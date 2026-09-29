@@ -1,0 +1,230 @@
+{
+ "pa_c_s702": {
+  "extrap": false,
+  "ptr": [
+   1,
+   1,
+   1,
+   2,
+   2,
+   3,
+   3,
+   3,
+   3,
+   3,
+   3,
+   3
+  ],
+  "dwell_steps_2toK": 3,
+  "revert_K1": false
+ },
+ "pa_c_s703": {
+  "extrap": true,
+  "ptr": [
+   1,
+   1,
+   2,
+   1,
+   2,
+   3,
+   4,
+   5,
+   4,
+   5,
+   4,
+   5
+  ],
+  "dwell_steps_2toK": 1,
+  "revert_K1": false
+ },
+ "pa_c_s704": {
+  "extrap": true,
+  "ptr": [
+   1,
+   1,
+   1,
+   2,
+   2,
+   3,
+   3,
+   4,
+   4,
+   5,
+   5,
+   6
+  ],
+  "dwell_steps_2toK": 3,
+  "revert_K1": false
+ },
+ "pa_c_s705": {
+  "extrap": true,
+  "ptr": [
+   1,
+   1,
+   1,
+   2,
+   2,
+   3,
+   4,
+   4,
+   5,
+   5,
+   6,
+   6
+  ],
+  "dwell_steps_2toK": 2,
+  "revert_K1": false
+ },
+ "pa_c_s706": {
+  "extrap": false,
+  "ptr": [
+   0,
+   1,
+   2,
+   3,
+   1,
+   2,
+   3,
+   1,
+   2,
+   3,
+   1,
+   2
+  ],
+  "dwell_steps_2toK": 1,
+  "revert_K1": true
+ },
+ "pa_c_s707": {
+  "extrap": false,
+  "ptr": [
+   1,
+   1,
+   1,
+   2,
+   3,
+   2,
+   3,
+   2,
+   2,
+   2,
+   2,
+   2
+  ],
+  "dwell_steps_2toK": 2,
+  "revert_K1": true
+ },
+ "pa_mb2_s730": {
+  "extrap": true,
+  "ptr": [
+   1,
+   1,
+   2,
+   2,
+   3,
+   3,
+   4,
+   4,
+   5,
+   5,
+   6,
+   6
+  ],
+  "dwell_steps_2toK": 2,
+  "revert_K1": false
+ },
+ "pa_mb2_s733": {
+  "extrap": true,
+  "ptr": [
+   1,
+   1,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10
+  ],
+  "dwell_steps_2toK": 1,
+  "revert_K1": false
+ },
+ "pb_at_s751": {
+  "extrap": true,
+  "ptr": [
+   1,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   0,
+   0,
+   0,
+   0
+  ],
+  "dwell_steps_2toK": 0,
+  "revert_K1": false
+ },
+ "pb_at_s752": {
+  "extrap": false,
+  "ptr": [
+   1,
+   1,
+   2,
+   3,
+   4,
+   3,
+   2,
+   2,
+   3,
+   2,
+   3,
+   3
+  ],
+  "dwell_steps_2toK": 2,
+  "revert_K1": false
+ },
+ "pb_at_s753": {
+  "extrap": true,
+  "ptr": [
+   1,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11
+  ],
+  "dwell_steps_2toK": 0,
+  "revert_K1": false
+ },
+ "pb_mat_s762": {
+  "extrap": true,
+  "ptr": [
+   1,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11
+  ],
+  "dwell_steps_2toK": 0,
+  "revert_K1": false
+ }
+}
