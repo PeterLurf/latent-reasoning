@@ -5,6 +5,52 @@ other session — see `docs/CURRENT_TASKS.md`). Everything here is **exploratory
 labels were known) unless a section says it was pre-registered. Code: `theory/*.py`; outputs: `theory/results/`. All
 measurements run on the CPU on existing `runs/` models; nothing here touches the queues or the pre-registrations.
 
+**Contents:** Executive summary · Timestamp correction · §0 question · §1 pointer · §2 retrieval (Mechanism 1) ·
+§3 theory · §4 attenuation (Mechanism 2) · §5 architectures · §6 Pilot A pre-registration · §9 Pilot B · §10 developmental
+race · §11 Pilot C · §12 training-free repair · §13 GPT-2 latent reasoners · §14 transfer curves (+ failed out-of-sample
+rule) · §15 Pilot A scored · §16 Pilot B interim · §17 Pilot D · §18 formal sketch · §19 Pilot B scored · §20 Pilot E ·
+§21 O marker test · §7 log · §8 toy simulation. (Sections were appended in the order written, so numbers are not in
+page order.)
+
+## Timestamp correction (2026-09-29 12:59 EDT, prompted by the Audit session; machine clock via `date`, Vast logs in UTC = EDT + 4)
+
+Times written in this document before this note were my own estimates, not read from the clock; many run 30–110 min
+ahead of the commits, one runs behind. The original text is left unchanged. Authoritative times are the git commit
+times below (local EDT) and the first-run times from the host queue logs.
+
+| item (as written) | stated time | commit that contains it | first run of that pilot started | first result |
+|---|---|---|---|---|
+| §6 Pilot A pre-registration | ~02:05 | 7f43b08 **01:57:04** | **01:53:19** (host 1), 01:54–01:56 hosts 2–4 | 02:27:40 |
+| §6 amendment A-1 | ~05:50 | 84fa0c1 05:57:30 | (re-runs pa_mb2 after 05:57) | — |
+| §9 Pilot B pre-registration | ~06:15 | 84fa0c1 **05:57:30** | 06:28:59 | 07:22:05 |
+| §11 Pilot C pre-registration | ~06:35 | 5d0e1bc **06:00:32** | 10:03:24 | 10:32:30 |
+| §14 out-of-sample rule check | ~07:40 | 044c1b9 **09:10:10** | — | — |
+| §15 Pilot A scored | ~09:15 | 457cf81 09:15:21 | — | — |
+| §16 Pilot B interim | ~09:40 | 9f4ea6b **09:16:37** | — | — |
+| §17 Pilot D pre-registration | ~09:50 | f05c4b1 **09:17:22** | not started before 11:55 | — |
+| Executive summary | ~10:30 | 3a81019 **09:30:18** | — | — |
+| §19 Pilot B scored | ~11:45 | a0d3648 11:43:59 | — | — |
+| §20 Pilot E + amendment D-1 | ~12:40 | 3ded4f5 **11:49:57** | 11:55:24 (pe8_at_s1006, host 4) | 12:57:31 |
+| amendment E-1, §21 pre-registration | ~13:00 | b895d96 **11:50:43** | — | — |
+| §21 PO3 added | ~13:15 | f12c4ca **11:51:36** | — | — |
+| §21 scorer written | ~13:25 | a898bcf **11:52:27** | — | — |
+| §21 scored | ~13:50 | 3ff40d8 **11:54:27** | — | — |
+| scope note (addendum Q) | ~14:10 | eb2e2f6 **12:25:40** | — | — |
+
+* **Order of registration and data, corrected:** Pilots B, C, D, E and amendments D-1, E-1 were committed before any of
+  their runs started. **Pilot A's text was written before the hosts were deployed, but its commit (01:57:04) is 4 min
+  after the first Pilot A run started (01:53:19)**; no Pilot A run produced any output before 02:27:40, so no outcome
+  could have informed it — but the commit record alone does not prove the order.
+* **§14's claim "frozen before any Pilot model was analysed" is inaccurate.** Before the rule was written (~07:00),
+  Pilot A pointer trajectories (analyse_pilotA.py) and the Coconut-arm retrieval shares (analyse_pilotA_shares.py) had
+  been computed (~06:10); no Pilot A transfer curve had. The retrieval threshold (0.5) predates Pilot A (§2); the
+  transfer-curve criterion was fixed after three P30 curves. The out-of-sample test failed (8/15), so nothing was inflated.
+* **§21 is out of sample for the marker only.** Addendum O's outcomes had been scored and published by the experiments
+  session (~10:05, results/p_o.json; PROTOCOL6_RESULTS) and its aggregate (O1 13 vs 13; P7 AUC 0.99) was in a message I
+  had read before §21 was written. I had not read any per-run O label and had not measured any O run; only the marker
+  was unmeasured. It is not a blind prospective test.
+* From here on every time in this document is taken from `date` or the commit.
+
 ## Executive summary (updated 2026-09-29 ~10:30 EDT)
 
 **Question.** Why do some Coconut-style latent reasoners follow chains past their training depth and others stop there?
