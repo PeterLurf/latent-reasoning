@@ -41,9 +41,16 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 
 | GPU (torch id) | Queue | Now | Next (chained, automatic) |
 |---|---|---|---|
-| RTX 4060 (`cuda:0`) | addendum R `scratch/p6_r_4060.txt` (log `logs/queue_r_4060.out`) | `r3_s407` | PROTOCOL7 T9 `scratch/p7s_t9_4060.txt` (first six seeds already done on vast3, marked claimed) |
-| RTX 3070 (`cuda:1`) | addendum R `scratch/p6_r_3070.txt` | `r3_s403` | T9 `scratch/p7s_t9_3070.txt` |
+| RTX 4060 (`cuda:0`) | addendum R `scratch/p6_r_4060.txt` (log `logs/queue_r_4060.out`) | `m_s324`, then the **priority** theory run `fz_g_s950`, then R resumes | PROTOCOL7 T9 `scratch/p7s_t9_4060.txt` (first six seeds already done on vast3, marked claimed) |
+| RTX 3070 (`cuda:1`) | addendum R `scratch/p6_r_3070.txt` | `m_s320`, then the **priority** theory run `fz_gat_s951`, then R resumes | T9 `scratch/p7s_t9_3070.txt` |
 | RTX 2070 (`cuda:2`) | PROTOCOL7 T10 fork graphs `scratch/p7s_t10_2070.txt` (fp32) | `t10fork_s560` | — (queue ends) |
+
+**Priority runs (2026-09-29 14:21, at the theory session's request; THEORY §24 Pilot G feasibility, code 0aecb47):**
+`fz_gat_s951` (setmem + anytime, 3070) and `fz_g_s950` (setmem, 4060), one after each card's current R run.
+`scratch/priority_run.sh` holds the R queue's claim lock (`scratch/p6_r_*.txt.lock`), so the worker waits; it runs
+`scratch/prio_<run>.sh` and releases the lock on exit. Logs: `logs/prio_<run>.out`, outputs `theory/runs/fz_*`. This
+delays R by ~1.5 h per card, well inside R's Wed 06:00 cut-off. If a `.lock` outlives its `priority_run.sh` process,
+remove it with `rmdir` so R resumes. Report to the theory session when both finish.
 
 Monitor: `bash scratch/p7s_monitor.sh` (wakes on a queue failure, a QUEUE_DONE, or a run whose log.jsonl is idle
 > 75 min: the 2070 memory-thrash stall of 09-29 03:05–09:08). Keep jobs under ~6.5 GB per 8 GB card.
