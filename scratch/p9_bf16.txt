@@ -1,0 +1,25 @@
+# PROTOCOL9 anytime arm, bf16 families (RTX 3070 / 4060): the paired T9 control's line plus --anytime 1
+p9at_l3_s500 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 500 --layers 3 --anytime 1
+p9at_l4_s520 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 520 --layers 4 --anytime 1
+p9at_w512_s540 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 540 --d 512 --anytime 1
+p9at_l3_s501 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 501 --layers 3 --anytime 1
+p9at_l4_s521 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 521 --layers 4 --anytime 1
+p9at_w512_s541 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 541 --d 512 --anytime 1
+p9at_l3_s502 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 502 --layers 3 --anytime 1
+p9at_l4_s522 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 522 --layers 4 --anytime 1
+p9at_w512_s542 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 542 --d 512 --anytime 1
+p9at_l3_s503 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 503 --layers 3 --anytime 1
+p9at_l4_s523 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 523 --layers 4 --anytime 1
+p9at_w512_s543 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 543 --d 512 --anytime 1
+p9at_l3_s504 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 504 --layers 3 --anytime 1
+p9at_l4_s524 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 524 --layers 4 --anytime 1
+p9at_w512_s544 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 544 --d 512 --anytime 1
+p9at_l3_s505 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 505 --layers 3 --anytime 1
+p9at_l4_s525 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 525 --layers 4 --anytime 1
+p9at_w512_s545 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 545 --d 512 --anytime 1
+p9at_l3_s506 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 506 --layers 3 --anytime 1
+p9at_l4_s526 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 526 --layers 4 --anytime 1
+p9at_w512_s546 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 546 --d 512 --anytime 1
+p9at_l3_s507 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 507 --layers 3 --anytime 1
+p9at_l4_s527 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 527 --layers 4 --anytime 1
+p9at_w512_s547 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 547 --d 512 --anytime 1
