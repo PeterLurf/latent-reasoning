@@ -39,3 +39,6 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53289703 vast 3090 (Q seed 1) DESTROYED 2026-09-29 ~12:00 after checksum-verified fetch
 53289329 vast 3090 (Q seed 0) DESTROYED 2026-09-29 ~12:25 after checksum-verified fetch
 # 2026-09-29 13:00: no instances of this session remain. theory-pa-h1..h4 belong to the theory session.
+53405513 vast 3090 0.189 created 2026-09-29 ~15:10: PROTOCOL8 Phase 0 Coconut | BAD HOST (driver 535, cuInit 804), DESTROYED ~15:13 before any work
+53405514 vast A4000 0.108 created 2026-09-29 15:10: PROTOCOL8 Phase 0 P8-0a no-CoT (38.29.145.27:40817)
+53405925 vast 3090 0.215 created 2026-09-29 15:14: PROTOCOL8 Phase 0 P8-0b Coconut (142.112.39.215:63335)
