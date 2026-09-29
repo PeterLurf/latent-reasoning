@@ -17,3 +17,5 @@ scratch/*.lock
 # Raw ProsQA training logs (~19 MB of progress bars each; key lines are in res_*/train_acc_lines.txt)
 prosqa/res*/logs/prosqa.out
 prosqa/logs/prosqa.out
+# PROTOCOL8 Phase 0 data (regenerable: prosqa/make_deep.py, md5s in docs/PROTOCOL8_PHASE0.md)
+prosqa/p8data/
