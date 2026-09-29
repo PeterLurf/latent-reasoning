@@ -925,6 +925,10 @@ of anytime supervision; and does tightness matter only in the selection window (
 * **Order and hosts.** Appended to the theory hosts' queues after Pilot D/E: J and JAT for all seeds first, then ATW and
   ATL; hosts 2–4 (host 1 is slow and is released after its D/E pairs). 32 runs, ≈ 24 GPU-hours, ≈ $4; expected
   completion ~08:00–10:00 EDT 2026-09-30.
+* **Amendment F-1 (2026-09-29 15:28 EDT, before any Pilot F run started; budget).** Arms **ATW and ATL are withdrawn**
+  (16 runs) to keep the shared Vast credit within the user's "don't overspend" instruction and make room for Pilot J.
+  PF4 (the selection-window test, T7) is therefore not run; Pilot H's fine-tuning arms (§27) address the related
+  critical-period question on trained models. PF1–PF3 and PF5 are unchanged.
 
 ## 24. Pilot G — monotone latent set (A6) (pre-registered 2026-09-29, committed 2e9fa17 14:15:32 EDT, before any Pilot G run started)
 
@@ -1172,6 +1176,8 @@ timestep encodings raise the expressivity of looped transformers; this pilot is 
 * **PI3 (the speed is kept).** In competent PER runs, the post-K speed (p[11] − p[K−1]) / (11 − (K − 1)) is within ±0.25 of
   the in-range speed p[K−1] / K in ≥ 60 % of runs.
 * **Order.** 16 runs appended after Pilot G on the four theory hosts (~2 h at the end of the queue).
+* **Amendment I-1 (2026-09-29 15:28 EDT, before any Pilot I run started; budget).** Arm **PER3 is withdrawn**; Pilot I is
+  PER2 only (8 runs). PI1–PI3 are evaluated on PER2.
 
 ## 29. Pilot J — chunk-reset latent attention (A8; CTM sliding window) (pre-registered 2026-09-29 15:19 EDT, before any Pilot J run started)
 
@@ -1192,6 +1198,10 @@ so continuing past K means running more copies of a trained computation rather t
   Pilot A PA3).
 * **Where.** Not queued on Vast yet (credit): offered to the experiments session's local GPUs after addendum R, or appended
   after Pilot I if the user approves the extra ≈ $2.
+* **Placement (2026-09-29 15:28 EDT).** The user left arms and placement to the agents' discretion within budget (relayed by
+  the Audit session); agreed with the experiments session: Pilot J runs on the theory Vast hosts, capped at $5. Queue
+  order on hosts 2–4: D/E → H → F (J, JAT) → G → I (PER2) → J; host 1 keeps only its D/E and H runs and is destroyed after
+  them (its G/I/J lines moved to hosts 2–4). Projected theory Vast spend from 15:30 to the end of all queues ≈ $15–16.
 
 ## 7. Log
 

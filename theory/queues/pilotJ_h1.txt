@@ -1,0 +1,4 @@
+pj_ch3_s900 --seed 900 --arch chunk3
+pj_ch3_s902 --seed 902 --arch chunk3
+pj_ch3_s904 --seed 904 --arch chunk3
+pj_ch3_s906 --seed 906 --arch chunk3

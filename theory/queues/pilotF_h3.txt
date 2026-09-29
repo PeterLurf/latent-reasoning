@@ -3,9 +3,3 @@ pf_j_s902 --seed 902 --jitter 2
 pf_jat_s903 --seed 903 --anytime 1 --jitter 2
 pf_j_s905 --seed 905 --jitter 2
 pf_jat_s906 --seed 906 --anytime 1 --jitter 2
-pf_atw_s900 --seed 900 --anytime 1 --anytime_stages 1:3
-pf_atl_s901 --seed 901 --anytime 1 --anytime_stages 4:5
-pf_atw_s903 --seed 903 --anytime 1 --anytime_stages 1:3
-pf_atl_s904 --seed 904 --anytime 1 --anytime_stages 4:5
-pf_atw_s906 --seed 906 --anytime 1 --anytime_stages 1:3
-pf_atl_s907 --seed 907 --anytime 1 --anytime_stages 4:5
