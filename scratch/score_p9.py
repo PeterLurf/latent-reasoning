@@ -11,6 +11,9 @@ AP2: extrapolation success (competent and extrap_K12): l = anytime-only, b = con
   l - b >= 4 and one-sided sign p <= 0.05; not supported if l <= b; else inconclusive.
 AP3 (learnability cost): pooled competent anytime vs control; "cost" if anytime has >= 6 fewer of 32; per family
   descriptive.
+Amendment 1 (ceiling rule, before any run): per family, if the competent controls' median d8 is >= 0.85, that family's
+beyond-depth measure is the mean of far 10-12 at K' = 16 instead of d8; if that median is also >= 0.85, the family
+leaves AP1 (reported as "controls never fail beyond depth"). Decided from the controls alone.
 Descriptive: AP1 share per family; d7/d8/d9 means by arm; P7 by arm is added by a separate frozen far_sweep pass.
     PYTHONPATH=. python scratch/score_p9.py [--final]
 """
@@ -39,12 +42,14 @@ def status(r):
     done = os.path.exists(f"results/competence_matched_{r}.json") and os.path.exists(f"results/length_gen_{r}.json")
     if done:
         p = P5.pilot_run(r)
+        f16 = [far(r, d, 16) for d in (10, 11, 12)]
         return {"done": True, "competent": bool(p.get("gate")), "extrap": bool(p.get("gate") and p.get("extrap_K12")),
-                "d7": far(r, 7), "d8": far(r, 8), "d9": far(r, 9)}
+                "d7": far(r, 7), "d8": far(r, 8), "d9": far(r, 9),
+                "far10_12_K16": None if None in f16 else float(np.mean(f16))}
     no_model = os.path.isdir(f"runs/{r}") and not os.path.exists(f"runs/{r}/model.pt") and \
         any(f"evaluated {r}" in open(q, errors="ignore").read() for q in
             [os.path.join(dp, fn) for dp, _, fs in os.walk("logs") for fn in fs if fn.startswith("queue_")])
-    return {"done": no_model, "competent": False, "extrap": False, "d7": None, "d8": None, "d9": None}
+    return {"done": no_model, "competent": False, "extrap": False, "d7": None, "d8": None, "d9": None, "far10_12_K16": None}
 
 
 def sign_p(k, n):
@@ -63,8 +68,21 @@ def main():
             if not (sa["done"] and sc["done"]):
                 pending.append((at, co)); continue
             rows.append({"family": fam, "seed": s, "anytime": at, "control": co, "a": sa, "c": sc})
-    ev = [r for r in rows if r["a"]["competent"] and r["c"]["competent"] and r["a"]["d8"] != r["c"]["d8"]]
-    k = sum(r["a"]["d8"] > r["c"]["d8"] for r in ev)
+    measure = {}
+    for fam in FAM:
+        cd8 = [r["c"]["d8"] for r in rows if r["family"] == fam and r["c"]["competent"] and r["c"]["d8"] is not None]
+        cfar = [r["c"]["far10_12_K16"] for r in rows if r["family"] == fam and r["c"]["competent"]
+                and r["c"]["far10_12_K16"] is not None]
+        measure[fam] = ("d8" if not cd8 or np.median(cd8) < 0.85 else
+                        "far10_12_K16" if cfar and np.median(cfar) < 0.85 else None)
+    for r in rows:
+        m = measure[r["family"]]
+        r["measure"] = m
+        r["a"]["m"] = r["a"][m] if m else None
+        r["c"]["m"] = r["c"][m] if m else None
+    ev = [r for r in rows if r["measure"] and r["a"]["competent"] and r["c"]["competent"]
+          and r["a"]["m"] is not None and r["c"]["m"] is not None and r["a"]["m"] != r["c"]["m"]]
+    k = sum(r["a"]["m"] > r["c"]["m"] for r in ev)
     share = k / len(ev) if ev else None
     p = sign_p(k, len(ev))
     ap1 = ("unresolved" if len(ev) < 10 else "supported" if share >= 0.70 and p < 0.05 else
@@ -79,7 +97,7 @@ def main():
         fr = [r for r in rows if r["family"] == fam]
         fe = [r for r in fr if r in ev]
         fam_out[fam] = {"pairs": len(fr), "evaluable": len(fe),
-                        "anytime_better": sum(r["a"]["d8"] > r["c"]["d8"] for r in fe),
+                        "measure": measure[fam], "anytime_better": sum(r["a"]["m"] > r["c"]["m"] for r in fe),
                         "competent_anytime": sum(r["a"]["competent"] for r in fr),
                         "competent_control": sum(r["c"]["competent"] for r in fr),
                         "extrap_anytime": sum(r["a"]["extrap"] for r in fr), "extrap_control": sum(r["c"]["extrap"] for r in fr)}
