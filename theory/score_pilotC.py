@@ -43,6 +43,12 @@ def main():
     runs = sorted(r for r in os.listdir("theory/runs") if arm_of(r) and os.path.exists(f"theory/runs/{r}/eval.json"))
     g, br, E = probe(512)
     gs, brs, Es = probe(256)
+    # queued Pilot C runs with no eval.json: the stage-1 guard's relaunch budget ran out (checked on the hosts:
+    # <run>_stage1fail_1..4 and no model) -> counted as runs that are not competent (rule of §15)
+    import glob
+    queued = {l.split()[0] for f in glob.glob("theory/queues/pilotC_h*.txt") for l in open(f) if l.strip() and not l.startswith("#")}
+    for r in sorted(queued - set(runs)):
+        res["runs"][r] = {"arm": arm_of(r), "gate": False, "extrap": False, "stage": "stage-1 failure (guard exhausted)"}
     for r in runs:
         ev = json.load(open(f"theory/runs/{r}/eval.json"))
         row = {"arm": arm_of(r), "gate": ev["gate"], "extrap": ev["extrap_K12"], "d7": ev["d7_K12"], "far": ev["far8_10_K12"],

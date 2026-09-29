@@ -340,6 +340,27 @@ decline: more latent steps than hops → more room for step-indexed solutions.
 * **PC2 (mechanism).** Mean retrieval share of the trained transitions (exp4 split) increases with K, and the number of
   steps the pointer spends before reaching depth 4 on the long-chain probe increases with K.
 
+**§11 result (scored 2026-09-29 14:25 EDT; `theory/score_pilotC.py` → `theory/results/score_pilotC.json`).** All 16
+Pilot C runs finished; three (pc_k5_s797, pc_k7_s800, pc_k7_s804) exhausted the stage-1 guard (4 attempts each) and
+count as not competent (§15 rule).
+
+| arm | competent / run | extrapolate (of competent) | retrieval share (mean, competent) | p[K−1] (competent) |
+|---|---|---|---|---|
+| K5 | 4 / 8 | 3 / 4 | 0.06 | 2 3 3 3 |
+| K6 (Pilot A C) | 6 / 8 | 3 / 6 | 0.14 | 2 2 3 3 3 3 |
+| K7 | 4 / 8 | 3 / 4 | 0.26 | 0 2 2 3 |
+
+* **PC1: not supported** — share(K5) 0.75 = share(K7) 0.75 (rule: not supported if share(K5) ≤ share(K7)). With 4
+  competent runs per arm the shares are imprecise, but there is no sign of the predicted decline.
+* **PC2: half met** — the retrieval share of the trained transitions rises with K (0.06 → 0.14 → 0.26) as predicted; the
+  steps to reach depth 4 do not (6.75, 9.17, 8.0).
+* **Reading.** More slack buys more retrieval, but in these runs retrieval did not decide the outcome (pc_k7_s801 and
+  pc_k7_s806 extrapolate with retrieval shares 0.51 and 0.43), consistent with the out-of-sample failure of the retrieval
+  marker (§21). *Post hoc (not a test):* under Prop. 9 (§25) every K here has slack — the in-range reach is ≈ 3 at every K
+  (p[K−1] medians 3, 3, 2), i.e. fractional speeds 3/5, 3/6, 3/7 that all need a brake — so the discriminating contrast
+  is slack vs none (anytime, budget matching; Pilots D/E, F), not K5 vs K7. The slack account's dose-response form (PC1)
+  is withdrawn.
+
 ## 12. Training-free repair at inference (exp8, exploratory)
 
 `theory/exp8_gainboost.py` → `theory/results/exp8_gainboost.json`, the 59 P30 ∪ L models, long-chain probe, K′ = 12.
@@ -932,6 +953,7 @@ committed; no Pilot C/D/E data used).**
   condition (b), novelty levels); A6 implemented (`--arch setmem`); §24 Pilot G pre-registered.
 * 2026-09-29 ~14:15–14:19 — §25 Prop. 9 (fractional budget-law speed needs a clock; slack forces C2 violations) and
   pointer predictions LE1–LE3 for Pilots C/D/E, registered before their pointer trajectories were computed.
+* 2026-09-29 14:25 — Pilot C scored (§11 result): PC1 not supported, PC2 half met; LE-R amendment (§25).
 
 ## 8. Toy simulation of the loop-gain account (Th3) — `theory/sim_gain.py` (exploratory)
 
