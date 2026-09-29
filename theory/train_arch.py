@@ -5,6 +5,7 @@
   --overrun M                       latent budget drawn from K..K+M each step (the last thought is sometimes fed on)
   --device cpu                      eager step instead of the CUDA-graph step (smoke tests)
   --jitter R [--jitter_p P]         amplitude jitter of the fed-back thought during training (THEORY §22, T6)
+  --init_from PATH                  start from a trained model.pt (fine-tuning; THEORY §26 Pilot H)
   --anytime_stages LO:HI            anytime supervision only while the curriculum stage (max depth; full = NPB - 1) is
                                     in LO..HI; plain final-step loss otherwise (THEORY §23, critical-window arms)
 Example:
@@ -189,6 +190,7 @@ def main(argv=None):
     p.add_argument("--jitter_p", type=float, default=0.5, help="probability a thought is jittered")
     p.add_argument("--anytime_stages", default="", help='"lo:hi": anytime loss only in curriculum stages lo..hi '
                    "(stage = max depth; full = NPB - 1); requires --anytime")
+    p.add_argument("--init_from", default="", help="model.pt to initialise the weights from (fresh optimizer)")
     p.add_argument("--out", required=True)
     a = p.parse_args(argv)
     Ks = [a.K]
@@ -211,10 +213,13 @@ def main(argv=None):
 
     json.dump({"arch": a.arch, "budget_match": a.budget_match, "overrun": a.overrun, "anytime": a.anytime,
                **({"jitter": a.jitter, "jitter_p": a.jitter_p} if a.jitter else {}),
-               **({"anytime_stages": a.anytime_stages} if a.anytime_stages else {})},
+               **({"anytime_stages": a.anytime_stages} if a.anytime_stages else {}),
+               **({"init_from": a.init_from} if a.init_from else {})},
               open(os.path.join(a.out, "arch.json"), "w"))
     model = build(a.arch, d=a.d, n_layers=a.layers, n_heads=a.heads, k_max=max(a.K + a.overrun, 8), mode=a.mode,
                   emb=a.emb, d_id=a.d_id, init=a.init, feedback=a.feedback, step_emb=not a.no_step_emb).to(dev)
+    if a.init_from:
+        model.load_state_dict(torch.load(a.init_from, map_location=dev, weights_only=False)["model"])
     if a.jitter:
         from arch import add_jitter
         add_jitter(model, a.jitter, a.jitter_p)
