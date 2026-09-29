@@ -26,3 +26,12 @@ run  results/budget_sweep_o_dev6_s53.json
 EVAL_DONE o_dev6_s53
 09:48:26 evaluated o_dev6_s53
 09:48:27 start o_dev6_s54 (--K 6 --seed 54 --lr 5e-4 --save_every 1000 --amp fp32 --aux_steps 20000 --aux_anneal 5000 )
+11:43:27 trained o_dev6_s54 rc 0
+run  results/competence_o_dev6_s54.json
+run  results/competence_matched_o_dev6_s54.json
+run  results/length_gen_o_dev6_s54.json
+run  results/delayed_trace_o_dev6_s54.json
+run  results/budget_sweep_o_dev6_s54.json
+EVAL_DONE o_dev6_s54
+11:43:50 evaluated o_dev6_s54
+11:43:50 QUEUE_DONE

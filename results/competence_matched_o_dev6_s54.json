@@ -1,0 +1,46 @@
+{
+ "runs/o_dev6_s54": {
+  "1": {
+   "bal_acc": 0.9979566453447051,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 0.9959132906894101,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9641806351299999,
+   "recall_reachable": 0.9544824856520878,
+   "specificity_decoy": 0.9738787846079119,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.8708951445595692,
+   "recall_reachable": 0.7905832747716093,
+   "specificity_decoy": 0.9512070143475291,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.790955879969943,
+   "recall_reachable": 0.6449590454039842,
+   "specificity_decoy": 0.9369527145359019,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.6561844382139288,
+   "recall_reachable": 0.38139079333986287,
+   "specificity_decoy": 0.9309780830879948,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5715185179654876,
+   "recall_reachable": 0.24870466321243523,
+   "specificity_decoy": 0.8943323727185398,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

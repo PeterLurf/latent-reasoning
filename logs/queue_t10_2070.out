@@ -1,0 +1,1 @@
+11:44:15 start t10fork_s560 (--no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 560 --shapes fork --p_fork 0.5 )

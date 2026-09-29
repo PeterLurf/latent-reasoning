@@ -394,4 +394,13 @@ steer which solution a run lands on while the late curriculum is still open.| **
   the scaffold → 8/10 extrapolate) was a fast-learner confound, not a cause. 8 of 96 runs (both arms of seeds 133, 138,
   141, 142) were stage-1 failures and count as unsuccessful. dev6 pairs (descriptive): 3 scored, long 0/3, base 1/3;
   o_dev6_s55/s56 dropped by the cut-off.
+* **Note on L2 / M1 (2026-09-29 ~11:45, from the theory session, `docs/THEORY.md`; exploratory).** The latent thought
+  acts as a pointer that should advance one depth per step. In failing K = 8 models the front *dwells* (~2 steps per
+  hop), reaches depth ~4–5 by step 8 and reverts at step 9 (e.g. k8_s214, k8_s207). So L2 and M1 show that the front
+  stops **where the learned step schedule ends**, and training makes that coincide with the training depth. They do
+  not by themselves separate a depth wall from a schedule end. Proposed cause: *slack*. When the latent budget exceeds
+  the hops needed, any schedule covering each depth once has zero loss, so the continuation past K is not identified.
+  This fits O1 (a longer scaffold removes no slack) and the retrospective extrapolating share, 47 % at K = 6 vs 26 % at
+  K = 8. The decisive test (anytime / minimum-progress supervision at K = 6 and 8, and on capped graphs, scored on
+  distance ≥ 8) is being run and pre-registered by the theory session (THEORY.md §17).
 
