@@ -480,6 +480,28 @@ amplitudes beyond depth D — e.g. chains longer than the latent budget with any
 keep up is a sustained front). Pilots B (arms ATR, MR) and D test parts of this; the combined recipe is the next
 experiment.
 
+## 19. Pilot B — scored where complete (2026-09-29 ~11:45 EDT; host 1 still owes pb_mat_s760, pb_mr_s770, pb_atr_s780)
+
+| arm | competent / run | extrapolate (of competent) | far8–10, competent |
+|---|---|---|---|
+| **AT** coconut + anytime 1 | **4 / 4** | **3 / 4** | 0.56 0.52 0.51 0.67 |
+| MAT markov + anytime 1 | 1 / 3 | 1 / 1 | 0.60 |
+| MR markov + restoring pointer | **0 / 3** | — | — |
+| ATR coconut + restoring pointer + anytime | 1 / 3 | 1 / 1 | 0.53 |
+
+* **PB1 (primary): supported (n = 4).** AT extrapolating share 0.75 ≥ 0.75 and ≥ Pilot A C's 0.50 + 0.25. Small n —
+  Pilot D (12 + 12, same hosts) is the real test.
+* **PB3 (learnability): met** — AT reaches the gate 4/4 (C in Pilot A: 6/8). Anytime supervision slows stage 2 in some
+  seeds but does not prevent full depth within 30 000 steps.
+* **PB2 (mechanism), competent AT/MAT so far:** no dwell (one repeat allowed) in 4/5 (s750 `1 2 3 3 4 5 6 5 …`, s751,
+  s753, s762; not s752); revert at K + 1 in 1/5 (s750, 6 → 5, then fades) — the "0 reverts" half is **not met**.
+* **PB4: unresolved** — no competent MR run. The restoring module as implemented **hurts learnability** badly (MR 0/3,
+  ATR 1/3 vs AT 4/4): the per-id sigmoid write-back interferes with the curriculum (runs stall at stages 3–4). A
+  restoring nonlinearity needs a gentler design (e.g. zero-initialised gate, applied only after full depth, or a
+  soft clamp on the pointer norm) before it can be tested.
+* Pilot C interim (not scored): K5 1/3 competent (does not extrapolate), K7 1/1 competent (extrapolates, 0.63) — early and
+  opposite in direction to PC1 so far; K5 is hard to learn with this recipe.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
