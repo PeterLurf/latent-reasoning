@@ -56,8 +56,12 @@ compute contracts**, and **in-distribution-null causal tests** as a standard eva
    toy simulation, now measured in trained networks — the design target for A2 is "a stable non-zero fixed point".
 5. **Training-free repair for trained models:** mask latent→latent attention past the trained budget and amplify the
    thought mildly (α ≈ 1.3): 7-hop success 24 → **46 of 59** seeds, 8–10-hop 8 → 27, with zero in-distribution cost.
-6. **Broadening to LLM-scale latent reasoners (in progress):** SIM-CoT-on-CODI GPT-2 reproduced at 0.393 on GSM8K
-   (published ≈ 0.44); its six latents add +7 points overall but nothing on 4–7-step problems (0.26 vs 0.24 at 4 steps).
+6. **LLM-scale latent reasoners have the budget horizon but not the hidden fix.** Public GPT-2 CODI and SIM-CoT-CODI
+   (6 trained latents, GSM8K): accuracy peaks at 6 latents (CODI 0.425) and never improves with more (CODI degrades to
+   0.401 at 12; SIM-CoT flat); their latents attend to earlier latents increasingly (up to ~30 % of mass in layer 0) and
+   making them Markov costs 7.5–12.5 points; masking earlier latents past the budget slightly *hurts* (−1 to −2 points) —
+   unlike the toy, there is no local advance operator underneath. Implication: for LLM latent reasoners, extrapolation
+   in the number of latent steps must be trained in (T2/T5), and "more latents at test time" is not a free lunch.
 
 ---
 
@@ -203,17 +207,21 @@ stopping signal is directly readable from the state.
 
 ## 6. Theoretical proposals
 
-* **Th1 Support-bound recurrence.** For a latent step h_k = F(h_{k−1}, H_{<k}, x) trained on k ≤ K, the loss identifies F
-  only on the visited states and on history lengths < K; F's dependence on |H| (the count of earlier thoughts) is
-  unconstrained beyond K, and the final output h_K is unconstrained altogether. Extrapolation therefore needs an
-  inductive bias that makes F independent of the history length — Markovian steps (A1) are the minimal such bias;
-  time-shift invariance of the latent dynamics is the property to formalise (a discrete analogue of path independence).
-  Prediction: any architecture whose step reads a growing history can learn count-indexed schedules, and will do so
-  whenever the compute contract has slack (Th2).
-* **Th2 Budget law ⇒ schedules.** If the contract allows T steps for n hops, SGD finds v ≈ n/T (Zhang et al.); v < 1
-  requires dwell; dwell is realisable either by holding state (Markov) or by lagged copies (retrieval). Lagged copies
-  with count-dependent lags are cheaper to learn from a growing KV cache, so slack contracts select retrieval schedules.
-  Testable: dwell time in stage 1 predicts retrieval share at full depth; unity contracts (T2) remove both.
+* **Th1 Support-bound recurrence (revised 07:30).** For a latent step h_k = F(h_{k−1}, H_{<k}, x) trained on k ≤ K,
+  the loss identifies F only on the states visited in training; its extension past K (and the untrained output h_K) is
+  chosen by inductive bias, not by data. Two ways to make the extension step-indexed: through the history (retrieval
+  with count-dependent lags — the Coconut failures) or through the state itself (phase/fade-triggered resets — the
+  Markov failures, pa_m_s713). Removing the history (A1) therefore does not by itself give time-homogeneity; what is
+  needed is that every zero-loss F be an "advance" operator on the reachable states, which is a property of the
+  **contract** (Th2), not of the attention pattern. Formal target: characterise the set of zero-loss transitions under
+  a contract with slack σ = K − (hops needed) and show it contains step-indexed members iff σ > 0 (or the per-step loss
+  leaves intermediate states unconstrained).
+* **Th2 Slack selects schedules (revised 07:30).** If the contract allows T steps for n hops, SGD finds speed v ≈ n/T
+  (Zhang et al.'s budget law); slack is spent on dwell, restarts or copies, all step-indexed. Observed: every model has a
+  static pointer at the end of stage 2 (queries do the hops), and the first latent advance is acquired in stage 3 either
+  as a local operator or as a lagged copy (THEORY §10); retrieval share ≥ 0.25 at the end of stage 3 → 0/12 extrapolate.
+  Retrospective dose-response: extrapolating share 47 % at K = 6 vs 26 % at K = 8 (no step embedding). Tests running:
+  Pilot C (K = 5 / 6 / 7), Pilot A arm MB (unity contract), Pilot B (anytime supervision removes slack step by step).
 * **Th3 Loop-gain reach.** With pointer amplitude a_d = a₀ g^d and a matching threshold θ set by the competition
   (log-sum-exp of the other keys' logits), reach = d_train + log(a_{d_train}/θ)/log(1/g). SGD sets g as low as the
   training depth allows because g ≥ 1 amplifies decoy noise; hence horizon ∝ training depth for graded (analog)
@@ -231,11 +239,18 @@ stopping signal is directly readable from the state.
   Mechanism 1, with Mechanism 2 limiting reach beyond it.
 * **Th4 Width-limited amplitude.** Under softmax reading the starting amplitude a₀ ∝ 1/(frontier size) (the per-edge
   budget law), so reach falls with width — a prediction for A3 (non-competitive reads remove it).
+* **Th5 Two-factor account (07:30; THEORY §14).** A seed extrapolates iff (i) its untrained last step is computed
+  locally (no retrieval schedule) and (ii) its local map is restoring (stable non-zero fixed point). On the 59 P30/L
+  models: 18/23 extrapolate when both hold, 7/36 otherwise, 1/21 when h_K is retrieved. An out-of-sample check on the
+  Pilot A models (rule frozen before they were analysed) **failed: 8/15 correct** — a single-step probe misses dwell steps and later restarts. The two mechanisms stand on causal evidence; as a *predictor* the one-step rule does not generalise, and P7 remains the reliable in-budget diagnostic.
 
-## 7. Order of work tonight and next
+## 7. Status and next steps (2026-09-29 ~07:30 EDT)
 
-1. Pilot A (A1, T1, T2) on 4 Vast GPUs — running; score by the pre-registered rules in `docs/THEORY.md` §6.
-2. Pilot B: A2 + A3 variants (implemented in `theory/arch.py` next), 4 seeds each, same recipe.
-3. Toy simulations for Th2/Th3 (numpy): budget law and dwell, loop-gain reach vs training depth.
-4. Transfer check: component attribution on the GPT-2 ProsQA checkpoints (G/J) — do GPT-2 thoughts retrieve from
-   earlier thoughts?
+1. Pilot A (A1, T1, T2): 2 runs left (host 1, ~08:45); interim above. Score by `docs/THEORY.md` §6.
+2. Pilot B (T5 anytime; A2 restore; combinations) and Pilot C (K dose-response) queued behind A on the same 4 hosts;
+   expected ~11:00–15:00 EDT. The first anytime run learns stage 2 slowly (11 000 steps); PB3 (learnability) may bind.
+3. Done tonight: toy gain simulation (Th3), developmental race (Th2), transfer curves + two-factor rule (Th5),
+   training-free repair (24 → 46/59), GPT-2 CODI / SIM-CoT probes (horizon at the trained budget; no hidden fix).
+4. Next: out-of-sample rule check (running); if Pilot B/C support the slack account, a confirmatory pre-registered
+   study of anytime supervision and unity contracts (8+ seeds per arm, both formats), then the same training change on
+   CODI/SIM-CoT GPT-2 with more latents than training steps (does the horizon move?).
