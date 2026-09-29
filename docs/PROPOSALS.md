@@ -4,6 +4,11 @@ Theory stream, 2026-09-29 (overnight). Companion to `docs/THEORY.md` (the eviden
 `docs/LITERATURE_NOTES.md` (the project's systematic review). Every proposal says what it fixes, why we think so, and
 how it is tested; the ones already running are marked **[running]**.
 
+> **Timestamp correction (2026-09-29 12:59 EDT, machine clock).** Times in this file were my estimates, not read from the
+> clock. Authoritative commit times: "Update ~06:50" → f54609d 07:00:56; "Th1/Th2 revised 07:30", "Th5 (07:30)",
+> "Status and next steps (~07:30)" → 044c1b9 09:10:10; scope note → eb2e2f6 12:25:40. See `docs/THEORY.md`, "Timestamp
+> correction", for the pre-registration timeline.
+
 ---
 
 ## 0. One-paragraph summary

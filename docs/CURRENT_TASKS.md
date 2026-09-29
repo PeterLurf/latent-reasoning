@@ -25,7 +25,7 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 > variants, pre-registered in `docs/THEORY.md` §6): `/workspace/Latent/theory/runs/pa_*`, log
 > `/workspace/Latent/logs/queue_theory-pa-h<N>.out`; fetch with `bash theory/vfetch_arch.sh <host> <port>`. Queues hold Pilots A–E (`theory/queues/`; A scored, B nearly done, C running, then D/E = 28 same-seed anytime/control pairs, the depth-wall vs schedule-end test pre-registered in `docs/THEORY.md` §20; until about 01:00 EDT 2026-09-30). Host 4 also runs the GPT-2 latent-reasoner probe (`/workspace/codi_batch.sh`, log `/workspace/codi_batch.log`). Theory CPU jobs locally: keep ≤ 3–4 threads at Idle priority (they starved the local GPUs once, 2026-09-29 ~07:00).
 
-> **Theory ↔ experiments coordination (2026-09-29 ~12:10).** Messages exchanged between the experiments session and the
+> **Theory ↔ experiments coordination (committed 2026-09-29 11:47 EDT; the "~12:10" first written here was an estimate).** Messages exchanged between the experiments session and the
 > theory session (claude-54). Shared understanding: the horizon is a propagation limit, the readout generalises. Theory
 > additions (docs/THEORY.md, executive summary at top): the latent thought is a pointer that breaks at step K + 1;
 > failing seeds retrieve it from earlier latent positions on a step-indexed schedule (masking that from step K on rescues
