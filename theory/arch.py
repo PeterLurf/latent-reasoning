@@ -184,6 +184,32 @@ def run_both_anytime(model, src, dst, start, K, qnodes, target, pnodes=None, cno
 
 
 
+class ChunkReasoner(MarkovReasoner):
+    """A8 / Pilot J (THEORY §29): chunk-reset latent attention. Latent step k attends to the prefix and only to the
+    latent positions of its own chunk of L steps (steps ((k-1)//L)*L + 1 .. k-1); at every chunk boundary the latent
+    history is cut, so the transition sees at most L-1 earlier thoughts and its count restarts — a finite, periodic
+    history window (the continuous-thought-machine sliding window; a clock that cannot run out). The thought itself
+    carries state across chunks; the queries still read every latent position."""
+    def __init__(self, *a, chunk=3, **kw):
+        super().__init__(*a, markov_layers=(), **kw)
+        self.chunk = int(chunk)
+
+    def latent_step(self, h, k, cache, keep_resid=False):
+        P = self._P
+        cs = ((k - 1) // self.chunk) * self.chunk + 1            # first step of this chunk
+        te = self.type_emb.weight
+        base = self.pause.expand_as(h) if self.mode == "pause" else h
+        x = (base + te[T_LAT] + (self.step_emb.weight[k] if self.use_step else 0))[:, None]
+        new = []
+        for blk, kv in zip(self.blocks, cache):
+            lo = P + cs - 1                                        # cache index of the chunk's first latent position
+            vis = (torch.cat([kv[0][:, :, :P], kv[0][:, :, lo:]], 2), torch.cat([kv[1][:, :, :P], kv[1][:, :, lo:]], 2))
+            x_new, kv2 = blk.step(x, vis)
+            new.append((torch.cat([kv[0], kv2[0][:, :, -1:]], 2), torch.cat([kv[1], kv2[1][:, :, -1:]], 2)))
+            x = x_new
+        return self._thought(x[:, 0]), new, None
+
+
 def add_jitter(model, r, p=0.5):
     """Proposal T6 (THEORY §22): amplitude jitter. While training, the thought fed into every latent step is rescaled
     about the batch mean, h <- c + s (h - c), with s ~ LogUniform[1/r, r] per example, applied with probability p
@@ -233,4 +259,6 @@ def build(kind, **kw):
         return VariantReasoner(**opts[kind], **kw)
     if kind == "setmem":
         return SetMemReasoner(**kw)
+    if kind.startswith("chunk"):                  # chunk2, chunk3, ...
+        return ChunkReasoner(chunk=int(kind[5:]), **kw)
     raise ValueError(kind)

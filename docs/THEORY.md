@@ -11,7 +11,7 @@ measurements run on the CPU on existing `runs/` models; nothing here touches the
 §3 theory · §4 attenuation (Mechanism 2) · §5 architectures · §6 Pilot A pre-registration · §9 Pilot B · §10 developmental
 race · §11 Pilot C · §12 training-free repair · §13 GPT-2 latent reasoners · §14 transfer curves (+ failed out-of-sample
 rule) · §15 Pilot A scored · §16 Pilot B interim · §17 Pilot D · §18 formal sketch · §19 Pilot B scored · §20 Pilot E ·
-§21 O marker test · **§22 four conditions C1–C4, Props. 4–8, new methods T6/T7 and architecture A6** · §23 Pilot F · §24 Pilot G (A6) · **§25 Prop. 9: slack creates the clock** · §26 CTM-inspired T8/A8 · §27 Pilot H (fine-tune repair) · §28 Pilot I (periodic clock) · §7 log · §8 toy simulation. (Sections were appended in the order written, so numbers are not in
+§21 O marker test · **§22 four conditions C1–C4, Props. 4–8, new methods T6/T7 and architecture A6** · §23 Pilot F · §24 Pilot G (A6) · **§25 Prop. 9: slack creates the clock** · §26 CTM-inspired T8/A8 · §27 Pilot H (fine-tune repair) · §28 Pilot I (periodic clock) · §29 Pilot J (chunk-reset attention) · §7 log · §8 toy simulation. (Sections were appended in the order written, so numbers are not in
 page order.)
 
 ## Timestamp correction (2026-09-29 12:59 EDT, prompted by the Audit session; machine clock via `date`, Vast logs in UTC = EDT + 4)
@@ -1154,6 +1154,26 @@ timestep encodings raise the expressivity of looped transformers; this pilot is 
 * **PI3 (the speed is kept).** In competent PER runs, the post-K speed (p[11] − p[K−1]) / (11 − (K − 1)) is within ±0.25 of
   the in-range speed p[K−1] / K in ≥ 60 % of runs.
 * **Order.** 16 runs appended after Pilot G on the four theory hosts (~2 h at the end of the queue).
+
+## 29. Pilot J — chunk-reset latent attention (A8; CTM sliding window) (pre-registered 2026-09-29 15:19 EDT, before any Pilot J run started)
+
+**Design (`--arch chunk3`, `theory/arch.py:ChunkReasoner`).** The latent budget is cut into chunks of L = 3 steps; latent
+step k attends to the prefix and only to the earlier latent positions of its own chunk; at each chunk boundary the latent
+history is cut and the within-chunk count restarts. The thought carries state across chunks; the queries read every
+latent position. This is §26's A8 made concrete: a finite, periodic history window (a CTM-style sliding window, and the
+attention-level form of Pilot I's periodic clock). It is also the training-time counterpart of re-anchoring (§26):
+every chunk at test time is the same computation as a trained chunk, started from the previous chunk's final thought,
+so continuing past K means running more copies of a trained computation rather than extrapolating a count. (Checked
+2026-09-29: harness = model at K′ = 6 and 12; identical to Coconut up to step 3.)
+
+* **Arms** (P30 recipe; seeds 900–907; paired with Pilot D): **CH3** `--arch chunk3`; **CH3AT** `--arch chunk3 --anytime 1`.
+* **PJ1 (continuation).** The pointer passes distance 8 by h_11 (le_pointer.py; max p ≥ 8) in ≥ 50 % of competent CH3 ∪ CH3AT
+  runs and in a larger share than the same seeds' competent C ∪ AT runs.
+* **PJ2 (outcome).** §23 pair rule on d8 (K′ = 12): CH3 > C and CH3AT > AT (pooled; ≥ 5 counted pairs).
+* **PJ3 (learnability).** Competent counts CH3 vs C and CH3AT vs AT differ by ≤ 2 of 8 (unlike the full Markov step,
+  Pilot A PA3).
+* **Where.** Not queued on Vast yet (credit): offered to the experiments session's local GPUs after addendum R, or appended
+  after Pilot I if the user approves the extra ≈ $2.
 
 ## 7. Log
 

@@ -182,7 +182,7 @@ def main(argv=None):
     p.add_argument("--amp", default="auto", choices=["auto", "bf16", "fp32"],
                    help="auto: bf16 autocast on sm>=80, fp32 otherwise; fp32 reproduces RTX 2070 runs on newer cards")
     p.add_argument("--resume", action="store_true", help="continue from <out>/state.pt (full training state) if present")
-    p.add_argument("--arch", default="coconut", choices=["coconut", "markov", "markov_l2", "restore", "markov_restore", "markov_sigread", "markov_restore_sigread", "setmem"])
+    p.add_argument("--arch", default="coconut", choices=["coconut", "markov", "markov_l2", "restore", "markov_restore", "markov_sigread", "markov_restore_sigread", "setmem", "chunk2", "chunk3", "chunk4"])
     p.add_argument("--budget_match", action="store_true")
     p.add_argument("--overrun", type=int, default=0)
     p.add_argument("--anytime", type=int, default=None, help="anytime supervision slack C (queries after step k must "
