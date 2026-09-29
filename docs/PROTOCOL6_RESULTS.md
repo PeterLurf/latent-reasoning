@@ -384,4 +384,14 @@ steer which solution a run lands on while the late curriculum is still open.| **
   new chains hung off the answer options whatever the total depth — consistent with a shortcut that searches a few
   hops backwards from the options, and with no multi-step use of the thoughts (P2, addenda G/J). Addendum Q (3–4 hop
   training) tests training-depth dependence directly on unextended problems.
+| **O1** does a longer lookup scaffold (full depth reached while it is still on) make extrapolation more common? (addendum O; 48 same-card pairs) | successes 13 vs 13; discordant l = 6, b = 6 (sign p 0.61); local 6 vs 4, Vast 0 vs 2 | **not supported** |
+
+### Addendum O (scored 2026-09-29 ~10:05, `scratch/score_o.py --final`, `results/p_o.json`)
+
+* The manipulation worked: long-scaffold runs reached full depth at median step 18 500 while the scaffold was still at
+  weight 1 (until 20 000); base runs at 18 000 after it had faded. Competent 30 vs 29 of 48; P7 ≥ 0.2 in 30 % vs 21 % of
+  competent runs (descriptive). Extrapolation did not change, so the exploratory association (early full depth under
+  the scaffold → 8/10 extrapolate) was a fast-learner confound, not a cause. 8 of 96 runs (both arms of seeds 133, 138,
+  141, 142) were stage-1 failures and count as unsuccessful. dev6 pairs (descriptive): 3 scored, long 0/3, base 1/3;
+  o_dev6_s55/s56 dropped by the cut-off.
 

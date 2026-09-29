@@ -1,6 +1,6 @@
 # PROTOCOL 7 — results
 
-Pre-registration: `docs/PROTOCOL7.md` (tests T1–T13, amendments 1–5). Every verdict below is the pre-registered one;
+Pre-registration: `docs/PROTOCOL7.md` (tests T1–T13, amendments 1–7). Every verdict below is the pre-registered one;
 exploratory results are labelled.
 
 | Test | Population | Result | Verdict |
@@ -13,6 +13,12 @@ exploratory results are labelled.
 | **T7** independent re-implementation | same 59 runs | Spearman 1.000, max |Δ| 2.4e-6 | **pass** |
 | **T8a** pause-token models | 3 pause models | no extrapolation (d7 0.50); in_peak 0.0003–0.0013, 25–100× below the floor, so P7 is undefined for them (raw ratios 0.4–1.2 are noise) | as expected (floor excludes) |
 | **T8b** placebo P7 (C1 − random unreachable edge) | same 59 runs | AUC 0.75 (band 0.35–0.65) | **fail** — see below |
+| positive control (amendment 3): blocking chain A cuts A4–A6 by ≥ 0.20 | 44 competent addendum-O runs (new) | 44/44 | ok |
+| **T1b** frontier necessity at distances 8–10 (block B in every block's latent attention) | 12 eligible O extrapolators | 11/12 | **supported** |
+| **T1c** distance 7 is a query-time hop (block the query's read of A6 → B1) | 18 O runs with TPR_B1 ≥ 0.35 | 18/18 | **supported** |
+| **T2b** rescue at natural scale (per-head mass of the model's own sharp frontier) | 24 O non-extrapolators, P7 < 0.10 | 20/24 rescued (B2–B6 up ≥ 0.20 and decoy injection raises false positives ≥ 0.10) | **supported** |
+| **T13** P8 predicts extrapolation to distance 8 | 44 O runs, 8 extrapolate at d8 | AUC 0.98 (P7: 0.97) | **supported** |
+| **T4** prospective head-to-head vs in-distribution predictors | 44 O runs, 20 extrapolate | P7 0.99; best of 10 in-distribution instruments 0.82 (completion time at depth 6); EA 0.53; accuracies 0.54–0.65; difference 0.17, 95 % CI [0.05, 0.26] | **supported** |
 
 Sources: `results/p7s_t5.json`, `results/p7s_t6.json`, `results/p7_indep.json`, `results/p7s_t8.json`; `results/p7s_causal.json`, `results/p7s_t12.json` (T1/T2; code `latent/frontier_causal.py`, git f77d6ff);
 `results/p7s_t3.json`, `results/p7s_t3_score.json` (T3; `scratch/p7s_t3.py`).
@@ -64,3 +70,13 @@ increasing hop clock (layer clocks [2,3,1,4,3,3] and [1,1,1,1,1,2]). By the pre-
 stops: no confirmatory seeds with this recipe. Difference from Rizvi-Martel et al. 2026 (96 % for 2L-768d from
 scratch): they used a 40-token symbolic vocabulary; here the model must also learn GPT-2 BPE embeddings for the
 invented concept names in 50 epochs. The remaining pilot analyses (long sets, P7 extractor) were stopped as moot.
+
+## Amendment-3 tests and T4 (scored 2026-09-29 ~10:20 on the addendum-O runs, none measured before)
+
+`results/p7s_amend3.json`, `results/p7s_causal2.json`, `results/far_sweep_o_s2033.json`, `results/p7s_t4.json`.
+The exploratory account from T1/T2 replicates on 44 new models: the latent frontier is causally necessary for answers
+beyond one hop past the horizon (T1b) and sufficient to produce them when supplied at the model's own natural scale
+(T2b) — the readout of failing models uses a frontier they never build; distance 7 is a query-time hop (T1c); the
+frontier's reach at distance 8 predicts extrapolation there (T13); and the horizon-crossing probe beats every
+in-distribution instrument prospectively (T4). Together: **the training-depth horizon is a propagation limit of the
+latent sweep, visible and causal in the frontier.**
