@@ -93,6 +93,18 @@ et al. 2022); hard attention + discrete states give provable size generalisation
 latent CoT trades execution precision against exploration via decisional certainty (2602.01148); overthinking degrades
 deep recurrence (Kohli et al. 2604.07822).
 
+**Closest new work found overnight (read abstracts; full texts before any claim).** *Beyond the Training Horizon:
+Mechanisms and Limits of Length Generalization in Looped Transformers* (arXiv 2609.33144, Sept 2026): two looped
+configurations learn a "transferable progress cue" (one) or an "advancing computational frontier" (the other), and fail
+past the training depth by degradation of the readout state and progress cues / declining reliability of state
+propagation, with little self-correction — the looped-transformer analogue of our two mechanisms; no fix proposed, no
+Coconut-style sequential thoughts, no history-retrieval mechanism, no in-distribution-null interventions. *Fast-slow
+latent recurrence* (arXiv 2604.01577): a persistent latent state updated by weight-shared steps generalises train-short /
+test-long, with state-dependent transitions and feature-wise nonlinear mixing as the essential ingredients — consistent
+with our Markov + restoring-map results. Also relevant: neural-algorithmic-reasoning "hints" (per-step state
+supervision; Bevilacqua et al. 2302.10258 Hint-ReLIC; Rodionov et al. 2306.13411 on reasoning *without* hints) — our
+anytime supervision (T5) is weaker than hints: it supervises only the readout's lower bound per step, never the state.
+
 **What is missing.** (a) Almost all methods are evaluated in-distribution; extrapolation past the trained number of
 latent steps or reasoning depth is rarely measured, and never per seed. (b) Every Coconut-family method lets thoughts
 attend to all earlier thoughts; nobody has asked what that channel is used for. (c) The final latent of training is
