@@ -11,7 +11,7 @@ measurements run on the CPU on existing `runs/` models; nothing here touches the
 §3 theory · §4 attenuation (Mechanism 2) · §5 architectures · §6 Pilot A pre-registration · §9 Pilot B · §10 developmental
 race · §11 Pilot C · §12 training-free repair · §13 GPT-2 latent reasoners · §14 transfer curves (+ failed out-of-sample
 rule) · §15 Pilot A scored · §16 Pilot B interim · §17 Pilot D · §18 formal sketch · §19 Pilot B scored · §20 Pilot E ·
-§21 O marker test · **§22 four conditions C1–C4, Props. 4–8, new methods T6/T7 and architecture A6** · §23 Pilot F · §24 Pilot G (A6) · **§25 Prop. 9: slack creates the clock** · §7 log · §8 toy simulation. (Sections were appended in the order written, so numbers are not in
+§21 O marker test · **§22 four conditions C1–C4, Props. 4–8, new methods T6/T7 and architecture A6** · §23 Pilot F · §24 Pilot G (A6) · **§25 Prop. 9: slack creates the clock** · §26 CTM-inspired T8/A8 · §7 log · §8 toy simulation. (Sections were appended in the order written, so numbers are not in
 page order.)
 
 ## Timestamp correction (2026-09-29 12:59 EDT, prompted by the Audit session; machine clock via `date`, Vast logs in UTC = EDT + 4)
@@ -1021,6 +1021,48 @@ committed; no Pilot C/D/E data used).**
   it keeps running past K at the same speed (extrapolates, far8–10 0.59). pa_mb2_s733 runs `1 1 1 2 3 4 | 5 6 7 8 9 10`
   (a short warm-up, then unit speed; far8–10 0.77). A clock need not stop at K; what fails is a clock whose continuation
   past K stops or cycles (the count-indexed retrieval of §2), as Prop. 1 allows.
+
+## 26. Continuous Thought Machines as a source for C2 — re-anchored episodes and stationary history (2026-09-29 14:48 EDT, prompted by the user; re-anchoring predictions registered before the 59-model run)
+
+**What CTMs do** (Darlow et al., arXiv 2505.05522, read in full today): internal ticks decoupled from the input; each neuron
+has private weights applied to a sliding window of its last M pre-activations (neuron-level models); the representation
+is *synchronisation* — S_ij^t = Σ_τ e^(−r_ij(t−τ)) z_i^τ z_j^τ / √(Σ_τ e^(−r_ij(t−τ))), learnable r_ij ≥ 0 — which forms
+the attention queries and the outputs; no positional embeddings; the loss averages the loss at the lowest-loss tick
+and at the most-certain tick; on mazes, a model trained to output 100 steps on 39×39 mazes solves longer paths and
+99×99 mazes **by re-applying its policy** from the current position.
+
+**What carries over to C2 (no usable clock) — and what does not.**
+1. *Re-application from the current state* (the maze result) is the cleanest route: a bounded-horizon latent loop that is
+   restarted from a decoded state never sees a step count outside its trained range, and each restart begins from a
+   crisp token embedding (amplitude restored, C3). → **Method T8, re-anchored latent episodes** (below; training-free
+   test now).
+2. *Stationary history.* A sliding window of M steps, or history weighted by e^(−r(t−τ)) with r > 0, is time-translation
+   invariant: after ~M or ~1/r steps it carries no information about the absolute tick, unlike causal attention over the
+   whole latent history, whose normalisation counts predecessors (Haviv et al.). Note the CTM normaliser √Σe^(−r(t−τ)) is
+   a √t clock when r = 0, which CTMs allow; a clock-free variant needs r ≥ r_min > 0. → **Architecture A8, stationary
+   history reads**: latent→latent access only through a window of M earlier thoughts or a decayed summary with r ≥ r_min,
+   so the history channel (which Pilot A showed helps learnability) stays but cannot index steps beyond M ≈ 1/r_min.
+   *Prediction from Prop. 9:* under slack A8 alone will not fix extrapolation — the clock will be rebuilt in the state as in
+   Pilot A — so A8 must be paired with a tight contract (C1). Its value is C2 without Markov's learnability cost.
+3. *The tick-selection loss* (min-loss tick + max-certainty tick) lets the model answer when ready. By Prop. 4 it does not
+   remove slack (being right at *some* tick leaves the speed free); combined with minimum-progress masking (T5) it
+   would, and max-certainty halting is a content-triggered stop (C4, A5) rather than a count.
+4. *Neuron-level temporal filters* are a per-coordinate nonlinearity over time — a possible substrate for restoring
+   (bistable) dynamics (C3); not pursued yet.
+
+**Method T8 — re-anchored latent episodes (training-free).** Run the trained K-step loop; decode where its frontier is
+from the model itself (the target of the edge token that the sweep head attends to most at step K); start a new K-step
+episode from that node on the same input; combine query logits by max over episodes. Variant re2top3 branches the
+second episode from the 3 most-attended edges' targets. Code `theory/exp12_reanchor.py`; exploratory debug on one model
+outside the test set (pa_c_s706: distance 7–10 bal-acc 0.50 → 0.65/0.65/0.61/0.54 with re2top3) was run before this entry.
+
+**Predictions for the 59 P30 ∪ L models** (long-chain probe(512); "7-hop success" = distance-7 bal-acc ≥ 0.60 as in exp5:
+single episode at K′ = 12 → 24/59, layer-2 block → 41/59; 16 failures are not rescued by the block):
+* **RA1.** re2top3 gives 7-hop success in ≥ 41 of 59 (at least the block's count).
+* **RA2 (differential).** Among the 16 block-resistant failures, re2top3 reaches 7-hop success in ≥ 40 % (block: 0 %) —
+  re-anchoring resets both the clock (Mechanism 1) and the amplitude (Mechanism 2); the block only removes the first.
+* **RA3.** Mean far8–10 bal-acc over the 59 models: re3 − single ≥ 0.05.
+* **RA4 (cost).** Mean near-distance (1–6) bal-acc drops by ≤ 0.02 (max-combination can add false positives).
 
 ## 7. Log
 
