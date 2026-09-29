@@ -279,6 +279,38 @@ fp32/left-padding here vs bf16 there; close enough for mechanism probes). Accura
 2: 0.61, 3: 0.46, 4: 0.26, 5: 0.17, 6: 0.04, 7: 0.05. Running: latent budget 0–12, per-layer attention of each latent on
 earlier latents, latent→latent masking from latent 2 (Markov) and past the trained budget (latents 7–10).
 
+## 14. Mechanism 2 measured directly: transfer curves of the local map (exp9, exploratory)
+
+`theory/exp9_transfer.py` → `theory/results/exp9_transfer.json`, `exp9_summary.json`. For each of the 59 models: roll out
+to step K − 1, scale the input thought's deviation from the batch mean by s ∈ {0.25 … 2}, run step K with layer-2
+retrieval blocked (the local map alone), and read the output pointer through the sweep head of the next step.
+
+* **Two shapes.** *Restoring* (saturating): weak pointers collapse, strong ones are clamped to a fixed level — p30_s105
+  inputs 1.4 → 6.4 give outputs 0.3, 1.4, 3.6, 3.8, 3.7, 3.6, 3.2 (a stable non-zero fixed point near 3.7).
+  *Linear* (graded): output ∝ input with gain < 1 — p30_s126, gain ≈ 0.7 at every scale, no fixed point → the front fades.
+  Some retrieval-type models have an almost absent local path (p30_s115, gain 0.15) or one that points back to depth 1
+  (k8_s214).
+* Classification (fixed before the tables below were computed, after inspecting three curves): *restoring* = the local
+  map advances the pointer, its output at the operating point is ≥ 0.6 of the input, and the log-log slope around s = 1
+  is < 0.6 (clamped).
+* **Restoring maps are common in extrapolators** (19/25) and less so in failures (15/34).
+* **The retrieval block rescues exactly the models whose hidden local map is restoring:** among retrieval-type failures,
+  8–10-hop ≥ 0.60 after the block in 9/12 with a restoring local map vs 1/11 without.
+* **Two-factor rule** (untrained last thought computed locally — retrieval share at h_K < 0.5 — *and* restoring local
+  map): **18/23 extrapolate vs 7/36 otherwise**; with retrieval at h_K only 1/21 extrapolate whatever the map.
+
+| local map | h_K computed | extrapolate |
+|---|---|---|
+| restoring | locally | **18 / 23** |
+| restoring | by retrieval | 1 / 11 |
+| not restoring | locally | 6 / 15 |
+| not restoring | by retrieval | **0 / 10** |
+
+This is the two-factor account in one table: Mechanism 1 (retrieval schedule at the untrained step) blocks
+extrapolation almost completely; given a local step, Mechanism 2 (restoring vs graded map) decides most of the rest.
+Formal anchor: saturated recurrences act as discrete automata (Merrill et al. 2020; Weiss et al. 2018). Exploratory;
+the classification thresholds should be frozen and tested on new runs (Pilots A–C provide them).
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the

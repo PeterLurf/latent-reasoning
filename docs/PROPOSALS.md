@@ -32,6 +32,33 @@ compute contracts**, and **in-distribution-null causal tests** as a standard eva
 | M1–M5 | Evaluation methodology (beyond-budget tests, attribution, null-in-distribution interventions, seed triage, pre-registration) | overclaiming from signatures | this project | — |
 | Th1–Th4 | Theory: support-bound recurrence, budget-law schedules, loop-gain reach, width-limited amplitude | — | — | derivations + toy sims |
 
+### Update 2026-09-29 ~06:50 EDT — what the night changed (details in `docs/THEORY.md` §9–13)
+
+1. **Blocking retrieval architecturally is not enough.** Interim Pilot A: Markov models extrapolate no more often than
+   Coconut (1/3 vs 3/6 competent). Without retrieval, failing Markov models **restart the sweep** when their pointer has
+   faded (pa_m_s713: `1 2 3 | 1 2 3 4 | 1 2 3 4`). Retrieval was one implementation of a step-indexed schedule; the
+   deeper cause is **slack** — more latent steps than required hops lets any schedule that visits each depth once fit the
+   loss. Proposal A1 is demoted from "the fix" to "one ingredient"; the unity contract (T2) and a new proposal T5 are
+   promoted.
+2. **New T5 — anytime (minimum-progress) supervision [running: Pilot B].** Supervise the answer after every latent step
+   for nodes within k + 1 hops and for all unreachable nodes, masking deeper nodes (never penalise early arrival). This
+   removes slack without imposing a counter, and gives a mechanistic reason why per-step supervision (SIM-CoT, PMPS,
+   TRM/DIS deep supervision) stabilises latent reasoning with more latent steps. Early signal for the same idea via the
+   unity contract: the first fixed Markov + budget-matched run extrapolates to 0.77 at 8–10 hops (one seed).
+3. **The circuit is chosen in curriculum stage 3**, when the first latent advance is needed: all models have a static
+   pointer at the end of stage 2; failures acquire the advance as a lagged copy, extrapolators as a local operator.
+   Retrieval share ≥ 0.25 at the end of stage 3: 0/12 extrapolate (all 34 checkpointed models) — a cheap early
+   negative marker for seed triage (T4).
+4. **Mechanism 2 has a direct signature: the local map's transfer curve.** Scaling the pointer in the input thought
+   and reading the output pointer: extrapolators have a **restoring** map (weak pointers collapse, strong ones clamp to a
+   stable non-zero fixed point, e.g. p30_s105 output ≈ 3.7 for any input ≥ 3.6); fading failures have a **linear**
+   sub-unity map (p30_s126, gain ≈ 0.7, no fixed point). This is exactly the analog vs digital distinction of Th3 and the
+   toy simulation, now measured in trained networks — the design target for A2 is "a stable non-zero fixed point".
+5. **Training-free repair for trained models:** mask latent→latent attention past the trained budget and amplify the
+   thought mildly (α ≈ 1.3): 7-hop success 24 → **46 of 59** seeds, 8–10-hop 8 → 27, with zero in-distribution cost.
+6. **Broadening to LLM-scale latent reasoners (in progress):** SIM-CoT-on-CODI GPT-2 reproduced at 0.393 on GSM8K
+   (published ≈ 0.44); its six latents add +7 points overall but nothing on 4–7-step problems (0.26 vs 0.24 at 4 steps).
+
 ---
 
 ## 1. Where the field is (Sept 2026)
@@ -192,6 +219,12 @@ stopping signal is directly readable from the state.
   training depth allows because g ≥ 1 amplifies decoy noise; hence horizon ∝ training depth for graded (analog)
   updates, and no horizon for restoring (digital) updates (A2). This connects the bounded index-matching logit of Zhu
   et al. (ICLR 2026) and the certainty trade-off of 2602.01148 to a quantitative reach prediction.
+  *Formal anchor:* saturated networks — squashing units driven to their extreme values — behave as discrete automata
+  (Merrill et al. 2020, *A Formal Hierarchy of RNN Architectures*, arXiv 2004.08500; Weiss, Goldberg & Yahav 2018,
+  arXiv 1805.04908, on which recurrences implement counters/automata in practice); a discrete state machine runs for any
+  length, a graded (unsaturated) one accumulates error. Our transfer curves (update item 4) show extrapolating seeds'
+  latent maps operating in the saturated regime (clamped output above threshold) and fading seeds' maps in the linear
+  regime. Design target: a stable non-zero fixed point of the pointer map.
   *Toy check (`theory/sim_gain.py`, THEORY §8):* with moderate noise a graded update fitted on depth ≤ D reaches only
   D + 2–4 (7 / 8 / 10 for D = 3 / 5 / 8), a restoring update 40 of 40; with little noise the graded update also reaches
   far — so the horizon's strength depends on noise, and the exact training-depth horizon in our models is mainly
