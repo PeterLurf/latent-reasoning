@@ -50,9 +50,11 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
   (logs `logs/queue_t9_*.out`); T10 fork graphs `scratch/p7s_t10_2070.txt` after the 2070's O queue (log
   `logs/queue_t10_2070.out`). Score T9/T10 with `scratch/far_sweep_layers.py` (layer by largest in_peak) — scorer
   `scratch/score_p7s_t9.py` (written before data; rules in PROTOCOL7 T9/T10). T11 (from-scratch ProsQA) and T12 need cloud credit.
-* **GitHub:** local git repository in D:\Latent (branch main, `core.autocrlf false` — keep it: bash scripts must stay LF).
-  GitHub CLI at `C:\Users\peter\.local\gh\bin\gh.exe`; after `gh auth login`, create the private repo and push
-  (`gh repo create <name> --private --source . --push`). Weights and raw ProsQA logs are git-ignored.
+* **GitHub: private repo https://github.com/PeterLurf/latent-reasoning (branch main), first pushed 2026-09-29 ~01:22.**
+  Push from D:\Latent with `git add -A && git commit -m ... && git push` (set GIT_TERMINAL_PROMPT=0). The repo's local
+  git config uses only the gh credential helper (`credential.helper` reset, then `!C:/Users/peter/.local/gh/bin/gh.exe
+  auth git-credential`; gh logged in as PeterLurf) — the system Git Credential Manager hangs on a hidden login window.
+  Keep `core.autocrlf false` (bash scripts must stay LF). Weights and raw ProsQA logs are git-ignored.
 * **PROTOCOL7 T11 pilot (from-scratch 2-layer GPT-2 on ProsQA; amendment 6) — Vast 53306310, RTX 3090, $0.173/h,
   `ssh -p 6399 root@142.127.68.223`**, launched 2026-09-29 ~00:51 with `prosqa/vdeploy.sh` (RunPod A4500 at $0.19 vanished
   on create). cuInit 0, driver 560, md5 of regenerated sets match. ~3.7 min/epoch → training ~3 h, then analyses. Fetch:
