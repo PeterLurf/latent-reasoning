@@ -538,6 +538,29 @@ the slack-induced schedule (§16, §18 Prop. 2), so the two accounts make opposi
 * **Order and hosts.** Pairs interleaved across the four theory hosts after Pilot C, E8 and E3 pairs placed early; host 1
   (slower) gets fewer pairs. Expected completion ~01:00 EDT 2026-09-30, cost ≈ $7 at $0.60/h.
 
+* **Amendment E-1 (2026-09-29 ~13:00 EDT, before any Pilot D or E run started; prompted by the experiments session).**
+  PE1's pair comparison uses the **continuous** beyond-depth latent accuracy (d8 for D/E8, d6 for E3): a pair counts for
+  anytime if its anytime run's accuracy is strictly higher, for control if strictly lower; exactly equal pairs are ties and
+  are excluded from both the 70 % share and the one-sided sign test. "Evaluable pairs" = pairs with both runs competent
+  and not tied; PE1 needs ≥ 8 of them, else unresolved.
+
+## 21. Out-of-sample test of the stage-3 retrieval marker on addendum O (pre-registered 2026-09-29 ~13:00 EDT)
+
+Addendum O is scored by the experiments session (results/p_o.json); I have seen only its aggregate (O1 null, 13 vs 13 of
+48 pairs), not any per-run label, and have not measured any O run.
+
+* **Population.** The 27 locally trained O runs with step checkpoints (o_s100–o_s123, o_dev6_s51–s54 as present) that are
+  competent by the experiments session's O scoring; labels (extrapolates or not) read from results/p_o.json **after**
+  the measurement below is written to theory/results/.
+* **Marker (frozen from §10, unchanged).** Mean retrieval share of the trained transitions (exp4 split, sweep head from
+  exp7) at the **last checkpoint of curriculum stage 3** (`theory/exp7_dev.py` code path). Rule: share ≥ 0.25 → predicts
+  *does not extrapolate*.
+* **PO1.** Among competent O runs with share ≥ 0.25, the extrapolating share is ≤ 0.15 (in-sample: 0/12). Supported if
+  so with ≥ 5 such runs; not supported if > 0.35; else inconclusive; unresolved with < 5 such runs.
+* **PO2.** AUC of (−share) for extrapolation ≥ 0.70 (in-sample 0.78). Reported with the AUC of P7 on the same runs.
+* **Exploratory, labelled as such:** does the longer scaffold (O) change the retrieval share at the end of stage 3 relative
+  to the paired P30 run of the same seed (same card)? — a mechanistic reading of O1's null.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
