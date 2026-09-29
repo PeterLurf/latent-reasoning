@@ -89,6 +89,12 @@ confirmatory arms (~$15–30, 3 arms) or Pilot J on Vast (~$3–4), not comforta
 
 Pilot J does not run locally: a peer-written queue on the local GPUs tripped a permission check. Beyond this plan, ask
 for a top-up.
+**If the user tops up (Audit recommends +$40; agreed with Theory 2026-09-29 ~15:50):**
+- Theory takes ≤ 6 extra hosts now. Pilot F goes first, with PF1–PF3 messaged here ~03:00–04:00 Wed; its hosts drain by
+  ~03:00.
+- PROTOCOL8: register ~06:30 (after the Phase 0 scoring and PF), launch ~07:00 Wed, 3 arms × 4 seeds.
+- T9/T10 go to Vast only with leftover hosts.
+- Check RunPod stock too.
 
 **Candidate next step (needs the user's go-ahead and ~$10–20):** PROTOCOL8, multi-step latent work in a pretrained model
 (`docs/NEXT_STEPS.md`, end). Plan: pre-register after Pilot E is scored. Per THEORY Prop. 8, first measure the one-pass
