@@ -80,3 +80,21 @@ run  results/budget_sweep_o_s108.json
 EVAL_DONE o_s108
 06:29:32 evaluated o_s108
 06:29:33 start o_s109 (--no_step_emb --K 6 --seed 109 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
+07:41:33 trained o_s109 rc 0
+run  results/competence_o_s109.json
+run  results/competence_matched_o_s109.json
+run  results/length_gen_o_s109.json
+run  results/delayed_trace_o_s109.json
+run  results/budget_sweep_o_s109.json
+EVAL_DONE o_s109
+07:41:59 evaluated o_s109
+07:41:59 start o_s110 (--no_step_emb --K 6 --seed 110 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
+08:49:59 trained o_s110 rc 0
+run  results/competence_o_s110.json
+run  results/competence_matched_o_s110.json
+run  results/length_gen_o_s110.json
+run  results/delayed_trace_o_s110.json
+run  results/budget_sweep_o_s110.json
+EVAL_DONE o_s110
+08:50:24 evaluated o_s110
+08:50:25 start o_s111 (--no_step_emb --K 6 --seed 111 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )

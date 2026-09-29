@@ -5,7 +5,7 @@ cd "$(dirname "$0")/.."
 S="ssh -o ConnectTimeout=20 -i $HOME/.ssh/runpod_ed25519"
 fails0=$(cat logs/queue_*.out 2>/dev/null | grep -ac "rc [1-9]")
 for i in $(seq 1 200); do
-  grep -q P_EVAL_DONE logs/p_eval.out && [ ! -f results/.p_scored ] && { echo "EVENT P_EVAL_DONE"; exit 0; }
+  grep -q P_EVAL_DONE logs/p_eval_g_s2.out && [ ! -f results/.p_scored ] && { echo "EVENT P_EVAL_DONE"; exit 0; }
   grep -q QUEUE_DONE logs/queue_o_4060.out && [ ! -f results/.o_scored ] && { echo "EVENT O_4060_DONE"; exit 0; }
   f=$(cat logs/queue_*.out 2>/dev/null | grep -ac "rc [1-9]"); [ "$f" -gt "$fails0" ] && { echo "EVENT LOCAL_RC_FAIL"; exit 0; }
   for x in "96.20.36.104 40044 q0" "142.198.191.106 40409 q1"; do set -- $x

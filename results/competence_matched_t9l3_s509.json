@@ -1,0 +1,46 @@
+{
+ "runs/t9l3_s509": {
+  "1": {
+   "bal_acc": 0.9948027718550106,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 0.9896055437100213,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9084059358480678,
+   "recall_reachable": 0.8637113266046573,
+   "specificity_decoy": 0.9531005450914782,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.7971723609574494,
+   "recall_reachable": 0.6685874912157413,
+   "specificity_decoy": 0.9257572306991574,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.6952452727316412,
+   "recall_reachable": 0.48447770249772476,
+   "specificity_decoy": 0.9060128429655575,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.5442492575765003,
+   "recall_reachable": 0.19333986287952987,
+   "specificity_decoy": 0.8951586522734707,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5496384007008008,
+   "recall_reachable": 0.21070811744386875,
+   "specificity_decoy": 0.8885686839577329,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}
