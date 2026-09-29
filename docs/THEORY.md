@@ -385,6 +385,22 @@ not competent (pa_m_s715, pa_mb2_s731). The buggy MB arm (pa_mb_*) is excluded (
 * PB2 as pre-registered ("no dwell from step 2 to K, one repeat allowed; 0 reverts at K + 1"): no-dwell 3/4, reverts
   0/4 — final scoring after all Pilot B runs.
 
+## 17. Pilot D — anytime supervision vs control, 12 + 12 seeds (pre-registered 2026-09-29 ~09:50 EDT, before any
+## Pilot D run started; basis: Pilot A/B interim above)
+
+* **Design.** Recipe and evaluation exactly as Pilots A–C. **AT** coconut + `--anytime 1`, seeds 900–911; **C**
+  coconut control, seeds 920–931. Three of each arm per host on the same four Vast hosts, AT and C interleaved; queued
+  after Pilot C. Definitions as §6 (gate; extrapolates = d7 ≥ 0.60 with CI lower bound > 0.55 at K′ = 12; far8–10).
+* **PD1 (primary).** Among competent runs, extrapolating share(AT) − share(C) ≥ 0.20 and share(AT) ≥ 0.60 → supported;
+  share(AT) ≤ share(C) → not supported; otherwise inconclusive. One-sided Fisher exact p reported. Needs ≥ 6 competent
+  runs per arm, else unresolved.
+* **PD2.** Mean far8–10 among competent runs: AT − C ≥ 0.05.
+* **PD3 (mechanism).** Share of competent runs whose pointer advances at every step from h_2 to h_K on the long-chain
+  probe (one repeat allowed): AT ≥ 0.60 and C ≤ 0.30.
+* **PD4 (learnability).** Gate rate(AT) ≥ gate rate(C) − 0.25.
+* Pilot A's C arm (seeds 700–707) and Pilot B's AT arm (750–753) are **not** pooled into Pilot D; they may be reported
+  alongside, labelled as pilot data.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
