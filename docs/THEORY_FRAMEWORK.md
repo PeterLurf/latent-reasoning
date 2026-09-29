@@ -42,6 +42,9 @@ Main results:
 6. **Slack explains bypass** (Prop. 8). If a problem fits in one forward pass, every latent step is unidentified, and
    bypassing the latents is the shortest zero-loss solution. Extrapolation in latent steps can therefore only be
    measured on problems deeper than one pass.
+7. **Re-anchoring fixes failures without training** (§5b). Restarting the latent loop every K steps from the
+   decoded frontier lifts 7-hop success from 24 to 55 of 59 models; restarting from the true frontier node gives 59/59.
+   The failing models' per-episode computation is intact, and only the continuation past K breaks.
 
 ---
 
