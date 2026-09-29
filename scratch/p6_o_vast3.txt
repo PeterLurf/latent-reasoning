@@ -1,0 +1,17 @@
+# PROTOCOL6 addendum O Vast extension, instance 3: seeds 140-147, base then long scaffold per seed
+ob_s140 --no_step_emb --K 6 --seed 140 --lr 5e-4 --amp bf16 --save_every 1000
+o_s140 --no_step_emb --K 6 --seed 140 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000
+ob_s141 --no_step_emb --K 6 --seed 141 --lr 5e-4 --amp bf16 --save_every 1000
+o_s141 --no_step_emb --K 6 --seed 141 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000
+ob_s142 --no_step_emb --K 6 --seed 142 --lr 5e-4 --amp bf16 --save_every 1000
+o_s142 --no_step_emb --K 6 --seed 142 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000
+ob_s143 --no_step_emb --K 6 --seed 143 --lr 5e-4 --amp bf16 --save_every 1000
+o_s143 --no_step_emb --K 6 --seed 143 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000
+ob_s144 --no_step_emb --K 6 --seed 144 --lr 5e-4 --amp bf16 --save_every 1000
+o_s144 --no_step_emb --K 6 --seed 144 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000
+ob_s145 --no_step_emb --K 6 --seed 145 --lr 5e-4 --amp bf16 --save_every 1000
+o_s145 --no_step_emb --K 6 --seed 145 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000
+ob_s146 --no_step_emb --K 6 --seed 146 --lr 5e-4 --amp bf16 --save_every 1000
+o_s146 --no_step_emb --K 6 --seed 146 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000
+ob_s147 --no_step_emb --K 6 --seed 147 --lr 5e-4 --amp bf16 --save_every 1000
+o_s147 --no_step_emb --K 6 --seed 147 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000

@@ -1,0 +1,7 @@
+05:34:58 guarding runs/v2_deep_s0 pid 5628 max relaunch 3
+05:41:09 stage-1 failure at step 4000; archived as runs/v2_deep_s0_stage1fail_1
+05:41:09 launched pid 8576
+05:48:09 stage 1 passed; guard exits at step 1600
+10:40:27 guarding runs/v2_deep_s0 pid 0 max relaunch 3
+10:40:27 launched pid 7104
+10:47:28 stage 1 passed at step 1600 ; waiting for the run to end

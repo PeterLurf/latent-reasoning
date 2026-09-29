@@ -1,0 +1,127 @@
+runs/v2_deep_s1 K'=0 delayed 0.792 upfront 0.567 depth(delayed) {1:0.79, 2:0.98, 3:0.90, 4:0.32, 5:0.36, 6:0.47, 99:0.85}
+runs/v2_deep_s1 K'=1 delayed 0.814 upfront 0.804 depth(delayed) {1:0.98, 2:0.98, 3:0.89, 4:0.29, 5:0.31, 6:0.41, 99:0.87}
+runs/v2_deep_s1 K'=2 delayed 0.814 upfront 0.811 depth(delayed) {1:0.99, 2:0.98, 3:0.89, 4:0.29, 5:0.31, 6:0.41, 99:0.87}
+runs/v2_deep_s1 K'=3 delayed 0.815 upfront 0.810 depth(delayed) {1:1.00, 2:0.98, 3:0.89, 4:0.29, 5:0.31, 6:0.41, 99:0.87}
+runs/v2_deep_s1 K'=4 delayed 0.818 upfront 0.815 depth(delayed) {1:1.00, 2:0.98, 3:0.90, 4:0.29, 5:0.31, 6:0.42, 99:0.87}
+runs/v2_deep_s1 K'=5 delayed 0.822 upfront 0.818 depth(delayed) {1:1.00, 2:0.99, 3:0.91, 4:0.30, 5:0.31, 6:0.41, 99:0.88}
+runs/v2_deep_s1 K'=6 delayed 0.823 upfront 0.823 depth(delayed) {1:1.00, 2:0.99, 3:0.92, 4:0.30, 5:0.31, 6:0.42, 99:0.88}
+runs/v2_deep_s1 d1:1.00 d2:0.98 d3:0.88 d4:0.56 d5:0.55 d6:0.52
+  k=0 full: tgt 0.004 col 0.007 | probe: tgt 0.000 col 0.000
+  k=1 full: tgt 0.000 col 0.001 | probe: tgt 0.000 col 0.000
+  k=2 full: tgt 0.000 col 0.000 | probe: tgt 0.000 col 0.000
+  k=3 full: tgt 0.000 col 0.000 | probe: tgt -0.000 col 0.000
+  k=4 full: tgt 0.000 col 0.000 | probe: tgt -0.000 col 0.000
+  k=5 full: tgt 0.000 col 0.000 | probe: tgt 0.000 col 0.000
+runs/v2_deep_s1: k* = 4  (20s)
+  k=0 (targeted/collateral) full: +0.004/0.007 | pca6: +0.001/0.003 | random6: +0.000/0.001 | pca20: +0.002/0.005 | random20: +0.000/0.002 | pca40: +0.004/0.007 | random40: +0.001/0.003
+  k=1 (targeted/collateral) full: +0.000/0.001 | pca6: +0.000/0.000 | random6: +0.000/0.000 | pca20: +0.000/0.000 | random20: -0.000/0.000 | pca40: +0.000/0.001 | random40: +0.000/0.000
+  k=2 (targeted/collateral) full: -0.000/0.000 | pca6: -0.000/0.000 | random6: -0.000/0.000 | pca20: -0.000/0.000 | random20: +0.000/0.000 | pca40: -0.000/0.000 | random40: +0.000/0.000
+  k=3 (targeted/collateral) full: +0.000/0.000 | pca6: +0.000/0.000 | random6: -0.000/0.000 | pca20: +0.000/0.000 | random20: +0.000/0.000 | pca40: +0.000/0.000 | random40: +0.000/0.000
+  k=4 (targeted/collateral) full: +0.000/0.000 | pca6: -0.000/0.000 | random6: +0.000/0.000 | pca20: +0.000/0.000 | random20: -0.000/0.000 | pca40: +0.000/0.000 | random40: +0.000/0.000
+  k=5 (targeted/collateral) full: +0.000/0.000 | pca6: +0.000/0.000 | random6: +0.000/0.000 | pca20: -0.000/0.000 | random20: -0.000/0.000 | pca40: +0.000/0.000 | random40: -0.000/0.000
+runs/v2_deep_s1 {'probe filters (6)': 0.004323058761656284, 'branch patterns (6)': 0.3474971354007721, 'PCA (6)': 0.49188199639320374, 'PCA (20)': 0.8048173189163208, 'random (6)': 0.023638145998120308}
+/workspace/Latent/latent/followup_analysis.py:24: RuntimeWarning: Mean of empty slice
+  per = np.nanmean(v, axis=-1)                     # (..., N)
+[runs/v2_deep_s1 fresh W=2] dose done 18s
+/workspace/Latent/latent/followup_analysis.py:258: RuntimeWarning: Mean of empty slice
+  cl.append(np.nanmean(np.where(m, pb[si] - sig(r["don"][si]), np.nan), 1))
+/workspace/Latent/latent/followup_analysis.py:260: RuntimeWarning: Mean of empty slice
+  clm = np.nanmean(np.nanmean(np.stack(cl), 0))
+/workspace/Latent/latent/followup_analysis.py:265: RuntimeWarning: Mean of empty slice
+  vals.append(np.nanmean(np.where(m, pb[si] - sig(r[cnd][si]), np.nan), 1))
+/workspace/Latent/latent/followup_analysis.py:267: RuntimeWarning: Mean of empty slice
+  per[cnd] = float(np.nanmean(np.nanmean(np.stack(vals), 0)) / clm) if clm > 0.05 else float("nan")
+[runs/v2_deep_s1 fresh W=2] cache done 23s
+[runs/v2_deep_s1 fresh W=2] attn done 24s
+[runs/v2_deep_s1 fresh W=4] dose done 57s
+[runs/v2_deep_s1 fresh W=4] cache done 65s
+[runs/v2_deep_s1 fresh W=4] attn done 66s
+[runs/v2_deep_s1 fresh W=8] dose done 132s
+[runs/v2_deep_s1 fresh W=8] cache done 140s
+[runs/v2_deep_s1 fresh W=8] attn done 141s
+wrote runs/v2_deep_s1/followup/fresh/summary.json
+[runs/v2_deep_s1 fresh W=2] amp done 3s
+[runs/v2_deep_s1 fresh W=4] amp done 6s
+[runs/v2_deep_s1 fresh W=8] amp done 9s
+wrote runs/v2_deep_s1/followup/fresh_amp/summary.json
+/workspace/Latent/latent/followup_analysis.py:258: RuntimeWarning: Mean of empty slice
+  cl.append(np.nanmean(np.where(m, pb[si] - sig(r["don"][si]), np.nan), 1))
+/workspace/Latent/latent/followup_analysis.py:260: RuntimeWarning: Mean of empty slice
+  clm = np.nanmean(np.nanmean(np.stack(cl), 0))
+/workspace/Latent/latent/followup_analysis.py:265: RuntimeWarning: Mean of empty slice
+  vals.append(np.nanmean(np.where(m, pb[si] - sig(r[cnd][si]), np.nan), 1))
+/workspace/Latent/latent/followup_analysis.py:267: RuntimeWarning: Mean of empty slice
+  per[cnd] = float(np.nanmean(np.nanmean(np.stack(vals), 0)) / clm) if clm > 0.05 else float("nan")
+[runs/v2_deep_s1 fresh W=2] cache done 5s
+[runs/v2_deep_s1 fresh W=4] cache done 13s
+[runs/v2_deep_s1 fresh W=8] cache done 21s
+wrote runs/v2_deep_s1/followup/fresh_cachedepth/summary.json
+[runs/v2_deep_s1 discovery W=1] gainfit done 0s
+[runs/v2_deep_s1 discovery W=2] gainfit done 0s
+[runs/v2_deep_s1 discovery W=3] gainfit done 0s
+[runs/v2_deep_s1 discovery W=4] gainfit done 1s
+[runs/v2_deep_s1 discovery W=5] gainfit done 1s
+[runs/v2_deep_s1 discovery W=6] gainfit done 1s
+[runs/v2_deep_s1 discovery W=7] gainfit done 1s
+[runs/v2_deep_s1 discovery W=8] gainfit done 1s
+wrote runs/v2_deep_s1/followup/discovery_gainfit/summary.json
+[runs/v2_deep_s1 fresh W=1] gainfit done 0s
+[runs/v2_deep_s1 fresh W=2] gainfit done 0s
+[runs/v2_deep_s1 fresh W=3] gainfit done 1s
+[runs/v2_deep_s1 fresh W=4] gainfit done 1s
+[runs/v2_deep_s1 fresh W=5] gainfit done 1s
+[runs/v2_deep_s1 fresh W=6] gainfit done 1s
+[runs/v2_deep_s1 fresh W=7] gainfit done 1s
+[runs/v2_deep_s1 fresh W=8] gainfit done 1s
+wrote runs/v2_deep_s1/followup/fresh_gainfit/summary.json
+runs/v2_deep_s1 train  K'= 0 all 0.796 d1:0.88 d2:0.97 d3:0.85 d4:0.55 d5:0.54 d6:0.53
+runs/v2_deep_s1 train  K'= 1 all 0.817 d1:0.98 d2:0.98 d3:0.85 d4:0.55 d5:0.54 d6:0.54
+runs/v2_deep_s1 train  K'= 2 all 0.817 d1:0.99 d2:0.98 d3:0.86 d4:0.55 d5:0.53 d6:0.53
+runs/v2_deep_s1 train  K'= 3 all 0.819 d1:1.00 d2:0.98 d3:0.86 d4:0.55 d5:0.53 d6:0.53
+runs/v2_deep_s1 train  K'= 4 all 0.822 d1:1.00 d2:0.98 d3:0.86 d4:0.56 d5:0.53 d6:0.54
+runs/v2_deep_s1 train  K'= 5 all 0.825 d1:1.00 d2:0.98 d3:0.87 d4:0.56 d5:0.53 d6:0.53
+runs/v2_deep_s1 train  K'= 6 all 0.828 d1:1.00 d2:0.98 d3:0.88 d4:0.56 d5:0.53 d6:0.54
+runs/v2_deep_s1 raw    K'= 7 all 0.827 d1:1.00 d2:0.98 d3:0.88 d4:0.56 d5:0.53 d6:0.53
+runs/v2_deep_s1 raw    K'= 8 all 0.827 d1:1.00 d2:0.98 d3:0.88 d4:0.56 d5:0.53 d6:0.53
+runs/v2_deep_s1 repeat K'= 7 all 0.827 d1:1.00 d2:0.98 d3:0.88 d4:0.56 d5:0.53 d6:0.53
+runs/v2_deep_s1 repeat K'= 8 all 0.827 d1:1.00 d2:0.98 d3:0.88 d4:0.56 d5:0.53 d6:0.53
+runs/v2_deep_s1 repeat K'= 9 all 0.827 d1:1.00 d2:0.98 d3:0.87 d4:0.56 d5:0.53 d6:0.53
+runs/v2_deep_s1 repeat K'=10 all 0.826 d1:1.00 d2:0.98 d3:0.87 d4:0.56 d5:0.53 d6:0.53
+runs/v2_deep_s1 K'= 0 near 0.89 0.92 0.89 0.50 0.50 0.49 | far 0.50 0.50 0.50 0.51 0.50 0.52
+runs/v2_deep_s1 K'= 2 near 0.99 0.94 0.90 0.50 0.49 0.49 | far 0.49 0.50 0.50 0.51 0.50 0.50
+runs/v2_deep_s1 K'= 4 near 0.99 0.94 0.90 0.50 0.49 0.49 | far 0.49 0.50 0.50 0.51 0.50 0.50
+runs/v2_deep_s1 K'= 6 near 0.99 0.95 0.91 0.50 0.49 0.49 | far 0.49 0.50 0.50 0.51 0.50 0.50
+runs/v2_deep_s1 K'= 8 near 0.99 0.95 0.91 0.50 0.49 0.49 | far 0.49 0.50 0.50 0.51 0.50 0.50
+runs/v2_deep_s1 K'=10 near 0.99 0.95 0.91 0.50 0.49 0.49 | far 0.49 0.50 0.50 0.51 0.50 0.50
+runs/v2_deep_s1 K'=12 near 0.99 0.95 0.91 0.50 0.49 0.49 | far 0.49 0.50 0.50 0.51 0.50 0.50
+runs/v2_deep_s1 K'=16 near 0.99 0.95 0.91 0.50 0.49 0.48 | far 0.49 0.50 0.50 0.51 0.50 0.51
+runs/v2_deep_s1 W=4 delayed: per-edge attention, reachable-branch edges by depth 0..5 | decoy
+   L1 k1  0.010 0.017 0.009 0.011 0.009 0.011  | 0.009 0.009 0.009 0.009 0.012 0.011
+   L1 k2  0.008 0.007 0.007 0.007 0.006 0.007  | 0.007 0.006 0.007 0.007 0.008 0.008
+   L1 k3  0.006 0.008 0.008 0.007 0.008 0.009  | 0.007 0.008 0.007 0.007 0.008 0.010
+   L1 k4  0.008 0.008 0.007 0.006 0.007 0.009  | 0.007 0.007 0.007 0.007 0.007 0.011
+   L1 k5  0.007 0.008 0.008 0.007 0.006 0.011  | 0.007 0.007 0.007 0.007 0.007 0.006
+   L1 k6  0.008 0.008 0.007 0.007 0.006 0.010  | 0.007 0.007 0.008 0.007 0.008 0.006
+   L1 k7  0.008 0.008 0.007 0.007 0.007 0.009  | 0.007 0.007 0.007 0.007 0.008 0.006
+   L1 k8  0.008 0.007 0.007 0.006 0.006 0.009  | 0.007 0.007 0.007 0.006 0.007 0.006
+DONE runs/v2_deep_s1
+runs/v2_deep_s1 normal_K8      d1-12 0.99 0.95 0.91 0.51 0.49 0.50 0.48 0.51 0.50 0.50 0.49 0.50
+runs/v2_deep_s1 normal_K12     d1-12 0.99 0.95 0.91 0.51 0.50 0.50 0.49 0.51 0.50 0.50 0.49 0.50
+runs/v2_deep_s1 normal_K16     d1-12 0.99 0.94 0.91 0.51 0.50 0.51 0.49 0.51 0.50 0.50 0.49 0.50
+runs/v2_deep_s1 normal_K20     d1-12 0.99 0.94 0.91 0.51 0.50 0.51 0.49 0.51 0.50 0.50 0.50 0.50
+runs/v2_deep_s1 freeze_1_K8    d1-12 0.99 0.94 0.89 0.50 0.49 0.50 0.49 0.52 0.51 0.50 0.50 0.50
+runs/v2_deep_s1 freeze_1_K12   d1-12 0.99 0.94 0.89 0.50 0.49 0.51 0.49 0.52 0.50 0.50 0.50 0.50
+runs/v2_deep_s1 freeze_1_K16   d1-12 0.99 0.94 0.89 0.50 0.49 0.50 0.49 0.52 0.50 0.50 0.49 0.50
+runs/v2_deep_s1 freeze_1_K20   d1-12 0.99 0.94 0.89 0.50 0.49 0.50 0.49 0.52 0.50 0.50 0.49 0.50
+runs/v2_deep_s1 freeze_2_K8    d1-12 0.99 0.94 0.90 0.50 0.49 0.51 0.48 0.51 0.50 0.50 0.49 0.51
+runs/v2_deep_s1 freeze_2_K12   d1-12 0.99 0.94 0.90 0.50 0.49 0.51 0.48 0.51 0.50 0.50 0.49 0.51
+runs/v2_deep_s1 freeze_2_K16   d1-12 0.99 0.95 0.90 0.50 0.49 0.50 0.48 0.52 0.50 0.50 0.50 0.51
+runs/v2_deep_s1 freeze_2_K20   d1-12 0.99 0.95 0.90 0.50 0.49 0.50 0.49 0.52 0.50 0.50 0.50 0.51
+runs/v2_deep_s1 freeze_3_K8    d1-12 0.99 0.94 0.90 0.50 0.49 0.50 0.49 0.51 0.51 0.50 0.49 0.51
+runs/v2_deep_s1 freeze_3_K12   d1-12 0.99 0.94 0.90 0.50 0.50 0.50 0.49 0.51 0.51 0.50 0.50 0.51
+runs/v2_deep_s1 freeze_3_K16   d1-12 0.99 0.94 0.90 0.50 0.49 0.50 0.49 0.51 0.51 0.50 0.50 0.51
+runs/v2_deep_s1 freeze_3_K20   d1-12 0.99 0.94 0.90 0.50 0.49 0.50 0.49 0.52 0.51 0.50 0.50 0.51
+runs/v2_deep_s1 freeze_4_K8    d1-12 0.99 0.95 0.90 0.50 0.49 0.51 0.49 0.51 0.50 0.50 0.49 0.50
+runs/v2_deep_s1 freeze_4_K12   d1-12 0.99 0.95 0.90 0.51 0.49 0.51 0.49 0.51 0.50 0.50 0.49 0.50
+runs/v2_deep_s1 freeze_4_K16   d1-12 0.99 0.95 0.90 0.51 0.49 0.51 0.49 0.52 0.50 0.50 0.49 0.50
+runs/v2_deep_s1 freeze_4_K20   d1-12 0.99 0.94 0.90 0.51 0.49 0.51 0.49 0.52 0.50 0.50 0.49 0.50

@@ -1,0 +1,20 @@
+D:\Latent\latent\followup_analysis.py:24: RuntimeWarning: Mean of empty slice
+  per = np.nanmean(v, axis=-1)                     # (..., N)
+D:\Latent\latent\followup_analysis.py:25: RuntimeWarning: Mean of empty slice
+  return np.nanmean(per, axis=lead) if lead else per
+D:\Latent\latent\followup_analysis.py:258: RuntimeWarning: Mean of empty slice
+  cl.append(np.nanmean(np.where(m, pb[si] - sig(r["don"][si]), np.nan), 1))
+D:\Latent\latent\followup_analysis.py:260: RuntimeWarning: Mean of empty slice
+  clm = np.nanmean(np.nanmean(np.stack(cl), 0))
+D:\Latent\latent\followup_analysis.py:265: RuntimeWarning: Mean of empty slice
+  vals.append(np.nanmean(np.where(m, pb[si] - sig(r[cnd][si]), np.nan), 1))
+D:\Latent\latent\followup_analysis.py:267: RuntimeWarning: Mean of empty slice
+  per[cnd] = float(np.nanmean(np.nanmean(np.stack(vals), 0)) / clm) if clm > 0.05 else float("nan")
+D:\Latent\latent\followup_analysis.py:258: RuntimeWarning: Mean of empty slice
+  cl.append(np.nanmean(np.where(m, pb[si] - sig(r["don"][si]), np.nan), 1))
+D:\Latent\latent\followup_analysis.py:260: RuntimeWarning: Mean of empty slice
+  clm = np.nanmean(np.nanmean(np.stack(cl), 0))
+D:\Latent\latent\followup_analysis.py:265: RuntimeWarning: Mean of empty slice
+  vals.append(np.nanmean(np.where(m, pb[si] - sig(r[cnd][si]), np.nan), 1))
+D:\Latent\latent\followup_analysis.py:267: RuntimeWarning: Mean of empty slice
+  per[cnd] = float(np.nanmean(np.nanmean(np.stack(vals), 0)) / clm) if clm > 0.05 else float("nan")

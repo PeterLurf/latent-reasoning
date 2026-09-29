@@ -1,0 +1,5 @@
+04:03:02 guarding runs/v3_rawfb_s1 pid 0 max relaunch 3
+04:03:02 launched pid 332
+04:10:12 stage-1 failure at step 4400; archived as runs/v3_rawfb_s1_stage1fail_1
+04:10:12 launched pid 535
+04:12:12 stage 1 passed at step 1200 ; waiting for the run to end

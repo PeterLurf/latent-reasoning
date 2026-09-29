@@ -1,0 +1,46 @@
+{
+ "runs/stall_bf16_s77": {
+  "1": {
+   "bal_acc": 1.0,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 1.0,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9986747382240311,
+   "recall_reachable": 0.9996701629395078,
+   "specificity_decoy": 0.9976793135085542,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.9496929770582612,
+   "recall_reachable": 0.9303583977512297,
+   "specificity_decoy": 0.9690275563652927,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.8377131223716943,
+   "recall_reachable": 0.7635756901607847,
+   "specificity_decoy": 0.9118505545826037,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.7519379263788861,
+   "recall_reachable": 0.6419196865817826,
+   "specificity_decoy": 0.8619561661759896,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.6948127630699191,
+   "recall_reachable": 0.5831894070236039,
+   "specificity_decoy": 0.8064361191162344,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

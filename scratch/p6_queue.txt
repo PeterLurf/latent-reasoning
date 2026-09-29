@@ -1,0 +1,25 @@
+# PROTOCOL6 local queue for the RTX 4060 / 3070 (bf16): addendum A continuation, A3 stalled runs, addendum B.
+rel_base_s20_ext --K 6 --seed 20 --lr 0.001 --no_step_emb --amp bf16 --steps 45000 --save_every 2500
+rel_base_s24_ext --K 6 --seed 24 --lr 0.001 --no_step_emb --amp bf16 --steps 45000 --save_every 2500
+rel_base_s25_ext --K 6 --seed 25 --lr 0.001 --no_step_emb --amp bf16 --steps 45000 --save_every 2500
+rel_base_s26_ext --K 6 --seed 26 --lr 0.001 --no_step_emb --amp bf16 --steps 45000 --save_every 2500
+rel_base_s27_ext --K 6 --seed 27 --lr 0.001 --no_step_emb --amp bf16 --steps 45000 --save_every 2500
+rel_lr5_s20_ext --K 6 --seed 20 --lr 0.0005 --no_step_emb --amp bf16 --steps 45000 --save_every 2500
+rel_lr5_s22_ext --K 6 --seed 22 --lr 0.0005 --no_step_emb --amp bf16 --steps 45000 --save_every 2500
+rel_lr5_s24_ext --K 6 --seed 24 --lr 0.0005 --no_step_emb --amp bf16 --steps 45000 --save_every 2500
+rel_lr5_s26_ext --K 6 --seed 26 --lr 0.0005 --no_step_emb --amp bf16 --steps 45000 --save_every 2500
+rel_lr5_s27_ext --K 6 --seed 27 --lr 0.0005 --no_step_emb --amp bf16 --steps 45000 --save_every 2500
+rel_base_s21_ext --K 6 --seed 21 --lr 0.001 --no_step_emb --amp bf16 --steps 45000 --save_every 2500
+rel_base_s22_ext --K 6 --seed 22 --lr 0.001 --no_step_emb --amp bf16 --steps 45000 --save_every 2500
+rel_base_s23_ext --K 6 --seed 23 --lr 0.001 --no_step_emb --amp bf16 --steps 45000 --save_every 2500
+rel_lr5_s25_ext --K 6 --seed 25 --lr 0.0005 --no_step_emb --amp bf16 --steps 45000 --save_every 2500
+nostep_s0_ext --K 6 --seed 0 --lr 0.001 --no_step_emb --amp bf16 --steps 45000 --save_every 2500
+dev6_s30 --K 6 --seed 30 --lr 5e-4 --save_every 1000 --amp bf16
+dev6_s31 --K 6 --seed 31 --lr 5e-4 --save_every 1000 --amp bf16
+dev6_s32 --K 6 --seed 32 --lr 5e-4 --save_every 1000 --amp bf16
+dev6_s33 --K 6 --seed 33 --lr 5e-4 --save_every 1000 --amp bf16
+dev6_s34 --K 6 --seed 34 --lr 5e-4 --save_every 1000 --amp bf16
+dev6_s35 --K 6 --seed 35 --lr 5e-4 --save_every 1000 --amp bf16
+dev6_s36 --K 6 --seed 36 --lr 5e-4 --save_every 1000 --amp bf16
+dev6_s37 --K 6 --seed 37 --lr 5e-4 --save_every 1000 --amp bf16
+dev6_s38 --K 6 --seed 38 --lr 5e-4 --save_every 1000 --amp bf16

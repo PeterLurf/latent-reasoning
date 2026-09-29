@@ -1,0 +1,9 @@
+{
+ "run": "runs/main_s1",
+ "compared": 7635,
+ "deterministic_compared": 7034,
+ "deterministic_over_1e-4": 0,
+ "random_control_over_1e-4": 601,
+ "max_abs_diff_all": 0.032532334327697754,
+ "max_abs_diff_deterministic_flagged": 0.0
+}

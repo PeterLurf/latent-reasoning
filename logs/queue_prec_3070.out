@@ -1,0 +1,73 @@
+10:31:16 start prec_bf16_s54 (--no_step_emb --K 6 --seed 54 --lr 5e-4 --amp bf16 )
+11:22:16 trained prec_bf16_s54 rc 0
+run  results/competence_prec_bf16_s54.json
+run  results/competence_matched_prec_bf16_s54.json
+run  results/length_gen_prec_bf16_s54.json
+run  results/delayed_trace_prec_bf16_s54.json
+run  results/budget_sweep_prec_bf16_s54.json
+EVAL_DONE prec_bf16_s54
+11:22:37 evaluated prec_bf16_s54
+11:22:37 start prec_fp32_s54 (--no_step_emb --K 6 --seed 54 --lr 5e-4 --amp fp32 )
+12:44:37 trained prec_fp32_s54 rc 0
+run  results/competence_prec_fp32_s54.json
+run  results/competence_matched_prec_fp32_s54.json
+run  results/length_gen_prec_fp32_s54.json
+run  results/delayed_trace_prec_fp32_s54.json
+run  results/budget_sweep_prec_fp32_s54.json
+EVAL_DONE prec_fp32_s54
+12:44:57 evaluated prec_fp32_s54
+12:44:58 start prec_bf16_s55 (--no_step_emb --K 6 --seed 55 --lr 5e-4 --amp bf16 )
+13:35:58 trained prec_bf16_s55 rc 0
+run  results/competence_prec_bf16_s55.json
+run  results/competence_matched_prec_bf16_s55.json
+run  results/length_gen_prec_bf16_s55.json
+run  results/delayed_trace_prec_bf16_s55.json
+run  results/budget_sweep_prec_bf16_s55.json
+EVAL_DONE prec_bf16_s55
+13:36:18 evaluated prec_bf16_s55
+13:36:18 start prec_fp32_s55 (--no_step_emb --K 6 --seed 55 --lr 5e-4 --amp fp32 )
+14:59:18 trained prec_fp32_s55 rc 0
+run  results/competence_prec_fp32_s55.json
+run  results/competence_matched_prec_fp32_s55.json
+run  results/length_gen_prec_fp32_s55.json
+run  results/delayed_trace_prec_fp32_s55.json
+run  results/budget_sweep_prec_fp32_s55.json
+EVAL_DONE prec_fp32_s55
+14:59:39 evaluated prec_fp32_s55
+14:59:39 start prec_bf16_s56 (--no_step_emb --K 6 --seed 56 --lr 5e-4 --amp bf16 )
+15:50:39 trained prec_bf16_s56 rc 0
+run  results/competence_prec_bf16_s56.json
+run  results/competence_matched_prec_bf16_s56.json
+run  results/length_gen_prec_bf16_s56.json
+run  results/delayed_trace_prec_bf16_s56.json
+run  results/budget_sweep_prec_bf16_s56.json
+EVAL_DONE prec_bf16_s56
+15:50:59 evaluated prec_bf16_s56
+15:51:00 start prec_fp32_s56 (--no_step_emb --K 6 --seed 56 --lr 5e-4 --amp fp32 --save_every 1000 )
+17:13:00 trained prec_fp32_s56 rc 0
+run  results/competence_prec_fp32_s56.json
+run  results/competence_matched_prec_fp32_s56.json
+run  results/length_gen_prec_fp32_s56.json
+run  results/delayed_trace_prec_fp32_s56.json
+run  results/budget_sweep_prec_fp32_s56.json
+EVAL_DONE prec_fp32_s56
+17:13:21 evaluated prec_fp32_s56
+17:13:21 start prec_bf16_s57 (--no_step_emb --K 6 --seed 57 --lr 5e-4 --amp bf16 --save_every 1000 )
+18:05:21 trained prec_bf16_s57 rc 0
+run  results/competence_prec_bf16_s57.json
+run  results/competence_matched_prec_bf16_s57.json
+run  results/length_gen_prec_bf16_s57.json
+run  results/delayed_trace_prec_bf16_s57.json
+run  results/budget_sweep_prec_bf16_s57.json
+EVAL_DONE prec_bf16_s57
+18:05:41 evaluated prec_bf16_s57
+18:05:42 start prec_fp32_s57 (--no_step_emb --K 6 --seed 57 --lr 5e-4 --amp fp32 --save_every 1000 )
+19:27:44 trained prec_fp32_s57 rc 0
+run  results/competence_prec_fp32_s57.json
+run  results/competence_matched_prec_fp32_s57.json
+run  results/length_gen_prec_fp32_s57.json
+run  results/delayed_trace_prec_fp32_s57.json
+run  results/budget_sweep_prec_fp32_s57.json
+EVAL_DONE prec_fp32_s57
+19:28:04 evaluated prec_fp32_s57
+19:28:05 QUEUE_DONE

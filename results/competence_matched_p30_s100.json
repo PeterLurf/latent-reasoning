@@ -1,0 +1,46 @@
+{
+ "runs/p30_s100": {
+  "1": {
+   "bal_acc": 0.9988894811656006,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 0.9977789623312011,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9920422381126227,
+   "recall_reachable": 0.9926116498449766,
+   "specificity_decoy": 0.9914728263802688,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.8987389237520751,
+   "recall_reachable": 0.8829936753338018,
+   "specificity_decoy": 0.9144841721703485,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.7400668730556581,
+   "recall_reachable": 0.6319142481545151,
+   "specificity_decoy": 0.848219497956801,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.622573487030777,
+   "recall_reachable": 0.4309500489715965,
+   "specificity_decoy": 0.8141969250899574,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5792208567887593,
+   "recall_reachable": 0.385146804835924,
+   "specificity_decoy": 0.7732949087415946,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

@@ -1,0 +1,46 @@
+{
+ "runs/budget_k10_s2": {
+  "1": {
+   "bal_acc": 0.9991560056858564,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 0.9983120113717129,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9858502464411001,
+   "recall_reachable": 0.978824460716406,
+   "specificity_decoy": 0.9928760321657941,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.929259279145854,
+   "recall_reachable": 0.8746310611384399,
+   "specificity_decoy": 0.9838874971532681,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.8259307704225096,
+   "recall_reachable": 0.6752957831934473,
+   "specificity_decoy": 0.976565757651572,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.6228879497192904,
+   "recall_reachable": 0.277179236043095,
+   "specificity_decoy": 0.9685966633954858,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5376361078344026,
+   "recall_reachable": 0.1180195739781232,
+   "specificity_decoy": 0.957252641690682,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

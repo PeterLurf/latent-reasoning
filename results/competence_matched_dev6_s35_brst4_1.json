@@ -1,0 +1,46 @@
+{
+ "runs/dev6_s35_brst4_1": {
+  "1": {
+   "bal_acc": 1.0,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 1.0,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9985368257817806,
+   "recall_reachable": 0.9999340325879016,
+   "specificity_decoy": 0.9971396189756597,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.9319794065450109,
+   "recall_reachable": 0.9101897399859452,
+   "specificity_decoy": 0.9537690731040765,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.7862238658297327,
+   "recall_reachable": 0.6523409849327536,
+   "specificity_decoy": 0.9201067467267117,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.7301443004078243,
+   "recall_reachable": 0.5829578844270323,
+   "specificity_decoy": 0.8773307163886163,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.6606093184612245,
+   "recall_reachable": 0.5094991364421416,
+   "specificity_decoy": 0.8117195004803074,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

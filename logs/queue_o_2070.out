@@ -1,0 +1,19 @@
+17:33:41 start o_dev6_s51 (--K 6 --seed 51 --lr 5e-4 --save_every 1000 --amp fp32 --aux_steps 20000 --aux_anneal 5000 )
+19:27:43 trained o_dev6_s51 rc 0
+run  results/competence_o_dev6_s51.json
+run  results/competence_matched_o_dev6_s51.json
+run  results/length_gen_o_dev6_s51.json
+run  results/delayed_trace_o_dev6_s51.json
+run  results/budget_sweep_o_dev6_s51.json
+EVAL_DONE o_dev6_s51
+19:28:06 evaluated o_dev6_s51
+19:28:06 start o_dev6_s52 (--K 6 --seed 52 --lr 5e-4 --save_every 1000 --amp fp32 --aux_steps 20000 --aux_anneal 5000 )
+22:14:17 trained o_dev6_s52 rc 0
+run  results/competence_o_dev6_s52.json
+run  results/competence_matched_o_dev6_s52.json
+run  results/length_gen_o_dev6_s52.json
+run  results/delayed_trace_o_dev6_s52.json
+run  results/budget_sweep_o_dev6_s52.json
+EVAL_DONE o_dev6_s52
+22:15:03 evaluated o_dev6_s52
+22:15:03 start o_dev6_s53 (--K 6 --seed 53 --lr 5e-4 --save_every 1000 --amp fp32 --aux_steps 20000 --aux_anneal 5000 )

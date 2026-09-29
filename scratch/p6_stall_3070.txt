@@ -1,0 +1,9 @@
+# PROTOCOL6 addendum H, RTX 3070: bf16/fp32 pairs
+stall_bf16_s74 --no_step_emb --K 6 --seed 74 --lr 5e-4 --amp bf16 --save_every 1000
+stall_fp32_s74 --no_step_emb --K 6 --seed 74 --lr 5e-4 --amp fp32 --save_every 1000
+stall_bf16_s75 --no_step_emb --K 6 --seed 75 --lr 5e-4 --amp bf16 --save_every 1000
+stall_fp32_s75 --no_step_emb --K 6 --seed 75 --lr 5e-4 --amp fp32 --save_every 1000
+stall_bf16_s76 --no_step_emb --K 6 --seed 76 --lr 5e-4 --amp bf16 --save_every 1000
+stall_fp32_s76 --no_step_emb --K 6 --seed 76 --lr 5e-4 --amp fp32 --save_every 1000
+stall_bf16_s77 --no_step_emb --K 6 --seed 77 --lr 5e-4 --amp bf16 --save_every 1000
+stall_fp32_s77 --no_step_emb --K 6 --seed 77 --lr 5e-4 --amp fp32 --save_every 1000

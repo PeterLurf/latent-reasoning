@@ -1,0 +1,38 @@
+runs/rel_base_s20_ext K'=0 delayed 0.757 upfront 0.500 depth(delayed) {1:0.86, 2:1.00, 3:0.82, 4:0.43, 5:0.47, 6:0.57, 99:0.75}
+runs/rel_base_s20_ext K'=1 delayed 0.794 upfront 0.809 depth(delayed) {1:0.89, 2:0.99, 3:0.84, 4:0.25, 5:0.29, 6:0.41, 99:0.87}
+runs/rel_base_s20_ext K'=2 delayed 0.825 upfront 0.837 depth(delayed) {1:0.89, 2:0.99, 3:0.84, 4:0.59, 5:0.30, 6:0.41, 99:0.87}
+runs/rel_base_s20_ext K'=3 delayed 0.840 upfront 0.841 depth(delayed) {1:0.90, 2:0.99, 3:0.85, 4:0.61, 5:0.65, 6:0.40, 99:0.86}
+runs/rel_base_s20_ext K'=4 delayed 0.841 upfront 0.874 depth(delayed) {1:0.84, 2:0.99, 3:0.85, 4:0.61, 5:0.65, 6:0.70, 99:0.86}
+runs/rel_base_s20_ext K'=5 delayed 0.871 upfront 0.875 depth(delayed) {1:0.92, 2:1.00, 3:0.82, 4:0.55, 5:0.59, 6:0.65, 99:0.93}
+runs/rel_base_s20_ext K'=6 delayed 0.894 upfront 0.874 depth(delayed) {1:1.00, 2:1.00, 3:0.87, 4:0.66, 5:0.62, 6:0.66, 99:0.93}
+runs/rel_base_s20_ext d1:1.00 d2:1.00 d3:0.89 d4:0.73 d5:0.69 d6:0.69
+runs/rel_base_s20_ext K'= 0 near 0.80 0.87 0.76 0.50 0.50 0.50 | far 0.49 0.50 0.51 0.51 0.49 0.49
+runs/rel_base_s20_ext K'= 2 near 0.83 0.96 0.88 0.74 0.51 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+runs/rel_base_s20_ext K'= 4 near 0.83 0.95 0.88 0.74 0.74 0.70 | far 0.51 0.51 0.50 0.50 0.49 0.49
+runs/rel_base_s20_ext K'= 6 near 1.00 0.99 0.93 0.80 0.76 0.73 | far 0.53 0.51 0.50 0.50 0.50 0.50
+runs/rel_base_s20_ext K'= 8 near 0.99 0.96 0.92 0.80 0.76 0.72 | far 0.52 0.50 0.50 0.49 0.50 0.49
+runs/rel_base_s20_ext K'=10 near 0.97 0.88 0.89 0.81 0.75 0.73 | far 0.53 0.51 0.50 0.49 0.50 0.49
+runs/rel_base_s20_ext K'=12 near 0.96 0.84 0.88 0.80 0.76 0.73 | far 0.53 0.51 0.50 0.49 0.50 0.48
+runs/rel_base_s20_ext K'=16 near 0.92 0.83 0.87 0.79 0.75 0.73 | far 0.53 0.52 0.50 0.50 0.50 0.48
+runs/rel_base_s20_ext W=4 delayed: per-edge attention, reachable-branch edges by depth 0..5 | decoy
+   L1 k1  0.003 0.031 0.003 0.004 0.004 0.004  | 0.003 0.003 0.004 0.003 0.004 0.004
+   L1 k2  0.003 0.004 0.023 0.004 0.004 0.004  | 0.004 0.004 0.004 0.004 0.004 0.005
+   L1 k3  0.004 0.004 0.004 0.027 0.004 0.005  | 0.004 0.004 0.004 0.005 0.005 0.004
+   L1 k4  0.005 0.005 0.005 0.005 0.038 0.006  | 0.005 0.005 0.005 0.006 0.006 0.007
+   L1 k5  0.002 0.002 0.002 0.002 0.001 0.002  | 0.002 0.002 0.002 0.002 0.002 0.002
+   L1 k6  0.001 0.001 0.001 0.001 0.001 0.001  | 0.002 0.001 0.001 0.001 0.001 0.001
+   L1 k7  0.001 0.000 0.001 0.001 0.001 0.001  | 0.001 0.001 0.001 0.001 0.001 0.001
+   L1 k8  0.000 0.000 0.000 0.000 0.000 0.000  | 0.001 0.001 0.000 0.000 0.001 0.001
+runs/rel_base_s20_ext train  K'= 0 all 0.755 d1:0.92 d2:0.93 d3:0.74 d4:0.52 d5:0.51 d6:0.53
+runs/rel_base_s20_ext train  K'= 1 all 0.790 d1:0.95 d2:0.97 d3:0.82 d4:0.52 d5:0.52 d6:0.53
+runs/rel_base_s20_ext train  K'= 2 all 0.814 d1:0.95 d2:0.97 d3:0.82 d4:0.64 d5:0.52 d6:0.55
+runs/rel_base_s20_ext train  K'= 3 all 0.824 d1:0.95 d2:0.97 d3:0.82 d4:0.63 d5:0.64 d6:0.55
+runs/rel_base_s20_ext train  K'= 4 all 0.824 d1:0.90 d2:0.97 d3:0.83 d4:0.65 d5:0.65 d6:0.65
+runs/rel_base_s20_ext train  K'= 5 all 0.855 d1:0.95 d2:0.99 d3:0.86 d4:0.68 d5:0.68 d6:0.69
+runs/rel_base_s20_ext train  K'= 6 all 0.882 d1:1.00 d2:0.99 d3:0.89 d4:0.72 d5:0.69 d6:0.69
+runs/rel_base_s20_ext raw    K'= 7 all 0.886 d1:1.00 d2:0.99 d3:0.89 d4:0.74 d5:0.69 d6:0.69
+runs/rel_base_s20_ext raw    K'= 8 all 0.877 d1:1.00 d2:0.96 d3:0.88 d4:0.75 d5:0.70 d6:0.69
+runs/rel_base_s20_ext repeat K'= 7 all 0.886 d1:1.00 d2:0.99 d3:0.89 d4:0.74 d5:0.69 d6:0.69
+runs/rel_base_s20_ext repeat K'= 8 all 0.877 d1:1.00 d2:0.96 d3:0.88 d4:0.75 d5:0.70 d6:0.69
+runs/rel_base_s20_ext repeat K'= 9 all 0.855 d1:0.99 d2:0.91 d3:0.86 d4:0.76 d5:0.70 d6:0.69
+runs/rel_base_s20_ext repeat K'=10 all 0.834 d1:0.98 d2:0.85 d3:0.83 d4:0.76 d5:0.70 d6:0.70

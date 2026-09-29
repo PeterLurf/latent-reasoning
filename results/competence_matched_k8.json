@@ -1,0 +1,46 @@
+{
+ "runs/budget_k8_s0": {
+  "1": {
+   "bal_acc": 0.9993781094527363,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 0.9987562189054726,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9941980487965245,
+   "recall_reachable": 0.9934692262022561,
+   "specificity_decoy": 0.9949268713907928,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.95633856977306,
+   "recall_reachable": 0.9361911454673225,
+   "specificity_decoy": 0.9764859940787975,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.8274975402684922,
+   "recall_reachable": 0.7378905854990393,
+   "specificity_decoy": 0.9171044950379451,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.7193591913615193,
+   "recall_reachable": 0.5563173359451518,
+   "specificity_decoy": 0.8824010467778868,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.6807312120171418,
+   "recall_reachable": 0.5146804835924007,
+   "specificity_decoy": 0.8467819404418828,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

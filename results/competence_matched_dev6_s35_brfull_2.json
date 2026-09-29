@@ -1,0 +1,46 @@
+{
+ "runs/dev6_s35_brfull_2": {
+  "1": {
+   "bal_acc": 1.0,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 1.0,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9997841221868422,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 0.9995682443736845,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.9825332089386822,
+   "recall_reachable": 0.9824314827828531,
+   "specificity_decoy": 0.9826349350945115,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.8689585666008195,
+   "recall_reachable": 0.7903731418748104,
+   "specificity_decoy": 0.9475439913268284,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.7490553784333382,
+   "recall_reachable": 0.5792360430950049,
+   "specificity_decoy": 0.9188747137716715,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.7539577661309456,
+   "recall_reachable": 0.6332757628094415,
+   "specificity_decoy": 0.8746397694524496,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

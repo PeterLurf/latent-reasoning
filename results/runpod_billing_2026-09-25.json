@@ -1,0 +1,3 @@
+{"source": "RunPod list-billing, bucket 2026-09-25T00:00Z..2026-09-26T00:00Z, queried 2026-09-25 ~14:30 local",
+ "podGpuAmount": 2.6015, "podDiskAmount": 0.0793, "totalAmount": 2.6808,
+ "note": "May lag the last minutes of usage; all pods deleted by ~07:35 local."}

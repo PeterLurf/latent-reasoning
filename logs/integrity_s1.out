@@ -1,0 +1,9 @@
+05:07:11 start ['-m', 'latent.followup_run', '--run', 'runs/main_s1', '--split', 'fresh', '--n', '300', '--device', 'cuda:2', '--experiments', 'cache', 'dose', '--tag', 'integrity']
+[runs/main_s1 fresh W=2] cache done 4s
+[runs/main_s1 fresh W=2] dose done 21s
+[runs/main_s1 fresh W=4] cache done 27s
+[runs/main_s1 fresh W=4] dose done 90s
+[runs/main_s1 fresh W=8] cache done 123s
+[runs/main_s1 fresh W=8] dose done 491s
+wrote runs/main_s1\followup\fresh_integrity\summary.json
+05:15:26 exit 0

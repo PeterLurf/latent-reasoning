@@ -1,0 +1,5 @@
+13:23:38 guarding runs/p30_s112 pid 0 max relaunch 3
+13:23:38 launched pid 9136
+13:30:48 stage-1 failure at step 4000; archived as runs/p30_s112_stage1fail_1
+13:30:48 launched pid 368
+13:36:48 stage 1 passed at step 3400 ; waiting for the run to end

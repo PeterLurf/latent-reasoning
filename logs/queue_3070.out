@@ -1,0 +1,37 @@
+15:05:59 start rel_base_s21 (--no_step_emb --K 6 --seed 21 --amp bf16)
+15:57:59 trained rel_base_s21 rc 0
+run  results/competence_rel_base_s21.json
+run  results/competence_matched_rel_base_s21.json
+run  results/length_gen_rel_base_s21.json
+run  results/delayed_trace_rel_base_s21.json
+run  results/budget_sweep_rel_base_s21.json
+EVAL_DONE rel_base_s21
+15:58:38 evaluated rel_base_s21
+15:58:38 start rel_base_s22 (--no_step_emb --K 6 --seed 22 --amp bf16)
+16:50:38 trained rel_base_s22 rc 0
+run  results/competence_rel_base_s22.json
+run  results/competence_matched_rel_base_s22.json
+run  results/length_gen_rel_base_s22.json
+run  results/delayed_trace_rel_base_s22.json
+run  results/budget_sweep_rel_base_s22.json
+EVAL_DONE rel_base_s22
+16:50:59 evaluated rel_base_s22
+16:50:59 start rel_base_s23 (--no_step_emb --K 6 --seed 23 --amp bf16)
+17:42:59 trained rel_base_s23 rc 0
+run  results/competence_rel_base_s23.json
+run  results/competence_matched_rel_base_s23.json
+run  results/length_gen_rel_base_s23.json
+run  results/delayed_trace_rel_base_s23.json
+run  results/budget_sweep_rel_base_s23.json
+EVAL_DONE rel_base_s23
+17:43:19 evaluated rel_base_s23
+17:43:20 start rel_lr5_s24 (--no_step_emb --K 6 --seed 24 --amp bf16 --lr 5e-4)
+18:34:20 trained rel_lr5_s24 rc 0
+run  results/competence_rel_lr5_s24.json
+run  results/competence_matched_rel_lr5_s24.json
+run  results/length_gen_rel_lr5_s24.json
+run  results/delayed_trace_rel_lr5_s24.json
+run  results/budget_sweep_rel_lr5_s24.json
+EVAL_DONE rel_lr5_s24
+18:34:40 evaluated rel_lr5_s24
+18:34:40 QUEUE_DONE

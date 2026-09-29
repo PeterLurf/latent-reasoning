@@ -1,0 +1,702 @@
+{
+ "run": "runs/pause_s0",
+ "decodability_val": {
+  "0": {
+   "matched_auc": 0.694715483234483,
+   "by_bdepth": {
+    "0": 0.8144189375808317,
+    "1": 0.6682255239157059,
+    "2": 0.6708110795917509,
+    "3": 0.6692434069772492,
+    "4": 0.6755377024859591,
+    "5": 0.6700562488554012
+   },
+   "by_width": {
+    "1": 0.5671224094936103,
+    "2": 0.5481158060700997,
+    "3": 0.5538247269439112,
+    "4": 0.5564797969387273,
+    "5": 0.5285082177859749,
+    "6": 0.5287114432511446,
+    "7": 0.5337831390771384,
+    "8": 0.522753567615214
+   },
+   "branch_auc_by_width": {
+    "1": 0.5724990454371898,
+    "2": 0.5572270242316785,
+    "3": 0.5525118051999772,
+    "4": 0.5554612016908212,
+    "5": 0.5297858796296296,
+    "6": 0.5288229875283447,
+    "7": 0.5317983439452366,
+    "8": 0.5312120522161505
+   }
+  },
+  "1": {
+   "matched_auc": 0.7233336147886722,
+   "by_bdepth": {
+    "0": 0.7894815517692048,
+    "1": 0.7238831769679498,
+    "2": 0.7124035568410778,
+    "3": 0.702781770127984,
+    "4": 0.7107735072900034,
+    "5": 0.7006781257358136
+   },
+   "by_width": {
+    "1": 0.5584000283013635,
+    "2": 0.5323560608570498,
+    "3": 0.5419315854456394,
+    "4": 0.543167564200214,
+    "5": 0.5407461926603528,
+    "6": 0.5190137997912391,
+    "7": 0.5239659264260796,
+    "8": 0.5192370065067805
+   },
+   "branch_auc_by_width": {
+    "1": 0.5695876288659794,
+    "2": 0.5425993646572104,
+    "3": 0.5543821471240825,
+    "4": 0.5531652576489534,
+    "5": 0.5348958333333333,
+    "6": 0.5298504818594105,
+    "7": 0.5258496995785131,
+    "8": 0.5196379781420765
+   }
+  },
+  "2": {
+   "matched_auc": 0.7253513258213234,
+   "by_bdepth": {
+    "0": 0.7906773397745934,
+    "1": 0.7248222793223473,
+    "2": 0.7139815275603497,
+    "3": 0.7054325397107554,
+    "4": 0.7125677347975006,
+    "5": 0.7046265337623944
+   },
+   "by_width": {
+    "1": 0.5567728134354079,
+    "2": 0.5328935476180252,
+    "3": 0.5458464833067739,
+    "4": 0.5409528190410379,
+    "5": 0.5409000004863668,
+    "6": 0.5281725487341664,
+    "7": 0.5255167076051892,
+    "8": 0.5148247711789118
+   },
+   "branch_auc_by_width": {
+    "1": 0.572244495354461,
+    "2": 0.5444001182033097,
+    "3": 0.5559040223018717,
+    "4": 0.5543981481481481,
+    "5": 0.5362037037037037,
+    "6": 0.5371846655328798,
+    "7": 0.5259617971482379,
+    "8": 0.5195525956284153
+   }
+  },
+  "3": {
+   "matched_auc": 0.7266735201675026,
+   "by_bdepth": {
+    "0": 0.7930996270398643,
+    "1": 0.7260182769841963,
+    "2": 0.7168028876532242,
+    "3": 0.7051892795117617,
+    "4": 0.7122063029358181,
+    "5": 0.7067247468801507
+   },
+   "by_width": {
+    "1": 0.5570936733234833,
+    "2": 0.5343353403096097,
+    "3": 0.5492964803218418,
+    "4": 0.538069431140534,
+    "5": 0.5384804891694911,
+    "6": 0.5277067507470015,
+    "7": 0.527010837772938,
+    "8": 0.5236366756248617
+   },
+   "branch_auc_by_width": {
+    "1": 0.573867252131857,
+    "2": 0.546126994680851,
+    "3": 0.5566222904932582,
+    "4": 0.5497810990338164,
+    "5": 0.5344849537037037,
+    "6": 0.538389314058957,
+    "7": 0.5272098167578393,
+    "8": 0.5231576350941105
+   }
+  },
+  "4": {
+   "matched_auc": 0.727296872435636,
+   "by_bdepth": {
+    "0": 0.7938375512370441,
+    "1": 0.7288491150141898,
+    "2": 0.7155242525091806,
+    "3": 0.7041365724687163,
+    "4": 0.712114223723748,
+    "5": 0.7093195196609371
+   },
+   "by_width": {
+    "1": 0.5583433900180054,
+    "2": 0.5378227770731353,
+    "3": 0.5463658450559746,
+    "4": 0.5413824584747261,
+    "5": 0.5422248519641102,
+    "6": 0.5259136207561178,
+    "7": 0.5305665018198849,
+    "8": 0.5234855915693211
+   },
+   "branch_auc_by_width": {
+    "1": 0.5769854906452845,
+    "2": 0.5448249113475178,
+    "3": 0.5562880468794447,
+    "4": 0.5555115237520128,
+    "5": 0.5356018518518518,
+    "6": 0.5390861205593349,
+    "7": 0.5297208023196724,
+    "8": 0.5255862932604736
+   }
+  },
+  "5": {
+   "matched_auc": 0.7319385184458064,
+   "by_bdepth": {
+    "0": 0.8014428481804418,
+    "1": 0.735896092453844,
+    "2": 0.7201477501216746,
+    "3": 0.7084919886498254,
+    "4": 0.7164370373962538,
+    "5": 0.7092153938727991
+   },
+   "by_width": {
+    "1": 0.5741769659207945,
+    "2": 0.5455986386820525,
+    "3": 0.5464395835624484,
+    "4": 0.5499277532902364,
+    "5": 0.5386617425161359,
+    "6": 0.5320673928199385,
+    "7": 0.5394877279726035,
+    "8": 0.5291058932103853
+   },
+   "branch_auc_by_width": {
+    "1": 0.5898084510627466,
+    "2": 0.5580396719858156,
+    "3": 0.5618848495192581,
+    "4": 0.5623175825281803,
+    "5": 0.5387789351851852,
+    "6": 0.5482036564625851,
+    "7": 0.5412967446865752,
+    "8": 0.5355570734669095
+   }
+  },
+  "6": {
+   "matched_auc": 0.7281954577166885,
+   "by_bdepth": {
+    "0": 0.7954010022261884,
+    "1": 0.7338204454752434,
+    "2": 0.7172872885005851,
+    "3": 0.7025246939178189,
+    "4": 0.7108412495711851,
+    "5": 0.7092980666091097
+   },
+   "by_width": {
+    "1": 0.5689030721246573,
+    "2": 0.550462203792748,
+    "3": 0.5462765010898297,
+    "4": 0.5449442063079145,
+    "5": 0.5483058980056212,
+    "6": 0.5280158700987615,
+    "7": 0.5346031934058211,
+    "8": 0.5241514363009481
+   },
+   "branch_auc_by_width": {
+    "1": 0.5892516227567773,
+    "2": 0.5581781914893617,
+    "3": 0.5585708596461284,
+    "4": 0.5605626006441223,
+    "5": 0.5439583333333332,
+    "6": 0.5425524376417235,
+    "7": 0.5344737392759993,
+    "8": 0.5333086672738312
+   }
+  }
+ },
+ "shuffled_label_auc": {
+  "0": 0.501140984241768,
+  "1": 0.490493021592144,
+  "2": 0.48771643952033106,
+  "3": 0.49164013175468857,
+  "4": 0.48916786083458913,
+  "5": 0.4972376227994779,
+  "6": 0.49456983320190934
+ },
+ "untrained_model_auc": {
+  "0": 0.5159915915437777,
+  "1": 0.5161344764783239,
+  "2": 0.5157574092138348,
+  "3": 0.5156203257728994,
+  "4": 0.5166471274989161,
+  "5": 0.5160135477822445,
+  "6": 0.5162528759956792
+ },
+ "site_profile_W4": {
+  "0": {
+   "targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_signed": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_decoy": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "1": {
+   "targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_signed": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_decoy": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "2": {
+   "targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_signed": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_decoy": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "3": {
+   "targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_signed": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_decoy": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "4": {
+   "targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_signed": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_decoy": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "5": {
+   "targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_signed": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_decoy": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "k_star": 0,
+ "sec": 20.98525333404541,
+ "subspace_profile_W4": {
+  "0": {
+   "full": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   }
+  },
+  "1": {
+   "full": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   }
+  },
+  "2": {
+   "full": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   }
+  },
+  "3": {
+   "full": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   }
+  },
+  "4": {
+   "full": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   }
+  },
+  "5": {
+   "full": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   }
+  }
+ }
+}

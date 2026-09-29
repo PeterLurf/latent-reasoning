@@ -1,0 +1,46 @@
+{
+ "runs/p29_s80": {
+  "1": {
+   "bal_acc": 0.9984354879671768,
+   "recall_reachable": 0.9998915871639202,
+   "specificity_decoy": 0.9969793887704336,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9731729966704668,
+   "recall_reachable": 0.9670162939507884,
+   "specificity_decoy": 0.9793296993901451,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.8692295443004305,
+   "recall_reachable": 0.7850316233309909,
+   "specificity_decoy": 0.9534274652698702,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.7856558141463144,
+   "recall_reachable": 0.6344423096369703,
+   "specificity_decoy": 0.9368693186556584,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.753729130202291,
+   "recall_reachable": 0.5833496571988247,
+   "specificity_decoy": 0.9241086032057573,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5734397475524231,
+   "recall_reachable": 0.24870466321243523,
+   "specificity_decoy": 0.8981748318924111,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

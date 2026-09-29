@@ -1,0 +1,13 @@
+# PROTOCOL6 addendum K amendment (P30), Vast instance 3: seeds 148-159, bf16
+p30_s148 --no_step_emb --K 6 --seed 148 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s149 --no_step_emb --K 6 --seed 149 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s150 --no_step_emb --K 6 --seed 150 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s151 --no_step_emb --K 6 --seed 151 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s152 --no_step_emb --K 6 --seed 152 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s153 --no_step_emb --K 6 --seed 153 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s154 --no_step_emb --K 6 --seed 154 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s155 --no_step_emb --K 6 --seed 155 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s156 --no_step_emb --K 6 --seed 156 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s157 --no_step_emb --K 6 --seed 157 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s158 --no_step_emb --K 6 --seed 158 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s159 --no_step_emb --K 6 --seed 159 --lr 5e-4 --amp bf16 --save_every 1000

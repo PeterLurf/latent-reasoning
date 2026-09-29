@@ -1,0 +1,3 @@
+00:48:32 guarding runs/stall_fp32_s71 pid 0 max relaunch 3
+00:48:32 launched pid 15952
+00:56:32 stage 1 passed at step 2000 ; waiting for the run to end

@@ -1,0 +1,92 @@
+﻿"  Width W âˆˆ {1..8} = number of branches attached to `s`; the rest hang off `s'`." 
+  -> "  Width W ∈ {1..8} = number of branches attached to `s`; the rest hang off `s'`."
+'  Every graph has 62 nodes and 60 edge tokens regardless of W, and â‰¥2 shape-matched' 
+  -> '  Every graph has 62 nodes and 60 edge tokens regardless of W, and ≥2 shape-matched'
+'* Families = multiset of (attached?, canonical tree shape) â†’ hashed into 20 buckets:' 
+  -> '* Families = multiset of (attached?, canonical tree shape) → hashed into 20 buckets:'
+'  never cross splits. 20 000 draws â†’ 19 990 distinct families.' 
+  -> '  never cross splits. 20 000 draws → 19 990 distinct families.'
+"* Counterfactual partner = one edge token changes source (s â†’ s', s â†’ graft into a" 
+  -> "* Counterfactual partner = one edge token changes source (s → s', s → graft into a"
+"  decoy branch, or s' â†’ s). Verified by BFS that exactly the edited branch changes." 
+  -> "  decoy branch, or s' → s). Verified by BFS that exactly the edited branch changes."
+'identity patch bit-exact; patching thought k leaves thoughts â‰¤ k untouched;' 
+  -> 'identity patch bit-exact; patching thought k leaves thoughts ≤ k untouched;'
+'  incoming edge" âˆ˜ "is its source s?") never left the class prior in 1500 steps' 
+  -> '  incoming edge" ∘ "is its source s?") never left the class prior in 1500 steps'
+"* Added query type PARENT(v) â†’ id of v's parent (tied id readout), forked against the" 
+  -> "* Added query type PARENT(v) → id of v's parent (tied id readout), forked against the"
+'### Round 2 (PARENT scaffold only): depth-1 learned, depth â‰¥ 2 not' 
+  -> '### Round 2 (PARENT scaffold only): depth-1 learned, depth ≥ 2 not'
+'  donor patches have zero effect). Depth â‰¥ 2 stayed at the prior through 6k steps.' 
+  -> '  donor patches have zero effect). Depth ≥ 2 stayed at the prior through 6k steps.'
+'* Gated curriculum: start at within-branch depth â‰¤ 1 (star branches); advance when' 
+  -> '* Gated curriculum: start at within-branch depth ≤ 1 (star branches); advance when'
+'  held-out delayed balanced accuracy at the current stage â‰¥ 0.9 (checked every 500' 
+  -> '  held-out delayed balanced accuracy at the current stage ≥ 0.9 (checked every 500'
+'donor patches with collateral â‰ˆ targeted, and targeted falling from 0.16 (W=2) to 0.01' 
+  -> 'donor patches with collateral ≈ targeted, and targeted falling from 0.16 (W=2) to 0.01'
+'Alternative **H-damage**: collateral is unsigned general damage â†’ signed collateral â‰ˆ ' 
+  -> 'Alternative **H-damage**: collateral is unsigned general damage → signed collateral ≈ 0'
+'graphs/width, W âˆˆ {2,8}) drew *confirm-split* graphs before `split` was made a protocol' 
+  -> 'graphs/width, W ∈ {2,8}) drew *confirm-split* graphs before `split` was made a protocol'
+'parameter. Seen: full-vector patch at k=1 had targeted â‰ˆ collateral; probe-subspace' 
+  -> 'parameter. Seen: full-vector patch at k=1 had targeted ≈ collateral; probe-subspace'
+'patches â‰ˆ 0; identity control exactly 0. No protocol choice below was changed because of' 
+  -> 'patches ≈ 0; identity control exactly 0. No protocol choice below was changed because of'
+'* Targeted (full, remove, k*=1): W1 0.261 â†’ W2 0.085 â†’ W4 0.059 â†’ W8 0.026 (monotone' 
+  -> '* Targeted (full, remove, k*=1): W1 0.261 → W2 0.085 → W4 0.059 → W8 0.026 (monotone ↓).'
+'  Pattern: 0.212 â†’ 0.052 â†’ 0.052 â†’ 0.025. Probe filter: 0.000 at every W. Random ran' 
+  -> '  Pattern: 0.212 → 0.052 → 0.052 → 0.025. Probe filter: 0.000 at every W. Random rank-6/20'
+'* **H-norm prediction 2 confirmed:** signed collateral < 0 under removal (W2 âˆ’0.060, W4 ' 
+  -> '* **H-norm prediction 2 confirmed:** signed collateral < 0 under removal (W2 −0.060, W4 −0'
+'  W8 âˆ’0.006) and > 0 under insertion (+0.096, +0.018, +0.009): removing one branch makes' 
+  -> '  W8 −0.006) and > 0 under insertion (+0.096, +0.018, +0.009): removing one branch makes t'
+'  collateral â‰ˆ 0.001; the delayed-format pattern subspace is inert there (different dire' 
+  -> '  collateral ≈ 0.001; the delayed-format pattern subspace is inert there (different direct'
+'* Provisional "selective" bar (â‰¥ 0.10 targeted, â‰¤ 0.03 collateral, pooled over the bra' 
+  -> '* Provisional "selective" bar (≥ 0.10 targeted, ≤ 0.03 collateral, pooled over the branch)'
+'a roughly fixed attention budget (0.25 â†’ 0.13 total) divided among W branches.' 
+  -> 'a roughly fixed attention budget (0.25 → 0.13 total) divided among W branches.'
+'* Targeted (full, remove) W2 â†’ W8: s1 0.300 â†’ 0.059; s2 0.324 â†’ 0.114 (s0 0.085 â†’ ' 
+  -> '* Targeted (full, remove) W2 → W8: s1 0.300 → 0.059; s2 0.324 → 0.114 (s0 0.085 → 0.026).'
+'* Probe filters â‰¤ 0.001 everywhere; branch-pattern energy share 0.53 / 0.49 (s0 0.35) vs' 
+  -> '* Probe filters ≤ 0.001 everywhere; branch-pattern energy share 0.53 / 0.49 (s0 0.35) vs'
+'* Selectivity bar (â‰¥ 0.10 targeted, â‰¤ 0.03 collateral) met only by **s2 at W = 2**' 
+  -> '* Selectivity bar (≥ 0.10 targeted, ≤ 0.03 collateral) met only by **s2 at W = 2**'
+'  collateral â‰¤ 0.03 except s2 W2 (0.053); delayed-format pattern subspace â‰¤ 0.027 ther' 
+  -> '  collateral ≤ 0.03 except s2 W2 (0.053); delayed-format pattern subspace ≤ 0.027 there.'
+'  â†’ Overall accuracy does **not** separate recurrence from pause positions; the recurren' 
+  -> '  → Overall accuracy does **not** separate recurrence from pause positions; the recurrent'
+'| Minimum positive result: â‰¥ 2 alternatives in one shared state with distinct predicted ' 
+  -> '| Minimum positive result: ≥ 2 alternatives in one shared state with distinct predicted ef'
+'| Provisional selectivity bar (â‰¥ 0.10 targeted, â‰¤ 0.03 collateral) | Met in 1/3 seeds,' 
+  -> '| Provisional selectivity bar (≥ 0.10 targeted, ≤ 0.03 collateral) | Met in 1/3 seeds, W ='
+'| Bounded test of width | Done: targeted and selectivity decline monotonically W 2â†’8; de' 
+  -> '| Bounded test of width | Done: targeted and selectivity decline monotonically W 2→8; deco'
+'| Valuable alternative result | Readable â‰\xa0 usable: probe filters inert, activation patte' 
+  -> '| Valuable alternative result | Readable ≠ usable: probe filters inert, activation pattern'
+'* Donor audit: W=1 removal/insertion involves an untrained W=0 state â†’ W=1 now reported ' 
+  -> '* Donor audit: W=1 removal/insertion involves an untrained W=0 state → W=1 now reported on'
+"* The model's own clean counterfactual on deep nodes collapses with W (s0, 4 hops: 0.79 â†" 
+  -> "* The model's own clean counterfactual on deep nodes collapses with W (s0, 4 hops: 0.79 → "
+"* Part I's single-seed control conclusions (pause â‰ˆ recurrent to 4 hops; no-latent fails" 
+  -> "* Part I's single-seed control conclusions (pause ≈ recurrent to 4 hops; no-latent fails >"
+"  Width W âˆˆ {1..8} = number of branches attached to `s`; the rest hang off `s'`." 
+    "  Width W ∈ {1..8} = number of branches attached to `s`; the rest hang off `s'`."
+'  Every graph has 62 nodes and 60 edge tokens regardless of W, and â‰¥2 shape-matched' 
+    '  Every graph has 62 nodes and 60 edge tokens regardless of W, and ≥2 shape-matched'
+'* Families = multiset of (attached?, canonical tree shape) â†’ hashed into 20 buckets:' 
+    '* Families = multiset of (attached?, canonical tree shape) → hashed into 20 buckets:'
+'  never cross splits. 20 000 draws â†’ 19 990 distinct families.' 
+    '  never cross splits. 20 000 draws → 19 990 distinct families.'
+"* Counterfactual partner = one edge token changes source (s â†’ s', s â†’ graft into a" 
+    "* Counterfactual partner = one edge token changes source (s → s', s → graft into a"
+"  decoy branch, or s' â†’ s). Verified by BFS that exactly the edited branch changes." 
+    "  decoy branch, or s' → s). Verified by BFS that exactly the edited branch changes."
+'* Donor audit: W=1 removal/insertion involves an untrained W=0 state â†’ W=1 now reported only as a' 
+    '* Donor audit: W=1 removal/insertion involves an untrained W=0 state → W=1 now reported only as a'
+"* The model's own clean counterfactual on deep nodes collapses with W (s0, 4 hops: 0.79 â†’ 0.19)." 
+    "* The model's own clean counterfactual on deep nodes collapses with W (s0, 4 hops: 0.79 → 0.19)."
+"* Part I's single-seed control conclusions (pause â‰ˆ recurrent to 4 hops; no-latent fails > 2 hops)" 
+    "* Part I's single-seed control conclusions (pause ≈ recurrent to 4 hops; no-latent fails > 2 hops)"

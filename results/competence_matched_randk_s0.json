@@ -1,0 +1,46 @@
+{
+ "runs/randk_s0": {
+  "1": {
+   "bal_acc": 1.0,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 1.0,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9951246027362801,
+   "recall_reachable": 0.9956461508015041,
+   "specificity_decoy": 0.9946030546710561,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.8908255210579745,
+   "recall_reachable": 0.8404075895994378,
+   "specificity_decoy": 0.9412434525165111,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.7046083430000956,
+   "recall_reachable": 0.5613307715643644,
+   "specificity_decoy": 0.8478859144358268,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.6391345371663499,
+   "recall_reachable": 0.45523996082272283,
+   "specificity_decoy": 0.8230291135099771,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5491937638015791,
+   "recall_reachable": 0.3154864709268854,
+   "specificity_decoy": 0.7829010566762729,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

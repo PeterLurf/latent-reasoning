@@ -1,0 +1,18 @@
+{
+  "mode": "pause",
+  "K": 6,
+  "d": 256,
+  "layers": 2,
+  "heads": 8,
+  "steps": 8000,
+  "bs": 512,
+  "Q": 16,
+  "lr": 0.001,
+  "wd": 0.01,
+  "warmup": 500,
+  "upfront_weight": 1.0,
+  "seed": 0,
+  "device": "cuda:2",
+  "eval_every": 1000,
+  "out": "runs/pilot2_pause_lr1e-3"
+}

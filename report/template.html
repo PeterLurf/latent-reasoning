@@ -1,0 +1,560 @@
+<meta charset="utf-8">
+<title>Branch Edits in Continuous Thought</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#f5f6f4; --surface:#fbfbf9; --ink:#15181d; --ink-2:#4b525d; --muted:#858b95;
+  --rule:#dde0e3; --axis:#c3c7cc; --grid:#e8eaec; --accent:#1d5da8; --accent-wash:#e3ecf7;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#8a5cd1; --s5:#b8901c; --s6:#d64f8a; --s7:#5f6f86; --neutral:#9aa0a8; --neutral-2:#c4c8cd;
+  --pos:#1d5da8; --neg:#c2410c; --mid:#eeefec;
+  --ok:#0a7d0a; --warn-bg:#fff4dc; --warn-ink:#7a4b00;
+  --sans:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#0f1114; --surface:#15171b; --ink:#eceef1; --ink-2:#b4bac4; --muted:#7f8792;
+    --rule:#2a2e35; --axis:#3a3f47; --grid:#23272d; --accent:#7fb0ee; --accent-wash:#1a2533;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#a07ce6; --s5:#cfa53a; --s6:#e0679c; --s7:#8a9ab3; --neutral:#7c838d; --neutral-2:#4a5058;
+    --pos:#6ea8ec; --neg:#e0773f; --mid:#2a2d31; --ok:#3fbf3f; --warn-bg:#2f2614; --warn-ink:#f0c46c;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0f1114; --surface:#15171b; --ink:#eceef1; --ink-2:#b4bac4; --muted:#7f8792;
+  --rule:#2a2e35; --axis:#3a3f47; --grid:#23272d; --accent:#7fb0ee; --accent-wash:#1a2533;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#a07ce6; --s5:#cfa53a; --s6:#e0679c; --s7:#8a9ab3; --neutral:#7c838d; --neutral-2:#4a5058;
+  --pos:#6ea8ec; --neg:#e0773f; --mid:#2a2d31; --ok:#3fbf3f; --warn-bg:#2f2614; --warn-ink:#f0c46c;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--serif);font-size:17px;line-height:1.6;margin:0}
+.wrap{max-width:1000px;margin:0 auto;padding-inline:20px;padding-block:40px 80px}
+.prose{max-width:68ch}
+h1,h2,h3,.label,.fig-title,table,.chip,.meta,figcaption,.tip,nav{font-family:var(--sans)}
+h1{font-size:clamp(30px,5vw,44px);line-height:1.08;letter-spacing:-.02em;margin:.2em 0 .35em;text-wrap:balance;font-weight:700}
+h2{font-size:24px;letter-spacing:-.01em;margin:2.4em 0 .5em;text-wrap:balance;font-weight:650}
+h3{font-size:17px;margin:1.6em 0 .3em;font-weight:600}
+p{margin:.6em 0}
+a{color:var(--accent)}
+.eyebrow{font-family:var(--sans);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.meta{display:flex;flex-wrap:wrap;gap:6px 18px;color:var(--ink-2);font-size:13.5px;margin:10px 0 22px}
+.meta b{color:var(--ink);font-weight:600}
+.abstract{font-size:18.5px;line-height:1.55;color:var(--ink)}
+.status{border:1px solid var(--rule);background:var(--surface);border-radius:8px;padding:14px 18px;margin:22px 0;font-family:var(--sans);font-size:14.5px;line-height:1.5}
+.status strong{font-weight:650}
+.findings{list-style:none;padding:0;margin:18px 0;display:grid;gap:12px}
+.findings li{padding:12px 16px;background:var(--surface);border:1px solid var(--rule);border-radius:8px;font-size:16px}
+.findings li b{font-family:var(--sans);font-weight:650}
+code,.num{font-family:var(--mono);font-size:.88em}
+.num{font-variant-numeric:tabular-nums}
+figure{margin:26px 0 30px;background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:16px 18px 12px}
+.fig-title{font-size:15px;font-weight:650;margin:0 0 2px}
+.fig-sub{font-family:var(--sans);font-size:13px;color:var(--ink-2);margin:0 0 10px}
+figcaption{font-size:13px;color:var(--ink-2);line-height:1.5;margin-top:8px;border-top:1px solid var(--rule);padding-top:8px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px 22px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px 18px}
+.panel-title{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--ink);margin:4px 0 0}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-family:var(--sans);font-size:12.5px;color:var(--ink-2);margin:4px 0 6px}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.legend i.dot{width:9px;height:9px;border-radius:50%}
+svg.chart{width:100%;height:auto;display:block;overflow:visible}
+svg.chart text{font-family:var(--sans);font-size:11.5px;fill:var(--muted)}
+svg.chart .t-ink{fill:var(--ink-2)}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--ground);font-size:12px;line-height:1.4;padding:6px 9px;border-radius:6px;max-width:260px;z-index:10;opacity:0;transition:opacity .08s}
+.tbl{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;font-size:13.5px;width:100%}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-weight:600;color:var(--ink-2);font-size:12.5px;letter-spacing:.02em}
+td:first-child{white-space:nowrap}
+td.n,th.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:12.5px;white-space:nowrap}
+details{margin:8px 0}
+summary{cursor:pointer;font-family:var(--sans);font-size:13px;color:var(--accent);font-weight:600}
+summary:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.chip{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;border:1px solid var(--rule);color:var(--ink-2);white-space:nowrap}
+.chip.yes{border-color:transparent;background:var(--accent-wash);color:var(--accent)}
+.chip.no{border-color:transparent;background:var(--warn-bg);color:var(--warn-ink)}
+h3{scroll-margin-top:12px}.part{border-top:2px solid var(--rule);margin-top:3em;padding-top:.6em}
+.callout{border-left:3px solid var(--accent);padding:4px 0 4px 14px;margin:14px 0;color:var(--ink-2)}
+.diagram text{font-family:var(--sans);font-size:12px;fill:var(--ink-2)}
+nav.toc{font-size:13.5px;display:flex;flex-wrap:wrap;gap:4px 14px;margin:6px 0 10px}
+nav.toc a{text-decoration:none;color:var(--ink-2)} nav.toc a:hover{color:var(--accent)}
+@media (max-width:560px){body{font-size:16px}.wrap{padding-block:24px 60px}figure{padding:12px}}
+@media (prefers-reduced-motion:reduce){.tip{transition:none}}
+@page{size:A4;margin:16mm 15mm 18mm;
+  @bottom-center{content:"Branch edits in continuous thought  ·  " counter(page) " / " counter(pages);font-family:"Instrument Sans",sans-serif;font-size:8pt;color:#858b95}}
+@media print{
+  body{background:#fff;font-size:10.5pt;line-height:1.5}
+  .wrap{max-width:none;padding:0}
+  .prose{max-width:none}
+  nav.toc,.tip,summary{display:none}
+  h1{font-size:26pt} h2{font-size:15pt;margin-top:1.6em;break-after:avoid} h3{break-after:avoid}
+  .abstract{font-size:11.5pt}
+  .findings li,.status,tr,svg.chart,.grid2,.grid3,.legend{break-inside:avoid}
+  figure:not(:has(details)){break-inside:avoid}
+  .fig-title,.fig-sub,.legend{break-after:avoid}
+  td:first-child,th:first-child{min-width:110px}
+  figure{padding:10px 12px 8px;margin:14px 0}
+  .fig-title{font-size:10.5pt} .fig-sub,figcaption,.legend{font-size:8.5pt}
+  table{font-size:8.5pt} th,td{padding:4px 6px}
+  a{color:inherit;text-decoration:none}
+}
+</style>
+
+<div class="wrap">
+<div class="eyebrow">Mechanistic interpretability · research report</div>
+<h1>Branch edits in continuous thought</h1>
+<div class="meta">
+  <span><b>Question</b> are alternatives readable from a latent state also separately usable?</span>
+  <span><b>System</b> 2-layer Coconut-style transformer, trained from scratch</span>
+  <span><b>Seeds</b> <span id="m-seeds"></span></span>
+  <span><b>Date</b> 23 Sep 2026 · follow-up 24 Sep 2026</span>
+</div>
+<nav class="toc" aria-label="Sections">
+  <a href="#findings">Findings</a><a href="#setup">Setup</a><a href="#competence">Competence</a>
+  <a href="#readable">Readable vs usable</a><a href="#width">Width</a><a href="#depth">Depth &amp; timing</a>
+  <a href="#competition">Competition</a><a href="#recovery">Recovery</a><a href="#upfront">Upfront format</a>
+  <a href="#why">Part II: why edits weaken</a><a href="#part3h">Part III: ablations &amp; search</a><a href="#claims">Claims</a><a href="#limits">Limits</a><a href="#repro">Reproduce</a>
+</nav>
+
+<div id="prose-abstract" class="prose abstract"></div>
+<div id="prose-status" class="status"></div>
+
+<h2 id="findings">What the study found</h2>
+<ul class="findings" id="findings-list"></ul>
+
+<h2 id="setup">Setup</h2>
+<div class="prose" id="prose-setup"></div>
+<figure>
+  <p class="fig-title">Task and intervention interface</p>
+  <p class="fig-sub">Every graph has 10 six-node branches, 62 nodes and 60 edge tokens; width W only changes which hub a branch hangs from.</p>
+  <div id="fig-diagram"></div>
+  <figcaption>Left: W branches hang off the start hub <i>s</i>; the rest hang off a decoy hub <i>s′</i> and are shape-matched unreachable negatives. The donor differs from the recipient by one edge token (<i>s</i>→root<sub>i</sub> becomes <i>s′</i>→root<sub>i</sub>). Right: the thought <i>h<sub>k</sub></i> is replaced by <i>h</i> + UUᵀ(<i>h</i><sub>donor</sub> − <i>h</i>) before it becomes the input of latent position k+1; the cache for positions ≤ k is kept, everything after is recomputed, and every node is then queried as an independent fork of that one saved state.</figcaption>
+</figure>
+
+<h2 id="competence">Competence and latent use</h2>
+<div class="prose" id="prose-competence"></div>
+<figure>
+  <p class="fig-title">Accuracy by distance from the start node</p>
+  <p class="fig-sub">Delayed-query format, held-out (confirm-split) graph families, full latent budget. Unreachable queries shown at the right.</p>
+  <div class="legend" id="lg-comp"></div>
+  <div id="fig-comp"></div>
+  <figcaption id="cap-comp"></figcaption>
+  <details><summary>Table: balanced accuracy by model and inference-time latent budget</summary><div class="tbl" id="tbl-comp"></div></details>
+</figure>
+
+<h2 id="readable">Readable directions are not the usable ones</h2>
+<div class="prose" id="prose-readable"></div>
+<figure>
+  <p class="fig-title">Single-branch removal at the frozen site, W = 4</p>
+  <p class="fig-sub">Targeted effect: drop in P(reachable) on the edited branch's nodes. Collateral: mean |ΔP| on the other reachable branches. Bars: mean over seeds; whiskers: seed range.</p>
+  <div class="legend"><span><i style="background:var(--s1)"></i>Targeted</span><span><i style="background:var(--s2)"></i>Collateral</span></div>
+  <div id="fig-sub"></div>
+  <figcaption id="cap-sub"></figcaption>
+  <details><summary>Table: all subspace conditions at W = 4</summary><div class="tbl" id="tbl-sub"></div></details>
+</figure>
+
+<h2 id="width">What width does to readability and use</h2>
+<div class="prose" id="prose-width"></div>
+<figure>
+  <p class="fig-title">Branch-effect matrices from one saved state</p>
+  <p class="fig-sub">Rows: which reachable branch is edited. Columns: which branch is queried. Diagonal = targeted drop in P(reachable); off-diagonal = |ΔP| on an untouched branch. Full-vector removal at k*, mean over seeds.</p>
+  <div class="grid3" id="fig-matrix"></div>
+  <figcaption id="cap-matrix"></figcaption>
+</figure>
+<figure>
+  <p class="fig-title">Effects of a single-branch edit as width grows</p>
+  <p class="fig-sub">Full-vector and pattern-subspace removal at the frozen site. Lines: mean over seeds; bands: seed range.</p>
+  <div class="legend"><span><i style="background:var(--s1)"></i>Full vector</span><span><i style="background:var(--s2)"></i>Branch pattern subspace</span></div>
+  <div class="grid2">
+    <div><p class="panel-title">Targeted effect (ΔP toward counterfactual)</p><div id="fig-w-tgt"></div></div>
+    <div><p class="panel-title">Collateral on other reachable branches (|ΔP|)</p><div id="fig-w-col"></div></div>
+  </div>
+  <figcaption id="cap-w"></figcaption>
+</figure>
+<figure>
+  <p class="fig-title">Decodability outlasts causal control</p>
+  <p class="fig-sub">Both indexed to W = 1 = 1.0 on one axis: probe per-branch AUC above chance (AUC − 0.5), and the full-vector targeted effect.</p>
+  <div class="legend"><span><i style="background:var(--s3)"></i>Readable: probe AUC − 0.5</span><span><i style="background:var(--s1)"></i>Usable: targeted effect</span></div>
+  <div id="fig-index"></div>
+  <figcaption id="cap-index"></figcaption>
+  <details><summary>Table: per-width values by seed</summary><div class="tbl" id="tbl-w"></div></details>
+</figure>
+
+<h2 id="depth">Which nodes an edit reaches, and when</h2>
+<div class="prose" id="prose-depth"></div>
+<figure>
+  <p class="fig-title">Targeted effect by node distance and width</p>
+  <p class="fig-sub">Full-vector removal at the frozen site; mean over seeds. Distance = hops from the start node.</p>
+  <div id="fig-heat"></div>
+  <figcaption id="cap-heat"></figcaption>
+</figure>
+<figure>
+  <p class="fig-title">Edit timing: which latent step carries the branch</p>
+  <p class="fig-sub">Full-vector removal applied at thought k = 0…4 (k = 0 is the START output). Mean over seeds.</p>
+  <div class="legend"><span><i style="background:var(--s1)"></i>Targeted</span><span><i style="background:var(--s2)"></i>Collateral</span></div>
+  <div class="grid3" id="fig-steps"></div>
+  <figcaption id="cap-steps"></figcaption>
+</figure>
+
+<h2 id="competition">Branches compete for a shared budget</h2>
+<div class="prose" id="prose-competition"></div>
+<figure>
+  <p class="fig-title">Signed collateral: what happens to the <em>other</em> branches</p>
+  <p class="fig-sub">Change in P(reachable) on the untouched reachable branches after a single-branch edit. Above zero = they became more reachable.</p>
+  <div class="legend"><span><i style="background:var(--s1)"></i>Remove one branch</span><span><i style="background:var(--s2)"></i>Insert one branch</span></div>
+  <div id="fig-signed"></div>
+  <figcaption id="cap-signed"></figcaption>
+</figure>
+<figure>
+  <p class="fig-title">Attention budget per reachable branch</p>
+  <p class="fig-sub">Exploratory, discovery graphs, all three seeds: layer-1 attention mass from latent positions 1–3 onto one branch's edges, minus the same quantity for a decoy branch.</p>
+  <div id="fig-attn"></div>
+  <figcaption id="cap-attn"></figcaption>
+</figure>
+
+<h2 id="recovery">The edited branch partly comes back</h2>
+<div class="prose" id="prose-recovery"></div>
+<figure>
+  <p class="fig-title">Probe margin of the edited branch in later thoughts</p>
+  <p class="fig-sub">Edited-branch minus decoy probe logit, unpatched vs after the edit at the frozen site. Mean over seeds.</p>
+  <div class="legend"><span><i style="background:var(--neutral)"></i>Unpatched recipient</span><span><i style="background:var(--s1)"></i>After full-vector edit</span><span><i style="background:var(--s2)"></i>After pattern edit</span></div>
+  <div class="grid3" id="fig-trace"></div>
+  <figcaption id="cap-trace"></figcaption>
+</figure>
+
+<h2 id="upfront">When the target is known in advance</h2>
+<div class="prose" id="prose-upfront"></div>
+<div class="tbl" id="tbl-upfront"></div>
+
+<div class="part" id="part2">
+<div class="eyebrow">Part II · follow-up study, 24 Sep 2026</div>
+<h2 id="why">Why do branch edits weaken with width?</h2>
+<div class="prose" id="prose-why"></div>
+<div class="tbl" id="tbl-score"></div>
+
+<h3 id="dose">Calibration: more dose does not rescue high width</h3>
+<div class="prose" id="prose-dose"></div>
+<figure>
+  <p class="fig-title">Targeted effect of a single-branch removal as the edit is scaled</p>
+  <p class="fig-sub">Thought edit at each seed's frozen site; dose multiplies the (projected) donor difference. Fresh confirmation graphs; mean over seeds, band = seed range.</p>
+  <div class="legend"><span><i style="background:var(--s1)"></i>Full vector</span><span><i style="background:var(--s2)"></i>Branch pattern subspace</span><span><i style="background:var(--neutral)"></i>Probe filters</span></div>
+  <div class="grid3" id="fig-dose"></div>
+  <figcaption id="cap-dose"></figcaption>
+</figure>
+
+<h3 id="routes">Where each branch's effect travels</h3>
+<div class="prose" id="prose-routes"></div>
+<figure>
+  <p class="fig-title">Share of the clean counterfactual effect carried by each route</p>
+  <p class="fig-sub">Removing one branch for real changes its nodes' P(reachable) by the clean gap. Each route is edited alone (donor values patched into that route only); shares are fractions of the clean gap. Fresh graphs.</p>
+  <div class="legend"><span><i style="background:var(--s1)"></i>Latent pathway (thought + START/early-latent cache)</span><span><i style="background:var(--s2)"></i>Queries reading the edge-token cache</span><span><i style="background:var(--neutral)"></i>Pause-token models, query reading</span></div>
+  <div class="grid2">
+    <div><p class="panel-title">Latent pathway share</p><div id="fig-route-lat"></div></div>
+    <div><p class="panel-title">Query-time graph share</p><div id="fig-route-q"></div></div>
+  </div>
+  <figcaption id="cap-routes"></figcaption>
+</figure>
+<figure>
+  <p class="fig-title">By node distance: what a thought edit reaches, and how much effect there is to reach</p>
+  <p class="fig-sub">Post-hoc breakdown of the same fresh graphs. Top: share of the clean effect carried by the thought edit alone, the latent pathway, and query-time graph reading, by distance of the queried node. Bottom: the clean counterfactual effect itself. Mean over seeds; band = seed range.</p>
+  <div class="legend"><span><i style="background:var(--s1)"></i>Thought edit only</span><span><i style="background:var(--s3)"></i>Latent pathway (thought + cache)</span><span><i style="background:var(--s2)"></i>Query-time graph reading</span></div>
+  <div class="grid3" id="fig-depthroute"></div>
+  <div class="legend" style="margin-top:10px"><span><i style="background:var(--s1)"></i>W = 2</span><span><i style="background:var(--s2)"></i>W = 4</span><span><i style="background:var(--s3)"></i>W = 8</span></div>
+  <div id="fig-cleangap"></div>
+  <figcaption id="cap-depthroute"></figcaption>
+</figure><figure>
+  <p class="fig-title">The edited branch comes back unless its cache route is also edited</p>
+  <p class="fig-sub">Probe margin of the edited branch (edited-branch minus decoy logit) at each thought, seed 0 at its frozen site k* = 1; fresh graphs.</p>
+  <div class="legend"><span><i style="background:var(--neutral)"></i>Unedited</span><span><i style="background:var(--s1)"></i>Thought edit only</span><span><i style="background:var(--s2)"></i>Thought + latent-cache edit</span><span><i style="background:var(--s3)"></i>Donor thought clamped at every later step</span></div>
+  <div class="grid3" id="fig-margin"></div>
+  <figcaption id="cap-margin"></figcaption>
+</figure>
+
+<h3 id="swaps">Width-preserving swaps</h3>
+<div class="prose" id="prose-swaps"></div>
+<figure>
+  <p class="fig-title">Collateral on untouched branches: swap vs removal vs insertion</p>
+  <p class="fig-sub">Full-vector edit at dose 1. Swap = one reachable and one unreachable branch exchange hubs (width unchanged). Mean over seeds; whiskers = seed range. Collateral excludes both swapped branches.</p>
+  <div class="legend"><span><i style="background:var(--s1)"></i>Unsigned (mean |ΔP|)</span><span><i style="background:var(--s2)"></i>Signed (others became less reachable &gt; 0)</span></div>
+  <div id="fig-swap"></div>
+  <figcaption id="cap-swap"></figcaption>
+</figure>
+
+<h3 id="semantics">What an edit changes: conflicting continuations</h3>
+<div class="prose" id="prose-sem"></div>
+<figure>
+  <p class="fig-title">An inserted branch continues with the recipient's graph, not the donor's</p>
+  <p class="fig-sub">Donor and recipient disagree about what lies below depth 2 of branch B. ΔP(reachable) on the recipient continuation (should rise) and the donor-only endpoints (should not). Fresh graphs, mean over seeds.</p>
+  <div class="legend"><span><i style="background:var(--s1)"></i>Recipient continuation</span><span><i style="background:var(--s2)"></i>Donor-only endpoints</span></div>
+  <div id="fig-sem"></div>
+  <figcaption id="cap-sem"></figcaption>
+  <details><summary>Table: composed two-branch edits</summary><div class="tbl" id="tbl-pair"></div></details>
+</figure>
+
+<h3 id="mechanism">A normalised, relative code</h3>
+<div class="prose" id="prose-mech"></div>
+<div class="grid2">
+<figure>
+  <p class="fig-title">Boosting attention onto one branch</p>
+  <p class="fig-sub">Layer-1 logit bias on one branch's edge keys (START and latent rows). Effect on the <em>other</em> reachable branches; W = 4, mean over recurrent seeds.</p>
+  <div class="legend"><span><i style="background:var(--s1)"></i>Boost a reachable branch</span><span><i style="background:var(--s2)"></i>Boost a decoy branch</span><span><i style="background:var(--s3)"></i>Boost every edge</span></div>
+  <div id="fig-boost"></div>
+  <figcaption id="cap-boost"></figcaption>
+</figure>
+<figure>
+  <p class="fig-title">Branch-signal amplitude in the thought</p>
+  <p class="fig-sub">|h(donor) − h(recipient)| for single-branch removal, log–log against width, fresh graphs. Grey lines: 1/√W and 1/W through each seed's W = 2 value.</p>
+  <div class="legend"><span><i style="background:var(--s1)"></i>seed 0</span><span><i style="background:var(--s2)"></i>seed 1</span><span><i style="background:var(--s3)"></i>seed 2</span></div>
+  <div id="fig-gain"></div>
+  <figcaption id="cap-gain"></figcaption>
+</figure>
+</div>
+
+<h3 id="control">Local controllability</h3>
+<div class="prose" id="prose-ctrl"></div>
+<div class="tbl" id="tbl-ctrl"></div>
+
+<h3 id="replication">Replicating the controls</h3>
+<div class="prose" id="prose-rep"></div>
+<div class="tbl" id="tbl-rep"></div>
+</div>
+
+<div class="part" id="part3">
+<h2 id="part3h">Part III: ablations, held-out seeds, and test-time search</h2>
+<div class="prose" id="prose-p3"></div>
+<div class="tbl" id="tbl-p3score"></div>
+
+<h3 id="ablations">Changing one piece of the architecture</h3>
+<div class="prose" id="prose-abl"></div>
+<div class="tbl" id="tbl-abl"></div>
+
+<h3 id="seed3">Held-out seeds</h3>
+<div class="prose" id="prose-seed3"></div>
+<div class="tbl" id="tbl-seed3"></div>
+
+<h3 id="upfront3">With the target given first, queries never read the graph</h3>
+<div class="prose" id="prose-up3"></div>
+<div class="tbl" id="tbl-up3"></div>
+
+<h3 id="walk">Two search algorithms: a forward sweep and a backward walk</h3>
+<div class="prose" id="prose-walk"></div>
+<div class="grid2">
+<figure>
+  <p class="fig-title">V3, target given first: attention walks back from the target</p>
+  <p class="fig-sub">Layer-1 attention of each latent step onto the edges of the start-to-target path (path depth 1 = hub edge, 6 = edge into the target), target at distance 6, W = 4.</p>
+  <div id="fig-walk-attn"></div>
+</figure>
+<figure>
+  <p class="fig-title">Blocking one edge at one step</p>
+  <p class="fig-sub">Drop in P(reachable) when layer-1 attention onto one path edge is blocked at one step. Same-depth edges of other reachable branches: |Δ| ≤ 0.004.</p>
+  <div id="fig-walk-block"></div>
+</figure>
+</div>
+<figcaption id="cap-walk"></figcaption>
+<div class="grid2">
+<figure>
+  <p class="fig-title">Seed 1, delayed format: one depth per step</p>
+  <p class="fig-sub">Drop in P(reachable) of a branch's deeper nodes when its edges into depth-x nodes are blocked at one latent step (W = 4).</p>
+  <div id="fig-sweep-s1"></div>
+</figure>
+<figure>
+  <p class="fig-title">Seed 2, delayed format: one depth per two steps</p>
+  <p class="fig-sub">Same test. Each depth is read over two consecutive steps, and the sweep is still running at step 6.</p>
+  <div id="fig-sweep-s2"></div>
+</figure>
+</div>
+<figcaption id="cap-sweep"></figcaption>
+
+<h3 id="search">Some seeds learn a search that can run longer</h3>
+<div class="prose" id="prose-search"></div>
+<figure>
+  <p class="fig-title">Depth-6 accuracy against the number of latent steps</p>
+  <p class="fig-sub">Depth-matched balanced accuracy at six hops, discovery graphs. Every model was trained with six latent steps; steps 7–10 reuse the step-6 embedding.</p>
+  <div class="legend" id="lg-budget"></div>
+  <div id="fig-budget"></div>
+  <figcaption id="cap-budget"></figcaption>
+</figure>
+<div class="grid2">
+<figure>
+  <p class="fig-title">Chains longer than any in training</p>
+  <p class="fig-sub">Balanced accuracy at distance 7 (never seen in training) on all-chain graphs, against latent steps.</p>
+  <div class="legend" id="lg-length"></div>
+  <div id="fig-length"></div>
+  <figcaption id="cap-length"></figcaption>
+</figure>
+<figure>
+  <p class="fig-title">Seed 2: extra steps help at W = 2, not W = 8</p>
+  <p class="fig-sub">Depth-matched accuracy by depth after 10 latent steps (solid) and 6 (dashed), per width.</p>
+  <div class="legend" id="lg-wd"></div>
+  <div id="fig-wd"></div>
+  <figcaption id="cap-wd"></figcaption>
+</figure>
+</div>
+
+<h3 id="rewind">Rewinding the thought: one seed's search is halted, not incapable</h3>
+<div class="prose" id="prose-rewind"></div>
+<figure>
+  <p class="fig-title">Seed 0: gain in far accuracy after one rewind</p>
+  <p class="fig-sub">Twelve-step runs on long-chain graphs. At step j the input thought is replaced by the run's own thought from step s; the cache is kept. Cell: balanced accuracy at distances 7–9 minus the unedited run (0.51).</p>
+  <div id="fig-rewind"></div>
+  <figcaption id="cap-rewind"></figcaption>
+</figure>
+
+<h3 id="clock">The stop is keyed to the step embedding</h3>
+<div class="prose" id="prose-clock"></div>
+<figure>
+  <p class="fig-title">Holding the step embedding at step 2 lets the search run on</p>
+  <p class="fig-sub">Balanced accuracy by distance on long-chain graphs after 20 latent steps: normal step embeddings (dashed) and every step fed the step-2 embedding (solid). Distances beyond 6 never occur in training.</p>
+  <div class="legend" id="lg-clock"></div>
+  <div id="fig-clock"></div>
+  <figcaption id="cap-clock"></figcaption>
+</figure>
+<div class="grid2">
+<figure>
+  <p class="fig-title">V2, normal step embeddings: the sweep halts at step 6</p>
+  <p class="fig-sub">Layer-1 attention of each latent step on the chain edge into each distance (long-chain graphs; distances 7–12 are the re-hung chain).</p>
+  <div id="fig-ctrace-n"></div>
+</figure>
+<figure>
+  <p class="fig-title">V2, step embedding held at step 2: it walks to the chain's end</p>
+  <p class="fig-sub">Same graphs and scale. One new distance per step, through distances never seen in training.</p>
+  <div id="fig-ctrace-f"></div>
+</figure>
+</div>
+
+<h3 id="development">How the routes develop during training</h3>
+<div class="prose" id="prose-dev"></div>
+<div id="fig-dev-host"></div>
+
+<h3 id="integrity">Hardware incident and an integrity re-run</h3>
+<div class="prose" id="prose-integrity"></div>
+</div>
+<h2 id="claims">Claims and the evidence behind them</h2>
+<div class="tbl" id="tbl-claims"></div>
+
+<h2 id="limits">Deviations, limits, and what would change the conclusion</h2>
+<div class="prose" id="prose-limits"></div>
+
+<h2 id="repro">Reproduce</h2>
+<div class="prose" id="prose-repro"></div>
+</div>
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const S = DATA.S, X = DATA.X;
+const seeds = Object.keys(S.seeds);
+const WS = [1,2,3,4,5,6,7,8];
+const f3 = v => (v==null||isNaN(v)) ? "–" : (v>=0?"+":"") + v.toFixed(3);
+const f2 = v => (v==null||isNaN(v)) ? "–" : v.toFixed(2);
+const pct = v => (v==null||isNaN(v)) ? "–" : (100*v).toFixed(0) + "%";
+const mean = a => a.reduce((x,y)=>x+y,0)/a.length;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const tip = document.getElementById("tip");
+function showTip(e, html){ tip.innerHTML = html; tip.style.opacity = 1;
+  const x = Math.min(e.clientX + 14, window.innerWidth - 270); tip.style.left = x + "px"; tip.style.top = (e.clientY + 14) + "px"; }
+function hideTip(){ tip.style.opacity = 0; }
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, parent){ const n = document.createElementNS(NS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); if (parent) parent.appendChild(n); return n; }
+function txt(parent, x, y, s, attrs={}){ const t = el("text", {x, y, ...attrs}, parent); t.textContent = s; return t; }
+
+// effect helpers ---------------------------------------------------------
+function eff(cond, W, metric){ // [mean,min,max] across seeds of point estimates
+  const v = seeds.map(s => { const e = S.seeds[s].effects[cond]; return e && e[W] ? e[W][metric][0] : null; }).filter(x => x!=null);
+  return v.length ? [mean(v), Math.min(...v), Math.max(...v)] : [NaN,NaN,NaN];
+}
+function seedVal(fn){ const v = seeds.map(fn).filter(x => x!=null && !isNaN(x)); return v.length ? [mean(v), Math.min(...v), Math.max(...v)] : [NaN,NaN,NaN]; }
+
+// generic line chart -----------------------------------------------------
+function lineChart(host, o){
+  const W = o.w || 460, H = o.h || 250, m = {l:46, r:o.r||16, t:12, b:34};
+  const svg = el("svg", {viewBox:`0 0 ${W} ${H}`, class:"chart", role:"img", "aria-label":o.aria||""});
+  const xs = o.x, x0 = Math.min(...xs), x1 = Math.max(...xs);
+  const [y0, y1] = o.y;
+  const X = v => m.l + (v - x0) / (x1 - x0 || 1) * (W - m.l - m.r);
+  const Y = v => m.t + (1 - (v - y0) / (y1 - y0)) * (H - m.t - m.b);
+  (o.yt || []).forEach(t => { el("line", {x1:m.l, x2:W-m.r, y1:Y(t), y2:Y(t), stroke: t===0 && o.zero ? css("--axis") : css("--grid"), "stroke-width":1}, svg);
+    txt(svg, m.l-6, Y(t)+4, o.yfmt ? o.yfmt(t) : t, {"text-anchor":"end"}); });
+  xs.forEach(v => txt(svg, X(v), H-m.b+16, o.xlab ? o.xlab(v) : v, {"text-anchor":"middle"}));
+  if (o.xtitle) txt(svg, (m.l+W-m.r)/2, H-4, o.xtitle, {"text-anchor":"middle", class:"t-ink"});
+  o.series.forEach(s => {
+    const pts = s.pts.filter(p => p && p[1] != null && !Number.isNaN(p[1]));
+    if (s.band) { const up = pts.map(p => `${X(p[0])},${Y(p[3])}`), dn = pts.slice().reverse().map(p => `${X(p[0])},${Y(p[2])}`);
+      el("polygon", {points: up.concat(dn).join(" "), fill:s.color, "fill-opacity":0.12, stroke:"none"}, svg); }
+    el("polyline", {points: pts.map(p => `${X(p[0])},${Y(p[1])}`).join(" "), fill:"none", stroke:s.color, "stroke-width":2, "stroke-linejoin":"round", "stroke-linecap":"round", "stroke-dasharray": s.dash||""}, svg);
+    pts.forEach(p => el("circle", {cx:X(p[0]), cy:Y(p[1]), r:4, fill:s.color, stroke:css("--surface"), "stroke-width":2}, svg));
+    if (s.label) { const p = pts[pts.length-1]; txt(svg, X(p[0])+8, Y(p[1])+4, s.label, {class:"t-ink"}); }
+  });
+  // hover crosshair
+  const cross = el("line", {y1:m.t, y2:H-m.b, stroke:css("--axis"), "stroke-width":1, opacity:0}, svg);
+  const hit = el("rect", {x:m.l, y:m.t, width:W-m.l-m.r, height:H-m.t-m.b, fill:"transparent"}, svg);
+  hit.addEventListener("mousemove", e => { const r = svg.getBoundingClientRect(); const px = (e.clientX - r.left) / r.width * W;
+    let best = xs[0]; xs.forEach(v => { if (Math.abs(X(v)-px) < Math.abs(X(best)-px)) best = v; });
+    cross.setAttribute("x1", X(best)); cross.setAttribute("x2", X(best)); cross.setAttribute("opacity", 1);
+    const rows = o.series.map(s => { const p = s.pts.find(q => q && q[0]===best); return p && p[1] != null && !Number.isNaN(p[1]) ? `<div>${s.name}: <b>${(o.tfmt||f3)(p[1])}</b>${s.band && p[2]!==p[3] ? ` <span style="opacity:.7">(${(o.tfmt||f3)(p[2])} … ${(o.tfmt||f3)(p[3])})</span>` : ""}</div>` : ""; }).join("");
+    showTip(e, `<div style="opacity:.75">${o.xname||""} ${o.xlab ? o.xlab(best) : best}</div>${rows}`); });
+  hit.addEventListener("mouseleave", () => { cross.setAttribute("opacity", 0); hideTip(); });
+  host.appendChild(svg);
+}
+
+// grouped bar chart with seed-range whiskers -----------------------------
+function barChart(host, o){
+  const W = 900, H = o.h || 270, m = {l:46, r:10, t:14, b:48};
+  const svg = el("svg", {viewBox:`0 0 ${W} ${H}`, class:"chart", role:"img", "aria-label":o.aria||""});
+  const [y0, y1] = o.y; const Y = v => m.t + (1 - (v - y0) / (y1 - y0)) * (H - m.t - m.b);
+  o.yt.forEach(t => { el("line", {x1:m.l, x2:W-m.r, y1:Y(t), y2:Y(t), stroke: t===0 ? css("--axis") : css("--grid"), "stroke-width":1}, svg);
+    txt(svg, m.l-6, Y(t)+4, t.toFixed(2), {"text-anchor":"end"}); });
+  const n = o.groups.length, band = (W - m.l - m.r) / n, bw = Math.min(24, band/4);
+  o.groups.forEach((g, i) => {
+    const cx = m.l + band*i + band/2;
+    g.bars.forEach((b, j) => {
+      const x = cx + (j - (g.bars.length-1)/2) * (bw + 4) - bw/2;
+      const v = b.v[0], top = Y(Math.max(v,0)), bot = Y(Math.min(v,0)), h = Math.max(1, bot-top), r = Math.min(4, h);
+      const d = v >= 0 ? `M${x},${bot} V${top+r} Q${x},${top} ${x+r},${top} H${x+bw-r} Q${x+bw},${top} ${x+bw},${top+r} V${bot} Z`
+                       : `M${x},${top} V${bot-r} Q${x},${bot} ${x+r},${bot} H${x+bw-r} Q${x+bw},${bot} ${x+bw},${bot-r} V${top} Z`;
+      const p = el("path", {d, fill:b.color}, svg);
+      if (b.v[1] !== b.v[2]) { el("line", {x1:x+bw/2, x2:x+bw/2, y1:Y(b.v[1]), y2:Y(b.v[2]), stroke:css("--ink-2"), "stroke-width":1.2}, svg); }
+      const hit = el("rect", {x:x-3, y:m.t, width:bw+6, height:H-m.t-m.b, fill:"transparent"}, svg);
+      hit.addEventListener("mousemove", e => showTip(e, `<div style="opacity:.75">${g.name}</div>${b.name}: <b>${f3(b.v[0])}</b><div style="opacity:.75">seed range ${f3(b.v[1])} … ${f3(b.v[2])}</div>`));
+      hit.addEventListener("mouseleave", hideTip);
+    });
+    const lines = g.name.split("\n");
+    lines.forEach((ln, k) => txt(svg, cx, H - m.b + 16 + k*13, ln, {"text-anchor":"middle", class: k===0 ? "t-ink" : ""}));
+  });
+  host.appendChild(svg);
+}
+
+// heatmap ------------------------------------------------------------------
+function heatmap(host, o){
+  const W = o.w || 900, cols = o.cols.length, rows = o.rows.length, m = {l:o.ml || 92, r:10, t:10, b:34};
+  const cw = (W - m.l - m.r) / cols, ch = o.ch || 34, H = m.t + rows*ch + m.b;
+  const svg = el("svg", {viewBox:`0 0 ${W} ${H}`, class:"chart", role:"img", "aria-label":o.aria||""});
+  const ramp = ["#eef4fc","#cde2fb","#9ec5f4","#6da7ec","#3987e5","#256abf","#184f95","#0d366b"];
+  const rampD = ["#1a2230","#172d4a","#184f95","#1c5cab","#256abf","#2a78d6","#5598e7","#9ec5f4"];
+  const dark = matchMedia("(prefers-color-scheme: dark)").matches && document.documentElement.dataset.theme !== "light" || document.documentElement.dataset.theme === "dark";
+  const R = dark ? rampD : ramp;
+  o.rows.forEach((r, i) => { txt(svg, m.l-8, m.t + i*ch + ch/2 + 4, r, {"text-anchor":"end", class:"t-ink"});
+    o.cols.forEach((c, j) => {
+      const v = o.val(r, c); const t = Math.max(0, Math.min(0.999, v / o.max)); const k = Math.floor(t * R.length);
+      const x = m.l + j*cw, y = m.t + i*ch;
+      const rect = el("rect", {x:x+1, y:y+1, width:cw-2, height:ch-2, rx:3, fill: isNaN(v) ? css("--grid") : R[k]}, svg);
+      if (cw >= 44 || window.PRINT) txt(svg, x + cw/2, y + ch/2 + (cw >= 44 ? 4 : 3), isNaN(v) ? "" : o.fmt ? o.fmt(v) : (cw >= 44 ? v.toFixed(2) : v.toFixed(2).replace(/^0/, "")), {"text-anchor":"middle", style:`fill:${(dark ? k < 5 : k >= 4) ? "#ffffff" : "#15181d"};font-family:var(--mono);font-size:${cw >= 44 ? 11 : 8}px`});
+      rect.addEventListener("mousemove", e => showTip(e, o.tipf ? o.tipf(r, c, v) : `${r}, W = ${c}<br>targeted <b>${f3(v)}</b>`)); rect.addEventListener("mouseleave", hideTip);
+    }); });
+  o.cols.forEach((c, j) => txt(svg, m.l + j*cw + cw/2, H - m.b + 18, o.colLabel ? o.colLabel(c) : "W = " + c, {"text-anchor":"middle"}));
+  host.appendChild(svg);
+}
+function table(host, head, rows, numCols){
+  const t = document.createElement("table");
+  t.innerHTML = "<thead><tr>" + head.map((h,i) => `<th${numCols.includes(i)?' class="n"':""}>${h}</th>`).join("") + "</tr></thead><tbody>" +
+    rows.map(r => "<tr>" + r.map((c,i) => `<td${numCols.includes(i)?' class="n"':""}>${c}</td>`).join("") + "</tr>").join("") + "</tbody>";
+  host.appendChild(t);
+}
+</script>
+<script>
+/*__PROSE__*/
+</script>

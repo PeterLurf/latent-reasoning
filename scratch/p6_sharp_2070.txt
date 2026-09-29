@@ -1,0 +1,4 @@
+# exploratory: extra no-step runs with checkpoints for the attention-sharpness question (fp32; RTX 2070)
+sharp_fp32_s60 --no_step_emb --K 6 --seed 60 --lr 5e-4 --amp fp32 --save_every 1000
+sharp_fp32_s61 --no_step_emb --K 6 --seed 61 --lr 5e-4 --amp fp32 --save_every 1000
+sharp_fp32_s62 --no_step_emb --K 6 --seed 62 --lr 5e-4 --amp fp32 --save_every 1000

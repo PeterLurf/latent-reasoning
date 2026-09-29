@@ -1,0 +1,176 @@
+﻿{
+    "frozen_at":  "2026-09-24, after discovery-split development, before any fresh-confirmation graph was generated",
+    "split":  "fresh: confirm buckets 17-19, sampling seed 271828, excluding all families from earlier confirm-split samplers (followup_run.used_confirm_families)",
+    "n_graphs_per_width":  300,
+    "widths":  [
+                   2,
+                   4,
+                   8
+               ],
+    "models":  {
+                   "recurrent":  {
+                                     "runs/r3_pc_gated_gpt2":  [
+                                                                   1,
+                                                                   0
+                                                               ],
+                                     "runs/main_s1":  [
+                                                          0
+                                                      ],
+                                     "runs/main_s2":  [
+                                                          0
+                                                      ]
+                                 },
+                   "pause":  {
+                                 "runs/pause_s0":  [
+                                                       0
+                                                   ],
+                                 "runs/pause_s1":  [
+                                                       0
+                                                   ],
+                                 "runs/pause_s2":  [
+                                                       0
+                                                   ]
+                             },
+                   "note":  "first site = frozen k* from the original protocol rule; seed 0 also run at the common site k=0. Pause models use the cache interface at k=0 (START); discovery showed k=0/1/2 give identical results."
+               },
+    "experiments":  {
+                        "dose":  {
+                                     "kinds":  [
+                                                   "full",
+                                                   "pattern",
+                                                   "filter",
+                                                   "pca20",
+                                                   "random6"
+                                               ],
+                                     "doses":  [
+                                                   0,
+                                                   0.1,
+                                                   0.25,
+                                                   0.5,
+                                                   1.0,
+                                                   1.5
+                                               ],
+                                     "directions":  [
+                                                        "remove",
+                                                        "insert"
+                                                    ],
+                                     "recovery_denominator_min":  0.1,
+                                     "magnitude_matched_pair":  [
+                                                                    "pattern@0.1",
+                                                                    "filter@1.5"
+                                                                ]
+                                 },
+                        "swap":  {
+                                     "kinds":  [
+                                                   "full",
+                                                   "pattern",
+                                                   "pca20"
+                                               ],
+                                     "doses":  [
+                                                   0.5,
+                                                   1.0,
+                                                   1.5
+                                               ],
+                                     "pairs_per_graph":  3,
+                                     "collateral_excludes":  [
+                                                                 "A",
+                                                                 "B"
+                                                             ],
+                                     "flag":  "insert_B at W=8 creates a W=9 donor (outside training range)"
+                                 },
+                        "continuation":  {
+                                             "depths_j":  [
+                                                              2,
+                                                              3
+                                                          ],
+                                             "kinds":  [
+                                                           "full",
+                                                           "pattern",
+                                                           "pca20"
+                                                       ],
+                                             "donors":  [
+                                                            "Dn (true)",
+                                                            "Wr (wrong branch)"
+                                                        ]
+                                         },
+                        "cache":  {
+                                      "conditions":  [
+                                                         "base",
+                                                         "T",
+                                                         "L",
+                                                         "TL",
+                                                         "clamp",
+                                                         "clampL",
+                                                         "G",
+                                                         "Gq",
+                                                         "Gl",
+                                                         "TG",
+                                                         "TLG",
+                                                         "TLGq",
+                                                         "TLGl",
+                                                         "LG",
+                                                         "L_wrong"
+                                                     ],
+                                      "slots_per_graph":  3,
+                                      "latent_route":  "START..START+k",
+                                      "graph_route":  "edge tokens 0..59"
+                                  },
+                        "attention":  {
+                                          "layer":  0,
+                                          "rows":  "START + latent positions",
+                                          "doses":  [
+                                                        0.5,
+                                                        1.0,
+                                                        2.0
+                                                    ],
+                                          "targets":  [
+                                                          "one reachable branch",
+                                                          "one decoy branch",
+                                                          "all edges"
+                                                      ]
+                                      },
+                        "gain_restore":  {
+                                             "bias":  "log(W/2) on every reachable branch\u0027s edge keys, layer 0, recipient and donor runs",
+                                             "widths":  [
+                                                            4,
+                                                            8
+                                                        ]
+                                         },
+                        "controllability":  {
+                                                "basis":  "shared PCA-20 at k",
+                                                "features_baseline":  [
+                                                                          "W",
+                                                                          "diff_norm",
+                                                                          "base_conf"
+                                                                      ],
+                                                "features_geometry":  [
+                                                                          "gain",
+                                                                          "resid_ratio",
+                                                                          "pred_target_logit",
+                                                                          "pred_col_logit"
+                                                                      ],
+                                                "outcomes":  [
+                                                                 "obs_target_prob",
+                                                                 "obs_col_prob"
+                                                             ],
+                                                "fit":  "OLS on discovery rows per seed, evaluated on fresh rows (R^2)"
+                                            }
+                    },
+    "predictions":  {
+                        "P1_route_shift":  "For each recurrent seed, latent-pathway share TL/clean is lower at W=8 than W=2 and query-graph share Gq/clean is higher. [discovery-derived]",
+                        "P1b_pause":  "Pause models: Gq/clean \u003e= 0.85 at every width; L/clean \u003c= 0.15. [discovery-derived for pause_s0; new for pause_s1, pause_s2]",
+                        "P2_no_dose_rescue":  "Full-edit targeted at dose 1.5, W=8 \u003c targeted at dose 1.0, W=2 in each seed. [pre-registered in PROTOCOL2 as the H-dil test]",
+                        "P3_direction_not_size":  "At W=4, pattern@0.1 targeted \u003e filter@1.5 targeted (similar perturbation norm) in each seed. [discovery-derived]",
+                        "P4_swap":  "Swap |signed collateral| \u003c removal |signed collateral|; swap unsigned collateral \u003e= 0.8 x removal unsigned collateral. [discovery-derived]",
+                        "P5_semantics":  "Continuation follow index (full edit, true donor) \u003e 0 with 95% CI above 0 at j=2 and j=3, every seed and width; wrong-branch donor index CI includes or lies below that of the true donor. [pre-registered H-sem]",
+                        "P6_competition":  "Boosting one reachable branch (b=1) lowers other reachable branches\u0027 P (CI \u003c 0) in every recurrent seed and width; decoy-boost and all-edge-boost effects on reachable branches are \u003c 1/3 of that in magnitude. [discovery-derived]",
+                        "P7_no_gain_restore":  "|targeted(restored) - targeted(plain)| \u003c 0.03 at W=4 and 8. [discovery-derived; PROTOCOL2 H-dil predicted an increase]",
+                        "P8_geometry":  "Adding geometry features improves held-out R^2 by \u003c 0.05 over the baseline predictors for both outcomes. [discovery-derived]"
+                    },
+    "addendum_A":  {
+                       "frozen_at":  "2026-09-24, after discovery runs of the two added tests, before their fresh runs",
+                       "tests":  "composed two-branch continuation edits (widths 2,4,8; W=2 recipients have width 0 = distribution shift); natural branch-signal amplitude |h_don - h_rec| at k for widths 1..8 (300 graphs/width)",
+                       "P9_composition":  "At W=4 and W=8, joint edit follow index CI \u003e 0 for both branches in every seed; each single edit leaves the other branch\u0027s follow index |.| \u003c 0.03; joint edit is sub-additive (additivity mean \u003c 0). [discovery-derived]",
+                       "P10_gain":  "Fit log|diff| = a - beta*log W per seed on discovery rows; on fresh rows compare held-out MSE of beta=0, 0.5, 1 and the discovery free-beta fit. Prediction from normalised superposition (softmax share ~1/W, LayerNorm of ~orthogonal codes): beta=0.5 beats beta=0 and beta=1 in \u003e= 2 of 3 seeds; free-beta estimate on fresh lies in [0.4, 0.9]."
+                   }
+}

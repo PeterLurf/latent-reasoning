@@ -1,0 +1,40 @@
+{
+ "verdicts": {
+  "H_v1_wide_s2": {
+   "gate": false,
+   "delayed": 0.7114105224609375,
+   "matched5": 0.5239843720213752,
+   "targeted_W8_over_W2": 0.6806038821998674,
+   "reading": null
+  },
+  "P12_v2_deep_s1": {
+   "gate": false,
+   "delayed": 0.8234710693359375,
+   "matched5": 0.5456244671515447,
+   "Gq_W4": 0.3440649981205699,
+   "ref_min": 0.2820769355135894,
+   "Gq_d3_W4": 0.0015282153617590666,
+   "pass": false,
+   "extrapolates_K12": false,
+   "d7_K12": 0.49072265625,
+   "P17": {
+    "d7": 0.48307291666666663,
+    "ci": [
+     0.46809895833333337,
+     0.4986979166666667
+    ],
+    "pass": false
+   }
+  },
+  "P13_v3_rawfb_s1": {
+   "gate": true,
+   "delayed": 0.9400177001953125,
+   "matched5": 0.789663100406671,
+   "beta": 0.7282000669856965,
+   "toward_1": false,
+   "outside_range": false,
+   "competition_persists": true,
+   "pass": false
+  }
+ }
+}

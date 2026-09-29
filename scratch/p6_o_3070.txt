@@ -1,0 +1,13 @@
+# PROTOCOL6 addendum O (long scaffold), RTX 3070, paired with p30_s112..123
+o_s112 --no_step_emb --K 6 --seed 112 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000
+o_s113 --no_step_emb --K 6 --seed 113 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000
+o_s114 --no_step_emb --K 6 --seed 114 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000
+o_s115 --no_step_emb --K 6 --seed 115 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000
+o_s116 --no_step_emb --K 6 --seed 116 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000
+o_s117 --no_step_emb --K 6 --seed 117 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000
+o_s118 --no_step_emb --K 6 --seed 118 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000
+o_s119 --no_step_emb --K 6 --seed 119 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000
+o_s120 --no_step_emb --K 6 --seed 120 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000
+o_s121 --no_step_emb --K 6 --seed 121 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000
+o_s122 --no_step_emb --K 6 --seed 122 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000
+o_s123 --no_step_emb --K 6 --seed 123 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000

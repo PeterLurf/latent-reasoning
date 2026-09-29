@@ -1,0 +1,5 @@
+06:38:48 guarding runs/k8_s203 pid 0 max relaunch 3
+06:38:48 launched pid 19904
+06:49:58 stage-1 failure at step 4200; archived as runs/k8_s203_stage1fail_1
+06:49:58 launched pid 3352
+06:57:58 stage 1 passed at step 3000 ; waiting for the run to end

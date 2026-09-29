@@ -1,0 +1,37 @@
+10:22:16 start prec2070_fp32_s50 (--no_step_emb --K 6 --seed 50 --lr 5e-4 --amp fp32 )
+12:14:16 trained prec2070_fp32_s50 rc 0
+run  results/competence_prec2070_fp32_s50.json
+run  results/competence_matched_prec2070_fp32_s50.json
+run  results/length_gen_prec2070_fp32_s50.json
+run  results/delayed_trace_prec2070_fp32_s50.json
+run  results/budget_sweep_prec2070_fp32_s50.json
+EVAL_DONE prec2070_fp32_s50
+12:14:38 evaluated prec2070_fp32_s50
+12:14:39 start prec2070_fp32_s51 (--no_step_emb --K 6 --seed 51 --lr 5e-4 --amp fp32 )
+14:08:39 trained prec2070_fp32_s51 rc 0
+run  results/competence_prec2070_fp32_s51.json
+run  results/competence_matched_prec2070_fp32_s51.json
+run  results/length_gen_prec2070_fp32_s51.json
+run  results/delayed_trace_prec2070_fp32_s51.json
+run  results/budget_sweep_prec2070_fp32_s51.json
+EVAL_DONE prec2070_fp32_s51
+14:09:01 evaluated prec2070_fp32_s51
+14:09:01 start prec2070_fp32_s52 (--no_step_emb --K 6 --seed 52 --lr 5e-4 --amp fp32 )
+16:04:01 trained prec2070_fp32_s52 rc 0
+run  results/competence_prec2070_fp32_s52.json
+run  results/competence_matched_prec2070_fp32_s52.json
+run  results/length_gen_prec2070_fp32_s52.json
+run  results/delayed_trace_prec2070_fp32_s52.json
+run  results/budget_sweep_prec2070_fp32_s52.json
+EVAL_DONE prec2070_fp32_s52
+16:04:24 evaluated prec2070_fp32_s52
+16:04:24 start prec2070_fp32_s53 (--no_step_emb --K 6 --seed 53 --lr 5e-4 --amp fp32 --save_every 1000 )
+17:57:24 trained prec2070_fp32_s53 rc 0
+run  results/competence_prec2070_fp32_s53.json
+run  results/competence_matched_prec2070_fp32_s53.json
+run  results/length_gen_prec2070_fp32_s53.json
+run  results/delayed_trace_prec2070_fp32_s53.json
+run  results/budget_sweep_prec2070_fp32_s53.json
+EVAL_DONE prec2070_fp32_s53
+17:57:48 evaluated prec2070_fp32_s53
+17:57:48 QUEUE_DONE

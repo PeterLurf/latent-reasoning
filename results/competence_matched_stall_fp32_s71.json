@@ -1,0 +1,46 @@
+{
+ "runs/stall_fp32_s71": {
+  "1": {
+   "bal_acc": 0.9986229566453447,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 0.9972459132906895,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9678235732270369,
+   "recall_reachable": 0.9544824856520878,
+   "specificity_decoy": 0.981164660801986,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.9004575736513372,
+   "recall_reachable": 0.8444132115249473,
+   "specificity_decoy": 0.9565019357777271,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.6732434973582464,
+   "recall_reachable": 0.405197694407928,
+   "specificity_decoy": 0.9412893003085647,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.594544881338794,
+   "recall_reachable": 0.25876591576885405,
+   "specificity_decoy": 0.930323846908734,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5491780024189574,
+   "recall_reachable": 0.17616580310880828,
+   "specificity_decoy": 0.9221902017291066,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

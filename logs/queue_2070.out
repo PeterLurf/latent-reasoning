@@ -1,0 +1,19 @@
+15:18:02 start rel_lr5_s21 (--no_step_emb --K 6 --seed 21 --amp bf16 --lr 5e-4 --amp fp32)
+17:10:02 trained rel_lr5_s21 rc 0
+run  results/competence_rel_lr5_s21.json
+run  results/competence_matched_rel_lr5_s21.json
+run  results/length_gen_rel_lr5_s21.json
+run  results/delayed_trace_rel_lr5_s21.json
+run  results/budget_sweep_rel_lr5_s21.json
+EVAL_DONE rel_lr5_s21
+17:10:25 evaluated rel_lr5_s21
+17:10:25 start rel_lr5_s23 (--no_step_emb --K 6 --seed 23 --amp bf16 --lr 5e-4 --amp fp32)
+18:59:26 trained rel_lr5_s23 rc 0
+run  results/competence_rel_lr5_s23.json
+run  results/competence_matched_rel_lr5_s23.json
+run  results/length_gen_rel_lr5_s23.json
+run  results/delayed_trace_rel_lr5_s23.json
+run  results/budget_sweep_rel_lr5_s23.json
+EVAL_DONE rel_lr5_s23
+18:59:48 evaluated rel_lr5_s23
+18:59:48 QUEUE_DONE

@@ -1,0 +1,46 @@
+{
+ "runs/rel_lr5_s23": {
+  "1": {
+   "bal_acc": 0.9995113717128643,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 0.9990227434257285,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9867110893049693,
+   "recall_reachable": 0.987993930998087,
+   "specificity_decoy": 0.9854282476118517,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.8888276993780642,
+   "recall_reachable": 0.8199578355586788,
+   "specificity_decoy": 0.9576975631974494,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.7696722207951848,
+   "recall_reachable": 0.6028921023359288,
+   "specificity_decoy": 0.9364523392544408,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.6427993330763806,
+   "recall_reachable": 0.37081292850146913,
+   "specificity_decoy": 0.9147857376512921,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5864325188846251,
+   "recall_reachable": 0.2895797351755901,
+   "specificity_decoy": 0.88328530259366,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

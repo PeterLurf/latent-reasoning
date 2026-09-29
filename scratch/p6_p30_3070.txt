@@ -1,0 +1,13 @@
+# PROTOCOL6 addendum K (P30), RTX 3070: seeds 112-123, bf16
+p30_s112 --no_step_emb --K 6 --seed 112 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s113 --no_step_emb --K 6 --seed 113 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s114 --no_step_emb --K 6 --seed 114 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s115 --no_step_emb --K 6 --seed 115 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s116 --no_step_emb --K 6 --seed 116 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s117 --no_step_emb --K 6 --seed 117 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s118 --no_step_emb --K 6 --seed 118 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s119 --no_step_emb --K 6 --seed 119 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s120 --no_step_emb --K 6 --seed 120 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s121 --no_step_emb --K 6 --seed 121 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s122 --no_step_emb --K 6 --seed 122 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s123 --no_step_emb --K 6 --seed 123 --lr 5e-4 --amp bf16 --save_every 1000

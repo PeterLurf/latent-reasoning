@@ -1,0 +1,4 @@
+GPU 0: NVIDIA RTX 4000 Ada Generation (UUID: GPU-77b38e06-360d-f055-8eb0-fe7da292627a)
+565.57.01
+torch 2.14.0+cu126
+Fri Sep 25 04:58:18 UTC 2026

@@ -1,0 +1,7 @@
+# PROTOCOL6 addendum K (P30), RTX 2070: dev6 recipe seeds 51-56, fp32
+dev6_s51 --K 6 --seed 51 --lr 5e-4 --save_every 1000 --amp fp32
+dev6_s52 --K 6 --seed 52 --lr 5e-4 --save_every 1000 --amp fp32
+dev6_s53 --K 6 --seed 53 --lr 5e-4 --save_every 1000 --amp fp32
+dev6_s54 --K 6 --seed 54 --lr 5e-4 --save_every 1000 --amp fp32
+dev6_s55 --K 6 --seed 55 --lr 5e-4 --save_every 1000 --amp fp32
+dev6_s56 --K 6 --seed 56 --lr 5e-4 --save_every 1000 --amp fp32

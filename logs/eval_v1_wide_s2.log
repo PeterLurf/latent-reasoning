@@ -1,0 +1,103 @@
+runs/v1_wide_s2 K'=0 delayed 0.711 upfront 0.506 depth(delayed) {1:1.00, 2:0.99, 3:0.04, 4:0.05, 5:0.04, 6:0.06, 99:0.96}
+runs/v1_wide_s2 K'=1 delayed 0.711 upfront 0.712 depth(delayed) {1:1.00, 2:0.99, 3:0.04, 4:0.05, 5:0.04, 6:0.06, 99:0.96}
+runs/v1_wide_s2 K'=2 delayed 0.711 upfront 0.712 depth(delayed) {1:1.00, 2:0.99, 3:0.04, 4:0.05, 5:0.04, 6:0.06, 99:0.96}
+runs/v1_wide_s2 K'=3 delayed 0.711 upfront 0.712 depth(delayed) {1:1.00, 2:0.99, 3:0.04, 4:0.05, 5:0.04, 6:0.06, 99:0.96}
+runs/v1_wide_s2 K'=4 delayed 0.711 upfront 0.712 depth(delayed) {1:1.00, 2:0.99, 3:0.04, 4:0.05, 5:0.04, 6:0.06, 99:0.96}
+runs/v1_wide_s2 K'=5 delayed 0.711 upfront 0.712 depth(delayed) {1:1.00, 2:0.99, 3:0.04, 4:0.05, 5:0.04, 6:0.06, 99:0.96}
+runs/v1_wide_s2 K'=6 delayed 0.711 upfront 0.712 depth(delayed) {1:1.00, 2:0.99, 3:0.04, 4:0.05, 5:0.04, 6:0.06, 99:0.96}
+runs/v1_wide_s2 d1:0.99 d2:0.98 d3:0.52 d4:0.51 d5:0.52 d6:0.52
+  k=0 full: tgt -0.000 col 0.000 | probe: tgt 0.000 col 0.000
+  k=1 full: tgt 0.000 col 0.000 | probe: tgt -0.000 col 0.000
+  k=2 full: tgt -0.000 col 0.000 | probe: tgt -0.000 col 0.000
+  k=3 full: tgt -0.000 col 0.000 | probe: tgt -0.000 col 0.000
+  k=4 full: tgt 0.000 col 0.000 | probe: tgt 0.000 col 0.000
+  k=5 full: tgt 0.000 col 0.000 | probe: tgt -0.000 col 0.000
+runs/v1_wide_s2: k* = 4  (23s)
+  k=0 (targeted/collateral) full: -0.000/0.000 | pca6: -0.000/0.000 | random6: -0.000/0.000 | pca20: -0.000/0.000 | random20: -0.000/0.000 | pca40: -0.000/0.000 | random40: +0.000/0.000
+  k=1 (targeted/collateral) full: -0.000/0.000 | pca6: -0.000/0.000 | random6: +0.000/0.000 | pca20: +0.000/0.000 | random20: -0.000/0.000 | pca40: -0.000/0.000 | random40: -0.000/0.000
+  k=2 (targeted/collateral) full: +0.000/0.000 | pca6: +0.000/0.000 | random6: +0.000/0.000 | pca20: +0.000/0.000 | random20: +0.000/0.000 | pca40: +0.000/0.000 | random40: +0.000/0.000
+  k=3 (targeted/collateral) full: +0.000/0.000 | pca6: +0.000/0.000 | random6: -0.000/0.000 | pca20: +0.000/0.000 | random20: +0.000/0.000 | pca40: +0.000/0.000 | random40: -0.000/0.000
+  k=4 (targeted/collateral) full: +0.000/0.000 | pca6: +0.000/0.000 | random6: -0.000/0.000 | pca20: +0.000/0.000 | random20: -0.000/0.000 | pca40: +0.000/0.000 | random40: +0.000/0.000
+  k=5 (targeted/collateral) full: +0.000/0.000 | pca6: +0.000/0.000 | random6: -0.000/0.000 | pca20: +0.000/0.000 | random20: +0.000/0.000 | pca40: +0.000/0.000 | random40: +0.000/0.000
+runs/v1_wide_s2 {'probe filters (6)': 0.002726188162341714, 'branch patterns (6)': 0.26209768652915955, 'PCA (6)': 0.2985256016254425, 'PCA (20)': 0.8544051647186279, 'random (6)': 0.011673609726130962}
+/workspace/Latent/latent/followup_analysis.py:24: RuntimeWarning: Mean of empty slice
+  per = np.nanmean(v, axis=-1)                     # (..., N)
+[runs/v1_wide_s2 fresh W=2] dose done 20s
+/workspace/Latent/latent/followup_analysis.py:258: RuntimeWarning: Mean of empty slice
+  cl.append(np.nanmean(np.where(m, pb[si] - sig(r["don"][si]), np.nan), 1))
+/workspace/Latent/latent/followup_analysis.py:260: RuntimeWarning: Mean of empty slice
+  clm = np.nanmean(np.nanmean(np.stack(cl), 0))
+/workspace/Latent/latent/followup_analysis.py:265: RuntimeWarning: Mean of empty slice
+  vals.append(np.nanmean(np.where(m, pb[si] - sig(r[cnd][si]), np.nan), 1))
+[runs/v1_wide_s2 fresh W=2] cache done 26s
+[runs/v1_wide_s2 fresh W=2] attn done 27s
+[runs/v1_wide_s2 fresh W=4] dose done 66s
+[runs/v1_wide_s2 fresh W=4] cache done 75s
+[runs/v1_wide_s2 fresh W=4] attn done 76s
+[runs/v1_wide_s2 fresh W=8] dose done 154s
+[runs/v1_wide_s2 fresh W=8] cache done 163s
+[runs/v1_wide_s2 fresh W=8] attn done 165s
+wrote runs/v1_wide_s2/followup/fresh/summary.json
+[runs/v1_wide_s2 fresh W=2] amp done 3s
+[runs/v1_wide_s2 fresh W=4] amp done 6s
+[runs/v1_wide_s2 fresh W=8] amp done 10s
+wrote runs/v1_wide_s2/followup/fresh_amp/summary.json
+/workspace/Latent/latent/followup_analysis.py:258: RuntimeWarning: Mean of empty slice
+  cl.append(np.nanmean(np.where(m, pb[si] - sig(r["don"][si]), np.nan), 1))
+/workspace/Latent/latent/followup_analysis.py:260: RuntimeWarning: Mean of empty slice
+  clm = np.nanmean(np.nanmean(np.stack(cl), 0))
+/workspace/Latent/latent/followup_analysis.py:265: RuntimeWarning: Mean of empty slice
+  vals.append(np.nanmean(np.where(m, pb[si] - sig(r[cnd][si]), np.nan), 1))
+[runs/v1_wide_s2 fresh W=2] cache done 6s
+[runs/v1_wide_s2 fresh W=4] cache done 15s
+[runs/v1_wide_s2 fresh W=8] cache done 24s
+wrote runs/v1_wide_s2/followup/fresh_cachedepth/summary.json
+[runs/v1_wide_s2 discovery W=1] gainfit done 0s
+[runs/v1_wide_s2 discovery W=2] gainfit done 0s
+[runs/v1_wide_s2 discovery W=3] gainfit done 0s
+[runs/v1_wide_s2 discovery W=4] gainfit done 1s
+[runs/v1_wide_s2 discovery W=5] gainfit done 1s
+[runs/v1_wide_s2 discovery W=6] gainfit done 1s
+[runs/v1_wide_s2 discovery W=7] gainfit done 1s
+[runs/v1_wide_s2 discovery W=8] gainfit done 1s
+wrote runs/v1_wide_s2/followup/discovery_gainfit/summary.json
+[runs/v1_wide_s2 fresh W=1] gainfit done 0s
+[runs/v1_wide_s2 fresh W=2] gainfit done 0s
+[runs/v1_wide_s2 fresh W=3] gainfit done 1s
+[runs/v1_wide_s2 fresh W=4] gainfit done 1s
+[runs/v1_wide_s2 fresh W=5] gainfit done 1s
+[runs/v1_wide_s2 fresh W=6] gainfit done 1s
+[runs/v1_wide_s2 fresh W=7] gainfit done 1s
+[runs/v1_wide_s2 fresh W=8] gainfit done 1s
+wrote runs/v1_wide_s2/followup/fresh_gainfit/summary.json
+runs/v1_wide_s2 train  K'= 0 all 0.723 d1:0.99 d2:0.98 d3:0.52 d4:0.52 d5:0.52 d6:0.52
+runs/v1_wide_s2 train  K'= 1 all 0.723 d1:0.99 d2:0.98 d3:0.52 d4:0.52 d5:0.52 d6:0.52
+runs/v1_wide_s2 train  K'= 2 all 0.723 d1:0.99 d2:0.98 d3:0.52 d4:0.52 d5:0.52 d6:0.52
+runs/v1_wide_s2 train  K'= 3 all 0.723 d1:0.99 d2:0.98 d3:0.52 d4:0.52 d5:0.52 d6:0.52
+runs/v1_wide_s2 train  K'= 4 all 0.723 d1:0.99 d2:0.98 d3:0.52 d4:0.52 d5:0.52 d6:0.52
+runs/v1_wide_s2 train  K'= 5 all 0.723 d1:0.99 d2:0.98 d3:0.52 d4:0.52 d5:0.52 d6:0.52
+runs/v1_wide_s2 train  K'= 6 all 0.723 d1:0.99 d2:0.98 d3:0.52 d4:0.52 d5:0.52 d6:0.52
+runs/v1_wide_s2 raw    K'= 7 all 0.723 d1:0.99 d2:0.98 d3:0.52 d4:0.52 d5:0.52 d6:0.52
+runs/v1_wide_s2 raw    K'= 8 all 0.723 d1:0.99 d2:0.98 d3:0.52 d4:0.52 d5:0.52 d6:0.52
+runs/v1_wide_s2 repeat K'= 7 all 0.723 d1:0.99 d2:0.98 d3:0.52 d4:0.52 d5:0.52 d6:0.52
+runs/v1_wide_s2 repeat K'= 8 all 0.723 d1:0.99 d2:0.98 d3:0.52 d4:0.52 d5:0.52 d6:0.52
+runs/v1_wide_s2 repeat K'= 9 all 0.723 d1:0.99 d2:0.98 d3:0.52 d4:0.52 d5:0.52 d6:0.52
+runs/v1_wide_s2 repeat K'=10 all 0.723 d1:0.99 d2:0.98 d3:0.52 d4:0.52 d5:0.52 d6:0.52
+runs/v1_wide_s2 K'= 0 near 0.99 0.99 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.51 0.50
+runs/v1_wide_s2 K'= 2 near 0.99 0.99 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.51 0.50
+runs/v1_wide_s2 K'= 4 near 0.99 0.99 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.51 0.50
+runs/v1_wide_s2 K'= 6 near 0.99 0.99 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.51 0.50
+runs/v1_wide_s2 K'= 8 near 0.99 0.99 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.51 0.50
+runs/v1_wide_s2 K'=10 near 0.99 0.99 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.51 0.50
+runs/v1_wide_s2 K'=12 near 0.99 0.99 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.51 0.50
+runs/v1_wide_s2 K'=16 near 0.99 0.99 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.51 0.51
+runs/v1_wide_s2 W=4 delayed: per-edge attention, reachable-branch edges by depth 0..5 | decoy
+   L1 k1  0.013 0.017 0.015 0.018 0.016 0.016  | 0.013 0.016 0.016 0.017 0.019 0.019
+   L1 k2  0.018 0.017 0.016 0.017 0.018 0.017  | 0.013 0.016 0.017 0.018 0.017 0.021
+   L1 k3  0.018 0.017 0.016 0.017 0.019 0.017  | 0.013 0.017 0.017 0.018 0.017 0.021
+   L1 k4  0.019 0.017 0.016 0.017 0.019 0.017  | 0.013 0.017 0.016 0.018 0.017 0.020
+   L1 k5  0.018 0.017 0.016 0.017 0.020 0.017  | 0.013 0.017 0.016 0.018 0.016 0.021
+   L1 k6  0.019 0.017 0.016 0.017 0.019 0.017  | 0.013 0.017 0.016 0.018 0.016 0.021
+   L1 k7  0.018 0.017 0.016 0.017 0.019 0.017  | 0.013 0.017 0.016 0.018 0.016 0.021
+   L1 k8  0.018 0.017 0.016 0.017 0.019 0.017  | 0.013 0.017 0.016 0.018 0.016 0.021
+DONE runs/v1_wide_s2

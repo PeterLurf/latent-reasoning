@@ -1,0 +1,12 @@
+{
+ "0": {
+  "acc": 0.755,
+  "n": 200
+ },
+ "6": {
+  "acc": 0.73,
+  "n": 200
+ },
+ "ckpt": "ckpt/checkpoint_50",
+ "data": "D:/coconut/data/prosqa_test.json"
+}

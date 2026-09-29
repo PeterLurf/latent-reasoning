@@ -1,0 +1,41 @@
+skip results/competence_v3.json
+skip results/competence_matched_v3.json
+skip runs/v3_rawfb_s0\discovery\discovery.json
+skip runs/v3_rawfb_s0\discovery\patterns.pt
+[runs/v3_rawfb_s0 fresh W=2] dose done 16s
+[runs/v3_rawfb_s0 fresh W=2] cache done 20s
+[runs/v3_rawfb_s0 fresh W=2] attn done 21s
+[runs/v3_rawfb_s0 fresh W=4] dose done 51s
+[runs/v3_rawfb_s0 fresh W=4] cache done 57s
+[runs/v3_rawfb_s0 fresh W=4] attn done 58s
+[runs/v3_rawfb_s0 fresh W=8] dose done 117s
+[runs/v3_rawfb_s0 fresh W=8] cache done 124s
+[runs/v3_rawfb_s0 fresh W=8] attn done 125s
+wrote runs/v3_rawfb_s0\followup\fresh\summary.json
+[runs/v3_rawfb_s0 fresh W=2] amp done 4s
+[runs/v3_rawfb_s0 fresh W=4] amp done 8s
+[runs/v3_rawfb_s0 fresh W=8] amp done 12s
+wrote runs/v3_rawfb_s0\followup\fresh_amp\summary.json
+[runs/v3_rawfb_s0 fresh W=2] cache done 4s
+[runs/v3_rawfb_s0 fresh W=4] cache done 10s
+[runs/v3_rawfb_s0 fresh W=8] cache done 17s
+wrote runs/v3_rawfb_s0\followup\fresh_cachedepth\summary.json
+[runs/v3_rawfb_s0 discovery W=1] gainfit done 0s
+[runs/v3_rawfb_s0 discovery W=2] gainfit done 0s
+[runs/v3_rawfb_s0 discovery W=3] gainfit done 0s
+[runs/v3_rawfb_s0 discovery W=4] gainfit done 1s
+[runs/v3_rawfb_s0 discovery W=5] gainfit done 1s
+[runs/v3_rawfb_s0 discovery W=6] gainfit done 1s
+[runs/v3_rawfb_s0 discovery W=7] gainfit done 1s
+[runs/v3_rawfb_s0 discovery W=8] gainfit done 1s
+wrote runs/v3_rawfb_s0\followup\discovery_gainfit\summary.json
+[runs/v3_rawfb_s0 fresh W=1] gainfit done 0s
+[runs/v3_rawfb_s0 fresh W=2] gainfit done 0s
+[runs/v3_rawfb_s0 fresh W=3] gainfit done 1s
+[runs/v3_rawfb_s0 fresh W=4] gainfit done 1s
+[runs/v3_rawfb_s0 fresh W=5] gainfit done 1s
+[runs/v3_rawfb_s0 fresh W=6] gainfit done 1s
+[runs/v3_rawfb_s0 fresh W=7] gainfit done 1s
+[runs/v3_rawfb_s0 fresh W=8] gainfit done 1s
+wrote runs/v3_rawfb_s0\followup\fresh_gainfit\summary.json
+DONE runs/v3_rawfb_s0

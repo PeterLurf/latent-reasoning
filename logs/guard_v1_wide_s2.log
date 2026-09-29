@@ -1,0 +1,5 @@
+05:19:14 guarding runs/v1_wide_s2 pid 0 max relaunch 3
+05:19:14 launched pid 2322
+05:32:24 stage-1 failure at step 4200; archived as runs/v1_wide_s2_stage1fail_1
+05:32:24 launched pid 2498
+05:43:24 stage 1 passed at step 3600 ; waiting for the run to end

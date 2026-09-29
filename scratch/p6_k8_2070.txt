@@ -1,0 +1,7 @@
+# PROTOCOL6 addendum L (K = 8), RTX 2070, fp32
+k8_s212 --no_step_emb --K 8 --seed 212 --lr 5e-4 --amp fp32 --save_every 1000
+k8_s213 --no_step_emb --K 8 --seed 213 --lr 5e-4 --amp fp32 --save_every 1000
+k8_s214 --no_step_emb --K 8 --seed 214 --lr 5e-4 --amp fp32 --save_every 1000
+k8_s215 --no_step_emb --K 8 --seed 215 --lr 5e-4 --amp fp32 --save_every 1000
+# amendment 2026-09-28 ~01:45
+k8_s222 --no_step_emb --K 8 --seed 222 --lr 5e-4 --amp fp32 --save_every 1000

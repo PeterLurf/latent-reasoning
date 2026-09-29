@@ -1,0 +1,37 @@
+06:51:57 start p29_s80 (--no_step_emb --K 6 --seed 80 --lr 5e-4 --amp bf16 --save_every 1000 )
+07:43:57 trained p29_s80 rc 0
+run  results/competence_p29_s80.json
+run  results/competence_matched_p29_s80.json
+run  results/length_gen_p29_s80.json
+run  results/delayed_trace_p29_s80.json
+run  results/budget_sweep_p29_s80.json
+EVAL_DONE p29_s80
+07:44:17 evaluated p29_s80
+07:44:18 start p29_s81 (--no_step_emb --K 6 --seed 81 --lr 5e-4 --amp bf16 --save_every 1000 )
+08:36:18 trained p29_s81 rc 0
+run  results/competence_p29_s81.json
+run  results/competence_matched_p29_s81.json
+run  results/length_gen_p29_s81.json
+run  results/delayed_trace_p29_s81.json
+run  results/budget_sweep_p29_s81.json
+EVAL_DONE p29_s81
+08:36:38 evaluated p29_s81
+08:36:38 start p29_s82 (--no_step_emb --K 6 --seed 82 --lr 5e-4 --amp bf16 --save_every 1000 )
+09:28:39 trained p29_s82 rc 0
+run  results/competence_p29_s82.json
+run  results/competence_matched_p29_s82.json
+run  results/length_gen_p29_s82.json
+run  results/delayed_trace_p29_s82.json
+run  results/budget_sweep_p29_s82.json
+EVAL_DONE p29_s82
+09:28:59 evaluated p29_s82
+09:28:59 start p29_s83 (--no_step_emb --K 6 --seed 83 --lr 5e-4 --amp bf16 --save_every 1000 )
+10:20:59 trained p29_s83 rc 0
+run  results/competence_p29_s83.json
+run  results/competence_matched_p29_s83.json
+run  results/length_gen_p29_s83.json
+run  results/delayed_trace_p29_s83.json
+run  results/budget_sweep_p29_s83.json
+EVAL_DONE p29_s83
+10:21:20 evaluated p29_s83
+10:21:20 QUEUE_DONE

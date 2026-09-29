@@ -1,0 +1,46 @@
+{
+ "runs/rel_base_s22_ext": {
+  "1": {
+   "bal_acc": 0.9889987169221419,
+   "recall_reachable": 0.9996747614917606,
+   "specificity_decoy": 0.9783226723525231,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9683250754444644,
+   "recall_reachable": 0.976317699056666,
+   "specificity_decoy": 0.9603324518322629,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.5346801169516706,
+   "recall_reachable": 0.1275474349964863,
+   "specificity_decoy": 0.941812798906855,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.5425503676245403,
+   "recall_reachable": 0.15815552634240065,
+   "specificity_decoy": 0.92694520890668,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.5404629377767568,
+   "recall_reachable": 0.1682664054848188,
+   "specificity_decoy": 0.9126594700686947,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5417232832121366,
+   "recall_reachable": 0.19343696027633853,
+   "specificity_decoy": 0.8900096061479347,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

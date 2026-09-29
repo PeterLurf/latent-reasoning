@@ -1,0 +1,78 @@
+09:49:06 start base_s0 pid 4332
+09:56:06 done base_s0 advance 3000 last step 3000
+09:56:06 start base_s1 pid 14460
+09:58:27 done base_s1 advance 1000 last step 1000
+09:58:27 start base_s2 pid 19312
+10:00:47 done base_s2 advance 1000 last step 1000
+10:00:47 start wu1000_s0 pid 9204
+10:03:07 done wu1000_s0 advance 1000 last step 1000
+10:03:07 start wu1000_s1 pid 7016
+10:05:27 done wu1000_s1 advance 1000 last step 1000
+10:05:27 start wu1000_s2 pid 5288
+10:07:48 done wu1000_s2 advance 1000 last step 1000
+10:07:48 start lr5e-4_s0 pid 13508
+10:10:08 done lr5e-4_s0 advance 1000 last step 1000
+10:10:08 start lr5e-4_s1 pid 16452
+10:12:28 done lr5e-4_s1 advance 1000 last step 1000
+10:12:28 start lr5e-4_s2 pid 2956
+10:14:48 done lr5e-4_s2 advance 1000 last step 1000
+10:14:48 start lr5e-4_wu1000_s0 pid 13200
+10:17:08 done lr5e-4_wu1000_s0 advance 1000 last step 1000
+10:17:08 start lr5e-4_wu1000_s1 pid 19380
+10:19:29 done lr5e-4_wu1000_s1 advance 1000 last step 1000
+10:19:29 start lr5e-4_wu1000_s2 pid 6716
+10:21:49 done lr5e-4_wu1000_s2 advance 1000 last step 1000
+10:21:49 stall counts (of 3): {'base': 0, 'wu1000': 0, 'lr5e-4': 0, 'lr5e-4_wu1000': 0}
+10:21:49 PILOT_DONE
+12:12:20 start nostep_base_s10 pid 12940
+12:12:20 start nostep_lr5e-4_s10 pid 4724
+12:16:00 done nostep_lr5e-4_s10 advance 2000 last step 2000
+12:16:00 start nostep_lr5e-4_s11 pid 6452
+12:18:40 done nostep_lr5e-4_s11 advance 1500 last step 1500
+12:18:40 start nostep_lr5e-4_s12 pid 14848
+12:20:41 done nostep_lr5e-4_s12 advance 1000 last step 1000
+12:20:41 start nostep_lr5e-4_s13 pid 9832
+12:21:20 done nostep_base_s10 advance None last step 4000
+12:21:20 start nostep_base_s11 pid 18180
+12:26:01 done nostep_lr5e-4_s13 advance 3000 last step 3000
+12:26:01 start nostep_lr5e-4_s14 pid 9332
+12:30:20 done nostep_base_s11 advance None last step 4000
+12:30:20 start nostep_base_s12 pid 3436
+12:30:21 done nostep_lr5e-4_s14 advance 2500 last step 2500
+12:30:21 start nostep_lr5e-4_s15 pid 5032
+12:34:41 done nostep_lr5e-4_s15 advance 2500 last step 2500
+12:34:41 start nostep_lr5e-4_wu1000_s10 pid 16348
+12:37:22 done nostep_lr5e-4_wu1000_s10 advance 1500 last step 1500
+12:37:22 start nostep_lr5e-4_wu1000_s11 pid 6588
+12:39:21 done nostep_base_s12 advance None last step 4000
+12:39:21 start nostep_base_s13 pid 19272
+12:39:22 done nostep_lr5e-4_wu1000_s11 advance 1000 last step 1000
+12:39:22 start nostep_lr5e-4_wu1000_s12 pid 13180
+12:41:22 done nostep_lr5e-4_wu1000_s12 advance 1000 last step 1000
+12:41:22 start nostep_lr5e-4_wu1000_s13 pid 16024
+12:43:22 done nostep_lr5e-4_wu1000_s13 advance 1000 last step 1000
+12:43:22 start nostep_lr5e-4_wu1000_s14 pid 10464
+12:44:01 done nostep_base_s13 advance 2000 last step 2000
+12:44:01 start nostep_base_s14 pid 7184
+12:45:22 done nostep_lr5e-4_wu1000_s14 advance 1000 last step 1000
+12:45:22 start nostep_lr5e-4_wu1000_s15 pid 15844
+12:49:03 done nostep_lr5e-4_wu1000_s15 advance 2000 last step 2000
+12:49:03 nostep stall counts (of 6): {'lr5e-4': 0, 'lr5e-4_wu1000': 0}
+12:49:03 PILOT_DONE nostep
+12:51:01 done nostep_base_s14 advance 3000 last step 3000
+12:51:01 start nostep_base_s15 pid 6828
+12:55:42 done nostep_base_s15 advance 2000 last step 2000
+12:55:42 start nostep_wu1000_s10 pid 1812
+12:58:02 done nostep_wu1000_s10 advance 1000 last step 1000
+12:58:02 start nostep_wu1000_s11 pid 15732
+13:00:23 done nostep_wu1000_s11 advance 1000 last step 1000
+13:00:23 start nostep_wu1000_s12 pid 3452
+13:03:03 done nostep_wu1000_s12 advance 1000 last step 1000
+13:03:03 start nostep_wu1000_s13 pid 2076
+13:05:23 done nostep_wu1000_s13 advance 1000 last step 1000
+13:05:23 start nostep_wu1000_s14 pid 17616
+13:07:43 done nostep_wu1000_s14 advance 1000 last step 1000
+13:07:43 start nostep_wu1000_s15 pid 15988
+13:16:44 done nostep_wu1000_s15 advance None last step 4000
+13:16:44 nostep stall counts (of 6): {'base': 3, 'wu1000': 1}
+13:16:44 PILOT_DONE nostep

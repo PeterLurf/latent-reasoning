@@ -1,0 +1,55 @@
+10:35:16 start prec_bf16_s50 (--no_step_emb --K 6 --seed 50 --lr 5e-4 --amp bf16 )
+11:42:17 trained prec_bf16_s50 rc 0
+run  results/competence_prec_bf16_s50.json
+run  results/competence_matched_prec_bf16_s50.json
+run  results/length_gen_prec_bf16_s50.json
+run  results/delayed_trace_prec_bf16_s50.json
+run  results/budget_sweep_prec_bf16_s50.json
+EVAL_DONE prec_bf16_s50
+11:42:40 evaluated prec_bf16_s50
+11:42:40 start prec_fp32_s50 (--no_step_emb --K 6 --seed 50 --lr 5e-4 --amp fp32 )
+13:33:40 trained prec_fp32_s50 rc 0
+run  results/competence_prec_fp32_s50.json
+run  results/competence_matched_prec_fp32_s50.json
+run  results/length_gen_prec_fp32_s50.json
+run  results/delayed_trace_prec_fp32_s50.json
+run  results/budget_sweep_prec_fp32_s50.json
+EVAL_DONE prec_fp32_s50
+13:34:03 evaluated prec_fp32_s50
+13:34:03 start prec_bf16_s51 (--no_step_emb --K 6 --seed 51 --lr 5e-4 --amp bf16 )
+14:41:03 trained prec_bf16_s51 rc 0
+run  results/competence_prec_bf16_s51.json
+run  results/competence_matched_prec_bf16_s51.json
+run  results/length_gen_prec_bf16_s51.json
+run  results/delayed_trace_prec_bf16_s51.json
+run  results/budget_sweep_prec_bf16_s51.json
+EVAL_DONE prec_bf16_s51
+14:41:26 evaluated prec_bf16_s51
+14:41:26 start prec_fp32_s51 (--no_step_emb --K 6 --seed 51 --lr 5e-4 --amp fp32 )
+16:37:27 trained prec_fp32_s51 rc 0
+run  results/competence_prec_fp32_s51.json
+run  results/competence_matched_prec_fp32_s51.json
+run  results/length_gen_prec_fp32_s51.json
+run  results/delayed_trace_prec_fp32_s51.json
+run  results/budget_sweep_prec_fp32_s51.json
+EVAL_DONE prec_fp32_s51
+16:37:54 evaluated prec_fp32_s51
+16:37:54 start prec_bf16_s52 (--no_step_emb --K 6 --seed 52 --lr 5e-4 --amp bf16 --save_every 1000 )
+17:45:54 trained prec_bf16_s52 rc 0
+run  results/competence_prec_bf16_s52.json
+run  results/competence_matched_prec_bf16_s52.json
+run  results/length_gen_prec_bf16_s52.json
+run  results/delayed_trace_prec_bf16_s52.json
+run  results/budget_sweep_prec_bf16_s52.json
+EVAL_DONE prec_bf16_s52
+17:46:17 evaluated prec_bf16_s52
+17:46:17 start prec_fp32_s52 (--no_step_emb --K 6 --seed 52 --lr 5e-4 --amp fp32 --save_every 1000 )
+19:39:20 trained prec_fp32_s52 rc 0
+run  results/competence_prec_fp32_s52.json
+run  results/competence_matched_prec_fp32_s52.json
+run  results/length_gen_prec_fp32_s52.json
+run  results/delayed_trace_prec_fp32_s52.json
+run  results/budget_sweep_prec_fp32_s52.json
+EVAL_DONE prec_fp32_s52
+19:39:45 evaluated prec_fp32_s52
+19:39:46 QUEUE_DONE

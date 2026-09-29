@@ -1,0 +1,163 @@
+19:11:57 start p30_s124 (--no_step_emb --K 6 --seed 124 --lr 5e-4 --amp bf16 --save_every 1000 )
+19:46:57 trained p30_s124 rc 0
+run  results/competence_p30_s124.json
+run  results/competence_matched_p30_s124.json
+run  results/length_gen_p30_s124.json
+run  results/delayed_trace_p30_s124.json
+run  results/budget_sweep_p30_s124.json
+EVAL_DONE p30_s124
+19:47:18 evaluated p30_s124
+19:47:18 start p30_s125 (--no_step_emb --K 6 --seed 125 --lr 5e-4 --amp bf16 --save_every 1000 )
+20:22:18 trained p30_s125 rc 0
+run  results/competence_p30_s125.json
+run  results/competence_matched_p30_s125.json
+run  results/length_gen_p30_s125.json
+run  results/delayed_trace_p30_s125.json
+run  results/budget_sweep_p30_s125.json
+EVAL_DONE p30_s125
+20:22:38 evaluated p30_s125
+20:22:38 start p30_s126 (--no_step_emb --K 6 --seed 126 --lr 5e-4 --amp bf16 --save_every 1000 )
+20:57:38 trained p30_s126 rc 0
+run  results/competence_p30_s126.json
+run  results/competence_matched_p30_s126.json
+run  results/length_gen_p30_s126.json
+run  results/delayed_trace_p30_s126.json
+run  results/budget_sweep_p30_s126.json
+EVAL_DONE p30_s126
+20:57:58 evaluated p30_s126
+20:57:58 start p30_s127 (--no_step_emb --K 6 --seed 127 --lr 5e-4 --amp bf16 --save_every 1000 )
+21:31:58 trained p30_s127 rc 0
+run  results/competence_p30_s127.json
+run  results/competence_matched_p30_s127.json
+run  results/length_gen_p30_s127.json
+run  results/delayed_trace_p30_s127.json
+run  results/budget_sweep_p30_s127.json
+EVAL_DONE p30_s127
+21:32:18 evaluated p30_s127
+21:32:18 start p30_s128 (--no_step_emb --K 6 --seed 128 --lr 5e-4 --amp bf16 --save_every 1000 )
+22:07:18 trained p30_s128 rc 0
+run  results/competence_p30_s128.json
+run  results/competence_matched_p30_s128.json
+run  results/length_gen_p30_s128.json
+run  results/delayed_trace_p30_s128.json
+run  results/budget_sweep_p30_s128.json
+EVAL_DONE p30_s128
+22:07:37 evaluated p30_s128
+22:07:37 start p30_s129 (--no_step_emb --K 6 --seed 129 --lr 5e-4 --amp bf16 --save_every 1000 )
+22:42:37 trained p30_s129 rc 0
+run  results/competence_p30_s129.json
+run  results/competence_matched_p30_s129.json
+run  results/length_gen_p30_s129.json
+run  results/delayed_trace_p30_s129.json
+run  results/budget_sweep_p30_s129.json
+EVAL_DONE p30_s129
+22:42:57 evaluated p30_s129
+22:42:57 start p30_s130 (--no_step_emb --K 6 --seed 130 --lr 5e-4 --amp bf16 --save_every 1000 )
+23:17:57 trained p30_s130 rc 0
+run  results/competence_p30_s130.json
+run  results/competence_matched_p30_s130.json
+run  results/length_gen_p30_s130.json
+run  results/delayed_trace_p30_s130.json
+run  results/budget_sweep_p30_s130.json
+EVAL_DONE p30_s130
+23:18:16 evaluated p30_s130
+23:18:16 start p30_s131 (--no_step_emb --K 6 --seed 131 --lr 5e-4 --amp bf16 --save_every 1000 )
+23:53:16 trained p30_s131 rc 0
+run  results/competence_p30_s131.json
+run  results/competence_matched_p30_s131.json
+run  results/length_gen_p30_s131.json
+run  results/delayed_trace_p30_s131.json
+run  results/budget_sweep_p30_s131.json
+EVAL_DONE p30_s131
+23:53:36 evaluated p30_s131
+23:53:36 start p30_s132 (--no_step_emb --K 6 --seed 132 --lr 5e-4 --amp bf16 --save_every 1000 )
+00:28:36 trained p30_s132 rc 0
+run  results/competence_p30_s132.json
+run  results/competence_matched_p30_s132.json
+run  results/length_gen_p30_s132.json
+run  results/delayed_trace_p30_s132.json
+run  results/budget_sweep_p30_s132.json
+EVAL_DONE p30_s132
+00:28:56 evaluated p30_s132
+00:28:56 start p30_s133 (--no_step_emb --K 6 --seed 133 --lr 5e-4 --amp bf16 --save_every 1000 )
+01:03:56 trained p30_s133 rc 0
+run  results/competence_p30_s133.json
+run  results/competence_matched_p30_s133.json
+run  results/length_gen_p30_s133.json
+run  results/delayed_trace_p30_s133.json
+run  results/budget_sweep_p30_s133.json
+EVAL_DONE p30_s133
+01:04:15 evaluated p30_s133
+01:04:15 start p30_s134 (--no_step_emb --K 6 --seed 134 --lr 5e-4 --amp bf16 --save_every 1000 )
+01:39:15 trained p30_s134 rc 0
+run  results/competence_p30_s134.json
+run  results/competence_matched_p30_s134.json
+run  results/length_gen_p30_s134.json
+run  results/delayed_trace_p30_s134.json
+run  results/budget_sweep_p30_s134.json
+EVAL_DONE p30_s134
+01:39:35 evaluated p30_s134
+01:39:35 start p30_s135 (--no_step_emb --K 6 --seed 135 --lr 5e-4 --amp bf16 --save_every 1000 )
+02:14:35 trained p30_s135 rc 0
+run  results/competence_p30_s135.json
+run  results/competence_matched_p30_s135.json
+run  results/length_gen_p30_s135.json
+run  results/delayed_trace_p30_s135.json
+run  results/budget_sweep_p30_s135.json
+EVAL_DONE p30_s135
+02:14:54 evaluated p30_s135
+02:14:54 start p30_s148 (--no_step_emb --K 6 --seed 148 --lr 5e-4 --amp bf16 --save_every 1000 )
+02:49:54 trained p30_s148 rc 0
+run  results/competence_p30_s148.json
+run  results/competence_matched_p30_s148.json
+run  results/length_gen_p30_s148.json
+run  results/delayed_trace_p30_s148.json
+run  results/budget_sweep_p30_s148.json
+EVAL_DONE p30_s148
+02:50:14 evaluated p30_s148
+02:50:14 start p30_s149 (--no_step_emb --K 6 --seed 149 --lr 5e-4 --amp bf16 --save_every 1000 )
+03:25:14 trained p30_s149 rc 0
+run  results/competence_p30_s149.json
+run  results/competence_matched_p30_s149.json
+run  results/length_gen_p30_s149.json
+run  results/delayed_trace_p30_s149.json
+run  results/budget_sweep_p30_s149.json
+EVAL_DONE p30_s149
+03:25:34 evaluated p30_s149
+03:25:34 start p30_s150 (--no_step_emb --K 6 --seed 150 --lr 5e-4 --amp bf16 --save_every 1000 )
+04:00:34 trained p30_s150 rc 0
+run  results/competence_p30_s150.json
+run  results/competence_matched_p30_s150.json
+run  results/length_gen_p30_s150.json
+run  results/delayed_trace_p30_s150.json
+run  results/budget_sweep_p30_s150.json
+EVAL_DONE p30_s150
+04:00:53 evaluated p30_s150
+04:00:53 start p30_s151 (--no_step_emb --K 6 --seed 151 --lr 5e-4 --amp bf16 --save_every 1000 )
+04:35:53 trained p30_s151 rc 0
+run  results/competence_p30_s151.json
+run  results/competence_matched_p30_s151.json
+run  results/length_gen_p30_s151.json
+run  results/delayed_trace_p30_s151.json
+run  results/budget_sweep_p30_s151.json
+EVAL_DONE p30_s151
+04:36:13 evaluated p30_s151
+04:36:13 start p30_s152 (--no_step_emb --K 6 --seed 152 --lr 5e-4 --amp bf16 --save_every 1000 )
+05:11:13 trained p30_s152 rc 0
+run  results/competence_p30_s152.json
+run  results/competence_matched_p30_s152.json
+run  results/length_gen_p30_s152.json
+run  results/delayed_trace_p30_s152.json
+run  results/budget_sweep_p30_s152.json
+EVAL_DONE p30_s152
+05:11:32 evaluated p30_s152
+05:11:33 start p30_s153 (--no_step_emb --K 6 --seed 153 --lr 5e-4 --amp bf16 --save_every 1000 )
+05:46:33 trained p30_s153 rc 0
+run  results/competence_p30_s153.json
+run  results/competence_matched_p30_s153.json
+run  results/length_gen_p30_s153.json
+run  results/delayed_trace_p30_s153.json
+run  results/budget_sweep_p30_s153.json
+EVAL_DONE p30_s153
+05:46:52 evaluated p30_s153
+05:46:52 QUEUE_DONE

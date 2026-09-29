@@ -1,0 +1,55 @@
+16:33:38 start o_s112 (--no_step_emb --K 6 --seed 112 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
+17:24:38 trained o_s112 rc 0
+run  results/competence_o_s112.json
+run  results/competence_matched_o_s112.json
+run  results/length_gen_o_s112.json
+run  results/delayed_trace_o_s112.json
+run  results/budget_sweep_o_s112.json
+EVAL_DONE o_s112
+17:24:59 evaluated o_s112
+17:24:59 start o_s113 (--no_step_emb --K 6 --seed 113 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
+18:15:59 trained o_s113 rc 0
+run  results/competence_o_s113.json
+run  results/competence_matched_o_s113.json
+run  results/length_gen_o_s113.json
+run  results/delayed_trace_o_s113.json
+run  results/budget_sweep_o_s113.json
+EVAL_DONE o_s113
+18:16:20 evaluated o_s113
+18:16:20 start o_s114 (--no_step_emb --K 6 --seed 114 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
+19:07:20 trained o_s114 rc 0
+run  results/competence_o_s114.json
+run  results/competence_matched_o_s114.json
+run  results/length_gen_o_s114.json
+run  results/delayed_trace_o_s114.json
+run  results/budget_sweep_o_s114.json
+EVAL_DONE o_s114
+19:07:41 evaluated o_s114
+19:07:41 start o_s115 (--no_step_emb --K 6 --seed 115 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
+19:59:43 trained o_s115 rc 0
+run  results/competence_o_s115.json
+run  results/competence_matched_o_s115.json
+run  results/length_gen_o_s115.json
+run  results/delayed_trace_o_s115.json
+run  results/budget_sweep_o_s115.json
+EVAL_DONE o_s115
+20:00:04 evaluated o_s115
+20:00:04 start o_s116 (--no_step_emb --K 6 --seed 116 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
+20:51:05 trained o_s116 rc 0
+run  results/competence_o_s116.json
+run  results/competence_matched_o_s116.json
+run  results/length_gen_o_s116.json
+run  results/delayed_trace_o_s116.json
+run  results/budget_sweep_o_s116.json
+EVAL_DONE o_s116
+20:51:25 evaluated o_s116
+20:51:26 start o_s117 (--no_step_emb --K 6 --seed 117 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
+22:33:26 trained o_s117 rc 0
+run  results/competence_o_s117.json
+run  results/competence_matched_o_s117.json
+run  results/length_gen_o_s117.json
+run  results/delayed_trace_o_s117.json
+run  results/budget_sweep_o_s117.json
+EVAL_DONE o_s117
+22:34:08 evaluated o_s117
+22:34:09 start o_s118 (--no_step_emb --K 6 --seed 118 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )

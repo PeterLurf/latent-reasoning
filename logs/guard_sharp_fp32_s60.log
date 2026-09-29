@@ -1,0 +1,3 @@
+18:01:03 guarding runs/sharp_fp32_s60 pid 0 max relaunch 3
+18:01:03 launched pid 14792
+18:05:03 stage 1 passed at step 1000 ; waiting for the run to end

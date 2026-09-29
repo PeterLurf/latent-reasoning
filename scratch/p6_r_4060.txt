@@ -1,0 +1,13 @@
+# PROTOCOL6 addendum R (cap 3 dose-response + more cap 4), RTX 4060, bf16
+r3_s406 --no_step_emb --K 6 --seed 406 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 3
+m_s323 --no_step_emb --K 6 --seed 323 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4
+r3_s407 --no_step_emb --K 6 --seed 407 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 3
+m_s324 --no_step_emb --K 6 --seed 324 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4
+r3_s408 --no_step_emb --K 6 --seed 408 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 3
+m_s325 --no_step_emb --K 6 --seed 325 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4
+r3_s409 --no_step_emb --K 6 --seed 409 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 3
+m_s326 --no_step_emb --K 6 --seed 326 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4
+r3_s410 --no_step_emb --K 6 --seed 410 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 3
+m_s327 --no_step_emb --K 6 --seed 327 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4
+r3_s411 --no_step_emb --K 6 --seed 411 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 3
+m_s328 --no_step_emb --K 6 --seed 328 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4

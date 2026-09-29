@@ -1,0 +1,91 @@
+00:02:25 start k8_s206 (--no_step_emb --K 8 --seed 206 --lr 5e-4 --amp bf16 --save_every 1000 )
+00:59:25 trained k8_s206 rc 0
+run  results/competence_k8_s206.json
+run  results/competence_matched_k8_s206.json
+run  results/length_gen_k8_s206.json
+run  results/delayed_trace_k8_s206.json
+run  results/budget_sweep_k8_s206.json
+EVAL_DONE k8_s206
+00:59:46 evaluated k8_s206
+00:59:46 start k8_s207 (--no_step_emb --K 8 --seed 207 --lr 5e-4 --amp bf16 --save_every 1000 )
+01:56:47 trained k8_s207 rc 0
+run  results/competence_k8_s207.json
+run  results/competence_matched_k8_s207.json
+run  results/length_gen_k8_s207.json
+run  results/delayed_trace_k8_s207.json
+run  results/budget_sweep_k8_s207.json
+EVAL_DONE k8_s207
+01:57:08 evaluated k8_s207
+01:57:08 start k8_s208 (--no_step_emb --K 8 --seed 208 --lr 5e-4 --amp bf16 --save_every 1000 )
+02:54:08 trained k8_s208 rc 0
+run  results/competence_k8_s208.json
+run  results/competence_matched_k8_s208.json
+run  results/length_gen_k8_s208.json
+run  results/delayed_trace_k8_s208.json
+run  results/budget_sweep_k8_s208.json
+EVAL_DONE k8_s208
+02:54:31 evaluated k8_s208
+02:54:31 start k8_s209 (--no_step_emb --K 8 --seed 209 --lr 5e-4 --amp bf16 --save_every 1000 )
+03:53:31 trained k8_s209 rc 0
+run  results/competence_k8_s209.json
+run  results/competence_matched_k8_s209.json
+run  results/length_gen_k8_s209.json
+run  results/delayed_trace_k8_s209.json
+run  results/budget_sweep_k8_s209.json
+EVAL_DONE k8_s209
+03:53:53 evaluated k8_s209
+03:53:54 start k8_s210 (--no_step_emb --K 8 --seed 210 --lr 5e-4 --amp bf16 --save_every 1000 )
+04:50:54 trained k8_s210 rc 0
+run  results/competence_k8_s210.json
+run  results/competence_matched_k8_s210.json
+run  results/length_gen_k8_s210.json
+run  results/delayed_trace_k8_s210.json
+run  results/budget_sweep_k8_s210.json
+EVAL_DONE k8_s210
+04:51:15 evaluated k8_s210
+04:51:16 start k8_s211 (--no_step_emb --K 8 --seed 211 --lr 5e-4 --amp bf16 --save_every 1000 )
+05:48:16 trained k8_s211 rc 0
+run  results/competence_k8_s211.json
+run  results/competence_matched_k8_s211.json
+run  results/length_gen_k8_s211.json
+run  results/delayed_trace_k8_s211.json
+run  results/budget_sweep_k8_s211.json
+EVAL_DONE k8_s211
+05:48:37 evaluated k8_s211
+05:48:38 start k8_s216 (--no_step_emb --K 8 --seed 216 --lr 5e-4 --amp bf16 --save_every 1000 )
+06:45:38 trained k8_s216 rc 0
+run  results/competence_k8_s216.json
+run  results/competence_matched_k8_s216.json
+run  results/length_gen_k8_s216.json
+run  results/delayed_trace_k8_s216.json
+run  results/budget_sweep_k8_s216.json
+EVAL_DONE k8_s216
+06:45:59 evaluated k8_s216
+06:46:00 start k8_s217 (--no_step_emb --K 8 --seed 217 --lr 5e-4 --amp bf16 --save_every 1000 )
+07:43:00 trained k8_s217 rc 0
+run  results/competence_k8_s217.json
+run  results/competence_matched_k8_s217.json
+run  results/length_gen_k8_s217.json
+run  results/delayed_trace_k8_s217.json
+run  results/budget_sweep_k8_s217.json
+EVAL_DONE k8_s217
+07:43:22 evaluated k8_s217
+07:43:23 start k8_s218 (--no_step_emb --K 8 --seed 218 --lr 5e-4 --amp bf16 --save_every 1000 )
+08:40:23 trained k8_s218 rc 0
+run  results/competence_k8_s218.json
+run  results/competence_matched_k8_s218.json
+run  results/length_gen_k8_s218.json
+run  results/delayed_trace_k8_s218.json
+run  results/budget_sweep_k8_s218.json
+EVAL_DONE k8_s218
+08:40:45 evaluated k8_s218
+08:40:45 start k8_s219 (--no_step_emb --K 8 --seed 219 --lr 5e-4 --amp bf16 --save_every 1000 )
+09:37:46 trained k8_s219 rc 0
+run  results/competence_k8_s219.json
+run  results/competence_matched_k8_s219.json
+run  results/length_gen_k8_s219.json
+run  results/delayed_trace_k8_s219.json
+run  results/budget_sweep_k8_s219.json
+EVAL_DONE k8_s219
+09:38:08 evaluated k8_s219
+09:38:09 QUEUE_DONE

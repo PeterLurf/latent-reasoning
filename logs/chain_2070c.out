@@ -1,0 +1,89 @@
+12:57:56 start ['scratch/stage1_guard.py', '--wait', 'runs/budget_k4_s1', '0', '3', '--', '-m', 'latent.train', '--mode', 'coconut', '--heads', '8', '--steps', '30000', '--bs', '512', '--Q', '16', '--lr', '1e-3', '--warmup', '300', '--eval_every', '1000', '--curriculum', 'gated', '--init', 'gpt2', '--aux_steps', '10000', '--aux_anneal', '5000', '--children_weight', '1.0', '--gate', '0.9', '--resume', '--d', '256', '--layers', '2', '--K', '4', '--seed', '1', '--device', 'cuda:2', '--out', 'runs/budget_k4_s1']
+14:54:13 exit 0
+14:54:13 start ['scratch/variant_pipeline.py', 'runs/budget_k4_s1', 'cuda:2', 'k4b']
+runs/budget_k4_s1 K'=0 delayed 0.690 upfront 0.500 depth(delayed) {1:1.00, 2:0.94, 3:0.28, 4:0.38, 5:0.48, 6:0.74, 99:0.75}
+runs/budget_k4_s1 K'=1 delayed 0.691 upfront 0.698 depth(delayed) {1:1.00, 2:0.94, 3:0.27, 4:0.38, 5:0.48, 6:0.74, 99:0.75}
+runs/budget_k4_s1 K'=2 delayed 0.691 upfront 0.698 depth(delayed) {1:1.00, 2:0.94, 3:0.27, 4:0.38, 5:0.48, 6:0.74, 99:0.75}
+runs/budget_k4_s1 K'=3 delayed 0.691 upfront 0.698 depth(delayed) {1:1.00, 2:0.94, 3:0.27, 4:0.38, 5:0.48, 6:0.74, 99:0.75}
+runs/budget_k4_s1 K'=4 delayed 0.691 upfront 0.699 depth(delayed) {1:1.00, 2:0.94, 3:0.28, 4:0.38, 5:0.48, 6:0.74, 99:0.75}
+runs/budget_k4_s1 d1:0.99 d2:0.89 d3:0.53 d4:0.54 d5:0.57 d6:0.61
+  k=0 full: tgt -0.001 col 0.002 | probe: tgt 0.000 col 0.000
+  k=1 full: tgt 0.000 col 0.001 | probe: tgt 0.000 col 0.000
+  k=2 full: tgt 0.000 col 0.000 | probe: tgt 0.000 col 0.000
+  k=3 full: tgt 0.000 col 0.000 | probe: tgt 0.000 col 0.000
+runs/budget_k4_s1: k* = 3  (15s)
+  k=0 (targeted/collateral) full: -0.001/0.002 | pca6: -0.001/0.002 | random6: -0.000/0.000 | pca20: -0.001/0.002 | random20: -0.000/0.000 | pca40: -0.001/0.002 | random40: -0.000/0.001
+  k=1 (targeted/collateral) full: +0.000/0.000 | pca6: +0.000/0.000 | random6: +0.000/0.000 | pca20: +0.000/0.000 | random20: +0.000/0.000 | pca40: +0.000/0.000 | random40: +0.000/0.000
+  k=2 (targeted/collateral) full: +0.000/0.000 | pca6: +0.000/0.000 | random6: +0.000/0.000 | pca20: +0.000/0.000 | random20: +0.000/0.000 | pca40: +0.000/0.000 | random40: +0.000/0.000
+  k=3 (targeted/collateral) full: +0.000/0.000 | pca6: +0.000/0.000 | random6: +0.000/0.000 | pca20: +0.000/0.000 | random20: +0.000/0.000 | pca40: +0.000/0.000 | random40: +0.000/0.000
+runs/budget_k4_s1 {'probe filters (6)': 0.0016496808966621757, 'branch patterns (6)': 0.5537605285644531, 'PCA (6)': 0.771490216255188, 'PCA (20)': 0.9396743774414062, 'random (6)': 0.023842941969633102}
+[runs/budget_k4_s1 fresh W=2] dose done 17s
+[runs/budget_k4_s1 fresh W=2] cache done 20s
+[runs/budget_k4_s1 fresh W=2] attn done 21s
+[runs/budget_k4_s1 fresh W=4] dose done 53s
+[runs/budget_k4_s1 fresh W=4] cache done 58s
+[runs/budget_k4_s1 fresh W=4] attn done 59s
+[runs/budget_k4_s1 fresh W=8] dose done 119s
+[runs/budget_k4_s1 fresh W=8] cache done 126s
+[runs/budget_k4_s1 fresh W=8] attn done 127s
+wrote runs/budget_k4_s1\followup\fresh\summary.json
+[runs/budget_k4_s1 fresh W=2] amp done 4s
+[runs/budget_k4_s1 fresh W=4] amp done 8s
+[runs/budget_k4_s1 fresh W=8] amp done 13s
+wrote runs/budget_k4_s1\followup\fresh_amp\summary.json
+[runs/budget_k4_s1 fresh W=2] cache done 4s
+[runs/budget_k4_s1 fresh W=4] cache done 9s
+[runs/budget_k4_s1 fresh W=8] cache done 16s
+wrote runs/budget_k4_s1\followup\fresh_cachedepth\summary.json
+[runs/budget_k4_s1 discovery W=1] gainfit done 0s
+[runs/budget_k4_s1 discovery W=2] gainfit done 0s
+[runs/budget_k4_s1 discovery W=3] gainfit done 0s
+[runs/budget_k4_s1 discovery W=4] gainfit done 1s
+[runs/budget_k4_s1 discovery W=5] gainfit done 1s
+[runs/budget_k4_s1 discovery W=6] gainfit done 1s
+[runs/budget_k4_s1 discovery W=7] gainfit done 1s
+[runs/budget_k4_s1 discovery W=8] gainfit done 1s
+wrote runs/budget_k4_s1\followup\discovery_gainfit\summary.json
+[runs/budget_k4_s1 fresh W=1] gainfit done 0s
+[runs/budget_k4_s1 fresh W=2] gainfit done 0s
+[runs/budget_k4_s1 fresh W=3] gainfit done 1s
+[runs/budget_k4_s1 fresh W=4] gainfit done 1s
+[runs/budget_k4_s1 fresh W=5] gainfit done 1s
+[runs/budget_k4_s1 fresh W=6] gainfit done 1s
+[runs/budget_k4_s1 fresh W=7] gainfit done 1s
+[runs/budget_k4_s1 fresh W=8] gainfit done 1s
+wrote runs/budget_k4_s1\followup\fresh_gainfit\summary.json
+runs/budget_k4_s1 train  K'= 0 all 0.714 d1:0.99 d2:0.89 d3:0.53 d4:0.56 d5:0.56 d6:0.61
+runs/budget_k4_s1 train  K'= 1 all 0.714 d1:0.99 d2:0.89 d3:0.53 d4:0.55 d5:0.56 d6:0.61
+runs/budget_k4_s1 train  K'= 2 all 0.714 d1:0.99 d2:0.89 d3:0.53 d4:0.55 d5:0.55 d6:0.60
+runs/budget_k4_s1 train  K'= 3 all 0.714 d1:0.99 d2:0.89 d3:0.53 d4:0.55 d5:0.55 d6:0.60
+runs/budget_k4_s1 train  K'= 4 all 0.714 d1:0.99 d2:0.89 d3:0.53 d4:0.55 d5:0.55 d6:0.60
+runs/budget_k4_s1 raw    K'= 5 all 0.714 d1:0.99 d2:0.89 d3:0.53 d4:0.55 d5:0.55 d6:0.60
+runs/budget_k4_s1 raw    K'= 6 all 0.714 d1:0.99 d2:0.89 d3:0.53 d4:0.55 d5:0.55 d6:0.60
+runs/budget_k4_s1 raw    K'= 7 all 0.713 d1:0.99 d2:0.89 d3:0.53 d4:0.55 d5:0.55 d6:0.60
+runs/budget_k4_s1 raw    K'= 8 all 0.713 d1:0.99 d2:0.89 d3:0.53 d4:0.55 d5:0.55 d6:0.59
+runs/budget_k4_s1 repeat K'= 5 all 0.714 d1:0.99 d2:0.89 d3:0.53 d4:0.55 d5:0.55 d6:0.60
+runs/budget_k4_s1 repeat K'= 6 all 0.714 d1:0.99 d2:0.89 d3:0.53 d4:0.55 d5:0.55 d6:0.60
+runs/budget_k4_s1 repeat K'= 7 all 0.713 d1:0.99 d2:0.89 d3:0.53 d4:0.55 d5:0.55 d6:0.60
+runs/budget_k4_s1 repeat K'= 8 all 0.713 d1:0.99 d2:0.89 d3:0.53 d4:0.55 d5:0.55 d6:0.60
+runs/budget_k4_s1 repeat K'= 9 all 0.713 d1:0.99 d2:0.89 d3:0.53 d4:0.55 d5:0.55 d6:0.59
+runs/budget_k4_s1 repeat K'=10 all 0.713 d1:0.99 d2:0.89 d3:0.53 d4:0.55 d5:0.55 d6:0.59
+runs/budget_k4_s1 K'= 0 near 0.97 0.92 0.50 0.50 0.50 0.50 | far 0.49 0.50 0.50 0.50 0.50 0.50
+runs/budget_k4_s1 K'= 2 near 0.97 0.92 0.50 0.50 0.50 0.50 | far 0.49 0.50 0.50 0.50 0.50 0.50
+runs/budget_k4_s1 K'= 4 near 0.97 0.92 0.50 0.50 0.50 0.50 | far 0.49 0.50 0.50 0.50 0.50 0.50
+runs/budget_k4_s1 K'= 6 near 0.97 0.93 0.50 0.50 0.50 0.50 | far 0.49 0.50 0.50 0.50 0.50 0.50
+runs/budget_k4_s1 K'= 8 near 0.97 0.93 0.50 0.50 0.50 0.50 | far 0.49 0.50 0.50 0.50 0.50 0.50
+runs/budget_k4_s1 K'=10 near 0.97 0.93 0.50 0.50 0.50 0.50 | far 0.49 0.50 0.50 0.50 0.50 0.51
+runs/budget_k4_s1 K'=12 near 0.97 0.93 0.50 0.50 0.50 0.50 | far 0.49 0.50 0.50 0.50 0.50 0.51
+runs/budget_k4_s1 K'=16 near 0.97 0.93 0.50 0.50 0.50 0.50 | far 0.49 0.50 0.50 0.50 0.50 0.51
+runs/budget_k4_s1 W=4 delayed: per-edge attention, reachable-branch edges by depth 0..5 | decoy
+   L1 k1  0.012 0.013 0.014 0.014 0.014 0.014  | 0.013 0.014 0.013 0.013 0.015 0.014
+   L1 k2  0.009 0.011 0.012 0.012 0.011 0.012  | 0.009 0.011 0.011 0.011 0.012 0.012
+   L1 k3  0.008 0.011 0.012 0.012 0.012 0.011  | 0.009 0.011 0.012 0.011 0.012 0.012
+   L1 k4  0.009 0.011 0.013 0.013 0.011 0.012  | 0.009 0.011 0.012 0.012 0.012 0.013
+   L1 k5  0.009 0.011 0.012 0.013 0.011 0.011  | 0.009 0.011 0.012 0.012 0.012 0.013
+   L1 k6  0.008 0.011 0.012 0.013 0.011 0.011  | 0.009 0.011 0.012 0.012 0.012 0.013
+   L1 k7  0.008 0.011 0.012 0.013 0.011 0.011  | 0.009 0.011 0.012 0.011 0.012 0.013
+   L1 k8  0.008 0.011 0.012 0.013 0.011 0.011  | 0.009 0.011 0.012 0.011 0.012 0.013
+DONE runs/budget_k4_s1
+14:58:19 exit 0

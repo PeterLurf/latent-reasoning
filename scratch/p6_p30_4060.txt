@@ -1,0 +1,13 @@
+# PROTOCOL6 addendum K (P30), RTX 4060: seeds 100-111, bf16
+p30_s100 --no_step_emb --K 6 --seed 100 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s101 --no_step_emb --K 6 --seed 101 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s102 --no_step_emb --K 6 --seed 102 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s103 --no_step_emb --K 6 --seed 103 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s104 --no_step_emb --K 6 --seed 104 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s105 --no_step_emb --K 6 --seed 105 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s106 --no_step_emb --K 6 --seed 106 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s107 --no_step_emb --K 6 --seed 107 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s108 --no_step_emb --K 6 --seed 108 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s109 --no_step_emb --K 6 --seed 109 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s110 --no_step_emb --K 6 --seed 110 --lr 5e-4 --amp bf16 --save_every 1000
+p30_s111 --no_step_emb --K 6 --seed 111 --lr 5e-4 --amp bf16 --save_every 1000
