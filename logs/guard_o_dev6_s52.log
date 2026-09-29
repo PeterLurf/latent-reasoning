@@ -1,0 +1,5 @@
+19:28:06 guarding runs/o_dev6_s52 pid 0 max relaunch 3
+19:28:06 launched pid 6676
+19:44:17 stage-1 failure at step 4000; archived as runs/o_dev6_s52_stage1fail_1
+19:44:17 launched pid 8372
+20:00:17 stage 1 passed at step 4000 ; waiting for the run to end

@@ -1,0 +1,5 @@
+03:53:34 guarding runs/nostep_s3 pid 0 max relaunch 3
+03:53:34 launched pid 235
+04:02:44 stage-1 failure at step 4000; archived as runs/nostep_s3_stage1fail_1
+04:02:44 launched pid 334
+04:10:44 stage 1 passed at step 3500 ; waiting for the run to end

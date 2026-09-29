@@ -1,0 +1,9 @@
+# PROTOCOL6 addendum I: P29 unresolved at 10:25 (1 extrapolating competent run) -> more seeds of the same batch, as pre-registered
+p29_s88 --no_step_emb --K 6 --seed 88 --lr 5e-4 --amp bf16 --save_every 1000
+p29_s89 --no_step_emb --K 6 --seed 89 --lr 5e-4 --amp bf16 --save_every 1000
+# dropped 11:27 (P29 resolved at 11:26; seeds are added only while unresolved): p29_s90 --no_step_emb --K 6 --seed 90 --lr 5e-4 --amp bf16 --save_every 1000
+# dropped 11:27 (P29 resolved at 11:26; seeds are added only while unresolved): p29_s91 --no_step_emb --K 6 --seed 91 --lr 5e-4 --amp bf16 --save_every 1000
+# dropped 11:27 (P29 resolved at 11:26; seeds are added only while unresolved): p29_s92 --no_step_emb --K 6 --seed 92 --lr 5e-4 --amp bf16 --save_every 1000
+# dropped 11:27 (P29 resolved at 11:26; seeds are added only while unresolved): p29_s93 --no_step_emb --K 6 --seed 93 --lr 5e-4 --amp bf16 --save_every 1000
+# dropped 11:27 (P29 resolved at 11:26; seeds are added only while unresolved): p29_s94 --no_step_emb --K 6 --seed 94 --lr 5e-4 --amp bf16 --save_every 1000
+# dropped 11:27 (P29 resolved at 11:26; seeds are added only while unresolved): p29_s95 --no_step_emb --K 6 --seed 95 --lr 5e-4 --amp bf16 --save_every 1000

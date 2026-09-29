@@ -1,0 +1,4 @@
+[runs/diag_slots_curr] step 500 loss 1.3864 delayed 0.500 upfront 0.500 depth {1: 1.0, 2: 1.0, 3: 1.0, 4: 1.0, 5: 1.0, 6: 1.0, 99: 0.0} 86s
+[runs/diag_slots_curr] step 1000 loss 1.3865 delayed 0.500 upfront 0.500 depth {1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0, 6: 0.0, 99: 1.0} 176s
+[runs/diag_slots_curr] step 1500 loss 1.3865 delayed 0.500 upfront 0.500 depth {1: 1.0, 2: 1.0, 3: 1.0, 4: 1.0, 5: 1.0, 6: 1.0, 99: 0.0} 267s
+[runs/diag_slots_curr] step 2000 loss 1.3864 delayed 0.500 upfront 0.500 depth {1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0, 6: 0.0, 99: 1.0} 357s

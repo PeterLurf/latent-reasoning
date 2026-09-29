@@ -1,0 +1,9 @@
+runs/main_s1 baseline far(7-9): {6: np.float64(0.495), 12: np.float64(0.494), 16: np.float64(0.494)}
+  K'=12 best far(7-9): [('K12_j6_r1_rewind', np.float64(0.517)), ('K12_j8_r3_rewind', np.float64(0.507)), ('K12_j7_r2_rewind', np.float64(0.507)), ('K12_j10_r5_rewind', np.float64(0.507)), ('K12_j9_r4_rewind', np.float64(0.507)), ('K12_j11_r6_rewind', np.float64(0.507))]
+  K'=16 best far(7-9): [('K16_j6_r1_rewind', np.float64(0.516)), ('K16_j8_r3_rewind', np.float64(0.506)), ('K16_j11_r6_rewind', np.float64(0.506)), ('K16_j7_r2_rewind', np.float64(0.506)), ('K16_j9_r4_rewind', np.float64(0.506)), ('K16_j10_r5_rewind', np.float64(0.506))]
+runs/main_s2 baseline far(7-9): {6: np.float64(0.496), 12: np.float64(0.611), 16: np.float64(0.612)}
+  K'=12 best far(7-9): [('K12_j10_r1_rewind', np.float64(0.608)), ('K12_j11_r1_rewind', np.float64(0.604)), ('K12_j9_r1_rewind', np.float64(0.603)), ('K12_j11_r2_rewind', np.float64(0.603)), ('K12_j8_r1_rewind', np.float64(0.601)), ('K12_j11_r6_rewind', np.float64(0.601))]
+  K'=16 best far(7-9): [('K16_j10_r1_rewind', np.float64(0.614)), ('K16_j8_r1_rewind', np.float64(0.611)), ('K16_j11_r2_rewind', np.float64(0.61)), ('K16_j6_r1_rewind', np.float64(0.609)), ('K16_j11_r1_rewind', np.float64(0.608)), ('K16_j10_r2_rewind', np.float64(0.604))]
+runs/v3_rawfb_s0 baseline far(7-9): {6: np.float64(0.505), 12: np.float64(0.517), 16: np.float64(0.516)}
+  K'=12 best far(7-9): [('K12_j4_r3_rewind', np.float64(0.526)), ('K12_j11_r4_foreign', np.float64(0.526)), ('K12_j4_zero', np.float64(0.521)), ('K12_j9_r2_rewind', np.float64(0.521)), ('K12_j3_r2_rewind', np.float64(0.521)), ('K12_j5_r2_rewind', np.float64(0.52))]
+  K'=16 best far(7-9): [('K16_j7_r6_rewind', np.float64(0.532)), ('K16_j5_r4_rewind', np.float64(0.528)), ('K16_j6_r4_rewind', np.float64(0.527)), ('K16_j11_r4_foreign', np.float64(0.526)), ('K16_j4_r3_rewind', np.float64(0.526)), ('K16_j5_r2_rewind', np.float64(0.525))]

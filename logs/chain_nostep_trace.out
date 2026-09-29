@@ -1,0 +1,32 @@
+18:59:32 start ['-m', 'latent.clock_trace', 'runs/nostep_s0', '--out', 'results/clock_trace_nostep.json', '--device', 'cuda:1']
+runs/nostep_s0 normal: layer-1 attention on the chain edge into distance d (argmax per step, value)
+   step  1: peak at distance  2 (0.039)  | distances 7-12: 0.010 0.008 0.009 0.008 0.008 0.008
+   step  2: peak at distance  2 (0.030)  | distances 7-12: 0.006 0.004 0.006 0.004 0.005 0.006
+   step  3: peak at distance  3 (0.030)  | distances 7-12: 0.005 0.005 0.004 0.005 0.005 0.004
+   step  4: peak at distance  2 (0.033)  | distances 7-12: 0.006 0.006 0.006 0.006 0.005 0.006
+   step  5: peak at distance  3 (0.033)  | distances 7-12: 0.007 0.007 0.006 0.006 0.006 0.005
+   step  6: peak at distance  4 (0.034)  | distances 7-12: 0.007 0.006 0.006 0.007 0.005 0.006
+   step  7: peak at distance  5 (0.032)  | distances 7-12: 0.008 0.006 0.006 0.007 0.007 0.006
+   step  8: peak at distance  6 (0.032)  | distances 7-12: 0.009 0.006 0.006 0.006 0.006 0.006
+   step  9: peak at distance  7 (0.032)  | distances 7-12: 0.032 0.008 0.008 0.006 0.006 0.007
+   step 10: peak at distance  8 (0.032)  | distances 7-12: 0.007 0.032 0.007 0.006 0.005 0.005
+   step 11: peak at distance  9 (0.032)  | distances 7-12: 0.008 0.007 0.032 0.007 0.006 0.005
+   step 12: peak at distance 10 (0.029)  | distances 7-12: 0.007 0.007 0.006 0.029 0.007 0.006
+   step 13: peak at distance 11 (0.029)  | distances 7-12: 0.007 0.006 0.007 0.007 0.029 0.006
+   step 14: peak at distance 12 (0.029)  | distances 7-12: 0.006 0.006 0.007 0.007 0.007 0.029
+runs/nostep_s0 freeze_2: layer-1 attention on the chain edge into distance d (argmax per step, value)
+   step  1: peak at distance  2 (0.039)  | distances 7-12: 0.010 0.008 0.009 0.008 0.008 0.008
+   step  2: peak at distance  2 (0.030)  | distances 7-12: 0.006 0.004 0.006 0.004 0.005 0.006
+   step  3: peak at distance  3 (0.030)  | distances 7-12: 0.005 0.005 0.004 0.005 0.005 0.004
+   step  4: peak at distance  2 (0.033)  | distances 7-12: 0.006 0.006 0.006 0.006 0.005 0.006
+   step  5: peak at distance  3 (0.033)  | distances 7-12: 0.007 0.007 0.006 0.006 0.006 0.005
+   step  6: peak at distance  4 (0.034)  | distances 7-12: 0.007 0.006 0.006 0.007 0.005 0.006
+   step  7: peak at distance  5 (0.032)  | distances 7-12: 0.008 0.006 0.006 0.007 0.007 0.006
+   step  8: peak at distance  6 (0.032)  | distances 7-12: 0.009 0.006 0.006 0.006 0.006 0.006
+   step  9: peak at distance  7 (0.032)  | distances 7-12: 0.032 0.008 0.008 0.006 0.006 0.007
+   step 10: peak at distance  8 (0.032)  | distances 7-12: 0.007 0.032 0.007 0.006 0.005 0.005
+   step 11: peak at distance  9 (0.032)  | distances 7-12: 0.008 0.007 0.032 0.007 0.006 0.005
+   step 12: peak at distance 10 (0.029)  | distances 7-12: 0.007 0.007 0.006 0.029 0.007 0.006
+   step 13: peak at distance 11 (0.029)  | distances 7-12: 0.007 0.006 0.007 0.007 0.029 0.006
+   step 14: peak at distance 12 (0.029)  | distances 7-12: 0.006 0.006 0.007 0.007 0.007 0.029
+18:59:36 exit 0

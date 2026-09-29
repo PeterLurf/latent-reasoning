@@ -1,0 +1,3 @@
+[runs/pilot/nostep_lr5e-4_s15] step 1000 loss 2.3786 delayed 0.584 upfront 0.584 depth {1: 1.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0013831258644536654, 6: 0.0, 99: 0.999755859375} 102s
+[runs/pilot/nostep_lr5e-4_s15] step 2000 loss 1.3759 delayed 0.598 upfront 0.718 depth {1: 0.9985422740524781, 2: 0.33274179236912155, 3: 0.3154486586493987, 4: 0.3992982456140351, 5: 0.4412171507607192, 6: 0.5, 99: 0.7296142578125} 204s
+[runs/pilot/nostep_lr5e-4_s15] step 2500: curriculum -> max_bdepth 2

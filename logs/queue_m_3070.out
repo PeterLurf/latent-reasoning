@@ -1,0 +1,73 @@
+09:39:00 start m_s300 (--no_step_emb --K 6 --seed 300 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4 )
+10:30:00 trained m_s300 rc 0
+run  results/competence_m_s300.json
+run  results/competence_matched_m_s300.json
+run  results/length_gen_m_s300.json
+run  results/delayed_trace_m_s300.json
+run  results/budget_sweep_m_s300.json
+EVAL_DONE m_s300
+10:30:22 evaluated m_s300
+10:30:22 start m_s301 (--no_step_emb --K 6 --seed 301 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4 )
+11:21:22 trained m_s301 rc 0
+run  results/competence_m_s301.json
+run  results/competence_matched_m_s301.json
+run  results/length_gen_m_s301.json
+run  results/delayed_trace_m_s301.json
+run  results/budget_sweep_m_s301.json
+EVAL_DONE m_s301
+11:21:43 evaluated m_s301
+11:21:43 start m_s302 (--no_step_emb --K 6 --seed 302 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4 )
+12:12:43 trained m_s302 rc 0
+run  results/competence_m_s302.json
+run  results/competence_matched_m_s302.json
+run  results/length_gen_m_s302.json
+run  results/delayed_trace_m_s302.json
+run  results/budget_sweep_m_s302.json
+EVAL_DONE m_s302
+12:13:04 evaluated m_s302
+12:13:04 start m_s303 (--no_step_emb --K 6 --seed 303 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4 )
+13:04:04 trained m_s303 rc 0
+run  results/competence_m_s303.json
+run  results/competence_matched_m_s303.json
+run  results/length_gen_m_s303.json
+run  results/delayed_trace_m_s303.json
+run  results/budget_sweep_m_s303.json
+EVAL_DONE m_s303
+13:04:25 evaluated m_s303
+13:04:25 start m_s304 (--no_step_emb --K 6 --seed 304 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4 )
+13:56:25 trained m_s304 rc 0
+run  results/competence_m_s304.json
+run  results/competence_matched_m_s304.json
+run  results/length_gen_m_s304.json
+run  results/delayed_trace_m_s304.json
+run  results/budget_sweep_m_s304.json
+EVAL_DONE m_s304
+13:56:46 evaluated m_s304
+13:56:46 start m_s305 (--no_step_emb --K 6 --seed 305 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4 )
+14:48:46 trained m_s305 rc 0
+run  results/competence_m_s305.json
+run  results/competence_matched_m_s305.json
+run  results/length_gen_m_s305.json
+run  results/delayed_trace_m_s305.json
+run  results/budget_sweep_m_s305.json
+EVAL_DONE m_s305
+14:49:09 evaluated m_s305
+14:49:09 start m_s306 (--no_step_emb --K 6 --seed 306 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4 )
+15:41:09 trained m_s306 rc 0
+run  results/competence_m_s306.json
+run  results/competence_matched_m_s306.json
+run  results/length_gen_m_s306.json
+run  results/delayed_trace_m_s306.json
+run  results/budget_sweep_m_s306.json
+EVAL_DONE m_s306
+15:41:30 evaluated m_s306
+15:41:30 start m_s307 (--no_step_emb --K 6 --seed 307 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4 )
+16:32:30 trained m_s307 rc 0
+run  results/competence_m_s307.json
+run  results/competence_matched_m_s307.json
+run  results/length_gen_m_s307.json
+run  results/delayed_trace_m_s307.json
+run  results/budget_sweep_m_s307.json
+EVAL_DONE m_s307
+16:32:51 evaluated m_s307
+16:32:52 QUEUE_DONE

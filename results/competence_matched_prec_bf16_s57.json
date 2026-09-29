@@ -1,0 +1,46 @@
+{
+ "runs/prec_bf16_s57": {
+  "1": {
+   "bal_acc": 0.999955579246624,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 0.9999111584932481,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9930887716404682,
+   "recall_reachable": 0.996107922686193,
+   "specificity_decoy": 0.9900696205947433,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.9003211385711494,
+   "recall_reachable": 0.9083626141953619,
+   "specificity_decoy": 0.892279662946937,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.6951815936648276,
+   "recall_reachable": 0.5446455657801598,
+   "specificity_decoy": 0.8457176215494955,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.593406423881607,
+   "recall_reachable": 0.36885406464250736,
+   "specificity_decoy": 0.8179587831207066,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5632031443128784,
+   "recall_reachable": 0.34254461715601614,
+   "specificity_decoy": 0.7838616714697406,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

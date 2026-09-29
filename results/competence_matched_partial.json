@@ -1,0 +1,266 @@
+{
+ "runs/r3_pc_gated_gpt2": {
+  "1": {
+   "bal_acc": 1.0,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 1.0,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9977992076512401,
+   "recall_reachable": 0.9989445214064252,
+   "specificity_decoy": 0.9966538938960549,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.9265938258044908,
+   "recall_reachable": 0.8942375263527759,
+   "specificity_decoy": 0.9589501252562058,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.7544611124605631,
+   "recall_reachable": 0.6577004752755587,
+   "specificity_decoy": 0.8512217496455675,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.6661961260375426,
+   "recall_reachable": 0.5294809010773751,
+   "specificity_decoy": 0.8029113509977102,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.6593065157555758,
+   "recall_reachable": 0.5198618307426598,
+   "specificity_decoy": 0.7987512007684918,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ },
+ "runs/main_s1": {
+  "1": {
+   "bal_acc": 1.0,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 1.0,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9980630772996337,
+   "recall_reachable": 0.9994722607032126,
+   "specificity_decoy": 0.9966538938960549,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.9628160072517846,
+   "recall_reachable": 0.9561489810260014,
+   "specificity_decoy": 0.9694830334775677,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.8085155112500149,
+   "recall_reachable": 0.7344524218829002,
+   "specificity_decoy": 0.8825786006171296,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.6695415733130591,
+   "recall_reachable": 0.5204701273261508,
+   "specificity_decoy": 0.8186130192999673,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.6555988578804425,
+   "recall_reachable": 0.5359815774323546,
+   "specificity_decoy": 0.7752161383285303,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ },
+ "runs/main_s2": {
+  "1": {
+   "bal_acc": 0.999866737739872,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 0.9997334754797441,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9939223093574278,
+   "recall_reachable": 0.9963717923345867,
+   "specificity_decoy": 0.9914728263802688,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.9243897670969159,
+   "recall_reachable": 0.8827125790583275,
+   "specificity_decoy": 0.9660669551355044,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.8285180413776305,
+   "recall_reachable": 0.7143290524825564,
+   "specificity_decoy": 0.9427070302727045,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.7851556149772027,
+   "recall_reachable": 0.6430950048971596,
+   "specificity_decoy": 0.9272162250572457,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5888406922399247,
+   "recall_reachable": 0.27806563039723664,
+   "specificity_decoy": 0.8996157540826129,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ },
+ "runs/pause_s0": {
+  "1": {
+   "bal_acc": 1.0,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 1.0,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9993883390756026,
+   "recall_reachable": 0.9998020977637048,
+   "specificity_decoy": 0.9989745803875006,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.9900290962812358,
+   "recall_reachable": 0.9933239634574842,
+   "specificity_decoy": 0.9867342291049874,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.8076994856399488,
+   "recall_reachable": 0.7218121144706239,
+   "specificity_decoy": 0.8935868568092736,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.5578988285584024,
+   "recall_reachable": 0.28442703232125366,
+   "specificity_decoy": 0.8313706247955512,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5331710740469756,
+   "recall_reachable": 0.2815198618307427,
+   "specificity_decoy": 0.7848222862632085,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ },
+ "runs/pause_s1": {
+  "1": {
+   "bal_acc": 0.9978233830845771,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 0.9956467661691543,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9668553468517147,
+   "recall_reachable": 0.9607493898014381,
+   "specificity_decoy": 0.9729613039019914,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.5181399561455241,
+   "recall_reachable": 0.22832044975404076,
+   "specificity_decoy": 0.8079594625370075,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.5066670911937787,
+   "recall_reachable": 0.3662655475781171,
+   "specificity_decoy": 0.6470686348094404,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.5158857963787611,
+   "recall_reachable": 0.5790401567091087,
+   "specificity_decoy": 0.4527314360484135,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5001103296783516,
+   "recall_reachable": 0.97524467472654,
+   "specificity_decoy": 0.02497598463016326,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ },
+ "runs/k0_s0": {
+  "1": {
+   "bal_acc": 0.9954690831556503,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 0.9909381663113006,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9298636407771828,
+   "recall_reachable": 0.9150999406293291,
+   "specificity_decoy": 0.9446273409250364,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.5356275525563132,
+   "recall_reachable": 0.14082923401264932,
+   "specificity_decoy": 0.9304258710999772,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.542912151754629,
+   "recall_reachable": 0.16038022044696126,
+   "specificity_decoy": 0.9254440830622968,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.5465431050971791,
+   "recall_reachable": 0.17257590597453476,
+   "specificity_decoy": 0.9205103042198234,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5498835316778904,
+   "recall_reachable": 0.20207253886010362,
+   "specificity_decoy": 0.8976945244956772,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

@@ -1,0 +1,27 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\Latent\latent\study.py", line 316, in <module>
+    main()
+    ~~~~^^
+  File "D:\Latent\latent\study.py", line 308, in main
+    discover(a.run, a.device)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\Latent\latent\study.py", line 94, in discover
+    prof[k]["probe_targeted"] = bootstrap_ci(s2["targeted"])
+                                ~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "D:\Latent\latent\interventions.py", line 271, in bootstrap_ci
+    bs = x[idx].mean(1)
+         ~^^^^^
+IndexError: index 4294967307 is out of bounds for axis 0 with size 300
+Traceback (most recent call last):
+  File "D:\Latent\scratch\variant_pipeline.py", line 11, in <module>
+    sh(["latent.study", "discover", run, "--device", dev])
+    ~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Latent\scratch\variant_pipeline.py", line 8, in <lambda>
+    sh = lambda args: subprocess.run(py + args, check=True)
+                      ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['C:\\Users\\peter\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe', '-m', 'latent.study', 'discover', 'runs/v3_rawfb_s0', '--device', 'cuda:0']' returned non-zero exit status 1.

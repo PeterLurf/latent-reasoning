@@ -1,0 +1,86 @@
+{
+ "base_s0": {
+  "config": "base",
+  "seed": 0,
+  "advance_step": 3000,
+  "stalled": false,
+  "last_step": 3000
+ },
+ "base_s1": {
+  "config": "base",
+  "seed": 1,
+  "advance_step": 1000,
+  "stalled": false,
+  "last_step": 1000
+ },
+ "base_s2": {
+  "config": "base",
+  "seed": 2,
+  "advance_step": 1000,
+  "stalled": false,
+  "last_step": 1000
+ },
+ "wu1000_s0": {
+  "config": "wu1000",
+  "seed": 0,
+  "advance_step": 1000,
+  "stalled": false,
+  "last_step": 1000
+ },
+ "wu1000_s1": {
+  "config": "wu1000",
+  "seed": 1,
+  "advance_step": 1000,
+  "stalled": false,
+  "last_step": 1000
+ },
+ "wu1000_s2": {
+  "config": "wu1000",
+  "seed": 2,
+  "advance_step": 1000,
+  "stalled": false,
+  "last_step": 1000
+ },
+ "lr5e-4_s0": {
+  "config": "lr5e-4",
+  "seed": 0,
+  "advance_step": 1000,
+  "stalled": false,
+  "last_step": 1000
+ },
+ "lr5e-4_s1": {
+  "config": "lr5e-4",
+  "seed": 1,
+  "advance_step": 1000,
+  "stalled": false,
+  "last_step": 1000
+ },
+ "lr5e-4_s2": {
+  "config": "lr5e-4",
+  "seed": 2,
+  "advance_step": 1000,
+  "stalled": false,
+  "last_step": 1000
+ },
+ "lr5e-4_wu1000_s0": {
+  "config": "lr5e-4_wu1000",
+  "seed": 0,
+  "advance_step": 1000,
+  "stalled": false,
+  "last_step": 1000
+ },
+ "lr5e-4_wu1000_s1": {
+  "config": "lr5e-4_wu1000",
+  "seed": 1,
+  "advance_step": 1000,
+  "stalled": false,
+  "last_step": 1000
+ },
+ "lr5e-4_wu1000_s2": {
+  "config": "lr5e-4_wu1000",
+  "seed": 2,
+  "advance_step": 1000,
+  "stalled": false,
+  "last_step": 1000
+ }
+}

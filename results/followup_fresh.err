@@ -1,0 +1,8 @@
+D:\Latent\latent\followup_analysis.py:24: RuntimeWarning: Mean of empty slice
+  per = np.nanmean(v, axis=-1)                     # (..., N)
+D:\Latent\latent\followup_analysis.py:24: RuntimeWarning: Mean of empty slice
+  per = np.nanmean(v, axis=-1)                     # (..., N)
+D:\Latent\latent\followup_analysis.py:24: RuntimeWarning: Mean of empty slice
+  per = np.nanmean(v, axis=-1)                     # (..., N)
+D:\Latent\latent\followup_analysis.py:24: RuntimeWarning: Mean of empty slice
+  per = np.nanmean(v, axis=-1)                     # (..., N)

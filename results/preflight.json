@@ -1,0 +1,168 @@
+{
+ "reproduction_s0": {
+  "compared_point_estimates": 862,
+  "max_abs_diff": 0.0,
+  "identical": true
+ },
+ "split_audit": {
+  "generator_sha256": "50c74dbc8d7ffee4",
+  "splits": {
+   "train": [
+    0,
+    13
+   ],
+   "discovery": [
+    14,
+    16
+   ],
+   "confirm": [
+    17,
+    19
+   ]
+  },
+  "family_overlap_train_confirm": 0,
+  "family_overlap_train_discovery": 0,
+  "family_overlap_discovery_confirm": 0
+ },
+ "donor_audit": [
+  {
+   "W": 1,
+   "remove: recipient/donor width": [
+    1,
+    0
+   ],
+   "insert: recipient/donor width": [
+    0,
+    1
+   ],
+   "swap (fixed width): recipient/donor width": [
+    1,
+    1
+   ],
+   "out_of_training_range": true
+  },
+  {
+   "W": 2,
+   "remove: recipient/donor width": [
+    2,
+    1
+   ],
+   "insert: recipient/donor width": [
+    1,
+    2
+   ],
+   "swap (fixed width): recipient/donor width": [
+    2,
+    2
+   ],
+   "out_of_training_range": false
+  },
+  {
+   "W": 3,
+   "remove: recipient/donor width": [
+    3,
+    2
+   ],
+   "insert: recipient/donor width": [
+    2,
+    3
+   ],
+   "swap (fixed width): recipient/donor width": [
+    3,
+    3
+   ],
+   "out_of_training_range": false
+  },
+  {
+   "W": 4,
+   "remove: recipient/donor width": [
+    4,
+    3
+   ],
+   "insert: recipient/donor width": [
+    3,
+    4
+   ],
+   "swap (fixed width): recipient/donor width": [
+    4,
+    4
+   ],
+   "out_of_training_range": false
+  },
+  {
+   "W": 5,
+   "remove: recipient/donor width": [
+    5,
+    4
+   ],
+   "insert: recipient/donor width": [
+    4,
+    5
+   ],
+   "swap (fixed width): recipient/donor width": [
+    5,
+    5
+   ],
+   "out_of_training_range": false
+  },
+  {
+   "W": 6,
+   "remove: recipient/donor width": [
+    6,
+    5
+   ],
+   "insert: recipient/donor width": [
+    5,
+    6
+   ],
+   "swap (fixed width): recipient/donor width": [
+    6,
+    6
+   ],
+   "out_of_training_range": false
+  },
+  {
+   "W": 7,
+   "remove: recipient/donor width": [
+    7,
+    6
+   ],
+   "insert: recipient/donor width": [
+    6,
+    7
+   ],
+   "swap (fixed width): recipient/donor width": [
+    7,
+    7
+   ],
+   "out_of_training_range": false
+  },
+  {
+   "W": 8,
+   "remove: recipient/donor width": [
+    8,
+    7
+   ],
+   "insert: recipient/donor width": [
+    7,
+    8
+   ],
+   "swap (fixed width): recipient/donor width": [
+    8,
+    8
+   ],
+   "out_of_training_range": false
+  }
+ ],
+ "interface_positions": {
+  "edges": [
+   0,
+   59
+  ],
+  "START": 60,
+  "LAT_j": "60+j (j=1..6)",
+  "thought h_k": "final-LN output at position START+k (h_0 = START output)",
+  "edit at k retains": "KV of positions 0..60+k (edges, START, LAT_1..LAT_k)",
+  "edit at k recomputes": "LAT_(k+1)..LAT_6 and every forked query"
+ }
+}

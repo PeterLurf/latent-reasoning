@@ -1,0 +1,19 @@
+# Model weights and checkpoints (~42 GB; kept locally, not versioned)
+*.pt
+runs/*/ckpts/
+prosqa/ckpt/
+prosqa/ckpt_ext/
+# Large or regenerable data (Coconut's ProsQA train set; make_long.py outputs)
+prosqa/data/prosqa_train.json
+prosqa/data/*long*_test.json
+prosqa/data/*ctl*_test.json
+# Python
+__pycache__/
+*.pyc
+# Local tooling and live queue state
+.claude/
+scratch/*.claimed
+scratch/*.lock
+# Raw ProsQA training logs (~19 MB of progress bars each; key lines are in res_*/train_acc_lines.txt)
+prosqa/res*/logs/prosqa.out
+prosqa/logs/prosqa.out

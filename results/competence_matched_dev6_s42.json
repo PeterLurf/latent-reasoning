@@ -1,0 +1,46 @@
+{
+ "runs/dev6_s42": {
+  "1": {
+   "bal_acc": 0.9981343283582089,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 0.996268656716418,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9774609211795662,
+   "recall_reachable": 0.976779470941355,
+   "specificity_decoy": 0.9781423714177775,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.8633352767663621,
+   "recall_reachable": 0.7640196767392832,
+   "specificity_decoy": 0.9626508767934411,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.7999005920095513,
+   "recall_reachable": 0.6442511881888967,
+   "specificity_decoy": 0.955549995830206,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.6855152366223599,
+   "recall_reachable": 0.4266405484818805,
+   "specificity_decoy": 0.9443899247628393,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5701962209181752,
+   "recall_reachable": 0.2095567069660334,
+   "specificity_decoy": 0.930835734870317,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

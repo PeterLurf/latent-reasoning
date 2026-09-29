@@ -1,0 +1,5 @@
+11:06:47 guarding runs/nostep_s5 pid 0 max relaunch 3
+11:06:47 launched pid 14404
+11:22:58 stage-1 failure at step 4200; archived as runs/nostep_s5_stage1fail_1
+11:22:58 launched pid 5776
+11:30:58 stage 1 passed at step 2000 ; waiting for the run to end

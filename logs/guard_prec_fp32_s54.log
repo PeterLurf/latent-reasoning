@@ -1,0 +1,3 @@
+11:22:37 guarding runs/prec_fp32_s54 pid 0 max relaunch 3
+11:22:37 launched pid 18880
+11:25:37 stage 1 passed at step 1000 ; waiting for the run to end

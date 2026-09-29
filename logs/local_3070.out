@@ -1,0 +1,21 @@
+08:56:52 start train:nostep_k8_s1:--K,8,--no_step_emb,--seed,1
+09:10:52 exit 0 train:nostep_k8_s1:--K,8,--no_step_emb,--seed,1
+09:10:52 start train:nostep_k8_s2:--K,8,--no_step_emb,--seed,2
+10:08:52 exit 0 train:nostep_k8_s2:--K,8,--no_step_emb,--seed,2
+10:08:52 start eval:nostep_k8_s1
+run  results/competence_nostep_k8_s1.json
+run  results/competence_matched_nostep_k8_s1.json
+run  results/length_gen_nostep_k8_s1.json
+run  results/delayed_trace_nostep_k8_s1.json
+run  results/budget_sweep_nostep_k8_s1.json
+EVAL_DONE nostep_k8_s1
+10:09:14 exit 0 eval:nostep_k8_s1
+10:09:14 start eval:nostep_k8_s2
+run  results/competence_nostep_k8_s2.json
+run  results/competence_matched_nostep_k8_s2.json
+run  results/length_gen_nostep_k8_s2.json
+run  results/delayed_trace_nostep_k8_s2.json
+run  results/budget_sweep_nostep_k8_s2.json
+EVAL_DONE nostep_k8_s2
+10:09:35 exit 0 eval:nostep_k8_s2
+10:09:35 QUEUE_DONE

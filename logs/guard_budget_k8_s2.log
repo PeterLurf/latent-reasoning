@@ -1,0 +1,6 @@
+00:17:34 guarding runs/budget_k8_s2 pid 0 max relaunch 3
+00:17:34 launched pid 15912
+00:21:34 stage 1 passed at step 1500 ; waiting for the run to end
+08:56:52 guarding runs/budget_k8_s2 pid 0 max relaunch 3
+08:56:52 launched pid 5540
+08:57:52 stage 1 passed at step 10200 ; waiting for the run to end

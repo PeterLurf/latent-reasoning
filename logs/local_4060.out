@@ -1,0 +1,12 @@
+08:56:52 start train:budget_k8_s2:--K,8,--seed,2
+09:47:52 exit 0 train:budget_k8_s2:--K,8,--seed,2
+09:47:52 start eval:budget_k8_s2:clock
+run  results/competence_budget_k8_s2.json
+run  results/competence_matched_budget_k8_s2.json
+run  results/length_gen_budget_k8_s2.json
+run  results/delayed_trace_budget_k8_s2.json
+run  results/budget_sweep_budget_k8_s2.json
+run  results/clock_freeze_budget_k8_s2.json
+EVAL_DONE budget_k8_s2
+09:48:22 exit 0 eval:budget_k8_s2:clock
+09:48:22 QUEUE_DONE

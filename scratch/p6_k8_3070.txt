@@ -1,0 +1,12 @@
+# PROTOCOL6 addendum L (K = 8), RTX 3070, bf16
+k8_s206 --no_step_emb --K 8 --seed 206 --lr 5e-4 --amp bf16 --save_every 1000
+k8_s207 --no_step_emb --K 8 --seed 207 --lr 5e-4 --amp bf16 --save_every 1000
+k8_s208 --no_step_emb --K 8 --seed 208 --lr 5e-4 --amp bf16 --save_every 1000
+k8_s209 --no_step_emb --K 8 --seed 209 --lr 5e-4 --amp bf16 --save_every 1000
+k8_s210 --no_step_emb --K 8 --seed 210 --lr 5e-4 --amp bf16 --save_every 1000
+k8_s211 --no_step_emb --K 8 --seed 211 --lr 5e-4 --amp bf16 --save_every 1000
+# amendment 2026-09-28 ~01:45
+k8_s216 --no_step_emb --K 8 --seed 216 --lr 5e-4 --amp bf16 --save_every 1000
+k8_s217 --no_step_emb --K 8 --seed 217 --lr 5e-4 --amp bf16 --save_every 1000
+k8_s218 --no_step_emb --K 8 --seed 218 --lr 5e-4 --amp bf16 --save_every 1000
+k8_s219 --no_step_emb --K 8 --seed 219 --lr 5e-4 --amp bf16 --save_every 1000

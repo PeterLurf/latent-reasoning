@@ -1,0 +1,46 @@
+{
+ "runs/stall_bf16_s72": {
+  "1": {
+   "bal_acc": 0.9990129577610646,
+   "recall_reachable": 0.9998915871639202,
+   "specificity_decoy": 0.9981343283582089,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9838624712645772,
+   "recall_reachable": 0.9815950920245399,
+   "specificity_decoy": 0.9861298505046144,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.9294117543502786,
+   "recall_reachable": 0.8909346451159522,
+   "specificity_decoy": 0.9678888635846049,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.7396158952227283,
+   "recall_reachable": 0.520679542926484,
+   "specificity_decoy": 0.9585522475189726,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.5719619428059171,
+   "recall_reachable": 0.20411361410381978,
+   "specificity_decoy": 0.9398102715080144,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5552755836274076,
+   "recall_reachable": 0.18019573978123202,
+   "specificity_decoy": 0.9303554274735831,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

@@ -1,0 +1,46 @@
+{
+ "runs/k8_s200": {
+  "1": {
+   "bal_acc": 0.9915058504405244,
+   "recall_reachable": 0.9998915871639202,
+   "specificity_decoy": 0.9831201137171286,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9671853761643658,
+   "recall_reachable": 0.9667524243023946,
+   "specificity_decoy": 0.9676183280263371,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.8530038443484589,
+   "recall_reachable": 0.791637385804638,
+   "specificity_decoy": 0.9143703028922796,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.7516266602992661,
+   "recall_reachable": 0.6562847608453838,
+   "specificity_decoy": 0.8469685597531482,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.5937764421790743,
+   "recall_reachable": 0.3584720861900098,
+   "specificity_decoy": 0.8290807981681387,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5948374835542416,
+   "recall_reachable": 0.37363270005757054,
+   "specificity_decoy": 0.8160422670509127,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

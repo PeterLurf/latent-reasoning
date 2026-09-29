@@ -1,0 +1,702 @@
+{
+ "run": "runs/pause_s1",
+ "decodability_val": {
+  "0": {
+   "matched_auc": 0.7523453609686177,
+   "by_bdepth": {
+    "0": 0.9174244581805585,
+    "1": 0.7177375216924865,
+    "2": 0.7216080573229958,
+    "3": 0.7231251918846353,
+    "4": 0.7211973171302657,
+    "5": 0.712979619600764
+   },
+   "by_width": {
+    "1": 0.5935808995903756,
+    "2": 0.5760487236754511,
+    "3": 0.5745946047750177,
+    "4": 0.5714759767788116,
+    "5": 0.5544371380385426,
+    "6": 0.5424750809482359,
+    "7": 0.5597721166781523,
+    "8": 0.5462396214542274
+   },
+   "branch_auc_by_width": {
+    "1": 0.5827605956471936,
+    "2": 0.5845984781323877,
+    "3": 0.5754252716618308,
+    "4": 0.5688657407407408,
+    "5": 0.5601678240740742,
+    "6": 0.553931642101285,
+    "7": 0.5561085702328641,
+    "8": 0.5535727838494232
+   }
+  },
+  "1": {
+   "matched_auc": 0.6804517848986812,
+   "by_bdepth": {
+    "0": 0.6890999284704675,
+    "1": 0.675436670428575,
+    "2": 0.6764526748731204,
+    "3": 0.6726701110461303,
+    "4": 0.6772709828946998,
+    "5": 0.6917803416790937
+   },
+   "by_width": {
+    "1": 0.5207671332516601,
+    "2": 0.5112913947376876,
+    "3": 0.5109641228935763,
+    "4": 0.5151074495201767,
+    "5": 0.514965731456546,
+    "6": 0.49717580173612114,
+    "7": 0.5054647907117743,
+    "8": 0.49885083851266937
+   },
+   "branch_auc_by_width": {
+    "1": 0.5116138475245005,
+    "2": 0.5059471040189125,
+    "3": 0.5056110257723161,
+    "4": 0.5064286433172304,
+    "5": 0.5070601851851851,
+    "6": 0.5048185941043084,
+    "7": 0.4944698532269154,
+    "8": 0.507039313904068
+   }
+  },
+  "2": {
+   "matched_auc": 0.6950032458579326,
+   "by_bdepth": {
+    "0": 0.723300965025653,
+    "1": 0.6866772389952065,
+    "2": 0.6877366388076203,
+    "3": 0.6883826137728284,
+    "4": 0.6884004739265558,
+    "5": 0.6955215446197316
+   },
+   "by_width": {
+    "1": 0.5424516115193362,
+    "2": 0.5247565058422488,
+    "3": 0.5189128248419161,
+    "4": 0.5324885524686495,
+    "5": 0.5145176153739929,
+    "6": 0.5069265432934525,
+    "7": 0.5038970487020967,
+    "8": 0.49695834368548214
+   },
+   "branch_auc_by_width": {
+    "1": 0.530768741249841,
+    "2": 0.5266419178486997,
+    "3": 0.517636684303351,
+    "4": 0.5246766807568438,
+    "5": 0.51609375,
+    "6": 0.5127137660619804,
+    "7": 0.5006128000478284,
+    "8": 0.5099043715846995
+   }
+  },
+  "3": {
+   "matched_auc": 0.6867155925446062,
+   "by_bdepth": {
+    "0": 0.6959861451245947,
+    "1": 0.6830975842807141,
+    "2": 0.683588546507795,
+    "3": 0.6801097275384195,
+    "4": 0.6857317333821868,
+    "5": 0.6917798184339272
+   },
+   "by_width": {
+    "1": 0.5224642543494912,
+    "2": 0.5096834913122817,
+    "3": 0.5071700130935773,
+    "4": 0.5137427294090504,
+    "5": 0.512231669045553,
+    "6": 0.5002941957179684,
+    "7": 0.5003584579582421,
+    "8": 0.4997449608390377
+   },
+   "branch_auc_by_width": {
+    "1": 0.5078751431844215,
+    "2": 0.5056331264775413,
+    "3": 0.5065355293849918,
+    "4": 0.5077055656199678,
+    "5": 0.5079976851851852,
+    "6": 0.5071688397581254,
+    "7": 0.4903820285176217,
+    "8": 0.5044398907103825
+   }
+  },
+  "4": {
+   "matched_auc": 0.6880797473194575,
+   "by_bdepth": {
+    "0": 0.6947637724647747,
+    "1": 0.6839736353256056,
+    "2": 0.6864947443727325,
+    "3": 0.6842541182347096,
+    "4": 0.6850519157924231,
+    "5": 0.6939402977264998
+   },
+   "by_width": {
+    "1": 0.525246800337752,
+    "2": 0.5079792376992067,
+    "3": 0.5044046927186949,
+    "4": 0.5113407807711555,
+    "5": 0.5101860313304085,
+    "6": 0.5020380240783759,
+    "7": 0.5013215310460973,
+    "8": 0.4968225765013659
+   },
+   "branch_auc_by_width": {
+    "1": 0.5110729285987018,
+    "2": 0.4997321956264775,
+    "3": 0.5029584115605621,
+    "4": 0.5092278079710144,
+    "5": 0.5071990740740742,
+    "6": 0.5049366969009828,
+    "7": 0.49204107254954715,
+    "8": 0.4994782179720704
+   }
+  },
+  "5": {
+   "matched_auc": 0.6911431984448361,
+   "by_bdepth": {
+    "0": 0.6992225143847075,
+    "1": 0.688705399436936,
+    "2": 0.6884053241546662,
+    "3": 0.6870768142287552,
+    "4": 0.6894225052849756,
+    "5": 0.6940266331789761
+   },
+   "by_width": {
+    "1": 0.5250406308251631,
+    "2": 0.5091398572073161,
+    "3": 0.5052437158094661,
+    "4": 0.5123845059367974,
+    "5": 0.5090864137110348,
+    "6": 0.5021629315774344,
+    "7": 0.49967269963318267,
+    "8": 0.49906790561868114
+   },
+   "branch_auc_by_width": {
+    "1": 0.5085751559119256,
+    "2": 0.4991965868794326,
+    "3": 0.5033068783068783,
+    "4": 0.506592190016103,
+    "5": 0.5057696759259259,
+    "6": 0.5095368008314436,
+    "7": 0.4926239799121156,
+    "8": 0.5071246964177293
+   }
+  },
+  "6": {
+   "matched_auc": 0.6797608144008439,
+   "by_bdepth": {
+    "0": 0.7084226029007283,
+    "1": 0.6752081385573131,
+    "2": 0.6788548045657737,
+    "3": 0.6718301039154496,
+    "4": 0.6745875144659556,
+    "5": 0.669661721999843
+   },
+   "by_width": {
+    "1": 0.5237955840790041,
+    "2": 0.5050049128891929,
+    "3": 0.5090457091943593,
+    "4": 0.5101601516065511,
+    "5": 0.5132477268045647,
+    "6": 0.5108171805871126,
+    "7": 0.5091287260776765,
+    "8": 0.5001633873069914
+   },
+   "branch_auc_by_width": {
+    "1": 0.5318664884816088,
+    "2": 0.5213874113475178,
+    "3": 0.5066350913125107,
+    "4": 0.513071155394525,
+    "5": 0.5132928240740741,
+    "6": 0.515500992063492,
+    "7": 0.5043942247332078,
+    "8": 0.5044019429265331
+   }
+  }
+ },
+ "shuffled_label_auc": {
+  "0": 0.4989223762490116,
+  "1": 0.4857610769615384,
+  "2": 0.4873374741175547,
+  "3": 0.48735240510189426,
+  "4": 0.4841593543499659,
+  "5": 0.4845065003166346,
+  "6": 0.48352013138047717
+ },
+ "untrained_model_auc": {
+  "0": 0.5159915915437777,
+  "1": 0.5161344764783239,
+  "2": 0.5157574092138348,
+  "3": 0.5156203257728994,
+  "4": 0.5166471274989161,
+  "5": 0.5160135477822445,
+  "6": 0.5162528759956792
+ },
+ "site_profile_W4": {
+  "0": {
+   "targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_signed": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_decoy": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "1": {
+   "targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_signed": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_decoy": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "2": {
+   "targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_signed": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_decoy": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "3": {
+   "targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_signed": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_decoy": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "4": {
+   "targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_signed": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_decoy": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "5": {
+   "targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_signed": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "collateral_decoy": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_targeted": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "probe_collateral_attached": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "k_star": 0,
+ "sec": 38.10464644432068,
+ "subspace_profile_W4": {
+  "0": {
+   "full": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   }
+  },
+  "1": {
+   "full": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   }
+  },
+  "2": {
+   "full": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   }
+  },
+  "3": {
+   "full": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   }
+  },
+  "4": {
+   "full": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   }
+  },
+  "5": {
+   "full": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random6": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random20": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "pca40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   },
+   "random40": {
+    "targeted": 0.0,
+    "collateral_attached": 0.0,
+    "collateral_signed": 0.0,
+    "collateral_decoy": 0.0
+   }
+  }
+ }
+}

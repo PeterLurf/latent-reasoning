@@ -1,0 +1,123 @@
+{
+ "models": {
+  "s0": {
+   "run": "runs/r3_pc_gated_gpt2",
+   "delayed": 0.9001922607421875,
+   "matched5": 0.6661961260375426,
+   "gate_old": true,
+   "gate_J": true
+  },
+  "s1": {
+   "run": "runs/main_s1",
+   "delayed": 0.918243408203125,
+   "matched5": 0.6695415733130591,
+   "gate_old": true,
+   "gate_J": true
+  },
+  "s2": {
+   "run": "runs/main_s2",
+   "delayed": 0.9259796142578125,
+   "matched5": 0.7851556149772027,
+   "gate_old": true,
+   "gate_J": true
+  },
+  "s3": {
+   "run": "runs/main_s3",
+   "delayed": 0.92510986328125,
+   "matched5": 0.8360908811587349,
+   "gate_old": true,
+   "gate_J": true
+  },
+  "s4": {
+   "run": "runs/dev_s4",
+   "delayed": 0.818817138671875,
+   "matched5": 0.538179470888893,
+   "gate_old": false,
+   "gate_J": false
+  },
+  "s5": {
+   "run": "runs/main_s5",
+   "delayed": 0.8914642333984375,
+   "matched5": 0.5837813345328731,
+   "gate_old": true,
+   "gate_J": false
+  },
+  "v1": {
+   "run": "runs/v1_wide_s0",
+   "delayed": 0.923675537109375,
+   "matched5": 0.7127642375665489,
+   "gate_old": true,
+   "gate_J": true
+  },
+  "v2": {
+   "run": "runs/v2_deep_s0",
+   "delayed": 0.9648895263671875,
+   "matched5": 0.9051098184446544,
+   "gate_old": true,
+   "gate_J": true
+  },
+  "v3": {
+   "run": "runs/v3_rawfb_s0",
+   "delayed": 0.8837127685546875,
+   "matched5": 0.6034613803614447,
+   "gate_old": true,
+   "gate_J": true
+  },
+  "v1b": {
+   "run": "runs/v1_wide_s1",
+   "delayed": 0.718353271484375,
+   "matched5": 0.5073380501134661,
+   "gate_old": false,
+   "gate_J": false
+  },
+  "k4": {
+   "run": "runs/budget_k4_s0",
+   "delayed": 0.9257049560546875,
+   "matched5": 0.619887706543355,
+   "gate_old": true,
+   "gate_J": true
+  },
+  "k10": {
+   "run": "runs/budget_k10_s0",
+   "delayed": 0.836273193359375,
+   "matched5": 0.5471752343732228,
+   "gate_old": false,
+   "gate_J": false
+  },
+  "k4b": {
+   "run": "runs/budget_k4_s1",
+   "delayed": 0.6910247802734375,
+   "matched5": 0.5652142271058187,
+   "gate_old": false,
+   "gate_J": false
+  },
+  "k4c": {
+   "run": "runs/budget_k4_s2",
+   "delayed": 0.9163818359375,
+   "matched5": 0.6009256064259962,
+   "gate_old": true,
+   "gate_J": true
+  },
+  "k8": {
+   "run": "runs/budget_k8_s0",
+   "delayed": 0.9275665283203125,
+   "matched5": 0.7193591913615193,
+   "gate_old": true,
+   "gate_J": true
+  },
+  "nostep": {
+   "run": "runs/nostep_s0",
+   "delayed": 0.8705291748046875,
+   "matched5": 0.6412902485809131,
+   "gate_old": true,
+   "gate_J": true
+  }
+ },
+ "changed": [
+  "s5"
+ ],
+ "affected_verdicts": {
+  "s5": {}
+ },
+ "note": "Only main_s5 changes. Under J it is not competent, so the addendum-I held-out replication would be unscorable on seed 5 instead of failed; the held-out replication then rests on seed 3 alone (seed 4 failed the old gate too). No other PROTOCOL3 verdict used s5 as a competent model."
+}

@@ -1,0 +1,46 @@
+{
+ "runs/budget_k4_s3": {
+  "1": {
+   "bal_acc": 0.9985341151385927,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 0.9970682302771855,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9761476573624063,
+   "recall_reachable": 0.9765815687050597,
+   "specificity_decoy": 0.9757137460197528,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.85609079406497,
+   "recall_reachable": 0.7773717498243148,
+   "specificity_decoy": 0.9348098383056251,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.6176380144683125,
+   "recall_reachable": 0.33168166649812925,
+   "specificity_decoy": 0.9035943624384956,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.5888342036725013,
+   "recall_reachable": 0.29461312438785503,
+   "specificity_decoy": 0.8830552829571475,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5679900421243689,
+   "recall_reachable": 0.2872769142199194,
+   "specificity_decoy": 0.8487031700288185,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

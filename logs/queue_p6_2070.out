@@ -1,0 +1,46 @@
+19:58:48 start rel_lr5_s21_ext (--K 6 --seed 21 --lr 0.0005 --no_step_emb --amp fp32 --steps 45000 --save_every 2500 )
+20:54:48 trained rel_lr5_s21_ext rc 0
+run  results/competence_rel_lr5_s21_ext.json
+run  results/competence_matched_rel_lr5_s21_ext.json
+run  results/length_gen_rel_lr5_s21_ext.json
+run  results/delayed_trace_rel_lr5_s21_ext.json
+run  results/budget_sweep_rel_lr5_s21_ext.json
+EVAL_DONE rel_lr5_s21_ext
+20:55:10 evaluated rel_lr5_s21_ext
+20:55:11 start rel_lr5_s23_ext (--K 6 --seed 23 --lr 0.0005 --no_step_emb --amp fp32 --steps 45000 --save_every 2500 )
+21:51:11 trained rel_lr5_s23_ext rc 0
+run  results/competence_rel_lr5_s23_ext.json
+run  results/competence_matched_rel_lr5_s23_ext.json
+run  results/length_gen_rel_lr5_s23_ext.json
+run  results/delayed_trace_rel_lr5_s23_ext.json
+run  results/budget_sweep_rel_lr5_s23_ext.json
+EVAL_DONE rel_lr5_s23_ext
+21:51:33 evaluated rel_lr5_s23_ext
+21:51:33 start dev6_s39 (--K 6 --seed 39 --lr 5e-4 --save_every 1000 --amp fp32 )
+23:43:34 trained dev6_s39 rc 0
+run  results/competence_dev6_s39.json
+run  results/competence_matched_dev6_s39.json
+run  results/length_gen_dev6_s39.json
+run  results/delayed_trace_dev6_s39.json
+run  results/budget_sweep_dev6_s39.json
+EVAL_DONE dev6_s39
+23:43:57 evaluated dev6_s39
+23:43:57 start dev6_s40 (--K 6 --seed 40 --lr 5e-4 --save_every 1000 --amp fp32 )
+01:36:57 trained dev6_s40 rc 0
+run  results/competence_dev6_s40.json
+run  results/competence_matched_dev6_s40.json
+run  results/length_gen_dev6_s40.json
+run  results/delayed_trace_dev6_s40.json
+run  results/budget_sweep_dev6_s40.json
+EVAL_DONE dev6_s40
+01:37:20 evaluated dev6_s40
+01:37:21 start dev6_s41 (--K 6 --seed 41 --lr 5e-4 --save_every 1000 --amp fp32 )
+03:30:21 trained dev6_s41 rc 0
+run  results/competence_dev6_s41.json
+run  results/competence_matched_dev6_s41.json
+run  results/length_gen_dev6_s41.json
+run  results/delayed_trace_dev6_s41.json
+run  results/budget_sweep_dev6_s41.json
+EVAL_DONE dev6_s41
+03:30:44 evaluated dev6_s41
+03:30:44 QUEUE_DONE

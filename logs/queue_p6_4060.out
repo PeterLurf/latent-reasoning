@@ -1,0 +1,100 @@
+19:58:33 start rel_base_s20_ext (--K 6 --seed 20 --lr 0.001 --no_step_emb --amp bf16 --steps 45000 --save_every 2500 )
+20:32:33 trained rel_base_s20_ext rc 0
+run  results/competence_rel_base_s20_ext.json
+run  results/competence_matched_rel_base_s20_ext.json
+run  results/length_gen_rel_base_s20_ext.json
+run  results/delayed_trace_rel_base_s20_ext.json
+run  results/budget_sweep_rel_base_s20_ext.json
+EVAL_DONE rel_base_s20_ext
+20:32:56 evaluated rel_base_s20_ext
+20:32:56 start rel_base_s26_ext (--K 6 --seed 26 --lr 0.001 --no_step_emb --amp bf16 --steps 45000 --save_every 2500 )
+21:06:56 trained rel_base_s26_ext rc 0
+run  results/competence_rel_base_s26_ext.json
+run  results/competence_matched_rel_base_s26_ext.json
+run  results/length_gen_rel_base_s26_ext.json
+run  results/delayed_trace_rel_base_s26_ext.json
+run  results/budget_sweep_rel_base_s26_ext.json
+EVAL_DONE rel_base_s26_ext
+21:07:20 evaluated rel_base_s26_ext
+21:07:20 start rel_lr5_s20_ext (--K 6 --seed 20 --lr 0.0005 --no_step_emb --amp bf16 --steps 45000 --save_every 2500 )
+21:41:20 trained rel_lr5_s20_ext rc 0
+run  results/competence_rel_lr5_s20_ext.json
+run  results/competence_matched_rel_lr5_s20_ext.json
+run  results/length_gen_rel_lr5_s20_ext.json
+run  results/delayed_trace_rel_lr5_s20_ext.json
+run  results/budget_sweep_rel_lr5_s20_ext.json
+EVAL_DONE rel_lr5_s20_ext
+21:41:43 evaluated rel_lr5_s20_ext
+21:41:43 start rel_lr5_s24_ext (--K 6 --seed 24 --lr 0.0005 --no_step_emb --amp bf16 --steps 45000 --save_every 2500 )
+22:15:43 trained rel_lr5_s24_ext rc 0
+run  results/competence_rel_lr5_s24_ext.json
+run  results/competence_matched_rel_lr5_s24_ext.json
+run  results/length_gen_rel_lr5_s24_ext.json
+run  results/delayed_trace_rel_lr5_s24_ext.json
+run  results/budget_sweep_rel_lr5_s24_ext.json
+EVAL_DONE rel_lr5_s24_ext
+22:16:06 evaluated rel_lr5_s24_ext
+22:16:07 start rel_base_s21_ext (--K 6 --seed 21 --lr 0.001 --no_step_emb --amp bf16 --steps 45000 --save_every 2500 )
+22:50:07 trained rel_base_s21_ext rc 0
+run  results/competence_rel_base_s21_ext.json
+run  results/competence_matched_rel_base_s21_ext.json
+run  results/length_gen_rel_base_s21_ext.json
+run  results/delayed_trace_rel_base_s21_ext.json
+run  results/budget_sweep_rel_base_s21_ext.json
+EVAL_DONE rel_base_s21_ext
+22:50:30 evaluated rel_base_s21_ext
+22:50:30 start rel_base_s23_ext (--K 6 --seed 23 --lr 0.001 --no_step_emb --amp bf16 --steps 45000 --save_every 2500 )
+23:24:30 trained rel_base_s23_ext rc 0
+run  results/competence_rel_base_s23_ext.json
+run  results/competence_matched_rel_base_s23_ext.json
+run  results/length_gen_rel_base_s23_ext.json
+run  results/delayed_trace_rel_base_s23_ext.json
+run  results/budget_sweep_rel_base_s23_ext.json
+EVAL_DONE rel_base_s23_ext
+23:24:54 evaluated rel_base_s23_ext
+23:24:55 start nostep_s0_ext (--K 6 --seed 0 --lr 0.001 --no_step_emb --amp bf16 --steps 45000 --save_every 2500 )
+23:59:55 trained nostep_s0_ext rc 0
+run  results/competence_nostep_s0_ext.json
+run  results/competence_matched_nostep_s0_ext.json
+run  results/length_gen_nostep_s0_ext.json
+run  results/delayed_trace_nostep_s0_ext.json
+run  results/budget_sweep_nostep_s0_ext.json
+EVAL_DONE nostep_s0_ext
+00:00:18 evaluated nostep_s0_ext
+00:00:18 start dev6_s31 (--K 6 --seed 31 --lr 5e-4 --save_every 1000 --amp bf16 )
+01:08:19 trained dev6_s31 rc 0
+run  results/competence_dev6_s31.json
+run  results/competence_matched_dev6_s31.json
+run  results/length_gen_dev6_s31.json
+run  results/delayed_trace_dev6_s31.json
+run  results/budget_sweep_dev6_s31.json
+EVAL_DONE dev6_s31
+01:08:43 evaluated dev6_s31
+01:08:43 start dev6_s33 (--K 6 --seed 33 --lr 5e-4 --save_every 1000 --amp bf16 )
+02:17:44 trained dev6_s33 rc 0
+run  results/competence_dev6_s33.json
+run  results/competence_matched_dev6_s33.json
+run  results/length_gen_dev6_s33.json
+run  results/delayed_trace_dev6_s33.json
+run  results/budget_sweep_dev6_s33.json
+EVAL_DONE dev6_s33
+02:18:07 evaluated dev6_s33
+02:18:08 start dev6_s36 (--K 6 --seed 36 --lr 5e-4 --save_every 1000 --amp bf16 )
+03:27:08 trained dev6_s36 rc 0
+run  results/competence_dev6_s36.json
+run  results/competence_matched_dev6_s36.json
+run  results/length_gen_dev6_s36.json
+run  results/delayed_trace_dev6_s36.json
+run  results/budget_sweep_dev6_s36.json
+EVAL_DONE dev6_s36
+03:27:31 evaluated dev6_s36
+03:27:32 start dev6_s38 (--K 6 --seed 38 --lr 5e-4 --save_every 1000 --amp bf16 )
+04:36:32 trained dev6_s38 rc 0
+run  results/competence_dev6_s38.json
+run  results/competence_matched_dev6_s38.json
+run  results/length_gen_dev6_s38.json
+run  results/delayed_trace_dev6_s38.json
+run  results/budget_sweep_dev6_s38.json
+EVAL_DONE dev6_s38
+04:36:55 evaluated dev6_s38
+04:36:56 QUEUE_DONE

@@ -1,0 +1,4 @@
+[runs/pilot2_pause_lr1e-3] step 1000 loss 1.3862 delayed 0.500 upfront 0.500 depth {1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0, 6: 0.0, 99: 1.0} 138s
+[runs/pilot2_pause_lr1e-3] step 2000 loss 1.3884 delayed 0.500 upfront 0.500 depth {1: 1.0, 2: 1.0, 3: 1.0, 4: 1.0, 5: 1.0, 6: 1.0, 99: 0.0} 272s
+[runs/pilot2_pause_lr1e-3] step 3000 loss 1.3861 delayed 0.500 upfront 0.500 depth {1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0, 6: 0.0, 99: 1.0} 401s
+[runs/pilot2_pause_lr1e-3] step 4000 loss 1.3865 delayed 0.500 upfront 0.500 depth {1: 1.0, 2: 1.0, 3: 1.0, 4: 1.0, 5: 1.0, 6: 1.0, 99: 0.0} 530s

@@ -1,0 +1,28 @@
+04:41:23 start dev6_s42 (--K 6 --seed 42 --lr 5e-4 --save_every 1000 --amp fp32 )
+06:33:24 trained dev6_s42 rc 0
+run  results/competence_dev6_s42.json
+run  results/competence_matched_dev6_s42.json
+run  results/length_gen_dev6_s42.json
+run  results/delayed_trace_dev6_s42.json
+run  results/budget_sweep_dev6_s42.json
+EVAL_DONE dev6_s42
+06:33:46 evaluated dev6_s42
+06:33:46 start dev6_s43 (--K 6 --seed 43 --lr 5e-4 --save_every 1000 --amp fp32 )
+08:25:46 trained dev6_s43 rc 0
+run  results/competence_dev6_s43.json
+run  results/competence_matched_dev6_s43.json
+run  results/length_gen_dev6_s43.json
+run  results/delayed_trace_dev6_s43.json
+run  results/budget_sweep_dev6_s43.json
+EVAL_DONE dev6_s43
+08:26:09 evaluated dev6_s43
+08:26:09 start dev6_s44 (--K 6 --seed 44 --lr 5e-4 --save_every 1000 --amp fp32 )
+10:18:09 trained dev6_s44 rc 0
+run  results/competence_dev6_s44.json
+run  results/competence_matched_dev6_s44.json
+run  results/length_gen_dev6_s44.json
+run  results/delayed_trace_dev6_s44.json
+run  results/budget_sweep_dev6_s44.json
+EVAL_DONE dev6_s44
+10:18:32 evaluated dev6_s44
+10:18:32 QUEUE_DONE

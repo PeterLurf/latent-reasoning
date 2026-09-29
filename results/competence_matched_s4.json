@@ -1,0 +1,46 @@
+{
+ "runs/dev_s4": {
+  "1": {
+   "bal_acc": 0.9997681105684562,
+   "recall_reachable": 0.9998915871639202,
+   "specificity_decoy": 0.9996446339729922,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9900006430122672,
+   "recall_reachable": 0.999538228115311,
+   "specificity_decoy": 0.9804630579092234,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.8623319787983886,
+   "recall_reachable": 0.8803232607167955,
+   "specificity_decoy": 0.8443406968799818,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.5468294769464195,
+   "recall_reachable": 0.3225806451612903,
+   "specificity_decoy": 0.7710783087315487,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.538179470888893,
+   "recall_reachable": 0.3784524975514202,
+   "specificity_decoy": 0.6979064442263657,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5291614612626693,
+   "recall_reachable": 0.4881980426021877,
+   "specificity_decoy": 0.5701248799231509,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

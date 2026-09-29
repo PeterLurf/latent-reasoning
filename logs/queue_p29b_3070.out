@@ -1,0 +1,19 @@
+10:23:22 start p29_s88 (--no_step_emb --K 6 --seed 88 --lr 5e-4 --amp bf16 --save_every 1000 )
+11:14:22 trained p29_s88 rc 0
+run  results/competence_p29_s88.json
+run  results/competence_matched_p29_s88.json
+run  results/length_gen_p29_s88.json
+run  results/delayed_trace_p29_s88.json
+run  results/budget_sweep_p29_s88.json
+EVAL_DONE p29_s88
+11:14:42 evaluated p29_s88
+11:14:43 start p29_s89 (--no_step_emb --K 6 --seed 89 --lr 5e-4 --amp bf16 --save_every 1000 )
+12:06:43 trained p29_s89 rc 0
+run  results/competence_p29_s89.json
+run  results/competence_matched_p29_s89.json
+run  results/length_gen_p29_s89.json
+run  results/delayed_trace_p29_s89.json
+run  results/budget_sweep_p29_s89.json
+EVAL_DONE p29_s89
+12:07:03 evaluated p29_s89
+12:07:03 QUEUE_DONE

@@ -1,0 +1,91 @@
+04:39:52 start dev6_s30_brst2_1 (--K 6 --seed 30 --lr 0.0005 --amp bf16 )
+05:29:52 trained dev6_s30_brst2_1 rc 0
+run  results/competence_dev6_s30_brst2_1.json
+run  results/competence_matched_dev6_s30_brst2_1.json
+run  results/length_gen_dev6_s30_brst2_1.json
+run  results/delayed_trace_dev6_s30_brst2_1.json
+run  results/budget_sweep_dev6_s30_brst2_1.json
+EVAL_DONE dev6_s30_brst2_1
+05:30:12 evaluated dev6_s30_brst2_1
+05:30:12 start dev6_s35_brst2_2 (--K 6 --seed 35 --lr 0.0005 --amp bf16 )
+06:19:13 trained dev6_s35_brst2_2 rc 0
+run  results/competence_dev6_s35_brst2_2.json
+run  results/competence_matched_dev6_s35_brst2_2.json
+run  results/length_gen_dev6_s35_brst2_2.json
+run  results/delayed_trace_dev6_s35_brst2_2.json
+run  results/budget_sweep_dev6_s35_brst2_2.json
+EVAL_DONE dev6_s35_brst2_2
+06:19:33 evaluated dev6_s35_brst2_2
+06:19:33 start dev6_s32_brst2_2 (--K 6 --seed 32 --lr 0.0005 --amp bf16 )
+07:05:33 trained dev6_s32_brst2_2 rc 0
+run  results/competence_dev6_s32_brst2_2.json
+run  results/competence_matched_dev6_s32_brst2_2.json
+run  results/length_gen_dev6_s32_brst2_2.json
+run  results/delayed_trace_dev6_s32_brst2_2.json
+run  results/budget_sweep_dev6_s32_brst2_2.json
+EVAL_DONE dev6_s32_brst2_2
+07:05:53 evaluated dev6_s32_brst2_2
+07:05:54 start dev6_s35_brst4_2 (--K 6 --seed 35 --lr 0.0005 --amp bf16 )
+07:45:54 trained dev6_s35_brst4_2 rc 0
+run  results/competence_dev6_s35_brst4_2.json
+run  results/competence_matched_dev6_s35_brst4_2.json
+run  results/length_gen_dev6_s35_brst4_2.json
+run  results/delayed_trace_dev6_s35_brst4_2.json
+run  results/budget_sweep_dev6_s35_brst4_2.json
+EVAL_DONE dev6_s35_brst4_2
+07:46:14 evaluated dev6_s35_brst4_2
+07:46:14 start dev6_s35_brst4_1 (--K 6 --seed 35 --lr 0.0005 --amp bf16 )
+08:25:14 trained dev6_s35_brst4_1 rc 0
+run  results/competence_dev6_s35_brst4_1.json
+run  results/competence_matched_dev6_s35_brst4_1.json
+run  results/length_gen_dev6_s35_brst4_1.json
+run  results/delayed_trace_dev6_s35_brst4_1.json
+run  results/budget_sweep_dev6_s35_brst4_1.json
+EVAL_DONE dev6_s35_brst4_1
+08:25:35 evaluated dev6_s35_brst4_1
+08:25:35 start dev6_s32_brst4_1 (--K 6 --seed 32 --lr 0.0005 --amp bf16 )
+09:01:35 trained dev6_s32_brst4_1 rc 0
+run  results/competence_dev6_s32_brst4_1.json
+run  results/competence_matched_dev6_s32_brst4_1.json
+run  results/length_gen_dev6_s32_brst4_1.json
+run  results/delayed_trace_dev6_s32_brst4_1.json
+run  results/budget_sweep_dev6_s32_brst4_1.json
+EVAL_DONE dev6_s32_brst4_1
+09:01:56 evaluated dev6_s32_brst4_1
+09:01:56 start dev6_s35_brfull_1 (--K 6 --seed 35 --lr 0.0005 --amp bf16 )
+09:35:56 trained dev6_s35_brfull_1 rc 0
+run  results/competence_dev6_s35_brfull_1.json
+run  results/competence_matched_dev6_s35_brfull_1.json
+run  results/length_gen_dev6_s35_brfull_1.json
+run  results/delayed_trace_dev6_s35_brfull_1.json
+run  results/budget_sweep_dev6_s35_brfull_1.json
+EVAL_DONE dev6_s35_brfull_1
+09:36:17 evaluated dev6_s35_brfull_1
+09:36:17 start dev6_s30_brst4_1 (--K 6 --seed 30 --lr 0.0005 --amp bf16 )
+09:59:17 trained dev6_s30_brst4_1 rc 0
+run  results/competence_dev6_s30_brst4_1.json
+run  results/competence_matched_dev6_s30_brst4_1.json
+run  results/length_gen_dev6_s30_brst4_1.json
+run  results/delayed_trace_dev6_s30_brst4_1.json
+run  results/budget_sweep_dev6_s30_brst4_1.json
+EVAL_DONE dev6_s30_brst4_1
+09:59:38 evaluated dev6_s30_brst4_1
+09:59:38 start dev6_s32_brfull_1 (--K 6 --seed 32 --lr 0.0005 --amp bf16 )
+10:20:38 trained dev6_s32_brfull_1 rc 0
+run  results/competence_dev6_s32_brfull_1.json
+run  results/competence_matched_dev6_s32_brfull_1.json
+run  results/length_gen_dev6_s32_brfull_1.json
+run  results/delayed_trace_dev6_s32_brfull_1.json
+run  results/budget_sweep_dev6_s32_brfull_1.json
+EVAL_DONE dev6_s32_brfull_1
+10:20:58 evaluated dev6_s32_brfull_1
+10:20:58 start dev6_s30_brfull_2 (--K 6 --seed 30 --lr 0.0005 --amp bf16 )
+10:29:59 trained dev6_s30_brfull_2 rc 0
+run  results/competence_dev6_s30_brfull_2.json
+run  results/competence_matched_dev6_s30_brfull_2.json
+run  results/length_gen_dev6_s30_brfull_2.json
+run  results/delayed_trace_dev6_s30_brfull_2.json
+run  results/budget_sweep_dev6_s30_brfull_2.json
+EVAL_DONE dev6_s30_brfull_2
+10:30:19 evaluated dev6_s30_brfull_2
+10:30:19 QUEUE_DONE

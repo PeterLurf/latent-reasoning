@@ -1,0 +1,11 @@
+10:29:24 start train:nostep_k8_s3:--K,8,--no_step_emb,--seed,3
+11:26:24 exit 0 train:nostep_k8_s3:--K,8,--no_step_emb,--seed,3
+11:26:24 start eval:nostep_k8_s3
+run  results/competence_nostep_k8_s3.json
+run  results/competence_matched_nostep_k8_s3.json
+run  results/length_gen_nostep_k8_s3.json
+run  results/delayed_trace_nostep_k8_s3.json
+run  results/budget_sweep_nostep_k8_s3.json
+EVAL_DONE nostep_k8_s3
+11:26:46 exit 0 eval:nostep_k8_s3
+11:26:46 QUEUE_DONE

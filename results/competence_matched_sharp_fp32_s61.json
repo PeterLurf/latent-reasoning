@@ -1,0 +1,46 @@
+{
+ "runs/sharp_fp32_s61": {
+  "1": {
+   "bal_acc": 0.9994225302061123,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 0.9988450604122245,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9916103543182012,
+   "recall_reachable": 0.9890494095916618,
+   "specificity_decoy": 0.9941712990447407,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.9632116049678694,
+   "recall_reachable": 0.9510189739985945,
+   "specificity_decoy": 0.9754042359371442,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.8442758316757253,
+   "recall_reachable": 0.7199919102032561,
+   "specificity_decoy": 0.9685597531481944,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.7283346741650719,
+   "recall_reachable": 0.49363369245837413,
+   "specificity_decoy": 0.9630356558717698,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5442517408032332,
+   "recall_reachable": 0.13989637305699482,
+   "specificity_decoy": 0.9486071085494716,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

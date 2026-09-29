@@ -1,0 +1,55 @@
+23:43:46 start dev6_s45 (--K 6 --seed 45 --lr 5e-4 --save_every 1000 --amp fp32 )
+01:38:46 trained dev6_s45 rc 0
+run  results/competence_dev6_s45.json
+run  results/competence_matched_dev6_s45.json
+run  results/length_gen_dev6_s45.json
+run  results/delayed_trace_dev6_s45.json
+run  results/budget_sweep_dev6_s45.json
+EVAL_DONE dev6_s45
+01:39:09 evaluated dev6_s45
+01:39:09 start dev6_s46 (--K 6 --seed 46 --lr 5e-4 --save_every 1000 --amp fp32 )
+03:35:09 trained dev6_s46 rc 0
+run  results/competence_dev6_s46.json
+run  results/competence_matched_dev6_s46.json
+run  results/length_gen_dev6_s46.json
+run  results/delayed_trace_dev6_s46.json
+run  results/budget_sweep_dev6_s46.json
+EVAL_DONE dev6_s46
+03:35:32 evaluated dev6_s46
+03:35:32 start dev6_s47 (--K 6 --seed 47 --lr 5e-4 --save_every 1000 --amp fp32 )
+05:31:32 trained dev6_s47 rc 0
+run  results/competence_dev6_s47.json
+run  results/competence_matched_dev6_s47.json
+run  results/length_gen_dev6_s47.json
+run  results/delayed_trace_dev6_s47.json
+run  results/budget_sweep_dev6_s47.json
+EVAL_DONE dev6_s47
+05:31:55 evaluated dev6_s47
+05:31:55 start dev6_s48 (--K 6 --seed 48 --lr 5e-4 --save_every 1000 --amp fp32 )
+07:26:55 trained dev6_s48 rc 0
+run  results/competence_dev6_s48.json
+run  results/competence_matched_dev6_s48.json
+run  results/length_gen_dev6_s48.json
+run  results/delayed_trace_dev6_s48.json
+run  results/budget_sweep_dev6_s48.json
+EVAL_DONE dev6_s48
+07:27:19 evaluated dev6_s48
+07:27:19 start dev6_s49 (--K 6 --seed 49 --lr 5e-4 --save_every 1000 --amp fp32 )
+09:25:20 trained dev6_s49 rc 0
+run  results/competence_dev6_s49.json
+run  results/competence_matched_dev6_s49.json
+run  results/length_gen_dev6_s49.json
+run  results/delayed_trace_dev6_s49.json
+run  results/budget_sweep_dev6_s49.json
+EVAL_DONE dev6_s49
+09:25:42 evaluated dev6_s49
+09:25:43 start dev6_s50 (--K 6 --seed 50 --lr 5e-4 --save_every 1000 --amp fp32 )
+11:22:43 trained dev6_s50 rc 0
+run  results/competence_dev6_s50.json
+run  results/competence_matched_dev6_s50.json
+run  results/length_gen_dev6_s50.json
+run  results/delayed_trace_dev6_s50.json
+run  results/budget_sweep_dev6_s50.json
+EVAL_DONE dev6_s50
+11:23:06 evaluated dev6_s50
+11:23:06 QUEUE_DONE

@@ -1,0 +1,3 @@
+02:41:56 guarding runs/stall_bf16_s72 pid 0 max relaunch 3
+02:41:56 launched pid 4688
+02:47:56 stage 1 passed at step 2500 ; waiting for the run to end

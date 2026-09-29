@@ -1,0 +1,4 @@
+GPU 0: NVIDIA GeForce RTX 4090 (UUID: GPU-172e506d-97df-5a09-cf52-6f1ad9dbeea4)
+580.173.02
+torch 2.14.0+cu126
+Fri Sep 25 19:06:46 UTC 2026

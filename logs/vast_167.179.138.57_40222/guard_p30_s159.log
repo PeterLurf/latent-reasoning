@@ -1,0 +1,10 @@
+06:42:25 guarding runs/p30_s159 pid 0 max relaunch 3
+06:42:25 launched pid 8237
+06:47:35 stage-1 failure at step 4200; archived as runs/p30_s159_stage1fail_1
+06:47:35 launched pid 8329
+06:52:45 stage-1 failure at step 4200; archived as runs/p30_s159_stage1fail_2
+06:52:45 launched pid 8433
+06:57:56 stage-1 failure at step 4200; archived as runs/p30_s159_stage1fail_3
+06:57:56 launched pid 8525
+07:03:06 stage-1 failure at step 4200; archived as runs/p30_s159_stage1fail_4
+07:03:06 relaunch budget spent

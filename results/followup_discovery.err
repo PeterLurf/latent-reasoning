@@ -1,0 +1,26 @@
+D:\Latent\latent\followup_analysis.py:24: RuntimeWarning: Mean of empty slice
+  per = np.nanmean(v, axis=-1)                     # (..., N)
+D:\Latent\latent\followup_analysis.py:24: RuntimeWarning: Mean of empty slice
+  per = np.nanmean(v, axis=-1)                     # (..., N)
+D:\Latent\latent\followup_analysis.py:24: RuntimeWarning: Mean of empty slice
+  per = np.nanmean(v, axis=-1)                     # (..., N)
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\Latent\latent\followup_run.py", line 123, in <module>
+    main()
+    ~~~~^^
+  File "D:\Latent\latent\followup_run.py", line 84, in main
+    A = F.load_assets(a.run, a.device)
+  File "D:\Latent\latent\followup.py", line 27, in load_assets
+    probes = [{k: v.to(device) for k, v in p.items()} for p in torch.load(os.path.join(d, "probes_reach.pt"), weights_only=False)]
+                                                               ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\serialization.py", line 1565, in load
+    with _open_file_like(f, "rb") as opened_file:
+         ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\serialization.py", line 795, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\serialization.py", line 776, in __init__
+    super().__init__(open(name, mode))  # noqa: SIM115
+                     ~~~~^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'runs/pause_s0\\discovery\\probes_reach.pt'

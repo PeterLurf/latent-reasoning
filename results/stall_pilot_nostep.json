@@ -1,0 +1,170 @@
+{
+ "nostep_lr5e-4_s10": {
+  "config": "lr5e-4",
+  "seed": 10,
+  "advance_step": 2000,
+  "stalled": false,
+  "last_step": 2000
+ },
+ "nostep_lr5e-4_s11": {
+  "config": "lr5e-4",
+  "seed": 11,
+  "advance_step": 1500,
+  "stalled": false,
+  "last_step": 1500
+ },
+ "nostep_lr5e-4_s12": {
+  "config": "lr5e-4",
+  "seed": 12,
+  "advance_step": 1000,
+  "stalled": false,
+  "last_step": 1000
+ },
+ "nostep_base_s10": {
+  "config": "base",
+  "seed": 10,
+  "advance_step": null,
+  "stalled": true,
+  "last_step": 4000
+ },
+ "nostep_lr5e-4_s13": {
+  "config": "lr5e-4",
+  "seed": 13,
+  "advance_step": 3000,
+  "stalled": false,
+  "last_step": 3000
+ },
+ "nostep_base_s11": {
+  "config": "base",
+  "seed": 11,
+  "advance_step": null,
+  "stalled": true,
+  "last_step": 4000
+ },
+ "nostep_lr5e-4_s14": {
+  "config": "lr5e-4",
+  "seed": 14,
+  "advance_step": 2500,
+  "stalled": false,
+  "last_step": 2500
+ },
+ "nostep_lr5e-4_s15": {
+  "config": "lr5e-4",
+  "seed": 15,
+  "advance_step": 2500,
+  "stalled": false,
+  "last_step": 2500
+ },
+ "nostep_lr5e-4_wu1000_s10": {
+  "config": "lr5e-4_wu1000",
+  "seed": 10,
+  "advance_step": 1500,
+  "stalled": false,
+  "last_step": 1500
+ },
+ "nostep_base_s12": {
+  "config": "base",
+  "seed": 12,
+  "advance_step": null,
+  "stalled": true,
+  "last_step": 4000
+ },
+ "nostep_lr5e-4_wu1000_s11": {
+  "config": "lr5e-4_wu1000",
+  "seed": 11,
+  "advance_step": 1000,
+  "stalled": false,
+  "last_step": 1000
+ },
+ "nostep_lr5e-4_wu1000_s12": {
+  "config": "lr5e-4_wu1000",
+  "seed": 12,
+  "advance_step": 1000,
+  "stalled": false,
+  "last_step": 1000
+ },
+ "nostep_lr5e-4_wu1000_s13": {
+  "config": "lr5e-4_wu1000",
+  "seed": 13,
+  "advance_step": 1000,
+  "stalled": false,
+  "last_step": 1000
+ },
+ "nostep_base_s13": {
+  "config": "base",
+  "seed": 13,
+  "advance_step": 2000,
+  "stalled": false,
+  "last_step": 2000
+ },
+ "nostep_lr5e-4_wu1000_s14": {
+  "config": "lr5e-4_wu1000",
+  "seed": 14,
+  "advance_step": 1000,
+  "stalled": false,
+  "last_step": 1000
+ },
+ "nostep_lr5e-4_wu1000_s15": {
+  "config": "lr5e-4_wu1000",
+  "seed": 15,
+  "advance_step": 2000,
+  "stalled": false,
+  "last_step": 2000
+ },
+ "nostep_base_s14": {
+  "config": "base",
+  "seed": 14,
+  "advance_step": 3000,
+  "stalled": false,
+  "last_step": 3000
+ },
+ "nostep_base_s15": {
+  "config": "base",
+  "seed": 15,
+  "advance_step": 2000,
+  "stalled": false,
+  "last_step": 2000
+ },
+ "nostep_wu1000_s10": {
+  "config": "wu1000",
+  "seed": 10,
+  "advance_step": 1000,
+  "stalled": false,
+  "last_step": 1000
+ },
+ "nostep_wu1000_s11": {
+  "config": "wu1000",
+  "seed": 11,
+  "advance_step": 1000,
+  "stalled": false,
+  "last_step": 1000
+ },
+ "nostep_wu1000_s12": {
+  "config": "wu1000",
+  "seed": 12,
+  "advance_step": 1000,
+  "stalled": false,
+  "last_step": 1000
+ },
+ "nostep_wu1000_s13": {
+  "config": "wu1000",
+  "seed": 13,
+  "advance_step": 1000,
+  "stalled": false,
+  "last_step": 1000
+ },
+ "nostep_wu1000_s14": {
+  "config": "wu1000",
+  "seed": 14,
+  "advance_step": 1000,
+  "stalled": false,
+  "last_step": 1000
+ },
+ "nostep_wu1000_s15": {
+  "config": "wu1000",
+  "seed": 15,
+  "advance_step": null,
+  "stalled": true,
+  "last_step": 4000
+ }
+}

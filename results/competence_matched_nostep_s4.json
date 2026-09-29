@@ -1,0 +1,46 @@
+{
+ "runs/nostep_s4": {
+  "1": {
+   "bal_acc": 0.9992892679459844,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 0.9985785358919688,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9910978154027595,
+   "recall_reachable": 0.9937990632627483,
+   "specificity_decoy": 0.9883965675427708,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.8995107822123225,
+   "recall_reachable": 0.8791286015460296,
+   "specificity_decoy": 0.9198929628786153,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.8246771715453594,
+   "recall_reachable": 0.7794519162706037,
+   "specificity_decoy": 0.8699024268201151,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.6976580779745719,
+   "recall_reachable": 0.6530852105778648,
+   "specificity_decoy": 0.742230945371279,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.6978866474543708,
+   "recall_reachable": 0.6666666666666666,
+   "specificity_decoy": 0.729106628242075,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

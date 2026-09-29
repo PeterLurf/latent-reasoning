@@ -1,0 +1,46 @@
+{
+ "runs/sharp_fp32_s60": {
+  "1": {
+   "bal_acc": 0.9992448471926083,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 0.9984896943852167,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9924559327166718,
+   "recall_reachable": 0.9906326274820239,
+   "specificity_decoy": 0.9942792379513196,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.9347525435740038,
+   "recall_reachable": 0.8893183415319748,
+   "specificity_decoy": 0.9801867456160328,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.8586962561557802,
+   "recall_reachable": 0.7508342602892102,
+   "specificity_decoy": 0.9665582520223501,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.8217218906720722,
+   "recall_reachable": 0.6987267384916749,
+   "specificity_decoy": 0.9447170428524697,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.6755979785612014,
+   "recall_reachable": 0.4208405296488198,
+   "specificity_decoy": 0.9303554274735831,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

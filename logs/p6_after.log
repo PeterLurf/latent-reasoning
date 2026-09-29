@@ -1,0 +1,1025 @@
+runs/rel_base_s20_ext: end activity 0.001
+runs/rel_base_s20_ext: disc clock [1, 2, 3] single-step True; confirm clock [1, 2, 3]
+runs/rel_base_s20_ext K'=12 near 0.91 0.87 0.85 0.78 0.74 0.65 | far 0.50 0.50 0.50 0.50 0.50 0.51
+runs/rel_base_s20_ext step 32500: EA 0.003 d7 0.495
+runs/rel_base_s20_ext K'=12 near 0.91 0.85 0.87 0.81 0.75 0.67 | far 0.50 0.50 0.50 0.49 0.50 0.51
+runs/rel_base_s20_ext step 35000: EA 0.003 d7 0.496
+runs/rel_base_s20_ext K'=12 near 0.93 0.85 0.85 0.81 0.75 0.71 | far 0.52 0.50 0.50 0.51 0.49 0.51
+runs/rel_base_s20_ext step 37500: EA 0.001 d7 0.517
+runs/rel_base_s20_ext K'=12 near 0.93 0.83 0.86 0.81 0.75 0.71 | far 0.52 0.49 0.50 0.51 0.50 0.52
+runs/rel_base_s20_ext step 40000: EA 0.001 d7 0.520
+runs/rel_base_s20_ext K'=12 near 0.94 0.84 0.87 0.81 0.76 0.71 | far 0.53 0.50 0.51 0.51 0.50 0.52
+runs/rel_base_s20_ext step 42500: EA 0.001 d7 0.527
+runs/rel_base_s20_ext K'=12 near 0.94 0.84 0.87 0.81 0.75 0.71 | far 0.53 0.50 0.50 0.51 0.50 0.52
+runs/rel_base_s20_ext step 45000: EA 0.001 d7 0.527
+runs/rel_base_s24_ext: end activity 0.321
+runs/rel_base_s24_ext: disc clock [1, 1, 1] single-step False; confirm clock [1, 1, 1]
+runs/rel_base_s24_ext K'=12 near 0.97 0.97 0.99 0.93 0.85 0.69 | far 0.58 0.51 0.49 0.49 0.49 0.48
+runs/rel_base_s24_ext step 32500: EA 0.237 d7 0.585
+runs/rel_base_s24_ext K'=12 near 0.96 0.98 0.99 0.95 0.86 0.70 | far 0.59 0.51 0.49 0.48 0.48 0.48
+runs/rel_base_s24_ext step 35000: EA 0.476 d7 0.593
+runs/rel_base_s24_ext K'=12 near 0.95 0.98 0.98 0.95 0.86 0.71 | far 0.60 0.51 0.49 0.48 0.49 0.48
+runs/rel_base_s24_ext step 37500: EA 0.756 d7 0.602
+runs/rel_base_s24_ext K'=12 near 0.94 0.98 0.99 0.95 0.88 0.72 | far 0.60 0.51 0.49 0.49 0.48 0.48
+runs/rel_base_s24_ext step 40000: EA 0.326 d7 0.597
+runs/rel_base_s24_ext K'=12 near 0.95 0.98 0.98 0.95 0.87 0.72 | far 0.60 0.52 0.49 0.49 0.48 0.47
+runs/rel_base_s24_ext step 42500: EA 0.311 d7 0.603
+runs/rel_base_s24_ext K'=12 near 0.95 0.98 0.98 0.95 0.88 0.72 | far 0.60 0.52 0.48 0.49 0.49 0.48
+runs/rel_base_s24_ext step 45000: EA 0.321 d7 0.603
+runs/rel_base_s25_ext: end activity 0.049
+runs/rel_base_s25_ext: disc clock [1, 3, 4] single-step True; confirm clock [1, 3, 4]
+runs/rel_base_s25_ext K'=12 near 1.00 0.96 0.92 0.90 0.81 0.76 | far 0.67 0.53 0.51 0.50 0.50 0.49
+runs/rel_base_s25_ext step 32500: EA 0.039 d7 0.674
+runs/rel_base_s25_ext K'=12 near 1.00 0.96 0.93 0.91 0.82 0.79 | far 0.71 0.56 0.51 0.52 0.50 0.50
+runs/rel_base_s25_ext step 35000: EA 0.058 d7 0.713
+runs/rel_base_s25_ext K'=12 near 0.99 0.97 0.95 0.93 0.85 0.81 | far 0.69 0.54 0.50 0.50 0.51 0.49
+runs/rel_base_s25_ext step 37500: EA 0.021 d7 0.689
+runs/rel_base_s25_ext K'=12 near 1.00 0.96 0.93 0.90 0.83 0.79 | far 0.71 0.54 0.50 0.50 0.50 0.49
+runs/rel_base_s25_ext step 40000: EA 0.054 d7 0.706
+runs/rel_base_s25_ext K'=12 near 1.00 0.96 0.94 0.92 0.83 0.79 | far 0.70 0.53 0.51 0.50 0.51 0.49
+runs/rel_base_s25_ext step 42500: EA 0.047 d7 0.697
+runs/rel_base_s25_ext K'=12 near 1.00 0.96 0.94 0.91 0.83 0.78 | far 0.69 0.53 0.50 0.50 0.51 0.49
+runs/rel_base_s25_ext step 45000: EA 0.049 d7 0.693
+runs/rel_lr5_s21_ext: end activity 0.888
+runs/rel_lr5_s21_ext: disc clock [1, 4, 6] single-step False; confirm clock [1, 4, 6]
+runs/rel_lr5_s21_ext K'=12 near 1.00 0.97 0.93 0.81 0.77 0.66 | far 0.58 0.55 0.51 0.53 0.52 0.50
+runs/rel_lr5_s21_ext step 32500: EA 0.933 d7 0.581
+runs/rel_lr5_s21_ext K'=12 near 1.00 0.98 0.94 0.82 0.78 0.67 | far 0.57 0.54 0.51 0.51 0.52 0.51
+runs/rel_lr5_s21_ext step 35000: EA 1.000 d7 0.573
+runs/rel_lr5_s21_ext K'=12 near 1.00 0.97 0.94 0.84 0.78 0.66 | far 0.58 0.56 0.52 0.52 0.51 0.50
+runs/rel_lr5_s21_ext step 37500: EA 0.952 d7 0.583
+runs/rel_lr5_s21_ext K'=12 near 1.00 0.97 0.93 0.84 0.80 0.69 | far 0.59 0.56 0.53 0.52 0.52 0.52
+runs/rel_lr5_s21_ext step 40000: EA 0.889 d7 0.587
+runs/rel_lr5_s21_ext K'=12 near 1.00 0.97 0.94 0.84 0.81 0.69 | far 0.60 0.56 0.53 0.52 0.52 0.51
+runs/rel_lr5_s21_ext step 42500: EA 0.895 d7 0.596
+runs/rel_lr5_s21_ext K'=12 near 1.00 0.97 0.94 0.84 0.81 0.67 | far 0.60 0.56 0.52 0.52 0.52 0.51
+runs/rel_lr5_s21_ext step 45000: EA 0.888 d7 0.596
+runs/rel_base_s26_ext: end activity 0.057
+runs/rel_base_s26_ext: disc clock [3, 4, 5] single-step False; confirm clock [3, 4, 5]
+runs/rel_base_s26_ext K'=12 near 1.00 0.97 0.94 0.80 0.67 0.59 | far 0.53 0.52 0.51 0.49 0.48 0.48
+runs/rel_base_s26_ext step 32500: EA 0.015 d7 0.527
+runs/rel_base_s26_ext K'=12 near 1.00 0.97 0.94 0.81 0.68 0.61 | far 0.55 0.55 0.52 0.53 0.50 0.49
+runs/rel_base_s26_ext step 35000: EA 0.049 d7 0.553
+runs/rel_base_s26_ext K'=12 near 1.00 0.98 0.95 0.82 0.69 0.62 | far 0.56 0.54 0.53 0.52 0.49 0.47
+runs/rel_base_s26_ext step 37500: EA 0.046 d7 0.560
+runs/rel_base_s26_ext K'=12 near 1.00 0.96 0.95 0.82 0.70 0.61 | far 0.56 0.56 0.52 0.53 0.48 0.47
+runs/rel_base_s26_ext step 40000: EA 0.041 d7 0.563
+runs/rel_base_s26_ext K'=12 near 1.00 0.96 0.94 0.82 0.70 0.61 | far 0.57 0.56 0.52 0.53 0.49 0.48
+runs/rel_base_s26_ext step 42500: EA 0.061 d7 0.567
+runs/rel_base_s26_ext K'=12 near 1.00 0.96 0.94 0.82 0.69 0.61 | far 0.57 0.55 0.52 0.52 0.49 0.48
+runs/rel_base_s26_ext step 45000: EA 0.057 d7 0.568
+runs/rel_base_s27_ext: end activity 0.571
+runs/rel_base_s27_ext: disc clock [1, 3, 5] single-step True; confirm clock [1, 3, 5]
+runs/rel_base_s27_ext K'=12 near 1.00 0.96 0.95 0.93 0.91 0.83 | far 0.78 0.74 0.67 0.62 0.59 0.58
+runs/rel_base_s27_ext step 32500: EA 0.600 d7 0.779
+runs/rel_base_s27_ext K'=12 near 1.00 0.96 0.95 0.92 0.92 0.85 | far 0.80 0.74 0.70 0.66 0.62 0.61
+runs/rel_base_s27_ext step 35000: EA 0.638 d7 0.797
+runs/rel_base_s27_ext K'=12 near 1.00 0.95 0.94 0.91 0.91 0.84 | far 0.80 0.76 0.73 0.69 0.66 0.65
+runs/rel_base_s27_ext step 37500: EA 0.584 d7 0.800
+runs/rel_base_s27_ext K'=12 near 1.00 0.96 0.94 0.93 0.92 0.84 | far 0.81 0.77 0.74 0.70 0.67 0.66
+runs/rel_base_s27_ext step 40000: EA 0.581 d7 0.813
+runs/rel_base_s27_ext K'=12 near 1.00 0.95 0.94 0.92 0.91 0.84 | far 0.81 0.77 0.73 0.71 0.69 0.68
+runs/rel_base_s27_ext step 42500: EA 0.569 d7 0.810
+runs/rel_base_s27_ext K'=12 near 1.00 0.96 0.94 0.92 0.91 0.84 | far 0.81 0.77 0.74 0.70 0.69 0.68
+runs/rel_base_s27_ext step 45000: EA 0.571 d7 0.811
+runs/rel_lr5_s20_ext: end activity 0.961
+runs/rel_lr5_s20_ext: disc clock [1, 4, 6] single-step False; confirm clock [1, 4, 6]
+runs/rel_lr5_s20_ext K'=12 near 0.99 0.98 0.95 0.86 0.75 0.64 | far 0.62 0.61 0.60 0.59 0.58 0.56
+runs/rel_lr5_s20_ext step 32500: EA 1.000 d7 0.616
+runs/rel_lr5_s20_ext K'=12 near 0.99 0.98 0.95 0.87 0.75 0.65 | far 0.61 0.61 0.59 0.59 0.58 0.55
+runs/rel_lr5_s20_ext step 35000: EA 1.000 d7 0.612
+runs/rel_lr5_s20_ext K'=12 near 0.99 0.97 0.95 0.87 0.74 0.64 | far 0.62 0.60 0.59 0.61 0.57 0.58
+runs/rel_lr5_s20_ext step 37500: EA 0.999 d7 0.624
+runs/rel_lr5_s20_ext K'=12 near 0.99 0.97 0.96 0.87 0.76 0.65 | far 0.62 0.60 0.59 0.60 0.58 0.58
+runs/rel_lr5_s20_ext step 40000: EA 0.973 d7 0.622
+runs/rel_lr5_s20_ext K'=12 near 0.99 0.97 0.96 0.88 0.77 0.66 | far 0.61 0.59 0.59 0.60 0.58 0.57
+runs/rel_lr5_s20_ext step 42500: EA 0.955 d7 0.610
+runs/rel_lr5_s20_ext K'=12 near 0.99 0.97 0.96 0.88 0.77 0.66 | far 0.62 0.60 0.59 0.60 0.57 0.58
+runs/rel_lr5_s20_ext step 45000: EA 0.961 d7 0.617
+runs/rel_lr5_s22_ext: end activity 0.600
+runs/rel_lr5_s22_ext: disc clock [1, 4, 5] single-step False; confirm clock [1, 4, 5]
+runs/rel_lr5_s22_ext K'=12 near 1.00 0.98 0.93 0.85 0.80 0.76 | far 0.71 0.65 0.59 0.57 0.54 0.53
+runs/rel_lr5_s22_ext step 32500: EA 0.664 d7 0.705
+runs/rel_lr5_s22_ext K'=12 near 1.00 0.97 0.94 0.85 0.80 0.77 | far 0.70 0.64 0.58 0.56 0.53 0.51
+runs/rel_lr5_s22_ext step 35000: EA 0.633 d7 0.695
+runs/rel_lr5_s22_ext K'=12 near 1.00 0.97 0.93 0.86 0.82 0.77 | far 0.71 0.65 0.58 0.57 0.53 0.53
+runs/rel_lr5_s22_ext step 37500: EA 0.620 d7 0.707
+runs/rel_lr5_s22_ext K'=12 near 1.00 0.97 0.94 0.86 0.82 0.77 | far 0.71 0.65 0.59 0.58 0.53 0.54
+runs/rel_lr5_s22_ext step 40000: EA 0.656 d7 0.706
+runs/rel_lr5_s22_ext K'=12 near 1.00 0.98 0.93 0.86 0.82 0.78 | far 0.71 0.65 0.58 0.56 0.52 0.52
+runs/rel_lr5_s22_ext step 42500: EA 0.610 d7 0.711
+runs/rel_lr5_s22_ext K'=12 near 1.00 0.98 0.93 0.86 0.83 0.78 | far 0.72 0.67 0.59 0.55 0.53 0.52
+runs/rel_lr5_s22_ext step 45000: EA 0.600 d7 0.718
+runs/rel_lr5_s23_ext: end activity 0.856
+runs/rel_lr5_s23_ext: disc clock [2, 3, 4] single-step False; confirm clock [2, 3, 4]
+runs/rel_lr5_s23_ext K'=12 near 0.99 0.95 0.94 0.89 0.82 0.69 | far 0.58 0.51 0.50 0.50 0.50 0.50
+runs/rel_lr5_s23_ext step 32500: EA 0.832 d7 0.581
+runs/rel_lr5_s23_ext K'=12 near 0.99 0.96 0.96 0.90 0.83 0.68 | far 0.58 0.50 0.50 0.50 0.51 0.50
+runs/rel_lr5_s23_ext step 35000: EA 0.825 d7 0.579
+runs/rel_lr5_s23_ext K'=12 near 0.99 0.96 0.94 0.90 0.83 0.69 | far 0.57 0.49 0.50 0.49 0.51 0.51
+runs/rel_lr5_s23_ext step 37500: EA 0.849 d7 0.567
+runs/rel_lr5_s23_ext K'=12 near 0.99 0.97 0.95 0.91 0.83 0.70 | far 0.55 0.49 0.50 0.51 0.51 0.50
+runs/rel_lr5_s23_ext step 40000: EA 0.848 d7 0.548
+runs/rel_lr5_s23_ext K'=12 near 0.99 0.96 0.95 0.90 0.83 0.70 | far 0.58 0.50 0.50 0.50 0.51 0.50
+runs/rel_lr5_s23_ext step 42500: EA 0.862 d7 0.579
+runs/rel_lr5_s23_ext K'=12 near 0.99 0.96 0.95 0.90 0.84 0.69 | far 0.58 0.50 0.50 0.50 0.51 0.50
+runs/rel_lr5_s23_ext step 45000: EA 0.856 d7 0.577
+runs/rel_lr5_s26_ext: end activity 0.011
+runs/rel_lr5_s26_ext: disc clock [1, 3, 5] single-step False; confirm clock [1, 3, 5]
+runs/rel_lr5_s26_ext K'=12 near 0.95 0.93 0.91 0.83 0.66 0.52 | far 0.50 0.49 0.50 0.51 0.52 0.50
+runs/rel_lr5_s26_ext step 32500: EA 0.012 d7 0.503
+runs/rel_lr5_s26_ext K'=12 near 0.95 0.93 0.91 0.83 0.67 0.52 | far 0.51 0.49 0.50 0.52 0.51 0.50
+runs/rel_lr5_s26_ext step 35000: EA 0.012 d7 0.508
+runs/rel_lr5_s26_ext K'=12 near 0.95 0.93 0.90 0.85 0.68 0.52 | far 0.50 0.49 0.51 0.52 0.51 0.49
+runs/rel_lr5_s26_ext step 37500: EA 0.012 d7 0.505
+runs/rel_lr5_s26_ext K'=12 near 0.95 0.93 0.91 0.84 0.69 0.52 | far 0.52 0.50 0.50 0.51 0.51 0.48
+runs/rel_lr5_s26_ext step 40000: EA 0.012 d7 0.516
+runs/rel_lr5_s26_ext K'=12 near 0.95 0.94 0.91 0.85 0.70 0.51 | far 0.52 0.50 0.50 0.51 0.51 0.49
+runs/rel_lr5_s26_ext step 42500: EA 0.012 d7 0.516
+runs/rel_lr5_s26_ext K'=12 near 0.95 0.93 0.91 0.85 0.70 0.51 | far 0.51 0.50 0.50 0.51 0.51 0.49
+runs/rel_lr5_s26_ext step 45000: EA 0.011 d7 0.512
+runs/rel_lr5_s24_ext: end activity 0.759
+runs/rel_lr5_s24_ext: disc clock [2, 3, 4] single-step True; confirm clock [2, 3, 4]
+runs/rel_lr5_s24_ext K'=12 near 1.00 1.00 0.98 0.93 0.80 0.67 | far 0.59 0.50 0.49 0.51 0.51 0.49
+runs/rel_lr5_s24_ext step 32500: EA 0.982 d7 0.589
+runs/rel_lr5_s24_ext K'=12 near 1.00 1.00 0.97 0.93 0.81 0.68 | far 0.57 0.50 0.49 0.51 0.51 0.49
+runs/rel_lr5_s24_ext step 35000: EA 0.848 d7 0.574
+runs/rel_lr5_s24_ext K'=12 near 1.00 1.00 0.98 0.94 0.82 0.68 | far 0.54 0.50 0.48 0.50 0.50 0.48
+runs/rel_lr5_s24_ext step 37500: EA 0.781 d7 0.543
+runs/rel_lr5_s24_ext K'=12 near 1.00 1.00 0.98 0.94 0.83 0.68 | far 0.54 0.50 0.48 0.51 0.50 0.49
+runs/rel_lr5_s24_ext step 40000: EA 0.755 d7 0.542
+runs/rel_lr5_s24_ext K'=12 near 1.00 1.00 0.98 0.95 0.82 0.69 | far 0.55 0.51 0.47 0.50 0.50 0.48
+runs/rel_lr5_s24_ext step 42500: EA 0.764 d7 0.546
+runs/rel_lr5_s24_ext K'=12 near 1.00 1.00 0.98 0.94 0.83 0.70 | far 0.55 0.50 0.48 0.51 0.50 0.48
+runs/rel_lr5_s24_ext step 45000: EA 0.759 d7 0.550
+runs/rel_lr5_s27_ext: end activity 0.120
+runs/rel_lr5_s27_ext: disc clock [1, 2, 6] single-step False; confirm clock [1, 2, 8]
+runs/rel_lr5_s27_ext K'=12 near 0.99 0.97 0.93 0.80 0.66 0.54 | far 0.50 0.50 0.49 0.48 0.50 0.50
+runs/rel_lr5_s27_ext step 32500: EA 0.133 d7 0.497
+runs/rel_lr5_s27_ext K'=12 near 1.00 0.96 0.93 0.80 0.67 0.55 | far 0.50 0.51 0.50 0.49 0.50 0.49
+runs/rel_lr5_s27_ext step 35000: EA 0.132 d7 0.497
+runs/rel_lr5_s27_ext K'=12 near 0.99 0.97 0.93 0.82 0.68 0.56 | far 0.50 0.50 0.49 0.48 0.50 0.50
+runs/rel_lr5_s27_ext step 37500: EA 0.126 d7 0.503
+runs/rel_lr5_s27_ext K'=12 near 0.99 0.97 0.93 0.82 0.69 0.56 | far 0.49 0.50 0.50 0.49 0.49 0.50
+runs/rel_lr5_s27_ext step 40000: EA 0.126 d7 0.494
+runs/rel_lr5_s27_ext K'=12 near 0.99 0.97 0.94 0.82 0.69 0.57 | far 0.50 0.50 0.50 0.50 0.49 0.49
+runs/rel_lr5_s27_ext step 42500: EA 0.123 d7 0.497
+runs/rel_lr5_s27_ext K'=12 near 0.99 0.97 0.94 0.82 0.70 0.57 | far 0.50 0.50 0.50 0.49 0.49 0.49
+runs/rel_lr5_s27_ext step 45000: EA 0.120 d7 0.497
+runs/rel_base_s21_ext: end activity 0.578
+runs/rel_base_s21_ext: disc clock [1, 1, 1] single-step False; confirm clock [1, 1, 1]
+runs/rel_base_s21_ext K'=12 near 0.96 0.93 0.50 0.50 0.50 0.50 | far 0.50 0.49 0.50 0.50 0.50 0.50
+runs/rel_base_s21_ext step 32500: EA 0.122 d7 0.499
+runs/rel_base_s21_ext K'=12 near 0.97 0.94 0.50 0.50 0.50 0.51 | far 0.50 0.50 0.50 0.50 0.49 0.51
+runs/rel_base_s21_ext step 35000: EA 0.054 d7 0.500
+runs/rel_base_s21_ext K'=12 near 0.96 0.92 0.51 0.50 0.51 0.51 | far 0.50 0.49 0.50 0.51 0.50 0.50
+runs/rel_base_s21_ext step 37500: EA 0.270 d7 0.504
+runs/rel_base_s21_ext K'=12 near 0.96 0.93 0.50 0.50 0.50 0.50 | far 0.50 0.49 0.49 0.50 0.50 0.49
+runs/rel_base_s21_ext step 40000: EA 0.567 d7 0.501
+runs/rel_base_s21_ext K'=12 near 0.96 0.93 0.51 0.51 0.50 0.51 | far 0.50 0.49 0.50 0.50 0.50 0.51
+runs/rel_base_s21_ext step 42500: EA 0.565 d7 0.503
+runs/rel_base_s21_ext K'=12 near 0.96 0.93 0.50 0.50 0.50 0.51 | far 0.50 0.49 0.50 0.50 0.50 0.51
+runs/rel_base_s21_ext step 45000: EA 0.578 d7 0.504
+runs/rel_base_s22_ext: end activity 0.130
+runs/rel_base_s22_ext: disc clock [2, 2, 2] single-step False; confirm clock [2, 2, 2]
+runs/rel_base_s22_ext K'=12 near 0.98 0.96 0.50 0.49 0.50 0.50 | far 0.51 0.50 0.50 0.51 0.50 0.50
+runs/rel_base_s22_ext step 32500: EA 0.164 d7 0.506
+runs/rel_base_s22_ext K'=12 near 0.98 0.96 0.50 0.49 0.50 0.50 | far 0.50 0.50 0.50 0.51 0.50 0.50
+runs/rel_base_s22_ext step 35000: EA 0.171 d7 0.503
+runs/rel_base_s22_ext K'=12 near 0.98 0.97 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.49 0.51 0.49 0.50
+runs/rel_base_s22_ext step 37500: EA 0.194 d7 0.503
+runs/rel_base_s22_ext K'=12 near 0.98 0.97 0.50 0.50 0.50 0.50 | far 0.51 0.50 0.49 0.51 0.49 0.50
+runs/rel_base_s22_ext step 40000: EA 0.136 d7 0.508
+runs/rel_base_s22_ext K'=12 near 0.98 0.97 0.50 0.50 0.50 0.50 | far 0.51 0.50 0.50 0.51 0.49 0.50
+runs/rel_base_s22_ext step 42500: EA 0.131 d7 0.506
+runs/rel_base_s22_ext K'=12 near 0.98 0.97 0.50 0.50 0.50 0.50 | far 0.51 0.50 0.49 0.51 0.49 0.50
+runs/rel_base_s22_ext step 45000: EA 0.130 d7 0.507
+runs/rel_base_s23_ext: end activity 1.000
+runs/rel_base_s23_ext: disc clock [4, 5, 6] single-step False; confirm clock [4, 5, 6]
+runs/rel_base_s23_ext K'=12 near 0.99 0.97 0.94 0.77 0.75 0.74 | far 0.73 0.72 0.73 0.73 0.74 0.50
+runs/rel_base_s23_ext step 32500: EA 1.000 d7 0.727
+runs/rel_base_s23_ext K'=12 near 0.99 0.98 0.95 0.79 0.75 0.74 | far 0.73 0.72 0.73 0.74 0.73 0.50
+runs/rel_base_s23_ext step 35000: EA 1.000 d7 0.728
+runs/rel_base_s23_ext K'=12 near 0.99 0.97 0.95 0.88 0.75 0.74 | far 0.72 0.71 0.72 0.73 0.73 0.51
+runs/rel_base_s23_ext step 37500: EA 1.000 d7 0.719
+runs/rel_base_s23_ext K'=12 near 0.99 0.96 0.93 0.89 0.75 0.72 | far 0.73 0.70 0.71 0.73 0.73 0.51
+runs/rel_base_s23_ext step 38500: EA 1.000 d7 0.727
+runs/rel_base_s23_ext K'=12 near 0.99 0.97 0.94 0.89 0.75 0.72 | far 0.74 0.71 0.72 0.72 0.72 0.50
+runs/rel_base_s23_ext step 40000: EA 1.000 d7 0.738
+runs/rel_base_s23_ext K'=12 near 0.99 0.97 0.93 0.89 0.75 0.71 | far 0.74 0.70 0.71 0.72 0.72 0.52
+runs/rel_base_s23_ext step 42500: EA 1.000 d7 0.736
+runs/rel_base_s23_ext K'=12 near 0.99 0.97 0.93 0.89 0.74 0.71 | far 0.74 0.70 0.71 0.71 0.72 0.51
+runs/rel_base_s23_ext step 45000: EA 1.000 d7 0.741
+runs/rel_lr5_s25_ext: end activity 0.019
+runs/rel_lr5_s25_ext: disc clock [1, 3, 5] single-step True; confirm clock [1, 3, 5]
+runs/rel_lr5_s25_ext K'=12 near 0.55 0.50 0.66 0.71 0.53 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+runs/rel_lr5_s25_ext step 32500: EA 0.018 d7 0.500
+runs/rel_lr5_s25_ext K'=12 near 0.54 0.50 0.66 0.70 0.52 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+runs/rel_lr5_s25_ext step 35000: EA 0.014 d7 0.501
+runs/rel_lr5_s25_ext K'=12 near 0.53 0.50 0.64 0.69 0.52 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+runs/rel_lr5_s25_ext step 37500: EA 0.013 d7 0.501
+runs/rel_lr5_s25_ext K'=12 near 0.53 0.50 0.62 0.69 0.51 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+runs/rel_lr5_s25_ext step 40000: EA 0.013 d7 0.501
+runs/rel_lr5_s25_ext K'=12 near 0.52 0.50 0.61 0.69 0.51 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+runs/rel_lr5_s25_ext step 42500: EA 0.013 d7 0.500
+runs/rel_lr5_s25_ext K'=12 near 0.52 0.50 0.62 0.69 0.51 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+runs/rel_lr5_s25_ext step 43000: EA 0.013 d7 0.500
+runs/rel_lr5_s25_ext K'=12 near 0.54 0.50 0.61 0.67 0.52 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+runs/rel_lr5_s25_ext step 45000: EA 0.019 d7 0.500
+runs/dev6_s39: end activity 0.366
+runs/dev6_s39: disc clock [1, 3, 3] single-step False; confirm clock [1, 3, 1]
+runs/dev6_s39 K'=12 near 0.84 0.54 0.51 0.52 0.51 0.51 | far 0.47 0.47 0.50 0.50 0.52 0.50
+runs/dev6_s39 step 1000: EA 0.393 d7 0.468
+runs/dev6_s39 K'=12 near 0.83 0.53 0.49 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+runs/dev6_s39 step 1500: EA 1.000 d7 0.501
+runs/dev6_s39 K'=12 near 0.95 0.84 0.54 0.48 0.51 0.48 | far 0.50 0.51 0.50 0.51 0.49 0.49
+runs/dev6_s39 step 2000: EA 0.595 d7 0.498
+runs/dev6_s39 K'=12 near 0.97 0.90 0.55 0.50 0.50 0.48 | far 0.50 0.51 0.50 0.50 0.52 0.49
+runs/dev6_s39 step 3000: EA 0.392 d7 0.498
+runs/dev6_s39 K'=12 near 0.97 0.87 0.53 0.51 0.50 0.48 | far 0.51 0.51 0.50 0.49 0.51 0.49
+runs/dev6_s39 step 4000: EA 0.362 d7 0.510
+runs/dev6_s39 K'=12 near 0.97 0.89 0.55 0.51 0.51 0.47 | far 0.51 0.51 0.50 0.50 0.50 0.50
+runs/dev6_s39 step 5000: EA 0.447 d7 0.507
+runs/dev6_s39 K'=12 near 0.98 0.86 0.81 0.54 0.52 0.49 | far 0.50 0.51 0.49 0.50 0.52 0.50
+runs/dev6_s39 step 6000: EA 0.340 d7 0.503
+runs/dev6_s39 K'=12 near 0.99 0.91 0.82 0.56 0.49 0.50 | far 0.49 0.50 0.50 0.51 0.52 0.48
+runs/dev6_s39 step 7000: EA 0.410 d7 0.486
+runs/dev6_s39 K'=12 near 0.98 0.92 0.86 0.60 0.51 0.48 | far 0.48 0.49 0.49 0.51 0.51 0.48
+runs/dev6_s39 step 8000: EA 0.453 d7 0.481
+runs/dev6_s39 K'=12 near 0.99 0.93 0.87 0.60 0.51 0.49 | far 0.49 0.50 0.51 0.51 0.51 0.51
+runs/dev6_s39 step 9000: EA 0.481 d7 0.493
+runs/dev6_s39 K'=12 near 0.99 0.96 0.88 0.61 0.53 0.50 | far 0.49 0.50 0.50 0.51 0.51 0.51
+runs/dev6_s39 step 10000: EA 0.464 d7 0.494
+runs/dev6_s39 K'=12 near 0.99 0.95 0.90 0.61 0.52 0.49 | far 0.49 0.50 0.50 0.50 0.50 0.51
+runs/dev6_s39 step 11000: EA 0.507 d7 0.490
+runs/dev6_s39 K'=12 near 0.99 0.96 0.90 0.61 0.51 0.49 | far 0.50 0.50 0.50 0.50 0.50 0.49
+runs/dev6_s39 step 12000: EA 0.473 d7 0.497
+runs/dev6_s39 K'=12 near 0.99 0.97 0.90 0.62 0.51 0.49 | far 0.50 0.50 0.50 0.50 0.51 0.51
+runs/dev6_s39 step 13000: EA 0.473 d7 0.500
+runs/dev6_s39 K'=12 near 0.99 0.95 0.91 0.64 0.51 0.50 | far 0.49 0.51 0.51 0.51 0.49 0.52
+runs/dev6_s39 step 13500: EA 0.476 d7 0.486
+runs/dev6_s39 K'=12 near 0.99 0.96 0.89 0.70 0.53 0.50 | far 0.51 0.51 0.52 0.51 0.52 0.51
+runs/dev6_s39 step 14000: EA 0.412 d7 0.510
+runs/dev6_s39 K'=12 near 0.99 0.97 0.90 0.70 0.53 0.49 | far 0.52 0.50 0.50 0.52 0.52 0.51
+runs/dev6_s39 step 15000: EA 0.383 d7 0.517
+runs/dev6_s39 K'=12 near 1.00 0.97 0.90 0.71 0.54 0.50 | far 0.50 0.51 0.52 0.49 0.52 0.51
+runs/dev6_s39 step 16000: EA 0.342 d7 0.505
+runs/dev6_s39 K'=12 near 0.99 0.98 0.92 0.74 0.55 0.50 | far 0.50 0.49 0.52 0.50 0.51 0.51
+runs/dev6_s39 step 17000: EA 0.385 d7 0.505
+runs/dev6_s39 K'=12 near 0.99 0.98 0.93 0.77 0.57 0.50 | far 0.51 0.49 0.52 0.52 0.52 0.51
+runs/dev6_s39 step 18000: EA 0.366 d7 0.506
+runs/dev6_s39 K'=12 near 0.99 0.98 0.93 0.79 0.60 0.51 | far 0.50 0.49 0.51 0.50 0.51 0.52
+runs/dev6_s39 step 18500: EA 0.372 d7 0.496
+runs/dev6_s39 K'=12 near 0.99 0.98 0.92 0.77 0.61 0.54 | far 0.50 0.51 0.52 0.53 0.51 0.51
+runs/dev6_s39 step 19000: EA 0.372 d7 0.495
+runs/dev6_s39 K'=12 near 0.99 0.98 0.92 0.79 0.64 0.54 | far 0.52 0.50 0.52 0.51 0.52 0.52
+runs/dev6_s39 step 20000: EA 0.387 d7 0.516
+runs/dev6_s39 K'=12 near 0.99 0.98 0.92 0.79 0.65 0.54 | far 0.53 0.50 0.53 0.51 0.50 0.52
+runs/dev6_s39 step 21000: EA 0.389 d7 0.530
+runs/dev6_s39 K'=12 near 0.99 0.99 0.94 0.80 0.64 0.54 | far 0.53 0.50 0.52 0.51 0.50 0.52
+runs/dev6_s39 step 22000: EA 0.387 d7 0.527
+runs/dev6_s39 K'=12 near 0.99 0.98 0.94 0.79 0.65 0.54 | far 0.52 0.49 0.52 0.51 0.51 0.51
+runs/dev6_s39 step 23000: EA 0.381 d7 0.522
+runs/dev6_s39 K'=12 near 1.00 0.98 0.93 0.81 0.66 0.54 | far 0.51 0.48 0.51 0.51 0.51 0.52
+runs/dev6_s39 step 24000: EA 0.373 d7 0.509
+runs/dev6_s39 K'=12 near 1.00 0.98 0.93 0.81 0.66 0.54 | far 0.51 0.49 0.50 0.50 0.51 0.51
+runs/dev6_s39 step 25000: EA 0.373 d7 0.513
+runs/dev6_s39 K'=12 near 1.00 0.98 0.94 0.81 0.66 0.54 | far 0.52 0.49 0.51 0.50 0.52 0.51
+runs/dev6_s39 step 26000: EA 0.367 d7 0.521
+runs/dev6_s39 K'=12 near 1.00 0.98 0.94 0.81 0.66 0.54 | far 0.52 0.49 0.51 0.51 0.52 0.51
+runs/dev6_s39 step 27000: EA 0.367 d7 0.518
+runs/dev6_s39 K'=12 near 1.00 0.98 0.94 0.81 0.66 0.54 | far 0.52 0.49 0.51 0.51 0.51 0.52
+runs/dev6_s39 step 28000: EA 0.370 d7 0.520
+runs/dev6_s39 K'=12 near 1.00 0.98 0.94 0.81 0.66 0.55 | far 0.52 0.49 0.51 0.51 0.51 0.52
+runs/dev6_s39 step 29000: EA 0.365 d7 0.518
+runs/dev6_s39 K'=12 near 1.00 0.98 0.94 0.81 0.66 0.54 | far 0.52 0.49 0.51 0.51 0.51 0.52
+runs/dev6_s39 step 30000: EA 0.366 d7 0.520
+runs/nostep_s0_ext: end activity 0.633
+runs/nostep_s0_ext: disc clock [3, 4, 5] single-step False; confirm clock [3, 4, 5]
+runs/nostep_s0_ext K'=12 near 1.00 0.98 0.91 0.80 0.68 0.61 | far 0.58 0.58 0.55 0.55 0.55 0.52
+runs/nostep_s0_ext step 32500: EA 0.656 d7 0.582
+runs/nostep_s0_ext K'=12 near 0.99 0.97 0.90 0.80 0.65 0.58 | far 0.53 0.53 0.51 0.50 0.49 0.50
+runs/nostep_s0_ext step 35000: EA 0.708 d7 0.528
+runs/nostep_s0_ext K'=12 near 1.00 0.97 0.93 0.84 0.68 0.62 | far 0.57 0.56 0.54 0.51 0.52 0.49
+runs/nostep_s0_ext step 37500: EA 0.511 d7 0.572
+runs/nostep_s0_ext K'=12 near 1.00 0.98 0.92 0.83 0.66 0.58 | far 0.52 0.52 0.50 0.50 0.51 0.50
+runs/nostep_s0_ext step 40000: EA 0.648 d7 0.517
+runs/nostep_s0_ext K'=12 near 1.00 0.98 0.92 0.83 0.66 0.61 | far 0.53 0.52 0.50 0.50 0.50 0.50
+runs/nostep_s0_ext step 42500: EA 0.632 d7 0.526
+runs/nostep_s0_ext K'=12 near 1.00 0.98 0.92 0.83 0.67 0.61 | far 0.54 0.53 0.51 0.50 0.51 0.49
+runs/nostep_s0_ext step 43000: EA 0.615 d7 0.540
+runs/nostep_s0_ext K'=12 near 1.00 0.98 0.91 0.83 0.68 0.60 | far 0.53 0.53 0.50 0.50 0.51 0.51
+runs/nostep_s0_ext step 45000: EA 0.633 d7 0.526
+runs/dev6_s30: end activity 1.000
+runs/dev6_s30: disc clock [1, 4, 6] single-step False; confirm clock [1, 4, 6]
+runs/dev6_s30 K'=12 near 0.92 0.69 0.50 0.50 0.49 0.50 | far 0.51 0.49 0.50 0.50 0.50 0.50
+runs/dev6_s30 step 1000: EA 0.496 d7 0.511
+runs/dev6_s30 K'=12 near 0.71 0.83 0.65 0.54 0.49 0.51 | far 0.51 0.51 0.49 0.50 0.49 0.51
+runs/dev6_s30 step 2000: EA 0.343 d7 0.513
+runs/dev6_s30 K'=12 near 0.90 0.92 0.61 0.50 0.50 0.51 | far 0.51 0.49 0.51 0.50 0.49 0.50
+runs/dev6_s30 step 3000: EA 0.329 d7 0.506
+runs/dev6_s30 K'=12 near 0.97 0.94 0.67 0.50 0.51 0.51 | far 0.51 0.49 0.50 0.49 0.49 0.49
+runs/dev6_s30 step 4000: EA 0.304 d7 0.509
+runs/dev6_s30 K'=12 near 0.98 0.94 0.66 0.50 0.50 0.50 | far 0.51 0.50 0.50 0.49 0.49 0.51
+runs/dev6_s30 step 5000: EA 0.330 d7 0.509
+runs/dev6_s30 K'=12 near 0.97 0.79 0.77 0.73 0.69 0.64 | far 0.61 0.52 0.50 0.53 0.49 0.49
+runs/dev6_s30 step 6000: EA 0.484 d7 0.609
+runs/dev6_s30 K'=12 near 0.96 0.74 0.75 0.70 0.68 0.63 | far 0.59 0.52 0.50 0.52 0.49 0.50
+runs/dev6_s30 step 7000: EA 0.552 d7 0.588
+runs/dev6_s30 K'=12 near 0.96 0.77 0.76 0.71 0.70 0.64 | far 0.59 0.53 0.50 0.53 0.51 0.48
+runs/dev6_s30 step 8000: EA 0.616 d7 0.590
+runs/dev6_s30 K'=12 near 0.98 0.83 0.82 0.75 0.68 0.57 | far 0.52 0.52 0.50 0.50 0.50 0.49
+runs/dev6_s30 step 9000: EA 0.576 d7 0.522
+runs/dev6_s30 K'=12 near 0.98 0.80 0.82 0.76 0.73 0.61 | far 0.53 0.51 0.49 0.52 0.49 0.48
+runs/dev6_s30 step 10000: EA 0.545 d7 0.533
+runs/dev6_s30 K'=12 near 0.98 0.82 0.81 0.76 0.71 0.63 | far 0.55 0.51 0.49 0.51 0.48 0.49
+runs/dev6_s30 step 11000: EA 0.556 d7 0.555
+runs/dev6_s30 K'=12 near 0.98 0.84 0.83 0.78 0.69 0.58 | far 0.53 0.50 0.50 0.51 0.50 0.48
+runs/dev6_s30 step 12000: EA 0.673 d7 0.530
+runs/dev6_s30 K'=12 near 0.98 0.89 0.86 0.79 0.71 0.58 | far 0.52 0.51 0.51 0.50 0.49 0.47
+runs/dev6_s30 step 13000: EA 0.522 d7 0.524
+runs/dev6_s30 K'=12 near 0.97 0.89 0.87 0.81 0.71 0.55 | far 0.51 0.50 0.50 0.50 0.49 0.49
+runs/dev6_s30 step 14000: EA 0.684 d7 0.510
+runs/dev6_s30 K'=12 near 0.97 0.88 0.86 0.79 0.69 0.58 | far 0.51 0.52 0.51 0.52 0.48 0.48
+runs/dev6_s30 step 15000: EA 0.485 d7 0.509
+runs/dev6_s30 K'=12 near 0.97 0.87 0.87 0.80 0.69 0.57 | far 0.52 0.50 0.51 0.52 0.47 0.48
+runs/dev6_s30 step 16000: EA 0.626 d7 0.516
+runs/dev6_s30 K'=12 near 0.97 0.89 0.86 0.83 0.70 0.59 | far 0.53 0.52 0.51 0.51 0.50 0.48
+runs/dev6_s30 step 17000: EA 0.551 d7 0.533
+runs/dev6_s30 K'=12 near 0.95 0.86 0.83 0.79 0.77 0.76 | far 0.72 0.67 0.50 0.52 0.47 0.48
+runs/dev6_s30 step 18000: EA 1.000 d7 0.722
+runs/dev6_s30 K'=12 near 0.94 0.87 0.83 0.79 0.78 0.75 | far 0.72 0.67 0.49 0.52 0.50 0.48
+runs/dev6_s30 step 19000: EA 1.000 d7 0.721
+runs/dev6_s30 K'=12 near 0.94 0.86 0.83 0.80 0.78 0.75 | far 0.72 0.66 0.50 0.53 0.47 0.48
+runs/dev6_s30 step 20000: EA 1.000 d7 0.718
+runs/dev6_s30 K'=12 near 0.94 0.88 0.84 0.79 0.79 0.75 | far 0.74 0.68 0.51 0.52 0.48 0.48
+runs/dev6_s30 step 21000: EA 1.000 d7 0.739
+runs/dev6_s30 K'=12 near 0.96 0.86 0.81 0.79 0.77 0.73 | far 0.72 0.68 0.49 0.52 0.50 0.48
+runs/dev6_s30 step 22000: EA 1.000 d7 0.720
+runs/dev6_s30 K'=12 near 0.97 0.86 0.82 0.78 0.76 0.73 | far 0.70 0.67 0.49 0.53 0.49 0.48
+runs/dev6_s30 step 23000: EA 1.000 d7 0.701
+runs/dev6_s30 K'=12 near 0.98 0.84 0.77 0.75 0.74 0.73 | far 0.70 0.67 0.49 0.51 0.50 0.48
+runs/dev6_s30 step 24000: EA 1.000 d7 0.700
+runs/dev6_s30 K'=12 near 0.99 0.86 0.78 0.77 0.75 0.73 | far 0.71 0.67 0.49 0.52 0.51 0.48
+runs/dev6_s30 step 25000: EA 1.000 d7 0.711
+runs/dev6_s30 K'=12 near 0.99 0.87 0.80 0.77 0.77 0.73 | far 0.71 0.68 0.50 0.51 0.50 0.49
+runs/dev6_s30 step 26000: EA 1.000 d7 0.710
+runs/dev6_s30 K'=12 near 0.99 0.89 0.81 0.80 0.78 0.75 | far 0.72 0.69 0.50 0.50 0.49 0.48
+runs/dev6_s30 step 27000: EA 1.000 d7 0.716
+runs/dev6_s30 K'=12 near 0.99 0.88 0.82 0.79 0.77 0.75 | far 0.72 0.69 0.50 0.51 0.49 0.49
+runs/dev6_s30 step 28000: EA 1.000 d7 0.720
+runs/dev6_s30 K'=12 near 0.99 0.87 0.81 0.79 0.77 0.74 | far 0.72 0.69 0.49 0.51 0.49 0.49
+runs/dev6_s30 step 29000: EA 1.000 d7 0.717
+runs/dev6_s30 K'=12 near 0.99 0.87 0.81 0.78 0.77 0.74 | far 0.71 0.69 0.50 0.51 0.49 0.49
+runs/dev6_s30 step 30000: EA 1.000 d7 0.712
+runs/dev6_s31: end activity -0.002
+runs/dev6_s31: disc clock [2, 3, 8] single-step False; confirm clock [2, 3, 7]
+runs/dev6_s31 K'=12 near 0.99 0.54 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.49 0.50 0.50 0.49
+runs/dev6_s31 step 1000: EA 1.000 d7 0.500
+runs/dev6_s31 K'=12 near 0.93 0.89 0.50 0.51 0.50 0.48 | far 0.51 0.48 0.51 0.50 0.51 0.50
+runs/dev6_s31 step 2000: EA 0.708 d7 0.514
+runs/dev6_s31 K'=12 near 0.94 0.91 0.49 0.51 0.50 0.49 | far 0.51 0.50 0.51 0.49 0.51 0.49
+runs/dev6_s31 step 3000: EA 0.372 d7 0.513
+runs/dev6_s31 K'=12 near 0.96 0.94 0.52 0.50 0.49 0.49 | far 0.50 0.50 0.50 0.49 0.50 0.50
+runs/dev6_s31 step 4000: EA 0.003 d7 0.500
+runs/dev6_s31 K'=12 near 0.94 0.94 0.51 0.51 0.50 0.50 | far 0.51 0.50 0.51 0.48 0.51 0.52
+runs/dev6_s31 step 5000: EA 0.003 d7 0.511
+runs/dev6_s31 K'=12 near 0.96 0.95 0.51 0.50 0.48 0.50 | far 0.51 0.49 0.50 0.49 0.50 0.50
+runs/dev6_s31 step 6000: EA 0.003 d7 0.508
+runs/dev6_s31 K'=12 near 0.95 0.94 0.51 0.51 0.49 0.49 | far 0.51 0.50 0.51 0.49 0.51 0.51
+runs/dev6_s31 step 7000: EA 0.001 d7 0.506
+runs/dev6_s31 K'=12 near 0.96 0.95 0.51 0.50 0.49 0.50 | far 0.51 0.50 0.50 0.50 0.50 0.51
+runs/dev6_s31 step 8000: EA 0.000 d7 0.506
+runs/dev6_s31 K'=12 near 0.95 0.94 0.52 0.51 0.49 0.50 | far 0.50 0.49 0.51 0.49 0.51 0.50
+runs/dev6_s31 step 9000: EA 0.001 d7 0.502
+runs/dev6_s31 K'=12 near 0.94 0.94 0.52 0.52 0.48 0.50 | far 0.51 0.50 0.51 0.48 0.50 0.52
+runs/dev6_s31 step 10000: EA 0.001 d7 0.508
+runs/dev6_s31 K'=12 near 0.95 0.94 0.52 0.51 0.48 0.50 | far 0.50 0.49 0.51 0.49 0.51 0.50
+runs/dev6_s31 step 11000: EA 0.001 d7 0.505
+runs/dev6_s31 K'=12 near 0.94 0.94 0.54 0.51 0.49 0.49 | far 0.50 0.50 0.51 0.49 0.51 0.51
+runs/dev6_s31 step 12000: EA 0.003 d7 0.498
+runs/dev6_s31 K'=12 near 0.95 0.95 0.53 0.51 0.48 0.50 | far 0.50 0.50 0.50 0.49 0.50 0.51
+runs/dev6_s31 step 12500: EA 0.001 d7 0.505
+runs/dev6_s31 K'=12 near 0.92 0.89 0.82 0.57 0.50 0.50 | far 0.48 0.52 0.49 0.50 0.50 0.50
+runs/dev6_s31 step 13000: EA -0.001 d7 0.483
+runs/dev6_s31 K'=12 near 0.95 0.93 0.78 0.54 0.50 0.51 | far 0.52 0.50 0.50 0.49 0.50 0.49
+runs/dev6_s31 step 14000: EA 0.000 d7 0.517
+runs/dev6_s31 K'=12 near 0.96 0.94 0.74 0.52 0.50 0.50 | far 0.50 0.50 0.50 0.48 0.49 0.49
+runs/dev6_s31 step 15000: EA 0.003 d7 0.499
+runs/dev6_s31 K'=12 near 0.97 0.95 0.79 0.52 0.49 0.50 | far 0.50 0.50 0.51 0.48 0.50 0.50
+runs/dev6_s31 step 16000: EA -0.001 d7 0.503
+runs/dev6_s31 K'=12 near 0.97 0.95 0.83 0.51 0.49 0.49 | far 0.50 0.50 0.50 0.49 0.49 0.50
+runs/dev6_s31 step 17000: EA -0.001 d7 0.505
+runs/dev6_s31 K'=12 near 0.96 0.95 0.83 0.52 0.50 0.49 | far 0.50 0.50 0.50 0.49 0.49 0.50
+runs/dev6_s31 step 18000: EA -0.001 d7 0.505
+runs/dev6_s31 K'=12 near 0.97 0.94 0.84 0.52 0.49 0.50 | far 0.51 0.51 0.50 0.49 0.49 0.49
+runs/dev6_s31 step 19000: EA 0.002 d7 0.512
+runs/dev6_s31 K'=12 near 0.97 0.94 0.83 0.53 0.49 0.49 | far 0.51 0.50 0.51 0.49 0.49 0.50
+runs/dev6_s31 step 20000: EA 0.001 d7 0.515
+runs/dev6_s31 K'=12 near 0.97 0.95 0.84 0.54 0.49 0.49 | far 0.50 0.51 0.51 0.49 0.48 0.49
+runs/dev6_s31 step 21000: EA -0.000 d7 0.497
+runs/dev6_s31 K'=12 near 0.96 0.94 0.84 0.54 0.49 0.50 | far 0.51 0.50 0.50 0.50 0.50 0.49
+runs/dev6_s31 step 22000: EA -0.000 d7 0.508
+runs/dev6_s31 K'=12 near 0.96 0.94 0.83 0.54 0.49 0.49 | far 0.51 0.51 0.51 0.50 0.50 0.50
+runs/dev6_s31 step 23000: EA -0.001 d7 0.511
+runs/dev6_s31 K'=12 near 0.96 0.93 0.83 0.55 0.49 0.49 | far 0.50 0.50 0.51 0.50 0.49 0.50
+runs/dev6_s31 step 24000: EA -0.002 d7 0.498
+runs/dev6_s31 K'=12 near 0.96 0.93 0.83 0.55 0.49 0.49 | far 0.50 0.50 0.51 0.49 0.48 0.50
+runs/dev6_s31 step 25000: EA -0.002 d7 0.500
+runs/dev6_s31 K'=12 near 0.95 0.93 0.83 0.54 0.49 0.49 | far 0.50 0.50 0.51 0.49 0.49 0.50
+runs/dev6_s31 step 26000: EA -0.003 d7 0.503
+runs/dev6_s31 K'=12 near 0.95 0.92 0.84 0.55 0.49 0.50 | far 0.50 0.50 0.51 0.49 0.49 0.50
+runs/dev6_s31 step 27000: EA -0.001 d7 0.497
+runs/dev6_s31 K'=12 near 0.95 0.93 0.83 0.55 0.49 0.49 | far 0.50 0.50 0.51 0.49 0.50 0.50
+runs/dev6_s31 step 28000: EA -0.002 d7 0.495
+runs/dev6_s31 K'=12 near 0.95 0.93 0.83 0.55 0.49 0.50 | far 0.50 0.50 0.50 0.49 0.50 0.50
+runs/dev6_s31 step 29000: EA -0.003 d7 0.495
+runs/dev6_s31 K'=12 near 0.95 0.93 0.84 0.55 0.49 0.50 | far 0.50 0.50 0.51 0.49 0.50 0.50
+runs/dev6_s31 step 30000: EA -0.002 d7 0.495
+runs/dev6_s32: end activity 0.952
+runs/dev6_s32: disc clock [1, 3, 5] single-step False; confirm clock [1, 3, 5]
+runs/dev6_s32 K'=12 near 0.87 0.52 0.50 0.47 0.51 0.48 | far 0.50 0.51 0.50 0.49 0.50 0.49
+runs/dev6_s32 step 1000: EA 0.373 d7 0.500
+runs/dev6_s32 K'=12 near 0.95 0.53 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.51
+runs/dev6_s32 step 2000: EA 0.183 d7 0.496
+runs/dev6_s32 K'=12 near 0.97 0.60 0.50 0.50 0.50 0.50 | far 0.49 0.50 0.50 0.49 0.49 0.51
+runs/dev6_s32 step 3000: EA 0.236 d7 0.491
+runs/dev6_s32 K'=12 near 0.96 0.93 0.54 0.50 0.49 0.50 | far 0.50 0.51 0.50 0.49 0.50 0.50
+runs/dev6_s32 step 4000: EA 0.076 d7 0.499
+runs/dev6_s32 K'=12 near 0.96 0.95 0.58 0.50 0.49 0.49 | far 0.51 0.50 0.49 0.50 0.50 0.47
+runs/dev6_s32 step 5000: EA 0.068 d7 0.508
+runs/dev6_s32 K'=12 near 0.98 0.97 0.73 0.50 0.50 0.49 | far 0.50 0.50 0.49 0.49 0.50 0.51
+runs/dev6_s32 step 6000: EA 0.035 d7 0.496
+runs/dev6_s32 K'=12 near 0.98 0.92 0.87 0.75 0.55 0.48 | far 0.50 0.50 0.51 0.49 0.51 0.48
+runs/dev6_s32 step 7000: EA 0.526 d7 0.495
+runs/dev6_s32 K'=12 near 0.99 0.96 0.88 0.80 0.52 0.49 | far 0.49 0.50 0.50 0.51 0.50 0.50
+runs/dev6_s32 step 8000: EA 0.696 d7 0.492
+runs/dev6_s32 K'=12 near 0.98 0.96 0.91 0.82 0.55 0.49 | far 0.49 0.50 0.49 0.50 0.50 0.50
+runs/dev6_s32 step 9000: EA 0.800 d7 0.489
+runs/dev6_s32 K'=12 near 0.99 0.96 0.91 0.81 0.70 0.59 | far 0.55 0.52 0.50 0.49 0.50 0.50
+runs/dev6_s32 step 10000: EA 0.442 d7 0.551
+runs/dev6_s32 K'=12 near 0.99 0.96 0.90 0.84 0.76 0.68 | far 0.58 0.55 0.51 0.50 0.50 0.52
+runs/dev6_s32 step 11000: EA 0.667 d7 0.583
+runs/dev6_s32 K'=12 near 0.99 0.95 0.90 0.85 0.78 0.68 | far 0.58 0.53 0.50 0.51 0.51 0.51
+runs/dev6_s32 step 12000: EA 0.522 d7 0.585
+runs/dev6_s32 K'=12 near 0.99 0.96 0.89 0.87 0.81 0.71 | far 0.59 0.54 0.51 0.52 0.51 0.49
+runs/dev6_s32 step 13000: EA 0.594 d7 0.587
+runs/dev6_s32 K'=12 near 0.99 0.96 0.92 0.87 0.81 0.73 | far 0.60 0.54 0.51 0.52 0.52 0.51
+runs/dev6_s32 step 14000: EA 0.719 d7 0.601
+runs/dev6_s32 K'=12 near 0.99 0.97 0.93 0.86 0.82 0.75 | far 0.66 0.57 0.54 0.53 0.52 0.50
+runs/dev6_s32 step 15000: EA 0.836 d7 0.655
+runs/dev6_s32 K'=12 near 0.99 0.97 0.93 0.88 0.82 0.70 | far 0.58 0.54 0.51 0.52 0.51 0.51
+runs/dev6_s32 step 16000: EA 0.724 d7 0.580
+runs/dev6_s32 K'=12 near 0.99 0.96 0.93 0.88 0.81 0.68 | far 0.55 0.52 0.50 0.51 0.50 0.51
+runs/dev6_s32 step 17000: EA 0.758 d7 0.551
+runs/dev6_s32 K'=12 near 0.99 0.97 0.95 0.89 0.82 0.73 | far 0.60 0.54 0.50 0.51 0.51 0.49
+runs/dev6_s32 step 18000: EA 1.000 d7 0.599
+runs/dev6_s32 K'=12 near 0.99 0.97 0.93 0.88 0.82 0.78 | far 0.71 0.63 0.57 0.54 0.52 0.50
+runs/dev6_s32 step 19000: EA 0.689 d7 0.707
+runs/dev6_s32 K'=12 near 0.99 0.98 0.95 0.90 0.83 0.79 | far 0.71 0.64 0.57 0.54 0.52 0.50
+runs/dev6_s32 step 20000: EA 0.632 d7 0.706
+runs/dev6_s32 K'=12 near 0.99 0.98 0.95 0.90 0.82 0.80 | far 0.74 0.67 0.60 0.54 0.52 0.51
+runs/dev6_s32 step 21000: EA 0.690 d7 0.736
+runs/dev6_s32 K'=12 near 0.99 0.98 0.95 0.89 0.83 0.79 | far 0.73 0.67 0.61 0.57 0.54 0.54
+runs/dev6_s32 step 22000: EA 0.926 d7 0.733
+runs/dev6_s32 K'=12 near 0.99 0.98 0.95 0.90 0.84 0.81 | far 0.77 0.71 0.64 0.59 0.54 0.53
+runs/dev6_s32 step 23000: EA 1.000 d7 0.772
+runs/dev6_s32 K'=12 near 0.99 0.98 0.95 0.89 0.84 0.81 | far 0.76 0.69 0.62 0.58 0.54 0.52
+runs/dev6_s32 step 24000: EA 0.948 d7 0.760
+runs/dev6_s32 K'=12 near 0.99 0.98 0.95 0.90 0.84 0.81 | far 0.76 0.69 0.62 0.57 0.55 0.52
+runs/dev6_s32 step 25000: EA 0.958 d7 0.765
+runs/dev6_s32 K'=12 near 0.99 0.98 0.95 0.90 0.84 0.81 | far 0.78 0.70 0.64 0.58 0.55 0.53
+runs/dev6_s32 step 26000: EA 0.951 d7 0.782
+runs/dev6_s32 K'=12 near 1.00 0.98 0.95 0.90 0.84 0.82 | far 0.78 0.73 0.65 0.60 0.56 0.53
+runs/dev6_s32 step 27000: EA 0.978 d7 0.784
+runs/dev6_s32 K'=12 near 0.99 0.98 0.96 0.90 0.85 0.82 | far 0.78 0.71 0.63 0.58 0.55 0.54
+runs/dev6_s32 step 28000: EA 0.957 d7 0.778
+runs/dev6_s32 K'=12 near 0.99 0.98 0.96 0.91 0.84 0.82 | far 0.78 0.69 0.62 0.58 0.56 0.54
+runs/dev6_s32 step 29000: EA 0.952 d7 0.777
+runs/dev6_s32 K'=12 near 0.99 0.98 0.96 0.91 0.84 0.82 | far 0.77 0.70 0.62 0.58 0.55 0.53
+runs/dev6_s32 step 30000: EA 0.952 d7 0.774
+runs/dev6_s40: end activity 0.674
+runs/dev6_s40: disc clock [1, 6, 7] single-step False; confirm clock [1, 6, 7]
+runs/dev6_s40 K'=12 near 0.89 0.80 0.51 0.49 0.49 0.50 | far 0.51 0.50 0.50 0.49 0.49 0.48
+runs/dev6_s40 step 1000: EA 0.120 d7 0.506
+runs/dev6_s40 K'=12 near 0.91 0.90 0.50 0.50 0.49 0.50 | far 0.50 0.51 0.50 0.49 0.50 0.48
+runs/dev6_s40 step 2000: EA 0.022 d7 0.500
+runs/dev6_s40 K'=12 near 0.92 0.92 0.51 0.49 0.50 0.51 | far 0.50 0.49 0.49 0.49 0.49 0.48
+runs/dev6_s40 step 3000: EA 0.012 d7 0.500
+runs/dev6_s40 K'=12 near 0.94 0.93 0.54 0.49 0.49 0.50 | far 0.50 0.51 0.51 0.50 0.49 0.48
+runs/dev6_s40 step 4000: EA 0.027 d7 0.504
+runs/dev6_s40 K'=12 near 0.96 0.94 0.55 0.49 0.48 0.51 | far 0.51 0.50 0.50 0.50 0.49 0.50
+runs/dev6_s40 step 5000: EA 0.294 d7 0.508
+runs/dev6_s40 K'=12 near 0.96 0.95 0.57 0.50 0.49 0.51 | far 0.50 0.50 0.50 0.50 0.49 0.50
+runs/dev6_s40 step 5500: EA 0.294 d7 0.502
+runs/dev6_s40 K'=12 near 0.98 0.93 0.80 0.55 0.51 0.52 | far 0.51 0.50 0.50 0.50 0.50 0.50
+runs/dev6_s40 step 6000: EA 0.324 d7 0.506
+runs/dev6_s40 K'=12 near 0.98 0.92 0.83 0.61 0.50 0.50 | far 0.49 0.50 0.51 0.50 0.50 0.52
+runs/dev6_s40 step 7000: EA 0.425 d7 0.485
+runs/dev6_s40 K'=12 near 0.97 0.94 0.86 0.64 0.51 0.50 | far 0.50 0.52 0.50 0.51 0.50 0.51
+runs/dev6_s40 step 8000: EA 0.404 d7 0.497
+runs/dev6_s40 K'=12 near 0.99 0.92 0.88 0.67 0.52 0.51 | far 0.49 0.50 0.52 0.50 0.50 0.49
+runs/dev6_s40 step 9000: EA 0.406 d7 0.494
+runs/dev6_s40 K'=12 near 0.99 0.94 0.89 0.66 0.52 0.49 | far 0.50 0.51 0.50 0.52 0.50 0.50
+runs/dev6_s40 step 10000: EA 0.382 d7 0.498
+runs/dev6_s40 K'=12 near 0.99 0.94 0.91 0.72 0.53 0.49 | far 0.50 0.51 0.50 0.50 0.50 0.52
+runs/dev6_s40 step 11000: EA 0.336 d7 0.501
+runs/dev6_s40 K'=12 near 0.99 0.94 0.90 0.81 0.73 0.65 | far 0.65 0.64 0.63 0.61 0.56 0.52
+runs/dev6_s40 step 12000: EA 0.326 d7 0.647
+runs/dev6_s40 K'=12 near 0.99 0.91 0.90 0.79 0.73 0.64 | far 0.61 0.58 0.56 0.56 0.52 0.51
+runs/dev6_s40 step 13000: EA 0.375 d7 0.607
+runs/dev6_s40 K'=12 near 0.99 0.93 0.91 0.84 0.75 0.68 | far 0.63 0.59 0.56 0.56 0.52 0.52
+runs/dev6_s40 step 14000: EA 0.413 d7 0.633
+runs/dev6_s40 K'=12 near 0.99 0.95 0.92 0.83 0.77 0.73 | far 0.64 0.58 0.55 0.54 0.52 0.50
+runs/dev6_s40 step 15000: EA 0.444 d7 0.638
+runs/dev6_s40 K'=12 near 0.99 0.95 0.93 0.87 0.79 0.73 | far 0.62 0.58 0.54 0.53 0.50 0.50
+runs/dev6_s40 step 16000: EA 0.627 d7 0.619
+runs/dev6_s40 K'=12 near 0.98 0.94 0.92 0.86 0.81 0.74 | far 0.61 0.56 0.52 0.53 0.50 0.50
+runs/dev6_s40 step 17000: EA 0.571 d7 0.606
+runs/dev6_s40 K'=12 near 0.99 0.96 0.94 0.90 0.82 0.75 | far 0.61 0.56 0.54 0.52 0.51 0.51
+runs/dev6_s40 step 18000: EA 0.654 d7 0.609
+runs/dev6_s40 K'=12 near 0.99 0.96 0.95 0.89 0.82 0.76 | far 0.63 0.57 0.54 0.52 0.50 0.48
+runs/dev6_s40 step 19000: EA 0.674 d7 0.633
+runs/dev6_s40 K'=12 near 0.99 0.96 0.94 0.91 0.82 0.75 | far 0.63 0.56 0.53 0.51 0.50 0.50
+runs/dev6_s40 step 20000: EA 0.696 d7 0.632
+runs/dev6_s40 K'=12 near 1.00 0.96 0.94 0.90 0.83 0.75 | far 0.65 0.57 0.55 0.53 0.50 0.49
+runs/dev6_s40 step 21000: EA 0.640 d7 0.651
+runs/dev6_s40 K'=12 near 0.99 0.96 0.95 0.91 0.84 0.76 | far 0.65 0.57 0.55 0.53 0.51 0.50
+runs/dev6_s40 step 22000: EA 0.670 d7 0.652
+runs/dev6_s40 K'=12 near 1.00 0.96 0.96 0.92 0.83 0.75 | far 0.65 0.58 0.54 0.52 0.50 0.49
+runs/dev6_s40 step 23000: EA 0.677 d7 0.647
+runs/dev6_s40 K'=12 near 0.99 0.95 0.94 0.92 0.84 0.76 | far 0.65 0.57 0.54 0.51 0.49 0.49
+runs/dev6_s40 step 24000: EA 0.670 d7 0.646
+runs/dev6_s40 K'=12 near 0.99 0.96 0.94 0.92 0.85 0.76 | far 0.66 0.58 0.53 0.53 0.49 0.49
+runs/dev6_s40 step 25000: EA 0.698 d7 0.659
+runs/dev6_s40 K'=12 near 1.00 0.96 0.95 0.92 0.85 0.76 | far 0.65 0.57 0.53 0.52 0.50 0.49
+runs/dev6_s40 step 26000: EA 0.663 d7 0.651
+runs/dev6_s40 K'=12 near 1.00 0.96 0.95 0.91 0.84 0.75 | far 0.65 0.57 0.54 0.53 0.49 0.48
+runs/dev6_s40 step 27000: EA 0.669 d7 0.652
+runs/dev6_s40 K'=12 near 1.00 0.96 0.95 0.91 0.85 0.76 | far 0.65 0.57 0.54 0.52 0.49 0.48
+runs/dev6_s40 step 28000: EA 0.678 d7 0.646
+runs/dev6_s40 K'=12 near 1.00 0.96 0.95 0.91 0.84 0.76 | far 0.65 0.57 0.54 0.52 0.50 0.48
+runs/dev6_s40 step 29000: EA 0.673 d7 0.649
+runs/dev6_s40 K'=12 near 1.00 0.96 0.95 0.91 0.85 0.76 | far 0.65 0.57 0.54 0.52 0.49 0.49
+runs/dev6_s40 step 30000: EA 0.674 d7 0.648
+runs/dev6_s34: end activity 0.710
+runs/dev6_s34: disc clock [1, 3, 6] single-step False; confirm clock [1, 3, 6]
+runs/dev6_s34 K'=12 near 0.94 0.50 0.50 0.50 0.51 0.47 | far 0.50 0.49 0.50 0.51 0.49 0.50
+runs/dev6_s34 step 1000: EA 0.234 d7 0.497
+runs/dev6_s34 K'=12 near 1.00 0.51 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+runs/dev6_s34 step 2000: EA 0.357 d7 0.498
+runs/dev6_s34 K'=12 near 0.99 0.52 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+runs/dev6_s34 step 2500: EA 0.707 d7 0.495
+runs/dev6_s34 K'=12 near 0.91 0.92 0.49 0.48 0.50 0.48 | far 0.51 0.51 0.50 0.50 0.50 0.48
+runs/dev6_s34 step 3000: EA 0.320 d7 0.510
+runs/dev6_s34 K'=12 near 0.95 0.93 0.71 0.50 0.49 0.49 | far 0.51 0.50 0.50 0.51 0.49 0.48
+runs/dev6_s34 step 4000: EA 0.609 d7 0.507
+runs/dev6_s34 K'=12 near 0.98 0.94 0.76 0.50 0.49 0.49 | far 0.51 0.51 0.51 0.51 0.50 0.49
+runs/dev6_s34 step 5000: EA 0.846 d7 0.508
+runs/dev6_s34 K'=12 near 0.93 0.96 0.85 0.49 0.50 0.50 | far 0.50 0.51 0.51 0.50 0.50 0.50
+runs/dev6_s34 step 6000: EA 0.841 d7 0.501
+runs/dev6_s34 K'=12 near 0.94 0.93 0.86 0.66 0.61 0.56 | far 0.53 0.51 0.52 0.50 0.50 0.51
+runs/dev6_s34 step 7000: EA 0.412 d7 0.534
+runs/dev6_s34 K'=12 near 0.97 0.94 0.81 0.69 0.60 0.56 | far 0.53 0.52 0.50 0.51 0.50 0.51
+runs/dev6_s34 step 8000: EA 0.312 d7 0.533
+runs/dev6_s34 K'=12 near 0.96 0.94 0.82 0.66 0.59 0.54 | far 0.51 0.50 0.50 0.51 0.52 0.48
+runs/dev6_s34 step 9000: EA 0.525 d7 0.507
+runs/dev6_s34 K'=12 near 0.97 0.93 0.80 0.72 0.61 0.57 | far 0.53 0.52 0.51 0.51 0.51 0.50
+runs/dev6_s34 step 10000: EA 0.527 d7 0.534
+runs/dev6_s34 K'=12 near 0.99 0.95 0.84 0.72 0.64 0.57 | far 0.52 0.50 0.51 0.50 0.50 0.51
+runs/dev6_s34 step 11000: EA 0.463 d7 0.521
+runs/dev6_s34 K'=12 near 0.99 0.94 0.83 0.72 0.59 0.55 | far 0.52 0.51 0.51 0.50 0.53 0.51
+runs/dev6_s34 step 12000: EA 0.416 d7 0.518
+runs/dev6_s34 K'=12 near 1.00 0.96 0.85 0.76 0.56 0.50 | far 0.50 0.49 0.51 0.50 0.50 0.48
+runs/dev6_s34 step 13000: EA 0.452 d7 0.496
+runs/dev6_s34 K'=12 near 0.99 0.96 0.88 0.76 0.54 0.52 | far 0.52 0.50 0.49 0.51 0.51 0.50
+runs/dev6_s34 step 14000: EA 0.892 d7 0.520
+runs/dev6_s34 K'=12 near 1.00 0.97 0.90 0.78 0.53 0.52 | far 0.50 0.50 0.50 0.51 0.51 0.49
+runs/dev6_s34 step 15000: EA 0.857 d7 0.502
+runs/dev6_s34 K'=12 near 1.00 0.97 0.91 0.79 0.54 0.50 | far 0.49 0.50 0.50 0.50 0.51 0.50
+runs/dev6_s34 step 15500: EA 0.816 d7 0.493
+runs/dev6_s34 K'=12 near 1.00 0.97 0.91 0.79 0.70 0.64 | far 0.65 0.61 0.58 0.59 0.58 0.51
+runs/dev6_s34 step 16000: EA 0.755 d7 0.646
+runs/dev6_s34 K'=12 near 1.00 0.98 0.90 0.77 0.74 0.64 | far 0.62 0.57 0.56 0.54 0.52 0.52
+runs/dev6_s34 step 17000: EA 0.592 d7 0.615
+runs/dev6_s34 K'=12 near 1.00 0.97 0.90 0.78 0.71 0.54 | far 0.51 0.50 0.50 0.49 0.51 0.50
+runs/dev6_s34 step 18000: EA 0.583 d7 0.507
+runs/dev6_s34 K'=12 near 1.00 0.98 0.91 0.80 0.72 0.55 | far 0.51 0.50 0.50 0.50 0.51 0.49
+runs/dev6_s34 step 19000: EA 0.632 d7 0.510
+runs/dev6_s34 K'=12 near 1.00 0.97 0.92 0.80 0.75 0.55 | far 0.52 0.50 0.50 0.50 0.51 0.49
+runs/dev6_s34 step 20000: EA 0.688 d7 0.519
+runs/dev6_s34 K'=12 near 1.00 0.98 0.92 0.81 0.76 0.58 | far 0.53 0.51 0.50 0.50 0.51 0.49
+runs/dev6_s34 step 21000: EA 0.524 d7 0.531
+runs/dev6_s34 K'=12 near 1.00 0.98 0.92 0.80 0.75 0.58 | far 0.52 0.52 0.50 0.50 0.51 0.49
+runs/dev6_s34 step 22000: EA 0.721 d7 0.524
+runs/dev6_s34 K'=12 near 1.00 0.98 0.91 0.80 0.76 0.60 | far 0.55 0.52 0.50 0.50 0.51 0.48
+runs/dev6_s34 step 23000: EA 0.640 d7 0.549
+runs/dev6_s34 K'=12 near 1.00 0.98 0.91 0.81 0.73 0.53 | far 0.51 0.51 0.49 0.49 0.53 0.47
+runs/dev6_s34 step 24000: EA 0.747 d7 0.508
+runs/dev6_s34 K'=12 near 1.00 0.98 0.91 0.80 0.76 0.60 | far 0.55 0.53 0.50 0.51 0.51 0.47
+runs/dev6_s34 step 25000: EA 0.579 d7 0.550
+runs/dev6_s34 K'=12 near 1.00 0.98 0.92 0.81 0.77 0.60 | far 0.53 0.52 0.50 0.50 0.52 0.48
+runs/dev6_s34 step 26000: EA 0.628 d7 0.532
+runs/dev6_s34 K'=12 near 1.00 0.98 0.92 0.81 0.77 0.59 | far 0.52 0.52 0.49 0.50 0.51 0.47
+runs/dev6_s34 step 27000: EA 0.646 d7 0.523
+runs/dev6_s34 K'=12 near 1.00 0.97 0.92 0.81 0.77 0.58 | far 0.53 0.52 0.49 0.50 0.51 0.48
+runs/dev6_s34 step 28000: EA 0.679 d7 0.526
+runs/dev6_s34 K'=12 near 1.00 0.98 0.92 0.81 0.76 0.57 | far 0.52 0.52 0.50 0.50 0.51 0.47
+runs/dev6_s34 step 29000: EA 0.710 d7 0.517
+runs/dev6_s34 K'=12 near 1.00 0.98 0.92 0.81 0.76 0.57 | far 0.52 0.52 0.49 0.50 0.51 0.47
+runs/dev6_s34 step 30000: EA 0.710 d7 0.516
+runs/dev6_s33: end activity 0.426
+runs/dev6_s33: disc clock [1, 2, 6] single-step False; confirm clock [1, 2, 6]
+runs/dev6_s33 K'=12 near 0.87 0.50 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+runs/dev6_s33 step 1000: EA 0.889 d7 0.500
+runs/dev6_s33 K'=12 near 0.98 0.50 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+runs/dev6_s33 step 2000: EA 1.000 d7 0.498
+runs/dev6_s33 K'=12 near 0.97 0.51 0.50 0.51 0.51 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.51
+runs/dev6_s33 step 3000: EA 0.391 d7 0.498
+runs/dev6_s33 K'=12 near 0.94 0.92 0.49 0.51 0.50 0.49 | far 0.49 0.51 0.52 0.48 0.50 0.51
+runs/dev6_s33 step 4000: EA 0.290 d7 0.491
+runs/dev6_s33 K'=12 near 0.94 0.94 0.75 0.52 0.50 0.49 | far 0.49 0.51 0.52 0.51 0.51 0.51
+runs/dev6_s33 step 5000: EA 0.919 d7 0.487
+runs/dev6_s33 K'=12 near 0.97 0.94 0.79 0.53 0.50 0.49 | far 0.50 0.50 0.51 0.50 0.50 0.51
+runs/dev6_s33 step 5500: EA 0.871 d7 0.504
+runs/dev6_s33 K'=12 near 0.98 0.91 0.87 0.69 0.59 0.55 | far 0.52 0.50 0.50 0.49 0.50 0.52
+runs/dev6_s33 step 6000: EA 0.679 d7 0.521
+runs/dev6_s33 K'=12 near 0.98 0.94 0.91 0.75 0.56 0.50 | far 0.50 0.51 0.51 0.49 0.50 0.51
+runs/dev6_s33 step 7000: EA 0.597 d7 0.498
+runs/dev6_s33 K'=12 near 0.99 0.95 0.91 0.81 0.55 0.48 | far 0.50 0.50 0.50 0.49 0.49 0.51
+runs/dev6_s33 step 8000: EA 0.666 d7 0.499
+runs/dev6_s33 K'=12 near 0.99 0.94 0.91 0.84 0.54 0.48 | far 0.49 0.50 0.52 0.51 0.51 0.53
+runs/dev6_s33 step 8500: EA 0.665 d7 0.491
+runs/dev6_s33 K'=12 near 0.99 0.95 0.92 0.85 0.67 0.55 | far 0.49 0.50 0.50 0.49 0.49 0.50
+runs/dev6_s33 step 9000: EA 0.543 d7 0.490
+runs/dev6_s33 K'=12 near 0.99 0.95 0.91 0.85 0.70 0.61 | far 0.54 0.51 0.50 0.50 0.50 0.50
+runs/dev6_s33 step 10000: EA 0.561 d7 0.540
+runs/dev6_s33 K'=12 near 0.99 0.95 0.93 0.86 0.72 0.59 | far 0.53 0.50 0.49 0.51 0.51 0.51
+runs/dev6_s33 step 11000: EA 0.610 d7 0.531
+runs/dev6_s33 K'=12 near 0.99 0.96 0.94 0.89 0.74 0.62 | far 0.54 0.52 0.50 0.51 0.50 0.50
+runs/dev6_s33 step 11500: EA 0.576 d7 0.545
+runs/dev6_s33 K'=12 near 0.99 0.97 0.93 0.87 0.76 0.67 | far 0.61 0.58 0.54 0.53 0.50 0.52
+runs/dev6_s33 step 12000: EA 0.486 d7 0.606
+runs/dev6_s33 K'=12 near 0.99 0.96 0.91 0.86 0.77 0.65 | far 0.59 0.53 0.51 0.51 0.49 0.51
+runs/dev6_s33 step 13000: EA 0.423 d7 0.594
+runs/dev6_s33 K'=12 near 0.99 0.96 0.91 0.88 0.76 0.65 | far 0.57 0.54 0.51 0.51 0.51 0.52
+runs/dev6_s33 step 14000: EA 0.458 d7 0.570
+runs/dev6_s33 K'=12 near 0.99 0.97 0.94 0.88 0.74 0.65 | far 0.58 0.55 0.52 0.51 0.50 0.52
+runs/dev6_s33 step 15000: EA 0.477 d7 0.580
+runs/dev6_s33 K'=12 near 0.99 0.97 0.95 0.91 0.74 0.63 | far 0.56 0.54 0.53 0.51 0.51 0.52
+runs/dev6_s33 step 16000: EA 0.450 d7 0.560
+runs/dev6_s33 K'=12 near 0.99 0.98 0.93 0.90 0.75 0.63 | far 0.58 0.54 0.51 0.52 0.51 0.50
+runs/dev6_s33 step 17000: EA 0.398 d7 0.578
+runs/dev6_s33 K'=12 near 0.99 0.97 0.95 0.91 0.78 0.64 | far 0.57 0.53 0.52 0.51 0.50 0.51
+runs/dev6_s33 step 18000: EA 0.458 d7 0.567
+runs/dev6_s33 K'=12 near 0.99 0.98 0.94 0.91 0.79 0.68 | far 0.61 0.58 0.54 0.53 0.50 0.51
+runs/dev6_s33 step 19000: EA 0.410 d7 0.614
+runs/dev6_s33 K'=12 near 0.99 0.98 0.96 0.92 0.78 0.64 | far 0.57 0.53 0.50 0.50 0.49 0.50
+runs/dev6_s33 step 20000: EA 0.414 d7 0.568
+runs/dev6_s33 K'=12 near 0.99 0.98 0.95 0.92 0.78 0.64 | far 0.58 0.55 0.52 0.50 0.51 0.51
+runs/dev6_s33 step 21000: EA 0.472 d7 0.580
+runs/dev6_s33 K'=12 near 0.99 0.98 0.97 0.93 0.80 0.66 | far 0.60 0.55 0.52 0.51 0.50 0.51
+runs/dev6_s33 step 22000: EA 0.424 d7 0.604
+runs/dev6_s33 K'=12 near 0.99 0.98 0.97 0.94 0.81 0.69 | far 0.61 0.57 0.54 0.51 0.50 0.49
+runs/dev6_s33 step 23000: EA 0.348 d7 0.612
+runs/dev6_s33 K'=12 near 0.99 0.98 0.98 0.94 0.83 0.68 | far 0.59 0.56 0.52 0.51 0.50 0.50
+runs/dev6_s33 step 24000: EA 0.413 d7 0.594
+runs/dev6_s33 K'=12 near 0.99 0.98 0.97 0.94 0.82 0.67 | far 0.59 0.55 0.52 0.50 0.50 0.48
+runs/dev6_s33 step 25000: EA 0.422 d7 0.591
+runs/dev6_s33 K'=12 near 0.99 0.98 0.97 0.94 0.82 0.66 | far 0.59 0.55 0.51 0.51 0.50 0.49
+runs/dev6_s33 step 26000: EA 0.428 d7 0.592
+runs/dev6_s33 K'=12 near 0.99 0.98 0.96 0.94 0.84 0.66 | far 0.60 0.55 0.52 0.51 0.50 0.50
+runs/dev6_s33 step 27000: EA 0.428 d7 0.599
+runs/dev6_s33 K'=12 near 0.99 0.98 0.96 0.94 0.82 0.67 | far 0.59 0.56 0.52 0.51 0.50 0.49
+runs/dev6_s33 step 28000: EA 0.432 d7 0.588
+runs/dev6_s33 K'=12 near 0.99 0.98 0.96 0.94 0.83 0.66 | far 0.60 0.55 0.52 0.51 0.49 0.50
+runs/dev6_s33 step 29000: EA 0.423 d7 0.598
+runs/dev6_s33 K'=12 near 0.99 0.98 0.96 0.94 0.83 0.66 | far 0.59 0.56 0.52 0.51 0.50 0.50
+runs/dev6_s33 step 30000: EA 0.426 d7 0.593
+runs/dev6_s35: end activity 0.151
+runs/dev6_s35: disc clock [2, 3, 4] single-step False; confirm clock [2, 3, 4]
+runs/dev6_s35 K'=12 near 0.91 0.55 0.50 0.50 0.50 0.51 | far 0.50 0.50 0.50 0.50 0.50 0.50
+runs/dev6_s35 step 1000: EA 0.915 d7 0.499
+runs/dev6_s35 K'=12 near 0.81 0.58 0.49 0.51 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.49
+runs/dev6_s35 step 1500: EA 0.445 d7 0.503
+runs/dev6_s35 K'=12 near 0.93 0.85 0.55 0.51 0.50 0.49 | far 0.50 0.49 0.50 0.51 0.51 0.46
+runs/dev6_s35 step 2000: EA 0.534 d7 0.503
+runs/dev6_s35 K'=12 near 0.95 0.91 0.59 0.50 0.50 0.49 | far 0.51 0.49 0.49 0.49 0.51 0.46
+runs/dev6_s35 step 3000: EA 0.276 d7 0.509
+runs/dev6_s35 K'=12 near 0.97 0.94 0.65 0.49 0.50 0.49 | far 0.49 0.49 0.49 0.50 0.51 0.47
+runs/dev6_s35 step 4000: EA 0.299 d7 0.492
+runs/dev6_s35 K'=12 near 0.97 0.93 0.73 0.51 0.48 0.49 | far 0.49 0.50 0.50 0.50 0.50 0.49
+runs/dev6_s35 step 4500: EA 0.489 d7 0.487
+runs/dev6_s35 K'=12 near 0.95 0.86 0.80 0.65 0.53 0.48 | far 0.49 0.50 0.50 0.49 0.49 0.50
+runs/dev6_s35 step 5000: EA 0.536 d7 0.491
+runs/dev6_s35 K'=12 near 0.94 0.87 0.80 0.69 0.50 0.47 | far 0.50 0.51 0.51 0.48 0.50 0.50
+runs/dev6_s35 step 6000: EA 0.613 d7 0.504
+runs/dev6_s35 K'=12 near 0.98 0.96 0.89 0.73 0.50 0.49 | far 0.49 0.50 0.51 0.52 0.50 0.52
+runs/dev6_s35 step 7000: EA 0.582 d7 0.488
+runs/dev6_s35 K'=12 near 0.99 0.96 0.88 0.75 0.63 0.53 | far 0.48 0.50 0.50 0.49 0.49 0.50
+runs/dev6_s35 step 8000: EA 0.412 d7 0.479
+runs/dev6_s35 K'=12 near 0.99 0.96 0.87 0.77 0.66 0.51 | far 0.48 0.51 0.50 0.50 0.51 0.48
+runs/dev6_s35 step 9000: EA 0.291 d7 0.480
+runs/dev6_s35 K'=12 near 1.00 0.96 0.87 0.77 0.67 0.51 | far 0.49 0.53 0.50 0.49 0.49 0.49
+runs/dev6_s35 step 10000: EA 0.442 d7 0.490
+runs/dev6_s35 K'=12 near 1.00 0.96 0.89 0.79 0.66 0.49 | far 0.49 0.51 0.51 0.49 0.50 0.48
+runs/dev6_s35 step 10500: EA 0.568 d7 0.487
+runs/dev6_s35 K'=12 near 1.00 0.97 0.88 0.78 0.68 0.63 | far 0.52 0.51 0.51 0.50 0.49 0.50
+runs/dev6_s35 step 11000: EA 0.465 d7 0.521
+runs/dev6_s35 K'=12 near 1.00 0.98 0.91 0.80 0.72 0.66 | far 0.57 0.52 0.50 0.51 0.51 0.48
+runs/dev6_s35 step 12000: EA 0.324 d7 0.566
+runs/dev6_s35 K'=12 near 1.00 0.98 0.92 0.81 0.72 0.68 | far 0.60 0.53 0.49 0.50 0.50 0.51
+runs/dev6_s35 step 13000: EA 0.173 d7 0.599
+runs/dev6_s35 K'=12 near 1.00 0.98 0.92 0.83 0.72 0.67 | far 0.59 0.52 0.51 0.50 0.50 0.49
+runs/dev6_s35 step 14000: EA 0.156 d7 0.587
+runs/dev6_s35 K'=12 near 1.00 0.98 0.92 0.83 0.73 0.66 | far 0.58 0.54 0.51 0.48 0.50 0.48
+runs/dev6_s35 step 15000: EA 0.140 d7 0.583
+runs/dev6_s35 K'=12 near 1.00 0.99 0.93 0.85 0.74 0.70 | far 0.59 0.55 0.49 0.49 0.50 0.51
+runs/dev6_s35 step 16000: EA 0.125 d7 0.588
+runs/dev6_s35 K'=12 near 1.00 0.98 0.92 0.85 0.76 0.71 | far 0.58 0.53 0.50 0.50 0.50 0.50
+runs/dev6_s35 step 17000: EA 0.118 d7 0.577
+runs/dev6_s35 K'=12 near 1.00 0.98 0.93 0.86 0.77 0.69 | far 0.59 0.53 0.50 0.50 0.51 0.50
+runs/dev6_s35 step 18000: EA 0.113 d7 0.589
+runs/dev6_s35 K'=12 near 1.00 0.99 0.94 0.86 0.78 0.68 | far 0.57 0.54 0.52 0.50 0.51 0.51
+runs/dev6_s35 step 19000: EA 0.133 d7 0.574
+runs/dev6_s35 K'=12 near 1.00 0.99 0.95 0.88 0.79 0.72 | far 0.58 0.54 0.51 0.51 0.51 0.51
+runs/dev6_s35 step 20000: EA 0.124 d7 0.576
+runs/dev6_s35 K'=12 near 1.00 0.99 0.95 0.88 0.78 0.71 | far 0.57 0.54 0.51 0.50 0.50 0.52
+runs/dev6_s35 step 21000: EA 0.142 d7 0.573
+runs/dev6_s35 K'=12 near 1.00 0.99 0.96 0.90 0.78 0.70 | far 0.57 0.54 0.50 0.50 0.51 0.52
+runs/dev6_s35 step 22000: EA 0.137 d7 0.569
+runs/dev6_s35 K'=12 near 1.00 0.99 0.96 0.90 0.80 0.73 | far 0.57 0.54 0.51 0.50 0.50 0.52
+runs/dev6_s35 step 23000: EA 0.144 d7 0.569
+runs/dev6_s35 K'=12 near 1.00 0.99 0.95 0.90 0.79 0.72 | far 0.57 0.54 0.50 0.50 0.50 0.52
+runs/dev6_s35 step 24000: EA 0.145 d7 0.571
+runs/dev6_s35 K'=12 near 1.00 0.99 0.95 0.90 0.79 0.71 | far 0.57 0.53 0.50 0.50 0.50 0.52
+runs/dev6_s35 step 25000: EA 0.146 d7 0.570
+runs/dev6_s35 K'=12 near 1.00 0.99 0.96 0.90 0.80 0.72 | far 0.57 0.53 0.51 0.50 0.51 0.52
+runs/dev6_s35 step 26000: EA 0.149 d7 0.572
+runs/dev6_s35 K'=12 near 1.00 0.99 0.96 0.90 0.80 0.72 | far 0.57 0.53 0.50 0.51 0.51 0.52
+runs/dev6_s35 step 27000: EA 0.153 d7 0.573
+runs/dev6_s35 K'=12 near 1.00 0.99 0.96 0.90 0.81 0.73 | far 0.58 0.53 0.50 0.51 0.51 0.52
+runs/dev6_s35 step 28000: EA 0.153 d7 0.576
+runs/dev6_s35 K'=12 near 1.00 0.99 0.96 0.90 0.80 0.72 | far 0.58 0.53 0.51 0.51 0.52 0.53
+runs/dev6_s35 step 29000: EA 0.151 d7 0.579
+runs/dev6_s35 K'=12 near 1.00 0.99 0.96 0.90 0.80 0.72 | far 0.58 0.53 0.50 0.51 0.51 0.52
+runs/dev6_s35 step 30000: EA 0.151 d7 0.584
+runs/dev6_s36: end activity 0.882
+runs/dev6_s36: disc clock [4, 6, 1] single-step False; confirm clock [4, 6, 8]
+runs/dev6_s36 K'=12 near 1.00 0.50 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+runs/dev6_s36 step 1000: EA 0.699 d7 0.500
+runs/dev6_s36 K'=12 near 0.99 0.54 0.50 0.50 0.50 0.50 | far 0.49 0.50 0.50 0.49 0.50 0.51
+runs/dev6_s36 step 2000: EA 0.333 d7 0.491
+runs/dev6_s36 K'=12 near 0.96 0.69 0.50 0.52 0.50 0.51 | far 0.51 0.50 0.51 0.50 0.51 0.52
+runs/dev6_s36 step 2500: EA 0.383 d7 0.515
+runs/dev6_s36 K'=12 near 0.92 0.87 0.49 0.52 0.48 0.51 | far 0.51 0.48 0.49 0.49 0.52 0.51
+runs/dev6_s36 step 3000: EA 0.624 d7 0.513
+runs/dev6_s36 K'=12 near 0.90 0.87 0.50 0.52 0.49 0.50 | far 0.51 0.49 0.49 0.49 0.51 0.50
+runs/dev6_s36 step 4000: EA 0.521 d7 0.512
+runs/dev6_s36 K'=12 near 0.95 0.89 0.51 0.51 0.47 0.51 | far 0.51 0.49 0.50 0.49 0.50 0.51
+runs/dev6_s36 step 5000: EA 0.362 d7 0.513
+runs/dev6_s36 K'=12 near 0.95 0.91 0.61 0.50 0.49 0.51 | far 0.52 0.49 0.49 0.51 0.51 0.50
+runs/dev6_s36 step 6000: EA 0.234 d7 0.521
+runs/dev6_s36 K'=12 near 0.95 0.92 0.77 0.51 0.48 0.51 | far 0.51 0.48 0.50 0.49 0.50 0.52
+runs/dev6_s36 step 7000: EA 0.917 d7 0.508
+runs/dev6_s36 K'=12 near 0.96 0.93 0.74 0.50 0.48 0.49 | far 0.50 0.50 0.49 0.50 0.51 0.50
+runs/dev6_s36 step 8000: EA 0.937 d7 0.502
+runs/dev6_s36 K'=12 near 0.95 0.93 0.70 0.51 0.49 0.51 | far 0.50 0.50 0.48 0.51 0.51 0.51
+runs/dev6_s36 step 9000: EA 0.867 d7 0.502
+runs/dev6_s36 K'=12 near 0.96 0.93 0.75 0.51 0.49 0.50 | far 0.52 0.50 0.48 0.50 0.50 0.51
+runs/dev6_s36 step 10000: EA 0.871 d7 0.523
+runs/dev6_s36 K'=12 near 0.97 0.94 0.74 0.50 0.48 0.51 | far 0.52 0.50 0.49 0.50 0.51 0.50
+runs/dev6_s36 step 11000: EA 0.818 d7 0.517
+runs/dev6_s36 K'=12 near 0.96 0.93 0.77 0.50 0.49 0.51 | far 0.51 0.50 0.49 0.50 0.51 0.50
+runs/dev6_s36 step 11500: EA 0.899 d7 0.512
+runs/dev6_s36 K'=12 near 0.96 0.90 0.84 0.61 0.54 0.50 | far 0.50 0.50 0.49 0.49 0.51 0.50
+runs/dev6_s36 step 12000: EA 0.475 d7 0.502
+runs/dev6_s36 K'=12 near 0.97 0.92 0.84 0.72 0.57 0.51 | far 0.52 0.50 0.50 0.50 0.49 0.49
+runs/dev6_s36 step 13000: EA 0.706 d7 0.521
+runs/dev6_s36 K'=12 near 0.98 0.92 0.89 0.77 0.60 0.52 | far 0.49 0.49 0.52 0.51 0.50 0.51
+runs/dev6_s36 step 14000: EA 0.802 d7 0.493
+runs/dev6_s36 K'=12 near 0.98 0.94 0.90 0.80 0.60 0.52 | far 0.51 0.50 0.49 0.50 0.51 0.49
+runs/dev6_s36 step 15000: EA 0.758 d7 0.508
+runs/dev6_s36 K'=12 near 0.99 0.95 0.92 0.83 0.60 0.50 | far 0.51 0.51 0.52 0.51 0.51 0.51
+runs/dev6_s36 step 16000: EA 0.766 d7 0.510
+runs/dev6_s36 K'=12 near 0.98 0.95 0.93 0.83 0.59 0.52 | far 0.51 0.49 0.51 0.50 0.50 0.50
+runs/dev6_s36 step 17000: EA 0.793 d7 0.513
+runs/dev6_s36 K'=12 near 0.99 0.94 0.90 0.82 0.67 0.53 | far 0.53 0.50 0.51 0.51 0.48 0.50
+runs/dev6_s36 step 18000: EA 0.829 d7 0.528
+runs/dev6_s36 K'=12 near 0.98 0.95 0.91 0.84 0.64 0.53 | far 0.52 0.50 0.50 0.51 0.52 0.49
+runs/dev6_s36 step 19000: EA 0.837 d7 0.519
+runs/dev6_s36 K'=12 near 0.99 0.94 0.91 0.84 0.67 0.53 | far 0.50 0.50 0.50 0.50 0.50 0.51
+runs/dev6_s36 step 20000: EA 0.862 d7 0.505
+runs/dev6_s36 K'=12 near 0.98 0.95 0.92 0.87 0.63 0.53 | far 0.52 0.49 0.50 0.50 0.50 0.51
+runs/dev6_s36 step 21000: EA 0.887 d7 0.517
+runs/dev6_s36 K'=12 near 0.97 0.94 0.92 0.86 0.65 0.55 | far 0.53 0.50 0.51 0.49 0.50 0.51
+runs/dev6_s36 step 22000: EA 0.869 d7 0.534
+runs/dev6_s36 K'=12 near 0.99 0.95 0.93 0.87 0.66 0.56 | far 0.53 0.50 0.50 0.49 0.51 0.49
+runs/dev6_s36 step 23000: EA 0.886 d7 0.534
+runs/dev6_s36 K'=12 near 0.98 0.94 0.91 0.86 0.69 0.56 | far 0.54 0.51 0.51 0.50 0.51 0.49
+runs/dev6_s36 step 24000: EA 0.877 d7 0.545
+runs/dev6_s36 K'=12 near 0.98 0.94 0.92 0.85 0.66 0.54 | far 0.52 0.50 0.50 0.50 0.51 0.49
+runs/dev6_s36 step 25000: EA 0.883 d7 0.518
+runs/dev6_s36 K'=12 near 0.99 0.95 0.92 0.87 0.67 0.55 | far 0.51 0.49 0.50 0.51 0.51 0.50
+runs/dev6_s36 step 26000: EA 0.883 d7 0.515
+runs/dev6_s36 K'=12 near 0.98 0.96 0.93 0.86 0.66 0.53 | far 0.51 0.49 0.50 0.51 0.52 0.48
+runs/dev6_s36 step 27000: EA 0.884 d7 0.513
+runs/dev6_s36 K'=12 near 0.98 0.96 0.93 0.86 0.66 0.52 | far 0.51 0.49 0.50 0.51 0.51 0.50
+runs/dev6_s36 step 28000: EA 0.882 d7 0.510
+runs/dev6_s36 K'=12 near 0.98 0.96 0.92 0.86 0.66 0.52 | far 0.51 0.49 0.50 0.51 0.53 0.49
+runs/dev6_s36 step 29000: EA 0.882 d7 0.514
+runs/dev6_s36 K'=12 near 0.98 0.96 0.93 0.87 0.65 0.53 | far 0.52 0.49 0.50 0.51 0.52 0.48
+runs/dev6_s36 step 30000: EA 0.882 d7 0.521
+runs/dev6_s41: end activity 0.337
+runs/dev6_s41: disc clock [1, 5, 7] single-step False; confirm clock [1, 5, 7]
+runs/dev6_s41 K'=12 near 0.94 0.56 0.51 0.51 0.50 0.50 | far 0.49 0.51 0.50 0.50 0.50 0.50
+runs/dev6_s41 step 1000: EA 0.917 d7 0.494
+runs/dev6_s41 K'=12 near 0.93 0.89 0.63 0.50 0.49 0.50 | far 0.50 0.51 0.49 0.50 0.51 0.48
+runs/dev6_s41 step 2000: EA 0.317 d7 0.501
+runs/dev6_s41 K'=12 near 0.96 0.94 0.60 0.50 0.51 0.51 | far 0.50 0.49 0.49 0.50 0.51 0.49
+runs/dev6_s41 step 3000: EA 0.197 d7 0.503
+runs/dev6_s41 K'=12 near 0.97 0.94 0.60 0.50 0.51 0.50 | far 0.50 0.50 0.49 0.50 0.51 0.52
+runs/dev6_s41 step 4000: EA 0.151 d7 0.502
+runs/dev6_s41 K'=12 near 0.98 0.95 0.52 0.50 0.51 0.50 | far 0.51 0.50 0.50 0.50 0.50 0.49
+runs/dev6_s41 step 5000: EA 0.054 d7 0.509
+runs/dev6_s41 K'=12 near 0.96 0.79 0.74 0.72 0.64 0.55 | far 0.50 0.50 0.49 0.47 0.48 0.50
+runs/dev6_s41 step 6000: EA 0.427 d7 0.499
+runs/dev6_s41 K'=12 near 0.97 0.82 0.79 0.72 0.62 0.55 | far 0.49 0.50 0.49 0.47 0.51 0.50
+runs/dev6_s41 step 7000: EA 0.471 d7 0.490
+runs/dev6_s41 K'=12 near 0.96 0.79 0.77 0.72 0.64 0.56 | far 0.49 0.50 0.48 0.49 0.50 0.49
+runs/dev6_s41 step 8000: EA 0.592 d7 0.488
+runs/dev6_s41 K'=12 near 0.98 0.85 0.84 0.75 0.64 0.55 | far 0.51 0.51 0.49 0.49 0.52 0.49
+runs/dev6_s41 step 9000: EA 0.610 d7 0.513
+runs/dev6_s41 K'=12 near 0.98 0.86 0.85 0.74 0.64 0.56 | far 0.50 0.50 0.48 0.50 0.50 0.51
+runs/dev6_s41 step 10000: EA 0.553 d7 0.498
+runs/dev6_s41 K'=12 near 0.98 0.81 0.82 0.74 0.60 0.54 | far 0.50 0.49 0.48 0.48 0.50 0.50
+runs/dev6_s41 step 11000: EA 0.588 d7 0.498
+runs/dev6_s41 K'=12 near 0.98 0.81 0.82 0.74 0.56 0.51 | far 0.51 0.51 0.50 0.48 0.50 0.50
+runs/dev6_s41 step 12000: EA 0.598 d7 0.509
+runs/dev6_s41 K'=12 near 0.96 0.83 0.80 0.75 0.63 0.57 | far 0.51 0.50 0.49 0.49 0.51 0.50
+runs/dev6_s41 step 13000: EA 0.622 d7 0.513
+runs/dev6_s41 K'=12 near 0.96 0.83 0.79 0.77 0.67 0.59 | far 0.54 0.50 0.48 0.50 0.52 0.49
+runs/dev6_s41 step 14000: EA 0.535 d7 0.537
+runs/dev6_s41 K'=12 near 0.97 0.84 0.80 0.76 0.66 0.57 | far 0.53 0.52 0.49 0.50 0.50 0.49
+runs/dev6_s41 step 15000: EA 0.532 d7 0.529
+runs/dev6_s41 K'=12 near 0.97 0.85 0.82 0.77 0.66 0.60 | far 0.52 0.51 0.49 0.51 0.52 0.49
+runs/dev6_s41 step 16000: EA 0.552 d7 0.522
+runs/dev6_s41 K'=12 near 0.97 0.87 0.83 0.79 0.68 0.57 | far 0.53 0.51 0.50 0.51 0.50 0.50
+runs/dev6_s41 step 17000: EA 0.512 d7 0.532
+runs/dev6_s41 K'=12 near 0.96 0.83 0.82 0.77 0.65 0.58 | far 0.54 0.52 0.48 0.49 0.51 0.52
+runs/dev6_s41 step 18000: EA 0.480 d7 0.536
+runs/dev6_s41 K'=12 near 0.97 0.84 0.83 0.78 0.66 0.59 | far 0.51 0.53 0.50 0.48 0.51 0.50
+runs/dev6_s41 step 19000: EA 0.527 d7 0.511
+runs/dev6_s41 K'=12 near 0.96 0.84 0.81 0.78 0.66 0.57 | far 0.51 0.52 0.48 0.49 0.53 0.50
+runs/dev6_s41 step 20000: EA 0.432 d7 0.508
+runs/dev6_s41 K'=12 near 0.96 0.84 0.81 0.78 0.66 0.57 | far 0.52 0.51 0.47 0.49 0.52 0.51
+runs/dev6_s41 step 21000: EA 0.552 d7 0.520
+runs/dev6_s41 K'=12 near 0.96 0.83 0.79 0.77 0.68 0.60 | far 0.55 0.51 0.48 0.49 0.52 0.50
+runs/dev6_s41 step 22000: EA 0.474 d7 0.549
+runs/dev6_s41 K'=12 near 0.96 0.84 0.81 0.78 0.66 0.57 | far 0.51 0.52 0.50 0.49 0.53 0.48
+runs/dev6_s41 step 23000: EA 0.420 d7 0.510
+runs/dev6_s41 K'=12 near 0.96 0.83 0.80 0.77 0.66 0.59 | far 0.50 0.50 0.49 0.49 0.53 0.50
+runs/dev6_s41 step 24000: EA 0.431 d7 0.504
+runs/dev6_s41 K'=12 near 0.96 0.82 0.80 0.77 0.66 0.57 | far 0.51 0.52 0.48 0.49 0.52 0.50
+runs/dev6_s41 step 25000: EA 0.477 d7 0.514
+runs/dev6_s41 K'=12 near 0.96 0.82 0.80 0.78 0.66 0.59 | far 0.51 0.50 0.49 0.48 0.53 0.50
+runs/dev6_s41 step 26000: EA 0.380 d7 0.510
+runs/dev6_s41 K'=12 near 0.96 0.82 0.80 0.77 0.68 0.59 | far 0.51 0.51 0.49 0.48 0.52 0.49
+runs/dev6_s41 step 27000: EA 0.335 d7 0.510
+runs/dev6_s41 K'=12 near 0.96 0.82 0.79 0.76 0.67 0.59 | far 0.51 0.51 0.48 0.48 0.52 0.50
+runs/dev6_s41 step 28000: EA 0.347 d7 0.507
+runs/dev6_s41 K'=12 near 0.96 0.82 0.79 0.76 0.67 0.59 | far 0.51 0.52 0.48 0.48 0.52 0.49
+runs/dev6_s41 step 29000: EA 0.329 d7 0.507
+runs/dev6_s41 K'=12 near 0.96 0.82 0.79 0.76 0.67 0.59 | far 0.51 0.51 0.47 0.48 0.52 0.49
+runs/dev6_s41 step 30000: EA 0.337 d7 0.509
+runs/dev6_s37: end activity 0.278
+runs/dev6_s37: disc clock [1, 3, 6] single-step True; confirm clock [1, 3, 6]
+runs/dev6_s37 K'=12 near 0.98 0.61 0.50 0.50 0.50 0.51 | far 0.50 0.49 0.50 0.51 0.50 0.49
+runs/dev6_s37 step 1000: EA 0.635 d7 0.504
+runs/dev6_s37 K'=12 near 0.96 0.90 0.50 0.50 0.50 0.51 | far 0.50 0.49 0.51 0.49 0.51 0.49
+runs/dev6_s37 step 2000: EA 0.332 d7 0.496
+runs/dev6_s37 K'=12 near 0.96 0.91 0.51 0.51 0.50 0.50 | far 0.51 0.50 0.51 0.50 0.50 0.50
+runs/dev6_s37 step 3000: EA 0.224 d7 0.510
+runs/dev6_s37 K'=12 near 0.96 0.93 0.52 0.51 0.50 0.50 | far 0.50 0.50 0.50 0.51 0.50 0.49
+runs/dev6_s37 step 4000: EA 0.160 d7 0.502
+runs/dev6_s37 K'=12 near 0.97 0.94 0.53 0.51 0.50 0.49 | far 0.50 0.51 0.50 0.50 0.49 0.50
+runs/dev6_s37 step 5000: EA 0.197 d7 0.499
+runs/dev6_s37 K'=12 near 0.97 0.94 0.54 0.51 0.50 0.49 | far 0.50 0.50 0.49 0.50 0.50 0.51
+runs/dev6_s37 step 6000: EA 0.467 d7 0.496
+runs/dev6_s37 K'=12 near 0.97 0.93 0.87 0.57 0.50 0.49 | far 0.49 0.51 0.49 0.51 0.51 0.51
+runs/dev6_s37 step 7000: EA 0.436 d7 0.486
+runs/dev6_s37 K'=12 near 0.96 0.92 0.86 0.60 0.51 0.50 | far 0.49 0.49 0.49 0.51 0.50 0.52
+runs/dev6_s37 step 8000: EA 0.367 d7 0.486
+runs/dev6_s37 K'=12 near 0.98 0.92 0.82 0.58 0.51 0.51 | far 0.49 0.50 0.50 0.50 0.51 0.51
+runs/dev6_s37 step 9000: EA 0.442 d7 0.494
+runs/dev6_s37 K'=12 near 0.97 0.92 0.84 0.60 0.51 0.52 | far 0.49 0.49 0.49 0.51 0.50 0.51
+runs/dev6_s37 step 10000: EA 0.365 d7 0.486
+runs/dev6_s37 K'=12 near 0.95 0.93 0.85 0.63 0.51 0.51 | far 0.50 0.50 0.48 0.50 0.51 0.51
+runs/dev6_s37 step 11000: EA 0.310 d7 0.497
+runs/dev6_s37 K'=12 near 0.95 0.92 0.86 0.60 0.51 0.50 | far 0.48 0.50 0.50 0.50 0.51 0.52
+runs/dev6_s37 step 12000: EA 0.333 d7 0.480
+runs/dev6_s37 K'=12 near 0.93 0.91 0.86 0.63 0.49 0.50 | far 0.51 0.49 0.50 0.51 0.50 0.51
+runs/dev6_s37 step 13000: EA 0.330 d7 0.506
+runs/dev6_s37 K'=12 near 0.97 0.95 0.87 0.66 0.50 0.50 | far 0.50 0.50 0.49 0.51 0.50 0.51
+runs/dev6_s37 step 14000: EA 0.394 d7 0.497
+runs/dev6_s37 K'=12 near 0.97 0.93 0.88 0.68 0.52 0.51 | far 0.50 0.50 0.51 0.52 0.50 0.52
+runs/dev6_s37 step 15000: EA 0.451 d7 0.502
+runs/dev6_s37 K'=12 near 0.96 0.91 0.87 0.73 0.55 0.51 | far 0.49 0.49 0.49 0.52 0.50 0.51
+runs/dev6_s37 step 16000: EA 0.495 d7 0.493
+runs/dev6_s37 K'=12 near 0.97 0.94 0.91 0.74 0.53 0.52 | far 0.49 0.48 0.51 0.50 0.50 0.50
+runs/dev6_s37 step 16500: EA 0.415 d7 0.488
+runs/dev6_s37 K'=12 near 0.98 0.94 0.90 0.74 0.61 0.54 | far 0.50 0.50 0.51 0.51 0.51 0.50
+runs/dev6_s37 step 17000: EA 0.377 d7 0.500
+runs/dev6_s37 K'=12 near 0.96 0.91 0.90 0.76 0.62 0.53 | far 0.48 0.49 0.49 0.51 0.51 0.54
+runs/dev6_s37 step 18000: EA 0.325 d7 0.481
+runs/dev6_s37 K'=12 near 0.98 0.94 0.91 0.77 0.61 0.52 | far 0.50 0.50 0.51 0.54 0.49 0.51
+runs/dev6_s37 step 19000: EA 0.309 d7 0.497
+runs/dev6_s37 K'=12 near 0.98 0.95 0.92 0.78 0.61 0.52 | far 0.50 0.50 0.51 0.52 0.50 0.50
+runs/dev6_s37 step 20000: EA 0.310 d7 0.497
+runs/dev6_s37 K'=12 near 0.97 0.94 0.92 0.80 0.63 0.53 | far 0.50 0.49 0.50 0.52 0.51 0.51
+runs/dev6_s37 step 21000: EA 0.307 d7 0.505
+runs/dev6_s37 K'=12 near 0.98 0.94 0.91 0.80 0.62 0.52 | far 0.49 0.49 0.50 0.52 0.49 0.50
+runs/dev6_s37 step 22000: EA 0.301 d7 0.490
+runs/dev6_s37 K'=12 near 0.98 0.94 0.92 0.79 0.62 0.52 | far 0.50 0.49 0.50 0.52 0.49 0.51
+runs/dev6_s37 step 23000: EA 0.282 d7 0.500
+runs/dev6_s37 K'=12 near 0.98 0.95 0.92 0.81 0.65 0.53 | far 0.50 0.49 0.50 0.51 0.50 0.51
+runs/dev6_s37 step 23500: EA 0.290 d7 0.503
+runs/dev6_s37 K'=12 near 0.98 0.95 0.93 0.82 0.68 0.57 | far 0.50 0.49 0.51 0.51 0.49 0.51
+runs/dev6_s37 step 24000: EA 0.288 d7 0.499
+runs/dev6_s37 K'=12 near 0.98 0.96 0.93 0.82 0.67 0.56 | far 0.51 0.48 0.49 0.51 0.49 0.51
+runs/dev6_s37 step 25000: EA 0.285 d7 0.509
+runs/dev6_s37 K'=12 near 0.99 0.96 0.94 0.83 0.68 0.58 | far 0.50 0.48 0.50 0.53 0.49 0.51
+runs/dev6_s37 step 26000: EA 0.282 d7 0.499
+runs/dev6_s37 K'=12 near 0.99 0.96 0.94 0.83 0.68 0.60 | far 0.51 0.49 0.50 0.52 0.50 0.50
+runs/dev6_s37 step 27000: EA 0.280 d7 0.515
+runs/dev6_s37 K'=12 near 0.99 0.96 0.94 0.84 0.69 0.61 | far 0.51 0.50 0.50 0.52 0.49 0.50
+runs/dev6_s37 step 28000: EA 0.280 d7 0.508
+runs/dev6_s37 K'=12 near 0.99 0.96 0.94 0.83 0.70 0.62 | far 0.51 0.50 0.50 0.51 0.49 0.51
+runs/dev6_s37 step 29000: EA 0.276 d7 0.508
+runs/dev6_s37 K'=12 near 0.99 0.96 0.94 0.83 0.69 0.62 | far 0.51 0.50 0.50 0.51 0.49 0.50
+runs/dev6_s37 step 30000: EA 0.278 d7 0.510
+runs/dev6_s38: end activity 1.000
+runs/dev6_s38: disc clock [2, 5, 6] single-step True; confirm clock [2, 5, 6]
+runs/dev6_s38 K'=12 near 0.71 0.50 0.50 0.49 0.53 0.50 | far 0.49 0.51 0.50 0.51 0.50 0.51
+runs/dev6_s38 step 1000: EA 0.168 d7 0.487
+runs/dev6_s38 K'=12 near 0.99 0.52 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+runs/dev6_s38 step 2000: EA 0.677 d7 0.500
+runs/dev6_s38 K'=12 near 0.96 0.90 0.53 0.50 0.48 0.49 | far 0.50 0.49 0.49 0.50 0.50 0.52
+runs/dev6_s38 step 3000: EA 0.347 d7 0.502
+runs/dev6_s38 K'=12 near 0.99 0.95 0.53 0.50 0.49 0.48 | far 0.50 0.49 0.49 0.48 0.50 0.52
+runs/dev6_s38 step 4000: EA 0.135 d7 0.495
+runs/dev6_s38 K'=12 near 0.98 0.94 0.55 0.50 0.49 0.50 | far 0.50 0.49 0.48 0.50 0.51 0.53
+runs/dev6_s38 step 5000: EA 0.082 d7 0.495
+runs/dev6_s38 K'=12 near 0.99 0.95 0.60 0.51 0.50 0.48 | far 0.50 0.49 0.49 0.50 0.51 0.51
+runs/dev6_s38 step 6000: EA 0.094 d7 0.503
+runs/dev6_s38 K'=12 near 0.98 0.96 0.61 0.50 0.50 0.49 | far 0.49 0.49 0.49 0.50 0.51 0.51
+runs/dev6_s38 step 7000: EA 0.123 d7 0.494
+runs/dev6_s38 K'=12 near 0.99 0.94 0.85 0.72 0.56 0.49 | far 0.49 0.49 0.50 0.48 0.50 0.51
+runs/dev6_s38 step 8000: EA 0.432 d7 0.492
+runs/dev6_s38 K'=12 near 0.99 0.93 0.84 0.71 0.60 0.52 | far 0.51 0.50 0.48 0.49 0.50 0.50
+runs/dev6_s38 step 9000: EA 0.555 d7 0.512
+runs/dev6_s38 K'=12 near 0.99 0.93 0.85 0.69 0.56 0.49 | far 0.51 0.49 0.49 0.49 0.50 0.50
+runs/dev6_s38 step 10000: EA 0.501 d7 0.507
+runs/dev6_s38 K'=12 near 0.99 0.92 0.86 0.71 0.59 0.53 | far 0.50 0.49 0.49 0.49 0.50 0.52
+runs/dev6_s38 step 11000: EA 0.477 d7 0.499
+runs/dev6_s38 K'=12 near 0.97 0.96 0.90 0.75 0.57 0.52 | far 0.51 0.48 0.47 0.47 0.51 0.51
+runs/dev6_s38 step 12000: EA 0.423 d7 0.508
+runs/dev6_s38 K'=12 near 0.97 0.96 0.90 0.75 0.57 0.51 | far 0.51 0.49 0.48 0.49 0.51 0.51
+runs/dev6_s38 step 13000: EA 0.347 d7 0.506
+runs/dev6_s38 K'=12 near 0.97 0.96 0.91 0.75 0.55 0.51 | far 0.50 0.49 0.47 0.49 0.51 0.53
+runs/dev6_s38 step 14000: EA 0.349 d7 0.499
+runs/dev6_s38 K'=12 near 0.99 0.96 0.90 0.77 0.71 0.69 | far 0.63 0.56 0.47 0.50 0.50 0.52
+runs/dev6_s38 step 15000: EA 0.788 d7 0.631
+runs/dev6_s38 K'=12 near 1.00 0.95 0.88 0.79 0.72 0.68 | far 0.61 0.55 0.49 0.50 0.49 0.50
+runs/dev6_s38 step 16000: EA 0.813 d7 0.613
+runs/dev6_s38 K'=12 near 1.00 0.97 0.89 0.79 0.73 0.66 | far 0.60 0.53 0.49 0.51 0.50 0.51
+runs/dev6_s38 step 17000: EA 0.845 d7 0.602
+runs/dev6_s38 K'=12 near 1.00 0.97 0.89 0.78 0.72 0.65 | far 0.58 0.52 0.48 0.48 0.50 0.49
+runs/dev6_s38 step 18000: EA 0.779 d7 0.583
+runs/dev6_s38 K'=12 near 1.00 0.98 0.90 0.79 0.74 0.65 | far 0.59 0.53 0.49 0.50 0.49 0.49
+runs/dev6_s38 step 18500: EA 0.829 d7 0.593
+runs/dev6_s38 K'=12 near 1.00 0.98 0.91 0.79 0.75 0.67 | far 0.62 0.57 0.49 0.49 0.50 0.50
+runs/dev6_s38 step 19000: EA 0.882 d7 0.622
+runs/dev6_s38 K'=12 near 1.00 0.97 0.92 0.81 0.75 0.68 | far 0.61 0.55 0.47 0.50 0.50 0.50
+runs/dev6_s38 step 20000: EA 0.912 d7 0.611
+runs/dev6_s38 K'=12 near 1.00 0.98 0.92 0.81 0.77 0.68 | far 0.63 0.57 0.49 0.49 0.48 0.50
+runs/dev6_s38 step 21000: EA 0.957 d7 0.628
+runs/dev6_s38 K'=12 near 1.00 0.98 0.92 0.81 0.76 0.68 | far 0.62 0.58 0.49 0.49 0.48 0.50
+runs/dev6_s38 step 22000: EA 0.983 d7 0.623
+runs/dev6_s38 K'=12 near 1.00 0.98 0.93 0.83 0.76 0.69 | far 0.62 0.58 0.49 0.50 0.49 0.51
+runs/dev6_s38 step 23000: EA 1.000 d7 0.618
+runs/dev6_s38 K'=12 near 1.00 0.99 0.93 0.82 0.77 0.70 | far 0.63 0.59 0.50 0.50 0.49 0.50
+runs/dev6_s38 step 24000: EA 1.000 d7 0.630
+runs/dev6_s38 K'=12 near 1.00 0.98 0.93 0.82 0.77 0.69 | far 0.63 0.57 0.50 0.51 0.50 0.49
+runs/dev6_s38 step 25000: EA 1.000 d7 0.630
+runs/dev6_s38 K'=12 near 1.00 0.98 0.94 0.84 0.78 0.70 | far 0.63 0.57 0.49 0.49 0.49 0.49
+runs/dev6_s38 step 26000: EA 1.000 d7 0.629
+runs/dev6_s38 K'=12 near 1.00 0.98 0.93 0.82 0.78 0.69 | far 0.63 0.58 0.50 0.50 0.50 0.49
+runs/dev6_s38 step 27000: EA 1.000 d7 0.628
+runs/dev6_s38 K'=12 near 1.00 0.99 0.94 0.83 0.77 0.69 | far 0.63 0.58 0.51 0.50 0.50 0.49
+runs/dev6_s38 step 28000: EA 1.000 d7 0.634
+runs/dev6_s38 K'=12 near 1.00 0.99 0.93 0.84 0.78 0.69 | far 0.63 0.58 0.50 0.51 0.50 0.48
+runs/dev6_s38 step 29000: EA 1.000 d7 0.632
+runs/dev6_s38 K'=12 near 1.00 0.99 0.93 0.83 0.78 0.70 | far 0.63 0.58 0.51 0.51 0.50 0.48
+runs/dev6_s38 step 30000: EA 1.000 d7 0.629
+04:38:24 P6_AFTER_DONE

@@ -1,0 +1,46 @@
+{
+ "runs/prec2070_fp32_s52": {
+  "1": {
+   "bal_acc": 0.9919154228855722,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 0.9838308457711443,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9169496769756084,
+   "recall_reachable": 0.9075136882380104,
+   "specificity_decoy": 0.9263856657132064,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.7637314626336724,
+   "recall_reachable": 0.6896697118763176,
+   "specificity_decoy": 0.8377932133910271,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.6416642292620467,
+   "recall_reachable": 0.474972191323693,
+   "specificity_decoy": 0.8083562672004003,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.5669860473401711,
+   "recall_reachable": 0.35788442703232126,
+   "specificity_decoy": 0.776087667648021,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5595958615586514,
+   "recall_reachable": 0.3511801957397812,
+   "specificity_decoy": 0.7680115273775217,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

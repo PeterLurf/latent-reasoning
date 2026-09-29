@@ -1,0 +1,22 @@
+00:47:20 waiting for PROTOCOL6 queues
+04:39:29 queues and measurements done; building branches
+selected ['dev6_s30', 'dev6_s32', 'dev6_s35'] {'dev6_s30': 1.0, 'dev6_s32': 0.952, 'dev6_s35': 0.151}
+dev6_s30_brst2_1 from step 1000
+dev6_s30_brst2_2 from step 1000
+dev6_s30_brst4_1 from step 17000
+dev6_s30_brst4_2 from step 17000
+dev6_s30_brfull_1 from step 25000
+dev6_s30_brfull_2 from step 25000
+dev6_s32_brst2_1 from step 3000
+dev6_s32_brst2_2 from step 3000
+dev6_s32_brst4_1 from step 9000
+dev6_s32_brst4_2 from step 9000
+dev6_s32_brfull_1 from step 18000
+dev6_s32_brfull_2 from step 18000
+dev6_s35_brst2_1 from step 1500
+dev6_s35_brst2_2 from step 1500
+dev6_s35_brst4_1 from step 7000
+dev6_s35_brst4_2 from step 7000
+dev6_s35_brfull_1 from step 10500
+dev6_s35_brfull_2 from step 10500
+10:36:01 P6_NIGHT_DONE

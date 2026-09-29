@@ -1,0 +1,6 @@
+# PROTOCOL6 local queue for the RTX 2070 (fp32): the two fp32 pilot runs' continuation, then addendum B.
+rel_lr5_s21_ext --K 6 --seed 21 --lr 0.0005 --no_step_emb --amp fp32 --steps 45000 --save_every 2500
+rel_lr5_s23_ext --K 6 --seed 23 --lr 0.0005 --no_step_emb --amp fp32 --steps 45000 --save_every 2500
+dev6_s39 --K 6 --seed 39 --lr 5e-4 --save_every 1000 --amp fp32
+dev6_s40 --K 6 --seed 40 --lr 5e-4 --save_every 1000 --amp fp32
+dev6_s41 --K 6 --seed 41 --lr 5e-4 --save_every 1000 --amp fp32

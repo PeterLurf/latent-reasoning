@@ -1,0 +1,3 @@
+03:11:05 guarding runs/stall_fp32_s76 pid 0 max relaunch 3
+03:11:05 launched pid 17932
+03:14:05 stage 1 passed at step 1000 ; waiting for the run to end

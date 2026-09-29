@@ -1,0 +1,4 @@
+[runs/aux_curr] step 1000 loss 1.3878 delayed 0.500 upfront 0.498 depth {1: 1.0, 2: 1.0, 3: 1.0, 4: 1.0, 5: 1.0, 6: 1.0, 99: 0.0} 119s
+[runs/aux_curr] step 2000 loss 1.3863 delayed 0.500 upfront 0.500 depth {1: 1.0, 2: 1.0, 3: 1.0, 4: 1.0, 5: 1.0, 6: 1.0, 99: 0.0} 237s
+[runs/aux_curr] step 3000 loss 1.3863 delayed 0.500 upfront 0.500 depth {1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0, 6: 0.0, 99: 1.0} 356s
+[runs/aux_curr] step 4000 loss 1.3866 delayed 0.500 upfront 0.500 depth {1: 1.0, 2: 1.0, 3: 1.0, 4: 1.0, 5: 1.0, 6: 1.0, 99: 0.0} 477s

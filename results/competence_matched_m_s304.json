@@ -1,0 +1,46 @@
+{
+ "runs/m_s304": {
+  "1": {
+   "bal_acc": 0.9987562189054726,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 0.9975124378109452,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9825913071100035,
+   "recall_reachable": 0.9848274952173626,
+   "specificity_decoy": 0.9803551190026445,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.9047228303341355,
+   "recall_reachable": 0.8563598032326072,
+   "specificity_decoy": 0.9530858574356639,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.7717698055454154,
+   "recall_reachable": 0.6101729194054,
+   "specificity_decoy": 0.9333666916854307,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.6312183594947708,
+   "recall_reachable": 0.33849167482859943,
+   "specificity_decoy": 0.9239450441609421,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5526699782161102,
+   "recall_reachable": 0.20092112838226828,
+   "specificity_decoy": 0.904418828049952,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

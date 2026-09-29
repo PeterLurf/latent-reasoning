@@ -1,0 +1,73 @@
+21:48:20 start stall_bf16_s74 (--no_step_emb --K 6 --seed 74 --lr 5e-4 --amp bf16 --save_every 1000 )
+22:40:20 trained stall_bf16_s74 rc 0
+run  results/competence_stall_bf16_s74.json
+run  results/competence_matched_stall_bf16_s74.json
+run  results/length_gen_stall_bf16_s74.json
+run  results/delayed_trace_stall_bf16_s74.json
+run  results/budget_sweep_stall_bf16_s74.json
+EVAL_DONE stall_bf16_s74
+22:40:41 evaluated stall_bf16_s74
+22:40:41 start stall_fp32_s74 (--no_step_emb --K 6 --seed 74 --lr 5e-4 --amp fp32 --save_every 1000 )
+00:03:41 trained stall_fp32_s74 rc 0
+run  results/competence_stall_fp32_s74.json
+run  results/competence_matched_stall_fp32_s74.json
+run  results/length_gen_stall_fp32_s74.json
+run  results/delayed_trace_stall_fp32_s74.json
+run  results/budget_sweep_stall_fp32_s74.json
+EVAL_DONE stall_fp32_s74
+00:04:01 evaluated stall_fp32_s74
+00:04:02 start stall_bf16_s75 (--no_step_emb --K 6 --seed 75 --lr 5e-4 --amp bf16 --save_every 1000 )
+00:56:02 trained stall_bf16_s75 rc 0
+run  results/competence_stall_bf16_s75.json
+run  results/competence_matched_stall_bf16_s75.json
+run  results/length_gen_stall_bf16_s75.json
+run  results/delayed_trace_stall_bf16_s75.json
+run  results/budget_sweep_stall_bf16_s75.json
+EVAL_DONE stall_bf16_s75
+00:56:22 evaluated stall_bf16_s75
+00:56:23 start stall_fp32_s75 (--no_step_emb --K 6 --seed 75 --lr 5e-4 --amp fp32 --save_every 1000 )
+02:18:23 trained stall_fp32_s75 rc 0
+run  results/competence_stall_fp32_s75.json
+run  results/competence_matched_stall_fp32_s75.json
+run  results/length_gen_stall_fp32_s75.json
+run  results/delayed_trace_stall_fp32_s75.json
+run  results/budget_sweep_stall_fp32_s75.json
+EVAL_DONE stall_fp32_s75
+02:18:43 evaluated stall_fp32_s75
+02:18:43 start stall_bf16_s76 (--no_step_emb --K 6 --seed 76 --lr 5e-4 --amp bf16 --save_every 1000 )
+03:10:44 trained stall_bf16_s76 rc 0
+run  results/competence_stall_bf16_s76.json
+run  results/competence_matched_stall_bf16_s76.json
+run  results/length_gen_stall_bf16_s76.json
+run  results/delayed_trace_stall_bf16_s76.json
+run  results/budget_sweep_stall_bf16_s76.json
+EVAL_DONE stall_bf16_s76
+03:11:05 evaluated stall_bf16_s76
+03:11:05 start stall_fp32_s76 (--no_step_emb --K 6 --seed 76 --lr 5e-4 --amp fp32 --save_every 1000 )
+04:33:05 trained stall_fp32_s76 rc 0
+run  results/competence_stall_fp32_s76.json
+run  results/competence_matched_stall_fp32_s76.json
+run  results/length_gen_stall_fp32_s76.json
+run  results/delayed_trace_stall_fp32_s76.json
+run  results/budget_sweep_stall_fp32_s76.json
+EVAL_DONE stall_fp32_s76
+04:33:26 evaluated stall_fp32_s76
+04:33:26 start stall_bf16_s77 (--no_step_emb --K 6 --seed 77 --lr 5e-4 --amp bf16 --save_every 1000 )
+05:25:26 trained stall_bf16_s77 rc 0
+run  results/competence_stall_bf16_s77.json
+run  results/competence_matched_stall_bf16_s77.json
+run  results/length_gen_stall_bf16_s77.json
+run  results/delayed_trace_stall_bf16_s77.json
+run  results/budget_sweep_stall_bf16_s77.json
+EVAL_DONE stall_bf16_s77
+05:25:47 evaluated stall_bf16_s77
+05:25:47 start stall_fp32_s77 (--no_step_emb --K 6 --seed 77 --lr 5e-4 --amp fp32 --save_every 1000 )
+06:47:47 trained stall_fp32_s77 rc 0
+run  results/competence_stall_fp32_s77.json
+run  results/competence_matched_stall_fp32_s77.json
+run  results/length_gen_stall_fp32_s77.json
+run  results/delayed_trace_stall_fp32_s77.json
+run  results/budget_sweep_stall_fp32_s77.json
+EVAL_DONE stall_fp32_s77
+06:48:08 evaluated stall_fp32_s77
+06:48:08 QUEUE_DONE

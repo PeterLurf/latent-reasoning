@@ -1,0 +1,16 @@
+# PROTOCOL5 addendum A pilot (local share). rel_base_s20 trains on RunPod; lines claimed by scratch/queue_worker.sh.
+rel_lr5_s20 --no_step_emb --K 6 --seed 20 --amp bf16 --lr 5e-4
+rel_base_s21 --no_step_emb --K 6 --seed 21 --amp bf16
+rel_lr5_s21 --no_step_emb --K 6 --seed 21 --amp bf16 --lr 5e-4
+rel_base_s22 --no_step_emb --K 6 --seed 22 --amp bf16
+rel_lr5_s22 --no_step_emb --K 6 --seed 22 --amp bf16 --lr 5e-4
+rel_base_s23 --no_step_emb --K 6 --seed 23 --amp bf16
+rel_lr5_s23 --no_step_emb --K 6 --seed 23 --amp bf16 --lr 5e-4
+rel_base_s24 --no_step_emb --K 6 --seed 24 --amp bf16
+rel_lr5_s24 --no_step_emb --K 6 --seed 24 --amp bf16 --lr 5e-4
+rel_base_s25 --no_step_emb --K 6 --seed 25 --amp bf16
+rel_lr5_s25 --no_step_emb --K 6 --seed 25 --amp bf16 --lr 5e-4
+rel_base_s26 --no_step_emb --K 6 --seed 26 --amp bf16
+rel_lr5_s26 --no_step_emb --K 6 --seed 26 --amp bf16 --lr 5e-4
+rel_base_s27 --no_step_emb --K 6 --seed 27 --amp bf16
+rel_lr5_s27 --no_step_emb --K 6 --seed 27 --amp bf16 --lr 5e-4

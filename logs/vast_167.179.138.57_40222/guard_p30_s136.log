@@ -1,0 +1,10 @@
+21:04:30 guarding runs/p30_s136 pid 0 max relaunch 3
+21:04:30 launched pid 565
+21:09:40 stage-1 failure at step 4400; archived as runs/p30_s136_stage1fail_1
+21:09:40 launched pid 655
+21:14:51 stage-1 failure at step 4400; archived as runs/p30_s136_stage1fail_2
+21:14:51 launched pid 723
+21:20:01 stage-1 failure at step 4400; archived as runs/p30_s136_stage1fail_3
+21:20:01 launched pid 791
+21:25:11 stage-1 failure at step 4200; archived as runs/p30_s136_stage1fail_4
+21:25:11 relaunch budget spent

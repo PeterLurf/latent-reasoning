@@ -1,0 +1,5 @@
+16:29:22 guarding runs/m_s311 pid 0 max relaunch 3
+16:29:22 launched pid 9572
+16:38:32 stage-1 failure at step 4000; archived as runs/m_s311_stage1fail_1
+16:38:32 launched pid 21340
+16:43:32 stage 1 passed at step 2200 ; waiting for the run to end

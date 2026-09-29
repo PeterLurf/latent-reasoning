@@ -1,0 +1,142 @@
+{
+  "frozen_at": "2026-09-23T21:50 local, before any final-checkpoint confirm-split graph was generated",
+  "site_rule": "k* = argmax_k (targeted - collateral_attached) for full/remove at W=4 on 300 discovery graphs; value per run from that run's discovery.json",
+  "k_star_default": 1,
+  "k_star_by_run": {
+    "runs/r3_pc_gated_gpt2": 1,
+    "runs/main_s1": 0,
+    "runs/main_s2": 0
+  },
+  "subspace_rule": "pattern = Haufe patterns Cov(h_k) W_raw of the discovery reach-probe, restricted to the edited branch's 6 node ids (branch-specific, id-indexed); pca = top-r right singular vectors of pooled discovery donor differences (shared across graphs); probe = raw probe filters (kept as the pre-registered readout-direction condition).",
+  "split": "confirm",
+  "seed": 424242,
+  "n_decode": 3000,
+  "n_per_width": 300,
+  "widths": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "conditions": [
+    {
+      "kind": "full",
+      "direction": "remove",
+      "save_raw": true
+    },
+    {
+      "kind": "pattern",
+      "direction": "remove",
+      "save_raw": true
+    },
+    {
+      "kind": "probe",
+      "direction": "remove"
+    },
+    {
+      "kind": "pca",
+      "rank": 20,
+      "direction": "remove"
+    },
+    {
+      "kind": "pca",
+      "rank": 6,
+      "direction": "remove"
+    },
+    {
+      "kind": "random",
+      "rank": 6,
+      "direction": "remove"
+    },
+    {
+      "kind": "random",
+      "rank": 20,
+      "direction": "remove"
+    },
+    {
+      "kind": "normrand",
+      "direction": "remove"
+    },
+    {
+      "kind": "full",
+      "direction": "insert"
+    },
+    {
+      "kind": "pattern",
+      "direction": "insert"
+    },
+    {
+      "kind": "full",
+      "direction": "remove",
+      "donor": "graft"
+    },
+    {
+      "kind": "pattern",
+      "direction": "remove",
+      "donor": "graft"
+    },
+    {
+      "kind": "full",
+      "direction": "remove",
+      "steps": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "widths": [
+        2,
+        4,
+        8
+      ]
+    },
+    {
+      "kind": "pattern",
+      "direction": "remove",
+      "steps": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "widths": [
+        2,
+        4,
+        8
+      ]
+    }
+  ],
+  "controls": [
+    "identity",
+    "same_status"
+  ],
+  "upfront_kinds": [
+    "full",
+    "pattern"
+  ],
+  "trace_widths": [
+    2,
+    4,
+    8
+  ],
+  "n_trace": 200,
+  "decision_thresholds": {
+    "competence_bal_acc": 0.85,
+    "selective_targeted_min": 0.1,
+    "selective_collateral_max": 0.03,
+    "negligible_upper_bound": 0.03,
+    "note": "provisional project thresholds from the proposal; reported, not used to filter results"
+  },
+  "primary_contrasts": [
+    "pattern vs probe (same ids, same rank): usable vs readable directions",
+    "targeted and collateral vs width W (1..8), primary W in {2,4,8}",
+    "signed collateral sign under remove vs insert (H-norm prediction)",
+    "coconut vs pause vs K=0 competence on distance >= 3"
+  ]
+}

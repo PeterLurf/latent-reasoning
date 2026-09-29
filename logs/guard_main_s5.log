@@ -1,0 +1,7 @@
+12:57:56 guarding runs/main_s5 pid 0 max relaunch 3
+12:57:56 launched pid 14676
+13:07:07 stage-1 failure at step 4000; archived as runs/main_s5_stage1fail_1
+13:07:07 launched pid 9308
+13:16:18 stage-1 failure at step 4000; archived as runs/main_s5_stage1fail_2
+13:16:18 launched pid 2060
+13:21:18 stage 1 passed at step 2200 ; waiting for the run to end

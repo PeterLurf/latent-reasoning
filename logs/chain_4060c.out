@@ -1,0 +1,91 @@
+12:46:08 start ['scratch/variant_pipeline.py', 'runs/v2_deep_s0', 'cuda:0', 'v2']
+runs/v2_deep_s0 K'=0 delayed 0.609 upfront 0.500 depth(delayed) {1:0.25, 2:1.00, 3:0.32, 4:0.35, 5:0.35, 6:0.35, 99:0.72}
+runs/v2_deep_s0 K'=1 delayed 0.620 upfront 0.590 depth(delayed) {1:0.30, 2:1.00, 3:0.36, 4:0.32, 5:0.32, 6:0.34, 99:0.73}
+runs/v2_deep_s0 K'=2 delayed 0.655 upfront 0.720 depth(delayed) {1:0.54, 2:1.00, 3:1.00, 4:0.52, 5:0.50, 6:0.53, 99:0.54}
+runs/v2_deep_s0 K'=3 delayed 0.647 upfront 0.848 depth(delayed) {1:0.68, 2:1.00, 3:1.00, 4:0.99, 5:0.67, 6:0.68, 99:0.39}
+runs/v2_deep_s0 K'=4 delayed 0.653 upfront 0.933 depth(delayed) {1:0.72, 2:1.00, 3:1.00, 4:0.99, 5:0.99, 6:0.76, 99:0.36}
+runs/v2_deep_s0 K'=5 delayed 0.760 upfront 0.984 depth(delayed) {1:0.58, 2:1.00, 3:0.99, 4:0.97, 5:0.96, 6:0.83, 99:0.61}
+runs/v2_deep_s0 K'=6 delayed 0.965 upfront 1.000 depth(delayed) {1:1.00, 2:1.00, 3:0.94, 4:0.89, 5:0.89, 6:0.93, 99:0.98}
+runs/v2_deep_s0 d1:1.00 d2:0.99 d3:0.95 d4:0.91 d5:0.91 d6:0.91
+  k=0 full: tgt 0.431 col 0.020 | probe: tgt 0.000 col 0.001
+  k=1 full: tgt 0.521 col 0.022 | probe: tgt 0.001 col 0.001
+  k=2 full: tgt 0.268 col 0.018 | probe: tgt 0.001 col 0.001
+  k=3 full: tgt 0.109 col 0.008 | probe: tgt 0.000 col 0.000
+  k=4 full: tgt 0.028 col 0.003 | probe: tgt 0.000 col 0.000
+  k=5 full: tgt 0.003 col 0.002 | probe: tgt 0.000 col 0.000
+runs/v2_deep_s0: k* = 1  (29s)
+  k=0 (targeted/collateral) full: +0.418/0.021 | pca6: +0.032/0.013 | random6: +0.000/0.002 | pca20: +0.318/0.021 | random20: +0.002/0.005 | pca40: +0.414/0.022 | random40: +0.008/0.008
+  k=1 (targeted/collateral) full: +0.507/0.022 | pca6: +0.267/0.049 | random6: +0.017/0.007 | pca20: +0.500/0.052 | random20: +0.082/0.013 | pca40: +0.506/0.022 | random40: +0.225/0.019
+  k=2 (targeted/collateral) full: +0.256/0.018 | pca6: +0.134/0.036 | random6: +0.008/0.005 | pca20: +0.245/0.039 | random20: +0.041/0.009 | pca40: +0.257/0.018 | random40: +0.098/0.012
+  k=3 (targeted/collateral) full: +0.099/0.009 | pca6: +0.040/0.013 | random6: +0.003/0.002 | pca20: +0.093/0.016 | random20: +0.013/0.003 | pca40: +0.099/0.009 | random40: +0.034/0.005
+  k=4 (targeted/collateral) full: +0.026/0.003 | pca6: +0.009/0.003 | random6: +0.001/0.000 | pca20: +0.025/0.004 | random20: +0.002/0.001 | pca40: +0.026/0.003 | random40: +0.008/0.001
+  k=5 (targeted/collateral) full: +0.004/0.002 | pca6: +0.002/0.002 | random6: +0.000/0.000 | pca20: +0.003/0.002 | random20: +0.000/0.001 | pca40: +0.003/0.002 | random40: +0.001/0.001
+runs/v2_deep_s0 {'probe filters (6)': 0.0047188857570290565, 'branch patterns (6)': 0.43022191524505615, 'PCA (6)': 0.21515731513500214, 'PCA (20)': 0.6517672538757324, 'random (6)': 0.02308804914355278}
+[runs/v2_deep_s0 fresh W=2] dose done 23s
+[runs/v2_deep_s0 fresh W=2] cache done 30s
+[runs/v2_deep_s0 fresh W=2] attn done 32s
+[runs/v2_deep_s0 fresh W=4] dose done 77s
+[runs/v2_deep_s0 fresh W=4] cache done 88s
+[runs/v2_deep_s0 fresh W=4] attn done 90s
+[runs/v2_deep_s0 fresh W=8] dose done 177s
+[runs/v2_deep_s0 fresh W=8] cache done 189s
+[runs/v2_deep_s0 fresh W=8] attn done 190s
+wrote runs/v2_deep_s0\followup\fresh\summary.json
+[runs/v2_deep_s0 fresh W=2] amp done 5s
+[runs/v2_deep_s0 fresh W=4] amp done 11s
+[runs/v2_deep_s0 fresh W=8] amp done 18s
+wrote runs/v2_deep_s0\followup\fresh_amp\summary.json
+[runs/v2_deep_s0 fresh W=2] cache done 9s
+[runs/v2_deep_s0 fresh W=4] cache done 19s
+[runs/v2_deep_s0 fresh W=8] cache done 30s
+wrote runs/v2_deep_s0\followup\fresh_cachedepth\summary.json
+[runs/v2_deep_s0 discovery W=1] gainfit done 1s
+[runs/v2_deep_s0 discovery W=2] gainfit done 1s
+[runs/v2_deep_s0 discovery W=3] gainfit done 1s
+[runs/v2_deep_s0 discovery W=4] gainfit done 1s
+[runs/v2_deep_s0 discovery W=5] gainfit done 1s
+[runs/v2_deep_s0 discovery W=6] gainfit done 1s
+[runs/v2_deep_s0 discovery W=7] gainfit done 1s
+[runs/v2_deep_s0 discovery W=8] gainfit done 1s
+wrote runs/v2_deep_s0\followup\discovery_gainfit\summary.json
+[runs/v2_deep_s0 fresh W=1] gainfit done 0s
+[runs/v2_deep_s0 fresh W=2] gainfit done 1s
+[runs/v2_deep_s0 fresh W=3] gainfit done 1s
+[runs/v2_deep_s0 fresh W=4] gainfit done 1s
+[runs/v2_deep_s0 fresh W=5] gainfit done 1s
+[runs/v2_deep_s0 fresh W=6] gainfit done 1s
+[runs/v2_deep_s0 fresh W=7] gainfit done 1s
+[runs/v2_deep_s0 fresh W=8] gainfit done 1s
+wrote runs/v2_deep_s0\followup\fresh_gainfit\summary.json
+runs/v2_deep_s0 train  K'= 0 all 0.667 d1:0.60 d2:0.89 d3:0.58 d4:0.58 d5:0.58 d6:0.57
+runs/v2_deep_s0 train  K'= 1 all 0.678 d1:0.62 d2:0.90 d3:0.60 d4:0.58 d5:0.58 d6:0.57
+runs/v2_deep_s0 train  K'= 2 all 0.727 d1:0.68 d2:0.81 d3:0.80 d4:0.62 d5:0.61 d6:0.59
+runs/v2_deep_s0 train  K'= 3 all 0.707 d1:0.70 d2:0.74 d3:0.72 d4:0.71 d5:0.61 d6:0.60
+runs/v2_deep_s0 train  K'= 4 all 0.710 d1:0.73 d2:0.73 d3:0.71 d4:0.70 d5:0.68 d6:0.60
+runs/v2_deep_s0 train  K'= 5 all 0.817 d1:0.79 d2:0.87 d3:0.82 d4:0.80 d5:0.77 d6:0.71
+runs/v2_deep_s0 train  K'= 6 all 0.956 d1:1.00 d2:1.00 d3:0.95 d4:0.90 d5:0.90 d6:0.92
+runs/v2_deep_s0 raw    K'= 7 all 0.947 d1:1.00 d2:0.99 d3:0.93 d4:0.89 d5:0.88 d6:0.90
+runs/v2_deep_s0 raw    K'= 8 all 0.931 d1:1.00 d2:0.99 d3:0.91 d4:0.86 d5:0.85 d6:0.88
+runs/v2_deep_s0 repeat K'= 7 all 0.945 d1:1.00 d2:0.99 d3:0.93 d4:0.88 d5:0.88 d6:0.90
+runs/v2_deep_s0 repeat K'= 8 all 0.928 d1:1.00 d2:0.98 d3:0.91 d4:0.86 d5:0.86 d6:0.88
+runs/v2_deep_s0 repeat K'= 9 all 0.911 d1:1.00 d2:0.95 d3:0.89 d4:0.84 d5:0.84 d6:0.86
+runs/v2_deep_s0 repeat K'=10 all 0.893 d1:1.00 d2:0.93 d3:0.87 d4:0.83 d5:0.82 d6:0.84
+runs/v2_deep_s0 K'= 0 near 0.54 0.83 0.50 0.51 0.50 0.51 | far 0.50 0.52 0.50 0.50 0.51 0.50
+runs/v2_deep_s0 K'= 2 near 0.55 0.79 0.80 0.51 0.50 0.51 | far 0.50 0.52 0.50 0.50 0.50 0.50
+runs/v2_deep_s0 K'= 4 near 0.58 0.68 0.67 0.68 0.68 0.51 | far 0.51 0.51 0.49 0.49 0.51 0.51
+runs/v2_deep_s0 K'= 6 near 1.00 1.00 0.99 0.99 0.97 0.86 | far 0.50 0.50 0.50 0.50 0.49 0.50
+runs/v2_deep_s0 K'= 8 near 1.00 0.98 0.99 0.98 0.93 0.72 | far 0.50 0.50 0.50 0.50 0.50 0.50
+runs/v2_deep_s0 K'=10 near 1.00 0.92 0.98 0.97 0.90 0.67 | far 0.50 0.50 0.50 0.50 0.50 0.50
+runs/v2_deep_s0 K'=12 near 1.00 0.87 0.97 0.95 0.88 0.64 | far 0.50 0.50 0.50 0.50 0.50 0.50
+runs/v2_deep_s0 K'=16 near 0.99 0.81 0.94 0.91 0.80 0.58 | far 0.50 0.50 0.51 0.50 0.50 0.50
+runs/v2_deep_s0 W=4 delayed: per-edge attention, reachable-branch edges by depth 0..5 | decoy
+   L1 k1  0.001 0.041 0.002 0.002 0.002 0.002  | 0.001 0.002 0.002 0.002 0.002 0.002
+   L1 k2  0.001 0.070 0.002 0.002 0.002 0.002  | 0.001 0.001 0.001 0.001 0.002 0.002
+   L1 k3  0.002 0.003 0.065 0.003 0.003 0.003  | 0.001 0.002 0.002 0.003 0.003 0.003
+   L1 k4  0.002 0.003 0.004 0.083 0.004 0.003  | 0.002 0.003 0.003 0.004 0.004 0.004
+   L1 k5  0.002 0.004 0.005 0.005 0.112 0.004  | 0.002 0.003 0.004 0.005 0.004 0.005
+   L1 k6  0.007 0.006 0.007 0.007 0.007 0.007  | 0.007 0.007 0.007 0.007 0.007 0.007
+   L1 k7  0.004 0.004 0.004 0.005 0.005 0.005  | 0.003 0.004 0.004 0.004 0.004 0.004
+   L1 k8  0.004 0.004 0.004 0.005 0.006 0.004  | 0.003 0.004 0.004 0.004 0.004 0.004
+DONE runs/v2_deep_s0
+12:52:39 exit 0

@@ -1,0 +1,7 @@
+# PROTOCOL6 extension B'' (2026-09-26 ~23:40): dev6 recipe, fp32, RTX 2070, overnight
+dev6_s45 --K 6 --seed 45 --lr 5e-4 --save_every 1000 --amp fp32
+dev6_s46 --K 6 --seed 46 --lr 5e-4 --save_every 1000 --amp fp32
+dev6_s47 --K 6 --seed 47 --lr 5e-4 --save_every 1000 --amp fp32
+dev6_s48 --K 6 --seed 48 --lr 5e-4 --save_every 1000 --amp fp32
+dev6_s49 --K 6 --seed 49 --lr 5e-4 --save_every 1000 --amp fp32
+dev6_s50 --K 6 --seed 50 --lr 5e-4 --save_every 1000 --amp fp32

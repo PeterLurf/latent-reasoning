@@ -1,0 +1,55 @@
+13:07:09 start m_s308 (--no_step_emb --K 6 --seed 308 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4 )
+14:14:10 trained m_s308 rc 0
+run  results/competence_m_s308.json
+run  results/competence_matched_m_s308.json
+run  results/length_gen_m_s308.json
+run  results/delayed_trace_m_s308.json
+run  results/budget_sweep_m_s308.json
+EVAL_DONE m_s308
+14:14:33 evaluated m_s308
+14:14:33 start m_s309 (--no_step_emb --K 6 --seed 309 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4 )
+15:21:34 trained m_s309 rc 0
+run  results/competence_m_s309.json
+run  results/competence_matched_m_s309.json
+run  results/length_gen_m_s309.json
+run  results/delayed_trace_m_s309.json
+run  results/budget_sweep_m_s309.json
+EVAL_DONE m_s309
+15:21:57 evaluated m_s309
+15:21:58 start m_s310 (--no_step_emb --K 6 --seed 310 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4 )
+16:28:58 trained m_s310 rc 0
+run  results/competence_m_s310.json
+run  results/competence_matched_m_s310.json
+run  results/length_gen_m_s310.json
+run  results/delayed_trace_m_s310.json
+run  results/budget_sweep_m_s310.json
+EVAL_DONE m_s310
+16:29:21 evaluated m_s310
+16:29:22 start m_s311 (--no_step_emb --K 6 --seed 311 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4 )
+17:45:32 trained m_s311 rc 0
+run  results/competence_m_s311.json
+run  results/competence_matched_m_s311.json
+run  results/length_gen_m_s311.json
+run  results/delayed_trace_m_s311.json
+run  results/budget_sweep_m_s311.json
+EVAL_DONE m_s311
+17:45:55 evaluated m_s311
+17:45:56 start m_s312 (--no_step_emb --K 6 --seed 312 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4 )
+18:52:56 trained m_s312 rc 0
+run  results/competence_m_s312.json
+run  results/competence_matched_m_s312.json
+run  results/length_gen_m_s312.json
+run  results/delayed_trace_m_s312.json
+run  results/budget_sweep_m_s312.json
+EVAL_DONE m_s312
+18:53:20 evaluated m_s312
+18:53:20 start m_s313 (--no_step_emb --K 6 --seed 313 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4 )
+20:00:22 trained m_s313 rc 0
+run  results/competence_m_s313.json
+run  results/competence_matched_m_s313.json
+run  results/length_gen_m_s313.json
+run  results/delayed_trace_m_s313.json
+run  results/budget_sweep_m_s313.json
+EVAL_DONE m_s313
+20:00:46 evaluated m_s313
+20:00:46 QUEUE_DONE

@@ -1,0 +1,46 @@
+{
+ "runs/dev6_s32_brst4_1": {
+  "1": {
+   "bal_acc": 0.9982231698649608,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 0.9964463397299218,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9707499430248266,
+   "recall_reachable": 0.9552081271851706,
+   "specificity_decoy": 0.9862917588644827,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.9035830892839167,
+   "recall_reachable": 0.8341531974701335,
+   "specificity_decoy": 0.9730129810976998,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.794246399398261,
+   "recall_reachable": 0.6249367984629386,
+   "specificity_decoy": 0.9635560003335835,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.7263719656272898,
+   "recall_reachable": 0.49363369245837413,
+   "specificity_decoy": 0.9591102387962054,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5847419032118379,
+   "recall_reachable": 0.22279792746113988,
+   "specificity_decoy": 0.946685878962536,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

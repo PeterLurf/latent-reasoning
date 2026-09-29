@@ -1,0 +1,4 @@
+[runs/main_s2 discovery W=2] upcache done 1s
+[runs/main_s2 discovery W=4] upcache done 1s
+[runs/main_s2 discovery W=8] upcache done 2s
+wrote runs/main_s2\followup\discovery_upcache\summary.json

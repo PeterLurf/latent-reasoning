@@ -1,0 +1,10 @@
+[runs/diag_tinit_star] step 500 loss 1.3924 delayed 0.500 upfront 0.500 depth {1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0, 6: 0.0, 99: 1.0} 177s
+[runs/diag_tinit_star] step 1000 loss 1.3865 delayed 0.500 upfront 0.500 depth {1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0, 6: 0.0, 99: 1.0} 289s
+[runs/diag_tinit_star] step 1500 loss 1.3864 delayed 0.500 upfront 0.500 depth {1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0, 6: 0.0, 99: 1.0} 345s
+[runs/diag_tinit_star] step 2000 loss 1.3870 delayed 0.500 upfront 0.500 depth {1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0, 6: 0.0, 99: 1.0} 401s
+[runs/diag_tinit_star] step 2500 loss 1.3862 delayed 0.500 upfront 0.500 depth {1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0, 6: 0.0, 99: 1.0} 456s
+[runs/diag_tinit_star] step 3000 loss 1.3864 delayed 0.500 upfront 0.500 depth {1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0, 6: 0.0, 99: 1.0} 512s
+[runs/diag_tinit_star] step 3500 loss 1.3858 delayed 0.500 upfront 0.500 depth {1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0, 6: 0.0, 99: 1.0} 568s
+[runs/diag_tinit_star] step 4000 loss 1.3865 delayed 0.500 upfront 0.500 depth {1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0, 6: 0.0, 99: 1.0} 624s
+[runs/diag_tinit_star] step 4500 loss 1.3866 delayed 0.500 upfront 0.500 depth {1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0, 6: 0.0, 99: 1.0} 679s
+[runs/diag_tinit_star] step 5000 loss 1.3863 delayed 0.500 upfront 0.500 depth {1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0, 6: 0.0, 99: 1.0} 735s

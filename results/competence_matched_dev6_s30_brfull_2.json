@@ -1,0 +1,46 @@
+{
+ "runs/dev6_s30_brfull_2": {
+  "1": {
+   "bal_acc": 0.9995219279023049,
+   "recall_reachable": 0.9991326973113617,
+   "specificity_decoy": 0.9999111584932481,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9887680343161274,
+   "recall_reachable": 0.9910284319546144,
+   "specificity_decoy": 0.9865076366776404,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.857992403006661,
+   "recall_reachable": 0.7749121574139143,
+   "specificity_decoy": 0.9410726485994079,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.7813903244367917,
+   "recall_reachable": 0.6642734351299424,
+   "specificity_decoy": 0.8985072137436411,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.7347151269208576,
+   "recall_reachable": 0.6086190009794319,
+   "specificity_decoy": 0.8608112528622833,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5790105667627281,
+   "recall_reachable": 0.3333333333333333,
+   "specificity_decoy": 0.824687800192123,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

@@ -1,0 +1,46 @@
+{
+ "runs/p30_s152": {
+  "1": {
+   "bal_acc": 0.9973151834681135,
+   "recall_reachable": 0.9997831743278404,
+   "specificity_decoy": 0.9948471926083866,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9662797866104994,
+   "recall_reachable": 0.9639158255821624,
+   "specificity_decoy": 0.9686437476388364,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.8328226273539452,
+   "recall_reachable": 0.7409697821503866,
+   "specificity_decoy": 0.9246754725575039,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.7690269927139459,
+   "recall_reachable": 0.6473859844271412,
+   "specificity_decoy": 0.8906680010007506,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.6086499186049454,
+   "recall_reachable": 0.3523996082272282,
+   "specificity_decoy": 0.8649002289826627,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5542519233034531,
+   "recall_reachable": 0.2895797351755901,
+   "specificity_decoy": 0.818924111431316,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

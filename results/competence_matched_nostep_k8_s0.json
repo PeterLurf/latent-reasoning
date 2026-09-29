@@ -1,0 +1,46 @@
+{
+ "runs/nostep_k8_s0": {
+  "1": {
+   "bal_acc": 0.9978233830845771,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 0.9956467661691543,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9804262309401076,
+   "recall_reachable": 0.9764496338808628,
+   "specificity_decoy": 0.9844028279993524,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.8938683914408072,
+   "recall_reachable": 0.8274771609276177,
+   "specificity_decoy": 0.9602596219539968,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.8024350964541369,
+   "recall_reachable": 0.6569926180604713,
+   "specificity_decoy": 0.9478775748478026,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.7010701182911556,
+   "recall_reachable": 0.4595494613124388,
+   "specificity_decoy": 0.9425907752698724,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5718640240634835,
+   "recall_reachable": 0.23258491652274035,
+   "specificity_decoy": 0.9111431316042267,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}
