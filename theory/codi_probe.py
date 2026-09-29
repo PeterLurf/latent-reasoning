@@ -22,7 +22,7 @@ import time
 import torch
 import torch.nn as nn
 
-SP = "C:/Users/peter/AppData/Local/Temp/claude/D--/2f0034d5-4d85-51eb-880b-bab41adb0dff/scratchpad"
+SP = os.environ.get("CODI_SP", "C:/Users/peter/AppData/Local/Temp/claude/D--/2f0034d5-4d85-51eb-880b-bab41adb0dff/scratchpad")
 torch.set_num_threads(int(os.environ.get("THEORY_THREADS", "6")))
 
 
@@ -51,6 +51,7 @@ def load(ckpt):
             A = v.float(); B = sd[k.replace("lora_A", "lora_B")].float()
             base[mod + ".weight"] = base[mod + ".weight"] + scale * (B @ A).T      # Conv1D weight is (in, out)
     cfg = GPT2Config(vocab_size=base["transformer.wte.weight"].shape[0])
+    cfg._attn_implementation = "eager"          # attention weights are needed for --attn
     m = GPT2LMHeadModel(cfg)
     missing, unexpected = m.load_state_dict(base, strict=False)
     missing = [x for x in missing if not x.endswith("attn.bias") and not x.endswith("masked_bias")]
@@ -83,7 +84,7 @@ def extract(s):
 
 
 @torch.no_grad()
-def run(m, prj, tok, data, n_latent=6, block_from=None, attn=False, bs=16, max_new=40):
+def run(m, prj, tok, data, n_latent=6, block_from=None, attn=False, bs=16, max_new=40, dev="cpu"):
     V = m.config.vocab_size
     bot, eot = V - 2, V - 1
     wte = m.transformer.wte
@@ -91,9 +92,9 @@ def run(m, prj, tok, data, n_latent=6, block_from=None, attn=False, bs=16, max_n
     for i in range(0, len(data), bs):
         chunk = data[i:i + bs]
         tok.padding_side = "left"
-        enc = tok([q for q, _, _ in chunk], return_tensors="pt", padding=True)
-        ids = torch.cat([enc["input_ids"], torch.full((len(chunk), 1), bot)], 1)
-        mask = torch.cat([enc["attention_mask"], torch.ones(len(chunk), 1, dtype=torch.long)], 1)
+        enc = {k: v.to(dev) for k, v in tok([q for q, _, _ in chunk], return_tensors="pt", padding=True).items()}
+        ids = torch.cat([enc["input_ids"], torch.full((len(chunk), 1), bot, device=dev)], 1)
+        mask = torch.cat([enc["attention_mask"], torch.ones(len(chunk), 1, dtype=torch.long, device=dev)], 1)
         pos = (mask.cumsum(1) - 1).clamp(min=0)
         out = m(input_ids=ids, attention_mask=mask, position_ids=pos, use_cache=True, output_hidden_states=True)
         pkv = out.past_key_values
@@ -102,7 +103,7 @@ def run(m, prj, tok, data, n_latent=6, block_from=None, attn=False, bs=16, max_n
         lat_mask = mask.clone()
         nextpos = pos[:, -1:] + 1
         for j in range(1, n_latent + 1):
-            cur = torch.ones(len(chunk), 1, dtype=torch.long)
+            cur = torch.ones(len(chunk), 1, dtype=torch.long, device=dev)
             am = torch.cat([lat_mask, cur], 1)
             if block_from is not None and j >= block_from:
                 am = am.clone(); am[:, P:P + j - 1] = 0                 # hide earlier latent positions
@@ -120,12 +121,12 @@ def run(m, prj, tok, data, n_latent=6, block_from=None, attn=False, bs=16, max_n
             nextpos = nextpos + 1
             h = prj(o.hidden_states[-1][:, -1:, :])
         # answer: <eot> then greedy decoding; answer tokens see everything
-        x = wte(torch.full((len(chunk), 1), eot))
+        x = wte(torch.full((len(chunk), 1), eot, device=dev))
         am = lat_mask
         gen = [[] for _ in chunk]
-        done = torch.zeros(len(chunk), dtype=torch.bool)
+        done = torch.zeros(len(chunk), dtype=torch.bool, device=dev)
         for t in range(max_new):
-            am = torch.cat([am, torch.ones(len(chunk), 1, dtype=torch.long)], 1)
+            am = torch.cat([am, torch.ones(len(chunk), 1, dtype=torch.long, device=dev)], 1)
             o = m(inputs_embeds=x, attention_mask=am, position_ids=nextpos, past_key_values=pkv, use_cache=True)
             pkv = o.past_key_values
             nxt = o.logits[:, -1, :V - 1].argmax(-1)
@@ -158,14 +159,16 @@ def main():
     ap.add_argument("--block_from", type=int, default=None)
     ap.add_argument("--attn", action="store_true")
     ap.add_argument("--out", default="theory/results/codi_probe.json")
+    ap.add_argument("--device", default="cpu")
     a = ap.parse_args()
     m, prj, tok = load(a.ckpt)
+    m, prj = m.to(a.device), prj.to(a.device)
     data = gsm8k(a.n)
     res = json.load(open(a.out)) if os.path.exists(a.out) else {}
     for nl in a.n_latent:
         key = f"{a.ckpt}|n{a.n}|L{nl}|block{a.block_from}"
         t0 = time.time()
-        o = run(m, prj, tok, data, nl, a.block_from, a.attn)
+        o = run(m, prj, tok, data, nl, a.block_from, a.attn, dev=a.device)
         bydepth = {}
         for r in o["rows"]:
             if r["nsteps"] is not None:
