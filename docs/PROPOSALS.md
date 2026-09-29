@@ -286,7 +286,7 @@ stopping signal is directly readable from the state.
 
 ## 8. Second-generation proposals (2026-09-29, after the theory of `docs/THEORY.md` §22)
 
-The first round (§3–§6) fixed the failures we found. This round states what *any* latent reasoner needs in order to
+A self-contained write-up with proof sketches: `docs/THEORY_FRAMEWORK.md`. The first round (§3–§6) fixed the failures we found. This round states what *any* latent reasoner needs in order to
 extrapolate in the number of latent steps, and proposes methods for the conditions nobody addresses. Full statements
 and proofs sketches: THEORY §22; test: THEORY §23 (Pilot F, pre-registered, running after Pilots D/E).
 

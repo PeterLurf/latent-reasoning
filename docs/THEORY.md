@@ -5,6 +5,8 @@ other session — see `docs/CURRENT_TASKS.md`). Everything here is **exploratory
 labels were known) unless a section says it was pre-registered. Code: `theory/*.py`; outputs: `theory/results/`. All
 measurements run on the CPU on existing `runs/` models; nothing here touches the queues or the pre-registrations.
 
+**Self-contained write-up of the general theory:** `docs/THEORY_FRAMEWORK.md`.
+
 **Contents:** Executive summary · Timestamp correction · §0 question · §1 pointer · §2 retrieval (Mechanism 1) ·
 §3 theory · §4 attenuation (Mechanism 2) · §5 architectures · §6 Pilot A pre-registration · §9 Pilot B · §10 developmental
 race · §11 Pilot C · §12 training-free repair · §13 GPT-2 latent reasoners · §14 transfer curves (+ failed out-of-sample
