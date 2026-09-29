@@ -1064,6 +1064,35 @@ single episode at K′ = 12 → 24/59, layer-2 block → 41/59; 16 failures are 
 * **RA3.** Mean far8–10 bal-acc over the 59 models: re3 − single ≥ 0.05.
 * **RA4 (cost).** Mean near-distance (1–6) bal-acc drops by ≤ 0.02 (max-combination can add false positives).
 
+**§26 result (scored 2026-09-29 15:03 EDT; `theory/score_reanchor.py` → `theory/results/score_reanchor.json`).**
+
+| inference | 7-hop success (of 59) | failures rescued (of 34) | mean far8–10 | mean near1–6 |
+|---|---|---|---|---|
+| single episode, K′ = 12 | 24 | 1 | 0.533 | 0.861 |
+| layer-2 block from K (exp5) | 41 | — | — | — |
+| **re2** (2 episodes) | **55** | 31 | 0.612 | 0.864 |
+| re3 (3 episodes) | 53 | 31 | 0.624 | 0.851 |
+| **re2top3** (branching 2nd episode) | **55** | 31 | **0.667** | 0.854 |
+
+* **RA1 met** (55 ≥ 41). **RA2 met:** 14 of the 16 block-resistant failures are rescued (87.5 %; block 0 %) — including
+  all 8 local-type P30 failures (s102, s109, s115, s119, s126, s135, s145, s158) and 6 of the K = 8 failures.
+  **RA3 met** (+0.091). **RA4 met** (near −0.007 / −0.010).
+* **Reading.** Failing models are competent *within* K steps from any start node deep in the graph; what breaks is running
+  beyond K. Restarting the loop keeps every step count inside the trained range and restarts the pointer from a crisp
+  node embedding, and that alone turns 33 of 34 failures into 7-hop successes. This is the strongest evidence yet for the
+  clock account (Props. 1, 9): the local operator generalises to new positions; the step-indexed continuation does not.
+  It also shows the fading mechanism is bounded by the episode length, since the local-type failures are rescued too.
+* **Caveats.** Inference-time only, with extra compute (2–4 episodes) and a discrete decode (the anchor), i.e. a hybrid
+  latent/explicit procedure — the latent counterpart of CTM's maze re-application and of the Markovian Thinker's chunked
+  reasoning (2510.06557). The sweep head used to decode the anchor was identified on in-distribution depths. The
+  delayed query still reads each episode separately (max-combined); balanced accuracy at 8–10 hops stays ≈ 0.62–0.67,
+  far from perfect — anchors land off the chain in ~50–70 % of graphs (other branches of the frontier), which the
+  branching variant partly fixes.
+* **Implication for the field (C2).** Latent reasoners do not need to extrapolate in the number of steps if they are
+  re-anchored: train a bounded-horizon latent loop, decode its state to a discrete checkpoint every K steps, and
+  restart. Training-time counterpart: continue training from the model's own step-K states with the counter reset
+  (sample-pool training, Growing Neural Cellular Automata, suggested by the Literature session) — proposed as Pilot J.
+
 ## 27. Pilot H — repairing trained failures by fine-tuning: anytime (C1) vs jitter + anytime (C1 + C3) vs plain (pre-registered 2026-09-29 14:49 EDT, before any Pilot H run started)
 
 **Question.** Is the failure of a trained model to extrapolate fixed by removing slack *after* training (the slack/clock
