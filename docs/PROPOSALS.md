@@ -192,6 +192,10 @@ stopping signal is directly readable from the state.
   training depth allows because g ≥ 1 amplifies decoy noise; hence horizon ∝ training depth for graded (analog)
   updates, and no horizon for restoring (digital) updates (A2). This connects the bounded index-matching logit of Zhu
   et al. (ICLR 2026) and the certainty trade-off of 2602.01148 to a quantitative reach prediction.
+  *Toy check (`theory/sim_gain.py`, THEORY §8):* with moderate noise a graded update fitted on depth ≤ D reaches only
+  D + 2–4 (7 / 8 / 10 for D = 3 / 5 / 8), a restoring update 40 of 40; with little noise the graded update also reaches
+  far — so the horizon's strength depends on noise, and the exact training-depth horizon in our models is mainly
+  Mechanism 1, with Mechanism 2 limiting reach beyond it.
 * **Th4 Width-limited amplitude.** Under softmax reading the starting amplitude a₀ ∝ 1/(frontier size) (the per-edge
   budget law), so reach falls with width — a prediction for A3 (non-competitive reads remove it).
 

@@ -1,0 +1,4 @@
+pb_at_s750 --seed 750 --anytime 1
+pb_mat_s760 --seed 760 --arch markov --anytime 1
+pb_mr_s770 --seed 770 --arch markov_restore
+pb_atr_s780 --seed 780 --arch restore --anytime 1
