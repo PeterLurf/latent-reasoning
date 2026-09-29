@@ -28,3 +28,14 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53251755 vast o-toy created 2026-09-28 ~16:55: addendum O extension (38.29.145.27:40758)
 53251761 vast o-toy created 2026-09-28 ~16:55: addendum O extension (38.29.145.230:40771)
 53251763 vast o-toy created 2026-09-28 ~16:55: addendum O extension (174.0.242.177:1743)
+53145506 vast 3090 (J seed 2) DESTROYED 2026-09-28 ~21:50 after checksum-verified fetch (recorded late, 2026-09-29 ~13:00, after audit)
+53289329 vast 3090 0.176 created 2026-09-28 ~22:05: ProsQA addendum Q seed 0 (96.20.36.104:40044)
+53289703 vast 3090 0.192 created 2026-09-28 ~22:08: ProsQA addendum Q seed 1 (142.198.191.106:40409)
+53306310 vast 3090 0.173 created 2026-09-29 ~00:51: PROTOCOL7 T11 pilot (142.127.68.223:6399)
+53251755 vast o-toy (vast1) DESTROYED 2026-09-29 ~07:00 after checksum-verified fetch (16 runs)
+53251761 vast o-toy (vast2) DESTROYED 2026-09-29 ~07:00 after checksum-verified fetch (12 models + 4 stage-1 failures)
+53306310 vast 3090 (T11 pilot) DESTROYED 2026-09-29 ~07:04 after checksum-verified fetch (pilot not learned)
+53251763 vast o-toy (vast3) O runs fetched 2026-09-29 ~07:08 (12 models + 4 stage-1 failures); T9 runs fetched ~09:08 (5 models; t9w512_s549 stage-1 failure, relaunch budget spent); DESTROYED ~09:08
+53289703 vast 3090 (Q seed 1) DESTROYED 2026-09-29 ~12:00 after checksum-verified fetch
+53289329 vast 3090 (Q seed 0) DESTROYED 2026-09-29 ~12:25 after checksum-verified fetch
+# 2026-09-29 13:00: no instances of this session remain. theory-pa-h1..h4 belong to the theory session.

@@ -1,7 +1,7 @@
 # PROTOCOL6 results (Part VI; compiled 2026-09-26, in progress)
 
 Sources: `results/protocol6_confirm.json` (`python -m latent.protocol6 score`), `results/p6_endact.json`,
-`results/p6_strict.json`, `results/p6_traj.json`. Predictions and definitions: `docs/PROTOCOL6.md` (addenda A–F, each
+`results/p6_strict.json`, `results/p6_traj.json`. Predictions and definitions: `docs/PROTOCOL6.md` (addenda A–R, each
 written before the data it scores; amendments dated there). Chronology: `docs/RESEARCH_LOG.md`.
 EA = end activity (PROTOCOL5 addendum B); high = EA ≥ 0.25. Extrapolates = d7 ≥ 0.60 with lower bound > 0.55 at K′ = 12.
 
@@ -23,8 +23,14 @@ EA = end activity (PROTOCOL5 addendum B); high = EA ≥ 0.25. Extrapolates = d7 
 | **ProsQA T2** step-locked use | blocking at all thoughts ≤ 0.09 of 12.2 nats; 0 thoughts 0.976 vs 6 thoughts 0.974 | **thoughts not needed** |
 | **P29** does P7 ≥ 0.2 predict extrapolation on new runs? (addendum I; 8 competent test runs, 3 extrapolate) | accuracy 0.50, AUC 0.73 (EA 0.53) | **not supported** |
 | **ProsQA G** bypass-blocked Coconut (3 seeds) | competent (0.972, 0.972, 0.940); K′ = 0 at chance (0.49–0.52); no sweep; not step-locked; K′ = 1 already 0.93–0.94 | thoughts **needed**, sweep **absent** — a conduit, not a search |
-| ProsQA J delayed query (addendum J; seeds 0, 1; seed 2 running) | competent (0.89, 0.88); K′ = 1 ≈ K = 6; no sweep; not step-locked; K′ = 0 0.85 / 0.51 | **prefix-computed** (one pass); J1 seed-dependent pending seed 2 |
+| ProsQA J delayed query (addendum J; 3 seeds) | competent (0.89, 0.88, 0.88); K′ = 1 ≈ K = 6; no sweep; not step-locked; K′ = 0 0.85 / 0.51 / 0.48 | **prefix-computed** (one pass); J1 thoughts needed (2 of 3 seeds) |
 | ProsQA N delayed query on 4-layer GPT-2 (addendum N; 2 seeds) | test 0.544 / 0.552 | **not learned** (N0 fails on both) |
+| **P30** does P7 *rank* extrapolators on new runs? (addendum K; 42 competent test runs, 21 extrapolate; 4 cards, 2 recipes) | AUC 0.993 (EA 0.673); per card 0.96–1.00; per recipe 0.995 / 1.00; Spearman with d7 0.87 | **supported** |
+| **L1 / L2** K = 8 (two spare thoughts): does P7 still rank extrapolators, and do failing sweeps stop at the training depth? (addendum L; 17 competent, 4 extrapolate) | AUC 0.90 (EA 0.59); non-extrapolators with P7 < 0.10: 12/13 | **supported / supported** |
+| **M1 / M2** depth cap 4, K = 6 (one spare thought): does a failing frontier stop at the new training depth (distance 5)? (addendum M; 17 runs, 10 competent, 2 extrapolate by one level) | P6 < 0.10: 7/10 (share 0.70 ≥ 0.30); M2 needs ≥ 3 of each outcome, only 2 extrapolate (descriptive AUC 0.56) | **supported / unresolved** |
+| **P1 / P2** ProsQA deeper than training: training-depth wall in GPT-2? do 12 thoughts help? (addendum P; 6 GPT-2 models, long + control sets) | walls 5/6 (a_6 0.48–0.52 with c_6 ≥ 0.80; j_s1 c_6 0.792 → "length failure"); 12-thought gain ≥ 0.05 in 0/6 | **supported / not supported** — but see the depth-matched analysis: the decline tracks the added chain, not the training depth |
+| **O1** does a longer lookup scaffold (full depth reached while it is still on) make extrapolation more common? (addendum O; 48 same-card pairs) | successes 13 vs 13; discordant l = 6, b = 6 (sign p 0.61); local 6 vs 4, Vast 0 vs 2 | **not supported** |
+| **Q1 / Q2** does GPT-2's depth horizon follow the training depth? (addendum Q; addendum-G recipe trained on 3–4 hop problems only, 2 seeds) | acc 3–4 hop vs 5–6 hop (never trained) at K = 6: s0 0.947 vs 0.951, s1 0.928 vs 0.938 (gap −0.003, −0.010); K′ = 12 gain on 5–6 hop 0.000, 0.000 | **not supported / not supported** |
 
 ## Addendum A: continuation
 
@@ -342,17 +348,6 @@ P7 = layer-1 frontier excess on the distance-7 edge (max over steps 1–12) ÷ t
   beyond step 6, yet the non-extrapolators still never reach the distance-7 edge: the horizon a failing sweep stops at
   is the **training graph depth** (6), not the number of trained thoughts.
 
-## Reading so far
-
-Whether a model's sweep stays open — and with it, mostly, whether it extrapolates — is decided during the late
-curriculum, between stage 4 and the arrival at full depth, and is usually fixed once full depth is reached: later
-training, new data order and a restarted optimizer rarely change it (slow drift can, in about 1 run in 8, and a
-reopened sweep did not bring extrapolation with it). An open sweep remains close to necessary for extrapolation
-but is not sufficient. Training precision is not the missing factor (P27 not supported): same-card fp32 and bf16
-models extrapolate equally rarely once competent. Nor does it affect curriculum progress (P28 not supported). Tiny numerical differences — precision, card, a changed data order —
-steer which solution a run lands on while the late curriculum is still open.| **P30** does P7 *rank* extrapolators on new runs? (addendum K; 42 competent test runs, 21 extrapolate; 4 cards, 2 recipes) | AUC 0.993 (EA 0.673); per card 0.96–1.00; per recipe 0.995 / 1.00; Spearman with d7 0.87 | **supported** |
-| **L1 / L2** K = 8 (two spare thoughts): does P7 still rank extrapolators, and do failing sweeps stop at the training depth? (addendum L; 17 competent, 4 extrapolate) | AUC 0.90 (EA 0.59); non-extrapolators with P7 < 0.10: 12/13 | **supported / supported** |
-| **M1 / M2** depth cap 4, K = 6 (one spare thought): does a failing frontier stop at the new training depth (distance 5)? (addendum M; 17 runs, 10 competent, 2 extrapolate by one level) | P6 < 0.10: 7/10 (share 0.70 ≥ 0.30); M2 needs ≥ 3 of each outcome, only 2 extrapolate (descriptive AUC 0.56) | **supported / unresolved** |
 
 ### Addendum M (scored 2026-09-28 ~20:10, `scratch/score_m.py`, `results/p_m.json`)
 
@@ -367,7 +362,6 @@ steer which solution a run lands on while the late curriculum is still open.| **
   non-frontier route, and its d7 is 0.523.
 * Exploratory: extrapolation by one level is rarer under the cap (2/10) than extrapolation to distance 7 in depth-6
   K = 6 models (21/42 in P30).
-| **P1 / P2** ProsQA deeper than training: training-depth wall in GPT-2? do 12 thoughts help? (addendum P; 6 GPT-2 models, long + control sets) | walls 5/6 (a_6 0.48–0.52 with c_6 ≥ 0.80; j_s1 c_6 0.792 → "length failure"); 12-thought gain ≥ 0.05 in 0/6 | **supported / not supported** — but see the depth-matched analysis: the decline tracks the added chain, not the training depth |
 
 ### Addendum P (scored 2026-09-29 ~10:00, `prosqa/score_p.py`, `prosqa/res_p/p_score.json`)
 
@@ -384,7 +378,6 @@ steer which solution a run lands on while the late curriculum is still open.| **
   new chains hung off the answer options whatever the total depth — consistent with a shortcut that searches a few
   hops backwards from the options, and with no multi-step use of the thoughts (P2, addenda G/J). Addendum Q (3–4 hop
   training) tests training-depth dependence directly on unextended problems.
-| **O1** does a longer lookup scaffold (full depth reached while it is still on) make extrapolation more common? (addendum O; 48 same-card pairs) | successes 13 vs 13; discordant l = 6, b = 6 (sign p 0.61); local 6 vs 4, Vast 0 vs 2 | **not supported** |
 
 ### Addendum O (scored 2026-09-29 ~10:05, `scratch/score_o.py --final`, `results/p_o.json`)
 
@@ -392,8 +385,8 @@ steer which solution a run lands on while the late curriculum is still open.| **
   weight 1 (until 20 000); base runs at 18 000 after it had faded. Competent 30 vs 29 of 48; P7 ≥ 0.2 in 30 % vs 21 % of
   competent runs (descriptive). Extrapolation did not change, so the exploratory association (early full depth under
   the scaffold → 8/10 extrapolate) was a fast-learner confound, not a cause. 8 of 96 runs (both arms of seeds 133, 138,
-  141, 142) were stage-1 failures and count as unsuccessful. dev6 pairs (descriptive): 3 scored, long 0/3, base 1/3;
-  o_dev6_s55/s56 dropped by the cut-off.
+  141, 142) were stage-1 failures and count as unsuccessful. dev6 pairs (descriptive): 4 scored after the ~13:00 re-score, long 1/4, base 2/4; o_dev6_s55/s56 were dropped
+  early on a wrong premise (see the correction in PROTOCOL6.md addendum O).
 * **Note on L2 / M1 (2026-09-29 ~11:45, from the theory session, `docs/THEORY.md`; exploratory).** The latent thought
   acts as a pointer that should advance one depth per step. In failing K = 8 models the front *dwells* (~2 steps per
   hop), reaches depth ~4–5 by step 8 and reverts at step 9 (e.g. k8_s214, k8_s207). So L2 and M1 show that the front
@@ -403,7 +396,6 @@ steer which solution a run lands on while the late curriculum is still open.| **
   This fits O1 (a longer scaffold removes no slack) and the retrospective extrapolating share, 47 % at K = 6 vs 26 % at
   K = 8. The decisive test (anytime / minimum-progress supervision at K = 6 and 8, and on capped graphs, scored on
   distance ≥ 8) is being run and pre-registered by the theory session (THEORY.md §17).
-| **Q1 / Q2** does GPT-2's depth horizon follow the training depth? (addendum Q; addendum-G recipe trained on 3–4 hop problems only, 2 seeds) | acc 3–4 hop vs 5–6 hop (never trained) at K = 6: s0 0.947 vs 0.951, s1 0.928 vs 0.938 (gap −0.003, −0.010); K′ = 12 gain on 5–6 hop 0.000, 0.000 | **not supported / not supported** |
 
 ### Addendum Q (scored 2026-09-29 ~12:25, `prosqa/score_q.py`, `prosqa/res_q_s{0,1}/`; Vast 53289329/53289703 destroyed after checksum-verified fetch)
 
@@ -414,3 +406,21 @@ steer which solution a run lands on while the late curriculum is still open.| **
   (hops attached beyond the answer options). The toy model's training-depth horizon does not transfer to Coconut GPT-2,
   consistent with one-pass computation (G, J) rather than a learned step schedule.
 
+## Reading so far (updated 2026-09-29 ~13:20)
+
+Whether a model's sweep stays open — and with it, mostly, whether it extrapolates — is decided during the late
+curriculum, between stage 4 and the arrival at full depth, and is usually fixed once full depth is reached: later
+training, new data order and a restarted optimizer rarely change it (slow drift can, in about 1 run in 8, and a
+reopened sweep did not bring extrapolation with it). An open sweep remains close to necessary for extrapolation
+but is not sufficient. Training precision is not the missing factor (P27 not supported): same-card fp32 and bf16
+models extrapolate equally rarely once competent. Nor does it affect curriculum progress (P28 not supported). Tiny numerical differences — precision, card, a changed data order —
+steer which solution a run lands on while the late curriculum is still open.
+
+Addenda I–Q add: among open sweeps, whether the latent frontier crosses the trained horizon (P7) decides
+extrapolation, prospectively and on every card and recipe (P30, L1; PROTOCOL7 T4 on 44 new runs). Failing fronts stop
+where the learned step schedule ends, which training puts at the training depth (L2, M1; the theory session's
+anytime test decides wall vs schedule end). PROTOCOL7 shows the limit is causal and in propagation: blocking the
+frontier removes beyond-horizon answers, and supplying it at natural scale restores them. A longer lookup scaffold does
+not help (O1). None of this transfers to Coconut GPT-2 on ProsQA, which computes in one pass: its thoughts carry an
+answer (G, J), extra thoughts never help (P2, Q2), and it has no training-depth wall (Q1). Its limit is following
+chains hung beyond the answer options (P, depth-matched).

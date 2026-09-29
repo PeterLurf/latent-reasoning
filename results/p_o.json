@@ -733,6 +733,10 @@
   "53": {
    "long": false,
    "base": false
+  },
+  "54": {
+   "long": true,
+   "base": true
   }
  }
 }

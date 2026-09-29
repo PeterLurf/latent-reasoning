@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-09-29 01:05 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-09-29 13:05 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -35,7 +35,36 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 > gives fronts to depth 11 in 2/4 runs; Pilot D 12 + 12 running on Vast). Ownership (theory Vast hosts vs a PROTOCOL8)
 > to be agreed. The theory session analyses O/R/T9/T10 runs only after the experiments session has scored them.
 
-## 1. What is running now
+## 0. STATE AT 2026-09-29 13:05 — authoritative; sections 1–3 below are partly history
+
+**Running (local only; this session has no cloud instances):**
+
+| GPU (torch id) | Queue | Now | Next (chained, automatic) |
+|---|---|---|---|
+| RTX 4060 (`cuda:0`) | addendum R `scratch/p6_r_4060.txt` (log `logs/queue_r_4060.out`) | `r3_s407` | PROTOCOL7 T9 `scratch/p7s_t9_4060.txt` (first six seeds already done on vast3, marked claimed) |
+| RTX 3070 (`cuda:1`) | addendum R `scratch/p6_r_3070.txt` | `r3_s403` | T9 `scratch/p7s_t9_3070.txt` |
+| RTX 2070 (`cuda:2`) | PROTOCOL7 T10 fork graphs `scratch/p7s_t10_2070.txt` (fp32) | `t10fork_s560` | — (queue ends) |
+
+Monitor: `bash scratch/p7s_monitor.sh` (wakes on a queue failure, a QUEUE_DONE, or a run whose log.jsonl is idle
+> 75 min: the 2070 memory-thrash stall of 09-29 03:05–09:08). Keep jobs under ~6.5 GB per 8 GB card.
+
+**Scored today (details: PROTOCOL6_RESULTS.md, PROTOCOL7_RESULTS.md; all re-verified by the audit):** O1 not supported;
+P1 supported / P2 not (depth-matched: decline tracks added hops, not depth); Q1 / Q2 not supported (no training-depth
+wall in GPT-2); PROTOCOL7 T1b, T1c, T2b, T13, T4 supported on 44 new O runs; T3, T5, T7 pass; T1, T2, T6, T8b not.
+T11 pilot not learned (T11 stops); T12 not triggered (Q1 not supported).
+
+**Waiting to be scored:** addendum R when both R queues show QUEUE_DONE (`PYTHONPATH=. python scratch/score_r.py
+--device cuda:0`); T9/T10 when their queues end (`PYTHONPATH=. python scratch/score_p7s_t9.py --device cuda:0`), with
+the amendment-3 causal tests and T4 applied to them as secondary. Theory session: THEORY §20 Pilot E (anytime vs control;
+depth wall vs schedule end), results ~2026-09-30 01:00. It will message this session.
+
+**Cloud:** none of this session's instances remain (lifecycle in `scratch/pods.txt`). The four `theory-pa-h*` Vast
+instances belong to the theory session. Shared Vast credit $22.63 at 12:56.
+
+**Candidate next step (needs the user's go-ahead and ~$10–20):** PROTOCOL8, multi-step latent work in a pretrained model
+(`docs/NEXT_STEPS.md`, end).
+
+## 1. What is running now (HISTORY before 2026-09-29 — see section 0)
 
 ### Local PC (3 GPUs; torch `cuda:0` = RTX 4060, `cuda:1` = RTX 3070, `cuda:2` = RTX 2070 — nvidia-smi numbers differ)
 

@@ -92,3 +92,14 @@ only. Exploratory: the long scaffold does not change the stage-3 retrieval share
 13 of 23 pairs), and most O failures fail by local routes (fading or restarting fronts), consistent with the O1 null
 and the slack account (§20's anytime test is pending).
 
+## Bookkeeping (2026-09-29 ~13:00, after the audit)
+
+* T9 seed `t9w512_s549` (moved to vast3 by amendment 7) is not missing: it failed stage 1 three times ("relaunch
+  budget spent", guard log `logs/vast_174.0.242.177_1743/guard_t9w512_s549.log`). Like every stage-1 failure, it counts
+  as a finished, non-competent run; it is not re-queued. vast3 was destroyed at ~09:08 after checksum-verified fetches
+  of its O runs (~07:08) and T9 runs (~09:08). All Vast create/destroy events are now in `scratch/pods.txt`.
+* The theory session corrected its THEORY.md timestamps (commit 973fb4f). Commit times for citation: §20 Pilot E +
+  D-1 at 11:49:57, first E run at 11:55:24; E-1 and §21 at 11:50:43; §21 scored at 11:54:27. The O outcomes were
+  public before §21, so §21 is out of sample for its marker only; the early-P7 comparison (PO3) there is a re-analysis
+  of O runs whose labels were already known.
+
