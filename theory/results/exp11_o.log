@@ -1,0 +1,74 @@
+o_dev6_s51 step 16000 share 0.613 ptr [1, 1, 1, 1, 1, 1, 1, 1]
+dev6_s51 step 30000 share 0.031 ptr [1, 1, 1, 1, 2, 3, 4, 4]
+o_dev6_s52 step 20000 share 0.019 ptr [1, 2, 1, 2, 1, 2, 1, 2]
+dev6_s52 step 14000 share 0.063 ptr [1, 2, 2, 3, 3, 11, 11, 11]
+o_dev6_s53 step 16000 share 0.405 ptr [1, 1, 1, 2, 2, 2, 2, 2]
+dev6_s53 step 8000 share 0.212 ptr [1, 1, 1, 2, 2, 2, 2, 2]
+o_dev6_s54 step 8000 share 0.338 ptr [1, 1, 1, 2, 2, 2, 2, 2]
+dev6_s54 step 12000 share 0.111 ptr [1, 1, 2, 2, 3, 3, 4, 4]
+o_s100 step 10000 share 0.052 ptr [1, 1, 2, 1, 1, 1, 2, 1]
+p30_s100 step 12000 share 0.052 ptr [1, 1, 1, 1, 1, 1, 1, 1]
+o_s101 step 8000 share 0.013 ptr [8, 8, 8, 8, 8, 8, 8, 8]
+p30_s101 step 18000 share 0.485 ptr [1, 1, 1, 2, 2, 2, 2, 2]
+o_s102 step 8000 share 0.080 ptr [1, 2, 2, 1, 1, 2, 3, 3]
+p30_s102 step 12000 share 0.205 ptr [1, 2, 1, 1, 2, 2, 2, 3]
+o_s103 step 12000 share 0.112 ptr [1, 2, 2, 3, 3, 1, 1, 1]
+p30_s103 step 20000 share 0.462 ptr [1, 1, 1, 2, 2, 2, 2, 2]
+o_s104 step 16000 share 0.195 ptr [1, 1, 1, 2, 1, 2, 1, 2]
+p30_s104 step 18000 share 0.410 ptr [1, 1, 1, 2, 2, 2, 2, 2]
+o_s105 step 10000 share 0.088 ptr [1, 2, 1, 1, 2, 3, 1, 1]
+p30_s105 step 8000 share 0.027 ptr [1, 2, 3, 3, 1, 1, 1, 1]
+o_s106 step 18000 share 0.200 ptr [1, 1, 1, 1, 1, 1, 1, 1]
+p30_s106 step 12000 share 0.286 ptr [1, 2, 1, 1, 2, 2, 1, 1]
+o_s107 step 12000 share 0.597 ptr [1, 1, 1, 1, 2, 2, 2, 2]
+p30_s107 step 30000 share -0.009 ptr [1, 1, 1, 1, 1, 1, 1, 1]
+o_s108 step 12000 share 0.094 ptr [1, 2, 1, 2, 1, 1, 1, 2]
+p30_s108 step 26000 share 0.094 ptr [1, 2, 3, 1, 1, 1, 1, 1]
+o_s109 step 26000 share 0.059 ptr [1, 2, 1, 2, 1, 2, 1, 2]
+p30_s109 step 14000 share 0.373 ptr [1, 1, 1, 2, 2, 2, 2, 2]
+o_s110 step 12000 share 0.295 ptr [1, 1, 1, 2, 2, 2, 2, 2]
+p30_s110 step 14000 share 0.153 ptr [1, 1, 1, 1, 1, 1, 1, 1]
+o_s111 step 8000 share 0.359 ptr [1, 1, 1, 2, 2, 2, 2, 2]
+p30_s111 step 8000 share 0.192 ptr [1, 2, 1, 1, 2, 1, 1, 2]
+o_s112 step 14000 share 0.088 ptr [1, 1, 2, 2, 2, 10, 10, 10]
+p30_s112 step 12000 share 0.480 ptr [1, 1, 1, 2, 2, 2, 2, 2]
+o_s113 step 12000 share 0.077 ptr [1, 1, 2, 2, 2, 3, 3, 3]
+p30_s113 step 10000 share 0.403 ptr [1, 1, 2, 2, 2, 2, 2, 2]
+o_s114 step 6000 share 0.069 ptr [1, 1, 2, 2, 2, 3, 3, 3]
+p30_s114 step 10000 share 0.044 ptr [1, 1, 1, 2, 2, 3, 3, 3]
+o_s115 step 16000 share 0.007 ptr [1, 1, 1, 1, 1, 1, 1, 1]
+p30_s115 step 12000 share 0.341 ptr [1, 1, 1, 2, 2, 2, 2, 2]
+o_s116 step 6000 share 0.130 ptr [1, 1, 1, 2, 1, 1, 1, 1]
+p30_s116 step 6000 share 0.057 ptr [1, 1, 1, 2, 2, 3, 3, 4]
+o_s117 step 6000 share 0.066 ptr [1, 1, 1, 1, 1, 2, 2, 2]
+p30_s117 step 6000 share 0.153 ptr [1, 1, 1, 2, 2, 3, 3, 3]
+o_s118 step 12000 share 0.442 ptr [1, 1, 1, 2, 2, 2, 2, 2]
+p30_s118 step 10000 share 0.377 ptr [1, 1, 1, 2, 2, 2, 2, 2]
+o_s119 step 30000 share 0.212 ptr [1, 1, 1, 2, 2, 2, 1, 1]
+p30_s119 step 14000 share -0.007 ptr [2, 1, 1, 1, 1, 1, 1, 1]
+o_s120 step 14000 share 0.044 ptr [1, 2, 1, 1, 2, 1, 1, 2]
+p30_s120 no stage-3 checkpoint
+o_s121 step 8000 share 0.198 ptr [1, 1, 1, 1, 2, 2, 2, 2]
+p30_s121 step 16000 share 0.296 ptr [1, 1, 1, 1, 1, 1, 1, 1]
+o_s122 step 10000 share 0.238 ptr [1, 1, 1, 2, 2, 2, 1, 2]
+p30_s122 step 8000 share 0.033 ptr [1, 1, 1, 1, 2, 2, 3, 1]
+o_s123 step 14000 share 0.060 ptr [1, 2, 3, 3, 3, 2, 2, 2]
+p30_s123 step 6000 share 0.127 ptr [1, 1, 1, 2, 2, 2, 3, 3]
+o_dev6_s54 full 20500 ckpt 22000 P7_early 0.068 in_peak 0.1169
+o_s100 full 20500 ckpt 22000 P7_early 0.336 in_peak 0.1114
+o_s101 full 19000 ckpt 21000 P7_early 0.237 in_peak 0.0301
+o_s102 full 14000 ckpt 16000 P7_early 0.451 in_peak 0.1006
+o_s103 full 19000 ckpt 21000 P7_early 0.520 in_peak 0.0738
+o_s105 full 24500 ckpt 26000 P7_early 0.022 in_peak 0.1009
+o_s108 full 20500 ckpt 22000 P7_early 0.251 in_peak 0.0891
+o_s110 full 14500 ckpt 16000 P7_early 0.015 in_peak 0.0771
+o_s111 full 19000 ckpt 21000 P7_early 0.004 in_peak 0.0668
+o_s112 full 19000 ckpt 21000 P7_early 0.080 in_peak 0.0538
+o_s113 full 18500 ckpt 20000 P7_early 0.353 in_peak 0.1137
+o_s114 full 14000 ckpt 16000 P7_early 0.087 in_peak 0.1326
+o_s116 full 19500 ckpt 21000 P7_early 0.024 in_peak 0.0802
+o_s117 full 12500 ckpt 14000 P7_early 0.050 in_peak 0.0878
+o_s120 full 18500 ckpt 20000 P7_early 0.040 in_peak 0.0942
+o_s121 full 11000 ckpt 13000 P7_early 0.951 in_peak 0.0606
+o_s122 full 18500 ckpt 20000 P7_early 0.005 in_peak 0.0735
+o_s123 full 18000 ckpt 20000 P7_early 0.010 in_peak 0.0554
