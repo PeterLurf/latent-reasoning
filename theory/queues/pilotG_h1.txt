@@ -1,0 +1,4 @@
+pg_gat_s900 --seed 900 --arch setmem --anytime 1
+pg_g_s900 --seed 900 --arch setmem
+pg_gat_s901 --seed 901 --arch setmem --anytime 1
+pg_g_s901 --seed 901 --arch setmem
