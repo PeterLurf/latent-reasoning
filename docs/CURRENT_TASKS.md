@@ -89,7 +89,7 @@ confirmatory arms (~$15–30, 3 arms) or Pilot J on Vast (~$3–4), not comforta
 
 Pilot J does not run locally: a peer-written queue on the local GPUs tripped a permission check. Beyond this plan, ask
 for a top-up.
-**If the user tops up (Audit recommends +$40; agreed with Theory 2026-09-29 ~15:50):**
+**If the user tops up (Audit recommends +$40; agreed with Theory 2026-09-29 ~15:35):**
 - Theory takes ≤ 6 extra hosts now. Pilot F goes first, with PF1–PF3 messaged here ~03:00–04:00 Wed; its hosts drain by
   ~03:00.
 - PROTOCOL8: register ~06:30 (after the Phase 0 scoring and PF), launch ~07:00 Wed, 3 arms × 4 seeds.
