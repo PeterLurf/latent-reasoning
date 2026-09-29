@@ -957,6 +957,15 @@ make the latent computation extrapolate, alone and with anytime supervision (C1 
   competent G runs whose set is used (manipulation check), the set depth at step K on the long-chain probe
   (`theory/set_traj.py`: deepest d with m_K(chain node) − m_K(look-alike) ≥ 0.5 at every d' ≤ d) is ≥ K − 2 in ≥ 75 % of
   runs (≥ 4 such runs, else unresolved) — against p[K−1] ≈ 3 for Coconut pointers (§25).
+* **Amendment G-1 (2026-09-29 15:46 EDT, before any Pilot G run started; after the two feasibility runs).** fz_g_s950
+  (setmem) ended at curriculum stage 4 (not competent; delayed 0.875, m5 0.592) and fz_gat_s951 (setmem + anytime) was
+  still in stage 3 at step 27 200 — neither reached full depth, against ~75 % for the P30 recipe (n = 2; P ≈ 0.06 if
+  learnability were unchanged). The set gate moved off 0 (≈ −0.08), so the set is used and apparently interferes with
+  the curriculum, as the restore module did. G and GAT stay as registered (PG4 measures learnability). Added arms, on
+  the Literature session's suggestion to introduce restoration after the curriculum: **GL** `--arch setmem
+  --set_from_stage 5` (the set write is off — the model is exactly Coconut — until full depth, then on) and **GLAT** (the
+  same + `--anytime 1`), seeds 900–907. PG1–PG5 apply to GL/GLAT with G → GL and GAT → GLAT; PG4's guard for GL/GLAT is the
+  same (competent counts within 2 of 8 of C/AT).
 * **Order and hosts.** Host 1 (after its D/E pairs, ~02:00): GAT then G for seeds 900–901; hosts 2–4 after Pilot F:
   the remaining 12, GAT first. Expected completion ~12:00–14:00 EDT 2026-09-30; ≈ $3.
 
