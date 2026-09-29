@@ -635,7 +635,7 @@ O runs with local checkpoints, 8 extrapolate.
   not a general marker. The causal block result (§2) and the mechanism stand; the marker claims of §10 are downgraded
   to "in-sample only".
 
-## 22. Second-generation theory: four conditions for extrapolation in the number of latent steps (2026-09-29, written 14:00–14:40 EDT)
+## 22. Second-generation theory: four conditions for extrapolation in the number of latent steps (2026-09-29, written 13:55–14:09 EDT; committed f1f21d8 14:09:05)
 
 §18 explained our failures. This section generalises the account into conditions that any latent reasoner (Coconut
 family, looped transformers, recursive models) has to meet, states them as propositions, and derives three new methods
@@ -781,7 +781,7 @@ consequence (PROTOCOL8): measure c first (one-pass accuracy vs n on the in-conte
 train at depths above c. At n ≤ c no latent method can show extrapolation in steps, so ProsQA at its native depth is the
 wrong benchmark for it.
 
-## 23. Pilot F — amplitude jitter (T6), the complete fix (C1 + C3) and the selection window (T7) (pre-registered 2026-09-29, before any Pilot F run started and before any Pilot D run finished)
+## 23. Pilot F — amplitude jitter (T6), the complete fix (C1 + C3) and the selection window (T7) (pre-registered 2026-09-29, committed f1f21d8 14:09:05 EDT, before any Pilot F run started and before any Pilot D run finished)
 
 **Question.** Does contraction training (§22.3, Prop. 5) make the latent map restoring and extend reach, alone and on top
 of anytime supervision; and does tightness matter only in the selection window (§22.5)?
@@ -792,7 +792,7 @@ of anytime supervision; and does tightness matter only in the selection window (
   **ATL** `--anytime 1 --anytime_stages 4:5` (anytime only from stage 4 to full depth). Comparison runs: Pilot D's
   **C** (pd_c_s900–907) and **AT** (pd_at_s900–907), same seeds and code path. Cards may differ within a pair (recorded).
 * **Code.** `theory/arch.py:add_jitter` and `theory/train_arch.py --jitter/--jitter_p/--anytime_stages` (this commit).
-  Unit checks (2026-09-29 ~14:15): jitter active only in training and the state dict unchanged; windowed anytime with
+  Unit checks (2026-09-29 ~14:00): jitter active only in training and the state dict unchanged; windowed anytime with
   the window closed equals the plain loss exactly; with the window open equals unwindowed anytime exactly; CUDA-graph
   replay draws fresh jitter each step (checked on host 4). Options off ⇒ the Pilot D/E computation is unchanged.
 * **Competence and outcomes** as §6/§20: gate of §6; beyond-depth latent accuracy **d8** = balanced accuracy at distance
@@ -820,7 +820,7 @@ of anytime supervision; and does tightness matter only in the selection window (
   59 P30 ∪ L competent models; this document.
 * 2026-09-29 ~01:45–02:05 — attenuation analysis (exp6); literature pass; trainer/evaluator for variants; Pilot A
   pre-registered.
-* 2026-09-29 14:00–14:45 — §22 (four conditions C1–C4; Props. 4–8; methods T6 jitter, T7 selection-window
+* 2026-09-29 13:55–14:09 — §22 (four conditions C1–C4; Props. 4–8; methods T6 jitter, T7 selection-window
   anytime; architecture A6 monotone latent set) and §23 (Pilot F pre-registration); jitter/window options added to
   theory/train_arch.py and uploaded to the hosts (options off ⇒ unchanged computation).
 
