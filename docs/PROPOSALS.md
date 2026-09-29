@@ -37,6 +37,10 @@ compute contracts**, and **in-distribution-null causal tests** as a standard eva
 | M1–M5 | Evaluation methodology (beyond-budget tests, attribution, null-in-distribution interventions, seed triage, pre-registration) | overclaiming from signatures | this project | — |
 | Th1–Th4 | Theory: support-bound recurrence, budget-law schedules, loop-gain reach, width-limited amplitude | — | — | derivations + toy sims |
 
+**Second round (2026-09-29 ~14:10): §8** — four conditions for extrapolation in latent steps (C1 identification, C2
+homogeneity, C3 stability, C4 idempotence), the tightness account of random/matched/per-step budgets, and new methods
+T6 (amplitude jitter), T7 (selection-window supervision) and architecture A6 (monotone latent set); Pilot F tests T6/T7.
+
 ### Update 2026-09-29 ~06:50 EDT — what the night changed (details in `docs/THEORY.md` §9–13)
 
 1. **Blocking retrieval architecturally is not enough.** Interim Pilot A: Markov models extrapolate no more often than
@@ -45,7 +49,9 @@ compute contracts**, and **in-distribution-null causal tests** as a standard eva
    deeper cause is **slack** — more latent steps than required hops lets any schedule that visits each depth once fit the
    loss. Proposal A1 is demoted from "the fix" to "one ingredient"; the unity contract (T2) and a new proposal T5 are
    promoted.
-2. **New T5 — anytime (minimum-progress) supervision [running: Pilot B].** Supervise the answer after every latent step
+2. **New T5 — anytime (minimum-progress) supervision [running: Pilot B].** (Closest prior: RELAY 2502.08482,
+   iteration-wise supervision for looped-transformer length generalisation; also PonderNet, CLRS hints, SIM-CoT, PMPS.
+   Ours is the minimum-progress form — deeper nodes masked, early arrival never penalised — and its mechanism.) Supervise the answer after every latent step
    for nodes within k + 1 hops and for all unreachable nodes, masking deeper nodes (never penalise early arrival). This
    removes slack without imposing a counter, and gives a mechanistic reason why per-step supervision (SIM-CoT, PMPS,
    TRM/DIS deep supervision) stabilises latent reasoning with more latent steps. Early signal for the same idea via the
@@ -98,7 +104,7 @@ extrapolate is predicted by in-distribution frontier completion (Zhang et al. 26
 speed v ≈ n_train/T_train, "the demanded minimum is met, never exceeded" — matches the slow, dwelling pointers we see.
 Randomised loop counts stabilise extrapolation in looped transformers (Kuo et al. 2606.29983); progressive loss prevents
 "behaviours specific to iteration number" (Bansal et al. 2022); path independence predicts upward generalisation (Anil
-et al. 2022); hard attention + discrete states give provable size generalisation (Rodionov & Prokhorenkova, ICML 2025);
+et al. 2022); hard attention + discrete states give provable size generalisation (Rodionov & Prokhorenkova, ICML 2025, 2402.11628);
 latent CoT trades execution precision against exploration via decisional certainty (2602.01148); overthinking degrades
 deep recurrence (Kohli et al. 2604.07822).
 
@@ -194,10 +200,12 @@ stopping signal is directly readable from the state.
 
 * **T1 No dangling thought [running: Pilot A arm OV].** Train with latent budgets drawn from K..K+m (overrun) or with a
   progressive loss (start from a random intermediate state, Bansal et al. 2022), or supervise every latent output (deep
-  supervision as in TRM / Deep Improvement Supervision 2511.16886). Then the final trained thought is also an input,
+  supervision as in TRM; Asadulaev et al. 2511.16886, *Latent Reasoning in TRMs is Secretly a Policy Improvement
+  Operator* — cited earlier here under an older title, corrected 2026-09-29 at the Literature session's request). Then the final trained thought is also an input,
   and "one more step" is in-distribution. For Coconut/SIM-CoT/PMPS: append 1–2 extra latent steps with the same answer
   loss during training.
-* **T2 Unity compute contract [running: Pilot A arm MB].** Match the latent budget to the reasoning depth at every
+* **T2 Unity compute contract [running: Pilot A arm MB]** (not new as a training scheme: T = n is Fan et al.
+  2409.15647, Zhang et al. 2607.20594 and MR-Loop in 2609.33144; ours is the reason it helps, Prop. 4). Match the latent budget to the reasoning depth at every
   curriculum stage (here K = depth + 1), so the frontier must move one hop per step and never needs to dwell (Zhang et
   al.'s budget law predicts v = n/T). In LLM latent CoT this argues against padding with idle latents and for budgets
   proportional to the number of reasoning steps.
@@ -228,7 +236,7 @@ stopping signal is directly readable from the state.
 
 ## 6. Theoretical proposals
 
-* **Th1 Support-bound recurrence (revised 07:30).** For a latent step h_k = F(h_{k−1}, H_{<k}, x) trained on k ≤ K,
+* **Th1 Support-bound recurrence (revised 07:30; an instance of underspecification, D'Amour et al. 2011.03395).** For a latent step h_k = F(h_{k−1}, H_{<k}, x) trained on k ≤ K,
   the loss identifies F only on the states visited in training; its extension past K (and the untrained output h_K) is
   chosen by inductive bias, not by data. Two ways to make the extension step-indexed: through the history (retrieval
   with count-dependent lags — the Coconut failures) or through the state itself (phase/fade-triggered resets — the
@@ -275,3 +283,30 @@ stopping signal is directly readable from the state.
 4. Next: out-of-sample rule check (running); if Pilot B/C support the slack account, a confirmatory pre-registered
    study of anytime supervision and unity contracts (8+ seeds per arm, both formats), then the same training change on
    CODI/SIM-CoT GPT-2 with more latents than training steps (does the horizon move?).
+
+## 8. Second-generation proposals (2026-09-29, after the theory of `docs/THEORY.md` §22)
+
+The first round (§3–§6) fixed the failures we found. This round states what *any* latent reasoner needs in order to
+extrapolate in the number of latent steps, and proposes methods for the conditions nobody addresses. Full statements
+and proofs sketches: THEORY §22; test: THEORY §23 (Pilot F, pre-registered, running after Pilots D/E).
+
+**Framework: four conditions.** C1 *identification* (no slack while the circuit is chosen), C2 *homogeneity* (no usable
+step clock), C3 *stability* (a restoring map with a stable non-zero fixed point on the computation-carrying
+coordinates), C4 *idempotence at completion* (extra steps leave the answer-relevant state invariant). Coconut, CODI,
+SIM-CoT and PMPS meet none of C2–C4; RELAY-style or deep supervision and random loop counts meet C1 only up to the
+training depth; attractor / DEQ models and discrete NAR meet C3–C4 by construction. No latent-CoT method targets C3 or C4.
+
+| # | Proposal | Condition | Why it should work | Test / status |
+|---|---|---|---|---|
+| Th6 | **Tightness** (Prop. 4): random budgets, budget matching and anytime supervision are one mechanism — mass on budgets equal to the steps needed; they help iff that mass is present at the circuit-selection stage | C1 | T unobservable to the latent steps ⇒ a tight budget forces unit speed; non-tight random budgets leave dwell schedules at zero loss | retrospective consistent (randk, OV fail; MB2, anytime succeed); explains why Kuo et al.'s random loop counts helped and our randk did not |
+| **T6** | **Amplitude jitter**: during training rescale each fed-back thought about the batch mean by s ~ LogU[1/r, r] | C3 | Prop. 5: under jitter no linear (graded) map can fit beyond depth ln(a₀/b₀)/(2 ln r); every fitting map is bistable/restoring; restoring ⇒ unbounded reach | Pilot F arms J, JAT (8 seeds each, paired with Pilot D) **[queued]** |
+| **T7** | **Selection-window anytime**: anytime supervision only in the curriculum stages where the algorithm is chosen | C1 | Prop. 4 + §10 (circuit fixed at stage 3): tightness matters only there — a critical period for algorithm selection | Pilot F arms ATW vs ATL **[queued]** |
+| **A6** | **Monotone latent set** ("latent set memory"): a membership vector over entities updated by max of non-competitive sigmoid scores, fed back into the thought | C3 + C4 | Prop. 6: members never fade, extra steps are no-ops after convergence, errors grow linearly (k·V·ε) not geometrically; fits every least-fixed-point task (reachability, ProsQA, Horn/Datalog inference) | design; toy test after Pilot F |
+| Th7 | **Slack explains bypass** (Prop. 8): with one-pass capacity c ≥ hops needed, all K latents are unidentified and bypassing them is the shortest zero-loss solution | scope | predicts latent effect ≈ 0 for n ≤ c, > 0 for n > c; test-time latent scaling only for n > c *and* tight contracts | PROTOCOL8 design: measure c first, train above it (pending the user's go/no-go) |
+
+**What would change the field if Pilot F holds.** (i) A one-line training change (T6) that turns graded latent maps into
+restoring ones without state supervision or new parameters — directly applicable to CODI/SIM-CoT/Coconut at LLM scale.
+(ii) A unified reading of random-depth, matched-depth and per-step supervision as the same identifiability fix, with a
+falsifiable condition (tight mass at selection) that tells practitioners which variant will work. (iii) A benchmark rule:
+extrapolation in latent steps can only be measured on problems deeper than one forward pass (Prop. 8), which ProsQA at
+its native depth is not.
