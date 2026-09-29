@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-09-28 18:45 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-09-29 01:05 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -31,7 +31,7 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 * **Chained after L (addendum M, depth cap):** `chain_after.sh logs/queue_k8_<gpu>.out m_<gpu> ...` starts `p6_m_<gpu>.txt` (3070: m_s300..307, 4060: m_s308..313, 2070 fp32: m_s314..316; `--depth_cap 4` = train only to distance 5). EA not auto-measured. **DONE, scored 2026-09-28 ~20:10** (`scratch/score_m.py` → `results/p_m.json`): M1 supported (7/10), M2 unresolved.
 * **Idea parked (not built):** deeper training graphs (graft branch onto an attached leaf, BFS labels, parent-aux fix) — the other direction of M.
 * **Addendum P (ProsQA deeper than training, evaluation only; pre-registered 2026-09-28 ~21:18):** `prosqa/run_p.sh cuda:2 g_s0 g_s1 g_s2 j_s0 j_s1` running detached on the RTX 3070 alongside O (log `logs/p_eval.out`) and `run_p.sh cuda:1 j_s1 j_s0 j_s2` (log `logs/p_eval_4060.out` — misnamed: torch cuda:2 = RTX 2070 and cuda:1 = RTX 3070, so the P runners are on the 2070 and 3070; existing outputs are skipped, so the overlap is harmless; ~2.7 h per model, done ~Tue 06:00; j_s2 needs `prosqa/ckpt/j_s2_checkpoint_50` fetched first, else re-run it, output `prosqa/res_p/<tag>_{long,ctl}.json`; data from `prosqa/make_long.py`). After J s2 is fetched: `bash prosqa/run_p.sh cuda:2 j_s2`. Scorer: `python prosqa/score_p.py` → `prosqa/res_p/p_score.json` (written before any output).
-* **Addendum R (toy dose-response, pre-registered 2026-09-28 ~22:02):** `chain_after.sh logs/queue_o_<gpu>.out r_<gpu> ...` starts `scratch/p6_r_{3070,4060}.txt` (r3_s400..411 `--depth_cap 3`, m_s317..328 `--depth_cap 4`, interleaved) after each card's O queue. Cut-off: runs not started by Wed 2026-09-30 06:00 dropped. Scorer not yet written (cap-3 gate matched4 ≥ 0.60; P5 = e5/in4; R3 pools cap-4 runs with M — rules in PROTOCOL6.md addendum R).
+* **Addendum R (toy dose-response, pre-registered 2026-09-28 ~22:02):** `chain_after.sh logs/queue_o_<gpu>.out r_<gpu> ...` starts `scratch/p6_r_{3070,4060}.txt` (r3_s400..411 `--depth_cap 3`, m_s317..328 `--depth_cap 4`, interleaved) after each card's O queue. Cut-off: runs not started by Wed 2026-09-30 06:00 dropped. Scorer `scratch/score_r.py` (written before data; reproduces M 7/10) (cap-3 gate matched4 ≥ 0.60; P5 = e5/in4; R3 pools cap-4 runs with M — rules in PROTOCOL6.md addendum R).
 * **Addendum Q (GPT-2 trained on 3–4 hop ProsQA, pre-registered 2026-09-28 ~22:02) — Vast:**
 
 | Instance | Seed / config | SSH (direct) | $/h |
@@ -39,7 +39,7 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 | 53289329 | seed 0, `prosqa/prosqa_q.yaml` (name `prosqa-coconut-q`), `pod_prosqa_q.sh` | `ssh -p 40044 root@96.20.36.104` | 0.176 |
 | 53289703 | seed 1, `prosqa/prosqa_q_s1.yaml` (name `prosqa-coconut-q-s1`) | `ssh -p 40409 root@142.198.191.106` | 0.192 |
 
-  Launched ~22:10 with `prosqa/vdeploy.sh` (RunPod had no card ≤ $0.34/h: community 4090/A6000/4000 Ada gone, secure 4090 billed $0.74 and A6000 $0.53, both deleted within a minute). Both cuInit 0, drivers 555/565, md5 of regenerated long/ctl/test sets match. Expect ~16 h training + ~4 h analyses (done ~Tue 18:00–20:00). Status `bash prosqa/status.sh vast:<host>:<port>`; fetch `bash prosqa/vfetch.sh <host> <port> prosqa/res_q_s<seed> /workspace/ckpt/<name>/checkpoint_50 prosqa/ckpt/q_s<seed>_checkpoint_50`, then destroy. Scorer not yet written (Q1 gap 3–4 vs 5–6 hop at K=6 from `kprime_test_e50.json`; Q2 K'=12 − K=6 on 5–6 hop).
+  Launched ~22:10 with `prosqa/vdeploy.sh` (RunPod had no card ≤ $0.34/h: community 4090/A6000/4000 Ada gone, secure 4090 billed $0.74 and A6000 $0.53, both deleted within a minute). Both cuInit 0, drivers 555/565, md5 of regenerated long/ctl/test sets match. Expect ~16 h training + ~4 h analyses (done ~Tue 18:00–20:00). Status `bash prosqa/status.sh vast:<host>:<port>`; fetch `bash prosqa/vfetch.sh <host> <port> prosqa/res_q_s<seed> /workspace/ckpt/<name>/checkpoint_50 prosqa/ckpt/q_s<seed>_checkpoint_50`, then destroy. Progress 2026-09-29 00:55: both at epoch 12/50 (~14 min/epoch so far). Scorer `prosqa/score_q.py` (written before data) (Q1 gap 3–4 vs 5–6 hop at K=6 from `kprime_test_e50.json`; Q2 K'=12 − K=6 on 5–6 hop).
 * **PROTOCOL7 confirmation suite (pre-registered 2026-09-28 ~23:30, amendments 1–5; results `docs/PROTOCOL7_RESULTS.md`).**
   Scored: T1, T2 not supported (distance 7 is a query-time hop; T2 dose ≈ uniform); T3 supported (AUC 0.93); T5 supported;
   T6 not supported by 0.4 % (layer 1 robust, layer 2 not); T7 pass; T8a as expected; T8b fail (tiny structural component).
@@ -48,8 +48,8 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
   `PYTHONPATH=. python scratch/p7s_t4.py --device cuda:0` (T4; needs the amend3 output first).
   **Chained, start automatically:** T9 architectures `scratch/p7s_t9_{3070,4060}.txt` after each card's R queue
   (logs `logs/queue_t9_*.out`); T10 fork graphs `scratch/p7s_t10_2070.txt` after the 2070's O queue (log
-  `logs/queue_t10_2070.out`). Score T9/T10 with `scratch/far_sweep_layers.py` (layer by largest in_peak) — scorer not
-  yet written (rules in PROTOCOL7 T9/T10). T11 (from-scratch ProsQA) and T12 need cloud credit.
+  `logs/queue_t10_2070.out`). Score T9/T10 with `scratch/far_sweep_layers.py` (layer by largest in_peak) — scorer
+  `scratch/score_p7s_t9.py` (written before data; rules in PROTOCOL7 T9/T10). T11 (from-scratch ProsQA) and T12 need cloud credit.
 * **GitHub:** local git repository in D:\Latent (branch main, `core.autocrlf false` — keep it: bash scripts must stay LF).
   GitHub CLI at `C:\Users\peter\.local\gh\bin\gh.exe`; after `gh auth login`, create the private repo and push
   (`gh repo create <name> --private --source . --push`). Weights and raw ProsQA logs are git-ignored.
@@ -61,7 +61,7 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
   fix the P7-analogue floor in an amendment first (needs credit: ~10 seeds × ~$0.7).
 * **Chained after M (addendum O, long scaffold, paired with P30 seeds):** `chain_after.sh logs/queue_m_<gpu>.out o_<gpu> ...`
   starts `p6_o_<gpu>.txt` (4060: o_s100..111, 3070: o_s112..123, 2070: o_dev6_s51..56; `--aux_steps 20000`). Score:
-  paired success (competent + extrapolates) vs `p30_s*` / `dev6_s51..56`; rules in PROTOCOL6.md addendum O (scorer not
+  paired success (competent + extrapolates) vs `p30_s*` / `dev6_s51..56`; rules in PROTOCOL6.md addendum O (scorer `scratch/score_o.py`, written before data; was: scorer not
   yet written). Runs until ~Tue morning.
 * Workers: `scratch/queue_worker2.sh <tag> <device> <queue>` (claims lines via `<queue>.claimed`, trains under
   `scratch/stage1_guard.py`, then runs `scratch/eval_battery.sh`). Chains: `scratch/p6_stall_chain.sh` (starts the 3070's
@@ -150,7 +150,10 @@ with `allowedCudaVersions` 12.4/12.6/12.8; use Vast.ai only when RunPod has no s
 
 * RunPod: ~$20 credit on 2026-09-25; **$11.42 spent** (2026-09-25 $4.51, 2026-09-26 $6.91) → ~$8.5 left.
   Rate cap $0.34/h per card; secure-cloud prices are often billed above the listing — check `cost`, delete if > $0.34.
-* Vast.ai: user added credit 2026-09-27 ~14:40 → **$35.54 at 15:15**. Running: 2 J (0.211 + 0.281) + 2 P30 (0.182 + 0.239) ≈ $0.91/h until the J runs end (~Mon morning), ~$14 total → ~$20 left.
+* Vast.ai: **$12.97 at 2026-09-29 00:58**, 6 instances at $1.00/h (3 O-ext $0.39, 2 Q $0.43, T11 pilot $0.18).
+  Estimated to finish: O-ext ~$2.5 (vast1/vast3 10/16 runs, vast2 7/16 at 00:50), Q ~$7 (epoch 12/50), T11 pilot ~$0.8
+  → **~$10.5 of $12.97, ~$2.5 margin. User warned 01:05.** T11 confirmatory seeds (~$7) need a top-up (Vast or RunPod).
+  If credit hits 0 Vast stops the instances — fetch O-ext hosts as they finish to cut spend.
 * Local GPUs are free.
 
 ## 3. Waiting to be scored (and how)
