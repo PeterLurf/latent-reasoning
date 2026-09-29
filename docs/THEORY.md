@@ -11,7 +11,7 @@ measurements run on the CPU on existing `runs/` models; nothing here touches the
 §3 theory · §4 attenuation (Mechanism 2) · §5 architectures · §6 Pilot A pre-registration · §9 Pilot B · §10 developmental
 race · §11 Pilot C · §12 training-free repair · §13 GPT-2 latent reasoners · §14 transfer curves (+ failed out-of-sample
 rule) · §15 Pilot A scored · §16 Pilot B interim · §17 Pilot D · §18 formal sketch · §19 Pilot B scored · §20 Pilot E ·
-§21 O marker test · **§22 four conditions C1–C4, Props. 4–8, new methods T6/T7 and architecture A6** · §23 Pilot F · §24 Pilot G (A6) · **§25 Prop. 9: slack creates the clock** · §26 CTM-inspired T8/A8 · §7 log · §8 toy simulation. (Sections were appended in the order written, so numbers are not in
+§21 O marker test · **§22 four conditions C1–C4, Props. 4–8, new methods T6/T7 and architecture A6** · §23 Pilot F · §24 Pilot G (A6) · **§25 Prop. 9: slack creates the clock** · §26 CTM-inspired T8/A8 · §27 Pilot H (fine-tune repair) · §7 log · §8 toy simulation. (Sections were appended in the order written, so numbers are not in
 page order.)
 
 ## Timestamp correction (2026-09-29 12:59 EDT, prompted by the Audit session; machine clock via `date`, Vast logs in UTC = EDT + 4)
@@ -1063,6 +1063,34 @@ single episode at K′ = 12 → 24/59, layer-2 block → 41/59; 16 failures are 
   re-anchoring resets both the clock (Mechanism 1) and the amplitude (Mechanism 2); the block only removes the first.
 * **RA3.** Mean far8–10 bal-acc over the 59 models: re3 − single ≥ 0.05.
 * **RA4 (cost).** Mean near-distance (1–6) bal-acc drops by ≤ 0.02 (max-combination can add false positives).
+
+## 27. Pilot H — repairing trained failures by fine-tuning: anytime (C1) vs jitter + anytime (C1 + C3) vs plain (pre-registered 2026-09-29 14:49 EDT, before any Pilot H run started)
+
+**Question.** Is the failure of a trained model to extrapolate fixed by removing slack *after* training (the slack/clock
+account, Props. 1, 2, 9), or is the circuit chosen at stage 3 locked in (a critical period)? And does the answer differ
+by failure mechanism, as Props. 3 and 5 predict?
+
+* **Models.** The 20 competent non-extrapolating P30 models with K = 6 (s102, s109, s111, s112, s113, s115, s118, s119,
+  s125, s126, s130, s131, s132, s135, s140, s145, s146, s147, s157, s158). By exp5, 12 are *retrieval-type* (the layer-2
+  block rescues 7-hop success: s111, s112, s113, s118, s125, s130, s131, s132, s140, s146, s147, s157) and 8 are
+  *local-type* (not rescued: s102, s109, s115, s119, s126, s135, s145, s158).
+* **Fine-tuning** (`theory/train_arch.py --init_from runs/p30_sX/model.pt`, same seed, fresh AdamW): 6000 steps, lr 1e-4
+  (warm-up 100, cosine), no aux loss, bs 512, bf16, gated curriculum (the trained model advances every 500 steps, so
+  ~4000 steps at full depth). Arms: **FT-C** plain loss (all 20); **FT-AT** `--anytime 1` (all 20); **FT-JAT**
+  `--anytime 1 --jitter 2` (the 8 local-type models).
+* **Outcomes** from `theory/eval_arch.py` (gate; d7 at K′ = 12; extrapolates = extrap_K12; far8–10) and the pointer
+  (le_pointer.py: p[K−1]).
+* **PH1 (primary: slack removal repairs).** FT-AT extrapolates in ≥ 40 % of its competent runs and FT-C in ≤ 15 %; and
+  d7(FT-AT) > d7(FT-C) in ≥ 75 % of models with both competent. *Critical-period reading* if FT-AT ≤ FT-C + 0.10 in
+  extrapolating share.
+* **PH2 (the brake goes).** Median p[K−1] ≥ K − 2 = 4 for competent FT-AT runs; ≤ 3 for FT-C runs.
+* **PH3 (mechanism split).** FT-AT's extrapolating share among retrieval-type models exceeds that among local-type
+  models by ≥ 0.25 (anytime removes the schedule; a fading map also needs C3).
+* **PH4 (C3 adds to C1).** Among local-type models, d7(FT-JAT) > d7(FT-AT) in ≥ 6 of 8 (both competent; ties excluded;
+  unresolved if < 5 counted).
+* **Guard.** Each arm keeps the gate in ≥ 75 % of its runs; otherwise that arm's verdicts are flagged.
+* **Order and hosts.** 48 runs inserted after Pilot D/E and before Pilot F on all four theory hosts (~15 min per run on
+  hosts 2–4); Pilots F and G shift by ~3 h (to ~15:00–17:00 EDT 2026-09-30).
 
 ## 7. Log
 
