@@ -1,0 +1,12 @@
+# Theory-stream Vast instances (label theory-*). One line per create/destroy event, times EDT from `date`.
+# instance  label  gpu  $/h  host:port  event
+53312599 theory-pa-h1 RTX_A4000 0.128 38.29.145.230:40473 created 2026-09-29 ~01:50 (Pilot A onward; see CURRENT_TASKS)
+53312701 theory-pa-h2 RTX_4070 0.158 174.0.242.177:1712 created 2026-09-29 ~01:50
+53312759 theory-pa-h3 RTX_3080 0.136 181.116.79.48:40283 created 2026-09-29 ~01:50
+53312847 theory-pa-h4 RTX_3090 0.178 109.173.238.203:42213 created 2026-09-29 ~01:50
+53408503 theory-x1 RTX_4070 0.144 174.0.242.177:1714 created 2026-09-29 15:44 (Pilots F/G/I/J + moved D/E pairs; THEORY §23-§29)
+53408508 theory-x2 RTX_3090 0.169 38.64.63.175:21214 created 2026-09-29 15:44 (Pilots F/G/I/J + moved D/E pairs; THEORY §23-§29)
+53408512 theory-x3 RTX_3090 0.179 38.49.42.46:58611 created 2026-09-29 15:44 (Pilots F/G/I/J + moved D/E pairs; THEORY §23-§29)
+53408518 theory-x4 RTX_3080 0.115 1.208.108.242:55107 created 2026-09-29 15:44 (Pilots F/G/I/J + moved D/E pairs; THEORY §23-§29)
+53408522 theory-x5 RTX_3080 0.162 85.51.34.67:40302 created 2026-09-29 15:44 (Pilots F/G/I/J + moved D/E pairs; THEORY §23-§29)
+53408526 theory-x6 RTX_4070 0.202 159.48.242.2:35175 created 2026-09-29 15:44 (Pilots F/G/I/J + moved D/E pairs; THEORY §23-§29)

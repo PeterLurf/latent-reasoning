@@ -1,0 +1,15 @@
+pe3_at_s1010 --seed 1010 --depth_cap 3 --anytime 1
+pe3_c_s1010 --seed 1010 --depth_cap 3
+pf_jat_s900 --seed 900 --anytime 1 --jitter 2
+pf_jat_s902 --seed 902 --anytime 1 --jitter 2
+pf_atw_s901 --seed 901 --anytime 1 --anytime_stages 1:3
+pf_atw_s904 --seed 904 --anytime 1 --anytime_stages 1:3
+pf_atw_s907 --seed 907 --anytime 1 --anytime_stages 1:3
+pg_gat_s901 --seed 901 --arch setmem --anytime 1
+pg_g_s901 --seed 901 --arch setmem
+pi_per2_s902 --seed 902 --periodic_step 2
+pi_per2_s900 --seed 900 --periodic_step 2
+pi_per3_s904 --seed 904 --periodic_step 3
+pj_ch3at_s904 --seed 904 --arch chunk3 --anytime 1
+pj_ch3_s905 --seed 905 --arch chunk3
+pj_ch3at_s907 --seed 907 --arch chunk3 --anytime 1
