@@ -10,7 +10,7 @@
 # Exits ALL_DONE when every host is destroyed.
 cd "$(dirname "$0")/.."
 de_done=$1
-V="C:/Users/peter/AppData/Local/Temp/claude/D--/6af9c751-a423-5604-9170-0c177c13d67f/scratchpad/vast.sh"
+V="C:/Users/peter/.local/vastai/vast.sh"
 KEY=~/.ssh/runpod_ed25519
 touch theory/hosts_done.txt
 declare -A idle unreach
@@ -42,8 +42,22 @@ except Exception: pass")
       if r=$(timeout 1800 bash theory/vfetch_arch.sh $h $p 2>&1 | tail -1) && { [[ "$r" == fetched,\ sha\ ok* ]] || [[ "$r" == "NOTHING TO FETCH" ]]; }; then
         log "$id $tag - - $h:$p fetched $NOW ($r)"
         d=$(timeout 120 bash "$V" destroy instance $id -y 2>&1 | tail -1)
-        log "$id $tag - - $h:$p destroyed $(date '+%Y-%m-%d %H:%M') after queue end + verified fetch ($d)"
-        echo "$tag ${n:-0}" >> theory/hosts_done.txt
+        gone=0
+        for try in 1 2 3 4 5 6; do                 # confirm: a successful listing that no longer contains the id
+          sleep 20
+          lst=$(timeout 60 bash "$V" show instances --raw 2>/dev/null | python -c "import json,sys
+try:
+  print('OK', ' '.join(str(i['id']) for i in json.load(sys.stdin)))
+except Exception: print('ERR')")
+          [[ "$lst" == OK* ]] && [[ " $lst " != *" $id "* ]] && { gone=1; break; }
+        done
+        if [ $gone = 1 ]; then
+          log "$id $tag - - $h:$p destroyed $(date '+%Y-%m-%d %H:%M') after queue end + verified fetch, confirmed absent from show instances ($d)"
+          echo "$tag ${n:-0}" >> theory/hosts_done.txt
+        else
+          log "$id $tag - - $h:$p DESTROY NOT CONFIRMED $(date '+%Y-%m-%d %H:%M') ($d)"
+          echo "DESTROY_NOT_CONFIRMED $tag $h $p $id: $d"; date; exit 0
+        fi
       else
         echo "FETCH_FAILED $tag $h $p $id: $r"; date; exit 0
       fi
