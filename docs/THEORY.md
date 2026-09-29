@@ -426,6 +426,26 @@ projection, CODI's GPT-2 test recipe; run on Vast host 4, `theory/results/codi_p
   applies directly. The slack account is a theory of *multi-step latent computation*; making a pretrained model do such
   computation (problems deeper than one pass, T12-style) is the precondition for it to matter at scale.
 
+**§13 addendum (2026-09-29 14:28 EDT; exploratory re-reading of the saved `by_steps` field of the same runs, no new
+inference).** Accuracy by the number of gold CoT steps (s) and latents (L), GSM8K test (n = 1319; s = count of «…»
+calculations in the gold CoT):
+
+| CODI | s1 (65) | s2 (357) | s3 (364) | s4 (290) | s5 (138) | s6 (57) |
+|---|---|---|---|---|---|---|
+| L0 | 0.26 | 0.32 | 0.24 | 0.19 | 0.06 | 0.05 |
+| L2 | 0.38 | 0.50 | **0.15** | **0.11** | 0.07 | 0.00 |
+| L6 (trained) | 0.40 | 0.66 | 0.49 | 0.31 | 0.14 | 0.02 |
+| L12 | 0.37 | 0.64 | 0.46 | **0.24** | 0.15 | 0.07 |
+
+(SIM-CoT-CODI: same shape, smaller effects; s3 L0 0.32 → L2 0.27 → L6 0.46 → L12 0.47.)
+* **Latents help most at 2–3 steps and not at all at ≥ 6** (L6 − L0: +0.14, +0.34, +0.25, +0.12, +0.08, −0.03): a
+  reasoning-depth horizon inside the trained budget, and 12 latents do not move it (s4 falls 0.31 → 0.24 for CODI).
+* **Truncated latent chains are worse than none** (CODI s3/s4: L2 0.15/0.11 < L0 0.24/0.19): the thought after 2 steps is
+  not partial progress in a form the readout can use — the latent dynamics are keyed to the trained budget, not
+  answer-ready at every step. This is the LLM-scale signature of a non-anytime contract (C1): an anytime-trained latent
+  reasoner should have accuracy **non-decreasing in L** for every s. Proposed as an outcome for PROTOCOL8 (monotonicity
+  in L per difficulty stratum), alongside test-time gains at L > K for problems above one-pass capacity (Prop. 8).
+
 ## 14. Mechanism 2 measured directly: transfer curves of the local map (exp9, exploratory)
 
 `theory/exp9_transfer.py` → `theory/results/exp9_transfer.json`, `exp9_summary.json`. For each of the 59 models: roll out
