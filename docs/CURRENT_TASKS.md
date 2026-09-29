@@ -40,6 +40,19 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 | 53289703 | seed 1, `prosqa/prosqa_q_s1.yaml` (name `prosqa-coconut-q-s1`) | `ssh -p 40409 root@142.198.191.106` | 0.192 |
 
   Launched ~22:10 with `prosqa/vdeploy.sh` (RunPod had no card ≤ $0.34/h: community 4090/A6000/4000 Ada gone, secure 4090 billed $0.74 and A6000 $0.53, both deleted within a minute). Both cuInit 0, drivers 555/565, md5 of regenerated long/ctl/test sets match. Expect ~16 h training + ~4 h analyses (done ~Tue 18:00–20:00). Status `bash prosqa/status.sh vast:<host>:<port>`; fetch `bash prosqa/vfetch.sh <host> <port> prosqa/res_q_s<seed> /workspace/ckpt/<name>/checkpoint_50 prosqa/ckpt/q_s<seed>_checkpoint_50`, then destroy. Scorer not yet written (Q1 gap 3–4 vs 5–6 hop at K=6 from `kprime_test_e50.json`; Q2 K'=12 − K=6 on 5–6 hop).
+* **PROTOCOL7 confirmation suite (pre-registered 2026-09-28 ~23:30, amendments 1–5; results `docs/PROTOCOL7_RESULTS.md`).**
+  Scored: T1, T2 not supported (distance 7 is a query-time hop; T2 dose ≈ uniform); T3 supported (AUC 0.93); T5 supported;
+  T6 not supported by 0.4 % (layer 1 robust, layer 2 not); T7 pass; T8a as expected; T8b fail (tiny structural component).
+  **Pending, run when addendum O is complete (local + fetched Vast O runs):** `PYTHONPATH=. python scratch/score_p7s_amend3.py
+  --device cuda:0` (T1b, T1c, T2b, T13; measures with `latent/frontier_causal2.py` and frozen far_sweep), then
+  `PYTHONPATH=. python scratch/p7s_t4.py --device cuda:0` (T4; needs the amend3 output first).
+  **Chained, start automatically:** T9 architectures `scratch/p7s_t9_{3070,4060}.txt` after each card's R queue
+  (logs `logs/queue_t9_*.out`); T10 fork graphs `scratch/p7s_t10_2070.txt` after the 2070's O queue (log
+  `logs/queue_t10_2070.out`). Score T9/T10 with `scratch/far_sweep_layers.py` (layer by largest in_peak) — scorer not
+  yet written (rules in PROTOCOL7 T9/T10). T11 (from-scratch ProsQA) and T12 need cloud credit.
+* **GitHub:** local git repository in D:\Latent (branch main, `core.autocrlf false` — keep it: bash scripts must stay LF).
+  GitHub CLI at `C:\Users\peter\.local\gh\bin\gh.exe`; after `gh auth login`, create the private repo and push
+  (`gh repo create <name> --private --source . --push`). Weights and raw ProsQA logs are git-ignored.
 * **Chained after M (addendum O, long scaffold, paired with P30 seeds):** `chain_after.sh logs/queue_m_<gpu>.out o_<gpu> ...`
   starts `p6_o_<gpu>.txt` (4060: o_s100..111, 3070: o_s112..123, 2070: o_dev6_s51..56; `--aux_steps 20000`). Score:
   paired success (competent + extrapolates) vs `p30_s*` / `dev6_s51..56`; rules in PROTOCOL6.md addendum O (scorer not
