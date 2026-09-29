@@ -67,12 +67,16 @@ leak.**
 
 | GPU | Now | Next (chained, automatic) | Runs dry |
 |---|---|---|---|
-| RTX 4060 | addendum R `scratch/p6_r_4060.txt` | T9 worker (all its lines are claimed, so it ends at once) → T10 worker `t10_4060` on the shared `scratch/p7s_t10_2070.txt` (fp32) | ~02:30–03:30 Wed |
-| RTX 3070 | addendum R `scratch/p6_r_3070.txt` | same pattern → T10 worker `t10_3070` | same |
-| RTX 2070 | T10 `scratch/p7s_t10_2070.txt` (fp32) | — | same |
+| RTX 4060 | addendum R `scratch/p6_r_4060.txt` | T9 worker (all lines claimed, ends at once) → T10 worker `t10_4060` (shared `p7s_t10_2070.txt`, fp32) → **PROTOCOL9** `p9b_4060` (`scratch/p9_bf16.txt`) → `p9f_4060` (`scratch/p9_fork.txt`) | ~Wed 23:00 |
+| RTX 3070 | addendum R `scratch/p6_r_3070.txt` | same: T10 `t10_3070` → `p9b_3070` → `p9f_3070` | ~Wed 23:00 |
+| RTX 2070 | T10 `scratch/p7s_t10_2070.txt` (fp32) | **PROTOCOL9** `p9f_2070` (`scratch/p9_fork.txt`, fp32) | ~Wed 23:00 |
 
-- **Overnight follow-up:** the plan is to register the next local work before ~23:00 and chain it after T10, so the cards
-  don't idle.
+- **Overnight follow-up: PROTOCOL9** (`docs/PROTOCOL9.md`, a28ff0c 16:09:10): anytime supervision on the T9/T10
+  architectures, paired by seed with the T9/T10 controls. 32 runs (`scratch/queue_worker3.sh`, frozen theory code in
+  `scratch/p9_frozen/`), chained after T10 on every card by `scratch/chain_after_w.sh`. Score with
+  `PYTHONPATH=. python scratch/score_p9.py` once all pairs are in.
+- **GPU idle watcher:** `scratch/gpu_watch.sh`, polling every 5 min (user request); re-arm it with the current host list
+  after any create or destroy.
 - **Monitor:** `bash scratch/p7s_monitor.sh` (a queue failure, QUEUE_DONE, or a log.jsonl idle > 75 min). The 3070
   runs thermally throttled at 80–86 °C. Keep jobs under ~6.5 GB per 8 GB card.
 - **Pilot G feasibility:** done 15:54 (priority slot via `scratch/priority_run.sh`); both runs failed the gate, and
