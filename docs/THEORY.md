@@ -926,6 +926,12 @@ make the latent computation extrapolate, alone and with anytime supervision (C1 
 * **PG1.** d8(G) > d8(C). **PG2.** d8(GAT) > d8(AT). **PG3 (C4, no overthinking).** Far-chain bal-acc at K′ = 16 minus at
   K′ = 12 (length_gen, distances 8–10 pooled) is ≥ −0.01 in ≥ 75 % of competent G ∪ GAT runs and higher (paired) than in
   C/AT. **PG4 (learnability).** Competent counts G vs C and GAT vs AT differ by ≤ 2 of 8.
+* **Amendment PG5 (2026-09-29 14:33 EDT, before any Pilot G run or feasibility run finished) — a monotone set removes
+  the need for a brake.** Under slack, Prop. 9 says a pointer-state front must brake with a clock; with a monotone set,
+  running at full speed and then idling at the fixed point needs no clock (the set simply stops growing). Prediction: in
+  competent G runs whose set is used (manipulation check), the set depth at step K on the long-chain probe
+  (`theory/set_traj.py`: deepest d with m_K(chain node) − m_K(look-alike) ≥ 0.5 at every d' ≤ d) is ≥ K − 2 in ≥ 75 % of
+  runs (≥ 4 such runs, else unresolved) — against p[K−1] ≈ 3 for Coconut pointers (§25).
 * **Order and hosts.** Host 1 (after its D/E pairs, ~02:00): GAT then G for seeds 900–901; hosts 2–4 after Pilot F:
   the remaining 12, GAT first. Expected completion ~12:00–14:00 EDT 2026-09-30; ≈ $3.
 
