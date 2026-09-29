@@ -1,0 +1,8 @@
+# Theory stream Pilot A (docs/THEORY.md s6), host 4
+pa_c_s703 --seed 703
+pa_m_s713 --seed 713 --arch markov
+pa_c_s707 --seed 707
+pa_m_s717 --seed 717 --arch markov
+pa_m2_s723 --seed 723 --arch markov_l2
+pa_mb_s733 --seed 733 --arch markov --budget_match
+pa_ov_s743 --seed 743 --overrun 2

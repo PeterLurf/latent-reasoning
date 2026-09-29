@@ -147,7 +147,37 @@ otherwise the front fades within a few hops of the training depth (Mechanism 2).
   not depend on how many other keys compete (per-edge budget law, softmax dispersion; Veličković et al. 2024).
 * **A5 Budget-matched curriculum** — K grows with the curriculum depth so the pointer never needs to dwell.
 
-## 6. Log
+## 6. Pilot A — architecture and schedule variants (pre-registered 2026-09-29 ~02:05 EDT, before any run started)
 
-* 2026-09-29 01:10–04:30 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
+**Question.** If the retrieval route (Mechanism 1) causes the horizon, a latent step that *cannot* read earlier latent
+positions should extrapolate far more often, with the recipe otherwise unchanged.
+
+* **Recipe** (all arms): the P30 recipe — `--no_step_emb --K 6 --lr 5e-4 --amp bf16`, bs 512, 30 000 steps, gated
+  curriculum, lookup scaffold 10 000 + 5 000 anneal, children weight 1, gpt2 init, stage-1 guard (3 relaunches).
+  Trainer `theory/train_arch.py` (= `latent/train.py` + options), evaluation `theory/eval_arch.py` (the project's
+  competence, matched-depth and length_gen code with the loader swapped; same seeds and definitions as P30).
+* **Arms and seeds.** C = coconut (control), seeds 700–707; M = markov (both layers; latent positions never attend to
+  earlier latent positions, queries read everything), seeds 710–717; secondary: M2 = markov_l2 (layer 2 only) 720–723;
+  MB = markov + budget-matched curriculum (K = min(6, stage depth + 1) during training) 730–733; OV = coconut + overrun 2
+  (training budget drawn from 6..8 each step) 740–743. Four Vast.ai hosts, every host runs every arm (card balanced).
+* **Definitions** (as PROTOCOL6): competent = gate (delayed ≥ 0.85, matched 5-hop ≥ 0.60, final stage full);
+  extrapolates = d7 ≥ 0.60 with CI lower bound > 0.55 at K′ = 12; far8–10 = mean balanced accuracy at distances 8–10,
+  K′ = 12.
+* **PA1 (primary).** Among competent runs, the extrapolating share is higher in M than in C. Supported if share(M) ≥ 0.70
+  and share(M) − share(C) ≥ 0.25; not supported if share(M) ≤ share(C); otherwise inconclusive. (Basis: C-type models
+  extrapolate in 21/42 of P30; blocking retrieval at inference rescued 17/23 retrieval-type failures.) Needs ≥ 4
+  competent runs per arm, else unresolved.
+* **PA2.** Mean far8–10 among competent runs is higher in M than in C by ≥ 0.05.
+* **PA3 (learnability).** M reaches the gate in ≥ (share in C − 0.25). If not, the Markov step is "harder to train with
+  this recipe" and PA1 is read on the competent runs only, with that caveat.
+* **PA4 (mechanism).** Competent non-extrapolators in C have a retrieval-type pointer (retrieval share ≥ 0.5 on a trained
+  step or at h_K) in ≥ 50 %; in M every failure is of the local kinds (fade / stall / restart) by construction, and the
+  M failures are mostly fade (pointer dies within 4 hops past K).
+* Secondary arms M2, MB, OV: descriptive only (4 seeds each).
+
+## 7. Log
+
+* 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
   59 P30 ∪ L competent models; this document.
+* 2026-09-29 ~01:45–02:05 — attenuation analysis (exp6); literature pass; trainer/evaluator for variants; Pilot A
+  pre-registered.
