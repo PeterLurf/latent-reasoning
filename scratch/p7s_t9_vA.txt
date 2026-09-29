@@ -1,0 +1,12 @@
+# PROTOCOL7 T9 on Vast host A (amendment 8), bf16, same recipe
+t9l3_s500 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 500 --layers 3
+t9l4_s521 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 521 --layers 4
+t9w512_s542 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 542 --d 512
+t9l3_s504 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 504 --layers 3
+t9l4_s525 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 525 --layers 4
+t9w512_s546 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 546 --d 512
+t9l3_s510 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 510 --layers 3
+t9l4_s531 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 531 --layers 4
+t9w512_s552 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 552 --d 512
+t9l3_s514 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 514 --layers 3
+t9l4_s535 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 535 --layers 4

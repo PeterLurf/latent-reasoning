@@ -256,3 +256,15 @@ dropped. A test whose population ends up below its minimum is reported as unreso
   instead (bf16, same recipe; `scratch/p7s_t9_vast3.txt`, chained after `queue_o_vast3` on that instance). They are
   marked claimed in `scratch/p7s_t9_4060.txt.claimed` so the local worker skips them. Fetched with
   `scratch/vfetch_toy.sh <host> <port> t9`. No other change to T9.
+
+## Amendment 8 (2026-09-29 15:39 EDT, before any of the runs below started; placement only)
+
+* The user added Vast credit to run faster in parallel. The 42 T9 runs not yet started (all 24 of the RTX 3070 queue,
+  and the 18 unclaimed runs of the RTX 4060 queue) move to four Vast hosts, A–D. Same recipe and bf16; queues
+  `scratch/p7s_t9_vA.txt`..`vD.txt` (10–11 runs each, families interleaved), run by `scratch/queue_worker2.sh`.
+  They are marked claimed in the local `.claimed` files, so the local T9 workers skip them. Fetched with
+  `scratch/vfetch_toy.sh <host> <port> t9`.
+* The freed local cards join T10 after addendum R finishes: the RTX 3070 (`cuda:1`) and later the RTX 4060 (`cuda:0`)
+  run further workers on the same shared queue `scratch/p7s_t10_2070.txt`. Each line already carries `--amp fp32`, so
+  the registered precision is unchanged; only the card differs.
+* No change to any rule, seed, measure or cut-off. Mixed hardware within a family already applied under amendment 7.
