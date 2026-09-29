@@ -235,3 +235,16 @@ dropped. A test whose population ends up below its minimum is reported as unreso
   (deepest depth whose peak excess ≥ 25 % of the in-range maximum), EA, delayed / matched 5 / matched 6 accuracy and
   full-depth step; each scored in its better direction, and P7 must beat the **best** of them (maximum recomputed in
   each bootstrap resample, so the comparison is conservative for P7). Rules otherwise as T4. Code `scratch/p7s_t4.py`.
+
+## Amendment 6 (2026-09-29 ~00:52, before the T11 pilot was launched)
+
+* **T11 pilot (exploratory).** `prosqa/prosqa_s11p.yaml`: the Coconut ProsQA recipe (50 epochs, effective batch 128,
+  fp32, standard question-first format, no answer mask) with `from_scratch: True, n_layer: 2` (GPT-2 architecture,
+  768 wide, 12 heads, random init via `prosqa/patch_scratch.py`) and **lr 3e-4** (Coconut's 1e-4 is a fine-tuning
+  rate; exploratory choice). Pod script `prosqa/pod_prosqa_s.sh`: trace and K′ ∈ {0, 1, 2, 6, 12} on the test set,
+  `long_eval2.py --no_mask` on the addendum-P long and control sets, and `p7_prosqa.py --m 4 --Kp 12` (per-statement
+  thought attention on extension-4 problems; the correct option's chain vs the wrong option's look-alike chain).
+  Card: RunPod RTX A4500 (≤ $0.34/h) if available, else Vast.
+* **Continuation rule** (as T11): confirmatory seeds only if the pilot reaches ≥ 0.85 at K = 6 and its hop clock
+  increases. The ProsQA P7 analogue's layer rule and floor are fixed in a dated amendment after the pilot and before
+  any confirmatory seed; the confirmatory seeds' outcomes decide T11, the pilot's do not.
