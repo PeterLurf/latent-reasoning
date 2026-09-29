@@ -9,7 +9,7 @@ measurements run on the CPU on existing `runs/` models; nothing here touches the
 §3 theory · §4 attenuation (Mechanism 2) · §5 architectures · §6 Pilot A pre-registration · §9 Pilot B · §10 developmental
 race · §11 Pilot C · §12 training-free repair · §13 GPT-2 latent reasoners · §14 transfer curves (+ failed out-of-sample
 rule) · §15 Pilot A scored · §16 Pilot B interim · §17 Pilot D · §18 formal sketch · §19 Pilot B scored · §20 Pilot E ·
-§21 O marker test · **§22 four conditions C1–C4, Props. 4–8, new methods T6/T7 and architecture A6** · §23 Pilot F · §24 Pilot G (A6) · §7 log · §8 toy simulation. (Sections were appended in the order written, so numbers are not in
+§21 O marker test · **§22 four conditions C1–C4, Props. 4–8, new methods T6/T7 and architecture A6** · §23 Pilot F · §24 Pilot G (A6) · **§25 Prop. 9: slack creates the clock** · §7 log · §8 toy simulation. (Sections were appended in the order written, so numbers are not in
 page order.)
 
 ## Timestamp correction (2026-09-29 12:59 EDT, prompted by the Audit session; machine clock via `date`, Vast logs in UTC = EDT + 4)
@@ -863,6 +863,40 @@ make the latent computation extrapolate, alone and with anytime supervision (C1 
 * **Order and hosts.** Host 1 (after its D/E pairs, ~02:00): GAT then G for seeds 900–901; hosts 2–4 after Pilot F:
   the remaining 12, GAT first. Expected completion ~12:00–14:00 EDT 2026-09-30; ≈ $3.
 
+## 25. Proposition 9 — slack creates the clock (least-effort brake); pre-registered pointer predictions for Pilots C, D, E (2026-09-29 ~14:25 EDT, before any Pilot C/D/E pointer trajectory was computed)
+
+**Observation (retrospective, 59 P30/L models, `theory/results/pointer_taxonomy.json`).** The pointer depth of the last
+fed-back thought, p[K−1] (long-chain probe, top sweep head, `analyse_pointer.py`), is the same for K = 6 and K = 8:
+median 3 in both (K6: 29/42 models at 3; K8: 10/17). The in-range front therefore moves at speed ≈ 3/6 and 3/8, by
+dwelling (mean in-range dwell steps 2.6 at K6, 3.5 at K8) — equally in extrapolators and failures. The two differ only
+**after** K: extrapolators switch to unit speed (p30_s155 `1 1 1 2 2 3 | 4 5 6 7 8 9`), failures cycle (`2 3 2 3`) or
+restart. This is Zhang et al.'s budget law (v ≈ n/T, "the demanded minimum is met, never exceeded") measured inside the
+latent thought.
+
+**Proposition 9 (fractional speed needs a clock).** Suppose training at budget K demands latent depth d* at the deepest
+problems and SGD meets the demand exactly (least effort: the front reaches d* at step K). If d*/K is not an integer, the
+front must advance on some steps and dwell on others. A transition whose state is only the pointer (plus the fixed
+problem) maps equal inputs to equal outputs, so it cannot dwell at step j and advance at step j′ from the same pointer:
+it needs a **phase variable** — a clock — read from the step embedding, the number of earlier thoughts (Haviv et al.),
+or a phase coordinate carried in the state. Hence slack (C1 violated) *forces* a clock (C2 violated): the "brake" that
+slows a speed-1 operator to d*/K is step-indexed, and past K it either disengages (extrapolation) or keeps cycling
+(failure). Tight contracts demand speed 1, which a clock-free operator realises. *Consequences:* (i) this is why removing
+the history channel (Pilot A, Markov) did not help: the clock moved into the state (pa_m_s713 restarts); (ii) C1 and C2
+are not independent — enforcing C1 removes the need for C2 violations; (iii) the budget law's fractional speeds are the
+signature of a clock, so Zhang et al.'s v = n/T regime predicts step-indexed mechanisms whenever T > n.
+
+**Pre-registered predictions** (measurement frozen: `theory/analyse_pilotA.py:ptr_traj`, unchanged, on `probe(512)` from
+`theory/rollout.py`; p[K−1] = pointer depth of the last fed-back thought h_{K−1}; competent runs only; a new driver
+calls it for pc_*, pd_*, pe8_*, pe3_* runs):
+* **LE1 (budget law in the thought).** Control (non-anytime) arms at different K reach the same depth by K: the arm
+  medians of p[K−1] for Pilot C K5 and K7, Pilot D control (K6) and E8 control (K8) span at most 1 (max − min ≤ 1).
+  *Not supported* if the K8 or K7 median exceeds the K5 median by ≥ 2 (a homogeneous speed would give p[K−1] ≈ K − 1).
+* **LE2 (anytime removes the brake).** Anytime arms (Pilot D AT, E8 AT): median p[K−1] ≥ K − 2, and p[K−1] higher than
+  the same-seed control's in ≥ 75 % of pairs with both competent (≥ 5 such pairs, else unresolved).
+* **LE3 (the demand sets the depth).** E3 controls (training capped at depth 3): median p[K−1] ≤ 2, below Pilot D
+  control's median.
+* Reported with each: in-range dwell counts, and post-K speed (p[K+3] − p[K−1]) split by extrapolation.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
@@ -874,6 +908,8 @@ make the latent computation extrapolate, alone and with anytime supervision (C1 
   theory/train_arch.py and uploaded to the hosts (options off ⇒ unchanged computation).
 * 2026-09-29 ~14:10–14:20 — theory/anytime_loss.py for PROTOCOL8; §22.7 (literature check: Prop. 4 refined with
   condition (b), novelty levels); A6 implemented (`--arch setmem`); §24 Pilot G pre-registered.
+* 2026-09-29 ~14:20–14:30 — §25 Prop. 9 (fractional budget-law speed needs a clock; slack forces C2 violations) and
+  pointer predictions LE1–LE3 for Pilots C/D/E, registered before their pointer trajectories were computed.
 
 ## 8. Toy simulation of the loop-gain account (Th3) — `theory/sim_gain.py` (exploratory)
 
