@@ -1,0 +1,136 @@
+{
+ "n_competent": 17,
+ "n_extrap": 8,
+ "PO1": {
+  "n_share_ge_0.25": 2,
+  "extrap_among_them": 0,
+  "extrap_below": 8,
+  "n_below": 15,
+  "verdict": "unresolved"
+ },
+ "PO2": {
+  "auc_neg_share": 0.5138888888888888,
+  "verdict": "not met"
+ },
+ "PO3": {
+  "n": 17,
+  "auc_stage3_marker": 0.5138888888888888,
+  "auc_early_P7": 0.9166666666666666,
+  "diff": -0.4027777777777778,
+  "diff_ci95": [
+   -0.7083333333333333,
+   -0.11111111111111116
+  ]
+ },
+ "exploratory_scaffold": {
+  "n_pairs": 23,
+  "mean_share_long": 0.1621444292992754,
+  "mean_share_base": 0.21892856184723689,
+  "long_lower": 13,
+  "long_higher": 10
+ },
+ "rows": [
+  {
+   "run": "o_s100",
+   "share": 0.05235614857222206,
+   "extrap": true,
+   "P7_early": 0.3355939965697867
+  },
+  {
+   "run": "o_s101",
+   "share": 0.012667491455378944,
+   "extrap": false,
+   "P7_early": 0.2370366960341799
+  },
+  {
+   "run": "o_s102",
+   "share": 0.08006009600787374,
+   "extrap": true,
+   "P7_early": 0.4509596443534106
+  },
+  {
+   "run": "o_s103",
+   "share": 0.11171331152243676,
+   "extrap": true,
+   "P7_early": 0.5198500915637139
+  },
+  {
+   "run": "o_s105",
+   "share": 0.08806782742244788,
+   "extrap": true,
+   "P7_early": 0.021956728410268352
+  },
+  {
+   "run": "o_s108",
+   "share": 0.09405020042615676,
+   "extrap": true,
+   "P7_early": 0.25066385891006343
+  },
+  {
+   "run": "o_s110",
+   "share": 0.2946742131601723,
+   "extrap": false,
+   "P7_early": 0.015301292567348357
+  },
+  {
+   "run": "o_s111",
+   "share": 0.3585247905949733,
+   "extrap": false,
+   "P7_early": 0.0035667833580070073
+  },
+  {
+   "run": "o_s112",
+   "share": 0.08755445980308253,
+   "extrap": false,
+   "P7_early": 0.0796573555564139
+  },
+  {
+   "run": "o_s113",
+   "share": 0.0771182526051103,
+   "extrap": true,
+   "P7_early": 0.3530780559430576
+  },
+  {
+   "run": "o_s114",
+   "share": 0.06879019281663439,
+   "extrap": true,
+   "P7_early": 0.087332629008804
+  },
+  {
+   "run": "o_s116",
+   "share": 0.12988563882885085,
+   "extrap": false,
+   "P7_early": 0.024276541480600506
+  },
+  {
+   "run": "o_s117",
+   "share": 0.06628691791633157,
+   "extrap": false,
+   "P7_early": 0.050342574509885614
+  },
+  {
+   "run": "o_s120",
+   "share": 0.04406544269504837,
+   "extrap": false,
+   "P7_early": 0.03973364497511437
+  },
+  {
+   "run": "o_s121",
+   "share": 0.19815270093793338,
+   "extrap": true,
+   "P7_early": 0.9506985175275406
+  },
+  {
+   "run": "o_s122",
+   "share": 0.23791136301040558,
+   "extrap": false,
+   "P7_early": 0.004746653201397264
+  },
+  {
+   "run": "o_s123",
+   "share": 0.05967563103603309,
+   "extrap": false,
+   "P7_early": 0.010137142274671301
+  }
+ ]
+}
