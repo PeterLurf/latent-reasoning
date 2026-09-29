@@ -9,7 +9,7 @@ for i in $(seq 1 300); do
   ev > /tmp/mon_new.txt
   new=$(comm -13 /tmp/mon_old.txt /tmp/mon_new.txt)
   [ -n "$new" ] && { echo "EVENT $new"; exit 0; }
-  for f in logs/queue_r_*.out logs/queue_t9_*.out logs/queue_t10_*.out logs/queue_o_2070.out; do
+  for f in logs/queue_r_*.out logs/queue_t9_*.out logs/queue_t10_*.out logs/queue_p9*.out; do
     [ -f "$f" ] || continue
     last=$(tail -1 "$f")
     case "$last" in *" start "*) r=$(echo "$last" | awk '{print $3}');;
