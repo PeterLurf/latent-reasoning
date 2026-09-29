@@ -73,3 +73,19 @@ before D/E report, so its design does not depend on their outcome.
   - AP1 supported with no AP3 cost: the anytime fix generalises across depth, width and graph shape.
   - AP1 not supported while THEORY D/E support anytime on the base architecture: the fix is architecture-specific, a
     scope limit on the slack account.
+
+## Amendment 1 (2026-09-29 16:11 EDT, before any PROTOCOL9 run started and before any paired control finished)
+
+* **Ceiling rule** (suggested by the theory session). With 3–4 layers or more width, the delayed query may resolve more
+  than one hop, or one latent step may advance more than one hop. Distance 8 could then be in range for both arms, and
+  the pairs would tie at the ceiling.
+  - Per family: if the competent controls' median d8 (K′ = 12) is ≥ 0.85, that family's beyond-depth measure becomes
+    the mean accuracy at distances 10–12 with K′ = 16 (`length_gen` rows).
+  - If that median is also ≥ 0.85, the family leaves AP1 and is reported as "controls never fail beyond depth".
+  - The rule is decided from the controls alone. AP1's thresholds and minimum are unchanged. Implemented in
+    `scratch/score_p9.py` (unit-checked on synthetic pairs).
+* **C = 1 unchanged.** If a deeper readout adds more than one hop, C = 1 only masks nodes the model could already reach,
+  so the pressure is weaker, never impossible. Noted as a caveat on a null in the deeper families.
+* **Disclosure.** While checking the `length_gen` file format for this amendment, I saw the K′ = 6 and K′ = 12 accuracy
+  rows of one T9 run, `t9l3_s508` (fetched from vast3). That run is not in PROTOCOL9's pairs. Its values (near 5 ≈ 0.7,
+  far 7–12 ≈ 0.5) did not inform the rule. The rule is Theory's proposal, adopted as stated.
