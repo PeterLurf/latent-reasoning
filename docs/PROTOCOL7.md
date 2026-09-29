@@ -215,3 +215,23 @@ dropped. A test whose population ends up below its minimum is reported as unreso
   K′ = 12 (length_gen); P8 = max over steps of the distance-8 far excess / in_peak (frozen far_sweep output). AUC(P8)
   ≥ 0.80 supported, < 0.65 not (needs ≥ 3 of each); AUC(P7) for extrap8 reported.
 * **Reporting.** T1 and T2 stay "not supported" as pre-registered; T1b–T2b are new tests, not re-scorings.
+
+## Amendment 4 (2026-09-28 ~23:55, before any T9/T10 run started)
+
+* Cards and precision: the 4-layer and width-512 families do not fit in fp32 next to the 2070's other job (smoke test
+  OOM), and the 2070 has no bf16. So **T9 (L3, L4, W512) runs on the RTX 3070 and 4060 in bf16**
+  (`scratch/p7s_t9_{3070,4060}.txt`, families interleaved, seeds split 8/8 per family per card) and **T10 (fork) on the
+  RTX 2070 in fp32** (`scratch/p7s_t10_2070.txt`; precision had no effect in P27/P28). Each queue is chained after that
+  card's current queue (R on 3070/4060, O on 2070). Smoke runs (60 steps) passed for L3 and fork.
+* Per-layer P7: `scratch/far_sweep_layers.py` (its layer-1 P7 equals the frozen far_sweep exactly on nostep_s0:
+  0.90114); layer chosen per model by largest in_peak.
+* If credit allows, T9 seeds may be moved to Vast.ai A4000/4070 cards (bf16) by a dated amendment before they start.
+
+## Amendment 5 (2026-09-29 ~00:01, before any addendum-O run was measured)
+
+* T4's in-distribution instruments were defined on the distance-6 frontier, which the exploration after T1/T2 showed
+  the latent sweep barely reads (the last in-range hop is a query-time read). To avoid a strawman, the T4 set of
+  in-distribution predictors is widened: completion time and completion-at-K at depth 5 **and** 6, sweep reach
+  (deepest depth whose peak excess ≥ 25 % of the in-range maximum), EA, delayed / matched 5 / matched 6 accuracy and
+  full-depth step; each scored in its better direction, and P7 must beat the **best** of them (maximum recomputed in
+  each bootstrap resample, so the comparison is conservative for P7). Rules otherwise as T4. Code `scratch/p7s_t4.py`.

@@ -1,0 +1,27 @@
+done 2033|2-4-6
+done 2033|2
+done 2033|6
+done 7|2-4-6
+done 7|2
+done 7|6
+done 11|2-4-6
+done 11|2
+done 11|6
+Traceback (most recent call last):
+  File "D:\Latent\scratch\p7s_t6.py", line 75, in <module>
+    main()
+    ~~~~^^
+  File "D:\Latent\scratch\p7s_t6.py", line 69, in main
+    "by_layer": {li: float(np.median([sp["auc"] for sp in specs if sp["layer"] == li])) for li in LAYERS}}
+                           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\numpy\lib\_function_base_impl.py", line 3999, in median
+    return _ureduce(a, func=_median, keepdims=keepdims, axis=axis, out=out,
+                    overwrite_input=overwrite_input)
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\numpy\lib\_function_base_impl.py", line 3892, in _ureduce
+    r = func(a, **kwargs)
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\numpy\lib\_function_base_impl.py", line 4032, in _median
+    part = partition(a, kth, axis=axis)
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\numpy\_core\fromnumeric.py", line 840, in partition
+    a.partition(kth, axis=axis, kind=kind, order=order)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: '<' not supported between instances of 'NoneType' and 'float'

@@ -1,0 +1,17 @@
+# PROTOCOL7 T10 (fork graphs), RTX 2070, fp32
+t10fork_s560 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 560 --shapes fork --p_fork 0.5
+t10fork_s561 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 561 --shapes fork --p_fork 0.5
+t10fork_s562 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 562 --shapes fork --p_fork 0.5
+t10fork_s563 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 563 --shapes fork --p_fork 0.5
+t10fork_s564 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 564 --shapes fork --p_fork 0.5
+t10fork_s565 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 565 --shapes fork --p_fork 0.5
+t10fork_s566 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 566 --shapes fork --p_fork 0.5
+t10fork_s567 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 567 --shapes fork --p_fork 0.5
+t10fork_s568 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 568 --shapes fork --p_fork 0.5
+t10fork_s569 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 569 --shapes fork --p_fork 0.5
+t10fork_s570 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 570 --shapes fork --p_fork 0.5
+t10fork_s571 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 571 --shapes fork --p_fork 0.5
+t10fork_s572 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 572 --shapes fork --p_fork 0.5
+t10fork_s573 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 573 --shapes fork --p_fork 0.5
+t10fork_s574 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 574 --shapes fork --p_fork 0.5
+t10fork_s575 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 575 --shapes fork --p_fork 0.5
