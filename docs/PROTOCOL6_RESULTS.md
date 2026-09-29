@@ -367,4 +367,21 @@ steer which solution a run lands on while the late curriculum is still open.| **
   non-frontier route, and its d7 is 0.523.
 * Exploratory: extrapolation by one level is rarer under the cap (2/10) than extrapolation to distance 7 in depth-6
   K = 6 models (21/42 in P30).
+| **P1 / P2** ProsQA deeper than training: training-depth wall in GPT-2? do 12 thoughts help? (addendum P; 6 GPT-2 models, long + control sets) | walls 5/6 (a_6 0.48–0.52 with c_6 ≥ 0.80; j_s1 c_6 0.792 → "length failure"); 12-thought gain ≥ 0.05 in 0/6 | **supported / not supported** — but see the depth-matched analysis: the decline tracks the added chain, not the training depth |
+
+### Addendum P (scored 2026-09-29 ~10:00, `prosqa/score_p.py`, `prosqa/res_p/p_score.json`)
+
+* Accuracy at K = 6 by extension m (0 / 2 / 4 / 6): G 0.94–0.97 / 0.65–0.73 / 0.48–0.52 / 0.49–0.50; J 0.88–0.89 /
+  0.64–0.68 / 0.51–0.53 / 0.48–0.52. Control sets (same added statements, answer path unchanged): G 0.92–0.97 at every
+  m; J 0.79–0.82 at m = 6. So added length alone costs G nothing and J ~0.07; the collapse needs the answer to go
+  through the added chain. **P1 supported** (5 walls, 1 length failure). **P2 not supported**: K′ = 12 never helps
+  (a_6 at K′ 0 / 1 / 6 / 12 all 0.46–0.54). My pre-registered expectation ("gradual decline, no wall") was wrong on
+  the wall.
+* **Depth-matched secondary (decisive for the reading).** Within m = 2, problems whose paths stay inside the training
+  depth (5–6 hops) are no easier than those beyond it (7–8 hops): 0.64–0.74 vs 0.57–0.72 per model; within m = 4,
+  7–8 ≈ 9–10 ≈ chance. Original (m = 0) 5–6-hop problems score 0.88–1.00. Accuracy follows the number of *added*
+  hops, not the path length, so this is **not a training-depth horizon like the toy model's**: GPT-2 fails to follow
+  new chains hung off the answer options whatever the total depth — consistent with a shortcut that searches a few
+  hops backwards from the options, and with no multi-step use of the thoughts (P2, addenda G/J). Addendum Q (3–4 hop
+  training) tests training-depth dependence directly on unextended problems.
 
