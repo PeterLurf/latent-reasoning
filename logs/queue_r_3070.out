@@ -1,0 +1,1 @@
+06:56:49 start r3_s400 (--no_step_emb --K 6 --seed 400 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 3 )

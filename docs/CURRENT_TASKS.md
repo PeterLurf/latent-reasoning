@@ -66,7 +66,7 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
   git config uses only the gh credential helper (`credential.helper` reset, then `!C:/Users/peter/.local/gh/bin/gh.exe
   auth git-credential`; gh logged in as PeterLurf) — the system Git Credential Manager hangs on a hidden login window.
   Keep `core.autocrlf false` (bash scripts must stay LF). Weights and raw ProsQA logs are git-ignored.
-* **PROTOCOL7 T11 pilot (from-scratch 2-layer GPT-2 on ProsQA; amendment 6) — Vast 53306310, RTX 3090, $0.173/h,
+* **DONE 2026-09-29 ~07:00 — not learned (test 0.51–0.55 at every K′; fetched to prosqa/res_s11p, Vast 53306310 destroyed; T11 stops).** Was: PROTOCOL7 T11 pilot (from-scratch 2-layer GPT-2 on ProsQA; amendment 6) — Vast 53306310, RTX 3090, $0.173/h,
   `ssh -p 6399 root@142.127.68.223`**, launched 2026-09-29 ~00:51 with `prosqa/vdeploy.sh` (RunPod A4500 at $0.19 vanished
   on create). cuInit 0, driver 560, md5 of regenerated sets match. ~3.7 min/epoch → training ~3 h, then analyses. Fetch:
   `bash prosqa/vfetch.sh 142.127.68.223 6399 prosqa/res_s11p /workspace/ckpt/prosqa-coconut-s11p/checkpoint_50 prosqa/ckpt/s11p_checkpoint_50`,
@@ -75,8 +75,9 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 * **vast3 (174.0.242.177:1743, RTX 4070) continues after its O queue with 6 T9 seeds** (amendment 7,
   `scratch/p7s_t9_vast3.txt`, log `logs/queue_t9_vast3.out` on the instance). When its O queue is DONE: fetch the O runs
   (`bash scratch/vfetch_toy.sh 174.0.242.177 1743 o`) but **do not destroy it**; destroy only after the t9 queue shows
-  QUEUE_DONE and `bash scratch/vfetch_toy.sh 174.0.242.177 1743 t9` is checksum-verified. vast1/vast2: fetch + destroy
-  when their O queues are done.
+  QUEUE_DONE and `bash scratch/vfetch_toy.sh 174.0.242.177 1743 t9` is checksum-verified. **Status 2026-09-29 ~07:05:**
+  vast1 and vast2 O runs fetched (16 + 12 models; 4 stage-1 failures) and destroyed; vast3 O runs fetched (12 models,
+  4 stage-1 failures), T9 continuing there. The 4 `theory-pa-h*` Vast instances belong to another agent — leave them.
 * **Chained after M (addendum O, long scaffold, paired with P30 seeds):** `chain_after.sh logs/queue_m_<gpu>.out o_<gpu> ...`
   starts `p6_o_<gpu>.txt` (4060: o_s100..111, 3070: o_s112..123, 2070: o_dev6_s51..56; `--aux_steps 20000`). Score:
   paired success (competent + extrapolates) vs `p30_s*` / `dev6_s51..56`; rules in PROTOCOL6.md addendum O (scorer `scratch/score_o.py`, written before data; was: scorer not

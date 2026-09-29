@@ -462,3 +462,7 @@ Pending.
   training depth at all three depths: **supported**; any cap ≤ 10 %: **not supported**.
 * **R3 (M2 pooled).** Cap-4 runs of addenda M and R pooled: AUC of P6 for extrapolation by one level ≥ 0.80 supported,
   < 0.65 not, else inconclusive (needs ≥ 3 of each outcome, else unresolved). Also for cap 3 with P5 (exploratory).
+* **Note (2026-09-29 ~07:10, addendum O cut-off applied early; no dev6 outcome read).** On the RTX 2070 (fp32, shared
+  with addendum-P evaluation) each dev6 run takes ~4 h: o_dev6_s53 ends ~10:00 and o_dev6_s54 then runs past noon, so
+  o_dev6_s55 and o_dev6_s56 cannot start before the Tue 12:00 cut-off and are dropped now (marked claimed in
+  `scratch/p6_o_2070.txt.claimed`), letting the card move on to PROTOCOL7 T10. The dev6 pairs are descriptive only.

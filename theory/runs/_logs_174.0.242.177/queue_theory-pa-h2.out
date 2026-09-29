@@ -1,0 +1,107 @@
+05:54:21 start pa_m_s711 (--seed 711 --arch markov)
+06:43:21 trained pa_m_s711 rc 0
+theory/runs/pa_m_s711 K'=0 delayed 0.762 upfront 0.499 depth(delayed) {1:1.00, 2:0.99, 3:0.79, 4:0.47, 5:0.54, 6:0.63, 99:0.73}
+theory/runs/pa_m_s711 K'=1 delayed 0.761 upfront 0.754 depth(delayed) {1:1.00, 2:0.99, 3:0.79, 4:0.47, 5:0.54, 6:0.62, 99:0.73}
+theory/runs/pa_m_s711 K'=2 delayed 0.770 upfront 0.755 depth(delayed) {1:1.00, 2:0.98, 3:0.68, 4:0.30, 5:0.35, 6:0.40, 99:0.83}
+theory/runs/pa_m_s711 K'=3 delayed 0.769 upfront 0.757 depth(delayed) {1:1.00, 2:0.98, 3:0.68, 4:0.29, 5:0.35, 6:0.40, 99:0.83}
+theory/runs/pa_m_s711 K'=4 delayed 0.768 upfront 0.767 depth(delayed) {1:1.00, 2:0.98, 3:0.70, 4:0.32, 5:0.39, 6:0.44, 99:0.81}
+theory/runs/pa_m_s711 K'=5 delayed 0.768 upfront 0.767 depth(delayed) {1:1.00, 2:0.98, 3:0.71, 4:0.34, 5:0.41, 6:0.46, 99:0.80}
+theory/runs/pa_m_s711 K'=6 delayed 0.767 upfront 0.765 depth(delayed) {1:1.00, 2:0.99, 3:0.72, 4:0.35, 5:0.43, 6:0.48, 99:0.79}
+theory/runs/pa_m_s711 d1:1.00 d2:0.94 d3:0.74 d4:0.54 d5:0.55 d6:0.54
+theory/runs/pa_m_s711 K'= 0 near 0.95 0.86 0.72 0.50 0.49 0.50 | far 0.51 0.50 0.50 0.49 0.49 0.47
+theory/runs/pa_m_s711 K'= 2 near 0.97 0.91 0.74 0.50 0.50 0.51 | far 0.51 0.50 0.49 0.49 0.51 0.49
+theory/runs/pa_m_s711 K'= 4 near 0.95 0.88 0.74 0.50 0.50 0.50 | far 0.50 0.49 0.49 0.48 0.50 0.49
+theory/runs/pa_m_s711 K'= 6 near 0.94 0.86 0.74 0.51 0.50 0.50 | far 0.50 0.49 0.49 0.48 0.50 0.49
+theory/runs/pa_m_s711 K'= 8 near 0.93 0.85 0.73 0.50 0.50 0.50 | far 0.50 0.49 0.50 0.48 0.50 0.49
+theory/runs/pa_m_s711 K'=10 near 0.91 0.83 0.73 0.50 0.51 0.50 | far 0.50 0.49 0.49 0.49 0.50 0.48
+theory/runs/pa_m_s711 K'=12 near 0.90 0.82 0.73 0.50 0.51 0.49 | far 0.51 0.49 0.50 0.49 0.51 0.49
+theory/runs/pa_m_s711 K'=16 near 0.88 0.81 0.73 0.51 0.51 0.50 | far 0.51 0.49 0.50 0.48 0.50 0.49
+EVAL theory/runs/pa_m_s711 stage 3 delayed 0.767 m5 0.550 gate False d7 0.505 extrap False far8-10 0.491
+06:43:29 evaluated pa_m_s711
+06:43:29 start pa_c_s701 (--seed 701)
+07:20:29 trained pa_c_s701 rc 0
+theory/runs/pa_c_s701 K'=0 delayed 0.519 upfront 0.500 depth(delayed) {1:1.00, 2:1.00, 3:1.00, 4:1.00, 5:1.00, 6:1.00, 99:0.04}
+theory/runs/pa_c_s701 K'=1 delayed 0.547 upfront 0.621 depth(delayed) {1:1.00, 2:1.00, 3:0.99, 4:0.93, 5:0.92, 6:0.93, 99:0.12}
+theory/runs/pa_c_s701 K'=2 delayed 0.620 upfront 0.691 depth(delayed) {1:1.00, 2:1.00, 3:0.98, 4:0.84, 5:0.77, 6:0.81, 99:0.30}
+theory/runs/pa_c_s701 K'=3 delayed 0.703 upfront 0.811 depth(delayed) {1:1.00, 2:1.00, 3:0.93, 4:0.72, 5:0.58, 6:0.60, 99:0.52}
+theory/runs/pa_c_s701 K'=4 delayed 0.755 upfront 0.882 depth(delayed) {1:1.00, 2:0.99, 3:0.93, 4:0.66, 5:0.50, 6:0.50, 99:0.65}
+theory/runs/pa_c_s701 K'=5 delayed 0.808 upfront 0.931 depth(delayed) {1:1.00, 2:0.99, 3:0.92, 4:0.61, 5:0.41, 6:0.42, 99:0.78}
+theory/runs/pa_c_s701 K'=6 delayed 0.853 upfront 0.967 depth(delayed) {1:1.00, 2:0.99, 3:0.91, 4:0.57, 5:0.33, 6:0.34, 99:0.89}
+theory/runs/pa_c_s701 d1:1.00 d2:0.99 d3:0.88 d4:0.66 d5:0.57 d6:0.57
+theory/runs/pa_c_s701 K'= 0 near 0.50 0.50 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/pa_c_s701 K'= 2 near 0.64 0.62 0.62 0.54 0.51 0.49 | far 0.49 0.51 0.51 0.50 0.51 0.51
+theory/runs/pa_c_s701 K'= 4 near 0.85 0.81 0.78 0.63 0.53 0.50 | far 0.50 0.52 0.49 0.50 0.50 0.50
+theory/runs/pa_c_s701 K'= 6 near 0.99 0.96 0.88 0.70 0.53 0.51 | far 0.50 0.51 0.49 0.51 0.52 0.50
+theory/runs/pa_c_s701 K'= 8 near 0.99 0.95 0.88 0.69 0.53 0.51 | far 0.50 0.50 0.49 0.51 0.51 0.50
+theory/runs/pa_c_s701 K'=10 near 1.00 0.94 0.88 0.68 0.52 0.51 | far 0.50 0.51 0.49 0.50 0.51 0.51
+theory/runs/pa_c_s701 K'=12 near 1.00 0.92 0.87 0.67 0.52 0.51 | far 0.51 0.51 0.50 0.50 0.51 0.50
+theory/runs/pa_c_s701 K'=16 near 1.00 0.89 0.86 0.65 0.52 0.51 | far 0.50 0.50 0.50 0.50 0.51 0.50
+EVAL theory/runs/pa_c_s701 stage 4 delayed 0.853 m5 0.571 gate False d7 0.507 extrap False far8-10 0.500
+07:20:37 evaluated pa_c_s701
+07:20:37 start pa_c_s705 (--seed 705)
+07:57:37 trained pa_c_s705 rc 0
+theory/runs/pa_c_s705 K'=0 delayed 0.684 upfront 0.497 depth(delayed) {1:0.99, 2:0.91, 3:0.10, 4:0.09, 5:0.09, 6:0.05, 99:0.90}
+theory/runs/pa_c_s705 K'=1 delayed 0.537 upfront 0.597 depth(delayed) {1:1.00, 2:1.00, 3:0.99, 4:0.99, 5:1.00, 6:1.00, 99:0.08}
+theory/runs/pa_c_s705 K'=2 delayed 0.709 upfront 0.737 depth(delayed) {1:1.00, 2:0.98, 3:0.94, 4:0.58, 5:0.64, 6:0.84, 99:0.55}
+theory/runs/pa_c_s705 K'=3 delayed 0.796 upfront 0.858 depth(delayed) {1:1.00, 2:0.98, 3:0.93, 4:0.28, 5:0.34, 6:0.61, 99:0.81}
+theory/runs/pa_c_s705 K'=4 delayed 0.853 upfront 0.937 depth(delayed) {1:1.00, 2:0.98, 3:0.93, 4:0.50, 5:0.18, 6:0.39, 99:0.91}
+theory/runs/pa_c_s705 K'=5 delayed 0.886 upfront 0.987 depth(delayed) {1:1.00, 2:0.98, 3:0.92, 4:0.76, 5:0.10, 6:0.19, 99:0.95}
+theory/runs/pa_c_s705 K'=6 delayed 0.912 upfront 1.000 depth(delayed) {1:1.00, 2:0.99, 3:0.92, 4:0.75, 5:0.63, 6:0.09, 99:0.96}
+theory/runs/pa_c_s705 d1:1.00 d2:0.98 d3:0.92 d4:0.81 d5:0.74 d6:0.54
+theory/runs/pa_c_s705 K'= 0 near 0.95 0.90 0.50 0.50 0.49 0.51 | far 0.51 0.49 0.50 0.51 0.50 0.50
+theory/runs/pa_c_s705 K'= 2 near 0.84 0.81 0.80 0.50 0.49 0.51 | far 0.49 0.48 0.50 0.52 0.49 0.50
+theory/runs/pa_c_s705 K'= 4 near 1.00 0.98 0.97 0.75 0.50 0.50 | far 0.50 0.49 0.51 0.51 0.50 0.50
+theory/runs/pa_c_s705 K'= 6 near 1.00 0.98 0.97 0.91 0.82 0.50 | far 0.50 0.50 0.50 0.51 0.50 0.50
+theory/runs/pa_c_s705 K'= 8 near 1.00 0.98 0.97 0.91 0.82 0.73 | far 0.54 0.50 0.50 0.51 0.50 0.49
+theory/runs/pa_c_s705 K'=10 near 1.00 0.98 0.96 0.90 0.81 0.75 | far 0.65 0.56 0.51 0.51 0.50 0.49
+theory/runs/pa_c_s705 K'=12 near 1.00 0.98 0.95 0.89 0.81 0.75 | far 0.66 0.59 0.54 0.51 0.50 0.50
+theory/runs/pa_c_s705 K'=16 near 0.99 0.97 0.95 0.88 0.80 0.75 | far 0.66 0.60 0.56 0.53 0.51 0.50
+EVAL theory/runs/pa_c_s705 stage full delayed 0.912 m5 0.739 gate True d7 0.658 extrap True far8-10 0.549
+07:57:45 evaluated pa_c_s705
+07:57:45 start pa_m_s715 (--seed 715 --arch markov)
+08:26:26 trained pa_m_s715 rc 0
+08:26:26 evaluated pa_m_s715
+08:26:26 start pa_m2_s721 (--seed 721 --arch markov_l2)
+09:13:26 trained pa_m2_s721 rc 0
+theory/runs/pa_m2_s721 K'=0 delayed 0.821 upfront 0.499 depth(delayed) {1:1.00, 2:1.00, 3:0.70, 4:0.34, 5:0.18, 6:0.23, 99:0.94}
+theory/runs/pa_m2_s721 K'=1 delayed 0.833 upfront 0.842 depth(delayed) {1:1.00, 2:1.00, 3:0.79, 4:0.33, 5:0.20, 6:0.22, 99:0.94}
+theory/runs/pa_m2_s721 K'=2 delayed 0.842 upfront 0.843 depth(delayed) {1:1.00, 2:1.00, 3:0.85, 4:0.35, 5:0.22, 6:0.24, 99:0.93}
+theory/runs/pa_m2_s721 K'=3 delayed 0.863 upfront 0.842 depth(delayed) {1:1.00, 2:1.00, 3:0.85, 4:0.57, 5:0.23, 6:0.25, 99:0.93}
+theory/runs/pa_m2_s721 K'=4 delayed 0.875 upfront 0.842 depth(delayed) {1:1.00, 2:1.00, 3:0.86, 4:0.58, 5:0.49, 6:0.26, 99:0.93}
+theory/runs/pa_m2_s721 K'=5 delayed 0.882 upfront 0.842 depth(delayed) {1:1.00, 2:1.00, 3:0.89, 4:0.60, 5:0.50, 6:0.42, 99:0.93}
+theory/runs/pa_m2_s721 K'=6 delayed 0.891 upfront 0.841 depth(delayed) {1:1.00, 2:1.00, 3:0.89, 4:0.69, 5:0.53, 6:0.44, 99:0.93}
+theory/runs/pa_m2_s721 d1:1.00 d2:1.00 d3:0.90 d4:0.73 d5:0.64 d6:0.57
+theory/runs/pa_m2_s721 K'= 0 near 1.00 0.98 0.87 0.63 0.50 0.50 | far 0.50 0.50 0.51 0.51 0.51 0.51
+theory/runs/pa_m2_s721 K'= 2 near 1.00 0.98 0.91 0.64 0.52 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.51
+theory/runs/pa_m2_s721 K'= 4 near 1.00 0.98 0.91 0.71 0.62 0.51 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/pa_m2_s721 K'= 6 near 1.00 0.97 0.92 0.77 0.63 0.54 | far 0.50 0.49 0.50 0.50 0.51 0.50
+theory/runs/pa_m2_s721 K'= 8 near 1.00 0.97 0.92 0.80 0.72 0.60 | far 0.50 0.49 0.50 0.50 0.51 0.49
+theory/runs/pa_m2_s721 K'=10 near 1.00 0.97 0.91 0.80 0.73 0.63 | far 0.51 0.49 0.50 0.50 0.50 0.49
+theory/runs/pa_m2_s721 K'=12 near 1.00 0.97 0.91 0.80 0.74 0.64 | far 0.52 0.49 0.50 0.50 0.50 0.50
+theory/runs/pa_m2_s721 K'=16 near 1.00 0.97 0.91 0.80 0.74 0.64 | far 0.52 0.49 0.50 0.50 0.50 0.49
+EVAL theory/runs/pa_m2_s721 stage full delayed 0.891 m5 0.644 gate True d7 0.516 extrap False far8-10 0.498
+09:13:34 evaluated pa_m2_s721
+09:13:34 start pa_mb_s731 (--seed 731 --arch markov --budget_match)
+09:34:15 trained pa_mb_s731 rc 0
+09:34:15 evaluated pa_mb_s731
+09:34:15 start pa_ov_s741 (--seed 741 --overrun 2)
+10:14:15 trained pa_ov_s741 rc 0
+theory/runs/pa_ov_s741 K'=0 delayed 0.693 upfront 0.500 depth(delayed) {1:0.99, 2:0.83, 3:0.01, 4:0.01, 5:0.01, 6:0.01, 99:0.99}
+theory/runs/pa_ov_s741 K'=1 delayed 0.745 upfront 0.607 depth(delayed) {1:1.00, 2:0.82, 3:0.40, 4:0.01, 5:0.01, 6:0.01, 99:0.99}
+theory/runs/pa_ov_s741 K'=2 delayed 0.789 upfront 0.781 depth(delayed) {1:1.00, 2:0.89, 3:0.67, 4:0.07, 5:0.07, 6:0.12, 99:0.97}
+theory/runs/pa_ov_s741 K'=3 delayed 0.826 upfront 0.878 depth(delayed) {1:1.00, 2:0.94, 3:0.71, 4:0.32, 5:0.06, 6:0.06, 99:0.98}
+theory/runs/pa_ov_s741 K'=4 delayed 0.854 upfront 0.948 depth(delayed) {1:1.00, 2:0.98, 3:0.82, 4:0.33, 5:0.22, 6:0.07, 99:0.98}
+theory/runs/pa_ov_s741 K'=5 delayed 0.868 upfront 0.989 depth(delayed) {1:1.00, 2:0.99, 3:0.92, 4:0.34, 5:0.26, 6:0.18, 99:0.97}
+theory/runs/pa_ov_s741 K'=6 delayed 0.890 upfront 1.000 depth(delayed) {1:1.00, 2:0.99, 3:0.92, 4:0.60, 5:0.28, 6:0.22, 99:0.96}
+theory/runs/pa_ov_s741 d1:1.00 d2:0.98 d3:0.93 d4:0.72 d5:0.56 d6:0.54
+theory/runs/pa_ov_s741 K'= 0 near 0.99 0.92 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/pa_ov_s741 K'= 2 near 1.00 0.95 0.88 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/pa_ov_s741 K'= 4 near 1.00 0.98 0.95 0.65 0.59 0.49 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/pa_ov_s741 K'= 6 near 1.00 0.98 0.97 0.83 0.59 0.50 | far 0.50 0.49 0.50 0.50 0.49 0.50
+theory/runs/pa_ov_s741 K'= 8 near 1.00 0.98 0.97 0.89 0.75 0.59 | far 0.50 0.50 0.50 0.50 0.49 0.50
+theory/runs/pa_ov_s741 K'=10 near 1.00 0.98 0.97 0.89 0.77 0.67 | far 0.58 0.50 0.50 0.50 0.49 0.50
+theory/runs/pa_ov_s741 K'=12 near 1.00 0.98 0.97 0.89 0.78 0.68 | far 0.60 0.53 0.51 0.50 0.49 0.50
+theory/runs/pa_ov_s741 K'=16 near 1.00 0.98 0.96 0.89 0.79 0.69 | far 0.62 0.55 0.52 0.50 0.49 0.50
+EVAL theory/runs/pa_ov_s741 stage full delayed 0.890 m5 0.557 gate False d7 0.604 extrap True far8-10 0.512
+10:14:23 evaluated pa_ov_s741
+10:14:23 start pa_mb2_s731 (--seed 731 --arch markov --budget_match)

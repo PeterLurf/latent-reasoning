@@ -1,0 +1,10 @@
+07:57:45 guarding theory/runs/pa_m_s715 pid 0 max relaunch 3
+07:57:45 launched pid 868
+08:04:55 stage-1 failure at step 4200; archived as theory/runs/pa_m_s715_stage1fail_1
+08:04:55 launched pid 920
+08:12:06 stage-1 failure at step 4200; archived as theory/runs/pa_m_s715_stage1fail_2
+08:12:06 launched pid 972
+08:19:16 stage-1 failure at step 4200; archived as theory/runs/pa_m_s715_stage1fail_3
+08:19:16 launched pid 1024
+08:26:26 stage-1 failure at step 4200; archived as theory/runs/pa_m_s715_stage1fail_4
+08:26:26 relaunch budget spent

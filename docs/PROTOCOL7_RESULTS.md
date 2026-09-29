@@ -54,3 +54,13 @@ little more to *any* edge continuing a depth-6 chain end, reachable or not — a
 size of the reachability signal. P7 subtracts exactly this decoy term, so the component works against P7, not for it.
 Pre-registered verdict stands: fail (the construction is not confound-free); practical reading: P7's signal is
 reachability-specific to within ~2 %.
+
+## T11 pilot — not learned (2026-09-29 ~07:00; `prosqa/res_s11p/`, checkpoint `prosqa/ckpt/s11p_checkpoint_50`)
+
+2-layer, 768-wide GPT-2 architecture trained from scratch with the Coconut ProsQA recipe (lr 3e-4, 50 epochs, GPT-2 BPE
+tokens, no answer mask; Vast 53306310, destroyed after a checksum-verified fetch). Final-stage validation 0.46–0.50;
+test accuracy 0.536 / 0.550 / 0.522 / 0.514 / 0.542 at K′ = 0 / 1 / 2 / 6 / 12 — chance at every budget, no
+increasing hop clock (layer clocks [2,3,1,4,3,3] and [1,1,1,1,1,2]). By the pre-registered continuation rule T11
+stops: no confirmatory seeds with this recipe. Difference from Rizvi-Martel et al. 2026 (96 % for 2L-768d from
+scratch): they used a 40-token symbolic vocabulary; here the model must also learn GPT-2 BPE embeddings for the
+invented concept names in 50 epochs. The remaining pilot analyses (long sets, P7 extractor) were stopped as moot.

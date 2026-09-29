@@ -1,0 +1,10 @@
+22:56:30 guarding runs/ob_s142 pid 0 max relaunch 3
+22:56:30 launched pid 31802
+23:02:41 stage-1 failure at step 4400; archived as runs/ob_s142_stage1fail_1
+23:02:41 launched pid 33301
+23:08:51 stage-1 failure at step 4400; archived as runs/ob_s142_stage1fail_2
+23:08:51 launched pid 34793
+23:15:01 stage-1 failure at step 4400; archived as runs/ob_s142_stage1fail_3
+23:15:01 launched pid 36249
+23:21:11 stage-1 failure at step 4400; archived as runs/ob_s142_stage1fail_4
+23:21:11 relaunch budget spent

@@ -1,0 +1,125 @@
+20:47:31 start ob_s132 (--no_step_emb --K 6 --seed 132 --lr 5e-4 --amp bf16 --save_every 1000 )
+21:41:31 trained ob_s132 rc 0
+run  results/competence_ob_s132.json
+run  results/competence_matched_ob_s132.json
+run  results/length_gen_ob_s132.json
+run  results/delayed_trace_ob_s132.json
+run  results/budget_sweep_ob_s132.json
+EVAL_DONE ob_s132
+21:41:55 evaluated ob_s132
+21:41:55 start o_s132 (--no_step_emb --K 6 --seed 132 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
+22:35:55 trained o_s132 rc 0
+run  results/competence_o_s132.json
+run  results/competence_matched_o_s132.json
+run  results/length_gen_o_s132.json
+run  results/delayed_trace_o_s132.json
+run  results/budget_sweep_o_s132.json
+EVAL_DONE o_s132
+22:36:17 evaluated o_s132
+22:36:18 start ob_s133 (--no_step_emb --K 6 --seed 133 --lr 5e-4 --amp bf16 --save_every 1000 )
+23:08:58 trained ob_s133 rc 0
+no model for ob_s133
+23:08:58 evaluated ob_s133
+23:08:58 start o_s133 (--no_step_emb --K 6 --seed 133 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
+23:41:40 trained o_s133 rc 0
+no model for o_s133
+23:41:40 evaluated o_s133
+23:41:40 start ob_s134 (--no_step_emb --K 6 --seed 134 --lr 5e-4 --amp bf16 --save_every 1000 )
+00:36:40 trained ob_s134 rc 0
+run  results/competence_ob_s134.json
+run  results/competence_matched_ob_s134.json
+run  results/length_gen_ob_s134.json
+run  results/delayed_trace_ob_s134.json
+run  results/budget_sweep_ob_s134.json
+EVAL_DONE ob_s134
+00:37:04 evaluated ob_s134
+00:37:04 start o_s134 (--no_step_emb --K 6 --seed 134 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
+01:32:04 trained o_s134 rc 0
+run  results/competence_o_s134.json
+run  results/competence_matched_o_s134.json
+run  results/length_gen_o_s134.json
+run  results/delayed_trace_o_s134.json
+run  results/budget_sweep_o_s134.json
+EVAL_DONE o_s134
+01:32:31 evaluated o_s134
+01:32:31 start ob_s135 (--no_step_emb --K 6 --seed 135 --lr 5e-4 --amp bf16 --save_every 1000 )
+02:27:31 trained ob_s135 rc 0
+run  results/competence_ob_s135.json
+run  results/competence_matched_ob_s135.json
+run  results/length_gen_ob_s135.json
+run  results/delayed_trace_ob_s135.json
+run  results/budget_sweep_ob_s135.json
+EVAL_DONE ob_s135
+02:27:59 evaluated ob_s135
+02:27:59 start o_s135 (--no_step_emb --K 6 --seed 135 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
+03:21:59 trained o_s135 rc 0
+run  results/competence_o_s135.json
+run  results/competence_matched_o_s135.json
+run  results/length_gen_o_s135.json
+run  results/delayed_trace_o_s135.json
+run  results/budget_sweep_o_s135.json
+EVAL_DONE o_s135
+03:22:22 evaluated o_s135
+03:22:22 start ob_s136 (--no_step_emb --K 6 --seed 136 --lr 5e-4 --amp bf16 --save_every 1000 )
+04:15:22 trained ob_s136 rc 0
+run  results/competence_ob_s136.json
+run  results/competence_matched_ob_s136.json
+run  results/length_gen_ob_s136.json
+run  results/delayed_trace_ob_s136.json
+run  results/budget_sweep_ob_s136.json
+EVAL_DONE ob_s136
+04:15:46 evaluated ob_s136
+04:15:46 start o_s136 (--no_step_emb --K 6 --seed 136 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
+05:09:46 trained o_s136 rc 0
+run  results/competence_o_s136.json
+run  results/competence_matched_o_s136.json
+run  results/length_gen_o_s136.json
+run  results/delayed_trace_o_s136.json
+run  results/budget_sweep_o_s136.json
+EVAL_DONE o_s136
+05:10:09 evaluated o_s136
+05:10:09 start ob_s137 (--no_step_emb --K 6 --seed 137 --lr 5e-4 --amp bf16 --save_every 1000 )
+06:03:09 trained ob_s137 rc 0
+run  results/competence_ob_s137.json
+run  results/competence_matched_ob_s137.json
+run  results/length_gen_ob_s137.json
+run  results/delayed_trace_ob_s137.json
+run  results/budget_sweep_ob_s137.json
+EVAL_DONE ob_s137
+06:03:32 evaluated ob_s137
+06:03:32 start o_s137 (--no_step_emb --K 6 --seed 137 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
+06:56:32 trained o_s137 rc 0
+run  results/competence_o_s137.json
+run  results/competence_matched_o_s137.json
+run  results/length_gen_o_s137.json
+run  results/delayed_trace_o_s137.json
+run  results/budget_sweep_o_s137.json
+EVAL_DONE o_s137
+06:56:55 evaluated o_s137
+06:56:55 start ob_s138 (--no_step_emb --K 6 --seed 138 --lr 5e-4 --amp bf16 --save_every 1000 )
+07:29:36 trained ob_s138 rc 0
+no model for ob_s138
+07:29:36 evaluated ob_s138
+07:29:36 start o_s138 (--no_step_emb --K 6 --seed 138 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
+08:02:17 trained o_s138 rc 0
+no model for o_s138
+08:02:17 evaluated o_s138
+08:02:17 start ob_s139 (--no_step_emb --K 6 --seed 139 --lr 5e-4 --amp bf16 --save_every 1000 )
+08:55:17 trained ob_s139 rc 0
+run  results/competence_ob_s139.json
+run  results/competence_matched_ob_s139.json
+run  results/length_gen_ob_s139.json
+run  results/delayed_trace_ob_s139.json
+run  results/budget_sweep_ob_s139.json
+EVAL_DONE ob_s139
+08:55:40 evaluated ob_s139
+08:55:40 start o_s139 (--no_step_emb --K 6 --seed 139 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
+09:48:40 trained o_s139 rc 0
+run  results/competence_o_s139.json
+run  results/competence_matched_o_s139.json
+run  results/length_gen_o_s139.json
+run  results/delayed_trace_o_s139.json
+run  results/budget_sweep_o_s139.json
+EVAL_DONE o_s139
+09:49:03 evaluated o_s139
+09:49:03 QUEUE_DONE
