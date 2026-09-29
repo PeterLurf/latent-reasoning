@@ -248,3 +248,11 @@ dropped. A test whose population ends up below its minimum is reported as unreso
 * **Continuation rule** (as T11): confirmatory seeds only if the pilot reaches ≥ 0.85 at K = 6 and its hop clock
   increases. The ProsQA P7 analogue's layer rule and floor are fixed in a dated amendment after the pilot and before
   any confirmatory seed; the confirmatory seeds' outcomes decide T11, the pilot's do not.
+
+## Amendment 7 (2026-09-29 ~01:18, before any T9 run started)
+
+* To use the Vast RTX 4070 (vast3, $0.144/h) that finishes its addendum-O queue around 03:00, the first six seeds of the
+  RTX 4060 T9 queue (`t9l3_s508`, `t9l4_s528`, `t9w512_s548`, `t9l3_s509`, `t9l4_s529`, `t9w512_s549`) run there
+  instead (bf16, same recipe; `scratch/p7s_t9_vast3.txt`, chained after `queue_o_vast3` on that instance). They are
+  marked claimed in `scratch/p7s_t9_4060.txt.claimed` so the local worker skips them. Fetched with
+  `scratch/vfetch_toy.sh <host> <port> t9`. No other change to T9.

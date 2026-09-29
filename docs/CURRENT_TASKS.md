@@ -59,6 +59,11 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
   `bash prosqa/vfetch.sh 142.127.68.223 6399 prosqa/res_s11p /workspace/ckpt/prosqa-coconut-s11p/checkpoint_50 prosqa/ckpt/s11p_checkpoint_50`,
   then destroy. Continue to confirmatory seeds only if test ≥ 0.85 at K = 6 and the hop clock increases (T11 rule);
   fix the P7-analogue floor in an amendment first (needs credit: ~10 seeds × ~$0.7).
+* **vast3 (174.0.242.177:1743, RTX 4070) continues after its O queue with 6 T9 seeds** (amendment 7,
+  `scratch/p7s_t9_vast3.txt`, log `logs/queue_t9_vast3.out` on the instance). When its O queue is DONE: fetch the O runs
+  (`bash scratch/vfetch_toy.sh 174.0.242.177 1743 o`) but **do not destroy it**; destroy only after the t9 queue shows
+  QUEUE_DONE and `bash scratch/vfetch_toy.sh 174.0.242.177 1743 t9` is checksum-verified. vast1/vast2: fetch + destroy
+  when their O queues are done.
 * **Chained after M (addendum O, long scaffold, paired with P30 seeds):** `chain_after.sh logs/queue_m_<gpu>.out o_<gpu> ...`
   starts `p6_o_<gpu>.txt` (4060: o_s100..111, 3070: o_s112..123, 2070: o_dev6_s51..56; `--aux_steps 20000`). Score:
   paired success (competent + extrapolates) vs `p30_s*` / `dev6_s51..56`; rules in PROTOCOL6.md addendum O (scorer `scratch/score_o.py`, written before data; was: scorer not

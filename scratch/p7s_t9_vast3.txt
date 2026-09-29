@@ -1,0 +1,7 @@
+# PROTOCOL7 T9 seeds moved from the RTX 4060 queue to Vast vast3 (RTX 4070, bf16) by amendment 7
+t9l3_s508 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 508 --layers 3
+t9l4_s528 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 528 --layers 4
+t9w512_s548 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 548 --d 512
+t9l3_s509 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 509 --layers 3
+t9l4_s529 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 529 --layers 4
+t9w512_s549 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 549 --d 512
