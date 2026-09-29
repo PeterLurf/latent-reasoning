@@ -1126,6 +1126,10 @@ single episode at K′ = 12 → 24/59, layer-2 block → 41/59; 16 failures are 
   frontier node, *failing* models reach 0.872 at 8–10 hops and all 34 pass 7 hops — each K-step episode is fully
   competent from any start; only the continuation past K was broken. Extrapolators gain too (single 0.573 → oracle 0.903
   at 8–10 hops), as expected from their fading (Mechanism 2).
+* *Exploratory (after the controls; 15:44; `theory/exp12c_branch.py`):* branching the second episode over the top-M attended
+  edges — M = 1: 55/59, far8–10 0.612; **M = 3: 55/59, 0.667**; M = 6: 46/59, 0.620 (near 0.806): beyond the frontier's
+  width the extra anchors are off-frontier nodes that add false positives. A calibrated frontier decode (threshold, or a
+  trained set readout as in A6) is the way to approach the oracle's 0.885.
 * **Implication for the field (C2).** Latent reasoners do not need to extrapolate in the number of steps if they are
   re-anchored: train a bounded-horizon latent loop, decode its state to a discrete checkpoint every K steps, and
   restart. Training-time counterpart: continue training from the model's own step-K states with the counter reset
