@@ -80,3 +80,15 @@ beyond one hop past the horizon (T1b) and sufficient to produce them when suppli
 frontier's reach at distance 8 predicts extrapolation there (T13); and the horizon-crossing probe beats every
 in-distribution instrument prospectively (T4). Together: **the training-depth horizon is a propagation limit of the
 latent sweep, visible and causal in the frontier.**
+
+## Independent out-of-sample check by the theory session (THEORY.md §21, commit 3ff40d8; 2026-09-29)
+
+Pre-registered before any O run was measured by that session: 17 competent, locally checkpointed addendum-O runs
+(8 extrapolate). **Early P7 by the T3 rule** (frozen far_sweep copy, checkpoint nearest full-depth arrival + 2000,
+P7 = 0 below the floor) reaches **AUC 0.92**, a second out-of-sample confirmation of T3 on new runs. The theory
+session's stage-3 retrieval-share marker reaches 0.51 (0.78 in-sample): difference −0.40, 95 % CI [−0.71, −0.11].
+Its own rule (PO1) was unresolved (2 runs above threshold; ≥ 5 needed), and it downgraded the marker to in-sample
+only. Exploratory: the long scaffold does not change the stage-3 retrieval share systematically (0.16 vs 0.22, lower in
+13 of 23 pairs), and most O failures fail by local routes (fading or restarting fronts), consistent with the O1 null
+and the slack account (§20's anytime test is pending).
+
