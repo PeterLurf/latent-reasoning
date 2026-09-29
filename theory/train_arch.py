@@ -46,6 +46,62 @@ class EagerStep:
         self.opt.step()
 
 
+class AnytimeMixin:
+    """Anytime (minimum-progress) supervision, --anytime C: after every latent step k the delayed/upfront answers are
+    supervised for reachable nodes within distance k + C and for unreachable nodes; reachable nodes farther than k + C
+    are masked (no loss), so reaching them early is never penalised. The final step k = K is the ordinary loss."""
+    def _anytime_loss(self, ld, lu, qd, qy, tgtd, ty, C):
+        K = ld.shape[0]
+        ks = torch.arange(1, K + 1, device=ld.device, dtype=qd.dtype)
+        md = ((qy[None] == 0) | (qd[None] <= ks[:, None, None] + C)).float()
+        md[-1] = 1.0
+        mu = ((ty[None] == 0) | (tgtd[None] <= ks[:, None] + C)).float()
+        mu[-1] = 1.0
+        bd = F.binary_cross_entropy_with_logits(ld.float(), qy[None].expand_as(ld), reduction="none")
+        bu = F.binary_cross_entropy_with_logits(lu.float(), ty[None].expand_as(lu), reduction="none")
+        return (bd * md).sum() / md.sum(), (bu * mu).sum() / mu.sum()
+
+
+class AnytimeGraphedStep(AnytimeMixin, GraphedStep):
+    def __init__(self, *a, anytime_C=1, **kw):
+        self.C = anytime_C
+        super().__init__(*a, **kw)
+
+    def _fwd_bwd(self, K):
+        from arch import run_both_anytime
+        i = self.inp
+        if "qd" not in i:            # created during warm-up (before capture); step() then copies batch values in
+            i["qd"] = torch.zeros_like(i["q"]); i["tgtd"] = torch.zeros_like(i["tgt"])
+        with torch.autocast("cuda", dtype=self.amp or torch.float32, enabled=self.amp is not None, cache_enabled=False):
+            ld, lu, lp, lc = run_both_anytime(self.model, i["src"], i["dst"], i["start"], K, i["q"], i["tgt"], i["pq"], i["cq"])
+        self.loss_d, self.loss_u = self._anytime_loss(ld, lu, i["qd"], i["qy"], i["tgtd"], i["ty"], self.C)
+        self.loss_p = F.cross_entropy(lp.float().flatten(0, 1), i["py"].flatten())
+        self.loss_c = F.binary_cross_entropy_with_logits(lc.float(), i["cy"]) * lc.shape[-1] / 4
+        self.loss = (self.loss_d + self.w_up * self.loss_u + self.w_aux * self.loss_p
+                     + self.w_aux * self.w_children * self.loss_c)
+        self.loss.backward()
+        self.gn = torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.clip, foreach=True)
+        self.opt.step()
+
+
+class AnytimeEagerStep(AnytimeMixin):
+    def __init__(self, model, opt, upfront_weight, anytime_C=1, clip=1.0):
+        self.model, self.opt, self.clip, self.C = model, opt, clip, anytime_C
+        self.w_children = torch.tensor(0.0); self.w_aux = torch.tensor(0.0); self.w_up = torch.tensor(float(upfront_weight))
+
+    def step(self, b, K):
+        from arch import run_both_anytime
+        self.opt.zero_grad()
+        ld, lu, lp, lc = run_both_anytime(self.model, b["src"], b["dst"], b["start"], K, b["q"], b["tgt"], b["pq"], b["cq"])
+        self.loss_d, self.loss_u = self._anytime_loss(ld, lu, b["qd"], b["qy"], b["tgtd"], b["ty"], self.C)
+        self.loss_p = F.cross_entropy(lp.flatten(0, 1), b["py"].flatten())
+        self.loss_c = F.binary_cross_entropy_with_logits(lc, b["cy"]) * lc.shape[-1] / 4
+        self.loss = self.loss_d + self.w_up * self.loss_u + self.w_aux * self.loss_p + self.w_aux * self.w_children * self.loss_c
+        self.loss.backward()
+        self.gn = torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.clip)
+        self.opt.step()
+
+
 def evaluate(model, K, n=2048, split="discovery", seed=12345, device="cuda", Q=16, widths=None,
              max_bdepth=None):
     """Accuracy by format / width / depth on a fixed held-out-family sample."""
@@ -119,9 +175,11 @@ def main(argv=None):
     p.add_argument("--amp", default="auto", choices=["auto", "bf16", "fp32"],
                    help="auto: bf16 autocast on sm>=80, fp32 otherwise; fp32 reproduces RTX 2070 runs on newer cards")
     p.add_argument("--resume", action="store_true", help="continue from <out>/state.pt (full training state) if present")
-    p.add_argument("--arch", default="coconut", choices=["coconut", "markov", "markov_l2"])
+    p.add_argument("--arch", default="coconut", choices=["coconut", "markov", "markov_l2", "restore", "markov_restore", "markov_sigread", "markov_restore_sigread"])
     p.add_argument("--budget_match", action="store_true")
     p.add_argument("--overrun", type=int, default=0)
+    p.add_argument("--anytime", type=int, default=None, help="anytime supervision slack C (queries after step k must "
+                   "know reachable nodes within distance k + C); off by default")
     p.add_argument("--out", required=True)
     a = p.parse_args(argv)
     Ks = [a.K]
@@ -142,7 +200,8 @@ def main(argv=None):
     os.makedirs(a.out, exist_ok=True)
     dev = a.device
 
-    json.dump({"arch": a.arch, "budget_match": a.budget_match, "overrun": a.overrun}, open(os.path.join(a.out, "arch.json"), "w"))
+    json.dump({"arch": a.arch, "budget_match": a.budget_match, "overrun": a.overrun, "anytime": a.anytime},
+              open(os.path.join(a.out, "arch.json"), "w"))
     model = build(a.arch, d=a.d, n_layers=a.layers, n_heads=a.heads, k_max=max(a.K + a.overrun, 8), mode=a.mode,
                   emb=a.emb, d_id=a.d_id, init=a.init, feedback=a.feedback, step_emb=not a.no_step_emb).to(dev)
     lr_t = torch.tensor(a.lr, device=dev)
@@ -159,7 +218,11 @@ def main(argv=None):
         Ks = sorted(set(range(2, a.K + 1)))
     if a.overrun:
         Ks = sorted(set(Ks) | set(range(a.K, a.K + a.overrun + 1)))
-    gstep = EagerStep(model, opt, a.upfront_weight) if cpu else GraphedStep(model, opt, Ks, a.bs, E, a.Q, a.upfront_weight, dev, amp)
+    if a.anytime is not None:
+        gstep = (AnytimeEagerStep(model, opt, a.upfront_weight, anytime_C=a.anytime) if cpu else
+                 AnytimeGraphedStep(model, opt, Ks, a.bs, E, a.Q, a.upfront_weight, dev, amp, anytime_C=a.anytime))
+    else:
+        gstep = EagerStep(model, opt, a.upfront_weight) if cpu else GraphedStep(model, opt, Ks, a.bs, E, a.Q, a.upfront_weight, dev, amp)
     gstep.w_children.fill_(a.children_weight)
     # depth curriculum: "1:1500,2:1500" -> max within-branch depth 1 for 1500 steps, then 2, ...
     # or "gated": start at max depth 1, advance when held-out delayed bal-acc at the
@@ -256,7 +319,8 @@ def main(argv=None):
                    "gn": gn.item(), "lr": lr_at(step), "sec": time.time() - t0, "peak_mb": peak}
             log.write(json.dumps(rec) + "\n"); log.flush()
         if gated and cur["d"] is not None and step % 500 == 0:
-            ev = evaluate(model, a.K, n=512, device=dev, max_bdepth=cur["d"], seed=step)
+            K_gate = min(a.K, cur["d"] + 1) if a.budget_match else a.K     # budget_match: gate at the stage's budget
+            ev = evaluate(model, K_gate, n=512, device=dev, max_bdepth=cur["d"], seed=step)
             if ev["delayed"]["bal_acc"] >= a.gate:
                 cur["hist"].append((step, cur["d"]))
                 cur["d"] = None if cur["d"] >= NPB - 2 else cur["d"] + 1

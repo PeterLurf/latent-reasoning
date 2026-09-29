@@ -174,6 +174,42 @@ positions should extrapolate far more often, with the recipe otherwise unchanged
   step or at h_K) in ≥ 50 %; in M every failure is of the local kinds (fade / stall / restart) by construction, and the
   M failures are mostly fade (pointer dies within 4 hops past K).
 * Secondary arms M2, MB, OV: descriptive only (4 seeds each).
+* **Amendment A-1 (2026-09-29 ~05:50 EDT).** Arm MB had an implementation error: with `--budget_match` the curriculum
+  gate still evaluated at K = 6 while training used K = stage depth + 1, so no MB run could pass stage 1 (all four
+  launches of pa_mb_s731 and pa_mb_s733 stopped at step 4600 with identical logs; no MB model was evaluated). Fixed in
+  `theory/train_arch.py` (the gate evaluates at the stage's budget); MB is re-run as `pa_mb2_s730..733` with the same
+  seeds and rules. Interim Pilot A results for arms C, M, M2 had been seen when this was fixed; nothing else changes.
+
+
+## 9. Pilot A interim reading and Pilot B (pre-registered 2026-09-29 ~06:15 EDT, before any Pilot B run started)
+
+**Interim Pilot A (seen before this section was written; not the scored verdict).** Competent-and-extrapolating: C 3/6,
+M 1/3 (s714 pending), M2 1/2. Pointer trajectories (`theory/analyse_pilotA.py`, `theory/results/pilotA_ptr.json`):
+Markov failures cannot retrieve, yet they still break at K + 1 — s713 **restarts the sweep** every 4 steps
+(1 2 3 | 1 2 3 4 | 1 2 3 4), s712 stalls and fades, and the non-gated M/M2 runs show 1 2 3 | 1 2 3 | 1 1 1 cycles.
+**Reading:** the Markov restriction removes one *implementation* of a step-indexed schedule (retrieval), not the reason
+for having one. The reason is **slack**: whenever the latent budget exceeds the hops the model must compute (and the
+query adds 1–2 hops), any schedule that visits each depth once fits the loss — dwell by retrieval (Coconut), restart
+cycles (Markov), clocks — and none continues past K. Developmental data agree (exp7, 24 models with checkpoints):
+retrieval appears during **curriculum stage 3** (e.g. p30_s115 retrieval share 0.02 → 0.32 at step 8 000) and persists;
+local extrapolators stay ≤ ~0.15 throughout.
+
+**Pilot B tests the slack account directly with anytime (minimum-progress) supervision** (`--anytime 1`): after every
+latent step k the delayed and upfront answers are supervised for reachable nodes within distance k + 1 and for all
+unreachable nodes; reachable nodes farther than k + 1 are masked (reaching them early is never penalised); step K is the
+ordinary loss. Dwell and restarts then cost loss; a time-homogeneous one-hop-per-step front satisfies every step without
+a counter. (Relatives: SIM-CoT's per-thought supervision, TRM/DIS deep supervision; none is minimum-progress with
+masked look-ahead, and none is motivated by a slack mechanism.)
+
+* Recipe, evaluation and definitions exactly as Pilot A (§6). Arms, 4 seeds each, one of each arm per host:
+  **AT** coconut + anytime 1 (seeds 750–753); **MAT** markov + anytime 1 (760–763); **MR** markov + gain-restoring
+  pointer (`markov_restore`, A2; 770–773); **ATR** coconut + restore + anytime 1 (`restore --anytime 1`; 780–783).
+* **PB1 (primary).** Among competent AT runs the extrapolating share is ≥ 0.75 and exceeds Pilot A's C share by ≥ 0.25.
+  Not supported if it is ≤ C's share. Needs ≥ 3 competent AT runs, else unresolved. Pooled AT ∪ MAT reported too.
+* **PB2 (mechanism).** In competent AT/MAT models the pointer does not dwell (depth increases at every step from step 2 to
+  step K on the long-chain probe, allowing one repeat) and does not revert at K + 1 (0 reverts).
+* **PB3 (learnability).** AT reaches the gate in ≥ 2 of 4 runs.
+* **PB4.** Mean far8–10 of competent MR runs exceeds that of competent M runs (Pilot A) by ≥ 0.05. ATR descriptive.
 
 ## 7. Log
 
@@ -181,3 +217,22 @@ positions should extrapolate far more often, with the recipe otherwise unchanged
   59 P30 ∪ L competent models; this document.
 * 2026-09-29 ~01:45–02:05 — attenuation analysis (exp6); literature pass; trainer/evaluator for variants; Pilot A
   pre-registered.
+
+## 8. Toy simulation of the loop-gain account (Th3) — `theory/sim_gain.py` (exploratory)
+
+A pointer amplitude moves one hop per step along a chain; every node also receives fresh noise each step, which the same
+map propagates (decoy leakage). Readout: amplitude > θ. Parameters fitted (grid search, balanced error) on depths ≤ D
+only; reach = deepest depth with balanced accuracy ≥ 0.9 on 40-hop chains.
+
+| per-hop noise sd | analog a ← g·a + noise: reach at D = 3 / 5 / 8 (fitted g) | restoring a ← σ(β(g·a − τ)) + noise: reach |
+|---|---|---|
+| 0.08 | 10 / 16 / 21 (g 0.96–1.10) | 6 at D = 3; **40** for D ≥ 4 |
+| 0.15 | **7 / 8 / 10** (g 1.10–1.16) | **40 / 40** (D = 3, 5) |
+| 0.25 | 3 / 3 / 3 (noise too high to fit) | 3 / 4 |
+
+Reading: with moderate noise, a graded update fitted on depth ≤ D generalises only a few hops past D (reach ≈ D + 2–4,
+growing with D) — a horizon tied to the training depth that a larger budget cannot remove; a restoring (bistable)
+update has no horizon once it is fitted at all. With very little noise the graded update also reaches far, so the
+*strength* of the horizon depends on the noise level. In the real models the horizon at exactly the training depth is
+mainly Mechanism 1 (the schedule ends when the trained steps end); Mechanism 2 limits how far a local front gets
+beyond it (THEORY §4), as this toy predicts. Supports proposal A2 (gain restoration).
