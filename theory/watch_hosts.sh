@@ -8,7 +8,7 @@ while :; do
   total=0
   while read -r h p tag id; do
     [ -z "$h" ] && continue; case "$h" in \#*) continue;; esac
-    out=$(timeout 30 ssh -o ConnectTimeout=15 -i ~/.ssh/runpod_ed25519 -p $p root@$h \
+    out=$(timeout 30 ssh -n -o ConnectTimeout=15 -i ~/.ssh/runpod_ed25519 -p $p root@$h \
       "grep -c 'evaluated p[de][38_]' /workspace/Latent/logs/queue_$tag.out; grep -c QUEUE_DONE /workspace/Latent/logs/queue_$tag.out" 2>/dev/null | grep -v "Welcome\|Have fun" | tr '\n' ' ')
     read -r n qd <<<"$out"
     total=$((total + ${n:-0}))
