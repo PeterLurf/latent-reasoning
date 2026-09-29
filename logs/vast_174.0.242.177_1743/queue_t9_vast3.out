@@ -1,0 +1,50 @@
+06:05:40 start t9l3_s508 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 508 --layers 3 )
+06:58:40 trained t9l3_s508 rc 0
+run  results/competence_t9l3_s508.json
+run  results/competence_matched_t9l3_s508.json
+run  results/length_gen_t9l3_s508.json
+run  results/delayed_trace_t9l3_s508.json
+run  results/budget_sweep_t9l3_s508.json
+EVAL_DONE t9l3_s508
+06:59:04 evaluated t9l3_s508
+06:59:04 start t9l4_s528 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 528 --layers 4 )
+08:08:04 trained t9l4_s528 rc 0
+run  results/competence_t9l4_s528.json
+run  results/competence_matched_t9l4_s528.json
+run  results/length_gen_t9l4_s528.json
+run  results/delayed_trace_t9l4_s528.json
+run  results/budget_sweep_t9l4_s528.json
+EVAL_DONE t9l4_s528
+08:08:30 evaluated t9l4_s528
+08:08:30 start t9w512_s548 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 548 --d 512 )
+09:23:30 trained t9w512_s548 rc 0
+run  results/competence_t9w512_s548.json
+run  results/competence_matched_t9w512_s548.json
+run  results/length_gen_t9w512_s548.json
+run  results/delayed_trace_t9w512_s548.json
+run  results/budget_sweep_t9w512_s548.json
+EVAL_DONE t9w512_s548
+09:24:00 evaluated t9w512_s548
+09:24:00 start t9l3_s509 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 509 --layers 3 )
+10:17:00 trained t9l3_s509 rc 0
+run  results/competence_t9l3_s509.json
+run  results/competence_matched_t9l3_s509.json
+run  results/length_gen_t9l3_s509.json
+run  results/delayed_trace_t9l3_s509.json
+run  results/budget_sweep_t9l3_s509.json
+EVAL_DONE t9l3_s509
+10:17:24 evaluated t9l3_s509
+10:17:24 start t9l4_s529 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 529 --layers 4 )
+11:27:24 trained t9l4_s529 rc 0
+run  results/competence_t9l4_s529.json
+run  results/competence_matched_t9l4_s529.json
+run  results/length_gen_t9l4_s529.json
+run  results/delayed_trace_t9l4_s529.json
+run  results/budget_sweep_t9l4_s529.json
+EVAL_DONE t9l4_s529
+11:27:50 evaluated t9l4_s529
+11:27:50 start t9w512_s549 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 549 --d 512 )
+12:08:31 trained t9w512_s549 rc 0
+no model for t9w512_s549
+12:08:31 evaluated t9w512_s549
+12:08:31 QUEUE_DONE

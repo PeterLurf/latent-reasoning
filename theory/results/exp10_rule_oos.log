@@ -1,0 +1,16 @@
+pa_c_s702    extrap False pred True  | retr_K 0.49 restoring True  gain 0.95 slope 0.10 d3->d4
+pa_c_s703    extrap True  pred True  | retr_K 0.00 restoring True  gain 1.00 slope 0.31 d3->d4
+pa_c_s704    extrap True  pred False | retr_K 0.09 restoring False gain 0.70 slope 1.47 d3->d3
+pa_c_s705    extrap True  pred True  | retr_K 0.04 restoring True  gain 1.09 slope 0.09 d3->d4
+pa_c_s706    extrap False pred True  | retr_K -0.01 restoring True  gain 0.81 slope 0.16 d2->d3
+pa_c_s707    extrap False pred True  | retr_K 0.41 restoring True  gain 0.70 slope -0.09 d2->d3
+pa_m2_s720   extrap True  pred False | retr_K 0.00 restoring False gain 0.68 slope 1.50 d3->d3
+pa_m2_s721   extrap False pred True  | retr_K 0.00 restoring True  gain 0.83 slope -0.09 d2->d3
+pa_m2_s723   extrap True  pred True  | retr_K 0.00 restoring True  gain 0.90 slope 0.27 d4->d5
+pa_m_s712    extrap False pred False | retr_K 0.00 restoring False gain 0.42 slope 0.93 d3->d3
+pa_m_s713    extrap False pred True  | retr_K 0.00 restoring True  gain 0.63 slope 0.32 d2->d3
+pa_m_s717    extrap True  pred True  | retr_K 0.00 restoring True  gain 0.90 slope -0.09 d3->d4
+pa_mb2_s733  extrap True  pred True  | retr_K 0.00 restoring True  gain 0.99 slope 0.28 d4->d5
+pa_ov_s742   extrap False pred False | retr_K 0.29 restoring False gain 0.57 slope -0.21 d2->d3
+pa_ov_s743   extrap True  pred True  | retr_K -0.00 restoring True  gain 0.85 slope 0.09 d3->d4
+OUT-OF-SAMPLE: accuracy 8/15; predicted-extrap 11 of which true 6; predicted-fail 4 of which true 2

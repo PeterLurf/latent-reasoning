@@ -1,0 +1,10 @@
+11:27:50 guarding runs/t9w512_s549 pid 0 max relaunch 3
+11:27:50 launched pid 210638
+11:38:01 stage-1 failure at step 4000; archived as runs/t9w512_s549_stage1fail_1
+11:38:01 launched pid 213045
+11:48:11 stage-1 failure at step 4000; archived as runs/t9w512_s549_stage1fail_2
+11:48:11 launched pid 215452
+11:58:21 stage-1 failure at step 4000; archived as runs/t9w512_s549_stage1fail_3
+11:58:21 launched pid 217861
+12:08:31 stage-1 failure at step 4000; archived as runs/t9w512_s549_stage1fail_4
+12:08:31 relaunch budget spent

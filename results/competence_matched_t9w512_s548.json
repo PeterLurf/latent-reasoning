@@ -1,0 +1,46 @@
+{
+ "runs/t9w512_s548": {
+  "1": {
+   "bal_acc": 0.9973791755508173,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 0.9947583511016347,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9687204526900351,
+   "recall_reachable": 0.9652351738241309,
+   "specificity_decoy": 0.9722057315559394,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.8110899754544889,
+   "recall_reachable": 0.6757554462403373,
+   "specificity_decoy": 0.9464245046686404,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.7754255203318086,
+   "recall_reachable": 0.6252401658408332,
+   "specificity_decoy": 0.9256108748227838,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.7890826019632853,
+   "recall_reachable": 0.6748285994123409,
+   "specificity_decoy": 0.9033366045142296,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.8208333125946721,
+   "recall_reachable": 0.7708693149107657,
+   "specificity_decoy": 0.8707973102785783,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}

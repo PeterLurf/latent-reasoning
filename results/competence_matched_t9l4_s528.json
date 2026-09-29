@@ -1,0 +1,46 @@
+{
+ "runs/t9l4_s528": {
+  "1": {
+   "bal_acc": 1.0,
+   "recall_reachable": 1.0,
+   "specificity_decoy": 1.0,
+   "n_pos": 9224,
+   "n_neg": 11256
+  },
+  "2": {
+   "bal_acc": 0.9999670162939508,
+   "recall_reachable": 0.9999340325879016,
+   "specificity_decoy": 1.0,
+   "n_pos": 15159,
+   "n_neg": 18529
+  },
+  "3": {
+   "bal_acc": 0.9951841417465259,
+   "recall_reachable": 0.999648629655657,
+   "specificity_decoy": 0.9907196538373947,
+   "n_pos": 14230,
+   "n_neg": 17564
+  },
+  "4": {
+   "bal_acc": 0.8194190187083634,
+   "recall_reachable": 0.7351602790979876,
+   "specificity_decoy": 0.9036777583187391,
+   "n_pos": 9889,
+   "n_neg": 11991
+  },
+  "5": {
+   "bal_acc": 0.6197273674170518,
+   "recall_reachable": 0.4311459353574926,
+   "specificity_decoy": 0.808308799476611,
+   "n_pos": 5105,
+   "n_neg": 6114
+  },
+  "6": {
+   "bal_acc": 0.5528333988675032,
+   "recall_reachable": 0.41738629821531376,
+   "specificity_decoy": 0.6882804995196926,
+   "n_pos": 1737,
+   "n_neg": 2082
+  }
+ }
+}
