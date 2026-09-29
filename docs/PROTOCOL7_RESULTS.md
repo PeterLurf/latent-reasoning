@@ -1,6 +1,6 @@
 # PROTOCOL 7 — results
 
-Pre-registration: `docs/PROTOCOL7.md` (tests T1–T13, amendments 1–3). Every verdict below is the pre-registered one;
+Pre-registration: `docs/PROTOCOL7.md` (tests T1–T13, amendments 1–5). Every verdict below is the pre-registered one;
 exploratory results are labelled.
 
 | Test | Population | Result | Verdict |
@@ -8,8 +8,13 @@ exploratory results are labelled.
 | **T1** frontier necessity at distance 7 (block B in layer-1 latent attention) | 25 competent extrapolators (P30, L) | TPR on B1 drops ≥ 0.20 in 0/25 (it rises slightly on average) | **not supported** |
 | **T2** frontier rescue at "natural mass" (anchored on the distance-6 edge) | 33 non-extrapolators, P7 < 0.10 | rescued 0/33; the injected mass (~0.010–0.017 per head) is ≈ uniform attention | **not supported** (manipulation ≈ null; see below) |
 | **T3** P7 shortly after full-depth arrival predicts final extrapolation | 34 locally trained competent runs (12 extrapolate) | AUC 0.93 at arrival + 2000 steps (0.91 at arrival, 0.95 at + 5000); P7 class agrees with the final model in 91 % | **supported** |
+| **T5** P7 adds to in-distribution covariates (retrospective) | 59 competent P30 + L runs (25 extrapolate) | cross-validated AUC: covariates (delayed, matched 5/6, full-depth step, EA) 0.68 → + P7 0.92 (Δ 0.24); single AUCs: matched 5 0.73, matched 6 0.73, EA 0.66, delayed 0.62, full-depth step 0.34 (earlier = better), P7 0.98 | **supported** |
+| **T6** multiverse (54 specifications) | same 59 runs | AUC ≥ 0.85 in 43/54 = 79.6 % (bar 80 %); layer 1 (P7's layer): all 27 specifications 0.95–0.99; layer 2: 0.79–1.0 (median 0.875); 3 layer-2 specifications had no run above the floor and count as misses (43/51 = 84 % without them); frozen specification AUC 0.976, permutation p < 0.0001 | **not supported** (by 0.4 %; the misses are all layer 2) |
+| **T7** independent re-implementation | same 59 runs | Spearman 1.000, max |Δ| 2.4e-6 | **pass** |
+| **T8a** pause-token models | 3 pause models | no extrapolation (d7 0.50); in_peak 0.0003–0.0013, 25–100× below the floor, so P7 is undefined for them (raw ratios 0.4–1.2 are noise) | as expected (floor excludes) |
+| **T8b** placebo P7 (C1 − random unreachable edge) | same 59 runs | AUC 0.75 (band 0.35–0.65) | **fail** — see below |
 
-Sources: `results/p7s_causal.json`, `results/p7s_t12.json` (T1/T2; code `latent/frontier_causal.py`, git f77d6ff);
+Sources: `results/p7s_t5.json`, `results/p7s_t6.json`, `results/p7_indep.json`, `results/p7s_t8.json`; `results/p7s_causal.json`, `results/p7s_t12.json` (T1/T2; code `latent/frontier_causal.py`, git f77d6ff);
 `results/p7s_t3.json`, `results/p7s_t3_score.json` (T3; `scratch/p7s_t3.py`).
 
 ## T1 / T2 — what went wrong, and what exploration showed (exploratory, 5 + 5 models)
@@ -39,3 +44,13 @@ Sources: `results/p7s_causal.json`, `results/p7s_t12.json` (T1/T2; code `latent/
 * **Consequence for the account.** The horizon is a *propagation* limit: the latent sweep stops advancing, the query
   adds one hop, and the readout would use a deeper frontier. d7 ("extrapolation") partly measures that final
   query-time hop; T13 tests whether P8 predicts extrapolation beyond it.
+
+## T8b — what the placebo failure means
+
+The placebo's numerator (attention on the unreachable decoy's distance-7 edge minus a random unreachable edge) is
+itself somewhat higher in extrapolators (AUC 0.79), but tiny: 0.0010 vs 0.0005, against 0.0455 vs 0.0024 for P7's
+numerator (reachable minus decoy distance-7 edge; AUC 0.98 alone); the two correlate 0.44. So extrapolators attend a
+little more to *any* edge continuing a depth-6 chain end, reachable or not — a weak structural component ~2 % the
+size of the reachability signal. P7 subtracts exactly this decoy term, so the component works against P7, not for it.
+Pre-registered verdict stands: fail (the construction is not confound-free); practical reading: P7's signal is
+reachability-specific to within ~2 %.

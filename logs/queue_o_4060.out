@@ -26,3 +26,12 @@ run  results/budget_sweep_o_s102.json
 EVAL_DONE o_s102
 23:26:04 evaluated o_s102
 23:26:05 start o_s103 (--no_step_emb --K 6 --seed 103 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
+00:41:05 trained o_s103 rc 0
+run  results/competence_o_s103.json
+run  results/competence_matched_o_s103.json
+run  results/length_gen_o_s103.json
+run  results/delayed_trace_o_s103.json
+run  results/budget_sweep_o_s103.json
+EVAL_DONE o_s103
+00:41:31 evaluated o_s103
+00:41:31 start o_s104 (--no_step_emb --K 6 --seed 104 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
