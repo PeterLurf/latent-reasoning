@@ -23,7 +23,7 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 > 53312701 RTX 4070 `ssh -p 1712 root@174.0.242.177` ($0.149), 53312759 RTX 3080 `ssh -p 40283 root@181.116.79.48`
 > ($0.132), 53312847 RTX 3090 `ssh -p 42213 root@109.173.238.203` ($0.178) — ≈ $0.58/h. Pilot A (architecture
 > variants, pre-registered in `docs/THEORY.md` §6): `/workspace/Latent/theory/runs/pa_*`, log
-> `/workspace/Latent/logs/queue_theory-pa-h<N>.out`; fetch with `bash theory/vfetch_arch.sh <host> <port>`. Queues hold Pilots A–E (`theory/queues/`; A scored, B nearly done, C running, then D/E = 28 same-seed anytime/control pairs, the depth-wall vs schedule-end test pre-registered in `docs/THEORY.md` §20; until about 01:00 EDT 2026-09-30). Host 4 also runs the GPT-2 latent-reasoner probe (`/workspace/codi_batch.sh`, log `/workspace/codi_batch.log`). Theory CPU jobs locally: keep ≤ 3–4 threads at Idle priority (they starved the local GPUs once, 2026-09-29 ~07:00).
+> `/workspace/Latent/logs/queue_theory-pa-h<N>.out`; fetch with `bash theory/vfetch_arch.sh <host> <port>`. Queues hold Pilots A–E (`theory/queues/`; A scored, B nearly done, C running, then D/E = 28 same-seed anytime/control pairs, the depth-wall vs schedule-end test pre-registered in `docs/THEORY.md` §20; D/E now expected to end ~01:00–05:00 EDT 2026-09-30), then **Pilot F** on hosts 2–4 (THEORY §23, pre-registered 14:09 EDT 2026-09-29: amplitude jitter, jitter + anytime, selection-window anytime; 32 runs, until ~08:00–10:00 EDT 2026-09-30). Host 1 is released after its D/E pairs. Host 4 also runs the GPT-2 latent-reasoner probe (`/workspace/codi_batch.sh`, log `/workspace/codi_batch.log`). Theory CPU jobs locally: keep ≤ 3–4 threads at Idle priority (they starved the local GPUs once, 2026-09-29 ~07:00).
 
 > **Theory ↔ experiments coordination (committed 2026-09-29 11:47 EDT; the "~12:10" first written here was an estimate).** Messages exchanged between the experiments session and the
 > theory session (claude-54). Shared understanding: the horizon is a propagation limit, the readout generalises. Theory
@@ -56,13 +56,18 @@ T11 pilot not learned (T11 stops); T12 not triggered (Q1 not supported).
 **Waiting to be scored:** addendum R when both R queues show QUEUE_DONE (`PYTHONPATH=. python scratch/score_r.py
 --device cuda:0`); T9/T10 when their queues end (`PYTHONPATH=. python scratch/score_p7s_t9.py --device cuda:0`), with
 the amendment-3 causal tests and T4 applied to them as secondary. Theory session: THEORY §20 Pilot E (anytime vs control;
-depth wall vs schedule end), results ~2026-09-30 01:00. It will message this session.
+depth wall vs schedule end), results ~2026-09-30 01:00. It will message this session. Also from the theory session
+(14:10, commits f1f21d8, 4be1d16, 24aa547): THEORY §22, a general theory with four conditions for extrapolation
+(identification, homogeneity, stability, idempotence) and Prop. 8 "slack explains bypass", which is the basis for
+PROTOCOL8; §23 Pilot F (jitter, jitter + anytime, anytime only in stages 1–3 or 4–full; seeds 900–907, paired with
+Pilot D) is queued behind D/E on its hosts 2–4.
 
 **Cloud:** none of this session's instances remain (lifecycle in `scratch/pods.txt`). The four `theory-pa-h*` Vast
 instances belong to the theory session. Shared Vast credit $22.63 at 12:56.
 
 **Candidate next step (needs the user's go-ahead and ~$10–20):** PROTOCOL8, multi-step latent work in a pretrained model
-(`docs/NEXT_STEPS.md`, end).
+(`docs/NEXT_STEPS.md`, end). Plan: pre-register after Pilot E is scored. Per THEORY Prop. 8, first measure the one-pass
+capacity c on the exact training format, then train above it.
 
 ## 1. What is running now (HISTORY before 2026-09-29 — see section 0)
 
