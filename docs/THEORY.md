@@ -927,6 +927,14 @@ calls it for pc_*, pd_*, pe8_*, pe3_* runs):
   in-sample = 3). Unresolved for an arm with < 4 competent runs. The already-scored m_s301–316 (cap 4) are in-sample
   context only.
 
+* **Amendment LE4 (2026-09-29 14:25 EDT, before any Pilot D run finished) — attenuation as a clock.** In a Markov or
+  weakly history-dependent transition, a decaying pointer amplitude is itself a monotone counter, so under slack a
+  sub-unity gain can serve as the brake's clock (the fade-triggered restarts of pa_m_s713 are this). Prediction: without
+  slack there is no use for the clock, so anytime-trained models have more restoring local maps than their controls —
+  **LE4:** transfer-curve saturation index z = log₂(a_out(2)/a_out(1)) (exp9, as §23 PF1) is lower in the anytime run
+  than in its same-seed control in ≥ 75 % of Pilot D pairs with both runs competent (≥ 5 such pairs, else unresolved;
+  ≤ 50 % = not supported).
+
 **Exploratory addendum to §25 (2026-09-29 14:22 EDT; retrospective, P30/L data only, computed after LE1–LE3 were
 committed; no Pilot C/D/E data used).**
 * *Demand met stage by stage* (`theory/results/exp7_dev.json`, 34 checkpointed models, last checkpoint of each curriculum
