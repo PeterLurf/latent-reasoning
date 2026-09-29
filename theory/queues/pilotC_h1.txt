@@ -1,0 +1,4 @@
+pc_k5_s790 --seed 790 --K 5
+pc_k7_s800 --seed 800 --K 7
+pc_k5_s791 --seed 791 --K 5
+pc_k7_s801 --seed 801 --K 7
