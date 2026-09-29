@@ -558,6 +558,11 @@ Addendum O is scored by the experiments session (results/p_o.json); I have seen 
 * **PO1.** Among competent O runs with share ≥ 0.25, the extrapolating share is ≤ 0.15 (in-sample: 0/12). Supported if
   so with ≥ 5 such runs; not supported if > 0.35; else inconclusive; unresolved with < 5 such runs.
 * **PO2.** AUC of (−share) for extrapolation ≥ 0.70 (in-sample 0.78). Reported with the AUC of P7 on the same runs.
+* **PO3 (added 2026-09-29 ~13:15, before any measurement; suggested by the experiments session).** Head-to-head with
+  PROTOCOL7 T3's in-training diagnostic on the same competent O runs: early P7 = frozen `far_sweep_frozen_I.measure`
+  (seed 2033; copied unmodified to theory/frozen/) at the checkpoint nearest full-depth arrival + 2000 steps, set to 0 if
+  in_peak < 0.03 (T3 rule). Report AUC(−stage-3 share), AUC(early P7) and the model-bootstrap 95 % CI of their
+  difference; descriptive (no decision rule). The stage-3 marker is the earlier signal (stage 3 precedes full depth).
 * **Exploratory, labelled as such:** does the longer scaffold (O) change the retrieval share at the end of stage 3 relative
   to the paired P30 run of the same seed (same card)? — a mechanistic reading of O1's null.
 
