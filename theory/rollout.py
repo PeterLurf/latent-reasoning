@@ -56,7 +56,7 @@ def rollout(m, K, src, dst, start, Kp, window=None, window_from=1, feed=None, qn
     for k in range(1, Kp + 1):
         if feed is not None:
             h = feed(k, h, thoughts)
-        kk = min(k, K)
+        kk = (k - 1) % m.periodic_step + 1 if getattr(m, "periodic_step", None) else min(k, K)
         base = m.pause.expand_as(h) if m.mode == "pause" else h
         xx = (base + te[T_LAT] + (m.step_emb.weight[kk] if getattr(m, "use_step", True) else 0))[:, None]
         nlat = k - 1                                  # latent positions already in the cache

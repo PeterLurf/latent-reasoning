@@ -204,6 +204,20 @@ def add_jitter(model, r, p=0.5):
     return model
 
 
+def add_periodic_step(model, period):
+    """Literature-session idea #2 (THEORY §28): a clock that never runs out. The latent step k uses step embedding
+    ((k - 1) mod period) + 1 instead of k (the table is trained; use_step is switched on). Applied at training and at
+    evaluation (theory/eval_arch.load_arch reads period from arch.json; theory/rollout.py follows model.periodic_step)."""
+    base = model.latent_step
+    model.use_step = True
+    model.periodic_step = int(period)
+
+    def latent_step(h, k, cache, keep_resid=False):
+        return base(h, (k - 1) % model.periodic_step + 1, cache, keep_resid)
+    model.latent_step = latent_step
+    return model
+
+
 def build(kind, **kw):
     if kind == "coconut":
         return LatentReasoner(**kw)

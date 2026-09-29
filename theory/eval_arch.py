@@ -29,9 +29,13 @@ def load_arch(run, device):
     A = json.load(open(ap)) if os.path.exists(ap) else {"arch": "coconut", "overrun": 0}
     m = build(A["arch"], d=c["d"], n_layers=c["layers"], n_heads=c["heads"], k_max=max(c["K"] + A.get("overrun", 0), 8),
               mode=c["mode"], emb=c.get("emb", "slots"), d_id=c.get("d_id", 64), init=c.get("init", "torch"),
-              feedback=c.get("feedback", "post_ln"), step_emb=not c.get("no_step_emb", False)).to(device)
+              feedback=c.get("feedback", "post_ln"),
+              step_emb=(not c.get("no_step_emb", False)) or bool(A.get("periodic_step"))).to(device)
     set_shapes(c.get("shapes", "default"), c.get("p_fork", 0.5))
     m.load_state_dict(ck["model"])
+    if A.get("periodic_step"):
+        from arch import add_periodic_step
+        add_periodic_step(m, A["periodic_step"])
     return m.eval(), c
 
 

@@ -11,7 +11,7 @@ measurements run on the CPU on existing `runs/` models; nothing here touches the
 §3 theory · §4 attenuation (Mechanism 2) · §5 architectures · §6 Pilot A pre-registration · §9 Pilot B · §10 developmental
 race · §11 Pilot C · §12 training-free repair · §13 GPT-2 latent reasoners · §14 transfer curves (+ failed out-of-sample
 rule) · §15 Pilot A scored · §16 Pilot B interim · §17 Pilot D · §18 formal sketch · §19 Pilot B scored · §20 Pilot E ·
-§21 O marker test · **§22 four conditions C1–C4, Props. 4–8, new methods T6/T7 and architecture A6** · §23 Pilot F · §24 Pilot G (A6) · **§25 Prop. 9: slack creates the clock** · §26 CTM-inspired T8/A8 · §27 Pilot H (fine-tune repair) · §7 log · §8 toy simulation. (Sections were appended in the order written, so numbers are not in
+§21 O marker test · **§22 four conditions C1–C4, Props. 4–8, new methods T6/T7 and architecture A6** · §23 Pilot F · §24 Pilot G (A6) · **§25 Prop. 9: slack creates the clock** · §26 CTM-inspired T8/A8 · §27 Pilot H (fine-tune repair) · §28 Pilot I (periodic clock) · §7 log · §8 toy simulation. (Sections were appended in the order written, so numbers are not in
 page order.)
 
 ## Timestamp correction (2026-09-29 12:59 EDT, prompted by the Audit session; machine clock via `date`, Vast logs in UTC = EDT + 4)
@@ -1120,6 +1120,27 @@ by failure mechanism, as Props. 3 and 5 predict?
 * **Guard.** Each arm keeps the gate in ≥ 75 % of its runs; otherwise that arm's verdicts are flagged.
 * **Order and hosts.** 48 runs inserted after Pilot D/E and before Pilot F on all four theory hosts (~15 min per run on
   hosts 2–4); Pilots F and G shift by ~3 h (to ~15:00–17:00 EDT 2026-09-30).
+
+## 28. Pilot I — a clock that never runs out (pre-registered 2026-09-29 15:05 EDT, before any Pilot I run started; idea #2 of the Literature session's adjacent-field list, Clockwork RNN 1402.3511 / Phased LSTM 1610.09513)
+
+**Logic (Prop. 9).** Under slack the model wants a clock to brake with; what fails is a clock whose continuation past K is
+unidentified (a count that leaves its trained range). A periodic clock — step embedding ((k − 1) mod p) + 1 — has an
+identified continuation: past K it repeats exactly the cycles seen in training, so a brake keyed to it keeps braking at
+the same rate and the front keeps moving at its in-range fractional speed instead of stopping or cycling (in-sample
+existence proof: pa_mb2_s730's period-2 phase bit, `1 1 2 2 3 3 | 4 4 5 5 6 6`). Counterpoint: Xu & Sato 2410.01405 argue
+timestep encodings raise the expressivity of looped transformers; this pilot is about extrapolation, not expressivity.
+
+* **Arms** (P30 recipe; seeds 900–907; paired with Pilot D's control pd_c_s*, which has no step embedding): **PER2**
+  `--periodic_step 2`, **PER3** `--periodic_step 3` (`theory/arch.py:add_periodic_step`; evaluation and the rollout
+  harness follow the period — harness vs model max |diff| 0.0 at K′ = 6 and 12, checked 2026-09-29).
+* **PI1 (mechanism).** Among competent runs, the pointer (le_pointer.py, h_0..h_11) keeps advancing after K — max over
+  h_K..h_11 ≥ p[K−1] + 2 and no backstep after K — in ≥ 60 % of competent PER2 ∪ PER3 runs, and that share exceeds the
+  share among the same seeds' competent controls by ≥ 0.30.
+* **PI2 (outcome).** Pair rule of §23 on far8–10 at K′ = 16 (length_gen, mean of distances 8–10): PER > C in ≥ 75 % of
+  counted pairs (pooled PER2 and PER3 pairs; ≥ 5 counted).
+* **PI3 (the speed is kept).** In competent PER runs, the post-K speed (p[11] − p[K−1]) / (11 − (K − 1)) is within ±0.25 of
+  the in-range speed p[K−1] / K in ≥ 60 % of runs.
+* **Order.** 16 runs appended after Pilot G on the four theory hosts (~2 h at the end of the queue).
 
 ## 7. Log
 
