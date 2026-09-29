@@ -61,9 +61,12 @@ leak.**
 - **T9 on Vast:** PROTOCOL7 amendment 8 (9bb1944, 15:39). Toy code lives in `/workspace/Latent`, log
   `logs/queue_t9_v?.out` (host clock is UTC). Deploy script `scratch/vdeploy_toy.sh`. When a queue shows QUEUE_DONE,
   run `bash scratch/vfetch_toy.sh <host> <port> t9` and destroy.
+- **Vast CLI:** the stable wrapper is `C:/Users/peter/.local/vastai/vast.sh` (package in `.../vastai/lib`; key in
+  `~/.config/vastai`, never copied). Shared with the theory session. The old copy in the session scratchpad is
+  deprecated.
 - **Destroy with `bash scratch/vdestroy.sh <id>`.** It passes -y (a bare `vastai destroy` stops at a [y/N] prompt
   and destroys nothing) and checks `show instances` until the id is gone. Log it in pods.txt only after
-  DESTROYED_VERIFIED.
+  DESTROYED_VERIFIED. An unreadable instance list gives UNKNOWN (exit 2), never "verified".
 - The theory session owns `theory-pa-h1..h4` and `theory-x1..x6` (its log `theory/vast_log.txt`); never touch them.
 
 **Local GPUs (detached queues; torch `cuda:0` = 4060, `cuda:1` = 3070, `cuda:2` = 2070):**
