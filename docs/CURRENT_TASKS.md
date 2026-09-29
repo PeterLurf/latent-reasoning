@@ -14,6 +14,17 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 > `D:\Latent_backup_2026-09-28_1840.tgz`. If any path here stops resolving, check whether it was moved before
 > assuming a job failed.
 
+> **Theory stream (separate Claude session, from 2026-09-29 ~01:10, at the user's request).** Researches *why* some
+> models fail to extrapolate and designs new architectures. It works only in `theory/` (code + `theory/results/`) and
+> `docs/THEORY.md`, runs on the **CPU** (never the GPUs), reads existing `runs/` and `results/` read-only, and does not
+> touch queues, `latent/`, `scratch/`, pre-registrations or cloud instances. Findings there are exploratory until tested.
+> **Theory-stream Vast instances (user-approved 2026-09-29 ~01:50: "3–4 GPUs"; labels `theory-pa-h*`; do not destroy —
+> the theory session fetches and destroys them):** 53312599 A4000 `ssh -p 40473 root@38.29.145.230` ($0.121/h),
+> 53312701 RTX 4070 `ssh -p 1712 root@174.0.242.177` ($0.149), 53312759 RTX 3080 `ssh -p 40283 root@181.116.79.48`
+> ($0.132), 53312847 RTX 3090 `ssh -p 42213 root@109.173.238.203` ($0.178) — ≈ $0.58/h. Pilot A (architecture
+> variants, pre-registered in `docs/THEORY.md` §6): `/workspace/Latent/theory/runs/pa_*`, log
+> `/workspace/Latent/logs/queue_theory-pa-h<N>.out`; fetch with `bash theory/vfetch_arch.sh <host> <port>`.
+
 ## 1. What is running now
 
 ### Local PC (3 GPUs; torch `cuda:0` = RTX 4060, `cuda:1` = RTX 3070, `cuda:2` = RTX 2070 — nvidia-smi numbers differ)
