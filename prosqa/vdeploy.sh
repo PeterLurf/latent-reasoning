@@ -4,7 +4,7 @@
 # Prints INSTANCE <id> <host> <port>, CUINIT, STARTED; on a bad host prints BAD HOST (instance left for you to destroy).
 set -u
 O=$1; LBL=$2; PS=$3; CFG=$4
-V="C:/Users/peter/AppData/Local/Temp/claude/D--/6af9c751-a423-5604-9170-0c177c13d67f/scratchpad/vast.sh"
+V="C:/Users/peter/.local/vastai/vast.sh"
 export PYTHONIOENCODING=utf-8
 cd "$(dirname "$0")/.."
 ID=$(bash "$V" create instance $O --image pytorch/pytorch:2.5.1-cuda12.4-cudnn9-devel --disk 40 --ssh --direct --label $LBL --raw 2>&1 | grep -o '"new_contract": *[0-9]*' | grep -o '[0-9]*$')
