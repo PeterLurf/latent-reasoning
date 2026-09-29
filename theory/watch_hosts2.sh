@@ -41,7 +41,7 @@ except Exception: pass")
       NOW=$(date '+%Y-%m-%d %H:%M')
       if r=$(timeout 1800 bash theory/vfetch_arch.sh $h $p 2>&1 | tail -1) && { [[ "$r" == fetched,\ sha\ ok* ]] || [[ "$r" == "NOTHING TO FETCH" ]]; }; then
         log "$id $tag - - $h:$p fetched $NOW ($r)"
-        d=$(timeout 120 bash "$V" destroy instance $id 2>&1 | tail -1)
+        d=$(timeout 120 bash "$V" destroy instance $id -y 2>&1 | tail -1)
         log "$id $tag - - $h:$p destroyed $(date '+%Y-%m-%d %H:%M') after queue end + verified fetch ($d)"
         echo "$tag ${n:-0}" >> theory/hosts_done.txt
       else
