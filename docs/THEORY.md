@@ -1088,6 +1088,19 @@ single episode at K′ = 12 → 24/59, layer-2 block → 41/59; 16 failures are 
   delayed query still reads each episode separately (max-combined); balanced accuracy at 8–10 hops stays ≈ 0.62–0.67,
   far from perfect — anchors land off the chain in ~50–70 % of graphs (other branches of the frontier), which the
   branching variant partly fixes.
+* **Controls (requested by the experiments session; registered 2026-09-29 15:17 EDT, before the 59-model control run;
+  one debug run on pa_c_s706, outside the set, was seen first: model 0.60/0.61/0.58/0.53, random node 0.49/0.48/0.49/0.51,
+  random same-depth node 0.60/0.61/0.58/0.53, oracle chain node 0.87/0.85/0.79/0.61 at distances 7–10).**
+  `theory/exp12b_controls.py`, two episodes, episode 2 anchored at: the model's decode; a random node of the graph; a
+  random reachable node at the model anchor's BFS depth; the chain node at that depth (oracle). The probe's frontier
+  legitimately holds W nodes per depth (W = 2, 4, 6), so the model's anchor lies on the probed chain in only ~1/W of
+  graphs; what the decode can be credited with is the *depth*.
+  **RC1 (not "any fresh episode"):** random-node anchors give 7-hop success ≤ 29/59 and mean far8–10 within ±0.02 of the
+  single episode. **RC2:** random same-depth anchors match the model's anchors (7-hop success within ±5) — the gain is
+  carried by restarting at the frontier's depth. **RC3:** oracle anchors beat the model's by ≥ 0.10 in mean far8–10 — the
+  choice among frontier nodes is the remaining bottleneck (branching over the whole frontier would close it).
+  Extrapolating models are reported separately (descriptive; our account predicts gains there too at 8–10 hops,
+  because they also fade — Mechanism 2 — not "no gain").
 * **Implication for the field (C2).** Latent reasoners do not need to extrapolate in the number of steps if they are
   re-anchored: train a bounded-horizon latent loop, decode its state to a discrete checkpoint every K steps, and
   restart. Training-time counterpart: continue training from the model's own step-K states with the counter reset
