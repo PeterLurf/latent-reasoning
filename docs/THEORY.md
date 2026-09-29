@@ -897,6 +897,19 @@ calls it for pc_*, pd_*, pe8_*, pe3_* runs):
   control's median.
 * Reported with each: in-range dwell counts, and post-K speed (p[K+3] − p[K−1]) split by extrapolation.
 
+**Exploratory addendum to §25 (2026-09-29 14:22 EDT; retrospective, P30/L data only, computed after LE1–LE3 were
+committed; no Pilot C/D/E data used).**
+* *Demand met stage by stage* (`theory/results/exp7_dev.json`, 34 checkpointed models, last checkpoint of each curriculum
+  stage, pointer counted only if its logit ≥ 1): median p[K−1] = 0 at the end of stage 2, **2** at stage 3, **3** at stage
+  4, 3.5 at full depth — one more depth per stage, as the demand grows by one latent hop per stage. The front's in-range
+  reach tracks the curriculum's demand rather than the budget.
+* *The brake is (partly) retrieval* (`exp4_shares.json` × `pointer_taxonomy.json`, in-range steps): retrieval share on
+  dwell steps 0.22 in extrapolators vs 0.43 in failures; on advance steps 0.04 vs 0.14. Dwelling is where the history is
+  copied; failures brake by copying twice as much, and past K their copies continue periodically (e.g. `2 3 2 3`, with
+  retrieval share ≈ 1.0 on every dwell). Dwell *positions* do not separate the groups (dwell at h_1–h_5 in 86/57/52/43/19 %
+  of extrapolators vs 86/67/24/52/29 % of failures, K6). Reading: the brake exists in both groups (Prop. 9); what differs
+  is how it is built — a copy keyed to the history count (fails past K) or a local mechanism that releases past K.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
