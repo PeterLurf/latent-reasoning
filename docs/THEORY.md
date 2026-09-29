@@ -401,6 +401,48 @@ not competent (pa_m_s715, pa_mb2_s731). The buggy MB arm (pa_mb_*) is excluded (
 * Pilot A's C arm (seeds 700–707) and Pilot B's AT arm (750–753) are **not** pooled into Pilot D; they may be reported
   alongside, labelled as pilot data.
 
+## 18. Formal sketch of the slack account (theory; to be made rigorous)
+
+**Setting.** Delayed-query reachability; training graphs have depth ≤ D; the latent budget is K; after the latents, a
+query can resolve up to q further hops from what the latent positions hold (here q ≈ 1–2: T1c, §2). A latent
+*schedule* is the sequence of pointer depths π(1), …, π(K) (the depth each thought points at; sets in general). The
+query reads every latent position, so the delayed loss is zero (in the idealised, noise-free model) iff the schedule
+**covers** {1, …, D − q}: every such depth is pointed at by some step. Let the slack be σ = K − (D − q).
+
+**Proposition 1 (slack ⇒ the continuation is not identified).** If σ > 0, the zero-loss schedules include ones with dwell
+(π(k+1) = π(k)), restarts (π(k+1) < π(k)) and any continuation after coverage. For any prescribed behaviour after step
+K — advance, stall, revert, restart — there is a zero-loss schedule that produces it, because steps after coverage are
+unconstrained and the output of step K is never consumed. Hence the training loss does not determine whether the front
+continues past K; the inductive bias does. *Sketch:* coverage needs D − q distinct depths in K > D − q steps; the σ free
+steps can be spent anywhere, and h_K's successor is unconstrained.
+*Realisation:* a schedule with dwell or restarts must know *when* to advance. With access to the history (Coconut) this
+phase can be read from the number or content of earlier latent positions (retrieval with count-dependent lags, §2);
+without it (Markov) it must live in the state (phase or amplitude — fade-triggered resets, §9). Both are step-indexed:
+their continuation past K is whatever the phase variable does out of range.
+
+**Proposition 2 (anytime supervision ⇒ minimum speed).** With anytime supervision (after step k, reachable nodes within
+distance k + c are supervised; deeper ones masked), a zero-loss schedule must satisfy max_{j≤k} π(j) ≥ k + c − q for every
+k until coverage: the front must advance at least one depth per step from the first step. Dwell and restarts before
+coverage cost loss; a time-homogeneous advance operator (π(k+1) = π(k) + 1, no phase variable) satisfies every step, and
+any step-indexed alternative needs extra machinery with no loss benefit. Under a simplicity bias this selects the
+homogeneous operator — observed in Pilot B (§16: `1 1 2 3 4 5 6 7 8 9 10 11`, 0 dwell steps in 3/4 competent runs).
+Steps after coverage (k > D − q) remain unconstrained, so Proposition 2 removes the *reason* for a schedule, not every
+possibility of one.
+
+**Proposition 3 (reach of a homogeneous advance depends on its gain map).** Let the pointer amplitude evolve as
+a_{d+1} = φ(a_d) under the advance operator and let θ be the matching threshold (the competition of the other keys).
+(i) If φ has a stable fixed point a* > θ whose basin contains a_{D−q} (a *restoring* map), the front continues
+indefinitely (reach unbounded, up to noise). (ii) If φ(a) ≤ g·a with g < 1 (graded, *linear* map), reach ≤ (D − q) +
+log(a_{D−q}/θ)/log(1/g). Neither the delayed nor the anytime loss constrains φ beyond the amplitudes realised at depths
+≤ D, so neither forces (i) — consistent with pb_at_s751 (clean front to depth 7, then fades), with the transfer curves
+(§14: restoring vs linear maps coexist among competent models) and with the toy simulation (§8).
+
+**Corollary (what a complete fix needs).** Extrapolation requires removing slack (Prop. 2: anytime or unity
+contracts) *and* making the advance restoring (Prop. 3(i): an architectural restoring nonlinearity, or training signal on
+amplitudes beyond depth D — e.g. chains longer than the latent budget with anytime supervision, where the only way to
+keep up is a sustained front). Pilots B (arms ATR, MR) and D test parts of this; the combined recipe is the next
+experiment.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
