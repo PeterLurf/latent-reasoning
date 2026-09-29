@@ -2,7 +2,7 @@
 import json, os, collections
 arms = collections.defaultdict(list)
 for r in sorted(os.listdir("theory/runs")):
-    if not r[:3] in ("pa_", "pb_", "pc_") or "stage1fail" in r:
+    if not r[:3] in ("pa_", "pb_", "pc_", "pd_", "pe8", "pe3") or "stage1fail" in r:
         continue
     f = f"theory/runs/{r}/eval.json"
     if not os.path.exists(f):

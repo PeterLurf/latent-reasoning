@@ -1,0 +1,18 @@
+pe8_at_s1006 --seed 1006 --K 8 --anytime 1
+pe8_c_s1006 --seed 1006 --K 8
+pe3_at_s1015 --seed 1015 --depth_cap 3 --anytime 1
+pe3_c_s1015 --seed 1015 --depth_cap 3
+pd_at_s908 --seed 908 --anytime 1
+pd_c_s908 --seed 908
+pd_at_s909 --seed 909 --anytime 1
+pd_c_s909 --seed 909
+pe8_at_s1007 --seed 1007 --K 8 --anytime 1
+pe8_c_s1007 --seed 1007 --K 8
+pe3_at_s1016 --seed 1016 --depth_cap 3 --anytime 1
+pe3_c_s1016 --seed 1016 --depth_cap 3
+pd_at_s910 --seed 910 --anytime 1
+pd_c_s910 --seed 910
+pe3_at_s1017 --seed 1017 --depth_cap 3 --anytime 1
+pe3_c_s1017 --seed 1017 --depth_cap 3
+pd_at_s911 --seed 911 --anytime 1
+pd_c_s911 --seed 911

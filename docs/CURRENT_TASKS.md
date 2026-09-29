@@ -23,7 +23,7 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 > 53312701 RTX 4070 `ssh -p 1712 root@174.0.242.177` ($0.149), 53312759 RTX 3080 `ssh -p 40283 root@181.116.79.48`
 > ($0.132), 53312847 RTX 3090 `ssh -p 42213 root@109.173.238.203` ($0.178) — ≈ $0.58/h. Pilot A (architecture
 > variants, pre-registered in `docs/THEORY.md` §6): `/workspace/Latent/theory/runs/pa_*`, log
-> `/workspace/Latent/logs/queue_theory-pa-h<N>.out`; fetch with `bash theory/vfetch_arch.sh <host> <port>`. Queues hold Pilots A–D (`theory/queues/`, ~21 runs per host, until about 20:00 EDT on 2026-09-29; A scored, B/C/D running). Host 4 also runs the GPT-2 latent-reasoner probe (`/workspace/codi_batch.sh`, log `/workspace/codi_batch.log`). Theory CPU jobs locally: keep ≤ 3–4 threads at Idle priority (they starved the local GPUs once, 2026-09-29 ~07:00).
+> `/workspace/Latent/logs/queue_theory-pa-h<N>.out`; fetch with `bash theory/vfetch_arch.sh <host> <port>`. Queues hold Pilots A–E (`theory/queues/`; A scored, B nearly done, C running, then D/E = 28 same-seed anytime/control pairs, the depth-wall vs schedule-end test pre-registered in `docs/THEORY.md` §20; until about 01:00 EDT 2026-09-30). Host 4 also runs the GPT-2 latent-reasoner probe (`/workspace/codi_batch.sh`, log `/workspace/codi_batch.log`). Theory CPU jobs locally: keep ≤ 3–4 threads at Idle priority (they starved the local GPUs once, 2026-09-29 ~07:00).
 
 > **Theory ↔ experiments coordination (2026-09-29 ~12:10).** Messages exchanged between the experiments session and the
 > theory session (claude-54). Shared understanding: the horizon is a propagation limit, the readout generalises. Theory
