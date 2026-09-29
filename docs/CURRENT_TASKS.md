@@ -82,6 +82,13 @@ instances: lifecycle in `scratch/pods.txt`. The four `theory-pa-h*` Vast
 instances belong to the theory session. Shared Vast credit $46.07 at 15:22 (the user topped up ~$25 after 15:10).
 Burn is ~$0.95/h: the 4 theory hosts plus the 2 Phase 0 hosts. That leaves ~$32 at Wed 10:00, enough for the PROTOCOL8
 confirmatory arms (~$15–30, 3 arms) or Pilot J on Vast (~$3–4), not comfortably both. Re-check before registering.
+**Budget plan (2026-09-29 ~15:35; the user leaves runs to the agents, "just don't overspend"):**
+- Pilot J on Vast, on Theory's hosts, ≤ $5.
+- PROTOCOL8 3 arms ≤ $22, with seeds sized from the Phase 0 per-run cost; fallback to 2 arms.
+- ~$5 reserve.
+
+Pilot J does not run locally: a peer-written queue on the local GPUs tripped a permission check. Beyond this plan, ask
+for a top-up.
 
 **Candidate next step (needs the user's go-ahead and ~$10–20):** PROTOCOL8, multi-step latent work in a pretrained model
 (`docs/NEXT_STEPS.md`, end). Plan: pre-register after Pilot E is scored. Per THEORY Prop. 8, first measure the one-pass
