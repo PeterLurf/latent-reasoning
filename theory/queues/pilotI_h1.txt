@@ -1,0 +1,4 @@
+pi_per2_s900 --seed 900 --periodic_step 2
+pi_per2_s902 --seed 902 --periodic_step 2
+pi_per2_s904 --seed 904 --periodic_step 2
+pi_per2_s906 --seed 906 --periodic_step 2
