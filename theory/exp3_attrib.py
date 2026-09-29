@@ -111,4 +111,9 @@ def main():
         print(f"== {name} head {head}: pointer in h_{s} (output of step {s}); cols = src distance 1..9")
         print("   %-12s %s" % ("TOTAL", total[:9]))
         for k_, v in sorted(out.items(), key=lambda kv: -np.abs(kv[1][:9]).max()):
-            if np.abs(v[
+            if np.abs(v[:9]).max() >= 0.4:
+                print("   %-12s %s" % (k_, v[:9]))
+
+
+if __name__ == "__main__":
+    main()

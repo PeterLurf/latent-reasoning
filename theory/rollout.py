@@ -44,7 +44,8 @@ def _step_attn(attn, x, kv, keep_idx=None):
 
 
 @torch.no_grad()
-def rollout(m, K, src, dst, start, Kp, window=None, window_from=1, feed=None, qnodes=None):
+def rollout(m, K, src, dst, start, Kp, window=None, window_from=1, feed=None, qnodes=None,
+            block_from=None, block_layers=(1,)):
     """Returns dict with thoughts (B,Kp+1,d), attn1 list of (B,H,T_k) [full-width, hidden keys = 0],
     logits1 list, and query logits (B,Q) if qnodes given."""
     x = m.embed_prefix(src, dst, start)
@@ -64,14 +65,18 @@ def rollout(m, K, src, dst, start, Kp, window=None, window_from=1, feed=None, qn
             keep = torch.as_tensor(list(range(P)) + list(range(P + nlat - window, P + nlat)), device=src.device)
         new = []
         for li, (blk, kv) in enumerate(zip(m.blocks, cache)):
-            a_out, kv2, arow, srow = _step_attn(blk.attn, blk.ln1(xx), kv, keep)
+            kp = keep
+            if block_from is not None and k >= block_from and li in block_layers and nlat > 0:
+                base_idx = keep if keep is not None else torch.arange(P + nlat, device=src.device)
+                kp = base_idx[base_idx < P]                   # prefix only: no earlier latent positions
+            a_out, kv2, arow, srow = _step_attn(blk.attn, blk.ln1(xx), kv, kp)
             xx = xx + a_out
             xx = xx + blk.mlp(blk.ln2(xx))
             new.append(kv2)
             if li == 0:
                 full = torch.zeros(arow.shape[0], arow.shape[1], P + nlat + 1, device=arow.device)
                 fs = torch.full_like(full, float("nan"))
-                idx = keep if keep is not None else torch.arange(P + nlat, device=src.device)
+                idx = kp if kp is not None else torch.arange(P + nlat, device=src.device)
                 full[:, :, idx] = arow[:, :, :-1]; full[:, :, -1] = arow[:, :, -1]
                 fs[:, :, idx] = srow[:, :, :-1]; fs[:, :, -1] = srow[:, :, -1]
                 attn1.append(full); logit1.append(fs)
