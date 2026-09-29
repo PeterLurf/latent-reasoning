@@ -9,7 +9,7 @@ measurements run on the CPU on existing `runs/` models; nothing here touches the
 §3 theory · §4 attenuation (Mechanism 2) · §5 architectures · §6 Pilot A pre-registration · §9 Pilot B · §10 developmental
 race · §11 Pilot C · §12 training-free repair · §13 GPT-2 latent reasoners · §14 transfer curves (+ failed out-of-sample
 rule) · §15 Pilot A scored · §16 Pilot B interim · §17 Pilot D · §18 formal sketch · §19 Pilot B scored · §20 Pilot E ·
-§21 O marker test · §7 log · §8 toy simulation. (Sections were appended in the order written, so numbers are not in
+§21 O marker test · **§22 four conditions C1–C4, Props. 4–8, new methods T6/T7 and architecture A6** · §23 Pilot F · §7 log · §8 toy simulation. (Sections were appended in the order written, so numbers are not in
 page order.)
 
 ## Timestamp correction (2026-09-29 12:59 EDT, prompted by the Audit session; machine clock via `date`, Vast logs in UTC = EDT + 4)
@@ -635,12 +635,194 @@ O runs with local checkpoints, 8 extrapolate.
   not a general marker. The causal block result (§2) and the mechanism stand; the marker claims of §10 are downgraded
   to "in-sample only".
 
+## 22. Second-generation theory: four conditions for extrapolation in the number of latent steps (2026-09-29, written 14:00–14:40 EDT)
+
+§18 explained our failures. This section generalises the account into conditions that any latent reasoner (Coconut
+family, looped transformers, recursive models) has to meet, states them as propositions, and derives three new methods
+(T6, T7, A6) and a scope result for pretrained models (Prop. 8). Prior art to position against (Literature session,
+`docs/ADVISOR_2026-09-29.md`): 2609.33144 *Beyond the Training Horizon* (looped transformers: a decaying frontier and a
+"fresh–aged" usability direction; progress tracked by a *content* cue, no count clock, no fix); D'Amour et al.
+2011.03395 (underspecification — Prop. 1 is an instance); Zhang et al. 2607.20594 (budget law; T = n training); RELAY
+2502.08482 (iteration-wise supervision); Kuo et al. 2606.29983 (random loop counts); Rodionov & Prokhorenkova 2402.11628
+(discrete NAR) and Altabaa et al. 2510.14095 (anchored latents) — restoring states that train, both with state
+supervision; Haviv et al. 2203.16634 (causal attention infers position from the number of predecessors — the implicit
+clock of Mechanism 1).
+
+### 22.1 The four conditions
+
+Write a latent reasoner as h_{k+1} = F(h_k, H_{<k}, x), read out after a budget T. It extrapolates in the number of
+steps (and hence in reasoning depth when depth needs steps) only if:
+
+* **C1 Identification.** The training contracts pin the transition down on the states it visits: no slack during the
+  stage in which the circuit is chosen (Props. 1, 2, 4).
+* **C2 Homogeneity.** The transition has no usable clock — no step embedding, no count-indexed access to the history —
+  or training makes the clock irrelevant (Mechanism 1; Haviv et al. for why causal attention always offers a clock).
+* **C3 Stability.** On the coordinates that carry the computation, the per-step map has a stable non-zero fixed point
+  (restoring), so errors and fading do not compound (Props. 3, 5; Mechanism 2; the "fresh–aged" direction of 2609.33144).
+* **C4 Idempotence at completion.** Once the computation is finished, further steps leave the answer-relevant state
+  invariant (overthinking; the untrained last thought of §3 is a violation; Prop. 6).
+
+Where published methods stand (from their designs, not from new measurements; "?" = not determined by the design):
+
+| method | C1 | C2 | C3 | C4 |
+|---|---|---|---|---|
+| Coconut, CODI | slack (fixed K ≥ steps needed) | no (history + position) | no | no (last thought dangling) |
+| SIM-CoT, PMPS (per-thought decoders) | partly (every thought supervised) | no | ? (state supervised in-range only) | no |
+| RELAY, CLRS hints, TRM deep supervision | yes (per-iteration targets) | yes for weight-shared loops | ? | TRM: partly |
+| Kuo et al. random stopping, DR-Loop Poisson depth | yes **iff** the budget support reaches the steps needed (Prop. 4) | yes | ? | partly |
+| attractor / DEQ / path-independent models | — | yes | yes (fixed point by construction) | yes |
+| Discrete NAR (hard attention + discrete states) | via hints | yes | yes (discrete) | yes |
+| ours: anytime supervision (T5) | yes (Prop. 2) | only if Markov/clock-free | no (Prop. 3) | no |
+| ours: retrieval block + α boost (inference) | — | yes past K | partly (α) | no |
+| **new: T6 amplitude jitter** | — | — | **yes (Prop. 5)** | — |
+| **new: A6 monotone latent set** | — | yes | **yes** | **yes (Prop. 6)** |
+
+Reading: no Coconut-family method addresses C3 or C4, and the ones that meet C1 do so only up to the training depth. The
+combinations predicted to extrapolate are C1 + C3 (anytime + jitter; tested in Pilot F, §23) and architectures that
+meet C3 + C4 by construction (A6).
+
+### 22.2 Proposition 4 — tightness (resolves the random-budget tension)
+
+*Setting as §18:* depth-n problems at curriculum stage s, query resolves q hops, so a latent schedule must cover depths
+1..n − q. A training *contract* is a budget distribution μ_s(T | n); T is not observable by the latent steps (the query
+comes after them). Call μ_s **tight** if its support contains T = n − q for every depth n trained at stage s.
+
+**Prop. 4.** (a) If μ_s is not tight — every budget has slack T ≥ n − q + 1 — then the delayed schedule π(k) = max(0,
+k − 1) (one dwell step, then unit speed) has zero loss under every budget in the support, so random budgets alone do not
+exclude dwell/restart schedules and their step-indexed implementations (§18 Prop. 1). (b) If μ_s is tight, every
+zero-loss schedule has π(k) ≥ k for all k ≤ n − q, i.e. unit speed from the first step: the zero-loss set equals the
+anytime zero-loss set of Prop. 2 on 1..n − q. *Proof sketch:* (a) the delayed schedule covers 1..n − q by step n − q + 1
+≤ T. (b) T is unobservable, so the schedule must succeed when T = n − q, which forces full speed. ∎
+
+**Corollary.** Random budgets (Kuo et al., DR-Loop), budget matching (T2, Zhang et al., MR-Loop) and anytime supervision
+(T5, RELAY) are one mechanism: each puts mass on tight contracts. They help iff that mass is present **at the stage where
+the circuit is chosen** (for us, curriculum stage 3, §10), because Prop. 1's freedom is exercised there.
+*Retrospective consistency (exploratory, n tiny, not a test):* P22 randk (K ∈ 4..8, step embeddings on) had slack 2–3 at
+stage 3 (depth 3, n − q = 1–2) → 0/2 competent extrapolate; OV (budgets 6–8) never tight → 1/2; MB2 (tight at every
+stage) → 2/2 with the pilot's two best far8–10; anytime (tight at every step) → PB1 3/4. *Prediction for others:* random
+loop counts help in looped models only when their minimum budget is ≤ the steps needed at the selection stage; a
+distribution with min(T) above that should not help. *New test (T7 below and §23 arm ATW/ATL):* tightness only inside
+the selection window should give most of the benefit; tightness only after it should give little (a critical period for
+algorithm selection; Achille et al. 1711.08856).
+
+### 22.3 Proposition 5 — contraction training forces a restoring map (method T6: amplitude jitter)
+
+Let a ≥ 0 be the amplitude of the computation-carrying component (pointer logit excess, §4), b the amplitude of leakage
+on a non-reachable decoy, and φ the per-step map; readout: reachable iff a > θ.
+
+**Prop. 5.** Train with *amplitude jitter*: the thought fed into each step is rescaled by s ∈ [1/r, r] (r > 1),
+adversarially or at random with full support, and the answer must stay correct at every trained depth ≤ D. (a) No
+linear map φ(a) = g·a (the graded regime of §14) can satisfy this beyond depth n_lin = ln(a₀/b₀) / (2 ln r), where
+a₀/b₀ is the initial signal-to-leak ratio: correctness under all-down jitter needs (g/r)^n a₀ > θ, under all-up jitter on
+a decoy (g·r)^n b₀ < θ, and both hold only while r^{2n} < a₀/b₀. (b) Any map that satisfies it for D > n_lin must be
+expanding below some threshold and contracting around a stable fixed point a* > θ whose basin contains [a*/r, r·a*] —
+a bistable (restoring) map. (c) A restoring map with such a basin keeps the front alive for any number of steps under
+bounded per-step noise η < (a* − θ)(1 − L), where L < 1 is its Lipschitz constant on the basin (invariant interval), so
+reach is unbounded (Prop. 3(i)). *Proof sketch:* (a) as stated; (b) the image of the jitter interval must stay above θ
+and below the decoy bound after every step, so φ maps [a*/r, r·a*] into a subinterval: by the intermediate value theorem
+there is a fixed point there, and the average slope on the interval is < 1; since φ(0) ≈ 0 (no pointer stays no pointer)
+and φ(a*/r) > a*/r, φ exceeds the diagonal between 0 and a*/r only after an expanding stretch (the threshold); (c)
+standard invariant-set argument. ∎
+
+**Why it is new.** A2 (restore module, Pilot B) tried to impose (b) architecturally and mostly broke learnability (Pilot B arm
+MR: 1 of 4 runs competent); Rodionov and Altabaa impose discreteness with state supervision. T6 imposes C3 through the
+*loss* without state targets or new parameters: the transfer-curve perturbation of exp9 (our diagnostic) becomes the
+augmentation. It is also the principled version of the training-free α ≈ 1.3 boost (§12), and a trained counterpart of
+2609.33144's "fresh–aged" restoration. Cost: one elementwise rescale per latent step during training. Applies unchanged
+to CODI/SIM-CoT/Coconut on LLMs (jitter the fed-back hidden state about its batch mean).
+
+*Minimal model (`theory/sim_jitter.py`, not evidence):* a 200-step smoke run of a 1-D learned map without an amplitude
+ceiling became explosive (gain 2.1 at a = 1). A 1-D model has no fixed-norm thought (post-LN) and therefore no reason for
+the sub-unity regime seen in trained transformers, so it cannot test Prop. 5; the test is the transformer pilot of §23.
+
+### 22.4 Proposition 6 — a monotone latent set is idempotent and cannot fade (architecture A6)
+
+Many reasoning problems are least fixed points of monotone operators: reachability and ProsQA entailment (R ← R ∪
+succ(R)), Horn-clause/Datalog inference, dataflow analysis, constraint propagation. Let the latent state carry a
+membership vector m ∈ [0, 1]^V over entities, updated by **m_{k+1} = max(m_k, σ(β(u(m_k, x) − τ)))** with u monotone
+in m (e.g. non-competitive sigmoid attention from the set to edge/rule tokens, A3), and let the next thought receive
+m_{k+1}·E (the entity embeddings) additively.
+
+**Prop. 6.** (a) m_k is non-decreasing in k: a found entity never fades (C3 on membership coordinates, without any gain
+condition). (b) If u is exact on sets, m_k is the k-step closure and m_{k+1} = m_k after convergence: any number of
+extra steps leaves m invariant (C4; no overthinking, no dangling last state). (c) Errors are one-sided and absorbing:
+with per-step false-positive probability ≤ ε per entity, P(some false positive by step k) ≤ k·V·ε — linear in k,
+against the geometric decay (1 − h)^k of 2609.33144's hazard model or g^k of a graded pointer. *Proof:* (a), (b) from max
+and monotonicity (Knaster–Tarski on the finite lattice [0,1]^V with inflationary updates); (c) union bound. ∎
+
+**Design A6 ("latent set memory") for LLM latent reasoning.** A persistent set vector over the entity (or vocabulary)
+space next to the continuous thought: each latent step writes sigmoid scores (non-competitive, so many members do not
+dilute each other — Th4), the set updates by max, and both the next thought and the answer read it. Relatives:
+max-aggregation in neural execution of graph algorithms (Veličković et al. 1910.10593) and NBFNet; algorithmic
+alignment (Xu et al. 1905.13211); the KV cache is already a monotone store for the *readout* — A6 makes the *transition*
+read the accumulated set rather than a fading pointer. Limits: only inflationary reasoning; retraction or negation needs
+stratified sets (as in stratified Datalog); false positives are permanent, so the threshold must be calibrated (T6
+jitter on the set scores is the natural training signal). Toy test deferred until Pilot F reports (GPU budget).
+
+### 22.5 Proposition 7 — method T7: tightness only where it matters
+
+From Prop. 4's corollary and §10 (the circuit is chosen at stage 3): **anytime supervision applied only during the
+selection window** (stages ≤ 3) should give most of the benefit of full-length anytime supervision, and anytime applied
+only after it (stages ≥ 4) little. This is cheaper than full anytime training (its intermediate readouts can be
+dropped once the circuit is set) and it is a falsifiable critical-period claim about algorithm selection in latent
+reasoners. Tested by §23 arms ATW/ATL.
+
+### 22.6 Proposition 8 — slack explains bypass: scope for pretrained models
+
+Let c be the number of hops a model resolves in one forward pass on the task (one-pass capacity; it grows with depth —
+Merrill & Sabharwal 2503.03961, Ye et al. 2510.19753 — and our addendum Q shows c ≥ 6 for GPT-2 on ProsQA-style graphs).
+For an n-hop problem and K latent steps each worth c_s hops, the latent slack is σ = K − ⌈max(0, n − c)/c_s⌉. If n ≤ c,
+σ = K: every latent step is unidentified (Prop. 1 with no constraint at all), and bypassing the latents is a zero-loss
+solution that is shorter than any use of them. **Prediction P8a:** the causal effect of the latent tokens on the answer
+is ≈ 0 for n ≤ c and grows once n > c — a single account of the reports that latent tokens are bypassed or shortcut
+(Aswal et al. 2606.12689; Cui et al. 2602.22441; Rizvi-Martel et al. 2604.06374; our addenda D/G/J/N/Q). **P8b:** test-time
+gains from more latents than trained (K′ > K) appear only when n > c *and* the contract was tight (C1). Design
+consequence (PROTOCOL8): measure c first (one-pass accuracy vs n on the in-context format; addendum P's curve), then
+train at depths above c. At n ≤ c no latent method can show extrapolation in steps, so ProsQA at its native depth is the
+wrong benchmark for it.
+
+## 23. Pilot F — amplitude jitter (T6), the complete fix (C1 + C3) and the selection window (T7) (pre-registered 2026-09-29, before any Pilot F run started and before any Pilot D run finished)
+
+**Question.** Does contraction training (§22.3, Prop. 5) make the latent map restoring and extend reach, alone and on top
+of anytime supervision; and does tightness matter only in the selection window (§22.5)?
+
+* **Arms** (P30 recipe of §6 via `theory/queue_arch.sh`; seeds 900–907, 8 runs per arm; paired by seed with Pilot D):
+  **J** `--jitter 2` (s ~ LogUniform[1/2, 2], p = 0.5 per thought, training only); **JAT** `--anytime 1 --jitter 2`;
+  **ATW** `--anytime 1 --anytime_stages 1:3` (anytime only in curriculum stages 1–3, the selection window);
+  **ATL** `--anytime 1 --anytime_stages 4:5` (anytime only from stage 4 to full depth). Comparison runs: Pilot D's
+  **C** (pd_c_s900–907) and **AT** (pd_at_s900–907), same seeds and code path. Cards may differ within a pair (recorded).
+* **Code.** `theory/arch.py:add_jitter` and `theory/train_arch.py --jitter/--jitter_p/--anytime_stages` (this commit).
+  Unit checks (2026-09-29 ~14:15): jitter active only in training and the state dict unchanged; windowed anytime with
+  the window closed equals the plain loss exactly; with the window open equals unwindowed anytime exactly; CUDA-graph
+  replay draws fresh jitter each step (checked on host 4). Options off ⇒ the Pilot D/E computation is unchanged.
+* **Competence and outcomes** as §6/§20: gate of §6; beyond-depth latent accuracy **d8** = balanced accuracy at distance
+  8 at K′ = 12 (length_gen in eval.json); extrapolates = extrap_K12; far8–10 reported.
+* **Restoring index** (C3). exp9's transfer curve (`theory/exp9_transfer.py:measure`, unchanged; sweep head from
+  `theory/exp2_membership.py`, unchanged; new driver only): **z = log₂(a_out(2)/a_out(1))** — 1 for a linear map, ≤ 0 for a
+  clamped (restoring) one. Computed for J, JAT, C, AT (competent runs).
+* **Pair rule** (all PF comparisons): a pair counts if both runs are competent and their values differ; supported if the
+  predicted direction holds in ≥ 75 % of counted pairs; not supported if ≤ 50 %; otherwise inconclusive; unresolved with
+  fewer than 5 counted pairs. One-sided sign-test p reported (8 pairs is a pilot; no claim rests on p alone).
+* **PF1 (primary, T6 → C3).** z(J) < z(C).
+* **PF2 (primary, T6 → reach).** d8(J) > d8(C).
+* **PF3 (complete fix, C1 + C3).** d8(JAT) > d8(AT); descriptive bar: ≥ 75 % of competent JAT runs extrapolate.
+* **PF4 (selection window, T7).** d8(ATW) > d8(ATL); descriptive: median d8(ATW) within 0.05 of median d8(AT). If Pilot D
+  shows no anytime advantage (PD1 not supported), PF4 is reported as moot.
+* **PF5 (learnability guard).** Competent counts: J vs C and JAT vs AT differ by ≤ 2 of 8 (the restore module's failure
+  mode, §19, must not recur).
+* **Order and hosts.** Appended to the theory hosts' queues after Pilot D/E: J and JAT for all seeds first, then ATW and
+  ATL; hosts 2–4 (host 1 is slow and is released after its D/E pairs). 32 runs, ≈ 24 GPU-hours, ≈ $4; expected
+  completion ~08:00–10:00 EDT 2026-09-30.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
   59 P30 ∪ L competent models; this document.
 * 2026-09-29 ~01:45–02:05 — attenuation analysis (exp6); literature pass; trainer/evaluator for variants; Pilot A
   pre-registered.
+* 2026-09-29 14:00–14:45 — §22 (four conditions C1–C4; Props. 4–8; methods T6 jitter, T7 selection-window
+  anytime; architecture A6 monotone latent set) and §23 (Pilot F pre-registration); jitter/window options added to
+  theory/train_arch.py and uploaded to the hosts (options off ⇒ unchanged computation).
 
 ## 8. Toy simulation of the loop-gain account (Th3) — `theory/sim_gain.py` (exploratory)
 
