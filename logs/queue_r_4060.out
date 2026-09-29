@@ -8,3 +8,12 @@ run  results/budget_sweep_r3_s406.json
 EVAL_DONE r3_s406
 11:12:22 evaluated r3_s406
 11:12:22 start m_s323 (--no_step_emb --K 6 --seed 323 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4 )
+12:19:22 trained m_s323 rc 0
+run  results/competence_m_s323.json
+run  results/competence_matched_m_s323.json
+run  results/length_gen_m_s323.json
+run  results/delayed_trace_m_s323.json
+run  results/budget_sweep_m_s323.json
+EVAL_DONE m_s323
+12:19:45 evaluated m_s323
+12:19:46 start r3_s407 (--no_step_emb --K 6 --seed 407 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 3 )
