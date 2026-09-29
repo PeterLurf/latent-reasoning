@@ -200,3 +200,24 @@ deeper than one pass resolves (ProsQA-style graphs whose answer requires followi
 one-pass accuracy is at chance from 4 added hops), with Coconut's recipe vs anytime (minimum-progress) supervision
 (theory/train_arch.py AnytimeMixin, to be adapted to the Coconut codebase). Pre-register before launch; ~$10–20 of
 cloud credit. PROTOCOL7 T12 (Q-deep) was contingent on Q1 and does not run.
+
+**Candidate outcomes (2026-09-29 14:35, from the theory session, THEORY §13 addendum 9e02cd6; for the pre-registration).**
+The theory session re-read its saved GPT-2 CODI GSM8K accuracy by gold step count s:
+- At s = 3 and s = 4, two latents score below zero latents (0.15 vs 0.24, and 0.11 vs 0.19).
+- The gain from 6 latents over none is largest at s = 2–3 and gone by s ≥ 6.
+- So a truncated chain is worse than none: the non-anytime signature.
+
+Suggested outcomes:
+- (1) Per difficulty stratum, accuracy is non-decreasing in the number of inference latents L = 0..K′: predicted for
+  anytime arms, violated for Coconut arms.
+- (2) Test-time gains at L > K occur only above the one-pass capacity c.
+
+Constraint from our own data: the Coconut GPT-2 ProsQA model's budget sweep is flat, 0.976 at K′ = 0 and 0.974 for
+K′ = 2..12 (`prosqa/res/kprime_test_e50.json`). It is one-pass, so it has no truncation penalty. Outcome (1) therefore
+passes trivially below c. It must be scored only on strata above c, with a tolerance, and together with a non-zero
+latent benefit (acc at K minus acc at 0).
+
+Anytime training supervises intermediate readouts, so monotonicity inside the trained range is partly built in. The
+informative test is at depths and budgets beyond training. CODI's dip at L = 2 may also be a readout
+distribution shift (it never saw a 2-latent context). A Coconut arm trained with random budgets would separate that
+from dynamics keyed to the budget.
