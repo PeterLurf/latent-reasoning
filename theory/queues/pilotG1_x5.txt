@@ -1,0 +1,2 @@
+pg_gl_s902 --seed 902 --arch setmem --set_from_stage 5
+pg_gl_s905 --seed 905 --arch setmem --set_from_stage 5

@@ -1,0 +1,3 @@
+pg_glat_s901 --seed 901 --arch setmem --set_from_stage 5 --anytime 1
+pg_glat_s904 --seed 904 --arch setmem --set_from_stage 5 --anytime 1
+pg_glat_s907 --seed 907 --arch setmem --set_from_stage 5 --anytime 1
