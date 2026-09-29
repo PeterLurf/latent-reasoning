@@ -341,6 +341,31 @@ step does not predict new seeds. P7 (reads the far chain directly) remains the r
 predictor would have to integrate the pointer dynamics over several steps past K (dwell-aware), which is what P7 does
 implicitly.
 
+## 15. Pilot A — scored by the pre-registered rules (2026-09-29 ~09:15 EDT)
+
+Sources: `theory/runs/pa_*/eval.json`, `theory/pilot_table.py`. Stage-1 failures after the relaunch budget count as
+not competent (pa_m_s715, pa_mb2_s731). The buggy MB arm (pa_mb_*) is excluded (amendment A-1).
+
+| arm | competent / run | extrapolate (of competent) | far8–10, competent |
+|---|---|---|---|
+| C coconut | 6 / 8 | 3 / 6 | 0.50 0.57 0.53 0.55 0.50 0.51 (mean 0.526) |
+| M markov | 3 / 8 | 1 / 3 | 0.50 0.51 0.70 (mean 0.570) |
+| M2 markov_l2 | 3 / 4 | 2 / 3 | 0.55 0.50 0.67 |
+| MB2 markov + budget-matched | 2 / 4 | **2 / 2** | **0.59 0.77** |
+| OV coconut + overrun 2 | 2 / 4 | 1 / 2 | 0.52 0.52 |
+
+* **PA1 (primary): unresolved** — only 3 competent M runs (rule needs ≥ 4). Descriptively M 1/3 vs C 3/6: no sign of the
+  predicted jump.
+* **PA2: not supported** — mean far8–10 M 0.570 vs C 0.526 (difference 0.044 < 0.05).
+* **PA3: fails** — M reaches the gate in 3/8 vs C 6/8 (bar: ≥ 0.50): the Markov step is harder to train with this recipe.
+* **PA4:** C's competent non-extrapolators are retrieval-type in 2/3 (pa_c_s702, s707; s706 is a local restart cycle) —
+  meets the ≥ 50 % bar. M failures: pa_m_s712 fades, pa_m_s713 restarts after fading — local failure modes as predicted.
+* Secondary (descriptive, n tiny): the unity contract (MB2) gave the two strongest extrapolators of the pilot (8–10-hop
+  0.59 and 0.77) but only 2 of 4 runs became competent; overrun (OV) did not help (1/2, far 0.52).
+* **Reading:** removing the retrieval channel by architecture does not raise the extrapolating share and costs
+  learnability; the evidence points from the *channel* to the *contract* (slack), which Pilots B (anytime) and C (K
+  dose-response) test directly.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
