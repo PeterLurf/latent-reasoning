@@ -998,6 +998,11 @@ committed; no Pilot C/D/E data used).**
   retrieval share ≈ 1.0 on every dwell). Dwell *positions* do not separate the groups (dwell at h_1–h_5 in 86/57/52/43/19 %
   of extrapolators vs 86/67/24/52/29 % of failures, K6). Reading: the brake exists in both groups (Prop. 9); what differs
   is how it is built — a copy keyed to the history count (fails past K) or a local mechanism that releases past K.
+* *A textbook clock (14:35; `theory/le_pointer.py` on the budget-matched Markov runs, in-sample):* pa_mb2_s730 (Markov, no
+  history channel) runs `1 1 2 2 3 3 | 4 4 5 5 6 6` — a period-2 phase bit carried in the state, realising speed ½, and
+  it keeps running past K at the same speed (extrapolates, far8–10 0.59). pa_mb2_s733 runs `1 1 1 2 3 4 | 5 6 7 8 9 10`
+  (a short warm-up, then unit speed; far8–10 0.77). A clock need not stop at K; what fails is a clock whose continuation
+  past K stops or cycles (the count-indexed retrieval of §2), as Prop. 1 allows.
 
 ## 7. Log
 
