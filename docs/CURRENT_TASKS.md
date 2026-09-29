@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-09-29 13:05 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-09-29 16:05 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -35,70 +35,77 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 > gives fronts to depth 11 in 2/4 runs; Pilot D 12 + 12 running on Vast). Ownership (theory Vast hosts vs a PROTOCOL8)
 > to be agreed. The theory session analyses O/R/T9/T10 runs only after the experiments session has scored them.
 
-## 0. STATE AT 2026-09-29 13:05 — authoritative; sections 1–3 below are partly history
+## 0. STATE AT 2026-09-29 16:05 — authoritative; sections 1–3 below are partly history
 
-**Running (local only; this session has no cloud instances):**
+**Budget.** Vast credit $145.00 at 16:01 (the user added $100 at ~15:35; "runs are up to the agents, just don't
+overspend"). Burn ~$2.9/h: 10 theory hosts plus the 6 hosts below. Plan: theory ≈ $19 through ~03:00 Wed; T9 on Vast
+≈ $12; Phase 0 ≈ $5; PROTOCOL8 (3 arms × 4 seeds, ~12 hosts from ~07:00 Wed) ≈ $40; keep ≥ $10 in reserve. Don't plan
+past that without telling the user. **Every create/destroy goes in `scratch/pods.txt`; an orphaned host is the main
+leak.**
 
-| GPU (torch id) | Queue | Now | Next (chained, automatic) |
+**This session's live Vast hosts (destroy each after a checksum-verified fetch):**
+
+| Instance | Card, $/h | Job | SSH | Expected done → destroy |
+|---|---|---|---|---|
+| 53405514 | A4000, 0.118 | PROTOCOL8 Phase 0 P8-0a no-CoT (`prosqa/pod_p8.sh p8_nocot`) | `ssh -p 40817 root@38.29.145.27` | ~22:30 Tue |
+| 53405925 | 3090, 0.228 | Phase 0 P8-0b Coconut (`p8_coconut`) | `ssh -p 63335 root@142.112.39.215` | ~04:30 Wed |
+| 53410360 | 4070, 0.144 | PROTOCOL7 T9 host A (`scratch/p7s_t9_vA.txt`, 11 runs) | `ssh -p 1839 root@174.0.242.177` | ~04:00 Wed |
+| 53410361 | 3090, 0.208 | T9 host B (`p7s_t9_vB.txt`, 11) | `ssh -p 24373 root@193.143.121.30` | ~04:00 Wed |
+| 53408587 | 3090, 0.299 | T9 host C (`p7s_t9_vC.txt`, 10) | `ssh -p 12428 root@81.166.162.13` | ~03:00 Wed |
+| 53410630 | 4060 Ti, 0.14 | T9 host D (`p7s_t9_vD.txt`, 10) | `ssh -p 13578 root@142.127.68.223` | ~08:30 Wed |
+
+- **Phase 0:** pre-registered in `docs/PROTOCOL8_PHASE0.md` (3a9c05e, 15:09:38). Pod log `/workspace/logs/prosqa.out`,
+  results `/workspace/prosqa/res/`. Watcher `bash scratch/p8_watch.sh "142.112.39.215 63335 coconut" "38.29.145.27
+  40817 nocot"`. On ANALYSIS_DONE, fetch `res/` and the final checkpoint (`prosqa/vfetch.sh`, checksums), destroy,
+  then score by the Phase 0 rules.
+- **T9 on Vast:** PROTOCOL7 amendment 8 (9bb1944, 15:39). Toy code lives in `/workspace/Latent`, log
+  `logs/queue_t9_v?.out` (host clock is UTC). Deploy script `scratch/vdeploy_toy.sh`. When a queue shows QUEUE_DONE,
+  run `bash scratch/vfetch_toy.sh <host> <port> t9` and destroy.
+- The theory session owns `theory-pa-h1..h4` and `theory-x1..x6` (its log `theory/vast_log.txt`); never touch them.
+
+**Local GPUs (detached queues; torch `cuda:0` = 4060, `cuda:1` = 3070, `cuda:2` = 2070):**
+
+| GPU | Now | Next (chained, automatic) | Runs dry |
 |---|---|---|---|
-| RTX 4060 (`cuda:0`) | addendum R `scratch/p6_r_4060.txt` (log `logs/queue_r_4060.out`) | `m_s324`, then the **priority** theory run `fz_g_s950`, then R resumes | PROTOCOL7 T9 `scratch/p7s_t9_4060.txt` (first six seeds already done on vast3, marked claimed) |
-| RTX 3070 (`cuda:1`) | addendum R `scratch/p6_r_3070.txt` | `m_s320`, then the **priority** theory run `fz_gat_s951`, then R resumes | T9 `scratch/p7s_t9_3070.txt` |
-| RTX 2070 (`cuda:2`) | PROTOCOL7 T10 fork graphs `scratch/p7s_t10_2070.txt` (fp32) | `t10fork_s560` | — (queue ends) |
+| RTX 4060 | addendum R `scratch/p6_r_4060.txt` | T9 worker (all its lines are claimed, so it ends at once) → T10 worker `t10_4060` on the shared `scratch/p7s_t10_2070.txt` (fp32) | ~02:30–03:30 Wed |
+| RTX 3070 | addendum R `scratch/p6_r_3070.txt` | same pattern → T10 worker `t10_3070` | same |
+| RTX 2070 | T10 `scratch/p7s_t10_2070.txt` (fp32) | — | same |
 
-**Priority runs (2026-09-29 14:21, at the theory session's request; THEORY §24 Pilot G feasibility, code 0aecb47):**
-`fz_gat_s951` (setmem + anytime, 3070) and `fz_g_s950` (setmem, 4060), one after each card's current R run.
-`scratch/priority_run.sh` holds the R queue's claim lock (`scratch/p6_r_*.txt.lock`), so the worker waits; it runs
-`scratch/prio_<run>.sh` and releases the lock on exit. Logs: `logs/prio_<run>.out`, outputs `theory/runs/fz_*`. This
-delays R by ~1.5 h per card, well inside R's Wed 06:00 cut-off. If a `.lock` outlives its `priority_run.sh` process,
-remove it with `rmdir` so R resumes. Report to the theory session when both finish.
+- **Overnight follow-up:** the plan is to register the next local work before ~23:00 and chain it after T10, so the cards
+  don't idle.
+- **Monitor:** `bash scratch/p7s_monitor.sh` (a queue failure, QUEUE_DONE, or a log.jsonl idle > 75 min). The 3070
+  runs thermally throttled at 80–86 °C. Keep jobs under ~6.5 GB per 8 GB card.
+- **Pilot G feasibility:** done 15:54 (priority slot via `scratch/priority_run.sh`); both runs failed the gate, and
+  Theory has amended Pilot G (G-1).
 
-Monitor: `bash scratch/p7s_monitor.sh` (wakes on a queue failure, a QUEUE_DONE, or a run whose log.jsonl is idle
-> 75 min: the 2070 memory-thrash stall of 09-29 03:05–09:08). Keep jobs under ~6.5 GB per 8 GB card.
+**Waiting to be scored / timeline (Wed 30 Sep unless noted):**
 
-**Scored today (details: PROTOCOL6_RESULTS.md, PROTOCOL7_RESULTS.md; all re-verified by the audit):** O1 not supported;
-P1 supported / P2 not (depth-matched: decline tracks added hops, not depth); Q1 / Q2 not supported (no training-depth
-wall in GPT-2); PROTOCOL7 T1b, T1c, T2b, T13, T4 supported on 44 new O runs; T3, T5, T7 pass; T1, T2, T6, T8b not.
-T11 pilot not learned (T11 stops); T12 not triggered (Q1 not supported).
+| When | Item | Action |
+|---|---|---|
+| ~22:30 Tue | Phase 0 no-CoT | fetch, destroy, compute a₁(m), c, H |
+| ~02:00 | Addendum R | `PYTHONPATH=. python scratch/score_r.py --device cuda:0`, then ping Theory (its LE-R, d75d275) |
+| ~01:00–05:00 | Theory Pilots D/E | Theory messages the result |
+| ~03:00–04:00 | Theory Pilot F | Theory messages PF1–PF3 with competence per arm |
+| ~03:00–08:30 | T9 hosts | fetch, destroy; score T9 when all are in (`scratch/score_p7s_t9.py`) |
+| ~04:30 | Phase 0 Coconut | fetch, destroy, F1 decision |
+| ~06:30 | PROTOCOL8 | pre-register (arms Coconut / anytime / random-tight; design in `docs/NEXT_STEPS.md`, end) |
+| ~07:00 | PROTOCOL8 | launch ~12 hosts as the theory hosts free up |
+| ~03:00 | T10 | score with T9 |
 
-**Waiting to be scored:** addendum R when both R queues show QUEUE_DONE (`PYTHONPATH=. python scratch/score_r.py
---device cuda:0`), then message Theory: its §25 amendment LE-R (d75d275, 14:23:29) tests Prop. 9 on the R models
-and waits for the R competence labels; T9/T10 when their queues end (`PYTHONPATH=. python scratch/score_p7s_t9.py --device cuda:0`), with
-the amendment-3 causal tests and T4 applied to them as secondary. Theory session: THEORY §20 Pilot E (anytime vs control;
-depth wall vs schedule end), results ~2026-09-30 01:00. It will message this session. Also from the theory session
-(14:10, commits f1f21d8, 4be1d16, 24aa547): THEORY §22, a general theory with four conditions for extrapolation
-(identification, homogeneity, stability, idempotence) and Prop. 8 "slack explains bypass", which is the basis for
-PROTOCOL8; §23 Pilot F (jitter, jitter + anytime, anytime only in stages 1–3 or 4–full; seeds 900–907, paired with
-Pilot D) is queued behind D/E on its hosts 2–4.
+**Scored 2026-09-29 (details in PROTOCOL6_RESULTS.md and PROTOCOL7_RESULTS.md; all re-verified by the audit):**
+- O1 not supported.
+- P1 supported, P2 not.
+- Q1 and Q2 not supported.
+- PROTOCOL7:
+  - T1b, T1c, T2b, T13 and T4 supported.
+  - T3, T5 and T7 pass.
+  - T1, T2, T6 and T8b not supported.
+  - T11 pilot not learned.
+  - T12 not triggered.
 
-**Cloud (PROTOCOL8 Phase 0, pre-registered `docs/PROTOCOL8_PHASE0.md`, commit 3a9c05e 15:09:38):**
-- Vast 53405514, A4000, `ssh -p 40817 root@38.29.145.27`: P8-0a no-CoT, ~7 h.
-- Vast 53405925, 3090, `ssh -p 63335 root@142.112.39.215`: P8-0b Coconut, ~10 h training plus ~3 h eval, done
-  ~2026-09-30 04:30.
-
-Pod log `/workspace/logs/prosqa.out`, results `/workspace/prosqa/res/`. Watcher: `bash scratch/p8_watch.sh "142.112.39.215
-63335 coconut" "38.29.145.27 40817 nocot"`. On ANALYSIS_DONE, fetch `res/` and the final checkpoint with
-checksums (`prosqa/vfetch.sh`), destroy the instance, log it in pods.txt, then score by the Phase 0 rules. Earlier
-instances: lifecycle in `scratch/pods.txt`. The four `theory-pa-h*` Vast
-instances belong to the theory session. Shared Vast credit $46.07 at 15:22 (the user topped up ~$25 after 15:10).
-Burn is ~$0.95/h: the 4 theory hosts plus the 2 Phase 0 hosts. That leaves ~$32 at Wed 10:00, enough for the PROTOCOL8
-confirmatory arms (~$15–30, 3 arms) or Pilot J on Vast (~$3–4), not comfortably both. Re-check before registering.
-**Budget plan (2026-09-29 ~15:35; the user leaves runs to the agents, "just don't overspend"):**
-- Pilot J on Vast, on Theory's hosts, ≤ $5.
-- PROTOCOL8 3 arms ≤ $22, with seeds sized from the Phase 0 per-run cost; fallback to 2 arms.
-- ~$5 reserve.
-
-Pilot J does not run locally: a peer-written queue on the local GPUs tripped a permission check. Beyond this plan, ask
-for a top-up.
-**If the user tops up (Audit recommends +$40; agreed with Theory 2026-09-29 ~15:35):**
-- Theory takes ≤ 6 extra hosts now. Pilot F goes first, with PF1–PF3 messaged here ~03:00–04:00 Wed; its hosts drain by
-  ~03:00.
-- PROTOCOL8: register ~06:30 (after the Phase 0 scoring and PF), launch ~07:00 Wed, 3 arms × 4 seeds.
-- T9/T10 go to Vast only with leftover hosts.
-- Check RunPod stock too.
-
-**Candidate next step (needs the user's go-ahead and ~$10–20):** PROTOCOL8, multi-step latent work in a pretrained model
-(`docs/NEXT_STEPS.md`, end). Plan: pre-register after Pilot E is scored. Per THEORY Prop. 8, first measure the one-pass
-capacity c on the exact training format, then train above it.
+**Theory results to cite:**
+- §21: the out-of-sample marker failed; T3 early P7 AUC 0.92.
+- §26 plus controls: re-anchoring at the frontier's depth rescues 55–56/59; random-node anchors 0/59.
 
 ## 1. What is running now (HISTORY before 2026-09-29 — see section 0)
 
