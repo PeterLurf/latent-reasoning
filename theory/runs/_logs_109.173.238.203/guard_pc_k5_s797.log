@@ -1,0 +1,10 @@
+15:05:37 guarding theory/runs/pc_k5_s797 pid 0 max relaunch 3
+15:05:37 launched pid 4025
+15:09:47 stage-1 failure at step 4000; archived as theory/runs/pc_k5_s797_stage1fail_1
+15:09:47 launched pid 4061
+15:13:57 stage-1 failure at step 4000; archived as theory/runs/pc_k5_s797_stage1fail_2
+15:13:57 launched pid 4109
+15:18:07 stage-1 failure at step 4000; archived as theory/runs/pc_k5_s797_stage1fail_3
+15:18:07 launched pid 4145
+15:22:17 stage-1 failure at step 4000; archived as theory/runs/pc_k5_s797_stage1fail_4
+15:22:17 relaunch budget spent

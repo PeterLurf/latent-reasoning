@@ -1,1 +1,10 @@
 09:58:58 start r3_s406 (--no_step_emb --K 6 --seed 406 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 3 )
+11:11:58 trained r3_s406 rc 0
+run  results/competence_r3_s406.json
+run  results/competence_matched_r3_s406.json
+run  results/length_gen_r3_s406.json
+run  results/delayed_trace_r3_s406.json
+run  results/budget_sweep_r3_s406.json
+EVAL_DONE r3_s406
+11:12:22 evaluated r3_s406
+11:12:22 start m_s323 (--no_step_emb --K 6 --seed 323 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4 )
