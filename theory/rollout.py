@@ -61,6 +61,9 @@ def rollout(m, K, src, dst, start, Kp, window=None, window_from=1, feed=None, qn
         xx = (base + te[T_LAT] + (m.step_emb.weight[kk] if getattr(m, "use_step", True) else 0))[:, None]
         nlat = k - 1                                  # latent positions already in the cache
         keep = None
+        if getattr(m, "chunk", None):                   # ChunkReasoner: prefix + this chunk's earlier latent positions
+            cs = ((k - 1) // m.chunk) * m.chunk + 1
+            keep = torch.as_tensor(list(range(P)) + list(range(P + cs - 1, P + nlat)), device=src.device)
         if window is not None and k >= window_from and nlat > window:
             keep = torch.as_tensor(list(range(P)) + list(range(P + nlat - window, P + nlat)), device=src.device)
         new = []
