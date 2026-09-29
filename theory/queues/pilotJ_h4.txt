@@ -1,0 +1,4 @@
+pj_ch3at_s901 --seed 901 --arch chunk3 --anytime 1
+pj_ch3at_s903 --seed 903 --arch chunk3 --anytime 1
+pj_ch3at_s905 --seed 905 --arch chunk3 --anytime 1
+pj_ch3at_s907 --seed 907 --arch chunk3 --anytime 1
