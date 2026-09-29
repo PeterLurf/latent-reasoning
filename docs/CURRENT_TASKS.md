@@ -70,7 +70,15 @@ depth wall vs schedule end), results ~2026-09-30 01:00. It will message this ses
 PROTOCOL8; §23 Pilot F (jitter, jitter + anytime, anytime only in stages 1–3 or 4–full; seeds 900–907, paired with
 Pilot D) is queued behind D/E on its hosts 2–4.
 
-**Cloud:** none of this session's instances remain (lifecycle in `scratch/pods.txt`). The four `theory-pa-h*` Vast
+**Cloud (PROTOCOL8 Phase 0, pre-registered `docs/PROTOCOL8_PHASE0.md`, commit 3a9c05e 15:09:38):**
+- Vast 53405514, A4000, `ssh -p 40817 root@38.29.145.27`: P8-0a no-CoT, ~7 h.
+- Vast 53405925, 3090, `ssh -p 63335 root@142.112.39.215`: P8-0b Coconut, ~10 h training plus ~3 h eval, done
+  ~2026-09-30 04:30.
+
+Pod log `/workspace/logs/prosqa.out`, results `/workspace/prosqa/res/`. Watcher: `bash scratch/p8_watch.sh "142.112.39.215
+63335 coconut" "38.29.145.27 40817 nocot"`. On ANALYSIS_DONE, fetch `res/` and the final checkpoint with
+checksums (`prosqa/vfetch.sh`), destroy the instance, log it in pods.txt, then score by the Phase 0 rules. Earlier
+instances: lifecycle in `scratch/pods.txt`. The four `theory-pa-h*` Vast
 instances belong to the theory session. Shared Vast credit $22.63 at 12:56.
 
 **Candidate next step (needs the user's go-ahead and ~$10–20):** PROTOCOL8, multi-step latent work in a pretrained model
