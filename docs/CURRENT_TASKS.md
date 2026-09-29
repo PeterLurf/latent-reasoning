@@ -61,7 +61,8 @@ wall in GPT-2); PROTOCOL7 T1b, T1c, T2b, T13, T4 supported on 44 new O runs; T3,
 T11 pilot not learned (T11 stops); T12 not triggered (Q1 not supported).
 
 **Waiting to be scored:** addendum R when both R queues show QUEUE_DONE (`PYTHONPATH=. python scratch/score_r.py
---device cuda:0`); T9/T10 when their queues end (`PYTHONPATH=. python scratch/score_p7s_t9.py --device cuda:0`), with
+--device cuda:0`), then message Theory: its §25 amendment LE-R (d75d275, 14:23:29) tests Prop. 9 on the R models
+and waits for the R competence labels; T9/T10 when their queues end (`PYTHONPATH=. python scratch/score_p7s_t9.py --device cuda:0`), with
 the amendment-3 causal tests and T4 applied to them as secondary. Theory session: THEORY §20 Pilot E (anytime vs control;
 depth wall vs schedule end), results ~2026-09-30 01:00. It will message this session. Also from the theory session
 (14:10, commits f1f21d8, 4be1d16, 24aa547): THEORY §22, a general theory with four conditions for extrapolation
