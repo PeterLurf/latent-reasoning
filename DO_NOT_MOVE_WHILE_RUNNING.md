@@ -31,3 +31,17 @@ files; new training runs import `latent/` fresh).
 * If a move is unavoidable after the runs, update every path in `docs/CURRENT_TASKS.md` and the scripts that reference it.
 
 * The folder is now a git repository (`.git/`, branch `main`, `core.autocrlf false`). Do not change line-ending settings: the running bash scripts must stay LF.
+
+## For other agents building on this code (added 2026-09-29 ~01:20)
+
+Queued training runs start over the next days (addendum R, PROTOCOL7 T9/T10) and each one imports `latent/` and runs
+`scratch/queue_worker2.sh`, `scratch/eval_battery.sh`, `scratch/stage1_guard.py` fresh when it starts. Pre-registered
+scorers (`scratch/score_*.py`, `scratch/p7s_*.py`, `scratch/far_sweep_frozen_I.py`, `scratch/far_sweep_layers.py`,
+`latent/frontier_causal*.py`, `prosqa/*.py`) must keep their current behaviour. So:
+
+* Add new modules/files, or new flags whose default keeps today's behaviour; please don't change the behaviour of
+  existing functions in `latent/` (especially `train.py`, `model.py`, `graphs.py`, `data.py`, `competence*.py`,
+  `length_gen.py`, `frontier_amp.py`) or of the scripts above.
+* Don't edit running shell scripts in place (bash reads them line by line) or the queue files `scratch/p6_*.txt`,
+  `scratch/p7s_*.txt` and their `.claimed`/`.lock` files.
+* The folder is under git: `git status` / `git diff` show every change; commit your work on a separate branch if you can.
