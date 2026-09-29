@@ -304,6 +304,18 @@ training depth; attractor / DEQ models and discrete NAR meet C3–C4 by construc
 | **A6** | **Monotone latent set** ("latent set memory"): a membership vector over entities updated by max of non-competitive sigmoid scores, fed back into the thought | C3 + C4 | Prop. 6: members never fade, extra steps are no-ops after convergence, errors grow linearly (k·V·ε) not geometrically; fits every least-fixed-point task (reachability, ProsQA, Horn/Datalog inference) | design; toy test after Pilot F |
 | Th7 | **Slack explains bypass** (Prop. 8): with one-pass capacity c ≥ hops needed, all K latents are unidentified and bypassing them is the shortest zero-loss solution | scope | predicts latent effect ≈ 0 for n ≤ c, > 0 for n > c; test-time latent scaling only for n > c *and* tight contracts | PROTOCOL8 design: measure c first, train above it (pending the user's go/no-go) |
 
+**LLM-scale specifications (for a PROTOCOL8 second phase; GPT-2 Coconut / CODI).**
+* *T6 jitter:* rescale each fed-back thought about the batch mean, h ← c + s(h − c), s ~ LogU[1/r, r], r = 1.5–2,
+  p = 0.5, training only. Centring on the batch mean leaves GPT-2's massive-activation dimensions (nearly constant
+  across examples) in c, so they are not scaled. Outcome: accuracy at L > K on problems above one-pass capacity.
+* *A6 set memory:* a membership vector over the entity tokens of the question (first sub-word embedding of each entity
+  name, E_ent), scores s = W_r h · E_entᵀ, m ← max(m, σ(β(s − τ))), next thought input += γ · W_w(m · E_ent), γ
+  initialised to 0. ProsQA answers are membership questions, so the set is also directly readable.
+* *T5 anytime at LLM scale:* `theory/anytime_loss.py:anytime_ce` — after each latent step, teacher-forced answer loss for
+  examples whose required depth ≤ k + C (C = hops the readout adds; 0 if the answer follows the last thought directly).
+* *Evaluation for all three:* accuracy by difficulty stratum × number of latents L = 0..K′ (non-decreasing in L is the
+  anytime signature; GPT-2 CODI violates it — truncated chains score below no latents, THEORY §13 addendum).
+
 **What would change the field if Pilot F holds.** (i) A one-line training change (T6) that turns graded latent maps into
 restoring ones without state supervision or new parameters — directly applicable to CODI/SIM-CoT/Coconut at LLM scale.
 (ii) A unified reading of random-depth, matched-depth and per-step supervision as the same identifiability fix, with a
