@@ -657,6 +657,16 @@ the slack-induced schedule (§16, §18 Prop. 2), so the two accounts make opposi
   are excluded from both the 70 % share and the one-sided sign test. "Evaluable pairs" = pairs with both runs competent
   and not tied; PE1 needs ≥ 8 of them, else unresolved.
 
+* **Amendment E-2 (2026-09-29 14:30 EDT; operationalisation only, written with the scoring code before any Pilot D run
+  finished; of Pilot E, only pe8_at_s1006 / pe8_c_s1006's gate and d7 lines have been seen, a pair that is not
+  evaluable because its control is not competent).** (i) PE3: "the pointer passes distance X" = the maximum of the
+  ptr_traj pointer depths over thoughts h_0..h_11 (probe(512), K′ = 12) is ≥ X. (ii) PE4: the length_gen evaluator cannot
+  apply the block, so base and blocked beyond-depth accuracy are both taken from `rollout.query_eval` on probe(512) at
+  K′ = 12 — distance 8 = 0.5·(TPR_B + TNR_C) at far index 8 for D/E8, distance 6 = 0.5·(TPR_A + TNR_D) at near index 6
+  for E3 (the same instrument as §20's E3 d6) — and the change is blocked − base. (iii) PD3's "advances at every step from
+  h_2 to h_K, one repeat allowed" = p[i] = p[i−1] + 1 for every i in 2..K except at most one i with p[i] = p[i−1], and no
+  i with p[i] < p[i−1]. Code: `theory/score_pilotDE.py`.
+
 ## 21. Out-of-sample test of the stage-3 retrieval marker on addendum O (pre-registered 2026-09-29 ~13:00 EDT)
 
 Addendum O is scored by the experiments session (results/p_o.json); I have seen only its aggregate (O1 null, 13 vs 13 of
