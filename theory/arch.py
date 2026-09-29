@@ -147,6 +147,27 @@ def run_both_anytime(model, src, dst, start, K, qnodes, target, pnodes=None, cno
     return outs[0], outs[1][..., 0], pl, cl
 
 
+
+def add_jitter(model, r, p=0.5):
+    """Proposal T6 (THEORY §22): amplitude jitter. While training, the thought fed into every latent step is rescaled
+    about the batch mean, h <- c + s (h - c), with s ~ LogUniform[1/r, r] per example, applied with probability p
+    (the exp9 transfer-curve perturbation used as augmentation). Evaluation (model.eval()) is untouched and the
+    state dict is unchanged, so every analysis tool loads these checkpoints as they are."""
+    base, logr = model.latent_step, math.log(r)
+
+    def latent_step(h, k, cache, keep_resid=False):
+        if model.training:
+            B = h.shape[0]
+            s = torch.exp((2 * torch.rand(B, 1, device=h.device) - 1) * logr)
+            s = torch.where(torch.rand(B, 1, device=h.device) < p, s, torch.ones_like(s)).to(h.dtype)
+            c = h.mean(0, keepdim=True).detach()
+            h = c + s * (h - c)
+        return base(h, k, cache, keep_resid)
+    model.latent_step = latent_step
+    model.jitter = (r, p)
+    return model
+
+
 def build(kind, **kw):
     if kind == "coconut":
         return LatentReasoner(**kw)

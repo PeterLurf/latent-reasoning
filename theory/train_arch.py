@@ -4,6 +4,9 @@
   --budget_match                    latent budget per step = min(K, curriculum depth + 1) (no dwell needed; eval uses K)
   --overrun M                       latent budget drawn from K..K+M each step (the last thought is sometimes fed on)
   --device cpu                      eager step instead of the CUDA-graph step (smoke tests)
+  --jitter R [--jitter_p P]         amplitude jitter of the fed-back thought during training (THEORY §22, T6)
+  --anytime_stages LO:HI            anytime supervision only while the curriculum stage (max depth; full = NPB - 1) is
+                                    in LO..HI; plain final-step loss otherwise (THEORY §23, critical-window arms)
 Example:
     python theory/train_arch.py --arch markov --K 6 --seed 0 --device cuda:0 --out theory/runs/mk_s0
 """
@@ -54,8 +57,10 @@ class AnytimeMixin:
         K = ld.shape[0]
         ks = torch.arange(1, K + 1, device=ld.device, dtype=qd.dtype)
         md = ((qy[None] == 0) | (qd[None] <= ks[:, None, None] + C)).float()
-        md[-1] = 1.0
         mu = ((ty[None] == 0) | (tgtd[None] <= ks[:, None] + C)).float()
+        if getattr(self, "windowed", False):     # w_any = 0 leaves only the final step: the ordinary loss
+            md = md * self.w_any; mu = mu * self.w_any
+        md[-1] = 1.0
         mu[-1] = 1.0
         bd = F.binary_cross_entropy_with_logits(ld.float(), qy[None].expand_as(ld), reduction="none")
         bu = F.binary_cross_entropy_with_logits(lu.float(), ty[None].expand_as(lu), reduction="none")
@@ -180,6 +185,10 @@ def main(argv=None):
     p.add_argument("--overrun", type=int, default=0)
     p.add_argument("--anytime", type=int, default=None, help="anytime supervision slack C (queries after step k must "
                    "know reachable nodes within distance k + C); off by default")
+    p.add_argument("--jitter", type=float, default=0.0, help="T6 amplitude jitter ratio r (s ~ LogU[1/r, r]); 0 = off")
+    p.add_argument("--jitter_p", type=float, default=0.5, help="probability a thought is jittered")
+    p.add_argument("--anytime_stages", default="", help='"lo:hi": anytime loss only in curriculum stages lo..hi '
+                   "(stage = max depth; full = NPB - 1); requires --anytime")
     p.add_argument("--out", required=True)
     a = p.parse_args(argv)
     Ks = [a.K]
@@ -200,10 +209,15 @@ def main(argv=None):
     os.makedirs(a.out, exist_ok=True)
     dev = a.device
 
-    json.dump({"arch": a.arch, "budget_match": a.budget_match, "overrun": a.overrun, "anytime": a.anytime},
+    json.dump({"arch": a.arch, "budget_match": a.budget_match, "overrun": a.overrun, "anytime": a.anytime,
+               **({"jitter": a.jitter, "jitter_p": a.jitter_p} if a.jitter else {}),
+               **({"anytime_stages": a.anytime_stages} if a.anytime_stages else {})},
               open(os.path.join(a.out, "arch.json"), "w"))
     model = build(a.arch, d=a.d, n_layers=a.layers, n_heads=a.heads, k_max=max(a.K + a.overrun, 8), mode=a.mode,
                   emb=a.emb, d_id=a.d_id, init=a.init, feedback=a.feedback, step_emb=not a.no_step_emb).to(dev)
+    if a.jitter:
+        from arch import add_jitter
+        add_jitter(model, a.jitter, a.jitter_p)
     lr_t = torch.tensor(a.lr, device=dev)
     cpu = dev == "cpu"
     opt = torch.optim.AdamW(model.parameters(), lr=lr_t, weight_decay=a.wd, betas=(0.9, 0.98),
@@ -224,6 +238,11 @@ def main(argv=None):
     else:
         gstep = EagerStep(model, opt, a.upfront_weight) if cpu else GraphedStep(model, opt, Ks, a.bs, E, a.Q, a.upfront_weight, dev, amp)
     gstep.w_children.fill_(a.children_weight)
+    win = None
+    if a.anytime_stages:
+        assert a.anytime is not None, "--anytime_stages needs --anytime"
+        win = tuple(map(int, a.anytime_stages.split(":")))
+        gstep.windowed, gstep.w_any = True, torch.tensor(1.0, device=dev)
     # depth curriculum: "1:1500,2:1500" -> max within-branch depth 1 for 1500 steps, then 2, ...
     # or "gated": start at max depth 1, advance when held-out delayed bal-acc at the
     # current stage >= gate (checked every 500 steps), full depth after stage NPB-2.
@@ -301,6 +320,10 @@ def main(argv=None):
         b = make_batch(rng, g, a.Q, dev)
         lr_t.fill_(lr_at(step))
         gstep.w_aux.fill_(aux_at(step))
+        if win is not None:
+            dstage = max_depth_at(step)
+            dstage = NPB - 1 if dstage is None else dstage
+            gstep.w_any.fill_(1.0 if win[0] <= dstage <= win[1] else 0.0)
         # K drawn from its own (seed, step) stream: the data stream is untouched and resume stays exact
         K_step = int(np.random.default_rng([a.seed, step]).integers(Ks[0], Ks[-1] + 1)) if a.K_random else a.K
         if a.budget_match:
