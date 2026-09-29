@@ -53,3 +53,57 @@ run  results/budget_sweep_o_s117.json
 EVAL_DONE o_s117
 22:34:08 evaluated o_s117
 22:34:09 start o_s118 (--no_step_emb --K 6 --seed 118 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
+02:05:09 trained o_s118 rc 0
+run  results/competence_o_s118.json
+run  results/competence_matched_o_s118.json
+run  results/length_gen_o_s118.json
+run  results/delayed_trace_o_s118.json
+run  results/budget_sweep_o_s118.json
+EVAL_DONE o_s118
+02:06:04 evaluated o_s118
+02:06:05 start o_s119 (--no_step_emb --K 6 --seed 119 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
+03:12:05 trained o_s119 rc 0
+run  results/competence_o_s119.json
+run  results/competence_matched_o_s119.json
+run  results/length_gen_o_s119.json
+run  results/delayed_trace_o_s119.json
+run  results/budget_sweep_o_s119.json
+EVAL_DONE o_s119
+03:12:28 evaluated o_s119
+03:12:28 start o_s120 (--no_step_emb --K 6 --seed 120 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
+04:04:28 trained o_s120 rc 0
+run  results/competence_o_s120.json
+run  results/competence_matched_o_s120.json
+run  results/length_gen_o_s120.json
+run  results/delayed_trace_o_s120.json
+run  results/budget_sweep_o_s120.json
+EVAL_DONE o_s120
+04:04:51 evaluated o_s120
+04:04:51 start o_s121 (--no_step_emb --K 6 --seed 121 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
+05:04:02 trained o_s121 rc 0
+run  results/competence_o_s121.json
+run  results/competence_matched_o_s121.json
+run  results/length_gen_o_s121.json
+run  results/delayed_trace_o_s121.json
+run  results/budget_sweep_o_s121.json
+EVAL_DONE o_s121
+05:04:25 evaluated o_s121
+05:04:25 start o_s122 (--no_step_emb --K 6 --seed 122 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
+05:56:25 trained o_s122 rc 0
+run  results/competence_o_s122.json
+run  results/competence_matched_o_s122.json
+run  results/length_gen_o_s122.json
+run  results/delayed_trace_o_s122.json
+run  results/budget_sweep_o_s122.json
+EVAL_DONE o_s122
+05:56:48 evaluated o_s122
+05:56:49 start o_s123 (--no_step_emb --K 6 --seed 123 --lr 5e-4 --amp bf16 --save_every 1000 --aux_steps 20000 --aux_anneal 5000 )
+06:55:49 trained o_s123 rc 0
+run  results/competence_o_s123.json
+run  results/competence_matched_o_s123.json
+run  results/length_gen_o_s123.json
+run  results/delayed_trace_o_s123.json
+run  results/budget_sweep_o_s123.json
+EVAL_DONE o_s123
+06:56:17 evaluated o_s123
+06:56:17 QUEUE_DONE

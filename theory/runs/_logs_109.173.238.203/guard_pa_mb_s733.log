@@ -1,0 +1,10 @@
+09:03:06 guarding theory/runs/pa_mb_s733 pid 0 max relaunch 3
+09:03:06 launched pid 965
+09:07:16 stage-1 failure at step 4200; archived as theory/runs/pa_mb_s733_stage1fail_1
+09:07:16 launched pid 1001
+09:11:26 stage-1 failure at step 4200; archived as theory/runs/pa_mb_s733_stage1fail_2
+09:11:26 launched pid 1037
+09:15:36 stage-1 failure at step 4200; archived as theory/runs/pa_mb_s733_stage1fail_3
+09:15:36 launched pid 1073
+09:19:46 stage-1 failure at step 4200; archived as theory/runs/pa_mb_s733_stage1fail_4
+09:19:46 relaunch budget spent

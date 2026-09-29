@@ -1,0 +1,10 @@
+22:07:09 guarding runs/ob_s141 pid 0 max relaunch 3
+22:07:09 launched pid 19797
+22:13:19 stage-1 failure at step 4400; archived as runs/ob_s141_stage1fail_1
+22:13:19 launched pid 21275
+22:19:29 stage-1 failure at step 4400; archived as runs/ob_s141_stage1fail_2
+22:19:29 launched pid 22774
+22:25:39 stage-1 failure at step 4400; archived as runs/ob_s141_stage1fail_3
+22:25:39 launched pid 24268
+22:31:49 stage-1 failure at step 4400; archived as runs/ob_s141_stage1fail_4
+22:31:49 relaunch budget spent

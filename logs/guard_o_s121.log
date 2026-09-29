@@ -1,0 +1,5 @@
+04:04:51 guarding runs/o_s121 pid 0 max relaunch 3
+04:04:52 launched pid 7440
+04:12:02 stage-1 failure at step 4000; archived as runs/o_s121_stage1fail_1
+04:12:02 launched pid 19652
+04:18:02 stage 1 passed at step 3400 ; waiting for the run to end

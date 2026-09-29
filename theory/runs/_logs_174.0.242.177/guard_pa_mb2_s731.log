@@ -1,0 +1,8 @@
+10:14:23 guarding theory/runs/pa_mb2_s731 pid 0 max relaunch 3
+10:14:23 launched pid 1924
+10:19:33 stage-1 failure at step 4400; archived as theory/runs/pa_mb2_s731_stage1fail_1
+10:19:33 launched pid 1976
+10:24:43 stage-1 failure at step 4400; archived as theory/runs/pa_mb2_s731_stage1fail_2
+10:24:43 launched pid 2028
+10:29:54 stage-1 failure at step 4400; archived as theory/runs/pa_mb2_s731_stage1fail_3
+10:29:54 launched pid 2101
