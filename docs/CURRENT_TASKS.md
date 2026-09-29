@@ -25,6 +25,16 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 > variants, pre-registered in `docs/THEORY.md` §6): `/workspace/Latent/theory/runs/pa_*`, log
 > `/workspace/Latent/logs/queue_theory-pa-h<N>.out`; fetch with `bash theory/vfetch_arch.sh <host> <port>`. Queues hold Pilots A–D (`theory/queues/`, ~21 runs per host, until about 20:00 EDT on 2026-09-29; A scored, B/C/D running). Host 4 also runs the GPT-2 latent-reasoner probe (`/workspace/codi_batch.sh`, log `/workspace/codi_batch.log`). Theory CPU jobs locally: keep ≤ 3–4 threads at Idle priority (they starved the local GPUs once, 2026-09-29 ~07:00).
 
+> **Theory ↔ experiments coordination (2026-09-29 ~12:10).** Messages exchanged between the experiments session and the
+> theory session (claude-54). Shared understanding: the horizon is a propagation limit, the readout generalises. Theory
+> additions (docs/THEORY.md, executive summary at top): the latent thought is a pointer that breaks at step K + 1;
+> failing seeds retrieve it from earlier latent positions on a step-indexed schedule (masking that from step K on rescues
+> 17/23, zero in-distribution effect); the circuit is chosen in curriculum stage 3; the cause is slack (budget > hops
+> needed). **Proposed joint test:** anytime (minimum-progress) supervision at K = 8 and on cap-3 graphs — a depth wall
+> predicts the front still stops at the training depth, a schedule end predicts it continues (K = 6 anytime already
+> gives fronts to depth 11 in 2/4 runs; Pilot D 12 + 12 running on Vast). Ownership (theory Vast hosts vs a PROTOCOL8)
+> to be agreed. The theory session analyses O/R/T9/T10 runs only after the experiments session has scored them.
+
 ## 1. What is running now
 
 ### Local PC (3 GPUs; torch `cuda:0` = RTX 4060, `cuda:1` = RTX 3070, `cuda:2` = RTX 2070 — nvidia-smi numbers differ)
