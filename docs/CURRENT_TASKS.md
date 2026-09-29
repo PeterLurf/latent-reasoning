@@ -58,6 +58,11 @@ leak.**
   results `/workspace/prosqa/res/`. Watcher `bash scratch/p8_watch.sh "142.112.39.215 63335 coconut" "38.29.145.27
   40817 nocot"`. On ANALYSIS_DONE, fetch `res/` and the final checkpoint (`prosqa/vfetch.sh`, checksums), destroy,
   then score by the Phase 0 rules.
+- **Phase 0 note (19:20):** Coconut's in-run validation (exact match, generation capped at 128 tokens by `run.py`) reads
+  0/100 through the early stages. The deep problems' language CoT runs past 128 tokens before the answer, so it
+  climbs only as latents replace steps (7/100 at epoch 15). It isn't a Phase 0 measure: the pre-registered measures
+  are candidate log-prob comparisons (`long_eval2.py`, `eval_p8.py`, max 220 new tokens for CoT). The Coconut pod runs
+  ~14 min per epoch, so training ends ~02:40 and evaluation ~05:30–06:00.
 - **T9 on Vast:** PROTOCOL7 amendment 8 (9bb1944, 15:39). Toy code lives in `/workspace/Latent`, log
   `logs/queue_t9_v?.out` (host clock is UTC). Deploy script `scratch/vdeploy_toy.sh`. When a queue shows QUEUE_DONE,
   run `bash scratch/vfetch_toy.sh <host> <port> t9` and destroy.
