@@ -781,7 +781,7 @@ consequence (PROTOCOL8): measure c first (one-pass accuracy vs n on the in-conte
 train at depths above c. At n ≤ c no latent method can show extrapolation in steps, so ProsQA at its native depth is the
 wrong benchmark for it.
 
-### 22.7 Addendum (2026-09-29 ~14:15 EDT): literature check of §22 (Literature session; `docs/ADVISOR_2026-09-29.md` addendum)
+### 22.7 Addendum (2026-09-29, committed 2e9fa17 14:15:32 EDT): literature check of §22 (Literature session; `docs/ADVISOR_2026-09-29.md` addendum)
 
 * **Prop. 4 needs a second condition.** Kuo et al. 2606.29983 train with K = clip(n + Δ, 1, 20), Δ ~ U{−5..5} (the support
   includes tight and under-budget K), and it helps; but their **length-matched K = n was the worst** out of distribution
@@ -842,7 +842,7 @@ of anytime supervision; and does tightness matter only in the selection window (
   ATL; hosts 2–4 (host 1 is slow and is released after its D/E pairs). 32 runs, ≈ 24 GPU-hours, ≈ $4; expected
   completion ~08:00–10:00 EDT 2026-09-30.
 
-## 24. Pilot G — monotone latent set (A6) (pre-registered 2026-09-29, before any Pilot G run started)
+## 24. Pilot G — monotone latent set (A6) (pre-registered 2026-09-29, committed 2e9fa17 14:15:32 EDT, before any Pilot G run started)
 
 **Question.** Does a monotone, max-updated set memory (§22.4, Prop. 6; `theory/arch.py:SetMemReasoner`, `--arch setmem`)
 make the latent computation extrapolate, alone and with anytime supervision (C1 + C3 + C4)?
@@ -850,7 +850,7 @@ make the latent computation extrapolate, alone and with anytime supervision (C1 
 * **Architecture.** After each latent step the thought is scored against the id table, m_k = max(m_{k−1},
   σ(β(r(h_k)·E_idᵀ − τ))), and γ·W(m_k·E_id) is added to the next latent input; γ is initialised to 0 (so at
   initialisation the model equals Coconut exactly — checked, max difference 0.0), β = 8, τ = 0.5 learned. Unit checks
-  (~14:12): m non-decreasing over 12 steps; anytime path runs; CUDA-graph training runs and γ moves (host 4 smoke run).
+  (~14:13): m non-decreasing over 12 steps; anytime path runs; CUDA-graph training runs and γ moves (host 4 smoke run).
 * **Arms** (P30 recipe; seeds 900–907; paired by seed with Pilot D): **G** `--arch setmem`; **GAT** `--arch setmem
   --anytime 1`. Comparison: Pilot D's C and AT. 16 runs.
 * **Outcomes, pair rule and competence** exactly as §23 (d8 at K′ = 12; ≥ 75 % of counted pairs; ≥ 5 counted pairs).
@@ -863,7 +863,7 @@ make the latent computation extrapolate, alone and with anytime supervision (C1 
 * **Order and hosts.** Host 1 (after its D/E pairs, ~02:00): GAT then G for seeds 900–901; hosts 2–4 after Pilot F:
   the remaining 12, GAT first. Expected completion ~12:00–14:00 EDT 2026-09-30; ≈ $3.
 
-## 25. Proposition 9 — slack creates the clock (least-effort brake); pre-registered pointer predictions for Pilots C, D, E (2026-09-29 ~14:25 EDT, before any Pilot C/D/E pointer trajectory was computed)
+## 25. Proposition 9 — slack creates the clock (least-effort brake); pre-registered pointer predictions for Pilots C, D, E (2026-09-29, committed 7b6875c 14:18:52 EDT, before any Pilot C/D/E pointer trajectory was computed)
 
 **Observation (retrospective, 59 P30/L models, `theory/results/pointer_taxonomy.json`).** The pointer depth of the last
 fed-back thought, p[K−1] (long-chain probe, top sweep head, `analyse_pointer.py`), is the same for K = 6 and K = 8:
@@ -906,9 +906,9 @@ calls it for pc_*, pd_*, pe8_*, pe3_* runs):
 * 2026-09-29 13:55–14:09 — §22 (four conditions C1–C4; Props. 4–8; methods T6 jitter, T7 selection-window
   anytime; architecture A6 monotone latent set) and §23 (Pilot F pre-registration); jitter/window options added to
   theory/train_arch.py and uploaded to the hosts (options off ⇒ unchanged computation).
-* 2026-09-29 ~14:10–14:20 — theory/anytime_loss.py for PROTOCOL8; §22.7 (literature check: Prop. 4 refined with
+* 2026-09-29 ~14:11–14:16 — theory/anytime_loss.py for PROTOCOL8; §22.7 (literature check: Prop. 4 refined with
   condition (b), novelty levels); A6 implemented (`--arch setmem`); §24 Pilot G pre-registered.
-* 2026-09-29 ~14:20–14:30 — §25 Prop. 9 (fractional budget-law speed needs a clock; slack forces C2 violations) and
+* 2026-09-29 ~14:15–14:19 — §25 Prop. 9 (fractional budget-law speed needs a clock; slack forces C2 violations) and
   pointer predictions LE1–LE3 for Pilots C/D/E, registered before their pointer trajectories were computed.
 
 ## 8. Toy simulation of the loop-gain account (Th3) — `theory/sim_gain.py` (exploratory)
