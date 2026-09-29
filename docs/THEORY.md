@@ -1101,6 +1101,24 @@ single episode at K′ = 12 → 24/59, layer-2 block → 41/59; 16 failures are 
   choice among frontier nodes is the remaining bottleneck (branching over the whole frontier would close it).
   Extrapolating models are reported separately (descriptive; our account predicts gains there too at 8–10 hops,
   because they also fade — Mechanism 2 — not "no gain").
+* **Controls result (scored 2026-09-29 15:26 EDT; `theory/results/score_reanchor_controls.json`).**
+
+  | second-episode anchor | 7-hop success (of 59) | failures (of 34) | mean far8–10 | mean near1–6 |
+  |---|---|---|---|---|
+  | none (single episode, K′ = 12) | 24 | 1 | 0.533 | — |
+  | model's decode | 55 | 31 | 0.612 | 0.864 |
+  | random node | **0** | 0 | 0.503 | 0.826 |
+  | random reachable node, same depth | 56 | 32 | 0.619 | 0.868 |
+  | oracle: probed chain's node at that depth | **59** | **34** | **0.885** | 0.937 |
+
+  **RC1 not met as written** — the band was ±0.02 around the single episode, and random-node anchors fall *below* it
+  (far8–10 −0.030, 7-hop 0/59, near −0.035): a random fresh episode hurts rather than helps, so the conclusion RC1 was
+  meant to protect ("the gain is not from any fresh episode") holds more strongly than predicted. **RC2 met** (56 vs 55):
+  the gain comes from restarting at the frontier's depth; the model's choice among the W frontier nodes is at chance
+  (its anchor lies on the probed chain in 30 % of graphs ≈ mean 1/W). **RC3 met** (+0.273): restarted at the right
+  frontier node, *failing* models reach 0.872 at 8–10 hops and all 34 pass 7 hops — each K-step episode is fully
+  competent from any start; only the continuation past K was broken. Extrapolators gain too (single 0.573 → oracle 0.903
+  at 8–10 hops), as expected from their fading (Mechanism 2).
 * **Implication for the field (C2).** Latent reasoners do not need to extrapolate in the number of steps if they are
   re-anchored: train a bounded-horizon latent loop, decode its state to a discrete checkpoint every K steps, and
   restart. Training-time counterpart: continue training from the model's own step-K states with the counter reset
