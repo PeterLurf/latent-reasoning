@@ -1,0 +1,8 @@
+pe8_at_s1000 --seed 1000 --K 8 --anytime 1
+pe8_c_s1000 --seed 1000 --K 8
+pe3_at_s1010 --seed 1010 --depth_cap 3 --anytime 1
+pe3_c_s1010 --seed 1010 --depth_cap 3
+pd_at_s900 --seed 900 --anytime 1
+pd_c_s900 --seed 900
+pd_at_s901 --seed 901 --anytime 1
+pd_c_s901 --seed 901

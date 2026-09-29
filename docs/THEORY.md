@@ -502,6 +502,42 @@ experiment.
 * Pilot C interim (not scored): K5 1/3 competent (does not extrapolate), K7 1/1 competent (extrapolates, 0.63) — early and
   opposite in direction to PC1 so far; K5 is hard to learn with this recipe.
 
+## 20. Pilot E — depth wall or schedule end? (pre-registered 2026-09-29 ~12:40 EDT, before any Pilot D or E run started;
+## design agreed with the experiments session)
+
+**Question.** Failing fronts stop at the training depth (PROTOCOL6 L2, M1). Is that a **depth wall** (DW: the frontier
+cannot cross the trained depth whatever the schedule) or a **schedule end** (SE: the front stops because a
+slack-induced step-indexed schedule ends; without slack it continues)? Anytime (minimum-progress) supervision removes
+the slack-induced schedule (§16, §18 Prop. 2), so the two accounts make opposite predictions for anytime-trained models.
+
+* **Amendment D-1 to Pilot D (§17), made before any D run started:** the control arm uses the **same seeds** as the anytime
+  arm (C seeds 900–911 instead of 920–931), each pair on the same host. PD1–PD4 unchanged; a paired sign test is added.
+* **Arms** (same recipe and evaluation as Pilots A–D; each pair = anytime run + control run, same seed, same host):
+  **D** K = 6, training depth 6: seeds 900–911 (12 pairs, = Pilot D); **E8** K = 8, training depth 6
+  (`--K 8`, anytime `--K 8 --anytime 1`): seeds 1000–1007 (8 pairs); **E3** K = 6, training capped at depth 3, i.e.
+  distance ≤ 4 (`--depth_cap 3`, anytime `--depth_cap 3 --anytime 1`): seeds 1010–1017 (8 pairs).
+* **Competence.** D, E8: the gate of §6. E3: final stage full and matched 4-hop bal-acc ≥ 0.60 (the R rule for cap 3,
+  `scratch/score_r.py`).
+* **Beyond-depth latent accuracy** (the query itself adds one hop — T1c — so the first latent-dependent distance is
+  trained distance + 2): D, E8: **d8** = balanced accuracy at distance 8 at K′ = 12 (length_gen); E3: **d6** = balanced
+  accuracy at distance 6 on the long-chain probe (chain A vs its look-alike D) at K′ = 12. A run **crosses** if this
+  accuracy ≥ 0.60.
+* **PE1 (primary; pooled D ∪ E8 ∪ E3; pairs with both runs competent).** SE supported if the anytime run's beyond-depth
+  accuracy exceeds its control's in ≥ 70 % of evaluable pairs with one-sided sign-test p < 0.05, **and** ≥ 50 % of
+  competent anytime runs in E8 ∪ E3 cross. DW supported if ≤ 20 % of competent anytime runs in E8 ∪ E3 cross. Otherwise
+  inconclusive. Needs ≥ 8 evaluable pairs, else unresolved.
+* **PE2 (slack).** The anytime − control difference in crossing share is larger in E8 (K = 8) than in D (K = 6).
+  Descriptive (reported with both shares).
+* **PE3 (pointer).** On the long-chain probe (theory/rollout.py, sweep head, K′ = 12), the pointer passes trained
+  depth + 2 (D, E8: distance 8; E3: distance 6) in ≥ 60 % of competent anytime runs and ≤ 30 % of competent controls.
+* **PE4 (causal).** Competent controls that do not cross: masking layer-2 latent→latent attention from step K on raises
+  beyond-depth accuracy by ≥ 0.05 in ≥ 50 %. Competent anytime runs: mean absolute change ≤ 0.05 (they need no block).
+* **Supplementary** (reported, not scored): P7/P8 per layer from the experiments session's frozen tools, copied
+  unmodified to `theory/frozen/` (far_sweep_layers.py, far_sweep_frozen_I.py, frontier_causal2.py; natural-mass inject
+  and block).
+* **Order and hosts.** Pairs interleaved across the four theory hosts after Pilot C, E8 and E3 pairs placed early; host 1
+  (slower) gets fewer pairs. Expected completion ~01:00 EDT 2026-09-30, cost ≈ $7 at $0.60/h.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
