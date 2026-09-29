@@ -236,7 +236,7 @@ dropped. A test whose population ends up below its minimum is reported as unreso
   full-depth step; each scored in its better direction, and P7 must beat the **best** of them (maximum recomputed in
   each bootstrap resample, so the comparison is conservative for P7). Rules otherwise as T4. Code `scratch/p7s_t4.py`.
 
-## Amendment 6 (2026-09-29 ~00:52, before the T11 pilot was launched)
+## Amendment 6 (2026-09-29 ~00:49, before the T11 pilot was launched)
 
 * **T11 pilot (exploratory).** `prosqa/prosqa_s11p.yaml`: the Coconut ProsQA recipe (50 epochs, effective batch 128,
   fp32, standard question-first format, no answer mask) with `from_scratch: True, n_layer: 2` (GPT-2 architecture,

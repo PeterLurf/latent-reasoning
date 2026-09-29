@@ -53,6 +53,12 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 * **GitHub:** local git repository in D:\Latent (branch main, `core.autocrlf false` — keep it: bash scripts must stay LF).
   GitHub CLI at `C:\Users\peter\.local\gh\bin\gh.exe`; after `gh auth login`, create the private repo and push
   (`gh repo create <name> --private --source . --push`). Weights and raw ProsQA logs are git-ignored.
+* **PROTOCOL7 T11 pilot (from-scratch 2-layer GPT-2 on ProsQA; amendment 6) — Vast 53306310, RTX 3090, $0.173/h,
+  `ssh -p 6399 root@142.127.68.223`**, launched 2026-09-29 ~00:51 with `prosqa/vdeploy.sh` (RunPod A4500 at $0.19 vanished
+  on create). cuInit 0, driver 560, md5 of regenerated sets match. ~3.7 min/epoch → training ~3 h, then analyses. Fetch:
+  `bash prosqa/vfetch.sh 142.127.68.223 6399 prosqa/res_s11p /workspace/ckpt/prosqa-coconut-s11p/checkpoint_50 prosqa/ckpt/s11p_checkpoint_50`,
+  then destroy. Continue to confirmatory seeds only if test ≥ 0.85 at K = 6 and the hop clock increases (T11 rule);
+  fix the P7-analogue floor in an amendment first (needs credit: ~10 seeds × ~$0.7).
 * **Chained after M (addendum O, long scaffold, paired with P30 seeds):** `chain_after.sh logs/queue_m_<gpu>.out o_<gpu> ...`
   starts `p6_o_<gpu>.txt` (4060: o_s100..111, 3070: o_s112..123, 2070: o_dev6_s51..56; `--aux_steps 20000`). Score:
   paired success (competent + extrapolates) vs `p30_s*` / `dev6_s51..56`; rules in PROTOCOL6.md addendum O (scorer not
