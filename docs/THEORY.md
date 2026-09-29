@@ -51,7 +51,7 @@ times below (local EDT) and the first-run times from the host queue logs.
   was unmeasured. It is not a blind prospective test.
 * From here on every time in this document is taken from `date` or the commit.
 
-## Executive summary (updated 2026-09-29 ~10:30 EDT)
+## Executive summary (updated 2026-09-29 14:27 EDT)
 
 **Question.** Why do some Coconut-style latent reasoners follow chains past their training depth and others stop there?
 
@@ -66,8 +66,21 @@ times below (local EDT) and the first-run times from the host queue logs.
    local map is restoring vs 1/11 otherwise. **Causal/dissociation.**
 4. **Cause: slack.** When the latent budget exceeds the hops needed, any schedule that visits each depth once fits the
    loss, so the continuation past K is unidentified (§18 Prop. 1). The circuit is chosen in curriculum stage 3 (§10);
-   retrieval ≥ 0.25 at the end of stage 3 → 0/12 extrapolate in-sample, but the marker **failed out of sample** on addendum O (AUC 0.51 vs early P7 0.92, §21). Retrospectively, extrapolation falls with K
-   (47 % at K = 6 vs 26 % at K = 8, §11).
+   retrieval ≥ 0.25 at the end of stage 3 → 0/12 extrapolate in-sample, but the marker **failed out of sample** on addendum O (AUC 0.51 vs early P7 0.92, §21). The K dose-response form of the account **failed** in Pilot C
+   (K5 3/4 = K7 3/4 extrapolate; PC1 not supported, §11 result), though retrieval share does rise with K.
+5. **Slack creates the clock (§25, Prop. 9).** With slack, the front reaches only the demanded depth by step K (p[K−1] ≈ 3
+   at K = 5, 6, 7 and 8), i.e. it runs at a fractional speed; a pointer-state transition can only realise that with a
+   phase variable — a clock (history count, step embedding, or a decaying amplitude) — whose continuation past K is
+   unidentified. Enforcing tightness removes the need for any clock (links C1 and C2 below). Pre-registered tests LE1–LE4
+   and LE-R (out of sample on addendum R) are pending.
+
+**General theory (§22): four conditions for extrapolation in the number of latent steps** — C1 identification (tight
+contracts during circuit selection; Prop. 4 — random, matched and per-step budgets are one mechanism, refined in §22.7
+after Kuo et al.), C2 homogeneity (no usable clock), C3 stability (a restoring map; Prop. 5), C4 idempotence at
+completion (Prop. 6). No Coconut-family method targets C3 or C4. Prop. 8: latent tokens are bypassed whenever the
+problem fits in one forward pass (slack = K), so extrapolation in latent steps can only be tested above one-pass capacity
+(the basis of the experiments session's PROTOCOL8). New methods: **T6 amplitude jitter** (C3 through the loss),
+**T7 selection-window supervision**, **A6 monotone latent set** (C3 + C4 by construction) — Pilots F and G (§23, §24).
 
 **What failed or did not hold (reported, not buried):**
 * Markov architecture alone (no latent→latent attention): no gain, harder to train (Pilot A: PA1 unresolved, PA2 not
@@ -91,8 +104,10 @@ times below (local EDT) and the first-run times from the host queue logs.
   chain-following past the answer options (addendum P), a one-pass capacity limit. Our CODI / SIM-CoT GSM8K probe (§13)
   fits the same picture: extra latents neither help nor expose a hidden stepwise operator.
 
-**Running:** Pilots B (anytime / restore, done ~13:00), C (K = 5 / 7 dose-response), D (anytime vs control, 12 + 12;
-until ~20:00) on 4 Vast GPUs (~$0.60/h). Proposals for the field: `docs/PROPOSALS.md`.
+**Running (as of 14:27):** Pilots D/E (anytime vs control, 28 same-seed pairs; ~01:00–05:00 EDT 2026-09-30), then F
+(jitter, jitter + anytime, selection window; 32 runs) and G (set memory; 16 runs) on 4 Vast GPUs (~$0.60/h), until
+~12:00–14:00 EDT 2026-09-30; two G feasibility runs on the experiments session's local GPUs. Pilots A, B (except
+pb_atr_s780) and C are scored. Proposals for the field: `docs/PROPOSALS.md` (§8 = second round).
 
 ## 0. The question
 
