@@ -88,6 +88,10 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
   QUEUE_DONE and `bash scratch/vfetch_toy.sh 174.0.242.177 1743 t9` is checksum-verified. **Status 2026-09-29 ~07:05:**
   vast1 and vast2 O runs fetched (16 + 12 models; 4 stage-1 failures) and destroyed; vast3 O runs fetched (12 models,
   4 stage-1 failures), T9 continuing there. The 4 `theory-pa-h*` Vast instances belong to another agent — leave them.
+* **Theory session (peer "Latent", docs/THEORY.md) owns the depth-wall vs schedule-end test:** THEORY §20 Pilot E +
+  amendment D-1 to §17 (commit 3ded4f5, frozen before any run). Anytime supervision vs control, same-seed pairs: K 6
+  (seeds 900-911), K 8 (1000-1007), cap-3 (1010-1017); scored on d8 (d6 for cap 3). Runs on its Vast hosts (theory-pa-h*),
+  done ~2026-09-30 01:00; it will message the scored result. Don't touch its instances or theory/ files.
 * **Chained after M (addendum O, long scaffold, paired with P30 seeds):** `chain_after.sh logs/queue_m_<gpu>.out o_<gpu> ...`
   starts `p6_o_<gpu>.txt` (4060: o_s100..111, 3070: o_s112..123, 2070: o_dev6_s51..56; `--aux_steps 20000`). Score:
   paired success (competent + extrapolates) vs `p30_s*` / `dev6_s51..56`; rules in PROTOCOL6.md addendum O (scorer `scratch/score_o.py`, written before data; was: scorer not
