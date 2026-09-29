@@ -961,7 +961,7 @@ make the latent computation extrapolate, alone and with anytime supervision (C1 
   (setmem) ended at curriculum stage 4 (not competent; delayed 0.875, m5 0.592) and fz_gat_s951 (setmem + anytime) was
   still in stage 3 at step 27 200 — neither reached full depth, against 71 % for the P30 recipe (41 of 58 P30 runs reach
   full depth, median step 18 000; n = 2, so P ≈ 0.08 if learnability were unchanged — weak evidence; numbers corrected
-  from "~75 %, P ≈ 0.06" at 15:50 after counting). The set gate moved off 0 (≈ −0.08), so the set is used and apparently interferes with
+  from "~75 %, P ≈ 0.06" at 15:55 after counting). The set gate moved off 0 (≈ −0.08), so the set is used and apparently interferes with
   the curriculum, as the restore module did. G and GAT stay as registered (PG4 measures learnability). Added arms, on
   the Literature session's suggestion to introduce restoration after the curriculum: **GL** `--arch setmem
   --set_from_stage 5` (the set write is off — the model is exactly Coconut — until full depth, then on) and **GLAT** (the
