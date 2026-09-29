@@ -189,3 +189,14 @@ The standard algebra and sufficient bounds provide tools for testing the model. 
 
 ## Equations (as written in the document)
 
+
+## Candidate PROTOCOL8 (2026-09-29, from the Q result and the theory session)
+
+**Multi-step latent work in a pretrained model.** Addenda P and Q show Coconut GPT-2 computes ProsQA in one pass: no
+training-depth wall, extra thoughts never help, and its limit is following chains added past the answer options. The
+toy model's slack / schedule-end account (THEORY.md) applies only to models whose thoughts carry a step schedule. The
+next question is whether a pretrained model can be made to do genuinely multi-step latent work: train on problems
+deeper than one pass resolves (ProsQA-style graphs whose answer requires following long added chains, where P shows
+one-pass accuracy is at chance from 4 added hops), with Coconut's recipe vs anytime (minimum-progress) supervision
+(theory/train_arch.py AnytimeMixin, to be adapted to the Coconut codebase). Pre-register before launch; ~$10–20 of
+cloud credit. PROTOCOL7 T12 (Q-deep) was contingent on Q1 and does not run.
