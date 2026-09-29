@@ -897,6 +897,15 @@ calls it for pc_*, pd_*, pe8_*, pe3_* runs):
   control's median.
 * Reported with each: in-range dwell counts, and post-K speed (p[K+3] − p[K−1]) split by extrapolation.
 
+* **Amendment LE-R (2026-09-29 14:23 EDT, suggested by the experiments session; before any addendum-R outcome was read
+  and before any R model was measured).** Out-of-sample test of Prop. 9 on the experiments session's addendum R (K = 6,
+  `--depth_cap 3`: r3_s400–411; `--depth_cap 4`: m_s317–328; different recipe owner, local cards). Same frozen
+  measurement (ptr_traj on probe(512), model loaded from `runs/<run>/model.pt` only); competence and labels taken from
+  the experiments session's R scoring **after** it is posted. Predictions: **LE3-R** median p[K−1] ≤ 2 in competent
+  cap-3 runs and ≤ 3 in competent cap-4 runs; **LE3-R dose** median(cap 3) < median(cap 4) ≤ median(uncapped P30,
+  in-sample = 3). Unresolved for an arm with < 4 competent runs. The already-scored m_s301–316 (cap 4) are in-sample
+  context only.
+
 **Exploratory addendum to §25 (2026-09-29 14:22 EDT; retrospective, P30/L data only, computed after LE1–LE3 were
 committed; no Pilot C/D/E data used).**
 * *Demand met stage by stage* (`theory/results/exp7_dev.json`, 34 checkpointed models, last checkpoint of each curriculum
