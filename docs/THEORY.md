@@ -9,7 +9,7 @@ measurements run on the CPU on existing `runs/` models; nothing here touches the
 §3 theory · §4 attenuation (Mechanism 2) · §5 architectures · §6 Pilot A pre-registration · §9 Pilot B · §10 developmental
 race · §11 Pilot C · §12 training-free repair · §13 GPT-2 latent reasoners · §14 transfer curves (+ failed out-of-sample
 rule) · §15 Pilot A scored · §16 Pilot B interim · §17 Pilot D · §18 formal sketch · §19 Pilot B scored · §20 Pilot E ·
-§21 O marker test · **§22 four conditions C1–C4, Props. 4–8, new methods T6/T7 and architecture A6** · §23 Pilot F · §7 log · §8 toy simulation. (Sections were appended in the order written, so numbers are not in
+§21 O marker test · **§22 four conditions C1–C4, Props. 4–8, new methods T6/T7 and architecture A6** · §23 Pilot F · §24 Pilot G (A6) · §7 log · §8 toy simulation. (Sections were appended in the order written, so numbers are not in
 page order.)
 
 ## Timestamp correction (2026-09-29 12:59 EDT, prompted by the Audit session; machine clock via `date`, Vast logs in UTC = EDT + 4)
@@ -781,6 +781,34 @@ consequence (PROTOCOL8): measure c first (one-pass accuracy vs n on the in-conte
 train at depths above c. At n ≤ c no latent method can show extrapolation in steps, so ProsQA at its native depth is the
 wrong benchmark for it.
 
+### 22.7 Addendum (2026-09-29 ~14:15 EDT): literature check of §22 (Literature session; `docs/ADVISOR_2026-09-29.md` addendum)
+
+* **Prop. 4 needs a second condition.** Kuo et al. 2606.29983 train with K = clip(n + Δ, 1, 20), Δ ~ U{−5..5} (the support
+  includes tight and under-budget K), and it helps; but their **length-matched K = n was the worst** out of distribution
+  (22.1 % vs 34.2 % for fixed K = 20 and 45.0 % for RL halting). A deterministic tight budget that is a function of
+  something the model can observe (length) makes T observable, so the premise of Prop. 4(b) fails, and it makes the
+  loop count a usable clock (C2). **Prop. 4, refined:** random or matched budgets help iff (a) the support reaches the
+  tight budget at the selection stage **and** (b) T is not a deterministic function of an observable of the example.
+  Our MB2 (K = stage depth + 1, constant within a stage while example depths vary) satisfies (b); a per-example
+  T = depth + 1 would not, and is predicted to do worse than MB2 or anytime. DR-Loop (R ~ clip(Poisson(4), 2, 8),
+  independent of n) and Huginn (r mostly below the mean) satisfy both, which is consistent.
+* **Novelty, stated honestly.** T6 (jitter) — *medium-low*: training a recurrence to denoise its own state is known
+  (Mozer et al. 1805.08394 State-Denoised RNNs, the closest in purpose; Lim et al. 2102.04877 Noisy RNNs, with theory;
+  Lamb et al. 1905.11382 state reification; Huginn's random initial state). New here: multiplicative amplitude jitter of
+  a Coconut-style fed-back thought with no auxiliary loss or target, and Prop. 5's statement that it excludes graded
+  maps. A6 — the principle (max aggregation for reachability) is standard (Veličković et al. 1910.10593; Bonet
+  2609.15932, set-aggregation recurrent GNNs ≡ reachability logic); new as a latent-CoT state (no Coconut-style model
+  with a max-updated set thought found; Gu 2609.13747 cumulative superposition is the continuous counterpart). T7 —
+  *low-medium*: Ali 2605.04396 shows weight decay in one 25 % window matches full weight decay OOD; ours is supervision,
+  not regularisation, in a mechanistically located window. Prop. 8 — *medium*: bypass is well documented (Rizvi-Martel,
+  Cui 2602.22441, Aswal; Think-at-Hard 2511.08577: most tokens right after one pass, extra iterations overthink; Pfau
+  2404.15758: filler tokens help only when more computation is needed); a formal slack/capacity statement with a
+  falsifiable depth threshold was not found.
+* **Independent support for C2 (history hurts extrapolation):** Kavuncu 2609.19521 (cellular automata, train to depth 6,
+  test to 12): a current-state-only recurrent transformer reaches 98.1 % at depth 12, CoTFormer with an expanding cache
+  of earlier states 50.3 %; clearing the cache restores extrapolation. There the cache *interferes* rather than being
+  retrieved from — a different route to the same C2 violation as our retrieval schedules.
+
 ## 23. Pilot F — amplitude jitter (T6), the complete fix (C1 + C3) and the selection window (T7) (pre-registered 2026-09-29, committed f1f21d8 14:09:05 EDT, before any Pilot F run started and before any Pilot D run finished)
 
 **Question.** Does contraction training (§22.3, Prop. 5) make the latent map restoring and extend reach, alone and on top
@@ -814,6 +842,27 @@ of anytime supervision; and does tightness matter only in the selection window (
   ATL; hosts 2–4 (host 1 is slow and is released after its D/E pairs). 32 runs, ≈ 24 GPU-hours, ≈ $4; expected
   completion ~08:00–10:00 EDT 2026-09-30.
 
+## 24. Pilot G — monotone latent set (A6) (pre-registered 2026-09-29, before any Pilot G run started)
+
+**Question.** Does a monotone, max-updated set memory (§22.4, Prop. 6; `theory/arch.py:SetMemReasoner`, `--arch setmem`)
+make the latent computation extrapolate, alone and with anytime supervision (C1 + C3 + C4)?
+
+* **Architecture.** After each latent step the thought is scored against the id table, m_k = max(m_{k−1},
+  σ(β(r(h_k)·E_idᵀ − τ))), and γ·W(m_k·E_id) is added to the next latent input; γ is initialised to 0 (so at
+  initialisation the model equals Coconut exactly — checked, max difference 0.0), β = 8, τ = 0.5 learned. Unit checks
+  (~14:12): m non-decreasing over 12 steps; anytime path runs; CUDA-graph training runs and γ moves (host 4 smoke run).
+* **Arms** (P30 recipe; seeds 900–907; paired by seed with Pilot D): **G** `--arch setmem`; **GAT** `--arch setmem
+  --anytime 1`. Comparison: Pilot D's C and AT. 16 runs.
+* **Outcomes, pair rule and competence** exactly as §23 (d8 at K′ = 12; ≥ 75 % of counted pairs; ≥ 5 counted pairs).
+* **Manipulation check (decides interpretability).** Final |γ|, and d8 with the set ablated at evaluation (γ → 0). The set
+  counts as *used* in a run if ablation lowers d8 by ≥ 0.05 or lowers delayed in-distribution bal-acc by ≥ 0.05. If it is
+  used in fewer than half of the competent G ∪ GAT runs, PG1–PG3 are reported as "set unused" (no verdict on A6).
+* **PG1.** d8(G) > d8(C). **PG2.** d8(GAT) > d8(AT). **PG3 (C4, no overthinking).** Far-chain bal-acc at K′ = 16 minus at
+  K′ = 12 (length_gen, distances 8–10 pooled) is ≥ −0.01 in ≥ 75 % of competent G ∪ GAT runs and higher (paired) than in
+  C/AT. **PG4 (learnability).** Competent counts G vs C and GAT vs AT differ by ≤ 2 of 8.
+* **Order and hosts.** Host 1 (after its D/E pairs, ~02:00): GAT then G for seeds 900–901; hosts 2–4 after Pilot F:
+  the remaining 12, GAT first. Expected completion ~12:00–14:00 EDT 2026-09-30; ≈ $3.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
@@ -823,6 +872,8 @@ of anytime supervision; and does tightness matter only in the selection window (
 * 2026-09-29 13:55–14:09 — §22 (four conditions C1–C4; Props. 4–8; methods T6 jitter, T7 selection-window
   anytime; architecture A6 monotone latent set) and §23 (Pilot F pre-registration); jitter/window options added to
   theory/train_arch.py and uploaded to the hosts (options off ⇒ unchanged computation).
+* 2026-09-29 ~14:10–14:20 — theory/anytime_loss.py for PROTOCOL8; §22.7 (literature check: Prop. 4 refined with
+  condition (b), novelty levels); A6 implemented (`--arch setmem`); §24 Pilot G pre-registered.
 
 ## 8. Toy simulation of the loop-gain account (Th3) — `theory/sim_gain.py` (exploratory)
 
