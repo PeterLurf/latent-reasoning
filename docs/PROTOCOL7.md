@@ -1,6 +1,6 @@
 # PROTOCOL 7 — confirmation suite for the horizon account (pre-registration)
 
-Written 2026-09-28 ~23:45 EDT, before any data below were generated or any analysis below was run. Append-only:
+Written 2026-09-28 ~23:30 EDT, before any data below were generated or any analysis below was run. Append-only:
 deviations go in dated amendments at the end. Frozen code named here is copied to `scratch/*_frozen_P7S.py` (or
 `latent/frontier_causal.py` as committed) before the first confirmatory run.
 
@@ -162,3 +162,56 @@ graph family (T10); the toy→ProsQA gap (T11, T12).
 
 Cut-offs: T9/T10 runs not started by Mon 2026-10-05 00:00 are dropped; T11 seeds not started by the same time are
 dropped. A test whose population ends up below its minimum is reported as unresolved, never re-specified.
+
+## Amendment 1 (2026-09-28 ~23:38, before any T1/T2 measurement on a test-population model)
+
+* Only equivalence and manipulation checks have been run, on two exploration models outside every test population
+  (`runs/main_s1` with step embedding, `runs/nostep_s0` without): the intervention-free rollout of
+  `latent/frontier_causal.py` reproduces `LatentReasoner.latent_step` + `query` exactly (256/256 graphs × 24 queries
+  identical), and an injection sets the requested per-head mass exactly (`scratch/test_frontier_causal.py`).
+* **T2 natural mass** is the per-head *peak over steps 1–6* of the mean attention on A's distance-6 edge (the text
+  above says "at step 6"): 13 of 22 Part V models read a depth over several steps, so step 6 need not be their step
+  for that edge. Everything else in T1/T2 is unchanged.
+* Frozen code: `latent/frontier_causal.py` as in git commit f77d6ff (local repository; pushed to the private GitHub
+  repository once access is set up).
+* Test populations, from `results/p30.json` and `results/p_l.json` (frozen P7, extrapolation labels): T1 = competent
+  extrapolators; T2 = competent non-extrapolators with P7 < 0.10. Output `results/p7s_causal.json`; scorer
+  `scratch/score_p7s_t12.py` (written before the run).
+
+## Amendment 2 (2026-09-28 ~23:42, before any checkpoint was measured for T3)
+
+* T3 population = P30 ∪ L competent runs above the floor that have step checkpoints locally (Vast-trained runs were
+  fetched without them). Checkpoint = the saved one nearest to (full-depth arrival + offset), ties to the earlier.
+  Full-depth arrival = the logged curriculum advance to "full" (`curriculum_advance_to: null`).
+* An early checkpoint whose in_peak is below the floor (0.03) gets P7 = 0 (no measurable frontier to cross) and is
+  counted and reported. Code: `scratch/p7s_t3.py` (frozen `far_sweep_frozen_I.measure`, loader pointed at the
+  checkpoint).
+
+## Amendment 3 (2026-09-28 ~23:48, after T1, T2 and T3 were scored and T1/T2 explored; before any addendum-O run was measured by any PROTOCOL7 code)
+
+* **Why.** T1 and T2 were "not supported" as pre-registered, and exploration on 5 + 5 of their models
+  (`scratch/p7s_explore.py`, `results/p7s_explore.json`) showed why: (i) distance-7 answers come from a one-hop read
+  at query time (blocking the query's read of the A6 → B1 edge takes TPR_B1 from ~0.5 to ~0), so the latent frontier
+  must be tested on distances ≥ 8, where blocking B in the latent attention does cut answers in extrapolators;
+  (ii) T2's "natural mass" (anchored on A's distance-6 edge, which the latent sweep barely reads: ~0.02) was ≈ uniform
+  attention; the sharp part of the sweep (depths 2–5) reaches ~0.2–0.3 in one or two heads, and a strong injection
+  rescues distance 8–12 answers while the same injection on the decoy chain creates false positives. These are
+  exploratory; the tests below are confirmatory on models no PROTOCOL7 code has touched.
+* **Population.** Competent, above-floor runs of addendum O (both arms: `o_*`, `ob_*`; local and Vast), measured by
+  `latent/frontier_causal2.py` (fresh probe seed 4243, K′ = 12) and the frozen `far_sweep_frozen_I.py --seed 2033`.
+  Scorer `scratch/score_p7s_amend3.py` (written now). The same tests are applied to T9/T10 runs as secondary.
+* **Positive control.** Blocking A in the first block's latent attention lowers mean TPR on A4–A6 by ≥ 0.20 in
+  ≥ 80 % of runs; otherwise T1b–T2b are uninterpretable.
+* **T1b (necessity at distances 8–10).** Extrapolators whose base mean TPR(B2–B4) exceeds mean FP(C2–C4) by ≥ 0.10:
+  blocking B in every block's latent attention lowers mean TPR(B2–B4) by ≥ 0.15 while blocking D changes it by
+  ≤ 0.05. Supported if ≥ 70 % of eligible runs; not if ≤ 40 %.
+* **T1c (distance 7 is a query-time hop).** Runs with base TPR_B1 ≥ 0.35: blocking the query's read of A6 → B1
+  lowers TPR_B1 by ≥ 0.30 in ≥ 80 % → supported; ≤ 50 % → not.
+* **T2b (rescue at natural scale).** Non-extrapolators with P7 < 0.10: head h's attention on B-edge j at step 6 + j is
+  raised to its natural mass m_h = max over depths 2–5 and steps 1–6 of its mean attention on A's edge into that depth.
+  Rescued if mean TPR(B2–B6) rises by ≥ 0.20 and the same injection on C raises mean FP(C2–C6) by ≥ 0.10.
+  Supported (the horizon is a propagation limit; the readout uses a supplied frontier) if ≥ 60 %; not if ≤ 20 %.
+* **T13 (P8 predicts extrapolation beyond the query-time hop).** extrap8 = d8 ≥ 0.60 with CI lower bound > 0.55 at
+  K′ = 12 (length_gen); P8 = max over steps of the distance-8 far excess / in_peak (frozen far_sweep output). AUC(P8)
+  ≥ 0.80 supported, < 0.65 not (needs ≥ 3 of each); AUC(P7) for extrap8 reported.
+* **Reporting.** T1 and T2 stay "not supported" as pre-registered; T1b–T2b are new tests, not re-scorings.
