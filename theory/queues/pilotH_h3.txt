@@ -1,0 +1,14 @@
+ph_at_s126 --seed 126 --init_from runs/p30_s126/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0 --anytime 1
+ph_c_s126 --seed 126 --init_from runs/p30_s126/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0
+ph_jat_s126 --seed 126 --init_from runs/p30_s126/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0 --anytime 1 --jitter 2
+ph_at_s135 --seed 135 --init_from runs/p30_s135/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0 --anytime 1
+ph_c_s135 --seed 135 --init_from runs/p30_s135/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0
+ph_jat_s135 --seed 135 --init_from runs/p30_s135/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0 --anytime 1 --jitter 2
+ph_at_s125 --seed 125 --init_from runs/p30_s125/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0 --anytime 1
+ph_c_s125 --seed 125 --init_from runs/p30_s125/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0
+ph_at_s130 --seed 130 --init_from runs/p30_s130/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0 --anytime 1
+ph_c_s130 --seed 130 --init_from runs/p30_s130/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0
+ph_at_s131 --seed 131 --init_from runs/p30_s131/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0 --anytime 1
+ph_c_s131 --seed 131 --init_from runs/p30_s131/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0
+ph_at_s132 --seed 132 --init_from runs/p30_s132/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0 --anytime 1
+ph_c_s132 --seed 132 --init_from runs/p30_s132/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0

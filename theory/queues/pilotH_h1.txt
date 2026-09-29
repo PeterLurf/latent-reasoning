@@ -1,0 +1,6 @@
+ph_at_s102 --seed 102 --init_from runs/p30_s102/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0 --anytime 1
+ph_c_s102 --seed 102 --init_from runs/p30_s102/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0
+ph_jat_s102 --seed 102 --init_from runs/p30_s102/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0 --anytime 1 --jitter 2
+ph_at_s109 --seed 109 --init_from runs/p30_s109/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0 --anytime 1
+ph_c_s109 --seed 109 --init_from runs/p30_s109/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0
+ph_jat_s109 --seed 109 --init_from runs/p30_s109/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0 --anytime 1 --jitter 2
