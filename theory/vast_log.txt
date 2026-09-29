@@ -10,3 +10,5 @@
 53408518 theory-x4 RTX_3080 0.115 1.208.108.242:55107 created 2026-09-29 15:44 (Pilots F/G/I/J + moved D/E pairs; THEORY §23-§29)
 53408522 theory-x5 RTX_3080 0.162 85.51.34.67:40302 created 2026-09-29 15:44 (Pilots F/G/I/J + moved D/E pairs; THEORY §23-§29)
 53408526 theory-x6 RTX_4070 0.202 159.48.242.2:35175 created 2026-09-29 15:44 (Pilots F/G/I/J + moved D/E pairs; THEORY §23-§29)
+53408508 theory-x2 RTX_3090 0.169 38.64.63.175:21214 destroyed 2026-09-29 16:28: SSH refused (direct and proxy) since ~16:20, host daemon not answering log requests; no run had finished, nothing to fetch (first attempt stopped at the CLI's confirmation prompt; destroyed with -y at 16:28: destroying instance 53408508.)
+53414051 theory-x2b RTX_3090 0.161 79.112.26.222:41215 created 2026-09-29 16:35 (replacement for theory-x2; same 18-run queue: theory/queues/parallel_x2b.txt)
