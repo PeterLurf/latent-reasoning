@@ -108,8 +108,7 @@ problem fits in one forward pass (slack = K), so extrapolation in latent steps c
 
 **Running (as of 14:27):** Pilots D/E (anytime vs control, 28 same-seed pairs; ~01:00–05:00 EDT 2026-09-30), then F
 (jitter, jitter + anytime, selection window; 32 runs) and G (set memory; 16 runs) on 4 Vast GPUs (~$0.60/h), until
-~12:00–14:00 EDT 2026-09-30; two G feasibility runs on the experiments session's local GPUs. Pilots A, B (except
-pb_atr_s780) and C are scored. Proposals for the field: `docs/PROPOSALS.md` (§8 = second round).
+~12:00–14:00 EDT 2026-09-30; two G feasibility runs on the experiments session's local GPUs. Pilots A, B and C are scored. Proposals for the field: `docs/PROPOSALS.md` (§8 = second round).
 
 ## 0. The question
 
@@ -616,6 +615,23 @@ experiment.
   soft clamp on the pointer norm) before it can be tested.
 * Pilot C interim (not scored): K5 1/3 competent (does not extrapolate), K7 1/1 competent (extrapolates, 0.63) — early and
   opposite in direction to PC1 so far; K5 is hard to learn with this recipe.
+
+**§19 final (2026-09-29 14:37 EDT; host 1's last three runs fetched).** pb_mat_s760 stopped at stage 4 (not competent);
+pb_mr_s770 is competent and extrapolates (d7 0.772, far8–10 0.709); pb_atr_s780 is competent and extrapolates (d7 0.647,
+far8–10 0.510).
+
+| arm | competent / run | extrapolate (of competent) | far8–10, competent |
+|---|---|---|---|
+| AT | 4 / 4 | 3 / 4 | 0.56 0.52 0.51 0.67 |
+| MAT | 1 / 4 | 1 / 1 | 0.60 |
+| MR | 1 / 4 | 1 / 1 | 0.71 |
+| ATR | 2 / 4 | 2 / 2 | 0.51 0.53 |
+
+* PB1 **supported (n = 4)**, PB3 **met** — unchanged. Pooled AT ∪ MAT: 4 of 5 competent runs extrapolate.
+* PB2 unchanged: no dwell in 4/5 competent AT/MAT runs, but a revert at K + 1 in 1/5 → the "0 reverts" half **not met**.
+* PB4 **met on a single run** (MR 0.709 vs Pilot A M mean 0.570; rule ≥ +0.05) — with n = 1 it is not evidence; the
+  restore module's main effect is on learnability (MR 1/4, ATR 2/4 vs AT 4/4), which motivated the zero-initialised gate
+  in A6 (§24).
 
 ## 20. Pilot E — depth wall or schedule end? (pre-registered 2026-09-29 ~12:40 EDT, before any Pilot D or E run started;
 ## design agreed with the experiments session)
