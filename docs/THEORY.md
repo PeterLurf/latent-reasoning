@@ -929,6 +929,9 @@ of anytime supervision; and does tightness matter only in the selection window (
   (16 runs) to keep the shared Vast credit within the user's "don't overspend" instruction and make room for Pilot J.
   PF4 (the selection-window test, T7) is therefore not run; Pilot H's fine-tuning arms (§27) address the related
   critical-period question on trained models. PF1–PF3 and PF5 are unchanged.
+* **Amendment F-2 (2026-09-29 15:38 EDT, before any Pilot F run started).** The user added Vast credit ($145.83 at 15:37),
+  so **ATW and ATL are restored** exactly as registered, and PF4 is back in force (still moot if PD1 is not supported).
+  Pilot F now runs on additional hosts in parallel (placement below does not change any prediction).
 
 ## 24. Pilot G — monotone latent set (A6) (pre-registered 2026-09-29, committed 2e9fa17 14:15:32 EDT, before any Pilot G run started)
 
@@ -1178,6 +1181,8 @@ timestep encodings raise the expressivity of looped transformers; this pilot is 
 * **Order.** 16 runs appended after Pilot G on the four theory hosts (~2 h at the end of the queue).
 * **Amendment I-1 (2026-09-29 15:28 EDT, before any Pilot I run started; budget).** Arm **PER3 is withdrawn**; Pilot I is
   PER2 only (8 runs). PI1–PI3 are evaluated on PER2.
+* **Amendment I-2 (2026-09-29 15:38 EDT, before any Pilot I run started).** Credit added: **PER3 is restored**; PI1–PI3 are
+  evaluated on PER2 ∪ PER3 as first registered.
 
 ## 29. Pilot J — chunk-reset latent attention (A8; CTM sliding window) (pre-registered 2026-09-29 15:19 EDT, before any Pilot J run started)
 
