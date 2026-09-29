@@ -1,0 +1,4 @@
+pg_gat_s903 --seed 903 --arch setmem --anytime 1
+pg_gat_s906 --seed 906 --arch setmem --anytime 1
+pg_g_s903 --seed 903 --arch setmem
+pg_g_s906 --seed 906 --arch setmem
