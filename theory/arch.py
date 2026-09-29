@@ -125,6 +125,42 @@ class VariantReasoner(MarkovReasoner):
         return (self._restore(h2) if self.restore else h2), new, None
 
 
+class SetMemReasoner(LatentReasoner):
+    """A6 (THEORY §22.4): monotone latent set memory next to the continuous thought.
+
+    After every latent step the output thought is scored against every node id (shared id table), passed through a
+    per-id sigmoid (non-competitive membership) and merged into the set by an elementwise max:
+        m_k = max(m_{k-1}, sigmoid(beta * (r(h_k) @ E_id.T - tau)))      (m_0 = 0; non-decreasing in k)
+    The set is fed back into the next latent input, h_k + gamma * W(m_k @ E_id), with gamma initialised to 0 (the
+    restore module's learnability failure, §19, came from an untrained write at full strength). A found node can
+    therefore never fade from the transition's input (Prop. 6a); the queries still read every latent position.
+    """
+    def __init__(self, *a, set_beta=8.0, set_tau=0.5, **kw):
+        super().__init__(*a, **kw)
+        d, d_id = self.d, self.id_emb.weight.shape[1]
+        self.s_read = nn.Linear(d, d_id)
+        self.s_write = nn.Linear(d_id, d, bias=False)
+        for m_ in (self.s_read, self.s_write):
+            nn.init.normal_(m_.weight, std=0.02)
+        nn.init.zeros_(self.s_read.bias)
+        self.s_beta = nn.Parameter(torch.tensor(float(set_beta)))
+        self.s_tau = nn.Parameter(torch.tensor(float(set_tau)))
+        self.s_gate = nn.Parameter(torch.zeros(()))
+        self._m = None
+
+    def set_scores(self, h):
+        E = self.id_emb.weight
+        return torch.sigmoid(self.s_beta * (self.s_read(h) @ E.T - self.s_tau))
+
+    def latent_step(self, h, k, cache, keep_resid=False):
+        if k == 1 or self._m is None or self._m.shape[0] != h.shape[0]:
+            self._m = torch.zeros(h.shape[0], self.id_emb.weight.shape[0], device=h.device, dtype=h.dtype)
+        x = h + self.s_gate * self.s_write(self._m.to(h.dtype) @ self.id_emb.weight.to(h.dtype))
+        h2, new, resid = super().latent_step(x, k, cache, keep_resid)
+        self._m = torch.maximum(self._m.to(h2.dtype), self.set_scores(h2).to(h2.dtype))
+        return h2, new, resid
+
+
 def run_both_anytime(model, src, dst, start, K, qnodes, target, pnodes=None, cnodes=None):
     """As run_both, but returns delayed and upfront logits after every latent step: (K, B, Q) and (K, B).
     Works for LatentReasoner and the Markov/Variant subclasses (sets the prefix length they need)."""
@@ -181,4 +217,6 @@ def build(kind, **kw):
             "markov_restore_sigread": dict(markov_layers=(0, 1), restore=True, sigread=True)}
     if kind in opts:
         return VariantReasoner(**opts[kind], **kw)
+    if kind == "setmem":
+        return SetMemReasoner(**kw)
     raise ValueError(kind)
