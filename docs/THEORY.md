@@ -225,6 +225,12 @@ models (13 retrieval-type failures, 11 local extrapolators).
 * Whichever circuit wins in stage 3 persists to the end (retrieval shares stay 0.3–1.0 on the same steps through full
   depth); later stages only extend it. This places the commitment window (PROTOCOL6 E1: 2/4 agreement from stage-2
   entry, 5/6 from stage 4, 6/6 at full depth) in stage 3, when the first latent advance is learned.
+* **Unselected check (all 34 locally checkpointed competent P30/L models, 12 extrapolate;
+  `theory/results/exp7_stage_features.json`).** Mean retrieval share of the trained transitions at the *last checkpoint
+  of stage 3* predicts final extrapolation: AUC 0.78 (0.79 at the first stage-4 checkpoint, 0.75 at full-depth arrival,
+  0.67 at the end). With share ≥ 0.25 at the end of stage 3, **0 of 12** extrapolate; below, 12 of 22. A near-certain
+  negative marker available before stage 4 (P7 at full-depth arrival, PROTOCOL7 T3, is the better positive marker:
+  AUC 0.93, but later). Exploratory; a prospective test needs new checkpointed runs (Pilot A–C runs have checkpoints).
 * **Markov failures are fade-triggered resets, not clocks.** In pa_m_s713 the pointer restarts at depth 1 exactly when
   its amplitude has decayed to ~2.4 (7.3 5.8 3.6 2.4 | 2.7 …): a weak pointer lets the step fall back to the start's
   edges. That is Mechanism 2 plus a default attractor — a time-homogeneous failure — so gain restoration (A2, arm MR)
@@ -244,6 +250,34 @@ decline: more latent steps than hops → more room for step-indexed solutions.
   arm is unresolved ("K too tight to learn" if K5 fails the gate).
 * **PC2 (mechanism).** Mean retrieval share of the trained transitions (exp4 split) increases with K, and the number of
   steps the pointer spends before reaching depth 4 on the long-chain probe increases with K.
+
+## 12. Training-free repair at inference (exp8, exploratory)
+
+`theory/exp8_gainboost.py` → `theory/results/exp8_gainboost.json`, the 59 P30 ∪ L models, long-chain probe, K′ = 12.
+From step K + 1 on: layer-2 retrieval blocked (as exp5) **and** each input thought amplified around the per-step batch
+mean, h ← c + α(h − c). Trained answers (K′ = K) are unchanged by construction.
+
+| | no repair | block only (α = 1) | block + α 1.3 | block + α 1.6 | block + α 2.0 |
+|---|---|---|---|---|---|
+| models with 7-hop ≥ 0.60 | 24 | 41 | **46** | 47 | 44 |
+| models with 8–10-hop ≥ 0.60 | 8 | 25 | **27** | 22 | 15 |
+| unreachable-chain false-positive rate (8–10) | — | 0.14–0.19 | same | same | same |
+
+* The boost helps extrapolators (8–10-hop 0.609 → 0.625 at α 1.3) and does nothing for local-type failures (0.531 →
+  0.539): scaling the whole thought is not the restoration Mechanism 2 needs — the fade is inside the local map (the
+  learned restoring module, Pilot B arm MR, is the real test).
+* Practical reading: for an already-trained Coconut-style model, masking latent→latent attention past the trained budget
+  plus a mild gain (α ≈ 1.3) roughly doubles the number of seeds that follow chains past the trained depth (24 → 46 of 59
+  at 7 hops), with no retraining and no in-distribution cost.
+
+## 13. Broadening: public GPT-2 latent reasoners on GSM8K (in progress)
+
+`theory/codi_probe.py`: self-contained inference for `internlm/SIM_COT-GPT2-CODI` and `zen-E/CODI-gpt2` (GPT-2 small,
+LoRA r 128 merged, latent projection, CODI's GPT-2 test recipe; weights and a private `transformers` in the session
+scratchpad, not the repo). Reproduction: SIM-CoT-CODI GPT-2 **0.393** on the full GSM8K test (1 319; published ≈ 0.44 —
+fp32/left-padding here vs bf16 there; close enough for mechanism probes). Accuracy by number of annotated steps: 1: 0.45,
+2: 0.61, 3: 0.46, 4: 0.26, 5: 0.17, 6: 0.04, 7: 0.05. Running: latent budget 0–12, per-layer attention of each latent on
+earlier latents, latent→latent masking from latent 2 (Markov) and past the trained budget (latents 7–10).
 
 ## 7. Log
 
