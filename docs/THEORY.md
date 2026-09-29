@@ -38,6 +38,12 @@ measurements run on the CPU on existing `runs/` models; nothing here touches the
 * **Unity contract** (budget matched to curriculum depth): 2/2 competent Markov runs extrapolate, incl. the pilot's best
   (0.77 at 8–10 hops; §15).
 * A complete fix likely needs **both** no slack and a restoring map (§18 corollary; Pilot B arms MR, ATR pending).
+* **Scope (added ~14:10 after the experiments session's addendum Q):** the slack account applies to models whose thoughts
+  carry a *step schedule* (the toy). GPT-2 Coconut on ProsQA computes in one pass: trained only on 3–4 hops it is as
+  accurate on 5–6 hops (0.947 vs 0.951; 0.928 vs 0.938) and 12 thoughts add nothing (Q1, Q2 not supported;
+  `docs/PROTOCOL6_RESULTS.md`) — no training-depth wall, because there is no schedule to run out. Its limit is
+  chain-following past the answer options (addendum P), a one-pass capacity limit. Our CODI / SIM-CoT GSM8K probe (§13)
+  fits the same picture: extra latents neither help nor expose a hidden stepwise operator.
 
 **Running:** Pilots B (anytime / restore, done ~13:00), C (K = 5 / 7 dose-response), D (anytime vs control, 12 + 12;
 until ~20:00) on 4 Vast GPUs (~$0.60/h). Proposals for the field: `docs/PROPOSALS.md`.
@@ -332,6 +338,11 @@ projection, CODI's GPT-2 test recipe; run on Vast host 4, `theory/results/codi_p
   Illusion of Superposition; our ProsQA addenda). For LLM-scale latent reasoners the remedy has to be in training
   (anytime / unity-contract supervision, Pilot B/C), not at inference.
 * Caveats: GSM8K step counts are not clean hop counts; problems with > 6 steps are few (n ≈ 20–40 per bucket).
+* **Scope, with addendum Q (experiments session, 2026-09-29):** GPT-2 Coconut trained only on 3–4-hop ProsQA generalises
+  to 5–6 hops with no loss and gains nothing from 12 thoughts. GPT-2-scale latent reasoners here compute in one pass;
+  their "latent steps" do not implement a step schedule, so neither the schedule failure (Mechanism 1) nor the slack fix
+  applies directly. The slack account is a theory of *multi-step latent computation*; making a pretrained model do such
+  computation (problems deeper than one pass, T12-style) is the precondition for it to matter at scale.
 
 ## 14. Mechanism 2 measured directly: transfer curves of the local map (exp9, exploratory)
 

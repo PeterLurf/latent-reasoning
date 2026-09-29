@@ -62,6 +62,10 @@ compute contracts**, and **in-distribution-null causal tests** as a standard eva
    making them Markov costs 7.5–12.5 points; masking earlier latents past the budget slightly *hurts* (−1 to −2 points) —
    unlike the toy, there is no local advance operator underneath. Implication: for LLM latent reasoners, extrapolation
    in the number of latent steps must be trained in (T2/T5), and "more latents at test time" is not a free lunch.
+   Scope (addendum Q, experiments session): GPT-2 Coconut trained on 3–4-hop ProsQA is as accurate on 5–6 hops and
+   gains nothing from 12 thoughts — it solves ProsQA in one pass, so there is no step schedule and no training-depth wall.
+   The slack mechanism and its fixes concern models whose latent steps do sequential work; getting a pretrained model
+   into that regime (problems deeper than one forward pass) comes first.
 
 ---
 
