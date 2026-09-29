@@ -20,7 +20,7 @@ measurements run on the CPU on existing `runs/` models; nothing here touches the
    local map is restoring vs 1/11 otherwise. **Causal/dissociation.**
 4. **Cause: slack.** When the latent budget exceeds the hops needed, any schedule that visits each depth once fits the
    loss, so the continuation past K is unidentified (§18 Prop. 1). The circuit is chosen in curriculum stage 3 (§10);
-   retrieval ≥ 0.25 at the end of stage 3 → 0/12 extrapolate (exploratory). Retrospectively, extrapolation falls with K
+   retrieval ≥ 0.25 at the end of stage 3 → 0/12 extrapolate in-sample, but the marker **failed out of sample** on addendum O (AUC 0.51 vs early P7 0.92, §21). Retrospectively, extrapolation falls with K
    (47 % at K = 6 vs 26 % at K = 8, §11).
 
 **What failed or did not hold (reported, not buried):**
@@ -565,6 +565,18 @@ Addendum O is scored by the experiments session (results/p_o.json); I have seen 
   difference; descriptive (no decision rule). The stage-3 marker is the earlier signal (stage 3 precedes full depth).
 * **Exploratory, labelled as such:** does the longer scaffold (O) change the retrieval share at the end of stage 3 relative
   to the paired P30 run of the same seed (same card)? — a mechanistic reading of O1's null.
+
+**§21 result (scored 2026-09-29 ~13:50; `theory/score_o_marker.py` → `theory/results/score_o_marker.json`).** 17 competent
+O runs with local checkpoints, 8 extrapolate.
+* **PO1: unresolved** — only 2 runs have stage-3 retrieval share ≥ 0.25 (both fail; rule needs ≥ 5).
+* **PO2: not met** — AUC(−share) **0.51** (in-sample 0.78).
+* **PO3:** early P7 (T3 rule) AUC **0.92** vs stage-3 marker 0.51; difference −0.40, 95 % CI [−0.71, −0.11]. The experiments
+  session's early P7 is the better in-training diagnostic; the stage-3 marker does not generalise.
+* **Exploratory (scaffold):** mean stage-3 retrieval share 0.16 in O vs 0.22 in the same-seed P30 runs (lower in 13 of 23
+  pairs) — no systematic change, consistent with O1's null. In O most failures have *low* retrieval: they fail by the
+  local routes (fade, restart), so the retrieval schedule is one failure route whose prevalence depends on the recipe,
+  not a general marker. The causal block result (§2) and the mechanism stand; the marker claims of §10 are downgraded
+  to "in-sample only".
 
 ## 7. Log
 
