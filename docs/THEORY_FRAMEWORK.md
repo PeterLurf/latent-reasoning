@@ -192,6 +192,36 @@ slack's pressure to build a brake. *Pending:* Pilot G (PG1–PG5) and two feasib
 
 ---
 
+## 5b. Re-anchoring: C2 and C3 at inference (after Continuous Thought Machines)
+
+CTMs reach longer maze paths by re-applying a bounded-horizon policy from the current state. The latent analogue is
+**T8, re-anchored episodes**:
+1. Run the trained K-step loop.
+2. Decode the frontier from the model's own attention (the target of the edge the sweep head reads at step K).
+3. Start a fresh K-step episode from that node.
+4. Max-combine the answers across episodes.
+
+The step count never leaves the trained range (C2), and every restart begins from a crisp node embedding (C3).
+
+*Result* (pre-registered, THEORY §26; 59 models, no training):
+- 7-hop success goes from 24/59 to **55/59**, against 41/59 for the history block.
+- 14 of 16 block-resistant (fading) failures are rescued.
+- Controls: random-node anchors give 0/59. Random anchors at the frontier's depth match the model's decode (56/59).
+  Restarting at the true frontier node gives **59/59 and 0.885** balanced accuracy at 8–10 hops; failing models alone
+  reach 0.872.
+
+Failing models are therefore fully competent for K steps from any start. Only the continuation past K was broken, which
+is the clearest evidence for the clock account (Props. 1, 9).
+
+*Implication.* A latent reasoner need not extrapolate in the number of steps if it is re-anchored every K steps. The
+problem then reduces to decoding the frontier; at LLM scale that means reading the reached entity or state out of the
+thought, e.g. with Patchscopes.
+
+*Training-time counterparts under test:*
+- **A8, chunk-reset latent attention** (Pilot J): a CTM-style sliding window that restarts every L steps, so every
+  test-time chunk is a copy of a trained chunk.
+- **T9, a periodic step clock** (Pilot I): a clock that cannot run out.
+
 ## 6. Scope — pretrained models (Prop. 8)
 
 Let c be the number of hops one forward pass resolves on the task (the one-pass capacity). For an n-hop problem with K
@@ -219,10 +249,14 @@ this above one-pass capacity with three arms: Coconut, anytime, and random tight
 | §21 | stage-3 retrieval marker predicts failure | **failed out of sample** (AUC 0.51) |
 | §14 | two-factor rule | **failed out of sample** (8/15) |
 | Pilot D/E | anytime vs control, 28 pairs: depth wall or schedule end | running (~01:00–05:00 EDT 2026-09-30) |
+| §26 T8 re-anchoring | restarting at the frontier fixes failures (C2, C3) | **supported**: 24 → 55/59; oracle frontier 59/59 |
+| Pilot H | fine-tuning a failure with anytime (± jitter) repairs it | queued |
+| Pilot I | periodic clock keeps the front moving past K | queued |
+| Pilot J | chunk-reset attention (A8) | queued |
 | LE1–LE4, LE-R | Prop. 9 | registered; C data in, D/E/R pending |
-| Pilot F | T6 jitter, T6 + anytime, T7 window | queued |
+| Pilot F | T6 jitter, T6 + anytime (T7 window arms withdrawn for budget) | queued |
 | Pilot G | A6 set memory | queued; feasibility runs in progress |
-| PROTOCOL8 | Prop. 8 and C1 at GPT-2 scale | being designed; go/no-go with the user |
+| PROTOCOL8 | Prop. 8 and C1 at GPT-2 scale | Phase 0 (one-pass capacity c) running, experiments session |
 
 Negative results are part of the theory's history: the Markov architecture, the K dose-response, the retrieval marker
 and the two-factor rule all failed. Each failure narrowed the account from "the retrieval channel" to "slack, and the
