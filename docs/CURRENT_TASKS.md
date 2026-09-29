@@ -79,7 +79,9 @@ Pod log `/workspace/logs/prosqa.out`, results `/workspace/prosqa/res/`. Watcher:
 63335 coconut" "38.29.145.27 40817 nocot"`. On ANALYSIS_DONE, fetch `res/` and the final checkpoint with
 checksums (`prosqa/vfetch.sh`), destroy the instance, log it in pods.txt, then score by the Phase 0 rules. Earlier
 instances: lifecycle in `scratch/pods.txt`. The four `theory-pa-h*` Vast
-instances belong to the theory session. Shared Vast credit $22.63 at 12:56.
+instances belong to the theory session. Shared Vast credit $46.07 at 15:22 (the user topped up ~$25 after 15:10).
+Burn is ~$0.95/h: the 4 theory hosts plus the 2 Phase 0 hosts. That leaves ~$32 at Wed 10:00, enough for the PROTOCOL8
+confirmatory arms (~$15–30, 3 arms) or Pilot J on Vast (~$3–4), not comfortably both. Re-check before registering.
 
 **Candidate next step (needs the user's go-ahead and ~$10–20):** PROTOCOL8, multi-step latent work in a pretrained model
 (`docs/NEXT_STEPS.md`, end). Plan: pre-register after Pilot E is scored. Per THEORY Prop. 8, first measure the one-pass
