@@ -466,3 +466,9 @@ Pending.
   with addendum-P evaluation) each dev6 run takes ~4 h: o_dev6_s53 ends ~10:00 and o_dev6_s54 then runs past noon, so
   o_dev6_s55 and o_dev6_s56 cannot start before the Tue 12:00 cut-off and are dropped now (marked claimed in
   `scratch/p6_o_2070.txt.claimed`), letting the card move on to PROTOCOL7 T10. The dev6 pairs are descriptive only.
+* **Correction (2026-09-29 ~13:00, after the audit, docs/AUDIT_2026-09-29.md).** The ~07:10 note dropped o_dev6_s55 and
+  s56 early on a wrong premise: o_dev6_s54 did not run past noon. It finished at 11:43, so by the cut-off rule s55
+  would have started before 12:00. Two dev6 pairs were therefore dropped against the rule. They are descriptive only;
+  O1 (48 no-step pairs) is unaffected. `results/p_o.json` was re-scored at ~13:00 to include the s54 pair (4 dev6 pairs:
+  long 1/4, base 2/4); O1 unchanged (l = 6, b = 6).
+
