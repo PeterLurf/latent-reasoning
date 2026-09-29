@@ -5,6 +5,43 @@ other session — see `docs/CURRENT_TASKS.md`). Everything here is **exploratory
 labels were known) unless a section says it was pre-registered. Code: `theory/*.py`; outputs: `theory/results/`. All
 measurements run on the CPU on existing `runs/` models; nothing here touches the queues or the pre-registrations.
 
+## Executive summary (updated 2026-09-29 ~10:30 EDT)
+
+**Question.** Why do some Coconut-style latent reasoners follow chains past their training depth and others stop there?
+
+**Answer so far (two mechanisms, one cause):**
+1. **The thought is a pointer** that must move one hop per step (§1). In failing seeds it breaks at the first untrained
+   step (K + 1), not at a fixed depth.
+2. **Mechanism 1 — step-indexed schedules.** Most failing seeds write the pointer by *retrieving* an earlier thought
+   with a step-dependent lag (§2). Blocking that retrieval only past the trained budget (provably no in-distribution
+   effect) rescues 17/23 such seeds; 7-hop success 24 → 41 of 59 (46 with a mild gain boost, §12). **Causal.**
+3. **Mechanism 2 — graded vs restoring gain.** Even local pointers fade ~×0.8 per hop unless the local map is restoring
+   (clamps to a stable fixed point; §4, §14, toy §8). Among retrieval failures, the block rescues 9/12 whose hidden
+   local map is restoring vs 1/11 otherwise. **Causal/dissociation.**
+4. **Cause: slack.** When the latent budget exceeds the hops needed, any schedule that visits each depth once fits the
+   loss, so the continuation past K is unidentified (§18 Prop. 1). The circuit is chosen in curriculum stage 3 (§10);
+   retrieval ≥ 0.25 at the end of stage 3 → 0/12 extrapolate (exploratory). Retrospectively, extrapolation falls with K
+   (47 % at K = 6 vs 26 % at K = 8, §11).
+
+**What failed or did not hold (reported, not buried):**
+* Markov architecture alone (no latent→latent attention): no gain, harder to train (Pilot A: PA1 unresolved, PA2 not
+  supported, PA3 fails; §15). Failures reappear as fade-triggered restarts.
+* The one-step two-factor rule: 18/23 vs 7/36 in-sample but **8/15 out of sample** (§14). P7 remains the reliable
+  predictor.
+* The toy's inference-time repair does **not** transfer to public GPT-2 latent reasoners (CODI, SIM-CoT): they peak
+  at their trained 6 latents, rely on earlier latents, and masking them past the budget slightly hurts (§13).
+
+**Most promising fixes (small n, pre-registered tests running):**
+* **Anytime (minimum-progress) supervision** — the answer after every latent step must know everything within k + 1
+  hops: produces a one-hop-per-step front with no dwell (e.g. `1 1 2 3 4 5 6 7 8 9 10 11`) in 3/4 competent runs;
+  2/3 extrapolate so far (§16, Prop. 2). Confirmatory Pilot D (12 + 12 seeds) queued.
+* **Unity contract** (budget matched to curriculum depth): 2/2 competent Markov runs extrapolate, incl. the pilot's best
+  (0.77 at 8–10 hops; §15).
+* A complete fix likely needs **both** no slack and a restoring map (§18 corollary; Pilot B arms MR, ATR pending).
+
+**Running:** Pilots B (anytime / restore, done ~13:00), C (K = 5 / 7 dose-response), D (anytime vs control, 12 + 12;
+until ~20:00) on 4 Vast GPUs (~$0.60/h). Proposals for the field: `docs/PROPOSALS.md`.
+
 ## 0. The question
 
 In the toy setting (2-layer Coconut-style reasoner, graph reachability, delayed query, K = 6 or 8 latent steps, training
