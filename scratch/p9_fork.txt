@@ -1,0 +1,9 @@
+# PROTOCOL9 anytime arm, fork graphs (fp32, any card): the paired T10 control's line plus --anytime 1
+p9at_fork_s560 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 560 --shapes fork --p_fork 0.5 --anytime 1
+p9at_fork_s561 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 561 --shapes fork --p_fork 0.5 --anytime 1
+p9at_fork_s562 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 562 --shapes fork --p_fork 0.5 --anytime 1
+p9at_fork_s563 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 563 --shapes fork --p_fork 0.5 --anytime 1
+p9at_fork_s564 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 564 --shapes fork --p_fork 0.5 --anytime 1
+p9at_fork_s565 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 565 --shapes fork --p_fork 0.5 --anytime 1
+p9at_fork_s566 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 566 --shapes fork --p_fork 0.5 --anytime 1
+p9at_fork_s567 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 567 --shapes fork --p_fork 0.5 --anytime 1
