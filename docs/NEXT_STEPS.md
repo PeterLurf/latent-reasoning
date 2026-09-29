@@ -221,3 +221,19 @@ Anytime training supervises intermediate readouts, so monotonicity inside the tr
 informative test is at depths and budgets beyond training. CODI's dip at L = 2 may also be a readout
 distribution shift (it never saw a 2-latent context). A Coconut arm trained with random budgets would separate that
 from dynamics keyed to the budget.
+
+**Third arm, agreed with the theory session (2026-09-29 ~14:40): Coconut with random tight training budgets.**
+The theory session calls this the strongest single addition: it tests Prop. 4 (random tight budgets and anytime
+supervision are one identification mechanism), and it separates "keyed to the budget" from "never saw that length".
+For a fair test:
+- (a) The budget support reaches at or below the smallest step demand at each curriculum stage, e.g. K ~ U{1..K_max} per
+  batch.
+- (b) K is drawn independently of the example (not K = hops; Kuo's K = n failed; THEORY §22.7 refinement (b)).
+
+Predictions:
+- Random-tight ≈ anytime beyond training, and both beat fixed-K Coconut.
+- Random-tight removes the L2 dip.
+- Random-tight failing where anytime succeeds would refute Prop. 4's equivalence claim.
+
+If cost forces two arms, keep Coconut vs anytime. Cost of three arms: about 1.5× the two-arm estimate, ~$15–30; the
+user decides.
