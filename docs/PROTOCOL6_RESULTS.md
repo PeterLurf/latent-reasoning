@@ -403,4 +403,14 @@ steer which solution a run lands on while the late curriculum is still open.| **
   This fits O1 (a longer scaffold removes no slack) and the retrospective extrapolating share, 47 % at K = 6 vs 26 % at
   K = 8. The decisive test (anytime / minimum-progress supervision at K = 6 and 8, and on capped graphs, scored on
   distance ≥ 8) is being run and pre-registered by the theory session (THEORY.md §17).
+| **Q1 / Q2** does GPT-2's depth horizon follow the training depth? (addendum Q; addendum-G recipe trained on 3–4 hop problems only, 2 seeds) | acc 3–4 hop vs 5–6 hop (never trained) at K = 6: s0 0.947 vs 0.951, s1 0.928 vs 0.938 (gap −0.003, −0.010); K′ = 12 gain on 5–6 hop 0.000, 0.000 | **not supported / not supported** |
+
+### Addendum Q (scored 2026-09-29 ~12:25, `prosqa/score_q.py`, `prosqa/res_q_s{0,1}/`; Vast 53289329/53289703 destroyed after checksum-verified fetch)
+
+* Both seeds competent (Q0: 3–4 hop 0.947, 0.928). Trained only on 3–4 hops, GPT-2 answers unseen 5–6 hop problems
+  **as well as trained ones**: no wall at the training depth (toy models fail exactly there). Extra thoughts add nothing.
+  On extended problems (m = 2, path 5–6) accuracy is 0.66 / 0.64, the same drop as the full-depth G models in addendum P.
+* Together with P's depth-matched analysis: GPT-2's limit on ProsQA is not the training depth; it is the added chain
+  (hops attached beyond the answer options). The toy model's training-depth horizon does not transfer to Coconut GPT-2,
+  consistent with one-pass computation (G, J) rather than a learned step schedule.
 
