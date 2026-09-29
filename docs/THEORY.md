@@ -270,14 +270,31 @@ mean, h ← c + α(h − c). Trained answers (K′ = K) are unchanged by constru
   plus a mild gain (α ≈ 1.3) roughly doubles the number of seeds that follow chains past the trained depth (24 → 46 of 59
   at 7 hops), with no retraining and no in-distribution cost.
 
-## 13. Broadening: public GPT-2 latent reasoners on GSM8K (in progress)
+## 13. Broadening: public GPT-2 latent reasoners on GSM8K
 
-`theory/codi_probe.py`: self-contained inference for `internlm/SIM_COT-GPT2-CODI` and `zen-E/CODI-gpt2` (GPT-2 small,
-LoRA r 128 merged, latent projection, CODI's GPT-2 test recipe; weights and a private `transformers` in the session
-scratchpad, not the repo). Reproduction: SIM-CoT-CODI GPT-2 **0.393** on the full GSM8K test (1 319; published ≈ 0.44 —
-fp32/left-padding here vs bf16 there; close enough for mechanism probes). Accuracy by number of annotated steps: 1: 0.45,
-2: 0.61, 3: 0.46, 4: 0.26, 5: 0.17, 6: 0.04, 7: 0.05. Running: latent budget 0–12, per-layer attention of each latent on
-earlier latents, latent→latent masking from latent 2 (Markov) and past the trained budget (latents 7–10).
+`theory/codi_probe.py` (self-contained inference: GPT-2 small with the checkpoint's LoRA merged, the latent
+projection, CODI's GPT-2 test recipe; run on Vast host 4, `theory/results/codi_probe*_vast*.json` there). Models:
+`zen-E/CODI-gpt2` and `internlm/SIM_COT-GPT2-CODI`, both trained with 6 latents on GSM8K-Aug. GSM8K test, 1 319 problems.
+
+| latents at inference | 0 | 2 | 4 | **6 (trained)** | 8 | 10 | 12 |
+|---|---|---|---|---|---|---|---|
+| CODI GPT-2 | 0.221 | 0.234 | 0.368 | **0.425** (published 0.437) | 0.418 | 0.409 | 0.401 |
+| SIM-CoT on CODI GPT-2 | 0.320 | 0.276 | 0.356 | **0.393** (published ≈ 0.44) | 0.391 | 0.394 | 0.397 |
+
+* **The trained budget is a horizon.** Neither model gains from more latents, overall or on longer problems (4-step:
+  CODI 0.31 → 0.24 at 12 latents; SIM-CoT 0.26 → 0.28); CODI degrades past the budget, SIM-CoT stays flat (its
+  step-level supervision buys stability, as the SIM-CoT paper claims, but not extrapolation).
+* **Latents read earlier latents, increasingly.** Attention mass of latent j on earlier latents (layer 0 / 5 / 11):
+  SIM-CoT latent 2 0.05 / 0.07 / 0.08 → latent 6 0.32 / 0.19 / 0.26; CODI latent 2 0.06 / 0.02 / 0.01 → latent 6
+  0.28 / 0.10 / 0.08. Making latents Markov within the budget (latents ≥ 2 cannot see earlier latents) costs 7.5 points
+  (SIM-CoT 0.393 → 0.318) and 12.5 points (CODI 0.425 → 0.300): the history channel is used.
+* **The toy's training-free repair does not transfer.** Masking earlier latents only past the trained budget (latents
+  7–12) slightly lowers accuracy (SIM-CoT 10 latents 0.394 → 0.383, 12: 0.397 → 0.379; CODI 10: 0.409 → 0.393,
+  12: 0.401 → 0.380). In the toy, the block exposed a hidden local "advance" operator; these GPT-2 reasoners have none
+  to expose — consistent with the literature that their latents mostly relay a prefix computation (Aswal et al.;
+  Illusion of Superposition; our ProsQA addenda). For LLM-scale latent reasoners the remedy has to be in training
+  (anytime / unity-contract supervision, Pilot B/C), not at inference.
+* Caveats: GSM8K step counts are not clean hop counts; problems with > 6 steps are few (n ≈ 20–40 per bucket).
 
 ## 14. Mechanism 2 measured directly: transfer curves of the local map (exp9, exploratory)
 
@@ -310,6 +327,19 @@ This is the two-factor account in one table: Mechanism 1 (retrieval schedule at 
 extrapolation almost completely; given a local step, Mechanism 2 (restoring vs graded map) decides most of the rest.
 Formal anchor: saturated recurrences act as discrete automata (Merrill et al. 2020; Weiss et al. 2018). Exploratory;
 the classification thresholds should be frozen and tested on new runs (Pilots A–C provide them).
+
+**Out-of-sample check — the rule does not replicate (2026-09-29 ~07:40; `theory/exp10_rule_oos.py`,
+`theory/results/exp10_rule_oos.json`).** The rule above, frozen before any Pilot model was analysed, applied to the 15
+competent Pilot A runs (C, M, M2, MB2, OV): **8/15 correct** (predicted-extrapolate 11, of which 6 do; predicted-fail 4,
+of which 2 do) — chance level. Errors: (i) *missed extrapolators* (pa_c_s704, pa_m2_s720): the transition probed at step
+K happens to be a dwell step (depth 3 → 3), so a single-transition probe reads "not advancing" although the map advances
+over two steps; (ii) *false alarms* (pa_c_s702, s706, s707, pa_m2_s721, pa_m_s713): step K looks local and restoring but
+the sweep restarts or falls back later (restart cycles, retrieval on other steps; pa_c_s707's retrieval at h_K is 0.41,
+just under the 0.5 cut, but 0.83 on a trained step). **Reading:** the in-sample 18/23 vs 7/36 split was partly fitted to
+the 59 models; the qualitative mechanisms stand on the causal results (§2 block, §10 race), but a diagnostic read at one
+step does not predict new seeds. P7 (reads the far chain directly) remains the reliable predictor; a mechanistic
+predictor would have to integrate the pointer dynamics over several steps past K (dwell-aware), which is what P7 does
+implicitly.
 
 ## 7. Log
 
