@@ -1,0 +1,6 @@
+pd_at_s900 --seed 900 --anytime 1
+pd_c_s920 --seed 920
+pd_at_s901 --seed 901 --anytime 1
+pd_c_s921 --seed 921
+pd_at_s902 --seed 902 --anytime 1
+pd_c_s922 --seed 922
