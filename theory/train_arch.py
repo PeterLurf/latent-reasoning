@@ -6,6 +6,7 @@
   --device cpu                      eager step instead of the CUDA-graph step (smoke tests)
   --jitter R [--jitter_p P]         amplitude jitter of the fed-back thought during training (THEORY §22, T6)
   --periodic_step P                 step embedding (k - 1) mod P + 1: a periodic clock (THEORY §28); overrides --no_step_emb
+  --set_from_stage S                setmem only: the set write is off until the curriculum stage reaches S (full = NPB - 1)
   --init_from PATH                  start from a trained model.pt (fine-tuning; THEORY §26 Pilot H)
   --anytime_stages LO:HI            anytime supervision only while the curriculum stage (max depth; full = NPB - 1) is
                                     in LO..HI; plain final-step loss otherwise (THEORY §23, critical-window arms)
@@ -192,6 +193,7 @@ def main(argv=None):
     p.add_argument("--anytime_stages", default="", help='"lo:hi": anytime loss only in curriculum stages lo..hi '
                    "(stage = max depth; full = NPB - 1); requires --anytime")
     p.add_argument("--periodic_step", type=int, default=0, help="periodic step embedding with this period (0 = off)")
+    p.add_argument("--set_from_stage", type=int, default=0, help="setmem: enable the set write from this stage on")
     p.add_argument("--init_from", default="", help="model.pt to initialise the weights from (fresh optimizer)")
     p.add_argument("--out", required=True)
     a = p.parse_args(argv)
@@ -217,7 +219,8 @@ def main(argv=None):
                **({"jitter": a.jitter, "jitter_p": a.jitter_p} if a.jitter else {}),
                **({"anytime_stages": a.anytime_stages} if a.anytime_stages else {}),
                **({"init_from": a.init_from} if a.init_from else {}),
-               **({"periodic_step": a.periodic_step} if a.periodic_step else {})},
+               **({"periodic_step": a.periodic_step} if a.periodic_step else {}),
+               **({"set_from_stage": a.set_from_stage} if a.set_from_stage else {})},
               open(os.path.join(a.out, "arch.json"), "w"))
     model = build(a.arch, d=a.d, n_layers=a.layers, n_heads=a.heads, k_max=max(a.K + a.overrun, 8), mode=a.mode,
                   emb=a.emb, d_id=a.d_id, init=a.init, feedback=a.feedback,
@@ -332,6 +335,9 @@ def main(argv=None):
         b = make_batch(rng, g, a.Q, dev)
         lr_t.fill_(lr_at(step))
         gstep.w_aux.fill_(aux_at(step))
+        if a.set_from_stage:
+            sstage = max_depth_at(step)
+            model.set_on.fill_(1.0 if (NPB - 1 if sstage is None else sstage) >= a.set_from_stage else 0.0)
         if win is not None:
             dstage = max_depth_at(step)
             dstage = NPB - 1 if dstage is None else dstage

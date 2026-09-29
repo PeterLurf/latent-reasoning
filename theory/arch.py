@@ -146,6 +146,7 @@ class SetMemReasoner(LatentReasoner):
         self.s_beta = nn.Parameter(torch.tensor(float(set_beta)))
         self.s_tau = nn.Parameter(torch.tensor(float(set_tau)))
         self.s_gate = nn.Parameter(torch.zeros(()))
+        self.register_buffer("set_on", torch.ones(()), persistent=False)   # 0 = set write disabled (--set_from_stage)
         self._m = None
 
     def set_scores(self, h):
@@ -155,7 +156,7 @@ class SetMemReasoner(LatentReasoner):
     def latent_step(self, h, k, cache, keep_resid=False):
         if k == 1 or self._m is None or self._m.shape[0] != h.shape[0]:
             self._m = torch.zeros(h.shape[0], self.id_emb.weight.shape[0], device=h.device, dtype=h.dtype)
-        x = h + self.s_gate * self.s_write(self._m.to(h.dtype) @ self.id_emb.weight.to(h.dtype))
+        x = h + (self.set_on * self.s_gate) * self.s_write(self._m.to(h.dtype) @ self.id_emb.weight.to(h.dtype))
         h2, new, resid = super().latent_step(x, k, cache, keep_resid)
         self._m = torch.maximum(self._m.to(h2.dtype), self.set_scores(h2).to(h2.dtype))
         return h2, new, resid
