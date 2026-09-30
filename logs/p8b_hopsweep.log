@@ -1,0 +1,51 @@
+20 problems
+40 problems
+60 problems
+80 problems
+100 problems
+120 problems
+140 problems
+160 problems
+DONE res_p8b/hopsweep_ckpt_s1.json
+17:51:42 ckpt_s1 rc 0
+20 problems
+40 problems
+60 problems
+80 problems
+100 problems
+120 problems
+140 problems
+160 problems
+DONE res_p8b/hopsweep_ckpt_s2.json
+17:59:29 ckpt_s2 rc 0
+20 problems
+40 problems
+60 problems
+80 problems
+100 problems
+120 problems
+140 problems
+160 problems
+DONE res_p8b/hopsweep_ckpt_s3.json
+18:07:14 ckpt_s3 rc 0
+20 problems
+40 problems
+60 problems
+80 problems
+100 problems
+120 problems
+140 problems
+160 problems
+DONE res_p8b/hopsweep_ctl_s1.json
+18:15:03 ctl_s1 rc 0
+20 problems
+40 problems
+60 problems
+80 problems
+100 problems
+120 problems
+140 problems
+160 problems
+DONE res_p8b/hopsweep_ctl_s3.json
+18:22:49 ctl_s3 rc 0
+18:34:14 launcher stopped before ctl_s2 (avoid two jobs on the 2070); ctl_s2 re-chained in scratch/p8b_hopsweep_ctl2.sh
