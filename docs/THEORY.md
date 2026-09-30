@@ -55,6 +55,23 @@ times below (local EDT) and the first-run times from the host queue logs.
 
 ## Executive summary (updated 2026-09-29 14:27 EDT)
 
+**Overnight results (2026-09-30 02:15 EDT; one line each, details in the § Result sections):**
+* Anytime supervision (D): 8/10 extrapolate vs 3/9, Fisher p 0.055. The gain is at d7 only; the pointer falls back after
+  K (§17).
+* Depth wall (E): anytime runs stop at the trained depth whatever K (0/12 cross). This is a learned fall-back, not a
+  capacity limit (§20).
+* Fine-tuning repair (H): 1/18. The brake is kept, as a critical period predicts (§27).
+* Jitter (F): alone it breaks learning (1/8); with anytime, no gain (§23).
+* Set memory (G): unused, so A6 is untested (§24).
+* Random-tight (K): consistent with anytime, on 4 competent runs (§31).
+* Periodic clock (I): PI1 0.57, narrowly not met (§28).
+* Chunk reset (J): PJ2 supported (6/8); best from-scratch d8 (§29).
+* Stop key (Prop. 10, §35): the fall-back is keyed to counts. Skip → step key. History and step clock carry part of it.
+* **Re-anchoring distillation (L): 19/20 failures fixed without labels (0/20 plain), §32.** GT-distilled loops
+  extrapolate to 2× their training depth (17/20, §37). Round 2 (Pilot M, §38) is running.
+* **Silent thoughts are causally editable (T-C7c, §34):** IIA 0.36; answers follow the edited pointer (+0.83 / −0.59).
+* Counter clamp (§36): rescues 9/34 vs control 0/34, but costly. LE-R: supported out of sample (§25).
+
 **Question.** Why do some Coconut-style latent reasoners follow chains past their training depth and others stop there?
 
 **Answer so far (two mechanisms, one cause):**
@@ -106,7 +123,7 @@ problem fits in one forward pass (slack = K), so extrapolation in latent steps c
   chain-following past the answer options (addendum P), a one-pass capacity limit. Our CODI / SIM-CoT GSM8K probe (§13)
   fits the same picture: extra latents neither help nor expose a hidden stepwise operator.
 
-**Running (as of 14:27):** Pilots D/E (anytime vs control, 28 same-seed pairs; ~01:00–05:00 EDT 2026-09-30), then F
+**Running (as of 14:27 on 2026-09-29; superseded by the overnight results above):** Pilots D/E (anytime vs control, 28 same-seed pairs; ~01:00–05:00 EDT 2026-09-30), then F
 (jitter, jitter + anytime, selection window; 32 runs) and G (set memory; 16 runs) on 4 Vast GPUs (~$0.60/h), until
 ~12:00–14:00 EDT 2026-09-30; two G feasibility runs on the experiments session's local GPUs. Pilots A, B and C are scored. Proposals for the field: `docs/PROPOSALS.md` (§8 = second round).
 
