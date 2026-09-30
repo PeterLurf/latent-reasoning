@@ -51,6 +51,8 @@ def main():
     ap.add_argument("--init_from", required=True)
     ap.add_argument("--head", type=int, required=True)
     ap.add_argument("--W", type=int, required=True, help="checkpoint size (written START tokens)")
+    ap.add_argument("--shuffle", type=int, default=1, help="random anchor order per example during training (which anchor "
+                    "seeds the loop varies; Literature's anti-collapse mitigation, LIT_SET_RESTART); evaluation keeps top-1 last")
     ap.add_argument("--steps", type=int, default=3000)
     ap.add_argument("--bs", type=int, default=256)
     ap.add_argument("--lr", type=float, default=1e-4)
@@ -75,7 +77,8 @@ def main():
     opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01, betas=(0.9, 0.98))
     sched = lambda s: a.lr * min(1, (s + 1) / 100) * 0.5 * (1 + math.cos(math.pi * s / a.steps))
     amp = torch.bfloat16 if dev != "cpu" and torch.cuda.get_device_capability(dev)[0] >= 8 else None
-    c.update(clr={"W": a.W, "init_from": a.init_from, "steps": a.steps, "lr": a.lr, "bs": a.bs, "seed": a.seed, "head": a.head})
+    c.update(clr={"W": a.W, "init_from": a.init_from, "steps": a.steps, "lr": a.lr, "bs": a.bs, "seed": a.seed, "head": a.head,
+                  "shuffle": a.shuffle})
     json.dump({"arch": "coconut", "clr": c["clr"]}, open(os.path.join(a.out, "arch.json"), "w", newline="\n"))
     log = open(os.path.join(a.out, "log.jsonl"), "w", newline="\n")
     log.write(json.dumps({"step": 0, "curriculum_advance_to": None, "note": "inherited: initial model was at full depth"}) + "\n")
@@ -97,7 +100,11 @@ def main():
             o = rollout(m, K, src, dst, st, K)
             att = o["attn1"][K - 1][:, a.head, :o["P"] - 1]
             order = torch.argsort(att, 1, descending=True)[:, :a.W].cpu().numpy()
-            anc = T(np.stack([gl.dst[bi, order[:, w]] for w in range(a.W)][::-1], 1)).long()   # top-1 anchor last
+            anc = np.stack([gl.dst[bi, order[:, w]] for w in range(a.W)][::-1], 1)          # top-1 anchor last
+            if a.shuffle and a.W > 1:
+                prng = np.random.default_rng([a.seed, step, 11])
+                anc = np.take_along_axis(anc, np.argsort(prng.random(anc.shape), 1), 1)
+            anc = T(anc).long()
             m.train()
         with torch.autocast("cuda", dtype=amp or torch.float32, enabled=amp is not None):
             ld, lu, _, _ = m.run_both(b["src"], b["dst"], b["start"], K, b["q"], b["tgt"])

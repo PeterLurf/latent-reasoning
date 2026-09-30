@@ -2375,6 +2375,40 @@ A4–A6 ≥ 0.20 at the model's chosen layer: 8 fail.
   teach restarts from sets of START tokens. Separate episodes per anchor (top3max) remain the working inference-time
   version.
 
+## 45. Pilot CLR-1 — training set-valued checkpoints (the checkpointed latent reasoner's first stage) (pre-registered 2026-09-30 12:27 EDT, before any run)
+
+**Why.** §44: trained models ignore extra START tokens zero-shot. Literature (`docs/LIT_SET_RESTART_2026-09-30.md`,
+6fcb828) found no precedent for a latent loop restarted from a self-chosen set of node-id tokens with the history cut,
+and flagged collapse onto one start token as the known failure.
+
+**Training.** `theory/train_clr.py`.
+* Fine-tune each model (fresh AdamW, lr 1e-4, 3000 steps, bs 256) on the normal batch plus a deep batch of 12-hop
+  chains.
+* The student's deep answer is two segments. Episode 1 runs K steps from START. The student then writes a checkpoint:
+  the W targets its own sweep head attends most at step K, chosen without gradient. Episode 2 runs K steps from those
+  W START tokens. Answers are max-combined.
+* Targets come from the frozen initial model's re-anchored inference (§26 re2top3; no labels).
+* Random anchor order during training, a Literature mitigation.
+
+**Arms.** CLR3 (W = 3) and CLR1 (W = 1, same teacher and data). Models: the 10 even-indexed P30 failures (as §41), 20
+runs. Both arms of a model run on the same local card, 5 models on the 3070 (bf16) and 5 on the 2070 (fp32).
+
+**Measures** (`theory/exp20_clr_eval.py`; evaluation writes the top-1 anchor last):
+* two_seg far8–10 on probe(512);
+* chain S = 2..4 segments on §37's 24-hop probe;
+* checkpoint edit (C7): replace the written anchors that lie on the reachable chain by their look-alikes. IIA = the
+  look-alike's successors at +2, +3 are answered reachable and the true ones are not.
+* eval_arch for in-distribution delayed bal-acc.
+
+**Predictions.**
+* **PC1 (a written set is used after training).** §23 pair rule on two_seg far8–10: CLR3 > CLR1.
+* **PC2 (C2 through checkpoints).** chain4 mean d13–18 ≥ 0.60 in ≥ 5/10 CLR3 models.
+* **PC3 (C7 on written checkpoints).** Median edit IIA ≥ 0.30 in CLR3.
+* **PC4 (no in-distribution cost).** Median delayed drop vs the initial model ≤ 0.02 in CLR3.
+
+**Disclosure.** The smoke students, trained 3 steps on CPU from p30_s111, gave edit IIA 0.30 (W3) and 0.48 (W1). They
+are essentially the untrained model.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
