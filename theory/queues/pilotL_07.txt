@@ -1,0 +1,3 @@
+pl_t8_s118 --init_from runs/p30_s118/model.pt --teacher t8 --head 0 --seed 118
+pl_self_s118 --init_from runs/p30_s118/model.pt --teacher self --head 0 --seed 118
+pl_gt_s118 --init_from runs/p30_s118/model.pt --teacher gt --head 0 --seed 118
