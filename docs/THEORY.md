@@ -2489,6 +2489,10 @@ For PROTOCOL8b this would say: write the checkpoint within one episode's reach o
 
 **Result (2026-09-30; 59 models; `theory/results/exp21_hop_sweep.json`). H1 and H2 hold, with a sharp edge.**
 * Median accuracy by hops remaining r: r = 1–5: 0.94–0.95; r = 6: 0.91; r = 7: 0.51; r ≥ 8: 0.50.
+  - Aggregation: one median over all (model, d, k) cells with the same r, pooled.
+  - Audit's per-model mean over cells, then the median over models, gives r 1–6 = 0.95/0.93/0.94/0.94/0.94/0.91,
+    r 7 = 0.51, r ≥ 8 = 0.50.
+  - The verdicts are the same under both.
 * At fixed r it is flat across d = 7..12. Without a restart, d7–12 is 0.50.
 * **Reading.**
   - One restarted episode covers exactly its trained 6 hops, at any absolute depth.
