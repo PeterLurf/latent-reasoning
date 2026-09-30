@@ -73,3 +73,13 @@ already been verified there), and now trains normally. No data existed from the 
 evaluated with `reanchor_p8.py --random_pos` (same probe, same seed) on the local RTX 2070. This gives OG, RG and REG
 **before** any checkpoint training, including the random-position variant the pilot lacked. It is a reference only; no
 decision rule uses it.
+
+## Exploratory follow-up: hop sweep (added 2026-09-30 18:07 EDT, before any sweep output was read; not part of the registration)
+
+`prosqa/hopsweep_p8b.py --skip_probe` (`scratch/p8b_hopsweep.sh`, local 2070, started 17:44): for the 6 step-1 models, on
+p8_test problems disjoint from the P8b1 probe (40 per depth 7–10), write the oracle checkpoint k gold hops in, for every
+k = 1..depth−1, at one random position, and record accuracy by depth × k and by hops remaining (depth − k). It prints no
+accuracies; the outputs `prosqa/res_p8b/hopsweep_*.json` are read only after the P8b1 verdict is committed (Audit guard).
+Stated expectation, from Theory's toy result (THEORY §46): accuracy is high while the hops remaining are within the model's
+in-distribution reach (≈ 5–6 hops, going by Phase 0), is near chance beyond it, and is flat across absolute depth at fixed hops remaining.
+Ckpt-trained models are expected to show this more strongly than ctl models. Descriptive only; no decision rule.
