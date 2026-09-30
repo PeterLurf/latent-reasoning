@@ -2678,6 +2678,32 @@ it is a probe that is used causally. It is not a claim about the silent steps (�
     depth that tracks the problem: about one segment per 4–5 hops, as in §48.
   - Not yet learned end to end: v3 (RL on the final answer only, MEM1-style) is the next step for C5.
 
+## 50. A halt learned from final-answer reward (C5 v3, toy) (pre-registered 2026-09-30 19:24 EDT, before measuring the 10 test models)
+
+**Design.** `theory/exp24_learned_halt.py`, CPU.
+* The model and the write head (§49) are frozen, so the segment trajectory does not depend on the halt. Segments 1–8
+  are cached per graph: the last thought, and the per-graph balanced accuracy of the max-combined answers.
+* A stop head reads only the thought, with no step index: π_k = σ(w·h_k + b).
+* It is trained to maximise the exact expected final-answer reward E[acc(stop) − 0.01·stop] over the cached training
+  graphs (12/18/24-hop chains, seeds 21–23). This is "learned from final-answer reward", not RL (Audit's wording).
+
+**Evaluation.**
+* Held-out graphs, disjoint from training: §49's probes, seed 9, 12/18/24 hops. Greedy stop at the first π_k > 0.5.
+* Baselines on the same graphs:
+  - §49's closure rule;
+  - fixed S = 6;
+  - the best fixed S chosen on the training cache.
+* The accuracy–segments trade-off is reported for each.
+
+**Disclosure.** A smoke model outside the set (pclr1_s109, 18-hop chains) gave accuracy by segment 0.62, 0.66, 0.69,
+0.70, 0.67, 0.65, 0.64, 0.63. Running longer costs accuracy, so there is an optimum to learn.
+
+**Predictions.**
+* **LH1 (better use of compute).** Held-out reward of the learned halt ≥ the closure rule's and ≥ the best fixed S's,
+  pooled over the three lengths, in ≥ 7/10 models.
+* **LH2 (tracks depth, as WH2).** The learned halt's median segment count increases strictly with chain length (12 < 18
+  < 24) in ≥ 7/10 models.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
