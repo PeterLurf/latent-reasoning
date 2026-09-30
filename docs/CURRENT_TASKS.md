@@ -59,7 +59,7 @@ in `scratch/pods.txt`.
 | **PROTOCOL10** (registered 4208998; inference only, local cards; `prosqa/segchain_p10.py`) | 7 models (6 step-1 + Phase 0) on the 3070/2070 | blind until the P8b1 verdict is committed; then score by the rules in `docs/PROTOCOL10.md` |
 | **PROTOCOL8b step 1** (registered 7d61c0a; `prosqa/pod_p8b1.sh`) | all 6 hosts destroyed (ctl_s2 53555209 at 19:02 with its probe unfinished; the probe is re-run on the local 4060, see the deviation note) | when `logs/p8b1_ctl2_local.log` shows CTL2_LOCAL_DONE: rename `prosqa/res_p8b1/p8b1_p8b1_<arm>_s<seed>.json` → `p8b1_<arm>_s<seed>.json` and `p8b1_ctl_s2_local.json` → `p8b1_ctl_s2.json`, then `python prosqa/score_p8b1.py` |
 
-**Watchers (re-armed 19:32 over the 13 live p8c hosts; cot_s2/s3/s4 drained, only cot_s1 of the CoT arm left):** before re-arming, check `logs/auto_drain.log` for hosts drained since the last list. `scratch/auto_drain_prosqa.sh` (verified
+**Watchers (re-armed 19:31 over the 13 live p8c hosts; cot_s2/s3/s4 drained, only cot_s1 of the CoT arm left):** before re-arming, check `logs/auto_drain.log` for hosts drained since the last list. `scratch/auto_drain_prosqa.sh` (verified
 drain on ANALYSIS_DONE; log `logs/auto_drain.log`) and `scratch/gpu_watch.sh` (5-min idle check, user request). Both
 exit on their first event (error, failed drain, idle host), so re-arm each with the current host list straight after
 any event, create or destroy. The toy-side `auto_drain.sh`, `p8_watch.sh` and `p7s_monitor.sh` have nothing left to watch.
