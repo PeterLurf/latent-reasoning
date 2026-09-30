@@ -71,8 +71,7 @@ def main():
         for name in sorted(res):
             m, c = load("runs/" + name, "cpu")
             res[name]["branch"] = branch_stats(m, c["K"], g, res[name]["head"], D)
-            json.dump(res, open(a.out, "w", newline="
-"), indent=1)
+            json.dump(res, open(a.out, "w", newline="\n"), indent=1)
             print(name, "branch recomputed", flush=True)
         return
     for name in sorted(R, key=lambda r: (R[r]["extrap"], r)):
