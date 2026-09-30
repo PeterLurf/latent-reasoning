@@ -118,3 +118,12 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53533326 vast offer 37119325 created 2026-09-30 09:36: label p8c-cot_s4, pod_p8c.sh p8c_cot_s4 (logged at create by prosqa/vdeploy.sh)
 53533305 vast 4090 | p8c-at_s2: SSH refused for 14 min after start, DESTROYED_VERIFIED 53533305 2026-09-30 09:51 before any work; at_s2 re-placed by scratch/p8c_fill.sh
 53534818 vast offer 33137671 created 2026-09-30 09:51: label p8c-at-s2, pod_p8c.sh p8c_at_s2 (logged at create by prosqa/vdeploy.sh)
+53534943 vast offer 31458823 created 2026-09-30 09:52: label p8c-coco-s3, pod_p8c.sh p8c_coco_s3 (logged at create by prosqa/vdeploy.sh)
+53535096 vast offer 29850350 created 2026-09-30 09:53: label p8c-at-s3, pod_p8c.sh p8c_at_s3 (logged at create by prosqa/vdeploy.sh)
+53535201 vast offer 49980278 created 2026-09-30 09:54: label p8c-rt-s3, pod_p8c.sh p8c_rt_s3 (logged at create by prosqa/vdeploy.sh)
+53535503 vast offer 15529812 created 2026-09-30 09:58: label p8c-coco-s4, pod_p8c.sh p8c_coco_s4 (logged at create by prosqa/vdeploy.sh)
+53494817 vast | p9_x4 DESTROYED_VERIFIED 2026-09-30 10:09 after verified fetch (3 runs: 3 with model, 0 stage-1 failures)
+53535503 vast 4090 | p8c-coco-s4 on the same bad host as at_s2 (142.132.162.244, SSH refused 23 min), DESTROYED_VERIFIED 53535503 2026-09-30 10:21 before any work; coco_s4 stays in the p8c_fill queue
+53539583 vast offer 30086286 created 2026-09-30 10:31: label p8c-coco-s4, pod_p8c.sh p8c_coco_s4 (logged at create by prosqa/vdeploy.sh)
+53539933 vast offer 31458809 created 2026-09-30 10:35: label p8c-at-s4, pod_p8c.sh p8c_at_s4 (logged at create by prosqa/vdeploy.sh)
+53540125 vast offer 46775634 created 2026-09-30 10:36: label p8c-rt-s4, pod_p8c.sh p8c_rt_s4 (logged at create by prosqa/vdeploy.sh)

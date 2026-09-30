@@ -2270,6 +2270,10 @@ about 24 hops. Two accounts:
   (Mechanism 2), not a stop key. Deeper training makes the transition more restoring, so the pointer survives more
   hops. It would explain why a second depth helps even though the count stays decodable (§37). A test: transfer
   curves (exp9's z) for GT9 vs GT12 students.
+* **Registered test of the reading (2026-09-30 10:52 EDT, before measuring).**
+  - z (`theory/transfer_pairs.py`) is lower for the GT12 student than for the same model's GT9 student in ≥ 75 % of
+    the 10 pairs (§23 pair rule).
+  - Descriptive: z vs the one-loop reach, i.e. the last distance with bal-acc ≥ 0.60.
 
 ## 42. Predictions sent for PROTOCOL8's revised primary (in-distribution deep depths) (2026-09-30 09:34 EDT, before any PROTOCOL8 confirmatory data)
 
