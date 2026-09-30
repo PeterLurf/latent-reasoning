@@ -64,3 +64,7 @@ plain deep accuracy by arm; all of it by depth.
 **Note (2026-09-30 13:17, file naming only).** `prosqa/pod_p8b1.sh` writes `res/p8b1_<cfg>.json` with
 cfg = `p8b1_<arm>_s<seed>`, i.e. `p8b1_p8b1_<arm>_s<seed>.json`. The scorer reads `p8b1_<arm>_s<seed>.json`. Fetched files
 are renamed to the scorer's names before scoring. No content changes.
+**Note (2026-09-30 13:27).** `ckpt_s1` (53555197) hung for 15 minutes while loading the base checkpoint: GPU idle,
+~0 CPU. It was killed and restarted from scratch on the same host (same seed and config; the base-checkpoint sha had
+already been verified there), and now trains normally. No data existed from the hung attempt; its log is kept as
+`prosqa.out.hung_attempt1`.
