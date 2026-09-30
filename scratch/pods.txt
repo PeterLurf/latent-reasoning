@@ -76,3 +76,18 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53489427 vast 3080 Ti 0.138 created 2026-09-30 03:23: T12 host v2 (142.127.68.223:18162) | same crash; held idle
 53489433 vast 4070 0.144 created 2026-09-30 03:23: T12 host v3 (174.0.242.177:1713) | same crash; held idle
 53489436 vast 3090 0.17 created 2026-09-30 03:24: T12 host v4 (142.127.68.223) | still loading when the crash was found; its deploy script was stopped before any queue started; held
+53410360 vast | t9_vA DESTROYED_VERIFIED 2026-09-30 03:44 after verified fetch (11 runs: 10 with model, 1 stage-1 failures)
+53489436 vast 3090 | t12-v4 stuck loading 30 min, DESTROYED_VERIFIED 2026-09-30 03:50 before any work
+53453343 vast | p9_vb7 DESTROYED_VERIFIED 2026-09-30 03:54 after verified fetch (3 runs: 3 with model, 0 stage-1 failures)
+53492405 vast 4070 0.144 created 2026-09-30 03:53: PROTOCOL9 amendment 7 host v1, queue p9x_v1.txt (174.0.242.177:1678)
+53492407 vast 3090 0.169 created 2026-09-30 03:53: PROTOCOL9 amendment 7 host v2, queue p9x_v2.txt (137.175.22.196, loading)
+53492408 vast 3090 0.178 created 2026-09-30 03:53: PROTOCOL9 amendment 7 host v3, queue p9x_v3.txt (109.173.238.203:42167)
+53492412 vast 4070 0.202 created 2026-09-30 03:53: PROTOCOL9 amendment 7 host v4, queue p9x_v4.txt (159.48.242.2, loading)
+53492421 vast 4080 0.216 created 2026-09-30 03:53: PROTOCOL9 amendment 7 host v5, queue p9x_v5.txt (172.218.118.138:55578)
+53492427 vast 3090 0.224 created 2026-09-30 03:53: PROTOCOL9 amendment 7 host v6, queue p9x_v6.txt (142.112.39.215:62359)
+53492433 vast 3090 0.224 created 2026-09-30 03:53: PROTOCOL9 amendment 7 host v7, queue p9x_v7.txt (142.112.39.215:63657)
+53492437 vast 3090 Ti 0.235 created 2026-09-30 03:53: PROTOCOL9 amendment 7 host v8, queue p9x_v8.txt (86.123.234.69:47324)
+53492407 vast | p9x host stuck loading 20 min, DESTROYED_VERIFIED 53492407 2026-09-30 04:13 before any work
+53492412 vast | p9x host stuck loading 20 min, DESTROYED_VERIFIED 53492412 2026-09-30 04:13 before any work
+53494807 vast offer 53264059 created 2026-09-30 04:14: label p9x-v2b, queue scratch/p9x_v2.txt (logged at create by vdeploy_toy.sh)
+53494817 vast offer 45498586 created 2026-09-30 04:14: label p9x-v4b, queue scratch/p9x_v4.txt (logged at create by vdeploy_toy.sh)
