@@ -43,19 +43,20 @@ including a ≥ $10 reserve. Every create/destroy goes in `scratch/pods.txt`.
 **Theory (details in docs/THEORY.md, one-liners at the top of its executive summary):** all overnight pilots are
 scored (D–M, §§34–38). No theory hosts are live. T12 (§39, 8 runs) runs on the experiments session's Vast hosts.
 
-**This session's live Vast hosts (destroy each after a checksum-verified fetch):**
+**This session's live Vast hosts** (full lifecycle in `scratch/pods.txt`; destroy only via the drain scripts):
 
-| Instance | Card, $/h | Job | SSH | Expected done → destroy |
-|---|---|---|---|---|
-| 53405925 | 3090, 0.228 | Phase 0 P8-0b Coconut (`p8_coconut`) | `ssh -p 63335 root@142.112.39.215` | ~04:30 Wed |
-| 53410360 | 4070, 0.144 | PROTOCOL7 T9 host A (`scratch/p7s_t9_vA.txt`, 11 runs) | `ssh -p 1839 root@174.0.242.177` | ~04:00 Wed |
-| 53410630 | 4060 Ti, 0.14 | T9 host D (`p7s_t9_vD.txt`, 10) | `ssh -p 13578 root@142.127.68.223` | ~08:30 Wed |
-| 53489419 / 427 / 433 / 436 | 3080 Ti ×2, 4070, 3090, ~0.59 total | THEORY §39 T12 (8 runs, frozen `scratch/t12_frozen`, worker `queue_worker_t12.sh`): **crashed at step 0 in CUDA-graph capture, held idle** waiting for Theory's fix (§39 amendment); destroy if no fix by ~04:20 | v1–v4 in pods.txt | re-run after fix |
-| 53453305 | A4000, 0.102 | PROTOCOL9 vb1 (`scratch/p9_vb1.txt`, 3 runs; amendment 2) | `ssh -p 17224 root@198.200.122.18` | ~03:30 Wed |
-| 53453314 | 3090, 0.155 | PROTOCOL9 vb4 (`scratch/p9_vb4.txt`, 3 runs; amendment 2) | `ssh -p 45232 root@223.167.245.91` | ~02:30 Wed |
-| 53453320 | 3080, 0.158 | PROTOCOL9 vb5 (`scratch/p9_vb5.txt`, 3 runs; amendment 2) | `ssh -p 40452 root@178.226.163.63` | ~02:45 Wed |
-| 53453343 | 4070, 0.202 | PROTOCOL9 vb7 (`scratch/p9_vb7.txt`, 3 runs; amendment 2) | `ssh -p 35012 root@159.48.242.2` | ~02:30 Wed |
-| 53453349 | 4060 Ti, 0.207 | PROTOCOL9 vb8 (`scratch/p9_vb8.txt`, 3 runs; amendment 2) | `ssh -p 47615 root@141.195.21.87` | ~03:30 Wed |
+| Group | Hosts (instance: host:port) | Done → drained |
+|---|---|---|
+| Phase 0 Coconut | 53405925: 142.112.39.215:63335 | ~05:30–06:00 → `drain_prosqa.sh` |
+| T9 | t9_vD 53410630: 142.127.68.223:13578 | ~08:30 |
+| PROTOCOL9 | vb1 53453305 198.200.122.18:17224 · vb4 53453314 223.167.245.91:45232 · vb5 53453320 178.226.163.63:40452 · vb8 53453349 141.195.21.87:47615 | ~04:00–05:00 |
+| PROTOCOL9 extension (am. 7) | x1 53492405 174.0.242.177:1678 · x3 53492408 109.173.238.203:42167 · x5 53492421 172.218.118.138:55578 · x6 53492427 142.112.39.215:62359 · x7 53492433 142.112.39.215:63657 · x8 53492437 86.123.234.69:47324 · x2/x4 (53492407/12) loading | ~08:00 |
+| THEORY §39 T12 (frozen 6a9784c) | v1 53489419 142.127.68.223:7439 · v2 53489427 142.127.68.223:18162 · v3 53489433 174.0.242.177:1713 | ~07:30 |
+
+**Watchers:** `scratch/auto_drain.sh` (verified drain on each QUEUE_DONE, with T12 via `drain_t12.sh`; log
+`logs/auto_drain.log`; replaces `t9_watch.sh`), `scratch/gpu_watch.sh` (5-min idle check, user request),
+`scratch/p8_watch.sh` (Phase 0) and `scratch/p7s_monitor.sh` (local). Re-arm each with the current host list after any
+change.
 
 - **Phase 0:** pre-registered in `docs/PROTOCOL8_PHASE0.md` (3a9c05e, 15:09:38). Pod log `/workspace/logs/prosqa.out`,
   results `/workspace/prosqa/res/`. Watcher `bash scratch/p8_watch.sh "142.112.39.215 63335 coconut" "38.29.145.27
