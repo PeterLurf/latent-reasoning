@@ -1954,6 +1954,48 @@ hold.**
     distil again) can extend depth without labels at every rung. Whether a second distillation also yields one-loop
     extrapolation like GT's is the natural pilot (§38, to be registered).
 
+## 38. Pilot M — a second rung of the label-free ladder (pre-registered 2026-09-30 01:40 EDT, before any Pilot M run started)
+
+**Idea.** Round 2 of Pilot L (§32).
+* The teacher is each round-1 T8 student, re-anchored with 12-step episodes. §37 found it reaches d13–18 in 14/20.
+* It is distilled into one 24-step loop.
+* No labels are used at either rung.
+* Prior work (Literature, `docs/LIT_PILOT_M_2026-09-30.md`, e1e93f1):
+  - the closest is expert iteration (1705.08439);
+  - no iterated label-free ladder on latent or looped models, and no restart-based amplifier, was found;
+  - the known failure mode is the "error avalanche" (2502.01612).
+
+**Code.** `theory/distill_reanchor.py` with `--deep_R 4 --deep_widths 2,3 --student_Kp 24 --teacher_ep 12`.
+* The round-1 defaults reproduce Pilot L's trainer bit for bit (checked: max |Δw| = 0).
+* Everything else is as §32: 3000 steps, lr 1e-4, bs 256, a normal batch every step, fresh AdamW.
+
+**Arms.** All start from the round-1 student pl_t8_sX, with its §37 sweep head.
+* **M-T8:** the round-2 re-anchoring teacher. 20 models.
+* **M-self:** the student's own one-episode labels at K′ = 24. 20 models.
+* **M-T8F:** T8 with Literature's agreement filter; loss only where top-1 and top-3 re-anchoring agree. 10 models: the
+  even-indexed ones in sorted seed order.
+* **M-GT:** true labels, as the ceiling. The other 10 models.
+* 60 runs.
+
+**Outcomes.**
+* **Deep measure:** mean bal-acc over d13–18, one loop at K′ = 24, on §37's probe (seed 7, never used in training).
+  Measured by `theory/exp18_deep_reanchor.py` after fetch.
+* Plus eval_arch's gate, d8 at K′ = 12, and delayed bal-acc.
+
+**Predictions.**
+* **PM1 (primary: the teacher matters).** §23 pair rule on the deep measure: M-T8 > M-self.
+* **PM2 (label-free one-loop reach to 18).** M-T8 is ≥ 0.60 in ≥ 10/20. The round-1 students were 2/20.
+* **PM3 (no avalanche at the old rung).** Median d8 of M-T8 ≥ 0.608, i.e. the round-1 median 0.638 − 0.03.
+* **PM4 (no in-distribution cost).** Median delayed drop vs the round-1 student ≤ 0.02.
+* **Descriptive.**
+  - T8F vs T8 on the same 10 models.
+  - The GT ceiling.
+  - d19–24 at K′ = 24.
+  - d25–30 on an R = 5, width-1 probe at K′ = 32.
+
+**Where and cost.** 20 new Vast hosts (theory-M01..M20), 3 runs each, destroyed as each queue ends. About 2 h wall
+time and about $7. That is over the earlier theory plan, so the user is told.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
