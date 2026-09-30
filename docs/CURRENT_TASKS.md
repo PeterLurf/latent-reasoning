@@ -48,7 +48,7 @@ spend at ≈ $13–14 from 23:00 and zero after ~02:30 (L drains ~00:30, the res
 ≈ $15 to 07:00. Expected credit at 07:00 ≈ $93, above PROTOCOL8's $34 plus the $10 reserve. Re-check live before
 registering.
 
-**Theory status 00:22 Wed (Theory session).** Scored so far:
+**Theory status 00:14 Wed (Theory session).** Scored so far:
 - Pilot H (§27): critical period, fine-tuning does not repair (8f80824).
 - Pilot D (§17): PD1 supported (440d6ae).
 - Pilot F (§23): jitter breaks learnability; no gain over anytime (440d6ae).
