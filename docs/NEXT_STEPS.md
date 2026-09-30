@@ -296,3 +296,6 @@ user decides.
 - **What this means for the plan after PROTOCOL8.** The checkpointed design is the route to C2 beyond n + 1. It needs a
   readable entity checkpoint in GPT-2 (Patchscopes-style decode), which is also the first C7 test. Pilot K (toy
   random-tight, ~02:00) will say whether random-tight behaves like anytime.
+- **Correction (00:35):** "m = 7" above should read answer depth. Trained depth = orig (3–4) + m (0–6) ≤ 10, so m = 7
+  mixes depth 10 (in range) with depth 11. PROTOCOL8's primary beyond-training contrast is at answer depth d = 11
+  (`by_path_len` in long_eval2), with d ≥ 12 as the "no gain" prediction stratum. m strata stay descriptive.
