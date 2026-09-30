@@ -49,7 +49,7 @@ The closest trained precedent for "answer from its own text only" is Markovian T
 | C4 | Toy base models use a lookup scaffold. Label-free fine-tuning (distilling re-anchored inference) fixes 19/20 failures, but on deep graphs from the evaluation generator (Pilot L). Random tight budgets with final-answer labels only match anytime in-range, but only 4/8 runs learn (Pilot K, suggestive) | THEORY §§31, 32 |
 | C5 | Not tested; re-anchoring (§26) is a hand-built version of "write a checkpoint every K steps". Untrained models ignore written checkpoints (GPT-2 pilot, toy set checkpoints §44), so checkpoint use must be trained first (PROTOCOL8b step 1) | THEORY §§26, 44; PROTOCOL8B_PILOT |
 | C6 | Partly characterised: outcome set at full-depth entry (E1), fading per hop (Mechanism 2); not solved | PROTOCOL6 A/E, THEORY §§4, 14 |
-| C7 | Toy: the silent pointer is causally editable at node-id level: answers follow edits (IIA 0.36). Round trip 0.947, just under 0.95. The vocabulary is node ids, not language, and the encoder is fitted on the model's own thoughts. Naive probe directions were inert (Part I) | THEORY §34; Part I |
+| C7 | Toy: the silent pointer is causally editable at node-id level: answers follow edits (IIA 0.36). Round trip 0.947, just under 0.95. The vocabulary is node ids, not language, and the encoder is fitted on the model's own thoughts. Naive probe directions were inert (Part I). After training, written checkpoints are the causal channel: edits to them change answers as predicted (IIA 0.84 for a 3-node set, 1.00 single; §45) | THEORY §§34, 45; Part I |
 
 ## The candidate design this points to
 
