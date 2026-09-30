@@ -13,6 +13,7 @@ export PYTHONIOENCODING=utf-8
 cd "$(dirname "$0")/.."
 ID=$(bash "$V" create instance $O --image pytorch/pytorch:2.5.1-cuda12.4-cudnn9-devel --disk 30 --ssh --direct --label $LBL --raw 2>&1 | grep -o '"new_contract": *[0-9]*' | grep -o '[0-9]*$')
 [ -n "$ID" ] || { echo "CREATE FAILED"; exit 1; }
+echo "$ID vast offer $O created $(date '+%Y-%m-%d %H:%M'): label $LBL, queue $Q (logged at create by vdeploy_toy.sh)" >> scratch/pods.txt
 for i in $(seq 1 60); do
   j=$(bash "$V" show instance $ID --raw 2>/dev/null)
   H=$(echo "$j" | python -c "import json,sys;d=json.load(sys.stdin);print(d.get('public_ipaddr','').strip())" 2>/dev/null)

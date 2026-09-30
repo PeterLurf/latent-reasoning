@@ -91,3 +91,12 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53492412 vast | p9x host stuck loading 20 min, DESTROYED_VERIFIED 53492412 2026-09-30 04:13 before any work
 53494807 vast offer 53264059 created 2026-09-30 04:14: label p9x-v2b, queue scratch/p9x_v2.txt (logged at create by vdeploy_toy.sh)
 53494817 vast offer 45498586 created 2026-09-30 04:14: label p9x-v4b, queue scratch/p9x_v4.txt (logged at create by vdeploy_toy.sh)
+53453320 vast | p9_vb5 DESTROYED_VERIFIED 2026-09-30 04:26 after verified fetch (3 runs: 2 with model, 1 stage-1 failures)
+53453349 vast | p9_vb8 DESTROYED_VERIFIED 2026-09-30 05:18 after verified fetch (3 runs: 2 with model, 1 stage-1 failures)
+53453305 vast | p9_vb1 DESTROYED_VERIFIED 2026-09-30 05:29 after verified fetch (3 runs: 3 with model, 0 stage-1 failures)
+53489433 vast | t12_v3 DESTROYED_VERIFIED 2026-09-30 05:50 after verified fetch (2 T12 runs)
+53489419 vast | t12_v1 DESTROYED_VERIFIED 2026-09-30 06:01 after verified fetch (3 T12 runs)
+53489427 vast | t12_v2 DESTROYED_VERIFIED 2026-09-30 06:11 after verified fetch (3 T12 runs)
+53453314 vast | p9_vb4 DESTROYED_VERIFIED 2026-09-30 06:22 after verified fetch (3 runs: 2 with model, 1 stage-1 failures)
+53410630 vast | t9_vD DESTROYED_VERIFIED 2026-09-30 06:44 after verified fetch (10 runs: 8 with model, 2 stage-1 failures)
+53492421 vast | p9_x5 DESTROYED_VERIFIED 2026-09-30 07:25 after verified fetch (3 runs: 3 with model, 0 stage-1 failures)

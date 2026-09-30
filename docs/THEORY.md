@@ -67,6 +67,8 @@ times below (local EDT) and the first-run times from the host queue logs.
 * Periodic clock (I): PI1 0.57, narrowly not met (§28).
 * Chunk reset (J): PJ2 supported (6/8); best from-scratch d8 (§29).
 * Stop key (Prop. 10, §35): the fall-back is keyed to counts. Skip → step key. History and step clock carry part of it.
+* PROTOCOL9 (Experiments, across architectures) replicates D: anytime helps d7 (10 vs 3, p 0.046) and learnability
+  (21 vs 12), but not d8 (5/10) (`docs/PROTOCOL9_RESULTS.md`).
 * **Re-anchoring distillation (L): 19/20 failures fixed without labels (0/20 plain), §32.** GT-distilled loops
   extrapolate to 2× their training depth (17/20, §37).
 * Second label-free rung (M): the teacher beats self-labels (10/12, p 0.019), and one-loop reach rises from 2/20 to
@@ -1890,6 +1892,9 @@ models eligible).**
   - P10f holds only by the letter: PI1 is 0.57 < 0.60, but PER passes 8 in 3/7 runs vs 0/5 controls.
   - So both the history length and the step clock carry part of the key. The thought is not the only carrier, which
     corrects the post-hoc delay reading above.
+* **Across architectures (PROTOCOL9, experiments session, 2026-09-30).** Anytime gains at d7 but not at d8 (AP1 5/10;
+  AP2 supported, p 0.046). This is the pattern Prop. 10 predicts for a fall-back at the trained depth
+  (`docs/PROTOCOL9_RESULTS.md`).
 * **Consequence.** The count can be read, and possibly written, without restarting. The per-step mean of the thoughts
   (the lin encoder's μ_i) is common to all graphs and so carries no node identity, which makes it the natural candidate
   for the count. §36 registers an inference-time test of that ("counter clamp").
