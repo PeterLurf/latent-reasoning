@@ -2366,6 +2366,15 @@ A4–A6 ≥ 0.20 at the model's chosen layer: 8 fail.
 * **S1 holds, S2 fails.** Sets help, but training is needed to use them fully.
 * **S1 fails.** Sets need training.
 
+**Result (2026-09-30; 59 models; `theory/results/exp19_set_restart.json`). S1 and S2 not met: sets need training.**
+* Medians of per-model differences in far8–10: set3 − top1 = −0.006; set3r − top1 = −0.011; top3max − set3 = +0.064.
+* 7-hop success is 55/59 for top1, top3max and set3, and 52/59 for set3r.
+* **Reading.** The P30 models' loop starts from the last START and ignores the others. A correct set helps no more
+  than a single anchor, and a random one hurts slightly. The smoke model (Pilot B anytime) was not representative.
+* For the checkpointed reasoner (§33), set-valued restarts must be trained. The pilot's first stage is therefore to
+  teach restarts from sets of START tokens. Separate episodes per anchor (top3max) remain the working inference-time
+  version.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
