@@ -110,4 +110,21 @@ for rep in range(2):
     draws.append(ks)
 assert draws[0] != draws[1], "two calls drew identical budgets"
 print("4. random_tight: budgets", draws[0], "then", draws[1])
+# 5. jitter: off -> identical to the plain loss; on -> finite and different in train mode, identical in eval mode
+cfg.random_tight = False
+b = batch_at(11, cfg)
+idx = b.pop("idx").tolist()
+model.anytime_C = None
+model.jitter = None
+model.train()
+l0 = float(model(**b, sample_idx=idx).loss)
+model.jitter, model.jitter_p = 2.0, 1.0
+l1 = float(model(**b, sample_idx=idx).loss)
+assert l1 == l1 and abs(l1 - l0) > 1e-6, (l0, l1)
+model.eval()
+e1 = float(model(**b).loss)
+model.jitter = None
+e0 = float(model(**b).loss)
+assert e0 == e1, (e0, e1)
+print("5. jitter: train loss", l0, "->", l1, "; eval unchanged", e0)
 print("P8_TEST PASS")

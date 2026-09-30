@@ -18,7 +18,12 @@ Adds two config options, both off by default (the standard recipe is unchanged w
   - K is drawn from a hash of (per-call salt, idx), so it is independent of the example's content and length.
   - The first K steps are replaced by K latents; explicit steps resume at step K + 1 (none if K >= n).
 
-`test_p8.py` checks both on a tiny random GPT-2. The anytime branch at j = K reproduces the ordinary pass's answer
+* `jitter: r` (float, with `jitter_p`, default 0.5). Amplitude jitter (THEORY §22 T6; as theory/arch.add_jitter).
+  - While training, each fed-back thought is rescaled about the mean of the thoughts fed back in that pass:
+    h <- c + s (h - c), with s ~ LogUniform[1/r, r] per example, applied with probability jitter_p. c is detached.
+  - Evaluation is untouched.
+
+`test_p8.py` checks the anytime and random-tight options on a tiny random GPT-2. The anytime branch at j = K reproduces the ordinary pass's answer
 logits, and with no supervised pairs the loss equals the ordinary loss.
 """
 import os
@@ -109,6 +114,20 @@ if MARK not in src:
         return torch.cat(terms).mean() if terms else None
 '''
     src = src.replace("    def train(self):", method + "\n    def train(self):", 1)
+    old_fb = """                inputs_embeds = inputs_embeds.index_put(
+                    (bi, ti), hidden_states[bi, ti - 1 - hidden_states_offset, :])"""
+    assert src.count(old_fb) == 1, "vectorised feedback anchor not found"
+    src = src.replace(old_fb, """                fb = hidden_states[bi, ti - 1 - hidden_states_offset, :]
+                if getattr(self, "jitter", None) and self.base_causallm.training:     # PROTOCOL8 arms: amplitude jitter
+                    lr_ = math.log(self.jitter)
+                    s_ = torch.exp((2 * torch.rand(fb.shape[0], 1, device=fb.device) - 1) * lr_)
+                    s_ = torch.where(torch.rand(fb.shape[0], 1, device=fb.device) < getattr(self, "jitter_p", 0.5),
+                                     s_, torch.ones_like(s_)).to(fb.dtype)
+                    c_ = fb.mean(0, keepdim=True).detach()
+                    fb = c_ + s_ * (fb - c_)
+                inputs_embeds = inputs_embeds.index_put((bi, ti), fb)""", 1)
+    if "\nimport math" not in src:
+        src = "import math\n" + src
     open(cp, "w").write(src)
     print("P8 anytime patch applied to coconut.py")
 else:
@@ -158,6 +177,8 @@ if MARK not in src:
                       f'''        model = Coconut(model, latent_id, start_id, end_id, tokenizer.eos_token_id)
         {MARK}
         model.anytime_C = getattr(configs, "anytime", None)
+        model.jitter = getattr(configs, "jitter", None)
+        model.jitter_p = getattr(configs, "jitter_p", 0.5)
         Coconut.DEPTH = {{i: len(x["steps"]) for i, x in enumerate(json.load(open(configs.train_path)))}}''', 1)
     old = '''                batch = {
                     key: batch[key].to(rank) for key in batch.keys() if key != "idx"
