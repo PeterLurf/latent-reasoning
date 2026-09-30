@@ -48,10 +48,6 @@ scored (D–M, §§34–38). No theory hosts are live. T12 (§39, 8 runs) runs o
 | Group | Hosts (instance: host:port) | Done → drained |
 |---|---|---|
 | done 09:34 | Phase 0 Coconut | **F1 and F1b not met** (aᴄ(H, 10) = 0.656; K′ = 0 at chance): outcome (iii), Coconut does not learn deep problems; `docs/PROTOCOL8_PHASE0_RESULTS.md` |
-| T9 | t9_vD 53410630: 142.127.68.223:13578 | ~08:30 |
-| PROTOCOL9 | vb1 53453305 198.200.122.18:17224 · vb4 53453314 223.167.245.91:45232 · vb5 53453320 178.226.163.63:40452 · vb8 53453349 141.195.21.87:47615 | ~04:00–05:00 |
-| PROTOCOL9 extension (am. 7) | x1 53492405 174.0.242.177:1678 · x3 53492408 109.173.238.203:42167 · x5 53492421 172.218.118.138:55578 · x6 53492427 142.112.39.215:62359 · x7 53492433 142.112.39.215:63657 · x8 53492437 86.123.234.69:47324 · x2 53494807 142.127.68.223:7004 · x4 53494817 174.0.242.177:1626 (replacements for stuck 53492407/12) | ~08:00 |
-| THEORY §39 T12 (frozen 6a9784c) | v1 53489419 142.127.68.223:7439 · v2 53489427 142.127.68.223:18162 · v3 53489433 174.0.242.177:1713 | ~07:30 |
 | **PROTOCOL8** (registered 482a8e9; `prosqa/pod_p8c.sh`) | coco_s1 53533281 151.237.25.16:20413 · coco_s2 53533300 213.163.75.246:50708 · at_s1 53533289 142.112.39.215:63460 · rt_s1 53533295 86.123.234.69:46460 · rt_s2 53533311 185.101.222.13:17298 · cot_s1–s4 53533314/19/22/26 (38.29.145.230:40495, 142.127.68.223:13228, 159.48.242.15:42038, 38.247.78.6:44010) · at_s2 + s3/s4 of every latent arm placed by `scratch/p8c_fill.sh` (log `logs/p8c_fill.log`) | latent ~Thu 04:00–10:00; cot ~16:00 → `drain_prosqa.sh` |
 
 **Watchers:** `scratch/auto_drain.sh` (verified drain on each QUEUE_DONE, with T12 via `drain_t12.sh`; log
@@ -116,7 +112,7 @@ change.
 | done 07:45 | PROTOCOL9 primary | **AP1 not supported (d8 5/10); AP2 supported (10 vs 3, p 0.046); AP3 anytime more learnable (21 vs 12)**; `docs/PROTOCOL9_RESULTS.md` |
 | ~09:00 | Phase 0 Coconut: training ends ~08:10 (epochs ran ~28 min, not 14); `coco_test_e48.json` first, full evaluation ~11:00 | read F1/F1b from e48 as soon as it exists; drain at ANALYSIS_DONE |
 | ~09:30–10:00 | PROTOCOL8 registration, after F1/F1b | launch ~10:30: 12 latent-arm hosts (~16–20 h each) + 4 CoT; ≈ $50 of $88 |
-| ~11:00 | PROTOCOL9 extension (7 Vast hosts + local l3 runs) | pooled 64-pair analysis (`--ext`) |
+| ~13:30 | PROTOCOL9 extension | Vast part fully drained (10:09); last local l3 runs s513/s514/s515 end ~13:15 → pooled 64-pair analysis (`score_p9.py --ext`) |
 | — | T12 (THEORY §39) | fetched 06:11; scored by Theory |
 
 **Scored 2026-09-29 (details in PROTOCOL6_RESULTS.md and PROTOCOL7_RESULTS.md; all re-verified by the audit):**
