@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Toy-queue Vast watcher with automatic, verified draining.
-#   bash scratch/auto_drain.sh "<host> <port> <queue tag> <instance id> <fetch prefix t9|p9>" ...
+#   bash scratch/auto_drain.sh "<host> <port> <queue tag> <instance id> <fetch prefix t9|p9|t12>" ...   (t12: drain_t12.sh)
 # Every 10 min, for each host still in the list:
 #   - QUEUE_DONE: run scratch/drain_toy.sh. On DRAINED, record host:port in logs/drained_hosts.txt (scratch/gpu_watch.sh
 #     skips those), log it in logs/auto_drain.log, and drop the host from the list. Otherwise print the drain output
@@ -27,7 +27,8 @@ while :; do
     if [ -n "$err" ] && [ "$err" != "${base[$t]}" ]; then
       # a new "no model for <r>" whose guard log says "relaunch budget spent" is a genuine stage-1 outcome: note it, go on
       nm=$(echo "$err" | tail -1 | sed -n 's/^no model for //p')
-      if [ -n "$nm" ] && timeout 40 ssh -o ConnectTimeout=15 -i ~/.ssh/runpod_ed25519 -p $p root@$h            "tail -n 1 /workspace/Latent/logs/guard_$nm.log | grep -q 'relaunch budget spent'" 2>/dev/null; then
+      gl="/workspace/Latent/logs/guard_$nm.log"
+      if [ -n "$nm" ] && timeout 40 ssh -o ConnectTimeout=15 -i ~/.ssh/runpod_ed25519 -p $p root@$h            "tail -n 1 $gl | grep -q 'relaunch budget spent'" 2>/dev/null; then
         echo "$(date '+%F %T') $t stage-1 failure (genuine, relaunch budget spent): $nm" >> logs/auto_drain.log
         base[$t]="$err"
       else
@@ -35,7 +36,8 @@ while :; do
       fi
     fi
     if [ "$dn" -ge 1 ] 2>/dev/null; then
-      res=$(bash scratch/drain_toy.sh "$h" "$p" "$pre" "$id" "$t" 2>&1)
+      if [ "$pre" = t12 ]; then res=$(bash scratch/drain_t12.sh "$h" "$p" "$t" "$id" 2>&1)
+      else res=$(bash scratch/drain_toy.sh "$h" "$p" "$pre" "$id" "$t" 2>&1); fi
       if echo "$res" | grep -q "^DRAINED $id"; then
         echo "$h:$p" >> logs/drained_hosts.txt
         echo "$(date '+%F %T') $t $id $(echo "$res" | grep '^verified')" >> logs/auto_drain.log

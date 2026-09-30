@@ -77,3 +77,12 @@ run  results/budget_sweep_t10fork_s572.json
 EVAL_DONE t10fork_s572
 02:54:17 evaluated t10fork_s572
 02:54:17 start t10fork_s575 (--no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 575 --shapes fork --p_fork 0.5 )
+04:47:17 trained t10fork_s575 rc 0
+run  results/competence_t10fork_s575.json
+run  results/competence_matched_t10fork_s575.json
+run  results/length_gen_t10fork_s575.json
+run  results/delayed_trace_t10fork_s575.json
+run  results/budget_sweep_t10fork_s575.json
+EVAL_DONE t10fork_s575
+04:47:40 evaluated t10fork_s575
+04:47:41 QUEUE_DONE
