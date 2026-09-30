@@ -1361,6 +1361,16 @@ timestep encodings raise the expressivity of looped transformers; this pilot is 
 * **Amendment I-2 (2026-09-29 15:38 EDT, before any Pilot I run started).** Credit added: **PER3 is restored**; PI1–PI3 are
   evaluated on PER2 ∪ PER3 as first registered.
 
+**Result (2026-09-30; all 16 runs; `theory/score_pilotHIJKL.py I` → `theory/results/score_pilotI.json`). PI1 narrowly
+not met; PI2 inconclusive; PI3 not met.**
+* **Competent:** PER2 4/8 and PER3 3/8 (pi_per3_s905 exhausted its guard), vs C 5/8.
+* **PI1.** The pointer keeps advancing after K in 4/7 competent PER runs (0.57 < 0.60), vs 0/4 same-seed controls.
+* **PI2.** far8–10 at K′ = 16: PER > C in 3/5 counted pairs.
+* **PI3.** The in-range speed is kept after K in 1/7.
+* **Descriptive.** Pointer passes 8: PER 3/7, controls 0/5. Median d8: PER2 0.622, C 0.503.
+* **Reading.** A periodic clock removes part of the stop key (§35) in some runs, at a cost in learnability. It does not
+  keep the in-range speed.
+
 ## 29. Pilot J — chunk-reset latent attention (A8; CTM sliding window) (pre-registered 2026-09-29 15:19 EDT, before any Pilot J run started)
 
 **Design (`--arch chunk3`, `theory/arch.py:ChunkReasoner`).** The latent budget is cut into chunks of L = 3 steps; latent
@@ -1384,6 +1394,18 @@ so continuing past K means running more copies of a trained computation rather t
   the Audit session); agreed with the experiments session: Pilot J runs on the theory Vast hosts, capped at $5. Queue
   order on hosts 2–4: D/E → H → F (J, JAT) → G → I (PER2) → J; host 1 keeps only its D/E and H runs and is destroyed after
   them (its G/I/J lines moved to hosts 2–4). Projected theory Vast spend from 15:30 to the end of all queues ≈ $15–16.
+
+**Result (2026-09-30; all 16 runs; `theory/score_pilotHIJKL.py J` → `theory/results/score_pilotJ.json`). PJ2 supported;
+PJ3 met; PJ1 not met.**
+* **Competent:** CH3 6/8, CH3AT 4/8 (pj_ch3at_s905 exhausted its guard). C 5/8, AT 6/8.
+* **PJ2 supported.** Pooled pair rule on d8: 6/8 (one-sided sign p = 0.14). Median d8: CH3 0.604 vs C 0.503; CH3AT 0.644
+  vs AT 0.584. That is the highest median d8 of any from-scratch toy arm.
+* **PJ1 not met.** The pointer passes 8 in 4/10 competent J runs (0.40 < 0.50), vs 1/11 same-seed C ∪ AT runs.
+  - CH3AT: 2/4 run at unit speed to 11. The other 2 fall back into a period-3 cycle (s901 `1 1 2 3 4 5 6 1 2 3 1 2`).
+  - AT (same seeds): 1/4.
+* **PJ3 met.**
+* **Reading.** Cutting the latent history every 3 steps removes the stop key in half the anytime runs. The fall-back in
+  the rest is locked to the chunk period. This refutes P10b′ (§35), which predicted no gain over AT.
 
 ## 30. Zero-cost follow-ups from PROPOSALS §9: renormalisation (F3a), the randk re-analysis (F1a's $0 test), and branch selection (pre-registered 2026-09-29 21:48 EDT, before any of these measurements on the named models)
 
@@ -1842,6 +1864,11 @@ models eligible).**
     key. The CH3AT pointer falls back near the trained depth like AT, and PJ1's "passes 8" share is not larger than AT's.
     This replaces P10b's conditional.
   - **P10f (Pilot I, PER2/PER3).** A periodic step embedding does not touch a count inside the thought. PI1 is not met.
+* **Outcome of P10b′ and P10f (2026-09-30, after Pilots I and J were scored).**
+  - P10b′ is not supported: CH3AT passes 8 in 2/4 runs vs AT's 1/4.
+  - P10f holds only by the letter: PI1 is 0.57 < 0.60, but PER passes 8 in 3/7 runs vs 0/5 controls.
+  - So both the history length and the step clock carry part of the key. The thought is not the only carrier, which
+    corrects the post-hoc delay reading above.
 * **Consequence.** The count can be read, and possibly written, without restarting. The per-step mean of the thoughts
   (the lin encoder's μ_i) is common to all graphs and so carries no node identity, which makes it the natural candidate
   for the count. §36 registers an inference-time test of that ("counter clamp").

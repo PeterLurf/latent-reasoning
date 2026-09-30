@@ -1,0 +1,72 @@
+{
+ "arms": {
+  "ch3": {
+   "registered": 8,
+   "evaluated": 8,
+   "competent": 6,
+   "extrapolate_competent": 4,
+   "extrapolate_all": 5,
+   "median_d8": 0.60400390625,
+   "median_d7": 0.6513671875,
+   "missing": []
+  },
+  "ch3at": {
+   "registered": 8,
+   "evaluated": 7,
+   "competent": 4,
+   "extrapolate_competent": 4,
+   "extrapolate_all": 4,
+   "median_d8": 0.64404296875,
+   "median_d7": 0.697998046875,
+   "missing": [
+    "pj_ch3at_s905"
+   ]
+  },
+  "C": {
+   "registered": 8,
+   "evaluated": 8,
+   "competent": 5,
+   "extrapolate_competent": 2,
+   "extrapolate_all": 4,
+   "median_d8": 0.50341796875,
+   "median_d7": 0.53173828125,
+   "missing": []
+  },
+  "AT": {
+   "registered": 8,
+   "evaluated": 7,
+   "competent": 6,
+   "extrapolate_competent": 6,
+   "extrapolate_all": 6,
+   "median_d8": 0.583984375,
+   "median_d7": 0.6669921875,
+   "missing": [
+    "pd_at_s905"
+   ]
+  }
+ },
+ "PJ1": {
+  "n_J": 10,
+  "share_J": 0.4,
+  "n_base_same_seeds": 11,
+  "share_base": 0.09090909090909091,
+  "met": false
+ },
+ "PJ2": {
+  "counted": 8,
+  "in_direction": 6,
+  "sign_p_one_sided": 0.14453125,
+  "verdict": "supported"
+ },
+ "PJ3": {
+  "CH3_vs_C": [
+   6,
+   5
+  ],
+  "CH3AT_vs_AT": [
+   4,
+   6
+  ],
+  "met": true
+ }
+}
