@@ -19,8 +19,8 @@ exploratory results are labelled.
 | **T2b** rescue at natural scale (per-head mass of the model's own sharp frontier) | 24 O non-extrapolators, P7 < 0.10 | 20/24 rescued (B2–B6 up ≥ 0.20 and decoy injection raises false positives ≥ 0.10) | **supported** |
 | **T13** P8 predicts extrapolation to distance 8 | 44 O runs, 8 extrapolate at d8 | AUC 0.98 (P7: 0.97) | **supported** |
 | **T4** prospective head-to-head vs in-distribution predictors | 44 O runs, 20 extrapolate | P7 0.99; best of 10 in-distribution instruments 0.82 (completion time at depth 6); EA 0.53; accuracies 0.54–0.65; difference 0.17, 95 % CI [0.05, 0.26] | **supported** |
-| **T9** P7 generality across architecture (3 layers, 4 layers, 512 wide) | 44 of 48 runs trained (4 stage-1 failures), 24 competent, 21 above the floor | pooled AUC 0.89 (14/21 extrapolate); 512 wide AUC 1.00, 4 layers 0.71, 3 layers unresolved (all 5 extrapolate) | **supported** (pooled); per family supported / inconclusive / unresolved |
-| **T10** P7 on fork graphs | 16 runs, 10 competent above the floor | AUC 1.00 (5/10 extrapolate); non-extrapolators with P7 < 0.10: 5/5 | **supported** |
+| **T9** P7 generality across architecture (3 layers, 4 layers, 512 wide) | 44 of 48 runs trained (4 stage-1 failures), 24 competent, 21 above the floor | pooled AUC 0.89, 95 % CI [0.71, 1.00], permutation p 0.0017 (Holm ≤ 0.0085; 14/21 extrapolate); 512 wide AUC 1.00, 4 layers 0.71, 3 layers unresolved (all 5 extrapolate) | **supported** (pooled); per family supported / inconclusive / unresolved |
+| **T10** P7 on fork graphs | 16 runs, 10 competent above the floor | AUC 1.00, CI [1.00, 1.00], permutation p 0.004 (5/10 extrapolate); non-extrapolators with P7 < 0.10: 5/5 | **supported** |
 
 Sources: `results/p7s_t5.json`, `results/p7s_t6.json`, `results/p7_indep.json`, `results/p7s_t8.json`; `results/p7s_causal.json`, `results/p7s_t12.json` (T1/T2; code `latent/frontier_causal.py`, git f77d6ff);
 `results/p7s_t3.json`, `results/p7s_t3_score.json` (T3; `scratch/p7s_t3.py`).
@@ -41,6 +41,15 @@ Sources: `results/p7s_t5.json`, `results/p7s_t6.json`, `results/p7_indep.json`, 
   outside the training shape distribution (PROTOCOL7 amendment 9).
 - **Placement:** amendments 7–8 put runs on Vast and local cards with mixed hardware; 4 T9 runs were stage-1 failures
   (t9l3_s501, t9w512_s547, t9w512_s549, t9w512_s552).
+- **General-rule statistics** (`scratch/p7s_t9_stats.py`, `results/p7s_t9_stats.json`; model bootstrap of 5000, 10 000
+  permutations, seed 0; added after Audit noted the gap):
+  - T9 pooled: CI [0.71, 1.00], p 0.0017. Holm across T1–T4 and T9 is bounded by 5p = 0.0085, so T9 survives whatever
+    the other four p-values are. T1–T4 permutation p-values were never computed; that is a reporting gap, not needed
+    for this bound.
+  - T10: CI [1.00, 1.00], p 0.004.
+  - 4 layers: AUC 0.71, CI [0.32, 1.00], p 0.17.
+  - 512 wide: AUC 1.00, CI [1.00, 1.00], but p 0.052 with n = 6. "Supported" follows the AUC ≥ 0.80 rule; on its own
+    it is weak evidence.
 - **Not yet applied:** the amendment-3 causal tests and T4, registered as secondary for T9/T10.
 
 ## T1 / T2 — what went wrong, and what exploration showed (exploratory, 5 + 5 models)
