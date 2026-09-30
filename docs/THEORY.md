@@ -2188,6 +2188,23 @@ bar.
     training at a second depth (§37), chunked history (§29), or restarts (§26, §32). They do not delete the count.
   - T12 in this form is not pursued further (PROPOSALS §10 updated).
 
+## 40. Prop. 10 across architectures: pointers and counts in the PROTOCOL9 runs (exploratory predictions registered 2026-09-30 07:47 EDT, before any PROTOCOL9 model was measured by this session)
+
+**Models.** The competent runs in `results/p9.json` (experiments session; scored 07:45): anytime p9at_* and their
+paired controls t9l3/t9l4/t9w512/t10fork.
+
+**Measures** (frozen tools):
+* the pointer: `theory/le_pointer.py`, on probe(512);
+* step decodability: `theory/step_decode.py`.
+The fork family is probed on chain graphs, i.e. off its training shape, and is reported separately.
+
+**Predictions** (non-fork families):
+* **X9a (the in-range brake goes).** Median p[K−1] of competent anytime runs ≥ K − 2, and above the competent
+  controls' median. This is the LE2 pattern.
+* **X9b (the fall-back remains).** The pointer passes 8 in ≤ 30 % of competent anytime runs. This is the d7-not-d8
+  pattern.
+* **X9c (the count is carried).** Step-decode accuracy ≥ 0.70 in ≥ 80 % of competent runs of both arms.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
