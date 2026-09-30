@@ -257,3 +257,14 @@ user decides.
   Coconut 66.0/67.5 vs pause 75.4/75.1). We already evaluated one checkpoint of it (`prosqa/res/ext_bmarti44_coconut_e49.json`).
   CODI and SIM-CoT GPT-2 checkpoints are GSM8K only.
 - **Deeper datasets for later generality.** CLUTRR (2–10 hops), StepGame (k ≤ 10), the Saparov 2412.04703 generator.
+
+**Random-tight arm, exact rule (theory session, 2026-09-29 ~19:45; THEORY §22.7, 340e558), to register as is:**
+- **Per stage:** at every latent curriculum stage s ≥ 1, draw K ~ U{1..K_s} per example, independent of the example.
+  K_s = c·s is the stage's nominal latent count, not capped by the example's step count n. The final stage uses
+  K ~ U{1..K_max}.
+- **Format:** Coconut's stage-K format. K latents replace the first K steps, explicit CoT resumes at step K + 1, and
+  if K ≥ n the answer follows the latents directly. The loss is unchanged.
+- **Implementation:** in `get_cot_latent_dataset`, redrawn every epoch because the dataset is rebuilt per epoch.
+- **Prediction:** random-tight ≈ anytime > fixed-K Coconut on beyond-training outcomes.
+- **Optional sub-arm, if seeds allow:** random-tight at the final stage only, to test whether circuit selection in
+  Coconut happens in the early stages.
