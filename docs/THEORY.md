@@ -2579,6 +2579,21 @@ For PROTOCOL8b this would say: write the checkpoint within one episode's reach o
 3. **External, already registered:** PROTOCOL8b step 1 (experiments session). Does training make GPT-2 use written
    checkpoints? If not, the design does not transfer as is.
 
+**Addendum (2026-09-30 18:28 EDT): architecture edits and other domains are now allowed (user, via Audit).**
+* **Architecture change to test first: segment-isolating attention.** Later segments' latent positions see only the
+  text and the written checkpoints, never earlier latent states.
+  - It is a mask, not new parameters. It bounds every count (§35) and makes the written text the only channel, so C7
+    is well posed.
+  - For GPT-2 it is sent to the experiments session as a concrete design ("segmented Coconut with written entity
+    checkpoints"): single anchor, a write head, closure halt, trained in stages A (checkpoint use) → B (write head by
+    self-distillation) → C (re-anchor distillation).
+  - The first test there is inference only, on the 8b step-1 checkpoints: chained isolated segments at depths 11–14,
+    with a C7 swap.
+* **Domain.** The prior is CLUTRR or StepGame next: entity checkpoints transfer directly and depth is controllable. The
+  C3 comparison is a text-CoT baseline. Prior art has been requested from Literature, and a choice will be registered
+  after its answer.
+
+
 ## 48. Multi-start beams across checkpointed segments (§47 test 1; pre-registered 2026-09-30 18:07 EDT, before measuring)
 
 **Test.** `theory/exp22_beam_chain.py`, CPU.
