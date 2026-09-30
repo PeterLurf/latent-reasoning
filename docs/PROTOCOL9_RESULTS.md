@@ -33,6 +33,13 @@ Registration: `docs/PROTOCOL9.md`. Scorer: `scratch/score_p9.py`. Results: `resu
     not "anytime extends the reach of a trained model on these architectures". It is the same pattern as THEORY
     Pilot D.
 
+## Mechanism check by the theory session (THEORY §40, measurement only, 33 competent models)
+
+- Anytime removes the in-range brake: median p[K−1] is 5 vs 2 for controls.
+- The fall-back remains: only 1/16 anytime runs have a pointer past depth 8.
+- The step count is decodable from the thoughts in 25/25 runs.
+- Same cause as on the base toy: a fall-back keyed to an iteration count.
+
 ## Deviation (scorer fix, disclosed)
 
 The first scoring run left 4 pairs "pending": `l3_s501`, `l3_s504`, `w512_s547` and `fork_s566`, each with a
