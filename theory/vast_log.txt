@@ -185,3 +185,6 @@
 53477338 theory-M06 - - - destroyed 2026-09-30 02:02: SSH never reachable after ~19 min (bad host), before any run; vdestroy: DESTROYED_VERIFIED 53477338
 53456501 theory-w1 - - 1.208.108.242:55181 destroyed 2026-09-30 02:02 after queue end + verified fetch, confirmed absent (destroying instance 53456501.)
 53479488 theory-M06 offer53264059 142.127.68.223:7009 created 2026-09-30 02:03 (Pilot M, one model x 3 arms; queue theory/queues/pilotM_06.txt; NVIDIA GeForce RTX 3080 Ti, 550.107.02)
+53477356 theory-M20 - - 50.40.161.201:60504 fetched 2026-09-30 02:08 (fetched, sha ok: 3 runs)
+53477356 theory-M20 - - 50.40.161.201:60504 destroyed 2026-09-30 02:09 after queue end + verified fetch, confirmed absent (destroying instance 53477356.)
+53477339 theory-M08 - - 96.28.173.248:28521 deployed by hand 2026-09-30 02:12 (its deploy loop stalled after vdeploy_toy.sh was edited mid-run)
