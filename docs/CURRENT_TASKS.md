@@ -92,7 +92,7 @@ change.
 | GPU | Now | Next (chained, automatic) | Runs dry |
 |---|---|---|---|
 | RTX 4060 | T10 (last run `t10fork_s573`) | PROTOCOL9 workers (end at once) → **PROTOCOL9 extension** `p9x_4060` (`scratch/p9x_bf16.txt`) → `p9xf_4060` (`scratch/p9x_fork.txt`) | ~Wed 20:00 |
-| RTX 3070 | idle since 11:48 (its extension share done) | next registered local job (none yet) | — |
+| RTX 3070 | lent to Theory 11:53: §41-2 run pn_gt18_s130 (log `logs/queue_local3070-N18.out`) | — | ~12:15 |
 | RTX 2070 | lent to Theory from ~11:03: THEORY §41 amendment 41-2 (6 runs, log `logs/queue_local2070-N18.out`) | PROTOCOL8b re-anchor pilot (Phase 0 checkpoint, being written) | ~13:00 |
 
 - **Overnight follow-up: PROTOCOL9** (`docs/PROTOCOL9.md`, a28ff0c 16:09:10): anytime supervision on the T9/T10
