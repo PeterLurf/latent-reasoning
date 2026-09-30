@@ -231,6 +231,48 @@ def add_jitter(model, r, p=0.5):
     return model
 
 
+def add_step_adversary(model, lam, n_classes, hidden=128):
+    """Proposal T12 (PROPOSALS §10, THEORY §39): step-adversarial thoughts, confusion form. While training, every
+    thought produced by a latent step (h_k, k = 1..K, delayed and upfront chains) is recorded. A 2-layer probe is
+    trained to predict k from the detached thoughts (cross-entropy); the model is trained, with weight lam, to make the
+    probe's output uniform over 1..K (cross-entropy to the uniform target through a frozen copy of the probe) -- the
+    domain-confusion objective, which unlike plain gradient reversal cannot be met by making the probe confidently
+    wrong. The probe is not a registered submodule: the state dict is unchanged and evaluation is untouched. Returns
+    the probe (its parameters go to the optimizer). model.adv_last holds the probe's last CE (device tensor, updated by
+    CUDA-graph replays; ln K = chance)."""
+    import torch.nn.functional as F
+    dev = next(model.parameters()).device
+    probe = nn.Sequential(nn.Linear(model.d, hidden), nn.GELU(), nn.Linear(hidden, n_classes)).to(dev)
+    buf = []
+    object.__setattr__(model, "_step_probe", probe)
+    object.__setattr__(model, "_adv_buf", buf)
+    object.__setattr__(model, "adv_last", torch.zeros((), device=dev))
+    base = model.latent_step
+
+    def latent_step(h, k, cache, keep_resid=False):
+        out = base(h, k, cache, keep_resid)
+        if model.training:
+            buf.append((out[0], k))
+        return out
+
+    def step_adv_loss():
+        hs = torch.cat([h.float() for h, _ in buf])
+        ys = torch.cat([torch.full((h.shape[0],), k, dtype=torch.long, device=h.device) for h, k in buf])
+        ks = sorted({k for _, k in buf})
+        buf.clear()
+        ce = F.cross_entropy(probe(hs.detach()), ys)                        # trains the probe only
+        W1, b1, W2, b2 = (t.detach() for t in (probe[0].weight, probe[0].bias, probe[2].weight, probe[2].bias))
+        logp = F.log_softmax(F.linear(F.gelu(F.linear(hs, W1, b1)), W2, b2), -1)
+        conf = -logp[:, ks].mean()                                           # CE to uniform over the used steps
+        model.adv_last.copy_(ce.detach())
+        return ce + lam * conf
+
+    model.latent_step = latent_step
+    object.__setattr__(model, "step_adv_loss", step_adv_loss)
+    model.step_adv = lam
+    return probe
+
+
 def add_periodic_step(model, period):
     """Literature-session idea #2 (THEORY §28): a clock that never runs out. The latent step k uses step embedding
     ((k - 1) mod period) + 1 instead of k (the table is trained; use_step is switched on). Applied at training and at

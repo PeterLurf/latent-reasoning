@@ -2077,8 +2077,11 @@ met.**
     9/20.
   - But unfiltered labels erode the rung below. This is the error avalanche of 2502.01612.
   - Literature's agreement filter keeps the old rung (d8 0.640) and climbs further (6/10), on 10 models only.
-  - A third rung should use the filter. It should also mix in the previous rung's teacher data, to hold the lower
-    depths.
+  - PM3's failure, together with lower competence (13/20 vs 17/20), is the early sign of self-training error build-up
+    that 2502.01612 warns about. The filtered arm (8/10 competent, d8 0.640) is the descriptive hint that filtering
+    contains it.
+  - **The agreement filter is the default for any third rung.** It should also mix in the previous rung's teacher
+    data, to hold the lower depths.
 
 ## 7. Log
 

@@ -68,3 +68,12 @@ run  results/budget_sweep_t10fork_s569.json
 EVAL_DONE t10fork_s569
 00:57:53 evaluated t10fork_s569
 00:57:54 start t10fork_s572 (--no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 572 --shapes fork --p_fork 0.5 )
+02:53:54 trained t10fork_s572 rc 0
+run  results/competence_t10fork_s572.json
+run  results/competence_matched_t10fork_s572.json
+run  results/length_gen_t10fork_s572.json
+run  results/delayed_trace_t10fork_s572.json
+run  results/budget_sweep_t10fork_s572.json
+EVAL_DONE t10fork_s572
+02:54:17 evaluated t10fork_s572
+02:54:17 start t10fork_s575 (--no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 575 --shapes fork --p_fork 0.5 )
