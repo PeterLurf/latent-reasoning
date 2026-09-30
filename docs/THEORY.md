@@ -2234,6 +2234,31 @@ The fork family is probed on chain graphs, i.e. off its training shape, and is r
  on
   each path. It was re-run with clean paths.
 
+## 41. Why a second training depth gives length generalisation: content key or moved count? (pre-registered 2026-09-30 09:04 EDT, before any run)
+
+**Question (§37 X1).** Students distilled with true labels on 12-hop chains at K′ = 12 extrapolate in one loop to
+about 24 hops. Two accounts:
+* **Content key.** Training past the old stop teaches continuation keyed to content (there is an edge to read). Reach
+  is then unbounded and only fades.
+* **Moved count.** The stop key moves to the new training depth.
+
+**Test.** Supervise the deep chains only up to distance 9, with a tight 9-step loop.
+* Flags: `--teacher gt --student_Kp 9 --deep_sup_max 9`. Look-alikes are masked at the same indices, and there is a
+  normal batch as before.
+* Everything else is as §32. The flag-off path is bit-identical to Pilot L's (checked).
+* A stop keyed to count 9 is then free.
+
+**Models.** The 10 even-indexed P30 failures: 102, 111, 113, 118, 125, 130, 132, 140, 146, 157. Local RTX 2070, fp32.
+
+**Measure.** exp18: one loop at K′ = 24 on §37's probe, bal-acc by distance.
+
+**Rule** (medians over the 10):
+* **Moved count** if median d10–12 < 0.60.
+* **Content key** if median d13–18 ≥ 0.60.
+* Otherwise partial.
+
+**Reference, descriptive.** The same models' GT12 students (pl_gt), paired.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the

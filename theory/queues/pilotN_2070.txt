@@ -1,0 +1,10 @@
+pn_gt9_s102 --init_from runs/p30_s102/model.pt --teacher gt --head 2 --seed 102 --student_Kp 9 --deep_sup_max 9
+pn_gt9_s111 --init_from runs/p30_s111/model.pt --teacher gt --head 4 --seed 111 --student_Kp 9 --deep_sup_max 9
+pn_gt9_s113 --init_from runs/p30_s113/model.pt --teacher gt --head 7 --seed 113 --student_Kp 9 --deep_sup_max 9
+pn_gt9_s118 --init_from runs/p30_s118/model.pt --teacher gt --head 0 --seed 118 --student_Kp 9 --deep_sup_max 9
+pn_gt9_s125 --init_from runs/p30_s125/model.pt --teacher gt --head 5 --seed 125 --student_Kp 9 --deep_sup_max 9
+pn_gt9_s130 --init_from runs/p30_s130/model.pt --teacher gt --head 0 --seed 130 --student_Kp 9 --deep_sup_max 9
+pn_gt9_s132 --init_from runs/p30_s132/model.pt --teacher gt --head 6 --seed 132 --student_Kp 9 --deep_sup_max 9
+pn_gt9_s140 --init_from runs/p30_s140/model.pt --teacher gt --head 4 --seed 140 --student_Kp 9 --deep_sup_max 9
+pn_gt9_s146 --init_from runs/p30_s146/model.pt --teacher gt --head 4 --seed 146 --student_Kp 9 --deep_sup_max 9
+pn_gt9_s157 --init_from runs/p30_s157/model.pt --teacher gt --head 5 --seed 157 --student_Kp 9 --deep_sup_max 9
