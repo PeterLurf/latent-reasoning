@@ -1081,7 +1081,10 @@ single episode at K′ = 12 → 24/59, layer-2 block → 41/59; 16 failures are 
 * **RA3.** Mean far8–10 bal-acc over the 59 models: re3 − single ≥ 0.05.
 * **RA4 (cost).** Mean near-distance (1–6) bal-acc drops by ≤ 0.02 (max-combination can add false positives).
 
-**§26 result (scored 2026-09-29 15:03 EDT; `theory/score_reanchor.py` → `theory/results/score_reanchor.json`).**
+**§26 result (scored 2026-09-29 15:03 EDT;*Definition (added 20:34 EDT at the Audit session's request):* "7-hop success" in this section is distance-7 balanced
+accuracy ≥ 0.60 on the long-chain probe (as in exp5), **without** the confidence-bound clause (lower bound > 0.55) of
+the confirmatory "extrapolates" criterion, so it is looser than "extrapolates" in Pilots A–J.
+ `theory/score_reanchor.py` → `theory/results/score_reanchor.json`).**
 
 | inference | 7-hop success (of 59) | failures rescued (of 34) | mean far8–10 | mean near1–6 |
 |---|---|---|---|---|
@@ -1096,7 +1099,8 @@ single episode at K′ = 12 → 24/59, layer-2 block → 41/59; 16 failures are 
   **RA3 met** (+0.091). **RA4 met** (near −0.007 / −0.010).
 * **Reading.** Failing models are competent *within* K steps from any start node deep in the graph; what breaks is running
   beyond K. Restarting the loop keeps every step count inside the trained range and restarts the pointer from a crisp
-  node embedding, and that alone turns 33 of 34 failures into 7-hop successes. This is the strongest evidence yet for the
+  node embedding, and that alone turns 31 of 34 failures into 7-hop successes [corrected 20:34 EDT from "33 of 34", a
+  transcription error found by the Audit session; the table and JSON always said 31 — 24 + 31 = 55]. This is the strongest evidence yet for the
   clock account (Props. 1, 9): the local operator generalises to new positions; the step-indexed continuation does not.
   It also shows the fading mechanism is bounded by the episode length, since the local-type failures are rescued too.
 * **Caveats.** Inference-time only, with extra compute (2–4 episodes) and a discrete decode (the anchor), i.e. a hybrid
