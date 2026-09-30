@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-09-30 00:01 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-09-30 00:36 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -35,30 +35,14 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 > gives fronts to depth 11 in 2/4 runs; Pilot D 12 + 12 running on Vast). Ownership (theory Vast hosts vs a PROTOCOL8)
 > to be agreed. The theory session analyses O/R/T9/T10 runs only after the experiments session has scored them.
 
-## 0. STATE AT 2026-09-29 16:05 — authoritative; sections 1–3 below are partly history
+## 0. STATE AT 2026-09-30 00:45 — authoritative; sections 1–3 below are partly history
 
-**Budget.** Vast credit $145.00 at 16:01 (the user added $100 at ~15:35; "runs are up to the agents, just don't
-overspend"). Burn ~$2.9/h: 10 theory hosts plus the 6 hosts below. Plan: theory ≈ $19 through ~03:00 Wed; T9 on Vast
-≈ $12; Phase 0 ≈ $5; PROTOCOL8 (3 arms × 4 seeds, ~12 hosts from ~07:00 Wed) ≈ $40; keep ≥ $10 in reserve. Don't plan
-past that without telling the user. **Every create/destroy goes in `scratch/pods.txt`; an orphaned host is the main
-leak.**
+**Budget.** Vast $122.35 at 23:01; projected ≈ $93 at 07:00 once Theory's hosts drain (~02:30). PROTOCOL8 needs ≈ $45
+including a ≥ $10 reserve. Every create/destroy goes in `scratch/pods.txt`.
 
-**Credit check 23:05:** $122.35 at 23:01, burn $11.48/h (Theory's Pilot L added 20 hosts). Theory projects its
-spend at ≈ $13–14 from 23:00 and zero after ~02:30 (L drains ~00:30, the rest by ~02:15). This session spends
-≈ $15 to 07:00. Expected credit at 07:00 ≈ $93, above PROTOCOL8's $34 plus the $10 reserve. Re-check live before
-registering.
-
-**Theory status 00:14 Wed (Theory session).** Scored so far:
-- Pilot H (§27): critical period, fine-tuning does not repair (8f80824).
-- Pilot D (§17): PD1 supported (440d6ae).
-- Pilot F (§23): jitter breaks learnability; no gain over anytime (440d6ae).
-
-Pending:
-- Pilot E: the last run is on theory-pa-h2, done ≈ 00:20.
-- Pilot L: the s102 re-runs on theory-L20, done ≈ 00:45.
-- Pilots G, I, J and K: the remaining theory hosts, drain ≈ 02:00–02:30.
-
-watch_hosts3.sh drains and destroys each host. The CPU job theory/exp15_c7_edit.py (§34 T-C7c, registered 6862dd6) runs locally with 2 threads at Idle priority until ≈ 01:30.
+**Theory (details in docs/THEORY.md):** Pilots D (PD1 supported), F (jitter breaks learnability), H (no post-hoc
+repair) and E (PE1 depth wall by rule; learned fall-back keyed to an iteration count, §35) are scored. Pilots G, I, J
+and K drain ~02:00–02:30.
 
 **This session's live Vast hosts (destroy each after a checksum-verified fetch):**
 
