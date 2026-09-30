@@ -1510,6 +1510,54 @@ first test).
    by self-distillation from the attention-decoded frontier, fixed K first, then learned halting.
 4. **Hand the design to Experiments** for PROTOCOL8's format once the toy shows C2 + C6 + C7a together.
 
+## 34. T-C7c — are silent thoughts faithfully editable? Edit and round-trip tests on the pointer (pre-registered 2026-09-30 00:10 EDT, before any measurement on the 59 test models)
+
+**Question (NORTH_STAR open question 1; C7 for latent steps).** The readable content of a thought is its pointer: the
+node whose out-edge the sweep head reads next (§1). Part I found probe directions causally inert. Is the pointer
+different? If the thought is re-written to say "I am at node u", does the model then do what BFS from u predicts, and
+nothing else?
+
+* **Code.** `theory/exp15_c7_edit.py` (the docstring defines every measure). CPU, no training of the model.
+  - *Translation* (thought → text): v_i = the source of the sweep head's top edge at step i + 1, per graph.
+  - *Re-encoding* (text → thought): a linear map U from the model's own id table, fitted per model by ridge least squares on
+    separate probe graphs (seed 1): h_i ≈ μ_i + U id_emb[v_i]. A second encoder, **emb**, uses the model's node-token
+    embedding (the §33 T-C7c wording), scaled by the model's own coefficient.
+  - *Edit:* h_i + Enc(u) − Enc(v_i), where u is v_i's look-alike on the unreachable chain (A/B ↔ D/C, same index j).
+  - *Control:* a random direction of the same norm.
+  - *Round trip:* full substitution h_i → μ_i + U id_emb[v_i]; the residual is discarded.
+  - *Test graphs:* the long-chain probe (512, seed 4247). Eligible graphs are those whose unedited pointer is on the
+    reachable chain at index j ≤ 8.
+* **Models.** The 59 P30 ∪ L models of §26 (exp12 set, each with its §26 sweep head). Primary: edit at thought i = 2 with
+  the lin encoder at dose ×2. Secondary: doses ×1 and ×4, i = 3, and the emb encoder.
+* **Disclosure.** The measures were shaped on one model outside the test set, the fine-tuned ph_c_s102.
+  - The nodes at j and j + 1 are decided by the prefix pass, so answer changes are scored at j + 2 and j + 3.
+  - The ridge fit shrinks U (r² 0.23), so ×2 is primary.
+  - Its values at i = 2, ×2: read 0.74, follow 0.76, ins +0.88, del −0.55, collateral 0.02, IIA 0.47. Random control: all
+    ≤ 0.06. Round-trip agreement 0.98, read_v 0.93. emb edit read 0.00.
+* **Predictions** (medians over the 59 models, primary condition):
+  - **E1 (read and follow).** M0 ≥ 0.50 and M1 ≥ 0.40. The random control has M0 ≤ 0.05 and M1 ≤ 0.05 in ≥ 90 % of
+    models.
+  - **E2 (answers follow the edit past the one-pass horizon).** ins ≥ +0.40 and del ≤ −0.30. The random control has
+    |ins| ≤ 0.10 and |del| ≤ 0.10.
+  - **E3 (locality).** Collateral ≤ 0.05, and within 0.03 of the random control's.
+  - **E4 (interchange-intervention accuracy).** IIA ≥ 0.30. Also reported: the share of models with IIA ≥ 0.30.
+  - **E5 (round trip).** Answer agreement ≥ 0.95 and read_v ≥ 0.85. The pointer plus the step mean then carries what the
+    probe's answers depend on, although it explains only about a fifth of the thought's variance.
+  - **E6 (descriptive).** The emb edit has M0 ≤ 0.05: thoughts do not write the pointer in the node-token code. §26's
+    restart works because START is an input token, not because thoughts share its code.
+* **Readings.**
+  - E1–E4 hold: first causal C7 evidence for silent latent steps, on a toy and at the granularity of a single node id.
+  - E1 holds but E2 fails: the pointer steers attention but the answers are computed elsewhere (Part I's pattern).
+  - E1 fails: the pointer is readable but not linearly writable.
+  - E5 fails: the thought carries answer-relevant content beyond the pointer, a hidden channel. That is expected where
+    attention covers several branches (§30 B1: 1.4–2.3).
+* **Scope.**
+  - The translation's vocabulary is node ids, not language.
+  - The encoder is fitted on the model's own thoughts, not trained independently of it.
+  - Only single-node claims are edited; set-valued claims come with the checkpointed design (§33).
+  - The input-only control of NORTH_STAR (c) concerns decoders. It applies to T-C7a and is not part of this edit test.
+* **Moderators (descriptive).** IIA by extrapolating vs non-extrapolating models (Mann–Whitney), and by K.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
