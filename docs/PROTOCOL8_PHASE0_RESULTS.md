@@ -44,12 +44,16 @@ files (e44, ctl, CoT reference) are still running on the host.
 
 | Stratum (trained m = 0–6, pooled, n = 2933) | Accuracy |
 |---|---|
-| aᴄ at K′ = 10 (the trained budget) | **0.656** |
+| aᴄ at K′ = 10 (the trained budget) | **0.656** (Audit re-check reproduces) |
 | a₁ (no-CoT, P8-0a) | 0.532 |
 | aᴄ at K′ = 0 | 0.507 |
 
 - **F1 not met:** 0.656 < 0.75. The margin over a₁ is 0.124.
-- **F1b not met:** 0.656 < 0.75. The margin over K′ = 0 is 0.149, against a bar of 0.15.
+- **F1b not met:** it fails on the accuracy bar (0.656 < 0.75). Its difference clause (0.148, i.e. 435/2933, against
+  0.15) misses by about 5 questions. "Not met" does **not** mean "latents unused". Without thoughts the model is at
+  chance at every depth; with them it reaches 0.82 at m = 0, falling to chance by m = 5. So the latents are necessary,
+  but they give out after about 4 added hops, and one or two thoughts carry all the gain (overall K′ = 1: 0.60,
+  K′ = 2–16: ~0.61). That is the one-pass-conduit pattern of addenda G, J and Q, now with a depth ceiling.
 - **c_model = −1:** K′ = 0 is at chance at every m. The answer mask leaves no usable one-pass route, so the answer
   depends on the thoughts.
 - **By m:** at K′ = 10, 0.82 / 0.76 / 0.73 / 0.66 / 0.59 / 0.50 / 0.52 for m = 0..6. Gains saturate by K′ ≈ 3; K′ > 10
