@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-09-29 16:05 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-09-30 00:01 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -125,7 +125,7 @@ registering.
 | ~01:00–05:00 | Theory Pilots D/E | Theory messages the result |
 | ~03:00–04:00 | Theory Pilot F | Theory messages PF1–PF3 with competence per arm |
 | ~03:00–08:30 | T9 hosts | fetch, destroy; score T9 when all are in (`scratch/score_p7s_t9.py`) |
-| ~04:30 | Phase 0 Coconut | fetch, destroy, F1 decision |
+| ~05:30–06:00 (training ends ~02:40, then ~3 h evaluation) | Phase 0 Coconut | drain (`scratch/drain_prosqa.sh`), F1 and F1b decision; PROTOCOL8 registration follows at ~06:30–07:00 |
 | ~06:30 | PROTOCOL8 | pre-register (arms Coconut / anytime / random-tight; design in `docs/NEXT_STEPS.md`, end) |
 | ~07:00 | PROTOCOL8 | launch ~12 hosts as the theory hosts free up |
 | ~03:00 | T10 | score with T9, after `scratch/rerun_length_gen.sh t10fork` has filled every length_gen (PROTOCOL7 am. 9). State in the write-up: the extrapolation probe (and far_sweep P7) for fork-trained models is chain-shaped, i.e. outside their training shape distribution (Audit, 2026-09-29). The same holds for PROTOCOL9's fork family |
