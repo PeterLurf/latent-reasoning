@@ -298,3 +298,17 @@ dropped. A test whose population ends up below its minimum is reported as unreso
     `latent/frontier_causal2.py` as a default-off option before they are measured with it.
 * **Rules.** The amendment-3 and T4 decision rules are unchanged. Results go to `results/p7s_causal2_t9.json`, the
   RTX 2070 (fp32).
+
+## Amendment 11 (2026-09-30 10:55 EDT; T4 for T9/T10, before any T4 value for these models was read)
+
+* **Symmetry rule** (theory session): T4 compares P7 with in-distribution instruments read at the **same** layer.
+* **Primary: first block for both.**
+  - The instruments (completion time at depths 5–6, completion at K, sweep reach, EA) come from
+    `latent.protocol6 measure` (`results/p6_endact.json`, pre-filled for the 34 competent T9/T10 models at 10:55),
+    which records the first block.
+  - P7 is the **layer-1 P7** (`results/far_sweep_layers_s2033.json`, layers["1"]). This is distinct from T9's
+    registered chosen-layer P7, and must not be read as it.
+* **Secondary, both at the in_peak-chosen layer:** not computed, because the instrument trace records only the first
+  block. The models where it would differ are the 7 listed in amendment 10.
+* **Rules:** the T4 decision rule is unchanged: AUC(P7) − max AUC(instrument), with a model-bootstrap 95 % CI where the
+  max is recomputed per resample. Populations are T9 pooled and T10, above the P7 floor.
