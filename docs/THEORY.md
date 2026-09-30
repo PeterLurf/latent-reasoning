@@ -711,6 +711,34 @@ the slack-induced schedule (§16, §18 Prop. 2), so the two accounts make opposi
   h_2 to h_K, one repeat allowed" = p[i] = p[i−1] + 1 for every i in 2..K except at most one i with p[i] = p[i−1], and no
   i with p[i] < p[i−1]. Code: `theory/score_pilotDE.py`.
 
+**Result (2026-09-30, all 56 runs; scored after the last pair was fetched at 00:23; `theory/score_pilotDE.py` →
+`theory/results/score_pilotDE.json`; committed with this text). PE1: DW supported by the registered rule. PE3 and PE4 not
+met; PE2 reversed.**
+* **Competent runs.** D: AT 10/12, C 9/12. E8: AT 7/8, C 7/8. E3 (R rule): AT 5/8, C 5/8.
+  - Guard-exhausted runs count as run and not competent: pd_at_s905, pe3_at_s1014, and the E3 runs that stopped at
+    stage 4.
+* **PE1 — DW supported.** 16 evaluable pairs (D 8, E8 6, E3 2); anytime higher in 10 (0.63 < 0.70; one-sided sign
+  p = 0.23).
+  - By arm: D 7/8, E8 3/6, E3 0/2.
+  - 0 of the 12 competent anytime runs in E8 ∪ E3 cross (share 0.00 ≤ 0.20).
+* **PE2 — reversed.** Crossing share, anytime vs control: D 0.30 vs 0.11 (+0.19); E8 0.00 vs 0.43 (−0.43); E3 0.00 vs
+  0.00. Slack did not make anytime's advantage larger in E8. Anytime lost there.
+* **PE3 — not met.** The pointer passes trained depth + 2 in 2/22 competent anytime runs (0.09) and 1/21 competent
+  controls (0.05).
+* **PE4 — not met.** Blocking layer-2 latent→latent attention from step K raises beyond-depth accuracy by ≥ 0.05 in 6/17
+  non-crossing competent controls (0.35 < 0.50). Mean |change| in anytime runs is 0.045 (≤ 0.05).
+* **Reading.**
+  - By the registered rule this is a depth wall: anytime runs do not cross the trained depth, whatever K.
+  - But the wall is not a limit on what the network can represent. In E8, 3/7 slack controls cross d8 (0.67–0.74), and
+    their pointers run past depth 6 (s1003 reaches 8).
+  - What stops the anytime runs is a learned fall-back at the trained depth. In E8 it comes *inside* the budget: the
+    pointer drops at h_5–h_8 with steps to spare (§35).
+  - So the registered dichotomy (DW vs SE) was too coarse. Anytime removes the slack-induced brake (in-range unit speed,
+    §17), but it aligns step count and hop count with the trained depth. Their continuation is then unidentified in a
+    new way.
+  - §35 (Prop. 10) states this, and its P10e test (skip/delay interventions) decides whether the fall-back is keyed to
+    the step (latent history length) or to the hop count.
+
 ## 21. Out-of-sample test of the stage-3 retrieval marker on addendum O (pre-registered 2026-09-29 ~13:00 EDT)
 
 Addendum O is scored by the experiments session (results/p_o.json); I have seen only its aggregate (O1 null, 13 vs 13 of

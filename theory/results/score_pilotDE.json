@@ -269,12 +269,12 @@
    "seed": 1012,
    "at": "pe3_at_s1012",
    "c": "pe3_c_s1012",
-   "at_comp": false,
-   "c_comp": false,
-   "at_beyond": null,
-   "c_beyond": null,
-   "at_extrap": null,
-   "c_extrap": null
+   "at_comp": true,
+   "c_comp": true,
+   "at_beyond": 0.5,
+   "c_beyond": 0.533203125,
+   "at_extrap": false,
+   "c_extrap": false
   },
   {
    "arm": "E3",
@@ -369,11 +369,11 @@
   "met": true
  },
  "PE1": {
-  "evaluable_pairs": 15,
+  "evaluable_pairs": 16,
   "ties": 0,
   "anytime_wins": 10,
-  "sign_p_one_sided": 0.15087890625,
-  "E8E3_anytime_competent": 11,
+  "sign_p_one_sided": 0.2272491455078125,
+  "E8E3_anytime_competent": 12,
   "E8E3_anytime_cross_share": 0.0,
   "verdict": "DW supported",
   "by_arm": {
@@ -386,7 +386,7 @@
     "wins": 3
    },
    "E3": {
-    "evaluable": 1,
+    "evaluable": 2,
     "wins": 0
    }
   }
@@ -415,27 +415,27 @@
   "E3": {
    "AT": [
     0.0,
-    4
+    5
    ],
    "C": [
     0.0,
-    4
+    5
    ]
   }
  },
  "PE3": {
-  "AT_share": 0.09523809523809523,
-  "C_share": 0.05,
+  "AT_share": 0.09090909090909091,
+  "C_share": 0.047619047619047616,
   "n": [
-   21,
-   20
+   22,
+   21
   ],
   "met": false
  },
  "PE4": {
-  "controls_not_crossing": 16,
-  "share_raised_ge_0.05": 0.375,
-  "anytime_mean_abs_change": 0.04673549107142857,
+  "controls_not_crossing": 17,
+  "share_raised_ge_0.05": 0.35294117647058826,
+  "anytime_mean_abs_change": 0.044611150568181816,
   "met": false
  },
  "LE1": {
