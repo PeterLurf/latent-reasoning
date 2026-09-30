@@ -85,6 +85,13 @@ registering.
 - **Vast CLI:** the stable wrapper is `C:/Users/peter/.local/vastai/vast.sh` (package in `.../vastai/lib`; key in
   `~/.config/vastai`, never copied). Shared with the theory session. The old copy in the session scratchpad is
   deprecated.
+- **Drain finished hosts with the drain scripts, never a bare fetch plus destroy:**
+  - `bash scratch/drain_toy.sh <host> <port> <t9|p9> <id> <queue tag>` for toy queues;
+  - `bash scratch/drain_prosqa.sh <host> <port> <id> <local res dir> <remote ckpt> <local ckpt> <expected res files…>` for
+    ProsQA.
+  They fetch with checksums (3 tries), check that every evaluated run's files are present locally, and only then call
+  vdestroy.sh and append to pods.txt. An incomplete fetch prints FETCH_INCOMPLETE and destroys nothing (Audit lesson:
+  theory-L01).
 - **Destroy with `bash scratch/vdestroy.sh <id>`.** It passes -y (a bare `vastai destroy` stops at a [y/N] prompt
   and destroys nothing) and checks `show instances` until the id is gone. Log it in pods.txt only after
   DESTROYED_VERIFIED. An unreadable instance list gives UNKNOWN (exit 2), never "verified".
