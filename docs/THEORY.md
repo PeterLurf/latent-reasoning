@@ -73,9 +73,9 @@ times below (local EDT) and the first-run times from the host queue logs.
   (`docs/PROTOCOL9_RESULTS.md`).
 * **Re-anchoring distillation (L): 19/20 failures fixed without labels (0/20 plain), §32.** GT-distilled loops
   extrapolate to 2× their training depth (17/20, §37).
-* **Architecture review (§47):** the current best design is a single-anchor checkpointed reasoner with multi-start beams,
-  trained label-free. Unproven: chains past about 18 hops, a learned write/halt policy, and transfer to GPT-2. Next:
-  beam chaining (CPU), a learned write head (local GPU), and PROTOCOL8b step 1.
+* **Architecture review (§47, updated by §48):** the best current design is a single-anchor checkpointed reasoner,
+  trained label-free. Six chained segments reach d19–24 at 0.65, without compounding. Beams add nothing. Unproven: a
+  learned write/halt policy, and transfer to GPT-2.
 * One restart covers exactly its trained horizon: 0.91–0.95 up to 6 hops from the anchor, chance from 7 (§46).
 * **Checkpointed restarts (CLR-1, §45): editing the written checkpoint changes answers as predicted (IIA 0.84 for sets,
   1.00 single).** Chains reach d13–18 label-free (single anchor 0.67). Sets are used but don't beat one anchor.
@@ -2528,6 +2528,8 @@ For PROTOCOL8b this would say: write the checkpoint within one episode's reach o
   restarts from them. After training, the written checkpoint is the causal channel (C7 at checkpoint level, IIA ≈ 1).
 * **Parallelism.** Keep the top-W anchors as W separate single-anchor episodes and combine their answers, instead of
   W tokens in one episode. This follows Multiverse 2506.09991 and SoftCoT++ 2505.11484, and costs W× compute.
+  - **Update after §48:** beams did not help, since they add false positives, and a single anchor with more segments
+    reaches d19–24 (S6 0.65). Recommendation: single anchor, enough segments.
 * **Teacher.** The model's own re-anchored inference, with the agreement filter (M-2). The label-free ladder (L → M-2)
   lengthens each segment's reach, so fewer checkpoints are needed.
 
@@ -2590,6 +2592,27 @@ For PROTOCOL8b this would say: write the checkpoint within one episode's reach o
 * **BM1 (beams fix compounding).** Median over models of S4 d19–24: B3 ≥ 0.60, and B3 − B1 ≥ +0.05. §45 B1 was ≈ 0.52.
 * **BM2 (no loss nearer in).** Median S4 d13–18: B3 ≥ B1 − 0.02.
 * **Descriptive (C6).** Accuracy vs S at fixed distance bands, for both B.
+
+**Result (2026-09-30; 10 models; `theory/results/exp22_beam_chain.json`). BM1 and BM2 not met: beams do not help. But
+single-anchor chains keep extending with more segments.**
+* S4 d19–24: B1 0.517, B3 0.510 (median per-model difference −0.008).
+* S4 d13–18: B1 0.671, B3 0.631. B3 is worse, presumably from the extra false positives of max-combining more episodes.
+* Medians by segment count (B1; bands d7–12 / d13–18 / d19–24):
+
+  | Segments | d7–12 | d13–18 | d19–24 |
+  |---|---|---|---|
+  | S2 | 0.60 | 0.50 | 0.50 |
+  | S3 | 0.68 | 0.55 | 0.50 |
+  | S4 | 0.67 | 0.67 | 0.52 |
+  | S5 | 0.67 | 0.67 | 0.62 |
+  | S6 | 0.66 | 0.66 | 0.65 |
+
+* **Reading (C2, C6).**
+  - Errors do not compound: each band holds about 0.66–0.67 once reached, over 6 segments.
+  - Reach grows by about 4–5 hops per segment, less than K = 6, and the anchor lands about a hop behind the frontier.
+  - §45's "d19–24 ≈ 0.51" was too few segments, not a limit.
+  - Multi-start beams add false positives rather than reach. §47's beam recommendation is withdrawn: a single anchor
+    with more segments is the working design.
 
 ## 7. Log
 
