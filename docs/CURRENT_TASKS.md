@@ -40,9 +40,8 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 **Budget.** Vast $122.35 at 23:01; projected ≈ $93 at 07:00 once Theory's hosts drain (~02:30). PROTOCOL8 needs ≈ $45
 including a ≥ $10 reserve. Every create/destroy goes in `scratch/pods.txt`.
 
-**Theory (details in docs/THEORY.md):** Pilots D (PD1 supported), F (jitter breaks learnability), H (no post-hoc
-repair) and E (PE1 depth wall by rule; learned fall-back keyed to an iteration count, §35) are scored. Pilots G, I, J
-and K drain ~02:00–02:30.
+**Theory (details in docs/THEORY.md, one-liners at the top of its executive summary):** all overnight pilots are
+scored (D–L, §§34–37). Pilot M (§38) runs on 20 hosts, theory-M01..M20 (≈ $3.2/h), and drains ≈ 03:00–03:30.
 
 **This session's live Vast hosts (destroy each after a checksum-verified fetch):**
 
