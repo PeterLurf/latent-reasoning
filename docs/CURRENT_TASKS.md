@@ -37,10 +37,10 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 
 ## 0. STATE AT 2026-09-30 00:36 — authoritative; sections 1–3 below are partly history
 
-**Budget (11:22):** Vast $81.07; burn $3.94/h (16 PROTOCOL8 hosts, the Phase 0 host, the PROTOCOL8b pilot). The rest
-of PROTOCOL8 costs ≈ $55, leaving ≈ $25 when it finishes (above the $10 reserve, below Audit's $30 alarm). PROTOCOL8b
-(re-anchor plus distil on 4 checkpoints, ≈ $5–10) and later work need a top-up; the user has been told. Every
-create/destroy goes in `scratch/pods.txt`.
+**Budget (12:45): SPEND FREEZE until the user tops up.** Vast $76.17. The rest of PROTOCOL8 is ≈ $52 and PROTOCOL8b
+step 1 ≈ $4, leaving ≈ $20 (below Audit's $30 alarm). No Vast creates beyond the queued PROTOCOL8 and step-1 seeds
+(ctl_s3 is the only one left to place). Re-check the projection once all hosts are placed. Every create/destroy goes
+in `scratch/pods.txt`.
 
 **Theory (details in docs/THEORY.md, one-liners at the top of its executive summary):** all overnight pilots are
 scored (D–M, §§34–38). No theory hosts are live. T12 (§39, 8 runs) runs on the experiments session's Vast hosts.
