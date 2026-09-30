@@ -1231,9 +1231,12 @@ so continuing past K means running more copies of a trained computation rather t
 * **Dropped before running: F6a (learned frontier decoder) and F6b (soft restart).** On one debug model outside the test set
   (pa_c_s706), a linear decoder h_K → node ids put the probed chain's node at the anchor depth first in 32 % of graphs,
   with a mean rank of 22 — the same as the attention anchor (≈ 1/W). The sweep head's attention at step K has ≥ 50 % of
-  its maximum on only 1.29 edges on average (W = 4.1), and 98 % of them lie at the anchor's depth. So the model's pointer
-  follows about **one branch** of the frontier, not the whole set; the oracle gap of §26 is structural, not a decoding
-  problem. Reported as exploratory; measured on all 59 models below (B1).
+  its maximum on only 1.29 edges on average (W = 4.1), and 98 % of them lie at the anchor's depth. *In this one debug
+  model and this one head*, the pointer seems to follow about one branch of the frontier. That conflicts with Part IV
+  P25 (14/18 models: layer-1 frontier attention splits per frontier edge and halves when the frontier doubles), and the
+  Audit session saw p30_s124 alternate between branches across steps in head-mean attention. Possible reconciliations:
+  different heads cover different branches, branch switching across steps, or width dependence. Dropping F6a/F6b *as
+  designed* stands either way; the mechanism claim waits for B1.
 * **F3a (amplitude renormalisation at inference; `theory/exp13_decode_restart.py`, renorm conditions only).** Past K, each
   fed-back thought's deviation from the batch mean is rescaled to its example's mean in-range norm (h_1..h_{K−1}), with
   and without the layer-2 block. Baselines from exp8 (block + constant α): α = 1.0 → 41/59, far8–10 0.585; α = 1.3 → 46/59,
@@ -1246,6 +1249,11 @@ so continuing past K means running more copies of a trained computation rather t
   ≤ p[3] + 1 in both runs — randk had step embeddings, so a clock was available to brake after step 4.
 * **B1 (branch selection; descriptive).** Per model: the mean number of edges with sweep-head attention ≥ 0.5 × max at step
   K, and the share of those at the anchor's BFS depth.
+* **Amendment B1-a (21:48 EDT, before B1 was measured; at the Audit session's request).** B1 is reported per head (all 8
+  layer-1 heads) and for the head-mean, split by width W = 2 / 4 / 6, at every step 1..K, as (i) the number of frontier
+  edges (edges out of nodes at the pointer's BFS depth) with attention ≥ 0.5 × the maximum over frontier edges, and (ii)
+  the effective number exp(entropy) of the attention restricted to frontier edges. It is compared explicitly with P25's
+  per-edge split: P25 predicts an effective number ≈ W at every step; single-branch following predicts ≈ 1.
 
 ## 7. Log
 
