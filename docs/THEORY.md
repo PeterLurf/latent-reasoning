@@ -2344,6 +2344,28 @@ A4–A6 ≥ 0.20 at the model's chosen layer: 8 fail.
   in-range deep nodes are also answered by another route, e.g. a query-time read (T1c holds in 13/13). The T1b/T2b
   nulls in T9 are therefore uninterpretable where the control fails, as the experiments session concluded.
 
+## 44. Set-valued checkpoints zero-shot: can one episode restart from several written anchors? (pre-registered 2026-09-30 12:13 EDT, before measuring the 59 models; NORTH_STAR open question 2)
+
+**Test.** `theory/exp19_set_restart.py`, CPU, the 59 P30 ∪ L models of §26.
+* After episode 1, take the top-3 attended anchors (§26).
+* **top1:** restart one episode from a1.
+* **top3max:** three separate episodes, one per anchor (§26's re2top3).
+* **set3:** ONE episode whose prefix ends in three START tokens, (a3, a2, a1).
+* **set3r (control):** the same, with a2 and a3 replaced by random off-chain nodes.
+* All conditions are max-combined with episode 1. Measure: far8–10 bal-acc on the long-chain probe.
+
+**Disclosure.** Smoke model outside the set, pb_at_s751: top1 0.614, top3max 0.680, set3 0.650, set3r 0.613.
+
+**Predictions** (medians over the 59 models, of per-model differences):
+* **S1 (a written set carries information zero-shot).** set3 − top1 ≥ +0.02, and set3r − top1 ≤ +0.005.
+* **S2 (one set-episode is almost as good as separate episodes).** top3max − set3 ≤ 0.03.
+
+**Readings.**
+* **S1 and S2 hold.** A checkpoint can be a set of node ids, written as START tokens, with no retraining. §33's
+  set-valued checkpoint then keeps the parallelism with one episode per segment.
+* **S1 holds, S2 fails.** Sets help, but training is needed to use them fully.
+* **S1 fails.** Sets need training.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
