@@ -417,6 +417,9 @@ P7 = layer-1 frontier excess on the distance-7 edge (max over steps 1–12) ÷ t
   AUC 0.44). The exploratory cap-3 version is also unresolved (1/8).
 - **Reading:** the frontier stops at the training depth at all three depths (3, 4, 6), and at cap 3 in every competent
   run. THEORY §35 reads this as a learned fall-back keyed to an iteration count.
+- **Out-of-sample check by the theory session (THEORY §25, LE-R, registered d75d275 before R was scored):** supported.
+  Median p[K−1] is 2 at cap 3 and 3 at cap 4, with the dose ordering 2 < 3 ≤ 3. The pointer's in-range reach tracks the
+  trained depth, not the budget.
 
 ## Reading so far (updated 2026-09-29 ~13:20)
 
