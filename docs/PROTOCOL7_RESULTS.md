@@ -69,6 +69,10 @@ Sources: `results/p7s_t5.json`, `results/p7s_t6.json`, `results/p7_indep.json`, 
   - **Status:** P7's predictive value (T9 AUC 0.89) stands, but its advantage over in-distribution instruments is not
     established on these architectures.
   - **Chosen layer vs literal first block:** same decisions (positive control 15/21 vs 16/21).
+  - **Why the T9 positive control fails (THEORY §43, measurement only, all 24 competent T9 models; the registered test
+    uses the 21 above the floor, hence 8 failures there vs 6 here).** In 4 models it is the layer choice: the sweep is
+    strongest in layer 1 or spread across layers. In 4 it is redundancy: the sweep sits in the blocked layer, yet A4–A6
+    survive, presumably through a query-time route (T1c 13/13). Data: `theory/results/layer_sweep.json`.
   - **Provenance of T4** (audit): the instrument AUCs were unread when amendment 11 was written, but the layer-1 P7
     AUCs per family had already been output by the primary T9 scorer (07:44). Both T4 results are inconclusive.
 
