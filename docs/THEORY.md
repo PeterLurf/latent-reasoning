@@ -1935,6 +1935,25 @@ freeze3 was chosen as primary because it was the only variant that did not hurt 
 * **X2.** T8 students, single24: ≤ 5/20. T8 students, re12top3: ≥ 5/20 (the next rung of a label-free ladder).
 * **X3.** Self students, single24: 0/20.
 
+**Result (2026-09-30 01:36 EDT; all 60 students; raw `theory/results/exp18_deep_reanchor.json`, log alongside). X1, X2 and X3 all
+hold.**
+* **X1.** GT students extrapolate in one loop in 17/20 (median d13–18 = 0.74). Median bal-acc stays ≥ 0.59 out to d23:
+  `0.81 … 0.80 (d10) 0.77 (d13) 0.73 (d16) 0.69 (d19) 0.62 (d22) 0.52 (d24)`.
+* **X2.** T8 students in one loop: 2/20 (median 0.50; their profile falls to chance at d13). Re-anchored with 12-step
+  episodes: 14/20 (median 0.63).
+* **X3.** Self students: 0/20 in one loop, and 0/20 re-anchored.
+* **Reading.**
+  - **Training at a second, deeper tight budget makes one loop extrapolate to about twice its training depth.** The GT
+    students were trained on 12-hop chains at K′ = 12 plus 6-hop graphs at K = 6. They run to 24 hops at K′ = 24.
+  - This is the first single-loop C2 result past training depth in this project. It matches Prop. 10: when the loop
+    must continue past its first natural count (6), no count stays a free stop key, and a content-keyed continuation is
+    what is learned.
+  - Caveat: X1 used true labels on deeper chains, so it is not C4.
+  - **The label-free route works one rung at a time.** T8 students do not extrapolate in one loop, because they inherit
+    their teacher's stop at about 10. But they re-anchor to 13–18 in 14/20. So an iterated ladder (distil, re-anchor,
+    distil again) can extend depth without labels at every rung. Whether a second distillation also yields one-loop
+    extrapolation like GT's is the natural pilot (§38, to be registered).
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the

@@ -28,8 +28,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("runs", nargs="+")
     ap.add_argument("--device", default="cuda:0")
+    ap.add_argument("--out", default=OUT)
     a = ap.parse_args()
-    res = json.load(open(OUT)) if os.path.exists(OUT) else {}
+    res = json.load(open(a.out)) if os.path.exists(a.out) else {}
     for run in a.runs:
         name = os.path.basename(run.rstrip("/\\"))
         if name in res or not os.path.exists(os.path.join(run, "model.pt")):
@@ -44,7 +45,7 @@ def main():
         row = next(x for x in L["rows"] if x["K'"] == 12)
         res[name] = {"gate": gate, "delayed_ablated": comp["budgets"][K]["delayed"]["bal_acc"][0],
                      "d8_ablated": row["far"]["8"]}
-        json.dump(res, open(OUT, "w", newline="\n"), indent=1)
+        json.dump(res, open(a.out, "w", newline="\n"), indent=1)
         print(name, res[name], flush=True)
 
 
