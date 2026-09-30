@@ -2453,7 +2453,8 @@ set is used (CLR-1a); PC1 inconclusive; PC2 narrowly not met.**
     thoughts' 0.36 (§34).
   - Chained segments extend reach to d13–18 without labels (C2 through checkpoints; CLR1 median 0.67). Each segment
     adds about 6 hops.
-  - A set of 3 anchors is used but does not beat a single anchor, and it chains worse. The parallelism gain of sets is
+  - **A 3-node set is used, but at this scale it costs reach rather than adding it** (Audit): chain4 median 0.596 for
+    the set vs 0.671 for a single anchor; PC1 is inconclusive. A set of 3 anchors does not beat a single anchor. The parallelism gain of sets is
     not realised at this width and training dose; §30's B1 measured the attention's branch coverage at only ≈ 1.4–2.3.
   - Next for the design: single-anchor checkpoints are the working C2 + C7 unit. Sets need either more training or a
     per-anchor coverage target (Literature's mitigation).
@@ -2461,7 +2462,8 @@ set is used (CLR-1a); PC1 inconclusive; PC2 narrowly not met.**
 **Amendment CLR-1b (2026-09-30 15:24 EDT, before any run): the other 10 failure models.** PC1 was inconclusive and PC2 missed by one
 model at n = 10.
 * **Runs.** The same design on the 10 odd-indexed P30 failures (109, 112, 115, 119, 126, 131, 135, 145, 147, 158), both
-  arms per model on one local card. 20 runs.
+  arms per model on one local card. 20 runs. Placement: 4 models on the 3070, 6 on the 4060. The 2070 was busy at launch, so its 3 models moved
+  to the 4060.
 * **Scoring.** PC1–PC4 and CLR-1a are re-scored pooled over all 20 models by the same rules. For PC2 and CLR-1a the
   counts scale: ≥ 10/20 and ≥ 12/20. The new 10 are also reported alone.
 
