@@ -281,3 +281,18 @@ user decides.
   and deeper (m = 8), not pooled only. Expect anytime/random-tight effects at m = 7 more than at m = 8.
 - **Pilot H.** Post-hoc anytime fine-tuning of trained failures does not repair them (1/18). The PROTOCOL8 rules
   already apply from the first latent stage, which fits.
+
+**THEORY Pilot E final (2026-09-30 ~00:30, commit 55c0bf4; §20 Result, §35 mechanism).**
+- **Verdicts.** PE1 "depth wall supported" by the registered rule: 0/12 competent anytime runs in E8 ∪ E3 cross beyond
+  depth. PE2 is reversed at K = 8. PE3 and PE4 are not met.
+- **Mechanism (§35).** The wall is a learned fall-back, not a representational limit.
+  - Pushing the pointer 2 hops ahead moves it 2 hops deeper, and it falls back at the same step (8/17 models pass
+    depth 8).
+  - Re-feeding an older thought delays the fall-back by one step.
+  - So the fall-back is keyed to an iteration count carried inside the thought.
+- **Prediction to register for PROTOCOL8** (Theory's line): anytime or tight-budget training at depth n gains at
+  m = n + 1 and gains nothing at m ≥ n + 2 for any K′. Deeper answers need the count reset: restarts from written
+  checkpoints (§33), or count-clamping at inference (§36, pending).
+- **What this means for the plan after PROTOCOL8.** The checkpointed design is the route to C2 beyond n + 1. It needs a
+  readable entity checkpoint in GPT-2 (Patchscopes-style decode), which is also the first C7 test. Pilot K (toy
+  random-tight, ~02:00) will say whether random-tight behaves like anytime.
