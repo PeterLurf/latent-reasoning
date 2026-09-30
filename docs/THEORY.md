@@ -1490,6 +1490,28 @@ distillation 2202.00512 (precedents from the Literature session).
   graphs, different label source.
 * **Where.** 60 runs (≈ 15 min each) on ~12 new Vast hosts, labelled theory-L*, destroyed as each queue ends.
 
+**Result (2026-09-30; all 60 runs; `theory/score_pilotHIJKL.py L` → `theory/results/score_pilotL.json`; committed with
+this text). PL1–PL4 all met.**
+* **Competent:** T8 20/20, self 20/20, GT 19/20.
+* **PL1 supported.** d8(L-T8) > d8(L-self) in 20/20 pairs (one-sided sign p = 1e-6).
+* **PL2 met.** L-T8 extrapolates in 19/20 models, Pilot H's FT-C in 0/20.
+* **PL3.** Median d8: L-GT 0.667 ≥ L-T8 0.638. L-self 0.505, the same as FT-C's 0.505.
+* **PL4 met.** Median drop in delayed bal-acc: 0.003.
+* **Descriptive.**
+  - The student recovers most of its teacher's gain. Median d8: teacher (re2top3, probe graphs) 0.698, student 0.638,
+    one uninterrupted episode 0.503.
+  - Student medians at K′ = 12: d7 0.651, d8 0.638, d9 0.627, d10 0.542. At K′ = 16, d10 rises to 0.591 and d11 to
+    0.551: more steps than distilled help.
+* **Reading.**
+  - The same deep graphs with the model's own single-episode labels teach nothing (self 0/20). With labels from its own
+    re-anchored inference they fix 19/20 failures. So the teacher, not the data, does the work.
+  - This is label-free (C4) improvement in depth, obtained by distilling checkpointed inference into one loop. As
+    registered, it is not zero-shot extrapolation: the deep graphs come from the evaluation generator.
+  - It also fixes what fine-tuning with anytime could not (Pilot H: 1/18). The critical period binds loss reweighting,
+    not a teacher that supplies deeper targets.
+  - Natural next step: iterate. Re-anchor the student, whose episodes now reach about 12 hops, to reach about 24, then
+    distil again. That is an amplify-and-distil ladder in depth, with no labels at any rung.
+
 ## 33. Toward the north star: the checkpointed latent reasoner (CLR), C7 tests, and what each pilot tests (2026-09-29 23:32 EDT; design, exploratory — nothing here is registered)
 
 Goal (`docs/NORTH_STAR.md`, set by the user): one model meeting C1–C7 at once. This section turns §26's re-anchoring

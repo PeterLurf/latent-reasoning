@@ -1,0 +1,65 @@
+{
+ "arms": {
+  "t8": {
+   "registered": 20,
+   "evaluated": 20,
+   "competent": 20,
+   "extrapolate_competent": 19,
+   "extrapolate_all": 19,
+   "median_d8": 0.6376953125,
+   "median_d7": 0.650634765625,
+   "missing": []
+  },
+  "self": {
+   "registered": 20,
+   "evaluated": 20,
+   "competent": 20,
+   "extrapolate_competent": 0,
+   "extrapolate_all": 0,
+   "median_d8": 0.5048828125,
+   "median_d7": 0.522216796875,
+   "missing": []
+  },
+  "gt": {
+   "registered": 20,
+   "evaluated": 20,
+   "competent": 19,
+   "extrapolate_competent": 19,
+   "extrapolate_all": 20,
+   "median_d8": 0.66748046875,
+   "median_d7": 0.6826171875,
+   "missing": []
+  },
+  "FT-C (Pilot H)": {
+   "registered": 20,
+   "evaluated": 20,
+   "competent": 20,
+   "extrapolate_competent": 0,
+   "extrapolate_all": 0,
+   "median_d8": 0.5048828125,
+   "median_d7": 0.52685546875,
+   "missing": []
+  }
+ },
+ "PL1": {
+  "counted": 20,
+  "in_direction": 20,
+  "sign_p_one_sided": 9.5367431640625e-07,
+  "verdict": "supported"
+ },
+ "PL2": {
+  "T8_extrap_share_of_20": 0.95,
+  "FTC_extrap_share_of_20": 0.0,
+  "met": true
+ },
+ "PL3": {
+  "median_d8_GT": 0.66748046875,
+  "median_d8_T8": 0.6376953125,
+  "GT_ge_T8": true
+ },
+ "PL4": {
+  "n": 20,
+  "median_drop_delayed": 0.00270843505859375,
+  "met": true
+ }
+}
