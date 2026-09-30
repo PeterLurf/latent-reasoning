@@ -1302,6 +1302,21 @@ so continuing past K means running more copies of a trained computation rather t
   in ≈ 1/W of graphs, because attention mass is spread unevenly over several branches rather than concentrated on the
   queried one. Literature context (`docs/LIT_REQUESTS_2026-09-29.md` Part C): partial, uneven superposition matches Gu
   2609.13747 (uneven weights) and Coconut's "parallel exploration then commitment", not Zhu's balanced superposition.
+* **Disclosures for B1 (added 21:59 EDT at the Audit session's request).**
+  - *Mid-run code fix.* In the first pass, the head-mean line computed `A[i, :, fr].mean(0)`. NumPy advanced indexing
+    returns that as (frontier edges × heads), so the "head-mean" was an entropy over the 8 heads rather than over the
+    frontier edges. Head-mean values seen in the run log before the fix (e.g. 3.27 / 3.45 / 3.77 for p30_s111 at
+    W = 2 / 4 / 6) exposed the bug, since 3.27 > W = 2 is impossible. The per-head values, including the sweep head,
+    were computed correctly throughout and were seen during the run. The fix (8b0670e, 21:52:55; a literal-newline
+    slip repaired in 62dc024) changed code only, not the registered rule. All B1 numbers above come from the
+    `--branch_only` recompute after the fix. The renormalisation (RN) numbers were not affected.
+  - *Aggregation.* `branch[k][W]` is keyed by latent step k = 1..K (K = 6 or 8) and width W. Each holds 9 entries
+    [count ≥ 0.5 × max, effective number]: the 8 layer-1 head slots, then the head-mean. For each model the sweep head
+    is its exp2 top head. Table values are unweighted means over all (model, step) pairs, pooled across the 59 models,
+    so K = 8 models contribute 8 steps each. Pairs where the sweep head had no frontier (None) are skipped. The per-head
+    range is the min and max over the 8 head *slots* of that pooled mean; slots are not functionally aligned across
+    models. The "at step K" column uses k = K only. Other reasonable aggregations (per-model first, then models)
+    shift the numbers by ≤ ~0.2, and the pattern holds under all of them (the Audit session's re-check).
 
 ## 7. Log
 
