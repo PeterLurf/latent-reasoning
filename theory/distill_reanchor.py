@@ -9,8 +9,12 @@ Fine-tunes a trained P30 model (fresh AdamW) on two batches per step:
                       START, episode 2 from each of the 3 most-attended edges' targets at step K; max-combined logits > 0)
                self : the same frozen copy run as one episode at K' = 12 (plain self-training; isolates re-anchoring)
                gt   : the true labels (A, B reachable; C, D not) — upper bound
+               t8f  : t8 with an agreement filter (loss only on queries where top-1 and top-3 re-anchoring agree; §38)
 Output <out>/model.pt (config as the P30 run), arch.json, log.jsonl (with an inherited full-depth marker, so
 theory/eval_arch.py scores it like any run).
+Round 2 of the ladder (THEORY §38, Pilot M): --deep_R 4 --deep_widths 2,3 --student_Kp 24 --teacher_ep 12 starts from a
+round-1 student, draws 24-hop chains (theory/deep_chain.py) and re-anchors with 12-step episodes. The defaults
+(--deep_R 2, --student_Kp 12, --teacher_ep = the model's K) are round 1 exactly.
     python theory/distill_reanchor.py --init_from runs/p30_s126/model.pt --teacher t8 --head 3 --out theory/runs/pl_t8_s126
 """
 import argparse
@@ -32,6 +36,7 @@ from latent.graphs import NPB, sample_graphs, set_shapes  # noqa: E402
 from latent.length_gen import long_chain_graphs  # noqa: E402
 from latent.model import LatentReasoner  # noqa: E402
 from rollout import rollout  # noqa: E402
+from deep_chain import deep_chain_graphs  # noqa: E402
 
 
 def one_episode(m, K, Kp, src, dst, start, q):
@@ -42,35 +47,45 @@ def one_episode(m, K, Kp, src, dst, start, q):
 
 
 @torch.no_grad()
-def teacher_targets(kind, tm, K, head, g, br, q, dev):
+def teacher_targets(kind, tm, K, head, g, br, q, dev, Kp=12, ep=None):
     T = lambda a: torch.as_tensor(a, device=dev)
     n = len(g); bi = np.arange(n)
+    ep = ep or K
     if kind == "gt":
-        y = np.concatenate([np.ones((n, 2 * NPB)), np.zeros((n, 2 * NPB))], 1)
+        h = q.shape[1] // 2
+        y = np.concatenate([np.ones((n, h)), np.zeros((n, h))], 1)
         return T(y).float()
     src, dst = T(g.src), T(g.dst)
     if kind == "self":
-        return (one_episode(tm, K, 12, src, dst, T(g.start), q) > 0).float()
-    o1 = rollout(tm, K, src, dst, T(g.start), K, qnodes=q)
+        return (one_episode(tm, K, Kp, src, dst, T(g.start), q) > 0).float()
+    o1 = rollout(tm, K, src, dst, T(g.start), ep, qnodes=q)
     best = o1["qlogit"]
-    a = o1["attn1"][K - 1][:, head, :o1["P"] - 1]
+    a = o1["attn1"][ep - 1][:, head, :o1["P"] - 1]
     order = torch.argsort(a, 1, descending=True).cpu().numpy()
     for r in range(3):
         anc = g.dst[bi, order[:, r]]
-        best = torch.maximum(best, rollout(tm, K, src, dst, T(anc), K, qnodes=q)["qlogit"])
+        best = torch.maximum(best, rollout(tm, K, src, dst, T(anc), ep, qnodes=q)["qlogit"])
+        if r == 0:
+            top1 = best.clone()
+    if kind == "t8f":                    # agreement filter: train only where the top-1 and top-3 re-anchorings agree
+        return (best > 0).float(), ((best > 0) == (top1 > 0)).float()
     return (best > 0).float()
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--init_from", required=True)
-    ap.add_argument("--teacher", required=True, choices=["t8", "self", "gt"])
+    ap.add_argument("--teacher", required=True, choices=["t8", "t8f", "self", "gt"])
     ap.add_argument("--head", type=int, required=True, help="sweep head of the initial model (exp12_reanchor.json)")
     ap.add_argument("--steps", type=int, default=3000)
     ap.add_argument("--bs", type=int, default=256)
     ap.add_argument("--lr", type=float, default=1e-4)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--device", default="cuda:0")
+    ap.add_argument("--deep_R", type=int, default=2, help="chain length 6R; 2 = latent.length_gen (round 1)")
+    ap.add_argument("--deep_widths", default="2,4,6")
+    ap.add_argument("--student_Kp", type=int, default=12)
+    ap.add_argument("--teacher_ep", type=int, default=0, help="re-anchoring episode length (0 = the model's K)")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     dev = a.device
@@ -91,6 +106,9 @@ def main():
     sched = lambda s: a.lr * min(1, (s + 1) / 100) * 0.5 * (1 + math.cos(math.pi * s / a.steps))
     amp = torch.bfloat16 if dev != "cpu" and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     c.update(distill={"teacher": a.teacher, "init_from": a.init_from, "steps": a.steps, "lr": a.lr, "bs": a.bs, "seed": a.seed})
+    if a.deep_R != 2 or a.student_Kp != 12 or a.teacher_ep:
+        c["distill"].update(deep_R=a.deep_R, deep_widths=a.deep_widths, student_Kp=a.student_Kp, teacher_ep=a.teacher_ep)
+    widths = [int(w) for w in a.deep_widths.split(",")]
     json.dump({"arch": "coconut", "distill": c["distill"]}, open(os.path.join(a.out, "arch.json"), "w"))
     log = open(os.path.join(a.out, "log.jsonl"), "w")
     log.write(json.dumps({"step": 0, "curriculum_advance_to": None, "note": "inherited: initial model was at full depth"}) + "\n")
@@ -102,15 +120,22 @@ def main():
             gp["lr"] = sched(step)
         g = sample_graphs(rng, a.bs, split="train", max_bdepth=None)
         b = make_batch(rng, g, 16, dev)
-        gl, br = long_chain_graphs(rng, a.bs, [2, 4, 6])
         bi = np.arange(a.bs)
-        q = T(np.concatenate([gl.nodes[bi, br[k]] for k in ("A", "B", "C", "D")], 1)).long()
-        y = teacher_targets(a.teacher, tm, K, a.head, gl, br, q, dev)
+        if a.deep_R == 2:
+            gl, br = long_chain_graphs(rng, a.bs, widths)
+            q = T(np.concatenate([gl.nodes[bi, br[k]] for k in ("A", "B", "C", "D")], 1)).long()
+        else:
+            gl, br = deep_chain_graphs(rng, a.bs, widths, a.deep_R)
+            q = T(np.concatenate([br["reach"], br["decoy"]], 1)).long()
+        y = teacher_targets(a.teacher, tm, K, a.head, gl, br, q, dev, Kp=a.student_Kp, ep=a.teacher_ep or None)
+        w = None
+        if isinstance(y, tuple):
+            y, w = y
         with torch.autocast("cuda", dtype=amp or torch.float32, enabled=amp is not None):
             ld, lu, _, _ = m.run_both(b["src"], b["dst"], b["start"], K, b["q"], b["tgt"])
-            ldeep = one_episode(m, K, 12, T(gl.src), T(gl.dst), T(gl.start), q)
+            ldeep = one_episode(m, K, a.student_Kp, T(gl.src), T(gl.dst), T(gl.start), q)
         loss_n = F.binary_cross_entropy_with_logits(ld.float(), b["qy"]) + F.binary_cross_entropy_with_logits(lu.float(), b["ty"])
-        loss_d = F.binary_cross_entropy_with_logits(ldeep.float(), y)
+        loss_d = F.binary_cross_entropy_with_logits(ldeep.float(), y) if w is None else             (F.binary_cross_entropy_with_logits(ldeep.float(), y, reduction="none") * w).sum() / w.sum().clamp_min(1)
         loss = loss_n + loss_d
         opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step()
         if step % 100 == 0 or step == a.steps:
