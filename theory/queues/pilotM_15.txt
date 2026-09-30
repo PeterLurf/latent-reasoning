@@ -1,0 +1,3 @@
+pm_t8_s140 --init_from theory/runs/pl_t8_s140/model.pt --teacher t8 --head 4 --seed 140 --deep_R 4 --deep_widths 2,3 --student_Kp 24 --teacher_ep 12
+pm_self_s140 --init_from theory/runs/pl_t8_s140/model.pt --teacher self --head 4 --seed 140 --deep_R 4 --deep_widths 2,3 --student_Kp 24 --teacher_ep 12
+pm_t8f_s140 --init_from theory/runs/pl_t8_s140/model.pt --teacher t8f --head 4 --seed 140 --deep_R 4 --deep_widths 2,3 --student_Kp 24 --teacher_ep 12
