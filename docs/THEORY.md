@@ -72,8 +72,8 @@ times below (local EDT) and the first-run times from the host queue logs.
   (21 vs 12), but not d8 (5/10) (`docs/PROTOCOL9_RESULTS.md`).
 * **Re-anchoring distillation (L): 19/20 failures fixed without labels (0/20 plain), §32.** GT-distilled loops
   extrapolate to 2× their training depth (17/20, §37).
-* Second label-free rung (M): the teacher beats self-labels (10/12, p 0.019), and one-loop reach rises from 2/20 to
-  9/20. The old rung erodes (an error avalanche); the agreement filter helps, descriptively (§38).
+* Second label-free rung (M): the teacher beats self-labels (10/12, p 0.019). **With the agreement filter (M-2), 12/20
+  reach 13–18 hops in one loop, and the old rung holds** (T8F > T8 9/11, p 0.033; §38).
 * T12 step-adversarial thoughts (§39): breaks learning (2/8 competent). Removing the count is not the fix: extrapolators
   keep it (§37).
 * **Silent thoughts are causally editable (T-C7c, §34):** IIA 0.36; answers follow the edited pointer (+0.83 / −0.59).
@@ -2109,6 +2109,21 @@ met.**
   - **M2c:** T8F reaches ≥ 0.60 on the deep measure in ≥ 10/20 (PM2's bar).
   - **M2d:** competent T8F ≥ competent T8 (13/20).
 
+**M-2 result (2026-09-30; the 10 new runs finished 08:51; `theory/score_pilotM2.py` →
+`theory/results/score_pilotM2.json`). M2a supported; M2b and M2c met; M2d narrowly not met.**
+* **M2a.** T8F > T8 on the deep measure in 9/11 counted pairs (one-sided p = 0.033).
+* **M2b.** Median d8 of T8F over 20 models is 0.624 (≥ 0.608): the old rung holds.
+* **M2c.** T8F reaches d13–18 in one loop in 12/20 (PM2's bar was 10).
+* **M2d.** Competent T8F 12/20 vs T8 13/20.
+* **Reading.**
+  - The agreement filter contains the error avalanche. With it, the label-free ladder climbs a second rung without
+    losing the first. After two rungs, 12/20 models answer at 13–18 hops in one loop, trained only on their own
+    re-anchored inference.
+  - Caveats:
+    - The half of the models run in this amendment used fp32 on a different card.
+    - Competence is not better (12 vs 13).
+    - The deep graphs still come from the evaluation generator (§32's caveat).
+
 
 ## 39. Pilot T12 — step-adversarial thoughts (PROPOSALS §10) (pre-registered 2026-09-30 03:22 EDT, before any T12 run started)
 
@@ -2214,7 +2229,8 @@ The fork family is probed on chain graphs, i.e. off its training shape, and is r
 * **Fork family (descriptive).** Anytime 5 vs 4; passes 8 in 2/5 and 1/3; count decoded in 8/8.
 * **Reading.** The mechanism of §17 and §35 holds on 3- and 4-layer models and on 512-wide models. Anytime removes the
   in-range brake, the fall-back after the trained depth remains, and the thoughts carry a count.
-* Measurement note: the first attempt skipped every model silently, because CRLF in a path list left a trailing  on
+* Measurement note: the first attempt skipped every model silently, because CRLF in a path list left a trailing 
+ on
   each path. It was re-run with clean paths.
 
 ## 7. Log
