@@ -66,13 +66,15 @@ def main():
         P = parse(x)
         ids = P["ids"] if a.mode == "nocot" else generate(model, P["ids"], a.max_new)
         lp = score(model, ids, P["answers"])
-        rows.append((x["ext"], len(x["steps"]), lp[0] - lp[1]))
+        rows.append((x["ext"], len(x["steps"]), lp[0] - lp[1], len(ids) - len(P["ids"])))
     R = np.array(rows)
     grp = lambda col: {int(v): float((R[R[:, col] == v, 2] > 0).mean()) for v in sorted(set(R[:, col]))}
     cnt = lambda col: {int(v): int((R[:, col] == v).sum()) for v in sorted(set(R[:, col]))}
     out = {"ckpt": a.ckpt, "data": a.data, "mode": a.mode, "n": len(rows), "acc": float((R[:, 2] > 0).mean()),
            "by_ext": grp(0), "n_by_ext": cnt(0), "by_path_len": grp(1), "n_by_path_len": cnt(1),
-           "margins": R[:, 2].round(4).tolist(), "ext": R[:, 0].astype(int).tolist()}
+           "margins": R[:, 2].round(4).tolist(), "ext": R[:, 0].astype(int).tolist(),
+           "gen_tokens": R[:, 3].astype(int).tolist(),        # generated reasoning tokens per example (C3 compute)
+           "mean_gen_tokens_by_ext": {int(v): float(R[R[:, 0] == v, 3].mean()) for v in sorted(set(R[:, 0]))}}
     json.dump(out, open(a.out, "w"))
     print(a.mode, "acc", round(out["acc"], 3), "by_ext", {k: round(v, 3) for k, v in out["by_ext"].items()}, flush=True)
     print("DONE", a.out, flush=True)
