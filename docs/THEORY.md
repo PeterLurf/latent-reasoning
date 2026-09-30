@@ -2278,6 +2278,13 @@ about 24 hops. Two accounts:
     −0.02 vs 0.05. Across all 20 students, z vs reach gives Spearman −0.36: weakly in the predicted direction. The fade
     reading stays a hypothesis. Raw data: `theory/results/transfer_pilots.json`, log `transfer_s41.log`.
 
+**Amendment 41-2 (2026-09-30 11:02 EDT, before any run): does reach keep growing with training depth?**
+* **Runs.** GT distillation on 18-hop chains (`--deep_R 3 --deep_widths 2,3,4 --student_Kp 18`) for 6 of §41's models
+  (102, 111, 113, 118, 125, 130), otherwise as §32. Local 2070, fp32, in the gap before PROTOCOL8b.
+* **Prediction.** Reach grows with training depth (9 → ≈ 13–14, 12 → ≈ 22). So the GT18 median one-loop bal-acc at
+  d19–24 (K′ = 24, §37's probe) is ≥ 0.60. The same models' GT12 students give the reference.
+* **Descriptive.** d25–30 at K′ = 32 on the 30-hop width-1 probe (exp18 --r5).
+
 ## 42. Predictions sent for PROTOCOL8's revised primary (in-distribution deep depths) (2026-09-30 09:34 EDT, before any PROTOCOL8 confirmatory data)
 
 Context: Phase 0 outcome (iii), from the experiments session. GPT-2 Coconut on deep ProsQA learns about 5–6 hops in its
