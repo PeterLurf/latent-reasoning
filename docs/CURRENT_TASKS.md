@@ -92,7 +92,7 @@ change.
 | GPU | Now | Next (chained, automatic) | Runs dry |
 |---|---|---|---|
 | RTX 4060 | lent to Theory 13:33: §45 CLR-1 third worker (4 runs, log `logs/queue_local4060-CLR.out`) | — | ~15:30 |
-| RTX 3070 | lent to Theory from ~12:29: THEORY §45 Pilot CLR-1 (log `logs/queue_local3070-CLR.out`) | — | ~17:00–18:00 |
+| RTX 3070 | free (Theory's §45 done on it); no registered local job under the spend freeze | — | — |
 | RTX 2070 | lent to Theory from ~12:29: THEORY §45 Pilot CLR-1 (log `logs/queue_local2070-CLR.out`) | — | ~17:00–18:00 |
 
 - **Overnight follow-up: PROTOCOL9** (`docs/PROTOCOL9.md`, a28ff0c 16:09:10): anytime supervision on the T9/T10
