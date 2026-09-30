@@ -155,3 +155,4 @@
 53431160 theory-y2 - - 142.127.68.223:18533 destroyed 2026-09-30 01:06 after queue end + verified fetch, confirmed absent (destroying instance 53431160.)
 53453452 theory-z3 - - 87.106.223.150:30044 fetched 2026-09-30 01:09 (fetched, sha ok: 1 runs)
 53453452 theory-z3 - - 87.106.223.150:30044 destroyed 2026-09-30 01:09 after queue end + verified fetch, confirmed absent (destroying instance 53453452.)
+(note) pi_per3_s903 moved from theory-w1 (marked claimed there) to theory-z1's queue 2026-09-30 01:12 to shorten the tail; it was re-queued on w1 at 23:07 after theory-w3 was lost
