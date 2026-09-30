@@ -28,3 +28,5 @@ theory-y4 2
 theory-x6 0
 theory-z7 0
 theory-pa-h4 16
+theory-pa-h2 12
+theory-x1 2

@@ -659,7 +659,7 @@ far8–10 0.510).
   restore module's main effect is on learnability (MR 1/4, ATR 2/4 vs AT 4/4), which motivated the zero-initialised gate
   in A6 (§24).
 
-## 20. Pilot E — depth wall or schedule end? (pre-registered 2026-09-29 ~12:40 EDT, before any Pilot D or E run started;
+## 20. Pilot E — depth wall or schedule end? (pre-registered 2026-09-29, committed 3ded4f5 11:49:57 EDT [first written "~12:40", an estimate; see the timestamp table], before any Pilot D or E run started;
 ## design agreed with the experiments session)
 
 **Question.** Failing fronts stop at the training depth (PROTOCOL6 L2, M1). Is that a **depth wall** (DW: the frontier
@@ -695,7 +695,7 @@ the slack-induced schedule (§16, §18 Prop. 2), so the two accounts make opposi
 * **Order and hosts.** Pairs interleaved across the four theory hosts after Pilot C, E8 and E3 pairs placed early; host 1
   (slower) gets fewer pairs. Expected completion ~01:00 EDT 2026-09-30, cost ≈ $7 at $0.60/h.
 
-* **Amendment E-1 (2026-09-29 ~13:00 EDT, before any Pilot D or E run started; prompted by the experiments session).**
+* **Amendment E-1 (2026-09-29, committed b895d96 11:50:43 EDT [first written "~13:00", an estimate], before any Pilot D or E run started; prompted by the experiments session).**
   PE1's pair comparison uses the **continuous** beyond-depth latent accuracy (d8 for D/E8, d6 for E3): a pair counts for
   anytime if its anytime run's accuracy is strictly higher, for control if strictly lower; exactly equal pairs are ties and
   are excluded from both the 70 % share and the one-sided sign test. "Evaluable pairs" = pairs with both runs competent
