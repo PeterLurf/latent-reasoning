@@ -98,18 +98,19 @@ limit.** The horizon moves with the training depth (addenda M, R: 7/10, 8/8, 12/
 thought two hops ahead makes it fall back at the same *step*, two hops deeper (P10e, 13/17). Anytime or random tight
 budgets from the start buy about one hop (Pilot D: 8/10 vs 3/9 extrapolate; E: 0/12 cross depth + 2; K). Fine-tuning
 afterwards does not (H: 1/18). Jitter, a periodic clock and a set memory do not fix it (F, I, G). Cutting the latent
-history every 3 steps gives the best from-scratch reach (J: d8 6/8 pairs), but still not reliably. *THEORY §§17–35.*
+history every 3 steps gives the best from-scratch reach (J: d8 6/8 pairs), but still not reliably. The same mechanism holds in 3- and 4-layer and wider models: anytime removes the in-range brake, the fall-back stays and the count is decodable (§40, 25/25); across 64 architecture pairs anytime does not extend reach (PROTOCOL9). *THEORY §§17–35, 40; PROTOCOL9.*
 
 **12. Restarts fix it, and restarting can be distilled into one loop without labels.** Re-anchoring from a written node
 rescues 31/34 failures (§26). Training each failed model on its own re-anchored answers fixes 19/20, against 0/20 with its
 own single-pass answers (Pilot L). This is label-free, but the deep training graphs come from the evaluation generator.
-Reach extends one rung at a time: 14/20 students reach 13–18 hops when re-anchored (§37). A second rung (Pilot M) is
-running. *THEORY §§26, 32, 37.*
+Reach extends one rung at a time: 14/20 students reach 13–18 hops when re-anchored (§37), and a second label-free rung puts 12/20 there in one loop when the self-labels are agreement-filtered; unfiltered, the old rung erodes (Pilot M, M-2). With true labels, reach grows with training depth (depth 9/12/18: 0.51/0.63/0.69 at 19–24 hops, §41). Restarting from a set of nodes is ignored unless trained (§44). *THEORY §§26, 32, 37, 38, 41, 44.*
 
 **13. Unlike probe directions (finding 2), the silent pointer is causally editable.** Rewriting "I am at node v" as
 "node u" in a thought, through a linear map from the model's own id table, makes later reads and answers follow BFS from
 u (IIA 0.36; collateral 0.03). Translating the thought out and back keeps 94.7 % of answers. The vocabulary is node ids,
 not language. *THEORY §34.*
+
+**14. In Coconut GPT-2 on deep ProsQA the thoughts are needed but shallow, and written checkpoints are not used untrained.** Without thoughts the model is at chance at every depth; with them it reaches 0.82 with no added hops and falls to chance by 5 added hops; one or two thoughts give all the gain (PROTOCOL8 Phase 0: F1 0.656 < 0.75). Restarting from written checkpoints, even correct ones, does not help (PROTOCOL8b pilot). So checkpoint use must be trained (PROTOCOL8b step 1, running). *PROTOCOL8_PHASE0_RESULTS; PROTOCOL8B_PILOT.*
 
 ## What was revised or overturned
 
@@ -144,7 +145,7 @@ depth (A3, not supported) and transfer to ProsQA (finding 10).* Still open on 20
 
 * **Why the frontier crosses the horizon in some seeds.** A longer lookup scaffold is not the cause (addendum O, O1 not
   supported). Findings 11–12 give the mechanism of the stop, not why some seeds escape it.
-* **How far the label-free ladder goes** (Pilot M, a second rung), and whether it survives self-training error build-up.
+* **Whether trained checkpoint use and anytime / random-tight training give a pretrained model deep latent reasoning** (PROTOCOL8, PROTOCOL8b step 1: results Thursday), and a third label-free rung.
 * **ProsQA J1.** Seed 2 of addendum J decides whether the delayed-query model needs any thought at all.
 * **Multi-step latent computation in a pretrained model.** Needs problems deeper than one forward pass, or a recipe
   closer to the toy model's (scaffold, gated curriculum); N shows that simply removing layers does not do it.
