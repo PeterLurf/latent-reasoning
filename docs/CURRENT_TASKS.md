@@ -112,7 +112,7 @@ change.
 | When | Item | Action |
 |---|---|---|
 | done 07:43 | T9 + T10 | **T9 pooled supported (AUC 0.89); T10 supported (AUC 1.00)**; per family in `docs/PROTOCOL7_RESULTS.md`; secondary causal tests pending |
-| now | PROTOCOL9 primary (32 pairs in) | `PYTHONPATH=. python scratch/score_p9.py --final` |
+| done 07:55 | PROTOCOL9 primary | **AP1 not supported (d8 5/10); AP2 supported (10 vs 3, p 0.046); AP3 anytime more learnable (21 vs 12)**; `docs/PROTOCOL9_RESULTS.md` |
 | ~09:00 | Phase 0 Coconut: training ends ~08:10 (epochs ran ~28 min, not 14); `coco_test_e48.json` first, full evaluation ~11:00 | read F1/F1b from e48 as soon as it exists; drain at ANALYSIS_DONE |
 | ~09:30–10:00 | PROTOCOL8 registration, after F1/F1b | launch ~10:30: 12 latent-arm hosts (~16–20 h each) + 4 CoT; ≈ $50 of $88 |
 | ~11:00 | PROTOCOL9 extension (7 Vast hosts + local l3 runs) | pooled 64-pair analysis (`--ext`) |
