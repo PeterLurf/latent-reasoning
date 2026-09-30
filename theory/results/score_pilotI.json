@@ -1,0 +1,54 @@
+{
+ "arms": {
+  "per2": {
+   "registered": 8,
+   "evaluated": 8,
+   "competent": 4,
+   "extrapolate_competent": 3,
+   "extrapolate_all": 3,
+   "median_d8": 0.622314453125,
+   "median_d7": 0.64990234375,
+   "missing": []
+  },
+  "per3": {
+   "registered": 8,
+   "evaluated": 7,
+   "competent": 3,
+   "extrapolate_competent": 2,
+   "extrapolate_all": 3,
+   "median_d8": 0.57275390625,
+   "median_d7": 0.65283203125,
+   "missing": [
+    "pi_per3_s905"
+   ]
+  },
+  "C": {
+   "registered": 8,
+   "evaluated": 8,
+   "competent": 5,
+   "extrapolate_competent": 2,
+   "extrapolate_all": 4,
+   "median_d8": 0.50341796875,
+   "median_d7": 0.53173828125,
+   "missing": []
+  }
+ },
+ "PI1": {
+  "n_PER": 7,
+  "share_PER": 0.5714285714285714,
+  "n_C_same_seeds": 4,
+  "share_C": 0.0,
+  "met": false
+ },
+ "PI2": {
+  "counted": 5,
+  "in_direction": 3,
+  "sign_p_one_sided": 0.5,
+  "verdict": "inconclusive"
+ },
+ "PI3": {
+  "n": 7,
+  "share_kept": 0.14285714285714285,
+  "met": false
+ }
+}
