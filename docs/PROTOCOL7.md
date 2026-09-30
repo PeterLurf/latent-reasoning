@@ -281,3 +281,20 @@ dropped. A test whose population ends up below its minimum is reported as unreso
   unaffected.
 * **Handling.** `length_gen` is re-run with the fixed code for every finished T10 run before T10 is scored, and later
   T10 runs use the fixed code. Nothing else changes.
+
+## Amendment 10 (2026-09-30 08:56 EDT, before any T9/T10 run was measured with frontier_causal2)
+
+* **What.** The registered secondary analyses for T9/T10 (amendment-3 causal tests and T4) are applied to the 34
+  competent T9/T10 models. The layer mapping for 3- and 4-layer models follows the theory session's recommendation.
+  Layers are numbered as in `scratch/far_sweep_layers.py` (1-based; layer 1 = first block).
+* **Necessity** (`block_B_L12`, `block_D_L12`): block in every block's latent attention, as the code already does.
+  `query_B1` is unchanged.
+* **Sufficiency and the positive control** (`inject_B_nat`, `inject_C_nat`, `block_A_L1`):
+  - Primary: at each model's in_peak-chosen layer (`results/p7s_t9.json` "layer"), with natural mass computed at that
+    layer.
+  - Also reported: the literal first-block version.
+  - For the 27 models whose chosen layer is 1, the two coincide. The other 7 (`t10fork_s570`, `t9l3_s510`,
+    `t9l3_s512`, `t9l4_s523`, `t9l4_s526`, `t9l4_s533`, `t9w512_s548`) need the chosen-layer variant, added to
+    `latent/frontier_causal2.py` as a default-off option before they are measured with it.
+* **Rules.** The amendment-3 and T4 decision rules are unchanged. Results go to `results/p7s_causal2_t9.json`, the
+  RTX 2070 (fp32).
