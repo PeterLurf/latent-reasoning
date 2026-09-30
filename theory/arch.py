@@ -263,7 +263,10 @@ def add_step_adversary(model, lam, n_classes, hidden=128):
         ce = F.cross_entropy(probe(hs.detach()), ys)                        # trains the probe only
         W1, b1, W2, b2 = (t.detach() for t in (probe[0].weight, probe[0].bias, probe[2].weight, probe[2].bias))
         logp = F.log_softmax(F.linear(F.gelu(F.linear(hs, W1, b1)), W2, b2), -1)
-        conf = -logp[:, ks].mean()                                           # CE to uniform over the used steps
+        assert ks == list(range(ks[0], ks[-1] + 1))
+        # a slice, not a list index: list indexing copies an index tensor host -> device, which a CUDA-graph capture
+        # forbids (the §39 runs crashed at capture_end; amendment T12-1)
+        conf = -logp[:, ks[0]:ks[-1] + 1].mean()                             # CE to uniform over the used steps
         model.adv_last.copy_(ce.detach())
         return ce + lam * conf
 

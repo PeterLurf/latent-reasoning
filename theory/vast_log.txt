@@ -226,3 +226,5 @@
 53479488 theory-M06 - - 142.127.68.223:7009 destroyed 2026-09-30 02:55 after queue end + verified fetch, confirmed absent (destroying instance 53479488.)
 53477357 theory-M18 - - 142.112.39.215:63758 fetched 2026-09-30 03:12 (fetched, sha ok: 3 runs)
 53477357 theory-M18 - - 142.112.39.215:63758 destroyed 2026-09-30 03:12 after queue end + verified fetch, confirmed absent (destroying instance 53477357.)
+53490271 theory-T12smoke offer50923400 - created 2026-09-30 03:32 (create call returned; awaiting SSH; queue theory/queues/t12_smoke.txt)
+53490271 theory-T12smoke - - 76.122.147.106:51810 destroyed 2026-09-30 03:49: T12 GPU capture check done (no runs to fetch; smoke outputs only); vdestroy: DESTROYED_VERIFIED 53490271

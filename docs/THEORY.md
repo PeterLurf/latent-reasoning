@@ -2129,6 +2129,18 @@ with Pilot D's pd_at_s900–907. 8 runs.
 **Where.** The experiments session runs it on 1–2 Vast hosts (≈ $1) from a frozen copy of this commit, with its own
 worker.
 
+**Amendment T12-1 (2026-09-30 03:49 EDT, before any T12 run produced a model). A graph-capture fix only; the design and
+predictions are unchanged.**
+* All first attempts on the experiments session's hosts crashed at CUDA-graph capture, at step 0, so they are not
+  outcomes. Cause: the adversary indexed log-probabilities with a Python list, which copies an index tensor host →
+  device during capture.
+* Fix: the same computation as a contiguous slice (`theory/arch.py`).
+* GPU check on a rented A4000 (theory-T12smoke, destroyed after). Graph capture works. Over 2000 steps:
+  - with a negligible adversary weight (1e-6), the probe learns the step index: CE 1.37 → 0.16;
+  - with the registered λ = 0.5, it stays at chance (1.78 ≈ ln 6).
+* Disclosed observation: the task loss at step 2000 is higher with the adversary (≈ 1.5 vs ≈ 0.8). λ is kept as
+  registered, and PT4 measures the learnability cost.
+
 **Baseline, measured before any T12 run finished** (2026-09-30; `theory/results/step_decode.json`). A fresh probe reads
 the step index from the thoughts with accuracy 0.87–1.00 in pd_at_s900–907 (7 runs with models) and 0.77–1.00 in
 pd_c_s900–907; chance is 0.17. This is direct evidence that the thought carries a count (Prop. 10), and it sets PT1's
