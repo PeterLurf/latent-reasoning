@@ -1902,6 +1902,32 @@ freeze3 was chosen as primary because it was the only variant that did not hurt 
   - Restarts remain far ahead (31/34), which supports the checkpointed design (§33) over clamping.
   - A trained, count-free thought (PROPOSALS §10, T12) is the remaining restart-free route.
 
+## 37. Do Pilot L's students extrapolate past their own training depth? (exploratory predictions registered 2026-09-30 01:16 EDT, before `theory/exp18_deep_reanchor.py` is run on the remaining 57 Pilot L models)
+
+**Setup.**
+* Probe: a 24-hop chain vs a look-alike decoy (`theory/deep_chain.py`, R = 4, widths 2–3, 512 graphs, seed 7).
+* Arms: one loop at K′ = 24 (single24), K′ = 12 (single12), and re-anchored with 12-step episodes (re12top3).
+* Outcome: mean bal-acc over distances 13–18. The students were trained on chains of ≤ 12 hops at K′ = 12.
+
+**Already seen, disclosed.** Mean bal-acc at d13–18:
+
+| Model | single24 | re12top3 |
+|---|---|---|
+| pl_gt_s111 | 0.89 | 0.55 |
+| pl_t8_s111 | 0.50 | 0.50 |
+| pl_t8_s126 | 0.51 | 0.65 |
+| p30_s111 | 0.50 | 0.49 |
+
+**Why a GT student might extrapolate (Prop. 10).**
+* The GT student was trained with tight budgets at two depths: 6 in the normal batch, 12 in the deep batch. So a stop
+  keyed to count 6 is penalised.
+* The T8 student's labels stop where its teacher stops (d10 ≈ 0.54). That teaches a stop at about 10.
+
+**Predictions** (counts over 20 models per arm; a model "extrapolates" if its mean bal-acc at d13–18 is ≥ 0.60):
+* **X1.** GT students, single24: ≥ 10/20.
+* **X2.** T8 students, single24: ≤ 5/20. T8 students, re12top3: ≥ 5/20 (the next rung of a label-free ladder).
+* **X3.** Self students, single24: 0/20.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
