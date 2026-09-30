@@ -35,7 +35,7 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 > gives fronts to depth 11 in 2/4 runs; Pilot D 12 + 12 running on Vast). Ownership (theory Vast hosts vs a PROTOCOL8)
 > to be agreed. The theory session analyses O/R/T9/T10 runs only after the experiments session has scored them.
 
-## 0. STATE AT 2026-09-30 00:45 — authoritative; sections 1–3 below are partly history
+## 0. STATE AT 2026-09-30 00:36 — authoritative; sections 1–3 below are partly history
 
 **Budget.** Vast $122.35 at 23:01; projected ≈ $93 at 07:00 once Theory's hosts drain (~02:30). PROTOCOL8 needs ≈ $45
 including a ≥ $10 reserve. Every create/destroy goes in `scratch/pods.txt`.
