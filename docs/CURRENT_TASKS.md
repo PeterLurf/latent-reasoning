@@ -107,19 +107,16 @@ change.
 - **Pilot G feasibility:** done 15:54 (priority slot via `scratch/priority_run.sh`); both runs failed the gate, and
   Theory has amended Pilot G (G-1).
 
-**Waiting to be scored / timeline (Wed 30 Sep unless noted):**
+**Waiting to be scored / timeline (Wed 30 Sep; updated 07:45):**
 
 | When | Item | Action |
 |---|---|---|
-| done 22:16 | Phase 0 no-CoT | **scored: no-CoT below 0.75 at every trained m, near chance from m = 4 (read as no-CoT learnability, amendment 1; F1b decides latent use)**; `docs/PROTOCOL8_PHASE0_RESULTS.md`; host destroyed 22:15 |
-| done 01:16 | Addendum R | **R1 supported (8/8), R2 supported, R3 unresolved (2/18 extrapolate)**; `docs/PROTOCOL6_RESULTS.md`; Theory pinged for LE-R |
-| ~01:00–05:00 | Theory Pilots D/E | Theory messages the result |
-| ~03:00–04:00 | Theory Pilot F | Theory messages PF1–PF3 with competence per arm |
-| ~03:00–08:30 | T9 hosts | fetch, destroy; score T9 when all are in (`scratch/score_p7s_t9.py`) |
-| ~05:30–06:00 (training ends ~02:40, then ~3 h evaluation) | Phase 0 Coconut | drain (`scratch/drain_prosqa.sh`), F1 and F1b decision; PROTOCOL8 registration follows at ~06:30–07:00 |
-| ~06:30 | PROTOCOL8 | pre-register (arms Coconut / anytime / random-tight; design in `docs/NEXT_STEPS.md`, end) |
-| ~07:00 | PROTOCOL8 | launch ~12 hosts as the theory hosts free up |
-| ~03:00 | T10 | score with T9, after `scratch/rerun_length_gen.sh t10fork` has filled every length_gen (PROTOCOL7 am. 9). State in the write-up: the extrapolation probe (and far_sweep P7) for fork-trained models is chain-shaped, i.e. outside their training shape distribution (Audit, 2026-09-29). The same holds for PROTOCOL9's fork family |
+| now | T9 + T10 (all runs in) | `PYTHONPATH=. python scratch/score_p7s_t9.py --device cuda:1`; chain-shaped probe caveat for fork runs |
+| now | PROTOCOL9 primary (32 pairs in) | `PYTHONPATH=. python scratch/score_p9.py --final` |
+| ~09:00 | Phase 0 Coconut: training ends ~08:10 (epochs ran ~28 min, not 14); `coco_test_e48.json` first, full evaluation ~11:00 | read F1/F1b from e48 as soon as it exists; drain at ANALYSIS_DONE |
+| ~09:30–10:00 | PROTOCOL8 registration, after F1/F1b | launch ~10:30: 12 latent-arm hosts (~16–20 h each) + 4 CoT; ≈ $50 of $88 |
+| ~11:00 | PROTOCOL9 extension (7 Vast hosts + local l3 runs) | pooled 64-pair analysis (`--ext`) |
+| — | T12 (THEORY §39) | fetched 06:11; scored by Theory |
 
 **Scored 2026-09-29 (details in PROTOCOL6_RESULTS.md and PROTOCOL7_RESULTS.md; all re-verified by the audit):**
 - O1 not supported.
