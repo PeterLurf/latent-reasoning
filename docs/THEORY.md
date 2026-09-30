@@ -2291,6 +2291,28 @@ latents. Accuracy saturates by K′ ≈ 3, and depths ≥ 10 are at chance in di
 * Falsified if anytime does not lift depths 7–10 and saturation stays at K′ ≈ 3. The limit would then be per-thought
   capacity, not a brake.
 
+## 43. Where is the deep frontier read in 3- and 4-layer models? (exploratory, registered 2026-09-30 10:58 EDT, before measuring; prompted by the experiments session's T9 secondary)
+
+**Background.** Blocking chain A at the in_peak-chosen layer fails the positive control in several T9 models
+(PROTOCOL7_RESULTS).
+
+**Measure.**
+* `theory/rollout.py` gained an opt-in `record_layers` option. It is off by default, and the default output was checked
+  bit-identical.
+* Script: `theory/layer_sweep.py`.
+* Per layer l and head h, sweep strength S[l, h] = the sum over steps 1..K and chain edges of the positive part of the
+  mean attention excess on the reachable vs the look-alike chain. This is ptr_traj's head-selection statistic, applied
+  per layer.
+* Per model: the argmax layer, and the top layer's share of Σ_l max_h S[l, h].
+
+**Models.** All 24 T9 models of `results/p7s_causal2_t9.json`. The positive control is recomputed as the mean drop of
+A4–A6 ≥ 0.20 at the model's chosen layer: 8 fail.
+
+**Predictions.**
+* **L1.** In failing models, the argmax layer differs from the chosen layer, or the top-layer share is < 0.5, in ≥ 60 %
+  of models.
+* **L2.** In passing models the same holds in ≤ 30 %.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the

@@ -45,13 +45,16 @@ def _step_attn(attn, x, kv, keep_idx=None):
 
 @torch.no_grad()
 def rollout(m, K, src, dst, start, Kp, window=None, window_from=1, feed=None, qnodes=None,
-            block_from=None, block_layers=(1,)):
+            block_from=None, block_layers=(1,), record_layers=False):
     """Returns dict with thoughts (B,Kp+1,d), attn1 list of (B,H,T_k) [full-width, hidden keys = 0],
-    logits1 list, and query logits (B,Q) if qnodes given."""
+    logits1 list, and query logits (B,Q) if qnodes given. record_layers=True (THEORY §43) also returns logitL:
+    per layer, the list over steps of the pre-softmax attention logits (B,H,T_k) (NaN at hidden keys); off by default,
+    so every existing call is unchanged."""
     x = m.embed_prefix(src, dst, start)
     P = x.shape[1]                                   # prefix length (edges + START)
     h, cache, _ = m.encode(x)
     thoughts, attn1, logit1 = [h], [], []
+    logitL = {}
     te = m.type_emb.weight
     for k in range(1, Kp + 1):
         if feed is not None:
@@ -76,17 +79,22 @@ def rollout(m, K, src, dst, start, Kp, window=None, window_from=1, feed=None, qn
             xx = xx + a_out
             xx = xx + blk.mlp(blk.ln2(xx))
             new.append(kv2)
-            if li == 0:
+            if li == 0 or record_layers:
                 full = torch.zeros(arow.shape[0], arow.shape[1], P + nlat + 1, device=arow.device)
                 fs = torch.full_like(full, float("nan"))
                 idx = kp if kp is not None else torch.arange(P + nlat, device=src.device)
                 full[:, :, idx] = arow[:, :, :-1]; full[:, :, -1] = arow[:, :, -1]
                 fs[:, :, idx] = srow[:, :, :-1]; fs[:, :, -1] = srow[:, :, -1]
-                attn1.append(full); logit1.append(fs)
+                if li == 0:
+                    attn1.append(full); logit1.append(fs)
+                if record_layers:
+                    logitL.setdefault(li, []).append(fs)
         cache = new
         h = m._thought(xx[:, 0])
         thoughts.append(h)
     out = {"thoughts": torch.stack(thoughts, 1), "attn1": attn1, "logit1": logit1, "P": P}
+    if record_layers:
+        out["logitL"] = [logitL[i] for i in sorted(logitL)]
     if qnodes is not None:
         out["qlogit"] = m.query(cache, qnodes)
     return out
