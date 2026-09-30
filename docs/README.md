@@ -38,9 +38,10 @@ Notes: `PROTOCOL6.md` has an empty "Results — Pending." heading between addend
 | `LITERATURE_NOTES.md` | Short positioning note (2026-09-26): closest prior work, the sceptical line, what is new here |
 | `LITERATURE.md` | Full annotated bibliography grouped by question, with a novelty-status section (updated 2026-09-27) |
 | `LITERATURE_AUDIT.md` | Targeted novelty check against prior work (2026-09-28; abstract-level, not exhaustive) |
-| `LIT_REQUESTS_2026-09-29.md` | Literature session's answers to agent requests: anytime-supervision novelty, random-budget precedents, checkpoints and deep datasets, PROTOCOL9 novelty (Experiments); citation check, prior work for §26/F5a/F1a, pre-registration reporting standards (Audit) |
-| `IDEAS_ADJACENT_2026-09-29.md` | Literature session: 12 ideas to borrow from adjacent fields (NCA pool training, periodic clocks, normalisation and working-memory models, Neural Data Router, Hopfield clean-up, theta cycling, energy-based reasoning …), each mapped to C1–C4 with a cheapest test |
-| `ADVISOR_2026-09-29.md` | Literature session's advisory report: papers supporting or scrutinising each claim of the experiments and theory streams, with suggested actions |
+| `LIT_NORTHSTAR_2026-09-29.md` | Prior work for the north star: C7 faithfulness tests, latent decoding, hybrids, halting, restart faithfulness |
+| `LIT_REQUESTS_2026-09-29.md` | Answers to Experiments, Audit and Theory literature requests |
+| `IDEAS_ADJACENT_2026-09-29.md` | Ideas to borrow from adjacent fields |
+| `ADVISOR_2026-09-29.md` | Prior work supporting or scrutinising each stream's claims |
 | `literature_dois.txt` | Bare DOI list (94; 85 arXiv DOIs), one per line (last changed 2026-09-27); not cross-referenced in `LITERATURE.md` |
 
 ## Theory stream (separate Claude session, from 2026-09-29)
