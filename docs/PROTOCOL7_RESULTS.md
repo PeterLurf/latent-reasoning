@@ -19,9 +19,29 @@ exploratory results are labelled.
 | **T2b** rescue at natural scale (per-head mass of the model's own sharp frontier) | 24 O non-extrapolators, P7 < 0.10 | 20/24 rescued (B2–B6 up ≥ 0.20 and decoy injection raises false positives ≥ 0.10) | **supported** |
 | **T13** P8 predicts extrapolation to distance 8 | 44 O runs, 8 extrapolate at d8 | AUC 0.98 (P7: 0.97) | **supported** |
 | **T4** prospective head-to-head vs in-distribution predictors | 44 O runs, 20 extrapolate | P7 0.99; best of 10 in-distribution instruments 0.82 (completion time at depth 6); EA 0.53; accuracies 0.54–0.65; difference 0.17, 95 % CI [0.05, 0.26] | **supported** |
+| **T9** P7 generality across architecture (3 layers, 4 layers, 512 wide) | 44 of 48 runs trained (4 stage-1 failures), 24 competent, 21 above the floor | pooled AUC 0.89 (14/21 extrapolate); 512 wide AUC 1.00, 4 layers 0.71, 3 layers unresolved (all 5 extrapolate) | **supported** (pooled); per family supported / inconclusive / unresolved |
+| **T10** P7 on fork graphs | 16 runs, 10 competent above the floor | AUC 1.00 (5/10 extrapolate); non-extrapolators with P7 < 0.10: 5/5 | **supported** |
 
 Sources: `results/p7s_t5.json`, `results/p7s_t6.json`, `results/p7_indep.json`, `results/p7s_t8.json`; `results/p7s_causal.json`, `results/p7s_t12.json` (T1/T2; code `latent/frontier_causal.py`, git f77d6ff);
 `results/p7s_t3.json`, `results/p7s_t3_score.json` (T3; `scratch/p7s_t3.py`).
+
+## T9 / T10 (scored 2026-09-30 07:43, `scratch/score_p7s_t9.py`, `results/p7s_t9.json`)
+
+| Family | Finished / competent / above floor | Extrapolate | AUC(P7) | H2 (P7 < 0.10 among non-extrapolators) | Verdict |
+|---|---|---|---|---|---|
+| 3 layers | 15 / 7 / 5 | 5 | — | 0/0 | **unresolved** (no non-extrapolator) |
+| 4 layers | 16 / 11 / 10 | 6 | 0.71 | 4/4 | **inconclusive** (0.65–0.80); H2 supported |
+| 512 wide | 13 / 6 / 6 | 3 | 1.00 | 3/3 | **supported** |
+| fork graphs (T10) | 16 / 10 / 10 | 5 | 1.00 | 5/5 | **supported** |
+| T9 pooled | 21 above floor | 14 | 0.89 (bar 0.85) | — | **supported** |
+
+- **Layer choice (by in_peak, fixed in advance):** mostly layer 1 (26/31). Layer-1 P7 gives AUC 0.67 for 4 layers, 0.89
+  for 512 wide and 1.00 for fork.
+- **Fork caveat:** the extrapolation probe and P7's probe graphs are chain-shaped, so for fork-trained models they are
+  outside the training shape distribution (PROTOCOL7 amendment 9).
+- **Placement:** amendments 7–8 put runs on Vast and local cards with mixed hardware; 4 T9 runs were stage-1 failures
+  (t9l3_s501, t9w512_s547, t9w512_s549, t9w512_s552).
+- **Not yet applied:** the amendment-3 causal tests and T4, registered as secondary for T9/T10.
 
 ## T1 / T2 — what went wrong, and what exploration showed (exploratory, 5 + 5 models)
 
