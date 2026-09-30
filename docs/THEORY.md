@@ -11,7 +11,7 @@ measurements run on the CPU on existing `runs/` models; nothing here touches the
 §3 theory · §4 attenuation (Mechanism 2) · §5 architectures · §6 Pilot A pre-registration · §9 Pilot B · §10 developmental
 race · §11 Pilot C · §12 training-free repair · §13 GPT-2 latent reasoners · §14 transfer curves (+ failed out-of-sample
 rule) · §15 Pilot A scored · §16 Pilot B interim · §17 Pilot D · §18 formal sketch · §19 Pilot B scored · §20 Pilot E ·
-§21 O marker test · **§22 four conditions C1–C4, Props. 4–8, new methods T6/T7 and architecture A6** · §23 Pilot F · §24 Pilot G (A6) · **§25 Prop. 9: slack creates the clock** · §26 CTM-inspired T8/A8 · §27 Pilot H (fine-tune repair) · §28 Pilot I (periodic clock) · §29 Pilot J (chunk-reset attention) · §30 zero-cost follow-ups · §31 Pilot K (label-free tight budgets) · §7 log · §8 toy simulation. (Sections were appended in the order written, so numbers are not in
+§21 O marker test · **§22 four conditions C1–C4, Props. 4–8, new methods T6/T7 and architecture A6** · §23 Pilot F · §24 Pilot G (A6) · **§25 Prop. 9: slack creates the clock** · §26 CTM-inspired T8/A8 · §27 Pilot H (fine-tune repair) · §28 Pilot I (periodic clock) · §29 Pilot J (chunk-reset attention) · §30 zero-cost follow-ups · §31 Pilot K (label-free tight budgets) · §32 Pilot L (re-anchoring distillation) · §7 log · §8 toy simulation. (Sections were appended in the order written, so numbers are not in
 page order.)
 
 ## Timestamp correction (2026-09-29 12:59 EDT, prompted by the Audit session; machine clock via `date`, Vast logs in UTC = EDT + 4)
@@ -1345,6 +1345,37 @@ the example, should do what anytime supervision does, with final-answer labels o
 * **PK4 (learnability).** Competent RT runs ≥ competent C runs − 2 (of 8).
 * **Falsified** if PK1 is not supported while Pilot D's anytime-vs-control comparison is. Then tight budgets without labels
   are not enough, and the minimum-progress labels are doing the work.
+
+## 32. Pilot L — distilling re-anchored inference into one latent loop (PROPOSALS §9 F5a) (pre-registered 2026-09-29 22:57 EDT, before any Pilot L run started)
+
+**Idea.** Re-anchored inference (§26) is right where the single uninterrupted loop is not. Use it as a teacher for
+deeper problems and fine-tune the model to reproduce its answers in *one* episode with K′ = 12. This is
+amplify-then-distil (Christiano et al. 1810.08575) with a clock-resetting procedure as the amplifier; related:
+self-improving transformers 2502.01612, Deng et al. 2405.14838, 2407.06023, STaR / Quiet-STaR, progressive
+distillation 2202.00512 (precedents from the Literature session).
+
+* **Code.** `theory/distill_reanchor.py` (smoke-tested on CPU with all three teachers; its outputs load in eval_arch).
+  Fine-tuning from each model, fresh AdamW, lr 1e-4 (100-step warm-up, cosine), 3000 steps, bs 256. Each step has a
+  normal batch (training graphs, full depth, K = 6, delayed + upfront BCE) and a deep batch (long-chain graphs from the
+  length_gen generator with fresh random seeds; all A/B/C/D chain nodes queried; one student episode at K′ = 12).
+* **Arms** (the 20 P30 K6 failures of Pilot H, each model's own seed and sweep head from exp12):
+  - **L-T8:** deep targets from a frozen copy of the initial model run with re-anchoring (re2top3: episode 1 from START,
+    episode 2 from each of the 3 most-attended edges' targets at step K; max-combined logits > 0).
+  - **L-self:** deep targets from the frozen copy run as one episode at K′ = 12 (plain self-training on deep graphs; the
+    control that isolates the re-anchoring teacher).
+  - **L-GT:** the true labels (upper bound).
+  - Lower bound: Pilot H's FT-C (plain fine-tune on normal graphs).
+* **Outcomes.** theory/eval_arch.py: d7 and d8 at K′ = 12 (length_gen seed 99; graphs different from the training ones),
+  extrapolates (extrap_K12), delayed in-distribution bal-acc.
+* **PL1 (primary: the re-anchoring teacher matters).** §23 pair rule on d8: L-T8 > L-self (≥ 75 % of ≥ 5 counted pairs).
+* **PL2 (label-free extension works).** L-T8 extrapolates in ≥ 50 % of the 20 models, and in ≥ 0.30 more of them than
+  Pilot H's FT-C.
+* **PL3 (upper bound, descriptive).** median d8: L-GT ≥ L-T8.
+* **PL4 (no in-distribution cost).** Median drop in delayed bal-acc from the initial model ≤ 0.02 in L-T8.
+* **Caveat, stated now.** The deep graphs come from the same generator as the evaluation, so this is label-free
+  improvement on harder problems, not zero-shot extrapolation. The pure test of the teacher is L-T8 vs L-self: same
+  graphs, different label source.
+* **Where.** 60 runs (≈ 15 min each) on ~12 new Vast hosts, labelled theory-L*, destroyed as each queue ends.
 
 ## 7. Log
 
