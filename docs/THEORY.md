@@ -876,6 +876,16 @@ wrong benchmark for it.
   Our MB2 (K = stage depth + 1, constant within a stage while example depths vary) satisfies (b); a per-example
   T = depth + 1 would not, and is predicted to do worse than MB2 or anytime. DR-Loop (R ~ clip(Poisson(4), 2, 8),
   independent of n) and Huginn (r mostly below the mean) satisfy both, which is consistent.
+* **Refinement of (b) (21:51 EDT, after the Literature session's full reads, `docs/LIT_REQUESTS_2026-09-29.md`).** Fan et al.
+  2409.15647 use a deterministic, length-dependent budget T(n) and still extrapolate, because the *test* budget also
+  follows T(n). Kuo et al.'s schedule is n-centred, K = clip(n + Δ, 1, 20) with Δ ~ U{−5..5}, which includes budgets
+  below the steps needed; their worst arm, K = n, was tested at n = 20–60 against a training clip at 20, so part of that
+  failure may be the clipped test budget. So (b) is not a general law. The correct form: if the budget is a function of
+  an observable, the schedule may key on it, and the continuation is identified only where the test budget follows the
+  same function. For extrapolation to *arbitrary* test budgets (our K′ > K), the budget must be independent of the
+  example. "Random loop counts help" should be cited as "n-centred budgets that sometimes undershoot help", which is
+  the tightness claim (a). No published scheme manipulates slack directly (Bansal 2202.05826, Huginn and DR-Loop all
+  use fixed minimums of 1–2), so F1a vs P22 is the discriminating test.
 * **Novelty, stated honestly.** T6 (jitter) — *medium-low*: training a recurrence to denoise its own state is known
   (Mozer et al. 1805.08394 State-Denoised RNNs, the closest in purpose; Lim et al. 2102.04877 Noisy RNNs, with theory;
   Lamb et al. 1905.11382 state reification; Huginn's random initial state). New here: multiplicative amplitude jitter of
