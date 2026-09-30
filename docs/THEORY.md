@@ -2120,7 +2120,8 @@ met.**
     losing the first. After two rungs, 12/20 models answer at 13–18 hops in one loop, trained only on their own
     re-anchored inference.
   - Caveats:
-    - The half of the models run in this amendment used fp32 on a different card.
+    - The half of the models run in this amendment used fp32 on a different card. The fp32 half reaches 6/10, the same
+      as the bf16 half's 6/10 (Audit), so precision does not drive the result.
     - Competence is not better (12 vs 13).
     - The deep graphs still come from the evaluation generator (§32's caveat).
 
