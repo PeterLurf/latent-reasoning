@@ -120,7 +120,9 @@ leak.**
 
 **Theory results to cite:**
 - §21: the out-of-sample marker failed; T3 early P7 AUC 0.92.
-- §26 plus controls: re-anchoring at the frontier's depth rescues 55–56/59; random-node anchors 0/59.
+- §26 plus controls (71b9830): re-anchoring at the frontier's depth takes probe 7-hop success (distance-7 bal-acc ≥ 0.60, no
+  CI clause, so looser than "extrapolates") from 24 to 55/59, i.e. 31 of 34 failures rescued. Random same-depth anchor
+  56/59; random-node anchor 0/59; oracle 59/59.
 
 ## 1. What is running now (HISTORY before 2026-09-29 — see section 0)
 
