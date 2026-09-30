@@ -1,0 +1,4 @@
+# PROTOCOL9 amendment 7: extension on Vast host x6
+p9at_w512_s550 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 550 --d 512 --anytime 1
+p9at_w512_s554 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 554 --d 512 --anytime 1
+p9at_fork_s573 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 573 --shapes fork --p_fork 0.5 --anytime 1
