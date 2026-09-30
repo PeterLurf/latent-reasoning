@@ -91,7 +91,7 @@ change.
 
 | GPU | Now | Next (chained, automatic) | Runs dry |
 |---|---|---|---|
-| RTX 4060 | T10 (last run `t10fork_s573`) | PROTOCOL9 workers (end at once) → **PROTOCOL9 extension** `p9x_4060` (`scratch/p9x_bf16.txt`) → `p9xf_4060` (`scratch/p9x_fork.txt`) | ~Wed 20:00 |
+| RTX 4060 | free since 13:28 (extension done); offered to Theory for §45 | — | — |
 | RTX 3070 | lent to Theory from ~12:29: THEORY §45 Pilot CLR-1 (log `logs/queue_local3070-CLR.out`) | — | ~17:00–18:00 |
 | RTX 2070 | lent to Theory from ~12:29: THEORY §45 Pilot CLR-1 (log `logs/queue_local2070-CLR.out`) | — | ~17:00–18:00 |
 
@@ -114,7 +114,7 @@ change.
 | done 07:45 | PROTOCOL9 primary | **AP1 not supported (d8 5/10); AP2 supported (10 vs 3, p 0.046); AP3 anytime more learnable (21 vs 12)**; `docs/PROTOCOL9_RESULTS.md` |
 | ~09:00 | Phase 0 Coconut: training ends ~08:10 (epochs ran ~28 min, not 14); `coco_test_e48.json` first, full evaluation ~11:00 | read F1/F1b from e48 as soon as it exists; drain at ANALYSIS_DONE |
 | ~09:30–10:00 | PROTOCOL8 registration, after F1/F1b | launch ~10:30: 12 latent-arm hosts (~16–20 h each) + 4 CoT; ≈ $50 of $88 |
-| ~13:30 | PROTOCOL9 extension | Vast part fully drained (10:09); last local l3 runs s513/s514/s515 end ~13:15 → pooled 64-pair analysis (`score_p9.py --ext`) |
+| done 13:31 | PROTOCOL9 pooled 64 | **AP1/AP2 inconclusive (AP2 18 vs 10, p 0.09); the primary AP2 does not replicate**; `docs/PROTOCOL9_RESULTS.md` |
 | — | T12 (THEORY §39) | fetched 06:11; scored by Theory |
 
 **Scored 2026-09-29 (details in PROTOCOL6_RESULTS.md and PROTOCOL7_RESULTS.md; all re-verified by the audit):**
