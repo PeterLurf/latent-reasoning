@@ -62,3 +62,4 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53453363 vast 3090 0.224 created 2026-09-29 22:22: PROTOCOL9 host vf3 (amendment 2), queue p9_vf3.txt (142.112.39.215:63691)
 53453369 vast 4080S 0.265 created 2026-09-29 22:22: PROTOCOL9 host vf4 (amendment 2), queue p9_vf4.txt (70.48.44.13:30685)
 53408587 vast | t9_vC DESTROYED_VERIFIED 2026-09-30 00:25 after verified fetch (10 runs: 10 with model, 0 stage-1 failures)
+53453369 vast | p9_vf4 DESTROYED_VERIFIED 2026-09-30 00:47 after verified fetch (2 runs: 2 with model, 0 stage-1 failures)
