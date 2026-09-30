@@ -114,3 +114,7 @@
 53453467 theory-z7 - - 125.190.184.215:30965 destroyed 2026-09-30 00:08 after queue end + verified fetch, confirmed absent (destroying instance 53453467.)
 53312847 theory-pa-h4 - - 109.173.238.203:42213 fetched 2026-09-30 00:11 (fetched, sha ok: 1 runs)
 53312847 theory-pa-h4 - - 109.173.238.203:42213 destroyed 2026-09-30 00:11 after queue end + verified fetch, confirmed absent (destroying instance 53312847.)
+53312701 theory-pa-h2 - - 174.0.242.177:1712 fetched 2026-09-30 00:23 (fetched, sha ok: 0 runs)
+53312701 theory-pa-h2 - - 174.0.242.177:1712 destroyed 2026-09-30 00:24 after queue end + verified fetch, confirmed absent (destroying instance 53312701.)
+53408503 theory-x1 - - 174.0.242.177:1714 fetched 2026-09-30 00:27 (fetched, sha ok: 3 runs)
+53408503 theory-x1 - - 174.0.242.177:1714 destroyed 2026-09-30 00:28 after queue end + verified fetch, confirmed absent (destroying instance 53408503.)
