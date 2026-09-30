@@ -114,7 +114,7 @@ and K drain ~02:00–02:30.
 | When | Item | Action |
 |---|---|---|
 | done 22:16 | Phase 0 no-CoT | **scored: no-CoT below 0.75 at every trained m, near chance from m = 4 (read as no-CoT learnability, amendment 1; F1b decides latent use)**; `docs/PROTOCOL8_PHASE0_RESULTS.md`; host destroyed 22:15 |
-| done 01:20 | Addendum R | **R1 supported (8/8), R2 supported, R3 unresolved (2/18 extrapolate)**; `docs/PROTOCOL6_RESULTS.md`; Theory pinged for LE-R |
+| done 01:16 | Addendum R | **R1 supported (8/8), R2 supported, R3 unresolved (2/18 extrapolate)**; `docs/PROTOCOL6_RESULTS.md`; Theory pinged for LE-R |
 | ~01:00–05:00 | Theory Pilots D/E | Theory messages the result |
 | ~03:00–04:00 | Theory Pilot F | Theory messages PF1–PF3 with competence per arm |
 | ~03:00–08:30 | T9 hosts | fetch, destroy; score T9 when all are in (`scratch/score_p7s_t9.py`) |
