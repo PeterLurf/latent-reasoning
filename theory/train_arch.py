@@ -80,6 +80,8 @@ class AnytimeGraphedStep(AnytimeMixin, GraphedStep):
         i = self.inp
         if "qd" not in i:            # created during warm-up (before capture); step() then copies batch values in
             i["qd"] = torch.zeros_like(i["q"]); i["tgtd"] = torch.zeros_like(i["tgt"])
+        if hasattr(self.model, "_adv_buf"):
+            self.model._adv_buf.clear()
         with torch.autocast("cuda", dtype=self.amp or torch.float32, enabled=self.amp is not None, cache_enabled=False):
             ld, lu, lp, lc = run_both_anytime(self.model, i["src"], i["dst"], i["start"], K, i["q"], i["tgt"], i["pq"], i["cq"])
         self.loss_d, self.loss_u = self._anytime_loss(ld, lu, i["qd"], i["qy"], i["tgtd"], i["ty"], self.C)
@@ -87,6 +89,8 @@ class AnytimeGraphedStep(AnytimeMixin, GraphedStep):
         self.loss_c = F.binary_cross_entropy_with_logits(lc.float(), i["cy"]) * lc.shape[-1] / 4
         self.loss = (self.loss_d + self.w_up * self.loss_u + self.w_aux * self.loss_p
                      + self.w_aux * self.w_children * self.loss_c)
+        if hasattr(self.model, "step_adv_loss"):            # T12 (§39): probe CE, reversed into the model
+            self.loss = self.loss + self.model.step_adv_loss()
         self.loss.backward()
         self.gn = torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.clip, foreach=True)
         self.opt.step()
@@ -100,11 +104,15 @@ class AnytimeEagerStep(AnytimeMixin):
     def step(self, b, K):
         from arch import run_both_anytime
         self.opt.zero_grad()
+        if hasattr(self.model, "_adv_buf"):
+            self.model._adv_buf.clear()
         ld, lu, lp, lc = run_both_anytime(self.model, b["src"], b["dst"], b["start"], K, b["q"], b["tgt"], b["pq"], b["cq"])
         self.loss_d, self.loss_u = self._anytime_loss(ld, lu, b["qd"], b["qy"], b["tgtd"], b["ty"], self.C)
         self.loss_p = F.cross_entropy(lp.flatten(0, 1), b["py"].flatten())
         self.loss_c = F.binary_cross_entropy_with_logits(lc, b["cy"]) * lc.shape[-1] / 4
         self.loss = self.loss_d + self.w_up * self.loss_u + self.w_aux * self.loss_p + self.w_aux * self.w_children * self.loss_c
+        if hasattr(self.model, "step_adv_loss"):
+            self.loss = self.loss + self.model.step_adv_loss()
         self.loss.backward()
         self.gn = torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.clip)
         self.opt.step()
@@ -195,6 +203,8 @@ def main(argv=None):
     p.add_argument("--periodic_step", type=int, default=0, help="periodic step embedding with this period (0 = off)")
     p.add_argument("--set_from_stage", type=int, default=0, help="setmem: enable the set write from this stage on")
     p.add_argument("--init_from", default="", help="model.pt to initialise the weights from (fresh optimizer)")
+    p.add_argument("--step_adv", type=float, default=0.0, help="T12 step-adversarial thoughts: gradient-reversal weight "
+                   "of a step-index probe on every thought (THEORY §39); requires --anytime; 0 = off")
     p.add_argument("--out", required=True)
     a = p.parse_args(argv)
     Ks = [a.K]
@@ -218,6 +228,7 @@ def main(argv=None):
     json.dump({"arch": a.arch, "budget_match": a.budget_match, "overrun": a.overrun, "anytime": a.anytime,
                **({"jitter": a.jitter, "jitter_p": a.jitter_p} if a.jitter else {}),
                **({"anytime_stages": a.anytime_stages} if a.anytime_stages else {}),
+               **({"step_adv": a.step_adv} if a.step_adv else {}),
                **({"init_from": a.init_from} if a.init_from else {}),
                **({"periodic_step": a.periodic_step} if a.periodic_step else {}),
                **({"set_from_stage": a.set_from_stage} if a.set_from_stage else {})},
@@ -233,9 +244,14 @@ def main(argv=None):
     if a.jitter:
         from arch import add_jitter
         add_jitter(model, a.jitter, a.jitter_p)
+    probe_params = []
+    if a.step_adv:
+        assert a.anytime is not None, "--step_adv is implemented for the anytime training steps only"
+        from arch import add_step_adversary
+        probe_params = list(add_step_adversary(model, a.step_adv, a.K + 1).parameters())
     lr_t = torch.tensor(a.lr, device=dev)
     cpu = dev == "cpu"
-    opt = torch.optim.AdamW(model.parameters(), lr=lr_t, weight_decay=a.wd, betas=(0.9, 0.98),
+    opt = torch.optim.AdamW(list(model.parameters()) + probe_params, lr=lr_t, weight_decay=a.wd, betas=(0.9, 0.98),
                             capturable=not cpu)
     lr_at = lambda s: a.lr * min(1, (s + 1) / a.warmup) * 0.5 * (1 + math.cos(math.pi * min(1.0, s / a.steps)))
     # bf16 autocast where supported; plain fp32 on sm<80 (RTX 2070) or when --amp fp32 is forced
@@ -358,6 +374,8 @@ def main(argv=None):
                    "loss_children": gstep.loss_c.item(),
                    "w_aux": aux_at(step), "max_bdepth": max_depth_at(step), "K": K_step,
                    "gn": gn.item(), "lr": lr_at(step), "sec": time.time() - t0, "peak_mb": peak}
+            if a.step_adv:
+                rec["loss_step_probe"] = model.adv_last.item()
             log.write(json.dumps(rec) + "\n"); log.flush()
         if gated and cur["d"] is not None and step % 500 == 0:
             K_gate = min(a.K, cur["d"] + 1) if a.budget_match else a.K     # budget_match: gate at the stage's budget

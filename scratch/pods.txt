@@ -69,3 +69,5 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53410361 vast | t9_vB DESTROYED_VERIFIED 2026-09-30 01:47 after verified fetch (11 runs: 11 with model, 0 stage-1 failures)
 53453343 vast 4070 | p9_vb7 OFFLINE since ~02:31–02:41 (Vast actual_status offline); not destroyed (runs unfetched). Rule (PROTOCOL9 amendment 5): drain if back by 03:45, else re-queue its 3 runs on a new host
 53453343 vast 4070 | p9_vb7 back online 02:49 (network outage only; uptime 1 d, worker and run intact); PROTOCOL9 amendment 5: drain normally
+53453331 vast | p9_vb6 DESTROYED_VERIFIED 2026-09-30 03:01 after verified fetch (3 runs: 3 with model, 0 stage-1 failures)
+53453310 vast | p9_vb3 DESTROYED_VERIFIED 2026-09-30 03:12 after verified fetch (3 runs: 3 with model, 0 stage-1 failures)
