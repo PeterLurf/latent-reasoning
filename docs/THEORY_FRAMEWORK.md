@@ -207,7 +207,9 @@ CTMs reach longer maze paths by re-applying a bounded-horizon policy from the cu
 The step count never leaves the trained range (C2), and every restart begins from a crisp node embedding (C3).
 
 *Result* (pre-registered, THEORY §26; 59 models, no training):
-- 7-hop success goes from 24/59 to **55/59**, against 41/59 for the history block.
+- 7-hop success goes from 24/59 to **55/59**, against 41/59 for the history block. Here "7-hop success" means
+  distance-7 balanced accuracy ≥ 0.60 on the probe, without the confidence-bound clause of the confirmatory
+  "extrapolates" criterion, so it is a looser bar. 31 of the 34 failing models pass it.
 - 14 of 16 block-resistant (fading) failures are rescued.
 - Controls: random-node anchors give 0/59. Random anchors at the frontier's depth match the model's decode (56/59).
   Restarting at the true frontier node gives **59/59 and 0.885** balanced accuracy at 8–10 hops; failing models alone
