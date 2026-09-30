@@ -1,0 +1,6 @@
+pn_gt18_s102 --init_from runs/p30_s102/model.pt --teacher gt --head 2 --seed 102 --deep_R 3 --deep_widths 2,3,4 --student_Kp 18
+pn_gt18_s111 --init_from runs/p30_s111/model.pt --teacher gt --head 4 --seed 111 --deep_R 3 --deep_widths 2,3,4 --student_Kp 18
+pn_gt18_s113 --init_from runs/p30_s113/model.pt --teacher gt --head 7 --seed 113 --deep_R 3 --deep_widths 2,3,4 --student_Kp 18
+pn_gt18_s118 --init_from runs/p30_s118/model.pt --teacher gt --head 0 --seed 118 --deep_R 3 --deep_widths 2,3,4 --student_Kp 18
+pn_gt18_s125 --init_from runs/p30_s125/model.pt --teacher gt --head 5 --seed 125 --deep_R 3 --deep_widths 2,3,4 --student_Kp 18
+pn_gt18_s130 --init_from runs/p30_s130/model.pt --teacher gt --head 0 --seed 130 --deep_R 3 --deep_widths 2,3,4 --student_Kp 18
