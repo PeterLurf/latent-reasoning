@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Theory stream: rent a Vast offer, check cuInit, upload the toy code, start theory/queue_arch.sh on <queue file>.
-#   [EXTRA="files to include"] bash theory/vdeploy_toy.sh <offer id> <label> <queue file (local path)>
+#   [EXTRA="files to include"] [RUNNER=queue_distill.sh] bash theory/vdeploy_toy.sh <offer id> <label> <queue file (local path)>
 # Prints INSTANCE <id> <host> <port>, CUINIT, STARTED; a bad host prints BAD HOST (instance left for you to destroy).
 set -u
 O=$1; LBL=$2; QF=$3
@@ -21,7 +21,7 @@ S="ssh -o ConnectTimeout=20 -i $HOME/.ssh/runpod_ed25519 -p $P root@$H"
 $S "python -c \"import ctypes;print('CUINIT',ctypes.CDLL('libcuda.so.1').cuInit(0))\"; nvidia-smi --query-gpu=name,driver_version --format=csv,noheader" 2>/dev/null | grep -v -i "welcome\|have fun"
 $S "python -c \"import ctypes;exit(ctypes.CDLL('libcuda.so.1').cuInit(0))\"" 2>/dev/null || { echo "BAD HOST"; exit 2; }
 for f in theory/*.sh; do sed -i 's/\r$//' "$f"; done
-tar -czf /tmp/up_$LBL.tgz --exclude=__pycache__ latent theory/arch.py theory/train_arch.py theory/eval_arch.py theory/rollout.py theory/queue_arch.sh scratch/stage1_guard.py ${EXTRA:-}
+tar -czf /tmp/up_$LBL.tgz --exclude=__pycache__ latent theory/arch.py theory/train_arch.py theory/eval_arch.py theory/rollout.py theory/queue_arch.sh theory/queue_distill.sh theory/distill_reanchor.py scratch/stage1_guard.py ${EXTRA:-}
 scp -q -i ~/.ssh/runpod_ed25519 -P $P /tmp/up_$LBL.tgz root@$H:/workspace/up.tgz
 scp -q -i ~/.ssh/runpod_ed25519 -P $P "$QF" root@$H:/workspace/queue.txt
-$S "mkdir -p /workspace/Latent && cd /workspace/Latent && tar --no-same-owner -xzf /workspace/up.tgz && mv /workspace/queue.txt theory/queue.txt && sed -i 's/\r$//' theory/queue.txt && (setsid nohup bash theory/queue_arch.sh $LBL cuda:0 theory/queue.txt > logs_q.out 2>&1 < /dev/null &) ; sleep 3; pgrep -fa queue_arch | head -1" 2>/dev/null | grep -q queue_arch && echo STARTED
+$S "mkdir -p /workspace/Latent && cd /workspace/Latent && tar --no-same-owner -xzf /workspace/up.tgz && mv /workspace/queue.txt theory/queue.txt && sed -i 's/\r$//' theory/queue.txt && (setsid nohup bash theory/${RUNNER:-queue_arch.sh} $LBL cuda:0 theory/queue.txt > logs_q.out 2>&1 < /dev/null &) ; sleep 3; pgrep -fa 'queue_(arch|distill)' | head -1" 2>/dev/null | grep -q 'queue_' && echo STARTED
