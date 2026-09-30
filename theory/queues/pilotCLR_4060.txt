@@ -1,0 +1,4 @@
+pclr3_s146 --init_from runs/p30_s146/model.pt --head 4 --W 3 --seed 146
+pclr1_s146 --init_from runs/p30_s146/model.pt --head 4 --W 1 --seed 146
+pclr3_s157 --init_from runs/p30_s157/model.pt --head 5 --W 3 --seed 157
+pclr1_s157 --init_from runs/p30_s157/model.pt --head 5 --W 1 --seed 157
