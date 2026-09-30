@@ -73,6 +73,10 @@ times below (local EDT) and the first-run times from the host queue logs.
   (`docs/PROTOCOL9_RESULTS.md`).
 * **Re-anchoring distillation (L): 19/20 failures fixed without labels (0/20 plain), §32.** GT-distilled loops
   extrapolate to 2× their training depth (17/20, §37).
+* **Architecture review (§47):** the current best design is a single-anchor checkpointed reasoner with multi-start beams,
+  trained label-free. Unproven: chains past about 18 hops, a learned write/halt policy, and transfer to GPT-2. Next:
+  beam chaining (CPU), a learned write head (local GPU), and PROTOCOL8b step 1.
+* One restart covers exactly its trained horizon: 0.91–0.95 up to 6 hops from the anchor, chance from 7 (§46).
 * **Checkpointed restarts (CLR-1, §45): editing the written checkpoint changes answers as predicted (IIA 0.84 for sets,
   1.00 single).** Chains reach d13–18 label-free (single anchor 0.67). Sets are used but don't beat one anchor.
 * Depth of training sets reach (§41): trained to 9 → fades by ~15; to 12 → ~22; to 18 → flat to 23 on §37's probe (0.88 at 25–30 on an easier width-1 probe).
@@ -2482,6 +2486,92 @@ model at n = 10.
 * **H2 (anchors near the target help most).** Accuracy is non-increasing in r for r = 1..7, allowing ties within 0.02.
 
 For PROTOCOL8b this would say: write the checkpoint within one episode's reach of the target, i.e. far from the root.
+
+**Result (2026-09-30; 59 models; `theory/results/exp21_hop_sweep.json`). H1 and H2 hold, with a sharp edge.**
+* Median accuracy by hops remaining r: r = 1–5: 0.94–0.95; r = 6: 0.91; r = 7: 0.51; r ≥ 8: 0.50.
+* At fixed r it is flat across d = 7..12. Without a restart, d7–12 is 0.50.
+* **Reading.**
+  - One restarted episode covers exactly its trained 6 hops, at any absolute depth.
+  - A checkpoint helps only if it lies within one episode's horizon of the target.
+  - So the checkpoint must be written at least every K hops, and a checkpoint more than K hops behind the frontier is
+    useless.
+
+## 47. Architecture review: the checkpointed latent reasoner after §§34–46 (2026-09-30 18:07 EDT; requested by the user via Audit; prior art `docs/LIT_CLR_REVIEW_2026-09-30.md`, 57a92dd)
+
+**What the evidence says, in one paragraph.**
+* A single latent loop stops where a count it carries says to stop. The count lives in the thought, the history and
+  the clock (§35, P10e; I and J).
+* Loss-side fixes (anytime, random-tight) remove the in-range brake. They add about one hop, and not reliably across
+  architectures (D, K, PROTOCOL9 pooled).
+* Removing the count breaks learning (T12). Clamping it helps a little (§36, 9/34).
+* What works is to **bound every count by construction**: restart from a written node token (§26, 31/34), or train
+  on deeper chains so that the count stops being a free stop key (§41: trained to 18 → flat to 23).
+* Both work without step labels:
+  - the restarts are the model's own (§26);
+  - distilling them fixes 19/20 (L);
+  - a filtered second rung reaches d13–18 in one loop in 12/20 (M-2).
+* After training, a written checkpoint is the causal channel: edit IIA 1.00 for single anchors, 0.84 for sets (§45).
+* A 3-node set inside one episode is used, but reaches less far than a single anchor (0.596 vs 0.671, §45).
+* GPT-2 Coconut ignores untrained checkpoints (PROTOCOL8b pilot), as Lanham 2307.13702 would predict. Use has to be
+  trained.
+
+### (1) The design that best fits C2 + C4 + C7 now
+
+**A single-anchor checkpointed reasoner, with multi-start beams, trained label-free by self-distillation.**
+* **Segments.** Each segment runs L ≤ K latent steps from written START tokens, with the latent history cut. Every
+  count therefore stays inside its trained range (C2).
+* **Checkpoints.** A segment writes node ids chosen by its own attention (C4, no step labels). The next segment
+  restarts from them. After training, the written checkpoint is the causal channel (C7 at checkpoint level, IIA ≈ 1).
+* **Parallelism.** Keep the top-W anchors as W separate single-anchor episodes and combine their answers, instead of
+  W tokens in one episode. This follows Multiverse 2506.09991 and SoftCoT++ 2505.11484, and costs W× compute.
+* **Teacher.** The model's own re-anchored inference, with the agreement filter (M-2). The label-free ladder (L → M-2)
+  lengthens each segment's reach, so fewer checkpoints are needed.
+
+**Still unproven:**
+* Chains past about 18 hops. chain4 d19–24 is ≈ 0.51 in both §45 arms, i.e. errors compound across segments.
+* A learned write/halt policy (C5). Anchors come from attention decoding, not a trained head.
+* Stability over many segments (C6).
+* Transfer to a pretrained LM. That is PROTOCOL8b step 1, which asks whether training makes GPT-2 use checkpoints.
+* C3 (vs text CoT). Untested.
+* Faithfulness of the silent steps between checkpoints: 0.36 (§34).
+* **Novelty boundary (Literature).** Isolation makes the checkpoint the only channel by construction. The claim is
+  "training makes the model use the written channel", not "latent reasoning is faithful".
+
+### (2) What changes in §33's design
+
+* **Single vs set.**
+  - Default to single-anchor episodes run as a beam of W.
+  - Sets-in-one-episode stay a research option. They would need a per-anchor coverage target and a shared position
+    id (2405.20671).
+* **When to write.**
+  - After each segment of L ≤ K steps, i.e. before any count leaves its trained range.
+  - §46 makes this sharp: a restarted episode answers 0.91–0.95 up to 6 hops from its anchor and is at chance from 7,
+    at any depth. A checkpoint is useful only within one horizon of the frontier, so write every ≤ K hops.
+* **How to learn the write policy (C5).** Literature's order:
+  1. **v1: a write head distilled from the model's own attention-decoded anchors.** Label-free (C4), and it replaces
+     the probe with a trained head.
+  2. **v2: halting from closure.** Stop when a new segment's checkpoint adds no node, which is a free label (§22 Prop.
+     6). Then a TRM-style correctness head.
+  3. **v3: RL on the final answer only**, for write and halt (MEM1 2506.15841, SWITCH 2606.13106).
+* **Stability (C6).**
+  - Restarts reset amplitude and counts, so drift inside a segment is bounded.
+  - The risk moves to anchor errors compounding across segments. Beams and the agreement filter are the controls.
+  - Stability is measured as accuracy vs number of segments at fixed hops remaining.
+
+### (3) The cheapest decisive next tests (CPU or local GPU; no Vast)
+
+1. **Beam chaining on existing models (CPU, $0).**
+   - Set-up: on the §45 CLR1 students, chain 4–6 segments, keeping the top-W anchors as W separate episodes at each
+     segment. Probes: the 24-hop one, and the 30-hop width-1 one for depth only.
+   - Decides whether beams fix compounding past 18 hops (C2) and whether beams beat sets (design choice). It also
+     gives C6 as accuracy vs segment count.
+2. **A learned write head plus a closure halt (local GPU, about 2 h).**
+   - Train a small head on the last thought to output node-id scores, distilled from the model's own top-W attended
+     anchors. Halting is labelled by closure.
+   - Test: the head's anchors chain as well as the attention decode, and the halt fires at closure. This is C5 v1–v2,
+     C4-compatible.
+3. **External, already registered:** PROTOCOL8b step 1 (experiments session). Does training make GPT-2 use written
+   checkpoints? If not, the design does not transfer as is.
 
 ## 7. Log
 
