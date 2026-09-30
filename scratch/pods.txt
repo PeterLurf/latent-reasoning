@@ -143,3 +143,7 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53555197 vast | p8b1_ckpt_s1 hung loading the base checkpoint 15 min; restarted from scratch on the same host 13:27, training
 53533322 vast | DESTROYED_VERIFIED 2026-09-30 14:13 after verified fetch (prosqa/res_p8c/cot_s3: cot_test_e30.json cot_ctl_e30.json; ckpt prosqa/ckpt/p8c_cot_s3_checkpoint_30)
 53555206 vast | DESTROYED_VERIFIED 2026-09-30 15:11 after verified fetch (prosqa/res_p8b1: p8b1_p8b1_ckpt_s2.json; ckpt prosqa/ckpt/p8b1_ckpt_s2_checkpoint_48)
+53555200 vast | DESTROYED_VERIFIED 2026-09-30 15:25 after verified fetch (prosqa/res_p8b1: p8b1_p8b1_ctl_s1.json; ckpt prosqa/ckpt/p8b1_ctl_s1_checkpoint_48)
+53558699 vast | DESTROYED_VERIFIED 2026-09-30 15:29 after verified fetch (prosqa/res_p8b1: p8b1_p8b1_ctl_s3.json; ckpt prosqa/ckpt/p8b1_ctl_s3_checkpoint_48)
+53555219 vast | DESTROYED_VERIFIED 2026-09-30 15:43 after verified fetch (prosqa/res_p8b1: p8b1_p8b1_ckpt_s3.json; ckpt prosqa/ckpt/p8b1_ckpt_s3_checkpoint_48)
+53555197 vast | DESTROYED_VERIFIED 2026-09-30 16:44 after verified fetch (prosqa/res_p8b1: p8b1_p8b1_ckpt_s1.json; ckpt prosqa/ckpt/p8b1_ckpt_s1_checkpoint_48)

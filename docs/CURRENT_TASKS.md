@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-09-30 00:36 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-09-30 16:49 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -51,11 +51,12 @@ scored (D–M, §§34–38). No theory hosts are live. T12 (§39, 8 runs) runs o
 |---|---|---|
 | done 09:34 | Phase 0 Coconut | **F1 and F1b not met** (aᴄ(H, 10) = 0.656; K′ = 0 at chance): outcome (iii), Coconut does not learn deep problems; `docs/PROTOCOL8_PHASE0_RESULTS.md` |
 | **PROTOCOL8** (registered 482a8e9; `prosqa/pod_p8c.sh`) | coco_s1 53533281 151.237.25.16:20413 · coco_s2 53533300 213.163.75.246:50708 · at_s1 53533289 142.112.39.215:63460 · rt_s1 53533295 86.123.234.69:46460 · rt_s2 53533311 185.101.222.13:17298 · cot_s1–s4 53533314/19/22/26 (38.29.145.230:40495, 142.127.68.223:13228, 159.48.242.15:42038, 38.247.78.6:44010) · at_s2 + s3/s4 of every latent arm placed by `scratch/p8c_fill.sh` (log `logs/p8c_fill.log`) | latent ~Thu 04:00–10:00; cot ~16:00 → `drain_prosqa.sh` |
+| **PROTOCOL8b step 1** (registered 7d61c0a; `prosqa/pod_p8b1.sh`) | ckpt_s1–s3, ctl_s1, ctl_s3 drained (15:11–16:44). Live: ctl_s2 53555209 5.2.174.20:23725 (last epoch at 16:48, ~18:00 incl. eval) | then rename `prosqa/res_p8b1/p8b1_p8b1_<arm>_s<seed>.json` → `p8b1_<arm>_s<seed>.json`, `python prosqa/score_p8b1.py` |
 
-**Watchers:** `scratch/auto_drain.sh` (verified drain on each QUEUE_DONE, with T12 via `drain_t12.sh`; log
-`logs/auto_drain.log`; replaces `t9_watch.sh`), `scratch/gpu_watch.sh` (5-min idle check, user request),
-`scratch/p8_watch.sh` (Phase 0) and `scratch/p7s_monitor.sh` (local). Re-arm each with the current host list after any
-change.
+**Watchers (re-armed 16:46 over the 16 live hosts: 15 p8c + p8b1 ctl_s2):** `scratch/auto_drain_prosqa.sh` (verified
+drain on ANALYSIS_DONE; log `logs/auto_drain.log`) and `scratch/gpu_watch.sh` (5-min idle check, user request). Both
+exit on their first event (error, failed drain, idle host), so re-arm each with the current host list straight after
+any event, create or destroy. The toy-side `auto_drain.sh`, `p8_watch.sh` and `p7s_monitor.sh` have nothing left to watch.
 
 - **Phase 0:** pre-registered in `docs/PROTOCOL8_PHASE0.md` (3a9c05e, 15:09:38). Pod log `/workspace/logs/prosqa.out`,
   results `/workspace/prosqa/res/`. Watcher `bash scratch/p8_watch.sh "142.112.39.215 63335 coconut" "38.29.145.27
