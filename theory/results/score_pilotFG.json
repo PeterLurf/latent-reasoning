@@ -1,0 +1,130 @@
+{
+ "arms": {
+  "C": {
+   "runs": 8,
+   "competent": 5,
+   "extrapolate": 2,
+   "median_d8": 0.50341796875,
+   "mean_far8_10": 0.53388671875
+  },
+  "AT": {
+   "runs": 7,
+   "competent": 6,
+   "extrapolate": 6,
+   "median_d8": 0.583984375,
+   "mean_far8_10": 0.5541449652777778
+  },
+  "J": {
+   "runs": 8,
+   "competent": 1,
+   "extrapolate": 0,
+   "median_d8": 0.50830078125,
+   "mean_far8_10": 0.5042317708333334
+  },
+  "JAT": {
+   "runs": 8,
+   "competent": 6,
+   "extrapolate": 5,
+   "median_d8": 0.568359375,
+   "mean_far8_10": 0.5336642795138888
+  },
+  "ATW": {
+   "runs": 7,
+   "competent": 7,
+   "extrapolate": 5,
+   "median_d8": 0.56982421875,
+   "mean_far8_10": 0.5283668154761905
+  },
+  "ATL": {
+   "runs": 8,
+   "competent": 7,
+   "extrapolate": 5,
+   "median_d8": 0.51708984375,
+   "mean_far8_10": 0.5259719122023809
+  },
+  "G": {
+   "runs": 6,
+   "competent": 5,
+   "extrapolate": 2,
+   "median_d8": 0.50146484375,
+   "mean_far8_10": 0.5430013020833333
+  },
+  "GAT": {
+   "runs": 6,
+   "competent": 3,
+   "extrapolate": 3,
+   "median_d8": 0.54931640625,
+   "mean_far8_10": 0.527072482638889
+  }
+ },
+ "PF1": {
+  "counted": 0,
+  "in_direction": 0,
+  "sign_p_one_sided": null,
+  "verdict": "unresolved (< 5 counted pairs)"
+ },
+ "PF2": {
+  "counted": 0,
+  "in_direction": 0,
+  "sign_p_one_sided": null,
+  "verdict": "unresolved (< 5 counted pairs)"
+ },
+ "PF3": {
+  "counted": 4,
+  "in_direction": 2,
+  "sign_p_one_sided": 0.6875,
+  "verdict": "unresolved (< 5 counted pairs)",
+  "JAT_extrap_share": 0.8333333333333334
+ },
+ "PF4": {
+  "counted": 5,
+  "in_direction": 2,
+  "sign_p_one_sided": 0.8125,
+  "verdict": "not supported",
+  "PD1": "supported",
+  "ATW_minus_AT_median_d8": -0.01416015625
+ },
+ "PF5": {
+  "J_vs_C": [
+   1,
+   5
+  ],
+  "JAT_vs_AT": [
+   6,
+   6
+  ],
+  "met": false
+ },
+ "PG_manipulation": {
+  "measured": 0,
+  "used": 0,
+  "set_used": null
+ },
+ "PG1": {
+  "counted": 3,
+  "in_direction": 2,
+  "sign_p_one_sided": 0.5,
+  "verdict": "unresolved (< 5 counted pairs)"
+ },
+ "PG2": {
+  "counted": 2,
+  "in_direction": 1,
+  "sign_p_one_sided": 0.75,
+  "verdict": "unresolved (< 5 counted pairs)"
+ },
+ "PG3": {
+  "n": 8,
+  "share_ge_-0.01": 1.0
+ },
+ "PG4": {
+  "G_vs_C": [
+   5,
+   5
+  ],
+  "GAT_vs_AT": [
+   3,
+   6
+  ],
+  "met": false
+ }
+}

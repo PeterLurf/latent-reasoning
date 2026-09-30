@@ -552,6 +552,23 @@ not competent (pa_m_s715, pa_mb2_s731). The buggy MB arm (pa_mb_*) is excluded (
 * Pilot A's C arm (seeds 700–707) and Pilot B's AT arm (750–753) are **not** pooled into Pilot D; they may be reported
   alongside, labelled as pilot data.
 
+**Result (2026-09-30 00:17 EDT; all 24 runs; `theory/score_pilotDE.py` → `theory/results/score_pilotDE.json`,
+measurements in `theory/results/pilotDE_meas.json`). PD1 supported; PD2 and PD3 not met; PD4 met.**
+* Runs: AT 12 (pd_at_s905 ran and exhausted its stage-1 guard, so it counts as run and not competent, §15 rule); C 12.
+* **PD1 supported.** Competent AT 10/12, of which 8 extrapolate (0.80). Competent C 9/12, of which 3 extrapolate (0.33).
+  Difference 0.47 ≥ 0.20, and share(AT) ≥ 0.60. One-sided Fisher p = 0.055.
+* **PD2 not met.** Mean far8–10: AT 0.543, C 0.526 (difference 0.017 < 0.05).
+* **PD3 not met.** Pointer advances at every step h_2..h_K: AT 4/10 (0.40 < 0.60), C 0/9.
+* **PD4 met.** Gate rate AT 0.83, C 0.75.
+* **Reading.**
+  - Anytime supervision removes the in-range brake. The pointer runs `1 1 2 3 4 5` through h_5 in 6/10 competent AT
+    runs and in 0/9 controls (controls: the `1 1 1 2 2 3` brake of §25).
+  - But the continuation past K dies within one to three steps. In 7/10 AT runs the pointer falls back to 2–3 after K
+    (e.g. s900 `1 1 2 3 4 5 6 2 2 2 2 2`). Only s903 and s910 reach 8–9.
+  - So the gain is concentrated one hop past training (d7, which defines "extrapolates"). Distances 8–10 barely move.
+  - This is the split §22 predicts: anytime supplies identification (C1: unit speed, no clock) but not stability (C3: a
+    restoring map). Pilot F's JAT arm (jitter + anytime) is the registered test of whether C3 adds the missing distance.
+
 ## 18. Formal sketch of the slack account (theory; to be made rigorous)
 
 **Setting.** Delayed-query reachability; training graphs have depth ≤ D; the latent budget is K; after the latents, a
@@ -948,6 +965,42 @@ of anytime supervision; and does tightness matter only in the selection window (
 * **Amendment F-2 (2026-09-29 15:38 EDT, before any Pilot F run started).** The user added Vast credit ($145.83 at 15:37),
   so **ATW and ATL are restored** exactly as registered, and PF4 is back in force (still moot if PD1 is not supported).
   Pilot F now runs on additional hosts in parallel (placement below does not change any prediction).
+
+**Result (2026-09-30 00:20 EDT; all 32 runs; `theory/score_pilotFG.py` → `theory/results/score_pilotFG.json`; z from
+`theory/results/transfer_pilots.json`).**
+
+| Arm | Competent | Extrapolate (of competent) | Median d8 |
+|---|---|---|---|
+| J | **1/8** | 0 | 0.508 |
+| JAT | 6/8 | 5 | 0.568 |
+| ATW | 7/7 | 5 | 0.570 |
+| ATL | 7/8 | 5 | 0.517 |
+| C (pd_c_s900–907) | 5/8 | 2 | 0.503 |
+| AT (pd_at_s900–907) | 6/8 | 6 | 0.584 |
+
+pd_at_s905 exhausted its stage-1 guard, and so did pf_atw_s905. Both count as run and not competent.
+
+* **PF5 not met (learnability).** J 1/8 vs C 5/8. Jitter alone breaks the gated curriculum, the failure mode PF5 guarded
+  against. JAT 6/8 vs AT 6/8 is fine.
+* **PF1, PF2 unresolved** (0 counted pairs, because J has only one competent run).
+* **PF3 unresolved** (4 counted pairs; JAT > AT in 2). Descriptive bar met: 5/6 competent JAT runs extrapolate (0.83).
+  Median d8 JAT 0.568 vs AT 0.584.
+* **PF4 not supported.** ATW > ATL in 2 of 5 counted pairs. Descriptive: median d8(ATW) − median d8(AT) = −0.014 (within
+  0.05). PD1 is supported, so PF4 is in force.
+* **Manipulation check (descriptive, not registered).** Jitter does make the map restoring when it is learnable.
+  - Median z over competent runs: JAT −0.14 vs AT +0.05. z ≤ 0 in 6/6 competent JAT runs vs 2/6 competent AT runs.
+  - Controls are restoring too (C −0.14, 4/5 ≤ 0). So anytime *loosens* the map, and jitter on top brings it back to
+    the control's level.
+* **Reading.**
+  - Contraction training reaches its mechanism: a restoring map (C3).
+  - But on top of anytime it does not add reach: d8 is no better, and far8–10 is lower (0.534 vs 0.554).
+  - Alone, it prevents learning.
+  - So the post-K collapse of the AT pointer (§17 result) is not fixed by making the map restoring. What restoring
+    buys is a stable fixed point, and the AT runs' post-K pointer already sits at one (it falls back to 2–3 and stays).
+    The missing ingredient is continued *advance*, not stability. That points to the clock/identification side, i.e.
+    Pilots I, J and K, and to re-anchoring (§26), which advances by restarting rather than by extrapolating the loop.
+  - Selection window (T7): anytime only in stages 1–3 (ATW) is as good as full anytime (median d8 within 0.014), but it
+    does not beat anytime from stage 4 on (ATL) pairwise. The window effect is not established.
 
 ## 24. Pilot G — monotone latent set (A6) (pre-registered 2026-09-29, committed 2e9fa17 14:15:32 EDT, before any Pilot G run started)
 
