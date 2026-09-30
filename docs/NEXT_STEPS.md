@@ -299,3 +299,11 @@ user decides.
 - **Correction (00:35):** "m = 7" above should read answer depth. Trained depth = orig (3–4) + m (0–6) ≤ 10, so m = 7
   mixes depth 10 (in range) with depth 11. PROTOCOL8's primary beyond-training contrast is at answer depth d = 11
   (`by_path_len` in long_eval2), with d ≥ 12 as the "no gain" prediction stratum. m strata stay descriptive.
+- **Refined prediction (Theory, 00:40):** key it to answer depth. The fall-back trips after as many latent iterations
+  as the deepest trained problem needed, so the right key is depth, not m. The toy's "+1" is the answer pass's own hop.
+  For GPT-2, let c1 = the answer pass's hop capacity, measured from Phase 0 Coconut at K′ = 0 as the largest answer
+  depth with accuracy ≥ 0.75 (c1 ≥ 1).
+  - Gain is possible up to d = D_train + c1 (D_train = 10).
+  - Firm prediction: no gain at d ≥ D_train + c1 + 1 for any K′.
+  - If c1 cannot be measured, use c1 = 1 (the toy value) and treat d = 12 .. 10 + c_model as a grey zone, not a test.
+  - The primary contrast stays at d = 11.
