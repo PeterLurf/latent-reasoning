@@ -1,0 +1,3 @@
+# THEORY §39 T12 (frozen 6e556fa), Vast host t12-v1
+pt12_s900 --seed 900 --anytime 1 --step_adv 0.5
+pt12_s901 --seed 901 --anytime 1 --step_adv 0.5

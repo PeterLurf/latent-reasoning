@@ -7,6 +7,7 @@
 set -u
 O=$1; LBL=$2; Q=$3; TAG=$4; W=${5:-scratch/queue_worker2.sh}
 EXTRA=""; [ "$W" = scratch/queue_worker3.sh ] && EXTRA="scratch/queue_worker3.sh scratch/p9_frozen"
+[ "$W" = scratch/queue_worker_t12.sh ] && EXTRA="scratch/queue_worker_t12.sh scratch/t12_frozen"
 V="C:/Users/peter/.local/vastai/vast.sh"
 export PYTHONIOENCODING=utf-8
 cd "$(dirname "$0")/.."
