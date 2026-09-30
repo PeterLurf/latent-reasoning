@@ -39,6 +39,13 @@ def main():
            "desc_clr1": {"median_two_seg_far": float(np.median([far(f"pclr1_s{s}") for s in H if f"pclr1_s{s}" in X])) if X else None,
                          "median_chain4_d13_18": float(np.median([np.mean(X[f"pclr1_s{s}"]["chain4"][12:18]) for s in H if f"pclr1_s{s}" in X])) if X else None,
                          "median_IIA": float(np.median([X[f"pclr1_s{s}"]["edit"]["IIA"] for s in H if f"pclr1_s{s}" in X and X[f"pclr1_s{s}"]["edit"]["IIA"] is not None])) if X else None}}
+    sh = [X[r]["anchor_maxshare"] for r in c3 if "anchor_maxshare" in X[r]]
+    dr = [float(np.mean(X[r]["two_seg"][7:10]) - np.mean(X[r]["two_seg_rand"][7:10])) for r in c3 if "two_seg_rand" in X[r]]
+    used = sum(x < 0.8 for x in sh) >= 6 and bool(dr) and float(np.median(dr)) >= 0.02
+    out["CLR1a"] = {"maxshare_lt_0.8": sum(x < 0.8 for x in sh), "of": len(sh), "median_maxshare": float(np.median(sh)) if sh else None,
+                    "median_two_seg_minus_rand": float(np.median(dr)) if dr else None, "set_used": used}
+    if out["PC1"]["verdict"] == "supported" and not used:
+        out["PC1"]["reading"] = "gain without set use"
     json.dump(out, open("theory/results/score_s45.json", "w", newline="\n"), indent=1)
     print(json.dumps(out, indent=1))
 
