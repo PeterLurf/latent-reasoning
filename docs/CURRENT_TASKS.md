@@ -128,7 +128,7 @@ registering.
 | ~04:30 | Phase 0 Coconut | fetch, destroy, F1 decision |
 | ~06:30 | PROTOCOL8 | pre-register (arms Coconut / anytime / random-tight; design in `docs/NEXT_STEPS.md`, end) |
 | ~07:00 | PROTOCOL8 | launch ~12 hosts as the theory hosts free up |
-| ~03:00 | T10 | score with T9 |
+| ~03:00 | T10 | score with T9, after `scratch/rerun_length_gen.sh t10fork` has filled every length_gen (PROTOCOL7 am. 9). State in the write-up: the extrapolation probe (and far_sweep P7) for fork-trained models is chain-shaped, i.e. outside their training shape distribution (Audit, 2026-09-29). The same holds for PROTOCOL9's fork family |
 
 **Scored 2026-09-29 (details in PROTOCOL6_RESULTS.md and PROTOCOL7_RESULTS.md; all re-verified by the audit):**
 - O1 not supported.
