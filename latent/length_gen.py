@@ -19,11 +19,19 @@ import numpy as np
 import torch
 
 from .competence import load
-from .graphs import NB, NPB, UNREACH, bfs_dist, sample_graphs
+from .graphs import NB, NPB, SHAPES, UNREACH, bfs_dist, sample_graphs, set_shapes
 
 
 def long_chain_graphs(rng, n, widths):
-    g = sample_graphs(rng, n, widths=widths, split=None, p_chain=1.0)
+    # The probe is defined on chain branches. A fork-trained run (PROTOCOL7 T10, PROTOCOL9 fork family) has set the
+    # global graph shape to "fork", which would override p_chain, so the probe is built under the default shape and
+    # the run's setting restored (no change for default-shape runs; fix 2026-09-29, PROTOCOL7 amendment 9).
+    saved = dict(SHAPES)
+    set_shapes("default")
+    try:
+        g = sample_graphs(rng, n, widths=widths, split=None, p_chain=1.0)
+    finally:
+        set_shapes(saved["mode"], saved["p_fork"])
     B = len(g)
     bi = np.arange(B)
     r = rng.random((B, NB))

@@ -268,3 +268,16 @@ dropped. A test whose population ends up below its minimum is reported as unreso
   run further workers on the same shared queue `scratch/p7s_t10_2070.txt`. Each line already carries `--amp fp32`, so
   the registered precision is unchanged; only the card differs.
 * No change to any rule, seed, measure or cut-off. Mixed hardware within a family already applied under amendment 7.
+
+## Amendment 9 (2026-09-29 23:49 EDT, instrument fix; no T10 length_gen outcome existed)
+
+* `latent/length_gen.py` (the long-chain probe behind the PROTOCOL5 extrapolation rule used by T9/T10) crashed on
+  every fork-graph run. The probe asks `sample_graphs` for chain branches (`p_chain = 1`), but a fork run sets the
+  global graph shape to "fork", which overrides that, so the probe's structural assertion failed. Every
+  `t10fork_*` evaluation logged `FAIL results/length_gen_…`, so no T10 extrapolation value exists.
+* **Fix.** The probe graphs are built under the default shape, and the run's shape setting is restored afterwards.
+  This matches the probe's own definition ("every branch a 6-node chain"). For default-shape runs the graphs are
+  byte-identical to before (checked: src/dst/start equal, seed 99, n 1024), so T9 and all earlier results are
+  unaffected.
+* **Handling.** `length_gen` is re-run with the fixed code for every finished T10 run before T10 is scored, and later
+  T10 runs use the fixed code. Nothing else changes.
