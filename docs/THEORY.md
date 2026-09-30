@@ -1002,6 +1002,15 @@ the history channel (Pilot A, Markov) did not help: the clock moved into the sta
 are not independent — enforcing C1 removes the need for C2 violations; (iii) the budget law's fractional speeds are the
 signature of a clock, so Zhang et al.'s v = n/T regime predicts step-indexed mechanisms whenever T > n.
 
+*Formal anchor (21:52 EDT, from the Literature session, `docs/LIT_REQUESTS_2026-09-29.md` Part C).* At finite precision
+the state set is finite, so a homogeneous map s_{k+1} = f(s_k) is eventually periodic (pigeonhole). The average
+advance per step is then m/q for some period q, and a non-integer speed needs q ≥ 2 phases, i.e. a mod-q counter —
+a clock (standard for finite automata: ultimately periodic outputs). With exact reals, an irrational speed needs a
+rotation on a phase variable (circle maps; the rotation number is p/q iff there is a period-q orbit — Katok & Hasselblatt
+1995 ch. 11). Floor(nα) advance sequences for irrational α are Sturmian (Morse & Hedlund 1940), so no finite automaton
+produces them. **Added prediction (mode locking):** learned fractional speeds should lock to small rationals (½, ⅓, ⅔,
+…) rather than irrational-looking averages; the in-sample speeds 3/6 = ½ and 3/8 are consistent.
+
 **Pre-registered predictions** (measurement frozen: `theory/analyse_pilotA.py:ptr_traj`, unchanged, on `probe(512)` from
 `theory/rollout.py`; p[K−1] = pointer depth of the last fed-back thought h_{K−1}; competent runs only; a new driver
 calls it for pc_*, pd_*, pe8_*, pe3_* runs):
