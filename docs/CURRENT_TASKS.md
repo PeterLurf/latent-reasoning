@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-09-30 19:01 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-09-30 19:03 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -52,9 +52,9 @@ scored (D–M, §§34–38). No theory hosts are live. T12 (§39, 8 runs) runs o
 | done 09:34 | Phase 0 Coconut | **F1 and F1b not met** (aᴄ(H, 10) = 0.656; K′ = 0 at chance): outcome (iii), Coconut does not learn deep problems; `docs/PROTOCOL8_PHASE0_RESULTS.md` |
 | **PROTOCOL8** (registered 482a8e9; `prosqa/pod_p8c.sh`) | coco_s1 53533281 151.237.25.16:20413 · coco_s2 53533300 213.163.75.246:50708 · at_s1 53533289 142.112.39.215:63460 · rt_s1 53533295 86.123.234.69:46460 · rt_s2 53533311 185.101.222.13:17298 · cot_s1–s4 53533314/19/22/26 (38.29.145.230:40495, 142.127.68.223:13228, 159.48.242.15:42038, 38.247.78.6:44010) · at_s2 + s3/s4 of every latent arm placed by `scratch/p8c_fill.sh` (log `logs/p8c_fill.log`) | latent ~Thu 04:00–10:00; cot ~16:00 → `drain_prosqa.sh` |
 | **PROTOCOL10** (registered 4208998; inference only, local cards; `prosqa/segchain_p10.py`) | 7 models (6 step-1 + Phase 0) on the 3070/2070 | blind until the P8b1 verdict is committed; then score by the rules in `docs/PROTOCOL10.md` |
-| **PROTOCOL8b step 1** (registered 7d61c0a; `prosqa/pod_p8b1.sh`) | ckpt_s1–s3, ctl_s1, ctl_s3 drained (15:11–16:44). Live: ctl_s2 53555209 5.2.174.20:23725 (last epoch at 16:48, ~18:00 incl. eval) | then rename `prosqa/res_p8b1/p8b1_p8b1_<arm>_s<seed>.json` → `p8b1_<arm>_s<seed>.json`, `python prosqa/score_p8b1.py` |
+| **PROTOCOL8b step 1** (registered 7d61c0a; `prosqa/pod_p8b1.sh`) | all 6 hosts destroyed (ctl_s2 53555209 at 19:02 with its probe unfinished; the probe is re-run on the local 4060, see the deviation note) | when `logs/p8b1_ctl2_local.log` shows CTL2_LOCAL_DONE: rename `prosqa/res_p8b1/p8b1_p8b1_<arm>_s<seed>.json` → `p8b1_<arm>_s<seed>.json` and `p8b1_ctl_s2_local.json` → `p8b1_ctl_s2.json`, then `python prosqa/score_p8b1.py` |
 
-**Watchers (re-armed 16:46 over the 16 live hosts: 15 p8c + p8b1 ctl_s2):** `scratch/auto_drain_prosqa.sh` (verified
+**Watchers (re-armed 19:03 over the 15 live p8c hosts):** `scratch/auto_drain_prosqa.sh` (verified
 drain on ANALYSIS_DONE; log `logs/auto_drain.log`) and `scratch/gpu_watch.sh` (5-min idle check, user request). Both
 exit on their first event (error, failed drain, idle host), so re-arm each with the current host list straight after
 any event, create or destroy. The toy-side `auto_drain.sh`, `p8_watch.sh` and `p7s_monitor.sh` have nothing left to watch.
@@ -93,7 +93,7 @@ any event, create or destroy. The toy-side `auto_drain.sh`, `p8_watch.sh` and `p
 
 | GPU | Now | Next (chained, automatic) | Runs dry |
 |---|---|---|---|
-| RTX 4060 | since 18:59 local re-run of the ctl_s2 P8b1 probe (`scratch/p8b1_ctl2_local.sh`, log `logs/p8b1_ctl2_local.log`; checkpoint `prosqa/ckpt/p8b1_ctl_s2_checkpoint_48.part`, sha256-verified) | then stop the Vast probe, `vdestroy.sh 53555209`, rename `.part`, add the drained line to `logs/auto_drain.log` (releases the PROTOCOL10 and hop-sweep waiters for ctl_s2) | ~21:00 |
+| RTX 4060 | since 18:59 local re-run of the ctl_s2 P8b1 probe (`scratch/p8b1_ctl2_local.sh`, log `logs/p8b1_ctl2_local.log`; checkpoint `prosqa/ckpt/p8b1_ctl_s2_checkpoint_48.part`, sha256-verified) | then rename `.part`, add the drained line to `logs/auto_drain.log` (releases the PROTOCOL10 and hop-sweep waiters for ctl_s2) | ~21:00 |
 | RTX 3070 | PROTOCOL10 done for 6 of 7 models (18:55). Since 19:00: exploratory deep hop sweep, d11–13 (`scratch/p8b_hopsweep_deep.sh cuda:1`, log `logs/p8b_hopsweep_deep.log`, blind) | — | ~19:40 |
 | RTX 2070 | hop sweep d7–10 5/6 done; PROTOCOL10 worker done 18:50. Since 19:00: deep hop sweep (`scratch/p8b_hopsweep_deep.sh cuda:2`) | ctl_s2 hop sweep chained (`scratch/p8b_hopsweep_ctl2.sh`, waits for the drained line) | ~19:40 |
 

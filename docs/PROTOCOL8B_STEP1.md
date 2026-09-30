@@ -93,3 +93,7 @@ verified against the host by sha256 (b40721ad…). The unchanged probe command (
 `prosqa/res_p8b1/p8b1_ctl_s2_local.json`). Rule, fixed now: the local output is ctl_s2's P8b1 result. The Vast probe
 is stopped and the host is destroyed once the local run has finished. The GPU differs (4060 vs A5000; TF32 is off in both),
 so near-tie margins could differ in principle; no result of either run has been read.
+Update 19:03: host 53555209 destroyed at 19:02, before its probe finished (DESTROYED_VERIFIED; its prosqa.out saved in
+`prosqa/res_p8b1/logs_ctl_s2/`). Fallback: if the local run fails, it is re-run locally from the same verified
+checkpoint. The 4060 re-run is fp32 on a different card, so small numeric differences from the other five seeds' hosts
+are possible.
