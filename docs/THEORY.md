@@ -2274,6 +2274,9 @@ about 24 hops. Two accounts:
   - z (`theory/transfer_pairs.py`) is lower for the GT12 student than for the same model's GT9 student in ≥ 75 % of
     the 10 pairs (§23 pair rule).
   - Descriptive: z vs the one-loop reach, i.e. the last distance with bal-acc ≥ 0.60.
+  - **Result: inconclusive.** z(GT12) < z(GT9) in 7/10 pairs (0.70 < 0.75; one-sided sign p = 0.17). Median z is
+    −0.02 vs 0.05. Across all 20 students, z vs reach gives Spearman −0.36: weakly in the predicted direction. The fade
+    reading stays a hypothesis. Raw data: `theory/results/transfer_pilots.json`, log `transfer_s41.log`.
 
 ## 42. Predictions sent for PROTOCOL8's revised primary (in-distribution deep depths) (2026-09-30 09:34 EDT, before any PROTOCOL8 confirmatory data)
 
