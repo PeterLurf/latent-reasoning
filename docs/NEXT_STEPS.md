@@ -307,3 +307,8 @@ user decides.
   - Firm prediction: no gain at d ≥ D_train + c1 + 1 for any K′.
   - If c1 cannot be measured, use c1 = 1 (the toy value) and treat d = 12 .. 10 + c_model as a grey zone, not a test.
   - The primary contrast stays at d = 11.
+
+**THEORY Pilot L (§32, 7a6b330):** distilling the model's own re-anchored inference makes 19/20 trained failures
+extrapolate (fine-tuning control 0/20; own single-episode labels 0/20). **Planned follow-up (PROTOCOL8b, own
+registration):** re-anchoring plus distillation on PROTOCOL8's coco-arm checkpoints (~Thu 00:00). Anchor decode:
+attention-based and/or text (Patchscopes; also the first C7 test). Recipe to come from Theory.
