@@ -37,7 +37,7 @@ def seg(m, K, g, start, head, Q):
     o = rollout(m, K, T(g.src), T(g.dst), T(start), K, qnodes=Q)
     att = o["attn1"][K - 1][:, head, :o["P"] - 1]
     anc = g.dst[np.arange(len(g)), att.argmax(1).numpy()]
-    return o["qlogit"].numpy(), o["thoughts"][:, K], anc
+    return (o["qlogit"].numpy() if Q is not None else None), o["thoughts"][:, K], anc
 
 
 def train_head(m, K, head, steps=400, bs=256, seed=3):
