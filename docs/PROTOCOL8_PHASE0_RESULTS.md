@@ -37,6 +37,29 @@ model (c_model, F1b) comes from P8-0b's K′ = 0 vs K′ = 10 sweep.
   above one-pass capacity for a curriculum-trained model is decided by F1b.
 - Whether Coconut learns H (F1) is decided by P8-0b, due ~05:30–06:00 Wed.
 
+## P8-0b Coconut: feasibility (scored 2026-09-30 09:33 EDT, from `prosqa/res_p8_coconut/coco_test_e48.json`, sha-checked)
+
+Vast 3090 53405925: training exited 0 (checkpoint_48); ~28 min per epoch in the late stages. The other evaluation
+files (e44, ctl, CoT reference) are still running on the host.
+
+| Stratum (trained m = 0–6, pooled, n = 2933) | Accuracy |
+|---|---|
+| aᴄ at K′ = 10 (the trained budget) | **0.656** |
+| a₁ (no-CoT, P8-0a) | 0.532 |
+| aᴄ at K′ = 0 | 0.507 |
+
+- **F1 not met:** 0.656 < 0.75. The margin over a₁ is 0.124.
+- **F1b not met:** 0.656 < 0.75. The margin over K′ = 0 is 0.149, against a bar of 0.15.
+- **c_model = −1:** K′ = 0 is at chance at every m. The answer mask leaves no usable one-pass route, so the answer
+  depends on the thoughts.
+- **By m:** at K′ = 10, 0.82 / 0.76 / 0.73 / 0.66 / 0.59 / 0.50 / 0.52 for m = 0..6. Gains saturate by K′ ≈ 3; K′ > 10
+  adds nothing.
+- **By answer depth, K′ = 10:** 0.80 at depths 3–4, 0.71 at 6, 0.55 at 8, and chance from 10 on.
+- **Beyond training:** m = 7–10 are at chance for every K′.
+- **Rule outcome (iii):** Coconut does not learn the deep problems in this format. PROTOCOL8's primary outcome is
+  whether anytime or random-tight training makes the deep trained depths learnable (in distribution). Extrapolation
+  is secondary.
+
 ## Deviations from the registration (for the write-up's deviation table)
 
 | Plan | Change | When, relative to data | Reason | Impact |
