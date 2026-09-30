@@ -51,7 +51,8 @@ def main():
                     "median_two_seg_minus_rand": float(np.median(dr)) if dr else None, "set_used": used}
     if out["PC1"]["verdict"] == "supported" and not used:
         out["PC1"]["reading"] = "gain without set use"
-    json.dump(out, open("theory/results/score_s45.json", "w", newline="\n"), indent=1)
+    tag = ("_" + sys.argv[1]) if len(sys.argv) > 1 else ""
+    json.dump(out, open(f"theory/results/score_s45{tag}.json", "w", newline="\n"), indent=1)
     print(json.dumps(out, indent=1))
 
 
