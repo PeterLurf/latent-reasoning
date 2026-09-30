@@ -237,3 +237,23 @@ Predictions:
 
 If cost forces two arms, keep Coconut vs anytime. Cost of three arms: about 1.5× the two-arm estimate, ~$15–30; the
 user decides.
+
+**Literature input for PROTOCOL8 (2026-09-29 ~19:40; Literature session, `docs/LIT_REQUESTS_2026-09-29.md` Part A):**
+- **Anytime arm is new in form.** No prior method uses a depth-masked per-step answer target (a lower bound on progress,
+  early arrival never penalised). Closest:
+  - CLRS hints / NEGA supervise the exact reached set, which pins the speed to 1 hop per step.
+  - RELAY, SIM-CoT and PMPS align content per step.
+  - Fan 2409.15647 puts a loss only at T(n).
+  - Yang 2311.12424 puts a full-answer loss over late iterations.
+  - PonderNet, TRM and multi-exit nets put the full target at every step.
+
+  Wording: "per-step supervision of the answer with a depth-masked target: minimum progress without fixed speed."
+- **Random-budget arm must be example-independent, with minimum 1** (as Bansal 2202.05826, Huginn). Coconut's
+  `uniform_prob` caps thoughts by the example's own step count, and Kuo's K = n + Δ is centred on n, so neither is the
+  arm we want. Use K ~ U{1..K_max} per batch.
+- **Caveat on Prop. 4(b).** Fan's budget is deterministic in n, yet extrapolates, because the test budget is also T(n).
+  Kuo's K = n failure may partly be a clipped test budget (K ≤ 20 tested at n = 20–60). Theory has been told.
+- **Checkpoints.** `bmarti44/coconut-curriculum-checkpoints` (MIT, GPT-2 ProsQA; model card: 7-/8-hop out-of-distribution
+  Coconut 66.0/67.5 vs pause 75.4/75.1). We already evaluated one checkpoint of it (`prosqa/res/ext_bmarti44_coconut_e49.json`).
+  CODI and SIM-CoT GPT-2 checkpoints are GSM8K only.
+- **Deeper datasets for later generality.** CLUTRR (2–10 hops), StepGame (k ≤ 10), the Saparov 2412.04703 generator.
