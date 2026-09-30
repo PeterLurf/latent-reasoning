@@ -6,7 +6,7 @@ Registration: `docs/PROTOCOL9.md`. Scorer: `scratch/score_p9.py`. Results: `resu
 | Test | Result | Verdict |
 |---|---|---|
 | **AP1** anytime beats control at d8 (pairs, pooled over 4 families) | 5 of 10 evaluable pairs (share 0.50, sign p 0.62) | **not supported** |
-| **AP2** extrapolation success (PROTOCOL5 rule, d7-based) | anytime-only 10, control-only 3 (sign p 0.046) | **supported** |
+| **AP2** extrapolation success (PROTOCOL5 rule, d7-based) | anytime-only 10, control-only 3 (sign p 0.046); among pairs where both are competent 1 vs 1 | **supported**, via learnability |
 | **AP3** learnability cost | competent anytime 21 / 32 vs control 12 / 32 | **no cost**; anytime is more often competent |
 | Pooled 64-pair replication (amendment 6) | pending (extension runs until ~11:00) | — |
 
@@ -26,8 +26,12 @@ Registration: `docs/PROTOCOL9.md`. Scorer: `scratch/score_p9.py`. Results: `resu
   - It does not push accuracy deeper: d8 does not improve pair by pair.
   - This matches THEORY Pilot D (gain at d7, d8–10 barely move) and §35 (a learned fall-back keyed to an iteration
     count).
-- **Caveat:** AP2 counts successes regardless of competence. Part of the anytime advantage is the higher competence
-  rate (AP3), not better extrapolation given competence.
+- **Where AP2 comes from: learnability, not reach.** Split by competence (Audit's point, verified here):
+  - Among competent runs the extrapolating shares are similar: anytime 15/21 (0.71), control 8/12 (0.67).
+  - In the 10 pairs where both runs are competent, anytime-only extrapolators number 1 and control-only 1.
+  - So AP2 means "anytime makes more seeds both learn the task and pass the d7 rule". Together with AP1's null, that is
+    not "anytime extends the reach of a trained model on these architectures". It is the same pattern as THEORY
+    Pilot D.
 
 ## Deviation (scorer fix, disclosed)
 
