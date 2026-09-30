@@ -141,3 +141,5 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53555219 vast offer 44544437 created 2026-09-30 12:38: label p8b1-ckpt_s3, pod_p8b1.sh p8b1_ckpt_s3 (logged at create by prosqa/vdeploy.sh)
 53558699 vast offer 31250687 created 2026-09-30 13:08: label p8b1-ctl_s3, pod_p8b1.sh p8b1_ctl_s3 (logged at create by prosqa/vdeploy.sh)
 53555197 vast | p8b1_ckpt_s1 hung loading the base checkpoint 15 min; restarted from scratch on the same host 13:27, training
+53533322 vast | DESTROYED_VERIFIED 2026-09-30 14:13 after verified fetch (prosqa/res_p8c/cot_s3: cot_test_e30.json cot_ctl_e30.json; ckpt prosqa/ckpt/p8c_cot_s3_checkpoint_30)
+53555206 vast | DESTROYED_VERIFIED 2026-09-30 15:11 after verified fetch (prosqa/res_p8b1: p8b1_p8b1_ckpt_s2.json; ckpt prosqa/ckpt/p8b1_ckpt_s2_checkpoint_48)

@@ -2464,8 +2464,10 @@ model at n = 10.
 * **Runs.** The same design on the 10 odd-indexed P30 failures (109, 112, 115, 119, 126, 131, 135, 145, 147, 158), both
   arms per model on one local card. 20 runs. Placement: 4 models on the 3070, 6 on the 4060. The 2070 was busy at launch, so its 3 models moved
   to the 4060.
-* **Scoring.** PC1–PC4 and CLR-1a are re-scored pooled over all 20 models by the same rules. For PC2 and CLR-1a the
-  counts scale: ≥ 10/20 and ≥ 12/20. The new 10 are also reported alone.
+* **Scoring.**
+  - **Primary: the new 10 alone, as the clean replication**, with the §45 thresholds (PC2 ≥ 5/10; CLR-1a ≥ 6/10).
+  - Secondary: the pooled 20 by the same rules (PC2 ≥ 10/20; CLR-1a ≥ 12/20). CLR-1b was registered after the first 10
+    were scored, so a pooled verdict is partly determined by results already seen (Audit).
 
 
 ## 7. Log
