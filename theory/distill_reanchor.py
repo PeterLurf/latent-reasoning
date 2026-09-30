@@ -84,6 +84,8 @@ def main():
     ap.add_argument("--device", default="cuda:0")
     ap.add_argument("--deep_R", type=int, default=2, help="chain length 6R; 2 = latent.length_gen (round 1)")
     ap.add_argument("--deep_widths", default="2,4,6")
+    ap.add_argument("--deep_sup_max", type=int, default=0, help="THEORY §41: supervise deep-chain queries only up to this "
+                    "distance (reachable node and its look-alike at the same index); 0 = all")
     ap.add_argument("--student_Kp", type=int, default=12)
     ap.add_argument("--teacher_ep", type=int, default=0, help="re-anchoring episode length (0 = the model's K)")
     ap.add_argument("--out", required=True)
@@ -106,8 +108,9 @@ def main():
     sched = lambda s: a.lr * min(1, (s + 1) / 100) * 0.5 * (1 + math.cos(math.pi * s / a.steps))
     amp = torch.bfloat16 if dev != "cpu" and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     c.update(distill={"teacher": a.teacher, "init_from": a.init_from, "steps": a.steps, "lr": a.lr, "bs": a.bs, "seed": a.seed})
-    if a.deep_R != 2 or a.student_Kp != 12 or a.teacher_ep:
-        c["distill"].update(deep_R=a.deep_R, deep_widths=a.deep_widths, student_Kp=a.student_Kp, teacher_ep=a.teacher_ep)
+    if a.deep_R != 2 or a.student_Kp != 12 or a.teacher_ep or a.deep_sup_max:
+        c["distill"].update(deep_R=a.deep_R, deep_widths=a.deep_widths, student_Kp=a.student_Kp, teacher_ep=a.teacher_ep,
+                            deep_sup_max=a.deep_sup_max)
     widths = [int(w) for w in a.deep_widths.split(",")]
     json.dump({"arch": "coconut", "distill": c["distill"]}, open(os.path.join(a.out, "arch.json"), "w"))
     log = open(os.path.join(a.out, "log.jsonl"), "w")
@@ -131,6 +134,13 @@ def main():
         w = None
         if isinstance(y, tuple):
             y, w = y
+        if a.deep_sup_max:
+            if a.deep_R == 2:       # columns A0..A5, B0..B5 (distance 1..12), C0..C5 (look-alike 7..12), D0..D5 (1..6)
+                dist = np.r_[np.arange(1, 13), np.arange(7, 13), np.arange(1, 7)]
+            else:                   # reach 1..6R, decoy 1..6R
+                dist = np.r_[np.arange(1, 6 * a.deep_R + 1), np.arange(1, 6 * a.deep_R + 1)]
+            wm = T((dist <= a.deep_sup_max).astype(np.float32))[None].expand(a.bs, -1)
+            w = wm if w is None else w * wm
         with torch.autocast("cuda", dtype=amp or torch.float32, enabled=amp is not None):
             ld, lu, _, _ = m.run_both(b["src"], b["dst"], b["start"], K, b["q"], b["tgt"])
             ldeep = one_episode(m, K, a.student_Kp, T(gl.src), T(gl.dst), T(gl.start), q)
