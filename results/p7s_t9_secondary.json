@@ -1,0 +1,150 @@
+{
+ "T9": {
+  "n": 21,
+  "amend3_primary_chosen_layer": {
+   "positive_control": {
+    "counts": "15/21",
+    "ok": false
+   },
+   "T1b": {
+    "counts": "0/5",
+    "decision": "not supported"
+   },
+   "T1c": {
+    "counts": "13/13",
+    "decision": "supported"
+   },
+   "T2b": {
+    "counts": "4/7",
+    "decision": "mixed"
+   },
+   "T13": {
+    "auc_P8": 0.6,
+    "n_extrap8": 5,
+    "n": 21,
+    "decision": "not supported"
+   }
+  },
+  "amend3_literal_first_block": {
+   "positive_control": {
+    "counts": "16/21",
+    "ok": false
+   },
+   "T1b": {
+    "counts": "0/5",
+    "decision": "not supported"
+   },
+   "T1c": {
+    "counts": "13/13",
+    "decision": "supported"
+   },
+   "T2b": {
+    "counts": "4/7",
+    "decision": "mixed"
+   },
+   "T13": {
+    "auc_P8": 0.6,
+    "n_extrap8": 5,
+    "n": 21,
+    "decision": "not supported"
+   }
+  },
+  "T4_layer1": {
+   "n": 21,
+   "n_extrap": 14,
+   "single_auc": {
+    "EA": 0.6530612244897959,
+    "delayed": 0.6530612244897959,
+    "matched5": 0.8163265306122449,
+    "matched6": 0.7244897959183674,
+    "full_step": 0.25,
+    "ct_d5": 0.6377551020408163,
+    "ct_d6": 0.6428571428571429,
+    "cK_d5": 0.39285714285714285,
+    "cK_d6": 0.4387755102040816,
+    "reach": 0.5306122448979592,
+    "P7": 0.8673469387755102
+   },
+   "best_id_auc": 0.8163265306122449,
+   "diff": 0.05102040816326525,
+   "diff_ci": [
+    -0.23687500000000006,
+    0.21113247863247864
+   ],
+   "T4": "inconclusive"
+  }
+ },
+ "T10": {
+  "n": 10,
+  "amend3_primary_chosen_layer": {
+   "positive_control": {
+    "counts": "9/10",
+    "ok": true
+   },
+   "T1b": {
+    "counts": "2/2",
+    "decision": "unresolved"
+   },
+   "T1c": {
+    "counts": "3/5",
+    "decision": "mixed"
+   },
+   "T2b": {
+    "counts": "4/5",
+    "decision": "supported"
+   },
+   "T13": {
+    "decision": "unresolved",
+    "n_extrap8": 1,
+    "n": 10
+   }
+  },
+  "amend3_literal_first_block": {
+   "positive_control": {
+    "counts": "10/10",
+    "ok": true
+   },
+   "T1b": {
+    "counts": "2/2",
+    "decision": "unresolved"
+   },
+   "T1c": {
+    "counts": "3/5",
+    "decision": "mixed"
+   },
+   "T2b": {
+    "counts": "4/5",
+    "decision": "supported"
+   },
+   "T13": {
+    "decision": "unresolved",
+    "n_extrap8": 1,
+    "n": 10
+   }
+  },
+  "T4_layer1": {
+   "n": 10,
+   "n_extrap": 5,
+   "single_auc": {
+    "EA": 0.52,
+    "delayed": 0.6,
+    "matched5": 0.6,
+    "matched6": 0.68,
+    "full_step": 0.6,
+    "ct_d5": 0.64,
+    "ct_d6": 0.8,
+    "cK_d5": 0.32,
+    "cK_d6": 0.2,
+    "reach": 0.4,
+    "P7": 1.0
+   },
+   "best_id_auc": 0.8,
+   "diff": 0.19999999999999996,
+   "diff_ci": [
+    0.0,
+    0.20833333333333337
+   ],
+   "T4": "inconclusive"
+  }
+ }
+}

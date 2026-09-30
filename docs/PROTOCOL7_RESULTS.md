@@ -50,7 +50,25 @@ Sources: `results/p7s_t5.json`, `results/p7s_t6.json`, `results/p7_indep.json`, 
   - 4 layers: AUC 0.71, CI [0.32, 1.00], p 0.17.
   - 512 wide: AUC 1.00, CI [1.00, 1.00], but p 0.052 with n = 6. "Supported" follows the AUC ≥ 0.80 rule; on its own
     it is weak evidence.
-- **Not yet applied:** the amendment-3 causal tests and T4, registered as secondary for T9/T10.
+- **Secondary analyses** (scored 2026-09-30 10:57, `scratch/score_p7s_t9_secondary.py`, `results/p7s_t9_secondary.json`;
+  amendment 10 layer mapping for the causal tests, amendment 11 first-block symmetry for T4):
+
+  | Test | T9 pooled (21) | T10 fork (10) |
+  |---|---|---|
+  | Positive control (block A drops deep in-range nodes; need ≥ 80 %) | 15/21, **fails** | 9/10, ok |
+  | T1b frontier necessity at 8–10 | 0/5, not supported | 2/2, unresolved (< 3) |
+  | T1c distance 7 is a query-time hop | 13/13, **supported** | 3/5, mixed |
+  | T2b rescue at natural scale | 4/7, mixed | 4/5, **supported** |
+  | T13 P8 predicts d8 | AUC 0.60, not supported | unresolved (1 extrapolates to d8) |
+  | T4 layer-1 P7 vs best in-distribution instrument | 0.87 vs 0.82 (matched 5); Δ 0.05, CI [−0.24, 0.21]: inconclusive | 1.00 vs 0.80; Δ 0.20, CI [0.00, 0.21]: inconclusive |
+
+  - **Reading:** the causal story transfers to fork graphs (T10) but not cleanly to the 3/4-layer and wide models. In
+    T9 the positive control itself fails in 6/21 models, so blocking at the chosen layer often misses where the deep
+    read happens. That makes T1b and T2b hard to interpret there. T1c, the query-time hop at distance 7, holds in
+    13/13.
+  - **Status:** P7's predictive value (T9 AUC 0.89) stands, but its advantage over in-distribution instruments is not
+    established on these architectures.
+  - **Chosen layer vs literal first block:** same decisions (positive control 15/21 vs 16/21).
 
 ## T1 / T2 — what went wrong, and what exploration showed (exploratory, 5 + 5 models)
 
