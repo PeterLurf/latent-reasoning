@@ -62,7 +62,6 @@ and K drain ~02:00–02:30.
 | 53453349 | 4060 Ti, 0.207 | PROTOCOL9 vb8 (`scratch/p9_vb8.txt`, 3 runs; amendment 2) | `ssh -p 47615 root@141.195.21.87` | ~03:30 Wed |
 | 53453358 | 3090, 0.21 | PROTOCOL9 vf1 (`scratch/p9_vf1.txt`, 2 runs; amendment 2) | `ssh -p 32448 root@108.76.208.51` | ~01:30 Wed |
 | 53453361 | 3090, 0.224 | PROTOCOL9 vf2 (`scratch/p9_vf2.txt`, 2 runs; amendment 2) | `ssh -p 62361 root@142.112.39.215` | ~01:30 Wed |
-| 53453363 | 3090, 0.224 | PROTOCOL9 vf3 (`scratch/p9_vf3.txt`, 2 runs; amendment 2) | `ssh -p 63691 root@142.112.39.215` | ~01:30 Wed |
 
 - **Phase 0:** pre-registered in `docs/PROTOCOL8_PHASE0.md` (3a9c05e, 15:09:38). Pod log `/workspace/logs/prosqa.out`,
   results `/workspace/prosqa/res/`. Watcher `bash scratch/p8_watch.sh "142.112.39.215 63335 coconut" "38.29.145.27
