@@ -558,8 +558,17 @@ measurements in `theory/results/pilotDE_meas.json`). PD1 supported; PD2 and PD3 
 * **PD1 supported.** Competent AT 10/12, of which 8 extrapolate (0.80). Competent C 9/12, of which 3 extrapolate (0.33).
   Difference 0.47 ≥ 0.20, and share(AT) ≥ 0.60. One-sided Fisher p = 0.055.
 * **PD2 not met.** Mean far8–10: AT 0.543, C 0.526 (difference 0.017 < 0.05).
-* **PD3 not met.** Pointer advances at every step h_2..h_K: AT 4/10 (0.40 < 0.60), C 0/9.
+* **PD3 not met.** Pointer advances at every step: AT 4/10 (0.40 < 0.60), C 0/9.
+  - Exact rule used, per amendment E-2 (iii): p[i] = p[i−1] + 1 for every i in 2..K (transitions h_1→h_2 through
+    h_{K−1}→h_K), except at most one i with p[i] = p[i−1], and no i with p[i] < p[i−1].
+  - Audit's more literal reading of §17 starts at h_2 (transitions h_2→h_3 onward). Under it pd_c_s902 passes, giving
+    C 1/9. PD3 fails under either reading.
 * **PD4 met.** Gate rate AT 0.83, C 0.75.
+* **Paired sign test (amendment D-1; the metric was not named there, so both are reported).** Pairs with both runs
+  competent: 8 pairs.
+  - d7, the metric that defines "extrapolates": AT > C in 6/8, one-sided p = 0.145.
+  - far8–10: AT > C in 7/8, one-sided p = 0.035.
+  - Added 2026-09-30 after Audit's recomputation.
 * **Reading.**
   - Anytime supervision removes the in-range brake. The pointer runs `1 1 2 3 4 5` through h_5 in 6/10 competent AT
     runs and in 0/9 controls (controls: the `1 1 1 2 2 3` brake of §25).
@@ -973,7 +982,7 @@ of anytime supervision; and does tightness matter only in the selection window (
 |---|---|---|---|
 | J | **1/8** | 0 | 0.508 |
 | JAT | 6/8 | 5 | 0.568 |
-| ATW | 7/7 | 5 | 0.570 |
+| ATW | 7/8 | 5 | 0.570 |
 | ATL | 7/8 | 5 | 0.517 |
 | C (pd_c_s900–907) | 5/8 | 2 | 0.503 |
 | AT (pd_at_s900–907) | 6/8 | 6 | 0.584 |
