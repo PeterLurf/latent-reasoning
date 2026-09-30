@@ -8,6 +8,7 @@ PODS=("$@")
 while :; do
   for hp in "${PODS[@]}"; do
     read -r h p l <<<"$hp"
+    grep -qx "$h:$p" logs/drained_hosts.txt 2>/dev/null && continue      # drained by scratch/auto_drain.sh
     u=$(timeout 40 ssh -o ConnectTimeout=15 -i ~/.ssh/runpod_ed25519 -p $p root@$h "for i in 1 2 3; do nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits; sleep 5; done | sort -n | tail -1" 2>/dev/null | tr -dc '0-9')
     if [ -z "$u" ]; then fails[$l]=$(( ${fails[$l]:-0} + 1 )); [ ${fails[$l]} -ge 3 ] && { echo "$(date +%T) $l UNREACHABLE ($h:$p)"; exit 0; }; continue; fi
     fails[$l]=0
