@@ -312,3 +312,7 @@ dropped. A test whose population ends up below its minimum is reported as unreso
   block. The models where it would differ are the 7 listed in amendment 10.
 * **Rules:** the T4 decision rule is unchanged: AUC(P7) − max AUC(instrument), with a model-bootstrap 95 % CI where the
   max is recomputed per resample. Populations are T9 pooled and T10, above the P7 floor.
+* **Correction to amendment 11** (2026-09-30 10:58, after the audit): "before any T4 value for these models was read" holds for the
+  instrument AUCs only. The layer-1 P7 AUCs per family (`auc_layer1_P7`: 4 layers 0.667, 512 wide 0.889, fork 1.00)
+  had already been written and printed by the primary T9 scorer (`results/p7s_t9.json`, 2e00a79, 07:44) before
+  amendment 11 chose layer-1 P7 as T4's P7. Both T4 decisions are inconclusive, so no verdict benefited.

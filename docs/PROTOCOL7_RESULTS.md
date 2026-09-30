@@ -60,7 +60,7 @@ Sources: `results/p7s_t5.json`, `results/p7s_t6.json`, `results/p7_indep.json`, 
   | T1c distance 7 is a query-time hop | 13/13, **supported** | 3/5, mixed |
   | T2b rescue at natural scale | 4/7, mixed | 4/5, **supported** |
   | T13 P8 predicts d8 | AUC 0.60, not supported | unresolved (1 extrapolates to d8) |
-  | T4 layer-1 P7 vs best in-distribution instrument | 0.87 vs 0.82 (matched 5); Δ 0.05, CI [−0.24, 0.21]: inconclusive | 1.00 vs 0.80; Δ 0.20, CI [0.00, 0.21]: inconclusive |
+  | T4 layer-1 P7 vs best in-distribution instrument | 0.87 vs 0.82 (matched 5); Δ 0.05, CI [−0.24, 0.21]: inconclusive | 1.00 vs 0.80 (completion time at depth 6, `ct_d6`); Δ 0.20, CI [0.00, 0.21]: inconclusive |
 
   - **Reading:** the causal story transfers to fork graphs (T10) but not cleanly to the 3/4-layer and wide models. In
     T9 the positive control itself fails in 6/21 models, so blocking at the chosen layer often misses where the deep
@@ -69,6 +69,8 @@ Sources: `results/p7s_t5.json`, `results/p7s_t6.json`, `results/p7_indep.json`, 
   - **Status:** P7's predictive value (T9 AUC 0.89) stands, but its advantage over in-distribution instruments is not
     established on these architectures.
   - **Chosen layer vs literal first block:** same decisions (positive control 15/21 vs 16/21).
+  - **Provenance of T4** (audit): the instrument AUCs were unread when amendment 11 was written, but the layer-1 P7
+    AUCs per family had already been output by the primary T9 scorer (07:44). Both T4 results are inconclusive.
 
 ## T1 / T2 — what went wrong, and what exploration showed (exploratory, 5 + 5 models)
 
