@@ -26,9 +26,11 @@ Candidate accuracy a₁(m) on `p8_test` (chance 0.5):
   "### answer"; no latent markers when `no_cot`). The in-run exact-match validation agrees (43–48 / 100 over epochs
   15–18).
 
-**Reading.**
-- A GPT-2 answering in one pass does not learn this format at any trained depth, not even with the added chains
+**Reading** (revised by amendment 1). What this measures is **no-CoT learnability** (answer labels only), not one-pass
+capacity: Coconut's curriculum can teach one-pass solutions, as in addendum Q. One-pass capacity inside the Coconut
+model (c_model, F1b) comes from P8-0b's K′ = 0 vs K′ = 10 sweep.
+- A GPT-2 trained to answer in one pass does not learn this format at any trained depth, not even with the added chains
   absent (m = 0: 0.63, versus ~0.77 for native ProsQA in the Coconut paper, which trains on native problems only).
-- Rule (i) of the registration, "H empty → deepen the format", therefore does not apply. The whole training range is
-  above one-pass capacity, which is the regime PROTOCOL8 needs (THEORY Prop. 8; Biran et al.).
+- Rule (i) of the registration ("H empty → deepen the format") does not apply. Whether the training range is
+  above one-pass capacity for a curriculum-trained model is decided by F1b.
 - Whether Coconut learns H (F1) is decided by P8-0b, due ~05:30–06:00 Wed.
