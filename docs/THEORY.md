@@ -1127,6 +1127,13 @@ calls it for pc_*, pd_*, pe8_*, pe3_* runs):
   cap-3 runs and ≤ 3 in competent cap-4 runs; **LE3-R dose** median(cap 3) < median(cap 4) ≤ median(uncapped P30,
   in-sample = 3). Unresolved for an arm with < 4 competent runs. The already-scored m_s301–316 (cap 4) are in-sample
   context only.
+  - **LE-R result (2026-09-30, after the experiments session posted R's competence labels in 26c2ed1;
+    `theory/results/le_pointer.json`). LE3-R and its dose ordering are supported.**
+    - Competent cap-3 runs (8): p[K−1] = 3, 1, 2, 2, 2, 0, 2, 3, median 2 (≤ 2).
+    - Competent cap-4 runs (8): median 3 (≤ 3).
+    - Dose ordering: 2 < 3 ≤ 3.
+    - Provenance: 6 of the 16 were measured blind before the labels. The rest were measured with the same frozen
+      script after the labels were posted.
 
 * **Amendment LE4 (2026-09-29 14:25 EDT, before any Pilot D run finished) — attenuation as a clock.** In a Markov or
   weakly history-dependent transition, a decaying pointer amplitude is itself a monotone counter, so under slack a
