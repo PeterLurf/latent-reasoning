@@ -1734,6 +1734,33 @@ nothing else?
 * Deeper answers need every count bounded at inference: a chunked latent history, or segments restarted from written
   checkpoints (§33). Alternatively, train at the test depth.
 
+**P10e result (2026-09-30 00:25 EDT; `theory/exp16_stop_key.py` → `theory/results/exp16_stop_key.json`, log alongside; all 17
+models eligible).**
+* **Verdict by the registered rule: step key.**
+  - Skip minus base: median peak-depth change +2, median peak-step change 0.
+  - 13/17 models show the step-key signature individually.
+  - After skipping ahead, the pointer passes depth 8 in 8/17 models, i.e. well past the trained depth. Examples:
+    pd_at_s900 `1 1 4 5 6 7 8 2 …`, pe8_at_s1002 `1 1 4 5 6 7 8 9 10 11 1 0`.
+  - So the fall-back is not a hop limit at the trained depth. A thought moved ahead in depth keeps going until its step
+    count runs out.
+* **Delay, reported alongside: the count is carried in the thought, not in the history length.**
+  - Median change: peak depth 0, peak step +1.
+  - 10/17 models fall back one step *later* at the *same* depth. 4/17 fall back at the same step, one hop shallower.
+  - Feeding h_2 again leaves the history length unchanged, so a history-length count would predict "same step, one hop
+    shallower", the 4/17 pattern. The majority instead follows the re-fed thought: its count is one behind.
+  - Together with skip, which changed the node identity but not the fall-back step, this says the fall-back is keyed to
+    an **iteration count carried in the thought**, separable from the node identity that the lin encoder edits.
+  - This reading is post hoc. P10e's rule used skip only, and the delay interpretation was not stated before the data.
+* **Revised predictions, stated now, before any Pilot J or Pilot I result has been looked at.** Their runs are still on
+  the theory hosts.
+  - **P10b′ (Pilot J, CH3AT).** The thought crosses chunk boundaries with its count, so chunk reset does not remove the
+    key. The CH3AT pointer falls back near the trained depth like AT, and PJ1's "passes 8" share is not larger than AT's.
+    This replaces P10b's conditional.
+  - **P10f (Pilot I, PER2/PER3).** A periodic step embedding does not touch a count inside the thought. PI1 is not met.
+* **Consequence.** The count can be read, and possibly written, without restarting. The per-step mean of the thoughts
+  (the lin encoder's μ_i) is common to all graphs and so carries no node identity, which makes it the natural candidate
+  for the count. §36 registers an inference-time test of that ("counter clamp").
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the

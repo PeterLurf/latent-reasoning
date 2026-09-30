@@ -1,0 +1,17 @@
+pd_at_s900     K 6 | peak depth@step, ptr: base 6@7 112345622222 | skip 8@7 114567822222 | delay 6@8 112234562222
+pd_at_s901     K 6 | peak depth@step, ptr: base 4@5 112342222222 | skip 7@6 114567222222 | delay 4@6 112234222222
+pd_at_s902     K 6 | peak depth@step, ptr: base 5@6 112345222222 | skip 8@7 114567832232 | delay 5@7 112234522322
+pd_at_s903     K 6 | peak depth@step, ptr: base 9@10 112345678903 | skip 11@10 11456789101101 | delay 8@10 112234567830
+pd_at_s906     K 6 | peak depth@step, ptr: base 6@7 112345622223 | skip 9@8 114567892222 | delay 5@7 112234502223
+pd_at_s907     K 6 | peak depth@step, ptr: base 5@8 112234450000 | skip 11@10 114567891011119 | delay 8@11 112223445488
+pd_at_s908     K 6 | peak depth@step, ptr: base 3@4 112322322222 | skip 6@5 114562222222 | delay 3@5 112232222222
+pd_at_s909     K 6 | peak depth@step, ptr: base 4@6 112234333333 | skip 4@3 114256555555 | delay 4@7 112223433333
+pd_at_s910     K 6 | peak depth@step, ptr: base 8@9 112345678000 | skip 10@9 1145678910000 | delay 8@10 112234567800
+pd_at_s911     K 6 | peak depth@step, ptr: base 5@6 112345222222 | skip 6@5 114562822222 | delay 5@7 112234522222
+pe8_at_s1000   K 8 | peak depth@step, ptr: base 5@6 112345234120 | skip 7@6 114567123412 | delay 5@7 112234523234
+pe8_at_s1001   K 8 | peak depth@step, ptr: base 5@6 112345233232 | skip 7@6 114567223223 | delay 4@6 112234223423
+pe8_at_s1002   K 8 | peak depth@step, ptr: base 7@8 112345670000 | skip 11@10 114567891011110 | delay 7@9 112234567000
+pe8_at_s1003   K 8 | peak depth@step, ptr: base 4@5 112341111111 | skip 5@4 114511111111 | delay 4@6 112234111111
+pe8_at_s1005   K 8 | peak depth@step, ptr: base 2@3 112222222222 | skip 7@6 114567222222 | delay 3@9 112222223222
+pe8_at_s1006   K 8 | peak depth@step, ptr: base 5@6 112345223322 | skip 7@6 114567223322 | delay 4@6 112234322232
+pe8_at_s1007   K 8 | peak depth@step, ptr: base 6@8 111234560000 | skip 9@9 113456789000 | delay 7@10 111123456700
