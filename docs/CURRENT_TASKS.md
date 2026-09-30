@@ -92,7 +92,7 @@ change.
 | GPU | Now | Next (chained, automatic) | Runs dry |
 |---|---|---|---|
 | RTX 4060 | T10 (last run `t10fork_s573`) | PROTOCOL9 workers (end at once) → **PROTOCOL9 extension** `p9x_4060` (`scratch/p9x_bf16.txt`) → `p9xf_4060` (`scratch/p9x_fork.txt`) | ~Wed 20:00 |
-| RTX 3070 | lent to Theory 11:53: §41-2 run pn_gt18_s130 (log `logs/queue_local3070-N18.out`) | — | ~12:15 |
+| RTX 3070 | free since ~12:10 (Theory's s130 done) | next registered local job (none yet) | — |
 | RTX 2070 | free since ~12:05 (Theory's §41-2 done) | next registered local job (none yet; PROTOCOL8b pilot result pending) | — |
 
 - **Overnight follow-up: PROTOCOL9** (`docs/PROTOCOL9.md`, a28ff0c 16:09:10): anytime supervision on the T9/T10
