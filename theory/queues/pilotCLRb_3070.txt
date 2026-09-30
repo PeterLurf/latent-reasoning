@@ -1,0 +1,8 @@
+pclr3_s109 --init_from runs/p30_s109/model.pt --head 4 --W 3 --seed 109
+pclr1_s109 --init_from runs/p30_s109/model.pt --head 4 --W 1 --seed 109
+pclr3_s112 --init_from runs/p30_s112/model.pt --head 3 --W 3 --seed 112
+pclr1_s112 --init_from runs/p30_s112/model.pt --head 3 --W 1 --seed 112
+pclr3_s115 --init_from runs/p30_s115/model.pt --head 4 --W 3 --seed 115
+pclr1_s115 --init_from runs/p30_s115/model.pt --head 4 --W 1 --seed 115
+pclr3_s119 --init_from runs/p30_s119/model.pt --head 3 --W 3 --seed 119
+pclr1_s119 --init_from runs/p30_s119/model.pt --head 3 --W 1 --seed 119

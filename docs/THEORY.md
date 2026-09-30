@@ -2458,6 +2458,13 @@ set is used (CLR-1a); PC1 inconclusive; PC2 narrowly not met.**
   - Next for the design: single-anchor checkpoints are the working C2 + C7 unit. Sets need either more training or a
     per-anchor coverage target (Literature's mitigation).
 
+**Amendment CLR-1b (2026-09-30 15:24 EDT, before any run): the other 10 failure models.** PC1 was inconclusive and PC2 missed by one
+model at n = 10.
+* **Runs.** The same design on the 10 odd-indexed P30 failures (109, 112, 115, 119, 126, 131, 135, 145, 147, 158), both
+  arms per model on one local card. 20 runs.
+* **Scoring.** PC1–PC4 and CLR-1a are re-scored pooled over all 20 models by the same rules. For PC2 and CLR-1a the
+  counts scale: ≥ 10/20 and ≥ 12/20. The new 10 are also reported alone.
+
 
 ## 7. Log
 

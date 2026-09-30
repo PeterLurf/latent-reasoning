@@ -1,0 +1,6 @@
+pclr3_s126 --init_from runs/p30_s126/model.pt --head 0 --W 3 --seed 126
+pclr1_s126 --init_from runs/p30_s126/model.pt --head 0 --W 1 --seed 126
+pclr3_s131 --init_from runs/p30_s131/model.pt --head 5 --W 3 --seed 131
+pclr1_s131 --init_from runs/p30_s131/model.pt --head 5 --W 1 --seed 131
+pclr3_s135 --init_from runs/p30_s135/model.pt --head 7 --W 3 --seed 135
+pclr1_s135 --init_from runs/p30_s135/model.pt --head 7 --W 1 --seed 135
