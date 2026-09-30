@@ -1,0 +1,149 @@
+{
+ "competent": {
+  "T12": 2,
+  "AT": 6
+ },
+ "runs": {
+  "pt12_s900": {
+   "gate": true,
+   "extrap": true,
+   "d7": 0.62939453125,
+   "d8": 0.505859375,
+   "delayed": 0.9163818359375,
+   "step_acc": 0.85888671875,
+   "ptr": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  "pt12_s901": "stage-1 guard exhausted (run, not competent)",
+  "pt12_s902": {
+   "gate": false,
+   "extrap": false,
+   "d7": 0.4990234375,
+   "d8": 0.50830078125,
+   "delayed": 0.811279296875,
+   "step_acc": 0.7464192509651184,
+   "ptr": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  "pt12_s903": {
+   "gate": false,
+   "extrap": false,
+   "d7": 0.505859375,
+   "d8": 0.4970703125,
+   "delayed": 0.8548583984375,
+   "step_acc": 0.3636067807674408,
+   "ptr": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  "pt12_s904": {
+   "gate": false,
+   "extrap": false,
+   "d7": 0.501953125,
+   "d8": 0.50244140625,
+   "delayed": 0.7137451171875,
+   "step_acc": 0.72705078125,
+   "ptr": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  "pt12_s905": {
+   "gate": true,
+   "extrap": false,
+   "d7": 0.53955078125,
+   "d8": 0.513671875,
+   "delayed": 0.967498779296875,
+   "step_acc": 0.296875,
+   "ptr": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  "pt12_s906": "stage-1 guard exhausted (run, not competent)",
+  "pt12_s907": "stage-1 guard exhausted (run, not competent)"
+ },
+ "PT1": {
+  "counted": 1,
+  "in_direction": 1,
+  "sign_p_one_sided": 0.5,
+  "verdict": "unresolved (< 5 counted pairs)"
+ },
+ "PT2": {
+  "T12_pass8": [
+   0,
+   2
+  ],
+  "AT_same_seeds_pass8": [
+   0,
+   1
+  ],
+  "met": false
+ },
+ "PT3": {
+  "counted": 1,
+  "in_direction": 0,
+  "sign_p_one_sided": 1.0,
+  "verdict": "unresolved (< 5 counted pairs)"
+ },
+ "PT4": {
+  "T12": 2,
+  "AT": 6,
+  "met": false
+ }
+}
