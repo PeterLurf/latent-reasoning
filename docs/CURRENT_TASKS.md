@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-09-30 16:47 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-09-30 17:45 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -92,9 +92,9 @@ any event, create or destroy. The toy-side `auto_drain.sh`, `p8_watch.sh` and `p
 
 | GPU | Now | Next (chained, automatic) | Runs dry |
 |---|---|---|---|
-| RTX 4060 | lent to Theory 15:26: §45 CLR-1b (log `logs/queue_local4060-CLRb.out`) | — | ~18:00–18:30 |
-| RTX 3070 | lent to Theory 15:26: §45 CLR-1b (log `logs/queue_local3070-CLRb.out`) | — | ~18:00–18:30 |
-| RTX 2070 | PROTOCOL8b step-1 base reference (`scratch/p8b1_base_ref.sh`, log `logs/p8b1_base_ref.log`; ~6.8 GB, single job) | — | ~17:45 |
+| RTX 4060 | lent to Theory 15:26: §45 CLR-1b (log `logs/queue_local4060-CLRb.out`) | — | ~18:55 (Theory update 17:50) |
+| RTX 3070 | lent to Theory 15:26: §45 CLR-1b (log `logs/queue_local3070-CLRb.out`) | — | ~18:55 (Theory update 17:50) |
+| RTX 2070 | base ref done 17:36 (`prosqa/res_p8b/p8b1_base_ref.json`). 17:47: exploratory PROTOCOL8b hop sweep (`scratch/p8b_hopsweep.sh`, `prosqa/hopsweep_p8b.py --skip_probe`: probe-disjoint problems, no accuracies printed, not read until P8b1 is scored; log `logs/p8b_hopsweep.log`) | ctl_s2 waits for its verified drain | ~19:00 |
 
 - **Overnight follow-up: PROTOCOL9** (`docs/PROTOCOL9.md`, a28ff0c 16:09:10): anytime supervision on the T9/T10
   architectures, paired by seed with the T9/T10 controls. 32 runs (`scratch/queue_worker3.sh`, frozen theory code in
