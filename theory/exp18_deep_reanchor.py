@@ -8,7 +8,9 @@ Per model (sweep head from analyse_pilotA.ptr_traj on rollout.probe(512)):
   * re12top3 : episode 1 of 12 steps; episode 2 (12 steps) from each of the 3 edges most attended by the sweep head at
                step 12 (their targets as START); logits max-combined (§26's re2top3 with 12-step episodes)
 Balanced accuracy by distance j = 1..24: 0.5 (TPR on reach[j] + TNR on decoy[j]).
-    python theory/exp18_deep_reanchor.py --out theory/results/exp18_deep_reanchor.json [--runs ...]
+    python theory/exp18_deep_reanchor.py --out theory/results/exp18_deep_reanchor.json [--runs ...] [--r5]
+--r5 (THEORY §38, descriptive) adds r5_single32: one episode at K' = 32 on a 30-hop probe (R = 5, width 1, 512 graphs,
+seed 8), balanced accuracy by distance 1..30.
 """
 import argparse
 import json
@@ -59,12 +61,15 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="theory/results/exp18_deep_reanchor.json")
     ap.add_argument("--runs", nargs="*")
+    ap.add_argument("--r5", action="store_true")
     a = ap.parse_args()
     H = [102, 109, 111, 112, 113, 115, 118, 119, 125, 126, 130, 131, 132, 135, 140, 145, 146, 147, 157, 158]
     names = a.runs or [f"theory/runs/pl_t8_s{s}" for s in H]
     res = json.load(open(a.out)) if os.path.exists(a.out) else {}
     g, s = deep_chain_graphs(np.random.default_rng(7), 512, [2, 3], 4)
     pg, pb, pE = probe(512)
+    if a.r5:
+        g5, s5 = deep_chain_graphs(np.random.default_rng(8), 512, [1], 5)
     for path in names:
         name = os.path.basename(path.rstrip("/\\"))
         if name in res:
@@ -74,6 +79,10 @@ def main():
             _, _, head = ptr_traj(m, c["K"], pg, pb, pE, {})
         o = run(m, c["K"], head, g, s)
         o["head"] = head
+        if a.r5:
+            with torch.no_grad():
+                Q5 = T(np.concatenate([s5["reach"], s5["decoy"]], 1))
+                o["r5_single32"] = bal(rollout(m, c["K"], T(g5.src), T(g5.dst), T(g5.start), 32, qnodes=Q5)["qlogit"].numpy(), 30)
         res[name] = o
         json.dump(res, open(a.out, "w", newline="\n"), indent=1)
         f = lambda k: " ".join("%.2f" % x for x in o[k][12:18])
