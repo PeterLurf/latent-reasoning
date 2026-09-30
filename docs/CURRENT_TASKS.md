@@ -93,9 +93,9 @@ scored (D–L, §§34–37). Pilot M (§38) runs on 20 hosts, theory-M01..M20 (�
 
 | GPU | Now | Next (chained, automatic) | Runs dry |
 |---|---|---|---|
-| RTX 4060 | addendum R `scratch/p6_r_4060.txt` | T9 worker → T10 worker `t10_4060` (shared `p7s_t10_2070.txt`, fp32) → PROTOCOL9 workers (all lines claimed by the Vast hosts, amendment 2: they end at once) | ~03:30 Wed |
-| RTX 3070 | T10 `t10_3070` (R done 19:19) | PROTOCOL9 workers (end at once, as above) | ~03:30 Wed |
-| RTX 2070 | T10 `scratch/p7s_t10_2070.txt` (fp32) | PROTOCOL9 worker (ends at once) | ~03:30 Wed |
+| RTX 4060 | T10 (last run `t10fork_s573`) | PROTOCOL9 workers (end at once) → **PROTOCOL9 extension** `p9x_4060` (`scratch/p9x_bf16.txt`) → `p9xf_4060` (`scratch/p9x_fork.txt`) | ~Wed 20:00 |
+| RTX 3070 | T10 (last run `t10fork_s574`) | PROTOCOL9 workers (end at once) → `p9x_3070` → `p9xf_3070` | ~Wed 20:00 |
+| RTX 2070 | T10 (last run `t10fork_s575`) | PROTOCOL9 worker (ends at once) → `p9xf_2070` (`scratch/p9x_fork.txt`, fp32) | ~Wed 20:00 |
 
 - **Overnight follow-up: PROTOCOL9** (`docs/PROTOCOL9.md`, a28ff0c 16:09:10): anytime supervision on the T9/T10
   architectures, paired by seed with the T9/T10 controls. 32 runs (`scratch/queue_worker3.sh`, frozen theory code in
