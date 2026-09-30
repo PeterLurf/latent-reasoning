@@ -47,7 +47,6 @@ leak.**
 
 | Instance | Card, $/h | Job | SSH | Expected done → destroy |
 |---|---|---|---|---|
-| 53405514 | A4000, 0.118 | PROTOCOL8 Phase 0 P8-0a no-CoT (`prosqa/pod_p8.sh p8_nocot`) | `ssh -p 40817 root@38.29.145.27` | ~22:30 Tue |
 | 53405925 | 3090, 0.228 | Phase 0 P8-0b Coconut (`p8_coconut`) | `ssh -p 63335 root@142.112.39.215` | ~04:30 Wed |
 | 53410360 | 4070, 0.144 | PROTOCOL7 T9 host A (`scratch/p7s_t9_vA.txt`, 11 runs) | `ssh -p 1839 root@174.0.242.177` | ~04:00 Wed |
 | 53410361 | 3090, 0.208 | T9 host B (`p7s_t9_vB.txt`, 11) | `ssh -p 24373 root@193.143.121.30` | ~04:00 Wed |
@@ -97,7 +96,7 @@ leak.**
 
 | When | Item | Action |
 |---|---|---|
-| ~22:30 Tue | Phase 0 no-CoT | fetch, destroy, compute a₁(m), c, H |
+| done 22:20 | Phase 0 no-CoT | **scored: c = −1, H = all m 0–6** (one pass at chance; `docs/PROTOCOL8_PHASE0_RESULTS.md`); host destroyed 22:15 |
 | ~02:00 | Addendum R | `PYTHONPATH=. python scratch/score_r.py --device cuda:0`, then ping Theory (its LE-R, d75d275) |
 | ~01:00–05:00 | Theory Pilots D/E | Theory messages the result |
 | ~03:00–04:00 | Theory Pilot F | Theory messages PF1–PF3 with competence per arm |
