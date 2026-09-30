@@ -1,0 +1,36 @@
+2026-09-30 01:22:40 p9_vf2 53453361 verified 2 runs from p9_vf2: 2 with model, 0 stage-1 failures
+2026-09-30 01:47:17 t9_vB 53410361 verified 11 runs from t9_vB: 11 with model, 0 stage-1 failures
+2026-09-30 03:01:12 p9_vb6 53453331 verified 3 runs from p9_vb6: 3 with model, 0 stage-1 failures
+2026-09-30 03:12:22 p9_vb3 53453310 verified 3 runs from p9_vb3: 3 with model, 0 stage-1 failures
+2026-09-30 03:33:08 p9_vb2 53453307 verified 3 runs from p9_vb2: 3 with model, 0 stage-1 failures
+2026-09-30 03:44:03 t9_vA 53410360 verified 11 runs from t9_vA: 10 with model, 1 stage-1 failures
+2026-09-30 03:54:41 p9_vb7 53453343 verified 3 runs from p9_vb7: 3 with model, 0 stage-1 failures
+2026-09-30 04:26:21 p9_vb5 53453320 verified 3 runs from p9_vb5: 2 with model, 1 stage-1 failures
+2026-09-30 05:18:27 p9_vb8 stage-1 failure (genuine, relaunch budget spent): p9at_w512_s547
+2026-09-30 05:18:49 p9_vb8 53453349 verified 3 runs from p9_vb8: 2 with model, 1 stage-1 failures
+2026-09-30 05:18:51 t12_v1 stage-1 failure (genuine, relaunch budget spent): pt12_s901
+2026-09-30 05:29:31 p9_vb1 53453305 verified 3 runs from p9_vb1: 3 with model, 0 stage-1 failures
+2026-09-30 05:50:36 t12_v3 53489433 
+2026-09-30 06:01:01 t12_v1 stage-1 failure (genuine, relaunch budget spent): pt12_s906
+2026-09-30 06:01:10 t12_v1 53489419 
+2026-09-30 06:11:30 t12_v2 stage-1 failure (genuine, relaunch budget spent): pt12_s907
+2026-09-30 06:11:39 t12_v2 53489427 
+2026-09-30 06:22:33 p9_vb4 53453314 verified 3 runs from p9_vb4: 2 with model, 1 stage-1 failures
+2026-09-30 06:44:09 t9_vD 53410630 verified 10 runs from t9_vD: 8 with model, 2 stage-1 failures
+2026-09-30 07:25:34 p9_x5 53492421 verified 3 runs from p9_x5: 3 with model, 0 stage-1 failures
+2026-09-30 08:07:01 p9_x8 53492437 verified 3 runs from p9_x8: 3 with model, 0 stage-1 failures
+2026-09-30 08:27:38 p9_x3 53492408 verified 3 runs from p9_x3: 3 with model, 0 stage-1 failures
+2026-09-30 08:28:03 p9_x6 53492427 verified 3 runs from p9_x6: 3 with model, 0 stage-1 failures
+2026-09-30 08:28:19 p9_x7 53492433 verified 3 runs from p9_x7: 3 with model, 0 stage-1 failures
+2026-09-30 08:38:22 p9_x1 stage-1 failure (genuine, relaunch budget spent): p9at_fork_s568
+2026-09-30 08:38:39 p9_x1 53492405 verified 3 runs from p9_x1: 2 with model, 1 stage-1 failures
+2026-09-30 09:19:16 p9_x2 53494807 verified 3 runs from p9_x2: 3 with model, 0 stage-1 failures
+2026-09-30 10:09:51 p9_x4 53494817 verified 3 runs from p9_x4: 3 with model, 0 stage-1 failures
+2026-09-30 11:45:29 p8-coconut 53405925 drained (res prosqa/res_p8_coconut, ckpt prosqa/ckpt/p8_coconut_checkpoint_48)
+2026-09-30 14:13:35 p8c_cot_s3 53533322 drained (res prosqa/res_p8c/cot_s3, ckpt prosqa/ckpt/p8c_cot_s3_checkpoint_30)
+2026-09-30 15:11:01 p8b1_ckpt_s2 53555206 drained (res prosqa/res_p8b1, ckpt prosqa/ckpt/p8b1_ckpt_s2_checkpoint_48)
+2026-09-30 15:25:45 p8b1_ctl_s1 53555200 drained (res prosqa/res_p8b1, ckpt prosqa/ckpt/p8b1_ctl_s1_checkpoint_48)
+2026-09-30 15:29:18 p8b1_ctl_s3 53558699 drained (res prosqa/res_p8b1, ckpt prosqa/ckpt/p8b1_ctl_s3_checkpoint_48)
+2026-09-30 15:43:07 p8b1_ckpt_s3 53555219 drained (res prosqa/res_p8b1, ckpt prosqa/ckpt/p8b1_ckpt_s3_checkpoint_48)
+2026-09-30 19:00:42 p8c_cot_s4 53533326 drained (res prosqa/res_p8c/cot_s4, ckpt prosqa/ckpt/p8c_cot_s4_checkpoint_30)
+2026-09-30 19:30:22 p8c_cot_s2 53533319 drained (res prosqa/res_p8c/cot_s2, ckpt prosqa/ckpt/p8c_cot_s2_checkpoint_30)

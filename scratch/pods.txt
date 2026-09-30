@@ -149,3 +149,4 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53555197 vast | DESTROYED_VERIFIED 2026-09-30 16:44 after verified fetch (prosqa/res_p8b1: p8b1_p8b1_ckpt_s1.json; ckpt prosqa/ckpt/p8b1_ckpt_s1_checkpoint_48)
 53533326 vast | DESTROYED_VERIFIED 2026-09-30 19:00 after verified fetch (prosqa/res_p8c/cot_s4: cot_test_e30.json cot_ctl_e30.json; ckpt prosqa/ckpt/p8c_cot_s4_checkpoint_30)
 53555209 vast | DESTROYED_VERIFIED 2026-09-30 19:02 after sha256-verified fetch of checkpoint_48 (prosqa/ckpt/p8b1_ctl_s2_checkpoint_48.part) and prosqa.out; probe unfinished (~10x slow), re-run locally per the PROTOCOL8B_STEP1 deviation note
+53533319 vast | DESTROYED_VERIFIED 2026-09-30 19:30 after verified fetch (prosqa/res_p8c/cot_s2: cot_test_e30.json cot_ctl_e30.json; ckpt prosqa/ckpt/p8c_cot_s2_checkpoint_30)
