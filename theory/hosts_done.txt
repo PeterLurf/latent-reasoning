@@ -2,3 +2,17 @@ theory-x2 0
 theory-pa-h1 2
 theory-x5 0
 theory-w3 0
+theory-L01 0
+theory-L02 0
+theory-pa-h3 12
+theory-L11 0
+theory-L10 0
+theory-L15 0
+theory-L12 0
+theory-L17 0
+theory-L08 0
+theory-L07 0
+theory-L16 0
+theory-L04 0
+theory-L06 0
+theory-L05 0
