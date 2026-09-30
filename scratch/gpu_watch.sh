@@ -2,7 +2,7 @@
 # GPU idle watcher (user request 2026-09-29 16:15: "check gpus every few mins"). Every 5 min, samples utilisation 3x
 # (5 s apart) on each Vast host and on each local card. A GPU whose max sample is < 15 % on 2 consecutive polls
 # (~10 min idle) or a host unreachable on 3 polls makes the script print the reason and exit (waking the session).
-#   bash scratch/gpu_watch.sh "<host> <port> <label>" ...     (local cards are always checked)
+#   [GPU_WATCH_SKIP="RTX 2070,RTX 3070"] bash scratch/gpu_watch.sh "<host> <port> <label>" ...   (local cards checked unless skipped)
 declare -A idle fails
 PODS=("$@")
 while :; do
@@ -16,6 +16,7 @@ while :; do
   done
   mapfile -t loc < <(for i in 1 2 3; do nvidia-smi --query-gpu=name,utilization.gpu --format=csv,noheader,nounits; sleep 5; done)
   for name in "RTX 2070" "RTX 4060" "RTX 3070"; do
+    case ",${GPU_WATCH_SKIP:-}," in *",$name,"*) continue;; esac     # cards knowingly idle (e.g. awaiting a registered job)
     u=$(printf '%s\n' "${loc[@]}" | grep "$name" | awk -F', ' '{print $2}' | sort -n | tail -1)
     k="local_${name// /}"
     if [ -n "$u" ] && [ "$u" -lt 15 ]; then idle[$k]=$(( ${idle[$k]:-0} + 1 )); [ ${idle[$k]} -ge 2 ] && { echo "$(date +%T) $k IDLE (max util $u%)"; exit 0; }; else idle[$k]=0; fi
