@@ -60,3 +60,7 @@ plain deep accuracy by arm; all of it by depth.
 
 **Next.** Only if P8b1-1 is supported: step 2, re-anchor distillation with the model's own decoded anchors
 (label-free), plus false-checkpoint training for verification if P8b1-2 shows harm.
+
+**Note (2026-09-30 13:17, file naming only).** `prosqa/pod_p8b1.sh` writes `res/p8b1_<cfg>.json` with
+cfg = `p8b1_<arm>_s<seed>`, i.e. `p8b1_p8b1_<arm>_s<seed>.json`. The scorer reads `p8b1_<arm>_s<seed>.json`. Fetched files
+are renamed to the scorer's names before scoring. No content changes.

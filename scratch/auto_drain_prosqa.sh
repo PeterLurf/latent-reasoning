@@ -12,7 +12,7 @@ PODS=("$@")
 spec() {  # tag -> "<local res dir> <remote ckpt> <local ckpt> <expected res files...>"
   case $1 in
     p8-coconut) echo "prosqa/res_p8_coconut /workspace/ckpt/p8-coconut/checkpoint_48 prosqa/ckpt/p8_coconut_checkpoint_48 coco_test_e48.json coco_test_e44.json coco_ctl_e48.json cot_test_e4.json" ;;
-    p8b1_*) a=${1#p8b1_}; echo "prosqa/res_p8b1 /workspace/ckpt/p8b1-${a//_/-}/checkpoint_48 prosqa/ckpt/p8b1_${a}_checkpoint_48 $1.json" ;;
+    p8b1_*) a=${1#p8b1_}; echo "prosqa/res_p8b1 /workspace/ckpt/p8b1-${a//_/-}/checkpoint_48 prosqa/ckpt/p8b1_${a}_checkpoint_48 p8b1_$1.json" ;;
     p8c_cot_s*) a=${1#p8c_}; echo "prosqa/res_p8c/$a /workspace/ckpt/p8c-${a//_/-}/checkpoint_30 prosqa/ckpt/p8c_${a}_checkpoint_30 cot_test_e30.json cot_ctl_e30.json" ;;
     p8c_*) a=${1#p8c_}; echo "prosqa/res_p8c/$a /workspace/ckpt/p8c-${a//_/-}/checkpoint_48 prosqa/ckpt/p8c_${a}_checkpoint_48 coco_test_e48.json coco_ctl_e48.json" ;;
   esac
