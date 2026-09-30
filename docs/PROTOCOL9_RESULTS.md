@@ -35,12 +35,12 @@ Registration: `docs/PROTOCOL9.md`. Scorer: `scratch/score_p9.py`. Results: `resu
 
 ## Pooled 64-pair replication (amendment 6; scored 2026-09-30 13:31, `scratch/score_p9.py --ext --final`, `results/p9_pooled64.json`)
 
-| Family (16 pairs each) | Competent anytime / control | Extrapolate anytime / control | AP1 evaluable (anytime better) |
-|---|---|---|---|
-| 3 layers | 10 / 7 | 6 / 7 | 6 (0) |
-| 4 layers | 14 / 11 | 8 / 6 | 9 (5) |
-| 512 wide | 12 / 6 | 12 / 3 | 6 (6) |
-| fork | 8 / 10 | 3 / 5 | 5 (4) |
+| Family (16 pairs each) | Competent runs, anytime / control | Extrapolating runs (total per arm), anytime / control | AP2 discordant pairs, only-anytime / only-control | AP1 evaluable (anytime better) |
+|---|---|---|---|---|
+| 3 layers | 10 / 7 | 6 / 7 | 3 / 4 | 6 (0) |
+| 4 layers | 14 / 11 | 8 / 6 | 5 / 3 | 9 (5) |
+| 512 wide | 12 / 6 | 12 / 3 | 9 / 0 | 6 (6) |
+| fork | 8 / 10 | 3 / 5 | 1 / 3 | 5 (4) |
 
 - **Pooled:** AP1 15/26 (share 0.58, sign p 0.28), inconclusive. AP2 18 vs 10 (p 0.09), inconclusive. AP3: 44 vs 34
   competent, no cost.
@@ -48,7 +48,9 @@ Registration: `docs/PROTOCOL9.md`. Scorer: `scratch/score_p9.py`. Results: `resu
   effect (10 vs 3) does not recur in the new seeds.
 - **Reading:**
   - With 64 pairs the evidence that anytime raises extrapolation success across architectures is weak (p 0.09).
-  - It is concentrated in the 512-wide family (12 vs 3). Fork graphs go the other way (3 vs 5), and 3 layers is even.
+  - It is concentrated in the 512-wide family (discordant pairs 9 vs 0; runs 12 vs 3), which is also where the
+    learnability gain sits (competent 12 vs 6). Fork graphs go the other way (discordant 1 vs 3), and 3 layers is
+    even (3 vs 4). Audit recomputed these counts independently and they match.
   - The mean d7 gain is small (0.651 vs 0.621), and d8 is unchanged.
   - The primary AP2 "supported" should be read as fragile: it does not replicate in the pre-specified pooled
     analysis.
