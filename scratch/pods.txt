@@ -71,3 +71,8 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53453343 vast 4070 | p9_vb7 back online 02:49 (network outage only; uptime 1 d, worker and run intact); PROTOCOL9 amendment 5: drain normally
 53453331 vast | p9_vb6 DESTROYED_VERIFIED 2026-09-30 03:01 after verified fetch (3 runs: 3 with model, 0 stage-1 failures)
 53453310 vast | p9_vb3 DESTROYED_VERIFIED 2026-09-30 03:12 after verified fetch (3 runs: 3 with model, 0 stage-1 failures)
+53453307 vast | p9_vb2 DESTROYED_VERIFIED 2026-09-30 03:33 after verified fetch (3 runs: 3 with model, 0 stage-1 failures)
+53489419 vast 3080 Ti 0.136 created 2026-09-30 03:23: THEORY §39 T12 host v1 (142.127.68.223:7439) | both runs crashed at step 0 (CUDA-graph capture with --step_adv; not outcomes); held idle for the fixed re-run
+53489427 vast 3080 Ti 0.138 created 2026-09-30 03:23: T12 host v2 (142.127.68.223:18162) | same crash; held idle
+53489433 vast 4070 0.144 created 2026-09-30 03:23: T12 host v3 (174.0.242.177:1713) | same crash; held idle
+53489436 vast 3090 0.17 created 2026-09-30 03:24: T12 host v4 (142.127.68.223) | still loading when the crash was found; its deploy script was stopped before any queue started; held
