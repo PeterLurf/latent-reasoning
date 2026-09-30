@@ -19,8 +19,18 @@ drain() {   # tag h p id n
   mkdir $S/drain_$tag.lock 2>/dev/null || return 0
   r=$(timeout 1800 bash theory/vfetch_arch.sh $h $p 2>&1 | tail -1)
   # completeness: every run with an eval.json on the host must now exist locally with its eval.json
-  remote=$(timeout 60 ssh -n -o ConnectTimeout=15 -i $KEY -p $p root@$h "cd /workspace/Latent && ls theory/runs/*/eval.json 2>/dev/null" 2>/dev/null | grep -v "Welcome\|Have fun" | tr -d '')
+  # the listing ends with END_OK, so a dropped connection (empty output) can never read as "0 remote runs"
+  remote=""; listed=0
+  for try in 1 2 3; do
+    out=$(timeout 60 ssh -n -o ConnectTimeout=15 -i $KEY -p $p root@$h "cd /workspace/Latent && ls theory/runs/*/eval.json 2>/dev/null; echo END_OK" 2>/dev/null | grep -v "Welcome\|Have fun" | tr -d '\r')
+    if [[ "$out" == *END_OK* ]]; then remote=$(echo "$out" | grep -v END_OK); listed=1; break; fi
+    sleep $((try * 20))
+  done
   missing=0; for f in $remote; do [ -f "$f" ] || missing=$((missing + 1)); done
+  if [ "$listed" = 0 ]; then
+    echo "$id $tag - - $h:$p REMOTE LISTING FAILED $(date '+%Y-%m-%d %H:%M') (fetch: $r); will retry" >> theory/vast_log.txt
+    rmdir $S/drain_$tag.lock; return 0
+  fi
   if [[ "$r" == fetched,\ sha\ ok* ]] && [ -n "$remote" ] && [ $missing -eq 0 ]; then
     echo "$id $tag - - $h:$p fetched $(date '+%Y-%m-%d %H:%M') ($r)" >> theory/vast_log.txt
     d=$(timeout 120 bash "$V" destroy instance $id -y 2>&1 | tail -1)
@@ -48,6 +58,7 @@ while :; do
     [ -z "$h" ] && continue; case "$h" in \#*) continue;; esac
     grep -q "^$tag " theory/hosts_done.txt && continue
     live=$((live + 1))
+    [ -d $S/drain_$tag.lock ] && { echo DRAINING > $S/poll_$tag; continue; }   # no extra SSH while a drain runs
     ( timeout 60 ssh -n -o ConnectTimeout=15 -i $KEY -p $p root@$h \
       "grep -c 'evaluated p[de][38_]' /workspace/Latent/logs/queue_$tag.out; grep -c QUEUE_DONE /workspace/Latent/logs/queue_$tag.out; for i in 1 2 3; do nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits; sleep 5; done | sort -n | tail -1" \
       2>/dev/null | grep -v "Welcome\|Have fun" | tr '\n' ' ' > $S/poll_$tag ) &
@@ -59,6 +70,7 @@ while :; do
     [ -z "$h" ] && continue; case "$h" in \#*) continue;; esac
     grep -q "^$tag " theory/hosts_done.txt && continue
     read -r n qd util < $S/poll_$tag 2>/dev/null
+    [ "$n" = DRAINING ] && continue
     if [ -z "$util" ]; then
       unreach[$tag]=$(( ${unreach[$tag]:-0} + 1 ))
       [ ${unreach[$tag]} -ge 3 ] && { echo "UNREACHABLE $tag $h $p $id"; date; exit 0; }
