@@ -268,3 +268,16 @@ user decides.
 - **Prediction:** random-tight ≈ anytime > fixed-K Coconut on beyond-training outcomes.
 - **Optional sub-arm, if seeds allow:** random-tight at the final stage only, to test whether circuit selection in
   Coconut happens in the early stages.
+
+**THEORY Pilots D, F and H scored (2026-09-30 ~00:10, commit 440d6ae), and what they mean for PROTOCOL8:**
+- **Jitter off.** Pilot F: jitter alone broke learnability (1/8 competent). Jitter + anytime was learnable (6/8) but
+  gave no d8 gain over anytime (median 0.568 vs 0.584). `patch_p8`'s jitter option stays unused in the confirmatory
+  arms.
+- **Anytime helps mostly at the first distance past training.** Pilot D, PD1 supported (anytime 8/10 extrapolate vs
+  control 3/9, Fisher p 0.055). Mechanism: anytime removes the in-range brake, so the pointer moves one hop per step
+  in 6/10 runs vs 0/9. But the pointer falls back within 1–3 steps after K. The gain is at d7, while d8–10 barely
+  move.
+- **Consequence for PROTOCOL8.** Score beyond-training accuracy separately at the first strata past training (m = 7)
+  and deeper (m = 8), not pooled only. Expect anytime/random-tight effects at m = 7 more than at m = 8.
+- **Pilot H.** Post-hoc anytime fine-tuning of trained failures does not repair them (1/18). The PROTOCOL8 rules
+  already apply from the first latent stage, which fits.
