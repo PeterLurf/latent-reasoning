@@ -1,0 +1,64 @@
+{
+ "arms": {
+  "RT": {
+   "registered": 8,
+   "evaluated": 8,
+   "competent": 4,
+   "extrapolate_competent": 4,
+   "extrapolate_all": 4,
+   "median_d8": 0.57080078125,
+   "median_d7": 0.619140625,
+   "missing": []
+  },
+  "C": {
+   "registered": 8,
+   "evaluated": 8,
+   "competent": 5,
+   "extrapolate_competent": 2,
+   "extrapolate_all": 4,
+   "median_d8": 0.50341796875,
+   "median_d7": 0.53173828125,
+   "missing": []
+  },
+  "AT": {
+   "registered": 8,
+   "evaluated": 7,
+   "competent": 6,
+   "extrapolate_competent": 6,
+   "extrapolate_all": 6,
+   "median_d8": 0.583984375,
+   "median_d7": 0.6669921875,
+   "missing": [
+    "pd_at_s905"
+   ]
+  }
+ },
+ "PK1": {
+  "counted": 3,
+  "in_direction": 2,
+  "sign_p_one_sided": 0.5,
+  "verdict": "unresolved (< 5 counted pairs)"
+ },
+ "AT_vs_C_same_seeds": {
+  "counted": 4,
+  "in_direction": 4,
+  "sign_p_one_sided": 0.0625,
+  "verdict": "unresolved (< 5 counted pairs)"
+ },
+ "PK2": {
+  "median_d8_RT_minus_AT": -0.01318359375,
+  "extrap_share_RT": 1.0,
+  "extrap_share_AT": 1.0,
+  "met": true
+ },
+ "PK3": {
+  "n": 4,
+  "median_pK1": 4.0,
+  "met": true
+ },
+ "PK4": {
+  "competent_RT": 4,
+  "competent_C": 5,
+  "met": true
+ }
+}

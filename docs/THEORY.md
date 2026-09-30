@@ -1459,6 +1459,21 @@ the example, should do what anytime supervision does, with final-answer labels o
 * **Falsified** if PK1 is not supported while Pilot D's anytime-vs-control comparison is. Then tight budgets without labels
   are not enough, and the minimum-progress labels are doing the work.
 
+**Result (2026-09-30; all 8 runs; `theory/score_pilotHIJKL.py K` → `theory/results/score_pilotK.json`; pointers in
+`theory/results/le_pointer.json`). PK1 unresolved; PK2, PK3 and PK4 met; not falsified.**
+* **Competent:** RT 4/8, C 5/8, AT 6/8 (seeds 900–907). All 4 competent RT runs extrapolate.
+* **PK1 unresolved.** 3 counted pairs, RT > C in 2. The same-seed AT-vs-C rule is also unresolved (4 pairs, 4 in
+  direction), so the falsification clause does not apply.
+* **PK2 met.** Median d8: RT − AT = −0.013. Extrapolating share: 1.0 in both.
+* **PK3 met, at the threshold.** Median p[K−1] is 4.0 (2, 2, 6, 6).
+* **PK4 met.** 4 vs 5 competent.
+* **Reading.**
+  - With final-answer labels only, random tight budgets reach the anytime outcome: d7 median 0.62, d8 0.57 vs AT 0.58.
+    They also share its fall-back after K (s901 `1 2 3 4 5 6 7 0 …`, s904 `1 2 3 4 5 6 2 2 …`), as P10a predicted (§35).
+  - So minimum-progress labels are not needed for the in-range fix (C4). Neither method fixes continuation past the
+    trained depth.
+  - Learnability is lower: 4/8 competent.
+
 ## 32. Pilot L — distilling re-anchored inference into one latent loop (PROPOSALS §9 F5a) (pre-registered 2026-09-29 22:57 EDT, before any Pilot L run started)
 
 **Idea.** Re-anchored inference (§26) is right where the single uninterrupted loop is not. Use it as a teacher for
