@@ -127,3 +127,5 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53539583 vast offer 30086286 created 2026-09-30 10:31: label p8c-coco-s4, pod_p8c.sh p8c_coco_s4 (logged at create by prosqa/vdeploy.sh)
 53539933 vast offer 31458809 created 2026-09-30 10:35: label p8c-at-s4, pod_p8c.sh p8c_at_s4 (logged at create by prosqa/vdeploy.sh)
 53540125 vast offer 46775634 created 2026-09-30 10:36: label p8c-rt-s4, pod_p8c.sh p8c_rt_s4 (logged at create by prosqa/vdeploy.sh)
+53540125 vast | p8c_rt_s4 failed deploy (BAD HOST), DESTROYED_VERIFIED 2026-09-30 10:57
+53542399 vast offer 44544433 created 2026-09-30 10:57: label p8c-rt-s4, pod_p8c.sh p8c_rt_s4 (logged at create by prosqa/vdeploy.sh)

@@ -2314,6 +2314,8 @@ A4–A6 ≥ 0.20 at the model's chosen layer: 8 fail.
 * **L2.** In passing models the same holds in ≤ 30 %.
 
 **Result (2026-09-30, CPU; `theory/results/layer_sweep.json`). L1 not met (4/8 = 0.50 < 0.60); L2 met (3/16 = 0.19).**
+* **Denominators (Audit).** My 24 is every T9 model in `results/p7s_causal2_t9.json`, including 3 below the P7 floor.
+  Within the experiments session's primary 21, the same rule gives 6/21 failing, so the two counts agree.
 * **4 failing models:** the sweep is strongest in layer 1, or spread (top share < 0.5), while in_peak chose layer 2 or
   3. These are t9l3_s510 (weak sweep everywhere, max S 0.06), t9l4_s523, t9l4_s526 and t9w512_s548. Blocking at layer
   1 might pass the control there.
