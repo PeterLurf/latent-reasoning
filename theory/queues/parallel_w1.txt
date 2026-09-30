@@ -1,0 +1,3 @@
+pk_rt_s903 --seed 903 --K_random 1:6
+pj_ch3at_s902 --seed 902 --arch chunk3 --anytime 1
+pi_per3_s906 --seed 906 --periodic_step 3

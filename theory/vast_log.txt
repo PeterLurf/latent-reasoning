@@ -35,3 +35,8 @@
 53453501 theory-z13 RTX_3090 0.22 73.63.79.23:41054 created 2026-09-29 22:24 (scale-out for a ~3 h drain; queue theory/queues/parallel_z13.txt)
 53453507 theory-z14 RTX_4070 0.202 159.48.242.2:35152 created 2026-09-29 22:24 (scale-out for a ~3 h drain; queue theory/queues/parallel_z14.txt)
 53453511 theory-z15 RTX_3090 0.206 91.150.160.38:17101 created 2026-09-29 22:24 (scale-out for a ~3 h drain; queue theory/queues/parallel_z15.txt)
+53456501 theory-w1 RTX_3080 0.115 1.208.108.242:55181 created 2026-09-29 22:55 (leftover runs from z1-z13; queue theory/queues/parallel_w1.txt)
+53456512 theory-w2 RTX_4070 0.144 57.132.208.22:28395 created 2026-09-29 22:55 (leftover runs from z1-z13; queue theory/queues/parallel_w2.txt)
+53456518 theory-w3 RTX_3090 0.183 142.252.103.101:10990 created 2026-09-29 22:55 (leftover runs from z1-z13; queue theory/queues/parallel_w3.txt)
+53456524 theory-w4 RTX_3090 0.196 137.175.22.196:19653 created 2026-09-29 22:55 (leftover runs from z1-z13; queue theory/queues/parallel_w4.txt)
+53456530 theory-w5 RTX_3090 0.179 143.109.167.245:40087 created 2026-09-29 22:55 (leftover runs from z1-z13; queue theory/queues/parallel_w5.txt)

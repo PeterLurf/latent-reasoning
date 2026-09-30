@@ -1,0 +1,2 @@
+pi_per2_s905 --seed 905 --periodic_step 2
+pj_ch3at_s900 --seed 900 --arch chunk3 --anytime 1
