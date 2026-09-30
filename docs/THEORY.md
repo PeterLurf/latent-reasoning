@@ -11,7 +11,7 @@ measurements run on the CPU on existing `runs/` models; nothing here touches the
 §3 theory · §4 attenuation (Mechanism 2) · §5 architectures · §6 Pilot A pre-registration · §9 Pilot B · §10 developmental
 race · §11 Pilot C · §12 training-free repair · §13 GPT-2 latent reasoners · §14 transfer curves (+ failed out-of-sample
 rule) · §15 Pilot A scored · §16 Pilot B interim · §17 Pilot D · §18 formal sketch · §19 Pilot B scored · §20 Pilot E ·
-§21 O marker test · **§22 four conditions C1–C4, Props. 4–8, new methods T6/T7 and architecture A6** · §23 Pilot F · §24 Pilot G (A6) · **§25 Prop. 9: slack creates the clock** · §26 CTM-inspired T8/A8 · §27 Pilot H (fine-tune repair) · §28 Pilot I (periodic clock) · §29 Pilot J (chunk-reset attention) · §7 log · §8 toy simulation. (Sections were appended in the order written, so numbers are not in
+§21 O marker test · **§22 four conditions C1–C4, Props. 4–8, new methods T6/T7 and architecture A6** · §23 Pilot F · §24 Pilot G (A6) · **§25 Prop. 9: slack creates the clock** · §26 CTM-inspired T8/A8 · §27 Pilot H (fine-tune repair) · §28 Pilot I (periodic clock) · §29 Pilot J (chunk-reset attention) · §30 zero-cost follow-ups · §7 log · §8 toy simulation. (Sections were appended in the order written, so numbers are not in
 page order.)
 
 ## Timestamp correction (2026-09-29 12:59 EDT, prompted by the Audit session; machine clock via `date`, Vast logs in UTC = EDT + 4)
@@ -1225,6 +1225,27 @@ so continuing past K means running more copies of a trained computation rather t
   the Audit session); agreed with the experiments session: Pilot J runs on the theory Vast hosts, capped at $5. Queue
   order on hosts 2–4: D/E → H → F (J, JAT) → G → I (PER2) → J; host 1 keeps only its D/E and H runs and is destroyed after
   them (its G/I/J lines moved to hosts 2–4). Projected theory Vast spend from 15:30 to the end of all queues ≈ $15–16.
+
+## 30. Zero-cost follow-ups from PROPOSALS §9: renormalisation (F3a), the randk re-analysis (F1a's $0 test), and branch selection (pre-registered 2026-09-29 21:48 EDT, before any of these measurements on the named models)
+
+* **Dropped before running: F6a (learned frontier decoder) and F6b (soft restart).** On one debug model outside the test set
+  (pa_c_s706), a linear decoder h_K → node ids put the probed chain's node at the anchor depth first in 32 % of graphs,
+  with a mean rank of 22 — the same as the attention anchor (≈ 1/W). The sweep head's attention at step K has ≥ 50 % of
+  its maximum on only 1.29 edges on average (W = 4.1), and 98 % of them lie at the anchor's depth. So the model's pointer
+  follows about **one branch** of the frontier, not the whole set; the oracle gap of §26 is structural, not a decoding
+  problem. Reported as exploratory; measured on all 59 models below (B1).
+* **F3a (amplitude renormalisation at inference; `theory/exp13_decode_restart.py`, renorm conditions only).** Past K, each
+  fed-back thought's deviation from the batch mean is rescaled to its example's mean in-range norm (h_1..h_{K−1}), with
+  and without the layer-2 block. Baselines from exp8 (block + constant α): α = 1.0 → 41/59, far8–10 0.585; α = 1.3 → 46/59,
+  0.594. **RN1:** renorm + block gives 7-hop success ≥ 46/59. **RN2:** renorm + block mean far8–10 > 0.594. (7-hop success =
+  distance-7 bal-acc ≥ 0.60 on the probe, as §26.)
+* **R-randk (Prop. 4 on the existing P22 runs, measurement only; competent runs randk_s0 and randk_s2).** With budgets
+  K ∈ 4..8 and T unobservable, zero loss requires the demanded depth by step 4 (the minimum budget), and nothing
+  after it. Prop. 4 predicts a faster in-range front than fixed K = 6: **RR1** pointer depth of the last fed-back thought at
+  budget 4, p[3], ≥ 3 in both runs (fixed-K6 P30 models have p[3] ≈ 2). **RR2** (least effort after the tight point) p[7]
+  ≤ p[3] + 1 in both runs — randk had step embeddings, so a clock was available to brake after step 4.
+* **B1 (branch selection; descriptive).** Per model: the mean number of edges with sweep-head attention ≥ 0.5 × max at step
+  K, and the share of those at the anchor's BFS depth.
 
 ## 7. Log
 
