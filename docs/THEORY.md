@@ -2614,6 +2614,24 @@ single-anchor chains keep extending with more segments.**
   - Multi-start beams add false positives rather than reach. §47's beam recommendation is withdrawn: a single anchor
     with more segments is the working design.
 
+## 49. A learned write head and a closure halt (C5 v1–v2; §47 test 2) (pre-registered 2026-09-30 18:17 EDT, before any run)
+
+**Test.** `theory/exp23_write_halt.py`, CPU, the 10 frozen §45 CLR1 students.
+* **Write head.** A linear map from the segment's last thought through the model's id table, trained to predict the
+  model's own attention-decoded anchor. This is self-distillation: no labels (C4).
+* **Chains.** Up to 6 segments on the 24-hop probe, with head-written anchors vs attention-decoded ones.
+* **Closure halt.** On probes with 12-, 18- and 24-hop chains: halt at the first segment after which no answer newly
+  turns reachable. That is a free label (§22 Prop. 6; Literature's first step).
+
+**Predictions.**
+* **WH1 (the state can write its own checkpoint).** Median held-out agreement with the attention anchor ≥ 0.70, and
+  median head-chain S6 d19–24 ≥ 0.60 (attention: 0.65, §48).
+* **WH2 (halting adapts to depth, C5).** The median halting segment increases strictly with chain length (12 < 18 <
+  24 hops) in ≥ 7/10 models.
+
+**Scope.** C5 here is the halting and writing rule, not an RL-learned policy (v3). The write head reads the state, so
+it is a probe that is used causally. It is not a claim about the silent steps (§34).
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
