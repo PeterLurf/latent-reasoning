@@ -130,3 +130,14 @@ PROTOCOL9 bears on **C2** (more thinking helps beyond training, in every compete
   copied to vf1–4. `length_gen` is re-run for fork runs already evaluated, and later runs use the fixed code.
 * **Disclosure.** Diagnosing the crash on vf4 showed `p9at_fork_s563`'s in-distribution evaluation lines
   (competence and budget sweep by depth, K′ ≤ 10). No d7/d8 value (the AP1/AP2 measures) was seen; none existed.
+
+## Amendment 5 (2026-09-30 02:42 EDT, host outage; decided before any of the affected runs' outcomes exist)
+
+* Vast host vb7 (53453343) went offline between 02:31 and 02:41 with its three runs unfetched (`p9at_l3_s502`,
+  `p9at_w512_s544`, `p9at_l4_s527`).
+* **Rule, fixed now:**
+  - If vb7 is back by 03:45, it is drained normally.
+  - If not, the three runs are re-queued unchanged on a new host (`scratch/p9_vb7b.txt`), and the re-runs are the ones
+    scored.
+  - If vb7 returns later, its results are fetched for the record but not used, so there is no post-hoc choice between
+    the two copies.
