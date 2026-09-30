@@ -1274,6 +1274,35 @@ so continuing past K means running more copies of a trained computation rather t
   the effective number exp(entropy) of the attention restricted to frontier edges. It is compared explicitly with P25's
   per-edge split: P25 predicts an effective number ≈ W at every step; single-branch following predicts ≈ 1.
 
+**§30 results (scored 2026-09-29 21:58 EDT; `theory/exp14_branch_renorm.py` → `theory/results/exp14_branch_renorm.json`;
+`le_pointer.py` for randk).**
+* **F3a renormalisation — RN1 not met, RN2 not met.** Renorm + block reaches 7-hop success in 45/59 (bar 46) with far8–10
+  0.590 (bar > 0.594); renorm alone 26/59, 0.543 (single episode 24/59). Matching each model's in-range amplitude is
+  no better than a constant α = 1.3 (46/59, 0.594). Amplitude restoration at inference is exhausted at ≈ 46/59; the
+  remaining gap to re-anchoring (55/59) is not an amplitude problem. F3a is dropped.
+* **R-randk — RR1 not supported (1 of 2), RR2 1 of 2.** randk_s0 runs `1 2 3 4 | 0 0 …`: unit speed to depth 4 by the
+  minimum budget, then the pointer stops — exactly Prop. 4's zero-loss prediction. randk_s2 runs `1 1 1 1 2 3 4 3 3 …`:
+  it dwells three steps and reaches depth 3 only at h_5, so it would fail at budget 4 by the idealised account (its
+  loss at K = 4 was not examined). randk_s1 (not competent) cycles. The P22 re-analysis neither confirms nor refutes the
+  tightness account; F1a's own arm (K ∈ 1..6, no step embedding) remains the test.
+* **B1 branch selection (descriptive; amendment B1-a).** Effective number of attended frontier edges (exp entropy over the
+  W frontier edges), averaged over steps 1..K and all 59 models:
+
+  | W | sweep head | head-mean | range over the 8 heads | at step K: sweep / head-mean |
+  |---|---|---|---|---|
+  | 2 | 1.37 | 1.56 | 1.57–1.64 | 1.38 / 1.60 |
+  | 4 | 1.95 | 2.59 | 2.61–2.80 | 1.65 / 2.25 |
+  | 6 | 2.33 | 3.49 | 3.56–3.85 | 1.76 / 2.78 |
+
+  Neither pure superposition (≈ W) nor single-branch following (≈ 1): attention covers part of the frontier with uneven
+  weights, and the chain-selecting sweep head is the most concentrated. Relation to P25: the effective number grows with
+  W (so per-edge mass falls as the frontier widens, as P25 found), but sub-linearly — 1.4 → 2.3 for W 2 → 6 in the
+  sweep head. The earlier "about one branch" from the debug model is withdrawn as a general claim: it held for that
+  model's sweep head at step K. What it implies for re-anchoring stands: the most-attended edge lands on the probed chain
+  in ≈ 1/W of graphs, because attention mass is spread unevenly over several branches rather than concentrated on the
+  queried one. Literature context (`docs/LIT_REQUESTS_2026-09-29.md` Part C): partial, uneven superposition matches Gu
+  2609.13747 (uneven weights) and Coconut's "parallel exploration then commitment", not Zhu's balanced superposition.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
