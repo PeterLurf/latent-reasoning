@@ -31,6 +31,7 @@ EA = end activity (PROTOCOL5 addendum B); high = EA ≥ 0.25. Extrapolates = d7 
 | **P1 / P2** ProsQA deeper than training: training-depth wall in GPT-2? do 12 thoughts help? (addendum P; 6 GPT-2 models, long + control sets) | walls 5/6 (a_6 0.48–0.52 with c_6 ≥ 0.80; j_s1 c_6 0.792 → "length failure"); 12-thought gain ≥ 0.05 in 0/6 | **supported / not supported** — but see the depth-matched analysis: the decline tracks the added chain, not the training depth |
 | **O1** does a longer lookup scaffold (full depth reached while it is still on) make extrapolation more common? (addendum O; 48 same-card pairs) | successes 13 vs 13; discordant l = 6, b = 6 (sign p 0.61); local 6 vs 4, Vast 0 vs 2 | **not supported** |
 | **Q1 / Q2** does GPT-2's depth horizon follow the training depth? (addendum Q; addendum-G recipe trained on 3–4 hop problems only, 2 seeds) | acc 3–4 hop vs 5–6 hop (never trained) at K = 6: s0 0.947 vs 0.951, s1 0.928 vs 0.938 (gap −0.003, −0.010); K′ = 12 gain on 5–6 hop 0.000, 0.000 | **not supported / not supported** |
+| **R1 / R2 / R3** depth cap 3 and more cap 4: does the horizon follow the training depth at every depth? (addendum R; cap 3: 12 runs, 8 competent; cap 4 pooled with M: 18 competent) | R1: P5 < 0.10 in 8/8; R2 shares cap 3 1.00, cap 4 0.67, depth 6 0.92; R3: 2/18 extrapolate (unresolved) | **supported / supported / unresolved** — details below |
 
 ## Addendum A: continuation
 
@@ -405,6 +406,17 @@ P7 = layer-1 frontier excess on the distance-7 edge (max over steps 1–12) ÷ t
 * Together with P's depth-matched analysis: GPT-2's limit on ProsQA is not the training depth; it is the added chain
   (hops attached beyond the answer options). The toy model's training-depth horizon does not transfer to Coconut GPT-2,
   consistent with one-pass computation (G, J) rather than a learned step schedule.
+
+### Addendum R (scored 2026-09-30 ~01:20, `scratch/score_r.py`, `results/p_r.json`)
+
+- **R1 (cap 3):** all 8 competent runs above the floor have P5 < 0.10 (share 1.00 ≥ 0.30): **supported**. Not competent:
+  r3_s401, s407, s410, s411.
+- **R2 (dose-response):** the share whose frontier stops one level past the training depth is ≥ 0.30 at every depth:
+  cap 3 1.00 (8/8), cap 4 0.67 (12/18, M pooled with R), depth 6 0.92 (12/13, L2 basis): **supported**.
+- **R3 (M2 pooled):** only 2/18 cap-4 runs extrapolate by one level (needs ≥ 3 of each): **unresolved** (descriptive
+  AUC 0.44). The exploratory cap-3 version is also unresolved (1/8).
+- **Reading:** the frontier stops at the training depth at all three depths (3, 4, 6), and at cap 3 in every competent
+  run. THEORY §35 reads this as a learned fall-back keyed to an iteration count.
 
 ## Reading so far (updated 2026-09-29 ~13:20)
 
