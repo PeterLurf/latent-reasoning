@@ -6,6 +6,7 @@
 # trains it with the base recipe under the stage-1 guard, then runs the addendum-D battery (scratch/eval_battery.sh).
 # Claimed lines are recorded in <queue-file>.claimed; the worker exits when every line is claimed.
 cd "$(dirname "$0")/.."
+export PYTHONPATH="$PWD${PYTHONPATH:+:$PYTHONPATH}"   # the frozen train_arch.py only adds scratch/ to sys.path; latent/ is imported from the repo root
 tag=$1; dev=$2; q=$3; shift 3; over="$*"
 log=logs/queue_$tag.out
 TRAIN=scratch/p9_frozen/train_arch.py
