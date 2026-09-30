@@ -326,3 +326,145 @@ restoring ones without state supervision or new parameters — directly applicab
 falsifiable condition (tight mass at selection) that tells practitioners which variant will work. (iii) A benchmark rule:
 extrapolation in latent steps can only be measured on problems deeper than one forward pass (Prop. 8), which ProsQA at
 its native depth is not.
+
+## 9. Candidate fixes for the six open problems of latent test-time scaling (2026-09-29 21:40 EDT; exploratory, not a pre-registration)
+
+Requested by the user via the Audit session, for these six problems:
+1. slack / underspecification;
+2. step counting;
+3. drift / fading;
+4. shortcuts on real tasks;
+5. supervision cost;
+6. no re-anchoring in latent loops.
+
+For every fix below: the mechanism it targets, the closest prior work and how it differs, a cheap first test, the
+outcome that would falsify it, and the cost. Toy GPU costs assume ~0.9 GPU-h per 30k-step run at ~$0.16/h, so an
+8-seed arm is ≈ $1.2. **Covered** marks fixes a running pilot already tests; nothing here launches without its own
+dated pre-registration in THEORY.md. **★** marks fixes that address several problems at once.
+
+**Already covered by running work (not duplicated):**
+
+| pilot / study | problems | what it tests |
+|---|---|---|
+| D/E anytime | 1 | tight per-step supervision |
+| F jitter (J, JAT, ATW/ATL) | 3 (+1) | restoring dynamics; supervision only inside the selection window |
+| G set memory (G/GAT/GL/GLAT) | 3, 6 | monotone state |
+| H fine-tune repair | 1 (+3) | late removal of slack |
+| I periodic clock | 2 | a clock that cannot run out |
+| J chunk-reset attention | 2, 6 | stationary history |
+| §26 T8 re-anchoring (done) | 2, 3, 6 at inference | 24 → 55/59 |
+| PROTOCOL8 (experiments session) | 4 | train above one-pass capacity c, latent-bottleneck mask |
+
+### Problem 1 — slack / underspecification (the seed lottery)
+* **★ F1a — label-free tight budgets** (problems 1 and 5). Train with a budget K ~ U{1..K} per batch, drawn independently
+  of the example, and supervise only the final answer.
+  - *Mechanism:* Prop. 4 says the support must reach the tight budget at the circuit-selection stage and must not be a
+    function of anything the model can observe. It then identifies unit speed with no intermediate labels (impossible
+    targets at small K act as noise, and the best response is to be as fast as possible).
+  - *Prior work:* Kuo et al. 2606.29983 use K = clip(n + Δ), which is tied to length; our P22 randk (K ∈ 4..8) was
+    never tight at stage 3. This version meets both conditions.
+  - *First test:* toy, `--K_random 1:6`, 8 seeds paired with Pilot D (the flag already exists). ≈ $1.2.
+  - *Falsified if* the pair rule on d8 vs control is not supported while anytime (D) is.
+* **★ F1b — clock-adversarial training** (problems 1 and 2). A small probe predicts the step index k from each thought;
+  gradient reversal removes step information the transition could key a schedule on.
+  - *Prior work:* domain-adversarial training (Ganin et al. 2016); new here as a way to remove a latent clock.
+  - *First test:* toy, 8 seeds, ≈ $1.2 plus ~1 h of coding.
+  - *Falsified if* probe accuracy on k falls to chance but extrapolation and p[K−1] are unchanged.
+  - *Risk:* depth legitimately correlates with k, so the probe should be conditioned on the pointer depth, i.e. remove
+    only the step information that is *not* explained by progress.
+* **F1c — seed triage by early P7.** This is not a mechanism fix: it cuts the lottery's cost using the experiments
+  session's instrument (AUC 0.92 in-training). Train N seeds and continue only those with high early P7. Cost: nothing
+  new. Already validated (PROTOCOL7 T3, §21 PO3).
+
+### Problem 2 — step counting (implicit clock)
+* **F2a — latent-history dropout.** During training, each earlier latent position is hidden from the latent step with
+  p = 0.5; the queries still read everything.
+  - *Mechanism:* a predecessor count read from the history (Haviv et al. 2203.16634) becomes unreliable, so schedules
+    keyed to it do not fit.
+  - *Prior work:* randomised positional encodings for length generalisation (Ruoss et al. 2305.16843) randomise
+    positions, not the attendable set; our T3 proposal was never run.
+  - *First test:* toy, 8 seeds, ≈ $1.2 plus ~30 min of coding.
+  - *Falsified if* retrieval share drops but extrapolation does not rise (Prop. 9 predicts the clock then moves into the
+    state, as in Pilot A; if so, F2a only helps together with F1a / anytime).
+* F1b (above) also targets this problem.
+* **Covered:** I (periodic clock), J (chunk reset), T8 (inference).
+* *Not proposed:* sigmoid (unnormalised) latent attention. Its summed weights still grow with the number of
+  predecessors, so it keeps a count clock.
+
+### Problem 3 — drift / fading
+* **F3a — amplitude renormalisation at inference** (training-free). At every step past K, rescale the thought's deviation
+  from the batch mean to its average norm over steps 1..K.
+  - *Mechanism:* a gain-1 constraint that holds exactly on the trained range.
+  - *Prior work:* our constant α ≈ 1.3 boost (§12) and adaptive temperature (Veličković et al. 2410.01104); this matches
+    the in-range amplitude per model instead of using a fixed factor.
+  - *First test:* the 59 P30 ∪ L models on CPU, ~1 h, $0.
+  - *Falsified if* 7-hop success is no higher than with α = 1.3 (46/59, with the block).
+* **F3b — Hopfield clean-up, introduced late.** h ← h + λ·E_id·softmax(β E_idᵀ W h), with λ zero-initialised and switched
+  on only at full curriculum depth (as in GL).
+  - *Prior work:* modern Hopfield networks (Ramsauer et al. 2008.02217). Our A2 restore module wrote sigmoid memberships
+    back at full strength from step 0 and broke learnability; this version cleans up towards stored patterns and cannot
+    act before the circuit is chosen.
+  - *First test:* toy, 8 seeds, ≈ $1.2.
+  - *Falsified if* the transfer-curve index z is not lower than in controls, or d8 does not rise.
+* **Covered:** F (jitter: C3 through the loss), G/GL (monotone set), T8.
+
+### Problem 4 — shortcuts on real tasks
+* **Covered by PROTOCOL8** (experiments session): measure one-pass capacity c on the exact format, train above it, and use
+  the latent-bottleneck (G) mask so the answer cannot bypass the latents.
+* **F4a — capacity-matched looping.** Run the latent steps through only the first L′ < L layers of the pretrained model,
+  so that one pass resolves fewer hops and native benchmarks exceed c.
+  - *Prior work:* depth-recurrent LMs (Huginn 2502.05171, Ouro 2510.25741) loop a middle block of a model trained that
+    way; here the loop is shortened deliberately to create iteration pressure on a fixed benchmark.
+  - *First test:* measure c(L′) for GPT-2 Coconut at L′ = 4, 6, 8 by inference only on the Phase 0 checkpoint (after
+    Phase 0 reports).
+  - *Falsified if* accuracy collapses rather than shifting work into the latent steps.
+  - *Cost:* ≈ $1 of inference, plus a training run only if c(L′) is clean.
+* **F4b — report latent benefit per difficulty stratum.** Accuracy with K latents minus accuracy with 0, as a function of
+  depth relative to c (Prop. 8). This is a methodology fix: a benchmark on which latents cannot matter should not be
+  used to claim latent reasoning. Cost: $0 (a re-analysis on any sweep).
+
+### Problem 5 — supervision cost (no intermediate targets in natural data)
+* **★ F1a** (label-free tight budgets) is the main candidate.
+* **★ F5a — re-anchoring distillation** (problems 2, 3, 5 and 6). Use training-free re-anchored inference (T8), which
+  succeeds on 55/59 models at 7 hops, as a teacher: generate pseudo-labels for queries beyond the training depth, then
+  fine-tune the model to produce them in *one* uninterrupted episode with K′ > K.
+  - *Prior work:* self-improving transformers (Lee et al. 2502.01612; "fine-tune on your own answers one step harder")
+    and STaR (Zelikman et al. 2022) for text CoT. New here: the teacher is a clock-resetting inference procedure, so the
+    labels are exactly those the untrained continuation gets wrong.
+  - *First test:* the 20 P30 failures from Pilot H. Pseudo-labels on long-chain graphs come from exp12 on CPU (~1 h);
+    fine-tuning takes 6000 steps each, ≈ 5 GPU-h ≈ $0.8. The comparison is Pilot H's FT-C.
+  - *Falsified if* single-episode d7/d8 after distillation is not above FT-C's, or near-distance accuracy falls.
+  - *Engineering:* a data path for deeper graphs with pseudo-labels (~2 h).
+* **F5b — label-free progress consistency.** Add a loss that makes the readout's evidence for "reachable" non-decreasing
+  over latent steps (a hinge on p_k − p_{k+1}), with final-step supervision only.
+  - *Prior work:* PonderNet and deep supervision use labelled targets; this uses monotonicity only.
+  - *First test:* toy, 8 seeds, ≈ $1.2.
+  - *Falsified if* no dwell reduction (p[K−1]) and no d8 gain.
+  - *Caveat:* monotone evidence does not by itself forbid dwelling (constant evidence satisfies it). Expect it to
+    remove only reverts and restarts, so it is weaker than F1a.
+
+### Problem 6 — no re-anchoring in latent loops
+* **Covered:** T8 at inference (done), J (training-time chunking), G (monotone set).
+* **★ F6a — learned frontier decoder plus set restart** (problems 3 and 6). Train a small head (thought → multi-label over
+  node ids, supervised by the true frontier) on *frozen* trained models, then restart each episode from the decoded set.
+  - *Mechanism:* the model's own attention picks a frontier node at chance among the W at the right depth (30 % on the
+    probed chain), so the gap to the oracle anchor (0.612 vs 0.885 at 8–10 hops) is a decode problem.
+  - *Prior work:* Patchscopes (2401.06102) decodes entities from hidden states without training; CLRS hints supervise the
+    whole state. Here only a readout is trained and the model is untouched.
+  - *First test:* CPU, 59 frozen models; the head trains in minutes per model. $0.
+  - *Falsified if* decoded-anchor re-anchoring is not above the model-attention anchors (far 8–10 0.667 with top-3).
+  - *At LLM scale:* this is the entity readout the experiments session plans for PROTOCOL8's inference arm.
+* **★ F6b — soft re-anchoring** (problems 2, 3 and 6). Every M steps, replace the thought by its projection onto the
+  node-embedding simplex (softmax over ids, re-embedded) and cut the latent history. This is T8 made differentiable and
+  trainable, i.e. F3b plus J.
+  - *First test:* inference-only on the 59 models first (CPU, ~1 h), to check that a projected thought is a usable input
+    at all; a toy training arm only if it is.
+  - *Falsified if* the inference variant is below T8 (hard re-anchoring).
+
+### Suggested order if the pilots leave room (all small)
+1. **$0 CPU tests first:** F3a (renormalisation), F6a (decoded anchors), F6b (soft re-anchoring, inference only).
+2. **One cheap GPU arm with the best cost-to-information ratio:** F1a (label-free tight budgets). It tests Prop. 4's
+   central claim and, if it works, removes the need for intermediate labels (problems 1 and 5).
+3. **Then F5a** (re-anchoring distillation), which alone targets four problems.
+
+Each step gets a dated pre-registration first. Total ≈ $3–4 of GPU, within the reserve plan.
