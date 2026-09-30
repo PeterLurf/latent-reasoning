@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-09-30 19:03 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-09-30 19:23 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -99,8 +99,8 @@ any event, create or destroy. The toy-side `auto_drain.sh`, `p8_watch.sh` and `p
 | GPU | Now | Next (chained, automatic) | Runs dry |
 |---|---|---|---|
 | RTX 4060 | since 18:59 local re-run of the ctl_s2 P8b1 probe (`scratch/p8b1_ctl2_local.sh`, log `logs/p8b1_ctl2_local.log`; checkpoint `prosqa/ckpt/p8b1_ctl_s2_checkpoint_48.part`, sha256-verified) | then rename `.part`, add the drained line to `logs/auto_drain.log` (releases the PROTOCOL10 and hop-sweep waiters for ctl_s2) | ~21:00 |
-| RTX 3070 | PROTOCOL10 done for 6 of 7 models (18:55). Since 19:00: exploratory deep hop sweep, d11–13 (`scratch/p8b_hopsweep_deep.sh cuda:1`, log `logs/p8b_hopsweep_deep.log`, blind) | — | ~19:40 |
-| RTX 2070 | hop sweep d7–10 5/6 done; PROTOCOL10 worker done 18:50. Since 19:00: deep hop sweep (`scratch/p8b_hopsweep_deep.sh cuda:2`) | ctl_s2 hop sweep chained (`scratch/p8b_hopsweep_ctl2.sh`, waits for the drained line) | ~19:40 |
+| RTX 3070 | PROTOCOL10 6/7 done 18:55; deep hop sweep done 19:11. Since 19:22: PROTOCOL10 amendment 1 (exploratory K′=5/10, S=8; `scratch/p10v_worker.sh cuda:1`, log `logs/p10v.log`, blind) | — | ~20:30 |
+| RTX 2070 | since 19:22: PROTOCOL10 amendment 1 (`scratch/p10v_worker.sh cuda:2`) | ctl_s2 hop sweep chained (`scratch/p8b_hopsweep_ctl2.sh`, waits for the drained line; can overlap the amendment-1 worker, ~10 GB total, so write the drained line only after `WORKER_DONE cuda:2` in `logs/p10v.log`) | ~20:30 |
 
 - **Overnight follow-up: PROTOCOL9** (`docs/PROTOCOL9.md`, a28ff0c 16:09:10): anytime supervision on the T9/T10
   architectures, paired by seed with the T9/T10 controls. 32 runs (`scratch/queue_worker3.sh`, frozen theory code in
