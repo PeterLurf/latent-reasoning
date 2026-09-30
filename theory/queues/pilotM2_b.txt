@@ -1,0 +1,5 @@
+pm_t8f_s112 --init_from theory/runs/pl_t8_s112/model.pt --teacher t8f --head 3 --seed 112 --deep_R 4 --deep_widths 2,3 --student_Kp 24 --teacher_ep 12
+pm_t8f_s119 --init_from theory/runs/pl_t8_s119/model.pt --teacher t8f --head 3 --seed 119 --deep_R 4 --deep_widths 2,3 --student_Kp 24 --teacher_ep 12
+pm_t8f_s131 --init_from theory/runs/pl_t8_s131/model.pt --teacher t8f --head 5 --seed 131 --deep_R 4 --deep_widths 2,3 --student_Kp 24 --teacher_ep 12
+pm_t8f_s145 --init_from theory/runs/pl_t8_s145/model.pt --teacher t8f --head 5 --seed 145 --deep_R 4 --deep_widths 2,3 --student_Kp 24 --teacher_ep 12
+pm_t8f_s158 --init_from theory/runs/pl_t8_s158/model.pt --teacher t8f --head 2 --seed 158 --deep_R 4 --deep_widths 2,3 --student_Kp 24 --teacher_ep 12
