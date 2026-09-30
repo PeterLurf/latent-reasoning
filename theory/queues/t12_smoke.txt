@@ -1,0 +1,1 @@
+# T12 capture smoke test host: no queued runs (the test is run by hand)
