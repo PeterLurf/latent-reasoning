@@ -1,0 +1,3 @@
+# PROTOCOL9 amendment 2: Vast host vf3
+p9at_fork_s562 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 562 --shapes fork --p_fork 0.5 --anytime 1
+p9at_fork_s566 --no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 566 --shapes fork --p_fork 0.5 --anytime 1

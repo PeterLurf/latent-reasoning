@@ -89,3 +89,17 @@ before D/E report, so its design does not depend on their outcome.
 * **Disclosure.** While checking the `length_gen` file format for this amendment, I saw the K′ = 6 and K′ = 12 accuracy
   rows of one T9 run, `t9l3_s508` (fetched from vast3). That run is not in PROTOCOL9's pairs. Its values (near 5 ≈ 0.7,
   far 7–12 ≈ 0.5) did not inform the rule. The rule is Theory's proposal, adopted as stated.
+
+## Amendment 2 (2026-09-29 22:22 EDT, before any PROTOCOL9 run started; placement only)
+
+* At the user's request ("spin up more GPUs … 4 GPUs for 1 h cost the same as 1 for 4 h"), all 32 runs move from
+  the local cards to Vast hosts, one queue per host:
+  - the 24 bf16 runs on 8 hosts, `scratch/p9_vb1..8.txt` (3 runs each, families interleaved);
+  - the 8 fork runs (fp32) on 4 hosts, `scratch/p9_vf1..4.txt` (2 each).
+* Same frozen code (`scratch/p9_frozen/`), the same worker (`scratch/queue_worker3.sh`) and the same evaluation
+  battery. Deployed with `scratch/vdeploy_toy.sh <offer> <label> <queue> <tag> scratch/queue_worker3.sh`, and fetched
+  with `scratch/vfetch_toy.sh <host> <port> p9`.
+* All 32 are marked claimed in the local `scratch/p9_bf16.txt.claimed` and `p9_fork.txt.claimed`, so the chained
+  local PROTOCOL9 workers end at once. The local cards keep PROTOCOL7 T10.
+* Controls (T9 on Vast, T10 local) and anytime runs now run on mixed hardware in both arms. Rules, seeds, measures and
+  the cut-off are unchanged.
