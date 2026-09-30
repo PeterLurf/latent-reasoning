@@ -93,6 +93,24 @@ seed (0.85 vs 0.51; seed 2 running). Truncated to 4 layers (addendum N, 2 seeds)
 at all (0.54, 0.55). ProsQA's 3–6 hops fit inside one 12-layer pass, so under Coconut's recipe the continuous thoughts
 carry the result rather than compute it. *Part VI addenda D, G, J, N.*
 
+**11. Failing loops stop at their training depth because they fall back on a step count, not because of a depth
+limit.** The horizon moves with the training depth (addenda M, R: 7/10, 8/8, 12/18 stop one level past it). Pushing a
+thought two hops ahead makes it fall back at the same *step*, two hops deeper (P10e, 13/17). Anytime or random tight
+budgets from the start buy about one hop (Pilot D: 8/10 vs 3/9 extrapolate; E: 0/12 cross depth + 2; K). Fine-tuning
+afterwards does not (H: 1/18). Jitter, a periodic clock and a set memory do not fix it (F, I, G). Cutting the latent
+history every 3 steps gives the best from-scratch reach (J: d8 6/8 pairs), but still not reliably. *THEORY §§17–35.*
+
+**12. Restarts fix it, and restarting can be distilled into one loop without labels.** Re-anchoring from a written node
+rescues 31/34 failures (§26). Training each failed model on its own re-anchored answers fixes 19/20, against 0/20 with its
+own single-pass answers (Pilot L). This is label-free, but the deep training graphs come from the evaluation generator.
+Reach extends one rung at a time: 14/20 students reach 13–18 hops when re-anchored (§37). A second rung (Pilot M) is
+running. *THEORY §§26, 32, 37.*
+
+**13. Unlike probe directions (finding 2), the silent pointer is causally editable.** Rewriting "I am at node v" as
+"node u" in a thought, through a linear map from the model's own id table, makes later reads and answers follow BFS from
+u (IIA 0.36; collateral 0.03). Translating the thought out and back keeps 94.7 % of answers. The vocabulary is node ids,
+not language. *THEORY §34.*
+
 ## What was revised or overturned
 
 | Claim | When | Now |
@@ -122,13 +140,11 @@ no run stalled at stage 1.
 ## Open
 
 *Part V's three open items were taken up in Part VI: why the sweep stays open (findings 8–9), training without full
-depth (A3, not supported) and transfer to ProsQA (finding 10).* Still open on 2026-09-28:
+depth (A3, not supported) and transfer to ProsQA (finding 10).* Still open on 2026-09-30:
 
-* **Why the frontier crosses the horizon in some seeds.** P7 ranks extrapolation, but it is itself a seed-level
-  outcome. Addendum O tests one training-level cause: a longer lookup scaffold (paired re-training of the P30 seeds,
-  48 pairs; runs until Tue 2026-09-29).
-* **Training depth vs step budget.** L2 says failing sweeps stop at the training depth; addendum M (training graphs
-  capped at distance 5, K = 6) is the converse test (running).
+* **Why the frontier crosses the horizon in some seeds.** A longer lookup scaffold is not the cause (addendum O, O1 not
+  supported). Findings 11–12 give the mechanism of the stop, not why some seeds escape it.
+* **How far the label-free ladder goes** (Pilot M, a second rung), and whether it survives self-training error build-up.
 * **ProsQA J1.** Seed 2 of addendum J decides whether the delayed-query model needs any thought at all.
 * **Multi-step latent computation in a pretrained model.** Needs problems deeper than one forward pass, or a recipe
   closer to the toy model's (scaffold, gated curriculum); N shows that simply removing layers does not do it.
