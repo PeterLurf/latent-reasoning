@@ -43,3 +43,8 @@ Gain G(model) = acc(S = 4) − acc(S = 1), depths 11–14 pooled over the 334 pr
 ## Blinding
 Runs start before the P8b1 verdict. The script prints progress only; `prosqa/res_p10/*.json` are read only after the
 P8b1 verdict is committed. Local cards only (3070, then the 4060 when Theory frees it); Vast freeze holds.
+
+## Amendment 1 (2026-09-30 19:21 EDT, before any PROTOCOL10 output was read): exploratory segment-length variants
+Not part of the decision rules. The same script and models, with (a) K′ = 5 thoughts per segment, S = 8 (Theory: a
+segment should span ≤ 4–5 hops) and (b) K′ = 10, S = 8 (longer chains). Outputs `prosqa/res_p10/<model>_k<K′>_s8.json`,
+blind under the same rule. Run on the idle 3070/2070 (`scratch/p10v_worker.sh`).
