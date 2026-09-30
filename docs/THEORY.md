@@ -864,6 +864,12 @@ gains from more latents than trained (K′ > K) appear only when n > c *and* the
 consequence (PROTOCOL8): measure c first (one-pass accuracy vs n on the in-context format; addendum P's curve), then
 train at depths above c. At n ≤ c no latent method can show extrapolation in steps, so ProsQA at its native depth is the
 wrong benchmark for it.
+*Measurement note (22:16 EDT, after PROTOCOL8 Phase 0).* A no-CoT model trained from answer labels alone can sit at chance
+(Phase 0: 0.63 at m = 0, ≈ 0.5 deeper) even where the same architecture solves the problems in one pass after a CoT or
+latent curriculum (addendum Q: Coconut GPT-2 at K′ = 0 scored 0.976 on native ProsQA). Such a baseline measures
+*learnability without intermediate supervision*, not one-pass *capacity*. So c should be measured on the latent-trained
+model itself: c is the largest depth where accuracy at K′ = 0 matches accuracy at K′ = K. The latent benefit per stratum
+(accuracy(K) − accuracy(0)) is the direct evidence of latent use (PROPOSALS §9, F4b).
 
 ### 22.7 Addendum (2026-09-29, committed 2e9fa17 14:15:32 EDT): literature check of §22 (Literature session; `docs/ADVISOR_2026-09-29.md` addendum)
 
