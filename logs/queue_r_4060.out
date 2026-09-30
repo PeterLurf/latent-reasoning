@@ -98,3 +98,12 @@ run  results/budget_sweep_r3_s411.json
 EVAL_DONE r3_s411
 00:05:23 evaluated r3_s411
 00:05:24 start m_s328 (--no_step_emb --K 6 --seed 328 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4 )
+01:14:24 trained m_s328 rc 0
+run  results/competence_m_s328.json
+run  results/competence_matched_m_s328.json
+run  results/length_gen_m_s328.json
+run  results/delayed_trace_m_s328.json
+run  results/budget_sweep_m_s328.json
+EVAL_DONE m_s328
+01:14:52 evaluated m_s328
+01:14:52 QUEUE_DONE

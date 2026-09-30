@@ -46,3 +46,7 @@ theory-z10 0
 theory-w4 0
 theory-y2 2
 theory-z3 0
+theory-w2 0
+theory-z1 0
+theory-w1 0
+theory-M20 0
