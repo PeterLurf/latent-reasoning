@@ -32,14 +32,16 @@ def split(x):
     return parts[:-1], parts[-1]
 
 
-def with_checkpoint(x, anchor_sym):
-    """x with the statement '<root> is a <anchor>.' added (and its edge), everything else unchanged."""
+def with_checkpoint(x, anchor_sym, pos=None):
+    """x with the statement '<root> is a <anchor>.' added (and its edge), everything else unchanged. pos: index among
+    the statements (None = appended at the end, as in the pilot)."""
     stmts, q = split(x)
     sym = x["idx_to_symbol"]; root = sym[x["root"]]
     art = "an" if anchor_sym[:1] in "aeiou" else "a"
     new = f"{root} is {art} {anchor_sym}."
     ix = {s: i for i, s in enumerate(sym)}
-    return {**x, "question": " ".join(stmts + [new]) + " " + q, "edges": x["edges"] + [[x["root"], ix[anchor_sym]]]}
+    stmts = stmts + [new] if pos is None else stmts[:pos] + [new] + stmts[pos:]
+    return {**x, "question": " ".join(stmts) + " " + q, "edges": x["edges"] + [[x["root"], ix[anchor_sym]]]}
 
 
 @torch.no_grad()
@@ -60,6 +62,8 @@ def main():
     ap.add_argument("--ckpt", required=True); ap.add_argument("--data", required=True); ap.add_argument("--out", required=True)
     ap.add_argument("--n_per_m", type=int, default=150); ap.add_argument("--n_cal", type=int, default=100)
     ap.add_argument("--Kp", type=int, default=10); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--random_pos", action="store_true", help="PROTOCOL8b step 1: also score checkpoints inserted at a "
+                    "random statement position (as in training), reported as *_rp")
     a = ap.parse_args()
     torch.backends.cuda.matmul.allow_tf32 = False
     model = GPT2C(load_state(a.ckpt, a.device)); model.mask_answer = True
@@ -93,24 +97,32 @@ def main():
         rand = list(rng.choice(concepts, 3, replace=False))
         path_objs = [objs[i] for i in P["path"]]
         oracle = path_objs[max(0, len(path_objs) - 5)]             # 4 hops before the target
-        comb = lambda anc: np.maximum.reduce([base] + [lp_of(model, with_checkpoint(x, y), a.Kp)[0] for y in anc])
+        comb = lambda anc, pos=None: np.maximum.reduce([base] + [lp_of(model, with_checkpoint(x, y, pos), a.Kp)[0] for y in anc])
         re_lp, rnd_lp, or_lp = comb(anchors), comb(rand), comb([oracle])
+        extra = {}
+        if a.random_pos:
+            rp = int(rng.integers(0, len(stmts) + 1))
+            for k, anc in (("reanchor_rp", anchors), ("random_rp", rand), ("oracle_rp", [oracle])):
+                v = comb(anc, rp); extra[k] = float(v[0] - v[1])
         hop_top1 = P["hop"][top[0]]
         rows.append({"m": x["ext"], "depth": len(x["steps"]), "base": float(base[0] - base[1]),
                      "reanchor": float(re_lp[0] - re_lp[1]), "random": float(rnd_lp[0] - rnd_lp[1]),
                      "oracle": float(or_lp[0] - or_lp[1]), "top1_on_path": bool(top[0] in P["path"]),
-                     "top1_hop": hop_top1})
+                     "top1_hop": hop_top1, **extra})
+        if len(rows) % 100 == 0:
+            print(f"{len(rows)} problems scored", flush=True)
     R = rows
     def acc(key, by):
         vals = sorted(set(r[by] for r in R))
         return {int(v): float(np.mean([r[key] > 0 for r in R if r[by] == v])) for v in vals}
+    keys = ["base", "reanchor", "random", "oracle"] + (["reanchor_rp", "random_rp", "oracle_rp"] if a.random_pos else [])
     out = {"ckpt": a.ckpt, "Kp": a.Kp, "sweep_layer": int(L_), "sweep_head": int(H_), "n": len(R),
-           "by_m": {k: acc(k, "m") for k in ("base", "reanchor", "random", "oracle")},
-           "by_depth": {k: acc(k, "depth") for k in ("base", "reanchor", "random", "oracle")},
+           "by_m": {k: acc(k, "m") for k in keys},
+           "by_depth": {k: acc(k, "depth") for k in keys},
            "top1_on_path_share": float(np.mean([r["top1_on_path"] for r in R])), "rows": R}
     json.dump(out, open(a.out, "w"))
     print("sweep head", L_, H_, "top1 on path", round(out["top1_on_path_share"], 3))
-    for k in ("base", "reanchor", "random", "oracle"):
+    for k in keys:
         print(k, {d: round(v, 3) for d, v in out["by_depth"][k].items()})
     print("DONE", a.out)
 
