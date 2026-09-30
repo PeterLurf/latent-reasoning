@@ -1,0 +1,29 @@
+# PROTOCOL8 confirmatory, arm coco, seed 3
+project: coconut
+save_path: /workspace/ckpt
+name: p8c-coco-s3
+only_eval: False
+coconut: True
+cot: False
+no_thoughts: False
+no_cot: False
+c_thought: 1
+epochs_per_stage: 4
+max_latent_stage: 10
+pad_latent_to_max: True
+save_only_improve: False
+uniform_prob: 0.0
+model_id: openai-community/gpt2
+load_model_path: None
+seed: 3
+resume: 0
+bf16: False
+train_path: data/p8_train.json
+val_path: data/p8_valid.json
+reset_optimizer: True
+batch_size_training: 8
+debug: False
+gradient_accumulation_steps: 16
+num_epochs: 48
+lr: !!float "1e-4"
+weight_decay: 0.01
