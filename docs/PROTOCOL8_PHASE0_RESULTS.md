@@ -64,6 +64,17 @@ files (e44, ctl, CoT reference) are still running on the host.
   whether anytime or random-tight training makes the deep trained depths learnable (in distribution). Extrapolation
   is secondary.
 
+### P8-0b descriptive files (host drained 11:45, sha-verified)
+
+- **Control** (same added length, original answer depth), K′ = 10: 0.754 at m = 4 and 0.737 at m = 8, against 0.592
+  and 0.500 on the deep test. The failure tracks **answer depth, not input length**, as in addendum P. K′ = 0 is 0.54
+  / 0.51.
+- **Epoch 44 vs 48:** essentially the same (K′ = 10: 0.81 at m = 0 down to chance at m ≥ 5).
+- **CoT reference (epoch 4): invalid.** It reads 0.51 at every depth, which is an instrument mismatch. The stage-0
+  checkpoint of a Coconut run trains with <start-latent><end-latent> markers and the answer mask, but
+  `eval_p8.py --mode cot` feeds it the plain question. It is descriptive only, so no decision is affected. The
+  PROTOCOL8 CoT arm (plain GPT-2, `cot: True`, no markers, no mask) does match `eval_p8`'s format.
+
 ## Deviations from the registration (for the write-up's deviation table)
 
 | Plan | Change | When, relative to data | Reason | Impact |
