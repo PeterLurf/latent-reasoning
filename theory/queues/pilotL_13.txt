@@ -1,0 +1,3 @@
+pl_t8_s132 --init_from runs/p30_s132/model.pt --teacher t8 --head 6 --seed 132
+pl_self_s132 --init_from runs/p30_s132/model.pt --teacher self --head 6 --seed 132
+pl_gt_s132 --init_from runs/p30_s132/model.pt --teacher gt --head 6 --seed 132

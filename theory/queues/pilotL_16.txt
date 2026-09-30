@@ -1,0 +1,3 @@
+pl_t8_s145 --init_from runs/p30_s145/model.pt --teacher t8 --head 5 --seed 145
+pl_self_s145 --init_from runs/p30_s145/model.pt --teacher self --head 5 --seed 145
+pl_gt_s145 --init_from runs/p30_s145/model.pt --teacher gt --head 5 --seed 145
