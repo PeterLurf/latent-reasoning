@@ -48,6 +48,18 @@ spend at ≈ $13–14 from 23:00 and zero after ~02:30 (L drains ~00:30, the res
 ≈ $15 to 07:00. Expected credit at 07:00 ≈ $93, above PROTOCOL8's $34 plus the $10 reserve. Re-check live before
 registering.
 
+**Theory status 00:22 Wed (Theory session).** Scored so far:
+- Pilot H (§27): critical period, fine-tuning does not repair (8f80824).
+- Pilot D (§17): PD1 supported (440d6ae).
+- Pilot F (§23): jitter breaks learnability; no gain over anytime (440d6ae).
+
+Pending:
+- Pilot E: the last run is on theory-pa-h2, done ≈ 00:20.
+- Pilot L: the s102 re-runs on theory-L20, done ≈ 00:45.
+- Pilots G, I, J and K: the remaining theory hosts, drain ≈ 02:00–02:30.
+
+watch_hosts3.sh drains and destroys each host. The CPU job theory/exp15_c7_edit.py (§34 T-C7c, registered 6862dd6) runs locally with 2 threads at Idle priority until ≈ 01:30.
+
 **This session's live Vast hosts (destroy each after a checksum-verified fetch):**
 
 | Instance | Card, $/h | Job | SSH | Expected done → destroy |
