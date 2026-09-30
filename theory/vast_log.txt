@@ -229,3 +229,4 @@
 53490271 theory-T12smoke offer50923400 - created 2026-09-30 03:32 (create call returned; awaiting SSH; queue theory/queues/t12_smoke.txt)
 53490271 theory-T12smoke - - 76.122.147.106:51810 destroyed 2026-09-30 03:49: T12 GPU capture check done (no runs to fetch; smoke outputs only); vdestroy: DESTROYED_VERIFIED 53490271
 (note) 2026-09-30 04:57: M-2 runs on the local 2070 one at a time (two concurrent runs used 7.6 GB > the 6.5 GB limit; worker B stopped at step < 100 and its 5 runs appended to queue A; the partial pm_t8f_s112 was discarded)
+(note) 2026-09-30 13:32: §45 placement: models s146 (from the 3070 queue) and s157 (from the 2070 queue) moved, both arms each, to a third worker on the local 4060 (bf16), offered by Experiments; rules unchanged
