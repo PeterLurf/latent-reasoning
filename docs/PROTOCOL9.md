@@ -116,3 +116,9 @@ before D/E report, so its design does not depend on their outcome.
 * **Handling.** These attempts are void: an instrument failure, not stage-1 failures. They produced no model and no
   outcome. On each host the failed attempt's files (`runs/p9at_*`, their logs and the queue claim file) are deleted
   and the same queue is restarted with the fixed worker. Nothing else changes.
+
+## Note (2026-09-29 23:31 EDT, not a rule change): north-star conditions
+
+PROTOCOL9 bears on **C2** (more thinking helps beyond training, in every competent seed, across architectures) and
+**C6** (seed-to-seed variance of the outcome). It uses the toy model only, so C3 does not apply. See
+`docs/NORTH_STAR.md`.
