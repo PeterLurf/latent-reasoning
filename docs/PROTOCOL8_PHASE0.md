@@ -91,3 +91,24 @@ seed (0) is not reused by PROTOCOL8's confirmatory runs.
 
 Two cloud GPUs (RunPod ≤ $0.34/h first, else Vast), about 3 h (no-CoT) and 9–12 h (Coconut), ~$3–5 total. The results
 should arrive by ~2026-09-30 08:00, before the PROTOCOL8 confirmatory registration.
+
+## Amendment 1 (2026-09-29 22:17 EDT, after P8-0a was scored, before any P8-0b test outcome existed)
+
+* **Re-reading a₁** (theory session). A separately trained no-CoT model at chance measures learnability *without
+  intermediate supervision*, not one-pass *capacity*. Addendum Q's Coconut model scored 0.976 at K′ = 0 on native
+  ProsQA, so the curriculum can teach one-pass computation that a no-CoT run never finds. Hence "c = −1" from P8-0a
+  is reported as "no-CoT learnability", and one-pass capacity is also measured inside the Coconut model. With the
+  answer mask, K′ = 0 still leaves the <start-latent> position as a one-pass channel, so aᴄ(m, 0) is a genuine one-pass
+  measure.
+* **Added decision F1b (latent use inside the model; primary for the latent-use claim).** On H pooled:
+  aᴄ(·, 10) − aᴄ(·, 0) ≥ 0.15, together with F1's aᴄ(·, 10) ≥ 0.75. The model's own one-pass capacity c_model is the
+  largest m ≤ 6 with aᴄ(m′, 0) ≥ aᴄ(m′, 10) − 0.05 for every m′ ≤ m (−1 if none). Strata above c_model are where the
+  latents are used. PROTOCOL8's latent-use and monotonicity outcomes are scored there, in place of H, when c_model ≥ 0.
+* **What each case means:**
+  - F1 met but F1b not: Coconut solves the deep problems in one pass, as in addendum Q. PROTOCOL8 then needs a deeper
+    format before its latent claims can be tested.
+  - F1 and F1b both met: latent use is established on deep problems, and PROTOCOL8 proceeds on this format.
+* F1 itself is unchanged. Both F1 and F1b are reported.
+* **Disclosure.** The only P8-0b information seen so far is its in-run validation (exact-match generation capped at 128
+  tokens, 0/100 through epoch 14 and 6–7/100 at epochs 15–16). That is uninformative for these rules; see
+  CURRENT_TASKS.
