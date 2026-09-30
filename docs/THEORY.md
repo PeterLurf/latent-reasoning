@@ -2470,6 +2470,19 @@ model at n = 10.
     were scored, so a pooled verdict is partly determined by results already seen (Audit).
 
 
+## 46. Where does a written anchor help most? Toy hop sweep (pre-registered 2026-09-30 17:46 EDT, before measuring; counterpart of PROTOCOL8b's k-sweep)
+
+**Test.** `theory/exp21_hop_sweep.py`, CPU, the 59 P30 ∪ L models.
+* Episode 1, plus one restart from an oracle anchor: the reachable chain's node at distance k (k = 1..10).
+* Answers max-combined. Measure: bal-acc at distances d = 7..12, indexed by hops remaining r = d − k.
+
+**Predictions** (medians over models, pooling (d, k) cells with the same r):
+* **H1 (a one-episode horizon).** Accuracy depends on r, not on d: ≥ 0.80 for r ≤ 4, and ≤ 0.60 for r ≥ 7. One K = 6
+  episode plus the query hop covers about 6–7 hops.
+* **H2 (anchors near the target help most).** Accuracy is non-increasing in r for r = 1..7, allowing ties within 0.02.
+
+For PROTOCOL8b this would say: write the checkpoint within one episode's reach of the target, i.e. far from the root.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
