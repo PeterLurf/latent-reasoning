@@ -44,12 +44,12 @@ The closest trained precedent for "answer from its own text only" is Markovian T
 | # | Status | Evidence |
 |---|---|---|
 | C1 | Toy: met (delayed format; blocking the frontier cuts deep nodes). GPT-2 on ProsQA: **not met** — one-pass conduit (G, J), no training-depth wall (Q) | PROTOCOL3–5; PROTOCOL6 D/G/J/N/P/Q; PROTOCOL7 T1b/T2b |
-| C2 | Toy: understood, not solved. Predictor P7 (AUC 0.993). Anytime supervision gains only ~1 hop past training (Pilot D); post-hoc fine-tuning does not repair (H). The fall-back is keyed to an iteration count (P10e), so the target is bounding or restarting it. Under test: K, L, counter clamp (§36) | PROTOCOL6 K/L/M, PROTOCOL7; THEORY §§17, 20, 23, 27, 35 |
+| C2 | Toy: understood, not solved. Anytime supervision gains ~1 hop (Pilot D); the fall-back is keyed to an iteration count (P10e). Restart-based fixes work: re-anchoring 31/34 (§26), and distilling it into one loop fixes 19/20 (Pilot L). An inference-time count clamp rescues only 9/34 (§36) | THEORY §§17, 26, 32, 35, 36 |
 | C3 | Not tested | — |
-| C4 | Toy uses a lookup scaffold and a gated curriculum; label-free variants (F1a / Pilot K) under test | THEORY §31 |
+| C4 | Toy base models use a lookup scaffold. Label-free fine-tuning (distilling re-anchored inference) fixes 19/20 failures, but on deep graphs from the evaluation generator (Pilot L). F1a / Pilot K under test | THEORY §§31, 32 |
 | C5 | Not tested; re-anchoring (§26) is a hand-built version of "write a checkpoint every K steps" | THEORY §26 |
 | C6 | Partly characterised: outcome set at full-depth entry (E1), fading per hop (Mechanism 2); not solved | PROTOCOL6 A/E, THEORY §§4, 14 |
-| C7 | **Negative result on the naive version** (probe directions causally inert, Part I) and **a promising anchor**: re-anchored checkpoints are discrete node ids, i.e. readable by construction, and rescue 31/34 failures | Part I; THEORY §26 |
+| C7 | Toy: the silent pointer is causally editable at node-id level: answers follow edits (IIA 0.36). Round trip 0.947, just under 0.95. The vocabulary is node ids, not language, and the encoder is fitted on the model's own thoughts. Naive probe directions were inert (Part I) | THEORY §34; Part I |
 
 ## The candidate design this points to
 
