@@ -1,0 +1,76 @@
+# North star — what "solved latent reasoning" means for this project
+
+Set by the user on 2026-09-29: *"this entire project is based on trying to solve these problems"*. The goal is a model
+that satisfies all seven conditions below at once, in a pretrained language model, reliably across training seeds.
+This document defines each condition operationally, records where the project stands, and names the next steps. It
+states goals, not predictions: every test that bears on a condition is still pre-registered in the usual PROTOCOL /
+THEORY files before its data exist.
+
+## The seven conditions
+
+| # | Condition | Operational test (what would count as meeting it) |
+|---|---|---|
+| C1 | **The thoughts do the work** | Removing or blocking the latent steps drops accuracy to chance on problems that exceed one forward pass (addendum G/J style: K′ = 0 and K′ = 1 far below K), and step-specific blocking shows serial, hop-by-hop use |
+| C2 | **More thinking helps, beyond training** | Accuracy rises with latent steps past the trained budget (extrapolation at K′ > K), in every competent seed, not a lucky subset (the P7 / seed-lottery problem) |
+| C3 | **Competitive with text chain-of-thought** | At matched compute, equal or better accuracy than written CoT on tasks that need many steps (maths, planning, long graph search) |
+| C4 | **Trainable without step labels** | Reaches C1–C3 from final-answer supervision or RL alone, starting from a pretrained LM; no ground-truth intermediate states |
+| C5 | **Decides how long to think, and when to write** | Learned halting and learned externalisation: spends more steps on harder inputs; emits a discrete checkpoint when it helps |
+| C6 | **Stable** | No drift or collapse over long latent runs; low seed-to-seed variance in the outcome |
+| C7 | **Faithfully readable in human language** | A translation of each thought (or each checkpoint) into language that passes two causal tests: **round trip** — decode thought → text, re-encode text → thought, substitute, and behaviour is unchanged; **edit** — change the text (e.g. "node 37 is unreachable"), re-encode, substitute, and behaviour changes exactly as the edit predicts. Readable is not enough: Part I showed probes can decode what they cannot causally use |
+
+**Audit requirements for any C7 claim** (from the Literature survey, `docs/LIT_NORTHSTAR_2026-09-29.md`, 0734c84):
+(a) **behavioural substitution**: the re-encoded thought replaces the original and the model's answers are compared;
+reconstruction quality (fraction of variance explained) alone does not count. (b) **Edit test scored by
+interchange-intervention accuracy** (DAS, 2303.02536), plus the share of answers that change, at the level of the
+claim (e.g. which node ids are in the frontier). (c) **Input-only control**: the same decoder applied to the input
+without the thought must not match its performance, since verbalizers can be right from the input alone (2509.13316).
+(d) **Restart / hidden-channel tests** (LIT_NORTHSTAR §5, 49ff87e): only restarts that drop text or carry non-text state
+are informative, since restarting a standard transformer from its full text is identical by construction. Report
+per-instance answer agreement and KL, not just aggregate accuracy (Delethink and InftyThink report only aggregates).
+The closest trained precedent for "answer from its own text only" is Markovian Transformers (2404.18988); hold any
+"first" claim to it.
+
+## Where the field stands (Literature survey, 2026-09-29)
+
+- No published work passes a behavioural round-trip and predicted-edit test on latent reasoning states. The closest
+  activation-to-text decoder (NLA, 2026) reports reconstruction and steering, not behavioural substitution.
+- Ouro (2510.25741, 1.4–2.6B) claims C3/C4/C5 and a correlational form of C7, but degrades beyond its trained depth
+  (C2 not met). Huginn, LOTUS, SIM-CoT and TRM each cover two or three conditions.
+- Nobody claims C2 in every seed, or a causal C7. No published design combines a latent loop, a set-valued readable
+  checkpoint and a learned restart. Any "first" claim here should be scoped to exactly that.
+
+## Where the project stands (toy 2-layer model unless marked)
+
+| # | Status | Evidence |
+|---|---|---|
+| C1 | Toy: met (delayed format; blocking the frontier cuts deep nodes). GPT-2 on ProsQA: **not met** — one-pass conduit (G, J), no training-depth wall (Q) | PROTOCOL3–5; PROTOCOL6 D/G/J/N/P/Q; PROTOCOL7 T1b/T2b |
+| C2 | Toy: understood, not solved — a mechanistic predictor (P7, AUC 0.993 prospective) and a causal account (step-indexed schedule, slack); fixes under test (anytime supervision D/E, tight budgets K, distillation L). Post-hoc repair ruled out at the registered dose: anytime fine-tuning of 20 trained failures extrapolates in 1/18 and keeps the step-counting pointer (Pilot H, critical period; so budgets must be fixed at circuit selection) | PROTOCOL6 K/L/M, PROTOCOL7, THEORY §§2, 18, 22, 25–32 (§27 Pilot H, Audit-reproduced) |
+| C3 | Not tested | — |
+| C4 | Toy uses a lookup scaffold and a gated curriculum; label-free variants (F1a / Pilot K) under test | THEORY §31 |
+| C5 | Not tested; re-anchoring (§26) is a hand-built version of "write a checkpoint every K steps" | THEORY §26 |
+| C6 | Partly characterised: outcome set at full-depth entry (E1), fading per hop (Mechanism 2); not solved | PROTOCOL6 A/E, THEORY §§4, 14 |
+| C7 | **Negative result on the naive version** (probe directions causally inert, Part I) and **a promising anchor**: re-anchored checkpoints are discrete node ids, i.e. readable by construction, and rescue 31/34 failures | Part I; THEORY §26 |
+
+## The candidate design this points to
+
+**Checkpointed latent reasoning**: think silently for up to K steps, then write a discrete, human-readable checkpoint
+(the current frontier: which nodes are reached, at what depth), and restart the latent loop from it. Re-anchoring
+suggests this can serve C2 (no step count outside the trained range), C6 (amplitude restored at each checkpoint) and
+C7 (checkpoints are readable by construction), and a learned checkpoint policy is C5. Open questions:
+1. Are the silent stretches between checkpoints themselves faithful (C7 for latent steps, not only checkpoints)?
+2. Can the checkpoint carry a *set* (the frontier holds several branches; the model's own anchor is right in ~1/W of
+   graphs) without losing the parallelism that makes latent reasoning worth having?
+3. Can it be learned end-to-end without step labels (C4), e.g. by distillation (Pilot L) or RL on final answers?
+4. Does it transfer to a pretrained LM on problems deeper than one pass (PROTOCOL8's format)?
+
+## Roles (see the memory note "latent-sessions")
+
+- **Theory** — design the checkpointed architecture and the C7 round-trip / edit tests on the toy model; keep the
+  mechanism account current against C2/C6.
+- **Experiments** — confirmatory tests at scale; after PROTOCOL8, carry the checkpoint design and the C7 tests to a
+  pretrained model.
+- **Literature** — prior work on faithful chain-of-thought and CoT monitorability, latent-state decoding and
+  translation (e.g. logit/tuned lens, activation-to-text decoders), adaptive computation and learned halting, and
+  hybrid latent/discrete reasoning.
+- **Audit** — hold every claim of progress on a condition to its operational test above; keep this status table
+  current as results are scored.
