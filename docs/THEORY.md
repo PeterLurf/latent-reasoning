@@ -2259,6 +2259,18 @@ about 24 hops. Two accounts:
 
 **Reference, descriptive.** The same models' GT12 students (pl_gt), paired.
 
+**Result (2026-09-30; 10 runs finished 10:49; `theory/score_s41.py` → `theory/results/score_s41.json`, raw
+`theory/results/exp18_pilotN.json`). Partial by the registered rule.**
+* Median d10–12 = 0.67 (not < 0.60), so the count did not simply move to 9.
+* Median d13–18 = 0.53 (< 0.60), so continuation is not unbounded.
+* Median profile: d9 0.71, d10 0.69, d11 0.67, d12 0.64, d13 0.60, d14 0.55, d15 0.52, then chance.
+* Reference: the same models' GT12 students keep 0.70 at d13–18 and 0.59 at d23.
+* **Reading (hypothesis, not tested).** Reach past the supervised depth is graded and grows with it: training to 9 →
+  about 13–14 hops; training to 12 → about 22. This looks like a per-hop fade whose rate depends on the depth trained
+  (Mechanism 2), not a stop key. Deeper training makes the transition more restoring, so the pointer survives more
+  hops. It would explain why a second depth helps even though the count stays decodable (§37). A test: transfer
+  curves (exp9's z) for GT9 vs GT12 students.
+
 ## 42. Predictions sent for PROTOCOL8's revised primary (in-distribution deep depths) (2026-09-30 09:34 EDT, before any PROTOCOL8 confirmatory data)
 
 Context: Phase 0 outcome (iii), from the experiments session. GPT-2 Coconut on deep ProsQA learns about 5–6 hops in its
