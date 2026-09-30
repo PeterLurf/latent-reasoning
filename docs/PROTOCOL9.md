@@ -122,3 +122,11 @@ before D/E report, so its design does not depend on their outcome.
 PROTOCOL9 bears on **C2** (more thinking helps beyond training, in every competent seed, across architectures) and
 **C6** (seed-to-seed variance of the outcome). It uses the toy model only, so C3 does not apply. See
 `docs/NORTH_STAR.md`.
+
+## Amendment 4 (2026-09-29 23:49 EDT, instrument fix for the fork family)
+
+* The same `length_gen` crash (PROTOCOL7 amendment 9) hit PROTOCOL9's fork runs on hosts vf1–4. The fix is in
+  `latent/length_gen.py`: the probe is built under the default shape and is unchanged for default-shape runs. It is
+  copied to vf1–4. `length_gen` is re-run for fork runs already evaluated, and later runs use the fixed code.
+* **Disclosure.** Diagnosing the crash on vf4 showed `p9at_fork_s563`'s in-distribution evaluation lines
+  (competence and budget sweep by depth, K′ ≤ 10). No d7/d8 value (the AP1/AP2 measures) was seen; none existed.
