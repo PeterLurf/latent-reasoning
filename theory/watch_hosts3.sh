@@ -18,7 +18,10 @@ drain() {   # tag h p id n
   local tag=$1 h=$2 p=$3 id=$4 n=$5
   mkdir $S/drain_$tag.lock 2>/dev/null || return 0
   r=$(timeout 1800 bash theory/vfetch_arch.sh $h $p 2>&1 | tail -1)
-  if [[ "$r" == fetched,\ sha\ ok* ]] || [[ "$r" == "NOTHING TO FETCH" ]]; then
+  # completeness: every run with an eval.json on the host must now exist locally with its eval.json
+  remote=$(timeout 60 ssh -n -o ConnectTimeout=15 -i $KEY -p $p root@$h "cd /workspace/Latent && ls theory/runs/*/eval.json 2>/dev/null" 2>/dev/null | grep -v "Welcome\|Have fun" | tr -d '')
+  missing=0; for f in $remote; do [ -f "$f" ] || missing=$((missing + 1)); done
+  if [[ "$r" == fetched,\ sha\ ok* ]] && [ -n "$remote" ] && [ $missing -eq 0 ]; then
     echo "$id $tag - - $h:$p fetched $(date '+%Y-%m-%d %H:%M') ($r)" >> theory/vast_log.txt
     d=$(timeout 120 bash "$V" destroy instance $id -y 2>&1 | tail -1)
     for try in 1 2 3 4 5 6; do
@@ -34,7 +37,7 @@ except Exception: print('ERR')")
     done
     echo "$id $tag - - $h:$p DESTROY NOT CONFIRMED $(date '+%Y-%m-%d %H:%M') ($d); will retry" >> theory/vast_log.txt
   else
-    echo "$id $tag - - $h:$p FETCH FAILED $(date '+%Y-%m-%d %H:%M') ($r); will retry" >> theory/vast_log.txt
+    echo "$id $tag - - $h:$p FETCH FAILED OR INCOMPLETE $(date '+%Y-%m-%d %H:%M') ($r; remote runs $(echo $remote | wc -w), missing locally $missing); will retry" >> theory/vast_log.txt
   fi
   rmdir $S/drain_$tag.lock
 }
