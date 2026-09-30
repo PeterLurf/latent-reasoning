@@ -1,0 +1,3 @@
+pf_atl_s905 --seed 905 --anytime 1 --anytime_stages 4:5
+pi_per2_s904 --seed 904 --periodic_step 2
+pj_ch3_s903 --seed 903 --arch chunk3

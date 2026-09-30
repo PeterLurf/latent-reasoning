@@ -1,0 +1,2 @@
+pg_glat_s903 --seed 903 --arch setmem --set_from_stage 5 --anytime 1
+pi_per2_s903 --seed 903 --periodic_step 2

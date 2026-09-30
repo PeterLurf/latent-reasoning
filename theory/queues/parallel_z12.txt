@@ -1,0 +1,3 @@
+pg_gat_s904 --seed 904 --arch setmem --anytime 1
+pi_per3_s901 --seed 901 --periodic_step 3
+pj_ch3at_s904 --seed 904 --arch chunk3 --anytime 1
