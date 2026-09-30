@@ -312,8 +312,9 @@ user decides.
 extrapolate (fine-tuning control 0/20; own single-episode labels 0/20). **Planned follow-up (PROTOCOL8b, own
 registration):** re-anchoring plus distillation on PROTOCOL8's coco-arm checkpoints (~Thu 00:00). Anchor decode:
 attention-based and/or text (Patchscopes; also the first C7 test). Recipe to come from Theory.
-- **Pilot K (§31, b19711a):** random-tight ≈ anytime on the toy (4/4 competent RT runs extrapolate at d7; median d8
-  0.571 vs 0.584; same fall-back after K; learnability lower, 4/8). One PROTOCOL8 prediction serves both arms.
+- **Pilot K (§31, b19711a; corrected per Audit):** random-tight is *consistent with* anytime on the toy (only 4 competent runs; PK1 unresolved; PK3 split, 2/4 still show the fixed-K brake), not established (4/4 competent RT runs extrapolate at d7; median d8
+  0.571 vs 0.584; learnability lower, 4/8). PROTOCOL8 registers the same prediction for both arms, with lower
+  confidence for random-tight.
 - **PROTOCOL8b recipe** (Theory; toy code `theory/distill_reanchor.py`, `theory/exp12_reanchor.py`):
   - Teacher: K thoughts, then the top-3 statements by sweep-head attention at thought K become anchors. Each anchor
     gets a fresh K-thought episode from its target entity, and the answer is the max logit over the episodes.
