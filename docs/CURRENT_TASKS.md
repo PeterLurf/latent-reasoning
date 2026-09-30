@@ -111,7 +111,7 @@ change.
 
 | When | Item | Action |
 |---|---|---|
-| now | T9 + T10 (all runs in) | `PYTHONPATH=. python scratch/score_p7s_t9.py --device cuda:1`; chain-shaped probe caveat for fork runs |
+| done 07:43 | T9 + T10 | **T9 pooled supported (AUC 0.89); T10 supported (AUC 1.00)**; per family in `docs/PROTOCOL7_RESULTS.md`; secondary causal tests pending |
 | now | PROTOCOL9 primary (32 pairs in) | `PYTHONPATH=. python scratch/score_p9.py --final` |
 | ~09:00 | Phase 0 Coconut: training ends ~08:10 (epochs ran ~28 min, not 14); `coco_test_e48.json` first, full evaluation ~11:00 | read F1/F1b from e48 as soon as it exists; drain at ANALYSIS_DONE |
 | ~09:30–10:00 | PROTOCOL8 registration, after F1/F1b | launch ~10:30: 12 latent-arm hosts (~16–20 h each) + 4 CoT; ≈ $50 of $88 |
