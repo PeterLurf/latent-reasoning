@@ -159,3 +159,227 @@ theory/runs/pb_at_s750 K'=16 near 0.99 0.98 0.97 0.90 0.76 0.70 | far 0.63 0.60 
 EVAL theory/runs/pb_at_s750 stage full delayed 0.960 m5 0.757 gate True d7 0.615 extrap True far8-10 0.564
 14:06:30 evaluated pb_at_s750
 14:06:30 start pb_mat_s760 (--seed 760 --arch markov --anytime 1)
+15:48:30 trained pb_mat_s760 rc 0
+theory/runs/pb_mat_s760 K'=0 delayed 0.696 upfront 0.498 depth(delayed) {1:1.00, 2:1.00, 3:0.05, 4:0.03, 5:0.02, 6:0.01, 99:0.93}
+theory/runs/pb_mat_s760 K'=1 delayed 0.740 upfront 0.720 depth(delayed) {1:1.00, 2:0.99, 3:0.18, 4:0.00, 5:0.00, 6:0.00, 99:1.00}
+theory/runs/pb_mat_s760 K'=2 delayed 0.813 upfront 0.841 depth(delayed) {1:1.00, 2:0.99, 3:0.79, 4:0.05, 5:0.05, 6:0.04, 99:0.97}
+theory/runs/pb_mat_s760 K'=3 delayed 0.851 upfront 0.923 depth(delayed) {1:1.00, 2:0.99, 3:0.84, 4:0.51, 5:0.14, 6:0.16, 99:0.94}
+theory/runs/pb_mat_s760 K'=4 delayed 0.864 upfront 0.975 depth(delayed) {1:1.00, 2:0.99, 3:0.85, 4:0.62, 5:0.31, 6:0.20, 99:0.92}
+theory/runs/pb_mat_s760 K'=5 delayed 0.875 upfront 0.990 depth(delayed) {1:1.00, 2:0.99, 3:0.85, 4:0.63, 5:0.53, 6:0.37, 99:0.92}
+theory/runs/pb_mat_s760 K'=6 delayed 0.875 upfront 1.000 depth(delayed) {1:1.00, 2:0.99, 3:0.85, 4:0.63, 5:0.56, 6:0.39, 99:0.92}
+theory/runs/pb_mat_s760 d1:1.00 d2:0.98 d3:0.85 d4:0.71 d5:0.66 d6:0.57
+theory/runs/pb_mat_s760 K'= 0 near 0.87 0.98 0.51 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/pb_mat_s760 K'= 2 near 0.98 0.97 0.92 0.50 0.49 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/pb_mat_s760 K'= 4 near 0.98 0.96 0.91 0.81 0.52 0.51 | far 0.49 0.50 0.50 0.50 0.50 0.49
+theory/runs/pb_mat_s760 K'= 6 near 0.98 0.96 0.91 0.80 0.69 0.52 | far 0.49 0.51 0.50 0.50 0.50 0.48
+theory/runs/pb_mat_s760 K'= 8 near 0.98 0.96 0.91 0.81 0.69 0.58 | far 0.49 0.50 0.50 0.50 0.50 0.48
+theory/runs/pb_mat_s760 K'=10 near 0.98 0.96 0.91 0.80 0.69 0.57 | far 0.49 0.51 0.50 0.50 0.50 0.48
+theory/runs/pb_mat_s760 K'=12 near 0.98 0.96 0.91 0.80 0.69 0.57 | far 0.49 0.50 0.50 0.50 0.50 0.48
+theory/runs/pb_mat_s760 K'=16 near 0.98 0.96 0.90 0.80 0.69 0.57 | far 0.49 0.50 0.50 0.50 0.50 0.48
+EVAL theory/runs/pb_mat_s760 stage 4 delayed 0.875 m5 0.663 gate False d7 0.492 extrap False far8-10 0.501
+15:48:39 evaluated pb_mat_s760
+15:48:39 start pb_mr_s770 (--seed 770 --arch markov_restore)
+16:59:39 trained pb_mr_s770 rc 0
+theory/runs/pb_mr_s770 K'=0 delayed 0.659 upfront 0.500 depth(delayed) {1:1.00, 2:0.55, 3:0.00, 4:0.00, 5:0.00, 6:0.00, 99:1.00}
+theory/runs/pb_mr_s770 K'=1 delayed 0.719 upfront 0.595 depth(delayed) {1:1.00, 2:1.00, 3:0.01, 4:0.01, 5:0.01, 6:0.02, 99:0.99}
+theory/runs/pb_mr_s770 K'=2 delayed 0.790 upfront 0.740 depth(delayed) {1:1.00, 2:1.00, 3:0.59, 4:0.03, 5:0.04, 6:0.04, 99:0.98}
+theory/runs/pb_mr_s770 K'=3 delayed 0.832 upfront 0.857 depth(delayed) {1:1.00, 2:1.00, 3:0.58, 4:0.51, 5:0.05, 6:0.07, 99:0.97}
+theory/runs/pb_mr_s770 K'=4 delayed 0.873 upfront 0.936 depth(delayed) {1:1.00, 2:1.00, 3:0.91, 4:0.52, 5:0.07, 6:0.08, 99:0.97}
+theory/runs/pb_mr_s770 K'=5 delayed 0.910 upfront 0.984 depth(delayed) {1:1.00, 2:1.00, 3:0.91, 4:0.82, 5:0.31, 6:0.11, 99:0.97}
+theory/runs/pb_mr_s770 K'=6 delayed 0.928 upfront 1.000 depth(delayed) {1:1.00, 2:1.00, 3:0.91, 4:0.82, 5:0.63, 6:0.41, 99:0.96}
+theory/runs/pb_mr_s770 d1:1.00 d2:0.99 d3:0.92 d4:0.86 d5:0.74 d6:0.60
+theory/runs/pb_mr_s770 K'= 0 near 1.00 0.77 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/pb_mr_s770 K'= 2 near 1.00 0.99 0.78 0.50 0.50 0.50 | far 0.49 0.50 0.50 0.50 0.50 0.50
+theory/runs/pb_mr_s770 K'= 4 near 1.00 0.99 0.99 0.77 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.51
+theory/runs/pb_mr_s770 K'= 6 near 1.00 0.99 0.98 0.96 0.83 0.60 | far 0.49 0.50 0.51 0.50 0.50 0.51
+theory/runs/pb_mr_s770 K'= 8 near 1.00 0.99 0.98 0.95 0.83 0.78 | far 0.73 0.56 0.50 0.50 0.50 0.51
+theory/runs/pb_mr_s770 K'=10 near 1.00 0.99 0.98 0.95 0.83 0.80 | far 0.75 0.73 0.69 0.56 0.50 0.51
+theory/runs/pb_mr_s770 K'=12 near 1.00 0.99 0.98 0.95 0.83 0.79 | far 0.77 0.74 0.71 0.67 0.63 0.57
+theory/runs/pb_mr_s770 K'=16 near 1.00 0.99 0.98 0.95 0.83 0.79 | far 0.77 0.74 0.72 0.68 0.65 0.68
+EVAL theory/runs/pb_mr_s770 stage full delayed 0.928 m5 0.738 gate True d7 0.772 extrap True far8-10 0.709
+16:59:48 evaluated pb_mr_s770
+16:59:48 start pb_atr_s780 (--seed 780 --arch restore --anytime 1)
+18:34:48 trained pb_atr_s780 rc 0
+theory/runs/pb_atr_s780 K'=0 delayed 0.761 upfront 0.500 depth(delayed) {1:1.00, 2:1.00, 3:0.51, 4:0.00, 5:0.00, 6:0.00, 99:0.95}
+theory/runs/pb_atr_s780 K'=1 delayed 0.793 upfront 0.720 depth(delayed) {1:1.00, 2:1.00, 3:0.56, 4:0.00, 5:0.00, 6:0.00, 99:1.00}
+theory/runs/pb_atr_s780 K'=2 delayed 0.874 upfront 0.848 depth(delayed) {1:1.00, 2:1.00, 3:0.96, 4:0.35, 5:0.07, 6:0.04, 99:0.99}
+theory/runs/pb_atr_s780 K'=3 delayed 0.922 upfront 0.933 depth(delayed) {1:1.00, 2:1.00, 3:0.98, 4:0.82, 5:0.29, 6:0.16, 99:0.97}
+theory/runs/pb_atr_s780 K'=4 delayed 0.942 upfront 0.984 depth(delayed) {1:1.00, 2:1.00, 3:0.99, 4:0.86, 5:0.71, 6:0.27, 99:0.96}
+theory/runs/pb_atr_s780 K'=5 delayed 0.948 upfront 1.000 depth(delayed) {1:1.00, 2:1.00, 3:0.99, 4:0.87, 5:0.73, 6:0.72, 99:0.96}
+theory/runs/pb_atr_s780 K'=6 delayed 0.948 upfront 1.000 depth(delayed) {1:1.00, 2:1.00, 3:0.99, 4:0.87, 5:0.73, 6:0.73, 99:0.96}
+theory/runs/pb_atr_s780 d1:1.00 d2:1.00 d3:0.98 d4:0.88 d5:0.77 d6:0.72
+theory/runs/pb_atr_s780 K'= 0 near 0.82 0.99 0.74 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/pb_atr_s780 K'= 2 near 1.00 0.99 0.98 0.68 0.51 0.50 | far 0.50 0.50 0.50 0.50 0.51 0.50
+theory/runs/pb_atr_s780 K'= 4 near 1.00 0.99 0.98 0.91 0.81 0.54 | far 0.50 0.50 0.51 0.50 0.51 0.50
+theory/runs/pb_atr_s780 K'= 6 near 1.00 0.99 0.98 0.91 0.82 0.75 | far 0.65 0.51 0.51 0.50 0.51 0.50
+theory/runs/pb_atr_s780 K'= 8 near 1.00 0.99 0.98 0.91 0.82 0.75 | far 0.65 0.52 0.51 0.50 0.52 0.50
+theory/runs/pb_atr_s780 K'=10 near 1.00 0.99 0.98 0.91 0.81 0.75 | far 0.65 0.52 0.51 0.50 0.51 0.50
+theory/runs/pb_atr_s780 K'=12 near 1.00 0.99 0.98 0.91 0.81 0.75 | far 0.65 0.52 0.51 0.50 0.51 0.50
+theory/runs/pb_atr_s780 K'=16 near 1.00 0.99 0.98 0.91 0.81 0.75 | far 0.65 0.52 0.51 0.50 0.52 0.50
+EVAL theory/runs/pb_atr_s780 stage full delayed 0.948 m5 0.766 gate True d7 0.647 extrap True far8-10 0.510
+18:34:57 evaluated pb_atr_s780
+18:34:57 start pe8_at_s1000 (--seed 1000 --K 8 --anytime 1)
+20:14:57 trained pe8_at_s1000 rc 0
+theory/runs/pe8_at_s1000 K'=0 delayed 0.698 upfront 0.502 depth(delayed) {1:1.00, 2:0.83, 3:0.00, 4:0.00, 5:0.00, 6:0.00, 99:1.00}
+theory/runs/pe8_at_s1000 K'=1 delayed 0.723 upfront 0.720 depth(delayed) {1:1.00, 2:0.99, 3:0.03, 4:0.00, 5:0.00, 6:0.00, 99:1.00}
+theory/runs/pe8_at_s1000 K'=2 delayed 0.818 upfront 0.848 depth(delayed) {1:1.00, 2:0.99, 3:0.81, 4:0.03, 5:0.02, 6:0.02, 99:0.98}
+theory/runs/pe8_at_s1000 K'=3 delayed 0.877 upfront 0.933 depth(delayed) {1:1.00, 2:0.99, 3:0.82, 4:0.73, 5:0.05, 6:0.07, 99:0.97}
+theory/runs/pe8_at_s1000 K'=4 delayed 0.907 upfront 0.984 depth(delayed) {1:1.00, 2:0.99, 3:0.83, 4:0.74, 5:0.74, 6:0.11, 99:0.96}
+theory/runs/pe8_at_s1000 K'=5 delayed 0.920 upfront 1.000 depth(delayed) {1:1.00, 2:0.99, 3:0.86, 4:0.74, 5:0.75, 6:0.69, 99:0.96}
+theory/runs/pe8_at_s1000 K'=6 delayed 0.926 upfront 1.000 depth(delayed) {1:1.00, 2:0.99, 3:0.88, 4:0.78, 5:0.74, 6:0.69, 99:0.96}
+theory/runs/pe8_at_s1000 K'=7 delayed 0.930 upfront 1.000 depth(delayed) {1:1.00, 2:0.99, 3:0.88, 4:0.81, 5:0.78, 6:0.69, 99:0.96}
+theory/runs/pe8_at_s1000 K'=8 delayed 0.932 upfront 1.000 depth(delayed) {1:1.00, 2:0.99, 3:0.88, 4:0.80, 5:0.82, 6:0.72, 99:0.96}
+theory/runs/pe8_at_s1000 d1:1.00 d2:0.99 d3:0.90 d4:0.85 d5:0.84 d6:0.76
+theory/runs/pe8_at_s1000 K'= 0 near 1.00 0.90 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/pe8_at_s1000 K'= 2 near 1.00 0.99 0.96 0.49 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/pe8_at_s1000 K'= 4 near 1.00 0.98 0.96 0.91 0.87 0.50 | far 0.50 0.50 0.50 0.51 0.50 0.49
+theory/runs/pe8_at_s1000 K'= 6 near 1.00 0.98 0.97 0.91 0.87 0.79 | far 0.64 0.50 0.50 0.51 0.50 0.49
+theory/runs/pe8_at_s1000 K'= 8 near 1.00 0.99 0.97 0.93 0.90 0.79 | far 0.63 0.52 0.50 0.51 0.50 0.49
+theory/runs/pe8_at_s1000 K'=10 near 1.00 0.99 0.97 0.93 0.90 0.82 | far 0.65 0.52 0.50 0.51 0.50 0.49
+theory/runs/pe8_at_s1000 K'=12 near 1.00 0.99 0.97 0.93 0.90 0.82 | far 0.68 0.57 0.53 0.51 0.50 0.50
+theory/runs/pe8_at_s1000 K'=16 near 1.00 0.99 0.97 0.93 0.90 0.83 | far 0.69 0.62 0.60 0.59 0.56 0.57
+EVAL theory/runs/pe8_at_s1000 stage full delayed 0.932 m5 0.839 gate True d7 0.675 extrap True far8-10 0.535
+20:15:07 evaluated pe8_at_s1000
+20:15:07 start pe8_c_s1000 (--seed 1000 --K 8)
+21:10:07 trained pe8_c_s1000 rc 0
+theory/runs/pe8_c_s1000 K'=0 delayed 0.680 upfront 0.500 depth(delayed) {1:0.98, 2:0.98, 3:0.14, 4:0.12, 5:0.09, 6:0.03, 99:0.86}
+theory/runs/pe8_c_s1000 K'=1 delayed 0.707 upfront 0.570 depth(delayed) {1:1.00, 2:0.99, 3:0.46, 4:0.21, 5:0.19, 6:0.14, 99:0.80}
+theory/runs/pe8_c_s1000 K'=2 delayed 0.768 upfront 0.717 depth(delayed) {1:1.00, 2:0.96, 3:0.55, 4:0.05, 5:0.04, 6:0.03, 99:0.95}
+theory/runs/pe8_c_s1000 K'=3 delayed 0.810 upfront 0.842 depth(delayed) {1:1.00, 2:0.92, 3:0.67, 4:0.27, 5:0.03, 6:0.03, 99:0.97}
+theory/runs/pe8_c_s1000 K'=4 delayed 0.835 upfront 0.924 depth(delayed) {1:1.00, 2:0.90, 3:0.80, 4:0.39, 5:0.04, 6:0.03, 99:0.98}
+theory/runs/pe8_c_s1000 K'=5 delayed 0.862 upfront 0.974 depth(delayed) {1:1.00, 2:0.92, 3:0.81, 4:0.54, 5:0.32, 6:0.04, 99:0.97}
+theory/runs/pe8_c_s1000 K'=6 delayed 0.882 upfront 0.996 depth(delayed) {1:1.00, 2:0.94, 3:0.82, 4:0.68, 5:0.40, 6:0.30, 99:0.96}
+theory/runs/pe8_c_s1000 K'=7 delayed 0.892 upfront 1.000 depth(delayed) {1:1.00, 2:0.94, 3:0.83, 4:0.69, 5:0.61, 6:0.38, 99:0.95}
+theory/runs/pe8_c_s1000 K'=8 delayed 0.901 upfront 1.000 depth(delayed) {1:1.00, 2:0.96, 3:0.84, 4:0.79, 5:0.63, 6:0.43, 99:0.95}
+theory/runs/pe8_c_s1000 d1:1.00 d2:0.95 d3:0.87 d4:0.83 d5:0.73 d6:0.62
+theory/runs/pe8_c_s1000 K'= 0 near 0.91 0.93 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/pe8_c_s1000 K'= 2 near 0.99 0.97 0.81 0.50 0.50 0.50 | far 0.50 0.50 0.51 0.51 0.50 0.50
+theory/runs/pe8_c_s1000 K'= 4 near 1.00 0.94 0.96 0.73 0.50 0.50 | far 0.51 0.50 0.50 0.51 0.50 0.50
+theory/runs/pe8_c_s1000 K'= 6 near 0.99 0.96 0.96 0.88 0.69 0.60 | far 0.51 0.50 0.50 0.50 0.50 0.50
+theory/runs/pe8_c_s1000 K'= 8 near 0.99 0.97 0.95 0.93 0.82 0.66 | far 0.54 0.50 0.49 0.51 0.50 0.51
+theory/runs/pe8_c_s1000 K'=10 near 0.99 0.97 0.95 0.93 0.86 0.70 | far 0.59 0.51 0.50 0.51 0.50 0.50
+theory/runs/pe8_c_s1000 K'=12 near 0.99 0.97 0.95 0.93 0.86 0.71 | far 0.62 0.52 0.50 0.51 0.50 0.50
+theory/runs/pe8_c_s1000 K'=16 near 0.98 0.96 0.94 0.91 0.86 0.72 | far 0.63 0.53 0.50 0.51 0.50 0.49
+EVAL theory/runs/pe8_c_s1000 stage full delayed 0.901 m5 0.725 gate True d7 0.621 extrap True far8-10 0.509
+21:10:17 evaluated pe8_c_s1000
+21:10:17 start ph_at_s102 (--seed 102 --init_from runs/p30_s102/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0 --anytime 1)
+21:27:17 trained ph_at_s102 rc 0
+theory/runs/ph_at_s102 K'=0 delayed 0.699 upfront 0.506 depth(delayed) {1:1.00, 2:0.93, 3:0.05, 4:0.05, 5:0.05, 6:0.03, 99:0.95}
+theory/runs/ph_at_s102 K'=1 delayed 0.746 upfront 0.720 depth(delayed) {1:1.00, 2:0.89, 3:0.39, 4:0.04, 5:0.04, 6:0.03, 99:0.97}
+theory/runs/ph_at_s102 K'=2 delayed 0.803 upfront 0.848 depth(delayed) {1:1.00, 2:0.91, 3:0.62, 4:0.42, 5:0.07, 6:0.06, 99:0.95}
+theory/runs/ph_at_s102 K'=3 delayed 0.837 upfront 0.933 depth(delayed) {1:1.00, 2:0.95, 3:0.77, 4:0.44, 5:0.26, 6:0.09, 99:0.94}
+theory/runs/ph_at_s102 K'=4 delayed 0.858 upfront 0.984 depth(delayed) {1:1.00, 2:0.99, 3:0.77, 4:0.55, 5:0.29, 6:0.26, 99:0.95}
+theory/runs/ph_at_s102 K'=5 delayed 0.870 upfront 1.000 depth(delayed) {1:1.00, 2:0.99, 3:0.83, 4:0.57, 5:0.43, 6:0.31, 99:0.94}
+theory/runs/ph_at_s102 K'=6 delayed 0.883 upfront 1.000 depth(delayed) {1:1.00, 2:0.98, 3:0.89, 4:0.58, 5:0.51, 6:0.33, 99:0.94}
+theory/runs/ph_at_s102 d1:1.00 d2:0.97 d3:0.90 d4:0.67 d5:0.63 d6:0.55
+theory/runs/ph_at_s102 K'= 0 near 0.98 0.96 0.50 0.50 0.50 0.51 | far 0.50 0.50 0.50 0.50 0.51 0.50
+theory/runs/ph_at_s102 K'= 2 near 0.99 0.96 0.85 0.75 0.51 0.51 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/ph_at_s102 K'= 4 near 1.00 0.97 0.91 0.81 0.66 0.57 | far 0.50 0.50 0.50 0.51 0.50 0.50
+theory/runs/ph_at_s102 K'= 6 near 1.00 0.97 0.95 0.83 0.78 0.62 | far 0.52 0.50 0.50 0.51 0.50 0.50
+theory/runs/ph_at_s102 K'= 8 near 0.99 0.97 0.94 0.85 0.79 0.65 | far 0.55 0.51 0.50 0.50 0.50 0.50
+theory/runs/ph_at_s102 K'=10 near 0.99 0.97 0.94 0.85 0.79 0.67 | far 0.56 0.51 0.50 0.50 0.50 0.49
+theory/runs/ph_at_s102 K'=12 near 0.99 0.97 0.94 0.85 0.79 0.68 | far 0.56 0.51 0.50 0.50 0.50 0.49
+theory/runs/ph_at_s102 K'=16 near 0.99 0.96 0.93 0.84 0.80 0.69 | far 0.57 0.51 0.50 0.51 0.50 0.49
+EVAL theory/runs/ph_at_s102 stage full delayed 0.883 m5 0.633 gate True d7 0.561 extrap False far8-10 0.507
+21:27:26 evaluated ph_at_s102
+21:27:26 start ph_c_s102 (--seed 102 --init_from runs/p30_s102/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0)
+21:37:26 trained ph_c_s102 rc 0
+theory/runs/ph_c_s102 K'=0 delayed 0.698 upfront 0.502 depth(delayed) {1:1.00, 2:0.90, 3:0.05, 4:0.06, 5:0.06, 6:0.06, 99:0.95}
+theory/runs/ph_c_s102 K'=1 delayed 0.746 upfront 0.635 depth(delayed) {1:1.00, 2:0.81, 3:0.46, 4:0.05, 5:0.06, 6:0.07, 99:0.97}
+theory/runs/ph_c_s102 K'=2 delayed 0.773 upfront 0.754 depth(delayed) {1:1.00, 2:0.79, 3:0.45, 4:0.35, 5:0.05, 6:0.07, 99:0.98}
+theory/runs/ph_c_s102 K'=3 delayed 0.821 upfront 0.868 depth(delayed) {1:1.00, 2:0.99, 3:0.62, 4:0.35, 5:0.05, 6:0.06, 99:0.97}
+theory/runs/ph_c_s102 K'=4 delayed 0.848 upfront 0.945 depth(delayed) {1:1.00, 2:0.99, 3:0.74, 4:0.52, 5:0.06, 6:0.08, 99:0.97}
+theory/runs/ph_c_s102 K'=5 delayed 0.874 upfront 0.987 depth(delayed) {1:1.00, 2:0.99, 3:0.80, 4:0.59, 5:0.37, 6:0.10, 99:0.96}
+theory/runs/ph_c_s102 K'=6 delayed 0.894 upfront 1.000 depth(delayed) {1:1.00, 2:0.99, 3:0.90, 4:0.60, 5:0.48, 6:0.29, 99:0.96}
+theory/runs/ph_c_s102 d1:1.00 d2:0.98 d3:0.91 d4:0.69 d5:0.62 d6:0.55
+theory/runs/ph_c_s102 K'= 0 near 0.99 0.95 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.51 0.50
+theory/runs/ph_c_s102 K'= 2 near 1.00 0.92 0.76 0.69 0.50 0.50 | far 0.49 0.50 0.50 0.50 0.50 0.50
+theory/runs/ph_c_s102 K'= 4 near 1.00 0.99 0.91 0.81 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/ph_c_s102 K'= 6 near 1.00 0.98 0.97 0.85 0.76 0.56 | far 0.50 0.50 0.49 0.50 0.50 0.49
+theory/runs/ph_c_s102 K'= 8 near 1.00 0.98 0.96 0.85 0.76 0.56 | far 0.50 0.51 0.49 0.50 0.50 0.49
+theory/runs/ph_c_s102 K'=10 near 1.00 0.98 0.95 0.86 0.77 0.64 | far 0.52 0.51 0.50 0.51 0.50 0.50
+theory/runs/ph_c_s102 K'=12 near 0.99 0.97 0.95 0.87 0.78 0.64 | far 0.54 0.51 0.50 0.51 0.50 0.49
+theory/runs/ph_c_s102 K'=16 near 0.99 0.96 0.95 0.87 0.78 0.67 | far 0.56 0.52 0.51 0.51 0.50 0.49
+EVAL theory/runs/ph_c_s102 stage full delayed 0.894 m5 0.620 gate True d7 0.543 extrap False far8-10 0.506
+21:37:35 evaluated ph_c_s102
+21:37:35 start ph_jat_s102 (--seed 102 --init_from runs/p30_s102/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0 --anytime 1 --jitter 2)
+21:54:35 trained ph_jat_s102 rc 0
+theory/runs/ph_jat_s102 K'=0 delayed 0.700 upfront 0.564 depth(delayed) {1:1.00, 2:0.94, 3:0.06, 4:0.06, 5:0.05, 6:0.04, 99:0.94}
+theory/runs/ph_jat_s102 K'=1 delayed 0.749 upfront 0.720 depth(delayed) {1:1.00, 2:0.90, 3:0.40, 4:0.05, 5:0.04, 6:0.04, 99:0.97}
+theory/runs/ph_jat_s102 K'=2 delayed 0.801 upfront 0.848 depth(delayed) {1:1.00, 2:0.93, 3:0.60, 4:0.42, 5:0.08, 6:0.07, 99:0.94}
+theory/runs/ph_jat_s102 K'=3 delayed 0.835 upfront 0.933 depth(delayed) {1:1.00, 2:0.96, 3:0.78, 4:0.44, 5:0.24, 6:0.09, 99:0.93}
+theory/runs/ph_jat_s102 K'=4 delayed 0.855 upfront 0.983 depth(delayed) {1:1.00, 2:0.99, 3:0.77, 4:0.57, 5:0.25, 6:0.20, 99:0.94}
+theory/runs/ph_jat_s102 K'=5 delayed 0.870 upfront 1.000 depth(delayed) {1:1.00, 2:0.98, 3:0.83, 4:0.57, 5:0.43, 6:0.21, 99:0.94}
+theory/runs/ph_jat_s102 K'=6 delayed 0.884 upfront 1.000 depth(delayed) {1:1.00, 2:0.98, 3:0.90, 4:0.58, 5:0.53, 6:0.27, 99:0.94}
+theory/runs/ph_jat_s102 d1:1.00 d2:0.97 d3:0.90 d4:0.67 d5:0.65 d6:0.53
+theory/runs/ph_jat_s102 K'= 0 near 0.98 0.97 0.50 0.50 0.50 0.51 | far 0.50 0.50 0.50 0.50 0.51 0.50
+theory/runs/ph_jat_s102 K'= 2 near 0.99 0.96 0.83 0.76 0.51 0.51 | far 0.50 0.49 0.50 0.50 0.50 0.50
+theory/runs/ph_jat_s102 K'= 4 near 0.99 0.97 0.91 0.83 0.61 0.52 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/ph_jat_s102 K'= 6 near 1.00 0.97 0.95 0.83 0.78 0.54 | far 0.50 0.50 0.50 0.51 0.50 0.50
+theory/runs/ph_jat_s102 K'= 8 near 0.99 0.97 0.94 0.85 0.80 0.56 | far 0.50 0.51 0.50 0.51 0.50 0.50
+theory/runs/ph_jat_s102 K'=10 near 0.99 0.97 0.94 0.85 0.80 0.56 | far 0.50 0.51 0.50 0.50 0.51 0.49
+theory/runs/ph_jat_s102 K'=12 near 0.99 0.97 0.94 0.85 0.80 0.57 | far 0.50 0.50 0.50 0.50 0.51 0.49
+theory/runs/ph_jat_s102 K'=16 near 0.99 0.96 0.94 0.85 0.81 0.57 | far 0.51 0.50 0.50 0.51 0.50 0.49
+EVAL theory/runs/ph_jat_s102 stage 4 delayed 0.884 m5 0.646 gate False d7 0.505 extrap False far8-10 0.502
+21:54:44 evaluated ph_jat_s102
+21:54:44 start ph_at_s109 (--seed 109 --init_from runs/p30_s109/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0 --anytime 1)
+22:11:44 trained ph_at_s109 rc 0
+theory/runs/ph_at_s109 K'=0 delayed 0.772 upfront 0.500 depth(delayed) {1:1.00, 2:1.00, 3:0.48, 4:0.01, 5:0.01, 6:0.00, 99:0.98}
+theory/runs/ph_at_s109 K'=1 delayed 0.767 upfront 0.720 depth(delayed) {1:1.00, 2:1.00, 3:0.36, 4:0.00, 5:0.00, 6:0.00, 99:1.00}
+theory/runs/ph_at_s109 K'=2 delayed 0.839 upfront 0.848 depth(delayed) {1:1.00, 2:1.00, 3:0.81, 4:0.24, 5:0.08, 6:0.07, 99:0.98}
+theory/runs/ph_at_s109 K'=3 delayed 0.868 upfront 0.933 depth(delayed) {1:1.00, 2:1.00, 3:0.92, 4:0.51, 5:0.16, 6:0.15, 99:0.95}
+theory/runs/ph_at_s109 K'=4 delayed 0.885 upfront 0.984 depth(delayed) {1:1.00, 2:1.00, 3:0.92, 4:0.65, 5:0.32, 6:0.17, 99:0.94}
+theory/runs/ph_at_s109 K'=5 delayed 0.896 upfront 1.000 depth(delayed) {1:1.00, 2:1.00, 3:0.91, 4:0.73, 5:0.36, 6:0.32, 99:0.94}
+theory/runs/ph_at_s109 K'=6 delayed 0.905 upfront 1.000 depth(delayed) {1:1.00, 2:1.00, 3:0.91, 4:0.73, 5:0.56, 6:0.35, 99:0.94}
+theory/runs/ph_at_s109 d1:1.00 d2:1.00 d3:0.92 d4:0.77 d5:0.68 d6:0.59
+theory/runs/ph_at_s109 K'= 0 near 1.00 0.98 0.72 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/ph_at_s109 K'= 2 near 1.00 0.99 0.91 0.64 0.52 0.50 | far 0.50 0.49 0.50 0.50 0.50 0.50
+theory/runs/ph_at_s109 K'= 4 near 1.00 0.98 0.93 0.77 0.53 0.50 | far 0.49 0.51 0.49 0.50 0.51 0.50
+theory/runs/ph_at_s109 K'= 6 near 1.00 0.98 0.94 0.83 0.71 0.51 | far 0.49 0.51 0.50 0.50 0.50 0.49
+theory/runs/ph_at_s109 K'= 8 near 1.00 0.98 0.93 0.84 0.72 0.54 | far 0.51 0.51 0.50 0.49 0.50 0.49
+theory/runs/ph_at_s109 K'=10 near 1.00 0.98 0.93 0.84 0.73 0.56 | far 0.51 0.51 0.50 0.50 0.50 0.49
+theory/runs/ph_at_s109 K'=12 near 1.00 0.98 0.92 0.83 0.74 0.57 | far 0.51 0.51 0.50 0.50 0.50 0.49
+theory/runs/ph_at_s109 K'=16 near 1.00 0.98 0.91 0.83 0.73 0.60 | far 0.52 0.50 0.50 0.49 0.50 0.49
+EVAL theory/runs/ph_at_s109 stage full delayed 0.905 m5 0.676 gate True d7 0.515 extrap False far8-10 0.503
+22:11:53 evaluated ph_at_s109
+22:11:53 start ph_c_s109 (--seed 109 --init_from runs/p30_s109/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0)
+22:21:53 trained ph_c_s109 rc 0
+theory/runs/ph_c_s109 K'=0 delayed 0.740 upfront 0.500 depth(delayed) {1:1.00, 2:1.00, 3:0.63, 4:0.23, 5:0.23, 6:0.26, 99:0.81}
+theory/runs/ph_c_s109 K'=1 delayed 0.768 upfront 0.621 depth(delayed) {1:1.00, 2:1.00, 3:0.40, 4:0.06, 5:0.06, 6:0.07, 99:0.97}
+theory/runs/ph_c_s109 K'=2 delayed 0.830 upfront 0.755 depth(delayed) {1:0.99, 2:0.98, 3:0.78, 4:0.31, 5:0.15, 6:0.15, 99:0.95}
+theory/runs/ph_c_s109 K'=3 delayed 0.847 upfront 0.864 depth(delayed) {1:0.99, 2:0.99, 3:0.91, 4:0.31, 5:0.15, 6:0.16, 99:0.95}
+theory/runs/ph_c_s109 K'=4 delayed 0.873 upfront 0.942 depth(delayed) {1:1.00, 2:0.99, 3:0.91, 4:0.59, 5:0.15, 6:0.15, 99:0.95}
+theory/runs/ph_c_s109 K'=5 delayed 0.892 upfront 0.988 depth(delayed) {1:1.00, 2:1.00, 3:0.90, 4:0.73, 5:0.29, 6:0.15, 99:0.95}
+theory/runs/ph_c_s109 K'=6 delayed 0.907 upfront 1.000 depth(delayed) {1:1.00, 2:1.00, 3:0.89, 4:0.73, 5:0.58, 6:0.30, 99:0.95}
+theory/runs/ph_c_s109 d1:1.00 d2:1.00 d3:0.91 d4:0.78 d5:0.68 d6:0.57
+theory/runs/ph_c_s109 K'= 0 near 1.00 0.92 0.72 0.50 0.51 0.51 | far 0.50 0.50 0.50 0.49 0.50 0.50
+theory/runs/ph_c_s109 K'= 2 near 0.99 0.97 0.87 0.62 0.51 0.50 | far 0.50 0.50 0.50 0.51 0.51 0.49
+theory/runs/ph_c_s109 K'= 4 near 1.00 0.98 0.95 0.75 0.52 0.50 | far 0.50 0.50 0.50 0.51 0.51 0.50
+theory/runs/ph_c_s109 K'= 6 near 1.00 0.98 0.94 0.86 0.76 0.50 | far 0.51 0.51 0.50 0.50 0.51 0.50
+theory/runs/ph_c_s109 K'= 8 near 1.00 0.98 0.94 0.86 0.77 0.52 | far 0.50 0.51 0.50 0.50 0.51 0.49
+theory/runs/ph_c_s109 K'=10 near 1.00 0.98 0.93 0.85 0.77 0.55 | far 0.50 0.51 0.49 0.50 0.50 0.48
+theory/runs/ph_c_s109 K'=12 near 1.00 0.98 0.92 0.84 0.78 0.56 | far 0.50 0.51 0.50 0.50 0.50 0.48
+theory/runs/ph_c_s109 K'=16 near 1.00 0.98 0.91 0.83 0.77 0.58 | far 0.51 0.50 0.50 0.50 0.50 0.48
+EVAL theory/runs/ph_c_s109 stage full delayed 0.907 m5 0.679 gate True d7 0.505 extrap False far8-10 0.500
+22:22:01 evaluated ph_c_s109
+22:22:01 start ph_jat_s109 (--seed 109 --init_from runs/p30_s109/model.pt --steps 6000 --warmup 100 --lr 1e-4 --aux_steps 0 --aux_anneal 0 --anytime 1 --jitter 2)
+22:39:01 trained ph_jat_s109 rc 0
+theory/runs/ph_jat_s109 K'=0 delayed 0.758 upfront 0.504 depth(delayed) {1:1.00, 2:1.00, 3:0.54, 4:0.06, 5:0.06, 6:0.07, 99:0.92}
+theory/runs/ph_jat_s109 K'=1 delayed 0.781 upfront 0.720 depth(delayed) {1:1.00, 2:1.00, 3:0.47, 4:0.00, 5:0.00, 6:0.00, 99:1.00}
+theory/runs/ph_jat_s109 K'=2 delayed 0.841 upfront 0.848 depth(delayed) {1:1.00, 2:1.00, 3:0.82, 4:0.26, 5:0.09, 6:0.07, 99:0.97}
+theory/runs/ph_jat_s109 K'=3 delayed 0.867 upfront 0.933 depth(delayed) {1:1.00, 2:1.00, 3:0.91, 4:0.51, 5:0.16, 6:0.15, 99:0.95}
+theory/runs/ph_jat_s109 K'=4 delayed 0.885 upfront 0.984 depth(delayed) {1:1.00, 2:1.00, 3:0.91, 4:0.64, 5:0.35, 6:0.17, 99:0.94}
+theory/runs/ph_jat_s109 K'=5 delayed 0.895 upfront 1.000 depth(delayed) {1:1.00, 2:1.00, 3:0.91, 4:0.71, 5:0.42, 6:0.35, 99:0.94}
+theory/runs/ph_jat_s109 K'=6 delayed 0.901 upfront 1.000 depth(delayed) {1:1.00, 2:1.00, 3:0.92, 4:0.72, 5:0.56, 6:0.42, 99:0.93}
+theory/runs/ph_jat_s109 d1:1.00 d2:0.99 d3:0.91 d4:0.77 d5:0.67 d6:0.60
+theory/runs/ph_jat_s109 K'= 0 near 1.00 0.94 0.73 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.49 0.50 0.50
+theory/runs/ph_jat_s109 K'= 2 near 1.00 0.99 0.91 0.66 0.52 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/ph_jat_s109 K'= 4 near 1.00 0.98 0.93 0.77 0.57 0.50 | far 0.49 0.51 0.49 0.50 0.51 0.50
+theory/runs/ph_jat_s109 K'= 6 near 1.00 0.98 0.93 0.80 0.66 0.56 | far 0.53 0.51 0.49 0.50 0.51 0.50
+theory/runs/ph_jat_s109 K'= 8 near 1.00 0.98 0.92 0.81 0.68 0.59 | far 0.56 0.54 0.50 0.50 0.51 0.50
+theory/runs/ph_jat_s109 K'=10 near 1.00 0.98 0.91 0.81 0.69 0.60 | far 0.57 0.54 0.50 0.50 0.50 0.51
+theory/runs/ph_jat_s109 K'=12 near 1.00 0.97 0.91 0.81 0.69 0.60 | far 0.57 0.54 0.50 0.50 0.50 0.50
+theory/runs/ph_jat_s109 K'=16 near 1.00 0.96 0.89 0.79 0.69 0.62 | far 0.57 0.54 0.51 0.50 0.50 0.49
+EVAL theory/runs/ph_jat_s109 stage full delayed 0.901 m5 0.666 gate True d7 0.568 extrap False far8-10 0.516
+22:39:10 evaluated ph_jat_s109
+22:39:10 QUEUE_DONE

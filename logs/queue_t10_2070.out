@@ -1,1 +1,61 @@
 11:44:15 start t10fork_s560 (--no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 560 --shapes fork --p_fork 0.5 )
+13:37:16 trained t10fork_s560 rc 0
+run  results/competence_t10fork_s560.json
+run  results/competence_matched_t10fork_s560.json
+run  results/length_gen_t10fork_s560.json
+FAIL results/length_gen_t10fork_s560.json
+run  results/delayed_trace_t10fork_s560.json
+run  results/budget_sweep_t10fork_s560.json
+EVAL_DONE t10fork_s560
+13:37:37 evaluated t10fork_s560
+13:37:37 start t10fork_s561 (--no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 561 --shapes fork --p_fork 0.5 )
+15:30:37 trained t10fork_s561 rc 0
+run  results/competence_t10fork_s561.json
+run  results/competence_matched_t10fork_s561.json
+run  results/length_gen_t10fork_s561.json
+FAIL results/length_gen_t10fork_s561.json
+run  results/delayed_trace_t10fork_s561.json
+run  results/budget_sweep_t10fork_s561.json
+EVAL_DONE t10fork_s561
+15:31:03 evaluated t10fork_s561
+15:31:04 start t10fork_s562 (--no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 562 --shapes fork --p_fork 0.5 )
+17:24:04 trained t10fork_s562 rc 0
+run  results/competence_t10fork_s562.json
+run  results/competence_matched_t10fork_s562.json
+run  results/length_gen_t10fork_s562.json
+FAIL results/length_gen_t10fork_s562.json
+run  results/delayed_trace_t10fork_s562.json
+run  results/budget_sweep_t10fork_s562.json
+EVAL_DONE t10fork_s562
+17:24:25 evaluated t10fork_s562
+17:24:25 start t10fork_s563 (--no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 563 --shapes fork --p_fork 0.5 )
+19:17:26 trained t10fork_s563 rc 0
+run  results/competence_t10fork_s563.json
+run  results/competence_matched_t10fork_s563.json
+run  results/length_gen_t10fork_s563.json
+FAIL results/length_gen_t10fork_s563.json
+run  results/delayed_trace_t10fork_s563.json
+run  results/budget_sweep_t10fork_s563.json
+EVAL_DONE t10fork_s563
+19:17:47 evaluated t10fork_s563
+19:17:47 start t10fork_s564 (--no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 564 --shapes fork --p_fork 0.5 )
+21:09:47 trained t10fork_s564 rc 0
+run  results/competence_t10fork_s564.json
+run  results/competence_matched_t10fork_s564.json
+run  results/length_gen_t10fork_s564.json
+FAIL results/length_gen_t10fork_s564.json
+run  results/delayed_trace_t10fork_s564.json
+run  results/budget_sweep_t10fork_s564.json
+EVAL_DONE t10fork_s564
+21:10:08 evaluated t10fork_s564
+21:10:09 start t10fork_s567 (--no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 567 --shapes fork --p_fork 0.5 )
+23:03:09 trained t10fork_s567 rc 0
+run  results/competence_t10fork_s567.json
+run  results/competence_matched_t10fork_s567.json
+run  results/length_gen_t10fork_s567.json
+FAIL results/length_gen_t10fork_s567.json
+run  results/delayed_trace_t10fork_s567.json
+run  results/budget_sweep_t10fork_s567.json
+EVAL_DONE t10fork_s567
+23:03:30 evaluated t10fork_s567
+23:03:31 start t10fork_s569 (--no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 569 --shapes fork --p_fork 0.5 )
