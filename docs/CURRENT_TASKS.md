@@ -60,7 +60,6 @@ and K drain ~02:00–02:30.
 | 53453331 | 3090, 0.168 | PROTOCOL9 vb6 (`scratch/p9_vb6.txt`, 3 runs; amendment 2) | `ssh -p 47188 root@79.116.20.245` | ~02:30 Wed |
 | 53453343 | 4070, 0.202 | PROTOCOL9 vb7 (`scratch/p9_vb7.txt`, 3 runs; amendment 2) | `ssh -p 35012 root@159.48.242.2` | ~02:30 Wed |
 | 53453349 | 4060 Ti, 0.207 | PROTOCOL9 vb8 (`scratch/p9_vb8.txt`, 3 runs; amendment 2) | `ssh -p 47615 root@141.195.21.87` | ~03:30 Wed |
-| 53453358 | 3090, 0.21 | PROTOCOL9 vf1 (`scratch/p9_vf1.txt`, 2 runs; amendment 2) | `ssh -p 32448 root@108.76.208.51` | ~01:30 Wed |
 | 53453361 | 3090, 0.224 | PROTOCOL9 vf2 (`scratch/p9_vf2.txt`, 2 runs; amendment 2) | `ssh -p 62361 root@142.112.39.215` | ~01:30 Wed |
 
 - **Phase 0:** pre-registered in `docs/PROTOCOL8_PHASE0.md` (3a9c05e, 15:09:38). Pod log `/workspace/logs/prosqa.out`,
@@ -78,6 +77,9 @@ and K drain ~02:00–02:30.
 - **Vast CLI:** the stable wrapper is `C:/Users/peter/.local/vastai/vast.sh` (package in `.../vastai/lib`; key in
   `~/.config/vastai`, never copied). Shared with the theory session. The old copy in the session scratchpad is
   deprecated.
+- **Auto-drain:** `scratch/auto_drain.sh "<host> <port> <tag> <id> <t9|p9>" …` runs `drain_toy.sh` on each QUEUE_DONE
+  (log `logs/auto_drain.log`; drained hosts listed in `logs/drained_hosts.txt`, which `gpu_watch.sh` skips). It wakes the
+  session on a failed drain, a new failure line, unreachable, or stalled.
 - **Drain finished hosts with the drain scripts, never a bare fetch plus destroy:**
   - `bash scratch/drain_toy.sh <host> <port> <t9|p9> <id> <queue tag>` for toy queues;
   - `bash scratch/drain_prosqa.sh <host> <port> <id> <local res dir> <remote ckpt> <local ckpt> <expected res files…>` for
