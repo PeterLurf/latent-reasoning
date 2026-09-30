@@ -2086,6 +2086,17 @@ met.**
   - **The agreement filter is the default for any third rung.** It should also mix in the previous rung's teacher
     data, to hold the lower depths.
 
+**Amendment M-2 (2026-09-30 04:54 EDT): does the filter contain the avalanche? Registered before any M-2 run.** Pilot M's hint
+(T8F vs T8) rests on 10 models.
+* **Runs.** M-T8F on the other 10 models (the odd-indexed ones, which had M-GT), exactly as §38. The only difference
+  is the hardware: the local RTX 2070 in fp32, where M ran in bf16 on Vast. 10 runs.
+* **Predictions** over all 20 models, with M-T8F paired with M-T8 on the same model:
+  - **M2a:** §23 pair rule on the deep measure, T8F > T8.
+  - **M2b (no avalanche):** median d8 of T8F ≥ 0.608 (PM3's bar).
+  - **M2c:** T8F reaches ≥ 0.60 on the deep measure in ≥ 10/20 (PM2's bar).
+  - **M2d:** competent T8F ≥ competent T8 (13/20).
+
+
 ## 39. Pilot T12 — step-adversarial thoughts (PROPOSALS §10) (pre-registered 2026-09-30 03:22 EDT, before any T12 run started)
 
 **Idea (§35, Prop. 10).** The anytime fall-back is keyed to counts the loop carries. T12 removes the count from the
