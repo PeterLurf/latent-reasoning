@@ -1,0 +1,40 @@
+{
+ "n_clr3": 10,
+ "n_clr1": 10,
+ "competent": {
+  "clr3": 10,
+  "clr1": 10
+ },
+ "PC1": {
+  "counted": 10,
+  "in_direction": 5,
+  "sign_p_one_sided": 0.623046875,
+  "verdict": "not supported"
+ },
+ "PC2": {
+  "chain4_d13_18_ge_0.60": 6,
+  "of": 10,
+  "median": 0.6060384114583334,
+  "met": true
+ },
+ "PC3": {
+  "median_IIA": 0.8340118633309257,
+  "met": true
+ },
+ "PC4": {
+  "median_delayed_drop": 0.00049591064453125,
+  "met": true
+ },
+ "desc_clr1": {
+  "median_two_seg_far": 0.6153971354166667,
+  "median_chain4_d13_18": 0.6752115885416666,
+  "median_IIA": 1.0
+ },
+ "CLR1a": {
+  "maxshare_lt_0.8": 10,
+  "of": 10,
+  "median_maxshare": 0.44567981362342834,
+  "median_two_seg_minus_rand": 0.057942708333333315,
+  "set_used": true
+ }
+}

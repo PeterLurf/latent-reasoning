@@ -2473,6 +2473,22 @@ model at n = 10.
   - Secondary: the pooled 20 by the same rules (PC2 ≥ 10/20; CLR-1a ≥ 12/20). CLR-1b was registered after the first 10
     were scored, so a pooled verdict is partly determined by results already seen (Audit).
 
+**CLR-1b result (2026-09-30; 20 runs on the 3070/4060, finished 18:49; `theory/score_s45.py b` and `pooled` →
+`theory/results/score_s45_b.json`, `_pooled.json`).**
+
+| Test | New 10 (primary) | Pooled 20 (secondary) |
+|---|---|---|
+| PC1 | not supported, 5/10 pairs | inconclusive, 11/20 |
+| PC2 | met, 6/10 (median 0.606) | met, 10/20 |
+| PC3 | met, IIA 0.83 (CLR1 1.00) | met, 0.84 |
+| PC4 | met, 0.0005 | met |
+| CLR-1a | set used: 10/10 < 0.8; rand cost +0.058 | set used |
+
+* The descriptive pattern replicates: CLR1 chains further (chain4 d13–18 median 0.675).
+* **Reading (replicated).** After label-free training, written checkpoints are the causal channel, and chains of them
+  reach d13–18. A 3-node set is used but adds no reach over a single anchor. Within the scope set by Literature, the C7
+  claim is about the trained written channel, not the silent steps.
+
 
 ## 46. Where does a written anchor help most? Toy hop sweep (pre-registered 2026-09-30 17:46 EDT, before measuring; counterpart of PROTOCOL8b's k-sweep)
 
