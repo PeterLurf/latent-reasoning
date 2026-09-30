@@ -1,0 +1,4 @@
+# PROTOCOL9 amendment 2: Vast host vb6
+p9at_w512_s541 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 541 --d 512 --anytime 1
+p9at_l4_s524 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 524 --layers 4 --anytime 1
+p9at_l3_s507 --no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 507 --layers 3 --anytime 1
