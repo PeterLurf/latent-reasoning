@@ -2609,6 +2609,9 @@ single-anchor chains keep extending with more segments.**
 
 * **Reading (C2, C6).**
   - Errors do not compound: each band holds about 0.66–0.67 once reached, over 6 segments.
+  - **But near depths erode (C6; Audit).** Median d2–5 is 0.946 at S2, 0.913 at S4 and 0.889 at S6 (worst model: 0.71
+    → 0.60). Each extra segment's max-combined answers add false positives near the root. Halting (§49) or a filter on
+    new positives would bound this.
   - Reach grows by about 4–5 hops per segment, less than K = 6, and the anchor lands about a hop behind the frontier.
   - §45's "d19–24 ≈ 0.51" was too few segments, not a limit.
   - Multi-start beams add false positives rather than reach. §47's beam recommendation is withdrawn: a single anchor
