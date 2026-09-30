@@ -2573,6 +2573,20 @@ For PROTOCOL8b this would say: write the checkpoint within one episode's reach o
 3. **External, already registered:** PROTOCOL8b step 1 (experiments session). Does training make GPT-2 use written
    checkpoints? If not, the design does not transfer as is.
 
+## 48. Multi-start beams across checkpointed segments (§47 test 1; pre-registered 2026-09-30 18:07 EDT, before measuring)
+
+**Test.** `theory/exp22_beam_chain.py`, CPU.
+* Models: the 10 §45 CLR1 students (single-anchor restarts, trained label-free).
+* Probe: §37's 24-hop probe.
+* Chains of S = 2..6 segments of K steps, each from written single anchors.
+* Beam B = 3: each segment runs one episode per anchor, and the next anchors are the 3 distinct most-attended targets
+  over all episodes. B = 1 reproduces §45's chain. Answers are max-combined.
+
+**Predictions.**
+* **BM1 (beams fix compounding).** Median over models of S4 d19–24: B3 ≥ 0.60, and B3 − B1 ≥ +0.05. §45 B1 was ≈ 0.52.
+* **BM2 (no loss nearer in).** Median S4 d13–18: B3 ≥ B1 − 0.02.
+* **Descriptive (C6).** Accuracy vs S at fixed distance bands, for both B.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
