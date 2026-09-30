@@ -150,6 +150,49 @@ restores every branch's amplitude, which the literature does not quantify for la
 beyond the trained depth, and its faithfulness evidence is correlational. No system claims C2 in every seed, and none
 tests C7 causally. The north-star combination, especially C2-in-every-seed plus causal C7, is open.
 
+## 5. Faithfulness under restart (Theory follow-up, 2026-09-30)
+
+*Does a model restarted only from its own emitted text behave like the uninterrupted model?*
+
+**Conceptual point first.** In a standard transformer, restarting from the *full* emitted text is identical by
+construction: the KV cache is a deterministic function of the text. Hidden cross-token computation exists (Future Lens,
+Pal et al. 2311.04897; pre-caching, Wu et al. 2404.00859; filler-token computation 2404.15758 / 2607.03502) but is
+*recomputed* from the text. So the test is informative only when (a) the restart **drops text** (summaries,
+carry-overs) or (b) a **non-text state** is carried. Our latent loop is case (b): the thoughts cannot be recomputed from
+the checkpoint, so the test is well posed.
+
+**Evidence that restart from own text ≈ uninterrupted (aggregate accuracy only):**
+- **Delethink / Markovian Thinker** 2510.06557 (full text): chunked reasoning with the KV cache cleared and a short text
+  carry-over. *Untrained* ("Delethink Tracing at initialization") "recovers most of LongCoT performance". Trained, it
+  matches or exceeds LongCoT-RL at a 24K budget. **Where it breaks:** CrossWordBench, comparable on 7×7 and declining on
+  14×14, i.e. when the live state is larger than the carry-over can hold. That is the case where a hidden channel would
+  matter.
+- **InftyThink** 2503.06692 (full text): trained summaries beat uninterrupted reasoning (AIME24 +11.0, GPQA +9.0 on
+  Qwen2.5-Math-7B). *Training-free* iteration drops slightly: "the model may lose important information across multiple
+  reasoning iterations."
+- **PENCIL** 2503.14337: reduction rules erase thoughts; argued to preserve the computation (space-efficient simulation),
+  so restart-from-reduced-text is exact when the rule is correct.
+- **LightThinker** 2502.15589: restart from compressed *latent* gist tokens, ~1% accuracy drop (the reverse direction).
+
+**A training objective that forces text sufficiency:** **Markovian Transformers** (Viteri et al. 2404.18988). All
+information from question to answer must pass through a bounded CoT (the question is removed when answering), trained
+by RL (GRPO-style). Markovian models show "systematically larger log-probability drops under CoT corruption" than
+non-Markovian baselines, within ~3–4 pp accuracy, and the CoTs transfer across architectures. This is the closest
+precedent for "restart only from own text" as a *trained* property, and it is C4-compatible (no step labels).
+
+**Per-instance counterfactual tools:** Lanham 2307.13702 (paraphrase and early answering); Roger & Greenblatt 2310.18512
+(paraphrasing bounds hidden information); **Thought Anchors** 2506.19143 (resample continuations from truncated CoT
+prefixes to measure each step's counterfactual importance).
+
+**Gap and recommendation.** No work reports **per-instance** agreement between restarted and uninterrupted runs; all
+report aggregate accuracy. For our hidden-channel test, report per instance:
+- (i) answer agreement between restart-from-checkpoint-only and uninterrupted;
+- (ii) KL between their answer distributions;
+- (iii) the swap test (another input's latent state, same checkpoint text), paired with (i).
+
+Delethink's CrossWordBench result predicts where agreement should fail: when the frontier set exceeds what the
+checkpoint carries.
+
 ---
 
 ## Summary for Theory's five questions (ranked)
