@@ -1262,7 +1262,7 @@ pointers from `theory/results/le_pointer.json`).** **Critical-period reading; PH
   FT-C 0/20. The critical-period clause holds (0.06 ≤ 0.00 + 0.10). d7(FT-AT) > d7(FT-C) in 12 of 18 models with both
   competent (0.67 < 0.75; one-sided sign p = 0.12); medians d7 0.545 vs 0.527, d8 0.511 vs 0.505.
 * **PH2 not met.** Median p[K−1] = 3 in both FT-AT (n 18) and FT-C (n 20): the brake did not go. Against the initial
-  models' own trajectories (measured 2026-09-30 00:03 with the same `le_pointer.py`, added to le_pointer.json as
+  models' own trajectories (measured 2026-09-30 after 00:01, committed in 8f80824 00:02:46, with the same `le_pointer.py`, added to le_pointer.json as
   p30_s*), the whole trajectory h_0..h_11 is unchanged, digit for digit, in 13/20 FT-C models and 6/20 FT-AT models
   (s109, s118, s125, s132, s145, s158, all the `1 1 1 2 2 3 2 3 2 3 2 3` period-2 oscillation of §25 or its period-3
   relative). The in-range part h_0..h_5 is unchanged in 18/20 FT-C and 9/20 FT-AT models. Anytime fine-tuning moves the
