@@ -46,9 +46,14 @@ def status(r):
         return {"done": True, "competent": bool(p.get("gate")), "extrap": bool(p.get("gate") and p.get("extrap_K12")),
                 "d7": far(r, 7), "d8": far(r, 8), "d9": far(r, 9),
                 "far10_12_K16": None if None in f16 else float(np.mean(f16))}
-    no_model = os.path.isdir(f"runs/{r}") and not os.path.exists(f"runs/{r}/model.pt") and \
-        any(f"evaluated {r}" in open(q, errors="ignore").read() for q in
-            [os.path.join(dp, fn) for dp, _, fs in os.walk("logs") for fn in fs if fn.startswith("queue_")])
+    # A run with no model: its queue log (local, or fetched from a Vast host under logs/vast_*) has "no model for <r>".
+    # Fix 2026-09-30: the earlier test also required runs/<r> to exist locally, but the drain scripts do not fetch
+    # model-less run dirs, so remote stage-1 failures stayed "pending" instead of being counted as not competent.
+    # Queue logs renamed *.void_attempt1 (amendment 3) are not matched, since they do not start with "queue_" + end ".out".
+    no_model = not os.path.exists(f"runs/{r}/model.pt") and \
+        any(f"no model for {r}\n" in open(q, errors="ignore").read() for q in
+            [os.path.join(dp, fn) for dp, _, fs in os.walk("logs") for fn in fs
+             if fn.startswith("queue_") and fn.endswith(".out")])
     return {"done": no_model, "competent": False, "extrap": False, "d7": None, "d8": None, "d9": None, "far10_12_K16": None}
 
 
