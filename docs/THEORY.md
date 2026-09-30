@@ -69,7 +69,7 @@ times below (local EDT) and the first-run times from the host queue logs.
 * Stop key (Prop. 10, §35): the fall-back is keyed to counts. Skip → step key. History and step clock carry part of it.
 * Prop. 10 mechanism across architectures (§40): brake removed, fall-back kept (1/16 pass 8), count carried in 25/25.
 * PROTOCOL9 (Experiments, across architectures): the anytime gain at d7 is weak and family-dependent. It is strong in
-  512-wide models only: the pooled 64 pairs give 18 vs 10 (p 0.09), and w512 alone 12 vs 3. There is no d8 gain
+  512-wide models only: the pooled 64 pairs give 18 vs 10 (p 0.09), and w512 alone has discordant pairs 9 vs 0. There is no d8 gain
   (`docs/PROTOCOL9_RESULTS.md`).
 * **Re-anchoring distillation (L): 19/20 failures fixed without labels (0/20 plain), §32.** GT-distilled loops
   extrapolate to 2× their training depth (17/20, §37).
@@ -1898,7 +1898,7 @@ models eligible).**
 * **Across architectures (PROTOCOL9, experiments session, 2026-09-30; updated after the pooled 64-pair replication).**
   The anytime gain at d7 is weak and family-dependent:
   - pooled AP2 18 vs 10 (p 0.09) and AP1 15/26, both inconclusive;
-  - strong only in w512 (12 vs 3); fork goes the other way (3 vs 5); l3 is even.
+  - discordant pairs: w512 9 vs 0; l4 5/3; l3 3/4; fork 1/3.
 
   The absence of a d8 gain holds throughout, which is the part Prop. 10 predicts (`docs/PROTOCOL9_RESULTS.md`).
 * **Consequence.** The count can be read, and possibly written, without restarting. The per-step mean of the thoughts
