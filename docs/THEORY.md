@@ -2014,6 +2014,12 @@ hold.**
     their teacher's stop at about 10. But they re-anchor to 13–18 in 14/20. So an iterated ladder (distil, re-anchor,
     distil again) can extend depth without labels at every rung. Whether a second distillation also yields one-loop
     extrapolation like GT's is the natural pilot (§38, to be registered).
+* **Descriptive, post hoc** (2026-09-30, `theory/step_decode.py` → `theory/results/step_decode.json`): a fresh probe
+  reads the step index from the students' thoughts at median accuracy 0.94 (GT), 0.98 (T8) and 0.98 (self). Chance is
+  0.17. The 17 GT students that extrapolate are at 0.94.
+  - So a one-loop extrapolator still carries the count. What changed is that its stop is not keyed to the count.
+  - This refines Prop. 10: a decodable count is harmless unless the stop uses it.
+  - For T12 (§39) it means PT1, "count removed", may hold without being necessary. PT2 is the test that matters.
 
 ## 38. Pilot M — a second rung of the label-free ladder (pre-registered 2026-09-30 01:40 EDT, before any Pilot M run started)
 
