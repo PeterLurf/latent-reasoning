@@ -2409,6 +2409,22 @@ runs. Both arms of a model run on the same local card, 5 models on the 3070 (bf1
 **Disclosure.** The smoke students, trained 3 steps on CPU from p30_s111, gave edit IIA 0.30 (W3) and 0.48 (W1). They
 are essentially the untrained model.
 
+**Amendment CLR-1a (2026-09-30 12:31 EDT, before any §45 result was read or evaluated; requested by Audit). A manipulation check:
+is the set actually used?** Both measures are computed in `theory/exp20_clr_eval.py` at evaluation time, for CLR3
+models only.
+* **anchor_maxshare.** At the first latent step after the restart, the attention mass on each of the W START tokens,
+  summed over all layers and heads. Per graph, the largest anchor's share of the W-token total, averaged over graphs.
+  1/W means even use; 1 means collapse.
+* **two_seg_rand.** two_seg with the written set's non-seed anchors replaced by random off-chain nodes (the §44 set3r
+  control).
+* **Rule.** PC1 is read as "set used" only if both hold:
+  - anchor_maxshare < 0.8 in ≥ 6/10 CLR3 models;
+  - median (two_seg − two_seg_rand) far8–10 ≥ +0.02.
+
+  Otherwise a PC1 pass is reported as "gain without set use".
+* **Smoke disclosure.** The 3-step CPU student gave share 0.51, two_seg 0.542, two_seg_rand 0.544. Spread attention
+  with no use is exactly §44's pattern, which is why both measures are required.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
