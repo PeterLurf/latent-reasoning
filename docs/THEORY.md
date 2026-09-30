@@ -68,7 +68,10 @@ times below (local EDT) and the first-run times from the host queue logs.
 * Chunk reset (J): PJ2 supported (6/8); best from-scratch d8 (§29).
 * Stop key (Prop. 10, §35): the fall-back is keyed to counts. Skip → step key. History and step clock carry part of it.
 * **Re-anchoring distillation (L): 19/20 failures fixed without labels (0/20 plain), §32.** GT-distilled loops
-  extrapolate to 2× their training depth (17/20, §37). Round 2 (Pilot M, §38) is running.
+  extrapolate to 2× their training depth (17/20, §37).
+* Second label-free rung (M): the teacher beats self-labels (10/12, p 0.019), and one-loop reach rises from 2/20 to
+  9/20. The old rung erodes (an error avalanche); the agreement filter helps, descriptively (§38).
+* T12 step-adversarial thoughts: registered (§39), running.
 * **Silent thoughts are causally editable (T-C7c, §34):** IIA 0.36; answers follow the edited pointer (+0.83 / −0.59).
 * Counter clamp (§36): rescues 9/34 vs control 0/34, but costly. LE-R: supported out of sample (§25).
 

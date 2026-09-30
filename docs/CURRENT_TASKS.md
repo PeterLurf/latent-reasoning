@@ -41,7 +41,7 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 including a ≥ $10 reserve. Every create/destroy goes in `scratch/pods.txt`.
 
 **Theory (details in docs/THEORY.md, one-liners at the top of its executive summary):** all overnight pilots are
-scored (D–L, §§34–37). Pilot M (§38) runs on 20 hosts, theory-M01..M20 (≈ $3.2/h), and drains ≈ 03:00–03:30.
+scored (D–M, §§34–38). No theory hosts are live. T12 (§39, 8 runs) runs on the experiments session's Vast hosts.
 
 **This session's live Vast hosts (destroy each after a checksum-verified fetch):**
 
