@@ -71,7 +71,8 @@ times below (local EDT) and the first-run times from the host queue logs.
   extrapolate to 2× their training depth (17/20, §37).
 * Second label-free rung (M): the teacher beats self-labels (10/12, p 0.019), and one-loop reach rises from 2/20 to
   9/20. The old rung erodes (an error avalanche); the agreement filter helps, descriptively (§38).
-* T12 step-adversarial thoughts: registered (§39), running.
+* T12 step-adversarial thoughts (§39): breaks learning (2/8 competent). Removing the count is not the fix: extrapolators
+  keep it (§37).
 * **Silent thoughts are causally editable (T-C7c, §34):** IIA 0.36; answers follow the edited pointer (+0.83 / −0.59).
 * Counter clamp (§36): rescues 9/34 vs control 0/34, but costly. LE-R: supported out of sample (§25).
 
@@ -2162,6 +2163,25 @@ predictions are unchanged.**
 the step index from the thoughts with accuracy 0.87–1.00 in pd_at_s900–907 (7 runs with models) and 0.77–1.00 in
 pd_c_s900–907; chance is 0.17. This is direct evidence that the thought carries a count (Prop. 10), and it sets PT1's
 bar.
+
+**Result (2026-09-30; 8 runs from the experiments session, frozen at 6a9784c; `theory/score_pilotT12.py` →
+`theory/results/score_pilotT12.json`). PT4 fails; PT1 and PT3 unresolved; PT2 not met.**
+* **Competent: 2/8** (s900, s905). Three runs exhausted their stage-1 guard (s901, s906, s907). Three finished below
+  the gate (s902, s903, s904). AT is 6/8, so **PT4 fails**: the adversary at λ = 0.5 breaks learnability.
+* **PT1 and PT3 unresolved:** 1 counted pair each.
+* **PT2 not met:** the pointer passes 8 in 0/2 competent runs.
+* **Descriptive.**
+  - s900 kept both a pointer and the count: `1 2 3 4 5 6 | 0 …`, step decode 0.86. It falls back after K like AT: d7
+    0.63, d8 0.51.
+  - s905 had the count largely removed (step decode 0.30). It has no readable pointer and does not extrapolate (d7
+    0.54).
+  - The four non-s900 models show no pointer by ptr_traj's rule at all.
+* **Reading.**
+  - Removing the count from the thought is neither sufficient (s905) nor, per §37, necessary: the GT students keep it
+    at 0.94 and still extrapolate.
+  - The count is harmless unless the stop is keyed to it. The fixes that worked change what the stop is keyed to:
+    training at a second depth (§37), chunked history (§29), or restarts (§26, §32). They do not delete the count.
+  - T12 in this form is not pursued further (PROPOSALS §10 updated).
 
 ## 7. Log
 

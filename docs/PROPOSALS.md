@@ -487,7 +487,8 @@ among §9's six problems. So C2 needs every count removed from the state or held
 * **T11 counter clamp (inference).** Feed h_i − m_i + m_3 past step 3, where m_i is the per-step mean thought. Tested (THEORY §36): it rescues 9/34 failing models (control 0/34, restarts 31/34), but it costs in-range accuracy and breaks extrapolators. Not a fix alone.
   At LLM scale, first probe the loop or thought index linearly; the clamp is worth trying only where that probe
   succeeds.
-* **T12 step-adversarial thoughts (training).** A probe predicts the step index from the thought, trained through
+* **T12 step-adversarial thoughts (training).** Tested (THEORY §39): it breaks learnability (2/8 competent), and a
+  removed count does not extrapolate. Dropped. Original idea: A probe predicts the step index from the thought, trained through
   gradient reversal. It removes the count; anytime alone only aligned it with hops. Toy test ≈ $1: 8 seeds of AT + T12
   vs pd_at. At LLM scale it is one head on Coconut's thought.
 * **A9 count-free recurrence.** Re-embed the thought through the id table: a hard version is §33's restart, a soft
