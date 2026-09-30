@@ -46,7 +46,7 @@ The closest trained precedent for "answer from its own text only" is Markovian T
 | C1 | Toy: met (delayed format; blocking the frontier cuts deep nodes). GPT-2 on ProsQA: **not met** — one-pass conduit (G, J), no training-depth wall (Q) | PROTOCOL3–5; PROTOCOL6 D/G/J/N/P/Q; PROTOCOL7 T1b/T2b |
 | C2 | Toy: understood, not solved. Anytime supervision gains ~1 hop (Pilot D); the fall-back is keyed to an iteration count (P10e). Restart-based fixes work: re-anchoring 31/34 (§26), and distilling it into one loop fixes 19/20 (Pilot L). An inference-time count clamp rescues only 9/34 (§36) | THEORY §§17, 26, 32, 35, 36 |
 | C3 | Not tested | — |
-| C4 | Toy base models use a lookup scaffold. Label-free fine-tuning (distilling re-anchored inference) fixes 19/20 failures, but on deep graphs from the evaluation generator (Pilot L). F1a / Pilot K under test | THEORY §§31, 32 |
+| C4 | Toy base models use a lookup scaffold. Label-free fine-tuning (distilling re-anchored inference) fixes 19/20 failures, but on deep graphs from the evaluation generator (Pilot L). Random tight budgets with final-answer labels only match anytime in-range, but only 4/8 runs learn (Pilot K, suggestive) | THEORY §§31, 32 |
 | C5 | Not tested; re-anchoring (§26) is a hand-built version of "write a checkpoint every K steps" | THEORY §26 |
 | C6 | Partly characterised: outcome set at full-depth entry (E1), fading per hop (Mechanism 2); not solved | PROTOCOL6 A/E, THEORY §§4, 14 |
 | C7 | Toy: the silent pointer is causally editable at node-id level: answers follow edits (IIA 0.36). Round trip 0.947, just under 0.95. The vocabulary is node ids, not language, and the encoder is fitted on the model's own thoughts. Naive probe directions were inert (Part I) | THEORY §34; Part I |
