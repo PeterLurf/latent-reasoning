@@ -5,7 +5,8 @@
 #   - QUEUE_DONE: run scratch/drain_toy.sh. On DRAINED, record host:port in logs/drained_hosts.txt (scratch/gpu_watch.sh
 #     skips those), log it in logs/auto_drain.log, and drop the host from the list. Otherwise print the drain output
 #     and exit, waking the session.
-#   - A failure line ("rc [1-9]", FAIL, "no model") that is new since the watcher started: print it and exit.
+#   - A failure line ("rc [1-9]", FAIL, "no model") that is new since the watcher started: print it and exit, unless it is
+#     "no model for <r>" and <r>'s guard log ends "relaunch budget spent" (a genuine stage-1 outcome, logged, not alarmed).
 #   - Unreachable on 3 polls in a row, or the log unchanged for 3 h: print and exit.
 # Exits with ALL_DRAINED when the list is empty.
 cd "$(dirname "$0")/.."
@@ -23,7 +24,16 @@ while :; do
     fails[$t]=0
     sz=$(echo "$out" | sed -n 1p); dn=$(echo "$out" | sed -n 2p); err=$(echo "$out" | sed -n '3,$p')
     [ -z "${base[$t]+x}" ] && base[$t]="$err"
-    [ -n "$err" ] && [ "$err" != "${base[$t]}" ] && { echo "$(date +%T) $t NEW FAILURE LINE: $err"; exit 0; }
+    if [ -n "$err" ] && [ "$err" != "${base[$t]}" ]; then
+      # a new "no model for <r>" whose guard log says "relaunch budget spent" is a genuine stage-1 outcome: note it, go on
+      nm=$(echo "$err" | tail -1 | sed -n 's/^no model for //p')
+      if [ -n "$nm" ] && timeout 40 ssh -o ConnectTimeout=15 -i ~/.ssh/runpod_ed25519 -p $p root@$h            "tail -n 1 /workspace/Latent/logs/guard_$nm.log | grep -q 'relaunch budget spent'" 2>/dev/null; then
+        echo "$(date '+%F %T') $t stage-1 failure (genuine, relaunch budget spent): $nm" >> logs/auto_drain.log
+        base[$t]="$err"
+      else
+        echo "$(date +%T) $t NEW FAILURE LINE: $err"; exit 0
+      fi
+    fi
     if [ "$dn" -ge 1 ] 2>/dev/null; then
       res=$(bash scratch/drain_toy.sh "$h" "$p" "$pre" "$id" "$t" 2>&1)
       if echo "$res" | grep -q "^DRAINED $id"; then
