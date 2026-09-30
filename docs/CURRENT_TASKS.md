@@ -52,6 +52,7 @@ scored (D–M, §§34–38). No theory hosts are live. T12 (§39, 8 runs) runs o
 | PROTOCOL9 | vb1 53453305 198.200.122.18:17224 · vb4 53453314 223.167.245.91:45232 · vb5 53453320 178.226.163.63:40452 · vb8 53453349 141.195.21.87:47615 | ~04:00–05:00 |
 | PROTOCOL9 extension (am. 7) | x1 53492405 174.0.242.177:1678 · x3 53492408 109.173.238.203:42167 · x5 53492421 172.218.118.138:55578 · x6 53492427 142.112.39.215:62359 · x7 53492433 142.112.39.215:63657 · x8 53492437 86.123.234.69:47324 · x2 53494807 142.127.68.223:7004 · x4 53494817 174.0.242.177:1626 (replacements for stuck 53492407/12) | ~08:00 |
 | THEORY §39 T12 (frozen 6a9784c) | v1 53489419 142.127.68.223:7439 · v2 53489427 142.127.68.223:18162 · v3 53489433 174.0.242.177:1713 | ~07:30 |
+| **PROTOCOL8** (registered 482a8e9; `prosqa/pod_p8c.sh`) | coco_s1 53533281 151.237.25.16:20413 · coco_s2 53533300 213.163.75.246:50708 · at_s1 53533289 142.112.39.215:63460 · rt_s1 53533295 86.123.234.69:46460 · rt_s2 53533311 185.101.222.13:17298 · cot_s1–s4 53533314/19/22/26 (38.29.145.230:40495, 142.127.68.223:13228, 159.48.242.15:42038, 38.247.78.6:44010) · at_s2 + s3/s4 of every latent arm placed by `scratch/p8c_fill.sh` (log `logs/p8c_fill.log`) | latent ~Thu 04:00–10:00; cot ~16:00 → `drain_prosqa.sh` |
 
 **Watchers:** `scratch/auto_drain.sh` (verified drain on each QUEUE_DONE, with T12 via `drain_t12.sh`; log
 `logs/auto_drain.log`; replaces `t9_watch.sh`), `scratch/gpu_watch.sh` (5-min idle check, user request),

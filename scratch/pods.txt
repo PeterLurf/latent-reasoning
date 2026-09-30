@@ -116,3 +116,5 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53533319 vast offer 53264139 created 2026-09-30 09:36: label p8c-cot_s2, pod_p8c.sh p8c_cot_s2 (logged at create by prosqa/vdeploy.sh)
 53533322 vast offer 51824907 created 2026-09-30 09:36: label p8c-cot_s3, pod_p8c.sh p8c_cot_s3 (logged at create by prosqa/vdeploy.sh)
 53533326 vast offer 37119325 created 2026-09-30 09:36: label p8c-cot_s4, pod_p8c.sh p8c_cot_s4 (logged at create by prosqa/vdeploy.sh)
+53533305 vast 4090 | p8c-at_s2: SSH refused for 14 min after start, DESTROYED_VERIFIED 53533305 2026-09-30 09:51 before any work; at_s2 re-placed by scratch/p8c_fill.sh
+53534818 vast offer 33137671 created 2026-09-30 09:51: label p8c-at-s2, pod_p8c.sh p8c_at_s2 (logged at create by prosqa/vdeploy.sh)
