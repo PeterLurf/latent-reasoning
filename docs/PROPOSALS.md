@@ -394,6 +394,7 @@ dated pre-registration in THEORY.md. **★** marks fixes that address several pr
   predecessors, so it keeps a count clock.
 
 ### Problem 3 — drift / fading
+* *Result (21:58): F3a tested and dropped — 45/59, no better than constant α (THEORY §30).*
 * **F3a — amplitude renormalisation at inference** (training-free). At every step past K, rescale the thought's deviation
   from the batch mean to its average norm over steps 1..K.
   - *Mechanism:* a gain-1 constraint that holds exactly on the trained range.
