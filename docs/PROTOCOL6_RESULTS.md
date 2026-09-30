@@ -407,7 +407,7 @@ P7 = layer-1 frontier excess on the distance-7 edge (max over steps 1–12) ÷ t
   (hops attached beyond the answer options). The toy model's training-depth horizon does not transfer to Coconut GPT-2,
   consistent with one-pass computation (G, J) rather than a learned step schedule.
 
-### Addendum R (scored 2026-09-30 ~01:20, `scratch/score_r.py`, `results/p_r.json`)
+### Addendum R (scored 2026-09-30 01:16, `scratch/score_r.py`, `results/p_r.json`)
 
 - **R1 (cap 3):** all 8 competent runs above the floor have P5 < 0.10 (share 1.00 ≥ 0.30): **supported**. Not competent:
   r3_s401, s407, s410, s411.
