@@ -28,3 +28,25 @@ chance from 10).
   anchors do not help (or hurt, since writing a false checkpoint can make the wrong option reachable).
 - If re-anchoring and the oracle both fail, the model cannot use a written checkpoint, and PROTOCOL8b needs training
   on checkpoints (distillation) before inference can use them.
+
+## Result (2026-09-30 12:24 EDT; `prosqa/res_p8b/p8b_pilot.json`, sha-checked; Vast 53544379 destroyed after the fetch)
+
+- **Sweep head:** layer 10, head 11 (from calibration). Its top-1 anchor is on the gold path in **56 %** of problems,
+  so the decode is informative.
+- **Accuracy by answer depth, K′ = 10 (150 per m):**
+
+  | Depth | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
+  |---|---|---|---|---|---|---|---|---|---|---|
+  | baseline | .74 | .76 | .73 | .70 | .62 | .58 | .51 | .52 | .48 | .50 |
+  | re-anchor (top-3) | .75 | .70 | .68 | .62 | .61 | .53 | .52 | .48 | .52 | .51 |
+  | random anchors | .74 | .75 | .73 | .70 | .58 | .57 | .50 | .49 | .49 | .52 |
+  | oracle (4 hops before target) | .74 | .76 | .73 | .70 | .61 | .51 | .46 | .43 | .46 | .51 |
+
+- **Reading:**
+  - A written checkpoint does not help this model, even when it is correct (oracle).
+  - Re-anchoring slightly hurts the shallow depths, where the max-combination admits false checkpoints.
+  - The model does not use the new shortcut edge ("root is a Y") to shorten its latent search. That fits a
+    one-pass conduit that reads fixed positions rather than doing search over statements (Phase 0; addenda G, J, Q).
+  - This is the second pre-stated branch: **PROTOCOL8b has to train checkpoint use** (re-anchor distillation, or
+    training with written checkpoints in the data) before inference-time restarts can work. THEORY 41-2 also points
+    to deeper tight-budget training as a lever.
