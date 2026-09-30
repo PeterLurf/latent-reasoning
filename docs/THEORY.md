@@ -2313,6 +2313,16 @@ A4–A6 ≥ 0.20 at the model's chosen layer: 8 fail.
   of models.
 * **L2.** In passing models the same holds in ≤ 30 %.
 
+**Result (2026-09-30, CPU; `theory/results/layer_sweep.json`). L1 not met (4/8 = 0.50 < 0.60); L2 met (3/16 = 0.19).**
+* **4 failing models:** the sweep is strongest in layer 1, or spread (top share < 0.5), while in_peak chose layer 2 or
+  3. These are t9l3_s510 (weak sweep everywhere, max S 0.06), t9l4_s523, t9l4_s526 and t9w512_s548. Blocking at layer
+  1 might pass the control there.
+* **The other 4** (t9l3_s502, t9l3_s512, t9l4_s522, t9l4_s534): the sweep is concentrated in the blocked layer, yet
+  blocking it does not cut A4–A6.
+* **Reading.** The positive-control failures are half a layer-choice problem and half redundancy. In the latter, the
+  in-range deep nodes are also answered by another route, e.g. a query-time read (T1c holds in 13/13). The T1b/T2b
+  nulls in T9 are therefore uninterpretable where the control fails, as the experiments session concluded.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
