@@ -59,10 +59,11 @@ def sign_p(k, n):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--final", action="store_true")
+    ap.add_argument("--ext", action="store_true", help="amendment 6: pool the extension seeds (8-15 per family) with the primary 32")
     a = ap.parse_args()
     rows, pending = [], []
     for fam, (ctl, base) in FAM.items():
-        for s in range(base, base + 8):
+        for s in range(base, base + (16 if a.ext else 8)):
             at, co = f"p9at_{fam}_s{s}", f"{ctl}_s{s}"
             sa, sc = status(at), status(co)
             if not (sa["done"] and sc["done"]):
@@ -111,7 +112,7 @@ def main():
            "families": fam_out,
            "means_competent": {arm: {d: mean(arm, d) for d in ("d7", "d8", "d9")} for arm in ("a", "c")},
            "rows": rows}
-    json.dump(out, open("results/p9.json", "w"), indent=1)
+    json.dump(out, open("results/p9_pooled64.json" if a.ext else "results/p9.json", "w"), indent=1)
     print({k2: v for k2, v in out.items() if k2 != "rows"})
 
 

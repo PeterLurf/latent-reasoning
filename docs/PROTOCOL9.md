@@ -141,3 +141,21 @@ PROTOCOL9 bears on **C2** (more thinking helps beyond training, in every compete
     scored.
   - If vb7 returns later, its results are fetched for the record but not used, so there is no post-hoc choice between
     the two copies.
+
+## Amendment 6 (2026-09-30 03:06 EDT, extension; before any PROTOCOL9 outcome was scored or read)
+
+* **Why.** The local cards run dry at ~03:30, and PROTOCOL7 trained 16 control seeds per family while PROTOCOL9 paired
+  only 8. So the other 8 seeds per family get the anytime arm too, at no cost, doubling the pairs.
+* **Runs.** 32 more:
+  - `p9at_l3_s508..515`, `p9at_l4_s528..535`, `p9at_w512_s548..555`, each paired with the same-seed T9 control;
+  - `p9at_fork_s568..575`, paired with T10.
+  - Queues `scratch/p9x_bf16.txt` (RTX 3070 / 4060, bf16) and `scratch/p9x_fork.txt` (RTX 2070 first, fp32). The
+    code and worker are the same as for the primary runs.
+* **Analysis, fixed now:**
+  - AP1–AP3 on the original 32 pairs stay the primary, registered result.
+  - The same rules applied to all 64 pairs (`scratch/score_p9.py --ext`, results `results/p9_pooled64.json`) are
+    reported beside them as a pre-specified pooled replication.
+  - The extension's 32 pairs alone are descriptive.
+  - Cut-off unchanged (Sun 2026-10-04 00:00).
+* **Blinding.** While adding the `--ext` flag, the scorer was run once to check it; only the count of scorable pairs
+  was printed (10 of 64), no outcome, and the output file was deleted.
