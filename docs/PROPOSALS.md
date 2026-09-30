@@ -444,6 +444,9 @@ dated pre-registration in THEORY.md. **★** marks fixes that address several pr
     remove only reverts and restarts, so it is weaker than F1a.
 
 ### Problem 6 — no re-anchoring in latent loops
+*Update 21:48 EDT:* F6a and F6b were dropped before running. The model's pointer follows about one frontier branch (the sweep head
+attends to ~1.3 of W ≈ 4 frontier edges; THEORY §30), so no readout of the thought or attention can recover the
+probed chain's node. The oracle gap is structural.
 * **Covered:** T8 at inference (done), J (training-time chunking), G (monotone set).
 * **★ F6a — learned frontier decoder plus set restart** (problems 3 and 6). Train a small head (thought → multi-label over
   node ids, supervised by the true frontier) on *frozen* trained models, then restart each episode from the decoded set.
