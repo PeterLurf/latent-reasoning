@@ -23,6 +23,8 @@ Adds two config options, both off by default (the standard recipe is unchanged w
     h <- c + s (h - c), with s ~ LogUniform[1/r, r] per example, applied with probability jitter_p. c is detached.
   - Evaluation is untouched.
 
+(Fix 2026-09-30: sample_idx is passed only when configs.coconut; the plain-GPT-2 CoT / no-CoT arms reject the keyword.)
+
 `test_p8.py` checks the anytime and random-tight options on a tiny random GPT-2. The anytime branch at j = K reproduces the ordinary pass's answer
 logits, and with no supervised pairs the loss equals the ordinary loss.
 """
@@ -193,7 +195,7 @@ if MARK not in src:
                     key: batch[key].to(rank) for key in batch.keys() if key != "idx"
                 }
 
-                outputs = parallel_model(**batch, sample_idx=sample_idx)
+                outputs = parallel_model(**batch, **({"sample_idx": sample_idx} if configs.coconut else {}))
 
                 loss = outputs.loss / configs.gradient_accumulation_steps''', 1)
     if "import json" not in src:

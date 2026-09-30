@@ -24,7 +24,7 @@ echo "DATA_MD5 $(md5sum data/p8_*.json | cut -c1-10 | tr '\n' ' ')"
 OMP_NUM_THREADS=8 python /workspace/prosqa/test_mask.py > /workspace/logs/test_mask.out 2>&1
 grep -q "MASK_TEST PASS" /workspace/logs/test_mask.out || { echo "MASK_TEST_FAILED"; exit 1; }
 echo "MASK_TEST PASS"
-(cp -r /workspace/coconut /tmp/coco_t && rm -rf /tmp/coco_t/.git && cd /tmp && CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=4   python /workspace/prosqa/test_p8.py /tmp/coco_t /workspace/coconut/data/p8_train.json) > /workspace/logs/test_p8.out 2>&1
+(rm -rf /tmp/coco_t && cp -r /workspace/coconut /tmp/coco_t && rm -rf /tmp/coco_t/.git && cd /tmp && CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=4   python /workspace/prosqa/test_p8.py /tmp/coco_t /workspace/coconut/data/p8_train.json) > /workspace/logs/test_p8.out 2>&1
 grep -q "P8_TEST PASS" /workspace/logs/test_p8.out || { echo "P8_TEST_FAILED"; exit 1; }
 echo "P8_TEST PASS"
 C=/workspace/ckpt/$NAME

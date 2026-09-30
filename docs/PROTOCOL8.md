@@ -94,3 +94,16 @@ attention (primary) and by text (secondary; the first C7 round-trip / edit test,
 * With 4 vs 4 seeds, p = 1/70 = 0.014 at complete separation and 2/70 = 0.029 with one inversion. Two inversions give
   4/70 = 0.057, which fails. So "supported" requires at most one inverted seed pair, plus a mean gain ≥ 0.05.
 * No rule changes.
+
+## Amendment 2 (2026-09-30 09:50 EDT, instrument failure in the CoT arm; no PROTOCOL8 data existed)
+
+* **What happened.** The first CoT runs (hosts 53533314/19/22/26) crashed at the first training step. `patch_p8.py`
+  made `run.py` pass `sample_idx` to every model, but the CoT arm's plain GPT-2 rejects that keyword. The test gate
+  exercised only the Coconut path.
+* **Fix.** `sample_idx` is passed only when `configs.coconut`. `test_p8.py` check 6 now asserts the guard and that
+  a plain GPT-2 forward accepts the batch. `pod_p8c.sh` now clears `/tmp/coco_t` before the test copy: a stale copy
+  from the first attempt had made the gate test old code.
+* **Handling.** On each CoT host, Coconut was re-cloned and re-patched and the CoT seed restarted from scratch; the
+  failed logs were kept as `prosqa.out.void_attempt*`. All four pass `P8_TEST` and train.
+* **Latent arms.** Their `run.py` (Coconut) behaves identically before and after the fix, so they were not
+  restarted.
