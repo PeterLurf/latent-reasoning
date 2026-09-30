@@ -1648,6 +1648,31 @@ nothing else?
   - The input-only control of NORTH_STAR (c) concerns decoders. It applies to T-C7a and is not part of this edit test.
 * **Moderators (descriptive).** IIA by extrapolating vs non-extrapolating models (Mann–Whitney), and by K.
 
+**Result (2026-09-30 01:06 EDT; all 59 models; `theory/score_c7_clamp.py 34` → `theory/results/score_s34.json`; raw
+`theory/results/exp15_c7_edit.json`). E2, E3, E4 and E6 met; E1 and E5 narrowly not met.**
+* **E1 not met.** The edit is read as written: median M0 = 0.90. It is followed exactly one step later less often:
+  M1 = 0.35 < 0.40.
+  - Random control: M0 and M1 ≤ 0.05 in 59/59 models.
+  - M1 counts only an exact advance at step i + 2. Braking models often repeat a step, so M1 is 0.27 in extrapolating
+    models and 0.59 in non-extrapolating ones. The answer measures below are not affected by this.
+* **E2 met.** Past the one-pass horizon, answers follow the edited pointer: ins +0.83, del −0.59. Random control:
+  |ins| 0.01, |del| 0.08.
+* **E3 met.** Collateral flips 0.026, vs 0.015 for the random control.
+* **E4 met.** Median IIA 0.36; 32/59 models have IIA ≥ 0.30. At i = 3 the median is 0.48. Dose ×4: 0.45. Dose ×1: 0.09.
+* **E5 not met, by 0.003.** The round trip, i.e. full substitution μ_i + U id_emb[v_i], agrees with the unedited run on
+  0.947 of answers (read_v 1.00). The pointer plus the step mean carries almost everything the probe's answers depend
+  on. The residual 5 % is a small hidden channel.
+* **E6 met.** The node-token embedding is not the thought's code: emb edit M0 = 0.006.
+* **Moderator.** IIA is 0.30 in extrapolating models (n 25) and 0.39 in non-extrapolating ones (n 34). Mann–Whitney,
+  normal approximation, two-sided p = 0.15.
+* **Reading.**
+  - This is the first causal C7 evidence for silent latent steps on the toy, at single-node granularity. Re-writing
+    the thought's pointer, through a linear map from the model's own id table, changes the model's later reads and its
+    answers as BFS from the edited node predicts, and leaves the rest alone.
+  - Unlike Part I's probe directions, the pointer is readable, writable and used.
+  - Limits: IIA is a median 0.36, not near 1. The encoder is fitted on the model's own thoughts. Only single-node claims
+    were edited.
+
 ## 35. Proposition 10 — confounded stop keys: why anytime runs fall back at the trained depth, and a test of which count they use (theory, and pre-registration of P10e; written 2026-09-30 00:22 EDT, after Pilots D, F and H were scored and Pilot E's pointers measured, before exp16 was run on any test model)
 
 **Observation (Pilot E, E8 arm: K = 8, training depth 6; `theory/results/pilotDE_meas.json`).**
@@ -1818,6 +1843,23 @@ freeze3 was chosen as primary because it was the only variant that did not hurt 
   count cannot restore a speed their loop never had in range.
 * **Both fail.** The batch mean is not the count, or the count is not linearly separable. Restarts (§26, §33) remain
   the only working route.
+
+**Result (2026-09-30 01:06 EDT; 76 models; `theory/score_c7_clamp.py 36` → `theory/results/score_s36.json`; raw
+`theory/results/exp17_counter_clamp.json`). CC2 met; CC1 and CC3 not met.**
+* **CC1 not met (group A, anytime, n 17).** freeze3 changes median d8 by +0.028 and median peak depth by +1; rand3 −0.011.
+* **CC2 met (group B, 34 non-extrapolating).** 7-hop success: freeze3 9/34, base 1/34, rand3 0/34. freeze2 gives
+  12/34. Re-anchoring gives 31/34.
+* **CC3 not met.** Median in-range cost: 0.023 (A) and 0.045 (B).
+* **Descriptive.** The clamp hurts models that already extrapolate: 7-hop success 23/25 → 10/25 under freeze3, and
+  19/25 under freeze4.
+* **Reading.**
+  - The per-step mean carries part of what stops the loop. Clamping it rescues some failures, which a random shift of
+    equal size never does.
+  - But the mean is not a clean count. It also carries the in-range schedule, so clamping it costs accuracy and breaks
+    working models.
+  - The count is only partly separable in this linear form. Restarts remain far ahead (31/34), which supports the
+    checkpointed design (§33) over clamping.
+  - A trained, count-free thought (PROPOSALS §10, T12) is the remaining restart-free route.
 
 ## 7. Log
 
