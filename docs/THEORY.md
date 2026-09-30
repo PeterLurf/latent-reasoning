@@ -1202,6 +1202,29 @@ by failure mechanism, as Props. 3 and 5 predict?
 * **Order and hosts.** 48 runs inserted after Pilot D/E and before Pilot F on all four theory hosts (~15 min per run on
   hosts 2–4); Pilots F and G shift by ~3 h (to ~15:00–17:00 EDT 2026-09-30).
 
+**Result (2026-09-30 00:01 EDT; all 48 runs; `theory/score_pilotHIJKL.py H` → `theory/results/score_pilotH.json`;
+pointers from `theory/results/le_pointer.json`).** **Critical-period reading; PH1–PH4 not met.**
+* Competent: FT-C 20/20, FT-AT 18/20, FT-JAT 5/8 (guard: **FT-JAT flagged**, gate rate 0.63 < 0.75).
+* **PH1 not met.** Extrapolating share among competent runs: FT-AT 1/18 (0.06; s112, a retrieval-type model, d7 0.636),
+  FT-C 0/20. The critical-period clause holds (0.06 ≤ 0.00 + 0.10). d7(FT-AT) > d7(FT-C) in 12 of 18 models with both
+  competent (0.67 < 0.75; one-sided sign p = 0.12); medians d7 0.545 vs 0.527, d8 0.511 vs 0.505.
+* **PH2 not met.** Median p[K−1] = 3 in both FT-AT (n 18) and FT-C (n 20): the brake did not go. Against the initial
+  models' own trajectories (measured 2026-09-30 00:03 with the same `le_pointer.py`, added to le_pointer.json as
+  p30_s*), the whole trajectory h_0..h_11 is unchanged, digit for digit, in 13/20 FT-C models and 6/20 FT-AT models
+  (s109, s118, s125, s132, s145, s158, all the `1 1 1 2 2 3 2 3 2 3 2 3` period-2 oscillation of §25 or its period-3
+  relative). The in-range part h_0..h_5 is unchanged in 18/20 FT-C and 9/20 FT-AT models. Anytime fine-tuning moves the
+  pointer somewhat, but not past the brake.
+* **PH3 not met.** FT-AT extrapolating share: retrieval-type 1/12, local-type 0/6.
+* **PH4 not supported** (and its arm is flagged): d7(FT-JAT) > d7(FT-AT) in 3 of 5 counted local-type models.
+* **Reading.** Removing slack after training does not repair a trained failure at this fine-tuning dose (6000 steps,
+  lr 1e-4, ~4000 steps at full depth). The step-counting circuit chosen at curriculum stage 3 (§10, §25) is kept, in
+  most models down to its exact pointer schedule. That is what a critical period predicts. **Caveat:** the dose was fixed in
+  advance and is gentler than training (lr 1e-4 vs 5e-4). "Locked in" is established only for this dose, not for a
+  larger learning rate or a re-initialised step-sensitive component. Consequence for the fixes: the conditions of §22
+  must hold **at circuit selection**, as Prop. 4(a) states (random-tight or anytime budgets from the first latent
+  stage). Post-hoc anytime fine-tuning is not a repair route; Pilot L (§32) tests a different one, distillation of the
+  re-anchored teacher on deep graphs.
+
 ## 28. Pilot I — a clock that never runs out (pre-registered 2026-09-29 15:05 EDT, before any Pilot I run started; idea #2 of the Literature session's adjacent-field list, Clockwork RNN 1402.3511 / Phased LSTM 1610.09513)
 
 **Logic (Prop. 9).** Under slack the model wants a clock to brake with; what fails is a clock whose continuation past K is
