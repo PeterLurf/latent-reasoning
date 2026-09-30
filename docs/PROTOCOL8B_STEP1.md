@@ -68,3 +68,8 @@ are renamed to the scorer's names before scoring. No content changes.
 ~0 CPU. It was killed and restarted from scratch on the same host (same seed and config; the base-checkpoint sha had
 already been verified there), and now trains normally. No data existed from the hung attempt; its log is kept as
 `prosqa.out.hung_attempt1`.
+
+**Descriptive reference (2026-09-30 15:22, before any step-1 result was read).** The un-fine-tuned Phase 0 model is
+evaluated with `reanchor_p8.py --random_pos` (same probe, same seed) on the local RTX 2070. This gives OG, RG and REG
+**before** any checkpoint training, including the random-position variant the pilot lacked. It is a reference only; no
+decision rule uses it.
