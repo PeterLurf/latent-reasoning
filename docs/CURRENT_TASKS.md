@@ -52,6 +52,18 @@ leak.**
 | 53410361 | 3090, 0.208 | T9 host B (`p7s_t9_vB.txt`, 11) | `ssh -p 24373 root@193.143.121.30` | ~04:00 Wed |
 | 53408587 | 3090, 0.299 | T9 host C (`p7s_t9_vC.txt`, 10) | `ssh -p 12428 root@81.166.162.13` | ~03:00 Wed |
 | 53410630 | 4060 Ti, 0.14 | T9 host D (`p7s_t9_vD.txt`, 10) | `ssh -p 13578 root@142.127.68.223` | ~08:30 Wed |
+| 53453305 | A4000, 0.102 | PROTOCOL9 vb1 (`scratch/p9_vb1.txt`, 3 runs; amendment 2) | `ssh -p 17224 root@198.200.122.18` | ~03:30 Wed |
+| 53453307 | 3080 Ti, 0.132 | PROTOCOL9 vb2 (`scratch/p9_vb2.txt`, 3 runs; amendment 2) | `ssh -p 8117 root@142.127.68.223` | ~02:30 Wed |
+| 53453310 | 3080 Ti, 0.138 | PROTOCOL9 vb3 (`scratch/p9_vb3.txt`, 3 runs; amendment 2) | `ssh -p 18314 root@142.127.68.223` | ~02:30 Wed |
+| 53453314 | 3090, 0.155 | PROTOCOL9 vb4 (`scratch/p9_vb4.txt`, 3 runs; amendment 2) | `ssh -p 45232 root@223.167.245.91` | ~02:30 Wed |
+| 53453320 | 3080, 0.158 | PROTOCOL9 vb5 (`scratch/p9_vb5.txt`, 3 runs; amendment 2) | `ssh -p 40452 root@178.226.163.63` | ~02:45 Wed |
+| 53453331 | 3090, 0.168 | PROTOCOL9 vb6 (`scratch/p9_vb6.txt`, 3 runs; amendment 2) | `ssh -p 47188 root@79.116.20.245` | ~02:30 Wed |
+| 53453343 | 4070, 0.202 | PROTOCOL9 vb7 (`scratch/p9_vb7.txt`, 3 runs; amendment 2) | `ssh -p 35012 root@159.48.242.2` | ~02:30 Wed |
+| 53453349 | 4060 Ti, 0.207 | PROTOCOL9 vb8 (`scratch/p9_vb8.txt`, 3 runs; amendment 2) | `ssh -p 47615 root@141.195.21.87` | ~03:30 Wed |
+| 53453358 | 3090, 0.21 | PROTOCOL9 vf1 (`scratch/p9_vf1.txt`, 2 runs; amendment 2) | `ssh -p 32448 root@108.76.208.51` | ~01:30 Wed |
+| 53453361 | 3090, 0.224 | PROTOCOL9 vf2 (`scratch/p9_vf2.txt`, 2 runs; amendment 2) | `ssh -p 62361 root@142.112.39.215` | ~01:30 Wed |
+| 53453363 | 3090, 0.224 | PROTOCOL9 vf3 (`scratch/p9_vf3.txt`, 2 runs; amendment 2) | `ssh -p 63691 root@142.112.39.215` | ~01:30 Wed |
+| 53453369 | 4080S, 0.265 | PROTOCOL9 vf4 (`scratch/p9_vf4.txt`, 2 runs; amendment 2) | `ssh -p 30685 root@70.48.44.13` | ~01:30 Wed |
 
 - **Phase 0:** pre-registered in `docs/PROTOCOL8_PHASE0.md` (3a9c05e, 15:09:38). Pod log `/workspace/logs/prosqa.out`,
   results `/workspace/prosqa/res/`. Watcher `bash scratch/p8_watch.sh "142.112.39.215 63335 coconut" "38.29.145.27
@@ -77,9 +89,9 @@ leak.**
 
 | GPU | Now | Next (chained, automatic) | Runs dry |
 |---|---|---|---|
-| RTX 4060 | addendum R `scratch/p6_r_4060.txt` | T9 worker (all lines claimed, ends at once) → T10 worker `t10_4060` (shared `p7s_t10_2070.txt`, fp32) → **PROTOCOL9** `p9b_4060` (`scratch/p9_bf16.txt`) → `p9f_4060` (`scratch/p9_fork.txt`) | ~Wed 23:00 |
-| RTX 3070 | addendum R `scratch/p6_r_3070.txt` | same: T10 `t10_3070` → `p9b_3070` → `p9f_3070` | ~Wed 23:00 |
-| RTX 2070 | T10 `scratch/p7s_t10_2070.txt` (fp32) | **PROTOCOL9** `p9f_2070` (`scratch/p9_fork.txt`, fp32) | ~Wed 23:00 |
+| RTX 4060 | addendum R `scratch/p6_r_4060.txt` | T9 worker → T10 worker `t10_4060` (shared `p7s_t10_2070.txt`, fp32) → PROTOCOL9 workers (all lines claimed by the Vast hosts, amendment 2: they end at once) | ~03:30 Wed |
+| RTX 3070 | T10 `t10_3070` (R done 19:19) | PROTOCOL9 workers (end at once, as above) | ~03:30 Wed |
+| RTX 2070 | T10 `scratch/p7s_t10_2070.txt` (fp32) | PROTOCOL9 worker (ends at once) | ~03:30 Wed |
 
 - **Overnight follow-up: PROTOCOL9** (`docs/PROTOCOL9.md`, a28ff0c 16:09:10): anytime supervision on the T9/T10
   architectures, paired by seed with the T9/T10 controls. 32 runs (`scratch/queue_worker3.sh`, frozen theory code in
