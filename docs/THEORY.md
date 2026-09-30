@@ -1868,19 +1868,21 @@ freeze3 was chosen as primary because it was the only variant that did not hurt 
 
 **Result (2026-09-30 01:06 EDT; 76 models; `theory/score_c7_clamp.py 36` → `theory/results/score_s36.json`; raw
 `theory/results/exp17_counter_clamp.json`). CC2 met; CC1 and CC3 not met.**
-* **CC1 not met (group A, anytime, n 17).** freeze3 changes median d8 by +0.028 and median peak depth by +1; rand3 −0.011.
+* **CC1 not met (group A, anytime, n 17).** Two readings of the rule:
+  - The scorer's rule, the median of per-model differences: d8 +0.028, peak depth +1; rand3 d8 −0.011.
+  - Read literally as a difference of medians (Audit): d8 +0.049, peak +2.
+  - CC1 fails either way on d8. Under the literal reading it misses by 0.001.
 * **CC2 met (group B, 34 non-extrapolating).** 7-hop success: freeze3 9/34, base 1/34, rand3 0/34. freeze2 gives
   12/34. Re-anchoring gives 31/34.
 * **CC3 not met.** Median in-range cost: 0.023 (A) and 0.045 (B).
-* **Descriptive.** The clamp hurts models that already extrapolate: 7-hop success 23/25 → 10/25 under freeze3, and
-  19/25 under freeze4.
+* **Descriptive.** Any shift of this size from h_4 hurts models that already extrapolate. 7-hop success goes from 23/25
+  to 10/25 under freeze3 and to 7/25 under rand3, so the damage is non-specific (Audit).
 * **Reading.**
   - The per-step mean carries part of what stops the loop. Clamping it rescues some failures, which a random shift of
     equal size never does.
-  - But the mean is not a clean count. It also carries the in-range schedule, so clamping it costs accuracy and breaks
-    working models.
-  - The count is only partly separable in this linear form. Restarts remain far ahead (31/34), which supports the
-    checkpointed design (§33) over clamping.
+  - The count-specific evidence is only this rescue (9/34 vs 0/34). The in-range cost and the damage to working models
+    are non-specific effects of shifting the thought.
+  - Restarts remain far ahead (31/34), which supports the checkpointed design (§33) over clamping.
   - A trained, count-free thought (PROPOSALS §10, T12) is the remaining restart-free route.
 
 ## 7. Log
