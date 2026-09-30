@@ -1,0 +1,3 @@
+pm_t8_s102 --init_from theory/runs/pl_t8_s102/model.pt --teacher t8 --head 6 --seed 102 --deep_R 4 --deep_widths 2,3 --student_Kp 24 --teacher_ep 12
+pm_self_s102 --init_from theory/runs/pl_t8_s102/model.pt --teacher self --head 6 --seed 102 --deep_R 4 --deep_widths 2,3 --student_Kp 24 --teacher_ep 12
+pm_t8f_s102 --init_from theory/runs/pl_t8_s102/model.pt --teacher t8f --head 6 --seed 102 --deep_R 4 --deep_widths 2,3 --student_Kp 24 --teacher_ep 12
