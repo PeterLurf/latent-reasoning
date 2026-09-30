@@ -127,4 +127,12 @@ model.jitter = None
 e0 = float(model(**b).loss)
 assert e0 == e1, (e0, e1)
 print("5. jitter: train loss", l0, "->", l1, "; eval unchanged", e0)
+# 6. run.py passes sample_idx only to Coconut models (plain GPT-2 CoT / no-CoT arms reject the keyword)
+src = open(os.path.join(sys.argv[1], "run.py")).read()
+assert 'if configs.coconut else {}' in src and "sample_idx=sample_idx)" not in src, "sample_idx not guarded in run.py"
+try:
+    GPT2LMHeadModel(GPT2Config(n_layer=1, n_embd=32, n_head=2, vocab_size=len(tok)))(**b)
+except TypeError as e:
+    raise AssertionError(f"plain GPT-2 forward failed on a Coconut batch: {e}")
+print("6. run.py guards sample_idx; plain GPT-2 forward accepts the batch without it")
 print("P8_TEST PASS")
