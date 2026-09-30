@@ -1,0 +1,10 @@
+pclr1_s102 agree 0.66 | head S6 d19-24 0.638 attn 0.642 | halt median by length {'12': 3.0, '18': 4.0, '24': 5.0}
+pclr1_s111 agree 0.81 | head S6 d19-24 0.500 attn 0.502 | halt median by length {'12': 4.0, '18': 4.0, '24': 4.0}
+pclr1_s113 agree 0.97 | head S6 d19-24 0.605 attn 0.613 | halt median by length {'12': 3.0, '18': 4.0, '24': 5.0}
+pclr1_s118 agree 0.82 | head S6 d19-24 0.664 attn 0.686 | halt median by length {'12': 3.0, '18': 4.0, '24': 5.0}
+pclr1_s125 agree 0.88 | head S6 d19-24 0.639 attn 0.646 | halt median by length {'12': 3.0, '18': 4.0, '24': 6.0}
+pclr1_s130 agree 0.90 | head S6 d19-24 0.628 attn 0.661 | halt median by length {'12': 1.0, '18': 3.0, '24': 5.0}
+pclr1_s132 agree 0.90 | head S6 d19-24 0.679 attn 0.670 | halt median by length {'12': 3.0, '18': 4.0, '24': 7.0}
+pclr1_s140 agree 0.96 | head S6 d19-24 0.678 attn 0.667 | halt median by length {'12': 1.0, '18': 1.0, '24': 1.0}
+pclr1_s146 agree 0.65 | head S6 d19-24 0.628 attn 0.622 | halt median by length {'12': 3.0, '18': 4.0, '24': 6.0}
+pclr1_s157 agree 0.80 | head S6 d19-24 0.652 attn 0.652 | halt median by length {'12': 2.0, '18': 4.0, '24': 5.0}

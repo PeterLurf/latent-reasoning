@@ -77,6 +77,8 @@ times below (local EDT) and the first-run times from the host queue logs.
   trained label-free. Six chained segments reach d19–24 at 0.65, without compounding. Beams add nothing. Unproven: a
   learned write/halt policy, and transfer to GPT-2.
 * One restart covers exactly its trained horizon: 0.91–0.95 up to 6 hops from the anchor, chance from 7 (§46).
+* A learned write head (0.85 agreement) and a closure halt that tracks depth (3/4/5 segments for 12/18/24 hops, 8/10
+  models) give label-free C5 v1–v2 (§49).
 * **Checkpointed restarts (CLR-1, §45): editing the written checkpoint changes answers as predicted (IIA 0.84 for sets,
   1.00 single).** Chains reach d13–18 label-free (single anchor 0.67). Sets are used but don't beat one anchor.
 * Depth of training sets reach (§41): trained to 9 → fades by ~15; to 12 → ~22; to 18 → flat to 23 on §37's probe (0.88 at 25–30 on an easier width-1 probe).
@@ -2665,6 +2667,16 @@ single-anchor chains keep extending with more segments.**
 
 **Scope.** C5 here is the halting and writing rule, not an RL-learned policy (v3). The write head reads the state, so
 it is a probe that is used causally. It is not a claim about the silent steps (§34).
+
+**Result (2026-09-30; 10 models, CPU; `theory/results/exp23_write_halt.json`). WH1 and WH2 met.**
+* **WH1.** The head agrees with the attention anchor on held-out graphs in a median 0.85 of cases (0.65–0.97). Chains
+  written by the head reach S6 d19–24 = 0.639 (attention-written 0.649).
+* **WH2.** The closure halt fires after median 3, 4 and 5 segments for 12-, 18- and 24-hop chains. The halt is
+  strictly increasing with chain length in 8/10 models. One model halts after segment 1 at every length.
+* **Reading (C5 v1–v2, label-free).**
+  - A segment can write its own checkpoint from its final thought, and a free closure signal stops the chain at a
+    depth that tracks the problem: about one segment per 4–5 hops, as in §48.
+  - Not yet learned end to end: v3 (RL on the final answer only, MEM1-style) is the next step for C5.
 
 ## 7. Log
 
