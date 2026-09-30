@@ -1,0 +1,8 @@
+pf_atl_s905 --seed 905 --anytime 1 --anytime_stages 4:5
+pg_gat_s901 --seed 901 --arch setmem --anytime 1
+pg_gat_s906 --seed 906 --arch setmem --anytime 1
+pg_g_s903 --seed 903 --arch setmem
+pg_g_s906 --seed 906 --arch setmem
+pg_glat_s906 --seed 906 --arch setmem --set_from_stage 5 --anytime 1
+pi_per3_s903 --seed 903 --periodic_step 3
+pj_ch3at_s903 --seed 903 --arch chunk3 --anytime 1
