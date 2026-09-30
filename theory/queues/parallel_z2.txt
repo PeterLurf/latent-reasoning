@@ -1,0 +1,3 @@
+pk_rt_s901 --seed 901 --K_random 1:6
+pg_g_s905 --seed 905 --arch setmem
+pj_ch3_s904 --seed 904 --arch chunk3

@@ -19,3 +19,19 @@
 53431164 theory-y3 RTX_3090 0.135 77.48.24.239:43321 created 2026-09-29 19:28 (rebalance; theory/queues/parallel_y3.txt)
 53431171 theory-y4 RTX_3080 0.121 87.106.223.150:30229 created 2026-09-29 19:28 (rebalance; theory/queues/parallel_y4.txt)
 53408522 theory-x5 RTX_3080 0.162 85.51.34.67:40302 destroyed 2026-09-29 21:06: Vast status offline, SSH timed out; 5 of its 13 runs were already fetched (hourly fetch), 8 unfinished runs re-queued on other hosts; confirmed absent=1 (destroying instance 53408522.)
+53453463 theory-z5 RTX_3080_Ti 0.132 - created 2026-09-29 22:24; destroyed 2026-09-29 22:45 before any run started (stuck in image 'loading' > 20 min, or SSH banner timeout for z16); confirmed absent: yes
+53453466 theory-z6 RTX_3080_Ti 0.138 - created 2026-09-29 22:24; destroyed 2026-09-29 22:45 before any run started (stuck in image 'loading' > 20 min, or SSH banner timeout for z16); confirmed absent: yes
+53453470 theory-z8 RTX_3090 0.168 - created 2026-09-29 22:24; destroyed 2026-09-29 22:45 before any run started (stuck in image 'loading' > 20 min, or SSH banner timeout for z16); confirmed absent: yes
+53453516 theory-z16 RTX_3080 0.208 - created 2026-09-29 22:24; destroyed 2026-09-29 22:45 before any run started (stuck in image 'loading' > 20 min, or SSH banner timeout for z16); confirmed absent: yes
+(no instance) theory-z4 - - - create failed 22:24 (offer 53452712 no longer available); its queue re-assigned
+53453442 theory-z1 RTX_3080 0.115 1.208.108.242:55379 created 2026-09-29 22:24 (scale-out for a ~3 h drain; queue theory/queues/parallel_z1.txt)
+53453444 theory-z2 RTX_3080 0.115 1.208.108.242:55190 created 2026-09-29 22:24 (scale-out for a ~3 h drain; queue theory/queues/parallel_z2.txt)
+53453452 theory-z3 RTX_3080 0.124 87.106.223.150:30044 created 2026-09-29 22:24 (scale-out for a ~3 h drain; queue theory/queues/parallel_z3.txt)
+53453467 theory-z7 RTX_3090 0.155 125.190.184.215:30965 created 2026-09-29 22:24 (scale-out for a ~3 h drain; queue theory/queues/parallel_z7.txt)
+53453476 theory-z9 RTX_3080_Ti 0.178 174.95.112.105:51680 created 2026-09-29 22:24 (scale-out for a ~3 h drain; queue theory/queues/parallel_z9.txt)
+53453488 theory-z10 RTX_A5000 0.195 167.179.138.57:40271 created 2026-09-29 22:24 (scale-out for a ~3 h drain; queue theory/queues/parallel_z10.txt)
+53453494 theory-z11 RTX_3080_Ti 0.198 5.199.239.202:40018 created 2026-09-29 22:24 (scale-out for a ~3 h drain; queue theory/queues/parallel_z11.txt)
+53453497 theory-z12 RTX_3080_Ti 0.201 217.171.200.22:45349 created 2026-09-29 22:24 (scale-out for a ~3 h drain; queue theory/queues/parallel_z12.txt)
+53453501 theory-z13 RTX_3090 0.22 73.63.79.23:41054 created 2026-09-29 22:24 (scale-out for a ~3 h drain; queue theory/queues/parallel_z13.txt)
+53453507 theory-z14 RTX_4070 0.202 159.48.242.2:35152 created 2026-09-29 22:24 (scale-out for a ~3 h drain; queue theory/queues/parallel_z14.txt)
+53453511 theory-z15 RTX_3090 0.206 91.150.160.38:17101 created 2026-09-29 22:24 (scale-out for a ~3 h drain; queue theory/queues/parallel_z15.txt)

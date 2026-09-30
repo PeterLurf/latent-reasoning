@@ -1,0 +1,2 @@
+pg_gat_s906 --seed 906 --arch setmem --anytime 1
+pj_ch3_s905 --seed 905 --arch chunk3
