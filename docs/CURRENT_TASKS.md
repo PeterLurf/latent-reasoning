@@ -47,7 +47,7 @@ scored (D–M, §§34–38). No theory hosts are live. T12 (§39, 8 runs) runs o
 
 | Group | Hosts (instance: host:port) | Done → drained |
 |---|---|---|
-| Phase 0 Coconut | 53405925: 142.112.39.215:63335 | ~05:30–06:00 → `drain_prosqa.sh` |
+| done 09:34 | Phase 0 Coconut | **F1 and F1b not met** (aᴄ(H, 10) = 0.656; K′ = 0 at chance): outcome (iii), Coconut does not learn deep problems; `docs/PROTOCOL8_PHASE0_RESULTS.md` |
 | T9 | t9_vD 53410630: 142.127.68.223:13578 | ~08:30 |
 | PROTOCOL9 | vb1 53453305 198.200.122.18:17224 · vb4 53453314 223.167.245.91:45232 · vb5 53453320 178.226.163.63:40452 · vb8 53453349 141.195.21.87:47615 | ~04:00–05:00 |
 | PROTOCOL9 extension (am. 7) | x1 53492405 174.0.242.177:1678 · x3 53492408 109.173.238.203:42167 · x5 53492421 172.218.118.138:55578 · x6 53492427 142.112.39.215:62359 · x7 53492433 142.112.39.215:63657 · x8 53492437 86.123.234.69:47324 · x2 53494807 142.127.68.223:7004 · x4 53494817 174.0.242.177:1626 (replacements for stuck 53492407/12) | ~08:00 |
