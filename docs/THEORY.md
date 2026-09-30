@@ -552,7 +552,7 @@ not competent (pa_m_s715, pa_mb2_s731). The buggy MB arm (pa_mb_*) is excluded (
 * Pilot A's C arm (seeds 700–707) and Pilot B's AT arm (750–753) are **not** pooled into Pilot D; they may be reported
   alongside, labelled as pilot data.
 
-**Result (2026-09-30 00:17 EDT; all 24 runs; `theory/score_pilotDE.py` → `theory/results/score_pilotDE.json`,
+**Result (2026-09-30, committed 440d6ae 00:12:55 EDT; all 24 runs; `theory/score_pilotDE.py` → `theory/results/score_pilotDE.json`,
 measurements in `theory/results/pilotDE_meas.json`). PD1 supported; PD2 and PD3 not met; PD4 met.**
 * Runs: AT 12 (pd_at_s905 ran and exhausted its stage-1 guard, so it counts as run and not competent, §15 rule); C 12.
 * **PD1 supported.** Competent AT 10/12, of which 8 extrapolate (0.80). Competent C 9/12, of which 3 extrapolate (0.33).
@@ -966,7 +966,7 @@ of anytime supervision; and does tightness matter only in the selection window (
   so **ATW and ATL are restored** exactly as registered, and PF4 is back in force (still moot if PD1 is not supported).
   Pilot F now runs on additional hosts in parallel (placement below does not change any prediction).
 
-**Result (2026-09-30 00:20 EDT; all 32 runs; `theory/score_pilotFG.py` → `theory/results/score_pilotFG.json`; z from
+**Result (2026-09-30, committed 440d6ae 00:12:55 EDT; all 32 runs; `theory/score_pilotFG.py` → `theory/results/score_pilotFG.json`; z from
 `theory/results/transfer_pilots.json`).**
 
 | Arm | Competent | Extrapolate (of competent) | Median d8 |

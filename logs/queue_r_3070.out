@@ -53,3 +53,57 @@ run  results/budget_sweep_m_s319.json
 EVAL_DONE m_s319
 12:45:03 evaluated m_s319
 12:45:04 start r3_s403 (--no_step_emb --K 6 --seed 403 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 3 )
+13:36:04 trained r3_s403 rc 0
+run  results/competence_r3_s403.json
+run  results/competence_matched_r3_s403.json
+run  results/length_gen_r3_s403.json
+run  results/delayed_trace_r3_s403.json
+run  results/budget_sweep_r3_s403.json
+EVAL_DONE r3_s403
+13:36:25 evaluated r3_s403
+13:36:25 start m_s320 (--no_step_emb --K 6 --seed 320 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4 )
+14:27:25 trained m_s320 rc 0
+run  results/competence_m_s320.json
+run  results/competence_matched_m_s320.json
+run  results/length_gen_m_s320.json
+run  results/delayed_trace_m_s320.json
+run  results/budget_sweep_m_s320.json
+EVAL_DONE m_s320
+14:27:46 evaluated m_s320
+15:54:03 start r3_s404 (--no_step_emb --K 6 --seed 404 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 3 )
+16:45:03 trained r3_s404 rc 0
+run  results/competence_r3_s404.json
+run  results/competence_matched_r3_s404.json
+run  results/length_gen_r3_s404.json
+run  results/delayed_trace_r3_s404.json
+run  results/budget_sweep_r3_s404.json
+EVAL_DONE r3_s404
+16:45:23 evaluated r3_s404
+16:45:24 start m_s321 (--no_step_emb --K 6 --seed 321 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4 )
+17:36:24 trained m_s321 rc 0
+run  results/competence_m_s321.json
+run  results/competence_matched_m_s321.json
+run  results/length_gen_m_s321.json
+run  results/delayed_trace_m_s321.json
+run  results/budget_sweep_m_s321.json
+EVAL_DONE m_s321
+17:36:45 evaluated m_s321
+17:36:45 start r3_s405 (--no_step_emb --K 6 --seed 405 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 3 )
+18:27:45 trained r3_s405 rc 0
+run  results/competence_r3_s405.json
+run  results/competence_matched_r3_s405.json
+run  results/length_gen_r3_s405.json
+run  results/delayed_trace_r3_s405.json
+run  results/budget_sweep_r3_s405.json
+EVAL_DONE r3_s405
+18:28:06 evaluated r3_s405
+18:28:07 start m_s322 (--no_step_emb --K 6 --seed 322 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4 )
+19:19:07 trained m_s322 rc 0
+run  results/competence_m_s322.json
+run  results/competence_matched_m_s322.json
+run  results/length_gen_m_s322.json
+run  results/delayed_trace_m_s322.json
+run  results/budget_sweep_m_s322.json
+EVAL_DONE m_s322
+19:19:28 evaluated m_s322
+19:19:28 QUEUE_DONE

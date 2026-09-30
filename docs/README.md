@@ -7,6 +7,7 @@ memory refer to them by path (see `../DO_NOT_MOVE_WHILE_RUNNING.md`). Index writ
 
 | File | What | Editing |
 |---|---|---|
+| `NORTH_STAR.md` | **The project's goal**: seven conditions for solved latent reasoning, their operational tests, status and roles | Audit keeps the status table current |
 | `CURRENT_TASKS.md` | Live handoff: what is running, where, how to check/fetch/stop it, what awaits scoring | **Live**: the session running the experiments keeps it current |
 | `RESEARCH_LOG.md` | Chronology of every decision, run, deviation and disclosure (all parts) | **Live**, append only |
 | `RESEARCH_TIMELINE.md` | Why each part asked what it asked; claim ledger; next steps (Parts I–VI) | Narrative; no new results |

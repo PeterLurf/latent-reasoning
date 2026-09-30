@@ -2,3 +2,9 @@
 15:33:48 launched pid 2282
 15:38:58 stage-1 failure at step 4200; archived as theory/runs/pc_k7_s804_stage1fail_1
 15:38:58 launched pid 2311
+15:44:08 stage-1 failure at step 4200; archived as theory/runs/pc_k7_s804_stage1fail_2
+15:44:08 launched pid 2485
+15:49:19 stage-1 failure at step 4200; archived as theory/runs/pc_k7_s804_stage1fail_3
+15:49:19 launched pid 2537
+15:54:29 stage-1 failure at step 4200; archived as theory/runs/pc_k7_s804_stage1fail_4
+15:54:29 relaunch budget spent

@@ -4,6 +4,7 @@ Execution of the research proposal *"Readable versus usable alternatives in late
 reasoning"*: can several graph-search alternatives held in one continuous-thought state
 be manipulated separately, and how does that selectivity change with branching width?
 
+* `docs/NORTH_STAR.md` — **the goal: a latent reasoner meeting seven conditions (the thoughts do the work, scale past training, match text CoT, need no step labels, decide when to think and write, stay stable, and are faithfully readable in human language).**
 * `docs/CURRENT_TASKS.md` — **live handoff: what is running now, where, how to check/fetch/stop it, what awaits scoring.**
 * `DO_NOT_MOVE_WHILE_RUNNING.md` — **read before moving anything: paths that live experiments depend on (until ~2026-09-29 12:00).**
 * `report/findings.md` — consolidated write-up: what stands after Parts I–VI, what was revised, what is open.
