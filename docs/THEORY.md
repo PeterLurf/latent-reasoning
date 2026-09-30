@@ -1761,6 +1761,64 @@ models eligible).**
   (the lin encoder's μ_i) is common to all graphs and so carries no node identity, which makes it the natural candidate
   for the count. §36 registers an inference-time test of that ("counter clamp").
 
+## 36. Counter clamp — an inference-time fix that holds the thoughts' iteration count in range (pre-registered 2026-09-30 00:29 EDT, before `theory/exp17_counter_clamp.py` is run on any test model)
+
+**Idea (from §35).** The anytime fall-back is keyed to an iteration count carried in the thought, and that count is
+separable from node identity. So hold the count in range without restarting.
+* Over many graphs the node identities average out, so the batch mean of the thoughts at step i, m_i, carries the
+  count.
+* **freeze3:** from thought h_4 on, feed h_i − m_i + m_3. Every later step then sees the count of step 3 while keeping
+  its own node identity.
+* This is the inference-time, in-thought counterpart of Pilot I's periodic clock, and a restart-free counterpart of
+  re-anchoring (§26).
+* If it works, a latent loop can run past its trained budget with no written checkpoint. This bears on C2, and on
+  whether checkpoints are needed for C2 at all or only for C7.
+
+**Code.** `theory/exp17_counter_clamp.py`, CPU, no training.
+* m_i is the batch mean over the probe's 512 graphs of the thoughts produced in the same rollout. It is transductive:
+  a deployable version would use means fitted on training graphs, with the in-range targets fitted ahead of time.
+* Variants: freeze2, freeze3, freeze4, and cycle (2, 3, 4, 2, …).
+* Control rand3: the same per-step shift norm as freeze3, in a fixed random direction.
+* Outcomes on the long-chain probe at K′ = 12: bal-acc by distance, 7-hop success (bal-acc(7) ≥ 0.60, §26's
+  criterion), d8, and the pointer's peak depth (exp16's rule).
+
+**Models.**
+* **Group A:** the 17 competent anytime runs of Pilots D and E8 (pd_at, pe8_at).
+* **Group B:** the 59 P30 ∪ L models of §26 (exp12 set). 34 of them do not extrapolate, and re-anchoring rescues 31 of
+  those 34 (§26).
+
+**Primary: freeze3.** The other variants are secondary.
+
+**Disclosure: four smoke models outside both groups** (d7/d8, peak depth):
+
+| Model | Base | freeze3 | rand3 | Notes |
+|---|---|---|---|---|
+| pb_at_s751 (anytime) | 0.68/0.56, 8 | 0.69/0.74, 11 | 0.61/0.52, 7 | the pointer runs to 11 under every clamp variant |
+| pb_at_s750 (anytime) | 0.63/0.60, 7 | 0.67/0.61, 5 | — | little change |
+| pa_c_s703 (fixed-K control) | 0.67/0.61, 6 | 0.61/0.62, 9 | — | the pointer runs `1 1 2 1 2 3 4 5 6 7 8 9`; freeze2 and cycle hurt |
+| pa_c_s701 | pointer stuck at 1 | unchanged | unchanged | degenerate |
+
+freeze3 was chosen as primary because it was the only variant that did not hurt any smoke model.
+
+**Predictions.**
+* **CC1 (group A, primary).** freeze3 raises median d8 by ≥ 0.05 over base, and median peak depth by ≥ 2. rand3 changes
+  median d8 by ≤ 0.02.
+* **CC2 (group B, the 34 non-extrapolating models).** freeze3 gives 7-hop success in ≥ 8/34; rand3 in ≤ 3/34.
+  Re-anchoring's 31/34 is the reference.
+* **CC3 (in-range cost).** In both groups, the median drop in mean bal-acc over distances 1..K is ≤ 0.02 under freeze3.
+  The clamp starts inside the budget, at h_4.
+* **Descriptive.** The same numbers for the 25 extrapolating models of group B and for every variant. The per-model
+  pointer under freeze3 is compared with base.
+
+**Readings.**
+* **CC1 and CC2 hold.** The count, not the content, limits continuation, and it can be held in range without a
+  restart. That would be the first restart-free C2 fix on the toy. The next step is a trained version: a counter-free
+  thought, e.g. a loss that makes m_i constant across steps.
+* **CC1 holds, CC2 fails.** Fixed-K models brake on the step schedule (Prop. 9), not only on the count. Clamping the
+  count cannot restore a speed their loop never had in range.
+* **Both fail.** The batch mean is not the count, or the count is not linearly separable. Restarts (§26, §33) remain
+  the only working route.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
