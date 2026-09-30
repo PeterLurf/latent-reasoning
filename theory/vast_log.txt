@@ -60,3 +60,4 @@
 53457831 theory-L18 RTX_3080_Ti 0.222 220.130.209.122:50447 created 2026-09-29 22:59 (Pilot L, one model x 3 arms; queue theory/queues/pilotL_18.txt)
 53457836 theory-L19 RTX_3080_Ti 0.222 220.130.209.121:33626 created 2026-09-29 22:59 (Pilot L, one model x 3 arms; queue theory/queues/pilotL_19.txt)
 53457839 theory-L20 RTX_3090 0.224 142.112.39.215:62610 created 2026-09-29 22:59 (Pilot L, one model x 3 arms; queue theory/queues/pilotL_20.txt)
+53456518 theory-w3 RTX_3090 0.153 142.252.103.101:10990 destroyed 2026-09-29 23:07: container restarted (uptime reset to 0) and SSH refused; its 2 runs (pk_rt_s904, pi_per3_s903) re-queued; confirmed absent: yes
