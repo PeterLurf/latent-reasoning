@@ -86,3 +86,11 @@ Seed is the unit. "Exact MW" means the exact one-sided Mann–Whitney test on th
 
 **PROTOCOL8b:** re-anchoring plus distillation on the `coco` checkpoints (THEORY §32 recipe). Anchor decode by
 attention (primary) and by text (secondary; the first C7 round-trip / edit test, with an input-only control).
+
+## Amendment 1 (2026-09-30 09:38 EDT, clarification only, before any PROTOCOL8 run started)
+
+* P8-1 and P8-2 use the **one-sided** exact Mann–Whitney test, as already stated under Outcomes. It matches the
+  directional prediction.
+* With 4 vs 4 seeds, p = 1/70 = 0.014 at complete separation and 2/70 = 0.029 with one inversion. Two inversions give
+  4/70 = 0.057, which fails. So "supported" requires at most one inverted seed pair, plus a mean gain ≥ 0.05.
+* No rule changes.
