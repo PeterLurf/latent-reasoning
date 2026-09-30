@@ -103,3 +103,16 @@ before D/E report, so its design does not depend on their outcome.
   local PROTOCOL9 workers end at once. The local cards keep PROTOCOL7 T10.
 * Controls (T9 on Vast, T10 local) and anytime runs now run on mixed hardware in both arms. Rules, seeds, measures and
   the cut-off are unchanged.
+
+## Amendment 3 (2026-09-29 22:35 EDT, instrument fix; no PROTOCOL9 run has trained)
+
+* **What happened.** All 32 first attempts (12 Vast hosts, started ~22:23–22:35) failed at import before any training
+  step. The frozen `scratch/p9_frozen/train_arch.py` puts `scratch/` on `sys.path` (in `theory/` it put the repo
+  root), so `import latent` failed. The pre-launch CPU smoke test had `PYTHONPATH=.` set by hand, which hid this.
+  The workers logged "no model" for every run and ended.
+* **Fix.** `scratch/queue_worker3.sh` now exports `PYTHONPATH` as the repo root. The frozen training code is unchanged
+  (same sha256). The import was verified in a clean copy without `PYTHONPATH`: it fails without the export and works
+  with it.
+* **Handling.** These attempts are void: an instrument failure, not stage-1 failures. They produced no model and no
+  outcome. On each host the failed attempt's files (`runs/p9at_*`, their logs and the queue claim file) are deleted
+  and the same queue is restarted with the fixed worker. Nothing else changes.
