@@ -133,3 +133,10 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53542399 vast | p8c_rt_s4 failed deploy (BAD HOST), DESTROYED_VERIFIED 2026-09-30 11:19
 53545198 vast offer 49980276 created 2026-09-30 11:19: label p8c-rt-s4, pod_p8c.sh p8c_rt_s4 (logged at create by prosqa/vdeploy.sh)
 53405925 vast | DESTROYED_VERIFIED 2026-09-30 11:45 after verified fetch (prosqa/res_p8_coconut: coco_test_e48.json coco_test_e44.json coco_ctl_e48.json cot_test_e4.json; ckpt prosqa/ckpt/p8_coconut_checkpoint_48)
+53544379 vast 3060 | p8b-pilot DESTROYED_VERIFIED 53544379 2026-09-30 12:24 after sha-verified fetch of res/p8b_pilot.json
+53555197 vast offer 52692618 created 2026-09-30 12:38: label p8b1-ckpt_s1, pod_p8b1.sh p8b1_ckpt_s1 (logged at create by prosqa/vdeploy.sh)
+53555200 vast offer 49607482 created 2026-09-30 12:38: label p8b1-ctl_s1, pod_p8b1.sh p8b1_ctl_s1 (logged at create by prosqa/vdeploy.sh)
+53555206 vast offer 39105514 created 2026-09-30 12:38: label p8b1-ckpt_s2, pod_p8b1.sh p8b1_ckpt_s2 (logged at create by prosqa/vdeploy.sh)
+53555209 vast offer 19951405 created 2026-09-30 12:38: label p8b1-ctl_s2, pod_p8b1.sh p8b1_ctl_s2 (logged at create by prosqa/vdeploy.sh)
+53555219 vast offer 44544437 created 2026-09-30 12:38: label p8b1-ckpt_s3, pod_p8b1.sh p8b1_ckpt_s3 (logged at create by prosqa/vdeploy.sh)
+53558699 vast offer 31250687 created 2026-09-30 13:08: label p8b1-ctl_s3, pod_p8b1.sh p8b1_ctl_s3 (logged at create by prosqa/vdeploy.sh)

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ProsQA Vast watcher with automatic, verified draining (PROTOCOL8 Phase 0 and confirmatory hosts).
 #   bash scratch/auto_drain_prosqa.sh "<host> <port> <tag> <instance id>" ...
-# tag: p8-coconut (Phase 0 Coconut) or p8c_<arm>_s<seed> (arm coco|at|rt|cot).
+# tag: p8-coconut (Phase 0 Coconut), p8c_<arm>_s<seed> (arm coco|at|rt|cot) or p8b1_<arm>_s<seed> (PROTOCOL8b step 1).
 # Every 10 min per host: an error marker in /workspace/logs/prosqa.out (Traceback, FAIL, NO_FINAL_CKPT, P8_TEST_FAILED,
 # MASK_TEST_FAILED, TRAIN_EXIT non-zero) prints and exits (wakes the session). ANALYSIS_DONE runs scratch/drain_prosqa.sh
 # with the tag's expected result files and final checkpoint. On DRAINED the host is dropped and logged in
@@ -12,6 +12,7 @@ PODS=("$@")
 spec() {  # tag -> "<local res dir> <remote ckpt> <local ckpt> <expected res files...>"
   case $1 in
     p8-coconut) echo "prosqa/res_p8_coconut /workspace/ckpt/p8-coconut/checkpoint_48 prosqa/ckpt/p8_coconut_checkpoint_48 coco_test_e48.json coco_test_e44.json coco_ctl_e48.json cot_test_e4.json" ;;
+    p8b1_*) a=${1#p8b1_}; echo "prosqa/res_p8b1 /workspace/ckpt/p8b1-${a//_/-}/checkpoint_48 prosqa/ckpt/p8b1_${a}_checkpoint_48 $1.json" ;;
     p8c_cot_s*) a=${1#p8c_}; echo "prosqa/res_p8c/$a /workspace/ckpt/p8c-${a//_/-}/checkpoint_30 prosqa/ckpt/p8c_${a}_checkpoint_30 cot_test_e30.json cot_ctl_e30.json" ;;
     p8c_*) a=${1#p8c_}; echo "prosqa/res_p8c/$a /workspace/ckpt/p8c-${a//_/-}/checkpoint_48 prosqa/ckpt/p8c_${a}_checkpoint_48 coco_test_e48.json coco_ctl_e48.json" ;;
   esac
