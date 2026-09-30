@@ -1443,6 +1443,21 @@ Node ids are the toy's "human language": a checkpoint "frontier = {37, 42}" is a
     silent thoughts.
   - Exploratory, CPU, existing models.
 
+*Addendum to 33.2 (23:41 EDT; Literature, `docs/LIT_NORTHSTAR_2026-09-29.md` §5, commit 49ff87e).*
+* **Scope of the round trip.** In a standard transformer, restarting from the *full* emitted text is identical by
+  construction, because the KV cache is a function of the text. The test is informative only when the restart drops
+  text or carries non-text state; the CLR's latent loop is the second case, so T-C7b is well posed.
+* **Prediction from Delethink (2510.06557).** It clears the KV cache every chunk and keeps a short text carry-over. It
+  breaks exactly when the live state exceeds the carry-over (CrossWordBench 14×14, but not 7×7). Our analogue:
+  restarted-vs-uninterrupted agreement should fail when the frontier holds more branches than the checkpoint can carry
+  (W > W_max).
+* **Closest trained precedent.** Markovian Transformers (Viteri et al. 2404.18988): all question → answer information
+  must pass through a bounded CoT, trained with RL and no step labels. They show larger log-prob drops under corruption
+  and CoTs that transfer across models. This makes "checkpoint sufficiency" a C4-compatible training objective for the
+  CLR (option (iv) beside (i)–(iii) in 33.1).
+* **Metrics.** Per-instance answer agreement and the KL divergence between restarted and uninterrupted answer
+  distributions, alongside IIA for the edit test. The literature reports only aggregate accuracy for restarts.
+
 ### 33.3 What each pilot tests (for Audit's status table)
 
 | pilot / study | C1 | C2 | C3 | C4 | C5 | C6 | C7 |
