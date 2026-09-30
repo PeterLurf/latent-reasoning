@@ -112,3 +112,9 @@ should arrive by ~2026-09-30 08:00, before the PROTOCOL8 confirmatory registrati
 * **Disclosure.** The only P8-0b information seen so far is its in-run validation (exact-match generation capped at 128
   tokens, 0/100 through epoch 14 and 6–7/100 at epochs 15–16). That is uninformative for these rules; see
   CURRENT_TASKS.
+
+## Note (2026-09-29 23:31 EDT, not a rule change): north-star conditions
+
+Phase 0 bears on **C1** (F1b: latent use inside the model, K′ = 10 vs K′ = 0) in a pretrained model. The epoch-4 CoT
+reference is a first, under-trained look at **C3**. The PROTOCOL8 confirmatory registration will add a properly
+trained text-CoT arm for a matched-compute C3 comparison.
