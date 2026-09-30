@@ -361,8 +361,10 @@ dated pre-registration in THEORY.md. **★** marks fixes that address several pr
   - *Mechanism:* Prop. 4 says the support must reach the tight budget at the circuit-selection stage and must not be a
     function of anything the model can observe. It then identifies unit speed with no intermediate labels (impossible
     targets at small K act as noise, and the best response is to be as fast as possible).
-  - *Prior work:* Kuo et al. 2606.29983 use K = clip(n + Δ), which is tied to length; our P22 randk (K ∈ 4..8) was
-    never tight at stage 3. This version meets both conditions.
+  - *Prior work:* Kuo et al. 2606.29983 use an n-centred budget, K = clip(n + Δ, 1, 20) with Δ ~ U{−5..5}, which
+    sometimes undershoots the steps needed. Bansal 2202.05826, Huginn and DR-Loop use fixed minimums of 1–2. No
+    published scheme manipulates slack directly. Our P22 randk (K ∈ 4..8, step embeddings on) was never tight at stage
+    3; this version is.
   - *First test:* toy, `--K_random 1:6`, 8 seeds paired with Pilot D (the flag already exists). ≈ $1.2.
   - *Falsified if* the pair rule on d8 vs control is not supported while anytime (D) is.
 * **★ F1b — clock-adversarial training** (problems 1 and 2). A small probe predicts the step index k from each thought;
@@ -428,8 +430,9 @@ dated pre-registration in THEORY.md. **★** marks fixes that address several pr
 * **★ F5a — re-anchoring distillation** (problems 2, 3, 5 and 6). Use training-free re-anchored inference (T8), which
   succeeds on 55/59 models at 7 hops, as a teacher: generate pseudo-labels for queries beyond the training depth, then
   fine-tune the model to produce them in *one* uninterrupted episode with K′ > K.
-  - *Prior work:* self-improving transformers (Lee et al. 2502.01612; "fine-tune on your own answers one step harder")
-    and STaR (Zelikman et al. 2022) for text CoT. New here: the teacher is a clock-resetting inference procedure, so the
+  - *Prior work:* iterated amplification and distillation (Christiano et al. 1810.08575) is the closest precedent;
+    also self-improving transformers (Lee et al. 2502.01612), Deng et al. 2405.14838 (internalising CoT step by step),
+    2407.06023, and STaR (Zelikman et al. 2022) for text CoT. New here: the teacher is a clock-resetting inference procedure, so the
     labels are exactly those the untrained continuation gets wrong.
   - *First test:* the 20 P30 failures from Pilot H. Pseudo-labels on long-chain graphs come from exp12 on CPU (~1 h);
     fine-tuning takes 6000 steps each, ≈ 5 GPU-h ≈ $0.8. The comparison is Pilot H's FT-C.
@@ -449,6 +452,8 @@ decoder of h_K nor the sweep head's attention recovers the probed chain's node b
 single-branch following (it conflicts with Part IV P25's per-edge split) is being measured on all 59 models (THEORY
 §30 B1).
 * **Covered:** T8 at inference (done), J (training-time chunking), G (monotone set).
+  Relatives of T8 among chunked or erasing reasoners: HRM 2506.21734, InftyThink 2503.06692, PENCIL 2503.14337, the
+  Markovian Thinker 2510.06557.
 * **★ F6a — learned frontier decoder plus set restart** (problems 3 and 6). Train a small head (thought → multi-label over
   node ids, supervised by the true frontier) on *frozen* trained models, then restart each episode from the decoded set.
   - *Mechanism:* the model's own attention picks a frontier node at chance among the W at the right depth (30 % on the
