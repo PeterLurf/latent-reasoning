@@ -2129,6 +2129,11 @@ with Pilot D's pd_at_s900–907. 8 runs.
 **Where.** The experiments session runs it on 1–2 Vast hosts (≈ $1) from a frozen copy of this commit, with its own
 worker.
 
+**Baseline, measured before any T12 run finished** (2026-09-30; `theory/results/step_decode.json`). A fresh probe reads
+the step index from the thoughts with accuracy 0.87–1.00 in pd_at_s900–907 (7 runs with models) and 0.77–1.00 in
+pd_c_s900–907; chance is 0.17. This is direct evidence that the thought carries a count (Prop. 10), and it sets PT1's
+bar.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
