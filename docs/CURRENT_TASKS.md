@@ -91,9 +91,9 @@ change.
 
 | GPU | Now | Next (chained, automatic) | Runs dry |
 |---|---|---|---|
-| RTX 4060 | free (Theory's §45 done on it); no registered local job under the spend freeze | — | — |
-| RTX 3070 | free (Theory's §45 done on it); no registered local job under the spend freeze | — | — |
-| RTX 2070 | PROTOCOL8b step-1 base reference (`scratch/p8b1_base_ref.sh`, log `logs/p8b1_base_ref.log`; ~6.8 GB, single job) | — | ~16:30 |
+| RTX 4060 | lent to Theory 15:26: §45 CLR-1b (log `logs/queue_local4060-CLRb.out`) | — | ~18:00–18:30 |
+| RTX 3070 | lent to Theory 15:26: §45 CLR-1b (log `logs/queue_local3070-CLRb.out`) | — | ~18:00–18:30 |
+| RTX 2070 | PROTOCOL8b step-1 base reference (`scratch/p8b1_base_ref.sh`, log `logs/p8b1_base_ref.log`; ~6.8 GB, single job) | — | ~17:45 |
 
 - **Overnight follow-up: PROTOCOL9** (`docs/PROTOCOL9.md`, a28ff0c 16:09:10): anytime supervision on the T9/T10
   architectures, paired by seed with the T9/T10 controls. 32 runs (`scratch/queue_worker3.sh`, frozen theory code in
