@@ -66,9 +66,11 @@ def _first_block_step(blk, x, kv, bias=None, inj=None, rec=None):
 
 
 @torch.no_grad()
-def rollout(m, K, g, qnodes, Kp, device, bias_pos=None, inject=None, record=False, chunk=256):
+def rollout(m, K, g, qnodes, Kp, device, bias_pos=None, inject=None, record=False, chunk=256, rec_layer=0):
     """bias_pos: (N, P) token positions blocked in the first block at every latent step, or None.
-    inject: dict step -> (pos (N,), mass (H,) tensor), or None. Returns (answers (N, Q) bool, attention list)."""
+    inject: dict step -> (pos (N,), mass (H,) tensor), or None. Returns (answers (N, Q) bool, attention list).
+    rec_layer: 0-based block where blocking, injection and recording act (default 0 = first block; PROTOCOL7
+    amendment 10 uses the in_peak-chosen layer for deeper models)."""
     T = lambda a: torch.as_tensor(a, device=device)
     N = len(g)
     te = m.type_emb.weight
@@ -85,7 +87,7 @@ def rollout(m, K, g, qnodes, Kp, device, bias_pos=None, inject=None, record=Fals
             x = (base + te[T_LAT] + (m.step_emb.weight[kk] if use_step else 0))[:, None]
             new = []
             for li, (blk, kv) in enumerate(zip(m.blocks, cache)):
-                if li == 0:
+                if li == rec_layer:
                     bias = None
                     if bias_pos is not None:
                         bias = torch.zeros(n, kv[0].shape[2] + 1, device=device)

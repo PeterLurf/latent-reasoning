@@ -49,7 +49,7 @@ def _fork_masked(blk, x, kv, bias):
 
 
 @torch.no_grad()
-def run(m, K, g, q, Kp, dev, lat_block=None, lat_layers=(0,), qry_block=None, inject=None, chunk=256):
+def run(m, K, g, q, Kp, dev, lat_block=None, lat_layers=(0,), qry_block=None, inject=None, chunk=256, inj_layer=0):
     T = lambda a: torch.as_tensor(a, device=dev)
     te = m.type_emb.weight
     use_step = getattr(m, "use_step", True)
@@ -66,8 +66,8 @@ def run(m, K, g, q, Kp, dev, lat_block=None, lat_layers=(0,), qry_block=None, in
                 if lat_block is not None and li in lat_layers:
                     bias = torch.zeros(n, kv[0].shape[2] + 1, device=dev)
                     bias.scatter_(1, T(lat_block[sl]).long(), -1e4)
-                inj = (T(inject[k][0][sl]).long(), inject[k][1]) if (li == 0 and inject and k in inject) else None
-                if li == 0 and (bias is not None or inj is not None):
+                inj = (T(inject[k][0][sl]).long(), inject[k][1]) if (li == inj_layer and inject and k in inject) else None
+                if li == inj_layer and (bias is not None or inj is not None):
                     x, kv = FC._first_block_step(blk, x, kv, bias, inj)
                 elif bias is not None:
                     x, kv = step_masked(blk, x, kv, bias)
@@ -87,24 +87,30 @@ def run(m, K, g, q, Kp, dev, lat_block=None, lat_layers=(0,), qry_block=None, in
 
 
 @torch.no_grad()
-def measure(run_dir, device, n=1024, Kp=12, seed=4243):
+def measure(run_dir, device, n=1024, Kp=12, seed=4243, layer=1):
+    """layer (1-based, as far_sweep_layers.py): block for block_A, inject_* and the natural mass (PROTOCOL7 amendment
+    10). layer = 1 is the original amendment-3 measurement."""
+    L = layer - 1
     m, c = load(run_dir, device)
     K = c["K"]
     g, br = long_chain_graphs(np.random.default_rng(seed), n, [2, 4, 6])
     bi = np.arange(n)
     q = np.concatenate([g.nodes[bi, br[ch]] for ch in "ABCD"], 1)
     pos = {ch: FC.edge_positions(g, br[ch]) for ch in "ABCD"}
-    _, att = FC.rollout(m, K, g, q, Kp, device, record=True)            # (Kp, n, H, E)
+    _, att = FC.rollout(m, K, g, q, Kp, device, record=True, rec_layer=L)   # (Kp, n, H, E)
     mh = np.stack([np.stack([att[k][bi, :, pos["A"][:, j]] for k in range(min(6, Kp))]).mean(1)
                    for j in range(1, 5)])                               # depths 2..5: (4, steps, H)
     nat = mh.max((0, 1))                                                # (H,)
     mt = torch.as_tensor(np.minimum(nat, 0.99), device=device, dtype=torch.float32)
     conds = {"base": {}, "block_B_L12": {"lat_block": pos["B"], "lat_layers": tuple(range(len(m.blocks)))},
              "block_D_L12": {"lat_block": pos["D"], "lat_layers": tuple(range(len(m.blocks)))},
-             "block_A_L1": {"lat_block": pos["A"]}, "query_B1": {"qry_block": pos["B"][:, :1]},
-             "inject_B_nat": {"inject": {NPB + j: (pos["B"][:, j - 1], mt) for j in range(1, NPB + 1) if NPB + j <= Kp}},
-             "inject_C_nat": {"inject": {NPB + j: (pos["C"][:, j - 1], mt) for j in range(1, NPB + 1) if NPB + j <= Kp}}}
-    out = {"K": K, "Kp": Kp, "seed": seed, "n": n, "natural_mass": nat.round(4).tolist()}
+             "block_A_L1": {"lat_block": pos["A"], "lat_layers": (L,), "inj_layer": L},
+             "query_B1": {"qry_block": pos["B"][:, :1]},
+             "inject_B_nat": {"inject": {NPB + j: (pos["B"][:, j - 1], mt) for j in range(1, NPB + 1) if NPB + j <= Kp},
+                              "inj_layer": L},
+             "inject_C_nat": {"inject": {NPB + j: (pos["C"][:, j - 1], mt) for j in range(1, NPB + 1) if NPB + j <= Kp},
+                              "inj_layer": L}}
+    out = {"K": K, "Kp": Kp, "seed": seed, "n": n, "layer": layer, "natural_mass": nat.round(4).tolist()}
     for name, kw in conds.items():
         p = run(m, K, g, q, Kp, device, **kw).reshape(n, 4, NPB).mean(0)
         out[name] = {ch: p[i].round(4).tolist() for i, ch in enumerate("ABCD")}
@@ -116,12 +122,15 @@ def main():
     ap.add_argument("runs", nargs="+")
     ap.add_argument("--out", required=True)
     ap.add_argument("--device", default="cuda:0")
+    ap.add_argument("--layers_json", default=None, help="PROTOCOL7 amendment 10: JSON with rows[<run name>]['layer'] "
+                    "(1-based, e.g. results/p7s_t9.json); each run is measured at its chosen layer (default: layer 1)")
     a = ap.parse_args()
+    lay = json.load(open(a.layers_json))["rows"] if a.layers_json else {}
     res = json.load(open(a.out)) if os.path.exists(a.out) else {}
     for r in a.runs:
         if r in res or not os.path.exists(f"{r}/model.pt"):
             continue
-        res[r] = measure(r, a.device)
+        res[r] = measure(r, a.device, layer=int(lay.get(os.path.basename(r.rstrip("/")), {}).get("layer", 1)))
         b = res[r]
         f = lambda v: " ".join(f"{x:.2f}" for x in v)
         print(f"{r}: B base {f(b['base']['B'])} | blkB {f(b['block_B_L12']['B'])} | qB1 {b['query_B1']['B'][0]:.2f} "
