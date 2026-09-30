@@ -96,7 +96,7 @@ leak.**
 
 | When | Item | Action |
 |---|---|---|
-| done 22:16 | Phase 0 no-CoT | **scored: no-CoT at chance at every m (read as no-CoT learnability, amendment 1; F1b decides latent use)**; `docs/PROTOCOL8_PHASE0_RESULTS.md`; host destroyed 22:15 |
+| done 22:16 | Phase 0 no-CoT | **scored: no-CoT below 0.75 at every trained m, near chance from m = 4 (read as no-CoT learnability, amendment 1; F1b decides latent use)**; `docs/PROTOCOL8_PHASE0_RESULTS.md`; host destroyed 22:15 |
 | ~02:00 | Addendum R | `PYTHONPATH=. python scratch/score_r.py --device cuda:0`, then ping Theory (its LE-R, d75d275) |
 | ~01:00–05:00 | Theory Pilots D/E | Theory messages the result |
 | ~03:00–04:00 | Theory Pilot F | Theory messages PF1–PF3 with competence per arm |

@@ -29,8 +29,16 @@ Candidate accuracy a₁(m) on `p8_test` (chance 0.5):
 **Reading** (revised by amendment 1). What this measures is **no-CoT learnability** (answer labels only), not one-pass
 capacity: Coconut's curriculum can teach one-pass solutions, as in addendum Q. One-pass capacity inside the Coconut
 model (c_model, F1b) comes from P8-0b's K′ = 0 vs K′ = 10 sweep.
-- A GPT-2 trained to answer in one pass does not learn this format at any trained depth, not even with the added chains
-  absent (m = 0: 0.63, versus ~0.77 for native ProsQA in the Coconut paper, which trains on native problems only).
+- A GPT-2 trained to answer in one pass is below the 0.75 bar at every trained depth. It is above chance at m ≤ 3
+  (0.63 / 0.56 / 0.54 / 0.55, n = 419 each, SE ≈ 0.024) and near chance from m = 4 on (0.47–0.49). Even m = 0 (the
+  chains absent) reaches only 0.63, versus ~0.77 for native ProsQA in the Coconut paper, which trains on native
+  problems only. (Wording corrected 2026-09-29 after the audit; the first commit subject said "at chance".)
 - Rule (i) of the registration ("H empty → deepen the format") does not apply. Whether the training range is
   above one-pass capacity for a curriculum-trained model is decided by F1b.
 - Whether Coconut learns H (F1) is decided by P8-0b, due ~05:30–06:00 Wed.
+
+## Deviations from the registration (for the write-up's deviation table)
+
+| Plan | Change | When, relative to data | Reason | Impact |
+|---|---|---|---|---|
+| F1 (Coconut vs a₁ on H) decides latent use, with H from P8-0a | Amendment 1 (ecbec6f, 22:17:01) adds F1b: latent use inside the Coconut model (aᴄ(K′=10) − aᴄ(K′=0) on H), with c_model; PROTOCOL8's latent-use strata move from H to above c_model | 1 min after P8-0a was scored; before any P8-0b test outcome | Theory's caveat: no-CoT at chance measures learnability, not one-pass capacity (addendum Q: 0.976 at K′ = 0) | Changes which strata PROTOCOL8 scores latent use on. F1 is still reported. The change is informed by the P8-0a outcome, so it's listed here |
