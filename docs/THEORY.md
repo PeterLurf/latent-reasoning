@@ -2054,6 +2054,32 @@ hold.**
 **Where and cost.** 20 new Vast hosts (theory-M01..M20), 3 runs each, destroyed as each queue ends. About 2 h wall
 time and about $7. That is over the earlier theory plan, so the user is told.
 
+**Result (2026-09-30; all 60 runs; `theory/score_pilotM.py` → `theory/results/score_pilotM.json`, deep measure
+`theory/results/exp18_pilotM.json`; committed with this text). PM1 supported and PM4 met; PM2 narrowly and PM3 not
+met.**
+* **PM1 supported.** Deep measure: M-T8 > M-self in 10/12 counted pairs (one-sided p = 0.019).
+* **PM2 not met.** M-T8 reaches d13–18 in one loop in 9/20 (≥ 10 needed). The round-1 students did so in 2/20.
+* **PM3 not met.** Median d8 of M-T8 is 0.595 < 0.608: the old rung eroded. Competence fell as well: M-T8 13/20, vs
+  M-self 17/20.
+* **PM4 met.** Median delayed drop 0.011.
+* **Descriptive.**
+
+  | Arm | Deep median | ≥ 0.60 | d8 | Competent |
+  |---|---|---|---|---|
+  | M-T8F (filtered) | 0.62 | 6/10 | 0.640 | 8/10 |
+  | M-T8 | 0.56 | 9/20 | 0.595 | 13/20 |
+  | M-GT | 0.72 | 6/10 | — | 7/10 |
+
+  - T8F > T8 in 5/7 counted pairs (inconclusive).
+  - M-GT at d25–30 with K′ = 32: 0.98, past its 24-hop training depth.
+* **Reading.**
+  - The ladder climbs a second rung without labels: the teacher beats self-labels, and one-loop reach goes from 2/20 to
+    9/20.
+  - But unfiltered labels erode the rung below. This is the error avalanche of 2502.01612.
+  - Literature's agreement filter keeps the old rung (d8 0.640) and climbs further (6/10), on 10 models only.
+  - A third rung should use the filter. It should also mix in the previous rung's teacher data, to hold the lower
+    depths.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the

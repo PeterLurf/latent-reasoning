@@ -1,0 +1,76 @@
+{
+ "arms": {
+  "t8": {
+   "registered": 20,
+   "evaluated": 20,
+   "competent": 13,
+   "deep_ge_0.60": 9,
+   "median_deep": 0.5625,
+   "median_d19_24": 0.5113932291666666,
+   "median_d25_30_K32": 0.502197265625,
+   "median_d8": 0.594970703125,
+   "missing": []
+  },
+  "self": {
+   "registered": 20,
+   "evaluated": 20,
+   "competent": 17,
+   "deep_ge_0.60": 2,
+   "median_deep": 0.5,
+   "median_d19_24": 0.504638671875,
+   "median_d25_30_K32": 0.500244140625,
+   "median_d8": 0.63037109375,
+   "missing": []
+  },
+  "t8f": {
+   "registered": 10,
+   "evaluated": 10,
+   "competent": 8,
+   "deep_ge_0.60": 6,
+   "median_deep": 0.6209309895833334,
+   "median_d19_24": 0.5128580729166667,
+   "median_d25_30_K32": 0.5011393229166666,
+   "median_d8": 0.6396484375,
+   "missing": []
+  },
+  "gt": {
+   "registered": 10,
+   "evaluated": 10,
+   "competent": 7,
+   "deep_ge_0.60": 6,
+   "median_deep": 0.7196451822916667,
+   "median_d19_24": 0.6546223958333333,
+   "median_d25_30_K32": 0.9811197916666667,
+   "median_d8": 0.63037109375,
+   "missing": []
+  }
+ },
+ "PM1": {
+  "counted": 12,
+  "in_direction": 10,
+  "sign_p_one_sided": 0.019287109375,
+  "verdict": "supported"
+ },
+ "PM2": {
+  "t8_deep_ge_0.60": 9,
+  "of": 20,
+  "round1_students": 2,
+  "met": false
+ },
+ "PM3": {
+  "median_d8_t8": 0.594970703125,
+  "threshold": 0.608,
+  "met": false
+ },
+ "PM4": {
+  "n": 20,
+  "median_delayed_drop": 0.0111236572265625,
+  "met": true
+ },
+ "desc_T8F_vs_T8": {
+  "counted": 7,
+  "in_direction": 5,
+  "sign_p_one_sided": 0.2265625,
+  "verdict": "inconclusive"
+ }
+}
