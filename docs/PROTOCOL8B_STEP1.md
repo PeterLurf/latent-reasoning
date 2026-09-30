@@ -83,3 +83,13 @@ accuracies; the outputs `prosqa/res_p8b/hopsweep_*.json` are read only after the
 Stated expectation, from Theory's toy result (THEORY §46): accuracy is high while the hops remaining are within the model's
 in-distribution reach (≈ 5–6 hops, going by Phase 0), is near chance beyond it, and is flat across absolute depth at fixed hops remaining.
 Ckpt-trained models are expected to show this more strongly than ctl models. Descriptive only; no decision rule.
+
+## Deviation note (2026-09-30 19:01 EDT): ctl_s2 probe re-run locally
+
+ctl_s2's host (Vast 53555209, RTX A5000) finished training at ~18:05 (TRAIN_EXIT 0) but ran the probe ~10× slower than
+the other hosts: 200 of ~1,650 problems in ~65 min, so ~9 h in total. Its checkpoint_48 was fetched at 18:58 and
+verified against the host by sha256 (b40721ad…). The unchanged probe command (`reanchor_p8.py --n_per_m 150 --Kp 10
+--random_pos`, seed 0) runs locally on the 4060 from 18:59 (`scratch/p8b1_ctl2_local.sh`, output
+`prosqa/res_p8b1/p8b1_ctl_s2_local.json`). Rule, fixed now: the local output is ctl_s2's P8b1 result. The Vast probe
+is stopped and the host is destroyed once the local run has finished. The GPU differs (4060 vs A5000; TF32 is off in both),
+so near-tie margins could differ in principle; no result of either run has been read.
