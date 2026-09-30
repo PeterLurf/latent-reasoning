@@ -94,7 +94,7 @@ change.
 |---|---|---|---|
 | RTX 4060 | T10 (last run `t10fork_s573`) | PROTOCOL9 workers (end at once) → **PROTOCOL9 extension** `p9x_4060` (`scratch/p9x_bf16.txt`) → `p9xf_4060` (`scratch/p9x_fork.txt`) | ~Wed 20:00 |
 | RTX 3070 | T10 (last run `t10fork_s574`) | PROTOCOL9 workers (end at once) → `p9x_3070` → `p9xf_3070` | ~Wed 20:00 |
-| RTX 2070 | **lent to Theory from 04:55**: THEORY §38 M-2 (10 runs, one at a time, ~5.6 GB; log `logs/queue_local2070-M2a.out`) | — | ~09:15 |
+| RTX 2070 | PROTOCOL7 amendment 10: literal frontier_causal2 on 34 competent T9/T10 models (`scratch/t9_causal_measure.sh`, log `logs/t9_causal.log`) | chosen-layer variant for 7 models (code to add) | ~10:00 |
 
 - **Overnight follow-up: PROTOCOL9** (`docs/PROTOCOL9.md`, a28ff0c 16:09:10): anytime supervision on the T9/T10
   architectures, paired by seed with the T9/T10 controls. 32 runs (`scratch/queue_worker3.sh`, frozen theory code in
