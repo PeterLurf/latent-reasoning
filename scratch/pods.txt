@@ -105,3 +105,4 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53492427 vast | p9_x6 DESTROYED_VERIFIED 2026-09-30 08:28 after verified fetch (3 runs: 3 with model, 0 stage-1 failures)
 53492433 vast | p9_x7 DESTROYED_VERIFIED 2026-09-30 08:28 after verified fetch (3 runs: 3 with model, 0 stage-1 failures)
 53492405 vast | p9_x1 DESTROYED_VERIFIED 2026-09-30 08:38 after verified fetch (3 runs: 2 with model, 1 stage-1 failures)
+53494807 vast | p9_x2 DESTROYED_VERIFIED 2026-09-30 09:19 after verified fetch (3 runs: 3 with model, 0 stage-1 failures)

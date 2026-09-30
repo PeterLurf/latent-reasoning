@@ -2259,6 +2259,19 @@ about 24 hops. Two accounts:
 
 **Reference, descriptive.** The same models' GT12 students (pl_gt), paired.
 
+## 42. Predictions sent for PROTOCOL8's revised primary (in-distribution deep depths) (2026-09-30 09:34 EDT, before any PROTOCOL8 confirmatory data)
+
+Context: Phase 0 outcome (iii), from the experiments session. GPT-2 Coconut on deep ProsQA learns about 5–6 hops in its
+latents. Accuracy saturates by K′ ≈ 3, and depths ≥ 10 are at chance in distribution.
+
+**Predictions** (slack/brake account, §§17, 25, 35, 40):
+* At K′ = 10, anytime > Coconut in mean accuracy over answer depths 7–10, and the gain grows with depth. Depths 3–4 are
+  unchanged.
+* Random-tight: the same direction, with a gain ≤ anytime's and more seed variance.
+* Signature: for depths ≥ 7, the K′ at which accuracy saturates moves from ≈ 3 (Coconut) to ≥ 6 (anytime).
+* Falsified if anytime does not lift depths 7–10 and saturation stays at K′ ≈ 3. The limit would then be per-thought
+  capacity, not a brake.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
