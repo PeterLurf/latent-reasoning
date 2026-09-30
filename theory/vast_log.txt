@@ -18,3 +18,4 @@
 53431160 theory-y2 RTX_3080_Ti 0.131 142.127.68.223:18533 created 2026-09-29 19:28 (rebalance; theory/queues/parallel_y2.txt)
 53431164 theory-y3 RTX_3090 0.135 77.48.24.239:43321 created 2026-09-29 19:28 (rebalance; theory/queues/parallel_y3.txt)
 53431171 theory-y4 RTX_3080 0.121 87.106.223.150:30229 created 2026-09-29 19:28 (rebalance; theory/queues/parallel_y4.txt)
+53408522 theory-x5 RTX_3080 0.162 85.51.34.67:40302 destroyed 2026-09-29 21:06: Vast status offline, SSH timed out; 5 of its 13 runs were already fetched (hourly fetch), 8 unfinished runs re-queued on other hosts; confirmed absent=1 (destroying instance 53408522.)
