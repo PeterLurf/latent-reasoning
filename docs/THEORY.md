@@ -1076,6 +1076,20 @@ make the latent computation extrapolate, alone and with anytime supervision (C1 
 * **Order and hosts.** Host 1 (after its D/E pairs, ~02:00): GAT then G for seeds 900–901; hosts 2–4 after Pilot F:
   the remaining 12, GAT first. Expected completion ~12:00–14:00 EDT 2026-09-30; ≈ $3.
 
+**Result (2026-09-30; all 32 runs; `theory/score_pilotG.py` → `theory/results/score_pilotG.json`; ablations in
+`theory/results/setmem_ablation.json`, set depths in `set_traj.json`; committed with this text). The set was unused,
+so there is no verdict on A6. PG4 met; PG5 unresolved.**
+* **Manipulation check fails.** Ablating the set matters (≥ 0.05) in 3/11 competent G ∪ GAT runs and 0/13 GL ∪ GLAT
+  runs. Final gates stay near 0 (|γ| ≤ 0.11). So PG1–PG3 read "set unused" by the registered rule.
+* **PG4 met.** Competent: G 7 vs C 5, GAT 4 vs AT 6, GL 5 vs C 5, GLAT 8 vs AT 6.
+* **PG5 unresolved.** 3 runs use the set (G family), and 0 in the GL family.
+* **Reading.**
+  - A set write gated from 0 is not taken up by gradient descent at this scale. The pointer solution forms first (§10)
+    and the set path never becomes useful enough to open.
+  - A6 is untested, not refuted. A test would need the set to carry the answer by construction, e.g. queries that read
+    only the set. That is the checkpointed design's set-valued checkpoint (§33.1), where the set is the only channel
+    across a restart.
+
 ## 25. Proposition 9 — slack creates the clock (least-effort brake); pre-registered pointer predictions for Pilots C, D, E (2026-09-29, committed 7b6875c 14:18:52 EDT, before any Pilot C/D/E pointer trajectory was computed)
 
 **Observation (retrospective, 59 P30/L models, `theory/results/pointer_taxonomy.json`).** The pointer depth of the last

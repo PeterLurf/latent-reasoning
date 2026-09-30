@@ -1,0 +1,150 @@
+{
+ "G": {
+  "manipulation": {
+   "competent": 11,
+   "measured": 11,
+   "used": 3,
+   "set_used": false,
+   "gates": {
+    "pg_g_s900": 0.04703255370259285,
+    "pg_g_s901": 0.01832655258476734,
+    "pg_g_s902": -0.04603131115436554,
+    "pg_g_s903": -0.05791168287396431,
+    "pg_g_s904": -0.08602453768253326,
+    "pg_g_s906": 0.05821054428815842,
+    "pg_g_s907": 0.05541779845952988,
+    "pg_gat_s901": 0.07726069539785385,
+    "pg_gat_s904": 0.06915329396724701,
+    "pg_gat_s905": -0.11144227534532547,
+    "pg_gat_s907": -0.04660150408744812
+   }
+  },
+  "PG1": {
+   "counted": 4,
+   "in_direction": 2,
+   "sign_p_one_sided": 0.6875,
+   "verdict": "set unused (no verdict on A6)"
+  },
+  "PG2": {
+   "counted": 2,
+   "in_direction": 1,
+   "sign_p_one_sided": 0.75,
+   "verdict": "set unused (no verdict on A6)"
+  },
+  "PG3": {
+   "share_ge_-0.01": 1.0,
+   "n": 11,
+   "paired_vs_C_AT": {
+    "counted": 6,
+    "in_direction": 4,
+    "sign_p_one_sided": 0.34375,
+    "verdict": "inconclusive"
+   },
+   "met": false,
+   "verdict": "set unused (no verdict on A6)"
+  },
+  "PG4": {
+   "x_vs_C": [
+    7,
+    5
+   ],
+   "xAT_vs_AT": [
+    4,
+    6
+   ],
+   "met": true
+  },
+  "PG5": {
+   "n_used_runs": 3,
+   "share_depth_ge_K-2": 0.0,
+   "verdict": "unresolved (< 4 runs with the set used)"
+  },
+  "arms": {
+   "pg_g": {
+    "competent": 7,
+    "extrapolate": 2,
+    "median_d8": 0.5146484375
+   },
+   "pg_gat": {
+    "competent": 4,
+    "extrapolate": 4,
+    "median_d8": 0.54931640625
+   }
+  }
+ },
+ "GL": {
+  "manipulation": {
+   "competent": 13,
+   "measured": 13,
+   "used": 0,
+   "set_used": false,
+   "gates": {
+    "pg_gl_s901": 0.04266525059938431,
+    "pg_gl_s904": -0.003762645646929741,
+    "pg_gl_s905": -0.01454654335975647,
+    "pg_gl_s906": 0.02523942105472088,
+    "pg_gl_s907": 0.10327812284231186,
+    "pg_glat_s900": -0.03039824403822422,
+    "pg_glat_s901": 0.0076867202296853065,
+    "pg_glat_s902": 0.026774724945425987,
+    "pg_glat_s903": -0.00019067201355937868,
+    "pg_glat_s904": -0.05872134864330292,
+    "pg_glat_s905": 0.006627166643738747,
+    "pg_glat_s906": -0.05938134714961052,
+    "pg_glat_s907": -0.0833316221833229
+   }
+  },
+  "PG1": {
+   "counted": 2,
+   "in_direction": 1,
+   "sign_p_one_sided": 0.75,
+   "verdict": "set unused (no verdict on A6)"
+  },
+  "PG2": {
+   "counted": 6,
+   "in_direction": 1,
+   "sign_p_one_sided": 0.984375,
+   "verdict": "set unused (no verdict on A6)"
+  },
+  "PG3": {
+   "share_ge_-0.01": 0.9230769230769231,
+   "n": 13,
+   "paired_vs_C_AT": {
+    "counted": 8,
+    "in_direction": 2,
+    "sign_p_one_sided": 0.96484375,
+    "verdict": "not supported"
+   },
+   "met": false,
+   "verdict": "set unused (no verdict on A6)"
+  },
+  "PG4": {
+   "x_vs_C": [
+    5,
+    5
+   ],
+   "xAT_vs_AT": [
+    8,
+    6
+   ],
+   "met": true
+  },
+  "PG5": {
+   "n_used_runs": 0,
+   "share_depth_ge_K-2": null,
+   "verdict": "unresolved (< 4 runs with the set used)"
+  },
+  "arms": {
+   "pg_gl": {
+    "competent": 5,
+    "extrapolate": 4,
+    "median_d8": 0.626953125
+   },
+   "pg_glat": {
+    "competent": 8,
+    "extrapolate": 6,
+    "median_d8": 0.544189453125
+   }
+  }
+ }
+}
