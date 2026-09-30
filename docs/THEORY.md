@@ -11,7 +11,7 @@ measurements run on the CPU on existing `runs/` models; nothing here touches the
 §3 theory · §4 attenuation (Mechanism 2) · §5 architectures · §6 Pilot A pre-registration · §9 Pilot B · §10 developmental
 race · §11 Pilot C · §12 training-free repair · §13 GPT-2 latent reasoners · §14 transfer curves (+ failed out-of-sample
 rule) · §15 Pilot A scored · §16 Pilot B interim · §17 Pilot D · §18 formal sketch · §19 Pilot B scored · §20 Pilot E ·
-§21 O marker test · **§22 four conditions C1–C4, Props. 4–8, new methods T6/T7 and architecture A6** · §23 Pilot F · §24 Pilot G (A6) · **§25 Prop. 9: slack creates the clock** · §26 CTM-inspired T8/A8 · §27 Pilot H (fine-tune repair) · §28 Pilot I (periodic clock) · §29 Pilot J (chunk-reset attention) · §30 zero-cost follow-ups · §31 Pilot K (label-free tight budgets) · §32 Pilot L (re-anchoring distillation) · §7 log · §8 toy simulation. (Sections were appended in the order written, so numbers are not in
+§21 O marker test · **§22 four conditions C1–C4, Props. 4–8, new methods T6/T7 and architecture A6** · §23 Pilot F · §24 Pilot G (A6) · **§25 Prop. 9: slack creates the clock** · §26 CTM-inspired T8/A8 · §27 Pilot H (fine-tune repair) · §28 Pilot I (periodic clock) · §29 Pilot J (chunk-reset attention) · §30 zero-cost follow-ups · §31 Pilot K (label-free tight budgets) · §32 Pilot L (re-anchoring distillation) · **§33 north star: checkpointed latent reasoner + C7 tests** · §7 log · §8 toy simulation. (Sections were appended in the order written, so numbers are not in
 page order.)
 
 ## Timestamp correction (2026-09-29 12:59 EDT, prompted by the Audit session; machine clock via `date`, Vast logs in UTC = EDT + 4)
@@ -1376,6 +1376,101 @@ distillation 2202.00512 (precedents from the Literature session).
   improvement on harder problems, not zero-shot extrapolation. The pure test of the teacher is L-T8 vs L-self: same
   graphs, different label source.
 * **Where.** 60 runs (≈ 15 min each) on ~12 new Vast hosts, labelled theory-L*, destroyed as each queue ends.
+
+## 33. Toward the north star: the checkpointed latent reasoner (CLR), C7 tests, and what each pilot tests (2026-09-29 23:32 EDT; design, exploratory — nothing here is registered)
+
+Goal (`docs/NORTH_STAR.md`, set by the user): one model meeting C1–C7 at once. This section turns §26's re-anchoring
+result into an architecture, defines the causal readability tests for the toy, and maps the running pilots onto the
+conditions. The Literature session has been asked for prior work on each part; tests are registered only after it
+answers.
+
+### 33.1 The architecture (toy version)
+
+A problem is solved in **segments**. Each segment is:
+1. **Input.** The prefix (edges, question) and the current **checkpoint**: a *set* of node-id tokens F_j (type
+   CHECKPOINT, embedded with the shared id table like any node token). F_0 = {start}.
+2. **Silent work.** Up to L latent steps (L ≤ the trained budget). They attend to the prefix, all checkpoint tokens so far
+   and this segment's own latent positions only — the latent history is cut at every checkpoint (Pilot J's chunk reset).
+3. **Write.** A checkpoint head reads the last thought and scores every node id through the id table,
+   s_v = ⟨W h, E_id[v]⟩. The next checkpoint is F_{j+1} = {v : σ(s_v) > ½}, capped at W_max tokens.
+4. **Restart.** The next segment starts from a fixed START-type embedding plus the checkpoint tokens, **not** from the
+   previous thought, so no residue crosses a checkpoint except through the written text.
+5. **Answer.** The queries read every checkpoint and the current segment. A halting head decides when to stop writing
+   and answer.
+
+What each part is for:
+
+| part | condition | mechanism (THEORY section) |
+|---|---|---|
+| segments of ≤ L steps | **C2** | the step count never leaves the trained range; deeper problems use more segments, each an exact copy of a trained computation (§25 Prop. 9, §26, §29) |
+| restart from crisp checkpoint embeddings | **C6** | amplitude restored at every checkpoint (§26: re-anchoring rescues the fading failures the history block could not) |
+| checkpoint = set of node ids, restart only from it | **C7** (checkpoints) | readable by construction; and because the restart uses only the written text, the round-trip and hidden-channel tests below pass by construction if and only if the isolation holds |
+| set-valued checkpoint | open question 2 | keeps the parallelism: the model's own single anchor is on the right branch in only ≈ 1/W of graphs (§26 controls); attention covers ≈ 1.4–2.3 of W branches (§30 B1); a set can carry all of them |
+| learned write/halt heads | **C5** | a PonderNet-style halting head per latent step (end the segment) and per segment (answer now); a natural stopping signal is closure — the checkpoint stops changing (§22.4 Prop. 6, C4 of the framework) |
+| label-free training of the checkpoint | **C4** | the checkpoint is discrete, so options are: (i) straight-through Gumbel-sigmoid over node ids; (ii) REINFORCE on the final answer; (iii) self-distillation from the model's own attention-decoded frontier (T8, as in Pilot L). Only (iii) has evidence so far, and only for single anchors |
+| silent stretches | open question 1 (C7 for latents) | tested separately (33.2, T-C7c) |
+
+### 33.2 The C7 tests on the toy
+
+Node ids are the toy's "human language": a checkpoint "frontier = {37, 42}" is a sentence.
+* **T-C7a — edit test (checkpoints).** Take the model's checkpoint and edit it: drop a node, add a decoy node at the
+  same depth, or swap in a node on another branch. Re-run from the edited checkpoint.
+  - *Prediction:* every query's answer changes exactly as BFS from the edited frontier predicts, and nothing else
+    changes.
+  - *Metric:* interchange-intervention accuracy (IIA; DAS 2303.02536) — the share of edits for which every query's
+    output equals BFS on the edited frontier. Sensitivity (did the output change at all) is reported separately, as is
+    a per-node-id claim-flip audit (Literature's recommendation after 2607.20379).
+  - *Input-only control:* can the checkpoint be predicted from the graph and the step count alone, without the
+    thought? (2509.13316 found verbalisers matching their own performance from the input.) For the toy the true
+    frontier is input-computable, so the checkpoint counts as the *model's* only if it tracks the model's errors: on
+    graphs where the model is wrong, the checkpoint should be wrong in the same way.
+  - *First version, runnable now on the 59 existing models with no training:* re-anchored inference (§26) with the
+    episode-2 anchor edited (oracle chain node, decoy node, other-branch node).
+* **T-C7b — round trip and hidden channel.**
+  - *Round trip:* decode the checkpoint to text, re-encode the text as checkpoint tokens, continue; behaviour must be
+    unchanged.
+  - *Hidden channel:* keep the checkpoint text and replace everything before it — the previous segment's latent states —
+    with those of a *different* input; behaviour must be unchanged.
+  - In the CLR these pass by construction if the restart truly isolates. The tests certify the isolation in the
+    implementation. In a model without isolation (plain Coconut) the hidden-channel test is the measurement: how much
+    behaviour moves when only the unwritten state changes.
+* **T-C7c — silent-stretch edit (latent thoughts).** At latent step k, edit the thought's pointer along the model's own
+  node-embedding directions: h′ = h + α(E_node[u] − E_node[v]), with v the node it points at. Continue.
+  - *Prediction if the silent thought is faithful to its decoded pointer:* the next steps follow u's successors (sweep-head
+    target and query answers).
+  - Part I found probe directions causally inert; this uses the model's own input embedding instead, and Finding 1
+    reported every branch causally editable at the edge level. A clean positive here would be the first C7 evidence for
+    silent thoughts.
+  - Exploratory, CPU, existing models.
+
+### 33.3 What each pilot tests (for Audit's status table)
+
+| pilot / study | C1 | C2 | C3 | C4 | C5 | C6 | C7 |
+|---|---|---|---|---|---|---|---|
+| D/E anytime vs control (§17, §20) | | ● extrapolation past K | | | | ● seed variance (pairs) | |
+| F jitter (§23) | | ● | | | | ● restoring map | |
+| G set memory (§24) | | ● | | | ○ closure = natural halt | ● no fade / overthinking | ○ set readable by construction |
+| H fine-tune repair (§27) | | ● repairability | | | | | |
+| I periodic clock (§28) | | ● | | | | | |
+| J chunk-reset attention (§29) | | ● | | | | | ○ isolation needed for checkpoints |
+| K label-free tight budgets (§31) | | ● | | ● | | | |
+| L re-anchoring distillation (§32) | | ● | | ● self-labels | | | |
+| §26 re-anchoring (done) | | ● (inference) | | | ○ hand-set K | ● | ○ checkpoints = node ids |
+| PROTOCOL8 (Experiments) | ● GPT-2, F1b | ● | | ● final answers + curriculum | | | |
+| PROTOCOL9 (Experiments) | | ● generality of anytime | | | | | |
+
+● = the pilot's primary claim bears on the condition; ○ = relevant but not tested as such. **Gaps:** C3 (nothing
+compares to text CoT at matched compute), C5 (no learned halting or writing yet), C7 for silent thoughts (T-C7c is the
+first test).
+
+### 33.4 Proposed order (after tonight's pilots are scored)
+1. **T-C7a and T-C7c on existing models** (CPU, $0): do re-anchored checkpoints behave faithfully under edits, and are silent
+   thoughts editable along the model's own embeddings?
+2. **Set-valued checkpoints at inference** (CPU): restart one episode from a *set* of start tokens. This needs the model
+   to accept several START tokens, which it never saw — test whether it generalises, and if not, a short fine-tune.
+3. **A CLR toy pilot** (GPU, ≈ $2–4): segments of L = 3 (Pilot J's chunk reset plus isolation), checkpoint head trained
+   by self-distillation from the attention-decoded frontier, fixed K first, then learned halting.
+4. **Hand the design to Experiments** for PROTOCOL8's format once the toy shows C2 + C6 + C7a together.
 
 ## 7. Log
 
