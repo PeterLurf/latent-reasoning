@@ -323,3 +323,9 @@ attention-based and/or text (Patchscopes; also the first C7 test). Recipe to com
   - Arms: T vs self (the model's own K′ = 2K answer) vs GT.
   - Decode: attention (primary) and text (secondary, the C7 test, with an input-only control).
   - Toy bar: T 19/20 extrapolate, self 0/20.
+
+**THEORY §41-2 (2026-09-30 ~12:10): reach grows with the deepest training depth** (toy, true labels, tight budgets).
+Train to depth 9 and the fade sets in by about 15; depth 12, by about 22; depth 18, flat at ~0.72 to 23 and 0.88 at
+25–30. **For PROTOCOL8b and later:** the deepest problems in the training mix may matter more than the loss form, so
+consider a deeper tight-budget training arm (deep ProsQA beyond m = 6, which needs a larger name pool) next to
+re-anchor distillation.
