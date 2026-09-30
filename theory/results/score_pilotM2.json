@@ -1,0 +1,25 @@
+{
+ "n_t8f": 20,
+ "missing": [],
+ "M2a": {
+  "counted": 11,
+  "in_direction": 9,
+  "sign_p_one_sided": 0.03271484375,
+  "verdict": "supported"
+ },
+ "M2b": {
+  "median_d8_t8f": 0.624267578125,
+  "met": true
+ },
+ "M2c": {
+  "t8f_deep_ge_0.60": 12,
+  "of": 20,
+  "met": true
+ },
+ "M2d": {
+  "competent_t8f": 12,
+  "competent_t8": 13,
+  "met": false
+ },
+ "hardware_note": "odd-indexed T8F on local RTX 2070 fp32; even-indexed on Vast bf16 (Pilot M)"
+}
