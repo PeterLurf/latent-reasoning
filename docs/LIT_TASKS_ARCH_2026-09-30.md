@@ -59,6 +59,30 @@ from the GitHub or Hugging Face APIs; "?" means unverified. Result numbers are f
 - **Learned write:** NTM 1410.5401 (write heads to external memory); MEM1 (RL-written state).
 - **Counter-examples with explicit clocks:** LoopFormer 2602.11451; timestep encoding 2410.01405.
 
+## C. Theory's additional questions
+
+**Fit for GPT-2 small on 8 GB.** Every task in A is small-vocabulary text. ProsQA and GSM8K are already trained on GPT-2
+here or in the literature (CODI and Coconut GPT-2; bmarti44 used batch 128). On 8 GB, use gradient accumulation plus
+bf16. The best depth-extrapolation splits: CLUTRR (train 2–3, test to 10), StepGame (test k = 6–10 beyond training),
+PrOntoQA-OOD, extended ProsQA, CLRS-Text (size-scaled). The natural discrete state to write: entities (CLUTRR, ProsQA),
+positions (StepGame, mazes), registers or values (arithmetic, CLRS-Text, program traces).
+
+**Segment-isolating attention** (later tokens see only written or compressed state, not earlier latents):
+- **Gist tokens** 2304.08467: an attention mask forces later tokens to attend *only* to gist tokens. The cleanest
+  mask-level precedent.
+- LightThinker 2502.15589 (mask to compressed tokens); AutoCompressors 2305.14788 (summary vectors across segments).
+- Compressive Transformer 1911.05507; RMT 2207.06881; Transformer-XL 1901.02860 (segments see a carried memory).
+- Markovian Transformers 2404.18988 and Delethink 2510.06557 (text-only carry-over).
+- Kavuncu 2609.19521: clearing CoTFormer's cache restores extrapolation.
+- **Written entity checkpoints between latent segments: none found** (our CLR).
+
+**Learned write heads over entity tokens, self-distilled from attention.**
+- Pointing via attention: Pointer Networks 1506.03134; the pointer-generator copy mechanism 1704.04368 (supervised).
+- Attention as a distillation target: MiniLM 2002.10957 (teacher → student attention).
+- Pointer Graph Networks 2006.06380 (supervised pointers).
+- **No head found that writes entity tokens trained by self-distillation from the model's own attention.** New as
+  scoped (Pilot L / CLR-1).
+
 **Novelty note.** Shapiro 2608.11233 is now the closest *pretrained-model* precedent for PROTOCOL8b / CLR-on-GPT-2. It has
 a retrofitted latent loop, preregistered, beats text scratchpad beyond its horizon, and extrapolates ~1.5×. It has no
 restart or checkpoint, no label-free training (it uses intermediate-step supervision) and no C7 test. Cite and
