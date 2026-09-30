@@ -73,6 +73,28 @@ def set_attention(m, K, g, starts, head):
 
 
 @torch.no_grad()
+def anchor_maxshare(m, K, g, starts):
+    """§45 amendment CLR-1a (manipulation check): at the first latent step of a set-started episode, attention mass on
+    each of the W START tokens summed over all layers and heads; per graph, the largest anchor's share of the W-token
+    total; returns the mean over graphs (1/W = even use, 1 = collapse onto one anchor)."""
+    from latent.model import T_START
+    x = m.embed_prefix(T(g.src), T(g.dst), T(starts[:, -1]))
+    te = m.type_emb.weight
+    extra = [(m.node_emb(T(starts[:, w])) + te[T_START])[:, None] for w in range(starts.shape[1] - 1)]
+    x = torch.cat([x[:, :-1]] + extra + [x[:, -1:]], 1)
+    P = x.shape[1]; W = starts.shape[1]
+    h, cache, _ = m.encode(x)
+    for blk in m.blocks:
+        blk.attn.record = []
+    m.latent_step(h, 1, cache)
+    mass = sum(blk.attn.record[0][:, :, P - W:P].sum(1) for blk in m.blocks)     # (n, W)
+    for blk in m.blocks:
+        blk.attn.record = None
+    sh = mass / mass.sum(1, keepdim=True).clamp_min(1e-12)
+    return float(sh.max(1).values.mean())
+
+
+@torch.no_grad()
 def run(m, K, head, W):
     out = {}
     g, br, _ = probe(512)
@@ -82,6 +104,14 @@ def run(m, K, head, W):
     a1, ck = segment(m, K, g, g.start[:, None], head, W, Q)
     a2, _ = segment(m, K, g, ck, head, W, Q)
     out["two_seg"] = bal_by_dist(np.maximum(a1, a2), n)
+    if W > 1:
+        out["anchor_maxshare"] = anchor_maxshare(m, K, g, ck)
+        rng = np.random.default_rng(0); ckr = ck.copy()
+        for i in range(n):                                      # non-seed anchors -> random off-chain nodes
+            pool = [v for v in set(g.src[i].tolist()) | set(g.dst[i].tolist()) if v not in set(q[i].tolist())]
+            ckr[i, :-1] = rng.choice(pool, W - 1, replace=len(pool) < W - 1)
+        a2r, _ = segment(m, K, g, ckr, head, W, Q)
+        out["two_seg_rand"] = bal_by_dist(np.maximum(a1, a2r), n)
     out["one_seg"] = bal_by_dist(a1, n)
     # C7 edit: swap written nodes that are on the reachable chain for their look-alikes
     reach = np.concatenate([g.nodes[bi, br["A"]], g.nodes[bi, br["B"]]], 1)
