@@ -71,7 +71,7 @@ Seed is the unit. "Exact MW" means the exact one-sided Mann–Whitney test on th
   "Signature met" if anytime has K′sat ≥ 6 in at least 3 seeds and coco has K′sat ≤ 4 in at least 3 seeds.
 - **Learnability:** competent = acc(m 0–6, K′ = 10) ≥ 0.75; counts per arm.
 
-## Predictions (registered as given by the theory session, 2026-09-30 ~09:40)
+## Predictions (as given by the theory session before the registration commit, 09:35:36)
 
 - **Anytime:** at K′ = 10, anytime > coco on mean depth 7–10 accuracy, with the gain growing with depth; depths 3–4
   unchanged (both at ceiling).
