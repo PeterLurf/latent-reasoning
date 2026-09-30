@@ -43,6 +43,11 @@ overspend"). Burn ~$2.9/h: 10 theory hosts plus the 6 hosts below. Plan: theory 
 past that without telling the user. **Every create/destroy goes in `scratch/pods.txt`; an orphaned host is the main
 leak.**
 
+**Credit check 23:05:** $122.35 at 23:01, burn $11.48/h (Theory's Pilot L added 20 hosts). Theory projects its
+spend at ≈ $13–14 from 23:00 and zero after ~02:30 (L drains ~00:30, the rest by ~02:15). This session spends
+≈ $15 to 07:00. Expected credit at 07:00 ≈ $93, above PROTOCOL8's $34 plus the $10 reserve. Re-check live before
+registering.
+
 **This session's live Vast hosts (destroy each after a checksum-verified fetch):**
 
 | Instance | Card, $/h | Job | SSH | Expected done → destroy |
