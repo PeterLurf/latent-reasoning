@@ -159,3 +159,13 @@ PROTOCOL9 bears on **C2** (more thinking helps beyond training, in every compete
   - Cut-off unchanged (Sun 2026-10-04 00:00).
 * **Blinding.** While adding the `--ext` flag, the scorer was run once to check it; only the count of scorable pairs
   was printed (10 of 64), no outcome, and the output file was deleted.
+
+## Amendment 7 (2026-09-30 03:50 EDT, placement; no extension outcome read)
+
+* On the local 8 GB RTX 3070, the extension's anytime runs with 4 layers and with width 512 ran out of CUDA memory:
+  `p9at_l4_s528` at step 0, `p9at_w512_s548` at step 400 (`torch.OutOfMemoryError` in logs/*.err). Their guard
+  logged "exited without stage-1 advance", not a stage-1 failure. These attempts are **void** (instrument, not
+  outcome); the partial run dirs were renamed `runs/_void_oom_*`.
+* **Placement.** The extension's 4-layer (8), width-512 (8) and fork (8, fp32; the 2070 is also 8 GB) runs move to 8
+  Vast hosts, 3 runs each (`scratch/p9x_v1..8.txt`), where the primary runs of these families already ran fine. The
+  local RTX 3070 and 4060 keep the 8 three-layer runs. Everything else is unchanged.
