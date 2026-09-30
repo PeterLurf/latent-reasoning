@@ -2083,6 +2083,49 @@ met.**
   - **The agreement filter is the default for any third rung.** It should also mix in the previous rung's teacher
     data, to hold the lower depths.
 
+## 39. Pilot T12 — step-adversarial thoughts (PROPOSALS §10) (pre-registered 2026-09-30 03:22 EDT, before any T12 run started)
+
+**Idea (§35, Prop. 10).** The anytime fall-back is keyed to counts the loop carries. T12 removes the count from the
+thought during training: a probe learns to read the step index k from every thought h_k, and the model is trained to
+make that probe's output uniform.
+* It is the domain-confusion objective, with weight λ = 0.5.
+* The probe trains on detached thoughts. The model's term goes through a frozen copy of the probe.
+* Frontier expansion needs no count, so the task stays solvable.
+
+**Code.** `theory/arch.py:add_step_adversary`, `theory/train_arch.py --step_adv`.
+* The probe is not a registered submodule, so the state dict is unchanged.
+* With the flag off, training is bit-identical to the previous commit (checked on CPU: max |Δw| = 0).
+* Disclosure: plain gradient reversal was tried first in a CPU smoke run and dropped. It drove the probe above chance
+  (CE 2.5 > ln 7), i.e. the probe became confidently wrong rather than the count being removed.
+* With the confusion form, the smoke model's probe CE sits at ln 6 and post-hoc decode accuracy is at chance. That
+  model had not yet learned the task.
+* The CUDA-graph path could not be tested locally (GPUs busy). The first GPU run's log must show finite
+  loss_step_probe before any result is read.
+
+**Arm.** AT + T12: the P30 recipe (theory/queue_arch.sh BASE) plus `--anytime 1 --step_adv 0.5`, seeds 900–907, paired
+with Pilot D's pd_at_s900–907. 8 runs.
+
+**Measures.**
+* eval_arch: gate, d7, d8, extrap.
+* Pointer: le_pointer.py.
+* Post-hoc step decodability: `theory/step_decode.py`. A fresh 2-layer probe on the frozen thoughts, held-out
+  accuracy; chance is 1/K.
+
+**Predictions.**
+* **PT1 (manipulation).** Step-decode accuracy is lower in T12 than in the same-seed AT run in ≥ 75 % of pairs with
+  both runs competent (≥ 5 counted, else unresolved).
+* **PT2 (primary, C2).** The pointer passes 8 (max p ≥ 8) in ≥ 50 % of competent T12 runs, and in a larger share than
+  the same seeds' competent AT runs.
+* **PT3.** §23 pair rule on d8: T12 > AT.
+* **PT4 (learnability).** Competent T12 runs ≥ competent AT runs − 2 (AT: 6/8).
+* **Reading.**
+  - If PT1 holds and PT2 fails: removing the thought's count is not enough, because history and clock also carry it
+    (§35's I/J outcome).
+  - If PT1 fails: the adversary did not remove the count.
+
+**Where.** The experiments session runs it on 1–2 Vast hosts (≈ $1) from a frozen copy of this commit, with its own
+worker.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
