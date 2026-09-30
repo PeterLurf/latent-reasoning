@@ -72,7 +72,7 @@ times below (local EDT) and the first-run times from the host queue logs.
   (21 vs 12), but not d8 (5/10) (`docs/PROTOCOL9_RESULTS.md`).
 * **Re-anchoring distillation (L): 19/20 failures fixed without labels (0/20 plain), §32.** GT-distilled loops
   extrapolate to 2× their training depth (17/20, §37).
-* Depth of training sets reach (§41): trained to 9 → fades by ~15; to 12 → ~22; to 18 → flat past 30 (0.88 at 25–30).
+* Depth of training sets reach (§41): trained to 9 → fades by ~15; to 12 → ~22; to 18 → flat to 23 on §37's probe (0.88 at 25–30 on an easier width-1 probe).
 * Second label-free rung (M): the teacher beats self-labels (10/12, p 0.019). **With the agreement filter (M-2), 12/20
   reach 13–18 hops in one loop, and the old rung holds** (T8F > T8 9/11, p 0.033; §38).
 * T12 step-adversarial thoughts (§39): breaks learning (2/8 competent). Removing the count is not the fix: extrapolators
@@ -2290,7 +2290,8 @@ about 24 hops. Two accounts:
   - All 6 ran, none cut: 5 on the 2070 (fp32) and s130 on the 3070 (bf16), which was added once it became idle.
   - GT18 median one-loop bal-acc at d19–24 is 0.686 (≥ 0.60). The same models give 0.627 as GT12 and 0.511 as GT9.
   - The median profile is flat at ≈ 0.72 from d7 to d23, then 0.56 at d24, which is the budget edge at K′ = 24.
-  - d25–30 at K′ = 32 on the 30-hop probe: 0.88.
+  - d25–30 at K′ = 32 on the 30-hop probe: 0.88. That probe is width-1 and easier than §37's, so this number is not
+    comparable with 0.686 (Audit).
   - **Reading.** The fade shrinks as the trained depth grows. Depth 9 fades out by about 15; depth 12 fades
     gradually; depth 18 shows no fade out to 30 hops. A loop trained on long enough chains, with tight budgets,
     continues at a constant accuracy past its training depth. That is single-loop C2 with final-answer labels on
