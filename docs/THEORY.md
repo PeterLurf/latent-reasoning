@@ -67,6 +67,7 @@ times below (local EDT) and the first-run times from the host queue logs.
 * Periodic clock (I): PI1 0.57, narrowly not met (§28).
 * Chunk reset (J): PJ2 supported (6/8); best from-scratch d8 (§29).
 * Stop key (Prop. 10, §35): the fall-back is keyed to counts. Skip → step key. History and step clock carry part of it.
+* Prop. 10 mechanism across architectures (§40): brake removed, fall-back kept (1/16 pass 8), count carried in 25/25.
 * PROTOCOL9 (Experiments, across architectures) replicates D: anytime helps d7 (10 vs 3, p 0.046) and learnability
   (21 vs 12), but not d8 (5/10) (`docs/PROTOCOL9_RESULTS.md`).
 * **Re-anchoring distillation (L): 19/20 failures fixed without labels (0/20 plain), §32.** GT-distilled loops
@@ -2204,6 +2205,17 @@ The fork family is probed on chain graphs, i.e. off its training shape, and is r
 * **X9b (the fall-back remains).** The pointer passes 8 in ≤ 30 % of competent anytime runs. This is the d7-not-d8
   pattern.
 * **X9c (the count is carried).** Step-decode accuracy ≥ 0.70 in ≥ 80 % of competent runs of both arms.
+
+**Result (2026-09-30; 33 competent models; `theory/results/le_pointer.json`, `theory/results/step_decode.json`, logs
+`*_p9.log`). X9a, X9b and X9c all hold.**
+* **X9a.** Median p[K−1]: anytime 5 (n 16) vs controls 2 (n 9).
+* **X9b.** The pointer passes 8 in 1/16 anytime runs.
+* **X9c.** Step decode ≥ 0.70 in 25/25 runs (medians 0.96 and 0.99).
+* **Fork family (descriptive).** Anytime 5 vs 4; passes 8 in 2/5 and 1/3; count decoded in 8/8.
+* **Reading.** The mechanism of §17 and §35 holds on 3- and 4-layer models and on 512-wide models. Anytime removes the
+  in-range brake, the fall-back after the trained depth remains, and the thoughts carry a count.
+* Measurement note: the first attempt skipped every model silently, because CRLF in a path list left a trailing  on
+  each path. It was re-run with clean paths.
 
 ## 7. Log
 
