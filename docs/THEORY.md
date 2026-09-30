@@ -1462,17 +1462,19 @@ the example, should do what anytime supervision does, with final-answer labels o
 **Result (2026-09-30; all 8 runs; `theory/score_pilotHIJKL.py K` → `theory/results/score_pilotK.json`; pointers in
 `theory/results/le_pointer.json`). PK1 unresolved; PK2, PK3 and PK4 met; not falsified.**
 * **Competent:** RT 4/8, C 5/8, AT 6/8 (seeds 900–907). All 4 competent RT runs extrapolate.
-* **PK1 unresolved.** 3 counted pairs, RT > C in 2. The same-seed AT-vs-C rule is also unresolved (4 pairs, 4 in
-  direction), so the falsification clause does not apply.
+* **PK1 unresolved.** 3 counted pairs, RT > C in 2. The falsification clause does not apply: its referent PD1 is
+  supported, but PK1 is unresolved rather than "not supported". For reference, same seeds, AT > C in 4/4 pairs.
 * **PK2 met.** Median d8: RT − AT = −0.013. Extrapolating share: 1.0 in both.
-* **PK3 met, at the threshold.** Median p[K−1] is 4.0 (2, 2, 6, 6).
+* **PK3 met at the threshold; 2/4 runs brake.** Median p[K−1] is 4.0, and the values are bimodal (2, 6, 6, 2).
+  s900 and s905 have p[K−1] = 2, the fixed-K brake.
 * **PK4 met.** 4 vs 5 competent.
 * **Reading.**
   - With final-answer labels only, random tight budgets reach the anytime outcome: d7 median 0.62, d8 0.57 vs AT 0.58.
     They also share its fall-back after K (s901 `1 2 3 4 5 6 7 0 …`, s904 `1 2 3 4 5 6 2 2 …`), as P10a predicted (§35).
-  - So minimum-progress labels are not needed for the in-range fix (C4). Neither method fixes continuation past the
+  - This is consistent with, not proof of, the claim that minimum-progress labels are not needed for the in-range fix
+    (C4): only 4 runs are competent, PK1 is unresolved and PK3 is split. Neither method fixes continuation past the
     trained depth.
-  - Learnability is lower: 4/8 competent.
+  - Learnability is a real cost: 4/8 competent.
 
 ## 32. Pilot L — distilling re-anchored inference into one latent loop (PROPOSALS §9 F5a) (pre-registered 2026-09-29 22:57 EDT, before any Pilot L run started)
 
