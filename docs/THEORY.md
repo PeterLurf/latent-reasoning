@@ -11,7 +11,7 @@ measurements run on the CPU on existing `runs/` models; nothing here touches the
 §3 theory · §4 attenuation (Mechanism 2) · §5 architectures · §6 Pilot A pre-registration · §9 Pilot B · §10 developmental
 race · §11 Pilot C · §12 training-free repair · §13 GPT-2 latent reasoners · §14 transfer curves (+ failed out-of-sample
 rule) · §15 Pilot A scored · §16 Pilot B interim · §17 Pilot D · §18 formal sketch · §19 Pilot B scored · §20 Pilot E ·
-§21 O marker test · **§22 four conditions C1–C4, Props. 4–8, new methods T6/T7 and architecture A6** · §23 Pilot F · §24 Pilot G (A6) · **§25 Prop. 9: slack creates the clock** · §26 CTM-inspired T8/A8 · §27 Pilot H (fine-tune repair) · §28 Pilot I (periodic clock) · §29 Pilot J (chunk-reset attention) · §30 zero-cost follow-ups · §7 log · §8 toy simulation. (Sections were appended in the order written, so numbers are not in
+§21 O marker test · **§22 four conditions C1–C4, Props. 4–8, new methods T6/T7 and architecture A6** · §23 Pilot F · §24 Pilot G (A6) · **§25 Prop. 9: slack creates the clock** · §26 CTM-inspired T8/A8 · §27 Pilot H (fine-tune repair) · §28 Pilot I (periodic clock) · §29 Pilot J (chunk-reset attention) · §30 zero-cost follow-ups · §31 Pilot K (label-free tight budgets) · §7 log · §8 toy simulation. (Sections were appended in the order written, so numbers are not in
 page order.)
 
 ## Timestamp correction (2026-09-29 12:59 EDT, prompted by the Audit session; machine clock via `date`, Vast logs in UTC = EDT + 4)
@@ -1323,6 +1323,28 @@ so continuing past K means running more copies of a trained computation rather t
     range is the min and max over the 8 head *slots* of that pooled mean; slots are not functionally aligned across
     models. The "at step K" column uses k = K only. Other reasonable aggregations (per-model first, then models)
     shift the numbers by ≤ ~0.2, and the pattern holds under all of them (the Audit session's re-check).
+
+## 31. Pilot K — label-free tight budgets (PROPOSALS §9 F1a) (pre-registered 2026-09-29 22:22 EDT, before any Pilot K run started)
+
+**Claim tested (Prop. 4 with (a) and refined (b), §22.7).** Tightness, not intermediate labels, is what identifies unit
+speed: random budgets whose support reaches the tight budget at the circuit-selection stage, drawn independently of
+the example, should do what anytime supervision does, with final-answer labels only.
+
+* **How this differs from what failed.** P22 randk used K ∈ 4..8 *with* step embeddings, so at curriculum stage 3 (1–2
+  latent hops needed) every budget had slack ≥ 2 and a clock was available. Arm OV used budgets 6–8, never tight. Kuo
+  et al.'s schedule is n-centred, K = clip(n + Δ, 1, 20) with Δ ~ U{−5..5}; it sometimes undershoots, but it is tied to
+  the example's length. **RT** here: K ~ U{1..6} per batch (`--K_random 1:6`), independent of the example, no step
+  embedding (P30 recipe), final-answer loss at the sampled budget; evaluation and the curriculum gate at K = 6. The
+  support contains the tight budget at every stage.
+* **Arm.** RT, seeds 900–907, paired by seed with Pilot D's control (pd_c) and anytime (pd_at) runs. 8 runs.
+* **PK1 (primary; tightness without labels).** §23 pair rule on d8 (K′ = 12): RT > C (≥ 75 % of ≥ 5 counted pairs).
+* **PK2 (RT ≈ anytime).** |median d8(RT) − median d8(AT)| ≤ 0.05, and the RT extrapolating share among competent runs
+  is ≥ AT's − 0.15.
+* **PK3 (no brake; Prop. 9).** Median p[K−1] of competent RT runs ≥ K − 2 = 4 (anytime-like), against ≈ 3 for fixed-K
+  controls (§25).
+* **PK4 (learnability).** Competent RT runs ≥ competent C runs − 2 (of 8).
+* **Falsified** if PK1 is not supported while Pilot D's anytime-vs-control comparison is. Then tight budgets without labels
+  are not enough, and the minimum-progress labels are doing the work.
 
 ## 7. Log
 
