@@ -1620,6 +1620,92 @@ nothing else?
   - The input-only control of NORTH_STAR (c) concerns decoders. It applies to T-C7a and is not part of this edit test.
 * **Moderators (descriptive).** IIA by extrapolating vs non-extrapolating models (Mann–Whitney), and by K.
 
+## 35. Proposition 10 — confounded stop keys: why anytime runs fall back at the trained depth, and a test of which count they use (theory, and pre-registration of P10e; written 2026-09-30 00:22 EDT, after Pilots D, F and H were scored and Pilot E's pointers measured, before exp16 was run on any test model)
+
+**Observation (Pilot E, E8 arm: K = 8, training depth 6; `theory/results/pilotDE_meas.json`).**
+* **Anytime runs fall back at the trained depth, not at K.**
+  - Seven competent anytime runs. Six advance at unit speed, and one (s1005) stalls at 2.
+  - The in-range maxima are 5, 5, 7, 4, 5 and 6. p = 5 means the pointer reads the edge from depth 5 into depth 6, the
+    last edge of a training graph.
+  - All six fall back *inside* the trained budget, at h_5–h_8. Examples: s1000 `1 1 2 3 4 5 | 2 3 4 1 2 0`, s1006
+    `1 1 2 3 4 5 | 2 2 3 3 2 2`.
+  - In 3 of 6 the drop comes right after the last trained edge (p = 5), with two to three steps of budget unused. None
+    advances through h_8.
+* **Slack controls that crawl pass the trained depth.**
+  - s1003 runs `1 2 3 3 1 2 3 4 5 6 7 8`, s1005 runs `1 1 1 1 2 2 2 3 4 5 6 7`, and s1002 also crosses. These are 3/7
+    competent controls, with d8 0.67–0.74.
+  - Pilot D (K = 6) shows the same fall-back in its anytime runs, right after K (§17 result), where the trained depth and
+    K coincide.
+
+**Proposition 10 (confounded stop keys).**
+* **Claim.** In training, the true stop condition ("no unvisited out-edge") coincides with every monotone quantity a
+  latent loop can carry:
+  - the step index. With no step embedding (the P30 recipe) it is still available as the length of the latent history
+    that attention sees;
+  - the hop count;
+  - the amplitude (Mechanism 2).
+
+  A stop or fall-back keyed to any of them costs nothing in training, and only the content key generalises. This
+  extends §22's identification condition C1 from "the step count must not be usable" to every count whose training
+  range is bounded.
+* **Anytime supervision aligns the counts.** It forces hop count = step index up to the trained depth D_max and leaves
+  nothing to read afterwards. So a fall-back at D_max is free, and behaviour alone cannot tell which count keys it.
+  - This explains E8: the fall-back sits at step ≈ hop ≈ D_max, below K.
+  - Slack controls de-align the counts (fractional speed, Prop. 9), which is why some of them pass D_max.
+* **Pilot F rules out amplitude as the whole key.** The restoring JAT runs (z ≤ 0 in 6/6) still stop (median d8 0.568).
+* **Re-anchoring removes every count at once.** An episode restarted from a node token has step index 1, hop count 0,
+  an empty latent history and fresh amplitude, and relative to its anchor no count leaves its trained range. This is
+  the principled reason re-anchoring rescued 31/34 models (§26) where blocking, renormalisation (§30) and jitter
+  (Pilot F) did not, and the reason for segmenting in the checkpointed design (§33).
+
+**P10e — which count keys the fall-back? (registered here, before `theory/exp16_stop_key.py` is run on any test model)**
+* **Interventions** at thought h_2, with the model's own sweep head, on the long-chain probe (512, seed 4247):
+  - **Skip.** h_2 + 2(Enc(reach[p+1]) − Enc(reach[p−1])), with §34's lin encoder: the pointer jumps two hops ahead.
+  - **Delay.** h_2 is fed again into step 4, so the pointer re-reads one edge and falls one hop behind.
+* **Pointer.** ptr_traj's aggregate rule with a fixed head.
+* **Measures.** The peak depth (running maximum before the first drop by more than one) and the step at which it is
+  reached. See the script's docstring for the exact definitions.
+* **Models.** All 17 competent anytime runs with a pointer in `pilotDE_meas.json`: pd_at (10, K = 6) and pe8_at (7,
+  K = 8). A model is eligible if its base pointer at h_2 is 1..8.
+* **Rule** (medians over eligible models of skip − base; delay reported alongside):
+  - **Step key:** peak-step change within ±1 and peak-depth change ≥ +1.
+  - **Hop key:** peak-depth change within ±1 and peak-step change ≤ −1.
+  - Otherwise: mixed or unresolved.
+* **Disclosure.** Two smoke models outside the test set (pb_at_s750 and pb_at_s751, Pilot B anytime runs, same recipe:
+  no step embedding, K = 6) gave:
+
+  | Model | Base (depth@step) | Skip | Delay |
+  |---|---|---|---|
+  | pb_at_s751 | 8@9 | 10@9 | 7@9 |
+  | pb_at_s750 | 7@8 | 8@6 | 6@8 |
+
+  - Step-keyed in s751, mostly step-keyed in s750.
+  - A per-graph pointer was tried first on s751 and dropped as noise-dominated.
+  - My hop-count version of Prop. 10, drafted before the smoke run, is therefore disfavoured.
+  - **Expectation: step key.**
+* **What each outcome means.**
+  - **Step key.** The key is the latent history length, a count that any loop with growing attention history carries,
+    and a step embedding is not needed for it. Isolating the history removes it: Pilot J's chunk reset (so PJ1, pointer
+    passes 8, should be met in CH3AT), or restarts (§26). Rebalancing losses does not remove it (Pilot H: the brake
+    survives fine-tuning).
+  - **Hop key.** The count lives in the thought itself. Chunk reset would not remove it; only restarting from a written
+    node token does.
+  - Either way, restarts remove the key.
+
+**Further predictions (exploratory; stated before Pilots J, K and L are scored).**
+* **P10a (Pilot K, RT).** Draws K ≤ 6 never penalise a fall-back after step 6. Expect RT to extrapolate at d7 like AT,
+  while d8 stays flat.
+* **P10b (Pilot J, CH3AT).** If the key is the step, meaning the history length: CH3AT's pointer passes 8 in more runs
+  than AT's (PJ1). If the key is the hop count: it does not.
+* **P10c (Pilot L).** Students trained on depth-12 graphs at K′ = 12 move D_max to 12. Expect L-T8 and L-GT to pass 8 on
+  the probe: a label-free gain, not extrapolation (§32's caveat).
+
+**One line for a pretrained LM (PROTOCOL8).**
+* Anytime or tight-budget training on depth-n problems should give gains up to m = n + 1 (the query hop) and none at
+  m ≥ n + 2, for any K′. The loop learns a fall-back keyed to a count that never exceeds its trained range.
+* Deeper answers need every count bounded at inference: a chunked latent history, or segments restarted from written
+  checkpoints (§33). Alternatively, train at the test depth.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
