@@ -42,8 +42,13 @@ step 1 ≈ $4, leaving ≈ $20 (below Audit's $30 alarm). No Vast creates beyond
 (ctl_s3 is the only one left to place). Re-check the projection once all hosts are placed. Every create/destroy goes
 in `scratch/pods.txt`.
 
-**Theory (details in docs/THEORY.md, one-liners at the top of its executive summary):** all overnight pilots are
-scored (D–M, §§34–38). No theory hosts are live. T12 (§39, 8 runs) runs on the experiments session's Vast hosts.
+**Theory (details in docs/THEORY.md; one-liners at the top of its executive summary):**
+- All theory work so far is scored; no theory Vast hosts or local GPU jobs are running.
+- Toy checkpointed reasoner, without labels:
+  - chains reach d19–24 at 0.65 (§48);
+  - written checkpoints are the causal channel, IIA 0.83–1.00 (§45 and its replication CLR-1b);
+  - a write head plus closure halt tracks depth (§49).
+- GPT-2 transfer is PROTOCOL10 (experiments session).
 
 **This session's live Vast hosts** (full lifecycle in `scratch/pods.txt`; destroy only via the drain scripts):
 
