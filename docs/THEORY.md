@@ -73,6 +73,8 @@ times below (local EDT) and the first-run times from the host queue logs.
   (`docs/PROTOCOL9_RESULTS.md`).
 * **Re-anchoring distillation (L): 19/20 failures fixed without labels (0/20 plain), §32.** GT-distilled loops
   extrapolate to 2× their training depth (17/20, §37).
+* **Checkpointed restarts (CLR-1, §45): editing the written checkpoint changes answers as predicted (IIA 0.84 for sets,
+  1.00 single).** Chains reach d13–18 label-free (single anchor 0.67). Sets are used but don't beat one anchor.
 * Depth of training sets reach (§41): trained to 9 → fades by ~15; to 12 → ~22; to 18 → flat to 23 on §37's probe (0.88 at 25–30 on an easier width-1 probe).
 * Second label-free rung (M): the teacher beats self-labels (10/12, p 0.019). **With the agreement filter (M-2), 12/20
   reach 13–18 hops in one loop, and the old rung holds** (T8F > T8 9/11, p 0.033; §38).
@@ -2428,6 +2430,34 @@ models only.
   Otherwise a PC1 pass is reported as "gain without set use".
 * **Smoke disclosure.** The 3-step CPU student gave share 0.51, two_seg 0.542, two_seg_rand 0.544. Spread attention
   with no use is exactly §44's pattern, which is why both measures are required.
+
+**Result (2026-09-30; 20 runs on the local 3070/2070/4060; the queues ended 15:15; evaluation 15:17 →
+`theory/results/exp20_clr_eval.json`; `theory/score_s45.py` → `theory/results/score_s45.json`). PC3 and PC4 met; the
+set is used (CLR-1a); PC1 inconclusive; PC2 narrowly not met.**
+* **All competent:** CLR3 10/10, CLR1 10/10.
+* **CLR-1a (manipulation check) passes: the set is used.** Anchor max-share < 0.8 in 10/10 models (median 0.46).
+  Replacing the non-seed anchors with random nodes costs far8–10 +0.039 (median).
+* **PC1 inconclusive.** two_seg: CLR3 > CLR1 in 6/10 pairs (p = 0.38). Median far8–10: 0.613 vs 0.595. One segment
+  alone gives 0.50.
+* **PC2 not met.** chain4 d13–18 ≥ 0.60 in 4/10 CLR3 models (median 0.596).
+  - CLR1 chains better: median 0.671.
+  - Medians by segment count (CLR3 / CLR1): chain2 0.50 / 0.50; chain3 0.53 / 0.55; chain4 0.60 / 0.67.
+  - d19–24 stays at ≈ 0.51 for both arms.
+* **PC3 met: the written checkpoint is the causal channel (C7).** Swapping the on-chain anchors for their look-alikes
+  changes the answers as BFS from the edited checkpoint predicts.
+  - Median IIA: CLR3 0.84 (ins +0.86, del −0.89); CLR1 1.00 (ins +1.00, del −1.00).
+* **PC4 met.** Median delayed drop 0.0004.
+* **Reading.**
+  - Training makes restarts from written node-id checkpoints fully faithful: an edit to the written text changes the
+    answers as predicted, near IIA 1 for single anchors. That is C7 at the checkpoint level, far above the silent
+    thoughts' 0.36 (§34).
+  - Chained segments extend reach to d13–18 without labels (C2 through checkpoints; CLR1 median 0.67). Each segment
+    adds about 6 hops.
+  - A set of 3 anchors is used but does not beat a single anchor, and it chains worse. The parallelism gain of sets is
+    not realised at this width and training dose; §30's B1 measured the attention's branch coverage at only ≈ 1.4–2.3.
+  - Next for the design: single-anchor checkpoints are the working C2 + C7 unit. Sets need either more training or a
+    per-anchor coverage target (Literature's mitigation).
+
 
 ## 7. Log
 
