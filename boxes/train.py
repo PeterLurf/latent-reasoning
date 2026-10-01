@@ -63,7 +63,7 @@ def train(a):
                 vr = random.Random(10_000 + step); vb = [make_problem(vr, 8, "all") for _ in range(64)]
                 m.eval()
                 with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
-                    txt, _ = infer(m, a.arm, a.k, vb, dev)
+                    txt, _, _ = infer(m, a.arm, a.k, vb, dev)
                 m.train()
                 rec["acc_N8_all"] = float(np.mean([t == truth(p) for t, p in zip(txt, vb)]))
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
@@ -87,7 +87,7 @@ def edit_eval(m, a, dev, amp):
         for _ in batch:
             x = list("ABCD"); rng.shuffle(x); new.append("".join(x))
         with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
-            txt, _ = infer(m, a.arm, a.k, batch, dev, edit={"chunk": c, "arr": new})
+            txt, _, _ = infer(m, a.arm, a.k, batch, dev, edit={"chunk": c, "arr": new})
         rest = [(c + 1) * a.k] * len(batch)
         want = [" " + " ".join(apply(r, p["ops"][s:])) for r, p, s in zip(new, batch, rest)]
         out[str(N)] = float(np.mean([t == w for t, w in zip(txt, want)]))

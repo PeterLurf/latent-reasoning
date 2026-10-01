@@ -148,9 +148,9 @@ class Boxes(Adapter):
             for s in range(0, len(idx), 64):
                 b = idx[s:s + 64]
                 with torch.no_grad(), torch.autocast("cuda", dtype=amp, enabled=amp is not None):
-                    txt, comp = infer(self.m, self.arm, self.k, [items[i]["raw"] for i in b], self.dev)
-                for i, t in zip(b, txt):
-                    out[i] = {"text": t, "compute": dict(comp)}
+                    txt, comp, valid = infer(self.m, self.arm, self.k, [items[i]["raw"] for i in b], self.dev)
+                for i, t, v in zip(b, txt, valid):
+                    out[i] = {"text": t, "compute": {**comp, **v}}     # validity (THEORY §66 check) rides in the row
         return out
 
 
