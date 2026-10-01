@@ -50,6 +50,8 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 - §51 closed (TH1 0/10, TH2 1/10). §57: ProsQA cue origin found (proximity heuristic 0.91).
 - Handed to Experiments (22:36): §54b (F1 on GPT-2, one revision, 9 runs) and §58 (F6 age-transplant training,
   30 P30-recipe runs, `theory/train_arch.py --transplant`; GPU smoke first).
+- Handed to Experiments (2026-10-01 00:24): §60 boundary-memory Phase A (user's proposal; new code: data generator,
+  leaf encoder, 2-layer merger, exact-composer ceiling; 2 arms × 4 seeds; Gate A and the Phase B gate fixed in §60).
 - Toy checkpointed reasoner, without labels:
   - chains reach d19–24 at 0.65 (§48);
   - written checkpoints are the causal channel, IIA 0.83–1.00 (§45 and its replication CLR-1b);
