@@ -69,6 +69,7 @@ reward-neutral?) and §56 (are aged latents interchangeable?). Added F6 (age-tra
 §51 halt line closed: TH1 0/10, TH2 1/10.
 **F1 on GPT-2:** PROTOCOL12 not learnable as specified (hard-label ST gives no gradient); one revision
 registered as §54b (relaxed labels in training, hardened at test, hardening gap AG0).
+**ProsQA cue, confirmed:** without the cue, every GPT-2 latent arm is at chance on deep ProsQA (Coconut 0.508), while text CoT holds 0.767.
 **ProsQA cue (§57):** the generator always hangs the negative option off another person. A person-agnostic proximity
 heuristic scores 0.91, which explains the Coconut cue.
 **F2 toy (§53):** BD1 met (0.71 vs 0.50 at d7–12), but precision fails (FP 0.42). Parked.
@@ -2378,6 +2379,9 @@ Falsified, more strongly than the stated falsifier.**
   - The per-thought-capacity alternative named in the falsifier is not shown either: the anytime arms stop using their
     thoughts altogether.
   - Coconut's 0.56 at D7–10 may partly rest on ProsQA's proximity cue (§57). The p8_na secondary will tell.
+  - **It did** (PROTOCOL8 amendment 3, 10cc74c). On cue-free p8_na_test, Coconut's D7–10 falls 0.564 → 0.508 (chance);
+    anytime is 0.486 and random-tight 0.501. Text CoT is unaffected (0.762 → 0.767). Coconut's only edge on deep ProsQA
+    was the cue.
 * **Reference for C3.** Text CoT reaches 0.71–0.81 at every depth, including D11–12, with ~84 tokens: the bar any
   latent scheme must meet.
 
@@ -3512,6 +3516,8 @@ option (dn).
   - Alternatively, report the anti-cue subset (dn ≥ dt, ≈ 16–18 % of test problems).
   - Added to §54b as amendment 54b-1.
 * **Prior art (Literature, `docs/LIT_PROSQA_SHORTCUT_2026-09-30.md`, 028cef6).** This specific artefact is not documented.
+* **Confirmed on trained models (PROTOCOL8 amendment 3, 10cc74c).** Removing the cue (p8_na_test) drops every latent
+  arm to chance at D7–10 (Coconut 0.564 → 0.508), while text CoT holds (0.767).
   - Prior work shows only that ProsQA admits shortcuts: 2602.22441, 2604.06374, 2606.12689.
   - General precedent: multi-hop shortcuts and adversarial distractors (Jiang & Bansal 1906.07132).
   - A balanced re-generation of ProsQA would pair the finding with a fix.
