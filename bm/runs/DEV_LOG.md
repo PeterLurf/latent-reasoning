@@ -13,3 +13,9 @@
   batched runner with slot permutations, local ids and the canonical root remap, score probe 1.000 and entry 1.000. So it
   is not a wiring bug; the learned model collapses to the identity. Diagnostic run (2–3-edge regions only, λ 0, 2000
   steps, not a setting) launched to separate "cannot learn one merge" from deep credit assignment.
+* 2026-10-01 02:29 — diagnostic (not a setting; 2–3-edge regions only, λ 0, 2000 steps, seed 0, old 60-3 code): train
+  accuracy 0.880 / 0.883 / 0.887 / 0.884 at steps 500–2000 — the same identity plateau. Even single merges are not
+  learned under labels that include trivial entries. Kept in `bm/runs/diag_k3.void/`.
+* 2026-10-01 02:29 — §60 panel launched as registered (frozen in PANEL_FREEZE.md, λ 1 by tie-break, 10k × 128),
+  2070 from 02:27 and 3070 from 02:31; §60b (bdc70bc) to be implemented in separate files so the running panel's code
+  is untouched. Process rule from now on (Audit/Theory): aborted or void outputs are renamed *.void and committed, not deleted.

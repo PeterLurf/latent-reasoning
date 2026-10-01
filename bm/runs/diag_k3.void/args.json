@@ -1,0 +1,15 @@
+{
+ "cmd": "train",
+ "out": "C:\\Users\\peter\\AppData\\Local\\Temp/claude/D--/6af9c751-a423-5604-9170-0c177c13d67f/scratchpad/bm_diag_k3",
+ "pool": "bm/data_pool",
+ "run": null,
+ "seed": 0,
+ "n_train": 50000,
+ "lam": 0.0,
+ "steps": 2000,
+ "bs": 128,
+ "lr": 0.0003,
+ "device": "cuda:1",
+ "kmax": 3,
+ "sets": ""
+}
