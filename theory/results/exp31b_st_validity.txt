@@ -1,0 +1,9 @@
+s3_s1 N6 valid 1.00 acc|valid 1.00 N9 valid 0.90 acc|valid 0.98 N10 valid 0.54 acc|valid 0.46 N12 valid 0.48 acc|valid 0.02 N16 valid 0.25 acc|valid 0.30
+s3_s10 N6 valid 1.00 acc|valid 1.00 N9 valid 0.94 acc|valid 1.00 N10 valid 0.60 acc|valid 0.90 N12 valid 0.25 acc|valid 0.13 N16 valid 0.21 acc|valid 0.15
+s3_s2 N6 valid 1.00 acc|valid 1.00 N9 valid 0.78 acc|valid 0.98 N10 valid 0.46 acc|valid 0.71 N12 valid 0.28 acc|valid 0.07 N16 valid 0.12 acc|valid 0.18
+s3_s3 N6 valid 1.00 acc|valid 1.00 N9 valid 0.90 acc|valid 0.99 N10 valid 0.60 acc|valid 0.86 N12 valid 0.34 acc|valid 0.17 N16 valid 0.10 acc|valid 0.19
+s3_s4 N6 valid 1.00 acc|valid 1.00 N9 valid 0.82 acc|valid 0.98 N10 valid 0.47 acc|valid 0.55 N12 valid 0.38 acc|valid 0.05 N16 valid 0.24 acc|valid 0.18
+s3_s5 N6 valid 1.00 acc|valid 1.00 N9 valid 0.55 acc|valid 0.85 N10 valid 0.35 acc|valid 0.12 N12 valid 0.31 acc|valid 0.08 N16 valid 0.14 acc|valid 0.27
+s3_s6 N6 valid 1.00 acc|valid 1.00 N9 valid 0.56 acc|valid 0.85 N10 valid 0.35 acc|valid 0.25 N12 valid 0.31 acc|valid 0.09 N16 valid 0.16 acc|valid 0.12
+s3_s8 N6 valid 1.00 acc|valid 1.00 N9 valid 0.65 acc|valid 0.95 N10 valid 0.39 acc|valid 0.66 N12 valid 0.23 acc|valid 0.07 N16 valid 0.10 acc|valid 0.04
+s3_s9 N6 valid 1.00 acc|valid 1.00 N9 valid 0.93 acc|valid 0.99 N10 valid 0.78 acc|valid 0.94 N12 valid 0.42 acc|valid 0.70 N16 valid 0.11 acc|valid 0.11
