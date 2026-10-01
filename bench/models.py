@@ -185,6 +185,46 @@ class CODI(Adapter):
         return out
 
 
+class CoconutGSM(Adapter):
+    """GSM8K track step 1 (docs/GSM8K_REPRO.md amendment 1): a Coconut GPT-2 checkpoint (e.g. internlm/SIM_COT-GPT2-Coconut
+    checkpoint_28) with the Coconut repo's GSM8K eval: GSM8k-Aug question + "\n", <|start-latent|>, K continuous thoughts
+    (each = the last hidden state, after ln_f, of the previous position), <|end-latent|>, greedy decoding to EOS (max_new),
+    answer = the text after the last "#" (commas removed). Question text by index as in the CODI adapter."""
+    kinds = ("generate",)
+
+    def __init__(self, ckpt, device, K="10", max_new="128"):
+        import tiktoken
+        from gpt2c import GPT2C, load_state
+        sd = {k: v for k, v in load_state(ckpt, device).items() if not k.startswith(("expainable_llm.", "embedding."))}
+        self.m = GPT2C(sd); self.K = int(K); self.max_new = int(max_new); self.enc = tiktoken.get_encoding("gpt2")
+        os.environ.setdefault("CODI_SP", os.path.join(ROOT, "prosqa", "ckpt_ext"))
+        sys.path.insert(0, os.path.join(ROOT, "theory"))
+        import codi_probe as cp
+        self.aug = cp.gsm8k(10_000)
+
+    @torch.no_grad()
+    def predict(self, item):
+        from gpt2c import END, EOS, START
+        i = int(item["id"].split(":")[1]); q, a, _ = self.aug[i]
+        assert abs(a - float(item["answer"])) < 1e-6, (i, a, item["answer"])
+        dev = self.m.wte.device
+        x = self.m.embed(torch.tensor(self.enc.encode(q + "\n") + [START], device=dev))[None]
+        for _ in range(self.K):
+            h, _, _ = self.m.forward(x)
+            x = torch.cat([x, h[:, -1:, :]], 1)
+        x = torch.cat([x, self.m.embed(torch.tensor([END], device=dev))[None]], 1)
+        gen = []
+        for _ in range(self.max_new):
+            _, logits, _ = self.m.forward(x)
+            t = int(logits[0, -1].argmax())
+            if t == EOS:
+                break
+            gen.append(t); x = torch.cat([x, self.m.embed(torch.tensor([t], device=dev))[None]], 1)
+        text = self.enc.decode([t for t in gen if t < 50257])
+        return {"text": text.split("#")[-1].replace(",", "").strip(), "full": text,
+                "compute": {"latent_passes": self.K, "gen_tokens": len(gen)}}
+
+
 def load(spec, task, device="cpu"):
     kind, path, opts = parse_spec(spec)
     if kind == "coconut":
@@ -197,6 +237,8 @@ def load(spec, task, device="cpu"):
         return F1S(path, device, **opts)
     if kind == "gen":
         return Generate(path, device, **opts)
+    if kind == "coconut_gsm":
+        return CoconutGSM(path, device, **opts)
     if kind == "codi":
         return CODI(path, device, **opts)
     if kind == "boxes":

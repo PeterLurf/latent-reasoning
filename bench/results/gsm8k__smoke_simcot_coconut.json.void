@@ -1,0 +1,207 @@
+{
+ "task": "gsm8k",
+ "model": "coconut_gsm:prosqa/ckpt_ext/hf/simcot_coconut/checkpoint_28",
+ "tag": "smoke_simcot_coconut",
+ "n": 16,
+ "accuracy": 0.375,
+ "ci95": [
+  0.1848,
+  0.6136
+ ],
+ "by_depth": {
+  "1": {
+   "acc": 0.5,
+   "n": 2
+  },
+  "2": {
+   "acc": 0.5,
+   "n": 2
+  },
+  "3": {
+   "acc": 0.4,
+   "n": 5
+  },
+  "4": {
+   "acc": 0.3333,
+   "n": 6
+  },
+  "6": {
+   "acc": 0.0,
+   "n": 1
+  }
+ },
+ "baselines_same_items": {
+  "last number in question": 0.0,
+  "constant 5 (most frequent test answer; peeks)": 0.125,
+  "answer appears in question (oracle)": 0.125,
+  "one-op oracle (any pair, + - x /)": 0.3125
+ },
+ "mean_compute": {
+  "latent_passes": 10.0,
+  "gen_tokens": 2.19
+ },
+ "provenance": {
+  "commit": "a27400f",
+  "when": "2026-10-01T18:29:54",
+  "argv": [
+   "--task",
+   "gsm8k",
+   "--model",
+   "coconut_gsm:prosqa/ckpt_ext/hf/simcot_coconut/checkpoint_28",
+   "--n",
+   "16",
+   "--tag",
+   "smoke_simcot_coconut",
+   "--device",
+   "cuda:2"
+  ],
+  "device": "cuda:2",
+  "seconds": 2.4,
+  "data": [
+   {
+    "path": "bench/data/gsm8k_test.jsonl",
+    "sha256": "3730d312f6e34405"
+   }
+  ],
+  "checkpoint": {
+   "path": "prosqa/ckpt_ext/hf/simcot_coconut/checkpoint_28",
+   "bytes": 1458850422,
+   "head_tail_sha256": "69aa8d073efccfc2"
+  },
+  "selection": {
+   "n": 16,
+   "per_depth": 0,
+   "seed": 0
+  }
+ },
+ "items": [
+  {
+   "id": "gsm8k:12",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 10,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:98",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 10,
+   "gen_tokens": 2,
+   "text": "25"
+  },
+  {
+   "id": "gsm8k:130",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 10,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:209",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 10,
+   "gen_tokens": 2,
+   "text": "0"
+  },
+  {
+   "id": "gsm8k:237",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 10,
+   "gen_tokens": 2,
+   "text": "90"
+  },
+  {
+   "id": "gsm8k:244",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 10,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:264",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 10,
+   "gen_tokens": 2,
+   "text": "400"
+  },
+  {
+   "id": "gsm8k:586",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 10,
+   "gen_tokens": 2,
+   "text": "80"
+  },
+  {
+   "id": "gsm8k:601",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 10,
+   "gen_tokens": 3,
+   "text": "-3"
+  },
+  {
+   "id": "gsm8k:689",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 10,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:725",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 10,
+   "gen_tokens": 4,
+   "text": "10.5"
+  },
+  {
+   "id": "gsm8k:904",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 10,
+   "gen_tokens": 2,
+   "text": "8"
+  },
+  {
+   "id": "gsm8k:996",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 10,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:1010",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 10,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:1131",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 10,
+   "gen_tokens": 2,
+   "text": "96"
+  },
+  {
+   "id": "gsm8k:1284",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 10,
+   "gen_tokens": 2,
+   "text": "15"
+  }
+ ]
+}
