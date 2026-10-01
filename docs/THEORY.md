@@ -3710,6 +3710,9 @@ There is no further revision.
   - Both are in this single revision so that there is no second one.
 * **Reference line.** Both panels report the identity-map baseline per split, computed exactly from that split's labels
   (§60: ≈ 0.87; §60b: 0.50 on non-trivial entries). A pass is judged against it as well as against Gate A's 0.95.
+* **The 2–3-edge diagnostic, reported as promised (old code, `bm/runs/diag_k3.void`).** The same plateau: training
+  accuracy 0.880–0.887 at steps 500–2000. With trivial labels in the mix, even single merges are not learned. This
+  changes nothing in §60b, which was fixed before it.
 
 ## 7. Log
 
