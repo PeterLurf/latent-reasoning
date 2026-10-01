@@ -3012,7 +3012,28 @@ Source: `docs/EXTERNAL_IDEAS_2026-09-30.md` (87949a7). Literature's check: `docs
 
 **Order.** §55 and §56 first: CPU, existing models, handed to Experiments. Then F6 (local GPU), then F7. D2 waits.
 
-### Addendum (2026-10-01 06:28 EDT, commit b054c4e): after §54b — learning F1's local rule without step labels
+### Addendum (2026-10-01 10:10 EDT): F3's premise fails on this toy — not registered
+
+* **Plan.** F3 (compositional self-synthesis) was to label deep chains by composing the frozen model's own in-range
+  answers at the generator's junction (A5): label = 1 − (1 − p₁)(1 − p_J·p₂). Code: `distill_reanchor.py --teacher
+  comp|compv`.
+* **Prior** (Literature `docs/LIT_F3_CHECK_2026-10-01.md`, f987aea; medium-low novelty). Rajaraman 2606.27721 is the
+  theory; MuSiQue 2108.00573 composes single-hop questions.
+* **Literature's caution.** Composed error ≈ 2ε − ε².
+* **Premise check before registration.** `theory/exp29_teacher_errors.py --kind comp|compv` →
+  `theory/results/exp29_comp_errors.json`, `exp29_compv_errors.json`; 20 parents, the training distribution.
+  - **COMP.** Error at d1–6 0.162, at d7–12 0.379. Seam +0.228 (range +0.13 to +0.30), the same as T8's +0.239. It
+    misses 65 % of reachable deep nodes.
+  - **COMP-V.** The confidence filter keeps 77 % of labels at d1–6 and 48 % at d7–12, with kept error 0.088 vs 0.311.
+    The seam remains.
+* **Why.** The generator glues at A5, at depth 6, which is the parents' weakest in-range depth. Composed labels
+  inherit the junction's error.
+* **Decision.** Seam-free labels would need shorter glued segments, i.e. a new generator, which would be a design
+  patch. F3 is not registered on this toy.
+* **The finding, as a constraint on label-free depth extension.** A composed label is only as good as the model's
+  accuracy at the junction depth. The junction must sit well inside the reliable range, not at its edge.
+
+ — learning F1's local rule without step labels
 
 §54b showed that GPT-2's label channel extrapolates perfectly once its one-hop rule is learned. Deep final answers alone
 (ProsQA has no question shallower than 3 hops) do not teach that rule.

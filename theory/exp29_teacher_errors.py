@@ -30,6 +30,7 @@ def main():
     ap.add_argument("--out", default="theory/results/exp29_teacher_errors.json")
     ap.add_argument("--n", type=int, default=512)
     ap.add_argument("--widths", default="2,4,6", help="Pilot L's --deep_widths default")
+    ap.add_argument("--kind", default="t8", choices=["t8", "comp", "compv"], help="teacher (THEORY §63 adds comp/compv)")
     a = ap.parse_args()
     res = json.load(open(a.out)) if os.path.exists(a.out) else {}
     HEADS = json.load(open("theory/results/exp12_reanchor.json"))
@@ -43,13 +44,25 @@ def main():
             continue
         m, c = load(f"runs/{name}", "cpu"); m.eval()
         head = HEADS[name]["head"]                                         # the parent's sweep head, as Pilot L's --head
-        y = teacher_targets("t8", m, c["K"], head, g, br, q, "cpu").numpy()
+        y = teacher_targets(a.kind, m, c["K"], head, g, br, q, "cpu")
+        w = None
+        if isinstance(y, tuple):
+            y, w = y
+            w = w.numpy()
+        y = y.numpy()
         A, B, C, D = y[:, 0:6], y[:, 6:12], y[:, 12:18], y[:, 18:24]
         o = {"fn_A": float(1 - A.mean()), "fn_B": float(1 - B.mean()), "fp_D": float(D.mean()), "fp_C": float(C.mean()),
              "fn_by_dist": [float(1 - v) for v in np.r_[A.mean(0), B.mean(0)]],
              "fp_by_dist": [float(v) for v in np.r_[D.mean(0), C.mean(0)]]}
         o["err_d1_6"] = 0.5 * (o["fn_A"] + o["fp_D"]); o["err_d7_12"] = 0.5 * (o["fn_B"] + o["fp_C"])
         o["seam_contrast"] = o["err_d7_12"] - o["err_d1_6"]
+        if w is not None:                                                 # compv: error on kept labels, and coverage
+            truth = np.r_[np.ones(12), np.zeros(12)][None].repeat(len(y), 0)
+            near, far = np.r_[np.arange(6), np.arange(18, 24)], np.arange(6, 18)
+            err = (y != truth)
+            o["kept_d1_6"], o["kept_d7_12"] = float(w[:, near].mean()), float(w[:, far].mean())
+            o["kept_err_d1_6"] = float((err * w)[:, near].sum() / max(w[:, near].sum(), 1))
+            o["kept_err_d7_12"] = float((err * w)[:, far].sum() / max(w[:, far].sum(), 1))
         res[name] = o
         json.dump(res, open(a.out, "w", newline="\n"), indent=1)
         print("%-10s err d1-6 %.3f (FN %.3f FP %.3f) | d7-12 %.3f (FN %.3f FP %.3f) | seam %+.3f" % (
