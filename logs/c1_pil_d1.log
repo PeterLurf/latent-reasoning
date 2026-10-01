@@ -1,0 +1,61 @@
+{'update': 100, 'L': 1, 'loss': 1.356216008067131, 'examples': 51200, 'gpt2_tokens': 12000, 'sec': 9}
+{'update': 200, 'L': 1, 'loss': 0.7895384603738784, 'examples': 102400, 'gpt2_tokens': 24000, 'sec': 18}
+{'update': 300, 'L': 1, 'loss': 0.7870423239469528, 'examples': 153600, 'gpt2_tokens': 36000, 'sec': 26}
+{'update': 400, 'L': 1, 'loss': 0.7847572487592697, 'examples': 204800, 'gpt2_tokens': 48000, 'sec': 34}
+{'update': 500, 'L': 1, 'loss': 0.7860419601202011, 'examples': 256000, 'gpt2_tokens': 60000, 'sec': 42, 'acc8': 0.176, 'acc32': 0.162, 'certified': False, 'trans_err': 24}
+{'update': 600, 'L': 1, 'loss': 1.7185007482767105, 'examples': 307200, 'gpt2_tokens': 72000, 'sec': 53}
+{'update': 700, 'L': 1, 'loss': 1.3221663534641266, 'examples': 358400, 'gpt2_tokens': 84000, 'sec': 62}
+{'update': 800, 'L': 1, 'loss': 1.0891812044382094, 'examples': 409600, 'gpt2_tokens': 96000, 'sec': 70}
+{'update': 900, 'L': 1, 'loss': 1.0877311128377913, 'examples': 460800, 'gpt2_tokens': 108000, 'sec': 78}
+{'update': 1000, 'L': 2, 'loss': 1.044511046409607, 'examples': 512000, 'gpt2_tokens': 120000, 'sec': 87, 'acc8': 0.164, 'acc32': 0.172, 'certified': False, 'trans_err': 24}
+{'update': 1100, 'L': 1, 'loss': 1.2495443111658096, 'examples': 563200, 'gpt2_tokens': 132000, 'sec': 98}
+{'update': 1200, 'L': 4, 'loss': 1.2555135130882262, 'examples': 614400, 'gpt2_tokens': 144000, 'sec': 106}
+{'update': 1300, 'L': 4, 'loss': 1.283295493721962, 'examples': 665600, 'gpt2_tokens': 156000, 'sec': 114}
+{'update': 1400, 'L': 2, 'loss': 1.185549200773239, 'examples': 716800, 'gpt2_tokens': 168000, 'sec': 122}
+{'update': 1500, 'L': 4, 'loss': 1.1204465812444686, 'examples': 768000, 'gpt2_tokens': 180000, 'sec': 130, 'acc8': 0.194, 'acc32': 0.182, 'certified': False, 'trans_err': 16}
+{'update': 1600, 'L': 8, 'loss': 1.2446917790174483, 'examples': 819200, 'gpt2_tokens': 192000, 'sec': 140}
+{'update': 1700, 'L': 4, 'loss': 1.1560963851213455, 'examples': 870400, 'gpt2_tokens': 204000, 'sec': 148}
+{'update': 1800, 'L': 2, 'loss': 1.2288656663894653, 'examples': 921600, 'gpt2_tokens': 216000, 'sec': 156}
+{'update': 1900, 'L': 4, 'loss': 1.1609186023473739, 'examples': 972800, 'gpt2_tokens': 228000, 'sec': 165}
+{'update': 2000, 'L': 2, 'loss': 1.130211392045021, 'examples': 1024000, 'gpt2_tokens': 240000, 'sec': 173, 'acc8': 0.3, 'acc32': 0.29, 'certified': False, 'trans_err': 23}
+[W1001 18:37:50.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 276824064 bytes (free: 0, total: 8589606912).
+[W1001 18:37:50.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 369098752 bytes (free: 0, total: 8589606912).
+[W1001 18:37:51.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 369098752 bytes (free: 0, total: 8589606912).
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\Latent\c1\train.py", line 188, in <module>
+    main()
+    ~~~~^^
+  File "D:\Latent\c1\train.py", line 184, in main
+    train(ap.parse_args())
+    ~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\Latent\c1\train.py", line 169, in train
+    res = evaluate(model, a.arm, dev, a.n_test, a.n_null, a.out)
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "D:\Latent\c1\train.py", line 67, in evaluate
+    res["nulls"] = nulls(model, dev, n_null); res["mechanism"] = mechanism(model, dev)
+                   ~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "D:\Latent\c1\train.py", line 81, in nulls
+    _, ans, _ = hard_rollout(model, oo)
+                ~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "D:\Latent\c1\core.py", line 110, in hard_rollout
+    c = model.step_logits(torch.zeros_like(c) if reset else c, ops[:, t]).argmax(-1); traj.append(c)
+        ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Latent\c1\core.py", line 57, in step_logits
+    h, _ = self.g(x)
+           ~~~~~~^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\modules\module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\modules\module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "D:\Latent\boxes\core.py", line 126, in forward
+    m = F.gelu(a @ self.w(pre + "mlp.c_fc.weight") + self.w(pre + "mlp.c_fc.bias"), approximate="tanh")
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 352.00 MiB. GPU 2 has a total capacity of 8.00 GiB of which 0 bytes is free. Process 1960 has 17179869184.00 GiB memory in use. Process 7236 has 17179869184.00 GiB memory in use. Process 7368 has 17179869184.00 GiB memory in use. Process 7196 has 17179869184.00 GiB memory in use. Process 7124 has 17179869184.00 GiB memory in use. Process 7676 has 17179869184.00 GiB memory in use. Process 9516 has 17179869184.00 GiB memory in use. Process 17048 has 17179869184.00 GiB memory in use. Process 12992 has 17179869184.00 GiB memory in use. Process 15720 has 17179869184.00 GiB memory in use. Process 17800 has 17179869184.00 GiB memory in use. Process 12780 has 17179869184.00 GiB memory in use. Process 8988 has 17179869184.00 GiB memory in use. Process 20788 has 17179869184.00 GiB memory in use. Process 25552 has 17179869184.00 GiB memory in use. Process 5424 has 17179869184.00 GiB memory in use. Including non-PyTorch memory, this process has 17179869184.00 GiB memory in use. Of the allocated memory 6.00 GiB is allocated by PyTorch, and 1023.93 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)

@@ -48,6 +48,29 @@ class Cell(nn.Module):
         self.code = nn.Parameter(gpt.embed(torch.tensor(OP_TOK)).detach().clone().mean(0, keepdim=True).repeat(M, 1)
                                  + 0.02 * torch.randn(M, 768))
         self.next_head = nn.Linear(768, M); self.ans_head = nn.Linear(768, 6)
+        self.hn = nn.Identity()                                    # head-input norm (pilot option: ln)
+
+    def ln_heads(self):
+        """Implementation option (pilot; Audit): a learned LayerNorm on the cell output before both heads, addressing
+        GPT-2's outlier dimension directly."""
+        self.hn = nn.LayerNorm(768).to(self.code.device)
+
+    def small_heads(self, logit_std=0.5, hidden_norm=200.0):
+        """Implementation option (pilot): heads scaled so initial logits have std ~logit_std (GPT-2 hidden norm ~200)."""
+        for h in (self.next_head, self.ans_head):
+            nn.init.normal_(h.weight, std=logit_std / hidden_norm); nn.init.zeros_(h.bias)
+
+    def distinct_codes(self, std=0.14):
+        """Implementation option (pilot): codes drawn i.i.d. N(0, std^2) per coordinate (GPT-2 wte coordinate std ~0.14)
+        instead of a shared mean + 0.02 noise, which leaves all codes nearly identical (a symmetric saddle)."""
+        with torch.no_grad():
+            self.code.copy_(std * torch.randn_like(self.code))
+
+    def zero_heads(self):
+        """Implementation option (pilot, logged in c1/PILOT.md): zero-initialised heads. GPT-2's last hidden state has
+        norm ~200 with one outlier dimension, so default-initialised heads start with logit std ~5 and saturate."""
+        for h in (self.next_head, self.ans_head):
+            nn.init.zeros_(h.weight); nn.init.zeros_(h.bias)
 
     def step_logits(self, codes, ops):
         """codes, ops: (B,) long -> (B, M) next-code logits (one GPT-2 call per row, positions 0-2)."""
@@ -55,12 +78,12 @@ class Cell(nn.Module):
         x = torch.stack([self.code[codes], self.g.embed(torch.tensor(OP_TOK, device=dev)[ops]),
                          self.g.embed(torch.full_like(ops, STEP_TOK))], 1)
         h, _ = self.g(x)
-        return self.next_head(h[:, -1])
+        return self.next_head(self.hn(h[:, -1]))
 
     def dec_logits(self, codes):
         x = torch.stack([self.code[codes], self.g.embed(torch.full_like(codes, ANS_TOK))], 1)
         h, _ = self.g(x)
-        return self.ans_head(h[:, -1])
+        return self.ans_head(self.hn(h[:, -1]))
 
     def tables(self):
         """log T (6 ops, M, M) over all 36 (code, op) pairs and log D (M, 6): 42 GPT-2 calls."""
@@ -100,7 +123,18 @@ def marginal_loss(logT, logD, ops, y, reset=False):
 
 
 @torch.no_grad()
-def hard_rollout(model, ops, reset=False, start=None, from_step=0, upto=None):
+def hard_rollout(model, ops, reset=False, start=None, from_step=0, upto=None, chunk=2048):
+    """Chunked over rows (memory only; rows are independent). See _hard_rollout."""
+    if ops.shape[0] <= chunk:
+        return _hard_rollout(model, ops, reset, start, from_step, upto)
+    parts = [_hard_rollout(model, ops[i:i + chunk], reset, None if start is None else start[i:i + chunk], from_step, upto)
+             for i in range(0, ops.shape[0], chunk)]
+    return (torch.cat([p[0] for p in parts]), torch.cat([p[1] for p in parts]),
+            [torch.cat([p[2][t] for p in parts]) for t in range(len(parts[0][2]))])
+
+
+@torch.no_grad()
+def _hard_rollout(model, ops, reset=False, start=None, from_step=0, upto=None):
     """Real cell calls, argmax code after each op. ops: (B, N) long tensor. start: (B,) codes to start from (default
     initial code 0) at step from_step; runs ops[:, from_step:upto]. Returns final codes, decoded answers, list of codes."""
     B, N = ops.shape; dev = ops.device
@@ -116,12 +150,22 @@ class FP(nn.Module):
     def __init__(self, gpt):
         super().__init__()
         self.g = gpt; self.head = nn.Linear(768, 6)
+        self.hn = nn.Identity()
+
+    def ln_heads(self):
+        self.hn = nn.LayerNorm(768).to(self.head.weight.device)
+
+    def small_heads(self, logit_std=0.5, hidden_norm=200.0):
+        nn.init.normal_(self.head.weight, std=logit_std / hidden_norm); nn.init.zeros_(self.head.bias)
+
+    def zero_heads(self):
+        nn.init.zeros_(self.head.weight); nn.init.zeros_(self.head.bias)
 
     def forward(self, ops):
         dev = ops.device
         ids = torch.cat([torch.tensor(OP_TOK, device=dev)[ops], torch.full((ops.shape[0], 1), ANS_TOK, device=dev)], 1)
         h, _ = self.g(self.g.embed(ids))
-        return self.head(h[:, -1])
+        return self.head(self.hn(h[:, -1]))
 
 
 @torch.no_grad()

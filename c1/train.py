@@ -58,8 +58,9 @@ def evaluate(model, arm, dev, n_test, n_null, out):
     for N in DEPTHS:
         rng = np.random.default_rng(TEST_SEED + N); ops, y = sample(rng, n_test, N)
         ops_t = torch.tensor(ops, device=dev); pred = []
-        for i in range(0, n_test, 2000 if arm.startswith("fp") and N >= 64 else 5000):
-            pred.append(predict(model, arm, ops_t[i:i + (2000 if arm.startswith("fp") and N >= 64 else 5000)]).cpu())
+        ch = 250 if arm.startswith("fp") else 5000                   # memory only
+        for i in range(0, n_test, ch):
+            pred.append(predict(model, arm, ops_t[i:i + ch]).cpu())
         res["acc"][str(N)] = float((torch.cat(pred).numpy() == y).mean())
     if arm in ("d1", "tab", "reset"):
         res["audit"] = audit(model)
@@ -131,7 +132,18 @@ def train(a):
     dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
     assert a.seed < TEST_SEED
     model = build(a.arm, dev)
-    opt = torch.optim.AdamW(model.parameters(), lr=a.lr, weight_decay=0.0)
+    if a.head_init == "zero" and hasattr(model, "zero_heads"):
+        model.zero_heads()
+    if a.head_init == "small" and hasattr(model, "small_heads"):
+        model.small_heads()
+    if a.code_init == "distinct" and hasattr(model, "distinct_codes"):
+        model.distinct_codes()
+    if a.head_norm == "ln" and hasattr(model, "ln_heads"):
+        model.ln_heads()
+    new = [p for n, p in model.named_parameters() if not n.startswith("g.")]      # codes, heads, TAB tables
+    old = [p for n, p in model.named_parameters() if n.startswith("g.")]          # GPT-2
+    groups = [{"params": new, "lr": a.lr_new or a.lr}] + ([{"params": old, "lr": a.lr}] if old else [])
+    opt = torch.optim.AdamW(groups, weight_decay=0.0)
     os.makedirs(a.out, exist_ok=True)
     json.dump(vars(a), open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
     log = open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t0 = time.time(); hist = []; seen = 0; toks = 0
@@ -178,6 +190,10 @@ def main():
     ap.add_argument("--arm", required=True, choices=["d1", "tab", "reset", "fp_ex", "fp_cmp"])
     ap.add_argument("--seed", type=int, default=1); ap.add_argument("--updates", type=int, default=2000)
     ap.add_argument("--bs", type=int, default=512); ap.add_argument("--lr", type=float, default=1e-4)
+    ap.add_argument("--head_init", default="default", choices=["default", "zero", "small"])
+    ap.add_argument("--head_norm", default="none", choices=["none", "ln"])
+    ap.add_argument("--code_init", default="default", choices=["default", "distinct"])
+    ap.add_argument("--lr_new", type=float, default=0.0, help="lr for codes / heads / tables (0 = --lr); pilot-fixed")
     ap.add_argument("--n_test", type=int, default=2000); ap.add_argument("--n_null", type=int, default=10_000)
     ap.add_argument("--max_hours", type=float, default=3.0)
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
