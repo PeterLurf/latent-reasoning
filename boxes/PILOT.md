@@ -16,3 +16,11 @@ Pilot: seed 99 (not a panel seed), 1000 steps × bs 32, RTX 3090 hosts 53743423 
 arm; same task-data budget). Reason: TC converges by 1000 steps, while the latent / chunked arms are still improving at
 1000 steps (WC solver loss 0.33). 8000 steps keeps the wall-clock at ≈ 0.3–0.6 h per run at 4 concurrent runs per GPU.
 lr 1e-4 (cosine, 100 warm-up), AdamW wd 0.01, bf16 autocast (unchanged from the implementation).
+
+## CL accuracy-vs-FLOPs curve: K′ set fixed before any panel result (2026-10-01 15:38 EDT; Audit)
+
+Computed locally after the wave from the kept CL checkpoints (all 5 seeds), on the same bench boxes items (seed 6600,
+N 1–32 × {all, where} × 50), with everything else as the panel's CL inference.
+* **K′ ∈ {max(1, ⌈N/2⌉), N, 2N}.**
+* K′ = N is the panel's own evaluation (bench result already on the host); ⌈N/2⌉ and 2N are the two added points.
+* Per point: accuracy and mean FLOPs / sequential passes / written tokens, by N band (1–8, 9–16, 17–32).
