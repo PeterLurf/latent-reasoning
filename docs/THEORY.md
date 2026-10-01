@@ -2920,6 +2920,53 @@ targets, for each distance.
 * Command: `python theory/exp26_bidirectional.py` → `theory/results/exp26_bidirectional.json`.
 * Score: medians of `bidir_bal` over indices 6–11 and 0–5, and of `bidir_decoy_fp` over indices 6–11.
 
+## 54. F1 — annotated-input reasoning: toy feasibility, and the registered language-model test (2026-09-30 21:22 EDT; registered after Literature's check 3ba2507 and before any language-model run)
+
+**Toy feasibility (exploratory, not registered; disclosed).** `theory/ail.py`; one seed, 800 CPU steps, batch 32;
+`theory/results/ail_smoke/`.
+* The state is a binary monotone "reached" label per node id, the only thing carried between passes. Each pass is a
+  2-layer transformer over edge tokens with the endpoint labels added. It is trained from final answers only, with
+  P = 6 and depth ≤ 6.
+* In distribution: 1.00. 12-hop probe at P = 12: 1.00 at every distance. 24-hop probe at P = 24 and P = 32: 1.00.
+* The fixed point comes at exactly 12 and 24 passes, so halting tracks depth.
+* Label-flip edit (switch on a look-alike node at pass 2): IIA 1.00.
+* **Reading.** By construction, the labels make the BFS rule a one-edge local rule, and the toy hands the model the
+  graph structure as edge tokens. This shows the architecture can be learned from final answers and gives count-free,
+  readable, depth-tracking reasoning. It is *not* decisive: it resembles discrete neural algorithmic reasoning on
+  given graphs (Literature: 2306.13411, DiscoLoop 2607.00341). The open question is whether the same holds when the
+  structure must be read from text.
+* Two prototype bugs were found and fixed during smoke testing: monotone labels flooded at a random init, and the loss
+  clamp killed the straight-through gradient.
+
+**Registered test: GPT-2 small on ProsQA text** (spec for the experiments session to implement and run).
+* **Architecture.** GPT-2 small reads the problem text.
+  - Every token that belongs to an entity mention (person or concept) gets a label embedding added, for the entity's
+    current label ∈ {0, 1}.
+  - One pass = one GPT-2 forward over [tokens + label embeddings]. A linear mark head on every token gives a logit.
+    Per entity, the max over its mentions; then the new label = old OR (logit > 0).
+  - Hard labels forward, sigmoid straight-through backward, with an affine-squashed loss (not a clamp).
+  - Initial labels: the root person = 1. Answer: whichever option's label is on (both or neither: compare logits).
+    Nothing else carries between passes.
+* **Training.** Final answers only (C4), on problems of answer depth ≤ 6, with P = 6 passes.
+* **Arms (3 seeds each).**
+  - AI-mono (primary).
+  - AI-free: labels may switch off. This is the counter-risk ablation.
+  - AI-hint: per-pass targets = entities within p hops. This is the upper bound Literature asked for.
+* **Test.** Answer depths 3–14 (PROTOCOL8's test sets), with P = the depth needed (up to 14), and P = 2× trained.
+* **Predictions (AI-mono).**
+  - **AG1 (learnable).** In-distribution accuracy (depth ≤ 6) ≥ 0.95 in ≥ 2/3 seeds.
+  - **AG2 (C2).** Accuracy at depths 11–14 ≥ 0.85 in ≥ 2/3 seeds. That is reach ≥ 2× the trained depth, against the
+    ≈ 1.5× of 2608.11233 and Coconut's chance.
+  - **AG3 (C7).** Label-flip edit IIA ≥ 0.8. Switch on a concept on the negative option's side at pass k; the negative
+    option must become reached, with nothing else changing.
+  - **AG4 (C5).** The pass at which labels stop changing correlates with answer depth (Spearman ≥ 0.8).
+* **Descriptive.**
+  - AI-free vs AI-mono extrapolation (counter check).
+  - AI-hint as the ceiling.
+  - Text CoT at matched compute (C3).
+* **Falsified if** AG1 holds but AG2 fails, i.e. the labels become a covert counter or the model learns a depth-bounded
+  rule. If AG1 fails, final-answer training of the label channel does not converge in text (Literature's risk).
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
