@@ -1,0 +1,3 @@
+# §54b panel host 1
+p54b_soft_s1 soft 1 2 0.3 0.1 panel
+p54b_stoch_s1 stoch 1 2 0.3 0.1 panel
