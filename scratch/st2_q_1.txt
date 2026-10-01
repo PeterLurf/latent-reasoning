@@ -1,0 +1,3 @@
+# THEORY 64b host 1
+theory/runs/st/a5c_s3 theory/st_model.py --group A5 --seed 3 --curriculum
+theory/runs/st/a5c_s4 theory/st_model.py --group A5 --seed 4 --curriculum
