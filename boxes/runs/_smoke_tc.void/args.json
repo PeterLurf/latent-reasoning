@@ -1,0 +1,11 @@
+{
+ "arm": "tc",
+ "k": 4,
+ "seed": 1,
+ "steps": 3,
+ "bs": 4,
+ "lr": 0.0001,
+ "device": "cpu",
+ "init": "D:\\Latent\\prosqa\\ckpt\\gpt2_pretrained.bin",
+ "out": "C:\\Users\\peter\\AppData\\Local\\Temp/claude/D--/6af9c751-a423-5604-9170-0c177c13d67f/scratchpad/bx_tc"
+}

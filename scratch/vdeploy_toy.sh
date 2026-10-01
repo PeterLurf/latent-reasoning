@@ -13,6 +13,7 @@ EXTRA=""; [ "$W" = scratch/queue_worker3.sh ] && EXTRA="scratch/queue_worker3.sh
 [ "$W" = scratch/f1sb_vast_job.sh ] && EXTRA="scratch/f1sb_vast_job.sh prosqa/ail_gpt2.py prosqa/ail_f1s.py prosqa/gpt2c.py prosqa/analyze.py prosqa/eval_p8.py bench/__init__.py bench/run.py bench/tasks.py bench/models.py bench/report.py bench/literature.json bench/data prosqa/p8data/f1s_train.json prosqa/p8data/f1s_test_shallow.json prosqa/p8data/p8_na_test.json prosqa/p8data/p8_test.json"
 [ "$W" = scratch/bench_vast_job.sh ] && EXTRA="scratch/bench_vast_job.sh bench/__init__.py bench/run.py bench/tasks.py bench/models.py bench/report.py bench/literature.json bench/data prosqa/gpt2c.py prosqa/analyze.py prosqa/eval_p8.py prosqa/ail_gpt2.py prosqa/p8data/p8_test.json prosqa/p8data/p8_na_test.json"
 [ "$W" = scratch/tjob_vast.sh ] && EXTRA="scratch/tjob_vast.sh $(echo theory/*.py)"
+[ "$W" = scratch/tjob_vast2.sh ] && EXTRA="scratch/tjob_vast2.sh $(echo theory/*.py)"
 [ "$W" = scratch/f4_vast_job.sh ] && EXTRA="scratch/f4_vast_job.sh $(echo theory/*.py)"
 [ "$W" = scratch/p8na_vast_job.sh ] && EXTRA="scratch/p8na_vast_job.sh prosqa/eval_na_p8.py prosqa/eval_p8.py prosqa/analyze.py prosqa/gpt2c.py prosqa/p8data/p8_test.json prosqa/p8data/p8_na_test.json"
 [ "$W" = scratch/p8na_vast_par.sh ] && EXTRA="scratch/p8na_vast_par.sh prosqa/eval_na_p8.py prosqa/eval_p8.py prosqa/analyze.py prosqa/gpt2c.py prosqa/p8data/p8_test.json prosqa/p8data/p8_na_test.json"
