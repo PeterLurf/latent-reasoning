@@ -38,3 +38,22 @@ sha256 7c5d3f4b…). Pre-registration tuning under Audit's rules (training data 
   converge on GPT-2 / ProsQA within this budget, so F1's C4 claim stands on the toy only. But the hint ceiling shows the
   architecture itself runs an exact, readable (C7), halting (C5), depth-extrapolating (C2), cue-free search in GPT-2 once
   the per-pass label rule is learned. The obstacle is credit assignment from final answers, not representation.
+
+## THEORY §61 (F1-S) result (2026-10-01 07:26 EDT; `python prosqa/score_f1s.py` → `results/f1s.json`; 3 seeds, final answers only)
+
+Labels: 1,486 steps × 8 = 11,888 question presentations, matching §54b AI-soft's 11,892. Test: p8_na_test d3–14 (first 100
+per depth) plus 200 held-out shallow questions, P = 16, hardened labels.
+
+| seed | acc d1–2 / d3–6 / d7–10 / d11–14 | edit IIA | ρ(fixed point, depth) | label prec / recall | cue drop |
+|---|---|---|---|---|---|
+| s1 | 0.915 / 0.477 / 0.477 / 0.491 | 0.006 | −0.25 | 0.54 / 0.77 | −0.002 |
+| s2 | 0.900 / 0.472 / 0.512 / 0.488 | 0.127 | −0.25 | 0.57 / 0.78 | −0.006 |
+| **s3** | **1.000 / 1.000 / 1.000 / 1.000** | **1.000** | 0.75 | **1.00 / 1.00** | 0.000 |
+
+* **Verdicts.** S1 not met (1/3 ≥ 0.95 at d1–6); S2 not met (1/3); S3 not met (median IIA 0.13); S4 not met (median
+  ρ −0.25; s3 0.75). S0 met (soft − hardened ≤ 0.03 in every run and band).
+* **Reading.** Seed 3, trained with final answers only (no step labels, C4), learned the exact per-entity reachability
+  rule: perfect at every depth through 14 (2.3× the deepest training question), labels exactly the reachable set,
+  edits behave as BFS predicts, cue-free. Seeds 1–2 learned the shallow questions but not the iterated rule, and their
+  labels flood with extra passes. Learnability from final answers is real but seed-dependent (1/3), so the registered
+  2/3 criteria fail. Per §61 this was the settling test: no further F1 variants.
