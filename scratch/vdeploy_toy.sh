@@ -9,6 +9,7 @@ O=$1; LBL=$2; Q=$3; TAG=$4; W=${5:-scratch/queue_worker2.sh}
 EXTRA=""; [ "$W" = scratch/queue_worker3.sh ] && EXTRA="scratch/queue_worker3.sh scratch/p9_frozen"
 [ "$W" = scratch/queue_worker_t12.sh ] && EXTRA="scratch/queue_worker_t12.sh scratch/t12_frozen"
 [ "$W" = scratch/queue_worker_f6.sh ] && EXTRA="scratch/queue_worker_f6.sh scratch/f6_frozen"
+[ "$W" = scratch/f1s_vast_job.sh ] && EXTRA="scratch/f1s_vast_job.sh prosqa/ail_gpt2.py prosqa/ail_f1s.py prosqa/p8data/f1s_train.json prosqa/p8data/f1s_test_shallow.json prosqa/p8data/p8_na_test.json"
 [ "$W" = scratch/ail_vast_job.sh ] && EXTRA="scratch/ail_vast_job.sh prosqa/ail_gpt2.py prosqa/p8data/p8_train.json prosqa/p8data/p8_test.json"
 [ "$W" = scratch/bm_vast_job.sh ] && EXTRA="scratch/bm_vast_job.sh bm/__init__.py bm/data_b.py bm/model_b.py bm/run_b.py bm/data.py bm/model.py bm/run.py bm/data_pool_b"
 V="C:/Users/peter/.local/vastai/vast.sh"
