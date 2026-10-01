@@ -10,6 +10,10 @@ Fine-tunes a trained P30 model (fresh AdamW) on two batches per step:
                self : the same frozen copy run as one episode at K' = 12 (plain self-training; isolates re-anchoring)
                gt   : the true labels (A, B reachable; C, D not) — upper bound
                t8f  : t8 with an agreement filter (loss only on queries where top-1 and top-3 re-anchoring agree; §38)
+               comp : THEORY §63 (F3) compositional self-labels: the frozen copy answers in range from the root (p1) and
+                      from the junction A5 the generator glued the B chain onto (p2); label = 1 - (1 - p1)(1 - p_J p2) > 0.5,
+                      p_J = its answer for A5 from the root (no reachability label is used)
+               compv: comp with verification: loss only where the composed probability is confident, |p - 0.5| >= 0.3
 Output <out>/model.pt (config as the P30 run), arch.json, log.jsonl (with an inherited full-depth marker, so
 theory/eval_arch.py scores it like any run).
 Round 2 of the ladder (THEORY §38, Pilot M): --deep_R 4 --deep_widths 2,3 --student_Kp 24 --teacher_ep 12 starts from a
@@ -58,6 +62,15 @@ def teacher_targets(kind, tm, K, head, g, br, q, dev, Kp=12, ep=None):
     src, dst = T(g.src), T(g.dst)
     if kind == "self":
         return (one_episode(tm, K, Kp, src, dst, T(g.start), q) > 0).float()
+    if kind in ("comp", "compv"):        # THEORY §63 (F3): compose two in-range answers at the construction's junction
+        J = g.nodes[bi, br["A"], NPB - 1]                       # A5: the B chain was glued onto it by the generator
+        qJ = torch.cat([q, T(J)[:, None].long()], 1)
+        l1 = rollout(tm, K, src, dst, T(g.start), ep, qnodes=qJ)["qlogit"].float()
+        p1, pJ = torch.sigmoid(l1[:, :-1]), torch.sigmoid(l1[:, -1:])
+        p2 = torch.sigmoid(rollout(tm, K, src, dst, T(J).long(), ep, qnodes=q)["qlogit"].float())
+        pc = 1 - (1 - p1) * (1 - pJ * p2)                       # reachable within ep of the root, or via the junction
+        y = (pc > 0.5).float()
+        return (y, ((pc - 0.5).abs() >= 0.3).float()) if kind == "compv" else y
     o1 = rollout(tm, K, src, dst, T(g.start), ep, qnodes=q)
     best = o1["qlogit"]
     a = o1["attn1"][ep - 1][:, head, :o1["P"] - 1]
@@ -75,7 +88,7 @@ def teacher_targets(kind, tm, K, head, g, br, q, dev, Kp=12, ep=None):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--init_from", required=True)
-    ap.add_argument("--teacher", required=True, choices=["t8", "t8f", "self", "gt"])
+    ap.add_argument("--teacher", required=True, choices=["t8", "t8f", "self", "gt", "comp", "compv"])
     ap.add_argument("--head", type=int, required=True, help="sweep head of the initial model (exp12_reanchor.json)")
     ap.add_argument("--steps", type=int, default=3000)
     ap.add_argument("--bs", type=int, default=256)
