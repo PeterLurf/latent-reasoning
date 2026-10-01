@@ -29,7 +29,7 @@ Gain(model) = acc(bidir) − acc(forward), at d11–14.
 
 ## Disclosure
 * **Smoke test.** Phase 0 model, 24 problems (2 per depth), run before this registration, outside the primary set. The
-  negative option's frontier often meets the forward frontier at m = 10 (in ~20 of 24 problems), less so at m = 5. The
+  negative option's frontier often meets the forward frontier at m = 10 (in 23 of 24 problems), less so at m = 5. The
   primary m was set in the code before the smoke and is not changed.
 * **Prior from PROTOCOL10 / the hop sweep.** These models answer at chance at d ≥ 11 and misread written statements, so
   the expected outcome is null. This is the cheap test §52 asked for.
