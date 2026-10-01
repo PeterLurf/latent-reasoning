@@ -69,6 +69,9 @@ reward-neutral?) and §56 (are aged latents interchangeable?). Added F6 (age-tra
 §51 halt line closed: TH1 0/10, TH2 1/10.
 **F1 on GPT-2:** PROTOCOL12 not learnable as specified (hard-label ST gives no gradient); one revision
 registered as §54b (relaxed labels in training, hardened at test, hardening gap AG0).
+**ProsQA cue (§57):** the generator always hangs the negative option off another person. A person-agnostic proximity
+heuristic scores 0.91, which explains the Coconut cue.
+**F2 toy (§53):** BD1 met (0.71 vs 0.50 at d7–12), but precision fails (FP 0.42). Parked.
 
 **Overnight results (2026-09-30 02:15 EDT; one line each, details in the § Result sections):**
 * Anytime supervision (D): 8/10 extrapolate vs 3/9, Fisher p 0.055. The gain is at d7 only; the pointer falls back after
@@ -3008,6 +3011,17 @@ targets, for each distance.
 * Command: `python theory/exp26_bidirectional.py` → `theory/results/exp26_bidirectional.json`.
 * Score: medians of `bidir_bal` over indices 6–11 and 0–5, and of `bidir_decoy_fp` over indices 6–11.
 
+**Result (2026-09-30; scored by the experiments session, 474f6bd; `theory/results/score_exp26.json`, 59 models). BD1 met;
+BD2 and BD3 not met.**
+* **BD1.** Bidirectional bal-acc at d7–12 is 0.712, vs 0.501 for forward-only and 0.625 for re2top3.
+* **BD2.** The look-alike FP rate at d7–12 is 0.417 (by distance: 0.75 at d1, 0.25 at d4, 0.49 at d12).
+* **BD3.** d1–6 is 0.803, vs 0.853 forward.
+* 16/59 models meet BD1 and BD2 together.
+* **Reading.** The zero-shot meet-in-the-middle does extend reach: the intersection finds 0.90 of reachable targets at
+  d7–12. But the backward episodes over-mark, so it pays in precision. In GPT-2 there was no signal (PROTOCOL11, FP
+  0.92).
+* F2 stays a mechanism for models whose sets are precise. It is parked unless a trained backward direction is wanted.
+
 ## 54. F1 — annotated-input reasoning: toy feasibility, and the registered language-model test (2026-09-30 21:22 EDT; registered after Literature's check 3ba2507 and before any language-model run)
 
 **Toy feasibility (exploratory, not registered; disclosed).** `theory/ail.py`; one seed, 800 CPU steps, batch 32;
@@ -3111,6 +3125,17 @@ targets, for each distance.
 **Run (experiments session).** `prosqa/ail_gpt2.py` with `--arm soft|stoch|hint`. 9 runs on the 3 local cards, about
 6 h at ~0.65 s/step, or Vast within budget. Score AG0–AG4 on PROTOCOL8's test sets, excluding the 12 plumbing-check
 problems.
+
+**Amendment 54b-1 (2026-09-30 22:28 EDT, before any revised run; Literature `docs/LIT_F6F7_CHECK_2026-09-30.md`, c1ab04c,
+and Audit).**
+* **Hardening gap per run.** Report the soft-vs-hard gap for every run and every depth band, not only AG0's pooled
+  median. This follows the DARTS discretisation-gap precedent (1806.09055, 1909.09656). τ is annealed rather than
+  hardened abruptly (Soft-to-Hard VQ 1704.00648); the schedule above already does this.
+* **Cue control (from §57; descriptive).** Hardened accuracy on test problems with one added statement "<another
+  person> is a <a parent of the target>".
+  - The answer is unchanged, so a reasoner from the root is unaffected, while ProsQA's proximity cue flips toward the
+    negative.
+  - Report the drop vs plain per arm. A drop > 0.05 means the label channel uses the cue.
 
 ## 55. Kill test: is the anytime fall-back reward-neutral? (external direction 3; pre-registered 2026-09-30 22:22 EDT, before measuring any of the 17 test models)
 
@@ -3237,6 +3262,46 @@ At f = 5, ⌈f/2⌉ = 3, so that column is empty.
 * Run: `python theory/exp28_interchange.py`: 80 models, f = 5 and 11, about 40 s per model on 3 CPU threads →
   `theory/results/exp28_interchange.json`.
 * Score: per family at its primary f, medians over informative models of `G_by_age[f−1]`, `dG` and `AR_closed`.
+
+## 57. Origin of the ProsQA adjacency cue (2026-09-30 22:28 EDT; data statistics, exploratory; asked by the experiments session after its cue test)
+
+**Question.** The cue test (`docs/PROTOCOL8B_STEP1.md`, dd5ce92) showed that all 6 Coconut GPT-2 step-1 models treat an
+option adjacent to an entity named in a "<root> is a X" statement as the wrong one. Where in the training distribution
+does that come from?
+
+**Analysis.** `theory/cue_origin.py` → `theory/results/cue_origin.json`. ProsQA problems name 2–4 persons, and only one
+is the root. For each problem, take the shortest distance from *any* person to the target (dt) and to the negative
+option (dn).
+
+**Result.** The generator hangs the negative option off another person.
+
+| Data | n | neg reachable from another person | dn < dt | tie | neg adjacent | target adjacent | P(neg \| one adjacent) | proximity heuristic |
+|---|---|---|---|---|---|---|---|---|
+| prosqa_train | 17,886 | 1.00 | 0.85 | 0.12 | 0.51 | 0.03 | 0.97 | 0.91 |
+| prosqa_test | 500 | 1.00 | 0.84 | 0.14 | 0.51 | 0.03 | 0.98 | 0.91 |
+| p8_train | 12,000 | 1.00 | 0.83 | 0.15 | 0.10 | 0.01 | 0.96 | 0.90 |
+| p8_test | 4,057 | 1.00 | 0.82 | 0.16 | 0.08 | 0.01 | 0.96 | 0.90 |
+
+* The negative is never reachable from the root, and always reachable from another person.
+* "Adjacent" means one rule below a person-named concept.
+* Proximity heuristic: answer = the option farther from every person statement, ties broken by coin. It is
+  person-agnostic and needs no reasoning from the root. Its expected accuracy is 0.90–0.91, including 0.86–0.96 at each
+  original depth 3–6.
+
+**Reading.**
+* The models learned a true regularity of ProsQA's generator: "the option close to a concept named in a person
+  statement is the distractor". It is valid in 97 % of the problems where exactly one option is adjacent, and it ignores
+  *which* person is named.
+* That explains both cue-test signs. PT puts the target one rule below a person statement, so the target looks like
+  the distractor. PN does the same to the negative, so the models answer "target" even when both options are derivable.
+* **Consequence.** On ProsQA, accuracy up to ~0.9 is available without reasoning from the root. Claims that rest on
+  ProsQA accuracy need a control that keeps the answer fixed while moving the cue.
+* **Proposed standard control.**
+  - Add "<another person> is a <a parent of the target>". The answer is unchanged; a reasoner is unaffected, while the
+    cue flips toward the negative.
+  - Alternatively, report the anti-cue subset (dn ≥ dt, ≈ 16–18 % of test problems).
+  - Added to §54b as amendment 54b-1.
+* Literature is asked whether this ProsQA shortcut is known.
 
 ## 7. Log
 
