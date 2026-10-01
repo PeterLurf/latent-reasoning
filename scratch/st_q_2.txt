@@ -1,0 +1,3 @@
+# THEORY 64 host 2
+theory/runs/st/a5_s3 theory/st_model.py --group A5 --seed 3
+theory/runs/st/s3_s3 theory/st_model.py --group S3 --seed 3
