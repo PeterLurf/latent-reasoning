@@ -77,6 +77,8 @@ heuristic scores 0.91, which explains the Coconut cue.
 accuracy); identity buys no reach. D3 is parked.
 **Interchange (§56):** GT-distilled students' latents are age-invariant (G 0.09); T8 students' and parents' are not.
 Path independence tracks one-loop reach (Spearman −0.87, post hoc).
+**C1 frontier (§67):** a six-code categorical latent with GPT-2 as the transition cell, trained by exact marginalisation, run
+hard, with a 36-transition certificate. Post-hoc snapping failed its premise (in-range collapse).
 **§66:** in GPT-2 state tracking, the written-state chunked loop is 1.000 at N 17–32 vs text CoT 0.14 (fewer FLOPs). But the no-latent
 version is identical, so the scaffold (short contexts plus written state), not the latents, does the work. C1 is not shown. See the range principle.
 **§65 registered:** restart-distillation on S3. Can a near-clean label-free restart teacher give one loop its reach? RD / GT /
@@ -3116,6 +3118,28 @@ Source: `docs/EXTERNAL_IDEAS_2026-09-30.md` (87949a7). Literature's check: `docs
 * Matched-compute accounting rules for TC vs WC.
 * How it relates to scratchpad chunking and PENCIL-style reduction (Literature).
 
+### Addendum (2026-10-01 18:30 EDT): post-hoc latent snapping fails its premise — not registered
+
+* **Plan.** Snap the S3 loop's continuous thoughts to a k-means codebook built from in-range thoughts, to separate drift
+  from range (the draft of a "§67" never registered). Code: `theory/exp32_snap.py`.
+* **Premise check before registration** (in-range N only, so no outcome was measured; s3_s7 outside the set and gated
+  s3_s1, in-range only). Snapping destroys in-range accuracy.
+
+  | s3_s1, accuracy at N = 8 | Value |
+  |---|---|
+  | No snapping | 0.99 |
+  | Pooled 128 codes, every step | 0.27 |
+  | Pooled 256 codes, every step | 0.30 |
+  | Pooled 128 codes, every 4th step | 0.90 |
+  | Per-step 32 codes (age cycle) | 0.20 |
+
+  Purity against the current arrangement is 0.20–0.30, and all 6 states appear as cluster majorities.
+* **Reading.** The toy's thoughts are not a finite-state code. They carry continuous content beyond the 6 states,
+  e.g. the content pointer to random operation positions, which no post-hoc codebook preserves. Drift-vs-range cannot
+  be separated this way.
+* **Consequence.** Discreteness must be built in during training, with a credit-assignment method that works. That is
+  §67 (Design 1).
+
 ## 53. F2 — bidirectional latent reasoning, zero-shot on toy models (pre-registered 2026-09-30 20:45 EDT, after Literature's check 3ba2507 and before any measurement on the test models)
 
 **Design.** `theory/exp26_bidirectional.py`, CPU, inference only, no training.
@@ -4665,6 +4689,91 @@ Gate passed; P2, P3 and P4 met; P5 not met; P1 uninformative. The no-latent cont
     construction.
   - The open problems are now C5 (learning where to cut instead of fixed k) and C1 (latent computation earning its
     place). In GPT-2, latents have not yet been trainable from final answers.
+
+## 67. C1 Design 1: a six-code categorical latent with GPT-2 as the transition cell, trained by exact marginalisation (pre-registered 2026-10-01 18:30 EDT, after Literature's check c2c6957 and Audit's triage; before any implementation or run)
+
+**Source.** `docs/EXTERNAL_IDEAS_C1_2026-10-01.md` (an external agent at the user's request; Audit's triage at the top).
+C1 is the main frontier, by user decision.
+
+**Why this design.** It attacks both diagnosed failure modes.
+* **Credit assignment.** §54, F1-S's two attractors and F4's flat losses all came from straight-through or relaxed
+  discrete training. Here the latent is trained by *exact* forward marginalisation, with no straight-through.
+* **Drift.** §64, and the snapping premise above. Here the carried state is one of 6 codes, so it cannot drift.
+
+**Prior** (`docs/LIT_EXTERNAL_C1_CHECK_2026-10-01.md`).
+* Input–Output HMMs (Bengio & Frasconi, NeurIPS 1994): neural input-conditioned transitions over discrete states,
+  trained by forward likelihood. This is the same recipe; GPT-2 is the transition net.
+* Also State-Regularized RNNs 1901.08817, differentiable FSMs (2022) and neural HMMs 1609.09007.
+* New: GPT-2 as the transition cell, streaming, hard execution at test, the full 36-transition audit, and the causal
+  controls.
+
+**Task.** S3 composition. Each operation is a uniform random element of S3; the answer is the final permutation, a
+6-way label. With uniform independent operations, a stream processor without memory is at chance (1/6).
+
+**Model.**
+* **Cell.** Original GPT-2 small. Input: [code embedding (one of M = 6 learned) + operation symbol + fixed marker].
+  Positions restart identically at every call. A 6-way head gives the next code.
+* **Initial code.** Fixed.
+* **Terminal decoder call.** [code + terminal marker] → 6-way answer.
+* **Carried state.** Only the code embedding crosses calls. Logits, activations and KV cache are discarded.
+
+**Training (final answers only).**
+* For each update, GPT-2 is evaluated on all 36 (code, operation) pairs, giving T_a(i, j), and on the 6 codes for the
+  decoder.
+* Then α_t = α_{t−1} T_{a_t}, and the loss is −log Σ_i α_N(i) D(i, y).
+* Curriculum: complete examples of lengths 1, 2, 4, 8, on a fixed schedule.
+
+**Inference.** Real GPT-2 calls; the argmax code is kept after each operation. There is no probability feedback and no
+table executor.
+
+**Arms (5 seeds each).** A throughput pilot fixes updates, batch, precision and optimizer, logged; at most 3 GPU-h per
+arm per seed on a 3090-class card; timeouts count as failures.
+* **D1, the GPT-2 cell.**
+* **TAB, a tiny control.** A learned 6×6×6 table (or a small MLP) under the same exact marginalisation.
+* **RESET.** An identical scaffold trained with the carried code reset every round.
+* **FP, full-prompt GPT-2, no latent.** The same operation strings in one context, final answer, example-matched and
+  compute-matched.
+
+**Tests.**
+* Depths N = 8, 16, 32, 64, 128.
+* 2,000 examples per depth for the full panel, or 10,000 if the pilot allows (frozen before training). The nulls always
+  use 10,000.
+* **Nulls on the trained D1.** T = 0, 1, 2 updates (latent update calls counted literally); first-op-only,
+  last-op-only and two-op execution. Each upper 95 % bound ≤ chance + 0.02 = 0.1867.
+* **Mechanism.**
+  - Donor-code substitution at an interior step: the answer must be the donor's decoded state composed with the
+    recipient's remaining suffix, ≥ 99 %.
+  - Irrelevant substitution (a code with the same decoded state): ≤ 1 % of answers change.
+  - Same-semantic donors from different depths: ≥ 99 % continuation agreement.
+* **Audit.**
+  - Decode the 6 hard codes (decoder argmax); require a bijection to S3.
+  - Check all 36 hard transitions against group composition.
+  - Zero errors plus correct initialisation and readout certify correctness at any length, by induction. This is
+    conditional on stable argmaxes; margins are reported.
+
+**Predictions.**
+* **C1-1 (main pass).** D1 reaches ≥ 99 % hard-execution accuracy at every depth 8–128 in ≥ 4/5 seeds.
+* **C1-2 (certificate).** The 36-transition audit is error-free in every seed that passes C1-1.
+* **C1-3 (nulls).** All nulls and RESET are ≤ 0.1867 (upper bound) at the deep test depths.
+* **C1-4 (mechanism).** The donor, irrelevant and same-semantic criteria are met.
+* **C1-5 (the stronger claim).** FP trails D1 by ≥ 20 points at each extrapolation depth N ≥ 16, under both matchings.
+  Otherwise only "constrained latent-execution success" is claimed.
+* **Descriptive.** TAB vs D1. My expectation is that TAB also succeeds, so the result shows compositional latent
+  execution, not a benefit from pretraining.
+* **Likeliest failure (external).** A collapsed or stochastic solution with good marginal likelihood but bad greedy
+  rollouts.
+
+**Readings.**
+* **C1-1 to C1-4 met.** A pretrained LM's latent state does the work (C1), is trained from final answers only (C4),
+  runs at any length (C2, certified), and its codes are readable by the audit (C7 for the latent). Scope: streaming
+  interface, small state space.
+* **C1-5 met as well.** The latent machine beats the full-prompt LM.
+* **C1-1 failed with a good likelihood.** Hardening is the bottleneck, not credit assignment.
+
+**Order (Audit and external).** M = 12 codes (does spare capacity re-encode a counter?), then A5 (60 states, where the
+toys deadlocked), then Design 2 (Boolean-tree registers; Ito 2608.31067 is nearest).
+
+**Run (experiments session).** The pilot, then one wave: D1, TAB, RESET and FP × 5 seeds.
 
 ## 7. Log
 
