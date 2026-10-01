@@ -4601,6 +4601,17 @@ accuracy at N = 5–8 is ≤ 0.50 (full arrangement). Otherwise they are descrip
 **Implementation and run (experiments session).** GPT-2 code reuse: prosqa/gpt2c.py (Coconut rollout). One parallel
 Vast wave after a smoke and a throughput pilot (the pilot may fix only steps and batch, logged).
 
+**Amendment 66-1 (2026-10-01 15:12 EDT, before any run; Audit's review of the bench task).**
+* **Test seed.** The bench boxes test set uses generator seed 6600, disjoint from every training generator seed (the
+  implementation asserts this).
+* **In-range overlap.** In-range N (≤ 8) necessarily overlaps the training problem space: 4 boxes give few distinct
+  short problems. In-range accuracy is therefore not a held-out generalisation measure. All C2 and C3 verdicts (P1–P3,
+  P5) use extrapolation N > 8, which is clean.
+* **Chance per question type.** Full arrangement 1/24; "which box holds X" 1/4. Reported per type next to the
+  baselines.
+* **Scoring.** Generated answers are normalised before exact match (the letters, or the box digit, extracted), so
+  formatting such as "A,C,B,D" or extra spaces cannot change a score. Implemented in the bench scorer, with a unit test.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
