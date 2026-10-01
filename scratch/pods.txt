@@ -295,3 +295,5 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53732203 vast | f1sb_R DESTROYED_VERIFIED 2026-10-01 15:15 after verified fetch (f1sb runs: f1s_r3b f1s_r3c f1s_r3a)
 53743423 vast offer 39105514 created 2026-10-01 15:22: label boxes-P0, queue scratch/boxes_q_P0.txt (logged at create by vdeploy_toy.sh)
 53743427 vast offer 30580303 created 2026-10-01 15:22: label boxes-P1, queue scratch/boxes_q_P1.txt (logged at create by vdeploy_toy.sh)
+53743427 vast | boxes_P1 DESTROYED_VERIFIED 2026-10-01 15:35 after verified fetch (boxes: pil_tc2 pil_wc0_4 pil_wc4; model.pt kept for *_s1 only)
+53743423 vast | boxes_P0 DESTROYED_VERIFIED 2026-10-01 15:36 after verified fetch (boxes: pil_nc pil_tc pil_cl; model.pt kept for *_s1 only)

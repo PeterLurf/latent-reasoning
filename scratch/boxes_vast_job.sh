@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# THEORY §66 on a Vast host: bash scratch/boxes_vast_job.sh <tag> <device> <queue file> [parallel, default 3].
+# THEORY §66 on a Vast host: bash scratch/boxes_vast_job.sh <tag> <device> <queue file> [parallel, default 4].
 # Lines "<run> <arm> <k> <seed> <steps> <bs> <mode>"; mode pilot = train only; full = train (+ edit eval for WC) + bench boxes.
 # Writes boxes/runs/<run>/host.txt. A run is done only if eval_train.json exists (and, for full, the bench log says WROTE).
 cd "$(dirname "$0")/.."
-tag=$1; dev=$2; q=$3; P=${4:-3}; log=logs/queue_$tag.out; mkdir -p logs boxes/runs prosqa/ckpt bench/results
+tag=$1; dev=$2; q=$3; P=${4:-4}; log=logs/queue_$tag.out; mkdir -p logs boxes/runs prosqa/ckpt bench/results
 pip install -q tiktoken > logs/pip_boxes.log 2>&1
 W=prosqa/ckpt/gpt2_pretrained.bin
 [ -s $W ] || curl -sL -o $W https://huggingface.co/openai-community/gpt2/resolve/main/pytorch_model.bin
