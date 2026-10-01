@@ -3698,6 +3698,19 @@ falsifiers, the Phase B gate and amendments 60-1/60-2.
 composer passes", "sweep not operator", "accurate but not semantic") and the boundary-memory line stops at Phase A.
 There is no further revision.
 
+**Amendment 60b-1 (2026-10-01 02:26 EDT, before any panel; Audit).**
+* **Order.**
+  - First, the §60 panel as registered (with note 60-3): 2 arms × 4 seeds, settings from the development pilot that has
+    run. It gives the registered verdict; the development pilot cannot stand in for it.
+  - Then the §60b panel.
+* **The revision's two suspected causes, both named before any panel data.**
+  - (a) The identity map as a strong local optimum while 37 % of labels are trivial positives. Change: (1) + (2), one
+    coupled change. Building extensivity in makes trivial entries constant, so they leave the labels.
+  - (b) Terminal-only credit assignment through multi-merge trees. Change: (3), the size curriculum.
+  - Both are in this single revision so that there is no second one.
+* **Reference line.** Both panels report the identity-map baseline per split, computed exactly from that split's labels
+  (§60: ≈ 0.87; §60b: 0.50 on non-trivial entries). A pass is judged against it as well as against Gate A's 0.95.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
