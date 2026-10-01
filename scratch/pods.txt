@@ -163,3 +163,4 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53638792 vast offer 53246719 created 2026-10-01 00:43: label f6-A, queue scratch/f6_q_A.txt (logged at create by vdeploy_toy.sh)
 53638795 vast offer 29430929 created 2026-10-01 00:43: label f6-F, queue scratch/f6_q_F.txt (logged at create by vdeploy_toy.sh)
 53638793 vast offer 45415097 created 2026-10-01 00:43: label f6-C, queue scratch/f6_q_C.txt (logged at create by vdeploy_toy.sh)
+53539933 vast | p8c_at_s4: host offline ~22:4x-01:00 (container reboot); training had finished (checkpoint_48 03:32 UTC); evaluation interrupted, re-run on the host from checkpoint_48 at 2026-10-01 01:02 (interrupted-eval re-run; log saved as prosqa.out.interrupted_eval)

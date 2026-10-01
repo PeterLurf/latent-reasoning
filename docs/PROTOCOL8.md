@@ -137,3 +137,9 @@ the root. A high D710 could come from this cue. The primary rules P8-1 to P8-5 a
 
 Scorer: `prosqa/score_p8_na.py`, written and committed before any NA evaluation runs. The same caveat applies
 retroactively to Phase 0, PROTOCOL8b and PROTOCOL10/11 (notes added there).
+
+**Note (2026-10-01 01:02 EDT; interrupted-evaluation re-run, no rule change).** at_s4's host (Vast 53539933) went offline during the
+post-training evaluation. Its container rebooted; training had completed, with checkpoint_48 written 2026-10-01 03:32 UTC.
+`res/` was empty, so no evaluation output existed. The unchanged pod script was re-run on the same host from
+checkpoint_48 (evaluation only, since training is skipped when the final checkpoint exists). The interrupted log is kept
+as `prosqa.out.interrupted_eval`. Audit saw two partial budget-sweep lines from it; neither is used.
