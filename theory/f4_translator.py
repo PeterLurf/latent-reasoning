@@ -120,11 +120,15 @@ def train(a):
         # edit: add one node u unreachable from START and not in the hard set
         dist = g.dist(); s_h = (s > 0.5).cpu().numpy()
         cand = (dist == 99) & ~s_h
-        u = np.array([rng.choice(np.flatnonzero(row)) for row in cand])
+        ok = cand.any(1)                                    # rows whose unreachable nodes are all in the set: no edit
+        unr = dist == 99
+        u = np.array([rng.choice(np.flatnonzero(c if o else r)) for c, r, o in zip(cand, unr, ok)])
         ru = torch.as_tensor(reach_from(g.src, g.dst, u), device=dev)
         y_edit = torch.maximum(y0, torch.gather(ru.float(), 1, Q))
         s_e = s.clone(); s_e[torch.arange(len(u)), torch.as_tensor(u, device=dev)] = 1.0
-        l_ed = F.binary_cross_entropy_with_logits(run_patched(m, src, dst, start, Kp, Q, i, tr.encode(s_e, i)), y_edit)
+        w_e = torch.as_tensor(ok, device=dev).float()[:, None].expand_as(y_edit)
+        l_ed = (F.binary_cross_entropy_with_logits(run_patched(m, src, dst, start, Kp, Q, i, tr.encode(s_e, i)), y_edit,
+                                                   reduction="none") * w_e).sum() / w_e.sum().clamp_min(1)
         loss = l_rt + a.w_edit * l_ed
         opt.zero_grad(); loss.backward(); opt.step()
         if step % 100 == 0 or step == a.steps:
@@ -194,13 +198,15 @@ def evaluate(m, K, trD, trE, dev, steps=(2, 3)):
         # K' - i steps should turn on among the 24 probe queries, and no other probe answer should change
         rng = np.random.default_rng(100 + i)
         cand = (dist == 99) & ~sn
-        ua = np.array([rng.choice(np.flatnonzero(row)) for row in cand])
+        okf = cand.any(1)                                                      # graphs with an addable node
+        ua = np.array([rng.choice(np.flatnonzero(c if o else (dist[k] == 99))) for k, (c, o) in enumerate(zip(cand, okf))])
         desc = reach_from(g.src, g.dst, ua)
-        dq = desc[bi[:, None], np.concatenate([reach, decoy], 1)]               # (n, 24) predicted new positives
+        dq = desc[bi[:, None], np.concatenate([reach, decoy], 1)] & okf[:, None]  # (n, 24) predicted new positives
         s_a = s.clone(); s_a[torch.arange(n), T(ua).long()] = 1.0
         ya = (run_patched(m, src, dst, start, KMAX, Q, i, trE.encode(s_a, i)) > 0).cpu().numpy()
         r["flip_on"] = float(ya[dq].mean()) if dq.any() else float("nan")
-        r["flip_collateral"] = float((ya != y0n)[~dq].mean())                   # any change outside the predicted set
+        r["flip_collateral"] = float((ya != y0n)[~dq & okf[:, None]].mean()) if okf.any() else float("nan")
+        r["flip_eligible"] = float(okf.mean())
         out[f"i{i}"] = r
     return out
 

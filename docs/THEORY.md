@@ -4169,6 +4169,16 @@ family and arm.**
 * Then 40 swaps: `python theory/f4_translator.py --swap <…_t1> <…_t2> --device cuda:0`.
 * A 100-step GPU smoke first, to time it.
 
+**Implementation note 63-1 (2026-10-01 10:28 EDT, before any run; the experiments session's GPU smoke crashed at step
+1).**
+* **Cause.** When the decoder marks every node unreachable from START, which happens early in training, the edit has
+  no candidate node.
+* **Fix.**
+  - In training, such rows are masked out of the edit loss.
+  - In evaluation, such graphs are excluded from the claim-flip audit (`flip_eligible` reports the share).
+* Unit-checked on a forced empty case, with a CPU smoke on runs/p30_s100 (outside the set). No metric definition
+  changes.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
