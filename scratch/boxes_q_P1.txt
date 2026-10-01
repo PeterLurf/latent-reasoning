@@ -1,0 +1,4 @@
+# 66 throughput pilot
+pil_tc2 tc2 4 99 1000 32 pilot
+pil_wc4 wc 4 99 1000 32 pilot
+pil_wc0_4 wc0 4 99 1000 32 pilot
