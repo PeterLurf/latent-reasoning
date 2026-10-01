@@ -183,3 +183,5 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53638790 vast | f6_B DESTROYED_VERIFIED 2026-10-01 04:19 after verified fetch (5 F6 runs)
 53656988 vast | bmb_S3 DESTROYED_VERIFIED 2026-10-01 04:27 after verified fetch (bm runs: oc_b_s3 no_b_s3)
 53656986 vast | bmb_S4 DESTROYED_VERIFIED 2026-10-01 04:27 after verified fetch (bm runs: oc_b_s4 no_b_s4)
+53638791 vast | f6_D DESTROYED_VERIFIED 2026-10-01 04:50 after verified fetch (4 F6 runs)
+53667013 vast offer 51428266 created 2026-10-01 04:53: label ail-T1, queue scratch/ail_q_T1.txt (logged at create by vdeploy_toy.sh)
