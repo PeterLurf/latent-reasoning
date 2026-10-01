@@ -282,10 +282,12 @@ def infer(m, arm, k, batch, dev, edit=None):
         ans = greedy(m, hl, past, nans, meter, allowed)
         texts = [" " + " ".join(ENC.decode([int(t)]).strip() for t in row) for row in ans]
         c = meter.as_dict(); c["latent_passes"] = getattr(meter, "lat", 0)
-        return texts, c
+        valid = [{"valid_final": float(len(set(t.split())) == 4)} if qt == "all" else {} for t in texts]
+        return texts, c, valid
     # WC / WC0: chunked solver
     arrs = [p["start"] for p in batch]
     chunks = [list(range(s, min(s + k, N))) for s in range(0, N, k)]
+    nvalid = [0] * B
     for ci, ch in enumerate(chunks):
         sub = [dict(p, start=a, ops=[p["ops"][t] for t in ch]) for p, a in zip(batch, arrs)]
         K = len(ch) if arm == "wc" else 0
@@ -295,10 +297,13 @@ def infer(m, arm, k, batch, dev, edit=None):
             hl, past = latents(m, hl, past, K, meter)
             mid = tensor([tok(" done. a:")] * B, dev); h, past = run_prefix(m, mid, past, meter, True); hl = h[:, -1]
         out = greedy(m, hl, past, 4, meter, LET_IDS)
-        arrs = [dec_arr(r) for r in out]
+        arrs = [dec_arr(r) for r in out]                       # vocabulary-only decode: NOT forced to a permutation
+        nvalid = [v + (len(set(a)) == 4) for v, a in zip(nvalid, arrs)]
         if edit is not None and ci == edit["chunk"]:
             arrs = list(edit["arr"])
-    texts = [answer_text(a if len(set(a)) == 4 else "ABCD", qt, p["target"]) if qt == "where" else " " + " ".join(a)
+    # "where" is read off the last written arrangement; a target missing from it (invalid state) answers "0" (wrong)
+    texts = [(" " + str(a.index(p["target"]) + 1) if p["target"] in a else " 0") if qt == "where" else " " + " ".join(a)
              for a, p in zip(arrs, batch)]
     c = meter.as_dict(); c["latent_passes"] = getattr(meter, "lat", 0)
-    return texts, c
+    valid = [{"valid_final": float(len(set(a)) == 4), "chunk_valid_share": v / len(chunks)} for a, v in zip(arrs, nvalid)]
+    return texts, c, valid
