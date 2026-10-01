@@ -2996,7 +2996,7 @@ Source: `docs/EXTERNAL_IDEAS_2026-09-30.md` (87949a7). Literature's check: `docs
 
 **Order.** §55 and §56 first: CPU, existing models, handed to Experiments. Then F6 (local GPU), then F7. D2 waits.
 
-### Addendum (2026-10-01 06:31 EDT): after §54b — learning F1's local rule without step labels
+### Addendum (2026-10-01 06:28 EDT, commit b054c4e): after §54b — learning F1's local rule without step labels
 
 §54b showed that GPT-2's label channel extrapolates perfectly once its one-hop rule is learned. Deep final answers alone
 (ProsQA has no question shallower than 3 hops) do not teach that rule.
