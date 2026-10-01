@@ -16,12 +16,17 @@ Published:
 
 | System | Acc | Source | Same test? |
 |---|---|---|---|
-| Coconut, GPT-2 | 97.0 † | 2412.06769 Table 1 | yes |
-| Text CoT, GPT-2 | 77.5 † | 2412.06769 Table 1 | yes |
-| No CoT, GPT-2 | 76.7 † | 2412.06769 Table 1 | yes |
-| iCoT, GPT-2 | 98.2 † | 2412.06769 Table 1 | yes |
-| Coconut, GPT-2 (public checkpoint card) | 97.0 † | HF bmarti44/coconut-curriculum-checkpoints | yes |
-| Text CoT, GPT-2 (public checkpoint card) | 83.0 † | HF bmarti44/coconut-curriculum-checkpoints | yes |
+| Coconut, GPT-2 | 97.0 | 2412.06769 Table 1 | yes |
+| Text CoT, GPT-2 | 77.5 | 2412.06769 Table 1 | yes |
+| No CoT, GPT-2 | 76.7 | 2412.06769 Table 1 | yes |
+| iCoT, GPT-2 | 98.2 | 2412.06769 Table 1 | yes |
+| Pause Token, GPT-2 | 75.9 | 2412.06769 Table 1 | yes |
+| Coconut w/o curriculum, GPT-2 | 76.1 | 2412.06769 Table 1 | yes |
+| Coconut pause-as-thought, GPT-2 | 96.6 | 2412.06769 Table 1 | yes |
+| Coconut w/o thought, GPT-2 | 95.5 | 2412.06769 Table 1 | yes |
+| Coconut, GPT-2 (public checkpoint card) | 97.0 | HF bmarti44/coconut-curriculum-checkpoints (model card, not peer-reviewed) | yes |
+| Text CoT, GPT-2 (public checkpoint card) | 83.0 | HF bmarti44/coconut-curriculum-checkpoints (model card, not peer-reviewed) | yes |
+| Pause curriculum, GPT-2 (public checkpoint card) | 96.6 | HF bmarti44/coconut-curriculum-checkpoints (model card, not peer-reviewed) | yes |
 
 ## prosqa_na
 
@@ -41,7 +46,8 @@ Published:
 
 | System | Acc | Source | Same test? |
 |---|---|---|---|
-| Coconut, GPT-2, 7 / 8 hops (card; different generator) | 66.0 † | HF bmarti44/coconut-curriculum-checkpoints | no |
+| Coconut, GPT-2, 7 hops (card; different generator) | 66.0 | HF bmarti44/coconut-curriculum-checkpoints (model card, not peer-reviewed) | no |
+| Coconut, GPT-2, 8 hops (card; different generator) | 67.5 | HF bmarti44/coconut-curriculum-checkpoints (model card, not peer-reviewed) | no |
 
 ## prosqa_deep_na
 
@@ -61,10 +67,14 @@ Published:
 
 | System | Acc | Source | Same test? |
 |---|---|---|---|
-| Coconut, GPT-2 | 34.1 † | 2412.06769 Table 1 | yes |
-| Text CoT, GPT-2 | 42.9 † | 2412.06769 Table 1 | yes |
-| No CoT, GPT-2 | 16.5 † | 2412.06769 Table 1 | yes |
-| CODI, GPT-2 | — † | 2502.21074 | yes |
+| Coconut, GPT-2 | 34.1 | 2412.06769 Table 1 | yes |
+| Text CoT, GPT-2 | 42.9 | 2412.06769 Table 1 | yes |
+| No CoT, GPT-2 | 16.5 | 2412.06769 Table 1 | yes |
+| iCoT, GPT-2 (as cited in Coconut) | 30.0 | 2412.06769 Table 1 | yes |
+| Pause Token, GPT-2 | 16.4 | 2412.06769 Table 1 | yes |
+| Coconut pause-as-thought, GPT-2 | 24.1 | 2412.06769 Table 1 | yes |
+| CODI, GPT-2 | 43.7 | 2502.21074 (text, Table 2) | yes |
+| Stepwise internalisation (ICoT-SI), GPT-2 Small | 30.0 | 2405.14838 Table 3 | yes |
 
 ## mult4x4
 
@@ -74,7 +84,11 @@ Published:
 
 | System | Acc | Source | Same test? |
 |---|---|---|---|
-| Implicit CoT, GPT-2 | — † | 2311.01460 | yes |
+| Implicit CoT (ICoT-KD), GPT-2 Small | 97.0 | 2311.01460 Table 3 | yes |
+| Implicit CoT (ICoT-KD), GPT-2 Medium | 96.0 | 2311.01460 Table 3 | yes |
+| Stepwise internalisation (ICoT-SI), GPT-2 Small | 100.0 | 2405.14838 Table 2 | yes |
+| No CoT, GPT-2 Small | 29.0 | 2405.14838 Table 2 | yes |
+| Explicit CoT, GPT-2 Small | 100.0 | 2405.14838 Table 2 | yes |
 
 ## mult5x5
 
@@ -84,6 +98,9 @@ Published:
 
 | System | Acc | Source | Same test? |
 |---|---|---|---|
-| Implicit CoT, GPT-2 | — † | 2311.01460 | yes |
-| Stepwise internalisation, GPT-2 | — † | 2405.14838 | yes |
+| Implicit CoT (ICoT-KD), GPT-2 Small | 10.0 | 2311.01460 Table 3 | yes |
+| Implicit CoT (ICoT-KD), GPT-2 Medium | 96.0 | 2311.01460 Table 3 | yes |
+| Stepwise internalisation (ICoT-SI), GPT-2 Small | 95.0 | 2405.14838 Table 2 | yes |
+| No CoT, GPT-2 Small | 1.0 | 2405.14838 Table 2 | yes |
+| Explicit CoT, GPT-2 Small | 100.0 | 2405.14838 Table 2 | yes |
 
