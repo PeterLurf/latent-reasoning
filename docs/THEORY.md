@@ -2721,6 +2721,31 @@ it is a probe that is used causally. It is not a claim about the silent steps (�
     segment (as PROTOCOL10 does), or accept a node only if it is reached from a verified chain of checkpoints. Then
     re-learn the halt.
 
+## 51. Fixing the aggregator: single-target answers from the halting segment, with a halt learned from final-answer reward (pre-registered 2026-09-30 20:34 EDT, before measuring the 10 test models)
+
+**Provenance note.** A first commit (639fd62) added the code but not this text: the f-string that wrote it failed. A
+run started from that commit was stopped within a minute, before it wrote any result (no results file existed). The
+runs scored below start after this text is committed.
+
+**Design.** `theory/exp25_target_halt.py`, CPU, cached trajectories; the toy analogue of PROTOCOL10.
+* **Target.** One per graph: the reachable node at distance d ~ U{1..L}, or its look-alike (50/50).
+* **Answer rules at a stop k.**
+  - *last*: segment k's answer alone. This does not accumulate.
+  - *max*: the max over segments 1..k, §50's rule.
+* **Stop head.** Reads the thought and the current target logit. It is learned from final-answer reward, exact
+  expected E[correct − 0.01·stop], on training graphs (seeds 31–33). Evaluation is held out (seeds 41–43, 12/18/24
+  hops).
+
+**Disclosure.** Smoke model outside the set, pclr1_s109, 64 graphs. Correctness by k:
+* last rule: 0.69 → 0.52, falling, because later segments restart past shallow targets;
+* max rule: 0.69 → 0.80.
+
+**Predictions.**
+* **TH1 (depth tracking under the last rule).** For reachable targets, the median stop segment is non-decreasing across
+  distance bins 1–6, 7–12, 13–18, 19–24, and strictly larger at 19–24 than at 1–6, in ≥ 7/10 models.
+* **TH2 (no accuracy cost).** Held-out accuracy (last rule + learned halt) ≥ (max rule + learned halt) − 0.02 in
+  ≥ 7/10 models.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
