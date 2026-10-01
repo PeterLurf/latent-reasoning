@@ -1,0 +1,5 @@
+# bench batch (2) host 7
+prosqa_deep_p8c_cot_s3 prosqa_deep cot:prosqa/ckpt/p8c_cot_s3_checkpoint_30 --per_depth 150
+prosqa_deep_na_p8c_cot_s3 prosqa_deep_na cot:prosqa/ckpt/p8c_cot_s3_checkpoint_30 --per_depth 150
+prosqa_deep_p8c_cot_s4 prosqa_deep cot:prosqa/ckpt/p8c_cot_s4_checkpoint_30 --per_depth 150
+prosqa_deep_na_p8c_cot_s4 prosqa_deep_na cot:prosqa/ckpt/p8c_cot_s4_checkpoint_30 --per_depth 150

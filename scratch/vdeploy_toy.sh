@@ -9,6 +9,7 @@ O=$1; LBL=$2; Q=$3; TAG=$4; W=${5:-scratch/queue_worker2.sh}
 EXTRA=""; [ "$W" = scratch/queue_worker3.sh ] && EXTRA="scratch/queue_worker3.sh scratch/p9_frozen"
 [ "$W" = scratch/queue_worker_t12.sh ] && EXTRA="scratch/queue_worker_t12.sh scratch/t12_frozen"
 [ "$W" = scratch/queue_worker_f6.sh ] && EXTRA="scratch/queue_worker_f6.sh scratch/f6_frozen"
+[ "$W" = scratch/bench_vast_job.sh ] && EXTRA="scratch/bench_vast_job.sh bench/__init__.py bench/run.py bench/tasks.py bench/models.py bench/report.py bench/literature.json bench/data prosqa/gpt2c.py prosqa/analyze.py prosqa/eval_p8.py prosqa/ail_gpt2.py prosqa/p8data/p8_test.json prosqa/p8data/p8_na_test.json"
 [ "$W" = scratch/tjob_vast.sh ] && EXTRA="scratch/tjob_vast.sh $(echo theory/*.py)"
 [ "$W" = scratch/f4_vast_job.sh ] && EXTRA="scratch/f4_vast_job.sh $(echo theory/*.py)"
 [ "$W" = scratch/p8na_vast_job.sh ] && EXTRA="scratch/p8na_vast_job.sh prosqa/eval_na_p8.py prosqa/eval_p8.py prosqa/analyze.py prosqa/gpt2c.py prosqa/p8data/p8_test.json prosqa/p8data/p8_na_test.json"

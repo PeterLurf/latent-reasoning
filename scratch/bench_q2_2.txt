@@ -1,0 +1,9 @@
+# bench batch (2) host 2
+prosqa_deep_p8c_at_s2_K10 prosqa_deep coconut:prosqa/ckpt/p8c_at_s2_checkpoint_48?K=10&mask=1 --per_depth 150
+prosqa_deep_p8c_at_s2_K16 prosqa_deep coconut:prosqa/ckpt/p8c_at_s2_checkpoint_48?K=16&mask=1 --per_depth 150
+prosqa_deep_na_p8c_at_s2_K10 prosqa_deep_na coconut:prosqa/ckpt/p8c_at_s2_checkpoint_48?K=10&mask=1 --per_depth 150
+prosqa_deep_na_p8c_at_s2_K16 prosqa_deep_na coconut:prosqa/ckpt/p8c_at_s2_checkpoint_48?K=16&mask=1 --per_depth 150
+prosqa_deep_p8c_rt_s2_K10 prosqa_deep coconut:prosqa/ckpt/p8c_rt_s2_checkpoint_48?K=10&mask=1 --per_depth 150
+prosqa_deep_p8c_rt_s2_K16 prosqa_deep coconut:prosqa/ckpt/p8c_rt_s2_checkpoint_48?K=16&mask=1 --per_depth 150
+prosqa_deep_na_p8c_rt_s2_K10 prosqa_deep_na coconut:prosqa/ckpt/p8c_rt_s2_checkpoint_48?K=10&mask=1 --per_depth 150
+prosqa_deep_na_p8c_rt_s2_K16 prosqa_deep_na coconut:prosqa/ckpt/p8c_rt_s2_checkpoint_48?K=16&mask=1 --per_depth 150
