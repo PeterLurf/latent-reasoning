@@ -192,3 +192,65 @@ def audit(model):
 def wilson_upper(k, n, z=1.96):
     p = k / n; d = 1 + z * z / n
     return float((p + z * z / (2 * n) + z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n))) / d)
+
+
+# ---------------------------------------------------------------- amendment 67-1 cells (same objective, same interface)
+class _Tables:
+    def tables(self):
+        dev = next(self.parameters()).device
+        c = torch.arange(M, device=dev).repeat(6); a = torch.arange(6, device=dev).repeat_interleave(M)
+        logT = self.step_logits(c, a).log_softmax(-1).view(6, M, M)
+        logD = self.dec_logits(torch.arange(M, device=dev)).log_softmax(-1)
+        return logT, logD
+
+
+class MLPCell(_Tables, nn.Module):
+    """one-hot(code) + one-hot(op) -> 256 -> 6 next-code logits; decoder: one-hot(code) -> 6."""
+    def __init__(self):
+        super().__init__()
+        self.f = nn.Sequential(nn.Linear(M + 6, 256), nn.ReLU(), nn.Linear(256, M)); self.d = nn.Linear(M, 6)
+
+    def step_logits(self, codes, ops):
+        return self.f(torch.cat([F.one_hot(codes, M).float(), F.one_hot(ops, 6).float()], -1))
+
+    def dec_logits(self, codes):
+        return self.d(F.one_hot(codes, M).float())
+
+
+class TinyTF(_Tables, nn.Module):
+    """2-layer d=256 causal transformer from scratch, d1 input format: [code emb, op-symbol emb, marker emb] (positions
+    0-2) -> next-code head; [code emb, terminal-marker emb] -> answer head. LayerNorm before the heads."""
+    def __init__(self, d=256, L=2, H=4):
+        super().__init__()
+        self.code = nn.Parameter(0.5 * torch.randn(M, d)); self.op = nn.Embedding(6, d); self.mark = nn.Embedding(2, d)
+        self.pos = nn.Parameter(0.02 * torch.randn(3, d))
+        layer = nn.TransformerEncoderLayer(d, H, 4 * d, dropout=0.0, batch_first=True, norm_first=True)
+        self.tf = nn.TransformerEncoder(layer, L, enable_nested_tensor=False); self.ln = nn.LayerNorm(d)
+        self.next_head = nn.Linear(d, M); self.ans_head = nn.Linear(d, 6)
+
+    def _run(self, x):
+        T = x.shape[1]
+        mask = torch.full((T, T), float("-inf"), device=x.device).triu(1)
+        return self.ln(self.tf(x + self.pos[:T], mask=mask, is_causal=True)[:, -1])
+
+    def step_logits(self, codes, ops):
+        x = torch.stack([self.code[codes], self.op(ops), self.mark(torch.zeros_like(ops))], 1)
+        return self.next_head(self._run(x))
+
+    def dec_logits(self, codes):
+        x = torch.stack([self.code[codes], self.mark(torch.ones_like(codes))], 1)
+        return self.ans_head(self._run(x))
+
+
+def gpt2_random_sd(seed=0, L=12, D=768, V=50257, P=1024):
+    """GPT-2 small architecture with GPT-2's own init (normal 0.02; residual projections 0.02 / sqrt(2L))."""
+    g = torch.Generator().manual_seed(seed); n = lambda *s, std=0.02: torch.randn(*s, generator=g) * std
+    sd = {"wte.weight": n(V, D), "wpe.weight": n(P, D, std=0.01), "ln_f.weight": torch.ones(D), "ln_f.bias": torch.zeros(D)}
+    for i in range(L):
+        p = f"h.{i}."
+        sd.update({p + "ln_1.weight": torch.ones(D), p + "ln_1.bias": torch.zeros(D), p + "ln_2.weight": torch.ones(D),
+                   p + "ln_2.bias": torch.zeros(D), p + "attn.c_attn.weight": n(D, 3 * D), p + "attn.c_attn.bias": torch.zeros(3 * D),
+                   p + "attn.c_proj.weight": n(D, D, std=0.02 / math.sqrt(2 * L)), p + "attn.c_proj.bias": torch.zeros(D),
+                   p + "mlp.c_fc.weight": n(D, 4 * D), p + "mlp.c_fc.bias": torch.zeros(4 * D),
+                   p + "mlp.c_proj.weight": n(4 * D, D, std=0.02 / math.sqrt(2 * L)), p + "mlp.c_proj.bias": torch.zeros(D)})
+    return sd

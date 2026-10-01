@@ -25,7 +25,7 @@ import torch
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from boxes.core import GPT2KV  # noqa: E402
-from c1.core import COMP, FP, Cell, Tab, audit, hard_rollout, marginal_loss, sample, truth, wilson_upper  # noqa: E402
+from c1.core import COMP, FP, Cell, MLPCell, Tab, TinyTF, gpt2_random_sd, audit, hard_rollout, marginal_loss, sample, truth, wilson_upper  # noqa: E402
 
 DEPTHS = (8, 16, 32, 64, 128)
 TEST_SEED = 6700
@@ -38,9 +38,15 @@ def gpt2(dev):
     return GPT2KV(sd).to(dev)
 
 
-def build(arm, dev):
+def build(arm, dev, seed=0):
     if arm == "tab":
         return Tab().to(dev)
+    if arm == "mlp":                                                  # amendment 67-1
+        return MLPCell().to(dev)
+    if arm == "tf_small":
+        return TinyTF().to(dev)
+    if arm == "gpt2_rand":
+        return Cell(GPT2KV(gpt2_random_sd(seed))).to(dev)
     if arm in ("fp_ex", "fp_cmp"):
         return FP(gpt2("cpu")).to(dev)
     return Cell(gpt2("cpu")).to(dev)
@@ -62,7 +68,7 @@ def evaluate(model, arm, dev, n_test, n_null, out):
         for i in range(0, n_test, ch):
             pred.append(predict(model, arm, ops_t[i:i + ch]).cpu())
         res["acc"][str(N)] = float((torch.cat(pred).numpy() == y).mean())
-    if arm in ("d1", "tab", "reset"):
+    if not arm.startswith("fp"):
         res["audit"] = audit(model)
     if arm == "d1":
         res["nulls"] = nulls(model, dev, n_null); res["mechanism"] = mechanism(model, dev)
@@ -131,7 +137,7 @@ def mechanism(model, dev, n=2000, N=32, k=16):
 def train(a):
     dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
     assert a.seed < TEST_SEED
-    model = build(a.arm, dev)
+    model = build(a.arm, dev, a.seed)
     if a.head_init == "zero" and hasattr(model, "zero_heads"):
         model.zero_heads()
     if a.head_init == "small" and hasattr(model, "small_heads"):
@@ -172,7 +178,7 @@ def train(a):
                     vo, vy = sample(vr, 500, N)
                     with torch.no_grad():
                         rec[f"acc{N}"] = float((predict(model, a.arm, torch.tensor(vo, device=dev)).cpu().numpy() == vy).mean())
-                if a.arm in ("d1", "tab", "reset"):
+                if not a.arm.startswith("fp"):
                     au = audit(model); rec["certified"] = au["certified"]; rec["trans_err"] = au["transition_errors"]
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
             if time.time() - t0 > a.max_hours * 3600:
@@ -187,7 +193,7 @@ def train(a):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--arm", required=True, choices=["d1", "tab", "reset", "fp_ex", "fp_cmp"])
+    ap.add_argument("--arm", required=True, choices=["d1", "tab", "reset", "fp_ex", "fp_cmp", "mlp", "tf_small", "gpt2_rand"])
     ap.add_argument("--seed", type=int, default=1); ap.add_argument("--updates", type=int, default=2000)
     ap.add_argument("--bs", type=int, default=512); ap.add_argument("--lr", type=float, default=1e-4)
     ap.add_argument("--head_init", default="default", choices=["default", "zero", "small"])
