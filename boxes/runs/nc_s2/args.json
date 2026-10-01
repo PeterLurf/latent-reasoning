@@ -1,0 +1,11 @@
+{
+ "arm": "nc",
+ "k": 4,
+ "seed": 2,
+ "steps": 8000,
+ "bs": 32,
+ "lr": 0.0001,
+ "device": "cuda:0",
+ "init": "/workspace/Latent/prosqa/ckpt/gpt2_pretrained.bin",
+ "out": "boxes/runs/nc_s2"
+}
