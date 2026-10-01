@@ -9,6 +9,7 @@ O=$1; LBL=$2; Q=$3; TAG=$4; W=${5:-scratch/queue_worker2.sh}
 EXTRA=""; [ "$W" = scratch/queue_worker3.sh ] && EXTRA="scratch/queue_worker3.sh scratch/p9_frozen"
 [ "$W" = scratch/queue_worker_t12.sh ] && EXTRA="scratch/queue_worker_t12.sh scratch/t12_frozen"
 [ "$W" = scratch/queue_worker_f6.sh ] && EXTRA="scratch/queue_worker_f6.sh scratch/f6_frozen"
+[ "$W" = scratch/bm_vast_job.sh ] && EXTRA="scratch/bm_vast_job.sh bm/__init__.py bm/data_b.py bm/model_b.py bm/run_b.py bm/data.py bm/model.py bm/run.py bm/data_pool_b"
 V="C:/Users/peter/.local/vastai/vast.sh"
 export PYTHONIOENCODING=utf-8
 cd "$(dirname "$0")/.."

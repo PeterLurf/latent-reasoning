@@ -1,0 +1,2 @@
+# §60b development pilot (dev only, seed 0)
+pb_pilot_lam1 pilot 1 0 10000 128
