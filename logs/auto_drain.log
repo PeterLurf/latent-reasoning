@@ -34,3 +34,4 @@
 2026-09-30 15:43:07 p8b1_ckpt_s3 53555219 drained (res prosqa/res_p8b1, ckpt prosqa/ckpt/p8b1_ckpt_s3_checkpoint_48)
 2026-09-30 19:00:42 p8c_cot_s4 53533326 drained (res prosqa/res_p8c/cot_s4, ckpt prosqa/ckpt/p8c_cot_s4_checkpoint_30)
 2026-09-30 19:30:22 p8c_cot_s2 53533319 drained (res prosqa/res_p8c/cot_s2, ckpt prosqa/ckpt/p8c_cot_s2_checkpoint_30)
+2026-09-30 19:47:44 p8c_cot_s1 53533314 drained (res prosqa/res_p8c/cot_s1, ckpt prosqa/ckpt/p8c_cot_s1_checkpoint_30)
