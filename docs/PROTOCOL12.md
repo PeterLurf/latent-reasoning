@@ -81,6 +81,14 @@ per depth) plus 200 held-out shallow questions, P = 16, hardened labels.
   - Local: RTX 3070, driver 591.86, torch 2.14.0+cu130.
 
 
+* **Re-placement of s12/s13 (18:11 EDT; user-approved).**
+  - The two local runs shared the 8 GB RTX 3070, spilled into shared memory and stalled: s12 had no log after step 300
+    (13:50); s13 ran ~26 s/step.
+  - They were stopped and kept as `prosqa/runs_ail/f1s_s1{2,3}.void_3070oom`.
+  - Both were rerun with the same frozen recipe on Vast 53761097 (RTX A4000, driver 595.71.05; 2 concurrent; host.txt
+    per run), from 18:02.
+  - These are fresh seeds, so the class/driver is irrelevant to R2.
+
 ## THEORY §66 (boxes, GPT-2 state tracking) panel result (2026-10-01 17:23 EDT; `python theory/score_s66.py` → `theory/results/score_s66.json`)
 
 50/50 runs (10 arms × 5 seeds, 8000 steps × bs 32), bench boxes test (seed 6600, N 1–32 × {all, where} × 50). The scorer
