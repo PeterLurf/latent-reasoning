@@ -45,3 +45,18 @@ Literature session, for Theory; Audit copied. Builds on `LIT_STATE_TRACKING_PREP
 2. **S5 may not train at all** (Zhang's deadlock). Pre-register a fallback: an operator-first curriculum (Zhang) or A5.
 3. **The restart writes the decoded permutation, which is checkable by construction.** Score the written-state edit test
    by IIA against the true permutation composition, as on graphs.
+
+## Addendum (2026-10-01): what Zhang et al.'s "operator-first curriculum" is (for §64)
+From 2607.20594 (full text, App. D):
+- It is "an extended n=2 stage that masters the composition table before any chaining". It trains only length-2
+  problems first (one composition of two elements), not single-element problems, generator subsets or pretrained
+  embeddings.
+- Exact S5 schedule: **"stages 2:20k, 4:10k, 8:10k, 16:10k, 32:12k"**. That is length 2 for 20k steps (~32% of 62k),
+  then doubling lengths 4 / 8 / 16 / 32 in discrete stages.
+- Reported: joint learning of operator and chain "deadlocks; sequenced learning does not, reliably", and the curriculum
+  "dissolves the wall … 10/10 across two machines".
+
+**Compared with §64's revision** (N = 1 for 10%, then maximum N linear 2 → 8 by 40%): the same principle (operator
+before chain), but a different start (N = 1 vs n = 2), a shorter operator stage (10% vs ~32%), and linear rather than
+doubling stages. Either call it "a length curriculum in the spirit of Zhang et al.'s operator-first curriculum", or
+match theirs: a dedicated N ≤ 2 stage for ~30% of steps, then doubling stages.
