@@ -3564,6 +3564,24 @@ quantities after a throughput pilot: steps, batch, deep-set size).
 wall time is unmeasured. The throughput pilot sets the hours-scale allowance. 8 runs (2 arms × 4 seeds), on local cards
 or Vast at the experiments session's discretion. CPU suffices for the data generator, the exact composer and unit tests.
 
+**Amendment 60-1 (2026-10-01 00:30 EDT, before any implementation or run; Literature's addendum to the check, 9069f67
+00:30:29).**
+* **Added priors.**
+  - Transformers Learn Shortcuts to Automata 2210.10749 (must-cite). The Boolean 16 × 4 tables form a transition-summary
+    semigroup, and learned log-depth compositions there were brittle out of distribution.
+  - Learned interface conditions in domain decomposition (Taghibakhshi 2205.09833, the closest learned interface
+    operator).
+  - Learned AMG transfer operators (2003.05744, 1902.10248).
+  - Scans: 1709.04057, Mamba 2312.00752, 2411.12537, 2607.20594.
+  - None does Boolean reachability or latent reasoning.
+* **Numeric held-out-order thresholds** (Liu et al. predict in-distribution fit with unseen-order failure).
+  - **Phase A.** Unchanged: A2 requires ≥ 0.95 on the composite+composite held-out orders in every seed. The
+    residual associativity error is reported per seed.
+  - **Phase B, new gate B5.** On the training-depth evaluation set, accuracy under a held-out schedule family ≥ 0.95 in
+    every seed. The family: legal schedules from the same topology rule, but with merges of two composites (each ≥ 3
+    edges) that training never contains.
+  - Advancement to Phase C now needs B0–B5.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
