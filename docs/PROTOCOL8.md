@@ -107,3 +107,33 @@ attention (primary) and by text (secondary; the first C7 round-trip / edit test,
   failed logs were kept as `prosqa.out.void_attempt*`. All four pass `P8_TEST` and train.
 * **Latent arms.** Their `run.py` (Coconut) behaves identically before and after the fix, so they were not
   restarted.
+
+## Amendment 3 (2026-10-01 00:27 EDT, before any PROTOCOL8 result was read): ProsQA shortcut control (pre-specified secondary)
+
+**Why.** THEORY §57 (6c9920e), confirmed independently by Audit, found a shortcut in ProsQA's construction. The
+negative option always hangs off another person, never off the root. A person-agnostic proximity heuristic ("the option
+farther from every person statement") therefore scores 0.91 on ProsQA and 0.90 on p8_test without any reasoning from
+the root. A high D710 could come from this cue. The primary rules P8-1 to P8-5 are **unchanged**.
+
+**Secondary SC (pre-specified now; the user approved, relayed by Audit).**
+* **Test set.** `prosqa/p8data/p8_na_test.json` (THEORY §59, c012588; md5 5bb6dda2fa; 4,053 problems). It equalises both
+  options' distance to the nearest person statement and their in-degree with answer-preserving statements. The
+  proximity heuristic scores 0.500 on it (Audit's own parser); every problem keeps target reachable and negative
+  unreachable from the root.
+* **Latent arms (coco, at, rt).**
+  - Measures: D710_NA = candidate accuracy at K′ = 10, answer depth 7–10; D11_NA = at K′ = 16, answer depth 11.
+  - Instrument: the local evaluator `prosqa/gpt2c.py` rollout with the addendum-G answer mask, on the drained
+    checkpoints (local cards).
+  - The same evaluator also re-scores the original `p8_test.json`, over the same depths and K′, so that both numbers
+    come from one instrument.
+  - **Cue reliance** = original − NA, per arm and seed.
+  - Reported per seed, with arm means and the same exact-MW comparisons as P8-1/P8-2 on the NA measures, labelled secondary.
+* **CoT arm.** `eval_p8.py --mode cot --n_per_m 150` on p8_na_test, locally. Original = the pod's cot_test_e30
+  (same script, different GPU).
+* **Reference line.** The proximity heuristic's accuracy on each file and stratum (D710, D11), from
+  `theory/cue_origin.py`'s rule.
+* **Reading (fixed now).** An arm whose D710 advantage over coco (P8-1) disappears on NA (difference ≤ 0) gets the
+  label "advantage cue-dependent" next to its P8-1 verdict.
+
+Scorer: `prosqa/score_p8_na.py`, written and committed before any NA evaluation runs. The same caveat applies
+retroactively to Phase 0, PROTOCOL8b and PROTOCOL10/11 (notes added there).
