@@ -77,7 +77,7 @@ accuracy); identity buys no reach. D3 is parked.
 **Interchange (§56):** GT-distilled students' latents are age-invariant (G 0.09); T8 students' and parents' are not.
 Path independence tracks one-loop reach (Spearman −0.87, post hoc).
 **F1 on GPT-2 (§54b):** not learnable from deep final answers (soft and stoch 0/3). With per-pass targets it is exact
-to d14 (2.3×), readable, halting and cue-free. Next is F1-S, a shallow-question curriculum (pending Literature/Audit).
+to d14 (2.3×), readable, halting and cue-free. F1-S is registered as §61 (shallow questions on separate graphs, fixed P = 16 at test, label count matched).
 **§60b result:** Gate A not passed (0/4). Order consistency lets 2/4 seeds learn partially (best 0.88/0.84 on
 instances/orders), but the tables are not algebraically valid and fade with depth. The boundary-memory line stops at
 Phase A.
@@ -3800,6 +3800,77 @@ Non-trivial-entry probe accuracy.
 * **What it leaves for the frontier.** Order consistency is the ingredient that makes composition learnable at all,
   in line with LDRU. The learned tables fade with depth, i.e. the count returns as fading confidence. Neither is
   pursued further here.
+
+## 61. F1-S — learning F1's one-hop label rule from shallow final answers on separate graphs (pre-registered 2026-10-01 06:30 EDT, after Literature's check 07f68a9 and Audit's C4 conditions, before any run)
+
+**Why.**
+* §54b: GPT-2's entity-label channel runs an exact, readable, halting, cue-free BFS to d14 when per-pass targets teach
+  the one-hop rule.
+* From ProsQA's deep final answers alone (depth ≥ 3) it learns nothing.
+* F1-S adds final-answer questions of depth 1–2, so the rule can be learned where one pass is the whole problem.
+
+**Prior art** (`docs/LIT_F1S_CHECK_2026-10-01.md`).
+* Low novelty as a method. Fan 2409.15647 uses the same recipe for looped transformers: loss only at T(n), mixed
+  lengths.
+* Ye 2510.19753 predicts §54b: within-capacity data teaches the algorithm, beyond-capacity data teaches heuristics.
+* Also Bansal 2202.05826, Kohli 2604.07822, Saparov 2412.04703 (needs a balanced depth mix) and 2405.15071.
+* New only in scope: a discrete per-entity label channel in a pretrained LM, learned from mixed-depth answers and
+  iterated deeper. Nearest: EntNet 1612.03969 (continuous), 2305.02363, DiscoLoop.
+
+**C4 conditions (Audit, verbatim).**
+1. "No graph instance contributes both a shallow and a deep training question", checked in code.
+2. "Deep test problems must run at a fixed P (or the model's own halt), never at P = true depth." Test P is registered
+   below.
+3. "Disclose the number of extra final-answer labels and match total final-answer supervision against the original
+   arm. Report the depth mix."
+
+With these it counts as final answers only, from a disclosed generator-shaped distribution: the same class as Pilot L's
+deep graphs.
+
+**Design.** The experiments session implements it on the frozen §54b code (`prosqa/ail_gpt2.py` 02a03ac, AI-soft
+settings: τ 1 → 0.3 over two thirds, λ ramped 0 → 0.1 over the last third, lab_std 0.144, bias −4, bs 4 × accum 2,
+lr 5e-5 / 1e-3), plus a question generator.
+* **Instances.** p8_na_train problems of original depth ≤ 6 (§59, cue-neutralised).
+  - A fixed seeded split sends one third to *shallow* use and two thirds to *deep* use (their original question).
+  - Each instance contributes exactly one training question. Condition 1 is checked by an assertion on instance ids.
+* **Shallow questions.**
+  - On a shallow instance, ask "Is <root> a <T> or <N>?" with T at distance d ∈ {1, 2} from the root (half each) and N
+    the instance's unreachable negative. Option order is random.
+  - Then re-run the §59 NA equalisation for (T, N), so the proximity and in-degree cues stay at chance. The answer is
+    asserted by BFS.
+* **Label count (condition 3).** Questions × epochs equal §54b AI-soft's (its depth ≤ 6 problem count × 2 epochs).
+  - With a third of instances turned shallow, the mix is ≈ 1/6 d1, 1/6 d2 and 2/3 d3–6, in their original
+    proportions.
+  - It is reported exactly from the generated set. There are no extra labels: the same count is redistributed.
+* **Passes.** Batches are bucketed by depth d.
+  - Training uses P = d + U{0, 1, 2}, so even training does not hand over the exact depth.
+  - Curriculum: d = 1 only for the first sixth of steps, then widening linearly to d = 1–6 by one third.
+* **Test (condition 2).**
+  - p8_na_test deep problems (depths 3–14) and held-out shallow questions (d = 1–2, built the same way on
+    p8_na_test instances).
+  - **All are run at a fixed P = 16**, with hardened labels (OR at 0.5).
+  - Also reported: the model's own fixed-point pass (its halt), and, as a descriptive reference only, accuracy at
+    P = d.
+* **Seeds.** 1–3. **Reference arm:** §54b AI-soft (same code and label count, depths 3–6 only), 0/3.
+
+**Predictions** (hardened labels, P = 16):
+* **S1 (learnable).** Accuracy ≥ 0.95 at d1–6 in ≥ 2/3 seeds.
+* **S2 (C2).** Accuracy ≥ 0.85 at d11–14 in ≥ 2/3 seeds: reach ≥ 1.8× the deepest training question, with no depth
+  hint.
+* **S3 (C7).** Label-flip edit IIA ≥ 0.8, as AG3.
+* **S4 (C5).** Fixed-point pass vs depth, Spearman ≥ 0.8.
+* **S0.** Soft-vs-hard gap ≤ 0.03, per run and per depth band (54b-1).
+* **Descriptive.** The other-person cue-insertion drop; label precision and recall; accuracy at P = d vs P = 16.
+* **My expectation.** S1 and S2 met, by Ye's within-capacity account and the hint ceiling. The main risk is §54b's
+  σ ≈ 0.5 collapse recurring before the depth-1 signal acts.
+
+**Readings.**
+* **S1 and S2 met.** F1 reaches C2, C5 and C7 in GPT-2 from final answers (C4, with the disclosed depth mix). That is the
+  first joint C2 + C4 + C5 + C7 result on a pretrained LM in this project. C3 (matched-compute text CoT) comes next.
+* **S1 met, S2 failed.** The rule is learned but not iterated beyond the training depths: heuristics, not the algorithm
+  (Ye).
+* **S1 failed.** Even one-pass final answers do not teach the label rule at GPT-2 scale. F1's C4 claim stays on the toy,
+  and this line closes there. No further revision.
 
 ## 7. Log
 
