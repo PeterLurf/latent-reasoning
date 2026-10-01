@@ -79,7 +79,8 @@ Path independence tracks one-loop reach (Spearman −0.87, post hoc).
 **§62 registered:** does depth-structured label noise install a count (via calibration)? NS / NS45 / NB / NU label-noise
 arms on Pilot L. The label-free teacher's errors rise across its seam in 20/20 parents.
 **F1 on GPT-2 (§54b):** not learnable from deep final answers (soft and stoch 0/3). With per-pass targets it is exact
-to d14 (2.3×), readable, halting and cue-free. F1-S is registered as §61 (shallow questions on separate graphs, fixed P = 16 at test, label count matched).
+to d14 (2.3×), readable, halting and cue-free. F1-S (§61) did not meet its predictions (1/3 seeds). One seed learned an exact, readable BFS to d14 from final answers alone; the other two
+flood at long budgets. The F1 line is closed.
 **§60b result:** Gate A not passed (0/4). Order consistency lets 2/4 seeds learn partially (best 0.88/0.84 on
 instances/orders), but the tables are not algebraically valid and fade with depth. The boundary-memory line stops at
 Phase A.
@@ -3881,6 +3882,31 @@ lr 5e-5 / 1e-3), plus a question generator.
   (Ye).
 * **S1 failed.** Even one-pass final answers do not teach the label rule at GPT-2 scale. F1's C4 claim stays on the toy,
   and this line closes there. No further revision.
+
+**Result (2026-10-01; scored by the experiments session, daf3960, `results/f1s.json`, `docs/PROTOCOL12.md` §61; 1,486
+steps × 8 = 11,888 presentations vs §54b's 11,892). S1–S4 not met (1/3 seeds each); S0 met. By the registered reading
+the F1 line closes. One seed is an existence proof.**
+
+| Seed | d1–2 | d3–6 | d7–10 | d11–14 | Label precision / recall | Edit IIA | ρ (fixed point, depth) | At P = d, d1–6 (descriptive) |
+|---|---|---|---|---|---|---|---|---|
+| s1 | 0.92 | 0.48 | 0.48 | 0.49 | 0.54 / 0.77 | 0.01 | −0.25 | **1.000** |
+| s2 | 0.90 | 0.47 | 0.51 | 0.49 | 0.57 / 0.78 | 0.13 | −0.25 | 0.82 |
+| s3 | **1.000** | **1.000** | **1.000** | **1.000** | 1.000 / 1.000 | 1.000 | 0.75 | 1.000 |
+
+Hardened labels, fixed P = 16.
+* **s3: an existence proof.** It learned, from final answers only (C4, with the disclosed depth mix and disjoint
+  instances), an exact, readable (IIA 1.0), cue-free entity-label BFS in GPT-2 that extrapolates to d14 (2.3× the
+  deepest training question) at a fixed budget.
+* **s1 and s2: how they fail.** Both learned an imprecise rule whose false positives spread slowly.
+  - Run at its trained budget (P = d), s1 is exact at d1–6 (1.000). At the registered P = 16 the labels flood
+    (precision 0.54) and accuracy falls to chance.
+  - Training with P = d + U{0,1,2} never ran long enough to penalise that slow flooding. This is Prop. 10's pattern
+    in a new form: an error harmless within the trained budget, i.e. a rule that is only correct up to a count.
+* **Lesson (recorded, not pursued).** A monotone public state reaches a true fixed point only if its local rule is
+  exact. Training budgets must therefore include runs far longer than needed (P ≫ d), or slow flooding stays free.
+* **Verdict.** S1 1/3, S2 1/3, S3 median 0.13, S4 median −0.25 (s3 itself 0.75 < 0.8).
+  - Not met as registered: C4 learnability exists but is seed-dependent.
+  - No further F1 variants, as committed.
 
 ## 62. Does depth-structured label noise install a count? Why label-free distillation gives age-dependent latents (pre-registered 2026-10-01 06:44 EDT, after Literature's check 2e3d16b and before any run)
 
