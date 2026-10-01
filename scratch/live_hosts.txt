@@ -1,0 +1,16 @@
+# Live Vast hosts watched by scratch/gpu_watch2.sh: "<host> <port> <label>". Deploy scripts append at create; drained hosts
+# are skipped via logs/drained_hosts.txt (remove other destroyed hosts by hand).
+142.112.39.215 63460 p8c-at1
+185.101.222.13 17298 p8c-rt2
+142.112.39.215 62617 p8c-at3
+151.237.25.16 20284 p8c-at4
+149.200.35.231 28463 f6-A
+142.198.191.106 40428 f6-B
+38.29.145.27 40825 f6-C
+38.29.145.230 40055 f6-D
+174.0.242.177 1630 f6-E
+181.116.79.48 40276 f6-F
+181.22.157.52 40151 bmb-S1
+125.190.184.215 61044 bmb-S2
+198.200.122.18 17368 bmb-S3
+108.55.118.247 53293 bmb-S4

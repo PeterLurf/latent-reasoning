@@ -24,6 +24,7 @@ for i in $(seq 1 60); do
   sleep 20
 done
 echo "INSTANCE $ID $H $P"
+echo "$H $P $LBL" >> scratch/live_hosts.txt          # watched by gpu_watch2.sh from creation (Audit)
 S="ssh -o ConnectTimeout=20 -i $HOME/.ssh/runpod_ed25519 -p $P root@$H"
 $S "python -c \"import ctypes;print('CUINIT',ctypes.CDLL('libcuda.so.1').cuInit(0))\"; nvidia-smi --query-gpu=name,driver_version,clocks.max.sm --format=csv,noheader" 2>/dev/null | grep -v -i "welcome\|have fun"
 $S "python -c \"import ctypes;exit(ctypes.CDLL('libcuda.so.1').cuInit(0))\"" 2>/dev/null || { echo "BAD HOST"; exit 2; }
