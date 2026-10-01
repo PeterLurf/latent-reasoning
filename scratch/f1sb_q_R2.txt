@@ -1,0 +1,2 @@
+# 61b registered follow-up: one SOLO seed-3 rerun on an RTX 3090 (all 3 concurrent reruns failed)
+f1s_r3d 3
