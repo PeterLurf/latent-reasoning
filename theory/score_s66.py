@@ -15,6 +15,9 @@ P5: k = 8, N 17-32: per seed s, accuracy(wc8_s) - accuracy(wc0_8_s) on the same 
 Descriptive: WC0 (k = 4) and WC (k = 2) under P3's rule; k = 2 / 4 WC vs WC0; accuracy vs FLOPs / sequential passes /
 written tokens per arm and band; validity (valid final arrangement, chunk-valid share); baselines; CL K' curve from
 bench/results/boxes__boxes_cl_s<seed>_kp<half|double>.json if present (PILOT.md K' set: ceil(N/2), N, 2N).
+Audit's additions (47e6804 review, before any result was read): every verdict carries n_runs of its arm(s) and is marked
+"incomplete" if any has < 5 seeds; P2, P3 and P5 are also given per question type (descriptive); P5 also as the
+item-paired seed-mean difference wc8 - wc0_8 with a bootstrap CI (descriptive; seed numbers pair independent trainings).
     python theory/score_s66.py
 """
 import glob
@@ -65,9 +68,10 @@ def med(xs):
     return float(np.median(xs)) if xs else None
 
 
-def paired(a_runs, b_runs, lo, hi):
+def paired(a_runs, b_runs, lo, hi, qt=None):
     """Per-item seed-mean correctness difference a - b over items both have; mean, bootstrap 95 % CI, n items."""
-    ids = sorted(set.intersection(*[set(k for k, r in R.items() if lo <= r["N"] <= hi) for R in a_runs + b_runs]))
+    ids = sorted(set.intersection(*[set(k for k, r in R.items() if lo <= r["N"] <= hi and (qt is None or r["qt"] == qt))
+                                    for R in a_runs + b_runs]))
     da = np.array([np.mean([R[i]["correct"] for R in a_runs]) for i in ids])
     db = np.array([np.mean([R[i]["correct"] for R in b_runs]) for i in ids])
     d = da - db; rng = np.random.default_rng(0)
@@ -146,6 +150,27 @@ def main():
                                    for mode in ("half", "double")}
         desc["cl_Kprime_curve"]["N"] = {b: {k: res["arm"]["cl"][b][k] for k in ("acc", "flops", "seq_passes")} for b in BANDS}
     v["descriptive"] = desc
+    def stamp(key, arms):
+        if key in v:
+            v[key]["n_runs"] = {a: len(runs[a]) for a in arms}
+            if any(len(runs[a]) < 5 for a in arms):
+                v[key]["status"] = "incomplete"
+    for key, arms in (("gate", ["nc"]), ("P1", ["cl"]), ("P2", ["wc4"]), ("P3", ["wc4", "tc"]), ("P4", ["wc4"]),
+                      ("P5", ["wc8", "wc0_8"])):
+        stamp(key, arms)
+    by_qt = {}
+    for qt in ("all", "where"):
+        d = {}
+        if runs["wc4"]:
+            d["P2_wc4_median_17_32"] = med([acc(R, 17, 32, qt) for R in runs["wc4"].values()])
+        if runs["wc4"] and runs["tc"]:
+            p = paired(list(runs["wc4"].values()), list(runs["tc"].values()), 17, 32, qt); p["rule"] = p3_rule(p); d["P3"] = p
+        common = sorted(set(runs["wc8"]) & set(runs["wc0_8"]))
+        d["P5_median_per_seed"] = med([acc(runs["wc8"][s], 17, 32, qt) - acc(runs["wc0_8"][s], 17, 32, qt) for s in common])
+        by_qt[qt] = d
+    desc["per_question_type"] = by_qt
+    if runs["wc8"] and runs["wc0_8"]:
+        desc["P5_item_paired"] = paired(list(runs["wc8"].values()), list(runs["wc0_8"].values()), 17, 32)
     v["evidence_status"] = "reasoning evidence" if v["gate"]["passed"] else "descriptive only (gate not passed)"
     res["verdicts"] = v
     os.makedirs("theory/results", exist_ok=True)
