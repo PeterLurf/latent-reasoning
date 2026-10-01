@@ -56,4 +56,9 @@ lr 5e-5 / 1e-3, P = 6, epochs 2.
 
 | # | τ_end | λ | where | outcome |
 |---|---|---|---|---|
-| 1 | 0.3 | 0.1 (registered defaults) | Vast 53667013 (3090), started 2026-10-01 04:54 | (running) |
+| 1 | 0.3 | 0.1 (registered defaults) | Vast 53667013 (3090), 17 min; started 2026-10-01 04:54 | **no learning**: by step 100 every soft label sits at σ(z) ≈ 0.5 (loss ≈ 2 ln 2 = 1.39, binarity 0.041 constant), hardened train accuracy 0.45–0.55 throughout (τ 1 → 0.3, λ ramp to 0.1) |
+
+**Freeze (2026-10-01 05:13).** The collapse to the uninformative fixed point happens within the first 100 steps (τ ≈ 0.93, λ = 0), before
+τ_end or λ can act, so no allowed setting can plausibly change it; the remaining ~13 min of the 30-min cap would not fit a
+second 17-min setting. Frozen: **τ_end 0.3, λ 0.1** (registered defaults), code 02a03ac, the fixed quantities above, epochs 2,
+for all three arms. §54b panel (AI-soft, AI-stoch, AI-hint × seeds 1–3) on Vast.

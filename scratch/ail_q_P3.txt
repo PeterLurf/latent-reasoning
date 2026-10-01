@@ -1,0 +1,3 @@
+# §54b panel host 3
+p54b_stoch_s2 stoch 2 2 0.3 0.1 panel
+p54b_hint2_s2 hint2 2 2 0.3 0.1 panel
