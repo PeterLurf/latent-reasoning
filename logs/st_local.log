@@ -1,0 +1,6 @@
+13:36:40 st s3_s10 rc 0 (cuda:1)
+13:39:54 st a5_s10 rc 0 (cuda:1)
+13:39:54 WORKER_DONE cuda:1
+14:23:44 st2 a5c_s9 rc 0 (cuda:2)
+14:23:57 st2 a5c_s10 rc 0 (cuda:2)
+14:23:57 WORKER_DONE st2 cuda:2
