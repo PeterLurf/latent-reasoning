@@ -2360,6 +2360,19 @@ latents. Accuracy saturates by K′ ≈ 3, and depths ≥ 10 are at chance in di
 * Falsified if anytime does not lift depths 7–10 and saturation stays at K′ ≈ 3. The limit would then be per-thought
   capacity, not a brake.
 
+**Outcome (2026-10-01; PROTOCOL8 scored by the experiments session, `docs/PROTOCOL8_RESULTS.md`, `results/p8.json`).
+Falsified, more strongly than the stated falsifier.**
+* **Depths 7–10.** Anytime is *below* Coconut (0.50 vs 0.56; mean difference −0.067), and random-tight likewise
+  (−0.060).
+* **Saturation.** K′ moves to 0, not ≥ 6: at and rt answer without using their latents (latent use LU 0.07–0.12 vs
+  Coconut's 0.14–0.18). D11–12 are at chance for every latent arm, and no latent seed is competent (0/12).
+* **Reading.** The toy's slack/brake account does not transfer to GPT-2 Coconut on ProsQA.
+  - The per-thought-capacity alternative named in the falsifier is not shown either: the anytime arms stop using their
+    thoughts altogether.
+  - Coconut's 0.56 at D7–10 may partly rest on ProsQA's proximity cue (§57). The p8_na secondary will tell.
+* **Reference for C3.** Text CoT reaches 0.71–0.81 at every depth, including D11–12, with ~84 tokens: the bar any
+  latent scheme must meet.
+
 ## 43. Where is the deep frontier read in 3- and 4-layer models? (exploratory, registered 2026-09-30 10:58 EDT, before measuring; prompted by the experiments session's T9 secondary)
 
 **Background.** Blocking chain A at the in_peak-chosen layer fails the positive control in several T9 models
