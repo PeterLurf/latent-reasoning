@@ -200,3 +200,7 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53669334 vast | ail_P2 DESTROYED_VERIFIED 2026-10-01 06:18 after verified fetch (ail runs: p54b_hint2_s1 p54b_soft_s2)
 53669335 vast | ail_P4 DESTROYED_VERIFIED 2026-10-01 06:23 after verified fetch (ail runs: p54b_soft_s3 p54b_stoch_s3)
 53669336 vast | ail_P5 DESTROYED_VERIFIED 2026-10-01 06:25 after verified fetch (ail runs: p54b_hint2_s3)
+53535096 vast | DESTROYED_VERIFIED 2026-10-01 06:49 after verified fetch (prosqa/res_p8c/at_s3: coco_test_e48.json coco_ctl_e48.json; ckpt prosqa/ckpt/p8c_at_s3_checkpoint_48)
+53681103 vast offer 33137671 created 2026-10-01 06:51: label f1s-2, queue scratch/f1s_q_2.txt (logged at create by vdeploy_toy.sh)
+53681104 vast offer 31458823 created 2026-10-01 06:51: label f1s-3, queue scratch/f1s_q_3.txt (logged at create by vdeploy_toy.sh)
+53681105 vast offer 53120053 created 2026-10-01 06:51: label f1s-1, queue scratch/f1s_q_1.txt (logged at create by vdeploy_toy.sh)
