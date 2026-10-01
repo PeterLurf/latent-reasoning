@@ -4187,11 +4187,11 @@ whether silent thoughts are set-expressible.**
 
 | Measure | Value | Bar |
 |---|---|---|
-| RT | 0.916 | ≥ 0.95. Controls: RT_mismatch 0.905, RT_mean 0.850, RT_input ≈ 0.88 |
+| RT | 0.916 | ≥ 0.95. Controls: RT_mismatch 0.905, RT_input 0.864, RT_mean 0.850 (Audit's recomputation) |
 | Edit IIA | 0.013, collateral 0.081 | ≥ 0.80 (§34's linear pointer map: 0.36) |
 | err_repro | 0.887 vs input-only 0.812 | +0.075 < +0.15 |
 | Evaluator swap | RT 0.875, IIA 0.008 | — |
-| F4-5 step-index gap | −0.001 (P30) vs −0.006 (GT) | P30 larger by ≥ 0.02 |
+| F4-5 step-index gap | median of per-model differences: −0.001 (P30) vs −0.006 (GT); difference of medians: −0.002 vs −0.010 | P30 larger by ≥ 0.02 under either aggregation |
 | GT students, arm S | RT 0.833, IIA 0.002 | descriptive |
 
 * **Why.**
@@ -4201,6 +4201,8 @@ whether silent thoughts are set-expressible.**
     hard labels (PROTOCOL12).
   - The round trip looks high only because these reasoners tolerate a replaced step-2 thought: decoding another graph's
     thought keeps 0.905 of answers.
+  - The text carries little that is specific to the model (Audit): RT is barely above the mismatch, input-only and
+    mean-thought controls, and edit IIA is 0.013. It mostly re-encodes what the input already fixes.
 * **Reading.**
   - Nothing is learned here about whether silent thoughts are set-expressible. §34's hand-built pointer map remains the
     best C7 result for silent steps (IIA 0.36).
