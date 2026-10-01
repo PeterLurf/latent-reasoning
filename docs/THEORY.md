@@ -64,6 +64,10 @@ times below (local EDT) and the first-run times from the host queue logs.
 
 Novelty is with Literature, and Experiments runs the tests.
 
+**External input (§52 addendum, 2026-09-30 22:22):** registered two cheap tests on existing models: §55 (is the fall-back
+reward-neutral?) and §56 (are aged latents interchangeable?). Added F6 (age-transplant training) and F7 (path doubling).
+§51 halt line closed: TH1 0/10, TH2 1/10.
+
 **Overnight results (2026-09-30 02:15 EDT; one line each, details in the § Result sections):**
 * Anytime supervision (D): 8/10 extrapolate vs 3/9, Fisher p 0.055. The gain is at d7 only; the pointer falls back after
   K (§17).
@@ -2757,6 +2761,15 @@ minutes, no outcome line could have been printed. Note in `theory/results/exp25_
 * **TH2 (no accuracy cost).** Held-out accuracy (last rule + learned halt) ≥ (max rule + learned halt) − 0.02 in
   ≥ 7/10 models.
 
+**Result (2026-09-30; scored by the experiments session, 073337d 22:00; `theory/results/score_exp25.json`). TH1 not met
+(0/10); TH2 not met (1/10).**
+* **TH1.** Under the last rule, the learned halt stops at segment 1 in every distance bin of all 10 models.
+* **TH2.** Last trails max by 0.05–0.12 in 9/10. s111 passes only because both rules stop at segment 1 there.
+* **Reading.** With single-target answers, later segments restart past shallow targets, so the reward-optimal halt under
+  the last rule is "stop at once". Final-answer reward does not teach a depth-tracking halt here.
+* As planned, the halt/aggregator line ends here: no GPT-2 port. Halting is pursued by construction instead (F1's fixed
+  point, §54).
+
 ## 52. Frontier: new directions for latent reasoning (2026-09-30 20:39 EDT; requested by the user via Audit; nothing here is registered, and Literature checks novelty first)
 
 **What the last two days taught, as constraints on any new design.**
@@ -2890,6 +2903,79 @@ Each is meant to hit several north-star conditions at once.
 4. F3: local GPU.
 5. F5: last.
 
+### Addendum (2026-09-30 22:22 EDT): the external input, evaluated as pioneer input
+
+Source: `docs/EXTERNAL_IDEAS_2026-09-30.md` (87949a7). Literature's check: `docs/LIT_EXTERNAL_CHECK_2026-09-30.md`
+(8ce27e8).
+
+**Verdicts.**
+* **Unifying hypothesis (entry-state normal form): adopted as a test (§56).**
+  - In our terms, a state is in normal form when its future depends only on the residual problem. This is a causal
+    state (Shalizi & Crutchfield 2001) or a bisimulation class (2006.10742).
+  - Restarts (§26) impose it by construction: a written node token has no age.
+  - The open question is whether the *latent* states of repaired single loops have it, e.g. Pilot L's students.
+  - Closest empirical precedent: path independence in equilibrium models (Anil 2211.09961). Our delta is a
+    growing-history latent loop and a causal test of restart-induced canonicalisation.
+  - Scored as IIA, with an age-only reset as the control.
+* **Direction 3 (commit gates): its kill test is adopted (§55). The direction itself is predicted to give C5/C6, not
+  C2.**
+  - Prop. 10 applies to gates too. On graphs of depth ≤ D_max, "freeze at D_max" costs as little as "fall back at
+    D_max".
+  - A penalty on reward-neutral mutations therefore turns the fall-back into a fixed point: a halt, with stable
+    long-budget answers. It cannot make the loop continue past D_max, because no training residual ever needs that.
+  - Prediction for any D3 training test: reach unchanged, long-budget stability improved.
+* **Direction 1 (boundary-response elimination): the most novel; the same family as F1.**
+  - Both put the state on the problem's own structure and update it with a fixed-size local rule. Both are count-free
+    by construction: there is no learned stop, because the contraction tree or the fixed point decides.
+  - D1 adds what F1 lacks: composition of regions, i.e. log depth.
+  - Caveat: response tables over distances (min-plus) grow with region size and bring a count back. Over Boolean
+    reachability they are canonical bits.
+  - Its minimal version on our substrate is F7 below. A scaffolded mechanism test, as Audit says.
+* **Direction 2 (conserved continuations): later.**
+  - Call/return is established (PENCIL 2503.14337, Recursion of Thought 2306.06891, Recursive NPI 1704.06611). Only
+    exactly-once returns are new.
+  - Here a continuation is a CLR checkpoint with a return slot. Exactly-once consumption bounds fan-out, which may
+    bear on the false-positive build-up of §48/§50.
+* **Direction 4 (predictive state): already F1's semantics.** F1's labels are predictions of named tests ("is X
+  reachable?"), so F1 is a predictive-state representation whose tests are the queries. The Boolean-register domain is
+  a narrow C7 substrate; not prioritised.
+* **Direction 5 (Krylov): a control only.**
+* **Benchmark correction (2608.11233).**
+  - It reports ~1.44–1.50× extrapolation, but with dense intermediate labels first and no matched compute.
+  - So it is a pretrained-LM baseline, not evidence for C3 and C4 together. Literature confirmed this, and NORTH_STAR
+    already scopes it.
+
+**New directions derived from the input** (Literature checks novelty before either is registered).
+* **F6. Age-transplant training: path independence from shallow data (C2 + C4 in one loop, with no deep labels and
+  no restarts).**
+  - **Idea.**
+    - Train on graphs of depth ≤ D as usual.
+    - Sometimes feed a training episode, at step 2, an *aged* latent: one taken at age a ≤ D from another episode
+      whose frontier is the same node id (another graph, ids matched).
+    - Train only on the recipient's final answers.
+    - The recipient must then continue r ≤ D hops after receiving an age-a state, with a + r up to 2D. Any stop keyed
+      to a count at D now costs loss, while every graph stays within depth D.
+  - **Why.** By Prop. 10, a stop keyed to a count is free whenever training residuals never outlast that count.
+    - Deeper data breaks this (§41), but needs deep labels.
+    - Restarts sidestep it (§26), but need written checkpoints.
+    - F6 breaks it with shallow data and keeps a single loop.
+  - **Falsifier.** Reach stays at D. Or the model learns a seam detector, treating transplanted states specially, so
+    natural long runs gain nothing.
+  - **Cheapest test.**
+    - Set-up: the P30 recipe with transplants, 10 seeds, vs P30 controls, at the same budget as a P30 run.
+    - Measure: one-loop bal-acc at d7–12 (K′ = 12) and d13–24 (§37's probe).
+  - **Sequencing.** It runs after §56.
+    - If §56 shows the students' latents are interchangeable, F6 trains that property directly.
+    - If age stays causal in them, F6 is the only single-loop route aimed at age itself.
+* **F7. Path doubling on pair labels (D1 ∩ F1): log-depth latent reasoning.**
+  - **Idea.** Labels sit on node pairs: l(i, j) = "j reachable from i within 2^p hops". A learned pass over pair
+    tokens composes l′(i, j) = l(i, j) ∨ max_k [l(i, k) ∧ l(k, j)].
+  - Reach doubles per pass, so P passes cover 2^P hops: test-time compute logarithmic in depth (a C3 route).
+  - **Prior to check:** pointer jumping, transitive closure by squaring, neural algorithmic reasoning.
+  - A toy test comes after F1's language-model result.
+
+**Order.** §55 and §56 first: CPU, existing models, handed to Experiments. Then F6 (local GPU), then F7. D2 waits.
+
 ## 53. F2 — bidirectional latent reasoning, zero-shot on toy models (pre-registered 2026-09-30 20:45 EDT, after Literature's check 3ba2507 and before any measurement on the test models)
 
 **Design.** `theory/exp26_bidirectional.py`, CPU, inference only, no training.
@@ -2966,6 +3052,132 @@ targets, for each distance.
   - Text CoT at matched compute (C3).
 * **Falsified if** AG1 holds but AG2 fails, i.e. the labels become a covert counter or the model learns a depth-bounded
   rule. If AG1 fails, final-answer training of the label channel does not converge in text (Literature's risk).
+
+## 55. Kill test: is the anytime fall-back reward-neutral? (external direction 3; pre-registered 2026-09-30 22:22 EDT, before measuring any of the 17 test models)
+
+**Question.**
+* Prop. 10 (§35) says the count-keyed fall-back costs nothing in training.
+* Direction 3, commit gates (§52 addendum), needs exactly that. A penalty can only target mutations whose terminal
+  utility is neutral.
+* Priors (Literature): COMA 1705.08926, counterfactual credit 2011.09464, Skip RNN 1708.06834.
+
+**Design.** `theory/exp27_fallback_kill.py`, CPU, no training.
+* **Fall-back point.** The model's base peak step t* on the long-chain probe (P10e, `theory/results/exp16_stop_key.json`).
+* **Kill.** From step t*+2 on, the thought fed into each step is h_{t*} again: identity after the peak. The fallen-back
+  thoughts never enter.
+* **Positive control.** From step t*+1 on, the input is h_{t*−1}. This removes one real advance.
+* **Data.** In-distribution graphs: split "discovery", 2048 graphs, seed 2027, with make_batch's 16 balanced queries per
+  graph. Answers are read at the trained K, which is the training readout. Outcomes: terminal BCE and bal-acc.
+* **Models.** The 17 anytime runs of P10e.
+  - The kill acts inside the trained budget only where t*+2 ≤ K. That gives 6 models: pe8_at s1000, s1001, s1003,
+    s1005 and s1006, and pd_at s908. s1005's pointer stalls at 2.
+  - In the other 11, the fall-back starts at or after K, so training never executed it. Those are reward-neutral by
+    construction and reported as "outside".
+
+**Disclosure.** Smoke models outside the test set, with an artificial t* = 4: pb_at_s751 and pb_at_s750 (K = 6, so the
+kill covers step 6 only).
+
+| Model | ΔBCE, kill | ΔBCE, positive control | Bal-acc |
+|---|---|---|---|
+| pb_at_s751 | +0.0001 | +0.033 | unchanged |
+| pb_at_s750 | +0.0013 | +0.009 | unchanged |
+
+**Predictions** (medians over the inside models):
+* **KT1 (reward-neutral, Prop. 10).** ΔBCE_kill ≤ 0.25 × ΔBCE_pos and |Δbal_kill| ≤ 0.01.
+* **Killed** (direction 3 has no lever) if ΔBCE_kill ≥ 0.5 × ΔBCE_pos. Between these: partial.
+* **Uninformative** if the median ΔBCE_pos ≤ 0.
+* **KT2 (descriptive; the addendum's gate argument).** On the probe at K′ = 12, the kill does not raise d7–12 bal-acc
+  (median change ≤ +0.02). Identity freezes the state; it cannot advance it.
+
+**Readings.**
+* **KT1 met.** The fall-back is a free mutation, so a gate penalty has a target. Per the addendum, though, the penalty
+  turns the fall-back into a fixed point (C5/C6), not into reach (C2).
+* **Killed.** The post-peak updates carry answer value, so a gate penalty would cost in-distribution accuracy.
+
+**Run and score (experiments session).**
+* Run: `python theory/exp27_fallback_kill.py` → `theory/results/exp27_fallback_kill.json`. CPU, a few minutes.
+* Score, over models with `"inside": true`: medians of kill[0] − base[0], pos[0] − base[0] and kill[1] − base[1].
+* KT2: probe_kill − probe_base at indices 6–11.
+
+## 56. Are aged latent states interchangeable? The entry-state normal form, tested by interchange (external unifying hypothesis; pre-registered 2026-09-30 22:22 EDT, before measuring any of the 80 test models)
+
+**Question.**
+* Do restarts and distillation work by moving progress into an entry-state normal form? That is a state whose future
+  depends only on the residual problem.
+* Formal anchors (Literature): causal states (Shalizi & Crutchfield 2001), bisimulation (2006.10742) and path
+  independence (Anil 2211.09961).
+* Restarts impose the normal form by construction.
+* Do the *latent* states of repaired single loops have it too? The competing account: deeper or re-anchored targets
+  only move or slow the count (§41's fade reading), and age stays causal.
+
+**Design.** `theory/exp28_interchange.py`, CPU, no training.
+* **Probe and queries.** §37's 24-hop probe (seed 7, 512 graphs), with transport point f, i.e. frontier c_f. Every
+  condition continues 12 steps from c_f on the same graph. All are scored on the same 24 residual queries per graph:
+  the chain nodes at f+1..f+12 and their look-alikes.
+* **CT (reference).** A fresh episode from the written node c_{f−1}, 13 steps. Its own h_1 holds c_f at age 1.
+* **RT_a (the interchange intervention).** The thought fed into CT's step 2 is replaced by h_a from an episode started
+  at c_{f−a}, with a ∈ {2, 3, ⌈f/2⌉, f−1}. That donor has the same frontier c_f at age a. Its route stays on the chain,
+  so the residual problem matches exactly.
+* **RT_root (secondary).** The root episode's h_f: age f. That route has also visited the root's other branches.
+* **AR (age-only reset, the control).** The oldest chain donor shifted along the per-step mean:
+  h − μ_{f−1} + μ_1, with μ from a separate probe (seed 8).
+* **RND (content control).** The oldest chain donor, taken from another graph.
+* **Scores.**
+  - IIA_a is the agreement of RT_a's answers with CT's. The high-level model "the future depends only on the residual
+    problem" predicts IIA = 1.
+  - Gap G_a = (1 − IIA_a) / (1 − IIA_RND): an age swap's effect as a share of a content swap's.
+  - Age effect: dG = G_{f−1} − G_2.
+  - A model counts only if 1 − IIA_RND ≥ 0.05.
+* **Models and primary f** (just below each family's trained depth). Both f values are computed for every model; the
+  non-primary one is descriptive.
+
+  | Family | Models | Primary f |
+  |---|---|---|
+  | P30 parents of Pilot L | `runs/p30_s{H}`, 20 | 5 |
+  | Pilot L GT students | pl_gt, 20 | 11 |
+  | Pilot L T8 students | pl_t8, 20 | 11 |
+  | CLR1 | pclr1, 20 | 5 |
+
+**Disclosure.** Smoke models outside the test set. Code paths were checked; the donor ages were extended after the first
+smoke showed that the root route confounds age with the extra branches.
+
+| Model | f | G by age (2 / 3 / ⌈f/2⌉ / f−1) | dG | G_root | AR closes |
+|---|---|---|---|---|---|
+| p30_s100 | 5 | 0.37 / 0.78 / – / 0.96 | +0.59 | 0.92 | 0.47 |
+| pn_gt18_s102 (GT18 student) | 5 | 0.14 / 0.18 / – / 0.23 | +0.09 | 0.60 | −0.08 |
+| pn_gt18_s102 | 11 | 0.15 / 0.22 / 0.28 / 0.48 | +0.33 | 0.77 | 0.17 |
+| p30_s100 | 11 | 0.38 / 0.83 / 0.93 / 1.02 | +0.64 | 1.03 | 0.38 |
+| pclr3_s102 | 5 | 0.71 / 0.41 / – / 0.47 | −0.24 | 0.60 | 0.01 |
+| pclr3_s102 | 11 | 0.39 / 0.21 / 0.78 / 0.82 | +0.43 | 0.71 | 0.61 |
+
+At f = 5, ⌈f/2⌉ = 3, so that column is empty.
+
+**Predictions** (medians over informative models):
+* **NF1 (primary: does H-NF hold for distilled students?)** pl_gt at f = 11:
+  - normal form if G_10 ≤ 0.25 and dG ≤ 0.10;
+  - age-causal (the competing account) if dG ≥ 0.25;
+  - otherwise partial.
+  - My expectation, from the GT18 smoke and §41: age-causal at f = 11, with interchangeability only well inside the
+    trained range.
+* **NF2 (parents).** p30 at f = 5: dG ≥ 0.25. Age is causal, as P10e and §36 predict.
+* **NF3 (age-only reset).** In the parents, AR closes ≥ 0.5 of the oldest donor's gap. Expectation: not met (smoke
+  0.47; §36 rescued only 9/34), i.e. age is not a single mean direction.
+* **Descriptive.**
+  - CLR1: H-NF puts CLR's normal form in the written channel, so its latents need not be canonical.
+  - T8 students: X2 says they extrapolate only when re-anchored.
+  - G_root vs G_{f−1}: does the route's extra history matter beyond its age?
+  - T0: the root episode continued.
+
+**Readings.**
+* **NF1 normal form.** Distillation installs path independence in the latent; F6 would train it directly.
+* **NF1 age-causal.** Repaired students extrapolate *despite* a causal age, i.e. a slower count. The normal form then
+  lives only in written tokens. Canonical transport (restarts, F1's labels) is the mechanism, and F6 is the only
+  single-loop route aimed at age itself.
+
+**Run and score (experiments session).**
+* Run: `python theory/exp28_interchange.py`: 80 models, f = 5 and 11, about 40 s per model on 3 CPU threads →
+  `theory/results/exp28_interchange.json`.
+* Score: per family at its primary f, medians over informative models of `G_by_age[f−1]`, `dG` and `AR_closed`.
 
 ## 7. Log
 

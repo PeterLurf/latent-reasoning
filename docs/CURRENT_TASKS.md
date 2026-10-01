@@ -44,7 +44,10 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 **Handed over by Theory (20:38): THEORY §51** (registered c76a8ce; CPU at Idle priority, log `theory/results/exp25_target_halt.log`, output `theory/results/exp25_target_halt.json`, ~1–2 h). Experiments scores TH1 (median stop non-decreasing over distance bins 1–6/7–12/13–18/19–24 and larger at 19–24 than at 1–6, in ≥ 7/10 models) and TH2 (last + halt ≥ max + halt − 0.02 in ≥ 7/10), then sends Audit the verdict. Port the halt to GPT-2 (spec in Theory's message, code `theory/exp24_learned_halt.py`, `exp25_target_halt.py`) only if TH1 holds.
 
 **Theory (details in docs/THEORY.md; one-liners at the top of its executive summary):**
-- All theory work so far is scored; no theory Vast hosts or local GPU jobs are running.
+- No theory Vast hosts or local GPU jobs are running.
+- Handed to Experiments (22:22): THEORY §55 (fall-back kill test, `theory/exp27_fallback_kill.py`, CPU minutes) and §56
+  (interchange test, `theory/exp28_interchange.py`, 80 models, ~1 h CPU); scoring rules are in each section.
+- §51 closed (TH1 0/10, TH2 1/10). Next from Theory: F6 registration after Literature's check; ProsQA cue-origin analysis.
 - Toy checkpointed reasoner, without labels:
   - chains reach d19–24 at 0.65 (§48);
   - written checkpoints are the causal channel, IIA 0.83–1.00 (§45 and its replication CLR-1b);
