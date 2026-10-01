@@ -88,8 +88,8 @@ Phase A.
 revision: extensivity by construction, non-trivial labels, a size curriculum. No further revision.
 **Boundary memory (§60):** the user's proposal. Phase A is registered (learned Boolean-table merger, with vs without
 order consistency, 4 seeds, Gate A ≥ 0.95 on held-out instances, motifs and orders), and the Phase B gate is fixed.
-**F6 registered (§58):** age-transplant training, P30 recipe, 3 arms × 10 seeds (aged / young / mismatch). Handed to
-Experiments.
+**F6 (§58):** falsified. Aged transplants make aged latents interchangeable (dG −0.04) but give no reach. The age-reset
+control does best. Path independence is not the cause of single-loop reach.
 
 **Overnight results (2026-09-30 02:15 EDT; one line each, details in the § Result sections):**
 * Anytime supervision (D): 8/10 extrapolate vs 3/9, Fisher p 0.055. The gain is at d7 only; the pointer falls back after
@@ -3505,6 +3505,30 @@ This is a plumbing check, not a result.
 
 **Cost.** About 1–1.5 h per run on an A4000-class GPU, roughly +30–50 % over P30 from the eager transplant step: ≈ 40
 GPU-h. Placement by the experiments session: local cards after §54b, or Vast within budget, about $5–8.
+
+**Result (2026-10-01; scored by the experiments session, 93feb6c, `theory/results/score_f6.json`; Audit reproduced; all
+30 runs gated). Falsified by its own rule; F6-2 not met; F6-3 met.**
+
+| Arm | extrap_K12 | d7 (K′ = 12) median | dG at f = 5, median (n informative) | One-loop d13–18 median |
+|---|---|---|---|---|
+| F6-aged | 6/10 | 0.61 | **−0.04** (8) | 0.51 |
+| F6-young | 6/10 | **0.72** | +0.14 (10) | 0.52 |
+| F6-mismatch | 5/10 | 0.57 | +0.06 (10) | 0.50 |
+
+* **F6-1 not met.** Aged ≤ young + 1, so the registered falsifier holds.
+* **F6-2 not met.** Aged dG −0.04 meets its half; young's +0.14 is not ≥ 0.25. F6-3 met: delayed 0.919 vs 0.921.
+* **Reading (with Audit's).**
+  - Aged transplants did train age invariance (dG −0.04). It bought no reach: one-loop d13–18 is at chance in every
+    arm, and the young (age-reset) control has the best d7.
+  - So any gain from the fine-tune comes from the transplant mechanics or the extra training, not from exposure to aged
+    states.
+* **Consequence for §56.** Training age invariance directly does not produce single-loop reach. The across-student
+  association (ρ −0.87) is therefore not causal in the direction "age-free latent → reach". In GT students, path
+  independence looks like a co-product of what deep supervision teaches, not its mechanism. H-NF is weakened as the
+  account of extrapolation. §62 tests one candidate cause of the co-variation: calibration from depth-structured labels.
+* **Design limitation.** There is no plain (non-transplant) eager arm. Extrapolation of 5–6/10 among seeds that failed
+  as P30 runs therefore cannot be read in absolute terms: they are selected failures re-drawn with new numerics, and
+  P30's base rate is 25/59. The registered aged-vs-young contrast is unaffected.
 
 ## 59. ProsQA-NA: the §57 cue neutralised without changing any answer (2026-09-30 22:42 EDT; data, exploratory)
 
