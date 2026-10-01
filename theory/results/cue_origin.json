@@ -1,0 +1,338 @@
+{
+ "prosqa/data/prosqa_train.json": {
+  "n": 17886,
+  "P_dn_lt_dt": 0.850329866935033,
+  "P_dn_eq_dt": 0.12445488091244548,
+  "P_dn_gt_dt": 0.025215252152521524,
+  "adjacent_neg": 0.511070110701107,
+  "adjacent_target": 0.03142122330314212,
+  "P_neg_given_one_adjacent": 0.9700821917808219,
+  "proximity_heuristic_acc": 0.9125573073912557,
+  "neg_reachable_from_root": 0.0,
+  "neg_reachable_from_other_person": 1.0,
+  "by_depth": {
+   "3": {
+    "n": 7140,
+    "P_dn_lt_dt": 0.7488795518207283,
+    "P_dn_eq_dt": 0.226890756302521,
+    "P_dn_gt_dt": 0.0242296918767507,
+    "adjacent_neg": 0.5612044817927171,
+    "adjacent_target": 0.03529411764705882,
+    "P_neg_given_one_adjacent": 0.9709054426887384,
+    "proximity_heuristic_acc": 0.8623249299719888
+   },
+   "4": {
+    "n": 7645,
+    "P_dn_lt_dt": 0.9062132112491825,
+    "P_dn_eq_dt": 0.06788750817527796,
+    "P_dn_gt_dt": 0.025899280575539568,
+    "adjacent_neg": 0.4774362328319163,
+    "adjacent_target": 0.02851536952256377,
+    "P_neg_given_one_adjacent": 0.9709110867178924,
+    "proximity_heuristic_acc": 0.9401569653368215
+   },
+   "5": {
+    "n": 2541,
+    "P_dn_lt_dt": 0.9468713105076741,
+    "P_dn_eq_dt": 0.029122392758756395,
+    "P_dn_gt_dt": 0.024006296733569462,
+    "adjacent_neg": 0.4742227469500197,
+    "adjacent_target": 0.027548209366391185,
+    "P_neg_given_one_adjacent": 0.9686209744013212,
+    "proximity_heuristic_acc": 0.9614325068870524
+   },
+   "6": {
+    "n": 560,
+    "P_dn_lt_dt": 0.9428571428571428,
+    "P_dn_eq_dt": 0.023214285714285715,
+    "P_dn_gt_dt": 0.033928571428571426,
+    "adjacent_neg": 0.4982142857142857,
+    "adjacent_target": 0.039285714285714285,
+    "P_neg_given_one_adjacent": 0.9540636042402827,
+    "proximity_heuristic_acc": 0.9544642857142858
+   }
+  }
+ },
+ "prosqa/data/prosqa_test.json": {
+  "n": 500,
+  "P_dn_lt_dt": 0.842,
+  "P_dn_eq_dt": 0.138,
+  "P_dn_gt_dt": 0.02,
+  "adjacent_neg": 0.508,
+  "adjacent_target": 0.03,
+  "P_neg_given_one_adjacent": 0.9760956175298805,
+  "proximity_heuristic_acc": 0.911,
+  "neg_reachable_from_root": 0.0,
+  "neg_reachable_from_other_person": 1.0,
+  "by_depth": {
+   "3": {
+    "n": 202,
+    "P_dn_lt_dt": 0.7326732673267327,
+    "P_dn_eq_dt": 0.25742574257425743,
+    "P_dn_gt_dt": 0.009900990099009901,
+    "adjacent_neg": 0.5693069306930693,
+    "adjacent_target": 0.0297029702970297,
+    "P_neg_given_one_adjacent": 0.990990990990991,
+    "proximity_heuristic_acc": 0.8613861386138614
+   },
+   "4": {
+    "n": 217,
+    "P_dn_lt_dt": 0.8940092165898618,
+    "P_dn_eq_dt": 0.06912442396313365,
+    "P_dn_gt_dt": 0.03686635944700461,
+    "adjacent_neg": 0.4838709677419355,
+    "adjacent_target": 0.041474654377880185,
+    "P_neg_given_one_adjacent": 0.9528301886792453,
+    "proximity_heuristic_acc": 0.9285714285714286
+   },
+   "5": {
+    "n": 69,
+    "P_dn_lt_dt": 0.9710144927536232,
+    "P_dn_eq_dt": 0.028985507246376812,
+    "P_dn_gt_dt": 0.0,
+    "adjacent_neg": 0.4492753623188406,
+    "adjacent_target": 0.0,
+    "P_neg_given_one_adjacent": 1.0,
+    "proximity_heuristic_acc": 0.9855072463768116
+   },
+   "6": {
+    "n": 12,
+    "P_dn_lt_dt": 1.0,
+    "P_dn_eq_dt": 0.0,
+    "P_dn_gt_dt": 0.0,
+    "adjacent_neg": 0.25,
+    "adjacent_target": 0.0,
+    "P_neg_given_one_adjacent": 1.0,
+    "proximity_heuristic_acc": 1.0
+   }
+  }
+ },
+ "prosqa/p8data/p8_train.json": {
+  "n": 12000,
+  "P_dn_lt_dt": 0.8310833333333333,
+  "P_dn_eq_dt": 0.14458333333333334,
+  "P_dn_gt_dt": 0.024333333333333332,
+  "adjacent_neg": 0.10133333333333333,
+  "adjacent_target": 0.007166666666666667,
+  "P_neg_given_one_adjacent": 0.9600977198697068,
+  "proximity_heuristic_acc": 0.903375,
+  "neg_reachable_from_root": 0.0,
+  "neg_reachable_from_other_person": 1.0,
+  "by_depth": {
+   "3": {
+    "n": 823,
+    "P_dn_lt_dt": 0.7496962332928311,
+    "P_dn_eq_dt": 0.22721749696233293,
+    "P_dn_gt_dt": 0.023086269744835967,
+    "adjacent_neg": 0.5492102065613609,
+    "adjacent_target": 0.030376670716889428,
+    "P_neg_given_one_adjacent": 0.9797752808988764,
+    "proximity_heuristic_acc": 0.8633049817739976
+   },
+   "4": {
+    "n": 1635,
+    "P_dn_lt_dt": 0.8262996941896025,
+    "P_dn_eq_dt": 0.15351681957186544,
+    "P_dn_gt_dt": 0.02018348623853211,
+    "adjacent_neg": 0.3651376146788991,
+    "adjacent_target": 0.026299694189602447,
+    "P_neg_given_one_adjacent": 0.9570957095709571,
+    "proximity_heuristic_acc": 0.9030581039755352
+   },
+   "5": {
+    "n": 1711,
+    "P_dn_lt_dt": 0.8340151957919345,
+    "P_dn_eq_dt": 0.13793103448275862,
+    "P_dn_gt_dt": 0.028053769725306838,
+    "adjacent_neg": 0.09760374050263004,
+    "adjacent_target": 0.010520163646990065,
+    "P_neg_given_one_adjacent": 0.9209039548022598,
+    "proximity_heuristic_acc": 0.9029807130333138
+   },
+   "6": {
+    "n": 1777,
+    "P_dn_lt_dt": 0.8238604389420371,
+    "P_dn_eq_dt": 0.14631401238041644,
+    "P_dn_gt_dt": 0.029825548677546426,
+    "adjacent_neg": 0.0,
+    "adjacent_target": 0.0,
+    "P_neg_given_one_adjacent": 0.0,
+    "proximity_heuristic_acc": 0.8970174451322454
+   },
+   "7": {
+    "n": 1716,
+    "P_dn_lt_dt": 0.8403263403263403,
+    "P_dn_eq_dt": 0.1351981351981352,
+    "P_dn_gt_dt": 0.024475524475524476,
+    "adjacent_neg": 0.0,
+    "adjacent_target": 0.0,
+    "P_neg_given_one_adjacent": 0.0,
+    "proximity_heuristic_acc": 0.9079254079254079
+   },
+   "8": {
+    "n": 1675,
+    "P_dn_lt_dt": 0.826865671641791,
+    "P_dn_eq_dt": 0.15522388059701492,
+    "P_dn_gt_dt": 0.01791044776119403,
+    "adjacent_neg": 0.0,
+    "adjacent_target": 0.0,
+    "P_neg_given_one_adjacent": 0.0,
+    "proximity_heuristic_acc": 0.9044776119402985
+   },
+   "9": {
+    "n": 1756,
+    "P_dn_lt_dt": 0.8308656036446469,
+    "P_dn_eq_dt": 0.1429384965831435,
+    "P_dn_gt_dt": 0.02619589977220957,
+    "adjacent_neg": 0.0,
+    "adjacent_target": 0.0,
+    "P_neg_given_one_adjacent": 0.0,
+    "proximity_heuristic_acc": 0.9023348519362187
+   },
+   "10": {
+    "n": 907,
+    "P_dn_lt_dt": 0.9128996692392503,
+    "P_dn_eq_dt": 0.0639470782800441,
+    "P_dn_gt_dt": 0.023153252480705624,
+    "adjacent_neg": 0.0,
+    "adjacent_target": 0.0,
+    "P_neg_given_one_adjacent": 0.0,
+    "proximity_heuristic_acc": 0.9448732083792724
+   }
+  }
+ },
+ "prosqa/p8data/p8_test.json": {
+  "n": 4057,
+  "P_dn_lt_dt": 0.8168597485826966,
+  "P_dn_eq_dt": 0.15898447128420015,
+  "P_dn_gt_dt": 0.024155780133103277,
+  "adjacent_neg": 0.0759181661326103,
+  "adjacent_target": 0.005669213704707912,
+  "P_neg_given_one_adjacent": 0.9581993569131833,
+  "proximity_heuristic_acc": 0.8963519842247967,
+  "neg_reachable_from_root": 0.0,
+  "neg_reachable_from_other_person": 1.0,
+  "by_depth": {
+   "3": {
+    "n": 202,
+    "P_dn_lt_dt": 0.7326732673267327,
+    "P_dn_eq_dt": 0.25742574257425743,
+    "P_dn_gt_dt": 0.009900990099009901,
+    "adjacent_neg": 0.5693069306930693,
+    "adjacent_target": 0.0297029702970297,
+    "P_neg_given_one_adjacent": 0.990990990990991,
+    "proximity_heuristic_acc": 0.8613861386138614
+   },
+   "4": {
+    "n": 419,
+    "P_dn_lt_dt": 0.8162291169451074,
+    "P_dn_eq_dt": 0.15990453460620524,
+    "P_dn_gt_dt": 0.02386634844868735,
+    "adjacent_neg": 0.3436754176610978,
+    "adjacent_target": 0.02386634844868735,
+    "P_neg_given_one_adjacent": 0.958904109589041,
+    "proximity_heuristic_acc": 0.89618138424821
+   },
+   "5": {
+    "n": 419,
+    "P_dn_lt_dt": 0.8162291169451074,
+    "P_dn_eq_dt": 0.15990453460620524,
+    "P_dn_gt_dt": 0.02386634844868735,
+    "adjacent_neg": 0.11694510739856802,
+    "adjacent_target": 0.016706443914081145,
+    "P_neg_given_one_adjacent": 0.8888888888888888,
+    "proximity_heuristic_acc": 0.89618138424821
+   },
+   "6": {
+    "n": 419,
+    "P_dn_lt_dt": 0.8162291169451074,
+    "P_dn_eq_dt": 0.15990453460620524,
+    "P_dn_gt_dt": 0.02386634844868735,
+    "adjacent_neg": 0.0,
+    "adjacent_target": 0.0,
+    "P_neg_given_one_adjacent": 0.0,
+    "proximity_heuristic_acc": 0.89618138424821
+   },
+   "7": {
+    "n": 419,
+    "P_dn_lt_dt": 0.8162291169451074,
+    "P_dn_eq_dt": 0.15990453460620524,
+    "P_dn_gt_dt": 0.02386634844868735,
+    "adjacent_neg": 0.0,
+    "adjacent_target": 0.0,
+    "P_neg_given_one_adjacent": 0.0,
+    "proximity_heuristic_acc": 0.89618138424821
+   },
+   "8": {
+    "n": 419,
+    "P_dn_lt_dt": 0.8162291169451074,
+    "P_dn_eq_dt": 0.15990453460620524,
+    "P_dn_gt_dt": 0.02386634844868735,
+    "adjacent_neg": 0.0,
+    "adjacent_target": 0.0,
+    "P_neg_given_one_adjacent": 0.0,
+    "proximity_heuristic_acc": 0.89618138424821
+   },
+   "9": {
+    "n": 419,
+    "P_dn_lt_dt": 0.8162291169451074,
+    "P_dn_eq_dt": 0.15990453460620524,
+    "P_dn_gt_dt": 0.02386634844868735,
+    "adjacent_neg": 0.0,
+    "adjacent_target": 0.0,
+    "P_neg_given_one_adjacent": 0.0,
+    "proximity_heuristic_acc": 0.89618138424821
+   },
+   "10": {
+    "n": 418,
+    "P_dn_lt_dt": 0.8181818181818182,
+    "P_dn_eq_dt": 0.15789473684210525,
+    "P_dn_gt_dt": 0.023923444976076555,
+    "adjacent_neg": 0.0,
+    "adjacent_target": 0.0,
+    "P_neg_given_one_adjacent": 0.0,
+    "proximity_heuristic_acc": 0.8971291866028708
+   },
+   "11": {
+    "n": 397,
+    "P_dn_lt_dt": 0.8261964735516373,
+    "P_dn_eq_dt": 0.15113350125944586,
+    "P_dn_gt_dt": 0.022670025188916875,
+    "adjacent_neg": 0.0,
+    "adjacent_target": 0.0,
+    "P_neg_given_one_adjacent": 0.0,
+    "proximity_heuristic_acc": 0.9017632241813602
+   },
+   "12": {
+    "n": 326,
+    "P_dn_lt_dt": 0.8374233128834356,
+    "P_dn_eq_dt": 0.13496932515337423,
+    "P_dn_gt_dt": 0.027607361963190184,
+    "adjacent_neg": 0.0,
+    "adjacent_target": 0.0,
+    "P_neg_given_one_adjacent": 0.0,
+    "proximity_heuristic_acc": 0.9049079754601227
+   },
+   "13": {
+    "n": 166,
+    "P_dn_lt_dt": 0.8493975903614458,
+    "P_dn_eq_dt": 0.10843373493975904,
+    "P_dn_gt_dt": 0.04216867469879518,
+    "adjacent_neg": 0.0,
+    "adjacent_target": 0.0,
+    "P_neg_given_one_adjacent": 0.0,
+    "proximity_heuristic_acc": 0.9036144578313253
+   },
+   "14": {
+    "n": 34,
+    "P_dn_lt_dt": 0.8823529411764706,
+    "P_dn_eq_dt": 0.08823529411764706,
+    "P_dn_gt_dt": 0.029411764705882353,
+    "adjacent_neg": 0.0,
+    "adjacent_target": 0.0,
+    "P_neg_given_one_adjacent": 0.0,
+    "proximity_heuristic_acc": 0.9264705882352942
+   }
+  }
+ }
+}
