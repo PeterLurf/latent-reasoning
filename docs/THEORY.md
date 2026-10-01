@@ -76,6 +76,8 @@ heuristic scores 0.91, which explains the Coconut cue.
 accuracy); identity buys no reach. D3 is parked.
 **Interchange (§56):** GT-distilled students' latents are age-invariant (G 0.09); T8 students' and parents' are not.
 Path independence tracks one-loop reach (Spearman −0.87, post hoc).
+**§65 registered:** restart-distillation on S3. Can a near-clean label-free restart teacher give one loop its reach? RD / GT /
+SELF × 9 parents.
 **Beyond graphs (§64):** on S3, written-state restarts fix the single loop's length failure (0.995 at N 9–16). The failure is
 not a count-keyed stop: the state loses validity. A5 never learned (0/10, also with the curriculum).
 **F4 (§63):** not met on every measure. The hard straight-through translator never trained (flat losses), so it is uninformative on C7
@@ -4412,6 +4414,61 @@ the 30 eval_st.json files).**
 * If fewer than 3 seeds pass the gate, A5 gives no mechanism verdict, and the non-graph evidence rests on S3 (note
   64-2's rule).
 * Otherwise ST1–ST4 are scored on the gated A5 runs as in §64.
+
+## 65. Restart-distillation on permutation tracking: can a near-clean, label-free teacher give one loop its reach? (pre-registered 2026-10-01 14:55 EDT, after Literature's note 62fc986 and before any run)
+
+**Why.**
+* §64: on S3, written-state restarts are a near-clean, label-free procedure (0.943–0.998 at N 9–16 in the 9 gated
+  models). The single loop collapses past N = 8 and its state loses validity.
+* §62: label-free distillation needs near-clean labels. §32 (Pilot L): distilling restarts extended one loop on graphs,
+  but with a seam-noisy teacher.
+* So this tests whether a near-clean restart teacher gives a single loop the reach that true labels give, outside
+  graph search.
+
+**Prior** (`docs/LIT_PERM_TRACKING_CHECK_2026-10-01.md` addendum).
+* Closest: context distillation (Snell, Klein & Zhong 2209.15189): generate with a scratchpad, then fine-tune to answer
+  without it.
+* Also implicit CoT 2311.01460, stepwise internalisation 2405.14838, System 2 → 1 2407.06023, progressive distillation
+  2202.00512, consistency models 2303.01469, Lee 2502.01612, and Pilot L.
+* New as scoped: label-free distillation of a written-state restart procedure into one latent loop, for state
+  tracking.
+
+**Design.** `theory/st_distill.py`.
+* **Student.** Each of the 9 gated §64 S3 models: s3_s1, s2, s3, s4, s5, s6, s8, s9, s10. s3_s7 is ungated and was used
+  only for the code smoke.
+* **Teacher.** A frozen copy of the student.
+* **Each step.**
+  - A normal batch: N ≤ 8, K = 8, true final answers (the original task).
+  - A deep batch: one N ~ U{9..16}; the student answers in one loop at K′ = N against the teacher's targets.
+* 3000 steps, bs 256, AdamW 1e-4.
+* **Arms (27 runs).**
+  - **RD (primary, label-free).** The frozen copy's restart chain, every 8 operations.
+  - **GT (ceiling).** True final arrangements.
+  - **SELF (control).** The frozen copy's own single loop at K′ = N, which is near chance there.
+* **Measures.**
+  - §64's eval (`eval_st.json`): single loop at K′ = max(8, N) for N 1–24, K′ = 24, restarts, and edit IIA.
+  - `valid.json`: the share of single-loop answers that are valid arrangements at N 12, 16 and 20.
+  - The teacher's per-N error, i.e. 1 − the parent's restart accuracy at each N 9–16 in its §64 `eval_st.json`
+    (Literature's §62 check). It is seam-free if it does not jump at N = 9 or 16.
+
+**Predictions** (medians over the 9 parents; paired counts):
+* **D1 (label-free single-loop reach).** RD single-loop accuracy at N 9–16 ≥ 0.85, and ≥ SELF + 0.50 in 9/9 pairs.
+* **D2 (near-clean ≈ clean).** At N 9–16, RD ≥ GT − 0.05, as §62 predicts when label error is small.
+* **D3 (valid state).** RD's valid share at N 12 ≥ 0.95 (§64's single loops: 0.31).
+* **D4 (in-range kept).** RD in-range accuracy (N ≤ 8) ≥ 0.97.
+* **Descriptive.** N 17–24 (beyond the distilled length; §41 predicts partial reach), K′ = 24, and SELF and GT
+  profiles.
+* **My expectation.** D1–D4 met.
+
+**Readings.**
+* **D1 and D2 met.** A label-free procedure, restarts from written states, gives a single latent loop its reach on a
+  non-graph task, and near-clean self-labels act like true ones. This is a C2 + C4 single-loop result outside graph
+  search.
+* **D1 met, D2 failed.** The gap between near-clean and clean labels matters here.
+* **D1 failed.** Distillation does not transfer restart reach into the loop on state tracking.
+
+**Run (experiments session).** `python theory/st_distill.py --init theory/runs/st/s3_s<k> --teacher {rd|gt|self}
+--device cuda:0 --out theory/runs/st/s3<rd|gt|self>_s<k>`: 27 runs, local 2070 and other free cards.
 
 ## 7. Log
 
