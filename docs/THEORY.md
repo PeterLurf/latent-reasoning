@@ -4077,8 +4077,11 @@ code) is not supported. Calibration does show, graded by structure.**
     (G 0.67–0.93 vs 0.09 with clean labels).
   - These students start from age-causal P30 parents (G ≈ 0.9 at f = 11). Most likely, noise prevents deep
     supervision from overwriting the parents' code, rather than installing a new one. That is a hypothesis, not tested.
-  - **Reach.** Every depth-structured arm loses single-loop reach entirely (d13–18 ≈ 0.50). Uniform noise keeps some
-    (0.60, 5/10).
+  - **Reach.** The depth-structured arms lose single-loop reach in median (d13–18 ≈ 0.50).
+    - NB (one-sided misses) and NS45 lose it in all 10 parents.
+    - NS keeps it in 2 (s118 0.73, s146 0.81).
+    - Uniform noise keeps some: 0.60 median, 6/10 above 0.55 and 5/10 at ≥ 0.60.
+    - Wording corrected after Audit's reproduction.
 * **Together with §58** (training age invariance gives no reach): clean deep supervision delivers reach and age
   invariance together, and label noise removes both. Age invariance is a marker of how fully deep supervision rewrote
   the loop, not the mechanism.
