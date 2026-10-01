@@ -73,3 +73,16 @@ Every model is far above them.
 * All three fall steeply with equation steps (≤ 0.07 at 6 steps). This is the depth horizon THEORY §13 described.
 * The CODI numbers match §13 to the third decimal (same inference code), so the bench port is faithful.
 * Compute: CODI 6 latent passes + ~6 generated tokens; Coconut 10 passes + ~2 tokens ("### N").
+
+## Amendment 2 (2026-10-01 18:34 EDT; descriptive, before running; Audit's suggestion): do the GSM8K latents do the work?
+
+Same checkpoints, items and recipes. Only the number of latent steps changes:
+* SIM-CoT + Coconut at K = 0, 1, 2 thoughts (vs 10). The start and end markers are kept; K = 0 is the markers only.
+* CODI and SIM-CoT + CODI at 0 and 1 latent steps (vs 6). §13 already has CODI L0 0.221, L2 0.234, L6 0.425 on the
+  same code; this re-runs them inside bench.
+
+**Reading (fixed now; descriptive, no pass/fail).**
+* If accuracy at K ≤ 1 stays within 3 points of the full budget, the latents add nothing measurable (as in ProsQA
+  Coconut).
+* If it drops by ≥ 10 points, the latent steps carry computation.
+* Reported per equation-step bucket as well.
