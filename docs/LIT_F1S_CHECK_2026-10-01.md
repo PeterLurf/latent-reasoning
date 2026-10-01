@@ -44,3 +44,17 @@ Semantic Scholar).
   - masked diffusion (discrete per-position refinement).
 - **New if scoped as:** a discrete, readable per-entity label channel in a pretrained LM, learned from mixed-depth final
   answers and iterated beyond the trained depth.
+
+## Addendum (2026-10-01): priors for §61b (seed vs nondeterminism replication)
+- **Seed-bimodal success:**
+  - Zhou et al. 2402.09371 (length generalisation fragile to initialisation and data order);
+  - Zhang et al. 2607.20594 ("roughly a third crack chained A5"; bimodal, stable across hardware);
+  - Kuo et al. 2606.29983 (OOD variance across 18–32 seeds);
+  - McCoy et al. 1911.02969 (same in-distribution accuracy, different generalisation across 100 seeds).
+- **Run-to-run nondeterminism:**
+  - Summers & Dinneen 2103.04514: every nondeterminism source, down to one-bit changes, yields similarly diverse
+    models;
+  - Zhuang et al. 2106.11872: GPU and tooling nondeterminism alone produces run-to-run variance comparable to seed
+    variance.
+- **Implication:** design (a) separates the two only if it pins data order and init, varying GPU nondeterminism alone.
+  Summers & Dinneen predict that even then the outcome can differ.
