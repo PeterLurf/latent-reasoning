@@ -101,6 +101,7 @@ class AIL(nn.Module):
                 self.head.bias[1] = 8.0                # keep-or-set: start by keeping existing labels
 
     tau = None                                       # set during the soft warm-up (setting #5): no hard threshold
+    mode = "hard"                                    # §54b: "soft" (relaxed forward) | "stoch" (Bernoulli forward) | "hard"
 
     def step(self, b, lab, ckpt=False):
         """b: batch dict; lab: (B, V) float {0,1} with straight-through grads. Returns new labels and entity logits."""
@@ -115,6 +116,13 @@ class AIL(nn.Module):
         node = torch.full((lab.shape[0], V, s.shape[-1]), -30.0, device=s.device)
         node = node.scatter_reduce(1, ent.clamp(min=0)[..., None].expand(-1, -1, s.shape[-1]), s, reduce="amax", include_self=True)
         t = 1.0 if self.tau is None else self.tau
+        if not self.free and self.mode == "soft":    # §54b AI-soft / AI-hint: l' = max(l, sigmoid(z / tau))
+            logit = node[..., 0]
+            return torch.maximum(lab, torch.sigmoid(logit / t)), logit
+        if not self.free and self.mode == "stoch":   # §54b AI-stoch: l' = l OR b, b ~ Bernoulli(sigmoid(z)), ST via sigmoid
+            logit = node[..., 0]; pr = torch.sigmoid(logit)
+            bs = torch.bernoulli(pr.detach())
+            return lab + (1 - lab) * (bs + pr - pr.detach()), logit
         if self.free:
             logit = node[..., 0] + lab * node[..., 1]
             soft = torch.sigmoid(logit / t)
@@ -135,6 +143,23 @@ class AIL(nn.Module):
             lab, logit = (checkpoint(self.step, b, lab, use_reentrant=False) if ckpt else self.step(b, lab))
             traj.append(lab)
         return lab, logit, traj
+
+
+def cue_variant(x, rng):
+    """§54b-1: x plus "<another person> is a <parent of the target>." at a random statement position (answer, root's
+    reachable set and target depth unchanged); None if no other person or no concept parent exists."""
+    sym = x["idx_to_symbol"]; root = sym[x["root"]]
+    people = [s for s in sym if s[:1].isupper() and s != root]
+    par = [u for u, v in x["edges"] if v == x["target"] and sym[u][:1].islower()]
+    if not people or not par:
+        return None
+    pe, pa = str(rng.choice(people)), sym[int(rng.choice(par))]
+    parts = re.split(r"(?<=\.) ", x["question"]); stmts, q = parts[:-1], parts[-1]
+    pos = int(rng.integers(0, len(stmts) + 1))
+    art = "an" if pa[:1] in "aeiou" else "a"
+    stmts = stmts[:pos] + [f"{pe} is {art} {pa}."] + stmts[pos:]
+    ix = {s_: i for i, s_ in enumerate(sym)}
+    return {**x, "question": " ".join(stmts) + " " + q, "edges": x["edges"] + [[ix[pe], ix[pa]]]}
 
 
 def collate(xs, dev):
@@ -165,8 +190,10 @@ def train(a):
     dev = a.device
     torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
     sd = torch.load(a.init, map_location="cpu", weights_only=True)
-    arm = "mono" if a.arm == "hint" else a.arm
+    arm = "free" if a.arm == "free" else "mono"
     m = AIL(sd, arm, a.lab_std, a.bias).to(dev)
+    v2 = a.arm in ("soft", "stoch", "hint2")                                  # §54b schedules
+    sub = [x for x in data if len(x["steps"]) <= a.max_depth][:64]           # hardened train-accuracy monitor
     data = [x for x in json.load(open(a.train)) if len(x["steps"]) <= a.max_depth]
     by_depth = {d: [i for i, x in enumerate(data) if len(x["steps"]) <= d] for d in range(1, a.max_depth + 1)}
     head_params = list(m.lab.parameters()) + list(m.head.parameters())
@@ -182,7 +209,17 @@ def train(a):
     order = []
     while step < steps:
         soft_steps = int(a.soft_frac * steps)
-        if step < soft_steps:                        # setting #5: soft forward, tau 1 -> 0.1, depth 3 -> max_depth
+        lam = 0.0
+        if v2:                                       # §54b: tau 1 -> tau_end over 2/3, lambda ramp over the last 1/3,
+            fr = step / steps                        # depth 3 only for 1/6, widening linearly to 3..6 by 1/3
+            m.mode = "stoch" if a.arm == "stoch" else "soft"
+            m.tau = 1 + (a.tau_end - 1) * min(1, fr / (2 / 3))
+            lam = a.lam * max(0.0, (fr - 2 / 3) / (1 / 3))
+            dmax = 3 if fr < 1 / 6 else min(a.max_depth, 3 + int((fr - 1 / 6) / (1 / 6) * (a.max_depth - 3 + 1)))
+            pool = by_depth[dmax]
+            if not order or (dmax < a.max_depth and any(len(data[i]["steps"]) > dmax for i in order[-a.bs:])):
+                order = [pool[i] for i in rng.permutation(len(pool))]
+        elif step < soft_steps:                        # setting #5: soft forward, tau 1 -> 0.1, depth 3 -> max_depth
             fr = step / max(1, soft_steps)
             m.tau = a.tau0 * (a.tau1 / a.tau0) ** fr
             dmax = min(a.max_depth, 3 + int(fr * (a.max_depth - 2)))
@@ -205,7 +242,13 @@ def train(a):
             r = torch.arange(len(xs), device=dev)
             loss = F.binary_cross_entropy(sq(lab[r, b["tgt"]]), torch.ones(len(xs), device=dev)) + \
                    F.binary_cross_entropy(sq(lab[r, b["neg"]]), torch.zeros(len(xs), device=dev))
-            if a.arm == "hint":
+            if lam > 0:                              # binarisation penalty over entity labels, passes 1..P
+                msk = torch.zeros_like(lab)
+                for j, x in enumerate(xs):
+                    msk[j, : len(x["idx_to_symbol"])] = 1
+                pen = sum(((t_ * (1 - t_)) * msk).sum() for t_ in traj[1:]) / (msk.sum() * a.P)
+                loss = loss + lam * pen
+            if a.arm in ("hint", "hint2"):
                 for p in range(1, a.P + 1):
                     tg = torch.zeros_like(lab)
                     for j, x in enumerate(xs):
@@ -220,21 +263,52 @@ def train(a):
             accs.append(float(answer(lab.detach(), logit.detach(), b).float().mean())); losses.append(loss.item())
         torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); step += 1
         if step % 25 == 0 or step == steps:
-            log.write(json.dumps({"step": step, "of": steps, "loss": float(np.mean(losses)), "train_acc": float(np.mean(accs)),
-                                  "sec": round(time.time() - t0)}) + "\n"); log.flush()
+            rec = {"step": step, "of": steps, "loss": float(np.mean(losses)), "train_acc": float(np.mean(accs)),
+                   "sec": round(time.time() - t0)}
+            if v2:
+                rec.update({"tau": m.tau, "lam": lam, "dmax": dmax})
+                if step % 100 == 0 or step == steps:     # hardened accuracy and label binarity on 64 training problems
+                    rec.update(monitor(m, sub, a.P, dev, amp))
+            log.write(json.dumps(rec) + "\n"); log.flush()
             print(f"step {step}/{steps} loss {np.mean(losses):.3f} acc {np.mean(accs):.3f} {time.time() - t0:.0f}s", flush=True)
             accs, losses = [], []
-    torch.save({"model": m.state_dict(), "args": vars(a)}, os.path.join(a.out, "model.pt"))
+    torch.save({"model": m.state_dict(), "args": vars(a), "tau_end": m.tau}, os.path.join(a.out, "model.pt"))
     print("TRAIN_DONE", a.out, f"{time.time() - t0:.0f}s", flush=True)
+
+
+@torch.no_grad()
+def monitor(m, xs, P, dev, amp):
+    """Hardened and soft answer accuracy, and label binarity (share of soft labels within 0.1 of 0 or 1)."""
+    mode, tau = m.mode, m.tau
+    out = {}
+    for name, md in (("hard", "hard"), ("soft", mode)):
+        m.mode = md; m.tau = None if md == "hard" else tau
+        acc, binar = [], []
+        for i in range(0, len(xs), 8):
+            b = collate(xs[i:i + 8], dev)
+            with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+                lab, logit, _ = m.run(b, P)
+            acc += answer(lab, logit, b).float().tolist()
+            if name == "soft":
+                for j, x in enumerate(xs[i:i + 8]):
+                    v = lab[j, : len(x["idx_to_symbol"])]
+                    binar.append(float(((v < 0.1) | (v > 0.9)).float().mean()))
+        out[f"acc_{name}"] = float(np.mean(acc))
+        if binar:
+            out["binarity"] = float(np.mean(binar))
+    m.mode, m.tau = mode, tau
+    return out
 
 
 @torch.no_grad()
 def evaluate(a):
     dev = a.device
     ck = torch.load(os.path.join(a.eval, "model.pt"), map_location="cpu", weights_only=False)
-    arm = ck["args"]["arm"]; arm = "mono" if arm == "hint" else arm
+    arm0 = ck["args"]["arm"]; arm = "free" if arm0 == "free" else "mono"
     sd = torch.load(ck["args"]["init"], map_location="cpu", weights_only=True)
     m = AIL(sd, arm); m.load_state_dict(ck["model"]); m.to(dev).eval()
+    m.mode, m.tau = "hard", None                                              # hardened labels: OR at threshold 0.5
+    soft_cfg = {"soft": ("soft", ck.get("tau_end")), "hint2": ("soft", ck.get("tau_end")), "stoch": ("soft", 1.0)}.get(arm0)
     amp = torch.bfloat16 if torch.cuda.is_bf16_supported() else None
     data = json.load(open(a.test)); rng = np.random.default_rng(0)
     excl = {int(i) for i in a.exclude.split(",") if i}
@@ -271,6 +345,16 @@ def evaluate(a):
                 else:
                     has.append(False)
             lab_e, _, _ = m.run(b, max(Ps), edit=ed)
+            # §54b-1 cue control: one added statement "<another person> is a <parent of the target>" (answer unchanged)
+            xc = [cue_variant(x, rng) for x in xs]
+            bc = collate([c if c is not None else x for c, x in zip(xc, xs)], dev)
+            lab_c, logit_c, _ = m.run(bc, max(Ps))
+            acc_c = answer(lab_c, logit_c, bc)
+            if soft_cfg:                                                          # soft-test accuracy (AG0)
+                m.mode, m.tau = soft_cfg
+                lab_s, logit_s, _ = m.run(b, max(Ps))
+                acc_s = answer(lab_s, logit_s, b)
+                m.mode, m.tau = "hard", None
         r = torch.arange(len(xs), device=dev)
         for j, x in enumerate(xs):
             T = [traj[p][j] > 0.5 for p in range(len(traj))]
@@ -282,6 +366,10 @@ def evaluate(a):
                 lt, ln = bool(lb[j, x["target"]] > 0.5), bool(lb[j, x["neg_target"]] > 0.5)
                 row[f"P{P}"] = bool(lt and not ln) if lt != ln else None             # None = tie (logit only at max P)
             row["acc"] = bool(answer(lab, logit, b)[j])
+            if xc[j] is not None:
+                row["acc_cue"] = bool(acc_c[j])
+            if soft_cfg:
+                row["acc_soft"] = bool(acc_s[j])
             h = hops(x); nV = len(x["idx_to_symbol"])
             fin = traj[max(Ps)][j, :nV].cpu().numpy() > 0.5
             reach = np.array([v in h for v in range(nV)])
@@ -293,15 +381,15 @@ def evaluate(a):
     out = {"model": a.eval, "Ps": Ps, "n": len(rows), "rows": rows}
     json.dump(out, open(os.path.join(a.eval, "eval.json"), "w", newline="\n"))
     for lo, hi in ((3, 6), (7, 10), (11, 14)):
-        s = [r for r in rows if lo <= r["depth"] <= hi]
-        print(f"d{lo}-{hi} n {len(s)} acc {np.mean([r['acc'] for r in s]):.3f} fixed_point median {np.median([r['fixed_point'] for r in s])}", flush=True)
+        s_ = [r for r in rows if lo <= r["depth"] <= hi]
+        print(f"d{lo}-{hi} n {len(s_)} fixed_point median {np.median([r['fixed_point'] for r in s_])}", flush=True)
     print("EVAL_DONE", a.eval, flush=True)
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out"); ap.add_argument("--eval")
-    ap.add_argument("--arm", default="mono", choices=["mono", "free", "hint"]); ap.add_argument("--seed", type=int, default=1)
+    ap.add_argument("--arm", default="mono", choices=["mono", "free", "hint", "soft", "stoch", "hint2"]); ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--init", default=os.path.join(HERE, "ckpt", "gpt2_pretrained.bin"))
     ap.add_argument("--train", default=os.path.join(HERE, "p8data", "p8_train.json"))
     ap.add_argument("--test", default=os.path.join(HERE, "p8data", "p8_test.json"))
@@ -310,6 +398,7 @@ def main():
     ap.add_argument("--lr", type=float, default=5e-5); ap.add_argument("--lr_head", type=float, default=1e-3)
     ap.add_argument("--eps", type=float, default=1e-3); ap.add_argument("--n_per_d", type=int, default=100)
     ap.add_argument("--lab_std", type=float, default=0.02); ap.add_argument("--bias", type=float, default=-4.0)
+    ap.add_argument("--tau_end", type=float, default=0.3); ap.add_argument("--lam", type=float, default=0.1)
     ap.add_argument("--soft_frac", type=float, default=0.0); ap.add_argument("--tau0", type=float, default=1.0)
     ap.add_argument("--tau1", type=float, default=0.1)
     ap.add_argument("--exclude", default="0,1,2,3,4,5,6,7,15,16,27,47",
