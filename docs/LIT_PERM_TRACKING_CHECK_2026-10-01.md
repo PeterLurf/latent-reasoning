@@ -75,3 +75,29 @@ match theirs: a dedicated N ≤ 2 stage for ~30% of steps, then doubling stages.
   tracking.
 - **§62 check:** the teacher's 0.995 accuracy makes labels near-clean, with no depth seam. Report the teacher's
   per-N error to confirm.
+
+## Addendum (2026-10-01): GPT-2 text permutation tracking with written-chunk restarts (WC arm; THEORY §52 addendum 186d5f5)
+**Q1: nearest to "latent within chunks, text state between chunks, trained from short-problem final answers":**
+1. **Thinking States** 2602.08332: thoughts every few input tokens, extrapolates on state tracking. But the thoughts are
+   *supervised text tokens* and the history is not cut.
+2. **Delethink** 2510.06557 / **MEM1** 2506.15841: chunks plus a text carry-over with the history erased. But they are
+   explicit CoT inside chunks and trained with RL reward.
+3. **Markovian Transformers** 2404.18988: the answer passes only through text (RL).
+4. PENCIL 2503.14337 (reduction), InftyThink 2503.06692 (summaries), RMT 2207.06881 (continuous memory tokens).
+
+**None combines continuous thoughts inside chunks, a text state between chunks and a history cut, trained only on final
+answers of short problems. New as scoped.**
+
+**Q2: composing several transpositions per pass.**
+- Li, Guo & Andreas 2503.02854, *(How) Do Language Models Track State?*: LMs learn an *associative scan* (Liu-style
+  log-depth composition) or a parity-associative hybrid for permutation word problems. Composing several elements per
+  pass is expected.
+- Theory: Liu 2210.10749 (shortcuts); 4 boxes = S4, which is **solvable**, so shallow shortcuts exist.
+- Entity tracking with boxes: Kim & Schuster 2305.02363 (the boxes task); Prakash et al. 2402.14811 (fine-tuning
+  enhances an existing entity-tracking mechanism).
+- **Implication:** WC₀ (chunks without latent thoughts) may already solve k ≤ 4 per pass. Report WC₀ against WC by k,
+  so the latent thoughts' contribution (C1) is measured, not assumed.
+
+**Q3: compute-matched CoT vs latent on state tracking.** None found with matched compute. Thinking States reports
+latency against CoT; Shapiro 2608.11233 is explicitly a system-level comparison. A compute-matched C3 comparison here
+would be new. Use the C3 accounting in `LIT_NORTHSTAR` / the boundary-memory proposal (§12).
