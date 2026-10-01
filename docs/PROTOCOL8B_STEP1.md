@@ -97,3 +97,19 @@ Update 19:03: host 53555209 destroyed at 19:02, before its probe finished (DESTR
 `prosqa/res_p8b1/logs_ctl_s2/`). Fallback: if the local run fails, it is re-run locally from the same verified
 checkpoint. The 4060 re-run is fp32 on a different card, so small numeric differences from the other five seeds' hosts
 are possible.
+
+## Result (2026-09-30 20:47 EDT; `python prosqa/score_p8b1.py` → `results/p8b1.json`; all 6 seeds, ctl_s2 from the local re-run)
+
+**P8b1-1: inconclusive.** OG(ckpt) = −0.025 / −0.052 / −0.038 (mean −0.038), OG(ctl) = −0.080 / −0.102 / −0.117
+(mean −0.100). Difference +0.061 ≥ 0.05 with complete separation (exact one-sided MW p = 0.05), but mean OG(ckpt) is
+negative, far below the 0.10 bar. A written correct checkpoint still lowers accuracy; checkpoint training only
+reduces the harm (Phase 0 model: −0.133).
+**P8b1-2:** RG(ckpt) mean −0.004 (no gain from false checkpoints); RG(ctl) mean −0.027 (harm: blind trust).
+**Secondary (d7–10).** BASE ckpt 0.530 / 0.545 / 0.535 vs ctl 0.570 / 0.563 / 0.573 (checkpoint training costs ≈ 0.03
+of plain accuracy; both near chance = 0.5). OGe ckpt mean −0.018, ctl −0.031. REG (own anchors) ckpt −0.016, ctl −0.080.
+Oracle-at-random-position accuracy by depth (ckpt / ctl): d7 0.54 / 0.53, d8 0.52 / 0.52, d9 0.48 / 0.40, d10 0.46 / 0.43.
+Phase 0 reference (`res_p8b/p8b1_base_ref.json`, descriptive): BASE 0.558, oracle_rp 0.425.
+**Reading.** Four epochs of fine-tuning with checkpoints on half the training problems taught the model to be hurt less
+by written statements, not to use them: even the oracle checkpoint four hops before the target, which leaves a problem
+the model solves at d3–5, does not help. One caveat: the registered combination takes the max per option over the base
+and checkpoint episodes, which can add false positives (THEORY §50). **Step 2 (conditional on P8b1-1 supported) is not run.**
