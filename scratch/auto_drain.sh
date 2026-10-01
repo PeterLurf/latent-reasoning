@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Toy-queue Vast watcher with automatic, verified draining.
-#   bash scratch/auto_drain.sh "<host> <port> <queue tag> <instance id> <fetch prefix t9|p9|t12>" ...   (t12: drain_t12.sh)
+#   bash scratch/auto_drain.sh "<host> <port> <queue tag> <instance id> <fetch prefix t9|p9|t12|f6>" ...   (t12: drain_t12.sh; f6: drain_f6.sh)
 # Every 10 min, for each host still in the list:
 #   - QUEUE_DONE: run scratch/drain_toy.sh. On DRAINED, record host:port in logs/drained_hosts.txt (scratch/gpu_watch.sh
 #     skips those), log it in logs/auto_drain.log, and drop the host from the list. Otherwise print the drain output
@@ -37,6 +37,7 @@ while :; do
     fi
     if [ "$dn" -ge 1 ] 2>/dev/null; then
       if [ "$pre" = t12 ]; then res=$(bash scratch/drain_t12.sh "$h" "$p" "$t" "$id" 2>&1)
+      elif [ "$pre" = f6 ]; then res=$(bash scratch/drain_f6.sh "$h" "$p" "$t" "$id" 2>&1)
       else res=$(bash scratch/drain_toy.sh "$h" "$p" "$pre" "$id" "$t" 2>&1); fi
       if echo "$res" | grep -q "^DRAINED $id"; then
         echo "$h:$p" >> logs/drained_hosts.txt

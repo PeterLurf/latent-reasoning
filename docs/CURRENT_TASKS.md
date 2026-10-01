@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-10-01 00:41 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-10-01 00:55 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -71,6 +71,7 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 | **Cue test** (exploratory) | lexical-adjacency cue in all 6 step-1 models (`docs/PROTOCOL8B_STEP1.md`) | origin: Theory |
 | **THEORY §51** (scored by Experiments) | TH1 0/10, TH2 1/10, not met; `theory/results/score_exp25.json` | no GPT-2 halt port |
 | **PROTOCOL10** | **scored 20:59: P10-1 not supported** (G ckpt mean −0.002); P10-2 as predicted; P10-3 not met; edit check not estimable; `docs/PROTOCOL10.md` | — |
+| **F6 (THEORY §58)** 30 runs; frozen code `scratch/f6_frozen/` (5d3d2b6), worker `scratch/queue_worker_f6.sh` (stage-1 guard, T12 pattern), queues `scratch/f6_q_{local,A..F}.txt` | A 53638792 149.200.35.231:28463 (3090) · B 53638790 142.198.191.106:40428 (3090) · C 53638793 38.29.145.27:40825 (A4000) · D 53638791 38.29.145.230:40055 (A4000) · E 53638794 174.0.242.177:1630 (4070) · F 53638795 181.116.79.48:40276 (3080); ≈ $0.88/h; watchers `auto_drain.sh … f6` (→ `drain_f6.sh`) + gpu_watch | ~06:00–10:00 → score: eval_arch (in queue), then exp18 / exp28 per §58 |
 | **PROTOCOL8b step 1** | **scored 20:47: P8b1-1 inconclusive** (OG ckpt −0.038 vs ctl −0.100, separated but < 0.10); step 2 not run; `docs/PROTOCOL8B_STEP1.md` | hop sweep (exploratory): near-target checkpoints push ctl to 0.13 |
 
 **Watchers (auto-drain since 19:31 over the p8c hosts; gpu_watch re-armed 22:20 over the 11 live hosts; CoT arm and rt_s1 drained):** before re-arming, check `logs/auto_drain.log` for hosts drained since the last list. `scratch/auto_drain_prosqa.sh` (verified
@@ -112,7 +113,7 @@ any event, create or destroy. The toy-side `auto_drain.sh`, `p8_watch.sh` and `p
 
 | GPU | Now | Next (chained, automatic) | Runs dry |
 |---|---|---|---|
-| RTX 4060 | since 00:40: F6 (THEORY §58) queue, 30 runs × ~1.75 h (`scratch/f6_queue.sh cuda:0`, lock dirs `theory/runs/f6_locks/`, log `logs/f6_queue.log`, per run `logs/f6_<tag>.log`; resumable) | other cards can join with `bash scratch/f6_queue.sh <dev> [fp32 on the 2070]` | ~52 h alone |
+| RTX 4060 | since 00:43: F6 local share (4 runs: `scratch/queue_worker_f6.sh f6_local cuda:0 scratch/f6_q_local.txt`, log `logs/queue_f6_local.out`) | — | ~08:00 |
 | RTX 3070 | since 00:38: §60 development pilot BM-oc λ=1 (`scratch/bm_pilot.sh 1 cuda:1`, log `logs/bm_pilot_lam1.log`; dev set only) | then §60 seed panel (8 runs) once λ, steps, batch frozen | ~02:00 |
 | RTX 2070 | since 00:38: §60 development pilot BM-oc λ=0.1 (`scratch/bm_pilot.sh 0.1 cuda:2`) | §60 panel | ~02:10 |
 
