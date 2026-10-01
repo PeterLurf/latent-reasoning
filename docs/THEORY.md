@@ -2707,7 +2707,8 @@ it is a probe that is used causally. It is not a claim about the silent steps (�
   < 24) in ≥ 7/10 models.
 
 **Result (2026-09-30; 10 models; `theory/results/exp24_learned_halt.json`). LH1 met (9/10); LH2 not met (0/10).**
-* **LH1.** Pooled held-out reward is highest for the learned halt in 9/10 models. Example, s102: learned 0.719, closure
+* **LH1.** Pooled held-out reward is highest for the learned halt in 9/10 models. The failure is s113 (0.637 vs best
+  fixed 0.643). s111 ties the best fixed S at 0.645, which counts under ≥. Example, s102: learned 0.719, closure
   0.685, best fixed (S = 3) 0.701, fixed 6 0.645. Accuracy at the learned halt, by chain length 12/18/24: median
   ≈ 0.78 / 0.74 / 0.69.
 * **LH2.** The learned halt stops after a median of 2 segments at every chain length, in every model (s111: 1).
