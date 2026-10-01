@@ -3059,6 +3059,57 @@ Source: `docs/EXTERNAL_IDEAS_2026-09-30.md` (87949a7). Literature's check: `docs
   - **Literature to check first:** easy-to-hard and length curricula for looped or iterative models, and "train on one
     step, compose at test" without step labels.
 
+### Addendum (2026-10-01 15:00 EDT): design draft for GPT-2 state tracking — the written-state chunked loop (not registered; for Literature's and Audit's comments)
+
+**Why this rather than per-variable value slots.**
+* §64's transferable result is the written-state restart: 0.995 at N 9–16 on S3, with the written state read
+  faithfully (IIA 0.969).
+* F1-style public-label passes have twice failed on credit assignment from final answers: F1-S trained in 1/3 seeds;
+  F4's straight-through translator never trained.
+* A state written as text is public, readable and overwritten at every chunk by construction, with no new discrete
+  bottleneck to optimise.
+
+**Task.** Permutation tracking in text: n = 4 boxes holding items A–D.
+* Operations are transpositions, "swap boxes i and j" (generators of S4, non-abelian), in random order.
+* Question: "Which box holds item X?" (4-way), or the full arrangement.
+* Generator-built, so there is no answer shortcut; the identity predictor is registered as the no-reasoning baseline.
+* Train N ≤ 8 operations; test N = 1–32.
+
+**Arms** (all from original GPT-2 small; the same training problems and token budget accounted for):
+* **NC (no CoT).** Question → answer directly. Final answers only.
+* **TC (text CoT, the C3 bar).** The arrangement written after every operation, then the answer. Trained with step
+  labels: the standard CoT reference, not C4.
+* **CL (Coconut single loop).** K′ = N continuous thoughts, then the answer. Final answers only.
+* **WC (written-state chunked loop; the proposed method).**
+  - The model reads [current arrangement as text + the next k ≤ 4 operations], runs k continuous thoughts, then writes
+    the new arrangement as text.
+  - The next chunk restarts from [original question + new arrangement + the next k operations], with the latent
+    history cut.
+  - Training uses final answers of short problems only: "start arrangement + k ≤ 4 operations → end arrangement", with
+    random start arrangements. That is C4, since each chunk's target is a final answer, never a thought.
+  - At test, chunks are chained, so the state is overwritten as text every k operations.
+
+**Measures.**
+* Accuracy vs N (1–32).
+* Compute per problem: forward FLOPs and generated or latent positions; matched-compute curves vs TC (C3).
+* Readability of WC's written states, which is exact by construction (text). Edit IIA: replace a written arrangement
+  and check that the answer follows the true composition from it (as §64 ST4).
+* For CL: §64's state-validity probe, via a linear readout of the arrangement from the thoughts.
+
+**Predictions to register** (draft):
+* CL fails past the trained length (§64's analogue).
+* WC holds ≥ 0.95 to N = 32.
+* WC matches TC's accuracy at ≈ 1/k of TC's written tokens (the C3 claim).
+* Edit IIA ≥ 0.9.
+
+**Open points for comments.**
+* Which group: S4 transpositions (solvable; a GPT-2 shortcut is possible), or S5 / A5 (non-solvable; the deadlock risk
+  of §64)?
+* What k should be. GPT-2 may compose 2–4 transpositions per forward pass without latent steps (an NC-style shortcut);
+  WC with k latent steps should be compared with WC₀ (chunks of k with no latent thoughts).
+* Matched-compute accounting rules for TC vs WC.
+* How it relates to scratchpad chunking and PENCIL-style reduction (Literature).
+
 ## 53. F2 — bidirectional latent reasoning, zero-shot on toy models (pre-registered 2026-09-30 20:45 EDT, after Literature's check 3ba2507 and before any measurement on the test models)
 
 **Design.** `theory/exp26_bidirectional.py`, CPU, inference only, no training.
