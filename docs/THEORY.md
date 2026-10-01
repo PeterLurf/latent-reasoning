@@ -76,6 +76,8 @@ heuristic scores 0.91, which explains the Coconut cue.
 accuracy); identity buys no reach. D3 is parked.
 **Interchange (§56):** GT-distilled students' latents are age-invariant (G 0.09); T8 students' and parents' are not.
 Path independence tracks one-loop reach (Spearman −0.87, post hoc).
+**F4 registered (§63):** a behavioural round-trip translator for silent thoughts (C7): 20 frozen models × 2 arms × 2 seeds,
+with input-only, evaluator-swap and claim-flip controls. F3 was dropped at its premise check.
 **§62 registered:** does depth-structured label noise install a count (via calibration)? NS / NS45 / NB / NU label-noise
 arms on Pilot L. The label-free teacher's errors rise across its seam in 20/20 parents.
 **F1 on GPT-2 (§54b):** not learnable from deep final answers (soft and stoch 0/3). With per-pass targets it is exact
@@ -4049,6 +4051,84 @@ reachable nodes is +0.009 for pl_gt_s102 and +0.094 for pl_t8_s102, already the 
 
 **Run and score (experiments session).** 40 short GPU fine-tunes, the same cost class as one Pilot L arm. Score with
 the measures above.
+
+## 63. F4 — a behavioural round-trip translator: can silent toy thoughts be made readable as node sets? (pre-registered 2026-10-01 10:21 EDT, after Literature's checks 3ba2507 and bb74280, before any run)
+
+**Question (C7 for silent steps).**
+* §34 read the pointer with a fitted linear map: round trip 0.947, edit IIA 0.36.
+* F4 learns a decoder (thought → a hard set of node ids: the text) and an encoder (text → thought) **through the frozen
+  reasoner's behaviour only**. The reasoner is never trained, and the set's meaning is never supervised.
+* Is the silent state expressible as a set of input entities that behaves as written when edited?
+
+**Prior** (`docs/LIT_F4_DELTA_2026-10-01.md`).
+* Nothing since 3ba2507 trains a decoder and encoder through a frozen model with a behavioural substitution loss.
+* Closest set-valued precedent with causal edits: Concept Bottleneck Models 2007.04612. Also IIT 2112.00826, NLA,
+  2607.20379 (whose three audits are adopted below) and 2608.17843.
+
+**Code.** `theory/f4_translator.py` (D: MLP → V logits over the graph's present ids, hard forward with an ST gradient;
+E: MLP on [set, step one-hot] + a linear term).
+* **Losses.**
+  - Round trip: BCE of R's answers with thought i replaced by E(D(h_i), i), against R's unpatched answers.
+  - Edit (IIT-style): add a random node u unreachable from START to the decoded set; the targets are R's answers OR
+    BFS-reachable-from-u.
+* **Training.** Long chains (K′ = 12) and training graphs (K = 6), half each; i ~ U{1..5}; 3000 steps, bs 128,
+  Adam 1e-3.
+* **Arms (Literature's age-channel caution).** S: the encoder sees the step index. N: `--no_step`, set only.
+  2 seeds each.
+* **Canonicalisation (2310.18512).** The text is an unordered multi-hot set over a fixed id vocabulary, so there is no
+  order or no-op-token channel by construction.
+
+**Models.** The 10 even-indexed P30 failures (`runs/p30_s{102,…,157}`) and the same parents' GT students
+(`theory/runs/pl_gt_s…`): 20 models × 2 arms × 2 seeds = 80 translator trainings.
+
+**Evaluation (held out).** Long-chain probe, 512 graphs, seed 4247 (training uses other seeds), K′ = 12, i = 2
+(primary) and 3. **Aggregation (Audit): each metric per model over its 512 × 24 answers, then medians over models per
+family and arm.**
+* **RT.** Agreement of the hard-text round trip with R's unpatched answers.
+* **IIA (held-out edit type).** §34's test on the text.
+  - u = the look-alike of the deepest reachable-chain node j in the decoded set.
+  - ins: both look-alikes at j+2 and j+3 answered reachable. keep: all reachable-chain answers unchanged.
+  - IIA = mean(ins & keep) over graphs with such a j ≤ 8.
+  - Training never uses look-alike-of-frontier edits.
+* **Input-only control (Audit, Literature).** The encoder is fed the input-derived text: the true set reached within i
+  hops, by BFS on the input, with the same step index. Reported: RT_input, and the error-reproduction rates below.
+* **Error reproduction (faithful to the model, not the task).** On (graph, query) pairs where R's unpatched answer is
+  wrong, the share where the round trip reproduces R's answer: err_repro (own text) vs err_repro_input (input-only
+  text).
+* **Evaluator swap (2607.20379).** Decode with seed-1's D and encode with seed-2's E, and vice versa. Report RT_swap
+  and IIA_swap (mean of the two directions).
+* **Claim-flip audit (2607.20379).** Add a random unreachable node: flip_on is the share of its BFS descendants among
+  the probe queries that turn on; flip_collateral is the share of other answers that change.
+* **Grounded-vs-true cross.** Precision and recall of the decoded set against the true set reached within i hops. A
+  set that is behaviourally effective but untrue would be co-adapted content.
+* **Controls.** RT_mean (h_i ← the mean thought at step i) and RT_mismatch (decoding another graph's thought).
+
+**Predictions** (P30 models, arm S, i = 2, medians over the 10 models; the C7 claim needs F4-1 to F4-4 together):
+* **F4-1 (round trip).** RT ≥ 0.95.
+* **F4-2 (edits behave as written).** IIA ≥ 0.80 (§34: 0.36), with flip_collateral ≤ 0.05.
+* **F4-3 (faithful to the model).** err_repro ≥ 0.80 and ≥ err_repro_input + 0.15.
+* **F4-4 (no private code).** RT_swap ≥ RT − 0.05 and IIA_swap ≥ 0.60.
+* **F4-5 (age channel; cross-check of §56).** The step-index gap RT(S) − RT(N) is larger for P30 than for GT students
+  by ≥ 0.02 (medians). §56 found P30 latents age-causal and GT latents age-invariant.
+* **Descriptive.** All metrics for GT students and for arm N; i = 3; precision and recall; RT_mean and RT_mismatch.
+* **My expectation.** F4-1 and F4-3 met; F4-2 partial (0.5–0.8), because the probe's edit type is held out; F4-4 met
+  if F4-2 is.
+* **Disclosure.** A CPU pipeline smoke ran on runs/p30_s100, outside the set, for 300 steps (untrained: RT 0.84, IIA
+  0.0). It checks plumbing only.
+
+**Readings.**
+* **F4-1 to F4-4 met.** Silent latent states of a toy reasoner are faithfully readable as sets of input entities, by
+  optimisation, with no change to the reasoner: C7 for silent steps.
+* **F4-1 met, F4-2 failed.** The text reproduces behaviour but does not control it. A hidden channel lies outside the
+  set vocabulary; its size is the measurement.
+* **F4-3 failed.** The text describes the task, not the model.
+* **F4-4 failed.** The translators co-adapted a private code.
+
+**Run (experiments session).** One wave of parallel Vast hosts.
+* 80 runs:
+  `python theory/f4_translator.py --model <model> --seed {1,2} [--no_step] --device cuda:0 --out theory/runs/f4/<model>_<S|N>_t<seed>`.
+* Then 40 swaps: `python theory/f4_translator.py --swap <…_t1> <…_t2> --device cuda:0`.
+* A 100-step GPU smoke first, to time it.
 
 ## 7. Log
 
