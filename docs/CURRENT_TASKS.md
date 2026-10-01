@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-09-30 21:01 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-09-30 21:06 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -57,6 +57,7 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 |---|---|---|
 | done 09:34 | Phase 0 Coconut | **F1 and F1b not met** (aᴄ(H, 10) = 0.656; K′ = 0 at chance): outcome (iii), Coconut does not learn deep problems; `docs/PROTOCOL8_PHASE0_RESULTS.md` |
 | **PROTOCOL8** (registered 482a8e9; `prosqa/pod_p8c.sh`) | coco_s1 53533281 151.237.25.16:20413 · coco_s2 53533300 213.163.75.246:50708 · at_s1 53533289 142.112.39.215:63460 · rt_s1 53533295 86.123.234.69:46460 · rt_s2 53533311 185.101.222.13:17298 · cot_s1–s4 53533314/19/22/26 (38.29.145.230:40495, 142.127.68.223:13228, 159.48.242.15:42038, 38.247.78.6:44010) · at_s2 + s3/s4 of every latent arm placed by `scratch/p8c_fill.sh` (log `logs/p8c_fill.log`) | latent ~Thu 04:00–10:00; cot ~16:00 → `drain_prosqa.sh` |
+| **PROTOCOL11** (registered f192848; THEORY §52 F2 on GPT-2, inference only) | 7 models on the 3 local cards | score with `prosqa/score_p11.py` |
 | **PROTOCOL10** | **scored 20:59: P10-1 not supported** (G ckpt mean −0.002); P10-2 as predicted; P10-3 not met; edit check not estimable; `docs/PROTOCOL10.md` | — |
 | **PROTOCOL8b step 1** | **scored 20:47: P8b1-1 inconclusive** (OG ckpt −0.038 vs ctl −0.100, separated but < 0.10); step 2 not run; `docs/PROTOCOL8B_STEP1.md` | hop sweep (exploratory): near-target checkpoints push ctl to 0.13 |
 
@@ -99,9 +100,9 @@ any event, create or destroy. The toy-side `auto_drain.sh`, `p8_watch.sh` and `p
 
 | GPU | Now | Next (chained, automatic) | Runs dry |
 |---|---|---|---|
-| RTX 4060 | free since ~21:00 (all PROTOCOL8b/10 local work done and scored) | Theory's F1 (§54) run list when registered | — |
-| RTX 3070 | free since ~21:00 (all PROTOCOL8b/10 local work done and scored) | Theory's F1 (§54) run list when registered | — |
-| RTX 2070 | free since ~21:00 (all PROTOCOL8b/10 local work done and scored) | Theory's F1 (§54) run list when registered | — |
+| RTX 4060 | since 21:05: PROTOCOL11 (bidirectional search, `scratch/p11_worker.sh cuda:0`, log `logs/p11.log`; 7 models by lock dirs) | then `python prosqa/score_p11.py`; next Theory's F1 (§54) | ~21:45 |
+| RTX 3070 | since 21:05: PROTOCOL11 (bidirectional search, `scratch/p11_worker.sh cuda:1`, log `logs/p11.log`; 7 models by lock dirs) | then `python prosqa/score_p11.py`; next Theory's F1 (§54) | ~21:45 |
+| RTX 2070 | since 21:05: PROTOCOL11 (bidirectional search, `scratch/p11_worker.sh cuda:2`, log `logs/p11.log`; 7 models by lock dirs) | then `python prosqa/score_p11.py`; next Theory's F1 (§54) | ~21:45 |
 
 - **Overnight follow-up: PROTOCOL9** (`docs/PROTOCOL9.md`, a28ff0c 16:09:10): anytime supervision on the T9/T10
   architectures, paired by seed with the T9/T10 controls. 32 runs (`scratch/queue_worker3.sh`, frozen theory code in
