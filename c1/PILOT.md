@@ -54,3 +54,15 @@ Audit's conditions (18:5x):
   This matches the external agent's "likeliest failure": good-ish marginal likelihood, bad hard rollouts.
 * **The panel (D1/TAB/RESET/FP × 5 seeds) is not run.** The stop rule applies. Theory decides the next step (e.g. M = 12
   codes for spare capacity, the external agent's next item, or a frozen-GPT-2 cell with a trainable adapter).
+
+## Amendment 67-1 run record (2026-10-01 19:50 EDT; before any of these runs; descriptive)
+
+* **Seeds and budget.** 99, 1, 2; 2,000 updates, bs 512, the same marginalisation and curriculum.
+* **Cells and settings** (fixed now):
+  - **mlp:** lr 1e-3.
+  - **tf_small:** lr 1e-3 (2 layers, d 256, 4 heads, pre-norm, LayerNorm before heads).
+  - **gpt2_rand:** lr 1e-4 with the best pilot init (configuration 8: LayerNorm head input + distinct codes); GPT-2's own
+    init, weights seeded by the run seed.
+* **Placement.** Local: gpt2_rand on the 4060, tf_small on the 3070, mlp on the 2070, 3 seeds sequentially each.
+* **Reported.** Certified (36-transition audit) and hard-execution accuracy at N 8–128 per run.
+* CPU plumbing smokes (100 updates) are voided as `_smoke_*.void`.
