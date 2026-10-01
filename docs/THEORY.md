@@ -4261,6 +4261,17 @@ timing.
 * The registered S3 seed 1 run (20k steps, bs 256) is unaffected. A separate 20-step A5 smoke checked the evaluation
   code path only.
 
+**Note 64-2 (2026-10-01 12:26 EDT, before §64 is scored; Audit's live-log observation that A5 sits at loss ln 5).**
+* **Not a plumbing bug.** A CPU check outside the registered runs (scratch script; A5, bs 128, 400 steps) shows:
+  - N = 1 problems learn to full-state accuracy 0.97;
+  - with N ≤ 2 the loss leaves ln 5 by step 200 (accuracy 0.31 at step 400).
+  The registered A5 runs sit on an optimisation plateau, Zhang's deadlock pattern, not on a broken target.
+* **What S3 alone can show (fixed before scoring).** S3's ST2 and ST3 count as evidence about the loop's mechanism only
+  if its median K′ = 0 accuracy at N = 5–8 is ≤ 0.50, i.e. the loop is needed. Otherwise S3 is reported descriptively
+  (Liu's shortcut caveat). An S3-only verdict is stated as "on a solvable group".
+* **A5 follow-up.** The single registered revision is §64b, an operator-first length curriculum (registered next). It
+  is the follow-up §64's readings named in advance. There is no revision after it.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
