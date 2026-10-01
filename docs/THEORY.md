@@ -3586,6 +3586,20 @@ or Vast at the experiments session's discretion. CPU suffices for the data gener
 thresholded answers between the training-family and held-out-family schedules on the same instances, in every seed.
 This mirrors Phase A's held-out-order gate.
 
+**Implementation note 60-3 (2026-10-01 00:56 EDT; Theory's review of the experiments session's build in `bm/`, before
+the seed panel; no panel data exists).**
+* **Accepted.**
+  - Leaf ports follow the boundary rule.
+  - Wiring tokens carry in-A/in-B/in-P flags.
+  - The age audit is a ridge-CV decoder within truth-matched groups (n ≥ 20).
+* **Changed before the panel.**
+  - **(i) The root's slot is permuted per call like every other vertex.** A pinned root slot would be a role channel,
+    which the proposal (§6) excludes. The host still binds root and query for readout.
+  - **(ii) Training labels are sampled over all valid entries, including the trivial ones (j ∈ a), then balanced 50/50
+    by label.** Otherwise A3's extensivity law would be tested only on entries never seen in training.
+* The λ_order / steps development pilot is re-run on the fixed code, at the experiments session's discretion, before
+  settings are frozen.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
