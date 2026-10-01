@@ -16,3 +16,25 @@ sha256 7c5d3f4b…). Pre-registration tuning under Audit's rules (training data 
   check are excluded from any later evaluation.
 * **Success bar for a redesign.** 2608.11233 is cited with Audit's correction (intermediate-state supervision, no
   matched compute).
+
+## THEORY §54b panel result (2026-10-01 06:26 EDT; `python prosqa/score_p54b.py` → `results/p54b.json`; 9 runs, settings frozen in PROTOCOL12_TUNING.md)
+
+| arm | hardened acc d3–6 / d7–10 / d11–14 (per seed) | AG0 gap | AG1′ | AG2 | AG3 edit IIA | AG4 ρ | cue drop |
+|---|---|---|---|---|---|---|---|
+| **AI-soft** (primary) | 0.54/0.54/0.50 · 0.50/0.48/0.45 · 0.50/0.50/0.48 | 0.008 | **0/3** | no | 0.36 | 0.19 | 0.003 |
+| AI-stoch | 0.39/0.40/0.35 · 0.14/0.12/0.14 · 0.45/0.43/0.42 | −0.005 | 0/3 | no | 1.00 (all labels on) | 0.12 | 0.008 |
+| AI-hint (ceiling; per-pass targets) | **1.000 / 1.000 / 1.000 in all 3 seeds** | 0.000 | 3/3 | yes | 1.00 | 1.00 | 0.000 |
+
+* **AI-soft: AG1′ not met (0/3).** Every depth is at chance; the soft labels sit at ≈ 0.5 (binarity 0.04). AG0 is met only
+  trivially (both soft and hardened accuracy at chance).
+* **AI-stoch: AG1′ not met.** The labels flood: every entity is marked (recall 1.000, precision 0.549), the answer falls to the
+  logit tie-break, and accuracy is below chance. Its edit IIA of 1.0 is an artefact of flooding.
+* **AI-hint (upper bound, uses step labels, not C4): perfect.** In every seed:
+  - hardened accuracy 1.000 at every depth band, including d11–14, far past the trained depth of 6, with P = 14 passes;
+  - label precision and recall 1.000;
+  - edit IIA 1.000, and fixed-point vs depth ρ = 1.00;
+  - the cue control drops accuracy by 0.000.
+* **Reading (§54b's fixed readings): "AG1′ failed in both arms".** Final-answer training of an entity-label channel does not
+  converge on GPT-2 / ProsQA within this budget, so F1's C4 claim stands on the toy only. But the hint ceiling shows the
+  architecture itself runs an exact, readable (C7), halting (C5), depth-extrapolating (C2), cue-free search in GPT-2 once
+  the per-pass label rule is learned. The obstacle is credit assignment from final answers, not representation.
