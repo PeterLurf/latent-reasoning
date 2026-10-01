@@ -133,6 +133,59 @@ def norm_digits(s):
     return " ".join(re.findall(r"\d", s))
 
 
+# ---------------------------------------------------------------- Boxes state tracking (THEORY §66), generator-built
+
+def boxes_load():
+    import random as _r
+    import sys as _s
+    _s.path.insert(0, ROOT)
+    from boxes.core import apply, make_problem, truth
+    rng = _r.Random(6600); items = []
+    for n in range(1, 33):
+        for qt in ("all", "where"):
+            for i in range(50):
+                p = make_problem(rng, n, qt)
+                items.append({"id": f"boxes:{n}:{qt}:{i}", "kind": "generate", "depth": n, "answer": truth(p), "raw": p})
+    return items, []
+
+
+def _boxes_ans(p, arr):
+    return (" " + " ".join(arr)) if p["qtype"] == "all" else " " + str(arr.index(p["target"]) + 1)
+
+
+def boxes_identity(p):
+    from boxes.core import truth
+    return float(_boxes_ans(p, p["start"]).strip() == truth(p).strip())
+
+
+def boxes_lastop(p):
+    from boxes.core import apply, truth
+    return float(_boxes_ans(p, apply(p["start"], p["ops"][-1:])).strip() == truth(p).strip())
+
+
+def boxes_norm(s):
+    """THEORY §66 amendment 66-1: compare only the content. A full arrangement -> its letters A-D in order ("A,C,B,D",
+    " A C B D", "ACBD" all -> "A C B D"); a "where" answer -> its box digit 1-4."""
+    t = s.strip()
+    if re.fullmatch(r"[A-Da-d]{4}", t):
+        return " ".join(t.upper())
+    letters = re.findall(r"\b[A-Da-d]\b", t)                   # standalone letters only ("box" is not a B)
+    if letters:
+        return " ".join(c.upper() for c in letters)
+    d = re.findall(r"[1-4]", s)
+    return d[0] if d else s.strip()
+
+
+def boxes_chance(p):
+    return 1 / 24 if p["qtype"] == "all" else 1 / 4
+
+
+def boxes_majority(p):
+    from boxes.core import truth
+    maj = "ABCD" if p["qtype"] == "all" else None                # "all": the identity-ordered arrangement; "where": box 1
+    return float(truth(p).strip() == (" ".join(maj) if maj else "1"))
+
+
 # ---------------------------------------------------------------- registry
 
 @dataclass
@@ -164,6 +217,10 @@ TASKS = {t.name: t for t in [
          "equation steps in the reference solution", normalise=norm_number),
     Task("mult4x4", mult_loader(4), "4x4-digit multiplication test (implicit-CoT repo, 2311.01460)", "digits",
          normalise=norm_digits),
+    Task("boxes", boxes_load, "THEORY §66 generator: 4 boxes, swap ops (S4), N 1-32, 50 per N per question type (seed 6600)",
+         "operations N", normalise=boxes_norm,
+         baselines={"identity (start)": boxes_identity, "last op only": boxes_lastop,
+                    "majority (ABCD / box 1)": boxes_majority, "chance (1/24 all, 1/4 where)": boxes_chance}),
     Task("mult5x5", mult_loader(5), "5x5-digit multiplication test (implicit-CoT repo, 2311.01460)", "digits",
          normalise=norm_digits),
 ]}

@@ -13,6 +13,7 @@ Spec strings (the part after "?" is optional, key=value pairs joined by "&"):
 predict(item) returns {"margin": float} (choice) or {"text": str} (generate), and "compute": {...} with latent passes
 or generated tokens, so accuracy can be compared at matched compute.
 """
+import json
 import os
 import sys
 from urllib.parse import parse_qs
@@ -125,6 +126,34 @@ class Baseline(Adapter):
         return {"score": s, "compute": {"latent_passes": 0, "gen_tokens": 0}}
 
 
+class Boxes(Adapter):
+    """THEORY §66 arms (boxes/core.py): run dir with args.json (arm, k) and model.pt. Batched via predict_all."""
+    kinds = ("generate",)
+
+    def __init__(self, run_dir, device, k=None):
+        sys.path.insert(0, ROOT)
+        from boxes.train import load_model
+        a = json.load(open(os.path.join(run_dir, "args.json")))
+        self.arm = a["arm"]; self.k = int(k or a.get("k", 4)); self.dev = device
+        self.m = load_model(os.path.join(run_dir, "model.pt"), device).eval()
+
+    def predict_all(self, items):
+        from boxes.core import infer
+        groups = {}
+        for i, it in enumerate(items):
+            groups.setdefault((len(it["raw"]["ops"]), it["raw"]["qtype"]), []).append(i)
+        out = [None] * len(items)
+        amp = torch.bfloat16 if self.dev.startswith("cuda") and torch.cuda.is_bf16_supported() else None
+        for idx in groups.values():
+            for s in range(0, len(idx), 64):
+                b = idx[s:s + 64]
+                with torch.no_grad(), torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+                    txt, comp = infer(self.m, self.arm, self.k, [items[i]["raw"] for i in b], self.dev)
+                for i, t in zip(b, txt):
+                    out[i] = {"text": t, "compute": dict(comp)}
+        return out
+
+
 def load(spec, task, device="cpu"):
     kind, path, opts = parse_spec(spec)
     if kind == "coconut":
@@ -137,6 +166,8 @@ def load(spec, task, device="cpu"):
         return F1S(path, device, **opts)
     if kind == "gen":
         return Generate(path, device, **opts)
+    if kind == "boxes":
+        return Boxes(path, device, **opts)
     if kind in ("shortcut", "chance"):
         if kind == "shortcut" and not task.baselines:
             raise SystemExit(f"task {task.name} has no no-reasoning baseline")
