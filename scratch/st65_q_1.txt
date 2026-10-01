@@ -1,0 +1,4 @@
+# THEORY 65 Vast host 1
+theory/runs/st/s3gt_s1 theory/st_distill.py --init theory/runs/st/s3_s1 --teacher gt
+theory/runs/st/s3gt_s2 theory/st_distill.py --init theory/runs/st/s3_s2 --teacher gt
+theory/runs/st/s3gt_s3 theory/st_distill.py --init theory/runs/st/s3_s3 --teacher gt
