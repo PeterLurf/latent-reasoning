@@ -1,0 +1,15 @@
+{
+ "last": 0.022744503411675512,
+ "first": 0.016679302501895376,
+ "max": 0.01288855193328279,
+ "sum": 0.008339651250947688,
+ "product": 0.01592115238817286,
+ "max_minus_min": 0.006065200909780136,
+ "last_minus_first": 0.004548900682335102,
+ "round_mean": 0.02047005307050796,
+ "constant_most_frequent_test_answer": 0.030326004548900682,
+ "constant_value": 5.0,
+ "oracle_one_op_any_pair": 0.155420773313116,
+ "answer_in_question": 0.06368460955269144,
+ "n_items": 1319
+}

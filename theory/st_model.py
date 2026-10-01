@@ -82,7 +82,7 @@ class STReasoner(nn.Module):
                            torch.arange(Nm, device=ops.device)[None] < nops[:, None]], 1)
         return torch.cat([xi, xo], 1), valid
 
-    def run(self, init, ops, pos, nops, K, keep_attn=False):
+    def run(self, init, ops, pos, nops, K, keep_attn=False, patch=None):
         x, valid = self.prefix(init, ops, pos, nops)
         B, P, D = x.shape; te = self.type_emb.weight
         lat, attn1 = [], []
@@ -99,6 +99,8 @@ class STReasoner(nn.Module):
                 if li == 0 and keep_attn:
                     attn1.append(a[:, :, -1, self.n:P].mean(1))           # last latent's attention over op tokens
             h = self.ln_f(z[:, -1]); lat.append(xl)
+            if patch is not None:                                            # THEORY §67: edit thought k + 1 before feedback
+                h = patch(k + 1, h)
         xq = self.q_emb.weight[None].expand(B, -1, -1) + te[T_Q]
         seq = torch.cat([x] + lat + [xq], 1); L = seq.shape[1]
         keys = torch.cat([valid, torch.ones(B, L - P, dtype=torch.bool, device=x.device)], 1)
