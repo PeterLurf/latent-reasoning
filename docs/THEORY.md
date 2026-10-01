@@ -3378,6 +3378,39 @@ This is a plumbing check, not a result.
 **Cost.** About 1–1.5 h per run on an A4000-class GPU, roughly +30–50 % over P30 from the eager transplant step: ≈ 40
 GPU-h. Placement by the experiments session: local cards after §54b, or Vast within budget, about $5–8.
 
+## 59. ProsQA-NA: the §57 cue neutralised without changing any answer (2026-09-30 22:47 EDT; data, exploratory)
+
+**Construction.** `theory/prosqa_na.py SRC DST`. Outputs go to `prosqa/p8data/` (gitignored; regenerate with the script,
+seed 0).
+* **Distance equalisation.** The two options' distance from the nearest person statement is equalised at
+  L = min(dt, dn, 2). This adds "<another person> is a <option or a parent of it>."
+* **In-degree equalisation.** The options' in-degrees are equalised with "Every <C> is a <option>.", where C is a
+  concept the root cannot reach.
+* Statements go at random positions. The answer, the root's reachable set and the target's depth are asserted
+  unchanged per problem.
+
+**Residual-cue check.** Expected accuracy of shallow heuristics: the option farther from every person / with more
+parents / more mentions / mentioned first / mentioned last / whose parents have higher in-degree.
+
+| Data | n | proximity | parents | mentions | first | last | parents' in-degree |
+|---|---|---|---|---|---|---|---|
+| prosqa_test (original) | 500 | 0.91 | 0.66 | 0.66 | 0.59 | 0.55 | 0.52 |
+| prosqa_na_test | 496 | 0.50 | 0.50 | 0.50 | 0.50 | 0.51 | **0.62** |
+| p8_na_test | 4,053 | 0.50 | 0.50 | 0.50 | 0.51 | 0.51 | 0.50 |
+| p8_na_train | 11,985 | 0.50 | 0.50 | 0.50 | 0.50 | 0.50 | 0.50 |
+
+* **p8_na is clean on every check.** Few problems were dropped: 4 from test and 15 from train.
+* **prosqa_na keeps a second-order cue (0.59–0.62).** It comes from the added parents' in-degree. A fully
+  exchangeable re-generation (Literature: "balanced re-generation") would remove it. I am not iterating further on data
+  patches.
+
+**Uses.**
+1. **Cue reliance of existing models.** Accuracy on p8_na_test vs p8_test for the same model (Phase 0, PROTOCOL8b
+   step-1, PROTOCOL10/11). A model that reasons from the root loses nothing; a cue model falls toward its
+   reasoning-only accuracy.
+2. **Training data** for any future ProsQA-based latent-reasoning claim (C2/C3/C7), so that ~0.9 is not available
+   without reasoning.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
