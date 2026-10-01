@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-09-30 20:37 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-09-30 20:38 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -40,6 +40,8 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 **Budget (20:31): spend freeze lifted** — the user topped up; Vast credit $145.38 (`show user`), 12 hosts at $2.78/h. PROTOCOL8 to completion ≤ $39, Audit's reserve $30, so ≈ $76 for new paid work. Send Audit a host-by-host projection before any launch over ~$5. Every create/destroy goes in `scratch/pods.txt`.
 
 **Roles (user, via Audit, 2026-09-30 ~20:35):** Theory originates designs; Experiments runs every registered design (placement, deploy, queues, drains, scoring runs). Local cards first, Vast within budget, projection to Audit before launches over ~$5.
+
+**Handed over by Theory (20:38): THEORY §51** (registered c76a8ce; CPU at Idle priority, log `theory/results/exp25_target_halt.log`, output `theory/results/exp25_target_halt.json`, ~1–2 h). Experiments scores TH1 (median stop non-decreasing over distance bins 1–6/7–12/13–18/19–24 and larger at 19–24 than at 1–6, in ≥ 7/10 models) and TH2 (last + halt ≥ max + halt − 0.02 in ≥ 7/10), then sends Audit the verdict. Port the halt to GPT-2 (spec in Theory's message, code `theory/exp24_learned_halt.py`, `exp25_target_halt.py`) only if TH1 holds.
 
 **Theory (details in docs/THEORY.md; one-liners at the top of its executive summary):**
 - All theory work so far is scored; no theory Vast hosts or local GPU jobs are running.
