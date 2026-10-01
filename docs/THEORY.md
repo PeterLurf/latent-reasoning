@@ -4272,6 +4272,31 @@ timing.
 * **A5 follow-up.** The single registered revision is §64b, an operator-first length curriculum (registered next). It
   is the follow-up §64's readings named in advance. There is no revision after it.
 
+### 64b. Permutation tracking, the single A5 revision: Zhang et al.'s operator-first curriculum (pre-registered 2026-10-01 12:29 EDT, before §64 is scored; Literature's addendum 68a0a3d)
+
+**Why.** §64's A5 runs sit at loss ln 5 (Audit's live-log note).
+* Note 64-2 showed this is an optimisation plateau, not a bug: A5 N = 1 problems learn to 0.97 in 400 CPU steps.
+* Zhang 2607.20594 (App. D) reports that joint training deadlocks on S5, while a sequenced curriculum learns in 10/10
+  runs.
+* Its schedule starts with "an extended n = 2 stage that masters the composition table before any chaining", then
+  doubles the length.
+* §64's readings named this as the follow-up. It is the single revision; there is none after it.
+
+**Change from §64 (A5 only).** `theory/st_model.py --curriculum` (schedule commit 9ae43d2).
+* Stage 1, the first 32 % of steps: length-2 problems only, N = 2.
+* Stage 2, 32–48 %: N ~ U{1..4}.
+* Stage 3, the rest: §64's distribution, N ~ U{1..8}.
+* This is Zhang's operator-first schedule adapted to our maximum training length of 8. Zhang: length 2 for ≈ 32 % of
+  steps, then doubling stages.
+* Everything else is unchanged: 20k steps, bs 256, K = 8, the model, measures, the gate (≥ 0.90 at N ≤ 8), and ST1–ST4
+  with their thresholds and readings.
+* Seeds 1–10: 10 runs.
+
+**Decision rule, fixed now.**
+* If fewer than 3 seeds pass the gate, A5 gives no mechanism verdict, and the non-graph evidence rests on S3 (note
+  64-2's rule).
+* Otherwise ST1–ST4 are scored on the gated A5 runs as in §64.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
