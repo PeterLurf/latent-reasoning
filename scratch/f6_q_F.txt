@@ -1,0 +1,5 @@
+# THEORY 58 (F6) queue
+f6m_s146 --transplant 1 --transplant_mode mismatch --transplant_ages 2:4 --transplant_bs 128
+f6a_s157 --transplant 1 --transplant_mode aged --transplant_ages 2:4 --transplant_bs 128
+f6y_s157 --transplant 1 --transplant_mode young --transplant_ages 2:4 --transplant_bs 128
+f6m_s157 --transplant 1 --transplant_mode mismatch --transplant_ages 2:4 --transplant_bs 128
