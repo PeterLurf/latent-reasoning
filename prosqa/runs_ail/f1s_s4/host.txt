@@ -1,0 +1,2 @@
+NVIDIA RTX A4000, 560.35.05, 16376 MiB
+torch 2.5.1+cu124 cuda 12.4 bf16 True

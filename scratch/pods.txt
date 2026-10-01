@@ -306,3 +306,28 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53745075 vast offer 43574919 created 2026-10-01 15:37: label boxes-W6, queue scratch/boxes_q_W6.txt (logged at create by vdeploy_toy.sh)
 53745081 vast offer 38460297 created 2026-10-01 15:37: label boxes-W7, queue scratch/boxes_q_W7.txt (logged at create by vdeploy_toy.sh)
 53745088 vast offer 45242143 created 2026-10-01 15:38: label boxes-W8, queue scratch/boxes_q_W8.txt (logged at create by vdeploy_toy.sh)
+53732210 vast | f1sb_F0 DESTROYED_VERIFIED 2026-10-01 15:40 after verified fetch (f1sb runs: f1s_s4 f1s_s5)
+53747406 vast offer 45465084 created 2026-10-01 15:59: label boxes-W0, queue scratch/boxes_q_W0.txt (logged at create by vdeploy_toy.sh)
+53747413 vast offer 53644726 created 2026-10-01 15:59: label boxes-W9, queue scratch/boxes_q_W9.txt (logged at create by vdeploy_toy.sh)
+53747416 vast offer 35580413 created 2026-10-01 15:59: label boxes-W10, queue scratch/boxes_q_W10.txt (logged at create by vdeploy_toy.sh)
+53747420 vast offer 51428266 created 2026-10-01 15:59: label boxes-W11, queue scratch/boxes_q_W11.txt (logged at create by vdeploy_toy.sh)
+53747426 vast offer 35702410 created 2026-10-01 15:59: label boxes-W12, queue scratch/boxes_q_W12.txt (logged at create by vdeploy_toy.sh)
+53745056 vast | boxes_W2 DESTROYED_VERIFIED 2026-10-01 16:11 after verified fetch (boxes: wc0_4_s3 tc2_s1 tc_s5 wc4_s2; model.pt kept for *_s1 and all cl runs)
+53747406 vast | boxes-W0 DESTROYED_VERIFIED 2026-10-01 16:12 (GPT2_SHA_MISMATCH on the host's download: no run started; queue re-placed)
+53745059 vast | boxes_W3 DESTROYED_VERIFIED 2026-10-01 16:13 after verified fetch (boxes: wc0_8_s3 tc2_s5 cl_s1 wc8_s2; model.pt kept for *_s1 and all cl runs)
+53748938 vast offer 53644723 created 2026-10-01 16:13: label boxes-W0, queue scratch/boxes_q_W0.txt (logged at create by vdeploy_toy.sh)
+53749154 vast offer 47976752 created 2026-10-01 16:14: label st65-0, queue scratch/st65_q_0.txt (logged at create by vdeploy_toy.sh)
+53749175 vast offer 47976740 created 2026-10-01 16:14: label st65-1, queue scratch/st65_q_1.txt (logged at create by vdeploy_toy.sh)
+53749188 vast offer 49633880 created 2026-10-01 16:14: label st65-2, queue scratch/st65_q_2.txt (logged at create by vdeploy_toy.sh)
+53749199 vast offer 50923400 created 2026-10-01 16:14: label st65-3, queue scratch/st65_q_3.txt (logged at create by vdeploy_toy.sh)
+53749214 vast offer 50614344 created 2026-10-01 16:14: label st65-4, queue scratch/st65_q_4.txt (logged at create by vdeploy_toy.sh)
+53745075 vast | boxes_W6 DESTROYED_VERIFIED 2026-10-01 16:14 after verified fetch (boxes: tc2_s4 wc0_8_s2 wc4_s5 wc8_s1; model.pt kept for *_s1 and all cl runs)
+53749227 vast offer 48328451 created 2026-10-01 16:14: label st65-5, queue scratch/st65_q_5.txt (logged at create by vdeploy_toy.sh)
+53749232 vast offer 51587992 created 2026-10-01 16:14: label st65-6, queue scratch/st65_q_6.txt (logged at create by vdeploy_toy.sh)
+53745069 vast | boxes_W5 DESTROYED_VERIFIED 2026-10-01 16:19 after verified fetch (boxes: wc0_4_s2 wc2_s5 tc_s4 wc4_s1; model.pt kept for *_s1 and all cl runs)
+53745081 vast | boxes_W7 DESTROYED_VERIFIED 2026-10-01 16:20 after verified fetch (boxes: nc_s3 wc0_2_s1 cl_s4 wc8_s5; model.pt kept for *_s1 and all cl runs)
+53745088 vast | boxes_W8 DESTROYED_VERIFIED 2026-10-01 16:25 after verified fetch (boxes: wc0_2_s5 wc0_4_s1 wc2_s4 tc_s3; model.pt kept for *_s1 and all cl runs)
+53745066 vast | boxes_W4 DESTROYED_VERIFIED 2026-10-01 16:25 after verified fetch (boxes: nc_s4 wc0_2_s2 wc2_s1 cl_s5; model.pt kept for *_s1 and all cl runs)
+53749214 vast | st65-4 DESTROYED_VERIFIED 53749214 2026-10-01 16:29: SSH never came up (banner timeout); no work on it; queue st65_q_4 re-placed
+53751343 vast offer 47976746 created 2026-10-01 16:30: label st65-4, queue scratch/st65_q_4.txt (logged at create by vdeploy_toy.sh)
+53747420 vast | boxes_W11 DESTROYED_VERIFIED 2026-10-01 16:31 after verified fetch (boxes: wc0_2_s4 tc_s2 wc2_s3; model.pt kept for *_s1 and all cl runs)

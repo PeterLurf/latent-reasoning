@@ -1,0 +1,9 @@
+{
+ "out": "prosqa/runs_ail/f1s_s4",
+ "eval": null,
+ "seed": 4,
+ "init": "/workspace/Latent/prosqa/ckpt/gpt2_pretrained.bin",
+ "device": "cuda:0",
+ "steps": 1486,
+ "max_eval": 0
+}
