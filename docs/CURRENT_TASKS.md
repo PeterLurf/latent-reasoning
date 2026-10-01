@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-10-01 09:49 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-10-01 16:33 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -34,6 +34,29 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 > predicts the front still stops at the training depth, a schedule end predicts it continues (K = 6 anytime already
 > gives fronts to depth 11 in 2/4 runs; Pilot D 12 + 12 running on Vast). Ownership (theory Vast hosts vs a PROTOCOL8)
 > to be agreed. The theory session analyses O/R/T9/T10 runs only after the experiments session has scored them.
+
+## 00. EXPERIMENTS STATE AT 2026-10-01 16:33 EDT — authoritative over section 0
+
+**Credit:** Vast $114.73 at 16:28; 15 hosts ≈ $2.0/h.
+
+**Running:**
+* **THEORY §65** (27 st_distill runs; queues `scratch/st65_q_<h>.txt`): s3rd_s1/s2 done; s3rd_s3–s6 on the local
+  4060/2070 (`scratch/tj_local.sh`, log `logs/tj_local.log`).
+  - Seven Vast A4000s, st65-0…6 (`logs/tj_deploy.log`, pods.txt), run at **2 concurrent** (`scratch/tjob_vast2.sh`;
+    3 per 16 GB card OOM'd, logs kept as *.void_oom). st65-4 is the new instance 53751343.
+  - Watchers: `auto_drain_tj.sh`.
+  - Score D1–D4 (THEORY §65) when all 27 have `eval_st.json`.
+* **THEORY §66 boxes panel** (50 runs): 35 drained into `boxes/runs/`. W0, W1 and W9–W12 are still running, each with an
+  `auto_drain_boxes.sh` watcher.
+  - Then compute the CL K′ curve locally from the kept CL checkpoints.
+  - Then score the NC gate, P1–P5 and compute/validity.
+* **§61b:** 11/13 runs have eval.json; f1s_s12/s13 are running on the local 3070. Then score R1/R2 (PROTOCOL12 §61b).
+* **bench-6/7:** CoT jobs, watched by `auto_drain_bench_slow.sh`.
+
+**Scored today:**
+* PROTOCOL8 amendment 3 (NA re-score): every latent arm is at chance; coco's edge was the cue; CoT is cue-free (0.767).
+  See PROTOCOL8_RESULTS.md.
+* §54b, §60/§60b, §61, §62, §63/F4, §64/§64b, F6: see PROTOCOL12 and `theory/score_*.py`.
 
 ## 0. STATE AT 2026-09-30 00:36 — authoritative; sections 1–3 below are partly history
 
