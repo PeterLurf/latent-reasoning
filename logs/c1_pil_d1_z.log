@@ -18,3 +18,5 @@
 {'update': 1800, 'L': 2, 'loss': 1.7918105387687684, 'examples': 921600, 'gpt2_tokens': 216000, 'sec': 147}
 {'update': 1900, 'L': 4, 'loss': 1.7917901158332825, 'examples': 972800, 'gpt2_tokens': 228000, 'sec': 155}
 {'update': 2000, 'L': 2, 'loss': 1.7918561124801635, 'examples': 1024000, 'gpt2_tokens': 240000, 'sec': 163, 'acc8': 0.176, 'acc32': 0.184, 'certified': False, 'trans_err': 30}
+EVAL {"acc": {"8": 0.162, "16": 0.1775, "32": 0.166, "64": 0.186, "128": 0.1595}} False
+DONE c1/runs/pil_d1_z

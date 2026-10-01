@@ -17,3 +17,4 @@
 {"update": 1700, "L": 4, "loss": 1.6439557003974914, "examples": 870400, "gpt2_tokens": 204000, "sec": 329}
 {"update": 1800, "L": 2, "loss": 1.6684545660018921, "examples": 921600, "gpt2_tokens": 216000, "sec": 347}
 {"update": 1900, "L": 4, "loss": 1.6672100234031677, "examples": 972800, "gpt2_tokens": 228000, "sec": 366}
+{"update": 2000, "L": 2, "loss": 1.6374325704574586, "examples": 1024000, "gpt2_tokens": 240000, "sec": 384, "acc8": 0.146, "acc32": 0.168, "certified": false, "trans_err": 25}
