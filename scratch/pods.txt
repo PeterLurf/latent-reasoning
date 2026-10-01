@@ -284,3 +284,8 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53732219 vast offer 53120053 created 2026-10-01 13:43: label f1sb-F1, queue scratch/f1sb_q_F1.txt (logged at create by vdeploy_toy.sh)
 53732227 vast offer 52809950 created 2026-10-01 13:43: label f1sb-F2, queue scratch/f1sb_q_F2.txt (logged at create by vdeploy_toy.sh)
 53732236 vast offer 45242052 created 2026-10-01 13:43: label f1sb-F3, queue scratch/f1sb_q_F3.txt (logged at create by vdeploy_toy.sh)
+53709510 vast | na_C DESTROYED_VERIFIED 2026-10-01 13:47 after verified fetch (NA jobs: rt_s2 at_s2 cot_s4)
+53724366 vast | st2_0 DESTROYED_VERIFIED 2026-10-01 13:51 after verified fetch (theory/runs/st/a5c_s1 theory/runs/st/a5c_s2)
+53724369 vast | st2_1 DESTROYED_VERIFIED 2026-10-01 14:03 after verified fetch (theory/runs/st/a5c_s3 theory/runs/st/a5c_s4)
+53724387 vast | st2_3 DESTROYED_VERIFIED 2026-10-01 14:06 after verified fetch (theory/runs/st/a5c_s7 theory/runs/st/a5c_s8)
+53724377 vast | st2_2 DESTROYED_VERIFIED 2026-10-01 14:06 after verified fetch (theory/runs/st/a5c_s5 theory/runs/st/a5c_s6)
