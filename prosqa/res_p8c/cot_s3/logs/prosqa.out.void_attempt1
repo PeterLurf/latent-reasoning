@@ -1,0 +1,110 @@
+COMMIT 27273cb8cca4bb763c041a63b036d0c3b7cbbb48
+PATCH applied
+MASK patch applied to coconut.py
+run.py unchanged (SDPA attention with the wrapped kernel)
+P8 anytime patch applied to coconut.py
+P8 random_tight patch applied to dataset.py
+P8 patch applied to run.py
+ENVOK 2.5.1+cu124 4.46.2 NVIDIA GeForce RTX 4070 Ti SUPER
+DATA_MD5 c0ee4b3ade ff5baa26e4 078ca274fe 92c1dc9ed2 
+MASK_TEST PASS
+P8_TEST PASS
+[W930 13:39:12.289515291 CUDAAllocatorConfig.h:28] Warning: expandable_segments not supported on this platform (function operator())
+Config: {'project': 'coconut', 'save_path': '/workspace/ckpt', 'name': 'p8c-cot-s3', 'only_eval': False, 'coconut': False, 'cot': True, 'no_thoughts': False, 'no_cot': False, 'c_thought': 1, 'epochs_per_stage': 4, 'max_latent_stage': 10, 'pad_latent_to_max': True, 'save_only_improve': False, 'uniform_prob': 0.0, 'model_id': 'openai-community/gpt2', 'load_model_path': 'None', 'seed': 3, 'resume': 0, 'bf16': False, 'train_path': 'data/p8_train.json', 'val_path': 'data/p8_valid.json', 'reset_optimizer': True, 'batch_size_training': 8, 'debug': False, 'gradient_accumulation_steps': 16, 'num_epochs': 30, 'lr': 0.0001, 'weight_decay': 0.01}
+[rank0]:[W930 13:39:12.399111553 ProcessGroupNCCL.cpp:4115] [PG ID 0 PG GUID 0 Rank 0]  using GPU 0 to perform barrier as devices used by this process are currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect.Specify device_ids in barrier() to force use of a particular device,or call init_process_group() with a device_id.
+Running FSDP on rank = 0, world size = 1
+/opt/conda/lib/python3.11/site-packages/torch/distributed/fsdp/_init_utils.py:444: UserWarning: FSDP is switching to use `NO_SHARD` instead of ShardingStrategy.FULL_SHARD since the world size is 1.
+  warnings.warn(
+FullyShardedDataParallel(
+  (_fsdp_wrapped_module): GPT2LMHeadModel(
+    (transformer): GPT2Model(
+      (wte): Embedding(50257, 768)
+      (wpe): Embedding(1024, 768)
+      (drop): Dropout(p=0.1, inplace=False)
+      (h): ModuleList(
+        (0-11): 12 x GPT2Block(
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (attn): GPT2SdpaAttention(
+            (c_attn): Conv1D(nf=2304, nx=768)
+            (c_proj): Conv1D(nf=768, nx=768)
+            (attn_dropout): Dropout(p=0.1, inplace=False)
+            (resid_dropout): Dropout(p=0.1, inplace=False)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): GPT2MLP(
+            (c_fc): Conv1D(nf=3072, nx=768)
+            (c_proj): Conv1D(nf=768, nx=3072)
+            (act): NewGELUActivation()
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+      )
+      (ln_f): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+    )
+    (lm_head): Linear(in_features=768, out_features=50257, bias=False)
+  )
+)
+Map (num_proc=32):   0%|          | 0/100 [00:00<?, ? examples/s]Map (num_proc=32):   4%|▍         | 4/100 [00:00<00:03, 29.56 examples/s]Map (num_proc=32):  25%|██▌       | 25/100 [00:00<00:00, 111.08 examples/s]Map (num_proc=32):  43%|████▎     | 43/100 [00:00<00:00, 130.88 examples/s]Map (num_proc=32):  58%|█████▊    | 58/100 [00:00<00:00, 135.99 examples/s]Map (num_proc=32):  76%|███████▌  | 76/100 [00:00<00:00, 144.77 examples/s]Map (num_proc=32):  97%|█████████▋| 97/100 [00:00<00:00, 157.62 examples/s]Map (num_proc=32): 100%|██████████| 100/100 [00:00<00:00, 124.49 examples/s]
+Map (num_proc=32):   0%|          | 0/12000 [00:00<?, ? examples/s]Map (num_proc=32):   1%|          | 92/12000 [00:00<00:44, 270.43 examples/s]Map (num_proc=32):   2%|▏         | 274/12000 [00:00<00:16, 716.62 examples/s]Map (num_proc=32):   5%|▌         | 651/12000 [00:00<00:07, 1545.13 examples/s]Map (num_proc=32):   9%|▊         | 1026/12000 [00:00<00:05, 2127.22 examples/s]Map (num_proc=32):  12%|█▏        | 1392/12000 [00:00<00:04, 2494.51 examples/s]Map (num_proc=32):  15%|█▍        | 1769/12000 [00:00<00:03, 2775.30 examples/s]Map (num_proc=32):  18%|█▊        | 2149/12000 [00:00<00:03, 3004.56 examples/s]Map (num_proc=32):  21%|██        | 2524/12000 [00:01<00:03, 3149.72 examples/s]Map (num_proc=32):  24%|██▍       | 2898/12000 [00:01<00:02, 3232.19 examples/s]Map (num_proc=32):  27%|██▋       | 3264/12000 [00:01<00:02, 3264.93 examples/s]Map (num_proc=32):  30%|███       | 3647/12000 [00:01<00:02, 3349.60 examples/s]Map (num_proc=32):  33%|███▎      | 4018/12000 [00:01<00:02, 3354.19 examples/s]Map (num_proc=32):  37%|███▋      | 4396/12000 [00:01<00:02, 3395.55 examples/s]Map (num_proc=32):  40%|███▉      | 4775/12000 [00:01<00:02, 3427.39 examples/s]Map (num_proc=32):  43%|████▎     | 5149/12000 [00:01<00:01, 3428.86 examples/s]Map (num_proc=32):  46%|████▌     | 5515/12000 [00:01<00:01, 3423.80 examples/s]Map (num_proc=32):  49%|████▉     | 5903/12000 [00:02<00:01, 3459.95 examples/s]Map (num_proc=32):  52%|█████▏    | 6261/12000 [00:02<00:01, 3414.46 examples/s]Map (num_proc=32):  55%|█████▌    | 6643/12000 [00:02<00:01, 3433.77 examples/s]Map (num_proc=32):  58%|█████▊    | 7019/12000 [00:02<00:01, 3451.43 examples/s]Map (num_proc=32):  62%|██████▏   | 7397/12000 [00:02<00:01, 3412.08 examples/s]Map (num_proc=32):  65%|██████▍   | 7774/12000 [00:02<00:01, 3434.46 examples/s]Map (num_proc=32):  68%|██████▊   | 8144/12000 [00:02<00:01, 3435.82 examples/s]Map (num_proc=32):  71%|███████   | 8522/12000 [00:02<00:01, 3434.38 examples/s]Map (num_proc=32):  74%|███████▍  | 8898/12000 [00:02<00:00, 3443.43 examples/s]Map (num_proc=32):  77%|███████▋  | 9269/12000 [00:03<00:00, 3453.56 examples/s]Map (num_proc=32):  80%|████████  | 9648/12000 [00:03<00:00, 3427.93 examples/s]Map (num_proc=32):  84%|████████▎ | 10025/12000 [00:03<00:00, 3442.12 examples/s]Map (num_proc=32):  87%|████████▋ | 10395/12000 [00:03<00:00, 3416.48 examples/s]Map (num_proc=32):  90%|████████▉ | 10769/12000 [00:03<00:00, 3435.84 examples/s]Map (num_proc=32):  94%|█████████▎| 11245/12000 [00:03<00:00, 3792.72 examples/s]Map (num_proc=32):  98%|█████████▊| 11720/12000 [00:03<00:00, 3534.12 examples/s]Map (num_proc=32): 100%|██████████| 12000/12000 [00:03<00:00, 3039.09 examples/s]
+Map (num_proc=32):   0%|          | 0/100 [00:00<?, ? examples/s]Map (num_proc=32):  12%|█▏        | 12/100 [00:00<00:00, 104.15 examples/s]Map (num_proc=32): 100%|██████████| 100/100 [00:00<00:00, 377.33 examples/s]
+Map (num_proc=32):   0%|          | 0/12000 [00:00<?, ? examples/s]Map (num_proc=32):   3%|▎         | 375/12000 [00:00<00:03, 3061.55 examples/s]Map (num_proc=32):  12%|█▎        | 1500/12000 [00:00<00:01, 7079.66 examples/s]Map (num_proc=32):  28%|██▊       | 3375/12000 [00:00<00:00, 11577.59 examples/s]Map (num_proc=32):  41%|████      | 4875/12000 [00:00<00:00, 10105.23 examples/s]Map (num_proc=32):  59%|█████▉    | 7125/12000 [00:00<00:00, 13246.12 examples/s]Map (num_proc=32):  91%|█████████ | 10875/12000 [00:00<00:00, 19923.40 examples/s]Map (num_proc=32): 100%|██████████| 12000/12000 [00:00<00:00, 13812.62 examples/s]
+Map (num_proc=32):   0%|          | 0/100 [00:00<?, ? examples/s]Map (num_proc=32):  12%|█▏        | 12/100 [00:00<00:00, 112.46 examples/s]Map (num_proc=32): 100%|██████████| 100/100 [00:00<00:00, 397.15 examples/s]
+Training Epoch: 1:   0%|[34m          [0m| 0/93 [00:00<?, ?it/s]logging training data
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/workspace/coconut/run.py", line 539, in <module>
+[rank0]:     main()
+[rank0]:   File "/workspace/coconut/run.py", line 367, in main
+[rank0]:     outputs = parallel_model(**batch, sample_idx=sample_idx)
+[rank0]:               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/opt/conda/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/opt/conda/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/opt/conda/lib/python3.11/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py", line 864, in forward
+[rank0]:     output = self._fsdp_wrapped_module(*args, **kwargs)
+[rank0]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/opt/conda/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/opt/conda/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]: TypeError: GPT2LMHeadModel.forward() got an unexpected keyword argument 'sample_idx'
+Training Epoch: 1:   0%|[34m          [0m| 0/93 [00:00<?, ?it/s]
+E0930 13:39:22.649000 1334 site-packages/torch/distributed/elastic/multiprocessing/api.py:869] failed (exitcode: 1) local_rank: 0 (pid: 1356) of binary: /opt/conda/bin/python3.11
+Traceback (most recent call last):
+  File "/opt/conda/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 355, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/torch/distributed/run.py", line 919, in main
+    run(args)
+  File "/opt/conda/lib/python3.11/site-packages/torch/distributed/run.py", line 910, in run
+    elastic_launch(
+  File "/opt/conda/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 138, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 269, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+run.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-09-30_13:39:22
+  host      : 36ef7e293971
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 1356)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+TRAIN_EXIT 1
+NO_FINAL_CKPT

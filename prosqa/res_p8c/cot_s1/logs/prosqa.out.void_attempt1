@@ -1,0 +1,110 @@
+COMMIT 27273cb8cca4bb763c041a63b036d0c3b7cbbb48
+PATCH applied
+MASK patch applied to coconut.py
+run.py unchanged (SDPA attention with the wrapped kernel)
+P8 anytime patch applied to coconut.py
+P8 random_tight patch applied to dataset.py
+P8 patch applied to run.py
+ENVOK 2.5.1+cu124 4.46.2 NVIDIA RTX A4000
+DATA_MD5 c0ee4b3ade ff5baa26e4 078ca274fe 92c1dc9ed2 
+MASK_TEST PASS
+P8_TEST PASS
+[W930 13:38:39.276731262 CUDAAllocatorConfig.h:28] Warning: expandable_segments not supported on this platform (function operator())
+Config: {'project': 'coconut', 'save_path': '/workspace/ckpt', 'name': 'p8c-cot-s1', 'only_eval': False, 'coconut': False, 'cot': True, 'no_thoughts': False, 'no_cot': False, 'c_thought': 1, 'epochs_per_stage': 4, 'max_latent_stage': 10, 'pad_latent_to_max': True, 'save_only_improve': False, 'uniform_prob': 0.0, 'model_id': 'openai-community/gpt2', 'load_model_path': 'None', 'seed': 1, 'resume': 0, 'bf16': False, 'train_path': 'data/p8_train.json', 'val_path': 'data/p8_valid.json', 'reset_optimizer': True, 'batch_size_training': 8, 'debug': False, 'gradient_accumulation_steps': 16, 'num_epochs': 30, 'lr': 0.0001, 'weight_decay': 0.01}
+[rank0]:[W930 13:38:40.486720170 ProcessGroupNCCL.cpp:4115] [PG ID 0 PG GUID 0 Rank 0]  using GPU 0 to perform barrier as devices used by this process are currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect.Specify device_ids in barrier() to force use of a particular device,or call init_process_group() with a device_id.
+Running FSDP on rank = 0, world size = 1
+/opt/conda/lib/python3.11/site-packages/torch/distributed/fsdp/_init_utils.py:444: UserWarning: FSDP is switching to use `NO_SHARD` instead of ShardingStrategy.FULL_SHARD since the world size is 1.
+  warnings.warn(
+FullyShardedDataParallel(
+  (_fsdp_wrapped_module): GPT2LMHeadModel(
+    (transformer): GPT2Model(
+      (wte): Embedding(50257, 768)
+      (wpe): Embedding(1024, 768)
+      (drop): Dropout(p=0.1, inplace=False)
+      (h): ModuleList(
+        (0-11): 12 x GPT2Block(
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (attn): GPT2SdpaAttention(
+            (c_attn): Conv1D(nf=2304, nx=768)
+            (c_proj): Conv1D(nf=768, nx=768)
+            (attn_dropout): Dropout(p=0.1, inplace=False)
+            (resid_dropout): Dropout(p=0.1, inplace=False)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): GPT2MLP(
+            (c_fc): Conv1D(nf=3072, nx=768)
+            (c_proj): Conv1D(nf=768, nx=3072)
+            (act): NewGELUActivation()
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+      )
+      (ln_f): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+    )
+    (lm_head): Linear(in_features=768, out_features=50257, bias=False)
+  )
+)
+Map (num_proc=32):   0%|          | 0/100 [00:00<?, ? examples/s]Map (num_proc=32):   4%|▍         | 4/100 [00:00<00:06, 14.25 examples/s]Map (num_proc=32):  16%|█▌        | 16/100 [00:00<00:02, 39.65 examples/s]Map (num_proc=32):  28%|██▊       | 28/100 [00:00<00:01, 51.79 examples/s]Map (num_proc=32):  37%|███▋      | 37/100 [00:00<00:01, 57.69 examples/s]Map (num_proc=32):  49%|████▉     | 49/100 [00:00<00:00, 63.49 examples/s]Map (num_proc=32):  61%|██████    | 61/100 [00:01<00:00, 63.05 examples/s]Map (num_proc=32):  73%|███████▎  | 73/100 [00:01<00:00, 73.48 examples/s]Map (num_proc=32):  82%|████████▏ | 82/100 [00:01<00:00, 70.04 examples/s]Map (num_proc=32):  97%|█████████▋| 97/100 [00:01<00:00, 82.47 examples/s]Map (num_proc=32): 100%|██████████| 100/100 [00:01<00:00, 60.65 examples/s]
+Map (num_proc=32):   0%|          | 0/12000 [00:00<?, ? examples/s]Map (num_proc=32):   0%|          | 44/12000 [00:00<03:56, 50.47 examples/s]Map (num_proc=32):   1%|          | 131/12000 [00:01<01:15, 156.66 examples/s]Map (num_proc=32):   2%|▏         | 250/12000 [00:01<00:37, 316.23 examples/s]Map (num_proc=32):   3%|▎         | 332/12000 [00:01<00:28, 408.09 examples/s]Map (num_proc=32):   4%|▍         | 453/12000 [00:01<00:20, 557.19 examples/s]Map (num_proc=32):   5%|▍         | 581/12000 [00:01<00:16, 691.45 examples/s]Map (num_proc=32):   6%|▌         | 706/12000 [00:01<00:14, 755.09 examples/s]Map (num_proc=32):   7%|▋         | 835/12000 [00:01<00:12, 864.79 examples/s]Map (num_proc=32):   8%|▊         | 975/12000 [00:01<00:12, 900.98 examples/s]Map (num_proc=32):   9%|▉         | 1093/12000 [00:01<00:11, 967.59 examples/s]Map (num_proc=32):  10%|█         | 1221/12000 [00:02<00:10, 994.36 examples/s]Map (num_proc=32):  12%|█▏        | 1389/12000 [00:02<00:09, 1105.36 examples/s]Map (num_proc=32):  13%|█▎        | 1520/12000 [00:02<00:09, 1120.56 examples/s]Map (num_proc=32):  14%|█▍        | 1666/12000 [00:02<00:10, 992.40 examples/s] Map (num_proc=32):  15%|█▍        | 1787/12000 [00:02<00:10, 996.69 examples/s]Map (num_proc=32):  16%|█▌        | 1909/12000 [00:02<00:10, 949.62 examples/s]Map (num_proc=32):  17%|█▋        | 2038/12000 [00:02<00:09, 1021.83 examples/s]Map (num_proc=32):  18%|█▊        | 2164/12000 [00:03<00:10, 935.82 examples/s] Map (num_proc=32):  20%|█▉        | 2345/12000 [00:03<00:08, 1107.27 examples/s]Map (num_proc=32):  21%|██        | 2478/12000 [00:03<00:08, 1156.41 examples/s]Map (num_proc=32):  22%|██▏       | 2616/12000 [00:03<00:08, 1109.97 examples/s]Map (num_proc=32):  23%|██▎       | 2804/12000 [00:03<00:07, 1287.14 examples/s]Map (num_proc=32):  24%|██▍       | 2938/12000 [00:03<00:07, 1161.38 examples/s]Map (num_proc=32):  26%|██▌       | 3092/12000 [00:03<00:07, 1217.45 examples/s]Map (num_proc=32):  27%|██▋       | 3230/12000 [00:03<00:07, 1141.67 examples/s]Map (num_proc=32):  28%|██▊       | 3359/12000 [00:04<00:08, 1005.85 examples/s]Map (num_proc=32):  30%|██▉       | 3549/12000 [00:04<00:07, 1120.63 examples/s]Map (num_proc=32):  31%|███       | 3678/12000 [00:04<00:08, 957.50 examples/s] Map (num_proc=32):  33%|███▎      | 3924/12000 [00:04<00:06, 1229.27 examples/s]Map (num_proc=32):  34%|███▍      | 4059/12000 [00:04<00:07, 1054.11 examples/s]Map (num_proc=32):  35%|███▌      | 4246/12000 [00:04<00:06, 1181.63 examples/s]Map (num_proc=32):  36%|███▋      | 4375/12000 [00:04<00:07, 1078.09 examples/s]Map (num_proc=32):  38%|███▊      | 4507/12000 [00:05<00:07, 1063.56 examples/s]Map (num_proc=32):  39%|███▉      | 4739/12000 [00:05<00:05, 1243.72 examples/s]Map (num_proc=32):  41%|████      | 4880/12000 [00:05<00:06, 1179.42 examples/s]Map (num_proc=32):  42%|████▏     | 5006/12000 [00:05<00:06, 1134.08 examples/s]Map (num_proc=32):  43%|████▎     | 5134/12000 [00:05<00:06, 1126.46 examples/s]Map (num_proc=32):  44%|████▍     | 5261/12000 [00:05<00:06, 971.98 examples/s] Map (num_proc=32):  45%|████▌     | 5426/12000 [00:05<00:05, 1104.24 examples/s]Map (num_proc=32):  46%|████▋     | 5559/12000 [00:06<00:06, 1069.82 examples/s]Map (num_proc=32):  47%|████▋     | 5692/12000 [00:06<00:05, 1105.26 examples/s]Map (num_proc=32):  49%|████▉     | 5914/12000 [00:06<00:04, 1258.94 examples/s]Map (num_proc=32):  50%|█████     | 6046/12000 [00:06<00:05, 1187.73 examples/s]Map (num_proc=32):  51%|█████▏    | 6176/12000 [00:06<00:05, 1051.61 examples/s]Map (num_proc=32):  53%|█████▎    | 6304/12000 [00:06<00:05, 1057.65 examples/s]Map (num_proc=32):  53%|█████▎    | 6419/12000 [00:06<00:06, 860.48 examples/s] Map (num_proc=32):  55%|█████▍    | 6587/12000 [00:06<00:05, 1031.97 examples/s]Map (num_proc=32):  56%|█████▌    | 6715/12000 [00:07<00:05, 949.12 examples/s] Map (num_proc=32):  57%|█████▋    | 6877/12000 [00:07<00:04, 1035.35 examples/s]Map (num_proc=32):  58%|█████▊    | 7005/12000 [00:07<00:04, 1037.24 examples/s]Map (num_proc=32):  59%|█████▉    | 7119/12000 [00:07<00:05, 943.24 examples/s] Map (num_proc=32):  61%|██████    | 7339/12000 [00:07<00:04, 1117.39 examples/s]Map (num_proc=32):  62%|██████▏   | 7485/12000 [00:07<00:04, 953.56 examples/s] Map (num_proc=32):  64%|██████▍   | 7719/12000 [00:08<00:03, 1128.51 examples/s]Map (num_proc=32):  65%|██████▌   | 7846/12000 [00:08<00:04, 941.84 examples/s] Map (num_proc=32):  67%|██████▋   | 8088/12000 [00:08<00:03, 1126.99 examples/s]Map (num_proc=32):  68%|██████▊   | 8218/12000 [00:08<00:03, 1032.70 examples/s]Map (num_proc=32):  70%|██████▉   | 8382/12000 [00:08<00:03, 1102.06 examples/s]Map (num_proc=32):  71%|███████   | 8517/12000 [00:08<00:03, 1116.69 examples/s]Map (num_proc=32):  72%|███████▏  | 8656/12000 [00:08<00:02, 1178.67 examples/s]Map (num_proc=32):  73%|███████▎  | 8813/12000 [00:09<00:02, 1138.17 examples/s]Map (num_proc=32):  75%|███████▍  | 8959/12000 [00:09<00:02, 1100.19 examples/s]Map (num_proc=32):  76%|███████▌  | 9084/12000 [00:09<00:03, 895.75 examples/s] Map (num_proc=32):  77%|███████▋  | 9273/12000 [00:09<00:02, 1051.54 examples/s]Map (num_proc=32):  78%|███████▊  | 9413/12000 [00:09<00:02, 1010.83 examples/s]Map (num_proc=32):  80%|████████  | 9600/12000 [00:09<00:02, 1098.57 examples/s]Map (num_proc=32):  81%|████████  | 9726/12000 [00:09<00:02, 1017.86 examples/s]Map (num_proc=32):  82%|████████▏ | 9885/12000 [00:10<00:02, 1040.12 examples/s]Map (num_proc=32):  84%|████████▎ | 10029/12000 [00:10<00:01, 1108.59 examples/s]Map (num_proc=32):  85%|████████▍ | 10170/12000 [00:10<00:02, 893.83 examples/s] Map (num_proc=32):  87%|████████▋ | 10383/12000 [00:10<00:01, 1106.05 examples/s]Map (num_proc=32):  88%|████████▊ | 10512/12000 [00:10<00:01, 1091.44 examples/s]Map (num_proc=32):  89%|████████▉ | 10672/12000 [00:10<00:01, 1090.74 examples/s]Map (num_proc=32):  90%|█████████ | 10800/12000 [00:11<00:01, 1028.58 examples/s]Map (num_proc=32):  91%|█████████ | 10931/12000 [00:11<00:01, 1020.87 examples/s]Map (num_proc=32):  92%|█████████▏| 11089/12000 [00:11<00:00, 1098.29 examples/s]Map (num_proc=32):  93%|█████████▎| 11214/12000 [00:11<00:00, 1057.49 examples/s]Map (num_proc=32):  94%|█████████▍| 11338/12000 [00:11<00:00, 1101.53 examples/s]Map (num_proc=32):  96%|█████████▌| 11463/12000 [00:11<00:00, 1138.66 examples/s]Map (num_proc=32):  97%|█████████▋| 11593/12000 [00:11<00:00, 1039.53 examples/s]Map (num_proc=32):  98%|█████████▊| 11759/12000 [00:11<00:00, 1133.22 examples/s]Map (num_proc=32):  99%|█████████▉| 11904/12000 [00:12<00:00, 1071.17 examples/s]Map (num_proc=32): 100%|██████████| 12000/12000 [00:12<00:00, 977.01 examples/s] 
+Map (num_proc=32):   0%|          | 0/100 [00:00<?, ? examples/s]Map (num_proc=32):   8%|▊         | 8/100 [00:00<00:01, 61.21 examples/s]Map (num_proc=32):  31%|███       | 31/100 [00:00<00:00, 145.04 examples/s]Map (num_proc=32): 100%|██████████| 100/100 [00:00<00:00, 234.18 examples/s]
+Map (num_proc=32):   0%|          | 0/12000 [00:00<?, ? examples/s]Map (num_proc=32):   3%|▎         | 330/12000 [00:00<00:05, 2016.70 examples/s]Map (num_proc=32):  11%|█         | 1334/12000 [00:00<00:01, 5645.65 examples/s]Map (num_proc=32):  17%|█▋        | 2020/12000 [00:00<00:02, 4317.41 examples/s]Map (num_proc=32):  23%|██▎       | 2785/12000 [00:00<00:02, 4559.54 examples/s]Map (num_proc=32):  35%|███▍      | 4172/12000 [00:00<00:01, 6330.38 examples/s]Map (num_proc=32):  41%|████      | 4910/12000 [00:00<00:01, 5172.60 examples/s]Map (num_proc=32):  46%|████▌     | 5498/12000 [00:01<00:01, 4890.16 examples/s]Map (num_proc=32):  51%|█████     | 6102/12000 [00:01<00:01, 3850.70 examples/s]Map (num_proc=32):  56%|█████▌    | 6739/12000 [00:01<00:01, 3127.92 examples/s]Map (num_proc=32):  61%|██████    | 7289/12000 [00:01<00:01, 3021.85 examples/s]Map (num_proc=32):  65%|██████▍   | 7752/12000 [00:02<00:01, 2461.96 examples/s]Map (num_proc=32):  68%|██████▊   | 8197/12000 [00:02<00:02, 1897.80 examples/s]Map (num_proc=32):  72%|███████▏  | 8655/12000 [00:02<00:01, 2245.56 examples/s]Map (num_proc=32):  76%|███████▋  | 9180/12000 [00:02<00:01, 2708.37 examples/s]Map (num_proc=32):  80%|███████▉  | 9555/12000 [00:03<00:02, 1007.67 examples/s]Map (num_proc=32):  83%|████████▎ | 10019/12000 [00:04<00:01, 1210.91 examples/s]Map (num_proc=32):  87%|████████▋ | 10405/12000 [00:04<00:01, 1134.66 examples/s]Map (num_proc=32):  90%|████████▉ | 10741/12000 [00:04<00:01, 1048.47 examples/s]Map (num_proc=32):  94%|█████████▍| 11307/12000 [00:05<00:00, 1481.31 examples/s]Map (num_proc=32):  98%|█████████▊| 11746/12000 [00:05<00:00, 1702.12 examples/s]Map (num_proc=32): 100%|██████████| 12000/12000 [00:05<00:00, 2096.79 examples/s]
+Map (num_proc=32):   0%|          | 0/100 [00:00<?, ? examples/s]Map (num_proc=32):   7%|▋         | 7/100 [00:00<00:01, 52.80 examples/s]Map (num_proc=32):  25%|██▌       | 25/100 [00:00<00:00, 109.40 examples/s]Map (num_proc=32):  91%|█████████ | 91/100 [00:00<00:00, 328.13 examples/s]Map (num_proc=32): 100%|██████████| 100/100 [00:00<00:00, 219.04 examples/s]
+Training Epoch: 1:   0%|[34m          [0m| 0/93 [00:00<?, ?it/s]logging training data
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/workspace/coconut/run.py", line 539, in <module>
+[rank0]:     main()
+[rank0]:   File "/workspace/coconut/run.py", line 367, in main
+[rank0]:     outputs = parallel_model(**batch, sample_idx=sample_idx)
+[rank0]:               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/opt/conda/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/opt/conda/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/opt/conda/lib/python3.11/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py", line 864, in forward
+[rank0]:     output = self._fsdp_wrapped_module(*args, **kwargs)
+[rank0]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/opt/conda/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/opt/conda/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]: TypeError: GPT2LMHeadModel.forward() got an unexpected keyword argument 'sample_idx'
+Training Epoch: 1:   0%|[34m          [0m| 0/93 [00:00<?, ?it/s]
+E0930 13:39:11.768000 1374 site-packages/torch/distributed/elastic/multiprocessing/api.py:869] failed (exitcode: 1) local_rank: 0 (pid: 1440) of binary: /opt/conda/bin/python3.11
+Traceback (most recent call last):
+  File "/opt/conda/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 355, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/torch/distributed/run.py", line 919, in main
+    run(args)
+  File "/opt/conda/lib/python3.11/site-packages/torch/distributed/run.py", line 910, in run
+    elastic_launch(
+  File "/opt/conda/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 138, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 269, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+run.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-09-30_13:39:11
+  host      : 9f134eb87140
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 1440)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+TRAIN_EXIT 1
+NO_FINAL_CKPT

@@ -1,0 +1,17 @@
+num_proc must be <= 16. Reducing num_proc to 16 for dataset of size 16.
+Map (num_proc=16):   0%|          | 0/16 [00:00<?, ? examples/s]Map (num_proc=16):   6%|▋         | 1/16 [00:00<00:01,  8.41 examples/s]Map (num_proc=16):  38%|███▊      | 6/16 [00:00<00:00, 30.69 examples/s]Map (num_proc=16):  75%|███████▌  | 12/16 [00:00<00:00, 43.28 examples/s]Map (num_proc=16): 100%|██████████| 16/16 [00:00<00:00, 35.20 examples/s]
+num_proc must be <= 16. Reducing num_proc to 16 for dataset of size 16.
+Map (num_proc=16):   0%|          | 0/16 [00:00<?, ? examples/s]Map (num_proc=16): 100%|██████████| 16/16 [00:00<00:00, 96.14 examples/s]
+num_proc must be <= 16. Reducing num_proc to 16 for dataset of size 16.
+2. no supervised pairs: loss identical 10.874720573425293
+1. branch at j = K reproduces the ordinary answer logits, max |diff| 2.980232238769531e-07
+3. anytime C = 0: loss 21.750595092773438 > ordinary 10.874720573425293 ; backward ok
+Map (num_proc=16):   0%|          | 0/16 [00:00<?, ? examples/s]Map (num_proc=16):  62%|██████▎   | 10/16 [00:00<00:00, 99.33 examples/s]Map (num_proc=16): 100%|██████████| 16/16 [00:00<00:00, 72.26 examples/s]
+num_proc must be <= 16. Reducing num_proc to 16 for dataset of size 16.
+Map (num_proc=16):   0%|          | 0/16 [00:00<?, ? examples/s]Map (num_proc=16):  69%|██████▉   | 11/16 [00:00<00:00, 106.12 examples/s]Map (num_proc=16): 100%|██████████| 16/16 [00:00<00:00, 69.91 examples/s] 
+num_proc must be <= 16. Reducing num_proc to 16 for dataset of size 16.
+4. random_tight: budgets [1, 4, 1, 5, 5, 2, 2, 3, 1, 1, 4, 3, 5, 4, 2, 2] then [4, 5, 5, 3, 3, 3, 5, 2, 2, 4, 4, 5, 2, 4, 5, 1]
+Map (num_proc=16):   0%|          | 0/16 [00:00<?, ? examples/s]Map (num_proc=16):  75%|███████▌  | 12/16 [00:00<00:00, 118.79 examples/s]Map (num_proc=16): 100%|██████████| 16/16 [00:00<00:00, 74.45 examples/s] 
+5. jitter: train loss 10.874720573425293 -> 10.874809265136719 ; eval unchanged 10.874720573425293
+6. run.py guards sample_idx; plain GPT-2 forward accepts the batch without it
+P8_TEST PASS

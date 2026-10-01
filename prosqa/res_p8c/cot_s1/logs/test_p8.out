@@ -1,0 +1,17 @@
+num_proc must be <= 16. Reducing num_proc to 16 for dataset of size 16.
+Map (num_proc=16):   0%|          | 0/16 [00:00<?, ? examples/s]Map (num_proc=16):   6%|▋         | 1/16 [00:00<00:04,  3.40 examples/s]Map (num_proc=16):  31%|███▏      | 5/16 [00:00<00:00, 12.36 examples/s]Map (num_proc=16):  50%|█████     | 8/16 [00:00<00:00, 15.55 examples/s]Map (num_proc=16):  75%|███████▌  | 12/16 [00:00<00:00, 20.52 examples/s]Map (num_proc=16):  94%|█████████▍| 15/16 [00:00<00:00, 20.10 examples/s]Map (num_proc=16): 100%|██████████| 16/16 [00:00<00:00, 16.05 examples/s]
+num_proc must be <= 16. Reducing num_proc to 16 for dataset of size 16.
+Map (num_proc=16):   0%|          | 0/16 [00:00<?, ? examples/s]Map (num_proc=16):  19%|█▉        | 3/16 [00:00<00:00, 28.51 examples/s]Map (num_proc=16): 100%|██████████| 16/16 [00:00<00:00, 66.47 examples/s]
+num_proc must be <= 16. Reducing num_proc to 16 for dataset of size 16.
+2. no supervised pairs: loss identical 10.874720573425293
+1. branch at j = K reproduces the ordinary answer logits, max |diff| 2.980232238769531e-07
+3. anytime C = 0: loss 21.750595092773438 > ordinary 10.874720573425293 ; backward ok
+Map (num_proc=16):   0%|          | 0/16 [00:00<?, ? examples/s]Map (num_proc=16):   6%|▋         | 1/16 [00:00<00:01,  8.26 examples/s]Map (num_proc=16): 100%|██████████| 16/16 [00:00<00:00, 44.14 examples/s]
+num_proc must be <= 16. Reducing num_proc to 16 for dataset of size 16.
+Map (num_proc=16):   0%|          | 0/16 [00:00<?, ? examples/s]Map (num_proc=16):   6%|▋         | 1/16 [00:00<00:02,  7.02 examples/s]Map (num_proc=16): 100%|██████████| 16/16 [00:00<00:00, 42.19 examples/s]
+num_proc must be <= 16. Reducing num_proc to 16 for dataset of size 16.
+4. random_tight: budgets [2, 1, 4, 5, 5, 1, 1, 1, 3, 1, 2, 4, 1, 1, 4, 3] then [3, 1, 1, 3, 3, 3, 1, 2, 4, 2, 5, 4, 3, 4, 4, 4]
+Map (num_proc=16):   0%|          | 0/16 [00:00<?, ? examples/s]Map (num_proc=16):   6%|▋         | 1/16 [00:00<00:02,  7.37 examples/s]Map (num_proc=16): 100%|██████████| 16/16 [00:00<00:00, 80.34 examples/s]Map (num_proc=16): 100%|██████████| 16/16 [00:00<00:00, 41.41 examples/s]
+5. jitter: train loss 10.874720573425293 -> 10.874811172485352 ; eval unchanged 10.874720573425293
+6. run.py guards sample_idx; plain GPT-2 forward accepts the batch without it
+P8_TEST PASS

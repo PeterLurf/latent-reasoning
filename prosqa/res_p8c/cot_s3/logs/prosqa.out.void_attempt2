@@ -1,0 +1,11 @@
+COMMIT 27273cb8cca4bb763c041a63b036d0c3b7cbbb48
+PATCH applied
+MASK patch applied to coconut.py
+run.py unchanged (SDPA attention with the wrapped kernel)
+P8 anytime patch applied to coconut.py
+P8 random_tight patch applied to dataset.py
+P8 patch applied to run.py
+ENVOK 2.5.1+cu124 4.46.2 NVIDIA GeForce RTX 4070 Ti SUPER
+DATA_MD5 c0ee4b3ade ff5baa26e4 078ca274fe 92c1dc9ed2 
+MASK_TEST PASS
+P8_TEST_FAILED
