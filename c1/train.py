@@ -42,8 +42,8 @@ def build(arm, dev):
     if arm == "tab":
         return Tab().to(dev)
     if arm in ("fp_ex", "fp_cmp"):
-        return FP(gpt2(dev)).to(dev)
-    return Cell(gpt2(dev)).to(dev)
+        return FP(gpt2("cpu")).to(dev)
+    return Cell(gpt2("cpu")).to(dev)
 
 
 def predict(model, arm, ops):
