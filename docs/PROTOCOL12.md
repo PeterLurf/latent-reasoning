@@ -178,3 +178,28 @@ The teacher's mean error at N 9–16 is 0.2–5.7 % per parent; restarts stay at
 * So distillation extends the loop by ~3–4 ops at ≥ 0.85, not to the trained 16 (D1 failed). The loop has no restoring
   dynamics, and its error compounds with length whatever the label source.
 * Restarts from written states (§64, §66) remain the only length-robust mechanism here.
+
+
+## THEORY §61b (F1-S replication) result (2026-10-01 19:38 EDT; `python prosqa/score_f1sb.py` → `results/f1sb.json`)
+
+13/13 runs (3 seed-3 reruns, seeds 4–13). The scorer (c3ee7f1, b0ea23b) was committed before any §61b eval.json was
+read. Its failure-mode labels are descriptive: their thresholds were set after the s6–s11 bench outcomes were visible
+(disclosed in the scorer).
+
+| prediction | result |
+|---|---|
+| R1: ≥ 2/3 seed-3 reruns succeed (same class: RTX 3090, driver 570.211.01, as the original s3) | **not met: 0/3** |
+| R2: 2–5 of 10 fresh seeds succeed | **not met: 0/10** ("optimistic draw") |
+
+* **Every run floods.** Hardened accuracy at P = 16 is 0.78–0.96 at d1–2, and 0.40–0.56 (chance) at d3–14.
+  Label precision is 0.53–0.63 and edit IIA ≤ 0.39.
+* 10/13 are exact at their trained budget P = d at d1–6, as §61's s1 was (flag *).
+* Bench prosqa_deep_na: 0.488–0.510 for every run.
+* The seed-3 reruns ran on the original host's IP and the same driver/torch/CUDA. With 3 concurrent runs on one GPU, all
+  three flooded.
+
+**Reading.**
+* §61's 1/3 success was an optimistic draw: the frozen F1-S recipe succeeds in 0/13 replications.
+* Seed 3's success did not reproduce on the same hardware class, so it was not a property of the seed's init and data
+  order alone. Either non-deterministic numerics decide it, or concurrent execution changes it.
+* The registered follow-up (one solo seed-3 rerun on a 3090, descriptive) separates these and is placed next.
