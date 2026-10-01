@@ -94,8 +94,49 @@ def gsm8k_load():
         sol, ans = x["answer"].split("####")
         steps = len(re.findall(r"<<[^>]*>>", sol))                # calculator annotations = equation steps
         items.append({"id": f"gsm8k:{i}", "kind": "generate", "depth": steps, "answer": norm_number(ans),
-                      "raw": {"question": x["question"], "solution": sol.strip()}})
+                      "raw": {"question": x["question"], "solution": sol.strip(), "final": ans.strip()}})
     return items, [path]
+
+
+# No-reasoning GSM8K baselines (THEORY's shortcut check, theory/gsm8k_shortcuts.py; Audit's request). They read only the
+# numbers written in the question; answers compared as numbers (commas removed, rounded to 6 decimals).
+def _gsm_nums(text):
+    return [float(x.replace(",", "")) for x in re.findall(r"-?\d[\d,]*\.?\d*", text) if re.search(r"\d", x)]
+
+
+def _gsm_eq(a, b):
+    import math
+    return a is not None and b is not None and math.isfinite(a) and abs(round(a, 6) - round(b, 6)) < 1e-9
+
+
+def _gsm_gold(r):
+    return float(r["final"].replace(",", ""))
+
+
+def gsm_last(r):
+    n = _gsm_nums(r["question"]); return float(bool(n) and _gsm_eq(n[-1], _gsm_gold(r)))
+
+
+def gsm_const5(r):
+    return float(_gsm_eq(5.0, _gsm_gold(r)))
+
+
+def gsm_in_question(r):
+    return float(any(_gsm_eq(v, _gsm_gold(r)) for v in _gsm_nums(r["question"])))
+
+
+def gsm_one_op(r):
+    import itertools
+    y = _gsm_gold(r)
+    for p, q in itertools.permutations(_gsm_nums(r["question"]), 2):
+        for v in (p + q, p - q, p * q, p / q if q else None):
+            if _gsm_eq(v, y):
+                return 1.0
+    return 0.0
+
+
+GSM_BASE = {"last number in question": gsm_last, "constant 5 (most frequent test answer; peeks)": gsm_const5,
+            "answer appears in question (oracle)": gsm_in_question, "one-op oracle (any pair, + - x /)": gsm_one_op}
 
 
 def norm_number(s):
@@ -214,7 +255,7 @@ TASKS = {t.name: t for t in [
          "PROTOCOL8 deep test with the shortcut neutralised (THEORY §59)", "hops on the answer path",
          baselines=PROSQA_BASE, chance=0.5),
     Task("gsm8k", gsm8k_load, "GSM8K test (2110.14168), 1,319 items, openai/grade-school-math",
-         "equation steps in the reference solution", normalise=norm_number),
+         "equation steps in the reference solution", normalise=norm_number, baselines=GSM_BASE),
     Task("mult4x4", mult_loader(4), "4x4-digit multiplication test (implicit-CoT repo, 2311.01460)", "digits",
          normalise=norm_digits),
     Task("boxes", boxes_load, "THEORY §66 generator: 4 boxes, swap ops (S4), N 1-32, 50 per N per question type (seed 6600)",
