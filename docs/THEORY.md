@@ -72,6 +72,10 @@ registered as §54b (relaxed labels in training, hardened at test, hardening gap
 **ProsQA cue (§57):** the generator always hangs the negative option off another person. A person-agnostic proximity
 heuristic scores 0.91, which explains the Coconut cue.
 **F2 toy (§53):** BD1 met (0.71 vs 0.50 at d7–12), but precision fails (FP 0.42). Parked.
+**Kill test (§55):** KT1 partial at the boundary (the fall-back costs about ¼ of one advance's loss and 0.4 points of
+accuracy); identity buys no reach. D3 is parked.
+**Interchange (§56):** GT-distilled students' latents are age-invariant (G 0.09); T8 students' and parents' are not.
+Path independence tracks one-loop reach (Spearman −0.87, post hoc).
 **Boundary memory (§60):** the user's proposal. Phase A is registered (learned Boolean-table merger, with vs without
 order consistency, 4 seeds, Gate A ≥ 0.95 on held-out instances, motifs and orders), and the Phase B gate is fixed.
 **F6 registered (§58):** age-transplant training, P30 recipe, 3 arms × 10 seeds (aged / young / mismatch). Handed to
@@ -3187,6 +3191,18 @@ kill covers step 6 only).
 * Score, over models with `"inside": true`: medians of kill[0] − base[0], pos[0] − base[0] and kill[1] − base[1].
 * KT2: probe_kill − probe_base at indices 6–11.
 
+**Result (2026-10-01; scored by the experiments session, 298c9f7, `theory/results/score_exp27_28.json`; Audit
+reproduced). KT1 partial, at the boundary; KT2 met.**
+* **KT1, 6 inside models.** Median ΔBCE_kill is 0.00529 vs 0.25 × ΔBCE_pos = 0.00529 (above it by 4·10⁻⁶).
+  - The median of per-model kill/pos ratios is 0.30 (0.21–0.60), so "partial" holds under either aggregation.
+  - |Δbal_kill| = 0.004 ≤ 0.01. "Killed" (≥ 0.5) is not reached.
+* **KT2.** Probe d7–12, kill − base: median −0.004. Identity cannot advance.
+* **Reading.**
+  - The fall-back is nearly free in accuracy (−0.4 points), but in loss the post-peak updates do about a quarter to a
+    third of one real advance's work.
+  - A commit-gate penalty (direction 3) therefore has a target with a small in-range price, and by KT2 it buys no reach.
+  - D3 is parked as a C2 route. F1's fixed point already gives the C5/C6 benefit by construction.
+
 ## 56. Are aged latent states interchangeable? The entry-state normal form, tested by interchange (external unifying hypothesis; pre-registered 2026-09-30 22:22 EDT, before measuring any of the 80 test models)
 
 **Question.**
@@ -3266,6 +3282,46 @@ At f = 5, ⌈f/2⌉ = 3, so that column is empty.
 * Run: `python theory/exp28_interchange.py`: 80 models, f = 5 and 11, about 40 s per model on 3 CPU threads →
   `theory/results/exp28_interchange.json`.
 * Score: per family at its primary f, medians over informative models of `G_by_age[f−1]`, `dG` and `AR_closed`.
+
+**Result (2026-10-01; scored by the experiments session, 298c9f7, `theory/results/score_exp27_28.json`; Audit
+reproduced G, dG and AR_closed from the stored IIA). NF1 normal form, against my stated expectation; NF2 and NF3 not
+met.**
+
+| Family (f) | Informative | G_{f−1} | G_2 | dG | AR closes | Residual bal CT / RT_old / T0 |
+|---|---|---|---|---|---|---|
+| pl_gt, GT students (11) | 20/20 | **0.09** (≤ 0.25 in 14) | 0.05 | **+0.01** | −0.25 | 0.98 / 0.95 / 0.70 |
+| p30 parents (5) | 20/20 | 0.47 | 0.36 | +0.11 | 0.17 | 0.74 / 0.68 / 0.52 |
+| pl_t8, T8 students (11), descriptive | 20/20 | 0.84 | 0.25 | +0.47 | 0.54 | 0.87 / 0.62 / 0.51 |
+| pclr1 (5), descriptive | 19/20 | 0.50 | 0.39 | +0.16 | 0.11 | 0.73 / 0.67 / 0.52 |
+
+* **NF1 (GT students, f = 11).** Normal form: G_10 ≤ 0.25 and dG ≤ 0.10. An age-10 latent works like a fresh one.
+* **NF1's limit.** Root-route donors still differ (G_root 0.51): the GT latent is age-invariant, but not invariant to a
+  history that visited other branches.
+* **NF2 not met.** Parents at the registered f = 5: dG +0.11. Their latents are already partly bound to context at a
+  young age (G_2 0.36).
+* **NF2 at f = 11 (descriptive, as Audit asks).** dG +0.52. Caveat: parents do not reliably reach c_11, so old donors
+  there also lose content.
+* **NF3 not met.** The age-only reset closes 0.17 of the gap: age is not one mean direction.
+* **Caveat on AR closes.** It is undefined where the old donor's gap is ≈ 0, because it divides by 1 − IIA_old. That
+  happens for 6/20 pl_gt (median −0.07 over the other 14) and 1/20 pl_t8 (0.57 without it). It is uninformative for
+  pl_gt, which has no gap to close. p30's 0.17 and pclr1's 0.11 are unaffected.
+* **The contrast that matters (Audit's point (a), corrected on one fact).**
+  - The normal form appears with true-label distillation (pl_gt) and not with label-free re-anchored distillation
+    (pl_t8, dG +0.47, like p30 and pclr1).
+  - pl_t8 students do **not** extrapolate in one loop: one-loop d13–18 median 0.50, as in X2 (2/20). They reach depth
+    only when re-anchored (14/20, §37), i.e. through canonical transport by written tokens.
+  - So the normal-form account holds for the GT students' latents. The label-free route reaches depth only by restarts,
+    where the normal form is the written token.
+* **Exploratory, post hoc (not registered).** Across the 40 students, G_10 at f = 11 vs one-loop bal-acc at d13–18
+  (§37's `single24`): Spearman −0.87 (permutation p < 2·10⁻⁴). Within GT −0.49 (p 0.03); within T8 −0.77
+  (p < 2·10⁻⁴).
+  - Latent path independence tracks single-loop reach, model by model.
+* **Consequence.**
+  - This supports H-NF as the mechanism of single-loop extrapolation, and raises the prior for F6 (§58, running), which
+    trains age invariance from shallow data without true deep labels.
+  - The open question becomes why label-free targets (T8) do not install it.
+* **Process (Audit).** `exp28_interchange.py` stores IIA but not the per-query answers. From now on it also saves them
+  (`--answers_dir`), so IIA can be recomputed.
 
 ## 57. Origin of the ProsQA adjacency cue (2026-09-30 22:28 EDT; data statistics, exploratory; asked by the experiments session after its cue test)
 

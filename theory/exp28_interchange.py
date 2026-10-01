@@ -82,7 +82,7 @@ def run(m, K, g, s, mu, f, R=12):
     out["AR_closed"] = (out["IIA_AR"] - old_iia) / max(1 - old_iia, 1e-9)
     out["AR_root_closed"] = (out["IIA_AR_root"] - out["IIA_root"]) / max(1 - out["IIA_root"], 1e-9)
     out["informative"] = (1 - out["IIA_RND"]) >= 0.05
-    return out
+    return out, z
 
 
 def main():
@@ -90,6 +90,8 @@ def main():
     ap.add_argument("--out", default="theory/results/exp28_interchange.json")
     ap.add_argument("--runs", nargs="*")
     ap.add_argument("--f", type=int, nargs="*", default=[5, 11])
+    ap.add_argument("--answers_dir", default="theory/results/exp28_answers",
+                    help="per-query answers (bool, graphs x 24 residual queries) per condition, so IIA can be recomputed")
     a = ap.parse_args()
     names = a.runs or [p.format(s) for p in FAMILIES.values() for s in H]
     res = json.load(open(a.out)) if os.path.exists(a.out) else {}
@@ -105,8 +107,11 @@ def main():
         mu = th.mean(0)                                                       # mu[k] = mean root-episode thought at step k
         res[name] = {"K": c["K"]}
         for f in a.f:
-            o = run(m, c["K"], g, s, mu, f)
+            o, z = run(m, c["K"], g, s, mu, f)
             res[name][f"f{f}"] = o
+            if a.answers_dir:
+                os.makedirs(a.answers_dir, exist_ok=True)
+                np.savez_compressed(os.path.join(a.answers_dir, f"{name}_f{f}.npz"), **z)
             print("%-14s f %2d  G by age %s | dG %+.2f G_root %.2f | AR closed %+.2f (root %+.2f) | IIA_RND %.3f | "
                   "resid bal CT %.3f RT%d %.3f root %.3f T0 %.3f%s" % (
                       name, f, " ".join("%d:%.2f" % kv for kv in o["G_by_age"].items()), o["dG"], o["G_root"],
