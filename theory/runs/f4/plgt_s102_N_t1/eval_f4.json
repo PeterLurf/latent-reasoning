@@ -1,0 +1,52 @@
+{
+ "i2": {
+  "RT": 0.7666829824447632,
+  "RT_mean": 0.8478190302848816,
+  "RT_mismatch": 0.766845703125,
+  "RT_input": 0.7557780146598816,
+  "model_err_rate": 0.26220703125,
+  "err_repro": 0.8013656735420227,
+  "err_repro_input": 0.7408442497253418,
+  "prec": 0.12933707237243652,
+  "rec": 0.6188995242118835,
+  "set_size": 39.06640625,
+  "eligible": 0.03125,
+  "IIA": 0.0,
+  "ins": 0.0625,
+  "keep": 0.0625,
+  "flip_on": 0.1843220338983051,
+  "flip_collateral": 0.24116997792494482,
+  "flip_eligible": 1.0
+ },
+ "i3": {
+  "RT": 0.7940267324447632,
+  "RT_mean": 0.8245443105697632,
+  "RT_mismatch": 0.794921875,
+  "RT_input": 0.7740072011947632,
+  "model_err_rate": 0.26220703125,
+  "err_repro": 0.8336437344551086,
+  "err_repro_input": 0.7780881524085999,
+  "prec": 0.1948564350605011,
+  "rec": 0.622328519821167,
+  "set_size": 39.111328125,
+  "eligible": 0.03125,
+  "IIA": 0.0,
+  "ins": 0.0625,
+  "keep": 0.125,
+  "flip_on": 0.1464215364412344,
+  "flip_collateral": 0.21291221551323733,
+  "flip_eligible": 1.0
+ },
+ "args": {
+  "model": "theory/runs/pl_gt_s102",
+  "out": "theory/runs/f4/plgt_s102_N_t1",
+  "swap": null,
+  "seed": 1,
+  "steps": 3000,
+  "bs": 128,
+  "lr": 0.001,
+  "w_edit": 1.0,
+  "device": "cuda:0",
+  "no_step": true
+ }
+}
