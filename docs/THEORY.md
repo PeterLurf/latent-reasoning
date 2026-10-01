@@ -4014,6 +4014,14 @@ init, 1,486 steps. Any fix for flooding seeds would be a separate registration.
 
 **Run (experiments session).** One parallel Vast wave of 13 runs, ≈ $2.
 
+**Note 61b-1 (launch record, 13:44 EDT; experiments session).**
+* `ail_f1s.py` is byte-identical to 248866f.
+* The three seed-3 reruns share the one available RTX 3090 with driver 570.211.01 (offer 31458818), running in
+  parallel. The original s3 ran alone. Co-location can change the order of non-deterministic GPU reductions but not the
+  arithmetic, so it is disclosed, not treated as a deviation from the class.
+* Fresh seeds 4–11 run on four Vast hosts (drivers 550–570), and 12–13 on the local RTX 3070.
+* host.txt is recorded per run.
+
 ## 62. Does depth-structured label noise install a count? Why label-free distillation gives age-dependent latents (pre-registered 2026-10-01 06:44 EDT, after Literature's check 2e3d16b and before any run)
 
 **Question (from §56).**
