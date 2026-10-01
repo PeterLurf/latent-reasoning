@@ -78,8 +78,8 @@ accuracy); identity buys no reach. D3 is parked.
 Path independence tracks one-loop reach (Spearman −0.87, post hoc).
 **F4 registered (§63):** a behavioural round-trip translator for silent thoughts (C7): 20 frozen models × 2 arms × 2 seeds,
 with input-only, evaluator-swap and claim-flip controls. F3 was dropped at its premise check.
-**§62 registered:** does depth-structured label noise install a count (via calibration)? NS / NS45 / NB / NU label-noise
-arms on Pilot L. The label-free teacher's errors rise across its seam in 20/20 parents.
+**§62:** depth structure does not install the age code: any label noise keeps latents age-dependent (uniform 0.67 vs clean 0.09).
+The confidence step at the seam grows with structure (0.008 → 0.243). A one-sided miss bias removes reach entirely. Self-labels must be near-clean.
 **F1 on GPT-2 (§54b):** not learnable from deep final answers (soft and stoch 0/3). With per-pass targets it is exact
 to d14 (2.3×), readable, halting and cue-free. F1-S (§61) did not meet its predictions (1/3 seeds). One seed learned an exact, readable BFS to d14 from final answers alone; the other two
 flood at long budgets. The F1 line is closed.
@@ -4051,6 +4051,40 @@ reachable nodes is +0.009 for pl_gt_s102 and +0.094 for pl_t8_s102, already the 
 
 **Run and score (experiments session).** 40 short GPU fine-tunes, the same cost class as one Pilot L arm. Score with
 the measures above.
+
+**Result (2026-10-01; scored by the experiments session, 5e0e8ce, `theory/results/score_s62.json`; all 40 informative
+at f = 11). NC-4 met; NC-1, NC-2, NC-3 and NC-5 not met. The registered hypothesis (depth structure installs the age
+code) is not supported. Calibration does show, graded by structure.**
+
+| Arm (10 parents) | G_10 median (≤ 0.25) | One-loop d13–18 median (≥ 0.60) | d6 → d7 confidence step, median |
+|---|---|---|---|
+| NU, uniform 0.26 | 0.67 (3) | **0.60** (5) | 0.008 |
+| NS, teacher profile | 0.88 (3) | 0.50 (2) | 0.059 |
+| NS45 | 0.93 (0) | 0.50 (0) | 0.132 |
+| NB, misses beyond the seam | 0.86 (0) | 0.50 (0) | **0.243** |
+| References: pl_gt (clean) / pl_t8 | 0.09 / 0.84 | 0.74 / 0.50 | 0.014 / 0.039 |
+
+* **NC-1 not met.** NS > NU in 7/10 pairs (8 needed), and NU's 0.67 is far above 0.25. Even uniform noise leaves the
+  latents age-dependent.
+* **NC-2 not met.** NU > NS on d13–18 in 10/10 pairs, but the median difference is +0.048 < 0.10.
+* **NC-3 not met, by 0.002.** NB's d13–18 is 0.501 vs the 0.499 bar.
+* **NC-4 met.** Across the 40 students, G_10 vs d13–18 Spearman −0.66: §56's association, replicated prospectively.
+* **NC-5 not met for NS** (0.059 < 0.10; NU 0.008).
+* **Reading.**
+  - **The calibration mechanism is real, for confidence.** The confidence step at the seam grows with the strength of
+    depth-structured bias: NU 0.008 < NS 0.059 < NS45 0.132 < NB 0.243.
+  - **The age code does not need depth structure.** Any label noise keeps the students' latents age-dependent
+    (G 0.67–0.93 vs 0.09 with clean labels).
+  - These students start from age-causal P30 parents (G ≈ 0.9 at f = 11). Most likely, noise prevents deep
+    supervision from overwriting the parents' code, rather than installing a new one. That is a hypothesis, not tested.
+  - **Reach.** Every depth-structured arm loses single-loop reach entirely (d13–18 ≈ 0.50). Uniform noise keeps some
+    (0.60, 5/10).
+* **Together with §58** (training age invariance gives no reach): clean deep supervision delivers reach and age
+  invariance together, and label noise removes both. Age invariance is a marker of how fully deep supervision rewrote
+  the loop, not the mechanism.
+* **Constraint for label-free (C4) depth extension.** Self-labels must be close to clean. A one-sided miss bias beyond
+  the teacher's horizon, the realistic failure of self-labels, is the worst case: it removes reach in every parent.
+  Masking uncertain deep self-labels beats labelling them negative.
 
 ## 63. F4 — a behavioural round-trip translator: can silent toy thoughts be made readable as node sets? (pre-registered 2026-10-01 10:21 EDT, after Literature's checks 3ba2507 and bb74280, before any run)
 
