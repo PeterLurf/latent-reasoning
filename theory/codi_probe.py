@@ -140,7 +140,7 @@ def run(m, prj, tok, data, n_latent=6, block_from=None, attn=False, bs=16, max_n
         for (q, a, ns), g in zip(chunk, gen):
             txt = tok.decode([t for t in g if t != tok.eos_token_id])
             p = extract(txt)
-            res.append({"ok": abs(p - a) < 1e-4, "pred": p, "gold": a, "nsteps": ns, "txt": txt[:80]})
+            res.append({"ok": abs(p - a) < 1e-4, "pred": p, "gold": a, "nsteps": ns, "txt": txt[:80], "ntok": len(g)})
     out = {"acc": sum(r["ok"] for r in res) / len(res), "n": len(res), "rows": res}
     if attn:
         agg = {}

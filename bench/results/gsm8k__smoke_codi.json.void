@@ -1,0 +1,335 @@
+{
+ "task": "gsm8k",
+ "model": "codi:codi",
+ "tag": "smoke_codi",
+ "n": 32,
+ "accuracy": 0.3125,
+ "ci95": [
+  0.1795,
+  0.4857
+ ],
+ "by_depth": {
+  "1": {
+   "acc": 0.3333,
+   "n": 3
+  },
+  "2": {
+   "acc": 0.4,
+   "n": 5
+  },
+  "3": {
+   "acc": 0.3636,
+   "n": 11
+  },
+  "4": {
+   "acc": 0.2,
+   "n": 10
+  },
+  "6": {
+   "acc": 0.0,
+   "n": 2
+  },
+  "7": {
+   "acc": 1.0,
+   "n": 1
+  }
+ },
+ "baselines_same_items": {
+  "last number in question": 0.0,
+  "constant 5 (most frequent test answer; peeks)": 0.0938,
+  "answer appears in question (oracle)": 0.0625,
+  "one-op oracle (any pair, + - x /)": 0.1875
+ },
+ "mean_compute": {
+  "latent_passes": 6.0,
+  "gen_tokens": 6.22
+ },
+ "provenance": {
+  "commit": "c2c6957",
+  "when": "2026-10-01T18:27:04",
+  "argv": [
+   "--task",
+   "gsm8k",
+   "--model",
+   "codi:codi",
+   "--n",
+   "32",
+   "--tag",
+   "smoke_codi",
+   "--device",
+   "cuda:1"
+  ],
+  "device": "cuda:1",
+  "seconds": 1.3,
+  "data": [
+   {
+    "path": "bench/data/gsm8k_test.jsonl",
+    "sha256": "3730d312f6e34405"
+   }
+  ],
+  "checkpoint": null,
+  "selection": {
+   "n": 32,
+   "per_depth": 0,
+   "seed": 0
+  }
+ },
+ "items": [
+  {
+   "id": "gsm8k:12",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:90",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "225"
+  },
+  {
+   "id": "gsm8k:98",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:130",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:183",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:209",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "200"
+  },
+  {
+   "id": "gsm8k:237",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "90"
+  },
+  {
+   "id": "gsm8k:244",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:264",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "400"
+  },
+  {
+   "id": "gsm8k:423",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:454",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "240"
+  },
+  {
+   "id": "gsm8k:476",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:482",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "32"
+  },
+  {
+   "id": "gsm8k:506",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "288"
+  },
+  {
+   "id": "gsm8k:586",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "1100"
+  },
+  {
+   "id": "gsm8k:601",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "65"
+  },
+  {
+   "id": "gsm8k:622",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:689",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:725",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 8,
+   "text": "7.5"
+  },
+  {
+   "id": "gsm8k:765",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "430"
+  },
+  {
+   "id": "gsm8k:904",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 8,
+   "text": "3.33"
+  },
+  {
+   "id": "gsm8k:967",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:992",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "36"
+  },
+  {
+   "id": "gsm8k:996",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:1010",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:1020",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "22"
+  },
+  {
+   "id": "gsm8k:1093",
+   "depth": 7,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "144"
+  },
+  {
+   "id": "gsm8k:1131",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 8,
+   "text": "19.2"
+  },
+  {
+   "id": "gsm8k:1195",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "320"
+  },
+  {
+   "id": "gsm8k:1232",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:1272",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 7,
+   "text": "576"
+  },
+  {
+   "id": "gsm8k:1284",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 6,
+   "text": "15"
+  }
+ ]
+}

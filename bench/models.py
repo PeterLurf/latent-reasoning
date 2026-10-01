@@ -154,6 +154,37 @@ class Boxes(Adapter):
         return out
 
 
+class CODI(Adapter):
+    """GSM8K track step 1 (docs/GSM8K_REPRO.md): public CODI-style GPT-2 checkpoints (zen-E/CODI-gpt2,
+    internlm/SIM_COT-GPT2-CODI) with theory/codi_probe.py's inference (CODI GPT-2 test recipe). Checkpoints in
+    prosqa/ckpt_ext/hf/<ckpt>; the question text is GSM8k-Aug's (same 1,319 items in the same order as openai test.jsonl,
+    LIT_BENCH_VERIFY), i.e. what the models were evaluated on."""
+    kinds = ("generate",)
+
+    def __init__(self, ckpt, device, L="6"):
+        os.environ.setdefault("CODI_SP", os.path.join(ROOT, "prosqa", "ckpt_ext")); os.environ.setdefault("THEORY_THREADS", "3")
+        sys.path.insert(0, os.path.join(ROOT, "theory"))
+        import codi_probe as cp
+        self.cp = cp; self.dev = device; self.L = int(L)
+        self.m, self.prj, self.tok = cp.load(ckpt)
+        self.m, self.prj = self.m.to(device), self.prj.to(device)
+        self.aug = cp.gsm8k(10_000)                                   # (question, answer, nsteps) in test order
+
+    def predict_all(self, items):
+        data = []
+        for it in items:
+            i = int(it["id"].split(":")[1]); q, a, ns = self.aug[i]
+            assert abs(a - float(it["answer"])) < 1e-6, (i, a, it["answer"])     # same item check
+            data.append((q, a, ns))
+        o = self.cp.run(self.m, self.prj, self.tok, data, self.L, dev=self.dev)
+        out = []
+        for r in o["rows"]:
+            p = r["pred"]
+            txt = str(int(p)) if p != float("inf") and float(p).is_integer() else str(p)
+            out.append({"text": txt, "compute": {"latent_passes": self.L, "gen_tokens": r["ntok"]}})
+        return out
+
+
 def load(spec, task, device="cpu"):
     kind, path, opts = parse_spec(spec)
     if kind == "coconut":
@@ -166,6 +197,8 @@ def load(spec, task, device="cpu"):
         return F1S(path, device, **opts)
     if kind == "gen":
         return Generate(path, device, **opts)
+    if kind == "codi":
+        return CODI(path, device, **opts)
     if kind == "boxes":
         return Boxes(path, device, **opts)
     if kind in ("shortcut", "chance"):
