@@ -9,5 +9,6 @@ if grep -q "f1s:" "$q"; then [ -s $W ] || curl -sL -o $W https://huggingface.co/
 grep -v '^#' "$q" | grep -v '^$' | while read -r n t sp rest; do
   echo "python -u -m bench.run --task $t --model \"$sp\" --device $dev $rest > logs/bench_$n.log 2>&1; grep -q WROTE logs/bench_$n.log && rc=0 || rc=7; echo \"\$(date +%T) evaluated $n rc \$rc\" >> $log"
 done > /tmp/bench_cmds.txt
-xargs -P 4 -I{} bash -c '{}' < /tmp/bench_cmds.txt
+xargs -d '
+' -P 4 -I{} bash -c '{}' < /tmp/bench_cmds.txt   # -d: no quote processing (the spec contains &)
 echo "$(date +%T) QUEUE_DONE" >> $log
