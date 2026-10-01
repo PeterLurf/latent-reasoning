@@ -1,0 +1,4 @@
+# 66 throughput pilot (seed 99, not a panel seed)
+pil_nc nc 4 99 1000 32 pilot
+pil_tc tc 4 99 1000 32 pilot
+pil_cl cl 4 99 1000 32 pilot
