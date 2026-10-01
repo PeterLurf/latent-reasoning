@@ -76,6 +76,8 @@ heuristic scores 0.91, which explains the Coconut cue.
 accuracy); identity buys no reach. D3 is parked.
 **Interchange (§56):** GT-distilled students' latents are age-invariant (G 0.09); T8 students' and parents' are not.
 Path independence tracks one-loop reach (Spearman −0.87, post hoc).
+**F1 on GPT-2 (§54b):** not learnable from deep final answers (soft and stoch 0/3). With per-pass targets it is exact
+to d14 (2.3×), readable, halting and cue-free. Next is F1-S, a shallow-question curriculum (pending Literature/Audit).
 **§60b result:** Gate A not passed (0/4). Order consistency lets 2/4 seeds learn partially (best 0.88/0.84 on
 instances/orders), but the tables are not algebraically valid and fade with depth. The boundary-memory line stops at
 Phase A.
@@ -2994,6 +2996,26 @@ Source: `docs/EXTERNAL_IDEAS_2026-09-30.md` (87949a7). Literature's check: `docs
 
 **Order.** §55 and §56 first: CPU, existing models, handed to Experiments. Then F6 (local GPU), then F7. D2 waits.
 
+### Addendum (2026-10-01 06:31 EDT): after §54b — learning F1's local rule without step labels
+
+§54b showed that GPT-2's label channel extrapolates perfectly once its one-hop rule is learned. Deep final answers alone
+(ProsQA has no question shallower than 3 hops) do not teach that rule.
+* **F1-S. A shallow-question curriculum.**
+  - **Idea.** Generate questions of every depth 1–6 over the same graphs, with matched passes P = d, and train on final
+    answers only.
+  - A depth-1 question's answer exercises exactly one pass, so the rule is learned where credit assignment is trivial.
+    Deeper questions then teach its composition.
+  - This mirrors the toy (§54), whose make_batch asks queries at every depth.
+  - **C4 question for Audit.** No intermediate state of any training problem is labelled, but the training
+    distribution gains shallow problems from the same generator. That is the same disclosure class as Pilot L's deep
+    graphs.
+  - **Falsifier.** Hardened accuracy ≥ 0.95 at d1–6 but no extrapolation to d11–14 (composition not learned), or no
+    convergence even at d1.
+  - **Cheapest test.** One arm, 3 seeds, the frozen §54b code paths plus a question generator. Use p8_na graphs (§59),
+    so the cue is unavailable.
+  - **Literature to check first:** easy-to-hard and length curricula for looped or iterative models, and "train on one
+    step, compose at test" without step labels.
+
 ## 53. F2 — bidirectional latent reasoning, zero-shot on toy models (pre-registered 2026-09-30 20:45 EDT, after Literature's check 3ba2507 and before any measurement on the test models)
 
 **Design.** `theory/exp26_bidirectional.py`, CPU, inference only, no training.
@@ -3149,6 +3171,33 @@ and Audit).**
   - The answer is unchanged, so a reasoner from the root is unaffected, while ProsQA's proximity cue flips toward the
     negative.
   - Report the drop vs plain per arm. A drop > 0.05 means the label channel uses the cue.
+
+**§54b result (2026-10-01; scored by the experiments session, 814b2ff, `results/p54b.json`, `docs/PROTOCOL12.md`; 9 runs,
+settings frozen at τ_end 0.3, λ 0.1). "AG1′ failed in both arms." The ceiling arm is perfect.**
+
+| Arm | Hardened accuracy d3–6 / d7–10 / d11–14 | AG1′ | AG3 IIA | AG4 ρ | Cue drop |
+|---|---|---|---|---|---|
+| AI-soft (primary) | 0.50–0.54 / 0.48–0.54 / 0.45–0.50 | 0/3 | 0.36 | 0.19 | 0.003 |
+| AI-stoch | 0.14–0.45 at every band | 0/3 | 1.00 (flooding) | 0.12 | 0.008 |
+| AI-hint (per-pass targets, not C4) | **1.000 / 1.000 / 1.000, all 3 seeds** | 3/3 | 1.00 | 1.00 | 0.000 |
+
+* **AI-soft.**
+  - Within 100 steps every soft label sits at σ ≈ 0.5: loss 2 ln 2, binarity 0.04. That is the symmetric uninformative
+    fixed point, reached before τ or λ can act.
+  - AG0 is met only trivially, since soft and hardened accuracy are both at chance.
+* **AI-stoch.** Every entity gets marked (recall 1.0, precision 0.55), so answers fall to the tie-break.
+* **AI-hint.** Trained at depth ≤ 6, tested with P = 14:
+  - exact at every band, including d11–14 (2.3× the trained depth);
+  - label precision and recall 1.000; edit IIA 1.000;
+  - fixed point vs depth ρ = 1.00;
+  - no cue use.
+* **Reading (fixed in §54b).**
+  - Final-answer training of the entity-label channel did not converge, so F1's C4 claim rests on the toy only.
+  - The representation question is answered positively. GPT-2 with an entity-label channel runs an exact, readable
+    (C7), halting (C5), depth-extrapolating (C2), cue-free search once the one-hop label rule is learned.
+  - The obstacle is learning the rule from deep final answers (credit assignment through P discrete passes), not
+    representing or iterating it.
+  - Where F1 goes next is a §52 frontier item (addendum 2026-10-01 below), not a further §54 revision.
 
 ## 55. Kill test: is the anytime fall-back reward-neutral? (external direction 3; pre-registered 2026-09-30 22:22 EDT, before measuring any of the 17 test models)
 
