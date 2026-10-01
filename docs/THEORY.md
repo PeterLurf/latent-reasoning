@@ -76,6 +76,8 @@ heuristic scores 0.91, which explains the Coconut cue.
 accuracy); identity buys no reach. D3 is parked.
 **Interchange (§56):** GT-distilled students' latents are age-invariant (G 0.09); T8 students' and parents' are not.
 Path independence tracks one-loop reach (Spearman −0.87, post hoc).
+**§66 registered:** GPT-2 state tracking (S4 swaps) with a written-state chunked loop vs text CoT at matched FLOPs (C3), the
+single loop, and no-latent chunks (C1). Scaffolded.
 **§65 registered:** restart-distillation on S3. Can a near-clean label-free restart teacher give one loop its reach? RD / GT /
 SELF × 9 parents.
 **Beyond graphs (§64):** on S3, written-state restarts fix the single loop's length failure (0.995 at N 9–16). The failure is
@@ -4520,6 +4522,84 @@ the 30 eval_st.json files).**
 
 **Run (experiments session).** `python theory/st_distill.py --init theory/runs/st/s3_s<k> --teacher {rd|gt|self}
 --device cuda:0 --out theory/runs/st/s3<rd|gt|self>_s<k>`: 27 runs, local 2070 and other free cards.
+
+## 66. GPT-2 state tracking with a written-state chunked loop (WC): a scaffolded test of C2, C3 and C4 beyond graph search (pre-registered 2026-10-01 15:02 EDT, after Literature's check 27a4a05 and Audit's review; before any implementation or run)
+
+**Why.** §64: on S3 the written-state restart fixes the single loop's length failure (0.995 at N 9–16), with a
+faithfully read written state. This ports it to a pretrained LM and asks whether it beats text CoT at matched compute
+(C3). Design draft: §52 addendum (186d5f5); every point of Audit's review is adopted.
+
+**Prior** (`docs/LIT_PERM_TRACKING_CHECK_2026-10-01.md` addendum).
+* Nearest:
+  - Thinking States 2602.08332: supervised text thoughts, no history cut.
+  - Delethink 2510.06557 and MEM1 2506.15841: text carry-over with a history cut, but explicit CoT and RL.
+  - Markovian Transformers 2404.18988, PENCIL, InftyThink, RMT.
+  - None combines latents within a chunk, a text state between chunks, a history cut, and training on short-problem
+    final answers. New as scoped.
+* No compute-matched CoT-vs-latent comparison on state tracking was found, so a matched C3 result here would be new.
+* **Caution.** LMs learn an associative scan for permutation tracking (Li, Guo & Andreas 2503.02854), and S4 is
+  solvable (Liu). WC₀ may handle small k, so WC vs WC₀ is reported by k to measure C1.
+* Boxes-task priors: 2305.02363, 2402.14811.
+
+**Task (generator-built; added to `bench/` with a generator loader and a generate-kind scorer, so every arm is scored by
+one harness).**
+* 4 boxes holding A–D, in a random start arrangement. Operations "swap boxes i and j" (transpositions; S4), in random
+  order.
+* Question: the full final arrangement, or "which box holds X" (4-way).
+* Train N ≤ 8 operations. Test N = 1–32: in range 1–8, extrapolation 9–16 and 17–32.
+
+**Arms (from original GPT-2 small; ≥ 5 seeds each; the same task data budget).**
+* **NC (no CoT).** Question → answer. Final answers only, N ≤ 8.
+* **TC (text CoT, the C3 bar).** The arrangement written after every operation, then the answer. Step-labelled; the
+  standard reference, not C4.
+* **CL (Coconut single loop).** K′ = N continuous thoughts, then the answer. Final answers only, N ≤ 8.
+* **WC (the proposed method; scaffolded).**
+  - **Training** (credit assignment, Audit's (1)): a short-problem solver trained only on final answers. Input: start
+    arrangement + k′ ≤ k operations; k′ continuous thoughts; output: the end arrangement as text. Random start
+    arrangements; k = 4.
+  - **Inference:** chunk the long problem every k operations. Decode each chunk's final arrangement (greedy) and feed
+    it as the next chunk's start, with the latent history cut. The answer is read from the last arrangement.
+  - The written state is just the model's own final answer to a sub-problem: no intermediate labels exist.
+  - **Fixed chunk boundaries are a hand-built scaffold** (as in §46). A learned chunk or halt decision is a later C5
+    step.
+* **WC₀ (control).** WC with no continuous thoughts. It tests whether GPT-2 composes k swaps per forward pass anyway.
+* **k sweep (C1; Literature).** WC and WC₀ at k ∈ {2, 4, 8}. The k = 8 solver is trained on k′ ≤ 8, i.e. the full
+  training length per chunk. The latents do work (C1) where WC > WC₀ at some k, paired by seed and item.
+* **A5 (exploratory, separate verdicts; not gating).** WC and CL with "rotate boxes i, j, k" 3-cycles on 5 boxes, with
+  Zhang's operator-first curriculum, 3 seeds each, if budget allows.
+
+**Baselines (no reasoning).** The identity (start arrangement), last-op-only, and the majority arrangement.
+
+**Gate (bypass check; note 64-2's form).** The main results count as evidence about reasoning only if NC's median
+accuracy at N = 5–8 is ≤ 0.50 (full arrangement). Otherwise they are descriptive.
+
+**Compute (three axes per problem; FLOPs primary).**
+* FLOPs: tokens processed including latent positions, with KV-cache use stated.
+* Sequential forward passes.
+* Written tokens.
+* Each arm gives an accuracy-vs-FLOPs curve: TC with its natural length, and with the state written every 2 operations
+  as a cheaper variant; WC with k ∈ {2, 4}; CL with K′.
+
+**Predictions (S4; medians over seeds; in range and extrapolation reported separately).**
+* **P1 (single loop fails past training; the §64 analogue).** CL at N 17–32 ≤ ½ of its in-range accuracy.
+* **P2 (WC holds; C2 + C4, scaffolded).** WC (k = 4) ≥ 0.95 at N 17–32.
+* **P3 (C3; Audit's rule, fixed now).** At N 17–32, WC accuracy ≥ TC accuracy, paired by item, with the 95 % CI of the
+  difference above −0.02, at ≤ TC's median FLOPs. "Partial" if within 0.05; otherwise not met.
+* **P4 (C7, scoped to the written state; latents within a chunk are not claimed).** Edit IIA: replace a written
+  arrangement mid-chain; the answer must follow the true composition from it. ≥ 0.90.
+* **P5 (C1: the latents do work).** At k = 8, WC beats WC₀ at N 17–32 by ≥ 0.05 (median paired difference). At k ≤ 4,
+  Literature expects WC₀ ≈ WC (a shallow scan suffices); reported, not predicted.
+* **Descriptive.** WC₀ under P3's rule (chunked text without latents is itself a C3 candidate); the TC length curve;
+  seed variance; the A5 exploratory arm.
+
+**Readings.**
+* **P2 and P3 met.** A pretrained LM tracks state far past its trained length from final answers alone (scaffolded),
+  more cheaply than text CoT: a C2 + C3 + C4 result beyond graph search.
+* **P2 met, P3 not.** Restarts transfer to the LM, but text CoT is as cheap or cheaper here.
+* **P2 failed.** The short-problem solver errs too often for chaining (errors compound over N/k chunks).
+
+**Implementation and run (experiments session).** GPT-2 code reuse: prosqa/gpt2c.py (Coconut rollout). One parallel
+Vast wave after a smoke and a throughput pilot (the pilot may fix only steps and batch, logged).
 
 ## 7. Log
 
