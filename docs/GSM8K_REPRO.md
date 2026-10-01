@@ -47,3 +47,29 @@ question 0.064, one-op oracle 0.155).
 * **Checkpoint.** The Hugging Face upload is `checkpoint_28`, the only one public; the repo's eval config loads
   `checkpoint_30`. We evaluate `checkpoint_28` and report the mismatch as a caveat to its reproduction verdict.
 * The CODI runs (6 latents, as registered) are unaffected; they started at 18:27:24 (log creation time).
+
+## Result (2026-10-01 18:33 EDT; bench `gsm8k`, 1,319 items, local GPUs)
+
+| model | bench accuracy [95 % CI] | registered target | gap | verdict (±3.0) |
+|---|---|---|---|---|
+| CODI GPT-2 (6 latents) | **42.5** [39.8, 45.1] | 43.7 (original; SIM-CoT's re-run 42.0) | −1.2 | **reproduced** |
+| SIM-CoT + CODI GPT-2 (6 latents) | **39.4** [36.8, 42.0] | 42.6 | −3.2 | **not reproduced** (just outside) |
+| SIM-CoT + Coconut GPT-2 (10 thoughts, HF checkpoint_28) | **44.8** [42.1, 47.5] | 44.8 | 0.0 | **reproduced** (caveat: the repo evaluates checkpoint_30) |
+
+No-reasoning baselines on the same items: last number 2.3, constant 5 3.0, answer in question 6.4, one-op oracle 15.5.
+Every model is far above them.
+
+**By equation steps** (n per bucket: 1: 65, 2: 357, 3: 364, 4: 290, 5: 138, 6: 57):
+
+| model | 1 | 2 | 3 | 4 | 5 | 6 |
+|---|---|---|---|---|---|---|
+| CODI | 0.40 | 0.66 | 0.49 | 0.31 | 0.14 | 0.02 |
+| SIM-CoT + CODI | 0.45 | 0.61 | 0.46 | 0.26 | 0.17 | 0.04 |
+| SIM-CoT + Coconut | 0.40 | 0.62 | 0.50 | 0.40 | 0.22 | 0.07 |
+
+**Reading.**
+* The harness reproduces CODI and SIM-CoT-Coconut. SIM-CoT-CODI lands 3.2 points low, the same as our §13 probe
+  (0.393). This points to the checkpoint or recipe, not the harness.
+* All three fall steeply with equation steps (≤ 0.07 at 6 steps). This is the depth horizon THEORY §13 described.
+* The CODI numbers match §13 to the third decimal (same inference code), so the bench port is faithful.
+* Compute: CODI 6 latent passes + ~6 generated tokens; Coconut 10 passes + ~2 tokens ("### N").
