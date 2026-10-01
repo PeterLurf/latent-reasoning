@@ -255,16 +255,20 @@ def loss_batch(m, arm, k, batch, dev):
 
 # ---------------------------------------------------------------- inference (batch of problems with equal N, qtype)
 @torch.no_grad()
-def infer(m, arm, k, batch, dev, edit=None):
+def infer(m, arm, k, batch, dev, edit=None, kp=None):
     """Returns (list of answer strings, compute dict per problem). edit: for WC, {"chunk": c, "arr": [...]} replaces the
-    written arrangement after chunk c by the given arrangements (per row)."""
+    written arrangement after chunk c by the given arrangements (per row). kp (CL only; PILOT.md K' curve): None = K' = N
+    (the panel), "half" = max(1, ceil(N / 2)), "double" = 2N."""
     meter = Meter(m); B = len(batch); N = len(batch[0]["ops"]); qt = batch[0]["qtype"]
     nans = 4 if qt == "all" else 1
     allowed = LET_IDS if qt == "all" else DIG_IDS
     if arm in ("nc", "cl", "tc", "tc2"):
         if arm == "cl":
             pre = tensor([tok(prompt(p, think=True)) for p in batch], dev)
-            h, past = run_prefix(m, pre, meter=meter); hl, past = latents(m, h[:, -1], past, N, meter)
+            h, past = run_prefix(m, pre, meter=meter)
+            Kp = N if kp is None else max(1, math.ceil(N / 2)) if kp == "half" else 2 * N if kp == "double" else None
+            assert Kp is not None, kp
+            hl, past = latents(m, h[:, -1], past, Kp, meter)
             mid = tensor([tok(" done. a:")] * B, dev); h, past = run_prefix(m, mid, past, meter, True); hl = h[:, -1]
         elif arm == "nc":
             pre = tensor([tok(prompt(p)) for p in batch], dev); h, past = run_prefix(m, pre, meter=meter, need_logits=True); hl = h[:, -1]

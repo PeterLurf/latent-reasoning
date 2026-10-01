@@ -130,11 +130,11 @@ class Boxes(Adapter):
     """THEORY §66 arms (boxes/core.py): run dir with args.json (arm, k) and model.pt. Batched via predict_all."""
     kinds = ("generate",)
 
-    def __init__(self, run_dir, device, k=None):
+    def __init__(self, run_dir, device, k=None, kp=None):
         sys.path.insert(0, ROOT)
         from boxes.train import load_model
         a = json.load(open(os.path.join(run_dir, "args.json")))
-        self.arm = a["arm"]; self.k = int(k or a.get("k", 4)); self.dev = device
+        self.arm = a["arm"]; self.k = int(k or a.get("k", 4)); self.dev = device; self.kp = kp   # kp: CL K' half / double
         self.m = load_model(os.path.join(run_dir, "model.pt"), device).eval()
 
     def predict_all(self, items):
@@ -148,7 +148,7 @@ class Boxes(Adapter):
             for s in range(0, len(idx), 64):
                 b = idx[s:s + 64]
                 with torch.no_grad(), torch.autocast("cuda", dtype=amp, enabled=amp is not None):
-                    txt, comp, valid = infer(self.m, self.arm, self.k, [items[i]["raw"] for i in b], self.dev)
+                    txt, comp, valid = infer(self.m, self.arm, self.k, [items[i]["raw"] for i in b], self.dev, kp=self.kp)
                 for i, t, v in zip(b, txt, valid):
                     out[i] = {"text": t, "compute": {**comp, **v}}     # validity (THEORY §66 check) rides in the row
         return out
