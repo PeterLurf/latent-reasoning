@@ -48,3 +48,12 @@
 hard forward labels with a sigmoid straight-through estimator give no usable training signal on GPT-2 / ProsQA,
 from final answers or even from per-pass targets. A relaxation that trains on soft labels would be a redesign, for
 Theory and a new registration; it is not adopted silently.
+
+## §54b tuning (THEORY §54b, 15ff326; cap ≤ 3 settings or 30 min, τ_end and λ only; training data only)
+Code: `prosqa/ail_gpt2.py` at 02a03ac (arms soft / stoch / hint2; curriculum depth 3 → 3–6; hardened-label monitor on
+64 training problems every 100 steps). Fixed implementation quantities (not tuned): lab_std 0.144, bias −4, bs 4 × accum 2,
+lr 5e-5 / 1e-3, P = 6, epochs 2.
+
+| # | τ_end | λ | where | outcome |
+|---|---|---|---|---|
+| 1 | 0.3 | 0.1 (registered defaults) | Vast 53667013 (3090), started 2026-10-01 04:54 | (running) |
