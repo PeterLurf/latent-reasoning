@@ -49,3 +49,14 @@ DONE res_p8b/hopsweep_ctl_s1.json
 DONE res_p8b/hopsweep_ctl_s3.json
 18:22:49 ctl_s3 rc 0
 18:34:14 launcher stopped before ctl_s2 (avoid two jobs on the 2070); ctl_s2 re-chained in scratch/p8b_hopsweep_ctl2.sh
+20 problems
+40 problems
+60 problems
+80 problems
+100 problems
+120 problems
+140 problems
+160 problems
+DONE res_p8b/hopsweep_ctl_s2.json
+20:58:41 ctl_s2 rc 0
+20:58:41 HOPSWEEP_DONE
