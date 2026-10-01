@@ -4254,6 +4254,13 @@ mechanisms.
 cuda:0 --out theory/runs/st/{a5|s3}_s<seed>`. Evaluation is written as `eval_st.json`. Run a short GPU smoke first for
 timing.
 
+**Disclosure 64-1 (11:39 EDT).**
+* A CPU plumbing smoke of an earlier code version (S3, seed 1, 1500 steps, bs 128) started at 11:25, before this
+  registration. It was stopped at 11:39 before any evaluation; it had logged at most training-loss lines.
+* Its partial log is kept as `theory/results/void/st_smoke_s3_seed1_cpu.void`.
+* The registered S3 seed 1 run (20k steps, bs 256) is unaffected. A separate 20-step A5 smoke checked the evaluation
+  code path only.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
