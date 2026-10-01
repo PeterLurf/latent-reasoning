@@ -33,3 +33,9 @@ Gain(model) = acc(bidir) − acc(forward), at d11–14.
   primary m was set in the code before the smoke and is not changed.
 * **Prior from PROTOCOL10 / the hop sweep.** These models answer at chance at d ≥ 11 and misread written statements, so
   the expected outcome is null. This is the cheap test §52 asked for.
+
+## Amendment 1 (2026-09-30 21:20 EDT, before any PROTOCOL11 output was read): per-side precision (Theory)
+Exploratory, after the main run: the same models re-run with `--save_sets`. That stores the top-15 forward and backward
+frontiers, each entity labelled true (reached from the root / reaching the option). Report the precision of the
+forward and backward frontiers by depth, to show which side floods. The reversed statements may be off-distribution
+for the backward side. Outputs `prosqa/res_p11/sets/<model>.json`.

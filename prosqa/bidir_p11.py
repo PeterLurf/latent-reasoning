@@ -51,6 +51,8 @@ def main():
     ap.add_argument("--n_per_d", type=int, default=100); ap.add_argument("--dmin", type=int, default=3)
     ap.add_argument("--dmax", type=int, default=14); ap.add_argument("--n_cal", type=int, default=100)
     ap.add_argument("--device", default="cuda:0")
+    ap.add_argument("--save_sets", action="store_true", help="PROTOCOL11 amendment 1: store the top-15 forward and backward "
+                    "frontiers with their gold labels (reached from the root / reaching the option) for per-side precision")
     a = ap.parse_args()
     torch.backends.cuda.matmul.allow_tf32 = False
     model = GPT2C(load_state(a.ckpt, a.device)); model.mask_answer = True
@@ -84,6 +86,22 @@ def main():
             ob = [STMT.match(s).group(3) for s in sb]
             back[name] = [ob[i] for i in np.argsort(-Sb)]
         row = {"depth": d, "fwd": float(lp[0] - lp[1])}
+        if a.save_sets:
+            sym = x["idx_to_symbol"]; ix = {v: i for i, v in enumerate(sym)}; adj, radj = {}, {}
+            for u, v in x["edges"]:
+                adj.setdefault(u, []).append(v); radj.setdefault(v, []).append(u)
+            def closure(src, g):
+                seen, st = {src}, [src]
+                while st:
+                    u = st.pop()
+                    for v in g.get(u, []):
+                        if v not in seen:
+                            seen.add(v); st.append(v)
+                return seen
+            fr, bt_true, bn_true = closure(x["root"], adj), closure(x["target"], radj), closure(x["neg_target"], radj)
+            row["F"] = [[e, ix[e] in fr] for e in order_f[:15]]
+            row["Bt"] = [[e, e in ix and ix[e] in bt_true] for e in back["t"][:15]]
+            row["Bn"] = [[e, e in ix and ix[e] in bn_true] for e in back["n"][:15]]
         for m in a.m:
             F = set(order_f[:m]); bt, bn = set(back["t"][:m]), set(back["n"][:m])
             row[f"hit_t_m{m}"], row[f"hit_n_m{m}"] = bool(F & bt), bool(F & bn)

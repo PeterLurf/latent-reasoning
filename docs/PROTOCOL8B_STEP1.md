@@ -148,3 +148,21 @@ statements, not a depth limit. Outputs `prosqa/res_p8b/hopsweep_shallow_<model>.
   ckpt_s2 0.74 → 0.61. At 4–5 hops remaining accuracy is back near the plain level (0.60–0.78).
   So the effect is a learned response to the statement "<root> is a <entity near an option>", not a depth limit.
   Checkpoint training weakens it. Mechanism not yet diagnosed (Theory).
+
+### Cue test (registered 2026-09-30 21:20 EDT before running on the step-1 models; exploratory; idea: Theory)
+`prosqa/cue_p8b.py`: probe-disjoint p8_test problems at d3–10 (40 per depth). At one random position, four texts are
+compared; ProsQA options are leaves (0 / 4,057 have children), so adjacency means parents.
+* **plain.**
+* **+PT** "<root> is a <gold-path parent of the target>." (true and consistent).
+* **+PN** "<root> is a <a parent of the negative option>." (makes the negative option derivable too).
+* **+R** "<root> is a <concept reaching neither option>." (control).
+
+Measure: the margin shift toward the target vs plain, per condition, separately for d3–6 and d7–10.
+**Readings, fixed now.**
+* **Lexical cue ("an option adjacent to a written entity is wrong").** PT shifts toward the negative option and PN
+  toward the target, both clearly (|mean shift| > 1 nat, opposite signs).
+* **Premise reasoning.** PN shifts toward the negative option, and PT does not shift toward it.
+* **Control.** R shifts by < 0.5 nat.
+
+Models: the 6 step-1 models. **Smoke disclosed (Phase 0 model, 4 problems at d7–10, CPU):** PT −9.7, PN +6.5, R −0.2.
+Outputs `prosqa/res_p8b/cue_<model>.json`.
