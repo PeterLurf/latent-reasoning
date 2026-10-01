@@ -29,8 +29,22 @@
 `
 `| # | setting | where | steps | outcome |
 `|---|---|---|---|---|
-`| 4 | **hint** arm; head 0, bias −4; label emb N(0, 0.144) | 4060 | 594 | (running) |
-`| 5 | mono; head 0, bias −4; label emb N(0, 0.144); first 1/3 of steps soft forward l′ = max(l, σ(z/τ)), τ 1 → 0.1, depth 3 → 6 curriculum; then hard + ST | 4060 | 594 | (queued) |
+`| 4 | **hint** arm; head 0, bias −4; label emb N(0, 0.144) | 4060 | 594 | loss flat 9.2–10.0, train acc 0.29–0.55: **the hint arm does not learn either** |
+`| 5 | mono; head 0, bias −4; label emb N(0, 0.144); first 1/3 of steps soft forward l′ = max(l, σ(z/τ)), τ 1 → 0.1, depth 3 → 6 curriculum; then hard + ST | 4060 | 594 | soft phase: loss 1.7–2.6 but train acc 0.28–0.54 (no discrimination); hard phase: back to 6.8–7.1 |
 `
 `Test indices evaluated by setting #0's plumbing check, excluded from every PROTOCOL12 test evaluation (Audit):
 `p8_test 0, 1, 2, 3, 4, 5, 6, 7, 15, 16, 27, 47 (the first problem of each depth 3–14); \`ail_gpt2.py --exclude\` default.
+
+**Plumbing check (2026-09-30 22:23; a bug check, not a setting; 4 training problems, one batch, hint loss, P = 3).**
+* **Gradients reach the head.** |∇w| = 1228 at step 0. The label embedding and GPT-2 get none at step 0 only because
+  the head weight starts at 0. There is no wiring bug.
+* **Hard + ST is stuck.** The loss stays at exactly 1.550 for 60 Adam steps: the forward loss is piecewise constant and
+  no label crosses its threshold.
+* **Soft forward (τ = 1) fits.** The same batch reaches loss 0.002 and label accuracy 1.000 against the 3-hop targets
+  within 60 steps, so the architecture can represent the propagation.
+* **Hard + ST with head lr 1e-2 oscillates.** It is stuck for 40 steps, then floods (99 % on), then collapses back.
+
+**Outcome: cap reached (6 settings), PROTOCOL12 as specified is not learnable in this budget.** The specification's
+hard forward labels with a sigmoid straight-through estimator give no usable training signal on GPT-2 / ProsQA,
+from final answers or even from per-pass targets. A relaxation that trains on soft labels would be a redesign, for
+Theory and a new registration; it is not adopted silently.
