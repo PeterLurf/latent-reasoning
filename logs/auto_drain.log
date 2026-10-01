@@ -36,3 +36,4 @@
 2026-09-30 19:30:22 p8c_cot_s2 53533319 drained (res prosqa/res_p8c/cot_s2, ckpt prosqa/ckpt/p8c_cot_s2_checkpoint_30)
 2026-09-30 19:47:44 p8c_cot_s1 53533314 drained (res prosqa/res_p8c/cot_s1, ckpt prosqa/ckpt/p8c_cot_s1_checkpoint_30)
 2026-09-30 20:49:38 p8b1_ctl_s2 53555209 drained (checkpoint sha256-verified 18:58, host destroyed 19:02; probe re-run locally; released for local waiters)
+2026-09-30 22:19:46 p8c_rt_s1 53533295 drained (res prosqa/res_p8c/rt_s1, ckpt prosqa/ckpt/p8c_rt_s1_checkpoint_48)
