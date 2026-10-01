@@ -1,0 +1,41 @@
+# THEORY 62 (4f087eb): run seed head flags
+pn_ns_s102 102 2 --flip_all 0.145 --flip_far 0.23
+pn_ns45_s102 102 2 --flip_all 0.145 --flip_far 0.305
+pn_nb_s102 102 2 --fn_far 0.47
+pn_nu_s102 102 2 --flip_all 0.26
+pn_ns_s111 111 4 --flip_all 0.145 --flip_far 0.23
+pn_ns45_s111 111 4 --flip_all 0.145 --flip_far 0.305
+pn_nb_s111 111 4 --fn_far 0.47
+pn_nu_s111 111 4 --flip_all 0.26
+pn_ns_s113 113 7 --flip_all 0.145 --flip_far 0.23
+pn_ns45_s113 113 7 --flip_all 0.145 --flip_far 0.305
+pn_nb_s113 113 7 --fn_far 0.47
+pn_nu_s113 113 7 --flip_all 0.26
+pn_ns_s118 118 0 --flip_all 0.145 --flip_far 0.23
+pn_ns45_s118 118 0 --flip_all 0.145 --flip_far 0.305
+pn_nb_s118 118 0 --fn_far 0.47
+pn_nu_s118 118 0 --flip_all 0.26
+pn_ns_s125 125 5 --flip_all 0.145 --flip_far 0.23
+pn_ns45_s125 125 5 --flip_all 0.145 --flip_far 0.305
+pn_nb_s125 125 5 --fn_far 0.47
+pn_nu_s125 125 5 --flip_all 0.26
+pn_ns_s130 130 0 --flip_all 0.145 --flip_far 0.23
+pn_ns45_s130 130 0 --flip_all 0.145 --flip_far 0.305
+pn_nb_s130 130 0 --fn_far 0.47
+pn_nu_s130 130 0 --flip_all 0.26
+pn_ns_s132 132 6 --flip_all 0.145 --flip_far 0.23
+pn_ns45_s132 132 6 --flip_all 0.145 --flip_far 0.305
+pn_nb_s132 132 6 --fn_far 0.47
+pn_nu_s132 132 6 --flip_all 0.26
+pn_ns_s140 140 4 --flip_all 0.145 --flip_far 0.23
+pn_ns45_s140 140 4 --flip_all 0.145 --flip_far 0.305
+pn_nb_s140 140 4 --fn_far 0.47
+pn_nu_s140 140 4 --flip_all 0.26
+pn_ns_s146 146 4 --flip_all 0.145 --flip_far 0.23
+pn_ns45_s146 146 4 --flip_all 0.145 --flip_far 0.305
+pn_nb_s146 146 4 --fn_far 0.47
+pn_nu_s146 146 4 --flip_all 0.26
+pn_ns_s157 157 5 --flip_all 0.145 --flip_far 0.23
+pn_ns45_s157 157 5 --flip_all 0.145 --flip_far 0.305
+pn_nb_s157 157 5 --fn_far 0.47
+pn_nu_s157 157 5 --flip_all 0.26
