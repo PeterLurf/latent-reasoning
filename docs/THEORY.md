@@ -2725,7 +2725,9 @@ it is a probe that is used causally. It is not a claim about the silent steps (Â
 
 **Provenance note.** A first commit (639fd62) added the code but not this text: the f-string that wrote it failed. A
 run started from that commit was stopped within a minute, before it wrote any result (no results file existed). The
-runs scored below start after this text is committed.
+runs scored below start after this text is committed. The aborted run's partial log was deleted, which was a mistake. Its content is not
+recoverable: the task output holds only "[killed]". Since the script prints only after a whole model, which takes
+minutes, no outcome line could have been printed. Note in `theory/results/exp25_target_halt_aborted.void`.
 
 **Design.** `theory/exp25_target_halt.py`, CPU, cached trajectories; the toy analogue of PROTOCOL10.
 * **Target.** One per graph: the reachable node at distance d ~ U{1..L}, or its look-alike (50/50).

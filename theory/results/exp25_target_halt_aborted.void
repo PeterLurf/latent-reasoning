@@ -1,0 +1,8 @@
+VOID: aborted run of theory/exp25_target_halt.py started from commit 639fd62 (registration text missing) at ~20:34:00
+EDT 2026-09-30 and killed at ~20:34:20 (TaskStop + Stop-Process), before c76a8ce registered §51.
+- stdout/stderr went to theory/results/exp25_target_halt.log, which was deleted at 20:34:30 (a mistake; the rule from
+  now on is to rename to *.void and commit). Its content is not recoverable: the background task's own output file
+  holds only "[killed]".
+- The script prints a line only after finishing a whole model (write-head training + caching, minutes per model), and
+  no results file (theory/results/exp25_target_halt.json) existed when checked (Test-Path False), so no outcome was
+  produced or seen.
