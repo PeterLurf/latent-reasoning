@@ -55,6 +55,15 @@ times below (local EDT) and the first-run times from the host queue logs.
 
 ## Executive summary (updated 2026-09-29 14:27 EDT)
 
+**Frontier (§52, 2026-09-30):** five untested directions:
+* F1: a discrete per-token annotation state, count-free and readable by construction;
+* F2: bidirectional meet-in-the-middle latent search;
+* F3: compositional self-synthesis of deeper training data;
+* F4: a behavioural round-trip translator for silent thoughts;
+* F5: verify-then-extend search.
+
+Novelty is with Literature, and Experiments runs the tests.
+
 **Overnight results (2026-09-30 02:15 EDT; one line each, details in the § Result sections):**
 * Anytime supervision (D): 8/10 extrapolate vs 3/9, Fisher p 0.055. The gain is at d7 only; the pointer falls back after
   K (§17).
@@ -2747,6 +2756,112 @@ minutes, no outcome line could have been printed. Note in `theory/results/exp25_
   distance bins 1–6, 7–12, 13–18, 19–24, and strictly larger at 19–24 than at 1–6, in ≥ 7/10 models.
 * **TH2 (no accuracy cost).** Held-out accuracy (last rule + learned halt) ≥ (max rule + learned halt) − 0.02 in
   ≥ 7/10 models.
+
+## 52. Frontier: new directions for latent reasoning (2026-09-30 20:39 EDT; requested by the user via Audit; nothing here is registered, and Literature checks novelty first)
+
+**What the last two days taught, as constraints on any new design.**
+* A loop stops on a count it carries (§35).
+* A single vector per step holds only ≈ 1.4–2.3 branches (§30), and sets packed into one state compete (§45).
+* Restarting from written tokens resets every count, and a trained written channel becomes causal (§26, §45).
+* Max-combined answers accumulate errors (§50).
+* Reach grows with the depth trained (§41).
+* GPT-2 ignores untrained checkpoints (PROTOCOL8b).
+
+The directions below change the state, the inference scheme, the training signal or how readability is obtained.
+Each is meant to hit several north-star conditions at once.
+
+### F1. Annotated-input reasoning: the state lives on the problem's own tokens
+* **Idea.** Drop "one latent vector per step". Give every input token a small discrete label from a few states (e.g.
+  unseen / frontier / reached / dead), carried between passes.
+  - Each pass is the same transformer applied to [tokens + current labels]. Hidden activations are discarded; only the
+    labels persist.
+  - The answer reads the labels. Labels are trained from final answers only (straight-through Gumbel), with random pass
+    budgets.
+* **Why several conditions at once.**
+  - The state is a set over input entities, so parallel branches are free (no superposition limit).
+  - It is readable by construction: each label is a proposition about an input entity (C7). An edit flips one label.
+  - It is count-free: there is no step index or growing history, and the state size is fixed (C2).
+  - It is discrete, so nothing fades (C6).
+  - It halts at a fixed point, when labels stop changing (C5).
+  - Test-time compute is the number of passes.
+* **Falsifier.**
+  - Trained on depth ≤ 6, it fails beyond about 6 passes on longer chains;
+  - or the labels become a covert counter (label patterns encode depth);
+  - or flipping a label doesn't change the answers as BFS predicts.
+* **Cheapest decisive test (toy, one local GPU, about 1 h).**
+  - Set-up: a 2-layer transformer over edge and node tokens with 4-state labels per node token, trained on depth ≤ 6.
+  - Measure: chains of 12–24 at 12–24 passes, plus a label-flip edit test.
+  - For an LM, the labels would be an extra learned embedding added to the LM's own input tokens.
+
+### F2. Bidirectional latent reasoning (meet in the middle)
+* **Idea.** Run two latent searches: forward from the question's root, and backward from a candidate answer over
+  reversed relations. Each writes its frontier. The answer is "yes" when the two written frontiers intersect.
+* **Why several conditions at once.**
+  - Each search needs only half the depth, so reach doubles at the same trained horizon (C2), with no new training if
+    the model is relation-symmetric.
+  - The meeting node is a checkable certificate (C7) and a natural halt (C5).
+  - The two searches run in parallel.
+* **Falsifier.** Backward search can't be learned from final answers, or the intersection gives false positives, or
+  there's no reach gain over forward search alone at equal compute.
+* **Cheapest decisive test (CPU, $0, existing toy models, zero-shot).**
+  - The same model computes reachability *to* a target by reversing edge directions and starting from the target.
+  - So F = forward set within 6 hops, B = backward set within 6 hops, and "reachable within 12" ⇔ F ∩ B ≠ ∅.
+  - Measure bal-acc at d7–12 vs one episode (chance) and vs restarts (§46).
+
+### F3. Compositional self-synthesis: deeper training problems from verified shallow ones
+* **Idea.** The model makes its own deeper training data by composing problems it has solved and verified: root→x
+  and x→y become root→y.
+  - The composite label comes *by construction* from the verified sub-answers, not from the model's guess on the deep
+    problem.
+  - Iterating doubles the trained depth each round.
+  - In real domains: relation chains in CLUTRR, operation chains in arithmetic, lemma chains in proofs.
+* **Why several conditions at once.**
+  - Reach grows with trained depth (§41), so this is C2 from data. No external labels are used (C4).
+  - It avoids the error avalanche by construction: errors enter only through verification of shallow sub-answers,
+    which is the reliable part.
+* **Falsifier.** The model learns the seam (composed problems are off-distribution), or sub-answer verification fails,
+  or reach doesn't grow faster than the restart ladder (L/M).
+* **Cheapest decisive test (toy, local GPU, about 2 h).**
+  - Set-up: compose pairs of 6-hop problems into 12-hop training chains, labelled from the model's own verified 6-hop
+    answers.
+  - Compare against the re-anchoring teacher (L-T8) and true labels (L-GT) on d13–24.
+
+### F4. A behavioural round-trip translator for silent thoughts (C7 by optimisation)
+* **Idea.** Learn a decoder from thought to a short text over a constrained vocabulary (the input's entities plus a
+  few relation words), and an encoder from text back to thought. Train them through the *frozen* reasoner, on the
+  north star's own C7 tests:
+  - Round-trip loss: substitute encode(decode(h)) for h, and the answers must not change.
+  - Edit loss: change an entity in the text, and the answers must change as BFS on the edited text predicts.
+  - A paraphrase-invariance term detects steganography.
+* **Why several conditions at once.** It is the first method aimed directly at C7 for the *silent* steps (§34 reached
+  only 0.36 with a fitted linear map). It does not touch the reasoner (C1–C6 keep their status), and it applies to any
+  latent model, including Coconut GPT-2.
+* **Falsifier.**
+  - Round-trip agreement plateaus well below about 0.95, or edit IIA stays near 0.36. Either means a hidden channel the
+    vocabulary can't express, which is itself a measurement.
+  - Or paraphrases break behaviour, which means steganography.
+* **Cheapest decisive test (toy, CPU or local GPU, under 1 h).**
+  - Set-up: decoder = multi-label over node ids (a written frontier set); encoder = a small MLP. Train through the
+    frozen CLR1 or P30 models with both losses.
+  - Measure: held-out round-trip agreement and edit IIA vs §34.
+
+### F5. Verify-then-extend: latent proof checking as test-time compute
+* **Idea.** Treat each written checkpoint as a claim. Spend test-time compute on short latent *verification*
+  episodes ("from c_j, is c_{j+1} reachable?") and extend only verified checkpoints; on failure, branch to the next
+  candidate.
+  - Compute scales with the verification budget.
+  - Errors are rejected at the seam instead of accumulating (§50).
+* **Falsifier.** Verification episodes catch wrong checkpoints no better than chance, or the cost exceeds the gain.
+* **Cheapest test (CPU, existing CLR models).** Filter each chain step's anchor by a verification episode, and compare
+  chain accuracy and false positives with §48.
+
+**Priority.**
+1. F2: zero-shot, CPU, decisive for doubling reach.
+2. F1: the most north-star conditions by construction.
+3. F4: the C7 core.
+4. F3: a data engine for C2 + C4.
+
+F5 is closest to the current loop and comes last.
 
 ## 7. Log
 
