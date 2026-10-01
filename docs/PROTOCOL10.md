@@ -54,3 +54,26 @@ Not part of the decision rules. Theory (§48) saw shallow accuracy erode with mo
 models and the K′ = 5 / 10, S = 8 settings of amendment 1 are run on answer depths 3–6 (100 per depth). New flag
 `--exclude_cal` drops the 100 calibration problems (depths 3–6) from the evaluation; the main run (d11–14) is unaffected,
 since no calibration problem is that deep. Outputs `prosqa/res_p10/<model>_k<K′>_s8_d3-6.json`, blind under the same rule.
+
+## Result (2026-09-30 20:59 EDT; `python prosqa/score_p10.py` → `results/p10.json`; all 6 step-1 models)
+
+**P10-1: not supported.** G = acc(S = 4) − acc(S = 1) at d11–14: ckpt −0.003 / −0.009 / +0.006 (mean −0.002).
+**P10-2: as predicted.** ctl −0.009 / 0.000 / +0.012 (mean +0.001). **P10-3: not met** (difference −0.003, no separation).
+* **Baseline.** At S = 1 every model is at or below chance at d11–14 (0.47–0.50; Phase 0 model 0.46), so chaining had to
+  create the reach, not extend it.
+* **Write quality (v0 writer).** The first written entity is on the gold path in 55–59 % of problems and unreachable from
+  the root in 41–45 %. The halt fires in 7–15 % (S = 4).
+* **C7 edit check: not estimable, a design error.** It needed a distractor reachable from the root that reaches the
+  negative option. In ProsQA the negative option is unreachable from the root by construction, so no candidate exists
+  (edit n = 0 in every model). A valid edit must take the distractor from the negative option's side of the graph.
+* **Amendment 1 (exploratory, d11–14, S = 8).** No chain helps at K′ = 5 or K′ = 10. Accuracy stays 0.42–0.54 at every S,
+  with drifts of ±0.04 in both arms. The halt fires in 10–44 %.
+* **Amendment 2 (exploratory, d3–6).** Chaining costs shallow accuracy, as Theory's §48 warned (with last-segment
+  answers too):
+  - ctl falls from 0.76–0.77 (S = 1) to 0.63–0.66 (S = 8), most of it at S = 2;
+  - ckpt falls from 0.68–0.74 to 0.65–0.69;
+  - at d3–6 the first write is on the gold path in only 32–39 %; the halt fires in 61–84 %.
+* **Reading.** With these models a written entity checkpoint carries nothing forward. The hop sweep shows why: a correct
+  checkpoint near the target makes the models choose the wrong option, untrained ones systematically. The bottleneck is
+  reading as well as writing. The segmented design needs a model trained to reason *from* written premises, not
+  Coconut checkpoints fine-tuned for four epochs.
