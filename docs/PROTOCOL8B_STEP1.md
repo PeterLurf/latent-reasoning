@@ -166,3 +166,26 @@ Measure: the margin shift toward the target vs plain, per condition, separately 
 
 Models: the 6 step-1 models. **Smoke disclosed (Phase 0 model, 4 problems at d7–10, CPU):** PT −9.7, PN +6.5, R −0.2.
 Outputs `prosqa/res_p8b/cue_<model>.json`.
+
+#### Cue test: result (2026-09-30 21:59 EDT; `prosqa/res_p8b/cue_<model>.json`; 160 problems per depth band per model)
+Mean margin shift toward the target vs plain (nats), and accuracy:
+
+| model | d3–6 plain | +PT | +PN | +R | d7–10 plain | +PT | +PN | +R |
+|---|---|---|---|---|---|---|---|---|
+| ctl_s1 | 0.82 | −11.2 (0.32) | +5.3 (0.96) | −0.1 | 0.54 | −7.8 (0.16) | +7.4 (0.93) | +0.1 |
+| ctl_s2 | 0.80 | −10.1 (0.36) | +5.6 (0.96) | 0.0 | 0.57 | −7.2 (0.18) | +6.8 (0.88) | 0.0 |
+| ctl_s3 | 0.79 | −9.5 (0.36) | +5.7 (0.97) | −0.1 | 0.56 | −7.1 (0.15) | +6.8 (0.92) | 0.0 |
+| ckpt_s1 | 0.76 | −1.9 (0.64) | +1.3 (0.79) | 0.0 | 0.51 | −0.6 (0.48) | +0.6 (0.56) | 0.0 |
+| ckpt_s2 | 0.74 | −2.3 (0.62) | +1.6 (0.81) | −0.1 | 0.51 | −0.5 (0.46) | +0.8 (0.56) | −0.1 |
+| ckpt_s3 | 0.78 | −2.4 (0.64) | +1.4 (0.84) | −0.1 | 0.52 | −0.5 (0.48) | +0.6 (0.56) | +0.1 |
+
+**Reading (by the rules fixed before running): lexical cue, in all 6 models.**
+* **Shift direction.** PT moves answers toward the negative option and PN toward the target, with opposite signs and
+  |shift| > 1 nat at d3–6 in every model (at d7–10 only in ctl). The R control stays < 0.5 nat everywhere.
+* **Not premise reasoning.** PN makes the negative option derivable, yet it moves answers toward the *target*: the ctl
+  models answer 0.88–0.97 "target" when both options are derivable.
+* **What the models learned.** An option adjacent to an entity named in a root statement is the wrong one. In the
+  training data a root-to-entity statement always leads into the target's chain, so an option adjacent to a different
+  root-linked entity must be the decoy. The ckpt arm weakened the cue about 4–5× but kept its sign.
+* **Consequence.** Coconut GPT-2's ProsQA accuracy partly rests on this shortcut, which bears on every written-checkpoint
+  scheme built on these models (PROTOCOL8b, 10, 11).
