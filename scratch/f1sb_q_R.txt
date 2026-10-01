@@ -1,0 +1,4 @@
+# 61b seed-3 reruns (RTX 3090, driver 570.x)
+f1s_r3a 3
+f1s_r3b 3
+f1s_r3c 3

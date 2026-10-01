@@ -1,0 +1,3 @@
+# 61b fresh seeds
+f1s_s8 8
+f1s_s9 9
