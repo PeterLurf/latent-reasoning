@@ -1,0 +1,319 @@
+{
+ "runs": {
+  "f1s_r3a": {
+   "acc": {
+    "d1_2": 0.915,
+    "d3_6": 0.485,
+    "d7_10": 0.4975,
+    "d11_14": 0.5449101796407185
+   },
+   "acc_P_eq_d": {
+    "d1_2": 1.0,
+    "d3_6": 0.5,
+    "d7_10": 0.5,
+    "d11_14": 1.0
+   },
+   "label_prec": 0.6263387410932156,
+   "label_recall": 0.45133839593497466,
+   "edit_IIA": 0.01424287856071964,
+   "success": false,
+   "exact_at_P_eq_d": false,
+   "mode": "flooding",
+   "host": "NVIDIA GeForce RTX 3090, 570.211.01, 24576 MiB | torch 2.5.1+cu124 cuda 12.4 bf16 True",
+   "orig_class": true,
+   "bench_deep_na": 0.5101
+  },
+  "f1s_r3b": {
+   "acc": {
+    "d1_2": 0.915,
+    "d3_6": 0.48,
+    "d7_10": 0.495,
+    "d11_14": 0.5119760479041916
+   },
+   "acc_P_eq_d": {
+    "d1_2": 1.0,
+    "d3_6": null,
+    "d7_10": null,
+    "d11_14": null
+   },
+   "label_prec": 0.5755583598384545,
+   "label_recall": 0.7566998838230784,
+   "edit_IIA": 0.006746626686656672,
+   "success": false,
+   "exact_at_P_eq_d": true,
+   "mode": "flooding",
+   "host": "NVIDIA GeForce RTX 3090, 570.211.01, 24576 MiB | torch 2.5.1+cu124 cuda 12.4 bf16 True",
+   "orig_class": true,
+   "bench_deep_na": 0.5089
+  },
+  "f1s_r3c": {
+   "acc": {
+    "d1_2": 0.94,
+    "d3_6": 0.43,
+    "d7_10": 0.4,
+    "d11_14": 0.4491017964071856
+   },
+   "acc_P_eq_d": {
+    "d1_2": 1.0,
+    "d3_6": null,
+    "d7_10": null,
+    "d11_14": null
+   },
+   "label_prec": 0.5729067370858847,
+   "label_recall": 0.7693705218155406,
+   "edit_IIA": 0.0,
+   "success": false,
+   "exact_at_P_eq_d": true,
+   "mode": "flooding",
+   "host": "NVIDIA GeForce RTX 3090, 570.211.01, 24576 MiB | torch 2.5.1+cu124 cuda 12.4 bf16 True",
+   "orig_class": true,
+   "bench_deep_na": 0.4935
+  },
+  "f1s_s4": {
+   "acc": {
+    "d1_2": 0.94,
+    "d3_6": 0.4575,
+    "d7_10": 0.455,
+    "d11_14": 0.46407185628742514
+   },
+   "acc_P_eq_d": {
+    "d1_2": 0.9723756906077348,
+    "d3_6": 0.4369747899159664,
+    "d7_10": 0.3920704845814978,
+    "d11_14": 0.4656084656084656
+   },
+   "label_prec": 0.5638534151491139,
+   "label_recall": 0.790287662743718,
+   "edit_IIA": 0.3800599700149925,
+   "success": false,
+   "exact_at_P_eq_d": false,
+   "mode": "flooding",
+   "host": "NVIDIA RTX A4000, 560.35.05, 16376 MiB | torch 2.5.1+cu124 cuda 12.4 bf16 True",
+   "orig_class": false,
+   "bench_deep_na": 0.4976
+  },
+  "f1s_s5": {
+   "acc": {
+    "d1_2": 0.92,
+    "d3_6": 0.51,
+    "d7_10": 0.4975,
+    "d11_14": 0.4940119760479042
+   },
+   "acc_P_eq_d": {
+    "d1_2": 1.0,
+    "d3_6": null,
+    "d7_10": null,
+    "d11_14": null
+   },
+   "label_prec": 0.5388885940066817,
+   "label_recall": 0.7613323317613018,
+   "edit_IIA": 0.008245877061469266,
+   "success": false,
+   "exact_at_P_eq_d": true,
+   "mode": "flooding",
+   "host": "NVIDIA RTX A4000, 560.35.05, 16376 MiB | torch 2.5.1+cu124 cuda 12.4 bf16 True",
+   "orig_class": false,
+   "bench_deep_na": 0.5006
+  },
+  "f1s_s6": {
+   "acc": {
+    "d1_2": 0.955,
+    "d3_6": 0.5,
+    "d7_10": 0.4825,
+    "d11_14": 0.46107784431137727
+   },
+   "acc_P_eq_d": {
+    "d1_2": 1.0,
+    "d3_6": null,
+    "d7_10": null,
+    "d11_14": null
+   },
+   "label_prec": 0.5768723107140139,
+   "label_recall": 0.7691169252903429,
+   "edit_IIA": 0.005997001499250375,
+   "success": false,
+   "exact_at_P_eq_d": true,
+   "mode": "flooding",
+   "host": "NVIDIA GeForce RTX 3080 Ti, 560.35.03, 12288 MiB | torch 2.5.1+cu124 cuda 12.4 bf16 True",
+   "orig_class": false,
+   "bench_deep_na": 0.4911
+  },
+  "f1s_s7": {
+   "acc": {
+    "d1_2": 0.78,
+    "d3_6": 0.4975,
+    "d7_10": 0.4975,
+    "d11_14": 0.45808383233532934
+   },
+   "acc_P_eq_d": {
+    "d1_2": 0.9784172661870504,
+    "d3_6": 0.5197368421052632,
+    "d7_10": 0.5591397849462365,
+    "d11_14": 0.5714285714285714
+   },
+   "label_prec": 0.5565376549127895,
+   "label_recall": 0.7758656515137401,
+   "edit_IIA": 0.20089955022488756,
+   "success": false,
+   "exact_at_P_eq_d": false,
+   "mode": "flooding",
+   "host": "NVIDIA GeForce RTX 3080 Ti, 560.35.03, 12288 MiB | torch 2.5.1+cu124 cuda 12.4 bf16 True",
+   "orig_class": false,
+   "bench_deep_na": 0.5048
+  },
+  "f1s_s8": {
+   "acc": {
+    "d1_2": 0.93,
+    "d3_6": 0.445,
+    "d7_10": 0.41,
+    "d11_14": 0.4431137724550898
+   },
+   "acc_P_eq_d": {
+    "d1_2": 1.0,
+    "d3_6": null,
+    "d7_10": null,
+    "d11_14": null
+   },
+   "label_prec": 0.5722051873070144,
+   "label_recall": 0.7601291011746553,
+   "edit_IIA": 0.005997001499250375,
+   "success": false,
+   "exact_at_P_eq_d": true,
+   "mode": "flooding",
+   "host": "NVIDIA GeForce RTX 3080 Ti, 550.144.03, 12288 MiB | torch 2.5.1+cu124 cuda 12.4 bf16 True",
+   "orig_class": false,
+   "bench_deep_na": 0.4917
+  },
+  "f1s_s9": {
+   "acc": {
+    "d1_2": 0.88,
+    "d3_6": 0.5625,
+    "d7_10": 0.5575,
+    "d11_14": 0.5389221556886228
+   },
+   "acc_P_eq_d": {
+    "d1_2": 1.0,
+    "d3_6": null,
+    "d7_10": null,
+    "d11_14": null
+   },
+   "label_prec": 0.5683775477232857,
+   "label_recall": 0.7619479973835701,
+   "edit_IIA": 0.0014992503748125937,
+   "success": false,
+   "exact_at_P_eq_d": true,
+   "mode": "flooding",
+   "host": "NVIDIA GeForce RTX 3080 Ti, 550.144.03, 12288 MiB | torch 2.5.1+cu124 cuda 12.4 bf16 True",
+   "orig_class": false,
+   "bench_deep_na": 0.5077
+  },
+  "f1s_s10": {
+   "acc": {
+    "d1_2": 0.875,
+    "d3_6": 0.51,
+    "d7_10": 0.555,
+    "d11_14": 0.5089820359281437
+   },
+   "acc_P_eq_d": {
+    "d1_2": 1.0,
+    "d3_6": null,
+    "d7_10": null,
+    "d11_14": null
+   },
+   "label_prec": 0.565098684533857,
+   "label_recall": 0.7389745682380369,
+   "edit_IIA": 0.0,
+   "success": false,
+   "exact_at_P_eq_d": true,
+   "mode": "flooding",
+   "host": "NVIDIA RTX A5000, 560.35.03, 23028 MiB | torch 2.5.1+cu124 cuda 12.4 bf16 True",
+   "orig_class": false,
+   "bench_deep_na": 0.4964
+  },
+  "f1s_s11": {
+   "acc": {
+    "d1_2": 0.945,
+    "d3_6": 0.43,
+    "d7_10": 0.42,
+    "d11_14": 0.44011976047904194
+   },
+   "acc_P_eq_d": {
+    "d1_2": 1.0,
+    "d3_6": 1.0,
+    "d7_10": null,
+    "d11_14": null
+   },
+   "label_prec": 0.5745849225996177,
+   "label_recall": 0.7622367371558576,
+   "edit_IIA": 0.0007496251874062968,
+   "success": false,
+   "exact_at_P_eq_d": true,
+   "mode": "flooding",
+   "host": "NVIDIA RTX A5000, 560.35.03, 23028 MiB | torch 2.5.1+cu124 cuda 12.4 bf16 True",
+   "orig_class": false,
+   "bench_deep_na": 0.4929
+  },
+  "f1s_s12": {
+   "acc": {
+    "d1_2": 0.93,
+    "d3_6": 0.4825,
+    "d7_10": 0.5025,
+    "d11_14": 0.5209580838323353
+   },
+   "acc_P_eq_d": {
+    "d1_2": 1.0,
+    "d3_6": null,
+    "d7_10": null,
+    "d11_14": null
+   },
+   "label_prec": 0.5767386189784782,
+   "label_recall": 0.7687503188555207,
+   "edit_IIA": 0.004497751124437781,
+   "success": false,
+   "exact_at_P_eq_d": true,
+   "mode": "flooding",
+   "host": "NVIDIA RTX A4000, 595.71.05, 16376 MiB | torch 2.5.1+cu124 cuda 12.4 bf16 True",
+   "orig_class": false,
+   "bench_deep_na": 0.4964
+  },
+  "f1s_s13": {
+   "acc": {
+    "d1_2": 0.92,
+    "d3_6": 0.425,
+    "d7_10": 0.4375,
+    "d11_14": 0.4431137724550898
+   },
+   "acc_P_eq_d": {
+    "d1_2": 0.9722222222222222,
+    "d3_6": 0.375,
+    "d7_10": 0.35064935064935066,
+    "d11_14": 0.3888888888888889
+   },
+   "label_prec": 0.5333581799823766,
+   "label_recall": 0.7881590420556595,
+   "edit_IIA": 0.39430284857571213,
+   "success": false,
+   "exact_at_P_eq_d": false,
+   "mode": "flooding",
+   "host": "NVIDIA RTX A4000, 595.71.05, 16376 MiB | torch 2.5.1+cu124 cuda 12.4 bf16 True",
+   "orig_class": false,
+   "bench_deep_na": 0.4881
+  }
+ },
+ "R1": {
+  "reruns_on_original_class": [
+   "f1s_r3a",
+   "f1s_r3b",
+   "f1s_r3c"
+  ],
+  "successes": 0,
+  "met": false,
+  "note": null
+ },
+ "R2": {
+  "successes": 0,
+  "of": 10,
+  "met": false,
+  "reading": "optimistic draw"
+ }
+}
