@@ -272,3 +272,8 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53718496 vast | st_0 DESTROYED_VERIFIED 2026-10-01 12:45 after verified fetch (theory/runs/st/s3_s1 theory/runs/st/a5_s1)
 53719035 vast | bench_1 DESTROYED_VERIFIED 2026-10-01 12:52 after verified fetch (bench: 8 jobs)
 53719046 vast | bench_2 DESTROYED_VERIFIED 2026-10-01 12:52 after verified fetch (bench: 8 jobs)
+53719027 vast | bench_0 DESTROYED_VERIFIED 2026-10-01 13:12 after verified fetch (bench: 8 jobs)
+53720305 vast | bench_3 DESTROYED_VERIFIED 2026-10-01 13:14 after verified fetch (bench: 8 jobs)
+53719817 vast | st_8 DESTROYED_VERIFIED 2026-10-01 13:17 after verified fetch (theory/runs/st/s3_s9 theory/runs/st/a5_s9)
+53720318 vast | bench_4 DESTROYED_VERIFIED 2026-10-01 13:29 after verified fetch (bench: 8 jobs)
+53720327 vast | bench_5 DESTROYED_VERIFIED 2026-10-01 13:30 after verified fetch (bench: 8 jobs)
