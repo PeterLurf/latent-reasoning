@@ -3890,8 +3890,11 @@ lr 5e-5 / 1e-3), plus a question generator.
   ≈ 0.2–0.3 on look-alikes.
 * Within the T8 family, per-parent seam contrast does not predict the student's G (ρ +0.11): all 20 teachers share
   the structure.
-* Two earlier passes of this check used head 3 for every parent (a bug) or widths 2–3. They were not committed and are
-  superseded.
+* Two earlier passes of this check are superseded and kept as void files (void rule; added after Audit's note):
+  - `theory/results/exp29_pass1.void`: head 3 for every parent and widths 2–3;
+  - `theory/results/exp29_pass2.void`: head 3 for every parent and widths 2,4,6.
+  - Head 3 was a bug: Pilot L used each parent's own sweep head. Both passes also showed a positive seam in 20/20
+    parents.
 
 **Hypothesis: calibration pressure** (Literature, `docs/LIT_NOISE_CLOCK_CHECK_2026-10-01.md`).
 * With instance-dependent flip rates below ½, the Bayes-optimal *classifier* is unchanged (Menon, van Rooyen &
