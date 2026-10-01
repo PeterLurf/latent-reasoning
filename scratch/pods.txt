@@ -256,3 +256,6 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53720340 vast offer 53157040 created 2026-10-01 11:58: label bench-8, queue scratch/bench_q2_8.txt (logged at create by vdeploy_toy.sh)
 53720340 vast | bench-8 DESTROYED_VERIFIED 2026-10-01 12:02 (deploy cancelled during upload; its 6 f1s jobs moved to the local 4060)
 53719822 vast | st-9 DESTROYED_VERIFIED 2026-10-01 12:12 (stuck 'loading' 17 min; its 2 §64 runs moved to the local 3070)
+53718505 vast | st_2 DESTROYED_VERIFIED 2026-10-01 12:26 after verified fetch (theory/runs/st/s3_s3 theory/runs/st/a5_s3)
+53718508 vast | st_3 DESTROYED_VERIFIED 2026-10-01 12:26 after verified fetch (theory/runs/st/s3_s4 theory/runs/st/a5_s4)
+53718514 vast | st_4 DESTROYED_VERIFIED 2026-10-01 12:29 after verified fetch (theory/runs/st/s3_s5 theory/runs/st/a5_s5)
