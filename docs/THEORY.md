@@ -76,6 +76,8 @@ heuristic scores 0.91, which explains the Coconut cue.
 accuracy); identity buys no reach. D3 is parked.
 **Interchange (§56):** GT-distilled students' latents are age-invariant (G 0.09); T8 students' and parents' are not.
 Path independence tracks one-loop reach (Spearman −0.87, post hoc).
+**Beyond graphs (§64):** permutation tracking (A5 primary, S3 secondary) in the latent loop: do the count-keyed stop and the
+written-state restart reappear? 20 runs.
 **F4 registered (§63):** a behavioural round-trip translator for silent thoughts (C7): 20 frozen models × 2 arms × 2 seeds,
 with input-only, evaluator-swap and claim-flip controls. F3 was dropped at its premise check.
 **§62:** depth structure does not install the age code: any label noise keeps latents age-dependent (uniform 0.67 vs clean 0.09).
@@ -4178,6 +4180,79 @@ family and arm.**
   - In evaluation, such graphs are excluded from the claim-flip audit (`flip_eligible` reports the share).
 * Unit-checked on a forced empty case, with a CPU smoke on runs/p30_s100 (outside the set). No metric definition
   changes.
+
+## 64. Beyond graph search: permutation tracking in the latent loop — do the count-keyed stop and the written-state restart reappear? (pre-registered 2026-10-01 11:39 EDT, after Literature's check b6e57a7, before any run; user directive via Audit)
+
+**Why.**
+* Every result so far, toy and GPT-2, is on reachability, which is monotone closure.
+* Permutation tracking (group word problems) overwrites its state at every step, and the non-solvable case has no
+  shallow shortcut. Are this project's mechanisms properties of latent reasoning, or of graph search?
+* This test asks whether two toy findings reappear: the count-keyed stop beyond the trained length (Prop. 10, P10e),
+  and written-state restarts fixing it (§26).
+
+**Prior** (`docs/LIT_PERM_TRACKING_CHECK_2026-10-01.md`).
+* Looped and recurrent state tracking: Liu 2210.10749, 2404.08819, 2411.12537, Implicit LMs 2502.07827, Zhang
+  2607.20594, Giannou 2301.13196.
+* Randomised positions: Ruoss 2305.16843.
+* Closest competitor: Supervised Thinking States 2602.08332, whose thoughts are supervised.
+* New as scoped: a final-answer-only Coconut loop on group word problems, and a written-state restart with the history
+  cut.
+
+**Design.** `theory/st_model.py`.
+* **Task.** n items in an initial arrangement (identity with probability ½, else random) and N group elements applied
+  in order. Query: each item's final slot (n-way).
+* **Input.** Init tokens plus operation tokens at sorted random positions in [0, 64), so every position embedding is
+  trained.
+* **Loop.** The same toy architecture (d 256, 2 layers, 8 heads, no step embedding). K latent steps (Coconut feedback),
+  then n query tokens.
+* **Training.** Final answers only, N ~ U{1..8}, K = 8, 20k steps, bs 256, AdamW 5e-4.
+* **Groups, scored separately (Audit).**
+  - **A5 (primary).** The even permutations of 5 items: non-solvable, 60 elements. Literature notes that solvable groups
+    allow shallow shortcuts that bypass the loop.
+  - **S3 (secondary).** Solvable; its K′ = 0 accuracy shows any bypass.
+  - S5 is not run: looped models deadlock on it without an operator-first curriculum (Zhang). A5 is the registered
+    non-solvable fallback.
+* **Seeds.** 10 per group: 20 runs.
+
+**Measures** (per run; held-out N = 1..24, 1024 instances each).
+* single: full-state accuracy at K′ = max(8, N), plus K′ = 24 and K′ = 0.
+* trunc: for N > 8, agreement of the answers with the arrangement after the first 8 operations. This is the count-keyed
+  stop's signature.
+* restart: written-state restarts. Run 8 operations, decode the most probable arrangement, write it as the init block,
+  continue on the next 8.
+* edit_IIA: for N = 8, the init block replaced by a random arrangement; the answers must equal the true composition
+  from the edited state. C7 for the written state, scored against the truth (Literature).
+* pointer: per latent step, the rank of the operation token most attended by layer 1, on N = 16.
+* Baselines: chance 1/n! and the identity (no-update) predictor, per N.
+
+**Learnability gate (Audit).** A run is *gated* if its full-state accuracy at N ≤ 8 is ≥ 0.90. Only gated runs enter
+ST2–ST4. An A5 learnability failure is a possible outcome (Zhang reports seed-bimodal A5) and is not evidence against the
+mechanisms.
+
+**Predictions** (each group separately; over gated runs):
+* **ST1 (the loop does the work; C1).** A5: median K′ = 0 accuracy at N = 5–8 ≤ 0.10 (no shortcut). For S3 it is
+  reported, since a shallow shortcut there would make S3 uninformative about the loop.
+* **ST2 (count-keyed stop; the P10e analogue).** At N = 9–16 with K′ = N, the answers agree more with the 8-operation
+  truncation than with the true final arrangement in ≥ 70 % of gated runs. Median true accuracy at N = 13–16 is ≤ half
+  the in-range accuracy.
+* **ST3 (restarts fix it; the §26 analogue).** Written-state restarts reach median accuracy ≥ 0.75 at N = 9–16, and beat
+  the single loop by ≥ 0.20 in ≥ 70 % of gated runs.
+* **ST4 (the written state is read faithfully).** Median edit_IIA ≥ 0.90.
+* **Descriptive.** The pointer-rank profile (does it stop advancing at rank 8?), K′ = 24 vs K′ = N, the restart curve
+  to N = 24, and the number of gated runs per group.
+* **My expectation.** ST1–ST4 met for A5, if enough seeds pass the gate.
+
+**Readings.**
+* **ST2 and ST3 met.** The count-keyed stop and its restart fix are properties of latent loops, not of graph search. The
+  next registration is the GPT-2 overwritable public state (value slots), with text CoT at matched compute (C3), then
+  one-loop distillation and the §62 label check on this task.
+* **ST2 failed.** The loop continues past its trained length on state tracking. The count-keyed stop would then be
+  specific to the frontier sweep of reachability, and the mechanism story must be scoped to graph search.
+* **Too few gated runs.** No mechanism verdict. A5 with Zhang's curriculum becomes the follow-up.
+
+**Run (experiments session).** One wave, 20 runs: `python theory/st_model.py --group {A5|S3} --seed {1..10} --device
+cuda:0 --out theory/runs/st/{a5|s3}_s<seed>`. Evaluation is written as `eval_st.json`. Run a short GPU smoke first for
+timing.
 
 ## 7. Log
 
