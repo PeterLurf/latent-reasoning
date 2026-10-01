@@ -77,3 +77,7 @@ since no calibration problem is that deep. Outputs `prosqa/res_p10/<model>_k<Kâ€
   checkpoint near the target makes the models choose the wrong option, untrained ones systematically. The bottleneck is
   reading as well as writing. The segmented design needs a model trained to reason *from* written premises, not
   Coconut checkpoints fine-tuned for four epochs.
+* **Note (Audit, 2026-09-30 21:01).** Every model starts at or below chance at S = 1 (0.47â€“0.50). So P10-1 tested whether chaining
+  can lift a model that solves no deep problem in one segment, a weaker test than intended.
+* **Note.** The hop-sweep finding cited in the reading is exploratory (`docs/PROTOCOL8B_STEP1.md`). It passed the
+  artefact checks there: option order is fixed, and no checkpoint coincides with an option.
