@@ -1,0 +1,17 @@
+The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+num_proc must be <= 16. Reducing num_proc to 16 for dataset of size 16.
+Map (num_proc=16):   0%|          | 0/16 [00:00<?, ? examples/s]Map (num_proc=16):   6%|▋         | 1/16 [00:00<00:04,  3.34 examples/s]Map (num_proc=16):  12%|█▎        | 2/16 [00:00<00:02,  5.35 examples/s]Map (num_proc=16):  25%|██▌       | 4/16 [00:00<00:01,  9.73 examples/s]Map (num_proc=16):  38%|███▊      | 6/16 [00:00<00:00, 11.57 examples/s]Map (num_proc=16):  56%|█████▋    | 9/16 [00:00<00:00, 15.29 examples/s]Map (num_proc=16):  75%|███████▌  | 12/16 [00:00<00:00, 18.71 examples/s]Map (num_proc=16): 100%|██████████| 16/16 [00:01<00:00, 22.05 examples/s]Map (num_proc=16): 100%|██████████| 16/16 [00:01<00:00, 13.79 examples/s]
+num_proc must be <= 16. Reducing num_proc to 16 for dataset of size 16.
+Map (num_proc=16):   0%|          | 0/16 [00:00<?, ? examples/s]Map (num_proc=16):   6%|▋         | 1/16 [00:00<00:01,  8.92 examples/s]Map (num_proc=16):  56%|█████▋    | 9/16 [00:00<00:00, 40.93 examples/s]Map (num_proc=16): 100%|██████████| 16/16 [00:00<00:00, 39.06 examples/s]
+num_proc must be <= 16. Reducing num_proc to 16 for dataset of size 16.
+Map (num_proc=16):   0%|          | 0/16 [00:00<?, ? examples/s]Map (num_proc=16):   6%|▋         | 1/16 [00:00<00:01,  9.34 examples/s]Map (num_proc=16):  31%|███▏      | 5/16 [00:00<00:00, 25.43 examples/s]Map (num_proc=16): 100%|██████████| 16/16 [00:00<00:00, 38.89 examples/s]
+num_proc must be <= 16. Reducing num_proc to 16 for dataset of size 16.
+Map (num_proc=16):   0%|          | 0/16 [00:00<?, ? examples/s]Map (num_proc=16):   6%|▋         | 1/16 [00:00<00:02,  7.21 examples/s]Map (num_proc=16):  56%|█████▋    | 9/16 [00:00<00:00, 42.80 examples/s]Map (num_proc=16): 100%|██████████| 16/16 [00:00<00:00, 39.10 examples/s]
+num_proc must be <= 16. Reducing num_proc to 16 for dataset of size 16.
+Map (num_proc=16):   0%|          | 0/16 [00:00<?, ? examples/s]Map (num_proc=16):   6%|▋         | 1/16 [00:00<00:01,  8.38 examples/s]Map (num_proc=16):  44%|████▍     | 7/16 [00:00<00:00, 36.44 examples/s]Map (num_proc=16): 100%|██████████| 16/16 [00:00<00:00, 39.33 examples/s]
+stage 0: loss eager 8.38049 sdpa 8.38049 |d| 1.9e-06 answers 8/8 crossed 0.00e+00
+stage 3: loss eager 10.71293 sdpa 10.71293 |d| 1.9e-06 answers 8/8 crossed 0.00e+00
+stage 6: loss eager 14.01467 sdpa 14.01467 |d| 1.9e-06 answers 8/8 crossed 0.00e+00
+generate eager: ',,,,,,,,,,,,' sdpa: ',,,,,,,,,,,,' crossed 0.00e+00
+stage 6 loss with mask 14.0147 without 6.0834
+MASK_TEST PASS

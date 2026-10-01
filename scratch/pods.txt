@@ -207,3 +207,4 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53681105 vast | f1s_1 DESTROYED_VERIFIED 2026-10-01 07:17 after verified fetch (ail runs: f1s_s1)
 53681103 vast | f1s_2 DESTROYED_VERIFIED 2026-10-01 07:23 after verified fetch (ail runs: f1s_s2)
 53681104 vast | f1s_3 DESTROYED_VERIFIED 2026-10-01 07:25 after verified fetch (ail runs: f1s_s3)
+53533311 vast | DESTROYED_VERIFIED 2026-10-01 07:33 after verified fetch (prosqa/res_p8c/rt_s2: coco_test_e48.json coco_ctl_e48.json; ckpt prosqa/ckpt/p8c_rt_s2_checkpoint_48)

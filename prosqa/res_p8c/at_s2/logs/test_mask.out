@@ -1,0 +1,17 @@
+The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+num_proc must be <= 16. Reducing num_proc to 16 for dataset of size 16.
+Map (num_proc=16):   0%|          | 0/16 [00:00<?, ? examples/s]Map (num_proc=16):   6%|▋         | 1/16 [00:00<00:03,  4.75 examples/s]Map (num_proc=16):  19%|█▉        | 3/16 [00:00<00:01, 10.86 examples/s]Map (num_proc=16):  31%|███▏      | 5/16 [00:00<00:00, 13.32 examples/s]Map (num_proc=16):  56%|█████▋    | 9/16 [00:00<00:00, 16.95 examples/s]Map (num_proc=16):  69%|██████▉   | 11/16 [00:00<00:00, 17.62 examples/s]Map (num_proc=16):  88%|████████▊ | 14/16 [00:00<00:00, 20.71 examples/s]Map (num_proc=16): 100%|██████████| 16/16 [00:00<00:00, 16.69 examples/s]
+num_proc must be <= 16. Reducing num_proc to 16 for dataset of size 16.
+Map (num_proc=16):   0%|          | 0/16 [00:00<?, ? examples/s]Map (num_proc=16):  12%|█▎        | 2/16 [00:00<00:00, 16.44 examples/s]Map (num_proc=16): 100%|██████████| 16/16 [00:00<00:00, 66.42 examples/s]
+num_proc must be <= 16. Reducing num_proc to 16 for dataset of size 16.
+Map (num_proc=16):   0%|          | 0/16 [00:00<?, ? examples/s]Map (num_proc=16):  12%|█▎        | 2/16 [00:00<00:00, 19.78 examples/s]Map (num_proc=16): 100%|██████████| 16/16 [00:00<00:00, 72.11 examples/s]
+num_proc must be <= 16. Reducing num_proc to 16 for dataset of size 16.
+Map (num_proc=16):   0%|          | 0/16 [00:00<?, ? examples/s]Map (num_proc=16):  25%|██▌       | 4/16 [00:00<00:00, 39.11 examples/s]Map (num_proc=16): 100%|██████████| 16/16 [00:00<00:00, 72.09 examples/s]
+num_proc must be <= 16. Reducing num_proc to 16 for dataset of size 16.
+Map (num_proc=16):   0%|          | 0/16 [00:00<?, ? examples/s]Map (num_proc=16):   6%|▋         | 1/16 [00:00<00:01,  9.92 examples/s]Map (num_proc=16): 100%|██████████| 16/16 [00:00<00:00, 70.12 examples/s]
+stage 0: loss eager 8.38049 sdpa 8.38049 |d| 1.9e-06 answers 8/8 crossed 0.00e+00
+stage 3: loss eager 10.71293 sdpa 10.71293 |d| 1.9e-06 answers 8/8 crossed 0.00e+00
+stage 6: loss eager 14.01467 sdpa 14.01467 |d| 1.9e-06 answers 8/8 crossed 0.00e+00
+generate eager: ',,,,,,,,,,,,' sdpa: ',,,,,,,,,,,,' crossed 0.00e+00
+stage 6 loss with mask 14.0147 without 6.0834
+MASK_TEST PASS
