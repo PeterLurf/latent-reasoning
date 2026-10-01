@@ -79,3 +79,55 @@ per depth) plus 200 held-out shallow questions, P = 16, hardened labels.
   - F2 53732227: 3080 Ti, 550.144.03.
   - F3 53732236: A5000, 560.35.03.
   - Local: RTX 3070, driver 591.86, torch 2.14.0+cu130.
+
+
+## THEORY §66 (boxes, GPT-2 state tracking) panel result (2026-10-01 17:23 EDT; `python theory/score_s66.py` → `theory/results/score_s66.json`)
+
+50/50 runs (10 arms × 5 seeds, 8000 steps × bs 32), bench boxes test (seed 6600, N 1–32 × {all, where} × 50). The scorer
+(47e6804, ab0d67f) was committed before any result was read. All arms are complete (5/5 seeds). The CL K′ curve is
+pending (local GPU); it is descriptive only.
+
+| arm | acc N 1–8 | 9–16 | 17–32 | GFLOPs / seq passes (17–32) |
+|---|---|---|---|---|
+| NC | 0.221 | 0.138 | 0.147 | 20.1 / 2.5 |
+| TC | 1.000 | 0.180 | 0.139 | 51.8 / 126 |
+| TC2 | 1.000 | 0.168 | 0.137 | 36.5 / 66 |
+| CL (K′ = N) | 0.177 | 0.135 | 0.140 | 25.1 / 28 |
+| **WC k=4** | 1.000 | **1.000** | **1.000** | 43.4 / 57 |
+| WC k=2 | 1.000 | 1.000 | 1.000 | 64.1 / 87 |
+| WC k=8 | 0.509 | 0.164 | 0.144 | 33.1 / 42 |
+| **WC0 k=4** | 1.000 | **1.000** | **1.000** | **34.8** / 26 |
+| WC0 k=2 | 1.000 | 1.000 | 1.000 | 51.4 / 50 |
+| WC0 k=8 | 0.760 | 0.260 | 0.165 | 26.5 / 14 |
+
+No-reasoning baselines at 17–32: identity 0.151, last op 0.146, majority 0.136, chance 0.146 (pooled).
+
+| verdict | result |
+|---|---|
+| Gate (NC median, N 5–8, "all") | **passed**: 0.045 (chance 1/24 = 0.042) |
+| P1 CL 17–32 ≤ ½ in-range | **not met, uninformative**: CL never learned in range (0.177 ≈ identity 0.176; every seed 0.17–0.24) |
+| P2 WC4 ≥ 0.95 at 17–32 | **met**: 1.000 (every seed; "all" 1.000, "where" 1.000) |
+| P3 WC4 vs TC, paired, ≤ TC FLOPs | **met**: +0.858 [0.848, 0.867], 43.4 vs 51.8 GFLOPs ("all" +0.962, "where" +0.754) |
+| P4 WC4 edit IIA ≥ 0.90 | **met**: 1.000 |
+| P5 WC8 − WC0_8 ≥ 0.05 | **not met**: median −0.026 (per seed −0.02 / −0.57 / −0.42 / −0.03 / +0.19); item-paired −0.169 [−0.180, −0.157] |
+
+**Descriptive.**
+* **WC0 = WC wherever the solver works.** WC − WC0 at 17–32 is 0.000 for k = 2 and 0.000 for k = 4, in every seed.
+  - WC0_4 also meets P3's rule (+0.859, at 34.8 GFLOPs, cheaper than WC4) and has edit IIA 1.000.
+  - At k = 8, neither solver learns k′ ≤ 8 swaps in one go. The latents hurt (wc8 in-range 0.32–0.92 vs wc0_8
+    0.47–0.97).
+* **TC fails length generalisation.** Text CoT trained on N ≤ 8 writes correct states up to 8 ops, then falls to chance
+  (0.18 at 9–16, 0.14 at 17–32), even though it is forced to write N states.
+  - Two TC seeds are only 0.62 in range.
+  - TC2 (state every 2 ops) is the same: partial under P3's rule vs TC (−0.001).
+* **Validity.** The final arrangement is a valid permutation in ≥ 0.98 of items for every arm.
+
+**Reading.**
+* P2 + P3 + P4 are met: GPT-2 tracks S4 state to 32 ops from short-problem training, more cheaply than text CoT.
+* **But the win comes from the scaffold, not from latent computation.** WC0 (no continuous thoughts) does exactly as
+  well and is cheaper. The latents do no work at k ≤ 4 (C1 not shown, as Literature expected) and harm at k = 8 (P5).
+* What transfers is §64's written-state restart with the history cut. Each chunk's context stays inside the trained
+  length, while TC's single growing context leaves it at N > 8.
+* The C3 comparison is therefore "chunked text state with a history cut" vs "one long CoT". This is close to
+  Delethink / MEM1 (text carry-over with a history cut), not a latent-reasoning C3 result.
+* In-range accuracy overlaps the training space (amendment 66-1); every verdict above uses N > 8.
