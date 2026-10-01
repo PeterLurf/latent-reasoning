@@ -21,3 +21,4 @@ prosqa/logs/prosqa.out
 prosqa/p8data/
 bm/data_pool/
 bm/runs/*/model.pt
+bm/data_pool_b/
