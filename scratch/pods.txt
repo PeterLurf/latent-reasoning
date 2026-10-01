@@ -152,3 +152,8 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53533319 vast | DESTROYED_VERIFIED 2026-09-30 19:30 after verified fetch (prosqa/res_p8c/cot_s2: cot_test_e30.json cot_ctl_e30.json; ckpt prosqa/ckpt/p8c_cot_s2_checkpoint_30)
 53533314 vast | DESTROYED_VERIFIED 2026-09-30 19:47 after verified fetch (prosqa/res_p8c/cot_s1: cot_test_e30.json cot_ctl_e30.json; ckpt prosqa/ckpt/p8c_cot_s1_checkpoint_30)
 53533295 vast | DESTROYED_VERIFIED 2026-09-30 22:19 after verified fetch (prosqa/res_p8c/rt_s1: coco_test_e48.json coco_ctl_e48.json; ckpt prosqa/ckpt/p8c_rt_s1_checkpoint_48)
+53533281 vast | DESTROYED_VERIFIED 2026-09-30 22:39 after verified fetch (prosqa/res_p8c/coco_s1: coco_test_e48.json coco_ctl_e48.json; ckpt prosqa/ckpt/p8c_coco_s1_checkpoint_48)
+53534943 vast | DESTROYED_VERIFIED 2026-09-30 22:49 after verified fetch (prosqa/res_p8c/coco_s3: coco_test_e48.json coco_ctl_e48.json; ckpt prosqa/ckpt/p8c_coco_s3_checkpoint_48)
+53535201 vast | DESTROYED_VERIFIED 2026-09-30 22:56 after verified fetch (prosqa/res_p8c/rt_s3: coco_test_e48.json coco_ctl_e48.json; ckpt prosqa/ckpt/p8c_rt_s3_checkpoint_48)
+53539583 vast | DESTROYED_VERIFIED 2026-09-30 23:03 after verified fetch (prosqa/res_p8c/coco_s4: coco_test_e48.json coco_ctl_e48.json; ckpt prosqa/ckpt/p8c_coco_s4_checkpoint_48)
+53534818 vast | DESTROYED_VERIFIED 2026-09-30 23:23 after verified fetch (prosqa/res_p8c/at_s2: coco_test_e48.json coco_ctl_e48.json; ckpt prosqa/ckpt/p8c_at_s2_checkpoint_48)
