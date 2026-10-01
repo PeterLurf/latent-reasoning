@@ -131,3 +131,7 @@ No-reasoning baselines at 17–32: identity 0.151, last op 0.146, majority 0.136
 * The C3 comparison is therefore "chunked text state with a history cut" vs "one long CoT". This is close to
   Delethink / MEM1 (text carry-over with a history cut), not a latent-reasoning C3 result.
 * In-range accuracy overlaps the training space (amendment 66-1); every verdict above uses N > 8.
+
+**CL K′ curve (added 18:10 EDT; PILOT.md K′ set, local RTX 3070, bf16).** Accuracy is flat at the baseline for
+every budget: K′ = ⌈N/2⌉ / N / 2N gives 0.169 / 0.177 / 0.176 at N 1–8 and 0.142 / 0.140 / 0.139 at N 17–32
+(23.0 / 25.1 / 29.4 GFLOPs at 17–32). Extra thoughts buy nothing, consistent with CL never having learned.
