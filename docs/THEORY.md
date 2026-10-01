@@ -79,6 +79,8 @@ times below (local EDT) and the first-run times from the host queue logs.
 * One restart covers exactly its trained horizon: 0.91–0.95 up to 6 hops from the anchor, chance from 7 (§46).
 * A learned write head (0.85 agreement) and a closure halt that tracks depth (3/4/5 segments for 12/18/24 hops, 8/10
   models) give label-free C5 v1–v2 (§49).
+* A halt learned from final-answer reward beats closure and fixed halts (9/10), but stops at 2 segments regardless of
+  depth. The bottleneck is that max-combined answers accumulate false positives (§50).
 * **Checkpointed restarts (CLR-1, §45): editing the written checkpoint changes answers as predicted (IIA 0.84 for sets,
   1.00 single).** Chains reach d13–18 label-free (single anchor 0.67). Sets are used but don't beat one anchor.
 * Depth of training sets reach (§41): trained to 9 → fades by ~15; to 12 → ~22; to 18 → flat to 23 on §37's probe (0.88 at 25–30 on an easier width-1 probe).
@@ -2703,6 +2705,20 @@ it is a probe that is used causally. It is not a claim about the silent steps (�
   pooled over the three lengths, in ≥ 7/10 models.
 * **LH2 (tracks depth, as WH2).** The learned halt's median segment count increases strictly with chain length (12 < 18
   < 24) in ≥ 7/10 models.
+
+**Result (2026-09-30; 10 models; `theory/results/exp24_learned_halt.json`). LH1 met (9/10); LH2 not met (0/10).**
+* **LH1.** Pooled held-out reward is highest for the learned halt in 9/10 models. Example, s102: learned 0.719, closure
+  0.685, best fixed (S = 3) 0.701, fixed 6 0.645. Accuracy at the learned halt, by chain length 12/18/24: median
+  ≈ 0.78 / 0.74 / 0.69.
+* **LH2.** The learned halt stops after a median of 2 segments at every chain length, in every model (s111: 1).
+* **Reading.**
+  - With max-combined answers, each extra segment adds false positives faster than it adds coverage (§48's near-depth
+    erosion). So the reward-optimal stop is short and constant. It beats the closure rule, which tracks depth but pays
+    for the false positives.
+  - The bottleneck for C5 tracking depth, and for C6, is the aggregator, not the halting policy.
+  - Fix to test next: an answer rule that does not accumulate false positives. Either answer from the last or halting
+    segment (as PROTOCOL10 does), or accept a node only if it is reached from a verified chain of checkpoints. Then
+    re-learn the halt.
 
 ## 7. Log
 
