@@ -36,7 +36,7 @@ The closest trained precedent for "answer from its own text only" is Markovian T
   activation-to-text decoder (NLA, 2026) reports reconstruction and steering, not behavioural substitution.
 - Ouro (2510.25741, 1.4–2.6B) claims C3/C4/C5 and a correlational form of C7, but degrades beyond its trained depth
   (C2 not met). Huginn, LOTUS, SIM-CoT and TRM each cover two or three conditions.
-- The pretrained-LM precedent for C2/C3 is a pre-registered looped retrofit of Qwen-0.5B (2608.11233): ~1.5× depth extrapolation, beating a scratchpad past its horizon. Any PROTOCOL8/8b claim is held to it (LIT_TASKS_ARCH_2026-09-30).
+- The pretrained-LM precedent for C2/C3 is a pre-registered looped retrofit of Qwen-0.5B (2608.11233): ~1.44–1.5× depth extrapolation, beating a scratchpad past its horizon, but with intermediate-state supervision before outcome-only annealing and no matched-compute claim, so it does not show C3 + C4 jointly. Any PROTOCOL8/8b claim is held to it (LIT_TASKS_ARCH_2026-09-30).
 - Nobody claims C2 in every seed, or a causal C7. No published design combines a latent loop, a set-valued readable
   checkpoint and a learned restart. Any "first" claim here should be scoped to exactly that.
 
