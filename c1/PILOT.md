@@ -26,7 +26,31 @@ Audit's conditions (18:5x):
 * Configuration 5's flat 1/3 at every depth is consistent with a stable automaton that tracks only the sign of the
   permutation (S3 → Z2): it then picks among 3.
 
-**Remaining attempts (at most 4):**
-* 7: configuration 5 with 6,000 updates.
-* 8: LayerNorm on the cell output before both heads (Audit) + distinct codes, default heads.
-* 9 and 10: reserved.
+**Attempts 7–10 (the bounded set after Audit's conditions):**
+
+| # | arm | configuration | outcome |
+|---|---|---|---|
+| 7 | d1 | configuration 5, 6,000 updates | 0.48–0.51 at every N (flat); not certified |
+| 8 | d1 | LayerNorm on the cell output before both heads + distinct codes, default heads, 2,000 updates | 0.50–0.52 at every N 8–128 (flat); transition errors 28 → 8 during training; not certified |
+| 9 | d1 | configuration 8 with 8,000 updates | plateau 0.48–0.52 from update ~2,000 on; final 0.48–0.52 at every N; decoded codes [1, 1, 2, 5, 0, 4] (no bijection), 17/36 transitions wrong |
+| 10 | d1 | configuration 8 + lr_new 1e-3, 4,000 updates | 0.24 at N 8 → 0.15 at N 128; 15/36 wrong |
+
+## Pilot verdict (2026-10-01 19:32 EDT): GPT-2 cell fails rule acquisition (the pre-stated stop rule)
+
+* **Attempts.** 11 configurations were tried on pilot seed 99 (the voided OOM run 0 included): 1 TAB, 10 d1.
+* **No d1 configuration learns S3.**
+  - The best (8, 9) settle on a stable partial automaton: ~0.50 at every depth up to 128, with no decay. So the hard
+    codes are not drifting.
+  - But 3 of 6 codes duplicate a decoded state, and 13–17 of the 36 transitions are wrong.
+  - More updates (9) and a higher lr for the new parameters (10) do not help.
+* **The exact-marginalisation objective is not the problem.** TAB, under the same loss and curriculum, is certified
+  with 1.000 at every depth after 1,500 updates.
+* **Diagnosis.** The failure is in getting a pretrained GPT-2 cell to produce six well-separated, op-dependent code
+  transitions:
+  - GPT-2's outlier hidden dimension (norm ~200) saturates default heads;
+  - identical-start codes give a symmetric saddle;
+  - with both fixed (LayerNorm head input, distinct codes), the cell still falls into a partial automaton that the
+    marginal likelihood does not escape.
+  This matches the external agent's "likeliest failure": good-ish marginal likelihood, bad hard rollouts.
+* **The panel (D1/TAB/RESET/FP × 5 seeds) is not run.** The stop rule applies. Theory decides the next step (e.g. M = 12
+  codes for spare capacity, the external agent's next item, or a frozen-GPT-2 cell with a trainable adapter).

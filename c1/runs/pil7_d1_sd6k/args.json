@@ -1,0 +1,16 @@
+{
+ "arm": "d1",
+ "seed": 99,
+ "updates": 6000,
+ "bs": 512,
+ "lr": 0.0001,
+ "head_init": "small",
+ "head_norm": "none",
+ "code_init": "distinct",
+ "lr_new": 0.0,
+ "n_test": 2000,
+ "n_null": 10000,
+ "max_hours": 3.0,
+ "device": "cuda:0",
+ "out": "c1/runs/pil7_d1_sd6k"
+}
