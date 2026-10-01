@@ -40,6 +40,8 @@ The closest trained precedent for "answer from its own text only" is Markovian T
 - Nobody claims C2 in every seed, or a causal C7. No published design combines a latent loop, a set-valued readable
   checkpoint and a learned restart. Any "first" claim here should be scoped to exactly that.
 
+**ProsQA caveat (2026-09-30, THEORY §57, Audit-confirmed):** a person-agnostic proximity heuristic, with no reasoning from the root, scores 0.91 on prosqa_test and 0.90 on our deep p8 sets, because the generator hangs the negative option off another person. Any ProsQA claim needs a shortcut-neutral control (tie subset or other-person insertion).
+
 ## Where the project stands (toy 2-layer model unless marked)
 
 | # | Status | Evidence |
