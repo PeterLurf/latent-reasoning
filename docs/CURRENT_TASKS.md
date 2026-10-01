@@ -47,7 +47,9 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 - No theory Vast hosts or local GPU jobs are running.
 - Handed to Experiments (22:22): THEORY §55 (fall-back kill test, `theory/exp27_fallback_kill.py`, CPU minutes) and §56
   (interchange test, `theory/exp28_interchange.py`, 80 models, ~1 h CPU); scoring rules are in each section.
-- §51 closed (TH1 0/10, TH2 1/10). Next from Theory: F6 registration after Literature's check; ProsQA cue-origin analysis.
+- §51 closed (TH1 0/10, TH2 1/10). §57: ProsQA cue origin found (proximity heuristic 0.91).
+- Handed to Experiments (22:36): §54b (F1 on GPT-2, one revision, 9 runs) and §58 (F6 age-transplant training,
+  30 P30-recipe runs, `theory/train_arch.py --transplant`; GPU smoke first).
 - Toy checkpointed reasoner, without labels:
   - chains reach d19–24 at 0.65 (§48);
   - written checkpoints are the causal channel, IIA 0.83–1.00 (§45 and its replication CLR-1b);

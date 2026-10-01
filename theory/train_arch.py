@@ -10,6 +10,10 @@
   --init_from PATH                  start from a trained model.pt (fine-tuning; THEORY §26 Pilot H)
   --anytime_stages LO:HI            anytime supervision only while the curriculum stage (max depth; full = NPB - 1) is
                                     in LO..HI; plain final-step loss otherwise (THEORY §23, critical-window arms)
+  --transplant W [--transplant_mode aged|young|mismatch --transplant_ages LO:HI --transplant_bs N]
+                                    F6 age-transplant training (THEORY §58): once the curriculum is at full depth, every
+                                    step adds one eager optimizer step on recipient episodes whose step-2 input is a
+                                    donor thought (see transplant_batch); W = loss weight, 0 = off
 Example:
     python theory/train_arch.py --arch markov --K 6 --seed 0 --device cuda:0 --out theory/runs/mk_s0
 """
@@ -29,7 +33,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from latent.data import make_batch  # noqa: E402
-from latent.graphs import E, NPB, WMAX, sample_graphs, set_shapes  # noqa: E402
+from latent.graphs import E, NPB, V, WMAX, sample_graphs, set_shapes  # noqa: E402
 from latent.graphstep import GraphedStep  # noqa: E402
 from arch import build  # noqa: E402
 
@@ -116,6 +120,60 @@ class AnytimeEagerStep(AnytimeMixin):
         self.loss.backward()
         self.gn = torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.clip)
         self.opt.step()
+
+
+def transplant_batch(rng, n, mode, ages, device):
+    """F6 (THEORY §58): donor/recipient pairs on full-depth training graphs (depth <= NPB, nothing deeper is built).
+    Donor: graph G', a chain branch, START = its head, a steps -> thought h_a with frontier w = node a of the chain
+    (age a; mode young: a = 1). Recipient: graph G, a chain branch, START = its head; its first chain node is renamed
+    to w (a swap of two ids inside G), so after step 1 its frontier is the donor's (mode mismatch: no rename, the donor's
+    frontier is another node). The recipient's step-2 input is the donor thought; it is scored on reachability from its
+    START: the chain's nodes 2..NPB-1 (positives, 1 + 1..4 hops after the transplant) and 4 nodes of other branches."""
+    gd, gr = sample_graphs(rng, n, split="train"), sample_graphs(rng, n, split="train")
+    jj = np.arange(1, NPB)
+
+    def chain_branch(g):
+        ch = (g.parent[:, :, 1:] == (jj - 1)[None, None]).all(2)
+        return np.where(ch, rng.random(ch.shape), -1.0).argmax(1), ch.any(1)
+    bd, okd = chain_branch(gd); br, okr = chain_branch(gr)
+    keep = np.flatnonzero(okd & okr)
+    gd, gr, bd, br = gd.subset(keep), gr.subset(keep), bd[keep], br[keep]
+    m = len(keep); bi = np.arange(m)
+    age = np.ones(m, np.int64) if mode == "young" else rng.integers(ages[0], ages[1] + 1, m)
+    w = gd.nodes[bi, bd, age]
+    src, dst, nodes = gr.src.copy(), gr.dst.copy(), gr.nodes.copy()
+    if mode != "mismatch":
+        old = nodes[bi, br, 1]
+        M = np.tile(np.arange(V), (m, 1)); M[bi, w] = old; M[bi, old] = w
+        src, dst = np.take_along_axis(M, src, 1), np.take_along_axis(M, dst, 1)
+        nodes = np.take_along_axis(M, nodes.reshape(m, -1), 1).reshape(nodes.shape)
+    other = np.where(np.arange(nodes.shape[1])[None, :] != br[:, None], 1.0, 0.0)[:, :, None] * np.ones((1, 1, NPB))
+    flat = other.reshape(m, -1) * rng.random((m, nodes.shape[1] * NPB))
+    neg = np.take_along_axis(nodes.reshape(m, -1), np.argsort(-flat, 1)[:, :4], 1)
+    q = np.concatenate([nodes[bi, br, 2:], neg], 1)
+    T = lambda x: torch.as_tensor(x, device=device)
+    return {"d_src": T(gd.src), "d_dst": T(gd.dst), "d_start": T(gd.nodes[bi, bd, 0]), "age": T(age),
+            "src": T(src), "dst": T(dst), "start": T(nodes[bi, br, 0]), "q": T(q),
+            "y": T(np.r_[np.ones(NPB - 2), np.zeros(4)][None].repeat(m, 0).astype(np.float32))}
+
+
+def transplant_step(model, opt, tb, K, weight, amp, clip=1.0):
+    """One eager optimizer step on the transplant loss. Gradients reach the donor episode too (not detached), so the
+    model may learn either to emit age-free thoughts or to ignore the age it receives. zero_grad(set_to_none=False)
+    keeps the CUDA graph's static gradient buffers."""
+    opt.zero_grad(set_to_none=False)
+    dev_type = tb["src"].device.type
+    with torch.autocast(dev_type, dtype=amp, enabled=amp is not None and dev_type == "cuda"):
+        A = int(tb["age"].max())
+        th = model.run(tb["d_src"], tb["d_dst"], tb["d_start"], A, keep=True)["thoughts"]
+        donor = th[torch.arange(th.shape[0], device=th.device), tb["age"]]
+        logit = model.run(tb["src"], tb["dst"], tb["start"], K, qnodes=tb["q"],
+                          patch=lambda i, h: donor.to(h.dtype) if i == 1 else h)["logit"]
+        loss = F.binary_cross_entropy_with_logits(logit.float(), tb["y"])
+    (weight * loss).backward()
+    torch.nn.utils.clip_grad_norm_(model.parameters(), clip, foreach=True)
+    opt.step()
+    return loss.detach()
 
 
 def evaluate(model, K, n=2048, split="discovery", seed=12345, device="cuda", Q=16, widths=None,
@@ -205,6 +263,10 @@ def main(argv=None):
     p.add_argument("--init_from", default="", help="model.pt to initialise the weights from (fresh optimizer)")
     p.add_argument("--step_adv", type=float, default=0.0, help="T12 step-adversarial thoughts: gradient-reversal weight "
                    "of a step-index probe on every thought (THEORY §39); requires --anytime; 0 = off")
+    p.add_argument("--transplant", type=float, default=0.0, help="F6 transplant loss weight (THEORY §58); 0 = off")
+    p.add_argument("--transplant_mode", default="aged", choices=["aged", "young", "mismatch"])
+    p.add_argument("--transplant_ages", default="2:4", help="donor ages lo:hi (aged and mismatch modes)")
+    p.add_argument("--transplant_bs", type=int, default=128)
     p.add_argument("--out", required=True)
     a = p.parse_args(argv)
     Ks = [a.K]
@@ -229,6 +291,8 @@ def main(argv=None):
                **({"jitter": a.jitter, "jitter_p": a.jitter_p} if a.jitter else {}),
                **({"anytime_stages": a.anytime_stages} if a.anytime_stages else {}),
                **({"step_adv": a.step_adv} if a.step_adv else {}),
+               **({"transplant": a.transplant, "transplant_mode": a.transplant_mode, "transplant_ages": a.transplant_ages,
+                   "transplant_bs": a.transplant_bs} if a.transplant else {}),
                **({"init_from": a.init_from} if a.init_from else {}),
                **({"periodic_step": a.periodic_step} if a.periodic_step else {}),
                **({"set_from_stage": a.set_from_stage} if a.set_from_stage else {})},
@@ -367,6 +431,10 @@ def main(argv=None):
             K_step = K_step + int(np.random.default_rng([a.seed, step, 7]).integers(0, a.overrun + 1))
         gstep.step(b, K_step)
         loss, loss_d, gn = gstep.loss, gstep.loss_d, gstep.gn
+        if a.transplant and max_depth_at(step) is None:   # F6: only once the curriculum is at full depth
+            trng = np.random.default_rng([a.seed, step, 11])  # own stream: the main data stream is untouched
+            tb = transplant_batch(trng, a.transplant_bs, a.transplant_mode, tuple(map(int, a.transplant_ages.split(":"))), dev)
+            loss_t = transplant_step(model, opt, tb, a.K, a.transplant, amp)
         if step % 200 == 0:
             peak = 0 if cpu else max(peak, torch.cuda.max_memory_allocated(dev) / 2**20)
             rec = {"step": step, "loss": loss.item(), "loss_delayed": loss_d.item(),
@@ -376,6 +444,8 @@ def main(argv=None):
                    "gn": gn.item(), "lr": lr_at(step), "sec": time.time() - t0, "peak_mb": peak}
             if a.step_adv:
                 rec["loss_step_probe"] = model.adv_last.item()
+            if a.transplant and max_depth_at(step) is None:
+                rec["loss_transplant"] = loss_t.item()
             log.write(json.dumps(rec) + "\n"); log.flush()
         if gated and cur["d"] is not None and step % 500 == 0:
             K_gate = min(a.K, cur["d"] + 1) if a.budget_match else a.K     # budget_match: gate at the stage's budget

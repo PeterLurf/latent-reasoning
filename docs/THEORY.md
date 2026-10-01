@@ -72,6 +72,8 @@ registered as §54b (relaxed labels in training, hardened at test, hardening gap
 **ProsQA cue (§57):** the generator always hangs the negative option off another person. A person-agnostic proximity
 heuristic scores 0.91, which explains the Coconut cue.
 **F2 toy (§53):** BD1 met (0.71 vs 0.50 at d7–12), but precision fails (FP 0.42). Parked.
+**F6 registered (§58):** age-transplant training, P30 recipe, 3 arms × 10 seeds (aged / young / mismatch). Handed to
+Experiments.
 
 **Overnight results (2026-09-30 02:15 EDT; one line each, details in the § Result sections):**
 * Anytime supervision (D): 8/10 extrapolate vs 3/9, Fisher p 0.055. The gain is at d7 only; the pointer falls back after
@@ -3301,7 +3303,80 @@ option (dn).
     cue flips toward the negative.
   - Alternatively, report the anti-cue subset (dn ≥ dt, ≈ 16–18 % of test problems).
   - Added to §54b as amendment 54b-1.
-* Literature is asked whether this ProsQA shortcut is known.
+* **Prior art (Literature, `docs/LIT_PROSQA_SHORTCUT_2026-09-30.md`, 028cef6).** This specific artefact is not documented.
+  - Prior work shows only that ProsQA admits shortcuts: 2602.22441, 2604.06374, 2606.12689.
+  - General precedent: multi-hop shortcuts and adversarial distractors (Jiang & Bansal 1906.07132).
+  - A balanced re-generation of ProsQA would pair the finding with a fix.
+
+## 58. F6 — age-transplant training: can shallow data teach a single loop to ignore its own age? (pre-registered 2026-09-30 22:36 EDT, before any F6 run; Literature `docs/LIT_F6F7_CHECK_2026-09-30.md`, c1ab04c)
+
+**Idea (§52 addendum).**
+* Prop. 10: a stop keyed to a count is free whenever no training residual outlasts the count.
+* F6 makes training residuals outlast the age without building any graph deeper than the training depth.
+  - A recipient episode receives, at step 2, a donor thought of age a. Its frontier is matched by node id.
+  - The recipient must then continue up to 4 more hops, so its thought's age runs up to a + 5 ≤ 9 > 6.
+  - Every supervised distance stays ≤ 5 from the recipient's START, so no deep labels are used (C4).
+* **Prior (Literature).** Interchange intervention training (IIT, 2112.00826): F6 is IIT with variable = frontier and
+  swap = an aged latent. Anil 2211.09961 uses only content-agnostic initial states.
+* **New as scoped.** A content-matched aged transplant aimed at count-keyed stops.
+
+**Implementation.** `theory/train_arch.py --transplant 1 --transplant_mode M --transplant_ages 2:4 --transplant_bs 128`
+(`transplant_batch`, `transplant_step`).
+* **Pairing.** Donor and recipient come from separate full-depth training graphs.
+  - The donor starts at the head of a chain branch and runs a steps, giving frontier w.
+  - In the recipient graph, the first node of a chain branch is renamed to w (a swap of two ids). The recipient starts
+    at that branch's head.
+* **Transplant.** The recipient's step-2 input is the donor thought.
+* **Loss.** BCE on 8 recipient queries: the chain's nodes 2–5, reachable from START, plus 4 nodes of other branches.
+* **Gradients.** They flow into the donor too, so the model may learn age-free thoughts or learn to ignore age.
+* **Schedule.** The transplant runs as one extra eager optimizer step per training step, once the gated curriculum is
+  at full depth. Same optimizer, `zero_grad(set_to_none=False)` so the CUDA graph's buffers persist.
+* **Checks.**
+  - CPU unit check: labels match BFS in 51/51 per mode; the donor frontier equals the recipient's node 1 in 51/51
+    (aged, young) and 0/51 (mismatch).
+  - CPU loop smoke: 200 steps run, and `loss_transplant` is logged.
+  - On an existing model, outside any arm: aged donors already raise the recipient's loss (0.27 vs 0.03 young, pclr3_s102).
+
+**Arms.** All use the P30 recipe exactly (`runs/p30_s102/config.json`: 30k steps, bs 512, gated curriculum, auxiliary
+lookup, init gpt2, no step embedding, lr 5e-4). Seeds: the 10 even-indexed P30 failures (102, 111, 113, 118, 125, 130,
+132, 140, 146, 157). 30 runs.
+
+| Arm | Donor | Content | Role |
+|---|---|---|---|
+| F6-aged | a ~ U{2..4} | matched | primary |
+| F6-young | a = 1 | matched | control: the transplant mechanics without age; the training counterpart of §56's age-only reset |
+| F6-mismatch | a ~ U{2..4} | not matched | control: same-age, content-mismatched (Literature, Audit) |
+
+**Required before the full launch.** A 300-step GPU smoke with `--curriculum ""`, so transplants are active at once,
+on one card. Check that the CUDA-graph step and the eager transplant step coexist and that `loss_transplant` falls.
+This is a plumbing check, not a result.
+
+**Measures** (experiments session):
+* `theory/eval_arch.py`: gate, delayed bal-acc, extrap_K12 (7-hop success: d7 at K′ = 12 ≥ 0.60 with CI lower bound
+  > 0.55), far8_10_K12.
+* §37's probe: one loop at K′ = 24, `exp18_deep_reanchor.py --runs`.
+* §56's interchange: `exp28_interchange.py --runs ... --f 5`.
+
+**Predictions** (counts among gated runs; medians over gated runs):
+* **F6-1 (primary, C2 from shallow data).** extrap_K12 in F6-aged ≥ 6/10, and ≥ 3 more runs than F6-young and than
+  F6-mismatch.
+* **F6-2 (mechanism).** In F6-aged, §56's dG at f = 5 has median ≤ 0.10; in F6-young, ≥ 0.25. Aged training makes aged
+  thoughts interchangeable.
+* **F6-3 (no in-range cost).** Median delayed bal-acc of F6-aged within 0.02 of F6-young.
+* **Falsified if** F6-aged ≤ F6-young + 1 on extrap_K12. A seam detector would show as F6-2 met with F6-1 failed: the
+  recipients learn to handle transplants while natural long runs stay unchanged.
+* **My expectation.** F6-1 met with a modest margin, with gains concentrated at d7–9. F6 does not touch the
+  history-length part of the stop key (P10b′), which grows with K′ at test.
+
+**Readings.**
+* **F6-1 met.** Single-loop C2 from shallow labels, by training age invariance directly. This is the first fix that
+  needs neither deep data (§41) nor written restarts (§26).
+* **F6-1 failed, F6-2 met.** Age invariance holds on transplants but is not what limits natural runs. The
+  history-length key or the step clock remains, so restarts or chunked histories stay necessary.
+* **Both failed.** The thought-carried age cannot be trained out this way.
+
+**Cost.** About 1–1.5 h per run on an A4000-class GPU, roughly +30–50 % over P30 from the eager transplant step: ≈ 40
+GPU-h. Placement by the experiments session: local cards after §54b, or Vast within budget, about $5–8.
 
 ## 7. Log
 
