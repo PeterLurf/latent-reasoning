@@ -83,6 +83,11 @@ positions (StepGame, mazes), registers or values (arithmetic, CLRS-Text, program
 - **No head found that writes entity tokens trained by self-distillation from the model's own attention.** New as
   scoped (Pilot L / CLR-1).
 
+**Correction (2026-09-30, after EXTERNAL_IDEAS).** Shapiro's recurrent-vs-scratchpad result is a *system-level*
+comparison. The paper says the arms differ in training history, tokens, FLOPs and inference compute (§4.4). Training
+installs the transition with dense intermediate labels, then anneals with outcome-only labels. The extrapolation ratios
+are 1.44–1.50× at supports 4–12. Verified in the full text.
+
 **Novelty note.** Shapiro 2608.11233 is now the closest *pretrained-model* precedent for PROTOCOL8b / CLR-on-GPT-2. It has
 a retrofitted latent loop, preregistered, beats text scratchpad beyond its horizon, and extrapolates ~1.5×. It has no
 restart or checkpoint, no label-free training (it uses intermediate-step supervision) and no C7 test. Cite and
