@@ -3582,6 +3582,10 @@ or Vast at the experiments session's discretion. CPU suffices for the data gener
     edges) that training never contains.
   - Advancement to Phase C now needs B0–B5.
 
+**Amendment 60-2 (2026-10-01 00:31 EDT, before any implementation or run; Audit).** B5 also requires ≥ 95 % agreement of
+thresholded answers between the training-family and held-out-family schedules on the same instances, in every seed.
+This mirrors Phase A's held-out-order gate.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
