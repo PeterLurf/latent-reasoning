@@ -34,3 +34,16 @@ question 0.064, one-op oracle 0.155).
 
 **Run.** Local RTX 3070 / 2070, `python -m bench.run --task gsm8k --model <adapter spec>`; outputs
 `bench/results/gsm8k__<tag>.json`.
+
+## Amendment 1 (2026-10-01 18:27 EDT; before any SIM-CoT-Coconut inference and before any full-run result was read; Literature 39aa8b2)
+
+* **Reference values** (2509.20317 Table 1, GSM8k-Aug, verified by Literature):
+  - SIM-CoT + Coconut 44.8; SIM-CoT + CODI 42.6.
+  - Their own re-runs: Coconut 36.6, CODI 42.0, SFT-CoT 42.7.
+  - The CODI criterion keeps the original paper's 43.7, as registered; 42.0 is reported next to it.
+* **SIM-CoT-Coconut recipe correction.** The repo config (`args/gsm_coconut.yaml`, `gsm_simcot*.yaml`) uses
+  c_thought 2 and max_latent_stage 5 with pad_latent_to_max, i.e. **10 continuous thoughts**, not 6. The Coconut
+  inference uses 10.
+* **Checkpoint.** The Hugging Face upload is `checkpoint_28`, the only one public; the repo's eval config loads
+  `checkpoint_30`. We evaluate `checkpoint_28` and report the mismatch as a caveat to its reproduction verdict.
+* The CODI runs (6 latents, as registered) are unaffected; they started at 18:3x.
