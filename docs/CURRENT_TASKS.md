@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-10-01 02:44 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-10-01 07:02 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -73,6 +73,8 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 | **PROTOCOL10** | **scored 20:59: P10-1 not supported** (G ckpt mean −0.002); P10-2 as predicted; P10-3 not met; edit check not estimable; `docs/PROTOCOL10.md` | — |
 | **F6 (THEORY §58)** 30 runs; frozen code `scratch/f6_frozen/` (5d3d2b6), worker `scratch/queue_worker_f6.sh` (stage-1 guard, T12 pattern), queues `scratch/f6_q_{local,A..F}.txt` | A 53638792 149.200.35.231:28463 (3090) · B 53638790 142.198.191.106:40428 (3090) · C 53638793 38.29.145.27:40825 (A4000) · D 53638791 38.29.145.230:40055 (A4000) · E 53638794 174.0.242.177:1630 (4070) · F 53638795 181.116.79.48:40276 (3080); ≈ $0.88/h; watchers `auto_drain.sh … f6` (→ `drain_f6.sh`) + gpu_watch | ~06:00–10:00 → score: eval_arch (in queue), then exp18 / exp28 per §58 (current exp28 writes per-query npz to theory/results/exp28_answers/: commit them) |
 | **THEORY §60b dev pilot** (bdc70bc; code `bm/*_b.py`, pool `bm/data_pool_b`) | P1 53650633 108.76.208.51:32178 (λ 1) · P2b 53651989 108.55.118.247:53094 (λ 0.1); P2 53650634 never started (destroyed) | `auto_drain_bm.sh` → `drain_bm.sh`; then freeze λ/steps/batch and run the §60b panel |
+| **§61 F1-S** (10aa73f; `prosqa/ail_f1s.py`, data `make_f1s.py`) | Vast 53681105 / 53681103 / 53681104 (seeds 1–3), drain `auto_drain_bm.sh … ail` | score S0–S4 from `prosqa/runs_ail/f1s_s*/eval.json` |
+| **F6 scoring** | 30/30 runs in (eval.json); exp18 + exp28 (f5, answers) on CPU: `scratch/run_f6_measures.sh`, logs `logs/f6_exp18.log`, `logs/f6_exp28.log` | then score F6-1..3 |
 | **PROTOCOL8b step 1** | **scored 20:47: P8b1-1 inconclusive** (OG ckpt −0.038 vs ctl −0.100, separated but < 0.10); step 2 not run; `docs/PROTOCOL8B_STEP1.md` | hop sweep (exploratory): near-target checkpoints push ctl to 0.13 |
 
 **Watchers (auto-drain since 19:31 over the p8c hosts; gpu_watch re-armed 22:20 over the 11 live hosts; CoT arm and rt_s1 drained):** before re-arming, check `logs/auto_drain.log` for hosts drained since the last list. `scratch/auto_drain_prosqa.sh` (verified
@@ -114,9 +116,9 @@ any event, create or destroy. The toy-side `auto_drain.sh`, `p8_watch.sh` and `p
 
 | GPU | Now | Next (chained, automatic) | Runs dry |
 |---|---|---|---|
-| RTX 4060 | since 00:43: F6 local share (4 runs: `scratch/queue_worker_f6.sh f6_local cuda:0 scratch/f6_q_local.txt`, log `logs/queue_f6_local.out`) | — | ~08:00 |
-| RTX 3070 | since 02:31: §60 panel (registered, frozen in `bm/runs/PANEL_FREEZE.md`; `scratch/bm_panel.sh cuda:1`, log `logs/bm_panel.log`) | — | ~06:45 |
-| RTX 2070 | since 02:27: §60 panel (`scratch/bm_panel.sh cuda:2`) | — | ~06:45 |
+| RTX 4060 | since 07:01: THEORY §62 worker (`scratch/s62_worker.sh cuda:0`, queue `scratch/s62_queue.txt`, locks `theory/runs/s62_locks/`, log `logs/s62.log`) | — | ~09:00 |
+| RTX 3070 | §60 panel done 06:39. Since 06:50: §62 worker (`cuda:1`) | — | ~09:00 |
+| RTX 2070 | §60 panel done 06:42. Since 06:50: §62 worker (`cuda:2`) | — | ~09:00 |
 
 - **Overnight follow-up: PROTOCOL9** (`docs/PROTOCOL9.md`, a28ff0c 16:09:10): anytime supervision on the T9/T10
   architectures, paired by seed with the T9/T10 controls. 32 runs (`scratch/queue_worker3.sh`, frozen theory code in
