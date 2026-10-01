@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-09-30 20:32 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-09-30 20:37 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -38,6 +38,8 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 ## 0. STATE AT 2026-09-30 00:36 — authoritative; sections 1–3 below are partly history
 
 **Budget (20:31): spend freeze lifted** — the user topped up; Vast credit $145.38 (`show user`), 12 hosts at $2.78/h. PROTOCOL8 to completion ≤ $39, Audit's reserve $30, so ≈ $76 for new paid work. Send Audit a host-by-host projection before any launch over ~$5. Every create/destroy goes in `scratch/pods.txt`.
+
+**Roles (user, via Audit, 2026-09-30 ~20:35):** Theory originates designs; Experiments runs every registered design (placement, deploy, queues, drains, scoring runs). Local cards first, Vast within budget, projection to Audit before launches over ~$5.
 
 **Theory (details in docs/THEORY.md; one-liners at the top of its executive summary):**
 - All theory work so far is scored; no theory Vast hosts or local GPU jobs are running.
