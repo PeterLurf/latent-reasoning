@@ -12,7 +12,7 @@ for j in \$(grep -h ' evaluated ' \$L | awk '{print \$3}'); do echo RUN \$j; don
 echo "$st" | grep -q "^END_OK$" || { echo "FETCH_INCOMPLETE $ID (status)"; exit 1; }
 [ "$(echo "$st" | sed -n 's/^QD=//p')" = 1 ] && [ "$(echo "$st" | sed -n 's/^PROCS=//p')" = 0 ] || { echo "NOT_FINISHED $ID"; exit 1; }
 runs=$(echo "$st" | sed -n 's/^RUN //p'); [ -n "$runs" ] || { echo "FETCH_INCOMPLETE $ID (no runs)"; exit 1; }
-files=""; ex=""; for j in $runs; do files="$files boxes/runs/$j logs/$j.out"; case $j in *_s1) ;; *) ex="$ex --exclude=boxes/runs/$j/model.pt";; esac; done
+files=""; ex=""; for j in $runs; do files="$files boxes/runs/$j logs/$j.out"; case $j in *_s1|cl_s*) ;; *) ex="$ex --exclude=boxes/runs/$j/model.pt";; esac; done
 ok=0
 for try in 1 2 3; do
   rs=$($S "cd /workspace/Latent && tar -czf /tmp/bx.tgz $ex $files bench/results logs/bench_*.log logs/queue_${TAG}.out 2>/dev/null; sha256sum /tmp/bx.tgz" 2>/dev/null | grep -o '^[0-9a-f]\{64\}')
@@ -24,5 +24,5 @@ done
 mkdir -p logs/vast_${H}_${P} && tar --no-same-owner -xzf /tmp/bx_${H}_${P}.tgz -C . --transform "s|^logs/|logs/vast_${H}_${P}/|"
 for j in $runs; do [ -s boxes/runs/$j/eval_train.json ] || { echo "FETCH_INCOMPLETE $ID missing $j"; exit 1; }; done
 bash scratch/vdestroy.sh "$ID" | grep -q "^DESTROYED_VERIFIED" || { echo "DESTROY_UNVERIFIED $ID"; exit 1; }
-echo "$ID vast | $TAG DESTROYED_VERIFIED $(date '+%Y-%m-%d %H:%M') after verified fetch (boxes: $(echo $runs); model.pt kept for *_s1 only)" >> scratch/pods.txt
+echo "$ID vast | $TAG DESTROYED_VERIFIED $(date '+%Y-%m-%d %H:%M') after verified fetch (boxes: $(echo $runs); model.pt kept for *_s1 and all cl runs)" >> scratch/pods.txt
 echo "DRAINED $ID"
