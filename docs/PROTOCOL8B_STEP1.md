@@ -113,3 +113,23 @@ Phase 0 reference (`res_p8b/p8b1_base_ref.json`, descriptive): BASE 0.558, oracl
 by written statements, not to use them: even the oracle checkpoint four hops before the target, which leaves a problem
 the model solves at d3–5, does not help. One caveat: the registered combination takes the max per option over the base
 and checkpoint episodes, which can add false positives (THEORY §50). **Step 2 (conditional on P8b1-1 supported) is not run.**
+
+## Exploratory hop sweep: result (2026-09-30 20:48 EDT; read after the P8b1 verdict; 5 of 6 models, ctl_s2 still running)
+
+Single-episode accuracy (no max-combination) with the oracle checkpoint written k hops in, by hops remaining (depth − k),
+mean over seeds (`prosqa/res_p8b/hopsweep_*.json`, probe-disjoint p8_test problems):
+
+| hops remaining | 0 (plain) | 1 | 2 | 3 | 4 | 5 | 6 | 7–9 |
+|---|---|---|---|---|---|---|---|---|
+| ckpt (3), d7–10 | 0.51 | 0.48 | 0.42 | 0.40 | 0.44 | 0.49 | 0.50 | 0.50–0.52 |
+| ctl (2), d7–10 | 0.55 | **0.13** | 0.21 | 0.28 | 0.40 | 0.49 | 0.53 | 0.46–0.53 |
+| ckpt (3), d11–13 | 0.50 | 0.48 | 0.44 | 0.47 | 0.49 | 0.49 | 0.46 | 0.49–0.61 |
+| ctl (2), d11–13 | 0.45 | 0.24 | 0.29 | 0.39 | 0.39 | 0.45 | 0.43 | 0.45–0.56 |
+
+**The stated expectation (THEORY §46 toy shape: high when few hops remain) is not met.** A correct checkpoint close to the
+target drives the untrained-to-use (ctl) models *below chance* (0.13 at one hop remaining: they systematically pick the
+other option), and checkpoint training only lifts this to chance (≈ 0.45–0.50). Neither arm reads the checkpoint as a
+premise to reason from. The ctl pattern looks like a learned cue that works against a statement linking the root to
+an entity near an answer option. To diagnose (Theory): which option and which statements the checkpoint episodes attend
+to. Consequence: restart-from-text schemes on these Coconut models (PROTOCOL10, F2 on GPT-2) start from a model that
+misreads written statements.
