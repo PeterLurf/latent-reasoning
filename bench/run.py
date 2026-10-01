@@ -87,8 +87,9 @@ def main():
         raise SystemExit(f"model {a.model} supports no items of task {a.task}")
     tag = a.tag or re.sub(r"[^A-Za-z0-9_.=-]+", "_", a.model.replace("prosqa/ckpt/", "").replace("prosqa/runs_ail/", ""))[:80]
     rows, t0 = [], time.time()
+    preds = model.predict_all(items) if hasattr(model, "predict_all") else None   # batched adapters (THEORY §66)
     for i, it in enumerate(items):
-        p = model.predict(it)
+        p = preds[i] if preds is not None else model.predict(it)
         if "score" in p:
             ok = p["score"]
         elif it["kind"] == "choice":
@@ -106,7 +107,7 @@ def main():
     acc = lambda rs: float(np.mean([x["correct"] for x in rs]))
     depths = sorted({r["depth"] for r in rows if r["depth"] is not None})
     base = {}
-    if task.baselines and items[0]["kind"] == "choice":
+    if task.baselines:
         for name, f in task.baselines.items():
             base[name] = round(float(np.mean([f(it["raw"]) for it in items])), 4)
     if task.chance is not None:
@@ -123,7 +124,8 @@ def main():
         "by_depth": {str(d): {"acc": round(acc([r for r in rows if r["depth"] == d]), 4),
                               "n": sum(1 for r in rows if r["depth"] == d)} for d in depths},
         "baselines_same_items": base,
-        "mean_compute": {c: round(float(np.mean([r[c] for r in rows])), 2) for c in ("latent_passes", "gen_tokens")},
+        "mean_compute": {c: round(float(np.mean([r[c] for r in rows])), 2) for c in rows[0]
+                         if c in ("latent_passes", "gen_tokens", "tokens_processed", "flops", "seq_passes", "written_tokens")},
         "provenance": {"commit": commit, "when": datetime.datetime.now().isoformat(timespec="seconds"),
                        "argv": sys.argv[1:], "device": a.device, "seconds": round(time.time() - t0, 1),
                        "data": [{"path": os.path.relpath(f, ROOT).replace("\\", "/"), "sha256": tasks.sha256(f)[:16]} for f in files],
