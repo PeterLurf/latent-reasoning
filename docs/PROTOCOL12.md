@@ -143,3 +143,38 @@ No-reasoning baselines at 17–32: identity 0.151, last op 0.146, majority 0.136
 **CL K′ curve (added 18:10 EDT; PILOT.md K′ set, local RTX 3070, bf16).** Accuracy is flat at the baseline for
 every budget: K′ = ⌈N/2⌉ / N / 2N gives 0.169 / 0.177 / 0.176 at N 1–8 and 0.142 / 0.140 / 0.139 at N 17–32
 (23.0 / 25.1 / 29.4 GFLOPs at 17–32). Extra thoughts buy nothing, consistent with CL never having learned.
+
+
+## THEORY §65 (restart-distillation on S3) result (2026-10-01 19:18 EDT; `python theory/score_s65.py` → `theory/results/score_s65.json`)
+
+27/27 runs (RD / GT / SELF × the 9 gated §64 parents). The scorer (888a5cf) was committed before any §65 result was read.
+* **Placement.** 21 runs on Vast A4000s at 2 concurrent (3 concurrent OOM'd; voided `*.void_oom`); 6 local.
+* **Restart.** s3rd_s4 was restarted alone on the 3070 after a VRAM-spill stall on the 4060 (user-approved; partial kept
+  as `s3rd_s4.void_4060spill`).
+
+| verdict | result |
+|---|---|
+| D1 RD single loop at N 9–16 ≥ 0.85 and ≥ SELF + 0.50 in 9/9 | **not met**: median 0.658; 3/9 pairs |
+| D2 RD ≥ GT − 0.05 | **met**: RD 0.658 vs GT 0.657 |
+| D3 RD valid share at N 12 ≥ 0.95 | **not met**: 0.78 (SELF 0.31) |
+| D4 RD in range ≥ 0.97 | **met**: 0.998 |
+
+**Single-loop accuracy by N** (medians):
+
+| arm | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17–24 |
+|---|---|---|---|---|---|---|---|---|---|
+| RD | 0.97 | 0.93 | 0.87 | 0.77 | 0.62 | 0.47 | 0.37 | 0.25 | 0.06 |
+| GT | 0.98 | 0.93 | 0.88 | 0.76 | 0.63 | 0.47 | 0.37 | 0.24 | 0.06 |
+| SELF | 0.78 | 0.27 | 0.06 | 0.02 | 0.02–0.03 | | | | 0.01 |
+
+The teacher's mean error at N 9–16 is 0.2–5.7 % per parent; restarts stay at 0.997.
+
+**Reading.**
+* The label-free restart teacher works exactly like true labels (D2: RD = GT at every N). Near-clean self-labels are
+  not the bottleneck.
+* What fails is the single loop itself. Even trained on true final answers at N 9–16, its accuracy decays smoothly with
+  N (0.97 at 9 → 0.25 at 16) and is near zero past the distilled range (0.06 at 17–24). Its state validity also decays
+  (0.78 at N 12, 0.35 at 16).
+* So distillation extends the loop by ~3–4 ops at ≥ 0.85, not to the trained 16 (D1 failed). The loop has no restoring
+  dynamics, and its error compounds with length whatever the label source.
+* Restarts from written states (§64, §66) remain the only length-robust mechanism here.
