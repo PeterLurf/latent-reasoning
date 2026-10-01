@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-09-30 20:59 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-09-30 21:01 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -99,9 +99,9 @@ any event, create or destroy. The toy-side `auto_drain.sh`, `p8_watch.sh` and `p
 
 | GPU | Now | Next (chained, automatic) | Runs dry |
 |---|---|---|---|
-| RTX 4060 | free since 20:59 (PROTOCOL10 ctl_s2 done) | Theory's F1 (§54) run list when registered (9 runs × 30–60 min) | — |
-| RTX 3070 | since 20:51: exploratory shallow hop-sweep diagnostic (`scratch/p8b_hopsweep_shallow.sh cuda:1`, log `logs/p8b_hopsweep_shallow.log`) | F1 | ~21:20 |
-| RTX 2070 | since 20:50: ctl_s2 hop sweep d7–10 (`scratch/p8b_hopsweep_ctl2.sh`) | F1 | ~21:00 |
+| RTX 4060 | free since ~21:00 (all PROTOCOL8b/10 local work done and scored) | Theory's F1 (§54) run list when registered | — |
+| RTX 3070 | free since ~21:00 (all PROTOCOL8b/10 local work done and scored) | Theory's F1 (§54) run list when registered | — |
+| RTX 2070 | free since ~21:00 (all PROTOCOL8b/10 local work done and scored) | Theory's F1 (§54) run list when registered | — |
 
 - **Overnight follow-up: PROTOCOL9** (`docs/PROTOCOL9.md`, a28ff0c 16:09:10): anytime supervision on the T9/T10
   architectures, paired by seed with the T9/T10 controls. 32 runs (`scratch/queue_worker3.sh`, frozen theory code in
