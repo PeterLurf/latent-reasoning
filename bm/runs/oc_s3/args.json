@@ -1,0 +1,15 @@
+{
+ "cmd": "train",
+ "out": "bm/runs/oc_s3",
+ "pool": "bm/data_pool",
+ "run": null,
+ "seed": 3,
+ "n_train": 50000,
+ "lam": 1.0,
+ "steps": 10000,
+ "bs": 128,
+ "lr": 0.0003,
+ "device": "cuda:1",
+ "kmax": 0,
+ "sets": ""
+}
