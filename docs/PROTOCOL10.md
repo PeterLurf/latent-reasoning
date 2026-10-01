@@ -81,3 +81,8 @@ since no calibration problem is that deep. Outputs `prosqa/res_p10/<model>_k<K�
   can lift a model that solves no deep problem in one segment, a weaker test than intended.
 * **Note.** The hop-sweep finding cited in the reading is exploratory (`docs/PROTOCOL8B_STEP1.md`). It passed the
   artefact checks there: option order is fixed, and no checkpoint coincides with an option.
+
+**Shortcut caveat (2026-10-01 00:27 EDT).** THEORY §57, confirmed by Audit: ProsQA's negative option always hangs off another
+person, so a person-agnostic proximity heuristic scores ≈ 0.90 on p8_test without reasoning from the root. Accuracies
+here may partly reflect that cue. The cue-free set `p8_na_test.json` (THEORY §59; heuristic 0.50) is the control:
+PROTOCOL8 amendment 3. For the step-1 models, the cue test in `docs/PROTOCOL8B_STEP1.md` shows this cue directly.

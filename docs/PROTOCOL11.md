@@ -53,3 +53,8 @@ for the backward side. Outputs `prosqa/res_p11/sets/<model>.json`.
 * **Reading.** Zero-shot, these Coconut models' attended statements are not a search frontier in either direction:
   forward, or backward over reversed statements. That fits PROTOCOL10 and the cue test's premise: attention is not
   reasoning state here. Amendment 1 (per-side precision) is running and will show whether either side is better than chance.
+
+**Shortcut caveat (2026-10-01 00:27 EDT).** THEORY §57, confirmed by Audit: ProsQA's negative option always hangs off another
+person, so a person-agnostic proximity heuristic scores ≈ 0.90 on p8_test without reasoning from the root. Accuracies
+here may partly reflect that cue. The cue-free set `p8_na_test.json` (THEORY §59; heuristic 0.50) is the control:
+PROTOCOL8 amendment 3. For the step-1 models, the cue test in `docs/PROTOCOL8B_STEP1.md` shows this cue directly.
