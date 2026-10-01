@@ -39,3 +39,17 @@ Exploratory, after the main run: the same models re-run with `--save_sets`. That
 frontiers, each entity labelled true (reached from the root / reaching the option). Report the precision of the
 forward and backward frontiers by depth, to show which side floods. The reversed statements may be off-distribution
 for the backward side. Outputs `prosqa/res_p11/sets/<model>.json`.
+
+## Result (2026-09-30 21:54 EDT; `python prosqa/score_p11.py` → `results/p11.json`; all 6 step-1 models)
+
+**P11-1: inconclusive (no effect).** The gains from bidirectional search at d11–14 are 0.000, +0.009, −0.006, +0.015,
+−0.006 and +0.012 (mean +0.004): above 0, so not "not supported", but far below the +0.10 bar.
+**P11-2: not met.** The negative option's backward frontier meets the forward frontier in a median 0.92 of problems.
+**P11-3: met** (median d3–6 gain 0.000).
+* **No signal, not just floods.** The target's frontier meets the forward one exactly as often as the negative option's:
+  medians 0.92 / 0.92 at m = 10 and 0.28 / 0.29 at m = 5 (m = 5 is descriptive). The m = 5 mean gain is +0.0005. The
+  intersection carries no information about which option is reachable.
+* **Phase 0 model (descriptive).** The same pattern: forward 0.46 and bidirectional 0.46 at d11–14.
+* **Reading.** Zero-shot, these Coconut models' attended statements are not a search frontier in either direction:
+  forward, or backward over reversed statements. That fits PROTOCOL10 and the cue test's premise: attention is not
+  reasoning state here. Amendment 1 (per-side precision) is running and will show whether either side is better than chance.
