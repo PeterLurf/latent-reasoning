@@ -1,0 +1,4069 @@
+{
+ "task": "prosqa",
+ "model": "coconut:prosqa/ckpt/g_s1_checkpoint_50?K=6&mask=1",
+ "tag": "coconut_g_s1_checkpoint_50_K=6_mask=1",
+ "n": 500,
+ "accuracy": 0.972,
+ "ci95": [
+  0.9536,
+  0.9832
+ ],
+ "by_depth": {
+  "3": {
+   "acc": 0.9703,
+   "n": 202
+  },
+  "4": {
+   "acc": 0.9724,
+   "n": 217
+  },
+  "5": {
+   "acc": 0.971,
+   "n": 69
+  },
+  "6": {
+   "acc": 1.0,
+   "n": 12
+  }
+ },
+ "baselines_same_items": {
+  "proximity rule (no reasoning)": 0.911,
+  "chance": 0.5
+ },
+ "mean_compute": {
+  "latent_passes": 6.0,
+  "gen_tokens": 0.0
+ },
+ "provenance": {
+  "commit": "0ef4a78",
+  "when": "2026-10-01T11:56:38",
+  "argv": [
+   "--task",
+   "prosqa",
+   "--model",
+   "coconut:prosqa/ckpt/g_s1_checkpoint_50?K=6&mask=1",
+   "--device",
+   "cuda:0"
+  ],
+  "device": "cuda:0",
+  "seconds": 68.9,
+  "data": [
+   {
+    "path": "prosqa/data/prosqa_test.json",
+    "sha256": "82ddc0afe6ee30eb"
+   }
+  ],
+  "checkpoint": {
+   "path": "prosqa/ckpt/g_s1_checkpoint_50",
+   "bytes": 806633890,
+   "head_tail_sha256": "cca6ea6a3a4b8abf"
+  },
+  "selection": {
+   "n": 0,
+   "per_depth": 0,
+   "seed": 0
+  }
+ },
+ "items": [
+  {
+   "id": "prosqa_test.json:0",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 0.1089
+  },
+  {
+   "id": "prosqa_test.json:1",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.1429
+  },
+  {
+   "id": "prosqa_test.json:2",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.4172
+  },
+  {
+   "id": "prosqa_test.json:3",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.0844
+  },
+  {
+   "id": "prosqa_test.json:4",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.5304
+  },
+  {
+   "id": "prosqa_test.json:5",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.9323
+  },
+  {
+   "id": "prosqa_test.json:6",
+   "depth": 6,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.1995
+  },
+  {
+   "id": "prosqa_test.json:7",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.0896
+  },
+  {
+   "id": "prosqa_test.json:8",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 16.2186
+  },
+  {
+   "id": "prosqa_test.json:9",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.3279
+  },
+  {
+   "id": "prosqa_test.json:10",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.2017
+  },
+  {
+   "id": "prosqa_test.json:11",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 16.2294
+  },
+  {
+   "id": "prosqa_test.json:12",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.5623
+  },
+  {
+   "id": "prosqa_test.json:13",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.1461
+  },
+  {
+   "id": "prosqa_test.json:14",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.1702
+  },
+  {
+   "id": "prosqa_test.json:15",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.5465
+  },
+  {
+   "id": "prosqa_test.json:16",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.195
+  },
+  {
+   "id": "prosqa_test.json:17",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.6151
+  },
+  {
+   "id": "prosqa_test.json:18",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.1073
+  },
+  {
+   "id": "prosqa_test.json:19",
+   "depth": 6,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.0616
+  },
+  {
+   "id": "prosqa_test.json:20",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 24.9922
+  },
+  {
+   "id": "prosqa_test.json:21",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.1857
+  },
+  {
+   "id": "prosqa_test.json:22",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.7285
+  },
+  {
+   "id": "prosqa_test.json:23",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 8.6772
+  },
+  {
+   "id": "prosqa_test.json:24",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 6.8297
+  },
+  {
+   "id": "prosqa_test.json:25",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.6612
+  },
+  {
+   "id": "prosqa_test.json:26",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.8109
+  },
+  {
+   "id": "prosqa_test.json:27",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 19.1346
+  },
+  {
+   "id": "prosqa_test.json:28",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.4018
+  },
+  {
+   "id": "prosqa_test.json:29",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.1204
+  },
+  {
+   "id": "prosqa_test.json:30",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": -7.7821
+  },
+  {
+   "id": "prosqa_test.json:31",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.31
+  },
+  {
+   "id": "prosqa_test.json:32",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.7556
+  },
+  {
+   "id": "prosqa_test.json:33",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.5043
+  },
+  {
+   "id": "prosqa_test.json:34",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.9673
+  },
+  {
+   "id": "prosqa_test.json:35",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.4155
+  },
+  {
+   "id": "prosqa_test.json:36",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 6.3294
+  },
+  {
+   "id": "prosqa_test.json:37",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.5446
+  },
+  {
+   "id": "prosqa_test.json:38",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.7243
+  },
+  {
+   "id": "prosqa_test.json:39",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.2507
+  },
+  {
+   "id": "prosqa_test.json:40",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.9287
+  },
+  {
+   "id": "prosqa_test.json:41",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 17.2926
+  },
+  {
+   "id": "prosqa_test.json:42",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.614
+  },
+  {
+   "id": "prosqa_test.json:43",
+   "depth": 6,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.7648
+  },
+  {
+   "id": "prosqa_test.json:44",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.4598
+  },
+  {
+   "id": "prosqa_test.json:45",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.6137
+  },
+  {
+   "id": "prosqa_test.json:46",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.1566
+  },
+  {
+   "id": "prosqa_test.json:47",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.3577
+  },
+  {
+   "id": "prosqa_test.json:48",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.0196
+  },
+  {
+   "id": "prosqa_test.json:49",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 21.4613
+  },
+  {
+   "id": "prosqa_test.json:50",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 21.8774
+  },
+  {
+   "id": "prosqa_test.json:51",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.6891
+  },
+  {
+   "id": "prosqa_test.json:52",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.7754
+  },
+  {
+   "id": "prosqa_test.json:53",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.6516
+  },
+  {
+   "id": "prosqa_test.json:54",
+   "depth": 6,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.4722
+  },
+  {
+   "id": "prosqa_test.json:55",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 34.8905
+  },
+  {
+   "id": "prosqa_test.json:56",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 8.3509
+  },
+  {
+   "id": "prosqa_test.json:57",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 3.06
+  },
+  {
+   "id": "prosqa_test.json:58",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 8.695
+  },
+  {
+   "id": "prosqa_test.json:59",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.4633
+  },
+  {
+   "id": "prosqa_test.json:60",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.7722
+  },
+  {
+   "id": "prosqa_test.json:61",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.5066
+  },
+  {
+   "id": "prosqa_test.json:62",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.8407
+  },
+  {
+   "id": "prosqa_test.json:63",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.3824
+  },
+  {
+   "id": "prosqa_test.json:64",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 8.1555
+  },
+  {
+   "id": "prosqa_test.json:65",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.1137
+  },
+  {
+   "id": "prosqa_test.json:66",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.4633
+  },
+  {
+   "id": "prosqa_test.json:67",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.48
+  },
+  {
+   "id": "prosqa_test.json:68",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.49
+  },
+  {
+   "id": "prosqa_test.json:69",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.0013
+  },
+  {
+   "id": "prosqa_test.json:70",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.4529
+  },
+  {
+   "id": "prosqa_test.json:71",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.8078
+  },
+  {
+   "id": "prosqa_test.json:72",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.1922
+  },
+  {
+   "id": "prosqa_test.json:73",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.827
+  },
+  {
+   "id": "prosqa_test.json:74",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.9249
+  },
+  {
+   "id": "prosqa_test.json:75",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.428
+  },
+  {
+   "id": "prosqa_test.json:76",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 4.4959
+  },
+  {
+   "id": "prosqa_test.json:77",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.7749
+  },
+  {
+   "id": "prosqa_test.json:78",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 16.7276
+  },
+  {
+   "id": "prosqa_test.json:79",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 1.8929
+  },
+  {
+   "id": "prosqa_test.json:80",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.3905
+  },
+  {
+   "id": "prosqa_test.json:81",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.4256
+  },
+  {
+   "id": "prosqa_test.json:82",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.9219
+  },
+  {
+   "id": "prosqa_test.json:83",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.0054
+  },
+  {
+   "id": "prosqa_test.json:84",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.6643
+  },
+  {
+   "id": "prosqa_test.json:85",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.6091
+  },
+  {
+   "id": "prosqa_test.json:86",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 7.3285
+  },
+  {
+   "id": "prosqa_test.json:87",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.5329
+  },
+  {
+   "id": "prosqa_test.json:88",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.3959
+  },
+  {
+   "id": "prosqa_test.json:89",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.7169
+  },
+  {
+   "id": "prosqa_test.json:90",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.3408
+  },
+  {
+   "id": "prosqa_test.json:91",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.6934
+  },
+  {
+   "id": "prosqa_test.json:92",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": -0.4472
+  },
+  {
+   "id": "prosqa_test.json:93",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 6.3436
+  },
+  {
+   "id": "prosqa_test.json:94",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.9004
+  },
+  {
+   "id": "prosqa_test.json:95",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 16.6894
+  },
+  {
+   "id": "prosqa_test.json:96",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.971
+  },
+  {
+   "id": "prosqa_test.json:97",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 5.2017
+  },
+  {
+   "id": "prosqa_test.json:98",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.917
+  },
+  {
+   "id": "prosqa_test.json:99",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 2.2845
+  },
+  {
+   "id": "prosqa_test.json:100",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 6.8561
+  },
+  {
+   "id": "prosqa_test.json:101",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.0826
+  },
+  {
+   "id": "prosqa_test.json:102",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.1859
+  },
+  {
+   "id": "prosqa_test.json:103",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 5.49
+  },
+  {
+   "id": "prosqa_test.json:104",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.953
+  },
+  {
+   "id": "prosqa_test.json:105",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.4393
+  },
+  {
+   "id": "prosqa_test.json:106",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 16.3386
+  },
+  {
+   "id": "prosqa_test.json:107",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 17.892
+  },
+  {
+   "id": "prosqa_test.json:108",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.1892
+  },
+  {
+   "id": "prosqa_test.json:109",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.0057
+  },
+  {
+   "id": "prosqa_test.json:110",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 7.9721
+  },
+  {
+   "id": "prosqa_test.json:111",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 8.1795
+  },
+  {
+   "id": "prosqa_test.json:112",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.2516
+  },
+  {
+   "id": "prosqa_test.json:113",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.8336
+  },
+  {
+   "id": "prosqa_test.json:114",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": -3.1671
+  },
+  {
+   "id": "prosqa_test.json:115",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.6235
+  },
+  {
+   "id": "prosqa_test.json:116",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 8.7916
+  },
+  {
+   "id": "prosqa_test.json:117",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.1298
+  },
+  {
+   "id": "prosqa_test.json:118",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.4794
+  },
+  {
+   "id": "prosqa_test.json:119",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.3703
+  },
+  {
+   "id": "prosqa_test.json:120",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.191
+  },
+  {
+   "id": "prosqa_test.json:121",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.3349
+  },
+  {
+   "id": "prosqa_test.json:122",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.3006
+  },
+  {
+   "id": "prosqa_test.json:123",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.0148
+  },
+  {
+   "id": "prosqa_test.json:124",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.4589
+  },
+  {
+   "id": "prosqa_test.json:125",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.2114
+  },
+  {
+   "id": "prosqa_test.json:126",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.3719
+  },
+  {
+   "id": "prosqa_test.json:127",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.0243
+  },
+  {
+   "id": "prosqa_test.json:128",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.6283
+  },
+  {
+   "id": "prosqa_test.json:129",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 8.0289
+  },
+  {
+   "id": "prosqa_test.json:130",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.355
+  },
+  {
+   "id": "prosqa_test.json:131",
+   "depth": 6,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.3376
+  },
+  {
+   "id": "prosqa_test.json:132",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 6.4172
+  },
+  {
+   "id": "prosqa_test.json:133",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.0377
+  },
+  {
+   "id": "prosqa_test.json:134",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": -9.5151
+  },
+  {
+   "id": "prosqa_test.json:135",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 16.5849
+  },
+  {
+   "id": "prosqa_test.json:136",
+   "depth": 6,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.4585
+  },
+  {
+   "id": "prosqa_test.json:137",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.5567
+  },
+  {
+   "id": "prosqa_test.json:138",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 8.0955
+  },
+  {
+   "id": "prosqa_test.json:139",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.4404
+  },
+  {
+   "id": "prosqa_test.json:140",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.4796
+  },
+  {
+   "id": "prosqa_test.json:141",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.9692
+  },
+  {
+   "id": "prosqa_test.json:142",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 6.6986
+  },
+  {
+   "id": "prosqa_test.json:143",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.977
+  },
+  {
+   "id": "prosqa_test.json:144",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 8.1963
+  },
+  {
+   "id": "prosqa_test.json:145",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.3744
+  },
+  {
+   "id": "prosqa_test.json:146",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.2193
+  },
+  {
+   "id": "prosqa_test.json:147",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.5189
+  },
+  {
+   "id": "prosqa_test.json:148",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.7736
+  },
+  {
+   "id": "prosqa_test.json:149",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.7695
+  },
+  {
+   "id": "prosqa_test.json:150",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 4.1881
+  },
+  {
+   "id": "prosqa_test.json:151",
+   "depth": 6,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 16.4374
+  },
+  {
+   "id": "prosqa_test.json:152",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.666
+  },
+  {
+   "id": "prosqa_test.json:153",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.7571
+  },
+  {
+   "id": "prosqa_test.json:154",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 7.0315
+  },
+  {
+   "id": "prosqa_test.json:155",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.1603
+  },
+  {
+   "id": "prosqa_test.json:156",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.6464
+  },
+  {
+   "id": "prosqa_test.json:157",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.7791
+  },
+  {
+   "id": "prosqa_test.json:158",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 16.4843
+  },
+  {
+   "id": "prosqa_test.json:159",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.5264
+  },
+  {
+   "id": "prosqa_test.json:160",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 3.2868
+  },
+  {
+   "id": "prosqa_test.json:161",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.882
+  },
+  {
+   "id": "prosqa_test.json:162",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.7248
+  },
+  {
+   "id": "prosqa_test.json:163",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.8787
+  },
+  {
+   "id": "prosqa_test.json:164",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 8.8862
+  },
+  {
+   "id": "prosqa_test.json:165",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.2399
+  },
+  {
+   "id": "prosqa_test.json:166",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.8962
+  },
+  {
+   "id": "prosqa_test.json:167",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.047
+  },
+  {
+   "id": "prosqa_test.json:168",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 16.7617
+  },
+  {
+   "id": "prosqa_test.json:169",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.6724
+  },
+  {
+   "id": "prosqa_test.json:170",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.0579
+  },
+  {
+   "id": "prosqa_test.json:171",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.816
+  },
+  {
+   "id": "prosqa_test.json:172",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.5124
+  },
+  {
+   "id": "prosqa_test.json:173",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 17.0693
+  },
+  {
+   "id": "prosqa_test.json:174",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": -6.6522
+  },
+  {
+   "id": "prosqa_test.json:175",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.8242
+  },
+  {
+   "id": "prosqa_test.json:176",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 16.1744
+  },
+  {
+   "id": "prosqa_test.json:177",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.1381
+  },
+  {
+   "id": "prosqa_test.json:178",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 6.3684
+  },
+  {
+   "id": "prosqa_test.json:179",
+   "depth": 6,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.7127
+  },
+  {
+   "id": "prosqa_test.json:180",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.3536
+  },
+  {
+   "id": "prosqa_test.json:181",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.9269
+  },
+  {
+   "id": "prosqa_test.json:182",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.3487
+  },
+  {
+   "id": "prosqa_test.json:183",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 7.5219
+  },
+  {
+   "id": "prosqa_test.json:184",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.5297
+  },
+  {
+   "id": "prosqa_test.json:185",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.1293
+  },
+  {
+   "id": "prosqa_test.json:186",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.9765
+  },
+  {
+   "id": "prosqa_test.json:187",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 8.8889
+  },
+  {
+   "id": "prosqa_test.json:188",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": -4.4723
+  },
+  {
+   "id": "prosqa_test.json:189",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.4282
+  },
+  {
+   "id": "prosqa_test.json:190",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 7.3361
+  },
+  {
+   "id": "prosqa_test.json:191",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 8.3308
+  },
+  {
+   "id": "prosqa_test.json:192",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.4717
+  },
+  {
+   "id": "prosqa_test.json:193",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.9715
+  },
+  {
+   "id": "prosqa_test.json:194",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": -0.0681
+  },
+  {
+   "id": "prosqa_test.json:195",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 6.1609
+  },
+  {
+   "id": "prosqa_test.json:196",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.0838
+  },
+  {
+   "id": "prosqa_test.json:197",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 6.6278
+  },
+  {
+   "id": "prosqa_test.json:198",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 8.9422
+  },
+  {
+   "id": "prosqa_test.json:199",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.7514
+  },
+  {
+   "id": "prosqa_test.json:200",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 2.7112
+  },
+  {
+   "id": "prosqa_test.json:201",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.5455
+  },
+  {
+   "id": "prosqa_test.json:202",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 6.9149
+  },
+  {
+   "id": "prosqa_test.json:203",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.6602
+  },
+  {
+   "id": "prosqa_test.json:204",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 16.58
+  },
+  {
+   "id": "prosqa_test.json:205",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": -1.3895
+  },
+  {
+   "id": "prosqa_test.json:206",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.4189
+  },
+  {
+   "id": "prosqa_test.json:207",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.3898
+  },
+  {
+   "id": "prosqa_test.json:208",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 18.0427
+  },
+  {
+   "id": "prosqa_test.json:209",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 1.428
+  },
+  {
+   "id": "prosqa_test.json:210",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.5748
+  },
+  {
+   "id": "prosqa_test.json:211",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.5177
+  },
+  {
+   "id": "prosqa_test.json:212",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 21.9848
+  },
+  {
+   "id": "prosqa_test.json:213",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.1913
+  },
+  {
+   "id": "prosqa_test.json:214",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.7591
+  },
+  {
+   "id": "prosqa_test.json:215",
+   "depth": 6,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 7.9206
+  },
+  {
+   "id": "prosqa_test.json:216",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.0448
+  },
+  {
+   "id": "prosqa_test.json:217",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.3946
+  },
+  {
+   "id": "prosqa_test.json:218",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 18.3613
+  },
+  {
+   "id": "prosqa_test.json:219",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 5.9449
+  },
+  {
+   "id": "prosqa_test.json:220",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 3.5934
+  },
+  {
+   "id": "prosqa_test.json:221",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.0307
+  },
+  {
+   "id": "prosqa_test.json:222",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": -3.9092
+  },
+  {
+   "id": "prosqa_test.json:223",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.4349
+  },
+  {
+   "id": "prosqa_test.json:224",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.2754
+  },
+  {
+   "id": "prosqa_test.json:225",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.58
+  },
+  {
+   "id": "prosqa_test.json:226",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 16.7444
+  },
+  {
+   "id": "prosqa_test.json:227",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.0209
+  },
+  {
+   "id": "prosqa_test.json:228",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.1041
+  },
+  {
+   "id": "prosqa_test.json:229",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.0286
+  },
+  {
+   "id": "prosqa_test.json:230",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.3994
+  },
+  {
+   "id": "prosqa_test.json:231",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 4.7789
+  },
+  {
+   "id": "prosqa_test.json:232",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.1783
+  },
+  {
+   "id": "prosqa_test.json:233",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.6257
+  },
+  {
+   "id": "prosqa_test.json:234",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.3177
+  },
+  {
+   "id": "prosqa_test.json:235",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.0359
+  },
+  {
+   "id": "prosqa_test.json:236",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 2.6178
+  },
+  {
+   "id": "prosqa_test.json:237",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 8.1558
+  },
+  {
+   "id": "prosqa_test.json:238",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 17.9376
+  },
+  {
+   "id": "prosqa_test.json:239",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 8.9265
+  },
+  {
+   "id": "prosqa_test.json:240",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.4097
+  },
+  {
+   "id": "prosqa_test.json:241",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.8992
+  },
+  {
+   "id": "prosqa_test.json:242",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.9611
+  },
+  {
+   "id": "prosqa_test.json:243",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.8983
+  },
+  {
+   "id": "prosqa_test.json:244",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.5208
+  },
+  {
+   "id": "prosqa_test.json:245",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.7687
+  },
+  {
+   "id": "prosqa_test.json:246",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.5269
+  },
+  {
+   "id": "prosqa_test.json:247",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.6738
+  },
+  {
+   "id": "prosqa_test.json:248",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.459
+  },
+  {
+   "id": "prosqa_test.json:249",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.4559
+  },
+  {
+   "id": "prosqa_test.json:250",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.4547
+  },
+  {
+   "id": "prosqa_test.json:251",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.0769
+  },
+  {
+   "id": "prosqa_test.json:252",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.2989
+  },
+  {
+   "id": "prosqa_test.json:253",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 16.1192
+  },
+  {
+   "id": "prosqa_test.json:254",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 6.2726
+  },
+  {
+   "id": "prosqa_test.json:255",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.0958
+  },
+  {
+   "id": "prosqa_test.json:256",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.1626
+  },
+  {
+   "id": "prosqa_test.json:257",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 7.4573
+  },
+  {
+   "id": "prosqa_test.json:258",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 16.7497
+  },
+  {
+   "id": "prosqa_test.json:259",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 7.9398
+  },
+  {
+   "id": "prosqa_test.json:260",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 21.8828
+  },
+  {
+   "id": "prosqa_test.json:261",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 5.2009
+  },
+  {
+   "id": "prosqa_test.json:262",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.521
+  },
+  {
+   "id": "prosqa_test.json:263",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.0509
+  },
+  {
+   "id": "prosqa_test.json:264",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.0844
+  },
+  {
+   "id": "prosqa_test.json:265",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.2532
+  },
+  {
+   "id": "prosqa_test.json:266",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.6577
+  },
+  {
+   "id": "prosqa_test.json:267",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.1536
+  },
+  {
+   "id": "prosqa_test.json:268",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.9639
+  },
+  {
+   "id": "prosqa_test.json:269",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.9108
+  },
+  {
+   "id": "prosqa_test.json:270",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.0716
+  },
+  {
+   "id": "prosqa_test.json:271",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.7301
+  },
+  {
+   "id": "prosqa_test.json:272",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.6032
+  },
+  {
+   "id": "prosqa_test.json:273",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.3673
+  },
+  {
+   "id": "prosqa_test.json:274",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 7.1261
+  },
+  {
+   "id": "prosqa_test.json:275",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 5.994
+  },
+  {
+   "id": "prosqa_test.json:276",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.3586
+  },
+  {
+   "id": "prosqa_test.json:277",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.5692
+  },
+  {
+   "id": "prosqa_test.json:278",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 5.9616
+  },
+  {
+   "id": "prosqa_test.json:279",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.6962
+  },
+  {
+   "id": "prosqa_test.json:280",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 8.4056
+  },
+  {
+   "id": "prosqa_test.json:281",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.4627
+  },
+  {
+   "id": "prosqa_test.json:282",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 25.9908
+  },
+  {
+   "id": "prosqa_test.json:283",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.0525
+  },
+  {
+   "id": "prosqa_test.json:284",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 8.6594
+  },
+  {
+   "id": "prosqa_test.json:285",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.3785
+  },
+  {
+   "id": "prosqa_test.json:286",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.655
+  },
+  {
+   "id": "prosqa_test.json:287",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 16.0808
+  },
+  {
+   "id": "prosqa_test.json:288",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.9571
+  },
+  {
+   "id": "prosqa_test.json:289",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.8494
+  },
+  {
+   "id": "prosqa_test.json:290",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.7672
+  },
+  {
+   "id": "prosqa_test.json:291",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 2.9654
+  },
+  {
+   "id": "prosqa_test.json:292",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 1.8915
+  },
+  {
+   "id": "prosqa_test.json:293",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 5.0066
+  },
+  {
+   "id": "prosqa_test.json:294",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 5.516
+  },
+  {
+   "id": "prosqa_test.json:295",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.7404
+  },
+  {
+   "id": "prosqa_test.json:296",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 7.5685
+  },
+  {
+   "id": "prosqa_test.json:297",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.9631
+  },
+  {
+   "id": "prosqa_test.json:298",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.8742
+  },
+  {
+   "id": "prosqa_test.json:299",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.3886
+  },
+  {
+   "id": "prosqa_test.json:300",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 20.1821
+  },
+  {
+   "id": "prosqa_test.json:301",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 4.3981
+  },
+  {
+   "id": "prosqa_test.json:302",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 17.8994
+  },
+  {
+   "id": "prosqa_test.json:303",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 7.2843
+  },
+  {
+   "id": "prosqa_test.json:304",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.2152
+  },
+  {
+   "id": "prosqa_test.json:305",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.6862
+  },
+  {
+   "id": "prosqa_test.json:306",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.4608
+  },
+  {
+   "id": "prosqa_test.json:307",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.9516
+  },
+  {
+   "id": "prosqa_test.json:308",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 17.1982
+  },
+  {
+   "id": "prosqa_test.json:309",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 16.8139
+  },
+  {
+   "id": "prosqa_test.json:310",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.287
+  },
+  {
+   "id": "prosqa_test.json:311",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.6214
+  },
+  {
+   "id": "prosqa_test.json:312",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.0558
+  },
+  {
+   "id": "prosqa_test.json:313",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.3763
+  },
+  {
+   "id": "prosqa_test.json:314",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 8.4975
+  },
+  {
+   "id": "prosqa_test.json:315",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.2599
+  },
+  {
+   "id": "prosqa_test.json:316",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.3412
+  },
+  {
+   "id": "prosqa_test.json:317",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.4309
+  },
+  {
+   "id": "prosqa_test.json:318",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.1135
+  },
+  {
+   "id": "prosqa_test.json:319",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.4236
+  },
+  {
+   "id": "prosqa_test.json:320",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.628
+  },
+  {
+   "id": "prosqa_test.json:321",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.0312
+  },
+  {
+   "id": "prosqa_test.json:322",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.8428
+  },
+  {
+   "id": "prosqa_test.json:323",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.0437
+  },
+  {
+   "id": "prosqa_test.json:324",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.7084
+  },
+  {
+   "id": "prosqa_test.json:325",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 0.2481
+  },
+  {
+   "id": "prosqa_test.json:326",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": -2.0324
+  },
+  {
+   "id": "prosqa_test.json:327",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.4585
+  },
+  {
+   "id": "prosqa_test.json:328",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.3901
+  },
+  {
+   "id": "prosqa_test.json:329",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.1391
+  },
+  {
+   "id": "prosqa_test.json:330",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.5619
+  },
+  {
+   "id": "prosqa_test.json:331",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 4.0354
+  },
+  {
+   "id": "prosqa_test.json:332",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.7278
+  },
+  {
+   "id": "prosqa_test.json:333",
+   "depth": 6,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.247
+  },
+  {
+   "id": "prosqa_test.json:334",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 7.2532
+  },
+  {
+   "id": "prosqa_test.json:335",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": -5.6019
+  },
+  {
+   "id": "prosqa_test.json:336",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 6.168
+  },
+  {
+   "id": "prosqa_test.json:337",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.813
+  },
+  {
+   "id": "prosqa_test.json:338",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 19.5677
+  },
+  {
+   "id": "prosqa_test.json:339",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.8427
+  },
+  {
+   "id": "prosqa_test.json:340",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 19.6961
+  },
+  {
+   "id": "prosqa_test.json:341",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.0711
+  },
+  {
+   "id": "prosqa_test.json:342",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.751
+  },
+  {
+   "id": "prosqa_test.json:343",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.0946
+  },
+  {
+   "id": "prosqa_test.json:344",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.4798
+  },
+  {
+   "id": "prosqa_test.json:345",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.5408
+  },
+  {
+   "id": "prosqa_test.json:346",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.0567
+  },
+  {
+   "id": "prosqa_test.json:347",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.7472
+  },
+  {
+   "id": "prosqa_test.json:348",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.4989
+  },
+  {
+   "id": "prosqa_test.json:349",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.7975
+  },
+  {
+   "id": "prosqa_test.json:350",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.5759
+  },
+  {
+   "id": "prosqa_test.json:351",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.8813
+  },
+  {
+   "id": "prosqa_test.json:352",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.063
+  },
+  {
+   "id": "prosqa_test.json:353",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.7321
+  },
+  {
+   "id": "prosqa_test.json:354",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.6644
+  },
+  {
+   "id": "prosqa_test.json:355",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": -7.8903
+  },
+  {
+   "id": "prosqa_test.json:356",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 7.5531
+  },
+  {
+   "id": "prosqa_test.json:357",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.3139
+  },
+  {
+   "id": "prosqa_test.json:358",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.2044
+  },
+  {
+   "id": "prosqa_test.json:359",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.0507
+  },
+  {
+   "id": "prosqa_test.json:360",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.6572
+  },
+  {
+   "id": "prosqa_test.json:361",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.3501
+  },
+  {
+   "id": "prosqa_test.json:362",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.9544
+  },
+  {
+   "id": "prosqa_test.json:363",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.1699
+  },
+  {
+   "id": "prosqa_test.json:364",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 19.3289
+  },
+  {
+   "id": "prosqa_test.json:365",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.0547
+  },
+  {
+   "id": "prosqa_test.json:366",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.9181
+  },
+  {
+   "id": "prosqa_test.json:367",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.428
+  },
+  {
+   "id": "prosqa_test.json:368",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 4.8418
+  },
+  {
+   "id": "prosqa_test.json:369",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.2478
+  },
+  {
+   "id": "prosqa_test.json:370",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 8.8741
+  },
+  {
+   "id": "prosqa_test.json:371",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 25.595
+  },
+  {
+   "id": "prosqa_test.json:372",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.0115
+  },
+  {
+   "id": "prosqa_test.json:373",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.705
+  },
+  {
+   "id": "prosqa_test.json:374",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.2133
+  },
+  {
+   "id": "prosqa_test.json:375",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.3033
+  },
+  {
+   "id": "prosqa_test.json:376",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.9994
+  },
+  {
+   "id": "prosqa_test.json:377",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.7762
+  },
+  {
+   "id": "prosqa_test.json:378",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 8.1426
+  },
+  {
+   "id": "prosqa_test.json:379",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.7899
+  },
+  {
+   "id": "prosqa_test.json:380",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.0669
+  },
+  {
+   "id": "prosqa_test.json:381",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 0.7322
+  },
+  {
+   "id": "prosqa_test.json:382",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.6679
+  },
+  {
+   "id": "prosqa_test.json:383",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.8705
+  },
+  {
+   "id": "prosqa_test.json:384",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.9396
+  },
+  {
+   "id": "prosqa_test.json:385",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 5.2115
+  },
+  {
+   "id": "prosqa_test.json:386",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 7.3343
+  },
+  {
+   "id": "prosqa_test.json:387",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.8549
+  },
+  {
+   "id": "prosqa_test.json:388",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 8.732
+  },
+  {
+   "id": "prosqa_test.json:389",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 1.9897
+  },
+  {
+   "id": "prosqa_test.json:390",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.1504
+  },
+  {
+   "id": "prosqa_test.json:391",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": -5.8065
+  },
+  {
+   "id": "prosqa_test.json:392",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.7413
+  },
+  {
+   "id": "prosqa_test.json:393",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.8179
+  },
+  {
+   "id": "prosqa_test.json:394",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.04
+  },
+  {
+   "id": "prosqa_test.json:395",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.7588
+  },
+  {
+   "id": "prosqa_test.json:396",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": -2.6344
+  },
+  {
+   "id": "prosqa_test.json:397",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.656
+  },
+  {
+   "id": "prosqa_test.json:398",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 17.118
+  },
+  {
+   "id": "prosqa_test.json:399",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.6208
+  },
+  {
+   "id": "prosqa_test.json:400",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.5734
+  },
+  {
+   "id": "prosqa_test.json:401",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.9398
+  },
+  {
+   "id": "prosqa_test.json:402",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.772
+  },
+  {
+   "id": "prosqa_test.json:403",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 23.5681
+  },
+  {
+   "id": "prosqa_test.json:404",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 6.3275
+  },
+  {
+   "id": "prosqa_test.json:405",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.5722
+  },
+  {
+   "id": "prosqa_test.json:406",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 27.5963
+  },
+  {
+   "id": "prosqa_test.json:407",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.3412
+  },
+  {
+   "id": "prosqa_test.json:408",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.5411
+  },
+  {
+   "id": "prosqa_test.json:409",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.0832
+  },
+  {
+   "id": "prosqa_test.json:410",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.0593
+  },
+  {
+   "id": "prosqa_test.json:411",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 18.4817
+  },
+  {
+   "id": "prosqa_test.json:412",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.5587
+  },
+  {
+   "id": "prosqa_test.json:413",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 22.1106
+  },
+  {
+   "id": "prosqa_test.json:414",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.2435
+  },
+  {
+   "id": "prosqa_test.json:415",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.8904
+  },
+  {
+   "id": "prosqa_test.json:416",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.0842
+  },
+  {
+   "id": "prosqa_test.json:417",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.3018
+  },
+  {
+   "id": "prosqa_test.json:418",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.4007
+  },
+  {
+   "id": "prosqa_test.json:419",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.4937
+  },
+  {
+   "id": "prosqa_test.json:420",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 18.1103
+  },
+  {
+   "id": "prosqa_test.json:421",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 17.3529
+  },
+  {
+   "id": "prosqa_test.json:422",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.8029
+  },
+  {
+   "id": "prosqa_test.json:423",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.6713
+  },
+  {
+   "id": "prosqa_test.json:424",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 16.0505
+  },
+  {
+   "id": "prosqa_test.json:425",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.7785
+  },
+  {
+   "id": "prosqa_test.json:426",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 7.9444
+  },
+  {
+   "id": "prosqa_test.json:427",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 6.7279
+  },
+  {
+   "id": "prosqa_test.json:428",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 7.2119
+  },
+  {
+   "id": "prosqa_test.json:429",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.4407
+  },
+  {
+   "id": "prosqa_test.json:430",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 16.0159
+  },
+  {
+   "id": "prosqa_test.json:431",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 17.6771
+  },
+  {
+   "id": "prosqa_test.json:432",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.2077
+  },
+  {
+   "id": "prosqa_test.json:433",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.4168
+  },
+  {
+   "id": "prosqa_test.json:434",
+   "depth": 6,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 17.7337
+  },
+  {
+   "id": "prosqa_test.json:435",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.4016
+  },
+  {
+   "id": "prosqa_test.json:436",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.1776
+  },
+  {
+   "id": "prosqa_test.json:437",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.3733
+  },
+  {
+   "id": "prosqa_test.json:438",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.2277
+  },
+  {
+   "id": "prosqa_test.json:439",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.1192
+  },
+  {
+   "id": "prosqa_test.json:440",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.2312
+  },
+  {
+   "id": "prosqa_test.json:441",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.122
+  },
+  {
+   "id": "prosqa_test.json:442",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.4545
+  },
+  {
+   "id": "prosqa_test.json:443",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.9959
+  },
+  {
+   "id": "prosqa_test.json:444",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.5558
+  },
+  {
+   "id": "prosqa_test.json:445",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.7595
+  },
+  {
+   "id": "prosqa_test.json:446",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.9631
+  },
+  {
+   "id": "prosqa_test.json:447",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 9.1939
+  },
+  {
+   "id": "prosqa_test.json:448",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 18.9739
+  },
+  {
+   "id": "prosqa_test.json:449",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.1428
+  },
+  {
+   "id": "prosqa_test.json:450",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 16.9512
+  },
+  {
+   "id": "prosqa_test.json:451",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.1131
+  },
+  {
+   "id": "prosqa_test.json:452",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.0766
+  },
+  {
+   "id": "prosqa_test.json:453",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.9897
+  },
+  {
+   "id": "prosqa_test.json:454",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.9731
+  },
+  {
+   "id": "prosqa_test.json:455",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.53
+  },
+  {
+   "id": "prosqa_test.json:456",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.7783
+  },
+  {
+   "id": "prosqa_test.json:457",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.6652
+  },
+  {
+   "id": "prosqa_test.json:458",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 7.3138
+  },
+  {
+   "id": "prosqa_test.json:459",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.1606
+  },
+  {
+   "id": "prosqa_test.json:460",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.8226
+  },
+  {
+   "id": "prosqa_test.json:461",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 12.1736
+  },
+  {
+   "id": "prosqa_test.json:462",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.0951
+  },
+  {
+   "id": "prosqa_test.json:463",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.9321
+  },
+  {
+   "id": "prosqa_test.json:464",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 3.9627
+  },
+  {
+   "id": "prosqa_test.json:465",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 8.7888
+  },
+  {
+   "id": "prosqa_test.json:466",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 1.8976
+  },
+  {
+   "id": "prosqa_test.json:467",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 4.6591
+  },
+  {
+   "id": "prosqa_test.json:468",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 8.0063
+  },
+  {
+   "id": "prosqa_test.json:469",
+   "depth": 6,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.2609
+  },
+  {
+   "id": "prosqa_test.json:470",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.6951
+  },
+  {
+   "id": "prosqa_test.json:471",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.1652
+  },
+  {
+   "id": "prosqa_test.json:472",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.0219
+  },
+  {
+   "id": "prosqa_test.json:473",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 16.8643
+  },
+  {
+   "id": "prosqa_test.json:474",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.1914
+  },
+  {
+   "id": "prosqa_test.json:475",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.6505
+  },
+  {
+   "id": "prosqa_test.json:476",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.2726
+  },
+  {
+   "id": "prosqa_test.json:477",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 14.5442
+  },
+  {
+   "id": "prosqa_test.json:478",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.9388
+  },
+  {
+   "id": "prosqa_test.json:479",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.6261
+  },
+  {
+   "id": "prosqa_test.json:480",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.5483
+  },
+  {
+   "id": "prosqa_test.json:481",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 3.0203
+  },
+  {
+   "id": "prosqa_test.json:482",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.2072
+  },
+  {
+   "id": "prosqa_test.json:483",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 17.2347
+  },
+  {
+   "id": "prosqa_test.json:484",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.7428
+  },
+  {
+   "id": "prosqa_test.json:485",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 7.4725
+  },
+  {
+   "id": "prosqa_test.json:486",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 17.2349
+  },
+  {
+   "id": "prosqa_test.json:487",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 18.9945
+  },
+  {
+   "id": "prosqa_test.json:488",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.1126
+  },
+  {
+   "id": "prosqa_test.json:489",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.3831
+  },
+  {
+   "id": "prosqa_test.json:490",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.2377
+  },
+  {
+   "id": "prosqa_test.json:491",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 10.701
+  },
+  {
+   "id": "prosqa_test.json:492",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 6.9201
+  },
+  {
+   "id": "prosqa_test.json:493",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 22.7006
+  },
+  {
+   "id": "prosqa_test.json:494",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 15.5461
+  },
+  {
+   "id": "prosqa_test.json:495",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.9145
+  },
+  {
+   "id": "prosqa_test.json:496",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 11.9152
+  },
+  {
+   "id": "prosqa_test.json:497",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.5099
+  },
+  {
+   "id": "prosqa_test.json:498",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 13.0245
+  },
+  {
+   "id": "prosqa_test.json:499",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 0,
+   "margin": 2.5828
+  }
+ ]
+}

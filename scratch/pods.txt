@@ -259,3 +259,16 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53718505 vast | st_2 DESTROYED_VERIFIED 2026-10-01 12:26 after verified fetch (theory/runs/st/s3_s3 theory/runs/st/a5_s3)
 53718508 vast | st_3 DESTROYED_VERIFIED 2026-10-01 12:26 after verified fetch (theory/runs/st/s3_s4 theory/runs/st/a5_s4)
 53718514 vast | st_4 DESTROYED_VERIFIED 2026-10-01 12:29 after verified fetch (theory/runs/st/s3_s5 theory/runs/st/a5_s5)
+53724366 vast offer 45598416 created 2026-10-01 12:29: label st2-0, queue scratch/st2_q_0.txt (logged at create by vdeploy_toy.sh)
+53724369 vast offer 44437555 created 2026-10-01 12:29: label st2-1, queue scratch/st2_q_1.txt (logged at create by vdeploy_toy.sh)
+53724377 vast offer 38722526 created 2026-10-01 12:29: label st2-2, queue scratch/st2_q_2.txt (logged at create by vdeploy_toy.sh)
+53724387 vast offer 41678963 created 2026-10-01 12:29: label st2-3, queue scratch/st2_q_3.txt (logged at create by vdeploy_toy.sh)
+53724401 vast offer 45389031 created 2026-10-01 12:29: label st2-4, queue scratch/st2_q_4.txt (logged at create by vdeploy_toy.sh)
+53719416 vast | st_7 DESTROYED_VERIFIED 2026-10-01 12:32 after verified fetch (theory/runs/st/s3_s8 theory/runs/st/a5_s8)
+53719408 vast | st_6 DESTROYED_VERIFIED 2026-10-01 12:33 after verified fetch (theory/runs/st/s3_s7 theory/runs/st/a5_s7)
+53724401 vast | st2-4 DESTROYED_VERIFIED 2026-10-01 12:33 (deploy cancelled; its §64b seeds 9-10 run on the local 2070)
+53718499 vast | st_1 DESTROYED_VERIFIED 2026-10-01 12:37 after verified fetch (theory/runs/st/s3_s2 theory/runs/st/a5_s2)
+53718518 vast | st_5 DESTROYED_VERIFIED 2026-10-01 12:37 after verified fetch (theory/runs/st/s3_s6 theory/runs/st/a5_s6)
+53718496 vast | st_0 DESTROYED_VERIFIED 2026-10-01 12:45 after verified fetch (theory/runs/st/s3_s1 theory/runs/st/a5_s1)
+53719035 vast | bench_1 DESTROYED_VERIFIED 2026-10-01 12:52 after verified fetch (bench: 8 jobs)
+53719046 vast | bench_2 DESTROYED_VERIFIED 2026-10-01 12:52 after verified fetch (bench: 8 jobs)
