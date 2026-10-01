@@ -60,3 +60,18 @@ From 2607.20594 (full text, App. D):
 before chain), but a different start (N = 1 vs n = 2), a shorter operator stage (10% vs ~32%), and linear rather than
 doubling stages. Either call it "a length curriculum in the spirit of Zhang et al.'s operator-first curriculum", or
 match theirs: a dedicated N ≤ 2 stage for ~30% of steps, then doubling stages.
+
+## Addendum (2026-10-01): priors for §65 (restart-distillation on S3)
+- **Distilling a scaffolded inference procedure into one pass:**
+  - context distillation, Snell, Klein & Zhong 2209.15189: the model generates with a scratchpad, then is fine-tuned to
+    answer without it;
+  - implicit CoT by distillation 2311.01460 and stepwise internalisation 2405.14838;
+  - Distilling System 2 into System 1 2407.06023;
+  - progressive distillation 2202.00512 and consistency models 2303.01469 (an iterative procedure into fewer steps);
+  - Lee 2502.01612 (self-labels with filters); our Pilot L (graph).
+- **Chunked recurrence as an architecture, not distillation:** Chowdhury & Caragea 2402.00976; Thinking States
+  2602.08332 (supervised chunked thoughts).
+- **New if scoped as:** label-free distillation of a *written-state restart* procedure into one latent loop for state
+  tracking.
+- **§62 check:** the teacher's 0.995 accuracy makes labels near-clean, with no depth seam. Report the teacher's
+  per-N error to confirm.
