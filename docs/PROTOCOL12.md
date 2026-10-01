@@ -72,3 +72,10 @@ per depth) plus 200 held-out shallow questions, P = 16, hardened labels.
     RTX 3070, 2 concurrent.
 * **If all 3 seed-3 reruns fail** (Audit): one solo seed-3 rerun on a 3090 separates "concurrency" from "seed 3 was
   luck". Descriptive only, not a new arm.
+* **Hosts (13:44).**
+  - R 53732203: RTX 3090, 570.211.01, at 151.237.25.16, the same IP as the original f1s_s3 host, so most likely the same machine.
+  - F0 53732210: A4000, 560.35.05.
+  - F1 53732219: 3080 Ti, 560.35.03.
+  - F2 53732227: 3080 Ti, 550.144.03.
+  - F3 53732236: A5000, 560.35.03.
+  - Local: RTX 3070, driver 591.86, torch 2.14.0+cu130.
