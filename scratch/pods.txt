@@ -292,3 +292,4 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53732219 vast | f1sb_F1 DESTROYED_VERIFIED 2026-10-01 14:46 after verified fetch (f1sb runs: f1s_s6 f1s_s7)
 53732227 vast | f1sb_F2 DESTROYED_VERIFIED 2026-10-01 14:47 after verified fetch (f1sb runs: f1s_s8 f1s_s9)
 53732236 vast | f1sb_F3 DESTROYED_VERIFIED 2026-10-01 14:50 after verified fetch (f1sb runs: f1s_s11 f1s_s10)
+53732203 vast | f1sb_R DESTROYED_VERIFIED 2026-10-01 15:15 after verified fetch (f1sb runs: f1s_r3b f1s_r3c f1s_r3a)
