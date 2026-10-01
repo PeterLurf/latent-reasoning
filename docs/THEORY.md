@@ -76,6 +76,8 @@ heuristic scores 0.91, which explains the Coconut cue.
 accuracy); identity buys no reach. D3 is parked.
 **Interchange (§56):** GT-distilled students' latents are age-invariant (G 0.09); T8 students' and parents' are not.
 Path independence tracks one-loop reach (Spearman −0.87, post hoc).
+**§60b:** the development pilot collapsed to the identity map (0.874), caused by Theory's note 60-3 labels. One
+revision: extensivity by construction, non-trivial labels, a size curriculum. No further revision.
 **Boundary memory (§60):** the user's proposal. Phase A is registered (learned Boolean-table merger, with vs without
 order consistency, 4 seeds, Gate A ≥ 0.95 on held-out instances, motifs and orders), and the Phase B gate is fixed.
 **F6 registered (§58):** age-transplant training, P30 recipe, 3 arms × 10 seeds (aged / young / mismatch). Handed to
@@ -3655,6 +3657,46 @@ the seed panel; no panel data exists).**
     by label.** Otherwise A3's extensivity law would be tested only on entries never seen in training.
 * The λ_order / steps development pilot is re-run on the fixed code, at the experiments session's discretion, before
   settings are frozen.
+
+### 60b. Boundary memory, Phase A — the one revision: extensivity by construction and a size curriculum (pre-registered 2026-10-01 02:26 EDT, after the development pilot 0b9f9a6 and before the seed panel and the 2–3-edge diagnostic's result)
+
+**What the development pilot showed** (`bm/runs/DEV_LOG.md`, development set only).
+* BM-oc at λ 1 and λ 0.1 gave identical metrics: probe 0.874, entry 0.839, laws 1.000. Training accuracy was flat at
+  0.88 from step 2k to 10k.
+* 0.874 is exactly the identity map f(a) = a. Trivial entries (j ∈ a) are 37 % of the labels and are always 1. The
+  identity predicts every non-trivial entry 0, and 80 % of those are negatives: 0.37 + 0.63 × 0.80 = 0.874.
+* The identity map also satisfies all four laws, so the laws score was uninformative.
+* An exact operator pushed through the same batched runner scores 1.000, so this is not a bug.
+* **Cause, owned by Theory.** Note 60-3's fix (ii) put the trivial entries into the training labels. That made the
+  identity map an 87 %-accuracy minimum. As in §54b, this is an optimisation-design failure, not evidence about the
+  hypothesis. This is the one revision; whatever it gives is Phase A's result.
+
+**Changes from §60.** Everything else is unchanged: data, motifs, held-out splits, arms, seeds, measures, Gate A,
+falsifiers, the Phase B gate and amendments 60-1/60-2.
+* **(1) Extensivity by construction.** Each committed table is T[a, j] = max(a_j, Q8(σ(z_aj))), i.e. seeded ports
+  always respond (zero-length paths, proposal §4).
+  - This is a fixed elementwise OR with the input seed, the counterpart of F1's monotone OR. It is not a reachability
+    solver.
+  - It does enforce one audited property, so extensivity leaves A3. A3 now uses the other three laws: monotonicity,
+    idempotence, union preservation.
+  - Disclosed deviation from proposal §4 ("no projection to enforce those properties").
+* **(2) Labels.** Training and probe labels are drawn over non-trivial entries only (j ∉ a), balanced 50/50. Trivial
+  entries are constant by construction.
+  - The identity map now scores 0.50, so its basin earns nothing.
+  - A1/A2 thresholds (≥ 0.95) now apply to non-trivial entries, which is stricter than before.
+* **(3) Size curriculum (terminal labels only; label budget unchanged).**
+  - Training regions have 2–3 edges for the first 20 % of steps, then the maximum size widens linearly to 8 edges by
+    50 %, then stays at 2–8.
+  - Order-consistency pairs start once regions of ≥ 3 edges appear.
+* **Pilot.** The λ_order ∈ {0.1, 1} / steps / batch development pilot is re-run on the revised code under §60's rules
+  (development set, training motifs and orders only). Settings are frozen before the panel.
+* **Added report.** Non-trivial-entry accuracy beside the identity baseline (0.50) for every split and seed.
+* **Disclosure.** A 2–3-edge diagnostic on the old code (λ 0, 2k steps) is running. This revision was fixed before its
+  result, and the result will be reported without changing anything here.
+
+**Decision rule, fixed now.** If BM-oc fails Gate A under §60b, §60's falsifiers apply as written ("only the exact
+composer passes", "sweep not operator", "accurate but not semantic") and the boundary-memory line stops at Phase A.
+There is no further revision.
 
 ## 7. Log
 
