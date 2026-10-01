@@ -1,19 +1,254 @@
 {
  "_note": "Published numbers for comparison rows. 'same_items' is true only when the paper's test set is the file this harness loads for that task. Every entry starts unverified; Literature verifies each against the paper (table and setting) and sets verified to the commit of its check. Unverified rows print with a marker.",
  "entries": [
-  {"task": "prosqa", "system": "Coconut, GPT-2", "acc": 0.970, "source": "2412.06769 Table 1", "same_items": true, "verified": false},
-  {"task": "prosqa", "system": "Text CoT, GPT-2", "acc": 0.775, "source": "2412.06769 Table 1", "same_items": true, "verified": false},
-  {"task": "prosqa", "system": "No CoT, GPT-2", "acc": 0.767, "source": "2412.06769 Table 1", "same_items": true, "verified": false},
-  {"task": "prosqa", "system": "iCoT, GPT-2", "acc": 0.982, "source": "2412.06769 Table 1", "same_items": true, "verified": false},
-  {"task": "prosqa", "system": "Coconut, GPT-2 (public checkpoint card)", "acc": 0.970, "source": "HF bmarti44/coconut-curriculum-checkpoints", "same_items": true, "verified": false},
-  {"task": "prosqa", "system": "Text CoT, GPT-2 (public checkpoint card)", "acc": 0.830, "source": "HF bmarti44/coconut-curriculum-checkpoints", "same_items": true, "verified": false},
-  {"task": "prosqa_deep", "system": "Coconut, GPT-2, 7 / 8 hops (card; different generator)", "acc": 0.66, "source": "HF bmarti44/coconut-curriculum-checkpoints", "same_items": false, "verified": false},
-  {"task": "gsm8k", "system": "Coconut, GPT-2", "acc": 0.341, "source": "2412.06769 Table 1", "same_items": true, "verified": false},
-  {"task": "gsm8k", "system": "Text CoT, GPT-2", "acc": 0.429, "source": "2412.06769 Table 1", "same_items": true, "verified": false},
-  {"task": "gsm8k", "system": "No CoT, GPT-2", "acc": 0.165, "source": "2412.06769 Table 1", "same_items": true, "verified": false},
-  {"task": "gsm8k", "system": "CODI, GPT-2", "acc": null, "source": "2502.21074", "same_items": true, "verified": false},
-  {"task": "mult4x4", "system": "Implicit CoT, GPT-2", "acc": null, "source": "2311.01460", "same_items": true, "verified": false},
-  {"task": "mult5x5", "system": "Implicit CoT, GPT-2", "acc": null, "source": "2311.01460", "same_items": true, "verified": false},
-  {"task": "mult5x5", "system": "Stepwise internalisation, GPT-2", "acc": null, "source": "2405.14838", "same_items": true, "verified": false}
- ]
+  {
+   "task": "prosqa",
+   "system": "Coconut, GPT-2",
+   "acc": 0.97,
+   "source": "2412.06769 Table 1",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "prosqa",
+   "system": "Text CoT, GPT-2",
+   "acc": 0.775,
+   "source": "2412.06769 Table 1",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "prosqa",
+   "system": "No CoT, GPT-2",
+   "acc": 0.767,
+   "source": "2412.06769 Table 1",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "prosqa",
+   "system": "iCoT, GPT-2",
+   "acc": 0.982,
+   "source": "2412.06769 Table 1",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "prosqa",
+   "system": "Pause Token, GPT-2",
+   "acc": 0.759,
+   "source": "2412.06769 Table 1",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "prosqa",
+   "system": "Coconut w/o curriculum, GPT-2",
+   "acc": 0.761,
+   "source": "2412.06769 Table 1",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "prosqa",
+   "system": "Coconut pause-as-thought, GPT-2",
+   "acc": 0.966,
+   "source": "2412.06769 Table 1",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "prosqa",
+   "system": "Coconut w/o thought, GPT-2",
+   "acc": 0.955,
+   "source": "2412.06769 Table 1",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "prosqa",
+   "system": "Coconut, GPT-2 (public checkpoint card)",
+   "acc": 0.97,
+   "source": "HF bmarti44/coconut-curriculum-checkpoints (model card, not peer-reviewed)",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "prosqa",
+   "system": "Text CoT, GPT-2 (public checkpoint card)",
+   "acc": 0.83,
+   "source": "HF bmarti44/coconut-curriculum-checkpoints (model card, not peer-reviewed)",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "prosqa",
+   "system": "Pause curriculum, GPT-2 (public checkpoint card)",
+   "acc": 0.966,
+   "source": "HF bmarti44/coconut-curriculum-checkpoints (model card, not peer-reviewed)",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "prosqa_deep",
+   "system": "Coconut, GPT-2, 7 hops (card; different generator)",
+   "acc": 0.66,
+   "source": "HF bmarti44/coconut-curriculum-checkpoints (model card, not peer-reviewed)",
+   "same_items": false,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "prosqa_deep",
+   "system": "Coconut, GPT-2, 8 hops (card; different generator)",
+   "acc": 0.675,
+   "source": "HF bmarti44/coconut-curriculum-checkpoints (model card, not peer-reviewed)",
+   "same_items": false,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "gsm8k",
+   "system": "Coconut, GPT-2",
+   "acc": 0.341,
+   "source": "2412.06769 Table 1",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "gsm8k",
+   "system": "Text CoT, GPT-2",
+   "acc": 0.429,
+   "source": "2412.06769 Table 1",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "gsm8k",
+   "system": "No CoT, GPT-2",
+   "acc": 0.165,
+   "source": "2412.06769 Table 1",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "gsm8k",
+   "system": "iCoT, GPT-2 (as cited in Coconut)",
+   "acc": 0.3,
+   "source": "2412.06769 Table 1",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "gsm8k",
+   "system": "Pause Token, GPT-2",
+   "acc": 0.164,
+   "source": "2412.06769 Table 1",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "gsm8k",
+   "system": "Coconut pause-as-thought, GPT-2",
+   "acc": 0.241,
+   "source": "2412.06769 Table 1",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "gsm8k",
+   "system": "CODI, GPT-2",
+   "acc": 0.437,
+   "source": "2502.21074 (text, Table 2)",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "gsm8k",
+   "system": "Stepwise internalisation (ICoT-SI), GPT-2 Small",
+   "acc": 0.3,
+   "source": "2405.14838 Table 3",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "mult4x4",
+   "system": "Implicit CoT (ICoT-KD), GPT-2 Small",
+   "acc": 0.97,
+   "source": "2311.01460 Table 3",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "mult4x4",
+   "system": "Implicit CoT (ICoT-KD), GPT-2 Medium",
+   "acc": 0.96,
+   "source": "2311.01460 Table 3",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "mult4x4",
+   "system": "Stepwise internalisation (ICoT-SI), GPT-2 Small",
+   "acc": 1.0,
+   "source": "2405.14838 Table 2",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "mult4x4",
+   "system": "No CoT, GPT-2 Small",
+   "acc": 0.29,
+   "source": "2405.14838 Table 2",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "mult4x4",
+   "system": "Explicit CoT, GPT-2 Small",
+   "acc": 1.0,
+   "source": "2405.14838 Table 2",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "mult5x5",
+   "system": "Implicit CoT (ICoT-KD), GPT-2 Small",
+   "acc": 0.1,
+   "source": "2311.01460 Table 3",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "mult5x5",
+   "system": "Implicit CoT (ICoT-KD), GPT-2 Medium",
+   "acc": 0.96,
+   "source": "2311.01460 Table 3",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "mult5x5",
+   "system": "Stepwise internalisation (ICoT-SI), GPT-2 Small",
+   "acc": 0.95,
+   "source": "2405.14838 Table 2",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "mult5x5",
+   "system": "No CoT, GPT-2 Small",
+   "acc": 0.01,
+   "source": "2405.14838 Table 2",
+   "same_items": true,
+   "verified": "55cd5e7"
+  },
+  {
+   "task": "mult5x5",
+   "system": "Explicit CoT, GPT-2 Small",
+   "acc": 1.0,
+   "source": "2405.14838 Table 2",
+   "same_items": true,
+   "verified": "55cd5e7"
+  }
+ ],
+ "_verify_note": "Verified 2026-10-01 by Literature (docs/LIT_BENCH_VERIFY_2026-10-01.md, commit 55cd5e7): values from the papers' tables; same_items checked (ProsQA byte-identical to the Coconut repo; GSM8K-Aug test = openai test, 1,319/1,319 questions and answers; multiplication = iCoT repo test_bigbench files)."
 }
