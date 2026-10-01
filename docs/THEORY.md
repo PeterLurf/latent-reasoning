@@ -3948,6 +3948,10 @@ lr 5e-5 / 1e-3), plus a question generator.
 * **Neither met.** Label structure is not the cause. The T8 students' age code comes from elsewhere, e.g. the teacher's
   input distribution or the re-anchored episodes' internal states.
 
+**Disclosure 62-1 (2026-10-01 06:45 EDT, before any §62 arm runs).** The NC-5 script
+`theory/exp30_conf_by_depth.py` was smoke-tested on one reference pair (not a test arm). The d6 → d7 confidence step on
+reachable nodes is +0.009 for pl_gt_s102 and +0.094 for pl_t8_s102, already the predicted direction.
+
 **Run and score (experiments session).** 40 short GPU fine-tunes, the same cost class as one Pilot L arm. Score with
 the measures above.
 
