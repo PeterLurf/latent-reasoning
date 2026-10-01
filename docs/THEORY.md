@@ -2792,6 +2792,11 @@ Each is meant to hit several north-star conditions at once.
   - Set-up: a 2-layer transformer over edge and node tokens with 4-state labels per node token, trained on depth ≤ 6.
   - Measure: chains of 12–24 at 12–24 passes, plus a label-flip edit test.
   - For an LM, the labels would be an extra learned embedding added to the LM's own input tokens.
+* **First non-toy test: CLUTRR with GPT-2 small.** Each person token carries a relation-to-anchor label; one pass
+  composes one hop. Train k = 2–4, test k ≤ 10. Success would be:
+  - accuracy at k = 8–10 at least that of text CoT;
+  - reach ≥ 2× the trained depth, beyond the ≈ 1.5× of 2608.11233;
+  - label-flip IIA ≥ 0.8.
 
 ### F2. Bidirectional latent reasoning (meet in the middle)
 * **Idea.** Run two latent searches: forward from the question's root, and backward from a candidate answer over
@@ -2807,6 +2812,10 @@ Each is meant to hit several north-star conditions at once.
   - The same model computes reachability *to* a target by reversing edge directions and starting from the target.
   - So F = forward set within 6 hops, B = backward set within 6 hops, and "reachable within 12" ⇔ F ∩ B ≠ ∅.
   - Measure bal-acc at d7–12 vs one episode (chance) and vs restarts (§46).
+* **First non-toy test: GPT-2 Coconut on ProsQA (the PROTOCOL8 checkpoints).** Forward from the root; backward from each
+  answer option over reversed "is-a" statements; answer by intersection. Success would be:
+  - accuracy at answer depth 11–14 at least 0.10 above forward-only at equal compute;
+  - i.e. reach ≥ 2× a single search's horizon, above the 1.5× bar.
 
 ### F3. Compositional self-synthesis: deeper training problems from verified shallow ones
 * **Idea.** The model makes its own deeper training data by composing problems it has solved and verified: root→x
@@ -2825,6 +2834,10 @@ Each is meant to hit several north-star conditions at once.
   - Set-up: compose pairs of 6-hop problems into 12-hop training chains, labelled from the model's own verified 6-hop
     answers.
   - Compare against the re-anchoring teacher (L-T8) and true labels (L-GT) on d13–24.
+* **First non-toy test: multi-step arithmetic or CLUTRR with GPT-2 small.** Compose verified short operation or relation
+  chains into longer ones. Success would be:
+  - the trained depth doubles per round with no external labels;
+  - extrapolation beyond 1.5× trained length, at least matching a CoT-supervised baseline.
 
 ### F4. A behavioural round-trip translator for silent thoughts (C7 by optimisation)
 * **Idea.** Learn a decoder from thought to a short text over a constrained vocabulary (the input's entities plus a
@@ -2844,6 +2857,9 @@ Each is meant to hit several north-star conditions at once.
   - Set-up: decoder = multi-label over node ids (a written frontier set); encoder = a small MLP. Train through the
     frozen CLR1 or P30 models with both losses.
   - Measure: held-out round-trip agreement and edit IIA vs §34.
+* **First non-toy test: the frozen Phase 0 Coconut GPT-2 on ProsQA**, with entity names as the vocabulary. Success would
+  be round-trip agreement ≥ 0.95 and edit IIA ≥ 0.8 on silent thoughts. Published decoders (NLA) report only
+  reconstruction and steering, not behavioural substitution.
 
 ### F5. Verify-then-extend: latent proof checking as test-time compute
 * **Idea.** Treat each written checkpoint as a claim. Spend test-time compute on short latent *verification*
@@ -2854,14 +2870,25 @@ Each is meant to hit several north-star conditions at once.
 * **Falsifier.** Verification episodes catch wrong checkpoints no better than chance, or the cost exceeds the gain.
 * **Cheapest test (CPU, existing CLR models).** Filter each chain step's anchor by a verification episode, and compare
   chain accuracy and false positives with §48.
+* **First non-toy test: ProsQA or GSM-style problems.** Success would be an accuracy-vs-test-time-compute curve above
+  text-CoT self-consistency at matched FLOPs (C3).
 
-**Priority.**
-1. F2: zero-shot, CPU, decisive for doubling reach.
-2. F1: the most north-star conditions by construction.
-3. F4: the C7 core.
-4. F3: a data engine for C2 + C4.
+**Ranking by expected north-star coverage** (requested by Audit):
 
-F5 is closest to the current loop and comes last.
+| Rank | Direction | Conditions |
+|---|---|---|
+| 1 | F1 | C1, C2, C4, C5, C6, C7 |
+| 2 | F2 | C2, C5, C7 |
+| 3 | F3 | C2, C4 (C6) |
+| 4 | F4 | C7 for silent steps |
+| 5 | F5 | C2, C6 and a C3 route |
+
+**Run order for the experiments session, once Literature's checks land.**
+1. F2 first: zero-shot on CPU, and decisive for doubling reach.
+2. F1: one toy GPU-hour, highest coverage.
+3. F4: CPU or local GPU.
+4. F3: local GPU.
+5. F5: last.
 
 ## 7. Log
 
