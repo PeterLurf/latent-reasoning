@@ -39,6 +39,7 @@ while :; do
       if [ "$pre" = t12 ]; then res=$(bash scratch/drain_t12.sh "$h" "$p" "$t" "$id" 2>&1)
       elif [ "$pre" = f6 ]; then res=$(bash scratch/drain_f6.sh "$h" "$p" "$t" "$id" 2>&1)
       elif [ "$pre" = bm ]; then res=$(bash scratch/drain_bm.sh "$h" "$p" "$t" "$id" 2>&1)
+      elif [ "$pre" = ail ]; then res=$(bash scratch/drain_ail.sh "$h" "$p" "$t" "$id" 2>&1)
       else res=$(bash scratch/drain_toy.sh "$h" "$p" "$pre" "$id" "$t" 2>&1); fi
       if echo "$res" | grep -q "^DRAINED $id"; then
         echo "$h:$p" >> logs/drained_hosts.txt
