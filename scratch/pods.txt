@@ -235,3 +235,22 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53705408 vast | na_coco_s1 DESTROYED_VERIFIED 2026-10-01 11:23 after verified fetch (NA jobs: coco_s1)
 53711959 vast | f4_1 DESTROYED_VERIFIED 2026-10-01 11:23 after verified fetch (F4: p30_s113_S p30_s113_N p30_s118_S p30_s118_N)
 53716153 vast offer 49320809 created 2026-10-01 11:24: label na-D, queue scratch/p8na_q_D.txt (logged at create by vdeploy_toy.sh)
+53718496 vast offer 46653919 created 2026-10-01 11:42: label st-0, queue scratch/st_q_0.txt (logged at create by vdeploy_toy.sh)
+53718499 vast offer 52399066 created 2026-10-01 11:42: label st-1, queue scratch/st_q_1.txt (logged at create by vdeploy_toy.sh)
+53718505 vast offer 39105514 created 2026-10-01 11:42: label st-2, queue scratch/st_q_2.txt (logged at create by vdeploy_toy.sh)
+53718508 vast offer 53248760 created 2026-10-01 11:42: label st-3, queue scratch/st_q_3.txt (logged at create by vdeploy_toy.sh)
+53718514 vast offer 35170923 created 2026-10-01 11:42: label st-4, queue scratch/st_q_4.txt (logged at create by vdeploy_toy.sh)
+53718518 vast offer 45242052 created 2026-10-01 11:42: label st-5, queue scratch/st_q_5.txt (logged at create by vdeploy_toy.sh)
+53719027 vast offer 46653909 created 2026-10-01 11:46: label bench-0, queue scratch/bench_q2_0.txt (logged at create by vdeploy_toy.sh)
+53719035 vast offer 38607428 created 2026-10-01 11:46: label bench-1, queue scratch/bench_q2_1.txt (logged at create by vdeploy_toy.sh)
+53719046 vast offer 18990229 created 2026-10-01 11:46: label bench-2, queue scratch/bench_q2_2.txt (logged at create by vdeploy_toy.sh)
+53719408 vast offer 53248758 created 2026-10-01 11:49: label st-6, queue scratch/st_q_6.txt (logged at create by vdeploy_toy.sh)
+53719416 vast offer 31250705 created 2026-10-01 11:49: label st-7, queue scratch/st_q_7.txt (logged at create by vdeploy_toy.sh)
+53719817 vast offer 35849289 created 2026-10-01 11:53: label st-8, queue scratch/st_q_8.txt (logged at create by vdeploy_toy.sh)
+53719822 vast offer 50121240 created 2026-10-01 11:53: label st-9, queue scratch/st_q_9.txt (logged at create by vdeploy_toy.sh)
+53720305 vast offer 51994892 created 2026-10-01 11:58: label bench-3, queue scratch/bench_q2_3.txt (logged at create by vdeploy_toy.sh)
+53720318 vast offer 47976746 created 2026-10-01 11:58: label bench-4, queue scratch/bench_q2_4.txt (logged at create by vdeploy_toy.sh)
+53720327 vast offer 47976740 created 2026-10-01 11:58: label bench-5, queue scratch/bench_q2_5.txt (logged at create by vdeploy_toy.sh)
+53720331 vast offer 49633878 created 2026-10-01 11:58: label bench-6, queue scratch/bench_q2_6.txt (logged at create by vdeploy_toy.sh)
+53720335 vast offer 50286304 created 2026-10-01 11:58: label bench-7, queue scratch/bench_q2_7.txt (logged at create by vdeploy_toy.sh)
+53720340 vast offer 53157040 created 2026-10-01 11:58: label bench-8, queue scratch/bench_q2_8.txt (logged at create by vdeploy_toy.sh)
