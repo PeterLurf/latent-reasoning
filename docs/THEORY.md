@@ -67,6 +67,8 @@ Novelty is with Literature, and Experiments runs the tests.
 **External input (§52 addendum, 2026-09-30 22:22):** registered two cheap tests on existing models: §55 (is the fall-back
 reward-neutral?) and §56 (are aged latents interchangeable?). Added F6 (age-transplant training) and F7 (path doubling).
 §51 halt line closed: TH1 0/10, TH2 1/10.
+**F1 on GPT-2:** PROTOCOL12 not learnable as specified (hard-label ST gives no gradient); one revision
+registered as §54b (relaxed labels in training, hardened at test, hardening gap AG0).
 
 **Overnight results (2026-09-30 02:15 EDT; one line each, details in the § Result sections):**
 * Anytime supervision (D): 8/10 extrapolate vs 3/9, Fisher p 0.055. The gain is at d7 only; the pointer falls back after
@@ -3052,6 +3054,63 @@ targets, for each distance.
   - Text CoT at matched compute (C3).
 * **Falsified if** AG1 holds but AG2 fails, i.e. the labels become a covert counter or the model learns a depth-bounded
   rule. If AG1 fails, final-answer training of the label channel does not converge in text (Literature's risk).
+
+### 54b. F1 on GPT-2, the one revision: relaxed labels in training, hard labels at test (pre-registered 2026-09-30 22:24 EDT, after PROTOCOL12's registered outcome 1dcac15 and before any revised run)
+
+**Why §54 failed** (PROTOCOL12, `docs/PROTOCOL12.md`, `docs/PROTOCOL12_TUNING.md`).
+* Hard forward labels make the loss piecewise constant. The straight-through gradient moves the parameters, but no
+  label crosses its threshold at GPT-2's step sizes, so the loss never changes. At head lr 1e-2 the labels flood and
+  then collapse.
+* The toy escaped this because it trains from scratch at lr 1e-3 with 16 queries per graph at every depth, so crossings
+  happen.
+* With soft forward labels, the same GPT-2 model fits per-pass targets exactly.
+* So this is an optimisation-design failure, not evidence against F1 (Audit). This is the one revision; whatever it
+  gives is F1's language-model result.
+
+**Changes from §54.** Everything else is unchanged: architecture, data, depths, P, AG2–AG4, edit test.
+* **Training forward, two estimator arms.**
+  - **AI-soft (primary).** l′ = max(l, σ(z/τ)), with τ annealed linearly from 1 to 0.3 over the first two thirds of
+    training, then held. A binarisation penalty λ·mean[l(1 − l)] over the entity labels is ramped from 0 to λ = 0.1
+    over the last third.
+  - **AI-stoch.** The forward is binary even in training: l′ = max(l, b) with b ~ Bernoulli(σ(z)), and the gradient
+    goes straight through σ (stochastic binary units). The expected loss is smooth in z, and the training-time state
+    is binary, so no analog channel can form.
+* **Curriculum, both arms.** Answer depth 3 only for the first sixth of training, widening linearly to 3–6 by one
+  third.
+* **Test, both arms.** Hardened labels: the hard OR at threshold 0.5, as specified in §54. Soft-test accuracy is
+  reported alongside.
+* **Arms and seeds.** AI-soft, AI-stoch and AI-hint (the ceiling, soft forward with per-pass targets), 3 seeds each:
+  9 runs. AI-free (the counter ablation) is dropped for budget; AG2 on hardened labels covers the counter risk (a
+  covert counter fails AG2).
+* **Tuning cap (Audit's rules).** At most 3 settings or 30 min on training data, all logged in
+  `docs/PROTOCOL12_TUNING.md`. Only τ's end value and λ may be tuned. Then the settings are frozen with the code hash
+  for all arms.
+
+**Predictions** (AI-soft primary; AI-stoch scored on the same criteria and reported):
+* **AG0 (hardening gap; new).** In-distribution, soft-test accuracy − hardened-test accuracy ≤ 0.03 (median over
+  seeds). A larger gap means the relaxed labels carried non-binary information: a covert analog channel, which is
+  F1's readability failure mode.
+* **AG1′ (learnable).** Hardened in-distribution accuracy (depth ≤ 6) ≥ 0.95 in ≥ 2/3 seeds.
+* **AG2–AG4.** As in §54, on hardened labels: depths 11–14 ≥ 0.85; edit IIA ≥ 0.8; fixed-point pass vs depth Spearman
+  ≥ 0.8.
+* **Estimator comparison (descriptive).** AI-stoch vs AI-soft on AG0 and AG2. My expectation: AI-stoch has the
+  smaller gap but learns more slowly.
+* **Descriptive.** End-of-training binarity: the share of label values within 0.1 of 0 or 1. Text CoT at matched
+  compute (C3). AI-hint as the ceiling.
+
+**Readings.**
+* **AG1′ and AG0 met.** F1 is learnable in text with labels that stay readable when hardened. Then AG2–AG4 decide C2,
+  C7 and C5.
+* **AG1′ met, AG0 failed.** The soft channel does the work, and the readable state is not the computing state.
+* **AG1′ failed in both arms.** Final-answer training of an entity-label channel does not converge on GPT-2 / ProsQA
+  within this budget. F1 stands on the toy only.
+
+**Priors for the estimators (Literature to confirm).** Straight-through and stochastic binary units (Bengio et al.
+1308.3432); Gumbel-softmax / Concrete (1611.01144, 1611.00712).
+
+**Run (experiments session).** `prosqa/ail_gpt2.py` with `--arm soft|stoch|hint`. 9 runs on the 3 local cards, about
+6 h at ~0.65 s/step, or Vast within budget. Score AG0–AG4 on PROTOCOL8's test sets, excluding the 12 plumbing-check
+problems.
 
 ## 55. Kill test: is the anytime fall-back reward-neutral? (external direction 3; pre-registered 2026-09-30 22:22 EDT, before measuring any of the 17 test models)
 
