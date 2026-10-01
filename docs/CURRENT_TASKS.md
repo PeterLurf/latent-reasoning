@@ -53,7 +53,14 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 * **§61b:** 11/13 runs have eval.json; f1s_s12/s13 are running on the local 3070. Then score R1/R2 (PROTOCOL12 §61b).
 * **bench-6/7:** CoT jobs, watched by `auto_drain_bench_slow.sh`.
 
+**Blocked (17:30), waiting for the user's decision:**
+* The local §61b runs f1s_s12/s13 share the 8 GB 3070 (cuda:1). s12 has written no log since 13:50 (step 300); s13 runs
+  at ~26 s/step (step 400 at 16:36). VRAM is full, so they are probably spilling to shared memory.
+* Stopping them was denied by the permission classifier, so the user decides.
+* The §66 CL K′ curve (`scratch/s66_kp_local.sh`) waits for that GPU.
+
 **Scored today:**
+* THEORY §66: P2/P3/P4 met, P5 not; WC0 = WC, so the scaffold does the work (PROTOCOL12.md, dc8f219).
 * PROTOCOL8 amendment 3 (NA re-score): every latent arm is at chance; coco's edge was the cue; CoT is cue-free (0.767).
   See PROTOCOL8_RESULTS.md.
 * §54b, §60/§60b, §61, §62, §63/F4, §64/§64b, F6: see PROTOCOL12 and `theory/score_*.py`.
