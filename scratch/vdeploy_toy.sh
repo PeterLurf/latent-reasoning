@@ -9,6 +9,7 @@ O=$1; LBL=$2; Q=$3; TAG=$4; W=${5:-scratch/queue_worker2.sh}
 EXTRA=""; [ "$W" = scratch/queue_worker3.sh ] && EXTRA="scratch/queue_worker3.sh scratch/p9_frozen"
 [ "$W" = scratch/queue_worker_t12.sh ] && EXTRA="scratch/queue_worker_t12.sh scratch/t12_frozen"
 [ "$W" = scratch/queue_worker_f6.sh ] && EXTRA="scratch/queue_worker_f6.sh scratch/f6_frozen"
+[ "$W" = scratch/p8na_vast_job.sh ] && EXTRA="scratch/p8na_vast_job.sh prosqa/eval_na_p8.py prosqa/eval_p8.py prosqa/analyze.py prosqa/gpt2c.py prosqa/p8data/p8_test.json prosqa/p8data/p8_na_test.json"
 [ "$W" = scratch/f1s_vast_job.sh ] && EXTRA="scratch/f1s_vast_job.sh prosqa/ail_gpt2.py prosqa/ail_f1s.py prosqa/p8data/f1s_train.json prosqa/p8data/f1s_test_shallow.json prosqa/p8data/p8_na_test.json"
 [ "$W" = scratch/ail_vast_job.sh ] && EXTRA="scratch/ail_vast_job.sh prosqa/ail_gpt2.py prosqa/p8data/p8_train.json prosqa/p8data/p8_test.json"
 [ "$W" = scratch/bm_vast_job.sh ] && EXTRA="scratch/bm_vast_job.sh bm/__init__.py bm/data_b.py bm/model_b.py bm/run_b.py bm/data.py bm/model.py bm/run.py bm/data_pool_b"
@@ -30,6 +31,8 @@ echo "$H $P $LBL" >> scratch/live_hosts.txt          # watched by gpu_watch2.sh 
 S="ssh -o ConnectTimeout=20 -i $HOME/.ssh/runpod_ed25519 -p $P root@$H"
 $S "python -c \"import ctypes;print('CUINIT',ctypes.CDLL('libcuda.so.1').cuInit(0))\"; nvidia-smi --query-gpu=name,driver_version,clocks.max.sm --format=csv,noheader" 2>/dev/null | grep -v -i "welcome\|have fun"
 $S "python -c \"import ctypes;exit(ctypes.CDLL('libcuda.so.1').cuInit(0))\"" 2>/dev/null || { echo "BAD HOST"; exit 2; }
-tar -czf /tmp/up_$LBL.tgz --exclude=__pycache__ latent scratch/queue_worker2.sh scratch/stage1_guard.py scratch/eval_battery.sh $EXTRA $Q
+tar -czf /tmp/up_$LBL.tgz --exclude=__pycache__ latent scratch/queue_worker2.sh scratch/stage1_guard.py scratch/eval_battery.sh $EXTRA ${EXTRA_FILES:-} $Q
+echo "UPLOAD_BYTES $(stat -c %s /tmp/up_$LBL.tgz) START $(date +%s)"
 scp -q -i ~/.ssh/runpod_ed25519 -P $P /tmp/up_$LBL.tgz root@$H:/tmp/up.tgz
+echo "UPLOAD_DONE $(date +%s)"
 $S "mkdir -p /workspace/Latent && cd /workspace/Latent && tar --no-same-owner -xzf /tmp/up.tgz && mkdir -p logs runs results && (setsid nohup bash $W $TAG cuda:0 $Q > /dev/null 2>&1 < /dev/null &) ; sleep 5; pgrep -fa queue_worker | head -1" 2>/dev/null | grep -q queue_worker && echo STARTED
