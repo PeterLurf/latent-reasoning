@@ -19,3 +19,5 @@ prosqa/res*/logs/prosqa.out
 prosqa/logs/prosqa.out
 # PROTOCOL8 Phase 0 data (regenerable: prosqa/make_deep.py, md5s in docs/PROTOCOL8_PHASE0.md)
 prosqa/p8data/
+bm/data_pool/
+bm/runs/*/model.pt

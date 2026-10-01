@@ -216,8 +216,8 @@ def evaluate(a):
     model = BM().to(dev); model.load_state_dict(ck["model"]); model.eval()
     rng = np.random.default_rng(123)
     out = {}
-    sets = {k: pickle.load(open(os.path.join(a.pool, k + ".pkl"), "rb")) for k in
-            ("ev_instances", "ev_motifs", "ev_orders", "ev_size", "dev")}
+    names = a.sets.split(",") if a.sets else ["ev_instances", "ev_motifs", "ev_orders", "ev_size", "dev"]
+    sets = {k: pickle.load(open(os.path.join(a.pool, k + ".pkl"), "rb")) for k in names}
     for name, tasks in sets.items():
         R, info = run_set(model, tasks, dev, rng)
         probe = np.mean([(R[i, t["row"], t["col"]] > 0.5) == (t["label"] > 0.5) for i, t in enumerate(tasks)])
@@ -259,10 +259,11 @@ def evaluate(a):
                 marg.setdefault(info[i]["depth"], []).append(float(np.abs(R[i] - 0.5)[mk].mean()))
             out["margin_by_depth"] = {int(k): float(np.mean(v)) for k, v in sorted(marg.items())}
     model.binarise = True                                         # binarised-commit check
-    for name in ("ev_instances", "ev_orders"):
+    for name in [n for n in ("ev_instances", "ev_orders") if n in sets]:
         R, _ = run_set(model, sets[name], dev, rng)
         out[name]["probe_binarised"] = float(np.mean([(R[i, t["row"], t["col"]] > 0.5) == (t["label"] > 0.5) for i, t in enumerate(sets[name])]))
-    json.dump(out, open(os.path.join(a.run, "eval.json"), "w", newline="\n"), indent=1)
+    fn = "eval.json" if not a.sets else "eval_" + a.sets.replace(",", "_") + ".json"
+    json.dump(out, open(os.path.join(a.run, fn), "w", newline="\n"), indent=1)
     print(json.dumps({k: v for k, v in out.items()}, indent=1))
 
 
@@ -274,6 +275,7 @@ def main():
     ap.add_argument("--lam", type=float, default=0.0); ap.add_argument("--steps", type=int, default=5000)
     ap.add_argument("--bs", type=int, default=128); ap.add_argument("--lr", type=float, default=3e-4)
     ap.add_argument("--device", default="cuda:0")
+    ap.add_argument("--sets", default="", help="eval only these sets (the development pilot uses dev only)")
     a = ap.parse_args()
     {"gen": gen, "train": train, "eval": evaluate}[a.cmd](a)
 
