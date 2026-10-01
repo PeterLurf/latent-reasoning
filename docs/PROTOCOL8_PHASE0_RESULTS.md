@@ -80,3 +80,8 @@ files (e44, ctl, CoT reference) are still running on the host.
 | Plan | Change | When, relative to data | Reason | Impact |
 |---|---|---|---|---|
 | F1 (Coconut vs a₁ on H) decides latent use, with H from P8-0a | Amendment 1 (ecbec6f, 22:17:01) adds F1b: latent use inside the Coconut model (aᴄ(K′=10) − aᴄ(K′=0) on H), with c_model; PROTOCOL8's latent-use strata move from H to above c_model | 1 min after P8-0a was scored; before any P8-0b test outcome | Theory's caveat: no-CoT at chance measures learnability, not one-pass capacity (addendum Q: 0.976 at K′ = 0) | Changes which strata PROTOCOL8 scores latent use on. F1 is still reported. The change is informed by the P8-0a outcome, so it's listed here |
+
+**Shortcut caveat (2026-10-01 00:27 EDT).** THEORY §57, confirmed by Audit: ProsQA's negative option always hangs off another
+person, so a person-agnostic proximity heuristic scores ≈ 0.90 on p8_test without reasoning from the root. Accuracies
+here may partly reflect that cue. The cue-free set `p8_na_test.json` (THEORY §59; heuristic 0.50) is the control:
+PROTOCOL8 amendment 3. For the step-1 models, the cue test in `docs/PROTOCOL8B_STEP1.md` shows this cue directly.

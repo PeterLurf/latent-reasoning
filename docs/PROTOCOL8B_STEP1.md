@@ -189,3 +189,8 @@ Mean margin shift toward the target vs plain (nats), and accuracy:
   about 4–5× but kept its sign.
 * **Consequence.** Coconut GPT-2's ProsQA accuracy partly rests on this shortcut, which bears on every written-checkpoint
   scheme built on these models (PROTOCOL8b, 10, 11).
+
+**Shortcut caveat (2026-10-01 00:27 EDT).** THEORY §57, confirmed by Audit: ProsQA's negative option always hangs off another
+person, so a person-agnostic proximity heuristic scores ≈ 0.90 on p8_test without reasoning from the root. Accuracies
+here may partly reflect that cue. The cue-free set `p8_na_test.json` (THEORY §59; heuristic 0.50) is the control:
+PROTOCOL8 amendment 3. For the step-1 models, the cue test in `docs/PROTOCOL8B_STEP1.md` shows this cue directly.
