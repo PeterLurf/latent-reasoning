@@ -11,6 +11,9 @@ Failure mode (descriptive; operationalised here, the registration names the mode
     "no learning" : otherwise, P = d accuracy at d1-6 < 0.60;
     "partial"     : anything else.
 Bands without P = d rows (the P = d eval may not cover d7-14) are reported as None and skipped.
+DISCLOSURE (Audit): the failure-mode thresholds were set after bench prosqa_deep_na results for f1s_s6-s11 were
+committed (4823373, all at chance 0.49-0.51), though before any §61b eval.json was read. The failure-mode classification is
+therefore descriptive, defined after bench outcomes were visible; R1/R2 and the success profile (da85e97) are unaffected.
     python prosqa/score_f1sb.py
 """
 import json
