@@ -86,3 +86,28 @@ Same checkpoints, items and recipes. Only the number of latent steps changes:
   Coconut).
 * If it drops by ≥ 10 points, the latent steps carry computation.
 * Reported per equation-step bucket as well.
+
+## Amendment 2 result (2026-10-01 19:18 EDT; descriptive)
+
+| model | latent steps | accuracy | by equation steps 1 / 2 / 3 / 4 / 5 / 6 |
+|---|---|---|---|
+| CODI | 0 | 22.1 | 0.26 / 0.32 / 0.24 / 0.19 / 0.06 / 0.05 |
+| CODI | 1 | 24.9 | 0.29 / 0.38 / 0.25 / 0.21 / 0.10 / 0.02 |
+| CODI | **6** | **42.5** | 0.40 / 0.66 / 0.49 / 0.31 / 0.14 / 0.02 |
+| SIM-CoT + CODI | 0 | 32.0 | 0.34 / 0.51 / 0.32 / 0.24 / 0.17 / 0.02 |
+| SIM-CoT + CODI | 1 | 28.9 | 0.29 / 0.48 / 0.30 / 0.20 / 0.16 / 0.00 |
+| SIM-CoT + CODI | **6** | **39.4** | 0.45 / 0.60 / 0.46 / 0.26 / 0.17 / 0.04 |
+| SIM-CoT + Coconut | 0 | 5.1 | 0.06 / 0.11 / 0.04 / 0.02 / 0.03 / 0.02 |
+| SIM-CoT + Coconut | 1 | 6.2 | 0.12 / 0.12 / 0.05 / 0.03 / 0.04 / 0.02 |
+| SIM-CoT + Coconut | 2 | 13.8 | 0.17 / 0.31 / 0.10 / 0.04 / 0.04 / 0.00 |
+| SIM-CoT + Coconut | **10** | **44.8** | 0.40 / 0.62 / 0.50 / 0.40 / 0.22 / 0.07 |
+
+**Reading (per the fixed rule).**
+* CODI drops 20 points without latents, and SIM-CoT-Coconut 40 points. The latent steps carry computation, unlike
+  ProsQA Coconut.
+* SIM-CoT-CODI drops 7.4 points, between the two thresholds; its no-latent accuracy (32.0) is already high.
+* **Caveat.** K = 0 / 1 are inputs these models never saw in training (CODI and Coconut always train with the full
+  budget at the last stage). Some of the drop may be distribution shift rather than lost computation, especially
+  Coconut's 5.1, which is below the one-op oracle.
+* The gain from latents is largest at 2–4 equation steps. At 6 steps every configuration is ≤ 0.07: the latents add
+  depth up to ~4 steps and no further.
