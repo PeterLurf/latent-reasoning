@@ -2890,6 +2890,36 @@ Each is meant to hit several north-star conditions at once.
 4. F3: local GPU.
 5. F5: last.
 
+## 53. F2 — bidirectional latent reasoning, zero-shot on toy models (pre-registered 2026-09-30 20:45 EDT, after Literature's check 3ba2507 and before any measurement on the test models)
+
+**Design.** `theory/exp26_bidirectional.py`, CPU, inference only, no training.
+* **Forward.** One K-step episode from the root, on the graph as given. F = the graph nodes the model answers
+  reachable.
+* **Backward.** One K-step episode on the same graph with every edge reversed, START = the target t. B = the graph
+  nodes it answers reachable, i.e. t's ancestors.
+* **Answer.** "t reachable" iff F ∩ B ≠ ∅. Both are written node-id sets.
+* **Probe.** The long-chain probe(512): targets are the chain nodes at distance 1..12 and their look-alikes.
+* **Models.** The 59 P30 ∪ L models of §26.
+* **References.** Forward-only (F alone) and §26's re-anchoring re2top3.
+
+**Required control (Literature).** Precision by depth: the false-positive rate of the intersection on look-alike
+targets, for each distance.
+
+**Disclosure.** Two smoke models outside the set:
+* ph_c_s102: bidirectional d1–6 0.90, d7–12 0.78; forward-only d7–12 0.50; look-alike FP rate d7–12 0.25.
+* pb_at_s751: no gain, look-alike FP rate 0.98. Its sets are flooded with positives, which is exactly the risk.
+
+**Predictions** (medians over the 59 models):
+* **BD1 (reach doubles zero-shot).** Bidirectional bal-acc at d7–12 ≥ 0.70 (forward-only ≈ 0.50).
+* **BD2 (precision).** Look-alike FP rate at d7–12 ≤ 0.30.
+* **BD3 (no in-range loss).** Bidirectional bal-acc at d1–6 ≥ 0.85.
+
+**Descriptive.** Bidirectional vs re2top3 at d7–12, and the FP rate by distance.
+
+**Runs and scoring.** Handed to the experiments session:
+* Command: `python theory/exp26_bidirectional.py` → `theory/results/exp26_bidirectional.json`.
+* Score: medians of `bidir_bal` over indices 6–11 and 0–5, and of `bidir_decoy_fp` over indices 6–11.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
