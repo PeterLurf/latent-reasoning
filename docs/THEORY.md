@@ -72,6 +72,8 @@ registered as §54b (relaxed labels in training, hardened at test, hardening gap
 **ProsQA cue (§57):** the generator always hangs the negative option off another person. A person-agnostic proximity
 heuristic scores 0.91, which explains the Coconut cue.
 **F2 toy (§53):** BD1 met (0.71 vs 0.50 at d7–12), but precision fails (FP 0.42). Parked.
+**Boundary memory (§60):** the user's proposal. Phase A is registered (learned Boolean-table merger, with vs without
+order consistency, 4 seeds, Gate A ≥ 0.95 on held-out instances, motifs and orders), and the Phase B gate is fixed.
 **F6 registered (§58):** age-transplant training, P30 recipe, 3 arms × 10 seeds (aged / young / mismatch). Handed to
 Experiments.
 
@@ -3410,6 +3412,157 @@ parents / more mentions / mentioned first / mentioned last / whose parents have 
    reasoning-only accuracy.
 2. **Training data** for any future ProsQA-based latent-reasoning claim (C2/C3/C7), so that ~0.9 is not available
    without reasoning.
+
+## 60. Boundary memory, Phase A — can a learned worker compose Boolean boundary-response tables? With the Phase B gate fixed in advance (pre-registered 2026-10-01 00:24 EDT, after Literature's check 503df27 and before any implementation or run)
+
+**Source.** `docs/PROPOSAL_BOUNDARY_MEMORY_2026-10-01.md` (81a8453): the user's "try this out", relayed by Audit. It is
+the full version of external direction 1 (§52 addendum). This section registers its Phase A (local algebra) and fixes
+its Phase B gate now. The experiments session implements and runs it. Its own gates and falsifiers are kept; this is one
+proposal, not a fix loop.
+
+**Prior art** (`docs/LIT_BOUNDARY_MEMORY_CHECK_2026-10-01.md`). New only as a combination.
+* Learned merge: Divide and Conquer Networks 1611.02401.
+* Associativity bias: Learnable Commutative Monoids 2212.08541 and MLP-LDRU 2605.26035. LDRU's associativity-biased
+  operators give OOD length generalisation, which supports a directional prediction here.
+* Exact port algebra: Kron reduction / Schur complement 1102.2950.
+* Learned composition over subdomains: Mosaic Flows 2104.10873 and LatentDDM 2609.03069.
+* Also NBFNet 2106.06935 and neural coarsening 2102.01350.
+
+**How the Boolean-response design handles the count (my min-plus caveat, §52 addendum).**
+* **Min-plus tables bring a count back.** A min-plus (shortest-distance) table stores path lengths that grow with
+  region size, so the interface itself carries a hop count — exactly the free stop key of Prop. 10.
+* **Boolean tables cannot, when exact.** An exact Boolean table is a reachability relation over ≤ 4 ports. Its range is
+  finite and independent of region size, so a 1-edge region and a 20-edge region can have the identical table.
+* **Where age can still live: the learned approximation.**
+  - Sub-threshold values (e.g. 250/255 vs 247/255 fading with depth): a confidence clock, i.e. Mechanism 2.
+  - Which regions exist: workspace structure.
+* **How each channel is handled.**
+  - Committed codes are quantised to uint8 after every commit.
+  - The merger and answer head get no age, size, depth or creation-order feature.
+  - Phase A measures the channel: the age-decodability audit and the binarised-commit check below.
+  - Phase B tests its causal effect directly (B4, history equivalence).
+  - A learned deadline can only enter with the Phase C controller, which is out of scope here.
+
+**Phase A design** (the experiments session implements; spec fixed here).
+* **Task data** (generator with a reference BFS; the model never sees BFS).
+  - Small directed acyclic regions of 2–8 edges, from 8 motif families: path, out-tree, in-tree, diamond, chain with
+    skip edges, random sparse DAG, ladder (two parallel paths with rungs) and zigzag (alternating edge directions).
+  - **Held-out motifs:** ladder and zigzag, never trained.
+  - Each region declares pinned terminals P (|P| ∈ {2, 3, 4}). Only regions with a legal schedule are kept: every
+    intermediate region's boundary (vertices with an edge outside it, plus pinned ones) must have ≤ 4 ports. Report the
+    rejection rate per family.
+* **Terminal labels only.**
+  - Each task is one region and one label: an entry T_R[a, j] of the *final* table (seed pattern a ≠ 0 over P, output
+    port j), balanced 50/50.
+  - |P| = 2 tasks with a = {root} and j = query are the ordinary reachability answers. |P| = 3–4 tasks are the
+    independent boundary probes. Their counts are reported separately.
+  - No intermediate table, frontier or path label is used.
+* **Schedules.**
+  - Training: uniform random legal schedules with no merge whose two children both have ≥ 3 edges.
+  - **Held-out merge orders:** schedules with at least one merge of two composites, each with ≥ 3 edges (regions of
+    6–8 edges). This separates a learned composition *operator* from a learned one-edge-at-a-time *sweep*.
+* **Model.**
+  - **Leaf encoder.** Maps one edge u → v, with its two ports at randomly assigned local slots, to a 16 × 4 table
+    (learned; true leaf tables are never inserted).
+  - **Merger.** A shared 2-layer d = 256 transformer over ≈ 64 tokens: 32 child row tokens (seed bits, 4 response codes,
+    local vertex-id embeddings of the 4 slots, child role), up to 16 parent row queries, and wiring tokens (which child
+    slots are the same local vertex, which survive as parent ports).
+  - Local vertex ids are randomly permuted per call. There is no global id, age, size, depth or order feature, and
+    activations are fresh per call.
+  - **Output.** Sigmoid, padding masked to 0, then Q8 = round(255·p)/255 with a straight-through gradient (disclosed).
+* **Arms (4 seeds each, the same seeds in both).**
+  - **BM-oc (primary).** Terminal loss + λ_order × masked MSE between the final tables of two different legal training
+    schedules of the same region, aligned by port. Both branches count as training compute.
+  - **BM-no.** λ_order = 0.
+  - **Exact composer (diagnostic ceiling only).** An exact Boolean fixed-point composer (Kron reduction over the Boolean
+    semiring) on exact leaf tables. It must score 1.000 on every split; anything less is a data or bookkeeping bug.
+* **Fixed before the seed panel (development pilot on a separate development set, logged in the run directory).**
+  - λ_order ∈ {0.1, 1}, chosen by development accuracy on training motifs and orders only.
+  - Steps and batch from a throughput pilot, identical for both arms.
+  - Failed or unfinished seeds are not dropped and get no extra training.
+
+**Measures** (held-out evaluation sets; true tables are used for evaluation only):
+1. **Probe accuracy.**
+   - (a) Held-out instances: training motifs, training-type orders, 2–8 edges.
+   - (b) Held-out motifs.
+   - (c) Held-out merge orders.
+2. **Semantic validity** of thresholded final tables:
+   - entry accuracy vs the true tables;
+   - the share of tables satisfying all four reachability-closure laws: extensivity f(a) ≥ a; monotonicity;
+     idempotence f(f(a)) = f(a); union preservation f(a ∨ a′) = f(a) ∨ f(a′).
+3. **Residual associativity error** (Literature, Audit), on held-out regions under 2 held-out orders: the mean
+   |T₁ − T₂| over aligned valid entries (code/255), and the thresholded disagreement rate.
+4. **Age-channel audit (descriptive).**
+   - Group held-out regions by identical true table.
+   - Cross-validated decodability of merge-tree depth and edge count from the committed codes, vs a majority baseline.
+   - Mean margin |T − 0.5| by merge depth: does confidence fade?
+5. **Binarised-commit check (descriptive).** Accuracy when every commit is thresholded to {0, 255}. A drop > 0.02 means
+   the model relies on sub-threshold values.
+6. **Size preview (descriptive).** Regions of 9–16 edges, i.e. more merges than trained.
+
+**Gate A (advance to Phase B).** BM-oc in **every one of the 4 seeds**:
+* **A1.** Probe accuracy ≥ 0.95 on held-out instances (1a).
+* **A2.** ≥ 0.95 on held-out motifs (1b) and ≥ 0.95 on held-out merge orders (1c).
+* **A3.** Entry accuracy ≥ 0.95, and ≥ 95 % of tables satisfy all four laws.
+
+**Directional prediction (LDRU precedent; reported, not gating).**
+* **PA-dir.** BM-oc beats BM-no on held-out merge orders (1c) and has lower residual associativity error (3), in ≥ 3 of
+  4 seed pairs.
+* Expected magnitude: BM-no fails 1c (a sweep rather than an operator) more often than it fails 1a.
+
+**Falsifiers and decisions** (the proposal's §15, fixed now):
+* **Only the exact composer passes 1a.** Learned composition or credit assignment is inadequate. Stop: no Phase B, no
+  GPT-2.
+* **A1 passes, A2 orders fail in both arms.** The worker learned a sweep, not an operator. Stop. Phase B's arbitrary
+  schedules need composite merges.
+* **A1 and A2 pass, A3 fails.** Accurate answers without a valid reachability algebra. Stop, and report it as
+  "accurate but not semantic".
+* **Gate A passed by BM-oc.** Run Phase B as fixed below, with BM-no carried as the comparison arm whatever its Phase A
+  result.
+* **Considered, not adopted.**
+  - *Overlap ablation* (Mosaic Flows). Regions here already share boundary vertices, and Boolean composition over
+    shared ports is exact without further overlap. Mosaic Flows' need arose from continuous boundary data.
+  - *DCN's complexity regulariser.* Not added.
+  - Neither is a pre-declared rescue.
+
+**Phase B gate, fixed now** (the proposal's §11–12; its own registration amendment will fix only implementation
+quantities after a throughput pilot: steps, batch, deep-set size).
+* **Task.**
+  - Fixed 64-node branch-and-decoy graphs, restricted to legal executions with ≤ 4-port interfaces.
+  - Edge count, node vocabulary, input length and degree/decoy distributions matched across depth conditions.
+  - A legal schedule derived from topology without reachability labels or edge directions. It is a disclosed scaffold.
+  - If the graphs cannot fit the cap or cannot be learned under H, that is reported as a limitation. No path-only
+    substitute.
+* **Training.**
+  - H = 16 atomic merges per trajectory.
+  - Terminal answer loss through the always-available answer head over the region collection, plus order consistency
+    and boundary probes.
+  - Arms BM-oc and BM-no, the same 4 seeds.
+* **Evaluation.** The same frozen balanced deep set (including 19–24-hop queries where feasible) at K = 16, 24, 32, 48.
+  Merge calls, maximum merge ancestry and answer-head cost are counted separately.
+* **Gates** (BM-oc; all must hold to advance to Phase C):
+  - **B0.** ≥ 95 % held-out accuracy at training depths, in every seed.
+  - **B1 (C2).** Paired accuracy gain K16 → K32 on the deep set ≥ +10 points in every seed. Each seed's one-sided
+    98.75 % cluster-bootstrap lower bound (graphs as clusters) must be > 0 (Bonferroni over 4 seeds).
+  - **B2 (no reversal).** No adjacent-budget loss > 2 points across 16 → 24 → 32 → 48. Deep-negative false positives
+    are reported.
+  - **B3 (C1).** Replaying the same schedule with compatible sham tables costs ≥ 20 points of deep accuracy (several
+    sham types reported).
+  - **B4 (mechanism: history equivalence).**
+    - Take regions with the identical true boundary response but different construction histories (structure, merge
+      depth or merge order). They are matched by held-out truth tables, evaluation only.
+    - Inserted into the same held-out continuation, the paired downstream accuracy difference must have its 90 % CI
+      inside ±2 points.
+    - This is the boundary-memory counterpart of §56's interchange test.
+* **Readings** (the proposal's §15).
+  - Flat beyond H: C2 rejected in this configuration.
+  - Budget gains but B4 fails: more computation helps, but history still matters, so the age-invariance claim is
+    rejected.
+  - B3 fails: the answer head solves without merger content, so C1 fails.
+
+**Cost and placement.** Phase A is a 2-layer d = 256 model with ≈ 64 tokens per call. The proposal targets ≤ 8 GB;
+wall time is unmeasured. The throughput pilot sets the hours-scale allowance. 8 runs (2 arms × 4 seeds), on local cards
+or Vast at the experiments session's discretion. CPU suffices for the data generator, the exact composer and unit tests.
 
 ## 7. Log
 
