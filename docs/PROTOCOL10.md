@@ -48,3 +48,9 @@ P8b1 verdict is committed. Local cards only (3070, then the 4060 when Theory fre
 Not part of the decision rules. The same script and models, with (a) K′ = 5 thoughts per segment, S = 8 (Theory: a
 segment should span ≤ 4–5 hops) and (b) K′ = 10, S = 8 (longer chains). Outputs `prosqa/res_p10/<model>_k<K′>_s8.json`,
 blind under the same rule. Run on the idle 3070/2070 (`scratch/p10v_worker.sh`).
+
+## Amendment 2 (2026-09-30 20:18 EDT, before any PROTOCOL10 output was read): exploratory shallow-depth check
+Not part of the decision rules. Theory (§48) saw shallow accuracy erode with more segments on the toy. The same
+models and the K′ = 5 / 10, S = 8 settings of amendment 1 are run on answer depths 3–6 (100 per depth). New flag
+`--exclude_cal` drops the 100 calibration problems (depths 3–6) from the evaluation; the main run (d11–14) is unaffected,
+since no calibration problem is that deep. Outputs `prosqa/res_p10/<model>_k<K′>_s8_d3-6.json`, blind under the same rule.
