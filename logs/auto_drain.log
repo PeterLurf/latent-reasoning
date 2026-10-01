@@ -42,3 +42,8 @@
 2026-09-30 22:56:19 p8c_rt_s3 53535201 drained (res prosqa/res_p8c/rt_s3, ckpt prosqa/ckpt/p8c_rt_s3_checkpoint_48)
 2026-09-30 23:03:15 p8c_coco_s4 53539583 drained (res prosqa/res_p8c/coco_s4, ckpt prosqa/ckpt/p8c_coco_s4_checkpoint_48)
 2026-09-30 23:23:03 p8c_at_s2 53534818 drained (res prosqa/res_p8c/at_s2, ckpt prosqa/ckpt/p8c_at_s2_checkpoint_48)
+2026-10-01 01:19:09 p8c_rt_s4 53545198 drained (res prosqa/res_p8c/rt_s4, ckpt prosqa/ckpt/p8c_rt_s4_checkpoint_48)
+2026-10-01 02:24:20 p8c_at_s4 53539933 drained (res prosqa/res_p8c/at_s4, ckpt prosqa/ckpt/p8c_at_s4_checkpoint_48)
+2026-10-01 02:58:49 p8c_coco_s2 53533300 drained (res prosqa/res_p8c/coco_s2, ckpt prosqa/ckpt/p8c_coco_s2_checkpoint_48)
+2026-10-01 03:04:32 bmb_P1 53650633 
+2026-10-01 03:24:47 bmb_P2 53651989 

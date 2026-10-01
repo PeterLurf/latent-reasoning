@@ -1,0 +1,3 @@
+# §60b panel seed 1
+oc_b_s1 panel 1 1 10000 128
+no_b_s1 panel 0 1 10000 128

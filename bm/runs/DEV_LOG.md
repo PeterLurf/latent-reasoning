@@ -19,3 +19,5 @@
 * 2026-10-01 02:29 — §60 panel launched as registered (frozen in PANEL_FREEZE.md, λ 1 by tie-break, 10k × 128),
   2070 from 02:27 and 3070 from 02:31; §60b (bdc70bc) to be implemented in separate files so the running panel's code
   is untouched. Process rule from now on (Audit/Theory): aborted or void outputs are renamed *.void and committed, not deleted.
+* 2026-10-01 03:25 — §60b development pilot (Vast, dev only): λ 1 dev probe 0.5945, λ 0.1 0.588 (baseline 0.50); flat learning
+  curve. Frozen in PANEL_B_FREEZE.md; §60b panel on 4 Vast hosts.

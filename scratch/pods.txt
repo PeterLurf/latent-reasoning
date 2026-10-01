@@ -170,3 +170,6 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53650634 vast offer 53248764 created 2026-10-01 02:33: label bmb-P2, queue scratch/bmb_q_P2.txt (logged at create by vdeploy_toy.sh)
 53650634 vast | bmb-P2 DESTROYED_VERIFIED 2026-10-01 02:43 (never started: 'GPU error, unable to start instance'; replaced)
 53651989 vast offer 53546323 created 2026-10-01 02:43: label bmb-P2b, queue scratch/bmb_q_P2.txt (logged at create by vdeploy_toy.sh)
+53533300 vast | DESTROYED_VERIFIED 2026-10-01 02:58 after verified fetch (prosqa/res_p8c/coco_s2: coco_test_e48.json coco_ctl_e48.json; ckpt prosqa/ckpt/p8c_coco_s2_checkpoint_48)
+53650633 vast | bmb_P1 DESTROYED_VERIFIED 2026-10-01 03:04 after verified fetch (bm runs: pb_pilot_lam1)
+53651989 vast | bmb_P2 DESTROYED_VERIFIED 2026-10-01 03:24 after verified fetch (bm runs: pb_pilot_lam0.1)
