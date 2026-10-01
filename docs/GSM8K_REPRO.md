@@ -46,4 +46,4 @@ question 0.064, one-op oracle 0.155).
   inference uses 10.
 * **Checkpoint.** The Hugging Face upload is `checkpoint_28`, the only one public; the repo's eval config loads
   `checkpoint_30`. We evaluate `checkpoint_28` and report the mismatch as a caveat to its reproduction verdict.
-* The CODI runs (6 latents, as registered) are unaffected; they started at 18:3x.
+* The CODI runs (6 latents, as registered) are unaffected; they started at 18:27:24 (log creation time).
