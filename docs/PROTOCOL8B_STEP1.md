@@ -137,3 +137,14 @@ Follow-up (2026-09-30 20:49 EDT, exploratory diagnostic, before running): the sa
 40 per depth, probe-disjoint) for ctl_s1, ctl_s3, ckpt_s1, ckpt_s2. If a correct near-target checkpoint also drives
 shallow problems (which the plain episode solves at ≈ 0.7–0.8) below chance, the effect is a learned cue against such
 statements, not a depth limit. Outputs `prosqa/res_p8b/hopsweep_shallow_<model>.json`.
+
+### Hop sweep follow-ups (2026-09-30 21:01 EDT; all exploratory)
+* **Artefact checks (Audit).** The answer options are fixed by `analyze._parse`: option 0 is the dataset's answer
+  sentence, and option 1 is the same sentence with the target swapped for the negative option. So option order cannot follow
+  the checkpoint. The entity written one hop before the target equals an answer option in 0 of 4,057 test problems.
+* **ctl_s2 (the sixth model) replicates.** At d7–10, plain 0.575 and one hop remaining 0.17 (then 0.20, 0.32, 0.45 at 2–4).
+* **Shallow diagnostic (d3–6, 40 per depth, probe-disjoint).** Plain-episode accuracy is high, yet a correct checkpoint
+  near the target still pulls it down. One hop remaining: ctl_s1 0.82 → 0.34, ctl_s3 0.79 → 0.34; ckpt_s1 0.76 → 0.62,
+  ckpt_s2 0.74 → 0.61. At 4–5 hops remaining accuracy is back near the plain level (0.60–0.78).
+  So the effect is a learned response to the statement "<root> is a <entity near an option>", not a depth limit.
+  Checkpoint training weakens it. Mechanism not yet diagnosed (Theory).
