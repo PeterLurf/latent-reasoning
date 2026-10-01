@@ -81,8 +81,8 @@ Path independence tracks one-loop reach (Spearman −0.87, post hoc).
 hard, with a 36-transition certificate. Post-hoc snapping failed its premise (in-range collapse).
 **§66:** in GPT-2 state tracking, the written-state chunked loop is 1.000 at N 17–32 vs text CoT 0.14 (fewer FLOPs). But the no-latent
 version is identical, so the scaffold (short contexts plus written state), not the latents, does the work. C1 is not shown. See the range principle.
-**§65 registered:** restart-distillation on S3. Can a near-clean label-free restart teacher give one loop its reach? RD / GT /
-SELF × 9 parents.
+**§65:** restart labels equal true labels (a clean C4 teacher), but even true labels give the S3 single loop only 0.66 at N 9–16
+and 0.06 beyond. The limit is the continuous state, not the labels.
 **Beyond graphs (§64):** on S3, written-state restarts fix the single loop's length failure (0.995 at N 9–16). The failure is
 not a count-keyed stop: the state loses validity. A5 never learned (0/10, also with the curriculum).
 **F4 (§63):** not met on every measure. The hard straight-through translator never trained (flat losses), so it is uninformative on C7
@@ -4552,6 +4552,33 @@ the 30 eval_st.json files).**
 
 **Run (experiments session).** `python theory/st_distill.py --init theory/runs/st/s3_s<k> --teacher {rd|gt|self}
 --device cuda:0 --out theory/runs/st/s3<rd|gt|self>_s<k>`: 27 runs, local 2070 and other free cards.
+
+**Result (2026-10-01; scored by the experiments session, c6c09d0, `theory/results/score_s65.json`; Audit reproduced).
+D1 not met, D2 met, D3 not met, D4 met.**
+
+| Arm (median of 9) | N ≤ 8 | N 9–16 | N 17–24 | Valid share at N 12 |
+|---|---|---|---|---|
+| RD (restart labels) | 0.998 | 0.658 | 0.060 | 0.78 |
+| GT (true labels) | 0.998 | 0.657 | 0.060 | 0.78 |
+| SELF | 0.997 | 0.162 | 0.013 | 0.31 |
+
+* **D1 not met.** RD is 0.658 < 0.85, and RD ≥ SELF + 0.50 in only 3/9 pairs.
+* **D2 met.** RD equals GT, parent by parent (e.g. s1 0.89 / 0.89, s5 0.27 / 0.27). That is expected: the restart
+  labels are 99.5 % correct, and the runs share seed and data order.
+* **D3 not met.** The valid share at N 12 is 0.78 (§64's single loops: 0.31).
+* **D4 met.** In-range accuracy 0.998.
+* **Reading (with Audit's).**
+  - **The limit is not label quality.** True labels on N 9–16 give the same 0.66, and nothing past the distilled length
+    (0.06 at 17–24).
+  - On S3, deep supervision extends the single loop only partly within the supervised range, and not beyond it. On the
+    graph toy, GT supervision on 12 hops reached about 22, and GT18 stayed flat to 30 (§41).
+  - This is the range principle again. The S3 loop holds an exact discrete state in a continuous vector, which decays
+    with every step past the trained range (the valid share falls). The graph frontier sweep has a content-keyed
+    continuation that does not decay.
+  - So on state tracking, neither better labels nor deeper supervision gives a single continuous loop its reach. This
+    is the case for §67's discrete carried state.
+* **For C4.** The label-free restart teacher is as good as true labels (D2), so restart-distillation is a clean C4
+  method. The ceiling is the student's architecture.
 
 ## 66. GPT-2 state tracking with a written-state chunked loop (WC): a scaffolded test of C2, C3 and C4 beyond graph search (pre-registered 2026-10-01 15:02 EDT, after Literature's check 27a4a05 and Audit's review; before any implementation or run)
 
