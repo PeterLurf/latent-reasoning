@@ -75,6 +75,9 @@ def build_batch(tasks, rng, sched="main"):
         R = len(nodes) - 1
         for i in range(R):                                    # random slot order for every non-root node
             rng.shuffle(ports[i])
+        nP = len(ports[R])                                    # root too (note 60-3): slot s holds pinned[perm[s]]
+        perm = list(rng.permutation(nP)); ports[R] = [ports[R][k] for k in perm]
+        canon_row, canon_col = canon_index(perm)
         E = sum(k is None for k in kids)
         for i in range(E):
             u, v = t["edges"][nodes[i][0]]
@@ -94,9 +97,25 @@ def build_batch(tasks, rng, sched="main"):
                            len(ports[a_]), len(ports[b_]), len(ports[i]), wire))
             m += 1
         roots.append(off + R)
-        info.append({"depth": s["depth"][R], "k": t["k"], "nodes_depth": s["depth"]})
+        info.append({"depth": s["depth"][R], "k": t["k"], "nodes_depth": s["depth"], "crow": canon_row, "ccol": canon_col})
         off += len(nodes)
     return {"n_nodes": off, "leaves": leaves, "merges": merges, "roots": roots, "info": info}
+
+
+def canon_index(perm):
+    """Index arrays mapping a root table over permuted slots back to canonical (pinned-order) layout:
+    T_can[r, j] = T[crow[r], ccol[j]]. perm[s] = pinned index held by slot s."""
+    nP = len(perm); inv = {perm[s]: s for s in range(nP)}
+    crow = []
+    for r, pat in enumerate(PATTERNS):                    # canonical row: bit k = seed on pinned index k
+        if any(pat[k] for k in range(nP, MAXP)):
+            crow.append(r); continue                      # padding row: stays padding
+        bits = [0] * MAXP
+        for k in range(nP):
+            bits[inv[k]] = pat[k]
+        crow.append(PATTERNS.index(tuple(bits)))
+    ccol = [inv[j] if j < nP else j for j in range(MAXP)]
+    return crow, ccol
 
 
 def masks(n, dev):
@@ -123,7 +142,11 @@ def forward(model, bb, dev):
         P = model.merge(TA, TB, idA, idB, idP, rmA, rmB, rmP, cmP, wire)
         for j, x in enumerate(S):
             tab[x[1]] = P[j]
-    return torch.stack([tab[r] for r in bb["roots"]]), tab
+    R = torch.stack([tab[r] for r in bb["roots"]])         # permuted slots -> canonical pinned order (bookkeeping)
+    crow = torch.tensor([i["crow"] for i in bb["info"]], device=dev); ccol = torch.tensor([i["ccol"] for i in bb["info"]], device=dev)
+    R = torch.gather(R, 1, crow[:, :, None].expand(-1, -1, MAXP))
+    R = torch.gather(R, 2, ccol[:, None, :].expand(-1, 16, -1))
+    return R, tab
 
 
 # ---------------------------------------------------------------- training

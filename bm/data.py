@@ -6,7 +6,7 @@ endpoints as ports). Its boundary-response table T_S has one row per seed patter
 (16 rows) and one column per slot: T_S[a, j] = 1 iff port j is in a or reachable from a port in a using edges of S.
 A schedule is a binary merge tree over the edges (leaves = edges) whose every node has <= 4 ports; children of a merge
 share >= 1 vertex. Training schedules have no merge whose two children both have >= 3 edges; held-out-order schedules
-have at least one such merge. A task is one region with one terminal label T_R[a, j] (j not in a), balanced 50/50.
+have at least one such merge. A task is one region with one terminal label T_R[a, j] (any a != 0, trivial j in a included: note 60-3), balanced 50/50.
 The model never sees BFS or any intermediate table; the exact composer here is the diagnostic ceiling.
 """
 import itertools
@@ -216,7 +216,7 @@ def make_task(rng, fam, k, nP, mode="train"):
     ports, depth = schedule_tables(edges, pinned, nodes, kids)
     TR = true_table(edges, pinned)
     rm, cm = row_mask(nP)
-    cand = [(r, j) for r in range(16) if rm[r] and any(PATTERNS[r]) for j in range(nP) if not PATTERNS[r][j]]
+    cand = [(r, j) for r in range(16) if rm[r] and any(PATTERNS[r]) for j in range(nP)]   # all a != 0 entries (60-3)
     pos = [c for c in cand if TR[c] > 0.5]; neg = [c for c in cand if TR[c] < 0.5]
     if not pos or not neg:
         return None, "unbalanced"
