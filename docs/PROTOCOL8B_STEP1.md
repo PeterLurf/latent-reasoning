@@ -184,8 +184,8 @@ Mean margin shift toward the target vs plain (nats), and accuracy:
   |shift| > 1 nat at d3–6 in every model (at d7–10 only in ctl). The R control stays < 0.5 nat everywhere.
 * **Not premise reasoning.** PN makes the negative option derivable, yet it moves answers toward the *target*: the ctl
   models answer 0.88–0.97 "target" when both options are derivable.
-* **What the models learned.** An option adjacent to an entity named in a root statement is the wrong one. In the
-  training data a root-to-entity statement always leads into the target's chain, so an option adjacent to a different
-  root-linked entity must be the decoy. The ckpt arm weakened the cue about 4–5× but kept its sign.
+* **What the models learned.** An option adjacent to an entity named in a root statement is the wrong one. Its
+  origin in the training distribution is not yet checked (a hypothesis for Theory). The ckpt arm weakened the cue
+  about 4–5× but kept its sign.
 * **Consequence.** Coconut GPT-2's ProsQA accuracy partly rests on this shortcut, which bears on every written-checkpoint
   scheme built on these models (PROTOCOL8b, 10, 11).
