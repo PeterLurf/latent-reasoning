@@ -133,3 +133,7 @@ premise to reason from. The ctl pattern looks like a learned cue that works agai
 an entity near an answer option. To diagnose (Theory): which option and which statements the checkpoint episodes attend
 to. Consequence: restart-from-text schemes on these Coconut models (PROTOCOL10, F2 on GPT-2) start from a model that
 misreads written statements.
+Follow-up (2026-09-30 20:49 EDT, exploratory diagnostic, before running): the same hop sweep on answer depths 3–6 (`--dmin 3 --dmax 6`,
+40 per depth, probe-disjoint) for ctl_s1, ctl_s3, ckpt_s1, ckpt_s2. If a correct near-target checkpoint also drives
+shallow problems (which the plain episode solves at ≈ 0.7–0.8) below chance, the effect is a learned cue against such
+statements, not a depth limit. Outputs `prosqa/res_p8b/hopsweep_shallow_<model>.json`.
