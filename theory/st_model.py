@@ -144,7 +144,11 @@ def train(a):
     for step in range(1, a.steps + 1):
         for gp in opt.param_groups:
             gp["lr"] = a.lr * min(1, step / 500) * 0.5 * (1 + math.cos(math.pi * step / a.steps))
-        init, ops, pos, nops, final, _ = sample(rng, a.group, a.bs, 1, NMAX_TRAIN)
+        nhi = NMAX_TRAIN
+        if a.curriculum:                       # THEORY §64b: operators first (N = 1), then max N grows 2 -> 8 by 40 %
+            f = step / a.steps
+            nhi = 1 if f < 0.1 else min(NMAX_TRAIN, 2 + int(6 * (f - 0.1) / 0.3))
+        init, ops, pos, nops, final, _ = sample(rng, a.group, a.bs, 1, nhi, Nmax=NMAX_TRAIN)
         init, ops, pos, nops, final = tt(dev, init, ops, pos, nops, final)
         logits = m.run(init, ops, pos, nops, KTRAIN)
         loss = F.cross_entropy(logits.reshape(-1, n), final.reshape(-1))
@@ -220,6 +224,7 @@ def main():
     ap.add_argument("--steps", type=int, default=20000); ap.add_argument("--bs", type=int, default=256)
     ap.add_argument("--lr", type=float, default=5e-4); ap.add_argument("--device", default="cpu")
     ap.add_argument("--out"); ap.add_argument("--eval"); ap.add_argument("--n_eval", type=int, default=1024)
+    ap.add_argument("--curriculum", action="store_true", help="THEORY §64b operator-first length curriculum (default off)")
     a = ap.parse_args()
     torch.set_num_threads(int(os.environ.get("THEORY_THREADS", "3")))
     if a.eval:
