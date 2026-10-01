@@ -77,8 +77,8 @@ heuristic scores 0.91, which explains the Coconut cue.
 accuracy); identity buys no reach. D3 is parked.
 **Interchange (§56):** GT-distilled students' latents are age-invariant (G 0.09); T8 students' and parents' are not.
 Path independence tracks one-loop reach (Spearman −0.87, post hoc).
-**C1 frontier (§67):** a six-code categorical latent with GPT-2 as the transition cell, trained by exact marginalisation, run
-hard, with a 36-transition certificate. Post-hoc snapping failed its premise (in-range collapse).
+**C1 frontier (§67):** exact marginalisation works (the table is certified to N 128). The GPT-2 transition cell fails rule acquisition: a
+stable partial automaton, flat ~0.50 at every length (discreteness removes decay). Amendment 67-1 locates where acquisition breaks.
 **§66:** in GPT-2 state tracking, the written-state chunked loop is 1.000 at N 17–32 vs text CoT 0.14 (fewer FLOPs). But the no-latent
 version is identical, so the scaffold (short contexts plus written state), not the latents, does the work. C1 is not shown. See the range principle.
 **§65:** restart labels equal true labels (a clean C4 teacher), but even true labels give the S3 single loop only 0.66 at N 9–16
@@ -4801,6 +4801,36 @@ arm per seed on a 3090-class card; timeouts count as failures.
 toys deadlocked), then Design 2 (Boolean-tree registers; Ito 2608.31067 is nearest).
 
 **Run (experiments session).** The pilot, then one wave: D1, TAB, RESET and FP × 5 seeds.
+
+**Result: the pilot stop rule applies, so the panel is not run (2026-10-01; `c1/PILOT.md`; 11 configurations on pilot seed
+99, all logged).**
+* **The objective works.** TAB, under the same exact marginalisation and curriculum, is certified: 0 transition errors
+  and 1.000 at every N 8–128 by update 1,500.
+* **The GPT-2 cell fails rule acquisition.**
+  - Default heads saturate on GPT-2's massive outlier activation (hidden norm ~200; cf. 2402.17762).
+  - Zero heads with identical codes sit at a symmetric saddle (exactly ln 6).
+  - With both fixed (a LayerNorm on the head input, distinct codes), the cell settles on a stable partial automaton:
+    0.48–0.52 at every N, no bijection (decoded codes [1, 1, 2, 5, 0, 4]), 13–17 of 36 transitions wrong.
+  - More updates or a higher lr for the new parameters do not help.
+  - This is the external agent's "likeliest failure".
+* **Positive mechanistic finding.** The partial automaton's accuracy is flat from N = 8 to 128. Hard discrete codes do
+  not decay with length, unlike every continuous loop in §64 and §65. Discreteness removes drift; what remains is
+  acquiring the correct transitions.
+* **Reading.** C1-1 is not met. The bottleneck is the pretrained-GPT-2 parameterisation of the transition rule, not
+  exact credit assignment (TAB) and not drift.
+
+**Amendment 67-1 (2026-10-01 19:34 EDT, before any of these runs; descriptive, no C1 claim).** Where does acquisition
+break?
+* Under §67's objective and curriculum, three further cells: an MLP (one-hot code and operation → 256 → 6), a small
+  transformer from scratch (2 layers, d = 256, the d1 input format), and the GPT-2 architecture with random weights
+  (124M, d1 format, the best pilot init).
+* Pilot seed 99 plus seeds 1–2, at most 2,000 updates each; the TAB result above as the reference.
+* Each cell is reported as certified or not (the 36-transition audit) with its hard-execution accuracy.
+* **Reading.**
+  - Random-init GPT-2 learns where pretrained GPT-2 does not: pretraining geometry (the outlier activation, entangled
+    features) is the obstacle.
+  - Only small cells learn: scale or depth is the obstacle.
+  - Both GPT-2 variants are recorded as acquisition failures, and the line moves on.
 
 ## 7. Log
 
