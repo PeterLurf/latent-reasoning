@@ -3970,6 +3970,50 @@ Hardened labels, fixed P = 16.
   - Not met as registered: C4 learnability exists but is seed-dependent.
   - No further F1 variants, as committed.
 
+### 61b. F1-S replication: does seed 3 reproduce, and how often does the frozen recipe succeed? (pre-registered 2026-10-01 13:41 EDT, before any replication run; user directive via Audit; Literature's note 08cbb19)
+
+**Why.** §61: 1 of 3 seeds (s3) learned an exact, readable entity-label BFS in GPT-2 from final answers. Is that
+success seed-intrinsic, or GPU-nondeterminism luck, and what is the recipe's success rate?
+
+**Recipe: frozen and unchanged.** `prosqa/ail_f1s.py` at 248866f, the same `p8data/f1s_train.json`, the original GPT-2
+init, 1,486 steps. Any fix for flooding seeds would be a separate registration.
+* **(a) Exact reruns.** Seed 3, three times (`f1s_r3a`, `f1s_r3b`, `f1s_r3c`), on the original host's class: an RTX 3090, driver 570.x
+  (s3 ran on 570.211.01, CUDA 12.4 image, PyTorch 2.5.1, bf16 autocast). Each host's GPU name and precision are recorded from the queue wrapper.
+* **(b) Fresh seeds.** Seeds 4–13 (`f1s_s4` … `f1s_s13`).
+* **Evaluations per run.**
+  - The built-in `ail_f1s.py` eval (§61's measures).
+  - `python -m bench.run --task prosqa_deep_na --model "f1s:prosqa/runs_ail/<run>?P=16" --per_depth 150` for the
+    leaderboard.
+
+**Success (fixed now, from s3's profile).** All three must hold on §61's evaluation:
+* hardened accuracy ≥ 0.99 in every band (d1–2, d3–6, d7–10, d11–14) at P = 16;
+* label precision and recall ≥ 0.99;
+* edit IIA ≥ 0.90.
+
+**Predictions.**
+* **R1 (exact reruns).** Same GPU class: ≥ 2/3 seed-3 reruns succeed (seed-intrinsic). Different class: no prediction,
+  since the trajectory can diverge.
+  - Context: s2 also ran on a 3090 (driver 560.35.03) and flooded; s1 ran on a 3080 Ti. The hardware class alone did
+    not decide §61.
+  - Init and data order are pinned (`torch.manual_seed` and `np.random.default_rng` with the seed, fixed GPT-2 init),
+    so arm (a) isolates GPU nondeterminism.
+  - Literature's counter-expectation: one-bit changes produce diverse models (Summers & Dinneen 2103.04514).
+    Nondeterminism alone gives variance comparable to seed variance (Zhuang 2106.11872).
+  - Seed-bimodal success is common: Zhou 2402.09371, Zhang 2607.20594, Kuo 2606.29983, McCoy 1911.02969.
+* **R2 (success rate).** About 0.3: 2–5 of the 10 fresh seeds succeed. Fewer than 2 would make §61's 1/3 an optimistic
+  draw; more than 5 would make the recipe more reliable than §61 suggested.
+* **Descriptive.**
+  - The failure mode of each non-success: flooding at P = 16 with exact answers at P = d (as s1), or no learning.
+  - The bench prosqa_deep_na accuracies.
+
+**Readings.**
+* **R1 met.** Success is a property of the seed: data order and init, not hardware noise.
+* **R1 not met on the same class.** Success depends on non-deterministic numerics, i.e. a lottery even at a fixed seed.
+* **R2** gives the recipe's reliability. A recipe-level fix (e.g. training budgets with P ≫ d against slow flooding,
+  §61's lesson) would be its own registration.
+
+**Run (experiments session).** One parallel Vast wave of 13 runs, ≈ $2.
+
 ## 62. Does depth-structured label noise install a count? Why label-free distillation gives age-dependent latents (pre-registered 2026-10-01 06:44 EDT, after Literature's check 2e3d16b and before any run)
 
 **Question (from §56).**
