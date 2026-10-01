@@ -210,3 +210,28 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53533311 vast | DESTROYED_VERIFIED 2026-10-01 07:33 after verified fetch (prosqa/res_p8c/rt_s2: coco_test_e48.json coco_ctl_e48.json; ckpt prosqa/ckpt/p8c_rt_s2_checkpoint_48)
 53705408 vast offer 49320809 created 2026-10-01 10:04: label na-coco_s1, queue scratch/p8na_q_coco_s1.txt (logged at create by vdeploy_toy.sh)
 53708619 vast offer 46653913 created 2026-10-01 10:24: label na-B, queue scratch/p8na_q_B.txt (logged at create by vdeploy_toy.sh)
+53709476 vast offer 46653919 created 2026-10-01 10:30: label f4-0, queue scratch/f4_q_0.txt (logged at create by vdeploy_toy.sh)
+53709488 vast offer 53120053 created 2026-10-01 10:30: label f4-1, queue scratch/f4_q_1.txt (logged at create by vdeploy_toy.sh)
+53709499 vast offer 45498590 created 2026-10-01 10:30: label f4-2, queue scratch/f4_q_2.txt (logged at create by vdeploy_toy.sh)
+53709505 vast offer 52953027 created 2026-10-01 10:30: label f4-3, queue scratch/f4_q_3.txt (logged at create by vdeploy_toy.sh)
+53709508 vast offer 29430973 created 2026-10-01 10:30: label f4-4, queue scratch/f4_q_4.txt (logged at create by vdeploy_toy.sh)
+53709510 vast offer 46653912 created 2026-10-01 10:30: label na-C, queue scratch/p8na_q_C.txt (logged at create by vdeploy_toy.sh)
+53709512 vast offer 53248760 created 2026-10-01 10:31: label f4-5, queue scratch/f4_q_5.txt (logged at create by vdeploy_toy.sh)
+53709515 vast offer 53475863 created 2026-10-01 10:31: label f4-6, queue scratch/f4_q_6.txt (logged at create by vdeploy_toy.sh)
+53709518 vast offer 31458823 created 2026-10-01 10:31: label f4-7, queue scratch/f4_q_7.txt (logged at create by vdeploy_toy.sh)
+53709499 vast | f4_2 DESTROYED_VERIFIED 2026-10-01 10:52 after verified fetch (F4: p30_s125_S p30_s125_N p30_s130_S p30_s130_N)
+53709512 vast | f4_5 DESTROYED_VERIFIED 2026-10-01 10:52 after verified fetch (F4: plgt_s102_S plgt_s102_N plgt_s111_S plgt_s111_N)
+53709488 vast | f4-1 DESTROYED_VERIFIED 2026-10-01 10:52 (stuck 'loading' 20 min, never started; queue re-placed)
+53711959 vast offer 46653909 created 2026-10-01 10:52: label f4-1, queue scratch/f4_q_1.txt (logged at create by vdeploy_toy.sh)
+53711961 vast offer 53120053 created 2026-10-01 10:52: label f4-8, queue scratch/f4_q_8.txt (logged at create by vdeploy_toy.sh)
+53709515 vast | f4_6 DESTROYED_VERIFIED 2026-10-01 10:52 after verified fetch (F4: plgt_s113_S plgt_s113_N plgt_s118_S plgt_s118_N)
+53711965 vast offer 51618923 created 2026-10-01 10:52: label f4-9, queue scratch/f4_q_9.txt (logged at create by vdeploy_toy.sh)
+53709508 vast | f4_4 DESTROYED_VERIFIED 2026-10-01 10:52 after verified fetch (F4: p30_s146_S p30_s146_N p30_s157_S p30_s157_N)
+53709505 vast | f4_3 DESTROYED_VERIFIED 2026-10-01 10:56 after verified fetch (F4: p30_s132_S p30_s132_N p30_s140_S p30_s140_N)
+53709476 vast | f4_0 DESTROYED_VERIFIED 2026-10-01 11:01 after verified fetch (F4: p30_s102_S p30_s102_N p30_s111_S p30_s111_N)
+53709518 vast | f4_7 DESTROYED_VERIFIED 2026-10-01 11:02 after verified fetch (F4: plgt_s125_S plgt_s125_N plgt_s130_S plgt_s130_N)
+53711961 vast | f4_8 DESTROYED_VERIFIED 2026-10-01 11:13 after verified fetch (F4: plgt_s132_S plgt_s132_N plgt_s140_S plgt_s140_N)
+53711965 vast | f4_9 DESTROYED_VERIFIED 2026-10-01 11:16 after verified fetch (F4: plgt_s146_S plgt_s146_N plgt_s157_S plgt_s157_N)
+53705408 vast | na_coco_s1 DESTROYED_VERIFIED 2026-10-01 11:23 after verified fetch (NA jobs: coco_s1)
+53711959 vast | f4_1 DESTROYED_VERIFIED 2026-10-01 11:23 after verified fetch (F4: p30_s113_S p30_s113_N p30_s118_S p30_s118_N)
+53716153 vast offer 49320809 created 2026-10-01 11:24: label na-D, queue scratch/p8na_q_D.txt (logged at create by vdeploy_toy.sh)
