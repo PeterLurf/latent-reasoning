@@ -3378,7 +3378,7 @@ This is a plumbing check, not a result.
 **Cost.** About 1–1.5 h per run on an A4000-class GPU, roughly +30–50 % over P30 from the eager transplant step: ≈ 40
 GPU-h. Placement by the experiments session: local cards after §54b, or Vast within budget, about $5–8.
 
-## 59. ProsQA-NA: the §57 cue neutralised without changing any answer (2026-09-30 22:47 EDT; data, exploratory)
+## 59. ProsQA-NA: the §57 cue neutralised without changing any answer (2026-09-30 22:42 EDT; data, exploratory)
 
 **Construction.** `theory/prosqa_na.py SRC DST`. Outputs go to `prosqa/p8data/` (gitignored; regenerate with the script,
 seed 0).
