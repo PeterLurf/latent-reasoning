@@ -57,3 +57,18 @@ per depth) plus 200 held-out shallow questions, P = 16, hardened labels.
   edits behave as BFS predicts, cue-free. Seeds 1–2 learned the shallow questions but not the iterated rule, and their
   labels flood with extra passes. Learnability from final answers is real but seed-dependent (1/3), so the registered
   2/3 criteria fail. Per §61 this was the settling test: no further F1 variants.
+
+## THEORY §61b (F1-S replication) — run record (started 2026-10-01 13:44 EDT; registration da85e97)
+
+* **Code.** prosqa/ail_f1s.py at 248866f, byte-identical to the original §61 runs; same data (f1s_train.json md5
+  a8e09288a3) and init (GPT-2 sha256 7c5d3f4b…). Wrapper: `scratch/f1sb_vast_job.sh` writes `host.txt` per run (GPU
+  name, driver, torch/CUDA versions, bf16 support), then train → built-in eval → bench prosqa_deep_na --per_depth 150.
+* **Placement.**
+  - **(a) Seed-3 reruns f1s_r3a/b/c:** Vast offer 31458818, RTX 3090, driver 570.211.01 (the only 570.x 3090 offer;
+    the original f1s_s3 ran on offer 31458823, RTX 3090, 570.211.01). **3 concurrent runs on one GPU.** The original
+    f1s_s3 trained alone on its GPU, so concurrency (kernel timing, order of atomic operations) is part of the
+    nondeterminism arm (a) samples.
+  - **(b) Fresh seeds:** s4–s11 on 4 Vast hosts (drivers 550–570), 2 concurrent runs per GPU; s12–s13 on the local
+    RTX 3070, 2 concurrent.
+* **If all 3 seed-3 reruns fail** (Audit): one solo seed-3 rerun on a 3090 separates "concurrency" from "seed 3 was
+  luck". Descriptive only, not a new arm.
