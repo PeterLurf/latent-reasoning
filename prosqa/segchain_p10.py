@@ -45,13 +45,17 @@ def main():
     ap.add_argument("--n_per_d", type=int, default=100); ap.add_argument("--dmin", type=int, default=11)
     ap.add_argument("--dmax", type=int, default=14); ap.add_argument("--n_cal", type=int, default=100)
     ap.add_argument("--device", default="cuda:1"); ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--exclude_cal", action="store_true", help="skip the calibration problems in the evaluation "
+                    "(PROTOCOL10 amendment 2; they cannot occur at depth >= 11)")
     a = ap.parse_args()
     torch.backends.cuda.matmul.allow_tf32 = False
     model = GPT2C(load_state(a.ckpt, a.device)); model.mask_answer = True
     rng = np.random.default_rng(a.seed)
     data = json.load(open(a.data))
     score = None
-    for x in [x for x in data if x["ext"] <= 2][: a.n_cal]:
+    cal = [x for x in data if x["ext"] <= 2][: a.n_cal]
+    cal_ids = {id(x) for x in cal} if a.exclude_cal else set()
+    for x in cal:
         _, P, att = lp_of(model, x, a.Kp, trace=True)
         S = stmt_att(att, P)
         gold = np.zeros(S.shape[-1], bool); gold[P["path"]] = True
@@ -61,7 +65,7 @@ def main():
     seen, rows = {}, []
     for x in data:
         d = len(x["steps"])
-        if not a.dmin <= d <= a.dmax or seen.get(d, 0) >= a.n_per_d:
+        if not a.dmin <= d <= a.dmax or seen.get(d, 0) >= a.n_per_d or id(x) in cal_ids:
             continue
         seen[d] = seen.get(d, 0) + 1
         sym = x["idx_to_symbol"]; ix = {s: i for i, s in enumerate(sym)}; n = len(sym)
