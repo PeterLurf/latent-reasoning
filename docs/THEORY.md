@@ -78,8 +78,8 @@ accuracy); identity buys no reach. D3 is parked.
 Path independence tracks one-loop reach (Spearman −0.87, post hoc).
 **Beyond graphs (§64):** permutation tracking (A5 primary, S3 secondary) in the latent loop: do the count-keyed stop and the
 written-state restart reappear? 20 runs.
-**F4 registered (§63):** a behavioural round-trip translator for silent thoughts (C7): 20 frozen models × 2 arms × 2 seeds,
-with input-only, evaluator-swap and claim-flip controls. F3 was dropped at its premise check.
+**F4 (§63):** not met on every measure. The hard straight-through translator never trained (flat losses), so it is uninformative on C7
+for silent steps (§34's 0.36 stands). F3 was dropped at its premise check.
 **§62:** depth structure does not install the age code: any label noise keeps latents age-dependent (uniform 0.67 vs clean 0.09).
 The confidence step at the seam grows with structure (0.008 → 0.243). A one-sided miss bias removes reach entirely. Self-labels must be near-clean.
 **F1 on GPT-2 (§54b):** not learnable from deep final answers (soft and stoch 0/3). With per-pass targets it is exact
@@ -4180,6 +4180,33 @@ family and arm.**
   - In evaluation, such graphs are excluded from the claim-flip audit (`flip_eligible` reports the share).
 * Unit-checked on a forced empty case, with a CPU smoke on runs/p30_s100 (outside the set). No metric definition
   changes.
+
+**Result (2026-10-01; scored by the experiments session, `theory/results/score_f4.json`, 80 runs plus 40 swaps; P30, arm S,
+i = 2, medians). F4-1 to F4-5 all not met. The translator did not train, so F4 as specified is uninformative about
+whether silent thoughts are set-expressible.**
+
+| Measure | Value | Bar |
+|---|---|---|
+| RT | 0.916 | ≥ 0.95. Controls: RT_mismatch 0.905, RT_mean 0.850, RT_input ≈ 0.88 |
+| Edit IIA | 0.013, collateral 0.081 | ≥ 0.80 (§34's linear pointer map: 0.36) |
+| err_repro | 0.887 vs input-only 0.812 | +0.075 < +0.15 |
+| Evaluator swap | RT 0.875, IIA 0.008 | — |
+| F4-5 step-index gap | −0.001 (P30) vs −0.006 (GT) | P30 larger by ≥ 0.02 |
+| GT students, arm S | RT 0.833, IIA 0.002 | descriptive |
+
+* **Why.**
+  - The training losses are flat from step 100 to 3000 (e.g. p30_s102: l_rt 0.20 → 0.18, l_edit 0.30 → 0.32).
+  - The hard set stays at ≈ 28 of ≈ 61 present nodes, with precision 0.13 and recall 0.43 against the reached set.
+  - The hard-forward, straight-through decoder never left its initial regime: the same optimisation failure as §54's
+    hard labels (PROTOCOL12).
+  - The round trip looks high only because these reasoners tolerate a replaced step-2 thought: decoding another graph's
+    thought keeps 0.905 of answers.
+* **Reading.**
+  - Nothing is learned here about whether silent thoughts are set-expressible. §34's hand-built pointer map remains the
+    best C7 result for silent steps (IIA 0.36).
+  - Recurring lesson, now twice (§54, §63): hard straight-through discrete bottlenecks did not optimise in this project.
+    Any discrete-text method needs a relaxed training path (as in §54b's soft-label hint arm, which worked).
+  - F4 is closed as a frontier test. No revision.
 
 ## 64. Beyond graph search: permutation tracking in the latent loop — do the count-keyed stop and the written-state restart reappear? (pre-registered 2026-10-01 11:39 EDT, after Literature's check b6e57a7, before any run; user directive via Audit)
 
