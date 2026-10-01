@@ -76,8 +76,8 @@ heuristic scores 0.91, which explains the Coconut cue.
 accuracy); identity buys no reach. D3 is parked.
 **Interchange (§56):** GT-distilled students' latents are age-invariant (G 0.09); T8 students' and parents' are not.
 Path independence tracks one-loop reach (Spearman −0.87, post hoc).
-**Beyond graphs (§64):** permutation tracking (A5 primary, S3 secondary) in the latent loop: do the count-keyed stop and the
-written-state restart reappear? 20 runs.
+**Beyond graphs (§64):** on S3, written-state restarts fix the single loop's length failure (0.995 at N 9–16). The failure is
+not a count-keyed stop: the state loses validity. A5 never learned (0/10, also with the curriculum).
 **F4 (§63):** not met on every measure. The hard straight-through translator never trained (flat losses), so it is uninformative on C7
 for silent steps (§34's 0.36 stands). F3 was dropped at its premise check.
 **§62:** depth structure does not install the age code: any label noise keeps latents age-dependent (uniform 0.67 vs clean 0.09).
@@ -4334,6 +4334,41 @@ mechanisms.
 **Run (experiments session).** One wave, 20 runs: `python theory/st_model.py --group {A5|S3} --seed {1..10} --device
 cuda:0 --out theory/runs/st/{a5|s3}_s<seed>`. Evaluation is written as `eval_st.json`. Run a short GPU smoke first for
 timing.
+
+**Result (2026-10-01; scored by the experiments session, 00071a6, `theory/results/score_s64.json`; Audit reproduced from
+the 30 eval_st.json files).**
+* **A5: no mechanism verdict.** 0/10 runs pass the gate (median in-range 0.008). With §64b's curriculum, also 0/10:
+  best in-range 0.26 and 0.07.
+  - The curriculum's length-2 stage did not escape the ln 5 plateau in 20k steps either (e.g. a5c_s1: loss 1.6094
+    throughout).
+  - By §64b's fixed rule the A5 line ends here: no further revision. The non-graph evidence rests on S3 (note 64-2).
+* **S3 (9/10 gated, median in-range 0.997).** "On a solvable group".
+  - **ST1 met.** The K′ = 0 accuracy at N 5–8 is 0.020, so the loop does the work and note 64-2 admits ST2/ST3.
+  - **ST2 not met.** Truncation agreement exceeds true accuracy in 0/9 runs, though true accuracy at N 13–16
+    collapses (0.032, below half of in-range).
+  - **ST3 met.** Written-state restarts reach median 0.995 at N 9–16 and 0.976 at N 17–24, and beat the single loop by
+    ≥ 0.20 in 9/9.
+  - **ST4 met.** Median edit_IIA 0.969: the written state is read as the true composition from it.
+* **What the single loop does past its trained length** (descriptive, post hoc, at Audit's request:
+  `theory/exp31_st_wrong_answers.py` → `theory/results/exp31_st_wrong_answers.json`, plus a validity check).
+  - It extends 1–2 operations (median single at N = 9: 0.77; N = 10: 0.26), then fails.
+  - Extra latent steps make it worse: K′ = 24 at N 9–16 gives 0.049 vs K′ = N. There is no stable fixed point; the
+    loop keeps rewriting the state.
+  - At N = 12, its answers agree with no prefix or suffix product of the operations (all ≈ 0.04–0.09, under the 1/6
+    chance), because most answers stop being valid arrangements.
+    - The share of answers that are permutations falls from 1.00 at N = 6 to medians 0.82 (N 9), 0.47 (N 10), 0.31
+      (N 12) and 0.14 (N 16) (`theory/exp31b_st_validity.py`, output `theory/results/exp31b_st_validity.txt`).
+    - Among valid answers at N = 12, accuracy is near chance (median 0.08).
+  - The read pointer advances past rank 8 in most runs and falls back in some.
+* **Reading.**
+  - The transferable result is that **written-state restarts fix the single loop's length failure outside graph search
+    too** (0.995 at N 9–16), with a faithfully read written state.
+  - The failure itself differs from the frontier sweep's. It is not a count-keyed stop at the trained state (ST2), but
+    a loss of the state's validity once the loop runs past its trained length: the latent leaves the set of valid
+    arrangements.
+  - Prop. 10's specific form (a stop keyed to a count) is therefore scoped to the graph toy. The general statement that
+    survives: a latent loop is reliable only within the step counts it was trained on, and restarting from a written
+    state resets that range.
 
 **Disclosure 64-1 (11:39 EDT).**
 * A CPU plumbing smoke of an earlier code version (S3, seed 1, 1500 steps, bs 128) started at 11:25, before this
