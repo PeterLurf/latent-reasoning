@@ -1,0 +1,19 @@
+{
+ "_note": "Published numbers for comparison rows. 'same_items' is true only when the paper's test set is the file this harness loads for that task. Every entry starts unverified; Literature verifies each against the paper (table and setting) and sets verified to the commit of its check. Unverified rows print with a marker.",
+ "entries": [
+  {"task": "prosqa", "system": "Coconut, GPT-2", "acc": 0.970, "source": "2412.06769 Table 1", "same_items": true, "verified": false},
+  {"task": "prosqa", "system": "Text CoT, GPT-2", "acc": 0.775, "source": "2412.06769 Table 1", "same_items": true, "verified": false},
+  {"task": "prosqa", "system": "No CoT, GPT-2", "acc": 0.767, "source": "2412.06769 Table 1", "same_items": true, "verified": false},
+  {"task": "prosqa", "system": "iCoT, GPT-2", "acc": 0.982, "source": "2412.06769 Table 1", "same_items": true, "verified": false},
+  {"task": "prosqa", "system": "Coconut, GPT-2 (public checkpoint card)", "acc": 0.970, "source": "HF bmarti44/coconut-curriculum-checkpoints", "same_items": true, "verified": false},
+  {"task": "prosqa", "system": "Text CoT, GPT-2 (public checkpoint card)", "acc": 0.830, "source": "HF bmarti44/coconut-curriculum-checkpoints", "same_items": true, "verified": false},
+  {"task": "prosqa_deep", "system": "Coconut, GPT-2, 7 / 8 hops (card; different generator)", "acc": 0.66, "source": "HF bmarti44/coconut-curriculum-checkpoints", "same_items": false, "verified": false},
+  {"task": "gsm8k", "system": "Coconut, GPT-2", "acc": 0.341, "source": "2412.06769 Table 1", "same_items": true, "verified": false},
+  {"task": "gsm8k", "system": "Text CoT, GPT-2", "acc": 0.429, "source": "2412.06769 Table 1", "same_items": true, "verified": false},
+  {"task": "gsm8k", "system": "No CoT, GPT-2", "acc": 0.165, "source": "2412.06769 Table 1", "same_items": true, "verified": false},
+  {"task": "gsm8k", "system": "CODI, GPT-2", "acc": null, "source": "2502.21074", "same_items": true, "verified": false},
+  {"task": "mult4x4", "system": "Implicit CoT, GPT-2", "acc": null, "source": "2311.01460", "same_items": true, "verified": false},
+  {"task": "mult5x5", "system": "Implicit CoT, GPT-2", "acc": null, "source": "2311.01460", "same_items": true, "verified": false},
+  {"task": "mult5x5", "system": "Stepwise internalisation, GPT-2", "acc": null, "source": "2405.14838", "same_items": true, "verified": false}
+ ]
+}
