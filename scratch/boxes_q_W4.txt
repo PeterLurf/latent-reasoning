@@ -1,0 +1,5 @@
+# THEORY 66 panel
+wc2_s1 wc 2 1 8000 32 full
+wc0_2_s2 wc0 2 2 8000 32 full
+nc_s4 nc 4 4 8000 32 full
+cl_s5 cl 4 5 8000 32 full
