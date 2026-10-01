@@ -165,5 +165,5 @@ depth (A3, not supported) and transfer to ProsQA (finding 10).* Still open on 20
 * Part VI: the P7 floor (in_peak ≥ 0.03) and the ranking form of P30 were chosen after P29 failed, and tested only on
   new runs; P30's test set grew by 36 Vast.ai seeds by amendment before any P30 result was read (`docs/PROTOCOL6.md`).
 * Part VI null results (P27, P28) come from 8 same-card pairs each: they show no effect of precision, not its absence.
-* ProsQA has a generator shortcut: picking the option farther from every person statement scores 0.91 without reasoning from the root (THEORY §57). ProsQA accuracies below ~0.9 do not by themselves show multi-hop reasoning.
+* ProsQA has a generator shortcut: picking the option farther from every person statement scores 0.91 without reasoning from the root (THEORY §57). ProsQA accuracies below ~0.9 do not by themselves show multi-hop reasoning. Without the shortcut, our Coconut reproduction scores 0.738 (0.732 with no thoughts) vs 0.974 on the standard test (bench/LEADERBOARD.md).
 * ProsQA: one recipe (Coconut's, no scaffold or gated curriculum), GPT-2 only, 2–3 seeds per condition.
