@@ -76,6 +76,8 @@ heuristic scores 0.91, which explains the Coconut cue.
 accuracy); identity buys no reach. D3 is parked.
 **Interchange (§56):** GT-distilled students' latents are age-invariant (G 0.09); T8 students' and parents' are not.
 Path independence tracks one-loop reach (Spearman −0.87, post hoc).
+**§62 registered:** does depth-structured label noise install a count (via calibration)? NS / NS45 / NB / NU label-noise
+arms on Pilot L. The label-free teacher's errors rise across its seam in 20/20 parents.
 **F1 on GPT-2 (§54b):** not learnable from deep final answers (soft and stoch 0/3). With per-pass targets it is exact
 to d14 (2.3×), readable, halting and cue-free. F1-S is registered as §61 (shallow questions on separate graphs, fixed P = 16 at test, label count matched).
 **§60b result:** Gate A not passed (0/4). Order consistency lets 2/4 seeds learn partially (best 0.88/0.84 on
@@ -3871,6 +3873,83 @@ lr 5e-5 / 1e-3), plus a question generator.
   (Ye).
 * **S1 failed.** Even one-pass final answers do not teach the label rule at GPT-2 scale. F1's C4 claim stays on the toy,
   and this line closes there. No further revision.
+
+## 62. Does depth-structured label noise install a count? Why label-free distillation gives age-dependent latents (pre-registered 2026-10-01 06:44 EDT, after Literature's check 2e3d16b and before any run)
+
+**Question (from §56).**
+* Students distilled from true labels (pl_gt) are path-independent (G_10 0.09) and extrapolate in one loop.
+* Students distilled from the label-free re-anchoring teacher (pl_t8) are age-causal (G_10 0.84) and do not.
+* Across the 40 students, G tracks one-loop reach (ρ −0.87, post hoc).
+* Why does the label source decide whether a latent carries a usable age?
+
+**Premise check (exploratory; `theory/exp29_teacher_errors.py` → `theory/results/exp29_teacher_errors.json`, 1ea2ec5).**
+* Setting: each Pilot L parent's T8 teacher with its own sweep head, on 512 training-distribution chains (widths 2,4,6).
+* Error at d1–6: 0.11–0.30 (median ≈ 0.15). At d7–12: 0.32–0.46 (median ≈ 0.38).
+* The seam contrast is positive in 20/20 parents (+0.15 to +0.31).
+* Beyond the seam the errors are mostly misses: false-negative rate ≈ 0.40–0.55 on reachable nodes, false positives
+  ≈ 0.2–0.3 on look-alikes.
+* Within the T8 family, per-parent seam contrast does not predict the student's G (ρ +0.11): all 20 teachers share
+  the structure.
+* Two earlier passes of this check used head 3 for every parent (a bug) or widths 2–3. They were not committed and are
+  superseded.
+
+**Hypothesis: calibration pressure** (Literature, `docs/LIT_NOISE_CLOCK_CHECK_2026-10-01.md`).
+* With instance-dependent flip rates below ½, the Bayes-optimal *classifier* is unchanged (Menon, van Rooyen &
+  Natarajan 1605.00751). A count therefore does not pay for decisions.
+* It pays for *calibration*. Under cross-entropy, a flip rate η gives an optimal confidence of 1 − η: about 0.855 at
+  d ≤ 6 vs 0.625 at d ≥ 7 for the teacher's profile. Matching that requires knowing the depth, so an age code is
+  learned.
+* Uniform noise lowers confidence uniformly, so no depth is needed and continuing the sweep stays optimal.
+* The age code then degrades reach as a side effect. Once the code exists, a loop can key behaviour to it (Prop. 10).
+* So depth-structured supervision, not the absence of labels, would cause the T8 students' age-dependence.
+* **Prior.** Instance-dependent noise (2012.05458, 2006.07836, 2010.02347); distillation passes on teacher errors
+  (2106.05945, 2205.16004); Lee 2502.01612 filters exactly such seam errors. Noise structure → counter: not found, so
+  new as scoped. Nearest: Kuo's loop–length correlation, Prop. 4(b).
+
+**Design.** `theory/distill_reanchor.py --teacher gt` with label flips on the deep chains (`--flip_all`, `--flip_far`,
+1ea2ec5; a seeded stream per step). Otherwise exactly Pilot L's round-1 recipe: 3000 steps, bs 256, lr 1e-4, widths
+2,4,6, K′ = 12, init from the parent.
+* Parents: the 10 even-indexed P30 failures (102, 111, 113, 118, 125, 130, 132, 140, 146, 157), each as `--seed <s>`.
+* Arms (40 runs):
+
+  | Arm | Flips on deep-chain labels | Mean flip rate | Role |
+  |---|---|---|---|
+  | NS (structured noise) | 0.145 at d1–6, 0.375 at d7–12, symmetric | 0.26 | the teacher's median profile |
+  | NS45 (secondary) | 0.145 at d1–6, 0.45 at d7–12 | 0.30 | the teacher's worst beyond-seam rate (Literature) |
+  | NB (structured bias) | false negatives only: reachable d7–12 labels set to 0 with probability 0.47 (`--fn_far`) | 0.12 | the teacher's dominant error, a "stop at the seam" signal |
+  | NU (uniform noise) | 0.26 at every depth, symmetric | 0.26 | same total as NS, no structure |
+
+* References: the same parents' pl_gt (clean labels) and pl_t8 (teacher labels) students.
+* Measures:
+  - `theory/exp28_interchange.py --f 11` (G_10, dG, saving answers);
+  - `theory/exp18_deep_reanchor.py` (one loop at K′ = 24: d7–12, d13–18);
+  - `theory/eval_arch.py` (in-distribution sanity).
+  - Per-depth confidence (NC-5), from the students' K′ = 12 logits on 512 training-distribution chains.
+
+**Predictions** (paired by parent, per-pair sign counts):
+* **NC-1 (structure installs age).** G_10 higher in NS than in NU in ≥ 8/10 pairs. Median G_10: NS ≥ 0.5 and NU ≤ 0.25.
+* **NC-2 (reach follows).** One-loop d13–18 higher in NU than in NS in ≥ 8/10 pairs, by a median ≥ +0.10.
+* **NC-3 (a systematic stop suffices).** NB is age-causal like NS: median G_10 ≥ 0.5, and one-loop d13–18 ≤ NU's median
+  − 0.10.
+* **NC-4 (prospective replication of §56's association).** Across all 40 students, G_10 vs one-loop d13–18 Spearman
+  ≤ −0.5.
+* **NC-5 (the signature of calibration pressure).** The mean predicted probability on reachable deep-chain nodes
+  (training distribution, K′ = 12) steps down between d6 and d7 by ≥ 0.10 in the NS median, and by ≤ 0.03 in NU.
+  Reported per depth for every arm, including NS45 and the references.
+* **My expectation.** NC-1, NC-2 and NC-3 met.
+
+**Readings.**
+* **NC-1 and NC-2 met.** The age code comes from depth-structured supervision **via calibration**, not via a change in
+  the decision rule, which is noise-invariant here. NC-5 should then show the confidence step. A label-free (C4) route
+  to single-loop reach needs self-labels whose error does not rise with depth: drop or mask uncertain deep self-labels
+  rather than train on them (as Lee 2502.01612 filters), or mix teacher horizons.
+* **NC-3 met, NC-1 not.** A systematic one-sided signal installs the count, not symmetric noise. Its rate (0.47) also
+  stays below ½, so this too would be read via calibration of the reachable class beyond the seam.
+* **Neither met.** Label structure is not the cause. The T8 students' age code comes from elsewhere, e.g. the teacher's
+  input distribution or the re-anchored episodes' internal states.
+
+**Run and score (experiments session).** 40 short GPU fine-tunes, the same cost class as one Pilot L arm. Score with
+the measures above.
 
 ## 7. Log
 

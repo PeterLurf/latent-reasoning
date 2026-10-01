@@ -91,6 +91,8 @@ def main():
     ap.add_argument("--flip_far", type=float, default=0.0, help="THEORY §62: flip each deep-chain label at distance 7-12 "
                     "(B and C columns) with this probability (round 1 chains only; use with --teacher gt)")
     ap.add_argument("--flip_all", type=float, default=0.0, help="THEORY §62: flip every deep-chain label with this probability")
+    ap.add_argument("--fn_far", type=float, default=0.0, help="THEORY §62: set each reachable deep-chain label at distance "
+                    "7-12 (B column) to 0 with this probability (false negatives only)")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     dev = a.device
@@ -111,8 +113,8 @@ def main():
     sched = lambda s: a.lr * min(1, (s + 1) / 100) * 0.5 * (1 + math.cos(math.pi * s / a.steps))
     amp = torch.bfloat16 if dev != "cpu" and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     c.update(distill={"teacher": a.teacher, "init_from": a.init_from, "steps": a.steps, "lr": a.lr, "bs": a.bs, "seed": a.seed})
-    if a.flip_far or a.flip_all:
-        c["distill"].update(flip_far=a.flip_far, flip_all=a.flip_all)
+    if a.flip_far or a.flip_all or a.fn_far:
+        c["distill"].update(flip_far=a.flip_far, flip_all=a.flip_all, fn_far=a.fn_far)
     if a.deep_R != 2 or a.student_Kp != 12 or a.teacher_ep or a.deep_sup_max:
         c["distill"].update(deep_R=a.deep_R, deep_widths=a.deep_widths, student_Kp=a.student_Kp, teacher_ep=a.teacher_ep,
                             deep_sup_max=a.deep_sup_max)
@@ -136,12 +138,14 @@ def main():
             gl, br = deep_chain_graphs(rng, a.bs, widths, a.deep_R)
             q = T(np.concatenate([br["reach"], br["decoy"]], 1)).long()
         y = teacher_targets(a.teacher, tm, K, a.head, gl, br, q, dev, Kp=a.student_Kp, ep=a.teacher_ep or None)
-        if a.flip_far or a.flip_all:           # THEORY §62: label noise structured by depth vs uniform (own seeded stream)
+        if a.flip_far or a.flip_all or a.fn_far:  # THEORY §62: depth-structured vs uniform label noise (own seeded stream)
             assert a.deep_R == 2 and not isinstance(y, tuple)
             dist = np.r_[np.arange(1, 13), np.arange(7, 13), np.arange(1, 7)]
+            u = np.random.default_rng([a.seed, step, 13]).random((a.bs, len(dist)))
             pf = np.where(dist >= 7, a.flip_far, 0.0) + a.flip_all
-            flip = np.random.default_rng([a.seed, step, 13]).random((a.bs, len(dist))) < pf[None]
-            y = torch.where(T(flip), 1 - y, y)
+            y = torch.where(T(u < pf[None]), 1 - y, y)
+            reach_far = (np.arange(len(dist)) >= 6) & (np.arange(len(dist)) < 12)     # B0..B5: reachable, distance 7-12
+            y = torch.where(T((u < a.fn_far) & reach_far[None]), torch.zeros_like(y), y)
         w = None
         if isinstance(y, tuple):
             y, w = y
