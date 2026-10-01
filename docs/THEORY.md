@@ -3637,6 +3637,14 @@ proposal, not a fix loop.
   - *DCN's complexity regulariser.* Not added.
   - Neither is a pre-declared rescue.
 
+**Result of the registered §60 panel (2026-10-01; scored by the experiments session, 13bcbe7,
+`bm/runs/score_panel_a.json`; note 60-3 code, λ 1, 10k steps × bs 128). Gate A not passed: 0/4 seeds in both arms.**
+* All 8 runs equal each split's exact identity-map baseline: instances 0.877, motifs 0.911, orders 0.891, size 0.895.
+* Entry accuracy is 0.839. Laws score 0.99–1.00 only because the identity satisfies them. PA-dir 1/4.
+* **Reading.** The development pilot's collapse to the identity map holds for every seed and both arms: nothing beyond
+  the trivial entries was learned.
+* The one revision, §60b, was fixed before this panel, and its result (Gate A 0/4) ends the line at Phase A.
+
 **Phase B gate, fixed now** (the proposal's §11–12; its own registration amendment will fix only implementation
 quantities after a throughput pilot: steps, batch, deep-set size).
 * **Task.**
