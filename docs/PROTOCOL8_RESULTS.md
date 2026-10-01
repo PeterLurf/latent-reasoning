@@ -23,5 +23,8 @@ serialising a numpy bool; no computation changed. Output: `results/p8.json`. All
 * Anytime supervision and random-tight budgets make things worse, not better: lower in-range accuracy (SHAL 0.66–0.72 vs
   coco 0.75–0.78) and lower latent use (LU).
 * Text CoT reaches 0.71–0.81 at every depth, including past the trained depth (D11 0.73–0.81, D12p 0.77–0.81).
+* **Shortcut reference line (Audit).** Every arm is below the proximity heuristic's 0.896 at D710, CoT included
+  (0.762). None of these accuracies alone shows deep reasoning from the root, and CoT's C3 advantage (P8-4) could partly
+  be cue use. The amendment-3 re-score on p8_na_test (heuristic 0.500) decides it.
 * **Shortcut caveat.** coco's small D710 edge (0.56) may partly be the ProsQA proximity cue (THEORY §57). The
   pre-registered secondary SC (amendment 3: p8_na_test) is evaluated next, locally.
