@@ -1,0 +1,14 @@
+{
+ "cmd": "train",
+ "out": "bm/runs/pilot_oc_lam0.1",
+ "pool": "bm/data_pool",
+ "run": null,
+ "seed": 0,
+ "n_train": 50000,
+ "lam": 0.1,
+ "steps": 10000,
+ "bs": 128,
+ "lr": 0.0003,
+ "device": "cuda:2",
+ "sets": ""
+}

@@ -154,6 +154,8 @@ def train(a):
     dev = a.device
     torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
     pool = pickle.load(open(os.path.join(a.pool, "train.pkl"), "rb"))
+    if a.kmax:                                                   # diagnostic only: restrict training region size
+        pool = [t for t in pool if t["k"] <= a.kmax]
     model = BM().to(dev)
     opt = torch.optim.AdamW(model.parameters(), lr=a.lr, weight_decay=0.01)
     os.makedirs(a.out, exist_ok=True)
@@ -298,6 +300,7 @@ def main():
     ap.add_argument("--lam", type=float, default=0.0); ap.add_argument("--steps", type=int, default=5000)
     ap.add_argument("--bs", type=int, default=128); ap.add_argument("--lr", type=float, default=3e-4)
     ap.add_argument("--device", default="cuda:0")
+    ap.add_argument("--kmax", type=int, default=0, help="diagnostic: train only on regions with <= kmax edges")
     ap.add_argument("--sets", default="", help="eval only these sets (the development pilot uses dev only)")
     a = ap.parse_args()
     {"gen": gen, "train": train, "eval": evaluate}[a.cmd](a)
