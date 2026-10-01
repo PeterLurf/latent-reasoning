@@ -77,8 +77,8 @@ heuristic scores 0.91, which explains the Coconut cue.
 accuracy); identity buys no reach. D3 is parked.
 **Interchange (§56):** GT-distilled students' latents are age-invariant (G 0.09); T8 students' and parents' are not.
 Path independence tracks one-loop reach (Spearman −0.87, post hoc).
-**§66 registered:** GPT-2 state tracking (S4 swaps) with a written-state chunked loop vs text CoT at matched FLOPs (C3), the
-single loop, and no-latent chunks (C1). Scaffolded.
+**§66:** in GPT-2 state tracking, the written-state chunked loop is 1.000 at N 17–32 vs text CoT 0.14 (fewer FLOPs). But the no-latent
+version is identical, so the scaffold (short contexts plus written state), not the latents, does the work. C1 is not shown. See the range principle.
 **§65 registered:** restart-distillation on S3. Can a near-clean label-free restart teacher give one loop its reach? RD / GT /
 SELF × 9 parents.
 **Beyond graphs (§64):** on S3, written-state restarts fix the single loop's length failure (0.995 at N 9–16). The failure is
@@ -4617,6 +4617,54 @@ Vast wave after a smoke and a throughput pilot (the pilot may fix only steps and
   baselines.
 * **Scoring.** Generated answers are normalised before exact match (the letters, or the box digit, extracted), so
   formatting such as "A,C,B,D" or extra spaces cannot change a score. Implemented in the bench scorer, with a unit test.
+
+**Result (2026-10-01; scored by the experiments session, dc8f219, `theory/results/score_s66.json`; 10 arms × 5 seeds).
+Gate passed; P2, P3 and P4 met; P5 not met; P1 uninformative. The no-latent control does exactly as well.**
+
+| Arm (median) | N 1–8 | N 9–16 | N 17–32 | GFLOPs at N 17–32 |
+|---|---|---|---|---|
+| NC (direct) | 0.22 | 0.14 | 0.15 | 20 |
+| TC (text CoT, every op) | **1.00** | 0.18 | 0.14 | 52 |
+| CL (Coconut single loop) | 0.18 | 0.14 | 0.14 | 25 |
+| WC4 (4 latents per chunk) | 1.00 | 1.00 | **1.00** | 43 |
+| WC0_4 (no latents) | 1.00 | 1.00 | **1.00** | 35 |
+| WC8 / WC0_8 | — | — | both fail | — |
+| Baselines (chance, identity, last op, majority) | ≈ 0.14–0.27 | ≈ 0.15 | ≈ 0.15 | — |
+
+* **Gate.** NC's median full-arrangement accuracy at N 5–8 is 0.045, so the gate is passed.
+* **P2 met.** WC4 is 1.000 at N 17–32. Every written chunk state is a valid arrangement (validity 1.0).
+* **P3 met.** WC4 − TC is +0.858 (95 % CI 0.848–0.867, 1,600 items) at 43 vs 52 GFLOPs. Caveat: TC is perfect in range
+  but at chance past N = 8. Text CoT in one growing GPT-2 context does not length-generalise. WC wins because every
+  context stays within the trained length, not because it is a cheaper way to do the same computation in range.
+* **P4 met.** Written-state edit IIA is 1.0.
+* **P5 not met.**
+  - At k = 8, WC − WC0 has median −0.026 (per seed −0.02, −0.57, −0.42, −0.03, +0.19): the latents hurt or do nothing.
+  - At k ≤ 4, WC and WC0 are identical (Δ 0.000 in every seed).
+  - **C1 is not shown.** WC0 alone meets P3's rule (35 vs 52 GFLOPs).
+* **P1 uninformative.** CL never learned, even in range (0.18 ≈ baselines). Final-answer training of GPT-2 continuous
+  thoughts without Coconut's CoT-replacement curriculum has not produced latent computation anywhere in this project
+  (PROTOCOL8: latents unused; here CL ≈ chance).
+* **Reading.** What transferred to a pretrained LM is the written-state restart with a history cut, i.e. short
+  contexts. GPT-2's ordinary forward pass composes up to 4 swaps per chunk; the continuous thoughts add nothing.
+
+### Synthesis (2026-10-01): the range principle behind §26, §64 and §66
+
+* **Every failure past the trained length** in this project is a quantity that grows with the problem and was bounded in
+  training, then leaves its trained range:
+  - the iteration count or step clock (graph toy, Prop. 10, §35);
+  - the latent history length (P10b′);
+  - the latent state's validity, i.e. the loop running past its trained steps (§64);
+  - the context length and positions of text CoT (§66).
+* **Every fix that worked** keeps all such quantities in range by restarting from a written state with the history cut:
+  re-anchoring (§26), CLR (§45), S3 restarts (§64), WC/WC0 (§66). The written state is the only thing carried.
+* **Deep supervision** (§41, GT students) extends the range instead: training on longer problems.
+* **What did not work** tried to make a growing quantity harmless without bounding it: clamps (§36), adversarial count
+  removal (T12), age-transplant training (§58), counter-free label channels learned from final answers (F1-S 1/3, F4).
+* **Consequence for the north star.**
+  - C2 is reached, scaffolded, by chunking into in-range pieces with written states. C7 holds for those states by
+    construction.
+  - The open problems are now C5 (learning where to cut instead of fixed k) and C1 (latent computation earning its
+    place). In GPT-2, latents have not yet been trainable from final answers.
 
 ## 7. Log
 
