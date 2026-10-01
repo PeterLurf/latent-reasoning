@@ -1,0 +1,2 @@
+# §54b tuning setting 1 (registered defaults; training data only)
+t54b_set1 soft 0 2 0.3 0.1 tune

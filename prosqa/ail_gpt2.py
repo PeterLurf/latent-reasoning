@@ -193,9 +193,9 @@ def train(a):
     arm = "free" if a.arm == "free" else "mono"
     m = AIL(sd, arm, a.lab_std, a.bias).to(dev)
     v2 = a.arm in ("soft", "stoch", "hint2")                                  # §54b schedules
-    sub = [x for x in data if len(x["steps"]) <= a.max_depth][:64]           # hardened train-accuracy monitor
     data = [x for x in json.load(open(a.train)) if len(x["steps"]) <= a.max_depth]
     by_depth = {d: [i for i, x in enumerate(data) if len(x["steps"]) <= d] for d in range(1, a.max_depth + 1)}
+    sub = [x for x in data if len(x["steps"]) <= a.max_depth][:64]           # hardened train-accuracy monitor
     head_params = list(m.lab.parameters()) + list(m.head.parameters())
     opt = torch.optim.AdamW([{"params": m.lm.parameters(), "lr": a.lr}, {"params": head_params, "lr": a.lr_head}], weight_decay=0.01)
     base_lr = [a.lr, a.lr_head]
