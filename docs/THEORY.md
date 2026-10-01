@@ -76,6 +76,9 @@ heuristic scores 0.91, which explains the Coconut cue.
 accuracy); identity buys no reach. D3 is parked.
 **Interchange (§56):** GT-distilled students' latents are age-invariant (G 0.09); T8 students' and parents' are not.
 Path independence tracks one-loop reach (Spearman −0.87, post hoc).
+**§60b result:** Gate A not passed (0/4). Order consistency lets 2/4 seeds learn partially (best 0.88/0.84 on
+instances/orders), but the tables are not algebraically valid and fade with depth. The boundary-memory line stops at
+Phase A.
 **§60b:** the development pilot collapsed to the identity map (0.874), caused by Theory's note 60-3 labels. One
 revision: extensivity by construction, non-trivial labels, a size curriculum. No further revision.
 **Boundary memory (§60):** the user's proposal. Phase A is registered (learned Boolean-table merger, with vs without
@@ -3713,6 +3716,41 @@ There is no further revision.
 * **The 2–3-edge diagnostic, reported as promised (old code, `bm/runs/diag_k3.void`).** The same plateau: training
   accuracy 0.880–0.887 at steps 500–2000. With trivial labels in the mix, even single merges are not learned. This
   changes nothing in §60b, which was fixed before it.
+
+**§60b result (2026-10-01; scored by the experiments session, 5901972, `bm/runs/score_panel_b.json`). Gate A not
+passed: 0/4 seeds, failing A1, A2 and A3 in every seed. PA-dir not met (1/4).** Run alongside the still-running §60
+panel, on a freed card; their order does not affect either verdict.
+
+| Arm, seed | Instances | Motifs | Orders | Size 9–16 |
+|---|---|---|---|---|
+| Identity / chance baseline | 0.51 | 0.51 | 0.50 | 0.53 |
+| BM-oc s1 / s2 | 0.63 / 0.63 | 0.56 / 0.55 | 0.61 / 0.61 | 0.60 / 0.61 |
+| BM-oc s3 | **0.88** | **0.86** | **0.84** | 0.77 |
+| BM-oc s4 | 0.79 | 0.73 | 0.71 | 0.67 |
+| BM-no, all 4 seeds | 0.61–0.63 | 0.54–0.55 | 0.58–0.62 | 0.59–0.61 |
+
+Non-trivial-entry probe accuracy.
+* **A3 fails everywhere.** Monotonicity, idempotence and union preservation hold together in only 19–41 % of tables
+  (extensivity by construction).
+* **Order consistency.**
+  - It is what lets learning start. 2/4 BM-oc seeds leave the ~0.6 plateau, and no BM-no seed does. Held-out orders
+    are learned about as well as instances (s3: 0.84 vs 0.88), so the partial learner is an operator, not a sweep.
+  - The learners have *higher* associativity error (s3/s4 0.086/0.072 vs 0.026–0.041). The stuck seeds' near-constant
+    tables agree trivially, so that comparison is confounded, and PA-dir counts it against them.
+* **The predicted age channel appears in table values.**
+  - In both learners, mean confidence |T − 0.5| fades with merge depth: 0.48 → 0.38 (s3) and 0.48 → 0.35 (s4).
+  - Thresholding every commit costs 0.05 (s3: 0.884 → 0.832), so the learners rely on sub-threshold values.
+  - Merge depth is still not decodable within truth-matched groups (0.29 vs majority 0.32).
+  - So the confidence clock (Mechanism 2) that the §60 count analysis warned of shows up as soon as composition is
+    learned at all.
+* **Decision (fixed in §60b).**
+  - The falsifier "only the exact composer passes" applies: terminal-only training does not learn the Boolean
+    composition algebra in this configuration.
+  - **The boundary-memory line stops at Phase A.** No Phase B, no GPT-2, no further revision.
+  - The registered §60 panel's verdict will be added when it ends.
+* **What it leaves for the frontier.** Order consistency is the ingredient that makes composition learnable at all,
+  in line with LDRU. The learned tables fade with depth, i.e. the count returns as fading confidence. Neither is
+  pursued further here.
 
 ## 7. Log
 
