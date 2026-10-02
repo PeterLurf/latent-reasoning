@@ -1,0 +1,146 @@
+{
+ "M6_tab_lr0.01_u8000_s0": {
+  "loss": 0.24387353658676147,
+  "reach": 6,
+  "bijection": true,
+  "transition_errors": 12,
+  "certified": false,
+  "acc": {
+   "8": 0.398,
+   "32": 0.3345,
+   "128": 0.337
+  }
+ },
+ "M6_tab_lr0.01_u8000_s1": {
+  "loss": 0.23605656623840332,
+  "reach": 6,
+  "bijection": false,
+  "transition_errors": 12,
+  "certified": false,
+  "acc": {
+   "8": 0.506,
+   "32": 0.502,
+   "128": 0.4895
+  }
+ },
+ "M6_tab_lr0.01_u8000_s2": {
+  "loss": 0.21899765729904175,
+  "reach": 6,
+  "bijection": false,
+  "transition_errors": 12,
+  "certified": false,
+  "acc": {
+   "8": 0.3855,
+   "32": 0.3435,
+   "128": 0.348
+  }
+ },
+ "M6_mlp_lr0.01_u8000_s0": {
+  "loss": 0.6124001741409302,
+  "reach": 6,
+  "bijection": false,
+  "transition_errors": 21,
+  "certified": false,
+  "acc": {
+   "8": 0.2085,
+   "32": 0.1645,
+   "128": 0.171
+  }
+ },
+ "M6_mlp_lr0.01_u8000_s1": {
+  "loss": 0.25778454542160034,
+  "reach": 6,
+  "bijection": false,
+  "transition_errors": 17,
+  "certified": false,
+  "acc": {
+   "8": 0.17,
+   "32": 0.165,
+   "128": 0.1835
+  }
+ },
+ "M6_mlp_lr0.01_u8000_s2": {
+  "loss": 0.8661000728607178,
+  "reach": 5,
+  "bijection": false,
+  "transition_errors": 20,
+  "certified": false,
+  "acc": {
+   "8": 0.3245,
+   "32": 0.334,
+   "128": 0.333
+  }
+ },
+ "M12_tab_lr0.01_u8000_s0": {
+  "loss": 5.5419066484319046e-05,
+  "reach": 9,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "32": 1.0,
+   "128": 1.0
+  }
+ },
+ "M12_tab_lr0.01_u8000_s1": {
+  "loss": 0.00037056757719255984,
+  "reach": 7,
+  "bijection": true,
+  "transition_errors": 6,
+  "certified": false,
+  "acc": {
+   "8": 1.0,
+   "32": 1.0,
+   "128": 1.0
+  }
+ },
+ "M12_tab_lr0.01_u8000_s2": {
+  "loss": 6.708993896609172e-05,
+  "reach": 8,
+  "bijection": true,
+  "transition_errors": 6,
+  "certified": false,
+  "acc": {
+   "8": 1.0,
+   "32": 1.0,
+   "128": 1.0
+  }
+ },
+ "M12_mlp_lr0.01_u8000_s0": {
+  "loss": 0.06906165182590485,
+  "reach": 11,
+  "bijection": true,
+  "transition_errors": 25,
+  "certified": false,
+  "acc": {
+   "8": 0.4865,
+   "32": 0.5005,
+   "128": 0.5035
+  }
+ },
+ "M12_mlp_lr0.01_u8000_s1": {
+  "loss": 0.08943629264831543,
+  "reach": 11,
+  "bijection": true,
+  "transition_errors": 12,
+  "certified": false,
+  "acc": {
+   "8": 0.5785,
+   "32": 0.5005,
+   "128": 0.5025
+  }
+ },
+ "M12_mlp_lr0.01_u8000_s2": {
+  "loss": 0.00020562036661431193,
+  "reach": 12,
+  "bijection": true,
+  "transition_errors": 11,
+  "certified": false,
+  "acc": {
+   "8": 0.679,
+   "32": 0.2655,
+   "128": 0.1645
+  }
+ }
+}

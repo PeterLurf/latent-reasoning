@@ -4839,6 +4839,18 @@ toys deadlocked), then Design 2 (Boolean-tree registers; Ito 2608.31067 is neare
   - A shared-parameter cell (MLP) still fails, so a shared parameterisation adds a second difficulty.
 * **Rule (Audit).** Only a recipe that certifies TAB in ≥ 9/10 seeds goes to a neural cell. M = 12 meets it for TAB.
   Whether any recipe certifies the MLP is the next question.
+* **Disclosure: two certificate definitions (20:25 EDT; Audit).**
+  - `c1_diag_b.json` and `c1_diag_c.json` were produced under a first definition: a bijection of all reachable codes
+    plus 36 transitions checked against each code's decoder label. That definition wrongly checked the start code's
+    arbitrary label, so it reports M = 12 runs with accuracy 1.0 as "not certified".
+  - `c1_diag.json`, `c1_diag_tab12.json` and `c1_diag_mlp.json` use the fixed product-automaton certificate.
+  - Accuracy to N = 128 at odd and even N corroborates independently: 23/23 M = 12 table runs score 1.000 (Audit).
+* **Counter check (Audit's caution; `c1_diag.counter_check`, `c1_diag_counter.json`, 5 seeds).**
+  - In 3/5 M = 12 tables, H(code | true state) = 0: one code per S3 state, a pure automaton.
+  - In 2/5 there is small redundancy (0.04 and 0.32 bits), with mutual information between code and length mod 2/3/4,
+    given the state, ≤ 0.015 bits.
+  - So the spare capacity does not encode a length counter. The certificate already guarantees correctness at every
+    length.
 
 **Amendment 67-1 (2026-10-01 19:34 EDT, before any of these runs; descriptive, no C1 claim).** Where does acquisition
 break?

@@ -1,0 +1,32 @@
+{
+ "0": {
+  "H_code_given_state": 0.3153993655741827,
+  "MI_code_lenmod2_given_state": 0.0007037637109359451,
+  "MI_code_lenmod3_given_state": 0.0019668607959797413,
+  "MI_code_lenmod4_given_state": 0.0025921184551984666
+ },
+ "1": {
+  "H_code_given_state": 4.440892098500626e-16,
+  "MI_code_lenmod2_given_state": 8.881784197001252e-16,
+  "MI_code_lenmod3_given_state": 4.440892098500626e-16,
+  "MI_code_lenmod4_given_state": 4.440892098500626e-16
+ },
+ "2": {
+  "H_code_given_state": 0.041992159421378794,
+  "MI_code_lenmod2_given_state": 0.0072931120025017115,
+  "MI_code_lenmod3_given_state": 0.011697442990329598,
+  "MI_code_lenmod4_given_state": 0.014754600796528017
+ },
+ "3": {
+  "H_code_given_state": 0.0,
+  "MI_code_lenmod2_given_state": -4.440892098500626e-16,
+  "MI_code_lenmod3_given_state": -8.881784197001252e-16,
+  "MI_code_lenmod4_given_state": 0.0
+ },
+ "4": {
+  "H_code_given_state": 4.440892098500626e-16,
+  "MI_code_lenmod2_given_state": 4.440892098500626e-16,
+  "MI_code_lenmod3_given_state": 1.3322676295501878e-15,
+  "MI_code_lenmod4_given_state": 4.440892098500626e-16
+ }
+}
