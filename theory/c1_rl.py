@@ -31,6 +31,8 @@ import torch.nn.functional as F
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from c1_group import comp_table  # noqa: E402
 
+SAVE_TABLE = False
+
 
 class Cell(nn.Module):
     def __init__(self, kind, M, A, hid=256):
@@ -59,6 +61,8 @@ def length(rng, u, updates, curriculum):
         f = u / updates
         return 2 if f < 0.32 else int(rng.integers(1, 5)) if f < 0.48 else int(rng.integers(1, 9))
     stages = [[1], [1, 2], [1, 2, 4], [1, 2, 4, 8]]
+    if curriculum == "ge3":                       # §76 strong variant: no length-1/2 problem (no direct Cayley labels)
+        stages = [[3], [3, 4], [3, 4, 5, 6], [3, 4, 5, 6, 7, 8]]
     return int(rng.choice(stages[min(3, 4 * u // updates)]))
 
 
@@ -139,7 +143,11 @@ def _train(group, cell, method, seed, M, updates, lr, tau0, curriculum, K, beta0
     if model_only:
         return m
     cert, bad, acc = certify(m, COMP, e, np.random.default_rng(seed + 7))
-    return {"certified": bool(cert), "bad_pairs": bad, "acc": acc, "final_loss": float(loss.item())}
+    out = {"certified": bool(cert), "bad_pairs": bad, "acc": acc, "final_loss": float(loss.item())}
+    if SAVE_TABLE:                                # §76: the hard tables, for amortisation into the GPT-2 cell
+        with torch.no_grad():
+            out["table"] = m.table().argmax(-1).cpu().numpy().tolist(); out["dec"] = m.D.argmax(-1).cpu().numpy().tolist()
+    return out
 
 
 def _run_marg_model(group, cell, seed, M, updates, lr, tau0, curriculum, dev):
@@ -167,10 +175,12 @@ def main():
     ap.add_argument("--method", default="hem", choices=["marg", "hem", "grpo", "bon", "hyb", "rmer"])
     ap.add_argument("--seeds", type=int, nargs="*", default=[100, 101, 102]); ap.add_argument("--M", type=int, default=0)
     ap.add_argument("--updates", type=int, default=8000); ap.add_argument("--lr", type=float, default=1e-2)
-    ap.add_argument("--tau0", type=float, default=1.0); ap.add_argument("--curriculum", default="std", choices=["std", "zhang"])
+    ap.add_argument("--tau0", type=float, default=1.0); ap.add_argument("--curriculum", default="std", choices=["std", "zhang", "ge3"])
     ap.add_argument("--K", type=int, default=8); ap.add_argument("--beta0", type=float, default=0.05)
-    ap.add_argument("--device", default="cpu"); ap.add_argument("--out"); ap.add_argument("--threads", type=int, default=3)
+    ap.add_argument("--device", default="cpu"); ap.add_argument("--out"); ap.add_argument("--threads", type=int, default=3); ap.add_argument("--save_table", action="store_true")
     a = ap.parse_args(); torch.set_num_threads(a.threads)
+    global SAVE_TABLE
+    SAVE_TABLE = a.save_table
     _, _, A = comp_table(a.group); M = a.M or A
     res = {}
     for s in a.seeds:
