@@ -32,6 +32,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from c1_group import comp_table  # noqa: E402
 
 SAVE_TABLE = False
+MIX_P = 0.0                # §85: fraction of short batches under curriculum mixP
+INIT_ORACLE = -1.0         # §85: >= 0 -> free table initialised at the true automaton + N(0, eps^2) logit noise
 HELDOUT_PAIRS = 0          # §81: held-out (state, op) pairs per op, excluded from training paths
 HO_MASK = None
 
@@ -70,6 +72,10 @@ def length(rng, u, updates, curriculum):
         f = u / updates
         return 2 if f < 0.32 else int(rng.integers(1, 5)) if f < 0.48 else int(rng.integers(1, 9))
     stages = [[1], [1, 2], [1, 2, 4], [1, 2, 4, 8]]
+    if curriculum == "mixP":                      # §85: a fraction MIX_P of batches are short (length 1 or 2)
+        if rng.random() < MIX_P:
+            return int(rng.choice([1, 2]))
+        curriculum = "ge3"
     if curriculum == "ge3":                       # §76 strong variant: no length-1/2 problem (no direct Cayley labels)
         stages = [[3], [3, 4], [3, 4, 5, 6], [3, 4, 5, 6, 7, 8]]
     return int(rng.choice(stages[min(3, 4 * u // updates)]))
@@ -111,7 +117,16 @@ def _train(group, cell, method, seed, M, updates, lr, tau0, curriculum, K, beta0
     COMP, e, A = comp_table(group)
     Ct = torch.as_tensor(COMP, device=dev)
     torch.manual_seed(seed); rng = np.random.default_rng(seed)
-    m = Cell(cell, M, A).to(dev); opt = torch.optim.Adam(m.parameters(), lr=lr); ctrace = {}
+    m = Cell(cell, M, A).to(dev); ctrace = {}
+    if INIT_ORACLE >= 0 and cell == "tab":        # §85: code 0 <-> identity e, codes 1..|G|-1 <-> the other elements
+        order = [e] + [x for x in range(A) if x != e]; code_of = {g: i for i, g in enumerate(order)}
+        with torch.no_grad():
+            m.T.normal_(0.0, INIT_ORACLE); m.D.normal_(0.0, INIT_ORACLE)
+            for i, g in enumerate(order):
+                for a in range(A):
+                    m.T[i, a, code_of[int(COMP[g, a])]] += 3.0
+                m.D[i, g] += 3.0
+    opt = torch.optim.Adam(m.parameters(), lr=lr)
     for u in range(updates):
         L = length(rng, u, updates, curriculum)
         tau = 1.0 + (tau0 - 1.0) * max(0.0, 1.0 - u / (0.5 * updates))
@@ -212,13 +227,14 @@ def main():
     ap.add_argument("--method", default="hem", choices=["marg", "hem", "grpo", "bon", "hyb", "rmer"])
     ap.add_argument("--seeds", type=int, nargs="*", default=[100, 101, 102]); ap.add_argument("--M", type=int, default=0)
     ap.add_argument("--updates", type=int, default=8000); ap.add_argument("--lr", type=float, default=1e-2)
-    ap.add_argument("--tau0", type=float, default=1.0); ap.add_argument("--curriculum", default="std", choices=["std", "zhang", "ge3"])
+    ap.add_argument("--tau0", type=float, default=1.0); ap.add_argument("--curriculum", default="std", choices=["std", "zhang", "ge3", "mixP"])
     ap.add_argument("--K", type=int, default=8); ap.add_argument("--beta0", type=float, default=0.05)
     ap.add_argument("--device", default="cpu"); ap.add_argument("--out"); ap.add_argument("--threads", type=int, default=3); ap.add_argument("--save_table", action="store_true")
     ap.add_argument("--heldout_pairs", type=int, default=0, help="§81: held-out (state, op) pairs per op (seeded)")
+    ap.add_argument("--mix_p", type=float, default=0.0); ap.add_argument("--init_oracle", type=float, default=-1.0)
     a = ap.parse_args(); torch.set_num_threads(a.threads)
-    global SAVE_TABLE, HELDOUT_PAIRS, HO_MASK
-    SAVE_TABLE = a.save_table; HELDOUT_PAIRS = a.heldout_pairs
+    global SAVE_TABLE, HELDOUT_PAIRS, HO_MASK, MIX_P, INIT_ORACLE
+    SAVE_TABLE = a.save_table; HELDOUT_PAIRS = a.heldout_pairs; MIX_P = a.mix_p; INIT_ORACLE = a.init_oracle
     if HELDOUT_PAIRS:                                      # one held-out set per seed (seeded by 81000 + seed)
         COMP_, e_, A_ = comp_table(a.group); hr = np.random.default_rng(81000 + a.seeds[0])
         HO_MASK = np.zeros((A_, A_), bool)
