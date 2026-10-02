@@ -1,0 +1,2 @@
+EVAL {"train_cert": false, "acc128": 0.318, "agree": {"H1": 0.981, "H2": 0.87, "H3": 0.296, "H4": 0.296, "POS": 0.833, "NEG": 0.944, "T6": 0.889}}
+DONE c1/runs/p79_bow_s2081
