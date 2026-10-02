@@ -186,3 +186,33 @@ Each entry gives what to do, why (our rule and evidence), the closest prior, a f
 - shortcut-audited data (ProsQA-NA, generator checks);
 - per-seed reporting (≥ 5 seeds);
 - the C7 edit test on whatever is carried.
+
+## Addendum (2026-10-02, after Audit's review of 685bef0): scope and NORTH_STAR tags
+
+Audit's point is right. In M1 the state space (120 true S5 states) and the per-op labels are **given**, so the latents
+are a supervised carrier. A removal test can show that the carried latents are *used* (C1 as NORTH_STAR defines it:
+removal → chance, step-specific blocking shows serial use). It cannot show they were *discovered* from final answers
+(C4).
+
+| Method | Conditions it can bear on | Explicitly not |
+|---|---|---|
+| M1 latent restarts from the WC teacher | C1 (use: removal and step blocking), C2 (512/2,048), C6 (snapping), C7 (decoder plus edit) | **C4**: states and per-op labels are given |
+| **M1-U (new, the C4 variant)** | C1 + C4 | — |
+| M2 certified step codes | C6, C7 (certificate, edit) | C4 (codes come from labelled steps); C1 only if a removal test is added |
+| M3 supervision threshold | the C4 boundary (how far below per-step labels one can go) | — |
+| M4 random-start windows | C2, C6 | C4 (window targets are teacher states) |
+| M5 count-free halting | C5 | — |
+| M6 round-trip loss | C7 | — |
+| M7 semi-supervised EM on GSM8K | C3; partial C4 (labelled fraction p < 1) | — |
+| M8 loop-aligned composition | C1 (in-pass work) | C4 (iteration-aligned step labels) |
+
+**M1-U, the C4 ablation.**
+- **Setup.** The same architecture as M1, but with a **learned** codebook of size M ≥ 120 (e.g. M = 240, cf. §76's
+  M = 2|G|). There is **no per-op decoder loss**; supervision is the final state only, with exact marginalisation over
+  codes at snap points.
+- **Kill line.** Certified in < 4/5 seeds at 512 → no C4 claim for the M1 family.
+- **Prior expectation from rule 1** (§61b, §76/§82 ge3, §85): it fails unless short problems supply footholds. So run
+  two curricula:
+  - with length-1/2 problems (std), which bears on C4 only in §76's qualified sense;
+  - lengths ≥ 3 only, the strict C4 test.
+- Report both, with M3's threshold p* as the bridge.
