@@ -1,0 +1,17 @@
+{
+ "units_per_epoch": 556369,
+ "steps_per_epoch": 17386,
+ "total_steps": 104316,
+ "eff_batch": 32,
+ "frac_states_true_len_ge3": 0.0,
+ "true_len_dist": {
+  "0": 206396,
+  "1": 206396,
+  "2": 143577,
+  "3": 0
+ },
+ "best_valid_short": 0.4585635359116022,
+ "train_sec": 10957,
+ "tokens": 187886500,
+ "sec_per_step": 0.105
+}
