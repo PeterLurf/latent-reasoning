@@ -1,0 +1,6 @@
+93a266b1f7425a00463bb775de2946f9b30f76514944b5456bbffceb50b5de30  data/gsm_train.json
+01:27:02 cot_bf16 rc 0 wall_s 77
+01:32:44 ws_bf16 rc 0 wall_s 342
+01:38:55 ws_fp32 rc 0 wall_s 371
+NVIDIA GeForce RTX 3090, 580.159.03
+01:38:55 QUEUE_DONE

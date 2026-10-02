@@ -1,0 +1,15 @@
+100/1319 acc 0.350 24s
+200/1319 acc 0.390 24s
+300/1319 acc 0.387 24s
+400/1319 acc 0.380 24s
+500/1319 acc 0.370 24s
+600/1319 acc 0.365 24s
+700/1319 acc 0.364 24s
+800/1319 acc 0.366 24s
+900/1319 acc 0.367 24s
+1000/1319 acc 0.363 24s
+1100/1319 acc 0.359 24s
+1200/1319 acc 0.357 24s
+1300/1319 acc 0.356 24s
+gsm8k | codi:simcot_codi?L=4 | n 1319 | acc 0.356 [0.3302, 0.3818] | baselines {'last number in question': 0.0227, 'constant 5 (most frequent test answer; peeks)': 0.0303, 'answer appears in question (oracle)': 0.0637, 'one-op oracle (any pair, + - x /)': 0.1554}
+WROTE bench\results\gsm8k__simcot_codi_L4.json

@@ -1,0 +1,3 @@
+{"step": 100, "loss": 1.0169771909713745, "tokens": 193526, "sec": 12}
+{"step": 200, "loss": 0.9942882061004639, "tokens": 389021, "sec": 24}
+{"eval": 1, "step": 200, "tokens": 389021, "valid_acc": 0.02, "sec": 28, "saved": true}

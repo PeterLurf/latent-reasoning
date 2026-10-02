@@ -353,3 +353,5 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53779588 vast | gsmtime-3090 DESTROYED_VERIFIED 53779588 2026-10-01 21:03: stuck in image load ~27 min, never got SSH; no work on it
 53781055 vast offer 48317503 created 2026-10-01 21:03: label gsmtime-3090b, queue scratch/gsm_time_q.txt (logged at create by vdeploy_toy.sh)
 53781055 vast | gsmtime-3090b DESTROYED_VERIFIED 53781055 2026-10-01 21:20: timing logs fetched to logs/gsmtime/
+53783947 vast offer 50443928 created 2026-10-01 21:23: label gsmtime2-3090, queue scratch/gsm_time2_q.txt (logged at create by vdeploy_toy.sh)
+53783947 vast | gsmtime2-3090 DESTROYED_VERIFIED 53783947 2026-10-01 21:46: bf16 timing logs fetched to logs/gsmtime2/

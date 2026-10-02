@@ -1,0 +1,10645 @@
+{
+ "task": "gsm8k",
+ "model": "coconut_gsm:prosqa/ckpt_ext/hf/simcot_coconut/checkpoint_28?K=6",
+ "tag": "simcot_coconut_K6",
+ "n": 1319,
+ "accuracy": 0.3813,
+ "ci95": [
+  0.3555,
+  0.4079
+ ],
+ "by_depth": {
+  "0": {
+   "acc": 0.3889,
+   "n": 18
+  },
+  "1": {
+   "acc": 0.4,
+   "n": 65
+  },
+  "2": {
+   "acc": 0.6134,
+   "n": 357
+  },
+  "3": {
+   "acc": 0.4863,
+   "n": 364
+  },
+  "4": {
+   "acc": 0.1966,
+   "n": 290
+  },
+  "5": {
+   "acc": 0.0942,
+   "n": 138
+  },
+  "6": {
+   "acc": 0.0526,
+   "n": 57
+  },
+  "7": {
+   "acc": 0.0,
+   "n": 21
+  },
+  "8": {
+   "acc": 0.1111,
+   "n": 9
+  }
+ },
+ "baselines_same_items": {
+  "last number in question": 0.0227,
+  "constant 5 (most frequent test answer; peeks)": 0.0303,
+  "answer appears in question (oracle)": 0.0637,
+  "one-op oracle (any pair, + - x /)": 0.1554
+ },
+ "mean_compute": {
+  "latent_passes": 6.0,
+  "gen_tokens": 2.22
+ },
+ "provenance": {
+  "commit": "cea32fe",
+  "when": "2026-10-01T20:50:24",
+  "argv": [
+   "--task",
+   "gsm8k",
+   "--model",
+   "coconut_gsm:prosqa/ckpt_ext/hf/simcot_coconut/checkpoint_28?K=6",
+   "--tag",
+   "simcot_coconut_K6",
+   "--device",
+   "cuda:1"
+  ],
+  "device": "cuda:1",
+  "seconds": 127.3,
+  "data": [
+   {
+    "path": "bench/data/gsm8k_test.jsonl",
+    "sha256": "3730d312f6e34405"
+   }
+  ],
+  "checkpoint": {
+   "path": "prosqa/ckpt_ext/hf/simcot_coconut/checkpoint_28",
+   "bytes": 1458850422,
+   "head_tail_sha256": "69aa8d073efccfc2"
+  },
+  "selection": {
+   "n": 0,
+   "per_depth": 0,
+   "seed": 0
+  }
+ },
+ "items": [
+  {
+   "id": "gsm8k:0",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "18"
+  },
+  {
+   "id": "gsm8k:1",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:2",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "45000"
+  },
+  {
+   "id": "gsm8k:3",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "180"
+  },
+  {
+   "id": "gsm8k:4",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "-10"
+  },
+  {
+   "id": "gsm8k:5",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "80"
+  },
+  {
+   "id": "gsm8k:6",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "260"
+  },
+  {
+   "id": "gsm8k:7",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "120"
+  },
+  {
+   "id": "gsm8k:8",
+   "depth": 7,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "80"
+  },
+  {
+   "id": "gsm8k:9",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "472"
+  },
+  {
+   "id": "gsm8k:10",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "414"
+  },
+  {
+   "id": "gsm8k:11",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "726"
+  },
+  {
+   "id": "gsm8k:12",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:13",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "24"
+  },
+  {
+   "id": "gsm8k:14",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "40"
+  },
+  {
+   "id": "gsm8k:15",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "346"
+  },
+  {
+   "id": "gsm8k:16",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "115"
+  },
+  {
+   "id": "gsm8k:17",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "1425"
+  },
+  {
+   "id": "gsm8k:18",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:19",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:20",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "24.33"
+  },
+  {
+   "id": "gsm8k:21",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:22",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:23",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:24",
+   "depth": 0,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "26"
+  },
+  {
+   "id": "gsm8k:25",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:26",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "295"
+  },
+  {
+   "id": "gsm8k:27",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "16"
+  },
+  {
+   "id": "gsm8k:28",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "25"
+  },
+  {
+   "id": "gsm8k:29",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "71"
+  },
+  {
+   "id": "gsm8k:30",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "55"
+  },
+  {
+   "id": "gsm8k:31",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "138.33"
+  },
+  {
+   "id": "gsm8k:32",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "35"
+  },
+  {
+   "id": "gsm8k:33",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "70"
+  },
+  {
+   "id": "gsm8k:34",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "23"
+  },
+  {
+   "id": "gsm8k:35",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "9"
+  },
+  {
+   "id": "gsm8k:36",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "75"
+  },
+  {
+   "id": "gsm8k:37",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:38",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "45"
+  },
+  {
+   "id": "gsm8k:39",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "22.68"
+  },
+  {
+   "id": "gsm8k:40",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "8"
+  },
+  {
+   "id": "gsm8k:41",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "700"
+  },
+  {
+   "id": "gsm8k:42",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "26"
+  },
+  {
+   "id": "gsm8k:43",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "800"
+  },
+  {
+   "id": "gsm8k:44",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:45",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "34"
+  },
+  {
+   "id": "gsm8k:46",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "17"
+  },
+  {
+   "id": "gsm8k:47",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "380"
+  },
+  {
+   "id": "gsm8k:48",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "8"
+  },
+  {
+   "id": "gsm8k:49",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:50",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "34"
+  },
+  {
+   "id": "gsm8k:51",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "0.67"
+  },
+  {
+   "id": "gsm8k:52",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:53",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "320"
+  },
+  {
+   "id": "gsm8k:54",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "47"
+  },
+  {
+   "id": "gsm8k:55",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:56",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:57",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:58",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "53"
+  },
+  {
+   "id": "gsm8k:59",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "187"
+  },
+  {
+   "id": "gsm8k:60",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "18"
+  },
+  {
+   "id": "gsm8k:61",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "1170"
+  },
+  {
+   "id": "gsm8k:62",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "47500"
+  },
+  {
+   "id": "gsm8k:63",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "924"
+  },
+  {
+   "id": "gsm8k:64",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "240"
+  },
+  {
+   "id": "gsm8k:65",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "36"
+  },
+  {
+   "id": "gsm8k:66",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "36"
+  },
+  {
+   "id": "gsm8k:67",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "595"
+  },
+  {
+   "id": "gsm8k:68",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "24"
+  },
+  {
+   "id": "gsm8k:69",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "60"
+  },
+  {
+   "id": "gsm8k:70",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "495"
+  },
+  {
+   "id": "gsm8k:71",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "60"
+  },
+  {
+   "id": "gsm8k:72",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "209"
+  },
+  {
+   "id": "gsm8k:73",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "795"
+  },
+  {
+   "id": "gsm8k:74",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "93"
+  },
+  {
+   "id": "gsm8k:75",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:76",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:77",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "150"
+  },
+  {
+   "id": "gsm8k:78",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "3.5"
+  },
+  {
+   "id": "gsm8k:79",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "70"
+  },
+  {
+   "id": "gsm8k:80",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:81",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "26"
+  },
+  {
+   "id": "gsm8k:82",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "657"
+  },
+  {
+   "id": "gsm8k:83",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "600"
+  },
+  {
+   "id": "gsm8k:84",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "18"
+  },
+  {
+   "id": "gsm8k:85",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "11"
+  },
+  {
+   "id": "gsm8k:86",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "22"
+  },
+  {
+   "id": "gsm8k:87",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "3240"
+  },
+  {
+   "id": "gsm8k:88",
+   "depth": 0,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "8000"
+  },
+  {
+   "id": "gsm8k:89",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "24"
+  },
+  {
+   "id": "gsm8k:90",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "225"
+  },
+  {
+   "id": "gsm8k:91",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "28"
+  },
+  {
+   "id": "gsm8k:92",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:93",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "40"
+  },
+  {
+   "id": "gsm8k:94",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "228"
+  },
+  {
+   "id": "gsm8k:95",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "40"
+  },
+  {
+   "id": "gsm8k:96",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:97",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "32"
+  },
+  {
+   "id": "gsm8k:98",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:99",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "54"
+  },
+  {
+   "id": "gsm8k:100",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "125"
+  },
+  {
+   "id": "gsm8k:101",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "3.95"
+  },
+  {
+   "id": "gsm8k:102",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:103",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "140"
+  },
+  {
+   "id": "gsm8k:104",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "500"
+  },
+  {
+   "id": "gsm8k:105",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:106",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "8.31"
+  },
+  {
+   "id": "gsm8k:107",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:108",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "47"
+  },
+  {
+   "id": "gsm8k:109",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "28"
+  },
+  {
+   "id": "gsm8k:110",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:111",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "320"
+  },
+  {
+   "id": "gsm8k:112",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "18"
+  },
+  {
+   "id": "gsm8k:113",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "25"
+  },
+  {
+   "id": "gsm8k:114",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:115",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "60"
+  },
+  {
+   "id": "gsm8k:116",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "42"
+  },
+  {
+   "id": "gsm8k:117",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "360"
+  },
+  {
+   "id": "gsm8k:118",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:119",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "68000"
+  },
+  {
+   "id": "gsm8k:120",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "240"
+  },
+  {
+   "id": "gsm8k:121",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "27"
+  },
+  {
+   "id": "gsm8k:122",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "40"
+  },
+  {
+   "id": "gsm8k:123",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "65"
+  },
+  {
+   "id": "gsm8k:124",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:125",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "19"
+  },
+  {
+   "id": "gsm8k:126",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "82"
+  },
+  {
+   "id": "gsm8k:127",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "120"
+  },
+  {
+   "id": "gsm8k:128",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "320"
+  },
+  {
+   "id": "gsm8k:129",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "30000"
+  },
+  {
+   "id": "gsm8k:130",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:131",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "940"
+  },
+  {
+   "id": "gsm8k:132",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:133",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "13"
+  },
+  {
+   "id": "gsm8k:134",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "720"
+  },
+  {
+   "id": "gsm8k:135",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "70"
+  },
+  {
+   "id": "gsm8k:136",
+   "depth": 0,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:137",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "21"
+  },
+  {
+   "id": "gsm8k:138",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:139",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "70"
+  },
+  {
+   "id": "gsm8k:140",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:141",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "200"
+  },
+  {
+   "id": "gsm8k:142",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "140"
+  },
+  {
+   "id": "gsm8k:143",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "13.7"
+  },
+  {
+   "id": "gsm8k:144",
+   "depth": 7,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "51"
+  },
+  {
+   "id": "gsm8k:145",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4000"
+  },
+  {
+   "id": "gsm8k:146",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "2375"
+  },
+  {
+   "id": "gsm8k:147",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "120"
+  },
+  {
+   "id": "gsm8k:148",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:149",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "16"
+  },
+  {
+   "id": "gsm8k:150",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1"
+  },
+  {
+   "id": "gsm8k:151",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:152",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:153",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "22"
+  },
+  {
+   "id": "gsm8k:154",
+   "depth": 7,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "112"
+  },
+  {
+   "id": "gsm8k:155",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "120"
+  },
+  {
+   "id": "gsm8k:156",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1400"
+  },
+  {
+   "id": "gsm8k:157",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "160"
+  },
+  {
+   "id": "gsm8k:158",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "34"
+  },
+  {
+   "id": "gsm8k:159",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:160",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "16"
+  },
+  {
+   "id": "gsm8k:161",
+   "depth": 7,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "24"
+  },
+  {
+   "id": "gsm8k:162",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "71.2"
+  },
+  {
+   "id": "gsm8k:163",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "35"
+  },
+  {
+   "id": "gsm8k:164",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:165",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "1116"
+  },
+  {
+   "id": "gsm8k:166",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:167",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "16"
+  },
+  {
+   "id": "gsm8k:168",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "18"
+  },
+  {
+   "id": "gsm8k:169",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "120"
+  },
+  {
+   "id": "gsm8k:170",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "150"
+  },
+  {
+   "id": "gsm8k:171",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "650"
+  },
+  {
+   "id": "gsm8k:172",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "68"
+  },
+  {
+   "id": "gsm8k:173",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "1350"
+  },
+  {
+   "id": "gsm8k:174",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "11.25"
+  },
+  {
+   "id": "gsm8k:175",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "0"
+  },
+  {
+   "id": "gsm8k:176",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "100"
+  },
+  {
+   "id": "gsm8k:177",
+   "depth": 7,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "4800"
+  },
+  {
+   "id": "gsm8k:178",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "118"
+  },
+  {
+   "id": "gsm8k:179",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "130"
+  },
+  {
+   "id": "gsm8k:180",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:181",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "40"
+  },
+  {
+   "id": "gsm8k:182",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "22"
+  },
+  {
+   "id": "gsm8k:183",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "162"
+  },
+  {
+   "id": "gsm8k:184",
+   "depth": 0,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "40"
+  },
+  {
+   "id": "gsm8k:185",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:186",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:187",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "106"
+  },
+  {
+   "id": "gsm8k:188",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:189",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "41.75"
+  },
+  {
+   "id": "gsm8k:190",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "360"
+  },
+  {
+   "id": "gsm8k:191",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:192",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "104.5"
+  },
+  {
+   "id": "gsm8k:193",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:194",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:195",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "19.2"
+  },
+  {
+   "id": "gsm8k:196",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "120"
+  },
+  {
+   "id": "gsm8k:197",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1200"
+  },
+  {
+   "id": "gsm8k:198",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "200"
+  },
+  {
+   "id": "gsm8k:199",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1500"
+  },
+  {
+   "id": "gsm8k:200",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "55"
+  },
+  {
+   "id": "gsm8k:201",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "112500"
+  },
+  {
+   "id": "gsm8k:202",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "100"
+  },
+  {
+   "id": "gsm8k:203",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "33"
+  },
+  {
+   "id": "gsm8k:204",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "92"
+  },
+  {
+   "id": "gsm8k:205",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "93"
+  },
+  {
+   "id": "gsm8k:206",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "460"
+  },
+  {
+   "id": "gsm8k:207",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1600"
+  },
+  {
+   "id": "gsm8k:208",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "76"
+  },
+  {
+   "id": "gsm8k:209",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "0"
+  },
+  {
+   "id": "gsm8k:210",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:211",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:212",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:213",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "350"
+  },
+  {
+   "id": "gsm8k:214",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "32"
+  },
+  {
+   "id": "gsm8k:215",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "48"
+  },
+  {
+   "id": "gsm8k:216",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "-500"
+  },
+  {
+   "id": "gsm8k:217",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:218",
+   "depth": 7,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "28"
+  },
+  {
+   "id": "gsm8k:219",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "68"
+  },
+  {
+   "id": "gsm8k:220",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "70"
+  },
+  {
+   "id": "gsm8k:221",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "90"
+  },
+  {
+   "id": "gsm8k:222",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "140"
+  },
+  {
+   "id": "gsm8k:223",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "20000"
+  },
+  {
+   "id": "gsm8k:224",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "180"
+  },
+  {
+   "id": "gsm8k:225",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "18"
+  },
+  {
+   "id": "gsm8k:226",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "22"
+  },
+  {
+   "id": "gsm8k:227",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "18"
+  },
+  {
+   "id": "gsm8k:228",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:229",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "21"
+  },
+  {
+   "id": "gsm8k:230",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "23400"
+  },
+  {
+   "id": "gsm8k:231",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "50"
+  },
+  {
+   "id": "gsm8k:232",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "75"
+  },
+  {
+   "id": "gsm8k:233",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "24"
+  },
+  {
+   "id": "gsm8k:234",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:235",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:236",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:237",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "90"
+  },
+  {
+   "id": "gsm8k:238",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "78"
+  },
+  {
+   "id": "gsm8k:239",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "280"
+  },
+  {
+   "id": "gsm8k:240",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "21"
+  },
+  {
+   "id": "gsm8k:241",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:242",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:243",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "250"
+  },
+  {
+   "id": "gsm8k:244",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:245",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "18"
+  },
+  {
+   "id": "gsm8k:246",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "2700"
+  },
+  {
+   "id": "gsm8k:247",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "26"
+  },
+  {
+   "id": "gsm8k:248",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "300"
+  },
+  {
+   "id": "gsm8k:249",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "107"
+  },
+  {
+   "id": "gsm8k:250",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "13"
+  },
+  {
+   "id": "gsm8k:251",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "70"
+  },
+  {
+   "id": "gsm8k:252",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "67"
+  },
+  {
+   "id": "gsm8k:253",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "22"
+  },
+  {
+   "id": "gsm8k:254",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "84"
+  },
+  {
+   "id": "gsm8k:255",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "80"
+  },
+  {
+   "id": "gsm8k:256",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:257",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "10400"
+  },
+  {
+   "id": "gsm8k:258",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:259",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "76"
+  },
+  {
+   "id": "gsm8k:260",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "11"
+  },
+  {
+   "id": "gsm8k:261",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "7300"
+  },
+  {
+   "id": "gsm8k:262",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "270"
+  },
+  {
+   "id": "gsm8k:263",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "11"
+  },
+  {
+   "id": "gsm8k:264",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "400"
+  },
+  {
+   "id": "gsm8k:265",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "20000"
+  },
+  {
+   "id": "gsm8k:266",
+   "depth": 0,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "40000"
+  },
+  {
+   "id": "gsm8k:267",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:268",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "1375"
+  },
+  {
+   "id": "gsm8k:269",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:270",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "822"
+  },
+  {
+   "id": "gsm8k:271",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:272",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "4.3"
+  },
+  {
+   "id": "gsm8k:273",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "2.85"
+  },
+  {
+   "id": "gsm8k:274",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "3200"
+  },
+  {
+   "id": "gsm8k:275",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "66"
+  },
+  {
+   "id": "gsm8k:276",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "18"
+  },
+  {
+   "id": "gsm8k:277",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:278",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "100"
+  },
+  {
+   "id": "gsm8k:279",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "0"
+  },
+  {
+   "id": "gsm8k:280",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:281",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "50"
+  },
+  {
+   "id": "gsm8k:282",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "150"
+  },
+  {
+   "id": "gsm8k:283",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:284",
+   "depth": 8,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "300"
+  },
+  {
+   "id": "gsm8k:285",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "21"
+  },
+  {
+   "id": "gsm8k:286",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:287",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "52"
+  },
+  {
+   "id": "gsm8k:288",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:289",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "16"
+  },
+  {
+   "id": "gsm8k:290",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:291",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:292",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "45"
+  },
+  {
+   "id": "gsm8k:293",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "127"
+  },
+  {
+   "id": "gsm8k:294",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:295",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "330"
+  },
+  {
+   "id": "gsm8k:296",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "8.4"
+  },
+  {
+   "id": "gsm8k:297",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "55"
+  },
+  {
+   "id": "gsm8k:298",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "350"
+  },
+  {
+   "id": "gsm8k:299",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "225000"
+  },
+  {
+   "id": "gsm8k:300",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "78"
+  },
+  {
+   "id": "gsm8k:301",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "58"
+  },
+  {
+   "id": "gsm8k:302",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:303",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "7300"
+  },
+  {
+   "id": "gsm8k:304",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "2300"
+  },
+  {
+   "id": "gsm8k:305",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:306",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:307",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:308",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:309",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "8"
+  },
+  {
+   "id": "gsm8k:310",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "3900"
+  },
+  {
+   "id": "gsm8k:311",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "77"
+  },
+  {
+   "id": "gsm8k:312",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "32"
+  },
+  {
+   "id": "gsm8k:313",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "38400"
+  },
+  {
+   "id": "gsm8k:314",
+   "depth": 0,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "35"
+  },
+  {
+   "id": "gsm8k:315",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "16"
+  },
+  {
+   "id": "gsm8k:316",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "56"
+  },
+  {
+   "id": "gsm8k:317",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "12"
+  },
+  {
+   "id": "gsm8k:318",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "123"
+  },
+  {
+   "id": "gsm8k:319",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:320",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "8"
+  },
+  {
+   "id": "gsm8k:321",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1"
+  },
+  {
+   "id": "gsm8k:322",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:323",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "8"
+  },
+  {
+   "id": "gsm8k:324",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "12"
+  },
+  {
+   "id": "gsm8k:325",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "680000"
+  },
+  {
+   "id": "gsm8k:326",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "16"
+  },
+  {
+   "id": "gsm8k:327",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "48"
+  },
+  {
+   "id": "gsm8k:328",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:329",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:330",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "70"
+  },
+  {
+   "id": "gsm8k:331",
+   "depth": 7,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1600"
+  },
+  {
+   "id": "gsm8k:332",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "44"
+  },
+  {
+   "id": "gsm8k:333",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "290"
+  },
+  {
+   "id": "gsm8k:334",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:335",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "310"
+  },
+  {
+   "id": "gsm8k:336",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "48"
+  },
+  {
+   "id": "gsm8k:337",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1"
+  },
+  {
+   "id": "gsm8k:338",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "60"
+  },
+  {
+   "id": "gsm8k:339",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "180"
+  },
+  {
+   "id": "gsm8k:340",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "11"
+  },
+  {
+   "id": "gsm8k:341",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "150"
+  },
+  {
+   "id": "gsm8k:342",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "87"
+  },
+  {
+   "id": "gsm8k:343",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "180000"
+  },
+  {
+   "id": "gsm8k:344",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:345",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "310"
+  },
+  {
+   "id": "gsm8k:346",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "9"
+  },
+  {
+   "id": "gsm8k:347",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "36"
+  },
+  {
+   "id": "gsm8k:348",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "22"
+  },
+  {
+   "id": "gsm8k:349",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "1180"
+  },
+  {
+   "id": "gsm8k:350",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "10.5"
+  },
+  {
+   "id": "gsm8k:351",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:352",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "21"
+  },
+  {
+   "id": "gsm8k:353",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "9"
+  },
+  {
+   "id": "gsm8k:354",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "105"
+  },
+  {
+   "id": "gsm8k:355",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "34"
+  },
+  {
+   "id": "gsm8k:356",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:357",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:358",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:359",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "5.5"
+  },
+  {
+   "id": "gsm8k:360",
+   "depth": 0,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "25"
+  },
+  {
+   "id": "gsm8k:361",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:362",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "46"
+  },
+  {
+   "id": "gsm8k:363",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "6.29"
+  },
+  {
+   "id": "gsm8k:364",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "87"
+  },
+  {
+   "id": "gsm8k:365",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "18"
+  },
+  {
+   "id": "gsm8k:366",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "9"
+  },
+  {
+   "id": "gsm8k:367",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "17"
+  },
+  {
+   "id": "gsm8k:368",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:369",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "204"
+  },
+  {
+   "id": "gsm8k:370",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "720"
+  },
+  {
+   "id": "gsm8k:371",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "48"
+  },
+  {
+   "id": "gsm8k:372",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:373",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "240000"
+  },
+  {
+   "id": "gsm8k:374",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "37"
+  },
+  {
+   "id": "gsm8k:375",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "48"
+  },
+  {
+   "id": "gsm8k:376",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:377",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "52"
+  },
+  {
+   "id": "gsm8k:378",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:379",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "21"
+  },
+  {
+   "id": "gsm8k:380",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "755"
+  },
+  {
+   "id": "gsm8k:381",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "67"
+  },
+  {
+   "id": "gsm8k:382",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "330"
+  },
+  {
+   "id": "gsm8k:383",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "-18"
+  },
+  {
+   "id": "gsm8k:384",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:385",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "31"
+  },
+  {
+   "id": "gsm8k:386",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "80"
+  },
+  {
+   "id": "gsm8k:387",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "36"
+  },
+  {
+   "id": "gsm8k:388",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "88"
+  },
+  {
+   "id": "gsm8k:389",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "-24"
+  },
+  {
+   "id": "gsm8k:390",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "12"
+  },
+  {
+   "id": "gsm8k:391",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "45"
+  },
+  {
+   "id": "gsm8k:392",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:393",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "90"
+  },
+  {
+   "id": "gsm8k:394",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "92"
+  },
+  {
+   "id": "gsm8k:395",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "62"
+  },
+  {
+   "id": "gsm8k:396",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:397",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "25"
+  },
+  {
+   "id": "gsm8k:398",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "138"
+  },
+  {
+   "id": "gsm8k:399",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:400",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "48"
+  },
+  {
+   "id": "gsm8k:401",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "7200"
+  },
+  {
+   "id": "gsm8k:402",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:403",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "81"
+  },
+  {
+   "id": "gsm8k:404",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "44"
+  },
+  {
+   "id": "gsm8k:405",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "100"
+  },
+  {
+   "id": "gsm8k:406",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "160"
+  },
+  {
+   "id": "gsm8k:407",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1500"
+  },
+  {
+   "id": "gsm8k:408",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:409",
+   "depth": 7,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "36000"
+  },
+  {
+   "id": "gsm8k:410",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "5.25"
+  },
+  {
+   "id": "gsm8k:411",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "960"
+  },
+  {
+   "id": "gsm8k:412",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:413",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "14000"
+  },
+  {
+   "id": "gsm8k:414",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "56"
+  },
+  {
+   "id": "gsm8k:415",
+   "depth": 7,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "240"
+  },
+  {
+   "id": "gsm8k:416",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "92"
+  },
+  {
+   "id": "gsm8k:417",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "1140"
+  },
+  {
+   "id": "gsm8k:418",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "40"
+  },
+  {
+   "id": "gsm8k:419",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3000"
+  },
+  {
+   "id": "gsm8k:420",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "7000"
+  },
+  {
+   "id": "gsm8k:421",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "12"
+  },
+  {
+   "id": "gsm8k:422",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "344"
+  },
+  {
+   "id": "gsm8k:423",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:424",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "330"
+  },
+  {
+   "id": "gsm8k:425",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "150"
+  },
+  {
+   "id": "gsm8k:426",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "7.5"
+  },
+  {
+   "id": "gsm8k:427",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "300"
+  },
+  {
+   "id": "gsm8k:428",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:429",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "13"
+  },
+  {
+   "id": "gsm8k:430",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "136"
+  },
+  {
+   "id": "gsm8k:431",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1"
+  },
+  {
+   "id": "gsm8k:432",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:433",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:434",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "87"
+  },
+  {
+   "id": "gsm8k:435",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:436",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "16"
+  },
+  {
+   "id": "gsm8k:437",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "8"
+  },
+  {
+   "id": "gsm8k:438",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:439",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "11"
+  },
+  {
+   "id": "gsm8k:440",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:441",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "40"
+  },
+  {
+   "id": "gsm8k:442",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "21.5"
+  },
+  {
+   "id": "gsm8k:443",
+   "depth": 7,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "50"
+  },
+  {
+   "id": "gsm8k:444",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:445",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "45"
+  },
+  {
+   "id": "gsm8k:446",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:447",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "183"
+  },
+  {
+   "id": "gsm8k:448",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "455"
+  },
+  {
+   "id": "gsm8k:449",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "112"
+  },
+  {
+   "id": "gsm8k:450",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:451",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "170"
+  },
+  {
+   "id": "gsm8k:452",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "45"
+  },
+  {
+   "id": "gsm8k:453",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "3400"
+  },
+  {
+   "id": "gsm8k:454",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "240"
+  },
+  {
+   "id": "gsm8k:455",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "480"
+  },
+  {
+   "id": "gsm8k:456",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "39"
+  },
+  {
+   "id": "gsm8k:457",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "45"
+  },
+  {
+   "id": "gsm8k:458",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "41.67"
+  },
+  {
+   "id": "gsm8k:459",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:460",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "84"
+  },
+  {
+   "id": "gsm8k:461",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "9"
+  },
+  {
+   "id": "gsm8k:462",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "71"
+  },
+  {
+   "id": "gsm8k:463",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "18"
+  },
+  {
+   "id": "gsm8k:464",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "9"
+  },
+  {
+   "id": "gsm8k:465",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "35"
+  },
+  {
+   "id": "gsm8k:466",
+   "depth": 6,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1"
+  },
+  {
+   "id": "gsm8k:467",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "1680"
+  },
+  {
+   "id": "gsm8k:468",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "125"
+  },
+  {
+   "id": "gsm8k:469",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:470",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:471",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "160"
+  },
+  {
+   "id": "gsm8k:472",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:473",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "40"
+  },
+  {
+   "id": "gsm8k:474",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "80"
+  },
+  {
+   "id": "gsm8k:475",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:476",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:477",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:478",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "600"
+  },
+  {
+   "id": "gsm8k:479",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "11000"
+  },
+  {
+   "id": "gsm8k:480",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "11"
+  },
+  {
+   "id": "gsm8k:481",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "84"
+  },
+  {
+   "id": "gsm8k:482",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "22"
+  },
+  {
+   "id": "gsm8k:483",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "40"
+  },
+  {
+   "id": "gsm8k:484",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "240"
+  },
+  {
+   "id": "gsm8k:485",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "220"
+  },
+  {
+   "id": "gsm8k:486",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:487",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "200"
+  },
+  {
+   "id": "gsm8k:488",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:489",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 5,
+   "text": "-4.67"
+  },
+  {
+   "id": "gsm8k:490",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:491",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "16"
+  },
+  {
+   "id": "gsm8k:492",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "32"
+  },
+  {
+   "id": "gsm8k:493",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "150"
+  },
+  {
+   "id": "gsm8k:494",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "6.64"
+  },
+  {
+   "id": "gsm8k:495",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "200"
+  },
+  {
+   "id": "gsm8k:496",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "38"
+  },
+  {
+   "id": "gsm8k:497",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "112"
+  },
+  {
+   "id": "gsm8k:498",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "43"
+  },
+  {
+   "id": "gsm8k:499",
+   "depth": 0,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "32"
+  },
+  {
+   "id": "gsm8k:500",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:501",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "296"
+  },
+  {
+   "id": "gsm8k:502",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "26"
+  },
+  {
+   "id": "gsm8k:503",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "18"
+  },
+  {
+   "id": "gsm8k:504",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "1.75"
+  },
+  {
+   "id": "gsm8k:505",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "240"
+  },
+  {
+   "id": "gsm8k:506",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "72"
+  },
+  {
+   "id": "gsm8k:507",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:508",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "120"
+  },
+  {
+   "id": "gsm8k:509",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:510",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "500"
+  },
+  {
+   "id": "gsm8k:511",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "110"
+  },
+  {
+   "id": "gsm8k:512",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "120"
+  },
+  {
+   "id": "gsm8k:513",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "300"
+  },
+  {
+   "id": "gsm8k:514",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "90000"
+  },
+  {
+   "id": "gsm8k:515",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "32"
+  },
+  {
+   "id": "gsm8k:516",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "375"
+  },
+  {
+   "id": "gsm8k:517",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "18"
+  },
+  {
+   "id": "gsm8k:518",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "96"
+  },
+  {
+   "id": "gsm8k:519",
+   "depth": 0,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "160"
+  },
+  {
+   "id": "gsm8k:520",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "66"
+  },
+  {
+   "id": "gsm8k:521",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "44"
+  },
+  {
+   "id": "gsm8k:522",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "28"
+  },
+  {
+   "id": "gsm8k:523",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "82"
+  },
+  {
+   "id": "gsm8k:524",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "9"
+  },
+  {
+   "id": "gsm8k:525",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "9"
+  },
+  {
+   "id": "gsm8k:526",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "70"
+  },
+  {
+   "id": "gsm8k:527",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "40"
+  },
+  {
+   "id": "gsm8k:528",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "68"
+  },
+  {
+   "id": "gsm8k:529",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "11"
+  },
+  {
+   "id": "gsm8k:530",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "112"
+  },
+  {
+   "id": "gsm8k:531",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "31"
+  },
+  {
+   "id": "gsm8k:532",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "21"
+  },
+  {
+   "id": "gsm8k:533",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "300"
+  },
+  {
+   "id": "gsm8k:534",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "7.5"
+  },
+  {
+   "id": "gsm8k:535",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "16"
+  },
+  {
+   "id": "gsm8k:536",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "8"
+  },
+  {
+   "id": "gsm8k:537",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "200"
+  },
+  {
+   "id": "gsm8k:538",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "18"
+  },
+  {
+   "id": "gsm8k:539",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "60"
+  },
+  {
+   "id": "gsm8k:540",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "25"
+  },
+  {
+   "id": "gsm8k:541",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "37.5"
+  },
+  {
+   "id": "gsm8k:542",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "14.5"
+  },
+  {
+   "id": "gsm8k:543",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:544",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "80"
+  },
+  {
+   "id": "gsm8k:545",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:546",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:547",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "36"
+  },
+  {
+   "id": "gsm8k:548",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "100"
+  },
+  {
+   "id": "gsm8k:549",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "402"
+  },
+  {
+   "id": "gsm8k:550",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "16.8"
+  },
+  {
+   "id": "gsm8k:551",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "27"
+  },
+  {
+   "id": "gsm8k:552",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1100"
+  },
+  {
+   "id": "gsm8k:553",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "92"
+  },
+  {
+   "id": "gsm8k:554",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:555",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:556",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "240"
+  },
+  {
+   "id": "gsm8k:557",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "42"
+  },
+  {
+   "id": "gsm8k:558",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:559",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1"
+  },
+  {
+   "id": "gsm8k:560",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "45"
+  },
+  {
+   "id": "gsm8k:561",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "80"
+  },
+  {
+   "id": "gsm8k:562",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "82"
+  },
+  {
+   "id": "gsm8k:563",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "12"
+  },
+  {
+   "id": "gsm8k:564",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "350"
+  },
+  {
+   "id": "gsm8k:565",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:566",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "10.33"
+  },
+  {
+   "id": "gsm8k:567",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "9"
+  },
+  {
+   "id": "gsm8k:568",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "155"
+  },
+  {
+   "id": "gsm8k:569",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "21"
+  },
+  {
+   "id": "gsm8k:570",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:571",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "284"
+  },
+  {
+   "id": "gsm8k:572",
+   "depth": 6,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "100"
+  },
+  {
+   "id": "gsm8k:573",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "-600"
+  },
+  {
+   "id": "gsm8k:574",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "40"
+  },
+  {
+   "id": "gsm8k:575",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "277.5"
+  },
+  {
+   "id": "gsm8k:576",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "306"
+  },
+  {
+   "id": "gsm8k:577",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "40"
+  },
+  {
+   "id": "gsm8k:578",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "38"
+  },
+  {
+   "id": "gsm8k:579",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:580",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "0.56"
+  },
+  {
+   "id": "gsm8k:581",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "220"
+  },
+  {
+   "id": "gsm8k:582",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "131120"
+  },
+  {
+   "id": "gsm8k:583",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "116"
+  },
+  {
+   "id": "gsm8k:584",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1"
+  },
+  {
+   "id": "gsm8k:585",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "-3"
+  },
+  {
+   "id": "gsm8k:586",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2600"
+  },
+  {
+   "id": "gsm8k:587",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "402.5"
+  },
+  {
+   "id": "gsm8k:588",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "58.4"
+  },
+  {
+   "id": "gsm8k:589",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "1.5"
+  },
+  {
+   "id": "gsm8k:590",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "72"
+  },
+  {
+   "id": "gsm8k:591",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "220"
+  },
+  {
+   "id": "gsm8k:592",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "-33"
+  },
+  {
+   "id": "gsm8k:593",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:594",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "700"
+  },
+  {
+   "id": "gsm8k:595",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "13"
+  },
+  {
+   "id": "gsm8k:596",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "13.33"
+  },
+  {
+   "id": "gsm8k:597",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "90"
+  },
+  {
+   "id": "gsm8k:598",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:599",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "38"
+  },
+  {
+   "id": "gsm8k:600",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:601",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "95"
+  },
+  {
+   "id": "gsm8k:602",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:603",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "2520"
+  },
+  {
+   "id": "gsm8k:604",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "16"
+  },
+  {
+   "id": "gsm8k:605",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "57"
+  },
+  {
+   "id": "gsm8k:606",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "1.1"
+  },
+  {
+   "id": "gsm8k:607",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:608",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "-25"
+  },
+  {
+   "id": "gsm8k:609",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:610",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "9100"
+  },
+  {
+   "id": "gsm8k:611",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "62500"
+  },
+  {
+   "id": "gsm8k:612",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "68"
+  },
+  {
+   "id": "gsm8k:613",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "90000"
+  },
+  {
+   "id": "gsm8k:614",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "312"
+  },
+  {
+   "id": "gsm8k:615",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "31"
+  },
+  {
+   "id": "gsm8k:616",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:617",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:618",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "18"
+  },
+  {
+   "id": "gsm8k:619",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "96"
+  },
+  {
+   "id": "gsm8k:620",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "4945"
+  },
+  {
+   "id": "gsm8k:621",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3000"
+  },
+  {
+   "id": "gsm8k:622",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:623",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "32"
+  },
+  {
+   "id": "gsm8k:624",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "85"
+  },
+  {
+   "id": "gsm8k:625",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "160"
+  },
+  {
+   "id": "gsm8k:626",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "60"
+  },
+  {
+   "id": "gsm8k:627",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "82"
+  },
+  {
+   "id": "gsm8k:628",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "16"
+  },
+  {
+   "id": "gsm8k:629",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "5750"
+  },
+  {
+   "id": "gsm8k:630",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:631",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "4800"
+  },
+  {
+   "id": "gsm8k:632",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "45"
+  },
+  {
+   "id": "gsm8k:633",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "3.5"
+  },
+  {
+   "id": "gsm8k:634",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:635",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:636",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "750"
+  },
+  {
+   "id": "gsm8k:637",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "3.8"
+  },
+  {
+   "id": "gsm8k:638",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "13.4"
+  },
+  {
+   "id": "gsm8k:639",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "5.4"
+  },
+  {
+   "id": "gsm8k:640",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "11450"
+  },
+  {
+   "id": "gsm8k:641",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "33000"
+  },
+  {
+   "id": "gsm8k:642",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "9300"
+  },
+  {
+   "id": "gsm8k:643",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "840"
+  },
+  {
+   "id": "gsm8k:644",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "29"
+  },
+  {
+   "id": "gsm8k:645",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "48"
+  },
+  {
+   "id": "gsm8k:646",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "79"
+  },
+  {
+   "id": "gsm8k:647",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:648",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:649",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "16000"
+  },
+  {
+   "id": "gsm8k:650",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "28"
+  },
+  {
+   "id": "gsm8k:651",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "700"
+  },
+  {
+   "id": "gsm8k:652",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "120"
+  },
+  {
+   "id": "gsm8k:653",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "80"
+  },
+  {
+   "id": "gsm8k:654",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:655",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:656",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:657",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "180000"
+  },
+  {
+   "id": "gsm8k:658",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "135"
+  },
+  {
+   "id": "gsm8k:659",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:660",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:661",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "50"
+  },
+  {
+   "id": "gsm8k:662",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:663",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "249"
+  },
+  {
+   "id": "gsm8k:664",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "32"
+  },
+  {
+   "id": "gsm8k:665",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "360"
+  },
+  {
+   "id": "gsm8k:666",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:667",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "53"
+  },
+  {
+   "id": "gsm8k:668",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:669",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "144"
+  },
+  {
+   "id": "gsm8k:670",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:671",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "9.5"
+  },
+  {
+   "id": "gsm8k:672",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:673",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "9"
+  },
+  {
+   "id": "gsm8k:674",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "2.67"
+  },
+  {
+   "id": "gsm8k:675",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "36"
+  },
+  {
+   "id": "gsm8k:676",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "240"
+  },
+  {
+   "id": "gsm8k:677",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "61"
+  },
+  {
+   "id": "gsm8k:678",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "120"
+  },
+  {
+   "id": "gsm8k:679",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "48"
+  },
+  {
+   "id": "gsm8k:680",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "60"
+  },
+  {
+   "id": "gsm8k:681",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "214"
+  },
+  {
+   "id": "gsm8k:682",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "200"
+  },
+  {
+   "id": "gsm8k:683",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "50"
+  },
+  {
+   "id": "gsm8k:684",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "11"
+  },
+  {
+   "id": "gsm8k:685",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:686",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "80"
+  },
+  {
+   "id": "gsm8k:687",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:688",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:689",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:690",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "624"
+  },
+  {
+   "id": "gsm8k:691",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:692",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "21"
+  },
+  {
+   "id": "gsm8k:693",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "54"
+  },
+  {
+   "id": "gsm8k:694",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "13"
+  },
+  {
+   "id": "gsm8k:695",
+   "depth": 0,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:696",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "110"
+  },
+  {
+   "id": "gsm8k:697",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "12"
+  },
+  {
+   "id": "gsm8k:698",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "720"
+  },
+  {
+   "id": "gsm8k:699",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "8"
+  },
+  {
+   "id": "gsm8k:700",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "135"
+  },
+  {
+   "id": "gsm8k:701",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "70"
+  },
+  {
+   "id": "gsm8k:702",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "3600"
+  },
+  {
+   "id": "gsm8k:703",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "34"
+  },
+  {
+   "id": "gsm8k:704",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "50"
+  },
+  {
+   "id": "gsm8k:705",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "120"
+  },
+  {
+   "id": "gsm8k:706",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "600"
+  },
+  {
+   "id": "gsm8k:707",
+   "depth": 0,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "12"
+  },
+  {
+   "id": "gsm8k:708",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "168"
+  },
+  {
+   "id": "gsm8k:709",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "240"
+  },
+  {
+   "id": "gsm8k:710",
+   "depth": 7,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:711",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "8"
+  },
+  {
+   "id": "gsm8k:712",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:713",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "576"
+  },
+  {
+   "id": "gsm8k:714",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "25"
+  },
+  {
+   "id": "gsm8k:715",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "331500"
+  },
+  {
+   "id": "gsm8k:716",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "1140"
+  },
+  {
+   "id": "gsm8k:717",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:718",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:719",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "175"
+  },
+  {
+   "id": "gsm8k:720",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:721",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "2200"
+  },
+  {
+   "id": "gsm8k:722",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "255"
+  },
+  {
+   "id": "gsm8k:723",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "161"
+  },
+  {
+   "id": "gsm8k:724",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:725",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "7.5"
+  },
+  {
+   "id": "gsm8k:726",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "4.91"
+  },
+  {
+   "id": "gsm8k:727",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "56"
+  },
+  {
+   "id": "gsm8k:728",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "82"
+  },
+  {
+   "id": "gsm8k:729",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "0"
+  },
+  {
+   "id": "gsm8k:730",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "8"
+  },
+  {
+   "id": "gsm8k:731",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:732",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "64"
+  },
+  {
+   "id": "gsm8k:733",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:734",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:735",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "50"
+  },
+  {
+   "id": "gsm8k:736",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "27"
+  },
+  {
+   "id": "gsm8k:737",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "18"
+  },
+  {
+   "id": "gsm8k:738",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:739",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "150"
+  },
+  {
+   "id": "gsm8k:740",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "17"
+  },
+  {
+   "id": "gsm8k:741",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "28"
+  },
+  {
+   "id": "gsm8k:742",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "24"
+  },
+  {
+   "id": "gsm8k:743",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "8"
+  },
+  {
+   "id": "gsm8k:744",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:745",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "13400"
+  },
+  {
+   "id": "gsm8k:746",
+   "depth": 7,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "22"
+  },
+  {
+   "id": "gsm8k:747",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "50"
+  },
+  {
+   "id": "gsm8k:748",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "336"
+  },
+  {
+   "id": "gsm8k:749",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:750",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1600"
+  },
+  {
+   "id": "gsm8k:751",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "43"
+  },
+  {
+   "id": "gsm8k:752",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "300"
+  },
+  {
+   "id": "gsm8k:753",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "114"
+  },
+  {
+   "id": "gsm8k:754",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "47"
+  },
+  {
+   "id": "gsm8k:755",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:756",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "16"
+  },
+  {
+   "id": "gsm8k:757",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "52"
+  },
+  {
+   "id": "gsm8k:758",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "133"
+  },
+  {
+   "id": "gsm8k:759",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "200"
+  },
+  {
+   "id": "gsm8k:760",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:761",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:762",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "55"
+  },
+  {
+   "id": "gsm8k:763",
+   "depth": 0,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "250"
+  },
+  {
+   "id": "gsm8k:764",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "21"
+  },
+  {
+   "id": "gsm8k:765",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "490"
+  },
+  {
+   "id": "gsm8k:766",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "12"
+  },
+  {
+   "id": "gsm8k:767",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "60"
+  },
+  {
+   "id": "gsm8k:768",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "600"
+  },
+  {
+   "id": "gsm8k:769",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "170"
+  },
+  {
+   "id": "gsm8k:770",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:771",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:772",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "33.33"
+  },
+  {
+   "id": "gsm8k:773",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:774",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "0.5"
+  },
+  {
+   "id": "gsm8k:775",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "seeds"
+  },
+  {
+   "id": "gsm8k:776",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "800"
+  },
+  {
+   "id": "gsm8k:777",
+   "depth": 8,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "-40"
+  },
+  {
+   "id": "gsm8k:778",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "44"
+  },
+  {
+   "id": "gsm8k:779",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "172.5"
+  },
+  {
+   "id": "gsm8k:780",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "8"
+  },
+  {
+   "id": "gsm8k:781",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:782",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "27"
+  },
+  {
+   "id": "gsm8k:783",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:784",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:785",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "840"
+  },
+  {
+   "id": "gsm8k:786",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "142"
+  },
+  {
+   "id": "gsm8k:787",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "25"
+  },
+  {
+   "id": "gsm8k:788",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "100"
+  },
+  {
+   "id": "gsm8k:789",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:790",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "12"
+  },
+  {
+   "id": "gsm8k:791",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "110"
+  },
+  {
+   "id": "gsm8k:792",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "75"
+  },
+  {
+   "id": "gsm8k:793",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "370"
+  },
+  {
+   "id": "gsm8k:794",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "32"
+  },
+  {
+   "id": "gsm8k:795",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:796",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "480000"
+  },
+  {
+   "id": "gsm8k:797",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "720"
+  },
+  {
+   "id": "gsm8k:798",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:799",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:800",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "476"
+  },
+  {
+   "id": "gsm8k:801",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "1060"
+  },
+  {
+   "id": "gsm8k:802",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "16"
+  },
+  {
+   "id": "gsm8k:803",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "8"
+  },
+  {
+   "id": "gsm8k:804",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "260"
+  },
+  {
+   "id": "gsm8k:805",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "630"
+  },
+  {
+   "id": "gsm8k:806",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "272"
+  },
+  {
+   "id": "gsm8k:807",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "24"
+  },
+  {
+   "id": "gsm8k:808",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "0.92"
+  },
+  {
+   "id": "gsm8k:809",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "50"
+  },
+  {
+   "id": "gsm8k:810",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "80"
+  },
+  {
+   "id": "gsm8k:811",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "12"
+  },
+  {
+   "id": "gsm8k:812",
+   "depth": 7,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "56"
+  },
+  {
+   "id": "gsm8k:813",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:814",
+   "depth": 8,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "300"
+  },
+  {
+   "id": "gsm8k:815",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:816",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "4500"
+  },
+  {
+   "id": "gsm8k:817",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:818",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "44"
+  },
+  {
+   "id": "gsm8k:819",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "6250"
+  },
+  {
+   "id": "gsm8k:820",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "720"
+  },
+  {
+   "id": "gsm8k:821",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "35"
+  },
+  {
+   "id": "gsm8k:822",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "1260"
+  },
+  {
+   "id": "gsm8k:823",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "28"
+  },
+  {
+   "id": "gsm8k:824",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "52"
+  },
+  {
+   "id": "gsm8k:825",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "1020"
+  },
+  {
+   "id": "gsm8k:826",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "21"
+  },
+  {
+   "id": "gsm8k:827",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "11.4"
+  },
+  {
+   "id": "gsm8k:828",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "60"
+  },
+  {
+   "id": "gsm8k:829",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10000"
+  },
+  {
+   "id": "gsm8k:830",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "392"
+  },
+  {
+   "id": "gsm8k:831",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "1163"
+  },
+  {
+   "id": "gsm8k:832",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "42"
+  },
+  {
+   "id": "gsm8k:833",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "5.4"
+  },
+  {
+   "id": "gsm8k:834",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "80"
+  },
+  {
+   "id": "gsm8k:835",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "12"
+  },
+  {
+   "id": "gsm8k:836",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "140"
+  },
+  {
+   "id": "gsm8k:837",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "70"
+  },
+  {
+   "id": "gsm8k:838",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:839",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:840",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "12"
+  },
+  {
+   "id": "gsm8k:841",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "4800"
+  },
+  {
+   "id": "gsm8k:842",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:843",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "-3"
+  },
+  {
+   "id": "gsm8k:844",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "210"
+  },
+  {
+   "id": "gsm8k:845",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:846",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "9"
+  },
+  {
+   "id": "gsm8k:847",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "975"
+  },
+  {
+   "id": "gsm8k:848",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:849",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "75"
+  },
+  {
+   "id": "gsm8k:850",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "90"
+  },
+  {
+   "id": "gsm8k:851",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "130"
+  },
+  {
+   "id": "gsm8k:852",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "48"
+  },
+  {
+   "id": "gsm8k:853",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:854",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "120"
+  },
+  {
+   "id": "gsm8k:855",
+   "depth": 0,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "27"
+  },
+  {
+   "id": "gsm8k:856",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:857",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "14000"
+  },
+  {
+   "id": "gsm8k:858",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "120"
+  },
+  {
+   "id": "gsm8k:859",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "872"
+  },
+  {
+   "id": "gsm8k:860",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:861",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "60"
+  },
+  {
+   "id": "gsm8k:862",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "12"
+  },
+  {
+   "id": "gsm8k:863",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "110"
+  },
+  {
+   "id": "gsm8k:864",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "420"
+  },
+  {
+   "id": "gsm8k:865",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "17"
+  },
+  {
+   "id": "gsm8k:866",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "26.67"
+  },
+  {
+   "id": "gsm8k:867",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:868",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:869",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "500"
+  },
+  {
+   "id": "gsm8k:870",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "40"
+  },
+  {
+   "id": "gsm8k:871",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "26"
+  },
+  {
+   "id": "gsm8k:872",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "26"
+  },
+  {
+   "id": "gsm8k:873",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "12.48"
+  },
+  {
+   "id": "gsm8k:874",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "132"
+  },
+  {
+   "id": "gsm8k:875",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "60"
+  },
+  {
+   "id": "gsm8k:876",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "90"
+  },
+  {
+   "id": "gsm8k:877",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "7000"
+  },
+  {
+   "id": "gsm8k:878",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:879",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "525"
+  },
+  {
+   "id": "gsm8k:880",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:881",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:882",
+   "depth": 8,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "43"
+  },
+  {
+   "id": "gsm8k:883",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "25"
+  },
+  {
+   "id": "gsm8k:884",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "50"
+  },
+  {
+   "id": "gsm8k:885",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "500"
+  },
+  {
+   "id": "gsm8k:886",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:887",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "34"
+  },
+  {
+   "id": "gsm8k:888",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:889",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:890",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "25"
+  },
+  {
+   "id": "gsm8k:891",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "62.05"
+  },
+  {
+   "id": "gsm8k:892",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:893",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "480"
+  },
+  {
+   "id": "gsm8k:894",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "-24"
+  },
+  {
+   "id": "gsm8k:895",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "74"
+  },
+  {
+   "id": "gsm8k:896",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "250"
+  },
+  {
+   "id": "gsm8k:897",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1"
+  },
+  {
+   "id": "gsm8k:898",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "110"
+  },
+  {
+   "id": "gsm8k:899",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "16"
+  },
+  {
+   "id": "gsm8k:900",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:901",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:902",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "7.5"
+  },
+  {
+   "id": "gsm8k:903",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "36"
+  },
+  {
+   "id": "gsm8k:904",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "8"
+  },
+  {
+   "id": "gsm8k:905",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "11"
+  },
+  {
+   "id": "gsm8k:906",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "13"
+  },
+  {
+   "id": "gsm8k:907",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "16"
+  },
+  {
+   "id": "gsm8k:908",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:909",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "34"
+  },
+  {
+   "id": "gsm8k:910",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "700"
+  },
+  {
+   "id": "gsm8k:911",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "64"
+  },
+  {
+   "id": "gsm8k:912",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:913",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "38"
+  },
+  {
+   "id": "gsm8k:914",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:915",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "23"
+  },
+  {
+   "id": "gsm8k:916",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:917",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "12"
+  },
+  {
+   "id": "gsm8k:918",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "56"
+  },
+  {
+   "id": "gsm8k:919",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "60"
+  },
+  {
+   "id": "gsm8k:920",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "71"
+  },
+  {
+   "id": "gsm8k:921",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:922",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "130"
+  },
+  {
+   "id": "gsm8k:923",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:924",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "12"
+  },
+  {
+   "id": "gsm8k:925",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3000"
+  },
+  {
+   "id": "gsm8k:926",
+   "depth": 8,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:927",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 5,
+   "text": "3333.33"
+  },
+  {
+   "id": "gsm8k:928",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "74.5"
+  },
+  {
+   "id": "gsm8k:929",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "60"
+  },
+  {
+   "id": "gsm8k:930",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "13"
+  },
+  {
+   "id": "gsm8k:931",
+   "depth": 0,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "50"
+  },
+  {
+   "id": "gsm8k:932",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "22"
+  },
+  {
+   "id": "gsm8k:933",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:934",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "37.5"
+  },
+  {
+   "id": "gsm8k:935",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "90"
+  },
+  {
+   "id": "gsm8k:936",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "110"
+  },
+  {
+   "id": "gsm8k:937",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "135"
+  },
+  {
+   "id": "gsm8k:938",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "0"
+  },
+  {
+   "id": "gsm8k:939",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "460"
+  },
+  {
+   "id": "gsm8k:940",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "280"
+  },
+  {
+   "id": "gsm8k:941",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "882"
+  },
+  {
+   "id": "gsm8k:942",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "170"
+  },
+  {
+   "id": "gsm8k:943",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "130"
+  },
+  {
+   "id": "gsm8k:944",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "34"
+  },
+  {
+   "id": "gsm8k:945",
+   "depth": 7,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "10.5"
+  },
+  {
+   "id": "gsm8k:946",
+   "depth": 0,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "450"
+  },
+  {
+   "id": "gsm8k:947",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "13"
+  },
+  {
+   "id": "gsm8k:948",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "48"
+  },
+  {
+   "id": "gsm8k:949",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "42"
+  },
+  {
+   "id": "gsm8k:950",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "37"
+  },
+  {
+   "id": "gsm8k:951",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "450"
+  },
+  {
+   "id": "gsm8k:952",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "720"
+  },
+  {
+   "id": "gsm8k:953",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "55"
+  },
+  {
+   "id": "gsm8k:954",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "18"
+  },
+  {
+   "id": "gsm8k:955",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "700"
+  },
+  {
+   "id": "gsm8k:956",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:957",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "45"
+  },
+  {
+   "id": "gsm8k:958",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "58"
+  },
+  {
+   "id": "gsm8k:959",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:960",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "125"
+  },
+  {
+   "id": "gsm8k:961",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "340"
+  },
+  {
+   "id": "gsm8k:962",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1000"
+  },
+  {
+   "id": "gsm8k:963",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "290.88"
+  },
+  {
+   "id": "gsm8k:964",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "200"
+  },
+  {
+   "id": "gsm8k:965",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "336"
+  },
+  {
+   "id": "gsm8k:966",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "42"
+  },
+  {
+   "id": "gsm8k:967",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "26"
+  },
+  {
+   "id": "gsm8k:968",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "110"
+  },
+  {
+   "id": "gsm8k:969",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1800"
+  },
+  {
+   "id": "gsm8k:970",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "33"
+  },
+  {
+   "id": "gsm8k:971",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "100"
+  },
+  {
+   "id": "gsm8k:972",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "100"
+  },
+  {
+   "id": "gsm8k:973",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "9"
+  },
+  {
+   "id": "gsm8k:974",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:975",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "-10"
+  },
+  {
+   "id": "gsm8k:976",
+   "depth": 7,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "210"
+  },
+  {
+   "id": "gsm8k:977",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:978",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "160"
+  },
+  {
+   "id": "gsm8k:979",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "57"
+  },
+  {
+   "id": "gsm8k:980",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "90"
+  },
+  {
+   "id": "gsm8k:981",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:982",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "9"
+  },
+  {
+   "id": "gsm8k:983",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:984",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "48"
+  },
+  {
+   "id": "gsm8k:985",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "63"
+  },
+  {
+   "id": "gsm8k:986",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "140"
+  },
+  {
+   "id": "gsm8k:987",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:988",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "24"
+  },
+  {
+   "id": "gsm8k:989",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:990",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:991",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:992",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "36"
+  },
+  {
+   "id": "gsm8k:993",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "11"
+  },
+  {
+   "id": "gsm8k:994",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "180"
+  },
+  {
+   "id": "gsm8k:995",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "12"
+  },
+  {
+   "id": "gsm8k:996",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:997",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "3600"
+  },
+  {
+   "id": "gsm8k:998",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "50"
+  },
+  {
+   "id": "gsm8k:999",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "35.71"
+  },
+  {
+   "id": "gsm8k:1000",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:1001",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:1002",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "18.67"
+  },
+  {
+   "id": "gsm8k:1003",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1440"
+  },
+  {
+   "id": "gsm8k:1004",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "8"
+  },
+  {
+   "id": "gsm8k:1005",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "172"
+  },
+  {
+   "id": "gsm8k:1006",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "112.8"
+  },
+  {
+   "id": "gsm8k:1007",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "38"
+  },
+  {
+   "id": "gsm8k:1008",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "230"
+  },
+  {
+   "id": "gsm8k:1009",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "750"
+  },
+  {
+   "id": "gsm8k:1010",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:1011",
+   "depth": 8,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 5,
+   "text": "4916.67"
+  },
+  {
+   "id": "gsm8k:1012",
+   "depth": 0,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "20.16"
+  },
+  {
+   "id": "gsm8k:1013",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "0.8"
+  },
+  {
+   "id": "gsm8k:1014",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:1015",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "72"
+  },
+  {
+   "id": "gsm8k:1016",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:1017",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "45"
+  },
+  {
+   "id": "gsm8k:1018",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "60"
+  },
+  {
+   "id": "gsm8k:1019",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "141"
+  },
+  {
+   "id": "gsm8k:1020",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "22"
+  },
+  {
+   "id": "gsm8k:1021",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "36"
+  },
+  {
+   "id": "gsm8k:1022",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:1023",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "77"
+  },
+  {
+   "id": "gsm8k:1024",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "160"
+  },
+  {
+   "id": "gsm8k:1025",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "50"
+  },
+  {
+   "id": "gsm8k:1026",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1080"
+  },
+  {
+   "id": "gsm8k:1027",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:1028",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "500"
+  },
+  {
+   "id": "gsm8k:1029",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "87"
+  },
+  {
+   "id": "gsm8k:1030",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:1031",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "4.54"
+  },
+  {
+   "id": "gsm8k:1032",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "50"
+  },
+  {
+   "id": "gsm8k:1033",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:1034",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "66"
+  },
+  {
+   "id": "gsm8k:1035",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "280"
+  },
+  {
+   "id": "gsm8k:1036",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:1037",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:1038",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:1039",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "208"
+  },
+  {
+   "id": "gsm8k:1040",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "1717"
+  },
+  {
+   "id": "gsm8k:1041",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "101"
+  },
+  {
+   "id": "gsm8k:1042",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "5.46"
+  },
+  {
+   "id": "gsm8k:1043",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "130000"
+  },
+  {
+   "id": "gsm8k:1044",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:1045",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "160"
+  },
+  {
+   "id": "gsm8k:1046",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "15.75"
+  },
+  {
+   "id": "gsm8k:1047",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "9"
+  },
+  {
+   "id": "gsm8k:1048",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "15300"
+  },
+  {
+   "id": "gsm8k:1049",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:1050",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "1155"
+  },
+  {
+   "id": "gsm8k:1051",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:1052",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "190"
+  },
+  {
+   "id": "gsm8k:1053",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "72"
+  },
+  {
+   "id": "gsm8k:1054",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2400"
+  },
+  {
+   "id": "gsm8k:1055",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "2304"
+  },
+  {
+   "id": "gsm8k:1056",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "156"
+  },
+  {
+   "id": "gsm8k:1057",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "24"
+  },
+  {
+   "id": "gsm8k:1058",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "250"
+  },
+  {
+   "id": "gsm8k:1059",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:1060",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "41"
+  },
+  {
+   "id": "gsm8k:1061",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "56"
+  },
+  {
+   "id": "gsm8k:1062",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "462"
+  },
+  {
+   "id": "gsm8k:1063",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "320"
+  },
+  {
+   "id": "gsm8k:1064",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "181"
+  },
+  {
+   "id": "gsm8k:1065",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "45"
+  },
+  {
+   "id": "gsm8k:1066",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:1067",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "245"
+  },
+  {
+   "id": "gsm8k:1068",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "28"
+  },
+  {
+   "id": "gsm8k:1069",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "300"
+  },
+  {
+   "id": "gsm8k:1070",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "24"
+  },
+  {
+   "id": "gsm8k:1071",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "53"
+  },
+  {
+   "id": "gsm8k:1072",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "25"
+  },
+  {
+   "id": "gsm8k:1073",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "27"
+  },
+  {
+   "id": "gsm8k:1074",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "250"
+  },
+  {
+   "id": "gsm8k:1075",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:1076",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "159"
+  },
+  {
+   "id": "gsm8k:1077",
+   "depth": 7,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "100"
+  },
+  {
+   "id": "gsm8k:1078",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:1079",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:1080",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1200"
+  },
+  {
+   "id": "gsm8k:1081",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "195"
+  },
+  {
+   "id": "gsm8k:1082",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:1083",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:1084",
+   "depth": 0,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "40"
+  },
+  {
+   "id": "gsm8k:1085",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "26"
+  },
+  {
+   "id": "gsm8k:1086",
+   "depth": 8,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 5,
+   "text": "1312.5"
+  },
+  {
+   "id": "gsm8k:1087",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "12"
+  },
+  {
+   "id": "gsm8k:1088",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:1089",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "10.67"
+  },
+  {
+   "id": "gsm8k:1090",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:1091",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1000"
+  },
+  {
+   "id": "gsm8k:1092",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "540"
+  },
+  {
+   "id": "gsm8k:1093",
+   "depth": 7,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "48"
+  },
+  {
+   "id": "gsm8k:1094",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "40"
+  },
+  {
+   "id": "gsm8k:1095",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "270"
+  },
+  {
+   "id": "gsm8k:1096",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "92"
+  },
+  {
+   "id": "gsm8k:1097",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "516"
+  },
+  {
+   "id": "gsm8k:1098",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:1099",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:1100",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "4.16"
+  },
+  {
+   "id": "gsm8k:1101",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "16"
+  },
+  {
+   "id": "gsm8k:1102",
+   "depth": 7,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "119"
+  },
+  {
+   "id": "gsm8k:1103",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "22"
+  },
+  {
+   "id": "gsm8k:1104",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "24"
+  },
+  {
+   "id": "gsm8k:1105",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:1106",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:1107",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "144"
+  },
+  {
+   "id": "gsm8k:1108",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "38"
+  },
+  {
+   "id": "gsm8k:1109",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:1110",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "36"
+  },
+  {
+   "id": "gsm8k:1111",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "167"
+  },
+  {
+   "id": "gsm8k:1112",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:1113",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:1114",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "8"
+  },
+  {
+   "id": "gsm8k:1115",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:1116",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "60"
+  },
+  {
+   "id": "gsm8k:1117",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "11.29"
+  },
+  {
+   "id": "gsm8k:1118",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:1119",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:1120",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "280"
+  },
+  {
+   "id": "gsm8k:1121",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "35"
+  },
+  {
+   "id": "gsm8k:1122",
+   "depth": 8,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "34"
+  },
+  {
+   "id": "gsm8k:1123",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "45"
+  },
+  {
+   "id": "gsm8k:1124",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "64"
+  },
+  {
+   "id": "gsm8k:1125",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "60"
+  },
+  {
+   "id": "gsm8k:1126",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:1127",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "150"
+  },
+  {
+   "id": "gsm8k:1128",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "9"
+  },
+  {
+   "id": "gsm8k:1129",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "-18"
+  },
+  {
+   "id": "gsm8k:1130",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:1131",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "96"
+  },
+  {
+   "id": "gsm8k:1132",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "22500"
+  },
+  {
+   "id": "gsm8k:1133",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "60"
+  },
+  {
+   "id": "gsm8k:1134",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:1135",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "32"
+  },
+  {
+   "id": "gsm8k:1136",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "74"
+  },
+  {
+   "id": "gsm8k:1137",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "37"
+  },
+  {
+   "id": "gsm8k:1138",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1050"
+  },
+  {
+   "id": "gsm8k:1139",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:1140",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:1141",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:1142",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "9"
+  },
+  {
+   "id": "gsm8k:1143",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "3600"
+  },
+  {
+   "id": "gsm8k:1144",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "54"
+  },
+  {
+   "id": "gsm8k:1145",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "36"
+  },
+  {
+   "id": "gsm8k:1146",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:1147",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "9.17"
+  },
+  {
+   "id": "gsm8k:1148",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "9"
+  },
+  {
+   "id": "gsm8k:1149",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "93"
+  },
+  {
+   "id": "gsm8k:1150",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "21"
+  },
+  {
+   "id": "gsm8k:1151",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "50"
+  },
+  {
+   "id": "gsm8k:1152",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "80"
+  },
+  {
+   "id": "gsm8k:1153",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "11"
+  },
+  {
+   "id": "gsm8k:1154",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:1155",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "13"
+  },
+  {
+   "id": "gsm8k:1156",
+   "depth": 8,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "120"
+  },
+  {
+   "id": "gsm8k:1157",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:1158",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "4200"
+  },
+  {
+   "id": "gsm8k:1159",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "44"
+  },
+  {
+   "id": "gsm8k:1160",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "394"
+  },
+  {
+   "id": "gsm8k:1161",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "100"
+  },
+  {
+   "id": "gsm8k:1162",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:1163",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "12"
+  },
+  {
+   "id": "gsm8k:1164",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "44"
+  },
+  {
+   "id": "gsm8k:1165",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "2128"
+  },
+  {
+   "id": "gsm8k:1166",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "850"
+  },
+  {
+   "id": "gsm8k:1167",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "120"
+  },
+  {
+   "id": "gsm8k:1168",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "31"
+  },
+  {
+   "id": "gsm8k:1169",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "8"
+  },
+  {
+   "id": "gsm8k:1170",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "8"
+  },
+  {
+   "id": "gsm8k:1171",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "1560"
+  },
+  {
+   "id": "gsm8k:1172",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "93"
+  },
+  {
+   "id": "gsm8k:1173",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:1174",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "60"
+  },
+  {
+   "id": "gsm8k:1175",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:1176",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:1177",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "13"
+  },
+  {
+   "id": "gsm8k:1178",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "17"
+  },
+  {
+   "id": "gsm8k:1179",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "23.53"
+  },
+  {
+   "id": "gsm8k:1180",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "8240"
+  },
+  {
+   "id": "gsm8k:1181",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "18"
+  },
+  {
+   "id": "gsm8k:1182",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "18"
+  },
+  {
+   "id": "gsm8k:1183",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "11"
+  },
+  {
+   "id": "gsm8k:1184",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "306"
+  },
+  {
+   "id": "gsm8k:1185",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:1186",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "19"
+  },
+  {
+   "id": "gsm8k:1187",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "22.5"
+  },
+  {
+   "id": "gsm8k:1188",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "9"
+  },
+  {
+   "id": "gsm8k:1189",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:1190",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "245"
+  },
+  {
+   "id": "gsm8k:1191",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "100"
+  },
+  {
+   "id": "gsm8k:1192",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "476"
+  },
+  {
+   "id": "gsm8k:1193",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "22"
+  },
+  {
+   "id": "gsm8k:1194",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "1120"
+  },
+  {
+   "id": "gsm8k:1195",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "300"
+  },
+  {
+   "id": "gsm8k:1196",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "75"
+  },
+  {
+   "id": "gsm8k:1197",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "900"
+  },
+  {
+   "id": "gsm8k:1198",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "97.5"
+  },
+  {
+   "id": "gsm8k:1199",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:1200",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "8"
+  },
+  {
+   "id": "gsm8k:1201",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "42"
+  },
+  {
+   "id": "gsm8k:1202",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:1203",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "180"
+  },
+  {
+   "id": "gsm8k:1204",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "84"
+  },
+  {
+   "id": "gsm8k:1205",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "4"
+  },
+  {
+   "id": "gsm8k:1206",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "40000"
+  },
+  {
+   "id": "gsm8k:1207",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "60"
+  },
+  {
+   "id": "gsm8k:1208",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "18"
+  },
+  {
+   "id": "gsm8k:1209",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:1210",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "288"
+  },
+  {
+   "id": "gsm8k:1211",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "448"
+  },
+  {
+   "id": "gsm8k:1212",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "150"
+  },
+  {
+   "id": "gsm8k:1213",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "276"
+  },
+  {
+   "id": "gsm8k:1214",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:1215",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "72"
+  },
+  {
+   "id": "gsm8k:1216",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "200"
+  },
+  {
+   "id": "gsm8k:1217",
+   "depth": 7,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "24"
+  },
+  {
+   "id": "gsm8k:1218",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "175"
+  },
+  {
+   "id": "gsm8k:1219",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "100"
+  },
+  {
+   "id": "gsm8k:1220",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "32"
+  },
+  {
+   "id": "gsm8k:1221",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "10"
+  },
+  {
+   "id": "gsm8k:1222",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "350"
+  },
+  {
+   "id": "gsm8k:1223",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "8.4"
+  },
+  {
+   "id": "gsm8k:1224",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:1225",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "1.67"
+  },
+  {
+   "id": "gsm8k:1226",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "94"
+  },
+  {
+   "id": "gsm8k:1227",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "66"
+  },
+  {
+   "id": "gsm8k:1228",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "31"
+  },
+  {
+   "id": "gsm8k:1229",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "36"
+  },
+  {
+   "id": "gsm8k:1230",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "460"
+  },
+  {
+   "id": "gsm8k:1231",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "80"
+  },
+  {
+   "id": "gsm8k:1232",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:1233",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "54"
+  },
+  {
+   "id": "gsm8k:1234",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "12"
+  },
+  {
+   "id": "gsm8k:1235",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:1236",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "84"
+  },
+  {
+   "id": "gsm8k:1237",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "82"
+  },
+  {
+   "id": "gsm8k:1238",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "468"
+  },
+  {
+   "id": "gsm8k:1239",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:1240",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "45"
+  },
+  {
+   "id": "gsm8k:1241",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "3"
+  },
+  {
+   "id": "gsm8k:1242",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:1243",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "50"
+  },
+  {
+   "id": "gsm8k:1244",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:1245",
+   "depth": 0,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "115"
+  },
+  {
+   "id": "gsm8k:1246",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "6720"
+  },
+  {
+   "id": "gsm8k:1247",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "8"
+  },
+  {
+   "id": "gsm8k:1248",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "18"
+  },
+  {
+   "id": "gsm8k:1249",
+   "depth": 7,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "32"
+  },
+  {
+   "id": "gsm8k:1250",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "22"
+  },
+  {
+   "id": "gsm8k:1251",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:1252",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:1253",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "100"
+  },
+  {
+   "id": "gsm8k:1254",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:1255",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "18"
+  },
+  {
+   "id": "gsm8k:1256",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:1257",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  },
+  {
+   "id": "gsm8k:1258",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "140"
+  },
+  {
+   "id": "gsm8k:1259",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "7200"
+  },
+  {
+   "id": "gsm8k:1260",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:1261",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "150"
+  },
+  {
+   "id": "gsm8k:1262",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "80.95"
+  },
+  {
+   "id": "gsm8k:1263",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "380"
+  },
+  {
+   "id": "gsm8k:1264",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "230"
+  },
+  {
+   "id": "gsm8k:1265",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "16"
+  },
+  {
+   "id": "gsm8k:1266",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "63"
+  },
+  {
+   "id": "gsm8k:1267",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "80"
+  },
+  {
+   "id": "gsm8k:1268",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "20"
+  },
+  {
+   "id": "gsm8k:1269",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "54"
+  },
+  {
+   "id": "gsm8k:1270",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "4140"
+  },
+  {
+   "id": "gsm8k:1271",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "153"
+  },
+  {
+   "id": "gsm8k:1272",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "476"
+  },
+  {
+   "id": "gsm8k:1273",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "17"
+  },
+  {
+   "id": "gsm8k:1274",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "36"
+  },
+  {
+   "id": "gsm8k:1275",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "1470"
+  },
+  {
+   "id": "gsm8k:1276",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "70"
+  },
+  {
+   "id": "gsm8k:1277",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "32"
+  },
+  {
+   "id": "gsm8k:1278",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "583"
+  },
+  {
+   "id": "gsm8k:1279",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "84"
+  },
+  {
+   "id": "gsm8k:1280",
+   "depth": 1,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:1281",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "320"
+  },
+  {
+   "id": "gsm8k:1282",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:1283",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "0"
+  },
+  {
+   "id": "gsm8k:1284",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:1285",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "22"
+  },
+  {
+   "id": "gsm8k:1286",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "220"
+  },
+  {
+   "id": "gsm8k:1287",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "60"
+  },
+  {
+   "id": "gsm8k:1288",
+   "depth": 7,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:1289",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "101"
+  },
+  {
+   "id": "gsm8k:1290",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "54"
+  },
+  {
+   "id": "gsm8k:1291",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "27"
+  },
+  {
+   "id": "gsm8k:1292",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "67"
+  },
+  {
+   "id": "gsm8k:1293",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "140000"
+  },
+  {
+   "id": "gsm8k:1294",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "60"
+  },
+  {
+   "id": "gsm8k:1295",
+   "depth": 5,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:1296",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "435"
+  },
+  {
+   "id": "gsm8k:1297",
+   "depth": 6,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "60"
+  },
+  {
+   "id": "gsm8k:1298",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "28.3"
+  },
+  {
+   "id": "gsm8k:1299",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "16"
+  },
+  {
+   "id": "gsm8k:1300",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "120"
+  },
+  {
+   "id": "gsm8k:1301",
+   "depth": 6,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "19"
+  },
+  {
+   "id": "gsm8k:1302",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "72"
+  },
+  {
+   "id": "gsm8k:1303",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "2"
+  },
+  {
+   "id": "gsm8k:1304",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "1000"
+  },
+  {
+   "id": "gsm8k:1305",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "225"
+  },
+  {
+   "id": "gsm8k:1306",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "7"
+  },
+  {
+   "id": "gsm8k:1307",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "8"
+  },
+  {
+   "id": "gsm8k:1308",
+   "depth": 2,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "30"
+  },
+  {
+   "id": "gsm8k:1309",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 3,
+   "text": "2170"
+  },
+  {
+   "id": "gsm8k:1310",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "16"
+  },
+  {
+   "id": "gsm8k:1311",
+   "depth": 2,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "6"
+  },
+  {
+   "id": "gsm8k:1312",
+   "depth": 4,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "360"
+  },
+  {
+   "id": "gsm8k:1313",
+   "depth": 3,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 4,
+   "text": "1.6"
+  },
+  {
+   "id": "gsm8k:1314",
+   "depth": 5,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "19"
+  },
+  {
+   "id": "gsm8k:1315",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "5"
+  },
+  {
+   "id": "gsm8k:1316",
+   "depth": 4,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "230"
+  },
+  {
+   "id": "gsm8k:1317",
+   "depth": 1,
+   "correct": 0.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "15"
+  },
+  {
+   "id": "gsm8k:1318",
+   "depth": 3,
+   "correct": 1.0,
+   "latent_passes": 6,
+   "gen_tokens": 2,
+   "text": "14"
+  }
+ ]
+}

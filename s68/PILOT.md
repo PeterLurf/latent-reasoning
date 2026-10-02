@@ -29,3 +29,16 @@ Internalize_CoT_Step_by_Step @ e06a32ee, `gsm_train.json` sha256 93a266b1…, 38
 * fewer seeds;
 * CO to the epoch-15 checkpoint;
 * faster GPUs (cost per FLOP is roughly flat).
+
+## bf16 measurements (2026-10-01 21:47 EDT; Vast RTX 3090, logs in `logs/gsmtime2/`) — §68 PAUSED by user decision (via Audit)
+
+| arm | fp32 | bf16 | bf16 projection |
+|---|---|---|---|
+| TC, official code (`bf16: True`, a full cast), bs 32 | 0.516 s per batch | **0.115 s per batch (4.5×)** | 0.39 h per epoch → 25 epochs ≈ 9.6 h |
+| WS (`s68/ws.py`, autocast), bs 32 | 0.245 s per step | **0.120 s per step (2.0×)** | token-matched budget (670 M tokens ≈ 7.95 WS epochs) ≈ 11.5 h |
+| CO stage 3 | 3.81 s per batch | not measured | at TC's 4.5×, ≈ 2.8 h per epoch; to epoch 15 ≈ 30 h |
+
+**Projections at bf16** (1 seed): TC + WS + CO-to-15 ≈ 51 GPU-h ≈ $9 at $0.17/h. Three seeds ≈ $27.
+**Public stage-0 candidates found after Literature's addendum:** the Dilgren & Wiegreffe (2604.04902) GPT-2 GSM8k-Aug set
+(CoT checkpoint_25, Coconut checkpoint_33, no-CoT checkpoint_25; MIT). Benched descriptively in bench/results
+`gsm8k__dw_*`.

@@ -1,0 +1,6 @@
+100/496 acc 0.660 105s
+200/496 acc 0.695 202s
+300/496 acc 0.697 323s
+400/496 acc 0.713 438s
+prosqa_na | cot:prosqa/ckpt/p8c_cot_s1_checkpoint_30 | n 496 | acc 0.714 [0.6724, 0.7517] | baselines {'proximity rule (no reasoning)': 0.5, 'chance': 0.5}
+WROTE bench\results\prosqa_na__cot_p8c_cot_s1_checkpoint_30.json
