@@ -6131,6 +6131,27 @@ user's plan is "beat SOTA on smaller tasks, then GSM8K".
 **Placement and cost.** A one-host pilot first, then a projection to Audit before renting. Local cards first. About
 3 arms × 3 seeds × ≤ 6 epochs over 206k items, an estimated 30–45 GPU-h, ≤ $25.
 
+**§78 result (2026-10-02 17:50 EDT; scored by the experiments session, `docs/PROTOCOL12.md`, `theory/results/score_s78.json`;
+GPT-2 small from base, trained on 1–2-step problems, 3 seeds, medians).**
+
+| arm | in-distribution (n 1–2) | mid (3–4) | long (n ≥ 5) | FLOPs / problem |
+|---|---|---|---|---|
+| TC (text CoT) | 0.462 | 0.061 | 0.022 | 2.2e10 |
+| WS (written state) | 0.441 | 0.058 | 0.018 | — |
+| WS-pad | 0.441 | 0.049 | 0.018 | 6.0e10 |
+
+* **L2 not met.** WS-pad − TC on long = −0.006 (CI −0.021 to 0.009).
+* **L3 met** (no in-distribution cost).
+* **L4 not significant.** WS-pad − WS = −0.003 (CI −0.015 to 0.009).
+* **No C3 win.** WS-pad uses about 3× TC's FLOPs.
+* **L1.** TC's long / in-distribution ratio is 0.05.
+* **Mechanism (descriptive).** WS ends with exactly 2 values in 3,688 / 3,957 problems: it stops at its trained length.
+  WS-pad's stop spreads out (276 hit the 12-call cap). Accuracy by DAG depth falls from about 0.33 at depth 3 to about
+  0.04 at depth 4–5.
+* **Reading.** Trained on 1–2-step problems, no arm generalises to longer GSM8K problems at GPT-2-small scale. The
+  written-state restart does not help here, because the stop decision, not the step, is out of range. §84 tests this
+  directly (oracle stop, then decoy padding).
+
 ## 79. A latent automaton that needs the pretrained LM: operations as natural-language paraphrases, held-out phrasings (pre-registered 2026-10-02 11:35 EDT, after Literature's check a7cdf69 and before any run; user decision "both")
 
 **Why.** The stable latent (§73) is hosted by GPT-2, but GPT-2 contributes nothing a table cannot (notes 76-6, 76-7);
