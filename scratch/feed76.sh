@@ -42,7 +42,9 @@ PYEOF
   for d in cuda:0 cuda:1 cuda:2; do
     free=1
     [ -f scratch/.w76_$d ] && kill -0 "$(cat scratch/.w76_$d)" 2>/dev/null && free=0
-    [ $d = cuda:2 ] && ! grep -q "p75_pfstd_s2033 rc" logs/c1_local.log && free=0        # descriptive §75 run still there
+    [ -f scratch/.hold76_$d ] && free=0                                                  # manual hold (e.g. other work)
+    # hard guard (2026-10-02 11:25 stacking incident): never start if any amortise job already runs on this card
+    if [ $free = 1 ] && [ "$(powershell -NoProfile -c "(Get-CimInstance Win32_Process -Filter \"Name='python.exe'\" | Where-Object { \$_.CommandLine -like '*c1.amortise*--device $d *' }).Count")" != "0" ]; then free=0; fi
     if [ $free = 1 ]; then
       for G in S4 A5; do Q=scratch/c1_q_76_local.txt; [ $G = A5 ] && Q=scratch/c1_q_76_A5.txt
         todo=$(unclaimed $Q)
