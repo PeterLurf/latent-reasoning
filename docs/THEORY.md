@@ -6991,6 +6991,10 @@ session, extending `boxes/train.py`. $0.
 * **Scope.** The nearest prior is HRPO 2505.18454 (a learned-gate token → latent fade under RL). §89 is new as scoped
   (a supervised, scheduled α-fade, head to head against Coconut stages), not as a concept.
 
+**Note 89-2 (2026-10-02 19:20 EDT; scoring, before any §89 run; Audit).** F1 can be met by any of three FADE arms (std,
+std-dec, soft). The result line names every arm that meets it, as "best of 3 arms", and **F2 and F3 are applied to each
+arm that meets F1**, not only the best.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
