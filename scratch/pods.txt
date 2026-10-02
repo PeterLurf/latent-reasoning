@@ -466,3 +466,7 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53887296 vast offer 39105514 created 2026-10-02 12:37: label g78-b1, queue scratch/g78_q_b1.txt (logged at create by vdeploy_toy.sh)
 53887305 vast offer 53876213 created 2026-10-02 12:37: label g78-b2, queue scratch/g78_q_b2.txt (logged at create by vdeploy_toy.sh)
 53887312 vast offer 53757041 created 2026-10-02 12:37: label g78-b3, queue scratch/g78_q_b3.txt (logged at create by vdeploy_toy.sh)
+53891982 vast offer 53644716 created 2026-10-02 13:18: label s83-retrain, queue scratch/s83_q.txt (logged at create by vdeploy_toy.sh)
+53887296 vast | g78_b1 DESTROYED_VERIFIED 2026-10-02 15:54 after verified fetch (gsmlen/runs/wspad_s1)
+53887305 vast | g78_b2 DESTROYED_VERIFIED 2026-10-02 15:55 after verified fetch (gsmlen/runs/wspad_s2)
+53887312 vast | g78_b3 DESTROYED_VERIFIED 2026-10-02 15:58 after verified fetch (gsmlen/runs/wspad_s3)
