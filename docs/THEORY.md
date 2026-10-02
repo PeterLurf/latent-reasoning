@@ -6578,6 +6578,27 @@ states. Two speed-only changes:
 * **D2 without D1.** The stop is fixed, but per-step error past 2 limits accuracy.
 * **Gate fails.** The bottleneck is per-step computation past 2, not halting.
 
+**§84 result (2026-10-02 18:03 EDT; Step 1 ORACLE-stop diagnostic run by the experiments session, 230fc78,
+`theory/results/s84_step1_ORACLE.json`). The gate FAILS, so Step 2 (WS-decoy) is not run and §84 closes. Reading:
+"the bottleneck is per-step computation past 2, not halting".**
+
+| bin (pooled over seeds) | ORACLE stop (diagnostic upper bound) | WS-pad's own stop |
+|---|---|---|
+| in-distribution | 0.397 [0.355, 0.439] | 0.430 |
+| mid | 0.050 | 0.048 |
+| long (n ≥ 5) | 0.030 [0.016, 0.044] | 0.015 |
+
+* **The gate needed oracle long ≥ 0.10;** it is 0.030. The recovery share is 0.036.
+* **Value correctness by position under ORACLE:** position 3 0.052, 4 0.032, 5 0.032, 6 0.031, 7 0.011, 8 0.038. Values
+  past the trained depth (2) are about 3 % correct even when the model is made to continue.
+* **Error split (mid + long, 2,637 item-runs):** halting in 2,242 item-runs; 2,622 step and 4,861 propagation errors (by
+  position); 1,743 other.
+* **Reading.** Fixing the stop alone cannot help. The *steps* past the trained dependency depth are out of range: the
+  range principle again, now for the per-step computation at depth > 2.
+  - A solver trained on 1–2-step GSM8K problems at GPT-2-small scale has learned no reusable step operation that
+    extends to depth 3+.
+  - This closes the step-split GSM8K line for written state at this scale (§78, §84).
+
 ## 85. Information or optimisation? The short-label threshold, and an oracle-initialised free table without short labels (pre-registered 2026-10-02 16:55 EDT, after Literature's leads f89953e and before any §85 run; the user directive "keep innovating")
 
 **Why.** The free table acquires S4, A5 and S5 only when length-1/2 problems label the Cayley products directly (§76(A),
