@@ -21,6 +21,7 @@ import argparse
 import json
 import os
 import sys
+import time
 
 import numpy as np
 import torch
@@ -93,21 +94,6 @@ def train_acc(m, COMP, e, rng):
     return float(np.mean(ok))
 
 
-def run(group, cell, method, seed, M, updates, lr, tau0, curriculum, K=8, beta0=0.05, bs=256, dev="cpu"):
-    COMP, e, A = comp_table(group)
-    Ct = torch.as_tensor(COMP, device=dev)
-    if method == "bon":
-        best = None
-        for r in range(4):
-            mm = run(group, cell, "marg", seed * 100 + r, M, updates, lr, tau0, curriculum, dev=dev, _model=True)
-            ta = train_acc(mm, COMP, e, np.random.default_rng(seed))
-            if best is None or ta > best[0]:
-                best = (ta, mm)
-        cert, bad, acc = certify(best[1], COMP, e, np.random.default_rng(seed + 7))
-        return {"certified": bool(cert), "bad_pairs": bad, "acc": acc, "selected_train_acc": best[0], "n": 4}
-    return _train(group, cell, method, seed, M, updates, lr, tau0, curriculum, K, beta0, bs, dev)
-
-
 def _train(group, cell, method, seed, M, updates, lr, tau0, curriculum, K, beta0, bs, dev, model_only=False):
     COMP, e, A = comp_table(group)
     Ct = torch.as_tensor(COMP, device=dev)
@@ -161,7 +147,7 @@ def _run_marg_model(group, cell, seed, M, updates, lr, tau0, curriculum, dev):
 
 
 # best-of-n uses the marg trainer
-def run(group, cell, method, seed, M, updates, lr, tau0, curriculum, K=8, beta0=0.05, bs=256, dev="cpu", _model=False):  # noqa: F811
+def run(group, cell, method, seed, M, updates, lr, tau0, curriculum, K=8, beta0=0.05, bs=256, dev="cpu"):
     COMP, e, A = comp_table(group)
     if method == "bon":
         best = None
@@ -183,16 +169,18 @@ def main():
     ap.add_argument("--updates", type=int, default=8000); ap.add_argument("--lr", type=float, default=1e-2)
     ap.add_argument("--tau0", type=float, default=1.0); ap.add_argument("--curriculum", default="std", choices=["std", "zhang"])
     ap.add_argument("--K", type=int, default=8); ap.add_argument("--beta0", type=float, default=0.05)
-    ap.add_argument("--device", default="cpu"); ap.add_argument("--out")
-    a = ap.parse_args(); torch.set_num_threads(3)
+    ap.add_argument("--device", default="cpu"); ap.add_argument("--out"); ap.add_argument("--threads", type=int, default=3)
+    a = ap.parse_args(); torch.set_num_threads(a.threads)
     _, _, A = comp_table(a.group); M = a.M or A
     res = {}
     for s in a.seeds:
-        t0 = __import__("time").time()
+        t0, p0 = time.time(), time.process_time()
         r = run(a.group, a.cell, a.method, s, M, a.updates, a.lr, a.tau0, a.curriculum, a.K, a.beta0, dev=a.device)
-        r["cpu_sec"] = round(__import__("time").time() - t0, 1); res[s] = r
+        r["cpu_sec"] = round(time.time() - t0, 1); r["proc_sec"] = round(time.process_time() - p0, 1)  # wall, process CPU
+        r["updates"] = a.updates; res[s] = r
         print(a.group, a.cell, a.method, "M", M, "seed", s, "certified", r["certified"], "bad", r["bad_pairs"],
-              "acc", {k: round(v, 3) for k, v in r["acc"].items()}, flush=True)
+              "acc", {k: round(v, 3) for k, v in r["acc"].items()},
+              "sec", r["cpu_sec"], r["proc_sec"], flush=True)
     if a.out:
         json.dump(res, open(a.out, "w", newline="\n"), indent=1)
 

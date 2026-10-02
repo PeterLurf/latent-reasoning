@@ -5099,6 +5099,39 @@ checkpoints").**
 * **Stage 1 only.** RL-style updates fix small-state acquisition; scaling is still open.
 * **Neither.** Outcome-only acquisition of the latent automaton is not fixed by these methods; Target 1 is dropped.
 
+**Amendment 69-1 (2026-10-01 23:18 EDT, before any pilot or scored run).**
+* **Why-paragraph numbers corrected.** These are baselines; the design is unchanged.
+  - Table at M = 6: 1/6 (the corrected §67 figure), not 1/5.
+  - MLP: the "0/x" placeholder should read:
+    - 0/8 at M = 6 (`c1_diag.json`, `c1_diag_b.json`; pre-fix certificate, which can only add failures);
+    - 1/40 at M = 12/24 over τ0 × lr (`c1_diag_mlp.json`).
+  - The bilinear 8/10 held-out figure was at M = 24 with τ0 = 4.
+  - Since registration, the marg-with-Zhang retry on S4 has given 0/3 (`c1_group_S4_zhang.json`); A5 is still running.
+* **Placement.** One Vast host with many CPU cores (≤ $0.20/h), CPU only.
+  - One torch thread per process, with concurrency ≤ the host's cores. `c1_rl.py` gained `--threads` and records
+    process CPU seconds (`proc_sec`).
+  - Budget matching uses `proc_sec`.
+  - The dead duplicate `run()` was removed (no behaviour change).
+* **Calibration (pilot seed 990, τ0 = 1, 8,000 updates).** One run per method and cell on the host.
+  - For each method m and cell: if proc(m) > 1.5 × proc(marg), then U_m = round(8,000 × proc(marg) / proc(m)); otherwise
+    8,000.
+  - hyb splits U_m in half (marg, then hem).
+  - bon is 4 × 8,000 marg updates (4× cost, stated with the result).
+  - The U_m values are written to `theory/results/c1_rl/calib.json` before the pilot.
+* **Pilot selection.**
+  - For each (method, cell), marg included, choose τ0 ∈ {1, 4} by certified pilot seeds out of 5.
+  - Ties go to the higher mean hard accuracy at N 32, then to τ0 = 1.
+* **Stage-1 discriminating condition (tightening).** A pass on a cell counts only if marg, at its own chosen τ0, certifies
+  ≤ 6/10 on the same scored seeds and cell. Otherwise the cell shows no acquisition failure to fix, and it is
+  reported descriptively.
+* **Descriptive extra.** Each sampled method is also run at the full 8,000 updates on the scored seeds (unmatched; not
+  a pass).
+* **Stage 2 details.**
+  - Bilinear cell, M = 2|G|, τ0 = 4 for all methods (the 67b recipe for this cell), Zhang curriculum, 16,000 updates.
+  - Matched counts come from a fresh seed-990 calibration on S4 (A5 uses the same ratios).
+  - Seeds 200–202, with marg on the same seeds and host as the reference.
+  - The std curriculum is run alongside as descriptive only; the registered pass uses Zhang.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
