@@ -1,6 +1,6 @@
 """THEORY §76 (A) driver: the free-table latent automaton (exact marginal, final answers only) on S4 / A5 / S5,
 curricula ge3 (primary: lengths >= 3 only) and std, seeds 2051-2060; M = 2|G|, tau 4 -> 1, lr 1e-2, 16,000 updates; hard
-tables saved for (B). P concurrent single-thread processes, one seed per process, resumable. Output
+tables saved for (B). Descriptive: A5 ge3 M sweep (60, 90, 240) and tau0 = 1, seeds 2051-2055. P concurrent single-thread processes, one seed per process, resumable. Output
 theory/results/c1_tab/<group>_<curriculum>_s<seed>.json, marker DONE.
     python theory/c1_tab_driver.py --P 28 [--groups S4 A5 S5]
 """
@@ -24,17 +24,21 @@ def main():
     env = dict(os.environ, OMP_NUM_THREADS="1", MKL_NUM_THREADS="1", OPENBLAS_NUM_THREADS="1")
 
     def one(job):
-        g, cur, s = job
-        f = os.path.join(a.out, "%s_%s_s%d.json" % (g, cur, s))
+        g, cur, s, M, tau0, tag = job
+        name = "%s_%s%s_s%d" % (g, cur, tag, s)
+        f = os.path.join(a.out, name + ".json")
         if not os.path.exists(f):
-            with open(os.path.join(a.out, "logs", "%s_%s_s%d.log" % (g, cur, s)), "w") as lg:
+            with open(os.path.join(a.out, "logs", name + ".log"), "w") as lg:
                 subprocess.run([sys.executable, "-u", os.path.join(HERE, "c1_rl.py"), "--group", g, "--cell", "tab", "--M",
-                                str(2 * GSIZE[g]), "--method", "marg", "--tau0", "4", "--updates", "16000", "--curriculum", cur,
+                                str(M), "--method", "marg", "--tau0", str(tau0), "--updates", "16000", "--curriculum", cur,
                                 "--seeds", str(s), "--threads", "1", "--save_table", "--out", f],
                                stdout=lg, stderr=subprocess.STDOUT, env=env)
         return os.path.exists(f)
 
-    jobs = [(g, cur, s) for g in a.groups for cur in ("ge3", "std") for s in SEEDS]       # largest group first
+    jobs = [(g, cur, s, 2 * GSIZE[g], 4, "") for g in a.groups for cur in ("ge3", "std") for s in SEEDS]   # largest first
+    # descriptive (Literature 99ec154): M sweep and tau ablation, A5 ge3, seeds 2051-2055
+    jobs += [("A5", "ge3", s, M, 4, "_M%d" % M) for M in (240, 90, 60) for s in SEEDS[:5]]
+    jobs += [("A5", "ge3", s, 120, 1, "_tau1") for s in SEEDS[:5]]
     t0 = time.time()
     with ThreadPoolExecutor(a.P) as ex:
         ok = list(ex.map(one, jobs))

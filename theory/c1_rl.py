@@ -102,7 +102,7 @@ def _train(group, cell, method, seed, M, updates, lr, tau0, curriculum, K, beta0
     COMP, e, A = comp_table(group)
     Ct = torch.as_tensor(COMP, device=dev)
     torch.manual_seed(seed); rng = np.random.default_rng(seed)
-    m = Cell(cell, M, A).to(dev); opt = torch.optim.Adam(m.parameters(), lr=lr)
+    m = Cell(cell, M, A).to(dev); opt = torch.optim.Adam(m.parameters(), lr=lr); ctrace = {}
     for u in range(updates):
         L = length(rng, u, updates, curriculum)
         tau = 1.0 + (tau0 - 1.0) * max(0.0, 1.0 - u / (0.5 * updates))
@@ -140,6 +140,8 @@ def _train(group, cell, method, seed, M, updates, lr, tau0, curriculum, K, beta0
                 beta = beta0 * max(0.0, 1.0 - u / (0.5 * updates))
                 loss = -(adv * logp).mean() - beta * ent / max(L, 1)
         opt.zero_grad(); loss.backward(); opt.step()
+        if SAVE_TABLE and (u + 1) % 1000 == 0:          # §76: problems-to-certificate (certified at update u+1?)
+            ctrace[u + 1] = bool(certify(m, COMP, e, np.random.default_rng(seed + 7))[0])
     if model_only:
         return m
     cert, bad, acc = certify(m, COMP, e, np.random.default_rng(seed + 7))
@@ -147,6 +149,7 @@ def _train(group, cell, method, seed, M, updates, lr, tau0, curriculum, K, beta0
     if SAVE_TABLE:                                # §76: the hard tables, for amortisation into the GPT-2 cell
         with torch.no_grad():
             out["table"] = m.table().argmax(-1).cpu().numpy().tolist(); out["dec"] = m.D.argmax(-1).cpu().numpy().tolist()
+        out["cert_trace"] = ctrace; out["problems_per_update"] = bs
     return out
 
 
