@@ -65,3 +65,16 @@
 {"step": 6500, "loss": 0.810485172867775, "labelled_states": 416000, "sec": 2006}
 {"step": 6600, "loss": 0.8089643824100494, "labelled_states": 422400, "sec": 2030}
 {"step": 6700, "loss": 0.8077978891134262, "labelled_states": 428800, "sec": 2055}
+{"step": 6800, "loss": 0.8078542912006378, "labelled_states": 435200, "sec": 2079}
+{"step": 6900, "loss": 0.8079492914676666, "labelled_states": 441600, "sec": 2102}
+{"step": 7000, "loss": 0.80790212392807, "labelled_states": 448000, "sec": 2125}
+{"step": 7100, "loss": 0.8051224195957184, "labelled_states": 454400, "sec": 2148}
+{"step": 7200, "loss": 0.8063419944047928, "labelled_states": 460800, "sec": 2172}
+{"step": 7300, "loss": 0.8048380941152573, "labelled_states": 467200, "sec": 2195}
+{"step": 7400, "loss": 0.8050951766967773, "labelled_states": 473600, "sec": 2219}
+{"step": 7500, "loss": 0.8044465708732605, "labelled_states": 480000, "sec": 2241}
+{"step": 7600, "loss": 0.8040429133176804, "labelled_states": 486400, "sec": 2264}
+{"step": 7700, "loss": 0.8034798365831375, "labelled_states": 492800, "sec": 2287}
+{"step": 7800, "loss": 0.8044148874282837, "labelled_states": 499200, "sec": 2311}
+{"step": 7900, "loss": 0.8037493139505386, "labelled_states": 505600, "sec": 2334}
+{"step": 8000, "loss": 0.8035743850469589, "labelled_states": 512000, "sec": 2356}
