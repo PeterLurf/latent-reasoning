@@ -6773,6 +6773,31 @@ rules (685bef0) ask for ≥ 5 seeds for stability (C6). With 3 seeds, **C6 is re
 passes, seeds 4–5 (k = 1 and k = 4) are added locally ($0) under the same recipe before any C6 claim, and C6 is "met"
 only if ≥ 4/5 seeds pass R1's accuracy bar.
 
+**§85 result (2026-10-02 19:09 EDT; tables run by the experiments session, `theory/results/c1_s85/`; scored by Theory,
+`theory/results/score_s85.json`). A5 free table, M 120, seeds 2121–2125.**
+
+| (i) short-label fraction p (mixP) | 0.001 | 0.01 | 0.03 | 0.1 |
+|---|---|---|---|---|
+| certified | 0/5 | 1/5 | 2/5 | **5/5** |
+| acc at N 128 = 1.000 | 0/5 | 2/5 | **5/5** | 5/5 |
+
+| (ii) oracle init under ge3, logit noise ε | 0.5 | 1 | 2 | 4 |
+|---|---|---|---|---|
+| certified | **5/5** | **5/5** | **5/5** | 0/5 (at chance) |
+| first certified (update) | 2–3k | 3k | 5–6k | — |
+
+* **T1 met (monotone).** The smallest p with ≥ 4/5 certified is 0.1. Above about 3 % short problems, acquisition starts.
+  - At p = 0.03, all 5 seeds are 1.000 at N 128 but only 2 certify. Rarely reached transient codes stay wrong (§74's
+    pattern), so the certificate is the stricter measure.
+* **T2: optimisation, not information.**
+  - From the true automaton plus up to ε = 2 of logit noise, ge3 training (no short labels) re-certifies 5/5. The true
+    automaton is a stable attractor under ge3, and ge3 data pins it down.
+  - The basin's width lies between ε = 2 and 4.
+  - So §76(A)/§82's ge3 failure from a random start is an **optimisation** failure: a symmetric saddle at the uniform
+    start (the gradient norm is flat over lengths, iii). It is not missing information.
+* **Consequence.** Acquisition without short labels needs a way into the basin (data-derived or staged initialisation),
+  not more data. Short problems at ≥ 3–10 % are a practical way in.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the

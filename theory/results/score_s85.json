@@ -1,0 +1,330 @@
+{
+ "mixP0.001": {
+  "certified": 0,
+  "n": 5,
+  "runs": [
+   {
+    "file": "mixP0.001_s2121.json",
+    "certified": false,
+    "bad_pairs": 3599,
+    "acc128": 0.132,
+    "first_cert": null
+   },
+   {
+    "file": "mixP0.001_s2122.json",
+    "certified": false,
+    "bad_pairs": 7080,
+    "acc128": 0.014,
+    "first_cert": null
+   },
+   {
+    "file": "mixP0.001_s2123.json",
+    "certified": false,
+    "bad_pairs": 7080,
+    "acc128": 0.0135,
+    "first_cert": null
+   },
+   {
+    "file": "mixP0.001_s2124.json",
+    "certified": false,
+    "bad_pairs": 38,
+    "acc128": 0.5075,
+    "first_cert": null
+   },
+   {
+    "file": "mixP0.001_s2125.json",
+    "certified": false,
+    "bad_pairs": 3363,
+    "acc128": 0.312,
+    "first_cert": null
+   }
+  ]
+ },
+ "mixP0.01": {
+  "certified": 1,
+  "n": 5,
+  "runs": [
+   {
+    "file": "mixP0.01_s2121.json",
+    "certified": false,
+    "bad_pairs": 134,
+    "acc128": 0.3425,
+    "first_cert": null
+   },
+   {
+    "file": "mixP0.01_s2122.json",
+    "certified": false,
+    "bad_pairs": 5192,
+    "acc128": 1.0,
+    "first_cert": null
+   },
+   {
+    "file": "mixP0.01_s2123.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 11000
+   },
+   {
+    "file": "mixP0.01_s2124.json",
+    "certified": false,
+    "bad_pairs": 80,
+    "acc128": 0.4975,
+    "first_cert": null
+   },
+   {
+    "file": "mixP0.01_s2125.json",
+    "certified": false,
+    "bad_pairs": 4956,
+    "acc128": 0.493,
+    "first_cert": null
+   }
+  ]
+ },
+ "mixP0.03": {
+  "certified": 2,
+  "n": 5,
+  "runs": [
+   {
+    "file": "mixP0.03_s2121.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 15000
+   },
+   {
+    "file": "mixP0.03_s2122.json",
+    "certified": false,
+    "bad_pairs": 7021,
+    "acc128": 1.0,
+    "first_cert": null
+   },
+   {
+    "file": "mixP0.03_s2123.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 13000
+   },
+   {
+    "file": "mixP0.03_s2124.json",
+    "certified": false,
+    "bad_pairs": 6962,
+    "acc128": 1.0,
+    "first_cert": null
+   },
+   {
+    "file": "mixP0.03_s2125.json",
+    "certified": false,
+    "bad_pairs": 6608,
+    "acc128": 1.0,
+    "first_cert": null
+   }
+  ]
+ },
+ "mixP0.1": {
+  "certified": 5,
+  "n": 5,
+  "runs": [
+   {
+    "file": "mixP0.1_s2121.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 12000
+   },
+   {
+    "file": "mixP0.1_s2122.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 10000
+   },
+   {
+    "file": "mixP0.1_s2123.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 10000
+   },
+   {
+    "file": "mixP0.1_s2124.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 11000
+   },
+   {
+    "file": "mixP0.1_s2125.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 12000
+   }
+  ]
+ },
+ "orac0.5": {
+  "certified": 5,
+  "n": 5,
+  "runs": [
+   {
+    "file": "orac0.5_s2121.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 3000
+   },
+   {
+    "file": "orac0.5_s2122.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 2000
+   },
+   {
+    "file": "orac0.5_s2123.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 2000
+   },
+   {
+    "file": "orac0.5_s2124.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 3000
+   },
+   {
+    "file": "orac0.5_s2125.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 2000
+   }
+  ]
+ },
+ "orac1": {
+  "certified": 5,
+  "n": 5,
+  "runs": [
+   {
+    "file": "orac1_s2121.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 3000
+   },
+   {
+    "file": "orac1_s2122.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 3000
+   },
+   {
+    "file": "orac1_s2123.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 3000
+   },
+   {
+    "file": "orac1_s2124.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 3000
+   },
+   {
+    "file": "orac1_s2125.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 3000
+   }
+  ]
+ },
+ "orac2": {
+  "certified": 5,
+  "n": 5,
+  "runs": [
+   {
+    "file": "orac2_s2121.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 5000
+   },
+   {
+    "file": "orac2_s2122.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 5000
+   },
+   {
+    "file": "orac2_s2123.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 6000
+   },
+   {
+    "file": "orac2_s2124.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 5000
+   },
+   {
+    "file": "orac2_s2125.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 5000
+   }
+  ]
+ },
+ "orac4": {
+  "certified": 0,
+  "n": 5,
+  "runs": [
+   {
+    "file": "orac4_s2121.json",
+    "certified": false,
+    "bad_pairs": 7080,
+    "acc128": 0.0225,
+    "first_cert": null
+   },
+   {
+    "file": "orac4_s2122.json",
+    "certified": false,
+    "bad_pairs": 7080,
+    "acc128": 0.049,
+    "first_cert": null
+   },
+   {
+    "file": "orac4_s2123.json",
+    "certified": false,
+    "bad_pairs": 7080,
+    "acc128": 0.0185,
+    "first_cert": null
+   },
+   {
+    "file": "orac4_s2124.json",
+    "certified": false,
+    "bad_pairs": 7080,
+    "acc128": 0.061,
+    "first_cert": null
+   },
+   {
+    "file": "orac4_s2125.json",
+    "certified": false,
+    "bad_pairs": 7080,
+    "acc128": 0.016,
+    "first_cert": null
+   }
+  ]
+ }
+}
