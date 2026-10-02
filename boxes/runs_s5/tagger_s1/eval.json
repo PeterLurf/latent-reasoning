@@ -1,0 +1,18 @@
+{
+ "arm": "tagger",
+ "k": 1,
+ "latent": 0,
+ "train_sec": 4275,
+ "labelled_states_seen": 32768000,
+ "eval_batch": 100,
+ "eval_dtype": "torch.bfloat16",
+ "test_sequences": 2000,
+ "eval_sec": 28,
+ "cumulative": {
+  "128": 0.0,
+  "256": 0.0,
+  "512": 0.0
+ },
+ "final_state_acc_512": 0.003,
+ "invalid_share": 0.0
+}
