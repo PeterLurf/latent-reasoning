@@ -126,9 +126,10 @@ def mechanism(model, dev, n=2000, N=32, k=16):
     # §67b clarification (fixed before any panel result was read): with M > 6 the substitute must be a code the machine
     # actually reaches (the certificate's reachable set); unreachable codes are outside the certified machine. The
     # unrestricted rate above is kept as descriptive.
-    from c1.core import certificate_reach
-    reach = certificate_reach(model)
-    altr = [[c for c in reach if c != rc[i] and dec[c] == dec[rc[i]]] for i in range(n)]
+    # Audit's condition: substitutes are codes VISITED in the donors' real hard rollouts (after >= 1 op), fixed per model
+    # before the test, and drawn from those rollouts (not by enumerating codes).
+    visited = sorted({int(c) for t in range(1, len(d_tr)) for c in d_tr[t].cpu().numpy()})
+    altr = [[c for c in visited if c != rc[i] and dec[c] == dec[rc[i]]] for i in range(n)]
     haver = [i for i in range(n) if altr[i]]
     if haver:
         st = torch.tensor([altr[i][0] for i in haver], device=dev)
@@ -136,7 +137,7 @@ def mechanism(model, dev, n=2000, N=32, k=16):
         res["irrelevant_change_rate_reachable"] = float((a4.cpu().numpy() != r_ans.cpu().numpy()[haver]).mean())
     else:
         res["irrelevant_change_rate_reachable"] = None
-    res["irrelevant_n_reachable"] = len(haver)
+    res["irrelevant_n_reachable"] = len(haver); res["visited_codes"] = visited
     res["irrelevant_note"] = "vacuous: every decoded state has exactly one code" if not have else ""
     # same-semantic donors from a different depth: a donor code reached at step k2 != k with the recipient's decoded state
     pool = {}
