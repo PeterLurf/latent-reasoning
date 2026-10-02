@@ -5191,6 +5191,18 @@ checkpoints").**
   - What worked before is extra capacity: over-complete codes, the free table at M = 12 (10/10), and the bilinear cell
     at M = 24 with τ annealing (10/10 selection, 8/10 held out). It did not scale to S4/A5 (0/3, std and Zhang).
 
+**Note 69-3 (2026-10-01 23:39 EDT; labels only, definitions and result unchanged; Audit and the external reply
+`docs/EXTERNAL_IDEAS_RL_2026-10-01.md`).** Read the §69 method names as follows.
+* `hem` is on-policy success reinforcement, not Viterbi hard-EM. Successful on-policy paths are posterior samples, so
+  its expected update is the marginal-likelihood gradient up to batch weighting.
+* `rmer` is occurrence-weighted success reinforcement, not Guu's RandoMer: duplicate successful paths are not
+  deduplicated, so frequent paths still dominate.
+* `grpo` is REINFORCE with a self-inclusive group mean, which scales the gradient by 1 − 1/K. It has no clipping.
+* With this reading, the Stage-1 null says that sampling-based estimates of essentially the likelihood or reward
+  gradient do not escape the optima. It is not a test of deduplicated meritocratic search or of objectives that differ
+  in kind.
+* The exact expected-reward control Audit asked for is moot for §69, since no method won. It moves to the next design.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
