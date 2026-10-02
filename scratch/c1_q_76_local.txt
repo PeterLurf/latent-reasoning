@@ -1,0 +1,3 @@
+# §76(B) local queue (written by scratch/feed76.sh)
+c1/runs/p76_std_pfstd_s2051 c1.amortise --teacher theory/results/c1_tab_local\S4_std_s2051.json --student pfstd
+c1/runs/p76_std_ptstd_s2051 c1.amortise --teacher theory/results/c1_tab_local\S4_std_s2051.json --student ptstd
