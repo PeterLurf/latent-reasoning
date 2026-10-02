@@ -6043,6 +6043,17 @@ runs already read, see note 76-1).**
   reported, any certification disagreement is flagged, and the verdict counts a seed as certified only if every
   completed run certifies.
 
+**Note 76-6 (2026-10-02 09:53 EDT; descriptive premise for a possible §77, run by the experiments session;
+`theory/results/s77_premise_S4_hid*.json`).** Does a wider shared bilinear readout fix S4?
+* One-hot bilinear cell, S4, M 48, lr 1e-2, 16k updates, seeds 990–992: **0/9 certified**.
+  - hid 256: accuracy at N 128 0.04 / 0.08 / 0.16.
+  - hid 1024: 0.05 / 0.41 / 0.05.
+  - hid 4096: all at chance; the loss stays at ln 24, uniform.
+* **Readout capacity is not the obstacle.** The free table's independent per-(code, op) parameters are what make the
+  exact-marginal objective work at S4, A5 and S5 (notes 75-1, 75-2). Every shared readout tried (bilinear one-hot,
+  dense, GPT-2 PF-std and PT-std, now wider) merges states at S4.
+* The wide-readout §77 is not registered. The A5 hid-4096 run was stopped.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
