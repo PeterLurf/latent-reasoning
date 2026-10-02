@@ -1,0 +1,5 @@
+# THEORY §72 (5918e15) seed 2002
+c1/runs/p72_pf_s2002 --arm d1 --M 24 --tau0 4 --readout bil --head_norm ln --code_init distinct --updates 8000 --bs 512 --lr 1e-4 --lr_new 1e-2 --freeze_gpt2 --feat_norm ln --seed 2002
+c1/runs/p72_rf_s2002 --arm d1 --M 24 --tau0 4 --readout bil --head_norm ln --code_init distinct --updates 8000 --bs 512 --lr 1e-4 --lr_new 1e-2 --freeze_gpt2 --feat_norm ln --gpt2_init random --seed 2002
+c1/runs/p72_pfstd_s2002 --arm d1 --M 24 --tau0 4 --readout bil --head_norm ln --code_init distinct --updates 8000 --bs 512 --lr 1e-4 --lr_new 1e-2 --freeze_gpt2 --feat_norm tablestd --seed 2002
+c1/runs/p72_pt_s2002 --arm d1 --M 24 --tau0 4 --readout bil --head_norm ln --code_init distinct --updates 8000 --bs 512 --lr 1e-4 --lr_new 1e-2 --feat_norm ln --seed 2002

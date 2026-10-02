@@ -80,28 +80,82 @@ class Cell(nn.Module):
         self.U, self.V, self.W = nn.Linear(768, hid).to(dev), nn.Linear(768, hid).to(dev), nn.Linear(hid, M).to(dev)
         self.readout = "bil"
 
-    def step_logits(self, codes, ops):
-        """codes, ops: (B,) long -> (B, M) next-code logits (one GPT-2 call per row, positions 0-2)."""
+    feat_norm = "ln"          # §72: "ln" (learned LayerNorm, §67b) or "tablestd" (per-coordinate standardisation across
+                              # the rows of the full table; no affine; stats from the full table, identical at test)
+
+    def _raw_step(self, codes, ops):
         dev = self.code.device
         x = torch.stack([self.code[codes], self.g.embed(torch.tensor(OP_TOK, device=dev)[ops]),
                          self.g.embed(torch.full_like(ops, STEP_TOK))], 1)
         h, _ = self.g(x)
-        if getattr(self, "readout", "linear") == "bil":
-            return self.W(torch.relu(self.U(self.ln_c(h[:, 0])) * self.V(self.ln_o(h[:, 1]))))   # 67b-2: ReLU
-        return self.next_head(self.hn(h[:, -1]))
+        return h
 
-    def dec_logits(self, codes):
+    def _raw_dec(self, codes):
         x = torch.stack([self.code[codes], self.g.embed(torch.full_like(codes, ANS_TOK))], 1)
         h, _ = self.g(x)
-        return self.ans_head(self.hn(h[:, -1]))
+        return h[:, -1]
+
+    def _full_stats(self):
+        """Full-table statistics (no grad) for tablestd at test / single-batch calls."""
+        dev = self.code.device
+        with torch.no_grad():
+            c = torch.arange(M, device=dev).repeat(6); a = torch.arange(6, device=dev).repeat_interleave(M)
+            h = self._raw_step(c, a); hd = self._raw_dec(torch.arange(M, device=dev))
+            self._stats = (h[:, 0].mean(0), h[:, 0].std(0) + 1e-5, h[:, 1].mean(0), h[:, 1].std(0) + 1e-5,
+                           hd.mean(0), hd.std(0) + 1e-5)
+        return self._stats
+
+    def head_inputs(self, codes, ops, full=False):
+        """(h_code, h_op, raw h) as fed to U, V after the feature normalisation."""
+        h = self._raw_step(codes, ops)
+        if self.feat_norm == "tablestd":
+            if full:
+                mc, sc, mo, so = h[:, 0].mean(0), h[:, 0].std(0) + 1e-5, h[:, 1].mean(0), h[:, 1].std(0) + 1e-5
+            else:
+                st = getattr(self, "_stats", None) or self._full_stats(); mc, sc, mo, so = st[:4]
+            return (h[:, 0] - mc) / sc, (h[:, 1] - mo) / so, h
+        return self.ln_c(h[:, 0]), self.ln_o(h[:, 1]), h
+
+    def step_logits(self, codes, ops, full=False):
+        """codes, ops: (B,) long -> (B, M) next-code logits (one GPT-2 call per row, positions 0-2)."""
+        if getattr(self, "readout", "linear") == "bil":
+            hc, ho, _ = self.head_inputs(codes, ops, full)
+            return self.W(torch.relu(self.U(hc) * self.V(ho)))       # 67b-2: ReLU
+        h = self._raw_step(codes, ops)
+        return self.next_head(self.hn(h[:, -1]))
+
+    def dec_logits(self, codes, full=False):
+        h = self._raw_dec(codes)
+        if self.feat_norm == "tablestd":
+            if full:
+                md, sd = h.mean(0), h.std(0) + 1e-5
+            else:
+                st = getattr(self, "_stats", None) or self._full_stats(); md, sd = st[4], st[5]
+            return self.ans_head((h - md) / sd)
+        return self.ans_head(self.hn(h))
 
     def tables(self, tau=1.0):
         """log T (6 ops, M, M) over all M x 6 (code, op) pairs and log D (M, 6); T = softmax(logits / tau) (§67b)."""
         dev = self.code.device
         c = torch.arange(M, device=dev).repeat(6); a = torch.arange(6, device=dev).repeat_interleave(M)
-        logT = (self.step_logits(c, a) / tau).log_softmax(-1).view(6, M, M)
-        logD = self.dec_logits(torch.arange(M, device=dev)).log_softmax(-1)
+        logT = (self.step_logits(c, a, full=True) / tau).log_softmax(-1).view(6, M, M)
+        logD = self.dec_logits(torch.arange(M, device=dev), full=True).log_softmax(-1)
+        self._stats = None                                            # stale after this update; recomputed on demand
         return logT, logD
+
+    @torch.no_grad()
+    def distinctness(self):
+        """§72: mean pairwise cosine across codes of the head input h_code (per code averaged over the 6 ops), after the
+        feature normalisation ("normed") and the GPT-2 final hidden state itself ("raw")."""
+        dev = self.code.device
+        c = torch.arange(M, device=dev).repeat(6); a = torch.arange(6, device=dev).repeat_interleave(M)
+        self._stats = None
+        hc, _, h = self.head_inputs(c, a, full=True)
+        out = {}
+        for name, v in (("normed", hc), ("raw", h[:, 0])):
+            per = F.normalize(v.float().view(6, M, -1).mean(0), dim=-1); cos = per @ per.T
+            out[f"mean_pairwise_cos_{name}"] = float((cos.sum() - cos.diag().sum()) / (M * (M - 1)))
+        return out
 
 
 class Tab(nn.Module):
@@ -325,3 +379,27 @@ def certificate_reach(model):
             if Th[c][op] not in seen:
                 seen.add(Th[c][op]); frontier.append(Th[c][op])
     return sorted(seen)
+
+
+@torch.no_grad()
+def layer_code_variance(model):
+    """§72 (PT): per GPT-2 layer, at the code position of the 6M transition calls: between-code variance (of the code
+    means over ops) vs within-code variance (across ops), summed over coordinates."""
+    g = model.g; dev = model.code.device
+    c = torch.arange(M, device=dev).repeat(6); a = torch.arange(6, device=dev).repeat_interleave(M)
+    x = torch.stack([model.code[c], g.embed(torch.tensor(OP_TOK, device=dev)[a]), g.embed(torch.full_like(a, STEP_TOK))], 1)
+    B, T, D = x.shape; hd = D // g.H; h = x + g.w("wpe.weight")[:T][None]; out = []
+    for i in range(g.L):
+        p = f"h.{i}."
+        z = F.layer_norm(h, (D,), g.w(p + "ln_1.weight"), g.w(p + "ln_1.bias"))
+        q, k, v = (z @ g.w(p + "attn.c_attn.weight") + g.w(p + "attn.c_attn.bias")).split(D, -1)
+        q, k, v = (t.view(B, T, g.H, hd).transpose(1, 2) for t in (q, k, v))
+        o = F.scaled_dot_product_attention(q, k, v, is_causal=True)
+        h = h + o.transpose(1, 2).reshape(B, T, D) @ g.w(p + "attn.c_proj.weight") + g.w(p + "attn.c_proj.bias")
+        z = F.layer_norm(h, (D,), g.w(p + "ln_2.weight"), g.w(p + "ln_2.bias"))
+        h = h + F.gelu(z @ g.w(p + "mlp.c_fc.weight") + g.w(p + "mlp.c_fc.bias"), approximate="tanh") @ g.w(p + "mlp.c_proj.weight") \
+            + g.w(p + "mlp.c_proj.bias")
+        v0 = h[:, 0].float().view(6, M, D)                            # (op, code, D) at the code position
+        between = float(v0.mean(0).var(0, unbiased=False).sum()); within = float(v0.var(0, unbiased=False).mean(0).sum())
+        out.append({"layer": i + 1, "between_code": between, "within_code": within, "ratio": between / max(within, 1e-12)})
+    return out
