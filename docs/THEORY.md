@@ -6071,6 +6071,118 @@ not registered.**
   - C1 in a pretrained LM beyond hosting remains open, and the next step needs a task where the LM's knowledge is
     necessary. That is for the user's direction (Audit brief).
 
+## 78. GSM8K length generalisation by step count: written-state chunking vs text CoT, GPT-2 small from base (pre-registered 2026-10-02 11:35 EDT, after Literature's check 56d524d and the experiments session's step-count prep a900b18, before any training; user decision "both", via Audit)
+
+**Why.** §71's written-state restart is the method that works on state tracking (S5 at 512 and 2,048, certified). The
+user's plan is "beat SOTA on smaller tasks, then GSM8K".
+* The fair GSM8K analogue of length generalisation is a step-count split.
+* No short-trained, long-tested GSM8K number exists at GPT-2 scale. Hase 2401.06751 uses the same split at 7–70B.
+* No history-cut arm has been scored by step count.
+
+**Split (frozen now; `gsmlen/steps.py`).**
+* The step count n is the number of non-empty `<<…>>` equations in the reference.
+* **Train:** GSM8K-Aug items with n ∈ {1, 2} (206,397 items).
+* **Valid:** GSM8K-Aug valid items with n ∈ {1, 2}, for checkpoint selection only.
+* **Test bins:** in-distribution n ≤ 2; mid n = 3–4; **long n ≥ 5**.
+  - **Primary:** the GSM8K test (human references): in-distribution 422 (n 1–2), mid 654, **long 225 (n ≥ 5)**. The
+    18 items with n = 0 are reported separately.
+  - **Secondary (Audit).** The human n ≥ 6 subset (87 items, CI about ±10 points).
+  - **Secondary:** GSM8K-Aug training items with n ≥ 5, unused by training. They are deduplicated against the short
+    training split by question 8-gram Jaccard > 0.5, and equations are recomputed (wrong-arithmetic items dropped).
+    These references are GPT-4-generated and noisier.
+  - **Secondary split:** dependency (DAG) depth of the reference equations, as the range-relevant quantity (Literature).
+
+**Arms** (GPT-2 small, original weights; the same short training data; seeds 1–3).
+* **TC (text CoT).** Question → the `<<…>>` equation steps → "#### answer", as gsm_cot.yaml.
+* **WS (written state, §68).** Each call sees [question + "values so far: v₁, v₂, …"] and outputs either the next
+  `<<expr=value>>` or "#### answer". The history is cut; at most 12 calls.
+* **WS-pad (range-bounded written state; Literature pitfall 5 and Audit; the primary WS arm in L2).** As WS, but with training states padded with random
+  distractor numbers (drawn from the question and earlier values) to a uniformly random length up to 8. So at test, a
+  values list of up to 8 entries stays inside the trained range.
+* **Descriptive references (not length-split).** Dilgren & Wiegreffe's GPT-2 CoT and Coconut checkpoints, trained on
+  all lengths, benched on the same bins.
+
+**Training budget.** Equal for TC, WS and WS-pad in labelled steps seen.
+* A one-host throughput pilot fixes epochs (≤ 6) and batch only, logged.
+* Checkpoints are chosen by short-valid accuracy.
+* bf16 if the pilot confirms parity.
+
+**Measures** (bench gsm8k harness and its normaliser).
+* Accuracy per bin with bootstrap 95 % CIs, and by DAG depth.
+* Shortcut baselines (≤ 0.03; one-op oracle 0.155).
+* Compute per problem: inference FLOPs with the KV cache stated, forward passes, written tokens.
+* For WS and WS-pad: accuracy by values-list length.
+
+**Predictions** (medians over 3 seeds; long = GSM8K-test n ≥ 5).
+* **L1 (TC degrades with length; descriptive).** TC's long accuracy relative to its in-distribution accuracy.
+* **L2 (the restart method generalises better).** WS-pad − TC on long ≥ +0.05, paired by item (pooled over seeds), with
+  the 95 % CI above 0.
+* **L3 (no in-distribution cost).** WS-pad ≥ TC − 0.03 in-distribution.
+* **L4 (the range principle inside WS).** WS without padding loses more than WS-pad as the values list grows past 2. The
+  long-bin difference WS-pad − WS is reported with its CI.
+* **C3 (compute-matched).** At long n, WS-pad's accuracy-vs-FLOPs against TC's. A C3 win only if WS-pad is better at
+  ≤ TC's median FLOPs.
+
+**Readings.**
+* **L2 + L3.** The written-state restart extends a small LM's GSM8K reasoning past its trained step count. This is the
+  range principle on a real task (scaffolded; not C1).
+* **L2 fails.** On GSM8K the bottleneck is not context length or range. Report and close.
+
+**Placement and cost.** A one-host pilot first, then a projection to Audit before renting. Local cards first. About
+3 arms × 3 seeds × ≤ 6 epochs over 206k items, an estimated 30–45 GPU-h, ≤ $25.
+
+## 79. A latent automaton that needs the pretrained LM: operations as natural-language paraphrases, held-out phrasings (pre-registered 2026-10-02 11:35 EDT, after Literature's check a7cdf69 and before any run; user decision "both")
+
+**Why.** The stable latent (§73) is hosted by GPT-2, but GPT-2 contributes nothing a table cannot (notes 76-6, 76-7);
+§74's single-phrasing transfer failed.
+* §79 builds a task where the operations arrive as varied natural language. A table (each phrasing a separate symbol)
+  and random-init GPT-2 fail on unseen phrasings by construction.
+* Pretraining earns credit only if frozen pretrained GPT-2 beats both, and also beats a bag of pretrained word
+  embeddings.
+
+**Task.** S3 boxes: 3 boxes, all 6 elements as operations (identity, three swaps, left and right rotations).
+* Labels are generated from a formal spec (permutation semantics, one convention, unit-tested).
+* Start is the identity arrangement (code 0). The answer is the 6-way final arrangement, the only label.
+* **Lengths uniform in 1–8**, so both parities are trained (fixing §74's flaw).
+* **Phrasings.** About 12 families per op type (swap / rotate / identity), each a template with slots.
+  - **Training:** 8 families. **Held-out:** 4, including one with a different syntactic frame.
+  - Operative words in held-out families are disjoint from training; residual overlap is reported.
+  - **Minimal pairs** a bag of words cannot separate: rotations phrased only by the order of box numbers ("the item in
+    box 1 goes to box 2, box 2's to box 3, box 3's to box 1" vs the reverse), in training and held-out.
+  - **Positive control:** casing and whitespace variants of training families.
+  - **Negative control:** a non-permutation verb ("copy box 1 to box 2").
+
+**Cell and arms.** The §73 recipe: M = 12, lr 1e-4, τ 4 → 1, 8,000 updates, exact marginal from final answers,
+standardised readout with statistics frozen after training. h_op is read at the step marker.
+* **PF-std:** frozen pretrained GPT-2.
+* **RF-std:** frozen random-init GPT-2 (floor).
+* **BOW:** no transformer. h_op = code + Σ pretrained wte(op tokens). It isolates lexical knowledge from the
+  transformer and is the informative control (Literature).
+* **TAB-phrase:** one symbol per training phrasing (free table). Unseen phrasings are undefined and scored at chance (0
+  by construction).
+* **Training-family sweep (PF-std only):** 2, 4 and 8 training families.
+* **Seeds:** 2081–2085 (5 per arm).
+
+**Measures** (on the 4 held-out families, exhaustive over reachable codes × ops × phrasings).
+* Paraphrase agreement (the next code equals the trained-phrasing next code).
+* Family certificate (product automaton with that family's transitions).
+* Accuracy at N 8–128 with every op in held-out phrasing.
+* Each with and without the σ-floor. Minimal-pair accuracy; positive and negative controls.
+
+**Predictions.**
+* **P1 (prerequisite).** PF-std certified on the training phrasings in ≥ 4/5.
+* **P2 (pretraining is necessary).** On ≥ 1 held-out family, PF-std's agreement is ≥ 0.90 and its family certificate
+  holds in ≥ 3/5 seeds. Both must beat BOW and RF-std by ≥ 0.20 agreement (paired by seed), and PF-std must pass the
+  minimal pairs (≥ 0.90).
+
+**Readings.**
+* **P1 + P2.** A latent machine acquired from final answers transfers to unseen natural-language operations through a
+  pretrained LM, and not through lexical embeddings alone. C1 in a pretrained LM beyond hosting.
+* **BOW ties PF-std.** Lexical knowledge, not the transformer, does the transfer; report it.
+* **P2 fails.** Pretrained features do not carry operation semantics into the latent machine at this scale.
+
+**Placement and cost.** Local cards. About 35 runs (4 arms × 5, plus 2 sweep settings × 5), D1b-sized or smaller. $0.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
