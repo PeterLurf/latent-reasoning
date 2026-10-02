@@ -25,7 +25,8 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from c1.core import wilson_upper  # noqa: E402
 
-ARMS = {"d1b": "p67b_d1b", "tab": "p67b_tab", "reset": "p67b_reset", "fpex": "p67b_fpex", "fpcmp": "p67b_fpcmp"}
+ARMS = {"d1b": "p67b_d1b", "tab": "p67b_tab", "reset": "p67b_reset", "fpex": "p67b_fpex", "fpcmp": "p67b_fpcmp2",
+        "fpcmp_orig": "p67b_fpcmp"}   # 67b-impl-1: C1-5 compute-matched uses the corrected fpcmp2; the original is descriptive
 DEPTHS = ("8", "16", "32", "64", "128"); DEEP = ("16", "32", "64", "128"); THR = 0.1867
 
 
@@ -68,10 +69,13 @@ def main():
                  "note": "Audit: the irrelevant part is vacuous where visited codes are one per state; reported apart from "
                          "tested seeds; the donor (relevant) and same-semantic parts apply to every seed"}
     c5 = {}
-    for fp in ("fpex", "fpcmp"):
+    for fp in ("fpex", "fpcmp", "fpcmp_orig"):
         c5[fp] = {N: float(np.median([e["acc"][N] for e in d1.values()]) - np.median([e["acc"][N] for e in R[fp].values()]))
                   if d1 and R[fp] else None for N in DEEP}
-    v["C1-5"] = {"median_gap": c5, "met": all(x is not None and x >= 0.20 for d in c5.values() for x in d.values())}
+    v["C1-5"] = {"median_gap": c5, "met": all(x is not None and x >= 0.20 for f in ("fpex", "fpcmp") for x in c5[f].values()),
+                 "note": "fpcmp = corrected budget (67b-impl-1); fpcmp_orig descriptive"}
+    v["train_sec_median"] = {a: float(np.median([e["train"]["sec"] for e in R[a].values() if "train" in e])) if R[a] else None
+                             for a in R}
     for k, arms in (("C1-1", ["d1b"]), ("C1-2", ["d1b"]), ("C1-3", ["d1b", "reset"]), ("C1-4", ["d1b"]), ("C1-5", ["d1b", "fpex", "fpcmp"])):
         v[k]["n_runs"] = {a: n[a] for a in arms}
         if any(n[a] < 5 for a in arms):
@@ -87,6 +91,7 @@ def main():
     for a in R:
         for s, e in sorted(R[a].items()):
             print(f"{a:6s} s{s} cert {e.get('certificate', {}).get('certified')} acc " + " ".join(f"{e['acc'][N]:.3f}" for N in DEPTHS))
+    print("train_sec_median (indicative: shared GPUs)", v["train_sec_median"])
     for k in ("C1-1", "C1-2", "C1-3", "C1-4", "C1-5"):
         print(k, {x: y for x, y in v[k].items() if x not in ("mechanism", "reset_upper95", "per_seed_min_acc", "note")})
 

@@ -19,3 +19,17 @@ Started 2026-10-01 22:12 EDT. Fixed by §67b + 67b-2:
 * **Eval:** n_test 2,000 per depth, nulls 10,000; certificate, audit, nulls and mechanism on every certified D1b.
 * **Placement:** TAB on the local 3070. D1b / RESET / FP_ex / FP_cmp of seed s run together on Vast host s (RTX 3090
   class, 4 concurrent).
+
+## Implementation amendment 67b-impl-1 (2026-10-01 23:38 EDT; Audit / external agent; before any panel result was read)
+* **Bug.** `c1/train.py` set the d1 compute budget to a constant 120 GPT-2 token positions per update (36 × 3 + 6 × 2).
+  That is right only for M = 6; the true count is 6M × 3 + M × 2 = 20M, i.e. 480 at M = 24 (240 at M = 12).
+* **Consequences.**
+  - §67b's fp_cmp (compute-matched FP) got ~4× too few rows per update, so it was under-trained in D1b's favour.
+  - Logged `gpt2_tokens` for d1 arms at M ≠ 6 (67-2, 67b) are 2–4× low. fp_ex is unaffected.
+* **Fix.** Budget = 20 · M from args (`d1_tokens(M)`).
+* **Re-run.** fp_cmp for §67b seeds 1–5 with the corrected budget (`--M 24`), runs `c1/runs/p67b_fpcmp2_s<k>`, on local
+  GPUs.
+* **Scoring.** C1-5's compute-matched comparison uses the corrected runs. The original fp_cmp runs are kept and reported
+  as descriptive.
+* Measured training GPU-seconds per arm are reported next to token positions (positions are a proxy). Vast runs shared
+  a GPU 4 ways, local runs share with bench evals, so wall-seconds are indicative only.

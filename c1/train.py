@@ -29,7 +29,10 @@ from c1.core import COMP, FP, Cell, MLPCell, Tab, TinyTF, gpt2_random_sd, audit,
 
 DEPTHS = (8, 16, 32, 64, 128)
 TEST_SEED = 6700
-D1_TOKENS = 36 * 3 + 6 * 2
+def d1_tokens(M):
+    """GPT-2 token positions per d1 update: 6M transition calls x 3 positions + M decoder calls x 2 = 20M (amendment
+    67b-impl-1; the original constant 120 was right only for M = 6)."""
+    return 20 * M
 
 
 def gpt2(dev):
@@ -179,7 +182,7 @@ def train(a):
     for u in range(1, a.updates + 1):
         stage = min(3, (u - 1) * 4 // a.updates)
         L = int(rng.choice(lens[:stage + 1]))
-        B = a.bs if a.arm != "fp_cmp" else max(1, D1_TOKENS // (L + 1))
+        B = a.bs if a.arm != "fp_cmp" else max(1, d1_tokens(a.M) // (L + 1))   # fp_cmp: matched to d1 at --M
         ops, y = sample(rng, B, L)
         o, yy = torch.tensor(ops, device=dev), torch.tensor(y, device=dev)
         model.train()
@@ -188,7 +191,7 @@ def train(a):
         else:
             tau = 1.0 + (a.tau0 - 1.0) * max(0.0, 1.0 - (u - 1) / (0.5 * a.updates))   # §67b: tau0 -> 1 by halfway
             logT, logD = model.tables(tau); loss = marginal_loss(logT, logD, o, yy, reset=a.arm == "reset")
-            toks += D1_TOKENS if a.arm != "tab" else 0
+            toks += d1_tokens(a.M) if a.arm != "tab" else 0
         seen += B
         opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0); opt.step()
         hist.append(loss.item())
