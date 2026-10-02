@@ -487,3 +487,30 @@ checkpoint by short-valid) on 6 Vast RTX 3090s, about $5 (`gsmlen/PILOT78.md`). 
 **Reading (§78):** "L2 fails: on GSM8K the bottleneck is not context length or range" at GPT-2 small. The restart
 method does not extend reasoning past the trained step count. Written state, padded or not, does no better than text
 CoT on long problems.
+
+## THEORY §84 Step 1 (ORACLE-STOP diagnostic on the §78 WS-pad models) result (2026-10-02 18:03 EDT; `python gsmlen/oracle84.py summarise` → `theory/results/s84_step1_ORACLE.json`)
+
+**ORACLE: a diagnostic upper bound given the true step count n, never a method result.** "####" is banned until n
+equations are written, then the answer is forced (≤ 14 calls). Script 0578e8c; seeds 1–3, pooled over seeds; local
+RTX 4060. The summary ran after §78 was scored.
+
+| bin | ORACLE-stop | WS-pad (its own stop) |
+|---|---|---|
+| in-distribution (422) | 0.397 [0.355, 0.439] | 0.430 [0.388, 0.472] |
+| mid (654) | 0.050 [0.038, 0.063] | 0.048 [0.036, 0.061] |
+| **long (225)** | **0.030 [0.016, 0.044]** | 0.015 [0.006, 0.027] |
+
+* **Gate (Step 2 only if the pooled ORACLE long accuracy is ≥ 0.10): not met (0.030).
+  WS-decoy (Step 2) is not run.**
+* Recovery share (ORACLE long − WS-pad long) / (WS-pad in-distribution − WS-pad long) = 0.036.
+* Written-value correctness under the oracle stop, by position:
+  3: 0.052 (n 2605), 4: 0.032 (n 1514), 5: 0.032 (n 662), 6: 0.031 (n 259), 7: 0.011 (n 89), 8: 0.038 (n 26).
+  Values past the trained step count are almost always wrong.
+* Error split over mid + long items (3 seeds, 2637 item-runs):
+  - halting (the unconstrained WS-pad stopped before n): 2242 item-runs;
+  - step errors (wrong value, all earlier values right): 2622 positions;
+  - propagation (right arithmetic on an earlier wrong value): 4861 positions;
+  - other: 1743 positions.
+* **Reading:** fixing the stop decision recovers little. The short-trained model does not compute steps past n = 2
+  correctly even when made to continue. The failure is step computation out of range, not only halting.
+* A CPU plumbing smoke on the first 4 test items (seed 1) was seen before the run ().
