@@ -5002,6 +5002,26 @@ break?
 **Budget and placement.** A throughput pilot (fixing only batch and precision, logged) sizes the wave. Estimate 40–80
 GPU-h, ≈ $10–25 on Vast 3090/A4000-class hosts plus the local cards, behind §67-2.
 
+**Amendment 68-1 (2026-10-01 21:28 EDT, before any §68 training; user decision via Audit: "Lean: reuse public
+checkpoints").**
+* **Why.** Measured cost: official code, 3090, fp32. CoT 1.73 h per epoch, Coconut stage 3 12.7 h per epoch: ≈ $110–170
+  for 3 seeds, against the registered $10–25. My sizing was wrong by about ten times.
+* **(1) TC is replaced by a public GPT-2 GSM8K CoT-SFT checkpoint**, e.g. the SIM-CoT or CODI release's CoT-SFT baseline
+  (Literature: CoT-SFT 42.7).
+  - It is identified first, and benched on bench gsm8k as the TC reference.
+  - If no usable public checkpoint exists, the user decides (via Audit) before any from-scratch TC training.
+* **(2) CO and WS, 1 seed each, are trained from that checkpoint** on a multi-GPU Vast host, with bf16 if the timing
+  job supports it.
+  - CO: the official Coconut GSM schedule to the official epoch-15 checkpoint.
+  - WS: fine-tuned on the written-state format with checkpoint selection on gsm_valid. Its training GPU-hours are capped
+    at CO's, and its training tokens are logged.
+* **Budget: $15–30.** Training FLOPs are reported for both arms.
+* **Predictions, re-scoped** (1 seed, so the comparisons are single-run and their intervals are item-level bootstrap):
+  - G1: the public TC checkpoint scores ≥ 0.40 on our bench; CO ≥ 0.31.
+  - G2: CO's K = 0 / 1 / 2 and the donor swap are descriptive (amendment 2 already answered it on public checkpoints).
+  - G3: WS ≥ TC − 0.03.
+  - G4: compute, unchanged.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
