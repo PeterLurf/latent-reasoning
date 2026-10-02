@@ -1,0 +1,7 @@
+100/500 acc 0.840 32s
+200/500 acc 0.860 63s
+300/500 acc 0.857 93s
+400/500 acc 0.850 124s
+500/500 acc 0.856 155s
+prosqa | coconut:prosqa/ckpt/p8c_rt_s1_checkpoint_48?K=16&mask=1 | n 500 | acc 0.856 [0.8225, 0.8841] | baselines {'proximity rule (no reasoning)': 0.911, 'chance': 0.5}
+WROTE bench\results\prosqa__coconut_p8c_rt_s1_checkpoint_48_K=16_mask=1.json
