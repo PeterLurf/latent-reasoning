@@ -1,0 +1,462 @@
+{
+ "Z59_ge3": {
+  "certified": 0,
+  "n": 5,
+  "runs": [
+   {
+    "file": "Z59_ge3_s2111.json",
+    "certified": false,
+    "acc128": 0.016,
+    "reached_states": 59,
+    "block_sizes": [
+     59
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 59
+   },
+   {
+    "file": "Z59_ge3_s2112.json",
+    "certified": false,
+    "acc128": 0.022,
+    "reached_states": 59,
+    "block_sizes": [
+     59
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 59
+   },
+   {
+    "file": "Z59_ge3_s2113.json",
+    "certified": false,
+    "acc128": 0.017,
+    "reached_states": 59,
+    "block_sizes": [
+     59
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 59
+   },
+   {
+    "file": "Z59_ge3_s2114.json",
+    "certified": false,
+    "acc128": 0.013,
+    "reached_states": 59,
+    "block_sizes": [
+     59
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 59
+   },
+   {
+    "file": "Z59_ge3_s2115.json",
+    "certified": false,
+    "acc128": 0.013,
+    "reached_states": 59,
+    "block_sizes": [
+     59
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 59
+   }
+  ]
+ },
+ "Z59_std": {
+  "certified": 3,
+  "n": 3,
+  "runs": [
+   {
+    "file": "Z59_std_s2111.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 59,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 59,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "Z59_std_s2112.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 59,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 59,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "Z59_std_s2113.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 59,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 59,
+    "coset_trap_H": 1
+   }
+  ]
+ },
+ "Z60_ge3": {
+  "certified": 0,
+  "n": 5,
+  "runs": [
+   {
+    "file": "Z60_ge3_s2111.json",
+    "certified": false,
+    "acc128": 0.016,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   },
+   {
+    "file": "Z60_ge3_s2112.json",
+    "certified": false,
+    "acc128": 0.014,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   },
+   {
+    "file": "Z60_ge3_s2113.json",
+    "certified": false,
+    "acc128": 0.019,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   },
+   {
+    "file": "Z60_ge3_s2114.json",
+    "certified": false,
+    "acc128": 0.015,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   },
+   {
+    "file": "Z60_ge3_s2115.json",
+    "certified": false,
+    "acc128": 0.017,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   }
+  ]
+ },
+ "Z60_std": {
+  "certified": 3,
+  "n": 3,
+  "runs": [
+   {
+    "file": "Z60_std_s2111.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 60,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 60,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "Z60_std_s2112.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 60,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 60,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "Z60_std_s2113.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 60,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 60,
+    "coset_trap_H": 1
+   }
+  ]
+ },
+ "D30_ge3": {
+  "certified": 0,
+  "n": 5,
+  "runs": [
+   {
+    "file": "D30_ge3_s2111.json",
+    "certified": false,
+    "acc128": 0.017,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   },
+   {
+    "file": "D30_ge3_s2112.json",
+    "certified": false,
+    "acc128": 0.017,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   },
+   {
+    "file": "D30_ge3_s2113.json",
+    "certified": false,
+    "acc128": 0.015,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   },
+   {
+    "file": "D30_ge3_s2114.json",
+    "certified": false,
+    "acc128": 0.018,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   },
+   {
+    "file": "D30_ge3_s2115.json",
+    "certified": false,
+    "acc128": 0.017,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   }
+  ]
+ },
+ "D30_std": {
+  "certified": 3,
+  "n": 3,
+  "runs": [
+   {
+    "file": "D30_std_s2111.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 60,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 60,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "D30_std_s2112.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 60,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 60,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "D30_std_s2113.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 60,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 60,
+    "coset_trap_H": 1
+   }
+  ]
+ },
+ "A4xZ5_ge3": {
+  "certified": 0,
+  "n": 5,
+  "runs": [
+   {
+    "file": "A4xZ5_ge3_s2111.json",
+    "certified": false,
+    "acc128": 0.013,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   },
+   {
+    "file": "A4xZ5_ge3_s2112.json",
+    "certified": false,
+    "acc128": 0.015,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   },
+   {
+    "file": "A4xZ5_ge3_s2113.json",
+    "certified": false,
+    "acc128": 0.015,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   },
+   {
+    "file": "A4xZ5_ge3_s2114.json",
+    "certified": false,
+    "acc128": 0.014,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   },
+   {
+    "file": "A4xZ5_ge3_s2115.json",
+    "certified": false,
+    "acc128": 0.015,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   }
+  ]
+ },
+ "A4xZ5_std": {
+  "certified": 3,
+  "n": 3,
+  "runs": [
+   {
+    "file": "A4xZ5_std_s2111.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 60,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 60,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "A4xZ5_std_s2112.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 60,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 60,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "A4xZ5_std_s2113.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 60,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 60,
+    "coset_trap_H": 1
+   }
+  ]
+ }
+}
