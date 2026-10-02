@@ -156,3 +156,5 @@
 02:09:32 WORKER_DONE cuda:1 scratch/backfill_q1.txt
 02:14:32 bf1_prosqa_deep_f1s_f1s_s9_P_16 rc 0 (cuda:0)
 02:14:32 WORKER_DONE cuda:0 scratch/backfill_q1.txt
+02:24:25 bf1_prosqa_deep_f1s_f1s_s8_P_16 rc 0 (cuda:2)
+02:24:25 WORKER_DONE cuda:2 scratch/backfill_q1.txt
