@@ -5623,6 +5623,14 @@ DENSE by Theory, `theory/results/s72b_dense.json`). PT is provisional, 4 of 5 se
   usually does not.
 * §73's trigger (PF-std ≥ 4/5) is met. It was launched by the experiments session.
 
+**§72b final (2026-10-02 04:31 EDT; `theory/results/score_s72b.json`).**
+* PT is 1/5 (s2004 certified), so the verdict is unchanged.
+* **Dead-unit check** (ReLU units ever active, of 256): PF 147–165 (about 40 % dead); RF, PF-std and PT 256.
+  - Anisotropic pretrained features silence about 40 % of the multiplicative head's units in PF.
+  - Standardisation keeps them all alive.
+  - PT's failures are not dead units: its between/within-code ratio plateaus at about 0.45, against about 1.75 from
+    layer 5 in the certified seed.
+
 ## 73. A stable latent in GPT-2: the standardised-readout cell, 10-seed confirmation with §67's C1 controls (pre-registered 2026-10-02 02:53 EDT, after Literature's checks 6e57bba, 811c5d7 and da53d1b, before the §72b panel is read; conditional trigger below; the user's overnight goal "find a stable latent", via Audit)
 
 **Why.** §72b's evidence so far (all descriptive; §72b's panel is not yet read):
