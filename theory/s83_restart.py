@@ -155,13 +155,14 @@ def main():
     for k in a.fixed:
         p, _ = s5.wc_rollout(m, Xte, k, dev, amp, a.bs); c = s5.cumulative(p, Yte)
         res["fixed_k%d" % k] = {"cum": {t: float(c[t - 1]) for t in (128, 256, 512)}}
-    res["risk_coverage"] = {}                 # tau sweep on the first sweep_n test sequences (descriptive)
-    for al, tv in cal["taus"].items():
+    res["risk_coverage"] = {}                 # tau sweep on the first sweep_n test sequences (descriptive; 0 = skip)
+    for al, tv in (cal["taus"].items() if a.sweep_n > 0 else []):
         ps, ls, _, ds = adaptive_rollout(m, Xte[:a.sweep_n], Yte[:a.sweep_n], a.kmax, tv, dev, amp, a.bs, a.k)
         res["risk_coverage"][al] = {"tau": tv, "cum512": float(s5.cumulative(ps, Yte[:a.sweep_n])[-1]), "mean_accepted": float(np.mean(ls)), "detection": ds}
-    Xx, Yx = s5.load_csv(os.path.join(a.data_dir, "S5=2048.csv"), limit=a.ext_n)
-    px, lx, _, _ = adaptive_rollout(m, Xx, Yx, a.kmax, tau, dev, amp, a.bs, a.k); cx = s5.cumulative(px, Yx)
-    res["adaptive_2048"] = {"cum": {t: float(cx[t - 1]) for t in (512, 1024, 2048)}, "mean_accepted": float(np.mean(lx))}
+    if a.ext_n > 0:                           # 0 = skip (load_csv treats limit 0 as "all rows")
+        Xx, Yx = s5.load_csv(os.path.join(a.data_dir, "S5=2048.csv"), limit=a.ext_n)
+        px, lx, _, _ = adaptive_rollout(m, Xx, Yx, a.kmax, tau, dev, amp, a.bs, a.k); cx = s5.cumulative(px, Yx)
+        res["adaptive_2048"] = {"cum": {t: float(cx[t - 1]) for t in (512, 1024, 2048)}, "mean_accepted": float(np.mean(lx))}
     res["sec"] = round(time.time() - t0, 1)
     d = res["detection"] = det
     print(json.dumps({"tau": tau, "adaptive": res["adaptive"]["cum"], "mean_acc": res["adaptive"]["mean_accepted"],
