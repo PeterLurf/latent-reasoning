@@ -1,0 +1,24 @@
+{
+ "train_short": 206397,
+ "valid_short": 181,
+ "test_bins": {
+  "id": 422,
+  "mid": 654,
+  "long": 225,
+  "n0": 18
+ },
+ "test_n_ge6": 87,
+ "test_depth": {
+  "1": 18,
+  "2": 91,
+  "3": 519,
+  "4": 418,
+  "5": 208,
+  "6": 56,
+  "7": 9
+ },
+ "aug_long_candidates": 26687,
+ "aug_long_bad_arith": 2533,
+ "aug_long_dup_dropped": 8,
+ "aug_long": 24146
+}
