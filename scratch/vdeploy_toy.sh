@@ -15,6 +15,7 @@ EXTRA=""; [ "$W" = scratch/queue_worker3.sh ] && EXTRA="scratch/queue_worker3.sh
 [ "$W" = scratch/tjob_vast.sh ] && EXTRA="scratch/tjob_vast.sh $(echo theory/*.py)"
 [ "$W" = scratch/tjob_vast2.sh ] && EXTRA="scratch/tjob_vast2.sh $(echo theory/*.py)"
 [ "$W" = scratch/gsm_time_vast.sh ] && EXTRA="scratch/gsm_time_vast.sh"
+[ "$W" = scratch/c1_vast_job.sh ] && EXTRA="scratch/c1_vast_job.sh c1/__init__.py c1/core.py c1/train.py boxes/__init__.py boxes/core.py"
 [ "$W" = scratch/gsm_time_vast2.sh ] && EXTRA="scratch/gsm_time_vast2.sh s68/__init__.py s68/ws.py s68/ws_data.py"
 [ "$W" = scratch/f4_vast_job.sh ] && EXTRA="scratch/f4_vast_job.sh $(echo theory/*.py)"
 [ "$W" = scratch/p8na_vast_job.sh ] && EXTRA="scratch/p8na_vast_job.sh prosqa/eval_na_p8.py prosqa/eval_p8.py prosqa/analyze.py prosqa/gpt2c.py prosqa/p8data/p8_test.json prosqa/p8data/p8_na_test.json"

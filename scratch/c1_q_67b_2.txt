@@ -1,0 +1,5 @@
+# §67b panel host seed 2 (settings frozen in c1/PILOT_67b.md)
+c1/runs/p67b_d1b_s2 --arm d1 --M 24 --tau0 4 --readout bil --head_norm ln --code_init distinct --updates 8000 --bs 512 --lr 1e-4 --seed 2
+c1/runs/p67b_reset_s2 --arm reset --M 24 --tau0 4 --readout bil --head_norm ln --code_init distinct --updates 8000 --bs 512 --lr 1e-4 --seed 2
+c1/runs/p67b_fpex_s2 --arm fp_ex --head_norm ln --updates 8000 --bs 512 --lr 1e-4 --seed 2
+c1/runs/p67b_fpcmp_s2 --arm fp_cmp --head_norm ln --updates 8000 --bs 512 --lr 1e-4 --seed 2
