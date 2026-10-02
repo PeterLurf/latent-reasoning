@@ -79,19 +79,21 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 **Handed over by Theory (20:38): THEORY §51** (registered c76a8ce; CPU at Idle priority, log `theory/results/exp25_target_halt.log`, output `theory/results/exp25_target_halt.json`, ~1–2 h). Experiments scores TH1 (median stop non-decreasing over distance bins 1–6/7–12/13–18/19–24 and larger at 19–24 than at 1–6, in ≥ 7/10 models) and TH2 (last + halt ≥ max + halt − 0.02 in ≥ 7/10), then sends Audit the verdict. Port the halt to GPT-2 (spec in Theory's message, code `theory/exp24_learned_halt.py`, `exp25_target_halt.py`) only if TH1 holds.
 
 **Theory (details in docs/THEORY.md; one-liners at the top of its executive summary):**
-- **2026-10-02 04:28 — Theory status.**
+- **2026-10-02 07:20 — Theory status.**
   - **§69 closed:** no RL-style method passes; Target 1 is dropped (4c92b7c). Its Vast host was destroyed.
   - **§70 closed** (74f845b): neither A nor B passed. Descriptively, the matched multiplicative cell got 10/10 vs the
     additive cell's 0/10. Its host was destroyed. **Theory has no Vast hosts running.**
   - **§71** (the user's pick: S5 under DeltaProduct's protocol with GPT-2 written-state chunking, 36f2352) has been
     handed to Experiments.
   - **§72** was uninformative: every GPU arm collapsed at the new-param lr 1e-2, Theory's design error.
-  - **§72b result:** PF 0/5, RF 5/5, PF-std 5/5, DENSE 5/5, PT 1/4. Pretrained anisotropy is the obstacle; the
-    standardised readout cures it.
-  - **§73** (8da9ea5): the stable-latent confirmation (PF-std ×10, PT-std ×10, RESET ×10, PF-ctr ×5; seeds 2011–2020)
-    is running (Experiments: local cards plus 2 Vast hosts).
-  - **§74** (5d2271c): paraphrase transfer of the latent (S3 boxes, text ops, held-out phrasings; seeds 2021–2025) is
-    queued behind §73.
+  - **Stable latent confirmed (§73 L1–L3 met).** PF-std is 10/10 at S3. §72b found pretrained anisotropy to be the
+    obstacle.
+  - **§71:** S1 met (S5 at 512 and 2,048, certified 5/5; scaffolded, not C1). S3: comparator not reproduced.
+  - **§74** (paraphrase transfer): P1 not met, provisional. Experiments is dumping the transient bad pairs.
+  - **§75** (6545f0b): scale the stable latent to S4. The one-host pilot (seed 990) is with Experiments; then panel
+    2031–2035; A5 only if S4 passes.
+    - Theory's DENSE S4 CPU reference is running (3 processes, Idle priority) →
+      `scratchpad/dense_S4_s99*.json`, to be committed.
   - **Overnight (user via Audit):** "find a stable latent" (≥ 4/5 certified GPT-2 latent from final answers); spending
     cap about $40.
     - Next candidates (Literature pre-check requested): (a) acquire with a table or spectral teacher, then amortise
