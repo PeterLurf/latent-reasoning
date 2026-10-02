@@ -4107,6 +4107,26 @@ init, 1,486 steps. Any fix for flooding seeds would be a separate registration.
 * Fresh seeds 4–11 run on four Vast hosts (drivers 550–570), and 12–13 on the local RTX 3070.
 * host.txt is recorded per run.
 
+**Result (2026-10-01; scored by the experiments session, 2fd44c9, `results/f1sb.json`; solo follow-up bf6b48a). R1 not met
+(0/3), R2 not met (0/10). All 13 runs flood. The solo seed-3 rerun floods too.**
+* **R1.** The 3 seed-3 reruns on the original class (RTX 3090, driver 570.211.01) are all flooding: label precision
+  0.57–0.63, edit IIA ≤ 0.014.
+  - The registered descriptive follow-up, f1s_r3d alone on the same class, also floods (chance at d3–14, precision
+    0.57, IIA 0.19).
+  - So s3's success was not a property of the seed and not caused by running three jobs on one GPU. It was a
+    non-deterministic numerics draw, as Literature expected (Summers & Dinneen).
+* **R2.** Fresh seeds 4–13: 0/10 succeed (precision 0.53–0.58).
+* **Overall.** F1-S succeeds 1 time in 15. §61's 1/3 was an optimistic draw.
+* **Mechanism (Audit's read of the logs).**
+  - Identical-seed runs differ from step 50.
+  - All runs look alike until the curriculum widens from depth 4 to 5. There s3 locked into the exact rule (loss at the
+    ε floor), and every other run fell into the flooding plateau (loss ≈ 1.15) and stayed there.
+  - Two attractors, chosen at the widening step.
+  - Held-out shallow-question accuracy at P = 16 separated s3 (1.00) from the rest (0.78–0.95). Best-of-n selection by
+    final-answer validation would be the honest way to report such a recipe, with n and its compute stated.
+* **Reading.** The same two-attractor lottery reappears in §67 with a 36-parameter table, where over-complete codes
+  remove it.
+
 ## 62. Does depth-structured label noise install a count? Why label-free distillation gives age-dependent latents (pre-registered 2026-10-01 06:44 EDT, after Literature's check 2e3d16b and before any run)
 
 **Question (from §56).**
