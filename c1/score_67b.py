@@ -8,7 +8,8 @@ C1-3: on the D1b seeds that pass C1-1, every null's Wilson 95 % upper bound <= 0
 C1-4: on the D1b seeds that pass C1-1: donor accuracy >= 0.99, irrelevant change rate <= 0.01 among REACHABLE codes (or
       vacuous: no second reachable code with the same decoded state), same-semantic agreement >= 0.99; met if every such
       seed meets all three. (Clarified before any panel result was read: with M = 24, unreachable codes are outside the
-      certified machine; the unrestricted rate is descriptive. Panel hosts ran the old eval, so the reachable-restricted
+      certified machine; the unrestricted rate is descriptive. Audit's condition: substitutes are codes visited in the donors'
+      real hard rollouts after >= 1 op; on pilot seed 99 those are 6 codes, one per state, so the test is vacuous there. Panel hosts ran the old eval, so the reachable-restricted
       mechanism is recomputed locally by c1/remech.py on the fetched D1b models.)
 C1-5: median over seeds, D1b minus FP >= 0.20 at every N >= 16, for FP_ex AND FP_cmp (both matchings).
 Descriptive: TAB per seed (certificate, accuracy); counter check (H(code|state), MI with length mod 2/3/4) on certified
