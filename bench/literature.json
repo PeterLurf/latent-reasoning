@@ -248,6 +248,38 @@
    "source": "2405.14838 Table 2",
    "same_items": true,
    "verified": "55cd5e7"
+  },
+  {
+   "task": "gsm8k",
+   "system": "No CoT, GPT-2 (Dilgren & Wiegreffe replication)",
+   "acc": 0.168,
+   "source": "2604.04902 Table 1 (Dilgren & Wiegreffe; public MIT checkpoints connordilgren/gpt2-gsm8k-*)",
+   "same_items": true,
+   "verified": "8e7dfd4"
+  },
+  {
+   "task": "gsm8k",
+   "system": "Text CoT, GPT-2 (Dilgren & Wiegreffe replication; HF gpt2-gsm8k-cot ckpt 25)",
+   "acc": 0.416,
+   "source": "2604.04902 Table 1 (Dilgren & Wiegreffe; public MIT checkpoints connordilgren/gpt2-gsm8k-*)",
+   "same_items": true,
+   "verified": "8e7dfd4"
+  },
+  {
+   "task": "gsm8k",
+   "system": "Coconut, GPT-2 (Dilgren & Wiegreffe replication; HF gpt2-gsm8k-coconut ckpt 33)",
+   "acc": 0.331,
+   "source": "2604.04902 Table 1 (Dilgren & Wiegreffe; public MIT checkpoints connordilgren/gpt2-gsm8k-*)",
+   "same_items": true,
+   "verified": "8e7dfd4"
+  },
+  {
+   "task": "gsm8k",
+   "system": "CODI, GPT-2 (Dilgren & Wiegreffe replication)",
+   "acc": 0.422,
+   "source": "2604.04902 Table 1 (Dilgren & Wiegreffe; public MIT checkpoints connordilgren/gpt2-gsm8k-*)",
+   "same_items": true,
+   "verified": "8e7dfd4"
   }
  ],
  "_verify_note": "Verified 2026-10-01 by Literature (docs/LIT_BENCH_VERIFY_2026-10-01.md, commit 55cd5e7): values from the papers' tables; same_items checked (ProsQA byte-identical to the Coconut repo; GSM8K-Aug test = openai test, 1,319/1,319 questions and answers; multiplication = iCoT repo test_bigbench files)."
