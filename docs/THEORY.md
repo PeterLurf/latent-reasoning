@@ -5478,6 +5478,9 @@ loss of about ln 120).
 * **S1 met.** WC₀₁ is 1.000 cumulative at t = 128/256/512 in 5/5 seeds and certified 5/5 (0 errors on all 14,400
   (state, op) inputs). WC₀₂ and WC₀₄ are also 1.000.
 * **Extended test.** 1.000 at length 2,048 (16× training).
+* **k = 2 tail limitation (Audit).** WC₀₂ is certified in only 2/5. Seeds 3–5 make 0 errors on all 1.73M two-op chunks
+  but 638 errors on the 14,400 one-op tail chunks. A k = 2 solver trained on 2-op chunks fails single-op tails; its
+  cumulative accuracy at 512 is 1.000 only because 512 is even. The headline uses k = 1, which is certified 5/5.
 * **S2 met, with a caveat (Theory).** The GPT-2 tagger is 0.0 even at its training length 128, so it did not learn at
   all. It does not reproduce Li, Guo & Andreas's in-distribution fit, and it gives no evidence of their past-training
   cutoff. The "unscaffolded LM fails past training length" contrast rests on Li et al.'s published result, not on our
