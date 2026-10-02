@@ -1,0 +1,1 @@
+S3 mlp hyb M 6 seed 201 certified False bad 30 acc {8: 0.208, 9: 0.162, 32: 0.161, 128: 0.165} sec 20.7 20.7

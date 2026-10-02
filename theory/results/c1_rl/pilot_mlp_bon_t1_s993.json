@@ -1,0 +1,17 @@
+{
+ "993": {
+  "certified": false,
+  "bad_pairs": 25,
+  "acc": {
+   "8": 0.4395,
+   "9": 0.4285,
+   "32": 0.28,
+   "128": 0.153
+  },
+  "selected_train_acc": 0.5525,
+  "n": 4,
+  "cpu_sec": 77.6,
+  "proc_sec": 77.6,
+  "updates": 8000
+ }
+}

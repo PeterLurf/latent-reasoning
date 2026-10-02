@@ -1,0 +1,1 @@
+S3 mlp rmer M 6 seed 200 certified False bad 15 acc {8: 0.171, 9: 0.145, 32: 0.157, 128: 0.175} sec 22.6 22.6

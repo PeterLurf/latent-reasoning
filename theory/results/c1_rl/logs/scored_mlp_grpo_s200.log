@@ -1,0 +1,1 @@
+S3 mlp grpo M 6 seed 200 certified False bad 30 acc {8: 0.21, 9: 0.2, 32: 0.159, 128: 0.173} sec 23.3 23.3
