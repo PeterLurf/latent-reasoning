@@ -1,0 +1,1 @@
+S3 add mml M 24 r 12 seed 1300 params 1509 certified False bad 26 acc {8: 0.593, 9: 0.542, 32: 0.341, 128: 0.338} nll {1: 0.018, 2: 0.167, 4: 0.559, 8: 0.974} sec 126.7

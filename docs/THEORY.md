@@ -5277,6 +5277,37 @@ Literature bb83da8).**
 * A therefore stays new only as exact likelihood from terminal labels with a full certificate, across matched
   additive, multiplicative and per-op cells.
 
+**§70 result (2026-10-01 23:56 EDT; scored by Theory with `theory/c1_acq_score.py` under the §70 rules; raw
+`theory/results/c1_acq/`, summary `theory/results/score_s70.json`). Neither A nor B passes, so under the close rule the
+toy-acquisition line closes: no proposal C and no further variants.**
+
+Certified, out of 3 development seeds (1300–1302) and 10 confirmation seeds (1400–1409):
+
+| arm | dev | confirmation (Wilson 95 %) | acc at N 128 |
+|---|---|---|---|
+| A add (1,509 params) | 0/3 | 0/10 (0–0.28) | 0.32 |
+| A mul (1,480) | 1/3 | **10/10** (0.72–1.0) | 1.000 |
+| A opb, rank 12 (1,464) | 2/3 | 7/10 (0.40–0.89) | 0.83 |
+| A opb, full rank 24 (4,632; reference) | 3/3 | 9/10 | 0.93 |
+| B temper (MLP, M = 12) | 2/3 | 3/10 (0.11–0.60) | 0.57 |
+| B eta1 / mml2 / mml / exr | 0/3 each | 0/10 each | 0.17–0.32 |
+
+* **A fails as registered.** The development seeds chose `opb` (2/3 vs 1/3). It certified 7/10, below the 9/10 needed.
+* **Descriptive, after the selection rule, not a pass.** At matched parameters and initial logit scale, the
+  multiplicative cell certified 10/10 against the additive cell's 0/10 on the same seeds. The full-rank per-op cell
+  certified 9/10.
+  - This is direct evidence that the state × op interaction, not exploration, decides acquisition from final answers.
+  - It agrees with Goudreau 1994 and Howe 2609.18966.
+  - Three development seeds were too few to pick between the two interaction cells.
+  - §67b's GPT-2 cell already uses the bilinear (multiplicative) head, so nothing new is ported.
+* **B fails.** temper 3/10 vs its paired control mml2 0/10. η-sharpening and Viterbi help a little on the additive MLP
+  cell (+3, at the margin), but far from 9/10. The η = 1 control, exact expected reward and plain likelihood are all
+  0/10.
+* **Entropy (descriptive).** The additive and MLP cells' transition rows are near-deterministic (< 0.1 nats) by update
+  500 in every seed, as is `mul`'s. The per-op cells stay soft until about 4,500 updates or later. Early commitment
+  alone does not decide the outcome.
+* The Vast host was destroyed after a verified fetch (md5 59191bea).
+
 ## 71. S5 at 4× the training length with GPT-2's written-state chunked loop, under DeltaProduct's protocol (pre-registered 2026-10-01 23:54 EDT, after Literature's checks bb83da8 and LIT_SOTA_TARGETS, and before any implementation or run; user decision via Audit, option (a))
 
 **Why.** The user's target is a working method that beats SOTA on smaller tasks.

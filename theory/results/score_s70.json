@@ -1,0 +1,407 @@
+{
+ "arms": {
+  "A_add": {
+   "dev": 0,
+   "conf": 0,
+   "conf_wilson": [
+    -0.0,
+    0.278
+   ],
+   "conf_per_seed": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "acc128_conf": 0.319,
+   "missing": 0,
+   "params": 1509,
+   "entropy_collapse_step": [
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500
+   ]
+  },
+  "A_mul": {
+   "dev": 1,
+   "conf": 10,
+   "conf_wilson": [
+    0.722,
+    1.0
+   ],
+   "conf_per_seed": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "acc128_conf": 1.0,
+   "missing": 0,
+   "params": 1480,
+   "entropy_collapse_step": [
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    1000
+   ]
+  },
+  "A_opb12": {
+   "dev": 2,
+   "conf": 7,
+   "conf_wilson": [
+    0.397,
+    0.892
+   ],
+   "conf_per_seed": [
+    true,
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+    false,
+    false,
+    true
+   ],
+   "acc128_conf": 0.832,
+   "missing": 0,
+   "params": 1464,
+   "entropy_collapse_step": [
+    4500,
+    null,
+    null,
+    null,
+    null,
+    4500,
+    null,
+    null,
+    2500,
+    null
+   ]
+  },
+  "A_opb24": {
+   "dev": 3,
+   "conf": 9,
+   "conf_wilson": [
+    0.596,
+    0.982
+   ],
+   "conf_per_seed": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false
+   ],
+   "acc128_conf": 0.934,
+   "missing": 0,
+   "params": 4632,
+   "entropy_collapse_step": [
+    null,
+    4500,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "B_temper": {
+   "dev": 2,
+   "conf": 3,
+   "conf_wilson": [
+    0.108,
+    0.603
+   ],
+   "conf_per_seed": [
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true
+   ],
+   "acc128_conf": 0.566,
+   "missing": 0,
+   "params": 7948,
+   "entropy_collapse_step": [
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500
+   ]
+  },
+  "B_eta1": {
+   "dev": 0,
+   "conf": 0,
+   "conf_wilson": [
+    -0.0,
+    0.278
+   ],
+   "conf_per_seed": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "acc128_conf": 0.205,
+   "missing": 0,
+   "params": 7948,
+   "entropy_collapse_step": [
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500
+   ]
+  },
+  "B_mml2": {
+   "dev": 0,
+   "conf": 0,
+   "conf_wilson": [
+    -0.0,
+    0.278
+   ],
+   "conf_per_seed": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "acc128_conf": 0.219,
+   "missing": 0,
+   "params": 7948,
+   "entropy_collapse_step": [
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500
+   ]
+  },
+  "B_mml": {
+   "dev": 0,
+   "conf": 0,
+   "conf_wilson": [
+    -0.0,
+    0.278
+   ],
+   "conf_per_seed": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "acc128_conf": 0.315,
+   "missing": 0,
+   "params": 7948,
+   "entropy_collapse_step": [
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500
+   ]
+  },
+  "B_exr": {
+   "dev": 0,
+   "conf": 0,
+   "conf_wilson": [
+    -0.0,
+    0.278
+   ],
+   "conf_per_seed": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "acc128_conf": 0.168,
+   "missing": 0,
+   "params": 7948,
+   "entropy_collapse_step": [
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500
+   ]
+  }
+ },
+ "A_candidate": "A_opb12",
+ "A_pass": false,
+ "A_paired_vs_add": [
+  [
+   1,
+   0
+  ],
+  [
+   1,
+   0
+  ],
+  [
+   1,
+   0
+  ],
+  [
+   1,
+   0
+  ],
+  [
+   0,
+   0
+  ],
+  [
+   1,
+   0
+  ],
+  [
+   1,
+   0
+  ],
+  [
+   0,
+   0
+  ],
+  [
+   0,
+   0
+  ],
+  [
+   1,
+   0
+  ]
+ ],
+ "B_pass": false,
+ "B_paired_vs_mml2": [
+  [
+   0,
+   0
+  ],
+  [
+   0,
+   0
+  ],
+  [
+   1,
+   0
+  ],
+  [
+   0,
+   0
+  ],
+  [
+   0,
+   0
+  ],
+  [
+   0,
+   0
+  ],
+  [
+   0,
+   0
+  ],
+  [
+   0,
+   0
+  ],
+  [
+   1,
+   0
+  ],
+  [
+   1,
+   0
+  ]
+ ],
+ "close_line": true
+}
