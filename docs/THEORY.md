@@ -80,6 +80,12 @@ Path independence tracks one-loop reach (Spearman −0.87, post hoc).
 **GSM8K step 2 (§68):** our own text-CoT, Coconut and written-state arms on GSM8K-Aug (3 seeds), with C1 controls on Coconut's latents.
 **C1 frontier (§67):** the exact-marginal objective has partial-automaton local optima. The table is certified 1/6 at 6 codes but 10/10
 at 12 codes. Every neural cell fails (GPT-2, random GPT-2, small transformer, MLP). Hard codes do not decay with length.
+**Stable latent (§72b / §73):**
+* Frozen pretrained GPT-2 with a standardised (centred) readout acquires a certified S3 latent machine from final
+  answers in 10/10 seeds.
+* Pretrained anisotropy (cosine 0.99) was the obstacle.
+**S5 (§71):** GPT-2's written-state chunked loop is 1.000 at 512 (and 2,048) from training at 128, certified at every
+length. This is scaffolded and not C1.
 **§69 / §70 (C1 acquisition, closed):**
 * RL-style updates do not fix acquisition: 0–1/10, best-of-4 5/10 (§69).
 * A spectral learner gets S4/A5 from ≤ 10⁶ problems, so data is not the limit (69-2).
@@ -5467,6 +5473,24 @@ loss of about ln 120).
   wording against it. S1, S2 and S4 are unaffected.
 * The fairness arm (variable lengths) and the GRU reference stay descriptive and are reported whatever they score.
 
+**§71 result (2026-10-02 07:16 EDT, pointer; scored by the experiments session, `docs/PROTOCOL12.md` §71,
+`theory/results/score_s71.json`).**
+* **S1 met.** WC₀₁ is 1.000 cumulative at t = 128/256/512 in 5/5 seeds and certified 5/5 (0 errors on all 14,400
+  (state, op) inputs). WC₀₂ and WC₀₄ are also 1.000.
+* **Extended test.** 1.000 at length 2,048 (16× training).
+* **S2 met, with a caveat (Theory).** The GPT-2 tagger is 0.0 even at its training length 128, so it did not learn at
+  all. It does not reproduce Li, Guo & Andreas's in-distribution fit, and it gives no evidence of their past-training
+  cutoff. The "unscaffolded LM fails past training length" contrast rests on Li et al.'s published result, not on our
+  tagger.
+* **S3.** Comparator not reproduced (71-2); only the published DeltaProduct figure is cited.
+* **S4 not met.** Final-only P3 is at chance (0.009): 4-op S5 composition was not learned from final answers.
+* **C1 not met.** WC₄ ≈ WC₀₄, both at chance.
+* **Permitted wording (§71).** "The first transformer / pretrained-LM result on S5 at 4× training length (512 from
+  128), certified at every length". It carries the qualifiers **scaffolded, different interface**: a written discrete
+  state, a history cut, 124M parameters, and 3,584 sequential passes and 2.4 TFLOPs per 512-problem.
+* **What it shows.** The range principle works as a method at S5. What it is not: a latent result (C1), or a win over
+  recurrent SOTA.
+
 ## 72. Where does the GPT-2 transition cell lose acquisition? One diagnostic: frozen pretrained vs frozen random GPT-2 vs fine-tuned vs the toy multiplicative cell (pre-registered 2026-10-02 00:25 EDT, after Literature's check 811c5d7 and before any run; user question via Audit, "what are we doing to solve reliable latent method")
 
 **Why.** The same multiplicative interaction behaves very differently in toy and GPT-2 cells.
@@ -5695,6 +5719,18 @@ trained parameter; new fresh seeds 2011–2020).
 
 **Placement and cost.** 30 runs (PF-std, PT-std, RESET × 10 seeds), each 25–40 min on a 3090. The local cards come
 first, then at most 5 Vast hosts after the 72b panel host has proved the stack. About $3–5.
+
+**§73 result (2026-10-02 07:16 EDT, pointer; scored by the experiments session, `docs/PROTOCOL12.md` §73,
+`theory/results/score_s73.json`). L1, L2 and L3 are all met: a stable latent at S3.**
+* **L1.** PF-std certified 10/10 (seeds 2011–2020), 1.000 to N 128.
+* **L2.** Nulls ≤ 0.180; RESET within the bound in 10/10 at n = 10,000.
+* **L3.** Donor and same-semantic 1.000; irrelevant change 0.000 (6 tested seeds, 4 vacuous).
+* PT-std is also 10/10; PF-ctr (centring only) 5/5. Counter MI ≤ 0.0015 bits; all ReLU units are active.
+* **Reading (within §73's limits).** "A latent finite-state machine hosted by a frozen pretrained GPT-2 is acquired from
+  final answers alone in ≥ 9/10 seeds and certified at every length (S3)." The ingredient is removing the shared
+  direction from GPT-2's anisotropic features before the multiplicative readout; centring is enough.
+* **Not claimed.** That pretraining or GPT-2's computation is necessary (DENSE and RF also learn). §74 tests that, and
+  §75 tests scale.
 
 ## 74. Does the stable latent need a pretrained LM? Paraphrase transfer of the latent machine to unseen operation phrasings (pre-registered 2026-10-02 04:26 EDT, after Literature's check 614e6ef and before any run; the overnight stable-latent goal)
 
