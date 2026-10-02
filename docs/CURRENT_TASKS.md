@@ -35,7 +35,7 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 > gives fronts to depth 11 in 2/4 runs; Pilot D 12 + 12 running on Vast). Ownership (theory Vast hosts vs a PROTOCOL8)
 > to be agreed. The theory session analyses O/R/T9/T10 runs only after the experiments session has scored them.
 
-## 00. EXPERIMENTS STATE AT 2026-10-02 07:30 EDT — authoritative over section 0
+## 00. EXPERIMENTS STATE AT 2026-10-02 09:35 EDT — authoritative over section 0
 
 **Running:**
 * **§76(B) / B-std (amendment 76-2), local:** `scratch/feed76.sh` (stop: `touch scratch/.stop_feed76`; log
@@ -45,6 +45,7 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
   ge3 teachers are 0/6 certified, so primary (B) S4 fails.
 * **§75: gate failed 09:00** (PROTOCOL12). Descriptive leftovers: `p75_pfstd_s2031–2033` (void as evidence; s2034 was
   stopped and moved to `void_*`).
+* **§74 scored 08:00:** P1 0/5, so uninformative; bad pairs sent to Theory. Backfill queue: all 90 cells already done.
 * GRU host and the §75 host are destroyed. Theory runs c1tab-76 (Vast CPU) and local CPU teacher jobs.
 
 **Scored (details in docs/PROTOCOL12.md):** §65, §66, §61b, §67b, §72 (collapsed), §72b (PF-std 5/5), §73 (stable latent
