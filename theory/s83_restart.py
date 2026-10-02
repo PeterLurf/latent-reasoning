@@ -28,9 +28,11 @@ from boxes import core as bc  # noqa: E402
 
 
 @torch.no_grad()
-def chunk_with_conf(m, starts, ops, dev, amp):
-    """starts (B,), ops (B, K) -> predicted element ids (B, K) (-1 invalid) and confidences (B, K)."""
+def chunk_with_conf(m, starts, ops, dev, amp, tau=None):
+    """starts (B,), ops (B, K) -> predicted element ids (B, K) (-1 invalid) and confidences (B, K). With tau, generation
+    stops once every row has produced a state below tau (the remaining columns are -1 / 0 and are never accepted)."""
     B, K = ops.shape
+    done = np.zeros(B, dtype=bool)
     pre = torch.tensor([bc.tok(s5.chunk_prompt(s5.ARR[s], o)) for s, o in zip(starts, ops)], device=dev)
     allowed = torch.tensor(bc.LET_IDS, device=dev)
     preds, confs = [], []
@@ -45,7 +47,14 @@ def chunk_with_conf(m, starts, ops, dev, amp):
                 h, past = m(m.embed(nxt)[:, None, :], past); hl = h[:, -1]
             ids = torch.stack(ids, 1)
             preds.append([s5.ARR_INDEX.get(bc.dec_arr(r), -1) for r in ids.tolist()]); confs.append(lc.exp().float().cpu().numpy())
-    return np.array(preds).T, np.array(confs).T
+            if tau is not None:
+                done |= confs[-1] < tau
+                if done.all():
+                    break
+    P, C = np.array(preds).T, np.array(confs).T
+    if P.shape[1] < K:                                                  # pad unused columns
+        P = np.concatenate([P, np.full((B, K - P.shape[1]), -1)], 1); C = np.concatenate([C, np.zeros((B, K - C.shape[1]))], 1)
+    return P, C
 
 
 def s5_apply(s, o):                                   # element id after applying op o to element s (s5's convention)
@@ -89,25 +98,35 @@ def adaptive_rollout(m, X, Y, kmax, tau, dev, amp, bs, k_fb=4):
             for k in np.unique(K):
                 g = act[K == k]
                 ops = np.stack([X[rows[i], ptr[i]:ptr[i] + k] for i in g])
-                p, c = chunk_with_conf(m, np.where(cur[g] < 0, 0, cur[g]), ops, dev, amp); gen_states += p.size
+                p, c = chunk_with_conf(m, np.where(cur[g] < 0, 0, cur[g]), ops, dev, amp, tau); gen_states += int((c > 0).sum())
+                fb = [gi for gi in range(len(g)) if c[gi, 0] < tau]          # note 83-2 fallback rows, batched (83-3)
+                fbres = {}
+                for kf in sorted({int(min(k_fb, L - ptr[g[gi]])) for gi in fb}):
+                    sel = [gi for gi in fb if int(min(k_fb, L - ptr[g[gi]])) == kf]
+                    pf, cf = chunk_with_conf(m, np.array([max(cur[g[gi]], 0) for gi in sel]),
+                                             np.stack([X[rows[g[gi]], ptr[g[gi]]:ptr[g[gi]] + kf] for gi in sel]), dev, amp, tau)
+                    gen_states += int((cf > 0).sum())
+                    for j, gi in enumerate(sel):
+                        fbres[gi] = (pf[j], cf[j])
                 for gi, i in enumerate(g):
                     r, q = rows[i], ptr[i]
                     start_ok = q == 0 or pred[r, q - 1] == Y[r, q - 1]
                     if start_ok:                                       # detection stats on chunks with a correct start
                         for j in range(k):
+                            if c[gi, j] == 0:
+                                break
                             right = p[gi, j] == Y[r, q + j]; flagged = c[gi, j] < tau
                             det["right" if right else "wrong"] += 1
                             det["right_flagged" if right else "wrong_flagged"] += int(flagged)
-                            if not right:
-                                break                                  # later states inherit the error
+                            if not right or flagged:
+                                break                                  # later states inherit the error / are never accepted
                     ok = c[gi] >= tau
                     n = k if ok.all() else int(np.argmin(ok))
                     if n == 0:                                         # note 83-2: even the first state is unsure ->
-                        kf = int(min(k_fb, L - q))                     # retry from the same start with an in-range
-                        pf, cf = chunk_with_conf(m, np.array([max(cur[i], 0)]), X[r:r + 1, q:q + kf], dev, amp)
-                        gen_states += pf.size; okf = cf[0] >= tau      # chunk (the trained size) and accept its
-                        n = kf if okf.all() else max(1, int(np.argmin(okf)))   # confident prefix (>= 1 state)
-                        p_use = pf[0]; fallbacks[0] += 1
+                        pf, cf = fbres[gi]; kf = int(min(k_fb, L - q))  # in-range retry of the trained size k
+                        okf = cf[:kf] >= tau                           # (batched, 83-3); accept its confident
+                        n = kf if okf.all() else max(1, int(np.argmin(okf)))   # prefix (>= 1 state)
+                        p_use = pf; fallbacks[0] += 1
                     else:
                         p_use = p[gi]
                     pred[r, q:q + n] = p_use[:n]; cur[i] = p_use[n - 1]; ptr[i] += n; acc_lens.append(int(n))
@@ -126,9 +145,10 @@ def main():
     ev = json.load(open(os.path.join(a.run, "eval.json"))) if os.path.exists(os.path.join(a.run, "eval.json")) else {}
     amp = torch.bfloat16 if "bfloat16" in str(ev.get("eval_dtype", "")) else None
     m = s5.load_gpt2(dev); m.load_state_dict(torch.load(os.path.join(a.run, "model.pt"), map_location=dev)); m.eval()
-    t0 = time.time(); tau, cal = calibrate(m, a.k, dev, amp, n=a.cal_n); res = {"tau": tau, "calibration": cal, "amp": str(amp), "run": a.run}
+    t0 = time.time(); tau, cal = calibrate(m, a.k, dev, amp, n=a.cal_n); print("calibrated tau", tau, cal, round(time.time() - t0), "s", flush=True); res = {"tau": tau, "calibration": cal, "amp": str(amp), "run": a.run}
     Xte, Yte = s5.load_csv(os.path.join(a.data_dir, "S5=512.csv"), limit=a.test_n)
     pred, lens, gen, det = adaptive_rollout(m, Xte, Yte, a.kmax, tau, dev, amp, a.bs, a.k); cum = s5.cumulative(pred, Yte)
+    print("adaptive 512 done", float(cum[-1]), "mean accepted", float(np.mean(lens)), det, round(time.time() - t0), "s", flush=True)
     res["adaptive"] = {"cum": {t: float(cum[t - 1]) for t in (128, 256, 512)}, "final_state": float((pred[:, -1] == Yte[:, -1]).mean()),
                        "mean_accepted": float(np.mean(lens)), "accepted_hist": np.bincount(lens, minlength=a.kmax + 1).tolist(),
                        "generated_states_per_problem": gen / len(Xte), "detection": det}
