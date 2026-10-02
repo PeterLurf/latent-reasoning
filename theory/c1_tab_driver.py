@@ -22,6 +22,7 @@ def main():
     ap.add_argument("--out", default=os.path.join(HERE, "results", "c1_tab"))
     ap.add_argument("--device", default="cpu"); ap.add_argument("--curricula", nargs="*", default=["ge3", "std"])
     ap.add_argument("--no_extras", action="store_true", help="skip the A5 M-sweep / tau0 = 1 descriptive arms")
+    ap.add_argument("--seeds", type=int, nargs="*", default=SEEDS, help="subset of the registered seeds (placement only)")
     a = ap.parse_args(); os.makedirs(os.path.join(a.out, "logs"), exist_ok=True)
     env = dict(os.environ, OMP_NUM_THREADS="1", MKL_NUM_THREADS="1", OPENBLAS_NUM_THREADS="1")
 
@@ -37,7 +38,8 @@ def main():
                                stdout=lg, stderr=subprocess.STDOUT, env=env)
         return os.path.exists(f)
 
-    jobs = [(g, cur, s, 2 * GSIZE[g], 4, "") for g in a.groups for cur in a.curricula for s in SEEDS]   # largest first
+    assert set(a.seeds) <= set(SEEDS), "only registered seeds"
+    jobs = [(g, cur, s, 2 * GSIZE[g], 4, "") for g in a.groups for cur in a.curricula for s in a.seeds]   # largest first
     # descriptive (Literature 99ec154): M sweep and tau ablation, A5 ge3, seeds 2051-2055
     if not a.no_extras and "A5" in a.groups:
         jobs += [("A5", "ge3", s, M, 4, "_M%d" % M) for M in (240, 90, 60) for s in SEEDS[:5]]
