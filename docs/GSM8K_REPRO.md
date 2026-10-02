@@ -111,3 +111,13 @@ Same checkpoints, items and recipes. Only the number of latent steps changes:
   Coconut's 5.1, which is below the one-op oracle.
 * The gain from latents is largest at 2–4 equation steps. At 6 steps every configuration is ≤ 0.07: the latents add
   depth up to ~4 steps and no further.
+
+## Amendment 3 (2026-10-01 20:46 EDT; descriptive, before running): thought-budget curves (C2-style)
+
+Same checkpoints, items and recipes. Budgets beyond and between the trained ones:
+* SIM-CoT + Coconut: K = 4, 6, 8, 12, 16 (trained 10).
+* CODI and SIM-CoT + CODI: L = 2, 4, 8, 12 (trained 6). §13 has the CODI L-curve from the same code; this re-runs it in
+  bench with per-step buckets.
+
+Reported: accuracy and per-step accuracy vs budget; no pass/fail. The question is whether accuracy keeps rising past the
+trained budget (a C2 signature) or peaks at it (§13's horizon).
