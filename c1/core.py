@@ -310,3 +310,18 @@ def counter_check(model, n=4000, N=24, seed=7):
         out[f"MI_code_lenmod{q}_given_state"] = (H(R[:, :2]) + H(np.hstack([lm, R[:, 1:2]])) - H(np.hstack([R[:, :2], lm]))
                                                  - H(R[:, 1:2]))
     return out
+
+
+@torch.no_grad()
+def certificate_reach(model):
+    """The set of codes reachable from the initial code 0 under all ops (hard argmax), excluding nothing."""
+    dev = next(model.parameters()).device
+    codes = torch.arange(M, device=dev)
+    Th = model.step_logits(codes.repeat_interleave(6), torch.arange(6, device=dev).repeat(M)).argmax(-1).view(M, 6).tolist()
+    seen, frontier = {0}, [0]
+    while frontier:
+        c = frontier.pop()
+        for op in range(6):
+            if Th[c][op] not in seen:
+                seen.add(Th[c][op]); frontier.append(Th[c][op])
+    return sorted(seen)

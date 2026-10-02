@@ -25,7 +25,7 @@ import torch
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from boxes.core import GPT2KV  # noqa: E402
-from c1.core import COMP, FP, Cell, MLPCell, Tab, TinyTF, gpt2_random_sd, audit, certificate, hard_rollout, marginal_loss, sample, truth, wilson_upper  # noqa: E402
+from c1.core import COMP, FP, Cell, MLPCell, Tab, TinyTF, gpt2_random_sd, audit, certificate, counter_check, hard_rollout, marginal_loss, sample, truth, wilson_upper  # noqa: E402
 
 DEPTHS = (8, 16, 32, 64, 128)
 TEST_SEED = 6700
@@ -70,6 +70,8 @@ def evaluate(model, arm, dev, n_test, n_null, out):
         res["acc"][str(N)] = float((torch.cat(pred).numpy() == y).mean())
     if not arm.startswith("fp"):
         res["audit"] = audit(model); res["certificate"] = certificate(model)
+        if res["certificate"]["certified"]:
+            res["counter_check"] = counter_check(model)
     if arm == "d1":
         res["nulls"] = nulls(model, dev, n_null); res["mechanism"] = mechanism(model, dev)
     json.dump(res, open(os.path.join(out, "eval.json"), "w", newline="\n"), indent=1)
@@ -121,6 +123,20 @@ def mechanism(model, dev, n=2000, N=32, k=16):
     else:
         res["irrelevant_change_rate"] = None
     res["irrelevant_n"] = len(have)
+    # §67b clarification (fixed before any panel result was read): with M > 6 the substitute must be a code the machine
+    # actually reaches (the certificate's reachable set); unreachable codes are outside the certified machine. The
+    # unrestricted rate above is kept as descriptive.
+    from c1.core import certificate_reach
+    reach = certificate_reach(model)
+    altr = [[c for c in reach if c != rc[i] and dec[c] == dec[rc[i]]] for i in range(n)]
+    haver = [i for i in range(n) if altr[i]]
+    if haver:
+        st = torch.tensor([altr[i][0] for i in haver], device=dev)
+        _, a4, _ = hard_rollout(model, r[haver], start=st, from_step=k)
+        res["irrelevant_change_rate_reachable"] = float((a4.cpu().numpy() != r_ans.cpu().numpy()[haver]).mean())
+    else:
+        res["irrelevant_change_rate_reachable"] = None
+    res["irrelevant_n_reachable"] = len(haver)
     res["irrelevant_note"] = "vacuous: every decoded state has exactly one code" if not have else ""
     # same-semantic donors from a different depth: a donor code reached at step k2 != k with the recipient's decoded state
     pool = {}
@@ -149,6 +165,8 @@ def train(a):
         model.distinct_codes()
     if a.head_norm == "ln" and hasattr(model, "ln_heads"):
         model.ln_heads()
+    if a.readout == "bil" and hasattr(model, "bil_readout"):
+        model.bil_readout()
     new = [p for n, p in model.named_parameters() if not n.startswith("g.")]      # codes, heads, TAB tables
     old = [p for n, p in model.named_parameters() if n.startswith("g.")]          # GPT-2
     groups = [{"params": new, "lr": a.lr_new or a.lr}] + ([{"params": old, "lr": a.lr}] if old else [])
@@ -167,7 +185,8 @@ def train(a):
         if a.arm.startswith("fp"):
             loss = torch.nn.functional.cross_entropy(model(o), yy); toks += B * (L + 1)
         else:
-            logT, logD = model.tables(); loss = marginal_loss(logT, logD, o, yy, reset=a.arm == "reset")
+            tau = 1.0 + (a.tau0 - 1.0) * max(0.0, 1.0 - (u - 1) / (0.5 * a.updates))   # §67b: tau0 -> 1 by halfway
+            logT, logD = model.tables(tau); loss = marginal_loss(logT, logD, o, yy, reset=a.arm == "reset")
             toks += D1_TOKENS if a.arm != "tab" else 0
         seen += B
         opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0); opt.step()
@@ -201,6 +220,8 @@ def main():
     ap.add_argument("--bs", type=int, default=512); ap.add_argument("--lr", type=float, default=1e-4)
     ap.add_argument("--head_init", default="default", choices=["default", "zero", "small"])
     ap.add_argument("--M", type=int, default=6, help="number of codes (core.M)")
+    ap.add_argument("--readout", default="linear", choices=["linear", "bil"])
+    ap.add_argument("--tau0", type=float, default=1.0, help="§67b: temperature annealed tau0 -> 1 over the first half")
     ap.add_argument("--head_norm", default="none", choices=["none", "ln"])
     ap.add_argument("--code_init", default="default", choices=["default", "distinct"])
     ap.add_argument("--lr_new", type=float, default=0.0, help="lr for codes / heads / tables (0 = --lr); pilot-fixed")

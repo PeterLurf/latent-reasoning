@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Drain a §67b c1 host (model.pt excluded; eval runs on the host): QUEUE_DONE + no live python, checksummed fetch of each evaluated <out dir> + its log,
+# Drain a §67b c1 host (model.pt kept for D1b only, for c1/remech.py): QUEUE_DONE + no live python, checksummed fetch of each evaluated <out dir> + its log,
 # local check (eval*.json present), then vdestroy.   bash scratch/drain_tjob.sh <host> <port> <queue tag> <instance id>
 set -u
 H=$1; P=$2; TAG=$3; ID=$4
@@ -14,7 +14,7 @@ runs=$(echo "$st" | sed -n 's/^RUN //p'); [ -n "$runs" ] || { echo "FETCH_INCOMP
 files=""; for j in $runs; do files="$files $j logs/c1_$(basename $j).log"; done
 ok=0
 for try in 1 2 3; do
-  rs=$($S "cd /workspace/Latent && tar --exclude=model.pt -czf /tmp/tj.tgz $files logs/queue_${TAG}.out && sha256sum /tmp/tj.tgz" 2>/dev/null | grep -o '^[0-9a-f]\{64\}')
+  rs=$($S "cd /workspace/Latent && tar --exclude='p67b_reset_*/model.pt' --exclude='p67b_fp*/model.pt' -czf /tmp/tj.tgz $files logs/queue_${TAG}.out && sha256sum /tmp/tj.tgz" 2>/dev/null | grep -o '^[0-9a-f]\{64\}')
   scp -q -i ~/.ssh/runpod_ed25519 -P $P root@$H:/tmp/tj.tgz /tmp/c1_${H}_${P}.tgz 2>/dev/null
   [ -n "$rs" ] && [ "$rs" = "$(sha256sum /tmp/c1_${H}_${P}.tgz | cut -c1-64)" ] && { ok=1; break; }
   sleep 20
