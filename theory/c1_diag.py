@@ -30,13 +30,20 @@ class Cell(nn.Module):
         self.kind, self.M = kind, M
         if kind == "tab":
             self.T = nn.Parameter(torch.randn(M, 6, M) * 0.1)
+        elif kind == "bil":                                 # second-order cell: (U code) * (V op), then ReLU -> M
+            self.U, self.V = nn.Linear(M, hid), nn.Linear(6, hid)
+            self.out = nn.Linear(hid, M)
         else:
             self.f = nn.Sequential(nn.Linear(M + 6, hid), nn.ReLU(), nn.Linear(hid, M))
         self.D = nn.Parameter(torch.randn(M, 6) * 0.1)
         self.X = torch.cat([torch.eye(M).repeat_interleave(6, 0), torch.eye(6).repeat(M, 1)], 1)   # rows (c, a)
 
     def table(self):
-        return self.T if self.kind == "tab" else self.f(self.X).view(self.M, 6, self.M)
+        if self.kind == "tab":
+            return self.T
+        if self.kind == "bil":
+            return self.out(torch.relu(self.U(self.X[:, :self.M]) * self.V(self.X[:, self.M:]))).view(self.M, 6, self.M)
+        return self.f(self.X).view(self.M, 6, self.M)
 
 
 def run(kind, seed, updates, lr, bs=512, M=6, tau0=1.0):

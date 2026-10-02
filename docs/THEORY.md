@@ -4871,6 +4871,21 @@ toys deadlocked), then Design 2 (Boolean-tree registers; Ito 2608.31067 is neare
     given the state, ≤ 0.015 bits.
   - So the spare capacity does not encode a length counter. The certificate already guarantees correctness at every
     length.
+* **Shared-cell diagnostics so far (`c1_diag_mlp.json`, `c1_diag_bil.json`; 8,000 updates, lr 1e-2).**
+  - MLP: 1/40 certified across M 12/24, τ-annealing 1/4 and lr 1e-2/3e-3.
+  - Second-order (bilinear) cell, (U code) ⊙ (V op), the classic automaton-learning architecture (Giles et al. 1992):
+    0/10 at M = 6 but **7/10 at M = 12**.
+  - Multiplicative state–input interaction plus over-complete codes is most of what a shared cell needs.
+
+**Amendment 67-2 (2026-10-01 20:53 EDT; user decision via Audit: a time-box, no fix loop).**
+* **What remains.** The running bilinear grid (M = 24, τ0 1/4, 10 seeds) and exactly ONE more cell variant: the GPT-2
+  cell (d1) at **M = 12**, with LayerNorm heads and distinct codes (the best pilot init), 10 seeds, 8,000 updates, on
+  the local GPUs, certified by the product-automaton check.
+* **Decision rule, fixed now.**
+  - If any shared cell certifies in ≥ 9/10 seeds, §67b is registered as the single revision, with the full §67 panel.
+  - Otherwise the line closes with this finding: an over-complete free table learns the discrete latent rule from final
+    answers in 10/10 seeds, while shared networks do not reach 9/10 (MLP 1/40, bilinear 7/10 at best, GPT-2 0/11
+    at M = 6 plus this M = 12 result, tf_small and gpt2_rand 0/6). Shared-cell acquisition is the C1 obstacle.
 
 **Amendment 67-1 (2026-10-01 19:34 EDT, before any of these runs; descriptive, no C1 claim).** Where does acquisition
 break?
