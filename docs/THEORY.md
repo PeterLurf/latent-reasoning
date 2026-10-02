@@ -4887,6 +4887,11 @@ toys deadlocked), then Design 2 (Boolean-tree registers; Ito 2608.31067 is neare
   - Otherwise the line closes with this finding: an over-complete free table learns the discrete latent rule from final
     answers in 10/10 seeds, while shared networks do not reach 9/10 (MLP 1/40, bilinear 7/10 at best, GPT-2 0/11
     at M = 6 plus this M = 12 result, tf_small and gpt2_rand 0/6). Shared-cell acquisition is the C1 obstacle.
+* **67-2's final variant: the GPT-2 cell at M = 12 (`c1/PILOT.md`; recorded 22:34 EDT).** 3/10 seeds certified (s1, s2,
+  s8: 1.000 at N 8–128, 0 bad pairs).
+  - The other 7 sit on flat partial automata (0.24–0.53, 5–15 bad pairs).
+  - Below 9/10, so on its own it would not have triggered §67b. But the pretrained GPT-2 cell can acquire the rule:
+    0/11 at M = 6 vs 3/10 at M = 12.
 * **The bilinear grid (`c1_diag_bil24.json`, finished 21:06 EDT).** The second-order cell at M = 24 certifies in **10/10**
   seeds with τ annealed 4 → 1 over the first half, and 8/10 without annealing.
   - The 67-2 rule is met: a shared cell certifies in ≥ 9/10.
