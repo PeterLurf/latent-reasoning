@@ -5050,6 +5050,55 @@ checkpoints").**
     TC start and gpt2-gsm8k-coconut a matched CO reference.
   - They are benched now as descriptive leaderboard rows, with the K = 0/1/2 ablation on their Coconut (Audit).
 
+## 69. RL-style training for discrete-latent acquisition from outcome-only reward (pre-registered 2026-10-01 23:11 EDT, after Literature's check cea50a1 and before any scored run; user request via Audit)
+
+**Why.**
+* Exact marginalisation gives the exact likelihood gradient, yet it falls into partial-automaton optima.
+  - The S3 table at M = 6 certifies 1/5; the MLP 0/x; the bilinear cell at M = 6 0/10, and at M = 24 with τ annealing
+    8/10 on held-out seeds (67b-1).
+  - At S4 and A5 (premise check, `c1_group_*.json`) it certifies 0/3.
+* Discrete-program learning from final answers has the same pathology: spurious programs. There, sampling-based
+  updates with meritocratic weighting escape where both MML and REINFORCE fail (Guu 1704.07926, RandoMer; NSM 1611.00020;
+  MAPO 1807.02322).
+
+**Prior** (`docs/LIT_RL_ACQUISITION_2026-10-01.md`).
+* As above.
+* HMM local optima and their escapes: annealing (Ueda & Nakano; Smith & Eisner), Gibbs sampling, hard-EM (Spitkovsky),
+  split–merge (Petrov).
+* A global, non-neural alternative: spectral learning of weighted automata (Balle et al. 2014).
+
+**Design.** `theory/c1_rl.py` (CPU). The machine, cells, curricula and certificate are as in `c1_group.py`.
+* **Methods**, all trained on final answers only:
+  - marg (baseline);
+  - hem: hard-EM / expert iteration, K sampled code paths;
+  - grpo: REINFORCE with a group baseline and an annealed entropy bonus;
+  - rmer: RandoMer-style uniform weights over the correct sampled paths;
+  - bon: best-of-4 restarts of marg, selected on training reward. One "seed" is the whole 4-restart procedure.
+* **Budget matching (Audit).**
+  - Each method runs a fixed number of updates, and its CPU seconds are recorded.
+  - Seeds-to-certificate is compared at matched CPU time: a method using more than 1.5× marg's median CPU seconds is
+    rescaled. Its update count is cut to match before the scored runs, and this is fixed on the pilot.
+  - bon is reported with n = 4 and its 4× cost stated.
+* **Hyperparameters, fixed on pilot seeds 990–994 only** (disjoint from the scored seeds).
+  - Choices: K = 8, β0 = 0.05, lr 1e-2, and τ0 ∈ {1, 4}, picked per method on the pilot.
+  - Updates: 8,000 for S3 and 16,000 for S4/A5.
+  - Curriculum: std for S3, zhang for S4/A5.
+* **Scored seeds.** 200–209 for S3; 200–202, then 203–212, for S4/A5.
+
+**Stages, with the pass rule fixed now.** The certificate is tracked, not the reward (spurious automata).
+* **Stage 1 (S3).** Cells MLP (M = 6) and tab (M = 6), where marg fails. A method passes if it certifies ≥ 9/10 scored
+  seeds for at least one of these cells at matched budget, against marg on the same seeds.
+* **Stage 2 (S4, A5).** For every method that passes Stage 1: bilinear cell, M = 2|G|, 3 seeds. ≥ 2/3 certified, then
+  a 10-seed confirmation at ≥ 9/10.
+* **Descriptive.** The running marg-with-Zhang-curriculum retry on S4/A5 is the marg reference. A spectral
+  weighted-automaton baseline is optional, if time allows.
+
+**Readings.**
+* **A method passes both stages.** Discrete-latent acquisition from outcome-only reward scales to non-solvable groups.
+  Target 1 is back on (beat SOTA on A5/S5 acquisition, with a certificate), and the method goes to the GPT-2 cell.
+* **Stage 1 only.** RL-style updates fix small-state acquisition; scaling is still open.
+* **Neither.** Outcome-only acquisition of the latent automaton is not fixed by these methods; Target 1 is dropped.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
