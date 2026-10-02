@@ -4,7 +4,7 @@
 #   bash scratch/local_after.sh <device>
 cd "$(dirname "$0")/.."
 dev=$1
-busy() { powershell -NoProfile -Command "if ((Get-CimInstance Win32_Process -Filter \"Name='python.exe'\" | Where-Object { \$_.CommandLine -match '--device $dev( |\$)' }).Count -gt 0) { exit 0 } else { exit 1 }"; }
+busy() { n=$(powershell -NoProfile -Command "@(Get-CimInstance Win32_Process -Filter \"Name='python.exe'\" | Where-Object { \$_.CommandLine -match '--device $dev' }).Count" | tr -d ''); [ "${n:-0}" -gt 0 ]; }
 while busy; do sleep 60; done
 echo "$(date +%T) $dev free -> backfill" >> logs/local_after.log
 [ -f scratch/backfill_q1_paused2.txt ] && while read -r n; do rmdir bench/results/locks/$n 2>/dev/null; done < scratch/backfill_q1_paused2.txt   # release the paused items
