@@ -5030,6 +5030,17 @@ checkpoints").**
   - G3: WS ≥ TC − 0.03.
   - G4: compute, unchanged.
 
+**Status (21:37 EDT): §68 is PAUSED by user decision, not failed.**
+* The user's words (via Audit): "find a working method that beats sota on smaller tasks then run gsm8k".
+* No TC, WS or CO training was run.
+* Standing results: GSM8K step 1 (public-checkpoint reproduction and latent ablations, GSM8K amendment 2) and the
+  shortcut check.
+* Before the pause:
+  - Literature found no public CoT-SFT checkpoint in its search.
+  - The experiments session found Dilgren & Wiegreffe's matched GPT-2 GSM8K-Aug CoT, Coconut and no-CoT set
+    (2604.04902, MIT) and is benching it.
+  - That set would make a resumed §68 cheap: train only WS.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
