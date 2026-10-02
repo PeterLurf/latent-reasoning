@@ -54,6 +54,12 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
   carry computation on GSM8K.
 * §67 pilot: GPT-2 cell fails rule acquisition (c1/PILOT.md).
 
+**§67 status:**
+* The pilot, 67-1 and the lr 2×2 are done; TAB itself certifies only 1/6 runs at M = 6.
+* Theory's CPU re-implementation certifies TAB 10/10 at M = 12. An MLP grid is running on CPU.
+* No GPU job until a shared cell certifies ≥ 9/10 (then §67b).
+* Local cards are free for other registered work; none is pending.
+
 **Hosts:** only f1sb-R2. Credit ≈ $112.
 
 ## 0. STATE AT 2026-09-30 00:36 — authoritative; sections 1–3 below are partly history
