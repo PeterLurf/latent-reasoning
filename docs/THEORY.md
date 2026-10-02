@@ -6892,6 +6892,17 @@ k op symbols), and the same held-out sets: (b) unseen words, (a) unseen (state, 
     by any learner". The nearest priors are DeltaProduct, Howe and PD-SSM (per-position labels) and Lee 2606.07254
     (solvable S3×S3, hand projection).
 
+**Note 88-2 (2026-10-02 19:15 EDT, before any §88 run; implementation `c1/p80_p0.py loop`).**
+* **Readings accepted.**
+  - Forward: wte + wpe → layers 0–3 → k × layers 4–7 (shared) → (8–11).
+  - One shared Linear(768, 6) head is applied to ln_f of the residual at the last prompt token after each loop
+    iteration; the answer is the head after iteration k.
+  - align = mean CE over iterations 1..k; end = CE at iteration k only.
+  - fp32, AdamW lr 1e-4, wd 0.01, bs 64, 4,000 steps; prompts right-padded under the causal mask.
+* **Clarification.** As the head is defined, every iteration is read the same way: from ln_f of the loop output. So
+  **layers 8–11 are off the loss path.** "Run once at the end" in §88 was vestigial. This keeps the per-iteration and
+  final readouts identical in kind, and it is the reading used.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
