@@ -6,7 +6,7 @@ cd "$(dirname "$0")/.."
 tag=$1; dev=$2; q=$3; P=${4:-4}; log=logs/queue_$tag.out; mkdir -p logs boxes/runs prosqa/ckpt bench/results
 pip install -q tiktoken > logs/pip_boxes.log 2>&1
 W=prosqa/ckpt/gpt2_pretrained.bin
-[ -s $W ] || curl -sL -o $W https://huggingface.co/openai-community/gpt2/resolve/main/pytorch_model.bin
+for try in 1 2 3; do sha256sum $W 2>/dev/null | grep -q '^7c5d3f4b8b76583b' && break; rm -f $W; curl -sL -o $W https://huggingface.co/openai-community/gpt2/resolve/main/pytorch_model.bin; done   # retry a bad download
 sha256sum $W | grep -q '^7c5d3f4b8b76583b' || { echo "$(date +%T) GPT2_SHA_MISMATCH rc 9" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }
 grep -v '^#' "$q" | grep -v '^$' | while read -r r arm k seed steps bs mode; do
   echo "d=boxes/runs/$r; mkdir -p \$d; nvidia-smi --query-gpu=name,driver_version --format=csv,noheader > \$d/host.txt; echo \"\$(date +%T) start $r\" >> $log; python -u boxes/train.py --arm $arm --k $k --seed $seed --steps $steps --bs $bs --device $dev --out \$d > logs/$r.out 2>&1; rc=0; [ -s \$d/eval_train.json ] || rc=7; if [ $mode = full ] && [ \$rc = 0 ]; then python -u -m bench.run --task boxes --model boxes:\$d --tag boxes_$r --device $dev > logs/bench_$r.log 2>&1; grep -q WROTE logs/bench_$r.log || rc=8; fi; echo \"\$(date +%T) evaluated $r rc \$rc\" >> $log"
