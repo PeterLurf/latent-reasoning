@@ -6020,6 +6020,14 @@ B-std pilot).**
     tabular learner acquired from final answers".
   - The registered rules for (B) and (B-std), with held-out rows, stand and are scored as registered.
 
+**Amendment 76-4 (2026-10-02 09:36 EDT, implementation, before any A5 student result; the experiments session).**
+* **A5 students** train on row minibatches of 512 rows, because the 7,200-row table does not fit on 8 GB. The
+  full-table standardisation statistics are refreshed without gradient every 10 updates rather than every update.
+  After training they are frozen as registered.
+* **The stop rule** ("100 % of training rows") is now an exact all-rows check (2c0fa96). The earlier float32 mean
+  comparison let S4 std s2052 train past the stop; those runs were discarded and rerun. s2051 stopped correctly at
+  exactly 1.0 and stands.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
