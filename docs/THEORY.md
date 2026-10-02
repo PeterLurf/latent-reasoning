@@ -5269,6 +5269,122 @@ untested explanations each get one shot.
 * **Both pass.** Both readings hold; the GPT-2 arm uses A's head first, since it is cheaper.
 * **Neither passes.** Close the line, as above.
 
+**Note 70-1 (2026-10-01 23:54 EDT; prior-art addendum, recorded after registration and before any §70 result was read;
+Literature bb83da8).**
+* Howe 2609.18966 shows A's contrast in a Householder RNN on S5. With an additive input term the model shortcuts and
+  scores 0.20 at length 512. Without it, the model learns the exact automaton (1.00), and Adam grows the additive path
+  even from an exact initialisation.
+* A therefore stays new only as exact likelihood from terminal labels with a full certificate, across matched
+  additive, multiplicative and per-op cells.
+
+## 71. S5 at 4× the training length with GPT-2's written-state chunked loop, under DeltaProduct's protocol (pre-registered 2026-10-01 23:54 EDT, after Literature's checks bb83da8 and LIT_SOTA_TARGETS, and before any implementation or run; user decision via Audit, option (a))
+
+**Why.** The user's target is a working method that beats SOTA on smaller tasks.
+* §66's written-state chunked loop (WC) reached 1.000 at 4× its training length on S4 swaps, and so did its no-latent
+  version WC₀.
+* S5 with all 120 elements as inputs is the hardest standard state-tracking task. Recurrent models already extrapolate
+  on it: DeltaProduct n_h = 4 is robust to 512, as are a GRU and Howe's Householder RNN.
+* No transformer or pretrained LM is reported at 512 in any format; the best transformer results reach about 2×.
+* **The claim tested is a scaffold claim, not C1.** WC₀ is the primary arm (Audit).
+
+**Prior** (`docs/LIT_S5_PROTOCOL_2026-10-01.md`, `docs/LIT_SOTA_TARGETS_2026-10-01.md`).
+* DeltaProduct 2502.10297 (protocol below); Grazzi 2411.12537; PD-SSM 2509.22284; Howe 2609.18966.
+* Pretrained LMs on S5 show a steep cutoff past the training length (Li, Guo & Andreas 2503.02854).
+* Transformers at about 2×: Zhang 2607.20594 (≥ 0.92 exact match), Kraus 2604.25800 (1.7×).
+* Scaffold priors: PENCIL 2503.14337, Xu 2604.25166, Delethink, InftyThink, RMT, Ruiz & Gu 2507.02782. None evaluates
+  S5.
+* Anil 2207.04901: fine-tuned scratchpads do not length-generalise.
+
+**Task and protocol (P1, matched data: DeltaProduct's).**
+* Data from DeltaProduct's own generator (`automl/DeltaProduct`, MIT): `generate_data.py --group=S5 --k=128
+  --samples=100000` for training and `--k=512` for test.
+  - Inputs are uniform over all 120 elements, starting from the identity.
+  - The label at every position is the prefix product.
+* **Test set.** The first 2,000 test sequences are shared by every arm. Their full 100k is used as well for the cheap
+  comparators (descriptive).
+* **Extended test (descriptive).** 500 sequences of length 2,048.
+* **Text interface for the GPT-2 arms.**
+  - The state is the arrangement of letters A–E in 5 boxes (identity A B C D E).
+  - An operation is the element in 1-based one-line notation: "perm 3 1 5 2 4" means box i receives what box pᵢ held.
+  - **Implementation check, required before training.** Map every DeltaProduct element to its permutation. Applying
+    the ops must reproduce DeltaProduct's label at every position of all training sequences (an assert), which fixes the
+    product convention.
+* **Metrics.**
+  - (i) DeltaProduct's cumulative sequence accuracy: at t, the fraction of sequences with every position ≤ t correct
+    (their `cumulative_sequence_accuracies`), reported at t = 128, 256 and 512.
+  - (ii) Final-state accuracy at 512.
+  - Every arm is scored by one scorer on the same 2,000 sequences. DeltaProduct's curve is regenerated from its
+    outputs, not read from the paper's figure.
+
+**Arms.**
+* GPT-2 small (124M), pretrained init, lr 1e-4 (§66).
+* **WC₀ₖ, all-position mode (primary; 5 seeds each; k ∈ {1, 2, 4}).**
+  - The solver reads "start: <state>. ops: <k ops>. a:" and writes the state after each of its k ops.
+  - At test the sequence is cut every k ops: the last written state starts the next chunk, and the history is cut.
+  - Training chunks come from the P1 training sequences: a random position, the label before it as the start state, k
+    ops, and the k labels as targets.
+  - The number of labelled states and ops seen is reported against DeltaProduct's 12.7M positions × 100 epochs.
+* **GPT-2 tagger (the unscaffolded pretrained LM; 3 seeds).**
+  - Li et al.'s interface: 120 new element tokens and a label at every position, trained on the same length-128 data.
+  - Scored to 512, which fits the 1,024 window.
+* **DeltaProduct, run by us** (n_h = 4, 1 layer, the paper's command above; 3 seeds). This is SOTA under P1.
+* **Fairness arm: DeltaProduct trained on lengths uniform in 1–128** (3 seeds). Inputs are uniform, so every start
+  state is already equally likely; this is the closest analogue of WC's short-chunk training (Literature's point 5).
+* **GRU reference** (Merrill's `word-problem` code, 1 layer; 3 seeds; descriptive).
+* **P3, supervision efficiency (3 seeds each).**
+  - WC₀₄ and WC₄ (4 continuous thoughts per chunk) in **final-only** mode, as §66.
+  - Training uses random-start problems with N ≤ 8 ops uniform over all 120 elements, and final arrangements only.
+  - Scored on final-state accuracy at 512, from the identity, on the same test sequences.
+  - WC₄ vs WC₀₄ is the C1 check.
+* **Not run.** NC, TC and CL in a single context: 512 text operations exceed GPT-2's 1,024-token window. §66 already
+  showed that single-context TC fails past the training length.
+
+**Certificate and per-chunk check (pre-registered).**
+* **k = 1.** Exhaustive audit of all 14,400 (state, op) chunk inputs.
+* **k = 2.** All 1,728,000 two-op chunks, plus the 14,400 one-op tail chunks.
+* A solver is **certified** iff every chunk output decodes to the correct arrangement. Decoding is greedy, at the
+  inference precision and batch settings, and the audit checks that both match those used at test. Because the history
+  is cut, certification implies correctness at every length.
+* **k = 4.** Per-chunk accuracy p on 100,000 fresh random (state, chunk) inputs, with the compounding prediction
+  p^(512/k) reported next to the measured value.
+
+**Predictions and claim rules (fixed now; medians over seeds).**
+* **S1 (headline).** WC₀₁ has cumulative accuracy ≥ 0.99 at t = 512, and the k = 1 certificate holds in ≥ 4/5 seeds.
+* **S2.** The GPT-2 tagger's cumulative accuracy at t = 256 is ≤ 0.50: the unscaffolded pretrained LM fails past its
+  training length (replicating Li et al.).
+* **S3 (vs SOTA, matched data, paired on the same 2,000 sequences).** WC₀₁ against our DeltaProduct run:
+  - **"exceeds"** if the 95 % CI of the paired difference at t = 512 lies above 0;
+  - **"matches"** if it is within 0.01;
+  - otherwise **"below"**.
+* **S4 (P3).** WC₀₄ final-only has final-state accuracy ≥ 0.95 at 512, i.e. 64× its training length, from final answers
+  only.
+* **C1 (secondary).** WC₄ beats WC₀₄ at 512 by ≥ 0.05 (median paired difference). §66 predicts a null.
+* **Wording.**
+  - If S1 and S2 hold: "the first transformer / pretrained-LM result on S5 at 4× training length (512 from 128),
+    certified at every length".
+  - Against DeltaProduct, only the S3 word may be used.
+  - Every statement carries "**scaffolded, different interface**": sequential decoding, a written discrete state, a
+    history cut, 124M vs about 10⁵ parameters, and inference FLOPs at 512 reported.
+  - Published transformer results (Zhang about 2×, Kraus 1.7×) use other protocols; they are cited and not claimed as
+    beaten under a matched protocol.
+  - "Beats SOTA" may be used only for S3 = "exceeds", together with the scaffold label.
+
+**Readings.**
+* **S1 + S2 + S3 "matches", with certificates.**
+  - A pretrained LM reaches recurrent-SOTA extrapolation on S5 only through the written-state restart, with a
+    correctness certificate no recurrent model has.
+  - This is the range principle as a working method. It is the method to carry to GSM8K as chunked reasoning with a
+    written carry-over (C2 + C4 + C7, not C1).
+* **S1 fails at k = 1 while per-chunk accuracy is near 1.** Then the per-chunk error rate, not length, is the limit.
+  Report p and the compounding prediction.
+* **S4 holds.** The same works from short final-answer problems alone, a weaker supervision than any comparator's.
+
+**Implementation and run.** The experiments session implements this, extending `boxes/` with BOXES_NB = 5, a "perm" op
+type and the all-position chunk mode.
+* The DeltaProduct, GRU and data-generation arms run on a Linux Vast host (Triton). Grazzi's unlicensed code is not used.
+* A throughput pilot may fix only steps and batch (logged).
+* A projection goes to Audit before launches over about $5. Estimate: about 30 GPU-h, $6–10.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
