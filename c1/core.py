@@ -254,3 +254,26 @@ def gpt2_random_sd(seed=0, L=12, D=768, V=50257, P=1024):
                    p + "mlp.c_fc.weight": n(D, 4 * D), p + "mlp.c_fc.bias": torch.zeros(4 * D),
                    p + "mlp.c_proj.weight": n(4 * D, D, std=0.02 / math.sqrt(2 * L)), p + "mlp.c_proj.bias": torch.zeros(D)})
     return sd
+
+
+@torch.no_grad()
+def certificate(model):
+    """Theory's product-automaton certificate (theory/c1_diag.py), on real hard cell calls: search the (code, true S3
+    state) pairs reachable from (initial code 0, identity) under all 6 ops; certified iff every pair reached after >= 1
+    op decodes (decoder argmax) to its true state. Exact for every length >= 1 given stable argmaxes; ignores unreachable
+    codes and the start code's own label; valid for any M (several codes may share a decoded state)."""
+    dev = next(model.parameters()).device
+    codes = torch.arange(M, device=dev)
+    Dh = model.dec_logits(codes).argmax(-1).tolist()
+    Th = model.step_logits(codes.repeat_interleave(6), torch.arange(6, device=dev).repeat(M)).argmax(-1).view(M, 6).tolist()
+    seen, frontier, bad = set(), [(0, 0)], 0
+    while frontier:
+        c, st = frontier.pop()
+        for op in range(6):
+            nxt = (Th[c][op], int(COMP[op, st]))
+            if nxt not in seen:
+                seen.add(nxt); frontier.append(nxt); bad += int(Dh[nxt[0]] != nxt[1])
+    reach = {c for c, _ in seen}
+    ambiguous = sum(len({st for c2, st in seen if c2 == c}) > 1 for c in reach)
+    return {"certified": bad == 0, "bad_pairs": bad, "reachable_codes": len(reach), "ambiguous_codes": ambiguous,
+            "reachable_pairs": len(seen)}

@@ -5,7 +5,7 @@ import math
 import numpy as np
 import torch
 
-from c1.core import COMP, M, PERMS, Tab, audit, hard_rollout, marginal_loss, sample, truth
+from c1.core import COMP, M, PERMS, Tab, audit, certificate, hard_rollout, marginal_loss, sample, truth
 from c1.train import mechanism, nulls
 
 
@@ -65,6 +65,26 @@ def main():
     # one corrupted transition is caught
     au2 = audit(perfect_tab(corrupt=True))
     assert au2["transition_errors"] == 1 and not au2["certified"], au2
+    # product-automaton certificate (Theory's): agrees with the audit at M = 6
+    assert certificate(perfect_tab())["certified"] and not certificate(perfect_tab(corrupt=True))["certified"]
+    # M = 12: two copies of the group table (codes c and c + 6 decode to state c; transitions alternate copies)
+    import c1.core as cc
+    cc.M = 12
+    t12 = Tab()
+    with torch.no_grad():
+        T = torch.full((6, 12, 12), -30.0); D = torch.full((12, 6), -30.0)
+        for a in range(6):
+            for c in range(12):
+                T[a, c, COMP[a, c % 6] + (6 if c < 6 else 0)] = 30.0
+        for c in range(12):
+            D[c, c % 6] = 30.0
+        t12.T.copy_(T); t12.D.copy_(D)
+    ce = certificate(t12)
+    assert ce["certified"] and ce["reachable_codes"] == 12 and ce["ambiguous_codes"] == 0, ce
+    with torch.no_grad():
+        t12.D[9] = -30.0; t12.D[9, 0] = 30.0                         # code 9 (state 3) now decodes wrongly
+    assert not certificate(t12)["certified"]
+    cc.M = 6
     print("C1 TESTS PASSED")
 
 

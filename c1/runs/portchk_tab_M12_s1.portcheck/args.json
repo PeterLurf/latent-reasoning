@@ -1,0 +1,17 @@
+{
+ "arm": "tab",
+ "seed": 1,
+ "updates": 8000,
+ "bs": 512,
+ "lr": 0.01,
+ "head_init": "default",
+ "M": 12,
+ "head_norm": "none",
+ "code_init": "default",
+ "lr_new": 0.0,
+ "n_test": 1000,
+ "n_null": 1000,
+ "max_hours": 3.0,
+ "device": "cpu",
+ "out": "c1/runs/portchk_tab_M12_s1"
+}

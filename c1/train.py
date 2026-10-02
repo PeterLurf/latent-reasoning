@@ -25,7 +25,7 @@ import torch
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from boxes.core import GPT2KV  # noqa: E402
-from c1.core import COMP, FP, Cell, MLPCell, Tab, TinyTF, gpt2_random_sd, audit, hard_rollout, marginal_loss, sample, truth, wilson_upper  # noqa: E402
+from c1.core import COMP, FP, Cell, MLPCell, Tab, TinyTF, gpt2_random_sd, audit, certificate, hard_rollout, marginal_loss, sample, truth, wilson_upper  # noqa: E402
 
 DEPTHS = (8, 16, 32, 64, 128)
 TEST_SEED = 6700
@@ -69,7 +69,7 @@ def evaluate(model, arm, dev, n_test, n_null, out):
             pred.append(predict(model, arm, ops_t[i:i + ch]).cpu())
         res["acc"][str(N)] = float((torch.cat(pred).numpy() == y).mean())
     if not arm.startswith("fp"):
-        res["audit"] = audit(model)
+        res["audit"] = audit(model); res["certificate"] = certificate(model)
     if arm == "d1":
         res["nulls"] = nulls(model, dev, n_null); res["mechanism"] = mechanism(model, dev)
     json.dump(res, open(os.path.join(out, "eval.json"), "w", newline="\n"), indent=1)
@@ -95,7 +95,8 @@ def nulls(model, dev, n):
 def mechanism(model, dev, n=2000, N=32, k=16):
     """Donor substitution at step k; irrelevant substitution (another code with the recipient's decoded state);
     same-semantic donors taken at different depths. Expected answers from the decoded donor state + recipient suffix."""
-    dec = model.dec_logits(torch.arange(6, device=dev)).argmax(-1).cpu().numpy()
+    import c1.core as cc
+    dec = model.dec_logits(torch.arange(cc.M, device=dev)).argmax(-1).cpu().numpy()
     rng = np.random.default_rng(TEST_SEED + 77)
     r_ops, r_y = sample(rng, n, N); d_ops, _ = sample(rng, n, N)
     r, d = torch.tensor(r_ops, device=dev), torch.tensor(d_ops, device=dev)
@@ -111,7 +112,7 @@ def mechanism(model, dev, n=2000, N=32, k=16):
         want.append(s)
     res = {"donor_acc": float((ans.cpu().numpy() == np.array(want)).mean())}
     rc = r_tr[k].cpu().numpy()
-    alt = [[c for c in range(6) if c != rc[i] and dec[c] == dec[rc[i]]] for i in range(n)]
+    alt = [[c for c in range(cc.M) if c != rc[i] and dec[c] == dec[rc[i]]] for i in range(n)]
     have = [i for i in range(n) if alt[i]]
     if have:
         st = torch.tensor([alt[i][0] for i in have], device=dev)
@@ -135,6 +136,8 @@ def mechanism(model, dev, n=2000, N=32, k=16):
 
 
 def train(a):
+    import c1.core as cc
+    cc.M = a.M                                                       # number of codes (§67: 6; Theory's M = 12 option)
     dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
     assert a.seed < TEST_SEED
     model = build(a.arm, dev, a.seed)
@@ -179,7 +182,7 @@ def train(a):
                     with torch.no_grad():
                         rec[f"acc{N}"] = float((predict(model, a.arm, torch.tensor(vo, device=dev)).cpu().numpy() == vy).mean())
                 if not a.arm.startswith("fp"):
-                    au = audit(model); rec["certified"] = au["certified"]; rec["trans_err"] = au["transition_errors"]
+                    au = audit(model); rec["certified"] = au["certified"]; rec["trans_err"] = au["transition_errors"]; rec["cert"] = certificate(model)["certified"]
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
             if time.time() - t0 > a.max_hours * 3600:
                 print("TIMEOUT", flush=True); json.dump({"timeout": True}, open(os.path.join(a.out, "timeout.json"), "w")); break
@@ -197,6 +200,7 @@ def main():
     ap.add_argument("--seed", type=int, default=1); ap.add_argument("--updates", type=int, default=2000)
     ap.add_argument("--bs", type=int, default=512); ap.add_argument("--lr", type=float, default=1e-4)
     ap.add_argument("--head_init", default="default", choices=["default", "zero", "small"])
+    ap.add_argument("--M", type=int, default=6, help="number of codes (core.M)")
     ap.add_argument("--head_norm", default="none", choices=["none", "ln"])
     ap.add_argument("--code_init", default="default", choices=["default", "distinct"])
     ap.add_argument("--lr_new", type=float, default=0.0, help="lr for codes / heads / tables (0 = --lr); pilot-fixed")
