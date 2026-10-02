@@ -6252,6 +6252,18 @@ The Sinkhorn cell is not registered.**
 * The pilot (PF-std s2081, 8 families) reruns first. The panel starts only if the pilot certifies on the training
   phrasings.
 
+**Note 79-3 (2026-10-02 14:50 EDT, before the §79 panel is scored; Audit).**
+* **The pilot seed is a panel seed.** PF-std s2081 is one of the registered seeds (2081–2085). It ran 79-2's std recipe,
+  fixed before its result, and certified on the training phrasings. It counts in the panel as registered; nothing was
+  tuned after it.
+* **Disclosure.** Its held-out agreements were visible in the pilot log before the panel started: H1 0.762, H2 0.413,
+  H3 0.444, H4 0.254; POS 0.952; NEG 0.524.
+  - None reaches P2's 0.90.
+  - The negative control (" copy …" agreeing with the swap) at 0.524 shows substantial digit reliance.
+  - The order-only minimal pairs (H4) at 0.254 fail on this seed.
+* **Consequence.** P2 (agreement ≥ 0.90 on a held-out family and its certificate in ≥ 3/5 seeds) now needs ≥ 3 of the
+  remaining 4 seeds to pass on the same family.
+
 ## 80. A latent chunk machine: a discrete code carried across chunks of k operations, so the LM must compose inside its forward pass (pre-registered 2026-10-02 12:02 EDT, after Literature's check 9224385 and before any run; idea 1 of Theory's list, approved by Audit)
 
 **Why.** GPT-2 stores a latent automaton but does not compose missing rows (§76(B)). It does compose k operations inside
