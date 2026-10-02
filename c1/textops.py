@@ -166,6 +166,23 @@ def reach(Th):
     return sorted(seen)
 
 
+def bad_pairs(Th, Dh):
+    """Product-automaton BFS by length from (code 0, identity): every reachable (code, state) pair after >= 1 op with its
+    first length reached, the decoded state and the true state, for the pairs that decode wrongly (Theory's request)."""
+    first, frontier, L = {}, [(0, 0)], 0
+    seen = set()
+    while frontier:
+        L += 1; nxt = []
+        for c, st in frontier:
+            for a in range(3):
+                p = (int(Th[c, a]), int(COMP[OPS[a], st]))
+                if p not in seen:
+                    seen.add(p); first[p] = L; nxt.append(p)
+        frontier = nxt
+    return [{"code": c, "state": st, "first_length": first[(c, st)], "decoded": int(Dh[c]), "true": st}
+            for (c, st) in sorted(first) if Dh[c] != st]
+
+
 def certificate(Th, Dh):
     seen, fr, bad = set(), [(0, 0)], 0
     while fr:
@@ -242,7 +259,9 @@ def main():
     m.eval(); m.compute_stats()                                       # frozen training-table statistics from here on
     res = {"arm": a.arm, "seed": a.seed, "train_sec": train_sec}
     Th0, Dh = hard_tables(m, "train"); R = reach(Th0)
-    res["train"] = {"certificate": certificate(Th0, Dh), "acc": table_acc(Th0, Dh, np.random.default_rng(7400)), "reachable_codes": R}
+    res["train"] = {"certificate": certificate(Th0, Dh), "acc": table_acc(Th0, Dh, np.random.default_rng(7400)), "reachable_codes": R,
+                    "bad_pairs": bad_pairs(Th0, Dh), "Th": Th0.tolist(), "Dh": Dh.tolist()}
+    torch.save({k: v for k, v in m.state_dict().items() if not k.startswith(("g.", "wte"))}, os.path.join(a.out, "trainable.pt"))
     res["families"] = {}
     for floor in (False, True):
         m.sigma_floor = floor
