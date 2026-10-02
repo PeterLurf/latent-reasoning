@@ -6981,6 +6981,16 @@ position).
 **Placement.** Local cards. 30 runs, §66-sized (about 1 h each). Implementation by the experiments
 session, extending `boxes/train.py`. $0.
 
+**Note 89-1 (2026-10-02 19:20 EDT, before any §89 run; Audit, on Literature 7d8a231).**
+* **FADE-soft uses T = 1 fixed** (the HRPO-style soft token softmax(W h)·E), not T rising to 10. A rising T would drive
+  softmax to uniform, i.e. the constant mean embedding: a slow deletion of the input. The distance-from-mean log is
+  kept.
+* FADE-std-dec (already in §89) is Audit's "FADE-std+dec". Its decoder is a side-loss only and is never fed back, so
+  the output matrix is gone from the feedback path, faithful to the user's idea. It also makes readability at α = 1
+  testable (C7): its decode accuracy at α = 1 is reported.
+* **Scope.** The nearest prior is HRPO 2505.18454 (a learned-gate token → latent fade under RL). §89 is new as scoped
+  (a supervised, scheduled α-fade, head to head against Coconut stages), not as a concept.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
