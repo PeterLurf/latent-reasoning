@@ -91,16 +91,26 @@ class F1S(Adapter):
 class Generate(Adapter):
     kinds = ("generate",)
 
-    def __init__(self, ckpt, device, max_new="256"):
+    def __init__(self, ckpt, device, max_new="256", aug="0"):
         import tiktoken
         from gpt2c import GPT2C, load_state
         self.m = GPT2C(load_state(ckpt, device)); self.max_new = int(max_new); self.enc = tiktoken.get_encoding("gpt2")
+        self.aug = None
+        if aug == "1":                       # GSM8K: GSM8k-Aug's question text by index (same items; as the CODI adapter)
+            os.environ.setdefault("CODI_SP", os.path.join(ROOT, "prosqa", "ckpt_ext"))
+            sys.path.insert(0, os.path.join(ROOT, "theory"))
+            import codi_probe as cp
+            self.aug = cp.gsm8k(10_000)
 
     @torch.no_grad()
     def predict(self, item):
         from eval_p8 import EOS
         dev = self.m.wte.device
-        seq = self.enc.encode(item["raw"]["question"] + "\n"); n0 = len(seq)
+        q = item["raw"]["question"]
+        if self.aug is not None:
+            i = int(item["id"].split(":")[1]); q, a_, _ = self.aug[i]
+            assert abs(a_ - float(item["answer"])) < 1e-6, (i, a_, item["answer"])
+        seq = self.enc.encode(q + "\n"); n0 = len(seq)
         for _ in range(self.max_new):
             _, logits, _ = self.m.forward(self.m.embed(torch.tensor(seq, device=dev))[None])
             t = int(logits[0, -1].argmax())
