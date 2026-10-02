@@ -26,11 +26,12 @@ if cert:
     for cur, seed, f in cert:
         if (cur, seed, f) != pil and not pil_done:
             continue
-        for s in ("pfstd", "ptstd"):
-            out = f"c1/runs/p76_{cur}_{s}_s{seed}"
-            if out + " " not in have:
-                open(Q, "a", newline="\n").write(f"{out} c1.amortise --teacher {f} --student {s}\n")
-                print(time.strftime("%H:%M:%S"), "queued", out, flush=True)
+        for arm, extra in (("", ""), ("full", " --holdout 0")):          # amendment 76-3: descriptive no-holdout arm
+            for s in ("pfstd", "ptstd"):
+                out = f"c1/runs/p76_{cur}{arm}_{s}_s{seed}"
+                if out + " " not in have:
+                    open(Q, "a", newline="\n").write(f"{out} c1.amortise --teacher {f} --student {s}{extra}\n")
+                    print(time.strftime("%H:%M:%S"), "queued", out, flush=True)
 PYEOF
   for d in cuda:0 cuda:1 cuda:2; do
     free=1
