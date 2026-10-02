@@ -1,0 +1,2 @@
+# THEORY §79 pilot (one card first)
+c1/runs/p79_pfstd_s2081 c1.phrase79 --arm pfstd --seed 2081
