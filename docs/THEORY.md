@@ -6054,6 +6054,23 @@ runs already read, see note 76-1).**
   dense, GPT-2 PF-std and PT-std, now wider) merges states at S4.
 * The wide-readout §77 is not registered. The A5 hid-4096 run was stopped.
 
+**Note 76-7 (2026-10-02 09:55 EDT; a design decision, after Literature 8c3d104). A per-code-readout §77 is drafted but
+not registered.**
+* **The proposal:** logits(c, a, ·) = W_c · z(c, a) over frozen GPT-2 features.
+* **Literature's analysis:** it is a second-order RNN with a one-hot state, i.e. the free table reparametrised with *more*
+  parameters (M²·768: 11M at A5, against the table's 0.86M). The one-hot-feature control *is* the free table.
+* **So GPT-2 cannot add to acquisition beyond the table.** Its possible contribution is transfer (paraphrases, held-out
+  entries, samples-to-certificate), and §74 (no paraphrase transfer) and §76(B) (no held-out composition) already found
+  none.
+* **Expected outcome:** "works, GPT-2 adds nothing", a low-information run in a problem → fix pattern. Not run.
+* **Standing conclusion of the latent line (§67–§76).**
+  - The exact-marginal latent automaton is acquired reliably from final answers when its transition parameters are
+    independent per (code, op) and short products are labelled directly.
+  - A pretrained LM can host it, end to end at S3 with a standardised readout, or by storing a learned table.
+  - It has not been shown to compose or to generalise the automaton.
+  - C1 in a pretrained LM beyond hosting remains open, and the next step needs a task where the LM's knowledge is
+    necessary. That is for the user's direction (Audit brief).
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
