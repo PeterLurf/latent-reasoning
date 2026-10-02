@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-10-01 19:51 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-10-02 07:30 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -35,40 +35,24 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 > gives fronts to depth 11 in 2/4 runs; Pilot D 12 + 12 running on Vast). Ownership (theory Vast hosts vs a PROTOCOL8)
 > to be agreed. The theory session analyses O/R/T9/T10 runs only after the experiments session has scored them.
 
-## 00. EXPERIMENTS STATE AT 2026-10-01 19:51 EDT — authoritative over section 0
+## 00. EXPERIMENTS STATE AT 2026-10-02 07:30 EDT — authoritative over section 0
 
-**Running (2026-10-01 21:22):**
-* **§67 amendment 67-2.** d1 M = 12, 10 seeds on the 3 local cards (`scratch/c1_672.sh`, `logs/c1_a672*.log`). Then
-  report per the 67-2 rule.
-* **§67b** (registered 10dd84c): implemented in c1/ (--readout bil --tau0 4 --M 24, counter check). Next: the seed-99
-  pilot (updates/batch/lr only), then D1b / TAB / RESET / FP × 5 seeds. Amendment 67b-1's held-out toy check is
-  Theory's.
-* **§68 GSM8K step 2** (registered 78081a9): NOT launched.
-  - The measured cost (s68/PILOT.md) is ≈ 660–1,000 GPU-h (~$110–170), against $10–25 registered; re-scoping is with
-    Theory, Audit and the user.
-  - WS code ready (s68/ws.py). Official Coconut repo + data at D:/ext/coconut (Windows can't run it: an App Control
-    block on pandas; run on Vast).
-* **Backfill** (`scratch/backfill_q1.txt`, 90 descriptive bench cells): 11 done; 79 PAUSED by pre-claimed locks
-  (`scratch/backfill_q1_paused.txt`). Resume: rmdir those locks, then
-  `bash scratch/bench_worker.sh <dev> scratch/backfill_q1.txt`.
-* **Standing user rule** (via Audit): never leave local GPUs idle; keep a backfill queue.
+**Running:**
+* **§75 pilot** (THEORY §75, 6545f0b): Vast 53851105 `c1-75-990` (3090, $0.18/h). Queue `scratch/c1_q_75_990.txt`
+  (S4, M 48, 16k updates, PF-std then PT-std, seed 990); auto drain `logs/auto_drain_c1_75_990.out`. Gate: the panel
+  (seeds 2031–2035 × PF-std/PT-std) starts only if either arm certifies or reaches ≥ 0.95 at N 128. Then A5 (M 120),
+  one-host pilot first, with a projection to Audit before its panel.
+* **§74 P1 diagnostic** (local, one job per card): `c1/runs/p74diag_pfstd_s2021–2025` (2024/2025 follow), logs
+  `logs/c1_p74diag_*.log`. Gives each seed's bad (code, state, first length, decoded vs true) pairs for Theory; then
+  score §74 officially (`python c1/score_74.py`) and write it up in PROTOCOL12.
+* **§71 GRU host** 53814109 `s71-gru`: hard stop 09:00 (`scratch/gru_hardstop.sh`).
+* Theory's DENSE S4 reference: 3 CPU processes (`theory/s72_dense_toy.py`), not ours.
 
-**Scored today** (details in the linked docs):
-* PROTOCOL8 amendment 3 (NA): latent arms at chance; CoT cue-free.
-* §66 boxes: scaffold, not latents.
-* §65: D2/D4 met, D1/D3 not.
-* §61b: 0/3 and 0/10.
-* GSM8K step 1: CODI and SIM-CoT-Coconut reproduced, SIM-CoT-CODI −3.2 (`docs/GSM8K_REPRO.md`); amendment 2: latents
-  carry computation on GSM8K.
-* §67 pilot: GPT-2 cell fails rule acquisition (c1/PILOT.md).
-
-**§67 status:**
-* The pilot, 67-1 and the lr 2×2 are done; TAB itself certifies only 1/6 runs at M = 6.
-* Theory's CPU re-implementation certifies TAB 10/10 at M = 12. An MLP grid is running on CPU.
-* No GPU job until a shared cell certifies ≥ 9/10 (then §67b).
-* Local cards are free for other registered work; none is pending.
-
-**Hosts:** only f1sb-R2. Credit ≈ $112.
+**Scored (details in docs/PROTOCOL12.md):** §65, §66, §61b, §67b, §72 (collapsed), §72b (PF-std 5/5), §73 (stable latent
+10/10), §71 (S1/S2 met, S3 comparator not reproduced, S4/C1 not met).
+**Paused:** §68 GSM8K training (user: beat SOTA on smaller tasks first).
+**Rules:** one GPT-2 job per local 8 GB card; prove one host first, then moderate width; overnight cap ≈ $40, $30
+reserve, projection to Audit above $5. Credit $105 (07:25).
 
 ## 0. STATE AT 2026-09-30 00:36 — authoritative; sections 1–3 below are partly history
 
