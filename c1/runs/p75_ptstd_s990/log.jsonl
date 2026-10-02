@@ -1,0 +1,160 @@
+{"update": 100, "L": 1, "loss": 0.48765299007296564, "examples": 51200, "gpt2_tokens": 355200, "sec": 41}
+{"update": 200, "L": 1, "loss": 0.11982702031731605, "examples": 102400, "gpt2_tokens": 710400, "sec": 81}
+{"update": 300, "L": 1, "loss": 0.11902753591537475, "examples": 153600, "gpt2_tokens": 1065600, "sec": 122}
+{"update": 400, "L": 1, "loss": 0.11824736535549164, "examples": 204800, "gpt2_tokens": 1420800, "sec": 163}
+{"update": 500, "L": 1, "loss": 0.11512529820203782, "examples": 256000, "gpt2_tokens": 1776000, "sec": 204, "acc8": 0.04, "acc32": 0.048, "certified": false, "trans_err": 1109, "cert": false}
+{"update": 600, "L": 1, "loss": 0.11717578694224358, "examples": 307200, "gpt2_tokens": 2131200, "sec": 247}
+{"update": 700, "L": 1, "loss": 0.1194218634814024, "examples": 358400, "gpt2_tokens": 2486400, "sec": 288}
+{"update": 800, "L": 1, "loss": 0.11891139067709446, "examples": 409600, "gpt2_tokens": 2841600, "sec": 329}
+{"update": 900, "L": 1, "loss": 0.11801279954612255, "examples": 460800, "gpt2_tokens": 3196800, "sec": 370}
+{"update": 1000, "L": 1, "loss": 0.11713030368089676, "examples": 512000, "gpt2_tokens": 3552000, "sec": 411, "acc8": 0.048, "acc32": 0.042, "certified": false, "trans_err": 1100, "cert": false}
+{"update": 1100, "L": 1, "loss": 0.11756670951843262, "examples": 563200, "gpt2_tokens": 3907200, "sec": 455}
+{"update": 1200, "L": 1, "loss": 0.11650160796940327, "examples": 614400, "gpt2_tokens": 4262400, "sec": 496}
+{"update": 1300, "L": 1, "loss": 0.1156048522144556, "examples": 665600, "gpt2_tokens": 4617600, "sec": 537}
+{"update": 1400, "L": 1, "loss": 0.11565504878759385, "examples": 716800, "gpt2_tokens": 4972800, "sec": 578}
+{"update": 1500, "L": 1, "loss": 0.11655497319996357, "examples": 768000, "gpt2_tokens": 5328000, "sec": 619, "acc8": 0.038, "acc32": 0.04, "certified": false, "trans_err": 1098, "cert": false}
+{"update": 1600, "L": 1, "loss": 0.11879970207810402, "examples": 819200, "gpt2_tokens": 5683200, "sec": 662}
+{"update": 1700, "L": 1, "loss": 0.11599576383829117, "examples": 870400, "gpt2_tokens": 6038400, "sec": 703}
+{"update": 1800, "L": 1, "loss": 0.11510475918650627, "examples": 921600, "gpt2_tokens": 6393600, "sec": 744}
+{"update": 1900, "L": 1, "loss": 0.11532890275120736, "examples": 972800, "gpt2_tokens": 6748800, "sec": 785}
+{"update": 2000, "L": 1, "loss": 0.11514773555099964, "examples": 1024000, "gpt2_tokens": 7104000, "sec": 826, "acc8": 0.036, "acc32": 0.038, "certified": false, "trans_err": 1112, "cert": false}
+{"update": 2100, "L": 1, "loss": 0.11819346152245998, "examples": 1075200, "gpt2_tokens": 7459200, "sec": 869}
+{"update": 2200, "L": 1, "loss": 0.11463059678673744, "examples": 1126400, "gpt2_tokens": 7814400, "sec": 910}
+{"update": 2300, "L": 1, "loss": 0.11612561807036399, "examples": 1177600, "gpt2_tokens": 8169600, "sec": 951}
+{"update": 2400, "L": 1, "loss": 0.1159301906824112, "examples": 1228800, "gpt2_tokens": 8524800, "sec": 992}
+{"update": 2500, "L": 1, "loss": 0.1179604822397232, "examples": 1280000, "gpt2_tokens": 8880000, "sec": 1033, "acc8": 0.026, "acc32": 0.068, "certified": false, "trans_err": 1108, "cert": false}
+{"update": 2600, "L": 1, "loss": 0.11511915378272533, "examples": 1331200, "gpt2_tokens": 9235200, "sec": 1076}
+{"update": 2700, "L": 1, "loss": 0.1153901020437479, "examples": 1382400, "gpt2_tokens": 9590400, "sec": 1117}
+{"update": 2800, "L": 1, "loss": 0.11672001019120216, "examples": 1433600, "gpt2_tokens": 9945600, "sec": 1158}
+{"update": 2900, "L": 1, "loss": 0.1163260006159544, "examples": 1484800, "gpt2_tokens": 10300800, "sec": 1198}
+{"update": 3000, "L": 1, "loss": 0.11574923060834408, "examples": 1536000, "gpt2_tokens": 10656000, "sec": 1239, "acc8": 0.038, "acc32": 0.052, "certified": false, "trans_err": 1109, "cert": false}
+{"update": 3100, "L": 1, "loss": 0.11545740976929665, "examples": 1587200, "gpt2_tokens": 11011200, "sec": 1283}
+{"update": 3200, "L": 1, "loss": 0.1178609261661768, "examples": 1638400, "gpt2_tokens": 11366400, "sec": 1323}
+{"update": 3300, "L": 1, "loss": 0.11495032496750354, "examples": 1689600, "gpt2_tokens": 11721600, "sec": 1364}
+{"update": 3400, "L": 1, "loss": 0.11436995342373849, "examples": 1740800, "gpt2_tokens": 12076800, "sec": 1405}
+{"update": 3500, "L": 1, "loss": 0.11679419100284577, "examples": 1792000, "gpt2_tokens": 12432000, "sec": 1446, "acc8": 0.044, "acc32": 0.046, "certified": false, "trans_err": 1112, "cert": false}
+{"update": 3600, "L": 1, "loss": 0.11726587012410164, "examples": 1843200, "gpt2_tokens": 12787200, "sec": 1489}
+{"update": 3700, "L": 1, "loss": 0.11644155643880368, "examples": 1894400, "gpt2_tokens": 13142400, "sec": 1530}
+{"update": 3800, "L": 1, "loss": 0.11711142748594285, "examples": 1945600, "gpt2_tokens": 13497600, "sec": 1571}
+{"update": 3900, "L": 1, "loss": 0.11482379451394081, "examples": 1996800, "gpt2_tokens": 13852800, "sec": 1612}
+{"update": 4000, "L": 1, "loss": 0.11604701638221741, "examples": 2048000, "gpt2_tokens": 14208000, "sec": 1652, "acc8": 0.036, "acc32": 0.044, "certified": false, "trans_err": 1105, "cert": false}
+{"update": 4100, "L": 2, "loss": 0.7549136037752032, "examples": 2099200, "gpt2_tokens": 14563200, "sec": 1696}
+{"update": 4200, "L": 2, "loss": 0.09743887029588222, "examples": 2150400, "gpt2_tokens": 14918400, "sec": 1737}
+{"update": 4300, "L": 2, "loss": 0.08771851561963558, "examples": 2201600, "gpt2_tokens": 15273600, "sec": 1777}
+{"update": 4400, "L": 2, "loss": 0.08990673668682575, "examples": 2252800, "gpt2_tokens": 15628800, "sec": 1818}
+{"update": 4500, "L": 2, "loss": 0.08188520837575197, "examples": 2304000, "gpt2_tokens": 15984000, "sec": 1859, "acc8": 0.582, "acc32": 0.142, "certified": false, "trans_err": 555, "cert": false}
+{"update": 4600, "L": 2, "loss": 0.08584734253585338, "examples": 2355200, "gpt2_tokens": 16339200, "sec": 1902}
+{"update": 4700, "L": 2, "loss": 0.08457991417497396, "examples": 2406400, "gpt2_tokens": 16694400, "sec": 1943}
+{"update": 4800, "L": 2, "loss": 0.07966042786836625, "examples": 2457600, "gpt2_tokens": 17049600, "sec": 1984}
+{"update": 4900, "L": 2, "loss": 0.07849438235163689, "examples": 2508800, "gpt2_tokens": 17404800, "sec": 2025}
+{"update": 5000, "L": 2, "loss": 0.08588097117841244, "examples": 2560000, "gpt2_tokens": 17760000, "sec": 2066, "acc8": 0.612, "acc32": 0.122, "certified": false, "trans_err": 550, "cert": false}
+{"update": 5100, "L": 2, "loss": 0.08699248172342777, "examples": 2611200, "gpt2_tokens": 18115200, "sec": 2109}
+{"update": 5200, "L": 1, "loss": 0.08296046812087297, "examples": 2662400, "gpt2_tokens": 18470400, "sec": 2150}
+{"update": 5300, "L": 1, "loss": 0.08024486672133208, "examples": 2713600, "gpt2_tokens": 18825600, "sec": 2191}
+{"update": 5400, "L": 1, "loss": 0.07613858666270971, "examples": 2764800, "gpt2_tokens": 19180800, "sec": 2232}
+{"update": 5500, "L": 2, "loss": 0.08426675159484148, "examples": 2816000, "gpt2_tokens": 19536000, "sec": 2273, "acc8": 0.552, "acc32": 0.14, "certified": false, "trans_err": 566, "cert": false}
+{"update": 5600, "L": 1, "loss": 0.08219026971608401, "examples": 2867200, "gpt2_tokens": 19891200, "sec": 2317}
+{"update": 5700, "L": 1, "loss": 0.08189243908971548, "examples": 2918400, "gpt2_tokens": 20246400, "sec": 2358}
+{"update": 5800, "L": 1, "loss": 0.08243662662804127, "examples": 2969600, "gpt2_tokens": 20601600, "sec": 2399}
+{"update": 5900, "L": 2, "loss": 0.0830887496098876, "examples": 3020800, "gpt2_tokens": 20956800, "sec": 2440}
+{"update": 6000, "L": 1, "loss": 0.07997866719961166, "examples": 3072000, "gpt2_tokens": 21312000, "sec": 2481, "acc8": 0.592, "acc32": 0.114, "certified": false, "trans_err": 574, "cert": false}
+{"update": 6100, "L": 1, "loss": 0.07599395260214806, "examples": 3123200, "gpt2_tokens": 21667200, "sec": 2524}
+{"update": 6200, "L": 2, "loss": 0.07422754731029273, "examples": 3174400, "gpt2_tokens": 22022400, "sec": 2565}
+{"update": 6300, "L": 2, "loss": 0.08134519886225462, "examples": 3225600, "gpt2_tokens": 22377600, "sec": 2606}
+{"update": 6400, "L": 2, "loss": 0.08216739479452372, "examples": 3276800, "gpt2_tokens": 22732800, "sec": 2647}
+{"update": 6500, "L": 2, "loss": 0.0806575445830822, "examples": 3328000, "gpt2_tokens": 23088000, "sec": 2688, "acc8": 0.602, "acc32": 0.158, "certified": false, "trans_err": 539, "cert": false}
+{"update": 6600, "L": 2, "loss": 0.07811629477888346, "examples": 3379200, "gpt2_tokens": 23443200, "sec": 2731}
+{"update": 6700, "L": 1, "loss": 0.0808578596264124, "examples": 3430400, "gpt2_tokens": 23798400, "sec": 2772}
+{"update": 6800, "L": 2, "loss": 0.07983591835945844, "examples": 3481600, "gpt2_tokens": 24153600, "sec": 2813}
+{"update": 6900, "L": 1, "loss": 0.0746268568187952, "examples": 3532800, "gpt2_tokens": 24508800, "sec": 2854}
+{"update": 7000, "L": 1, "loss": 0.08323968671262265, "examples": 3584000, "gpt2_tokens": 24864000, "sec": 2895, "acc8": 0.646, "acc32": 0.152, "certified": false, "trans_err": 464, "cert": false}
+{"update": 7100, "L": 1, "loss": 0.07748352125287056, "examples": 3635200, "gpt2_tokens": 25219200, "sec": 2938}
+{"update": 7200, "L": 1, "loss": 0.08111397113651037, "examples": 3686400, "gpt2_tokens": 25574400, "sec": 2979}
+{"update": 7300, "L": 1, "loss": 0.08210281621664763, "examples": 3737600, "gpt2_tokens": 25929600, "sec": 3020}
+{"update": 7400, "L": 1, "loss": 0.0805467927455902, "examples": 3788800, "gpt2_tokens": 26284800, "sec": 3061}
+{"update": 7500, "L": 1, "loss": 0.07982415821403264, "examples": 3840000, "gpt2_tokens": 26640000, "sec": 3102, "acc8": 0.6, "acc32": 0.134, "certified": false, "trans_err": 543, "cert": false}
+{"update": 7600, "L": 2, "loss": 0.07688818953931331, "examples": 3891200, "gpt2_tokens": 26995200, "sec": 3146}
+{"update": 7700, "L": 1, "loss": 0.07910138264298439, "examples": 3942400, "gpt2_tokens": 27350400, "sec": 3187}
+{"update": 7800, "L": 2, "loss": 0.08479397479444742, "examples": 3993600, "gpt2_tokens": 27705600, "sec": 3228}
+{"update": 7900, "L": 1, "loss": 0.07679411109536886, "examples": 4044800, "gpt2_tokens": 28060800, "sec": 3269}
+{"update": 8000, "L": 1, "loss": 0.08205727592110634, "examples": 4096000, "gpt2_tokens": 28416000, "sec": 3309, "acc8": 0.62, "acc32": 0.154, "certified": false, "trans_err": 449, "cert": false}
+{"update": 8100, "L": 4, "loss": 0.14827563855797052, "examples": 4147200, "gpt2_tokens": 28771200, "sec": 3353}
+{"update": 8200, "L": 4, "loss": 0.11223114751279355, "examples": 4198400, "gpt2_tokens": 29126400, "sec": 3394}
+{"update": 8300, "L": 2, "loss": 0.1131318774446845, "examples": 4249600, "gpt2_tokens": 29481600, "sec": 3435}
+{"update": 8400, "L": 1, "loss": 0.09874021079391242, "examples": 4300800, "gpt2_tokens": 29836800, "sec": 3475}
+{"update": 8500, "L": 2, "loss": 0.11150195647031069, "examples": 4352000, "gpt2_tokens": 30192000, "sec": 3516, "acc8": 0.818, "acc32": 0.498, "certified": false, "trans_err": 411, "cert": false}
+{"update": 8600, "L": 4, "loss": 0.11364387959241867, "examples": 4403200, "gpt2_tokens": 30547200, "sec": 3560}
+{"update": 8700, "L": 4, "loss": 0.10935688097029925, "examples": 4454400, "gpt2_tokens": 30902400, "sec": 3601}
+{"update": 8800, "L": 2, "loss": 0.11285258911550045, "examples": 4505600, "gpt2_tokens": 31257600, "sec": 3642}
+{"update": 8900, "L": 2, "loss": 0.1097056732699275, "examples": 4556800, "gpt2_tokens": 31612800, "sec": 3682}
+{"update": 9000, "L": 1, "loss": 0.11360316257923841, "examples": 4608000, "gpt2_tokens": 31968000, "sec": 3724, "acc8": 0.832, "acc32": 0.502, "certified": false, "trans_err": 421, "cert": false}
+{"update": 9100, "L": 4, "loss": 0.11052113849669695, "examples": 4659200, "gpt2_tokens": 32323200, "sec": 3767}
+{"update": 9200, "L": 1, "loss": 0.10652275182306767, "examples": 4710400, "gpt2_tokens": 32678400, "sec": 3808}
+{"update": 9300, "L": 4, "loss": 0.11732077643275261, "examples": 4761600, "gpt2_tokens": 33033600, "sec": 3849}
+{"update": 9400, "L": 4, "loss": 0.11055362444370985, "examples": 4812800, "gpt2_tokens": 33388800, "sec": 3890}
+{"update": 9500, "L": 1, "loss": 0.11103873260319233, "examples": 4864000, "gpt2_tokens": 33744000, "sec": 3931, "acc8": 0.84, "acc32": 0.538, "certified": false, "trans_err": 430, "cert": false}
+{"update": 9600, "L": 1, "loss": 0.11054635133594275, "examples": 4915200, "gpt2_tokens": 34099200, "sec": 3975}
+{"update": 9700, "L": 4, "loss": 0.11746706455945968, "examples": 4966400, "gpt2_tokens": 34454400, "sec": 4016}
+{"update": 9800, "L": 2, "loss": 0.11040886484086514, "examples": 5017600, "gpt2_tokens": 34809600, "sec": 4057}
+{"update": 9900, "L": 4, "loss": 0.10044326223433017, "examples": 5068800, "gpt2_tokens": 35164800, "sec": 4098}
+{"update": 10000, "L": 2, "loss": 0.10652546029537917, "examples": 5120000, "gpt2_tokens": 35520000, "sec": 4139, "acc8": 0.862, "acc32": 0.588, "certified": false, "trans_err": 171, "cert": false}
+{"update": 10100, "L": 2, "loss": 0.1033283906430006, "examples": 5171200, "gpt2_tokens": 35875200, "sec": 4182}
+{"update": 10200, "L": 4, "loss": 0.09523747749626636, "examples": 5222400, "gpt2_tokens": 36230400, "sec": 4223}
+{"update": 10300, "L": 2, "loss": 0.10158507887274026, "examples": 5273600, "gpt2_tokens": 36585600, "sec": 4264}
+{"update": 10400, "L": 1, "loss": 0.10629392497241497, "examples": 5324800, "gpt2_tokens": 36940800, "sec": 4305}
+{"update": 10500, "L": 2, "loss": 0.09786200236529112, "examples": 5376000, "gpt2_tokens": 37296000, "sec": 4346, "acc8": 0.864, "acc32": 0.59, "certified": false, "trans_err": 253, "cert": false}
+{"update": 10600, "L": 1, "loss": 0.10429875273257494, "examples": 5427200, "gpt2_tokens": 37651200, "sec": 4389}
+{"update": 10700, "L": 2, "loss": 0.10537638548761606, "examples": 5478400, "gpt2_tokens": 38006400, "sec": 4430}
+{"update": 10800, "L": 1, "loss": 0.10240170910954476, "examples": 5529600, "gpt2_tokens": 38361600, "sec": 4471}
+{"update": 10900, "L": 4, "loss": 0.10633281130343676, "examples": 5580800, "gpt2_tokens": 38716800, "sec": 4512}
+{"update": 11000, "L": 4, "loss": 0.10641344018280506, "examples": 5632000, "gpt2_tokens": 39072000, "sec": 4553, "acc8": 0.836, "acc32": 0.558, "certified": false, "trans_err": 137, "cert": false}
+{"update": 11100, "L": 2, "loss": 0.10105760764330625, "examples": 5683200, "gpt2_tokens": 39427200, "sec": 4596}
+{"update": 11200, "L": 2, "loss": 0.1028396962955594, "examples": 5734400, "gpt2_tokens": 39782400, "sec": 4637}
+{"update": 11300, "L": 2, "loss": 0.11031011618673801, "examples": 5785600, "gpt2_tokens": 40137600, "sec": 4678}
+{"update": 11400, "L": 2, "loss": 0.10488228049129247, "examples": 5836800, "gpt2_tokens": 40492800, "sec": 4719}
+{"update": 11500, "L": 4, "loss": 0.09631938979029656, "examples": 5888000, "gpt2_tokens": 40848000, "sec": 4760, "acc8": 0.87, "acc32": 0.516, "certified": false, "trans_err": 206, "cert": false}
+{"update": 11600, "L": 4, "loss": 0.0971571834385395, "examples": 5939200, "gpt2_tokens": 41203200, "sec": 4804}
+{"update": 11700, "L": 1, "loss": 0.10161781184375286, "examples": 5990400, "gpt2_tokens": 41558400, "sec": 4845}
+{"update": 11800, "L": 4, "loss": 0.10598699755966663, "examples": 6041600, "gpt2_tokens": 41913600, "sec": 4886}
+{"update": 11900, "L": 1, "loss": 0.1084046645089984, "examples": 6092800, "gpt2_tokens": 42268800, "sec": 4927}
+{"update": 12000, "L": 1, "loss": 0.10361803535372019, "examples": 6144000, "gpt2_tokens": 42624000, "sec": 4968, "acc8": 0.818, "acc32": 0.574, "certified": false, "trans_err": 214, "cert": false}
+{"update": 12100, "L": 8, "loss": 0.15856782760471105, "examples": 6195200, "gpt2_tokens": 42979200, "sec": 5012}
+{"update": 12200, "L": 1, "loss": 0.15263087820261717, "examples": 6246400, "gpt2_tokens": 43334400, "sec": 5055}
+{"update": 12300, "L": 4, "loss": 0.14971009600907564, "examples": 6297600, "gpt2_tokens": 43689600, "sec": 5097}
+{"update": 12400, "L": 1, "loss": 0.16265110213309528, "examples": 6348800, "gpt2_tokens": 44044800, "sec": 5122}
+{"update": 12500, "L": 2, "loss": 0.14443529944866895, "examples": 6400000, "gpt2_tokens": 44400000, "sec": 5142, "acc8": 0.858, "acc32": 0.604, "certified": false, "trans_err": 33, "cert": false}
+{"update": 12600, "L": 1, "loss": 0.14899884164333344, "examples": 6451200, "gpt2_tokens": 44755200, "sec": 5162}
+{"update": 12700, "L": 4, "loss": 0.1414370622113347, "examples": 6502400, "gpt2_tokens": 45110400, "sec": 5182}
+{"update": 12800, "L": 4, "loss": 0.15027698148041962, "examples": 6553600, "gpt2_tokens": 45465600, "sec": 5201}
+{"update": 12900, "L": 4, "loss": 0.15191265288740396, "examples": 6604800, "gpt2_tokens": 45820800, "sec": 5221}
+{"update": 13000, "L": 2, "loss": 0.13798938691616058, "examples": 6656000, "gpt2_tokens": 46176000, "sec": 5240, "acc8": 0.874, "acc32": 0.598, "certified": false, "trans_err": 129, "cert": false}
+{"update": 13100, "L": 1, "loss": 0.14339718598872422, "examples": 6707200, "gpt2_tokens": 46531200, "sec": 5261}
+{"update": 13200, "L": 8, "loss": 0.14322341404855252, "examples": 6758400, "gpt2_tokens": 46886400, "sec": 5280}
+{"update": 13300, "L": 8, "loss": 0.1533873353153467, "examples": 6809600, "gpt2_tokens": 47241600, "sec": 5299}
+{"update": 13400, "L": 1, "loss": 0.14116666451096535, "examples": 6860800, "gpt2_tokens": 47596800, "sec": 5319}
+{"update": 13500, "L": 8, "loss": 0.15493372838944197, "examples": 6912000, "gpt2_tokens": 47952000, "sec": 5338, "acc8": 0.874, "acc32": 0.57, "certified": false, "trans_err": 33, "cert": false}
+{"update": 13600, "L": 2, "loss": 0.1446486844494939, "examples": 6963200, "gpt2_tokens": 48307200, "sec": 5359}
+{"update": 13700, "L": 8, "loss": 0.15405038736760615, "examples": 7014400, "gpt2_tokens": 48662400, "sec": 5378}
+{"update": 13800, "L": 1, "loss": 0.1505281562358141, "examples": 7065600, "gpt2_tokens": 49017600, "sec": 5398}
+{"update": 13900, "L": 4, "loss": 0.1456994442641735, "examples": 7116800, "gpt2_tokens": 49372800, "sec": 5417}
+{"update": 14000, "L": 1, "loss": 0.154858867675066, "examples": 7168000, "gpt2_tokens": 49728000, "sec": 5437, "acc8": 0.858, "acc32": 0.592, "certified": false, "trans_err": 81, "cert": false}
+{"update": 14100, "L": 1, "loss": 0.13854594759643077, "examples": 7219200, "gpt2_tokens": 50083200, "sec": 5457}
+{"update": 14200, "L": 4, "loss": 0.1538297475129366, "examples": 7270400, "gpt2_tokens": 50438400, "sec": 5477}
+{"update": 14300, "L": 8, "loss": 0.14251349456608295, "examples": 7321600, "gpt2_tokens": 50793600, "sec": 5496}
+{"update": 14400, "L": 4, "loss": 0.14328274492174387, "examples": 7372800, "gpt2_tokens": 51148800, "sec": 5516}
+{"update": 14500, "L": 4, "loss": 0.1399970007315278, "examples": 7424000, "gpt2_tokens": 51504000, "sec": 5535, "acc8": 0.86, "acc32": 0.67, "certified": false, "trans_err": 56, "cert": false}
+{"update": 14600, "L": 4, "loss": 0.15482452917844058, "examples": 7475200, "gpt2_tokens": 51859200, "sec": 5556}
+{"update": 14700, "L": 1, "loss": 0.13748685721307993, "examples": 7526400, "gpt2_tokens": 52214400, "sec": 5575}
+{"update": 14800, "L": 8, "loss": 0.16041488613933325, "examples": 7577600, "gpt2_tokens": 52569600, "sec": 5595}
+{"update": 14900, "L": 1, "loss": 0.14116006046533586, "examples": 7628800, "gpt2_tokens": 52924800, "sec": 5614}
+{"update": 15000, "L": 2, "loss": 0.143925413005054, "examples": 7680000, "gpt2_tokens": 53280000, "sec": 5633, "acc8": 0.89, "acc32": 0.626, "certified": false, "trans_err": 128, "cert": false}
+{"update": 15100, "L": 8, "loss": 0.1592504607141018, "examples": 7731200, "gpt2_tokens": 53635200, "sec": 5654}
+{"update": 15200, "L": 1, "loss": 0.1532370876893401, "examples": 7782400, "gpt2_tokens": 53990400, "sec": 5674}
+{"update": 15300, "L": 4, "loss": 0.1517354730144143, "examples": 7833600, "gpt2_tokens": 54345600, "sec": 5693}
+{"update": 15400, "L": 8, "loss": 0.12445179678499699, "examples": 7884800, "gpt2_tokens": 54700800, "sec": 5713}
+{"update": 15500, "L": 8, "loss": 0.14968232963234185, "examples": 7936000, "gpt2_tokens": 55056000, "sec": 5732, "acc8": 0.88, "acc32": 0.632, "certified": false, "trans_err": 128, "cert": false}
+{"update": 15600, "L": 8, "loss": 0.14351587787270545, "examples": 7987200, "gpt2_tokens": 55411200, "sec": 5753}
+{"update": 15700, "L": 1, "loss": 0.13939618322998285, "examples": 8038400, "gpt2_tokens": 55766400, "sec": 5772}
+{"update": 15800, "L": 4, "loss": 0.14795955151319504, "examples": 8089600, "gpt2_tokens": 56121600, "sec": 5792}
+{"update": 15900, "L": 1, "loss": 0.1350221924111247, "examples": 8140800, "gpt2_tokens": 56476800, "sec": 5811}
+{"update": 16000, "L": 2, "loss": 0.13525823824107647, "examples": 8192000, "gpt2_tokens": 56832000, "sec": 5831, "acc8": 0.882, "acc32": 0.66, "certified": false, "trans_err": 32, "cert": false}

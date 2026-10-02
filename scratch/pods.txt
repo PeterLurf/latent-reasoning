@@ -451,3 +451,9 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53831770 vast offer 53644716 created 2026-10-02 04:22: label c1-73-ptB, queue scratch/c1_q_73_ptB.txt (logged at create by vdeploy_toy.sh)
 53804532 vast | s71-dp DESTROYED_VERIFIED 53804532 2026-10-02 05:22: 71-2 closed - DeltaProduct not reproduced on our setup; logs in logs/dp_s71/
 53831770 vast | c1_73_ptB DESTROYED_VERIFIED 2026-10-02 05:23 after verified fetch (c1/runs/p73_ptstd_s2017 c1/runs/p73_ptstd_s2018 c1/runs/p73_ptstd_s2019 c1/runs/p73_ptstd_s2016 c1/runs/p73_ptstd_s2020)
+53838338 vast offer 53644720 created 2026-10-02 05:24: label c1-73-ptA, queue scratch/c1_q_73_ptA.txt (logged at create by vdeploy_toy.sh)
+53838338 vast | c1_73_ptA DESTROYED_VERIFIED 2026-10-02 06:30 after verified fetch (c1/runs/p73_ptstd_s2011 c1/runs/p73_ptstd_s2012 c1/runs/p73_ptstd_s2013 c1/runs/p73_ptstd_s2014 c1/runs/p73_ptstd_s2015)
+53851105 vast offer 52714988 created 2026-10-02 07:19: label c1-75-990, queue scratch/c1_q_75_990.txt (logged at create by vdeploy_toy.sh)
+53855975 vast offer 45031679 created 2026-10-02 08:10: label c1tab-76, CPU-only theory job (theory/c1_tab_driver.py --P 28; logged at create by c1rl_vast.sh)
+53814109 vast | s71-gru DESTROYED_VERIFIED 53814109 2026-10-02 09:02: hard stop 09:00 (Audit), not converged within budget; log in logs/gru_s71/
+53851105 vast | c1_75_990 DESTROYED_VERIFIED 2026-10-02 09:03 after verified fetch (c1/runs/p75_pfstd_s990 c1/runs/p75_ptstd_s990)
