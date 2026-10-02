@@ -6202,6 +6202,110 @@ result; tables in `theory/results/c1_tab_local/` (76-5); summary `theory/results
 * **Descriptive (ge3).** M ∈ (60, 90) 0/5, M = 240 0/3 so far, τ0 = 1 0/5. Over-completeness and annealing do not rescue
   acquisition without short labels.
 
+**Note 81-0 (2026-10-02 12:02 EDT; premise for idea 2, after Literature d67b35d; `theory/results/s81_premise_sk_S4_std_s990.json`).
+The Sinkhorn cell is not registered.**
+* The bijective (Sinkhorn) cell (`c1_rl.py --cell sk`, τ_sk 4 → 0.25) was checked on S4 with the **std** curriculum (short
+  labels), pilot seed 990.
+* It is not certified: accuracy 0.96 at N 8, 0.73 at N 32, 0.25 at N 128, with 17/24 ops bijective. The free table
+  certifies this cell (note 75-1).
+* As designed, the bijectivity cell is a worse learner than the free table even with short labels, so §81's ge3 test
+  would be uninformative. It is not registered, and no variant is tried (pioneer brief).
+* Bijectivity as a prior stays an open idea for a different parameterisation.
+
+## 80. A latent chunk machine: a discrete code carried across chunks of k operations, so the LM must compose inside its forward pass (pre-registered 2026-10-02 12:02 EDT, after Literature's check 9224385 and before any run; idea 1 of Theory's list, approved by Audit)
+
+**Why.** GPT-2 stores a latent automaton but does not compose missing rows (§76(B)). It does compose k operations inside
+one forward pass in text: §71's k = 4 chunk accuracy is 1.000.
+* §80 carries a discrete code (the stable latent of §73) across chunks of k ops. Each transition reads a k-op word.
+* A free table needs a row per (code, word), |Σ|^k words, so it cannot handle unseen words at all.
+* Only in-pass composition by the LM can. The certificate survives, since every (code, word) input is enumerable.
+
+**Task.** S3, ops as single-token symbols " A" … " F" (as D1b).
+* A problem is N = k·L ops read in chunks of k. L follows the std curriculum over chunk counts; tests run to L = 64.
+* The answer is the final element.
+* **k ∈ {2, 3}:** 36 or 216 words.
+
+**Held-out sets (fixed by seed; Literature (1)).**
+* **(b) unseen words:** 30 % of the k-op words never appear in training, with any state. This is the composition test.
+* **(a) unseen (state, word) pairs:** a further 10 % of (state, word) pairs, for seen words, are excluded from training
+  paths by rejection. This is §76(B)'s row test.
+* Training coverage per (code, word) is reported.
+
+**Premise P0 (text, run first; Literature (2)).** GPT-2 fine-tuned in text (§71's WC₀ format: start arrangement + k ops
+→ end arrangement) on the training words only, then tested on sets (b) and (a).
+* If its accuracy on (b) is < 0.95, §80 stops: the LM does not compose unseen k-op words in-pass, even in text.
+
+**Cell and arms** (§73 recipe: M = 12, lr 1e-4, τ 4 → 1, 8,000 updates, exact marginal over codes at chunk boundaries,
+from final answers). The transition call is [code_emb, k op tokens, step marker]. h_code at position 0, h_op at the
+marker. Standardised readout, statistics frozen after training.
+* **PF-std-chunk:** frozen pretrained GPT-2.
+* **RF-std-chunk:** frozen random-init GPT-2.
+* **TAB-chunk:** one symbol per word. Unseen words are scored at chance, 0 by construction.
+* **CHAIN (Literature (4)):** the k = 1 PF-std cell (§73) trained on the same problems one op at a time, then applied k
+  times per word. It is composition by the chain, a positive reference for what in-pass composition must match.
+* **Seeds:** 2091–2095.
+
+**Measures** (exhaustive).
+* The product-automaton certificate over training words, over all words including (b), and including (a).
+* Unseen-word agreement: over reachable codes, the next code decodes to the true state.
+* Accuracy at L 8–64 chunks with problems built only from unseen words.
+
+**Predictions.**
+* **P1 (prerequisite).** PF-std-chunk certified on training words in ≥ 4/5.
+* **P2 (in-pass composition carries the latent).** On (b), PF-std-chunk's all-words certificate holds in ≥ 3/5 and
+  unseen-word agreement ≥ 0.90. TAB-chunk is at 0, and RF-std-chunk is lower by ≥ 0.20 (paired by seed).
+* **(a)** is reported. §76(B) predicts failure there unless in-pass composition also covers it.
+
+**Readings.**
+* **P0 + P1 + P2.** A latent machine in a pretrained LM generalises to unseen operation sequences because the LM
+  composes them in its forward pass. This is C1 beyond hosting, with a certificate.
+* **P0 holds but P2 fails.** The LM composes in text but not into the latent readout.
+* **P0 fails.** No in-pass composition to exploit at this scale.
+
+**Placement.** Local cards. P0 is a few minutes of fine-tuning. The cell runs number 4 arms × 2 k × 5 seeds, about 2k
+GPT-2 calls per update at k = 3. $0.
+
+## 82. Acquisition ladder: do subgroup footholds help or trap final-answer-only learning? (pre-registered 2026-10-02 12:02 EDT, after Literature's checks 4a2aa35 and 19e8cc7 and before any run; idea 3)
+
+**Why.** Without short labels (ge3), the free table fails at S4, A5 and S5 (§76(A)).
+* S4 lands on coset-like plateaus. A5 and S5 sit at chance. S5 does not even find its parity quotient.
+* Literature: right cosets Hg of any subgroup give a valid quotient automaton. So A5 has footholds: A4 (index 5), D5
+  (index 6), S3 (index 10).
+* The question is whether footholds act as a **ladder** (partial solutions that are refined) or as **traps** (partial
+  solutions that stop learning). The groups differ in their subgroup lattices.
+
+**Groups** (all ops = all elements; the free table `tab`, M = 2|G|, ge3, exact marginal, lr 1e-2, 16k updates;
+`theory/groups_extra.py`).
+* **Z59:** cyclic of prime order; solvable; no proper subgroups, so no footholds.
+* **Z60:** cyclic; footholds at every index dividing 60, smallest 2.
+* **D30:** dihedral, order 60; smallest index 2.
+* **A4×Z5:** smallest index 3.
+* **A5:** simple; smallest index 5 (from §76(A); not rerun).
+
+**Reference.** std (with short labels) on each new group, 3 seeds, which should certify.
+**Seeds.** 2111–2115 (5 per group under ge3).
+
+**Measures.**
+* Certificate and accuracy at N 128.
+* For failures, the learned partition of reachable states into codes, compared with every right-coset partition of every
+  subgroup (≤ 2-generated, enumerated). A failure is a **coset trap** if the code-sets of states form exactly a
+  right-coset partition of some proper subgroup H. Its plateau should then be ≈ |H|/|G|.
+
+**Predictions (competing, fixed now).**
+* **Ladder:** groups with small-index footholds (Z60, D30) acquire (≥ 4/5) while Z59 fails.
+* **Trap:** Z59 acquires (≥ 4/5), with no partial solutions to stop at, while groups with footholds plateau on coset
+  traps.
+* **Solvability:** all solvable groups (Z59, Z60, D30, A4×Z5) acquire and only A5 fails. S4's 0/10 already argues
+  against this (solvable but failed).
+
+**Readings.**
+* **Trap supported.** Final-answer-only acquisition is blocked by partial (coset) solutions. That motivates a structural
+  prior against partial solutions (note 81-0), not curricula.
+* **Ladder supported.** Footholds should be exploited deliberately (subgroup curricula).
+* **Neither** (all fail or all succeed). Report; no variants.
+
+**Placement.** Local GPU. 20 ge3 runs plus 12 std runs, about 4 min each. $0.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
