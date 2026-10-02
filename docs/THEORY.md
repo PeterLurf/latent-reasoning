@@ -6798,6 +6798,72 @@ only if ≥ 4/5 seeds pass R1's accuracy bar.
 * **Consequence.** Acquisition without short labels needs a way into the basin (data-derived or staged initialisation),
   not more data. Short problems at ≥ 3–10 % are a practical way in.
 
+## 87. Into the basin without short labels: a short-label warm start, and deterministic annealing (pre-registered 2026-10-02 19:10 EDT, after §85's result and Literature's leads f89953e and 685bef0 (rule 1), before any §87 run)
+
+**Why.** §85: under ge3 the true A5 automaton is a stable attractor (oracle start + ε ≤ 2 → 5/5), but random starts fail.
+The problem is getting into the basin. Two ways in that keep the final training free of short labels:
+* **(i) A short-label warm start, then removal.** Are short labels needed only to enter the basin, or throughout?
+* **(ii) Deterministic annealing** (Rose; Ueda & Nakano) from a much hotter start. It is the classical escape from
+  symmetric saddles; τ0 = 4 over the first half failed (§76).
+
+**Arms** (A5 free table, M 120, exact marginal, lr 1e-2, 16k updates; `theory/c1_s87_driver.py`; seeds 2131–2135).
+* **warm25 / warm12:** short batches with p = 0.1 for the first 1/4 (resp. 1/8) of updates, then pure ge3 to the end.
+  τ0 = 4.
+* **da16 / da64:** ge3 throughout, τ0 = 16 (resp. 64) annealed to 1 over the first 3/4 of updates.
+
+**Predictions.**
+* **B1 (warm start suffices).** warm25 certifies ≥ 4/5. Short labels are a basin-entry device and can be removed. warm12
+  is reported.
+* **B2 (annealing enters the basin).** da16 or da64 certifies ≥ 4/5 with no short labels ever. That would be the first
+  certified A5 acquisition from length ≥ 3 problems only.
+
+**Readings.**
+* **B1.** Practical recipe: short problems only early.
+* **B2.** A pure optimisation fix exists: the symmetric saddle can be escaped by annealing.
+* **Neither.** Entering the basin needs short labels throughout (B1 fails) or a data-derived initialisation (spectral,
+  Literature lead 1), which is the next registration.
+
+**Placement.** Local GPU, 20 runs of a few minutes each. $0.
+
+## 88. Loop-aligned composition: a looped GPT-2 block with per-iteration state targets (pre-registered 2026-10-02 19:10 EDT, after Literature's note 685bef0 (method M8; prior RELAY, Saunshi 2502.17416) and before any §88 run)
+
+**Why.** §80's premise: GPT-2 trained on end-state targets memorises k-op words (unseen words 0.03 / 0.12), so there is no
+in-pass composition at our scale. Rule 1 (685bef0): per-step targets are load-bearing.
+* M8 asks whether **depth recurrence with per-iteration step targets** gives in-pass composition that generalises to
+  unseen words.
+* Each loop iteration is aligned with one op, so the looped block must learn a reusable "apply the next op" step.
+
+**Task.** Exactly §80's P0 split (S3, `c1/p80_split_k{2,3}.json`, k ∈ {2, 3}), the same text format (start arrangement +
+k op symbols), and the same held-out sets: (b) unseen words, (a) unseen (state, word) pairs.
+
+**Model.** GPT-2 small from base. Layers 0–3 run once, layers 4–7 are **looped k times** with shared weights, and layers
+8–11 plus ln_f run once at the end.
+* After loop iteration i, a linear 6-way head on the last prompt position's residual (through ln_f) is trained with
+  cross-entropy against the state after op i.
+* The final answer is that head after iteration k.
+* Training as P0: AdamW lr 1e-4, bs 64, 4,000 steps, training words only.
+
+**Arms** (seeds 1–3 each).
+* **LOOP-align:** per-iteration targets for i = 1..k.
+* **LOOP-end:** the same loop, final-state target only (the RELAY control).
+* **P0 (§80):** the non-looped end-state reference, not rerun.
+
+**Measures.** Accuracy on training words, on (b) and on (a); per-iteration accuracy on (b).
+
+**Predictions.**
+* **G1.** LOOP-align's (b) accuracy is ≥ 0.90 at k = 2 and k = 3 (median over seeds).
+* **G2.** LOOP-end's (b) accuracy is < 0.50: alignment, not looping, does the work.
+
+**Kill (Literature).** LOOP-align's (b) accuracy < 0.50.
+
+**Readings.**
+* **G1 + G2.** Per-step targets aligned with depth recurrence give in-pass composition of unseen op sequences. That is
+  latent computation in depth (C1 in depth), the answer to §80's negative.
+* **G1 without G2.** The loop alone helps.
+* **Kill.** No composition even with aligned depth.
+
+**Placement.** Local cards (P0-sized runs). Implementation by the experiments session, extending `c1/p80_p0.py`. $0.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
