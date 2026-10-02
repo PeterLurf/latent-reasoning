@@ -1,0 +1,607 @@
+{
+ "S4_ge3": {
+  "certified": 0,
+  "n": 10,
+  "runs": [
+   {
+    "file": "S4_ge3_s2051.json",
+    "certified": false,
+    "acc128": 0.334,
+    "reached_states": 24,
+    "block_sizes": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     3
+    ],
+    "n_blocks": 8,
+    "coset_trap_H": null
+   },
+   {
+    "file": "S4_ge3_s2052.json",
+    "certified": false,
+    "acc128": 0.335,
+    "reached_states": 24,
+    "block_sizes": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     3
+    ],
+    "n_blocks": 8,
+    "coset_trap_H": null
+   },
+   {
+    "file": "S4_ge3_s2053.json",
+    "certified": false,
+    "acc128": 0.521,
+    "reached_states": 24,
+    "block_sizes": [
+     2,
+     2,
+     2,
+     2,
+     2,
+     2
+    ],
+    "n_blocks": 12,
+    "coset_trap_H": null
+   },
+   {
+    "file": "S4_ge3_s2054.json",
+    "certified": false,
+    "acc128": 0.514,
+    "reached_states": 24,
+    "block_sizes": [
+     2,
+     2,
+     2,
+     2,
+     2,
+     2
+    ],
+    "n_blocks": 12,
+    "coset_trap_H": null
+   },
+   {
+    "file": "S4_ge3_s2055.json",
+    "certified": false,
+    "acc128": 0.244,
+    "reached_states": 24,
+    "block_sizes": [
+     4,
+     4,
+     4,
+     4,
+     4,
+     4
+    ],
+    "n_blocks": 6,
+    "coset_trap_H": 4
+   },
+   {
+    "file": "S4_ge3_s2056.json",
+    "certified": false,
+    "acc128": 0.122,
+    "reached_states": 24,
+    "block_sizes": [
+     8,
+     8,
+     8
+    ],
+    "n_blocks": 3,
+    "coset_trap_H": null
+   },
+   {
+    "file": "S4_ge3_s2057.json",
+    "certified": false,
+    "acc128": 0.233,
+    "reached_states": 24,
+    "block_sizes": [
+     4,
+     4,
+     4,
+     4,
+     4,
+     4
+    ],
+    "n_blocks": 6,
+    "coset_trap_H": null
+   },
+   {
+    "file": "S4_ge3_s2058.json",
+    "certified": false,
+    "acc128": 0.339,
+    "reached_states": 24,
+    "block_sizes": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     3
+    ],
+    "n_blocks": 8,
+    "coset_trap_H": null
+   },
+   {
+    "file": "S4_ge3_s2059.json",
+    "certified": false,
+    "acc128": 0.082,
+    "reached_states": 24,
+    "block_sizes": [
+     12,
+     12
+    ],
+    "n_blocks": 2,
+    "coset_trap_H": 12
+   },
+   {
+    "file": "S4_ge3_s2060.json",
+    "certified": false,
+    "acc128": 0.156,
+    "reached_states": 24,
+    "block_sizes": [
+     6,
+     6,
+     6,
+     6
+    ],
+    "n_blocks": 4,
+    "coset_trap_H": null
+   }
+  ]
+ },
+ "S4_std": {
+  "certified": 10,
+  "n": 10,
+  "runs": [
+   {
+    "file": "S4_std_s2051.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 24,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 24,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "S4_std_s2052.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 24,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 24,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "S4_std_s2053.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 24,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 24,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "S4_std_s2054.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 24,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 24,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "S4_std_s2055.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 24,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 24,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "S4_std_s2056.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 24,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 24,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "S4_std_s2057.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 24,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 24,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "S4_std_s2058.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 24,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 24,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "S4_std_s2059.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 24,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 24,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "S4_std_s2060.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 24,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 24,
+    "coset_trap_H": 1
+   }
+  ]
+ },
+ "A5_ge3": {
+  "certified": 0,
+  "n": 10,
+  "runs": [
+   {
+    "file": "A5_ge3_s2051.json",
+    "certified": false,
+    "acc128": 0.012,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   },
+   {
+    "file": "A5_ge3_s2052.json",
+    "certified": false,
+    "acc128": 0.017,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   },
+   {
+    "file": "A5_ge3_s2053.json",
+    "certified": false,
+    "acc128": 0.018,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   },
+   {
+    "file": "A5_ge3_s2054.json",
+    "certified": false,
+    "acc128": 0.017,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   },
+   {
+    "file": "A5_ge3_s2055.json",
+    "certified": false,
+    "acc128": 0.017,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   },
+   {
+    "file": "A5_ge3_s2056.json",
+    "certified": false,
+    "acc128": 0.019,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   },
+   {
+    "file": "A5_ge3_s2057.json",
+    "certified": false,
+    "acc128": 0.018,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   },
+   {
+    "file": "A5_ge3_s2058.json",
+    "certified": false,
+    "acc128": 0.018,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   },
+   {
+    "file": "A5_ge3_s2059.json",
+    "certified": false,
+    "acc128": 0.022,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   },
+   {
+    "file": "A5_ge3_s2060.json",
+    "certified": false,
+    "acc128": 0.021,
+    "reached_states": 60,
+    "block_sizes": [
+     60
+    ],
+    "n_blocks": 1,
+    "coset_trap_H": 60
+   }
+  ]
+ },
+ "A5_std": {
+  "certified": 10,
+  "n": 10,
+  "runs": [
+   {
+    "file": "A5_std_s2051.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 60,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 60,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "A5_std_s2052.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 60,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 60,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "A5_std_s2053.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 60,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 60,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "A5_std_s2054.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 60,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 60,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "A5_std_s2055.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 60,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 60,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "A5_std_s2056.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 60,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 60,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "A5_std_s2057.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 60,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 60,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "A5_std_s2058.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 60,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 60,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "A5_std_s2059.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 60,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 60,
+    "coset_trap_H": 1
+   },
+   {
+    "file": "A5_std_s2060.json",
+    "certified": true,
+    "acc128": 1.0,
+    "reached_states": 60,
+    "block_sizes": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_blocks": 60,
+    "coset_trap_H": 1
+   }
+  ]
+ }
+}
