@@ -10,8 +10,8 @@ SHA128=6ee3ef95405dc43b094824dff8973753c587fe95a00762d2023bd64a941504f2
 SHA512=a0087fe4a7496a47f76d9436e6bb089c8a8869f3f343f71057355e127d0c33da
 { cd /workspace; [ -d word-problem ] || git clone -q https://github.com/jopetty/word-problem.git
   cd word-problem; touch .project-root; mkdir -p data
-  pip install -q fire humanize polars pyrootutils accelerate datasets python-dotenv ordered-set tokenizers "transformers==4.46.2" wandb \
-     "git+https://github.com/jopetty/abstract_algebra" "git+https://github.com/jopetty/sfirah" "git+https://github.com/jopetty/s4.git"
+  pip install -q fire humanize polars pyrootutils accelerate datasets python-dotenv ordered-set tokenizers "transformers==4.46.2" wandb
+  for g in abstract_algebra sfirah s4.git; do for t in 1 2 3; do pip install -q "git+https://github.com/jopetty/$g" && break; sleep 20; done; done
   python - <<'PY'
 p = "src/main.py"; s = open(p).read()
 start = s.index("def train_gru("); end = s.index("def train_lstm(")
