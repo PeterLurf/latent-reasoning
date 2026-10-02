@@ -1,0 +1,36 @@
+[W1001 18:09:42.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 85983232 bytes (free: 0, total: 8589410304).
+[W1001 18:09:43.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 33554432 bytes (free: 0, total: 8589410304).
+100/3200 acc 0.250 33s
+200/3200 acc 0.225 33s
+300/3200 acc 0.207 33s
+400/3200 acc 0.198 33s
+500/3200 acc 0.184 33s
+600/3200 acc 0.187 33s
+700/3200 acc 0.180 33s
+800/3200 acc 0.176 33s
+900/3200 acc 0.174 33s
+1000/3200 acc 0.166 33s
+1100/3200 acc 0.163 33s
+1200/3200 acc 0.160 33s
+1300/3200 acc 0.155 33s
+1400/3200 acc 0.155 33s
+1500/3200 acc 0.152 33s
+1600/3200 acc 0.152 33s
+1700/3200 acc 0.149 33s
+1800/3200 acc 0.147 33s
+1900/3200 acc 0.145 33s
+2000/3200 acc 0.147 33s
+2100/3200 acc 0.146 33s
+2200/3200 acc 0.147 33s
+2300/3200 acc 0.147 33s
+2400/3200 acc 0.147 33s
+2500/3200 acc 0.146 33s
+2600/3200 acc 0.146 33s
+2700/3200 acc 0.145 33s
+2800/3200 acc 0.144 33s
+2900/3200 acc 0.143 33s
+3000/3200 acc 0.145 33s
+3100/3200 acc 0.145 33s
+3200/3200 acc 0.145 33s
+boxes | boxes:boxes/runs/cl_s5?kp=double | n 3200 | acc 0.145 [0.1332, 0.1576] | baselines {'identity (start)': 0.1578, 'last op only': 0.1775, 'majority (ABCD / box 1)': 0.1388, 'chance (1/24 all, 1/4 where)': 0.1458}
+WROTE bench\results\boxes__boxes_cl_s5_kpdouble.json

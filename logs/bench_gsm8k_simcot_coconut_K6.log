@@ -1,0 +1,15 @@
+100/1319 acc 0.370 10s
+200/1319 acc 0.400 20s
+300/1319 acc 0.387 29s
+400/1319 acc 0.400 39s
+500/1319 acc 0.402 49s
+600/1319 acc 0.393 59s
+700/1319 acc 0.390 69s
+800/1319 acc 0.388 78s
+900/1319 acc 0.393 87s
+1000/1319 acc 0.389 97s
+1100/1319 acc 0.384 106s
+1200/1319 acc 0.381 116s
+1300/1319 acc 0.381 125s
+gsm8k | coconut_gsm:prosqa/ckpt_ext/hf/simcot_coconut/checkpoint_28?K=6 | n 1319 | acc 0.381 [0.3555, 0.4079] | baselines {'last number in question': 0.0227, 'constant 5 (most frequent test answer; peeks)': 0.0303, 'answer appears in question (oracle)': 0.0637, 'one-op oracle (any pair, + - x /)': 0.1554}
+WROTE bench\results\gsm8k__simcot_coconut_K6.json

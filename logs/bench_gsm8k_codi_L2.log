@@ -1,0 +1,15 @@
+100/1319 acc 0.250 48s
+200/1319 acc 0.285 48s
+300/1319 acc 0.283 48s
+400/1319 acc 0.263 48s
+500/1319 acc 0.258 48s
+600/1319 acc 0.247 48s
+700/1319 acc 0.250 48s
+800/1319 acc 0.242 48s
+900/1319 acc 0.239 48s
+1000/1319 acc 0.235 48s
+1100/1319 acc 0.231 48s
+1200/1319 acc 0.228 48s
+1300/1319 acc 0.232 48s
+gsm8k | codi:codi?L=2 | n 1319 | acc 0.234 [0.2122, 0.2579] | baselines {'last number in question': 0.0227, 'constant 5 (most frequent test answer; peeks)': 0.0303, 'answer appears in question (oracle)': 0.0637, 'one-op oracle (any pair, + - x /)': 0.1554}
+WROTE bench\results\gsm8k__codi_L2.json

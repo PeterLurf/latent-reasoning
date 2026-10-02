@@ -1,0 +1,14 @@
+{
+ "tc_tokens_per_epoch": 26808946,
+ "tc_tokens_25_epochs": 670223650,
+ "ws_calls_per_epoch": 1387374,
+ "ws_tokens_per_epoch": 84288318,
+ "ws_epochs_equivalent": 7.951560381119481,
+ "optimizer_steps": 200,
+ "effective_batch": 32,
+ "skipped_examples": 90,
+ "prep_sec": 305,
+ "best_valid": 0.01,
+ "tokens_seen": 389021,
+ "train_sec": 53
+}

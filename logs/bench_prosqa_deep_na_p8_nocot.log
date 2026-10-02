@@ -1,0 +1,18 @@
+100/1684 acc 0.560 4s
+200/1684 acc 0.560 8s
+300/1684 acc 0.550 12s
+400/1684 acc 0.542 16s
+500/1684 acc 0.542 21s
+600/1684 acc 0.537 25s
+700/1684 acc 0.539 30s
+800/1684 acc 0.536 34s
+900/1684 acc 0.526 39s
+1000/1684 acc 0.516 44s
+1100/1684 acc 0.517 49s
+1200/1684 acc 0.517 55s
+1300/1684 acc 0.515 60s
+1400/1684 acc 0.512 66s
+1500/1684 acc 0.512 71s
+1600/1684 acc 0.511 77s
+prosqa_deep_na | nocot:prosqa/ckpt/p8_nocot_checkpoint_30 | n 1684 | acc 0.509 [0.4856, 0.5333] | baselines {'proximity rule (no reasoning)': 0.5, 'chance': 0.5}
+WROTE bench\results\prosqa_deep_na__nocot_p8_nocot_checkpoint_30.json

@@ -1,0 +1,6 @@
+100/496 acc 0.710 15s
+200/496 acc 0.670 29s
+300/496 acc 0.677 44s
+400/496 acc 0.698 58s
+prosqa_na | coconut:prosqa/ckpt/g_s2_checkpoint_50?K=6&mask=1 | n 496 | acc 0.706 [0.6641, 0.7441] | baselines {'proximity rule (no reasoning)': 0.5, 'chance': 0.5}
+WROTE bench\results\prosqa_na__coconut_g_s2_checkpoint_50_K=6_mask=1.json
