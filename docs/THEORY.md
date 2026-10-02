@@ -6657,6 +6657,26 @@ combination.
   - Rule 1 (685bef0) predicts the strict ge3 arm fails.
   - It is registered after §86 reports.
 
+**Note 86-2 (2026-10-02 17:28 EDT, before any §86 result; implementation caf2ccc, `boxes/latent86.py`).**
+* **Implementation readings accepted.**
+  - Segments run with the KV cache: [code(start), op₁ tokens] → slot 1, whose input is the final hidden state at op₁'s
+    last token; then [slot 1, op₂ tokens] → … → [slot k].
+  - The head is read at each slot's output; gradients flow through the chain.
+  - The 120-entry codebook is initialised from wte mean and std; §71's schedule is used.
+  - C1 removal at k = 4 uses 10k fresh chunks (seed 7106), with zero and mean (per-position, over 2,000 training chunks)
+    ablation of slots 1..k−1, reported per slot and pooled over slots 2..k.
+  - C3 by `boxes.core.Meter`: k = 4 ≈ 6.3e11 FLOPs and 640 sequential passes per 512-problem, against WC₀₄'s 1.64e12 and
+    3,200.
+* **R2's interpretation (fixed now).** Later segments can attend to earlier op-token positions, whose hidden states also
+  encode the state (the slot input *is* such a hidden state). So:
+  - **R1 holds and R2 fails:** the state is carried latently in the op-token stream rather than in the slots. That is
+    still non-text, latent carrying, but the slots are redundant. It is reported as "latent, slot-redundant", not as
+    "no latent computation".
+  - **Both hold:** the slots carry the state.
+* **Added descriptive ablation (segment isolation, k = 4 model, test only).** Each segment [slot j, op j+1 tokens] runs
+  with a fresh cache containing only slot j: a continuous restart at every op, without snapping. If accuracy holds, the
+  slot alone carries the full state.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
