@@ -9,8 +9,8 @@ c1/p80_split_k<k>.json before any training):
   (a) a further 10 % (rounded) of the (state, word) pairs of the remaining (seen) words are excluded from training.
 Text (§71 WC0 format, end state only): "start: X Y Z. ops: A, D. a:" -> " > Y X Z" + EOS; loss on the target.
 Training: base GPT-2 small (HF), AdamW lr 1e-4, wd 0.01, bs 64 drawn uniformly from the training pairs, --steps
-updates (default 1,500), fp32 (bf16 autocast if --bf16). Eval (greedy, exact match of the 3 letters): accuracy on the
-training pairs, on (b) (every unseen word x every start state) and on (a). Rule (§80): if (b) < 0.95, §80 stops.
+updates (default 4,000; Theory, before any P0 result; held-out also logged at 1,500), fp32 (bf16 autocast if --bf16). Eval (greedy, exact match of the 3 letters): accuracy on the
+training pairs, on (b) (every unseen word x every start state) and on (a). Rule (§80): if (b) at the final 4,000-step checkpoint < 0.95, §80 stops.
     python -m c1.p80_p0 split                        # writes c1/p80_split_k2.json, c1/p80_split_k3.json
     python -m c1.p80_p0 train --k 2 --device cuda:0 --out c1/runs/p80_p0_k2
 """
@@ -86,6 +86,7 @@ def train(a):
     os.makedirs(a.out, exist_ok=True); json.dump(vars(a), open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
     log = open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t0 = time.time()
     amp = a.bf16 and a.device.startswith("cuda")
+    unseen_b = [(s, w) for w in sp["unseen_words_b"] for s in range(6)]; mid = None
     for step in range(1, a.steps + 1):
         model.train(); b = [enc[rng.choice(tr)] for _ in range(a.bs)]; L = max(len(q) + len(r) for q, r in b)
         ids = torch.full((len(b), L), EOS); lab = torch.full((len(b), L), -100); att = torch.zeros(len(b), L, dtype=torch.long)
@@ -96,20 +97,24 @@ def train(a):
         opt.zero_grad(); loss.backward(); opt.step()
         if step % 100 == 0 or step == a.steps:
             log.write(json.dumps({"step": step, "loss": loss.item(), "sec": round(time.time() - t0)}) + "\n"); log.flush()
-    unseen_b = [(s, w) for w in sp["unseen_words_b"] for s in range(6)]
-    res = {"k": a.k, "steps": a.steps, "train_sec": round(time.time() - t0), "n_train_pairs": len(tr),
+        if step == 1500 and a.steps > 1500:                                    # Theory: held-out accuracy at 1,500 too
+            mid = {"step": 1500, "acc_train": evaluate(model, tok, tr, words, a.device),
+                   "acc_b_unseen_words": evaluate(model, tok, unseen_b, words, a.device),
+                   "acc_a_heldout_pairs": evaluate(model, tok, [tuple(p) for p in sp["heldout_pairs_a"]], words, a.device)}
+            log.write(json.dumps(mid) + "\n"); log.flush(); print(mid, flush=True)
+    res = {"k": a.k, "at_1500": mid, "steps": a.steps, "train_sec": round(time.time() - t0), "n_train_pairs": len(tr),
            "acc_train": evaluate(model, tok, tr, words, a.device),
            "acc_b_unseen_words": evaluate(model, tok, unseen_b, words, a.device), "n_b": len(unseen_b),
            "acc_a_heldout_pairs": evaluate(model, tok, [tuple(p) for p in sp["heldout_pairs_a"]], words, a.device),
            "n_a": len(sp["heldout_pairs_a"])}
-    res["P0_passes"] = res["acc_b_unseen_words"] >= 0.95
+    res["P0_passes"] = res["acc_b_unseen_words"] >= 0.95                          # at the final (4,000-step) checkpoint
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1); print(res, flush=True)
 
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("cmd", choices=["split", "train"])
     ap.add_argument("--k", type=int, default=2); ap.add_argument("--seed", type=int, default=1)
-    ap.add_argument("--steps", type=int, default=1500); ap.add_argument("--bs", type=int, default=64)
+    ap.add_argument("--steps", type=int, default=4000); ap.add_argument("--bs", type=int, default=64)
     ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--bf16", action="store_true")
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", default="")
     a = ap.parse_args()
