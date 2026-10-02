@@ -1,0 +1,5 @@
+{"update": 25, "loss": 5.489585876464844, "train_row_acc": 0.4416666666666667, "dec_row_acc": 0.6, "sec": 10}
+{"update": 50, "loss": 3.6591567993164062, "train_row_acc": 0.692857142857143, "dec_row_acc": 0.9428571428571428, "sec": 18}
+{"update": 75, "loss": 1.7332319021224976, "train_row_acc": 0.8964285714285715, "dec_row_acc": 1.0, "sec": 27}
+{"update": 100, "loss": 0.4116487503051758, "train_row_acc": 0.9988095238095239, "dec_row_acc": 1.0, "sec": 36}
+{"update": 125, "loss": 0.09092946350574493, "train_row_acc": 1.0, "dec_row_acc": 1.0, "sec": 45}
