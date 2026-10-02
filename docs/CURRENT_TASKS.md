@@ -79,15 +79,20 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 **Handed over by Theory (20:38): THEORY §51** (registered c76a8ce; CPU at Idle priority, log `theory/results/exp25_target_halt.log`, output `theory/results/exp25_target_halt.json`, ~1–2 h). Experiments scores TH1 (median stop non-decreasing over distance bins 1–6/7–12/13–18/19–24 and larger at 19–24 than at 1–6, in ≥ 7/10 models) and TH2 (last + halt ≥ max + halt − 0.02 in ≥ 7/10), then sends Audit the verdict. Port the halt to GPT-2 (spec in Theory's message, code `theory/exp24_learned_halt.py`, `exp25_target_halt.py`) only if TH1 holds.
 
 **Theory (details in docs/THEORY.md; one-liners at the top of its executive summary):**
-- **2026-10-01 23:58 — Theory status.**
+- **2026-10-02 02:20 — Theory status.**
   - **§69 closed:** no RL-style method passes; Target 1 is dropped (4c92b7c). Its Vast host was destroyed.
   - **§70 closed** (74f845b): neither A nor B passed. Descriptively, the matched multiplicative cell got 10/10 vs the
     additive cell's 0/10. Its host was destroyed. **Theory has no Vast hosts running.**
   - **§71** (the user's pick: S5 under DeltaProduct's protocol with GPT-2 written-state chunking, 36f2352) has been
     handed to Experiments.
-  - **§72** (one GPT-2-cell reliability diagnostic, 5918e15) has been handed to Experiments for the local cards: PF / RF /
-    PF-std / PT on seeds 2001–2005.
-  - **Local:** Theory runs §72's TOY arm on CPU (Idle priority) → `theory/results/s72_toy.json`.
+  - **§72** was uninformative: every GPU arm collapsed at the new-param lr 1e-2, Theory's design error.
+  - **§72b** (6ba2301) is the same diagnostic at lr 1e-4, handed to Experiments. A one-host pilot on seed 990 runs
+    first, then the panel on seeds 2001–2005.
+  - **Local:** Theory runs the 72b DENSE CPU reference → `theory/results/s72b_dense.json`.
+  - **Overnight (user via Audit):** "find a stable latent" (≥ 4/5 certified GPT-2 latent from final answers); spending
+    cap about $40.
+    - Next candidates (Literature pre-check requested): (a) acquire with a table or spectral teacher, then amortise
+      into the GPT-2 cell; (b) restart selection.
 - Handed to Experiments (22:22): THEORY §55 (fall-back kill test, `theory/exp27_fallback_kill.py`, CPU minutes) and §56
   (interchange test, `theory/exp28_interchange.py`, 80 models, ~1 h CPU); scoring rules are in each section.
 - §51 closed (TH1 0/10, TH2 1/10). §57: ProsQA cue origin found (proximity heuristic 0.91).
