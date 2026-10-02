@@ -5132,6 +5132,33 @@ checkpoints").**
   - Seeds 200–202, with marg on the same seeds and host as the reference.
   - The std curriculum is run alongside as descriptive only; the registered pass uses Zhang.
 
+**Amendment 69-2 (2026-10-01 23:25 EDT, before any Stage-2 run or result; Audit and Literature): a spectral weighted-automaton baseline, descriptive.**
+* **Learner.** Spectral learning of a vector-output weighted automaton (Balle et al. 2014), `theory/c1_spectral.py`.
+  - Data: n final-answer problems from the same training distribution. For each problem the update index is drawn
+    uniformly, the length follows the run's curriculum, ops are uniform, and the label is the final element.
+  - Hankel blocks over prefixes P = Σ (the |G| length-1 strings), suffix ε and outputs Y = G:
+    - H[p, y] = empirical P(y | p);
+    - H_a[p, y] = empirical P(y | p a);
+    - strings never seen contribute 0.
+  - Rank-|G| truncated SVD, H ≈ U S Vᵀ. Then A_a = (H V)⁺ H_a V and decoder B = (H V)⁺ H.
+  - Execution: the state after the first op x₁ is row x₁ of H V; apply A_{x₂} … A_{x_N}; predict argmax(state · B).
+  - The estimator therefore uses only problems of length ≤ 2.
+* **Certificate (the analogue of the product-automaton one).**
+  - BFS from the |G| (start state, true element) pairs under every A_a. States are deduplicated after rounding to
+    1e-6 of their norm.
+  - Certified iff the reachable set closes within 20·|G| distinct states and every reached pair decodes correctly.
+  - Hard accuracy is also reported at N 8, 9, 32, 128.
+* **Grid.**
+  - Groups S3, S4, A5; curricula std and zhang (each run's schedule: 8,000 updates for S3, 16,000 for S4/A5).
+  - n ∈ {10³, 10⁴, 10⁵, 10⁶}; data seeds 200–202.
+  - For comparison, the neural runs see 256 problems per update: 2.0 M (S3) or 4.1 M (S4/A5).
+* **Reading (descriptive, no pass rule).**
+  - **Spectral certifies S4/A5 at n ≤ the neural data budget.** Learnability from final answers is not in question. A
+    neural "acquisition" win is then about acquiring the automaton in a gradient-trained, GPT-2-compatible cell, and
+    is framed that way.
+  - **Spectral fails, or needs n beyond that budget.** This supports the neural route.
+  - The baseline exploits short, exact (noise-free) problems. The neural objective sees the same data.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
