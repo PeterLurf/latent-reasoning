@@ -5159,6 +5159,18 @@ checkpoints").**
   - **Spectral fails, or needs n beyond that budget.** This supports the neural route.
   - The baseline exploits short, exact (noise-free) problems. The neural objective sees the same data.
 
+**69-2 result (2026-10-01 23:29 EDT; descriptive; `theory/results/c1_spectral.json`, log alongside).**
+* Spectral WFA learning recovers every group exactly from final answers, once every length-2 pair has been seen. The
+  first n (of 10³–10⁶) at which all 3 seeds certify:
+  - S3: 10³ under both curricula;
+  - S4: 10⁵ (std) and 10⁵ (zhang; 2/3 already at 10⁴);
+  - A5: 10⁶ (std; at 10⁵ it reaches 3,598–3,599 of the 3,600 pairs, 0.93–0.96 at N 128, not certified) and 10⁵ (zhang).
+* Every certified fit closes on exactly |G| states with N-128 accuracy 1.000. That is ≤ 1/4 of the neural runs' data
+  (2.0 M / 4.1 M problems).
+* **Framing, fixed now.** Learnability from final answers is not in question for these groups. Any §69 neural success
+  is about acquiring the automaton in a gradient-trained cell that can sit inside GPT-2. The spectral learner has no
+  such cell, and it needs complete short-string coverage, i.e. exact supervision of the whole Cayley table at length 2.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
