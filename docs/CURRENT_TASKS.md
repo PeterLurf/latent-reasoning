@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-10-02 11:00 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-10-02 11:35 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -35,7 +35,7 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 > gives fronts to depth 11 in 2/4 runs; Pilot D 12 + 12 running on Vast). Ownership (theory Vast hosts vs a PROTOCOL8)
 > to be agreed. The theory session analyses O/R/T9/T10 runs only after the experiments session has scored them.
 
-## 00. EXPERIMENTS STATE AT 2026-10-02 11:00 EDT — authoritative over section 0
+## 00. EXPERIMENTS STATE AT 2026-10-02 11:35 EDT — authoritative over section 0
 
 **Running (all local; no Vast hosts of ours):**
 * **§76(A) teachers on local GPUs (amendment 76-5):** `python theory/c1_tab_driver.py --groups {A5|S5|S4} --device
@@ -57,6 +57,16 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
   stopped and moved to `void_*`).
 * **§74 scored 08:00:** P1 0/5, so uninformative; bad pairs sent to Theory. Backfill queue: all 90 cells already done.
 * GRU host and the §75 host are destroyed. Theory runs c1tab-76 (Vast CPU) and local CPU teacher jobs.
+
+* **User decision "both" (via Audit, about 11:05): (1) GSM8K length split with the written-state method from the D&W
+  CoT checkpoint (about $25, one-host pilot, projection to Audit first); (2) a new toy latent task needing LM knowledge
+  (local).** Theory registers both; no training before that. Prep done (a900b18, `gsmlen/`):
+  - step counts `gsmlen/step_counts.json` and distribution `gsmlen/step_dist.json`. Train ≤ 2 steps is 53.5 %
+    (206,397 items); test ≥ 4 is 514 items and ≥ 5 is 224.
+  - `gsmlen/ft_check.py`: the D&W CoT checkpoint loads strict, and the bf16 fine-tune plumbing works on CPU. The GPU
+    per-epoch timing waits for a free card (or a 10-minute Vast 3090).
+* **Incident 11:00–11:20 (Experiments):** a waiter killed feeder worker PIDs, so A5 jobs stacked on the 4060 and RAM ran
+  out. Fixed with a feeder guard (d896e2e); 7 A5 runs were reset and the completed runs kept.
 
 **Scored (details in docs/PROTOCOL12.md):** §65, §66, §61b, §67b, §72 (collapsed), §72b (PF-std 5/5), §73 (stable latent
 10/10), §71 (S1/S2 met, S3 comparator not reproduced, S4/C1 not met).
