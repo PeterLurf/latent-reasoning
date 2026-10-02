@@ -1,0 +1,4 @@
+S4 tab marg M 48 seed 2051 certified False bad 16 acc {8: 0.315, 9: 0.322, 32: 0.334, 128: 0.334} sec 408.6 382.5
+S4 tab marg M 48 seed 2052 certified False bad 24 acc {8: 0.325, 9: 0.328, 32: 0.342, 128: 0.335} sec 415.1 393.2
+S4 tab marg M 48 seed 2053 certified False bad 38 acc {8: 0.514, 9: 0.513, 32: 0.505, 128: 0.521} sec 419.8 409.1
+S4 tab marg M 48 seed 2054 certified False bad 34 acc {8: 0.494, 9: 0.509, 32: 0.511, 128: 0.514} sec 359.0 353.5
