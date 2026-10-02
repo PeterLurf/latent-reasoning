@@ -6458,6 +6458,17 @@ adaptive, **unlearned** C5. It is still scaffolded: the history cut is external.
 
 **Placement and cost.** One Vast 3090: retraining (about 3 × 40 min) plus inference (about 3 × 30 min). About $1.
 
+**Note 83-1 (2026-10-02 13:29 EDT, before any §83 result; Audit).**
+* **Retrained seeds that fail §71's own check.** If fixed k = 4 is below 1.000 at 512, that seed is **excluded** from
+  U1 and U2: it does not reproduce the solver under test. It is reported with its numbers.
+  - U1 then requires all included seeds, and at least 2 included seeds.
+  - If fewer than 2 seeds pass the check, §83 is uninformative, reported as such, with no further retraining.
+* **U3, sharpened (the C5-relevant comparison).** Adaptive vs fixed k = 4 on the same model.
+  - **Met** if the adaptive cumulative accuracy at 512 is ≥ fixed k = 4's minus 0.005 (paired by item) **and** the mean
+    accepted chunk length is > 4 in every included seed. The solver then safely extends past its trained chunk size
+    by self-gating.
+  - Fixed k = 16 in U1 stays as the trivially failing reference; it is not the main comparison.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
