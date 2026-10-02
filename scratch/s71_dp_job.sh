@@ -9,10 +9,13 @@ cd "$(dirname "$0")/.."
 tag=$1; dev=$2; q=$3; log=/workspace/Latent/logs/queue_$tag.out; mkdir -p logs boxes/runs_s5
 SHA128=6ee3ef95405dc43b094824dff8973753c587fe95a00762d2023bd64a941504f2
 SHA512=a0087fe4a7496a47f76d9436e6bb089c8a8869f3f343f71057355e127d0c33da
-{ cd /workspace && git clone -q https://github.com/automl/DeltaProduct.git && cd DeltaProduct/state_tracking && touch .project-root && \
-  pip install -q -e ../flash-linear-attention && \
+{ cd /workspace; [ -d DeltaProduct ] || git clone -q https://github.com/automl/DeltaProduct.git
+  cd DeltaProduct/state_tracking; touch .project-root
   pip install -q fire humanize polars pyrootutils accelerate datasets python-dotenv ordered-set tokenizers transformers wandb evaluate \
-     "git+https://github.com/jopetty/abstract_algebra" "git+https://github.com/jopetty/sfirah" ; } > /workspace/Latent/logs/s71_dp_setup.log 2>&1
+     "git+https://github.com/jopetty/abstract_algebra" "git+https://github.com/jopetty/sfirah"
+  touch ../flash-linear-attention/README.md                       # the bundled fla's setup reads a README it lacks
+  pip install -q -e ../flash-linear-attention
+  python -c "import fire, polars, abstract_algebra, fla, sfirah; print('deps ok')"; } > /workspace/Latent/logs/s71_dp_setup.log 2>&1
 W=/workspace/DeltaProduct/state_tracking; cd $W; mkdir -p data
 PYTHONPATH=$PWD python src/generate_data.py --group=S5 --k=128 --samples=100000 --seed=7101 >> /workspace/Latent/logs/s71_dp_setup.log 2>&1
 PYTHONPATH=$PWD python src/generate_data.py --group=S5 --k=512 --samples=100000 --seed=7102 >> /workspace/Latent/logs/s71_dp_setup.log 2>&1
