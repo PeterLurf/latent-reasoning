@@ -1,0 +1,6 @@
+# THEORY §86 panel (after the pilot evaluates)
+boxes/runs_s5/l86_k1_s1 boxes.latent86 train --k 1 --seed 1 --steps 8000 --bs 64
+boxes/runs_s5/l86_k1_s2 boxes.latent86 train --k 1 --seed 2 --steps 8000 --bs 64
+boxes/runs_s5/l86_k1_s3 boxes.latent86 train --k 1 --seed 3 --steps 8000 --bs 64
+boxes/runs_s5/l86_k4_s2 boxes.latent86 train --k 4 --seed 2 --steps 8000 --bs 64
+boxes/runs_s5/l86_k4_s3 boxes.latent86 train --k 4 --seed 3 --steps 8000 --bs 64
