@@ -18,11 +18,11 @@ SEEDS = range(2051, 2061); STUDENTS = ("pfstd", "ptstd")
 def main():
     G = sys.argv[1] if len(sys.argv) > 1 else "S4"
     res = {}
-    for cur in ("ge3", "std"):
+    for cur in ("ge3", "std", "ge3full", "stdfull"):                   # *full: amendment 76-3, descriptive (no rule)
         r = {"teacher_certified": 0, "teacher_files": 0, "per_seed": {}}
         k = {s: 0 for s in STUDENTS}; resolved = 0
         for sd in SEEDS:
-            tf = f"theory/results/c1_tab_local/{G}_{cur}_s{sd}.json"
+            tf = f"theory/results/c1_tab_local/{G}_{cur.replace('full', '')}_s{sd}.json"
             row = {}
             if os.path.exists(tf):
                 t = next(iter(json.load(open(tf)).values())); r["teacher_files"] += 1
@@ -35,7 +35,7 @@ def main():
                 if os.path.exists(f):
                     e = json.load(open(f)); c = bool(e["certificate"]["certified"]) and bool(e["evidential"])
                     k[s] += int(c)
-                    row[s] = {"certified": c, "heldout_row_acc": e["heldout_row_acc"], "train_row_acc": e["train_row_acc"],
+                    row[s] = {"certified": c, "heldout_row_acc": e["heldout_row_acc"] if e["heldout_row_acc"] is not None else float("nan"), "train_row_acc": e["train_row_acc"],
                               "patched_certified": e["certificate_heldout_patched"]["certified"], "acc": e["acc"],
                               "outside_R": e["outside_R"], "bad_pairs": e["certificate"]["bad_pairs"]}
             done = done or all(s in row for s in STUDENTS)
@@ -45,7 +45,7 @@ def main():
             v = "succeeds" if k[s] >= 9 else ("fails" if k[s] + (10 - resolved) < 9 else "open")
             r[s] = {"certified": k[s], "of": 10, "resolved_seeds": resolved,
                     "verdict": v if resolved == 10 or v == "fails" else f"incomplete ({v})"}
-        res[cur] = r
+        r["descriptive_only"] = cur.endswith("full"); res[cur] = r
     os.makedirs("theory/results", exist_ok=True)
     json.dump(res, open(f"theory/results/score_s76b_{G}.json", "w", newline="\n"), indent=1)
     for cur, r in res.items():
