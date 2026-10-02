@@ -5890,6 +5890,23 @@ certified from final answers. Fine-tuned with that readout, also 10/10; centring
 * A5: 1 pilot run plus 5 panel runs at a higher cost per run.
 * Total under about $15 on Vast, less on local cards.
 
+**§75 result (2026-10-02 09:01 EDT; one-host pilot, seed 990, run by the experiments session). The gate FAILS, so the
+panel and A5 are not run.**
+
+| arm (S4, M 48, 16k updates) | acc N 8 / 16 / 32 / 64 / 128 | code partition |
+|---|---|---|
+| PF-std | 0.761 / 0.653 / 0.543 / 0.512 / 0.486 | identity block plus 12 blocks of 2 |
+| PT-std | 0.867 / 0.777 / 0.619 / 0.424 / 0.233 | identity block plus 6 blocks of 4 |
+
+* Neither arm certifies or reaches 0.95 at N 128.
+* Both merge states into blocks that are neither left nor right cosets (26 codes used, no bijection). This is not the
+  quotient-solution plateau of Zhang & Li.
+* **Reading (§75's rule).** The end-to-end stable recipe is S3-scale. Reported, not tuned.
+* With note 75-1, the free table learns S4 and A5 but the shared cells do not. The GPT-2 cell's failure at scale is
+  parameter sharing in the readout, and §76(B) is the registered route.
+* The provisional local PF-std runs on seeds 2031–2033 are void as panel evidence. They are kept only as labelled
+  descriptive data.
+
 **Note 75-1 (2026-10-02 08:07 EDT; descriptive CPU premises on pilot seeds 990–992, not §75's panel;
 `theory/results/s75_dense_S4_*.json`, `s75_tab_S4_*.json`, `s75_tab_A5_*.json`).**
 * **DENSE (the §72b interface without a transformer), S4, M 48, lr 1e-4, 16k updates:** 0/3, at chance (0.04). Even the
