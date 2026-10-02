@@ -5171,6 +5171,26 @@ checkpoints").**
   is about acquiring the automaton in a gradient-trained cell that can sit inside GPT-2. The spectral learner has no
   such cell, and it needs complete short-string coverage, i.e. exact supervision of the whole Cayley table at length 2.
 
+**§69 Stage-1 result (2026-10-01 23:38 EDT; scored by Theory with `theory/c1_rl_score.py` under the 69-1 rules; raw
+`theory/results/c1_rl/`, summary `theory/results/score_s69_stage1.json`).**
+* **No method passes. Reading "Neither": Target 1 is dropped, and Stage 2 is not run.**
+* Scored seeds 200–209, at matched CPU (median process seconds 16.6–17.8 on the table cell, 20.8–23.2 on the MLP):
+
+  | cell (M = 6) | marg | hem | grpo | rmer | hyb | bon (n = 4, 3.2× CPU) |
+  |---|---|---|---|---|---|---|
+  | table | 0/10 | 0/10 | 1/10 | 1/10 | 1/10 | 5/10 |
+  | MLP | 0/10 | 0/10 | 0/10 | 0/10 | 0/10 | 0/10 |
+
+* Unmatched runs at the full 8,000 updates (descriptive): table 0–2/10, MLP 0/10.
+* The pilot was consistent: on the table, 0/5 for marg and ≤ 1/5 for each sampled method.
+* **Interpretation.** Sampling-based outcome-reward updates (hard-EM, group-baseline REINFORCE with entropy, RandoMer
+  weighting) do not escape the partial-automaton optima. They are no better than exact marginalisation, even unmatched.
+  - Only restarts help: bon reaches 5/10, as the §67 lottery predicts (per-restart success ≈ 16%).
+  - Together with 69-2, the obstacle is not data or identifiability: the spectral learner recovers A5 from ≤ 10⁶
+    problems. It is the optimisation landscape of a gradient-trained cell.
+  - What worked before is extra capacity: over-complete codes, the free table at M = 12 (10/10), and the bilinear cell
+    at M = 24 with τ annealing (10/10 selection, 8/10 held out). It did not scale to S4/A5 (0/3, std and Zhang).
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the

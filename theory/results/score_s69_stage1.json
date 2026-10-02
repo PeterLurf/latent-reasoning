@@ -1,0 +1,127 @@
+{
+ "tab": {
+  "marg_certified": 0,
+  "discriminating": true,
+  "marg": {
+   "tau0": 4,
+   "updates": 8000,
+   "certified": 0,
+   "missing": 0,
+   "acc128_mean": 0.472,
+   "proc_sec_median": 16.6,
+   "pass": false
+  },
+  "hem": {
+   "tau0": 1,
+   "updates": 2737,
+   "certified": 0,
+   "missing": 0,
+   "acc128_mean": 0.47,
+   "proc_sec_median": 17.2,
+   "pass": false,
+   "full8000_certified": 0
+  },
+  "grpo": {
+   "tau0": 4,
+   "updates": 2470,
+   "certified": 1,
+   "missing": 0,
+   "acc128_mean": 0.403,
+   "proc_sec_median": 17.8,
+   "pass": false,
+   "full8000_certified": 2
+  },
+  "rmer": {
+   "tau0": 1,
+   "updates": 2660,
+   "certified": 1,
+   "missing": 0,
+   "acc128_mean": 0.521,
+   "proc_sec_median": 17.2,
+   "pass": false,
+   "full8000_certified": 1
+  },
+  "hyb": {
+   "tau0": 1,
+   "updates": 3467,
+   "certified": 1,
+   "missing": 0,
+   "acc128_mean": 0.499,
+   "proc_sec_median": 16.7,
+   "pass": false,
+   "full8000_certified": 1
+  },
+  "bon": {
+   "tau0": 4,
+   "updates": 8000,
+   "certified": 5,
+   "missing": 0,
+   "acc128_mean": 0.749,
+   "proc_sec_median": 53.0,
+   "pass": false
+  }
+ },
+ "mlp": {
+  "marg_certified": 0,
+  "discriminating": true,
+  "marg": {
+   "tau0": 1,
+   "updates": 8000,
+   "certified": 0,
+   "missing": 0,
+   "acc128_mean": 0.23,
+   "proc_sec_median": 22.4,
+   "pass": false
+  },
+  "hem": {
+   "tau0": 4,
+   "updates": 3266,
+   "certified": 0,
+   "missing": 0,
+   "acc128_mean": 0.168,
+   "proc_sec_median": 22.5,
+   "pass": false,
+   "full8000_certified": 0
+  },
+  "grpo": {
+   "tau0": 1,
+   "updates": 2978,
+   "certified": 0,
+   "missing": 0,
+   "acc128_mean": 0.187,
+   "proc_sec_median": 23.2,
+   "pass": false,
+   "full8000_certified": 0
+  },
+  "rmer": {
+   "tau0": 1,
+   "updates": 3166,
+   "certified": 0,
+   "missing": 0,
+   "acc128_mean": 0.169,
+   "proc_sec_median": 22.6,
+   "pass": false,
+   "full8000_certified": 0
+  },
+  "hyb": {
+   "tau0": 1,
+   "updates": 3830,
+   "certified": 0,
+   "missing": 0,
+   "acc128_mean": 0.218,
+   "proc_sec_median": 20.8,
+   "pass": false,
+   "full8000_certified": 0
+  },
+  "bon": {
+   "tau0": 1,
+   "updates": 8000,
+   "certified": 0,
+   "missing": 0,
+   "acc128_mean": 0.316,
+   "proc_sec_median": 75.7,
+   "pass": false
+  }
+ },
+ "stage1_passers": []
+}
