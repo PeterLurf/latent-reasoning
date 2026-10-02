@@ -15,11 +15,13 @@ ARMS = ("pf", "rf", "pfstd", "pt"); SEEDS = range(2001, 2006)
 
 
 def main():
+    import sys
+    pre = sys.argv[1] if len(sys.argv) > 1 else "p72"                 # §72b: python c1/score_72.py p72b (same rules)
     res = {}
     for a in ARMS:
         runs = {}
         for s in SEEDS:
-            f = f"c1/runs/p72_{a}_s{s}/eval.json"
+            f = f"c1/runs/{pre}_{a}_s{s}/eval.json"
             if os.path.exists(f):
                 runs[s] = json.load(open(f))
         k = sum(bool(e.get("certificate", {}).get("certified")) for e in runs.values())

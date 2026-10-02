@@ -1,0 +1,6 @@
+# THEORY §73 PT-std host A
+c1/runs/p73_ptstd_s2011 --arm d1 --M 24 --tau0 4 --readout bil --head_norm ln --code_init distinct --updates 8000 --bs 512 --lr 1e-4 --lr_new 1e-4 --feat_norm tablestd --seed 2011
+c1/runs/p73_ptstd_s2012 --arm d1 --M 24 --tau0 4 --readout bil --head_norm ln --code_init distinct --updates 8000 --bs 512 --lr 1e-4 --lr_new 1e-4 --feat_norm tablestd --seed 2012
+c1/runs/p73_ptstd_s2013 --arm d1 --M 24 --tau0 4 --readout bil --head_norm ln --code_init distinct --updates 8000 --bs 512 --lr 1e-4 --lr_new 1e-4 --feat_norm tablestd --seed 2013
+c1/runs/p73_ptstd_s2014 --arm d1 --M 24 --tau0 4 --readout bil --head_norm ln --code_init distinct --updates 8000 --bs 512 --lr 1e-4 --lr_new 1e-4 --feat_norm tablestd --seed 2014
+c1/runs/p73_ptstd_s2015 --arm d1 --M 24 --tau0 4 --readout bil --head_norm ln --code_init distinct --updates 8000 --bs 512 --lr 1e-4 --lr_new 1e-4 --feat_norm tablestd --seed 2015
