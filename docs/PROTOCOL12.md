@@ -513,4 +513,4 @@ RTX 4060. The summary ran after §78 was scored.
   - other: 1743 positions.
 * **Reading:** fixing the stop decision recovers little. The short-trained model does not compute steps past n = 2
   correctly even when made to continue. The failure is step computation out of range, not only halting.
-* A CPU plumbing smoke on the first 4 test items (seed 1) was seen before the run ().
+* A CPU plumbing smoke on the first 4 test items (seed 1) was seen before the run (`scratch/ORACLE_smoke4.json`).
