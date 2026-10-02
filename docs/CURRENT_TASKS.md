@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-10-02 09:35 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-10-02 09:50 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -35,14 +35,20 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 > gives fronts to depth 11 in 2/4 runs; Pilot D 12 + 12 running on Vast). Ownership (theory Vast hosts vs a PROTOCOL8)
 > to be agreed. The theory session analyses O/R/T9/T10 runs only after the experiments session has scored them.
 
-## 00. EXPERIMENTS STATE AT 2026-10-02 09:35 EDT — authoritative over section 0
+## 00. EXPERIMENTS STATE AT 2026-10-02 09:50 EDT — authoritative over section 0
 
-**Running:**
-* **§76(B) / B-std (amendment 76-2), local:** `scratch/feed76.sh` (stop: `touch scratch/.stop_feed76`; log
-  `logs/feed76.log`) queues both students (`python -m c1.amortise`) for every CERTIFIED S4 teacher Theory writes to
-  `theory/results/c1_tab_local/` and starts workers on free cards (queue `scratch/c1_q_76_local.txt`). Score:
-  `python c1/score_76b.py S4`. Pilot s2051 (std): copied rows exact, held-out rows 0.10/0.24, so not certified.
-  ge3 teachers are 0/6 certified, so primary (B) S4 fails.
+**Running (all local; no Vast hosts of ours):**
+* **§76(A) teachers on local GPUs (amendment 76-5):** `python theory/c1_tab_driver.py --groups {A5|S5|S4} --device
+  cuda:{0|1|2} --P {3|2|2} [--no_extras] --out theory/results/c1_tab_local` (resumable; logs `logs/c1tab_local_*.log`).
+* **§77 premise (descriptive, Theory):** `bash scratch/s77_premise.sh <dev> <H>`, with H 4096/1024/256 on cuda:0/1/2,
+  → `theory/results/s77_premise_S4_hid<H>.json`. Then A5 at H 4096.
+* **§76(B)/B-std/76-3 feeder:** `scratch/feed76.sh` (stop: `touch scratch/.stop_feed76`; log `logs/feed76.log`). It
+  queues both students, held-out and full arms, for every CERTIFIED teacher in `c1_tab_local`: S4 → queue
+  `scratch/c1_q_76_local.txt`; A5 → `scratch/c1_q_76_A5.txt` (`--bs 512`). A card counts as busy while the pid in
+  `scratch/.w76_<dev>` lives.
+  - Scoring: `python c1/score_76b.py S4|A5`. A waiter scores S4 once all 10 std teachers are in.
+  - Findings so far: S4 ge3 teachers 0/6, so primary (B) S4 fails. With std teachers, students copy rows exactly but
+    held-out rows fail, so not certified. Full arm s2051: both students certified.
 * **§75: gate failed 09:00** (PROTOCOL12). Descriptive leftovers: `p75_pfstd_s2031–2033` (void as evidence; s2034 was
   stopped and moved to `void_*`).
 * **§74 scored 08:00:** P1 0/5, so uninformative; bad pairs sent to Theory. Backfill queue: all 90 cells already done.
