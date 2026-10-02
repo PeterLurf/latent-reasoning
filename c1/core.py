@@ -108,11 +108,13 @@ class Cell(nn.Module):
     def head_inputs(self, codes, ops, full=False):
         """(h_code, h_op, raw h) as fed to U, V after the feature normalisation."""
         h = self._raw_step(codes, ops)
-        if self.feat_norm == "tablestd":
+        if self.feat_norm in ("tablestd", "tablectr"):              # tablectr (§73 PF-ctr): centring only
             if full:
                 mc, sc, mo, so = h[:, 0].mean(0), h[:, 0].std(0) + 1e-5, h[:, 1].mean(0), h[:, 1].std(0) + 1e-5
             else:
                 st = getattr(self, "_stats", None) or self._full_stats(); mc, sc, mo, so = st[:4]
+            if self.feat_norm == "tablectr":
+                sc = so = 1.0
             return (h[:, 0] - mc) / sc, (h[:, 1] - mo) / so, h
         return self.ln_c(h[:, 0]), self.ln_o(h[:, 1]), h
 
@@ -126,11 +128,13 @@ class Cell(nn.Module):
 
     def dec_logits(self, codes, full=False):
         h = self._raw_dec(codes)
-        if self.feat_norm == "tablestd":
+        if self.feat_norm in ("tablestd", "tablectr"):
             if full:
                 md, sd = h.mean(0), h.std(0) + 1e-5
             else:
                 st = getattr(self, "_stats", None) or self._full_stats(); md, sd = st[4], st[5]
+            if self.feat_norm == "tablectr":
+                sd = 1.0
             return self.ans_head((h - md) / sd)
         return self.ans_head(self.hn(h))
 

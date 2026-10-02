@@ -178,8 +178,8 @@ def train(a):
         model.ln_heads()
     if a.readout == "bil" and hasattr(model, "bil_readout"):
         model.bil_readout()
-    if a.feat_norm == "tablestd" and hasattr(model, "feat_norm"):
-        model.feat_norm = "tablestd"                                 # §72 PF-std
+    if a.feat_norm in ("tablestd", "tablectr") and hasattr(model, "feat_norm"):
+        model.feat_norm = a.feat_norm                                # §72 PF-std / §73 PF-ctr
     if a.freeze_gpt2 and hasattr(model, "g"):
         model.g.requires_grad_(False)                                # §72 PF / RF: every GPT-2 weight frozen (incl. its LNs)
     dist0 = model.distinctness() if getattr(model, "readout", "") == "bil" else None
@@ -234,6 +234,10 @@ def train(a):
             model._stats = None; hc, ho, _ = model.head_inputs(c, o, full=True)
             pre = model.U(hc) * model.V(ho)                           # input to the ReLU, (6M, hid)
             act = (pre > 0).float()
+            if model.feat_norm in ("tablestd", "tablectr"):           # §73: frozen post-training stats and the sigma distribution
+                st = model._full_stats(); q = lambda t: [float(t.min()), float(t.median()), float(t.max())]
+                res["table_stats"] = {"sigma_code_min_med_max": q(st[1]), "sigma_op_min_med_max": q(st[3]),
+                                      "sigma_dec_min_med_max": q(st[5]), "frozen_after_training": True}
             res["relu_units"] = {"hid": int(pre.shape[1]), "ever_active": int((act.max(0).values > 0).sum()),
                                  "mean_active_rate": float(act.mean()), "rows": int(pre.shape[0])}
         if not a.freeze_gpt2:
@@ -252,7 +256,7 @@ def main():
     ap.add_argument("--head_init", default="default", choices=["default", "zero", "small"])
     ap.add_argument("--M", type=int, default=6, help="number of codes (core.M)")
     ap.add_argument("--freeze_gpt2", action="store_true", help="§72: freeze every GPT-2 weight")
-    ap.add_argument("--feat_norm", default="ln", choices=["ln", "tablestd"], help="§72: head-input normalisation")
+    ap.add_argument("--feat_norm", default="ln", choices=["ln", "tablestd", "tablectr"], help="§72/§73: head-input normalisation")
     ap.add_argument("--gpt2_init", default="pretrained", choices=["pretrained", "random"], help="§72 RF")
     ap.add_argument("--readout", default="linear", choices=["linear", "bil"])
     ap.add_argument("--tau0", type=float, default=1.0, help="§67b: temperature annealed tau0 -> 1 over the first half")
