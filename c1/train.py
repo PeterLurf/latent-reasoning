@@ -228,6 +228,14 @@ def train(a):
     res = evaluate(model, a.arm, dev, a.n_test, a.n_null, a.out)
     if dist0 is not None:
         res["distinctness"] = {"init": dist0, "end": model.distinctness()}
+        with torch.no_grad():                                         # §72b dead-unit check (computed on the host)
+            import c1.core as _cc
+            c = torch.arange(_cc.M, device=dev).repeat(6); o = torch.arange(6, device=dev).repeat_interleave(_cc.M)
+            model._stats = None; hc, ho, _ = model.head_inputs(c, o, full=True)
+            pre = model.U(hc) * model.V(ho)                           # input to the ReLU, (6M, hid)
+            act = (pre > 0).float()
+            res["relu_units"] = {"hid": int(pre.shape[1]), "ever_active": int((act.max(0).values > 0).sum()),
+                                 "mean_active_rate": float(act.mean()), "rows": int(pre.shape[0])}
         if not a.freeze_gpt2:
             res["layer_code_variance"] = layer_code_variance(model)
     res["train"] = {"updates": u, "examples": seen, "gpt2_tokens": toks, "sec": round(time.time() - t0)}
