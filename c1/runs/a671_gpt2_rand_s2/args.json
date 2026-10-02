@@ -1,0 +1,16 @@
+{
+ "arm": "gpt2_rand",
+ "seed": 2,
+ "updates": 2000,
+ "bs": 512,
+ "lr": 0.0001,
+ "head_init": "default",
+ "head_norm": "ln",
+ "code_init": "distinct",
+ "lr_new": 0.0,
+ "n_test": 2000,
+ "n_null": 10000,
+ "max_hours": 3.0,
+ "device": "cuda:0",
+ "out": "c1/runs/a671_gpt2_rand_s2"
+}

@@ -66,3 +66,24 @@ Audit's conditions (18:5x):
 * **Placement.** Local: gpt2_rand on the 4060, tf_small on the 3070, mlp on the 2070, 3 seeds sequentially each.
 * **Reported.** Certified (36-transition audit) and hard-execution accuracy at N 8–128 per run.
 * CPU plumbing smokes (100 updates) are voided as `_smoke_*.void`.
+
+## Amendment 67-1 result (2026-10-01 20:04 EDT; descriptive)
+
+| cell | seed 99 | seed 1 | seed 2 | certified |
+|---|---|---|---|---|
+| mlp (lr 1e-3) | 0.32–0.34 flat; 22/36 wrong | 0.31–0.34 flat; 21 | 0.16–0.18 (chance); 24 | 0/3 |
+| tf_small (lr 1e-3) | 0.15–0.19 (chance); 17 | 0.30 at N 8 → 0.17; 20 | 0.25 → 0.17; 20 | 0/3 |
+| gpt2_rand (lr 1e-4, LN + distinct codes) | 0.30 → 0.17; 14 | **0.49–0.52 flat**; 18 | 0.32–0.34 flat; 20 | 0/3 |
+| TAB (pilot reference, lr 1e-2, seed 99) | 1.000 at every N; 0 wrong | | | 1/1 |
+
+**Reading.**
+* No cell acquires S3: 0/9, against the pilot's pretrained d1 at 0/10 configurations.
+* Random-init GPT-2 does not learn where pretrained GPT-2 does not. Neither do the small cells, so neither "pretraining
+  geometry" nor "scale/depth" alone is the obstacle.
+* Every neural cell that learns anything lands on the same stable partial automata as pretrained d1: flat 1/3 (sign
+  only) or 1/2 at every depth to 128.
+* So the obstacle is common to neural transition cells under this objective and these settings: the local optima of the
+  marginal likelihood (HMM-style symmetric/partial solutions).
+* **Confound, stated.** The only learner, TAB, used lr 1e-2 and is a direct table parametrisation; the cells used 1e-3 /
+  1e-4. A lr-matched MLP would separate "parametrisation" from "learning rate". Theory decides; it is not run here.
+* By 67-1's readings, both GPT-2 variants are recorded as acquisition failures.
