@@ -5209,6 +5209,66 @@ checkpoints").**
   in kind.
 * The exact expected-reward control Audit asked for is moot for §69, since no method won. It moves to the next design.
 
+## 70. Discrete-latent acquisition, one time-boxed toy round: (A) operator-conditioned exact likelihood and (B) tempered posterior into Viterbi (pre-registered 2026-10-01 23:46 EDT, after Literature's check f9f6bce and before any scored run; proposals A and B of `docs/EXTERNAL_IDEAS_RL_2026-10-01.md`, triaged by Audit)
+
+**Why.** §69 ruled out sampling-based estimates of the likelihood or reward gradient, and 69-2 ruled out data. The two
+untested explanations each get one shot.
+* **A: parametrisation.** How the op enters the transition (additive vs multiplicative vs a per-op matrix) decides
+  acquisition, not exploration.
+* **B: optimisation path.** Exact posterior continuation (η-sharpening, then Viterbi) escapes the partial-automaton
+  optima that plain likelihood falls into.
+
+**Prior** (f9f6bce).
+* A: second-order RNNs represent every DFA, while single-layer first-order ones cannot (Goudreau et al. 1994; Giles
+  et al. 1992); per-input matrices (ISAN 1611.09434); mRNN; multiplicative integration (1606.06630). No study compares
+  these cells under exact likelihood from terminal labels with a full automaton certificate.
+* B: Unified EM (Samdani et al. 2012), deterministic annealing (Rose 1998; Ueda & Nakano 1998), Lateen EM (Spitkovsky et
+  al. 2011). Known risk: hardening locks in a wrong partition.
+* J vs log J: Misra et al. 2018 (1809.01299), Guu et al. 2017, RAML (1609.00150).
+
+**Design.** `theory/c1_acq.py` (CPU), shared by both parts.
+* Settings: S3, std curriculum, 8,000 optimizer updates, batch 512, Adam lr 1e-2, τ 4 → 1 linearly by update 4,000.
+* Evaluation: product-automaton certificate and hard accuracy at N 8–128. Also length-stratified soft NLL and the
+  transition-row entropy every 500 updates (Literature: report where entropy collapses).
+* **A (M = 24, exact marginal likelihood).** Cells:
+  - `add` (MLP on [code; op]) — the matched control;
+  - `mul` (multiplicative);
+  - `opb`, L(c, a, j) = e_out(j)ᵀ B_a e_in(c) + b_j, rank 12.
+  - Their transition-parameter counts are matched: 1,509 / 1,480 / 1,464.
+  - Initial transition-logit std is rescaled to 0.1 in all three.
+  - Reference (unmatched, 4,632 parameters): `opb` at full rank 24.
+* **B (historical MLP cell, hid 256, M = 12).** Methods:
+  - `temper`: outer steps of two updates on one batch.
+    - First 1/8: marginal likelihood.
+    - Then exact posterior counts from the detached model under q ∝ w^η (unnormalised powered potentials): η 0.5 → 2
+      over [1/8, 1/2), η = 4 over [1/2, 3/4), Viterbi over the last 1/4.
+    - Loss 0.25 (−log J) + 0.75 · (cross-entropy to the fixed counts).
+  - `eta1`: η = 1 throughout, no Viterbi.
+  - `mml2`: marginal likelihood, each batch used for two updates. This is the paired control (same init and the same
+    example stream as `temper` and `eta1`).
+  - `mml`: one update per batch.
+  - `exr`: exact expected reward, max mean J.
+  - The posterior counts were checked against brute-force enumeration (edge marginals, log Z, Viterbi path).
+* **Seeds.** Development 1300–1302, confirmation 1400–1409; both checked unused. Smoke runs used seed 9999 only.
+* **Placement.** One Vast CPU host (≤ $0.20/h), one thread per process. Every arm runs on all 13 seeds.
+
+**Rules (fixed now).**
+* **A candidate.** Chosen on the development seeds from {`mul`, `opb`} by certified count, then mean accuracy at N 128,
+  then `opb`.
+* **A passes** if the candidate certifies ≥ 9/10 on seeds 1400–1409 and at least 3 more than `add` on the same seeds.
+  Report paired outcomes and Wilson 95 % intervals.
+* **B passes** if `temper` certifies ≥ 9/10 on 1400–1409 and at least 3 more than `mml2`, paired. Report `eta1`,
+  `mml` and `exr` alongside.
+* **Close rule.** If neither passes, the toy-acquisition line closes: no proposal C, no further variants.
+
+**Readings.**
+* **A passes.** Parametrisation, not exploration, was the obstacle. The GPT-2 S3 cell gets an op-indexed or
+  multiplicative head arm, in a separate registration (S3 only; Audit's point 5).
+* **B passes (and A does not).** Posterior continuation escapes the optima. Next, replicate on the bilinear cell at
+  M = 24, then the GPT-2 S3 cell (separately registered).
+* **Both pass.** Both readings hold; the GPT-2 arm uses A's head first, since it is cheaper.
+* **Neither passes.** Close the line, as above.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
