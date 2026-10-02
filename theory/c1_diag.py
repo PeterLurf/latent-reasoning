@@ -103,3 +103,39 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+def counter_check(seed, M=12, updates=8000, lr=1e-2, n=4000, N=24):
+    """Descriptive (Audit): does an M = 12 table's code identity carry length information beyond the S3 state? For each
+    true state, the conditional entropy H(code | state) and the mutual information between code and (length mod q),
+    q = 2, 3, 4, given the state, from n random sequences observed at every step 1..N."""
+    torch.manual_seed(seed); rng = np.random.default_rng(seed)
+    m = Cell("tab", M); opt = torch.optim.Adam(m.parameters(), lr=lr)
+    stages = [[1], [1, 2], [1, 2, 4], [1, 2, 4, 8]]
+    for u in range(updates):
+        L = int(rng.choice(stages[min(3, 4 * u // updates)])); bs = 512
+        ops = torch.as_tensor(rng.integers(0, 6, (bs, L))); s = np.zeros(bs, int)
+        for t in range(L):
+            s = COMP[s, ops[:, t].numpy()]
+        T = F.softmax(m.table(), -1); alpha = torch.zeros(bs, M); alpha[:, 0] = 1.0
+        for t in range(L):
+            alpha = torch.einsum("bi,bij->bj", alpha, T[:, ops[:, t]].permute(1, 0, 2))
+        p = (alpha * F.softmax(m.D, -1)[:, torch.as_tensor(s)].T).sum(1)
+        loss = -torch.log(p.clamp_min(1e-12)).mean(); opt.zero_grad(); loss.backward(); opt.step()
+    with torch.no_grad():
+        Th = m.table().argmax(-1).numpy()
+    ops = rng.integers(0, 6, (n, N)); c = np.zeros(n, int); s = np.zeros(n, int); rows = []
+    for t in range(1, N + 1):
+        c = Th[c, ops[:, t - 1]]; s = COMP[s, ops[:, t - 1]]
+        rows.append(np.stack([c, s, np.full(n, t)], 1))
+    R = np.concatenate(rows)
+
+    def H(x):
+        _, cnt = np.unique(x, axis=0, return_counts=True); p = cnt / cnt.sum(); return float(-(p * np.log2(p)).sum())
+    out = {"H_code_given_state": H(R[:, :2]) - H(R[:, 1:2])}
+    for q in (2, 3, 4):
+        lm = (R[:, 2] % q)[:, None]
+        # I(code; len mod q | state) = H(code,state) + H(lenmod,state) - H(code,lenmod,state) - H(state)
+        out[f"MI_code_lenmod{q}_given_state"] = (H(R[:, :2]) + H(np.hstack([lm, R[:, 1:2]])) - H(np.hstack([R[:, :2], lm]))
+                                                 - H(R[:, 1:2]))
+    return out
