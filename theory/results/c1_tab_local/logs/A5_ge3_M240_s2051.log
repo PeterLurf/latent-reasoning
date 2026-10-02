@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "D:\Latent\theory\c1_rl.py", line 202, in <module>
+    main()
+    ~~~~^^
+  File "D:\Latent\theory\c1_rl.py", line 191, in main
+    r = run(a.group, a.cell, a.method, s, M, a.updates, a.lr, a.tau0, a.curriculum, a.K, a.beta0, dev=a.device)
+  File "D:\Latent\theory\c1_rl.py", line 172, in run
+    return _train(group, cell, method, seed, M, updates, lr, tau0, curriculum, K, beta0, bs, dev)
+  File "D:\Latent\theory\c1_rl.py", line 110, in _train
+    ops = torch.as_tensor(rng.integers(0, A, (bs, L)), device=dev)
+torch.AcceleratorError: CUDA error: unspecified launch failure
+Search for `cudaErrorLaunchFailure' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+The CUDA driver logged these messages, which may provide useful details:
+Returning 719 (CUDA_ERROR_LAUNCH_FAILED) from cuStreamSynchronize
+
+
