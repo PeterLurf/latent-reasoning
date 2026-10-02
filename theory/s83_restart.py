@@ -4,7 +4,8 @@ The all-position WC0 solver (trained on chunks of k' <= k ops; boxes/s5.py) writ
 Instead of a hand-fixed chunk size, the adaptive policy offers up to Kmax ops and accepts the written states while the
 model's own confidence in each state stays >= tau (confidence = product of the 5 letter probabilities, restricted to the
 letters, as in greedy decoding); at the first low-confidence state it restarts (history cut) from the last accepted
-state (at least one state is always accepted). tau is calibrated in range only: the 1st percentile of the confidences of
+state. If even the first state is below tau (the long offered op list is itself out of range), the policy retries from
+the same start with an in-range chunk of the trained size k and accepts its confident prefix (>= 1 state) (note 83-2). tau is calibrated in range only: the 1st percentile of the confidences of
 correct states on fresh in-range chunks (random start, k' ~ U{1..k}, uniform ops; seed 8300), so in-range chunks trigger
 restarts on <= 1 % of states.
     python theory/s83_restart.py --run boxes/runs_s5/wc0k4_s1 --k 4 --kmax 16 --test_n 2000 --out f.json [--device cuda:0]
@@ -75,8 +76,8 @@ def calibrate(m, k, dev, amp, n=20000, bs=500, seed=8300):
                           "conf_ok_p1_p50": [float(np.percentile(c, 1)), float(np.percentile(c, 50))]}
 
 
-def adaptive_rollout(m, X, Y, kmax, tau, dev, amp, bs):
-    N, L = X.shape; pred = np.full((N, L), -1, dtype=np.int64); acc_lens = []; gen_states = 0
+def adaptive_rollout(m, X, Y, kmax, tau, dev, amp, bs, k_fb=4):
+    N, L = X.shape; pred = np.full((N, L), -1, dtype=np.int64); acc_lens = []; gen_states = 0; fallbacks = [0]
     det = {"wrong_flagged": 0, "wrong": 0, "right_flagged": 0, "right": 0}
     for s0 in range(0, N, bs):
         rows = np.arange(s0, min(N, s0 + bs)); cur = np.zeros(len(rows), dtype=np.int64); ptr = np.zeros(len(rows), dtype=np.int64)
@@ -100,8 +101,17 @@ def adaptive_rollout(m, X, Y, kmax, tau, dev, amp, bs):
                             if not right:
                                 break                                  # later states inherit the error
                     ok = c[gi] >= tau
-                    n = k if ok.all() else max(1, int(np.argmin(ok)))
-                    pred[r, q:q + n] = p[gi, :n]; cur[i] = p[gi, n - 1]; ptr[i] += n; acc_lens.append(int(n))
+                    n = k if ok.all() else int(np.argmin(ok))
+                    if n == 0:                                         # note 83-2: even the first state is unsure ->
+                        kf = int(min(k_fb, L - q))                     # retry from the same start with an in-range
+                        pf, cf = chunk_with_conf(m, np.array([max(cur[i], 0)]), X[r:r + 1, q:q + kf], dev, amp)
+                        gen_states += pf.size; okf = cf[0] >= tau      # chunk (the trained size) and accept its
+                        n = kf if okf.all() else max(1, int(np.argmin(okf)))   # confident prefix (>= 1 state)
+                        p_use = pf[0]; fallbacks[0] += 1
+                    else:
+                        p_use = p[gi]
+                    pred[r, q:q + n] = p_use[:n]; cur[i] = p_use[n - 1]; ptr[i] += n; acc_lens.append(int(n))
+    det["fallbacks"] = fallbacks[0]
     return pred, acc_lens, gen_states, det
 
 
@@ -118,7 +128,7 @@ def main():
     m = s5.load_gpt2(dev); m.load_state_dict(torch.load(os.path.join(a.run, "model.pt"), map_location=dev)); m.eval()
     t0 = time.time(); tau, cal = calibrate(m, a.k, dev, amp, n=a.cal_n); res = {"tau": tau, "calibration": cal, "amp": str(amp), "run": a.run}
     Xte, Yte = s5.load_csv(os.path.join(a.data_dir, "S5=512.csv"), limit=a.test_n)
-    pred, lens, gen, det = adaptive_rollout(m, Xte, Yte, a.kmax, tau, dev, amp, a.bs); cum = s5.cumulative(pred, Yte)
+    pred, lens, gen, det = adaptive_rollout(m, Xte, Yte, a.kmax, tau, dev, amp, a.bs, a.k); cum = s5.cumulative(pred, Yte)
     res["adaptive"] = {"cum": {t: float(cum[t - 1]) for t in (128, 256, 512)}, "final_state": float((pred[:, -1] == Yte[:, -1]).mean()),
                        "mean_accepted": float(np.mean(lens)), "accepted_hist": np.bincount(lens, minlength=a.kmax + 1).tolist(),
                        "generated_states_per_problem": gen / len(Xte), "detection": det}
@@ -127,10 +137,10 @@ def main():
         res["fixed_k%d" % k] = {"cum": {t: float(c[t - 1]) for t in (128, 256, 512)}}
     res["risk_coverage"] = {}                 # tau sweep on the first sweep_n test sequences (descriptive)
     for al, tv in cal["taus"].items():
-        ps, ls, _, ds = adaptive_rollout(m, Xte[:a.sweep_n], Yte[:a.sweep_n], a.kmax, tv, dev, amp, a.bs)
+        ps, ls, _, ds = adaptive_rollout(m, Xte[:a.sweep_n], Yte[:a.sweep_n], a.kmax, tv, dev, amp, a.bs, a.k)
         res["risk_coverage"][al] = {"tau": tv, "cum512": float(s5.cumulative(ps, Yte[:a.sweep_n])[-1]), "mean_accepted": float(np.mean(ls)), "detection": ds}
     Xx, Yx = s5.load_csv(os.path.join(a.data_dir, "S5=2048.csv"), limit=a.ext_n)
-    px, lx, _, _ = adaptive_rollout(m, Xx, Yx, a.kmax, tau, dev, amp, a.bs); cx = s5.cumulative(px, Yx)
+    px, lx, _, _ = adaptive_rollout(m, Xx, Yx, a.kmax, tau, dev, amp, a.bs, a.k); cx = s5.cumulative(px, Yx)
     res["adaptive_2048"] = {"cum": {t: float(cx[t - 1]) for t in (512, 1024, 2048)}, "mean_accepted": float(np.mean(lx))}
     res["sec"] = round(time.time() - t0, 1)
     d = res["detection"] = det
