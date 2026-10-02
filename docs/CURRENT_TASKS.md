@@ -37,13 +37,21 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 
 ## 00. EXPERIMENTS STATE AT 2026-10-01 19:51 EDT — authoritative over section 0
 
-**Running:**
-* **THEORY §67 amendment 67-1** (descriptive; where acquisition breaks): `scratch/c1_671.sh`, logs `logs/c1_a671*.log`,
-  runs `c1/runs/a671_<cell>_s<seed>`. gpt2_rand on the 4060, tf_small on the 3070, mlp on the 2070; seeds 99, 1, 2.
-  Report certified/accuracy per run in c1/PILOT.md and to Theory and Audit.
-* **§61b solo seed-3 rerun** (registered descriptive follow-up): Vast 53771343 (RTX 3090, 570.211.01), queue
-  `scratch/f1sb_q_R2.txt`, run `f1s_r3d`. Arm `auto_drain_f1sb.sh` once it has STARTED; then add a one-line result
-  under PROTOCOL12 §61b.
+**Running (2026-10-01 21:22):**
+* **§67 amendment 67-2.** d1 M = 12, 10 seeds on the 3 local cards (`scratch/c1_672.sh`, `logs/c1_a672*.log`). Then
+  report per the 67-2 rule.
+* **§67b** (registered 10dd84c): implemented in c1/ (--readout bil --tau0 4 --M 24, counter check). Next: the seed-99
+  pilot (updates/batch/lr only), then D1b / TAB / RESET / FP × 5 seeds. Amendment 67b-1's held-out toy check is
+  Theory's.
+* **§68 GSM8K step 2** (registered 78081a9): NOT launched.
+  - The measured cost (s68/PILOT.md) is ≈ 660–1,000 GPU-h (~$110–170), against $10–25 registered; re-scoping is with
+    Theory, Audit and the user.
+  - WS code ready (s68/ws.py). Official Coconut repo + data at D:/ext/coconut (Windows can't run it: an App Control
+    block on pandas; run on Vast).
+* **Backfill** (`scratch/backfill_q1.txt`, 90 descriptive bench cells): 11 done; 79 PAUSED by pre-claimed locks
+  (`scratch/backfill_q1_paused.txt`). Resume: rmdir those locks, then
+  `bash scratch/bench_worker.sh <dev> scratch/backfill_q1.txt`.
+* **Standing user rule** (via Audit): never leave local GPUs idle; keep a backfill queue.
 
 **Scored today** (details in the linked docs):
 * PROTOCOL8 amendment 3 (NA): latent arms at chance; CoT cue-free.
