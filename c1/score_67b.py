@@ -60,7 +60,13 @@ def main():
     mech = {s: d1[s]["mechanism"] for s in passed}
     ok4 = bool(passed) and all(m["donor_acc"] >= 0.99 and (m.get("irrelevant_change_rate_reachable") is None or m["irrelevant_change_rate_reachable"] <= 0.01)
                                and m["same_semantic_agreement"] >= 0.99 for m in mech.values())
-    v["C1-4"] = {"mechanism": mech, "met": ok4}
+    irr = {s: ("vacuous (no same-state alternatives)" if m.get("irrelevant_change_rate_reachable") is None
+               else ("met" if m["irrelevant_change_rate_reachable"] <= 0.01 else "not met")) for s, m in mech.items()}
+    v["C1-4"] = {"mechanism": mech, "met": ok4, "irrelevant_part": irr,
+                 "irrelevant_tested_seeds": sum(x != "vacuous (no same-state alternatives)" for x in irr.values()),
+                 "irrelevant_vacuous_seeds": sum(x == "vacuous (no same-state alternatives)" for x in irr.values()),
+                 "note": "Audit: the irrelevant part is vacuous where visited codes are one per state; reported apart from "
+                         "tested seeds; the donor (relevant) and same-semantic parts apply to every seed"}
     c5 = {}
     for fp in ("fpex", "fpcmp"):
         c5[fp] = {N: float(np.median([e["acc"][N] for e in d1.values()]) - np.median([e["acc"][N] for e in R[fp].values()]))
@@ -82,7 +88,7 @@ def main():
         for s, e in sorted(R[a].items()):
             print(f"{a:6s} s{s} cert {e.get('certificate', {}).get('certified')} acc " + " ".join(f"{e['acc'][N]:.3f}" for N in DEPTHS))
     for k in ("C1-1", "C1-2", "C1-3", "C1-4", "C1-5"):
-        print(k, {x: y for x, y in v[k].items() if x not in ("mechanism", "reset_upper95", "per_seed_min_acc")})
+        print(k, {x: y for x, y in v[k].items() if x not in ("mechanism", "reset_upper95", "per_seed_min_acc", "note")})
 
 
 if __name__ == "__main__":
