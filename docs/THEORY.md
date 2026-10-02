@@ -6493,6 +6493,19 @@ adaptive, **unlearned** C5. It is still scaffolded: the history cut is external.
   - With this fix the smoke test gives 1.0, and all 22 first-wrong states in out-of-range offers were below τ.
 * Everything else in §83 and 83-1 is unchanged.
 
+**Note 83-3 (2026-10-02 16:22 EDT; speed fix before any §83 output is read; Audit's diagnosis).** Seed 1's inference was
+running for hours, because note 83-2's fallback ran serially at batch size 1 and every offered chunk generated all 16
+states. Two speed-only changes:
+* **Batched fallback.** Fallback rows are collected and run together per round.
+* **Early exit.** Generation of an offered chunk stops once every row has produced a below-τ state; those states are
+  never accepted.
+* On the CPU smoke (wc0k1_s2), predictions and accepted lengths are **identical** to the 97304ba version at two τ
+  values, with about 2× fewer generated states.
+* **Detection is now counted up to the first flagged or the first wrong state**: exactly the states the policy could
+  accept. This is a definitional tightening of U2's population.
+* Progress lines are printed. The host's running inference is restarted with this version, and its partial output (none
+  printed) is voided unread.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
