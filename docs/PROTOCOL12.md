@@ -203,3 +203,7 @@ read. Its failure-mode labels are descriptive: their thresholds were set after t
 * Seed 3's success did not reproduce on the same hardware class, so it was not a property of the seed's init and data
   order alone. Either non-deterministic numerics decide it, or concurrent execution changes it.
 * The registered follow-up (one solo seed-3 rerun on a 3090, descriptive) separates these and is placed next.
+* **Registered follow-up, solo seed-3 rerun (descriptive; 20:26 EDT).** `f1s_r3d`, alone on an RTX 3090, driver
+  570.211.01 (Vast 53771343), floods like the others: 0.93 at d1–2, chance at d3–14, label precision 0.57, edit IIA
+  0.19, bench 0.497. Concurrency did not cause the reruns' failure. §61's seed-3 success does not reproduce under the same
+  seed, code, data, GPU class and driver, so it was a draw from non-deterministic numerics, not a property of the seed.
