@@ -4887,6 +4887,37 @@ toys deadlocked), then Design 2 (Boolean-tree registers; Ito 2608.31067 is neare
   - Otherwise the line closes with this finding: an over-complete free table learns the discrete latent rule from final
     answers in 10/10 seeds, while shared networks do not reach 9/10 (MLP 1/40, bilinear 7/10 at best, GPT-2 0/11
     at M = 6 plus this M = 12 result, tf_small and gpt2_rand 0/6). Shared-cell acquisition is the C1 obstacle.
+* **The bilinear grid (`c1_diag_bil24.json`, finished 21:06 EDT).** The second-order cell at M = 24 certifies in **10/10**
+  seeds with τ annealed 4 → 1 over the first half, and 8/10 without annealing.
+  - The 67-2 rule is met: a shared cell certifies in ≥ 9/10.
+  - The recipe that makes a shared cell acquire the rule has three parts: multiplicative state–input interaction,
+    over-complete codes, and temperature annealing. §67b ports it to the GPT-2 cell.
+
+### 67b. C1 Design 1, the single revision: the GPT-2 cell with the recipe that certifies a shared cell (pre-registered 2026-10-01 21:06 EDT, before any 67b run; amendment 67-2's rule triggered)
+
+**Why.** Under §67's objective, a shared second-order cell with 24 codes and τ annealing learns the S3 rule in 10/10
+seeds, while every additive shared cell, GPT-2 included, falls into partial automata. This ports that recipe to the
+GPT-2 transition cell.
+
+**Changes from §67** (everything else unchanged: task, exact marginalisation, curriculum, hard execution, tests, nulls,
+mechanism criteria, predictions C1-1 to C1-5, and readings).
+* **M = 24 codes.** The certificate is the product-automaton check: decoded states cover S3, and every reachable
+  (code, true state) pair after ≥ 1 operation decodes correctly. The 36-transition bijection audit applies only at
+  M = 6.
+* **Temperature.** T = softmax(logits / τ), with τ annealed linearly 4 → 1 over the first half of updates. Inference uses
+  hard argmax.
+* **Second-order readout.** Next-code logits = W · ((U · LN(h_code)) ⊙ (V · LN(h_op))). Here h_code and h_op are GPT-2's
+  final hidden states at the code-embedding position and the operation-symbol position of the same call. U and V map to
+  256, W maps to M. LayerNorm handles the outlier activation (§67 pilot).
+* Distinct code initialisation, as in the best pilot.
+* **Arms.** D1b (the GPT-2 cell with this recipe), TAB (M = 24, same τ schedule), RESET and FP, 5 seeds each. The panel
+  follows a pilot on seed 99 (which may fix updates, batch and lr only, logged).
+* **Added descriptive measure.** Counter check: H(code | state) and MI(code; length mod 2/3/4 | state) on the certified
+  runs (`c1_diag.counter_check`'s definition).
+
+**No further revision.** If D1b fails C1-1, §67's readings apply and the C1 line records shared-cell acquisition with
+a pretrained LM as the obstacle, with the 10/10 bilinear toy cell as the existence proof that a shared cell can acquire
+the rule.
 
 **Amendment 67-1 (2026-10-01 19:34 EDT, before any of these runs; descriptive, no C1 claim).** Where does acquisition
 break?
