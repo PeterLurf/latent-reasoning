@@ -6335,6 +6335,29 @@ GPT-2 calls per update at k = 3. $0.
 
 **Placement.** Local GPU. 20 ge3 runs plus 12 std runs, about 4 min each. $0.
 
+**§82 result (2026-10-02 12:48 EDT; scored by Theory with `theory/c1_ladder_score.py`, committed before any §82 run;
+tables `theory/results/c1_tab82/` run by the experiments session; summary `theory/results/score_s82.json`).**
+**Reading: "Neither". Every group fails under ge3 and certifies under std. Reported; no variants.**
+
+| free table (M 2\|G\|) | Z59 | Z60 | D30 | A4×Z5 | A5 (§76) |
+|---|---|---|---|---|---|
+| ge3 (lengths ≥ 3 only) | 0/5 | 0/5 | 0/5 | 0/5 | 0/10 |
+| ge3 failure: partition | one block (chance, acc ≈ 0.015) | one block | one block | one block | one block |
+| std (with length-1/2 problems) | 3/3 | 3/3 | 3/3 | 3/3 | 10/10 |
+
+* **No coset traps, no ladder.** Every ge3 failure merges all reachable states into one block, at chance. This holds
+  whether the group has no proper subgroups (Z59), many index-2 footholds (Z60, D30), smallest index 3 (A4×Z5), or is
+  simple (A5).
+* Even the **cyclic** groups (Z59, Z60) are not acquired without short labels.
+* **So at order ≈ 60, final-answer-only acquisition by the free table is decided by supervision granularity, not by
+  algebraic structure** (solvability, simplicity or footholds).
+  - Each length-≥ 3 answer constrains a product of ≥ 3 unknown transitions, and the learner never leaves the uniform
+    solution.
+  - At order 24 (S4) it gets partway: §76 baseline, 2/10 exact coset traps and 8/10 mixed merges.
+* **Consequence for the latent line.** Directly supervised short products are the load-bearing ingredient, in the free
+  table (§76(A)) and here. A method that acquires from long problems only needs a different objective or a curriculum
+  that creates short supervision. Group-theoretic ladders do not supply it.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
