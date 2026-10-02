@@ -442,3 +442,4 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53822934 vast offer 50443912 created 2026-10-02 03:08: label c1-72b-2002, queue scratch/c1_q_72b_2002.txt (logged at create by vdeploy_toy.sh)
 53816939 vast | c1_72b_990 DESTROYED_VERIFIED 2026-10-02 03:10 after verified fetch (c1/runs/p72b_pf_s990 c1/runs/p72b_rf_s990 c1/runs/p72b_pfstd_s990 c1/runs/p72b_pt_s990)
 53805951 vast | s71-dpvar DESTROYED_VERIFIED 53805951 2026-10-02 03:10: stopped - DeltaProduct not reproducing in this environment (dpvar_s1 best seq acc 0.0); rerun after the 71-2 diagnosis
+53816939 vast | c1_72b_990 DESTROYED_VERIFIED 2026-10-02 03:10 after verified fetch (c1/runs/p72b_pf_s990 c1/runs/p72b_rf_s990 c1/runs/p72b_pfstd_s990 c1/runs/p72b_pt_s990)
