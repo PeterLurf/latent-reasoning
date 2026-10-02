@@ -80,6 +80,12 @@ Path independence tracks one-loop reach (Spearman −0.87, post hoc).
 **GSM8K step 2 (§68):** our own text-CoT, Coconut and written-state arms on GSM8K-Aug (3 seeds), with C1 controls on Coconut's latents.
 **C1 frontier (§67):** the exact-marginal objective has partial-automaton local optima. The table is certified 1/6 at 6 codes but 10/10
 at 12 codes. Every neural cell fails (GPT-2, random GPT-2, small transformer, MLP). Hard codes do not decay with length.
+**§69 / §70 (C1 acquisition, closed):**
+* RL-style updates do not fix acquisition: 0–1/10, best-of-4 5/10 (§69).
+* A spectral learner gets S4/A5 from ≤ 10⁶ problems, so data is not the limit (69-2).
+* At matched size, the multiplicative cell certifies 10/10 vs the additive cell's 0/10 (descriptive). Neither
+  registered arm passed (§70).
+* §71 (S5 with written-state chunking, DeltaProduct protocol) is with Experiments.
 **§66:** in GPT-2 state tracking, the written-state chunked loop is 1.000 at N 17–32 vs text CoT 0.14 (fewer FLOPs). But the no-latent
 version is identical, so the scaffold (short contexts plus written state), not the latents, does the work. C1 is not shown. See the range principle.
 **§65:** restart labels equal true labels (a clean C4 teacher), but even true labels give the S3 single loop only 0.66 at N 9–16
