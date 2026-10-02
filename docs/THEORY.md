@@ -77,6 +77,7 @@ heuristic scores 0.91, which explains the Coconut cue.
 accuracy); identity buys no reach. D3 is parked.
 **Interchange (§56):** GT-distilled students' latents are age-invariant (G 0.09); T8 students' and parents' are not.
 Path independence tracks one-loop reach (Spearman −0.87, post hoc).
+**GSM8K step 2 (§68):** our own text-CoT, Coconut and written-state arms on GSM8K-Aug (3 seeds), with C1 controls on Coconut's latents.
 **C1 frontier (§67):** the exact-marginal objective has partial-automaton local optima. The table is certified 1/6 at 6 codes but 10/10
 at 12 codes. Every neural cell fails (GPT-2, random GPT-2, small transformer, MLP). Hard codes do not decay with length.
 **§66:** in GPT-2 state tracking, the written-state chunked loop is 1.000 at N 17–32 vs text CoT 0.14 (fewer FLOPs). But the no-latent
@@ -4899,6 +4900,65 @@ break?
     features) is the obstacle.
   - Only small cells learn: scale or depth is the obstacle.
   - Both GPT-2 variants are recorded as acquisition failures, and the line moves on.
+
+## 68. GSM8K step 2: our own GPT-2 arms on GSM8K-Aug — text CoT, Coconut and a written-state chunked arm (pre-registered 2026-10-01 20:55 EDT, after Literature's check 40b2ac9 and before any run; user decision via Audit)
+
+**Why.**
+* The first real task beyond toy and ProsQA. It has no cheap shortcut: heuristics ≤ 0.03, and a one-operation oracle
+  reaches 0.155 (`theory/gsm8k_shortcuts.py`).
+* Public latent checkpoints do use their latents on GSM8K (GSM8K amendment 2) but were trained with step supervision.
+* This step reproduces the references with our own runs and adds the written-state arm that §66 found effective on
+  state tracking.
+* **None of these arms is C4.** All use GSM8K-Aug's equation steps. A final-answer-only arm is a later step.
+
+**Prior** (`docs/LIT_GSM8K_STEP2_2026-10-01.md`).
+* Text CoT 42.9 (official gsm_cot.yaml: full fine-tune, lr 1e-4, bs 32, 25 epochs, best on gsm_valid).
+* Coconut 34.1 ± 1.5 (from the CoT checkpoint; c_thought 2, max_latent_stage 3, 3 epochs per stage, optimizer reset).
+* CODI 43.7 (LoRA, 40 epochs), iCoT 30.0, Pause 16.4, No-CoT 16.5.
+* GSM8K-Aug: 385,620 training examples.
+* History cut on GSM8K: Markovian Transformers 2404.18988 (Llama scale) and LightThinker 2502.15589. A
+  values-so-far written state with the equation history erased is not found at GPT-2 scale, so it is new as scoped.
+
+**Arms** (GPT-2 small, original weights; seeds 1–3; official configs where they exist).
+* **TC (text CoT).** gsm_cot.yaml as published: 25 epochs, checkpoint chosen on gsm_valid. Each seed's checkpoint also
+  initialises its Coconut run.
+* **CO (Coconut).** The official GSM schedule from that seed's TC checkpoint: c_thought 2, max_latent_stage 3 (≤ 6
+  thoughts), 3 epochs per stage, optimizer reset.
+* **WS (written-state chunked; the §66 WC0 analogue).**
+  - Each call sees [question + "values so far: v1, v2, …"] and outputs either the next equation "<<expr=value>>" or
+    "### answer".
+  - Training: one example per gold step (teacher forcing; the same step supervision as TC). Tokens are matched to TC
+    within ±10 %, with the epoch count logged.
+  - Inference: generate an equation, parse its value, append it to the state and cut the history, until "###" or 10
+    calls.
+  - The written state is readable by construction (C7 for the state).
+
+**Measures** (bench gsm8k harness, 1,319 test items, the normaliser for "####", commas and ".0").
+* Accuracy per arm and seed.
+* Shortcut baselines (≤ 0.03; one-op oracle 0.155).
+* GSM8K-Platinum (2502.03461) as a sensitivity check.
+* Accuracy by number of gold steps.
+* **Compute.** Training FLOPs per arm (Literature: matched accounting must cover training) and inference FLOPs per
+  problem (tokens processed, KV cache stated), forward passes and written tokens.
+* **C1 controls for CO (the tightened definition).** Inference with K = 0, 1 and 2 latent thoughts against the trained
+  K, plus a donor-latent swap: replace CO's thoughts with another problem's (answer agreement with the donor vs the
+  recipient).
+
+**Predictions** (medians over 3 seeds):
+* **G1 (reproduction).** TC ≥ 0.40 (reference 0.429); CO ≥ 0.31 (reference 0.341).
+* **G2 (CO's latents carry computation).** CO at K = 0 is ≥ 10 points below CO at the trained K. Reported with K = 1, 2
+  and the donor swap; the K = 0 distribution-shift caveat of amendment 2 is stated.
+* **G3 (the written state suffices).** WS ≥ TC − 0.03.
+* **G4 (compute, descriptive; no C3 claim expected).** WS's inference FLOPs relative to TC's. WS re-encodes the
+  question at each call, so it may cost more on GSM8K's short chains.
+* **Readings.**
+  - G1 met: our pipeline reproduces the public references, and later C4 arms can be compared within it.
+  - G3 met: a compact written state of intermediate values loses nothing on a real task.
+  - G2 met with the donor swap: the latents carry problem-specific computation (C1 on a real task, with step
+    supervision).
+
+**Budget and placement.** A throughput pilot (fixing only batch and precision, logged) sizes the wave. Estimate 40–80
+GPU-h, ≈ $10–25 on Vast 3090/A4000-class hosts plus the local cards, behind §67-2.
 
 ## 7. Log
 
