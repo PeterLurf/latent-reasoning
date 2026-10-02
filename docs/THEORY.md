@@ -6903,6 +6903,84 @@ k op symbols), and the same held-out sets: (b) unseen words, (a) unseen (state, 
   **layers 8–11 are off the loss path.** "Run once at the end" in §88 was vestigial. This keeps the per-iteration and
   final readouts identical in kind, and it is the reading used.
 
+## 89. Fade to latent: text CoT trained normally while its thought inputs fade continuously into hidden states (pre-registered 2026-10-02 19:19 EDT, after Literature's check 7d8a231 and Audit's review, before any run; the user's idea)
+
+**The user's idea.** "Like Coconut, which progressively replaces discrete thinking steps with latent ones. But instead of
+removing them one by one, train CoT normally and slowly obliterate the output matrix."
+* A **continuous** curriculum from text CoT to latent thoughts.
+* The input at each thought position blends from the token embedding to a function of the previous hidden state. The
+  thought-token loss (the output matrix's role) fades to zero.
+
+**Why test it here.**
+* Coconut-style stage replacement collapsed in our runs: CL at chance on §66's boxes, latents bypassed on GSM8K
+  (K = 0 at 5.1).
+* A smooth path may avoid the stage-jump collapse and keep latents near the embedding manifold (C7).
+* §66's boxes task leaves room: text CoT is 1.00 in range, while latent loops are at chance.
+* **Tags:** C1 (use), C2, and C3 at matched compute. **Not C4** (it uses CoT labels).
+
+**Task.** §66 boxes (S4 swaps, both question types). Train N ≤ 8 with §66's data generator and budget. The primary test
+is in-range N 5–8; N 9–16 is descriptive.
+
+**Fade mechanics** (on TC's format: the arrangement written after every op; every CoT token position is a thought
+position).
+* **Input at thought position t + 1 = (1 − α)·E[ŷ_t] + α·g(h_t).**
+  - **ŷ_t is the model's own argmax token at t (detached), not the gold token.** Gold tokens would carry the true state
+    until α ≈ 1, so the model could copy rather than compute, and the curriculum would collapse into an abrupt switch
+    at the end (Audit).
+  - h_t is GPT-2's final hidden state at t.
+* α rises linearly from 0 to 1 over the first 60 % of updates, then stays at 1 (pure latent).
+* The thought-token loss (cross-entropy to the gold CoT tokens) is weighted (1 − α). The answer loss always has weight 1.
+* At α = 1 there are no thought tokens and no thought loss. The thought positions are continuous, as many as TC's.
+
+**Arms** (GPT-2 small from base; equal updates; seeds 1–5).
+* **FADE-std (primary, the faithful version).** g(h) = per-coordinate standardisation of h (§73's fix for anisotropy),
+  rescaled to the token-embedding coordinate std.
+  - Statistics: a running EMA (momentum 0.99) over thought-position hidden states from α = 0, **frozen at α = 1** and
+    used unchanged at test.
+* **FADE-soft (riskier).** g(h) = softmax(W h / T)·E, the soft token, with T rising 1 → 10 with α.
+  - It keeps the output matrix (unlike the user's idea).
+  - At high T over GPT-2's 50k vocabulary it approaches the mean embedding, so the state survives only in small
+    deviations. **Its input's distance from the mean embedding is logged over training.**
+* **FADE-std-gold (leak control).** As FADE-std, but with the gold token in E[·]. It measures how much copying the gold
+  tokens hides.
+* **COCONUT-stage (matched compute).** Coconut's stage schedule: stage s replaces the first s steps' CoT tokens by the
+  same number of continuous positions (input = h_t). Remaining text positions use the model's own tokens, as in FADE.
+  The stages split the same number of updates, and the final stage is all-latent with the same position count.
+* **FADE-std-dec (Literature's must: keep a step-decode loss).** As FADE-std, plus a constant-weight auxiliary linear
+  head on h at thought positions, decoding the gold CoT token. Its weight does not fade. Literature expects bypass
+  without it.
+* **FADE-raw.** α-fade onto raw h with no standardisation. It tests §73's lesson (Literature: without
+  standardisation the schedule becomes a step).
+* **TC** (text CoT, the same updates) and **NC** (no CoT; the floor, measured in §89 itself).
+* **Seeds.** 5 for FADE-std, FADE-std-dec and COCONUT-stage; 3 for FADE-soft, FADE-std-gold, FADE-raw, TC and NC
+  (30 runs).
+* **Literature (7d8a231).** The closest prior is HRPO 2505.18454 (a learned-gate token → latent fade under RL). A
+  supervised scheduled α-fade with a Coconut-stage comparison is new as scoped. The registration fades α, not W:
+  decaying W gives the mean embedding.
+
+**Measures** (the §66 bench harness and scorer).
+* Accuracy at N 5–8 (primary) and 9–16.
+* **C1 removal at test, pure-latent models:** thought inputs replaced by **zeros**, and separately by the **mean** thought
+  input (zeroed inputs can still give pause-token compute).
+* The distance of thought inputs from the token-embedding manifold (nearest-token cosine), against Coconut.
+
+**Predictions** (medians over 5 seeds).
+* **F1.** FADE-std or FADE-std-dec (or FADE-soft), pure latent, reaches ≥ 0.90 at N 5–8.
+* **F2 (C1).** For that arm, mean-ablating the thought inputs drops accuracy to ≤ NC's median + 0.05. Otherwise the
+  reading is "bypass" (zero ablation is also reported).
+* **F3.** FADE − COCONUT-stage ≥ 0.20 at N 5–8, paired by seed.
+
+**Readings.**
+* **F1 + F2 + F3.** A continuous fade from text to latent yields latent thoughts that do the work where stage-wise
+  replacement fails. This is the user's curriculum validated: C1 in a pretrained LM with CoT-label training.
+* **F1 without F2.** The latents are bypassed.
+* **F1 fails.** Fading does not rescue latent reasoning here.
+* **FADE-std-gold ≫ FADE-std at α < 1 but not at α = 1.** Gold-token copying masks the transition, as Audit predicts.
+* **FADE-std-dec passes where FADE-std fails.** The step-decode loss is load-bearing (rule 1, 685bef0).
+
+**Placement.** Local cards. 30 runs, §66-sized (about 1 h each). Implementation by the experiments
+session, extending `boxes/train.py`. $0.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
