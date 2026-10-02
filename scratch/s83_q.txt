@@ -1,0 +1,4 @@
+# THEORY §83 retrain (§71's exact command, wc0all k 4, seeds 1-3; models kept for s83_restart.py)
+boxes/runs_s5/s83_wc0k4_s1 --arm wc0all --k 4 --steps 8000 --bs 64 --lr 1e-4 --eval_bs 500 --seed 1
+boxes/runs_s5/s83_wc0k4_s2 --arm wc0all --k 4 --steps 8000 --bs 64 --lr 1e-4 --eval_bs 500 --seed 2
+boxes/runs_s5/s83_wc0k4_s3 --arm wc0all --k 4 --steps 8000 --bs 64 --lr 1e-4 --eval_bs 500 --seed 3
