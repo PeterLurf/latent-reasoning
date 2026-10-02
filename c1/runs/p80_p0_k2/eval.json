@@ -1,0 +1,18 @@
+{
+ "k": 2,
+ "at_1500": {
+  "step": 1500,
+  "acc_train": 1.0,
+  "acc_b_unseen_words": 0.0,
+  "acc_a_heldout_pairs": 0.6666666666666666
+ },
+ "steps": 4000,
+ "train_sec": 2193,
+ "n_train_pairs": 135,
+ "acc_train": 1.0,
+ "acc_b_unseen_words": 0.030303030303030304,
+ "n_b": 66,
+ "acc_a_heldout_pairs": 0.8,
+ "n_a": 15,
+ "P0_passes": false
+}
