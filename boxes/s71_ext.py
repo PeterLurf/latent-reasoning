@@ -18,7 +18,11 @@ args = json.load(open(os.path.join(a.run, "args.json")))
 X, Y = s5.load_csv(os.path.join(s5.ROOT, "bench", "data", "s5", "S5=2048.csv")); s5.check_labels(X, Y)
 m = load_model(os.path.join(a.run, "model.pt"), a.device).eval()
 amp = torch.bfloat16 if torch.cuda.get_device_capability(a.device)[0] >= 8 else None
-pred, comp = s5.wc_rollout(m, X, args["k"], a.device, amp, args.get("eval_bs", 500))
+if args["arm"] == "p3":                                              # final-only: the final state at 2,048
+    fin = s5.p3_rollout(m, X, args["k"], a.device, amp, args.get("eval_bs", 500), args.get("latent", 0))
+    pred = np.full_like(Y, -1); pred[:, -1] = fin; comp = None
+else:
+    pred, comp = s5.wc_rollout(m, X, args["k"], a.device, amp, args.get("eval_bs", 500))
 np.save(os.path.join(a.run, "preds_ext2048.npy"), pred)
 cum = s5.cumulative(pred, Y)
 res = {"n": len(X), "L": X.shape[1], "cumulative": {str(t): float(cum[t - 1]) for t in (512, 1024, 2048)},
