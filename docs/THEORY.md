@@ -4956,6 +4956,12 @@ break?
   - Only small cells learn: scale or depth is the obstacle.
   - Both GPT-2 variants are recorded as acquisition failures, and the line moves on.
 
+**Pointer 67b-3 (2026-10-01 23:40 EDT; at Audit's request).** The experiments session's implementation amendment
+67b-impl-1 (`c1/PILOT_67b.md`, d2a2fae) was recorded before any panel read. It makes three corrections.
+* The d1 budget was 120 positions, which is correct only for M = 6; it is now 20·M.
+* C1-5's compute-matched gap is scored on the re-run fpcmp2 (s1–5); the original fp_cmp is descriptive.
+* The logged d1 gpt2_tokens at M ≠ 6 are corrected by ×M/6.
+
 ## 68. GSM8K step 2: our own GPT-2 arms on GSM8K-Aug — text CoT, Coconut and a written-state chunked arm (pre-registered 2026-10-01 20:55 EDT, after Literature's check 40b2ac9 and before any run; user decision via Audit)
 
 **Why.**
