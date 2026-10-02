@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # §76(B)/(B-std) + 76-3 feeder (local cards): every 60 s, queue both students, held-out and full (76-3) arms, for each
 # CERTIFIED teacher: S4 from theory/results/c1_tab_local/ (queue scratch/c1_q_76_local.txt), A5 from
-# theory/results/c1_tab_host/ (queue scratch/c1_q_76_A5.txt, row minibatch --bs 512 for 8 GB cards). Per group, pilot
+# theory/results/c1_tab_local/ (76-5; queue scratch/c1_q_76_A5.txt, row minibatch --bs 512 for 8 GB cards). Per group, pilot
 # first: the first certified teacher of seed 2051 (else the first certified teacher at all); the others wait until the
 # pilot's two held-out-arm eval.json exist. Starts a py_local_worker (C1_GROUP set per queue) on each free card, S4 first.
 # Stop: touch scratch/.stop_feed76. Log: logs/feed76.log.
@@ -13,7 +13,7 @@ while [ ! -f scratch/.stop_feed76 ]; do
   python - <<'PYEOF' >> logs/feed76.log 2>&1
 import glob, json, os, re, time
 for G, src, Q, extra0, pre in (("S4", "theory/results/c1_tab_local", "scratch/c1_q_76_local.txt", "", "p76"),
-                               ("A5", "theory/results/c1_tab_host", "scratch/c1_q_76_A5.txt", " --bs 512", "p76a5")):
+                               ("A5", "theory/results/c1_tab_local", "scratch/c1_q_76_A5.txt", " --bs 512", "p76a5")):
     have = open(Q).read(); cert = []
     for f in sorted(glob.glob(f"{src}/{G}_*_s*.json")):
         m = re.search(rf"{G}_(ge3|std)_s(\d+)\.json$", f)
