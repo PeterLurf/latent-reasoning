@@ -358,3 +358,33 @@ acquired from final answers alone in 10/10 seeds and certified at every length (
   suffices.
 * Not a claim that pretraining or GPT-2's computation is necessary: RF and DENSE also learn (§72b; §74 tests language
   use).
+
+## THEORY §74 (paraphrase transfer: does the latent machine use GPT-2's language knowledge?) result (2026-10-02 07:46 EDT; `python c1/score_74.py` → `theory/results/score_s74.json`)
+
+The scorer was committed before any §74 eval.json was read. All 20 runs (4 arms × seeds 2021–2025) ran on the local
+cards. A descriptive rerun of PF-std (`c1/runs/p74diag_pfstd_s*`, with bad-pair listing) reproduced every seed exactly.
+
+| prediction | result |
+|---|---|
+| **P1** PF-std certified on the training phrasing in ≥ 4/5 | **not met: 0/5**, so §74 is uninformative by its own rule |
+| **P2** median agreement ≥ 0.90 on F2/F3/F4 (F3 needs neg ≤ 0.50) | not met: F2 0.405, F3 0.375, F4 0.458; neg 0.708 |
+| **P3** family certificate ≥ 3/5 | not met (no family qualifies) |
+
+**Descriptive.**
+* PF-std hard accuracy on the training phrasing: seeds 2021–2023 reach 1.000 at N 8–128 but fail the certificate;
+  2024 gets 0.56→0.35 and 2025 0.68→0.66.
+* **Bad pairs** (code, state; first length reached; decoded vs true):
+  - 2021–2023 have 3–4 each. **All are first reached at length 3, and all are parity flips**: a transposition state
+    (1, 2, 5) decodes as an even one (0, 3, 4). The errors sit on codes that hard accuracy at N ≥ 8 does not visit.
+  - 2024 has 28 and 2025 has 9, with no parity pattern. A few codes absorb many states, a merge failure.
+* Training-phrasing certificates: RF-std 0/5, DENSE-bag 1/5, pool 0/5.
+* Median agreement (frozen σ), F1/F2/F3/F4/pos/neg:
+  - RF-std 1.00/0.33/0.94/0.33/1.00/1.00;
+  - DENSE-bag 1.00/1.00/1.00/0.89/1.00/1.00;
+  - pool 0.46/0.61/0.44/0.42/0.97/0.75.
+  - The σ-floor changes PF-std's F4 only (0.458 → 0.417).
+* " one" vs " 1": wte cosine 0.498; final-hidden cosine 0.979.
+
+**Reading.** Unlike §73's single-token ops (10/10), the multi-token text-op cell at M 24 / 8,000 updates does not
+certify. Paraphrase transfer is therefore untested. In 3/5 seeds the failure is a small parity confusion at length-3
+codes, not a broken machine. Theory has the bad-pair list.

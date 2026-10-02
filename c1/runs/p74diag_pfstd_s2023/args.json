@@ -1,0 +1,10 @@
+{
+ "arm": "pfstd",
+ "seed": 2023,
+ "updates": 8000,
+ "bs": 512,
+ "lr": 0.0001,
+ "tau0": 4.0,
+ "device": "cuda:0",
+ "out": "c1/runs/p74diag_pfstd_s2023"
+}
