@@ -5550,6 +5550,47 @@ fail (0/5). That would literally read "interface". It is not claimed.
 * **Next.** One corrected revision (§72b). The lr is chosen with the dense-interface toy on pilot seeds 990–992 and
   proved on one GPU host first. There are no further lr sweeps.
 
+### 72b. The §72 diagnostic once more, at a learning rate where the dense interface learns (pre-registered 2026-10-02 02:17 EDT, one revision after §72's design error and before any 72b GPU run; Audit's conditions)
+
+**Why.** §72's four GPU arms all collapsed at lr 1e-2, and so did the dense interface without any transformer. §72 is
+therefore uninformative. The user's overnight goal (via Audit) is "find a stable latent": a GPT-2 latent learned from
+final answers that is reliable across seeds and lengths. That needs §72's answer at a usable lr.
+
+**Learning-rate pilot (CPU, pilot seeds 990–992, outside the panel; `theory/s72_dense_toy.py`, files
+`theory/results/s72b_pilot_dense_lr*.json`).**
+* Setup: the §72 head on dense 768-d inputs, no transformer.
+* lr 1e-2: collapse (seed 999). lr 1e-3: 0/3, with the loss rising late in training. **lr 1e-4: 2/3** (seed 990 fails at
+  0.50).
+* For comparison, the one-hot toy at 1e-2 on the same seeds: 2/3 (seed 990 fails).
+* **Fixed: all new parameters at lr 1e-4.** This is also D1b's setting.
+
+**Arms.** As §72 (D1b recipe, seeds 2001–2005), with these changes:
+* All new parameters at lr 1e-4. PT's GPT-2 weights also at 1e-4, so PT is D1b exactly on fresh seeds.
+* `model.pt` kept for every run, so dead units can be checked.
+* PT's per-layer between-code / within-code variance measured at the **op** position.
+* **New CPU reference DENSE.** `s72_dense_toy.py` at lr 1e-4 on seeds 2001–2005: the same head and interface with GPT-2
+  replaced by the identity.
+* TOY (one-hot, 1e-2; 5/5) is kept from §72.
+
+**Placement (the user's "prove on one host first").**
+* One Vast 3090 runs all four GPU arms on pilot seed 990.
+* The panel (seeds 2001–2005) starts only if at least one arm escapes the ln-6 collapse (final loss < 1.0).
+* If all four collapse, 72b stops, is reported, and there are no further sweeps.
+* Cost about $1–2.
+
+**Rules.** An arm **succeeds** at ≥ 4/5 certified and **fails** at ≤ 1/5. Every GPU arm is also compared with DENSE on the
+same seeds.
+
+**Readings.**
+* **PF and PT match DENSE (within 1/5).** GPT-2 is not the obstacle. D1b's unreliability is the dense multiplicative
+  interface's own seed reliability. The next registration makes that interface reliable on CPU first (toy-scale, no
+  GPU), then ports it.
+* **PF < RF by ≥ 2/5.** Pretrained geometry is the obstacle. PF-std says whether standardisation repairs it (then the
+  stable-latent candidate is a standardised readout).
+* **PT < PF by ≥ 2/5.** Fine-tuning GPT-2 hurts. The candidate is a frozen pretrained GPT-2 with a trained code layer.
+* **Any GPU arm at ≥ 4/5.** It is the stable-latent candidate. A 10-seed confirmation (seeds 2011–2020) is registered
+  next.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
