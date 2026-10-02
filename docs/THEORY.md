@@ -4919,6 +4919,12 @@ mechanism criteria, predictions C1-1 to C1-5, and readings).
 a pretrained LM as the obstacle, with the 10/10 bilinear toy cell as the existence proof that a shared cell can acquire
 the rule.
 
+**Amendment 67b-1 (2026-10-01 21:06 EDT, before running; Audit).** The recipe was chosen as the best cell of a grid on
+seeds 0–9, so the existence claim must rest on seeds not used for selection.
+* **Check, pre-stated.** The bilinear toy cell (M = 24, τ 4 → 1, lr 1e-2, 8,000 updates, `theory/c1_diag.py`) on 10
+  fresh seeds, 100–109. It must certify in ≥ 9/10.
+* If it does not, the "shared cell can acquire the rule" claim is withdrawn to "in 10/10 selection seeds only".
+
 **Amendment 67-1 (2026-10-01 19:34 EDT, before any of these runs; descriptive, no C1 claim).** Where does acquisition
 break?
 * Under §67's objective and curriculum, three further cells: an MLP (one-hot code and operation → 256 → 6), a small
