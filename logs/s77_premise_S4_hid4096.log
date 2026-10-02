@@ -1,0 +1,3 @@
+S4 seed 990 M 48 loss 3.120 certified False bad 50 acc {8: 0.044, 9: 0.045, 32: 0.039, 128: 0.042}
+S4 seed 991 M 48 loss 3.177 certified False bad 23 acc {8: 0.043, 9: 0.036, 32: 0.041, 128: 0.044}
+S4 seed 992 M 48 loss 3.179 certified False bad 23 acc {8: 0.04, 9: 0.04, 32: 0.037, 128: 0.045}
