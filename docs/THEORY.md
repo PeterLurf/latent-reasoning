@@ -5902,6 +5902,72 @@ certified from final answers. Fine-tuned with that readout, also 10/10; centring
   belongs to shared-parameter cells. The free table has independent rows.
 * §75's GPU pilot (PF-std / PT-std, seed 990) is still the registered test for the GPT-2 cell.
 
+## 76. A free-table latent automaton at S4 / A5 / S5, and its amortisation into the stable GPT-2 cell (pre-registered 2026-10-02 08:10 EDT, after Literature's check 99ec154 and before any panel run; note 75-1's premise; the overnight stable-latent goal)
+
+**Why.** Note 75-1 (pilot seeds): the free table under §67's exact-marginal objective certifies S4 3/3 and A5 3/3. Every
+shared-parameter cell failed there.
+* (A) measures how reliable that acquisition is at scale, with the strong variant primary.
+* (B) gives the stable latent in GPT-2 a scalable route, by hosting the acquired automaton in the stable GPT-2 cell.
+
+**Prior** (99ec154; da53d1b; 3fa7f90).
+* IO-HMM / Baum–Welch-style learning of finite automata.
+* Spectral WFA (69-2; same supervision, non-neural, exact).
+* Zhang 2607.20594: a shared-parameter looped transformer; curriculum and exact match; A5 8/22 from scratch.
+* Howe 2609.18966 (per-position); Lee 2606.07254 (held-out transition pairs).
+* Expert iteration / teacher → student (1705.08439); CLRS-style step supervision.
+
+**(A) Free table (a tabular PFA / IO-HMM, not a neural cell), exact marginal from final answers** (`theory/c1_rl.py --cell tab --method marg --tau0 4`, lr 1e-2, bs 256,
+16,000 updates, M = 2|G|, start code fixed; `theory/c1_tab_driver.py`; hard tables saved).
+* **Groups:** S4, A5, S5. **Seeds:** 2051–2060 (10 per cell).
+* **Curricula:**
+  - **ge3 (primary).** Lengths ≥ 3 only, stages {3} → {3, 4} → {3..6} → {3..8}, so no length-1 or length-2 problem labels
+    the Cayley table directly.
+  - **std (secondary).** {1} → {1, 2} → {1, 2, 4} → {1, 2, 4, 8}.
+* **Rule.** A cell succeeds at ≥ 9/10 certified (product-automaton certificate) with accuracy ≥ 0.99 at N 8–128.
+* **Wording (Audit, fixed now).** "The exact-marginal objective scales to <group> for a free-table latent automaton
+  (an IO-HMM / FSM learner) from final answers."
+  - **No "beats SOTA"**: a table against a shared-parameter transformer is not like for like.
+  - Spectral WFA does the same non-neurally.
+* **Descriptive arms (Literature 99ec154).**
+  - **M sweep:** M = 2|G| uses the oracle |G|, so A5 ge3 is also run at M ∈ {60, 90, 240} on seeds 2051–2055.
+  - **τ ablation:** A5 ge3 at τ0 = 1, seeds 2051–2055.
+  - **Problems-to-certificate:** certified yes/no every 1,000 updates (256 problems each), compared with spectral's
+    ≤ 10⁶.
+  - **Coverage:** full reachable-set coverage from the fixed start at each test N.
+  - **Disclosure:** the answer is the full final group element, i.e. full-state supervision at the last step. A
+    partial-observation version ("where is X") is a later stretch.
+* **Placement.** One Vast CPU host (one thread per run). About $1.
+
+**(B) Amortisation into the stable GPT-2 cell** (S4 and A5; S5 needs 120 single-token symbols and is out of scope here).
+* **Teachers.** The certified ge3 tables from (A), one per seed. A seed whose teacher is not certified counts as a
+  system failure.
+* **Students.** The §73 cells PF-std (frozen pretrained GPT-2, standardised readout) and PT-std (fine-tuned).
+  - Ops are single-token symbols: S4 " A" … " X"; A5 60 single tokens drawn from letters, lower-case letters and digits,
+    each checked to be one BPE token.
+  - Students are trained with supervised cross-entropy on the teacher's hard transitions: all (code, op) rows over the
+    teacher's reachable codes, plus the decoder rows.
+  - Training: lr 1e-4, up to 4,000 updates, stopping at 100 % row accuracy.
+  - **Held-out entries (Literature 99ec154).** About 10 % of the teacher's reachable (code, op) entries, chosen by seed,
+    are excluded from amortisation and certified separately: does the student predict them? This tests composition
+    against copying. The main certificate is reported both with and without them.
+  - The student never sees a final answer. Its supervision is the teacher's discrete transitions.
+* **Certificate on GPT-2's own hard table (Audit).** The product automaton from code 0 under the student's argmax
+  transitions and decoder against the true group. Codes the student reaches outside the teacher's set count as errors
+  if they decode wrongly.
+* **Arms reported side by side:** teacher alone (A) and each student.
+* **Rule.** A student succeeds at ≥ 9/10 seeds certified, counting teacher failures as failures.
+* **Wording (Literature da53d1b), if met.** "The system acquires a certified <group> automaton from final answers, and
+  a pretrained LM hosts it". C1 holds at the system level. GPT-2 itself is trained on the teacher's intermediate states,
+  so the certificate certifies faithful imitation. No claim is made that GPT-2 acquires the automaton.
+* **Placement.** One GPU host first (seed 2051, both students), then the rest. About $1–2.
+
+**Readings.**
+* **(A) ge3 ≥ 9/10 at A5/S5.** The latent-automaton objective is not the obstacle at scale; parameter sharing is. That
+  directs the next GPT-2 cell design: table-like independence per (code, op).
+* **(B) ≥ 9/10.** A stable LM-hosted latent at non-solvable scale (A5), with the system-level qualifier.
+* **(A) std passes but ge3 fails.** The learner needs directly labelled Cayley products. That is disclosed, and the
+  strong claim is withdrawn.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
