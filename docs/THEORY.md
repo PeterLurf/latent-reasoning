@@ -5454,6 +5454,19 @@ questions, fc6fa09).**
   equivalent to "box i receives what box pᵢ held". check_interface (all 14,400 pairs) and check_labels (every train and
   test position) pass. Data seeds are 7101 (train), 7102 (test) and 7103 (2,048 extension).
 
+**Amendment 71-2 (2026-10-02 02:22 EDT, before any §71 result is read; Audit). Comparator-reproduction rule.**
+Our first DeltaProduct n_h = 4 runs do not yet reach the paper's S5 level (dp_s1: best sequence accuracy 0.0; dp_s2 at a
+loss of about ln 120).
+* **Reproduced** means the best of our 3 DeltaProduct n_h = 4 seeds reaches cumulative sequence accuracy ≥ 0.90 at
+  t = 512. This is the paper's "robust to 512" (Fig. 5, figure only), read conservatively.
+* **Reproduction attempts are time-boxed.** At most two diagnosed configurations, each following the paper's command and
+  repo exactly (environment, precision, epochs), logged in the run notes. They concern the comparator's setup, not our
+  method.
+* **If not reproduced.** S3's comparison is reported as "**comparator not reproduced on our setup**". Only the published
+  figure is cited ("n_h = 4, 1 layer: robust to 512", DeltaProduct Fig. 5), with no "exceeds", "matches" or "below"
+  wording against it. S1, S2 and S4 are unaffected.
+* The fairness arm (variable lengths) and the GRU reference stay descriptive and are reported whatever they score.
+
 ## 72. Where does the GPT-2 transition cell lose acquisition? One diagnostic: frozen pretrained vs frozen random GPT-2 vs fine-tuned vs the toy multiplicative cell (pre-registered 2026-10-02 00:25 EDT, after Literature's check 811c5d7 and before any run; user question via Audit, "what are we doing to solve reliable latent method")
 
 **Why.** The same multiplicative interaction behaves very differently in toy and GPT-2 cells.
