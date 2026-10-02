@@ -77,8 +77,8 @@ heuristic scores 0.91, which explains the Coconut cue.
 accuracy); identity buys no reach. D3 is parked.
 **Interchange (§56):** GT-distilled students' latents are age-invariant (G 0.09); T8 students' and parents' are not.
 Path independence tracks one-loop reach (Spearman −0.87, post hoc).
-**C1 frontier (§67):** exact marginalisation works (the table is certified to N 128). The GPT-2 transition cell fails rule acquisition: a
-stable partial automaton, flat ~0.50 at every length (discreteness removes decay). Amendment 67-1 locates where acquisition breaks.
+**C1 frontier (§67):** the exact-marginal objective has partial-automaton local optima. The table is certified 1/6 at 6 codes but 10/10
+at 12 codes. Every neural cell fails (GPT-2, random GPT-2, small transformer, MLP). Hard codes do not decay with length.
 **§66:** in GPT-2 state tracking, the written-state chunked loop is 1.000 at N 17–32 vs text CoT 0.14 (fewer FLOPs). But the no-latent
 version is identical, so the scaffold (short contexts plus written state), not the latents, does the work. C1 is not shown. See the range principle.
 **§65:** restart labels equal true labels (a clean C4 teacher), but even true labels give the S3 single loop only 0.66 at N 9–16
@@ -4818,6 +4818,27 @@ toys deadlocked), then Design 2 (Boolean-tree registers; Ito 2608.31067 is neare
   acquiring the correct transitions.
 * **Reading.** C1-1 is not met. The bottleneck is the pretrained-GPT-2 parameterisation of the transition rule, not
   exact credit assignment (TAB) and not drift.
+
+**Correction (2026-10-01 20:22 EDT; Audit, the experiments session's lr 2×2 diagnostic, and Theory's independent
+`theory/c1_diag.py`).** The result above overstated the control.
+* **TAB is certified in only 1 of 6 c1 runs** (pil_tab, seed 99, lr 1e-2). Seeds 1–2 at lr 1e-2 sit at 0.50 with
+  13–14/36 wrong; lr 1e-3 runs are partial. The MLP is 0/6.
+* So the exact-marginal objective with the 1-2-4-8 curriculum does *not* reliably find the S3 table. Its partial
+  automata are HMM-style local optima, and GPT-2 is not singled out.
+* This is the same two-attractor lottery as F1-S (§61b), now on a 36-parameter table.
+* **Independent diagnostic** (`theory/c1_diag.py`, CPU, a minimal re-implementation of the objective;
+  certificate = a product-automaton search over reachable (code, true state) pairs):
+
+  | Cell, 8,000 updates, lr 1e-2 | M = 6 codes | M = 12 codes |
+  |---|---|---|
+  | Free table | 1/5 certified | **10/10 certified**, 1.00 at N 8–128, odd and even (`c1_diag_tab12.json`) |
+  | MLP (one-hot code and operation → 256 → M) | 0/5 | 0/5 (`c1_diag.json`; grid in `c1_diag_mlp.json`) |
+
+  - **Over-complete codes remove the local optima for a free table**: the classic over-parameterised-HMM remedy, and
+    certified, so not a counter.
+  - A shared-parameter cell (MLP) still fails, so a shared parameterisation adds a second difficulty.
+* **Rule (Audit).** Only a recipe that certifies TAB in ≥ 9/10 seeds goes to a neural cell. M = 12 meets it for TAB.
+  Whether any recipe certifies the MLP is the next question.
 
 **Amendment 67-1 (2026-10-01 19:34 EDT, before any of these runs; descriptive, no C1 claim).** Where does acquisition
 break?

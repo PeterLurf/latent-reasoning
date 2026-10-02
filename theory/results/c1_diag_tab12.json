@@ -1,0 +1,152 @@
+{
+ "M12_tab_tau1_lr0.01_u8000_s0": {
+  "loss": 5.5430475185858086e-05,
+  "reach": 9,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M12_tab_tau1_lr0.01_u8000_s1": {
+  "loss": 0.00037056757719255984,
+  "reach": 6,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M12_tab_tau1_lr0.01_u8000_s2": {
+  "loss": 6.708993896609172e-05,
+  "reach": 7,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M12_tab_tau1_lr0.01_u8000_s3": {
+  "loss": 0.0006181469652801752,
+  "reach": 6,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M12_tab_tau1_lr0.01_u8000_s4": {
+  "loss": 0.0005196678102947772,
+  "reach": 6,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M12_tab_tau1_lr0.01_u8000_s5": {
+  "loss": 5.828765642945655e-05,
+  "reach": 6,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M12_tab_tau1_lr0.01_u8000_s6": {
+  "loss": 0.00023660308215767145,
+  "reach": 8,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M12_tab_tau1_lr0.01_u8000_s7": {
+  "loss": 0.0003332354826852679,
+  "reach": 10,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M12_tab_tau1_lr0.01_u8000_s8": {
+  "loss": 0.0003075128188356757,
+  "reach": 6,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M12_tab_tau1_lr0.01_u8000_s9": {
+  "loss": 0.00013550315634347498,
+  "reach": 6,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ }
+}
