@@ -25,7 +25,7 @@ import torch
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from boxes.core import GPT2KV  # noqa: E402
-from c1.core import COMP, FP, Cell, MLPCell, Tab, TinyTF, gpt2_random_sd, audit, certificate, counter_check, hard_rollout, marginal_loss, sample, truth, wilson_upper  # noqa: E402
+from c1.core import COMP, FP, Cell, layer_code_variance, MLPCell, Tab, TinyTF, gpt2_random_sd, audit, certificate, counter_check, hard_rollout, marginal_loss, sample, truth, wilson_upper  # noqa: E402
 
 DEPTHS = (8, 16, 32, 64, 128)
 TEST_SEED = 6700
@@ -41,6 +41,9 @@ def gpt2(dev):
     return GPT2KV(sd).to(dev)
 
 
+GPT2_INIT = "pretrained"
+
+
 def build(arm, dev, seed=0):
     if arm == "tab":
         return Tab().to(dev)
@@ -49,6 +52,8 @@ def build(arm, dev, seed=0):
     if arm == "tf_small":
         return TinyTF().to(dev)
     if arm == "gpt2_rand":
+        return Cell(GPT2KV(gpt2_random_sd(seed))).to(dev)
+    if arm == "d1" and GPT2_INIT == "random":                         # §72 RF: random-init GPT-2 body in the d1 cell
         return Cell(GPT2KV(gpt2_random_sd(seed))).to(dev)
     if arm in ("fp_ex", "fp_cmp"):
         return FP(gpt2("cpu")).to(dev)
@@ -160,6 +165,8 @@ def train(a):
     cc.M = a.M                                                       # number of codes (§67: 6; Theory's M = 12 option)
     dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
     assert a.seed < TEST_SEED
+    global GPT2_INIT
+    GPT2_INIT = a.gpt2_init
     model = build(a.arm, dev, a.seed)
     if a.head_init == "zero" and hasattr(model, "zero_heads"):
         model.zero_heads()
@@ -171,8 +178,13 @@ def train(a):
         model.ln_heads()
     if a.readout == "bil" and hasattr(model, "bil_readout"):
         model.bil_readout()
-    new = [p for n, p in model.named_parameters() if not n.startswith("g.")]      # codes, heads, TAB tables
-    old = [p for n, p in model.named_parameters() if n.startswith("g.")]          # GPT-2
+    if a.feat_norm == "tablestd" and hasattr(model, "feat_norm"):
+        model.feat_norm = "tablestd"                                 # §72 PF-std
+    if a.freeze_gpt2 and hasattr(model, "g"):
+        model.g.requires_grad_(False)                                # §72 PF / RF: every GPT-2 weight frozen (incl. its LNs)
+    dist0 = model.distinctness() if getattr(model, "readout", "") == "bil" else None
+    new = [p for n, p in model.named_parameters() if not n.startswith("g.") and p.requires_grad]   # codes, heads, tables
+    old = [p for n, p in model.named_parameters() if n.startswith("g.") and p.requires_grad]       # GPT-2 (none if frozen)
     groups = [{"params": new, "lr": a.lr_new or a.lr}] + ([{"params": old, "lr": a.lr}] if old else [])
     opt = torch.optim.AdamW(groups, weight_decay=0.0)
     os.makedirs(a.out, exist_ok=True)
@@ -210,7 +222,14 @@ def train(a):
             if time.time() - t0 > a.max_hours * 3600:
                 print("TIMEOUT", flush=True); json.dump({"timeout": True}, open(os.path.join(a.out, "timeout.json"), "w")); break
     torch.save(model.state_dict(), os.path.join(a.out, "model.pt"))
+    model.eval()
+    if hasattr(model, "_stats"):
+        model._stats = None                                           # tablestd: final full-table statistics at test
     res = evaluate(model, a.arm, dev, a.n_test, a.n_null, a.out)
+    if dist0 is not None:
+        res["distinctness"] = {"init": dist0, "end": model.distinctness()}
+        if not a.freeze_gpt2:
+            res["layer_code_variance"] = layer_code_variance(model)
     res["train"] = {"updates": u, "examples": seen, "gpt2_tokens": toks, "sec": round(time.time() - t0)}
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     print("EVAL", json.dumps({k: res[k] for k in ("acc",) if k in res}), res.get("audit", {}).get("certified"), flush=True)
@@ -224,6 +243,9 @@ def main():
     ap.add_argument("--bs", type=int, default=512); ap.add_argument("--lr", type=float, default=1e-4)
     ap.add_argument("--head_init", default="default", choices=["default", "zero", "small"])
     ap.add_argument("--M", type=int, default=6, help="number of codes (core.M)")
+    ap.add_argument("--freeze_gpt2", action="store_true", help="§72: freeze every GPT-2 weight")
+    ap.add_argument("--feat_norm", default="ln", choices=["ln", "tablestd"], help="§72: head-input normalisation")
+    ap.add_argument("--gpt2_init", default="pretrained", choices=["pretrained", "random"], help="§72 RF")
     ap.add_argument("--readout", default="linear", choices=["linear", "bil"])
     ap.add_argument("--tau0", type=float, default=1.0, help="§67b: temperature annealed tau0 -> 1 over the first half")
     ap.add_argument("--head_norm", default="none", choices=["none", "ln"])
