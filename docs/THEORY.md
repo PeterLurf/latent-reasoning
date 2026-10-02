@@ -5604,6 +5604,71 @@ same seeds.
 * **Any GPU arm at ≥ 4/5.** It is the stable-latent candidate. A 10-seed confirmation (seeds 2011–2020) is registered
   next.
 
+## 73. A stable latent in GPT-2: the standardised-readout cell, 10-seed confirmation with §67's C1 controls (pre-registered 2026-10-02 02:53 EDT, after Literature's checks 6e57bba, 811c5d7 and da53d1b, before the §72b panel is read; conditional trigger below; the user's overnight goal "find a stable latent", via Audit)
+
+**Why.** §72b's evidence so far (all descriptive; §72b's panel is not yet read):
+* DENSE certifies 5/5 at lr 1e-4, so the bilinear interface itself is reliable.
+* D1b certified 1/5.
+* The seed-990 pilot, on a seed where even the toys fail: frozen pretrained GPT-2 fails (0.16), the same frozen features
+  with per-coordinate table standardisation certify (1.000), frozen random-init GPT-2 certifies, fine-tuned 0.51.
+* The pretrained head inputs are nearly parallel across codes (cosine 0.993).
+* The candidate stable latent is therefore a GPT-2 transition cell whose readout standardises GPT-2's anisotropic
+  features.
+
+**Trigger (fixed now).** §73 runs if PF-std certifies ≥ 4/5 in the §72b panel (seeds 2001–2005). Otherwise it does not
+run, and §72b's readings apply.
+
+**Arms** (S3, D1b recipe: M 24, τ 4 → 1 over the first half, 8,000 updates, bs 512, distinct codes, lr 1e-4 for every
+trained parameter; new fresh seeds 2011–2020).
+* **PF-std (primary).** Frozen pretrained GPT-2, including its LayerNorms. Trained: code embeddings, the bilinear head
+  and the decoder head. The head inputs h_code and h_op, and the decoder input, are standardised per coordinate across
+  the full table's rows (6M transition calls; M decoder calls), with no affine; the statistics come from the same table
+  at test.
+* **PT-std (secondary).** The same readout with GPT-2 fine-tuned at 1e-4. It asks whether the full fine-tuned cell is
+  also stable once its readout is standardised.
+* **RESET.** The PF-std cell, restarted from the initial code every round (§67's null).
+* **PF-ctr (descriptive, 5 seeds: 2011–2015).** PF with per-coordinate centring only, no scaling. It localises whether
+  removing the shared direction is enough (Literature's ablation).
+* **Standardisation details (Literature 6e57bba).**
+  - ε = 1e-5.
+  - During training the statistics come from the current table. After training they are computed once from the final
+    table and **frozen as constants** for every evaluation: certificate, depth tests, nulls, donor and edit tests. No
+    call ever depends on other rows at test.
+  - The σ distribution (min, median, max per input) is reported.
+  - U and V have biases, so the per-coordinate affine standardisation is absorbable by the head. It changes conditioning,
+    not information.
+
+**Measures and predictions** (§67's C1-1 to C1-4 for the primary arm; deep test depths 8–128):
+* **L1 (stable latent).** PF-std is certified (product-automaton certificate, which implies ≥ 99 % at every depth) in
+  ≥ 9/10 seeds.
+* **L2 (nulls; C1-3).** The T0 / T1 / T2 nulls and RESET have Wilson upper bound ≤ 0.1867 at the deep depths. They are
+  scored at n = 10,000, which fixes §67b's sample-size artefact.
+* **L3 (mechanism; C1-4).** Donor, irrelevant-change and same-semantic criteria as §67, in every certified seed.
+* **Counter check.** H(code | state) and MI with length mod q, as §67b.
+* **Descriptive.**
+  - C1-5 against the existing full-prompt GPT-2 runs (fpcmp2, seeds 1–5, at chance by N = 128). Not rerun.
+  - PT-std's certified count.
+  - Code distinctness before and after standardisation.
+
+**Claim limits (fixed now).**
+* If L1 holds, the claim is: "a latent finite-state machine hosted by a frozen pretrained GPT-2 is acquired from final
+  answers alone in ≥ 9/10 seeds and certified at every length (S3)".
+* It is **not** a claim that pretraining or GPT-2's computation is necessary. DENSE (no transformer) and RF (random
+  frozen GPT-2) also learn. GPT-2's necessity needs a task whose operations are text that only an LM can parse; that
+  is the next registration if L1 holds.
+* The result is S3 only. Larger groups need their own compute plan (Audit's point 5).
+
+**Readings.**
+* **L1 + L2 + L3 met.** A stable latent: reliable across seeds and lengths, from final answers. The ingredient was
+  standardising GPT-2's anisotropic features before the multiplicative readout.
+* **L1 at 6–8/10.** Standardisation helps but is not enough for ≥ 9/10. Restart selection (Literature da53d1b; n sized
+  from the per-restart rate) is the registered next step, not further cell variants.
+* **L1 ≤ 5/10.** The pilot and panel were optimistic. Report, and fall back to the teacher-amortisation candidate
+  (da53d1b).
+
+**Placement and cost.** 30 runs (PF-std, PT-std, RESET × 10 seeds), each 25–40 min on a 3090. The local cards come
+first, then at most 5 Vast hosts after the 72b panel host has proved the stack. About $3–5.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
