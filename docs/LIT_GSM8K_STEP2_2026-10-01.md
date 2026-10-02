@@ -58,3 +58,27 @@ on validation, the same test file. Expect ±1–2 points across seeds (Coconut r
   natural-language CoT, not GSM8K-Aug equations). Not usable as a faithful Coconut stage-0.
 - **Recommendation:** train TC from scratch with the official `args/gsm_cot.yaml` (GPT-2, GSM8K-Aug 385k, lr 1e-4,
   batch 32, 25 epochs, best on `gsm_valid`; reference 42.9 ± 0.2).
+
+## Correction (2026-10-01): a usable public matched set exists (found by Experiments; missed by my HF search)
+**My "no usable one found" above is wrong.** I searched only the original authors' accounts and generic name
+patterns. **Dilgren & Wiegreffe 2604.04902** release a matched GPT-2 set on GSM8K-Aug in the Coconut framework, all
+**MIT**:
+- `connordilgren/gpt2-gsm8k-cot` (checkpoint_25), `connordilgren/gpt2-gsm8k-coconut` (checkpoint_33),
+  `connordilgren/gpt2-gsm8k-no-cot` (checkpoint_25).
+- Also multimode Coconut and CODI variants, ProntoQA, ProsQA and LLaMA-3.2-1B sets.
+- Raw state dicts loaded by their code (`model_paths.yaml`), not `from_pretrained`.
+
+**Reported accuracies** (2604.04902 Table 1, GPT-2, GSM8k-Aug test): No-CoT 16.8%, **CoT 41.6%**, **Coconut 33.1%**,
+CODI 42.2%. Multimode (Table 11): No-CoT 22.4, CoT 41.3, Coconut 22.1. All are their own replications with the
+original training code.
+
+**Training configs** (repo `args_coconut-cot-no_cot/gpt2_gsm8k_*.yaml`):
+- CoT and No-CoT: lr 1e-4, batch 32, 25 epochs, fp32.
+- Coconut: from **CoT checkpoint_6**; c_thought 2, max_latent_stage 3 (≤ 6 thoughts), 3 epochs per stage, 47 epochs
+  total.
+- That matches the official Coconut recipe.
+- Data: `preprocessing/prepare_gsm8k.py` downloads Deng et al.'s `Internalize_CoT_Step_by_Step` GSM8K train/valid/test.
+  That is **GSM8K-Aug** (the file name `gsm_original_*` refers to the original preprocessing, not original GSM8K).
+
+**So:** `gpt2-gsm8k-cot` is a usable faithful TC starting point (41.6 vs Coconut's 42.9), and its Coconut (33.1 vs
+34.1) is a matched reference.
