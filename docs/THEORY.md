@@ -6593,6 +6593,60 @@ initialisation then EM).
 
 **Placement.** Local GPU (or CPU): 40 runs of a few minutes each, plus the gradient-norm script. $0.
 
+## 86. Latent restarts: the written state of §71 replaced by one latent per op, snapped to a codebook every k ops (pre-registered 2026-10-02 17:05 EDT, after Literature's deep-research note 685bef0 (method M1) and before any run; the user's "keep innovating")
+
+**Why.** §71's written-state chunked loop tracks S5 exactly to 2,048 (certified), but it writes 6 text tokens per op.
+Literature's synthesis (685bef0) of §45–§85 gives seven rules:
+* per-step targets are load-bearing;
+* range;
+* snapped states do not drift;
+* no in-pass composition at our scale (§80);
+* count-free stops;
+* condition pretrained features (§72b);
+* shortcut audits.
+M1 keeps every ingredient that worked and makes the carried state **latent**. C1 is then measurable by removal, and C3
+by compute against the written state.
+**Prior** (685bef0). SIM-CoT, KaVa and RELAY supervise latent steps but never restart; CLR-1 restarts in text. New as a
+combination.
+
+**Model** (GPT-2 small, fine-tuned from base, lr 1e-4; S5, DeltaProduct P1 data as §71).
+* A chunk is [code_emb(start)], then for each op j: [op-j tokens (" perm …")] [latent slot j].
+* The input embedding of slot j is GPT-2's last hidden state at the final op-j token (Coconut-style continuous
+  thought).
+* **Auxiliary decoder:** a linear head on slot j's output, trained with cross-entropy against the true state after op j
+  (all-position labels, §71's interface). It is the only training signal; there are no text state tokens.
+* **Snap and restart.** After k ops, the next chunk starts from code_emb(argmax of the decoder at slot k). The codebook
+  is 120 learned embeddings, one per S5 element. The history is cut.
+* **Training.** Chunks cut from the 128-length training sequences at random positions, with the start code given by the
+  true label; 8k steps, bs 64 (§71's budget).
+* **k ∈ (1, 4); seeds 1–3** (6 runs, local cards).
+
+**Measures** (the §71 test set: 2,000 × 512; extension 500 × 2,048).
+* Cumulative accuracy at 128 / 256 / 512 / 2,048, read from the decoder at every slot (all positions, as §71).
+* **Certificate (k = 1).** All 14,400 (code, op) inputs exhaustively. **Chunk check (k = 4)** on 100k fresh chunks.
+* **C1 removal (the registered removal test).** Slot inputs replaced by zeros (and, separately, by the dataset mean) at
+  test. This is reported for k = 4, where intermediate slots carry the state within a chunk.
+* **C3.** Inference FLOPs and sequential passes per 512-problem, against §71's WC₀ₖ (6 text tokens per op vs 1 latent
+  slot).
+
+**Predictions.**
+* **R1 (it works).** Cumulative ≥ 0.99 at 512 in ≥ 2/3 seeds for k = 1 and k = 4, and the k = 1 certificate holds in
+  ≥ 2/3.
+* **R2 (C1: the latents do the work).** At k = 4, zero-ablating the intermediate slots drops the accuracy of states
+  after the first ablated slot to ≤ 0.10 (chance 1/120 ≈ 0.008). The state is carried by the latent chain, not a
+  bypass.
+* **R3 (C3).** At equal accuracy (R1), latent restarts use ≤ 0.6 × WC₀ₖ's inference FLOPs at 512 (same k).
+
+**Kill (Literature).** Accuracy at 512 < 0.9, or removal does not hurt (bypass).
+
+**Readings.**
+* **R1 + R2 + R3.** A pretrained LM carries an exact S5 state in latent form, restarts from a snapped latent, reaches
+  512 (and 2,048) from training at 128, and is cheaper than writing the state: C1 + C2 + C3 + C4, scaffolded.
+* **R1 without R2.** Bypass: the model computes the state without using the latents.
+* **R1 fails.** The latent state drifts or fails without text, despite step targets and snapping.
+
+**Placement.** Local cards, after §79, §84 Step 1 and §85. Implementation by the experiments session in `boxes/`. $0.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
