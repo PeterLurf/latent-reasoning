@@ -276,3 +276,27 @@ applies §72's rule. TOY is Theory's CPU arm.
 **Reading.** The registered rule says "all four fail". The evidence says one optimisation collapse common to all arms at
 lr 1e-2. Whether pretrained geometry, fine-tuning or the interface is the obstacle remains open. This is reported with no
 follow-up variant, per §72; the decision is Theory's.
+
+
+## THEORY §72b (the §72 diagnostic at lr 1e-4) panel result (2026-10-02 04:30 EDT; `python c1/score_72.py p72b` → `theory/results/score_s72b.json`)
+
+Seeds 2001–2005 × PF / RF / PF-std / PT, all trained parameters at lr 1e-4. The pilot (seed 990) is recorded separately
+as pilot. Placement: 3 local cards (rolling, one job per card) and Vast for seed 2001. The seed-2002 host failed the
+GPT-2 sha / image pull; its arms ran locally.
+
+| arm | certified | verdict (§72 rule) | accuracy | ReLU units ever active (of 256) | head-input cosine (normed, end) |
+|---|---|---|---|---|---|
+| PF (frozen pretrained) | 0/5 | **fails** | chance (0.15–0.19) | 147–165 | 0.985–0.991 |
+| RF (frozen random-init) | 5/5 | **succeeds** | 1.000 at N 8–128 | 256 | 0.08–0.10 |
+| PF-std (frozen pretrained, table-standardised) | 5/5 | **succeeds** | 1.000 at N 8–128 | 256 | −0.04 (raw 0.99) |
+| PT (fine-tuned) | 1/5 | **fails** | s2004 1.000; others 0.18–0.51 | 256 | 0.21–0.72 |
+
+PT per-layer between/within-code variance at the op position: the certified seed rises to ~1.75 from layer 5 on; the
+failed seeds plateau at ~0.45.
+
+**Reading** (§72's rules).
+* "PF fails, RF succeeds": pretrained geometry is the obstacle.
+* PF-std succeeds, so the code information is present in frozen pretrained GPT-2, but its anisotropy (head inputs
+  nearly parallel across codes, cosine 0.99) ruins the readout's conditioning. Per-coordinate standardisation over the
+  table cures it. About 40 % of PF's ReLU units never fire.
+* The trigger for §73 (PF-std ≥ 4/5) is met; §73 is running.

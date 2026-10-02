@@ -1,0 +1,19 @@
+{
+ "arm": "p3",
+ "k": 4,
+ "latent": 0,
+ "train_sec": 1223,
+ "labelled_states_seen": 512000,
+ "eval_batch": 100,
+ "eval_dtype": "torch.bfloat16",
+ "test_sequences": 2000,
+ "eval_sec": 299,
+ "cumulative": {
+  "128": 0.0,
+  "256": 0.0,
+  "512": 0.0
+ },
+ "final_state_acc_512": 0.0105,
+ "invalid_share": 0.998046875,
+ "chunk_check_final": null
+}
