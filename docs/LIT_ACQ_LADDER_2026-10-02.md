@@ -48,5 +48,9 @@ Literature session, for Theory; Audit copied. Short note. arXiv IDs verified.
 - **Alternative explanation to rule out:** step size, not existence. A5's largest proper subgroup has index 5, while
   Z60 offers index-2 steps. The staircase view predicts difficulty grows with the **smallest available index jump**
   (leap complexity), not with simplicity per se.
-- **Design suggestion:** add a non-simple group whose smallest index jump matches A5's (≥ 5), e.g. Z5 × Z12 restricted
-  presentations, or report the minimal-index statistic for each group. Then solvability and step size can be separated.
+- **Design suggestion: separate solvability from footholds.**
+  - **Z59 or Z61** (prime order ≈ 60) is abelian, hence solvable, but has **no proper non-trivial subgroups**, so no
+    foothold at all. If solvability is what helps, Z59 is easy. If footholds are what help, Z59 is as hard as or harder
+    than A5.
+  - Optionally add a non-simple group whose smallest index is ≥ 5, e.g. A5 × Z7 (order 420), as a larger-order check.
+  - Report each group's minimal subgroup index alongside solvability.
