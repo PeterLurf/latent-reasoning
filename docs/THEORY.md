@@ -6402,6 +6402,62 @@ final 4,000-step checkpoints per 80-1). P0 fails, so §80 stops and the cell arm
 training (implicit-reasoning and grokking results, e.g. Wang 2405.15071). The claim is therefore "GPT-2 small, trained
 on ≤ 815 k-op words with end-state targets, does not compose unseen words in one pass". Not rerun (pioneer brief).
 
+## 83. Self-gated restarts: the written-state solver chooses its own chunk boundaries by confidence (pre-registered 2026-10-02 13:26 EDT, after Literature's check 93597e4 and before any run; idea 4, approved by Audit)
+
+**Why.** Every working fix in this project restarts from a written state at a **hand-fixed** k: §64, §66, §71 (S5 at
+512 and 2,048, certified), Delethink and PENCIL. C5 asks for boundaries the model chooses.
+* §80 and P3 showed that GPT-2 small does not compose several ops in one pass from end-state targets. But it does
+  compose when it writes the state after each op (§71, all-position).
+* So the remaining question is *where* to cut the history. §83 lets the solver's own confidence choose, with a
+  threshold calibrated **in range only**.
+
+**Prior** (93597e4). FLARE 2305.06983 and DRAGIN 2403.10081 (low-confidence-triggered redo); CALM 2207.07061 with
+Learn-then-Test risk control 2110.01052; ACT and PonderNet; DEER 2504.15895. Out-of-range overconfidence is the documented
+norm (Guo 1706.04599; Hein 1812.05720). Confidence under length extrapolation is unmeasured.
+
+**Models.** §71's WC₀₄ all-position solver (S5, DeltaProduct data, trained on chunks of k′ ≤ 4). It is **retrained with
+§71's exact command** (`boxes/s5.py`: wc0all, k 4, 8k steps, bs 64, lr 1e-4), seeds 1–3, on one Vast 3090. §71's weights
+were not kept.
+* Its §71 evaluation is rerun as a check: fixed k = 4 should be 1.000 at 512.
+
+**Policy** (`theory/s83_restart.py`; inference only).
+* Offer up to Kmax = 16 ops. The solver writes a state after each.
+* Accept states while the confidence (the product of the 5 letter probabilities under greedy decoding) is ≥ τ.
+* At the first state below τ, discard it and restart (history cut) from the last accepted state. At least one state is
+  always accepted.
+* **τ (risk-controlled, in range only).** On 20,000 fresh in-range chunks (random start, k′ ~ U{1..4}, uniform ops,
+  seed 8300), τ is the largest threshold whose 95 % upper bound on the false-restart rate among correct states is
+  ≤ 1 %.
+
+**Measures** (the §71 test set: 2,000 × 512; extension 500 × 2,048).
+* Cumulative accuracy at 128 / 256 / 512 (and 2,048), and final-state accuracy.
+* Mean accepted chunk length and its histogram; generated states per problem.
+* **Detection on the first wrong state** of chunks with a correct start: the miss rate (wrong but confident) and the
+  per-state error rate, reported separately (Literature).
+* False-restart rate on correct states.
+* Fixed k = 4, 8, 16 on the same models.
+* A risk–coverage sweep (τ at 0.1 %, 1 % and 5 % in-range false-restart levels; 500 sequences).
+
+**Predictions** (3 seeds).
+* **U1 (self-gating keeps exactness).** The adaptive policy reaches cumulative accuracy ≥ 0.99 at 512 in 3/3 seeds,
+  while fixed k = 16 reaches < 0.5 (median).
+* **U2 (detection).** Of first wrong states, ≥ 0.99 have confidence < τ (pooled).
+* **U3 (descriptive).** The mean accepted chunk length: whether the solver safely extends past its trained chunk size
+  (> 4) or stops at it.
+
+**Wording (Literature).** "Self-gated restarts: boundaries chosen at inference by the solver's own confidence, with a
+threshold calibrated in range only (risk-controlled); no parameters trained for segmentation". This counts as
+adaptive, **unlearned** C5. It is still scaffolded: the history cut is external.
+
+**Readings.**
+* **U1 + U2.** The solver's uncertainty marks its own range boundary. The hand-fixed k can be replaced by self-gating
+  without losing exactness, and this is the first measurement of LM confidence under length extrapolation on state
+  tracking.
+* **U2 fails.** Out-of-range overconfidence. The solver cannot tell when it leaves its range, and fixed k remains
+  necessary.
+
+**Placement and cost.** One Vast 3090: retraining (about 3 × 40 min) plus inference (about 3 × 30 min). About $1.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
