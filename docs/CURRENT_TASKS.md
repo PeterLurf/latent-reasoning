@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-10-02 11:35 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-10-02 12:05 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -35,7 +35,7 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 > gives fronts to depth 11 in 2/4 runs; Pilot D 12 + 12 running on Vast). Ownership (theory Vast hosts vs a PROTOCOL8)
 > to be agreed. The theory session analyses O/R/T9/T10 runs only after the experiments session has scored them.
 
-## 00. EXPERIMENTS STATE AT 2026-10-02 11:35 EDT — authoritative over section 0
+## 00. EXPERIMENTS STATE AT 2026-10-02 12:05 EDT — authoritative over section 0
 
 **Running (all local; no Vast hosts of ours):**
 * **§76(A) teachers on local GPUs (amendment 76-5):** `python theory/c1_tab_driver.py --groups {A5|S5|S4} --device
@@ -58,6 +58,15 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 * **§74 scored 08:00:** P1 0/5, so uninformative; bad pairs sent to Theory. Backfill queue: all 90 cells already done.
 * GRU host and the §75 host are destroyed. Theory runs c1tab-76 (Vast CPU) and local CPU teacher jobs.
 
+* **§78 GSM8K step-count split (registered 75ec955; code 1bfa742, scorer 4fcd147):** data `gsmlen/d78/` (from
+  `python gsmlen/data78.py`), trainer `gsmlen/train78.py`. The throughput pilot (`bash scratch/p78_pilot.sh cuda:0`,
+  logs `logs/p78_pilot_*.log`, out `gsmlen/pilot/`) runs on cuda:0 after the A5 panel. Then a Vast projection to Audit
+  (≤ $25), then 3 arms × 3 seeds. Score: `python gsmlen/score78.py`.
+* **§79 paraphrased-op latent (registered 75ec955; phrasings c410cfe; code and scorer 928ca7d):** `python -m
+  c1.phrase79 --arm {pfstd,rfstd,bow,tab} [--families 2|4] --seed 2081-2085`. The pilot (PF-std s2081, queue
+  `scratch/c1_q_79_pilot.txt`) runs on cuda:1 after the A5 panel; then the 30-run panel locally. Score:
+  `python c1/score_79.py`.
+* **Coming from Theory:** §80 (chunk machine; needs GPT-2 code), §81 Sinkhorn and §82 acquisition ladder (table jobs).
 * **User decision "both" (via Audit, about 11:05): (1) GSM8K length split with the written-state method from the D&W
   CoT checkpoint (about $25, one-host pilot, projection to Audit first); (2) a new toy latent task needing LM knowledge
   (local).** Theory registers both; no training before that. Prep done (a900b18, `gsmlen/`):
