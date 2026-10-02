@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-10-02 08:00 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-10-02 09:35 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -38,16 +38,14 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 ## 00. EXPERIMENTS STATE AT 2026-10-02 07:30 EDT — authoritative over section 0
 
 **Running:**
-* **§75 pilot** (THEORY §75, 6545f0b): Vast 53851105 `c1-75-990` (3090, $0.18/h). Queue `scratch/c1_q_75_990.txt`
-  (S4, M 48, 16k updates, PF-std then PT-std, seed 990); auto drain `logs/auto_drain_c1_75_990.out`. Gate: the panel
-  (seeds 2031–2035 × PF-std/PT-std) starts only if either arm certifies or reaches ≥ 0.95 at N 128. Then A5 (M 120),
-  one-host pilot first, with a projection to Audit before its panel.
-* **§75 panel PF-std, local, PROVISIONAL** (excluded unless the 990 gate passes): `scratch/c1_q_75_local.txt`, seeds
-  2031–2035 on all 3 cards (`C1_GROUP=S4 bash scratch/c1_local_worker.sh <dev> scratch/c1_q_75_local.txt`), logs
-  `logs/c1_p75_pfstd_s*.log`, ~60–100 min each. If the gate passes, Vast needs only the PT-std panel.
-* **§74 scored 08:00:** P1 0/5 → uninformative; bad pairs sent to Theory. Backfill queue: all 90 cells already done.
-* **§71 GRU host** 53814109 `s71-gru`: hard stop 09:00 (`scratch/gru_hardstop.sh`).
-* Theory's DENSE S4 reference: 3 CPU processes (`theory/s72_dense_toy.py`), not ours.
+* **§76(B) / B-std (amendment 76-2), local:** `scratch/feed76.sh` (stop: `touch scratch/.stop_feed76`; log
+  `logs/feed76.log`) queues both students (`python -m c1.amortise`) for every CERTIFIED S4 teacher Theory writes to
+  `theory/results/c1_tab_local/` and starts workers on free cards (queue `scratch/c1_q_76_local.txt`). Score:
+  `python c1/score_76b.py S4`. Pilot s2051 (std): copied rows exact, held-out rows 0.10/0.24, so not certified.
+  ge3 teachers are 0/6 certified, so primary (B) S4 fails.
+* **§75: gate failed 09:00** (PROTOCOL12). Descriptive leftovers: `p75_pfstd_s2031–2033` (void as evidence; s2034 was
+  stopped and moved to `void_*`).
+* GRU host and the §75 host are destroyed. Theory runs c1tab-76 (Vast CPU) and local CPU teacher jobs.
 
 **Scored (details in docs/PROTOCOL12.md):** §65, §66, §61b, §67b, §72 (collapsed), §72b (PF-std 5/5), §73 (stable latent
 10/10), §71 (S1/S2 met, S3 comparator not reproduced, S4/C1 not met).
