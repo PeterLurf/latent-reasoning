@@ -5805,6 +5805,28 @@ DENSE also learn, so on S3 with single-token ops GPT-2's pretraining contributes
 **Placement and cost.** 15 runs, each cheaper than D1b (3 ops per code). Local cards behind §73, or one Vast host. About
 $1–2.
 
+**§74 result (2026-10-02 07:53 EDT; scored by the experiments session, 205091d, `docs/PROTOCOL12.md` §74; diagnostic
+dump `c1/runs/p74diag_pfstd_s*/eval.json`). P1, P2 and P3 are all not met.**
+
+**P1: 0/5 certified, explained by the curriculum.**
+* In 3 seeds (2021–2023), accuracy is 1.000 at N 8–128, yet 3–4 reachable pairs decode wrongly.
+  - Every one is first reached at **length 3**.
+  - Every one is a **parity flip**: a true transposition decoded as an even element.
+* With transposition generators, the state's parity equals the length's parity.
+* The std curriculum trains lengths (1, 2, 4, 8), so no odd length above 1 is ever trained. The transient codes that
+  first appear at length 3 inherit the even-length decoding.
+* This is a curriculum × generator artefact, not a paraphrase or LM effect. The S3 single-token tasks (§72b/§73) mix all
+  6 elements, so they decouple parity from length.
+* Seeds 2024 and 2025 failed differently: code merges (28 and 9 bad pairs; first lengths 2–9).
+
+**P2 / P3 (descriptive, since P1 failed).** Agreement F2 0.405, F3 0.375, F4 0.458; negative control " copy i j" 0.708.
+* The trained readout transfers to no held-out phrasing.
+* It agrees more with the wrong verb than with real paraphrases, so it mostly reads the digits.
+* With one training phrasing, the frozen pretrained LM's language knowledge does not reach the latent transitions.
+
+**Close.** No variant within §74. A future text-op design must train lengths of both parities, i.e. all of 1..8 rather
+than (1, 2, 4, 8). A multi-phrasing version (§74's reading) is not registered now; S4/A5 scaling (§75) has priority.
+
 ## 75. Scaling the stable latent: S4, then A5 (pre-registered 2026-10-02 07:16 EDT, after Literature's check 3fa7f90, before any GPU run and before the CPU gate below is read; the overnight stable-latent goal, Audit's option (a))
 
 **Why.** §73 confirmed a stable latent at S3: frozen pretrained GPT-2 with a standardised bilinear readout, 10/10
