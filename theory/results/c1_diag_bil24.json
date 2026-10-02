@@ -1,0 +1,302 @@
+{
+ "M24_bil_tau1_lr0.01_u8000_s0": {
+  "loss": 0.1222151517868042,
+  "reach": 6,
+  "bijection": false,
+  "transition_errors": 12,
+  "certified": false,
+  "acc": {
+   "8": 0.6965,
+   "9": 0.696,
+   "32": 0.3825,
+   "33": 0.407,
+   "127": 0.3215,
+   "128": 0.3375
+  }
+ },
+ "M24_bil_tau1_lr0.01_u8000_s1": {
+  "loss": 9.990938269766048e-05,
+  "reach": 7,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M24_bil_tau1_lr0.01_u8000_s2": {
+  "loss": 0.00011779039778048173,
+  "reach": 10,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M24_bil_tau1_lr0.01_u8000_s3": {
+  "loss": 9.644986130297184e-05,
+  "reach": 6,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M24_bil_tau1_lr0.01_u8000_s4": {
+  "loss": 9.594876610208303e-05,
+  "reach": 6,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M24_bil_tau1_lr0.01_u8000_s5": {
+  "loss": 9.914513793773949e-05,
+  "reach": 6,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M24_bil_tau1_lr0.01_u8000_s6": {
+  "loss": 0.3556425869464874,
+  "reach": 7,
+  "bijection": false,
+  "transition_errors": 14,
+  "certified": false,
+  "acc": {
+   "8": 0.735,
+   "9": 0.6865,
+   "32": 0.351,
+   "33": 0.338,
+   "127": 0.331,
+   "128": 0.3285
+  }
+ },
+ "M24_bil_tau1_lr0.01_u8000_s7": {
+  "loss": 9.512586984783411e-05,
+  "reach": 6,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M24_bil_tau1_lr0.01_u8000_s8": {
+  "loss": 9.81569173745811e-05,
+  "reach": 6,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M24_bil_tau1_lr0.01_u8000_s9": {
+  "loss": 0.0001239402627106756,
+  "reach": 6,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M24_bil_tau4_lr0.01_u8000_s0": {
+  "loss": 9.747418516781181e-05,
+  "reach": 6,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M24_bil_tau4_lr0.01_u8000_s1": {
+  "loss": 9.68480744631961e-05,
+  "reach": 7,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M24_bil_tau4_lr0.01_u8000_s2": {
+  "loss": 0.00010391953401267529,
+  "reach": 8,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M24_bil_tau4_lr0.01_u8000_s3": {
+  "loss": 8.865911513566971e-05,
+  "reach": 6,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M24_bil_tau4_lr0.01_u8000_s4": {
+  "loss": 0.000169804974575527,
+  "reach": 13,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M24_bil_tau4_lr0.01_u8000_s5": {
+  "loss": 9.414181840838864e-05,
+  "reach": 6,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M24_bil_tau4_lr0.01_u8000_s6": {
+  "loss": 9.081417374545708e-05,
+  "reach": 6,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M24_bil_tau4_lr0.01_u8000_s7": {
+  "loss": 0.00011544337030500174,
+  "reach": 10,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M24_bil_tau4_lr0.01_u8000_s8": {
+  "loss": 0.00010678830585675314,
+  "reach": 8,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ },
+ "M24_bil_tau4_lr0.01_u8000_s9": {
+  "loss": 0.0001494677271693945,
+  "reach": 6,
+  "bijection": true,
+  "transition_errors": 0,
+  "certified": true,
+  "acc": {
+   "8": 1.0,
+   "9": 1.0,
+   "32": 1.0,
+   "33": 1.0,
+   "127": 1.0,
+   "128": 1.0
+  }
+ }
+}
