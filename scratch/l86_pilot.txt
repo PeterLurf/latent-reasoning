@@ -1,0 +1,2 @@
+# THEORY §86 pilot (one card first)
+boxes/runs_s5/l86_k4_s1 boxes.latent86 train --k 4 --seed 1 --steps 8000 --bs 64
