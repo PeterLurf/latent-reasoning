@@ -1,0 +1,23 @@
+{
+ "teacher": "theory/results/c1_tab_local/A5_std_s2057.json",
+ "student": "ptstd",
+ "updates": 4000,
+ "lr": 0.0001,
+ "holdout": 0.1,
+ "n_test": 2000,
+ "bs": 512,
+ "stats_every": 10,
+ "fake_teacher": false,
+ "allow_uncertified": false,
+ "device": "cuda:0",
+ "out": "c1/runs/p76a5_std_ptstd_s2057",
+ "seed": 2057,
+ "group": "A5",
+ "M": 120,
+ "teacher_certified_file": true,
+ "R": 61,
+ "rows": 3660,
+ "train_rows": 3294,
+ "heldout_rows": 366,
+ "evidential": true
+}

@@ -427,3 +427,19 @@ The scorer (5a3c259) and the 76-3 extension were committed before any student re
 learner from final answers (system level; 76-3 wording: "a pretrained LM can host a certified automaton acquired by a
 tabular learner"). It does not generalise the automaton to unseen transitions. The registered (B) and B-std rules are
 not met.
+
+## THEORY §76(B) A5 (amortisation into the stable GPT-2 cell, 60-element group) result (2026-10-02 12:19 EDT; `python c1/score_76b.py A5` → `theory/results/score_s76b_A5.json`)
+
+Same scorer and rules as S4. A path fix was made before this verdict: the per-group run prefix (A5 runs are
+`p76a5_*`; the first A5 scoring call had read the S4 runs). The verdict logic is unchanged. Students use a row
+minibatch (bs 512, full-table statistics refreshed every 10 updates) for 8 GB memory, disclosed.
+
+| arm | teachers certified | PF-std certified | PT-std certified | verdict |
+|---|---|---|---|---|
+| **(B), ge3 teachers (primary)** | 0/10 | 0/10 | 0/10 | **fails** |
+| **B-std, std teachers, 10 % rows held out** | 10/10 | 0/10 | 0/10 | **fails** |
+| 76-3 full arm (descriptive) | 10/10 | 10/10 | 10/10 | descriptive: hosted exactly (1.000 at N 128) |
+
+**Descriptive.** Held-out-row accuracy is at chance (about 1/|R|, |R| ≈ 60): PF-std median about 0.005, PT-std about
+0.008. Every student copies its training rows exactly, and the held-out-patched certificate holds. As with S4, the
+students host but do not compose.

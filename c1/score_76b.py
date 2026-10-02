@@ -1,7 +1,7 @@
 """Score THEORY §76(B) (ge3 teachers, primary) and amendment 76-2's B-std (std teachers, secondary) for one group.
 Committed before any §76(B) student result existed.
 Per seed 2051-2060 and teacher curriculum: the teacher file theory/results/c1_tab_local/<G>_<cur>_s<seed>.json (its
-certified flag) and the students c1/runs/p76_<cur>_<student>_s<seed>/eval.json (pfstd, ptstd).
+certified flag) and the students c1/runs/<p76|p76a5>_<cur>_<student>_s<seed>/eval.json (pfstd, ptstd; prefix p76 for S4, p76a5 for A5).
 Rule (§76): a student succeeds at >= 9/10 seeds certified (certificate on the student's own hard table), counting a
 seed whose teacher is uncertified (or missing) as a failure. Reported alongside: teacher-alone certified count, per seed
 held-out-row accuracy (composition vs copying), the held-out-patched certificate, accuracy at N 8-128, codes reached
@@ -13,6 +13,7 @@ import os
 import sys
 
 SEEDS = range(2051, 2061); STUDENTS = ("pfstd", "ptstd")
+PRE = {"S4": "p76", "A5": "p76a5"}                # run-name prefix per group (path fix 2026-10-02 12:20: A5 first read S4 runs)
 
 
 def main():
@@ -31,7 +32,7 @@ def main():
                 row["teacher_certified"] = None
             done = row["teacher_certified"] is False
             for s in STUDENTS:
-                f = f"c1/runs/p76_{cur}_{s}_s{sd}/eval.json"
+                f = f"c1/runs/{PRE[G]}_{cur}_{s}_s{sd}/eval.json"
                 if os.path.exists(f):
                     e = json.load(open(f)); c = bool(e["certificate"]["certified"]) and bool(e["evidential"])
                     k[s] += int(c)
