@@ -1,0 +1,4 @@
+# §71 DeltaProduct n_h=4, lengths 2-128 (amendment 71-1)
+dpvar 1
+dpvar 2
+dpvar 3

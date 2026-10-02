@@ -1,0 +1,4 @@
+# §71 DeltaProduct n_h=4 (paper command)
+dp 1
+dp 2
+dp 3
