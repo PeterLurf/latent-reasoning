@@ -445,3 +445,7 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53816939 vast | c1_72b_990 DESTROYED_VERIFIED 2026-10-02 03:10 after verified fetch (c1/runs/p72b_pf_s990 c1/runs/p72b_rf_s990 c1/runs/p72b_pfstd_s990 c1/runs/p72b_pt_s990)
 53822934 vast | c1_72b_2002 DESTROYED_VERIFIED 53822934 2026-10-02 03:22: GPT2_SHA_MISMATCH x3, nothing ran; redeployed with GPT-2 uploaded from local
 53826108 vast offer 50443928 created 2026-10-02 03:33: label c1-72b-2002, queue scratch/c1_q_72b_2002.txt (logged at create by vdeploy_toy.sh)
+53822932 vast | c1_72b_2001 DESTROYED_VERIFIED 2026-10-02 03:50 after verified fetch (c1/runs/p72b_pf_s2001 c1/runs/p72b_rf_s2001 c1/runs/p72b_pfstd_s2001 c1/runs/p72b_pt_s2001)
+53826108 vast | c1-72b-2002 DESTROYED_VERIFIED 53826108 2026-10-02 03:51: image pull stuck ~17 min; seed 2002 moved to the local cards
+53831765 vast offer 50443928 created 2026-10-02 04:22: label c1-73-ptA, queue scratch/c1_q_73_ptA.txt (logged at create by vdeploy_toy.sh)
+53831770 vast offer 53644716 created 2026-10-02 04:22: label c1-73-ptB, queue scratch/c1_q_73_ptB.txt (logged at create by vdeploy_toy.sh)
