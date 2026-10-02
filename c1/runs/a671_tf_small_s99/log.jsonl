@@ -1,0 +1,20 @@
+{"update": 100, "L": 1, "loss": 0.8807611268758774, "examples": 51200, "gpt2_tokens": 12000, "sec": 3}
+{"update": 200, "L": 1, "loss": 0.7894442498683929, "examples": 102400, "gpt2_tokens": 24000, "sec": 5}
+{"update": 300, "L": 1, "loss": 0.785417959690094, "examples": 153600, "gpt2_tokens": 36000, "sec": 7}
+{"update": 400, "L": 1, "loss": 0.6609422975778579, "examples": 204800, "gpt2_tokens": 48000, "sec": 9}
+{"update": 500, "L": 1, "loss": 0.5522058436274528, "examples": 256000, "gpt2_tokens": 60000, "sec": 11, "acc8": 0.154, "acc32": 0.158, "certified": false, "trans_err": 28}
+{"update": 600, "L": 1, "loss": 1.3087075060606004, "examples": 307200, "gpt2_tokens": 72000, "sec": 13}
+{"update": 700, "L": 1, "loss": 0.8404230552911759, "examples": 358400, "gpt2_tokens": 84000, "sec": 15}
+{"update": 800, "L": 1, "loss": 0.8286956211924553, "examples": 409600, "gpt2_tokens": 96000, "sec": 17}
+{"update": 900, "L": 1, "loss": 0.8318783921003342, "examples": 460800, "gpt2_tokens": 108000, "sec": 19}
+{"update": 1000, "L": 2, "loss": 0.8134001642465591, "examples": 512000, "gpt2_tokens": 120000, "sec": 21, "acc8": 0.222, "acc32": 0.164, "certified": false, "trans_err": 16}
+{"update": 1100, "L": 1, "loss": 1.1157938009500503, "examples": 563200, "gpt2_tokens": 132000, "sec": 23}
+{"update": 1200, "L": 4, "loss": 1.1267071306705474, "examples": 614400, "gpt2_tokens": 144000, "sec": 25}
+{"update": 1300, "L": 4, "loss": 1.174413918852806, "examples": 665600, "gpt2_tokens": 156000, "sec": 28}
+{"update": 1400, "L": 2, "loss": 1.036106430888176, "examples": 716800, "gpt2_tokens": 168000, "sec": 30}
+{"update": 1500, "L": 4, "loss": 1.099915109872818, "examples": 768000, "gpt2_tokens": 180000, "sec": 32, "acc8": 0.192, "acc32": 0.156, "certified": false, "trans_err": 17}
+{"update": 1600, "L": 8, "loss": 1.3144485914707185, "examples": 819200, "gpt2_tokens": 192000, "sec": 34}
+{"update": 1700, "L": 4, "loss": 1.2203993266820907, "examples": 870400, "gpt2_tokens": 204000, "sec": 36}
+{"update": 1800, "L": 2, "loss": 1.2629954725503922, "examples": 921600, "gpt2_tokens": 216000, "sec": 38}
+{"update": 1900, "L": 4, "loss": 1.1923930257558824, "examples": 972800, "gpt2_tokens": 228000, "sec": 40}
+{"update": 2000, "L": 2, "loss": 1.1139033353328704, "examples": 1024000, "gpt2_tokens": 240000, "sec": 43, "acc8": 0.166, "acc32": 0.162, "certified": false, "trans_err": 17}

@@ -1,0 +1,16 @@
+{
+ "arm": "mlp",
+ "seed": 99,
+ "updates": 2000,
+ "bs": 512,
+ "lr": 0.001,
+ "head_init": "default",
+ "head_norm": "none",
+ "code_init": "default",
+ "lr_new": 0.0,
+ "n_test": 2000,
+ "n_null": 10000,
+ "max_hours": 3.0,
+ "device": "cuda:2",
+ "out": "c1/runs/a671_mlp_s99"
+}
