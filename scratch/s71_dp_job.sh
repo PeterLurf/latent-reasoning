@@ -11,7 +11,7 @@ SHA128=6ee3ef95405dc43b094824dff8973753c587fe95a00762d2023bd64a941504f2
 SHA512=a0087fe4a7496a47f76d9436e6bb089c8a8869f3f343f71057355e127d0c33da
 { cd /workspace; [ -d DeltaProduct ] || git clone -q https://github.com/automl/DeltaProduct.git
   cd DeltaProduct/state_tracking; touch .project-root
-  pip install -q fire humanize polars pyrootutils accelerate datasets python-dotenv ordered-set tokenizers transformers wandb evaluate \
+  pip install -q fire humanize polars pyrootutils accelerate datasets python-dotenv ordered-set tokenizers "transformers==4.46.2" wandb evaluate \
      "git+https://github.com/jopetty/abstract_algebra" "git+https://github.com/jopetty/sfirah"
   touch ../flash-linear-attention/README.md                       # the bundled fla's setup reads a README it lacks
   pip install -q -e ../flash-linear-attention
