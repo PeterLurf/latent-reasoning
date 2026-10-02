@@ -5429,6 +5429,21 @@ type and the all-position chunk mode.
 * A throughput pilot may fix only steps and batch (logged).
 * A projection goes to Audit before launches over about $5. Estimate: about 30 GPU-h, $6–10.
 
+**Amendment 71-1 (2026-10-02 00:29 EDT, before any §71 training run; the experiments session's implementation
+questions, fc6fa09).**
+* **P3 training range.** "N ≤ 8 ops" was a loose restatement of §66. The P3 solvers (WC₀₄ and WC₄, final-only) train as
+  §66's WC did: random-start problems of k′ ~ U{1..4} ops (uniform over all 120 elements), final arrangement only.
+  The solver never sees more than 4 ops in one context, at training or at test.
+  - S4's rule is unchanged (≥ 0.95 at 512). Its wording becomes "512 from training problems of ≤ 4 ops (128×)" in place
+    of "64×".
+* **DeltaProduct fairness arm.** "Lengths uniform in 1–128" is implemented through DeltaProduct's own variable-length
+  path (`strict_len=False`, one file per length, [PAD]-masked loss). That gives lengths uniform in 2–128, about 790
+  sequences per length and 100k in total, the same as the main arm. Length 1 is excluded by their code. The arm stays
+  descriptive.
+* Recorded as implemented (no change): element order is itertools permutations of 1..5, label_t = label_{t−1} ∘ x_t,
+  equivalent to "box i receives what box pᵢ held". check_interface (all 14,400 pairs) and check_labels (every train and
+  test position) pass. Data seeds are 7101 (train), 7102 (test) and 7103 (2,048 extension).
+
 ## 72. Where does the GPT-2 transition cell lose acquisition? One diagnostic: frozen pretrained vs frozen random GPT-2 vs fine-tuned vs the toy multiplicative cell (pre-registered 2026-10-02 00:25 EDT, after Literature's check 811c5d7 and before any run; user question via Audit, "what are we doing to solve reliable latent method")
 
 **Why.** The same multiplicative interaction behaves very differently in toy and GPT-2 cells.
