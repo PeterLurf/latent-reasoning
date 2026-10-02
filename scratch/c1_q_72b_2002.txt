@@ -1,0 +1,5 @@
+# THEORY §72b panel seed 2002 (lr 1e-4 everywhere; pilot seed 990 clean)
+c1/runs/p72b_pf_s2002 --arm d1 --M 24 --tau0 4 --readout bil --head_norm ln --code_init distinct --updates 8000 --bs 512 --lr 1e-4 --lr_new 1e-4 --freeze_gpt2 --feat_norm ln --seed 2002
+c1/runs/p72b_rf_s2002 --arm d1 --M 24 --tau0 4 --readout bil --head_norm ln --code_init distinct --updates 8000 --bs 512 --lr 1e-4 --lr_new 1e-4 --freeze_gpt2 --feat_norm ln --gpt2_init random --seed 2002
+c1/runs/p72b_pfstd_s2002 --arm d1 --M 24 --tau0 4 --readout bil --head_norm ln --code_init distinct --updates 8000 --bs 512 --lr 1e-4 --lr_new 1e-4 --freeze_gpt2 --feat_norm tablestd --seed 2002
+c1/runs/p72b_pt_s2002 --arm d1 --M 24 --tau0 4 --readout bil --head_norm ln --code_init distinct --updates 8000 --bs 512 --lr 1e-4 --lr_new 1e-4 --feat_norm ln --seed 2002
