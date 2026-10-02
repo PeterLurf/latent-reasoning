@@ -6240,6 +6240,18 @@ The Sinkhorn cell is not registered.**
 * The two TAB runs started at 1e-4 (s2081 complete, s2082 partial) are voided unread and kept in `c1/runs/void_p79_tab_*`.
 * P2 is unaffected: TAB's held-out score is 0 by construction. TAB's training-phrasing certificate is descriptive.
 
+**Amendment 79-2 (2026-10-02 13:15 EDT; recipe revision after the pilot, before any panel result is read).**
+* **Pilot.** PF-std s2081 under the registered recipe (lengths uniform 1–8 from update 1) did not acquire S3.
+  - 3 reachable codes; accuracy ≈ 0.33 at every N.
+  - The training loss plateaued at ≈ 1.05 (a 3-way quotient) from update 1,000.
+* **Cause (Theory's design).** Uniform lengths were chosen to fix §74's parity holes. That flaw cannot arise here: with all
+  6 elements as operations, odd and even lengths both reach every state. §73's acquisition (10/10) used the std
+  curriculum.
+* **Change.** §79 uses **§73's std curriculum** (1 → (1, 2) → (1, 2, 4) → (1, 2, 4, 8)). Everything else is unchanged.
+* The runs started under the old recipe are **voided unread** and kept.
+* The pilot (PF-std s2081, 8 families) reruns first. The panel starts only if the pilot certifies on the training
+  phrasings.
+
 ## 80. A latent chunk machine: a discrete code carried across chunks of k operations, so the LM must compose inside its forward pass (pre-registered 2026-10-02 12:02 EDT, after Literature's check 9224385 and before any run; idea 1 of Theory's list, approved by Audit)
 
 **Why.** GPT-2 stores a latent automaton but does not compose missing rows (§76(B)). It does compose k operations inside
