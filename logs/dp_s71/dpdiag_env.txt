@@ -1,0 +1,5 @@
+val/best_sequence_accuracy': 0.0
+flash-linear-attention                   0.2.2        /workspace/DeltaProduct/flash-linear-attention
+torch                                    2.5.1+cu124
+transformers                             4.46.2
+triton                                   3.1.0

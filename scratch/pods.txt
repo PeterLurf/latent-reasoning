@@ -449,3 +449,5 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53826108 vast | c1-72b-2002 DESTROYED_VERIFIED 53826108 2026-10-02 03:51: image pull stuck ~17 min; seed 2002 moved to the local cards
 53831765 vast offer 50443928 created 2026-10-02 04:22: label c1-73-ptA, queue scratch/c1_q_73_ptA.txt (logged at create by vdeploy_toy.sh)
 53831770 vast offer 53644716 created 2026-10-02 04:22: label c1-73-ptB, queue scratch/c1_q_73_ptB.txt (logged at create by vdeploy_toy.sh)
+53804532 vast | s71-dp DESTROYED_VERIFIED 53804532 2026-10-02 05:22: 71-2 closed - DeltaProduct not reproduced on our setup; logs in logs/dp_s71/
+53831770 vast | c1_73_ptB DESTROYED_VERIFIED 2026-10-02 05:23 after verified fetch (c1/runs/p73_ptstd_s2017 c1/runs/p73_ptstd_s2018 c1/runs/p73_ptstd_s2019 c1/runs/p73_ptstd_s2016 c1/runs/p73_ptstd_s2020)
