@@ -1,0 +1,232 @@
+{
+ "S4_ge3": {
+  "certified": 0,
+  "n": 10,
+  "per_seed": {
+   "2051": false,
+   "2052": false,
+   "2053": false,
+   "2054": false,
+   "2055": false,
+   "2056": false,
+   "2057": false,
+   "2058": false,
+   "2059": false,
+   "2060": false
+  },
+  "first_cert_update_median": null,
+  "problems_to_cert_median": null,
+  "failed_plateau_1_over": [
+   3,
+   3,
+   2,
+   2,
+   4,
+   8,
+   4,
+   3,
+   12,
+   6
+  ],
+  "succeeds": false
+ },
+ "S4_std": {
+  "certified": 10,
+  "n": 10,
+  "per_seed": {
+   "2051": true,
+   "2052": true,
+   "2053": true,
+   "2054": true,
+   "2055": true,
+   "2056": true,
+   "2057": true,
+   "2058": true,
+   "2059": true,
+   "2060": true
+  },
+  "first_cert_update_median": 9000.0,
+  "problems_to_cert_median": 2304000.0,
+  "failed_plateau_1_over": [],
+  "succeeds": true
+ },
+ "A5_ge3": {
+  "certified": 0,
+  "n": 10,
+  "per_seed": {
+   "2051": false,
+   "2052": false,
+   "2053": false,
+   "2054": false,
+   "2055": false,
+   "2056": false,
+   "2057": false,
+   "2058": false,
+   "2059": false,
+   "2060": false
+  },
+  "first_cert_update_median": null,
+  "problems_to_cert_median": null,
+  "failed_plateau_1_over": [
+   83,
+   59,
+   54,
+   61,
+   59,
+   53,
+   57,
+   57,
+   45,
+   47
+  ],
+  "succeeds": false
+ },
+ "A5_std": {
+  "certified": 10,
+  "n": 10,
+  "per_seed": {
+   "2051": true,
+   "2052": true,
+   "2053": true,
+   "2054": true,
+   "2055": true,
+   "2056": true,
+   "2057": true,
+   "2058": true,
+   "2059": true,
+   "2060": true
+  },
+  "first_cert_update_median": 9000.0,
+  "problems_to_cert_median": 2304000.0,
+  "failed_plateau_1_over": [],
+  "succeeds": true
+ },
+ "S5_ge3": {
+  "certified": 0,
+  "n": 9,
+  "per_seed": {
+   "2051": false,
+   "2052": false,
+   "2053": false,
+   "2054": false,
+   "2055": false,
+   "2056": false,
+   "2057": false,
+   "2058": false,
+   "2059": false,
+   "2060": false
+  },
+  "first_cert_update_median": null,
+  "problems_to_cert_median": null,
+  "failed_plateau_1_over": [
+   143,
+   118,
+   118,
+   167,
+   95,
+   95,
+   143,
+   111,
+   125
+  ],
+  "succeeds": false
+ },
+ "S5_std": {
+  "certified": 10,
+  "n": 10,
+  "per_seed": {
+   "2051": true,
+   "2052": true,
+   "2053": true,
+   "2054": true,
+   "2055": true,
+   "2056": true,
+   "2057": true,
+   "2058": true,
+   "2059": true,
+   "2060": true
+  },
+  "first_cert_update_median": 10000.0,
+  "problems_to_cert_median": 2560000.0,
+  "failed_plateau_1_over": [],
+  "succeeds": true
+ },
+ "A5_ge3_M60": {
+  "certified": 0,
+  "n": 5,
+  "per_seed": {
+   "2051": false,
+   "2052": false,
+   "2053": false,
+   "2054": false,
+   "2055": false
+  },
+  "first_cert_update_median": null,
+  "problems_to_cert_median": null,
+  "failed_plateau_1_over": [
+   54,
+   61,
+   74,
+   61,
+   51
+  ]
+ },
+ "A5_ge3_M90": {
+  "certified": 0,
+  "n": 5,
+  "per_seed": {
+   "2051": false,
+   "2052": false,
+   "2053": false,
+   "2054": false,
+   "2055": false
+  },
+  "first_cert_update_median": null,
+  "problems_to_cert_median": null,
+  "failed_plateau_1_over": [
+   65,
+   61,
+   54,
+   83,
+   69
+  ]
+ },
+ "A5_ge3_M240": {
+  "certified": 0,
+  "n": 3,
+  "per_seed": {
+   "2051": false,
+   "2052": false,
+   "2053": false,
+   "2054": false,
+   "2055": false
+  },
+  "first_cert_update_median": null,
+  "problems_to_cert_median": null,
+  "failed_plateau_1_over": [
+   65,
+   51,
+   77
+  ]
+ },
+ "A5_ge3_tau1": {
+  "certified": 0,
+  "n": 5,
+  "per_seed": {
+   "2051": false,
+   "2052": false,
+   "2053": false,
+   "2054": false,
+   "2055": false
+  },
+  "first_cert_update_median": null,
+  "problems_to_cert_median": null,
+  "failed_plateau_1_over": [
+   3,
+   26,
+   3,
+   5,
+   2
+  ]
+ }
+}
