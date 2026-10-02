@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-10-02 17:28 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-10-02 17:53 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -35,7 +35,7 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 > gives fronts to depth 11 in 2/4 runs; Pilot D 12 + 12 running on Vast). Ownership (theory Vast hosts vs a PROTOCOL8)
 > to be agreed. The theory session analyses O/R/T9/T10 runs only after the experiments session has scored them.
 
-## 00. EXPERIMENTS STATE AT 2026-10-02 17:28 EDT — authoritative over section 0
+## 00. EXPERIMENTS STATE AT 2026-10-02 17:53 EDT — authoritative over section 0
 
 **Running (all local; no Vast hosts of ours):**
 * **§76(A) teachers on local GPUs (amendment 76-5):** `python theory/c1_tab_driver.py --groups {A5|S5|S4} --device
@@ -58,21 +58,8 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 * **§74 scored 08:00:** P1 0/5, so uninformative; bad pairs sent to Theory. Backfill queue: all 90 cells already done.
 * GRU host and the §75 host are destroyed. Theory runs c1tab-76 (Vast CPU) and local CPU teacher jobs.
 
-* **§78 GSM8K step-count split — RUNNING on Vast (Audit "go": about $6 expected, cap $10, credit floor about $94).**
-  - The pilot is in `gsmlen/PILOT78.md` (bs 16 × 2, bf16, 6 epochs). The smoke host was drained and destroyed at 12:37.
-  - Fleet since 12:38 (`logs/g78_deploy.log`; auto-drain `logs/auto_drain_g78_<n>.out`; drain `scratch/drain_g78.sh`):
-
-    | host | instance | runs |
-    |---|---|---|
-    | a1 | 53887276 | TC + WS, seed 1 |
-    | a2 | 53887285 | TC + WS, seed 2 |
-    | a3 | 53887291 | TC + WS, seed 3 |
-    | b1 | 53887296 | WS-pad, seed 1 |
-    | b2 | 53887305 | WS-pad, seed 2 |
-    | b3 | 53887312 | WS-pad, seed 3 |
-
-  - Expected: a-hosts about 4.5 h, b-hosts about 3.2 h. Destroy any host past 2× its projection.
-  - Score with `python gsmlen/score78.py` once all 9 `gsmlen/runs/*/pred_test.json` exist.
+* **§78 scored 17:50** (PROTOCOL12, 597a809; Audit reproduced it): L2 not met (WS-pad − TC long −0.006); L3 met; TC
+  collapses past its trained step count. All 7 Vast hosts are destroyed; about $5.
 * **§79 paraphrased-op latent (amendment 79-2: std curriculum; 79-1: TAB lr 1e-2).**
   - Pilot 1 (uniform lengths) failed: 3 codes reached. It is kept as `c1/runs/p79pilot1_uniform_pfstd_s2081`.
   - The first panel was voided unread (`c1/runs/void79`).
@@ -88,10 +75,11 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 * **§86 latent restarts** (caf2ccc, `boxes/latent86.py`): `scratch/l86_chain.sh` puts the pilot (k 4 s1) on the first
   card freed by §79's queue, then the panel (`scratch/l86_q.txt`). Out: `boxes/runs_s5/l86_*`.
 * **§80 stopped at P0 (13:10):** unseen words 0.030 / 0.118 < 0.95. **§82 done**, scored by Theory ("Neither").
-* **§83 retrain on Vast** 53891982 (137.175.22.196:60155): §71's exact wc0k4 command, seeds 1–3. The host's
-  `scratch/s83_after.sh` renames the runs to `wc0k4r_s*` and runs `theory/s83_restart.py`. The local
-  `scratch/s83_fetch.sh` fetches the models and JSONs, then destroys; hard stop 17:30. Log the model.pt sha256s in
-  pods.txt (Audit).
+* **§83:** the verdict is fixed by seed 1 (fails; Theory). The host was destroyed at 17:48 by a surviving old watcher
+  (incident disclosed). The models are local (`boxes/runs_s5/wc0k4r_s*`, shas in pods.txt). Seeds 2–3 and the extras
+  are descriptive, lowest priority: `scratch/s83_local.sh` on cuda:2 after the §86 panel there.
+* **Local priority (Theory):** §79 panel → §84 Step 1 (cuda:0, `scratch/s84_step1.sh`; then `python gsmlen/oracle84.py
+  summarise`) → §85 (cuda:2 tables) → §86 pilot/panel (`scratch/l86_chain.sh`) → §83 s2/s3.
 * **User decision "both" (via Audit, about 11:05): (1) GSM8K length split with the written-state method from the D&W
   CoT checkpoint (about $25, one-host pilot, projection to Audit first); (2) a new toy latent task needing LM knowledge
   (local).** Theory registers both; no training before that. Prep done (a900b18, `gsmlen/`):
