@@ -43,3 +43,18 @@ on validation, the same test file. Expect ±1–2 points across seeds (Coconut r
   natural-language CoT. Text-CoT numbers (42.9) refer to equation CoT.
 - **Compute accounting:** CODI uses LoRA, Coconut full fine-tuning. Matched-FLOPs comparisons must count trainable
   parameters and training epochs, not only inference thoughts.
+
+## Addendum (2026-10-01, for amendment 68-1): is there a public GPT-2-small GSM8K-Aug CoT-SFT checkpoint?
+**No usable one found** (Hugging Face API, 2026-10-01).
+- **internlm** (SIM-CoT) releases only `SIM_COT-GPT2-Coconut` (MIT; the files include **`checkpoint_28`**, so the HF upload
+  is checkpoint 28 even though the repo's eval YAML names checkpoint_30), `SIM_COT-GPT2-CODI` and LLaMA variants. No
+  CoT-SFT baseline.
+- **zen-E** (CODI): `CODI-gpt2` and `CODI-llama3.2-1b-Instruct` only. No CoT-SFT teacher.
+- **Coconut** (facebookresearch): no checkpoints released (repo README). bmarti44 releases a *ProsQA* CoT baseline only.
+- **yuntian-deng** (iCoT): GPT-2 explicit/implicit CoT checkpoints for *multiplication* only; GSM8K only for Mistral-7B
+  (implicit).
+- **Community** (`fiveflow/gpt2-gsm8k`, `thekarthikeyansekar/gpt2-gsm8k`, `princeLee1984/GPT2-COCONUT-gsm8k`, …): no
+  licence declared, no reported accuracy, and the training format is undocumented (most likely original GSM8K
+  natural-language CoT, not GSM8K-Aug equations). Not usable as a faithful Coconut stage-0.
+- **Recommendation:** train TC from scratch with the official `args/gsm_cot.yaml` (GPT-2, GSM8K-Aug 385k, lr 1e-4,
+  batch 32, 25 epochs, best on `gsm_valid`; reference 42.9 ± 0.2).
