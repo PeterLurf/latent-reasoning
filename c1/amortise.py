@@ -81,16 +81,23 @@ def student_tables(model):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--teacher", required=True); ap.add_argument("--student", required=True, choices=["pfstd", "ptstd"])
+    ap.add_argument("--teacher", default=""); ap.add_argument("--student", required=True, choices=["pfstd", "ptstd"])
     ap.add_argument("--updates", type=int, default=4000); ap.add_argument("--lr", type=float, default=1e-4)
     ap.add_argument("--holdout", type=float, default=0.10); ap.add_argument("--n_test", type=int, default=2000)
+    ap.add_argument("--bs", type=int, default=0, help="0 = full table per update (S4); >0 = row minibatch (A5 memory)")
+    ap.add_argument("--stats_every", type=int, default=10, help="minibatch mode: refresh the full-table stats every k updates")
+    ap.add_argument("--fake_teacher", action="store_true", help="plumbing: use the true group table as the teacher (M = |G|)")
     ap.add_argument("--allow_uncertified", action="store_true", help="plumbing smoke only (non-evidential)")
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args()
     from c1_group import comp_table
     Ct, e, A = comp_table(cc.GROUP)
     assert A == cc.NG and e == 0 and np.array_equal(Ct, cc.COMP.T), "group order / convention mismatch"
-    tf = json.load(open(a.teacher)); seed_s, t = next(iter(tf.items())); seed = int(seed_s)
+    if a.fake_teacher:                                                 # code = element; non-evidential plumbing only
+        tf = {"999": {"certified": False, "table": [[int(cc.COMP[op, s]) for op in range(A)] for s in range(A)], "dec": list(range(A))}}
+    else:
+        tf = json.load(open(a.teacher))
+    seed_s, t = next(iter(tf.items())); seed = int(seed_s)
     T0, D0 = t["table"], t["dec"]; M = len(T0)
     assert len(T0[0]) == A
     if not t["certified"] and not a.allow_uncertified:
@@ -117,15 +124,26 @@ def main():
     log = open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t_start = time.time(); u = 0; done = False
     for u in range(1, a.updates + 1):
         model.train()
-        logT, logD = model.tables(1.0)                                 # full table, full-table stats (§73 recipe)
-        loss = F.nll_loss(logT[tro, trc], trt) + F.nll_loss(logD[Rt], Rd)
+        if a.bs <= 0:
+            logT, logD = model.tables(1.0)                             # full table, full-table stats (§73 recipe)
+            loss = F.nll_loss(logT[tro, trc], trt) + F.nll_loss(logD[Rt], Rd)
+        else:                                                          # A5 memory: full-table stats (no grad) + row minibatch
+            if (u - 1) % a.stats_every == 0:
+                model._stats = None; model._full_stats()
+            ib = torch.randint(0, len(tr), (a.bs,), device=dev); idb = torch.randint(0, len(R), (min(a.bs, len(R)),), device=dev)
+            loss = F.cross_entropy(model.step_logits(trc[ib], tro[ib]), trt[ib]) + F.cross_entropy(model.dec_logits(Rt[idb]), Rd[idb])
+            if u % 25 == 0 or u == a.updates:
+                with torch.no_grad():
+                    model._stats = None; logT, logD = model.tables(1.0)   # full-table check (chunk-free; no grad)
+                model._stats = None
         opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0); opt.step()
         if u % 25 == 0 or u == a.updates:
             with torch.no_grad():
-                ta = float((logT[tro, trc].argmax(-1) == trt).float().mean()); da = float((logD[Rt].argmax(-1) == Rd).float().mean())
+                okt = bool((logT[tro, trc].argmax(-1) == trt).all()); okd = bool((logD[Rt].argmax(-1) == Rd).all())
+                ta = float((logT[tro, trc].argmax(-1) == trt).double().mean()); da = float((logD[Rt].argmax(-1) == Rd).double().mean())
             rec = {"update": u, "loss": loss.item(), "train_row_acc": ta, "dec_row_acc": da, "sec": round(time.time() - t_start)}
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
-            if ta == 1.0 and da == 1.0:
+            if okt and okd:                                            # exact (a float32 mean of 691 ones is 0.99999994)
                 Ts, Ds = student_tables(model)                         # confirm with the frozen-stats hard table
                 if all(Ts[c][o] == T0[c][o] for c, o in tr) and all(Ds[c] == D0[c] for c in R):
                     done = True; break
