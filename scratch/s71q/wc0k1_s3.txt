@@ -1,0 +1,2 @@
+# §71 (wc0k1_s3; settings boxes/S5_PILOT.md)
+boxes/runs_s5/wc0k1_s3 --arm wc0all --k 1 --steps 8000 --bs 64 --lr 1e-4 --eval_bs 500 --seed 3

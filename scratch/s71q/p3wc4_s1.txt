@@ -1,0 +1,2 @@
+# §71 (p3wc4_s1; settings boxes/S5_PILOT.md)
+boxes/runs_s5/p3wc4_s1 --arm p3 --k 4 --latent 4 --steps 8000 --bs 64 --lr 1e-4 --eval_bs 500 --seed 1
