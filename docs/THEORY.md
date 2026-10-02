@@ -5604,6 +5604,25 @@ same seeds.
 * **Any GPU arm at ≥ 4/5.** It is the stable-latent candidate. A 10-seed confirmation (seeds 2011–2020) is registered
   next.
 
+**§72b result (2026-10-02 04:24 EDT; scored by the experiments session with `c1/score_72.py` on the p72b runs;
+DENSE by Theory, `theory/results/s72b_dense.json`). PT is provisional, 4 of 5 seeds; s2002 is pending.**
+
+| arm (lr 1e-4, seeds 2001–2005) | certified | verdict |
+|---|---|---|
+| DENSE (no transformer, CPU) | 5/5 | succeeds |
+| PF (frozen pretrained GPT-2) | 0/5 | fails; code cosine stays 0.985–0.991 |
+| RF (frozen random-init GPT-2) | 5/5 | succeeds; 1.000 at N 8–128 |
+| **PF-std (frozen pretrained, standardised readout)** | **5/5** | **succeeds**; normalised cosine −0.04 vs raw 0.99 |
+| PT (fine-tuned pretrained = D1b) | 1/4 so far | fails |
+
+* **Reading (§72b's rule): "PF fails, RF succeeds"**, so pretrained geometry is the obstacle. PF-std succeeds, so the
+  code information is present in pretrained GPT-2's features, but anisotropy (cosine ≈ 0.99 across codes) ruins the
+  multiplicative readout's conditioning. **The cure is per-coordinate standardisation of the readout inputs.**
+* **PT (descriptive).** Between/within-code variance at the op position rises to about 1.75 from layer 5 in the
+  certified seed. It plateaus at about 0.35 in the failed seeds, so fine-tuning can learn to separate the codes but
+  usually does not.
+* §73's trigger (PF-std ≥ 4/5) is met. It was launched by the experiments session.
+
 ## 73. A stable latent in GPT-2: the standardised-readout cell, 10-seed confirmation with §67's C1 controls (pre-registered 2026-10-02 02:53 EDT, after Literature's checks 6e57bba, 811c5d7 and da53d1b, before the §72b panel is read; conditional trigger below; the user's overnight goal "find a stable latent", via Audit)
 
 **Why.** §72b's evidence so far (all descriptive; §72b's panel is not yet read):
