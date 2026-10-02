@@ -1,0 +1,19 @@
+{
+ "arm": "d1",
+ "seed": 3,
+ "updates": 8000,
+ "bs": 512,
+ "lr": 0.0001,
+ "head_init": "default",
+ "M": 12,
+ "readout": "linear",
+ "tau0": 1.0,
+ "head_norm": "ln",
+ "code_init": "distinct",
+ "lr_new": 0.0,
+ "n_test": 2000,
+ "n_null": 10000,
+ "max_hours": 3.0,
+ "device": "cuda:0",
+ "out": "c1/runs/a672_d1_M12_s3"
+}
