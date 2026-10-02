@@ -5993,6 +5993,19 @@ shared-parameter cell failed there.
 * (A)'s S4 verdict uses the host runs. Any certification difference between local and host for the same seed (torch
   versions differ) is reported. (B)'s S4 teachers are the local tables.
 
+**Amendment 76-2 (2026-10-02 09:13 EDT, before any (B) result; (A) partly read).**
+* **Why.** The first three local S4 ge3 teachers (seeds 2051, 2055, 2058) are not certified, so the primary (B) arm may
+  have few or no teachers. (A)'s verdicts await the full panel.
+* **Added: (B-std), a secondary arm.**
+  - The same student protocol, with the certified **std-curriculum** tables of (A) as teachers (S4, then A5;
+    seeds 2051–2060).
+  - S4 std tables are generated locally with the identical registered command (note 76-1) if the host's arrive late.
+  - Rule: as (B), ≥ 9/10 certified, with teacher failures counted as failures.
+  - Its wording adds "the teacher learned with directly labelled length-1/2 products".
+* **Unchanged.** (B)'s primary arm and rule (ge3 teachers). An uncertified ge3 teacher remains a system failure.
+* **Pipeline check (non-evidential, labelled).** The experiments session may smoke-test c1/amortise.py on any table,
+  including an uncertified one, for plumbing. No certificate from it is reported as a result.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
