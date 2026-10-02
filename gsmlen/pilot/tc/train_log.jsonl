@@ -1,0 +1,6 @@
+{"units_per_epoch": 206397, "steps_per_epoch": 6449, "total_steps": 400, "eff_batch": 32}
+{"step": 100, "loss": 1.2180862426757812, "tokens": 180991, "sec": 25}
+{"step": 200, "loss": 0.8072308301925659, "tokens": 361676, "sec": 49}
+{"step": 300, "loss": 0.8563029170036316, "tokens": 541055, "sec": 73}
+{"step": 400, "loss": 0.6230993270874023, "tokens": 719523, "sec": 97}
+{"step": 400, "epoch": 0.062, "valid_short_acc": 0.0718232044198895, "eval_sec": 8, "sec": 104}
