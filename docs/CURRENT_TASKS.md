@@ -40,13 +40,14 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 **Running (all local; no Vast hosts of ours):**
 * **§76(A) teachers on local GPUs (amendment 76-5):** `python theory/c1_tab_driver.py --groups {A5|S5|S4} --device
   cuda:{0|1|2} --P {3|2|2} [--no_extras] --out theory/results/c1_tab_local` (resumable; logs `logs/c1tab_local_*.log`).
-* **§77 premise (descriptive, Theory):** `bash scratch/s77_premise.sh <dev> <H>`, with H 4096/1024/256 on cuda:0/1/2,
+* **§77 premise done** (0/9 S4, A5 at chance; §77 dropped as drafted). Was: `bash scratch/s77_premise.sh <dev> <H>`, with H 4096/1024/256 on cuda:0/1/2,
   → `theory/results/s77_premise_S4_hid<H>.json`. Then A5 at H 4096.
 * **§76(B)/B-std/76-3 feeder:** `scratch/feed76.sh` (stop: `touch scratch/.stop_feed76`; log `logs/feed76.log`). It
   queues both students, held-out and full arms, for every CERTIFIED teacher in `c1_tab_local`: S4 → queue
   `scratch/c1_q_76_local.txt`; A5 → `scratch/c1_q_76_A5.txt` (`--bs 512`). A card counts as busy while the pid in
   `scratch/.w76_<dev>` lives.
-  - Scoring: `python c1/score_76b.py S4|A5`. A waiter scores S4 once all 10 std teachers are in.
+  - **S4 scored 10:10** (PROTOCOL12): (B) ge3 and B-std both fail; 76-3 full arm 20/20 certified. A5 is pending
+    certified teachers (ge3 at chance so far). Scorer: `python c1/score_76b.py A5`.
   - Findings so far: S4 ge3 teachers 0/6, so primary (B) S4 fails. With std teachers, students copy rows exactly but
     held-out rows fail, so not certified. Full arm s2051: both students certified.
 * **§75: gate failed 09:00** (PROTOCOL12). Descriptive leftovers: `p75_pfstd_s2031–2033` (void as evidence; s2034 was
