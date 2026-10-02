@@ -1,0 +1,20 @@
+# THEORY §79 panel, GPT-2 arms (start after the pilot)
+c1/runs/p79_pfstd_s2082 c1.phrase79 --arm pfstd --seed 2082
+c1/runs/p79_pfstd_s2083 c1.phrase79 --arm pfstd --seed 2083
+c1/runs/p79_pfstd_s2084 c1.phrase79 --arm pfstd --seed 2084
+c1/runs/p79_pfstd_s2085 c1.phrase79 --arm pfstd --seed 2085
+c1/runs/p79_rfstd_s2081 c1.phrase79 --arm rfstd --seed 2081
+c1/runs/p79_rfstd_s2082 c1.phrase79 --arm rfstd --seed 2082
+c1/runs/p79_rfstd_s2083 c1.phrase79 --arm rfstd --seed 2083
+c1/runs/p79_rfstd_s2084 c1.phrase79 --arm rfstd --seed 2084
+c1/runs/p79_rfstd_s2085 c1.phrase79 --arm rfstd --seed 2085
+c1/runs/p79_pfstd_f2_s2081 c1.phrase79 --arm pfstd --families 2 --seed 2081
+c1/runs/p79_pfstd_f2_s2082 c1.phrase79 --arm pfstd --families 2 --seed 2082
+c1/runs/p79_pfstd_f2_s2083 c1.phrase79 --arm pfstd --families 2 --seed 2083
+c1/runs/p79_pfstd_f2_s2084 c1.phrase79 --arm pfstd --families 2 --seed 2084
+c1/runs/p79_pfstd_f2_s2085 c1.phrase79 --arm pfstd --families 2 --seed 2085
+c1/runs/p79_pfstd_f4_s2081 c1.phrase79 --arm pfstd --families 4 --seed 2081
+c1/runs/p79_pfstd_f4_s2082 c1.phrase79 --arm pfstd --families 4 --seed 2082
+c1/runs/p79_pfstd_f4_s2083 c1.phrase79 --arm pfstd --families 4 --seed 2083
+c1/runs/p79_pfstd_f4_s2084 c1.phrase79 --arm pfstd --families 4 --seed 2084
+c1/runs/p79_pfstd_f4_s2085 c1.phrase79 --arm pfstd --families 4 --seed 2085

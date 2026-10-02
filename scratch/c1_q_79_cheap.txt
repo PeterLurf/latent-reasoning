@@ -1,0 +1,11 @@
+# THEORY §79 panel (seeds 2081-2085); cheap arms first, GPT-2 arms after the s2081 PF-std pilot
+c1/runs/p79_tab_s2081 c1.phrase79 --arm tab --seed 2081
+c1/runs/p79_tab_s2082 c1.phrase79 --arm tab --seed 2082
+c1/runs/p79_tab_s2083 c1.phrase79 --arm tab --seed 2083
+c1/runs/p79_tab_s2084 c1.phrase79 --arm tab --seed 2084
+c1/runs/p79_tab_s2085 c1.phrase79 --arm tab --seed 2085
+c1/runs/p79_bow_s2081 c1.phrase79 --arm bow --seed 2081
+c1/runs/p79_bow_s2082 c1.phrase79 --arm bow --seed 2082
+c1/runs/p79_bow_s2083 c1.phrase79 --arm bow --seed 2083
+c1/runs/p79_bow_s2084 c1.phrase79 --arm bow --seed 2084
+c1/runs/p79_bow_s2085 c1.phrase79 --arm bow --seed 2085
