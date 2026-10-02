@@ -443,3 +443,19 @@ minibatch (bs 512, full-table statistics refreshed every 10 updates) for 8 GB me
 **Descriptive.** Held-out-row accuracy is at chance (about 1/|R|, |R| ≈ 60): PF-std median about 0.005, PT-std about
 0.008. Every student copies its training rows exactly, and the held-out-patched certificate holds. As with S4, the
 students host but do not compose.
+
+## THEORY §80 premise P0 (text: does GPT-2 compose unseen k-op words in its forward pass?) result (2026-10-02 13:11 EDT; `c1/runs/p80_p0_k{2,3}/eval.json`)
+
+Split committed before training (seed 80 + k, 2ac5ffc); 4,000 steps per Theory's change before any result (f6f6052).
+Base GPT-2, lr 1e-4, bs 64, fp32, greedy exact match; local RTX 2070.
+
+| k | training pairs | (b) unseen words | (a) held-out (state, word) pairs of seen words | at step 1,500: train / (b) / (a) |
+|---|---|---|---|---|
+| 2 | 1.000 (135) | **0.030** (66) | 0.800 (15) | 1.000 / 0.000 / 0.667 |
+| 3 | 1.000 (815) | **0.118** (390) | 1.000 (91) | 0.540 / 0.049 / 0.330 |
+
+**Rule (§80): (b) < 0.95 at the final checkpoint, so §80 stops; the cell is not run.**
+* GPT-2 fits every training word and generalises to new start states of seen words ((a): 0.80 / 1.00).
+* It does not compose unseen k-op words. (b) is below chance (1/6) at both k, i.e. memorisation of words.
+* Run note: a first k = 2 attempt at 1,500 steps was aborted before any evaluation and its directory deleted; its log
+  was overwritten by the restart. Nothing of it survives, and no result was read (reported to Theory).
