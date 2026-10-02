@@ -1,0 +1,17 @@
+{
+ "cmd": "train",
+ "arm": "wc0all",
+ "k": 1,
+ "latent": 0,
+ "seed": 99,
+ "steps": 8000,
+ "bs": 64,
+ "lr": 0.0001,
+ "eval_bs": 100,
+ "test_n": 200,
+ "no_cert": false,
+ "data_dir": "D:\\Latent\\bench\\data\\s5",
+ "device": "cuda:2",
+ "out": "boxes/runs_s5/pil_wc0_k1_s99",
+ "train_sequences": 100000
+}
