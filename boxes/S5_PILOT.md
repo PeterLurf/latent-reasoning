@@ -17,3 +17,17 @@ One configuration tried.
 * **Precision:** bf16 on Ampere+ (Vast 3090s), fp32 on the local 2070. The certificate and chunk check run at the same
   dtype and eval batch as the test rollout (recorded in eval.json).
 * **DeltaProduct / GRU:** as in the job script (the paper's command; dpvar per 71-1).
+
+## DeltaProduct comparator: amendment 71-2 log (2026-10-02 04:02 EDT)
+* **First S5 runs (torch 2.5.1, triton 3.1.0, transformers 4.46.2, the bundled fla 0.2.2).**
+  - 3 concurrent runs OOM'd a 24 GB card; the runs were then made sequential.
+  - dp_s1: best sequence accuracy 0.0. dp_s2: loss ≈ ln 120 (chance). dpvar_s1: 0.0.
+  - All voided (`*.void_oom`, `*.void_env0`); the dpvar host was stopped.
+* **Environment check: the README's own S3 Configuration 2 (expected to train), 100 epochs.** Sequence accuracy at 512 is
+  0.18, token accuracy 0.961. The environment does not reproduce the reference. The README asks for triton > 3.1.0.
+* **Diagnosed configuration 1 (of 2): the repo's stated environment.**
+  - torch 2.6.0 + triton 3.2.0 (with matching torchvision 0.21 / torchaudio 2.6).
+  - The S3 check gives best sequence accuracy 0.73 (final 0.36), token accuracy 0.989. Better, but not "trains".
+  - Decision: run the S5 dp seeds 1–3 in this environment, sequentially, with the paper command unchanged.
+  - Attempt 2 is held in reserve.
+  - Interface-only patch: their error handler's wandb calls are guarded.
