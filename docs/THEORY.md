@@ -6366,6 +6366,25 @@ tables `theory/results/c1_tab82/` run by the experiments session; summary `theor
   table (§76(A)) and here. A method that acquires from long problems only needs a different objective or a curriculum
   that creates short supervision. Group-theoretic ladders do not supply it.
 
+**§80 result (2026-10-02 13:11 EDT; P0 run by the experiments session, `docs/PROTOCOL12.md`, `c1/runs/p80_p0_k{2,3}/eval.json`;
+final 4,000-step checkpoints per 80-1). P0 fails, so §80 stops and the cell arms are not run.**
+
+| text P0 (GPT-2, end state only) | training words | (b) unseen k-op words | (a) unseen (state, word), seen word |
+|---|---|---|---|
+| k = 2 | 1.000 | 0.030 (n 66) | 0.800 (n 15) |
+| k = 3 | 1.000 | 0.118 (n 390) | 1.000 (n 91) |
+
+* GPT-2 generalises to new start states of seen words, but not to unseen words. Its (b) accuracy is below chance (1/6):
+  it memorises words.
+* **Premise misread (Theory's).** §80 cited §71's k = 4 chunk accuracy of 1.000 as in-pass composition. But §71's WC₀ₖ
+  ran in **all-position** mode, writing the state after every op inside the chunk. Its composition went through
+  per-op written steps.
+  - §71's final-only P3 (end state only) failed (0.009), consistent with this P0.
+  - **Corrected reading:** GPT-2 small, trained on end-state targets, does not compose several ops in one forward pass;
+    it memorises.
+  - Multi-op computation works when each step is externalised (written or latent per op): the range principle again.
+* **Idea 1 is closed.** A latent chunk machine cannot borrow in-pass composition the LM does not have.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
