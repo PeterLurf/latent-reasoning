@@ -14,7 +14,8 @@ Eval (eval.json): all-position rollout on the §71 test set (2,000 x 512) -> cum
 state; the 2,048 extension (first 500 of S5=2048.csv); k = 1: certificate over all 14,400 (code, op); k = 4: chunk check
 on 100k fresh (state, chunk) inputs (seed 7104 as §71); C1 removal at k = 4 on 10k fresh chunks: the inputs of the
 intermediate slots 1..k-1 replaced by zeros, and separately by the dataset mean of slot inputs (2,000 real chunks),
-reporting per-slot accuracy and the accuracy of states after the first ablated slot (slots 2..k); C3: per-512-problem
+and (note 86-2, descriptive) segment isolation (each later segment sees only its slot, fresh cache), reporting per-slot
+accuracy and the accuracy of states after the first ablated slot (slots 2..k); C3: per-512-problem
 tokens processed, FLOPs (boxes.core.Meter accounting, head 768 x 120) and sequential passes, beside §71's WC0_k.
     python -m boxes.latent86 train --k 4 --seed 1 --steps 8000 --bs 64 --out boxes/runs_s5/l86_k4_s1 [--device cuda:0]
 """
@@ -57,11 +58,15 @@ class LatentRestart(nn.Module):
 
     def chunk(self, starts, ops, ablate=None, mean_in=None, meter=None):
         """starts (B,) element ids, ops (B, k) -> head logits (B, k, 120), slot inputs (B, k, D).
-        ablate: None | "zero" | "mean" applied to the inputs of slots 1..k-1."""
+        ablate: None | "zero" | "mean" applied to the inputs of slots 1..k-1; "isolate" (note 86-2, descriptive): every
+        segment after the first ([slot_j, op_(j+1) tokens], and the last slot alone) runs with a fresh cache, so it sees
+        only slot_j (no earlier op tokens): a continuous restart at every op, without snapping."""
         B, k = ops.shape; dev = ops.device
         x = torch.cat([self.code[starts][:, None], self.g.embed(self._ops(ops[:, 0], dev))], 1)
         past = None; logits, ins = [], []
         for j in range(k):
+            if ablate == "isolate":
+                past = None
             ctx = 0 if past is None else past[0][0].shape[2]
             h, past = self.g(x, past)
             if meter:
@@ -69,14 +74,16 @@ class LatentRestart(nn.Module):
             if j > 0:
                 logits.append(self.head(h[:, 0]))                         # output at slot j (the first position of x)
             s_in = h[:, -1]                                               # hidden at the last op-(j+1) token -> slot j+1 input
-            if ablate and j < k - 1:
+            if ablate in ("zero", "mean") and j < k - 1:
                 s_in = torch.zeros_like(s_in) if ablate == "zero" else mean_in[j][None].expand_as(s_in)
             ins.append(s_in)
             nxt = [s_in[:, None]]
             if j + 1 < k:
                 nxt.append(self.g.embed(self._ops(ops[:, j + 1], dev)))
             x = torch.cat(nxt, 1)
-        ctx = past[0][0].shape[2]
+        if ablate == "isolate":
+            past = None
+        ctx = 0 if past is None else past[0][0].shape[2]
         h, past = self.g(x, past)                                         # the last slot alone
         if meter:
             meter.step(1, ctx, 0); meter.flops += 2 * 768 * 120 * k
@@ -184,7 +191,7 @@ def train(a):
     else:
         res["chunk_check"] = chunk_check(m, a.k, dev, amp, a.eval_bs, n=a.check_n)
         mu = mean_slot_inputs(m, Xtr, Ytr, a.k, dev, amp)
-        res["removal"] = {ab: chunk_check(m, a.k, dev, amp, a.eval_bs, n=min(10_000, a.check_n), seed=7106, ablate=ab, mean_in=mu) for ab in ("zero", "mean")}
+        res["removal"] = {ab: chunk_check(m, a.k, dev, amp, a.eval_bs, n=min(10_000, a.check_n), seed=7106, ablate=ab, mean_in=mu) for ab in ("zero", "mean", "isolate")}
     res["eval_sec"] = round(time.time() - t1)
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     print("EVAL", json.dumps({kk: res[kk] for kk in ("cumulative", "final_state_acc_512")}), flush=True); print("DONE", a.out, flush=True)
