@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-10-02 07:30 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-10-02 08:00 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -42,9 +42,10 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
   (S4, M 48, 16k updates, PF-std then PT-std, seed 990); auto drain `logs/auto_drain_c1_75_990.out`. Gate: the panel
   (seeds 2031–2035 × PF-std/PT-std) starts only if either arm certifies or reaches ≥ 0.95 at N 128. Then A5 (M 120),
   one-host pilot first, with a projection to Audit before its panel.
-* **§74 P1 diagnostic** (local, one job per card): `c1/runs/p74diag_pfstd_s2021–2025` (2024/2025 follow), logs
-  `logs/c1_p74diag_*.log`. Gives each seed's bad (code, state, first length, decoded vs true) pairs for Theory; then
-  score §74 officially (`python c1/score_74.py`) and write it up in PROTOCOL12.
+* **§75 panel PF-std, local, PROVISIONAL** (excluded unless the 990 gate passes): `scratch/c1_q_75_local.txt`, seeds
+  2031–2035 on all 3 cards (`C1_GROUP=S4 bash scratch/c1_local_worker.sh <dev> scratch/c1_q_75_local.txt`), logs
+  `logs/c1_p75_pfstd_s*.log`, ~60–100 min each. If the gate passes, Vast needs only the PT-std panel.
+* **§74 scored 08:00:** P1 0/5 → uninformative; bad pairs sent to Theory. Backfill queue: all 90 cells already done.
 * **§71 GRU host** 53814109 `s71-gru`: hard stop 09:00 (`scratch/gru_hardstop.sh`).
 * Theory's DENSE S4 reference: 3 CPU processes (`theory/s72_dense_toy.py`), not ours.
 
