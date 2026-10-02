@@ -1,0 +1,3 @@
+{"update": 25, "loss": 2.2802441120147705, "train_row_acc": 0.7861111164093018, "dec_row_acc": 1.0, "sec": 9}
+{"update": 50, "loss": 0.15143878757953644, "train_row_acc": 0.9902778267860413, "dec_row_acc": 1.0, "sec": 17}
+{"update": 75, "loss": 0.004562175367027521, "train_row_acc": 1.0, "dec_row_acc": 1.0, "sec": 24}

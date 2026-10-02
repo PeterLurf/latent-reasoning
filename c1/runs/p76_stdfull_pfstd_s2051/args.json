@@ -1,0 +1,20 @@
+{
+ "teacher": "theory/results/c1_tab_local\\S4_std_s2051.json",
+ "student": "pfstd",
+ "updates": 4000,
+ "lr": 0.0001,
+ "holdout": 0.0,
+ "n_test": 2000,
+ "allow_uncertified": false,
+ "device": "cuda:0",
+ "out": "c1/runs/p76_stdfull_pfstd_s2051",
+ "seed": 2051,
+ "group": "S4",
+ "M": 48,
+ "teacher_certified_file": true,
+ "R": 30,
+ "rows": 720,
+ "train_rows": 720,
+ "heldout_rows": 0,
+ "evidential": true
+}
