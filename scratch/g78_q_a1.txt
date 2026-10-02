@@ -1,0 +1,2 @@
+tc 1 full
+ws 1 full
