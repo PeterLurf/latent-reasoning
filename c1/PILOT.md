@@ -113,3 +113,10 @@ every neural cell.
 * Any C1 Design-1 follow-up must first make the objective find the group table reliably in TAB, e.g. multiple random
   restarts selected on training likelihood, an annealed temperature on T, or a longer curriculum. This is a design
   question for Theory, not a pilot tweak.
+
+## Amendment 67-2 result (2026-10-01 22:33 EDT): GPT-2 cell, M = 12, LN heads + distinct codes, 8,000 updates, seeds 1–10
+
+**3/10 certified** (s1, s2, s8: product automaton, 0 bad pairs, 1.000 at N 8–128). The other 7 sit on flat partial
+automata (0.24–0.53 at every N; 5–15 bad pairs).
+Under 67-2's rule this GPT-2 M = 12 cell does not reach 9/10. The rule was met by the bilinear toy cell (Theory), and
+§67b (the GPT-2 cell + bilinear readout + τ annealing, M = 24) is the registered revision.
