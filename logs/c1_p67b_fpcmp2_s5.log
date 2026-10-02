@@ -1,0 +1,119 @@
+{'update': 100, 'L': 1, 'loss': 0.14579010611960258, 'examples': 24000, 'gpt2_tokens': 48000, 'sec': 36}
+{'update': 200, 'L': 1, 'loss': 6.18483674043091e-05, 'examples': 48000, 'gpt2_tokens': 96000, 'sec': 71}
+{'update': 300, 'L': 1, 'loss': 3.5755578628595686e-05, 'examples': 72000, 'gpt2_tokens': 144000, 'sec': 105}
+{'update': 400, 'L': 1, 'loss': 2.3923042954265837e-05, 'examples': 96000, 'gpt2_tokens': 192000, 'sec': 139}
+{'update': 500, 'L': 1, 'loss': 1.733951510686893e-05, 'examples': 120000, 'gpt2_tokens': 240000, 'sec': 161, 'acc8': 0.196, 'acc32': 0.166}
+{'update': 600, 'L': 1, 'loss': 1.3244322035461664e-05, 'examples': 144000, 'gpt2_tokens': 288000, 'sec': 197}
+{'update': 700, 'L': 1, 'loss': 1.0508725126783248e-05, 'examples': 168000, 'gpt2_tokens': 336000, 'sec': 231}
+{'update': 800, 'L': 1, 'loss': 8.56642218423076e-06, 'examples': 192000, 'gpt2_tokens': 384000, 'sec': 265}
+{'update': 900, 'L': 1, 'loss': 7.134749689612363e-06, 'examples': 216000, 'gpt2_tokens': 432000, 'sec': 299}
+{'update': 1000, 'L': 1, 'loss': 6.052048402125365e-06, 'examples': 240000, 'gpt2_tokens': 480000, 'sec': 332, 'acc8': 0.2, 'acc32': 0.162}
+{'update': 1100, 'L': 1, 'loss': 5.1922959937655835e-06, 'examples': 264000, 'gpt2_tokens': 528000, 'sec': 369}
+{'update': 1200, 'L': 1, 'loss': 4.518339696915064e-06, 'examples': 288000, 'gpt2_tokens': 576000, 'sec': 402}
+{'update': 1300, 'L': 1, 'loss': 3.961346660616982e-06, 'examples': 312000, 'gpt2_tokens': 624000, 'sec': 436}
+{'update': 1400, 'L': 1, 'loss': 3.495036364711268e-06, 'examples': 336000, 'gpt2_tokens': 672000, 'sec': 470}
+{'update': 1500, 'L': 1, 'loss': 3.1156392219600095e-06, 'examples': 360000, 'gpt2_tokens': 720000, 'sec': 504, 'acc8': 0.212, 'acc32': 0.15}
+{'update': 1600, 'L': 1, 'loss': 2.7985235169580846e-06, 'examples': 384000, 'gpt2_tokens': 768000, 'sec': 540}
+{'update': 1700, 'L': 1, 'loss': 2.5083241894208184e-06, 'examples': 408000, 'gpt2_tokens': 816000, 'sec': 563}
+{'update': 1800, 'L': 1, 'loss': 2.296767972893576e-06, 'examples': 432000, 'gpt2_tokens': 864000, 'sec': 597}
+{'update': 1900, 'L': 1, 'loss': 2.0676681197073777e-06, 'examples': 456000, 'gpt2_tokens': 912000, 'sec': 630}
+{'update': 2000, 'L': 1, 'loss': 1.86547957014227e-06, 'examples': 480000, 'gpt2_tokens': 960000, 'sec': 664, 'acc8': 0.194, 'acc32': 0.134}
+{'update': 2100, 'L': 2, 'loss': 0.5683985145865358, 'examples': 500080, 'gpt2_tokens': 1008000, 'sec': 699}
+{'update': 2200, 'L': 1, 'loss': 0.0036430651863520323, 'examples': 520480, 'gpt2_tokens': 1056000, 'sec': 731}
+{'update': 2300, 'L': 2, 'loss': 4.566213404359587e-05, 'examples': 540400, 'gpt2_tokens': 1104000, 'sec': 763}
+{'update': 2400, 'L': 1, 'loss': 2.700959853882523e-05, 'examples': 560800, 'gpt2_tokens': 1152000, 'sec': 795}
+{'update': 2500, 'L': 2, 'loss': 2.058546800981276e-05, 'examples': 581040, 'gpt2_tokens': 1200000, 'sec': 827, 'acc8': 0.184, 'acc32': 0.17}
+{'update': 2600, 'L': 1, 'loss': 1.4437724380513829e-05, 'examples': 601840, 'gpt2_tokens': 1248000, 'sec': 861}
+{'update': 2700, 'L': 1, 'loss': 1.2820714969166148e-05, 'examples': 622320, 'gpt2_tokens': 1296000, 'sec': 892}
+{'update': 2800, 'L': 1, 'loss': 1.1378586739283492e-05, 'examples': 642480, 'gpt2_tokens': 1344000, 'sec': 922}
+{'update': 2900, 'L': 2, 'loss': 1.0020409549724718e-05, 'examples': 662400, 'gpt2_tokens': 1392000, 'sec': 951}
+{'update': 3000, 'L': 1, 'loss': 8.322789637986716e-06, 'examples': 682400, 'gpt2_tokens': 1440000, 'sec': 971, 'acc8': 0.158, 'acc32': 0.172}
+{'update': 3100, 'L': 1, 'loss': 6.979566687732586e-06, 'examples': 702720, 'gpt2_tokens': 1488000, 'sec': 1002}
+{'update': 3200, 'L': 2, 'loss': 6.326793275093223e-06, 'examples': 722960, 'gpt2_tokens': 1536000, 'sec': 1031}
+{'update': 3300, 'L': 1, 'loss': 6.308930874183716e-06, 'examples': 742400, 'gpt2_tokens': 1584000, 'sec': 1061}
+{'update': 3400, 'L': 2, 'loss': 5.341947661463564e-06, 'examples': 762160, 'gpt2_tokens': 1632000, 'sec': 1090}
+{'update': 3500, 'L': 2, 'loss': 4.825871842513152e-06, 'examples': 781920, 'gpt2_tokens': 1680000, 'sec': 1119, 'acc8': 0.164, 'acc32': 0.174}
+{'update': 3600, 'L': 1, 'loss': 3.917552272696412e-06, 'examples': 802400, 'gpt2_tokens': 1728000, 'sec': 1151}
+{'update': 3700, 'L': 1, 'loss': 3.831005411711885e-06, 'examples': 822400, 'gpt2_tokens': 1776000, 'sec': 1180}
+{'update': 3800, 'L': 1, 'loss': 3.246968424264196e-06, 'examples': 842960, 'gpt2_tokens': 1824000, 'sec': 1210}
+{'update': 3900, 'L': 1, 'loss': 3.6172138447909675e-06, 'examples': 862080, 'gpt2_tokens': 1872000, 'sec': 1239}
+{'update': 4000, 'L': 2, 'loss': 2.96796178531622e-06, 'examples': 882000, 'gpt2_tokens': 1920000, 'sec': 1268, 'acc8': 0.18, 'acc32': 0.154}
+{'update': 4100, 'L': 2, 'loss': 1.1712202937197913, 'examples': 898576, 'gpt2_tokens': 1968000, 'sec': 1298}
+{'update': 4200, 'L': 1, 'loss': 0.61432397641227, 'examples': 915344, 'gpt2_tokens': 2016000, 'sec': 1326}
+{'update': 4300, 'L': 1, 'loss': 0.4931346787224538, 'examples': 932464, 'gpt2_tokens': 2064000, 'sec': 1354}
+{'update': 4400, 'L': 1, 'loss': 0.5445587547397736, 'examples': 948544, 'gpt2_tokens': 2112000, 'sec': 1382}
+{'update': 4500, 'L': 2, 'loss': 0.41565149101275894, 'examples': 965232, 'gpt2_tokens': 2160000, 'sec': 1410, 'acc8': 0.126, 'acc32': 0.172}
+{'update': 4600, 'L': 2, 'loss': 0.4878889536004863, 'examples': 981088, 'gpt2_tokens': 2208000, 'sec': 1440}
+{'update': 4700, 'L': 1, 'loss': 0.3950827567809847, 'examples': 998128, 'gpt2_tokens': 2256000, 'sec': 1468}
+{'update': 4800, 'L': 2, 'loss': 0.3426669003605184, 'examples': 1014176, 'gpt2_tokens': 2304000, 'sec': 1496}
+{'update': 4900, 'L': 2, 'loss': 0.23910128025803715, 'examples': 1029952, 'gpt2_tokens': 2352000, 'sec': 1524}
+{'update': 5000, 'L': 2, 'loss': 0.17397910198160843, 'examples': 1046496, 'gpt2_tokens': 2400000, 'sec': 1552, 'acc8': 0.158, 'acc32': 0.18}
+{'update': 5100, 'L': 2, 'loss': 0.12383787152593868, 'examples': 1063504, 'gpt2_tokens': 2448000, 'sec': 1926}
+{'update': 5200, 'L': 2, 'loss': 0.11712984759290065, 'examples': 1080144, 'gpt2_tokens': 2496000, 'sec': 2130}
+{'update': 5300, 'L': 1, 'loss': 0.0933584213118047, 'examples': 1096464, 'gpt2_tokens': 2544000, 'sec': 2275}
+{'update': 5400, 'L': 4, 'loss': 0.14613387110962775, 'examples': 1113344, 'gpt2_tokens': 2592000, 'sec': 2302}
+{'update': 5500, 'L': 2, 'loss': 0.049109124183564744, 'examples': 1129360, 'gpt2_tokens': 2640000, 'sec': 2329, 'acc8': 0.242, 'acc32': 0.178}
+{'update': 5600, 'L': 1, 'loss': 0.06885869898608007, 'examples': 1145792, 'gpt2_tokens': 2688000, 'sec': 2359}
+{'update': 5700, 'L': 1, 'loss': 0.03497032305399443, 'examples': 1161728, 'gpt2_tokens': 2736000, 'sec': 2388}
+{'update': 5800, 'L': 2, 'loss': 0.014386464304980109, 'examples': 1178128, 'gpt2_tokens': 2784000, 'sec': 2418}
+{'update': 5900, 'L': 1, 'loss': 0.004525871932917198, 'examples': 1194192, 'gpt2_tokens': 2832000, 'sec': 2447}
+{'update': 6000, 'L': 2, 'loss': 0.03628896864580156, 'examples': 1211696, 'gpt2_tokens': 2880000, 'sec': 2477, 'acc8': 0.188, 'acc32': 0.16}
+{'update': 6100, 'L': 8, 'loss': 0.9435269610624368, 'examples': 1224945, 'gpt2_tokens': 2927913, 'sec': 2508}
+{'update': 6200, 'L': 8, 'loss': 0.4168577732057497, 'examples': 1238532, 'gpt2_tokens': 2975844, 'sec': 2537}
+{'update': 6300, 'L': 4, 'loss': 0.22009798254724727, 'examples': 1254042, 'gpt2_tokens': 3023802, 'sec': 2567}
+{'update': 6400, 'L': 8, 'loss': 0.3529759547235108, 'examples': 1267912, 'gpt2_tokens': 3071736, 'sec': 2596}
+{'update': 6500, 'L': 4, 'loss': 0.4117160622949859, 'examples': 1281444, 'gpt2_tokens': 3119652, 'sec': 2625, 'acc8': 0.296, 'acc32': 0.188}
+{'update': 6600, 'L': 1, 'loss': 0.4101972288975185, 'examples': 1294923, 'gpt2_tokens': 3167571, 'sec': 2656}
+{'update': 6700, 'L': 4, 'loss': 0.4215227823792293, 'examples': 1308315, 'gpt2_tokens': 3215475, 'sec': 2685}
+{'update': 6800, 'L': 1, 'loss': 0.3930764110772145, 'examples': 1321852, 'gpt2_tokens': 3263388, 'sec': 2715}
+{'update': 6900, 'L': 2, 'loss': 0.30748905597430737, 'examples': 1335854, 'gpt2_tokens': 3311310, 'sec': 2744}
+{'update': 7000, 'L': 4, 'loss': 0.2814487503143846, 'examples': 1349692, 'gpt2_tokens': 3359244, 'sec': 2773, 'acc8': 0.342, 'acc32': 0.158}
+{'update': 7100, 'L': 4, 'loss': 0.308197588223818, 'examples': 1364025, 'gpt2_tokens': 3407169, 'sec': 2805}
+{'update': 7200, 'L': 4, 'loss': 0.28324055728799524, 'examples': 1378065, 'gpt2_tokens': 3455097, 'sec': 2817}
+{'update': 7300, 'L': 8, 'loss': 0.34407031949493555, 'examples': 1390984, 'gpt2_tokens': 3503016, 'sec': 2827}
+{'update': 7400, 'L': 4, 'loss': 0.25334992614694785, 'examples': 1405671, 'gpt2_tokens': 3550959, 'sec': 2837}
+{'update': 7500, 'L': 4, 'loss': 0.30197156967312594, 'examples': 1418510, 'gpt2_tokens': 3598878, 'sec': 2846, 'acc8': 0.366, 'acc32': 0.186}
+{'update': 7600, 'L': 8, 'loss': 0.3635827888071253, 'examples': 1431123, 'gpt2_tokens': 3646779, 'sec': 2856}
+{'update': 7700, 'L': 4, 'loss': 0.26976991651937626, 'examples': 1443787, 'gpt2_tokens': 3694707, 'sec': 2866}
+{'update': 7800, 'L': 4, 'loss': 0.3176580081822044, 'examples': 1457122, 'gpt2_tokens': 3742626, 'sec': 2875}
+{'update': 7900, 'L': 1, 'loss': 0.24141593849707532, 'examples': 1471344, 'gpt2_tokens': 3790560, 'sec': 2885}
+{'update': 8000, 'L': 2, 'loss': 0.23231677774431886, 'examples': 1484889, 'gpt2_tokens': 3838497, 'sec': 2894, 'acc8': 0.338, 'acc32': 0.18}
+[W1002 00:27:40.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 396361728 bytes (free: 0, total: 8589606912).
+[W1002 00:27:41.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 396361728 bytes (free: 0, total: 8589606912).
+[W1002 00:27:41.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 396361728 bytes (free: 0, total: 8589606912).
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\Latent\c1\train.py", line 239, in <module>
+    main()
+    ~~~~^^
+  File "D:\Latent\c1\train.py", line 235, in main
+    train(ap.parse_args())
+    ~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\Latent\c1\train.py", line 213, in train
+    res = evaluate(model, a.arm, dev, a.n_test, a.n_null, a.out)
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "D:\Latent\c1\train.py", line 72, in evaluate
+    pred.append(predict(model, arm, ops_t[i:i + ch]).cpu())
+                ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Latent\c1\train.py", line 60, in predict
+    return model(ops).argmax(-1)
+           ~~~~~^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\modules\module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\modules\module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "D:\Latent\c1\core.py", line 177, in forward
+    h, _ = self.g(self.g.embed(ids))
+           ~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\modules\module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\modules\module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "D:\Latent\boxes\core.py", line 126, in forward
+    h = h + o.transpose(1, 2).reshape(B, T, D) @ self.w(pre + "attn.c_proj.weight") + self.w(pre + "attn.c_proj.bias")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 378.00 MiB. GPU 2 has a total capacity of 8.00 GiB of which 0 bytes is free. Process 1960 has 17179869184.00 GiB memory in use. Process 7236 has 17179869184.00 GiB memory in use. Process 7368 has 17179869184.00 GiB memory in use. Process 7196 has 17179869184.00 GiB memory in use. Process 7124 has 17179869184.00 GiB memory in use. Process 7676 has 17179869184.00 GiB memory in use. Process 9516 has 17179869184.00 GiB memory in use. Process 17048 has 17179869184.00 GiB memory in use. Process 12992 has 17179869184.00 GiB memory in use. Process 15720 has 17179869184.00 GiB memory in use. Process 17800 has 17179869184.00 GiB memory in use. Process 12780 has 17179869184.00 GiB memory in use. Process 20788 has 17179869184.00 GiB memory in use. Process 25552 has 17179869184.00 GiB memory in use. Process 5424 has 17179869184.00 GiB memory in use. Process 22084 has 17179869184.00 GiB memory in use. Including non-PyTorch memory, this process has 17179869184.00 GiB memory in use. Of the allocated memory 6.04 GiB is allocated by PyTorch, and 969.56 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
