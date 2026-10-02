@@ -6995,6 +6995,21 @@ session, extending `boxes/train.py`. $0.
 std-dec, soft). The result line names every arm that meets it, as "best of 3 arms", and **F2 and F3 are applied to each
 arm that meets F1**, not only the best.
 
+**Note 89-3 (2026-10-02 19:27 EDT, before any §89 run; implementation `boxes/fade89.py`).**
+* **Readings accepted.**
+  - Thought positions are TC's CoT tokens (5N), run sequentially with the KV cache. x_j = (1 − α)E[ŷ] + α·g(h) from the
+    previous position.
+  - fade_std maps the standardised h onto the wte cloud (μ_E + σ_E ⊙ standardised h), with EMA statistics (0.99) frozen
+    at α = 1.
+  - The dec head is a side loss on the same h (weight 1, never fed back).
+  - coco_stage has 9 equal stages; latent ops take raw h with no thought loss and 5 positions each; the test is
+    all-latent.
+  - §66's budget (8k updates, bs 32, lr 1e-4) and §66's bench items (seed 6600, N 1–16).
+  - Mean ablation uses the mean thought input over 512 training-distribution problems at α = 1.
+* **TC and NC are reused, not rerun.** §66's tc_s1–3 and nc_s1–3 used exactly the same code, configuration, budget and
+  seeds, so their bench results stand in for §89's TC and NC arms. F2's floor is §66's NC median at N 5–8 on the same
+  bench items.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
