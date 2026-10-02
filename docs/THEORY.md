@@ -5890,6 +5890,18 @@ certified from final answers. Fine-tuned with that readout, also 10/10; centring
 * A5: 1 pilot run plus 5 panel runs at a higher cost per run.
 * Total under about $15 on Vast, less on local cards.
 
+**Note 75-1 (2026-10-02 08:07 EDT; descriptive CPU premises on pilot seeds 990–992, not §75's panel;
+`theory/results/s75_dense_S4_*.json`, `s75_tab_S4_*.json`, `s75_tab_A5_*.json`).**
+* **DENSE (the §72b interface without a transformer), S4, M 48, lr 1e-4, 16k updates:** 0/3, at chance (0.04). Even the
+  length-1 stage stays at a loss of about 0.3.
+* **Free table under the same exact-marginal objective** (`theory/c1_rl.py --cell tab --method marg --tau0 4`, lr 1e-2,
+  bs 256, 16k updates):
+  - **S4 (M 48): 3/3 certified** (about 2 min each).
+  - **A5 (M 120): 3/3 certified** (about 13 min each), 1.000 to N 128.
+* So the objective scales to a non-solvable group. Every earlier S4/A5 failure (one-hot bilinear 0/3, §69 RL, DENSE)
+  belongs to shared-parameter cells. The free table has independent rows.
+* §75's GPU pilot (PF-std / PT-std, seed 990) is still the registered test for the GPT-2 cell.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
