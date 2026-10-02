@@ -19,11 +19,30 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-PERMS = sorted(itertools.permutations(range(3)))           # index 0 = (0, 1, 2) = identity
-COMP = np.array([[PERMS.index(tuple(a[s[i]] for i in range(3))) for s in PERMS] for a in PERMS])  # COMP[a, s] = a o s
+import os as _os
+GROUP = _os.environ.get("C1_GROUP", "S3")                     # §75: S3 (default, unchanged), S4, A5
+_NB = {"S3": 3, "S4": 4, "A5": 5}[GROUP]
+PERMS = sorted(itertools.permutations(range(_NB)))              # index 0 = identity
+if GROUP == "A5":                                                 # even permutations only
+    PERMS = [p for p in PERMS if sum(1 for i in range(_NB) for j in range(i + 1, _NB) if p[i] > p[j]) % 2 == 0]
+NG = len(PERMS)                                                   # group order = number of ops = answer classes
+COMP = np.array([[PERMS.index(tuple(a[s[i]] for i in range(_NB))) for s in PERMS] for a in PERMS])  # COMP[a, s] = a o s
 M = 6
-# GPT-2 tokens: op symbols " A".." F", call marker " step", terminal marker " answer" (single tokens in GPT-2's BPE)
+# GPT-2 tokens: op symbols (S3 " A".." F"), call marker " step", terminal marker " answer" (single tokens in GPT-2's BPE)
 OP_TOK = [317, 347, 327, 360, 412, 376]
+if GROUP != "S3":                                                 # one single-token symbol per element (checked)
+    import tiktoken as _tk
+    _enc = _tk.get_encoding("gpt2")
+    _cands = [" " + c for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"] + [" " + c for c in "abcdefghijklmnopqrstuvwxyz"] + \
+             [" " + c for c in "0123456789"] + [" " + w for w in ("alpha", "beta", "gamma", "delta", "omega", "sigma")]
+    OP_TOK = []
+    for c in _cands:
+        t = _enc.encode(c)
+        if len(t) == 1 and t[0] not in OP_TOK:
+            OP_TOK.append(t[0])
+        if len(OP_TOK) == NG:
+            break
+    assert len(OP_TOK) == NG, f"not enough single-token symbols for {GROUP}"
 STEP_TOK, ANS_TOK = 2239, 3280
 
 
@@ -35,7 +54,7 @@ def truth(ops):
 
 
 def sample(rng, B, N):
-    ops = rng.integers(0, 6, size=(B, N))
+    ops = rng.integers(0, NG, size=(B, N))
     y = np.array([truth(r) for r in ops])
     return ops, y
 
@@ -47,7 +66,7 @@ class Cell(nn.Module):
         self.g = gpt
         self.code = nn.Parameter(gpt.embed(torch.tensor(OP_TOK)).detach().clone().mean(0, keepdim=True).repeat(M, 1)
                                  + 0.02 * torch.randn(M, 768))
-        self.next_head = nn.Linear(768, M); self.ans_head = nn.Linear(768, 6)
+        self.next_head = nn.Linear(768, M); self.ans_head = nn.Linear(768, NG)
         self.hn = nn.Identity()                                    # head-input norm (pilot option: ln)
 
     def ln_heads(self):
@@ -99,7 +118,7 @@ class Cell(nn.Module):
         """Full-table statistics (no grad) for tablestd at test / single-batch calls."""
         dev = self.code.device
         with torch.no_grad():
-            c = torch.arange(M, device=dev).repeat(6); a = torch.arange(6, device=dev).repeat_interleave(M)
+            c = torch.arange(M, device=dev).repeat(NG); a = torch.arange(NG, device=dev).repeat_interleave(M)
             h = self._raw_step(c, a); hd = self._raw_dec(torch.arange(M, device=dev))
             self._stats = (h[:, 0].mean(0), h[:, 0].std(0) + 1e-5, h[:, 1].mean(0), h[:, 1].std(0) + 1e-5,
                            hd.mean(0), hd.std(0) + 1e-5)
@@ -141,8 +160,8 @@ class Cell(nn.Module):
     def tables(self, tau=1.0):
         """log T (6 ops, M, M) over all M x 6 (code, op) pairs and log D (M, 6); T = softmax(logits / tau) (§67b)."""
         dev = self.code.device
-        c = torch.arange(M, device=dev).repeat(6); a = torch.arange(6, device=dev).repeat_interleave(M)
-        logT = (self.step_logits(c, a, full=True) / tau).log_softmax(-1).view(6, M, M)
+        c = torch.arange(M, device=dev).repeat(NG); a = torch.arange(NG, device=dev).repeat_interleave(M)
+        logT = (self.step_logits(c, a, full=True) / tau).log_softmax(-1).view(NG, M, M)
         logD = self.dec_logits(torch.arange(M, device=dev), full=True).log_softmax(-1)
         self._stats = None                                            # stale after this update; recomputed on demand
         return logT, logD
@@ -152,12 +171,12 @@ class Cell(nn.Module):
         """§72: mean pairwise cosine across codes of the head input h_code (per code averaged over the 6 ops), after the
         feature normalisation ("normed") and the GPT-2 final hidden state itself ("raw")."""
         dev = self.code.device
-        c = torch.arange(M, device=dev).repeat(6); a = torch.arange(6, device=dev).repeat_interleave(M)
+        c = torch.arange(M, device=dev).repeat(NG); a = torch.arange(NG, device=dev).repeat_interleave(M)
         self._stats = None
         hc, _, h = self.head_inputs(c, a, full=True)
         out = {}
         for name, v in (("normed", hc), ("raw", h[:, 0])):
-            per = F.normalize(v.float().view(6, M, -1).mean(0), dim=-1); cos = per @ per.T
+            per = F.normalize(v.float().view(NG, M, -1).mean(0), dim=-1); cos = per @ per.T
             out[f"mean_pairwise_cos_{name}"] = float((cos.sum() - cos.diag().sum()) / (M * (M - 1)))
         return out
 
@@ -165,7 +184,7 @@ class Cell(nn.Module):
 class Tab(nn.Module):
     def __init__(self):
         super().__init__()
-        self.T = nn.Parameter(0.01 * torch.randn(6, M, M)); self.D = nn.Parameter(0.01 * torch.randn(M, 6))
+        self.T = nn.Parameter(0.01 * torch.randn(NG, M, M)); self.D = nn.Parameter(0.01 * torch.randn(M, NG))
 
     def tables(self, tau=1.0):
         return (self.T / tau).log_softmax(-1), self.D.log_softmax(-1)
@@ -217,7 +236,7 @@ class FP(nn.Module):
     """Full-prompt GPT-2 (no latent): op tokens then the terminal marker, 6-way head at the last position."""
     def __init__(self, gpt):
         super().__init__()
-        self.g = gpt; self.head = nn.Linear(768, 6)
+        self.g = gpt; self.head = nn.Linear(768, NG)
         self.hn = nn.Identity()
 
     def ln_heads(self):
@@ -244,9 +263,9 @@ def audit(model):
     codes = torch.arange(M, device=dev)
     dl = model.dec_logits(codes); dec = dl.argmax(-1).tolist()
     top2 = dl.topk(2, -1).values; dmarg = (top2[:, 0] - top2[:, 1]).tolist()
-    bij = sorted(dec) == list(range(6))
+    bij = sorted(dec) == list(range(NG))
     errs, tmarg = [], []
-    c = codes.repeat(6); a = torch.arange(6, device=dev).repeat_interleave(M)
+    c = codes.repeat(NG); a = torch.arange(NG, device=dev).repeat_interleave(M)
     tl = model.step_logits(c, a); nxt = tl.argmax(-1).tolist()
     t2 = tl.topk(2, -1).values; tmarg = (t2[:, 0] - t2[:, 1]).tolist()
     for ci, ai, ni in zip(c.tolist(), a.tolist(), nxt):
@@ -266,8 +285,8 @@ def wilson_upper(k, n, z=1.96):
 class _Tables:
     def tables(self, tau=1.0):
         dev = next(self.parameters()).device
-        c = torch.arange(M, device=dev).repeat(6); a = torch.arange(6, device=dev).repeat_interleave(M)
-        logT = (self.step_logits(c, a) / tau).log_softmax(-1).view(6, M, M)
+        c = torch.arange(M, device=dev).repeat(NG); a = torch.arange(NG, device=dev).repeat_interleave(M)
+        logT = (self.step_logits(c, a) / tau).log_softmax(-1).view(NG, M, M)
         logD = self.dec_logits(torch.arange(M, device=dev)).log_softmax(-1)
         return logT, logD
 
@@ -276,10 +295,10 @@ class MLPCell(_Tables, nn.Module):
     """one-hot(code) + one-hot(op) -> 256 -> 6 next-code logits; decoder: one-hot(code) -> 6."""
     def __init__(self):
         super().__init__()
-        self.f = nn.Sequential(nn.Linear(M + 6, 256), nn.ReLU(), nn.Linear(256, M)); self.d = nn.Linear(M, 6)
+        self.f = nn.Sequential(nn.Linear(M + NG, 256), nn.ReLU(), nn.Linear(256, M)); self.d = nn.Linear(M, NG)
 
     def step_logits(self, codes, ops):
-        return self.f(torch.cat([F.one_hot(codes, M).float(), F.one_hot(ops, 6).float()], -1))
+        return self.f(torch.cat([F.one_hot(codes, M).float(), F.one_hot(ops, NG).float()], -1))
 
     def dec_logits(self, codes):
         return self.d(F.one_hot(codes, M).float())
@@ -290,11 +309,11 @@ class TinyTF(_Tables, nn.Module):
     0-2) -> next-code head; [code emb, terminal-marker emb] -> answer head. LayerNorm before the heads."""
     def __init__(self, d=256, L=2, H=4):
         super().__init__()
-        self.code = nn.Parameter(0.5 * torch.randn(M, d)); self.op = nn.Embedding(6, d); self.mark = nn.Embedding(2, d)
+        self.code = nn.Parameter(0.5 * torch.randn(M, d)); self.op = nn.Embedding(NG, d); self.mark = nn.Embedding(2, d)
         self.pos = nn.Parameter(0.02 * torch.randn(3, d))
         layer = nn.TransformerEncoderLayer(d, H, 4 * d, dropout=0.0, batch_first=True, norm_first=True)
         self.tf = nn.TransformerEncoder(layer, L, enable_nested_tensor=False); self.ln = nn.LayerNorm(d)
-        self.next_head = nn.Linear(d, M); self.ans_head = nn.Linear(d, 6)
+        self.next_head = nn.Linear(d, M); self.ans_head = nn.Linear(d, NG)
 
     def _run(self, x):
         T = x.shape[1]
@@ -333,11 +352,11 @@ def certificate(model):
     dev = next(model.parameters()).device
     codes = torch.arange(M, device=dev)
     Dh = model.dec_logits(codes).argmax(-1).tolist()
-    Th = model.step_logits(codes.repeat_interleave(6), torch.arange(6, device=dev).repeat(M)).argmax(-1).view(M, 6).tolist()
+    Th = model.step_logits(codes.repeat_interleave(NG), torch.arange(NG, device=dev).repeat(M)).argmax(-1).view(M, NG).tolist()
     seen, frontier, bad = set(), [(0, 0)], 0
     while frontier:
         c, st = frontier.pop()
-        for op in range(6):
+        for op in range(NG):
             nxt = (Th[c][op], int(COMP[op, st]))
             if nxt not in seen:
                 seen.add(nxt); frontier.append(nxt); bad += int(Dh[nxt[0]] != nxt[1])
@@ -352,7 +371,7 @@ def counter_check(model, n=4000, N=24, seed=7):
     """§67b descriptive (theory/c1_diag.py counter_check's definition, on real hard cell calls): H(code | state) and
     MI(code; length mod q | state), q = 2, 3, 4, over n random sequences observed at every step 1..N."""
     dev = next(model.parameters()).device
-    rng = np.random.default_rng(seed); ops = torch.tensor(rng.integers(0, 6, (n, N)), device=dev)
+    rng = np.random.default_rng(seed); ops = torch.tensor(rng.integers(0, NG, (n, N)), device=dev)
     _, _, traj = hard_rollout(model, ops)
     s = np.zeros(n, int); rows = []
     for t in range(1, N + 1):
@@ -375,11 +394,11 @@ def certificate_reach(model):
     """The set of codes reachable from the initial code 0 under all ops (hard argmax), excluding nothing."""
     dev = next(model.parameters()).device
     codes = torch.arange(M, device=dev)
-    Th = model.step_logits(codes.repeat_interleave(6), torch.arange(6, device=dev).repeat(M)).argmax(-1).view(M, 6).tolist()
+    Th = model.step_logits(codes.repeat_interleave(NG), torch.arange(NG, device=dev).repeat(M)).argmax(-1).view(M, NG).tolist()
     seen, frontier = {0}, [0]
     while frontier:
         c = frontier.pop()
-        for op in range(6):
+        for op in range(NG):
             if Th[c][op] not in seen:
                 seen.add(Th[c][op]); frontier.append(Th[c][op])
     return sorted(seen)
@@ -390,7 +409,7 @@ def layer_code_variance(model):
     """§72 (PT): per GPT-2 layer, at the code position of the 6M transition calls: between-code variance (of the code
     means over ops) vs within-code variance (across ops), summed over coordinates."""
     g = model.g; dev = model.code.device
-    c = torch.arange(M, device=dev).repeat(6); a = torch.arange(6, device=dev).repeat_interleave(M)
+    c = torch.arange(M, device=dev).repeat(NG); a = torch.arange(NG, device=dev).repeat_interleave(M)
     x = torch.stack([model.code[c], g.embed(torch.tensor(OP_TOK, device=dev)[a]), g.embed(torch.full_like(a, STEP_TOK))], 1)
     B, T, D = x.shape; hd = D // g.H; h = x + g.w("wpe.weight")[:T][None]; out = []
     for i in range(g.L):
@@ -403,7 +422,35 @@ def layer_code_variance(model):
         z = F.layer_norm(h, (D,), g.w(p + "ln_2.weight"), g.w(p + "ln_2.bias"))
         h = h + F.gelu(z @ g.w(p + "mlp.c_fc.weight") + g.w(p + "mlp.c_fc.bias"), approximate="tanh") @ g.w(p + "mlp.c_proj.weight") \
             + g.w(p + "mlp.c_proj.bias")
-        v0 = h[:, 1].float().view(6, M, D)        # (op, code, D) at the OP position (§72b: under causal attention the code position cannot see the op)
+        v0 = h[:, 1].float().view(NG, M, D)        # (op, code, D) at the OP position (§72b: under causal attention the code position cannot see the op)
         between = float(v0.mean(0).var(0, unbiased=False).sum()); within = float(v0.var(0, unbiased=False).mean(0).sum())
         out.append({"layer": i + 1, "between_code": between, "within_code": within, "ratio": between / max(within, 1e-12)})
     return out
+
+
+@torch.no_grad()
+def code_partition(model):
+    """§75 (Literature 3fa7f90): which group elements share a code. Reachable (code, true state) pairs from (0, identity);
+    blocks = the sets of states seen with each code. Reports whether the identity's block is a subgroup H and whether the
+    blocks are its left cosets {gH} or right cosets {Hg}."""
+    dev = next(model.parameters()).device
+    codes = torch.arange(M, device=dev)
+    Th = model.step_logits(codes.repeat_interleave(NG), torch.arange(NG, device=dev).repeat(M)).argmax(-1).view(M, NG).tolist()
+    seen, fr = {(0, 0)}, [(0, 0)]
+    while fr:
+        c, st = fr.pop()
+        for op in range(NG):
+            nxt = (Th[c][op], int(COMP[op, st]))
+            if nxt not in seen:
+                seen.add(nxt); fr.append(nxt)
+    blocks = {}
+    for c, st in seen:
+        blocks.setdefault(c, set()).add(st)
+    parts = sorted({frozenset(b) for b in blocks.values()}, key=lambda b: (len(b), sorted(b)))
+    H = next((b for b in parts if 0 in b), frozenset({0}))
+    sub = all(COMP[a, b] in H for a in H for b in H)
+    left = {frozenset(int(COMP[g, h]) for h in H) for g in range(NG)}
+    right = {frozenset(int(COMP[h, g]) for h in H) for g in range(NG)}
+    return {"n_codes_used": len(blocks), "block_sizes": sorted(len(b) for b in parts), "identity_block_size": len(H),
+            "identity_block_is_subgroup": bool(sub), "blocks_are_left_cosets": set(parts) <= left,
+            "blocks_are_right_cosets": set(parts) <= right, "exact_bijection_on_states": all(len(b) == 1 for b in parts)}

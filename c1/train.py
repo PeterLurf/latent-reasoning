@@ -32,7 +32,8 @@ TEST_SEED = 6700
 def d1_tokens(M):
     """GPT-2 token positions per d1 update: 6M transition calls x 3 positions + M decoder calls x 2 = 20M (amendment
     67b-impl-1; the original constant 120 was right only for M = 6)."""
-    return 20 * M
+    import c1.core as _c
+    return _c.NG * M * 3 + M * 2                                   # 20M for S3; general group order
 
 
 def gpt2(dev):
@@ -78,6 +79,9 @@ def evaluate(model, arm, dev, n_test, n_null, out):
         res["acc"][str(N)] = float((torch.cat(pred).numpy() == y).mean())
     if not arm.startswith("fp"):
         res["audit"] = audit(model); res["certificate"] = certificate(model)
+        if arm in ("d1", "tab"):
+            from c1.core import code_partition
+            res["code_partition"] = code_partition(model)               # §75: subgroup / coset structure of shared codes
         if res["certificate"]["certified"]:
             res["counter_check"] = counter_check(model)
     if arm == "d1":
@@ -230,7 +234,7 @@ def train(a):
         res["distinctness"] = {"init": dist0, "end": model.distinctness()}
         with torch.no_grad():                                         # §72b dead-unit check (computed on the host)
             import c1.core as _cc
-            c = torch.arange(_cc.M, device=dev).repeat(6); o = torch.arange(6, device=dev).repeat_interleave(_cc.M)
+            c = torch.arange(_cc.M, device=dev).repeat(_cc.NG); o = torch.arange(_cc.NG, device=dev).repeat_interleave(_cc.M)
             model._stats = None; hc, ho, _ = model.head_inputs(c, o, full=True)
             pre = model.U(hc) * model.V(ho)                           # input to the ReLU, (6M, hid)
             act = (pre > 0).float()
