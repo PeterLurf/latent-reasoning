@@ -241,3 +241,38 @@ committed before any panel result.
 * Per §67b's rule, the C1 line records **shared-cell acquisition with a pretrained LM as the obstacle**. The certified
   seed shows the GPT-2 cell can hold an exact, counter-free S3 machine (certificate + mechanism), but not reliably.
 * §72 (running) asks whether freezing GPT-2 and standardising its features changes this.
+
+
+## THEORY §72 (where does the GPT-2 cell lose acquisition?) result (2026-10-02 01:54 EDT; `python c1/score_72.py` → `theory/results/score_s72.json`)
+
+20 runs: PF / RF / PF-std / PT × seeds 2001–2005, on Vast 3090s. The scorer (committed before any eval.json was opened)
+applies §72's rule. TOY is Theory's CPU arm.
+
+| arm | certified | verdict (§72 rule) | hard accuracy |
+|---|---|---|---|
+| PF (frozen pretrained) | 0/5 | fails | 0.15–0.19 (chance) |
+| RF (frozen random) | 0/5 | fails | chance |
+| PF-std (frozen, table-standardised) | 0/5 | fails | chance |
+| PT (fine-tuned, new params at 1e-2) | 0/5 | fails | chance |
+
+**But every run collapsed the same way, so the diagnostic does not separate the three causes.**
+* In the first curriculum stage (length 1 only) the loss falls (PF 0.78, PT 0.93, PF-std 0.000). When longer sequences
+  enter (update ≥ ~2,000–4,000), the loss jumps to ln 6 = 1.79 and stays there.
+* The trained cells route every (code, op) to one code: PF s2001 has 1 reachable code, decoded [4, 4, …], with constant
+  output. So the per-seed accuracies are identical across arms (the test frequency of one state).
+* This is a collapse to a uniform marginal, consistent with dead ReLU units in the bilinear readout
+  W·ReLU((U·h_c) ⊙ (V·h_o)) at the new-parameter lr of 1e-2. §72 fixed that lr for every arm. D1b's lr 1e-4 gave 1/5
+  with partial automata, not this collapse.
+* The model files were not fetched (model.pt excluded), so dead units are not verified directly.
+* **Distinctness is still informative:**
+  - PF: head inputs stay near-parallel (cos 0.99 → 0.96–0.99).
+  - RF: distinct (0.10 → 0.15–0.28).
+  - PF-std: decorrelated by construction (−0.04).
+  None of the three learns. So feature conditioning alone, at this lr, did not rescue acquisition.
+* **Measure flaw (mine).** The PT per-layer between/within-code variance was taken at the code position. Under causal
+  attention, that position cannot see the op, so within-code variance is ~0 and the ratio is meaningless (~10^15).
+  The op or last position should have been used. Not reported as a result.
+
+**Reading.** The registered rule says "all four fail". The evidence says one optimisation collapse common to all arms at
+lr 1e-2. Whether pretrained geometry, fine-tuning or the interface is the obstacle remains open. This is reported with no
+follow-up variant, per §72; the decision is Theory's.

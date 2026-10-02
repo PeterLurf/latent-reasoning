@@ -1,0 +1,406 @@
+{
+ "pf": {
+  "n": 5,
+  "certified": 0,
+  "verdict": "fails",
+  "per_seed": {
+   "2001": {
+    "certified": false,
+    "acc": {
+     "8": 0.1595,
+     "16": 0.1725,
+     "32": 0.1705,
+     "64": 0.1665,
+     "128": 0.1775
+    },
+    "distinct_init": {
+     "mean_pairwise_cos_normed": 0.9961250424385071,
+     "mean_pairwise_cos_raw": 0.9961238503456116
+    },
+    "distinct_end": {
+     "mean_pairwise_cos_normed": 0.9549269080162048,
+     "mean_pairwise_cos_raw": 0.9682128429412842
+    }
+   },
+   "2002": {
+    "certified": false,
+    "acc": {
+     "8": 0.1675,
+     "16": 0.158,
+     "32": 0.1655,
+     "64": 0.1695,
+     "128": 0.1785
+    },
+    "distinct_init": {
+     "mean_pairwise_cos_normed": 0.9922043085098267,
+     "mean_pairwise_cos_raw": 0.9922041296958923
+    },
+    "distinct_end": {
+     "mean_pairwise_cos_normed": 0.9686978459358215,
+     "mean_pairwise_cos_raw": 0.9636250734329224
+    }
+   },
+   "2003": {
+    "certified": false,
+    "acc": {
+     "8": 0.1595,
+     "16": 0.1725,
+     "32": 0.1705,
+     "64": 0.1665,
+     "128": 0.1775
+    },
+    "distinct_init": {
+     "mean_pairwise_cos_normed": 0.9934276938438416,
+     "mean_pairwise_cos_raw": 0.9934253692626953
+    },
+    "distinct_end": {
+     "mean_pairwise_cos_normed": 0.9906978011131287,
+     "mean_pairwise_cos_raw": 0.9860653281211853
+    }
+   },
+   "2004": {
+    "certified": false,
+    "acc": {
+     "8": 0.162,
+     "16": 0.1775,
+     "32": 0.166,
+     "64": 0.186,
+     "128": 0.1595
+    },
+    "distinct_init": {
+     "mean_pairwise_cos_normed": 0.9959489107131958,
+     "mean_pairwise_cos_raw": 0.9959467053413391
+    },
+    "distinct_end": {
+     "mean_pairwise_cos_normed": 0.985990583896637,
+     "mean_pairwise_cos_raw": 0.9810522794723511
+    }
+   },
+   "2005": {
+    "certified": false,
+    "acc": {
+     "8": 0.1785,
+     "16": 0.161,
+     "32": 0.1735,
+     "64": 0.16,
+     "128": 0.153
+    },
+    "distinct_init": {
+     "mean_pairwise_cos_normed": 0.9932125210762024,
+     "mean_pairwise_cos_raw": 0.9932107329368591
+    },
+    "distinct_end": {
+     "mean_pairwise_cos_normed": 0.9772865176200867,
+     "mean_pairwise_cos_raw": 0.9607860445976257
+    }
+   }
+  }
+ },
+ "rf": {
+  "n": 5,
+  "certified": 0,
+  "verdict": "fails",
+  "per_seed": {
+   "2001": {
+    "certified": false,
+    "acc": {
+     "8": 0.1675,
+     "16": 0.158,
+     "32": 0.1655,
+     "64": 0.1695,
+     "128": 0.1785
+    },
+    "distinct_init": {
+     "mean_pairwise_cos_normed": 0.10368269681930542,
+     "mean_pairwise_cos_raw": 0.10368269681930542
+    },
+    "distinct_end": {
+     "mean_pairwise_cos_normed": 0.15706387162208557,
+     "mean_pairwise_cos_raw": 0.14970411360263824
+    }
+   },
+   "2002": {
+    "certified": false,
+    "acc": {
+     "8": 0.1595,
+     "16": 0.1725,
+     "32": 0.1705,
+     "64": 0.1665,
+     "128": 0.1775
+    },
+    "distinct_init": {
+     "mean_pairwise_cos_normed": 0.09275691211223602,
+     "mean_pairwise_cos_raw": 0.09275693446397781
+    },
+    "distinct_end": {
+     "mean_pairwise_cos_normed": 0.18854612112045288,
+     "mean_pairwise_cos_raw": 0.18620039522647858
+    }
+   },
+   "2003": {
+    "certified": false,
+    "acc": {
+     "8": 0.1785,
+     "16": 0.161,
+     "32": 0.1735,
+     "64": 0.16,
+     "128": 0.153
+    },
+    "distinct_init": {
+     "mean_pairwise_cos_normed": 0.11423647403717041,
+     "mean_pairwise_cos_raw": 0.11423647403717041
+    },
+    "distinct_end": {
+     "mean_pairwise_cos_normed": 0.24857155978679657,
+     "mean_pairwise_cos_raw": 0.1147819235920906
+    }
+   },
+   "2004": {
+    "certified": false,
+    "acc": {
+     "8": 0.16,
+     "16": 0.154,
+     "32": 0.1665,
+     "64": 0.158,
+     "128": 0.169
+    },
+    "distinct_init": {
+     "mean_pairwise_cos_normed": 0.10404551029205322,
+     "mean_pairwise_cos_raw": 0.10404551029205322
+    },
+    "distinct_end": {
+     "mean_pairwise_cos_normed": 0.14865654706954956,
+     "mean_pairwise_cos_raw": 0.14839166402816772
+    }
+   },
+   "2005": {
+    "certified": false,
+    "acc": {
+     "8": 0.1785,
+     "16": 0.161,
+     "32": 0.1735,
+     "64": 0.16,
+     "128": 0.153
+    },
+    "distinct_init": {
+     "mean_pairwise_cos_normed": 0.10117243230342865,
+     "mean_pairwise_cos_raw": 0.10117243230342865
+    },
+    "distinct_end": {
+     "mean_pairwise_cos_normed": 0.2768518328666687,
+     "mean_pairwise_cos_raw": 0.15735751390457153
+    }
+   }
+  }
+ },
+ "pfstd": {
+  "n": 5,
+  "certified": 0,
+  "verdict": "fails",
+  "per_seed": {
+   "2001": {
+    "certified": false,
+    "acc": {
+     "8": 0.1595,
+     "16": 0.1725,
+     "32": 0.1705,
+     "64": 0.1665,
+     "128": 0.1775
+    },
+    "distinct_init": {
+     "mean_pairwise_cos_normed": -0.04266860708594322,
+     "mean_pairwise_cos_raw": 0.9961238503456116
+    },
+    "distinct_end": {
+     "mean_pairwise_cos_normed": -0.033965375274419785,
+     "mean_pairwise_cos_raw": 0.9648413062095642
+    }
+   },
+   "2002": {
+    "certified": false,
+    "acc": {
+     "8": 0.1675,
+     "16": 0.158,
+     "32": 0.1655,
+     "64": 0.1695,
+     "128": 0.1785
+    },
+    "distinct_init": {
+     "mean_pairwise_cos_normed": -0.04252345487475395,
+     "mean_pairwise_cos_raw": 0.9922041296958923
+    },
+    "distinct_end": {
+     "mean_pairwise_cos_normed": -0.026171773672103882,
+     "mean_pairwise_cos_raw": 0.9444058537483215
+    }
+   },
+   "2003": {
+    "certified": false,
+    "acc": {
+     "8": 0.1785,
+     "16": 0.161,
+     "32": 0.1735,
+     "64": 0.16,
+     "128": 0.153
+    },
+    "distinct_init": {
+     "mean_pairwise_cos_normed": -0.042815759778022766,
+     "mean_pairwise_cos_raw": 0.9934253692626953
+    },
+    "distinct_end": {
+     "mean_pairwise_cos_normed": -0.039508163928985596,
+     "mean_pairwise_cos_raw": 0.9638683199882507
+    }
+   },
+   "2004": {
+    "certified": false,
+    "acc": {
+     "8": 0.162,
+     "16": 0.1775,
+     "32": 0.166,
+     "64": 0.186,
+     "128": 0.1595
+    },
+    "distinct_init": {
+     "mean_pairwise_cos_normed": -0.04277104139328003,
+     "mean_pairwise_cos_raw": 0.9959467053413391
+    },
+    "distinct_end": {
+     "mean_pairwise_cos_normed": -0.03600241616368294,
+     "mean_pairwise_cos_raw": 0.9655664563179016
+    }
+   },
+   "2005": {
+    "certified": false,
+    "acc": {
+     "8": 0.1785,
+     "16": 0.161,
+     "32": 0.1735,
+     "64": 0.16,
+     "128": 0.153
+    },
+    "distinct_init": {
+     "mean_pairwise_cos_normed": -0.04312331974506378,
+     "mean_pairwise_cos_raw": 0.9932107329368591
+    },
+    "distinct_end": {
+     "mean_pairwise_cos_normed": -0.03150717914104462,
+     "mean_pairwise_cos_raw": 0.950047492980957
+    }
+   }
+  }
+ },
+ "pt": {
+  "n": 5,
+  "certified": 0,
+  "verdict": "fails",
+  "per_seed": {
+   "2001": {
+    "certified": false,
+    "acc": {
+     "8": 0.1595,
+     "16": 0.1725,
+     "32": 0.1705,
+     "64": 0.1665,
+     "128": 0.1775
+    },
+    "distinct_init": {
+     "mean_pairwise_cos_normed": 0.9961250424385071,
+     "mean_pairwise_cos_raw": 0.9961238503456116
+    },
+    "distinct_end": {
+     "mean_pairwise_cos_normed": 0.99921715259552,
+     "mean_pairwise_cos_raw": 0.9994186162948608
+    }
+   },
+   "2002": {
+    "certified": false,
+    "acc": {
+     "8": 0.1725,
+     "16": 0.177,
+     "32": 0.158,
+     "64": 0.16,
+     "128": 0.1625
+    },
+    "distinct_init": {
+     "mean_pairwise_cos_normed": 0.9922043085098267,
+     "mean_pairwise_cos_raw": 0.9922041296958923
+    },
+    "distinct_end": {
+     "mean_pairwise_cos_normed": 0.9999687075614929,
+     "mean_pairwise_cos_raw": 0.9999715089797974
+    }
+   },
+   "2003": {
+    "certified": false,
+    "acc": {
+     "8": 0.1725,
+     "16": 0.177,
+     "32": 0.158,
+     "64": 0.16,
+     "128": 0.1625
+    },
+    "distinct_init": {
+     "mean_pairwise_cos_normed": 0.9934276938438416,
+     "mean_pairwise_cos_raw": 0.9934253692626953
+    },
+    "distinct_end": {
+     "mean_pairwise_cos_normed": 0.9979711771011353,
+     "mean_pairwise_cos_raw": 0.997785747051239
+    }
+   },
+   "2004": {
+    "certified": false,
+    "acc": {
+     "8": 0.1675,
+     "16": 0.158,
+     "32": 0.1655,
+     "64": 0.1695,
+     "128": 0.1785
+    },
+    "distinct_init": {
+     "mean_pairwise_cos_normed": 0.9959489107131958,
+     "mean_pairwise_cos_raw": 0.9959467053413391
+    },
+    "distinct_end": {
+     "mean_pairwise_cos_normed": 0.99996417760849,
+     "mean_pairwise_cos_raw": 0.9999646544456482
+    }
+   },
+   "2005": {
+    "certified": false,
+    "acc": {
+     "8": 0.1785,
+     "16": 0.161,
+     "32": 0.1735,
+     "64": 0.16,
+     "128": 0.153
+    },
+    "distinct_init": {
+     "mean_pairwise_cos_normed": 0.9932125210762024,
+     "mean_pairwise_cos_raw": 0.9932107329368591
+    },
+    "distinct_end": {
+     "mean_pairwise_cos_normed": 0.9999426603317261,
+     "mean_pairwise_cos_raw": 0.9999290108680725
+    }
+   }
+  },
+  "layer_ratio_by_outcome": {
+   "failed": [
+    1618495446777343.8,
+    1.1258922717285156e+16,
+    9.176306630859376e+16,
+    1.1144612580566406e+17,
+    1.2918030412597654e+17,
+    1.4087512253417971e+17,
+    1.482903524169922e+17,
+    1.5322203886718752e+17,
+    1.5688506264648438e+17,
+    1.5762536733398435e+17,
+    1.6007793740234374e+17,
+    1.5895694606933594e+17
+   ]
+  }
+ }
+}
