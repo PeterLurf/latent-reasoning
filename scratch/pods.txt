@@ -471,3 +471,7 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53887305 vast | g78_b2 DESTROYED_VERIFIED 2026-10-02 15:55 after verified fetch (gsmlen/runs/wspad_s2)
 53887312 vast | g78_b3 DESTROYED_VERIFIED 2026-10-02 15:58 after verified fetch (gsmlen/runs/wspad_s3)
 53891982 vast | s83-retrain MODELS FETCHED 2026-10-02 16:21 before destroy (300 MB parts, whole-tar sha256 ed53d77733ad99e4…), local boxes/runs_s5/wc0k4r_s1..3/model.pt sha256: s1 2385abf32ac1be0cb802151e715c0d3a1f28732d6b007bf24343940942b26874 s2 299ed35a325814270b36a32851e5b78c130244d91ea9f39c7ea7a671e47c143b s3 215e8b6a6c78ca618560601c7deaa2f3d7cead9ac43060d17bf42cfc48a95681 (match the host's files)
+53887276 vast | g78_a1 DESTROYED_VERIFIED 2026-10-02 17:22 after verified fetch (gsmlen/runs/tc_s1 gsmlen/runs/ws_s1)
+53887291 vast | g78_a3 DESTROYED_VERIFIED 2026-10-02 17:27 after verified fetch (gsmlen/runs/tc_s3 gsmlen/runs/ws_s3)
+53891982 vast | s83-retrain DESTROYED_VERIFIED 53891982 2026-10-02 17:48 after verified fetch (boxes/runs_s5/wc0k4r_s1-3 with model.pt, theory/results/s83)
+53887285 vast | g78_a2 DESTROYED_VERIFIED 2026-10-02 17:48 after verified fetch (gsmlen/runs/tc_s2 gsmlen/runs/ws_s2)
