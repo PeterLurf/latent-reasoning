@@ -1,0 +1,77 @@
+{
+ "tau": 0.8175575733184814,
+ "calibration": {
+  "n_states": 49500,
+  "in_range_acc": 0.9923030303030304,
+  "taus": {
+   "0.001": 0.5372474789619446,
+   "0.01": 0.8175575733184814,
+   "0.05": 0.9990314841270447
+  },
+  "conf_ok_p1_p50": [
+   0.8514911580085754,
+   0.999998927116394
+  ]
+ },
+ "amp": "torch.bfloat16",
+ "run": "boxes/runs_s5/wc0k4r_s1",
+ "adaptive": {
+  "cum": {
+   "128": 0.0,
+   "256": 0.0,
+   "512": 0.0
+  },
+  "final_state": 0.005,
+  "mean_accepted": 3.3140016570008286,
+  "accepted_hist": [
+   0,
+   1360,
+   9169,
+   205939,
+   77313,
+   14074,
+   1097,
+   39,
+   1,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "generated_states_per_problem": 1013.059,
+  "detection": {
+   "wrong_flagged": 6020,
+   "wrong": 8817,
+   "right_flagged": 210,
+   "right": 26798,
+   "fallbacks": 43
+  }
+ },
+ "fixed_k4": {
+  "cum": {
+   "128": 1.0,
+   "256": 1.0,
+   "512": 1.0
+  }
+ },
+ "fixed_k16": {
+  "cum": {
+   "128": 0.0,
+   "256": 0.0,
+   "512": 0.0
+  }
+ },
+ "risk_coverage": {},
+ "sec": 2814.1,
+ "detection": {
+  "wrong_flagged": 6020,
+  "wrong": 8817,
+  "right_flagged": 210,
+  "right": 26798,
+  "fallbacks": 43
+ }
+}

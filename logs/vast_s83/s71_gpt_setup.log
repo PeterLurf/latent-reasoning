@@ -1,0 +1,11 @@
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable.It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+Using seed 7101
+allowed indices = range(0, 120)
+num_elements = 120
+Randomly sampling 100000 sequences.
+Writing data to `/workspace/s71gen/data/S5=128.csv`
+Using seed 7102
+allowed indices = range(0, 120)
+num_elements = 120
+Randomly sampling 100000 sequences.
+Writing data to `/workspace/s71gen/data/S5=512.csv`
