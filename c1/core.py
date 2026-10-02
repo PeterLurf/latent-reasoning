@@ -72,12 +72,22 @@ class Cell(nn.Module):
         for h in (self.next_head, self.ans_head):
             nn.init.zeros_(h.weight); nn.init.zeros_(h.bias)
 
+    def bil_readout(self, hid=256):
+        """§67b (+ amendment 67b-2): next-code logits = W ReLU((U LN(h_code)) * (V LN(h_op))), h_code / h_op = GPT-2's final hidden states at the
+        code-embedding and op-symbol positions of the same call."""
+        dev = self.code.device
+        self.ln_c, self.ln_o = nn.LayerNorm(768).to(dev), nn.LayerNorm(768).to(dev)
+        self.U, self.V, self.W = nn.Linear(768, hid).to(dev), nn.Linear(768, hid).to(dev), nn.Linear(hid, M).to(dev)
+        self.readout = "bil"
+
     def step_logits(self, codes, ops):
         """codes, ops: (B,) long -> (B, M) next-code logits (one GPT-2 call per row, positions 0-2)."""
         dev = self.code.device
         x = torch.stack([self.code[codes], self.g.embed(torch.tensor(OP_TOK, device=dev)[ops]),
                          self.g.embed(torch.full_like(ops, STEP_TOK))], 1)
         h, _ = self.g(x)
+        if getattr(self, "readout", "linear") == "bil":
+            return self.W(torch.relu(self.U(self.ln_c(h[:, 0])) * self.V(self.ln_o(h[:, 1]))))   # 67b-2: ReLU
         return self.next_head(self.hn(h[:, -1]))
 
     def dec_logits(self, codes):
@@ -85,11 +95,11 @@ class Cell(nn.Module):
         h, _ = self.g(x)
         return self.ans_head(self.hn(h[:, -1]))
 
-    def tables(self):
-        """log T (6 ops, M, M) over all 36 (code, op) pairs and log D (M, 6): 42 GPT-2 calls."""
+    def tables(self, tau=1.0):
+        """log T (6 ops, M, M) over all M x 6 (code, op) pairs and log D (M, 6); T = softmax(logits / tau) (§67b)."""
         dev = self.code.device
         c = torch.arange(M, device=dev).repeat(6); a = torch.arange(6, device=dev).repeat_interleave(M)
-        logT = self.step_logits(c, a).log_softmax(-1).view(6, M, M)
+        logT = (self.step_logits(c, a) / tau).log_softmax(-1).view(6, M, M)
         logD = self.dec_logits(torch.arange(M, device=dev)).log_softmax(-1)
         return logT, logD
 
@@ -99,8 +109,8 @@ class Tab(nn.Module):
         super().__init__()
         self.T = nn.Parameter(0.01 * torch.randn(6, M, M)); self.D = nn.Parameter(0.01 * torch.randn(M, 6))
 
-    def tables(self):
-        return self.T.log_softmax(-1), self.D.log_softmax(-1)
+    def tables(self, tau=1.0):
+        return (self.T / tau).log_softmax(-1), self.D.log_softmax(-1)
 
     def step_logits(self, codes, ops):
         return self.T[ops, codes]
@@ -196,10 +206,10 @@ def wilson_upper(k, n, z=1.96):
 
 # ---------------------------------------------------------------- amendment 67-1 cells (same objective, same interface)
 class _Tables:
-    def tables(self):
+    def tables(self, tau=1.0):
         dev = next(self.parameters()).device
         c = torch.arange(M, device=dev).repeat(6); a = torch.arange(6, device=dev).repeat_interleave(M)
-        logT = self.step_logits(c, a).log_softmax(-1).view(6, M, M)
+        logT = (self.step_logits(c, a) / tau).log_softmax(-1).view(6, M, M)
         logD = self.dec_logits(torch.arange(M, device=dev)).log_softmax(-1)
         return logT, logD
 
@@ -277,3 +287,26 @@ def certificate(model):
     ambiguous = sum(len({st for c2, st in seen if c2 == c}) > 1 for c in reach)
     return {"certified": bad == 0, "bad_pairs": bad, "reachable_codes": len(reach), "ambiguous_codes": ambiguous,
             "reachable_pairs": len(seen)}
+
+
+@torch.no_grad()
+def counter_check(model, n=4000, N=24, seed=7):
+    """§67b descriptive (theory/c1_diag.py counter_check's definition, on real hard cell calls): H(code | state) and
+    MI(code; length mod q | state), q = 2, 3, 4, over n random sequences observed at every step 1..N."""
+    dev = next(model.parameters()).device
+    rng = np.random.default_rng(seed); ops = torch.tensor(rng.integers(0, 6, (n, N)), device=dev)
+    _, _, traj = hard_rollout(model, ops)
+    s = np.zeros(n, int); rows = []
+    for t in range(1, N + 1):
+        s = COMP[ops[:, t - 1].cpu().numpy(), s]
+        rows.append(np.stack([traj[t].cpu().numpy(), s, np.full(n, t)], 1))
+    R = np.concatenate(rows)
+
+    def H(x):
+        _, cnt = np.unique(x, axis=0, return_counts=True); p = cnt / cnt.sum(); return float(-(p * np.log2(p)).sum())
+    out = {"H_code_given_state": H(R[:, :2]) - H(R[:, 1:2])}
+    for q in (2, 3, 4):
+        lm = (R[:, 2] % q)[:, None]
+        out[f"MI_code_lenmod{q}_given_state"] = (H(R[:, :2]) + H(np.hstack([lm, R[:, 1:2]])) - H(np.hstack([R[:, :2], lm]))
+                                                 - H(R[:, 1:2]))
+    return out
