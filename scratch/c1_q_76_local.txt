@@ -7,3 +7,15 @@ c1/runs/p76_std_pfstd_s2052 c1.amortise --teacher theory/results/c1_tab_local\S4
 c1/runs/p76_std_ptstd_s2052 c1.amortise --teacher theory/results/c1_tab_local\S4_std_s2052.json --student ptstd
 c1/runs/p76_stdfull_pfstd_s2052 c1.amortise --teacher theory/results/c1_tab_local\S4_std_s2052.json --student pfstd --holdout 0
 c1/runs/p76_stdfull_ptstd_s2052 c1.amortise --teacher theory/results/c1_tab_local\S4_std_s2052.json --student ptstd --holdout 0
+c1/runs/p76_std_pfstd_s2053 c1.amortise --teacher theory/results/c1_tab_local\S4_std_s2053.json --student pfstd
+c1/runs/p76_std_ptstd_s2053 c1.amortise --teacher theory/results/c1_tab_local\S4_std_s2053.json --student ptstd
+c1/runs/p76_stdfull_pfstd_s2053 c1.amortise --teacher theory/results/c1_tab_local\S4_std_s2053.json --student pfstd --holdout 0
+c1/runs/p76_stdfull_ptstd_s2053 c1.amortise --teacher theory/results/c1_tab_local\S4_std_s2053.json --student ptstd --holdout 0
+c1/runs/p76_std_pfstd_s2054 c1.amortise --teacher theory/results/c1_tab_local\S4_std_s2054.json --student pfstd
+c1/runs/p76_std_ptstd_s2054 c1.amortise --teacher theory/results/c1_tab_local\S4_std_s2054.json --student ptstd
+c1/runs/p76_stdfull_pfstd_s2054 c1.amortise --teacher theory/results/c1_tab_local\S4_std_s2054.json --student pfstd --holdout 0
+c1/runs/p76_stdfull_ptstd_s2054 c1.amortise --teacher theory/results/c1_tab_local\S4_std_s2054.json --student ptstd --holdout 0
+c1/runs/p76_std_pfstd_s2055 c1.amortise --teacher theory/results/c1_tab_local\S4_std_s2055.json --student pfstd
+c1/runs/p76_std_ptstd_s2055 c1.amortise --teacher theory/results/c1_tab_local\S4_std_s2055.json --student ptstd
+c1/runs/p76_stdfull_pfstd_s2055 c1.amortise --teacher theory/results/c1_tab_local\S4_std_s2055.json --student pfstd --holdout 0
+c1/runs/p76_stdfull_ptstd_s2055 c1.amortise --teacher theory/results/c1_tab_local\S4_std_s2055.json --student ptstd --holdout 0
