@@ -6028,6 +6028,17 @@ B-std pilot).**
   comparison let S4 std s2052 train past the stop; those runs were discarded and rerun. s2051 stopped correctly at
   exactly 1.0 and stands.
 
+**Amendment 76-5 (2026-10-02 09:43 EDT; placement and verdict source, before any A5 or S5 (A) result is read; S4 local
+runs already read, see note 76-1).**
+* **Why move.** The Vast CPU host is memory-bound: none of its 28 jobs had finished after more than 70 min. The same
+  registered command on a local GPU (`--device cuda:N`, no other change) takes about 2–3 min per A5 run.
+* **Placement.** (A) runs on the local cards via `theory/c1_tab_driver.py --device cuda:N` (identical c1_rl command),
+  output `theory/results/c1_tab_local/`. The Vast host is destroyed after fetching anything it has finished.
+* **Verdict source (neutral, fixed now).** Each (group, curriculum, seed) is scored from the registered command's
+  completed run, on whichever machine. Where more than one completed run exists (local CPU, local GPU, host), all are
+  reported, any certification disagreement is flagged, and the verdict counts a seed as certified only if every
+  completed run certifies.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
