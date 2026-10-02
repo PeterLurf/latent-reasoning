@@ -32,6 +32,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from c1_group import comp_table  # noqa: E402
 
 SAVE_TABLE = False
+DAEM_BETA0 = 0.0           # §87 (87-2): > 0 -> DA-EM with beta annealed DAEM_BETA0 -> 1 over 3/4 of updates
 TAU_FRAC = 0.5             # §87: tau anneals tau0 -> 1 over the first TAU_FRAC of updates (default unchanged)
 WARM_FRAC = 0.0            # §87: warm-start fraction for curriculum warm
 MIX_P = 0.0                # §85: fraction of short batches under curriculum mixP
@@ -153,7 +154,14 @@ def _train(group, cell, method, seed, M, updates, lr, tau0, curriculum, K, beta0
         for t in range(L):
             s = Ct[s, ops[:, t]]
         logits = m.table() / tau
-        if meth == "marg":
+        if meth == "marg" and DAEM_BETA0 > 0:              # §87 (87-2): canonical DA-EM, tempered path posterior
+            beta = DAEM_BETA0 + (1.0 - DAEM_BETA0) * min(1.0, u / (0.75 * updates))   # beta 0.1 -> 1 over 3/4
+            lT = beta * F.log_softmax(logits, -1); lD = beta * F.log_softmax(m.D, -1)
+            la = torch.full((bs, M), -1e30, device=dev); la[:, 0] = 0.0
+            for t in range(L):
+                la = torch.logsumexp(la[:, :, None] + lT[:, ops[:, t]].permute(1, 0, 2), 1)
+            loss = -(torch.logsumexp(la + lD[:, s].T, 1) / beta).mean()          # -(1/beta) log sum_z w(z)^beta
+        elif meth == "marg":
             T = F.softmax(logits, -1); alpha = torch.zeros(bs, M, device=dev); alpha[:, 0] = 1.0
             for t in range(L):
                 alpha = torch.einsum("bi,bij->bj", alpha, T[:, ops[:, t]].permute(1, 0, 2))
@@ -239,10 +247,11 @@ def main():
     ap.add_argument("--heldout_pairs", type=int, default=0, help="§81: held-out (state, op) pairs per op (seeded)")
     ap.add_argument("--mix_p", type=float, default=0.0); ap.add_argument("--init_oracle", type=float, default=-1.0)
     ap.add_argument("--warm_frac", type=float, default=0.0); ap.add_argument("--tau_frac", type=float, default=0.5)
+    ap.add_argument("--daem_beta0", type=float, default=0.0)
     a = ap.parse_args(); torch.set_num_threads(a.threads)
-    global SAVE_TABLE, HELDOUT_PAIRS, HO_MASK, MIX_P, INIT_ORACLE, WARM_FRAC, TAU_FRAC
+    global SAVE_TABLE, HELDOUT_PAIRS, HO_MASK, MIX_P, INIT_ORACLE, WARM_FRAC, TAU_FRAC, DAEM_BETA0
     SAVE_TABLE = a.save_table; HELDOUT_PAIRS = a.heldout_pairs; MIX_P = a.mix_p; INIT_ORACLE = a.init_oracle
-    WARM_FRAC = a.warm_frac; TAU_FRAC = a.tau_frac
+    WARM_FRAC = a.warm_frac; TAU_FRAC = a.tau_frac; DAEM_BETA0 = a.daem_beta0
     if HELDOUT_PAIRS:                                      # one held-out set per seed (seeded by 81000 + seed)
         COMP_, e_, A_ = comp_table(a.group); hr = np.random.default_rng(81000 + a.seeds[0])
         HO_MASK = np.zeros((A_, A_), bool)
