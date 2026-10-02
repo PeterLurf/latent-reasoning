@@ -67,3 +67,11 @@
 {"step": 6700, "loss": 4.715094847679138, "labelled_states": 27443200, "sec": 3331}
 {"step": 6800, "loss": 4.714680066108704, "labelled_states": 27852800, "sec": 3458}
 {"step": 6900, "loss": 4.714541597366333, "labelled_states": 28262400, "sec": 3572}
+{"step": 7000, "loss": 4.714397864341736, "labelled_states": 28672000, "sec": 3683}
+{"step": 7100, "loss": 4.7147535228729245, "labelled_states": 29081600, "sec": 3793}
+{"step": 7200, "loss": 4.714483556747436, "labelled_states": 29491200, "sec": 3904}
+{"step": 7300, "loss": 4.7144279336929324, "labelled_states": 29900800, "sec": 4001}
+{"step": 7400, "loss": 4.714424896240234, "labelled_states": 30310400, "sec": 4040}
+{"step": 7500, "loss": 4.714499306678772, "labelled_states": 30720000, "sec": 4078}
+{"step": 7600, "loss": 4.714224896430969, "labelled_states": 31129600, "sec": 4116}
+{"step": 7700, "loss": 4.714192605018615, "labelled_states": 31539200, "sec": 4155}

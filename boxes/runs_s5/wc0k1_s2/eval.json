@@ -1,0 +1,34 @@
+{
+ "arm": "wc0all",
+ "k": 1,
+ "latent": 0,
+ "train_sec": 869,
+ "labelled_states_seen": 512000,
+ "eval_batch": 500,
+ "eval_dtype": "torch.bfloat16",
+ "test_sequences": 2000,
+ "compute_512_per_problem": {
+  "tokens_processed": 12800,
+  "flops": 2420710047744.0,
+  "seq_passes": 3584,
+  "written_tokens": 3072,
+  "latent_passes": 0,
+  "gen_tokens": 3072
+ },
+ "eval_sec": 922,
+ "cumulative": {
+  "128": 1.0,
+  "256": 1.0,
+  "512": 1.0
+ },
+ "final_state_acc_512": 1.0,
+ "invalid_share": 0.0,
+ "certificate": {
+  "k": 1,
+  "batch": 500,
+  "dtype": "torch.bfloat16",
+  "inputs": 14400,
+  "errors": 0,
+  "certified": true
+ }
+}

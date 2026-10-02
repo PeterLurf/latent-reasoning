@@ -436,3 +436,5 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53808625 vast | s71_wc0k2_s1 DESTROYED_VERIFIED 2026-10-02 02:00 after verified fetch (boxes/runs_s5/wc0k2_s1)
 53808654 vast | s71_wc0k2_s4 DESTROYED_VERIFIED 2026-10-02 02:04 after verified fetch (boxes/runs_s5/wc0k2_s4)
 53811279 vast | s71_wc0k2_s2 DESTROYED_VERIFIED 2026-10-02 02:17 after verified fetch (boxes/runs_s5/wc0k2_s2)
+53816939 vast offer 52714992 created 2026-10-02 02:18: label c1-72b-990, queue scratch/c1_q_72b_990.txt (logged at create by vdeploy_toy.sh)
+53811285 vast | s71_p3wc4_s2 DESTROYED_VERIFIED 2026-10-02 02:19 after verified fetch (boxes/runs_s5/p3wc4_s2)
