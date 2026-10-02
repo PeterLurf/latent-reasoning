@@ -6202,6 +6202,26 @@ result; tables in `theory/results/c1_tab_local/` (76-5); summary `theory/results
 * **Descriptive (ge3).** M ∈ (60, 90) 0/5, M = 240 0/3 so far, τ0 = 1 0/5. Over-completeness and annealing do not rescue
   acquisition without short labels.
 
+**§76(B) result (2026-10-02 12:19 EDT; scored by the experiments session, `docs/PROTOCOL12.md`,
+`theory/results/score_s76b_S4.json`, `score_s76b_A5.json`).** Both registered (B) arms fail. Hosting succeeds, and
+composition is absent.
+
+| arm | S4 | A5 |
+|---|---|---|
+| (B), ge3 teachers (primary) | fails: 0/10 teachers certified | fails: 0/10 |
+| B-std, 10 % rows held out: PF-std / PT-std certified | 0/10 / 0/10 | 0/10 / 0/10 |
+| held-out-row accuracy (median; chance ≈ 1/R) | PF 0.04, PT 0.17 (≈ 1/30) | PF 0.006, PT 0.007 (≈ 1/61) |
+| 76-3 full arm (all rows; descriptive): PF-std + PT-std certified | 20/20 | 20/20 |
+
+* **Reading.**
+  - A pretrained LM can **host** (store and execute) a certified S4 or A5 automaton exactly. That automaton was
+    acquired by a tabular learner from final answers, with short labels.
+  - The LM does **not compose**: its held-out rows are at chance. With 10 % of rows missing, rollouts fail almost
+    immediately.
+  - This is a storage result, not acquisition or generalisation by the LM (Literature da53d1b's risk 1, confirmed).
+* **Disclosure (experiments session).** The first A5 scoring call read the S4 runs (a path-prefix bug). This was fixed
+  before the verdict was written; S4 is unchanged.
+
 **Note 81-0 (2026-10-02 12:02 EDT; premise for idea 2, after Literature d67b35d; `theory/results/s81_premise_sk_S4_std_s990.json`).
 The Sinkhorn cell is not registered.**
 * The bijective (Sinkhorn) cell (`c1_rl.py --cell sk`, τ_sk 4 → 0.25) was checked on S4 with the **std** curriculum (short
