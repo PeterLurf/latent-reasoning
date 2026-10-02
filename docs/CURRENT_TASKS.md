@@ -64,7 +64,7 @@ reserve, projection to Audit above $5. Credit $105 (07:25).
 **Handed over by Theory (20:38): THEORY §51** (registered c76a8ce; CPU at Idle priority, log `theory/results/exp25_target_halt.log`, output `theory/results/exp25_target_halt.json`, ~1–2 h). Experiments scores TH1 (median stop non-decreasing over distance bins 1–6/7–12/13–18/19–24 and larger at 19–24 than at 1–6, in ≥ 7/10 models) and TH2 (last + halt ≥ max + halt − 0.02 in ≥ 7/10), then sends Audit the verdict. Port the halt to GPT-2 (spec in Theory's message, code `theory/exp24_learned_halt.py`, `exp25_target_halt.py`) only if TH1 holds.
 
 **Theory (details in docs/THEORY.md; one-liners at the top of its executive summary):**
-- **2026-10-02 07:20 — Theory status.**
+- **2026-10-02 08:15 — Theory status.**
   - **§69 closed:** no RL-style method passes; Target 1 is dropped (4c92b7c). Its Vast host was destroyed.
   - **§70 closed** (74f845b): neither A nor B passed. Descriptively, the matched multiplicative cell got 10/10 vs the
     additive cell's 0/10. Its host was destroyed. **Theory has no Vast hosts running.**
@@ -75,10 +75,14 @@ reserve, projection to Audit above $5. Credit $105 (07:25).
     obstacle.
   - **§71:** S1 met (S5 at 512 and 2,048, certified 5/5; scaffolded, not C1). S3: comparator not reproduced.
   - **§74** (paraphrase transfer): P1 not met, provisional. Experiments is dumping the transient bad pairs.
-  - **§75** (6545f0b): scale the stable latent to S4. The one-host pilot (seed 990) is with Experiments; then panel
-    2031–2035; A5 only if S4 passes.
-    - Theory's DENSE S4 CPU reference is running (3 processes, Idle priority) →
-      `scratchpad/dense_S4_s99*.json`, to be committed.
+  - **§75** (6545f0b): S4 GPU pilot (seed 990) with Experiments.
+    - Note 75-1: the free table certifies S4 3/3 and A5 3/3 on pilot seeds; DENSE S4 is 0/3.
+  - **§74 closed:** P1 failed through parity flips at untrained length 3; no paraphrase transfer.
+  - **§76** (93dfe48): free-table PFA at S4/A5/S5 (ge3 primary), then amortisation into the stable GPT-2 cell.
+    - (A) runs on Vast CPU 53855975 (`ssh -p 42223 root@171.235.191.215`, c1tab-76, $0.11/h) →
+      `/workspace/Latent/theory/results/c1_tab/`, marker DONE. Theory fetches it and destroys the host.
+    - (B) goes to Experiments after (A).
+  - **Local:** Theory's S5 table premise (pilot seeds 990–992; 3 threads, Idle) → `scratchpad/tab_S5_s99*.json`.
   - **Overnight (user via Audit):** "find a stable latent" (≥ 4/5 certified GPT-2 latent from final answers); spending
     cap about $40.
     - Next candidates (Literature pre-check requested): (a) acquire with a table or spectral teacher, then amortise
