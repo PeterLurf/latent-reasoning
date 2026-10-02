@@ -322,7 +322,8 @@ def finish(m, a, dev, amp, Xte, Yte, train_sec, states_seen):
     if a.arm == "wc0all":
         pred, comp = wc_rollout(m, Xte, a.k, dev, amp, a.eval_bs); res["compute_512_per_problem"] = comp
     elif a.arm == "tagger":
-        pred = np.concatenate([m(torch.tensor(Xte[i:i + 50], device=dev)).argmax(-1).cpu().numpy() for i in range(0, len(Xte), 50)])
+        with torch.no_grad():                                         # (was missing: the graph OOM'd 8 GB cards)
+            pred = np.concatenate([m(torch.tensor(Xte[i:i + 50], device=dev)).argmax(-1).cpu().numpy() for i in range(0, len(Xte), 50)])
     else:
         fin = p3_rollout(m, Xte, a.k, dev, amp, a.eval_bs, a.latent)
         pred = np.full_like(Yte, -1); pred[:, -1] = fin
