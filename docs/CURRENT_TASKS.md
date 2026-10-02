@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-10-02 17:53 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-10-02 19:15 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -35,7 +35,7 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 > gives fronts to depth 11 in 2/4 runs; Pilot D 12 + 12 running on Vast). Ownership (theory Vast hosts vs a PROTOCOL8)
 > to be agreed. The theory session analyses O/R/T9/T10 runs only after the experiments session has scored them.
 
-## 00. EXPERIMENTS STATE AT 2026-10-02 17:53 EDT — authoritative over section 0
+## 00. EXPERIMENTS STATE AT 2026-10-02 19:15 EDT — authoritative over section 0
 
 **Running (all local; no Vast hosts of ours):**
 * **§76(A) teachers on local GPUs (amendment 76-5):** `python theory/c1_tab_driver.py --groups {A5|S5|S4} --device
@@ -78,8 +78,13 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 * **§83:** the verdict is fixed by seed 1 (fails; Theory). The host was destroyed at 17:48 by a surviving old watcher
   (incident disclosed). The models are local (`boxes/runs_s5/wc0k4r_s*`, shas in pods.txt). Seeds 2–3 and the extras
   are descriptive, lowest priority: `scratch/s83_local.sh` on cuda:2 after the §86 panel there.
-* **Local priority (Theory):** §79 panel → §84 Step 1 (cuda:0, `scratch/s84_step1.sh`; then `python gsmlen/oracle84.py
-  summarise`) → §85 (cuda:2 tables) → §86 pilot/panel (`scratch/l86_chain.sh`) → §83 s2/s3.
+* **Local priority (Theory):**
+  1. §79 panel tail.
+  2. §86 pilot/panel (`scratch/l86_chain.sh`).
+  3. §88 (`scratch/c1_88_chain.sh`, queue `scratch/c1_q_88.txt`, per card after §86).
+  4. §83 s2/s3 (`scratch/s83_local.sh`, cuda:2 after §88).
+  - In parallel on cuda:2: §87 tables (`theory/c1_s87_driver.py`, then the daem pass; do not open c1_s87 results).
+  - Done: §84 Step 1 (gate failed, so Step 2 is not run), §85 (40 tables, Theory scores).
 * **User decision "both" (via Audit, about 11:05): (1) GSM8K length split with the written-state method from the D&W
   CoT checkpoint (about $25, one-host pilot, projection to Audit first); (2) a new toy latent task needing LM knowledge
   (local).** Theory registers both; no training before that. Prep done (a900b18, `gsmlen/`):
