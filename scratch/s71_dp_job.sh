@@ -15,6 +15,10 @@ SHA512=a0087fe4a7496a47f76d9436e6bb089c8a8869f3f343f71057355e127d0c33da
      "git+https://github.com/jopetty/abstract_algebra" "git+https://github.com/jopetty/sfirah"
   touch ../flash-linear-attention/README.md                       # the bundled fla's setup reads a README it lacks
   pip install -q -e ../flash-linear-attention
+  # interface-only patch (Audit): their error handler calls wandb.alert / wandb.log without wandb.init, which masks the
+  # real exception; guard both so the original traceback surfaces. Training code is otherwise unchanged.
+  sed -i -e 's/^        wandb.alert(/        if wandb.run: wandb.alert(/' -e 's/^        wandb.log({"error_traceback"/        if wandb.run: wandb.log({"error_traceback"/' src/main.py
+  grep -c "if wandb.run" src/main.py
   python -c "import fire, polars, abstract_algebra, fla, sfirah; print('deps ok')"; } > /workspace/Latent/logs/s71_dp_setup.log 2>&1
 W=/workspace/DeltaProduct/state_tracking; cd $W; mkdir -p data
 PYTHONPATH=$PWD python src/generate_data.py --group=S5 --k=128 --samples=100000 --seed=7101 >> /workspace/Latent/logs/s71_dp_setup.log 2>&1
@@ -24,7 +28,7 @@ echo "$(date +%T) data sha S5=128 $s1 S5=512 $s2" >> $log
 if [ "$s1" != "$SHA128" ] || [ "$s2" != "$SHA512" ]; then echo "$(date +%T) DATA_SHA_MISMATCH rc 9" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; fi
 if grep -q "^dpvar" "$q"; then for L in $(seq 2 127); do PYTHONPATH=$PWD python src/generate_data.py --group=S5 --k=$L --samples=790 --seed=$((7200 + L)) >> /workspace/Latent/logs/s71_dp_setup.log 2>&1; done; fi
 nvidia-smi --query-gpu=name,driver_version --format=csv,noheader >> $log
-one() { arm=$1; seed=$2; out=/workspace/Latent/boxes/runs_s5/${arm}_s$seed; mkdir -p $out; cd $W
+one() { arm=$1; seed=$2; out=/workspace/Latent/boxes/runs_s5/${arm}_s$seed; [ -s $out/preds_test.npy ] && return; mkdir -p $out; cd $W
   extra=""; [ $arm = dpvar ] && extra="--strict_len=False"
   echo "$(date +%T) start $arm $seed" >> $log
   WANDB_MODE=disabled PYTHONPATH=$PWD python src/main.py train --group=S5 --k=128 --k_test=512 --n_layers=1 --num_householder=4 \
@@ -35,5 +39,5 @@ one() { arm=$1; seed=$2; out=/workspace/Latent/boxes/runs_s5/${arm}_s$seed; mkdi
        --out $out/preds_test.npy > $out/eval.json 2>> /workspace/Latent/logs/s71_${arm}_s$seed.log && rc=0; fi
   echo "$(date +%T) evaluated boxes/runs_s5/${arm}_s$seed rc $rc" >> $log; }
 export -f one; export W log
-grep -v '^#' "$q" | grep -v '^$' | xargs -d '\n' -P 3 -I{} bash -c 'one {}'
+grep -v '^#' "$q" | grep -v '^$' | xargs -d '\n' -P ${DP_P:-1} -I{} bash -c 'one {}'   # 1 at a time: 3 x bs 2048 OOM a 24 GB card
 echo "$(date +%T) QUEUE_DONE" >> $log
