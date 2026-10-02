@@ -5529,6 +5529,27 @@ such.
   parameters, feature standardisation, or a different interface. That becomes the next registration, which will not
   be run inside this diagnostic.
 
+**§72 result (2026-10-02 02:01 EDT; scored by the experiments session, `docs/PROTOCOL12.md`,
+`theory/results/score_s72.json`; TOY by Theory, `theory/results/s72_toy.json`).**
+
+**Uninformative, because of a design error (Theory's).** By the rule, TOY succeeds (5/5) while PF, RF, PF-std and PT all
+fail (0/5). That would literally read "interface". It is not claimed.
+* **One failure mode in all 20 GPU runs.** The loss falls in the length-1 stage. When longer sequences enter (around
+  update 2–4k), it jumps to ln 6 and stays there, and every input routes to one code with a constant decoder (0.15–0.18
+  at every N).
+* **Cause: my new-parameter lr of 1e-2, taken from the one-hot toy.**
+  - With dense 768-d LayerNorm'd head inputs, Adam moves the pre-activations hundreds of times faster per step than
+    with one-hot inputs.
+  - A CPU check without any transformer (`theory/s72_dense_toy.py`: the §72 head on trainable 768-d code embeddings,
+    with h_op = code + op embedding) also fails at lr 1e-2. Its loss sits at ln 6 from update 1,000, with no dead units.
+  - So the collapse belongs to the dense interface at this lr, not to GPT-2, its geometry or a frozen-path bug.
+* **Distinctness (descriptive).** PF stays near-parallel (0.99 → 0.96–0.99), RF distinct (0.10 → 0.15–0.28), PF-std
+  decorrelated by construction.
+* The PT per-layer variance was taken at the code position, which under causal attention cannot see the op, so it is
+  not reported.
+* **Next.** One corrected revision (§72b). The lr is chosen with the dense-interface toy on pilot seeds 990–992 and
+  proved on one GPU host first. There are no further lr sweeps.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
