@@ -5919,6 +5919,10 @@ panel and A5 are not run.**
   belongs to shared-parameter cells. The free table has independent rows.
 * §75's GPU pilot (PF-std / PT-std, seed 990) is still the registered test for the GPT-2 cell.
 
+**Note 75-2 (2026-10-02 09:44 EDT; descriptive premise, pilot seeds 990–992; `theory/results/s75_tab_S5_*.json`).**
+The free table under the same exact-marginal objective (std curriculum, M 240, τ 4 → 1, 16k updates, CPU, about
+84 min each) certifies **S5 3/3** at 1.000 to N 128. §76(A)'s registered panel (ge3 primary, std) is the test.
+
 ## 76. A free-table latent automaton at S4 / A5 / S5, and its amortisation into the stable GPT-2 cell (pre-registered 2026-10-02 08:10 EDT, after Literature's check 99ec154 and before any panel run; note 75-1's premise; the overnight stable-latent goal)
 
 **Why.** Note 75-1 (pilot seeds): the free table under §67's exact-marginal objective certifies S4 3/3 and A5 3/3. Every
