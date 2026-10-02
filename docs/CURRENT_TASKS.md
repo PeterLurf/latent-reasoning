@@ -63,7 +63,7 @@ reserve, projection to Audit above $5. Credit $105 (07:25).
 **Handed over by Theory (20:38): THEORY §51** (registered c76a8ce; CPU at Idle priority, log `theory/results/exp25_target_halt.log`, output `theory/results/exp25_target_halt.json`, ~1–2 h). Experiments scores TH1 (median stop non-decreasing over distance bins 1–6/7–12/13–18/19–24 and larger at 19–24 than at 1–6, in ≥ 7/10 models) and TH2 (last + halt ≥ max + halt − 0.02 in ≥ 7/10), then sends Audit the verdict. Port the halt to GPT-2 (spec in Theory's message, code `theory/exp24_learned_halt.py`, `exp25_target_halt.py`) only if TH1 holds.
 
 **Theory (details in docs/THEORY.md; one-liners at the top of its executive summary):**
-- **2026-10-02 08:15 — Theory status.**
+- **2026-10-02 09:40 — Theory status.**
   - **§69 closed:** no RL-style method passes; Target 1 is dropped (4c92b7c). Its Vast host was destroyed.
   - **§70 closed** (74f845b): neither A nor B passed. Descriptively, the matched multiplicative cell got 10/10 vs the
     additive cell's 0/10. Its host was destroyed. **Theory has no Vast hosts running.**
@@ -77,11 +77,16 @@ reserve, projection to Audit above $5. Credit $105 (07:25).
   - **§75** (6545f0b): S4 GPU pilot (seed 990) with Experiments.
     - Note 75-1: the free table certifies S4 3/3 and A5 3/3 on pilot seeds; DENSE S4 is 0/3.
   - **§74 closed:** P1 failed through parity flips at untrained length 3; no paraphrase transfer.
-  - **§76** (93dfe48): free-table PFA at S4/A5/S5 (ge3 primary), then amortisation into the stable GPT-2 cell.
-    - (A) runs on Vast CPU 53855975 (`ssh -p 42223 root@171.235.191.215`, c1tab-76, $0.11/h) →
-      `/workspace/Latent/theory/results/c1_tab/`, marker DONE. Theory fetches it and destroys the host.
-    - (B) goes to Experiments after (A).
-  - **Local:** Theory's S5 table premise (pilot seeds 990–992; 3 threads, Idle) → `scratchpad/tab_S5_s99*.json`.
+  - **§76** (93dfe48), free-table PFA at S4/A5/S5, then amortisation into the stable GPT-2 cell.
+    - Premises: the free table certifies S4, A5 and S5 3/3 each (std, pilot seeds; notes 75-1, 75-2).
+    - (A) moved to the local GPUs (76-5; the Vast CPU host was destroyed, no job had finished) via `c1_tab_driver.py
+      --device cuda:N` → `theory/results/c1_tab_local/`.
+    - Local S4: ge3 0/10 (quotient plateaus), std 5/5.
+    - (B): students host full tables exactly (5/5) but compose no held-out rows (0/5). The A5 feeder waits on A5
+      teachers.
+    - A descriptive GPU premise (one-hot bilinear S4, hid 256/1024/4096) decides whether §77 (a wide GPT-2 readout) is
+      worth registering.
+  - **Theory has no cloud hosts.** No local Theory CPU jobs.
   - **Overnight (user via Audit):** "find a stable latent" (≥ 4/5 certified GPT-2 latent from final answers); spending
     cap about $40.
     - Next candidates (Literature pre-check requested): (a) acquire with a table or spectral teacher, then amortise
