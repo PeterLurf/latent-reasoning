@@ -194,6 +194,8 @@ def train(a):
             if v > best and not a.max_steps:
                 best = v; model.save_pretrained(os.path.join(a.out, "model")); rec["saved"] = True
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
+    if a.max_steps:                                                     # pilot / smoke: keep the final model for the predict path
+        model.save_pretrained(os.path.join(a.out, "model"))
     res = {**info, "best_valid_short": best, "train_sec": round(time.time() - t0), "tokens": ntok,
            "sec_per_step": round((time.time() - t0) / total, 4)}
     json.dump(res, open(os.path.join(a.out, "train_done.json"), "w", newline="\n"), indent=1); print("DONE", res, flush=True)

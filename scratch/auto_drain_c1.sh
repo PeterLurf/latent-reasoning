@@ -44,6 +44,7 @@ while :; do
       elif [ "$pre" = f4 ]; then res=$(bash scratch/drain_f4.sh "$h" "$p" "$t" "$id" 2>&1)
       elif [ "$pre" = c1 ]; then res=$(bash scratch/drain_c1.sh "$h" "$p" "$t" "$id" 2>&1)
       elif [ "$pre" = tj ]; then res=$(bash scratch/drain_tjob.sh "$h" "$p" "$t" "$id" 2>&1)
+      elif [ "$pre" = g78 ]; then res=$(bash scratch/drain_g78.sh "$h" "$p" "$t" "$id" 2>&1)
       else res=$(bash scratch/drain_toy.sh "$h" "$p" "$pre" "$id" "$t" 2>&1); fi
       if echo "$res" | grep -q "^DRAINED $id"; then
         echo "$h:$p" >> logs/drained_hosts.txt
