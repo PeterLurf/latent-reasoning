@@ -6506,6 +6506,93 @@ states. Two speed-only changes:
 * Progress lines are printed. The host's running inference is restarted with this version, and its partial output (none
   printed) is voided unread.
 
+## 84. The stop decision is out of range: an oracle-stop diagnostic, then decoy-computation padding (pre-registered 2026-10-02 16:55 EDT, after Literature's check 0919cee and before any §84 run; Audit's §78 diagnosis; user directive "keep innovating and improving our results")
+
+**Why (§78, read by Audit from WS-pad's committed predictions; L2 fails by arithmetic).**
+* WS-pad is 0.40–0.45 in-distribution but 0.04–0.06 on mid and 0.01–0.02 on long.
+* In the long bin (true n 5–8), 164/225 items stop after exactly 2 written values. Mid: 504/654.
+* The per-step computation works in range. The **halting decision** keys on the count of computed values, which never
+  exceeded 2 in training.
+* Padding with *question numbers* does not hide that count, because computed values are distinguishable. This is the
+  range principle applied to the stop decision.
+* Scope: GPT-2 small fine-tuned from base. Hase 2401.06751 runs the easy → hard step split at 7–70B.
+
+**Step 1: oracle-stop diagnostic** (inference only, the existing `gsmlen/runs/wspad_s{1,2,3}` checkpoints, local).
+* The stop ("####") is suppressed until the true n equations are written; then the answer step is forced.
+* It reports mid and long accuracy, with n and bootstrap CIs (225 long items), and the per-position correctness of
+  written values at positions 3–8.
+* **Error split (Literature: Newman 2010.07174, Dziri):** halting errors (WS-pad stopped before n), step errors (a wrong
+  value from correct inputs), and propagation errors (a correct op on an earlier wrong value).
+* **Recovery share:** (oracle-stop long − WS-pad long) / (WS-pad in-distribution − WS-pad long).
+* **This is an oracle: it uses the true n.** It is a diagnostic upper bound on fixing the stop decision, never a method
+  result.
+* **Gate:** Step 2 runs only if the oracle-stop long accuracy is ≥ 0.10 (pooled over seeds; its CI is reported).
+  Otherwise per-step error past 2 dominates, so halting fixes cannot help; §84 closes.
+
+**Step 2: WS-decoy (training fix).** As §78's WS-pad, but the padding consists of **decoy computed values**.
+* Decoys are results of random binary operations (+, −, ×, ÷ with integer results) on question numbers or earlier
+  values: computed-looking but unneeded.
+* True values keep their order. The total list length is ~ U{len(true), …, **12**}, so the training value counts span
+  the test range: aug_long reaches n = 12, and inference allows **14 calls** (Literature flag (a), Audit). The stop
+  label is unchanged (stop when the true final value has been computed).
+* **A decoy never equals a needed value or the answer** (Literature flag (b)).
+* **Decoy realism gate (Audit; checked before training).** A logistic classifier, decoy vs true value, on surface
+  features (log-magnitude, integer-ness, sign, digit count, appears-in-question), trained and tested on held-out
+  samples, must give **AUC ≤ 0.65**.
+  - Otherwise decoys are resampled from the true-value distribution (the same op and magnitude bins) and the check is
+    repeated.
+  - The final AUC is reported.
+* Seeds 1–3; the same short training data, epochs and budget as §78's WS-pad. Vast, ≤ $10 on top of §78.
+
+**Predictions (median over seeds; long = GSM8K-test n ≥ 5).**
+* **D1:** WS-decoy long ≥ WS-pad long + 0.05, paired by item (pooled), with the 95 % CI above 0.
+* **D2 (the stop now tracks the goal):** Spearman ρ between the number of written values and true n on mid + long is
+  ≥ 0.5, and higher than WS-pad's.
+* **D3 (no in-distribution cost; Audit):** WS-decoy in-distribution ≥ WS-pad in-distribution − 0.03.
+* **Reported (Literature flag (c)):** in-range step accuracy with and without decoys present in the state.
+
+**Readings.**
+* **D1 + D2 + D3.** Moving the stop decision into range lets a written-state solver trained on 1–2-step problems
+  generalise to longer GSM8K problems: the range principle fixes both the step and the stop.
+* **D2 without D1.** The stop is fixed, but per-step error past 2 limits accuracy.
+* **Gate fails.** The bottleneck is per-step computation past 2, not halting.
+
+## 85. Information or optimisation? The short-label threshold, and an oracle-initialised free table without short labels (pre-registered 2026-10-02 16:55 EDT, after Literature's leads f89953e and before any §85 run; the user directive "keep innovating")
+
+**Why.** The free table acquires S4, A5 and S5 only when length-1/2 problems label the Cayley products directly (§76(A),
+§82). Without them every order-60 group, cyclic included, stays at one block (chance). Two questions:
+* **(i) How much short supervision is needed?** This turns std-vs-ge3 into a curve.
+* **(ii) Is the ge3 failure missing information or the landscape?** If the true automaton is a stable attractor under
+  ge3 (re-found from a noisy oracle start), the uniform-start failure is optimisation: a symmetric saddle with weak
+  early gradient (Abbe 2302.11055).
+
+**Prior** (f89953e): Abbe 2302.11055 (leap complexity), Wies 2204.02892 (sub-task supervision), Zhang 1406.3824 (spectral
+initialisation then EM).
+
+**Design** (A5, the free table, M 120, exact marginal, lr 1e-2, τ 4 → 1, 16k updates; `theory/c1_rl.py`).
+* **(i) Threshold.** Curriculum `mixP`: per batch, with probability p the length is 1 or 2; otherwise the ge3 stages.
+  p ∈ {0.001, 0.01, 0.03, 0.1}. Seeds 2121–2125.
+* **(ii) Oracle init under ge3.** `--init_oracle ε`: the true automaton (code 0 ↔ identity, codes 1..59 ↔ the other
+  elements; logit +3) plus N(0, ε²) noise on every logit. ε ∈ {0.5, 1, 2, 4}. Seeds 2121–2125.
+* **(iii) Descriptive.** The gradient norm at the default init (0.1·randn), std vs ge3 batches, 5 seeds.
+
+**Measures.** Certificate; accuracy at N 128; problems to first certificate.
+
+**Predictions.**
+* **T1 (threshold).** The certified count rises monotonically with p. The smallest p with ≥ 4/5 certified is reported.
+  If even p = 0.001 certifies ≥ 4/5, a trace of short supervision suffices.
+* **T2 (information vs optimisation).** If ε = 1 certifies ≥ 4/5 under ge3, the information is there and ge3's failure
+  is optimisation. If even ε = 0.5 fails, ge3 data does not pin the automaton down (information).
+* **The ε curve (descriptive):** the basin of attraction's width.
+
+**Readings.**
+* **T2 optimisation.** Better optimisation (spectral or partial-information initialisation, staged training) is the
+  route to acquisition without short labels. That is Literature's lead 1, the next registration.
+* **T2 information.** Short supervision is necessary at this scale, and the claim boundary of §76 is fundamental for
+  this learner.
+
+**Placement.** Local GPU (or CPU): 40 runs of a few minutes each, plus the gradient-norm script. $0.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
