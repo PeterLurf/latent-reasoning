@@ -5985,6 +5985,14 @@ shared-parameter cell failed there.
 * **(A) std passes but ge3 fails.** The learner needs directly labelled Cayley products. That is disclosed, and the
   strong claim is withdrawn.
 
+**Note 76-1 (2026-10-02 09:02 EDT; placement only, before any §76 result is read).**
+* The Vast host's queue runs the 20 slow S5 jobs first, so its S4 tables would arrive late.
+* So that (B) can start, the S4 ge3 teacher tables (seeds 2051–2060) are also generated locally, with the identical
+  registered command (`c1_rl.py --group S4 --cell tab --M 48 --method marg --tau0 4 --updates 16000 --curriculum ge3
+  --save_table`), in `theory/results/c1_tab_local/`.
+* (A)'s S4 verdict uses the host runs. Any certification difference between local and host for the same seed (torch
+  versions differ) is reported. (B)'s S4 teachers are the local tables.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
