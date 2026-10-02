@@ -6,7 +6,7 @@
 #    strict_len=False over S5=2..128 (~790 sequences per length, seeds 7200 + L; amendment 71-1).
 # 3. Predictions on the first 2,000 test sequences via boxes/s71_dp_eval.py -> boxes/runs_s5/<arm>_s<seed>/.
 cd "$(dirname "$0")/.."
-tag=$1; dev=$2; q=$3; log=/workspace/Latent/logs/queue_$tag.out; mkdir -p logs boxes/runs_s5
+tag=$1; dev=$2; q=$(readlink -f "$3"); log=/workspace/Latent/logs/queue_$tag.out; mkdir -p logs boxes/runs_s5
 SHA128=6ee3ef95405dc43b094824dff8973753c587fe95a00762d2023bd64a941504f2
 SHA512=a0087fe4a7496a47f76d9436e6bb089c8a8869f3f343f71057355e127d0c33da
 { cd /workspace; [ -d DeltaProduct ] || git clone -q https://github.com/automl/DeltaProduct.git
