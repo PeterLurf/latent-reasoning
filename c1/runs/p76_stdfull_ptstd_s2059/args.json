@@ -1,0 +1,23 @@
+{
+ "teacher": "theory/results/c1_tab_local/S4_std_s2059.json",
+ "student": "ptstd",
+ "updates": 4000,
+ "lr": 0.0001,
+ "holdout": 0.0,
+ "n_test": 2000,
+ "bs": 0,
+ "stats_every": 10,
+ "fake_teacher": false,
+ "allow_uncertified": false,
+ "device": "cuda:2",
+ "out": "c1/runs/p76_stdfull_ptstd_s2059",
+ "seed": 2059,
+ "group": "S4",
+ "M": 48,
+ "teacher_certified_file": true,
+ "R": 34,
+ "rows": 816,
+ "train_rows": 816,
+ "heldout_rows": 0,
+ "evidential": true
+}

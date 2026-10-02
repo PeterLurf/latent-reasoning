@@ -399,3 +399,31 @@ descriptive only.
 * In both arms the blocks are neither left nor right cosets. 26 codes are used, and there is no bijection on states.
 
 Evals: `c1/runs/p75_{pfstd,ptstd}_s990/eval.json`. The §73 recipe works at S3 scale only, as tested.
+
+## THEORY §76(B) S4 (amortising free-table teachers into the stable GPT-2 cell) result (2026-10-02 10:07 EDT; `python c1/score_76b.py S4` → `theory/results/score_s76b_S4.json`)
+
+The scorer (5a3c259) and the 76-3 extension were committed before any student result. Placement: local cards (feeder
+`scratch/feed76.sh`). Teachers: §76(A) tables made locally (notes 76-1 and 76-5).
+
+| arm | teachers certified | PF-std certified | PT-std certified | verdict |
+|---|---|---|---|---|
+| **(B), ge3 teachers (primary)** | 0/10 | 0/10 | 0/10 | **fails** (every seed a teacher failure) |
+| **B-std (76-2), std teachers, 10 % rows held out** | 10/10 | 0/10 | 0/10 | **fails** |
+| 76-3 full arm, std teachers, all rows (descriptive) | 10/10 | 10/10 | 10/10 | descriptive: hosted exactly |
+
+**Descriptive.**
+* Every B-std student fits all training and decoder rows in 50–125 updates. The certificate with the held-out rows
+  patched to the teacher's entries holds 20/20, so the only defects are the held-out rows.
+* Held-out-row accuracy (student next code = teacher's), chance ≈ 1/|R| ≈ 0.03:
+  - PF-std median 0.04 (0.012–0.134);
+  - PT-std median 0.17 (0.089–0.273).
+* So the students copy the rows they were given and do not compose the missing ones. Own-table accuracy at N 128 is
+  about 0.04 (chance) for both.
+* Full arm: 1.000 at N 8–128, 0 bad pairs, no codes outside R, in 20/20 runs.
+* Fix disclosed: the 100 % stop check was made exact (2c0fa96). The two s2052 runs that overran the stop were reset and
+  rerun before scoring.
+
+**Reading.** A frozen or fine-tuned pretrained GPT-2 can host an exactly certified S4 automaton, acquired by a tabular
+learner from final answers (system level; 76-3 wording: "a pretrained LM can host a certified automaton acquired by a
+tabular learner"). It does not generalise the automaton to unseen transitions. The registered (B) and B-std rules are
+not met.
