@@ -372,6 +372,8 @@
   "donor_acc": 1.0,
   "irrelevant_change_rate": 0.391304347826087,
   "irrelevant_n": 1357,
+  "irrelevant_change_rate_reachable": 0.0,
+  "irrelevant_n_reachable": 335,
   "irrelevant_note": "",
   "same_semantic_agreement": 1.0,
   "same_semantic_distinct_codes": 0
@@ -381,5 +383,6 @@
   "examples": 4096000,
   "gpt2_tokens": 960000,
   "sec": 951
- }
+ },
+ "mechanism_recomputed_locally": true
 }
