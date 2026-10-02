@@ -388,3 +388,14 @@ cards. A descriptive rerun of PF-std (`c1/runs/p74diag_pfstd_s*`, with bad-pair 
 **Reading.** Unlike §73's single-token ops (10/10), the multi-token text-op cell at M 24 / 8,000 updates does not
 certify. Paraphrase transfer is therefore untested. In 3/5 seeds the failure is a small parity confusion at length-3
 codes, not a broken machine. Theory has the bad-pair list.
+
+## THEORY §75 (stable latent scaled to S4) pilot gate (2026-10-02 09:11 EDT; seed 990 only, Vast 3090)
+
+**Gate failed**: neither arm certifies or reaches ≥ 0.95 at N 128, so the panel and A5 were not started. The PF-std
+seeds 2031–2035 run provisionally on the local cards are void as panel evidence (Audit's conditions); they are labelled
+descriptive only.
+* PF-std: acc N 8–128 0.761/0.653/0.543/0.512/0.486, not certified. Code partition: identity block plus 12 pairs.
+* PT-std: 0.867/0.777/0.619/0.424/0.233, not certified. Partition: identity block plus 6 blocks of 4.
+* In both arms the blocks are neither left nor right cosets. 26 codes are used, and there is no bijection on states.
+
+Evals: `c1/runs/p75_{pfstd,ptstd}_s990/eval.json`. The §73 recipe works at S3 scale only, as tested.

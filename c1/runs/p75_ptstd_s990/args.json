@@ -1,0 +1,22 @@
+{
+ "arm": "d1",
+ "seed": 990,
+ "updates": 16000,
+ "bs": 512,
+ "lr": 0.0001,
+ "head_init": "default",
+ "M": 48,
+ "freeze_gpt2": false,
+ "feat_norm": "tablestd",
+ "gpt2_init": "pretrained",
+ "readout": "bil",
+ "tau0": 4.0,
+ "head_norm": "ln",
+ "code_init": "distinct",
+ "lr_new": 0.0001,
+ "n_test": 2000,
+ "n_null": 10000,
+ "max_hours": 3.0,
+ "device": "cuda:0",
+ "out": "c1/runs/p75_ptstd_s990"
+}
