@@ -73,7 +73,8 @@ batch). Classics without arXiv IDs are marked.
   P(best-of-n certifies) = 1 − (1 − p₁)^n. If the observed rate is near that bound, loss selection works; if it falls
   well below, loss doesn't track the certificate.
   - §69's 0–1/10 → 5/10 from best-of-4 is consistent with p₁ ≈ 0.15 and good selection.
-  - Even then, ≥ 9/10 needs n ≈ 13 at p₁ = 0.15 (1 − 0.85¹³ ≈ 0.88; 0.9 at n ≈ 14). The budget follows from p₁.
+  - Even then, an expected ≥ 0.9 at p₁ = 0.15 needs n ≥ 15 (1 − 0.85¹⁴ ≈ 0.897; 1 − 0.85¹⁵ ≈ 0.913). The budget
+    follows from p₁.
 - Report the loss-vs-certificate rank correlation across restarts. That is the evidence that selection is
   label-free.
 
