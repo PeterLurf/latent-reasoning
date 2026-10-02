@@ -5314,6 +5314,13 @@ Certified, out of 3 development seeds (1300–1302) and 10 confirmation seeds (1
   alone does not decide the outcome.
 * The Vast host was destroyed after a verified fetch (md5 59191bea).
 
+**Note 69-4 (2026-10-02 00:11 EDT; descriptive premise check; `theory/results/c1_group_S4_zhang.json`, `c1_group_A5_zhang.json`).**
+* Retrying Zhang's operator-first curriculum with the exact-marginal bilinear learner (M = 2|G|, τ 4 → 1, 16,000
+  updates) also fails.
+* S4: 0/3 (bad pairs 23 / 207 / 253; accuracy at N 128 0.04–0.18). A5: 0/3 (bad pairs 119 / 220 / 296; 0.06–0.19).
+* That is no better than the std curriculum (0/3 each). Together with §69 and §70, nothing tried in the toy learner
+  acquires S4 or A5.
+
 ## 71. S5 at 4× the training length with GPT-2's written-state chunked loop, under DeltaProduct's protocol (pre-registered 2026-10-01 23:54 EDT, after Literature's checks bb83da8 and LIT_SOTA_TARGETS, and before any implementation or run; user decision via Audit, option (a))
 
 **Why.** The user's target is a working method that beats SOTA on smaller tasks.
