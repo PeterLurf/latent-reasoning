@@ -457,3 +457,12 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53855975 vast offer 45031679 created 2026-10-02 08:10: label c1tab-76, CPU-only theory job (theory/c1_tab_driver.py --P 28; logged at create by c1rl_vast.sh)
 53814109 vast | s71-gru DESTROYED_VERIFIED 53814109 2026-10-02 09:02: hard stop 09:00 (Audit), not converged within budget; log in logs/gru_s71/
 53851105 vast | c1_75_990 DESTROYED_VERIFIED 2026-10-02 09:03 after verified fetch (c1/runs/p75_pfstd_s990 c1/runs/p75_ptstd_s990)
+53855975 vast | c1tab-76 DESTROYED_VERIFIED 2026-10-02 09:43: no job had finished (memory-bound); §76(A) moved to local GPUs (amendment 76-5)
+53886452 vast offer 53644725 created 2026-10-02 12:31: label g78-smoke, queue scratch/g78_q_smoke.txt (logged at create by vdeploy_toy.sh)
+53886452 vast | g78_smoke DESTROYED_VERIFIED 2026-10-02 12:37 after verified fetch (gsmlen/runs/smoke_tc_s1)
+53887276 vast offer 52714983 created 2026-10-02 12:37: label g78-a1, queue scratch/g78_q_a1.txt (logged at create by vdeploy_toy.sh)
+53887285 vast offer 49828253 created 2026-10-02 12:37: label g78-a2, queue scratch/g78_q_a2.txt (logged at create by vdeploy_toy.sh)
+53887291 vast offer 51828400 created 2026-10-02 12:37: label g78-a3, queue scratch/g78_q_a3.txt (logged at create by vdeploy_toy.sh)
+53887296 vast offer 39105514 created 2026-10-02 12:37: label g78-b1, queue scratch/g78_q_b1.txt (logged at create by vdeploy_toy.sh)
+53887305 vast offer 53876213 created 2026-10-02 12:37: label g78-b2, queue scratch/g78_q_b2.txt (logged at create by vdeploy_toy.sh)
+53887312 vast offer 53757041 created 2026-10-02 12:37: label g78-b3, queue scratch/g78_q_b3.txt (logged at create by vdeploy_toy.sh)
