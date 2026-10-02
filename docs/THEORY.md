@@ -5429,6 +5429,81 @@ type and the all-position chunk mode.
 * A throughput pilot may fix only steps and batch (logged).
 * A projection goes to Audit before launches over about $5. Estimate: about 30 GPU-h, $6–10.
 
+## 72. Where does the GPT-2 transition cell lose acquisition? One diagnostic: frozen pretrained vs frozen random GPT-2 vs fine-tuned vs the toy multiplicative cell (pre-registered 2026-10-02 00:25 EDT, after Literature's check 811c5d7 and before any run; user question via Audit, "what are we doing to solve reliable latent method")
+
+**Why.** The same multiplicative interaction behaves very differently in toy and GPT-2 cells.
+* In toys it decides acquisition: matched cells, multiplicative 10/10 vs additive 0/10 (§70, descriptive).
+* The §67b GPT-2 cell with a bilinear head certifies 1/5 (D1b: s1 1.000, others 0.17–0.50 with aliased codes).
+* So something GPT-2-specific remains. This is **one diagnostic, not a series of fixes**. It localises the gap to one
+  of three causes:
+  - pretrained geometry;
+  - fine-tuning dynamics;
+  - the interface (a code fed as an input embedding and read back from the transformer).
+
+**Premise measurements (2026-10-02, at initialisation, no training; descriptive).** Mean pairwise cosine between the
+24 codes' LayerNorm'd final hidden states, one call per (code, op):
+* **Pretrained GPT-2:** 0.993 at the code position (pos 0) and 0.998 at the op position.
+* **Random-init GPT-2:** 0.13 and 0.40.
+* **Moving the code to position 1 after `<|endoftext|>`:** 0.992.
+* **Raising the code-embedding std from 0.14 to 1.0:** 0.980 / 0.979.
+
+So pretrained GPT-2 maps the codes to nearly the same direction (anisotropy), and the position-0 sink is not the main
+factor. Moving the code is therefore not given its own arm; Literature's confound is answered by these measurements and
+by the per-layer measure below.
+
+**Learning-rate premise (toy multiplicative cell, M = 24, τ 4 → 1, 8,000 updates, bs 512, seeds 990–992).**
+* **lr 1e-4 (D1b's): 1/3 certified.** The failures sit at accuracy 0.50 and 0.335, D1b's aliasing pattern.
+* **lr 1e-2: 2/3.** Seed 990 fails at 0.49. Historically the same cell at 1e-2 certified 10/10 (seeds 0–9) and 8/10
+  (seeds 100–109).
+* A lower head lr probably hurts, but 3 seeds cannot settle whether it explains D1b.
+* New parameters (codes, head, head LayerNorms) use the toy optimum, 1e-2, in every arm (Literature: prompt tuning,
+  LoRA+, µP, LP-FT). GPT-2 weights, where trainable, keep 1e-4.
+
+**Prior** (811c5d7).
+* Frozen pretrained GPT-2 with trained input, output and LayerNorm beats frozen random-init (FPT, Lu et al.
+  2103.05247).
+* Random transformers with only embeddings trained solve algorithmic tasks (Zhong & Andreas 2410.04368).
+* Massive activations and the positional sink (Sun 2402.17762; Gu 2410.10781).
+* Learning-rate confounds for new parameters (Lester 2104.08691; LoRA+ 2402.12354; µP 2203.03466; LP-FT 2202.10054).
+* No certificate-based comparison exists; no novelty is claimed.
+
+**Arms.** Everything else is the D1b recipe: S3, M = 24, τ 4 → 1 over the first half, 8,000 updates, bs 512, D1b's
+curriculum, distinct code init, the bilinear head W ReLU((U·LN(h_code)) ⊙ (V·LN(h_op))) and the decoder head.
+* **PF (frozen pretrained).** GPT-2 pretrained, every GPT-2 weight frozen, including its internal LayerNorms (unlike
+  FPT). Codes and heads are trained.
+* **RF (frozen random).** The same with random-init GPT-2 (`gpt2_random_sd(seed)`).
+* **PF-std (frozen pretrained, standardised features).** As PF, but the heads' LayerNorm is replaced by per-coordinate
+  standardisation across the rows of the full table. Every update evaluates all 6M (code, op) calls, and separately the
+  M decoder calls, so this is exact and identical at test.
+  - It tests whether the code information is present but badly conditioned (anisotropy).
+* **PT (fine-tuned pretrained).** D1b with the new-parameter lr at 1e-2 (GPT-2 at 1e-4).
+* **TOY.** The one-hot multiplicative cell (`theory/c1_group.py`, hid 256), same M, τ, updates, bs and lr (CPU).
+* **Historical reference, not rerun.** D1b's 1/5 (seeds 1–5, all parameters at lr 1e-4).
+* **Seeds.** 2001–2005, fresh (used c1 seeds: 1–10 and 99), 5 per arm.
+* **Placement.** Local cards (free). Experiments implements `--freeze_gpt2` and `--feat_norm {ln, tablestd}` in
+  `c1/train.py`. Estimate about 20 GPU runs at 25–45 min.
+
+**Measures.**
+* The product-automaton certificate and hard accuracy at N 8–128, from `c1/core.py`.
+* Code distinctness (mean pairwise cosine of the head inputs across codes) at init and at the end. In PT also per layer
+  (between-code / within-code variance; Literature), split by certified vs failed seeds.
+
+**Rules (fixed now).** An arm **succeeds** at ≥ 4/5 certified and **fails** at ≤ 1/5; 2–3/5 is inconclusive and stated as
+such.
+
+**Readings.**
+* **PF succeeds.** Pretrained features suffice, and the obstacle is the fine-tuning dynamics. PT then says whether the
+  head-lr fix alone is enough (PT succeeds) or moving GPT-2 weights hurts (PT fails).
+* **PF fails, RF succeeds.** Pretrained geometry is the obstacle. PF-std then splits it:
+  - PF-std succeeds: the information is there but anisotropy ruins conditioning; the cure is feature standardisation.
+  - PF-std fails: code information is lost in pretrained GPT-2.
+* **PF and RF both fail while TOY succeeds.** The interface is the obstacle (a code as an input embedding read back
+  through a transformer), whatever the pretraining.
+* **TOY fails at these settings.** The diagnostic is uninformative; this is reported, with no follow-up variants.
+* **Any reading.** It names what a reliable latent method in a pretrained LM needs: a learning rate for the new
+  parameters, feature standardisation, or a different interface. That becomes the next registration, which will not
+  be run inside this diagnostic.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
