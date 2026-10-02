@@ -6647,6 +6647,16 @@ combination.
 
 **Placement.** Local cards, after §79, §84 Step 1 and §85. Implementation by the experiments session in `boxes/`. $0.
 
+**Note 86-1 (2026-10-02 17:06 EDT, before any §86 run; Literature 3f10515, after Audit's review).**
+* **Condition tags corrected.** §86 tests **C1 (use) + C2 + C6 + C7**, and C3 if R3 holds. It does **not** test C4: the
+  120 states and the per-op labels are given. The reading "C1 + C2 + C3 + C4" is replaced by "C1 (use) + C2 (+ C3)",
+  scaffolded.
+* **M1-U (the C4 variant) is planned, not registered.** A learned codebook M ≥ 120, no per-op decoder loss,
+  final-state targets only, exact marginalisation at snaps; under std and ge3.
+  - Kill: certified in < 4/5 seeds at 512, so no C4 claim.
+  - Rule 1 (685bef0) predicts the strict ge3 arm fails.
+  - It is registered after §86 reports.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
