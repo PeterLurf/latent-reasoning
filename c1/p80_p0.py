@@ -113,8 +113,8 @@ def train(a):
 
 # ---------------------------------------------------------------- THEORY §88 (30857ca): loop-aligned composition (M8)
 # Same split files, text prompt and held-out sets as P0. GPT-2 small from base: layers 0-3 once, layers 4-7 looped k
-# times (shared weights), layers 8-11 once at the end (computed but off the loss path: the registered answer is the head
-# after iteration k). After loop iteration i, one shared linear 6-way head on ln_f(residual at the last prompt token)
+# times (shared weights); layers 8-11 are off the loss path (the answer is the head after iteration k) and are skipped
+# (note 88-2). After loop iteration i, one shared linear 6-way head on ln_f(residual at the last prompt token)
 # predicts the state after op i. Arms: align (CE at every iteration i = 1..k, mean) / end (CE at iteration k only).
 # AdamW lr 1e-4, bs 64, 4,000 steps, fp32, training pairs only. eval.json: accuracy (iteration-k head) on training
 # pairs, (b) unseen words, (a) held-out pairs; per-iteration accuracy on (b).
@@ -146,8 +146,7 @@ class Looped(torch.nn.Module):
             for L in range(4, 8):
                 h = run(self.t.h[L], h)
             outs.append(self.head(self.t.ln_f(h[torch.arange(len(ids)), last])))
-        for L in range(8, 12):                                         # registered architecture; off the loss path
-            h = run(self.t.h[L], h)
+        # layers 8-11 are off the loss path (note 88-2): skipped to save compute; the loss is unchanged
         return torch.stack(outs, 1)
 
 
