@@ -111,8 +111,99 @@ def train(a):
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1); print(res, flush=True)
 
 
+# ---------------------------------------------------------------- THEORY §88 (30857ca): loop-aligned composition (M8)
+# Same split files, text prompt and held-out sets as P0. GPT-2 small from base: layers 0-3 once, layers 4-7 looped k
+# times (shared weights), layers 8-11 once at the end (computed but off the loss path: the registered answer is the head
+# after iteration k). After loop iteration i, one shared linear 6-way head on ln_f(residual at the last prompt token)
+# predicts the state after op i. Arms: align (CE at every iteration i = 1..k, mean) / end (CE at iteration k only).
+# AdamW lr 1e-4, bs 64, 4,000 steps, fp32, training pairs only. eval.json: accuracy (iteration-k head) on training
+# pairs, (b) unseen words, (a) held-out pairs; per-iteration accuracy on (b).
+#   python -m c1.p80_p0 loop --arm align --k 2 --seed 1 --device cuda:0 --out c1/runs/p88_align_k2_s1
+
+def prefix_states(s, word):
+    out = []
+    for a in word:
+        s = int(COMP[a, s]); out.append(s)
+    return out
+
+
+class Looped(torch.nn.Module):
+    def __init__(self, gpt, k):
+        super().__init__()
+        self.t = gpt.transformer; self.k = k; self.head = torch.nn.Linear(768, 6)
+
+    def forward(self, ids, last):
+        """ids (B, T) right-padded prompts, last (B,) index of the last prompt token -> (B, k, 6) per-iteration logits."""
+        T = ids.shape[1]; pos = torch.arange(T, device=ids.device)[None]
+        h = self.t.wte(ids) + self.t.wpe(pos)
+        def run(layer, h):                                             # causal attention; right padding never attends forward
+            o = layer(h)
+            return o[0] if isinstance(o, tuple) else o
+        for L in range(0, 4):
+            h = run(self.t.h[L], h)
+        outs = []
+        for _ in range(self.k):
+            for L in range(4, 8):
+                h = run(self.t.h[L], h)
+            outs.append(self.head(self.t.ln_f(h[torch.arange(len(ids)), last])))
+        for L in range(8, 12):                                         # registered architecture; off the loss path
+            h = run(self.t.h[L], h)
+        return torch.stack(outs, 1)
+
+
+def loop_batch(tok, pairs, words, dev):
+    enc = [tok.encode(prompt(s, words[w])) for s, w in pairs]; T = max(map(len, enc))
+    ids = torch.full((len(enc), T), EOS); last = torch.tensor([len(e) - 1 for e in enc])
+    for j, e in enumerate(enc):
+        ids[j, :len(e)] = torch.tensor(e)
+    tg = torch.tensor([prefix_states(s, words[w]) for s, w in pairs])
+    return ids.to(dev), last.to(dev), tg.to(dev)
+
+
+@torch.no_grad()
+def loop_eval(m, tok, pairs, words, dev, bs=256):
+    m.eval(); fin, per = 0, None
+    for i in range(0, len(pairs), bs):
+        ids, last, tg = loop_batch(tok, pairs[i:i + bs], words, dev)
+        p = m(ids, last).argmax(-1)
+        fin += int((p[:, -1] == tg[:, -1]).sum()); c = (p == tg).sum(0).cpu().numpy()
+        per = c if per is None else per + c
+    return fin / max(1, len(pairs)), (per / max(1, len(pairs))).tolist()
+
+
+def train_loop(a):
+    from transformers import GPT2LMHeadModel, GPT2TokenizerFast
+    sp = json.load(open(f"c1/p80_split_k{a.k}.json")); words = sp["words"]
+    torch.manual_seed(a.seed); rng = random.Random(a.seed)
+    tok = GPT2TokenizerFast.from_pretrained("openai-community/gpt2")
+    m = Looped(GPT2LMHeadModel.from_pretrained("openai-community/gpt2"), a.k).to(a.device)
+    opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
+    tr = [tuple(p) for p in sp["train_pairs"]]
+    os.makedirs(a.out, exist_ok=True); json.dump(vars(a), open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
+    log = open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t0 = time.time()
+    for step in range(1, a.steps + 1):
+        m.train(); ids, last, tg = loop_batch(tok, [rng.choice(tr) for _ in range(a.bs)], words, a.device)
+        lg = m(ids, last)
+        if a.arm == "align":
+            loss = torch.nn.functional.cross_entropy(lg.reshape(-1, 6), tg.reshape(-1))
+        else:
+            loss = torch.nn.functional.cross_entropy(lg[:, -1], tg[:, -1])
+        opt.zero_grad(); loss.backward(); opt.step()
+        if step % 100 == 0 or step == a.steps:
+            log.write(json.dumps({"step": step, "loss": loss.item(), "sec": round(time.time() - t0)}) + "\n"); log.flush()
+    unseen_b = [(s, w) for w in sp["unseen_words_b"] for s in range(6)]
+    acc_tr, _ = loop_eval(m, tok, tr, words, a.device)
+    acc_b, per_b = loop_eval(m, tok, unseen_b, words, a.device)
+    acc_a, _ = loop_eval(m, tok, [tuple(p) for p in sp["heldout_pairs_a"]], words, a.device)
+    res = {"section": 88, "arm": a.arm, "k": a.k, "seed": a.seed, "steps": a.steps, "train_sec": round(time.time() - t0),
+           "acc_train": acc_tr, "acc_b_unseen_words": acc_b, "per_iteration_acc_b": per_b, "n_b": len(unseen_b),
+           "acc_a_heldout_pairs": acc_a, "n_a": len(sp["heldout_pairs_a"]), "n_train_pairs": len(tr)}
+    json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1); print(res, flush=True)
+
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("cmd", choices=["split", "train"])
+    ap = argparse.ArgumentParser(); ap.add_argument("cmd", choices=["split", "train", "loop"])
+    ap.add_argument("--arm", default="align", choices=["align", "end"], help="§88 loop arms")
     ap.add_argument("--k", type=int, default=2); ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--steps", type=int, default=4000); ap.add_argument("--bs", type=int, default=64)
     ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--bf16", action="store_true")
@@ -123,6 +214,8 @@ def main():
             sp = make_split(k); json.dump(sp, open(f"c1/p80_split_k{k}.json", "w", newline="\n"))
             print(k, "words", len(sp["words"]), "unseen(b)", len(sp["unseen_words_b"]), "train pairs", len(sp["train_pairs"]),
                   "heldout(a)", len(sp["heldout_pairs_a"]))
+    elif a.cmd == "loop":
+        train_loop(a)
     else:
         train(a)
 
