@@ -1,0 +1,19 @@
+{
+ "arm": "tab",
+ "seed": 2,
+ "updates": 8000,
+ "bs": 512,
+ "lr": 0.01,
+ "head_init": "default",
+ "M": 24,
+ "readout": "linear",
+ "tau0": 4.0,
+ "head_norm": "none",
+ "code_init": "default",
+ "lr_new": 0.0,
+ "n_test": 2000,
+ "n_null": 10000,
+ "max_hours": 3.0,
+ "device": "cuda:1",
+ "out": "c1/runs/p67b_tab_s2"
+}

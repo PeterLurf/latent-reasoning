@@ -1,0 +1,2 @@
+[W1002 00:42:27.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 396361728 bytes (free: 0, total: 8585216000).
+c1/runs/p67b_fpcmp2_s2 {'8': 0.241, '16': 0.141, '32': 0.166, '64': 0.167, '128': 0.177}

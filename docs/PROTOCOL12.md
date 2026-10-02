@@ -207,3 +207,37 @@ read. Its failure-mode labels are descriptive: their thresholds were set after t
   570.211.01 (Vast 53771343), floods like the others: 0.93 at d1–2, chance at d3–14, label precision 0.57, edit IIA
   0.19, bench 0.497. Concurrency did not cause the reruns' failure. §61's seed-3 success does not reproduce under the same
   seed, code, data, GPU class and driver, so it was a draw from non-deterministic numerics, not a property of the seed.
+
+
+## THEORY §67b (GPT-2 cell, M 24, τ 4→1, bilinear readout) panel result (2026-10-02 01:53 EDT; `python c1/score_67b.py` → `theory/results/score_s67b.json`)
+
+**Panel.** Seeds 1–5 × D1b / TAB / RESET / FP_ex / FP_cmp. FP_cmp is the corrected budget (67b-impl-1); the original is
+descriptive. Settings were frozen after the clean seed-99 pilot (c1/PILOT_67b.md). The scorer (94ac692 → fc4a28f) was
+committed before any panel result.
+
+**Clarifications, both made on pilot seed 99 before any panel read.**
+* C1-4's irrelevant substitution uses codes visited in donor rollouts (Audit).
+* The compute-matched budget uses 20M positions (67b-impl-1).
+
+**Evaluation.** Some evaluations OOM'd on shared local cards after training finished. They were re-run from model.pt
+(`c1/reeval.py`).
+
+| prediction | result |
+|---|---|
+| C1-1: D1b ≥ 0.99 at N 8–128 in ≥ 4/5 seeds | **not met: 1/5** (s1 1.000 everywhere; s2 0.33–0.36, s3 0.50, s4 0.31–0.34, s5 0.16–0.30) |
+| C1-2: certificate on passing seeds | met (s1: 0 bad pairs) |
+| C1-3: nulls and RESET ≤ 0.1867 (upper bound) | nulls met (worst 0.180, s1). **RESET not met as written**: accuracy 0.147–0.182 in every seed (chance 0.167), but with n_test = 2,000 the Wilson upper bound reaches 0.18–0.20 > 0.1867. A sample-size artefact: RESET is at chance |
+| C1-4: mechanism (s1) | met: donor 1.000; reachable irrelevant change 0.000 (n = 335; unrestricted 0.248, descriptive); same-semantic agreement 1.000 (171 distinct-code donors) |
+| C1-5: FP ≥ 20 points behind at N ≥ 16 (both matchings) | **not met**: median gap 0.16–0.18. D1b's median is near chance, and FP is at chance past N = 8 |
+| TAB (descriptive) | **5/5 certified**, 1.000 at every N |
+
+* **Counter check** (s1): H(code | state) 0.21 bits (8 visited codes for 6 states); MI with length mod 2/3/4 ≤ 0.0004
+  bits, so no counter.
+* **Training seconds** (median, shared GPUs, indicative): D1b 1,679; RESET 1,590; FP_ex 1,906; FP_cmp 2,755; TAB 46.
+
+**Reading.**
+* The τ-annealed bilinear recipe that certifies the toy shared cell 10/10 certifies the GPT-2 cell in only 1/5 seeds.
+  The other four settle on partial automata: flat 1/3 and 1/2, as in §67.
+* Per §67b's rule, the C1 line records **shared-cell acquisition with a pretrained LM as the obstacle**. The certified
+  seed shows the GPT-2 cell can hold an exact, counter-free S3 machine (certificate + mechanism), but not reliably.
+* §72 (running) asks whether freezing GPT-2 and standardising its features changes this.

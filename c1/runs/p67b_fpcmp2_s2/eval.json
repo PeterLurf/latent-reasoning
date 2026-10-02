@@ -1,0 +1,17 @@
+{
+ "acc": {
+  "8": 0.241,
+  "16": 0.141,
+  "32": 0.166,
+  "64": 0.167,
+  "128": 0.177
+ },
+ "n_test": 2000,
+ "train": {
+  "updates": 8000,
+  "examples": 1490308,
+  "gpt2_tokens": 3838548,
+  "sec": 814
+ },
+ "reevaluated": "evaluation re-run from model.pt by c1/reeval.py (the original evaluation crashed after training)"
+}

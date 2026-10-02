@@ -1,0 +1,555 @@
+{
+ "n_runs": {
+  "d1b": 5,
+  "tab": 5,
+  "reset": 5,
+  "fpex": 5,
+  "fpcmp": 5,
+  "fpcmp_orig": 5
+ },
+ "verdicts": {
+  "C1-1": {
+   "passing_seeds": [
+    1
+   ],
+   "k": 1,
+   "met": false,
+   "per_seed_min_acc": {
+    "1": 1.0,
+    "2": 0.3315,
+    "3": 0.499,
+    "4": 0.314,
+    "5": 0.158
+   },
+   "n_runs": {
+    "d1b": 5
+   }
+  },
+  "C1-2": {
+   "certified": {
+    "1": true
+   },
+   "met": true,
+   "n_runs": {
+    "d1b": 5
+   }
+  },
+  "C1-3": {
+   "nulls_worst_upper95": 0.18023389008159055,
+   "nulls_ok": true,
+   "reset_upper95": {
+    "1": {
+     "16": 0.17671685888237532,
+     "32": 0.17308046578789504,
+     "64": 0.16944128909005304,
+     "128": 0.19123601313042393
+    },
+    "2": {
+     "16": 0.18605530746239304,
+     "32": 0.18501855069045914,
+     "64": 0.17931261928046263,
+     "128": 0.19899774238764179
+    },
+    "3": {
+     "16": 0.18346302395332484,
+     "32": 0.19020027769726566,
+     "64": 0.17827447935816662,
+     "128": 0.1943420242812115
+    },
+    "4": {
+     "16": 0.18346302395332484,
+     "32": 0.18035054211597362,
+     "64": 0.1964117156609588,
+     "128": 0.18035054211597362
+    },
+    "5": {
+     "16": 0.20003181874544304,
+     "32": 0.1631959974395165,
+     "64": 0.18242574289119431,
+     "128": 0.17723612072725528
+    }
+   },
+   "reset_ok": false,
+   "met": false,
+   "n_runs": {
+    "d1b": 5,
+    "reset": 5
+   }
+  },
+  "C1-4": {
+   "mechanism": {
+    "1": {
+     "donor_acc": 1.0,
+     "irrelevant_change_rate": 0.2480974124809741,
+     "irrelevant_n": 657,
+     "irrelevant_change_rate_reachable": 0.0,
+     "irrelevant_n_reachable": 335,
+     "visited_codes": [
+      3,
+      4,
+      6,
+      8,
+      14,
+      15,
+      16,
+      19
+     ],
+     "irrelevant_note": "",
+     "same_semantic_agreement": 1.0,
+     "same_semantic_distinct_codes": 171
+    }
+   },
+   "met": true,
+   "irrelevant_part": {
+    "1": "met"
+   },
+   "irrelevant_tested_seeds": 1,
+   "irrelevant_vacuous_seeds": 0,
+   "note": "Audit: the irrelevant part is vacuous where visited codes are one per state; reported apart from tested seeds; the donor (relevant) and same-semantic parts apply to every seed",
+   "n_runs": {
+    "d1b": 5
+   }
+  },
+  "C1-5": {
+   "median_gap": {
+    "fpex": {
+     "16": 0.17800000000000002,
+     "32": 0.173,
+     "64": 0.1725,
+     "128": 0.1695
+    },
+    "fpcmp": {
+     "16": 0.1605,
+     "32": 0.18049999999999997,
+     "64": 0.17949999999999997,
+     "128": 0.15800000000000003
+    },
+    "fpcmp_orig": {
+     "16": 0.171,
+     "32": 0.18049999999999997,
+     "64": 0.18299999999999997,
+     "128": 0.17500000000000002
+    }
+   },
+   "met": false,
+   "note": "fpcmp = corrected budget (67b-impl-1); fpcmp_orig descriptive",
+   "n_runs": {
+    "d1b": 5,
+    "fpex": 5,
+    "fpcmp": 5
+   }
+  },
+  "train_sec_median": {
+   "d1b": 1679.0,
+   "tab": 46.0,
+   "reset": 1590.0,
+   "fpex": 1906.0,
+   "fpcmp": 2755.0,
+   "fpcmp_orig": 971.0
+  }
+ },
+ "per_run": {
+  "d1b": {
+   "1": {
+    "acc": {
+     "8": 1.0,
+     "16": 1.0,
+     "32": 1.0,
+     "64": 1.0,
+     "128": 1.0
+    },
+    "certified": true,
+    "counter_check": {
+     "H_code_given_state": 0.2080718765036207,
+     "MI_code_lenmod2_given_state": 0.0001682310347472793,
+     "MI_code_lenmod3_given_state": 0.000157579292679344,
+     "MI_code_lenmod4_given_state": 0.0004263913739741554
+    },
+    "train_sec": 1679
+   },
+   "2": {
+    "acc": {
+     "8": 0.359,
+     "16": 0.3315,
+     "32": 0.3475,
+     "64": 0.3445,
+     "128": 0.335
+    },
+    "certified": false,
+    "counter_check": null,
+    "train_sec": 1687
+   },
+   "3": {
+    "acc": {
+     "8": 0.499,
+     "16": 0.5015,
+     "32": 0.501,
+     "64": 0.5135,
+     "128": 0.5
+    },
+    "certified": false,
+    "counter_check": null,
+    "train_sec": 1631
+   },
+   "4": {
+    "acc": {
+     "8": 0.3385,
+     "16": 0.314,
+     "32": 0.339,
+     "64": 0.3205,
+     "128": 0.3305
+    },
+    "certified": false,
+    "counter_check": null,
+    "train_sec": 1658
+   },
+   "5": {
+    "acc": {
+     "8": 0.298,
+     "16": 0.2045,
+     "32": 0.163,
+     "64": 0.158,
+     "128": 0.168
+    },
+    "certified": false,
+    "counter_check": null,
+    "train_sec": 2929
+   }
+  },
+  "tab": {
+   "1": {
+    "acc": {
+     "8": 1.0,
+     "16": 1.0,
+     "32": 1.0,
+     "64": 1.0,
+     "128": 1.0
+    },
+    "certified": true,
+    "counter_check": {
+     "H_code_given_state": 4.440892098500626e-16,
+     "MI_code_lenmod2_given_state": 1.3322676295501878e-15,
+     "MI_code_lenmod3_given_state": 8.881784197001252e-16,
+     "MI_code_lenmod4_given_state": 0.0
+    },
+    "train_sec": 42
+   },
+   "2": {
+    "acc": {
+     "8": 1.0,
+     "16": 1.0,
+     "32": 1.0,
+     "64": 1.0,
+     "128": 1.0
+    },
+    "certified": true,
+    "counter_check": {
+     "H_code_given_state": 4.440892098500626e-16,
+     "MI_code_lenmod2_given_state": 8.881784197001252e-16,
+     "MI_code_lenmod3_given_state": 8.881784197001252e-16,
+     "MI_code_lenmod4_given_state": 0.0
+    },
+    "train_sec": 46
+   },
+   "3": {
+    "acc": {
+     "8": 1.0,
+     "16": 1.0,
+     "32": 1.0,
+     "64": 1.0,
+     "128": 1.0
+    },
+    "certified": true,
+    "counter_check": {
+     "H_code_given_state": 4.440892098500626e-16,
+     "MI_code_lenmod2_given_state": 1.3322676295501878e-15,
+     "MI_code_lenmod3_given_state": 8.881784197001252e-16,
+     "MI_code_lenmod4_given_state": 0.0
+    },
+    "train_sec": 46
+   },
+   "4": {
+    "acc": {
+     "8": 1.0,
+     "16": 1.0,
+     "32": 1.0,
+     "64": 1.0,
+     "128": 1.0
+    },
+    "certified": true,
+    "counter_check": {
+     "H_code_given_state": 4.440892098500626e-16,
+     "MI_code_lenmod2_given_state": 1.3322676295501878e-15,
+     "MI_code_lenmod3_given_state": 8.881784197001252e-16,
+     "MI_code_lenmod4_given_state": 0.0
+    },
+    "train_sec": 56
+   },
+   "5": {
+    "acc": {
+     "8": 1.0,
+     "16": 1.0,
+     "32": 1.0,
+     "64": 1.0,
+     "128": 1.0
+    },
+    "certified": true,
+    "counter_check": {
+     "H_code_given_state": 4.440892098500626e-16,
+     "MI_code_lenmod2_given_state": 1.3322676295501878e-15,
+     "MI_code_lenmod3_given_state": 8.881784197001252e-16,
+     "MI_code_lenmod4_given_state": 0.0
+    },
+    "train_sec": 46
+   }
+  },
+  "reset": {
+   "1": {
+    "acc": {
+     "8": 0.1655,
+     "16": 0.16,
+     "32": 0.1565,
+     "64": 0.153,
+     "128": 0.174
+    },
+    "certified": false,
+    "counter_check": null,
+    "train_sec": 1590
+   },
+   "2": {
+    "acc": {
+     "8": 0.166,
+     "16": 0.169,
+     "32": 0.168,
+     "64": 0.1625,
+     "128": 0.1815
+    },
+    "certified": false,
+    "counter_check": null,
+    "train_sec": 1607
+   },
+   "3": {
+    "acc": {
+     "8": 0.1615,
+     "16": 0.1665,
+     "32": 0.173,
+     "64": 0.1615,
+     "128": 0.177
+    },
+    "certified": false,
+    "counter_check": null,
+    "train_sec": 1556
+   },
+   "4": {
+    "acc": {
+     "8": 0.1645,
+     "16": 0.1665,
+     "32": 0.1635,
+     "64": 0.179,
+     "128": 0.1635
+    },
+    "certified": false,
+    "counter_check": null,
+    "train_sec": 1581
+   },
+   "5": {
+    "acc": {
+     "8": 0.173,
+     "16": 0.1825,
+     "32": 0.147,
+     "64": 0.1655,
+     "128": 0.1605
+    },
+    "certified": false,
+    "counter_check": null,
+    "train_sec": 2752
+   }
+  },
+  "fpex": {
+   "1": {
+    "acc": {
+     "8": 0.439,
+     "16": 0.172,
+     "32": 0.18,
+     "64": 0.172,
+     "128": 0.1595
+    },
+    "certified": null,
+    "counter_check": null,
+    "train_sec": 1906
+   },
+   "2": {
+    "acc": {
+     "8": 0.5585,
+     "16": 0.15,
+     "32": 0.169,
+     "64": 0.177,
+     "128": 0.1675
+    },
+    "certified": null,
+    "counter_check": null,
+    "train_sec": 1937
+   },
+   "3": {
+    "acc": {
+     "8": 0.334,
+     "16": 0.186,
+     "32": 0.1745,
+     "64": 0.1735,
+     "128": 0.1655
+    },
+    "certified": null,
+    "counter_check": null,
+    "train_sec": 1867
+   },
+   "4": {
+    "acc": {
+     "8": 0.5225,
+     "16": 0.1535,
+     "32": 0.1765,
+     "64": 0.168,
+     "128": 0.177
+    },
+    "certified": null,
+    "counter_check": null,
+    "train_sec": 1900
+   },
+   "5": {
+    "acc": {
+     "8": 0.4105,
+     "16": 0.1535,
+     "32": 0.1585,
+     "64": 0.153,
+     "128": 0.159
+    },
+    "certified": null,
+    "counter_check": null,
+    "train_sec": 3590
+   }
+  },
+  "fpcmp": {
+   "1": {
+    "acc": {
+     "8": 0.845,
+     "16": 0.1695,
+     "32": 0.1635,
+     "64": 0.1615,
+     "128": 0.1565
+    },
+    "certified": null,
+    "counter_check": null,
+    "train_sec": 2867
+   },
+   "2": {
+    "acc": {
+     "8": 0.241,
+     "16": 0.141,
+     "32": 0.166,
+     "64": 0.167,
+     "128": 0.177
+    },
+    "certified": null,
+    "counter_check": null,
+    "train_sec": 814
+   },
+   "3": {
+    "acc": {
+     "8": 0.367,
+     "16": 0.219,
+     "32": 0.1685,
+     "64": 0.175,
+     "128": 0.1665
+    },
+    "certified": null,
+    "counter_check": null,
+    "train_sec": 2755
+   },
+   "4": {
+    "acc": {
+     "8": 0.36,
+     "16": 0.171,
+     "32": 0.167,
+     "64": 0.165,
+     "128": 0.1785
+    },
+    "certified": null,
+    "counter_check": null,
+    "train_sec": 815
+   },
+   "5": {
+    "acc": {
+     "8": 0.3915,
+     "16": 0.1865,
+     "32": 0.1795,
+     "64": 0.16,
+     "128": 0.182
+    },
+    "certified": null,
+    "counter_check": null,
+    "train_sec": 2894
+   }
+  },
+  "fpcmp_orig": {
+   "1": {
+    "acc": {
+     "8": 0.3335,
+     "16": 0.1525,
+     "32": 0.1865,
+     "64": 0.1615,
+     "128": 0.16
+    },
+    "certified": null,
+    "counter_check": null,
+    "train_sec": 971
+   },
+   "2": {
+    "acc": {
+     "8": 0.2595,
+     "16": 0.174,
+     "32": 0.1485,
+     "64": 0.174,
+     "128": 0.1575
+    },
+    "certified": null,
+    "counter_check": null,
+    "train_sec": 1015
+   },
+   "3": {
+    "acc": {
+     "8": 0.1845,
+     "16": 0.1605,
+     "32": 0.1735,
+     "64": 0.16,
+     "128": 0.153
+    },
+    "certified": null,
+    "counter_check": null,
+    "train_sec": 920
+   },
+   "4": {
+    "acc": {
+     "8": 0.2245,
+     "16": 0.1485,
+     "32": 0.165,
+     "64": 0.158,
+     "128": 0.1685
+    },
+    "certified": null,
+    "counter_check": null,
+    "train_sec": 934
+   },
+   "5": {
+    "acc": {
+     "8": 0.201,
+     "16": 0.177,
+     "32": 0.167,
+     "64": 0.163,
+     "128": 0.164
+    },
+    "certified": null,
+    "counter_check": null,
+    "train_sec": 1428
+   }
+  }
+ }
+}
