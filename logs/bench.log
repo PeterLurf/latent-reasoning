@@ -147,3 +147,12 @@
 00:26:06 WORKER_DONE cuda:2 scratch/backfill_q1.txt
 01:08:36 bf1_prosqa_deep_f1s_f1s_s7_P_16 rc 0 (cuda:1)
 01:08:36 WORKER_DONE cuda:1 scratch/backfill_q1.txt
+02:03:03 bf1_prosqa_na_f1s_f1s_s8_P_16 rc 0 (cuda:1)
+02:03:09 bf1_prosqa_f1s_f1s_s8_P_16 rc 0 (cuda:0)
+02:07:17 bf1_prosqa_na_f1s_f1s_s9_P_16 rc 0 (cuda:0)
+02:07:39 bf1_prosqa_f1s_f1s_s9_P_16 rc 0 (cuda:1)
+02:08:35 bf1_prosqa_nocot_p8_nocot_checkpoint_30 rc 0 (cuda:1)
+02:09:32 bf1_prosqa_na_nocot_p8_nocot_checkpoint_30 rc 0 (cuda:1)
+02:09:32 WORKER_DONE cuda:1 scratch/backfill_q1.txt
+02:14:32 bf1_prosqa_deep_f1s_f1s_s9_P_16 rc 0 (cuda:0)
+02:14:32 WORKER_DONE cuda:0 scratch/backfill_q1.txt
