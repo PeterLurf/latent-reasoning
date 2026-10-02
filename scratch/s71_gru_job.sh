@@ -28,6 +28,8 @@ G=/workspace/s71gen; mkdir -p $G/src $G/data; cp /workspace/Latent/scratch/s71_g
 ( cd $G && [ -s data/S5=128.csv ] || PYTHONPATH=$G python src/generate_data.py --group=S5 --k=128 --samples=100000 --seed=7101
   cd $G && [ -s data/S5=512.csv ] || PYTHONPATH=$G python src/generate_data.py --group=S5 --k=512 --samples=100000 --seed=7102 ) >> /workspace/Latent/logs/s71_gru_setup.log 2>&1
 cp $G/data/S5=128.csv $G/data/S5=512.csv data/
+# word-problem's strict mode trains on S5=2 (all 14,400 length-2 sequences) + S5=k (Merrill's protocol; descriptive arm)
+[ -s data/S5=2.csv ] || ( cd $G && PYTHONPATH=$G python src/generate_data.py --group=S5 --k=2 --seed=7199 >> /workspace/Latent/logs/s71_gru_setup.log 2>&1; cp $G/data/S5=2.csv /workspace/word-problem/data/ )
 s1=$(sha256sum data/S5=128.csv | cut -c1-64); s2=$(sha256sum data/S5=512.csv | cut -c1-64)
 echo "$(date +%T) data sha $s1 $s2" >> $log
 if [ "$s1" != "$SHA128" ] || [ "$s2" != "$SHA512" ]; then echo "$(date +%T) DATA_SHA_MISMATCH rc 9" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; fi
