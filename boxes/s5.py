@@ -312,6 +312,10 @@ def train(a):
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
     train_sec = round(time.time() - t0)
     torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
+    finish(m, a, dev, amp, Xte, Yte, train_sec, states_seen)
+
+
+def finish(m, a, dev, amp, Xte, Yte, train_sec, states_seen):
     m.eval(); res = {"arm": a.arm, "k": a.k, "latent": a.latent, "train_sec": train_sec, "labelled_states_seen": states_seen,
                      "eval_batch": a.eval_bs, "eval_dtype": str(amp), "test_sequences": len(Xte)}
     t1 = time.time()
@@ -341,7 +345,7 @@ def train(a):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("cmd", choices=["train", "check"])
+    ap = argparse.ArgumentParser(); ap.add_argument("cmd", choices=["train", "check", "eval"])
     ap.add_argument("--arm", choices=["wc0all", "tagger", "p3"], default="wc0all")
     ap.add_argument("--k", type=int, default=1); ap.add_argument("--latent", type=int, default=0)
     ap.add_argument("--seed", type=int, default=1); ap.add_argument("--steps", type=int, default=4000)
@@ -356,7 +360,23 @@ def main():
         check_interface(); X, Y = load_csv(os.path.join(a.data_dir, "S5=128.csv")); check_labels(X, Y)
         Xt, Yt = load_csv(os.path.join(a.data_dir, "S5=512.csv")); check_labels(Xt, Yt)
         print("CHECK OK", X.shape, Xt.shape); return
+    if a.cmd == "eval":                                               # re-run a finished run's evaluation from model.pt
+        reeval(a); return
     train(a)
+
+
+def reeval(a):
+    """Evaluation of a run whose training finished but whose evaluation crashed (e.g. OOM on a shared card); --eval_bs may
+    be lowered (recorded in eval.json; the certificate uses the same batch as the rollout)."""
+    saved = json.load(open(os.path.join(a.out, "args.json")))
+    for key in ("arm", "k", "latent", "seed", "steps", "bs", "lr"):
+        setattr(a, key, saved[key])
+    dev = a.device; amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
+    Xte, Yte = load_csv(os.path.join(a.data_dir, "S5=512.csv"), limit=a.test_n); check_labels(Xte, Yte)
+    g = load_gpt2(dev); m = Tagger(g).to(dev) if a.arm == "tagger" else g
+    m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev))
+    last = [json.loads(l) for l in open(os.path.join(a.out, "log.jsonl"))][-1]
+    finish(m, a, dev, amp, Xte, Yte, last["sec"], last["labelled_states"])
 
 
 if __name__ == "__main__":
