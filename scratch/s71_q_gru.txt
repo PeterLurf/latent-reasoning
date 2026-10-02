@@ -1,0 +1,2 @@
+# §71 GRU reference (descriptive), seed 1 first (prove end to end on one host)
+gru 1
