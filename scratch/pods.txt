@@ -377,3 +377,47 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53804532 vast offer 53644720 created 2026-10-02 00:35: label s71-dp, queue scratch/s71_q_dp.txt (logged at create by vdeploy_toy.sh)
 53804533 vast offer 50744899 created 2026-10-02 00:35: label s71-dpvar, queue scratch/s71_q_dpvar.txt (logged at create by vdeploy_toy.sh)
 53803966 vast | c1_72_2001 DESTROYED_VERIFIED 53803966 2026-10-02 00:41: GPT2_SHA_MISMATCH at start, no run; seed 2001 re-placed locally
+53805199 vast offer 53644729 created 2026-10-02 00:42: label c1-72-2001, queue scratch/c1_q_72_2001.txt (logged at create by vdeploy_toy.sh)
+53804533 vast | s71-dpvar DESTROYED_VERIFIED 53804533 2026-10-02 00:50: deploy aborted (vdeploy_toy.sh edited mid-deploy); nothing ran; redeployed
+53805951 vast offer 44579227 created 2026-10-02 00:50: label s71-dpvar, queue scratch/s71_q_dpvar.txt (logged at create by vdeploy_toy.sh)
+53803987 vast | c1_72_2004 DESTROYED_VERIFIED 2026-10-02 00:59 after verified fetch (c1/runs/p72_rf_s2004 c1/runs/p72_pf_s2004 c1/runs/p72_pfstd_s2004 c1/runs/p72_pt_s2004)
+53803982 vast | c1_72_2003 DESTROYED_VERIFIED 2026-10-02 01:01 after verified fetch (c1/runs/p72_pf_s2003 c1/runs/p72_pfstd_s2003 c1/runs/p72_rf_s2003 c1/runs/p72_pt_s2003)
+53803975 vast | c1_72_2002 DESTROYED_VERIFIED 2026-10-02 01:01 after verified fetch (c1/runs/p72_pf_s2002 c1/runs/p72_rf_s2002 c1/runs/p72_pfstd_s2002 c1/runs/p72_pt_s2002)
+53803989 vast | c1_72_2005 DESTROYED_VERIFIED 2026-10-02 01:04 after verified fetch (c1/runs/p72_pf_s2005 c1/runs/p72_rf_s2005 c1/runs/p72_pfstd_s2005 c1/runs/p72_pt_s2005)
+53808525 vast offer 49828253 created 2026-10-02 01:14: label s71-p3wc0_s2, queue scratch/s71q/p3wc0_s2.txt (logged at create by vdeploy_toy.sh)
+53808539 vast offer 51428264 created 2026-10-02 01:14: label s71-p3wc0_s3, queue scratch/s71q/p3wc0_s3.txt (logged at create by vdeploy_toy.sh)
+53808542 vast offer 50484115 created 2026-10-02 01:14: label s71-p3wc4_s2, queue scratch/s71q/p3wc4_s2.txt (logged at create by vdeploy_toy.sh)
+53808546 vast offer 44527578 created 2026-10-02 01:14: label s71-p3wc4_s3, queue scratch/s71q/p3wc4_s3.txt (logged at create by vdeploy_toy.sh)
+53808555 vast offer 53493696 created 2026-10-02 01:14: label s71-tagger_s2, queue scratch/s71q/tagger_s2.txt (logged at create by vdeploy_toy.sh)
+53808567 vast offer 36202392 created 2026-10-02 01:14: label s71-tagger_s3, queue scratch/s71q/tagger_s3.txt (logged at create by vdeploy_toy.sh)
+53808572 vast offer 49745142 created 2026-10-02 01:15: label s71-wc0k1_s1, queue scratch/s71q/wc0k1_s1.txt (logged at create by vdeploy_toy.sh)
+53808582 vast offer 41028912 created 2026-10-02 01:15: label s71-wc0k1_s2, queue scratch/s71q/wc0k1_s2.txt (logged at create by vdeploy_toy.sh)
+53808590 vast offer 43751730 created 2026-10-02 01:15: label s71-wc0k1_s3, queue scratch/s71q/wc0k1_s3.txt (logged at create by vdeploy_toy.sh)
+53808604 vast offer 53535519 created 2026-10-02 01:15: label s71-wc0k1_s4, queue scratch/s71q/wc0k1_s4.txt (logged at create by vdeploy_toy.sh)
+53808612 vast offer 53089467 created 2026-10-02 01:15: label s71-wc0k1_s5, queue scratch/s71q/wc0k1_s5.txt (logged at create by vdeploy_toy.sh)
+53808625 vast offer 52320273 created 2026-10-02 01:15: label s71-wc0k2_s1, queue scratch/s71q/wc0k2_s1.txt (logged at create by vdeploy_toy.sh)
+53808632 vast offer 45174323 created 2026-10-02 01:15: label s71-wc0k2_s2, queue scratch/s71q/wc0k2_s2.txt (logged at create by vdeploy_toy.sh)
+53808646 vast offer 53180089 created 2026-10-02 01:15: label s71-wc0k2_s3, queue scratch/s71q/wc0k2_s3.txt (logged at create by vdeploy_toy.sh)
+53808654 vast offer 53807009 created 2026-10-02 01:15: label s71-wc0k2_s4, queue scratch/s71q/wc0k2_s4.txt (logged at create by vdeploy_toy.sh)
+53808666 vast offer 51087512 created 2026-10-02 01:15: label s71-wc0k2_s5, queue scratch/s71q/wc0k2_s5.txt (logged at create by vdeploy_toy.sh)
+53808676 vast offer 47957835 created 2026-10-02 01:15: label s71-wc0k4_s1, queue scratch/s71q/wc0k4_s1.txt (logged at create by vdeploy_toy.sh)
+53808684 vast offer 46516927 created 2026-10-02 01:15: label s71-wc0k4_s2, queue scratch/s71q/wc0k4_s2.txt (logged at create by vdeploy_toy.sh)
+53808690 vast offer 45558034 created 2026-10-02 01:15: label s71-wc0k4_s3, queue scratch/s71q/wc0k4_s3.txt (logged at create by vdeploy_toy.sh)
+53808703 vast offer 47766457 created 2026-10-02 01:15: label s71-wc0k4_s4, queue scratch/s71q/wc0k4_s4.txt (logged at create by vdeploy_toy.sh)
+53808715 vast offer 53669939 created 2026-10-02 01:15: label s71-wc0k4_s5, queue scratch/s71q/wc0k4_s5.txt (logged at create by vdeploy_toy.sh)
+53805199 vast | c1_72_2001 DESTROYED_VERIFIED 2026-10-02 01:34 after verified fetch (c1/runs/p72_pf_s2001 c1/runs/p72_rf_s2001 c1/runs/p72_pfstd_s2001 c1/runs/p72_pt_s2001)
+53808572 vast | s71_wc0k1_s1 DESTROYED_VERIFIED 2026-10-02 01:35 after verified fetch (boxes/runs_s5/wc0k1_s1)
+53808555 vast | s71_tagger_s2 DESTROYED_VERIFIED 2026-10-02 01:35 after verified fetch (boxes/runs_s5/tagger_s2)
+53808572 vast | s71_wc0k1_s1 DESTROYED_VERIFIED 2026-10-02 01:35 after verified fetch (boxes/runs_s5/wc0k1_s1)
+53808539 vast | s71_p3wc0_s3 DESTROYED_VERIFIED 2026-10-02 01:35 after verified fetch (boxes/runs_s5/p3wc0_s3)
+53808604 vast | s71_wc0k1_s4 DESTROYED_VERIFIED 2026-10-02 01:35 after verified fetch (boxes/runs_s5/wc0k1_s4)
+53808567 vast | s71_tagger_s3 DESTROYED_VERIFIED 2026-10-02 01:35 after verified fetch (boxes/runs_s5/tagger_s3)
+53808555 vast | s71_tagger_s2 DESTROYED_VERIFIED 2026-10-02 01:35 after verified fetch (boxes/runs_s5/tagger_s2)
+53808632 vast | s71-wc0k2_s2 DESTROYED_VERIFIED 53808632 2026-10-02 01:35: bad host (GPT-2 sha x3 / stuck loading / unreachable); run re-placed
+53808582 vast | s71-wc0k1_s2 DESTROYED_VERIFIED 53808582 2026-10-02 01:36: bad host (GPT-2 sha x3 / stuck loading / unreachable); run re-placed
+53808542 vast | s71-p3wc4_s2 DESTROYED_VERIFIED 53808542 2026-10-02 01:36: bad host (GPT-2 sha x3 / stuck loading / unreachable); run re-placed
+53808539 vast | s71_p3wc0_s3 DESTROYED_VERIFIED 2026-10-02 01:36 after verified fetch (boxes/runs_s5/p3wc0_s3)
+53808612 vast | s71-wc0k1_s5 DESTROYED_VERIFIED 53808612 2026-10-02 01:36: bad host (GPT-2 sha x3 / stuck loading / unreachable); run re-placed
+53811279 vast offer 50744899 created 2026-10-02 01:36: label s71-wc0k2_s2, queue scratch/s71q/wc0k2_s2.txt (logged at create by vdeploy_toy.sh)
+53811285 vast offer 52756393 created 2026-10-02 01:36: label s71-p3wc4_s2, queue scratch/s71q/p3wc4_s2.txt (logged at create by vdeploy_toy.sh)
+53811289 vast offer 53415905 created 2026-10-02 01:36: label s71-wc0k1_s5, queue scratch/s71q/wc0k1_s5.txt (logged at create by vdeploy_toy.sh)

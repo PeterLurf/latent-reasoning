@@ -1,0 +1,22 @@
+{
+ "arm": "d1",
+ "seed": 2005,
+ "updates": 8000,
+ "bs": 512,
+ "lr": 0.0001,
+ "head_init": "default",
+ "M": 24,
+ "freeze_gpt2": false,
+ "feat_norm": "ln",
+ "gpt2_init": "pretrained",
+ "readout": "bil",
+ "tau0": 4.0,
+ "head_norm": "ln",
+ "code_init": "distinct",
+ "lr_new": 0.01,
+ "n_test": 2000,
+ "n_null": 10000,
+ "max_hours": 3.0,
+ "device": "cuda:0",
+ "out": "c1/runs/p72_pt_s2005"
+}
