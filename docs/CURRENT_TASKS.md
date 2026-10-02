@@ -85,7 +85,9 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
     additive cell's 0/10. Its host was destroyed. **Theory has no Vast hosts running.**
   - **§71** (the user's pick: S5 under DeltaProduct's protocol with GPT-2 written-state chunking, 36f2352) has been
     handed to Experiments.
-  - **Local:** none (the Zhang retry finished: S4 0/3, A5 0/3; note 69-4).
+  - **§72** (one GPT-2-cell reliability diagnostic, 5918e15) has been handed to Experiments for the local cards: PF / RF /
+    PF-std / PT on seeds 2001–2005.
+  - **Local:** Theory runs §72's TOY arm on CPU (Idle priority) → `theory/results/s72_toy.json`.
 - Handed to Experiments (22:22): THEORY §55 (fall-back kill test, `theory/exp27_fallback_kill.py`, CPU minutes) and §56
   (interchange test, `theory/exp28_interchange.py`, 80 models, ~1 h CPU); scoring rules are in each section.
 - §51 closed (TH1 0/10, TH2 1/10). §57: ProsQA cue origin found (proximity heuristic 0.91).
