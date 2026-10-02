@@ -2,7 +2,9 @@
 natural-language paraphrases; transfer to held-out phrasings.
 Task: S3 boxes, all 6 elements as ops (OPS of s79_phrasings, semantics `apply`, unit-tested there); start = the
 identity arrangement (code 0); answer = the final arrangement (6-way), the only label. Lengths uniform in 1-8 per batch
-(all rows of a batch share the length), no curriculum. Every op occurrence is rendered in a training family drawn
+(all rows of a batch share the length): amendment 79-2 replaces
+uniform 1-8 with §73's std curriculum (4 equal stages, lengths {1}, {1,2}, {1,2,4}, {1,2,4,8}); --curriculum uniform
+reproduces pilot 1. Every op occurrence is rendered in a training family drawn
 uniformly (swap order random), so each training PHRASING (op x family x swap order) is its own transition symbol:
 the exact marginal runs over the (phrasing, M, M) table. 8 families -> 72 phrasings; the 2/4-family sweep uses T1-T2 /
 T1-T4.
@@ -193,6 +195,7 @@ def main():
     ap.add_argument("--families", type=int, default=8, choices=[2, 4, 8]); ap.add_argument("--seed", type=int, default=2081)
     ap.add_argument("--updates", type=int, default=8000); ap.add_argument("--bs", type=int, default=512)
     ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--tau0", type=float, default=4.0)
+    ap.add_argument("--curriculum", default="std", choices=["std", "uniform"], help="79-2: std {1}->{1,2}->{1,2,4}->{1,2,4,8}")
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args()
     torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); dev = a.device
@@ -206,7 +209,10 @@ def main():
     opt = torch.optim.AdamW([p for p in m.parameters() if p.requires_grad], lr=a.lr, weight_decay=0.0)
     log = open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t0 = time.time(); hist = []
     for u in range(1, a.updates + 1):
-        L = int(rng.integers(1, 9))
+        if a.curriculum == "std":                                       # amendment 79-2: §73's std curriculum
+            L = int(rng.choice((1, 2, 4, 8)[: min(3, (u - 1) * 4 // a.updates) + 1]))
+        else:                                                             # the original reading 2 (pilot 1 only)
+            L = int(rng.integers(1, 9))
         ops = rng.integers(0, 6, (a.bs, L))
         sym = np.vectorize(lambda o: sym_by_op[o][rng.integers(len(sym_by_op[o]))])(ops)
         st = np.zeros(a.bs, int)

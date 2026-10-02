@@ -1,0 +1,2 @@
+EVAL {"train_cert": true, "acc128": 1.0, "agree": {"H1": 0.0, "H2": 0.0, "H3": 0.0, "H4": 0.0, "POS": 0.0, "NEG": 0.0, "T6": 1.0}}
+DONE c1/runs/p79_tab_s2082

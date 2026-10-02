@@ -1,0 +1,2 @@
+EVAL {"train_cert": false, "acc128": 0.3245, "agree": {"H1": 0.926, "H2": 0.926, "H3": 0.593, "H4": 0.296, "POS": 1.0, "NEG": 1.0, "T6": 1.0}}
+DONE c1/runs/p79_pfstd_s2081
