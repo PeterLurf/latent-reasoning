@@ -1,0 +1,19 @@
+{
+ "n": 500,
+ "L": 2048,
+ "cumulative": {
+  "512": 1.0,
+  "1024": 1.0,
+  "2048": 1.0
+ },
+ "final_state_acc_2048": 1.0,
+ "compute_2048_per_problem": {
+  "tokens_processed": 51200,
+  "flops": 9682840190976.0,
+  "seq_passes": 14336,
+  "written_tokens": 12288,
+  "latent_passes": 0,
+  "gen_tokens": 12288
+ },
+ "dtype": "torch.bfloat16"
+}

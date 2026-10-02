@@ -39,7 +39,7 @@ def main():
                     split[grp] = [float(np.mean([l[i]["ratio"] for l in L])) for i in range(len(L[0]))]
             r["layer_ratio_by_outcome"] = split
         res[a] = r
-    json.dump(res, open("theory/results/score_s72.json", "w", newline="\n"), indent=1)
+    json.dump(res, open(f"theory/results/score_s{pre[1:]}.json", "w", newline="\n"), indent=1)   # p72 -> s72, p72b -> s72b
     for a, r in res.items():
         print(f"{a:6s} certified {r['certified']}/{r['n']} -> {r['verdict']}")
         for s, x in r["per_seed"].items():

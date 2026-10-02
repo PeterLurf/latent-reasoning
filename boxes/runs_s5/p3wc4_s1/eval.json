@@ -1,0 +1,19 @@
+{
+ "arm": "p3",
+ "k": 4,
+ "latent": 4,
+ "train_sec": 2356,
+ "labelled_states_seen": 512000,
+ "eval_batch": 100,
+ "eval_dtype": "None",
+ "test_sequences": 2000,
+ "eval_sec": 665,
+ "cumulative": {
+  "128": 0.0,
+  "256": 0.0,
+  "512": 0.0
+ },
+ "final_state_acc_512": 0.011,
+ "invalid_share": 0.998046875,
+ "chunk_check_final": null
+}
