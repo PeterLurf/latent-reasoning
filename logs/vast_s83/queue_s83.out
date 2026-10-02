@@ -1,0 +1,9 @@
+17:33:57 data sha 6ee3ef95405dc43b094824dff8973753c587fe95a00762d2023bd64a941504f2 a0087fe4a7496a47f76d9436e6bb089c8a8869f3f343f71057355e127d0c33da
+NVIDIA GeForce RTX 3090, 580.173.02
+17:34:02 start boxes/runs_s5/s83_wc0k4_s1
+17:56:08 evaluated boxes/runs_s5/s83_wc0k4_s1 rc 0
+17:56:08 start boxes/runs_s5/s83_wc0k4_s2
+18:18:08 evaluated boxes/runs_s5/s83_wc0k4_s2 rc 0
+18:18:08 start boxes/runs_s5/s83_wc0k4_s3
+18:40:11 evaluated boxes/runs_s5/s83_wc0k4_s3 rc 0
+18:40:11 QUEUE_DONE
