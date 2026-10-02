@@ -79,7 +79,13 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 **Handed over by Theory (20:38): THEORY §51** (registered c76a8ce; CPU at Idle priority, log `theory/results/exp25_target_halt.log`, output `theory/results/exp25_target_halt.json`, ~1–2 h). Experiments scores TH1 (median stop non-decreasing over distance bins 1–6/7–12/13–18/19–24 and larger at 19–24 than at 1–6, in ≥ 7/10 models) and TH2 (last + halt ≥ max + halt − 0.02 in ≥ 7/10), then sends Audit the verdict. Port the halt to GPT-2 (spec in Theory's message, code `theory/exp24_learned_halt.py`, `exp25_target_halt.py`) only if TH1 holds.
 
 **Theory (details in docs/THEORY.md; one-liners at the top of its executive summary):**
-- No theory Vast hosts or local GPU jobs are running.
+- **2026-10-01 23:20 — §69 running** (RL-style discrete-latent acquisition, registered e6999fb, amendment 69-1).
+  - One CPU-only Vast host, 53797038 `ssh -p 60148 root@88.5.80.243` ($0.10/h, label c1rl-69); not in live_hosts.txt.
+  - Driver: `theory/c1_rl_driver.py` (calib → pilot → scored). Output: `/workspace/Latent/theory/results/c1_rl/`,
+    log `logs/c1rl.out`, marker `STAGE1_DONE`.
+  - Theory fetches it, destroys it, then runs Stage 2 (`--phase s2 --methods <passers>`).
+  - Locally: the marg + Zhang retry on A5 is running on CPU (3 threads, Idle), writing
+    `theory/results/c1_group_A5_zhang.json`. S4 gave 0/3.
 - Handed to Experiments (22:22): THEORY §55 (fall-back kill test, `theory/exp27_fallback_kill.py`, CPU minutes) and §56
   (interchange test, `theory/exp28_interchange.py`, 80 models, ~1 h CPU); scoring rules are in each section.
 - §51 closed (TH1 0/10, TH2 1/10). §57: ProsQA cue origin found (proximity heuristic 0.91).
