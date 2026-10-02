@@ -3,6 +3,7 @@ curricula ge3 (primary: lengths >= 3 only) and std, seeds 2051-2060; M = 2|G|, t
 tables saved for (B). Descriptive: A5 ge3 M sweep (60, 90, 240) and tau0 = 1, seeds 2051-2055. P concurrent single-thread processes, one seed per process, resumable. Output
 theory/results/c1_tab/<group>_<curriculum>_s<seed>.json, marker DONE.
     python theory/c1_tab_driver.py --P 28 [--groups S4 A5 S5] [--curricula ge3 std] [--device cuda:0] [--no_extras]
+    §82: --groups Z59 Z60 D30 A4xZ5 --curricula ge3 --seeds 2111 2112 2113 2114 2115 --no_extras (+ std on 2111-2113)
 """
 import argparse
 import os
@@ -12,8 +13,9 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-GSIZE = {"S4": 24, "A5": 60, "S5": 120}
+GSIZE = {"S4": 24, "A5": 60, "S5": 120, "Z59": 59, "Z60": 60, "D30": 60, "A4xZ5": 60}
 SEEDS = list(range(2051, 2061))
+SEEDS82 = list(range(2111, 2116))          # §82 (groups_extra), ge3 2111-2115, std 2111-2113
 
 
 def main():
@@ -38,7 +40,7 @@ def main():
                                stdout=lg, stderr=subprocess.STDOUT, env=env)
         return os.path.exists(f)
 
-    assert set(a.seeds) <= set(SEEDS), "only registered seeds"
+    assert set(a.seeds) <= set(SEEDS) | set(SEEDS82), "only registered seeds"
     jobs = [(g, cur, s, 2 * GSIZE[g], 4, "") for g in a.groups for cur in a.curricula for s in a.seeds]   # largest first
     # descriptive (Literature 99ec154): M sweep and tau ablation, A5 ge3, seeds 2051-2055
     if not a.no_extras and "A5" in a.groups:
