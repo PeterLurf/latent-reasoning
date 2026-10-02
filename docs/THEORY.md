@@ -6593,11 +6593,31 @@ states. Two speed-only changes:
   past the trained depth (2) are about 3 % correct even when the model is made to continue.
 * **Error split (mid + long, 2,637 item-runs):** halting in 2,242 item-runs; 2,622 step and 4,861 propagation errors (by
   position); 1,743 other.
-* **Reading.** Fixing the stop alone cannot help. The *steps* past the trained dependency depth are out of range: the
-  range principle again, now for the per-step computation at depth > 2.
+* **Reading (superseded by correction 84-1 below).** Fixing the stop alone cannot help. The *steps* past the trained
+  dependency depth are out of range: the range principle again, now for the per-step computation at depth > 2.
   - A solver trained on 1–2-step GSM8K problems at GPT-2-small scale has learned no reusable step operation that
     extends to depth 3+.
   - This closes the step-split GSM8K line for written state at this scale (§78, §84).
+
+**Correction 84-1 (2026-10-02 18:04 EDT; Audit, reproduced from the raw `ORACLE_pred_test.json` files).** The gate is
+reproduced: pooled long 0.0296, CI 0.0163–0.0444, n = 225, with the true n written in 98.8 % of items. Step 2 correctly
+does not run. But "a depth > 2 step wall" is **not** what the rows show.
+* **Per-position correctness** (pooled; a lower bound, since a valid different step order counts as wrong):
+
+  | bin | pos 1 | pos 2 | pos 3 |
+  |---|---|---|---|
+  | in-distribution | 0.551 | 0.464 | — |
+  | mid | 0.343 | 0.076 | 0.058 |
+  | long | 0.214 | 0.031 | 0.034 |
+
+  Conditional on all earlier steps being right: long pos 2 0.161, pos 3 0.094.
+* **Corrected reading.** Under oracle continuation, long accuracy stays at 0.030.
+  - Long problems are mostly wrong **from the first steps** (pos 1 0.21 vs 0.55 in-distribution): a problem-level
+    shift.
+  - Forced continuation often **repeats the last equation** (e.g. test item 5 writes <<3*16=48>> four times).
+  - Neither halting nor a depth-2 step wall alone explains the failure.
+* **Consequence.** A follow-up (Literature's M3) should target problem-level difficulty (question length, number of
+  quantities), not only chain depth.
 
 ## 85. Information or optimisation? The short-label threshold, and an oracle-initialised free table without short labels (pre-registered 2026-10-02 16:55 EDT, after Literature's leads f89953e and before any §85 run; the user directive "keep innovating")
 
