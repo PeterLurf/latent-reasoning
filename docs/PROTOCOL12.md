@@ -459,3 +459,31 @@ Base GPT-2, lr 1e-4, bs 64, fp32, greedy exact match; local RTX 2070.
 * It does not compose unseen k-op words. (b) is below chance (1/6) at both k, i.e. memorisation of words.
 * Run note: a first k = 2 attempt at 1,500 steps was aborted before any evaluation and its directory deleted; its log
   was overwritten by the restart. Nothing of it survives, and no result was read (reported to Theory).
+
+## THEORY §78 (GSM8K step-count split: text CoT vs written state, GPT-2 small from base) result (2026-10-02 17:50 EDT; `python gsmlen/score78.py` → `theory/results/score_s78.json`)
+
+The scorer (4fcd147) was committed before any prediction. 9 runs (3 arms × seeds 1–3; 6 epochs, bs 16 × 2, bf16,
+checkpoint by short-valid) on 6 Vast RTX 3090s, about $5 (`gsmlen/PILOT78.md`). Bins are on the GSM8K test.
+
+| arm (median of 3 seeds) | in-distribution n 1–2 (422) | mid n 3–4 (654) | **long n ≥ 5 (225)** | n ≥ 6 (87) | aug_long (secondary) |
+|---|---|---|---|---|---|
+| TC (text CoT) | 0.462 | 0.061 | 0.022 | 0.011 | 0.022 |
+| WS (written state, §68) | 0.441 | 0.058 | 0.018 | 0.011 | 0.021 |
+| WS-pad (padded to ≤ 8) | 0.441 | 0.049 | 0.018 | 0.023 | 0.020 |
+
+* **L1 (descriptive):** TC long is 0.022 against in-distribution 0.462, a ratio of 0.05. Short-trained GPT-2 collapses
+  past its step count.
+* **L2 not met:** WS-pad − TC on long is −0.006, CI [−0.021, +0.009], paired by item and pooled over seeds.
+* **L3 met:** WS-pad in-distribution 0.441 ≥ TC 0.462 − 0.03.
+* **L4:** WS-pad − WS on long is −0.003, CI [−0.015, +0.009]; padding makes no difference.
+* **C3:** no win. Median long-bin FLOPs: TC 2.2e10, WS 5.8e10, WS-pad 6.0e10 (states re-encoded each call).
+* **Descriptive.**
+  - By depth, all arms fall from about 0.33 at depth 3 to about 0.04 at depth 4–5.
+  - By final values-list length:
+    - WS ends with 2 values in 3,688 of 3,957 problems, i.e. it stops at its trained length (n ≤ 2).
+    - WS-pad spreads out, and in 276 problems hits the 12-call cap without stopping.
+  - The stop decision, not the state's range, looks like the failure point. This is what §84 tests (oracle stop).
+
+**Reading (§78):** "L2 fails: on GSM8K the bottleneck is not context length or range" at GPT-2 small. The restart
+method does not extend reasoning past the trained step count. Written state, padded or not, does no better than text
+CoT on long problems.

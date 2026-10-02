@@ -1,0 +1,10 @@
+{
+ "units_per_epoch": 206397,
+ "steps_per_epoch": 6449,
+ "total_steps": 38694,
+ "eff_batch": 32,
+ "best_valid_short": 0.5303867403314917,
+ "train_sec": 10369,
+ "tokens": 69617656,
+ "sec_per_step": 0.268
+}

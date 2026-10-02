@@ -1,0 +1,17 @@
+{
+ "cmd": "train",
+ "arm": "ws",
+ "seed": 1,
+ "epochs": 6,
+ "bs": 16,
+ "grad_acc": 2,
+ "lr": 0.0001,
+ "fp32": false,
+ "max_steps": 0,
+ "eval_every": 0,
+ "max_valid": 0,
+ "ckpt": null,
+ "split": "test",
+ "device": "cuda:0",
+ "out": "gsmlen/runs/ws_s1"
+}
