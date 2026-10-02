@@ -6864,6 +6864,17 @@ k op symbols), and the same held-out sets: (b) unseen words, (a) unseen (state, 
 
 **Placement.** Local cards (P0-sized runs). Implementation by the experiments session, extending `c1/p80_p0.py`. $0.
 
+**Note 87-1 (2026-10-02 19:11 EDT, before any §87 result; Audit).**
+* B2's wording becomes "the first certified A5 acquisition from length ≥ 3 problems **in this project**". Deterministic
+  annealing for HMM and automaton learning is classical (Rose 1998; Ueda & Nakano), and prior group-automaton induction
+  results may exist. Literature's prior check is requested before any §87 result; any stronger wording is fixed by it.
+* Only da16 and da64 can support a C4-strict reading. warm25 and warm12 use short labels and stay in §76(A)'s qualified
+  sense ("including length-1/2 problems").
+
+**Note 88-1 (2026-10-02 19:11 EDT, before any §88 result; Audit).**
+* §88 uses §80's split, so its reading carries note 80-2's scope: ≤ 815 training words (k = 3) and 135 (k = 2).
+* G1 is per-iteration-supervised composition, **C1 (use) and C2 in depth, not C4**.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
