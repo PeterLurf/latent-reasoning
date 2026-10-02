@@ -1,0 +1,1 @@
+S3 mlp exr M 12 r 12 seed 1409 params 7948 certified False bad 25 acc {8: 0.221, 9: 0.204, 32: 0.173, 128: 0.173} nll {1: 1.69, 2: 5.682, 4: 7.101, 8: 8.217} sec 55.3

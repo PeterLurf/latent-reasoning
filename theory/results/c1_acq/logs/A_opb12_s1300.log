@@ -1,0 +1,1 @@
+S3 opb mml M 24 r 12 seed 1300 params 1464 certified False bad 6 acc {8: 0.533, 9: 0.522, 32: 0.506, 128: 0.495} nll {1: 0.287, 2: 0.481, 4: 0.649, 8: 0.813} sec 140.6

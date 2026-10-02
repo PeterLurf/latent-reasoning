@@ -1,0 +1,1 @@
+S3 mlp temper M 12 r 12 seed 1302 params 7948 certified True bad 0 acc {8: 1.0, 9: 1.0, 32: 1.0, 128: 1.0} nll {1: 0.0, 2: 0.0, 4: 0.0, 8: 0.0} sec 71.9

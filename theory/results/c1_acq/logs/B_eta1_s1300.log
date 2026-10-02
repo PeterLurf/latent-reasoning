@@ -1,0 +1,1 @@
+S3 mlp eta1 M 12 r 12 seed 1300 params 7948 certified False bad 20 acc {8: 0.374, 9: 0.367, 32: 0.335, 128: 0.338} nll {1: 0.243, 2: 0.572, 4: 0.923, 8: 1.094} sec 70.8
