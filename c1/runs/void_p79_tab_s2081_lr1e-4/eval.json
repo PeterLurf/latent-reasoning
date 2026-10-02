@@ -1,0 +1,117 @@
+{
+ "arm": "tab",
+ "seed": 2081,
+ "families": 8,
+ "train_sec": 97,
+ "train": {
+  "certificate": {
+   "certified": false,
+   "bad_pairs": 60,
+   "reachable_pairs": 72
+  },
+  "acc": {
+   "8": 0.24,
+   "16": 0.1955,
+   "32": 0.19,
+   "64": 0.1545,
+   "128": 0.174
+  },
+  "reachable_codes": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11
+  ],
+  "phrasing_consistency": 0.1527777777777778
+ },
+ "eval": {
+  "H1": {
+   "frozen_sigma": {
+    "agreement": 0.0,
+    "certificate": {
+     "certified": false
+    },
+    "acc": null,
+    "note": "undefined for an unseen phrasing (TAB-phrase): 0 by construction"
+   }
+  },
+  "H2": {
+   "frozen_sigma": {
+    "agreement": 0.0,
+    "certificate": {
+     "certified": false
+    },
+    "acc": null,
+    "note": "undefined for an unseen phrasing (TAB-phrase): 0 by construction"
+   }
+  },
+  "H3": {
+   "frozen_sigma": {
+    "agreement": 0.0,
+    "certificate": {
+     "certified": false
+    },
+    "acc": null,
+    "note": "undefined for an unseen phrasing (TAB-phrase): 0 by construction"
+   }
+  },
+  "H4": {
+   "frozen_sigma": {
+    "agreement": 0.0,
+    "certificate": {
+     "certified": false
+    },
+    "acc": null,
+    "note": "undefined for an unseen phrasing (TAB-phrase): 0 by construction"
+   }
+  },
+  "POS": {
+   "frozen_sigma": {
+    "agreement": 0.0,
+    "certificate": {
+     "certified": false
+    },
+    "acc": null,
+    "note": "undefined for an unseen phrasing (TAB-phrase): 0 by construction"
+   }
+  },
+  "NEG": {
+   "frozen_sigma": {
+    "agreement": 0.0,
+    "certificate": {
+     "certified": false
+    },
+    "acc": null,
+    "note": "undefined for an unseen phrasing (TAB-phrase): 0 by construction"
+   }
+  },
+  "T6": {
+   "frozen_sigma": {
+    "agreement": 0.5833333333333334,
+    "chance": 0.08333333333333333,
+    "n_phrasings": 9,
+    "certificate": {
+     "certified": false,
+     "bad_pairs": 60,
+     "reachable_pairs": 72
+    },
+    "acc": {
+     "8": 0.257,
+     "16": 0.1805,
+     "32": 0.1535,
+     "64": 0.172,
+     "128": 0.174
+    },
+    "minimal_pair_acc": 0.3333333333333333
+   }
+  }
+ }
+}
