@@ -6006,6 +6006,20 @@ shared-parameter cell failed there.
 * **Pipeline check (non-evidential, labelled).** The experiments session may smoke-test c1/amortise.py on any table,
   including an uncertified one, for plumbing. No certificate from it is reported as a result.
 
+**Amendment 76-3 (2026-10-02 09:19 EDT, before any no-holdout result; the experiments session's question after the
+B-std pilot).**
+* **Design flaw (Theory's).** (B)'s main certificate includes the ~10 % held-out rows, so it can pass only if the student
+  composes missing rows. It thereby mixes "hosting" with "composition".
+* **The pilot already shows** (S4 seed 2051, B-std) that the students fit every trained row within 100 updates but get
+  held-out rows near chance (PF-std 0.097, PT-std 0.236; chance ≈ 1/30). Both main certificates fail, and both pass
+  once the held-out rows are patched.
+* **Added: B-std-full and B-full (descriptive, no pass claim).** The same students trained on *all* reachable rows of
+  the certified teacher. The certificate is on the student's own table, seeds 2051–2060, S4 then A5.
+  - This measures hosting alone.
+  - If it certifies, the wording is only: "a pretrained LM can host (store and execute) a certified automaton that a
+    tabular learner acquired from final answers".
+  - The registered rules for (B) and (B-std), with held-out rows, stand and are scored as registered.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
