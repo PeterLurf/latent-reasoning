@@ -9,3 +9,7 @@
 900/1319 acc 0.441 492s
 1000/1319 acc 0.439 546s
 1100/1319 acc 0.427 608s
+1200/1319 acc 0.422 663s
+1300/1319 acc 0.418 718s
+gsm8k | gen:prosqa/ckpt_ext/hf/dw_gsm/cot_checkpoint_25?aug=1 | n 1319 | acc 0.418 [0.3914, 0.4446] | baselines {'last number in question': 0.0227, 'constant 5 (most frequent test answer; peeks)': 0.0303, 'answer appears in question (oracle)': 0.0637, 'one-op oracle (any pair, + - x /)': 0.1554}
+WROTE bench\results\gsm8k__dw_cot_ck25.json
