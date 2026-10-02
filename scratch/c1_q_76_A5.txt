@@ -1,0 +1,41 @@
+# §76(B) A5 local queue (written by scratch/feed76.sh)
+c1/runs/p76a5_std_pfstd_s2051 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2051.json --student pfstd --bs 512
+c1/runs/p76a5_std_ptstd_s2051 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2051.json --student ptstd --bs 512
+c1/runs/p76a5_stdfull_pfstd_s2051 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2051.json --student pfstd --bs 512 --holdout 0
+c1/runs/p76a5_stdfull_ptstd_s2051 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2051.json --student ptstd --bs 512 --holdout 0
+c1/runs/p76a5_std_pfstd_s2052 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2052.json --student pfstd --bs 512
+c1/runs/p76a5_std_ptstd_s2052 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2052.json --student ptstd --bs 512
+c1/runs/p76a5_stdfull_pfstd_s2052 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2052.json --student pfstd --bs 512 --holdout 0
+c1/runs/p76a5_stdfull_ptstd_s2052 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2052.json --student ptstd --bs 512 --holdout 0
+c1/runs/p76a5_std_pfstd_s2053 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2053.json --student pfstd --bs 512
+c1/runs/p76a5_std_ptstd_s2053 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2053.json --student ptstd --bs 512
+c1/runs/p76a5_stdfull_pfstd_s2053 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2053.json --student pfstd --bs 512 --holdout 0
+c1/runs/p76a5_stdfull_ptstd_s2053 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2053.json --student ptstd --bs 512 --holdout 0
+c1/runs/p76a5_std_pfstd_s2054 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2054.json --student pfstd --bs 512
+c1/runs/p76a5_std_ptstd_s2054 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2054.json --student ptstd --bs 512
+c1/runs/p76a5_stdfull_pfstd_s2054 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2054.json --student pfstd --bs 512 --holdout 0
+c1/runs/p76a5_stdfull_ptstd_s2054 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2054.json --student ptstd --bs 512 --holdout 0
+c1/runs/p76a5_std_pfstd_s2055 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2055.json --student pfstd --bs 512
+c1/runs/p76a5_std_ptstd_s2055 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2055.json --student ptstd --bs 512
+c1/runs/p76a5_stdfull_pfstd_s2055 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2055.json --student pfstd --bs 512 --holdout 0
+c1/runs/p76a5_stdfull_ptstd_s2055 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2055.json --student ptstd --bs 512 --holdout 0
+c1/runs/p76a5_std_pfstd_s2056 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2056.json --student pfstd --bs 512
+c1/runs/p76a5_std_ptstd_s2056 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2056.json --student ptstd --bs 512
+c1/runs/p76a5_stdfull_pfstd_s2056 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2056.json --student pfstd --bs 512 --holdout 0
+c1/runs/p76a5_stdfull_ptstd_s2056 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2056.json --student ptstd --bs 512 --holdout 0
+c1/runs/p76a5_std_pfstd_s2057 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2057.json --student pfstd --bs 512
+c1/runs/p76a5_std_ptstd_s2057 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2057.json --student ptstd --bs 512
+c1/runs/p76a5_stdfull_pfstd_s2057 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2057.json --student pfstd --bs 512 --holdout 0
+c1/runs/p76a5_stdfull_ptstd_s2057 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2057.json --student ptstd --bs 512 --holdout 0
+c1/runs/p76a5_std_pfstd_s2058 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2058.json --student pfstd --bs 512
+c1/runs/p76a5_std_ptstd_s2058 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2058.json --student ptstd --bs 512
+c1/runs/p76a5_stdfull_pfstd_s2058 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2058.json --student pfstd --bs 512 --holdout 0
+c1/runs/p76a5_stdfull_ptstd_s2058 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2058.json --student ptstd --bs 512 --holdout 0
+c1/runs/p76a5_std_pfstd_s2059 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2059.json --student pfstd --bs 512
+c1/runs/p76a5_std_ptstd_s2059 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2059.json --student ptstd --bs 512
+c1/runs/p76a5_stdfull_pfstd_s2059 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2059.json --student pfstd --bs 512 --holdout 0
+c1/runs/p76a5_stdfull_ptstd_s2059 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2059.json --student ptstd --bs 512 --holdout 0
+c1/runs/p76a5_std_pfstd_s2060 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2060.json --student pfstd --bs 512
+c1/runs/p76a5_std_ptstd_s2060 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2060.json --student ptstd --bs 512
+c1/runs/p76a5_stdfull_pfstd_s2060 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2060.json --student pfstd --bs 512 --holdout 0
+c1/runs/p76a5_stdfull_ptstd_s2060 c1.amortise --teacher theory/results/c1_tab_local/A5_std_s2060.json --student ptstd --bs 512 --holdout 0
