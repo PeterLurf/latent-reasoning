@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-10-02 13:31 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-10-02 17:28 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -35,7 +35,7 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 > gives fronts to depth 11 in 2/4 runs; Pilot D 12 + 12 running on Vast). Ownership (theory Vast hosts vs a PROTOCOL8)
 > to be agreed. The theory session analyses O/R/T9/T10 runs only after the experiments session has scored them.
 
-## 00. EXPERIMENTS STATE AT 2026-10-02 13:31 EDT — authoritative over section 0
+## 00. EXPERIMENTS STATE AT 2026-10-02 17:28 EDT — authoritative over section 0
 
 **Running (all local; no Vast hosts of ours):**
 * **§76(A) teachers on local GPUs (amendment 76-5):** `python theory/c1_tab_driver.py --groups {A5|S5|S4} --device
@@ -81,6 +81,12 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
     pilot 2 certifies, and voided otherwise.
   - If pilot 2 certifies, run the rest (`scratch/c1_q_79_cheap.txt`, `scratch/c1_q_79_gpt.txt`; their pfstd 2082/2083
     lines are skipped by eval.json). Score: `python c1/score_79.py`.
+* **§84 Step 1 (ORACLE-stop diagnostic, adc0c75):** `gsmlen/oracle84.py`, run by `scratch/s84_step1.sh` on cuda:0 after
+  its §79 job (seeds 1–3, outputs `gsmlen/runs/wspad_s*/ORACLE_pred_test.json`). Run `python gsmlen/oracle84.py
+  summarise` (gate ≥ 0.10 for Step 2) only after §78 is scored.
+* **§85 tables** (Theory scores): `python theory/c1_s85_driver.py --device cuda:2 --P 2` → `theory/results/c1_s85`.
+* **§86 latent restarts** (caf2ccc, `boxes/latent86.py`): `scratch/l86_chain.sh` puts the pilot (k 4 s1) on the first
+  card freed by §79's queue, then the panel (`scratch/l86_q.txt`). Out: `boxes/runs_s5/l86_*`.
 * **§80 stopped at P0 (13:10):** unseen words 0.030 / 0.118 < 0.95. **§82 done**, scored by Theory ("Neither").
 * **§83 retrain on Vast** 53891982 (137.175.22.196:60155): §71's exact wc0k4 command, seeds 1–3. The host's
   `scratch/s83_after.sh` renames the runs to `wc0k4r_s*` and runs `theory/s83_restart.py`. The local
