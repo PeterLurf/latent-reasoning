@@ -20,7 +20,7 @@ import torch
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 import sys  # noqa: E402
 sys.path.insert(0, ROOT)
-from boxes.core import GPT2KV, apply, infer, loss_batch, make_problem, truth  # noqa: E402
+from boxes.core import LET, GPT2KV, apply, infer, loss_batch, make_problem, truth  # noqa: E402
 
 
 def load_model(path, dev):
@@ -85,7 +85,7 @@ def edit_eval(m, a, dev, amp):
         nch = math.ceil(N / a.k); c = nch // 2 - 1                    # replace the arrangement written after chunk c
         new = []
         for _ in batch:
-            x = list("ABCD"); rng.shuffle(x); new.append("".join(x))
+            x = list(LET); rng.shuffle(x); new.append("".join(x))
         with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
             txt, _, _ = infer(m, a.arm, a.k, batch, dev, edit={"chunk": c, "arr": new})
         rest = [(c + 1) * a.k] * len(batch)

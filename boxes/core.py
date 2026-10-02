@@ -16,6 +16,7 @@ positions), FLOPs = sum over processed positions of (2 * non-embedding params + 
 2 * d * vocab for every position whose logits are read, sequential forward passes, written (generated) tokens.
 """
 import math
+import os
 import random
 
 import numpy as np
@@ -25,7 +26,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 ENC = tiktoken.get_encoding("gpt2")
-LET = "ABCD"
+NB = int(os.environ.get("BOXES_NB", "4"))          # number of boxes (§66: 4 = S4; S5 prep: 5). Default unchanged
+LET = "ABCDEFGH"[:NB]
 
 
 # ---------------------------------------------------------------- task
@@ -33,7 +35,7 @@ def make_problem(rng, n, qtype=None):
     start = list(LET); rng.shuffle(start)
     ops = []
     for _ in range(n):
-        i, j = sorted(rng.sample(range(4), 2)); ops.append((i, j))
+        i, j = sorted(rng.sample(range(NB), 2)); ops.append((i, j))
     qtype = qtype or rng.choice(["all", "where"])
     target = rng.choice(LET)
     return {"start": "".join(start), "ops": ops, "qtype": qtype, "target": target}
@@ -202,7 +204,7 @@ def gen_feed(m, h_last, past, n, meter=None, allowed=None):
 
 
 LET_IDS = [tok(" " + c)[0] for c in LET]
-DIG_IDS = [tok(" " + str(d))[0] for d in range(1, 5)]
+DIG_IDS = [tok(" " + str(d))[0] for d in range(1, NB + 1)]
 
 
 def dec_arr(ids):
@@ -260,7 +262,7 @@ def infer(m, arm, k, batch, dev, edit=None, kp=None):
     written arrangement after chunk c by the given arrangements (per row). kp (CL only; PILOT.md K' curve): None = K' = N
     (the panel), "half" = max(1, ceil(N / 2)), "double" = 2N."""
     meter = Meter(m); B = len(batch); N = len(batch[0]["ops"]); qt = batch[0]["qtype"]
-    nans = 4 if qt == "all" else 1
+    nans = NB if qt == "all" else 1
     allowed = LET_IDS if qt == "all" else DIG_IDS
     if arm in ("nc", "cl", "tc", "tc2"):
         if arm == "cl":
@@ -280,13 +282,13 @@ def infer(m, arm, k, batch, dev, edit=None, kp=None):
             for s_ in range(nstates):                            # each state: " >" (forced) then 4 greedy letters, fed back
                 ctx = past[0][0].shape[2]; h, past = m(m.embed(tensor([gt] * B, dev)), past); meter.step(1, ctx, 1)
                 meter.written += 1; hl = h[:, -1]
-                _, hl, past = gen_feed(m, hl, past, 4, meter, LET_IDS)
+                _, hl, past = gen_feed(m, hl, past, NB, meter, LET_IDS)
             ctx = past[0][0].shape[2]; h, past = m(m.embed(tensor([tok(" a:")] * B, dev)), past)
             meter.step(len(tok(" a:")), ctx, 1); hl = h[:, -1]
         ans = greedy(m, hl, past, nans, meter, allowed)
         texts = [" " + " ".join(ENC.decode([int(t)]).strip() for t in row) for row in ans]
         c = meter.as_dict(); c["latent_passes"] = getattr(meter, "lat", 0)
-        valid = [{"valid_final": float(len(set(t.split())) == 4)} if qt == "all" else {} for t in texts]
+        valid = [{"valid_final": float(len(set(t.split())) == NB)} if qt == "all" else {} for t in texts]
         return texts, c, valid
     # WC / WC0: chunked solver
     arrs = [p["start"] for p in batch]
@@ -300,14 +302,14 @@ def infer(m, arm, k, batch, dev, edit=None, kp=None):
         if K:
             hl, past = latents(m, hl, past, K, meter)
             mid = tensor([tok(" done. a:")] * B, dev); h, past = run_prefix(m, mid, past, meter, True); hl = h[:, -1]
-        out = greedy(m, hl, past, 4, meter, LET_IDS)
+        out = greedy(m, hl, past, NB, meter, LET_IDS)
         arrs = [dec_arr(r) for r in out]                       # vocabulary-only decode: NOT forced to a permutation
-        nvalid = [v + (len(set(a)) == 4) for v, a in zip(nvalid, arrs)]
+        nvalid = [v + (len(set(a)) == NB) for v, a in zip(nvalid, arrs)]
         if edit is not None and ci == edit["chunk"]:
             arrs = list(edit["arr"])
     # "where" is read off the last written arrangement; a target missing from it (invalid state) answers "0" (wrong)
     texts = [(" " + str(a.index(p["target"]) + 1) if p["target"] in a else " 0") if qt == "where" else " " + " ".join(a)
              for a, p in zip(arrs, batch)]
     c = meter.as_dict(); c["latent_passes"] = getattr(meter, "lat", 0)
-    valid = [{"valid_final": float(len(set(a)) == 4), "chunk_valid_share": v / len(chunks)} for a, v in zip(arrs, nvalid)]
+    valid = [{"valid_final": float(len(set(a)) == NB), "chunk_valid_share": v / len(chunks)} for a, v in zip(arrs, nvalid)]
     return texts, c, valid
