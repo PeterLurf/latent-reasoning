@@ -282,7 +282,7 @@ def wc_chunks_final(m, starts, ops, dev, amp, think):
 # ---------------------------------------------------------------- train / evaluate
 def train(a):
     dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
-    amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.is_bf16_supported() else None
+    amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None   # Turing: fp32
     check_interface()
     Xtr, Ytr = load_csv(os.path.join(a.data_dir, "S5=128.csv"))
     check_labels(Xtr, Ytr)
