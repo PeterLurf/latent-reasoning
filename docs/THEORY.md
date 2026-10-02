@@ -6265,6 +6265,15 @@ marker. Standardised readout, statistics frozen after training.
 **Placement.** Local cards. P0 is a few minutes of fine-tuning. The cell runs number 4 arms × 2 k × 5 seeds, about 2k
 GPT-2 calls per update at k = 3. $0.
 
+**Amendment 80-1 (2026-10-02 12:06 EDT, before any P0 training; implementation 2ac5ffc).**
+* **P0 implementation.** `c1/p80_p0.py`; splits in `c1/p80_split_k{2,3}.json` (seed 80 + k).
+  - k = 2: 11 unseen words (66 (state, word) pairs), 15 held-out pairs (a), 135 training pairs.
+  - k = 3: 65 unseen words (390 pairs), 91 (a), 815 training pairs.
+  - Text format "start: X Y Z. ops: B, D. a:" → " > Y X Z" (arrangement letters X Y Z, disjoint from the op symbols
+    A–F). Base GPT-2, AdamW lr 1e-4, bs 64, fp32, greedy exact match.
+* **Change.** Training runs **4,000 steps** (not 1,500), since compositional generalisation can lag memorisation of the
+  training pairs. Held-out accuracy is logged at 1,500 and 4,000, and **P0's rule applies to the final checkpoint**.
+
 ## 82. Acquisition ladder: do subgroup footholds help or trap final-answer-only learning? (pre-registered 2026-10-02 12:02 EDT, after Literature's checks 4a2aa35 and 19e8cc7 and before any run; idea 3)
 
 **Why.** Without short labels (ge3), the free table fails at S4, A5 and S5 (§76(A)).
