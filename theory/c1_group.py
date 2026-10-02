@@ -23,6 +23,9 @@ from st_model import group_elems  # noqa: E402
 
 
 def comp_table(group):
+    from groups_extra import EXTRA, comp_table as _extra   # §82 groups
+    if group in EXTRA:
+        return _extra(group)
     n, G = group_elems(group)
     idx = {g: i for i, g in enumerate(G)}
     # state = a group element s (as a permutation); applying op a gives a o s (same convention as st_model.sample)

@@ -32,14 +32,17 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from c1_group import comp_table  # noqa: E402
 
 SAVE_TABLE = False
+HELDOUT_PAIRS = 0          # §81: held-out (state, op) pairs per op, excluded from training paths
+HO_MASK = None
 
 
 class Cell(nn.Module):
     def __init__(self, kind, M, A, hid=256):
         super().__init__()
         self.kind, self.M, self.A = kind, M, A
-        if kind == "tab":
+        if kind in ("tab", "sk"):
             self.T = nn.Parameter(torch.randn(M, A, M) * 0.1)
+            self.tau_sk = 1.0                                 # §81: Sinkhorn temperature (set per update)
         elif kind == "bil":
             self.U, self.V, self.out = nn.Linear(M, hid), nn.Linear(A, hid), nn.Linear(hid, M)
         else:
@@ -47,6 +50,12 @@ class Cell(nn.Module):
         self.D = nn.Parameter(torch.randn(M, A) * 0.1)
 
     def table(self):
+        if self.kind == "sk":                                 # §81: log of a doubly-stochastic matrix per op (Sinkhorn,
+            L = self.T / self.tau_sk                          # 30 log-space iterations); rows and columns sum to 1
+            for _ in range(30):
+                L = L - torch.logsumexp(L, dim=2, keepdim=True)
+                L = L - torch.logsumexp(L, dim=0, keepdim=True)
+            return L - torch.logsumexp(L, dim=2, keepdim=True)
         if self.kind == "tab":
             return self.T
         if self.kind == "bil":
@@ -106,8 +115,19 @@ def _train(group, cell, method, seed, M, updates, lr, tau0, curriculum, K, beta0
     for u in range(updates):
         L = length(rng, u, updates, curriculum)
         tau = 1.0 + (tau0 - 1.0) * max(0.0, 1.0 - u / (0.5 * updates))
+        if cell == "sk":
+            m.tau_sk = 4.0 * (0.25 / 4.0) ** (u / max(1, updates - 1)); tau = 1.0      # §81 vertex forcing
         meth = ("marg" if u < updates // 2 else "hem") if method == "hyb" else method
-        ops = torch.as_tensor(rng.integers(0, A, (bs, L)), device=dev)
+        if HELDOUT_PAIRS:                                      # §81 part 2: resample rows whose path uses a held-out pair
+            on = rng.integers(0, A, (bs, L)); bad = np.ones(bs, bool)
+            while bad.any():
+                on[bad] = rng.integers(0, A, (int(bad.sum()), L))
+                st = np.full(bs, e); bad = np.zeros(bs, bool)
+                for t_ in range(L):
+                    bad |= HO_MASK[st, on[:, t_]]; st = COMP[st, on[:, t_]]
+            ops = torch.as_tensor(on, device=dev)
+        else:
+            ops = torch.as_tensor(rng.integers(0, A, (bs, L)), device=dev)
         s = torch.full((bs,), e, device=dev, dtype=torch.long)
         for t in range(L):
             s = Ct[s, ops[:, t]]
@@ -146,6 +166,20 @@ def _train(group, cell, method, seed, M, updates, lr, tau0, curriculum, K, beta0
         return m
     cert, bad, acc = certify(m, COMP, e, np.random.default_rng(seed + 7))
     out = {"certified": bool(cert), "bad_pairs": bad, "acc": acc, "final_loss": float(loss.item())}
+    with torch.no_grad():
+        Th = m.table().argmax(-1).cpu().numpy(); Dh = m.D.argmax(-1).cpu().numpy()
+    out["bijective_ops"] = int(sum(len(set(Th[:, a])) == M for a in range(A)))
+    if HELDOUT_PAIRS:                                      # held-out entries reached from (0, e): decoded correctly?
+        seen, fr, ok, tot = set(), [(0, e)], 0, 0
+        while fr:
+            c, st = fr.pop()
+            for a in range(A):
+                nx = (int(Th[c, a]), int(COMP[st, a]))
+                if HO_MASK[st, a]:
+                    tot += 1; ok += int(Dh[nx[0]] == nx[1])
+                if nx not in seen:
+                    seen.add(nx); fr.append(nx)
+        out["heldout_entries"] = {"correct": ok, "total": tot}
     if SAVE_TABLE:                                # §76: the hard tables, for amortisation into the GPT-2 cell
         with torch.no_grad():
             out["table"] = m.table().argmax(-1).cpu().numpy().tolist(); out["dec"] = m.D.argmax(-1).cpu().numpy().tolist()
@@ -174,16 +208,22 @@ def run(group, cell, method, seed, M, updates, lr, tau0, curriculum, K=8, beta0=
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--group", default="S3"); ap.add_argument("--cell", default="mlp", choices=["tab", "mlp", "bil"])
+    ap.add_argument("--group", default="S3"); ap.add_argument("--cell", default="mlp", choices=["tab", "mlp", "bil", "sk"])
     ap.add_argument("--method", default="hem", choices=["marg", "hem", "grpo", "bon", "hyb", "rmer"])
     ap.add_argument("--seeds", type=int, nargs="*", default=[100, 101, 102]); ap.add_argument("--M", type=int, default=0)
     ap.add_argument("--updates", type=int, default=8000); ap.add_argument("--lr", type=float, default=1e-2)
     ap.add_argument("--tau0", type=float, default=1.0); ap.add_argument("--curriculum", default="std", choices=["std", "zhang", "ge3"])
     ap.add_argument("--K", type=int, default=8); ap.add_argument("--beta0", type=float, default=0.05)
     ap.add_argument("--device", default="cpu"); ap.add_argument("--out"); ap.add_argument("--threads", type=int, default=3); ap.add_argument("--save_table", action="store_true")
+    ap.add_argument("--heldout_pairs", type=int, default=0, help="§81: held-out (state, op) pairs per op (seeded)")
     a = ap.parse_args(); torch.set_num_threads(a.threads)
-    global SAVE_TABLE
-    SAVE_TABLE = a.save_table
+    global SAVE_TABLE, HELDOUT_PAIRS, HO_MASK
+    SAVE_TABLE = a.save_table; HELDOUT_PAIRS = a.heldout_pairs
+    if HELDOUT_PAIRS:                                      # one held-out set per seed (seeded by 81000 + seed)
+        COMP_, e_, A_ = comp_table(a.group); hr = np.random.default_rng(81000 + a.seeds[0])
+        HO_MASK = np.zeros((A_, A_), bool)
+        for op in range(A_):
+            HO_MASK[hr.choice([x for x in range(A_) if x != e_], HELDOUT_PAIRS, replace=False), op] = True
     _, _, A = comp_table(a.group); M = a.M or A
     res = {}
     for s in a.seeds:
