@@ -6469,6 +6469,18 @@ adaptive, **unlearned** C5. It is still scaffolded: the history cut is external.
     by self-gating.
   - Fixed k = 16 in U1 stays as the trivially failing reference; it is not the main comparison.
 
+**Note 83-2 (2026-10-02 13:42 EDT; policy correction before any §83 result; found by Theory's CPU smoke test on
+§71's surviving k = 1 model, wc0k1_s2, which is not a §83 model).**
+* As written, the policy accepted at least one state of every offered chunk. But the offered chunk lists up to 16 ops
+  in its prompt, which is itself out of range for a solver trained on k′ ≤ k. So even its first state can be wrong.
+  - In the smoke test (k = 1 model offered 4 ops), every first state was wrong and below τ. Accepting it gave accuracy 0
+    where fixed k = 1 gives 1.0.
+* **Corrected policy.** If the first offered state is below τ, the solver retries from the same start with an
+  **in-range chunk of its trained size k** and accepts that chunk's confident prefix (≥ 1 state). The number of
+  fallbacks is reported.
+  - With this fix the smoke test gives 1.0, and all 22 first-wrong states in out-of-range offers were below τ.
+* Everything else in §83 and 83-1 is unchanged.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
