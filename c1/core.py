@@ -399,7 +399,7 @@ def layer_code_variance(model):
         z = F.layer_norm(h, (D,), g.w(p + "ln_2.weight"), g.w(p + "ln_2.bias"))
         h = h + F.gelu(z @ g.w(p + "mlp.c_fc.weight") + g.w(p + "mlp.c_fc.bias"), approximate="tanh") @ g.w(p + "mlp.c_proj.weight") \
             + g.w(p + "mlp.c_proj.bias")
-        v0 = h[:, 0].float().view(6, M, D)                            # (op, code, D) at the code position
+        v0 = h[:, 1].float().view(6, M, D)        # (op, code, D) at the OP position (§72b: under causal attention the code position cannot see the op)
         between = float(v0.mean(0).var(0, unbiased=False).sum()); within = float(v0.var(0, unbiased=False).mean(0).sum())
         out.append({"layer": i + 1, "between_code": between, "within_code": within, "ratio": between / max(within, 1e-12)})
     return out
