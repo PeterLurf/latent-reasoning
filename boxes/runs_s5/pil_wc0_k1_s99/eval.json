@@ -1,0 +1,34 @@
+{
+ "arm": "wc0all",
+ "k": 1,
+ "latent": 0,
+ "train_sec": 1534,
+ "labelled_states_seen": 512000,
+ "eval_batch": 100,
+ "eval_dtype": "None",
+ "test_sequences": 200,
+ "compute_512_per_problem": {
+  "tokens_processed": 12800,
+  "flops": 2420710047744.0,
+  "seq_passes": 3584,
+  "written_tokens": 3072,
+  "latent_passes": 0,
+  "gen_tokens": 3072
+ },
+ "eval_sec": 131,
+ "cumulative": {
+  "128": 1.0,
+  "256": 1.0,
+  "512": 1.0
+ },
+ "final_state_acc_512": 1.0,
+ "invalid_share": 0.0,
+ "certificate": {
+  "k": 1,
+  "batch": 100,
+  "dtype": "None",
+  "inputs": 14400,
+  "errors": 0,
+  "certified": true
+ }
+}
