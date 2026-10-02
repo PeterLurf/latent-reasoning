@@ -6875,6 +6875,23 @@ k op symbols), and the same held-out sets: (b) unseen words, (a) unseen (state, 
 * §88 uses §80's split, so its reading carries note 80-2's scope: ≤ 815 training words (k = 3) and 135 (k = 2).
 * G1 is per-iteration-supervised composition, **C1 (use) and C2 in depth, not C4**.
 
+**Amendment 87-2 (2026-10-02 19:13 EDT, before any §87 result is read; Literature 75e7a01, Audit).**
+* **Rename.** da16 and da64 temper the *table logits*, not the posterior. They are **logit-temperature annealing (LTA16,
+  LTA64)**, a parameterisation schedule, not deterministic annealing in Rose's or Ueda–Nakano's sense.
+* **Added: a canonical DA-EM arm (`daem`).** The loss is −(1/β) log Σ_z w(z)^β: the exact forward pass with β-powered
+  transition and decoder potentials, i.e. a tempered posterior over code paths, whose gradient is E_{q_β}[∇ log w].
+  - β is annealed linearly 0.1 → 1 over the first 3/4 of updates; τ0 = 4 as usual; ge3 throughout; seeds 2131–2135.
+  - Under the same B2 rule. At β = 1 the loss equals the plain marginal exactly (checked).
+* **B2's reading carries Literature's qualifiers.**
+  - A tabular IO-HMM learner, not a neural cell.
+  - Oracle M = 2|G|.
+  - A ge3-only spectral comparator is untested; 69-2's spectral runs used the curricula's length distribution, which
+    includes lengths 1–2.
+  - τ0 or β sensitivity and the sharpness of the code split (the DA signature) are reported.
+  - Wording if B2 passes: "no prior report of acquiring a non-solvable group automaton from length ≥ 3 final states only,
+    by any learner". The nearest priors are DeltaProduct, Howe and PD-SSM (per-position labels) and Lee 2606.07254
+    (solvable S3×S3, hand projection).
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the

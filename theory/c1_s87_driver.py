@@ -14,7 +14,8 @@ SEEDS = list(range(2131, 2136))
 ARMS = {"warm25": ["--curriculum", "warm", "--mix_p", "0.1", "--warm_frac", "0.25"],
         "warm12": ["--curriculum", "warm", "--mix_p", "0.1", "--warm_frac", "0.125"],
         "da16": ["--curriculum", "ge3", "--tau_frac", "0.75", "--tau0_override", "16"],
-        "da64": ["--curriculum", "ge3", "--tau_frac", "0.75", "--tau0_override", "64"]}
+        "da64": ["--curriculum", "ge3", "--tau_frac", "0.75", "--tau0_override", "64"],
+        "daem": ["--curriculum", "ge3", "--daem_beta0", "0.1"]}       # 87-2: canonical DA-EM (tempered path posterior)
 
 
 def tau(args):                                   # tau0 = 4 unless the arm overrides it (deterministic annealing)
