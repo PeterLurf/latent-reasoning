@@ -122,7 +122,7 @@ class Tagger(nn.Module):
         super().__init__()
         self.g = g
         mu, sd = g.w("wte.weight").mean(0).detach(), g.w("wte.weight").std(0).detach()
-        self.emb = nn.Parameter(mu + sd * torch.randn(120, 768))
+        self.emb = nn.Parameter(mu + sd * torch.randn(120, 768, device=mu.device))
         self.head = nn.Linear(768, 120)
 
     def forward(self, x):
