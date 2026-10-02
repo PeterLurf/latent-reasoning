@@ -4924,6 +4924,14 @@ seeds 0–9, so the existence claim must rest on seeds not used for selection.
 * **Check, pre-stated.** The bilinear toy cell (M = 24, τ 4 → 1, lr 1e-2, 8,000 updates, `theory/c1_diag.py`) on 10
   fresh seeds, 100–109. It must certify in ≥ 9/10.
 * If it does not, the "shared cell can acquire the rule" claim is withdrawn to "in 10/10 selection seeds only".
+* **Result (21:29 EDT; `theory/results/c1_diag_bil24_heldout.json`). 8/10 certified: not met.**
+  - The two failures (s103, s108) are near-correct automata: 0.97 and 0.93 at N 8, decaying to 0.58 and 0.51 at N 128,
+    i.e. a few transitions wrong.
+  - Per the rule, the claim is withdrawn to: the recipe certifies 10/10 on the selection seeds and 8/10 on held-out
+    seeds (18/20 overall).
+  - A shared cell acquires the rule in most seeds, but not with the ≥ 9/10 reliability of an over-complete free table.
+  - §67b proceeds as registered, since this check gated the claim, not the registration. Its reading uses the
+    withdrawn wording.
 
 **Amendment 67b-2 (2026-10-01 21:22 EDT, before any D1b run; the experiments session's implementation query).**
 * §67b's readout formula omitted the ReLU that the certified toy cell has (`theory/c1_diag.py`:
