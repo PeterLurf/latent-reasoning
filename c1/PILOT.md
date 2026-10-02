@@ -87,3 +87,10 @@ Audit's conditions (18:5x):
 * **Confound, stated.** The only learner, TAB, used lr 1e-2 and is a direct table parametrisation; the cells used 1e-3 /
   1e-4. A lr-matched MLP would separate "parametrisation" from "learning rate". Theory decides; it is not run here.
 * By 67-1's readings, both GPT-2 variants are recorded as acquisition failures.
+
+## Diagnostic 2×2 on lr (2026-10-01 20:04 EDT; Audit; logged before running; descriptive)
+* TAB at lr 1e-3, and MLP at lr 1e-2, seeds 99 / 1 / 2. TAB at lr 1e-2 on seeds 1 / 2 completes the reference.
+  Everything else as 67-1.
+* **Reading.**
+  - TAB stalls at 1e-3: optimisation (lr / symmetric optima) is the obstacle.
+  - TAB learns at 1e-3 while the MLP fails at 1e-2: the shared-function parametrisation is the obstacle.
