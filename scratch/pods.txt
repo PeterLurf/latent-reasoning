@@ -355,3 +355,25 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53781055 vast | gsmtime-3090b DESTROYED_VERIFIED 53781055 2026-10-01 21:20: timing logs fetched to logs/gsmtime/
 53783947 vast offer 50443928 created 2026-10-01 21:23: label gsmtime2-3090, queue scratch/gsm_time2_q.txt (logged at create by vdeploy_toy.sh)
 53783947 vast | gsmtime2-3090 DESTROYED_VERIFIED 53783947 2026-10-01 21:46: bf16 timing logs fetched to logs/gsmtime2/
+53792351 vast offer 50484113 created 2026-10-01 22:33: label c1-67b-1, queue scratch/c1_q_67b_1.txt (logged at create by vdeploy_toy.sh)
+53792353 vast offer 53493694 created 2026-10-01 22:33: label c1-67b-2, queue scratch/c1_q_67b_2.txt (logged at create by vdeploy_toy.sh)
+53792360 vast offer 40928602 created 2026-10-01 22:33: label c1-67b-3, queue scratch/c1_q_67b_3.txt (logged at create by vdeploy_toy.sh)
+53792366 vast offer 49745142 created 2026-10-01 22:33: label c1-67b-4, queue scratch/c1_q_67b_4.txt (logged at create by vdeploy_toy.sh)
+53792369 vast offer 43751730 created 2026-10-01 22:33: label c1-67b-5, queue scratch/c1_q_67b_5.txt (logged at create by vdeploy_toy.sh)
+53797038 vast offer 48320068 created 2026-10-01 23:20: label c1rl-69, CPU-only §69 job (theory/c1_rl_driver.py --phase all --P 16; logged at create by c1rl_vast.sh)
+53792353 vast | c1_67b_2 DESTROYED_VERIFIED 2026-10-01 23:25 after verified fetch (c1/runs/p67b_fpcmp_s2 c1/runs/p67b_reset_s2 c1/runs/p67b_d1b_s2 c1/runs/p67b_fpex_s2)
+53792360 vast | c1_67b_3 DESTROYED_VERIFIED 2026-10-01 23:30 after verified fetch (c1/runs/p67b_fpcmp_s3 c1/runs/p67b_reset_s3 c1/runs/p67b_d1b_s3 c1/runs/p67b_fpex_s3)
+53792366 vast | c1_67b_4 DESTROYED_VERIFIED 2026-10-01 23:33 after verified fetch (c1/runs/p67b_fpcmp_s4 c1/runs/p67b_reset_s4 c1/runs/p67b_d1b_s4 c1/runs/p67b_fpex_s4)
+53792351 vast | c1_67b_1 DESTROYED_VERIFIED 2026-10-01 23:37 after verified fetch (c1/runs/p67b_fpcmp_s1 c1/runs/p67b_reset_s1 c1/runs/p67b_d1b_s1 c1/runs/p67b_fpex_s1)
+53797038 vast | c1rl-69 DESTROYED_VERIFIED 2026-10-01 23:38 after verified fetch (md5 528f7be8; theory/results/c1_rl, §69 Stage 1)
+53799717 vast offer 48540465 created 2026-10-01 23:46: label c1acq-70, CPU-only theory job (theory/c1_acq_driver.py --P 28; logged at create by c1rl_vast.sh)
+53799717 vast | c1acq-70 DESTROYED_VERIFIED 2026-10-01 23:56 after verified fetch (md5 59191bea; theory/results/c1_acq, §70)
+53792369 vast | c1_67b_5 DESTROYED_VERIFIED 2026-10-02 00:04 after verified fetch (c1/runs/p67b_fpcmp_s5 c1/runs/p67b_reset_s5 c1/runs/p67b_d1b_s5 c1/runs/p67b_fpex_s5)
+53803966 vast offer 50443907 created 2026-10-02 00:29: label c1-72-2001, queue scratch/c1_q_72_2001.txt (logged at create by vdeploy_toy.sh)
+53803975 vast offer 50484108 created 2026-10-02 00:29: label c1-72-2002, queue scratch/c1_q_72_2002.txt (logged at create by vdeploy_toy.sh)
+53803982 vast offer 44375073 created 2026-10-02 00:29: label c1-72-2003, queue scratch/c1_q_72_2003.txt (logged at create by vdeploy_toy.sh)
+53803987 vast offer 49607479 created 2026-10-02 00:29: label c1-72-2004, queue scratch/c1_q_72_2004.txt (logged at create by vdeploy_toy.sh)
+53803989 vast offer 51828402 created 2026-10-02 00:29: label c1-72-2005, queue scratch/c1_q_72_2005.txt (logged at create by vdeploy_toy.sh)
+53804532 vast offer 53644720 created 2026-10-02 00:35: label s71-dp, queue scratch/s71_q_dp.txt (logged at create by vdeploy_toy.sh)
+53804533 vast offer 50744899 created 2026-10-02 00:35: label s71-dpvar, queue scratch/s71_q_dpvar.txt (logged at create by vdeploy_toy.sh)
+53803966 vast | c1_72_2001 DESTROYED_VERIFIED 53803966 2026-10-02 00:41: GPT2_SHA_MISMATCH at start, no run; seed 2001 re-placed locally

@@ -5,7 +5,7 @@ cd "$(dirname "$0")/.."
 tag=$1; dev=$2; q=$3; P=${4:-4}; log=logs/queue_$tag.out; mkdir -p logs prosqa/ckpt c1/runs
 pip install -q tiktoken > logs/pip_c1.log 2>&1
 W=prosqa/ckpt/gpt2_pretrained.bin
-[ -s $W ] || curl -sL -o $W https://huggingface.co/openai-community/gpt2/resolve/main/pytorch_model.bin
+for try in 1 2 3; do sha256sum $W 2>/dev/null | grep -q '^7c5d3f4b8b76583b' && break; rm -f $W; curl -sL -o $W https://huggingface.co/openai-community/gpt2/resolve/main/pytorch_model.bin; done   # retry a bad download
 sha256sum $W | grep -q '^7c5d3f4b8b76583b' || { echo "$(date +%T) GPT2_SHA_MISMATCH rc 9" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }
 nvidia-smi --query-gpu=name,driver_version --format=csv,noheader >> $log
 grep -v '^#' "$q" | grep -v '^$' | while read -r out rest; do n=$(basename $out)

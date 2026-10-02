@@ -15,7 +15,7 @@ s1=$(sha256sum bench/data/s5/S5=128.csv | cut -c1-64); s2=$(sha256sum bench/data
 echo "$(date +%T) data sha $s1 $s2" >> $log
 if [ "$s1" != "$SHA128" ] || [ "$s2" != "$SHA512" ]; then echo "$(date +%T) DATA_SHA_MISMATCH rc 9" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; fi
 W=prosqa/ckpt/gpt2_pretrained.bin
-[ -s $W ] || curl -sL -o $W https://huggingface.co/openai-community/gpt2/resolve/main/pytorch_model.bin
+for try in 1 2 3; do sha256sum $W 2>/dev/null | grep -q '^7c5d3f4b8b76583b' && break; rm -f $W; curl -sL -o $W https://huggingface.co/openai-community/gpt2/resolve/main/pytorch_model.bin; done   # retry a bad download
 sha256sum $W | grep -q '^7c5d3f4b8b76583b' || { echo "$(date +%T) GPT2_SHA_MISMATCH rc 9" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }
 nvidia-smi --query-gpu=name,driver_version --format=csv,noheader >> $log
 grep -v '^#' "$q" | grep -v '^$' | while read -r out rest; do n=$(basename $out)
