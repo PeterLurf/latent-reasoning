@@ -1,0 +1,39 @@
+{
+ "acc": {
+  "8": 0.8475,
+  "16": 0.699,
+  "32": 0.605,
+  "64": 0.5065,
+  "128": 0.507
+ },
+ "n_test": 2000,
+ "audit": {
+  "decoded": [
+   0,
+   5,
+   1,
+   2,
+   4,
+   3
+  ],
+  "bijection": true,
+  "init_is_identity": true,
+  "transition_errors": 1,
+  "error_list": [
+   [
+    5,
+    0,
+    3
+   ]
+  ],
+  "min_dec_margin": 0.9231353998184204,
+  "min_trans_margin": 0.008649945259094238,
+  "certified": false
+ },
+ "train": {
+  "updates": 2000,
+  "examples": 1024000,
+  "gpt2_tokens": 0,
+  "sec": 9
+ }
+}
