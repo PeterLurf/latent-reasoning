@@ -6698,6 +6698,35 @@ combination.
   with a fresh cache containing only slot j: a continuous restart at every op, without snapping. If accuracy holds, the
   slot alone carries the full state.
 
+**§83 result (2026-10-02 17:52 EDT; seed 1 primary, `theory/results/s83/wc0k4r_s1.json`, recomputed by Audit and Theory).
+The verdict is fixed by seed 1: U1, U2 and U3 all fail. Reading: "U2 fails, out-of-range overconfidence".**
+* **Seed 1 passes §71's own check** (fixed k = 4 = 1.000 at 512), so it is included.
+* **Adaptive self-gating:** cumulative accuracy 0.000 at 128 / 256 / 512 (final state 0.005). Fixed k = 16 is 0.000.
+* **Detection on chunks with a correct start.**
+  - The per-state error rate is 0.248: the offered 16-op prompt is out of range from its first states.
+  - Of the first wrong states, 0.683 fall below τ. The **miss rate is 0.317**.
+  - The false-restart rate on correct states is 0.0078, matching the 1 % calibration.
+* **Mean accepted chunk 3.31** (308,992 chunks), not > 4. Fallbacks: 43.
+* **Why the verdict is fixed.**
+  - U1 requires every included seed, and seed 1 scores 0.
+  - U2 (pooled ≥ 0.99) would need about 271k more flagged first-wrong states; there are about 35k per seed.
+  - U3 fails on both accuracy and chunk length.
+  - Seeds 2–3 run locally only as descriptive seed variance, at $0, when a card is free.
+* **Reading.** The written-state solver is confidently wrong on about a third of the states it produces under
+  out-of-range prompts. Its uncertainty does not mark its own range boundary. This is the documented overconfidence
+  pattern (Guo 1706.04599; Hein 1812.05720), here **measured under length extrapolation for the first time**
+  (Literature 93597e4). The hand-fixed k stays necessary.
+* **Corrections and caveats (Audit).**
+  - The slow run came from generating up to 16 states per offered chunk while accepting 3.3 (about 1,013 states per
+    problem), not from batch-1 fallbacks (43). Note 83-3's diagnosis was wrong on the cause; its changes were
+    speed-only.
+  - In-range calibration accuracy was 0.992 per state (49,500 states), while §71's check gives 1.000 per chunk at k = 4.
+    The confidence path (`chunk_with_conf`: bf16, letter-restricted greedy) may differ slightly from §71's decoder.
+    That does not change the verdict, but any follow-up (e.g. Literature's lead 5, a trained boundary head) must first
+    check that path against §71's.
+* **Placement incident (experiments session).** An old fetch watcher destroyed the host at 17:48, before seeds 2–3 ran.
+  Seed 2's partial run is voided. The models are kept locally (sha-logged).
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
