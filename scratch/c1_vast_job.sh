@@ -4,6 +4,7 @@
 cd "$(dirname "$0")/.."
 tag=$1; dev=$2; q=$3; P=${4:-4}; log=logs/queue_$tag.out; mkdir -p logs prosqa/ckpt c1/runs
 pip install -q tiktoken > logs/pip_c1.log 2>&1
+g=$(grep -o "^# C1_GROUP=[A-Z0-9]*" "$q" | head -1 | cut -d= -f2); [ -n "$g" ] && export C1_GROUP=$g   # §75: group from the queue
 W=prosqa/ckpt/gpt2_pretrained.bin
 for try in 1 2 3; do sha256sum $W 2>/dev/null | grep -q '^7c5d3f4b8b76583b' && break; rm -f $W; curl -sL -o $W https://huggingface.co/openai-community/gpt2/resolve/main/pytorch_model.bin; done   # retry a bad download
 sha256sum $W | grep -q '^7c5d3f4b8b76583b' || { echo "$(date +%T) GPT2_SHA_MISMATCH rc 9" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }
