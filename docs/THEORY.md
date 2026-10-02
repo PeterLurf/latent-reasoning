@@ -6183,6 +6183,25 @@ standardised readout with statistics frozen after training. h_op is read at the 
 
 **Placement and cost.** Local cards. About 35 runs (4 arms × 5, plus 2 sweep settings × 5), D1b-sized or smaller. $0.
 
+**§76(A) result (2026-10-02 11:36 EDT; scored by Theory with `theory/c1_tab_score.py`, committed before any A5/S5 (A)
+result; tables in `theory/results/c1_tab_local/` (76-5); summary `theory/results/score_s76a.json`).**
+
+| free table (exact marginal, final answers) | S4 (M 48) | A5 (M 120) | S5 (M 240) |
+|---|---|---|---|
+| **ge3 (primary: lengths ≥ 3 only)** | 0/10 | 0/10 | 0/9 (1 seed pending; ≤ 1/10, verdict fixed) |
+| std (lengths 1, (1, 2), …) | **10/10** | **10/10** | **10/10** |
+| problems to first certificate (std, median) | 2.3 M | 2.3 M | 2.6 M |
+
+* **Reading (§76's rule): "std passes but ge3 fails".** The learner needs directly labelled short products (length-1/2
+  problems label the Cayley table). The strong claim is **withdrawn**.
+  - The registered wording holds only with the qualifier: "the exact-marginal objective scales to S4, A5 and S5 for a
+    free-table latent automaton (an IO-HMM / FSM learner) from final answers **including length-1/2 problems**".
+  - Spectral WFA needs ≤ 10⁶ problems on the same supervision (69-2); the table needs about 2.3–2.6 M.
+* **ge3 failures.** S4 sits on quotient or coset plateaus (accuracy ≈ 1/2 to 1/12). A5 and S5 sit at chance (≈ 1/60,
+  1/120): no foothold.
+* **Descriptive (ge3).** M ∈ (60, 90) 0/5, M = 240 0/3 so far, τ0 = 1 0/5. Over-completeness and annealing do not rescue
+  acquisition without short labels.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
