@@ -4968,6 +4968,16 @@ break?
 * C1-5's compute-matched gap is scored on the re-run fpcmp2 (s1–5); the original fp_cmp is descriptive.
 * The logged d1 gpt2_tokens at M ≠ 6 are corrected by ×M/6.
 
+**§67b result (2026-10-02 01:53 EDT, pointer; scored by the experiments session, `docs/PROTOCOL12.md` §67b panel,
+`theory/results/score_s67b.json`).** C1-1 is not met.
+* D1b certified 1/5: s1 is 1.000 at N 8–128; s2–s5 sit on flat partial automata at 0.33 / 0.50 / 0.33 / 0.16–0.30.
+  TAB certified 5/5.
+* On s1, C1-2 and C1-4 are met (donor 1.000; same-semantic 1.000), and there is no counter (MI ≤ 0.0004).
+* C1-3: the nulls are met. RESET is at chance but "not met as written" (a Wilson artefact at n = 2,000).
+* C1-5 is not met (FP gap 0.16–0.18).
+* Per §67b's rule, the obstacle is shared-cell acquisition with a pretrained LM. §72 is the registered diagnostic of
+  that gap.
+
 ## 68. GSM8K step 2: our own GPT-2 arms on GSM8K-Aug — text CoT, Coconut and a written-state chunked arm (pre-registered 2026-10-01 20:55 EDT, after Literature's check 40b2ac9 and before any run; user decision via Audit)
 
 **Why.**
