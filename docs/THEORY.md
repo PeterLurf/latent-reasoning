@@ -6727,6 +6727,11 @@ The verdict is fixed by seed 1: U1, U2 and U3 all fail. Reading: "U2 fails, out-
 * **Placement incident (experiments session).** An old fetch watcher destroyed the host at 17:48, before seeds 2–3 ran.
   Seed 2's partial run is voided. The models are kept locally (sha-logged).
 
+**Note 86-3 (2026-10-02 17:53 EDT, before any §86 result; Audit).** R1 counts ≥ 2/3 seeds, while Literature's evaluation
+rules (685bef0) ask for ≥ 5 seeds for stability (C6). With 3 seeds, **C6 is read only as "not contradicted"**. If R1
+passes, seeds 4–5 (k = 1 and k = 4) are added locally ($0) under the same recipe before any C6 claim, and C6 is "met"
+only if ≥ 4/5 seeds pass R1's accuracy bar.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
