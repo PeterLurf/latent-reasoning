@@ -1,0 +1,6 @@
+100/496 acc 0.500 21s
+200/496 acc 0.500 41s
+300/496 acc 0.490 61s
+400/496 acc 0.485 82s
+prosqa_na | f1s:prosqa/runs_ail/f1s_s12?P=16 | n 496 | acc 0.488 [0.4442, 0.5318] | baselines {'proximity rule (no reasoning)': 0.5, 'chance': 0.5}
+WROTE bench\results\prosqa_na__f1s_f1s_s12_P=16.json

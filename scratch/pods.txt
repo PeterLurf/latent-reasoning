@@ -421,3 +421,12 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53811279 vast offer 50744899 created 2026-10-02 01:36: label s71-wc0k2_s2, queue scratch/s71q/wc0k2_s2.txt (logged at create by vdeploy_toy.sh)
 53811285 vast offer 52756393 created 2026-10-02 01:36: label s71-p3wc4_s2, queue scratch/s71q/p3wc4_s2.txt (logged at create by vdeploy_toy.sh)
 53811289 vast offer 53415905 created 2026-10-02 01:36: label s71-wc0k1_s5, queue scratch/s71q/wc0k1_s5.txt (logged at create by vdeploy_toy.sh)
+53808684 vast | s71_wc0k4_s2 DESTROYED_VERIFIED 2026-10-02 01:39 after verified fetch (boxes/runs_s5/wc0k4_s2)
+53808715 vast | s71_wc0k4_s5 DESTROYED_VERIFIED 2026-10-02 01:46 after verified fetch (boxes/runs_s5/wc0k4_s5)
+53808703 vast | s71_wc0k4_s4 DESTROYED_VERIFIED 2026-10-02 01:46 after verified fetch (boxes/runs_s5/wc0k4_s4)
+53808590 vast | s71_wc0k1_s3 DESTROYED_VERIFIED 2026-10-02 01:47 after verified fetch (boxes/runs_s5/wc0k1_s3)
+53808525 vast | s71_p3wc0_s2 DESTROYED_VERIFIED 2026-10-02 01:47 after verified fetch (boxes/runs_s5/p3wc0_s2)
+53808646 vast | s71_wc0k2_s3 DESTROYED_VERIFIED 2026-10-02 01:47 after verified fetch (boxes/runs_s5/wc0k2_s3)
+53808690 vast | s71_wc0k4_s3 DESTROYED_VERIFIED 2026-10-02 01:49 after verified fetch (boxes/runs_s5/wc0k4_s3)
+53808676 vast | s71_wc0k4_s1 DESTROYED_VERIFIED 2026-10-02 01:49 after verified fetch (boxes/runs_s5/wc0k4_s1)
+53808546 vast | s71_p3wc4_s3 DESTROYED_VERIFIED 2026-10-02 01:57 after verified fetch (boxes/runs_s5/p3wc4_s3)
