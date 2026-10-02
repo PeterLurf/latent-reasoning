@@ -4925,6 +4925,11 @@ seeds 0–9, so the existence claim must rest on seeds not used for selection.
   fresh seeds, 100–109. It must certify in ≥ 9/10.
 * If it does not, the "shared cell can acquire the rule" claim is withdrawn to "in 10/10 selection seeds only".
 
+**Amendment 67b-2 (2026-10-01 21:22 EDT, before any D1b run; the experiments session's implementation query).**
+* §67b's readout formula omitted the ReLU that the certified toy cell has (`theory/c1_diag.py`:
+  out(ReLU((U c) ⊙ (V a)))).
+* To port the recipe that was actually validated, the D1b readout is **W · ReLU((U · LN(h_code)) ⊙ (V · LN(h_op)))**.
+
 **Amendment 67-1 (2026-10-01 19:34 EDT, before any of these runs; descriptive, no C1 claim).** Where does acquisition
 break?
 * Under §67's objective and curriculum, three further cells: an MLP (one-hot code and operation → 256 → 6), a small
