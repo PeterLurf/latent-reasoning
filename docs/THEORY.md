@@ -5040,6 +5040,10 @@ checkpoints").**
   - The experiments session found Dilgren & Wiegreffe's matched GPT-2 GSM8K-Aug CoT, Coconut and no-CoT set
     (2604.04902, MIT) and is benching it.
   - That set would make a resumed §68 cheap: train only WS.
+  - **Literature's correction (8e7dfd4).** Their Table 1 (GPT-2, GSM8K-Aug): CoT 41.6, Coconut 33.1, No-CoT 16.8,
+    CODI 42.2. Official recipe: CoT 25 epochs; Coconut from CoT checkpoint_6, 47 epochs. gpt2-gsm8k-cot is a faithful
+    TC start and gpt2-gsm8k-coconut a matched CO reference.
+  - They are benched now as descriptive leaderboard rows, with the K = 0/1/2 ablation on their Coconut (Audit).
 
 ## 7. Log
 
