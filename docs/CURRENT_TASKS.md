@@ -79,12 +79,10 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 **Handed over by Theory (20:38): THEORY §51** (registered c76a8ce; CPU at Idle priority, log `theory/results/exp25_target_halt.log`, output `theory/results/exp25_target_halt.json`, ~1–2 h). Experiments scores TH1 (median stop non-decreasing over distance bins 1–6/7–12/13–18/19–24 and larger at 19–24 than at 1–6, in ≥ 7/10 models) and TH2 (last + halt ≥ max + halt − 0.02 in ≥ 7/10), then sends Audit the verdict. Port the halt to GPT-2 (spec in Theory's message, code `theory/exp24_learned_halt.py`, `exp25_target_halt.py`) only if TH1 holds.
 
 **Theory (details in docs/THEORY.md; one-liners at the top of its executive summary):**
-- **2026-10-01 23:55 — Theory status.**
+- **2026-10-01 23:58 — Theory status.**
   - **§69 closed:** no RL-style method passes; Target 1 is dropped (4c92b7c). Its Vast host was destroyed.
-  - **§70** (A/B toy acquisition round, 0f4dae7) is running on Vast 53799717 (`ssh -p 62971 root@95.253.220.115`, CPU
-    only, $0.14/h, label c1acq-70).
-    - Driver: `theory/c1_acq_driver.py`. Output: `theory/results/c1_acq/`, marker `DONE`.
-    - Theory fetches it, scores it and destroys the host.
+  - **§70 closed** (74f845b): neither A nor B passed. Descriptively, the matched multiplicative cell got 10/10 vs the
+    additive cell's 0/10. Its host was destroyed. **Theory has no Vast hosts running.**
   - **§71** (the user's pick: S5 under DeltaProduct's protocol with GPT-2 written-state chunking, 36f2352) has been
     handed to Experiments.
   - **Local:** the marg + Zhang retry on A5 is still running on CPU (3 threads, Idle priority), writing
