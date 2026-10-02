@@ -121,3 +121,16 @@ Same checkpoints, items and recipes. Budgets beyond and between the trained ones
 
 Reported: accuracy and per-step accuracy vs budget; no pass/fail. The question is whether accuracy keeps rising past the
 trained budget (a C2 signature) or peaks at it (§13's horizon).
+
+## Descriptive addition (2026-10-01 21:50 EDT): the Dilgren & Wiegreffe GPT-2 GSM8k-Aug set (2604.04902, MIT; Coconut framework)
+
+The same harness and items, GSM8k-Aug question text. Coconut is run at its trained 6 thoughts (c_thought 2 × 3).
+
+| checkpoint | bench accuracy [95 % CI] | Coconut-paper reference (2412.06769 T1) |
+|---|---|---|
+| CoT (checkpoint_25) | 41.8 [39.1, 44.5] | 42.9 ± 0.2 |
+| No-CoT (checkpoint_25) | 16.5 [14.6, 18.6] | 16.5 ± 0.5 |
+| Coconut (checkpoint_33, K = 6) | 33.1 [30.6, 35.7] | 34.1 ± 1.5 |
+
+All three are within ~1 point of the published values. This is a public, matched TC / No-CoT / Coconut stage-0 set for
+§68 if it resumes (paused by the user, 2026-10-01).
