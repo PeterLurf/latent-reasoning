@@ -6385,6 +6385,11 @@ final 4,000-step checkpoints per 80-1). P0 fails, so §80 stops and the cell arm
   - Multi-op computation works when each step is externalised (written or latent per op): the range principle again.
 * **Idea 1 is closed.** A latent chunk machine cannot borrow in-pass composition the LM does not have.
 
+**Note 80-2 (2026-10-02 13:12 EDT; scope, Audit).** §80's conclusion holds at P0's data scale: 135 (k = 2) and 815
+(k = 3) training words, where memorisation is the expected regime. Composition can emerge with far more data or longer
+training (implicit-reasoning and grokking results, e.g. Wang 2405.15071). The claim is therefore "GPT-2 small, trained
+on ≤ 815 k-op words with end-state targets, does not compose unseen words in one pass". Not rerun (pioneer brief).
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
