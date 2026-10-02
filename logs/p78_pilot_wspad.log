@@ -1,0 +1,6 @@
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights:  30%|##9       | 44/148 [00:00<00:00, 393.11it/s]Loading weights: 100%|##########| 148/148 [00:00<00:00, 723.70it/s]
+{'units_per_epoch': 556369, 'steps_per_epoch': 17386, 'total_steps': 400, 'eff_batch': 32, 'frac_states_true_len_ge3': 0.0, 'true_len_dist': {'0': 206396, '1': 206396, '2': 143577, '3': 0}}
+[transformers] `loss_type=None` was set in the config but it is unrecognized. Using the default loss: `ForCausalLMLoss`.
+[W1002 12:27:17.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 486539264 bytes (free: 0, total: 8585216000).
+{'step': 400, 'epoch': 0.023, 'valid_short_acc': 0.03314917127071823, 'eval_sec': 7, 'sec': 103}
+DONE {'units_per_epoch': 556369, 'steps_per_epoch': 17386, 'total_steps': 400, 'eff_batch': 32, 'frac_states_true_len_ge3': 0.0, 'true_len_dist': {'0': 206396, '1': 206396, '2': 143577, '3': 0}, 'best_valid_short': -1.0, 'train_sec': 103, 'tokens': 721809, 'sec_per_step': 0.2578}
