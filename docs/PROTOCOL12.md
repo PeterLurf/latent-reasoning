@@ -300,3 +300,61 @@ failed seeds plateau at ~0.45.
   nearly parallel across codes, cosine 0.99) ruins the readout's conditioning. Per-coordinate standardisation over the
   table cures it. About 40 % of PF's ReLU units never fire.
 * The trigger for §73 (PF-std ≥ 4/5) is met; §73 is running.
+
+
+## THEORY §71 (S5 at 4× training length, GPT-2 written-state chunked loop, DeltaProduct's protocol) result (2026-10-02 07:15 EDT; `python boxes/score_s71.py` → `theory/results/score_s71.json`)
+
+**Setup.** One scorer on the same 2,000 test sequences: the first 2,000 of S5=512 from DeltaProduct's generator (seed
+7102), with labels asserted at every position. Settings: boxes/S5_PILOT.md (amendment 71-1). Runs: WC0₁/₂/₄ × 5, tagger
+× 3, P3 WC0₄/WC₄ × 3.
+* **Evaluation reruns.** Three local runs OOM'd in evaluation on shared cards; their evaluation was re-run from model.pt
+  (`boxes.s5 eval`, eval_bs 100, recorded). The k = 1/2 certificates and the k = 4 chunk check ran at the rollout's own
+  dtype and batch.
+
+| prediction | result |
+|---|---|
+| **S1** WC0₁ cumulative ≥ 0.99 at t = 512 and k = 1 certificate in ≥ 4/5 | **met**: 1.000 at t = 128/256/512 in 5/5; certified 5/5 (0 errors on all 14,400 (state, op) inputs) |
+| **S2** GPT-2 tagger cumulative at t = 256 ≤ 0.50 | **met**: 0.0 at t = 128, 256 and 512 in 3/3 (final-state 0.0075) |
+| **S3** vs DeltaProduct | **comparator not reproduced on our setup** (amendment 71-2; boxes/S5_PILOT.md). Only the published figure is cited (n_h = 4, 1 layer: robust to 512, Fig. 5). No exceeds / matches / below wording |
+| **S4** P3 WC0₄ final-only ≥ 0.95 final-state at 512 | **not met**: 0.009 (chance 1/120). The final-only solver did not learn 4-op S5 composition in 8,000 steps (loss plateau 0.3–0.8 per target token) |
+| **C1** WC₄ − WC0₄ ≥ 0.05 | not met: median +0.0005 (item-paired +0.002 [−0.001, 0.006]); both at chance |
+
+**Descriptive.**
+* WC0₂ and WC0₄ (all-position) are also 1.000 at 512 in 5/5. The k = 4 per-chunk accuracy is 1.000 on 100,000 fresh
+  chunks, so the predicted p^128 = 1.000.
+* **Extended test (500 sequences of length 2,048):** certified WC0₁ (s2) stays 1.000 at t = 512 / 1,024 / 2,048, 16×
+  its training length.
+* **DeltaProduct and GRU.**
+  - The DeltaProduct arms (dp, dpvar) were not reproduced (0.0 in both environments) and are excluded.
+  - The GRU (word-problem train_gru, descriptive) was still training at the overnight stop and is not scored here.
+
+**Wording (per §71).** "The first transformer / pretrained-LM result on S5 at 4× training length (512 from 128),
+certified at every length" — **scaffolded, different interface**:
+* sequential decoding of a written discrete state, with the history cut between chunks;
+* 124M parameters vs about 10⁵ for the recurrent comparators;
+* inference at 512, k = 1: 3,584 sequential passes and 2.4 TFLOPs per problem.
+
+## THEORY §73 (a stable latent in GPT-2: the standardised-readout cell, 10-seed confirmation) result (2026-10-02 07:15 EDT; `python c1/score_73.py` → `theory/results/score_s73.json`)
+
+The scorer (f128ae3) was committed before any §73 result. Placement: local rolling worker (PF-std, RESET at
+n_test = 10,000, PF-ctr); PT-std on Vast (one host failed to start and was re-placed). Statistics were frozen after
+training; σ and the dead-unit check are in each eval.json.
+
+| prediction | result |
+|---|---|
+| **L1** PF-std certified in ≥ 9/10 | **met: 10/10** (1.000 at N 8–128 in every seed) |
+| **L2** T0/T1/T2 nulls and RESET ≤ 0.1867 (Wilson upper bound, n = 10,000) | **met**: nulls worst 0.180; RESET within the bound in 10/10 at n = 10,000 (§67b's sample-size artefact resolved) |
+| **L3** mechanism in every certified seed | **met**: donor 1.000; same-semantic 1.000; irrelevant-change 0.000 where tested (6 seeds), vacuous in 4 (one visited code per state) |
+
+**Descriptive.**
+* PT-std (fine-tuned + standardised readout) is certified **10/10**. PF-ctr (centring only) is certified **5/5**.
+* **Counter check:** H(code | state) 0–0.43 bits; MI with length mod 2/3/4 ≤ 0.0015 bits. No counter.
+* C1-5 vs the existing full-prompt fpcmp2: +0.82 to +0.84 at N 16–128.
+* All 256 ReLU units are active in every seed. σ_min for the code features is ~6e-4 to 1e-3.
+
+**Reading** (§73's wording, within its limits): "A latent finite-state machine hosted by a frozen pretrained GPT-2 is
+acquired from final answers alone in 10/10 seeds and certified at every length (S3)."
+* The ingredient is standardising GPT-2's anisotropic features before the multiplicative readout. Centring alone already
+  suffices.
+* Not a claim that pretraining or GPT-2's computation is necessary: RF and DENSE also learn (§72b; §74 tests language
+  use).
