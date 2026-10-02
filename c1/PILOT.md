@@ -94,3 +94,22 @@ Audit's conditions (18:5x):
 * **Reading.**
   - TAB stalls at 1e-3: optimisation (lr / symmetric optima) is the obstacle.
   - TAB learns at 1e-3 while the MLP fails at 1e-2: the shared-function parametrisation is the obstacle.
+
+### Diagnostic result (2026-10-01 20:06 EDT)
+
+| run | seed 99 | seed 1 | seed 2 |
+|---|---|---|---|
+| TAB lr 1e-2 | **certified, 1.000** (pilot) | 0.49–0.51 flat; 14/36 wrong | 0.48–0.51 flat; 13 |
+| TAB lr 1e-3 | 0.85 at N 8 → 0.51 at 128; **1/36 wrong** | 0.38 → 0.17; 11 | 0.32–0.35 flat; 14 |
+| MLP lr 1e-2 | chance; 16 | 0.32–0.34 flat; 22 | chance; 24 |
+
+**Reading.** The pilot's TAB success was a lucky draw: TAB is certified in 1/6 runs across both lrs. Even a free
+6×6×6 table under this objective and curriculum mostly lands on the same stable partial automata (flat 1/3 or 1/2) as
+every neural cell.
+* The obstacle is the optimisation of the exact marginal likelihood: HMM-style local optima, with symmetric or merged
+  states.
+* It is neither GPT-2 nor the shared-function parametrisation. d1's failure is therefore not evidence against a GPT-2
+  cell as such.
+* Any C1 Design-1 follow-up must first make the objective find the group table reliably in TAB, e.g. multiple random
+  restarts selected on training likelihood, an annealed temperature on T, or a longer curriculum. This is a design
+  question for Theory, not a pilot tweak.

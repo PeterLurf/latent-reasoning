@@ -1,0 +1,16 @@
+{
+ "arm": "tab",
+ "seed": 2,
+ "updates": 2000,
+ "bs": 512,
+ "lr": 0.01,
+ "head_init": "default",
+ "head_norm": "none",
+ "code_init": "default",
+ "lr_new": 0.0,
+ "n_test": 2000,
+ "n_null": 10000,
+ "max_hours": 3.0,
+ "device": "cuda:1",
+ "out": "c1/runs/dx_tab_lr1e-2_s2"
+}
