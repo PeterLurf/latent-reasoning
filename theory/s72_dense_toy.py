@@ -8,7 +8,7 @@ marker f_ans.
   next-code logits = W ReLU((U LN(h_code)) * (V LN(h_op))) (hid 256), answer logits = A LN(h_dec)
 Exact marginalisation, S3, M 24, tau 4 -> 1 over the first half, std curriculum, 8,000 updates, bs 512, Adam at --lr for
 every trainable parameter (the §72 setting was 1e-2). Product-automaton certificate (c1_rl.certify).
-    python theory/s72_dense_toy.py --lr 1e-2 --seeds 990 991 992 [--onehot]   (--onehot: one-hot inputs, i.e. the TOY arm)
+    python theory/s72_dense_toy.py --lr 1e-2 --seeds 990 991 992 [--onehot] [--group S4 --M 48 --updates 16000]   (--onehot: one-hot inputs, i.e. the TOY arm)
 """
 import argparse
 import json
@@ -50,8 +50,8 @@ class Dense(nn.Module):
         return self.Ahead(self.ln_d(self.Ec + self.fans))
 
 
-def run(seed, lr, onehot, updates=8000, bs=512, M=24):
-    COMP, e, A = comp_table("S3"); Ct = torch.as_tensor(COMP)
+def run(seed, lr, onehot, updates=8000, bs=512, M=24, group="S3"):
+    COMP, e, A = comp_table(group); Ct = torch.as_tensor(COMP)
     torch.manual_seed(seed); rng = np.random.default_rng(seed)
     m = Dense(M, A, onehot=onehot); opt = torch.optim.Adam(m.parameters(), lr=lr); trace = {}
     for u in range(updates):
@@ -78,10 +78,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--lr", type=float, default=1e-2); ap.add_argument("--seeds", type=int, nargs="*", default=[990, 991, 992])
     ap.add_argument("--onehot", action="store_true"); ap.add_argument("--out")
+    ap.add_argument("--group", default="S3"); ap.add_argument("--M", type=int, default=24); ap.add_argument("--updates", type=int, default=8000)
     a = ap.parse_args(); torch.set_num_threads(2); res = {}
     for s in a.seeds:
-        r = run(s, a.lr, a.onehot); res[s] = r
-        print("dense" if not a.onehot else "onehot", "lr", a.lr, "seed", s, "certified", r["certified"], "bad", r["bad_pairs"],
+        r = run(s, a.lr, a.onehot, updates=a.updates, M=a.M, group=a.group); res[s] = r
+        print(a.group, "M", a.M, "dense" if not a.onehot else "onehot", "lr", a.lr, "seed", s, "certified", r["certified"], "bad", r["bad_pairs"],
               "acc128", round(r["acc"][128], 3), "trace", {k: (v["loss"], v["dead_frac"]) for k, v in r["trace"].items()}, flush=True)
     if a.out:
         json.dump(res, open(a.out, "w", newline="\n"), indent=1)

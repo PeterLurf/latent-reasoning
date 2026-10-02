@@ -5802,6 +5802,69 @@ DENSE also learn, so on S3 with single-token ops GPT-2's pretraining contributes
 **Placement and cost.** 15 runs, each cheaper than D1b (3 ops per code). Local cards behind §73, or one Vast host. About
 $1–2.
 
+## 75. Scaling the stable latent: S4, then A5 (pre-registered 2026-10-02 07:16 EDT, after Literature's check 3fa7f90, before any GPU run and before the CPU gate below is read; the overnight stable-latent goal, Audit's option (a))
+
+**Why.** §73 confirmed a stable latent at S3: frozen pretrained GPT-2 with a standardised bilinear readout, 10/10
+certified from final answers. Fine-tuned with that readout, also 10/10; centring alone, 5/5.
+* Every earlier scaling attempt used other cells: one-hot bilinear toys at lr 1e-2 (S4 0/3, A5 0/3, std and Zhang
+  curricula); §69's RL methods.
+* The stable recipe has never been tried beyond S3.
+* Beat-SOTA framing (Literature's earlier notes, 3fa7f90): no certified neural automaton for A5 learned from final
+  answers is known.
+  - Zhang's looped transformer learns A5 with an operator-first curriculum and position-level supervision, without a
+    certificate.
+  - Spectral WFA learns it non-neurally (69-2).
+
+**CPU reference (DENSE: the interface without a transformer; descriptive).**
+* `theory/s72_dense_toy.py --group S4 --M 48 --updates 16000 --lr 1e-4`, on pilot seeds 990–992. It started at 07:13 EDT,
+  before this registration; results are unread. It also runs on the panel seeds.
+* It does not gate the GPU runs; the one-host pilot does. Together with the earlier one-hot toy failures at S4 and A5
+  (0/3 each, lr 1e-2), it is the "what GPT-2 adds" control (Literature (i)).
+
+**GPU arms** (S4: the 24 elements as single-token op symbols " A" … " X"; M = 48 = 2|G|; the §73 recipe otherwise: lr 1e-4,
+τ 4 → 1 over the first half, std curriculum, bs 512, distinct codes; 16,000 updates).
+* **PF-std (primary).** Frozen pretrained GPT-2. Standardisation statistics are live during training and frozen after
+  it.
+* **PT-std (secondary).** GPT-2 fine-tuned at 1e-4.
+* **One host first (the user's rule).** Seed 990 runs both arms on one 3090. The panel (seeds 2031–2035, 5 per arm)
+  starts only if PF-std or PT-std certifies on seed 990, or reaches ≥ 0.95 at N 128.
+* **DENSE CPU reference** on 2031–2035.
+* **Logged for every run** (Literature 3fa7f90). The code partition is compared against the group's subgroups and
+  cosets, since quotient or coset solutions plateau near 1/|class| (Zhang & Li 2609.29951). The accuracy plateau level
+  is recorded too.
+* **Disclosure, fixed now.** The std curriculum includes length-1 and length-2 problems. From a fixed start these label
+  op → element and the Cayley products directly; spectral learning exploits exactly this.
+  - A pass is therefore "acquired from final answers, including length-2 products".
+  - A stronger variant (training lengths ≥ 3 only, or Lee 2606.07254's held-out transition pairs) is a later
+    registration if the main arm passes.
+* **Comparators, labelled by supervision.**
+  - Spectral WFA: same supervision, non-neural; 69-2.
+  - Zhang 2607.20594 A5: curriculum, exact match, 8/22 from scratch.
+  - Howe 2609.18966: per-position.
+  - DeltaProduct: per-position.
+  - NC-SSM 2610.00329: 100% on A5, no certificate.
+  - None is final-answer-only with a certificate.
+
+**Rules.**
+* **S4 succeeds** if PF-std or PT-std certifies ≥ 4/5 on 2031–2035 (certificate over reachable (code, element) pairs;
+  accuracy at N 8–128).
+* **A5 (only if S4 succeeds).** The same arm on A5 (60 symbols, M = 120): one-host pilot on seed 990, then 5 seeds
+  (2041–2045), with the same rule.
+  - The A5 compute is about 7,200 transition calls per update, measured on the pilot host.
+  - A5 is registered here, but its placement and cost go to Audit before launch.
+
+**Readings.**
+* **S4 succeeds.** The stable latent scales past S3; A5 follows.
+* **A5 succeeds.** A pretrained LM hosts a certified A5 automaton (non-solvable, beyond TC⁰-style shortcuts) learned from
+  final answers alone. It is a neural first under this protocol; spectral learning does the same non-neurally, so the
+  claim is about the LM-hosted latent, not about learnability.
+* **The gate or S4 fails.** The stable recipe is S3-scale. Report it, and do not tune it.
+
+**Cost.**
+* S4: 2 pilot runs plus 10 panel runs, each about 1–2 h on a 3090 (measured on the pilot).
+* A5: 1 pilot run plus 5 panel runs at a higher cost per run.
+* Total under about $15 on Vast, less on local cards.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
