@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-10-02 12:45 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-10-02 13:40 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -35,7 +35,7 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 > gives fronts to depth 11 in 2/4 runs; Pilot D 12 + 12 running on Vast). Ownership (theory Vast hosts vs a PROTOCOL8)
 > to be agreed. The theory session analyses O/R/T9/T10 runs only after the experiments session has scored them.
 
-## 00. EXPERIMENTS STATE AT 2026-10-02 12:45 EDT — authoritative over section 0
+## 00. EXPERIMENTS STATE AT 2026-10-02 13:40 EDT — authoritative over section 0
 
 **Running (all local; no Vast hosts of ours):**
 * **§76(A) teachers on local GPUs (amendment 76-5):** `python theory/c1_tab_driver.py --groups {A5|S5|S4} --device
@@ -73,11 +73,19 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 
   - Expected: a-hosts about 4.5 h, b-hosts about 3.2 h. Destroy any host past 2× its projection.
   - Score with `python gsmlen/score78.py` once all 9 `gsmlen/runs/*/pred_test.json` exist.
-* **§79 paraphrased-op latent (registered 75ec955; phrasings c410cfe; code and scorer 928ca7d):** `python -m
-  c1.phrase79 --arm {pfstd,rfstd,bow,tab} [--families 2|4] --seed 2081-2085`. The pilot (PF-std s2081, queue
-  `scratch/c1_q_79_pilot.txt`) runs on cuda:1 after the A5 panel; then the 30-run panel locally. Score:
-  `python c1/score_79.py`.
-* **Coming from Theory:** §80 (chunk machine; needs GPT-2 code), §81 Sinkhorn and §82 acquisition ladder (table jobs).
+* **§79 paraphrased-op latent (amendment 79-2: std curriculum; 79-1: TAB lr 1e-2).**
+  - Pilot 1 (uniform lengths) failed: 3 codes reached. It is kept as `c1/runs/p79pilot1_uniform_pfstd_s2081`.
+  - The first panel was voided unread (`c1/runs/void79`).
+  - Pilot 2 (PF-std s2081) runs on the 4060 (`scratch/c1_q_79_pilot2.txt`).
+  - PF-std 2082 and 2083 run PROVISIONALLY on the 3070 and 2070 (`scratch/c1_q_79_prov.txt`). They are unread unless
+    pilot 2 certifies, and voided otherwise.
+  - If pilot 2 certifies, run the rest (`scratch/c1_q_79_cheap.txt`, `scratch/c1_q_79_gpt.txt`; their pfstd 2082/2083
+    lines are skipped by eval.json). Score: `python c1/score_79.py`.
+* **§80 stopped at P0 (13:10):** unseen words 0.030 / 0.118 < 0.95. **§82 done**, scored by Theory ("Neither").
+* **§83 retrain on Vast** 53891982 (137.175.22.196:60155): §71's exact wc0k4 command, seeds 1–3. The host's
+  `scratch/s83_after.sh` renames the runs to `wc0k4r_s*` and runs `theory/s83_restart.py`. The local
+  `scratch/s83_fetch.sh` fetches the models and JSONs, then destroys; hard stop 17:30. Log the model.pt sha256s in
+  pods.txt (Audit).
 * **User decision "both" (via Audit, about 11:05): (1) GSM8K length split with the written-state method from the D&W
   CoT checkpoint (about $25, one-host pilot, projection to Audit first); (2) a new toy latent task needing LM knowledge
   (local).** Theory registers both; no training before that. Prep done (a900b18, `gsmlen/`):
