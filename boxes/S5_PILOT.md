@@ -31,3 +31,11 @@ One configuration tried.
   - Decision: run the S5 dp seeds 1–3 in this environment, sequentially, with the paper command unchanged.
   - Attempt 2 is held in reserve.
   - Interface-only patch: their error handler's wandb calls are guarded.
+* **71-2 closed (2026-10-02 05:23 EDT): DeltaProduct NOT reproduced on our setup.** In configuration 1 (torch 2.6.0 /
+  triton 3.2.0), S5 dp_s1 reached best sequence accuracy 0.0 after its full run (paper command unchanged), as in the
+  original environment. dp_s2 was stopped.
+  - The repo's own S3 check reached 0.73 best (0.18 before the upgrade): partial.
+  - Attempt 2 was not spent on a guess.
+  - Logs in `logs/dp_s71/`; host destroyed.
+  - Per 71-2, §71's S3 comparison is reported as "comparator not reproduced on our setup", citing only the published
+    figure (DeltaProduct n_h = 4, 1 layer: robust to 512, Fig. 5).
