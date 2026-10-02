@@ -16,6 +16,7 @@ EXTRA=""; [ "$W" = scratch/queue_worker3.sh ] && EXTRA="scratch/queue_worker3.sh
 [ "$W" = scratch/tjob_vast2.sh ] && EXTRA="scratch/tjob_vast2.sh $(echo theory/*.py)"
 [ "$W" = scratch/gsm_time_vast.sh ] && EXTRA="scratch/gsm_time_vast.sh"
 [ "$W" = scratch/s71_gpt_job.sh ] && EXTRA="scratch/s71_gpt_job.sh scratch/s71_gen boxes/__init__.py boxes/core.py boxes/s5.py"
+[ "$W" = scratch/s71_gru_job.sh ] && EXTRA="scratch/s71_gru_job.sh scratch/s71_gen boxes/s71_gru_eval.py"
 [ "$W" = scratch/s71_dp_job.sh ] && EXTRA="scratch/s71_dp_job.sh boxes/s71_dp_eval.py"
 [ "$W" = scratch/c1_vast_job.sh ] && EXTRA="scratch/c1_vast_job.sh c1/__init__.py c1/core.py c1/train.py boxes/__init__.py boxes/core.py"
 [ "$W" = scratch/gsm_time_vast2.sh ] && EXTRA="scratch/gsm_time_vast2.sh s68/__init__.py s68/ws.py s68/ws_data.py"
