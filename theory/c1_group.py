@@ -42,11 +42,11 @@ class Bil(nn.Module):
         return self.out(h)                                                       # (M, A, M)
 
 
-def run(group, seed, updates, lr, ratio, tau0, dev, bs=512, curriculum="std"):
+def run(group, seed, updates, lr, ratio, tau0, dev, bs=512, curriculum="std", hid=256):
     COMP, e, A = comp_table(group)
     torch.manual_seed(seed); rng = np.random.default_rng(seed)
     M = int(ratio * A)
-    m = Bil(M, A).to(dev); opt = torch.optim.Adam(m.parameters(), lr=lr)
+    m = Bil(M, A, hid).to(dev); opt = torch.optim.Adam(m.parameters(), lr=lr)
     stages = [[1], [1, 2], [1, 2, 4], [1, 2, 4, 8]]
     Ct = torch.as_tensor(COMP, device=dev)
     for u in range(updates):
@@ -91,11 +91,11 @@ def main():
     ap.add_argument("--updates", type=int, default=8000); ap.add_argument("--lr", type=float, default=1e-2)
     ap.add_argument("--ratio", type=float, default=2.0); ap.add_argument("--tau0", type=float, default=4.0)
     ap.add_argument("--device", default="cpu"); ap.add_argument("--out", default=None)
-    ap.add_argument("--curriculum", default="std", choices=["std", "zhang"])
+    ap.add_argument("--curriculum", default="std", choices=["std", "zhang"]); ap.add_argument("--hid", type=int, default=256)
     a = ap.parse_args(); torch.set_num_threads(3)
     res = {}
     for s in a.seeds:
-        r = run(a.group, s, a.updates, a.lr, a.ratio, a.tau0, a.device, curriculum=a.curriculum); res[s] = r
+        r = run(a.group, s, a.updates, a.lr, a.ratio, a.tau0, a.device, curriculum=a.curriculum, hid=a.hid); res[s] = r
         print(a.group, "seed", s, "M", r["M"], "loss %.3f" % r["loss"], "certified", r["certified"], "bad", r["bad_pairs"],
               "acc", {k: round(v, 3) for k, v in r["acc"].items()}, flush=True)
     if a.out:
