@@ -130,7 +130,7 @@ def train(group, cell, method, seed, M, rank, updates, lr, bs):
     torch.manual_seed(seed); rng = np.random.default_rng(seed)
     m = build(cell, M, A, rank); opt = torch.optim.Adam(m.parameters(), lr=lr)
     tau = lambda u: 1.0 + 3.0 * max(0.0, 1.0 - u / (0.5 * updates))              # noqa: E731
-    u = 0
+    u, ent_trace = 0, {}
     while u < updates:
         L = length(rng, u, updates, "std")
         ops = torch.as_tensor(rng.integers(0, A, (bs, L)))
@@ -166,6 +166,9 @@ def train(group, cell, method, seed, M, rank, updates, lr, bs):
                 C = -(xi * logT[:, ops, :].permute(1, 2, 0, 3)).sum((1, 2, 3)) - (gam * logD[:, s].T).sum(1)
                 loss = 0.25 * (-lp.mean()) + 0.75 * C.mean()
             opt.zero_grad(); loss.backward(); opt.step(); u += 1
+            if u % 500 == 0:                                                      # mean transition-row entropy (nats)
+                with torch.no_grad():
+                    P = F.softmax(m.table() / tau(u), -1); ent_trace[u] = round(float(-(P * P.clamp_min(1e-12).log()).sum(-1).mean()), 4)
     cert, bad, acc = certify(m, COMP, e, np.random.default_rng(seed + 7))
     with torch.no_grad():                                                         # length-stratified soft NLL, fixed panel
         logT, logD = F.log_softmax(m.table(), -1), F.log_softmax(m.D, -1); er = np.random.default_rng(seed + 11); nll = {}
@@ -174,7 +177,7 @@ def train(group, cell, method, seed, M, rank, updates, lr, bs):
             for t in range(N):
                 s = Ct[s, ops[:, t]]
             nll[N] = float(-forward_logp(logT, logD, ops, s).mean())
-    return {"certified": bool(cert), "bad_pairs": bad, "acc": acc, "nll": nll, "params": n_params(m)}
+    return {"certified": bool(cert), "bad_pairs": bad, "acc": acc, "nll": nll, "params": n_params(m), "ent_trace": ent_trace}
 
 
 def main():
