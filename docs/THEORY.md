@@ -6232,6 +6232,14 @@ The Sinkhorn cell is not registered.**
   would be uninformative. It is not registered, and no variant is tried (pioneer brief).
 * Bijectivity as a prior stays an open idea for a different parameterisation.
 
+**Amendment 79-1 (2026-10-02 12:51 EDT; implementation, before any TAB result is read; the experiments session).**
+* **TAB-phrase runs at lr 1e-2**, the one-hot / free-table convention (§67b, §76), not §73's 1e-4.
+  - At 1e-4 the table stayed at chance (training loss ln 6 through update 7,200). This matches §72b's finding that the
+    lr depends on input type.
+  - The cell arms (PF-std, RF-std, BOW; dense inputs) keep 1e-4.
+* The two TAB runs started at 1e-4 (s2081 complete, s2082 partial) are voided unread and kept in `c1/runs/void_p79_tab_*`.
+* P2 is unaffected: TAB's held-out score is 0 by construction. TAB's training-phrasing certificate is descriptive.
+
 ## 80. A latent chunk machine: a discrete code carried across chunks of k operations, so the LM must compose inside its forward pass (pre-registered 2026-10-02 12:02 EDT, after Literature's check 9224385 and before any run; idea 1 of Theory's list, approved by Audit)
 
 **Why.** GPT-2 stores a latent automaton but does not compose missing rows (§76(B)). It does compose k operations inside
