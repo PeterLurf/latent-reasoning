@@ -7561,6 +7561,20 @@ removal dropping it to ≤ NC + 0.05 for that type.
 **Placement.** Step 0 runs locally (inference). The arms run on Vast 3090s: 13 runs at about 6 h each, one host first,
 ≤ 5, about $14. Projection to Audit.
 
+**Note 94-1 (2026-10-03 10:33 EDT; how Step 0 is read, before it is used for any claim; Audit).**
+* **Availability, not direction.** If the latent linearly encodes the arrangement (box → letter, a 4 × 4 permutation),
+  then letter → box is its transpose and also linear in the same features. A linear letter → box probe at 1.0 therefore
+  shows the information is **available**; it cannot show direction-specific storage. Step 0 is worded that way.
+  - A direction test would need a restricted probe class (per-letter probes limited to one box's subspace) or an
+    MLP-vs-linear capacity comparison. This is optional and descriptive.
+* **Question type.** The question ("q: where X." vs "q: all.") precedes the thoughts, so latents may differ by type.
+  Probes are fitted and tested **separately on "where"-question latents and on "all"-question latents**.
+  - Arrangement decodable on "where" latents while the answer fails: a **readout** failure.
+  - Decodable only on "all" latents: the model **stops tracking on "where" problems**.
+* **Controls.** The same probes on (i) the pretrained GPT-2 before fine-tuning, with the same thought-input recipe at
+  α = 0 (untrained), and (ii) §66's NC model's positions. These are the baseline decodability.
+* The interim s1 result (letter → box 1.0 at every op block, n = 1,000; CURRENT_TASKS 10:20) is read under this note.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
