@@ -70,14 +70,14 @@ class LatentRestart(nn.Module):
         L = self.letidx[starts] if starts.dim() == 1 else starts
         return self.W[torch.arange(5, device=L.device)[None], L].sum(1)     # (B, D)
 
-    def chunk(self, starts, ops, ablate=None, mean_in=None, meter=None):
+    def chunk(self, starts, ops, ablate=None, mean_in=None, meter=None, override=None):
         """starts (B,) element ids or (B, 5) letters, ops (B, k) -> head logits (B, k, 5 boxes, 5 letters), slot inputs.
         ablate: None | "zero" | "mean" applied to the inputs of slots 1..k-1; "isolate" (note 86-2, descriptive): every
         segment after the first ([slot_j, op_(j+1) tokens], and the last slot alone) runs with a fresh cache, so it sees
         only slot_j (no earlier op tokens): a continuous restart at every op, without snapping."""
         B, k = ops.shape; dev = ops.device
         x = torch.cat([self.start_emb(starts)[:, None], self.g.embed(self._ops(ops[:, 0], dev))], 1)
-        past = None; logits, ins = [], []
+        past = None; logits, ins = [], []; self._slot_out = []                 # §93: slot output hiddens (probe)
         for j in range(k):
             if ablate == "isolate":
                 past = None
@@ -87,11 +87,14 @@ class LatentRestart(nn.Module):
                 meter.step(x.shape[1], ctx, 0)
             if j > 0:
                 logits.append(self.head(h[:, 0]).view(B, 5, 5))           # output at slot j (the first position of x)
+                self._slot_out.append(h[:, 0])
             s_in = h[:, -1]                                               # hidden at the last op-(j+1) token -> slot j+1 input
             if self.slot_tf is not None:
                 s_in = self.slot_tf(s_in)
             if ablate in ("zero", "mean") and j < k - 1:
                 s_in = torch.zeros_like(s_in) if ablate == "zero" else mean_in[j][None].expand_as(s_in)
+            if override is not None and override[0] == j:              # §93 IIA: slot (j+1)'s input from a donor chunk
+                s_in = override[1].to(s_in.dtype)
             ins.append(s_in)
             nxt = [s_in[:, None]]
             if j + 1 < k:
@@ -103,7 +106,7 @@ class LatentRestart(nn.Module):
         h, past = self.g(x, past)                                         # the last slot alone
         if meter:
             meter.step(1, ctx, 0); meter.flops += 2 * 768 * 25 * k
-        logits.append(self.head(h[:, 0]).view(B, 5, 5))
+        logits.append(self.head(h[:, 0]).view(B, 5, 5)); self._slot_out.append(h[:, 0])
         return torch.stack(logits, 1), torch.stack(ins, 1)
 
 
@@ -170,6 +173,55 @@ def mean_slot_inputs(m, X, Y, k, dev, amp, n=2000, seed=7105):
     return torch.cat(out).mean(0)                                         # (k, D)
 
 
+def probe_slots(m, X, Y, k, dev, amp, n_train=20000, n_test=5000, steps=300, seed=7108):
+    """§93 (descriptive): a post-hoc linear probe per slot (768 -> 5 boxes x 5 letters, CE summed over boxes, Adam lr 1e-2,
+    full batch) on the slot OUTPUT hiddens of held-out chunks (true starts, training-distribution ops); accuracy = all 5
+    letters right on a disjoint test set."""
+    rng = np.random.default_rng(seed); n = n_train + n_test; st, o, tg = batch(rng, X, Y, k, n); H = []
+    with torch.no_grad():
+        for i in range(0, n, 250):
+            with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+                m.chunk(torch.tensor(st[i:i + 250], device=dev), torch.tensor(o[i:i + 250], device=dev))
+            H.append(torch.stack(m._slot_out, 1).float())
+    H = torch.cat(H); L = torch.tensor(LETIDX[tg], device=dev); out = []
+    for j in range(k):
+        with torch.enable_grad():
+            lin = nn.Linear(768, 25).to(dev); op = torch.optim.Adam(lin.parameters(), lr=1e-2)
+            mu, sd = H[:n_train, j].mean(0), H[:n_train, j].std(0) + 1e-5
+            Xj = (H[:, j] - mu) / sd
+            for _ in range(steps):
+                lo = F.cross_entropy(lin(Xj[:n_train]).view(-1, 5), L[:n_train, j].reshape(-1)); op.zero_grad(); lo.backward(); op.step()
+        with torch.no_grad():
+            p = lin(Xj[n_train:]).view(-1, 5, 5).argmax(-1)
+            out.append(float((p == L[n_train:, j]).all(-1).float().mean()))
+    return out
+
+
+@torch.no_grad()
+def iia(m, k, dev, amp, bs, n=5000, seed=7109):
+    """§93 (descriptive): interchange per slot j = 1..k-1. Recipient chunk A, donor chunk B (fresh random starts and ops);
+    slot j's input in A is replaced by B's slot-j input; IIA = share of rows whose final (slot k) decode equals the donor's
+    true state after j ops followed by A's ops j+1..k."""
+    rng = np.random.default_rng(seed); SA = rng.integers(0, 120, n); SB = rng.integers(0, 120, n)
+    OA = rng.integers(0, 120, (n, k)); OB = rng.integers(0, 120, (n, k)); res = []
+    for j in range(1, k):
+        ok = 0
+        for i in range(0, n, bs):
+            sa, sb, oa, ob = [torch.tensor(v[i:i + bs], device=dev) for v in (SA, SB, OA, OB)]
+            with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+                _, insB = m.chunk(sb, ob)
+                lg, _ = m.chunk(sa, oa, override=(j - 1, insB[:, j - 1]))
+            let = lg[:, -1].argmax(-1).cpu().numpy(); pred = CODE2EL[(let * (5 ** np.arange(5))).sum(-1)]
+            w = SB[i:i + bs].copy()
+            for t in range(j):
+                w = s5.COMP[w, OB[i:i + bs, t]]
+            for t in range(j, k):
+                w = s5.COMP[w, OA[i:i + bs, t]]
+            ok += int((pred == w).sum())
+        res.append(ok / n)
+    return res
+
+
 def train(a):
     dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
@@ -184,17 +236,24 @@ def train(a):
     for step in range(1, a.steps + 1):
         for gr in opt.param_groups:
             gr["lr"] = a.lr * min(1, step / 100) * 0.5 * (1 + math.cos(math.pi * step / a.steps))
-        st, o, tg = batch(rng, Xtr, Ytr, a.k, a.bs)
+        Lc = int(rng.integers(1, a.k + 1)) if a.var else a.k                # §93 var: chunk length ~ U{1..k} per batch
+        st, o, tg = batch(rng, Xtr, Ytr, Lc, a.bs)
+        last_only = a.sup == "last" and not (a.warm_frac and step <= a.warm_frac * a.steps)   # §93 sparse / warm start
         with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
             lg, _ = m.chunk(torch.tensor(st, device=dev), torch.tensor(o, device=dev))
-            tl = torch.tensor(LETIDX[tg], device=dev)                       # (B, k, 5) target letters
+            tl = torch.tensor(LETIDX[tg], device=dev)                       # (B, Lc, 5) target letters
+            if last_only:
+                lg, tl = lg[:, -1:], tl[:, -1:]                             # CE on the chunk's last slot only
             loss = F.cross_entropy(lg.reshape(-1, 5).float(), tl.reshape(-1), reduction="none").view(*tl.shape).sum(-1).mean()   # 86-4: summed over boxes
         opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(loss.item())
         if step % 100 == 0 or step == a.steps:
             rec = {"step": step, "loss": float(np.mean(hist)), "sec": round(time.time() - t0)}; hist = []
             if a.log_every and step % a.log_every == 0:                    # §92: per-slot accuracy during training
                 m.eval(); cc = chunk_check(m, a.k, dev, amp, a.eval_bs, n=a.log_n, seed=7107)
-                rec["per_slot_acc"] = cc["per_slot_acc"]; rec["per_chunk_acc"] = cc["per_chunk_acc"]; m.train()
+                rec["per_slot_acc"] = cc["per_slot_acc"]; rec["per_chunk_acc"] = cc["per_chunk_acc"]
+                if a.probe:                                                 # §93: per-slot probe curve
+                    rec["probe_acc"] = probe_slots(m, Xtr, Ytr, a.k, dev, amp, n_train=4000, n_test=1000, steps=150)
+                m.train()
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
     train_sec = round(time.time() - t0)
     torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
@@ -213,6 +272,10 @@ def train(a):
         res["chunk_check"] = chunk_check(m, a.k, dev, amp, a.eval_bs, n=a.check_n)
         mu = mean_slot_inputs(m, Xtr, Ytr, a.k, dev, amp)
         res["removal"] = {ab: chunk_check(m, a.k, dev, amp, a.eval_bs, n=min(10_000, a.check_n), seed=7106, ablate=ab, mean_in=mu) for ab in ("zero", "mean", "isolate")}
+        if a.probe:                                                         # §93 descriptive: probe and interchange per slot
+            res["probe_acc_per_slot"] = probe_slots(m, Xtr, Ytr, a.k, dev, amp, n_train=min(20000, a.check_n), n_test=min(5000, a.check_n))
+            res["iia_per_slot"] = iia(m, a.k, dev, amp, a.eval_bs, n=min(5000, a.check_n))
+    res["sup"] = a.sup; res["var"] = a.var; res["warm_frac"] = a.warm_frac
     res["eval_sec"] = round(time.time() - t1)
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     print("EVAL", json.dumps({kk: res[kk] for kk in ("cumulative", "final_state_acc_512")}), flush=True); print("DONE", a.out, flush=True)
@@ -225,6 +288,10 @@ def main():
     ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--eval_bs", type=int, default=500)
     ap.add_argument("--test_n", type=int, default=s5.TEST_N); ap.add_argument("--ext_n", type=int, default=500); ap.add_argument("--check_n", type=int, default=100_000, help="< 100k: smoke only")
     ap.add_argument("--log_every", type=int, default=0, help="§92: per-slot accuracy every N steps"); ap.add_argument("--log_n", type=int, default=5000)
+    ap.add_argument("--sup", default="all", choices=["all", "last"], help="§93: CE on every slot or the chunk's last slot only")
+    ap.add_argument("--var", action="store_true", help="§93: chunk length ~ U{1..k} per batch (test snaps every k)")
+    ap.add_argument("--warm_frac", type=float, default=0.0, help="§93 WARM: every-slot CE for this fraction of updates")
+    ap.add_argument("--probe", action="store_true", help="§93: linear probe + interchange per slot (+ probe curves)")
     ap.add_argument("--data_dir", default=os.path.join(ROOT, "bench", "data", "s5"))
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     train(ap.parse_args())
