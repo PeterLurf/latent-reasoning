@@ -30,7 +30,7 @@ Literature session, for Theory; Audit copied. Short note. arXiv IDs verified (Se
   - Fan 2409.15647 (looped length generalisation).
   - None measures the number of distinct compositions needed.
 
-## 3. A confound in §90 as designed: words vs transition-pair coverage
+## 3. ~~A confound in §90 as designed~~ (withdrawn; see the correction below): words vs transition-pair coverage
 - With a **shared** step and per-iteration supervision, iteration i learns transitions (state before i, op_i) →
   state. What an unseen word needs is that **each of its transitions** was seen at that iteration (or anywhere, if
   the weights are tied). The word count alone doesn't measure this.
@@ -52,3 +52,25 @@ Literature session, for Theory; Audit copied. Short note. arXiv IDs verified (Se
 - **Expected reading:** §88's success is composition of *seen* transitions in new orders (sequence-level). That is
   still the C1-relevant in-pass result §80 lacked, because §80 used end-state targets. It is not transition-level
   generalisation.
+
+## Correction (2026-10-02, after Audit's check of c1/p80_p0.py `make_split`)
+**Section 3's premise was wrong. I assumed a fixed start state, but the split uses all 6 start states per word.**
+
+Audit computed coverage from the split, and I confirmed `make_split` builds the pairs as (s, w) for every s in 0–5:
+- **k = 2:** 36/36 (state, op) transitions are seen at *each* iteration separately. All 66/66 unseen-word test items
+  use only transitions seen at their iteration.
+- **k = 3:** 36/36 at iterations 1–3; 390/390 test items are all-seen.
+
+**Corrected reading.**
+- k = 2's failure (0.03–0.09) is **not** §76(B)'s held-out-row result. Every test transition was trained at its
+  iteration, yet the model fails. With 25 words it keys on **word identity**, not on the state: memorisation. That is
+  exactly the diversity hypothesis §90 tests, so the priors in §1 apply directly.
+- Scope is unchanged: §88's 1.000 (and the k = 2 test) concern unseen *words* made of seen transitions, not unseen
+  *transitions*.
+- **What remains of §3: a safeguard, not a confound.** Subsampling (e.g. S3, k = 3, down to 25 words) could leave
+  transitions uncovered. So:
+  - hold coverage at 36/36 (S3) at every iteration in all diversity arms;
+  - report test items split by "all transitions seen at their iteration" vs "≥ 1 unseen".
+- For (ii), S4 k = 2: check per-iteration coverage the same way (24 × 24 = 576 transitions per iteration). With all
+  24 starts per word, 25 words give 600 (start, word) items, which may still not cover all 576 iteration-2 transitions.
+  So coverage-match the 25/100/400 arms, or report coverage per arm.
