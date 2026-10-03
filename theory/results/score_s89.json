@@ -1,0 +1,143 @@
+{
+ "n_runs": {
+  "fade_std": 5,
+  "fade_std_dec": 5,
+  "coco_stage": 5,
+  "fade_raw": 0,
+  "fade_soft": 0,
+  "fade_gold": 0
+ },
+ "nc_tc_s66": {
+  "nc": {
+   "per_seed": [
+    0.13,
+    0.14,
+    0.15
+   ],
+   "median": 0.14
+  },
+  "tc": {
+   "per_seed": [
+    1.0,
+    0.625,
+    1.0
+   ],
+   "median": 1.0
+  }
+ },
+ "F2_floor": 0.19,
+ "arms": {
+  "fade_std": {
+   "median_N5_8": 0.1575,
+   "per_seed": {
+    "1": 0.1575,
+    "2": 0.1375,
+    "3": 0.615,
+    "4": 0.14,
+    "5": 0.2775
+   },
+   "median_N9_16": 0.1375,
+   "median_zero": 0.15,
+   "median_mean": 0.14,
+   "nearest_token_cos": 0.42067983746528625,
+   "dtype": {
+    "1": "torch.bfloat16",
+    "2": "torch.bfloat16",
+    "3": "torch.bfloat16",
+    "4": "torch.bfloat16",
+    "5": "torch.bfloat16"
+   },
+   "complete": true
+  },
+  "fade_std_dec": {
+   "median_N5_8": 0.615,
+   "per_seed": {
+    "1": 0.6125,
+    "2": 1.0,
+    "3": 0.615,
+    "4": 0.62,
+    "5": 0.6125
+   },
+   "median_N9_16": 0.20875,
+   "median_zero": 0.1425,
+   "median_mean": 0.145,
+   "nearest_token_cos": 0.45030665397644043,
+   "dtype": {
+    "1": "torch.bfloat16",
+    "2": "torch.bfloat16",
+    "3": "torch.bfloat16",
+    "4": "torch.bfloat16",
+    "5": "torch.bfloat16"
+   },
+   "complete": true,
+   "aux_decode_alpha1": 0.8301764705882353
+  },
+  "coco_stage": {
+   "median_N5_8": 0.2375,
+   "per_seed": {
+    "1": 0.37,
+    "2": 0.2375,
+    "3": 0.215,
+    "4": 0.125,
+    "5": 0.2725
+   },
+   "median_N9_16": 0.1475,
+   "median_zero": 0.255,
+   "median_mean": 0.235,
+   "nearest_token_cos": -0.08986911177635193,
+   "dtype": {
+    "1": "None",
+    "2": "None",
+    "3": "torch.bfloat16",
+    "4": "torch.bfloat16",
+    "5": "torch.bfloat16"
+   },
+   "complete": true
+  }
+ },
+ "F1": {
+  "arms": {
+   "fade_std": {
+    "median_N5_8": 0.1575,
+    "met": false,
+    "complete": true
+   },
+   "fade_std_dec": {
+    "median_N5_8": 0.615,
+    "met": false,
+    "complete": true
+   }
+  },
+  "met": false
+ },
+ "F2": {},
+ "F3": {
+  "fade_std": {
+   "median_paired_diff": 0.0050000000000000044,
+   "per_seed": [
+    -0.2125,
+    -0.09999999999999998,
+    0.4,
+    0.015000000000000013,
+    0.0050000000000000044
+   ],
+   "met": false
+  },
+  "fade_std_dec": {
+   "median_paired_diff": 0.4,
+   "per_seed": [
+    0.24250000000000005,
+    0.7625,
+    0.4,
+    0.495,
+    0.34
+   ],
+   "met": true
+  }
+ },
+ "coco_by_dtype": {
+  "all_median": 0.2375,
+  "bf16_only_median": 0.215,
+  "n_bf16": 3
+ }
+}

@@ -654,3 +654,24 @@ descriptive).
 **§88 completion (2026-10-03 00:44 EDT):** the requeued align k2 s3 finished: (b) 0.091, train 1.000. The panel is complete (12/12).
 LOOP-align k = 2 median (b) is now 0.091 (seeds 0.091 / 0.030 / 0.091). The verdict is unchanged: G1 not met, G2 met,
 kill at k = 2.
+
+## THEORY §89 (fade to latent) PROVISIONAL result (2026-10-03 09:34 EDT; `python c1/score_89.py` → `theory/results/score_s89.json`; FADE-soft still running)
+
+The scorer (f02d24ea) was committed before the F1–F3 panel was read; only the s1 placement pilots had been seen.
+Placement: amendment 89-5 plus the precision note (coco s1–s2 in fp32 on the 2070; all others bf16). NC/TC are §66's
+nc/tc_s1–3 on the same items (note 89-3): NC N 5–8 median 0.14, so F2's floor is 0.19; TC median 1.000.
+
+| arm (pure latent, α = 1) | N 5–8 median | N 9–16 | zero-ablated | mean-ablated | nearest-token cos |
+|---|---|---|---|---|---|
+| FADE-std (5) | 0.158 | 0.138 | 0.150 | 0.140 | 0.42 |
+| FADE-std-dec (5) | **0.615** | 0.209 | 0.142 | 0.145 | 0.45 |
+| COCONUT-stage (5) | 0.237 (bf16 seeds only: 0.215) | 0.147 | 0.255 | 0.235 | −0.09 |
+
+* **F1 not met** for FADE-std (0.158) and FADE-std-dec (0.615). FADE-soft (3 seeds, local) is pending; F1 is final when
+  it lands.
+* **F2:** not reached, since no arm meets F1. Descriptively, std_dec's mean-ablated accuracy (0.145) sits at the NC
+  floor, so its latents carry the computation (no bypass).
+* **F3:** FADE-std-dec − COCONUT-stage = **+0.40** median paired (+0.24 to +0.76 by seed): **met**. FADE-std +0.005: not
+  met.
+* FADE-std-dec's 0.615 is "all" questions near 1.000 and "where" low (per-type in eval.json; Audit). Aux decode at
+  α = 1: 0.83.
