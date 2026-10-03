@@ -7641,6 +7641,64 @@ table (§85, §87), single-step supervision looks like a **basin-entry device**.
 * **Runs:** `boxes/runs_s5/l95_f{005,025,05}_s{1,2,3}`, flags as `l93_s4fix` plus `--foot f`.
 * **Scorer:** `theory/score_s95.py` (committed with this note). The f = 0 reference is `l93_s4fix`.
 
+## 96. Amortised self-labels: §92's per-op targets from a free-table automaton trained on final answers only (pre-registered 2026-10-03 11:18 EDT, after Literature's check 0baeb3a0 and before any run)
+
+**Why.** §92/92-1's latent restarts in GPT-2 meet C1 (use) + C2 + C3 + C6 (S5 exact to 2,048, certified at k = 1,
+removal ≈ 0, 0.3–0.4× the written state's FLOPs), but they need a ground-truth per-op target on every slot (not C4).
+§93/§95 try to thin those labels inside the LM.
+* §96 takes the other route: the targets come from a **teacher trained on final answers only**, the free-table latent
+  automaton with exact marginal likelihood (§76/§82: S5 std certified 10/10).
+* Run the teacher's hard table on each training sequence. Its decoded per-prefix states D(code_t) become the per-op
+  targets.
+* If the teacher is certified, these targets equal the true states on every reachable prefix. §92's training data and
+  labels are then **bit-identical** to the teacher-labelled pipeline's, so §92/92-1's results transfer by construction.
+  No student needs retraining (Literature (c)).
+* The informative parts are:
+  - whether a teacher certifies at a **"little enough" short-problem dose** on S5;
+  - the measured label agreement.
+* **Prior** (0baeb3a0): hybrid DNN-HMM forced alignment (Hinton 2012, Dahl 2012: utterance-level EM → Viterbi frame
+  targets → DNN) is the structural precedent; also expert iteration, STaR, noisy student, TRICE, and our Pilot L/M and
+  §65. "C4 via a final-answer-trained discrete teacher" for latent reasoning is not claimed in prior work.
+* **Wording (Literature (d), fixed now).** "C4 for the pipeline, qualified by p." Acquisition belongs to the free table;
+  the LM hosts and executes the latent computation.
+
+**Teachers** (`theory/c1_s96_driver.py`). S5, free table, M = 240 (2|G|), exact marginal, lr 1e-2, τ 4 → 1, 16k updates
+(as §76/§85), `--save_table`, **seeds 2161–2165**. Arms:
+* **mixP 0.05:** 5 % of batches are short (length 1 or 2); the rest are lengths 3–8 (ge3). This is Audit's "little
+  enough" dose (as §95's f ≤ 0.05).
+* **mixP 0.1:** §85's 5/5 dose at A5.
+* **std** (reference; heavily short-labelled, cf. §76).
+
+**Measures** (`theory/score_s96.py`, committed now).
+* The product-automaton certificate.
+* Final-answer accuracy at N = 128.
+* For every certified or selected teacher: **per-position agreement** of D(code_t) with §92's training labels
+  (`bench/data/s5/S5=128.csv`, all 100,000 × 128 positions). The same on S5=512 and S5=2048, plus the share of
+  sequences correct at every position.
+* The index map between `boxes/s5` (right action) and `theory/c1_group` (left action) is ψ(x) = the c1 index of x⁻¹. It
+  is asserted exhaustively over all 14,400 pairs (ground truth only, checked before registration).
+
+**Selection rule (label-free, fixed now).** A teacher is **selected** if its final-answer accuracy at N = 128 is
+≥ 0.999. That is the deployable rule (final answers only). Certification is ground-truth evaluation, reported alongside.
+
+**Predictions.**
+* **P1 (acquisition at the little-enough dose).** mixP 0.05 is certified in ≥ 4/5 seeds. (§85 at A5: p = 0.03 certified
+  2/5; p = 0.1 certified 5/5. S5 is untested.)
+* **P2 (labels identical).** Every certified teacher agrees with §92's training labels at **1.000** over all 12.8M
+  positions. Anything less is a bug, by the certificate's logic.
+
+**Readings.**
+* **P1 + P2.** §92/92-1's latent restarts are reached by a pipeline trained on final answers only, with ≤ 5 % short
+  batches in the teacher's curriculum. So C1 (use) + C2 + C3 + C6, with **C4 for the pipeline, qualified by p ≤ 0.05**.
+  - Remaining scaffolds: a fixed snap interval (C5 open), two-stage training, and the answer-format head.
+* **P1 fails, mixP 0.1 or std certifies.** The same composition, qualified at the smallest certifying dose (p = 0.1, or
+  std).
+* **A selected teacher that is not certified** (Literature (a): wrong labels on rare prefixes). Its agreement is reported.
+  A student trained on its labels would be a label-noise robustness test: a separate registration if agreement < 1.000.
+
+**Placement.** 15 small table runs (GPU minutes each, about 0.2 GB). A local card when the experiments session frees one,
+else the local CPU at ≤ 3 threads, Idle priority. $0.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
