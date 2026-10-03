@@ -46,7 +46,7 @@ import torch.nn.functional as F
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
-from boxes.core import DIG_IDS, LET_IDS, NB, greedy, make_problem, prompt, tc_text, tok, truth  # noqa: E402
+from boxes.core import DIG_IDS, LET, LET_IDS, NB, greedy, make_problem, prompt, tc_text, tok, truth  # noqa: E402
 from boxes.train import load_model  # noqa: E402
 
 ARMS = ("fade_std", "fade_std_dec", "fade_raw", "fade_soft", "fade_gold", "coco_stage")
@@ -63,6 +63,7 @@ class Fade(nn.Module):
         self.register_buffer("frozen", torch.tensor(0)); self.register_buffer("seen", torch.tensor(0))
         self.aux = nn.Linear(768, len(COT_IDS)) if arm == "fade_std_dec" else None
         self.cot = torch.tensor(COT_IDS)
+        self.inv = None                         # §94 INV: letter -> box side head (set by --inv_dec; never fed back)
 
     def g(self, h, update_stats):
         if self.arm in ("fade_raw", "coco_stage"):
@@ -98,7 +99,11 @@ class Fade(nn.Module):
         cot = torch.tensor([tok(tc_text(p)[len(" cot:"):-len(" a:")]) for p in batch], device=dev)   # (B, 5N) gold CoT
         assert cot.shape[1] == 5 * N
         h, past = m(m.embed(pre)); hl = h[:, -1]
-        th_ce, aux_ce, aux_ok, soft_dist = [], [], 0, []
+        th_ce, aux_ce, aux_ok, soft_dist, inv_ce = [], [], 0, [], []
+        if self.inv is not None and train:                                 # §94: letter -> box of the state after each op
+            from boxes.core import apply as _apply
+            inv_t = torch.tensor([[[_apply(p["start"], p["ops"][:i + 1]).index(c) for c in LET] for i in range(N)]
+                                  for p in batch], device=dev)                 # (B, N, 4)
         for j in range(5 * N):
             lg = self.lg(hl)
             latent_pos = self.arm == "coco_stage" and j // 5 < (stage if stage is not None else N)
@@ -107,6 +112,8 @@ class Fade(nn.Module):
             if self.aux is not None:
                 al = self.aux(hl.float()); tgt = (cot[:, j][:, None] == self.cot.to(dev)[None]).float().argmax(-1)
                 aux_ce.append(F.cross_entropy(al, tgt)); aux_ok += int((al.argmax(-1) == tgt).sum())
+            if self.inv is not None and train:
+                inv_ce.append(F.cross_entropy(self.inv(hl.float()).view(-1, 4), inv_t[:, j // 5].reshape(-1)))
             if self.arm == "coco_stage":
                 x = hl if latent_pos else m.embed(lg.argmax(-1).detach())
             else:
@@ -138,6 +145,8 @@ class Fade(nn.Module):
             out["thought"] = torch.stack(th_ce).mean()
         if aux_ce:
             out["aux"] = torch.stack(aux_ce).mean()
+        if inv_ce:
+            out["inv"] = torch.stack(inv_ce).mean()
         if soft_dist:
             out["soft_dist"] = float(np.mean(soft_dist))
         return out
@@ -155,6 +164,8 @@ def train(a):
     dev = a.device; torch.manual_seed(a.seed); rng = random.Random(a.seed)
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     f = Fade(load_model(a.init, dev), a.arm).to(dev)
+    if a.inv_dec:
+        f.inv = nn.Linear(768, 16).to(dev)                                 # §94 STD-DEC-INV: 4 letters x 4 boxes
     opt = torch.optim.AdamW([p for p in f.parameters() if p.requires_grad], lr=a.lr, weight_decay=0.01)
     os.makedirs(a.out, exist_ok=True); json.dump(vars(a), open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
     log = open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t0 = time.time(); hist = {}
@@ -171,7 +182,7 @@ def train(a):
             with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
                 out = f(batch[i * mb:(i + 1) * mb], dev, al, stage=st, train=True)
                 loss = out["answer"] + ((1 - al) * out["thought"] if "thought" in out and a.arm != "coco_stage" else 0) \
-                    + (out["thought"] if "thought" in out and a.arm == "coco_stage" else 0) + (out["aux"] if "aux" in out else 0)
+                    + (out["thought"] if "thought" in out and a.arm == "coco_stage" else 0) + (out["aux"] if "aux" in out else 0) + (out["inv"] if "inv" in out else 0)
             (loss / a.grad_acc).backward()
         torch.nn.utils.clip_grad_norm_(f.parameters(), 1.0); opt.step()
         f.update_stats()
@@ -237,6 +248,7 @@ def main():
     ap.add_argument("--arm", required=True, choices=ARMS); ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--steps", type=int, default=8000); ap.add_argument("--bs", type=int, default=32)
     ap.add_argument("--grad_acc", type=int, default=2, help="micro-batches per update (bs 32 x 1 OOMs 8 GB at N 8)")
+    ap.add_argument("--inv_dec", action="store_true", help="§94: letter -> box side head at thought positions (weight 1)")
     ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--device", default="cuda:0")
     ap.add_argument("--init", default=os.path.join(ROOT, "prosqa", "ckpt", "gpt2_pretrained.bin"))
     ap.add_argument("--smoke", action="store_true", help="plumbing only: tiny eval")
