@@ -7383,6 +7383,13 @@ Prediction R met: three recipes are reliable.**
   - C6 (stability) is "not contradicted" with 3 seeds (86-3); seeds 4–5 are added before any C6 claim.
   - §86's 8k-step failure was a budget effect, as Audit's wording anticipated.
 
+**Note 92-1 (2026-10-03 04:14 EDT; completing §86's registered design at §92's budget, before any of these runs).**
+* **C6 (86-3).** k = 4, **seeds 4–5** under §92's recipe (24k steps). C6 is "met" only if ≥ 4/5 seeds (1–5) reach R1's
+  ≥ 0.99 at 512.
+* **R1's k = 1 part.** k = 1, **seeds 1–3** at 24k steps (snap after every op), with the exhaustive **certificate** over
+  all 14,400 (code, op) inputs (§86's measure). If certified, the claim is "certified at every length".
+* Placement: Vast 3090s, about $3.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
