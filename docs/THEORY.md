@@ -6301,12 +6301,23 @@ amendments 79-1 to 79-3).**
 | POS (casing) | 0.952 | 0.746 | 0.958 |
 | H4 word-order minimal pairs | **0.625** | 0.286 | 0.125 |
 
-* **Reading ("BOW ties PF-std").** BOW (pretrained word embeddings, no transformer) matches or beats PF-std on every
-  held-out family. Whatever transfers to unseen phrasings is **lexical**: the transformer adds nothing to transfer.
+* **Reading (superseded by correction 79-4 below).** BOW (pretrained word embeddings, no transformer) matches or beats
+  PF-std on every held-out family. Whatever transfers to unseen phrasings is **lexical**: the transformer adds nothing to
+  transfer.
   - PF-std's only advantage is word order (minimal pairs 0.625 vs BOW 0.125, at chance by construction), and it is not
     enough to certify.
   - So the latent machine, acquired from final answers, does not inherit operation semantics from the pretrained
     transformer at this scale. C1 in a pretrained LM beyond hosting is again not shown.
+
+**Correction 79-4 (2026-10-02 20:39 EDT; Audit).**
+* **BOW is 0/5 certified on the training phrasings**, so its held-out agreement is not comparable with a certified
+  cell's. "Transfer is lexical" is **not supported**.
+* **Among certified seeds** (descriptive), RF-std (2 certified) matches or beats PF-std (4 certified) on H1, H2 and NEG.
+  **Pretraining gives no advantage** in transferring the latent machine to unseen phrasings.
+* **Corrected reading.** P1 is met and P2 is not. The pretrained transformer adds nothing measurable over a random-init
+  one for operation-semantics transfer here, and its word-order advantage (minimal pairs 0.625) is too small to certify.
+* **Consequence.** Literature's lead 4 (function-vector op features to fix digit reliance in pretrained features) is
+  moot while random-init features do as well. It is not registered.
 
 ## 80. A latent chunk machine: a discrete code carried across chunks of k operations, so the LM must compose inside its forward pass (pre-registered 2026-10-02 12:02 EDT, after Literature's check 9224385 and before any run; idea 1 of Theory's list, approved by Audit)
 
