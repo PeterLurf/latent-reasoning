@@ -1,0 +1,24 @@
+[W1002 21:16:49.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 77594624 bytes (free: 0, total: 8585216000).
+[W1002 21:16:49.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 77594624 bytes (free: 0, total: 8585216000).
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\Latent\boxes\fade89.py", line 239, in <module>
+    main()
+    ~~~~^^
+  File "D:\Latent\boxes\fade89.py", line 235, in main
+    train(ap.parse_args())
+    ~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\Latent\boxes\fade89.py", line 165, in train
+    out = f(batch, dev, al, stage=st, train=True)
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\modules\module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\modules\module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "D:\Latent\boxes\fade89.py", line 98, in forward
+    lg = m.logits(hl)
+  File "D:\Latent\boxes\core.py", line 133, in logits
+    return h @ self.w("wte.weight").T
+           ~~^~~~~~~~~~~~~~~~~~~~~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 74.00 MiB. GPU 0 has a total capacity of 8.00 GiB of which 0 bytes is free. Process 22316 has 17179869184.00 GiB memory in use. Including non-PyTorch memory, this process has 17179869184.00 GiB memory in use. Of the allocated memory 5.82 GiB is allocated by PyTorch, and 1.40 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
