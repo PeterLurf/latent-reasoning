@@ -7628,6 +7628,19 @@ table (§85, §87), single-step supervision looks like a **basin-entry device**.
 
 **Placement.** Vast 3090s: 9 runs (3 doses × 3 seeds), one host first, ≤ 3, about $6. Projection to Audit.
 
+**Note 95-1 (2026-10-03 11:10 EDT, before any §95 result; Audit's arithmetic check and Experiments' implementation 91c843d8).**
+* **Exact definition.** Draws are per batch, as in §93's `--var` (a batch needs one chunk shape). Each update is:
+  - with probability **f**, a batch of **single-op chunks** (one op each, its slot labelled);
+  - otherwise a batch of **fixed 4-op chunks** labelled at slot 4 only (`--sup last`).
+* So **f is the fraction of updates (equivalently, of chunks) that are single-op footholds**. "Little enough for C4"
+  stays **f ≤ 0.05**.
+* **Labels per op seen in training** = 1 / (f + 4(1 − f)).
+  - 0.26 at f = 0.05, 0.31 at f = 0.25, 0.40 at f = 0.5, and 0.25 at f = 0 (§93).
+  - §95's text said "about 0.29" at f = 0.05; that was wrong. The fraction of training ops that sit in footholds is
+    f / (f + 4(1 − f)), which is 1.3 % at f = 0.05.
+* **Runs:** `boxes/runs_s5/l95_f{005,025,05}_s{1,2,3}`, flags as `l93_s4fix` plus `--foot f`.
+* **Scorer:** `theory/score_s95.py` (committed with this note). The f = 0 reference is `l93_s4fix`.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
