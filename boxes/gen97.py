@@ -240,6 +240,7 @@ def train(a):
     train_sec = round(time.time() - t0)
     torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
     m.eval(); res = {"arm": a.arm, "k": a.k, "seed": a.seed, "train_sec": train_sec, "eval_dtype": str(amp), "test_sequences": len(Xte)}
+    res["gpu"] = torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"      # Audit: arms run on 3090 / 4090
     t1 = time.time(); pred, comp, val = rollout(m, Xte, a.k, dev, amp, a.eval_bs)
     np.save(os.path.join(a.out, "preds_test.npy"), pred); cum = s5.cumulative(pred, Yte)
     res["cumulative"] = {str(t): float(cum[t - 1]) for t in (128, 256, 512) if t <= Xte.shape[1]}
