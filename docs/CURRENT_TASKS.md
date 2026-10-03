@@ -46,6 +46,14 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
   - On s1 the state is present; the answer readout fails.
   - s2–s5 are still running (`theory/results/s94_step0/`).
   - No untrained or NC control has been run yet.
+* **4060 (torch cuda:0) stopped, 14:35; NEEDS THE USER:**
+  - fade_soft s1's eval had run 2.7 h (alone it takes about 1 min), in WDDM memory fallback while sharing the card with Theory's §96 s2164. I stopped my eval and my cuda:0 worker; s2164 was untouched. model.pt (11:50) is kept.
+  - The rerun chain was blocked by the permission system ("Interfere With Workloads"), so it is left for the user. Once s2164 exits, run:
+    `python -m boxes.fade89 --arm fade_soft --seed 1 --steps 8000 --device cuda:0 --eval_only --out boxes/runs/f89_fade_soft_s1`
+    then `nohup bash scratch/py_local_worker2.sh cuda:0 scratch/c1_q_next.txt &`.
+  - Until then the 4060 is idle, and soft_s2 / raw_s3 / soft_s3 / gold_s3 wait for workers.
+* **§95 done:** all 9 runs fetched (26c15ccc); hosts v1–v3 destroyed; Theory scores.
+* **§94 Step 0 done** (2e559168): state available ≈ 1.0 in every seed; controls at chance.
 * **§97 general latent thinker, step 1** (`boxes/gen97.py`, 928b0fe6 and a83cd8b2; Theory scores with `theory/score_s97.py`): 9 runs `boxes/runs_s5/g97_{gen4,gen1,hyb4}_s1-3`. All use auto_drain_gen3 plus waiter bgi0szeew.
 
   | Host | Instance | Address | GPU | Arm | Speed | Ready |
