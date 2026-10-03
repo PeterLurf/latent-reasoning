@@ -1,0 +1,37 @@
+{
+ "arm": "icotsi",
+ "task": "4x4",
+ "acc_test": 0.998,
+ "test_items": 1000,
+ "gpu": "cpu",
+ "compute": {
+  "tokens_processed": 23,
+  "flops": 4926282240.0,
+  "seq_passes": 13,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "lm_head_rows": 13,
+  "sequential_passes": 13
+ },
+ "checkpoint": {
+  "path": "ext/icotsi/4x4/state_dict.bin",
+  "sha256": "c167c2780719379d5bf1916644a0af4676d9f88d5cdcb66365f4ccfc48884298",
+  "drive_folder": "1cCqJmmwJA7wg0Q64f51WgASSnLVJ4ahO",
+  "repo": "da03/Internalize_CoT_Step_by_Step",
+  "repo_commit": "c2e3891d8d577beeaff03fa3b076d1e4db96cfe8",
+  "config": {
+   "base_model": "gpt2",
+   "tokenizer_name": "gpt2",
+   "transformers_version": "4.38.2"
+  }
+ },
+ "decoding": "greedy, stop after two EOS (the released generate() passes do_sample=True)",
+ "training": {
+  "epochs": 200,
+  "flops": null,
+  "note": "released checkpoint; recipe per README/Literature e206d92d (about 200 epochs over 808k problems), not metered"
+ },
+ "repo_log_acc": 1.0,
+ "eval_sec": 58
+}
