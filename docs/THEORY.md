@@ -7447,6 +7447,16 @@ Prediction R met: three recipes are reliable.**
 **Placement.** Vast 3090s: 18 new runs (6 arms × 3 seeds). One host first, ≤ 5, about $12. Projection to Audit.
 Projection to Audit.
 
+**Note 89-8 (2026-10-03 04:17 EDT; placement and precision, before any §89 panel result; Audit).**
+* **fp32:** coco_stage s1 **and s2** train locally on the RTX 2070 (CC 7.5). s2 ended up local because the 2070's worker
+  claimed it before the Vast set was locked.
+* **bf16:**
+  - fade_std s1 and s2, and fade_std_dec s1 and s2, locally on the 4060 and 3070.
+  - All Vast runs (fade_std s3–5, fade_std_dec s3–5, coco_stage s3–5) on 3090s.
+* Each run's eval.json records eval_dtype (training autocast is identical) and args.json the device.
+* **Scoring.** coco_stage is reported with and without the two fp32 seeds, and the fp32 seeds are flagged if they are
+  outliers. F3's verdict uses all 5 seeds as registered.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
