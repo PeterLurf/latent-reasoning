@@ -7502,6 +7502,15 @@ any §89 value (7a8ffc23); `theory/results/score_s89.json`). The descriptive arm
   question-type readout. **C1 (use)** in a pretrained LM on "all" questions, in range, with CoT-label training (not
   C4). N 9–16 is out of range, as expected for a single growing context (§66).
 
+**Note 89-9 (2026-10-03 09:34 EDT; two scorers).**
+* The experiments session's scorer (f02d24ea) and Theory's (7a8ffc23) were both committed before their authors read §89
+  values. They wrote the same path, so Theory's output is now `theory/results/score_s89_theory.json`; the experiments
+  session's is `score_s89.json`.
+* **The numbers agree.**
+* **One wording difference: F3.** Note 89-2 applies F2 and F3 only to arms that meet F1. No arm met F1, so
+  fade_std_dec's +0.40 paired median over COCONUT-stage (per seed +0.24 / +0.76 / +0.40 / +0.50 / +0.34) is
+  **descriptive**, not "F3 met". The experiments session's PROTOCOL12 line should read the same way.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the

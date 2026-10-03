@@ -71,7 +71,7 @@ def main():
         print("  %-13s none %s | mean %s | all %s | where %s" % (a, {s: round(x, 3) for s, x in A["none_N5_8"].items()},
               {s: round(x, 3) for s, x in A["mean_N5_8"].items()}, {s: round(x, 3) for s, x in A["none_all"].items()},
               {s: round(x, 3) for s, x in A["none_where"].items()}))
-    json.dump(res, open("theory/results/score_s89.json", "w", newline="\n"), indent=1, default=float)
+    json.dump(res, open("theory/results/score_s89_theory.json", "w", newline="\n"), indent=1, default=float)
 
 
 if __name__ == "__main__":
