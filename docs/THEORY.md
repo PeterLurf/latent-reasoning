@@ -83,7 +83,13 @@ at 12 codes. Every neural cell fails (GPT-2, random GPT-2, small transformer, ML
 **Latent restarts (§92, 92-1):** an S5 state carried in GPT-2 latent slots (per-op aux targets, codebook snap) is
 exact to 2,048 from training at 128 (k = 4, 5/5 seeds) and certified at every length (k = 1, 0 / 14,400 errors).
 Removing the latents gives about 0, at 0.29–0.45× the written state's FLOPs (depending on whether the written
-state pays full-vocabulary logits; 92-3). C1 + C2 + C3 + C6, scaffolded, not C4.
+state pays full-vocabulary logits; 92-3). C1 + C2 + C3 + C6, scaffolded.
+**C4 for latent restarts (§93 / §95 / §96):**
+* Thinning labels inside the LM fails: chunk-end labels give 0/3 (§93), and single-op footholds up to f = 0.5 give
+  0/9 (§95).
+* A free-table teacher trained on final answers with 5 % short batches certifies 4/5 and reproduces §92's per-op
+  labels exactly (1.000 over 12.8M positions; §96).
+* So: C4 for the pipeline, qualified by p ≤ 0.05 and oracle M; the LM hosts, and does no acquisition.
 **In-depth composition (§88 / §90 / §91):** a looped GPT-2 with per-iteration targets composes unseen op sequences
 reliably (5/5) given word diversity and enough steps.
 **Stable latent (§72b / §73):**
