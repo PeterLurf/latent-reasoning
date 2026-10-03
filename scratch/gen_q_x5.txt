@@ -1,0 +1,4 @@
+# §97 C6 seeds 4-5, arm hyb4 (note 97-1; G4 met d8bc4eb7)
+# P=2
+boxes/runs_s5/g97_hyb4_s4 boxes.gen97 train --arm hyb --k 4 --steps 24000 --bs 64 --log_every 2000 --seed 4
+boxes/runs_s5/g97_hyb4_s5 boxes.gen97 train --arm hyb --k 4 --steps 24000 --bs 64 --log_every 2000 --seed 5

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# §97 fleet: bash scratch/gen_deploy_97.sh "<offer> <n>" ... -> hosts gen-x<n> on scratch/gen_q_x<n>.txt (n 1-3 = GEN-4 / GEN-1 / HYB-4), auto-drain gen3.
+# §97 fleet: bash scratch/gen_deploy_97.sh "<offer> <n>" ... -> hosts gen-x<n> on scratch/gen_q_x<n>.txt (n 1-3 = GEN-4 / GEN-1 / HYB-4 s1-3; n 4-5 = GEN-4 / HYB-4 s4-5, C6), auto-drain gen3.
 cd "$(dirname "$0")/.."
 one() { o=$1; n=$2
   out=$(EXTRA_FILES="prosqa/ckpt/gpt2_pretrained.bin boxes/gen97.py" bash scratch/vdeploy_toy.sh $o gen-x$n scratch/gen_q_x$n.txt gen_x$n scratch/gen_vast_job.sh 2>&1)
