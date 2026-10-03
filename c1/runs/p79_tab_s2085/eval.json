@@ -1,0 +1,112 @@
+{
+ "arm": "tab",
+ "seed": 2085,
+ "families": 8,
+ "train_sec": 57,
+ "train": {
+  "certificate": {
+   "certified": true,
+   "bad_pairs": 0,
+   "reachable_pairs": 6
+  },
+  "acc": {
+   "8": 1.0,
+   "16": 1.0,
+   "32": 1.0,
+   "64": 1.0,
+   "128": 1.0
+  },
+  "reachable_codes": [
+   0,
+   1,
+   2,
+   3,
+   7,
+   9,
+   11
+  ],
+  "phrasing_consistency": 1.0
+ },
+ "eval": {
+  "H1": {
+   "frozen_sigma": {
+    "agreement": 0.0,
+    "certificate": {
+     "certified": false
+    },
+    "acc": null,
+    "note": "undefined for an unseen phrasing (TAB-phrase): 0 by construction"
+   }
+  },
+  "H2": {
+   "frozen_sigma": {
+    "agreement": 0.0,
+    "certificate": {
+     "certified": false
+    },
+    "acc": null,
+    "note": "undefined for an unseen phrasing (TAB-phrase): 0 by construction"
+   }
+  },
+  "H3": {
+   "frozen_sigma": {
+    "agreement": 0.0,
+    "certificate": {
+     "certified": false
+    },
+    "acc": null,
+    "note": "undefined for an unseen phrasing (TAB-phrase): 0 by construction"
+   }
+  },
+  "H4": {
+   "frozen_sigma": {
+    "agreement": 0.0,
+    "certificate": {
+     "certified": false
+    },
+    "acc": null,
+    "note": "undefined for an unseen phrasing (TAB-phrase): 0 by construction"
+   }
+  },
+  "POS": {
+   "frozen_sigma": {
+    "agreement": 0.0,
+    "certificate": {
+     "certified": false
+    },
+    "acc": null,
+    "note": "undefined for an unseen phrasing (TAB-phrase): 0 by construction"
+   }
+  },
+  "NEG": {
+   "frozen_sigma": {
+    "agreement": 0.0,
+    "certificate": {
+     "certified": false
+    },
+    "acc": null,
+    "note": "undefined for an unseen phrasing (TAB-phrase): 0 by construction"
+   }
+  },
+  "T6": {
+   "frozen_sigma": {
+    "agreement": 1.0,
+    "chance": 0.14285714285714285,
+    "n_phrasings": 9,
+    "certificate": {
+     "certified": true,
+     "bad_pairs": 0,
+     "reachable_pairs": 6
+    },
+    "acc": {
+     "8": 1.0,
+     "16": 1.0,
+     "32": 1.0,
+     "64": 1.0,
+     "128": 1.0
+    },
+    "minimal_pair_acc": 1.0
+   }
+  }
+ }
+}

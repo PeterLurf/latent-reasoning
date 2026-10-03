@@ -1,0 +1,281 @@
+{
+ "arm": "bow",
+ "seed": 2085,
+ "families": 8,
+ "train_sec": 152,
+ "train": {
+  "certificate": {
+   "certified": false,
+   "bad_pairs": 14,
+   "reachable_pairs": 21
+  },
+  "acc": {
+   "8": 0.3815,
+   "16": 0.3165,
+   "32": 0.3455,
+   "64": 0.341,
+   "128": 0.3425
+  },
+  "reachable_codes": [
+   0,
+   1,
+   2,
+   6,
+   7,
+   9,
+   11
+  ],
+  "phrasing_consistency": 0.7380952380952381
+ },
+ "eval": {
+  "H1": {
+   "frozen_sigma": {
+    "agreement": 0.873015873015873,
+    "chance": 0.14285714285714285,
+    "n_phrasings": 9,
+    "certificate": {
+     "certified": false,
+     "bad_pairs": 12,
+     "reachable_pairs": 18
+    },
+    "acc": {
+     "8": 0.382,
+     "16": 0.3265,
+     "32": 0.335,
+     "64": 0.34,
+     "128": 0.331
+    }
+   },
+   "sigma_floor": {
+    "agreement": 0.873015873015873,
+    "chance": 0.14285714285714285,
+    "n_phrasings": 9,
+    "certificate": {
+     "certified": false,
+     "bad_pairs": 12,
+     "reachable_pairs": 18
+    },
+    "acc": {
+     "8": 0.382,
+     "16": 0.3265,
+     "32": 0.335,
+     "64": 0.34,
+     "128": 0.331
+    }
+   }
+  },
+  "H2": {
+   "frozen_sigma": {
+    "agreement": 0.7619047619047619,
+    "chance": 0.14285714285714285,
+    "n_phrasings": 9,
+    "certificate": {
+     "certified": false,
+     "bad_pairs": 35,
+     "reachable_pairs": 42
+    },
+    "acc": {
+     "8": 0.2465,
+     "16": 0.195,
+     "32": 0.161,
+     "64": 0.174,
+     "128": 0.1755
+    }
+   },
+   "sigma_floor": {
+    "agreement": 0.7619047619047619,
+    "chance": 0.14285714285714285,
+    "n_phrasings": 9,
+    "certificate": {
+     "certified": false,
+     "bad_pairs": 35,
+     "reachable_pairs": 42
+    },
+    "acc": {
+     "8": 0.2465,
+     "16": 0.195,
+     "32": 0.161,
+     "64": 0.174,
+     "128": 0.1755
+    }
+   }
+  },
+  "H3": {
+   "frozen_sigma": {
+    "agreement": 0.3968253968253968,
+    "chance": 0.14285714285714285,
+    "n_phrasings": 9,
+    "certificate": {
+     "certified": false,
+     "bad_pairs": 30,
+     "reachable_pairs": 36
+    },
+    "acc": {
+     "8": 0.161,
+     "16": 0.1675,
+     "32": 0.1735,
+     "64": 0.18,
+     "128": 0.1655
+    }
+   },
+   "sigma_floor": {
+    "agreement": 0.3968253968253968,
+    "chance": 0.14285714285714285,
+    "n_phrasings": 9,
+    "certificate": {
+     "certified": false,
+     "bad_pairs": 30,
+     "reachable_pairs": 36
+    },
+    "acc": {
+     "8": 0.161,
+     "16": 0.1675,
+     "32": 0.1735,
+     "64": 0.18,
+     "128": 0.1655
+    }
+   }
+  },
+  "H4": {
+   "frozen_sigma": {
+    "agreement": 0.36507936507936506,
+    "chance": 0.14285714285714285,
+    "n_phrasings": 9,
+    "certificate": {
+     "certified": false,
+     "bad_pairs": 35,
+     "reachable_pairs": 42
+    },
+    "acc": {
+     "8": 0.149,
+     "16": 0.183,
+     "32": 0.1715,
+     "64": 0.167,
+     "128": 0.162
+    },
+    "minimal_pair_acc": 0.14285714285714285
+   },
+   "sigma_floor": {
+    "agreement": 0.36507936507936506,
+    "chance": 0.14285714285714285,
+    "n_phrasings": 9,
+    "certificate": {
+     "certified": false,
+     "bad_pairs": 35,
+     "reachable_pairs": 42
+    },
+    "acc": {
+     "8": 0.149,
+     "16": 0.183,
+     "32": 0.1715,
+     "64": 0.167,
+     "128": 0.162
+    },
+    "minimal_pair_acc": 0.14285714285714285
+   }
+  },
+  "POS": {
+   "frozen_sigma": {
+    "agreement": 1.0,
+    "chance": 0.14285714285714285,
+    "n_phrasings": 9,
+    "certificate": {
+     "certified": false,
+     "bad_pairs": 12,
+     "reachable_pairs": 18
+    },
+    "acc": {
+     "8": 0.357,
+     "16": 0.3315,
+     "32": 0.3305,
+     "64": 0.331,
+     "128": 0.3335
+    }
+   },
+   "sigma_floor": {
+    "agreement": 1.0,
+    "chance": 0.14285714285714285,
+    "n_phrasings": 9,
+    "certificate": {
+     "certified": false,
+     "bad_pairs": 12,
+     "reachable_pairs": 18
+    },
+    "acc": {
+     "8": 0.357,
+     "16": 0.3315,
+     "32": 0.3305,
+     "64": 0.331,
+     "128": 0.3335
+    }
+   }
+  },
+  "NEG": {
+   "frozen_sigma": {
+    "agreement": 0.9523809523809523,
+    "chance": 0.14285714285714285,
+    "n_phrasings": 6
+   },
+   "sigma_floor": {
+    "agreement": 0.9523809523809523,
+    "chance": 0.14285714285714285,
+    "n_phrasings": 6
+   }
+  },
+  "T6": {
+   "frozen_sigma": {
+    "agreement": 0.873015873015873,
+    "chance": 0.14285714285714285,
+    "n_phrasings": 9,
+    "certificate": {
+     "certified": false,
+     "bad_pairs": 14,
+     "reachable_pairs": 21
+    },
+    "acc": {
+     "8": 0.3395,
+     "16": 0.336,
+     "32": 0.334,
+     "64": 0.343,
+     "128": 0.3175
+    },
+    "minimal_pair_acc": 0.14285714285714285
+   },
+   "sigma_floor": {
+    "agreement": 0.873015873015873,
+    "chance": 0.14285714285714285,
+    "n_phrasings": 9,
+    "certificate": {
+     "certified": false,
+     "bad_pairs": 14,
+     "reachable_pairs": 21
+    },
+    "acc": {
+     "8": 0.3395,
+     "16": 0.336,
+     "32": 0.334,
+     "64": 0.343,
+     "128": 0.3175
+    },
+    "minimal_pair_acc": 0.14285714285714285
+   }
+  }
+ },
+ "sigma_min_med_max": {
+  "code": [
+   0.05522438883781433,
+   0.1304783970117569,
+   0.22637973725795746
+  ],
+  "op": [
+   0.13593967258930206,
+   0.28195223212242126,
+   1.9359936714172363
+  ],
+  "dec": [
+   0.057646166533231735,
+   0.1362009197473526,
+   0.23630861937999725
+  ]
+ }
+}
