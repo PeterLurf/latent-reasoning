@@ -567,3 +567,8 @@ count. Local cards, 30 runs.
   not answered."
 * Descriptive addition: PF-std is more verb-sensitive on the negative control (NEG agreement 0.40–0.52 vs RF-std about
   0.97).
+
+**§79 caveat addendum (2026-10-02 20:40 EDT, Audit).** The corrected reading becomes: "RF-std ≥ PF-std on H1/H2 agreement, but PF-std
+is much more verb-sensitive (NEG, lower is better: 0.40–0.52 vs 0.97 on certified seeds) and better on minimal pairs
+(H4 median 0.625 vs 0.286, over all seeds). RF-std's agreement may be inflated by insensitivity: it maps a
+non-permutation verb to the swap's transition almost always." P1 met / P2 not met is unchanged.
