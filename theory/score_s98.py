@@ -3,8 +3,10 @@ Runs: boxes/runs_mult/m98_{genm,mask,coco,tc}_{4x4,5x5}_s{1,2,3}/eval.json; ICoT
 Per task (seeds 1-3, medians):
 M1      GEN-M median acc_test >= 0.95.
 M-SOTA  GEN-M median acc_test >= the ICoT-SI bar = our eval of the released checkpoint (fallback: repo log 1.000 / 0.996).
-M-C1    GEN-M-MASK median acc_test >= 0.95 AND, in those seeds, zero- and mean-removal answer accuracy <= No-CoT published
-        (0.29 at 4x4, 0.01 at 5x5) + 0.05.
+M-C1    GEN-M-MASK median acc_test >= 0.95 AND, in those seeds, zero- and mean-removal answer accuracy <= the NC-M floor
+        (note 98-1: our matched-budget no-CoT m98_nc_<task>_s1-3, median acc_test) + 0.05. Published No-CoT reported beside it.
+4x follow-up (98-1): m98_genm4x_<task>_s* / m98_mask4x_<task>_s* scored under M1 / M-SOTA / M-C1 when present.
+Training compute (training.epochs, training.flops) reported per arm.
 M-C3    GEN-M median acc_test >= TC-M median - 0.01 AND GEN-M median FLOPs <= TC-M median FLOPs (as metered); the
         restricted-vocabulary ratio (lm_head_rows removed on both sides) is reported.
 Descriptive: COCO-M under M1's bar with removal; GEN-M - COCO-M paired by seed; per-slot decode; validity / edit IIA
@@ -18,7 +20,7 @@ import numpy as np
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RUNS = os.path.join(ROOT, "boxes", "runs_mult")
-NC = {"4x4": 0.29, "5x5": 0.01}
+NC_PUBLISHED = {"4x4": 0.29, "5x5": 0.01}
 ICOT_FALLBACK = {"4x4": 1.000, "5x5": 0.996}
 ROW = 2 * 768 * 50257
 
@@ -46,7 +48,9 @@ def restricted(r):
 def main():
     res = {}
     for task in ("4x4", "5x5"):
-        A = {a: load(a, task) for a in ("genm", "mask", "coco", "tc")}
+        A = {a: load(a, task) for a in ("genm", "mask", "coco", "tc", "nc", "genm4x", "mask4x")}
+        nc_floor = med(A["nc"], lambda r: r["acc_test"])
+        floor = (nc_floor + 0.05) if nc_floor is not None else None
         f = os.path.join(RUNS, "icotsi_%s" % task, "eval.json")
         icot = json.load(open(f)) if os.path.exists(f) else None
         bar = icot["acc_test"] if icot else ICOT_FALLBACK[task]
@@ -56,13 +60,20 @@ def main():
         T["genm_median"] = med(g, acc)
         T["M1"] = T["genm_median"] is not None and T["genm_median"] >= 0.95
         T["M_SOTA"] = T["genm_median"] is not None and T["genm_median"] >= bar
+        if floor is None:
+            print(task, "NC-M missing: M-C1 not scorable"); 
         mk = A["mask"]; ok_seeds = [s for s, r in mk.items() if r["acc_test"] >= 0.95 and
-                                    r["removal"]["zero"]["answer_acc"] <= NC[task] + 0.05 and r["removal"]["mean"]["answer_acc"] <= NC[task] + 0.05]
+                                    r["removal"]["zero"]["answer_acc"] <= floor and r["removal"]["mean"]["answer_acc"] <= floor]
         T["mask_median"] = med(mk, acc)
-        T["M_C1"] = T["mask_median"] is not None and T["mask_median"] >= 0.95 and \
-            all(mk[s]["removal"]["zero"]["answer_acc"] <= NC[task] + 0.05 and mk[s]["removal"]["mean"]["answer_acc"] <= NC[task] + 0.05
+        T["M_C1"] = floor is not None and T["mask_median"] is not None and T["mask_median"] >= 0.95 and \
+            all(mk[s]["removal"]["zero"]["answer_acc"] <= floor and mk[s]["removal"]["mean"]["answer_acc"] <= floor
                 for s in mk if mk[s]["acc_test"] >= 0.95) and len(ok_seeds) >= 1
-        T["mask_seeds_passing_removal"] = ok_seeds
+        T["mask_seeds_passing_removal"] = ok_seeds; T["nc_m_median"] = nc_floor; T["nc_published"] = NC_PUBLISHED[task]
+        T["training"] = {a: {s: r.get("training") for s, r in rs.items()} for a, rs in A.items()}
+        for big, base in (("genm4x", "genm"), ("mask4x", "mask")):
+            if A[big]:
+                mb = med(A[big], acc); T[big + "_median"] = mb
+                T[big + "_M1_or_bar"] = {"M1": mb >= 0.95, "M_SOTA": mb >= bar}
         tc = A["tc"]; T["tc_median"] = med(tc, acc)
         gf, tf = med(g, lambda r: r["compute"]["flops"]), med(tc, lambda r: r["compute"]["flops"])
         T["flops_ratio_genm_tc"] = gf / tf if gf and tf else None
@@ -71,7 +82,7 @@ def main():
         T["M_C3"] = (T["genm_median"] is not None and T["tc_median"] is not None and T["genm_median"] >= T["tc_median"] - 0.01
                      and T["flops_ratio_genm_tc"] is not None and T["flops_ratio_genm_tc"] <= 1.0)
         T["removal"] = {a: {s: {m: r.get("removal", {}).get(m, {}).get("answer_acc") for m in ("zero", "mean")} for s, r in A[a].items()}
-                        for a in ("genm", "mask", "coco")}
+                        for a in ("genm", "mask", "coco", "nc")}
         T["coco_median"] = med(A["coco"], acc)
         T["genm_minus_coco_paired"] = [g[s]["acc_test"] - A["coco"][s]["acc_test"] for s in g if s in A["coco"]]
         T["per_slot_decode"] = {a: {s: r.get("per_slot_decode_acc") for s, r in A[a].items()} for a in ("genm", "mask")}
