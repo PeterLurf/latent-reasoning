@@ -46,6 +46,17 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
   - On s1 the state is present; the answer readout fails.
   - s2–s5 are still running (`theory/results/s94_step0/`).
   - No untrained or NC control has been run yet.
+* **§98 multiplication (18:45; `boxes/mult98.py`, ICoT-SI eval `boxes/icotsi98.py`; Theory scores with `theory/score_s98.py`; notes 98-1/98-2):**
+  - ICoT-SI released checkpoints, our greedy eval: 4x4 0.998, 5x5 0.996 (the M-SOTA bar; b78fb865). Checkpoints in `ext/icotsi/` (gitignored).
+  - Hosts (gen_deploy_98.sh, auto_drain_gen3, waiters `scratch/watch_any.sh`):
+    - y1 54069464: GEN-M 4x4 x3.
+    - y2 54070485: GEN-M 5x5 x3.
+    - y3 54070493 (A5000): MASK 4x4 + 5x5 x6.
+    - y4 54070499: COCO 4x4 s1/s2 only. Its 4x4 s3 and 5x5 s1-3 OOM'd at P3 before `--micro 2`.
+    - y5 54073316: TC + NC x12 (about 10 h).
+  - After y4 drains: deploy `scratch/gen_q_y6.txt` (the COCO reruns). y4's drain will report FETCH_INCOMPLETE for the 4 failed runs, so fetch s1/s2 and the logs by hand.
+  - Two y5 attempts were destroyed: one before upload (P3 OOM risk), one stuck loading.
+* **§97 C6:** x4 (GEN-4 s4-5) and x5 (HYB-4 s4-5) running. **§94:** only w2 left (w1, w3, w4, w5 fetched).
 * **4060 resolved (user-approved, ~15:00):** fade_soft s1's eval was rerun with `fade89 --eval_only` (N5-8 0.135), and the cuda:0 worker was restarted (it runs fade_raw s3).
   - fade_soft s2's 12:00 failure was a CUDA OOM on the 2070: fp32, and the soft arm needs bf16. The run is voided (`*.void_oom2070`, aborted unread) and requeued for the 3070's worker.
   - fade_soft s3 is held from the 2070 and chained onto cuda:0 (`scratch/c1_q_soft.txt`, task btbniyziw).
