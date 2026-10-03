@@ -166,12 +166,13 @@ reserve, projection to Audit above $5. Credit $105 (07:25).
       certified teacher reproduces §92's labels at 1.000 → C4 for the pipeline, qualified by p ≤ 0.05 and oracle M.
       The hold markers are gone (3070 results merged into `theory/results/c1_s96/`); no Theory jobs are on the local
       cards.
-    - **§97 (the user's "generalized latent thinker", step 1; 14499aad + note 97-1):** §92 with a text step target
-      (in-context fork, tied LM head) and re-embedded text checkpoints. GEN-4 (primary, G4), GEN-1 (descriptive) and
-      HYB-4 (text target + structured snap), seeds 1–3, about $6 on Vast. Handed to Experiments; scorer
-      `theory/score_s97.py` (90034c85). Later steps (bench ladder, general readout, bigger model) wait on §97.
-  - **To score (Theory only):** §94 arms (Step 0 recorded: readout failure), §97 (GEN-1 fetched; GEN-4 / HYB-4
-    about 16:30–17:00), and §89's descriptive arms (raw done; soft and gold running
+    - **§97 scored (17:10): G4 met** (GEN-4 0.998 / 1.0 / 1.0 at 512, 1.0 at 2,048; HYB-4 3/3; GEN-1 certified):
+      no hand-built state is needed. C1 (use, qualified: partial recompute under mean ablation) + C2 + C3 (0.56×) +
+      C7 checkpoints. Audit-reproduced. **C6 seeds 4–5** of GEN-4 / HYB-4 are with Experiments.
+    - **§98 (step 2a, multiplication; 3f6d85d3; scorer b732ee9b):** GEN-M, GEN-M-MASK (latent-only fork), COCO-M
+      and TC-M on mult 4×4 / 5×5 (24 runs, about $12–15), with the released ICoT-SI checkpoints as the bar. Handed
+      to Experiments.
+  - **To score (Theory only):** §94 arms (Step 0 recorded: readout failure), §97 C6 seeds, §98, and §89's descriptive arms (raw done; soft and gold running
     locally).
 - Handed to Experiments (22:22): THEORY §55 (fall-back kill test, `theory/exp27_fallback_kill.py`, CPU minutes) and §56
   (interchange test, `theory/exp28_interchange.py`, 80 models, ~1 h CPU); scoring rules are in each section.
