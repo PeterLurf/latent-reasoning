@@ -1,0 +1,314 @@
+{
+ "wc0k4r_flops_median": 1640514453504.0,
+ "arms": {
+  "GEN-4": {
+   "runs": {
+    "1": {
+     "cum512": 0.998,
+     "ext2048": 1.0,
+     "zero_after": 0.0042,
+     "mean_after": 0.23263333333333333,
+     "per_slot": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ],
+     "flops": 912165175296.0,
+     "certificate": null,
+     "cert_errors": null,
+     "validity": 0.9999921875,
+     "wte_min_cosine": 0.9962058663368225,
+     "edit_iia": 1.0,
+     "measurement_decode_flops": 506099662848.0
+    },
+    "2": {
+     "cum512": 1.0,
+     "ext2048": 1.0,
+     "zero_after": 0.002766666666666667,
+     "mean_after": 0.2782,
+     "per_slot": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ],
+     "flops": 912165175296.0,
+     "certificate": null,
+     "cert_errors": null,
+     "validity": 1.0,
+     "wte_min_cosine": 0.9966128468513489,
+     "edit_iia": 1.0,
+     "measurement_decode_flops": 506099662848.0
+    },
+    "3": {
+     "cum512": 1.0,
+     "ext2048": 1.0,
+     "zero_after": 0.0072,
+     "mean_after": 0.2929333333333333,
+     "per_slot": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ],
+     "flops": 912165175296.0,
+     "certificate": null,
+     "cert_errors": null,
+     "validity": 1.0,
+     "wte_min_cosine": 0.9966827034950256,
+     "edit_iia": 1.0,
+     "measurement_decode_flops": 506099662848.0
+    }
+   },
+   "n_seeds_1_3": 3,
+   "pass_seeds": [
+    1,
+    2,
+    3
+   ],
+   "G4": true,
+   "flops_ratio_vs_wc0k4r": 0.5560238578500131,
+   "C3": true
+  },
+  "HYB-4": {
+   "runs": {
+    "1": {
+     "cum512": 1.0,
+     "ext2048": 1.0,
+     "zero_after": 0.0024666666666666665,
+     "mean_after": 0.14883333333333335,
+     "per_slot": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ],
+     "flops": 802420555776.0,
+     "certificate": null,
+     "cert_errors": null,
+     "validity": 1.0,
+     "wte_min_cosine": 0.9975639581680298,
+     "edit_iia": 1.0,
+     "measurement_decode_flops": 505745768448.0
+    },
+    "2": {
+     "cum512": 1.0,
+     "ext2048": 1.0,
+     "zero_after": 0.0027333333333333333,
+     "mean_after": 0.4972,
+     "per_slot": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ],
+     "flops": 802420555776.0,
+     "certificate": null,
+     "cert_errors": null,
+     "validity": 1.0,
+     "wte_min_cosine": 0.9976040124893188,
+     "edit_iia": 1.0,
+     "measurement_decode_flops": 505745768448.0
+    },
+    "3": {
+     "cum512": 1.0,
+     "ext2048": 1.0,
+     "zero_after": 0.003,
+     "mean_after": 0.3092666666666667,
+     "per_slot": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ],
+     "flops": 802420555776.0,
+     "certificate": null,
+     "cert_errors": null,
+     "validity": 1.0,
+     "wte_min_cosine": 0.996558666229248,
+     "edit_iia": 1.0,
+     "measurement_decode_flops": 505745768448.0
+    }
+   },
+   "n_seeds_1_3": 3,
+   "pass_seeds": [
+    1,
+    2,
+    3
+   ],
+   "G4": true,
+   "flops_ratio_vs_wc0k4r": 0.4891273917532989,
+   "C3": true
+  },
+  "GEN-1": {
+   "runs": {
+    "1": {
+     "cum512": 1.0,
+     "ext2048": 1.0,
+     "zero_after": null,
+     "mean_after": null,
+     "per_slot": [
+      1.0
+     ],
+     "flops": 1808121987072.0,
+     "certificate": true,
+     "cert_errors": 0,
+     "validity": 1.0,
+     "wte_min_cosine": 0.9950867891311646,
+     "edit_iia": 1.0,
+     "measurement_decode_flops": 0.0
+    },
+    "2": {
+     "cum512": 1.0,
+     "ext2048": 1.0,
+     "zero_after": null,
+     "mean_after": null,
+     "per_slot": [
+      1.0
+     ],
+     "flops": 1808121987072.0,
+     "certificate": true,
+     "cert_errors": 0,
+     "validity": 1.0,
+     "wte_min_cosine": 0.9945672750473022,
+     "edit_iia": 1.0,
+     "measurement_decode_flops": 0.0
+    },
+    "3": {
+     "cum512": 1.0,
+     "ext2048": 1.0,
+     "zero_after": null,
+     "mean_after": null,
+     "per_slot": [
+      1.0
+     ],
+     "flops": 1808121987072.0,
+     "certificate": true,
+     "cert_errors": 0,
+     "validity": 1.0,
+     "wte_min_cosine": 0.9948119521141052,
+     "edit_iia": 1.0,
+     "measurement_decode_flops": 0.0
+    }
+   }
+  },
+  "\u00a792 k4": {
+   "runs": {
+    "1": {
+     "cum512": 1.0,
+     "ext2048": 1.0,
+     "zero_after": 0.0023,
+     "mean_after": 0.0019333333333333333,
+     "per_slot": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ],
+     "flops": 633527992320.0,
+     "certificate": null,
+     "cert_errors": null,
+     "validity": null,
+     "wte_min_cosine": null,
+     "edit_iia": null,
+     "measurement_decode_flops": null
+    },
+    "2": {
+     "cum512": 1.0,
+     "ext2048": 1.0,
+     "zero_after": 0.0015,
+     "mean_after": 0.0071,
+     "per_slot": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ],
+     "flops": 633527992320.0,
+     "certificate": null,
+     "cert_errors": null,
+     "validity": null,
+     "wte_min_cosine": null,
+     "edit_iia": null,
+     "measurement_decode_flops": null
+    },
+    "3": {
+     "cum512": 0.9995,
+     "ext2048": 1.0,
+     "zero_after": 0.0026666666666666666,
+     "mean_after": 0.028666666666666667,
+     "per_slot": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ],
+     "flops": 633527992320.0,
+     "certificate": null,
+     "cert_errors": null,
+     "validity": null,
+     "wte_min_cosine": null,
+     "edit_iia": null,
+     "measurement_decode_flops": null
+    },
+    "4": {
+     "cum512": 1.0,
+     "ext2048": 1.0,
+     "zero_after": 0.0015333333333333334,
+     "mean_after": 0.0025,
+     "per_slot": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ],
+     "flops": 633527992320.0,
+     "certificate": null,
+     "cert_errors": null,
+     "validity": null,
+     "wte_min_cosine": null,
+     "edit_iia": null,
+     "measurement_decode_flops": null
+    },
+    "5": {
+     "cum512": 0.9995,
+     "ext2048": 1.0,
+     "zero_after": 0.0025666666666666667,
+     "mean_after": 0.11166666666666666,
+     "per_slot": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ],
+     "flops": 633527992320.0,
+     "certificate": null,
+     "cert_errors": null,
+     "validity": null,
+     "wte_min_cosine": null,
+     "edit_iia": null,
+     "measurement_decode_flops": null
+    }
+   },
+   "n_seeds_1_3": 3,
+   "pass_seeds": [
+    1,
+    2,
+    3
+   ],
+   "G4": true,
+   "flops_ratio_vs_wc0k4r": 0.38617641616435494,
+   "C3": true,
+   "C6": true
+  }
+ },
+ "attribution": {
+  "key_92_hyb4_gen4": [
+   true,
+   true,
+   true
+  ],
+  "reading": "no hand-built state is needed"
+ }
+}
