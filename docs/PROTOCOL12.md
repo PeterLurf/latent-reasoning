@@ -675,3 +675,5 @@ nc/tc_s1–3 on the same items (note 89-3): NC N 5–8 median 0.14, so F2's floo
   met.
 * FADE-std-dec's 0.615 is "all" questions near 1.000 and "where" low (per-type in eval.json; Audit). Aux decode at
   α = 1: 0.83.
+* Per type, FADE-std-dec at N 5–8: "all" 1.000 in 5/5 seeds; "where" 1.000 in s2, about 0.23 in the others. Seed 2
+  solves both question types fully in pure latent; the "where" failure is seed-dependent.
