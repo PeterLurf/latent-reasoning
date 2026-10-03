@@ -1,0 +1,3 @@
+# §89 proof host (amendment 89-5)
+# P=1
+boxes/runs/f89_fade_std_s3 boxes.fade89 --arm fade_std --seed 3
