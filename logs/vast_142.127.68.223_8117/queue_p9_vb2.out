@@ -1,0 +1,28 @@
+02:36:30 start p9at_l4_s520 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 520 --layers 4 --anytime 1 )
+04:19:30 trained p9at_l4_s520 rc 0
+run  results/competence_p9at_l4_s520.json
+run  results/competence_matched_p9at_l4_s520.json
+run  results/length_gen_p9at_l4_s520.json
+run  results/delayed_trace_p9at_l4_s520.json
+run  results/budget_sweep_p9at_l4_s520.json
+EVAL_DONE p9at_l4_s520
+04:19:53 evaluated p9at_l4_s520
+04:19:53 start p9at_l3_s503 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 503 --layers 3 --anytime 1 )
+05:38:53 trained p9at_l3_s503 rc 0
+run  results/competence_p9at_l3_s503.json
+run  results/competence_matched_p9at_l3_s503.json
+run  results/length_gen_p9at_l3_s503.json
+run  results/delayed_trace_p9at_l3_s503.json
+run  results/budget_sweep_p9at_l3_s503.json
+EVAL_DONE p9at_l3_s503
+05:39:13 evaluated p9at_l3_s503
+05:39:14 start p9at_w512_s545 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 545 --d 512 --anytime 1 )
+07:25:14 trained p9at_w512_s545 rc 0
+run  results/competence_p9at_w512_s545.json
+run  results/competence_matched_p9at_w512_s545.json
+run  results/length_gen_p9at_w512_s545.json
+run  results/delayed_trace_p9at_w512_s545.json
+run  results/budget_sweep_p9at_w512_s545.json
+EVAL_DONE p9at_w512_s545
+07:25:40 evaluated p9at_w512_s545
+07:25:40 QUEUE_DONE

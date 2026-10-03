@@ -1,0 +1,10 @@
+08:46:00 guarding theory/runs/pt12_s901 pid 0 max relaunch 3
+08:46:00 launched pid 1402
+08:54:10 stage-1 failure at step 4200; archived as theory/runs/pt12_s901_stage1fail_1
+08:54:10 launched pid 1553
+09:02:20 stage-1 failure at step 4200; archived as theory/runs/pt12_s901_stage1fail_2
+09:02:20 launched pid 1704
+09:10:30 stage-1 failure at step 4200; archived as theory/runs/pt12_s901_stage1fail_3
+09:10:30 launched pid 1810
+09:18:41 stage-1 failure at step 4200; archived as theory/runs/pt12_s901_stage1fail_4
+09:18:41 relaunch budget spent

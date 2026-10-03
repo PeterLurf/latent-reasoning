@@ -1,0 +1,41 @@
+07:50:50 start pt12_s904 (--seed 904 --anytime 1 --step_adv 0.5)
+08:49:50 trained pt12_s904 rc 0
+theory/runs/pt12_s904 K'=0 delayed 0.500 upfront 0.500 depth(delayed) {1:1.00, 2:1.00, 3:1.00, 4:1.00, 5:1.00, 6:1.00, 99:0.00}
+theory/runs/pt12_s904 K'=1 delayed 0.710 upfront 0.720 depth(delayed) {1:1.00, 2:0.98, 3:0.05, 4:0.05, 5:0.05, 6:0.04, 99:0.96}
+theory/runs/pt12_s904 K'=2 delayed 0.714 upfront 0.768 depth(delayed) {1:1.00, 2:0.99, 3:0.18, 4:0.17, 5:0.20, 6:0.31, 99:0.88}
+theory/runs/pt12_s904 K'=3 delayed 0.714 upfront 0.768 depth(delayed) {1:1.00, 2:0.99, 3:0.18, 4:0.17, 5:0.19, 6:0.30, 99:0.89}
+theory/runs/pt12_s904 K'=4 delayed 0.713 upfront 0.768 depth(delayed) {1:1.00, 2:0.99, 3:0.18, 4:0.16, 5:0.19, 6:0.29, 99:0.89}
+theory/runs/pt12_s904 K'=5 delayed 0.713 upfront 0.768 depth(delayed) {1:1.00, 2:0.99, 3:0.18, 4:0.16, 5:0.18, 6:0.29, 99:0.89}
+theory/runs/pt12_s904 K'=6 delayed 0.714 upfront 0.768 depth(delayed) {1:1.00, 2:0.99, 3:0.17, 4:0.16, 5:0.18, 6:0.29, 99:0.89}
+theory/runs/pt12_s904 d1:0.99 d2:0.96 d3:0.55 d4:0.54 d5:0.54 d6:0.55
+theory/runs/pt12_s904 K'= 0 near 0.50 0.50 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/pt12_s904 K'= 2 near 0.98 0.98 0.50 0.50 0.50 0.51 | far 0.50 0.50 0.50 0.50 0.51 0.50
+theory/runs/pt12_s904 K'= 4 near 0.98 0.98 0.50 0.50 0.50 0.51 | far 0.50 0.50 0.50 0.50 0.51 0.50
+theory/runs/pt12_s904 K'= 6 near 0.98 0.98 0.50 0.50 0.50 0.51 | far 0.50 0.50 0.50 0.50 0.51 0.50
+theory/runs/pt12_s904 K'= 8 near 0.98 0.98 0.50 0.50 0.50 0.51 | far 0.50 0.50 0.50 0.50 0.51 0.49
+theory/runs/pt12_s904 K'=10 near 0.98 0.98 0.50 0.50 0.50 0.51 | far 0.50 0.50 0.50 0.50 0.51 0.49
+theory/runs/pt12_s904 K'=12 near 0.98 0.98 0.50 0.50 0.50 0.51 | far 0.50 0.50 0.50 0.50 0.51 0.49
+theory/runs/pt12_s904 K'=16 near 0.98 0.98 0.51 0.50 0.50 0.51 | far 0.50 0.50 0.50 0.50 0.51 0.49
+EVAL theory/runs/pt12_s904 stage 2 delayed 0.714 m5 0.542 gate False d7 0.502 extrap False far8-10 0.502
+08:49:58 evaluated pt12_s904
+08:49:58 start pt12_s905 (--seed 905 --anytime 1 --step_adv 0.5)
+09:48:58 trained pt12_s905 rc 0
+theory/runs/pt12_s905 K'=0 delayed 0.923 upfront 0.500 depth(delayed) {1:1.00, 2:1.00, 3:0.99, 4:0.73, 5:0.28, 6:0.05, 99:0.99}
+theory/runs/pt12_s905 K'=1 delayed 0.851 upfront 0.875 depth(delayed) {1:1.00, 2:1.00, 3:0.90, 4:0.16, 5:0.00, 6:0.00, 99:1.00}
+theory/runs/pt12_s905 K'=2 delayed 0.902 upfront 0.895 depth(delayed) {1:1.00, 2:1.00, 3:1.00, 4:0.54, 5:0.10, 6:0.01, 99:1.00}
+theory/runs/pt12_s905 K'=3 delayed 0.955 upfront 0.950 depth(delayed) {1:1.00, 2:1.00, 3:1.00, 4:0.92, 5:0.57, 6:0.25, 99:0.99}
+theory/runs/pt12_s905 K'=4 delayed 0.967 upfront 0.958 depth(delayed) {1:1.00, 2:1.00, 3:1.00, 4:0.95, 5:0.78, 6:0.58, 99:0.98}
+theory/runs/pt12_s905 K'=5 delayed 0.968 upfront 0.959 depth(delayed) {1:1.00, 2:1.00, 3:1.00, 4:0.95, 5:0.82, 6:0.69, 99:0.97}
+theory/runs/pt12_s905 K'=6 delayed 0.967 upfront 0.959 depth(delayed) {1:1.00, 2:1.00, 3:1.00, 4:0.95, 5:0.83, 6:0.70, 99:0.97}
+theory/runs/pt12_s905 d1:1.00 d2:1.00 d3:1.00 d4:0.95 d5:0.83 d6:0.71
+theory/runs/pt12_s905 K'= 0 near 1.00 0.99 0.98 0.91 0.70 0.55 | far 0.51 0.50 0.50 0.50 0.50 0.50
+theory/runs/pt12_s905 K'= 2 near 1.00 1.00 1.00 0.77 0.55 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/pt12_s905 K'= 4 near 1.00 0.99 0.98 0.96 0.84 0.64 | far 0.53 0.51 0.50 0.50 0.50 0.51
+theory/runs/pt12_s905 K'= 6 near 1.00 0.99 0.98 0.96 0.84 0.66 | far 0.54 0.52 0.51 0.50 0.51 0.51
+theory/runs/pt12_s905 K'= 8 near 1.00 0.99 0.98 0.95 0.84 0.66 | far 0.54 0.52 0.51 0.50 0.51 0.52
+theory/runs/pt12_s905 K'=10 near 1.00 0.99 0.98 0.95 0.84 0.66 | far 0.54 0.52 0.51 0.51 0.51 0.51
+theory/runs/pt12_s905 K'=12 near 1.00 0.99 0.98 0.95 0.84 0.67 | far 0.54 0.51 0.51 0.51 0.51 0.51
+theory/runs/pt12_s905 K'=16 near 1.00 0.99 0.98 0.95 0.84 0.67 | far 0.54 0.51 0.51 0.52 0.51 0.52
+EVAL theory/runs/pt12_s905 stage full delayed 0.967 m5 0.827 gate True d7 0.540 extrap False far8-10 0.509
+09:49:06 evaluated pt12_s905
+09:49:06 QUEUE_DONE

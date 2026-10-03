@@ -1,0 +1,12 @@
+NVIDIA GeForce RTX 3090, 580.173.02
+09:30:30 start c1/runs/p73_ptstd_s2011
+09:30:30 start c1/runs/p73_ptstd_s2012
+09:30:30 start c1/runs/p73_ptstd_s2013
+09:30:30 start c1/runs/p73_ptstd_s2014
+10:14:31 evaluated c1/runs/p73_ptstd_s2011 rc 0
+10:14:31 start c1/runs/p73_ptstd_s2015
+10:14:36 evaluated c1/runs/p73_ptstd_s2012 rc 0
+10:14:37 evaluated c1/runs/p73_ptstd_s2013 rc 0
+10:14:37 evaluated c1/runs/p73_ptstd_s2014 rc 0
+10:25:16 evaluated c1/runs/p73_ptstd_s2015 rc 0
+10:25:16 QUEUE_DONE

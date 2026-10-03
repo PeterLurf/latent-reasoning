@@ -1,0 +1,13 @@
+14:44:50 trained p30_s132_N_t2 rc 0
+14:44:51 trained p30_s132_S_t1 rc 0
+14:44:51 trained p30_s132_N_t1 rc 0
+14:44:58 trained p30_s132_S_t2 rc 0
+14:54:30 trained p30_s140_S_t2 rc 0
+14:54:31 trained p30_s140_S_t1 rc 0
+14:54:32 trained p30_s140_N_t1 rc 0
+14:54:37 trained p30_s140_N_t2 rc 0
+14:54:41 evaluated p30_s132_S rc 0
+14:54:44 evaluated p30_s132_N rc 0
+14:54:48 evaluated p30_s140_S rc 0
+14:54:52 evaluated p30_s140_N rc 0
+14:54:52 QUEUE_DONE

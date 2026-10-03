@@ -1,0 +1,10 @@
+03:59:59 guarding runs/p9at_fork_s566 pid 0 max relaunch 3
+03:59:59 launched pid 1678
+04:12:09 stage-1 failure at step 4200; archived as runs/p9at_fork_s566_stage1fail_1
+04:12:09 launched pid 1902
+04:24:19 stage-1 failure at step 4200; archived as runs/p9at_fork_s566_stage1fail_2
+04:24:19 launched pid 2042
+04:36:30 stage-1 failure at step 4200; archived as runs/p9at_fork_s566_stage1fail_3
+04:36:30 launched pid 2198
+04:48:40 stage-1 failure at step 4200; archived as runs/p9at_fork_s566_stage1fail_4
+04:48:40 relaunch budget spent

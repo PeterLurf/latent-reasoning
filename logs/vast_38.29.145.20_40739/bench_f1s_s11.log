@@ -1,0 +1,18 @@
+100/1684 acc 0.490 28s
+200/1684 acc 0.500 59s
+300/1684 acc 0.490 90s
+400/1684 acc 0.480 122s
+500/1684 acc 0.472 155s
+600/1684 acc 0.473 188s
+700/1684 acc 0.476 223s
+800/1684 acc 0.475 258s
+900/1684 acc 0.476 294s
+1000/1684 acc 0.480 331s
+1100/1684 acc 0.481 369s
+1200/1684 acc 0.489 408s
+1300/1684 acc 0.491 447s
+1400/1684 acc 0.494 487s
+1500/1684 acc 0.496 526s
+1600/1684 acc 0.495 566s
+prosqa_deep_na | f1s:prosqa/runs_ail/f1s_s11?P=16 | n 1684 | acc 0.493 [0.469, 0.5167] | baselines {'proximity rule (no reasoning)': 0.5, 'chance': 0.5}
+WROTE bench/results/prosqa_deep_na__f1s_f1s_s11_P=16.json

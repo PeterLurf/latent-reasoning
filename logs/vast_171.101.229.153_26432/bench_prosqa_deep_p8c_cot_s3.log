@@ -1,0 +1,18 @@
+100/1684 acc 0.780 385s
+200/1684 acc 0.785 803s
+300/1684 acc 0.803 1241s
+400/1684 acc 0.765 1812s
+500/1684 acc 0.752 2359s
+600/1684 acc 0.752 3000s
+700/1684 acc 0.750 3718s
+800/1684 acc 0.755 4574s
+900/1684 acc 0.754 5370s
+1000/1684 acc 0.750 6335s
+1100/1684 acc 0.749 7320s
+1200/1684 acc 0.746 8361s
+1300/1684 acc 0.743 9543s
+1400/1684 acc 0.742 10863s
+1500/1684 acc 0.745 12134s
+1600/1684 acc 0.747 13549s
+prosqa_deep | cot:prosqa/ckpt/p8c_cot_s3_checkpoint_30 | n 1684 | acc 0.748 [0.7263, 0.7678] | baselines {'proximity rule (no reasoning)': 0.8931, 'chance': 0.5}
+WROTE bench/results/prosqa_deep__cot_p8c_cot_s3_checkpoint_30.json

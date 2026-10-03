@@ -1,0 +1,82 @@
+{'update': 100, 'L': 1, 'loss': 0.14037384450130047, 'examples': 6000, 'gpt2_tokens': 12000, 'sec': 15}
+{'update': 200, 'L': 1, 'loss': 5.953064897767035e-05, 'examples': 12000, 'gpt2_tokens': 24000, 'sec': 31}
+{'update': 300, 'L': 1, 'loss': 3.5157922484359004e-05, 'examples': 18000, 'gpt2_tokens': 36000, 'sec': 47}
+{'update': 400, 'L': 1, 'loss': 2.377880557105527e-05, 'examples': 24000, 'gpt2_tokens': 48000, 'sec': 62}
+{'update': 500, 'L': 1, 'loss': 1.7339176174573368e-05, 'examples': 30000, 'gpt2_tokens': 60000, 'sec': 79, 'acc8': 0.196, 'acc32': 0.166}
+{'update': 600, 'L': 1, 'loss': 1.3295759281390928e-05, 'examples': 36000, 'gpt2_tokens': 72000, 'sec': 97}
+{'update': 700, 'L': 1, 'loss': 1.0556024408288067e-05, 'examples': 42000, 'gpt2_tokens': 84000, 'sec': 113}
+{'update': 800, 'L': 1, 'loss': 8.61595230162493e-06, 'examples': 48000, 'gpt2_tokens': 96000, 'sec': 130}
+{'update': 900, 'L': 1, 'loss': 7.1714651994625456e-06, 'examples': 54000, 'gpt2_tokens': 108000, 'sec': 147}
+{'update': 1000, 'L': 1, 'loss': 6.083111920816009e-06, 'examples': 60000, 'gpt2_tokens': 120000, 'sec': 164, 'acc8': 0.19, 'acc32': 0.138}
+{'update': 1100, 'L': 1, 'loss': 5.217578204792517e-06, 'examples': 66000, 'gpt2_tokens': 132000, 'sec': 183}
+{'update': 1200, 'L': 1, 'loss': 4.536201436167175e-06, 'examples': 72000, 'gpt2_tokens': 144000, 'sec': 200}
+{'update': 1300, 'L': 1, 'loss': 3.969820420479664e-06, 'examples': 78000, 'gpt2_tokens': 156000, 'sec': 217}
+{'update': 1400, 'L': 1, 'loss': 3.5109456621285063e-06, 'examples': 84000, 'gpt2_tokens': 168000, 'sec': 234}
+{'update': 1500, 'L': 1, 'loss': 3.113443440270203e-06, 'examples': 90000, 'gpt2_tokens': 180000, 'sec': 251, 'acc8': 0.202, 'acc32': 0.144}
+{'update': 1600, 'L': 1, 'loss': 2.785400758966716e-06, 'examples': 96000, 'gpt2_tokens': 192000, 'sec': 270}
+{'update': 1700, 'L': 1, 'loss': 2.5167633543787813e-06, 'examples': 102000, 'gpt2_tokens': 204000, 'sec': 287}
+{'update': 1800, 'L': 1, 'loss': 2.2696825658385933e-06, 'examples': 108000, 'gpt2_tokens': 216000, 'sec': 305}
+{'update': 1900, 'L': 1, 'loss': 2.0572919640926555e-06, 'examples': 114000, 'gpt2_tokens': 228000, 'sec': 322}
+{'update': 2000, 'L': 1, 'loss': 1.8842205361124797e-06, 'examples': 120000, 'gpt2_tokens': 240000, 'sec': 339, 'acc8': 0.194, 'acc32': 0.138}
+{'update': 2100, 'L': 2, 'loss': 1.0693021190591459, 'examples': 124880, 'gpt2_tokens': 252000, 'sec': 359}
+{'update': 2200, 'L': 2, 'loss': 0.18830928593626595, 'examples': 130000, 'gpt2_tokens': 264000, 'sec': 376}
+{'update': 2300, 'L': 2, 'loss': 0.005853898119867153, 'examples': 135060, 'gpt2_tokens': 276000, 'sec': 393}
+{'update': 2400, 'L': 1, 'loss': 7.027446374650027e-05, 'examples': 140260, 'gpt2_tokens': 288000, 'sec': 410}
+{'update': 2500, 'L': 2, 'loss': 5.445973499718093e-05, 'examples': 145240, 'gpt2_tokens': 300000, 'sec': 428, 'acc8': 0.176, 'acc32': 0.154}
+{'update': 2600, 'L': 1, 'loss': 3.381876402727357e-05, 'examples': 150360, 'gpt2_tokens': 312000, 'sec': 447}
+{'update': 2700, 'L': 2, 'loss': 3.066365455651976e-05, 'examples': 155320, 'gpt2_tokens': 324000, 'sec': 464}
+{'update': 2800, 'L': 1, 'loss': 2.2111560870143876e-05, 'examples': 160340, 'gpt2_tokens': 336000, 'sec': 481}
+{'update': 2900, 'L': 1, 'loss': 2.1933539844667394e-05, 'examples': 165140, 'gpt2_tokens': 348000, 'sec': 499}
+{'update': 3000, 'L': 1, 'loss': 1.5092634494067169e-05, 'examples': 170140, 'gpt2_tokens': 360000, 'sec': 516, 'acc8': 0.194, 'acc32': 0.182}
+{'update': 3100, 'L': 1, 'loss': 1.2549999910334009e-05, 'examples': 175200, 'gpt2_tokens': 372000, 'sec': 535}
+{'update': 3200, 'L': 1, 'loss': 1.1923858510272112e-05, 'examples': 180140, 'gpt2_tokens': 384000, 'sec': 553}
+{'update': 3300, 'L': 1, 'loss': 1.1158648924265435e-05, 'examples': 185000, 'gpt2_tokens': 396000, 'sec': 570}
+{'update': 3400, 'L': 2, 'loss': 9.644982958434411e-06, 'examples': 189820, 'gpt2_tokens': 408000, 'sec': 587}
+{'update': 3500, 'L': 2, 'loss': 8.07028791882658e-06, 'examples': 194800, 'gpt2_tokens': 420000, 'sec': 604, 'acc8': 0.168, 'acc32': 0.176}
+{'update': 3600, 'L': 1, 'loss': 6.598833826956252e-06, 'examples': 199880, 'gpt2_tokens': 432000, 'sec': 623}
+{'update': 3700, 'L': 1, 'loss': 6.182963666105934e-06, 'examples': 204940, 'gpt2_tokens': 444000, 'sec': 641}
+{'update': 3800, 'L': 1, 'loss': 6.039659815542109e-06, 'examples': 209860, 'gpt2_tokens': 456000, 'sec': 658}
+{'update': 3900, 'L': 2, 'loss': 5.936021727848128e-06, 'examples': 214720, 'gpt2_tokens': 468000, 'sec': 675}
+{'update': 4000, 'L': 2, 'loss': 4.663376578832868e-06, 'examples': 219760, 'gpt2_tokens': 480000, 'sec': 692, 'acc8': 0.16, 'acc32': 0.17}
+{'update': 4100, 'L': 4, 'loss': 1.0278182838166003, 'examples': 223860, 'gpt2_tokens': 492000, 'sec': 711}
+{'update': 4200, 'L': 4, 'loss': 0.7584015839143831, 'examples': 227948, 'gpt2_tokens': 504000, 'sec': 728}
+{'update': 4300, 'L': 2, 'loss': 0.5185210347101201, 'examples': 232164, 'gpt2_tokens': 516000, 'sec': 745}
+{'update': 4400, 'L': 1, 'loss': 0.5138140908579044, 'examples': 236424, 'gpt2_tokens': 528000, 'sec': 762}
+{'update': 4500, 'L': 1, 'loss': 0.5995556792345542, 'examples': 240544, 'gpt2_tokens': 540000, 'sec': 779, 'acc8': 0.166, 'acc32': 0.164}
+{'update': 4600, 'L': 2, 'loss': 0.645123005961932, 'examples': 244460, 'gpt2_tokens': 552000, 'sec': 797}
+{'update': 4700, 'L': 2, 'loss': 0.5231935211770724, 'examples': 248592, 'gpt2_tokens': 564000, 'sec': 814}
+{'update': 4800, 'L': 4, 'loss': 0.6124041990147816, 'examples': 252544, 'gpt2_tokens': 576000, 'sec': 831}
+{'update': 4900, 'L': 2, 'loss': 0.4098627167766881, 'examples': 256636, 'gpt2_tokens': 588000, 'sec': 848}
+{'update': 5000, 'L': 2, 'loss': 0.31593995751564763, 'examples': 260896, 'gpt2_tokens': 600000, 'sec': 865, 'acc8': 0.184, 'acc32': 0.146}
+{'update': 5100, 'L': 4, 'loss': 0.48565610638223006, 'examples': 264840, 'gpt2_tokens': 612000, 'sec': 884}
+{'update': 5200, 'L': 1, 'loss': 0.30885109797848825, 'examples': 269152, 'gpt2_tokens': 624000, 'sec': 901}
+{'update': 5300, 'L': 2, 'loss': 0.4065926617825471, 'examples': 273040, 'gpt2_tokens': 636000, 'sec': 918}
+{'update': 5400, 'L': 4, 'loss': 0.4317509490098018, 'examples': 276940, 'gpt2_tokens': 648000, 'sec': 935}
+{'update': 5500, 'L': 4, 'loss': 0.3578248952292597, 'examples': 281152, 'gpt2_tokens': 660000, 'sec': 952, 'acc8': 0.202, 'acc32': 0.17}
+{'update': 5600, 'L': 2, 'loss': 0.3595770767184604, 'examples': 285248, 'gpt2_tokens': 672000, 'sec': 970}
+{'update': 5700, 'L': 1, 'loss': 0.327141450860845, 'examples': 289412, 'gpt2_tokens': 684000, 'sec': 987}
+{'update': 5800, 'L': 1, 'loss': 0.42231264439642474, 'examples': 293328, 'gpt2_tokens': 696000, 'sec': 1004}
+{'update': 5900, 'L': 2, 'loss': 0.29521400376650037, 'examples': 297700, 'gpt2_tokens': 708000, 'sec': 1021}
+{'update': 6000, 'L': 1, 'loss': 0.34654674184989287, 'examples': 301928, 'gpt2_tokens': 720000, 'sec': 1038, 'acc8': 0.17, 'acc32': 0.154}
+{'update': 6100, 'L': 2, 'loss': 0.7565468934883666, 'examples': 305332, 'gpt2_tokens': 731928, 'sec': 1057}
+{'update': 6200, 'L': 4, 'loss': 0.7379048145752131, 'examples': 308657, 'gpt2_tokens': 743853, 'sec': 1073}
+{'update': 6300, 'L': 8, 'loss': 0.6327593314905243, 'examples': 312209, 'gpt2_tokens': 755781, 'sec': 1090}
+{'update': 6400, 'L': 2, 'loss': 0.5522060325059328, 'examples': 315870, 'gpt2_tokens': 767730, 'sec': 1107}
+{'update': 6500, 'L': 2, 'loss': 0.6573740706514399, 'examples': 319298, 'gpt2_tokens': 779670, 'sec': 1123, 'acc8': 0.198, 'acc32': 0.142}
+{'update': 6600, 'L': 4, 'loss': 0.7689522815578129, 'examples': 322665, 'gpt2_tokens': 791577, 'sec': 1141}
+{'update': 6700, 'L': 1, 'loss': 0.7941869927260541, 'examples': 325927, 'gpt2_tokens': 803475, 'sec': 1158}
+{'update': 6800, 'L': 2, 'loss': 0.6421842055486263, 'examples': 329577, 'gpt2_tokens': 815409, 'sec': 1175}
+{'update': 6900, 'L': 4, 'loss': 0.7771920496664529, 'examples': 332850, 'gpt2_tokens': 827310, 'sec': 1191}
+{'update': 7000, 'L': 2, 'loss': 0.6970482801209653, 'examples': 336263, 'gpt2_tokens': 839235, 'sec': 1208, 'acc8': 0.17, 'acc32': 0.184}
+{'update': 7100, 'L': 8, 'loss': 0.6834431790474901, 'examples': 339492, 'gpt2_tokens': 851160, 'sec': 1226}
+{'update': 7200, 'L': 8, 'loss': 0.6787672860869384, 'examples': 342852, 'gpt2_tokens': 863076, 'sec': 1243}
+{'update': 7300, 'L': 4, 'loss': 0.654166234409098, 'examples': 346289, 'gpt2_tokens': 875001, 'sec': 1260}
+{'update': 7400, 'L': 1, 'loss': 0.7508885498413349, 'examples': 349668, 'gpt2_tokens': 886896, 'sec': 1277}
+{'update': 7500, 'L': 4, 'loss': 0.5780273448925141, 'examples': 353321, 'gpt2_tokens': 898821, 'sec': 1293, 'acc8': 0.204, 'acc32': 0.192}
+{'update': 7600, 'L': 2, 'loss': 0.6094168828470174, 'examples': 356744, 'gpt2_tokens': 910752, 'sec': 1312}
+{'update': 7700, 'L': 8, 'loss': 0.825623775802519, 'examples': 359809, 'gpt2_tokens': 922641, 'sec': 1328}
+{'update': 7800, 'L': 8, 'loss': 0.714334191590873, 'examples': 363079, 'gpt2_tokens': 934551, 'sec': 1345}
+{'update': 7900, 'L': 1, 'loss': 0.5831938979168058, 'examples': 366537, 'gpt2_tokens': 946485, 'sec': 1362}
+{'update': 8000, 'L': 4, 'loss': 0.5701169453967168, 'examples': 369970, 'gpt2_tokens': 958422, 'sec': 1378, 'acc8': 0.184, 'acc32': 0.168}
+EVAL {"acc": {"8": 0.201, "16": 0.177, "32": 0.167, "64": 0.163, "128": 0.164}} None
+DONE c1/runs/p67b_fpcmp_s5

@@ -1,0 +1,6 @@
+NVIDIA GeForce RTX 3090, 580.178.04
+16:39:15 start gsmlen/runs/tc_s1
+16:39:15 start gsmlen/runs/ws_s1
+19:10:50 evaluated gsmlen/runs/tc_s1 rc 0
+21:05:16 evaluated gsmlen/runs/ws_s1 rc 0
+21:05:16 QUEUE_DONE

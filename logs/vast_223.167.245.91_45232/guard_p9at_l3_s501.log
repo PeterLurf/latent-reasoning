@@ -1,0 +1,10 @@
+02:42:18 guarding runs/p9at_l3_s501 pid 0 max relaunch 3
+02:42:18 launched pid 771
+03:02:28 stage-1 failure at step 4000; archived as runs/p9at_l3_s501_stage1fail_1
+03:02:28 launched pid 976
+03:21:38 stage-1 failure at step 4000; archived as runs/p9at_l3_s501_stage1fail_2
+03:21:38 launched pid 1131
+03:40:48 stage-1 failure at step 4000; archived as runs/p9at_l3_s501_stage1fail_3
+03:40:48 launched pid 1322
+03:59:59 stage-1 failure at step 4000; archived as runs/p9at_l3_s501_stage1fail_4
+03:59:59 relaunch budget spent

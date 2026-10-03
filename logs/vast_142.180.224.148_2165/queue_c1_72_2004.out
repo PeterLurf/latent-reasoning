@@ -1,0 +1,10 @@
+NVIDIA GeForce RTX 3090, 550.144.03
+04:29:50 start c1/runs/p72_pf_s2004
+04:29:50 start c1/runs/p72_rf_s2004
+04:29:50 start c1/runs/p72_pfstd_s2004
+04:29:50 start c1/runs/p72_pt_s2004
+04:51:54 evaluated c1/runs/p72_rf_s2004 rc 0
+04:52:01 evaluated c1/runs/p72_pf_s2004 rc 0
+04:52:10 evaluated c1/runs/p72_pfstd_s2004 rc 0
+04:55:39 evaluated c1/runs/p72_pt_s2004 rc 0
+04:55:39 QUEUE_DONE

@@ -1,0 +1,10 @@
+NVIDIA GeForce RTX 3090, 555.58.02
+02:38:44 start c1/runs/p67b_d1b_s4
+02:38:44 start c1/runs/p67b_reset_s4
+02:38:44 start c1/runs/p67b_fpex_s4
+02:38:44 start c1/runs/p67b_fpcmp_s4
+02:54:23 evaluated c1/runs/p67b_fpcmp_s4 rc 0
+03:05:11 evaluated c1/runs/p67b_reset_s4 rc 0
+03:06:28 evaluated c1/runs/p67b_d1b_s4 rc 0
+03:10:29 evaluated c1/runs/p67b_fpex_s4 rc 0
+03:10:29 QUEUE_DONE

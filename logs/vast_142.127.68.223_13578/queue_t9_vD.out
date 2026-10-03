@@ -1,0 +1,81 @@
+20:00:57 start t9l3_s501 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 501 --layers 3 )
+20:45:37 trained t9l3_s501 rc 0
+no model for t9l3_s501
+20:45:37 evaluated t9l3_s501
+20:45:38 start t9l4_s522 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 522 --layers 4 )
+22:29:38 trained t9l4_s522 rc 0
+run  results/competence_t9l4_s522.json
+run  results/competence_matched_t9l4_s522.json
+run  results/length_gen_t9l4_s522.json
+run  results/delayed_trace_t9l4_s522.json
+run  results/budget_sweep_t9l4_s522.json
+EVAL_DONE t9l4_s522
+22:30:11 evaluated t9l4_s522
+22:30:11 start t9w512_s543 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 543 --d 512 )
+00:18:11 trained t9w512_s543 rc 0
+run  results/competence_t9w512_s543.json
+run  results/competence_matched_t9w512_s543.json
+run  results/length_gen_t9w512_s543.json
+run  results/delayed_trace_t9w512_s543.json
+run  results/budget_sweep_t9w512_s543.json
+EVAL_DONE t9w512_s543
+00:18:47 evaluated t9w512_s543
+00:18:47 start t9l3_s505 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 505 --layers 3 )
+01:37:47 trained t9l3_s505 rc 0
+run  results/competence_t9l3_s505.json
+run  results/competence_matched_t9l3_s505.json
+run  results/length_gen_t9l3_s505.json
+run  results/delayed_trace_t9l3_s505.json
+run  results/budget_sweep_t9l3_s505.json
+EVAL_DONE t9l3_s505
+01:38:12 evaluated t9l3_s505
+01:38:12 start t9l4_s526 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 526 --layers 4 )
+03:22:12 trained t9l4_s526 rc 0
+run  results/competence_t9l4_s526.json
+run  results/competence_matched_t9l4_s526.json
+run  results/length_gen_t9l4_s526.json
+run  results/delayed_trace_t9l4_s526.json
+run  results/budget_sweep_t9l4_s526.json
+EVAL_DONE t9l4_s526
+03:22:41 evaluated t9l4_s526
+03:22:41 start t9w512_s547 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 547 --d 512 )
+04:23:22 trained t9w512_s547 rc 0
+no model for t9w512_s547
+04:23:22 evaluated t9w512_s547
+04:23:22 start t9l3_s511 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 511 --layers 3 )
+05:42:22 trained t9l3_s511 rc 0
+run  results/competence_t9l3_s511.json
+run  results/competence_matched_t9l3_s511.json
+run  results/length_gen_t9l3_s511.json
+run  results/delayed_trace_t9l3_s511.json
+run  results/budget_sweep_t9l3_s511.json
+EVAL_DONE t9l3_s511
+05:42:56 evaluated t9l3_s511
+05:42:56 start t9l4_s532 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 532 --layers 4 )
+07:26:56 trained t9l4_s532 rc 0
+run  results/competence_t9l4_s532.json
+run  results/competence_matched_t9l4_s532.json
+run  results/length_gen_t9l4_s532.json
+run  results/delayed_trace_t9l4_s532.json
+run  results/budget_sweep_t9l4_s532.json
+EVAL_DONE t9l4_s532
+07:27:28 evaluated t9l4_s532
+07:27:28 start t9w512_s553 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 553 --d 512 )
+09:15:28 trained t9w512_s553 rc 0
+run  results/competence_t9w512_s553.json
+run  results/competence_matched_t9w512_s553.json
+run  results/length_gen_t9w512_s553.json
+run  results/delayed_trace_t9w512_s553.json
+run  results/budget_sweep_t9w512_s553.json
+EVAL_DONE t9w512_s553
+09:16:04 evaluated t9w512_s553
+09:16:04 start t9l3_s515 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 515 --layers 3 )
+10:36:05 trained t9l3_s515 rc 0
+run  results/competence_t9l3_s515.json
+run  results/competence_matched_t9l3_s515.json
+run  results/length_gen_t9l3_s515.json
+run  results/delayed_trace_t9l3_s515.json
+run  results/budget_sweep_t9l3_s515.json
+EVAL_DONE t9l3_s515
+10:36:36 evaluated t9l3_s515
+10:36:36 QUEUE_DONE

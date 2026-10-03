@@ -1,0 +1,7 @@
+05:16:52 data sha 6ee3ef95405dc43b094824dff8973753c587fe95a00762d2023bd64a941504f2 a0087fe4a7496a47f76d9436e6bb089c8a8869f3f343f71057355e127d0c33da
+NVIDIA GeForce RTX 3090, 580.178.04
+05:16:52 start c1/runs/p91_base_s4
+05:20:58 evaluated c1/runs/p91_base_s4 rc 0
+05:20:58 start boxes/runs_s5/smoke92
+05:21:42 evaluated boxes/runs_s5/smoke92 rc 0
+05:21:42 QUEUE_DONE

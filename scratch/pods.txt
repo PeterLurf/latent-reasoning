@@ -485,3 +485,8 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53973796 vast offer 51428264 created 2026-10-03 02:03: label f89-proof, queue scratch/gen_q_f89proof.txt (logged at create by vdeploy_toy.sh)
 53971926 vast | gen-h3 DESTROYED_VERIFIED 2026-10-03 02:13: BAD HOST (cuInit failed at deploy, 02:03); queue redeployed on a new offer
 53974693 vast offer 43731723 created 2026-10-03 02:13: label gen-h3, queue scratch/gen_q_h3.txt (logged at create by vdeploy_toy.sh)
+53971922 vast | gen_h2 DESTROYED_VERIFIED 2026-10-03 03:23 after verified per-run fetch (c1/runs/p91_long_s5 c1/runs/p91_curr_s4 c1/runs/p91_base_s6 boxes/runs_s5/l92_k4_s2)
+53971931 vast | gen_h5 DESTROYED_VERIFIED 2026-10-03 03:23 after verified per-run fetch (c1/runs/p91_long_s8 c1/runs/p91_wdsp_s7 c1/runs/p91_curr_s7 c1/runs/p91_wdsp_s8 c1/runs/p91_curr_s8)
+53974693 vast | gen_h3 DESTROYED_VERIFIED 2026-10-03 03:50 after verified per-run fetch (c1/runs/p91_wdsp_s5 c1/runs/p91_curr_s5 c1/runs/p91_base_s7 boxes/runs_s5/l92_k4_s3)
+53971930 vast | gen_h4 DESTROYED_VERIFIED 2026-10-03 03:53 after verified per-run fetch (c1/runs/p91_long_s6 c1/runs/p91_long_s7 c1/runs/p91_curr_s6 c1/runs/p91_wdsp_s6 c1/runs/p91_base_s8)
+53971920 vast | gen_h1 DESTROYED_VERIFIED 2026-10-03 04:08 after verified per-run fetch (c1/runs/p91_long_s4 c1/runs/p91_wdsp_s4 boxes/runs_s5/l92_k4_s1 c1/runs/p91_base_s5)

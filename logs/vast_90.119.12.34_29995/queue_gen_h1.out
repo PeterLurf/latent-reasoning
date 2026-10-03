@@ -1,0 +1,11 @@
+06:05:27 data sha 6ee3ef95405dc43b094824dff8973753c587fe95a00762d2023bd64a941504f2 a0087fe4a7496a47f76d9436e6bb089c8a8869f3f343f71057355e127d0c33da
+NVIDIA GeForce RTX 3090, 595.84
+06:05:27 start boxes/runs_s5/l92_k4_s1
+06:05:27 start c1/runs/p91_long_s4
+06:54:51 evaluated c1/runs/p91_long_s4 rc 0
+06:54:51 start c1/runs/p91_wdsp_s4
+07:48:52 evaluated c1/runs/p91_wdsp_s4 rc 0
+07:48:52 start c1/runs/p91_base_s5
+07:56:49 evaluated boxes/runs_s5/l92_k4_s1 rc 0
+08:00:01 evaluated c1/runs/p91_base_s5 rc 0
+08:00:01 QUEUE_DONE

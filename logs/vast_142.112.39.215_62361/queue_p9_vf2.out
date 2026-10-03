@@ -1,0 +1,19 @@
+02:36:30 start p9at_fork_s561 (--no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 561 --shapes fork --p_fork 0.5 --anytime 1 )
+03:57:30 trained p9at_fork_s561 rc 0
+run  results/competence_p9at_fork_s561.json
+run  results/competence_matched_p9at_fork_s561.json
+run  results/length_gen_p9at_fork_s561.json
+run  results/delayed_trace_p9at_fork_s561.json
+run  results/budget_sweep_p9at_fork_s561.json
+EVAL_DONE p9at_fork_s561
+03:57:56 evaluated p9at_fork_s561
+03:57:56 start p9at_fork_s565 (--no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 565 --shapes fork --p_fork 0.5 --anytime 1 )
+05:18:56 trained p9at_fork_s565 rc 0
+run  results/competence_p9at_fork_s565.json
+run  results/competence_matched_p9at_fork_s565.json
+run  results/length_gen_p9at_fork_s565.json
+run  results/delayed_trace_p9at_fork_s565.json
+run  results/budget_sweep_p9at_fork_s565.json
+EVAL_DONE p9at_fork_s565
+05:19:21 evaluated p9at_fork_s565
+05:19:21 QUEUE_DONE

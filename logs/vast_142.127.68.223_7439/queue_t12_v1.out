@@ -1,0 +1,29 @@
+07:50:50 start pt12_s900 (--seed 900 --anytime 1 --step_adv 0.5)
+08:45:50 trained pt12_s900 rc 0
+theory/runs/pt12_s900 K'=0 delayed 0.719 upfront 0.500 depth(delayed) {1:1.00, 2:0.99, 3:0.00, 4:0.00, 5:0.00, 6:0.00, 99:1.00}
+theory/runs/pt12_s900 K'=1 delayed 0.769 upfront 0.720 depth(delayed) {1:1.00, 2:1.00, 3:0.38, 4:0.00, 5:0.00, 6:0.00, 99:1.00}
+theory/runs/pt12_s900 K'=2 delayed 0.848 upfront 0.756 depth(delayed) {1:1.00, 2:1.00, 3:0.87, 4:0.26, 5:0.02, 6:0.01, 99:0.98}
+theory/runs/pt12_s900 K'=3 delayed 0.899 upfront 0.766 depth(delayed) {1:1.00, 2:1.00, 3:0.89, 4:0.69, 5:0.40, 6:0.04, 99:0.97}
+theory/runs/pt12_s900 K'=4 delayed 0.915 upfront 0.766 depth(delayed) {1:1.00, 2:1.00, 3:0.89, 4:0.73, 5:0.64, 6:0.55, 99:0.95}
+theory/runs/pt12_s900 K'=5 delayed 0.916 upfront 0.773 depth(delayed) {1:1.00, 2:1.00, 3:0.90, 4:0.74, 5:0.67, 6:0.65, 99:0.95}
+theory/runs/pt12_s900 K'=6 delayed 0.916 upfront 0.773 depth(delayed) {1:1.00, 2:1.00, 3:0.90, 4:0.74, 5:0.68, 6:0.68, 99:0.95}
+theory/runs/pt12_s900 d1:1.00 d2:0.99 d3:0.90 d4:0.79 d5:0.74 d6:0.70
+theory/runs/pt12_s900 K'= 0 near 1.00 1.00 0.50 0.50 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/pt12_s900 K'= 2 near 1.00 1.00 0.95 0.70 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/pt12_s900 K'= 4 near 1.00 0.99 0.95 0.88 0.82 0.67 | far 0.50 0.49 0.49 0.50 0.50 0.50
+theory/runs/pt12_s900 K'= 6 near 1.00 0.99 0.95 0.88 0.82 0.75 | far 0.57 0.49 0.50 0.50 0.50 0.49
+theory/runs/pt12_s900 K'= 8 near 1.00 0.99 0.95 0.88 0.82 0.76 | far 0.61 0.49 0.50 0.50 0.50 0.49
+theory/runs/pt12_s900 K'=10 near 1.00 0.99 0.94 0.88 0.83 0.77 | far 0.62 0.50 0.49 0.50 0.50 0.49
+theory/runs/pt12_s900 K'=12 near 1.00 0.99 0.94 0.88 0.83 0.77 | far 0.63 0.51 0.49 0.50 0.50 0.49
+theory/runs/pt12_s900 K'=16 near 1.00 0.99 0.94 0.88 0.82 0.77 | far 0.64 0.52 0.50 0.50 0.51 0.49
+EVAL theory/runs/pt12_s900 stage full delayed 0.916 m5 0.739 gate True d7 0.629 extrap True far8-10 0.501
+08:46:00 evaluated pt12_s900
+08:46:00 start pt12_s901 (--seed 901 --anytime 1 --step_adv 0.5)
+09:18:41 trained pt12_s901 rc 0
+no model for pt12_s901
+09:18:41 evaluated pt12_s901
+09:18:41 start pt12_s906 (--seed 906 --anytime 1 --step_adv 0.5)
+09:51:21 trained pt12_s906 rc 0
+no model for pt12_s906
+09:51:21 evaluated pt12_s906
+09:51:21 QUEUE_DONE

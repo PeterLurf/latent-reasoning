@@ -1,0 +1,10 @@
+{'units_per_epoch': 206397, 'steps_per_epoch': 6449, 'total_steps': 38694, 'eff_batch': 32}
+{'step': 6449, 'epoch': 1.0, 'valid_short_acc': 0.3867403314917127, 'eval_sec': 7, 'sec': 1728, 'saved': True}
+{'step': 12898, 'epoch': 2.0, 'valid_short_acc': 0.4585635359116022, 'eval_sec': 3, 'sec': 3457, 'saved': True}
+{'step': 19347, 'epoch': 3.0, 'valid_short_acc': 0.48066298342541436, 'eval_sec': 2, 'sec': 5180, 'saved': True}
+{'step': 25796, 'epoch': 4.0, 'valid_short_acc': 0.5303867403314917, 'eval_sec': 3, 'sec': 6913, 'saved': True}
+{'step': 32245, 'epoch': 5.0, 'valid_short_acc': 0.49171270718232046, 'eval_sec': 3, 'sec': 8641}
+{'step': 38694, 'epoch': 6.0, 'valid_short_acc': 0.47513812154696133, 'eval_sec': 2, 'sec': 10369}
+DONE {'units_per_epoch': 206397, 'steps_per_epoch': 6449, 'total_steps': 38694, 'eff_batch': 32, 'best_valid_short': 0.5303867403314917, 'train_sec': 10369, 'tokens': 69617656, 'sec_per_step': 0.268}
+test acc 0.17058377558756635
+aug_long acc 0.019547751180319723
