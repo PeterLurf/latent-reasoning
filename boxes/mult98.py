@@ -337,15 +337,23 @@ def train(a):
         for gr in opt.param_groups:
             gr["lr"] = a.lr * min(1, step / 100) * 0.5 * (1 + math.cos(math.pi * step / a.steps))
         stage = min(n_stages - 1, (step - 1) * n_stages // a.steps) if a.arm == "coco" else 0
-        with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
-            if a.arm in ("genm", "mask"):
-                prefix, start, ops, st, ans = gen_batch(Dtr, rng, a.bs, dev)
-                loss, _, _, _ = m.chunk(prefix, start, ops, step_tgt=st, ans_tgt=ans)
-            else:
-                q, text = seq_batch(Dtr, rng, a.bs, dev, a.arm, stage)
-                hs, _ = seq_forward(g, q, stage if a.arm == "coco" else 0, text)
-                lg = g.logits(hs).float(); loss = F.cross_entropy(lg.reshape(-1, lg.shape[-1]), text.reshape(-1))
-        opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(loss.item())
+        micro = a.micro or (1 if a.arm in ("genm", "mask") else 2)          # memory: micro-batches, same effective batch
+        if a.arm in ("genm", "mask"):
+            prefix, start, ops, st, ans = gen_batch(Dtr, rng, a.bs, dev)
+        else:
+            q, text = seq_batch(Dtr, rng, a.bs, dev, a.arm, stage)
+        opt.zero_grad(); tot = 0.0; mb = a.bs // micro
+        for i in range(micro):
+            sl = slice(i * mb, (i + 1) * mb)
+            with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+                if a.arm in ("genm", "mask"):
+                    loss, _, _, _ = m.chunk(prefix[sl], None if start is None else start[sl], ops[sl], step_tgt=[t[sl] for t in st],
+                                            ans_tgt=None if ans is None else ans[sl])
+                else:
+                    hs, _ = seq_forward(g, q[sl], stage if a.arm == "coco" else 0, text[sl])
+                    lg = g.logits(hs).float(); loss = F.cross_entropy(lg.reshape(-1, lg.shape[-1]), text[sl].reshape(-1))
+            (loss / micro).backward(); tot += loss.item() / micro
+        torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(tot)
         if step % 100 == 0 or step == a.steps:
             rec = {"step": step, "loss": float(np.mean(hist)), "sec": round(time.time() - t0)}; hist = []
             if a.arm == "coco":
@@ -420,6 +428,7 @@ def main():
     ap.add_argument("--task", required=True, choices=["4x4", "5x5"]); ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--steps", type=int, default=24000); ap.add_argument("--bs", type=int, default=64)
     ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--eval_bs", type=int, default=250)
+    ap.add_argument("--micro", type=int, default=0, help="micro-batches per update (0: 1 for genm/mask, 2 for coco/tc/nc: 3 stage-0 jobs OOM a 24 GB card)")
     ap.add_argument("--test_n", type=int, default=None, help="smoke only"); ap.add_argument("--train_limit", type=int, default=0, help="smoke only")
     ap.add_argument("--log_every", type=int, default=2000); ap.add_argument("--log_n", type=int, default=200)
     ap.add_argument("--train_dir", default=os.path.join(ROOT, "bench", "data", "mult_train"))
