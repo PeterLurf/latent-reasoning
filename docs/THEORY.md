@@ -82,7 +82,8 @@ Path independence tracks one-loop reach (Spearman −0.87, post hoc).
 at 12 codes. Every neural cell fails (GPT-2, random GPT-2, small transformer, MLP). Hard codes do not decay with length.
 **Latent restarts (§92, 92-1):** an S5 state carried in GPT-2 latent slots (per-op aux targets, codebook snap) is
 exact to 2,048 from training at 128 (k = 4, 5/5 seeds) and certified at every length (k = 1, 0 / 14,400 errors).
-Removing the latents gives about 0, at 0.3–0.4× the written state's FLOPs. C1 + C2 + C3 + C6, scaffolded, not C4.
+Removing the latents gives about 0, at 0.29–0.45× the written state's FLOPs (depending on whether the written
+state pays full-vocabulary logits; 92-3). C1 + C2 + C3 + C6, scaffolded, not C4.
 **In-depth composition (§88 / §90 / §91):** a looped GPT-2 with per-iteration targets composes unseen op sequences
 reliably (5/5) given word diversity and enough steps.
 **Stable latent (§72b / §73):**
