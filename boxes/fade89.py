@@ -252,8 +252,25 @@ def main():
     ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--device", default="cuda:0")
     ap.add_argument("--init", default=os.path.join(ROOT, "prosqa", "ckpt", "gpt2_pretrained.bin"))
     ap.add_argument("--smoke", action="store_true", help="plumbing only: tiny eval")
+    ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt only (a training run's eval was stopped)")
     ap.add_argument("--out", required=True)
-    train(ap.parse_args())
+    a = ap.parse_args()
+    if a.eval_only:
+        eval_only(a)
+    else:
+        train(a)
+
+
+def eval_only(a):
+    """Re-run evaluate() on a finished training run's model.pt (same args; train_sec from the last log line)."""
+    dev = a.device; amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
+    f = Fade(load_model(a.init, dev), a.arm).to(dev)
+    if a.inv_dec:
+        f.inv = nn.Linear(768, 16).to(dev)
+    f.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev))
+    last = [json.loads(l) for l in open(os.path.join(a.out, "log.jsonl"))][-1]
+    assert last["step"] == a.steps, "model.pt is not from a finished run"
+    evaluate(f, a, dev, amp, last["sec"])
 
 
 if __name__ == "__main__":
