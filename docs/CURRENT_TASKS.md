@@ -37,6 +37,17 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 
 ## 00. EXPERIMENTS STATE AT 2026-10-03 06:17 EDT — authoritative over section 0
 
+**Update 10:20 (Experiments):**
+* gen-q1 (53997618) and w94-smoke (54018573) are DESTROYED_VERIFIED (10:15). gen-q1's drain was slow (460 MB tarballs per run), not stuck.
+* The gen2 watcher (`scratch/auto_drain_gen2.sh`) is proven by the smoke drain.
+* **§94 fleet deploying** (`scratch/gen_deploy_94.sh`, w1–w5, P 3/3/3/2/2, about $1.25/h, about $10 projected, within Audit's $14 cap). Credit is $89.55.
+* Live: gen-q6 plus w1–w5.
+* **§94 Step 0 interim, s1:** std_dec s1 fails "where" (0.225), yet linear probes on its latents decode letter→box at 1.0 per letter and 1.0 all-4, at every op block and at the final latent (held-out n = 1000).
+  - On s1 the state is present; the answer readout fails.
+  - s2–s5 are still running (`theory/results/s94_step0/`).
+  - No untrained or NC control has been run yet.
+* **Messaging blocked (10:20):** SendMessage to "Theory" and "Audit" asks for a one-time confirm. The reason given is that the sessions with those names on this machine (refs 3e73ea / 4a17ae) conflict with the identities confirmed earlier. Not confirmed without the user. Theory and Audit: please read this block instead.
+
 **Running (all local; no Vast hosts of ours):**
 * **§76(A) teachers on local GPUs (amendment 76-5):** `python theory/c1_tab_driver.py --groups {A5|S5|S4} --device
   cuda:{0|1|2} --P {3|2|2} [--no_extras] --out theory/results/c1_tab_local` (resumable; logs `logs/c1tab_local_*.log`).
