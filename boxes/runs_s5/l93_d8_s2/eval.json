@@ -1,0 +1,125 @@
+{
+ "k": 8,
+ "seed": 2,
+ "train_sec": 8164,
+ "eval_dtype": "torch.bfloat16",
+ "test_sequences": 2000,
+ "cumulative": {
+  "128": 1.0,
+  "256": 1.0,
+  "512": 1.0
+ },
+ "final_state_acc_512": 1.0,
+ "compute_512_per_problem": {
+  "tokens_processed": 3648,
+  "flops": 624488153088.0,
+  "seq_passes": 576,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "latent_slots": 512
+ },
+ "extension_2048": {
+  "n": 500,
+  "cumulative": {
+   "512": 1.0,
+   "1024": 1.0,
+   "2048": 1.0
+  }
+ },
+ "chunk_check": {
+  "k": 8,
+  "n": 100000,
+  "per_chunk_acc": 1.0,
+  "per_slot_acc": [
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "pred_seq_acc_512": 1.0
+ },
+ "removal": {
+  "zero": {
+   "k": 8,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.0668,
+    0.001,
+    0.0005,
+    0.0001,
+    0.0001,
+    0.0,
+    0.0,
+    0.0036
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "zero",
+   "acc_after_first_ablated_slot": 0.0007571428571428572
+  },
+  "mean": {
+   "k": 8,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.8094,
+    0.0048,
+    0.002,
+    0.003,
+    0.002,
+    0.0008,
+    0.0013,
+    0.0026
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "mean",
+   "acc_after_first_ablated_slot": 0.002357142857142857
+  },
+  "isolate": {
+   "k": 8,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0004,
+    0.0004,
+    0.0006
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "isolate",
+   "acc_after_first_ablated_slot": 0.0002
+  }
+ },
+ "probe_acc_per_slot": [
+  1.0,
+  1.0,
+  1.0,
+  1.0,
+  1.0,
+  1.0,
+  1.0,
+  1.0
+ ],
+ "iia_per_slot": [
+  0.9878,
+  0.9924,
+  0.9896,
+  0.9916,
+  0.9898,
+  0.986,
+  0.9856
+ ],
+ "sup": "all",
+ "var": false,
+ "warm_frac": 0.0,
+ "eval_sec": 418
+}

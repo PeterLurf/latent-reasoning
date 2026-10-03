@@ -1,0 +1,125 @@
+{
+ "k": 8,
+ "seed": 3,
+ "train_sec": 4827,
+ "eval_dtype": "torch.bfloat16",
+ "test_sequences": 2000,
+ "cumulative": {
+  "128": 0.0,
+  "256": 0.0,
+  "512": 0.0
+ },
+ "final_state_acc_512": 0.0,
+ "compute_512_per_problem": {
+  "tokens_processed": 3648,
+  "flops": 624488153088.0,
+  "seq_passes": 576,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "latent_slots": 512
+ },
+ "extension_2048": {
+  "n": 500,
+  "cumulative": {
+   "512": 0.0,
+   "1024": 0.0,
+   "2048": 0.0
+  }
+ },
+ "chunk_check": {
+  "k": 8,
+  "n": 100000,
+  "per_chunk_acc": 0.0,
+  "per_slot_acc": [
+   0.00057,
+   0.00037,
+   0.0019,
+   0.00345,
+   0.00149,
+   0.00073,
+   0.00092,
+   0.00031
+  ],
+  "pred_seq_acc_512": 0.0
+ },
+ "removal": {
+  "zero": {
+   "k": 8,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.0053,
+    0.0042,
+    0.002,
+    0.0,
+    0.0001,
+    0.0001,
+    0.0,
+    0.0004
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "zero",
+   "acc_after_first_ablated_slot": 0.0009714285714285714
+  },
+  "mean": {
+   "k": 8,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.0002,
+    0.0004,
+    0.002,
+    0.0026,
+    0.002,
+    0.0005,
+    0.0022,
+    0.0005
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "mean",
+   "acc_after_first_ablated_slot": 0.0014571428571428572
+  },
+  "isolate": {
+   "k": 8,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "isolate",
+   "acc_after_first_ablated_slot": 0.0
+  }
+ },
+ "probe_acc_per_slot": [
+  0.012399999424815178,
+  0.00019999999494757503,
+  0.0009999999310821295,
+  0.0009999999310821295,
+  0.0015999999595806003,
+  0.0023999998811632395,
+  0.00039999998989515007,
+  0.00139999995008111
+ ],
+ "iia_per_slot": [
+  0.0006,
+  0.0,
+  0.0004,
+  0.0006,
+  0.0002,
+  0.0004,
+  0.0002
+ ],
+ "sup": "last",
+ "var": false,
+ "warm_frac": 0.0,
+ "eval_sec": 217
+}
