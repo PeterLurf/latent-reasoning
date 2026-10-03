@@ -7112,6 +7112,30 @@ A5 free table, seeds 2131–2135).**
   pilot passing. The three k = 1 runs it started were stopped within about 1 min and voided (kept in
   `boxes/runs_s5/void86`).
 
+**§88 result (2026-10-02 21:29 EDT; run and scored by the experiments session, `docs/PROTOCOL12.md`,
+`theory/results/score_s88.json`).** The scorer `c1/score_88.py` (G1, G2, kill) was committed after the runs finished but
+before any eval.json was read (disclosed).
+
+| (b) unseen k-op words (median) | k = 2 | k = 3 |
+|---|---|---|
+| **LOOP-align** (per-iteration targets) | 0.061 (2 seeds: 0.091, 0.030) | **1.000 (3/3 seeds)**; (a) 1.000; training 1.000 |
+| LOOP-end (final target only) | 0.000 | 0.159 |
+| §80 P0 (no loop, end state) | 0.030 | 0.118 |
+
+* **Per-iteration (b), LOOP-align.** k = 2: iteration 1 0.97, iteration 2 0.06. k = 3: 1.00 / 1.00 / 1.00.
+* **Verdict as registered.**
+  - **G1 not met** (≥ 0.90 needed at both k; k = 2 fails), and **the kill fires at k = 2**.
+  - **G2 met:** LOOP-end < 0.50 at both k.
+* **Descriptive reading.**
+  - At k = 3 (about 151 training words), per-iteration-aligned depth recurrence gives **perfect in-pass composition of
+    unseen 3-op words** in every seed. That is where end-state training (P0 0.118) and an unaligned loop (0.159) fail.
+    It is the first positive answer to §80's question: C1 (use) and C2 in depth, with per-step targets, not C4.
+  - At k = 2 (only 25 training words) the second iteration does not generalise. The shared loop block has too little
+    word diversity to learn a reusable step.
+  - Scope (note 80-2 / 88-1): ≤ 815 training (state, word) pairs at k = 3.
+* **Run note.** align k = 2 s3 crashed (a GPU double-booking during the §86 chain error), was voided, and is requeued;
+  it cannot change the verdict.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
