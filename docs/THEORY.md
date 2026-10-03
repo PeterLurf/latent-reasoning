@@ -6285,6 +6285,29 @@ The Sinkhorn cell is not registered.**
 * **Consequence.** P2 (agreement ≥ 0.90 on a held-out family and its certificate in ≥ 3/5 seeds) now needs ≥ 3 of the
   remaining 4 seeds to pass on the same family.
 
+**§79 result (2026-10-02 20:39 EDT; scored by the experiments session, `docs/PROTOCOL12.md`, `theory/results/score_s79.json`;
+amendments 79-1 to 79-3).**
+* **P1 met.** PF-std is certified on the training phrasings in 4/5.
+  - Training certificates: TAB 5/5, RF-std 2/5, BOW 0/5.
+  - Sweep: 2 families 2/5, 4 families 4/5.
+* **P2 not met.** No held-out family reaches the bar, and PF-std's held-out family certificates are 0/5 everywhere.
+
+| held-out family (median agreement) | PF-std | RF-std | BOW |
+|---|---|---|---|
+| H1 (new verbs) | 0.806 | 0.704 | **0.889** |
+| H2 (different frame) | 0.413 | 0.722 | **0.792** |
+| H3 (number words) | 0.389 | 0.270 | **0.397** |
+| H4 (ordinals; minimal pairs) | 0.361 | 0.333 | 0.361 |
+| POS (casing) | 0.952 | 0.746 | 0.958 |
+| H4 word-order minimal pairs | **0.625** | 0.286 | 0.125 |
+
+* **Reading ("BOW ties PF-std").** BOW (pretrained word embeddings, no transformer) matches or beats PF-std on every
+  held-out family. Whatever transfers to unseen phrasings is **lexical**: the transformer adds nothing to transfer.
+  - PF-std's only advantage is word order (minimal pairs 0.625 vs BOW 0.125, at chance by construction), and it is not
+    enough to certify.
+  - So the latent machine, acquired from final answers, does not inherit operation semantics from the pretrained
+    transformer at this scale. C1 in a pretrained LM beyond hosting is again not shown.
+
 ## 80. A latent chunk machine: a discrete code carried across chunks of k operations, so the LM must compose inside its forward pass (pre-registered 2026-10-02 12:02 EDT, after Literature's check 9224385 and before any run; idea 1 of Theory's list, approved by Audit)
 
 **Why.** GPT-2 stores a latent automaton but does not compose missing rows (§76(B)). It does compose k operations inside
