@@ -7998,6 +7998,101 @@ sufficient.**
   **0.75× as metered and 0.72× with both sides' vocabulary-logit terms removed** (2.37e11 each: 512 × 6 rows). Against
   wc0k4r, GEN-1 would read 1.10×, which is the wrong comparison.
 
+## 98. General latent thinker, step 2a: §97's recipe on multi-digit multiplication (bench mult4x4 / mult5x5), against ICoT-SI and Coconut (pre-registered 2026-10-03 17:39 EDT, after Literature's check e206d92d and before any implementation or run; the user's plan, step 2)
+
+**Why.** §97 showed that one recipe with no hand-built state carries S5 exactly to 2,048: a text step target through
+the LM head, re-embedded text checkpoints, and one latent per op. Step 2 of the user's plan puts the same recipe on the
+bench ladder. This first rung is multi-digit multiplication: the published implicit-reasoning benchmark (Deng
+2311.01460, 2405.14838), scored on the same 1,000 test items per task as the published numbers.
+* **Prior** (e206d92d, `docs/LIT_S98_MULT_2026-10-03.md`).
+  - Only ICoT-KD and ICoT-SI report on these items. No Coconut, CODI, SIM-CoT, PCCoT or CoLaR numbers exist, so COCO-M
+    is a first measurement.
+  - **2510.00184** ("Why Can't Transformers Learn Multiplication?"): an auxiliary running-sum prediction loss unlocks
+    learning. It is the closest prior to the per-op S_j decode, and is cited.
+  - No length-generalisation result exists for any implicit or latent method. ICoT-SI is per-size (11×11 at 0.74).
+    Explicit baselines: Cho 2410.15787, Lee 2502.01612.
+
+**Task and data.** The implicit-CoT repo's `{4,5}_by_{4,5}_mult` files: digits least-significant first,
+`a * b || <steps> #### <product>`.
+* Train on its train split; test on `bench/data/mult_{4x4,5x5}_test.txt` (the published test items).
+* One task per run: 4×4 and 5×5 separately, as published.
+
+**Recipe mapping** (the same code path as §97's `gen` arm; nothing task-specific beyond reading the data's own format).
+* **Op j** (j = 1..n) = the multiplier digit b_j. Operand a is the problem's constant prefix and is visible in every
+  chunk.
+* **Step text j** = the dataset's own CoT segment j (segments split on " + "):
+  - step 1 = "P_1";
+  - step j > 1 = "+ P_j ( S_j )";
+  - the last segment as the data has it, then the answer.
+* **Chunk:** `[E(a and " *")] [E(start text)] [op_1] [slot_1] … [op_k] [slot_k]`.
+  - The start text is the previous step's text: the true text in training; the greedy-decoded, re-embedded text at test,
+    with the history cut. The first chunk has an empty start.
+  - Slot inputs are as §92/§97.
+* **Loss** (as §97). Fork at every slot and teacher-force the step text (CE through the tied LM head). After the last
+  slot, fork and teacher-force " #### <product>". Nothing is fed back.
+* k = 4 (§97). 4×4 is one chunk; 5×5 has one snap.
+* **Answer:** greedy decode after the last slot. Exact match on digits (the bench scorer).
+* **Budget:** §97's: 24k steps, bs 64, AdamW lr 1e-4. That is about 1.9 epochs of the 808k-problem train split, far
+  below ICoT-SI's 200.
+  - An M1 failure at this budget is read as **"not acquired within budget"** (as §86), not as a recipe failure.
+
+**Arms (each task, seeds 1–3).**
+* **GEN-M:** the recipe as above.
+* **GEN-M-MASK (Audit (a)):** as GEN-M, but every side-branch fork (step text and answer) attends only to the slot's
+  own position and its own decode tokens. The op tokens, the operand prefix, the start text and the earlier slots are
+  masked out of the fork. The chain itself is unchanged. The decoder can then read the state only through the latent.
+* **COCO-M (Audit (b)):** Coconut's stage curriculum on the same data and update budget, with n continuous thoughts.
+  Removal is applied to its thoughts.
+* **ICoT-SI (the SOTA bar):** the **released checkpoints**, evaluated by our harness on the same items.
+  - Literature found the repo's 5×5 log at 0.996 (the README says 1.00); the bench's paper value is 0.95.
+  - The bar is our evaluation of the released checkpoint. If it cannot be evaluated, the repo log's value is used
+    (1.000 at 4×4; 0.996 at 5×5).
+  - No retraining: its recipe is 200 epochs over 808k problems.
+  - Its inference FLOPs and sequential passes are metered on the same items. No removal applies, since it emits no
+    thoughts.
+* **TC-M (text CoT at matched budget):** GPT-2 small fine-tuned on the full CoT text, with the same data, budget and
+  seeds. It is **the C3 bar**, with FLOPs metered on the same items. The published value (100 / 100) is reported beside
+  it.
+* **No CoT:** published 29 / 1, the C1 floor.
+
+**Measures.**
+* Accuracy on the 1,000 test items.
+* Per-slot step-text decode accuracy (exact).
+* Zero and mean removal of slot inputs (answer accuracy), also on COCO-M.
+* Checkpoint validity and edit IIA at the 5×5 snap.
+* Inference FLOPs per problem (Meter; full vocabulary and restricted conventions, 92-3) for every arm, including text
+  CoT and ICoT-SI on the same items.
+* **Descriptive C2.** 4×4-trained GEN-M on 4×8 (an 8-digit multiplier, generated by the same rule), with snaps every 4
+  ops.
+  - The dataset's own checkpoint format is out of range here (Literature (a)): P_j carries j written leading zeros (a
+    counter), and S_j grows to about n + j digits.
+  - A bounded checkpoint (finalised low digits emitted, a positional shift) would be a hand-built format, so it is not
+    used. The 4×8 result is descriptive and flagged as range-limited.
+* Sequential passes are reported beside FLOPs (Literature (d)).
+
+**Rules (fixed now; per task, seeds 1–3).**
+* **M1 (the recipe solves the task):** GEN-M median accuracy ≥ 0.95.
+* **M-SOTA:** GEN-M median accuracy ≥ ICoT-SI's published value on the same items (1.000 at 4×4; 0.950 at 5×5).
+* **M-C1 (unqualified use):** GEN-M-MASK median accuracy ≥ 0.95, and in those seeds zero- and mean-removal answer
+  accuracy ≤ No-CoT's published value + 0.05.
+  - The slot-ablated S_j decode in the masked fork is reported per slot (Literature (c)). Operand a is always visible,
+    so P_j is recomputable; **S_j is the only carried state.**
+* **M-C3:** GEN-M median accuracy ≥ TC-M's − 0.01, at ≤ TC-M's median FLOPs on the same items (as metered; the
+  restricted convention is also reported).
+* COCO-M is reported under M1's bar, with removal. GEN-M − COCO-M is paired by seed (descriptive).
+
+**Readings.**
+* **M1 + M-SOTA at both sizes.** The general recipe matches or beats the best published implicit method on the standard
+  multiplication benchmark: C3 if M-C3 holds, and C1 unqualified if M-C1 holds. Next rung: ProsQA-NA.
+* **M1 only.** It solves the task but below ICoT-SI; report the gap.
+* **M1 fails.** The recipe does not transfer from S5 to arithmetic as is. Report per-slot decode to locate where.
+* **Tags:** C1 (use; unqualified only via M-C1) + C3 (vs text CoT) + C7 for checkpoints; C2 only descriptively here;
+  not C4.
+
+**Placement.** Vast 3090s: 24 runs (GEN-M, GEN-M-MASK, COCO-M, TC-M × 2 tasks × 3 seeds) plus the ICoT-SI checkpoint
+evals. One proof host (GEN-M 4×4 s1) first, then ≤ 5. About $12–15. Projection to Audit. Implementation: the experiments session (a task adapter for gen97.py, the
+fork mask, Coconut and TC from the GSM8K pipelines, and an ICoT-SI checkpoint loader).
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
