@@ -494,3 +494,5 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53986268 vast offer 53493692 created 2026-10-03 04:15: label gen-h7, queue scratch/gen_q_h7.txt (logged at create by vdeploy_toy.sh)
 53986284 vast offer 7899206 created 2026-10-03 04:15: label gen-h8, queue scratch/gen_q_h8.txt (logged at create by vdeploy_toy.sh)
 53989166 vast offer 52714995 created 2026-10-03 04:42: label p93-proof, queue scratch/gen_q_p93.txt (logged at create by vdeploy_toy.sh)
+53986284 vast | gen_h8 DESTROYED_VERIFIED 2026-10-03 05:00 after verified per-run fetch (boxes/runs_s5/l92_k1_s3)
+53973796 vast | f89_proof DESTROYED_VERIFIED 2026-10-03 05:38 after verified per-run fetch (boxes/runs/f89_fade_std_s3)
