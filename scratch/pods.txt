@@ -531,3 +531,5 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 54031327 vast offer 7899206 created 2026-10-03 11:45: label gen-v3, queue scratch/gen_q_v3.txt (logged at create by vdeploy_toy.sh)
 54035983 vast offer 41247181 created 2026-10-03 12:31: label gen-x1, queue scratch/gen_q_x1.txt (logged at create by vdeploy_toy.sh)
 54035983 vast | gen_x1 PRICE EXCEPTION 2026-10-03 12:37: 4090 at $0.362/h is above the ~$0.34/h per-host rule; it was already up and running when Audit flagged it, so it was kept rather than paying setup twice (Audit OK). GPU for runs g97_gen4_s1-3 = RTX 4090 (bf16); x2/x3 runs record 'gpu' in eval.json
+54037491 vast offer 11925445 created 2026-10-03 12:42: label gen-x3, queue scratch/gen_q_x3.txt (logged at create by vdeploy_toy.sh)
+54038416 vast offer 49745142 created 2026-10-03 12:51: label gen-x2, queue scratch/gen_q_x2.txt (logged at create by vdeploy_toy.sh)

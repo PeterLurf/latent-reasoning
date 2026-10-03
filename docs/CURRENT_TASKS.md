@@ -46,6 +46,16 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
   - On s1 the state is present; the answer readout fails.
   - s2–s5 are still running (`theory/results/s94_step0/`).
   - No untrained or NC control has been run yet.
+* **§97 general latent thinker, step 1** (`boxes/gen97.py`, 928b0fe6 and a83cd8b2; Theory scores with `theory/score_s97.py`): 9 runs `boxes/runs_s5/g97_{gen4,gen1,hyb4}_s1-3`. All use auto_drain_gen3 plus waiter bgi0szeew.
+
+  | Host | Instance | Address | GPU | Arm | Speed | Ready |
+  |---|---|---|---|---|---|---|
+  | x1 | 54035983 | 47.186.21.5:54624 | 4090, price exception logged | GEN-4, P2 | 100 steps/28 s | about 17:00 |
+  | x2 | 54038416 | 96.20.36.104:40060 | 3090 | GEN-1, P3 | 100 steps/17 s | about 14:30 |
+  | x3 | 54037491 | 167.179.138.57:42279 | A5000 | HYB-4, P3 | 100 steps/49 s | about 16:30 |
+
+  - About $3.6 projected (cap $6).
+* **C: reached 0 GB (12:15):** the /tmp tarballs were deleted (C: now has 54 GB free). drain_gen.sh and vdeploy_toy.sh now clean up after themselves.
 * **§95 foothold dose (91c843d8; Theory scores with `theory/score_s95.py`):** 9 runs `boxes/runs_s5/l95_f{005,025,05}_s1-3` (latent86 `--foot f`, per batch).
   - v1 (54030282, 136.36.139.116:9083) runs f 0.05, P2.
   - v2 (54031323, 142.113.28.123:22340) runs f 0.25, P3.
