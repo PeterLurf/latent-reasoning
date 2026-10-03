@@ -7208,6 +7208,22 @@ $0.
   k2-100 reported. The 25-word arm's (b) is descriptive, split by all-seen vs ≥ 1-unseen test items.
 * **V1** (S3 k3-25 (b) < 0.50) is unchanged, at full coverage.
 
+**§86 result (2026-10-02 22:04 EDT; re-pilot under 86-4, k = 4, s1; run by the experiments session, `docs/PROTOCOL12.md`).
+The gate fails (cumulative 0.000 at 512), so §86 closes per 86-4. No further revisions.**
+* **Per-slot accuracy** (100k chunks): slot 1 **1.000**, slot 2 0.112, slot 3 0.0015, slot 4 0.0002.
+  - The first op, applied from the snapped structured code, is exact.
+  - The **latent hand-off** (slot j's output feeding slot j + 1 within a chunk) fails.
+* **Loss.** A plateau at 8.05 until about step 4,100, then 6.85 → 4.77 by 8k, still falling. Whether longer training
+  rescues slot 2 is untested; not run (pioneer brief).
+* **Removal.** Mean ablation leaves slot 1 at 0.20 and the rest near 0; isolation is ≈ 0 everywhere.
+* **Reading.** Carrying a per-op state forward in a continuous latent, with per-op targets and a codebook snap at chunk
+  ends, does not learn past the first op in this budget.
+  - The same pattern as §88 at k = 2: step 1 right, step 2 not.
+  - By contrast, §88 at k = 3 (word diversity about 151) composes perfectly in depth, and §71's written text state
+    carries it exactly.
+  - So the continuous latent hand-off is the weak link here, not the step computation. C1 via latent tokens is not
+    shown.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
