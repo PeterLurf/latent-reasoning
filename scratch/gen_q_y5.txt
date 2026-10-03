@@ -1,0 +1,14 @@
+# §98 TC-M + NC-M 4x4 + 5x5
+# P=3
+boxes/runs_mult/m98_tc_4x4_s1 boxes.mult98 train --arm tc --task 4x4 --seed 1
+boxes/runs_mult/m98_tc_4x4_s2 boxes.mult98 train --arm tc --task 4x4 --seed 2
+boxes/runs_mult/m98_tc_4x4_s3 boxes.mult98 train --arm tc --task 4x4 --seed 3
+boxes/runs_mult/m98_tc_5x5_s1 boxes.mult98 train --arm tc --task 5x5 --seed 1
+boxes/runs_mult/m98_tc_5x5_s2 boxes.mult98 train --arm tc --task 5x5 --seed 2
+boxes/runs_mult/m98_tc_5x5_s3 boxes.mult98 train --arm tc --task 5x5 --seed 3
+boxes/runs_mult/m98_nc_4x4_s1 boxes.mult98 train --arm nc --task 4x4 --seed 1
+boxes/runs_mult/m98_nc_4x4_s2 boxes.mult98 train --arm nc --task 4x4 --seed 2
+boxes/runs_mult/m98_nc_4x4_s3 boxes.mult98 train --arm nc --task 4x4 --seed 3
+boxes/runs_mult/m98_nc_5x5_s1 boxes.mult98 train --arm nc --task 5x5 --seed 1
+boxes/runs_mult/m98_nc_5x5_s2 boxes.mult98 train --arm nc --task 5x5 --seed 2
+boxes/runs_mult/m98_nc_5x5_s3 boxes.mult98 train --arm nc --task 5x5 --seed 3
