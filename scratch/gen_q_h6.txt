@@ -1,0 +1,4 @@
+# note 92-1
+# P=2
+boxes/runs_s5/l92_k4_s4 boxes.latent86 train --steps 24000 --bs 64 --log_every 2000 --k 4 --seed 4
+boxes/runs_s5/l92_k1_s1 boxes.latent86 train --steps 24000 --bs 64 --log_every 2000 --k 1 --seed 1
