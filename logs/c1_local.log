@@ -350,3 +350,5 @@
 11:59:55 f89_fade_gold_s1 rc 0 (cuda:2)
 12:00:39 f89_fade_soft_s2 rc 1 no-eval (cuda:2)
 14:31:47 f89_fade_soft_s1 eval STOPPED by Experiments after 2.7 h in WDDM memory fallback (4060 shared with §96 s2164); model.pt (11:50) kept; eval re-run with fade89 --eval_only once the card is free (cuda:0 worker stopped with it)
+15:01:40 f89_fade_soft_s1 eval_only done rc 0 (cuda:0, user-approved)
+15:02:32 f89_fade_soft_s2: 12:00 rc 1 was CUDA OOM on the 2070 (fp32; soft arm needs bf16) -> run dir and log renamed *.void (aborted unread); lock released for a bf16 card; f89_fade_soft_s3 lock held so the 2070 skips it (runs on cuda:0 via scratch/c1_q_soft.txt)
