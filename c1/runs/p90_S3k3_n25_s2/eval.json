@@ -1,0 +1,35 @@
+{
+ "section": 90,
+ "group": "S3",
+ "k": 3,
+ "n_words": 25,
+ "seed": 2,
+ "train_sec": 720,
+ "coverage_per_iteration": [
+  1.0,
+  1.0,
+  1.0
+ ],
+ "coverage_full": true,
+ "acc_train": 1.0,
+ "acc_b_unseen_words": 0.10512820512820513,
+ "per_iteration_acc_b": [
+  0.7256410121917725,
+  0.20769231021404266,
+  0.1051282063126564
+ ],
+ "n_b": 390,
+ "acc_a_heldout_pairs": 0.14285714285714285,
+ "n_a": 14,
+ "n_train_pairs": 136,
+ "b_split_by_transition_seen": {
+  "all_seen": [
+   0.10512820512820513,
+   390
+  ],
+  "some_unseen": [
+   null,
+   0
+  ]
+ }
+}
