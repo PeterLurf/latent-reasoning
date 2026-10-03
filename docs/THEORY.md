@@ -8093,6 +8093,22 @@ bench ladder. This first rung is multi-digit multiplication: the published impli
 evals. One proof host (GEN-M 4×4 s1) first, then ≤ 5. About $12–15. Projection to Audit. Implementation: the experiments session (a task adapter for gen97.py, the
 fork mask, Coconut and TC from the GSM8K pipelines, and an ICoT-SI checkpoint loader).
 
+**Note 98-1 (2026-10-03 17:41 EDT, before any §98 implementation or run; Audit's review of 3f6d85d3).**
+* **M-C1's floor is pinned.** It is our own **NC-M**: GPT-2 small fine-tuned on question → answer, with no CoT. Same
+  data, budget and seeds (1–3), per task, on the same 1,000 items.
+  - The floor is **NC-M's median `acc_test` + 0.05**.
+  - The published No-CoT row (29 / 1) is reported beside it but is not the floor. NC-M adds 6 cheap runs.
+* **Training compute** is reported next to accuracy for every arm: epochs over the train split and training FLOPs
+  (Meter).
+  - ICoT-SI's released model: about 200 epochs (its recipe, Literature e206d92d). Ours: about 1.9.
+* **Reading if M1 holds but M-SOTA misses:** "**below SOTA at about 1/100 of ICoT-SI's training**", never plain "below
+  SOTA".
+* **Automatic follow-up (part of §98; no new registration).** For each task where M1 holds and M-SOTA misses:
+  - GEN-M runs at **4× budget** (96k steps, seeds 1–3) under the same rules;
+  - so does GEN-M-MASK, if its median accuracy is < 0.95 at 24k.
+  - Its reading, if it then meets the bar: "matches SOTA at about 1/25 of ICoT-SI's training".
+  - Nothing else follows automatically.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
