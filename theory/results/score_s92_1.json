@@ -1,0 +1,53 @@
+{
+ "k4": {
+  "1": {
+   "cum512": 1.0,
+   "ext2048": 1.0
+  },
+  "2": {
+   "cum512": 1.0,
+   "ext2048": 1.0
+  },
+  "3": {
+   "cum512": 0.9995,
+   "ext2048": 1.0
+  },
+  "4": {
+   "cum512": 1.0,
+   "ext2048": 1.0
+  },
+  "5": {
+   "cum512": 0.9995,
+   "ext2048": 1.0
+  }
+ },
+ "k1": {
+  "1": {
+   "cum512": 1.0,
+   "ext2048": 1.0,
+   "cert_inputs": 14400,
+   "cert_errors": 0,
+   "certified": true,
+   "flops": 697477890048.0
+  },
+  "2": {
+   "cum512": 1.0,
+   "ext2048": 1.0,
+   "cert_inputs": 14400,
+   "cert_errors": 0,
+   "certified": true,
+   "flops": 697477890048.0
+  },
+  "3": {
+   "cum512": 1.0,
+   "ext2048": 1.0,
+   "cert_inputs": 14400,
+   "cert_errors": 0,
+   "certified": true,
+   "flops": 697477890048.0
+  }
+ },
+ "C6_met": true,
+ "R1_k1_met": true,
+ "k1_certified_all_passing": true
+}
