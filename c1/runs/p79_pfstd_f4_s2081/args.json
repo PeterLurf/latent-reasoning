@@ -1,0 +1,19 @@
+{
+ "arm": "pfstd",
+ "families": 4,
+ "seed": 2081,
+ "updates": 8000,
+ "bs": 512,
+ "lr": 0.0001,
+ "tau0": 4.0,
+ "curriculum": "std",
+ "device": "cuda:0",
+ "out": "c1/runs/p79_pfstd_f4_s2081",
+ "train_families": [
+  "T1",
+  "T2",
+  "T3",
+  "T4"
+ ],
+ "train_phrasings": 36
+}

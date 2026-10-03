@@ -514,3 +514,38 @@ RTX 4060. The summary ran after §78 was scored.
 * **Reading:** fixing the stop decision recovers little. The short-trained model does not compute steps past n = 2
   correctly even when made to continue. The failure is step computation out of range, not only halting.
 * A CPU plumbing smoke on the first 4 test items (seed 1) was seen before the run (`scratch/ORACLE_smoke4.json`).
+
+## THEORY §79 (a latent automaton with paraphrased ops: does it need the pretrained LM?) result (2026-10-02 20:39 EDT; `python c1/score_79.py` → `theory/results/score_s79.json`)
+
+The scorer (928ca7d) was committed before any run. Amendments before the panel:
+* 79-1: TAB at lr 1e-2;
+* 79-2: §73's std curriculum. Pilot 1 (uniform lengths) failed; it is kept in `c1/runs/p79pilot1_uniform_pfstd_s2081`.
+  The first panel was voided unread.
+
+Pilot 2 (PF-std s2081) certified, so the panel ran. PF-std seeds 2082/2083 ran provisionally before the gate and
+count. Local cards, 30 runs.
+
+| prediction | result |
+|---|---|
+| **P1** PF-std certified on the training phrasings in ≥ 4/5 | **met: 4/5** (acc128 median 1.000) |
+| **P2** a held-out family with PF-std agreement ≥ 0.90, family certificate in ≥ 3/5, ≥ +0.20 over BOW and RF-std, minimal pairs ≥ 0.90 | **not met**: no family qualifies |
+
+**Descriptive** (median agreement with the trained phrasings, frozen σ):
+
+| family | PF-std | RF-std | BOW | TAB |
+|---|---|---|---|---|
+| H1 (new verbs) | 0.806 | 0.704 | **0.889** | 0 (by construction) |
+| H2 (different frame) | 0.413 | 0.722 | **0.792** | 0 |
+| H3 (number words) | 0.389 | 0.270 | 0.397 | 0 |
+| H4 (ordinals, minimal pairs) | 0.361 | 0.333 | 0.361 | 0 |
+| POS (casing) | 0.952 | 0.746 | 0.958 | 0 |
+
+* Held-out family certificates: PF-std 0/5 on every family. Held-out hard accuracy at N 128 is at or near 1/6–1/3.
+* Minimal pairs (H4 rotations): PF-std median 0.625, RF-std 0.286, BOW 0.125. T6 (training) gives PF-std 1.000.
+* Training certificates: PF-std 4/5, RF-std 2/5, BOW 0/5, TAB 5/5. Sweep: 2 families 2/5, 4 families 4/5.
+* **Reading (§79):** "P2 fails: pretrained features do not carry operation semantics into the latent machine at this
+  scale".
+  - The bag of pretrained word embeddings matches or beats frozen GPT-2 on every held-out family, so lexical
+    knowledge, not the transformer, gives what transfer there is.
+  - No held-out family certifies.
+  - PF-std separates word-order minimal pairs better than BOW (0.625 vs 0.125), but not enough for P2.
