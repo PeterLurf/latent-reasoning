@@ -1,0 +1,6 @@
+# §98 COCO-M reruns (first attempt OOM'd on y4 at P3 before --micro; logs kept)
+# P=3
+boxes/runs_mult/m98_coco_4x4_s3 boxes.mult98 train --arm coco --task 4x4 --seed 3
+boxes/runs_mult/m98_coco_5x5_s1 boxes.mult98 train --arm coco --task 5x5 --seed 1
+boxes/runs_mult/m98_coco_5x5_s2 boxes.mult98 train --arm coco --task 5x5 --seed 2
+boxes/runs_mult/m98_coco_5x5_s3 boxes.mult98 train --arm coco --task 5x5 --seed 3
