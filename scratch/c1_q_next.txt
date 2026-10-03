@@ -1,0 +1,38 @@
+# post-§88 combined queue (2026-10-02 21:37): §88 fix, §90 (12, Theory: in the gaps, before §89's remainder), then §89
+c1/runs/p88_align_k2_s3 c1.p80_p0 loop --arm align --k 2 --seed 3
+c1/runs/p90_S3k3_n25_s1 c1.p80_p0 loop90 --group S3 --k 3 --n_words 25 --seed 1
+c1/runs/p90_S3k3_n25_s2 c1.p80_p0 loop90 --group S3 --k 3 --n_words 25 --seed 2
+c1/runs/p90_S3k3_n25_s3 c1.p80_p0 loop90 --group S3 --k 3 --n_words 25 --seed 3
+c1/runs/p90_S4k2_n25_s1 c1.p80_p0 loop90 --group S4 --k 2 --n_words 25 --seed 1
+c1/runs/p90_S4k2_n25_s2 c1.p80_p0 loop90 --group S4 --k 2 --n_words 25 --seed 2
+c1/runs/p90_S4k2_n25_s3 c1.p80_p0 loop90 --group S4 --k 2 --n_words 25 --seed 3
+c1/runs/p90_S4k2_n100_s1 c1.p80_p0 loop90 --group S4 --k 2 --n_words 100 --seed 1
+c1/runs/p90_S4k2_n100_s2 c1.p80_p0 loop90 --group S4 --k 2 --n_words 100 --seed 2
+c1/runs/p90_S4k2_n100_s3 c1.p80_p0 loop90 --group S4 --k 2 --n_words 100 --seed 3
+c1/runs/p90_S4k2_n400_s1 c1.p80_p0 loop90 --group S4 --k 2 --n_words 400 --seed 1
+c1/runs/p90_S4k2_n400_s2 c1.p80_p0 loop90 --group S4 --k 2 --n_words 400 --seed 2
+c1/runs/p90_S4k2_n400_s3 c1.p80_p0 loop90 --group S4 --k 2 --n_words 400 --seed 3
+boxes/runs/f89_fade_std_s1 boxes.fade89 --arm fade_std --seed 1
+boxes/runs/f89_fade_std_dec_s1 boxes.fade89 --arm fade_std_dec --seed 1
+boxes/runs/f89_coco_stage_s1 boxes.fade89 --arm coco_stage --seed 1
+boxes/runs/f89_fade_std_s2 boxes.fade89 --arm fade_std --seed 2
+boxes/runs/f89_fade_std_dec_s2 boxes.fade89 --arm fade_std_dec --seed 2
+boxes/runs/f89_coco_stage_s2 boxes.fade89 --arm coco_stage --seed 2
+boxes/runs/f89_fade_std_s3 boxes.fade89 --arm fade_std --seed 3
+boxes/runs/f89_fade_std_dec_s3 boxes.fade89 --arm fade_std_dec --seed 3
+boxes/runs/f89_coco_stage_s3 boxes.fade89 --arm coco_stage --seed 3
+boxes/runs/f89_fade_std_s4 boxes.fade89 --arm fade_std --seed 4
+boxes/runs/f89_fade_std_dec_s4 boxes.fade89 --arm fade_std_dec --seed 4
+boxes/runs/f89_coco_stage_s4 boxes.fade89 --arm coco_stage --seed 4
+boxes/runs/f89_fade_std_s5 boxes.fade89 --arm fade_std --seed 5
+boxes/runs/f89_fade_std_dec_s5 boxes.fade89 --arm fade_std_dec --seed 5
+boxes/runs/f89_coco_stage_s5 boxes.fade89 --arm coco_stage --seed 5
+boxes/runs/f89_fade_raw_s1 boxes.fade89 --arm fade_raw --seed 1
+boxes/runs/f89_fade_soft_s1 boxes.fade89 --arm fade_soft --seed 1
+boxes/runs/f89_fade_gold_s1 boxes.fade89 --arm fade_gold --seed 1
+boxes/runs/f89_fade_raw_s2 boxes.fade89 --arm fade_raw --seed 2
+boxes/runs/f89_fade_soft_s2 boxes.fade89 --arm fade_soft --seed 2
+boxes/runs/f89_fade_gold_s2 boxes.fade89 --arm fade_gold --seed 2
+boxes/runs/f89_fade_raw_s3 boxes.fade89 --arm fade_raw --seed 3
+boxes/runs/f89_fade_soft_s3 boxes.fade89 --arm fade_soft --seed 3
+boxes/runs/f89_fade_gold_s3 boxes.fade89 --arm fade_gold --seed 3
