@@ -1,0 +1,207 @@
+{
+ "da16": {
+  "certified": 0,
+  "n": 5,
+  "runs": [
+   {
+    "file": "da16_s2131.json",
+    "certified": false,
+    "bad_pairs": 7080,
+    "acc128": 0.0115,
+    "first_cert": null
+   },
+   {
+    "file": "da16_s2132.json",
+    "certified": false,
+    "bad_pairs": 7080,
+    "acc128": 0.0165,
+    "first_cert": null
+   },
+   {
+    "file": "da16_s2133.json",
+    "certified": false,
+    "bad_pairs": 7080,
+    "acc128": 0.0185,
+    "first_cert": null
+   },
+   {
+    "file": "da16_s2134.json",
+    "certified": false,
+    "bad_pairs": 7080,
+    "acc128": 0.017,
+    "first_cert": null
+   },
+   {
+    "file": "da16_s2135.json",
+    "certified": false,
+    "bad_pairs": 7080,
+    "acc128": 0.0105,
+    "first_cert": null
+   }
+  ]
+ },
+ "da64": {
+  "certified": 0,
+  "n": 5,
+  "runs": [
+   {
+    "file": "da64_s2131.json",
+    "certified": false,
+    "bad_pairs": 7080,
+    "acc128": 0.0135,
+    "first_cert": null
+   },
+   {
+    "file": "da64_s2132.json",
+    "certified": false,
+    "bad_pairs": 7080,
+    "acc128": 0.0165,
+    "first_cert": null
+   },
+   {
+    "file": "da64_s2133.json",
+    "certified": false,
+    "bad_pairs": 7080,
+    "acc128": 0.021,
+    "first_cert": null
+   },
+   {
+    "file": "da64_s2134.json",
+    "certified": false,
+    "bad_pairs": 7080,
+    "acc128": 0.012,
+    "first_cert": null
+   },
+   {
+    "file": "da64_s2135.json",
+    "certified": false,
+    "bad_pairs": 7080,
+    "acc128": 0.0185,
+    "first_cert": null
+   }
+  ]
+ },
+ "daem": {
+  "certified": 0,
+  "n": 5,
+  "runs": [
+   {
+    "file": "daem_s2131.json",
+    "certified": false,
+    "bad_pairs": 1239,
+    "acc128": 0.0165,
+    "first_cert": null
+   },
+   {
+    "file": "daem_s2132.json",
+    "certified": false,
+    "bad_pairs": 1062,
+    "acc128": 0.0155,
+    "first_cert": null
+   },
+   {
+    "file": "daem_s2133.json",
+    "certified": false,
+    "bad_pairs": 1121,
+    "acc128": 0.0155,
+    "first_cert": null
+   },
+   {
+    "file": "daem_s2134.json",
+    "certified": false,
+    "bad_pairs": 1180,
+    "acc128": 0.021,
+    "first_cert": null
+   },
+   {
+    "file": "daem_s2135.json",
+    "certified": false,
+    "bad_pairs": 1121,
+    "acc128": 0.0175,
+    "first_cert": null
+   }
+  ]
+ },
+ "warm12": {
+  "certified": 0,
+  "n": 5,
+  "runs": [
+   {
+    "file": "warm12_s2131.json",
+    "certified": false,
+    "bad_pairs": 6726,
+    "acc128": 1.0,
+    "first_cert": null
+   },
+   {
+    "file": "warm12_s2132.json",
+    "certified": false,
+    "bad_pairs": 6844,
+    "acc128": 0.938,
+    "first_cert": null
+   },
+   {
+    "file": "warm12_s2133.json",
+    "certified": false,
+    "bad_pairs": 6785,
+    "acc128": 1.0,
+    "first_cert": null
+   },
+   {
+    "file": "warm12_s2134.json",
+    "certified": false,
+    "bad_pairs": 6195,
+    "acc128": 0.948,
+    "first_cert": null
+   },
+   {
+    "file": "warm12_s2135.json",
+    "certified": false,
+    "bad_pairs": 4307,
+    "acc128": 0.9495,
+    "first_cert": null
+   }
+  ]
+ },
+ "warm25": {
+  "certified": 5,
+  "n": 5,
+  "runs": [
+   {
+    "file": "warm25_s2131.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 15000
+   },
+   {
+    "file": "warm25_s2132.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 11000
+   },
+   {
+    "file": "warm25_s2133.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 14000
+   },
+   {
+    "file": "warm25_s2134.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 10000
+   },
+   {
+    "file": "warm25_s2135.json",
+    "certified": true,
+    "bad_pairs": 0,
+    "acc128": 1.0,
+    "first_cert": 10000
+   }
+  ]
+ }
+}

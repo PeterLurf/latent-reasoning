@@ -7010,6 +7010,28 @@ arm that meets F1**, not only the best.
   seeds, so their bench results stand in for §89's TC and NC arms. F2's floor is §66's NC median at N 5–8 on the same
   bench items.
 
+**§87 result (2026-10-02 20:04 EDT; tables run by the experiments session; scored by Theory, `theory/results/score_s87.json`;
+A5 free table, seeds 2131–2135).**
+
+| arm | certified | acc at N 128 | first certified (update) |
+|---|---|---|---|
+| **warm25** (short batches p 0.1 for the first ¼, then pure ge3) | **5/5** | 1.000 ×5 | 10k–15k (after removal at 4k) |
+| warm12 (first ⅛ only) | 0/5 | 0.94–1.00 | — |
+| LTA16 / LTA64 (logit-temperature annealing) | 0/5 / 0/5 | ≈ 0.015 (chance) | — |
+| DA-EM (tempered path posterior, β 0.1 → 1) | 0/5 | ≈ 0.017 (chance) | — |
+
+* **B1 met.** Short labels are a **basin-entry device**. Supplied for the first quarter of training only (about 400 short
+  batches), they put the table into the true automaton's basin. Pure length-≥ 3 training then certifies it, every seed
+  first certifying 6k–11k updates *after* the short labels stopped. An eighth of training is not quite enough (accuracy
+  0.94–1.00, transient codes uncertified).
+* **B2 fails.** Neither logit-temperature annealing (τ0 16, 64) nor canonical DA-EM escapes the symmetric saddle under
+  pure ge3; all stay at one block, chance. So the classical annealing remedy does not provide basin entry here, and
+  acquisition from length ≥ 3 only still needs a data-derived start (a ge3-only spectral initialisation is the next
+  candidate; Literature lead 1).
+* **Practical recipe (§85 + §87).** About 3–10 % short problems, or short problems only early, then long ones.
+* **Placement note.** The driver's default output directory was wrong (it wrote into `c1_s85`). The 25 files were moved
+  by name, unopened, to `c1_s87`, and the default is fixed.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
