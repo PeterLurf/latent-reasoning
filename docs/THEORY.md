@@ -7476,6 +7476,32 @@ at 3× budget.**
   - **C1 (use) + C2 + C3 + C6, scaffolded:** per-op auxiliary targets, a given arrangement structure, a fixed snap
     interval. **Not C4** (86-1). §93 tests sparse labels as a step toward C4.
 
+**§89 result: F1–F3 arms (2026-10-03 09:34 EDT; scored by Theory with `theory/score_s89.py`, committed before Theory read
+any §89 value (7a8ffc23); `theory/results/score_s89.json`). The descriptive arms (raw, soft, gold) are still running.**
+
+| arm (pure latent, §66 boxes) | acc N 5–8 (seeds 1–5) | "all" questions | "where" questions | mean-ablated N 5–8 |
+|---|---|---|---|---|
+| fade_std | 0.158 (0.14–0.615) | 0.045–1.0 (1.0 in s3) | 0.21–0.235 | 0.13–0.16 |
+| **fade_std_dec** | **0.615** (0.613–1.0) | **1.000 ×5** | 0.225–0.24 (**s2: 1.000**) | **0.128–0.152** |
+| coco_stage | 0.238 (0.125–0.37) | 0.03–0.445 | 0.22–0.30 | 0.155–0.375 |
+| NC floor (§66 nc_s1–3, same items) | 0.140 | — | — | — |
+
+* **Registered verdict.** **F1 not met** by any arm (best: fade_std_dec, median 0.615 < 0.90). F2 and F3 are gated on F1
+  and not scored as verdicts.
+* **Descriptive (89-6).**
+  - **fade_std_dec tracks the state in latent form perfectly in range:** "all" questions are 1.000 in all 5 seeds, with
+    no written thought tokens.
+  - **The latents do the work:** mean ablation drops it to 0.13–0.15, at the NC floor (0.140).
+  - Its failure is **"where"** (chance in 4/5). Seed 2 solves both question types at 1.000, so the "where" readout is
+    learnable, but not reliably within §66's 8k-update budget.
+  - fade_std_dec − coco_stage has a paired median of about 0.40 at N 5–8, and "all" is 1.000 vs ≤ 0.445.
+  - The step-decode side loss is load-bearing (fade_std without it: 0.158), as Rule 1 and Literature predicted.
+  - coco_stage with the fp32 seeds is 0.238, and bf16-only is 0.215 (89-8): no precision effect.
+* **Reading.** The user's fade-to-latent curriculum, with a side decode loss, yields latent thoughts that carry the full
+  state and do the work, where stage-wise Coconut fails. The registered bar is missed only because of the
+  question-type readout. **C1 (use)** in a pretrained LM on "all" questions, in range, with CoT-label training (not
+  C4). N 9–16 is out of range, as expected for a single growing context (§66).
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
