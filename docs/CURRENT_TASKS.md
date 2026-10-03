@@ -183,7 +183,9 @@ reserve, projection to Audit above $5. Credit $105 (07:25).
     - **§98 (step 2a, multiplication; 3f6d85d3; scorer b732ee9b):** GEN-M, GEN-M-MASK (latent-only fork), COCO-M
       and TC-M on mult 4×4 / 5×5 (24 runs, about $12–15), with the released ICoT-SI checkpoints as the bar. Handed
       to Experiments.
-  - **To score (Theory only):** §94 arms (Step 0 recorded: readout failure), §97 C6 seeds, §98, and §89's descriptive arms (raw done; soft and gold running
+    - **§94 scored (18:55): W1 + W2 met** (STD-DEC-3× "where" 1.000 ×5; a budget lottery). The Step 0 probes on the new
+      models are queued with Experiments (descriptive).
+  - **To score (Theory only):** §97 C6 seeds, §98, and §89's descriptive arms (raw done; soft and gold running
     locally).
 - Handed to Experiments (22:22): THEORY §55 (fall-back kill test, `theory/exp27_fallback_kill.py`, CPU minutes) and §56
   (interchange test, `theory/exp28_interchange.py`, 80 models, ~1 h CPU); scoring rules are in each section.
