@@ -7311,6 +7311,17 @@ are then scored on these runs. Otherwise the line closes for good.
 
 **Placement.** One host first (s1), then 2 more. About $3. Projection to Audit.
 
+**Amendment 89-5 (2026-10-03 02:02 EDT; placement only, under note 89-4).**
+* **89-4's trigger is met.** fade_std_dec s1 reaches 0.613 at N 5–8 (pure latent), ≥ 0.5. fade_std s1 is 0.158.
+* **Move.** The remaining F1–F3 runs (fade_std s2–5, fade_std_dec s2–5, coco_stage s2–5: 12 runs) go to Vast 3090s on
+  Audit's conditions: one proof host (fade_std s2) end to end first, then ≤ 5 hosts, cap $8, an eval.json-checked
+  worker, pods.txt and live_hosts entries.
+  - coco_stage s1 continues locally.
+  - The descriptive arms (raw, soft, gold) stay on the local cards.
+* **Hygiene.** The s1 pilots are registered panel seeds counted as registered. Their numbers (fade_std 0.158;
+  fade_std_dec 0.613, mean-ablated 0.128) decided placement only. Nothing in §89's design, arms or rules (F1–F3; notes
+  89-1 to 89-3) changes.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
