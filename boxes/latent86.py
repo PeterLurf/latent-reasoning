@@ -50,6 +50,7 @@ class LatentRestart(nn.Module):
         self.code = nn.Parameter(mu + sd * torch.randn(120, 768, device=mu.device))
         self.head = nn.Linear(768, 120)
         self.optok = None
+        self.slot_tf = None                     # optional slot-input transform (diagnostic / amendment hook; default off)
 
     def _ops(self, ops, dev):
         if self.optok is None or self.optok.device != torch.device(dev):
@@ -74,6 +75,8 @@ class LatentRestart(nn.Module):
             if j > 0:
                 logits.append(self.head(h[:, 0]))                         # output at slot j (the first position of x)
             s_in = h[:, -1]                                               # hidden at the last op-(j+1) token -> slot j+1 input
+            if self.slot_tf is not None:
+                s_in = self.slot_tf(s_in)
             if ablate in ("zero", "mean") and j < k - 1:
                 s_in = torch.zeros_like(s_in) if ablate == "zero" else mean_in[j][None].expand_as(s_in)
             ins.append(s_in)
