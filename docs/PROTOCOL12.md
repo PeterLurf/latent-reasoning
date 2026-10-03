@@ -549,3 +549,21 @@ count. Local cards, 30 runs.
     knowledge, not the transformer, gives what transfer there is.
   - No held-out family certifies.
   - PF-std separates word-order minimal pairs better than BOW (0.625 vs 0.125), but not enough for P2.
+
+**§79 caveat (2026-10-02 20:40 EDT, Audit's review; verified against the eval files). The reading above overreaches.**
+* BOW certifies the training phrasings in **0/5** seeds (acc128 0.32–0.35): it never acquired S3. Its held-out
+  "agreement" is measured on a collapsed machine and can agree trivially, so it is not comparable to PF-std's.
+  The BOW comparison is **uninformative**, not evidence for lexical transfer.
+* The informative contrast is between certified seeds:
+
+  | family | RF-std, certified seeds 2082 / 2083 | PF-std, certified seeds (2081–2083, 2085) |
+  |---|---|---|
+  | H1 | 0.635 / 0.981 | 0.750–0.861 |
+  | H2 | 0.794 / 0.759 | 0.333–0.417 |
+  | NEG (lower = verb-sensitive) | 0.976 / 0.972 | 0.396–0.524 |
+
+* **Corrected reading:** "P2 fails. Among certified models, random-init GPT-2 transfers at least as well as pretrained
+  GPT-2 on H1/H2 (2 vs 4 seeds, descriptive). BOW never acquired the task, so the lexical-vs-transformer question is
+  not answered."
+* Descriptive addition: PF-std is more verb-sensitive on the negative control (NEG agreement 0.40–0.52 vs RF-std about
+  0.97).
