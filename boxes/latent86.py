@@ -237,6 +237,8 @@ def train(a):
         for gr in opt.param_groups:
             gr["lr"] = a.lr * min(1, step / 100) * 0.5 * (1 + math.cos(math.pi * step / a.steps))
         Lc = int(rng.integers(1, a.k + 1)) if a.var else a.k                # §93 var: chunk length ~ U{1..k} per batch
+        if a.foot > 0:                                                      # §95: single-op foothold batch with prob. f
+            Lc = 1 if rng.random() < a.foot else a.k
         st, o, tg = batch(rng, Xtr, Ytr, Lc, a.bs)
         last_only = a.sup == "last" and not (a.warm_frac and step <= a.warm_frac * a.steps)   # §93 sparse / warm start
         with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
@@ -276,6 +278,7 @@ def train(a):
             res["probe_acc_per_slot"] = probe_slots(m, Xtr, Ytr, a.k, dev, amp, n_train=min(20000, a.check_n), n_test=min(5000, a.check_n))
             res["iia_per_slot"] = iia(m, a.k, dev, amp, a.eval_bs, n=min(5000, a.check_n))
     res["sup"] = a.sup; res["var"] = a.var; res["warm_frac"] = a.warm_frac
+    res["foot"] = a.foot
     res["eval_sec"] = round(time.time() - t1)
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     print("EVAL", json.dumps({kk: res[kk] for kk in ("cumulative", "final_state_acc_512")}), flush=True); print("DONE", a.out, flush=True)
@@ -291,6 +294,7 @@ def main():
     ap.add_argument("--sup", default="all", choices=["all", "last"], help="§93: CE on every slot or the chunk's last slot only")
     ap.add_argument("--var", action="store_true", help="§93: chunk length ~ U{1..k} per batch (test snaps every k)")
     ap.add_argument("--warm_frac", type=float, default=0.0, help="§93 WARM: every-slot CE for this fraction of updates")
+    ap.add_argument("--foot", type=float, default=0.0, help="§95: per batch, a single-op chunk with this probability, else a fixed k chunk")
     ap.add_argument("--probe", action="store_true", help="§93: linear probe + interchange per slot (+ probe curves)")
     ap.add_argument("--data_dir", default=os.path.join(ROOT, "bench", "data", "s5"))
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)

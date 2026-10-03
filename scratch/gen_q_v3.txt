@@ -1,0 +1,5 @@
+# §95 foothold dose f=0.5 (k 4, sup last, 24k steps; same as l93_s4fix plus --foot)
+# P=2
+boxes/runs_s5/l95_f05_s1 boxes.latent86 train --steps 24000 --bs 64 --log_every 2000 --probe --k 4 --sup last --foot 0.5 --seed 1
+boxes/runs_s5/l95_f05_s2 boxes.latent86 train --steps 24000 --bs 64 --log_every 2000 --probe --k 4 --sup last --foot 0.5 --seed 2
+boxes/runs_s5/l95_f05_s3 boxes.latent86 train --steps 24000 --bs 64 --log_every 2000 --probe --k 4 --sup last --foot 0.5 --seed 3
