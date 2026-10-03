@@ -7390,6 +7390,63 @@ Prediction R met: three recipes are reliable.**
   all 14,400 (code, op) inputs (§86's measure). If certified, the claim is "certified at every length".
 * Placement: Vast 3090s, about $3.
 
+## 93. Sparse labels for latent restarts: only the chunk-end slot is supervised (pre-registered 2026-10-03 04:16 EDT, after Literature's check 883259e0 and before any run; the next step after §92)
+
+**Why.** §92: with a per-op auxiliary target on every latent slot, latent restarts carry the S5 state exactly to 2,048
+(removal ≈ 0; 0.39× the written state's FLOPs). That is C1 + C2 + C3, but every op's state is labelled.
+* §93 removes the intermediate labels: **only the last slot of each chunk is supervised** (1 label per k ops).
+* The k − 1 intermediate slots must carry the state with no per-step target.
+* **Condition tags (Audit, fixed now).** 1 label per k ops is still intermediate supervision, so C4 is **qualified**, as
+  in §76. Only final-state-only training (M1-U) would be strict C4.
+* **Prior** (883259e0): Stepwise Internalization (Deng 2405.14838), SIM-CoT, CODI, RELAY. Rule 1 (685bef0) predicts
+  failure without per-step targets; §88 and §91 show composition when each iteration is targeted.
+
+**Arms** (86-4's model: latent slots, 5 × 5 arrangement head, structured-codebook snap, history cut at chunk ends;
+§92's budget, 24k steps; seeds 1–3).
+* **Chunk length is the hidden variable (Literature flag 1; fixed now).**
+  - **Fixed** chunks are exactly k ops; the label is at slot k only.
+  - **Variable** chunks have length uniform in 1..k; the label is at the chunk's last slot. Length-1 chunks are
+    single-hand-off footholds, a fraction 1/k of chunks, reported as the effective single-hand-off fraction (cf. §85's p).
+  - Snapping at test is always every k ops (fixed), as §92.
+* **Arms.**
+  - DENSE-4 is §92 itself (every slot supervised, k = 4, fixed), reused as the matched-budget control.
+  - **SPARSE-4-fix** and **SPARSE-4-var.**
+  - **DENSE-8** (new control, every slot, k = 8 fixed).
+  - **SPARSE-8-fix** and **SPARSE-8-var.**
+  - **WARM-SPARSE-8** (Literature flag 2): per-op labels on every slot for the first ¼ of updates, then chunk-end only,
+    fixed k = 8. It is labelled as a basin-entry recipe, not C4.
+
+**Measures** (§92's).
+* Cumulative accuracy at 128 / 256 / 512 and 2,048.
+* Per-slot accuracy, reading every slot with the shared head; for sparse arms this is zero-shot readability of the
+  unsupervised slots.
+* Removal (zero and mean) after the first ablated slot, including **intermediate-slot-only removal** (Literature flag 4,
+  chunk-end shortcut check).
+* FLOPs.
+* **Intermediate-slot identification (descriptive; Literature flag 3).** A post-hoc linear probe per slot, trained on
+  held-out chunks, for decodability. **Interchange IIA per slot**: swap slot j's latent with another chunk's and test
+  whether the downstream follows the donor.
+* Per-slot probe curves every 2k steps (Literature flag 5).
+
+**Predictions.**
+* **P-S4.** SPARSE-4-fix: cumulative ≥ 0.99 at 512 in ≥ 2/3 seeds, with zero-removal ≤ 0.10. SPARSE-4-var is reported
+  under the same rule.
+* **P-S8.** SPARSE-8-fix: the same rule. Literature predicts failure, like ge3 (a leap of k without footholds).
+  SPARSE-8-var and WARM-SPARSE-8 are reported under the same rule.
+* **Controls.** DENSE-8 is reported. If DENSE-8 fails, SPARSE-8 is uninformative.
+
+**Readings.**
+* **P-S4 (and P-S8).** Latent hand-off over k − 1 unlabelled steps is acquired from chunk-end labels alone: C1 + C2 + C3
+  with C4 qualified (1 label per k ops). The intermediate slots' readability (descriptive) says whether they carry the
+  state in the decodable format.
+* **Sparse fails, dense passes.** Per-step targets are load-bearing (Rule 1) for latent hand-off at this budget.
+
+* **Wording.** "A step toward C4". The fixed-k chunk-end arms without a warm start are the strictest here: C4 qualified,
+  1 label per k ops. Strict C4 is final-state-only (Audit).
+
+**Placement.** Vast 3090s: 18 new runs (6 arms × 3 seeds). One host first, ≤ 5, about $12. Projection to Audit.
+Projection to Audit.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
