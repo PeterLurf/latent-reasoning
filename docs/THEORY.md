@@ -7200,6 +7200,14 @@ $0.
 * **(3) Scope.** §88 and §90 test **composition of seen transitions into unseen sequences**. That is exactly what §80's
   P0 failed at (0.118), not transition-level generalisation (§76(B)'s held-out rows).
 
+**Note 90-2 (2026-10-02 21:37 EDT, before any §90 run; implementation `c1/p80_p0.py loop90`, split
+`c1/p90_split_S4_k2.json`).**
+* **Achieved per-iteration transition coverage** (seeded greedy cover then random fill, best of 500): S3 k3-25 1.000 in
+  all seeds; S4 k2-100 and k2-400 1.000; **S4 k2-25 0.77–0.80** (all seeds).
+* So **S4 k2-25 is descriptive** (90-1). **V2 is restated over the full-coverage arms**: S4 k2-400 (b) ≥ 0.90, with
+  k2-100 reported. The 25-word arm's (b) is descriptive, split by all-seen vs ≥ 1-unseen test items.
+* **V1** (S3 k3-25 (b) < 0.50) is unchanged, at full coverage.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
