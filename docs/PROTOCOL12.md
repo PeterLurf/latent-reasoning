@@ -650,3 +650,7 @@ descriptive).
     0.835.
   - So with 100 words, a fitted model may still memorise rather than compose. Composition at k = 2 is seed-dependent
     at 100 words and unresolved at 400 (1 of 3 fitted).
+
+**§88 completion (2026-10-03 00:44 EDT):** the requeued align k2 s3 finished: (b) 0.091, train 1.000. The panel is complete (12/12).
+LOOP-align k = 2 median (b) is now 0.091 (seeds 0.091 / 0.030 / 0.091). The verdict is unchanged: G1 not met, G2 met,
+kill at k = 2.
