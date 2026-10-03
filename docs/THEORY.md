@@ -7092,6 +7092,26 @@ A5 free table, seeds 2131–2135).**
 * **Placement note.** The driver's default output directory was wrong (it wrote into `c1_s85`). The 25 files were moved
   by name, unopened, to `c1_s87`, and the default is fixed.
 
+**Amendment 86-4 (2026-10-02 20:53 EDT; one revision after the pilot, before any panel run).**
+* **The pilot failed** (k = 4, s1): training loss stuck at 4.788 = ln 120 from step 900 to 8,000; every slot at chance;
+  cumulative accuracy 0.000 at 512.
+* **Diagnostics** (the experiments session; non-evidential, 600 steps, k = 1).
+  - The registered **120-way element decoder** is the obstacle: an arbitrary index lookup learned from scratch.
+  - It stays at ln 120 whether the slot input is raw, standardised or rescaled, at head lr 1e-3, and even with the head
+    directly on the last op token (no slot).
+  - A **5 × 5 arrangement head** (box × letter, the structure of §71's text interface) learns (1.95 → 1.015 by step 600).
+* **Revision.**
+  - (i) The auxiliary decoder becomes a **5 × 5-way arrangement head** per slot, with cross-entropy summed over the 5
+    boxes.
+  - (ii) **Snap to a structured codebook.** The next chunk's start embedding is code(a) = Σ_box W_box[letter_box(a)] for
+    the decoded arrangement a (learned 5 × 5 × 768). The restart stays **latent** (no text), as M1 requires.
+  - Everything else in §86 is unchanged (slots, k ∈ {1, 4}, seeds, measures, R1–R3, notes 86-1 to 86-3).
+* **Re-pilot gate.** k = 4, seed 1 under the revision. The panel starts only if the pilot reaches cumulative ≥ 0.95 at
+  512. If it fails, §86 closes with no further revisions.
+* **Process note (experiments session).** The first chain armed the panel on "eval.json exists" rather than on the
+  pilot passing. The three k = 1 runs it started were stopped within about 1 min and voided (kept in
+  `boxes/runs_s5/void86`).
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
