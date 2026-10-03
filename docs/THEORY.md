@@ -7949,6 +7949,48 @@ sufficient.**
   - §92's position-0 start is the problem's given initial state, not a teacher label.
   - No verdict changes.
 
+**§97 result (2026-10-03 17:35 EDT; runs by the experiments session on Vast; scored by Theory alone with
+`theory/score_s97.py`, committed before any run (90034c85; key alignment before the panel);
+`theory/results/score_s97.json`). G4 is met; the attribution reads "no hand-built state is needed".**
+
+| arm (S5, 24k steps, seeds 1–3) | cumulative at 512 | 2,048 | zero-removal after slot 1 | mean-removal after slot 1 | FLOPs vs WC₀₄ (as metered / restricted vocab) | G4 |
+|---|---|---|---|---|---|---|
+| **GEN-4** (text target + text checkpoint) | **0.998 / 1.000 / 1.000** | **1.000 ×3** | ≤ 0.007 | 0.23 / 0.28 / 0.29 | **0.56× / 0.61×** | **3/3** |
+| HYB-4 (text target + §92's codebook) | 1.000 ×3 | 1.000 ×3 | ≤ 0.003 | 0.15 / 0.50 / 0.31 | 0.49× / 0.53× | 3/3 |
+| §92 (5 × 5 head + codebook) | 1.000 / 1.000 / 0.9995 | 1.000 ×3 | ≤ 0.003 | ≤ 0.003 | 0.39× / 0.45× | 3/3 |
+| GEN-1 (descriptive) | 1.000 ×3 | 1.000 ×3 | — | — | — | certified 3/3 (0 / 14,400) |
+
+* **G4 met (3/3), and C3 met as registered** (0.56× ≤ 0.6, as metered with full vocabulary on both sides). Under the
+  restricted-vocabulary convention (92-3) it is 0.61×, just over the bar. Both are reported.
+* **Attribution (97-1): §92 pass, HYB-4 pass, GEN-4 pass, so no hand-built state is needed.** §92's latent restarts
+  work with the per-op target written as the CoT step's text, decoded by GPT-2's own LM head, and the checkpoint carried
+  as that text re-embedded.
+* **C7 (descriptive).**
+  - Every checkpoint is plain text. Validity is ≥ 0.99999 (one malformed snap in 128k, GEN-4 s1).
+  - **Checkpoint edit IIA is 1.000** in all 9 runs: replace a checkpoint with another state's text, and the next
+    checkpoint is the true composition from the edited state.
+  - The silent slots 1–4 decode to the correct step text at 1.000.
+  - wte drift is negligible (min cosine ≥ 0.995).
+* **C1 (use), with a qualifier from the bypass control (Literature (b)).**
+  - Zeroing the latent slot inputs drops accuracy to ≤ 0.007, and long rollouts fail without the latents (mean-ablated
+    512 accuracy ≈ 0).
+  - But **mean-ablating them leaves the in-context text decoder partly able to recompute the state from the visible
+    ops**:
+    - GEN-4 per slot under mean ablation: slot 1 at 0.71–0.95; slots 2–4 at 0.21–0.30 (chance 0.008);
+    - HYB-4: slots 2–4 at 0.37–0.64;
+    - §92's restricted head: ≤ 0.009 everywhere.
+  - So the latents carry the state (intact 1.0 vs ablated ≤ 0.30 from slot 2 on). The six-token text decode adds an
+    in-pass recomputation route that §92's single-position head lacked.
+  - C1 is claimed by the registered zero-removal rule, **qualified: partial recomputation under mean ablation**.
+* **GEN-1 (descriptive, 97-1).** A per-op text snap is certified at every length (0 errors over 14,400). This is
+  essentially the written-state loop.
+* **Standing claim (§97).** One recipe with no task-specific state:
+  - a text step target through the LM head, plus re-embedded text checkpoints with a history cut every 4 ops, plus one
+    latent per op in between;
+  - carries S5 exactly to 2,048 from training at 128 (3/3), at 0.56–0.61× the written state's compute.
+  - **C1 (use, qualified) + C2 + C3 (as metered) + C7 for checkpoints** (readable, edit IIA 1.0); **not C4**.
+  - C6 needs seeds 4–5 (97-1): next. This licenses step 2 of the user's plan (the bench ladder).
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
