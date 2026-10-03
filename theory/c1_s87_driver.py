@@ -27,7 +27,7 @@ def tau(args):                                   # tau0 = 4 unless the arm overr
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--device", default="cpu"); ap.add_argument("--P", type=int, default=3)
-    ap.add_argument("--out", default=os.path.join(HERE, "results", "c1_s85"))
+    ap.add_argument("--out", default=os.path.join(HERE, "results", "c1_s87"))
     a = ap.parse_args(); os.makedirs(os.path.join(a.out, "logs"), exist_ok=True)
     env = dict(os.environ, OMP_NUM_THREADS="1", MKL_NUM_THREADS="1")
 
