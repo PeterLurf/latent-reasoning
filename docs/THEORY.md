@@ -7875,6 +7875,27 @@ a smoke test of the fork loss, greedy snap and certificate before the panel.
   and without full-vocabulary logits on both sides. The registered C3 rule uses the as-metered numbers (Meter, both
   sides full vocabulary).
 
+**§95 result (2026-10-03 14:29 EDT; runs by the experiments session on Vast, 26c15ccc; scored by Theory alone with
+`theory/score_s95.py`, committed before any §95 run (3fd82763); `theory/results/score_s95.json`). No dose is
+sufficient.**
+
+| f (single-op foothold updates) | labels / op | cumulative at 512 (s1–3) | per-slot accuracy (slots 1–4) | sufficient |
+|---|---|---|---|---|
+| 0 (§93 SPARSE-4-fix) | 0.25 | 0.0 ×3 | 0 everywhere | 0/3 |
+| 0.05 | 0.26 | 0.0 ×3 | ≈ 0 everywhere | 0/3 |
+| 0.25 | 0.31 | 0.0 ×3 | slot 1 = 1.0 in s1 and s3; slots 2–4 ≤ 0.004 | 0/3 |
+| 0.5 | 0.40 | 0.0 ×3 | slot 1 = 1.0 ×3; slots 2–4 ≤ 0.007 | 0/3 |
+
+* **"Little enough for C4" (f ≤ 0.05): not met.** No dose up to f = 0.5 is sufficient.
+* **Reading ("none sufficient").** Single-op footholds do not rescue chunk-end-only labels at §93's budget.
+  - They teach **slot 1**: restart code → one op → readable state, in 5/6 seeds at f ≥ 0.25.
+  - They do **not** teach the **latent hand-off** to slots 2–4, which stays at chance in every run.
+  - The §92 claim stays per-op.
+* **Descriptive.** §93's SPARSE-4-var, whose one near-success (s3, 0.9725) drew chunk lengths from 1..4, also had 2- and
+  3-op chunks. Graded chunk lengths, not single-op footholds, are the candidate ingredient there. No claim is made.
+* **Consequence.** The in-LM C4 route for latent restarts (thinning labels inside the LM: §93, §95) is closed at this
+  budget. The C4 route left is §96 (a final-answer-trained teacher; running).
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
