@@ -60,10 +60,12 @@ def main():
         T["genm_median"] = med(g, acc)
         T["M1"] = T["genm_median"] is not None and T["genm_median"] >= 0.95
         T["M_SOTA"] = T["genm_median"] is not None and T["genm_median"] >= bar
+        mk = A["mask"]
         if floor is None:
-            print(task, "NC-M missing: M-C1 not scorable"); 
-        mk = A["mask"]; ok_seeds = [s for s, r in mk.items() if r["acc_test"] >= 0.95 and
-                                    r["removal"]["zero"]["answer_acc"] <= floor and r["removal"]["mean"]["answer_acc"] <= floor]
+            print(task, "NC-M missing: M-C1 not scorable"); ok_seeds = []
+        else:
+            ok_seeds = [s for s, r in mk.items() if r["acc_test"] >= 0.95 and
+                        r["removal"]["zero"]["answer_acc"] <= floor and r["removal"]["mean"]["answer_acc"] <= floor]
         T["mask_median"] = med(mk, acc)
         T["M_C1"] = floor is not None and T["mask_median"] is not None and T["mask_median"] >= 0.95 and \
             all(mk[s]["removal"]["zero"]["answer_acc"] <= floor and mk[s]["removal"]["mean"]["answer_acc"] <= floor
