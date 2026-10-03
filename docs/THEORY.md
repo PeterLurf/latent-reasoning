@@ -7511,6 +7511,56 @@ any §89 value (7a8ffc23); `theory/results/score_s89.json`). The descriptive arm
   fade_std_dec's +0.40 paired median over COCONUT-stage (per seed +0.24 / +0.76 / +0.40 / +0.50 / +0.34) is
   **descriptive**, not "F3 met". The experiments session's PROTOCOL12 line should read the same way.
 
+## 94. The "where" readout: a reversal problem in the latent state? Budget vs an inverse-direction decode target (pre-registered 2026-10-03 09:36 EDT, after Literature's check 48f0b698 and Audit's review, before any run)
+
+**Why.** §89's FADE-std-dec carries the full boxes arrangement in pure latent form: "all" questions are 1.000 in 5/5 and
+mean ablation gives the NC floor. But "where X" is at chance in 4/5 seeds (s2: 1.000).
+* Literature frames this as the **reversal curse / inverse search** (Berglund 2309.12288; Allen-Zhu & Li 2309.14402;
+  Golovneva 2403.13799).
+  - The step-decode loss trains only box → letter.
+  - "Where X" needs letter → box.
+  - The standard fix is a target in the needed direction. Longer training is not known to fix inverse failures, though
+    §91 and §92 showed seed lotteries vanishing with budget.
+* §94 separates three things: **information absent** (box-ordered storage), **readout not learned** (multi-task
+  lottery), and **direction**.
+
+**Step 0: bidirectional probes on §89's trained FADE-std-dec models** (s1–s5; inference only, local).
+* Linear probes on the final latent (and per thought position), trained on held-out training-distribution problems:
+  - **letter → box** (for each letter, its box index): the "where" information;
+  - **box → letter** (for each box, its letter): the "all" information, as the positive control.
+* **Reading per failing seed.**
+  - letter → box probe ≥ 0.9: the information is present and only the answer readout failed.
+  - Probe ≈ chance: a box-ordered storage format; letter → box binding is not accessible (Feng & Steinhardt 2310.17191).
+
+**Arms** (FADE-std-dec recipe of §89 and notes 89-1 to 89-3; 3× budget = 24k updates, the same fade-schedule fractions;
+fresh seeds 6–10).
+* **STD-DEC-3× (5 seeds):** budget only.
+* **STD-DEC-INV-3× (5 seeds):** plus an **inverse-direction step-decode target**. A second side head on h at thought
+  positions decodes, for each letter, its box index (letter → box), at constant weight and never fed back. It is
+  "reverse training" for the latent.
+* **FADE-STD-3× (3 seeds; descriptive):** no decoder, the matched control for whether budget alone rescues the
+  no-decoder arm (Audit).
+
+**Measures.** As §89, **per question type** ("all" / "where") with zero and mean removal per type; Step 0's probes on
+every new model.
+
+**Predictions.**
+* **W1 (budget).** STD-DEC-3× answers "where" ≥ 0.90 at N 5–8 in ≥ 4/5 seeds.
+* **W2 (direction).** STD-DEC-INV-3× answers "where" ≥ 0.90 in ≥ 4/5 seeds.
+* Literature's prior favours W2 over W1.
+
+**Rule for C1 per type (Literature).** C1 (use) is claimed for "where" only in seeds that answer it (≥ 0.90), with
+removal dropping it to ≤ NC + 0.05 for that type.
+
+**Readings.**
+* **W2 but not W1.** The failure was directional, as in the reversal curse for latents. The inverse target is the fix.
+* **W1.** It was a multi-task lottery that budget removes.
+* **Neither, and Step 0's probes fail.** Box-ordered storage, so letter → box binding is not formed.
+* **Tags.** C1 (use) + C2 in range, with CoT labels; not C4.
+
+**Placement.** Step 0 runs locally (inference). The arms run on Vast 3090s: 13 runs at about 6 h each, one host first,
+≤ 5, about $14. Projection to Audit.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
