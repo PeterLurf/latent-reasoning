@@ -1,47 +1,33 @@
 # Read before reorganising this folder
 
-Experiments are running **right now** (addenda O/P/Q/R until about Tue 2026-09-29 evening; PROTOCOL7 T9/T10 training queues after that, until about Fri 2026-10-02). Detached background processes on this PC and
-on Vast.ai cloud machines read and write files in this folder **by path**. Moving, renaming or editing the items below
-while they run will silently break experiments (bash reads running scripts line by line; queue workers re-read their queue
-files; new training runs import `latent/` fresh).
+**Refreshed 2026-10-03 19:55 EDT.** Jobs are running right now: the Vast fleets for §97 C6 and §98 (until about
+2026-10-04 06:00), plus local GPU and CPU jobs (§89's last fade runs, §98 COCO reruns, §83, §94 probes). The live
+list is in `docs/CURRENT_TASKS.md`. Detached processes on this PC and on Vast read and write files here **by path**.
+Bash reads running scripts line by line, workers re-read queue files, and new runs import the modules fresh. So
+moving, renaming or editing the items below silently breaks them.
 
-## Do not move, rename, delete or edit (until the runs finish)
+## Do not move, rename, delete or edit (while `docs/CURRENT_TASKS.md` lists running jobs)
 
 | Path | Why |
 |---|---|
-| `latent/` | the training/eval package; every new run imports it (`python -m latent.train`, `latent.protocol6`, …) |
-| `scratch/` | running scripts (`queue_worker2.sh`, `stage1_guard.py`, `eval_battery.sh`, `chain_after.sh`, `p6_after2.sh`, `p6_wait3.sh`, `vfetch_toy.sh`, `score_*.py`, `far_sweep_frozen_I.py`) and live queue files (`p6_o_*.txt`, `p6_r_*.txt`, `p7s_t9_*.txt`, `p7s_t10_2070.txt` + their `.claimed` / `.lock`) |
-| `runs/` | models being written right now (`m_s*`, `o_s*`, `o_dev6_s*`) and every earlier model the scorers read |
-| `results/` | evaluation outputs written by the running jobs and read by the scorers |
-| `logs/` | queue logs the chains watch for `QUEUE_DONE` (`logs/queue_*.out`) |
-| `prosqa/` | ProsQA scripts used to check/fetch/score the cloud runs (`status.sh`, `vfetch.sh`, `score.py`, `analyze.py`, `gpt2c.py`), results `res_*`, checkpoints `ckpt/` (6.5 GB) |
-| `docs/CURRENT_TASKS.md`, `docs/PROTOCOL6.md`, `docs/PROTOCOL6_RESULTS.md`, `docs/PROTOCOL7.md`, `docs/PROTOCOL7_RESULTS.md`, `docs/RESEARCH_LOG.md` | live handoff and pre-registration files; Claude sessions and memory refer to these exact paths |
+| `boxes/` (`core.py`, `s5.py`, `latent86.py`, `gen97.py`, `mult98.py`, `fade89.py`, `probe94.py`, `train.py`) | imported by every running and queued job; `boxes/runs*/` are their outputs |
+| `theory/s83_restart.py`, `theory/results/` | §83 job on the 2070; probe outputs |
+| `scratch/` | running scripts and queues. Workers: `py_local_worker2.sh`, `s83_local.sh`, `s98_local_chain.sh`, `s94_probes_new.sh`. Vast: `gen_vast_job.sh`, `vdeploy_toy.sh`, `drain_gen.sh`, `auto_drain_gen{2,3}.sh`, `vdestroy.sh`. Queues: `c1_q_next.txt`, `c1_q_98coco.txt`, `gen_q_*.txt`. Registry: `pods.txt`, `live_hosts.txt` |
+| `c1/runs/locks/` | local queue claims (a lock dir also holds the dropped §89 runs) |
+| `bench/data/` | §98 test files and `mult_train/` (gitignored), S5 data |
+| `prosqa/ckpt/gpt2_pretrained.bin` | the GPT-2 weights every job loads and every deploy uploads |
+| `ext/icotsi/` | ICoT-SI released checkpoints (gitignored) |
+| `logs/` | queue and watcher logs the chains and drains watch |
+| `docs/CURRENT_TASKS.md`, `docs/THEORY.md`, `docs/PROTOCOL*.md`, `docs/RESEARCH_LOG.md` | live handoff and registration files that sessions and memory refer to by path |
 
-## Safe to reorganise now
+## Safe to reorganise
 
-* `report/` and the other files in `docs/` (keep the four named above in place), `README.md` (keep its link to
-  `docs/CURRENT_TASKS.md`).
-* Anything else: please wait until `docs/CURRENT_TASKS.md` says nothing is running.
+* Other files in `docs/` (Audit moved superseded notes to `docs/archive/` on 2026-10-03), `report/`, and anything not
+  listed above. Check that no script or doc still points at a path before moving it.
 
 ## Also
 
-* Pre-registration records (`docs/PROTOCOL*.md`) must not be rewritten — only appended to with dated amendments.
-* A backup of code, docs, results, logs and run configs/logs (not model weights) was made before any reorganisation:
-  `D:\Latent_backup_2026-09-28_1840.tgz` (outside this folder).
-* If a move is unavoidable after the runs, update every path in `docs/CURRENT_TASKS.md` and the scripts that reference it.
-
-* The folder is now a git repository (`.git/`, branch `main`, `core.autocrlf false`). Do not change line-ending settings: the running bash scripts must stay LF.
-
-## For other agents building on this code (added 2026-09-29 ~01:20)
-
-Queued training runs start over the next days (addendum R, PROTOCOL7 T9/T10) and each one imports `latent/` and runs
-`scratch/queue_worker2.sh`, `scratch/eval_battery.sh`, `scratch/stage1_guard.py` fresh when it starts. Pre-registered
-scorers (`scratch/score_*.py`, `scratch/p7s_*.py`, `scratch/far_sweep_frozen_I.py`, `scratch/far_sweep_layers.py`,
-`latent/frontier_causal*.py`, `prosqa/*.py`) must keep their current behaviour. So:
-
-* Add new modules/files, or new flags whose default keeps today's behaviour; please don't change the behaviour of
-  existing functions in `latent/` (especially `train.py`, `model.py`, `graphs.py`, `data.py`, `competence*.py`,
-  `length_gen.py`, `frontier_amp.py`) or of the scripts above.
-* Don't edit running shell scripts in place (bash reads them line by line) or the queue files `scratch/p6_*.txt`,
-  `scratch/p7s_*.txt` and their `.claimed`/`.lock` files.
-* The folder is under git: `git status` / `git diff` show every change; commit your work on a separate branch if you can.
+* Pre-registration records (`docs/PROTOCOL*.md`, THEORY §§) are never rewritten, only appended to with dated notes.
+* Add new modules or new flags whose default keeps today's behaviour. Don't change existing functions that running
+  jobs or registered scorers use.
+* The repo is LF (`core.autocrlf false`); the running bash scripts must stay LF.
