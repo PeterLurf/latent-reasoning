@@ -61,6 +61,8 @@ def fade_latents(a, args, probs):
     if a.control == "pretrained":
         alpha = 0.0                                                            # no fine-tuning: inputs = E[argmax]
     else:
+        if args.get("inv_dec"):                                                # §94 STD-DEC-INV: the side head exists in model.pt
+            f.inv = nn.Linear(768, 16)
         f.load_state_dict(torch.load(os.path.join(a.run, "model.pt"), map_location=a.device))
     f.to(a.device).eval(); P, L = [], []
     with torch.no_grad():
