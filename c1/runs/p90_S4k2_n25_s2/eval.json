@@ -1,0 +1,33 @@
+{
+ "section": 90,
+ "group": "S4",
+ "k": 2,
+ "n_words": 25,
+ "seed": 2,
+ "train_sec": 535,
+ "coverage_per_iteration": [
+  0.7673611111111112,
+  0.7725694444444444
+ ],
+ "coverage_full": false,
+ "acc_train": 1.0,
+ "acc_b_unseen_words": 0.0197495183044316,
+ "per_iteration_acc_b": [
+  0.15992292761802673,
+  0.019749518483877182
+ ],
+ "n_b": 4152,
+ "acc_a_heldout_pairs": 0.26666666666666666,
+ "n_a": 60,
+ "n_train_pairs": 540,
+ "b_split_by_transition_seen": {
+  "all_seen": [
+   0.01647909967845659,
+   2488
+  ],
+  "some_unseen": [
+   0.024639423076923076,
+   1664
+  ]
+ }
+}

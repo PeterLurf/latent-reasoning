@@ -620,3 +620,27 @@ stays ≤ 0.091 whatever s3 scores.
 * **Gate not met (0.000 < 0.95), so §86 closes (86-4).**
 * **Reading (descriptive):** the latent cell applies the first op exactly from a snapped start code (slot 1 = 1.000),
   but the state is not carried through the fed-back hidden state to later slots.
+
+## THEORY §90 (word diversity for loop-aligned composition) result (2026-10-03 00:43 EDT; `python c1/score_90.py` → `theory/results/score_s90.json`)
+
+**Disclosure:** the scorer (7f6ed9b) was written after the 12 runs finished, before any eval.json was read. It
+encodes V1 and V2 as restated by note 90-2. Subsets are as in note 90-1; coverage is 100 % except S4 k2-25 (0.77–0.80,
+descriptive).
+
+| arm | (b) unseen words, median (per seed) | (a) median | train median | per-iteration (b), median |
+|---|---|---|---|---|
+| S3 k3, 25 words | **0.128** (0.128, 0.105, 0.159) | 0.143 | 1.000 | 0.85 / 0.22 / 0.13 |
+| S4 k2, 25 words (descriptive) | 0.018 | 0.333 | 1.000 | 0.19 / 0.02 |
+| S4 k2, 100 words | 0.548 (0.903, 0.148, 0.548) | 0.835 | 0.998 | 1.00 / 0.55 |
+| S4 k2, 400 words | **0.167** (0.113, 0.976, 0.167) | 0.134 | **0.189** | 0.97 / 0.17 |
+
+* **V1 met:** S3 k = 3 from 25 words gives 0.128 < 0.50 at full coverage, against 1.000 from §88's 151 words.
+* **V2 not met:** S4 k2-400 median 0.167 < 0.90.
+  - The 400-word arm **does not fit its training words** (train median 0.189). Its one seed that fit (s2: train high)
+    reaches (b) 0.976.
+  - Within this budget (4,000 steps, bs 64), V2's failure is an optimisation failure on the larger set, not evidence
+    against composition.
+* **Reading (descriptive):** "V1 only" by the registered table. With the caveat above:
+  - word diversity is necessary (25 words fail at k = 3 too);
+  - k = 2 composes when the larger training set is actually fitted (k2-100 s1 0.903, k2-400 s2 0.976);
+  - at this budget, fitting is seed-dependent.
