@@ -1,0 +1,5 @@
+# §93
+# P=2
+boxes/runs_s5/l93_s8fix_s3 boxes.latent86 train --steps 24000 --bs 64 --log_every 2000 --probe --k 8 --sup last --seed 3
+boxes/runs_s5/l93_warm8_s2 boxes.latent86 train --steps 24000 --bs 64 --log_every 2000 --probe --k 8 --sup last --warm_frac 0.25 --seed 2
+boxes/runs_s5/l93_warm8_s3 boxes.latent86 train --steps 24000 --bs 64 --log_every 2000 --probe --k 8 --sup last --warm_frac 0.25 --seed 3
