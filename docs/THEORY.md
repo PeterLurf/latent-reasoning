@@ -7246,6 +7246,71 @@ The gate fails (cumulative 0.000 at 512), so §86 closes per 86-4. No further re
   a lottery when it fits, budget-limited at 400 words. §91 (registered next) tests longer training, weight decay and a
   step-first curriculum for reliability.
 
+## 91. Making loop-aligned composition reliable: longer training, grokking-style weight decay, or a k = 1 → 2 curriculum (pre-registered 2026-10-03 00:47 EDT, after Literature's check 63f147a and before any run; the user's overnight "keep iterating", via Audit)
+
+**Why.**
+* §88: per-iteration-aligned depth recurrence composes unseen op sequences, perfectly at S3 k = 3.
+* §90 (scored): at S4 k = 2 with 400 training words and full coverage, 2 of 3 seeds do not fit training in 4k steps;
+  the one that fits composes at 0.976. At 100 words all fit, but composition is seed-dependent (0.15–0.90). It is a
+  **seed lottery** plus a budget limit, like Zhang 2607.20594's 8/22.
+* A reliable recipe is what a method needs. Candidates from the grokking and curriculum literature (63f147a): longer
+  training, strong weight decay, and a curriculum that trains the single step first.
+
+**Task.** §90's S4 k = 2 split (`c1/p90_split_S4_k2.json`), with 400 training words built per seed with full
+transition coverage (90-1) and the same unseen set (b) and held-out pairs (a). **New seeds 4–8.**
+
+**Model.** §88/§90's LOOP-align: GPT-2 small, layers 4–7 looped k times, a per-iteration shared head, AdamW lr 1e-4,
+bs 64.
+
+**Arms** (5 seeds each).
+* **BASE:** the §90 recipe (4,000 steps, weight decay 0.01). It re-measures the lottery on 5 fresh seeds.
+* **LONG:** 16,000 steps, weight decay 0.01.
+* **WD-SP:** 16,000 steps, grokking-style strong regularisation **towards the pretrained weights** (L2-SP 1802.01483):
+  decoupled decay θ ← θ − lr·1.0·(θ − θ₀) on GPT-2's parameters, plus ordinary weight decay 1.0 on the new head.
+  - Plain decoupled weight decay 1.0 at lr 1e-4 would shrink all weights by e^(−1e-4·N), erasing pretraining
+    (Literature).
+  - ‖θ − θ₀‖ and the weight norms are reported.
+* **CURR (operator-first, Zhang 2607.20594, applied to a looped pretrained GPT-2 with per-iteration targets):** 16,000
+  steps. The first 4,000 train on **single-op problems** (k = 1: start + one op, iteration-1 target only, all 24 ops ×
+  24 starts), then k = 2 as BASE.
+* LONG is the control WD-SP must beat (grokking means late generalisation).
+
+**Measures.** (b) and (a) accuracy and per-iteration (b) at the end; (b) every 2,000 steps (the timing of any
+grokking-style jump); training loss.
+
+**Rule (fixed now).** An arm is **reliable** if (b) ≥ 0.90 in ≥ 4/5 seeds.
+**Prediction R.** At least one of LONG, WD and CURR is reliable, while BASE is ≤ 2/5.
+
+**Readings.**
+* **R.** That arm's ingredient (time, regularisation or a step-first curriculum) turns the lottery into a reliable
+  in-depth composition recipe. It is the recipe to carry to latent hand-off and real tasks.
+* **BASE reliable too.** §90's lottery was a small-sample artefact.
+* **None reliable.** The lottery is intrinsic at this scale; report it.
+
+**Placement.** Vast 3090s (local cards are busy with §89's 4 h runs). One host proven first, then ≤ 4. About 11 GPU-h,
+about $3. Projection to Audit.
+
+## 92. §86's latent hand-off at three times the budget (pre-registered 2026-10-03 00:47 EDT, after Literature's check 1c30041 and before any run; Audit's suggestion)
+
+**Why.** §86 (86-4) got slot 1 exact, but the latent hand-off to slots 2–4 failed within 8k steps. The loss was still
+falling (8.05 → 4.68), so it was "not acquired within budget" (Audit's wording). §92 asks whether more training acquires
+it.
+
+**Design.** Exactly 86-4's model and recipe (S5, k = 4, a 5 × 5 arrangement head, structured-codebook snap, latent
+slots), at **24,000 steps** (3×, the same schedule shape), **seeds 1–3**, Vast 3090s.
+
+**Measures.** As §86: cumulative accuracy at 128 / 256 / 512 (and 2,048), per-slot accuracy, C1 removal (zero, mean and
+isolate), and C3 compute. Also **per-slot accuracy curves every 2k steps** (Literature: the slots may improve one at a
+time, saddle to saddle).
+**Prior** (1c30041): Coconut, CODI and ICoT-SI learn hand-offs over tens to hundreds of epochs with text curricula; §86
+had neither. Levers held for later: a text → latent fade of the per-op state, a k-curriculum, and CODI's MLP + LN
+projection.
+
+**Rule.** If cumulative ≥ 0.95 at 512 in ≥ 2/3 seeds, the latent hand-off is acquirable with budget, and §86's R2 / R3
+are then scored on these runs. Otherwise the line closes for good.
+
+**Placement.** One host first (s1), then 2 more. About $3. Projection to Audit.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
