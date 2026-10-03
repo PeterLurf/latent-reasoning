@@ -1,0 +1,4 @@
+# §93 (re-planned: no two k8 runs concurrent; p93 memsamp k4+k8 peak 21.9/24 GB)
+# P=1
+boxes/runs_s5/l93_s8var_s2 boxes.latent86 train --steps 24000 --bs 64 --log_every 2000 --probe --k 8 --sup last --var --seed 2
+boxes/runs_s5/l93_s8var_s3 boxes.latent86 train --steps 24000 --bs 64 --log_every 2000 --probe --k 8 --sup last --var --seed 3
