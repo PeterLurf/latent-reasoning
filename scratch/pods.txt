@@ -477,3 +477,11 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53887285 vast | g78_a2 DESTROYED_VERIFIED 2026-10-02 17:48 after verified fetch (gsmlen/runs/tc_s2 gsmlen/runs/ws_s2)
 53968592 vast offer 52714988 created 2026-10-03 01:02: label gen-proof, queue scratch/gen_q_proof.txt (logged at create by vdeploy_toy.sh)
 53968592 vast | gen_proof DESTROYED_VERIFIED 2026-10-03 01:40 after verified per-run fetch (c1/runs/p91_base_s4 boxes/runs_s5/smoke92)
+53971920 vast offer 51632299 created 2026-10-03 01:41: label gen-h1, queue scratch/gen_q_h1.txt (logged at create by vdeploy_toy.sh)
+53971922 vast offer 52714988 created 2026-10-03 01:41: label gen-h2, queue scratch/gen_q_h2.txt (logged at create by vdeploy_toy.sh)
+53971926 vast offer 48757264 created 2026-10-03 01:41: label gen-h3, queue scratch/gen_q_h3.txt (logged at create by vdeploy_toy.sh)
+53971930 vast offer 53006462 created 2026-10-03 01:41: label gen-h4, queue scratch/gen_q_h4.txt (logged at create by vdeploy_toy.sh)
+53971931 vast offer 52514396 created 2026-10-03 01:41: label gen-h5, queue scratch/gen_q_h5.txt (logged at create by vdeploy_toy.sh)
+53973796 vast offer 51428264 created 2026-10-03 02:03: label f89-proof, queue scratch/gen_q_f89proof.txt (logged at create by vdeploy_toy.sh)
+53971926 vast | gen-h3 DESTROYED_VERIFIED 2026-10-03 02:13: BAD HOST (cuInit failed at deploy, 02:03); queue redeployed on a new offer
+53974693 vast offer 43731723 created 2026-10-03 02:13: label gen-h3, queue scratch/gen_q_h3.txt (logged at create by vdeploy_toy.sh)
