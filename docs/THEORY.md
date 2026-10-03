@@ -7598,6 +7598,36 @@ removal dropping it to ≤ NC + 0.05 for that type.
 * **Consequence.** The strict-C4 version (M1-U, final-state-only latent restarts) is moot at this budget, and the C4 line
   for latent restarts stops here. C4 stays qualified: the standing §92 result needs per-op targets.
 
+## 95. Foothold dose-response: how many per-op footholds do sparse-label latent restarts need? (pre-registered 2026-10-03 11:08 EDT, after §93's result and Literature's foothold analysis 883259e0 (flags 1–2), before any run; Audit's OK)
+
+**Why.** §93: with chunk-end-only labels, fixed-length chunks learn nothing (0/3 at k = 4 and 8). Variable-length chunks
+(a quarter single-op at k = 4) and a dense warm start each give one seed that learns almost fully. As with the free
+table (§85, §87), single-step supervision looks like a **basin-entry device**. §95 measures the dose.
+
+**Design** (86-4's latent-restart model; §93's 24k-step budget; k = 4; test-time snapping every 4 ops; seeds 1–3).
+* Training chunks are of two kinds.
+  - With probability **f**, a **single-op chunk** (a per-op foothold: one op, with its slot labelled).
+  - Otherwise a **fixed 4-op chunk** with only slot 4 labelled.
+* **f ∈ {0.05, 0.25, 0.5}.** f = 0 is §93's SPARSE-4-fix, 0/3, the reference.
+* The label density is f + (1 − f)/4 labels per op. For f = 0.05 that is about 0.29 labels per op, against 1.0 for
+  dense.
+
+**Measures.** As §93: cumulative accuracy at 512 and 2,048, per-slot accuracy (zero-shot on unlabelled slots), removal
+(zero and mean), and probe and IIA per slot.
+
+**Rule (fixed now).** A dose f is **sufficient** if ≥ 2/3 seeds reach cumulative ≥ 0.99 at 512, with zero-removal
+≤ 0.10.
+* **"Little enough to matter for C4" (fixed now, Audit): f ≤ 0.05**, i.e. single-op footholds in ≤ 5 % of chunks, like
+  §85's p.
+
+**Readings.**
+* **f = 0.05 sufficient.** A small foothold dose makes chunk-end supervision acquire the latent hand-off. Closer to C4
+  (about 0.29 labels per op), but still qualified.
+* **Only f ≥ 0.25 sufficient.** Substantial per-op supervision is needed.
+* **None sufficient.** Footholds do not reliably rescue sparse labels at this budget; the §92 claim stays per-op.
+
+**Placement.** Vast 3090s: 9 runs (3 doses × 3 seeds), one host first, ≤ 3, about $6. Projection to Audit.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
