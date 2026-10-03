@@ -677,3 +677,8 @@ nc/tc_s1–3 on the same items (note 89-3): NC N 5–8 median 0.14, so F2's floo
   α = 1: 0.83.
 * Per type, FADE-std-dec at N 5–8: "all" 1.000 in 5/5 seeds; "where" 1.000 in s2, about 0.23 in the others. Seed 2
   solves both question types fully in pure latent; the "where" failure is seed-dependent.
+* **Correction (2026-10-03 09:35 EDT, note 89-9):** F3 is gated on F1 (note 89-2: "F2 and F3 are applied to each arm that meets F1").
+  No arm meets F1, so the line "F3 … met" above is wrong. FADE-std-dec − COCONUT-stage = +0.40 (median paired) is
+  **descriptive**; F3 is not met / not applicable. My scorer (score_s89.json) printed it without the gate. The
+  verdicts stand as F1 not met (soft pending), F2 and F3 not applicable. Theory's scorer writes
+  score_s89_theory.json.
