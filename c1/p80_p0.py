@@ -291,7 +291,13 @@ def train_loop90(a):
     tok = GPT2TokenizerFast.from_pretrained("openai-community/gpt2")
     m = Looped(GPT2LMHeadModel.from_pretrained("openai-community/gpt2"), a.k)
     m.head = torch.nn.Linear(768, g["n"]); m = m.to(a.device)
-    opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
+    if a.wd_sp:                                  # §91 WD-SP: decoupled decay towards the pretrained weights + wd 1.0 on the head
+        body = [p for n, p in m.named_parameters() if not n.startswith("head.")]
+        opt = torch.optim.AdamW([{"params": body, "weight_decay": 0.0},
+                                 {"params": list(m.head.parameters()), "weight_decay": 1.0}], lr=a.lr)
+        theta0 = [p.detach().clone() for p in body]
+    else:
+        opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
 
     def batch(pairs):
         enc = [tok.encode(g_prompt(g, s, words[w])) for s, w in pairs]; T = max(map(len, enc))
@@ -312,19 +318,48 @@ def train_loop90(a):
     os.makedirs(a.out, exist_ok=True)
     json.dump({**vars(a), "subset_words": sel, "coverage_attempt": attempt}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
     log = open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t0 = time.time()
+    singles = [(s_, op) for s_ in range(g["n"]) for op in range(g["n"])]        # §91 CURR: all single-op problems
     for step in range(1, a.steps + 1):
-        m.train(); ids, last, tg = batch([rng.choice(tr) for _ in range(a.bs)])
+        m.train()
+        if a.curr_steps and step <= a.curr_steps:                              # §91 CURR: k = 1 phase (iteration-1 target)
+            m.k = 1; pr = [rng.choice(singles) for _ in range(a.bs)]
+            enc = [tok.encode(g_prompt(g, s_, [op])) for s_, op in pr]; T = max(map(len, enc))
+            ids = torch.full((len(enc), T), EOS); last = torch.tensor([len(e) - 1 for e in enc])
+            for j, e in enumerate(enc):
+                ids[j, :len(e)] = torch.tensor(e)
+            tg = torch.tensor([[int(g["C"][op, s_])] for s_, op in pr])
+            ids, last, tg = ids.to(a.device), last.to(a.device), tg.to(a.device)
+        else:
+            m.k = a.k; ids, last, tg = batch([rng.choice(tr) for _ in range(a.bs)])
         loss = torch.nn.functional.cross_entropy(m(ids, last).reshape(-1, g["n"]), tg.reshape(-1))    # align: every iteration
         opt.zero_grad(); loss.backward(); opt.step()
+        if a.wd_sp:                                                            # theta <- theta - lr * 1.0 * (theta - theta0)
+            with torch.no_grad():
+                for p_, p0 in zip(body, theta0):
+                    p_.sub_(a.lr * 1.0 * (p_ - p0))
+        m.k = a.k
+        rec = None
         if step % 100 == 0 or step == a.steps:
-            log.write(json.dumps({"step": step, "loss": loss.item(), "sec": round(time.time() - t0)}) + "\n"); log.flush()
+            rec = {"step": step, "loss": loss.item(), "sec": round(time.time() - t0)}
+        if a.eval_every and (step % a.eval_every == 0 or step == a.steps):     # §91: (b) every 2k steps
+            fb, pb = ev(unseen_b); rec = rec or {"step": step}
+            rec.update(acc_b=float(np.mean(fb)), per_iteration_b=pb)
+            if a.wd_sp:
+                with torch.no_grad():
+                    rec["dist_to_pretrained"] = float(torch.sqrt(sum(((p_ - p0) ** 2).sum() for p_, p0 in zip(body, theta0))))
+                    rec["weight_norm"] = float(torch.sqrt(sum((p_ ** 2).sum() for p_ in body)))
+                    rec["head_norm"] = float(m.head.weight.norm())
+        if rec is not None:
+            log.write(json.dumps(rec) + "\n"); log.flush()
+    if a.save_model:
+        torch.save({k_: v.half() for k_, v in m.state_dict().items()}, os.path.join(a.out, "model.pt"))   # fp16: transfer size
     fin_b, per_b = ev(unseen_b); fin_a, _ = ev(held_a); fin_tr, _ = ev(tr)
     seen_all = [all((st, op) in cov[i] for i, (st, op) in enumerate(zip([s] + g_states(g, s, words[w])[:-1], words[w])))
                 for s, w in unseen_b]
     split = {"all_seen": [float(np.mean([c for c, q in zip(fin_b, seen_all) if q])) if any(seen_all) else None, int(sum(seen_all))],
              "some_unseen": [float(np.mean([c for c, q in zip(fin_b, seen_all) if not q])) if not all(seen_all) else None,
                              int(len(seen_all) - sum(seen_all))]}
-    res = {"section": 90, "group": a.group, "k": a.k, "n_words": a.n_words, "seed": a.seed, "train_sec": round(time.time() - t0),
+    res = {"section": a.section, "group": a.group, "steps": a.steps, "wd_sp": a.wd_sp, "curr_steps": a.curr_steps, "k": a.k, "n_words": a.n_words, "seed": a.seed, "train_sec": round(time.time() - t0),
            "coverage_per_iteration": cov_frac, "coverage_full": min(cov_frac) == 1.0, "acc_train": float(np.mean(fin_tr)),
            "acc_b_unseen_words": float(np.mean(fin_b)), "per_iteration_acc_b": per_b, "n_b": len(unseen_b),
            "acc_a_heldout_pairs": float(np.mean(fin_a)) if fin_a else None, "n_a": len(held_a), "n_train_pairs": len(tr),
@@ -339,6 +374,9 @@ def main():
     ap.add_argument("--k", type=int, default=2); ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--steps", type=int, default=4000); ap.add_argument("--bs", type=int, default=64)
     ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--bf16", action="store_true")
+    ap.add_argument("--wd_sp", action="store_true", help="§91 WD-SP"); ap.add_argument("--curr_steps", type=int, default=0, help="§91 CURR")
+    ap.add_argument("--eval_every", type=int, default=0, help="§91: (b) every N steps"); ap.add_argument("--save_model", action="store_true")
+    ap.add_argument("--section", type=int, default=90)
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", default="")
     a = ap.parse_args()
     if a.cmd == "split":
