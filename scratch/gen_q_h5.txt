@@ -1,0 +1,6 @@
+# §91/§92 fleet
+c1/runs/p91_long_s8 c1.p80_p0 loop90 --group S4 --k 2 --n_words 400 --eval_every 2000 --save_model --section 91 --seed 8 --steps 16000
+c1/runs/p91_wdsp_s7 c1.p80_p0 loop90 --group S4 --k 2 --n_words 400 --eval_every 2000 --save_model --section 91 --seed 7 --steps 16000 --wd_sp
+c1/runs/p91_wdsp_s8 c1.p80_p0 loop90 --group S4 --k 2 --n_words 400 --eval_every 2000 --save_model --section 91 --seed 8 --steps 16000 --wd_sp
+c1/runs/p91_curr_s7 c1.p80_p0 loop90 --group S4 --k 2 --n_words 400 --eval_every 2000 --save_model --section 91 --seed 7 --steps 16000 --curr_steps 4000
+c1/runs/p91_curr_s8 c1.p80_p0 loop90 --group S4 --k 2 --n_words 400 --eval_every 2000 --save_model --section 91 --seed 8 --steps 16000 --curr_steps 4000
