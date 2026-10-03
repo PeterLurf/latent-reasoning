@@ -7839,6 +7839,18 @@ a smoke test of the fork loss, greedy snap and certificate before the panel.
 * **Cost.** 9 runs (GEN-4, GEN-1, HYB-4 × seeds 1–3), plus seeds 4–5 of any arm that passes G4. About $6. Projection to
   Audit before launch.
 
+**Note 92-3 (2026-10-03 12:53 EDT; Audit's re-check of §92's R3 compute).**
+* **Both conventions now reported.** Both models are metered by `boxes/core.Meter` on the same §71 test file. But the
+  written-state comparator (WC₀ₖ) is charged the full 50,257-way logit layer for each of its 3,072 written tokens, about
+  2.4e11 FLOPs. A written-state decoder restricted to the state's own tokens would not pay that.
+  - Without that term, the ratio is **0.45× at k = 4** (was 0.39×) and **0.32× at k = 1** (was 0.29×).
+  - Theory's check: 6.3e11 / (1.6e12 − 2.4e11) ≈ 0.46; 7.0e11 / (2.4e12 − 2.4e11) ≈ 0.32.
+* **R3 (≤ 0.6×) holds either way.** Wording for §92 and any external claim: **"0.29–0.45× the written state's compute,
+  depending on whether the written state pays full-vocabulary logits."**
+* **§97:** its snaps decode through the full LM head. Its C3 ratio is therefore reported under both conventions, with
+  and without full-vocabulary logits on both sides. The registered C3 rule uses the as-metered numbers (Meter, both
+  sides full vocabulary).
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
