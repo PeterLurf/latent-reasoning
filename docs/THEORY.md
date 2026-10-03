@@ -7226,6 +7226,26 @@ The gate fails (cumulative 0.000 at 512), so §86 closes per 86-4. No further re
   - So the continuous latent hand-off is the weak link here, not the step computation. C1 via latent tokens is not
     shown.
 
+**§90 result (2026-10-03 00:44 EDT; run and scored by the experiments session, `docs/PROTOCOL12.md`,
+`theory/results/score_s90.json`; the scorer was committed after the runs and before reading; notes 90-1 and 90-2).**
+
+| arm (LOOP-align) | (b) unseen words, median | per seed / note |
+|---|---|---|
+| S3 k = 3, 25 words (coverage 1.0) | **0.128** | per iteration 0.85 / 0.22 / 0.13 |
+| S4 k = 2, 400 words (coverage 1.0) | 0.167 | (b) 0.113 / **0.976** / 0.167; training 0.119 / 0.984 / 0.189 |
+| S4 k = 2, 100 words (coverage 1.0) | 0.548 | (b) 0.903 / 0.148 / 0.548; training 0.996–0.999 |
+| S4 k = 2, 25 words (descriptive, coverage 0.77–0.80) | 0.018 | all-seen ≈ some-unseen ≈ 0.01–0.03 |
+
+* **V1 met.** k = 3 breaks at k = 2's data size: **word diversity is necessary** for in-depth composition, and §88's k = 3
+  success needed its about 151 words.
+* **V2 not met.** Two causes:
+  - At 400 words, 2/3 seeds **do not fit their training words** within 4k steps × bs 64. That is a budget limit, and
+    the one seed that fits composes at 0.976.
+  - At 100 words every seed fits but composition is **seed-dependent** (0.15–0.90).
+* **Reading.** Composition of seen transitions into unseen sequences needs diversity, and at k = 2 / S4 it is unreliable:
+  a lottery when it fits, budget-limited at 400 words. §91 (registered next) tests longer training, weight decay and a
+  step-first curriculum for reliability.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
