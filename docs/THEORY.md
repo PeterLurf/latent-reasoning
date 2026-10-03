@@ -7714,6 +7714,19 @@ else the local CPU at ≤ 3 threads, Idle priority. $0.
   one training position, §92's runs are not the same training data. Nothing is then claimed for that teacher until a
   student retrain (a separate registration).
 
+**Note 92-2 (2026-10-03 11:20 EDT; prior work for §92's and §93's claim lines, Literature eaea6201,
+`docs/LIT_S92_NOVELTY_2026-10-03.md`).**
+* **§92 is new as scoped, not as a mechanism.** The closest mechanism is **2510.14095**: supervised latent recurrence
+  with a discrete re-embedding every iteration, trained from scratch on mod-23 DAGs, 4× out of distribution.
+  - §92's claim line cites it.
+  - What §92 adds: a pretrained LM; S5; certification at every length (k = 1); a k-op latent hand-off between snaps;
+    removal and FLOPs.
+  - Literature found no certified latent S5 in a pretrained LM in 2026 work.
+* **§93:** **2602.14814** reports transformers, including a fine-tuned Qwen3-0.6B, failing S5 tracking as state reveals
+  get sparser. §93's sparse-label failure partly replicates it, and it is cited as prior.
+* **2609.02049** (mixture-collapse dynamics) is a candidate account of the unsnapped hand-off failures (§86's 8k-step
+  slots 2–4). Descriptive only.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
