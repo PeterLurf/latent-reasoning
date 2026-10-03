@@ -192,6 +192,9 @@ def train(a):
         opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(loss.item())
         if step % 100 == 0 or step == a.steps:
             rec = {"step": step, "loss": float(np.mean(hist)), "sec": round(time.time() - t0)}; hist = []
+            if a.log_every and step % a.log_every == 0:                    # §92: per-slot accuracy during training
+                m.eval(); cc = chunk_check(m, a.k, dev, amp, a.eval_bs, n=a.log_n, seed=7107)
+                rec["per_slot_acc"] = cc["per_slot_acc"]; rec["per_chunk_acc"] = cc["per_chunk_acc"]; m.train()
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
     train_sec = round(time.time() - t0)
     torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
@@ -221,6 +224,7 @@ def main():
     ap.add_argument("--steps", type=int, default=8000); ap.add_argument("--bs", type=int, default=64)
     ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--eval_bs", type=int, default=500)
     ap.add_argument("--test_n", type=int, default=s5.TEST_N); ap.add_argument("--ext_n", type=int, default=500); ap.add_argument("--check_n", type=int, default=100_000, help="< 100k: smoke only")
+    ap.add_argument("--log_every", type=int, default=0, help="§92: per-slot accuracy every N steps"); ap.add_argument("--log_n", type=int, default=5000)
     ap.add_argument("--data_dir", default=os.path.join(ROOT, "bench", "data", "s5"))
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     train(ap.parse_args())
