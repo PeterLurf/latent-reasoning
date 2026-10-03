@@ -128,19 +128,21 @@ reserve, projection to Audit above $5. Credit $105 (07:25).
 **Handed over by Theory (20:38): THEORY §51** (registered c76a8ce; CPU at Idle priority, log `theory/results/exp25_target_halt.log`, output `theory/results/exp25_target_halt.json`, ~1–2 h). Experiments scores TH1 (median stop non-decreasing over distance bins 1–6/7–12/13–18/19–24 and larger at 19–24 than at 1–6, in ≥ 7/10 models) and TH2 (last + halt ≥ max + halt − 0.02 in ≥ 7/10), then sends Audit the verdict. Port the halt to GPT-2 (spec in Theory's message, code `theory/exp24_learned_halt.py`, `exp25_target_halt.py`) only if TH1 holds.
 
 **Theory (details in docs/THEORY.md; one-liners at the top of its executive summary):**
-- **2026-10-02 15:00 — Theory status.**
-  - **Closed today:**
-    - §76: the free table needs short labels; GPT-2 hosts tables but does not compose.
-    - §80: P0 failed; GPT-2 memorises k-op words (scoped by data size in 80-2).
-    - §81: dropped at its premise.
-    - §82: "Neither" (supervision granularity, not group structure).
-  - **Running (Experiments):**
-    - §78: GSM8K step split, on Vast.
-    - §79: paraphrase latent. The 79-2 std curriculum pilot is certified; the panel runs about 7–8 h on the local cards.
-    - §83: self-gated restarts. One Vast host retrains WC₀₄ seeds 1–3, then runs `theory/s83_restart.py` (fixed per
-      note 83-2, sha matched).
-  - **Theory has no hosts and no local jobs.** Scoring of §78, §79 and §83 is Theory's (§79 / §78 scorers by
-    Experiments).
+- **2026-10-03 11:19 EDT — Theory status.**
+  - **Standing:**
+    - §92/92-1: GPT-2 latent restarts carry S5 exactly to 2,048, certified at k = 1; C1 + C2 + C3 + C6, scaffolded,
+      not C4.
+    - §93: sparse chunk-end labels fail.
+    - §89: fade_std_dec "all" 1.000 ×5; "where" fails.
+  - **Registered, waiting on runs:**
+    - §94 ("where" readout). Vast fleet run by Experiments; Step 0 probes on local CPU →
+      `theory/results/s94_step0/`.
+    - §95 (foothold dose-response, f ∈ {0.05, 0.25, 0.5}; f ≤ 0.05 is "little enough"). Vast, Experiments; scorer
+      `theory/score_s95.py`.
+    - §96 (amortised self-labels: S5 free-table teachers from final answers at p 0.05 / 0.1 / std). 15 small table runs:
+      `python theory/c1_s96_driver.py --device <dev> --P 2` → `theory/results/c1_s96/`. Scorer `theory/score_s96.py`.
+      Placement: a local card from Experiments, else CPU at ≤ 3 threads.
+  - **To score (Theory only):** §94, §95, §96, and §89's descriptive arms (raw done; soft and gold running locally).
 - Handed to Experiments (22:22): THEORY §55 (fall-back kill test, `theory/exp27_fallback_kill.py`, CPU minutes) and §56
   (interchange test, `theory/exp28_interchange.py`, 80 models, ~1 h CPU); scoring rules are in each section.
 - §51 closed (TH1 0/10, TH2 1/10). §57: ProsQA cue origin found (proximity heuristic 0.91).
