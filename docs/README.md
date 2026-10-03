@@ -35,19 +35,10 @@ Pre-registrations (`PROTOCOL*.md`) are append-only and are never rewritten.
 
 ## Literature
 
-Older broad notes: `LITERATURE_NOTES.md` (short positioning), `LITERATURE.md` (bibliography to 09-27),
-`LIT_NORTHSTAR_2026-09-29.md` (C1–C7 tests and prior work). Most useful current notes:
-
-| File | What |
-|---|---|
-| `LIT_S92_NOVELTY_2026-10-03.md` | Novelty of the latent-restart S5 result; closest priors |
-| `LIT_SEMI_DISCRETE_2026-10-03.md` | Survey: representations between latents and text tokens |
-| `LIT_LATENT_FROM_DISCRETE_2026-10-02.md` | Seven rules from our results and eight candidate methods |
-| `LIT_FINDINGS_COMPILED_2026-10-02.md` | Each verified result against its nearest prior (new / extension / replication) |
-| `LIT_SOTA_TARGETS_2026-10-01.md`, `LIT_BENCH_VERIFY_2026-10-01.md` | Published comparator numbers and their verification |
-
-Per-registration prior checks are named `LIT_<topic>_<date>.md` and cited from the matching THEORY §; they are kept in
-place because THEORY cites them by path.
+**`LIT_INDEX.md`** lists every literature note in one line each: synthesis notes first, then each per-registration
+prior check by § with its verdict and key prior IDs. The per-note files stay in place because THEORY cites them by path.
+`LITERATURE.md` and `LITERATURE_NOTES.md` are historical (to 09-27), and `LIT_NORTHSTAR_2026-09-29.md` holds the C1–C7
+test criteria.
 
 ## Archive (`archive/`)
 
