@@ -80,9 +80,9 @@ Path independence tracks one-loop reach (Spearman −0.87, post hoc).
 **GSM8K step 2 (§68):** our own text-CoT, Coconut and written-state arms on GSM8K-Aug (3 seeds), with C1 controls on Coconut's latents.
 **C1 frontier (§67):** the exact-marginal objective has partial-automaton local optima. The table is certified 1/6 at 6 codes but 10/10
 at 12 codes. Every neural cell fails (GPT-2, random GPT-2, small transformer, MLP). Hard codes do not decay with length.
-**Latent restarts (§92):** an S5 state carried in latent slots (per-op aux targets, codebook snap every 4 ops) is
-exact to 2,048 from training at 128. Removing the latents gives about 0, at 0.39× the written state's FLOPs. C1 + C2 + C3,
-scaffolded, not C4.
+**Latent restarts (§92, 92-1):** an S5 state carried in GPT-2 latent slots (per-op aux targets, codebook snap) is
+exact to 2,048 from training at 128 (k = 4, 5/5 seeds) and certified at every length (k = 1, 0 / 14,400 errors).
+Removing the latents gives about 0, at 0.3–0.4× the written state's FLOPs. C1 + C2 + C3 + C6, scaffolded, not C4.
 **In-depth composition (§88 / §90 / §91):** a looped GPT-2 with per-iteration targets composes unseen op sequences
 reliably (5/5) given word diversity and enough steps.
 **Stable latent (§72b / §73):**
@@ -7456,6 +7456,25 @@ Projection to Audit.
 * Each run's eval.json records eval_dtype (training autocast is identical) and args.json the device.
 * **Scoring.** coco_stage is reported with and without the two fp32 seeds, and the fp32 seeds are flagged if they are
   outliers. F3's verdict uses all 5 seeds as registered.
+
+**92-1 result (2026-10-03 06:18 EDT; runs by the experiments session on Vast; scored by Theory with
+`theory/score_s92_1.py`, committed before reading; `theory/results/score_s92_1.json`). §86's full design is now complete
+at 3× budget.**
+* **C6 met.** k = 4, seeds 1–5: cumulative at 512 is 1.000 / 1.000 / 0.9995 / 1.000 / 0.9995 (5/5 ≥ 0.99). The 2,048
+  extension is 1.000 in all 5.
+* **R1's k = 1 part met, and certified.** k = 1, seeds 1–3: cumulative 1.000 at 512 and 2,048. The **exhaustive
+  certificate holds in 3/3: 0 errors over all 14,400 (code, op) inputs**, so the k = 1 latent restart is **correct at
+  every length**.
+* **Compute (descriptive).** k = 1 uses 7.0e11 FLOPs per 512-problem, against about 2.4e12 for §71's written-state WC₀₁
+  (about 0.29×). k = 4 is 0.39× (§92).
+* **Standing claim (§86 / 92 / 92-1).** A pretrained GPT-2 carries the S5 state in **latent slots**, restarting from a
+  snapped codebook entry every k ops:
+  - exact to 2,048 from training at 128 (k = 4, 5/5 seeds);
+  - **certified at every length** (k = 1, 3/3);
+  - the latents do the work (removal ≈ 0);
+  - at 0.3–0.4× the compute of writing the state.
+  - **C1 (use) + C2 + C3 + C6, scaffolded:** per-op auxiliary targets, a given arrangement structure, a fixed snap
+    interval. **Not C4** (86-1). §93 tests sparse labels as a step toward C4.
 
 ## 7. Log
 
