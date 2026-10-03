@@ -165,21 +165,16 @@ reserve, projection to Audit above $5. Credit $105 (07:25).
     - **§95 scored (14:35): no foothold dose sufficient** (0/9; slot 1 learned at f ≥ 0.25, no hand-off;
       Audit-reproduced). The in-LM C4 route is closed; a graded-lengths follow-up is deliberately not registered (fix
       loop).
-    - §96 (amortised self-labels: S5 free-table teachers from final answers at p 0.05 / 0.1 / std). 15 small table runs:
-      `python theory/c1_s96_driver.py --device <dev> --P 2` → `theory/results/c1_s96/`. Scorer `theory/score_s96.py`.
-      **Placement (13:06, agreed with Experiments).**
-      - mixP 0.05 s2161–2164 ran on the 4060. s2164 was slowed by fade_soft s1's eval (memory fallback).
-      - **The 4060 is held:** `theory/results/c1_s96/*.json` files whose content is `{"HOLD": …}` are **hold markers,
-        not results**. They make the cuda:0 drivers skip mixP 0.05 s2165 and every mixP 0.1 / std job.
-      - mixP 0.1 and std run on the 3070 (torch cuda:1, P 1) → `theory/results/c1_s96_3070/`.
-      - s2165 runs on the 4060 after fade_soft s1's eval.json lands.
-      - **Before scoring:** move the c1_s96_3070 JSONs over the markers and delete any remaining marker.
-        `score_s96.py` must never see a HOLD file.
+    - **§96 scored (15:00): P1 + P2 met.** mixP 0.05 teachers certify 4/5 (mixP 0.1 0/5, std 5/5), and every
+      certified teacher reproduces §92's labels at 1.000 → C4 for the pipeline, qualified by p ≤ 0.05 and oracle M.
+      The hold markers are gone (3070 results merged into `theory/results/c1_s96/`); no Theory jobs are on the local
+      cards.
     - **§97 (the user's "generalized latent thinker", step 1; 14499aad + note 97-1):** §92 with a text step target
       (in-context fork, tied LM head) and re-embedded text checkpoints. GEN-4 (primary, G4), GEN-1 (descriptive) and
       HYB-4 (text target + structured snap), seeds 1–3, about $6 on Vast. Handed to Experiments; scorer
       `theory/score_s97.py` (90034c85). Later steps (bench ladder, general readout, bigger model) wait on §97.
-  - **To score (Theory only):** §94 arms (Step 0 recorded: readout failure), §96, §97, and §89's descriptive arms (raw done; soft and gold running
+  - **To score (Theory only):** §94 arms (Step 0 recorded: readout failure), §97 (GEN-1 fetched; GEN-4 / HYB-4
+    about 16:30–17:00), and §89's descriptive arms (raw done; soft and gold running
     locally).
 - Handed to Experiments (22:22): THEORY §55 (fall-back kill test, `theory/exp27_fallback_kill.py`, CPU minutes) and §56
   (interchange test, `theory/exp28_interchange.py`, 80 models, ~1 h CPU); scoring rules are in each section.
