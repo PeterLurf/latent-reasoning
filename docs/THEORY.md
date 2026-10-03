@@ -7727,6 +7727,99 @@ else the local CPU at ≤ 3 threads, Idle priority. $0.
 * **2609.02049** (mixture-collapse dynamics) is a candidate account of the unsnapped hand-off failures (§86's 8k-step
   slots 2–4). Descriptive only.
 
+## 97. A general latent thinker, step 1: §92's latent restarts with the hand-built state removed (text step targets, re-embedded text checkpoints) (pre-registered 2026-10-03 12:01 EDT, after Literature's check 05bff3e3 and before any implementation or run; the user's decision via Audit, ~12:00)
+
+**Why.** §92/92-1 meet C1 (use) + C2 + C3 + C6 on S5, but with task-specific structure:
+* a 5 × 5 arrangement head for the per-op targets;
+* a structured codebook for the restarts.
+
+The user's plan ("generalized latent thinker") asks for one recipe with no hand-built state. §97 is step 1:
+* the per-op target becomes the **text of the CoT step**;
+* the restart becomes the **decoded text, re-embedded** by GPT-2.
+
+**Main reading either way.** §97 and §92 differ only in these two interfaces. At matched budget, if §97 fails where §92
+passed, the hand-built structure was doing the work.
+* **What carries over from §89:** the step-decode side loss on the CoT text, i.e. fade_std_dec's load-bearing part.
+* **What does not:** the α schedule. With one latent per op there is no per-token input to fade from, so α = 1 throughout,
+  as in §92. A fade arm is a possible later variant.
+* **Prior** (05bff3e3, `docs/LIT_S97_TEXT_SNAP_2026-10-03.md`). New by combination.
+  - SELR 2608.13570: the same model decodes its own latents into steps; the closest to the fork decode.
+  - SIM-CoT, PLaT 2601.21358 and LatentGuard decode latents into text but never feed the text back.
+  - Thinking States 2602.08332 re-embeds generated text thoughts as a state, but its thoughts are all text and it keeps
+    the KV cache.
+  - 2510.14095 re-embeds discrete symbols every iteration, trained from scratch.
+  - Delethink, InftyThink, PENCIL, Markovian Transformers and §71 carry text with a history cut, but have no latent
+    slots.
+
+**Model** (GPT-2 small, pretrained base, fine-tuned; otherwise exactly §92's recipe: 24,000 steps, bs 64, AdamW lr 1e-4,
+wd 0.01, 100-step warmup + cosine, chunks cut at random positions from the S5=128 training sequences).
+* **Chunk:**
+  `[E(start text)] [op_1 tokens " perm p1 .. p5"] [slot_1] [op_2 tokens] [slot_2] ... [op_k tokens] [slot_k]`
+  - The start text is a state written in TC's format (" > A B C D E": 6 tokens), embedded with GPT-2's own wte.
+  - In training it is the true state before the chunk (identity at position 0), teacher-forced as in §92.
+  - Slot j's input is the final hidden state at op j's last token (Coconut-style, as §92).
+* **Per-op target (the only loss).** At every slot j, the KV cache is forked and the step text of the state after op j
+  (" > X X X X X") is teacher-forced after the slot. CE is taken with GPT-2's **tied LM head over the full vocabulary**.
+  - The fork is a side branch only. The chain continues from slot j without the step tokens.
+  - There is no new head, and no task-specific vocabulary.
+* **Snap (test) every k ops.** Greedy-decode the step text at slot k: 6 tokens, the length of TC's step for this task
+  (the general form decodes to the next step delimiter " >"). Re-embed exactly those tokens with wte as the next chunk's
+  start, with the history cut.
+  - No validity check: a malformed checkpoint is carried as is and counts as wrong.
+* **Per-position prediction** (for cumulative accuracy): the greedy-decoded step text at every slot, exact token match
+  to the true state's text.
+
+**Arms (seeds 1–3; seeds 4–5 are added if the k = 4 rule passes, for C6).**
+* **GEN-4:** k = 4.
+* **GEN-1:** k = 1.
+* The comparison is §92 / 92-1 at the same budget: k = 4 seeds 1–5; k = 1 seeds 1–3.
+
+**Measures** (§92's, generalised).
+* Cumulative accuracy at 128 / 256 / 512 on §71's test set (2,000 × 512), and the 2,048 extension (first 500).
+* **k = 1 certificate.** All 14,400 (state, op) inputs, with the start being the true state's text: the decoded step
+  text equals the true next state's text. If it holds, the k = 1 machine is correct at every length.
+* Per-slot decode accuracy. At k = 4, slots 1–3 are the silent latents' readability in text (C7 for latents).
+* **C1 removal** at k = 4 on 10k fresh chunks: slot inputs 1..k−1 zeroed, and separately mean-replaced. Accuracy after
+  the first ablated slot. This is also C7's input-only control.
+  - **It is also the fork-bypass control** (Literature (b)). The fork sees the start checkpoint and ops 1..j, so it could
+    re-derive the state without the latents. Decode accuracy at slots 2..k with the latents ablated but the ops
+    visible measures that. High accuracy would mean bypass, and G4's removal bar excludes it.
+* **Checkpoint validity rate:** the share of snapped texts that are a valid state (Literature (d)). Descriptive.
+  Constrained decoding is not used, since it would reintroduce task structure.
+* **wte drift** (Literature (c)): cosine between the initial and final wte rows of " >" and the five letters, which the
+  tied head and the snaps share. No detaching in the main arms.
+* **C7 edit at checkpoints** (descriptive): replace a decoded checkpoint with another valid state's text, then continue.
+  The share of chunks whose next checkpoint equals the true composition from the edited state is reported as IIA.
+* **C3:** FLOPs per 512-problem, counting every token processed including the snap decode and the start re-embedding.
+  Reported against §71's retrained WC₀₄ (wc0k4r) and §92.
+
+**Rules (fixed now; §92's).**
+* **G4.** GEN-4 cumulative ≥ 0.99 at 512 in ≥ 2/3 seeds, with zero-removal ≤ 0.10 in those seeds.
+* **G1.** The GEN-1 certificate holds in ≥ 2/3 seeds.
+* **C3** (as §86's R3): median FLOPs ≤ 0.6× wc0k4r's.
+* **C6:** if G4 passes, ≥ 4/5 seeds (1–5) at ≥ 0.99.
+
+**Readings.**
+* **G4 and G1.** §92's result does not depend on hand-built state: a generic text target and text checkpoint suffice.
+  - Tags: C1 (use) + C2 + C7 (readable, editable text checkpoints; text-readable latents if per-slot decode ≈ 1), plus
+    C3 if the FLOPs rule holds, and C6 at 4/5.
+  - **Not C4** (per-step text targets).
+  - This licenses step 2 (the same recipe on the bench ladder).
+* **G1 only.** A per-op text restart works, but the latent hand-off over k − 1 silent steps needs the structured state.
+* **Scope of G1 (Literature (a), fixed now).** At k = 1 a text snap follows every op, so no latent carries across ops.
+  GEN-1 is essentially the written-state loop with one latent slot per op. **Only GEN-4 tests latent carriage**, and C1
+  (use) is claimed only from GEN-4.
+* **G4 fails, §92 passes.** The structure was doing the work.
+  - **Attribution arm (pre-registered now, conditional; Literature (e)): HYB-4.** The text target (fork decode) with
+    §92's structured codebook snap. The snap index comes from the decoded text's letters, and the true start code is
+    used in training, as §92. k = 4, seeds 1–3, under G4's rule. It runs only if G4 fails.
+  - HYB-4 passes: the text checkpoint is the problem. HYB-4 fails: the text target is.
+  - No ladder step until this is read.
+
+**Placement.** Vast 3090s, about 2–3 h per run (§92's chain plus the forks). 6 runs (plus HYB-4's 3 if G4 fails; seeds 4–5 if it passes): one proof host
+(GEN-4 s1) first, then ≤ 3 hosts. About $4 for the 6. Projection to Audit. Implementation: the experiments session, from `boxes/latent86.py`, with
+a smoke test of the fork loss, greedy snap and certificate before the panel.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
