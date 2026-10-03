@@ -7322,6 +7322,22 @@ are then scored on these runs. Otherwise the line closes for good.
   fade_std_dec 0.613, mean-ablated 0.128) decided placement only. Nothing in §89's design, arms or rules (F1–F3; notes
   89-1 to 89-3) changes.
 
+**Note 89-6 (2026-10-03 02:02 EDT, before any §89 panel result; Audit's breakdown of the s1 pilots, which are registered
+seeds seen for placement).**
+* **Disclosure.** fade_std_dec s1, pure latent, N 5–8: **"all" questions 1.000; "where" questions 0.225** (chance 0.25).
+  - "where" fails at every N, including N = 1.
+  - Zero / mean removal drops "all" to 0.035 / 0.03: on "all" the latent carries the full arrangement and does the work.
+  - fade_std s1 (no side decoder): "all" 0.095, "where" 0.22.
+  - N 9–16: 0.19.
+* **Pre-declared (descriptive; F1–F3 unchanged).** F1, F2 and F3 are also reported **per question type** ("all" and
+  "where"), with removal per type.
+  - The registered F1 (≥ 0.90 at N 5–8, both types pooled) is kept as is, and it is likely unreachable if "where"
+    never learns.
+  - The per-type numbers say whether a failure is in tracking ("all") or in the "where" readout.
+* **A separate follow-up** (not part of §89): "where" at chance even at N = 1 suggests the answer head cannot index a
+  letter's position from the latent. An aux "where" probe, or answering "where" through the decoded arrangement, is a
+  candidate later registration.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
