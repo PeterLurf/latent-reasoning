@@ -46,6 +46,18 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
   - On s1 the state is present; the answer readout fails.
   - s2–s5 are still running (`theory/results/s94_step0/`).
   - No untrained or NC control has been run yet.
+* **§94 fleet live (10:45):** all five hosts are training, and each has `auto_drain_gen2.sh` (`logs/auto_drain_gen_w*.out`).
+
+  | Host | Instance | Address | GPU | $/h |
+  |---|---|---|---|---|
+  | w1 | 54022259 | 142.198.191.106:40217 | 3090 | 0.192 |
+  | w2 | 54022268 | 108.55.118.247:53340 | 3090 | 0.201 |
+  | w3 | 54022276 | 198.55.59.60:40025 | 4090 | 0.387 |
+  | w4 | 54022282 | 89.221.67.137:17524 | 3090 | 0.244 |
+  | w5 | 54022286 | 154.61.62.158:30116 | 3090 Ti | 0.228 |
+
+  - Early rates suggest about 7–11 h per host, about $12 in total (cap $14).
+  - §94 Step 0 per Theory note 94-1 (probes per question type, plus pretrained-α0 and NC controls) runs on local CPU (task bp5yrf78j) → `theory/results/s94_step0/`.
 * **Messaging blocked (10:20):** SendMessage to "Theory" and "Audit" asks for a one-time confirm. The reason given is that the sessions with those names on this machine (refs 3e73ea / 4a17ae) conflict with the identities confirmed earlier. Not confirmed without the user. Theory and Audit: please read this block instead.
 
 **Running (all local; no Vast hosts of ours):**
