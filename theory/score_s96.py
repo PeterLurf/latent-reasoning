@@ -62,7 +62,9 @@ def main():
     res = {"teachers": {}}
     for f in sorted(glob.glob(os.path.join(ROOT, "theory", "results", "c1_s96", "*_s*.json"))):
         arm, seed = os.path.basename(f)[:-5].rsplit("_s", 1)
-        r = list(json.load(open(f)).values())[0]
+        d = json.load(open(f))
+        assert "HOLD" not in d, "hold marker still present: %s (merge c1_s96_3070 first; see CURRENT_TASKS)" % f
+        r = list(d.values())[0]
         T, D = np.array(r["table"]), np.array(r["dec"])
         row = {"arm": arm, "seed": int(seed), "certified": r["certified"], "bad_pairs": r["bad_pairs"],
                "acc128": r["acc"]["128"], "selected": r["acc"]["128"] >= 0.999}
