@@ -3,7 +3,8 @@ bench items, seed 6600). Committed before any F1-F3 panel result beyond the s1 p
 * F1: FADE-std, FADE-std-dec or FADE-soft, median (over seeds) accuracy at N 5-8 >= 0.90.
 * F2 (C1): for each arm meeting F1, median mean-ablated accuracy at N 5-8 <= NC median + 0.05 (NC = §66's nc_s1-3 on
   the same items, note 89-3: 0.13 / 0.14 / 0.15). Zero-ablation also reported.
-* F3: (FADE arm - COCONUT-stage) at N 5-8 >= 0.20, paired by seed (median of per-seed differences), for each FADE arm.
+* F3: (FADE arm - COCONUT-stage) at N 5-8 >= 0.20, paired by seed (median of per-seed differences), applied only to
+  arms meeting F1 (note 89-2; gate added 2026-10-03 after note 89-9, the difference is still reported descriptively).
 * Descriptive: raw / soft / gold; nearest-token cosine; aux decode (std_dec); coco_stage with and without the fp32 seeds
   (s1, s2 on the RTX 2070; the others bf16, from eval_dtype) when they differ.
 Seeds: 5 for fade_std, fade_std_dec, coco_stage; 3 for raw / soft / gold. Incomplete arms are marked.
@@ -57,7 +58,9 @@ def main():
     for a in ("fade_std", "fade_std_dec", "fade_soft"):
         d = [acc(R[a][s]) - acc(co[s]) for s in R.get(a, {}) if s in co]
         if d:
-            F3[a] = {"median_paired_diff": float(np.median(d)), "per_seed": d, "met": float(np.median(d)) >= 0.20}
+            F3[a] = {"median_paired_diff": float(np.median(d)), "per_seed": d,
+                     "met": bool(F1.get(a, {}).get("met")) and float(np.median(d)) >= 0.20,
+                     "applies": bool(F1.get(a, {}).get("met"))}       # note 89-2 / 89-9: F3 only for arms meeting F1
     out["F3"] = F3
     if co:
         bf = [acc(e) for e in co.values() if e.get("eval_dtype") == "torch.bfloat16"]
