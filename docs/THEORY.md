@@ -7187,6 +7187,19 @@ AdamW lr 1e-4, bs 64, 4,000 steps; seeds 1–3).
 **Placement.** Local cards, in gaps between §89 jobs, ahead of §83's descriptive seeds. 12 runs of about 10 min each.
 $0.
 
+**Note 90-1 (2026-10-02 21:33 EDT, before any §90 run; Audit, computed from §80's split).**
+* **Coverage in §80's split.** At both k = 2 and k = 3, all 36 (state, op) transitions are seen at every iteration, and
+  100 % of the unseen-word test items (66 and 390) use only seen transitions. §88's k = 2 iteration-2 failure therefore
+  occurs on fully covered transitions: the model keys on word identity rather than state.
+* **(1) Coverage is held fixed.** In every §90 arm, the training words are constructed so that **every (state, op)
+  transition is seen at every iteration index** (S3: 36 per iteration; S4: 576 per iteration). Subsamples are drawn by
+  seed under that constraint, by rejection or greedy construction, so word count is the only variable. Where full S4
+  coverage is impossible at 25 words (25 distinct ops per position < 24 × 24 needs), the achieved coverage is reported
+  and that arm is descriptive.
+* **(2)** Test items are reported split by all-seen vs ≥ 1-unseen transitions.
+* **(3) Scope.** §88 and §90 test **composition of seen transitions into unseen sequences**. That is exactly what §80's
+  P0 failed at (0.118), not transition-level generalisation (§76(B)'s held-out rows).
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
