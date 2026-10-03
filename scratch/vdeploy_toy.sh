@@ -25,6 +25,7 @@ EXTRA=""; [ "$W" = scratch/queue_worker3.sh ] && EXTRA="scratch/queue_worker3.sh
 [ "$W" = scratch/p8na_vast_par.sh ] && EXTRA="scratch/p8na_vast_par.sh prosqa/eval_na_p8.py prosqa/eval_p8.py prosqa/analyze.py prosqa/gpt2c.py prosqa/p8data/p8_test.json prosqa/p8data/p8_na_test.json"
 [ "$W" = scratch/f1s_vast_job.sh ] && EXTRA="scratch/f1s_vast_job.sh prosqa/ail_gpt2.py prosqa/ail_f1s.py prosqa/p8data/f1s_train.json prosqa/p8data/f1s_test_shallow.json prosqa/p8data/p8_na_test.json"
 [ "$W" = scratch/ail_vast_job.sh ] && EXTRA="scratch/ail_vast_job.sh prosqa/ail_gpt2.py prosqa/p8data/p8_train.json prosqa/p8data/p8_test.json"
+[ "$W" = scratch/gen_vast_job.sh ] && EXTRA="scratch/gen_vast_job.sh c1/__init__.py c1/p80_p0.py c1/p90_split_S4_k2.json boxes/__init__.py boxes/core.py boxes/s5.py boxes/latent86.py scratch/s71_gen bench/data/s5/S5=2048.csv"
 [ "$W" = scratch/g78_vast_job.sh ] && EXTRA="scratch/g78_vast_job.sh gsmlen/train78.py gsmlen/d78"
 [ "$W" = scratch/bm_vast_job.sh ] && EXTRA="scratch/bm_vast_job.sh bm/__init__.py bm/data_b.py bm/model_b.py bm/run_b.py bm/data.py bm/model.py bm/run.py bm/data_pool_b"
 V="C:/Users/peter/.local/vastai/vast.sh"
