@@ -475,3 +475,5 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 53887291 vast | g78_a3 DESTROYED_VERIFIED 2026-10-02 17:27 after verified fetch (gsmlen/runs/tc_s3 gsmlen/runs/ws_s3)
 53891982 vast | s83-retrain DESTROYED_VERIFIED 53891982 2026-10-02 17:48 after verified fetch (boxes/runs_s5/wc0k4r_s1-3 with model.pt, theory/results/s83)
 53887285 vast | g78_a2 DESTROYED_VERIFIED 2026-10-02 17:48 after verified fetch (gsmlen/runs/tc_s2 gsmlen/runs/ws_s2)
+53968592 vast offer 52714988 created 2026-10-03 01:02: label gen-proof, queue scratch/gen_q_proof.txt (logged at create by vdeploy_toy.sh)
+53968592 vast | gen_proof DESTROYED_VERIFIED 2026-10-03 01:40 after verified per-run fetch (c1/runs/p91_base_s4 boxes/runs_s5/smoke92)

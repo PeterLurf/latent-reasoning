@@ -1,4 +1,5 @@
 # §91/§92 fleet
+# P=2
 boxes/runs_s5/l92_k4_s2 boxes.latent86 train --k 4 --steps 24000 --bs 64 --log_every 2000 --seed 2
 c1/runs/p91_long_s5 c1.p80_p0 loop90 --group S4 --k 2 --n_words 400 --eval_every 2000 --save_model --section 91 --seed 5 --steps 16000
 c1/runs/p91_curr_s4 c1.p80_p0 loop90 --group S4 --k 2 --n_words 400 --eval_every 2000 --save_model --section 91 --seed 4 --steps 16000 --curr_steps 4000
