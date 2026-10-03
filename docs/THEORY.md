@@ -6319,6 +6319,19 @@ amendments 79-1 to 79-3).**
 * **Consequence.** Literature's lead 4 (function-vector op features to fix digit reliance in pretrained features) is
   moot while random-init features do as well. It is not registered.
 
+**Correction 79-5 (2026-10-02 20:40 EDT; refining 79-4, from the experiments session's eval-file check).** On NEG
+(" copy …" agreeing with the swap) **lower is better**: it measures verb sensitivity. So 79-4's "RF-std matches or beats
+PF-std on NEG" had the direction wrong.
+* **Certified seeds only.**
+  - RF-std (2): H1 0.635 / 0.981, H2 0.794 / 0.759, NEG 0.976 / 0.972.
+  - PF-std (4): H1 0.750–0.861, H2 0.333–0.417, NEG 0.396–0.524.
+* **Corrected reading.** P2 fails.
+  - On held-out transfer (H1, H2), random-init GPT-2 does at least as well as pretrained GPT-2.
+  - **Pretraining does buy verb sensitivity** (NEG ≈ 0.45 vs ≈ 0.97: RF-std reads only the digits) and word order
+    (minimal pairs 0.625 vs 0.286).
+  - BOW never acquired the task, so the lexical-vs-transformer question is unanswered.
+  - The verdict is unchanged: P1 met, P2 not met.
+
 ## 80. A latent chunk machine: a discrete code carried across chunks of k operations, so the LM must compose inside its forward pass (pre-registered 2026-10-02 12:02 EDT, after Literature's check 9224385 and before any run; idea 1 of Theory's list, approved by Audit)
 
 **Why.** GPT-2 stores a latent automaton but does not compose missing rows (§76(B)). It does compose k operations inside
