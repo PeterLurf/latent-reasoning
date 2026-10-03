@@ -7136,6 +7136,17 @@ before any eval.json was read (disclosed).
 * **Run note.** align k = 2 s3 crashed (a GPU double-booking during the §86 chain error), was voided, and is requeued;
   it cannot change the verdict.
 
+**Note 89-4 (2026-10-02 21:30 EDT; placement only, before the s1 results are read).**
+* §89 runs take about 4 h each locally, not about 1 h (40 sequential thought positions at N = 8), so 24 runs take about
+  32 h on 3 cards.
+* **Local first**, with the F1–F3 arms (fade_std, std_dec, coco_stage, s1–5) ahead of raw / soft / gold.
+* **Conditional move.** If fade_std s1 or std_dec s1 reaches ≥ 0.5 at N 5–8 (pure latent), the remaining F1–F3 runs
+  move to Vast 3090s. Audit's OK is given: one host proven first, ≤ 5 hosts, cap $8, eval.json-checked worker,
+  pods.txt and live_hosts entries.
+* **Hygiene (Audit).** fade_std s1 and std_dec s1 are registered panel seeds. Their N 5–8 accuracy is seen before the
+  panel completes, and it decides placement only. Nothing in §89's design, arms or rules depends on it. They are
+  counted as registered.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
