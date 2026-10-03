@@ -352,3 +352,15 @@
 14:31:47 f89_fade_soft_s1 eval STOPPED by Experiments after 2.7 h in WDDM memory fallback (4060 shared with §96 s2164); model.pt (11:50) kept; eval re-run with fade89 --eval_only once the card is free (cuda:0 worker stopped with it)
 15:01:40 f89_fade_soft_s1 eval_only done rc 0 (cuda:0, user-approved)
 15:02:32 f89_fade_soft_s2: 12:00 rc 1 was CUDA OOM on the 2070 (fp32; soft arm needs bf16) -> run dir and log renamed *.void (aborted unread); lock released for a bf16 card; f89_fade_soft_s3 lock held so the 2070 skips it (runs on cuda:0 via scratch/c1_q_soft.txt)
+16:11:52 f89_fade_gold_s2 rc 0 (cuda:2)
+16:12:33 f89_fade_gold_s3 rc 1 no-eval (cuda:2)
+16:12:33 WORKER_DONE cuda:2 scratch/c1_q_next.txt
+16:17:21 s83 primary s2 rc 0 (cuda:2)
+16:17:26 s83 primary s3 rc 0 (cuda:2)
+16:17:30 s83 extras s1 rc 0 (cuda:2)
+16:17:34 s83 extras s2 rc 0 (cuda:2)
+16:17:38 s83 extras s3 rc 0 (cuda:2)
+16:30 CORRECTION (Audit): the five "s83 ... rc 0" lines at 16:17:21-16:17:38 are FAILED, not done: each crashed in ~4 s with "cutlassF: no kernel found to launch" (bf16 SDPA on the 2070, CC 7.5); s83_local.sh v1 logged $? after $(date). Logs kept as logs/s83_local_*.v1_bf16_turing.fail; rerun in fp32 with s83_local.sh v2.
+16:30 f89_fade_gold_s3 rc 1 (16:12:33) was CUDA OOM on the fp32 2070 -> voided (*.void_oom2070, aborted unread), lock released for a bf16 card (the 4060/3070 workers claim it).
+16:30:35 s83 wc0k4r_s2 rc 1 no-output (cuda:2 --fp32)
+16:30:57 s83 v2 first attempt: fp32 at bs 250 OOM'd (logs *.fp32_bs250_oom.void); rerun with --bs 64

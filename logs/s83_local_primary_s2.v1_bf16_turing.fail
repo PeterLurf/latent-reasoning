@@ -1,0 +1,26 @@
+Traceback (most recent call last):
+  File "D:\Latent\theory\s83_restart.py", line 174, in <module>
+    main()
+    ~~~~^^
+  File "D:\Latent\theory\s83_restart.py", line 148, in main
+    t0 = time.time(); tau, cal = calibrate(m, a.k, dev, amp, n=a.cal_n); print("calibrated tau", tau, cal, round(time.time() - t0), "s", flush=True); res = {"tau": tau, "calibration": cal, "amp": str(amp), "run": a.run}
+                                 ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Latent\theory\s83_restart.py", line 69, in calibrate
+    p, c = chunk_with_conf(m, st, ops, dev, amp)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "D:\Latent\theory\s83_restart.py", line 40, in chunk_with_conf
+    h, past = bc.run_prefix(m, pre)
+              ~~~~~~~~~~~~~^^^^^^^^
+  File "D:\Latent\boxes\core.py", line 154, in run_prefix
+    h, past = m(x, past)
+              ~^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\modules\module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\modules\module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "D:\Latent\boxes\core.py", line 122, in forward
+    o = F.scaled_dot_product_attention(q, k, v, is_causal=True)
+RuntimeError: cutlassF: no kernel found to launch!

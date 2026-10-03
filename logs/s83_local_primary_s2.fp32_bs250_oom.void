@@ -1,0 +1,35 @@
+[W1003 16:29:43.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 85983232 bytes (free: 0, total: 8589606912).
+[W1003 16:29:44.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 92274688 bytes (free: 0, total: 8589606912).
+[W1003 16:29:44.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 96468992 bytes (free: 0, total: 8589606912).
+[W1003 16:29:44.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 98566144 bytes (free: 0, total: 8589606912).
+calibrated tau 0.9747380614280701 {'n_states': 49500, 'in_range_acc': 0.9164848484848485, 'taus': {'0.001': 0.5820869207382202, '0.01': 0.9747380614280701, '0.05': 0.9999491572380066}, 'conf_ok_p1_p50': [0.9794934391975403, 0.9999992847442627]} 48 s
+[W1003 16:30:31.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 381681664 bytes (free: 0, total: 8589606912).
+[W1003 16:30:32.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 98566144 bytes (free: 0, total: 8589606912).
+[W1003 16:30:32.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 104857600 bytes (free: 0, total: 8589606912).
+[W1003 16:30:32.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 111149056 bytes (free: 0, total: 8589606912).
+[W1003 16:30:33.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 117440512 bytes (free: 0, total: 8589606912).
+[W1003 16:30:34.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 96468992 bytes (free: 0, total: 8589606912).
+[W1003 16:30:34.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 96468992 bytes (free: 0, total: 8589606912).
+Traceback (most recent call last):
+  File "D:\Latent\theory\s83_restart.py", line 177, in <module>
+    main()
+    ~~~~^^
+  File "D:\Latent\theory\s83_restart.py", line 153, in main
+    pred, lens, gen, det = adaptive_rollout(m, Xte, Yte, a.kmax, tau, dev, amp, a.bs, a.k); cum = s5.cumulative(pred, Yte)
+                           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Latent\theory\s83_restart.py", line 101, in adaptive_rollout
+    p, c = chunk_with_conf(m, np.where(cur[g] < 0, 0, cur[g]), ops, dev, amp, tau); gen_states += int((c > 0).sum())
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "D:\Latent\theory\s83_restart.py", line 42, in chunk_with_conf
+    h, past = m(m.embed(torch.full((B,), s5.GT, device=dev))[:, None, :], past); hl = h[:, -1]
+              ~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\modules\module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\modules\module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "D:\Latent\boxes\core.py", line 119, in forward
+    k = torch.cat([past[i][0], k], 2); v = torch.cat([past[i][1], v], 2)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 92.00 MiB. GPU 2 has a total capacity of 8.00 GiB of which 0 bytes is free. Process 1960 has 17179869184.00 GiB memory in use. Process 7236 has 17179869184.00 GiB memory in use. Process 7368 has 17179869184.00 GiB memory in use. Process 7196 has 17179869184.00 GiB memory in use. Process 7124 has 17179869184.00 GiB memory in use. Process 7676 has 17179869184.00 GiB memory in use. Process 9516 has 17179869184.00 GiB memory in use. Process 17048 has 17179869184.00 GiB memory in use. Process 12992 has 17179869184.00 GiB memory in use. Process 17800 has 17179869184.00 GiB memory in use. Process 12780 has 17179869184.00 GiB memory in use. Process 20788 has 17179869184.00 GiB memory in use. Process 25552 has 17179869184.00 GiB memory in use. Process 16456 has 17179869184.00 GiB memory in use. Including non-PyTorch memory, this process has 17179869184.00 GiB memory in use. Of the allocated memory 5.73 GiB is allocated by PyTorch, and 1.56 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
