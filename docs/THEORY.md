@@ -8165,6 +8165,10 @@ W1 and W2 are met: budget alone fixes "where".**
   - C1 (use) in a pretrained LM on the boxes task, both question types, in range, with CoT-label training. Not C4; no C2.
 * **Step 0 probes on the new models:** the registered measure. Queued with the experiments session (CPU), descriptive.
 
+**Note 94-2 (2026-10-03 18:52 EDT).** §94 is Audit-reproduced from the 13 eval.json files, with the same values. The "where"
+removal values sit at chance (4-way, 0.25), so C1-where's 3/5 vs 5/5 split is noise around the floor (NC 0.235 + 0.05).
+FADE-STD-3× s7's bypass: zero-ablated "all" is 0.645 against 0.845 intact.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
