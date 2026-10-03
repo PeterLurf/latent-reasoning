@@ -1,0 +1,2 @@
+# §88 rerun of align k2 s3 (crashed: CUDA illegal address during the 20:42 double-booking)
+c1/runs/p88_align_k2_s3 c1.p80_p0 loop --arm align --k 2 --seed 3

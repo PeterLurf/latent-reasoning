@@ -1,0 +1,19 @@
+{
+ "section": 88,
+ "arm": "end",
+ "k": 3,
+ "seed": 3,
+ "steps": 4000,
+ "train_sec": 518,
+ "acc_train": 0.9950920245398773,
+ "acc_b_unseen_words": 0.16153846153846155,
+ "per_iteration_acc_b": [
+  0.18974358974358974,
+  0.11025641025641025,
+  0.16153846153846155
+ ],
+ "n_b": 390,
+ "acc_a_heldout_pairs": 1.0,
+ "n_a": 91,
+ "n_train_pairs": 815
+}
