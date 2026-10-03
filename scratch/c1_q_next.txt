@@ -34,5 +34,5 @@ boxes/runs/f89_fade_raw_s2 boxes.fade89 --arm fade_raw --seed 2
 boxes/runs/f89_fade_soft_s2 boxes.fade89 --arm fade_soft --seed 2
 boxes/runs/f89_fade_gold_s2 boxes.fade89 --arm fade_gold --seed 2
 boxes/runs/f89_fade_raw_s3 boxes.fade89 --arm fade_raw --seed 3
-boxes/runs/f89_fade_soft_s3 boxes.fade89 --arm fade_soft --seed 3
-boxes/runs/f89_fade_gold_s3 boxes.fade89 --arm fade_gold --seed 3
+# DROPPED (user, 2026-10-03 19:15, fade line closed): boxes/runs/f89_fade_soft_s3 boxes.fade89 --arm fade_soft --seed 3
+# DROPPED (user, 2026-10-03 19:15, fade line closed): boxes/runs/f89_fade_gold_s3 boxes.fade89 --arm fade_gold --seed 3
