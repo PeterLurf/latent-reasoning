@@ -158,9 +158,14 @@ reserve, projection to Audit above $5. Credit $105 (07:25).
       `theory/score_s95.py`.
     - §96 (amortised self-labels: S5 free-table teachers from final answers at p 0.05 / 0.1 / std). 15 small table runs:
       `python theory/c1_s96_driver.py --device <dev> --P 2` → `theory/results/c1_s96/`. Scorer `theory/score_s96.py`.
-      **Running since 11:22 on the 4060 (torch cuda:0, P 1; Experiments' OK).** mixP 0.05 runs first, then mixP 0.1
-      and std (chained). About 8.6 min per run; ETA about 13:30. Logs are in `theory/results/c1_s96/logs/`; the
-      drivers are resumable per job.
+      **Placement (13:06, agreed with Experiments).**
+      - mixP 0.05 s2161–2164 ran on the 4060. s2164 was slowed by fade_soft s1's eval (memory fallback).
+      - **The 4060 is held:** `theory/results/c1_s96/*.json` files whose content is `{"HOLD": …}` are **hold markers,
+        not results**. They make the cuda:0 drivers skip mixP 0.05 s2165 and every mixP 0.1 / std job.
+      - mixP 0.1 and std run on the 3070 (torch cuda:1, P 1) → `theory/results/c1_s96_3070/`.
+      - s2165 runs on the 4060 after fade_soft s1's eval.json lands.
+      - **Before scoring:** move the c1_s96_3070 JSONs over the markers and delete any remaining marker.
+        `score_s96.py` must never see a HOLD file.
     - **§97 (the user's "generalized latent thinker", step 1; 14499aad + note 97-1):** §92 with a text step target
       (in-context fork, tied LM head) and re-embedded text checkpoints. GEN-4 (primary, G4), GEN-1 (descriptive) and
       HYB-4 (text target + structured snap), seeds 1–3, about $6 on Vast. Handed to Experiments; scorer
