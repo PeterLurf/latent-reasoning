@@ -80,6 +80,11 @@ Path independence tracks one-loop reach (Spearman −0.87, post hoc).
 **GSM8K step 2 (§68):** our own text-CoT, Coconut and written-state arms on GSM8K-Aug (3 seeds), with C1 controls on Coconut's latents.
 **C1 frontier (§67):** the exact-marginal objective has partial-automaton local optima. The table is certified 1/6 at 6 codes but 10/10
 at 12 codes. Every neural cell fails (GPT-2, random GPT-2, small transformer, MLP). Hard codes do not decay with length.
+**Latent restarts (§92):** an S5 state carried in latent slots (per-op aux targets, codebook snap every 4 ops) is
+exact to 2,048 from training at 128. Removing the latents gives about 0, at 0.39× the written state's FLOPs. C1 + C2 + C3,
+scaffolded, not C4.
+**In-depth composition (§88 / §90 / §91):** a looped GPT-2 with per-iteration targets composes unseen op sequences
+reliably (5/5) given word diversity and enough steps.
 **Stable latent (§72b / §73):**
 * Frozen pretrained GPT-2 with a standardised (centred) readout acquires a certified S3 latent machine from final
   answers in 10/10 seeds.
@@ -7341,6 +7346,42 @@ seeds seen for placement).**
 **Note 89-7 (2026-10-03 02:13 EDT; placement detail under 89-5).** fade_std s2 and fade_std_dec s2 were already running
 locally, so they stay local. The Vast set is the 10 runs fade_std s3–5, fade_std_dec s3–5 and coco_stage s2–5, with
 fade_std s3 as the proof host. The run count and rules are unchanged.
+
+**§91 result (2026-10-03 04:13 EDT; run by the experiments session on Vast; scored by Theory with `theory/score_s91_s92.py`,
+written after Audit's raw read and before Theory read any value (disclosed); `theory/results/score_s91_s92.json`).
+Prediction R met: three recipes are reliable.**
+
+| arm (S4 k = 2, 400 words, full coverage; seeds 4–8) | (b) unseen words | training | reliable (≥ 0.90 in ≥ 4/5) |
+|---|---|---|---|
+| BASE (4k steps) | 0.036–0.056 | 0.040–0.044 | no (0/5): underfit |
+| LONG (16k steps) | **1.000 ×5** | ≈ 1.000 | **yes (5/5)** |
+| WD-SP (16k, L2-SP) | 0.994–1.000 | ≈ 1.000 | **yes (5/5)** |
+| CURR (16k, operator-first) | 0.997–1.000 | ≈ 1.000 | **yes (5/5)** |
+
+* **Reading.** §90's "lottery" was a **training-budget** effect. At 4k steps the model mostly does not even fit its
+  training words. With 16k steps every seed fits, and **every seed then composes unseen 2-op words perfectly**. The
+  extra ingredients (L2-SP, operator-first) are not needed beyond the longer budget.
+* **Recipe.** A per-iteration-aligned looped GPT-2 with enough steps to fit and enough word diversity (§90's V1)
+  reliably composes seen transitions into unseen sequences. C1 (use) and C2 in depth, with per-step targets; not C4.
+
+**§92 result (same scorer). The gate passes, and §86's predictions are met at 3× budget (k = 4).**
+* **Cumulative accuracy at 512:** 1.000 / 1.000 / 0.9995. **The 2,048 extension: 1.000 ×3.** Per-slot accuracy: 1.0 at
+  all four slots.
+* **R1 (k = 4 part): met.** ≥ 0.99 in 3/3. §86's k = 1 certificate arm was not part of §92.
+* **R2: met.** Zero-ablating the intermediate latent slots drops accuracy after the first ablated slot to ≤ 0.003. Mean
+  ablation gives ≤ 0.029; segment isolation ≤ 0.05.
+  - The latents carry the state and do the work.
+  - Isolation also fails, so a slot alone in a fresh context does not suffice: the in-chunk state uses the slot and the
+    chunk's context together (note 86-2's descriptive reading).
+* **R3: met.** Inference FLOPs per 512-problem are **0.39×** the retrained §71 WC₀₄'s (6.3e11 vs 1.6e12), with 0 written
+  tokens.
+* **Reading.** **The project's first latent-carried S5 state exact to 2,048**, from training at 128, with the latents
+  doing the work, at 0.39× the written state's compute.
+  - Scope (86-1, 86-4): per-op auxiliary decoder supervision with a given 5 × 5 arrangement structure, and a codebook
+    snap with history cut every 4 ops.
+  - **C1 (use) + C2 + C3, scaffolded; not C4.**
+  - C6 (stability) is "not contradicted" with 3 seeds (86-3); seeds 4–5 are added before any C6 claim.
+  - §86's 8k-step failure was a budget effect, as Audit's wording anticipated.
 
 ## 7. Log
 
