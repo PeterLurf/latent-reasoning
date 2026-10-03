@@ -54,7 +54,9 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
     - y3 54070493 (A5000): MASK 4x4 + 5x5 x6.
     - y4 54070499: COCO 4x4 s1/s2 only. Its 4x4 s3 and 5x5 s1-3 OOM'd at P3 before `--micro 2`.
     - y5 54073316: TC + NC x12 (about 10 h).
-  - After y4 drains: deploy `scratch/gen_q_y6.txt` (the COCO reruns). y4's drain will report FETCH_INCOMPLETE for the 4 failed runs, so fetch s1/s2 and the logs by hand.
+  - **COCO reruns are LOCAL (user, 19:15), not Vast y6:** `scratch/s98_local_chain.sh cuda:0|cuda:1` runs `scratch/c1_q_98coco.txt` (`--micro 4`) after each card's §89 worker.
+  - y4's drain will report FETCH_INCOMPLETE for the 4 failed runs. Fetch ONLY coco_4x4_s1/s2 and the logs (the OOM logs as *.void); the failed run dirs' names collide with the local reruns.
+* **Fade line closed (user, 19:15):** §89 soft s3 and gold s3 are dropped (PROTOCOL12 note); raw s3 and soft s2 finish. §83 s2/s3 finish on the 2070.
   - Two y5 attempts were destroyed: one before upload (P3 OOM risk), one stuck loading.
 * **§97 C6:** x4 (GEN-4 s4-5) and x5 (HYB-4 s4-5) running. **§94:** only w2 left (w1, w3, w4, w5 fetched).
 * **4060 resolved (user-approved, ~15:00):** fade_soft s1's eval was rerun with `fade89 --eval_only` (N5-8 0.135), and the cuda:0 worker was restarted (it runs fade_raw s3).
