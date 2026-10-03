@@ -1,0 +1,13 @@
+{
+ "arm": "fade_std",
+ "seed": 7,
+ "steps": 24000,
+ "bs": 32,
+ "grad_acc": 2,
+ "inv_dec": false,
+ "lr": 0.0001,
+ "device": "cuda:0",
+ "init": "/workspace/Latent/prosqa/ckpt/gpt2_pretrained.bin",
+ "smoke": false,
+ "out": "boxes/runs/f94_fadestd3x_s7"
+}
