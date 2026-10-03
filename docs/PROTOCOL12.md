@@ -572,3 +572,28 @@ count. Local cards, 30 runs.
 is much more verb-sensitive (NEG, lower is better: 0.40–0.52 vs 0.97 on certified seeds) and better on minimal pairs
 (H4 median 0.625 vs 0.286, over all seeds). RF-std's agreement may be inflated by insensitivity: it maps a
 non-permutation verb to the swap's transition almost always." P1 met / P2 not met is unchanged.
+
+## THEORY §88 (loop-aligned composition: a looped GPT-2 block with per-iteration state targets) result (2026-10-02 21:29 EDT; `python c1/score_88.py` → `theory/results/score_s88.json`)
+
+**Disclosure:** the scorer (065913b) was written after the 12 runs finished, but before any eval.json was read. It
+encodes only §88's registered G1, G2 and kill. align k 2 s3 crashed (CUDA illegal address while a §86 job was wrongly
+co-scheduled on the same card, 20:42); it is voided and requeued. It cannot change the verdict: the k = 2 median of 3
+stays ≤ 0.091 whatever s3 scores.
+
+| arm | k = 2: (b) unseen / (a) held-out pairs / train | k = 3: (b) / (a) / train |
+|---|---|---|
+| LOOP-align | **0.061** (2 seeds: 0.091, 0.030) / 0.100 / 1.000 | **1.000** (1.000 ×3) / 1.000 / 1.000 |
+| LOOP-end | 0.000 / 0.400 / 1.000 | 0.159 / 0.890 / 0.999 |
+| §80 P0 (text, reference) | 0.030 | 0.118 |
+
+* **G1 not met.** LOOP-align (b) ≥ 0.90 holds at k = 3 (1.000, all seeds) but not at k = 2 (0.061).
+* **G2 met:** LOOP-end (b) is 0.000 / 0.159.
+* **Kill (Literature):** LOOP-align (b) < 0.50 at k = 2.
+* Per-iteration (b), LOOP-align median:
+  - k = 2: iteration 1 0.97, iteration 2 0.06 (the second application fails on unseen words);
+  - k = 3: 1.00 / 1.00 / 1.00.
+* **Reading (descriptive; the registered G1 fails):** with per-iteration targets, the looped block composes unseen
+  3-op words perfectly (0.118 → 1.000 against P0), but not 2-op words.
+  - The k = 2 split has 25 training words (135 pairs) against 151 (815 pairs) at k = 3. With so few k = 2 words the
+    second iteration memorises rather than learning a reusable step.
+  - Scope per note 88-1: per-iteration-supervised composition, C1 (use) and C2 in depth, not C4.

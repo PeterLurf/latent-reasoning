@@ -1,0 +1,24 @@
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights:  31%|###1      | 46/148 [00:00<00:00, 289.33it/s]Loading weights: 100%|##########| 148/148 [00:00<00:00, 896.85it/s]
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\Latent\c1\p80_p0.py", line 223, in <module>
+    main()
+    ~~~~^^
+  File "D:\Latent\c1\p80_p0.py", line 217, in main
+    train_loop(a)
+    ~~~~~~~~~~^^^
+  File "D:\Latent\c1\p80_p0.py", line 184, in train_loop
+    m.train(); ids, last, tg = loop_batch(tok, [rng.choice(tr) for _ in range(a.bs)], words, a.device)
+                               ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Latent\c1\p80_p0.py", line 159, in loop_batch
+    return ids.to(dev), last.to(dev), tg.to(dev)
+           ~~~~~~^^^^^
+torch.AcceleratorError: CUDA error: an illegal memory access was encountered
+Search for `cudaErrorIllegalAddress' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+The CUDA driver logged these messages, which may provide useful details:
+Returning 700 (CUDA_ERROR_ILLEGAL_ADDRESS) from cuStreamSynchronize
+
+
