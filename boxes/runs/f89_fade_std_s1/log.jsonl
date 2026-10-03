@@ -1,0 +1,80 @@
+{"step": 100, "alpha": 0.0208, "stage": null, "answer": 1.82913534283638, "thought": 2.2171568846702576, "sec": 180}
+{"step": 200, "alpha": 0.0417, "stage": null, "answer": 1.1602027958631516, "thought": 1.3975598633289337, "sec": 785}
+{"step": 300, "alpha": 0.0625, "stage": null, "answer": 1.2325284880399705, "thought": 1.450115362405777, "sec": 976}
+{"step": 400, "alpha": 0.0833, "stage": null, "answer": 1.1557294344902038, "thought": 1.386462653875351, "sec": 1170}
+{"step": 500, "alpha": 0.1042, "stage": null, "answer": 1.1949574726819991, "thought": 1.3377106183767318, "sec": 1361}
+{"step": 600, "alpha": 0.125, "stage": null, "answer": 1.1401366275548934, "thought": 1.396375259757042, "sec": 1546}
+{"step": 700, "alpha": 0.1458, "stage": null, "answer": 1.079391634464264, "thought": 1.351117896437645, "sec": 1734}
+{"step": 800, "alpha": 0.1667, "stage": null, "answer": 1.0391249307990074, "thought": 1.0919309815764426, "sec": 1910}
+{"step": 900, "alpha": 0.1875, "stage": null, "answer": 1.186462209224701, "thought": 1.1153714554011822, "sec": 2114}
+{"step": 1000, "alpha": 0.2083, "stage": null, "answer": 1.1932447227835654, "thought": 0.9751997420191765, "sec": 2309}
+{"step": 1100, "alpha": 0.2292, "stage": null, "answer": 1.1960379828512668, "thought": 0.8108976094052196, "sec": 2507}
+{"step": 1200, "alpha": 0.25, "stage": null, "answer": 1.0872115411607957, "thought": 0.6585432320115797, "sec": 2702}
+{"step": 1300, "alpha": 0.2708, "stage": null, "answer": 1.1016684873448686, "thought": 0.8199984667473472, "sec": 2889}
+{"step": 1400, "alpha": 0.2917, "stage": null, "answer": 1.121427473090589, "thought": 0.8432264916435815, "sec": 3089}
+{"step": 1500, "alpha": 0.3125, "stage": null, "answer": 1.124190882833791, "thought": 0.6388020966557088, "sec": 3293}
+{"step": 1600, "alpha": 0.3333, "stage": null, "answer": 1.080393198831007, "thought": 0.5519529518888158, "sec": 3465}
+{"step": 1700, "alpha": 0.3542, "stage": null, "answer": 1.001963163278997, "thought": 0.6236219414579682, "sec": 3669}
+{"step": 1800, "alpha": 0.375, "stage": null, "answer": 0.9729860919064959, "thought": 0.4262868706762674, "sec": 3848}
+{"step": 1900, "alpha": 0.3958, "stage": null, "answer": 1.0248611197829995, "thought": 0.40498865239249426, "sec": 4040}
+{"step": 2000, "alpha": 0.4167, "stage": null, "answer": 0.9599928683901635, "thought": 0.5432558997598972, "sec": 4229}
+{"step": 2100, "alpha": 0.4375, "stage": null, "answer": 0.9744069250533357, "thought": 0.37702535889282446, "sec": 4413}
+{"step": 2200, "alpha": 0.4583, "stage": null, "answer": 1.0100151083247328, "thought": 0.548979466270248, "sec": 4596}
+{"step": 2300, "alpha": 0.4792, "stage": null, "answer": 0.9301221218296541, "thought": 0.36001372307611745, "sec": 4768}
+{"step": 2400, "alpha": 0.5, "stage": null, "answer": 1.0495722265500809, "thought": 0.49821558584160813, "sec": 4967}
+{"step": 2500, "alpha": 0.5208, "stage": null, "answer": 0.9589358782378622, "thought": 0.3055326479458017, "sec": 5135}
+{"step": 2600, "alpha": 0.5417, "stage": null, "answer": 0.8546858112030532, "thought": 0.24885940777550786, "sec": 5324}
+{"step": 2700, "alpha": 0.5625, "stage": null, "answer": 0.9147552871156313, "thought": 0.24151631792883563, "sec": 5511}
+{"step": 2800, "alpha": 0.5833, "stage": null, "answer": 1.1390155337491887, "thought": 0.5990196326548903, "sec": 5703}
+{"step": 2900, "alpha": 0.6042, "stage": null, "answer": 1.0584007011400536, "thought": 0.5667623927537352, "sec": 5910}
+{"step": 3000, "alpha": 0.625, "stage": null, "answer": 1.0927838080466608, "thought": 0.42073356270426304, "sec": 6096}
+{"step": 3100, "alpha": 0.6458, "stage": null, "answer": 0.8551064268298069, "thought": 0.37304175589975785, "sec": 6276}
+{"step": 3200, "alpha": 0.6667, "stage": null, "answer": 0.8580363323539314, "thought": 0.28487395320964426, "sec": 6464}
+{"step": 3300, "alpha": 0.6875, "stage": null, "answer": 0.9128957891358322, "thought": 0.29911626077762776, "sec": 6652}
+{"step": 3400, "alpha": 0.7083, "stage": null, "answer": 0.7586660503015628, "thought": 0.29764816961818724, "sec": 6849}
+{"step": 3500, "alpha": 0.7292, "stage": null, "answer": 0.9261316579513732, "thought": 0.2183451597151725, "sec": 7042}
+{"step": 3600, "alpha": 0.75, "stage": null, "answer": 0.9822822094160892, "thought": 0.7837212095418726, "sec": 7254}
+{"step": 3700, "alpha": 0.7708, "stage": null, "answer": 0.9352028120563773, "thought": 0.6560884019799414, "sec": 7442}
+{"step": 3800, "alpha": 0.7917, "stage": null, "answer": 0.8885128347604404, "thought": 0.2295117476325686, "sec": 7625}
+{"step": 3900, "alpha": 0.8125, "stage": null, "answer": 0.7364555579091348, "thought": 0.20071445898305684, "sec": 7803}
+{"step": 4000, "alpha": 0.8333, "stage": null, "answer": 0.8640817554983323, "thought": 0.3453100798597734, "sec": 7985}
+{"step": 4100, "alpha": 0.8542, "stage": null, "answer": 0.7636777827449259, "thought": 0.2573426704159647, "sec": 8183}
+{"step": 4200, "alpha": 0.875, "stage": null, "answer": 0.7731848130449179, "thought": 0.20265543999710645, "sec": 8352}
+{"step": 4300, "alpha": 0.8958, "stage": null, "answer": 0.92365770066388, "thought": 0.48696493947994896, "sec": 8550}
+{"step": 4400, "alpha": 0.9167, "stage": null, "answer": 1.0484324999143428, "thought": 0.7882043252696167, "sec": 8739}
+{"step": 4500, "alpha": 0.9375, "stage": null, "answer": 1.0276926646337232, "thought": 1.2863374525681137, "sec": 8928}
+{"step": 4600, "alpha": 0.9583, "stage": null, "answer": 0.9644713744631735, "thought": 1.2903790024574846, "sec": 9111}
+{"step": 4700, "alpha": 0.9792, "stage": null, "answer": 1.0493398407360655, "thought": 1.014305994573515, "sec": 9285}
+{"step": 4800, "alpha": 1.0, "stage": null, "answer": 0.9908993699587881, "thought": 1.510127079720148, "sec": 9463}
+{"step": 4900, "alpha": 1.0, "stage": null, "answer": 1.0801008722226835, "sec": 9646}
+{"step": 5000, "alpha": 1.0, "stage": null, "answer": 0.9782484622535412, "sec": 9824}
+{"step": 5100, "alpha": 1.0, "stage": null, "answer": 0.9252456112690561, "sec": 10029}
+{"step": 5200, "alpha": 1.0, "stage": null, "answer": 1.0120451512348518, "sec": 10217}
+{"step": 5300, "alpha": 1.0, "stage": null, "answer": 0.9543124156515114, "sec": 10409}
+{"step": 5400, "alpha": 1.0, "stage": null, "answer": 1.0406120399894463, "sec": 10597}
+{"step": 5500, "alpha": 1.0, "stage": null, "answer": 0.9470754798726102, "sec": 10789}
+{"step": 5600, "alpha": 1.0, "stage": null, "answer": 0.9629064699336596, "sec": 10979}
+{"step": 5700, "alpha": 1.0, "stage": null, "answer": 0.9690960477049156, "sec": 11174}
+{"step": 5800, "alpha": 1.0, "stage": null, "answer": 0.9399547624633396, "sec": 11349}
+{"step": 5900, "alpha": 1.0, "stage": null, "answer": 0.9357526051073773, "sec": 11535}
+{"step": 6000, "alpha": 1.0, "stage": null, "answer": 0.8502025002001755, "sec": 11725}
+{"step": 6100, "alpha": 1.0, "stage": null, "answer": 0.8708214999225539, "sec": 11917}
+{"step": 6200, "alpha": 1.0, "stage": null, "answer": 0.8850221653735093, "sec": 12108}
+{"step": 6300, "alpha": 1.0, "stage": null, "answer": 0.938210586452542, "sec": 12360}
+{"step": 6400, "alpha": 1.0, "stage": null, "answer": 0.9560881614722961, "sec": 12633}
+{"step": 6500, "alpha": 1.0, "stage": null, "answer": 0.9219254864087293, "sec": 12908}
+{"step": 6600, "alpha": 1.0, "stage": null, "answer": 0.923205448538797, "sec": 13103}
+{"step": 6700, "alpha": 1.0, "stage": null, "answer": 0.9713578692856731, "sec": 13323}
+{"step": 6800, "alpha": 1.0, "stage": null, "answer": 0.8911949354789295, "sec": 13518}
+{"step": 6900, "alpha": 1.0, "stage": null, "answer": 0.9585065326479025, "sec": 13722}
+{"step": 7000, "alpha": 1.0, "stage": null, "answer": 0.9680903263395817, "sec": 13901}
+{"step": 7100, "alpha": 1.0, "stage": null, "answer": 1.0159929998125221, "sec": 14096}
+{"step": 7200, "alpha": 1.0, "stage": null, "answer": 0.8718298428222124, "sec": 14271}
+{"step": 7300, "alpha": 1.0, "stage": null, "answer": 0.9307611152838342, "sec": 14467}
+{"step": 7400, "alpha": 1.0, "stage": null, "answer": 0.9464918556616704, "sec": 14685}
+{"step": 7500, "alpha": 1.0, "stage": null, "answer": 0.8084256718421574, "sec": 14895}
+{"step": 7600, "alpha": 1.0, "stage": null, "answer": 0.9386578151043465, "sec": 15100}
+{"step": 7700, "alpha": 1.0, "stage": null, "answer": 0.924315044391933, "sec": 15306}
+{"step": 7800, "alpha": 1.0, "stage": null, "answer": 0.8372048819975174, "sec": 15498}
+{"step": 7900, "alpha": 1.0, "stage": null, "answer": 0.8153708376005102, "sec": 15705}
+{"step": 8000, "alpha": 1.0, "stage": null, "answer": 0.853998655187562, "sec": 15883}

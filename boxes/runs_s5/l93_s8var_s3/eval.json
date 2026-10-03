@@ -1,0 +1,125 @@
+{
+ "k": 8,
+ "seed": 3,
+ "train_sec": 3203,
+ "eval_dtype": "torch.bfloat16",
+ "test_sequences": 2000,
+ "cumulative": {
+  "128": 0.0,
+  "256": 0.0,
+  "512": 0.0
+ },
+ "final_state_acc_512": 0.003,
+ "compute_512_per_problem": {
+  "tokens_processed": 3648,
+  "flops": 624488153088.0,
+  "seq_passes": 576,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "latent_slots": 512
+ },
+ "extension_2048": {
+  "n": 500,
+  "cumulative": {
+   "512": 0.0,
+   "1024": 0.0,
+   "2048": 0.0
+  }
+ },
+ "chunk_check": {
+  "k": 8,
+  "n": 100000,
+  "per_chunk_acc": 0.0,
+  "per_slot_acc": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   1e-05,
+   0.00042,
+   0.00143,
+   0.00188
+  ],
+  "pred_seq_acc_512": 0.0
+ },
+ "removal": {
+  "zero": {
+   "k": 8,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0001
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "zero",
+   "acc_after_first_ablated_slot": 1.4285714285714285e-05
+  },
+  "mean": {
+   "k": 8,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0002,
+    0.0001,
+    0.0012,
+    0.0022
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "mean",
+   "acc_after_first_ablated_slot": 0.0005285714285714286
+  },
+  "isolate": {
+   "k": 8,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "isolate",
+   "acc_after_first_ablated_slot": 0.0
+  }
+ },
+ "probe_acc_per_slot": [
+  0.006000000052154064,
+  0.0007999999797903001,
+  0.0009999999310821295,
+  0.0009999999310821295,
+  0.0007999999797903001,
+  0.0011999999405816197,
+  0.0005999999702908099,
+  0.0009999999310821295
+ ],
+ "iia_per_slot": [
+  0.0016,
+  0.0016,
+  0.0024,
+  0.002,
+  0.0024,
+  0.0016,
+  0.002
+ ],
+ "sup": "last",
+ "var": true,
+ "warm_frac": 0.0,
+ "eval_sec": 218
+}

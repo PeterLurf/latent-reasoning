@@ -1,0 +1,12 @@
+{
+ "arm": "coco_stage",
+ "seed": 1,
+ "steps": 8000,
+ "bs": 32,
+ "grad_acc": 2,
+ "lr": 0.0001,
+ "device": "cuda:2",
+ "init": "D:\\Latent\\prosqa\\ckpt\\gpt2_pretrained.bin",
+ "smoke": false,
+ "out": "boxes/runs/f89_coco_stage_s1"
+}
