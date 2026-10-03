@@ -1,3 +1,7 @@
+> **Historical (2026-09-25 to 2026-09-29).** This log is kept in place because code and `DO_NOT_MOVE_WHILE_RUNNING.md` reference it.
+> Later events: registrations and results in `docs/THEORY.md` (§ numbers) and `docs/PROTOCOL12.md`; the live state in
+> `docs/CURRENT_TASKS.md`; the full chronology in `git log`.
+
 # Research log — readable vs usable alternatives in latent reasoning
 
 Entries are chronological. Predictions are recorded before the corresponding run.
