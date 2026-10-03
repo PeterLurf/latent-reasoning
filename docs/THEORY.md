@@ -7338,6 +7338,10 @@ seeds seen for placement).**
   letter's position from the latent. An aux "where" probe, or answering "where" through the decoded arrangement, is a
   candidate later registration.
 
+**Note 89-7 (2026-10-03 02:13 EDT; placement detail under 89-5).** fade_std s2 and fade_std_dec s2 were already running
+locally, so they stay local. The Vast set is the 10 runs fade_std s3–5, fade_std_dec s3–5 and coco_stage s2–5, with
+fade_std s3 as the proof host. The run count and rules are unchanged.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
