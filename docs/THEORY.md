@@ -7575,6 +7575,29 @@ removal dropping it to ≤ NC + 0.05 for that type.
   α = 0 (untrained), and (ii) §66's NC model's positions. These are the baseline decodability.
 * The interim s1 result (letter → box 1.0 at every op block, n = 1,000; CURRENT_TASKS 10:20) is read under this note.
 
+**§93 result (2026-10-03 11:08 EDT; runs by the experiments session on Vast; scored by Theory alone with
+`theory/score_s93.py`, committed before reading (97de49f1); `theory/results/score_s93.json`). P-S4 and P-S8 are not met.**
+
+| arm (24k steps, seeds 1–3) | cumulative at 512 | passing seeds (≥ 0.99, zero-removal ≤ 0.10) |
+|---|---|---|
+| DENSE-4 (§92, control) | 1.000 / 1.000 / 0.9995 | **3/3** |
+| DENSE-8 (control) | 1.000 ×3 | **3/3** |
+| SPARSE-4-fix | 0.0 ×3 (every slot at chance, the supervised one included) | 0/3 |
+| SPARSE-4-var | 0.0 / 0.0 / **0.9725** (s3: every slot 1.0) | 0/3 by the rule (s3 just under 0.99) |
+| SPARSE-8-fix | 0.0 ×3 | 0/3 |
+| SPARSE-8-var | 0.0 ×3 | 0/3 |
+| WARM-SPARSE-8 | 0.0 / 0.0 / **0.9005** (s3: slots ≈ 1.0; s1: slots 0.75–1.0) | 0/3 |
+
+* **Reading ("sparse fails, dense passes").** At this budget, **per-step targets are load-bearing** for the latent
+  hand-off (Rule 1, 685bef0). With chunk-end labels only, the model learns nothing in fixed-length chunks; even the
+  supervised chunk-end slot stays at chance. That is a leap of k without footholds, as Literature predicted.
+* **Footholds help partially (descriptive).** Variable-length chunks (1/k of chunks are single hand-offs) and a dense
+  warm start each produce one seed that learns almost fully (SPARSE-4-var s3 0.9725; WARM-SPARSE-8 s3 0.9005). Every slot
+  of those seeds is decodable by the shared head without being trained on it. This matches §85 / §87 on the free table:
+  short or dense supervision is a basin-entry device, unreliable at these doses.
+* **Consequence.** The strict-C4 version (M1-U, final-state-only latent restarts) is moot at this budget, and the C4 line
+  for latent restarts stops here. C4 stays qualified: the standing §92 result needs per-op targets.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
