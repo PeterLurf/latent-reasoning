@@ -1,5 +1,7 @@
 # Literature — readable vs usable alternatives in latent reasoning
 
+> **Historical (to 2026-09-27).** Kept in place because other docs cite it by path. Current literature: `docs/LIT_INDEX.md` (start with LIT_FINDINGS_COMPILED, LIT_LATENT_FROM_DISCRETE, LIT_SEMI_DISCRETE).
+
 Compiled 2026-09-25, expanded 2026-09-27 after a systematic sweep: topic searches, the latentreasoning.net
 bibliography, and forward citations of the closest papers. Every arXiv ID was checked against the arXiv API.
 Entries are grouped by the question they bear on, and each note says what the paper means for this project
