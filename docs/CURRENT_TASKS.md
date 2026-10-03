@@ -154,8 +154,9 @@ reserve, projection to Audit above $5. Credit $105 (07:25).
   - **Registered, waiting on runs:**
     - §94 ("where" readout). Vast fleet run by Experiments; Step 0 probes on local CPU →
       `theory/results/s94_step0/`.
-    - §95 (foothold dose-response, f ∈ {0.05, 0.25, 0.5}; f ≤ 0.05 is "little enough"). Vast, Experiments; scorer
-      `theory/score_s95.py`.
+    - **§95 scored (14:35): no foothold dose sufficient** (0/9; slot 1 learned at f ≥ 0.25, no hand-off;
+      Audit-reproduced). The in-LM C4 route is closed; a graded-lengths follow-up is deliberately not registered (fix
+      loop).
     - §96 (amortised self-labels: S5 free-table teachers from final answers at p 0.05 / 0.1 / std). 15 small table runs:
       `python theory/c1_s96_driver.py --device <dev> --P 2` → `theory/results/c1_s96/`. Scorer `theory/score_s96.py`.
       **Placement (13:06, agreed with Experiments).**
@@ -170,7 +171,7 @@ reserve, projection to Audit above $5. Credit $105 (07:25).
       (in-context fork, tied LM head) and re-embedded text checkpoints. GEN-4 (primary, G4), GEN-1 (descriptive) and
       HYB-4 (text target + structured snap), seeds 1–3, about $6 on Vast. Handed to Experiments; scorer
       `theory/score_s97.py` (90034c85). Later steps (bench ladder, general readout, bigger model) wait on §97.
-  - **To score (Theory only):** §94, §95, §96, §97, and §89's descriptive arms (raw done; soft and gold running
+  - **To score (Theory only):** §94 arms (Step 0 recorded: readout failure), §96, §97, and §89's descriptive arms (raw done; soft and gold running
     locally).
 - Handed to Experiments (22:22): THEORY §55 (fall-back kill test, `theory/exp27_fallback_kill.py`, CPU minutes) and §56
   (interchange test, `theory/exp28_interchange.py`, 80 models, ~1 h CPU); scoring rules are in each section.
