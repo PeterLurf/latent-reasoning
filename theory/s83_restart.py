@@ -141,9 +141,12 @@ def main():
     ap.add_argument("--fixed", type=int, nargs="*", default=[4, 8, 16]); ap.add_argument("--bs", type=int, default=250)
     ap.add_argument("--data_dir", default=os.path.join(ROOT, "bench", "data", "s5")); ap.add_argument("--device", default="cuda:0")
     ap.add_argument("--out", required=True); ap.add_argument("--cal_n", type=int, default=20000); ap.add_argument("--sweep_n", type=int, default=500)
+    ap.add_argument("--fp32", action="store_true", help="force fp32 (Turing / CC 7.5: no bf16 SDPA kernel; inference only)")
     a = ap.parse_args(); dev = a.device
     ev = json.load(open(os.path.join(a.run, "eval.json"))) if os.path.exists(os.path.join(a.run, "eval.json")) else {}
     amp = torch.bfloat16 if "bfloat16" in str(ev.get("eval_dtype", "")) else None
+    if a.fp32:
+        amp = None
     m = s5.load_gpt2(dev); m.load_state_dict(torch.load(os.path.join(a.run, "model.pt"), map_location=dev)); m.eval()
     t0 = time.time(); tau, cal = calibrate(m, a.k, dev, amp, n=a.cal_n); print("calibrated tau", tau, cal, round(time.time() - t0), "s", flush=True); res = {"tau": tau, "calibration": cal, "amp": str(amp), "run": a.run}
     Xte, Yte = s5.load_csv(os.path.join(a.data_dir, "S5=512.csv"), limit=a.test_n)

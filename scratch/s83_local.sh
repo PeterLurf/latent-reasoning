@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
-# §83 remainder, local (Theory, option (a)): primaries s2, s3 (5794e4c script) on the first card freed after §79 and
-# §84 Step 1; extras afterwards. Outputs theory/results/s83/wc0k4r_s<seed>.json and _ext.json.
+# §83 remainder, local (Theory, option (a)): primaries s2, s3 (5794e4c script), then extras s1-s3.
+# Outputs theory/results/s83/wc0k4r_s<seed>.json and _ext.json.
+# v2 (2026-10-03 16:30): rc captured right after python (v1 read $? after $(date), so every crash logged rc 0) and
+# "no-output" appended when the .json is missing; --fp32 on Turing (the 2070, CC 7.5, has no bf16 SDPA kernel:
+# v1's five runs crashed in 4 s with "cutlassF: no kernel found to launch").
 cd "$(dirname "$0")/.."
-d=${1:-cuda:2}
-# lowest priority (Audit/Theory): wait until the §89 worker on this card (after §86, §88) has finished
-until grep -q "WORKER_DONE $d scratch/c1_q_next.txt" logs/c1_local.log; do sleep 300; done
-until [ "$(powershell -NoProfile -c "(Get-CimInstance Win32_Process -Filter \"Name='python.exe'\" | Where-Object { \$_.CommandLine -like '*--device $d *' -and \$_.CommandLine -notlike '*c1_rl.py*' -and \$_.CommandLine -notlike '*c1_s85*' }).Count")" = "0" ] && \
-      ! powershell -NoProfile -c "Get-CimInstance Win32_Process -Filter \"Name='bash.exe'\" | Where-Object { \$_.CommandLine -like '*local_worker.sh $d *' -or \$_.CommandLine -like '*s84_step1*' }" | grep -q .; do sleep 120; done
-for s in 2 3; do python -u theory/s83_restart.py --run boxes/runs_s5/wc0k4r_s$s --k 4 --kmax 16 --test_n 2000 --ext_n 0 --cal_n 20000 --sweep_n 0 --fixed 4 16 --device $d --out theory/results/s83/wc0k4r_s$s.json > logs/s83_local_primary_s$s.log 2>&1; echo "$(date +%T) s83 primary s$s rc $? ($d)" >> logs/c1_local.log; done
-for s in 1 2 3; do python -u theory/s83_restart.py --run boxes/runs_s5/wc0k4r_s$s --k 4 --kmax 16 --test_n 2000 --ext_n 500 --cal_n 20000 --sweep_n 500 --fixed 4 8 16 --device $d --out theory/results/s83/wc0k4r_s${s}_ext.json > logs/s83_local_ext_s$s.log 2>&1; echo "$(date +%T) s83 extras s$s rc $? ($d)" >> logs/c1_local.log; done
+d=${1:-cuda:2}; F=""
+python -c "import torch,sys; sys.exit(0 if torch.cuda.get_device_capability('$d')[0] >= 8 else 1)" || F="--fp32 --bs 64"   # fp32 at bs 250 OOMs 8 GB (KV cache)
+run() { out=$1; log=$2; shift 2
+  python -u theory/s83_restart.py "$@" $F --device $d --out $out > $log 2>&1; rc=$?; [ -s $out ] || rc="$rc no-output"
+  echo "$(date +%T) s83 $(basename $out .json) rc $rc ($d ${F:-bf16-as-trained})" >> logs/c1_local.log; }
+for s in 2 3; do run theory/results/s83/wc0k4r_s$s.json logs/s83_local_primary_s$s.log --run boxes/runs_s5/wc0k4r_s$s --k 4 --kmax 16 --test_n 2000 --ext_n 0 --cal_n 20000 --sweep_n 0 --fixed 4 16; done
+for s in 1 2 3; do run theory/results/s83/wc0k4r_s${s}_ext.json logs/s83_local_ext_s$s.log --run boxes/runs_s5/wc0k4r_s$s --k 4 --kmax 16 --test_n 2000 --ext_n 500 --cal_n 20000 --sweep_n 500 --fixed 4 8 16; done
+echo "$(date +%T) S83_LOCAL_DONE $d" >> logs/c1_local.log
