@@ -1,65 +1,56 @@
 # docs/ — index
 
-What each file is, and whether it may be edited. Files stay at these paths: code, scripts, other docs and Claude
-memory refer to them by path (see `../DO_NOT_MOVE_WHILE_RUNNING.md`). Index written 2026-09-28, updated 2026-09-29 ~13:05 (PROTOCOL7, theory stream, audits).
+One line per file. Rewritten 2026-10-03 by Audit at the user's request ("too much old detail; summarise").
+Superseded one-off notes moved to `archive/` (unchanged, still in git); nothing that code loads by path was moved.
+Pre-registrations (`PROTOCOL*.md`) are append-only and are never rewritten.
 
 ## Start here
 
-| File | What | Editing |
+| File | What |
+|---|---|
+| `NORTH_STAR.md` | The goal (C1–C7), one status line per condition, current design, open questions |
+| `CURRENT_TASKS.md` | Live handoff: what is running, where, how to check/fetch/stop it |
+| `THEORY.md` | Every registration (§1–§98+), its predictions, amendments and results; summary at the top |
+| `PROTOCOL12.md` | Scorecards for the recent registrations run by Experiments (§61b onward) |
+| `../report/findings.md` | Plain-language write-up of what stands |
+| `../bench/LEADERBOARD.md` | Our models vs published numbers on the shared benchmark items |
+
+## Pre-registrations and scorecards (append-only)
+
+| Part | Topic | Files |
 |---|---|---|
-| `NORTH_STAR.md` | **The project's goal**: seven conditions for solved latent reasoning, their operational tests, status and roles | Audit keeps the status table current |
-| `CURRENT_TASKS.md` | Live handoff: what is running, where, how to check/fetch/stop it, what awaits scoring | **Live**: the session running the experiments keeps it current |
-| `RESEARCH_LOG.md` | Chronology of every decision, run, deviation and disclosure (all parts) | **Live**, append only |
-| `RESEARCH_TIMELINE.md` | Why each part asked what it asked; claim ledger; next steps (Parts I–VI) | Narrative; no new results |
-| `../report/findings.md` | Consolidated write-up: what stands, what was revised, what is open (Parts I–VI) | Narrative; no new results |
+| I–III (09-23/24) | Toy graph search: branch edits, width, the clocked sweep | `PROTOCOL.md`, `PROTOCOL2.md`, `PROTOCOL3.md`, `protocol_frozen.json`, `protocol2_frozen.json` |
+| IV–V (09-24/25) | Part III claims, reliability, extrapolation predictors | `PROTOCOL4.md` (+`_RESULTS`), `PROTOCOL5.md` (+`_RESULTS`) |
+| VI–VII (09-25/30) | Why sweeps keep running; horizon confirmation suite | `PROTOCOL6.md` (+`_RESULTS`), `PROTOCOL7.md` (+`_RESULTS`) |
+| VIII (09-29/10-01) | Pretrained Coconut GPT-2 on deep ProsQA; checkpoints | `PROTOCOL8*.md`, `PROTOCOL9*.md`, `PROTOCOL10.md`, `PROTOCOL11.md` |
+| IX (10-01 →) | GPT-2 latent automata, S3–S5 tracking, GSM8K, latent restarts | `PROTOCOL12.md` (+`_TUNING`), `GSM8K_REPRO.md` |
 
-## Pre-registrations and scorecards, by part
+## Logs and planning
 
-Pre-registration files (`PROTOCOL*.md`) are **append-only**: predictions are never rewritten, only followed by dated
-amendments.
-
-| Part | Dates | Pre-registration | Frozen values | Scorecard |
-|---|---|---|---|---|
-| I | 09-23 | `PROTOCOL.md` | `protocol_frozen.json` (read by `latent/study.py`) | `../results/summary.json`, `../report/latent_branch_report.html` |
-| II | 09-24 | `PROTOCOL2.md` | `protocol2_frozen.json` (read by `latent/followup_confirm.py`) | `../results/followup_confirm.json`, `../report/latent_branch_report.html` |
-| III | 09-24 | `PROTOCOL3.md` (addenda B–K) | — | `../results/protocol3_confirm.json`, `../report/latent_branch_report.html` |
-| IV | 09-24 → 09-25 | `PROTOCOL4.md` (addenda A–E) | — | `PROTOCOL4_RESULTS.md`, `../report/protocol4_report.html` |
-| V | 09-25 | `PROTOCOL5.md` (addenda A–C) | — | `PROTOCOL5_RESULTS.md` |
-| VI | 09-25 → running (R) | `PROTOCOL6.md` (addenda A–R) — **live** | — | `PROTOCOL6_RESULTS.md` — **live** |
-| VII | 09-28 → running | `PROTOCOL7.md` (confirmation suite T1–T13, amendments) | — | `PROTOCOL7_RESULTS.md` |
-
-Notes: `PROTOCOL6.md` has an empty "Results — Pending." heading between addenda H and I; the Part VI results are in
-`PROTOCOL6_RESULTS.md`. ProsQA (Part VI addenda C–N) code and per-seed results live in `../prosqa/` (`res_*/`).
+| File | What |
+|---|---|
+| `RESEARCH_LOG.md` | Chronology to 2026-09-29 (decisions, deviations, disclosures); later events live in THEORY / PROTOCOL12 / git |
+| `NEXT_STEPS.md` | Historical plan (09-30); superseded by NORTH_STAR's open questions |
+| `EXTERNAL_IDEAS_RL_2026-10-01.md` | External agent's RL/acquisition proposals (basis of §69) |
 
 ## Literature
 
-| File | What |
-|---|---|
-| `LITERATURE_NOTES.md` | Short positioning note (2026-09-26): closest prior work, the sceptical line, what is new here |
-| `LITERATURE.md` | Full annotated bibliography grouped by question, with a novelty-status section (updated 2026-09-27) |
-| `LITERATURE_AUDIT.md` | Targeted novelty check against prior work (2026-09-28; abstract-level, not exhaustive) |
-| `LIT_NORTHSTAR_2026-09-29.md` | Prior work for the north star: C7 faithfulness tests, latent decoding, hybrids, halting, restart faithfulness |
-| `LIT_REQUESTS_2026-09-29.md` | Answers to Experiments, Audit and Theory literature requests |
-| `IDEAS_ADJACENT_2026-09-29.md` | Ideas to borrow from adjacent fields |
-| `ADVISOR_2026-09-29.md` | Prior work supporting or scrutinising each stream's claims |
-| `literature_dois.txt` | Bare DOI list (94; 85 arXiv DOIs), one per line (last changed 2026-09-27); not cross-referenced in `LITERATURE.md` |
-
-## Theory stream (separate Claude session, from 2026-09-29)
+Older broad notes: `LITERATURE_NOTES.md` (short positioning), `LITERATURE.md` (bibliography to 09-27),
+`LIT_NORTHSTAR_2026-09-29.md` (C1–C7 tests and prior work). Most useful current notes:
 
 | File | What |
 |---|---|
-| `THEORY.md` | Why some models fail to extrapolate: mechanism analyses (exploratory) and its own pre-registered pilots A–E; code and results in `../theory/` |
-| `PROPOSALS.md` | Proposals for improving latent reasoning, drawn from the mechanism results and the literature |
+| `LIT_S92_NOVELTY_2026-10-03.md` | Novelty of the latent-restart S5 result; closest priors |
+| `LIT_SEMI_DISCRETE_2026-10-03.md` | Survey: representations between latents and text tokens |
+| `LIT_LATENT_FROM_DISCRETE_2026-10-02.md` | Seven rules from our results and eight candidate methods |
+| `LIT_FINDINGS_COMPILED_2026-10-02.md` | Each verified result against its nearest prior (new / extension / replication) |
+| `LIT_SOTA_TARGETS_2026-10-01.md`, `LIT_BENCH_VERIFY_2026-10-01.md` | Published comparator numbers and their verification |
 
-## Audits
+Per-registration prior checks are named `LIT_<topic>_<date>.md` and cited from the matching THEORY §; they are kept in
+place because THEORY cites them by path.
 
-| File | What |
-|---|---|
-| `AUDIT_2026-09-29.md` | Independent re-check of the scored verdicts (all reproduce) and a list of record-keeping fixes |
+## Archive (`archive/`)
 
-## Historical planning (kept because other files cite them)
-
-| File | What |
-|---|---|
-| `NEXT_STEPS.md` | The user's 24 Sep handoff that framed Parts II–III |
-| `TRAINING_TODO.md` | The 24 Sep training plan, run as Parts IV–VI |
+Superseded one-off notes, unchanged: advisor report and first audit (09-29), external-agent prompts and replies (09-30,
+10-01 C1), adjacent-field ideas, literature audit and requests (09-28/29), new-directions seeds, proposals and the
+boundary-memory proposal, research timeline (Parts I–VI), theory framework, training to-do, DOI list.
