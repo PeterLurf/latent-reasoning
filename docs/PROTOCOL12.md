@@ -597,3 +597,26 @@ stays ≤ 0.091 whatever s3 scores.
   - The k = 2 split has 25 training words (135 pairs) against 151 (815 pairs) at k = 3. With so few k = 2 words the
     second iteration memorises rather than learning a reusable step.
   - Scope per note 88-1: per-iteration-supervised composition, C1 (use) and C2 in depth, not C4.
+
+## THEORY §86 (latent restarts: one latent slot per op, snapped every k ops) result (2026-10-02 22:04 EDT; pilot gate; §86 closed)
+
+* **Pilot 1 (as registered, k 4, s1):** failed. Training loss stayed at ln 120 = 4.787 from about step 900 to 8,000,
+  and every slot was at chance. My placement chain armed the panel on eval.json existence; the panel was stopped
+  within about 1 min and voided (`boxes/runs_s5/void86`).
+* **Non-evidential diagnostics** (`scratch/dbg86*.py`, 600 steps, k = 1):
+  - the 120-way element head does not learn in any variant: slot-input standardisation or rescaling, head lr 1e-3, a
+    direct readout without slots, a text start;
+  - a 5 × 5 arrangement head does learn (1.95 → 1.02).
+* **Amendment 86-4** (Theory): 5 × 5 arrangement head; structured latent codebook start = Σ_box W[box, letter];
+  re-pilot; the panel arms only if the cumulative at 512 is ≥ 0.95.
+* **Re-pilot (86-4, k 4, s1):** cumulative 128/256/512 = 0.000; 2,048 extension 0.000.
+  - Chunk check (100k chunks), per-slot accuracy **1.000 / 0.112 / 0.0015 / 0.0002**.
+  - Loss: plateau at 8.05 to step 4,100, then 6.85 → 4.77 at the end (still falling).
+  - Removal (descriptive):
+    - zero: per slot 0.0003 / 0.0014 / 0 / 0.003;
+    - mean: 0.20 / 0.003 / 0.0004 / 0.0003;
+    - isolate: 0.007 / 0 / 0 / 0.0001.
+  - C3 shape: 3,712 tokens, 6.3e11 FLOPs, 640 sequential passes per 512-problem (vs WC₀₄ 1.64e12).
+* **Gate not met (0.000 < 0.95), so §86 closes (86-4).**
+* **Reading (descriptive):** the latent cell applies the first op exactly from a snapped start code (slot 1 = 1.000),
+  but the state is not carried through the fed-back hidden state to later slots.
