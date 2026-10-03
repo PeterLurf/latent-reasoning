@@ -1,0 +1,5 @@
+4x4 data ok: steps [5, 15, 17, 9] ans 10
+5x5 data ok: steps [6, 17, 19, 21, 11] ans 12
+genm ok: loss 74.56 CE tf/seq 84.81 84.811 rollout (6, 5) (6,) [(6, 21)]
+mask ok: loss 90.42 CE tf/seq 108.258 108.258 rollout (6, 5) (6,) [(6, 21)]
+SMOKE98_UNIT_OK
