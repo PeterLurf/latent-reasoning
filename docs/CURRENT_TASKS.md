@@ -151,7 +151,12 @@ reserve, projection to Audit above $5. Credit $105 (07:25).
       **Running since 11:22 on the 4060 (torch cuda:0, P 1; Experiments' OK).** mixP 0.05 runs first, then mixP 0.1
       and std (chained). About 8.6 min per run; ETA about 13:30. Logs are in `theory/results/c1_s96/logs/`; the
       drivers are resumable per job.
-  - **To score (Theory only):** §94, §95, §96, and §89's descriptive arms (raw done; soft and gold running locally).
+    - **§97 (the user's "generalized latent thinker", step 1; 14499aad + note 97-1):** §92 with a text step target
+      (in-context fork, tied LM head) and re-embedded text checkpoints. GEN-4 (primary, G4), GEN-1 (descriptive) and
+      HYB-4 (text target + structured snap), seeds 1–3, about $6 on Vast. Handed to Experiments; scorer
+      `theory/score_s97.py` (90034c85). Later steps (bench ladder, general readout, bigger model) wait on §97.
+  - **To score (Theory only):** §94, §95, §96, §97, and §89's descriptive arms (raw done; soft and gold running
+    locally).
 - Handed to Experiments (22:22): THEORY §55 (fall-back kill test, `theory/exp27_fallback_kill.py`, CPU minutes) and §56
   (interchange test, `theory/exp28_interchange.py`, 80 models, ~1 h CPU); scoring rules are in each section.
 - §51 closed (TH1 0/10, TH2 1/10). §57: ProsQA cue origin found (proximity heuristic 0.91).
