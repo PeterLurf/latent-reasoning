@@ -1,0 +1,12 @@
+{
+ "cmd": "loop",
+ "arm": "align",
+ "k": 2,
+ "seed": 3,
+ "steps": 4000,
+ "bs": 64,
+ "lr": 0.0001,
+ "bf16": false,
+ "device": "cuda:0",
+ "out": "c1/runs/p88_align_k2_s3"
+}
