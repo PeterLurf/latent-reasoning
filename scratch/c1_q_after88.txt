@@ -1,0 +1,26 @@
+# after §88 (per card): §86 re-pilot (amendment 86-4) first, then §89
+boxes/runs_s5/l86v4_k4_s1 boxes.latent86 train --k 4 --seed 1 --steps 8000 --bs 64
+boxes/runs/f89_fade_std_s1 boxes.fade89 --arm fade_std --seed 1
+boxes/runs/f89_fade_std_dec_s1 boxes.fade89 --arm fade_std_dec --seed 1
+boxes/runs/f89_coco_stage_s1 boxes.fade89 --arm coco_stage --seed 1
+boxes/runs/f89_fade_std_s2 boxes.fade89 --arm fade_std --seed 2
+boxes/runs/f89_fade_std_dec_s2 boxes.fade89 --arm fade_std_dec --seed 2
+boxes/runs/f89_coco_stage_s2 boxes.fade89 --arm coco_stage --seed 2
+boxes/runs/f89_fade_std_s3 boxes.fade89 --arm fade_std --seed 3
+boxes/runs/f89_fade_std_dec_s3 boxes.fade89 --arm fade_std_dec --seed 3
+boxes/runs/f89_coco_stage_s3 boxes.fade89 --arm coco_stage --seed 3
+boxes/runs/f89_fade_std_s4 boxes.fade89 --arm fade_std --seed 4
+boxes/runs/f89_fade_std_dec_s4 boxes.fade89 --arm fade_std_dec --seed 4
+boxes/runs/f89_coco_stage_s4 boxes.fade89 --arm coco_stage --seed 4
+boxes/runs/f89_fade_std_s5 boxes.fade89 --arm fade_std --seed 5
+boxes/runs/f89_fade_std_dec_s5 boxes.fade89 --arm fade_std_dec --seed 5
+boxes/runs/f89_coco_stage_s5 boxes.fade89 --arm coco_stage --seed 5
+boxes/runs/f89_fade_raw_s1 boxes.fade89 --arm fade_raw --seed 1
+boxes/runs/f89_fade_soft_s1 boxes.fade89 --arm fade_soft --seed 1
+boxes/runs/f89_fade_gold_s1 boxes.fade89 --arm fade_gold --seed 1
+boxes/runs/f89_fade_raw_s2 boxes.fade89 --arm fade_raw --seed 2
+boxes/runs/f89_fade_soft_s2 boxes.fade89 --arm fade_soft --seed 2
+boxes/runs/f89_fade_gold_s2 boxes.fade89 --arm fade_gold --seed 2
+boxes/runs/f89_fade_raw_s3 boxes.fade89 --arm fade_raw --seed 3
+boxes/runs/f89_fade_soft_s3 boxes.fade89 --arm fade_soft --seed 3
+boxes/runs/f89_fade_gold_s3 boxes.fade89 --arm fade_gold --seed 3
