@@ -104,11 +104,13 @@ class GPT2KV(nn.Module):
     def embed(self, ids):
         return self.w("wte.weight")[ids]
 
-    def forward(self, x, past=None):
+    def forward(self, x, past=None, pos0=None):
         """x: (B, T, D) input embeddings appended after `past` (list per layer of (k, v)). Returns final hidden (after
-        ln_f), new past."""
+        ln_f), new past. pos0 (§98 masked fork): position of x's first token when `past` is a slice of a longer cache
+        (default: the cache length)."""
         B, T, D = x.shape; P0 = 0 if past is None else past[0][0].shape[2]; hd = D // self.H
-        h = x + self.w("wpe.weight")[P0:P0 + T][None]
+        p0 = P0 if pos0 is None else pos0
+        h = x + self.w("wpe.weight")[p0:p0 + T][None]
         new = []
         for i in range(self.L):
             pre = f"h.{i}."
