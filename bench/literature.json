@@ -231,7 +231,10 @@
    "acc": 0.95,
    "source": "2405.14838 Table 2",
    "same_items": true,
-   "verified": "55cd5e7"
+   "verified": "55cd5e7",
+   "acc_release": 0.996,
+   "source_release": "released checkpoint: github.com/da03/Internalize_CoT_Step_by_Step logs/5_by_5_mult/gpt2/log.generate ('Test Accuracy: 0.996'); README lists 1.00",
+   "note": "paper table 0.95 vs released model 0.996; compare against 0.996 when using the released checkpoint (Literature e206d92d; Audit checked 2026-10-03)"
   },
   {
    "task": "mult5x5",
