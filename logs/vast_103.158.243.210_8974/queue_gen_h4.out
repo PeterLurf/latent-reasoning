@@ -1,0 +1,12 @@
+NVIDIA GeForce RTX 3090, 595.91.07
+06:03:48 start c1/runs/p91_long_s6
+06:03:48 start c1/runs/p91_long_s7
+06:46:32 evaluated c1/runs/p91_long_s6 rc 0
+06:46:32 start c1/runs/p91_wdsp_s6
+06:46:40 evaluated c1/runs/p91_long_s7 rc 0
+06:46:40 start c1/runs/p91_curr_s6
+07:25:25 evaluated c1/runs/p91_curr_s6 rc 0
+07:25:25 start c1/runs/p91_base_s8
+07:32:27 evaluated c1/runs/p91_wdsp_s6 rc 0
+07:33:48 evaluated c1/runs/p91_base_s8 rc 0
+07:33:48 QUEUE_DONE

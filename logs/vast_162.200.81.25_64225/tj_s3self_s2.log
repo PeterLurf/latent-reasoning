@@ -1,0 +1,2 @@
+theory/runs/st/s3self_s2 in-range N1-8 0.997 | single N9-12 0.301 N13-16 0.024 | trunc-agree N9-16 0.051 | restart N9-16 0.993 N17-24 0.974 | ptr [8.0, 1.0, 1.0, 2.0, 7.0, 9.0, 10.0, 11.0, 11.0, 11.0, 11.0, 11.0]
+theory/runs/st/s3self_s2 valid share {12: 0.296875, 16: 0.1171875, 20: 0.0390625}

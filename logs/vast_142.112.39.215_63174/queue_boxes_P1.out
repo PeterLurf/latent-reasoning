@@ -1,0 +1,7 @@
+19:25:26 start pil_wc0_4
+19:25:26 start pil_wc4
+19:25:26 start pil_tc2
+19:27:39 evaluated pil_tc2 rc 0
+19:27:52 evaluated pil_wc0_4 rc 0
+19:30:01 evaluated pil_wc4 rc 0
+19:30:01 QUEUE_DONE

@@ -1,0 +1,4 @@
+10:53:13 start f1s_s3
+11:05:13 trained f1s_s3 rc 0
+11:10:05 evaluated f1s_s3 rc 0
+11:10:05 QUEUE_DONE

@@ -1,0 +1,9 @@
+16:13:46 evaluated prosqa_deep_p8c_rt_s1_K10 rc 0
+16:14:08 evaluated prosqa_deep_na_p8c_rt_s1_K10 rc 0
+16:20:33 evaluated prosqa_deep_p8c_rt_s1_K16 rc 0
+16:21:10 evaluated prosqa_deep_na_p8c_rt_s1_K16 rc 0
+16:28:26 evaluated prosqa_deep_p8c_coco_s2_K10 rc 0
+16:33:51 evaluated prosqa_deep_p8c_coco_s2_K16 rc 0
+16:33:52 evaluated prosqa_deep_na_p8c_coco_s2_K10 rc 0
+16:35:45 evaluated prosqa_deep_na_p8c_coco_s2_K16 rc 0
+16:35:45 QUEUE_DONE

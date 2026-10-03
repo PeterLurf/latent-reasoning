@@ -1,0 +1,13 @@
+15:03:39 trained plgt_s146_N_t1 rc 0
+15:03:40 trained plgt_s146_S_t2 rc 0
+15:03:40 trained plgt_s146_S_t1 rc 0
+15:03:40 trained plgt_s146_N_t2 rc 0
+15:11:20 trained plgt_s157_S_t1 rc 0
+15:11:20 trained plgt_s157_N_t1 rc 0
+15:11:20 trained plgt_s157_S_t2 rc 0
+15:11:21 trained plgt_s157_N_t2 rc 0
+15:11:24 evaluated plgt_s146_S rc 0
+15:11:27 evaluated plgt_s146_N rc 0
+15:11:30 evaluated plgt_s157_S rc 0
+15:11:33 evaluated plgt_s157_N rc 0
+15:11:33 QUEUE_DONE

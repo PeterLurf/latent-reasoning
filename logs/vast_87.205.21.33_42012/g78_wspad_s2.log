@@ -1,0 +1,10 @@
+{'units_per_epoch': 556369, 'steps_per_epoch': 17386, 'total_steps': 104316, 'eff_batch': 32, 'frac_states_true_len_ge3': 0.0, 'true_len_dist': {'0': 206396, '1': 206396, '2': 143577, '3': 0}}
+{'step': 17386, 'epoch': 1.0, 'valid_short_acc': 0.3370165745856354, 'eval_sec': 2, 'sec': 1827, 'saved': True}
+{'step': 34772, 'epoch': 2.0, 'valid_short_acc': 0.4088397790055249, 'eval_sec': 2, 'sec': 3654, 'saved': True}
+{'step': 52158, 'epoch': 3.0, 'valid_short_acc': 0.4143646408839779, 'eval_sec': 2, 'sec': 5479, 'saved': True}
+{'step': 69544, 'epoch': 4.0, 'valid_short_acc': 0.43646408839779005, 'eval_sec': 2, 'sec': 7304, 'saved': True}
+{'step': 86930, 'epoch': 5.0, 'valid_short_acc': 0.425414364640884, 'eval_sec': 2, 'sec': 9130}
+{'step': 104316, 'epoch': 6.0, 'valid_short_acc': 0.4585635359116022, 'eval_sec': 2, 'sec': 10956, 'saved': True}
+DONE {'units_per_epoch': 556369, 'steps_per_epoch': 17386, 'total_steps': 104316, 'eff_batch': 32, 'frac_states_true_len_ge3': 0.0, 'true_len_dist': {'0': 206396, '1': 206396, '2': 143577, '3': 0}, 'best_valid_short': 0.4585635359116022, 'train_sec': 10957, 'tokens': 187886500, 'sec_per_step': 0.105}
+test acc 0.17437452615617893
+aug_long acc 0.021080096082166818

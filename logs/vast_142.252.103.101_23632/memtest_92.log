@@ -1,0 +1,6 @@
+{'step': 100, 'loss': 11.50581877708435, 'sec': 17}
+{'step': 200, 'loss': 8.059374437332153, 'sec': 33, 'per_slot_acc': [0.0, 0.0, 0.0, 0.0], 'per_chunk_acc': 0.0}
+{'step': 300, 'loss': 8.051730918884278, 'sec': 50}
+{'step': 400, 'loss': 8.047804441452026, 'sec': 62, 'per_slot_acc': [0.002, 0.0, 0.0, 0.0], 'per_chunk_acc': 0.0}
+EVAL {"cumulative": {"128": 0.0, "256": 0.0, "512": 0.0}, "final_state_acc_512": 0.0}
+DONE /tmp/mt92

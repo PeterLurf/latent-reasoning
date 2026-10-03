@@ -1,0 +1,10 @@
+NVIDIA GeForce RTX 3090, 580.173.02
+04:32:12 start c1/runs/p72_pf_s2003
+04:32:12 start c1/runs/p72_rf_s2003
+04:32:12 start c1/runs/p72_pfstd_s2003
+04:32:12 start c1/runs/p72_pt_s2003
+04:53:32 evaluated c1/runs/p72_pf_s2003 rc 0
+04:53:33 evaluated c1/runs/p72_pfstd_s2003 rc 0
+04:53:33 evaluated c1/runs/p72_rf_s2003 rc 0
+04:56:46 evaluated c1/runs/p72_pt_s2003 rc 0
+04:56:46 QUEUE_DONE

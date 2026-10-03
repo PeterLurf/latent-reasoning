@@ -1,0 +1,6 @@
+NVIDIA GeForce RTX 3090, 580.178.04
+11:22:15 start c1/runs/p75_pfstd_s990
+11:22:15 start c1/runs/p75_ptstd_s990
+12:47:32 evaluated c1/runs/p75_pfstd_s990 rc 0
+13:00:40 evaluated c1/runs/p75_ptstd_s990 rc 0
+13:00:40 QUEUE_DONE

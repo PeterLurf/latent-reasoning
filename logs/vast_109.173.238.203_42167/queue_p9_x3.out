@@ -1,0 +1,28 @@
+07:53:59 start p9at_l4_s529 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 529 --layers 4 --anytime 1 )
+09:27:59 trained p9at_l4_s529 rc 0
+run  results/competence_p9at_l4_s529.json
+run  results/competence_matched_p9at_l4_s529.json
+run  results/length_gen_p9at_l4_s529.json
+run  results/delayed_trace_p9at_l4_s529.json
+run  results/budget_sweep_p9at_l4_s529.json
+EVAL_DONE p9at_l4_s529
+09:28:20 evaluated p9at_l4_s529
+09:28:20 start p9at_l4_s533 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 533 --layers 4 --anytime 1 )
+11:02:20 trained p9at_l4_s533 rc 0
+run  results/competence_p9at_l4_s533.json
+run  results/competence_matched_p9at_l4_s533.json
+run  results/length_gen_p9at_l4_s533.json
+run  results/delayed_trace_p9at_l4_s533.json
+run  results/budget_sweep_p9at_l4_s533.json
+EVAL_DONE p9at_l4_s533
+11:02:41 evaluated p9at_l4_s533
+11:02:41 start p9at_fork_s570 (--no_step_emb --K 6 --lr 5e-4 --amp fp32 --save_every 1000 --seed 570 --shapes fork --p_fork 0.5 --anytime 1 )
+12:26:41 trained p9at_fork_s570 rc 0
+run  results/competence_p9at_fork_s570.json
+run  results/competence_matched_p9at_fork_s570.json
+run  results/length_gen_p9at_fork_s570.json
+run  results/delayed_trace_p9at_fork_s570.json
+run  results/budget_sweep_p9at_fork_s570.json
+EVAL_DONE p9at_fork_s570
+12:26:57 evaluated p9at_fork_s570
+12:26:57 QUEUE_DONE

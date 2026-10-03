@@ -1,0 +1,65 @@
+step 25/1486.0 loss 3.599 acc 0.275 38s
+step 50/1486.0 loss 2.035 acc 0.505 73s
+step 75/1486.0 loss 1.992 acc 0.515 107s
+step 100/1486.0 loss 0.723 acc 0.900 161s
+step 125/1486.0 loss 0.095 acc 0.995 196s
+step 150/1486.0 loss 0.084 acc 0.990 230s
+step 175/1486.0 loss 0.003 acc 1.000 270s
+step 200/1486.0 loss 0.003 acc 1.000 314s
+step 225/1486.0 loss 0.003 acc 1.000 351s
+step 250/1486.0 loss 0.003 acc 1.000 386s
+step 275/1486.0 loss 0.003 acc 1.000 421s
+step 300/1486.0 loss 0.003 acc 1.000 470s
+step 325/1486.0 loss 0.003 acc 1.000 505s
+step 350/1486.0 loss 0.003 acc 1.000 537s
+step 375/1486.0 loss 0.003 acc 1.000 573s
+step 400/1486.0 loss 0.003 acc 1.000 621s
+step 425/1486.0 loss 0.003 acc 1.000 654s
+step 450/1486.0 loss 0.003 acc 1.000 691s
+step 475/1486.0 loss 0.003 acc 1.000 729s
+step 500/1486.0 loss 0.003 acc 1.000 784s
+step 525/1486.0 loss 0.003 acc 1.000 821s
+step 550/1486.0 loss 0.003 acc 1.000 859s
+step 575/1486.0 loss 0.003 acc 1.000 897s
+step 600/1486.0 loss 0.003 acc 1.000 946s
+step 625/1486.0 loss 0.003 acc 1.000 982s
+step 650/1486.0 loss 0.003 acc 1.000 1017s
+step 675/1486.0 loss 0.003 acc 1.000 1053s
+step 700/1486.0 loss 0.003 acc 1.000 1101s
+step 725/1486.0 loss 0.003 acc 1.000 1138s
+step 750/1486.0 loss 0.003 acc 1.000 1172s
+step 775/1486.0 loss 0.003 acc 1.000 1208s
+step 800/1486.0 loss 0.003 acc 1.000 1252s
+step 825/1486.0 loss 0.003 acc 1.000 1289s
+step 850/1486.0 loss 0.003 acc 1.000 1323s
+step 875/1486.0 loss 0.003 acc 1.000 1358s
+step 900/1486.0 loss 0.003 acc 1.000 1405s
+step 925/1486.0 loss 0.003 acc 1.000 1443s
+step 950/1486.0 loss 0.003 acc 1.000 1478s
+step 975/1486.0 loss 0.003 acc 1.000 1514s
+step 1000/1486.0 loss 0.003 acc 1.000 1562s
+step 1025/1486.0 loss 0.003 acc 1.000 1598s
+step 1050/1486.0 loss 0.003 acc 1.000 1633s
+step 1075/1486.0 loss 0.003 acc 1.000 1668s
+step 1100/1486.0 loss 0.003 acc 1.000 1714s
+step 1125/1486.0 loss 0.003 acc 1.000 1753s
+step 1150/1486.0 loss 0.003 acc 1.000 1791s
+step 1175/1486.0 loss 0.003 acc 1.000 1826s
+step 1200/1486.0 loss 0.003 acc 1.000 1881s
+step 1225/1486.0 loss 0.003 acc 1.000 1918s
+step 1250/1486.0 loss 0.003 acc 1.000 1955s
+step 1275/1486.0 loss 0.003 acc 1.000 1994s
+step 1300/1486.0 loss 0.003 acc 1.000 2046s
+step 1325/1486.0 loss 0.003 acc 1.000 2084s
+step 1350/1486.0 loss 0.003 acc 1.000 2118s
+step 1375/1486.0 loss 0.003 acc 1.000 2154s
+step 1400/1486.0 loss 0.003 acc 1.000 2202s
+step 1425/1486.0 loss 0.003 acc 1.000 2239s
+step 1450/1486.0 loss 0.003 acc 1.000 2276s
+step 1475/1486.0 loss 0.003 acc 1.000 2313s
+step 1486/1486.0 loss 0.003 acc 1.000 2342s
+TRAIN_DONE prosqa/runs_ail/p54b_hint2_s3 2342s
+d3-6 n 400 fixed_point median 5.0
+d7-10 n 400 fixed_point median 8.5
+d11-14 n 333 fixed_point median 12.0
+EVAL_DONE prosqa/runs_ail/p54b_hint2_s3

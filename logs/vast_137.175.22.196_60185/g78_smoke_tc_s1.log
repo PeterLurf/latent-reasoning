@@ -1,0 +1,4 @@
+{'units_per_epoch': 206397, 'steps_per_epoch': 6449, 'total_steps': 50, 'eff_batch': 32}
+{'step': 50, 'epoch': 0.008, 'valid_short_acc': 0.027624309392265192, 'eval_sec': 1, 'sec': 7}
+DONE {'units_per_epoch': 206397, 'steps_per_epoch': 6449, 'total_steps': 50, 'eff_batch': 32, 'best_valid_short': -1.0, 'train_sec': 8, 'tokens': 90881, 'sec_per_step': 0.1583}
+test acc 0.0

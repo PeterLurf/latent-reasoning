@@ -1,0 +1,9 @@
+19:39:36 start tc_s1
+19:39:36 start wc0_2_s3
+19:39:36 start nc_s5
+19:39:36 start wc2_s2
+20:37:45 evaluated nc_s5 rc 0
+20:38:54 evaluated wc0_2_s3 rc 0
+20:54:24 evaluated wc2_s2 rc 0
+21:01:29 evaluated tc_s1 rc 0
+21:01:29 QUEUE_DONE

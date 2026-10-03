@@ -1,0 +1,7 @@
+20:30:58 start theory/runs/st/s3self_s1
+20:30:58 start theory/runs/st/s3self_s2
+21:05:03 evaluated theory/runs/st/s3self_s2 rc 0
+21:05:03 start theory/runs/st/s3self_s3
+21:05:03 evaluated theory/runs/st/s3self_s1 rc 0
+21:21:06 evaluated theory/runs/st/s3self_s3 rc 0
+21:21:06 QUEUE_DONE

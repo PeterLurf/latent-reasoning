@@ -1,0 +1,81 @@
+04:44:32 start f6y_s140 (--transplant 1 --transplant_mode young --transplant_ages 2:4 --transplant_bs 128)
+05:43:33 trained f6y_s140 rc 0
+theory/runs/f6y_s140 K'=0 delayed 0.551 upfront 0.500 depth(delayed) {1:1.00, 2:0.90, 3:0.79, 4:0.76, 5:0.73, 6:0.64, 99:0.26}
+theory/runs/f6y_s140 K'=1 delayed 0.705 upfront 0.590 depth(delayed) {1:1.00, 2:0.72, 3:0.48, 4:0.10, 5:0.09, 6:0.05, 99:0.89}
+theory/runs/f6y_s140 K'=2 delayed 0.754 upfront 0.720 depth(delayed) {1:1.00, 2:0.66, 3:0.49, 4:0.23, 5:0.03, 6:0.03, 99:0.99}
+theory/runs/f6y_s140 K'=3 delayed 0.793 upfront 0.848 depth(delayed) {1:1.00, 2:0.66, 3:0.69, 4:0.35, 5:0.16, 6:0.06, 99:0.98}
+theory/runs/f6y_s140 K'=4 delayed 0.857 upfront 0.933 depth(delayed) {1:1.00, 2:0.99, 3:0.69, 4:0.53, 5:0.22, 6:0.14, 99:0.98}
+theory/runs/f6y_s140 K'=5 delayed 0.894 upfront 0.984 depth(delayed) {1:1.00, 2:0.99, 3:0.90, 4:0.55, 5:0.44, 6:0.20, 99:0.97}
+theory/runs/f6y_s140 K'=6 delayed 0.920 upfront 1.000 depth(delayed) {1:1.00, 2:0.99, 3:0.94, 4:0.74, 5:0.49, 6:0.47, 99:0.97}
+theory/runs/f6y_s140 d1:1.00 d2:0.99 d3:0.95 d4:0.81 d5:0.65 d6:0.62
+theory/runs/f6y_s140 K'= 0 near 0.59 0.56 0.51 0.49 0.50 0.49 | far 0.50 0.51 0.50 0.51 0.49 0.50
+theory/runs/f6y_s140 K'= 2 near 1.00 0.82 0.79 0.67 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/f6y_s140 K'= 4 near 1.00 0.99 0.87 0.83 0.66 0.55 | far 0.49 0.50 0.50 0.50 0.50 0.51
+theory/runs/f6y_s140 K'= 6 near 1.00 0.99 0.98 0.93 0.77 0.68 | far 0.54 0.51 0.50 0.50 0.50 0.50
+theory/runs/f6y_s140 K'= 8 near 1.00 0.98 0.98 0.94 0.87 0.77 | far 0.62 0.54 0.50 0.50 0.50 0.51
+theory/runs/f6y_s140 K'=10 near 1.00 0.98 0.97 0.94 0.88 0.80 | far 0.70 0.62 0.52 0.50 0.50 0.51
+theory/runs/f6y_s140 K'=12 near 1.00 0.96 0.96 0.93 0.88 0.81 | far 0.72 0.66 0.57 0.53 0.51 0.51
+theory/runs/f6y_s140 K'=16 near 0.99 0.94 0.93 0.91 0.87 0.81 | far 0.74 0.68 0.60 0.55 0.54 0.53
+EVAL theory/runs/f6y_s140 stage full delayed 0.920 m5 0.650 gate True d7 0.721 extrap True far8-10 0.586
+05:43:40 evaluated f6y_s140
+05:43:40 start f6m_s140 (--transplant 1 --transplant_mode mismatch --transplant_ages 2:4 --transplant_bs 128)
+06:49:40 trained f6m_s140 rc 0
+theory/runs/f6m_s140 K'=0 delayed 0.545 upfront 0.500 depth(delayed) {1:1.00, 2:0.91, 3:0.89, 4:0.89, 5:0.89, 6:0.86, 99:0.18}
+theory/runs/f6m_s140 K'=1 delayed 0.718 upfront 0.590 depth(delayed) {1:1.00, 2:0.68, 3:0.46, 4:0.10, 5:0.12, 6:0.17, 99:0.93}
+theory/runs/f6m_s140 K'=2 delayed 0.763 upfront 0.721 depth(delayed) {1:1.00, 2:0.66, 3:0.50, 4:0.35, 5:0.04, 6:0.06, 99:0.98}
+theory/runs/f6m_s140 K'=3 delayed 0.804 upfront 0.848 depth(delayed) {1:1.00, 2:0.66, 3:0.69, 4:0.44, 5:0.26, 6:0.08, 99:0.98}
+theory/runs/f6m_s140 K'=4 delayed 0.863 upfront 0.933 depth(delayed) {1:1.00, 2:0.99, 3:0.69, 4:0.54, 5:0.31, 6:0.28, 99:0.97}
+theory/runs/f6m_s140 K'=5 delayed 0.895 upfront 0.984 depth(delayed) {1:1.00, 2:0.99, 3:0.90, 4:0.56, 5:0.45, 6:0.33, 99:0.97}
+theory/runs/f6m_s140 K'=6 delayed 0.920 upfront 1.000 depth(delayed) {1:1.00, 2:0.99, 3:0.94, 4:0.75, 5:0.49, 6:0.47, 99:0.96}
+theory/runs/f6m_s140 d1:1.00 d2:0.99 d3:0.94 d4:0.80 d5:0.65 d6:0.62
+theory/runs/f6m_s140 K'= 0 near 0.56 0.53 0.51 0.50 0.52 0.49 | far 0.50 0.51 0.50 0.51 0.50 0.49
+theory/runs/f6m_s140 K'= 2 near 1.00 0.82 0.79 0.68 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/f6m_s140 K'= 4 near 1.00 0.99 0.88 0.82 0.65 0.56 | far 0.49 0.50 0.50 0.50 0.50 0.51
+theory/runs/f6m_s140 K'= 6 near 1.00 0.99 0.98 0.93 0.76 0.66 | far 0.53 0.51 0.49 0.50 0.50 0.50
+theory/runs/f6m_s140 K'= 8 near 1.00 0.98 0.98 0.94 0.86 0.75 | far 0.60 0.53 0.50 0.50 0.50 0.50
+theory/runs/f6m_s140 K'=10 near 1.00 0.97 0.97 0.94 0.87 0.79 | far 0.69 0.59 0.51 0.50 0.50 0.51
+theory/runs/f6m_s140 K'=12 near 0.99 0.97 0.96 0.93 0.87 0.79 | far 0.70 0.62 0.54 0.52 0.50 0.52
+theory/runs/f6m_s140 K'=16 near 0.99 0.95 0.94 0.91 0.86 0.79 | far 0.72 0.64 0.56 0.54 0.52 0.52
+EVAL theory/runs/f6m_s140 stage full delayed 0.920 m5 0.653 gate True d7 0.702 extrap True far8-10 0.560
+06:49:48 evaluated f6m_s140
+06:49:48 start f6a_s146 (--transplant 1 --transplant_mode aged --transplant_ages 2:4 --transplant_bs 128)
+07:57:48 trained f6a_s146 rc 0
+theory/runs/f6a_s146 K'=0 delayed 0.552 upfront 0.500 depth(delayed) {1:1.00, 2:0.85, 3:0.79, 4:0.81, 5:0.81, 6:0.78, 99:0.26}
+theory/runs/f6a_s146 K'=1 delayed 0.717 upfront 0.589 depth(delayed) {1:0.99, 2:0.68, 3:0.46, 4:0.09, 5:0.10, 6:0.12, 99:0.93}
+theory/runs/f6a_s146 K'=2 delayed 0.760 upfront 0.720 depth(delayed) {1:1.00, 2:0.66, 3:0.49, 4:0.33, 5:0.05, 6:0.06, 99:0.98}
+theory/runs/f6a_s146 K'=3 delayed 0.800 upfront 0.848 depth(delayed) {1:1.00, 2:0.66, 3:0.68, 4:0.42, 5:0.27, 6:0.09, 99:0.98}
+theory/runs/f6a_s146 K'=4 delayed 0.860 upfront 0.933 depth(delayed) {1:1.00, 2:0.99, 3:0.68, 4:0.53, 5:0.33, 6:0.27, 99:0.97}
+theory/runs/f6a_s146 K'=5 delayed 0.893 upfront 0.984 depth(delayed) {1:1.00, 2:0.99, 3:0.90, 4:0.54, 5:0.45, 6:0.34, 99:0.97}
+theory/runs/f6a_s146 K'=6 delayed 0.919 upfront 1.000 depth(delayed) {1:1.00, 2:0.99, 3:0.94, 4:0.74, 5:0.48, 6:0.47, 99:0.97}
+theory/runs/f6a_s146 d1:1.00 d2:0.99 d3:0.94 d4:0.80 d5:0.65 d6:0.61
+theory/runs/f6a_s146 K'= 0 near 0.62 0.55 0.49 0.50 0.50 0.48 | far 0.49 0.52 0.50 0.52 0.50 0.49
+theory/runs/f6a_s146 K'= 2 near 1.00 0.82 0.78 0.67 0.51 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/f6a_s146 K'= 4 near 1.00 1.00 0.85 0.79 0.64 0.56 | far 0.49 0.50 0.50 0.49 0.50 0.50
+theory/runs/f6a_s146 K'= 6 near 1.00 0.99 0.98 0.93 0.73 0.66 | far 0.54 0.51 0.50 0.50 0.50 0.50
+theory/runs/f6a_s146 K'= 8 near 1.00 0.98 0.98 0.94 0.87 0.78 | far 0.60 0.53 0.50 0.50 0.49 0.50
+theory/runs/f6a_s146 K'=10 near 1.00 0.97 0.97 0.93 0.87 0.80 | far 0.70 0.63 0.52 0.51 0.50 0.51
+theory/runs/f6a_s146 K'=12 near 0.99 0.96 0.95 0.91 0.87 0.80 | far 0.72 0.66 0.58 0.55 0.52 0.51
+theory/runs/f6a_s146 K'=16 near 0.98 0.92 0.90 0.89 0.86 0.80 | far 0.72 0.68 0.62 0.58 0.56 0.56
+EVAL theory/runs/f6a_s146 stage full delayed 0.919 m5 0.652 gate True d7 0.718 extrap True far8-10 0.596
+07:57:56 evaluated f6a_s146
+07:57:56 start f6y_s146 (--transplant 1 --transplant_mode young --transplant_ages 2:4 --transplant_bs 128)
+08:57:56 trained f6y_s146 rc 0
+theory/runs/f6y_s146 K'=0 delayed 0.551 upfront 0.500 depth(delayed) {1:1.00, 2:0.90, 3:0.79, 4:0.76, 5:0.73, 6:0.64, 99:0.26}
+theory/runs/f6y_s146 K'=1 delayed 0.705 upfront 0.590 depth(delayed) {1:1.00, 2:0.72, 3:0.48, 4:0.10, 5:0.09, 6:0.05, 99:0.89}
+theory/runs/f6y_s146 K'=2 delayed 0.754 upfront 0.720 depth(delayed) {1:1.00, 2:0.66, 3:0.49, 4:0.23, 5:0.03, 6:0.03, 99:0.99}
+theory/runs/f6y_s146 K'=3 delayed 0.793 upfront 0.848 depth(delayed) {1:1.00, 2:0.66, 3:0.69, 4:0.35, 5:0.16, 6:0.06, 99:0.98}
+theory/runs/f6y_s146 K'=4 delayed 0.857 upfront 0.933 depth(delayed) {1:1.00, 2:0.99, 3:0.69, 4:0.53, 5:0.22, 6:0.14, 99:0.98}
+theory/runs/f6y_s146 K'=5 delayed 0.894 upfront 0.984 depth(delayed) {1:1.00, 2:0.99, 3:0.90, 4:0.55, 5:0.44, 6:0.20, 99:0.97}
+theory/runs/f6y_s146 K'=6 delayed 0.920 upfront 1.000 depth(delayed) {1:1.00, 2:0.99, 3:0.94, 4:0.74, 5:0.49, 6:0.47, 99:0.97}
+theory/runs/f6y_s146 d1:1.00 d2:0.99 d3:0.95 d4:0.81 d5:0.65 d6:0.62
+theory/runs/f6y_s146 K'= 0 near 0.59 0.56 0.51 0.49 0.50 0.49 | far 0.50 0.51 0.50 0.51 0.49 0.50
+theory/runs/f6y_s146 K'= 2 near 1.00 0.82 0.79 0.67 0.50 0.50 | far 0.50 0.50 0.50 0.50 0.50 0.50
+theory/runs/f6y_s146 K'= 4 near 1.00 0.99 0.87 0.83 0.66 0.55 | far 0.49 0.50 0.50 0.50 0.50 0.51
+theory/runs/f6y_s146 K'= 6 near 1.00 0.99 0.98 0.93 0.77 0.68 | far 0.54 0.51 0.50 0.50 0.50 0.50
+theory/runs/f6y_s146 K'= 8 near 1.00 0.98 0.98 0.94 0.87 0.77 | far 0.62 0.54 0.50 0.50 0.50 0.51
+theory/runs/f6y_s146 K'=10 near 1.00 0.98 0.97 0.94 0.88 0.80 | far 0.70 0.62 0.52 0.50 0.50 0.51
+theory/runs/f6y_s146 K'=12 near 1.00 0.96 0.96 0.93 0.88 0.81 | far 0.72 0.66 0.57 0.53 0.51 0.51
+theory/runs/f6y_s146 K'=16 near 0.99 0.94 0.93 0.91 0.87 0.81 | far 0.74 0.68 0.60 0.55 0.54 0.53
+EVAL theory/runs/f6y_s146 stage full delayed 0.920 m5 0.650 gate True d7 0.721 extrap True far8-10 0.586
+08:58:04 evaluated f6y_s146
+08:58:04 QUEUE_DONE

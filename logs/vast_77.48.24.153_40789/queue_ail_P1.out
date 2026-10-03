@@ -1,0 +1,7 @@
+09:19:23 start p54b_soft_s1
+09:34:42 trained p54b_soft_s1 rc 0
+09:38:06 evaluated p54b_soft_s1 rc 0
+09:38:06 start p54b_stoch_s1
+09:53:22 trained p54b_stoch_s1 rc 0
+09:56:47 evaluated p54b_stoch_s1 rc 0
+09:56:47 QUEUE_DONE

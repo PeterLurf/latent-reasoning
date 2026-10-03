@@ -1,0 +1,13 @@
+15:04:44 trained p30_s113_N_t1 rc 0
+15:04:44 trained p30_s113_S_t2 rc 0
+15:04:44 trained p30_s113_N_t2 rc 0
+15:04:45 trained p30_s113_S_t1 rc 0
+15:16:13 trained p30_s118_S_t2 rc 0
+15:16:14 trained p30_s118_N_t2 rc 0
+15:16:14 trained p30_s118_S_t1 rc 0
+15:16:14 trained p30_s118_N_t1 rc 0
+15:16:19 evaluated p30_s113_S rc 0
+15:16:23 evaluated p30_s113_N rc 0
+15:16:27 evaluated p30_s118_S rc 0
+15:16:32 evaluated p30_s118_N rc 0
+15:16:32 QUEUE_DONE

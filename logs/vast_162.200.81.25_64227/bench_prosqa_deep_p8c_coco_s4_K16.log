@@ -1,0 +1,18 @@
+100/1684 acc 0.740 131s
+200/1684 acc 0.770 265s
+300/1684 acc 0.813 394s
+400/1684 acc 0.797 530s
+500/1684 acc 0.796 672s
+600/1684 acc 0.782 813s
+700/1684 acc 0.757 964s
+800/1684 acc 0.729 1118s
+900/1684 acc 0.703 1280s
+1000/1684 acc 0.684 1444s
+1100/1684 acc 0.666 1619s
+1200/1684 acc 0.655 1778s
+1300/1684 acc 0.636 1916s
+1400/1684 acc 0.625 2054s
+1500/1684 acc 0.616 2192s
+1600/1684 acc 0.610 2329s
+prosqa_deep | coconut:prosqa/ckpt/p8c_coco_s4_checkpoint_48?K=16&mask=1 | n 1684 | acc 0.602 [0.578, 0.6247] | baselines {'proximity rule (no reasoning)': 0.8931, 'chance': 0.5}
+WROTE bench/results/prosqa_deep__coconut_p8c_coco_s4_checkpoint_48_K=16_mask=1.json

@@ -1,0 +1,6 @@
+NVIDIA GeForce RTX 3090, 595.71.05
+16:38:43 start gsmlen/runs/tc_s3
+16:38:43 start gsmlen/runs/ws_s3
+19:15:05 evaluated gsmlen/runs/tc_s3 rc 0
+21:19:34 evaluated gsmlen/runs/ws_s3 rc 0
+21:19:34 QUEUE_DONE

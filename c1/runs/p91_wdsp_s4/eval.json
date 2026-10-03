@@ -1,0 +1,36 @@
+{
+ "section": 91,
+ "group": "S4",
+ "steps": 16000,
+ "wd_sp": true,
+ "curr_steps": 0,
+ "k": 2,
+ "n_words": 400,
+ "seed": 4,
+ "train_sec": 3178,
+ "coverage_per_iteration": [
+  1.0,
+  1.0
+ ],
+ "coverage_full": true,
+ "acc_train": 1.0,
+ "acc_b_unseen_words": 1.0,
+ "per_iteration_acc_b": [
+  1.0,
+  1.0
+ ],
+ "n_b": 4152,
+ "acc_a_heldout_pairs": 0.9989583333333333,
+ "n_a": 960,
+ "n_train_pairs": 8640,
+ "b_split_by_transition_seen": {
+  "all_seen": [
+   1.0,
+   4152
+  ],
+  "some_unseen": [
+   null,
+   0
+  ]
+ }
+}

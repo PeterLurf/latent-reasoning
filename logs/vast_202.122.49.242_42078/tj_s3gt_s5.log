@@ -1,0 +1,2 @@
+theory/runs/st/s3gt_s5 in-range N1-8 0.982 | single N9-12 0.479 N13-16 0.070 | trunc-agree N9-16 0.059 | restart N9-16 0.965 N17-24 0.904 | ptr [2.0, 2.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+theory/runs/st/s3gt_s5 valid share {12: 0.302734375, 16: 0.12109375, 20: 0.109375}

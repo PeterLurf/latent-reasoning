@@ -1,0 +1,91 @@
+19:40:54 start t9w512_s540 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 540 --d 512 )
+20:35:54 trained t9w512_s540 rc 0
+run  results/competence_t9w512_s540.json
+run  results/competence_matched_t9w512_s540.json
+run  results/length_gen_t9w512_s540.json
+run  results/delayed_trace_t9w512_s540.json
+run  results/budget_sweep_t9w512_s540.json
+EVAL_DONE t9w512_s540
+20:36:17 evaluated t9w512_s540
+20:36:17 start t9l3_s502 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 502 --layers 3 )
+21:18:17 trained t9l3_s502 rc 0
+run  results/competence_t9l3_s502.json
+run  results/competence_matched_t9l3_s502.json
+run  results/length_gen_t9l3_s502.json
+run  results/delayed_trace_t9l3_s502.json
+run  results/budget_sweep_t9l3_s502.json
+EVAL_DONE t9l3_s502
+21:18:35 evaluated t9l3_s502
+21:18:35 start t9l4_s523 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 523 --layers 4 )
+22:13:35 trained t9l4_s523 rc 0
+run  results/competence_t9l4_s523.json
+run  results/competence_matched_t9l4_s523.json
+run  results/length_gen_t9l4_s523.json
+run  results/delayed_trace_t9l4_s523.json
+run  results/budget_sweep_t9l4_s523.json
+EVAL_DONE t9l4_s523
+22:13:55 evaluated t9l4_s523
+22:13:55 start t9w512_s544 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 544 --d 512 )
+23:08:55 trained t9w512_s544 rc 0
+run  results/competence_t9w512_s544.json
+run  results/competence_matched_t9w512_s544.json
+run  results/length_gen_t9w512_s544.json
+run  results/delayed_trace_t9w512_s544.json
+run  results/budget_sweep_t9w512_s544.json
+EVAL_DONE t9w512_s544
+23:09:17 evaluated t9w512_s544
+23:09:18 start t9l3_s506 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 506 --layers 3 )
+23:51:18 trained t9l3_s506 rc 0
+run  results/competence_t9l3_s506.json
+run  results/competence_matched_t9l3_s506.json
+run  results/length_gen_t9l3_s506.json
+run  results/delayed_trace_t9l3_s506.json
+run  results/budget_sweep_t9l3_s506.json
+EVAL_DONE t9l3_s506
+23:51:36 evaluated t9l3_s506
+23:51:36 start t9l4_s527 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 527 --layers 4 )
+00:46:36 trained t9l4_s527 rc 0
+run  results/competence_t9l4_s527.json
+run  results/competence_matched_t9l4_s527.json
+run  results/length_gen_t9l4_s527.json
+run  results/delayed_trace_t9l4_s527.json
+run  results/budget_sweep_t9l4_s527.json
+EVAL_DONE t9l4_s527
+00:46:57 evaluated t9l4_s527
+00:46:57 start t9w512_s550 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 550 --d 512 )
+01:41:57 trained t9w512_s550 rc 0
+run  results/competence_t9w512_s550.json
+run  results/competence_matched_t9w512_s550.json
+run  results/length_gen_t9w512_s550.json
+run  results/delayed_trace_t9w512_s550.json
+run  results/budget_sweep_t9w512_s550.json
+EVAL_DONE t9w512_s550
+01:42:19 evaluated t9w512_s550
+01:42:19 start t9l3_s512 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 512 --layers 3 )
+02:24:19 trained t9l3_s512 rc 0
+run  results/competence_t9l3_s512.json
+run  results/competence_matched_t9l3_s512.json
+run  results/length_gen_t9l3_s512.json
+run  results/delayed_trace_t9l3_s512.json
+run  results/budget_sweep_t9l3_s512.json
+EVAL_DONE t9l3_s512
+02:24:38 evaluated t9l3_s512
+02:24:38 start t9l4_s533 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 533 --layers 4 )
+03:19:38 trained t9l4_s533 rc 0
+run  results/competence_t9l4_s533.json
+run  results/competence_matched_t9l4_s533.json
+run  results/length_gen_t9l4_s533.json
+run  results/delayed_trace_t9l4_s533.json
+run  results/budget_sweep_t9l4_s533.json
+EVAL_DONE t9l4_s533
+03:19:58 evaluated t9l4_s533
+03:19:58 start t9w512_s554 (--no_step_emb --K 6 --lr 5e-4 --amp bf16 --save_every 1000 --seed 554 --d 512 )
+04:15:58 trained t9w512_s554 rc 0
+run  results/competence_t9w512_s554.json
+run  results/competence_matched_t9w512_s554.json
+run  results/length_gen_t9w512_s554.json
+run  results/delayed_trace_t9w512_s554.json
+run  results/budget_sweep_t9w512_s554.json
+EVAL_DONE t9w512_s554
+04:16:21 evaluated t9w512_s554
+04:16:21 QUEUE_DONE
