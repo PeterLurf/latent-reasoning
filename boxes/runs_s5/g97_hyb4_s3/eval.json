@@ -1,0 +1,105 @@
+{
+ "arm": "hyb",
+ "k": 4,
+ "seed": 3,
+ "train_sec": 14060,
+ "eval_dtype": "torch.bfloat16",
+ "test_sequences": 2000,
+ "gpu": "NVIDIA RTX A5000",
+ "cumulative": {
+  "128": 1.0,
+  "256": 1.0,
+  "512": 1.0
+ },
+ "final_state_acc_512": 1.0,
+ "compute_512_per_problem": {
+  "tokens_processed": 4352,
+  "flops": 802420555776.0,
+  "seq_passes": 1792,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "latent_slots": 512,
+  "measurement_decode_flops": 505745768448.0
+ },
+ "checkpoint_validity": {
+  "snaps": 256000,
+  "valid": 256000,
+  "rate": 1.0
+ },
+ "extension_2048": {
+  "n": 500,
+  "len": 2048,
+  "cumulative": {
+   "512": 1.0,
+   "1024": 1.0,
+   "2048": 1.0
+  }
+ },
+ "chunk_check": {
+  "k": 4,
+  "n": 100000,
+  "per_chunk_acc": 1.0,
+  "per_slot_acc": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "pred_seq_acc_512": 1.0
+ },
+ "removal": {
+  "zero": {
+   "k": 4,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.0,
+    0.0,
+    0.0,
+    0.009
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "zero",
+   "acc_after_first_ablated_slot": 0.003
+  },
+  "mean": {
+   "k": 4,
+   "n": 10000,
+   "per_chunk_acc": 0.1125,
+   "per_slot_acc": [
+    1.0,
+    0.3466,
+    0.2543,
+    0.3269
+   ],
+   "pred_seq_acc_512": 3.5279536702845673e-122,
+   "ablate": "mean",
+   "acc_after_first_ablated_slot": 0.3092666666666667
+  }
+ },
+ "wte_drift": {
+  "tokens": [
+   " >",
+   " A",
+   " B",
+   " C",
+   " D",
+   " E"
+  ],
+  "cosine": [
+   0.996558666229248,
+   0.9975730776786804,
+   0.9980326890945435,
+   0.9977484941482544,
+   0.9980673789978027,
+   0.9984652400016785
+  ],
+  "min_cosine": 0.996558666229248
+ },
+ "edit_iia": {
+  "n": 5000,
+  "iia": 1.0
+ },
+ "eval_sec": 1842
+}
