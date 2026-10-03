@@ -1,5 +1,7 @@
 # Literature notes (2026-09-26) — where this project sits
 
+> **Historical (2026-09-26).** Kept in place because other docs cite it by path. Current literature: `docs/LIT_INDEX.md` (start with LIT_FINDINGS_COMPILED, LIT_LATENT_FROM_DISCRETE, LIT_SEMI_DISCRETE).
+
 ## Closest prior work
 * **Zhu, Hao, Hu, Jiao, Russell, Tian — Reasoning by Superposition (NeurIPS 2025, arXiv 2505.12514).** Proof that a
   2-layer transformer with D continuous thoughts solves graph reachability (parallel BFS as a superposition state);
