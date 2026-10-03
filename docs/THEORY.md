@@ -7216,8 +7216,10 @@ The gate fails (cumulative 0.000 at 512), so §86 closes per 86-4. No further re
 * **Loss.** A plateau at 8.05 until about step 4,100, then 6.85 → 4.77 by 8k, still falling. Whether longer training
   rescues slot 2 is untested; not run (pioneer brief).
 * **Removal.** Mean ablation leaves slot 1 at 0.20 and the rest near 0; isolation is ≈ 0 everywhere.
-* **Reading.** Carrying a per-op state forward in a continuous latent, with per-op targets and a codebook snap at chunk
-  ends, does not learn past the first op in this budget.
+* **Reading (wording per Audit).** Carrying a per-op state forward in a continuous latent, with per-op targets and a
+  codebook snap at chunk ends, was **not acquired within the registered 8k-step budget**. The loss was still falling
+  (5·ln 5 = 8.05 plateau to about step 4.3k, then 4.68 at 8k), so this is not "cannot be acquired". A longer-budget test
+  could be registered separately later.
   - The same pattern as §88 at k = 2: step 1 right, step 2 not.
   - By contrast, §88 at k = 3 (word diversity about 151) composes perfectly in depth, and §71's written text state
     carries it exactly.
