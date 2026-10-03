@@ -25,3 +25,6 @@ bm/data_pool_b/
 scratch/s65_queue.txt.locks/
 boxes/runs/*/model.pt
 c1/runs/*/model.pt
+
+# external released checkpoints (ICoT-SI, §98): ~0.5 GB each, never committed
+ext/
