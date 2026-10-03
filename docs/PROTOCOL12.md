@@ -644,3 +644,9 @@ descriptive).
   - word diversity is necessary (25 words fail at k = 3 too);
   - k = 2 composes when the larger training set is actually fitted (k2-100 s1 0.903, k2-400 s2 0.976);
   - at this budget, fitting is seed-dependent.
+* **Correction (2026-10-03 00:43 EDT, mine, per seed):** "composes when fitted" holds at 400 words only (fitted s2 0.976; s1 and s3 did
+  not fit: train 0.119 / 0.189).
+  - At 100 words all three seeds fit (train 0.996–0.999), yet (b) is 0.903 / 0.148 / 0.548, and (a) is 0.941 / 0.387 /
+    0.835.
+  - So with 100 words, a fitted model may still memorise rather than compose. Composition at k = 2 is seed-dependent
+    at 100 words and unresolved at 400 (1 of 3 fitted).
