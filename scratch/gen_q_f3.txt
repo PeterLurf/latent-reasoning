@@ -1,0 +1,4 @@
+# §89 fleet (89-5)
+# P=2
+boxes/runs/f89_fade_std_dec_s5 boxes.fade89 --arm fade_std_dec --seed 5
+boxes/runs/f89_coco_stage_s5 boxes.fade89 --arm coco_stage --seed 5
