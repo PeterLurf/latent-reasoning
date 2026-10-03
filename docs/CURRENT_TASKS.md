@@ -141,7 +141,9 @@ reserve, projection to Audit above $5. Credit $105 (07:25).
       `theory/score_s95.py`.
     - §96 (amortised self-labels: S5 free-table teachers from final answers at p 0.05 / 0.1 / std). 15 small table runs:
       `python theory/c1_s96_driver.py --device <dev> --P 2` → `theory/results/c1_s96/`. Scorer `theory/score_s96.py`.
-      Placement: a local card from Experiments, else CPU at ≤ 3 threads.
+      **Running since 11:22 on the 4060 (torch cuda:0, P 1; Experiments' OK).** mixP 0.05 runs first, then mixP 0.1
+      and std (chained). About 8.6 min per run; ETA about 13:30. Logs are in `theory/results/c1_s96/logs/`; the
+      drivers are resumable per job.
   - **To score (Theory only):** §94, §95, §96, and §89's descriptive arms (raw done; soft and gold running locally).
 - Handed to Experiments (22:22): THEORY §55 (fall-back kill test, `theory/exp27_fallback_kill.py`, CPU minutes) and §56
   (interchange test, `theory/exp28_interchange.py`, 80 models, ~1 h CPU); scoring rules are in each section.
