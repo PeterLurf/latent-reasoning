@@ -48,6 +48,6 @@ $S "python -c \"import ctypes;print('CUINIT',ctypes.CDLL('libcuda.so.1').cuInit(
 $S "python -c \"import ctypes;exit(ctypes.CDLL('libcuda.so.1').cuInit(0))\"" 2>/dev/null || { echo "BAD HOST"; exit 2; }
 tar -czf /tmp/up_$LBL.tgz --exclude=__pycache__ latent scratch/queue_worker2.sh scratch/stage1_guard.py scratch/eval_battery.sh $EXTRA ${EXTRA_FILES:-} $Q
 echo "UPLOAD_BYTES $(stat -c %s /tmp/up_$LBL.tgz) START $(date +%s)"
-scp -q -i ~/.ssh/runpod_ed25519 -P $P /tmp/up_$LBL.tgz root@$H:/tmp/up.tgz
+scp -q -i ~/.ssh/runpod_ed25519 -P $P /tmp/up_$LBL.tgz root@$H:/tmp/up.tgz; rm -f /tmp/up_$LBL.tgz   # upload bundle no longer needed (C: filled up 2026-10-03)
 echo "UPLOAD_DONE $(date +%s)"
 $S "mkdir -p /workspace/Latent && cd /workspace/Latent && tar --no-same-owner -xzf /tmp/up.tgz && mkdir -p logs runs results && (setsid nohup bash $W $TAG cuda:0 $Q > /dev/null 2>&1 < /dev/null &) ; sleep 5; pgrep -fa queue_worker | head -1" 2>/dev/null | grep -q queue_worker && echo STARTED

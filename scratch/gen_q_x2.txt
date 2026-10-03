@@ -1,0 +1,5 @@
+# §97 arm gen1 (note 97-1; §92 recipe: 24k steps, bs 64, lr 1e-4)
+# P=2
+boxes/runs_s5/g97_gen1_s1 boxes.gen97 train --arm gen --k 1 --steps 24000 --bs 64 --log_every 2000 --seed 1
+boxes/runs_s5/g97_gen1_s2 boxes.gen97 train --arm gen --k 1 --steps 24000 --bs 64 --log_every 2000 --seed 2
+boxes/runs_s5/g97_gen1_s3 boxes.gen97 train --arm gen --k 1 --steps 24000 --bs 64 --log_every 2000 --seed 3
