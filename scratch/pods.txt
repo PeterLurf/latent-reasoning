@@ -524,3 +524,6 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 54022282 vast offer 45557884 created 2026-10-03 10:17: label gen-w4, queue scratch/gen_q_w4.txt (logged at create by vdeploy_toy.sh)
 54022286 vast offer 42882255 created 2026-10-03 10:17: label gen-w5, queue scratch/gen_q_w5.txt (logged at create by vdeploy_toy.sh)
 53997639 vast | gen_q6 DESTROYED_VERIFIED 2026-10-03 11:05 after verified per-run fetch (boxes/runs_s5/l93_warm8_s1 boxes/runs_s5/l93_warm8_s2 boxes/runs_s5/l93_warm8_s3)
+54027990 vast offer 31250707 created 2026-10-03 11:10: label gen-v1, queue scratch/gen_q_v1.txt (logged at create by vdeploy_toy.sh)
+54027990 vast | gen_v1 DESTROYED_VERIFIED 2026-10-03 11:32 BAD HOST (stuck loading 22 min, never started; nothing to fetch)
+54030282 vast offer 49980278 created 2026-10-03 11:33: label gen-v1, queue scratch/gen_q_v1.txt (logged at create by vdeploy_toy.sh)
