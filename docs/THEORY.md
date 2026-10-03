@@ -8109,6 +8109,25 @@ fork mask, Coconut and TC from the GSM8K pipelines, and an ICoT-SI checkpoint lo
   - Its reading, if it then meets the bar: "matches SOTA at about 1/25 of ICoT-SI's training".
   - Nothing else follows automatically.
 
+**Note 98-2 (2026-10-03 17:45 EDT, before any §98 run; the experiments session's implementation check).**
+* **The descriptive C2 measure (4×8) is dropped.** In the dataset's own CoT format the last step is "+ P_n" with **no
+  running sum**. So a 4×4-trained model never writes S_4, and a restart after op 4 at 4×8 has no carried state: it fails
+  by construction.
+  - A 5×5 → 5×8 version fails the same way: no slot past op 5 is ever trained, the last-step format changes, and P_j's
+    leading-zero counter grows (Literature (a)).
+  - **Multiplication's CoT, in its published format, is not restartable past its trained length.** A C2 test here needs
+    a restartable step format, which would be hand-built, so it is deferred.
+  - §98 is now an in-distribution rung (M1, M-SOTA, M-C1, M-C3); its tags drop C2.
+* **Implementation defaults recorded** (the experiments session; consistent with §97):
+  - training chunks are aligned to the test-time chunks (ops 1–4, plus op 5 alone at 5×5 from the true step-4 text),
+    with one chunk index drawn per batch;
+  - the answer fork is on the final chunk only;
+  - the loss is the mean over forks of per-fork token-summed CE;
+  - step and answer decodes use the format's fixed token counts (as §97's 6);
+  - removal ablates slot inputs 1..k−1 within each chunk (4×4: slots 1–3), and all thought inputs for COCO-M;
+  - MASK gives each fork only its slot's cached K/V (all layers) plus its own tokens, with true positions;
+  - NC-M: "a * b||" → " #### product". TC-M: "a * b||" → the full CoT + " #### product".
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
