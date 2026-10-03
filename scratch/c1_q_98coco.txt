@@ -1,0 +1,5 @@
+# §98 COCO-M reruns, local bf16 cards (user 19:15: use freed local cards for §98; replaces Vast y6). --micro 4 for 8 GB cards (same effective batch 64)
+boxes/runs_mult/m98_coco_4x4_s3 boxes.mult98 train --arm coco --task 4x4 --seed 3 --micro 4
+boxes/runs_mult/m98_coco_5x5_s1 boxes.mult98 train --arm coco --task 5x5 --seed 1 --micro 4
+boxes/runs_mult/m98_coco_5x5_s2 boxes.mult98 train --arm coco --task 5x5 --seed 2 --micro 4
+boxes/runs_mult/m98_coco_5x5_s3 boxes.mult98 train --arm coco --task 5x5 --seed 3 --micro 4
