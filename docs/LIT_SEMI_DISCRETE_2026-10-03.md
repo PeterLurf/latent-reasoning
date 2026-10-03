@@ -48,3 +48,21 @@ chunk-end-only labels (§93) can't train earlier chunks' hand-offs through the s
    non-use in fine-tuned pretrained LMs, matching §86 and §89's α → 1 collapse.
 4. **The gap across all eight bands:** none reports a certificate, few report removal tests, and length extrapolation
    is rare (Thinking States, 2510.14095). Our certified S5 plus removal protocol is the differentiator.
+
+## Caveat (2026-10-03, after Audit's review): the confidence-routed snap needs a different trigger
+- Our own §83 already tested this signal on the certified S5 written-state solver.
+  - Its token confidence flagged only **0.683 of first wrong states** (miss rate 0.317) under out-of-range
+    16-op chunks.
+  - Adaptive restarts scored **0.000** cumulative at 128/256/512, against 1.000 for fixed k = 4.
+  - The 1% in-range calibration held (false restarts 0.0078), but it didn't transfer out of range.
+- ThinkRouter's routing signal (the model's own token confidence) therefore fails as a range detector in exactly our
+  setting.
+- A confidence-routed snap must either:
+  - **(a) use a different trigger.** Examples:
+    - the side decoder's **validity** (a well-formed permutation; probability mass on valid states);
+    - **self-consistency** (agreement of the snapped state with a second decode, or with the state recomputed from a
+      shorter in-range window);
+    - a calibrator trained on in-range data with synthetic out-of-range chunks (Kamath 2006.09462);
+  - **(b) scope the claim to in-range lengths.**
+- Close item 1 above should read: "a certified snap triggered by a validity or self-consistency check (not raw token
+  confidence; §83)".
