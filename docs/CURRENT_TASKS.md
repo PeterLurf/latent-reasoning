@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-10-02 21:30 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-10-02 21:37 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -35,7 +35,7 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 > gives fronts to depth 11 in 2/4 runs; Pilot D 12 + 12 running on Vast). Ownership (theory Vast hosts vs a PROTOCOL8)
 > to be agreed. The theory session analyses O/R/T9/T10 runs only after the experiments session has scored them.
 
-## 00. EXPERIMENTS STATE AT 2026-10-02 21:30 EDT — authoritative over section 0
+## 00. EXPERIMENTS STATE AT 2026-10-02 21:37 EDT — authoritative over section 0
 
 **Running (all local; no Vast hosts of ours):**
 * **§76(A) teachers on local GPUs (amendment 76-5):** `python theory/c1_tab_driver.py --groups {A5|S5|S4} --device
@@ -78,15 +78,17 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 * **§83:** the verdict is fixed by seed 1 (fails; Theory). The host was destroyed at 17:48 by a surviving old watcher
   (incident disclosed). The models are local (`boxes/runs_s5/wc0k4r_s*`, shas in pods.txt). Seeds 2–3 and the extras
   are descriptive, lowest priority: `scratch/s83_local.sh` on cuda:2 after the §86 panel there.
-* **Local state (21:35):**
-  - §79 and §88 scored (PROTOCOL12).
-  - §86 re-pilot (86-4) on cuda:2 (`boxes/runs_s5/l86v4_k4_s1`). The panel is added by hand only if cum512 ≥ 0.95;
-    waiter task br41rp4qz.
-  - §89 (OOM fixed: embedding cast once, 2 × 16 micro-batches) restarted on cuda:0/cuda:1 from
-    `scratch/c1_q_after88.txt`. cuda:2 joins after the re-pilot.
-  - §88 align k2 s3 rerun on cuda:0 after its queue (`scratch/c1_88fix_chain.sh`).
+* **Local state (21:40):**
+  - Running:
+    - §86 re-pilot (86-4) on cuda:2 (`boxes/runs_s5/l86v4_k4_s1`). Panel by hand only if cum512 ≥ 0.95; waiter
+      br41rp4qz.
+    - §89 pilots fade_std s1 (cuda:0) and fade_std_dec s1 (cuda:1), about 4 h each. If either reaches ≥ 0.5 at N 5–8,
+      move the F1–F3 remainder to Vast under Audit's conditions (one host first, ≤ 5 hosts, cap $8, Theory's dated
+      placement amendment first); otherwise stay local. Waiter b03bs0oaw.
+  - Next on every card (`scratch/c1_next_chain.sh`, fixed `scratch/py_local_worker2.sh`, queue `scratch/c1_q_next.txt`):
+    §88 fix (align k2 s3), then §90 (12 runs; S4 k2-25 coverage < 100 %, so descriptive), then §89's remainder.
   - §83 s2/s3 last on cuda:2 (`scratch/s83_local.sh`).
-  - NOTE: "rc 0" lines in `logs/c1_local.log` are meaningless (`$?` read after `$(date)`); judge runs by eval.json.
+  - "rc 0" lines from the v1 workers are meaningless; judge by eval.json.
   - In parallel on cuda:2: §87 tables (`theory/c1_s87_driver.py`, then the daem pass; do not open c1_s87 results).
   - Done: §84 Step 1 (gate failed, so Step 2 is not run), §85 (40 tables, Theory scores).
 * **User decision "both" (via Audit, about 11:05): (1) GSM8K length split with the written-state method from the D&W
