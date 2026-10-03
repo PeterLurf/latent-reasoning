@@ -6280,7 +6280,8 @@ The Sinkhorn cell is not registered.**
 * **Disclosure.** Its held-out agreements were visible in the pilot log before the panel started: H1 0.762, H2 0.413,
   H3 0.444, H4 0.254; POS 0.952; NEG 0.524.
   - None reaches P2's 0.90.
-  - The negative control (" copy …" agreeing with the swap) at 0.524 shows substantial digit reliance.
+  - The negative control (" copy …" agreeing with the swap; lower is better) is 0.524. [Wording qualified by note 79-6:
+    better verb discrimination than random-init GPT-2's 0.97, not "substantial digit reliance".]
   - The order-only minimal pairs (H4) at 0.254 fail on this seed.
 * **Consequence.** P2 (agreement ≥ 0.90 on a held-out family and its certificate in ≥ 3/5 seeds) now needs ≥ 3 of the
   remaining 4 seeds to pass on the same family.
@@ -6331,6 +6332,18 @@ PF-std on NEG" had the direction wrong.
     (minimal pairs 0.625 vs 0.286).
   - BOW never acquired the task, so the lexical-vs-transformer question is unanswered.
   - The verdict is unchanged: P1 met, P2 not met.
+
+**Note 79-6 (2026-10-02 20:40 EDT; the final §79 reading, Audit; supersedes 79-4 and refines 79-5). P2 fails.**
+* BOW never acquired the task (0/5 certified on training), so "lexical" is unsupported.
+* **Pretrained features give better operation discrimination:** NEG 0.40–0.52 vs random-init 0.97 (lower is better:
+  random-init GPT-2 treats "copy" as "swap"), and word-order minimal pairs 0.625 vs 0.286.
+* **They do not give higher paraphrase agreement:** RF-std ≥ PF-std on H1 and H2. RF-std's agreement may itself be
+  inflated by insensitivity, since a machine that maps any swap-like phrase to swap agrees with paraphrases and
+  non-paraphrases alike.
+* Descriptive only; RF-std has 2 certified seeds.
+* **Lead 4 is reopened slightly.** Pretraining carries some operation semantics, so better op features (function
+  vectors, a mid-layer readout) might raise paraphrase agreement while keeping discrimination. It is held until §86 and
+  §88 report.
 
 ## 80. A latent chunk machine: a discrete code carried across chunks of k operations, so the LM must compose inside its forward pass (pre-registered 2026-10-02 12:02 EDT, after Literature's check 9224385 and before any run; idea 1 of Theory's list, approved by Audit)
 
