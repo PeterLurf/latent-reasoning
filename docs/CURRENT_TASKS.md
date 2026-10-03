@@ -46,6 +46,7 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
   - On s1 the state is present; the answer readout fails.
   - s2–s5 are still running (`theory/results/s94_step0/`).
   - No untrained or NC control has been run yet.
+* **§93 scored by Theory (97de49f1):** P-S4 and P-S8 not met; sparse-fix 0/3 at k 4 and 8, dense 3/3 (details in THEORY.md §93). gen-q6 was DESTROYED_VERIFIED at 11:05 after a hand rerun of the drain; no §93 hosts remain. New deploys use `scratch/auto_drain_gen3.sh`.
 * **§94 fleet live (10:45):** all five hosts are training, and each has `auto_drain_gen2.sh` (`logs/auto_drain_gen_w*.out`).
 
   | Host | Instance | Address | GPU | $/h |
