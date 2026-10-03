@@ -1,7 +1,9 @@
 """THEORY §86 (latent restarts; Literature M1): §71's written state replaced by one latent slot per op, snapped to a
 120-entry codebook every k ops, the history cut between chunks.
-Model: GPT-2 small (pretrained base, fine-tuned), a codebook of 120 learned embeddings (one per S5 element, init from
-wte statistics as §71's tagger) and a linear head 768 -> 120. A chunk is
+Model: GPT-2 small (pretrained base, fine-tuned). Amendment 86-4 (after the failed pilot): the decoder is a 5 x 5
+arrangement head per slot (linear 768 -> 25, CE summed over the 5 boxes) and the restart codebook is structured: start
+embedding = sum over boxes of W[box, letter] (learned 5 x 5 x 768; the restart stays latent, no text start); the next
+chunk restarts from the decoded letters (a non-permutation decode counts as wrong but still restarts). A chunk is
     [code_emb(start)] [op_1 tokens " perm p1 .. p5"] [slot_1] [op_2 tokens] [slot_2] ... [op_k tokens] [slot_k]
 where slot j's INPUT embedding is GPT-2's final hidden state at the last op-j token (Coconut-style continuous thought;
 computed segment by segment with the KV cache, gradients flow through the chain), and the head on slot j's OUTPUT hidden
@@ -38,6 +40,10 @@ from boxes import s5  # noqa: E402
 from boxes import core as bc  # noqa: E402
 
 OPTOK = {e: bc.tok(" " + s5.s_perm(e)) for e in range(120)}             # " perm p1 p2 p3 p4 p5" -> 6 tokens
+LETIDX = np.array([["ABCDE".index(c) for c in s5.ARR[e]] for e in range(120)])   # (120, 5): letter index per box
+CODE2EL = np.full(5 ** 5, -1, dtype=np.int64)                            # base-5 arrangement code -> element (-1 invalid)
+for _e in range(120):
+    CODE2EL[int(sum(LETIDX[_e, b] * 5 ** b for b in range(5)))] = _e
 assert len({len(v) for v in OPTOK.values()}) == 1
 NOP = len(OPTOK[0])
 
@@ -47,8 +53,10 @@ class LatentRestart(nn.Module):
         super().__init__()
         self.g = g
         mu, sd = g.w("wte.weight").mean(0).detach(), g.w("wte.weight").std(0).detach()
-        self.code = nn.Parameter(mu + sd * torch.randn(120, 768, device=mu.device))
-        self.head = nn.Linear(768, 120)
+        # amendment 86-4: structured latent codebook (start = sum over boxes of W[box, letter]) and a 5 x 5 arrangement head
+        self.W = nn.Parameter(mu / 5 + sd / math.sqrt(5) * torch.randn(5, 5, 768, device=mu.device))
+        self.head = nn.Linear(768, 25)
+        self.register_buffer("letidx", torch.tensor(LETIDX, device=mu.device))
         self.optok = None
         self.slot_tf = None                     # optional slot-input transform (diagnostic / amendment hook; default off)
 
@@ -57,13 +65,18 @@ class LatentRestart(nn.Module):
             self.optok = torch.tensor([OPTOK[e] for e in range(120)], device=dev)
         return self.optok[ops]                                            # (B, NOP)
 
+    def start_emb(self, starts):
+        """starts: (B,) element ids or (B, 5) letter indices (a decoded arrangement, possibly not a permutation)."""
+        L = self.letidx[starts] if starts.dim() == 1 else starts
+        return self.W[torch.arange(5, device=L.device)[None], L].sum(1)     # (B, D)
+
     def chunk(self, starts, ops, ablate=None, mean_in=None, meter=None):
-        """starts (B,) element ids, ops (B, k) -> head logits (B, k, 120), slot inputs (B, k, D).
+        """starts (B,) element ids or (B, 5) letters, ops (B, k) -> head logits (B, k, 5 boxes, 5 letters), slot inputs.
         ablate: None | "zero" | "mean" applied to the inputs of slots 1..k-1; "isolate" (note 86-2, descriptive): every
         segment after the first ([slot_j, op_(j+1) tokens], and the last slot alone) runs with a fresh cache, so it sees
         only slot_j (no earlier op tokens): a continuous restart at every op, without snapping."""
         B, k = ops.shape; dev = ops.device
-        x = torch.cat([self.code[starts][:, None], self.g.embed(self._ops(ops[:, 0], dev))], 1)
+        x = torch.cat([self.start_emb(starts)[:, None], self.g.embed(self._ops(ops[:, 0], dev))], 1)
         past = None; logits, ins = [], []
         for j in range(k):
             if ablate == "isolate":
@@ -73,7 +86,7 @@ class LatentRestart(nn.Module):
             if meter:
                 meter.step(x.shape[1], ctx, 0)
             if j > 0:
-                logits.append(self.head(h[:, 0]))                         # output at slot j (the first position of x)
+                logits.append(self.head(h[:, 0]).view(B, 5, 5))           # output at slot j (the first position of x)
             s_in = h[:, -1]                                               # hidden at the last op-(j+1) token -> slot j+1 input
             if self.slot_tf is not None:
                 s_in = self.slot_tf(s_in)
@@ -89,8 +102,8 @@ class LatentRestart(nn.Module):
         ctx = 0 if past is None else past[0][0].shape[2]
         h, past = self.g(x, past)                                         # the last slot alone
         if meter:
-            meter.step(1, ctx, 0); meter.flops += 2 * 768 * 120 * k
-        logits.append(self.head(h[:, 0]))
+            meter.step(1, ctx, 0); meter.flops += 2 * 768 * 25 * k
+        logits.append(self.head(h[:, 0]).view(B, 5, 5))
         return torch.stack(logits, 1), torch.stack(ins, 1)
 
 
@@ -105,18 +118,19 @@ def batch(rng, X, Y, k, B):
 def chunks_pred(m, starts, ops, dev, amp, ablate=None, mean_in=None, meter=None):
     with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
         lg, _ = m.chunk(torch.tensor(starts, device=dev), torch.tensor(ops, device=dev), ablate, mean_in, meter)
-    return lg.argmax(-1).cpu().numpy()
+    let = lg.argmax(-1).cpu().numpy()                                     # (B, k, 5) letters per box
+    return CODE2EL[(let * (5 ** np.arange(5))).sum(-1)], let             # element ids (-1 = not a permutation), letters
 
 
 @torch.no_grad()
 def rollout(m, X, k, dev, amp, bs):
     N, L = X.shape; pred = np.full((N, L), -1, dtype=np.int64); meter = bc.Meter(m.g)
     for s in range(0, N, bs):
-        cur = np.zeros(min(bs, N - s), dtype=np.int64)
+        cur = np.tile(LETIDX[0], (min(bs, N - s), 1))                   # identity arrangement, as letters
         for c in range(0, L, k):
             o = X[s:s + bs, c:c + k]
-            p = chunks_pred(m, cur, o, dev, amp, meter=meter if s == 0 else None)
-            pred[s:s + bs, c:c + o.shape[1]] = p; cur = p[:, -1]          # snap to the decoded element
+            p, let = chunks_pred(m, cur, o, dev, amp, meter=meter if s == 0 else None)
+            pred[s:s + bs, c:c + o.shape[1]] = p; cur = let[:, -1]        # snap (86-4): restart from the decoded letters
     d = meter.as_dict(); d["latent_slots"] = L; d["written_tokens"] = 0; d["gen_tokens"] = 0
     return pred, d                                                     # Meter counts per problem (one row's calls)
 
@@ -125,7 +139,7 @@ def rollout(m, X, k, dev, amp, bs):
 def certificate_k1(m, dev, amp, bs):
     S, O = [a.ravel() for a in np.meshgrid(np.arange(120), np.arange(120), indexing="ij")]; bad = 0
     for i in range(0, len(S), bs):
-        p = chunks_pred(m, S[i:i + bs], O[i:i + bs, None], dev, amp)
+        p, _ = chunks_pred(m, S[i:i + bs], O[i:i + bs, None], dev, amp)
         bad += int((p[:, 0] != s5.COMP[S[i:i + bs], O[i:i + bs]]).sum())
     return {"k": 1, "inputs": len(S), "errors": bad, "certified": bad == 0}
 
@@ -135,7 +149,7 @@ def chunk_check(m, k, dev, amp, bs, n=100_000, seed=7104, ablate=None, mean_in=N
     rng = np.random.default_rng(seed); S = rng.integers(0, 120, n); O = rng.integers(0, 120, (n, k))
     ok = 0; per = np.zeros(k)
     for i in range(0, n, bs):
-        p = chunks_pred(m, S[i:i + bs], O[i:i + bs], dev, amp, ablate, mean_in)
+        p, _ = chunks_pred(m, S[i:i + bs], O[i:i + bs], dev, amp, ablate, mean_in)
         w = S[i:i + bs].copy(); good = np.ones(len(w), bool)
         for t in range(k):
             w = s5.COMP[w, O[i:i + bs, t]]; c = p[:, t] == w; per[t] += c.sum(); good &= c
@@ -173,7 +187,8 @@ def train(a):
         st, o, tg = batch(rng, Xtr, Ytr, a.k, a.bs)
         with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
             lg, _ = m.chunk(torch.tensor(st, device=dev), torch.tensor(o, device=dev))
-            loss = F.cross_entropy(lg.reshape(-1, 120).float(), torch.tensor(tg, device=dev).reshape(-1))
+            tl = torch.tensor(LETIDX[tg], device=dev)                       # (B, k, 5) target letters
+            loss = F.cross_entropy(lg.reshape(-1, 5).float(), tl.reshape(-1), reduction="none").view(*tl.shape).sum(-1).mean()   # 86-4: summed over boxes
         opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(loss.item())
         if step % 100 == 0 or step == a.steps:
             rec = {"step": step, "loss": float(np.mean(hist)), "sec": round(time.time() - t0)}; hist = []
