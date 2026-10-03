@@ -1,0 +1,37 @@
+{
+ "k": 1,
+ "seed": 3,
+ "train_sec": 1538,
+ "eval_dtype": "torch.bfloat16",
+ "test_sequences": 2000,
+ "cumulative": {
+  "128": 1.0,
+  "256": 1.0,
+  "512": 1.0
+ },
+ "final_state_acc_512": 1.0,
+ "compute_512_per_problem": {
+  "tokens_processed": 4096,
+  "flops": 697477890048.0,
+  "seq_passes": 1024,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "latent_slots": 512
+ },
+ "extension_2048": {
+  "n": 500,
+  "cumulative": {
+   "512": 1.0,
+   "1024": 1.0,
+   "2048": 1.0
+  }
+ },
+ "certificate": {
+  "k": 1,
+  "inputs": 14400,
+  "errors": 0,
+  "certified": true
+ },
+ "eval_sec": 128
+}
