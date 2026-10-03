@@ -30,8 +30,12 @@ def load(prefix):
                       "zero_after": rem.get("zero", {}).get("acc_after_first_ablated_slot"),
                       "mean_after": rem.get("mean", {}).get("acc_after_first_ablated_slot"),
                       "per_slot": r.get("chunk_check", {}).get("per_slot_acc"), "flops": r["compute_512_per_problem"]["flops"],
-                      "certificate": r.get("certificate"), "validity": r.get("checkpoint_validity"),
-                      "wte_drift": r.get("wte_drift"), "edit_iia": r.get("edit_iia")}
+                      "certificate": (r.get("certificate") or {}).get("certified"),
+                      "cert_errors": (r.get("certificate") or {}).get("errors"),
+                      "validity": (r.get("checkpoint_validity") or {}).get("rate"),
+                      "wte_min_cosine": (r.get("wte_drift") or {}).get("min_cosine"),
+                      "edit_iia": (r.get("edit_iia") or {}).get("iia"),
+                      "measurement_decode_flops": r["compute_512_per_problem"].get("measurement_decode_flops")}
     return out
 
 
