@@ -7896,6 +7896,41 @@ sufficient.**
 * **Consequence.** The in-LM C4 route for latent restarts (thinning labels inside the LM: §93, §95) is closed at this
   budget. The C4 route left is §96 (a final-answer-trained teacher; running).
 
+**§96 result (2026-10-03 14:50 EDT; teachers run by Theory on the local 4060 and 3070; scored by Theory alone with
+`theory/score_s96.py`, committed before any run (889e78b5; HOLD guard added for placement only);
+`theory/results/score_s96.json`, tables in `theory/results/c1_s96/`). P1 and P2 are met.**
+
+| teacher arm (S5, M 240, seeds 2161–2165) | certified | selected (final-answer acc ≥ 0.999 at N 128) | agreement with §92's training labels (12.8M positions) |
+|---|---|---|---|
+| **mixP 0.05** (5 % short batches) | **4/5** | 5/5 | **1.000 in 5/5** (also 1.000 on S5=512 and 2,048) |
+| mixP 0.1 | 0/5 | 5/5 | 1.000 in 5/5 (s2165: 0.9999934 on S5=512, one sequence) |
+| std (reference) | 5/5 | 5/5 | 1.000 in 5/5 |
+
+* **P1 met.** At the "little enough" dose (≤ 5 % short batches), the teacher certifies in 4/5 seeds.
+* **P2 met.** All 9 certified teachers agree with §92's per-op labels at **exactly 1.000** over all 100,000 × 128
+  training positions.
+  - Under note 96-1, §92/92-1's training data are therefore **bit-identical** to a teacher-labelled pipeline's, so their
+    results transfer by construction.
+* **Standing claim (fixed wording, 96-1).**
+  - §92/92-1's GPT-2 latent restarts are reached by a pipeline whose only supervision is **final answers**, with
+    ≤ 5 % short batches in the teacher's curriculum: S5 exact to 2,048 (k = 4, 5/5), certified at every length (k = 1),
+    removal ≈ 0, 0.29–0.45× the written state's compute.
+  - **C1 (use) + C2 + C3 + C6, with C4 for the pipeline, qualified by p ≤ 0.05 and oracle M (= 2|G|).** The free table
+    does the acquisition; the LM hosts and executes it, and contributes no acquisition.
+  - Remaining scaffolds: a fixed snap interval (C5 open), two-stage training, S5 with clean op tokens, and §92's
+    task-specific head and codebook. §97 tests removing the last of these.
+* **Descriptive.**
+  - **The label-free selection rule is safe here.** It selected 15/15 teachers, certified or not. Every one agrees at
+    1.000 on the training set: the uncertified teachers' wrong entries sit on codes the data never reach (s2161: 728
+    wrong entries, all in the 116 codes no random length-128 sequence visits).
+  - **Non-monotone dose.** mixP 0.1 certifies 0/5 while mixP 0.05 certifies 4/5 and std 5/5. It is reported as found,
+    with no reading. Card placement does not explain it: mixP 0.1 and std both ran on the 3070.
+  - **Cost:** about 10 min per teacher on one consumer GPU.
+  - **Placement:** s2164 ran about 2.7 h under 4060 memory contention; the other arms moved to the 3070 via hold markers
+    (CURRENT_TASKS). No run was restarted or discarded.
+* **Disclosure.** Theory ran the committed scorer on the first three teachers (to test it), and Audit saw that interim
+  file while checking the disk outage. Nothing in the design or rules changed afterwards.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
