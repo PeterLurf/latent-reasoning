@@ -1,0 +1,125 @@
+{
+ "k": 8,
+ "seed": 1,
+ "train_sec": 4599,
+ "eval_dtype": "torch.bfloat16",
+ "test_sequences": 2000,
+ "cumulative": {
+  "128": 0.0025,
+  "256": 0.0,
+  "512": 0.0
+ },
+ "final_state_acc_512": 1.0,
+ "compute_512_per_problem": {
+  "tokens_processed": 3648,
+  "flops": 624488153088.0,
+  "seq_passes": 576,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "latent_slots": 512
+ },
+ "extension_2048": {
+  "n": 500,
+  "cumulative": {
+   "512": 0.0,
+   "1024": 0.0,
+   "2048": 0.0
+  }
+ },
+ "chunk_check": {
+  "k": 8,
+  "n": 100000,
+  "per_chunk_acc": 0.7008,
+  "per_slot_acc": [
+   0.74968,
+   0.9556,
+   0.98037,
+   0.99602,
+   0.99992,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "pred_seq_acc_512": 1.3122662585541452e-10
+ },
+ "removal": {
+  "zero": {
+   "k": 8,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.0479,
+    0.0011,
+    0.0002,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0018
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "zero",
+   "acc_after_first_ablated_slot": 0.00044285714285714284
+  },
+  "mean": {
+   "k": 8,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.1593,
+    0.0019,
+    0.0014,
+    0.0038,
+    0.0031,
+    0.0015,
+    0.0006,
+    0.0
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "mean",
+   "acc_after_first_ablated_slot": 0.001757142857142857
+  },
+  "isolate": {
+   "k": 8,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.0,
+    0.0008,
+    0.0007,
+    0.0007,
+    0.0015,
+    0.0009,
+    0.0014,
+    0.0009
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "isolate",
+   "acc_after_first_ablated_slot": 0.0009857142857142857
+  }
+ },
+ "probe_acc_per_slot": [
+  1.0,
+  1.0,
+  1.0,
+  0.9997999668121338,
+  1.0,
+  1.0,
+  1.0,
+  1.0
+ ],
+ "iia_per_slot": [
+  1.0,
+  0.9982,
+  0.9864,
+  0.9828,
+  0.9832,
+  0.9778,
+  0.9672
+ ],
+ "sup": "last",
+ "var": false,
+ "warm_frac": 0.25,
+ "eval_sec": 258
+}
