@@ -46,6 +46,13 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
   - On s1 the state is present; the answer readout fails.
   - s2–s5 are still running (`theory/results/s94_step0/`).
   - No untrained or NC control has been run yet.
+* **§95 foothold dose (91c843d8; Theory scores with `theory/score_s95.py`):** 9 runs `boxes/runs_s5/l95_f{005,025,05}_s1-3` (latent86 `--foot f`, per batch).
+  - v1 (54030282, 136.36.139.116:9083) runs f 0.05, P2.
+  - v2 (54031323, 142.113.28.123:22340) runs f 0.25, P3.
+  - v3 (54031327, 136.59.129.136:33653) runs f 0.5, P3.
+  - All use auto_drain_gen3 plus waiter b1lxoojg4. About 1.4 h per run; about $2.5–3 in total.
+  - The first v1 (54027990) was a BAD HOST and was destroyed.
+* **§96** (Theory) runs on the 4060 (torch cuda:0) alongside fade_soft s1 (`theory/results/c1_s96/`).
 * **§93 scored by Theory (97de49f1):** P-S4 and P-S8 not met; sparse-fix 0/3 at k 4 and 8, dense 3/3 (details in THEORY.md §93). gen-q6 was DESTROYED_VERIFIED at 11:05 after a hand rerun of the drain; no §93 hosts remain. New deploys use `scratch/auto_drain_gen3.sh`.
 * **§94 fleet live (10:45):** all five hosts are training, and each has `auto_drain_gen2.sh` (`logs/auto_drain_gen_w*.out`).
 
