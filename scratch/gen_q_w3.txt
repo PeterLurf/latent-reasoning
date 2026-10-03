@@ -1,0 +1,5 @@
+# §94
+# P=3
+boxes/runs/f94_stddec3x_s8 boxes.fade89 --steps 24000 --arm fade_std_dec --seed 8
+boxes/runs/f94_stddecinv3x_s8 boxes.fade89 --steps 24000 --arm fade_std_dec --inv_dec --seed 8
+boxes/runs/f94_fadestd3x_s8 boxes.fade89 --steps 24000 --arm fade_std --seed 8

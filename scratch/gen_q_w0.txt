@@ -1,0 +1,4 @@
+# §94 Vast smoke (plumbing: 500 steps, through eval and fetch)
+# P=2
+boxes/runs/f94_smoke_inv boxes.fade89 --steps 500 --arm fade_std_dec --inv_dec --seed 99
+boxes/runs/f94_smoke_dec boxes.fade89 --steps 500 --arm fade_std_dec --seed 98
