@@ -8128,6 +8128,37 @@ fork mask, Coconut and TC from the GSM8K pipelines, and an ICoT-SI checkpoint lo
   - MASK gives each fork only its slot's cached K/V (all layers) plus its own tokens, with true positions;
   - NC-M: "a * b||" → " #### product". TC-M: "a * b||" → the full CoT + " #### product".
 
+**§94 result (2026-10-03 18:52 EDT; runs by the experiments session on Vast, 47f17bdf; scored by Theory alone with
+`theory/score_s94.py`, committed before any §94 arm value was read (87af7c00); `theory/results/score_s94.json`).
+W1 and W2 are met: budget alone fixes "where".**
+
+| arm (FADE-std-dec recipe at 3× budget, seeds 6–10) | "where" at N 5–8 | "all" at N 5–8 | "where" zero / mean removal | "all" zero / mean removal | N 9–16 |
+|---|---|---|---|---|---|
+| **STD-DEC-3×** | **1.000 ×5** | **1.000 ×5** | 0.255–0.285 / 0.25–0.295 | 0.03–0.05 / 0.005–0.055 | 0.17–0.22 |
+| STD-DEC-INV-3× | 1.000 in 4/5 (s6 0.23) | 1.000 ×5 | 0.205–0.26 / 0.23–0.25 | 0.03–0.055 / 0.035–0.055 | 0.17–0.23 |
+| FADE-STD-3× (no decoder; 3 seeds) | 1.0 / 0.53 / 0.235 | 1.0 / 0.845 / 0.31 | — | s7 mean 0.705 (bypass) | 0.14–0.27 |
+| NC floor (§66 nc_s1–3, same items) | 0.235 | 0.045 | | | |
+
+* **W1 met (5/5) and W2 met (4/5).** Under §94's readings this is the **W1 reading**: a multi-task lottery that budget
+  removes. The inverse-direction target is not needed, and it is not better (one seed fails).
+  - Consistent with Step 0: the information was available, and the readout was learned with budget.
+* **C1 for "where" (rule: per seed, zero- and mean-removal ≤ NC floor + 0.05 = 0.285).**
+  - STD-DEC-3×: s6, s7 and s10 qualify. s8 and s9 miss by ≤ 0.01 (mean removal 0.295 / 0.29); chance is 0.25.
+  - STD-DEC-INV-3×: 4/4 passing seeds qualify.
+  - "All" removal is at the NC floor (≤ 0.055 vs 0.045 + 0.05) in 5/5.
+* **Descriptive.**
+  - Aux decode accuracy is 0.78–0.85 per thought token.
+  - Without the decoder, budget alone rescues 1/3 (FADE-STD-3× s6), and s7 is partly bypassed (mean-ablated "all" at
+    0.705).
+  - N 9–16 stays at 0.14–0.27: out of range, as expected for one growing context (§66).
+* **Consequence for §89** (descriptive; §89 itself was scored at 1×). The user's fade idea with a side step decoder, at
+  3× budget, answers both question types at 1.000 in 5/5 seeds with pure latent thoughts. §89's F1 bar (≥ 0.90 pooled)
+  would be met.
+  - The latents do the work: removal drops "all" to the NC floor, and "where" to the floor in 3/5 by the rule (5/5
+    within 0.01 of it).
+  - C1 (use) in a pretrained LM on the boxes task, both question types, in range, with CoT-label training. Not C4; no C2.
+* **Step 0 probes on the new models:** the registered measure. Queued with the experiments session (CPU), descriptive.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
