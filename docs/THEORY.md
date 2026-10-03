@@ -7991,6 +7991,13 @@ sufficient.**
   - **C1 (use, qualified) + C2 + C3 (as metered) + C7 for checkpoints** (readable, edit IIA 1.0); **not C4**.
   - C6 needs seeds 4–5 (97-1): next. This licenses step 2 of the user's plan (the bench ladder).
 
+**Note 97-2 (2026-10-03 17:36 EDT; Audit's reproduction of §97).**
+* **Reproduced:** GEN-4 0.998 / 1.0 / 1.0 at 512, 2,048 at 1.0 ×3; GEN-1 certified 3/3; edit IIA 1.0 in every run.
+  Compute: GEN-4 0.556× wc0k4r as metered (≈ 0.608× restricted vocab); HYB-4 0.489×.
+* **GEN-1's comparator is wc0k1** (k = 1 written state), not wc0k4r: 1.81e12 vs 2.42e12 FLOPs per 512-problem, so
+  **0.75× as metered and 0.72× with both sides' vocabulary-logit terms removed** (2.37e11 each: 512 × 6 rows). Against
+  wc0k4r, GEN-1 would read 1.10×, which is the wrong comparison.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
