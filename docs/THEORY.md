@@ -96,6 +96,9 @@ C1 is qualified: partial recomputation under mean ablation. §98 (multiplication
 **Fade to latent (§89 / §94):** the user's fade with a side step decoder, at 3× budget, answers both boxes question
 types at 1.000 in 5/5 seeds with pure latent thoughts. Removal falls to the NC floor. The earlier "where" failure was a
 budget lottery (§94 W1); the arrangement was always linearly available (Step 0).
+**Closed (2026-10-03 19:14, the user via Audit):** no new fade registrations. Its working ingredient, the side step
+decoder, lives in §97's recipe, which adds restarts and length generalisation. Effort goes to the §97 line: §98, the
+bench ladder, then C4 by final-answer self-training (pending the user), then readout.
 **In-depth composition (§88 / §90 / §91):** a looped GPT-2 with per-iteration targets composes unseen op sequences
 reliably (5/5) given word diversity and enough steps.
 **Stable latent (§72b / §73):**
