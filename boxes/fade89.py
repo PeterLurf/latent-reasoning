@@ -68,10 +68,13 @@ class Fade(nn.Module):
         if self.arm in ("fade_raw", "coco_stage"):
             return h
         if self.arm == "fade_soft":
-            return F.softmax(self.m.logits(h).float(), -1).to(h.dtype) @ self.m.w("wte.weight")
+            return F.softmax(self.lg(h).float(), -1).to(self._W.dtype) @ self._W
         if update_stats and not int(self.frozen):                          # collected; the EMA is applied after the update
             self._acc.append(h.detach().float())
         return (self.muE + self.sdE * (h.float() - self._mu) / self._sd).to(h.dtype)
+
+    def lg(self, h):
+        return h.to(self._W.dtype) @ self._W.T
 
     @torch.no_grad()
     def update_stats(self):
@@ -89,13 +92,15 @@ class Fade(nn.Module):
         """Returns (loss terms dict) when train, else (answer texts, aux decode correct count, n aux)."""
         m = self.m; B = len(batch); N = len(batch[0]["ops"]); qt = batch[0]["qtype"]
         self._mu, self._sd, self._acc = self.muH.clone(), self.sdH.clone(), []   # stats snapshot for this pass
+        W = m.w("wte.weight")                                              # cast once per pass (memory: autocast re-casts the
+        self._W = W.to(torch.get_autocast_gpu_dtype()) if torch.is_autocast_enabled() else W   # 50k x 768 matrix per call)
         pre = torch.tensor([tok(prompt(p)[:-3] + " cot:") for p in batch], device=dev)
         cot = torch.tensor([tok(tc_text(p)[len(" cot:"):-len(" a:")]) for p in batch], device=dev)   # (B, 5N) gold CoT
         assert cot.shape[1] == 5 * N
         h, past = m(m.embed(pre)); hl = h[:, -1]
         th_ce, aux_ce, aux_ok, soft_dist = [], [], 0, []
         for j in range(5 * N):
-            lg = m.logits(hl)
+            lg = self.lg(hl)
             latent_pos = self.arm == "coco_stage" and j // 5 < (stage if stage is not None else N)
             if train and not latent_pos and alpha < 1:
                 th_ce.append(F.cross_entropy(lg.float(), cot[:, j], reduction="none"))
@@ -127,7 +132,7 @@ class Fade(nn.Module):
         hs = [hl[:, None]]
         if tgt.shape[1] > 1:
             h3, _ = m(m.embed(tgt[:, :-1]), past); hs.append(h3)
-        lga = m.logits(torch.cat(hs, 1))
+        lga = self.lg(torch.cat(hs, 1))
         out = {"answer": F.cross_entropy(lga.reshape(-1, lga.shape[-1]).float(), tgt.reshape(-1))}
         if th_ce:
             out["thought"] = torch.stack(th_ce).mean()
@@ -161,11 +166,14 @@ def train(a):
         if al >= 1 and a.arm != "coco_stage":
             f.frozen.fill_(1)
         n = rng.randint(1, 8); qt = rng.choice(["all", "where"]); batch = [make_problem(rng, n, qt) for _ in range(a.bs)]
-        with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
-            out = f(batch, dev, al, stage=st, train=True)
-            loss = out["answer"] + ((1 - al) * out["thought"] if "thought" in out and a.arm != "coco_stage" else 0) \
-                + (out["thought"] if "thought" in out and a.arm == "coco_stage" else 0) + (out["aux"] if "aux" in out else 0)
-        opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(f.parameters(), 1.0); opt.step()
+        opt.zero_grad(); mb = a.bs // a.grad_acc                            # memory: micro-batches, same effective batch
+        for i in range(a.grad_acc):
+            with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+                out = f(batch[i * mb:(i + 1) * mb], dev, al, stage=st, train=True)
+                loss = out["answer"] + ((1 - al) * out["thought"] if "thought" in out and a.arm != "coco_stage" else 0) \
+                    + (out["thought"] if "thought" in out and a.arm == "coco_stage" else 0) + (out["aux"] if "aux" in out else 0)
+            (loss / a.grad_acc).backward()
+        torch.nn.utils.clip_grad_norm_(f.parameters(), 1.0); opt.step()
         f.update_stats()
         for k, v in out.items():
             hist.setdefault(k, []).append(v.item() if torch.is_tensor(v) else v)
@@ -228,6 +236,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--arm", required=True, choices=ARMS); ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--steps", type=int, default=8000); ap.add_argument("--bs", type=int, default=32)
+    ap.add_argument("--grad_acc", type=int, default=2, help="micro-batches per update (bs 32 x 1 OOMs 8 GB at N 8)")
     ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--device", default="cuda:0")
     ap.add_argument("--init", default=os.path.join(ROOT, "prosqa", "ckpt", "gpt2_pretrained.bin"))
     ap.add_argument("--smoke", action="store_true", help="plumbing only: tiny eval")
