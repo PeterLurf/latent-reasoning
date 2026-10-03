@@ -7820,6 +7820,25 @@ wd 0.01, 100-step warmup + cosine, chunks cut at random positions from the S5=12
 (GEN-4 s1) first, then ≤ 3 hosts. About $4 for the 6. Projection to Audit. Implementation: the experiments session, from `boxes/latent86.py`, with
 a smoke test of the fork loss, greedy snap and certificate before the panel.
 
+**Note 97-1 (2026-10-03 12:01 EDT, before any implementation or run; Audit's review, on Literature 05bff3e3).**
+* **Primary rule: G4 only.** GEN-1 (k = 1) is **descriptive**: its certificate and accuracies are reported, but G1 is not
+  a verdict. A per-op text snap is essentially §71's written-state loop.
+* **HYB-4 runs unconditionally:** text target (fork decode, tied LM head) + §92's structured codebook snap, k = 4, seeds
+  1–3, under G4's rule.
+* **Attribution (fixed now):**
+
+  | §92 | HYB-4 | GEN-4 | Reading |
+  |---|---|---|---|
+  | pass | pass | pass | No hand-built state is needed. |
+  | pass | pass | fail | The text checkpoint (snap) is the problem. |
+  | pass | fail | fail | The text target (head) is the problem; the snap is untested. |
+  | pass | fail | pass | Reported as found, with no reading fixed now. |
+* **Already in §97:**
+  - the decoder-bypass control: decode accuracy with slot inputs zero- and mean-ablated, ops visible;
+  - checkpoint validity.
+* **Cost.** 9 runs (GEN-4, GEN-1, HYB-4 × seeds 1–3), plus seeds 4–5 of any arm that passes G4. About $6. Projection to
+  Audit before launch.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
