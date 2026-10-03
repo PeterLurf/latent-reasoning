@@ -90,6 +90,12 @@ state pays full-vocabulary logits; 92-3). C1 + C2 + C3 + C6, scaffolded.
 * A free-table teacher trained on final answers with 5 % short batches certifies 4/5 and reproduces §92's per-op
   labels exactly (1.000 over 12.8M positions; §96).
 * So: C4 for the pipeline, qualified by p ≤ 0.05 and oracle M; the LM hosts, and does no acquisition.
+**General latent thinker (§97):** with no hand-built state (a text step target through the LM head, re-embedded text
+checkpoints every 4 ops), S5 is exact to 2,048 (3/3) at 0.56× the written state's compute. Checkpoint edit IIA is 1.0.
+C1 is qualified: partial recomputation under mean ablation. §98 (multiplication, against ICoT-SI) is running.
+**Fade to latent (§89 / §94):** the user's fade with a side step decoder, at 3× budget, answers both boxes question
+types at 1.000 in 5/5 seeds with pure latent thoughts. Removal falls to the NC floor. The earlier "where" failure was a
+budget lottery (§94 W1); the arrangement was always linearly available (Step 0).
 **In-depth composition (§88 / §90 / §91):** a looped GPT-2 with per-iteration targets composes unseen op sequences
 reliably (5/5) given word diversity and enough steps.
 **Stable latent (§72b / §73):**
