@@ -7699,6 +7699,21 @@ removal ≈ 0, 0.3–0.4× the written state's FLOPs), but they need a ground-tr
 **Placement.** 15 small table runs (GPU minutes each, about 0.2 GB). A local card when the experiments session frees one,
 else the local CPU at ≤ 3 threads, Idle priority. $0.
 
+**Note 96-1 (2026-10-03 11:20 EDT, before any §96 run; Audit's review of 889e78b5).**
+* **Where the per-op labels come from.** Only through the teacher's **own readout** D (code → arrangement), which is
+  trained on final answers only.
+  - Never through a code → state map built from true intermediate states.
+  - With M = 240, two codes can share an arrangement, so agreement is measured on **decoded arrangements**, not codes.
+  - The index map ψ is a fixed renaming of op and answer symbols between the two codebases' element orderings. It
+    carries no state information; it is equivalent to training the teacher on `boxes/s5`'s op ids. True intermediate
+    states enter only the scorer's comparison.
+* **Oracle qualifiers.** M = 2|G| is chosen knowing |S5| = 120, and the task is S5 with clean op tokens. The claim line
+  will carry both: "C4 for the pipeline, qualified by p and oracle M; the LM hosts and executes, and contributes no
+  acquisition."
+* **"Transfer by construction" holds only at P2 = 1.000 exactly.** If any teacher, certified or not, disagrees at even
+  one training position, §92's runs are not the same training data. Nothing is then claimed for that teacher until a
+  student retrain (a separate registration).
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
