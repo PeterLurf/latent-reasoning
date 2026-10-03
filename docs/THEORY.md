@@ -7937,6 +7937,18 @@ sufficient.**
 * **Disclosure.** Theory ran the committed scorer on the first three teachers (to test it), and Audit saw that interim
   file while checking the disk outage. Nothing in the design or rules changed afterwards.
 
+**Note 96-2 (2026-10-03 14:52 EDT; Audit's independent reproduction).**
+* **Reproduced.** Audit wrote its own BFS over the reachable (code, true element) product and its own rollout over the
+  12.8M training positions, using ψ only for the index map. Its counts match: mixP 0.05 4/5, mixP 0.1 0/5, std 5/5
+  certified; agreement 1.000 for all 15 teachers.
+* **Certificate convention, stated now.** "Certified" means correct **over all states reachable after at least one op**.
+  `certify()` never checks the start pair (code 0, e), the empty prefix.
+  - The std teachers decode the start code wrongly: D[0] = 65 / 35 / 72 / 43 / 25 for s2161–s2165. Every mixP teacher
+    gives D[0] = e.
+  - No problem has length 0, and the start code is never re-entered, so (0, e) is never queried.
+  - §92's position-0 start is the problem's given initial state, not a teacher label.
+  - No verdict changes.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
