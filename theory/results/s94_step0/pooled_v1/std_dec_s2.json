@@ -1,0 +1,98 @@
+{
+ "run": "boxes/runs/f89_fade_std_dec_s2",
+ "arm": "fade_std_dec",
+ "seed": 2,
+ "n": 4000,
+ "positions": {
+  "5": {
+   "letter_to_box": [
+    1.0,
+    1.0
+   ],
+   "box_to_letter": [
+    1.0,
+    1.0
+   ]
+  },
+  "10": {
+   "letter_to_box": [
+    1.0,
+    1.0
+   ],
+   "box_to_letter": [
+    1.0,
+    1.0
+   ]
+  },
+  "15": {
+   "letter_to_box": [
+    1.0,
+    1.0
+   ],
+   "box_to_letter": [
+    1.0,
+    1.0
+   ]
+  },
+  "20": {
+   "letter_to_box": [
+    1.0,
+    1.0
+   ],
+   "box_to_letter": [
+    1.0,
+    1.0
+   ]
+  },
+  "25": {
+   "letter_to_box": [
+    1.0,
+    1.0
+   ],
+   "box_to_letter": [
+    1.0,
+    1.0
+   ]
+  },
+  "30": {
+   "letter_to_box": [
+    1.0,
+    1.0
+   ],
+   "box_to_letter": [
+    1.0,
+    1.0
+   ]
+  },
+  "35": {
+   "letter_to_box": [
+    1.0,
+    1.0
+   ],
+   "box_to_letter": [
+    1.0,
+    1.0
+   ]
+  },
+  "40": {
+   "letter_to_box": [
+    1.0,
+    1.0
+   ],
+   "box_to_letter": [
+    1.0,
+    1.0
+   ]
+  }
+ },
+ "final": {
+  "letter_to_box": [
+   1.0,
+   1.0
+  ],
+  "box_to_letter": [
+   1.0,
+   1.0
+  ]
+ }
+}
