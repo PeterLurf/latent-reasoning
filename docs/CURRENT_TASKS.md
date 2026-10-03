@@ -2,7 +2,7 @@
 
 **Purpose.** If a Claude session crashes or a new chat takes over, this file says what is running, where, how to check
 or stop it, what is waiting to be scored, and the context needed to decide what comes next. Update it whenever a job
-starts or finishes. Last updated: **2026-10-03 02:22 EDT** (local time = UTC − 4).
+starts or finishes. Last updated: **2026-10-03 04:45 EDT** (local time = UTC − 4).
 
 Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registrations A–H, amendments) →
 `docs/PROTOCOL6_RESULTS.md` (scored so far) → the tail of `docs/RESEARCH_LOG.md` (chronology) →
@@ -35,7 +35,7 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 > gives fronts to depth 11 in 2/4 runs; Pilot D 12 + 12 running on Vast). Ownership (theory Vast hosts vs a PROTOCOL8)
 > to be agreed. The theory session analyses O/R/T9/T10 runs only after the experiments session has scored them.
 
-## 00. EXPERIMENTS STATE AT 2026-10-03 02:22 EDT — authoritative over section 0
+## 00. EXPERIMENTS STATE AT 2026-10-03 04:45 EDT — authoritative over section 0
 
 **Running (all local; no Vast hosts of ours):**
 * **§76(A) teachers on local GPUs (amendment 76-5):** `python theory/c1_tab_driver.py --groups {A5|S5|S4} --device
@@ -78,17 +78,20 @@ Read first in a new session: this file → `docs/PROTOCOL6.md` (pre-registration
 * **§83:** the verdict is fixed by seed 1 (fails; Theory). The host was destroyed at 17:48 by a surviving old watcher
   (incident disclosed). The models are local (`boxes/runs_s5/wc0k4r_s*`, shas in pods.txt). Seeds 2–3 and the extras
   are descriptive, lowest priority: `scratch/s83_local.sh` on cuda:2 after the §86 panel there.
-* **Overnight (user: keep iterating; Vast allowed; credit about $98, reserve ≥ $10, ≤ about 10 hosts):**
-  - **§91/§92 fleet on Vast** (5 × 3090, P = 2 per host): queues `scratch/gen_q_h{1..5}.txt`, job
-    `scratch/gen_vast_job.sh`, auto-drain `scratch/auto_drain_c1.sh "<h> <p> gen_h<n> <id> gen"` → `scratch/drain_gen.sh`
-    (per-run checksummed fetch, model.pt kept). Proof host passed (peak 10.2/24 GB at 2-concurrent). Cap $7.
-  - **§89 on Vast (amendment 89-5):**
-    - Proof host f89-proof runs fade_std s3 (`scratch/gen_q_f89proof.txt`, auto-drain).
-    - Then ≤ 5 hosts for fade_std s4–5, std_dec s3–5, coco_stage s2–5, locked locally. Cap $8.
-    - s1 pilots: std_dec 0.613, fade_std 0.158 (placement gate met).
-  - **Local:** f89 fade_std s2 (cuda:1), std_dec s2 (cuda:0), coco_stage s1 (cuda:2); then raw/soft/gold (descriptive)
-    via `scratch/c1_q_next.txt`; §83 s2/s3 last.
-  - gpu_watch2 restarts at 02:15 (task bsnkqwkqi). Scored tonight: §88 (complete), §90.
+* **Overnight (user: keep iterating; Vast allowed; credit about $95, reserve ≥ $10, ≤ about 10 live hosts):**
+  - **Done:** §91/§92 fleet (23 runs fetched, hosts destroyed; scored by Theory); §88 complete; §90 scored.
+  - **Live on Vast** (each with `scratch/auto_drain_c1.sh "<h> <p> <tag> <id> gen"` → `scratch/drain_gen.sh`):
+    - f89-proof (fade_std s3);
+    - gen-h6/h7/h8 (note 92-1: l92 k4 s4–5, k1 s1–3);
+    - p93-proof (§93 s4fix/s8fix/s4var s1; memory sampler on the host; mid-queue fetch check task b9saqvjsy).
+  - **Next:**
+    - When f89-proof drains, the §89 fleet: `scratch/gen_deploy_f89.sh "<offer> 1" "<offer> 2" "<offer> 3"`
+      (queues `scratch/gen_q_f{1,2,3}.txt`, P 3/3/2).
+    - When the 92-1 hosts drain and p93's first run verifies, the §93 fleet: `scratch/gen_q_q{1..4}.txt`. First check
+      the p93 memory sampler for the k8 pair; use P 1 if above about 20 GB.
+  - **Local:** §89 fade_std s2, std_dec s2, coco_stage s2 (coco s1/s2 in fp32 on the 2070), then raw/soft/gold;
+    §83 s2/s3 last.
+  - **Watcher:** `scratch/gpu_watch_loop.sh` (self-restarting; trips in `logs/gpu_watch_trips.log`).
 **Scored (details in docs/PROTOCOL12.md):** §65, §66, §61b, §67b, §72 (collapsed), §72b (PF-std 5/5), §73 (stable latent
 10/10), §71 (S1/S2 met, S3 comparator not reproduced, S4/C1 not met).
 **Paused:** §68 GSM8K training (user: beat SOTA on smaller tasks first).
