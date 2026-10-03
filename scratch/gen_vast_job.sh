@@ -5,6 +5,7 @@
 # boxes.*; S5 data regenerated with DeltaProduct's generator (sha-checked, as §71) if the queue uses boxes.latent86.
 cd "$(dirname "$0")/.."
 tag=$1; dev=$2; q=$3; P=${4:-1}; log=logs/queue_$tag.out; mkdir -p logs
+pq=$(grep -o "^# P=[0-9]*" "$q" | head -1 | cut -d= -f2); [ -n "$pq" ] && P=$pq          # concurrency from the queue header
 pip install -q transformers==4.46.2 tiktoken > logs/pip_gen.log 2>&1
 for try in 1 2 3; do python -c "from transformers import GPT2LMHeadModel, GPT2TokenizerFast; GPT2LMHeadModel.from_pretrained('openai-community/gpt2'); GPT2TokenizerFast.from_pretrained('openai-community/gpt2')" >> logs/pip_gen.log 2>&1 && break; sleep 30; done
 if grep -q "boxes.latent86" "$q"; then
