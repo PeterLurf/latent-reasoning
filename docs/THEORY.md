@@ -7576,6 +7576,29 @@ removal dropping it to ≤ NC + 0.05 for that type.
   α = 0 (untrained), and (ii) §66's NC model's positions. These are the baseline decodability.
 * The interim s1 result (letter → box 1.0 at every op block, n = 1,000; CURRENT_TASKS 10:20) is read under this note.
 
+**§94 Step 0 result (2026-10-03 13:36 EDT; probes run by the experiments session, 2e559168, `theory/results/s94_step0/`;
+read under note 94-1; descriptive, no W verdict).**
+* **Setup.** Linear probes, n = 4,000 (about 2,000 per question type, 25 % held out). Values are per-slot accuracy /
+  all-4 correct.
+* **FADE-std-dec s1–5:**
+  - letter → box and box → letter ≈ **1.0 / 1.0 at every op block**, fitted and tested **separately on "where" and on
+    "all" latents**;
+  - the lowest value is s5 "where" all-4 at 0.996;
+  - failing seeds (s1, s3, s4, s5: "where" ≈ 0.23) and the passing seed (s2) do not differ.
+* **Controls:**
+  - pretrained GPT-2 with α = 0 thought inputs (s1–2): chance everywhere (0.23–0.27 per slot, ≤ 0.06 all-4);
+  - §66's NC s1 prompt states: 0.92 / 0.80 after op 1, 0.47 / 0.10 after op 2, chance from op 3 on and at " a:";
+  - NC s2–s3 were not run: their checkpoints were not kept at fetch, so NC is single-seed. That is enough for a
+    baseline-decodability reading, so no retraining.
+* **Reading (94-1's wording).**
+  - The arrangement, including the letter → box map, is **linearly available in the latents of "where" problems at
+    every op block**, in failing and passing seeds alike. The model keeps tracking on "where" problems.
+  - The "where" failure is therefore a **readout** failure (94-1), not missing information or a stop in tracking.
+  - This shows availability, not direction: a linear letter → box probe is the transpose of the arrangement probe
+    (94-1).
+  - It removes §94's "information absent / box-ordered storage" branch for these models.
+  - W1 / W2 (budget vs inverse target) wait on the arms.
+
 **§93 result (2026-10-03 11:08 EDT; runs by the experiments session on Vast; scored by Theory alone with
 `theory/score_s93.py`, committed before reading (97de49f1); `theory/results/score_s93.json`). P-S4 and P-S8 are not met.**
 
