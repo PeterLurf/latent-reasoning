@@ -1,0 +1,79 @@
+{
+ "arm": "gen",
+ "k": 1,
+ "seed": 3,
+ "train_sec": 4180,
+ "eval_dtype": "torch.bfloat16",
+ "test_sequences": 2000,
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "cumulative": {
+  "128": 1.0,
+  "256": 1.0,
+  "512": 1.0
+ },
+ "final_state_acc_512": 1.0,
+ "compute_512_per_problem": {
+  "tokens_processed": 9216,
+  "flops": 1808121987072.0,
+  "seq_passes": 4096,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "latent_slots": 512,
+  "measurement_decode_flops": 0.0
+ },
+ "checkpoint_validity": {
+  "snaps": 1024000,
+  "valid": 1024000,
+  "rate": 1.0
+ },
+ "extension_2048": {
+  "n": 500,
+  "len": 2048,
+  "cumulative": {
+   "512": 1.0,
+   "1024": 1.0,
+   "2048": 1.0
+  }
+ },
+ "chunk_check": {
+  "k": 1,
+  "n": 100000,
+  "per_chunk_acc": 1.0,
+  "per_slot_acc": [
+   1.0
+  ],
+  "pred_seq_acc_512": 1.0
+ },
+ "certificate": {
+  "k": 1,
+  "inputs": 14400,
+  "total": 14400,
+  "errors": 0,
+  "certified": true
+ },
+ "wte_drift": {
+  "tokens": [
+   " >",
+   " A",
+   " B",
+   " C",
+   " D",
+   " E"
+  ],
+  "cosine": [
+   0.9990518093109131,
+   0.9948119521141052,
+   0.9956607222557068,
+   0.9950541257858276,
+   0.9964703321456909,
+   0.9973233938217163
+  ],
+  "min_cosine": 0.9948119521141052
+ },
+ "edit_iia": {
+  "n": 5000,
+  "iia": 1.0
+ },
+ "eval_sec": 1320
+}

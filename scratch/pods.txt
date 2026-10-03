@@ -536,3 +536,4 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 54031327 vast | gen_v3 DESTROYED_VERIFIED 2026-10-03 13:35 after verified per-run fetch (boxes/runs_s5/l95_f05_s3 boxes/runs_s5/l95_f05_s1 boxes/runs_s5/l95_f05_s2)
 54031323 vast | gen_v2 DESTROYED_VERIFIED 2026-10-03 13:41 after verified per-run fetch (boxes/runs_s5/l95_f025_s1 boxes/runs_s5/l95_f025_s3 boxes/runs_s5/l95_f025_s2)
 54030282 vast | gen_v1 DESTROYED_VERIFIED 2026-10-03 14:28 after verified per-run fetch (boxes/runs_s5/l95_f005_s1 boxes/runs_s5/l95_f005_s2 boxes/runs_s5/l95_f005_s3)
+54038416 vast | gen_x2 DESTROYED_VERIFIED 2026-10-03 14:48 after verified per-run fetch (boxes/runs_s5/g97_gen1_s1 boxes/runs_s5/g97_gen1_s3 boxes/runs_s5/g97_gen1_s2)
