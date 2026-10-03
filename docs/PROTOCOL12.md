@@ -682,3 +682,10 @@ nc/tc_s1–3 on the same items (note 89-3): NC N 5–8 median 0.14, so F2's floo
   **descriptive**; F3 is not met / not applicable. My scorer (score_s89.json) printed it without the gate. The
   verdicts stand as F1 not met (soft pending), F2 and F3 not applicable. Theory's scorer writes
   score_s89_theory.json.
+* **Dropped by the user (2026-10-03 19:15 EDT, directive relayed by Audit: "If the fade idea is a dead end, we don't
+  have to keep testing it"; the fade line is closed: §94 positive, its useful part is in §97).**
+  - fade_soft s3 and fade_gold s3 were never started and are dropped (marked in `scratch/c1_q_next.txt`; lock dirs held).
+  - fade_raw s3 and fade_soft s2 were mid-training and finish.
+  - fade_soft s2's first attempt (an OOM on the fp32 2070) is void. FADE-soft therefore has at most 2 seeds (s1, s2) and
+    FADE-gold 2 (s1, s2): descriptive only.
+  - F1 is final from the arms in hand when s2 lands.

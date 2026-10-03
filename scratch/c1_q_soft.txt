@@ -1,2 +1,2 @@
 # §89 soft arm on bf16 cards only (fp32 on the 2070 OOMs)
-boxes/runs/f89_fade_soft_s3 boxes.fade89 --arm fade_soft --seed 3
+# DROPPED (user, 2026-10-03 19:15, fade line closed): boxes/runs/f89_fade_soft_s3 boxes.fade89 --arm fade_soft --seed 3
