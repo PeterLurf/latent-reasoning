@@ -1,0 +1,14 @@
+{
+ "cmd": "loop",
+ "group": "S3",
+ "n_words": 25,
+ "arm": "align",
+ "k": 2,
+ "seed": 3,
+ "steps": 4000,
+ "bs": 64,
+ "lr": 0.0001,
+ "bf16": false,
+ "device": "cuda:2",
+ "out": "c1/runs/p88_align_k2_s3"
+}
