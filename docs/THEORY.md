@@ -7147,6 +7147,46 @@ before any eval.json was read (disclosed).
   panel completes, and it decides placement only. Nothing in §89's design, arms or rules depends on it. They are
   counted as registered.
 
+## 90. Word diversity and loop-aligned composition: does §88's k = 2 failure come from too few training words? (pre-registered 2026-10-02 21:32 EDT, after Literature's check 81bf89b and before any run; Audit's suggestion)
+
+**Why.** §88's LOOP-align composes unseen 3-op S3 words perfectly (k = 3, about 151 training words), but at k = 2 (25
+training words) its second iteration does not generalise. Is the shared looped step's generalisation a data-diversity
+effect (Raventós 2306.15063; Power 2201.02177; Wang 2405.15071), or a property of k?
+
+**Transition coverage (Literature's confound; checked against §80's split).** With a shared, per-iteration-supervised
+step, what matters may be (state, op) transition coverage rather than word count.
+* In §80's split the start state **varies** over all states: k = 2 has 135 training pairs = 25 words × 6 starts − 15
+  held out.
+* So each iteration's (state, op) transitions are covered whenever the op appears at that position in some training
+  word. That is essentially complete for S3, and for S4 at ≥ 100 words.
+* §90 therefore varies word diversity at (near-)full transition coverage. Coverage is **reported** per training set,
+  and test (state, word) pairs are scored separately for "all transitions seen in training paths" vs "≥ 1 unseen".
+
+**Arms** (§88's LOOP-align model and recipe: GPT-2 small, layers 4–7 looped k times, per-iteration 1 shared head,
+AdamW lr 1e-4, bs 64, 4,000 steps; seeds 1–3).
+* **S3, k = 3, 25 training words** (a random subset fixed by seed). The unseen set (b) and held-out pairs (a) are §80's.
+  Its about 150 training pairs roughly match k = 2's 135.
+* **S4, k = 2, training words ∈ {25, 100, 400}** (of 576).
+  - Ops are 24 single-token symbols; the state is the 4-letter arrangement; a 24-way head.
+  - A fixed unseen-word set (30 %, 173 words; seed 90) and 10 % held-out (state, word) pairs for seen words.
+  - Starts vary over all 24 states.
+
+**Predictions.**
+* **V1 (k = 3 breaks at k = 2's data size).** S3 k = 3 with 25 words: (b) median < 0.50.
+* **V2 (k = 2 recovers with diversity).** S4 k = 2: (b) median < 0.50 at 25 words and ≥ 0.90 at 400.
+
+**Readings.**
+* **V1 + V2.** Loop-aligned in-pass composition needs a minimum diversity of training words (a threshold between 25 and
+  about 150). §88's k = 2 failure was data, not k.
+* **V1 only.** Diversity matters, but more S4 words do not rescue k = 2 at this budget.
+* **V2 only.** k = 3 composes even from 25 words, so §88's k = 2 failure is k-specific.
+* **Neither.** Report.
+
+**Tags.** C1 (use) and C2 in depth, not C4; scope as §88 (per-iteration targets).
+
+**Placement.** Local cards, in gaps between §89 jobs, ahead of §83's descriptive seeds. 12 runs of about 10 min each.
+$0.
+
 ## 7. Log
 
 * 2026-09-29 01:10–01:45 — exp1 (window), exp2 (pointer), exp3/4 (component attribution), exp5 (retrieval block) on the
