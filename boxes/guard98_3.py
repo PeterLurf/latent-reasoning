@@ -40,13 +40,16 @@ def run(M, arm, task, steps=150, nb=8, dev="cpu"):
 if __name__ == "__main__":
     import argparse, json
     ap = argparse.ArgumentParser(); ap.add_argument("--old", default=os.path.join(ROOT, "boxes", "mult98_old_forkconflict.py"))
-    ap.add_argument("--device", default="cpu"); ap.add_argument("--out", default=None); a = ap.parse_args()
+    ap.add_argument("--device", default="cpu"); ap.add_argument("--out", default=None)
+    ap.add_argument("--steps", type=int, default=150); ap.add_argument("--only", default=None, help="e.g. FIXED:mask:5x5"); a = ap.parse_args()
     torch.set_num_threads(4); DEV = a.device                                 # fp32 on any device
     new, old = mod(os.path.join(ROOT, "boxes", "mult98.py"), "m98_new"), mod(a.old, "m98_old"); rows = []
     for label, M in (("FIXED", new), ("OLD", old)):
         for arm in ("genm", "mask"):
             for task in ("4x4", "5x5"):
-                last, ans, loss = run(M, arm, task, dev=DEV)
+                if a.only and a.only != f"{label}:{arm}:{task}":
+                    continue
+                last, ans, loss = run(M, arm, task, steps=a.steps, dev=DEV)
                 verdict = "PASS" if last == 1 and ans == 1 else "FAIL"
                 print(f"{label:5s} {arm:4s} {task}: final-slot step text exact {last:.3f}, answer exact {ans:.3f}, final train loss {loss:.3f} -> {verdict}", flush=True)
                 rows.append({"code": label, "arm": arm, "task": task, "final_slot_exact": float(last), "answer_exact": float(ans), "train_loss": loss, "verdict": verdict})

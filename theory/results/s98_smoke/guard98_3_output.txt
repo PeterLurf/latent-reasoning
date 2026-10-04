@@ -1,0 +1,15 @@
+Note 98-3 guard (boxes/guard98_3.py; 8 fixed 4x4/5x5 test problems, Adam lr 3e-4, fp32, RTX 3090 Vast gen-g1 54108396, 2026-10-04 01:28):
+FIXED genm 4x4: final-slot step text exact 1.000, answer exact 1.000, final train loss 0.002 -> PASS
+FIXED genm 5x5: final-slot step text exact 1.000, answer exact 1.000, final train loss 0.007 -> PASS
+FIXED mask 4x4: final-slot step text exact 1.000, answer exact 1.000, final train loss 0.010 -> PASS
+FIXED mask 5x5: final-slot step text exact 0.000, answer exact 0.000, final train loss 31.665 -> FAIL   (150 steps: not yet fit)
+OLD   genm 4x4: final-slot step text exact 1.000, answer exact 0.000, final train loss 0.283 -> FAIL
+OLD   genm 5x5: final-slot step text exact 0.125, answer exact 0.875, final train loss 0.697 -> FAIL
+OLD   mask 4x4: final-slot step text exact 0.500, answer exact 0.500, final train loss 0.289 -> FAIL
+OLD   mask 5x5: final-slot step text exact 0.000, answer exact 0.000, final train loss 35.635 -> FAIL
+FIXED mask 5x5 at more steps (the slot-only fork must emit 23 tokens; same host):
+steps 400: FIXED mask 5x5: final-slot step text exact 1.000, answer exact 1.000, final train loss 0.028 -> PASS
+steps 800: FIXED mask 5x5: final-slot step text exact 1.000, answer exact 1.000, final train loss 0.005 -> PASS
+Verdict: every FIXED configuration can fit and decode the final slot's step text AND the answer exactly; every OLD
+configuration fails (OLD genm 4x4 learns the final slot perfectly but the answer at 0: the shared-first-token conflict).
+Earlier attempts: 50 steps at lr 1e-3 could not fit even FIXED (loss 28); a local run starved in WDDM memory fallback.
