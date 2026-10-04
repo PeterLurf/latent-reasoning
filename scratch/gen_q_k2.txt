@@ -1,4 +1,4 @@
-# §108 forced latent carriage on S5 (Markov segments; donor protocol primary)
+# §108 forced latent carriage on S5 (Markov segments; donor protocol primary) -- RUNNING LOCALLY (scratch/c1_q_108_local.txt), do not deploy
 # P=3
 boxes/runs_s5/s108_mk4_s4 boxes.mk108 --k 4 --seed 4
 boxes/runs_s5/s108_mk4_s5 boxes.mk108 --k 4 --seed 5
