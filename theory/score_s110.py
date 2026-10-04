@@ -5,6 +5,7 @@ protocol, in-chunk slots), short_fraction, rounds.
 SELF2: cumulative >= 0.99 at 512 in >= 4/5.  C1: in SELF2 seeds, mean-removal <= 0.06 and donor USE >= 0.90 with
 recipient < 0.10 at every in-chunk slot, in >= 4/5 seeds overall.  C6: cumulative >= 0.99 at 2,048 in >= 4/5.
 STUDENT (conditional): the same rules on s110_student_s*.
+§113 (READ port, conditional): the same rules on s113_s11..s113_s15.
 §110b (corrected; identity-start shorts, random textual starts for length >= 3): the same rules on s110b_s* / s110b_student_s*.
     python theory/score_s110.py
 """
@@ -16,9 +17,9 @@ import numpy as np
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-def score(prefix):
+def score(prefix, seeds=range(1, 6)):
     runs = {}
-    for s in range(1, 6):
+    for s in seeds:
         f = os.path.join(ROOT, "boxes", "runs_s5", "%s_s%d" % (prefix, s), "eval.json")
         if os.path.exists(f):
             r = json.load(open(f)); assert r.get("short_fraction", 0) <= 0.05 + 1e-9, f
@@ -42,7 +43,7 @@ def score(prefix):
 
 
 def main():
-    res = {"main": score("s110"), "student": score("s110_student"), "s110b": score("s110b"), "s110b_student": score("s110b_student")}
+    res = {"main": score("s110"), "student": score("s110_student"), "s110b": score("s110b"), "s110b_student": score("s110b_student"), "s113": score("s113", range(11, 16))}
     for k, A in res.items():
         print(k, {x: A[x] for x in ("n", "median512", "range512", "SELF2", "self2_seeds", "C1", "c1_seeds", "C6", "student_trigger")})
     json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s110.json"), "w", newline="\n"), indent=1, default=float)
