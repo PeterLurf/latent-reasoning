@@ -1,0 +1,8 @@
+NVIDIA GeForce RTX 3090, 570.86.15
+05:48:55 start boxes/runs_mult/m98_mask_5x5_s1
+05:48:55 start boxes/runs_mult/m98_mask_5x5_s2
+05:48:55 start boxes/runs_mult/m98_mask_5x5_s3
+08:48:52 evaluated boxes/runs_mult/m98_mask_5x5_s3 rc 1 no-eval
+08:49:29 evaluated boxes/runs_mult/m98_mask_5x5_s2 rc 0
+08:49:55 evaluated boxes/runs_mult/m98_mask_5x5_s1 rc 0
+08:49:55 QUEUE_DONE

@@ -588,3 +588,5 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 54122096 vast offer 11925445 created 2026-10-04 03:48: label gen-m10, queue scratch/gen_q_m10.txt (logged at create by vdeploy_toy.sh)
 54110971 vast | gen_u3 DESTROYED_VERIFIED 2026-10-04 04:18 after verified per-run fetch (boxes/runs_mult/m100_mask2_4x4_s1 boxes/runs_mult/m100_mask2_4x4_s3); FAILED (no eval.json, logs fetched): boxes/runs_mult/m100_mask2_4x4_s2
 54110971 vast | gen_u3 CORRECTION 2026-10-04 04:19: m100_mask2_4x4_s2 is NOT failed. Its eval was re-run with --eval_only on the host (04:14) and its eval.json + model.pt were fetched and verified (the drain classified it while the re-run was finishing)
+54125241 vast offer 49745140 created 2026-10-04 04:20: label gen-m4, queue scratch/gen_q_m4.txt (logged at create by vdeploy_toy.sh)
+54110967 vast | gen_r4 DESTROYED_VERIFIED 2026-10-04 05:09 after verified per-run fetch (boxes/runs_mult/m98_mask_5x5_s3 boxes/runs_mult/m98_mask_5x5_s2 boxes/runs_mult/m98_mask_5x5_s1)
