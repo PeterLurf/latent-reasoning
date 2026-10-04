@@ -741,6 +741,18 @@ to guide back?"; Literature 6230b7f5, `docs/LIT_SELF_SNAP_2026-10-04.md`).**
 * **Prior:** State-Regularized RNNs 1901.08817 (from scratch); QBN 1811.12530; VQ-VAE; Token Assorted (codes, not drift
   correction). An online-learned snap in a pretrained LM's chain was not found, so it is new as scoped.
 
+**Note 101-2 (2026-10-04 01:09 EDT; SELF-SNAP premise result, `theory/s101_premise.py`, `theory/results/s101_premise.json`).
+The gate fails, so SELF-SNAP is not run (as pre-registered in 101-1).**
+* **Result.** k-means (M = 240) on frozen §97 HYB-4 last-slot states u (standardised as §101's g), 20k fresh chunks:
+  **purity 0.059 / 0.109 / 0.065 (median 0.065)**, NMI 0.20 / 0.37 / 0.23. All 240 clusters were used. The gate was
+  ≥ 0.90.
+* **Reading (descriptive).** The state is perfectly *readable* (the step-text decoder reads it at 1.0) but not
+  *cluster-separable* in the raw hidden space. It occupies a low-variance subspace, dominated by other variation. A
+  self-discovered manifold for snapping would have to be found in a learned projection (e.g. a small learned encoder
+  trained only for clusterability / reconstruction), not by clustering raw latents.
+  - That is a possible later design. It is not registered now.
+* §101's other arms (β_min 1 / 0.1 / 0.01 / 0, given codebook) are unaffected.
+
 ## 102. State in depth: a gated residual path from slot j−1 to slot j on multiplication (pre-registered 2026-10-04 00:17 EDT, after Literature's checks a214bb6d and 5c2e080e and before any implementation or run; the user's approval via Audit)
 
 **Why.** Latent hand-offs are learned slot by slot (the staircase; §92; §98's 4×4 slot 3). In our design, slot j gets its

@@ -1,0 +1,4 @@
+s1 purity 0.0585 nmi 0.1996 clusters 240
+s2 purity 0.1086 nmi 0.3744 clusters 240
+s3 purity 0.0650 nmi 0.2318 clusters 240
+median purity 0.0650 -> SELF-SNAP runs: False
