@@ -1,0 +1,5 @@
+# §106 note 106-3: WC-S-k2 s1-3 (written comparator, history cut every 2 steps)
+# P=3
+boxes/runs_mult/s106_wcs_k2_s1 boxes.stream106 --arm wcs_k2 --seed 1
+boxes/runs_mult/s106_wcs_k2_s2 boxes.stream106 --arm wcs_k2 --seed 2
+boxes/runs_mult/s106_wcs_k2_s3 boxes.stream106 --arm wcs_k2 --seed 3
