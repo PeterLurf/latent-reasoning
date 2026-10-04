@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-03 19:55 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-04 07:00 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -20,52 +20,52 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 Messages go through SendMessage. The names "Theory" and "Audit" currently need an identity confirm, pending the user,
 so send to the pipe addresses their messages come from.
 
-## Running now (04:00 2026-10-04; credit about $163; Audit: up to ~14 live overnight, one proof host per new code path)
+## Running now (07:00 2026-10-04; credit about $155; Audit: ~14 live, temporarily 16 for C1 items; one proof host per new code path)
 
-**Note 98-3 (Theory, 2026-10-03 ~23:40):** mult98's GEN-M/MASK had two forks at the final slot sharing a first token,
-so the last step and the answer failed by construction. Fixed (one final fork, step text ++ " #### product"). The guard
-test passed (FIXED fits and decodes, OLD fails; `theory/results/s98_smoke/guard98_3_output.txt`). The old §98 GEN-M/MASK
-and §99 runs are voided (`*.void_forkconflict`, kept); their hosts were aborted with `scratch/abort_host.sh`.
+**Note 98-3 (Theory, 2026-10-03 ~23:40):** mult98's GEN-M/MASK final slot had two forks sharing a first token. Fixed
+(one final fork, step text ++ " #### product"); guard test in `theory/results/s98_smoke/guard98_3_output.txt`; old runs
+kept as `*.void_forkconflict`.
 **Order (user, via Audit):** C1 > C6 > C4 = C2 > C3 > C5 > C7.
 
 ### Vast (all `scratch/gen_deploy_*.sh`, watchers gen4/gen5 + partial drains; `scratch/watch_any2.sh` waiters)
 
 | Tag | Instance | ssh (`-i ~/.ssh/runpod_ed25519 root@…`) | Work |
 |---|---|---|---|
-| r3 | 54110367 | `-p 42018 109.173.238.203` | §98 rerun MASK 4x4 s1-3 (gen4; eval without OOM fallback) |
 | u4 | 54110975 | `-p 41232 83.27.30.232` | §100 MASK2 5x5 s1-3 |
-| m1 | 54111465 | `-p 22599 142.113.28.123` | §99 markov s1-3 |
-| m2 | 54111472 | `-p 41152 77.48.24.153` | §99 ctrl s1-3 |
-| f1 | 54111560 | `-p 9195 136.36.139.116` | §105 gen97 GEN-4 --fork mask s1-3 (keep model.pt; Theory runs s104_serial) |
 | s1 | 54111926 | `-p 6412 142.127.68.223` | §101 b0 s2 only (s1/s3 OOM'd at P2 before --micro; logs kept) |
-| s2 | 54122048 | `-p 42390 167.179.138.57` | §101 micro proof: b0 s1/s3, then b1 s1/s2 (P2) |
-| t1 | 54122055 | `-p 40071 96.20.36.104` | §103 self103, 3 seeds in lockstep -> boxes/runs_s5/s103/s103_s* (move to boxes/runs_s5/ on fetch) |
-| p1 | 54122094 | `-p 11776 142.127.68.223` | §106 pilot GEN-S-MASK s1-3 |
-| m10 | 54122096 | `-p 42075 167.179.138.57` | §107 lat2 s1-3 |
+| s2 | 54122048 | `-p 42390 167.179.138.57` | §101 micro proof: b0 s1/s3, then b1 s1/s2 |
+| t1 | 54122055 | `-p 40071 96.20.36.104` | §103 self103 -> boxes/runs_s5/s103/s103_s* (move to boxes/runs_s5/ on fetch) |
+| m10 | 54122096 | `-p 42075 167.179.138.57` | §107 lat2 s1-3 (proof for m11/m12) |
 | m4 | 54125241 | `-p 40067 96.20.36.104` | §102 statepath s1-3 |
-| r1 | 54130307 | `-p 50171 137.175.22.196` | §98 GEN-M 4x4 s1-3 (s1 restarted by hand after a tiktoken download timeout) |
+| r1 | 54130307 | `-p 50171 137.175.22.196` | §98 GEN-M 4x4 s1-3 (s1 restarted by hand; its queue "rc 1" line is the old tiktoken timeout) |
 | r2 | 54131932 | `-p 28503 149.200.35.231` | §98 GEN-M 5x5 s1-3 |
 | u1 | 54131907 | `-p 50139 137.175.22.196` | §100 GEN2 4x4 s1-3 |
+| m8 | 54134511 | `-p 27762 149.200.35.231` | §99 tfslot s1-3 (C1) |
+| k1 | 54134514 | `-p 30047 154.61.62.158` | §108 MK-4 s1-3 (proof for k2-k4) |
+| u2 | 54138454 | `-p 40605 77.48.24.153` | §100 GEN2 5x5 s1-3 |
+| m5 | 54138455 | `-p 20154 151.237.25.16` | §99 std s1-3 |
+| m6 | 54138463 | `-p 47253 86.123.234.69` | §99 textfirst s1-3 |
+| p2 | 54139052 | `-p 12419 81.166.162.13` | §106 note 106-3 GEN-S-MASK-k2 s1-3 (C1 group) |
+| p3 | 54139062 | `-p 49822 86.123.234.69` | §106 note 106-3 WC-S-k2 s1-3 (new code, own proof) |
 
-**Queued, not yet deployed** (backfill as hosts drain; ~14 live allowed; a second host of an experiment only after its first host's first eval.json and drain):
-1. §99 tfslot (`gen_q_m8`, `gen_deploy_99b.sh`): moved up by Theory/Audit (C1 blocker: the second hand-off within a chunk).
-2. §101 second/third hosts (`gen_q_s3/s4`), after s2 proves the micro code.
-3. §107 lat4/pause4 (`gen_q_m11/m12`), after m10.
-4. COCO 4x4 s3 + 5x5 s3 on Vast (`gen_q_r5`, `gen_deploy_98r.sh`).
-5. §100 GEN2 5x5 (`gen_q_u2`); the rest of §99 (`gen_q_m5` std, `m6` textfirst, `m7` textfirst_mask, `m9` combo).
-6. §106 GEN-S / WC-S / TC-S: only if the p1 pilot passes its gate (b = 4 >= 0.95 in >= 2/3).
+**Queued, not yet deployed** (backfill as hosts drain; a second host of an experiment only after its first host's first eval.json and drain):
+1. §108 k2-k4 (`gen_q_k2..k4`, `gen_deploy_108.sh`) after k1.
+2. §101 `gen_q_s3/s4` after s2.
+3. §107 lat4/pause4 (`gen_q_m11/m12`) after m10.
+4. The rest of §99: `gen_q_m7` textfirst_mask, `m9` combo.
+5. §106: the k = 4 pilot failed its gate (note 106-2); latent k = 4 arms not run; TC-S deferred (Theory).
 
 ### Local PC (torch `cuda:0` = 4060, `cuda:1` = 3070, `cuda:2` = 2070)
 
-* 4060: Theory's §104 (C1) alone. My COCO 4x4 s3 was stopped at 23.7k (deadlock; kept `*.void_contention`), requeued on Vast. COCO 5x5 s3 stays held (lock dir) until it runs on Vast.
-* 3070: COCO 5x5 s1 eval re-run (eval_bs 50), then COCO 5x5 s2 (`scratch/c1_q_98coco_b.txt`).
+* 4060: COCO 4x4 s3 (restart) then 5x5 s3 (`scratch/c1_q_98coco_c.txt`).
+* 3070: COCO 5x5 s2 (`scratch/c1_q_98coco_b.txt`).
 * 2070: §83 extras (fp32).
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
 * **§97 C6:** complete (GEN-4 and HYB-4 s4-5 fetched).
-* **§98:** ICoT-SI done (0.998 / 0.996); COCO 4x4 s1-2 in, s3 + 5x5 local; TC/NC on y5; GEN-M/MASK rerunning (98-3).
-* **§99, §100, §101, §105:** running (above).
+* **§98:** ICoT-SI done (0.998 / 0.996); TC/NC done; MASK 4x4 + 5x5 done; COCO 4x4 s1-2 + 5x5 s1 in, rest local; GEN-M rerunning (r1/r2).
+* **§99** kcurr/markov/ctrl done; **§100** MASK2 4x4 done; **§105** done (models local for Theory); **§106** pilot gate failed (106-2); others running (above).
 * **§83 s2/s3** extras (local, fp32); **§89** soft s2 / raw s3 landed (descriptive; F1 final from the arms in hand).
 * **§94 Step 0** on the 13 §94 models: done (5d07f7fa).
 
