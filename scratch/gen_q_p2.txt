@@ -1,0 +1,5 @@
+# §106 note 106-3: GEN-S-MASK-k2 s1-3 (snap every 2 steps; train b<=5, test b=4/8/16/32 + a5b8)
+# P=3
+boxes/runs_mult/s106_gens_mask_k2_s1 boxes.stream106 --arm gens_mask_k2 --seed 1
+boxes/runs_mult/s106_gens_mask_k2_s2 boxes.stream106 --arm gens_mask_k2 --seed 2
+boxes/runs_mult/s106_gens_mask_k2_s3 boxes.stream106 --arm gens_mask_k2 --seed 3
