@@ -69,10 +69,10 @@ Every host is deployed by `scratch/gen_deploy_9{7,8}.sh`, has a watcher `scratch
   §98's TC-M / NC-M / ICoT-SI.
 * **§89:** final F1 from the arms in hand once fade_soft s2 lands (`python c1/score_89.py`).
 * **§83 s2/s3** (descriptive; s2/s3 fp32, s1 bf16).
-* **§94 Step 0 probes** on the new models (descriptive).
 
 ## Recently done (details in THEORY / PROTOCOL12 / git log)
 
+* **§94 Step 0 on the new models** (note 94-3): the decoder arms are linearly available 10/10; no decoder 1/3.
 * **§94** W1, W2 met (budget fixes "where").
 * **§95** foothold dose (scored).
 * **§96** (Theory).
