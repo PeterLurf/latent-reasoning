@@ -5,7 +5,7 @@ it whenever a job starts or finishes. History before this rewrite (dated state b
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
 **Last updated: 2026-10-03 19:55 EDT** (local = UTC − 4; Vast hosts log UTC).
 
-**Read first in a new session:** this file → `docs/NORTH_STAR.md` → the tail of `docs/THEORY.md` (registrations and
+**Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
 
 ## Sessions
