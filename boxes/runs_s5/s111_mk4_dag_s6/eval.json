@@ -1,0 +1,227 @@
+{
+ "arm": "mk4_dag",
+ "k": 4,
+ "seed": 6,
+ "steps": 24000,
+ "train_sec": 15560,
+ "eval_dtype": "torch.bfloat16",
+ "test_sequences": 2000,
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "segment_types": {
+  "start_or_gold_text": 25219,
+  "latent": 68855
+ },
+ "cumulative": {
+  "128": 0.0,
+  "256": 0.0,
+  "512": 0.0
+ },
+ "final_state_acc_512": 0.0075,
+ "compute_512_per_problem": {
+  "tokens_processed": 5888,
+  "flops": 1062320603136.0,
+  "seq_passes": 1792,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "latent_slots": 512,
+  "measurement_decode_flops": 505439059968.0
+ },
+ "checkpoint_validity": {
+  "snaps": 256000,
+  "valid": 256000,
+  "rate": 1.0
+ },
+ "extension_2048": {
+  "n": 500,
+  "len": 2048,
+  "cumulative": {
+   "512": 0.0,
+   "1024": 0.0,
+   "2048": 0.0
+  }
+ },
+ "chunk_check": {
+  "k": 4,
+  "n": 100000,
+  "per_chunk_acc": 0.0,
+  "per_slot_acc": [
+   1.0,
+   0.00971,
+   0.0087,
+   0.00845
+  ],
+  "pred_seq_acc_512": 0.0
+ },
+ "per_handoff_acc": {
+  "per_position": [
+   0.0096,
+   0.010416666666666666,
+   0.006134969325153374
+  ],
+  "pooled": 0.009579955784819455,
+  "first_slot": 1.0,
+  "n": 20000
+ },
+ "donor": {
+  "slot1": {
+   "donor_consistent": 0.011,
+   "recipient_consistent": 0.0085
+  },
+  "slot2": {
+   "donor_consistent": 0.008,
+   "recipient_consistent": 0.009
+  },
+  "slot3": {
+   "donor_consistent": 0.0065,
+   "recipient_consistent": 0.01
+  }
+ },
+ "removal": {
+  "zero": {
+   "k": 4,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.0031,
+    0.0,
+    0.0,
+    0.0081
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "zero",
+   "acc_after_first_ablated_slot": 0.0027
+  },
+  "mean": {
+   "k": 4,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.5827,
+    0.0101,
+    0.0092,
+    0.0087
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "mean",
+   "acc_after_first_ablated_slot": 0.009333333333333334
+  }
+ },
+ "edit_iia": {
+  "n": 5000,
+  "iia": 0.0088
+ },
+ "train_handoff_err": {
+  "n": 20000,
+  "len": 128,
+  "note": "training rows are 128 ops: 128-op rollouts",
+  "in_chunk_err": 0.985176960444136,
+  "snap_err": 0.0,
+  "pooled_err": 0.8614738579542696,
+  "first_pos_err": 0.0,
+  "cumulative_128": 0.0
+ },
+ "ratio_per_1k": [
+  [
+   1000,
+   null
+  ],
+  [
+   2000,
+   null
+  ],
+  [
+   3000,
+   1.043229262902242
+  ],
+  [
+   4000,
+   0.8709930816210307
+  ],
+  [
+   5000,
+   1.0080586516389387
+  ],
+  [
+   6000,
+   0.937638676686318
+  ],
+  [
+   7000,
+   1.0037646004214429
+  ],
+  [
+   8000,
+   1.0221061628592336
+  ],
+  [
+   9000,
+   0.993233878424423
+  ],
+  [
+   10000,
+   0.9983189593302432
+  ],
+  [
+   11000,
+   1.0149985629649194
+  ],
+  [
+   12000,
+   1.012188645442456
+  ],
+  [
+   13000,
+   1.022263658771525
+  ],
+  [
+   14000,
+   1.0259753277644905
+  ],
+  [
+   15000,
+   1.0380682523631546
+  ],
+  [
+   16000,
+   1.0237341261751485
+  ],
+  [
+   17000,
+   1.0229448898457763
+  ],
+  [
+   18000,
+   1.0244687856793708
+  ],
+  [
+   19000,
+   1.0149512084827332
+  ],
+  [
+   20000,
+   1.0067996455248012
+  ],
+  [
+   21000,
+   1.0020168485284102
+  ],
+  [
+   22000,
+   1.0057559989931573
+  ],
+  [
+   23000,
+   1.0016951816777293
+  ],
+  [
+   24000,
+   0.9995168586254296
+  ]
+ ],
+ "early_escape": true,
+ "early_window_min_ratio": 0.8738544140844922,
+ "escape_step": 2200,
+ "final_train_loss": 3.59107884657383,
+ "eval_sec": 3939
+}
