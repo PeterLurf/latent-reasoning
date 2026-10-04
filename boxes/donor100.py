@@ -8,7 +8,7 @@ non-zero; step texts built in the dataset's format and checked token-exact again
     input. The final fork (step 4 ++ " #### product") is decoded and the answer parsed. donor_consistent:
     S_3^B + a_A b_4^A 10^3; recipient_consistent: A's true product.
   intact: the same decodes with no patch (S_2 and answer accuracy).
-Unparseable decodes count as neither. Writes <run>/donor100.json.
+Unparseable decodes count as neither. Writes <run>/donor100.json; --same_a (note 100-2): donor B = (a_A, b_B) -> donor100_samea.json.
     python -m boxes.donor100 --run boxes/runs_mult/m100_mask2_4x4_s1 [--n 2000 --bs 200 --device cuda:0]
 """
 import os
@@ -61,16 +61,18 @@ def to_num(toks):
         return None
 
 
-def problems(rng, n):
-    a = rng.integers(10 ** (NA - 1), 10 ** NA, n); b = rng.integers(10 ** (NB - 1), 10 ** NB, n)
+def problems(rng, n, a=None):
+    if a is None:
+        a = rng.integers(10 ** (NA - 1), 10 ** NA, n)
+    b = rng.integers(10 ** (NB - 1), 10 ** NB, n)
     st = [steps_of(int(x), int(y)) for x, y in zip(a, b)]
     return {"a": a, "b": b, "A": np.array([digits_lsb(int(x), NA) for x in a]), "B": np.array([digits_lsb(int(y), NB) for y in b]),
             "steps": [np.array([s[0][j] for s in st]) for j in range(NB)], "ans": np.array([s[1] for s in st])}
 
 
 @torch.no_grad()
-def run(m, dev, amp, n, bs, seed):
-    rng = np.random.default_rng(seed); A = problems(rng, n); B = problems(rng, n)
+def run(m, dev, amp, n, bs, seed, same_a=False):
+    rng = np.random.default_rng(seed); A = problems(rng, n); B = problems(rng, n, a=A["a"] if same_a else None)
     T = lambda x: torch.tensor(x, device=dev)  # noqa: E731
     pre = lambda P, s: T(np.concatenate([DIGIT_IDS[P["A"][s]], np.full((len(P["A"][s]), 1), TOK["*"])], 1))  # noqa: E731
     L2, L3, L4, LA = A["steps"][1].shape[1], A["steps"][2].shape[1], A["steps"][3].shape[1], A["ans"].shape[1]
@@ -95,7 +97,7 @@ def run(m, dev, amp, n, bs, seed):
     S2A = aA * bA[:, 0] + aA * bA[:, 1] * 10; S2D = aB * bB[:, 0] + aA * bA[:, 1] * 10
     S3B = aB * (bB[:, 0] + bB[:, 1] * 10 + bB[:, 2] * 100); PA = aA * A["b"].astype(object); PD = S3B + aA * bA[:, 3] * 1000
     eq = lambda x, y: float(np.mean([u is not None and u == v for u, v in zip(x, y)]))  # noqa: E731
-    return {"n": n, "seed": seed,
+    return {"n": n, "seed": seed, "same_a": same_a,
             "intact": {"S2_acc": eq(s2[0], S2A), "answer_acc": eq(fa[0], PA)},
             "donor": {"chunk1_slot1": {"donor_consistent": eq(s2[1], S2D), "recipient_consistent": eq(s2[1], S2A),
                                        "unparsed": float(np.mean([u is None for u in s2[1]]))},
@@ -107,12 +109,13 @@ def run(m, dev, amp, n, bs, seed):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--n", type=int, default=2000)
     ap.add_argument("--bs", type=int, default=200); ap.add_argument("--seed", type=int, default=10001); ap.add_argument("--device", default="cuda:0")
+    ap.add_argument("--same_a", action="store_true", help="note 100-2 follow-up: donor B = (a_A, b_B), only the multiplier differs")
     a = ap.parse_args(); dev = a.device; check_format()
     args = json.load(open(os.path.join(a.run, "args.json"))); assert args["arm"] == "mask" and args["task"] == "4x4" and args["k"] == 2, args
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     m = MultGen(s5.load_gpt2(dev), "mask").to(dev); m.load_state_dict(torch.load(os.path.join(a.run, "model.pt"), map_location=dev)); m.eval()
-    r = run(m, dev, amp, a.n, a.bs, a.seed); r.update({"run": a.run, "eval_dtype": str(amp)})
-    json.dump(r, open(os.path.join(a.run, "donor100.json"), "w", newline="\n"), indent=1); print(json.dumps(r), flush=True)
+    r = run(m, dev, amp, a.n, a.bs, a.seed, a.same_a); r.update({"run": a.run, "eval_dtype": str(amp)})
+    json.dump(r, open(os.path.join(a.run, "donor100_samea.json" if a.same_a else "donor100.json"), "w", newline="\n"), indent=1); print(json.dumps(r), flush=True)
 
 
 if __name__ == "__main__":

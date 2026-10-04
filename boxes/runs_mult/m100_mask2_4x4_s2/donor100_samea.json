@@ -1,0 +1,27 @@
+{
+ "n": 2000,
+ "seed": 10001,
+ "same_a": true,
+ "intact": {
+  "S2_acc": 1.0,
+  "answer_acc": 0.2875
+ },
+ "donor": {
+  "chunk1_slot1": {
+   "donor_consistent": 0.791,
+   "recipient_consistent": 0.112,
+   "unparsed": 0.0
+  },
+  "chunk2_slot3": {
+   "donor_consistent": 0.0025,
+   "recipient_consistent": 0.0245,
+   "unparsed": 0.0005
+  }
+ },
+ "chance_overlap": {
+  "chunk1": 0.112,
+  "chunk2": 0.0005
+ },
+ "run": "/workspace/d100/s2",
+ "eval_dtype": "torch.bfloat16"
+}
