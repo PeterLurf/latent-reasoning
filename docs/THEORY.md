@@ -150,6 +150,9 @@ appended at the end of this file.
 | 98 | Step 2a: multiplication vs ICoT-SI, Coconut, text CoT | GEN arms void (final-fork conflict, 98-3), rerun on fixed code; comparators valid | **open** |
 | 99 | Speeding up the latent hand-off (k-curriculum, standardised slots, text-first, combo) | on fixed code (99-2) | **open** |
 | 100 | Shorter silent stretches: multiplication at k = 2 (GEN2, MASK2) | registered; fixed code only (100-1) | **open** |
+| 101 | Snap-strength dose-response (β_min 1 / 0.1 / 0.01 / 0) on S5 | registered | **open** |
+| 102 | State in depth: gated slot-to-slot residual path (4×4, in §99's harness) | registered | **open** |
+| 103 | Filtered self-training by length (C4 inside the LM, S5) | registered | **open** |
 
 ## Live sections
 
@@ -659,6 +662,141 @@ committed before any run.
 
 **Note 100-1 (2026-10-04 23:58 EDT, before any §100 run).** §100 runs only on mult98 with 98-3's fix (one final fork
 "+ P_n #### product").
+
+## 101. How much discrete correction does a latent chain need? A snap-strength dose-response on S5 (pre-registered 2026-10-04 00:17 EDT, after Literature's checks a214bb6d and 5c2e080e and before any implementation or run; the user's approval of the directions memo, via Audit)
+
+**Why.** Every success so far snaps to a discrete state. Every unsnapped chain drifts (directions memo, problem C). A snap
+does two things:
+* it **cuts the history**, which keeps context length in range;
+* it **projects** onto a valid code, which corrects errors.
+
+§101 keeps the cut and dials the projection down. That measures how much discrete correction a working latent chain
+needs.
+
+**Model.** §97's HYB-4 (text step target through the tied LM head; §92's structured codebook snap; k = 4; passed G4 3/3).
+* The next chunk's start embedding is **s = (1 − β) · u + β · code_emb(decoded)**.
+  - u = g(h), the last slot's output hidden state mapped into embedding space by §89's standardisation
+    (μ_E + σ_E · (h − μ_h) / σ_h; an EMA frozen at the end of training).
+  - decoded = the codebook index from the decoded step text, as in HYB-4.
+* The history cut is kept at every β.
+* **Training (Literature 5c2e080e).**
+  - Sequences of a random **1–4 chunks** (4–16 ops) from a true start code, backpropagating through every u.
+  - At each chunk boundary, β is a **per-chunk coin**: β = 1 with probability q, otherwise β_min. q anneals linearly
+    from 1 to 0 over the first 60 % of updates, then 0, so training ends at β_min throughout.
+  - The per-chunk coin forces chunks to read u from early on. It is the fix for the expected failure, posterior
+    collapse onto the code (the §89 α = 1 pattern).
+  - **Late noise:** Gaussian noise on u, σ = 0.05 × σ_E, in the last third of training.
+  - Otherwise §97's recipe and budget (24k steps).
+
+**Arms (seeds 1–3):** β_min ∈ {**1** (control, the same 2-chunk training), **0.1**, **0.01**, **0**}. 12 runs.
+
+**Measures** (at β_min, all-position rollout).
+* Cumulative accuracy at 512 and 2,048.
+* Zero- and mean-removal (slot inputs 1..3; and u at boundaries).
+* Per-chunk decode accuracy.
+* Along the 2,048 rollout: ‖u‖ and the distance from u to the nearest code (drift).
+* **The drift curve:** accuracy against length per β.
+* **‖u‖ / ‖code_emb‖**, logged so the effective β matches the nominal one.
+* FLOPs.
+
+**Rule (fixed now, per arm).** An arm passes if cumulative ≥ 0.99 at 512 in ≥ 2/3 seeds, with zero-removal ≤ 0.10 in those
+seeds (§92's rule).
+
+**Primary reading:** the smallest β_min that passes.
+* **β_min = 0 passes.** A continuous carry with a history cut and no discrete correction is exact on S5: the projection
+  was not needed. Tags: C1 (use), C2, C6 (drift bounded) for "latent without discretisation". Not yet "without cuts".
+* **Only 0.01 or 0.1.** A weak attractor suffices: "soft snap" is the honest design.
+* **Only β = 1.** Discrete correction is load-bearing (Literature's flag that β → 0 removes the carrier). Directions C2,
+  C3 and C6 are next.
+
+**Placement.** About $8 on Vast (proof host first, ≤ 5). Projection to Audit.
+
+## 102. State in depth: a gated residual path from slot j−1 to slot j on multiplication (pre-registered 2026-10-04 00:17 EDT, after Literature's checks a214bb6d and 5c2e080e and before any implementation or run; the user's approval via Audit)
+
+**Why.** Latent hand-offs are learned slot by slot (the staircase; §92; §98's 4×4 slot 3). In our design, slot j gets its
+state only by **attention retrieval** of slot j−1, which must be learned position by position. Depth recurrence with a
+direct state path composes reliably (§88/§91).
+* **Prior:** T²MLR 2607.15178 (a middle-layer state fed into the next token, retrofitted at 1.7B); Huginn / TRM
+  input-injection recurrence.
+
+**Arm STATEPATH**, in §99's harness on 4×4 multiplication with the fixed code (98-3).
+* GEN-M, plus **h⁽⁴⁾_slot_j ← h⁽⁴⁾_slot_j + γ · W · h⁽⁹⁾_slot_{j−1}**.
+  - Slot j−1's layer-9 hidden state is added to slot j's residual stream entering layer 5.
+  - W is 768 × 768, initialised at identity; γ is a learned scalar gate initialised at 0.
+* It applies within a chunk only (the first slot of a chunk has no previous slot).
+* The normal attention path is unchanged. Seeds 1–3, §99's cap (24k), logging, valid-split early stop and eligibility
+  (from step 0).
+* **Control: §99's CTRL** (same code, seeds and harness).
+
+**Rule (§99's, fixed now).** STATEPATH **accelerates** if its median steps-to-threshold is ≤ 0.5× CTRL's, with zero- and
+mean-removal answer accuracy ≤ §98's NC-M 4×4 + 0.05 in its threshold-reaching seeds.
+* Removal for STATEPATH also zeroes the injected path, so that the latent route is removed entirely.
+* Descriptive (Literature 5c2e080e):
+  - the per-slot curves (does the staircase flatten?);
+  - the trajectory of the gate norm |γ| (it may stay ≈ 0 if attention already carries the state);
+  - at test, separate ablations of the W path and of slot j's attention to slot j−1;
+  - FLOPs and sequential passes, counting the extra 5-layer dependency.
+
+**Readings.**
+* **Accelerates.** Attention retrieval of the previous slot was the slow part, and a direct state path fixes it. It joins
+  the recipe.
+* **No.** The staircase is not about the retrieval route. The state's content or size is the next suspect (directions A3).
+
+**Placement.** 3 runs on the local cards with §99 (about $0–3). It is scored with §99's scorer extended by the arm
+`statepath`.
+
+## 103. Learning step states without step labels: filtered self-training by length (pre-registered 2026-10-04 00:17 EDT, after Literature's checks a214bb6d and 5c2e080e and before any implementation or run; the user's go-ahead via Audit)
+
+**Why.** C4 inside the LM has failed by every label-thinning route (§93, §95) and by RL and annealing (§69, §87). §85 and
+§96 show the barrier is **optimisation, not information**: a table teacher from final answers supplies exact per-op
+labels.
+* Self-training by length grows the competent range the way the std curriculum does for tables, with the model as its
+  own teacher.
+* **Prior:** STaR 2203.14465; Lee 2502.01612 and 2511.07378 (recursive self-training extends length, with a filter); our
+  Pilot L/M (label-free ladder, toys).
+
+**Task and model.** S5 under DeltaProduct's protocol, problems **from the identity**. §97's GEN-4 recipe (text step target
+via a fork; text snap every 4 ops). Budget 24k steps total, seeds 1–3. **No ground-truth intermediate state is ever used.**
+
+**Rounds** (fixed now).
+* **R0 (steps 0–1.2k, 5 % of updates):** problems of length 1–2. Only the final answer is targeted: at the last slot,
+  and, for length 2, at slot 2. Slot 1 gets no target.
+* **R1–R4 (about 5.7k steps each):** problems of length ≤ 4, 8, 16, 32 (chunked at k = 4, uniform lengths).
+  - Each round starts by **pseudo-labelling** a fresh pool of 50k problems with the current model's greedy step decodes.
+  - A problem's intermediate targets are kept **only if** it passes three filters in order (Literature 5c2e080e):
+    1. **Validity:** every decoded checkpoint parses as a step text.
+    2. **Final answer:** the decoded final answer equals the true one.
+    3. **Cross-seed vote:** at least 2 of the 3 seeds' round-(r−1) models produce identical intermediate decodes, and
+       the majority decode is the target. This is a stand-in for 2502.01612's vote across independently trained
+       models.
+  - Self-consistency (the chain decode against a k = 1 restart decode) is reported but not required.
+  - **Coupling disclosed:** the vote shares pseudo-labels across seeds, so C6 from §103 would need an independent
+    replication.
+  - Kept problems give per-slot targets. Discarded problems give the final-answer target only.
+* The share of length ≤ 2 problems over all training is ≤ 5 % (p, as §96).
+* **Adaptive length rule (fixed now; Literature (3)).** Before each round, the current model's accuracy at the new
+  length and each filter's yield are recorded. If the kept share is < 20 %, an intermediate length is inserted (e.g.
+  6, 12, 24) and the remaining budget is split evenly. The 24k total is unchanged.
+
+**Measures.**
+* Per round: the share filtered by each criterion, the kept share, accuracy at the new length before training, and the
+  pseudo-label accuracy against truth. The last is measured by the scorer only; never used in training.
+* At the end: cumulative accuracy at 512 and 2,048 (all-position decodes), zero- and mean-removal, per-slot decode, and
+  checkpoint edit IIA.
+
+**Rule (fixed now).**
+* **SELF:** cumulative ≥ 0.99 at 512 in ≥ 2/3 seeds, with zero-removal ≤ 0.10 in those seeds.
+* **Descriptive:** pseudo-label precision per round (truth only in the scorer).
+
+**Readings.**
+* **SELF met.** A pretrained LM learns S5 latent restarts from final answers only, with no teacher outside itself.
+  **C4 inside the LM, qualified by p ≤ 0.05.** Round 0's length-1/2 answers are short labels at about 5 %, near §85's
+  3–10 % threshold, plus §97's C1 (qualified) + C2 + C3 + C7 for checkpoints.
+* **Fails with high pseudo-label precision but low coverage.** The filter is too strict; report the kept share.
+* **Fails with low precision.** Self-generated errors lock in (Literature's noise flag; §62).
+
+**Placement.** About $6–8 on Vast (one proof seed first). Projection to Audit. Implementation: the experiments session, from
+`boxes/gen97.py`.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
