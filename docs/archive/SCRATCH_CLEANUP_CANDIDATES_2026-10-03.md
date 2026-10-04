@@ -100,3 +100,5 @@ Suggested: `git rm` the groups below once the fleets in `docs/CURRENT_TASKS.md` 
 * **variant** (1): `variant_pipeline.py`
 * **vram** (1): `vram_test.py`
 * **w94** (1): `w94_smoke_host.txt`†
+
+**Executed 2026-10-03 23:55 (user-approved, via Audit):** 257 tracked files removed (commit 67111b1e; gen_deploy.sh and gen_deploy_95.sh kept, as they are now referenced). 50 untracked markers archived in `docs/archive/scratch_untracked_2026-10-03.tgz` and removed. far_prefill.sh and rerun_length_gen.sh committed and kept (56bb177f).
