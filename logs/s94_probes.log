@@ -1,0 +1,14 @@
+19:15:40 s94 probe f94_stddec3x_s6 rc 0 ok
+19:37:16 s94 probe f94_stddec3x_s7 rc 0 ok
+19:58:32 s94 probe f94_stddec3x_s8 rc 0 ok
+20:19:26 s94 probe f94_stddec3x_s9 rc 0 ok
+20:41:18 s94 probe f94_stddec3x_s10 rc 0 ok
+21:02:51 s94 probe f94_stddecinv3x_s6 rc 0 ok
+21:24:15 s94 probe f94_stddecinv3x_s7 rc 0 ok
+21:51:24 s94 probe f94_stddecinv3x_s8 rc 0 ok
+22:25:44 s94 probe f94_stddecinv3x_s9 rc 0 ok
+22:46:27 s94 probe f94_stddecinv3x_s10 rc 0 ok
+23:07:06 s94 probe f94_fadestd3x_s6 rc 0 ok
+23:29:29 s94 probe f94_fadestd3x_s7 rc 0 ok
+23:50:40 s94 probe f94_fadestd3x_s8 rc 0 ok
+23:50:40 S94_PROBES_DONE
