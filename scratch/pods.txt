@@ -558,3 +558,9 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 54067029 vast | gen_x4 DESTROYED_VERIFIED 2026-10-03 20:32 after verified per-run fetch (boxes/runs_s5/g97_gen4_s5 boxes/runs_s5/g97_gen4_s4)
 54070499 vast | gen_y4 DESTROYED_VERIFIED 2026-10-03 20:48 after verified MANUAL fetch (boxes/runs_mult/m98_coco_4x4_s1 m98_coco_4x4_s2 + logs); coco_4x4_s3 and coco_5x5_s1-3 FAILED (CUDA OOM at P3 before --micro; logs kept as logs/vast_96.20.36.104_40069/gen_m98_*.oom_p3.void; rerun locally); auto-drain watcher had exited at 18:24 on the new failure lines
 54070485 vast | gen_y2 DESTROYED_VERIFIED 2026-10-03 21:50 after verified per-run fetch (boxes/runs_mult/m98_genm_5x5_s3 boxes/runs_mult/m98_genm_5x5_s2 boxes/runs_mult/m98_genm_5x5_s1)
+54092744 vast offer 30086286 created 2026-10-03 22:12: label gen-z1, queue scratch/gen_q_z1.txt (logged at create by vdeploy_toy.sh)
+54093635 vast offer 53546318 created 2026-10-03 22:20: label gen-z2, queue scratch/gen_q_z2.txt (logged at create by vdeploy_toy.sh)
+54093638 vast offer 11925448 created 2026-10-03 22:20: label gen-z3, queue scratch/gen_q_z3.txt (logged at create by vdeploy_toy.sh)
+54093642 vast offer 50704391 created 2026-10-03 22:20: label gen-z4, queue scratch/gen_q_z4.txt (logged at create by vdeploy_toy.sh)
+54093648 vast offer 49745142 created 2026-10-03 22:20: label gen-z5, queue scratch/gen_q_z5.txt (logged at create by vdeploy_toy.sh)
+54069464 vast | gen_y1 DESTROYED_VERIFIED 2026-10-03 22:23 after verified per-run fetch (boxes/runs_mult/m98_genm_4x4_s3 boxes/runs_mult/m98_genm_4x4_s2 boxes/runs_mult/m98_genm_4x4_s1)

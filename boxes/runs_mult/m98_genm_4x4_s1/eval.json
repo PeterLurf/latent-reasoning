@@ -1,0 +1,53 @@
+{
+ "arm": "genm",
+ "task": "4x4",
+ "seed": 1,
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "train_sec": 14432,
+ "eval_dtype": "torch.bfloat16",
+ "test_items": 1000,
+ "training": {
+  "epochs": 1.900990099009901,
+  "flops": 7.0224766304256e+16,
+  "flops_convention": "Meter forward FLOPs per trained problem (full-vocab LM head) x 3 (fwd+bwd) x steps x bs"
+ },
+ "acc_test": 0.006,
+ "per_slot_decode_acc": [
+  1.0,
+  1.0,
+  0.918,
+  0.007
+ ],
+ "compute": {
+  "tokens_processed": 22,
+  "flops": 4523738112.0,
+  "seq_passes": 18,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "lm_head_rows": 10,
+  "sequential_passes": 18,
+  "measurement_decode_flops": 10722241536.0
+ },
+ "removal": {
+  "zero": {
+   "answer_acc": 0.0,
+   "per_slot_decode_acc": [
+    0.022,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "mean": {
+   "answer_acc": 0.001,
+   "per_slot_decode_acc": [
+    0.172,
+    0.884,
+    0.326,
+    0.0
+   ]
+  }
+ },
+ "eval_sec": 13
+}
