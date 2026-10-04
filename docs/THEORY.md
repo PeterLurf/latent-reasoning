@@ -758,6 +758,23 @@ session, `boxes/donor100.py`, `boxes/runs_mult/m100_mask2_4x4_s*/donor100.json`;
   - A **same-a donor variant** (donor problems share the recipient's a; only b differs) makes the transplant well
     defined. It has been requested, as descriptive.
 
+**Note 100-3 (2026-10-04 09:31 EDT; descriptive; same-a donor variant requested in 100-2; B = (a_A, b_B), n = 2000,
+`donor100_samea.json`).**
+
+| seed | chunk-1 slot-1 patch: donor / recipient | chunk-2 slot-3 patch: donor / recipient |
+|---|---|---|
+| s1 | **0.740** / 0.112 | 0.008 / 0.002 |
+| s2 | **0.791** / 0.112 | 0.003 / 0.025 |
+| s3 | **0.999** / 0.112 | 0.008 / 0.008 |
+
+(Recipient 0.112 equals the chance overlap: with the same a, S_2 coincides whenever b_1 matches.)
+* **Chunk 1: the slot-1 latent carries the running sum, relative to a.** With a matched multiplicand, the transplant is
+  clean (0.74–0.999), and the recipient is at chance. This is genuine latent carriage at multiplication's first hand-off
+  (C1 signal, masked fork).
+* **Chunk 2 breaks either way.** It starts from a visible checkpoint text (the recipient's S_2), and a donor latent
+  conflicts with it. This is the same pattern as §105's slot 1: **the visible chunk start competes with the latent.**
+  Markov segments (§108) remove that route.
+
 ## 101. How much discrete correction does a latent chain need? A snap-strength dose-response on S5 (pre-registered 2026-10-04 00:17 EDT, after Literature's checks a214bb6d and 5c2e080e and before any implementation or run; the user's approval of the directions memo, via Audit)
 
 **Why.** Every success so far snaps to a discrete state. Every unsnapped chain drifts (directions memo, problem C). A snap
