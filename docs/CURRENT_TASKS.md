@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-04 09:20 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-04 09:55 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -33,21 +33,22 @@ kept as `*.void_forkconflict`.
 |---|---|---|---|
 | u4 | 54110975 | `-p 41232 83.27.30.232` | §100 MASK2 5x5 s1-3 |
 | s2 | 54122048 | `-p 42390 167.179.138.57` | §101 micro proof: b0 s1/s3, then b1 s1/s2 |
-| m10 | 54122096 | `-p 42075 167.179.138.57` | §107 lat2 s1-3: done, draining (proof for m11/m12) |
 | r1 | 54130307 | `-p 50171 137.175.22.196` | §98 GEN-M 4x4 s1-3 (s1 restarted by hand) |
 | m8 | 54134511 | `-p 27762 149.200.35.231` | §99 tfslot s1-3 (C1) |
-| u2 | 54138454 | `-p 40605 77.48.24.153` | §100 GEN2 5x5 s1-3 |
-| m5 | 54138455 | `-p 20154 151.237.25.16` | §99 std s1-3; + §100 MASK2 donor eval (`boxes/donor100.py`, /workspace/d100/s*/donor100.json; fetch by hand) |
+| m5 | 54138455 | `-p 20154 151.237.25.16` | §99 std s1-3 (donor100 evals done; /workspace/d100 is scratch) |
 | m6 | 54138463 | `-p 47253 86.123.234.69` | §99 textfirst s1-3 |
-| k5 | 54148202 | `-p 40471 142.198.191.106` | §108 MK-4 s1-3 rerun (k1 lost to a host reboot; mk108 now checkpoints every 2k); + §106 gens_mask_k2 s2 --eval_only |
-| e1 | 54151372 | `-p 40051 96.20.36.104` | §110 self110 s1-3 (proof; s4-5 = `gen_q_e2` after) |
+| k5 | 54148202 | `-p 40471 142.198.191.106` | §108 MK-4 s1-3 rerun (mk108 checkpoints every 2k; resume fix copied) |
+| e1 | 54151372 | `-p 40051 96.20.36.104` | §110 s1-3 for the record (note 110-1); s1/s3 resumed by hand at 4960 after an OOM (manual python jobs hold the drain) |
+| m7 | 54152770 | `-p 6946 142.127.68.223` | §99 textfirst_mask s1-3 |
+| m9 | 54152775 | `-p 28568 149.200.35.231` | §99 combo s1-3 |
+| m11 | 54153333 | `-p 23005 5.2.174.20` | §107 lat4 s1-3 |
+| m12 | 54153339 | `-p 16997 89.221.67.137` | §107 pause4 s1-3 |
+| e3 | 54155841 | `-p 42034 167.179.138.57` | §110b s1-3 (proof; s4-5 = `gen_q_e4` after) |
 
 **Queued, not yet deployed** (a second host of an experiment only after its first host's first eval.json and drain):
 1. §108 k2-k4 (`gen_q_k2..k4`, `gen_deploy_108.sh`) after k5.
-2. §110 s4-5 (`gen_q_e2`, `gen_deploy_110.sh`) after e1.
-3. §107 lat4/pause4 (`gen_q_m11/m12`) after m10's drain.
-4. §101 `gen_q_s3/s4` after s2.
-5. The rest of §99: `gen_q_m7` textfirst_mask, `m9` combo.
+2. §110b s4-5 (`gen_q_e4`, `gen_deploy_110.sh`) after e3. (§110 s4-5, `gen_q_e2`: not run, note 110-1.)
+3. §101 `gen_q_s3/s4` after s2.
 * Watchers don't detect host reboots: check uptime on the C1 hosts each pass.
 
 ### Local PC (torch `cuda:0` = 4060, `cuda:1` = 3070, `cuda:2` = 2070)
