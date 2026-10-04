@@ -1,0 +1,105 @@
+{
+ "arm": "gen",
+ "k": 4,
+ "seed": 5,
+ "train_sec": 7972,
+ "eval_dtype": "torch.bfloat16",
+ "test_sequences": 2000,
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "cumulative": {
+  "128": 1.0,
+  "256": 1.0,
+  "512": 1.0
+ },
+ "final_state_acc_512": 1.0,
+ "compute_512_per_problem": {
+  "tokens_processed": 4992,
+  "flops": 912165175296.0,
+  "seq_passes": 1792,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "latent_slots": 512,
+  "measurement_decode_flops": 506099662848.0
+ },
+ "checkpoint_validity": {
+  "snaps": 256000,
+  "valid": 256000,
+  "rate": 1.0
+ },
+ "extension_2048": {
+  "n": 500,
+  "len": 2048,
+  "cumulative": {
+   "512": 1.0,
+   "1024": 1.0,
+   "2048": 1.0
+  }
+ },
+ "chunk_check": {
+  "k": 4,
+  "n": 100000,
+  "per_chunk_acc": 1.0,
+  "per_slot_acc": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "pred_seq_acc_512": 1.0
+ },
+ "removal": {
+  "zero": {
+   "k": 4,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.0774,
+    0.0064,
+    0.0085,
+    0.0093
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "zero",
+   "acc_after_first_ablated_slot": 0.008066666666666666
+  },
+  "mean": {
+   "k": 4,
+   "n": 10000,
+   "per_chunk_acc": 0.0664,
+   "per_slot_acc": [
+    0.5138,
+    0.4938,
+    0.275,
+    0.2141
+   ],
+   "pred_seq_acc_512": 1.7278823129538114e-151,
+   "ablate": "mean",
+   "acc_after_first_ablated_slot": 0.32763333333333333
+  }
+ },
+ "wte_drift": {
+  "tokens": [
+   " >",
+   " A",
+   " B",
+   " C",
+   " D",
+   " E"
+  ],
+  "cosine": [
+   0.9979034662246704,
+   0.9969953298568726,
+   0.9967831969261169,
+   0.996550977230072,
+   0.9975641369819641,
+   0.997831404209137
+  ],
+  "min_cosine": 0.996550977230072
+ },
+ "edit_iia": {
+  "n": 5000,
+  "iia": 1.0
+ },
+ "eval_sec": 1055
+}
