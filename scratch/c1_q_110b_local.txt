@@ -1,0 +1,3 @@
+# §110b s4-5 on local cards (free compute; Vast e4 not needed if these finish)
+boxes/runs_s5/s110b_s4 boxes.self110 --random_start --seed 4
+boxes/runs_s5/s110b_s5 boxes.self110 --random_start --seed 5

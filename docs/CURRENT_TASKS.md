@@ -53,8 +53,8 @@ kept as `*.void_forkconflict`.
 
 ### Local PC (torch `cuda:0` = 4060, `cuda:1` = 3070, `cuda:2` = 2070)
 
-* 4060: COCO 4x4 s3 (restart) then 5x5 s3 (`scratch/c1_q_98coco_c.txt`).
-* 3070: COCO 5x5 s2 (`scratch/c1_q_98coco_b.txt`).
+* 4060: COCO 4x4 s3 (restart), then §110b s4/s5 (`scratch/c1_q_110b_local.txt`, chained worker).
+* 3070: COCO 5x5 s3, then §110b s4/s5 (same queue; lock dirs pick).
 * 2070: §83 extras (fp32).
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
