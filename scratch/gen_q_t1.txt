@@ -1,0 +1,3 @@
+# §103 filtered self-training by length (3 seeds in lockstep in one process)
+# P=1
+boxes/runs_s5/s103 boxes.self103
