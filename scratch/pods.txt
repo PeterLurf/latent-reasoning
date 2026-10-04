@@ -555,3 +555,4 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 54071592 vast | gen_y5 DESTROYED 2026-10-03 18:37 stuck loading 17 min (Audit's 15-min rule); never started, nothing to fetch
 54073316 vast offer 53493696 created 2026-10-03 18:37: label gen-y5, queue scratch/gen_q_y5.txt (logged at create by vdeploy_toy.sh)
 54022268 vast | gen_w2 DESTROYED_VERIFIED 2026-10-03 18:49 after verified per-run fetch (boxes/runs/f94_fadestd3x_s7 boxes/runs/f94_stddec3x_s7 boxes/runs/f94_stddecinv3x_s7)
+54067029 vast | gen_x4 DESTROYED_VERIFIED 2026-10-03 20:32 after verified per-run fetch (boxes/runs_s5/g97_gen4_s5 boxes/runs_s5/g97_gen4_s4)
