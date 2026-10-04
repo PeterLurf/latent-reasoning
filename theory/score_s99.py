@@ -1,5 +1,6 @@
 """THEORY §99 scoring (rules fixed in §99; written before any §99 implementation or run; Theory is the only scorer).
-Runs: boxes/runs_mult/a99_{ctrl,kcurr,std,textfirst,combo}_4x4_s{1,2,3}/eval.json.
+Runs: boxes/runs_mult/a99_{ctrl,kcurr,std,textfirst,textfirst_mask,tfslot,combo}_4x4_s{1,2,3}/eval.json (note 99-1).
+steps_to_threshold must count only eligible logs (note 99-1: final configuration; k = 4; gold share 0).
 steps_to_threshold: first 1k-step valid-split log with every slot decode >= 0.95 and answer acc >= 0.95; null = censored
 (counted as 24,000).
 ACCELERATES (per non-CTRL arm): median steps-to-threshold <= 0.5 x CTRL's median (if CTRL's median is censored, <= 12,000)
@@ -16,7 +17,7 @@ import numpy as np
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RUNS = os.path.join(ROOT, "boxes", "runs_mult")
 CAP = 24000
-ARMS = ("ctrl", "kcurr", "std", "textfirst", "combo")
+ARMS = ("ctrl", "kcurr", "std", "textfirst", "textfirst_mask", "tfslot", "combo")
 
 
 def load(arm):
@@ -50,7 +51,7 @@ def main():
         if a != "ctrl":
             row["accelerates"] = (bar is not None and med[a] is not None and med[a] <= bar and len(rs) == 3 and nobypass)
         res["arms"][a] = row
-        print("%-9s n %d median steps %s | steps %s | test %s | removal %s | no-bypass %s | accelerates %s" % (
+        print("%-14s n %d median steps %s | steps %s | test %s | removal %s | no-bypass %s | accelerates %s" % (
             a, row["n"], row["median_steps"], row["steps"], row["test_acc"], row["removal"], nobypass, row.get("accelerates")))
     print("CTRL median", ctrl, "| bar", bar, "| NC floor+0.05", floor)
     json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s99.json"), "w", newline="\n"), indent=1, default=float)
