@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/Latent/boxes/self110.py", line 301, in <module>
+    main()
+  File "/workspace/Latent/boxes/self110.py", line 213, in main
+    rng.bit_generator.state = c["rng"]; drng.bit_generator.state = c["drng"]; torch.set_rng_state(c["torch_rng"])
+                                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/torch/random.py", line 19, in set_rng_state
+    default_generator.set_state(new_state)
+TypeError: RNG state must be a torch.ByteTensor

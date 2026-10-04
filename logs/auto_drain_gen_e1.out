@@ -1,0 +1,12 @@
+09:38:40 gen_e1 NEW FAILURE LINE (continuing): 13:38:02 evaluated boxes/runs_s5/s110_s1 rc 1 no-eval
+13:38:08 evaluated boxes/runs_s5/s110_s3 rc 1 no-eval
+12:49:31 gen_e1 not finished (a job still running); polling
+12:59:36 gen_e1 not finished (a job still running); polling
+13:10:03 gen_e1 not finished (a job still running); polling
+13:20:07 gen_e1 not finished (a job still running); polling
+13:30:21 gen_e1 not finished (a job still running); polling
+13:40:25 gen_e1 not finished (a job still running); polling
+13:50:31 gen_e1 not finished (a job still running); polling
+14:00:34 gen_e1 not finished (a job still running); polling
+14:10:38 gen_e1 not finished (a job still running); polling
+14:28:18 ALL_DRAINED
