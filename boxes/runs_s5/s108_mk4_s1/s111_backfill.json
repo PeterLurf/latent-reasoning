@@ -112,5 +112,15 @@
  "escape_step": 2200,
  "final_train_loss": 2.4486813304520182e-05,
  "eval_dtype": "torch.bfloat16",
- "sec": 1239
+ "sec": 1239,
+ "rel_final": {
+  "rel_ratio_final": 6.82570515946826e-07,
+  "main_loss": 1.8349230458625243e-05,
+  "zeroed_loss": 26.882541847229003,
+  "n_batches": 20,
+  "bs": 64
+ },
+ "early_escape_rel": null,
+ "rel_ratio_at_6k": null,
+ "rel_ratio_per_1k": []
 }
