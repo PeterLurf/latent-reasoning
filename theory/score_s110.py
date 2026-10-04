@@ -5,6 +5,7 @@ protocol, in-chunk slots), short_fraction, rounds.
 SELF2: cumulative >= 0.99 at 512 in >= 4/5.  C1: in SELF2 seeds, mean-removal <= 0.06 and donor USE >= 0.90 with
 recipient < 0.10 at every in-chunk slot, in >= 4/5 seeds overall.  C6: cumulative >= 0.99 at 2,048 in >= 4/5.
 STUDENT (conditional): the same rules on s110_student_s*.
+§110b (corrected; identity-start shorts, random textual starts for length >= 3): the same rules on s110b_s* / s110b_student_s*.
     python theory/score_s110.py
 """
 import json
@@ -41,7 +42,7 @@ def score(prefix):
 
 
 def main():
-    res = {"main": score("s110"), "student": score("s110_student")}
+    res = {"main": score("s110"), "student": score("s110_student"), "s110b": score("s110b"), "s110b_student": score("s110b_student")}
     for k, A in res.items():
         print(k, {x: A[x] for x in ("n", "median512", "range512", "SELF2", "self2_seeds", "C1", "c1_seeds", "C6", "student_trigger")})
     json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s110.json"), "w", newline="\n"), indent=1, default=float)
