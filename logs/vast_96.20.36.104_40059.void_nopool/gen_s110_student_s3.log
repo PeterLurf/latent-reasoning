@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/Latent/boxes/self110.py", line 420, in <module>
+    main()
+  File "/workspace/Latent/boxes/self110.py", line 348, in main
+    pool = dict(np.load(a.student_pool)); items = items_from_pool(Xtr, pool)
+                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/numpy/lib/_npyio_impl.py", line 459, in load
+    fid = stack.enter_context(open(os.fspath(file), "rb"))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'boxes/runs_s5/s110_s3/pool_final.npz'
