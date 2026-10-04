@@ -325,49 +325,56 @@ def train(a):
     Dtr = load(os.path.join(a.train_dir, f"{a.task}_train.txt"), limit=a.train_limit or None)
     Dte = load(os.path.join(ROOT, "bench", "data", f"mult_{a.task}_test.txt"), limit=a.test_n)
     assert Dtr["n"] == n and Dte["n"] == n
-    os.makedirs(a.out, exist_ok=True)
-    json.dump({**vars(a), "train_problems": len(Dtr["A"]), "step_tokens": [s.shape[1] for s in Dtr["steps"]], "answer_tokens": Dtr["ans"].shape[1]},
-              open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
-    g = s5.load_gpt2(dev)
-    m = MultGen(g, a.arm).to(dev) if a.arm in ("genm", "mask") else g
-    opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
-    log = open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t0 = time.time(); hist = []
-    n_stages = n + 1
-    for step in range(1, a.steps + 1):
-        for gr in opt.param_groups:
-            gr["lr"] = a.lr * min(1, step / 100) * 0.5 * (1 + math.cos(math.pi * step / a.steps))
-        stage = min(n_stages - 1, (step - 1) * n_stages // a.steps) if a.arm == "coco" else 0
-        micro = a.micro or (1 if a.arm in ("genm", "mask") else 2)          # memory: micro-batches, same effective batch
-        if a.arm in ("genm", "mask"):
-            prefix, start, ops, st, ans = gen_batch(Dtr, rng, a.bs, dev)
-        else:
-            q, text = seq_batch(Dtr, rng, a.bs, dev, a.arm, stage)
-        opt.zero_grad(); tot = 0.0; mb = a.bs // micro
-        for i in range(micro):
-            sl = slice(i * mb, (i + 1) * mb)
-            with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
-                if a.arm in ("genm", "mask"):
-                    loss, _, _, _ = m.chunk(prefix[sl], None if start is None else start[sl], ops[sl], step_tgt=[t[sl] for t in st],
-                                            ans_tgt=None if ans is None else ans[sl])
-                else:
-                    hs, _ = seq_forward(g, q[sl], stage if a.arm == "coco" else 0, text[sl])
-                    lg = g.logits(hs).float(); loss = F.cross_entropy(lg.reshape(-1, lg.shape[-1]), text[sl].reshape(-1))
-            (loss / micro).backward(); tot += loss.item() / micro
-        torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(tot)
-        if step % 100 == 0 or step == a.steps:
-            rec = {"step": step, "loss": float(np.mean(hist)), "sec": round(time.time() - t0)}; hist = []
-            if a.arm == "coco":
-                rec["stage"] = stage
-            if a.log_every and step % a.log_every == 0:
-                m.eval(); sub = {k: (v[:a.log_n] if isinstance(v, np.ndarray) else ([x[:a.log_n] for x in v] if isinstance(v, list) else v)) for k, v in Dte.items()}
-                if a.arm in ("genm", "mask"):
-                    per, ok, _ = gen_rollout(m, sub, dev, amp, a.eval_bs); rec["per_slot_decode_acc"] = per.mean(0).tolist(); rec["acc"] = float(ok.mean())
-                elif a.arm != "coco" or stage == n_stages - 1:
-                    rec["acc"] = float(seq_eval(g, sub, dev, amp, a.eval_bs, a.arm).mean())
-                m.train()
-            log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
-    train_sec = round(time.time() - t0)
-    torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
+    if a.eval_only:                                                         # re-run a finished run's eval (§98 genm 5x5 s3: eval OOM'd beside 2 others)
+        g = s5.load_gpt2(dev); m = MultGen(g, a.arm).to(dev) if a.arm in ("genm", "mask") else g
+        m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev))
+        last = [json.loads(x) for x in open(os.path.join(a.out, "log.jsonl"))][-1]
+        assert last["step"] == a.steps, "model.pt is not from a finished run"
+        train_sec = last["sec"]
+    else:
+        os.makedirs(a.out, exist_ok=True)
+        json.dump({**vars(a), "train_problems": len(Dtr["A"]), "step_tokens": [s.shape[1] for s in Dtr["steps"]], "answer_tokens": Dtr["ans"].shape[1]},
+                  open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
+        g = s5.load_gpt2(dev)
+        m = MultGen(g, a.arm).to(dev) if a.arm in ("genm", "mask") else g
+        opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
+        log = open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t0 = time.time(); hist = []
+        n_stages = n + 1
+        for step in range(1, a.steps + 1):
+            for gr in opt.param_groups:
+                gr["lr"] = a.lr * min(1, step / 100) * 0.5 * (1 + math.cos(math.pi * step / a.steps))
+            stage = min(n_stages - 1, (step - 1) * n_stages // a.steps) if a.arm == "coco" else 0
+            micro = a.micro or (1 if a.arm in ("genm", "mask") else 2)          # memory: micro-batches, same effective batch
+            if a.arm in ("genm", "mask"):
+                prefix, start, ops, st, ans = gen_batch(Dtr, rng, a.bs, dev)
+            else:
+                q, text = seq_batch(Dtr, rng, a.bs, dev, a.arm, stage)
+            opt.zero_grad(); tot = 0.0; mb = a.bs // micro
+            for i in range(micro):
+                sl = slice(i * mb, (i + 1) * mb)
+                with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+                    if a.arm in ("genm", "mask"):
+                        loss, _, _, _ = m.chunk(prefix[sl], None if start is None else start[sl], ops[sl], step_tgt=[t[sl] for t in st],
+                                                ans_tgt=None if ans is None else ans[sl])
+                    else:
+                        hs, _ = seq_forward(g, q[sl], stage if a.arm == "coco" else 0, text[sl])
+                        lg = g.logits(hs).float(); loss = F.cross_entropy(lg.reshape(-1, lg.shape[-1]), text[sl].reshape(-1))
+                (loss / micro).backward(); tot += loss.item() / micro
+            torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(tot)
+            if step % 100 == 0 or step == a.steps:
+                rec = {"step": step, "loss": float(np.mean(hist)), "sec": round(time.time() - t0)}; hist = []
+                if a.arm == "coco":
+                    rec["stage"] = stage
+                if a.log_every and step % a.log_every == 0:
+                    m.eval(); sub = {k: (v[:a.log_n] if isinstance(v, np.ndarray) else ([x[:a.log_n] for x in v] if isinstance(v, list) else v)) for k, v in Dte.items()}
+                    if a.arm in ("genm", "mask"):
+                        per, ok, _ = gen_rollout(m, sub, dev, amp, a.eval_bs); rec["per_slot_decode_acc"] = per.mean(0).tolist(); rec["acc"] = float(ok.mean())
+                    elif a.arm != "coco" or stage == n_stages - 1:
+                        rec["acc"] = float(seq_eval(g, sub, dev, amp, a.eval_bs, a.arm).mean())
+                    m.train()
+                log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
+        train_sec = round(time.time() - t0)
+        torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
     m.eval(); t1 = time.time()
     res = {"arm": a.arm, "task": a.task, "seed": a.seed, "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
            "train_sec": train_sec, "eval_dtype": str(amp), "test_items": len(Dte["A"])}
@@ -428,6 +435,7 @@ def main():
     ap.add_argument("--task", required=True, choices=["4x4", "5x5"]); ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--steps", type=int, default=24000); ap.add_argument("--bs", type=int, default=64)
     ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--eval_bs", type=int, default=250)
+    ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt of a finished run only (log.jsonl and args.json untouched)")
     ap.add_argument("--micro", type=int, default=0, help="micro-batches per update (0: 1 for genm/mask, 2 for coco/tc/nc: 3 stage-0 jobs OOM a 24 GB card)")
     ap.add_argument("--test_n", type=int, default=None, help="smoke only"); ap.add_argument("--train_limit", type=int, default=0, help="smoke only")
     ap.add_argument("--log_every", type=int, default=2000); ap.add_argument("--log_n", type=int, default=200)
