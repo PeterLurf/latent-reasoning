@@ -3,7 +3,8 @@ Runs: boxes/runs_mult/a114_{loopr,loop1}_4x4_s{1,2,3}/eval.json (accel99 keys + 
 PAUSE-4 comparator: boxes/runs_mult/a107_pause4_4x4_s*/eval.json.
 CARRY-3: per_slot_decode_acc[2] >= 0.95 in >= 2/3.  C1-donor: in those seeds, every in-chunk donor slot donor >= 0.90 and
 recipient < 0.10, and zero/mean removal answer acc <= §98 NC-M 4x4 median + 0.05.  DEPTH: LOOP-R meets CARRY-3 + C1-donor,
-LOOP-1 does not, PAUSE-4 did not.  No-read seeds (early_escape false) count as fails; also reported among escaped seeds.
+LOOP-1 does not, PAUSE-4 did not.  No-read seeds (no_read_final true: final shuffled-null ratio >= 0.5, note 114-3) count as fails; also reported among
+reading seeds.
     python theory/score_s114.py
 """
 import glob
@@ -38,7 +39,7 @@ def main():
             return (bool(d) and all(v["donor_consistent"] >= 0.90 and v["recipient_consistent"] < 0.10 for v in d.values())
                     and floor is not None and r["removal"]["zero"]["answer_acc"] <= floor and r["removal"]["mean"]["answer_acc"] <= floor)
         ok = [s for s in carry if c1(rs[s])]
-        esc = [s for s, r in rs.items() if r.get("early_escape")]
+        esc = [s for s, r in rs.items() if r.get("no_read_final") is False]          # note 114-3: final shuffled-null ratio < 0.5
         A = {"n": len(rs), "op3": op3, "carry_seeds": carry, "CARRY_3": len(carry) >= 2, "c1_seeds": ok, "C1_donor": len(ok) >= 2,
              "escaped_seeds": esc, "noread_seeds": [s for s in rs if s not in esc],
              "among_escaped_carry": [s for s in carry if s in esc], "test_acc": {s: r.get("test_acc") for s, r in rs.items()},
