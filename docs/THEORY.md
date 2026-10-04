@@ -49,6 +49,9 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 * **Directions memo** (2026-10-04, `docs/THEORY_DIRECTIONS_2026-10-04.md`): candidates for fast hand-offs, C4 without step
   labels, and latent chains without snaps. Top picks: a snap-strength dose-response, state-in-depth recurrence, filtered
   self-training by length.
+* **Looped / recurrent-depth proposals** (2026-10-04, `docs/THEORY_LOOPED_2026-10-04.md`): P1 looped depth per op (vs
+  PAUSE), P2 redundant state coding, P3 straight-through Gumbel snaps (strict C4), P4 round-trip-triggered snapping
+  (C5), P5 adaptive depth, P6 early triage.
 * **Next (the user's plan):** §98 → the bench ladder (ProsQA-NA, a held-out task) → C4 by final-answer self-training
   (pending the user) → a general readout.
   - Queued: a routed snap for C5, with a non-confidence trigger (Literature 2af8ca18; §83 showed confidence fails out of
