@@ -243,9 +243,13 @@ def gen_mean_inputs(m, D, dev, amp, n_rows=2000, seed=9805):
         idx = rng.integers(0, len(D["A"]), n_rows); T = lambda a: torch.tensor(a, device=dev)  # noqa: E731
         prefix = T(np.concatenate([DIGIT_IDS[D["A"][idx]], np.full((n_rows, 1), TOK["*"])], 1))
         start = T(D["steps"][c0 - 1][idx]) if c0 > 0 else None
-        with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
-            _, _, _, ins = m.chunk(prefix, start, T(D["B"][idx, c0:c1]))
-        out.append(ins.float().mean(0))
+        acc = 0                                                             # 250-row batches (2,000 at once OOM'd beside 2 evals, u3)
+        for b0 in range(0, n_rows, 250):
+            sl = slice(b0, b0 + 250)
+            with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+                _, _, _, ins = m.chunk(prefix[sl], None if start is None else start[sl], T(D["B"][idx[sl], c0:c1]))
+            acc = acc + ins.float().sum(0)
+        out.append(acc / n_rows)
     return out
 
 
