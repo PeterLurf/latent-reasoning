@@ -1856,6 +1856,22 @@ Projection to Audit. Implementation: the experiments session (accel99 plus a loo
 * **The carried latent** is the final iteration's segment output. The donor patch replaces it at each in-chunk slot.
 * Rules and arms are unchanged.
 
+**Note 114-2 (2026-10-04 16:51 EDT, before any §114 result; motivated by 111-2 and the experiments session's null
+analysis).**
+* **The problem with the registered flag.** §114 flagged no-read seeds by 111-1's `early_escape`, which does not
+  discriminate (111-2: all §108 seeds were True). The zero-latent null is out of distribution: a zeroed carried latent
+  inflates even unread seeds' loss. §108 MK-4's final-checkpoint ratios (main / zero-null) were 6.8e-7, 1.8e-4, 0.27,
+  0.31: separating, but not about 1 when unread.
+* **The new flag.** A seed is **no-read** if **main loss / shuffled-null loss ≥ 0.9** at the first log at or after 6k
+  (k = 4).
+  - The shuffled null is the same batch with carried latents permuted across batch rows: in distribution, and about 1
+    when the latent is not read.
+  - The flag's use in §114's rules is unchanged: no-read seeds count as fails and are also reported separately.
+* The same shuffled null replaces the zero null in §111's descriptive `early_escape_rel`, for the runs that get it
+  natively.
+* §114's l1 (the LOOP-R s1 proof) is restarted on the new code if it has not passed 6k. Otherwise its flag is computed
+  as the final-checkpoint shuffled ratio, and labelled as such.
+
 ## 115. Without snaps, and snapping only when needed: no-snap Markov chains and a round-trip snap trigger (eval only) (pre-registered 2026-10-04 15:55 EDT, after Literature's check c70d55e3 (P4) and before running on any checkpoint; the user's go-ahead for P4 via Audit)
 
 **Why.** Every success so far snaps at hand-set points (C5 unmet), and length generalisation comes from the snap scaffold
