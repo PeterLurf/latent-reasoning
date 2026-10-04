@@ -158,7 +158,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 101 | Snap-strength dose-response (β_min 1 / 0.1 / 0.01 / 0) on S5 | registered | **open** |
 | 102 | State in depth: gated slot-to-slot residual path (4×4, in §99's harness) | registered | **open** |
 | 103 | Filtered self-training by length (C4 inside the LM, S5) | registered | **open** |
-| 104 | Serial causal use of slots: donor patching, blocking (§92, §97; eval only) | registered | **open** |
+| 104 | Serial causal use of slots: donor patching, blocking (§92, §97; eval only) | SERIAL not met: §92 2/5; §97 0/3 with donor latents ignored (state recomputed from visible ops) | closed |
 | 105 | C1 for the headline: S5 GEN-4 with a masked fork + donor protocol | registered | **open** |
 | 106 | C2 on a real task: bounded streaming multiplication (latent vs the written format) | registered | **open** |
 | 107 | Multiplication's blocker: carrier width (m latents) vs compute (pause), carriage forced | registered | **open** |
@@ -929,6 +929,33 @@ chunks B, with random starts and ops. Donors are patched at the same slot index 
 
 **Placement.** Eval only: about 20 GPU-minutes on a local card (as the experiments session offers), or the CPU at
 Idle priority. $0.
+
+**§104 result (2026-10-04 05:46 EDT; run by Theory on the local 4060, `theory/s104_serial.py` committed with the
+registration; scored with `theory/score_s104.py`, written after the run printed §92's partial values (disclosed);
+`theory/results/score_s104.json`). SERIAL is not met in any family. §97's latents are bypassed.**
+
+| family | SERIAL (single-slot USE at all slots, no BYPASS) | joint patch donor-consistent at all slots | BYPASS (recipient-consistent ≥ 0.10) |
+|---|---|---|---|
+| §92 (5 × 5 head on the slot) | **2/5** (s1, s4: donor ≥ 0.97) | 3/5 (s1, s2, s4) | s3 slot 2 (0.29), s5 slot 1 (0.26) |
+| §97 GEN-4 (text fork) | **0/3** (single donor ≤ 0.02) | 0/3 (≤ 0.31) | every slot, 0.21–**1.0** |
+| §97 HYB-4 | **0/3** (single donor ≤ 0.27) | 0/3 (slot 1 only) | 0.05–**1.0** |
+
+* **Headline (the user's C1 priority).** In §97's text-fork models, a natural-looking donor latent at slot j is
+  **ignored**. The final decode equals the recipient's own true state (recipient-consistent up to 1.0), so the state is
+  recomputed from the visible start text and ops in context.
+  - Zero ablation broke them only because zeros are off-distribution.
+  - **§97's C1 (use) is not supported by donor patching.** Its chunks behave like the written-state loop with latent
+    tokens present but unused: the §66 WC = WC₀ pattern, now shown causally.
+* **§92.** The state is in the slot alone in 2/5 seeds. In the other three it is carried jointly by the slot and the
+  op-token residuals (multiple mediators, Literature (4)), with partial recomputation at one slot in s3 and s5.
+  - Serial C1 at the slot level is **2/5**, short of ≥ 4/5.
+* **Consequence.**
+  - Our C1 claims so far (§92, §97) rest on zero ablation. Causal patching shows that only designs which remove the
+    visible route can claim serial latent carriage.
+  - That makes the C1-first queue decisive: §105 (masked fork, with §104's protocol as its HANDOFF rule), §99's MARKOV,
+    and §107's forced-carriage arms.
+  - An S5 MARKOV test (fresh segments; carriage forced; S5's per-op lookup is cheap compute) is the natural next
+    registration.
 
 ## 105. C1 for the headline result: §97's S5 recipe with a masked fork, scored by donor patching (pre-registered 2026-10-04 01:34 EDT, after Literature's check 78a12af7 and before any implementation or run; Audit's steward pick, C1-first)
 
