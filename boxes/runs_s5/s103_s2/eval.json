@@ -1,0 +1,225 @@
+{
+ "arm": "self103",
+ "seed": 2,
+ "k": 4,
+ "train_sec": 13038,
+ "eval_dtype": "torch.bfloat16",
+ "test_sequences": 2000,
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "short_fraction": 0.05,
+ "updates": 24000,
+ "rounds": [
+  {
+   "length": "1-2",
+   "steps": 1200,
+   "targets": "final answer only"
+  },
+  {
+   "pool": 50000,
+   "filtered_by": {
+    "validity": 0.07334,
+    "final": 0.92646,
+    "vote": 0.00014
+   },
+   "kept_share": 6e-05,
+   "pseudo_label_precision": 0.0,
+   "acc_new_length_before": 0.006326666666666667,
+   "length": 4,
+   "action": "kept share 0.000 < 0.20: insert length 3"
+  },
+  {
+   "pool": 50000,
+   "filtered_by": {
+    "validity": 0.0,
+    "final": 0.99944,
+    "vote": 0.00044
+   },
+   "kept_share": 0.00012,
+   "pseudo_label_precision": 0.5,
+   "acc_new_length_before": 0.008093333333333333,
+   "length": 3,
+   "steps": 4560
+  },
+  {
+   "pool": 50000,
+   "filtered_by": {
+    "validity": 0.09046,
+    "final": 0.40938,
+    "vote": 0.50002
+   },
+   "kept_share": 0.00014,
+   "pseudo_label_precision": 1.0,
+   "acc_new_length_before": 0.3386733333333334,
+   "length": 4,
+   "steps": 4560
+  },
+  {
+   "pool": 50000,
+   "filtered_by": {
+    "validity": 0.0051,
+    "final": 0.66338,
+    "vote": 0.32816
+   },
+   "kept_share": 0.00336,
+   "pseudo_label_precision": 0.24404761904761904,
+   "acc_new_length_before": 0.22620666666666667,
+   "length": 8,
+   "action": "kept share 0.003 < 0.20: insert length 6"
+  },
+  {
+   "pool": 50000,
+   "filtered_by": {
+    "validity": 0.00822,
+    "final": 0.49792,
+    "vote": 0.4893
+   },
+   "kept_share": 0.00456,
+   "pseudo_label_precision": 0.3333333333333333,
+   "acc_new_length_before": 0.33534,
+   "length": 6,
+   "action": "kept share 0.005 < 0.20: insert length 5"
+  },
+  {
+   "pool": 50000,
+   "filtered_by": {
+    "validity": 0.00522,
+    "final": 0.3319,
+    "vote": 0.65588
+   },
+   "kept_share": 0.007,
+   "pseudo_label_precision": 0.32,
+   "acc_new_length_before": 0.44792666666666664,
+   "length": 5,
+   "steps": 2736
+  },
+  {
+   "pool": 50000,
+   "filtered_by": {
+    "validity": 0.00102,
+    "final": 0.24826,
+    "vote": 0.21434
+   },
+   "kept_share": 0.53638,
+   "pseudo_label_precision": 0.9779633841679406,
+   "acc_new_length_before": 0.5053666666666666,
+   "length": 6,
+   "steps": 2736
+  },
+  {
+   "pool": 50000,
+   "filtered_by": {
+    "validity": 0.00012,
+    "final": 0.3229,
+    "vote": 0.00712
+   },
+   "kept_share": 0.66986,
+   "pseudo_label_precision": 0.9826829486758427,
+   "acc_new_length_before": 0.5214466666666667,
+   "length": 8,
+   "steps": 2736
+  },
+  {
+   "pool": 50000,
+   "filtered_by": {
+    "validity": 0.0,
+    "final": 0.0014,
+    "vote": 0.00062
+   },
+   "kept_share": 0.99798,
+   "pseudo_label_precision": 0.9837672097637227,
+   "acc_new_length_before": 0.6912600000000001,
+   "length": 16,
+   "steps": 2736
+  },
+  {
+   "pool": 50000,
+   "filtered_by": {
+    "validity": 0.0,
+    "final": 0.00044,
+    "vote": 0.00054
+   },
+   "kept_share": 0.99902,
+   "pseudo_label_precision": 0.982743088226462,
+   "acc_new_length_before": 0.6808333333333333,
+   "length": 32,
+   "steps": 2736
+  }
+ ],
+ "cumulative": {
+  "128": 0.98,
+  "256": 0.973,
+  "512": 0.9615
+ },
+ "final_state_acc_512": 1.0,
+ "compute_512_per_problem": {
+  "tokens_processed": 4992,
+  "flops": 912165175296.0,
+  "seq_passes": 1792,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "latent_slots": 512,
+  "measurement_decode_flops": 506099662848.0
+ },
+ "checkpoint_validity": {
+  "snaps": 256000,
+  "valid": 255999,
+  "rate": 0.99999609375
+ },
+ "extension_2048": {
+  "n": 500,
+  "len": 2048,
+  "cumulative": {
+   "512": 0.948,
+   "1024": 0.934,
+   "2048": 0.896
+  }
+ },
+ "chunk_check": {
+  "k": 4,
+  "n": 100000,
+  "per_chunk_acc": 0.99984,
+  "per_slot_acc": [
+   0.99985,
+   0.99999,
+   1.0,
+   1.0
+  ],
+  "pred_seq_acc_512": 0.9797266854876273
+ },
+ "removal": {
+  "zero": {
+   "k": 4,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.0001,
+    0.0,
+    0.0,
+    0.007
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "zero",
+   "acc_after_first_ablated_slot": 0.0023333333333333335
+  },
+  "mean": {
+   "k": 4,
+   "n": 10000,
+   "per_chunk_acc": 0.8478,
+   "per_slot_acc": [
+    1.0,
+    0.9999,
+    1.0,
+    0.8478
+   ],
+   "pred_seq_acc_512": 6.630660099758679e-10,
+   "ablate": "mean",
+   "acc_after_first_ablated_slot": 0.9492333333333334
+  }
+ },
+ "edit_iia": {
+  "n": 5000,
+  "iia": 1.0
+ },
+ "eval_sec": 509
+}
