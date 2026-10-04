@@ -1,0 +1,3 @@
+# §98 COCO-M 5x5 reruns on local cards: --micro 4 and eval_bs 50 (an 8 GB card OOM'd at eval_bs 250: 5x5 s1)
+boxes/runs_mult/m98_coco_5x5_s2 boxes.mult98 train --arm coco --task 5x5 --seed 2 --micro 4 --eval_bs 50
+boxes/runs_mult/m98_coco_5x5_s3 boxes.mult98 train --arm coco --task 5x5 --seed 3 --micro 4 --eval_bs 50
