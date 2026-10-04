@@ -1,0 +1,22 @@
+{
+ "steps": 24000,
+ "bs": 64,
+ "lr": 0.0001,
+ "r0_steps": 1200,
+ "pool": 50000,
+ "lengths": "4,8,16,32",
+ "eval_bs": 250,
+ "test_n": 2000,
+ "ext_n": 500,
+ "ext_len": 2048,
+ "check_n": 100000,
+ "data_dir": "/workspace/Latent/bench/data/s5",
+ "device": "cuda:0",
+ "out": "boxes/runs_s5/s103",
+ "seed": 3,
+ "lockstep_seeds": [
+  1,
+  2,
+  3
+ ]
+}

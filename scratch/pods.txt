@@ -603,3 +603,10 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 54111465 vast | gen_m1 DESTROYED_VERIFIED 2026-10-04 06:05 after verified per-run fetch (boxes/runs_mult/a99_markov_4x4_s1 boxes/runs_mult/a99_markov_4x4_s3 boxes/runs_mult/a99_markov_4x4_s2)
 54111472 vast | gen_m2 DESTROYED_VERIFIED 2026-10-04 06:06 after verified per-run fetch (boxes/runs_mult/a99_ctrl_4x4_s3 boxes/runs_mult/a99_ctrl_4x4_s2 boxes/runs_mult/a99_ctrl_4x4_s1)
 54122094 vast | gen_p1 DESTROYED_VERIFIED 2026-10-04 06:43 after verified per-run fetch (boxes/runs_mult/s106_gens_mask_s3 boxes/runs_mult/s106_gens_mask_s1 boxes/runs_mult/s106_gens_mask_s2)
+54138454 vast offer 18990232 created 2026-10-04 06:46: label gen-u2, queue scratch/gen_q_u2.txt (logged at create by vdeploy_toy.sh)
+54138455 vast offer 31458818 created 2026-10-04 06:46: label gen-m5, queue scratch/gen_q_m5.txt (logged at create by vdeploy_toy.sh)
+54138463 vast offer 47263667 created 2026-10-04 06:46: label gen-m6, queue scratch/gen_q_m6.txt (logged at create by vdeploy_toy.sh)
+54139052 vast offer 53475863 created 2026-10-04 06:53: label gen-p2, queue scratch/gen_q_p2.txt (logged at create by vdeploy_toy.sh)
+54139062 vast offer 51152292 created 2026-10-04 06:53: label gen-p3, queue scratch/gen_q_p3.txt (logged at create by vdeploy_toy.sh)
+54134514 vast | gen_k1 DESTROYED_VERIFIED 2026-10-04 07:53 ABORTED: host rebooted ~07:35 EDT (uptime 8 min at 07:52); all three s108_mk4 runs killed at step 15,100 with no model.pt (aborted unread; Audit 07:51); logs + run args/log.jsonl/eval.json (no models) in logs/vast_154.61.62.158_30047/aborted
+54122055 vast | gen_t1 DESTROYED_VERIFIED 2026-10-04 08:14 after verified per-run fetch (boxes/runs_s5/s103)
