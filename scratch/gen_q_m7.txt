@@ -1,0 +1,5 @@
+# §99 relaunch on fixed code (C3 part): textfirst_mask
+# P=3
+boxes/runs_mult/a99_textfirst_mask_4x4_s1 boxes.accel99 --arm99 textfirst_mask --seed 1 --eval_bs 100
+boxes/runs_mult/a99_textfirst_mask_4x4_s2 boxes.accel99 --arm99 textfirst_mask --seed 2 --eval_bs 100
+boxes/runs_mult/a99_textfirst_mask_4x4_s3 boxes.accel99 --arm99 textfirst_mask --seed 3 --eval_bs 100
