@@ -1,0 +1,5 @@
+# §101 proof host: beta_min = 0, seeds 1-3 (memory unknown: multi-chunk backprop)
+# P=2
+boxes/runs_s5/s101_b0_s1 boxes.snap101 --beta_min 0 --seed 1
+boxes/runs_s5/s101_b0_s2 boxes.snap101 --beta_min 0 --seed 2
+boxes/runs_s5/s101_b0_s3 boxes.snap101 --beta_min 0 --seed 3
