@@ -165,7 +165,8 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 106 | C2 on a real task: bounded streaming multiplication (latent vs the written format) | written format + cut extrapolates 1.000 to b = 32 (WC-S-k2 3/3); masked latent arm fails even at k = 2 (106-4) | closed |
 | 107 | Multiplication's blocker: carrier width (m latents) vs compute (pause), carriage forced | registered | **open** |
 | 108 | Forced latent carriage on S5 (Markov segments, sink fix, TF bootstrap; donor-scored) | registered | **open** |
-| 110 | Self-training v2: independent seeds, label-free gate, masked fork (C4 + C1) | registered | **open** |
+| 110 | Self-training v2: independent seeds, label-free gate, masked fork (C4 + C1) | design error (110-1): the restart gate needs non-identity restarts; s1–3 for the record | closing |
+| 110b | Self-training v2 corrected: identity-start shorts plus random textual starts for length ≥ 3 | registered | **open** |
 
 ## Live sections
 
@@ -1415,6 +1416,78 @@ Theory's).**
   final-answer only.
   - The model then learns restarts from round 0, and the k = 1 restart becomes a trained second view.
   - Evaluation stays on the protocol's identity-start test set.
+
+## 110b. Self-training by length, v2 corrected: random given start states (C4 + C1) (pre-registered 2026-10-04 09:29 EDT, after Literature's check e9b41709 and before any implementation or run; corrects §110's design error, note 110-1)
+
+**Why (110-1).** §110's restart check needs restart competence from non-identity states, which identity-only training
+never provides (its gate was ≈ 0). §110b gives every training problem a **random given start state, written as text**.
+The start is problem input, so supervision stays final-answer only, and the k = 1 restart becomes a trained second view
+from round 0. Otherwise §110 is unchanged.
+
+**§110's motivation.** §103's filtered self-training (S5, final answers only, ≤ 5 % short) reached 0 / 0.9615 / 0.9585 at 512. It was
+the closest in-LM C4 result.
+* The cap was **pseudo-label precision ≈ 0.98**. The cross-seed vote on a shared pool lets correlated errors through.
+* s2's mean-removal (0.949) shows the fork bypass, so there is no C1.
+* §110 targets both: per-seed, label-free filtering with a precision gate, and the masked fork.
+* **Prior** (e9b41709): ...
+
+**Task and model (Literature e9b41709).** S5, final answers only (no ground-truth intermediate state is ever used in
+training or in any training decision).
+* **Short problems (R0, lengths 1–2, ≤ 5 % of updates) start from the identity**, exactly as §103. Their answers label only
+  e · a and e · a · b, the same footholds as §103 (Literature: random-start shorts would label Cayley entries across the
+  whole state space).
+* **Problems of length ≥ 3 start from a random given state, drawn uniformly from the 120 states and written as text** in
+  the same format as the identity start. Their final answers leak no step labels, and they train restarts from
+  arbitrary states.
+* The **test stays on DeltaProduct's identity-start protocol set**, with the identity start written as text in the same
+  format, so it is in distribution.
+* §97's GEN-4 recipe with **§105's masked fork**. Budget 24k steps. **Seeds 1–5, each with an independent pool**, no
+  cross-seed vote. §97's GEN-4 recipe with
+**§105's masked fork** (each step fork sees only its slot's K/V and its own tokens). Budget 24k steps. **Seeds 1–5, each
+with an independent pool** and no cross-seed vote.
+
+**Rounds.**
+* **R0:** as §103 (lengths 1–2, ≤ 5 % of updates; final-answer slots only).
+* **R1…:** lengths ≤ 4, 8, 16, 32 (3..L_max), with §103's adaptive insertion.
+* Per round, a fresh 50k pool is labelled with the seed's own greedy decodes. A problem's per-slot targets are kept only
+  if, in order:
+  1. **Validity:** every decoded checkpoint parses.
+  2. **Final answer:** the decoded final answer is correct.
+  3. **Self-consistency:** at every position, the chained decode equals the decode from a k = 1 restart at that
+     position's previous checkpoint.
+  - Otherwise only the final slot is targeted (as §103).
+* **Label-free precision gate.** Among final-correct problems, the self-consistency rate must be ≥ 0.995. If it is not,
+  the round's length is halved (an intermediate length is inserted) and the pool is relabelled.
+  - The truth-scored pseudo-label precision is logged by the scorer only, never used.
+* **Final relabelling:** the last 4k updates relabel a fresh pool at the maximum length with the current model, and
+  train on it.
+
+**Measures.** §97's (cumulative at 512 / 2,048, removal, per-slot, validity, edit IIA), plus:
+* §104's donor protocol on the trained models (primary C1);
+* per round: the yield of each filter, the gate value, and the truth-scored precision (descriptive);
+* short_fraction (≤ 0.05).
+
+**Rules (fixed now).**
+* **SELF2 (C4):** cumulative ≥ 0.99 at 512 in ≥ 4/5 seeds.
+* **C1 (§104 / §105):** in the SELF2 seeds, mean-removal ≤ 0.06, and donor USE (≥ 0.90) at every in-chunk slot with no
+  BYPASS (≥ 0.10), in ≥ 4/5.
+* **C6:** SELF2 at 2,048 (≥ 0.99) in ≥ 4/5.
+* **Claim wording (fixed; Audit, Literature):** "C4 qualified by ≤ 5 % identity-start short problems, with random textual
+  starts (uniform over the 120 states) for problems of length ≥ 3. Every state appears as text in the inputs, so the
+  state vocabulary is input-grounded."
+* Reported: the fraction of distinct (state, op) transitions labelled by short problems (at most e's row plus 2-step
+  compositions from e).
+
+**Readings.**
+* **SELF2 + C1.** A pretrained LM learns S5 latent restarts from final answers alone, with its latents causally carrying
+  the state: C4 (qualified) + C1 + C2 (restarts) + C6 if it holds at 2,048.
+* **SELF2 without C1.** C4 holds, but the masked fork's slot still recomputes in-pass (§105's concern). Report the donor
+  split.
+* **Not SELF2, with high gate values.** Coverage or optimisation is the limit, not precision.
+* **The gate never passes.** Self-consistency is too strict at this budget. Report the yields.
+
+**Placement.** 5 seeds, independent, about $8–10 on Vast (proof seed first). Projection to Audit. Implementation: the
+experiments session (self103 with the masked fork, the self-consistency filter and gate, and independent pools).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
