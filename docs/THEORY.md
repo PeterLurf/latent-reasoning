@@ -158,11 +158,11 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 99 | Speeding up the latent hand-off (k-curriculum, standardised slots, text-first, combo) | on fixed code (99-2) | **open** |
 | 100 | Shorter silent stretches: multiplication at k = 2 (GEN2, MASK2) | registered; fixed code only (100-1) | **open** |
 | 101 | Snap-strength dose-response (β_min 1 / 0.1 / 0.01 / 0) on S5 | registered | **open** |
-| 102 | State in depth: gated slot-to-slot residual path (4×4, in §99's harness) | registered | **open** |
+| 102 | State in depth: gated slot-to-slot residual path (4×4, in §99's harness) | does not accelerate (all censored; test 0.01–0.17) | closed |
 | 103 | Filtered self-training by length (C4 inside the LM, S5) | SELF not met: 0 / 0.9615 / 0.9585 at 512 from final answers only; pseudo-label precision ~0.98 caps it | closed |
 | 104 | Serial causal use of slots: donor patching, blocking (§92, §97; eval only) | SERIAL not met: §92 2/5; §97 0/3 with donor latents ignored (state recomputed from visible ops) | closed |
 | 105 | C1 for the headline: S5 GEN-4 with a masked fork + donor protocol | registered | **open** |
-| 106 | C2 on a real task: bounded streaming multiplication (latent vs the written format) | k = 4 pilot gate fails (b = 4 ≈ 0.005); k = 2 MASK + written comparator added (106-3) | **open** |
+| 106 | C2 on a real task: bounded streaming multiplication (latent vs the written format) | written format + cut extrapolates 1.000 to b = 32 (WC-S-k2 3/3); masked latent arm fails even at k = 2 (106-4) | closed |
 | 107 | Multiplication's blocker: carrier width (m latents) vs compute (pause), carriage forced | registered | **open** |
 | 108 | Forced latent carriage on S5 (Markov segments, sink fix, TF bootstrap; donor-scored) | registered | **open** |
 | 110 | Self-training v2: independent seeds, label-free gate, masked fork (C4 + C1) | registered | **open** |
@@ -833,6 +833,14 @@ mean-removal answer accuracy ≤ §98's NC-M 4×4 + 0.05 in its threshold-reachi
 **Placement.** 3 runs on the local cards with §99 (about $0–3). It is scored with §99's scorer extended by the arm
 `statepath`.
 
+**§102 result (2026-10-04 09:07 EDT; statepath s1–3 run by the experiments session in §99's harness; scored by Theory with
+`theory/score_s99.py` (arm `statepath`), committed before any run). STATEPATH does not accelerate.**
+* All 3 runs reached the 24k cap without reaching threshold (CTRL is also censored, so the bar was ≤ 12k).
+* Test accuracy: 0.170 / 0.032 / 0.013, against CTRL's 0.163 / 0.143 / 0.184. Removal: zero 0.0, mean ≤ 0.007.
+* **Reading ("No").** A direct, gated residual state path from slot j−1 to slot j does not speed up multiplication's
+  hand-off. The staircase is not about the attention-retrieval route. Consistent with §107 / 106-2: compute per op or the
+  carrier's format, not routing.
+
 ## 103. Learning step states without step labels: filtered self-training by length (pre-registered 2026-10-04 00:17 EDT, after Literature's checks a214bb6d and 5c2e080e and before any implementation or run; the user's go-ahead via Audit)
 
 **Why.** C4 inside the LM has failed by every label-thinning route (§93, §95) and by RL and annealing (§69, §87). §85 and
@@ -1121,6 +1129,22 @@ show the recipe learns multiplication. Projection to Audit.
   a real task.
 * About $4–6 (6 runs). It joins the C1 group after tfslot and §108. Scored with `theory/score_s106.py`, extended to
   the dirs `s106_gens_mask_k2_s*` and `s106_wcs_k2_s*`.
+
+**Note 106-4 (2026-10-04 09:07 EDT; the 106-3 arms, run by the experiments session; scored by Theory with
+`theory/score_s106.py`; GEN-S-MASK-k2 s2's re-evaluation is pending but cannot change the verdict).**
+* **WC-S-k2** (the streaming format written out, history cut every 2 steps), trained on b ≤ 5: **1.000 at b = 4 / 8 / 16 /
+  32 in 3/3** (one cell 0.999). C2-S is met: the written bounded-carry format plus the cut extrapolates multiplication
+  from 5 to 32 multiplier digits perfectly.
+* **GEN-S-MASK-k2** (masked fork, one latent hand-off per chunk): exact product at b = 4 is 0.003 / 0.007 (s1, s3).
+  - Per-step decode at b = 4: 1.0 / 0.20–0.25 / 0.04–0.07 / ≤ 0.011, with checkpoint validity 1.0.
+  - **Even one in-chunk hand-off of the carry fails.**
+  - C2-S and C1-S are not met.
+* **Attribution (fixed in 106-3).** C2 on multiplication belongs to **the written format plus the cut**. The latents add
+  nothing here, so this is a written-state (range-principle) result, not a latent one.
+* **Descriptive contrast with §100 MASK2 4×4 (dataset format, k = 2; answers 0.89 / 0.32 / 0.985).** There, S_2 is
+  recomputable from the visible operands within the slot's own forward pass (§105's caution: the masked fork does not
+  stop that). §100's partial success may be in-pass recomputation, not carriage. §104's donor protocol on the MASK2
+  models would decide it.
 
 ## 107. Multiplication's C1 blocker: carrier width or compute per op? m latents per op vs pause positions, with carriage forced (pre-registered 2026-10-04 03:32 EDT, after Literature's check 640ffe59 and before any implementation or run; Audit's 03:13 steward pick)
 
