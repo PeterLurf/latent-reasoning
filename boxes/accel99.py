@@ -25,6 +25,7 @@ tfslot updates are counted at the latent configuration).
 import os
 os.environ["BOXES_NB"] = "5"
 import argparse  # noqa: E402
+import hashlib  # noqa: E402
 import json  # noqa: E402
 import math  # noqa: E402
 import sys  # noqa: E402
@@ -231,11 +232,14 @@ def main():
     finish(a, m, Dtr, Dte, dev, amp, arm, elig, hit, stop_step, curve, flops, wall, round(time.time() - t0))
 
 
+USED_BS = []
+
+
 def rollout_safe(m, D, dev, amp, bs, **kw):
     """gen_rollout, halving the batch on CUDA OOM (three runs on one card can finish and evaluate together)."""
     while True:
         try:
-            return gen_rollout(m, D, dev, amp, bs, **kw)
+            out = gen_rollout(m, D, dev, amp, bs, **kw); USED_BS.append(bs); return out
         except torch.OutOfMemoryError:
             if bs <= 10:
                 raise
@@ -252,9 +256,11 @@ def finish(a, m, Dtr, Dte, dev, amp, arm, elig, hit, stop_step, curve, flops, wa
            "test_acc": float(ok.mean()), "per_slot_decode_acc": per.mean(0).tolist(), "removal": {},
            "training": {"flops": flops, "wall_sec": wall, "train_sec": train_sec,
                         "flops_convention": "sum over updates of Meter forward FLOPs per trained problem (config of that update) x 3 x bs; tfslot updates at the latent config"},
-           "std_stats": {"seen": int(m.seen), "sd_floor": float(0.05 * m.sdH.median())} if m.std else None}
+           "std_stats": {"seen": int(m.seen), "sd_floor": float(0.05 * m.sdH.median())} if m.std else None,
+           "code": {f: hashlib.md5(open(os.path.join(ROOT, "boxes", f), "rb").read()).hexdigest() for f in ("accel99.py", "mult98.py")}}
     for ab in ("zero", "mean"):
         _, o_, _ = rollout_safe(m, Dte, dev, amp, bs, ablate=ab, mean_in=mu); res["removal"][ab] = {"answer_acc": float(o_.mean())}
+    res["eval_bs"] = {"requested": a.final_eval_bs, "used": sorted(set(USED_BS))}
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     print("EVAL", json.dumps({k: res[k] for k in ("steps_to_threshold", "stopped_step", "test_acc")}), flush=True); print("DONE", a.out, flush=True)
 
