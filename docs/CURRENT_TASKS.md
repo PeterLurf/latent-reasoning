@@ -67,6 +67,11 @@ Every host is deployed by `scratch/gen_deploy_9{7,8}.sh`, has a watcher `scratch
   TEXTFIRST-MASK / TF-SLOT / COMBO), early stop on the valid split; `theory/score_s99.py`. It needs §98's NC-M 4×4.
 * **§100** (overnight, parallel): 12 runs, GEN2 / MASK2 at k = 2 on mult 4×4 / 5×5; `theory/score_s100.py`. It reuses
   §98's TC-M / NC-M / ICoT-SI.
+* **98-3 (final-fork conflict):** §98 GEN/MASK runs are void and rerun on fixed code after the guard test; §99 and §100
+  run on fixed code only. Priority §98 → §100 → §99.
+* **§101** snap strength (S5, 12 runs; `score_s101.py`), **§102** statepath (an arm in §99's harness;
+  `score_s99.py`), **§103** filtered self-training by length (S5, 3 seeds in lockstep; `score_s103.py`).
+  User-approved; in parallel with the reruns.
 * **§89:** final F1 from the arms in hand once fade_soft s2 lands (`python c1/score_89.py`).
 * **§83 s2/s3** (descriptive; s2/s3 fp32, s1 bf16).
 
