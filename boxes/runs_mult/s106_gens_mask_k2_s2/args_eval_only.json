@@ -1,0 +1,14 @@
+{
+ "arm": "gens_mask_k2",
+ "seed": 2,
+ "steps": 24000,
+ "bs": 64,
+ "lr": 0.0001,
+ "eval_bs": 100,
+ "test_n": 1000,
+ "log_every": 2000,
+ "test_bs": "4,8,16,32",
+ "device": "cuda:0",
+ "out": "boxes/runs_mult/s106_gens_mask_k2_s2",
+ "eval_only": true
+}
