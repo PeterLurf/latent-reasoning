@@ -166,7 +166,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 107 | Multiplication's blocker: carrier width (m latents) vs compute (pause), carriage forced | registered | **open** |
 | 108 | Forced latent carriage on S5 (Markov segments, sink fix, TF bootstrap; donor-scored) | registered | **open** |
 | 110 | Self-training v2: independent seeds, label-free gate, masked fork (C4 + C1) | design error (110-1): the restart gate needs non-identity restarts; s1–3 for the record | closing |
-| 110b | Self-training v2 corrected: identity-start shorts plus random textual starts for length ≥ 3 | registered | **open** |
+| 110b | Self-training v2 corrected: identity-start shorts plus random textual starts for length ≥ 3 | stopped after a clear null: loss at chance from random starts (110b-2) | closed |
 
 ## Live sections
 
@@ -1582,3 +1582,23 @@ experiments session (self103 with the masked fork, the self-consistency filter a
   - "§103: ≤ 5 % short problems covering ≈ 71 % of transitions".
   - **Strict C4** (lengths ≥ 3 only, as ge3) is **unmet**. Per §85, that route needs an optimisation advance (a way into
     the basin), not self-training.
+
+**Note 110b-2 (2026-10-04 11:35 EDT; §110b stopped after a clear null, Theory's decision; data kept and committed as
+"aborted after a clear null").**
+* **Result.** Seeds 1–3 (Vast) and s4 (local), through 13.2k of 24k steps, rounds L3 → L4 → L5 (inserted) → L6:
+  - final-correct at every labelling is **0.0074–0.0091**, which is chance (1/120 = 0.0083);
+  - the gate is ≤ 0.02, nothing is kept, and the truth-scored rate is 0;
+  - **training loss is flat at 4.86–4.92 since R0 (ln 120 = 4.79)**: the final state is predicted at chance.
+  - Label checks pass: the g105 control with random starts gives truth precision 1.0.
+* **Reading.** From **random given starts**, final-answer-only training on problems of length ≥ 3 does not get off the
+  ground at this budget. That is §85's strict-C4 barrier (ge3: no short labels per state) appearing in the LM.
+  - §110 / §103's identity-start rounds progressed because identity-start problems are **prefixes of the 100k training
+    rows** and can be memorised (§110 reached loss 1e-5 at L4; the experiments session's contrast). Random starts
+    remove that by 120×.
+  - **This qualifies §103's near-miss:** its bootstrap leaned on identity-start structure, and possibly on prefix
+    memorisation, before per-op pseudo-labels took over at L ≥ 6.
+* **Consequence.**
+  - Self-training alone is not a route to strict C4 here (Audit's morning-summary point).
+  - The in-LM route needs a way into the basin (§85 / §87: short-label warm start, oracle-like initialisation) or the
+    amortised teacher (§96).
+  - §110 (identity starts) s1–3 complete for the record.
