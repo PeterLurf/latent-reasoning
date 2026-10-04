@@ -737,6 +737,26 @@ committed before any run; 5×5 is pending).**
   Tags: C3 (SOTA parity at 4×4), not C1.
   - MASK2's donor protocol (running, 106-4's question) says whether its 0.89 median is hand-off or recomputation.
 
+**Note 100-2 (2026-10-04 09:27 EDT; descriptive; §104-style donor protocol on §100 MASK2 4×4, run by the experiments
+session, `boxes/donor100.py`, `boxes/runs_mult/m100_mask2_4x4_s*/donor100.json`; n = 2000, masked decodes).**
+
+| seed | intact S_2 / answer | chunk-1 slot-1 patch: donor / recipient | chunk-2 slot-3 patch: donor / recipient |
+|---|---|---|---|
+| s1 | 1.0 / 0.890 | 0.097 / 0.0095 | 0 / 0 |
+| s2 | 1.0 / 0.288 | 0.166 / 0.010 | 0 / 0.002 |
+| s3 | 1.0 / 0.981 | 0.109 / 0.010 | 0 / 0 |
+
+(Chance overlap of the donor and recipient S_2 is 0.0095.)
+* **Answers 106-4's caution.** Patching slot 1 drives S_2 from 1.0 to chance on the recipient side. So **S_2 is not
+  recomputed from the visible operands; the slot-1 latent is causally necessary.** MASK2's success is not in-pass
+  recomputation.
+* **But the transplant is not clean:** only 10–17 % of S_2 decodes follow the donor, and at slot 3 the answer breaks
+  entirely.
+  - The likely confound is that **donors have a different multiplicand a**. The latent probably encodes the running sum
+    relative to its own a (e.g. partial products), so it is incoherent in the recipient's context.
+  - A **same-a donor variant** (donor problems share the recipient's a; only b differs) makes the transplant well
+    defined. It has been requested, as descriptive.
+
 ## 101. How much discrete correction does a latent chain need? A snap-strength dose-response on S5 (pre-registered 2026-10-04 00:17 EDT, after Literature's checks a214bb6d and 5c2e080e and before any implementation or run; the user's approval of the directions memo, via Audit)
 
 **Why.** Every success so far snaps to a discrete state. Every unsnapped chain drifts (directions memo, problem C). A snap
