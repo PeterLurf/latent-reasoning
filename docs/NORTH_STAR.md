@@ -8,6 +8,9 @@ Condensed by Audit on 2026-10-03 (history before the S5 line kept as one-line su
 
 ## The seven conditions
 
+**Research priority (user, 2026-10-04): C1 > C6 > C4 = C2 > C3 > C5 > C7.** Order new work and GPU time by this; C5/C7 are
+reported where cheap but not designed for.
+
 | # | Condition | Operational test (what would count as meeting it) |
 |---|---|---|
 | C1 | **The thoughts do the work** | Removing or blocking the latent steps drops accuracy to chance on problems that exceed one forward pass (addendum G/J style: K′ = 0 and K′ = 1 far below K), and step-specific blocking shows serial, hop-by-hop use |
