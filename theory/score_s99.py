@@ -17,7 +17,7 @@ import numpy as np
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RUNS = os.path.join(ROOT, "boxes", "runs_mult")
 CAP = 24000
-ARMS = ("ctrl", "kcurr", "std", "textfirst", "textfirst_mask", "tfslot", "combo")
+ARMS = ("ctrl", "kcurr", "std", "textfirst", "textfirst_mask", "tfslot", "combo", "markov")
 
 
 def load(arm):
@@ -53,7 +53,9 @@ def main():
         res["arms"][a] = row
         print("%-14s n %d median steps %s | steps %s | test %s | removal %s | no-bypass %s | accelerates %s" % (
             a, row["n"], row["median_steps"], row["steps"], row["test_acc"], row["removal"], nobypass, row.get("accelerates")))
-    print("CTRL median", ctrl, "| bar", bar, "| NC floor+0.05", floor)
+    km, mm = med.get("kcurr"), med.get("markov")
+    res["H_starve_markov_earlier_than_kcurr"] = (km is not None and mm is not None and mm < km)
+    print("CTRL median", ctrl, "| bar", bar, "| NC floor+0.05", floor, "| H-starve (markov < kcurr)", res["H_starve_markov_earlier_than_kcurr"])
     json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s99.json"), "w", newline="\n"), indent=1, default=float)
 
 
