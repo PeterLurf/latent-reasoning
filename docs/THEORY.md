@@ -145,6 +145,7 @@ appended at the end of this file.
 | 96 | Amortised self-labels from a final-answer teacher | P1, P2 met: 4/5 certified at p 0.05; labels 1.000; pipeline C4 (qualified) | closed |
 | 97 | General latent thinker, step 1 | G4 met 3/3 (0.998–1.0 at 512; 1.0 at 2,048); 0.56× | **open** (C6 seeds) |
 | 98 | Step 2a: multiplication vs ICoT-SI, Coconut, text CoT | running | **open** |
+| 99 | Speeding up the latent hand-off (k-curriculum, standardised slots, text-first, combo) | running | **open** |
 
 ## Live sections
 
@@ -438,5 +439,67 @@ fork mask, Coconut and TC from the GSM8K pipelines, and an ICoT-SI checkpoint lo
   - removal ablates slot inputs 1..k−1 within each chunk (4×4: slots 1–3), and all thought inputs for COCO-M;
   - MASK gives each fork only its slot's cached K/V (all layers) plus its own tokens, with true positions;
   - NC-M: "a * b||" → " #### product". TC-M: "a * b||" → the full CoT + " #### product".
+
+## 99. Speeding up the latent hand-off: k-curriculum, standardised slot inputs, a text-first stage, and their combination (pre-registered 2026-10-03 21:27 EDT, after Literature's check cfeea0b8 and before any implementation or run; the user's directive via Audit, ~21:20, to run in parallel with §98)
+
+**Why.** §98's GEN-M training logs (training-time only, unscored) show the §86 staircase on multiplication. The first slots
+are learned fast; the latent hand-off to later slots is slow. genm_5x5_s1 reads per-slot 1.0 / 1.0 / 0.49 / 0.06 / 0.0
+at about 20k of 24k steps, with loss 1.6–2.8 against text CoT's ~1e-7.
+* §99 asks which cheap change makes the hand-off converge faster.
+* It is a separate comparison and leaves §98 untouched.
+* **Prior** (cfeea0b8, `docs/LIT_S99_ACCEL_2026-10-03.md`). No published speed-up figures exist for latent hand-offs,
+  so every arm is a new measurement.
+  - Literature's ranking: a warm start (CoT init, keeping the side decoder) > a k-curriculum 1 → 4 > standardisation
+    (frozen statistics, a σ floor).
+  - Hidden-state distillation is not used: it risks a bypass (SCIT 2608.27265: CODI computes in the V-cache), geometric
+    collapse (2606.20075), and a mismatch between a full-history teacher and our history cut.
+
+**Task.** Bench mult 4×4 (§98's data and test items), §98's GEN-M recipe and code path (k = 4, text step target via a fork,
+the answer fork after the last slot). Budget cap: §98's 24k steps, bs 64, lr 1e-4. Seeds 1–3 per arm.
+
+**Arms.**
+* **CTRL:** plain GEN-M, with §99's logging (a replication of §98's GEN-M 4×4 under early stopping).
+* **K-CURR:** training chunk length 1 for steps 0–2k, 2 for 2k–6k, then 4 (test always k = 4).
+  - Shorter chunks start from the true previous step text with the history cut, exactly as GEN-M's later chunks do.
+* **STD:** each slot's input is g(h) = μ_E + σ_E · (h − μ_h) / σ_h (per coordinate). μ_h and σ_h are an EMA
+  (momentum 0.99) over slot-input hidden states, frozen at the stopping step and used unchanged at test. μ_E and σ_E are
+  GPT-2's token-embedding statistics (§89's fade_std g). σ_h is floored at 0.05 × its median over coordinates
+  (Literature's σ floor).
+* **TEXT-FIRST:** steps 0–3k train ordinary text CoT (TC-M's objective) on the same data; then GEN-M from those
+  weights. The 3k text steps **count toward the budget and toward steps-to-threshold**.
+* **COMBO:** K-CURR + STD + TEXT-FIRST (text CoT for 0–3k, then k = 1 for 3k–5k, k = 2 for 5k–9k, then k = 4, with STD
+  throughout the latent phase).
+
+**Logging and stopping.** Every 1k steps, on the repo's 1,000-item valid split (never the bench test):
+* per-slot step-text decode accuracy;
+* answer accuracy (k = 4 rollout).
+
+A run **stops at the first log where every slot's decode is ≥ 0.95 and answer accuracy is ≥ 0.95**
+(steps-to-threshold), or at 24k (censored).
+
+At the stopping checkpoint, on the 1,000 bench test items:
+* answer accuracy;
+* zero- and mean-removal answer accuracy (slot inputs 1..k−1, as §98);
+* per-slot decode;
+* wall-clock and training FLOPs.
+
+**Rule (fixed now).**
+* An arm **accelerates** if its median steps-to-threshold is **≤ 0.5× CTRL's median**.
+  - A censored run counts as 24k. If CTRL's median is censored, the bar is ≤ 12k.
+* In addition, in the arm's threshold-reaching seeds, zero- and mean-removal answer accuracy must be **≤ the NC floor +
+  0.05**, with the NC floor = §98's NC-M 4×4 median (note 98-1). This is the no-bypass condition.
+* Reported for every arm: median steps-to-threshold, the per-seed curve, test accuracy at stop, removal, and FLOPs to
+  threshold.
+
+**Readings.**
+* **An arm accelerates.** That ingredient speeds the latent hand-off without a bypass. It joins the recipe for the ladder's
+  next rungs. COMBO vs its parts says whether the ingredients add.
+* **None accelerates.** The hand-off's slowness is not fixed by these levers. Budget (§92) remains the known remedy.
+* **An arm is fast but fails no-bypass.** The speed comes from recomputation, not latent carriage (§97's mean-ablation
+  route). It is reported as such.
+
+**Placement.** 15 runs (5 arms × 3 seeds), each capped at 24k steps, many stopping early. On local cards or Vast 3090s
+(≤ 5 hosts, proof host first), about $4–8. Projection to Audit. Implementation: the experiments session, as flags on
+`boxes/mult98.py` (`--kcurr`, `--std_slots`, `--text_first`, the valid-split early stop).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
