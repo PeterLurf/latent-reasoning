@@ -174,6 +174,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 112 | Short-coverage dose-response for self-training (f = 0.5 / 0.25 / 0.1; never-labelled k = 1 accuracy) | registered | **open** |
 | 113 | Auxiliary reader inside self-training (conditional on §111-READ) | registered (conditional) | **open** |
 | 114 | Looped depth per op (LOOP-R vs LOOP-1 vs §107 PAUSE) for multiplication's hand-off | registered | **open** |
+| 115 | No-snap Markov chains, and a round-trip snap trigger (eval only) | registered | **open** |
 
 ## Live sections
 
@@ -1817,6 +1818,46 @@ threshold), plus:
 
 **Placement.** 6 runs (2 arms × 3 seeds), about $6–9 (LOOP-R costs about 2.5–3× per step). Proof host first.
 Projection to Audit. Implementation: the experiments session (accel99 plus a looped-block option in the GPT2KV forward).
+
+## 115. Without snaps, and snapping only when needed: no-snap Markov chains and a round-trip snap trigger (eval only) (pre-registered 2026-10-04 15:55 EDT, after Literature's check c70d55e3 (P4) and before running on any checkpoint; the user's go-ahead for P4 via Audit)
+
+**Why.** Every success so far snaps at hand-set points (C5 unmet), and length generalisation comes from the snap scaffold
+(§106). §108's Markov segments make a new test possible at no cost.
+* A segment sees only [EOT, the previous latent, op]. It is the same at every position, so **with snaps disabled** a
+  working Markov model is a pure latent recurrence.
+* (A) asks whether it stays exact without any discrete checkpoint (C2 + C6 for fully latent thinking).
+* (B) asks whether a label-free trigger can decide when to snap (C5).
+
+**Models.** §108 MK-4 seeds that escaped the no-read basin (s1, s3, and s5 if it escapes), plus §105 GEN-4-MASK s1–3
+for (B).
+
+**(A) No-snap chains.** Run the Markov recurrence with **no snaps at all** (the chunk start text only at position 0) on
+§71's test set (2,000 × 512) and the 2,048 extension.
+* Report cumulative accuracy against length, per-hand-off accuracy against position, and the latent norm and its
+  distance to the snapped embedding along the chain (drift).
+* **Rule NOSNAP (per model):** cumulative ≥ 0.99 at 512 with no snaps.
+
+**(B) The round-trip trigger.** At each hand-off j, compare two paths for slot j+1:
+* the **latent path**: [EOT, latent_j, op_{j+1}];
+* the **text path**: [EOT, decoded text of state j, op_{j+1}].
+
+Disagreement of their greedy decodes at slot j+1 is the label-free trigger. The policy runs latent and snaps (restarts
+from the text path) only when the two disagree. There is no fixed k, apart from a cap at 64 hand-offs.
+* Report: the **first-error detection rate** (the share of chains whose first wrong latent state is flagged at that
+  hand-off, as in §83), the false-snap rate, accuracy at 512 / 2,048, and the snap count, against fixed k = 4.
+* **Rule TRIGGER:** first-error detection ≥ 0.95, with accuracy ≥ fixed k = 4's at fewer snaps.
+
+**Readings.**
+* **NOSNAP holds.** The first fully latent chain without any discrete checkpoint that stays exact to 512 (2,048): C2 +
+  C6 for latent thinking, on S5, in that seed. Snaps were needed in training, not at test.
+* **NOSNAP fails, TRIGGER holds.** The latent drifts, but the model detects its own drift without labels: C5 for when to
+  write.
+* **Both fail.** The fixed snap interval remains a hand-set scaffold. Literature flags that a shared-weight round trip can
+  miss consistent errors; the miss rate is reported.
+* **Tags:** C2, C6, C5 (descriptive, per model; eval only).
+
+**Placement.** Eval only, $0, on the local 3070 (idle). Implementation: the experiments session (mk108 / gen97 eval
+modes: `--no_snap`, and an `--adaptive_snap disagreement` policy).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
