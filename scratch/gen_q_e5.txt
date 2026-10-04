@@ -1,0 +1,5 @@
+# §110 STUDENT (conditional arm fired; Theory): students of seeds 1, 3, 5 (proof host)
+# P=3
+boxes/runs_s5/s110_student_s1 boxes.self110 --student_pool boxes/runs_s5/s110_s1/pool_final.npz --seed 1
+boxes/runs_s5/s110_student_s3 boxes.self110 --student_pool boxes/runs_s5/s110_s3/pool_final.npz --seed 3
+boxes/runs_s5/s110_student_s5 boxes.self110 --student_pool boxes/runs_s5/s110_s5/pool_final.npz --seed 5

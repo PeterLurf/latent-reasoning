@@ -203,6 +203,27 @@ def true_states(X, rows, lens, starts):
     return out
 
 
+def items_from_pool(X, pool):
+    """§110 STUDENT: training items from a saved pool_final.npz exactly as label_round builds them (kept problems:
+    per-slot pseudo-label targets on every chunk, each chunk from the previous pseudo-label's text; discarded problems:
+    the final answer only, on the last chunk, from the teacher's own decoded checkpoint before it)."""
+    g = {}
+
+    def add(cl, st, op, tg):
+        g.setdefault(cl, ([], [], [])); g[cl][0].append(st); g[cl][1].append(op); g[cl][2].append(tg)
+    st0 = pool["starts"] if "starts" in pool else np.zeros(len(pool["rows"]), np.int64)   # pools saved before §110b: identity starts
+    for i in range(len(pool["rows"])):
+        r, L = int(pool["rows"][i]), int(pool["lens"][i]); ops = X[r, :L]
+        if pool["keep"][i]:
+            tgt = pool["targets"][i, :L].astype(np.int64)
+            for c in range(0, L, K):
+                add(min(K, L - c), STTOK[int(st0[i])] if c == 0 else STTOK[tgt[c - 1]], ops[c:c + K], tgt[c:c + K])
+        else:
+            c = ((L - 1) // K) * K; cl = L - c; tg = np.full(cl, -1); tg[-1] = int(pool["true_final"][i])
+            add(cl, pool["before_last"][i].astype(np.int64), ops[c:], tg)
+    return {cl: (np.array(a), np.array(b), np.array(t)) for cl, (a, b, t) in g.items()}
+
+
 def label_round(m, X, Y, rows, lens, starts, dev, amp):
     """One seed's pool: rollouts, filters, items and stats (truth for logging only, except the final answer)."""
     m.eval(); decs, okck, fin, before = rollout_var(m, X, rows, lens, starts, dev, amp)
@@ -251,6 +272,7 @@ def main():
     ap.add_argument("--max_insert", type=int, default=2)
     ap.add_argument("--random_start", action="store_true", help="§110b: problems of length >= 3 start from a uniform random given state (as text)")
     ap.add_argument("--cov", type=float, default=None, help="§112: R0 shorts restricted to T_f with target coverage f (note 112-1)")
+    ap.add_argument("--student_pool", default=None, help="§110 STUDENT: train a fresh model --steps on this pool_final.npz only (no R0 / rounds)")
     ap.add_argument("--save_rounds", action="store_true", help="§112 (Audit): fp16 model at each round boundary -> <out>/rounds/")
     ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--test_n", type=int, default=s5.TEST_N); ap.add_argument("--ext_n", type=int, default=500)
     ap.add_argument("--ext_len", type=int, default=2048, help="< 2048: smoke only"); ap.add_argument("--check_n", type=int, default=100_000, help="< 100k: smoke only")
@@ -322,6 +344,12 @@ def main():
             torch.save({k_: v.half() if v.is_floating_point() else v for k_, v in m.state_dict().items()},
                        os.path.join(a.out, "rounds", f"r{len(S['per_round_split']):02d}_{name}_step{S['step']}.pt"))
 
+    if a.student_pool and S["phase"] == "R0":                               # §110 STUDENT (conditional arm)
+        pool = dict(np.load(a.student_pool)); items = items_from_pool(Xtr, pool)
+        S["rounds"].append({"student_of": a.student_pool, "pool": int(len(pool["rows"])), "kept_share": float(pool["keep"].mean()),
+                            "items": {str(cl): int(len(v[0])) for cl, v in items.items()}, "steps": a.steps})
+        print("student", S["rounds"][-1], flush=True)
+        train_round(items, a.steps, "student", False); S["phase"] = "done"
     if S["phase"] == "R0":
         r0 = r0_items_cov(rng, Tf) if Tf is not None else r0_items(rng, Xtr, Ytr)[0]
         o1 = np.concatenate([r0[1][1][:, 0], r0[2][1][:, 0]])
@@ -361,7 +389,7 @@ def main():
     del opt; m.eval(); t1 = time.time()
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
-    r = {"arm": "self112" if a.cov is not None else ("self110b" if a.random_start else "self110"), "start_ge3": "random" if a.random_start else "identity", "seed": a.seed, "k": K, "fork": "mask", "train_sec": train_sec, "eval_dtype": str(amp), "test_sequences": len(Xte),
+    r = {"arm": "self110_student" if a.student_pool else "self112" if a.cov is not None else ("self110b" if a.random_start else "self110"), "start_ge3": "random" if a.random_start else "identity", "seed": a.seed, "k": K, "fork": "mask", "train_sec": train_sec, "eval_dtype": str(amp), "test_sequences": len(Xte),
          "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
          "short_fraction": S["short"] / max(1, S["step"]), "updates": S["step"], "rounds": S["rounds"]}
     pred, comp, val = rollout(m, Xte, K, dev, amp, a.eval_bs); cum = s5.cumulative(pred, Yte)

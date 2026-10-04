@@ -1,0 +1,4 @@
+# §110 STUDENT: students of seeds 2, 4 (after e5's proof)
+# P=2
+boxes/runs_s5/s110_student_s2 boxes.self110 --student_pool boxes/runs_s5/s110_s2/pool_final.npz --seed 2
+boxes/runs_s5/s110_student_s4 boxes.self110 --student_pool boxes/runs_s5/s110_s4/pool_final.npz --seed 4
