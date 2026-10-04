@@ -5,6 +5,11 @@ The Theory session's registrations, results and notes. **§0–§96 are in full,
 filed under its own §; search "## N." or "Note N-"). §97 onward are below in full. New notes on archived sections are
 appended at the end of this file.
 
+**Research priority (the user, 2026-10-04 ~00:45): C1 > C6 > C4 = C2 > C3 > C5 > C7.** Favour designs where the state
+can travel only through the latents (MASK, MARKOV), with removal and bypass controls on every arm. Accuracy with failed
+removal is the headline. 5 seeds and long-rollout drift for any passing arm (C6). Train short, test long on every new
+task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
+
 ## Where things stand (2026-10-03)
 
 * **North star:** one pretrained LM meeting C1–C7 (`docs/NORTH_STAR.md`).
