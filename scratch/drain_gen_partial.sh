@@ -8,12 +8,14 @@ cd "$(dirname "$0")/.."
 S="ssh -o ConnectTimeout=20 -o ServerAliveInterval=15 -i $HOME/.ssh/runpod_ed25519 -p $P root@$H"
 st=$($S "cd /workspace/Latent || exit 3; L=logs/queue_${TAG}.out; [ -f \$L ] || exit 4
 echo QD=\$(tail -n 1 \$L | grep -c QUEUE_DONE); echo PROCS=\$(ps -eo args | grep -a -c -E '^[^ ]*python[^ ]* -u -m ')
-for j in \$(grep -h ' evaluated ' \$L | awk '{print \$3}'); do if [ -s \$j/eval.json ]; then echo RUN \$j; else echo BAD \$j; fi; done; echo END_OK" 2>/dev/null)
+for j in \$(grep -h ' evaluated ' \$L | awk '{print \$3}'); do if [ -s \$j/eval.json ]; then echo RUN \$j; elif [ -s \$j/model.pt ]; then echo BADM \$j; else echo BAD \$j; fi; done; echo END_OK" 2>/dev/null)
 echo "$st" | grep -q "^END_OK$" || { echo "FETCH_INCOMPLETE $ID (status)"; exit 1; }
 [ "$(echo "$st" | sed -n 's/^QD=//p')" = 1 ] && [ "$(echo "$st" | sed -n 's/^PROCS=//p')" = 0 ] || { echo "NOT_FINISHED $ID"; exit 1; }
-runs=$(echo "$st" | sed -n 's/^RUN //p'); bad=$(echo "$st" | sed -n 's/^BAD //p')
+runs=$(echo "$st" | sed -n 's/^RUN //p'); bad=$(echo "$st" | sed -n 's/^BADM\{0,1\} //p')
+# failed runs WITH a model.pt are fetched too (an eval OOM must not lose a trained model), unless a local dir of that name exists
+keep=""; for j in $(echo "$st" | sed -n 's/^BADM //p'); do [ -e "$j" ] || keep="$keep $j"; done
 mkdir -p logs/vast_${H}_${P}
-for j in $runs logs; do n=$(echo $j | tr '/' '_'); ok=0
+for j in $runs $keep logs; do n=$(echo $j | tr '/' '_'); ok=0
   for try in 1 2 3; do
     if [ $j = logs ]; then src="logs"; else src="$j logs/gen_$(basename $j).log"; fi
     rs=$($S "cd /workspace/Latent && tar -czf /tmp/f_$n.tgz $src 2>/dev/null; sha256sum /tmp/f_$n.tgz" 2>/dev/null | grep -o '^[0-9a-f]\{64\}')
