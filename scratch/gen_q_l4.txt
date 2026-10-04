@@ -1,0 +1,5 @@
+# §114 LOOP-1 s1-3 (same code path, r = 1)
+# P=3
+boxes/runs_mult/a114_loop1_4x4_s1 boxes.loop114 --arm loop1 --seed 1
+boxes/runs_mult/a114_loop1_4x4_s2 boxes.loop114 --arm loop1 --seed 2
+boxes/runs_mult/a114_loop1_4x4_s3 boxes.loop114 --arm loop1 --seed 3
