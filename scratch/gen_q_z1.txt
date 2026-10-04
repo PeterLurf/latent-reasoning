@@ -1,0 +1,7 @@
+# §99 (note 99-1) 4x4 mult acceleration panel
+# P=3
+boxes/runs_mult/a99_ctrl_4x4_s1 boxes.accel99 --arm99 ctrl --seed 1
+boxes/runs_mult/a99_ctrl_4x4_s2 boxes.accel99 --arm99 ctrl --seed 2
+boxes/runs_mult/a99_ctrl_4x4_s3 boxes.accel99 --arm99 ctrl --seed 3
+boxes/runs_mult/a99_tfslot_4x4_s2 boxes.accel99 --arm99 tfslot --seed 2
+boxes/runs_mult/a99_tfslot_4x4_s3 boxes.accel99 --arm99 tfslot --seed 3

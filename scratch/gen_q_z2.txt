@@ -1,0 +1,6 @@
+# §99 (note 99-1) 4x4 mult acceleration panel
+# P=3
+boxes/runs_mult/a99_kcurr_4x4_s1 boxes.accel99 --arm99 kcurr --seed 1
+boxes/runs_mult/a99_kcurr_4x4_s2 boxes.accel99 --arm99 kcurr --seed 2
+boxes/runs_mult/a99_kcurr_4x4_s3 boxes.accel99 --arm99 kcurr --seed 3
+boxes/runs_mult/a99_std_4x4_s1 boxes.accel99 --arm99 std --seed 1
