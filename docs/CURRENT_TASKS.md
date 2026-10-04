@@ -32,32 +32,33 @@ and §99 runs are voided (`*.void_forkconflict`, kept); their hosts were aborted
 
 | Tag | Instance | ssh (`-i ~/.ssh/runpod_ed25519 root@…`) | Work |
 |---|---|---|---|
-| y5 | 54073316 | `-p 22815 142.113.28.123` | §98 TC-M + NC-M x12 (unaffected by 98-3); tc_5x5_s1 eval OOM'd, `scratch/finish_evals.sh` re-runs it at QUEUE_DONE then drains |
 | r3 | 54110367 | `-p 42018 109.173.238.203` | §98 rerun MASK 4x4 s1-3 (gen4; eval without OOM fallback) |
-| r4 | 54110967 | `-p 40974 77.48.24.153` | §98 rerun MASK 5x5 s1-3 |
-| u3 | 54110971 | `-p 40042 96.20.36.104` | §100 MASK2 4x4 s1-3 (k = 2) |
 | u4 | 54110975 | `-p 41232 83.27.30.232` | §100 MASK2 5x5 s1-3 |
 | m1 | 54111465 | `-p 22599 142.113.28.123` | §99 markov s1-3 |
 | m2 | 54111472 | `-p 41152 77.48.24.153` | §99 ctrl s1-3 |
-| m3 | 54111478 | `-p 33615 136.59.129.136` | §99 kcurr s1-3 |
 | f1 | 54111560 | `-p 9195 136.36.139.116` | §105 gen97 GEN-4 --fork mask s1-3 (keep model.pt; Theory runs s104_serial) |
 | s1 | 54111926 | `-p 6412 142.127.68.223` | §101 b0 s2 only (s1/s3 OOM'd at P2 before --micro; logs kept) |
 | s2 | 54122048 | `-p 42390 167.179.138.57` | §101 micro proof: b0 s1/s3, then b1 s1/s2 (P2) |
 | t1 | 54122055 | `-p 40071 96.20.36.104` | §103 self103, 3 seeds in lockstep -> boxes/runs_s5/s103/s103_s* (move to boxes/runs_s5/ on fetch) |
 | p1 | 54122094 | `-p 11776 142.127.68.223` | §106 pilot GEN-S-MASK s1-3 |
 | m10 | 54122096 | `-p 42075 167.179.138.57` | §107 lat2 s1-3 |
+| m4 | 54125241 | `-p 40067 96.20.36.104` | §102 statepath s1-3 |
+| r1 | 54130307 | `-p 50171 137.175.22.196` | §98 GEN-M 4x4 s1-3 (s1 restarted by hand after a tiktoken download timeout) |
+| r2 | 54131932 | `-p 28503 149.200.35.231` | §98 GEN-M 5x5 s1-3 |
+| u1 | 54131907 | `-p 50139 137.175.22.196` | §100 GEN2 4x4 s1-3 |
 
-**Queued, not yet deployed** (deploy as hosts drain; keep <= ~10 live). In order:
-1. §101 (C6): `gen_q_s2..s4` via `scratch/gen_deploy_101.sh`, P2 with --micro 2.
-2. §103 (C4): `gen_q_t1` via `gen_deploy_103.sh`; one process, 3 seeds in lockstep. Move `boxes/runs_s5/s103/s103_s*` to `boxes/runs_s5/` on fetch.
-3. §102 (statepath): `gen_q_m4` via `gen_deploy_99b.sh`.
-4. The C3 parts: §98 GEN-M (`gen_q_r1/r2`, `gen_deploy_98r.sh`); §100 GEN2 (`gen_q_u1/u2`, `gen_deploy_100.sh`); the rest of §99 (std, textfirst, textfirst_mask, tfslot, combo: queues to write).
-5. §106: not implemented; waits for §98 GEN-M to show multiplication is learned.
+**Queued, not yet deployed** (backfill as hosts drain; ~14 live allowed; a second host of an experiment only after its first host's first eval.json and drain):
+1. §99 tfslot (`gen_q_m8`, `gen_deploy_99b.sh`): moved up by Theory/Audit (C1 blocker: the second hand-off within a chunk).
+2. §101 second/third hosts (`gen_q_s3/s4`), after s2 proves the micro code.
+3. §107 lat4/pause4 (`gen_q_m11/m12`), after m10.
+4. COCO 4x4 s3 + 5x5 s3 on Vast (`gen_q_r5`, `gen_deploy_98r.sh`).
+5. §100 GEN2 5x5 (`gen_q_u2`); the rest of §99 (`gen_q_m5` std, `m6` textfirst, `m7` textfirst_mask, `m9` combo).
+6. §106 GEN-S / WC-S / TC-S: only if the p1 pilot passes its gate (b = 4 >= 0.95 in >= 2/3).
 
 ### Local PC (torch `cuda:0` = 4060, `cuda:1` = 3070, `cuda:2` = 2070)
 
-* 4060: COCO 4x4 s3 finishing; then free for Theory's §104 (C1). COCO 5x5 s2/s3 are HELD (lock dirs in `c1/runs/locks/`); release (rmdir) and start `py_local_worker2.sh` after §104.
-* 3070: COCO 5x5 s1.
+* 4060: Theory's §104 (C1) alone. My COCO 4x4 s3 was stopped at 23.7k (deadlock; kept `*.void_contention`), requeued on Vast. COCO 5x5 s3 stays held (lock dir) until it runs on Vast.
+* 3070: COCO 5x5 s1 eval re-run (eval_bs 50), then COCO 5x5 s2 (`scratch/c1_q_98coco_b.txt`).
 * 2070: §83 extras (fp32).
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
