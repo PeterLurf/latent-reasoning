@@ -1,4 +1,0 @@
-# PROTOCOL6 addendum M (depth cap 4), RTX 2070, fp32
-m_s314 --no_step_emb --K 6 --seed 314 --lr 5e-4 --amp fp32 --save_every 1000 --depth_cap 4
-m_s315 --no_step_emb --K 6 --seed 315 --lr 5e-4 --amp fp32 --save_every 1000 --depth_cap 4
-m_s316 --no_step_emb --K 6 --seed 316 --lr 5e-4 --amp fp32 --save_every 1000 --depth_cap 4

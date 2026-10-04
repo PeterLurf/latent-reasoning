@@ -1,9 +1,0 @@
-# PROTOCOL6 addendum M (depth cap 4), RTX 3070, bf16
-m_s300 --no_step_emb --K 6 --seed 300 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4
-m_s301 --no_step_emb --K 6 --seed 301 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4
-m_s302 --no_step_emb --K 6 --seed 302 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4
-m_s303 --no_step_emb --K 6 --seed 303 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4
-m_s304 --no_step_emb --K 6 --seed 304 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4
-m_s305 --no_step_emb --K 6 --seed 305 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4
-m_s306 --no_step_emb --K 6 --seed 306 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4
-m_s307 --no_step_emb --K 6 --seed 307 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4

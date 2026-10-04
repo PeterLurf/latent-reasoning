@@ -1,5 +1,0 @@
-# PROTOCOL6 addendum F, RTX 2070 arm: seeds 50-53, fp32
-prec2070_fp32_s50 --no_step_emb --K 6 --seed 50 --lr 5e-4 --amp fp32
-prec2070_fp32_s51 --no_step_emb --K 6 --seed 51 --lr 5e-4 --amp fp32
-prec2070_fp32_s52 --no_step_emb --K 6 --seed 52 --lr 5e-4 --amp fp32
-prec2070_fp32_s53 --no_step_emb --K 6 --seed 53 --lr 5e-4 --amp fp32 --save_every 1000

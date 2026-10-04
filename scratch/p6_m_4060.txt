@@ -1,7 +1,0 @@
-# PROTOCOL6 addendum M (depth cap 4), RTX 4060, bf16
-m_s308 --no_step_emb --K 6 --seed 308 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4
-m_s309 --no_step_emb --K 6 --seed 309 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4
-m_s310 --no_step_emb --K 6 --seed 310 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4
-m_s311 --no_step_emb --K 6 --seed 311 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4
-m_s312 --no_step_emb --K 6 --seed 312 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4
-m_s313 --no_step_emb --K 6 --seed 313 --lr 5e-4 --amp bf16 --save_every 1000 --depth_cap 4

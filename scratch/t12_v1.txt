@@ -1,4 +1,0 @@
-# THEORY §39 T12 (frozen 6a9784c, amendment T12-1), Vast host t12-v1
-pt12_s900 --seed 900 --anytime 1 --step_adv 0.5
-pt12_s901 --seed 901 --anytime 1 --step_adv 0.5
-pt12_s906 --seed 906 --anytime 1 --step_adv 0.5

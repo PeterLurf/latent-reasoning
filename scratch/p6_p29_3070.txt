@@ -1,5 +1,0 @@
-# PROTOCOL6 addendum I (P29), RTX 3070: seeds 80-83, bf16
-p29_s80 --no_step_emb --K 6 --seed 80 --lr 5e-4 --amp bf16 --save_every 1000
-p29_s81 --no_step_emb --K 6 --seed 81 --lr 5e-4 --amp bf16 --save_every 1000
-p29_s82 --no_step_emb --K 6 --seed 82 --lr 5e-4 --amp bf16 --save_every 1000
-p29_s83 --no_step_emb --K 6 --seed 83 --lr 5e-4 --amp bf16 --save_every 1000

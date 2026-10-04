@@ -1,4 +1,0 @@
-# THEORY §75 panel seed 2032 (starts only if the 990 pilot passes the gate)
-# C1_GROUP=S4
-c1/runs/p75_pfstd_s2032 --arm d1 --M 48 --tau0 4 --readout bil --head_norm ln --code_init distinct --updates 16000 --bs 512 --lr 1e-4 --lr_new 1e-4 --freeze_gpt2 --feat_norm tablestd --seed 2032
-c1/runs/p75_ptstd_s2032 --arm d1 --M 48 --tau0 4 --readout bil --head_norm ln --code_init distinct --updates 16000 --bs 512 --lr 1e-4 --lr_new 1e-4 --feat_norm tablestd --seed 2032

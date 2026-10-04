@@ -1,2 +1,0 @@
-prosqa_deep_p8_nocot prosqa_deep nocot:prosqa/ckpt/p8_nocot_checkpoint_30 --per_depth 150
-prosqa_deep_na_p8_nocot prosqa_deep_na nocot:prosqa/ckpt/p8_nocot_checkpoint_30 --per_depth 150
