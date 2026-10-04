@@ -17,6 +17,10 @@ agreement_vs_truth_gap (gate - truth_rate_final_correct), op_hist {all, kept} (1
 Eval (<out>/eval.json): §103's keys + donor (§104 single patch, slots 1..3, n = 2000) and removal.{zero,mean} (gen97
 chunk_check incl. acc_after_first_ablated_slot). <out>/pool_final.npz: the final relabelled pool (rows into S5=128,
 lens, keep, targets (N, L_max) chained decodes, -1 padded, before_last (N, 6) tokens) for the conditional STUDENT arm.
+§110b (--random_start, note 110-1): R0 shorts start from the identity; every problem of length >= 3 (rounds and the
+final relabelling) starts from a uniform random given state written as state text (the start is input, not a label);
+the self-consistency restart at t = 0 uses that start; truth is the chain from that start. R0 logs
+short_transition_coverage {direct, incl_2step} (distinct (state, op) pairs over 14,400). eval.json arm "self110b".
 Checkpoint <out>/ckpt.pt at each round boundary (model, optimiser, RNGs, schedule state); resumed if present.
     python -m boxes.self110 --seed 1 --out boxes/runs_s5/s110_s1
 """
@@ -35,9 +39,10 @@ import torch.nn.functional as F  # noqa: E402
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from boxes import s5  # noqa: E402
-from boxes.gen97 import (NST, STTOK, amp_ctx, chunk_check, decode_to_el, edit_iia, mean_slot_inputs, rollout)  # noqa: E402
+from boxes.gen97 import (NST, STTOK, amp_ctx, chunk_check, decode_to_el, edit_iia, mean_slot_inputs, rollout,  # noqa: E402
+                         true_chain)
 from boxes.mk108 import donor  # noqa: E402
-from boxes.self103 import Gen103, draw, make_pool, r0_items, rollout_var  # noqa: E402
+from boxes.self103 import Gen103, draw, make_pool, r0_items  # noqa: E402
 
 K = 4
 GATE = 0.995
@@ -67,22 +72,28 @@ class Gen110(Gen103):
 
 
 @torch.no_grad()
-def restart_k1(m, X, rows, lens, decs, ii, dev, amp, bs=4000):
+def restart_k1(m, X, rows, lens, decs, ii, dev, amp, starts, bs=1000):
     """For problems ii: True iff at every position t the chained decode equals a k = 1 restart from the chained decode at
-    t-1 (identity at t = 0). Unparseable previous decodes fail."""
+    t-1 (the problem's start state at t = 0). Unparseable previous decodes fail."""
     pr, pt = [], []
     for i in ii:
         d = decs[i]; L = lens[i]
         pr.extend([i] * L); pt.extend(range(L))
     pr = np.array(pr, np.int64); pt = np.array(pt, np.int64)
-    prev = np.array([0 if t == 0 else decs[i][t - 1] for i, t in zip(pr, pt)], np.int64)
+    prev = np.array([starts[i] if t == 0 else decs[i][t - 1] for i, t in zip(pr, pt)], np.int64)
     cur = np.array([decs[i][t] for i, t in zip(pr, pt)], np.int64); ops = X[rows[pr], pt]
     agree = np.zeros(len(pr), bool); okp = prev >= 0
-    for s in range(0, len(pr), bs):
-        sl = slice(s, s + bs); st = np.where(okp[sl], prev[sl], 0)
-        with amp_ctx(amp):
-            _, d, _ = m.chunk(torch.tensor(STTOK[st], device=dev), torch.tensor(ops[sl, None], device=dev), decode="all")
-        e, _ = decode_to_el(d.cpu().numpy().reshape(-1, NST)); agree[sl] = (e == cur[sl]) & okp[sl] & (cur[sl] >= 0)
+    s = 0
+    while s < len(pr):                                                      # halves the batch on CUDA OOM (3 seeds per card; e1)
+        sl = slice(s, min(len(pr), s + bs)); st = np.where(okp[sl], prev[sl], 0)
+        try:
+            with amp_ctx(amp):
+                _, d, _ = m.chunk(torch.tensor(STTOK[st], device=dev), torch.tensor(ops[sl, None], device=dev), decode="all")
+        except torch.OutOfMemoryError:
+            if bs <= 50:
+                raise
+            torch.cuda.empty_cache(); bs //= 2; print("restart_k1 OOM: bs", bs, flush=True); continue
+        e, _ = decode_to_el(d.cpu().numpy().reshape(-1, NST)); agree[sl] = (e == cur[sl]) & okp[sl] & (cur[sl] >= 0); s = sl.stop
     out = {}
     for i in ii:
         out[i] = True
@@ -92,14 +103,56 @@ def restart_k1(m, X, rows, lens, decs, ii, dev, amp, bs=4000):
     return np.array([out[i] for i in ii], bool)
 
 
-def label_round(m, X, Y, rows, lens, dev, amp):
-    """One seed's pool: rollouts, filters, items and stats (truth for logging only)."""
-    m.eval(); decs, okck, fin, before = rollout_var(m, X, rows, lens, dev, amp)
-    N = len(rows); true_fin = Y[rows, lens - 1]
+@torch.no_grad()
+def rollout_var(m, X, rows, lens, starts, dev, amp, bs=250):
+    """self103.rollout_var with a per-problem start state (§110b; all zeros = the identity, as §110). Returns per problem:
+    decoded element per position, chunk-end validity, the final element, and the tokens of the checkpoint before the last
+    chunk (the start text if L <= 4)."""
+    out_el, ok_ck, fin, before_last = [None] * len(rows), np.zeros(len(rows), bool), np.full(len(rows), -1), np.zeros((len(rows), NST), np.int64)
+    for L in sorted(set(lens.tolist())):
+        idx = np.where(lens == L)[0]
+        s = 0
+        while s < len(idx):                                                 # halves the batch on CUDA OOM
+            ii = idx[s:s + bs]; n = len(ii); ops = X[rows[ii], :L]
+            start = torch.tensor(STTOK[starts[ii]], device=dev); els = np.zeros((n, L), np.int64); valid = np.ones(n, bool)
+            try:
+                for c in range(0, L, K):
+                    if c + K >= L:
+                        before_last[ii] = start.cpu().numpy()
+                    with amp_ctx(amp):
+                        _, d, _ = m.chunk(start, torch.tensor(ops[:, c:c + K], device=dev), decode="all")
+                    toks = d.cpu().numpy(); e, _ = decode_to_el(toks.reshape(-1, NST)); e = e.reshape(n, -1)
+                    els[:, c:c + e.shape[1]] = e; valid &= e[:, -1] >= 0
+                    start = torch.tensor(toks[:, -1], device=dev)
+            except torch.OutOfMemoryError:
+                if bs <= 25:
+                    raise
+                torch.cuda.empty_cache(); bs //= 2; print("rollout_var OOM: bs", bs, flush=True); continue
+            s += n
+            for t, i in enumerate(ii):
+                out_el[i] = els[t]
+            ok_ck[ii] = valid; fin[ii] = els[:, -1]
+    return out_el, ok_ck, fin, before_last
+
+
+def true_states(X, rows, lens, starts):
+    """Truth (logging and the final-answer filter only): the state after every op from each problem's start."""
+    out = [None] * len(rows)
+    for L in sorted(set(lens.tolist())):
+        idx = np.where(lens == L)[0]; tc = true_chain(starts[idx], X[rows[idx], :L])
+        for t, i in enumerate(idx):
+            out[i] = tc[t]
+    return out
+
+
+def label_round(m, X, Y, rows, lens, starts, dev, amp):
+    """One seed's pool: rollouts, filters, items and stats (truth for logging only, except the final answer)."""
+    m.eval(); decs, okck, fin, before = rollout_var(m, X, rows, lens, starts, dev, amp)
+    N = len(rows); tst = true_states(X, rows, lens, starts); true_fin = np.array([t[-1] for t in tst])
     f_ok = okck & (fin == true_fin); fc = np.where(f_ok)[0]
-    sc = np.zeros(N, bool); sc[fc] = restart_k1(m, X, rows, lens, decs, fc, dev, amp) if len(fc) else []
+    sc = np.zeros(N, bool); sc[fc] = restart_k1(m, X, rows, lens, decs, fc, dev, amp, starts) if len(fc) else []
     m.train(); keep = sc
-    truth = np.array([np.array_equal(decs[i], Y[rows[i], :lens[i]]) for i in range(N)])
+    truth = np.array([np.array_equal(decs[i], tst[i]) for i in range(N)])
     gate = float(sc[fc].mean()) if len(fc) else 0.0
     tr_fc = float(truth[fc].mean()) if len(fc) else None
     oh_all = np.bincount(np.concatenate([X[rows[i], :lens[i]] for i in range(N)]), minlength=120)
@@ -120,7 +173,7 @@ def label_round(m, X, Y, rows, lens, dev, amp):
         if keep[i]:
             tgt = decs[i]
             for c in range(0, L, K):
-                add(min(K, L - c), STTOK[0] if c == 0 else STTOK[tgt[c - 1]], ops[c:c + K], tgt[c:c + K])
+                add(min(K, L - c), STTOK[starts[i]] if c == 0 else STTOK[tgt[c - 1]], ops[c:c + K], tgt[c:c + K])
         else:
             c = ((L - 1) // K) * K; cl = L - c; tg = np.full(cl, -1); tg[-1] = true_fin[i]
             add(cl, before[i], ops[c:], tg)
@@ -128,7 +181,7 @@ def label_round(m, X, Y, rows, lens, dev, amp):
     Lm = int(lens.max()); T = np.full((N, Lm), -1, np.int16)
     for i in range(N):
         T[i, :lens[i]] = decs[i]
-    pool = {"rows": rows.astype(np.int32), "lens": lens.astype(np.int16), "keep": keep, "targets": T, "before_last": before.astype(np.int32),
+    pool = {"rows": rows.astype(np.int32), "starts": starts.astype(np.int16), "lens": lens.astype(np.int16), "keep": keep, "targets": T, "before_last": before.astype(np.int32),
             "true_final": true_fin.astype(np.int16)}
     return items, stats, pool
 
@@ -138,6 +191,7 @@ def main():
     ap.add_argument("--bs", type=int, default=64); ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--r0_steps", type=int, default=1200)
     ap.add_argument("--final_steps", type=int, default=4000); ap.add_argument("--pool", type=int, default=50000); ap.add_argument("--lengths", default="4,8,16,32")
     ap.add_argument("--max_insert", type=int, default=2)
+    ap.add_argument("--random_start", action="store_true", help="§110b: problems of length >= 3 start from a uniform random given state (as text)")
     ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--test_n", type=int, default=s5.TEST_N); ap.add_argument("--ext_n", type=int, default=500)
     ap.add_argument("--ext_len", type=int, default=2048, help="< 2048: smoke only"); ap.add_argument("--check_n", type=int, default=100_000, help="< 100k: smoke only")
     ap.add_argument("--donor_n", type=int, default=2000); ap.add_argument("--data_dir", default=os.path.join(ROOT, "bench", "data", "s5"))
@@ -156,9 +210,9 @@ def main():
     t0 = time.time()
     if os.path.exists(ck):
         c = torch.load(ck, map_location=dev, weights_only=False); m.load_state_dict(c["model"]); opt.load_state_dict(c["opt"])
-        rng.bit_generator.state = c["rng"]; drng.bit_generator.state = c["drng"]; torch.set_rng_state(c["torch_rng"])
+        rng.bit_generator.state = c["rng"]; drng.bit_generator.state = c["drng"]; torch.set_rng_state(c["torch_rng"].cpu())
         if dev.startswith("cuda"):
-            torch.cuda.set_rng_state(c["cuda_rng"], dev)
+            torch.cuda.set_rng_state(c["cuda_rng"].cpu(), dev)
         S = c["S"]; t0 -= S["sec"]
         keep = [r for r in open(lp, encoding="utf-8") if r.strip() and json.loads(r)["step"] <= S["step"]] if os.path.exists(lp) else []
         open(lp, "w", newline="\n").writelines(keep); print("RESUMED", S["step"], S["phase"], flush=True); del c
@@ -184,12 +238,20 @@ def main():
                 rec = {"step": step, "round": name, "loss": float(np.mean(hist)), "sec": round(time.time() - t0)}; hist = []
                 log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
 
+    def pool_of(Lmax):
+        rows, lens = make_pool(rng, Xtr, a.pool, 3, Lmax)
+        return rows, lens, (rng.integers(0, 120, a.pool) if a.random_start else np.zeros(a.pool, np.int64))
+
     if S["phase"] == "R0":
-        train_round(r0_items(rng, Xtr, Ytr)[0], a.r0_steps, "R0", True)
-        S["rounds"].append({"length": "1-2", "steps": a.r0_steps, "targets": "final answer only"}); S["phase"] = "rounds"; save_ck()
+        r0 = r0_items(rng, Xtr, Ytr)[0]; o1 = np.concatenate([r0[1][1][:, 0], r0[2][1][:, 0]])
+        direct = {(0, int(x)) for x in o1}; two = direct | {(int(s5.COMP[0, x]), int(y)) for x, y in r0[2][1]}
+        train_round(r0, a.r0_steps, "R0", True)
+        S["rounds"].append({"length": "1-2", "steps": a.r0_steps, "targets": "final answer only", "start": "identity",
+                            "short_transition_coverage": {"direct": len(direct) / 14400, "incl_2step": len(two) / 14400}})
+        S["phase"] = "rounds"; save_ck()
     while S["phase"] == "rounds" and S["todo"]:
-        Lmax = S["todo"][0]; rows, lens = make_pool(rng, Xtr, a.pool, 3, Lmax)
-        items, st, _ = label_round(m, Xtr, Ytr, rows, lens, dev, amp); prev = S["prev"]; mid = (prev + Lmax) // 2
+        Lmax = S["todo"][0]; rows, lens, starts = pool_of(Lmax)
+        items, st, _ = label_round(m, Xtr, Ytr, rows, lens, starts, dev, amp); prev = S["prev"]; mid = (prev + Lmax) // 2
         why = [w for w, bad in (("gate %.4f < %.3f" % (st["gate"], GATE), st["gate"] < GATE),
                                 ("kept share %.3f < 0.20" % st["kept_share"], st["kept_share"] < 0.20)) if bad]
         if why and S["ins"] < a.max_insert and prev < mid < Lmax:
@@ -202,8 +264,8 @@ def main():
     if S["phase"] == "rounds":
         S["phase"] = "final"
     if S["phase"] == "final":
-        Lmax = lengths[-1]; rows, lens = make_pool(rng, Xtr, a.pool, 3, Lmax)
-        items, st, pool = label_round(m, Xtr, Ytr, rows, lens, dev, amp)
+        Lmax = lengths[-1]; rows, lens, starts = pool_of(Lmax)
+        items, st, pool = label_round(m, Xtr, Ytr, rows, lens, starts, dev, amp)
         np.savez_compressed(os.path.join(a.out, "pool_final.npz"), **pool)
         st.update({"length": Lmax, "steps": a.final_steps, "action": "final relabelling"}); S["rounds"].append(st)
         print("final", {k: v for k, v in st.items() if k != "op_hist"}, flush=True)
@@ -215,7 +277,7 @@ def main():
     del opt; m.eval(); t1 = time.time()
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
-    r = {"arm": "self110", "seed": a.seed, "k": K, "fork": "mask", "train_sec": train_sec, "eval_dtype": str(amp), "test_sequences": len(Xte),
+    r = {"arm": "self110b" if a.random_start else "self110", "start_ge3": "random" if a.random_start else "identity", "seed": a.seed, "k": K, "fork": "mask", "train_sec": train_sec, "eval_dtype": str(amp), "test_sequences": len(Xte),
          "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
          "short_fraction": S["short"] / max(1, S["step"]), "updates": S["step"], "rounds": S["rounds"]}
     pred, comp, val = rollout(m, Xte, K, dev, amp, a.eval_bs); cum = s5.cumulative(pred, Yte)

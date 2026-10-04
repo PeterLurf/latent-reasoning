@@ -136,9 +136,9 @@ def main():
     t0 = time.time(); hist = []; seg_types = [0, 0]; step0 = 0; ck = os.path.join(a.out, "ckpt.pt"); lp = os.path.join(a.out, "log.jsonl")
     if os.path.exists(ck):                                                  # resume after a host restart (k1, 2026-10-04)
         c = torch.load(ck, map_location=dev, weights_only=False); m.load_state_dict(c["model"]); opt.load_state_dict(c["opt"])
-        rng.bit_generator.state = c["np_rng"]; torch.set_rng_state(c["torch_rng"]); step0 = c["step"]; seg_types = c["seg_types"]; t0 -= c["sec"]
+        rng.bit_generator.state = c["np_rng"]; torch.set_rng_state(c["torch_rng"].cpu()); step0 = c["step"]; seg_types = c["seg_types"]; t0 -= c["sec"]
         if dev.startswith("cuda"):
-            torch.cuda.set_rng_state(c["cuda_rng"], dev)
+            torch.cuda.set_rng_state(c["cuda_rng"].cpu(), dev)
         keep = [r for r in open(lp, encoding="utf-8") if r.strip() and json.loads(r)["step"] <= step0] if os.path.exists(lp) else []
         open(lp, "w", newline="\n").writelines(keep); print("RESUMED", step0, flush=True); del c
     log = open(lp, "a", newline="\n")
