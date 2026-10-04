@@ -156,12 +156,12 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 97 | General latent thinker, step 1 | G4 met 3/3; C6 met 5/5; but mean ablation leaves HYB-4 s5 at 1.000 (fork bypass; C1 qualified) | closed (C1 → §104/§105) |
 | 98 | Step 2a: multiplication vs ICoT-SI, Coconut, text CoT | GEN arms void (final-fork conflict, 98-3), rerun on fixed code; comparators valid | **open** |
 | 99 | Speeding up the latent hand-off (k-curriculum, standardised slots, text-first, combo) | on fixed code (99-2) | **open** |
-| 100 | Shorter silent stretches: multiplication at k = 2 (GEN2, MASK2) | registered; fixed code only (100-1) | **open** |
+| 100 | Shorter silent stretches: multiplication at k = 2 (GEN2, MASK2) | 4×4: M1, SOTA (1.000 vs 0.998), C3 (0.89×) met; C1 not (MASK2 0.89); 5×5 pending | **open** |
 | 101 | Snap-strength dose-response (β_min 1 / 0.1 / 0.01 / 0) on S5 | registered | **open** |
 | 102 | State in depth: gated slot-to-slot residual path (4×4, in §99's harness) | does not accelerate (all censored; test 0.01–0.17) | closed |
 | 103 | Filtered self-training by length (C4 inside the LM, S5) | SELF not met: 0 / 0.9615 / 0.9585 at 512 from final answers only; pseudo-label precision ~0.98 caps it | closed |
 | 104 | Serial causal use of slots: donor patching, blocking (§92, §97; eval only) | SERIAL not met: §92 2/5; §97 0/3 with donor latents ignored (state recomputed from visible ops) | closed |
-| 105 | C1 for the headline: S5 GEN-4 with a masked fork + donor protocol | registered | **open** |
+| 105 | C1 for the headline: S5 GEN-4 with a masked fork + donor protocol | G4-M + MASK-DEC met; HANDOFF 0/3 (slots 2–3 latent-carried in 2/3; slot 1 recomputed from the visible start) | closed |
 | 106 | C2 on a real task: bounded streaming multiplication (latent vs the written format) | written format + cut extrapolates 1.000 to b = 32 (WC-S-k2 3/3); masked latent arm fails even at k = 2 (106-4) | closed |
 | 107 | Multiplication's blocker: carrier width (m latents) vs compute (pause), carriage forced | registered | **open** |
 | 108 | Forced latent carriage on S5 (Markov segments, sink fix, TF bootstrap; donor-scored) | registered | **open** |
@@ -715,6 +715,28 @@ committed before any run.
 **Note 100-1 (2026-10-04 23:58 EDT, before any §100 run).** §100 runs only on mult98 with 98-3's fix (one final fork
 "+ P_n #### product").
 
+**§100 result, 4×4 (2026-10-04 09:21 EDT; runs by the experiments session; scored by Theory with `theory/score_s100.py`,
+committed before any run; 5×5 is pending).**
+
+| 4×4 | value |
+|---|---|
+| GEN2 (k = 2) accuracy | 1.000 / 1.000 / 0.979 (median **1.000**) |
+| ICoT-SI bar (released checkpoint, our eval) | 0.998 |
+| TC-M (text CoT, matched budget) | 1.000 |
+| GEN2 FLOPs / TC-M | **0.89×** as metered (0.997× restricted vocabulary) |
+| MASK2 accuracy | 0.890 / 0.318 / 0.985 (median 0.89) |
+| GEN2 mean-removal | 0.63 / 0.58 / 0.13 |
+
+* **M1-2 met; M-SOTA-2 met** (1.000 ≥ 0.998); **M-C3-2 met** (≥ TC-M − 0.01 at 0.89× its FLOPs as metered; about
+  equal with restricted vocabulary).
+* **M-C1-2 not met** (MASK2 median 0.89 < 0.95).
+* GEN2's mean-removal (up to 0.63) shows substantial recomputation from visible ops. No seed reaches the "text
+  checkpoints only" flag (≥ 0.95).
+* **Reading.** At 4×4, the general recipe with a text snap every 2 steps matches the best published implicit method
+  (ICoT-SI) and costs ≤ text CoT. But its latents are partly bypassed, and the latent-only (masked) variant falls short.
+  Tags: C3 (SOTA parity at 4×4), not C1.
+  - MASK2's donor protocol (running, 106-4's question) says whether its 0.89 median is hand-off or recomputation.
+
 ## 101. How much discrete correction does a latent chain need? A snap-strength dose-response on S5 (pre-registered 2026-10-04 00:17 EDT, after Literature's checks a214bb6d and 5c2e080e and before any implementation or run; the user's approval of the directions memo, via Audit)
 
 **Why.** Every success so far snaps to a discrete state. Every unsnapped chain drifts (directions memo, problem C). A snap
@@ -1032,6 +1054,29 @@ fork mask**.
 * **G4-M fails.** The masked decoder cannot be trained at this budget.
 
 **Placement.** About $3–4 (3 runs, then 2) on Vast. Projection to Audit.
+
+**§105 result (2026-10-04 09:21 EDT; models trained by the experiments session; G4-M / MASK-DEC from eval.json; HANDOFF
+from §104's donor protocol with the masked decode, run by Theory on the 4060 (`theory/s105_donor.py`); scored with
+`theory/score_s105.py`, committed before any run). G4-M and MASK-DEC are met. HANDOFF is not met (0/3), so unqualified
+C1 is not met.**
+
+| model | cumulative 512 / 2,048 | mean-removal | single-slot donor-consistent (slots 1 / 2 / 3) | recipient-consistent (slot 1) | joint patch, slot 1 |
+|---|---|---|---|---|---|
+| s1 | 1.0 / 1.0 | 0.007 | 0.873 / **0.998 / 1.000** | 0.017 | 1.0 |
+| s2 | 1.0 / 0.998 | 0.008 | 0.476 / **1.000 / 1.000** | 0.051 | 1.0 |
+| s3 | 1.0 / 1.0 | 0.009 | 0.132 / 0.791 / 0.878 | 0.26 | 0.16 |
+
+* **Reading.** The masked fork turns §97's fully bypassed latents (single donor ≤ 0.02 everywhere, §104) into **serial
+  latent carriage at slots 2 and 3** in s1 and s2 (donor ≥ 0.998, recipient ≤ 0.012).
+* **Slot 1 is the remaining visible route.** It is one op from the chunk's visible start text, so slot 2's forward pass
+  can recompute S_1 from the start text plus op 1's tokens.
+  - The joint patch (slot plus op-token KV) restores donor-consistency to 1.0 in s1 and s2.
+  - s3 also recomputes at slot 1 (recipient 0.26).
+* **Consequence.**
+  - Masking the fork is necessary but not sufficient. The visible chunk start still offers a recompute route for the
+    first hand-off.
+  - §108's Markov segments remove exactly that route (no earlier ops or start text are visible past segment 1). §108 is
+    the decisive test of unqualified C1 on S5.
 
 ## 106. C2 on a real task: bounded-state streaming multiplication, latent chains against the same format written out (pre-registered 2026-10-04 01:34 EDT, after Literature's check 78a12af7 and before any implementation or run; Audit's steward pick)
 
