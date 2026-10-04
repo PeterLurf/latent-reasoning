@@ -1,0 +1,80 @@
+{
+ "guard": "note 98-3",
+ "steps": 150,
+ "lr": 0.0003,
+ "device": "cuda:0",
+ "rows": [
+  {
+   "code": "FIXED",
+   "arm": "genm",
+   "task": "4x4",
+   "final_slot_exact": 1.0,
+   "answer_exact": 1.0,
+   "train_loss": 0.0017604174790903926,
+   "verdict": "PASS"
+  },
+  {
+   "code": "FIXED",
+   "arm": "genm",
+   "task": "5x5",
+   "final_slot_exact": 1.0,
+   "answer_exact": 1.0,
+   "train_loss": 0.006830426515080035,
+   "verdict": "PASS"
+  },
+  {
+   "code": "FIXED",
+   "arm": "mask",
+   "task": "4x4",
+   "final_slot_exact": 1.0,
+   "answer_exact": 1.0,
+   "train_loss": 0.009834449738264084,
+   "verdict": "PASS"
+  },
+  {
+   "code": "FIXED",
+   "arm": "mask",
+   "task": "5x5",
+   "final_slot_exact": 0.0,
+   "answer_exact": 0.0,
+   "train_loss": 31.66507339477539,
+   "verdict": "FAIL"
+  },
+  {
+   "code": "OLD",
+   "arm": "genm",
+   "task": "4x4",
+   "final_slot_exact": 1.0,
+   "answer_exact": 0.0,
+   "train_loss": 0.28307589888572693,
+   "verdict": "FAIL"
+  },
+  {
+   "code": "OLD",
+   "arm": "genm",
+   "task": "5x5",
+   "final_slot_exact": 0.125,
+   "answer_exact": 0.875,
+   "train_loss": 0.6974621976260096,
+   "verdict": "FAIL"
+  },
+  {
+   "code": "OLD",
+   "arm": "mask",
+   "task": "4x4",
+   "final_slot_exact": 0.5,
+   "answer_exact": 0.5,
+   "train_loss": 0.2885928750038147,
+   "verdict": "FAIL"
+  },
+  {
+   "code": "OLD",
+   "arm": "mask",
+   "task": "5x5",
+   "final_slot_exact": 0.0,
+   "answer_exact": 0.0,
+   "train_loss": 35.634849548339844,
+   "verdict": "FAIL"
+  }
+ ]
+}
