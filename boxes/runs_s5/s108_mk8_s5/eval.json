@@ -1,0 +1,259 @@
+{
+ "arm": "mk8",
+ "k": 8,
+ "seed": 5,
+ "steps": 24000,
+ "train_sec": 12027,
+ "eval_dtype": "torch.bfloat16",
+ "test_sequences": 2000,
+ "gpu": "NVIDIA RTX A5000",
+ "segment_types": {
+  "start_or_gold_text": 37089,
+  "latent": 116911
+ },
+ "cumulative": {
+  "128": 0.0,
+  "256": 0.0,
+  "512": 0.0
+ },
+ "final_state_acc_512": 0.008,
+ "compute_512_per_problem": {
+  "tokens_processed": 5248,
+  "flops": 923523022848.0,
+  "seq_passes": 1408,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "latent_slots": 512,
+  "measurement_decode_flops": 589600260096.0
+ },
+ "checkpoint_validity": {
+  "snaps": 128000,
+  "valid": 127957,
+  "rate": 0.9996640625
+ },
+ "extension_2048": {
+  "n": 500,
+  "len": 2048,
+  "cumulative": {
+   "512": 0.0,
+   "1024": 0.0,
+   "2048": 0.0
+  }
+ },
+ "chunk_check": {
+  "k": 8,
+  "n": 100000,
+  "per_chunk_acc": 0.00166,
+  "per_slot_acc": [
+   1.0,
+   0.99999,
+   0.92674,
+   0.53973,
+   0.2938,
+   0.17325,
+   0.11345,
+   0.07784
+  ],
+  "pred_seq_acc_512": 1.2215679636449036e-178
+ },
+ "per_handoff_acc": {
+  "per_position": [
+   0.99995,
+   0.9274963748187409,
+   0.5445822102425876,
+   0.33876069966505395,
+   0.2283584617990852,
+   0.17688266199649738,
+   0.12790697674418605
+  ],
+  "pooled": 0.6737905816079458,
+  "first_slot": 1.0,
+  "n": 20000
+ },
+ "donor": {
+  "slot1": {
+   "donor_consistent": 0.0755,
+   "recipient_consistent": 0.01
+  },
+  "slot2": {
+   "donor_consistent": 0.0745,
+   "recipient_consistent": 0.0105
+  },
+  "slot3": {
+   "donor_consistent": 0.072,
+   "recipient_consistent": 0.0105
+  },
+  "slot4": {
+   "donor_consistent": 0.0735,
+   "recipient_consistent": 0.006
+  },
+  "slot5": {
+   "donor_consistent": 0.076,
+   "recipient_consistent": 0.0095
+  },
+  "slot6": {
+   "donor_consistent": 0.0805,
+   "recipient_consistent": 0.0075
+  },
+  "slot7": {
+   "donor_consistent": 0.0785,
+   "recipient_consistent": 0.0085
+  }
+ },
+ "removal": {
+  "zero": {
+   "k": 8,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0073
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "zero",
+   "acc_after_first_ablated_slot": 0.001042857142857143
+  },
+  "mean": {
+   "k": 8,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.997,
+    0.0009,
+    0.0038,
+    0.0082,
+    0.009,
+    0.0082,
+    0.009,
+    0.0078
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "mean",
+   "acc_after_first_ablated_slot": 0.0067
+  }
+ },
+ "edit_iia": {
+  "n": 5000,
+  "iia": 0.0794
+ },
+ "train_handoff_err": {
+  "n": 20000,
+  "len": 128,
+  "note": "training rows are 128 ops: 128-op rollouts",
+  "in_chunk_err": 0.36806863557598135,
+  "snap_err": 0.0,
+  "pooled_err": 0.3543818288978555,
+  "first_pos_err": 0.0,
+  "cumulative_128": 0.0
+ },
+ "ratio_per_1k": [
+  [
+   1000,
+   null
+  ],
+  [
+   2000,
+   null
+  ],
+  [
+   3000,
+   0.9827241134258579
+  ],
+  [
+   4000,
+   1.1678631179955599
+  ],
+  [
+   5000,
+   1.0967532744951056
+  ],
+  [
+   6000,
+   0.6700809005226237
+  ],
+  [
+   7000,
+   0.8342437575199745
+  ],
+  [
+   8000,
+   0.6770890307307913
+  ],
+  [
+   9000,
+   0.7200610352786618
+  ],
+  [
+   10000,
+   0.6635334353703819
+  ],
+  [
+   11000,
+   0.6230398009745587
+  ],
+  [
+   12000,
+   0.7010289650898079
+  ],
+  [
+   13000,
+   0.6992719822192288
+  ],
+  [
+   14000,
+   0.6866264999266274
+  ],
+  [
+   15000,
+   0.6531711482341881
+  ],
+  [
+   16000,
+   0.5996966621760799
+  ],
+  [
+   17000,
+   0.5606526922313508
+  ],
+  [
+   18000,
+   0.5274178523332905
+  ],
+  [
+   19000,
+   0.47635249674336005
+  ],
+  [
+   20000,
+   0.4275781885383485
+  ],
+  [
+   21000,
+   0.3859307556432765
+  ],
+  [
+   22000,
+   0.3606669197065068
+  ],
+  [
+   23000,
+   0.34908043164262786
+  ],
+  [
+   24000,
+   0.3495954254834746
+  ]
+ ],
+ "early_escape": true,
+ "early_window_min_ratio": 0.6096941098689113,
+ "escape_step": 2200,
+ "final_train_loss": 1.4631591629981995,
+ "eval_sec": 1359
+}
