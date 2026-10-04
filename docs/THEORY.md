@@ -168,6 +168,8 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 110 | Self-training v2: independent seeds, label-free gate, masked fork (C4 + C1) | design error (110-1): the restart gate needs non-identity restarts; s1–3 for the record | closing |
 | 110b | Self-training v2 corrected: identity-start shorts plus random textual starts for length ≥ 3 | stopped after a clear null: loss at chance from random starts (110b-2) | closed |
 | 111 | Reliability of the Markov hand-off: 2× budget vs DAgger-style own-state training; best-of-n | registered | **open** |
+| 112 | Short-coverage dose-response for self-training (f = 0.5 / 0.25 / 0.1; never-labelled k = 1 accuracy) | registered | **open** |
+| 113 | Auxiliary reader inside self-training (conditional on §111-READ) | registered (conditional) | **open** |
 
 ## Live sections
 
@@ -1668,6 +1670,69 @@ select by a **training-data-only** criterion.
     starting. Its AUC is reported next to train_handoff_err and final loss.
 * **Rules unchanged (REL per arm, SEL).** It is now 15 runs, about $22. The scorer is extended (arm `mk4_read`).
 
+## 112. How small can the foothold be? A short-coverage dose-response for §110's self-training (pre-registered 2026-10-04 15:00 EDT, after Literature's check b1352c3e and before any implementation or run; Audit's steward idea)
+
+**Why.** §110 s3, whose short problems label 71.5 % of S5's transitions, is correct on **all** 14,400 k = 1
+transitions (110-5): the shorts acted as a foothold. §112 measures how small the foothold can be. Fewer labelled
+transitions means closer to strict C4.
+* **Prior** (b1352c3e): our §85 (dose-response for the free table: 0.1 → 5/5, 0.03 → 2/5) and §87 (basin entry); Wies
+  2204.02892; Abbe 2306.16921. Contrasts: grokking's critical fraction, Lee 2606.07254, §76(B).
+
+**Design.** §110's recipe unchanged (identity starts, masked fork, independent pools, validity → final →
+self-consistency filters with the label-free gate, final relabel, 24k steps), except that R0's short problems are
+restricted to a **fixed random subset T_f of transitions**.
+* **T_f** is stratified by op: for every op b, a random fraction f of the 120 states s gives (s, b) ∈ T_f. It is fixed
+  per seed, so no op is left without shorts (Literature (1)).
+* A length-1 short (e; a) is allowed iff (e, a) ∈ T_f. A length-2 short (e; a, b) is allowed iff (e, a) ∈ T_f **and**
+  (a, b) ∈ T_f (Literature (2)).
+* The R0 short-problem count is held fixed (1,200 updates × 64; Literature (3)). Only which transitions they cover
+  changes.
+* **Doses:** f ∈ {0.5, 0.25, 0.1}, **5 seeds each** (s21–25). §110 itself is the f ≈ 0.715 reference (natural coverage).
+
+**Measures.**
+* **Primary:** k = 1 accuracy on transitions **never labelled by any short**. Split by whether the transition appears
+  inside the self-trained pools' kept problems (Literature (4)).
+* k = 1 accuracy on labelled transitions; the full certificate (all 14,400 correct); cumulative at 512 / 2,048;
+  donor C1 (§104); the realised coverage.
+
+**Rule (fixed now; per dose).**
+* **FOOTHOLD-f:** ≥ 2/5 seeds with **cumulative ≥ 0.99 at 512** and **k = 1 accuracy ≥ 0.99 on never-labelled
+  transitions**.
+  - Existence at a dose is the dose criterion; reliability (C6) is separate, given §110's 1/3 seed lottery.
+* **Primary reading:** the smallest f meeting FOOTHOLD-f. Certified seeds (all 14,400) are reported per dose.
+
+**Readings.**
+* **FOOTHOLD at f = 0.1.** A ~10 % short foothold suffices: the LM learns ~90 % of the transition table from long
+  final answers. That is near-strict C4, with the qualifier stated as coverage.
+* **Only at 0.5 or 0.25.** There is a coverage threshold; it is the measurement.
+* **None.** §110's success needs near-natural coverage. Report the per-dose never-labelled accuracy.
+* **Tags:** C4 (qualified by coverage f), C1 (donor), C2 (2,048), C6 per-dose seed rate.
+
+**Placement.** 15 runs (3 doses × 5 seeds), about $8–10 on Vast. Proof seed first. Projection to Audit.
+
+## 113. The auxiliary reader inside self-training: §110 plus a reader on the model's own decodes (pre-registered 2026-10-04 15:00 EDT, after Literature's check b1352c3e and before any implementation or run; conditional on §111 MK-4-READ meeting REL)
+
+**Why.** §110's seed failures (s1: a slot-1 bypass; s2: never acquires) look like 111-1's no-read family. If §111's
+auxiliary reader makes §108's Markov hand-off reliable, the same reader should help §110.
+* **Prior** (b1352c3e): SELR 2608.13570, ReLAT 2606.06252, 2606.20075, CODI, cycle consistency. New as scoped.
+
+**Design.** §110's recipe, plus §111-READ's auxiliary reader at every slot from step 0.
+* A fresh segment **[EOT, carried latent]** decodes the slot's state text.
+* Its target is **the model's own filtered decode**: the per-slot pseudo-label of kept problems, and the final-answer
+  slot of R0 shorts and of discarded problems.
+* The **final-answer filter sits in front of the reader loss** (Literature: confirmation bias, 1908.02983). No ground-
+  truth intermediate state is used, so C4 holds.
+* Seeds 11–15.
+
+**Rules.** §110's: SELF2 ≥ 4/5, donor C1 ≥ 4/5, C6 at 2,048. **REL here = SELF2 and C1 at ≥ 4/5.** Readability is not
+use (Literature): C1 is scored with the donor protocol only.
+
+**Readings.**
+* **REL.** The reader turns §110's lottery into a reliable recipe: C4 (qualified) + C1 + C2 + C6 together.
+* **Not REL.** The no-read account does not cover §110's failures.
+
+**Placement.** 5 runs, about $2–4, **launched only if §111 MK-4-READ meets REL**. Otherwise it is not run (noted then).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
@@ -1771,3 +1836,10 @@ running). It corrects 110-1.**
   labels**.
   - This is the first in-LM evidence pointing toward strict C4. It motivates the coverage dose-response (Audit's
     IDEA 1; registration next).
+
+**110-5 wording corrected (2026-10-04 15:00 EDT; Literature b1352c3e).** The 4,105 transitions never labelled by a short
+problem were **not unsupervised**. They occur inside long problems whose final answers, plus the filtered self-training
+targets, constrain them.
+* The correct statement: "**transitions learned from long-problem final answers, given a partial (71.5 %) short
+  foothold**". That is a C4-direction result.
+* It is **not** held-out-pair generalisation in the §76(B) / grokking sense, where held-out entries get no signal at all.
