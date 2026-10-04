@@ -104,32 +104,41 @@ class GPT2KV(nn.Module):
     def embed(self, ids):
         return self.w("wte.weight")[ids]
 
-    def forward(self, x, past=None, pos0=None):
+    def forward(self, x, past=None, pos0=None, inject=None, capture=None, kv_mask=None):
         """x: (B, T, D) input embeddings appended after `past` (list per layer of (k, v)). Returns final hidden (after
         ln_f), new past. pos0 (§98 masked fork): position of x's first token when `past` is a slice of a longer cache
-        (default: the cache length)."""
+        (default: the cache length). §102 (all default off): inject = (i, v) adds v (B, D) to the LAST position's residual
+        stream entering block i (0-based; i = 4 is "h(4)"); capture = c also returns the last position's hidden after c
+        blocks (pre ln_f; c = 9 is "h(9)") as a third value; kv_mask = absolute key positions no query may attend to."""
         B, T, D = x.shape; P0 = 0 if past is None else past[0][0].shape[2]; hd = D // self.H
         p0 = P0 if pos0 is None else pos0
         h = x + self.w("wpe.weight")[p0:p0 + T][None]
-        new = []
+        new = []; cap = None
         for i in range(self.L):
             pre = f"h.{i}."
+            if inject is not None and i == inject[0]:
+                h = torch.cat([h[:, :-1], (h[:, -1] + inject[1].to(h.dtype))[:, None]], 1)
             a = F.layer_norm(h, (D,), self.w(pre + "ln_1.weight"), self.w(pre + "ln_1.bias"))
             q, k, v = (a @ self.w(pre + "attn.c_attn.weight") + self.w(pre + "attn.c_attn.bias")).split(D, -1)
             q, k, v = (t.view(B, T, self.H, hd).transpose(1, 2) for t in (q, k, v))
             if past is not None:
                 k = torch.cat([past[i][0], k], 2); v = torch.cat([past[i][1], v], 2)
             new.append((k, v))
-            if P0 == 0:
+            if P0 == 0 and kv_mask is None:
                 o = F.scaled_dot_product_attention(q, k, v, is_causal=True)
             else:
                 mask = torch.ones(T, P0 + T, dtype=torch.bool, device=x.device).tril(P0)
+                if kv_mask is not None:
+                    mask[:, list(kv_mask)] = False
                 o = F.scaled_dot_product_attention(q, k, v, attn_mask=mask)
             h = h + o.transpose(1, 2).reshape(B, T, D) @ self.w(pre + "attn.c_proj.weight") + self.w(pre + "attn.c_proj.bias")
             a = F.layer_norm(h, (D,), self.w(pre + "ln_2.weight"), self.w(pre + "ln_2.bias"))
             m = F.gelu(a @ self.w(pre + "mlp.c_fc.weight") + self.w(pre + "mlp.c_fc.bias"), approximate="tanh")
             h = h + m @ self.w(pre + "mlp.c_proj.weight") + self.w(pre + "mlp.c_proj.bias")
-        return F.layer_norm(h, (D,), self.w("ln_f.weight"), self.w("ln_f.bias")), new
+            if capture is not None and i == capture - 1:
+                cap = h[:, -1]
+        out = F.layer_norm(h, (D,), self.w("ln_f.weight"), self.w("ln_f.bias"))
+        return (out, new, cap) if capture is not None else (out, new)
 
     def logits(self, h):
         return h @ self.w("wte.weight").T
