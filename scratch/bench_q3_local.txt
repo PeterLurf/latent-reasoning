@@ -1,6 +1,0 @@
-prosqa_deep_f1s_s1_P16 prosqa_deep f1s:prosqa/runs_ail/f1s_s1?P=16 --per_depth 150
-prosqa_deep_na_f1s_s1_P16 prosqa_deep_na f1s:prosqa/runs_ail/f1s_s1?P=16 --per_depth 150
-prosqa_deep_f1s_s2_P16 prosqa_deep f1s:prosqa/runs_ail/f1s_s2?P=16 --per_depth 150
-prosqa_deep_na_f1s_s2_P16 prosqa_deep_na f1s:prosqa/runs_ail/f1s_s2?P=16 --per_depth 150
-prosqa_deep_f1s_s3_P16 prosqa_deep f1s:prosqa/runs_ail/f1s_s3?P=16 --per_depth 150
-prosqa_deep_na_f1s_s3_P16 prosqa_deep_na f1s:prosqa/runs_ail/f1s_s3?P=16 --per_depth 150

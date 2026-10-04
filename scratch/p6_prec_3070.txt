@@ -1,9 +1,0 @@
-# PROTOCOL6 addendum F, RTX 3070: seeds 54-57, bf16 and fp32
-prec_bf16_s54 --no_step_emb --K 6 --seed 54 --lr 5e-4 --amp bf16
-prec_fp32_s54 --no_step_emb --K 6 --seed 54 --lr 5e-4 --amp fp32
-prec_bf16_s55 --no_step_emb --K 6 --seed 55 --lr 5e-4 --amp bf16
-prec_fp32_s55 --no_step_emb --K 6 --seed 55 --lr 5e-4 --amp fp32
-prec_bf16_s56 --no_step_emb --K 6 --seed 56 --lr 5e-4 --amp bf16
-prec_fp32_s56 --no_step_emb --K 6 --seed 56 --lr 5e-4 --amp fp32 --save_every 1000
-prec_bf16_s57 --no_step_emb --K 6 --seed 57 --lr 5e-4 --amp bf16 --save_every 1000
-prec_fp32_s57 --no_step_emb --K 6 --seed 57 --lr 5e-4 --amp fp32 --save_every 1000

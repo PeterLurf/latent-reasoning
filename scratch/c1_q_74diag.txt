@@ -1,6 +1,0 @@
-# §74 descriptive diagnostic (Theory): PF-std seeds 2021-2025 rerun with bad-pair listing and tables
-c1/runs/p74diag_pfstd_s2021 c1.textops --arm pfstd --seed 2021
-c1/runs/p74diag_pfstd_s2022 c1.textops --arm pfstd --seed 2022
-c1/runs/p74diag_pfstd_s2023 c1.textops --arm pfstd --seed 2023
-c1/runs/p74diag_pfstd_s2024 c1.textops --arm pfstd --seed 2024
-c1/runs/p74diag_pfstd_s2025 c1.textops --arm pfstd --seed 2025

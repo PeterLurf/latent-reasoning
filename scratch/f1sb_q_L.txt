@@ -1,3 +1,0 @@
-# 61b fresh seeds (local 3070)
-f1s_s12 12
-f1s_s13 13

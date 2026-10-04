@@ -1,4 +1,0 @@
-# PROTOCOL6 extension B′ (fp32; RTX 2070)
-dev6_s42 --K 6 --seed 42 --lr 5e-4 --save_every 1000 --amp fp32
-dev6_s43 --K 6 --seed 43 --lr 5e-4 --save_every 1000 --amp fp32
-dev6_s44 --K 6 --seed 44 --lr 5e-4 --save_every 1000 --amp fp32
