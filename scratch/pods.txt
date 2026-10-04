@@ -632,3 +632,8 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 54138455 vast | gen_m5 DESTROYED_VERIFIED 2026-10-04 11:33 after verified per-run fetch (boxes/runs_mult/a99_std_4x4_s3 boxes/runs_mult/a99_std_4x4_s1 boxes/runs_mult/a99_std_4x4_s2)
 54155841 vast | gen_e3 DESTROYED_VERIFIED 2026-10-04 11:36 ABORTED: §110b s1-3 stopped at step ~13.5k after a clear null (note 110b-2, Theory): final-correct at chance (0.008) at every labelling, loss at chance since R0; aborted after a clear null, read, not void; logs + run args/log.jsonl/eval.json (no models) in logs/vast_167.179.138.57_42034/aborted
 54148202 vast | gen_k5 DESTROYED_VERIFIED 2026-10-04 12:12 after verified per-run fetch (boxes/runs_s5/s108_mk4_s3 boxes/runs_s5/s108_mk4_s2 boxes/runs_s5/s108_mk4_s1)
+54171632 vast offer 49567360 created 2026-10-04 12:15: label gen-k3, queue scratch/gen_q_k3.txt (logged at create by vdeploy_toy.sh)
+54171649 vast offer 49745142 created 2026-10-04 12:15: label gen-k4, queue scratch/gen_q_k4.txt (logged at create by vdeploy_toy.sh)
+54171659 vast offer 51152292 created 2026-10-04 12:15: label gen-k6, queue scratch/gen_q_k6.txt (logged at create by vdeploy_toy.sh)
+54171659 vast | gen_k6 DESTROYED_VERIFIED 2026-10-04 12:34 stuck loading > 15 min (never started; offer 51152292); replaced
+54173915 vast offer 11925444 created 2026-10-04 12:34: label gen-k6, queue scratch/gen_q_k6.txt (logged at create by vdeploy_toy.sh)
