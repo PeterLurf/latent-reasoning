@@ -2059,3 +2059,9 @@ are not met. The STUDENT trigger fires.**
   certified on all 14,400 transitions (110-5).
   - Reliability is the gap: two seeds never acquire, and two acquire with a slot-1 bypass.
   - That is the same no-read and bypass family as §108. §113 (READ inside self-training) is conditional on §111.
+* **Audit's reproduction (77db3092).** The panel reproduces; gate maxima are s2 0.0021 and s4 0.0023, against ≥ 0.999 for s1 /
+  s3 / s5.
+  - **s5's slots 2–3 are neither donor- nor recipient-consistent** (0.007 / 0.011 and 0.007 / 0.005), yet mean-removal
+    is 0.0077. The latents are necessary but do not transplant across problems: the state is encoded jointly with
+    row-specific context (multiple mediators, as §104 / §97).
+  - s5's STUDENT may show whether that encoding is an artefact of the training path.
