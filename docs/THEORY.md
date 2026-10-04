@@ -1394,6 +1394,28 @@ with an independent pool** and no cross-seed vote.
 **Placement.** 5 seeds, independent, about $8–10 on Vast (proof seed first). Projection to Audit. Implementation: the
 experiments session (self103 with the masked fork, the self-consistency filter and gate, and independent pools).
 
+**Note 110-1 (2026-10-04 09:28 EDT; the experiments session's round-1 report on seeds 1–3, disclosed; a design error,
+Theory's).**
+* **What happened.**
+  - At round 1 (L = 4, then an inserted L = 3), the label-free gate is ≈ 0 in all three seeds: self-consistency among
+    final-correct problems is 0.0017 / 0.0 / 0.0041, and kept problems are 0 / 0 / 2.
+  - Yet the truth-scored rate of fully true chains among final-correct problems is 0.36 / 0.32 / 0.43.
+  - The code check passes: the same filter keeps 120/120 on g105, which was trained from arbitrary starts.
+* **Cause (design error).** The self-consistency view restarts at k = 1 from the model's own checkpoint text at a
+  **non-identity** state. But every §110 training problem starts from the **identity** (as §103), so restart
+  competence from other states is never trained early. The restart view fails even where the chain is right, and the
+  gate cannot pass.
+  - This is the pre-registered "gate never passes" outcome, but its cause is the design, not the method's idea.
+* **Handling.**
+  - Seeds 1–3 continue unchanged to completion, for the record, and are scored as registered. They now train on
+    final-only targets in most rounds.
+  - **Seeds 4–5 are not run** (held). The mechanism is identified and they would add nothing.
+* **Corrected design to follow as §110b** (after a Literature check). Training problems start from **random given start
+  states**, written as text. The start state is problem input, not an intermediate label, so supervision stays
+  final-answer only.
+  - The model then learns restarts from round 0, and the k = 1 restart becomes a trained second view.
+  - Evaluation stays on the protocol's identity-start test set.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
