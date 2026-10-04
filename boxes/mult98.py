@@ -163,6 +163,9 @@ class MultGen(nn.Module):
             s_in = h[:, -1]
             if ablate in ("zero", "mean") and j < c - 1:
                 s_in = torch.zeros_like(s_in) if ablate == "zero" else mean_in[j][None].expand_as(s_in)
+            ov = getattr(self, "override", None)                             # donor patch (j, (B, D)); default off
+            if ov is not None and ov[0] == j:
+                s_in = ov[1].to(s_in.dtype)
             ins.append(s_in)
             ctx = past[0][0].shape[2]; hs, past = g(s_in[:, None], past)
             if meter:
