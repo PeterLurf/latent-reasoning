@@ -158,6 +158,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 101 | Snap-strength dose-response (β_min 1 / 0.1 / 0.01 / 0) on S5 | registered | **open** |
 | 102 | State in depth: gated slot-to-slot residual path (4×4, in §99's harness) | registered | **open** |
 | 103 | Filtered self-training by length (C4 inside the LM, S5) | registered | **open** |
+| 104 | Serial causal use of slots: donor patching, blocking (§92, §97; eval only) | registered | **open** |
 
 ## Live sections
 
@@ -826,6 +827,54 @@ via a fork; text snap every 4 ops). Budget 24k steps total, seeds 1–3. **No gr
 
 **Placement.** About $6–8 on Vast (one proof seed first). Projection to Audit. Implementation: the experiments session, from
 `boxes/gen97.py`.
+
+## 104. Do the latent slots carry the state serially? Donor patching and step-specific blocking on §92 and §97 (pre-registered 2026-10-04 00:33 EDT, after Literature's check 5054f476 and before running on any checkpoint; C1-first under the user's priority order)
+
+**Why.** C1's operational test asks for **step-specific blocking showing serial, hop-by-hop use**. Our removal tests so far
+ablate slots 1..k−1 jointly. §97's text fork also partly recomputes the state under mean ablation. §104 tests each slot's
+causal role directly, at no training cost.
+* **Prior** (5054f476):
+  - Geiger 2106.02997 (causal abstraction); DAS 2303.02536 (interchange intervention accuracy); ROME 2202.05262 (causal
+    tracing).
+  - Method cautions: Zhang & Nanda 2309.16042, Heimersheim & Nanda 2404.15255, multiple mediators (2606.27510).
+  - Per-step latent-CoT interventions: Li 2602.08783, SCIT 2608.27265 (CODI computes in the V-cache); our §34/§45/§56.
+
+**Models:** §92 k = 4, seeds 1–5 (5 × 5 head on the slot); §97 GEN-4 and HYB-4, seeds 1–3 (text fork).
+
+**Setup.** Within one 4-op chunk (no snap; post-snap effects are not scored): 2,000 fresh recipient chunks A and donor
+chunks B, with random starts and ops. Donors are patched at the same slot index (Literature (2)).
+* **Primary (resample/donor patch).** For each slot j = 1..3:
+  - **single:** slot j's input ← B's slot-j input;
+  - **joint:** additionally, op j's token KV entries ← B's (the positions that produced slot j's input; Literature (4)).
+  - Scored at the final slot:
+    - **donor-consistent** = the decode equals B's state after j ops composed with A's ops j+1..4 (the slot is used);
+    - **recipient-consistent** = the decode equals A's own true final state (recomputation / bypass).
+  - Chance is 1/120.
+* **Secondary:** zero and mean replacement of slot j's input; per-slot decode accuracy against A's truth.
+* **Script:** `theory/s104_serial.py`, committed with this registration.
+
+**Rules (fixed now).**
+* **USE(j):** single-patch donor-consistent ≥ 0.90.
+* **BYPASS(j):** single-patch recipient-consistent ≥ 0.10.
+* **SERIAL** (per model): USE(j) for j = 1, 2, 3, with no BYPASS(j).
+* **Per family:** SERIAL holds if ≥ 4/5 (§92) or ≥ 2/3 (§97 GEN-4; §97 HYB-4) of models are SERIAL.
+* **Joint patch (descriptive):** if single fails but joint reaches USE, the state is carried jointly by the slot and the
+  op-token residuals (multiple mediators).
+
+**Predictions.**
+* §92 is SERIAL (≥ 4/5): its head reads only the slot, and §92's joint mean removal is ≤ 0.03.
+* §97 GEN-4 / HYB-4 show BYPASS at one or more slots, in line with their mean-ablation recompute (0.15–0.50).
+
+**Readings.**
+* **§92 SERIAL.** Unqualified, serial, hop-by-hop C1 for §92's latent restarts. That is the north star's C1 test, passed
+  within a chunk.
+* **§97 BYPASS at slot j.** The text fork recomputes from the visible ops at that slot. The recipient/donor split says
+  where. This sets the bar for §98/§100's MASK arms and §99's MARKOV.
+* **Joint-only USE.** The state is distributed across the slot and the op-token residuals. C1 holds for the latent
+  positions jointly, not for the slot alone.
+
+**Placement.** Eval only: about 20 GPU-minutes on a local card (as the experiments session offers), or the CPU at
+Idle priority. $0.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
