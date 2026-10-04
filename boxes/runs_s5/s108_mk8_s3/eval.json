@@ -1,0 +1,146 @@
+{
+ "arm": "mk8",
+ "k": 8,
+ "seed": 3,
+ "train_sec": 12633,
+ "eval_dtype": "torch.bfloat16",
+ "test_sequences": 2000,
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "segment_types": {
+  "start_or_gold_text": 37144,
+  "latent": 116856
+ },
+ "cumulative": {
+  "128": 0.994,
+  "256": 0.989,
+  "512": 0.982
+ },
+ "final_state_acc_512": 0.9825,
+ "compute_512_per_problem": {
+  "tokens_processed": 5248,
+  "flops": 923523022848.0,
+  "seq_passes": 1408,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "latent_slots": 512,
+  "measurement_decode_flops": 589600260096.0
+ },
+ "checkpoint_validity": {
+  "snaps": 128000,
+  "valid": 128000,
+  "rate": 1.0
+ },
+ "extension_2048": {
+  "n": 500,
+  "len": 2048,
+  "cumulative": {
+   "512": 0.984,
+   "1024": 0.966,
+   "2048": 0.93
+  }
+ },
+ "chunk_check": {
+  "k": 8,
+  "n": 100000,
+  "per_chunk_acc": 0.99975,
+  "per_slot_acc": [
+   1.0,
+   1.0,
+   1.0,
+   0.99999,
+   1.0,
+   0.99996,
+   0.99995,
+   0.99976
+  ],
+  "pred_seq_acc_512": 0.9841253514745116
+ },
+ "per_handoff_acc": {
+  "per_position": [
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   0.9999,
+   0.9998999899989999,
+   0.9998499699939988
+  ],
+  "pooled": 0.999949997857051,
+  "first_slot": 1.0,
+  "n": 20000
+ },
+ "donor": {
+  "slot1": {
+   "donor_consistent": 0.9995,
+   "recipient_consistent": 0.01
+  },
+  "slot2": {
+   "donor_consistent": 1.0,
+   "recipient_consistent": 0.009
+  },
+  "slot3": {
+   "donor_consistent": 1.0,
+   "recipient_consistent": 0.0095
+  },
+  "slot4": {
+   "donor_consistent": 0.9995,
+   "recipient_consistent": 0.0095
+  },
+  "slot5": {
+   "donor_consistent": 0.999,
+   "recipient_consistent": 0.0065
+  },
+  "slot6": {
+   "donor_consistent": 0.9995,
+   "recipient_consistent": 0.0095
+  },
+  "slot7": {
+   "donor_consistent": 0.9995,
+   "recipient_consistent": 0.0045
+  }
+ },
+ "removal": {
+  "zero": {
+   "k": 8,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0078
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "zero",
+   "acc_after_first_ablated_slot": 0.0011142857142857144
+  },
+  "mean": {
+   "k": 8,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.9227,
+    0.0089,
+    0.0077,
+    0.0104,
+    0.0077,
+    0.0063,
+    0.0094,
+    0.0086
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "mean",
+   "acc_after_first_ablated_slot": 0.00842857142857143
+  }
+ },
+ "edit_iia": {
+  "n": 5000,
+  "iia": 0.9998
+ },
+ "eval_sec": 1378
+}
