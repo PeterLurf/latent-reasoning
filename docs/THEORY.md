@@ -566,6 +566,27 @@ final-fork conflict. Their stop criterion (answer ≥ 0.95) cannot be met. §99 
 arms, seeds, rules and eligibility (99-1). Runs started on the old code are renamed `*.void_forkconflict`, kept, and not
 scored.
 
+**Note 99-3 (2026-10-04 00:01 EDT, before any fixed-code §99 run; Literature 0ca8a65a, `docs/LIT_S99_MARKOV_2026-10-03.md`).**
+* **Why.** 98-3's diagnostic: on multiplication, slot 2's state is recomputed from the visible operands (mean-ablated
+  latents still decode it at 0.79–0.99). So the first true latent hand-off is slot 3. Hypothesis: **visible-operand
+  recomputation starves the latent of gradient to carry state.**
+* **New arm MARKOV:** each slot step is a **fresh-cache segment**.
+  - The segment for slot j is [operand prefix a, slot j−1's latent, op j]. For the chunk's first op it is [a, the chunk's
+    start text, op 1].
+  - Positions are re-indexed from 0 in every segment, identically in training and test (Literature (c); §86's
+    segment-isolation construction).
+  - S_j can reach slot j only through slot j−1's latent, so every slot from 2 on is a forced hand-off, and earlier ops
+    are invisible.
+  - The step and answer forks attend only to their own segment, so they cannot recompute from earlier ops either
+    (Literature (a)). The final fork is 98-3's "+ P_n #### product".
+  - **Bootstrap:** MARKOV uses K-CURR's chunk schedule (k = 1 for 0–2k, 2 for 2k–6k, then 4), and is eligible from 6k.
+    Literature (b): our Pilot A Markovian step gave no gain and trained harder, and RMT needed a curriculum.
+  - **MARKOV vs K-CURR differs only in the context restriction.** That isolates the starvation hypothesis.
+* **Rule:** §99's (accelerates = median steps-to-threshold ≤ 0.5× CTRL's, with no-bypass removal), plus:
+  - **descriptive H-starve:** MARKOV reaches threshold earlier than K-CURR (median steps), with per-slot curves;
+  - if MARKOV is slower, or fails, the Pilot A prior holds here too.
+* **Panel:** 8 arms × 3 seeds = 24 runs. The scorer is updated (arm `markov`).
+
 ## 100. Shorter silent stretches on multiplication: §98's recipe with a text snap every 2 steps (k = 2) (pre-registered 2026-10-03 23:54 EDT, after Literature's check 478cc193 and before any implementation or run; the user's request for an overnight plan, via Audit)
 
 **Why.** On multiplication the first latent hand-off is learned and the second is the wall. §98's and §99's training logs
