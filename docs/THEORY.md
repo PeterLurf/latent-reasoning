@@ -161,6 +161,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 104 | Serial causal use of slots: donor patching, blocking (§92, §97; eval only) | registered | **open** |
 | 105 | C1 for the headline: S5 GEN-4 with a masked fork + donor protocol | registered | **open** |
 | 106 | C2 on a real task: bounded streaming multiplication (latent vs the written format) | registered | **open** |
+| 107 | Multiplication's blocker: carrier width (m latents) vs compute (pause), carriage forced | registered | **open** |
 
 ## Live sections
 
@@ -1023,6 +1024,54 @@ show the recipe learns multiplication. Projection to Audit.
 * **Gate for the rest of §106** (GEN-S, WC-S, TC-S): GEN-S-MASK's in-range accuracy (b = 4) ≥ 0.95 in ≥ 2/3 seeds.
   - If the gate fails, the latent arms are not run further. WC-S and TC-S may still run as a written-format C2 reference
     (descriptive).
+
+## 107. Multiplication's C1 blocker: carrier width or compute per op? m latents per op vs pause positions, with carriage forced (pre-registered 2026-10-04 03:32 EDT, after Literature's check 640ffe59 and before any implementation or run; Audit's 03:13 steward pick)
+
+**Why.** §99's fixed-code logs (raw, descriptive; Audit) locate the blocker at slot 3: the first step whose state, the
+running sum S_3 = S_2 + a · b_3 · 10², must arrive through a latent. It reads CTRL 0.34–0.39 at 10k, and MARKOV (forced
+carriage) 0.11–0.14 at 11k. S5's 120-way state was carried fine. Two explanations compete:
+* **Carrier width:** one vector per op cannot carry a multi-digit number in a usable format.
+* **Compute per op** (Literature's reframing): slot 3 must do a 4 × 1 product plus a carried add in one pass, where S5's op
+  was a table lookup. Capacity is not the obvious limit (an 8-digit sum is about 27 bits in 768 dimensions; MUX
+  2607.18264).
+* **Prior** (640ffe59): Coconut's c thoughts per step (c = 2 on GSM8K; more helped), CoLaR, SuperThoughts; pause tokens
+  2310.02226 / 2505.21024; 2510.00184 (a running-sum auxiliary unlocks multiplication).
+
+**Arms** (§99's harness on 4×4 multiplication: fixed code, MARKOV's fresh-cache segments so carriage is forced, the K-CURR
+bootstrap, 24k cap, the valid-split early stop, eligibility from 6k; seeds 1–3).
+* **LAT-m (m = 2, 4).** Each op gets **m latent slots**.
+  - Latent 1's input is the last hidden state at op j's token; latent i's input is the last hidden state of latent
+    i − 1.
+  - Segment j = [a, op j−1's **m** latents (or the chunk's start text), op j] → m new latents.
+  - The step and final forks read from the last latent's position (own segment).
+* **PAUSE-4.** One carried latent, plus **3 pause positions** before it within the segment. Each pause is a learned
+  embedding shared across positions and is *not* carried to the next segment.
+  - Segment j = [a, op j−1's latent, op j, pause × 3] → 1 latent.
+  - It adds compute per op without widening the carrier.
+* **m = 1: §99's MARKOV arm** (same harness and seeds), reused as the control.
+* Re-indexing stays contiguous as segments grow (Literature (2)).
+
+**Measures.** §99's (curve, steps-to-threshold, test accuracy, removal), plus:
+* per-op decode on the test split;
+* for LAT-m, the cosine between the m latents and a per-latent zero-removal effect (Literature (1): untargeted latents may
+  collapse to copies);
+* sequential passes and FLOPs, which scale with m.
+
+**Rules (fixed now).**
+* **CARRY-3** (per arm): test decode at op 3 ≥ 0.95 at the stop / cap checkpoint in ≥ 2/3 seeds.
+* **NO-BYPASS:** in those seeds, zero- and mean-removal of every carried latent gives answer accuracy ≤ §98's NC-M 4×4
+  median + 0.05.
+* **Accelerates** (§99's rule against §99 CTRL) is reported.
+
+**Readings (fixed now).**
+* **LAT passes, PAUSE fails.** Carrier width is the blocker: a wider latent state carries the running sum.
+* **PAUSE passes.** Compute per op is the blocker: extra in-step positions suffice and the single carrier is enough.
+* **Both pass.** Compute was enough; width is not needed. LAT's latent cosine says whether the extra latents were used.
+* **Neither.** Neither lever unblocks it at this budget. The explicit running-sum auxiliary (2510.00184) is next.
+* **Tags:** C1 (carriage forced by MARKOV plus removal) for multiplication if NO-BYPASS holds. Not C4.
+
+**Placement.** 9 runs (3 arms × 3 seeds), about $5, queued behind §101 / §103 / the §106 pilot as hosts free up.
+Projection to Audit.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
