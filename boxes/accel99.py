@@ -41,14 +41,14 @@ from boxes import s5  # noqa: E402
 from boxes.mult98 import (DIGIT_IDS, TOK, MeterR, MultGen, gen_mean_inputs, gen_rollout, load, seq_batch,  # noqa: E402
                           seq_forward)
 
-ARMS = {"ctrl": 0, "kcurr": 6000, "std": 0, "textfirst": 3000, "textfirst_mask": 3000, "combo": 9000, "tfslot": 12000}
+ARMS = {"ctrl": 0, "kcurr": 6000, "std": 0, "textfirst": 3000, "textfirst_mask": 3000, "combo": 9000, "tfslot": 12000, "markov": 6000}
 
 
 def config(arm, step):
     """-> (phase 'text' | 'latent', training chunk length, gold share rho) at this update."""
     if arm in ("textfirst", "textfirst_mask", "combo") and step <= 3000:
         return "text", 4, 0.0
-    if arm == "kcurr":
+    if arm in ("kcurr", "markov"):                                         # markov (note 99-3): K-CURR's schedule
         return "latent", 1 if step <= 2000 else (2 if step <= 6000 else 4), 0.0
     if arm == "combo":
         return "latent", 1 if step <= 5000 else (2 if step <= 9000 else 4), 0.0
@@ -60,7 +60,7 @@ def config(arm, step):
 class MultGen99(MultGen):
     def __init__(self, g, fork, std):
         super().__init__(g, fork)
-        self.std = std
+        self.std = std; self.markov = False
         E = g.w("wte.weight").detach()
         self.register_buffer("muE", E.mean(0).clone()); self.register_buffer("sdE", E.std(0).clone())
         self.register_buffer("muH", torch.zeros(768)); self.register_buffer("sdH", torch.ones(768)); self.register_buffer("seen", torch.tensor(0))
@@ -89,6 +89,8 @@ class MultGen99(MultGen):
         parts = [g.embed(prefix)] + ([g.embed(start)] if start is not None else []) + [g.embed(self.digtok[ops[:, 0]])[:, None]]
         x = torch.cat(parts, 1); past = None; losses, decs, ins = [], [], []; ans = None
         for j in range(c):
+            if self.markov:                                                 # §99 note 99-3: every slot step is a fresh-cache segment
+                past = None
             ctx = 0 if past is None else past[0][0].shape[2]
             h, past = g(x, past)
             if meter:
@@ -120,7 +122,10 @@ class MultGen99(MultGen):
                 elif step_len is not None and (decode == "all" or j == c - 1):
                     decs.append(self.fork_greedy(hslot, past, step_len[j], meter if (snap and j == c - 1) else meter_x))
             if j + 1 < c:
-                x = g.embed(self.digtok[ops[:, j + 1]])[:, None]
+                if self.markov:                                             # [operand prefix, slot j's latent, op j+1], positions from 0
+                    x = torch.cat([g.embed(prefix), ins[-1][:, None].to(g.embed(prefix).dtype), g.embed(self.digtok[ops[:, j + 1]])[:, None]], 1)
+                else:
+                    x = g.embed(self.digtok[ops[:, j + 1]])[:, None]
         loss = torch.stack(losses).mean() if losses else None
         return loss, decs, ans, torch.stack(ins, 1)
 
@@ -171,7 +176,7 @@ def main():
     sc = a.sched_scale; arm = a.arm99; elig = int(ARMS[arm] * sc)
     cfg = lambda s: config(arm, s / sc)  # noqa: E731
     if a.eval_only:                                                         # re-run the stop eval of a finished run from its model.pt
-        g = s5.load_gpt2(dev); m = MultGen99(g, "mask" if arm == "textfirst_mask" else "genm", std=arm in ("std", "combo")).to(dev)
+        g = s5.load_gpt2(dev); m = MultGen99(g, "mask" if arm == "textfirst_mask" else "genm", std=arm in ("std", "combo")).to(dev); m.markov = arm == "markov"
         m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev))
         recs = [json.loads(x) for x in open(os.path.join(a.out, "log.jsonl"))]; curve = [
             {"step": r["step"], "per_slot": r["per_slot"], "val_acc": r["val_acc"], "gold_share": r["gold_share"], "k_train": r["k_train"],
@@ -188,7 +193,7 @@ def main():
         finish(a, m, Dtr, Dte, dev, amp, arm, elig, hit, stop_step, curve, flops, None, recs[-1]["sec"]); return
     os.makedirs(a.out, exist_ok=True); json.dump({**vars(a), "eligible_from": ARMS[a.arm99]}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
     g = s5.load_gpt2(dev)
-    m = MultGen99(g, "mask" if arm == "textfirst_mask" else "genm", std=arm in ("std", "combo")).to(dev)
+    m = MultGen99(g, "mask" if arm == "textfirst_mask" else "genm", std=arm in ("std", "combo")).to(dev); m.markov = arm == "markov"
     opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
     log = open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t0 = time.time(); hist = []; curve = []; flops = 0.0; fcache = {}
     stop_step, hit = a.steps, None
