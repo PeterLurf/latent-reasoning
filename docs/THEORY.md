@@ -1675,6 +1675,29 @@ select by a **training-data-only** criterion.
     starting. Its AUC is reported next to train_handoff_err and final loss.
 * **Rules unchanged (REL per arm, SEL).** It is now 15 runs, about $22. The scorer is extended (arm `mk4_read`).
 
+**Note 111-2 (2026-10-04 16:05 EDT; §108 MK-4 s1–3 backfills by the experiments session; before any §111 result is read).**
+* **`train_handoff_err`** (20k training rows, 128-op rollouts, a snap every 4):
+
+  | seed | in-chunk error | cumulative at 128 |
+  |---|---|---|
+  | s1 | 1.6e-6 | 0.99985 |
+  | s2 | 0.991 | 0 |
+  | s3 | 1.36e-3 | 0.878 |
+
+  - Snap hand-offs: 0 errors in all three.
+  - **It ranks the seeds exactly as the test does**, supporting it as SEL's primary criterion.
+  - final_train_loss: 0.0 / 3.607 / 0.0034.
+* **fp32 re-evaluation of s3:** cumulative 0.875 / 0.770 / 0.59, pooled per-hand-off 0.99848, within noise of bf16.
+  **Numerics are not the cause** of s3's residual error.
+* **The registered early criterion (111-1) does not discriminate.** `early_escape` (the loss/null ratio < 0.9 in steps
+  2,001–3,000) is True for all three; the window minima are s1 0.44, **s2 0.74**, s3 0.83.
+  - At k = 2 with ρ ≈ 0.8, gold-fed segments are not exactly zero-loss early on, so the null is too small.
+  - It stays reported as registered (non-discriminating).
+* **Disclosed post-hoc secondary for §111's selection analysis**, designed after seeing these three seeds, so it is
+  descriptive only: the **model-relative null**, the same batch with carried latents zeroed (as §114 uses).
+  - The criterion is main loss / model-relative-null loss < 0.9 at the first log at or after k = 4 (6k).
+  - Its hit table is reported next to `train_handoff_err`'s AUC, but it is not a pre-registered criterion.
+
 ## 112. How small can the foothold be? A short-coverage dose-response for §110's self-training (pre-registered 2026-10-04 15:00 EDT, after Literature's check b1352c3e and before any implementation or run; Audit's steward idea)
 
 **Why.** §110 s3, whose short problems label 71.5 % of S5's transitions, is correct on **all** 14,400 k = 1
