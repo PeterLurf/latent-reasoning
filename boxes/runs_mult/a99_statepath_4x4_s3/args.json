@@ -1,0 +1,19 @@
+{
+ "arm99": "statepath",
+ "seed": 3,
+ "steps": 24000,
+ "bs": 64,
+ "lr": 0.0001,
+ "log_every": 1000,
+ "eval_bs": 100,
+ "val_n": null,
+ "test_n": null,
+ "train_limit": 0,
+ "sched_scale": 1.0,
+ "train_dir": "/workspace/Latent/bench/data/mult_train",
+ "final_eval_bs": 100,
+ "eval_only": false,
+ "device": "cuda:0",
+ "out": "boxes/runs_mult/a99_statepath_4x4_s3",
+ "eligible_from": 0
+}
