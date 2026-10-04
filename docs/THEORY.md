@@ -585,6 +585,12 @@ scored.
 * **Rule:** §99's (accelerates = median steps-to-threshold ≤ 0.5× CTRL's, with no-bypass removal), plus:
   - **descriptive H-starve:** MARKOV reaches threshold earlier than K-CURR (median steps), with per-slot curves;
   - if MARKOV is slower, or fails, the Pilot A prior holds here too.
+  - **If MARKOV does not reach threshold by 24k, the reading is "not acquired within budget"** (pre-declared; Audit),
+    not "the bottleneck cannot carry the state".
+* **Fork scope, stated (Audit (1)).** MARKOV's forks see only their own segment [a, slot j−1, op j, slot j]. P_j is
+  legitimately recomputable from a and b_j. S_j, the carried state, reaches the fork only through slot j−1, so there is
+  no recompute route for the hand-off.
+* MARKOV runs on 98-3's **fixed** code (one final fork), like all of §99 (99-2).
 * **Panel:** 8 arms × 3 seeds = 24 runs. The scorer is updated (arm `markov`).
 
 ## 100. Shorter silent stretches on multiplication: §98's recipe with a text snap every 2 steps (k = 2) (pre-registered 2026-10-03 23:54 EDT, after Literature's check 478cc193 and before any implementation or run; the user's request for an overnight plan, via Audit)
