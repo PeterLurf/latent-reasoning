@@ -590,3 +590,15 @@ to Audit. Run dirs `boxes/runs_mult/m100_{gen2,mask2}_{4x4,5x5}_s{1,2,3}`, with 
 committed before any run.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
+
+**Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
+2e559168, `theory/results/s94_step0/f94_*.json`; descriptive, availability only per 94-1).**
+* **STD-DEC-3× and STD-DEC-INV-3×, s6–10 (10 models):** letter → box and box → letter ≈ 1.000 / 1.000 at the final
+  latent, for "where" and "all". The minimum all-4 over all positions is ≥ 0.998 in all 10.
+* **FADE-STD-3× (no step decoder):**
+  - s6: 1.000 / 1.000;
+  - s7: 0.36 / 0.03;
+  - s8: 0.25 / 0.01, chance-level availability on both question types.
+* **Reading.** With the step decoder, the state is linearly available in every seed. Without it, availability is
+  seed-dependent (1/3), and that tracks the no-decoder arm's behaviour (s6 is the one seed that answers both types).
+  - This supports keeping the side step decoder in the §97 recipe.
