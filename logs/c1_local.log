@@ -385,3 +385,4 @@
 05:36:24 m98_coco_4x4_s3 STOPPED at step 23,700 (aborted unread): 4060 deadlock in WDDM fallback with Theory's §104 (C1); run dir and log kept *.void_contention; requeue on Vast
 05:46:47 §104 done: holds released; COCO 4x4 s3 (restart) + 5x5 s3 run locally via scratch/c1_q_98coco_c.txt (cuda:0 now; cuda:1 after its s2); gen_q_r5 (Vast) not deployed
 10:28:16 m98_coco_5x5_s2 rc 0 (cuda:1)
+10:33:43 queued scratch/c1_q_110b_local.txt (§110b s4, s5) on cuda:0 after its COCO queue, cuda:1 after its COCO queue
