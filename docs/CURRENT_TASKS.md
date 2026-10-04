@@ -20,7 +20,7 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 Messages go through SendMessage. The names "Theory" and "Audit" currently need an identity confirm, pending the user,
 so send to the pipe addresses their messages come from.
 
-## Running now (02:05 2026-10-04; credit $167 after the user's top-up)
+## Running now (04:00 2026-10-04; credit about $163; Audit: up to ~14 live overnight, one proof host per new code path)
 
 **Note 98-3 (Theory, 2026-10-03 ~23:40):** mult98's GEN-M/MASK had two forks at the final slot sharing a first token,
 so the last step and the answer failed by construction. Fixed (one final fork, step text ++ " #### product"). The guard
@@ -32,7 +32,7 @@ and §99 runs are voided (`*.void_forkconflict`, kept); their hosts were aborted
 
 | Tag | Instance | ssh (`-i ~/.ssh/runpod_ed25519 root@…`) | Work |
 |---|---|---|---|
-| y5 | 54073316 | `-p 22815 142.113.28.123` | §98 TC-M + NC-M x12 (unaffected by 98-3) |
+| y5 | 54073316 | `-p 22815 142.113.28.123` | §98 TC-M + NC-M x12 (unaffected by 98-3); tc_5x5_s1 eval OOM'd, `scratch/finish_evals.sh` re-runs it at QUEUE_DONE then drains |
 | r3 | 54110367 | `-p 42018 109.173.238.203` | §98 rerun MASK 4x4 s1-3 (gen4; eval without OOM fallback) |
 | r4 | 54110967 | `-p 40974 77.48.24.153` | §98 rerun MASK 5x5 s1-3 |
 | u3 | 54110971 | `-p 40042 96.20.36.104` | §100 MASK2 4x4 s1-3 (k = 2) |
@@ -41,7 +41,11 @@ and §99 runs are voided (`*.void_forkconflict`, kept); their hosts were aborted
 | m2 | 54111472 | `-p 41152 77.48.24.153` | §99 ctrl s1-3 |
 | m3 | 54111478 | `-p 33615 136.59.129.136` | §99 kcurr s1-3 |
 | f1 | 54111560 | `-p 9195 136.36.139.116` | §105 gen97 GEN-4 --fork mask s1-3 (keep model.pt; Theory runs s104_serial) |
-| s1 | deploying | | §101 proof: snap101 beta_min 0 s1-3, P2 |
+| s1 | 54111926 | `-p 6412 142.127.68.223` | §101 b0 s2 only (s1/s3 OOM'd at P2 before --micro; logs kept) |
+| s2 | 54122048 | `-p 42390 167.179.138.57` | §101 micro proof: b0 s1/s3, then b1 s1/s2 (P2) |
+| t1 | 54122055 | `-p 40071 96.20.36.104` | §103 self103, 3 seeds in lockstep -> boxes/runs_s5/s103/s103_s* (move to boxes/runs_s5/ on fetch) |
+| p1 | 54122094 | `-p 11776 142.127.68.223` | §106 pilot GEN-S-MASK s1-3 |
+| m10 | 54122096 | `-p 42075 167.179.138.57` | §107 lat2 s1-3 |
 
 **Queued, not yet deployed** (deploy as hosts drain; keep <= ~10 live). In order:
 1. §101 (C6): `gen_q_s2..s4` via `scratch/gen_deploy_101.sh`, P2 with --micro 2.
@@ -52,7 +56,8 @@ and §99 runs are voided (`*.void_forkconflict`, kept); their hosts were aborted
 
 ### Local PC (torch `cuda:0` = 4060, `cuda:1` = 3070, `cuda:2` = 2070)
 
-* 4060 and 3070: §98 COCO reruns (`scratch/c1_q_98coco.txt`, --micro 4). Theory may run §104 (`theory/s104_serial.py`) on the 4060.
+* 4060: COCO 4x4 s3 finishing; then free for Theory's §104 (C1). COCO 5x5 s2/s3 are HELD (lock dirs in `c1/runs/locks/`); release (rmdir) and start `py_local_worker2.sh` after §104.
+* 3070: COCO 5x5 s1.
 * 2070: §83 extras (fp32).
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
