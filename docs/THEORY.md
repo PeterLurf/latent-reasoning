@@ -18,12 +18,14 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 * **Latent restarts in GPT-2 (§86, §92).**
   - S5 carried in latent slots: exact to 2,048 from training at 128 (k = 4, 5/5), and certified at every length
     (k = 1, 0 / 14,400 errors).
-  - Removal ≈ 0, at 0.29–0.45× the written state's compute. C1 + C2 + C3 + C6, scaffolded.
+  - Removal ≈ 0, at 0.29–0.45× the written state's compute. C2 + C3 + C6, scaffolded.
+  - **C1 by donor patching (§104): slot-only serial use in 2/5 seeds**, with the slot and op tokens jointly in 3/5.
 * **General latent thinker (§97).** No hand-built state: a text step target through the LM head, plus re-embedded text
   checkpoints.
   - S5 exact to 2,048 (3/3), at 0.56× the written state's compute (0.61× with restricted vocabulary).
   - Checkpoint edit IIA 1.0.
-  - C1 qualified: partial in-pass recomputation under mean ablation.
+  - **C1 not supported (§104):** donor latents are ignored and the state is recomputed from visible ops (recipient-
+    consistent up to 1.0). HYB-4 s5 keeps 1.000 under mean ablation (97-3). C6 met 5/5.
   - C6 seeds are running. **§98** (the same recipe on 4×4 / 5×5 multiplication, against ICoT-SI 0.998 / 0.996,
     Coconut and text CoT) is running.
 * **C4 (§93, §95, §96).**
