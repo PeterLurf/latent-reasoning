@@ -1,0 +1,9 @@
+{
+ "seed": 3,
+ "labelled_share": 0.7149305555555555,
+ "acc_labelled": 1.0,
+ "acc_unlabelled": 1.0,
+ "acc_all": 1.0,
+ "n_unlabelled_wrong": 0,
+ "n_labelled_wrong": 0
+}
