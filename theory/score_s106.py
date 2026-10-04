@@ -16,6 +16,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ARMS = {"GEN-S": "gens", "GEN-S-MASK": "gens_mask", "WC-S": "wcs", "TC-S": "tcs", "GEN-S-MASK-k2": "gens_mask_k2", "WC-S-k2": "wcs_k2"}
 
 
+def _rem_ok(rem):
+    return rem is not None and rem["zero"]["acc_b8"] <= 0.05 and rem["mean"]["acc_b8"] <= 0.05
+
+
 def main():
     res = {"arms": {}}
     for name, tag in ARMS.items():
@@ -32,10 +36,10 @@ def main():
         print("%-11s n %d C2-S %s seeds %s | acc_by_b %s" % (name, len(runs), A["C2_S"], c2, A["acc_by_b"]))
     for mk, wk in (("GEN-S-MASK-k2", "WC-S-k2"),):
         mm = res["arms"][mk]
-        res["C1_S_" + mk] = mm["C2_S"] and all(mm["removal_b8"][s]["zero"]["acc_b8"] <= 0.05 and mm["removal_b8"][s]["mean"]["acc_b8"] <= 0.05 for s in mm["c2_seeds"])
+        res["C1_S_" + mk] = mm["C2_S"] and all(_rem_ok(mm["removal_b8"][s]) for s in mm["c2_seeds"])
         res["attribution_format_plus_cut_" + wk] = res["arms"][wk]["C2_S"]
     m = res["arms"]["GEN-S-MASK"]
-    res["C1_S"] = m["C2_S"] and all(m["removal_b8"][s]["zero"]["acc_b8"] <= 0.05 and m["removal_b8"][s]["mean"]["acc_b8"] <= 0.05 for s in m["c2_seeds"])
+    res["C1_S"] = m["C2_S"] and all(_rem_ok(m["removal_b8"][s]) for s in m["c2_seeds"])
     res["attribution_format_plus_cut"] = res["arms"]["WC-S"]["C2_S"]
     print("C1-S", res["C1_S"], "| WC-S extrapolates (format + cut)", res["attribution_format_plus_cut"])
     json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s106.json"), "w", newline="\n"), indent=1, default=float)
