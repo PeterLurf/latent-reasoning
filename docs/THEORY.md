@@ -441,6 +441,32 @@ fork mask, Coconut and TC from the GSM8K pipelines, and an ICoT-SI checkpoint lo
   - MASK gives each fork only its slot's cached K/V (all layers) plus its own tokens, with true positions;
   - NC-M: "a * b||" → " #### product". TC-M: "a * b||" → the full CoT + " #### product".
 
+**Note 98-3 (2026-10-04 23:58 EDT, before any §98 scoring; Theory's diagnostic read, disclosed below).**
+* **An implementation conflict voids the GEN-M and GEN-M-MASK runs for M1 and M-C1.**
+  - In `boxes/mult98.py` `chunk()`, at the final chunk's last slot, the step-n fork (target "+ P_n", first token " +") and
+    the answer fork (target " #### <product>", first token " ####") both start from the **identical** state. Both
+    first-token predictions come from `logits(hslot)`. One hidden state is trained toward two different first tokens,
+    and greedy decoding can produce at most one, so the last slot and the answer fail by construction.
+  - The registration's "after the last slot, fork and teacher-force ' #### <product>'" was ambiguous; this is where it
+    went wrong.
+  - **Evidence:** GEN-M 4×4 s1–3 last-slot decode is 0.007 / 0.0 / 0.007 and answer accuracy 0.006, while slot 3 is
+    0.92 / 0.95 / 0.37. The last slot's target (a × b_4, shifted) is as recomputable as slot 1's P_1, which decodes at
+    1.0.
+  - TC-M, NC-M, COCO-M and ICoT-SI do not use this path and are unaffected.
+* **Fix (the dataset's own format):** at the final slot, **one fork** whose target is the last step text followed by
+  " #### <product>" ("+ P_n #### product"), with CE over the concatenation and no separate answer fork.
+  - At eval, greedy-decode len(step_n) + len(answer) tokens. The last slot's decode is the first len(step_n) tokens; the
+    answer is the digits after " ####".
+  - The same applies to MASK and to 5×5's final single-op chunk.
+* **Reruns (part of §98, no new registration):** GEN-M and GEN-M-MASK, both tasks, seeds 1–3, §98's budget, on the fixed
+  code. Rules, comparators and the 98-1 follow-up are unchanged.
+  - The voided runs' slot curves and removal values are kept as descriptive.
+  - They are renamed `*.void_forkconflict`, not deleted.
+* **Disclosure.** Theory read the voided GEN-M 4×4 eval.json (per-slot decode and removal) as a descriptive diagnostic of
+  the slot-3 wall, after §98's rules were fixed. That read surfaced the conflict.
+  - Also descriptive: under mean ablation, slot 2 still decodes at 0.79–0.99 (slot 1 at 0.17–0.65). S_2 is largely
+    recomputed from the visible operands, so on multiplication **the first true latent hand-off is at slot 3**.
+
 ## 99. Speeding up the latent hand-off: k-curriculum, standardised slot inputs, a text-first stage, and their combination (pre-registered 2026-10-03 21:27 EDT, after Literature's check cfeea0b8 and before any implementation or run; the user's directive via Audit, ~21:20, to run in parallel with §98)
 
 **Why.** §98's GEN-M training logs (training-time only, unscored) show the §86 staircase on multiplication. The first slots
@@ -528,6 +554,11 @@ At the stopping checkpoint, on the 1,000 bench test items:
 * **Panel and cost:** 7 arms × 3 seeds = 21 runs, about $6–10. The rule, readings and no-bypass condition are as §99. The
   scorer is updated in the same commit (arms `tfslot`, `textfirst_mask`).
 
+**Note 99-2 (2026-10-04 23:58 EDT, before any §99 scoring).** §99's arms import mult98's GEN-M, so they carry 98-3's
+final-fork conflict. Their stop criterion (answer ≥ 0.95) cannot be met. §99 runs on the fixed code, with the same
+arms, seeds, rules and eligibility (99-1). Runs started on the old code are renamed `*.void_forkconflict`, kept, and not
+scored.
+
 ## 100. Shorter silent stretches on multiplication: §98's recipe with a text snap every 2 steps (k = 2) (pre-registered 2026-10-03 23:54 EDT, after Literature's check 478cc193 and before any implementation or run; the user's request for an overnight plan, via Audit)
 
 **Why.** On multiplication the first latent hand-off is learned and the second is the wall. §98's and §99's training logs
@@ -588,6 +619,9 @@ At the stopping checkpoint, on the 1,000 bench test items:
 **Placement.** 12 runs (2 arms × 2 tasks × 3 seeds), Vast (proof host first, ≤ 5) or local cards, about $8–12. Projection
 to Audit. Run dirs `boxes/runs_mult/m100_{gen2,mask2}_{4x4,5x5}_s{1,2,3}`, with §98's eval.json keys. The scorer is
 committed before any run.
+
+**Note 100-1 (2026-10-04 23:58 EDT, before any §100 run).** §100 runs only on mult98 with 98-3's fix (one final fork
+"+ P_n #### product").
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
