@@ -213,6 +213,20 @@ def donor(m, dev, amp, n=2000, bs=200, seed=11401, same_a=False):
     return res
 
 
+@torch.no_grad()
+def rel_final(m, Dtr, dev, amp, n_batches=20, bs=64, seed=11402):
+    """Note 114-3: at the final model (test r), mean main loss / mean loss with the carried latents permuted across rows
+    (rel_ratio_final_shuffled; no-read flag >= 0.5) and with them zeroed (rel_ratio_final), on n_batches training chunks of 4."""
+    rng = np.random.default_rng(seed); l1 = l0 = ls = 0.0; m.u = None
+    for _ in range(n_batches):
+        prefix, start, ops, st, ans = latent_batch(Dtr, rng, bs, dev, 4); m.perm = torch.from_numpy(rng.permutation(ops.shape[0])).to(dev)
+        with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+            l1 += float(m.chunk(prefix, start, ops, step_tgt=st, ans_tgt=ans)[0]); l0 += float(m.chunk(prefix, start, ops, step_tgt=st, ans_tgt=ans, ablate="zero")[0])
+            ls += float(m.chunk(prefix, start, ops, step_tgt=st, ans_tgt=ans, ablate="shuffle")[0])
+    return {"rel_ratio_final_shuffled": l1 / max(1e-9, ls), "rel_ratio_final": l1 / max(1e-9, l0), "no_read_final": bool(l1 / max(1e-9, ls) >= 0.5),
+            "main_loss": l1 / n_batches, "shuffled_loss": ls / n_batches, "zeroed_loss": l0 / n_batches, "n_batches": n_batches, "bs": bs}
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--arm", required=True, choices=["loopr", "loop1"]); ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--steps", type=int, default=24000); ap.add_argument("--bs", type=int, default=64); ap.add_argument("--lr", type=float, default=1e-4)
@@ -222,6 +236,7 @@ def main():
     ap.add_argument("--val_n", type=int, default=None, help="smoke only"); ap.add_argument("--test_n", type=int, default=None, help="smoke only")
     ap.add_argument("--train_limit", type=int, default=0, help="smoke only"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smoke only")
     ap.add_argument("--train_dir", default=os.path.join(ROOT, "bench", "data", "mult_train"))
+    ap.add_argument("--rel_only", action="store_true", help="note 114-3 backfill: add rel_final to <out>/eval.json from <out>/model.pt")
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); t_start = time.time()
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
@@ -230,6 +245,11 @@ def main():
     Dte = load(os.path.join(ROOT, "bench", "data", "mult_4x4_test.txt"), limit=a.test_n)
     sc = a.sched_scale; elig = int(ARMS["markov"] * sc); cfg = lambda s: config("markov", s / sc)  # noqa: E731
     test_r = a.test_r or (a.r_max if a.arm == "loopr" else 1)
+    if a.rel_only:
+        m = Loop114(s5.load_gpt2(dev)).to(dev); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval(); m.r = test_r
+        ep = os.path.join(a.out, "eval.json"); res = json.load(open(ep)); res["rel_final"] = rel_final(m, Dtr, dev, amp)
+        res["rel_ratio_final_shuffled"] = res["rel_final"]["rel_ratio_final_shuffled"]; res["no_read_final"] = res["rel_final"]["no_read_final"]
+        json.dump(res, open(ep, "w", newline="\n"), indent=1); print("REL", json.dumps(res["rel_final"]), flush=True); return
     os.makedirs(a.out, exist_ok=True); json.dump({**vars(a), "eligible_from": elig, "test_r_used": test_r}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
     m = Loop114(s5.load_gpt2(dev)).to(dev); opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
     log = open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t0 = time.time(); hist = []; curve = []; ratios = []; flops = 0.0
@@ -292,6 +312,8 @@ def main():
     res["ratio_at_6k"] = None if first6 is None else first6[1]; res["no_read"] = None if first6 is None else bool(first6[1] >= 0.9)
     for ab in ("zero", "mean"):
         _, o_, _ = rollout_safe(m, Dte, dev, amp, bs, ablate=ab, mean_in=mu); res["removal"][ab] = {"answer_acc": float(o_.mean())}
+    res["rel_final"] = rel_final(m, Dtr, dev, amp); m.r = test_r
+    res["rel_ratio_final_shuffled"] = res["rel_final"]["rel_ratio_final_shuffled"]; res["no_read_final"] = res["rel_final"]["no_read_final"]
     res["donor"] = donor(m, dev, amp, n=a.donor_n, bs=bs); res["donor_same_a"] = donor(m, dev, amp, n=a.donor_n, bs=bs, same_a=True)
     res["acc_by_r"] = {}
     for r in [int(x) for x in a.acc_r.split(",")]:
