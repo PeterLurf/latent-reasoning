@@ -168,7 +168,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 106 | C2 on a real task: bounded streaming multiplication (latent vs the written format) | written format + cut extrapolates 1.000 to b = 32 (WC-S-k2 3/3); masked latent arm fails even at k = 2 (106-4) | closed |
 | 107 | Multiplication's blocker: carrier width (m latents) vs compute (pause), carriage forced | registered | **open** |
 | 108 | Forced latent carriage on S5 (Markov segments, sink fix, TF bootstrap; donor-scored) | registered | **open** |
-| 110 | Self-training v2: independent seeds, label-free gate, masked fork (C4 + C1) | design error (110-1): the restart gate needs non-identity restarts; s1–3 for the record | closing |
+| 110 | Self-training v2: independent seeds, label-free gate, masked fork (C4 + C1) | SELF2 2/5, C1 1/5 (s3: C4 + C1 + C2 in one seed, certified k = 1); STUDENT triggered | **open** (STUDENT) |
 | 110b | Self-training v2 corrected: identity-start shorts plus random textual starts for length ≥ 3 | stopped after a clear null: loss at chance from random starts (110b-2) | closed |
 | 111 | Reliability of the Markov hand-off: 2× budget vs DAgger-style own-state training; best-of-n | registered | **open** |
 | 112 | Short-coverage dose-response for self-training (f = 0.5 / 0.25 / 0.1; never-labelled k = 1 accuracy) | registered | **open** |
@@ -2034,3 +2034,28 @@ targets, constrain them.
 * The correct statement: "**transitions learned from long-problem final answers, given a partial (71.5 %) short
   foothold**". That is a C4-direction result.
 * It is **not** held-out-pair generalisation in the §76(B) / grokking sense, where held-out entries get no signal at all.
+
+**§110 result (2026-10-04 18:30 EDT; 5 seeds, run by the experiments session (s1–3 e394f62d, s4–5 de1c71bc); scored by
+Theory alone with `theory/score_s110.py`, committed before any run; `theory/results/score_s110.json`). SELF2, C1 and C6
+are not met. The STUDENT trigger fires.**
+
+| seed | cumulative 512 / 2,048 | donor / recipient (slots 1 / 2 / 3) | reading |
+|---|---|---|---|
+| s1 | 0.9505 / 0.826 | 0.011 / **1.0**; 0.009 / 0.083; 0.012 / 0.069 | slot-1 bypass |
+| s2 | 0 / 0 | chance | never acquired (gate ≈ 0) |
+| **s3** | **0.999 / 0.994** | **0.962 / 0.983 / 0.968** donor; recipient ≈ 0.01 | **C4 (qualified) + C1 + C2** |
+| s4 | 0 / 0 | chance | never acquired (gate ≈ 0) |
+| s5 | **0.9915** / 0.954 | 0.013 / **0.432**; slots 2–3 neither | partial bypass |
+
+* **SELF2 is 2/5** (s3, s5; needs ≥ 4/5). **C1 is 1/5** (s3). **C6 at 2,048 is 1/5** (s3). Median at 512 is 0.9505,
+  range 0–0.999.
+* **The STUDENT arm triggers** (SELF2 fails; 3/5 seeds reach ≥ 0.90 at 512). As registered, every seed's final pool
+  trains a fresh GEN-4-MASK model, 5 students.
+  - s2 and s4 kept almost nothing, so their students get essentially final-only targets, and STUDENT can reach at most
+    3/5.
+  - The informative comparison is student against teacher on s1, s3 and s5.
+* **Reading.** Self-training by length with a masked fork gives, in **one seed (s3)**, C4 (≤ 5 % identity-start shorts
+  covering 71.5 % of transitions) + C1 (donor, every slot, including slot 1) + C2 to 2,048. Its k = 1 system is
+  certified on all 14,400 transitions (110-5).
+  - Reliability is the gap: two seeds never acquire, and two acquire with a slot-1 bypass.
+  - That is the same no-read and bypass family as §108. §113 (READ inside self-training) is conditional on §111.
