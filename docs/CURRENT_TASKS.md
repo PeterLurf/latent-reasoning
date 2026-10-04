@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-04 09:55 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-04 11:45 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -31,30 +31,24 @@ kept as `*.void_forkconflict`.
 
 | Tag | Instance | ssh (`-i ~/.ssh/runpod_ed25519 root@…`) | Work |
 |---|---|---|---|
-| u4 | 54110975 | `-p 41232 83.27.30.232` | §100 MASK2 5x5 s1-3 |
 | s2 | 54122048 | `-p 42390 167.179.138.57` | §101 micro proof: b0 s1/s3, then b1 s1/s2 |
-| r1 | 54130307 | `-p 50171 137.175.22.196` | §98 GEN-M 4x4 s1-3 (s1 restarted by hand) |
-| m8 | 54134511 | `-p 27762 149.200.35.231` | §99 tfslot s1-3 (C1) |
-| m5 | 54138455 | `-p 20154 151.237.25.16` | §99 std s1-3 (donor100 evals done; /workspace/d100 is scratch) |
-| m6 | 54138463 | `-p 47253 86.123.234.69` | §99 textfirst s1-3 |
 | k5 | 54148202 | `-p 40471 142.198.191.106` | §108 MK-4 s1-3 rerun (mk108 checkpoints every 2k; resume fix copied) |
 | e1 | 54151372 | `-p 40051 96.20.36.104` | §110 s1-3 for the record (note 110-1); s1/s3 resumed by hand at 4960 after an OOM (manual python jobs hold the drain) |
 | m7 | 54152770 | `-p 6946 142.127.68.223` | §99 textfirst_mask s1-3 |
 | m9 | 54152775 | `-p 28568 149.200.35.231` | §99 combo s1-3 |
 | m11 | 54153333 | `-p 23005 5.2.174.20` | §107 lat4 s1-3 |
 | m12 | 54153339 | `-p 16997 89.221.67.137` | §107 pause4 s1-3 |
-| e3 | 54155841 | `-p 42034 167.179.138.57` | §110b s1-3 (proof; s4-5 = `gen_q_e4` after) |
 
 **Queued, not yet deployed** (a second host of an experiment only after its first host's first eval.json and drain):
-1. §108 k2-k4 (`gen_q_k2..k4`, `gen_deploy_108.sh`) after k5.
-2. §110b s4-5 (`gen_q_e4`, `gen_deploy_110.sh`) after e3. (§110 s4-5, `gen_q_e2`: not run, note 110-1.)
+1. §108 k3-k4 (`gen_q_k3..k4`, `gen_deploy_108.sh`) after k5 (k2's MK-4 s4/s5 run locally).
+2. §110b: stopped after a clear null (note 110b-2); e4 not run. §110 s4-5 (`gen_q_e2`): not run (note 110-1).
 3. §101 `gen_q_s3/s4` after s2.
 * Watchers don't detect host reboots: check uptime on the C1 hosts each pass.
 
 ### Local PC (torch `cuda:0` = 4060, `cuda:1` = 3070, `cuda:2` = 2070)
 
-* 4060: COCO 4x4 s3 (restart), then §110b s4/s5 (`scratch/c1_q_110b_local.txt`, chained worker).
-* 3070: COCO 5x5 s3, then §110b s4/s5 (same queue; lock dirs pick).
+* 4060: §108 MK-4 s4 (`scratch/c1_q_108_local.txt`).
+* 3070: COCO 5x5 s3, then §108 MK-4 s5 (same queue, chained worker).
 * 2070: §83 extras (fp32).
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
