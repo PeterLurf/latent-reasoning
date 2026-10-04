@@ -155,7 +155,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 96 | Amortised self-labels from a final-answer teacher | P1, P2 met: 4/5 certified at p 0.05; labels 1.000; pipeline C4 (qualified) | closed |
 | 97 | General latent thinker, step 1 | G4 met 3/3; C6 met 5/5; but mean ablation leaves HYB-4 s5 at 1.000 (fork bypass; C1 qualified) | closed (C1 → §104/§105) |
 | 98 | Step 2a: multiplication vs ICoT-SI, Coconut, text CoT | not met at either size (GEN-M 0.163 / 0.005; TC 1.0; ICoT-SI 0.998 / 0.996); the k = 4 hand-off wall | closed |
-| 99 | Speeding up the latent hand-off (k-curriculum, standardised slots, text-first, combo) | on fixed code (99-2) | **open** |
+| 99 | Speeding up the latent hand-off (k-curriculum, standardised slots, text-first, combo) | no arm accelerates (all censored; best partials TF-SLOT 0.37, STD 0.42) | closed |
 | 100 | Shorter silent stretches: multiplication at k = 2 (GEN2, MASK2) | 4×4: M1, SOTA (1.000 vs 0.998), C3 (0.89×) met, C1 not; 5×5: not met (GEN2 0.09) | closed |
 | 101 | Snap-strength dose-response (β_min 1 / 0.1 / 0.01 / 0) on S5 | registered | **open** |
 | 102 | State in depth: gated slot-to-slot residual path (4×4, in §99's harness) | does not accelerate (all censored; test 0.01–0.17) | closed |
@@ -673,6 +673,33 @@ scored.
   no recompute route for the hand-off.
 * MARKOV runs on 98-3's **fixed** code (one final fork), like all of §99 (99-2).
 * **Panel:** 8 arms × 3 seeds = 24 runs. The scorer is updated (arm `markov`).
+
+**§99 result (2026-10-04 13:35 EDT; all arms run on the fixed code (98-3) by the experiments session; scored by Theory alone
+with `theory/score_s99.py`, committed before any run; `theory/results/score_s99.json`). No arm accelerates.**
+
+| arm (4×4, seeds 1–3) | steps-to-threshold | test accuracy | removal (zero / mean) |
+|---|---|---|---|
+| CTRL | censored ×3 | 0.163 / 0.143 / 0.184 | 0 / ≤ 0.012 |
+| K-CURR | censored ×3 | 0.048 / 0.118 / 0.074 | 0 / 0 |
+| STD | censored ×3 | 0.031 / 0.029 / 0.421 | 0 / ≤ 0.007 |
+| TEXT-FIRST | censored ×3 | 0.011 / 0.007 / 0.070 | 0 / ≤ 0.010 |
+| TEXTFIRST-MASK | censored ×3 | 0.020 / 0.020 / 0.034 | 0 / ≤ 0.006 |
+| TF-SLOT | censored ×3 | 0.049 / 0.247 / 0.369 | 0 / 0 |
+| COMBO | censored ×3 | 0.011 / 0.014 / 0.004 | 0 / ≤ 0.001 |
+| MARKOV (99-3) | censored ×3 | 0.047 / 0.041 / 0.020 | 0 / 0 |
+| STATEPATH (§102) | censored ×3 | 0.170 / 0.032 / 0.013 | 0 / ≤ 0.007 |
+
+* **Reading ("none accelerates"):** none of these levers makes multiplication's latent hand-off learnable within 24k at
+  k = 4. Removal is at the floor everywhere, so there is no bypass, but also no carriage.
+  - **H-starve (descriptive) is not supported:** MARKOV is not faster than K-CURR.
+  - The best partial results are TF-SLOT (one seed 0.37) and STD s3 (0.42).
+* **Implementation details recorded (the experiments session):**
+  - TF-SLOT's coin is per position per batch, and replaced slots skip their fork CE;
+  - the cosine LR runs over the full 24k cap;
+  - STD's statistics come from the latent phase only;
+  - removal acts on the fed input.
+* **What followed:** §107 (width vs compute, running), §105 / §108 / §111 (forced carriage on S5), and Audit's
+  no-read-basin diagnosis (111-1), which explains why chunk-start text lets the reader never learn.
 
 ## 100. Shorter silent stretches on multiplication: §98's recipe with a text snap every 2 steps (k = 2) (pre-registered 2026-10-03 23:54 EDT, after Literature's check 478cc193 and before any implementation or run; the user's request for an overnight plan, via Audit)
 
