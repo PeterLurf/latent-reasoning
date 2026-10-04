@@ -386,3 +386,5 @@
 05:46:47 §104 done: holds released; COCO 4x4 s3 (restart) + 5x5 s3 run locally via scratch/c1_q_98coco_c.txt (cuda:0 now; cuda:1 after its s2); gen_q_r5 (Vast) not deployed
 10:28:16 m98_coco_5x5_s2 rc 0 (cuda:1)
 10:33:43 queued scratch/c1_q_110b_local.txt (§110b s4, s5) on cuda:0 after its COCO queue, cuda:1 after its COCO queue
+10:56:42 m98_coco_4x4_s3 rc 0 (cuda:0)
+10:56:42 WORKER_DONE cuda:0 scratch/c1_q_98coco_c.txt
