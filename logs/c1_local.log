@@ -400,3 +400,8 @@
 15:52:09 WORKER_DONE cuda:1 scratch/c1_q_110b_local.txt
 15:52:52 WORKER_DONE cuda:1 scratch/c1_q_108_local.txt
 15:53:58 cuda:1: §108 MK-4 s4 --backfill, then §112 f010 s21 (scratch/c1_q_112_local.txt)
+16:22:35 s108_mk4_s4 backfill rc 0 (cuda:1)
+19:16:08 s83 wc0k4r_s3_ext rc 0 (cuda:2 --fp32 --bs 64)
+19:16:08 S83_LOCAL_DONE cuda:2
+19:16:45 s108_mk4_s5 rc 0 (cuda:0)
+19:16:46 WORKER_DONE cuda:0 scratch/c1_q_108_local.txt

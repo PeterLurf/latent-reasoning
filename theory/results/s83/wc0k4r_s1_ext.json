@@ -1,0 +1,129 @@
+{
+ "tau": 0.8313901424407959,
+ "calibration": {
+  "n_states": 49500,
+  "in_range_acc": 0.9920808080808081,
+  "taus": {
+   "0.001": 0.5385701656341553,
+   "0.01": 0.8313901424407959,
+   "0.05": 0.9990249276161194
+  },
+  "conf_ok_p1_p50": [
+   0.8496431130170822,
+   0.999998927116394
+  ]
+ },
+ "amp": "None",
+ "run": "boxes/runs_s5/wc0k4r_s1",
+ "adaptive": {
+  "cum": {
+   "128": 0.0,
+   "256": 0.0,
+   "512": 0.0
+  },
+  "final_state": 0.009,
+  "mean_accepted": 3.293907236624131,
+  "accepted_hist": [
+   0,
+   1362,
+   9652,
+   210702,
+   75538,
+   12681,
+   923,
+   19,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "generated_states_per_problem": 939.908,
+  "detection": {
+   "wrong_flagged": 6322,
+   "wrong": 9047,
+   "right_flagged": 229,
+   "right": 27565,
+   "fallbacks": 42
+  }
+ },
+ "fixed_k4": {
+  "cum": {
+   "128": 1.0,
+   "256": 1.0,
+   "512": 1.0
+  }
+ },
+ "fixed_k8": {
+  "cum": {
+   "128": 0.0,
+   "256": 0.0,
+   "512": 0.0
+  }
+ },
+ "fixed_k16": {
+  "cum": {
+   "128": 0.0,
+   "256": 0.0,
+   "512": 0.0
+  }
+ },
+ "risk_coverage": {
+  "0.001": {
+   "tau": 0.5385701656341553,
+   "cum512": 0.0,
+   "mean_accepted": 4.282082162451492,
+   "detection": {
+    "wrong_flagged": 313,
+    "wrong": 1153,
+    "right_flagged": 4,
+    "right": 3438,
+    "fallbacks": 6
+   }
+  },
+  "0.01": {
+   "tau": 0.8313901424407959,
+   "cum512": 0.0,
+   "mean_accepted": 3.292689201008386,
+   "detection": {
+    "wrong_flagged": 1589,
+    "wrong": 2280,
+    "right_flagged": 55,
+    "right": 6914,
+    "fallbacks": 14
+   }
+  },
+  "0.05": {
+   "tau": 0.9990249276161194,
+   "cum512": 0.432,
+   "mean_accepted": 2.741721286895429,
+   "detection": {
+    "wrong_flagged": 55042,
+    "wrong": 55329,
+    "right_flagged": 14594,
+    "right": 206508,
+    "fallbacks": 78
+   }
+  }
+ },
+ "adaptive_2048": {
+  "cum": {
+   "512": 0.0,
+   "1024": 0.0,
+   "2048": 0.0
+  },
+  "mean_accepted": 3.2912393251673744
+ },
+ "sec": 19981.2,
+ "detection": {
+  "wrong_flagged": 6322,
+  "wrong": 9047,
+  "right_flagged": 229,
+  "right": 27565,
+  "fallbacks": 42
+ }
+}

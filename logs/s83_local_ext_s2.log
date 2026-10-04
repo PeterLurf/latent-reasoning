@@ -1,0 +1,7 @@
+[W1004 04:46:14.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 85983232 bytes (free: 0, total: 8589606912).
+[W1004 04:46:14.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 92274688 bytes (free: 0, total: 8589606912).
+[W1004 04:46:14.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 96468992 bytes (free: 0, total: 8589606912).
+[W1004 04:46:14.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 98566144 bytes (free: 0, total: 8589606912).
+calibrated tau 0.9747380614280701 {'n_states': 49500, 'in_range_acc': 0.9164848484848485, 'taus': {'0.001': 0.5820869207382202, '0.01': 0.9747380614280701, '0.05': 0.9999491572380066}, 'conf_ok_p1_p50': [0.9794934391975403, 0.9999992847442627]} 48 s
+adaptive 512 done 0.0 mean accepted 2.3028727437919136 {'wrong_flagged': 21428, 'wrong': 23860, 'right_flagged': 5894, 'right': 59093, 'fallbacks': 47928} 8333 s
+{"tau": 0.9747380614280701, "adaptive": {"128": 0.0075, "256": 0.0, "512": 0.0}, "mean_acc": 2.3028727437919136, "fixed": {"4": 1.0, "8": 0.0, "16": 0.0}, "det": {"wrong_flagged": 21428, "wrong": 23860, "right_flagged": 5894, "right": 59093, "fallbacks": 47928}}
