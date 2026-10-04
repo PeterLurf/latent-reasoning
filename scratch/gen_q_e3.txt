@@ -1,0 +1,5 @@
+# §110b self-training v2 corrected (random given starts for length >= 3; note 110-1): proof host s1-3
+# P=3
+boxes/runs_s5/s110b_s1 boxes.self110 --random_start --seed 1
+boxes/runs_s5/s110b_s2 boxes.self110 --random_start --seed 2
+boxes/runs_s5/s110b_s3 boxes.self110 --random_start --seed 3

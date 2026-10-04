@@ -1,0 +1,4 @@
+# §110b: s4-5 (after e3's proof)
+# P=2
+boxes/runs_s5/s110b_s4 boxes.self110 --random_start --seed 4
+boxes/runs_s5/s110b_s5 boxes.self110 --random_start --seed 5

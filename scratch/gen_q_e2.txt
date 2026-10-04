@@ -1,4 +1,4 @@
-# §110 self-training v2: s4-5 (after e1's proof)
+# §110 s4-5: NOT RUN (note 110-1, Theory 2026-10-04: design error; replaced by §110b, queues e3/e4)
 # P=2
 boxes/runs_s5/s110_s4 boxes.self110 --seed 4
 boxes/runs_s5/s110_s5 boxes.self110 --seed 5
