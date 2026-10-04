@@ -1,0 +1,28 @@
+{
+ "cmd": "train",
+ "arm": "mask",
+ "task": "4x4",
+ "seed": 3,
+ "steps": 24000,
+ "bs": 64,
+ "lr": 0.0001,
+ "eval_bs": 100,
+ "eval_only": false,
+ "k": 4,
+ "micro": 0,
+ "test_n": null,
+ "train_limit": 0,
+ "log_every": 2000,
+ "log_n": 200,
+ "train_dir": "/workspace/Latent/bench/data/mult_train",
+ "device": "cuda:0",
+ "out": "boxes/runs_mult/m98_mask_4x4_s3",
+ "train_problems": 808000,
+ "step_tokens": [
+  5,
+  15,
+  17,
+  9
+ ],
+ "answer_tokens": 10
+}
