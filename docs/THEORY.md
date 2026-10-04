@@ -159,7 +159,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 100 | Shorter silent stretches: multiplication at k = 2 (GEN2, MASK2) | registered; fixed code only (100-1) | **open** |
 | 101 | Snap-strength dose-response (β_min 1 / 0.1 / 0.01 / 0) on S5 | registered | **open** |
 | 102 | State in depth: gated slot-to-slot residual path (4×4, in §99's harness) | registered | **open** |
-| 103 | Filtered self-training by length (C4 inside the LM, S5) | registered | **open** |
+| 103 | Filtered self-training by length (C4 inside the LM, S5) | SELF not met: 0 / 0.9615 / 0.9585 at 512 from final answers only; pseudo-label precision ~0.98 caps it | closed |
 | 104 | Serial causal use of slots: donor patching, blocking (§92, §97; eval only) | SERIAL not met: §92 2/5; §97 0/3 with donor latents ignored (state recomputed from visible ops) | closed |
 | 105 | C1 for the headline: S5 GEN-4 with a masked fork + donor protocol | registered | **open** |
 | 106 | C2 on a real task: bounded streaming multiplication (latent vs the written format) | k = 4 pilot gate fails (b = 4 ≈ 0.005); k = 2 MASK + written comparator added (106-3) | **open** |
@@ -884,6 +884,38 @@ via a fork; text snap every 4 ops). Budget 24k steps total, seeds 1–3. **No gr
 
 **Placement.** About $6–8 on Vast (one proof seed first). Projection to Audit. Implementation: the experiments session, from
 `boxes/gen97.py`.
+
+**§103 result (2026-10-04 08:20 EDT; run by the experiments session on Vast, 155ae67f; scored by Theory alone with
+`theory/score_s103.py`, committed before any run; `theory/results/score_s103.json`). SELF is not met, but it is a near
+miss for C4.**
+
+| seed | cumulative at 128 / 256 / 512 | 2,048 | final-state acc | zero / mean removal |
+|---|---|---|---|---|
+| s1 | 0 / 0 / 0 | 0 | 0.006 | 0.003 / 0.27 |
+| s2 | 0.980 / 0.973 / **0.9615** | 0.896 | 1.000 | 0.002 / **0.949** |
+| s3 | 0.979 / 0.972 / **0.9585** | 0.842 | 0.996 | 0.003 / 0.19 |
+
+* **SELF** (≥ 0.99 at 512 in ≥ 2/3): **not met**.
+* **But:** trained **from final answers only** (short_fraction 0.050, no ground-truth intermediate state ever used), two
+  of three seeds carry S5 to about 0.96 at 512 and 0.84–0.90 at 2,048. That is the closest in-LM C4 result in the
+  project.
+* **Rounds (shared by the cross-seed vote).**
+
+  | round length | 4 | 3 | 4 | 8 | 6 | 5 | 6 | 8 | 16 | 32 |
+  |---|---|---|---|---|---|---|---|---|---|---|
+  | kept share | 6e-5 | 1e-4 | 1e-4 | 0.003 | 0.005 | 0.007 | **0.54** | 0.67 | 0.998 | 0.999 |
+  | pseudo-label precision | 0.0 | 0.5 | 1.0 | 0.24 | 0.33 | 0.32 | 0.978 | 0.983 | 0.984 | 0.983 |
+
+  - The adaptive rule inserted lengths until, at length 6, the model's own checkpoints became reliable. From then on,
+    precision held at about **0.98**.
+  - **About 2 % wrong pseudo-labels were locked in**, which is consistent with the cap near 0.96 (Literature's noise
+    flag; §62). The vote across seeds sharing a pool lets correlated errors through.
+* **C1 caveat:** s2's mean-removal is 0.949, the fork bypass §104 found in §97. §103 used the unmasked recipe, so its C1
+  is not claimed.
+* **Reading.** C4 inside the LM nearly works by filtered self-training by length. The bottleneck is pseudo-label
+  precision (about 0.98), not coverage (kept share up to 0.999).
+  - A stricter filter (unanimity, plus a chain-vs-restart self-consistency check) and/or a final relabelling round is the
+    natural next step. Not registered now; C1 work has priority.
 
 ## 104. Do the latent slots carry the state serially? Donor patching and step-specific blocking on §92 and §97 (pre-registered 2026-10-04 00:33 EDT, after Literature's check 5054f476 and before running on any checkpoint; C1-first under the user's priority order)
 
