@@ -1755,3 +1755,19 @@ running). It corrects 110-1.**
 * **Filter audit (Audit, read in `self110.label_round`).** Keep = valid ∧ final == truth ∧ the restart self-consistency;
   the targets are the model's own decodes. Truth enters only through the final answer and logged statistics, so no
   intermediate label is used.
+
+**Note 110-5 (2026-10-04 14:58 EDT; descriptive; Audit's IDEA 1 first step; `theory/s110_unlabelled.py` on CPU,
+`theory/results/s110_unlabelled_s3.json`).**
+* **Test.** §110 s3's model, with a k = 1 restart from each state's text (masked fork, greedy), on all 14,400 (state, op)
+  transitions. They are split by whether s3's R0 short problems labelled them (an exact replay of `self110.py`'s
+  sampler: 71.5 % labelled).
+* **Result.**
+  - Accuracy is **1.000 on labelled and 1.000 on unlabelled transitions**: 0 errors among the 4,105 transitions no short
+    problem ever labelled.
+  - The k = 1 restart system is a finite automaton over the 120 written states. Correct on every input, it is
+    **certified at every length** (as §92-1's certificate), here **from final-answer supervision**.
+* **Reading.** s3 learned the 28.5 % of transitions its shorts never labelled from the **final answers of longer problems
+  alone**: it composes final-answer supervision into step knowledge. The short problems acted as a **foothold, not as
+  labels**.
+  - This is the first in-LM evidence pointing toward strict C4. It motivates the coverage dose-response (Audit's
+    IDEA 1; registration next).
