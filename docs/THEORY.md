@@ -1710,6 +1710,21 @@ restricted to a **fixed random subset T_f of transitions**.
 
 **Placement.** 15 runs (3 doses × 5 seeds), about $8–10 on Vast. Proof seed first. Projection to Audit.
 
+**Note 112-1 (2026-10-04 15:01 EDT, before any §112 run; Audit's arithmetic).**
+* **The problem.** Every short starts at e. Stratifying T_f by op over all states puts (e, a) in T_f for only about f ·
+  120 ops, so the reachable states shrink too.
+  - Realised coverage ≈ **f² + f/120**: about 25 / 6.3 / 1.1 % for f = 0.5 / 0.25 / 0.1.
+  - At low f, most first steps also lose their foothold, unlike §110.
+* **Fix (Audit's option (b), adopted).**
+  - **All 120 first-step transitions (e, a) are always in T_f**, so every first step keeps its foothold, as in §110.
+  - The **inner transitions** (a, b), a ≠ e, are drawn stratified by op (for each b, a random fraction g of the
+    non-identity states). g is set so the **realised coverage ≈ f**: g = (f · 14,400 − 120) / (14,400 − 120).
+  - Length-1 shorts are always allowed. A length-2 short (e; a, b) is allowed iff (a, b) ∈ T_f.
+* **The realised coverage is computed when T_f is built and logged** in args.json and eval.json (`coverage_target`,
+  `coverage_realised`). The doses are reported by realised coverage.
+* **Consistency:** §110's natural 71.5 % (a full row e plus randomly sampled inner pairs) corresponds to (b) at f ≈ 0.715.
+* The doses (f = 0.5 / 0.25 / 0.1), seeds, rules and scorer are otherwise unchanged.
+
 ## 113. The auxiliary reader inside self-training: §110 plus a reader on the model's own decodes (pre-registered 2026-10-04 15:00 EDT, after Literature's check b1352c3e and before any implementation or run; conditional on §111 MK-4-READ meeting REL)
 
 **Why.** §110's seed failures (s1: a slot-1 bypass; s2: never acquires) look like 111-1's no-read family. If §111's
