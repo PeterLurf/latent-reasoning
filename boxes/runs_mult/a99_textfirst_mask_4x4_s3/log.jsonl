@@ -1,0 +1,240 @@
+{"step": 100, "loss": 1.3704983794689178, "sec": 39, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 200, "loss": 0.8581807962059975, "sec": 82, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 300, "loss": 0.5035791282355785, "sec": 125, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 400, "loss": 0.2968523160368204, "sec": 167, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 500, "loss": 0.15816697359085083, "sec": 210, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 600, "loss": 0.08016932759433985, "sec": 253, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 700, "loss": 0.0344397459551692, "sec": 296, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 800, "loss": 0.013482463710242882, "sec": 339, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 900, "loss": 0.0011428838386200368, "sec": 382, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 1000, "loss": 0.0005570126202655956, "sec": 425, "phase": "text", "k_train": 4, "gold_share": 0.0, "per_slot": [0.009, 0.0, 0.0, 0.0], "val_acc": 0.0, "eligible": false, "gate": null}
+{"step": 1100, "loss": 0.0003775708038301673, "sec": 473, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 1200, "loss": 0.00027151979971677063, "sec": 516, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 1300, "loss": 0.014862321393375169, "sec": 559, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 1400, "loss": 0.04068057405529544, "sec": 602, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 1500, "loss": 0.006149123693467118, "sec": 645, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 1600, "loss": 0.011719562618527562, "sec": 688, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 1700, "loss": 0.003729045382206095, "sec": 731, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 1800, "loss": 0.0006441052962327376, "sec": 774, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 1900, "loss": 0.00012686844904237658, "sec": 817, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 2000, "loss": 9.35811479575932e-05, "sec": 860, "phase": "text", "k_train": 4, "gold_share": 0.0, "per_slot": [0.011, 0.0, 0.0, 0.0], "val_acc": 0.0, "eligible": false, "gate": null}
+{"step": 2100, "loss": 7.773831981467083e-05, "sec": 909, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 2200, "loss": 6.773813087420422e-05, "sec": 952, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 2300, "loss": 5.931922838499304e-05, "sec": 995, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 2400, "loss": 5.294079215673264e-05, "sec": 1038, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 2500, "loss": 4.745307582197711e-05, "sec": 1081, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 2600, "loss": 4.27369919634657e-05, "sec": 1124, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 2700, "loss": 3.940928938391153e-05, "sec": 1167, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 2800, "loss": 3.5882079082512064e-05, "sec": 1210, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 2900, "loss": 3.364570513440413e-05, "sec": 1253, "phase": "text", "k_train": 4, "gold_share": 0.0}
+{"step": 3000, "loss": 3.068735738452233e-05, "sec": 1296, "phase": "text", "k_train": 4, "gold_share": 0.0, "per_slot": [0.01, 0.0, 0.0, 0.0], "val_acc": 0.0, "eligible": true, "gate": null}
+{"step": 3100, "loss": 23.484004135131837, "sec": 1361, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 3200, "loss": 17.87241859436035, "sec": 1420, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 3300, "loss": 14.810200662612916, "sec": 1479, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 3400, "loss": 12.797664880752563, "sec": 1538, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 3500, "loss": 11.34756259918213, "sec": 1596, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 3600, "loss": 10.131178302764893, "sec": 1654, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 3700, "loss": 9.007162108421326, "sec": 1714, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 3800, "loss": 8.179764542579651, "sec": 1773, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 3900, "loss": 7.580087056159973, "sec": 1832, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 4000, "loss": 7.044456567764282, "sec": 1891, "phase": "latent", "k_train": 4, "gold_share": 0.0, "per_slot": [0.776, 0.133, 0.013, 0.705], "val_acc": 0.001, "eligible": true, "gate": null}
+{"step": 4100, "loss": 6.635674610137939, "sec": 1955, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 4200, "loss": 6.318402905464172, "sec": 2014, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 4300, "loss": 5.95871904373169, "sec": 2074, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 4400, "loss": 5.724740414619446, "sec": 2132, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 4500, "loss": 5.5771478652954105, "sec": 2192, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 4600, "loss": 5.49068687915802, "sec": 2251, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 4700, "loss": 5.3775733280181885, "sec": 2310, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 4800, "loss": 5.314052748680115, "sec": 2369, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 4900, "loss": 5.303187346458435, "sec": 2429, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 5000, "loss": 5.227071294784546, "sec": 2488, "phase": "latent", "k_train": 4, "gold_share": 0.0, "per_slot": [0.997, 0.21, 0.018, 0.988], "val_acc": 0.003, "eligible": true, "gate": null}
+{"step": 5100, "loss": 5.216160798072815, "sec": 2553, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 5200, "loss": 5.1000397539138795, "sec": 2612, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 5300, "loss": 5.049251990318298, "sec": 2671, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 5400, "loss": 4.936416711807251, "sec": 2730, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 5500, "loss": 4.948414011001587, "sec": 2789, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 5600, "loss": 4.837775564193725, "sec": 2848, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 5700, "loss": 4.845661211013794, "sec": 2906, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 5800, "loss": 4.763058748245239, "sec": 2965, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 5900, "loss": 4.692412185668945, "sec": 3024, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 6000, "loss": 4.658669643402099, "sec": 3082, "phase": "latent", "k_train": 4, "gold_share": 0.0, "per_slot": [1.0, 0.259, 0.027, 0.989], "val_acc": 0.001, "eligible": true, "gate": null}
+{"step": 6100, "loss": 4.605886354446411, "sec": 3148, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 6200, "loss": 4.549957733154297, "sec": 3207, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 6300, "loss": 4.576475787162781, "sec": 3265, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 6400, "loss": 4.495300369262695, "sec": 3323, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 6500, "loss": 4.457575430870056, "sec": 3381, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 6600, "loss": 4.362176768779754, "sec": 3440, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 6700, "loss": 4.379148421287536, "sec": 3498, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 6800, "loss": 4.317897827625274, "sec": 3557, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 6900, "loss": 4.309728062152862, "sec": 3615, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 7000, "loss": 4.272185680866241, "sec": 3674, "phase": "latent", "k_train": 4, "gold_share": 0.0, "per_slot": [1.0, 0.38, 0.055, 0.998], "val_acc": 0.006, "eligible": true, "gate": null}
+{"step": 7100, "loss": 4.277691106796265, "sec": 3737, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 7200, "loss": 4.228120889663696, "sec": 3796, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 7300, "loss": 4.210509688854217, "sec": 3855, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 7400, "loss": 4.118116097450256, "sec": 3913, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 7500, "loss": 4.085043518543244, "sec": 3971, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 7600, "loss": 4.073181874752045, "sec": 4029, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 7700, "loss": 4.013855440616608, "sec": 4088, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 7800, "loss": 4.045776739120483, "sec": 4146, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 7900, "loss": 4.03646981716156, "sec": 4203, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 8000, "loss": 4.00471615076065, "sec": 4260, "phase": "latent", "k_train": 4, "gold_share": 0.0, "per_slot": [1.0, 0.429, 0.058, 0.999], "val_acc": 0.004, "eligible": true, "gate": null}
+{"step": 8100, "loss": 4.052040719985962, "sec": 4323, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 8200, "loss": 3.94863739490509, "sec": 4381, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 8300, "loss": 3.9135679984092713, "sec": 4438, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 8400, "loss": 3.9623441910743713, "sec": 4496, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 8500, "loss": 3.888549132347107, "sec": 4554, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 8600, "loss": 3.9101961064338684, "sec": 4612, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 8700, "loss": 3.8194934916496277, "sec": 4670, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 8800, "loss": 3.79634254693985, "sec": 4729, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 8900, "loss": 3.7273968195915224, "sec": 4787, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 9000, "loss": 3.8917826509475706, "sec": 4846, "phase": "latent", "k_train": 4, "gold_share": 0.0, "per_slot": [1.0, 0.558, 0.089, 0.997], "val_acc": 0.005, "eligible": true, "gate": null}
+{"step": 9100, "loss": 3.7863930678367614, "sec": 4908, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 9200, "loss": 3.821771261692047, "sec": 4966, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 9300, "loss": 3.73050457239151, "sec": 5025, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 9400, "loss": 3.671388552188873, "sec": 5082, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 9500, "loss": 3.7928080344200135, "sec": 5140, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 9600, "loss": 3.665955526828766, "sec": 5199, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 9700, "loss": 3.6660851192474366, "sec": 5258, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 9800, "loss": 3.654757204055786, "sec": 5317, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 9900, "loss": 3.650055868625641, "sec": 5375, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 10000, "loss": 3.6422768807411194, "sec": 5433, "phase": "latent", "k_train": 4, "gold_share": 0.0, "per_slot": [1.0, 0.569, 0.085, 0.995], "val_acc": 0.005, "eligible": true, "gate": null}
+{"step": 10100, "loss": 3.6247847199440004, "sec": 5497, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 10200, "loss": 3.5557592415809633, "sec": 5556, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 10300, "loss": 3.60575763463974, "sec": 5614, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 10400, "loss": 3.5872612595558167, "sec": 5673, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 10500, "loss": 3.524868912696838, "sec": 5732, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 10600, "loss": 3.5161380267143247, "sec": 5790, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 10700, "loss": 3.5025400137901306, "sec": 5849, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 10800, "loss": 3.4705864644050597, "sec": 5908, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 10900, "loss": 3.494498918056488, "sec": 5966, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 11000, "loss": 3.5034986996650694, "sec": 6024, "phase": "latent", "k_train": 4, "gold_share": 0.0, "per_slot": [1.0, 0.684, 0.113, 0.999], "val_acc": 0.009, "eligible": true, "gate": null}
+{"step": 11100, "loss": 3.4709297394752503, "sec": 6088, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 11200, "loss": 3.47969655752182, "sec": 6146, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 11300, "loss": 3.403625478744507, "sec": 6204, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 11400, "loss": 3.434953720569611, "sec": 6262, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 11500, "loss": 3.387508625984192, "sec": 6321, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 11600, "loss": 3.3591029477119445, "sec": 6379, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 11700, "loss": 3.3249721765518188, "sec": 6437, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 11800, "loss": 3.3147553753852845, "sec": 6496, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 11900, "loss": 3.300134620666504, "sec": 6555, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 12000, "loss": 3.329692535400391, "sec": 6613, "phase": "latent", "k_train": 4, "gold_share": 0.0, "per_slot": [1.0, 0.699, 0.116, 0.997], "val_acc": 0.01, "eligible": true, "gate": null}
+{"step": 12100, "loss": 3.2818349266052245, "sec": 6675, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 12200, "loss": 3.258251371383667, "sec": 6734, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 12300, "loss": 3.304356734752655, "sec": 6792, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 12400, "loss": 3.2478829431533813, "sec": 6850, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 12500, "loss": 3.2609911155700684, "sec": 6909, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 12600, "loss": 3.266111249923706, "sec": 6967, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 12700, "loss": 3.2523827505111695, "sec": 7026, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 12800, "loss": 3.2129852104187013, "sec": 7084, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 12900, "loss": 3.1927772641181944, "sec": 7143, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 13000, "loss": 3.180151062011719, "sec": 7202, "phase": "latent", "k_train": 4, "gold_share": 0.0, "per_slot": [1.0, 0.761, 0.126, 0.998], "val_acc": 0.017, "eligible": true, "gate": null}
+{"step": 13100, "loss": 3.2063012981414794, "sec": 7264, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 13200, "loss": 3.16583487033844, "sec": 7321, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 13300, "loss": 3.158343756198883, "sec": 7380, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 13400, "loss": 3.168018503189087, "sec": 7439, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 13500, "loss": 3.148424572944641, "sec": 7497, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 13600, "loss": 3.1464283204078676, "sec": 7556, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 13700, "loss": 3.127954652309418, "sec": 7614, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 13800, "loss": 3.0817557191848755, "sec": 7672, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 13900, "loss": 3.1155839467048647, "sec": 7731, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 14000, "loss": 3.0778571486473085, "sec": 7789, "phase": "latent", "k_train": 4, "gold_share": 0.0, "per_slot": [1.0, 0.842, 0.133, 0.999], "val_acc": 0.016, "eligible": true, "gate": null}
+{"step": 14100, "loss": 3.0944512629508973, "sec": 7853, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 14200, "loss": 3.0533602380752565, "sec": 7912, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 14300, "loss": 3.0466197776794433, "sec": 7970, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 14400, "loss": 3.0531124544143675, "sec": 8028, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 14500, "loss": 3.0488792753219602, "sec": 8086, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 14600, "loss": 3.0363754796981812, "sec": 8145, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 14700, "loss": 3.04837610244751, "sec": 8203, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 14800, "loss": 3.0188156080245974, "sec": 8262, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 14900, "loss": 3.0417726135253904, "sec": 8321, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 15000, "loss": 3.0276219844818115, "sec": 8379, "phase": "latent", "k_train": 4, "gold_share": 0.0, "per_slot": [1.0, 0.87, 0.148, 0.996], "val_acc": 0.016, "eligible": true, "gate": null}
+{"step": 15100, "loss": 3.0154992032051084, "sec": 8442, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 15200, "loss": 2.993041985034943, "sec": 8501, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 15300, "loss": 2.980114903450012, "sec": 8560, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 15400, "loss": 2.9821453142166137, "sec": 8619, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 15500, "loss": 2.971864547729492, "sec": 8677, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 15600, "loss": 2.971325469017029, "sec": 8736, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 15700, "loss": 2.959489254951477, "sec": 8794, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 15800, "loss": 2.958484244346619, "sec": 8853, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 15900, "loss": 2.945152013301849, "sec": 8912, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 16000, "loss": 2.9169777488708495, "sec": 8970, "phase": "latent", "k_train": 4, "gold_share": 0.0, "per_slot": [1.0, 0.904, 0.164, 0.999], "val_acc": 0.02, "eligible": true, "gate": null}
+{"step": 16100, "loss": 2.9256327962875366, "sec": 9032, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 16200, "loss": 2.9212850522994995, "sec": 9091, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 16300, "loss": 2.9008915781974793, "sec": 9149, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 16400, "loss": 2.904131283760071, "sec": 9207, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 16500, "loss": 2.9214552903175353, "sec": 9266, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 16600, "loss": 2.8926111221313477, "sec": 9323, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 16700, "loss": 2.8920269346237184, "sec": 9382, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 16800, "loss": 2.8853608345985413, "sec": 9441, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 16900, "loss": 2.8734423995018004, "sec": 9499, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 17000, "loss": 2.839733312129974, "sec": 9558, "phase": "latent", "k_train": 4, "gold_share": 0.0, "per_slot": [1.0, 0.931, 0.163, 0.999], "val_acc": 0.022, "eligible": true, "gate": null}
+{"step": 17100, "loss": 2.842262074947357, "sec": 9621, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 17200, "loss": 2.841733763217926, "sec": 9680, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 17300, "loss": 2.8410309410095214, "sec": 9738, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 17400, "loss": 2.8179181146621706, "sec": 9797, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 17500, "loss": 2.8344140243530274, "sec": 9855, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 17600, "loss": 2.8000108432769775, "sec": 9914, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 17700, "loss": 2.8033802580833433, "sec": 9973, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 17800, "loss": 2.8104288744926453, "sec": 10031, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 17900, "loss": 2.768372406959534, "sec": 10089, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 18000, "loss": 2.782464017868042, "sec": 10147, "phase": "latent", "k_train": 4, "gold_share": 0.0, "per_slot": [1.0, 0.956, 0.169, 0.999], "val_acc": 0.021, "eligible": true, "gate": null}
+{"step": 18100, "loss": 2.7884066200256346, "sec": 10210, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 18200, "loss": 2.7561159038543703, "sec": 10268, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 18300, "loss": 2.747059953212738, "sec": 10326, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 18400, "loss": 2.740980622768402, "sec": 10384, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 18500, "loss": 2.769326083660126, "sec": 10442, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 18600, "loss": 2.766070535182953, "sec": 10500, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 18700, "loss": 2.7292963886260986, "sec": 10558, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 18800, "loss": 2.718162999153137, "sec": 10616, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 18900, "loss": 2.715959303379059, "sec": 10674, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 19000, "loss": 2.7263770079612732, "sec": 10732, "phase": "latent", "k_train": 4, "gold_share": 0.0, "per_slot": [1.0, 0.974, 0.18, 1.0], "val_acc": 0.023, "eligible": true, "gate": null}
+{"step": 19100, "loss": 2.7153935384750367, "sec": 10798, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 19200, "loss": 2.7173310112953186, "sec": 10855, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 19300, "loss": 2.7001926612854006, "sec": 10911, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 19400, "loss": 2.695258893966675, "sec": 10968, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 19500, "loss": 2.679477725028992, "sec": 11026, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 19600, "loss": 2.691319148540497, "sec": 11084, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 19700, "loss": 2.689280483722687, "sec": 11141, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 19800, "loss": 2.673258891105652, "sec": 11198, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 19900, "loss": 2.67963969707489, "sec": 11257, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 20000, "loss": 2.6756318831443786, "sec": 11315, "phase": "latent", "k_train": 4, "gold_share": 0.0, "per_slot": [1.0, 0.968, 0.181, 1.0], "val_acc": 0.02, "eligible": true, "gate": null}
+{"step": 20100, "loss": 2.6811092686653137, "sec": 11376, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 20200, "loss": 2.6443755507469175, "sec": 11434, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 20300, "loss": 2.662638456821442, "sec": 11492, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 20400, "loss": 2.6510618329048157, "sec": 11549, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 20500, "loss": 2.6425383138656615, "sec": 11607, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 20600, "loss": 2.6617739844322204, "sec": 11665, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 20700, "loss": 2.649763994216919, "sec": 11721, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 20800, "loss": 2.6421000838279722, "sec": 11779, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 20900, "loss": 2.647168929576874, "sec": 11838, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 21000, "loss": 2.609171893596649, "sec": 11896, "phase": "latent", "k_train": 4, "gold_share": 0.0, "per_slot": [1.0, 0.976, 0.203, 0.999], "val_acc": 0.026, "eligible": true, "gate": null}
+{"step": 21100, "loss": 2.6379530453681945, "sec": 11958, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 21200, "loss": 2.6323649287223816, "sec": 12016, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 21300, "loss": 2.6069289445877075, "sec": 12074, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 21400, "loss": 2.6365858459472657, "sec": 12133, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 21500, "loss": 2.610754096508026, "sec": 12191, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 21600, "loss": 2.622079870700836, "sec": 12249, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 21700, "loss": 2.6134818458557127, "sec": 12307, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 21800, "loss": 2.5930789923667907, "sec": 12364, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 21900, "loss": 2.622209303379059, "sec": 12423, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 22000, "loss": 2.584860441684723, "sec": 12481, "phase": "latent", "k_train": 4, "gold_share": 0.0, "per_slot": [1.0, 0.984, 0.2, 0.999], "val_acc": 0.027, "eligible": true, "gate": null}
+{"step": 22100, "loss": 2.615670266151428, "sec": 12544, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 22200, "loss": 2.570937716960907, "sec": 12602, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 22300, "loss": 2.5824736070632937, "sec": 12660, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 22400, "loss": 2.609949095249176, "sec": 12718, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 22500, "loss": 2.5900908589363096, "sec": 12776, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 22600, "loss": 2.5960477590560913, "sec": 12832, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 22700, "loss": 2.5975784969329836, "sec": 12890, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 22800, "loss": 2.6089783239364626, "sec": 12948, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 22900, "loss": 2.6029332160949705, "sec": 13006, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 23000, "loss": 2.6027520155906676, "sec": 13064, "phase": "latent", "k_train": 4, "gold_share": 0.0, "per_slot": [1.0, 0.982, 0.205, 0.999], "val_acc": 0.027, "eligible": true, "gate": null}
+{"step": 23100, "loss": 2.590138418674469, "sec": 13128, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 23200, "loss": 2.6102289581298828, "sec": 13186, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 23300, "loss": 2.5987977242469786, "sec": 13244, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 23400, "loss": 2.577099034786224, "sec": 13303, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 23500, "loss": 2.5878317952156067, "sec": 13361, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 23600, "loss": 2.582315742969513, "sec": 13419, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 23700, "loss": 2.606857750415802, "sec": 13477, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 23800, "loss": 2.5852502965927124, "sec": 13535, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 23900, "loss": 2.596839017868042, "sec": 13593, "phase": "latent", "k_train": 4, "gold_share": 0.0}
+{"step": 24000, "loss": 2.596652274131775, "sec": 13651, "phase": "latent", "k_train": 4, "gold_share": 0.0, "per_slot": [1.0, 0.985, 0.202, 0.999], "val_acc": 0.025, "eligible": true, "gate": null}

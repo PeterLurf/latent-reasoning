@@ -637,3 +637,9 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 54171659 vast offer 51152292 created 2026-10-04 12:15: label gen-k6, queue scratch/gen_q_k6.txt (logged at create by vdeploy_toy.sh)
 54171659 vast | gen_k6 DESTROYED_VERIFIED 2026-10-04 12:34 stuck loading > 15 min (never started; offer 51152292); replaced
 54173915 vast offer 11925444 created 2026-10-04 12:34: label gen-k6, queue scratch/gen_q_k6.txt (logged at create by vdeploy_toy.sh)
+54177767 vast offer 52982342 created 2026-10-04 13:09: label gen-n1, queue scratch/gen_q_n1.txt (logged at create by vdeploy_toy.sh)
+54177772 vast offer 53546323 created 2026-10-04 13:09: label gen-n2, queue scratch/gen_q_n2.txt (logged at create by vdeploy_toy.sh)
+54177773 vast offer 13991560 created 2026-10-04 13:09: label gen-n3, queue scratch/gen_q_n3.txt (logged at create by vdeploy_toy.sh)
+54177993 vast offer 23307645 created 2026-10-04 13:11: label gen-n4, queue scratch/gen_q_n4.txt (logged at create by vdeploy_toy.sh)
+54152775 vast | gen_m9 DESTROYED_VERIFIED 2026-10-04 13:13 after verified per-run fetch (boxes/runs_mult/a99_combo_4x4_s2 boxes/runs_mult/a99_combo_4x4_s1 boxes/runs_mult/a99_combo_4x4_s3)
+54152770 vast | gen_m7 DESTROYED_VERIFIED 2026-10-04 13:19 after verified per-run fetch (boxes/runs_mult/a99_textfirst_mask_4x4_s3 boxes/runs_mult/a99_textfirst_mask_4x4_s2 boxes/runs_mult/a99_textfirst_mask_4x4_s1)
