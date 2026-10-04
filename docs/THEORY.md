@@ -151,7 +151,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 94 | "Where" readout: budget vs inverse target | W1, W2 met: budget alone, 1.000 ×5 | closed |
 | 95 | Foothold dose-response | no dose sufficient (0/9) | closed |
 | 96 | Amortised self-labels from a final-answer teacher | P1, P2 met: 4/5 certified at p 0.05; labels 1.000; pipeline C4 (qualified) | closed |
-| 97 | General latent thinker, step 1 | G4 met 3/3 (0.998–1.0 at 512; 1.0 at 2,048); 0.56× | **open** (C6 seeds) |
+| 97 | General latent thinker, step 1 | G4 met 3/3; C6 met 5/5; but mean ablation leaves HYB-4 s5 at 1.000 (fork bypass; C1 qualified) | closed (C1 → §104/§105) |
 | 98 | Step 2a: multiplication vs ICoT-SI, Coconut, text CoT | GEN arms void (final-fork conflict, 98-3), rerun on fixed code; comparators valid | **open** |
 | 99 | Speeding up the latent hand-off (k-curriculum, standardised slots, text-first, combo) | on fixed code (99-2) | **open** |
 | 100 | Shorter silent stretches: multiplication at k = 2 (GEN2, MASK2) | registered; fixed code only (100-1) | **open** |
@@ -322,6 +322,27 @@ a smoke test of the fork loss, greedy snap and certificate before the panel.
 * **GEN-1's comparator is wc0k1** (k = 1 written state), not wc0k4r: 1.81e12 vs 2.42e12 FLOPs per 512-problem, so
   **0.75× as metered and 0.72× with both sides' vocabulary-logit terms removed** (2.37e11 each: 512 × 6 rows). Against
   wc0k4r, GEN-1 would read 1.10×, which is the wrong comparison.
+
+**Note 97-3 (2026-10-04 01:31 EDT; C6 seeds 4–5 scored with `theory/score_s97.py`; Audit raw-read).**
+* **C6 met (5/5, per 97-1).**
+  - GEN-4 at 512: 0.998 / 1.0 / 1.0 / 1.0 / 1.0; at 2,048: 1.0 ×4, plus 0.998.
+  - HYB-4: 1.0 at 512 and 2,048 in all 5.
+  - Zero-removal is ≤ 0.008 in every seed. Checkpoint edit IIA is 1.0 and validity 1.0.
+* **Headline under the user's C1 priority: mean ablation shows a fork bypass.** Mean-removal accuracy after the first
+  ablated slot:
+
+  | arm | s1 | s2 | s3 | s4 | s5 |
+  |---|---|---|---|---|---|
+  | GEN-4 | 0.23 | 0.28 | 0.29 | 0.26 | 0.33 |
+  | HYB-4 | 0.15 | 0.50 | 0.31 | 0.57 | **1.000** |
+
+  - In HYB-4 s5, replacing the slot inputs with their mean leaves **every state correct**. The text fork recomputes the
+    whole chunk from the visible ops without the latents.
+  - Zero ablation still drops it to 0.002, but zero is off-distribution.
+* **Consequence.** For the text-fork recipe, C1 (use) rests only on the zero-ablation rule. Under in-distribution
+  (mean) ablation the latents are not necessary in some seeds.
+  - §97's C1 stays **qualified**, and this is now quantified per seed.
+  - The decisive C1 test is a masked fork on S5 (§105, next) and §104's donor patching.
 
 ## 98. General latent thinker, step 2a: §97's recipe on multi-digit multiplication (bench mult4x4 / mult5x5), against ICoT-SI and Coconut (pre-registered 2026-10-03 17:39 EDT, after Literature's check e206d92d and before any implementation or run; the user's plan, step 2)
 

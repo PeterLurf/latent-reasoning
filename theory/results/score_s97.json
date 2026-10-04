@@ -59,6 +59,44 @@
      "wte_min_cosine": 0.9966827034950256,
      "edit_iia": 1.0,
      "measurement_decode_flops": 506099662848.0
+    },
+    "4": {
+     "cum512": 1.0,
+     "ext2048": 0.998,
+     "zero_after": 0.0037,
+     "mean_after": 0.2637333333333333,
+     "per_slot": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ],
+     "flops": 912165175296.0,
+     "certificate": null,
+     "cert_errors": null,
+     "validity": 1.0,
+     "wte_min_cosine": 0.9954325556755066,
+     "edit_iia": 1.0,
+     "measurement_decode_flops": 506099662848.0
+    },
+    "5": {
+     "cum512": 1.0,
+     "ext2048": 1.0,
+     "zero_after": 0.008066666666666666,
+     "mean_after": 0.32763333333333333,
+     "per_slot": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ],
+     "flops": 912165175296.0,
+     "certificate": null,
+     "cert_errors": null,
+     "validity": 1.0,
+     "wte_min_cosine": 0.996550977230072,
+     "edit_iia": 1.0,
+     "measurement_decode_flops": 506099662848.0
     }
    },
    "n_seeds_1_3": 3,
@@ -69,7 +107,8 @@
    ],
    "G4": true,
    "flops_ratio_vs_wc0k4r": 0.5560238578500131,
-   "C3": true
+   "C3": true,
+   "C6": true
   },
   "HYB-4": {
    "runs": {
@@ -129,6 +168,44 @@
      "wte_min_cosine": 0.996558666229248,
      "edit_iia": 1.0,
      "measurement_decode_flops": 505745768448.0
+    },
+    "4": {
+     "cum512": 1.0,
+     "ext2048": 1.0,
+     "zero_after": 0.0031333333333333335,
+     "mean_after": 0.5707,
+     "per_slot": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ],
+     "flops": 802420555776.0,
+     "certificate": null,
+     "cert_errors": null,
+     "validity": 1.0,
+     "wte_min_cosine": 0.9981462955474854,
+     "edit_iia": 1.0,
+     "measurement_decode_flops": 505745768448.0
+    },
+    "5": {
+     "cum512": 1.0,
+     "ext2048": 1.0,
+     "zero_after": 0.0021333333333333334,
+     "mean_after": 1.0,
+     "per_slot": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ],
+     "flops": 802420555776.0,
+     "certificate": null,
+     "cert_errors": null,
+     "validity": 1.0,
+     "wte_min_cosine": 0.996708333492279,
+     "edit_iia": 1.0,
+     "measurement_decode_flops": 505745768448.0
     }
    },
    "n_seeds_1_3": 3,
@@ -139,7 +216,8 @@
    ],
    "G4": true,
    "flops_ratio_vs_wc0k4r": 0.4891273917532989,
-   "C3": true
+   "C3": true,
+   "C6": true
   },
   "GEN-1": {
    "runs": {
