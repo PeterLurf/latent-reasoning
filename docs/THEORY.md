@@ -1610,6 +1610,32 @@ select by a **training-data-only** criterion.
 
 **Placement.** 10 runs (5 at 2× length plus 5 DAG), about $14–16 on Vast. Proof host first. Projection to Audit.
 
+**Note 111-1 (2026-10-04 12:20 EDT, before any §111 run; Audit's diagnosis of §108's failing seeds from the raw logs).**
+* **Diagnosis (descriptive).**
+  - The failing seeds' training loss follows a **null curve**, (k − 1)/k × (1 − ρ) × ln 120: every latent-fed slot is at
+    chance. s2 follows it from 3k to 24k (3.60–3.69 against 3.59 after 12k), and s4 is on it so far.
+  - **The latent is never read**, a total no-read basin; ρ's anneal only exposes it.
+  - Escapers leave the curve early: s1's loss/null ratio is 0.37 at 3.6k; s3 escapes only after k = 4 starts (0.21 at
+    8k).
+  - **Mechanism:** during k = 1 the fork sees its own segment [EOT, start text, op 1, s_in], decodes state 1 from the
+    visible text, and puts no pressure on s_in. Pressure arrives only at k ≥ 2, on the (1 − ρ) share. Writer and reader
+    are stuck in a chicken-and-egg.
+* **Amendments.**
+  - **MK-4-2× is un-confounded (Audit (d)):** K-CURR and ρ as §108 (ρ → 0 at 12k); only the total budget doubles to
+    48k. It isolates timing from warm-start length.
+  - **New arm MK-4-READ (seeds 6–10):** §108 MK-4 plus an **auxiliary reader** at every slot from step 0 (k = 1
+    included).
+    - A fresh segment **[EOT, carried latent]**, exactly what the next segment sees before its op, decodes state j's
+      step text (CE, weight 1) through the tied head.
+    - The carried vector must then hold state j, and a reader of it is trained together with the writer, from the
+      first step, with no text bypass.
+    - Prior: SIM-CoT's latent-conditioned auxiliary decoder (78a12af7); slot-local auxiliary targets (042f94a2,
+      2510.00184).
+  - **Descriptive:** the loss/null ratio per seed at every log.
+  - **The selection analysis adds Audit's early label-free criterion:** the ratio < 0.9 within 1k steps of k = 2
+    starting. Its AUC is reported next to train_handoff_err and final loss.
+* **Rules unchanged (REL per arm, SEL).** It is now 15 runs, about $22. The scorer is extended (arm `mk4_read`).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

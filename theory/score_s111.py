@@ -1,5 +1,5 @@
 """THEORY §111 scoring (rules fixed in §111; written before any §111 run; Theory is the only scorer).
-Runs: boxes/runs_s5/s111_{mk4_2x,mk4_dag}_s{6..10}/eval.json; §108 MK-4: boxes/runs_s5/s108_mk4_s{1..5}/eval.json.
+Runs: boxes/runs_s5/s111_{mk4_2x,mk4_dag,mk4_read}_s{6..10}/eval.json (note 111-1 adds mk4_read; early criterion key early_escape = loss/null ratio < 0.9 within 1k of k2); §108 MK-4: boxes/runs_s5/s108_mk4_s{1..5}/eval.json.
 Keys (as §108) plus train_handoff_err (per-hand-off error on 20k 512-op rollouts from TRAINING-split sequences) and
 final_train_loss.
 REL (per arm): cumulative >= 0.99 at 512 in >= 4/5 AND donor SERIAL (every in-chunk slot donor >= 0.90, recipient < 0.10)
@@ -43,7 +43,8 @@ def auc(scores_pos, scores_neg):
 
 def main():
     groups = {"§108 MK-4": load("s108_mk4", range(1, 6)), "§111 MK-4-2x": load("s111_mk4_2x", range(6, 11)),
-              "§111 MK-4-DAG": load("s111_mk4_dag", range(6, 11))}
+              "§111 MK-4-DAG": load("s111_mk4_dag", range(6, 11)),
+              "§111 MK-4-READ": load("s111_mk4_read", range(6, 11))}
     res = {"groups": {}}
     allruns = []
     for g, runs in groups.items():
@@ -60,10 +61,17 @@ def main():
         allruns += [(passes(r), r.get("train_handoff_err"), r.get("final_train_loss")) for r in runs.values()]
         print("%-14s n %d REL %s seeds %s | cum512 %s | SEL pick %s -> %s" % (g, G["n"], G["REL"], ok,
               {s: round(v, 4) for s, v in G["cum512"].items()}, G.get("SEL_pick"), G.get("SEL")))
+    allruns = [(p_, a_, b_, None) for (p_, a_, b_) in allruns]
+    for g, runs in groups.items():
+        pass
     for i, name in ((1, "train_handoff_err"), (2, "final_train_loss")):
         pos = [x[i] for x in allruns if x[0] and x[i] is not None]; neg = [x[i] for x in allruns if not x[0] and x[i] is not None]
         res["AUC_" + name] = auc(pos, neg)
-    print("AUC train_handoff_err", res["AUC_train_handoff_err"], "| AUC final_train_loss", res["AUC_final_train_loss"])
+    ee = [(passes(r), r.get("early_escape")) for runs in groups.values() for r in runs.values() if r.get("early_escape") is not None]
+    if ee:
+        tp = sum(1 for p_, e in ee if p_ and e); fp = sum(1 for p_, e in ee if (not p_) and e)
+        res["early_escape"] = {"n": len(ee), "pass_and_escape": tp, "fail_and_escape": fp, "pass_total": sum(p_ for p_, _ in ee)}
+    print("AUC train_handoff_err", res["AUC_train_handoff_err"], "| AUC final_train_loss", res["AUC_final_train_loss"], "| early_escape", res.get("early_escape"))
     json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s111.json"), "w", newline="\n"), indent=1, default=float)
 
 
