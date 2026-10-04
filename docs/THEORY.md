@@ -711,6 +711,30 @@ seeds (§92's rule).
 
 **Placement.** About $8 on Vast (proof host first, ≤ 5). Projection to Audit.
 
+**Note 101-1 (2026-10-04 00:22 EDT, before any §101 run; the user's question "self-discovered thought manifold in latent space
+to guide back?"; Literature 6230b7f5, `docs/LIT_SELF_SNAP_2026-10-04.md`).**
+* **New arm SELF-SNAP:** §101's soft snap s = (1 − β) · u + β · P(u), with **P(u) = the nearest centroid of a codebook
+  learned online from the model's own u's**, replacing §92's given codebook at every snap.
+  - M = 240 (2|G|, as §96).
+  - EMA k-means updates (decay 0.99) with a dead-code reset (Łańcucki 2005.08520), and a small commitment term (0.05).
+  - The codebook is initialised by k-means on u's at step 6k and used from then on. Before that, training uses
+    single-chunk sequences only (Literature: start the codebook after the hand-off works).
+  - The first chunk of a training sequence starts from the true start code. The first chunk at test starts from the
+    identity's code (the problem's given initial state). Every later boundary uses learned centroids only.
+  - **β_min = 0.1** with §101's per-chunk coin schedule. Seeds 1–3.
+* **Premise gate ($0, fixed now; Literature (3)).** Run k-means (M = 240) on frozen §97 HYB-4 s1–3 last-slot u's over
+  20k fresh chunks. Compute **purity**: the share of points whose cluster's majority true state equals their own.
+  - SELF-SNAP runs only if the **median purity is ≥ 0.90**. Otherwise it is not run, and the purity is reported.
+* **Rule:** §101's (cumulative ≥ 0.99 at 512 in ≥ 2/3 seeds, zero-removal ≤ 0.10).
+  - **The comparison:** SELF-SNAP against the given-codebook β_min = 0.1 arm, paired by seed.
+* **Descriptive:** code perplexity; centroid–state purity and NMI at the end of training (truth used by the scorer only);
+  and FSQ (2309.15505) as a possible later no-collapse variant.
+* **Scope (Literature).** "Self-discovered" applies to the clustering only. The latents are state-separable because of
+  §97's per-op text targets, so this is not C4.
+  - Readability (C7) of learned codes needs a post-hoc translator, unlike text checkpoints.
+* **Prior:** State-Regularized RNNs 1901.08817 (from scratch); QBN 1811.12530; VQ-VAE; Token Assorted (codes, not drift
+  correction). An online-learned snap in a pretrained LM's chain was not found, so it is new as scoped.
+
 ## 102. State in depth: a gated residual path from slot j−1 to slot j on multiplication (pre-registered 2026-10-04 00:17 EDT, after Literature's checks a214bb6d and 5c2e080e and before any implementation or run; the user's approval via Audit)
 
 **Why.** Latent hand-offs are learned slot by slot (the staircase; §92; §98's 4×4 slot 3). In our design, slot j gets its
