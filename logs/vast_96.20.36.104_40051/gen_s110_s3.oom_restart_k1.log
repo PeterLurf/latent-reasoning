@@ -1,0 +1,81 @@
+{'step': 100, 'round': 'R0', 'loss': 9.440408706665039, 'sec': 21}
+{'step': 200, 'round': 'R0', 'loss': 4.795556802749633, 'sec': 42}
+{'step': 300, 'round': 'R0', 'loss': 3.5103595712780953, 'sec': 62}
+{'step': 400, 'round': 'R0', 'loss': 3.4342675998806955, 'sec': 82}
+{'step': 500, 'round': 'R0', 'loss': 2.993115695118904, 'sec': 103}
+{'step': 600, 'round': 'R0', 'loss': 3.120493579804897, 'sec': 124}
+{'step': 700, 'round': 'R0', 'loss': 2.2620822087675334, 'sec': 145}
+{'step': 800, 'round': 'R0', 'loss': 2.3687231776304545, 'sec': 165}
+{'step': 900, 'round': 'R0', 'loss': 2.4690822630189357, 'sec': 186}
+{'step': 1000, 'round': 'R0', 'loss': 2.133857050780207, 'sec': 207}
+{'step': 1100, 'round': 'R0', 'loss': 1.682337812955957, 'sec': 228}
+{'step': 1200, 'round': 'R0', 'loss': 1.1956668845703826, 'sec': 249}
+insert length 3 ['gate 0.0022 < 0.995', 'kept share 0.000 < 0.20']
+round {'pool': 50000, 'filtered_by': {'validity': 0.0004, 'final': 0.9898, 'self_consistency': 0.00976}, 'kept_share': 4e-05, 'gate': 0.004081632653061225, 'acc_new_length_before': 0.0098, 'truth_precision_kept': 0.5, 'truth_rate_final_correct': 0.4326530612244898, 'agreement_vs_truth_gap': -0.4285714285714286, 'op_tv': 0.9746933333333333, 'length': 3, 'steps': 3760}
+{'step': 1300, 'round': 'L3', 'loss': 5.0901419019699095, 'sec': 428}
+{'step': 1400, 'round': 'L3', 'loss': 4.856197333335876, 'sec': 458}
+{'step': 1500, 'round': 'L3', 'loss': 4.803098273277283, 'sec': 487}
+{'step': 1600, 'round': 'L3', 'loss': 4.566902165412903, 'sec': 516}
+{'step': 1700, 'round': 'L3', 'loss': 4.009863703250885, 'sec': 546}
+{'step': 1800, 'round': 'L3', 'loss': 3.3864617204666136, 'sec': 575}
+{'step': 1900, 'round': 'L3', 'loss': 2.9266347742080687, 'sec': 605}
+{'step': 2000, 'round': 'L3', 'loss': 2.4023002910614015, 'sec': 634}
+{'step': 2100, 'round': 'L3', 'loss': 1.986156358718872, 'sec': 663}
+{'step': 2200, 'round': 'L3', 'loss': 1.63339639544487, 'sec': 693}
+{'step': 2300, 'round': 'L3', 'loss': 1.4069934618473052, 'sec': 722}
+{'step': 2400, 'round': 'L3', 'loss': 1.2228777533769608, 'sec': 751}
+{'step': 2500, 'round': 'L3', 'loss': 1.0929107308387755, 'sec': 780}
+{'step': 2600, 'round': 'L3', 'loss': 1.0017163294553757, 'sec': 810}
+{'step': 2700, 'round': 'L3', 'loss': 0.9220365577936173, 'sec': 839}
+{'step': 2800, 'round': 'L3', 'loss': 0.9674261027574539, 'sec': 868}
+{'step': 2900, 'round': 'L3', 'loss': 0.9140707135200501, 'sec': 898}
+{'step': 3000, 'round': 'L3', 'loss': 0.8682895821332931, 'sec': 927}
+{'step': 3100, 'round': 'L3', 'loss': 0.8320413094758987, 'sec': 957}
+{'step': 3200, 'round': 'L3', 'loss': 0.8230451500415802, 'sec': 986}
+{'step': 3300, 'round': 'L3', 'loss': 0.8091268622875214, 'sec': 1015}
+{'step': 3400, 'round': 'L3', 'loss': 0.8681206780672074, 'sec': 1044}
+{'step': 3500, 'round': 'L3', 'loss': 0.7943379676342011, 'sec': 1073}
+{'step': 3600, 'round': 'L3', 'loss': 0.6898950469493866, 'sec': 1103}
+{'step': 3700, 'round': 'L3', 'loss': 0.5523280829191208, 'sec': 1132}
+{'step': 3800, 'round': 'L3', 'loss': 0.28386453531682493, 'sec': 1161}
+{'step': 3900, 'round': 'L3', 'loss': 0.1287883293814957, 'sec': 1190}
+{'step': 4000, 'round': 'L3', 'loss': 0.12235728577710688, 'sec': 1220}
+{'step': 4100, 'round': 'L3', 'loss': 0.06315738417208194, 'sec': 1249}
+{'step': 4200, 'round': 'L3', 'loss': 0.0749152063683141, 'sec': 1278}
+{'step': 4300, 'round': 'L3', 'loss': 0.02981314280172228, 'sec': 1307}
+{'step': 4400, 'round': 'L3', 'loss': 0.03818978925453848, 'sec': 1337}
+{'step': 4500, 'round': 'L3', 'loss': 0.015802290985302534, 'sec': 1366}
+{'step': 4600, 'round': 'L3', 'loss': 0.025582610535602724, 'sec': 1396}
+{'step': 4700, 'round': 'L3', 'loss': 0.015556362222669122, 'sec': 1425}
+{'step': 4800, 'round': 'L3', 'loss': 0.013496359931978077, 'sec': 1454}
+{'step': 4900, 'round': 'L3', 'loss': 0.005268369248087765, 'sec': 1483}
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/Latent/boxes/self110.py", line 239, in <module>
+    main()
+  File "/workspace/Latent/boxes/self110.py", line 192, in main
+    items, st, _ = label_round(m, Xtr, Ytr, rows, lens, dev, amp); prev = S["prev"]; mid = (prev + Lmax) // 2
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Latent/boxes/self110.py", line 100, in label_round
+    sc = np.zeros(N, bool); sc[fc] = restart_k1(m, X, rows, lens, decs, fc, dev, amp) if len(fc) else []
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Latent/boxes/self110.py", line 84, in restart_k1
+    _, d, _ = m.chunk(torch.tensor(STTOK[st], device=dev), torch.tensor(ops[sl, None], device=dev), decode="all")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Latent/boxes/gen97.py", line 111, in chunk
+    h, past = g(x, past)                                             # op (j+1) tokens (with the start at j = 0)
+              ^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Latent/boxes/core.py", line 136, in forward
+    m = F.gelu(a @ self.w(pre + "mlp.c_fc.weight") + self.w(pre + "mlp.c_fc.bias"), approximate="tanh")
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 564.00 MiB. GPU 0 has a total capacity of 23.60 GiB of which 69.19 MiB is free. Process 925180 has 16.57 GiB memory in use. Process 925181 has 6.93 GiB memory in use. Of the allocated memory 5.31 GiB is allocated by PyTorch, and 1.31 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

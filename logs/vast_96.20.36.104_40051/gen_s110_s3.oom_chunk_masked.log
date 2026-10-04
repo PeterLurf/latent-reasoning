@@ -1,0 +1,18 @@
+RESUMED 4960 rounds
+restart_k1 OOM: bs 500
+round {'pool': 50000, 'filtered_by': {'validity': 0.00034, 'final': 0.48948, 'self_consistency': 0.51016}, 'kept_share': 2e-05, 'gate': 3.9201850327335454e-05, 'acc_new_length_before': 0.51018, 'truth_precision_kept': 0.0, 'truth_rate_final_correct': 0.15131914226351484, 'agreement_vs_truth_gap': -0.1512799404131875, 'op_tv': 0.9742062585655551, 'length': 4, 'steps': 3760}
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/Latent/boxes/self110.py", line 301, in <module>
+    main()
+  File "/workspace/Latent/boxes/self110.py", line 263, in main
+    train_round(items, n_steps, f"L{Lmax}", False); S["prev"] = Lmax; save_ck()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Latent/boxes/self110.py", line 235, in train_round
+    loss = m.chunk_masked(st, o_, tg)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Latent/boxes/self110.py", line 66, in chunk_masked
+    lg = g.logits(torch.cat([hslot[sel][:, None], hf], 1)).float()
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 74.00 MiB. GPU 0 has a total capacity of 23.60 GiB of which 35.88 MiB is free. Process 925180 has 16.62 GiB memory in use. Process 941816 has 3.21 GiB memory in use. Process 941818 has 3.70 GiB memory in use. Of the allocated memory 3.36 GiB is allocated by PyTorch, and 33.04 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

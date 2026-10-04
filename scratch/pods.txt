@@ -648,3 +648,4 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 54179841 vast offer 7899207 created 2026-10-04 13:28: label gen-n1, queue scratch/gen_q_n1.txt (logged at create by vdeploy_toy.sh)
 54179856 vast offer 50704391 created 2026-10-04 13:28: label gen-n2, queue scratch/gen_q_n2.txt (logged at create by vdeploy_toy.sh)
 54153339 vast | gen_m12 DESTROYED_VERIFIED 2026-10-04 13:38 after verified per-run fetch (boxes/runs_mult/a107_pause4_4x4_s2 boxes/runs_mult/a107_pause4_4x4_s1 boxes/runs_mult/a107_pause4_4x4_s3)
+54151372 vast | gen_e1 DESTROYED_VERIFIED 2026-10-04 14:28 after verified per-run fetch (boxes/runs_s5/s110_s1 boxes/runs_s5/s110_s3 boxes/runs_s5/s110_s2)
