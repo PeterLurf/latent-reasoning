@@ -65,6 +65,8 @@ Every host is deployed by `scratch/gen_deploy_9{7,8}.sh`, has a watcher `scratch
   - Automatic 4× follow-up (96k steps) only where M1 holds and M-SOTA misses (note 98-1); Theory says if it triggers.
 * **§99** (the user: in parallel with §98): 21 runs, 4×4 hand-off speed-ups (CTRL / K-CURR / STD / TEXT-FIRST /
   TEXTFIRST-MASK / TF-SLOT / COMBO), early stop on the valid split; `theory/score_s99.py`. It needs §98's NC-M 4×4.
+* **§100** (overnight, parallel): 12 runs, GEN2 / MASK2 at k = 2 on mult 4×4 / 5×5; `theory/score_s100.py`. It reuses
+  §98's TC-M / NC-M / ICoT-SI.
 * **§89:** final F1 from the arms in hand once fade_soft s2 lands (`python c1/score_89.py`).
 * **§83 s2/s3** (descriptive; s2/s3 fp32, s1 bf16).
 * **§94 Step 0 probes** on the new models (descriptive).
