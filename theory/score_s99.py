@@ -1,5 +1,6 @@
 """THEORY §99 scoring (rules fixed in §99; written before any §99 implementation or run; Theory is the only scorer).
 Runs: boxes/runs_mult/a99_{ctrl,kcurr,std,textfirst,textfirst_mask,tfslot,combo}_4x4_s{1,2,3}/eval.json (note 99-1).
+§102's arm statepath (gated slot-to-slot path) is scored here against CTRL by the same rule.
 steps_to_threshold must count only eligible logs (note 99-1: final configuration; k = 4; gold share 0).
 steps_to_threshold: first 1k-step valid-split log with every slot decode >= 0.95 and answer acc >= 0.95; null = censored
 (counted as 24,000).
@@ -17,7 +18,7 @@ import numpy as np
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RUNS = os.path.join(ROOT, "boxes", "runs_mult")
 CAP = 24000
-ARMS = ("ctrl", "kcurr", "std", "textfirst", "textfirst_mask", "tfslot", "combo", "markov")
+ARMS = ("ctrl", "kcurr", "std", "textfirst", "textfirst_mask", "tfslot", "combo", "markov", "statepath")
 
 
 def load(arm):
