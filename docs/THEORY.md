@@ -467,6 +467,13 @@ fork mask, Coconut and TC from the GSM8K pipelines, and an ICoT-SI checkpoint lo
   - Also descriptive: under mean ablation, slot 2 still decodes at 0.79–0.99 (slot 1 at 0.17–0.65). S_2 is largely
     recomputed from the visible operands, so on multiplication **the first true latent hand-off is at slot 3**.
 
+**98-3 addendum (2026-10-04 23:59 EDT; Audit's review).**
+* **Unaffected:** TC-M, NC-M, COCO-M and the ICoT-SI evals (no fork), and **§92/§97 on S5**. There the per-slot decode is
+  itself the answer and there is no separate answer fork.
+* **Guard test, required before any rerun:** a 50-step overfit smoke on a small fixed batch. It must reach exact decodes of
+  **both** the last slot's step text and the answer (so a shared-first-token conflict fails it).
+* **Rerun priority:** §98 → §100 → §99, with §99's relaunch on the local cards where it fits (4×4).
+
 ## 99. Speeding up the latent hand-off: k-curriculum, standardised slot inputs, a text-first stage, and their combination (pre-registered 2026-10-03 21:27 EDT, after Literature's check cfeea0b8 and before any implementation or run; the user's directive via Audit, ~21:20, to run in parallel with §98)
 
 **Why.** §98's GEN-M training logs (training-time only, unscored) show the §86 staircase on multiplication. The first slots
