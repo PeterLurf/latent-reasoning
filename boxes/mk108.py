@@ -124,6 +124,7 @@ def main():
     ap.add_argument("--donor_n", type=int, default=2000); ap.add_argument("--handoff_n", type=int, default=20000)
     ap.add_argument("--log_every", type=int, default=2000); ap.add_argument("--log_n", type=int, default=2000)
     ap.add_argument("--sched_scale", type=float, default=1.0, help="smoke only"); ap.add_argument("--data_dir", default=os.path.join(ROOT, "bench", "data", "s5"))
+    ap.add_argument("--ckpt_every", type=int, default=2000, help="training checkpoint <out>/ckpt.pt (model, optimiser, RNGs); resumed if present")
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); sc = a.sched_scale
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
@@ -132,8 +133,16 @@ def main():
     Xte, Yte = s5.load_csv(os.path.join(a.data_dir, "S5=512.csv"), limit=a.test_n); s5.check_labels(Xte, Yte)
     os.makedirs(a.out, exist_ok=True); json.dump({**vars(a), "train_sequences": len(Xtr)}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
     m = MK108(s5.load_gpt2(dev)).to(dev); opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
-    log = open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t0 = time.time(); hist = []; seg_types = [0, 0]
-    for step in range(1, a.steps + 1):
+    t0 = time.time(); hist = []; seg_types = [0, 0]; step0 = 0; ck = os.path.join(a.out, "ckpt.pt"); lp = os.path.join(a.out, "log.jsonl")
+    if os.path.exists(ck):                                                  # resume after a host restart (k1, 2026-10-04)
+        c = torch.load(ck, map_location=dev, weights_only=False); m.load_state_dict(c["model"]); opt.load_state_dict(c["opt"])
+        rng.bit_generator.state = c["np_rng"]; torch.set_rng_state(c["torch_rng"]); step0 = c["step"]; seg_types = c["seg_types"]; t0 -= c["sec"]
+        if dev.startswith("cuda"):
+            torch.cuda.set_rng_state(c["cuda_rng"], dev)
+        keep = [r for r in open(lp, encoding="utf-8") if r.strip() and json.loads(r)["step"] <= step0] if os.path.exists(lp) else []
+        open(lp, "w", newline="\n").writelines(keep); print("RESUMED", step0, flush=True); del c
+    log = open(lp, "a", newline="\n")
+    for step in range(step0 + 1, a.steps + 1):
         for gr in opt.param_groups:
             gr["lr"] = a.lr * min(1, step / 100) * 0.5 * (1 + math.cos(math.pi * step / a.steps))
         L = k_train(step, a.k, sc); rho = max(0.0, 1.0 - step / (12000 * sc))
@@ -149,8 +158,15 @@ def main():
                 m.eval(); cc = chunk_check(m, a.k, dev, amp, a.eval_bs, n=a.log_n, seed=7107)
                 rec["per_slot_acc"] = cc["per_slot_acc"]; rec["per_chunk_acc"] = cc["per_chunk_acc"]; m.train()
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
+        if a.ckpt_every and step % a.ckpt_every == 0 and step < a.steps:
+            c = {"model": m.state_dict(), "opt": opt.state_dict(), "np_rng": rng.bit_generator.state, "torch_rng": torch.get_rng_state(),
+                 "cuda_rng": torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else None, "step": step, "seg_types": seg_types,
+                 "sec": round(time.time() - t0)}
+            torch.save(c, ck + ".tmp"); os.replace(ck + ".tmp", ck); del c
     train_sec = round(time.time() - t0)
     torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
+    if os.path.exists(ck):
+        os.remove(ck)
     del opt; m.zero_grad(set_to_none=True); m.eval(); t1 = time.time()
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
