@@ -509,6 +509,24 @@ fork mask, Coconut and TC from the GSM8K pipelines, and an ICoT-SI checkpoint lo
   **both** the last slot's step text and the answer (so a shared-first-token conflict fails it).
 * **Rerun priority:** §98 → §100 → §99, with §99's relaunch on the local cards where it fits (4×4).
 
+**Note 98-4 (2026-10-04 01:38 EDT; 98-3's guard test, run by the experiments session on a Vast 3090;
+`theory/results/s98_smoke/guard98_3_output.txt`). The guard passes.**
+* **Setup:** 8 fixed problems, lr 3e-4, fp32.
+
+  | config | FIXED (final slot / answer) | OLD (final slot / answer) |
+  |---|---|---|
+  | GEN-M 4×4 | 1.000 / 1.000 | 1.000 / **0.000** |
+  | GEN-M 5×5 | 1.000 / 1.000 | 0.125 / 0.875 |
+  | MASK 4×4 | 1.000 / 1.000 | 0.5 / 0.5 |
+  | MASK 5×5 | 1.000 / 1.000 at 400 steps | 0 / 0 |
+
+* The OLD code shows the conflict exactly: the slot is learned and the answer never is.
+* **Deviation from the addendum's "50 steps", disclosed:**
+  - 50 steps at lr 1e-3 did not overfit even the fixed code (the test's optimisation, not the fix);
+  - the guard used 150 steps at lr 3e-4;
+  - MASK 5×5's slot-only fork emits 23 tokens and needed 400 steps (1.000 / 1.000; also at 800).
+* The reruns proceed C1-first: MASK 4×4 / 5×5, MASK2, MARKOV with its comparators, §105; then §101; then the C3 parts.
+
 ## 99. Speeding up the latent hand-off: k-curriculum, standardised slot inputs, a text-first stage, and their combination (pre-registered 2026-10-03 21:27 EDT, after Literature's check cfeea0b8 and before any implementation or run; the user's directive via Audit, ~21:20, to run in parallel with §98)
 
 **Why.** §98's GEN-M training logs (training-time only, unscored) show the §86 staircase on multiplication. The first slots
