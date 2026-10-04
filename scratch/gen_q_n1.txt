@@ -1,0 +1,5 @@
+# §111 (note 111-1): mk108 MK-4 2x (48k steps, schedule as §108) s6-8
+# P=3
+boxes/runs_s5/s111_mk4_2x_s6 boxes.mk108 --k 4 --steps 48000 --seed 6
+boxes/runs_s5/s111_mk4_2x_s7 boxes.mk108 --k 4 --steps 48000 --seed 7
+boxes/runs_s5/s111_mk4_2x_s8 boxes.mk108 --k 4 --steps 48000 --seed 8

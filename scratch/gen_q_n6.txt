@@ -1,0 +1,4 @@
+# §111 (note 111-1): mk108 MK-4 READ s9-10 (after n4's proof)
+# P=2
+boxes/runs_s5/s111_mk4_read_s9 boxes.mk108 --k 4 --arm read --seed 9
+boxes/runs_s5/s111_mk4_read_s10 boxes.mk108 --k 4 --arm read --seed 10

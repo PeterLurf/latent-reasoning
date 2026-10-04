@@ -1,0 +1,5 @@
+# §111 (note 111-1): mk108 MK-4 DAG s6-8 (proof host)
+# P=3
+boxes/runs_s5/s111_mk4_dag_s6 boxes.mk108 --k 4 --arm dag --seed 6
+boxes/runs_s5/s111_mk4_dag_s7 boxes.mk108 --k 4 --arm dag --seed 7
+boxes/runs_s5/s111_mk4_dag_s8 boxes.mk108 --k 4 --arm dag --seed 8
