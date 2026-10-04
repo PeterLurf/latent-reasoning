@@ -52,6 +52,14 @@ textfirst(_mask), tfslot, combo); §106 (after §98 GEN-M shows multiplication i
 * 4060 and 3070: §98 COCO reruns (`scratch/c1_q_98coco.txt`, --micro 4). Theory may run §104 (`theory/s104_serial.py`) on the 4060.
 * 2070: §83 extras (fp32).
 
+## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
+
+* **§97 C6:** complete (GEN-4 and HYB-4 s4-5 fetched).
+* **§98:** ICoT-SI done (0.998 / 0.996); COCO 4x4 s1-2 in, s3 + 5x5 local; TC/NC on y5; GEN-M/MASK rerunning (98-3).
+* **§99, §100, §101, §105:** running (above).
+* **§83 s2/s3** extras (local, fp32); **§89** soft s2 / raw s3 landed (descriptive; F1 final from the arms in hand).
+* **§94 Step 0** on the 13 §94 models: done (5d07f7fa).
+
 ## Recently done (details in THEORY / PROTOCOL12 / git log)
 
 * **§94 Step 0 on the new models** (note 94-3): the decoder arms are linearly available 10/10; no decoder 1/3.
