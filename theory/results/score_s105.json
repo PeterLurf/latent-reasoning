@@ -1,0 +1,32 @@
+{
+ "runs": {
+  "1": {
+   "cum512": 1.0,
+   "ext2048": 1.0,
+   "zero_after": 0.004033333333333333,
+   "mean_after": 0.0069
+  },
+  "2": {
+   "cum512": 1.0,
+   "ext2048": 0.998,
+   "zero_after": 0.003833333333333333,
+   "mean_after": 0.008233333333333334
+  },
+  "3": {
+   "cum512": 1.0,
+   "ext2048": 1.0,
+   "zero_after": 0.002533333333333333,
+   "mean_after": 0.008666666666666666
+  }
+ },
+ "G4_M_seeds": [
+  1,
+  2,
+  3
+ ],
+ "G4_M": true,
+ "MASK_DEC": true,
+ "HANDOFF_models": 0,
+ "HANDOFF": false,
+ "C1_unqualified": false
+}
