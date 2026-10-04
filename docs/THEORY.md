@@ -167,6 +167,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 108 | Forced latent carriage on S5 (Markov segments, sink fix, TF bootstrap; donor-scored) | registered | **open** |
 | 110 | Self-training v2: independent seeds, label-free gate, masked fork (C4 + C1) | design error (110-1): the restart gate needs non-identity restarts; s1–3 for the record | closing |
 | 110b | Self-training v2 corrected: identity-start shorts plus random textual starts for length ≥ 3 | stopped after a clear null: loss at chance from random starts (110b-2) | closed |
+| 111 | Reliability of the Markov hand-off: 2× budget vs DAgger-style own-state training; best-of-n | registered | **open** |
 
 ## Live sections
 
@@ -1554,6 +1555,60 @@ experiments session (self103 with the masked fork, the self-consistency filter a
     difference is only coverage (row e plus pairs vs every (s, a)).
 * The test and rules are unchanged. The implementation (R0 identity-start shorts; uniform random textual starts for
   length ≥ 3; the test on identity starts) matches §110b.
+
+## 111. Reliability of the Markov hand-off: twice the budget, and label-free best-of-n (pre-registered 2026-10-04 12:17 EDT, after Literature's check f41bb0bd and before any §111 run; C6 for §108's C1 design; Audit's steward pick)
+
+**Why.** §108 MK-4 (S5, Markov segments, forced carriage) shows **unqualified serial C1 in one seed**: s1 is exact to
+2,048, donor-consistent 1.0 at every slot. But it is a seed lottery.
+* s3 carries serially, but its per-hand-off accuracy of 0.99845 compounds to 0.59 at 512.
+* s2 is stuck at chance.
+* C6 is now the binding constraint for this design. §91 found a composition lottery was a budget effect (4× steps gave
+  5/5).
+* **Prior** (f41bb0bd, `docs/LIT_S111_RELIABILITY_2026-10-04.md`).
+  - **Budget fixes timing lotteries, not basin ones.** Timing: grokking (Power; Omnigrok; Nanda) and our §91. Basin:
+    Zhang 2607.20594 (fixed by an operator-first curriculum), our §87 (a warm start), Kuo 2606.29983.
+  - s2 (at chance) looks like a basin; s3 (1.5e-3 per hand-off) looks like timing or precision.
+  - Compounding: DAgger 1011.0686 (training on the learner's own visited states cuts compounding from about O(T²ε) to
+    about O(Tε)); scheduled sampling.
+  - Best-of-n: Dodge 1909.03004 (report a curve over n).
+
+**Arms (seeds 6–10 each, fresh; §108 MK-4 otherwise, including the sink fix).**
+* **MK-4-2× (the timing lever; also a longer basin warm start):** 48k steps, with the schedule shape scaled ×2 (K-CURR
+  stages at 4k / 12k; TF ρ → 0 at 24k; eligibility from then on).
+* **MK-4-DAG (the precision / compounding lever; DAgger-style):** 24k steps as §108. After ρ = 0 (12k), half of the
+  training sequences are **two chunks (8 ops)**: the second chunk starts from the model's **own** greedy-decoded
+  checkpoint of chunk 1 (its own snap), and its segments receive the model's own latents. The model is trained on its
+  own visited states, so compounding errors appear in training.
+
+**Pre-registered selection analysis (a), no new runs.** Over every MK-4 run (§108 s1–5, and each §111 arm's s6–10),
+select by a **training-data-only** criterion.
+* **Primary criterion:** the per-hand-off error on 20k long rollouts (512 ops, snaps every 4) built from the
+  **training-split** sequences (a P7 analogue; Literature (2): final loss would not separate s1 from s3).
+* **Secondary:** final training loss.
+* Report whether the selected run per group of 5 passes ACC at 512.
+* Report each criterion's AUC for picking passing runs, and a best-of-n curve over n (Dodge).
+* An honest recipe-level reading: "train n, keep the lowest-loss seed". It is reported as such, separately from per-seed
+  reliability.
+
+**Rules (fixed now).**
+* **REL (C6):** MK-4-2× cumulative ≥ 0.99 at 512 in ≥ 4/5 seeds, with §104's donor SERIAL (USE ≥ 0.90 at every in-chunk
+  slot, no BYPASS) in those seeds.
+* **SEL:** the selection criterion picks a passing run in each group of 5 (§108's s1–5; §111's s6–10).
+* Per-hand-off accuracy is reported; C6 at 2,048 (≥ 0.99) as §108.
+* **REL is applied to each arm separately.** The comparison of 2× against DAG says whether the lottery is timing or
+  compounding.
+* **Descriptive numerics check:** §108 MK-4 s3 re-evaluated with an fp32 carry (Literature (3)).
+
+**Readings.**
+* **REL.** The Markov hand-off's lottery was budget, so unqualified serial C1 on S5 is reliable: C1 + C6, with C2 to
+  2,048 if it holds.
+* **Not REL but SEL.** Per-seed reliability is not reached, but a label-free selection recipe finds a working model.
+* **Only MK-4-DAG passes REL.** Compounding from its own errors was the issue: training on its own states fixes it.
+* **Only MK-4-2× passes.** It was timing or the length of the warm start.
+* **Neither.** The lottery is not budget, and not exposure to its own states. Per-hand-off error correction (Audit's
+  (b): soft snap plus noise between segments, informed by §101) is next.
+
+**Placement.** 10 runs (5 at 2× length plus 5 DAG), about $14–16 on Vast. Proof host first. Projection to Audit.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
