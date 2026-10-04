@@ -165,6 +165,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 106 | C2 on a real task: bounded streaming multiplication (latent vs the written format) | k = 4 pilot gate fails (b = 4 ≈ 0.005); k = 2 MASK + written comparator added (106-3) | **open** |
 | 107 | Multiplication's blocker: carrier width (m latents) vs compute (pause), carriage forced | registered | **open** |
 | 108 | Forced latent carriage on S5 (Markov segments, sink fix, TF bootstrap; donor-scored) | registered | **open** |
+| 110 | Self-training v2: independent seeds, label-free gate, masked fork (C4 + C1) | registered | **open** |
 
 ## Live sections
 
@@ -1234,6 +1235,75 @@ Projection to Audit.
 **Placement.** 10 runs (2 arms × 5 seeds), about $6–8 on Vast (proof host MK-4 s1 first, ≤ 5 hosts). Projection to
 Audit. Implementation: the experiments session (gen97 plus accel99's markov segment construction). Scorer committed
 before any run.
+
+## 110. Self-training by length, v2: independent seeds, label-free precision gate, masked fork (C4 + C1) (pre-registered 2026-10-04 08:24 EDT, after Literature's check 552c57a5 and before any implementation or run; Audit's request after §103)
+
+**Why.** §103's filtered self-training (S5, final answers only, ≤ 5 % short) reached 0 / 0.9615 / 0.9585 at 512. It was
+the closest in-LM C4 result.
+* The cap was **pseudo-label precision ≈ 0.98**. The cross-seed vote on a shared pool lets correlated errors through.
+* s2's mean-removal (0.949) shows the fork bypass, so there is no C1.
+* §110 targets both: per-seed, label-free filtering with a precision gate, and the masked fork.
+* **Prior** (552c57a5, `docs/LIT_S110_SELFTRAIN_2026-10-04.md`).
+  - Multi-view agreement as a precision proxy: co-training and Dasgupta et al.'s agreement bounds, which hold only for
+    conditionally independent views; Jiang 2106.13799; self-consistency filtering (2203.11171, Huang 2210.11610).
+  - Iterated pseudo-labelling: noisy student 1911.04252, ReST 2308.08998, Lee 2502.01612, STaR 2203.14465.
+  - Confirmation bias: Arazo 1908.02983.
+
+**Task and model.** As §103: S5 under DeltaProduct's protocol, problems **from the identity**, **final answers only** (no
+ground-truth intermediate state is ever used in training or in any training decision). §97's GEN-4 recipe with
+**§105's masked fork** (each step fork sees only its slot's K/V and its own tokens). Budget 24k steps. **Seeds 1–5, each
+with an independent pool** and no cross-seed vote.
+
+**Rounds.**
+* **R0:** as §103 (lengths 1–2, ≤ 5 % of updates; final-answer slots only).
+* **R1…:** lengths ≤ 4, 8, 16, 32 (3..L_max), with §103's adaptive insertion.
+* Per round, a fresh 50k pool is labelled with the seed's own greedy decodes. A problem's per-slot targets are kept only
+  if, in order:
+  1. **Validity:** every decoded checkpoint parses.
+  2. **Final answer:** the decoded final answer is correct.
+  3. **Self-consistency:** at every position, the chained decode equals the decode from a k = 1 restart at that
+     position's previous checkpoint.
+  - Otherwise only the final slot is targeted (as §103).
+* **Label-free precision gate.** Among final-correct problems, the self-consistency rate must be ≥ 0.995. If it is not,
+  an intermediate length is inserted and the pool is relabelled, **at most 2 insertions per round** (Literature (3)).
+  - **The gate is a necessary condition, not an estimate.** Chain and restart share weights, so agreement
+    over-estimates precision.
+  - The agreement-vs-truth gap is logged per round. Truth-scored precision is computed by the scorer only and never
+    used.
+* **Final relabelling:** the last 4k updates relabel a fresh pool at the maximum length with the current model, and
+  train on it.
+
+**Measures.** §97's (cumulative at 512 / 2,048, removal, per-slot, validity, edit IIA), plus:
+* §104's donor protocol on the trained models (primary C1);
+* per round: the yield of each filter, the gate value, and the truth-scored precision (descriptive);
+* short_fraction (≤ 0.05).
+* The op distribution of kept vs all problems per round (selection bias), and the median and range over the 5 seeds.
+
+**Rules (fixed now).**
+* **SELF2 (C4):** cumulative ≥ 0.99 at 512 in ≥ 4/5 seeds.
+* **C1 (§104 / §105):** in the SELF2 seeds, mean-removal ≤ 0.06, and donor USE (≥ 0.90) at every in-chunk slot with no
+  BYPASS (≥ 0.10), in ≥ 4/5.
+* **C6:** SELF2 at 2,048 (≥ 0.99) in ≥ 4/5.
+* **Claim wording (fixed):** "C4 qualified by ≤ 5 % short problems (final answers only)".
+
+**Readings.**
+* **SELF2 + C1.** A pretrained LM learns S5 latent restarts from final answers alone, with its latents causally carrying
+  the state: C4 (qualified) + C1 + C2 (restarts) + C6 if it holds at 2,048.
+* **SELF2 without C1.** C4 holds, but the masked fork's slot still recomputes in-pass (§105's concern). Report the donor
+  split.
+* **Not SELF2, with high gate values.** Coverage or optimisation is the limit, not precision.
+* **The gate never passes** (pre-registered outcome). Self-consistency is too strict, or the views disagree benignly,
+  at this budget. Report the yields.
+* **Conditional STUDENT arm (fixed now; Literature (2), confirmation bias).** If SELF2 fails but ≥ 3/5 seeds reach ≥ 0.90
+  at 512:
+  - each seed's final filtered relabelled pool trains a **fresh** GEN-4-MASK model from pretrained GPT-2, 24k steps,
+    under the same rules;
+  - this restarts from the original model, as STaR does. A STUDENT pass means the self-trained model's labels were good
+    and its own training had locked in errors;
+  - 5 runs, about $8.
+
+**Placement.** 5 seeds, independent, about $8–10 on Vast (proof seed first). Projection to Audit. Implementation: the
+experiments session (self103 with the masked fork, the self-consistency filter and gate, and independent pools).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
