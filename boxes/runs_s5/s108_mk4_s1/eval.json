@@ -1,0 +1,114 @@
+{
+ "arm": "mk4",
+ "k": 4,
+ "seed": 1,
+ "train_sec": 10546,
+ "eval_dtype": "torch.bfloat16",
+ "test_sequences": 2000,
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "segment_types": {
+  "start_or_gold_text": 31227,
+  "latent": 50773
+ },
+ "cumulative": {
+  "128": 1.0,
+  "256": 1.0,
+  "512": 1.0
+ },
+ "final_state_acc_512": 1.0,
+ "compute_512_per_problem": {
+  "tokens_processed": 5888,
+  "flops": 1062320603136.0,
+  "seq_passes": 1792,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "latent_slots": 512,
+  "measurement_decode_flops": 505439059968.0
+ },
+ "checkpoint_validity": {
+  "snaps": 256000,
+  "valid": 256000,
+  "rate": 1.0
+ },
+ "extension_2048": {
+  "n": 500,
+  "len": 2048,
+  "cumulative": {
+   "512": 0.998,
+   "1024": 0.998,
+   "2048": 0.996
+  }
+ },
+ "chunk_check": {
+  "k": 4,
+  "n": 100000,
+  "per_chunk_acc": 1.0,
+  "per_slot_acc": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "pred_seq_acc_512": 1.0
+ },
+ "per_handoff_acc": {
+  "per_position": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "pooled": 1.0,
+  "first_slot": 1.0,
+  "n": 20000
+ },
+ "donor": {
+  "slot1": {
+   "donor_consistent": 1.0,
+   "recipient_consistent": 0.0105
+  },
+  "slot2": {
+   "donor_consistent": 1.0,
+   "recipient_consistent": 0.0095
+  },
+  "slot3": {
+   "donor_consistent": 1.0,
+   "recipient_consistent": 0.0075
+  }
+ },
+ "removal": {
+  "zero": {
+   "k": 4,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.0,
+    0.0015,
+    0.001,
+    0.0083
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "zero",
+   "acc_after_first_ablated_slot": 0.0036
+  },
+  "mean": {
+   "k": 4,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.3363,
+    0.0058,
+    0.0085,
+    0.0072
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "mean",
+   "acc_after_first_ablated_slot": 0.007166666666666667
+  }
+ },
+ "edit_iia": {
+  "n": 5000,
+  "iia": 1.0
+ },
+ "eval_sec": 1644
+}

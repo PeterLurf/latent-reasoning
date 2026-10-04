@@ -1,0 +1,114 @@
+{
+ "arm": "mk4",
+ "k": 4,
+ "seed": 3,
+ "train_sec": 10524,
+ "eval_dtype": "torch.bfloat16",
+ "test_sequences": 2000,
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "segment_types": {
+  "start_or_gold_text": 31193,
+  "latent": 50807
+ },
+ "cumulative": {
+  "128": 0.8785,
+  "256": 0.771,
+  "512": 0.59
+ },
+ "final_state_acc_512": 0.5985,
+ "compute_512_per_problem": {
+  "tokens_processed": 5888,
+  "flops": 1062320603136.0,
+  "seq_passes": 1792,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "latent_slots": 512,
+  "measurement_decode_flops": 505439059968.0
+ },
+ "checkpoint_validity": {
+  "snaps": 256000,
+  "valid": 255989,
+  "rate": 0.99995703125
+ },
+ "extension_2048": {
+  "n": 500,
+  "len": 2048,
+  "cumulative": {
+   "512": 0.618,
+   "1024": 0.336,
+   "2048": 0.12
+  }
+ },
+ "chunk_check": {
+  "k": 4,
+  "n": 100000,
+  "per_chunk_acc": 0.99595,
+  "per_slot_acc": [
+   1.0,
+   1.0,
+   1.0,
+   0.99595
+  ],
+  "pred_seq_acc_512": 0.5948460758292935
+ },
+ "per_handoff_acc": {
+  "per_position": [
+   1.0,
+   1.0,
+   0.99535
+  ],
+  "pooled": 0.99845,
+  "first_slot": 1.0,
+  "n": 20000
+ },
+ "donor": {
+  "slot1": {
+   "donor_consistent": 0.9955,
+   "recipient_consistent": 0.0105
+  },
+  "slot2": {
+   "donor_consistent": 0.995,
+   "recipient_consistent": 0.0095
+  },
+  "slot3": {
+   "donor_consistent": 0.996,
+   "recipient_consistent": 0.0075
+  }
+ },
+ "removal": {
+  "zero": {
+   "k": 4,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.0,
+    0.0,
+    0.0,
+    0.0074
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "zero",
+   "acc_after_first_ablated_slot": 0.0024666666666666665
+  },
+  "mean": {
+   "k": 4,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.9616,
+    0.0085,
+    0.0072,
+    0.0088
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "mean",
+   "acc_after_first_ablated_slot": 0.008166666666666666
+  }
+ },
+ "edit_iia": {
+  "n": 5000,
+  "iia": 0.9968
+ },
+ "eval_sec": 1657
+}
