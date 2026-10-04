@@ -168,11 +168,15 @@ def rollout(m, D, dev, amp, bs, ablate=None, mean_in=None, meter=None):
 def mean_inputs(m, rng, dev, amp, na=4, n=2000):
     """Mean slot inputs (K, D) over fresh training-distribution 4-op chunks (a first chunk and a restarted chunk with the
     true start text), used for every chunk's slots 1..k-1 under mean removal."""
-    D = gen_problems(rng, n, na, 2 * K); idx = np.arange(n); out = []
-    for c0, start in ((0, None), (K, torch.tensor(D["steps"][K - 1], device=dev))):
-        with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
-            _, _, _, ins = m.chunk(prefix_of(D, idx, dev), start, torch.tensor(D["B"][:, c0:c0 + K], device=dev))
-        out.append(ins.float().mean(0))
+    D = gen_problems(rng, n, na, 2 * K); out = []
+    for c0 in (0, K):
+        part = []
+        for s in range(0, n, 250):                                          # 250-row batches (2,000 at once OOM'd with 3 runs per card)
+            idx = np.arange(s, min(n, s + 250)); start = torch.tensor(D["steps"][K - 1][idx], device=dev) if c0 else None
+            with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+                _, _, _, ins = m.chunk(prefix_of(D, idx, dev), start, torch.tensor(D["B"][idx, c0:c0 + K], device=dev))
+            part.append(ins.float())
+        out.append(torch.cat(part).mean(0))
     return torch.stack(out).mean(0)
 
 
@@ -181,25 +185,29 @@ def main():
     ap.add_argument("--steps", type=int, default=24000); ap.add_argument("--bs", type=int, default=64); ap.add_argument("--lr", type=float, default=1e-4)
     ap.add_argument("--eval_bs", type=int, default=100); ap.add_argument("--test_n", type=int, default=1000); ap.add_argument("--log_every", type=int, default=2000)
     ap.add_argument("--test_bs", default="4,8,16,32"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
+    ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt (training FLOPs replayed from the same draws; the log is kept)")
     a = ap.parse_args(); dev = a.device; global K; K = 2 if a.arm.endswith("_k2") else 4; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
-    os.makedirs(a.out, exist_ok=True); json.dump(vars(a), open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
+    os.makedirs(a.out, exist_ok=True); json.dump(vars(a), open(os.path.join(a.out, "args_eval_only.json" if a.eval_only else "args.json"), "w", newline="\n"), indent=1)
     trng = np.random.default_rng(10600)                                     # fixed test sets (independent of the seed)
     tests = {b: gen_problems(trng, a.test_n, 4, b) for b in [int(x) for x in a.test_bs.split(",")]}; t_a5 = gen_problems(trng, a.test_n, 5, 8)
     wcs = a.arm == "wcs_k2"
     m = WCS(s5.load_gpt2(dev)).to(dev) if wcs else MultGen(s5.load_gpt2(dev), "mask" if a.arm.startswith("gens_mask") else "genm").to(dev)
     opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
-    log = open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t0 = time.time(); hist = []; flops = 0.0; fcache = {}
+    if a.eval_only:
+        m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval()
+    log = None if a.eval_only else open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t0 = time.time(); hist = []; flops = 0.0; fcache = {}
     for step in range(1, a.steps + 1):
         for gr in opt.param_groups:
             gr["lr"] = a.lr * min(1, step / 100) * 0.5 * (1 + math.cos(math.pi * step / a.steps))
         nb = int(rng.integers(1, 6)); ch = chunks_of(nb); c0, c1 = ch[int(rng.integers(len(ch)))]; last = c1 == nb
         D = gen_problems(rng, a.bs, 4, nb); idx = np.arange(a.bs); T = lambda x: torch.tensor(x, device=dev)  # noqa: E731
         start = T(D["steps"][c0 - 1]) if c0 > 0 else None
-        with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
-            loss, _, _, _ = m.chunk(prefix_of(D, idx, dev), start, T(D["B"][:, c0:c1]), step_tgt=[T(D["steps"][j]) for j in range(c0, c1)],
-                                    ans_tgt=T(D["flush"]) if last else None)
-        opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(loss.item())
+        if not a.eval_only:
+            with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+                loss, _, _, _ = m.chunk(prefix_of(D, idx, dev), start, T(D["B"][:, c0:c1]), step_tgt=[T(D["steps"][j]) for j in range(c0, c1)],
+                                        ans_tgt=T(D["flush"]) if last else None)
+            opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(loss.item())
         key = (c1 - c0, c0 > 0, last)
         if key not in fcache:                                               # forward FLOPs per trained problem of this shape (x3 for fwd+bwd)
             mt = MeterR(m.g); m.eval()
@@ -212,14 +220,19 @@ def main():
             ft = (c1 - c0) * (4 + D["W"]) + ((1 + D["W"]) if last else 0)
             fcache[key] = mt.flops if wcs else mt.flops + 2 * 768 * 50257 * ft + ft * 2 * m.g.n_nonemb; m.train()
         flops += 3 * fcache[key] * a.bs
+        if a.eval_only:
+            continue
         if step % 100 == 0 or step == a.steps:
             rec = {"step": step, "loss": float(np.mean(hist)), "sec": round(time.time() - t0)}; hist = []
             if a.log_every and step % a.log_every == 0:
                 m.eval(); o4, p4, _ = rollout(m, subset(tests[4], 200), dev, amp, a.eval_bs)
                 rec["acc_b4_200"] = float(o4.mean()); rec["per_slot_b4_200"] = p4.mean(0).round(3).tolist(); m.train()
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
-    train_sec = round(time.time() - t0)
-    torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
+    if a.eval_only:
+        train_sec = [json.loads(r) for r in open(os.path.join(a.out, "log.jsonl"), encoding="utf-8") if r.strip()][-1]["sec"]
+    else:
+        train_sec = round(time.time() - t0)
+        torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
     del opt; m.zero_grad(set_to_none=True); m.eval(); t1 = time.time()
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()

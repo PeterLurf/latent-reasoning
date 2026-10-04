@@ -1,0 +1,5 @@
+# §110 self-training v2 (independent seeds, masked fork, self-consistency gate): proof host s1-3
+# P=3
+boxes/runs_s5/s110_s1 boxes.self110 --seed 1
+boxes/runs_s5/s110_s2 boxes.self110 --seed 2
+boxes/runs_s5/s110_s3 boxes.self110 --seed 3
