@@ -63,6 +63,8 @@ Every host is deployed by `scratch/gen_deploy_9{7,8}.sh`, has a watcher `scratch
 * **§98:** 30 runs (`theory/score_s98.py`, keys fixed). The SOTA bar is ICoT-SI, our greedy eval: 4x4 0.998, 5x5
   0.996 (`boxes/runs_mult/icotsi_*`).
   - Automatic 4× follow-up (96k steps) only where M1 holds and M-SOTA misses (note 98-1); Theory says if it triggers.
+* **§99** (the user: in parallel with §98): 21 runs, 4×4 hand-off speed-ups (CTRL / K-CURR / STD / TEXT-FIRST /
+  TEXTFIRST-MASK / TF-SLOT / COMBO), early stop on the valid split; `theory/score_s99.py`. It needs §98's NC-M 4×4.
 * **§89:** final F1 from the arms in hand once fade_soft s2 lands (`python c1/score_89.py`).
 * **§83 s2/s3** (descriptive; s2/s3 fp32, s1 bf16).
 * **§94 Step 0 probes** on the new models (descriptive).
