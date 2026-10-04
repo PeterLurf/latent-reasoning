@@ -564,3 +564,4 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 54093642 vast offer 50704391 created 2026-10-03 22:20: label gen-z4, queue scratch/gen_q_z4.txt (logged at create by vdeploy_toy.sh)
 54093648 vast offer 49745142 created 2026-10-03 22:20: label gen-z5, queue scratch/gen_q_z5.txt (logged at create by vdeploy_toy.sh)
 54069464 vast | gen_y1 DESTROYED_VERIFIED 2026-10-03 22:23 after verified per-run fetch (boxes/runs_mult/m98_genm_4x4_s3 boxes/runs_mult/m98_genm_4x4_s2 boxes/runs_mult/m98_genm_4x4_s1)
+54093635 vast | gen_z2 DESTROYED 2026-10-03 22:41 stuck loading 21 min (15-min rule); never started; z2's queue (kcurr s1-3, std s1) deferred until z1 proves eval.json + gen4 partial drain (Audit)
