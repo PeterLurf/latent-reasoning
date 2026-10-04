@@ -1,0 +1,236 @@
+{
+ "arm": "mk4_read",
+ "k": 4,
+ "seed": 8,
+ "steps": 24000,
+ "train_sec": 15697,
+ "eval_dtype": "torch.bfloat16",
+ "test_sequences": 2000,
+ "gpu": "NVIDIA RTX A5000",
+ "segment_types": {
+  "start_or_gold_text": 31073,
+  "latent": 50927
+ },
+ "cumulative": {
+  "128": 1.0,
+  "256": 1.0,
+  "512": 1.0
+ },
+ "final_state_acc_512": 1.0,
+ "compute_512_per_problem": {
+  "tokens_processed": 5888,
+  "flops": 1062320603136.0,
+  "seq_passes": 1792,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "latent_slots": 512,
+  "measurement_decode_flops": 505439059968.0
+ },
+ "checkpoint_validity": {
+  "snaps": 256000,
+  "valid": 256000,
+  "rate": 1.0
+ },
+ "extension_2048": {
+  "n": 500,
+  "len": 2048,
+  "cumulative": {
+   "512": 1.0,
+   "1024": 1.0,
+   "2048": 1.0
+  }
+ },
+ "chunk_check": {
+  "k": 4,
+  "n": 100000,
+  "per_chunk_acc": 1.0,
+  "per_slot_acc": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "pred_seq_acc_512": 1.0
+ },
+ "per_handoff_acc": {
+  "per_position": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "pooled": 1.0,
+  "first_slot": 1.0,
+  "n": 20000
+ },
+ "donor": {
+  "slot1": {
+   "donor_consistent": 1.0,
+   "recipient_consistent": 0.0105
+  },
+  "slot2": {
+   "donor_consistent": 1.0,
+   "recipient_consistent": 0.0095
+  },
+  "slot3": {
+   "donor_consistent": 1.0,
+   "recipient_consistent": 0.0075
+  }
+ },
+ "removal": {
+  "zero": {
+   "k": 4,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.0002,
+    0.0,
+    0.0,
+    0.0081
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "zero",
+   "acc_after_first_ablated_slot": 0.0027
+  },
+  "mean": {
+   "k": 4,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.0923,
+    0.0089,
+    0.0081,
+    0.0086
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "mean",
+   "acc_after_first_ablated_slot": 0.008533333333333334
+  }
+ },
+ "edit_iia": {
+  "n": 5000,
+  "iia": 1.0
+ },
+ "train_handoff_err": {
+  "n": 20000,
+  "len": 128,
+  "note": "training rows are 128 ops: 128-op rollouts",
+  "in_chunk_err": 0.0,
+  "snap_err": 0.0,
+  "pooled_err": 0.0,
+  "first_pos_err": 0.0,
+  "cumulative_128": 1.0
+ },
+ "reader_acc": {
+  "n": 20000,
+  "per_slot_acc": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ "ratio_per_1k": [
+  [
+   1000,
+   null
+  ],
+  [
+   2000,
+   null
+  ],
+  [
+   3000,
+   0.8862380310759186
+  ],
+  [
+   4000,
+   0.03629189234767208
+  ],
+  [
+   5000,
+   0.002520809973182033
+  ],
+  [
+   6000,
+   0.0005490921249185538
+  ],
+  [
+   7000,
+   0.0004179817184923506
+  ],
+  [
+   8000,
+   0.001184273873853615
+  ],
+  [
+   9000,
+   0.0010790500607852597
+  ],
+  [
+   10000,
+   8.258437578281111e-05
+  ],
+  [
+   11000,
+   3.6205033354546283e-07
+  ],
+  [
+   12000,
+   1.3246906491118612e-07
+  ],
+  [
+   13000,
+   7.660883828649442e-08
+  ],
+  [
+   14000,
+   4.42142705095217e-08
+  ],
+  [
+   15000,
+   3.133764476335079e-08
+  ],
+  [
+   16000,
+   2.4872674858338348e-08
+  ],
+  [
+   17000,
+   1.5871231474215397e-08
+  ],
+  [
+   18000,
+   1.3609439248519299e-08
+  ],
+  [
+   19000,
+   1.0009333815783039e-08
+  ],
+  [
+   20000,
+   8.616475425130467e-09
+  ],
+  [
+   21000,
+   6.829379901501457e-09
+  ],
+  [
+   22000,
+   5.960467800816556e-09
+  ],
+  [
+   23000,
+   7.811031510465947e-09
+  ],
+  [
+   24000,
+   6.563515059006399e-09
+  ]
+ ],
+ "early_escape": true,
+ "early_window_min_ratio": 0.7753670466093642,
+ "escape_step": 2700,
+ "final_train_loss": 2.267487575657867e-08,
+ "eval_sec": 3678
+}
