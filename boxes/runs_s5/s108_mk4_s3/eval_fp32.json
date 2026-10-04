@@ -1,0 +1,221 @@
+{
+ "arm": "mk4",
+ "k": 4,
+ "seed": 3,
+ "eval_only": true,
+ "eval_dtype": "None",
+ "gpu": "NVIDIA RTX A5000",
+ "cumulative": {
+  "128": 0.875,
+  "256": 0.7695,
+  "512": 0.59
+ },
+ "final_state_acc_512": 0.5985,
+ "compute_512_per_problem": {
+  "tokens_processed": 5888,
+  "flops": 1062320603136.0,
+  "seq_passes": 1792,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "latent_slots": 512,
+  "measurement_decode_flops": 505439059968.0
+ },
+ "checkpoint_validity": {
+  "snaps": 256000,
+  "valid": 255993,
+  "rate": 0.99997265625
+ },
+ "extension_2048": {
+  "n": 500,
+  "len": 2048,
+  "cumulative": {
+   "512": 0.618,
+   "1024": 0.34,
+   "2048": 0.114
+  }
+ },
+ "chunk_check": {
+  "k": 4,
+  "n": 100000,
+  "per_chunk_acc": 0.996,
+  "per_slot_acc": [
+   1.0,
+   1.0,
+   1.0,
+   0.996
+  ],
+  "pred_seq_acc_512": 0.5986807833351095
+ },
+ "per_handoff_acc": {
+  "per_position": [
+   1.0,
+   1.0,
+   0.99545
+  ],
+  "pooled": 0.9984833333333333,
+  "first_slot": 1.0,
+  "n": 20000
+ },
+ "donor": {
+  "slot1": {
+   "donor_consistent": 0.995,
+   "recipient_consistent": 0.0105
+  },
+  "slot2": {
+   "donor_consistent": 0.9955,
+   "recipient_consistent": 0.0095
+  },
+  "slot3": {
+   "donor_consistent": 0.9965,
+   "recipient_consistent": 0.0075
+  }
+ },
+ "removal": {
+  "zero": {
+   "k": 4,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.0,
+    0.0,
+    0.0,
+    0.0072
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "zero",
+   "acc_after_first_ablated_slot": 0.0024
+  },
+  "mean": {
+   "k": 4,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.9603,
+    0.0088,
+    0.0075,
+    0.0083
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "mean",
+   "acc_after_first_ablated_slot": 0.0082
+  }
+ },
+ "edit_iia": {
+  "n": 5000,
+  "iia": 0.997
+ },
+ "train_handoff_err": {
+  "n": 20000,
+  "len": 128,
+  "note": "training rows are 128 ops: 128-op rollouts",
+  "in_chunk_err": 0.0013707163726551785,
+  "snap_err": 0.0,
+  "pooled_err": 0.0010366628768968544,
+  "first_pos_err": 0.0,
+  "cumulative_128": 0.8766
+ },
+ "ratio_per_1k": [
+  [
+   1000,
+   null
+  ],
+  [
+   2000,
+   null
+  ],
+  [
+   3000,
+   1.0703495854593068
+  ],
+  [
+   4000,
+   0.8507971879616765
+  ],
+  [
+   5000,
+   0.7123911407117882
+  ],
+  [
+   6000,
+   0.7321568800430327
+  ],
+  [
+   7000,
+   0.44346805789076
+  ],
+  [
+   8000,
+   0.21330893581414911
+  ],
+  [
+   9000,
+   0.21717598244974384
+  ],
+  [
+   10000,
+   0.17372647041647754
+  ],
+  [
+   11000,
+   0.15816734157752937
+  ],
+  [
+   12000,
+   0.1002361501501273
+  ],
+  [
+   13000,
+   0.0537486644820903
+  ],
+  [
+   14000,
+   0.033168424648142854
+  ],
+  [
+   15000,
+   0.021190989331693572
+  ],
+  [
+   16000,
+   0.014184761810669267
+  ],
+  [
+   17000,
+   0.009428781955743296
+  ],
+  [
+   18000,
+   0.006066261059906946
+  ],
+  [
+   19000,
+   0.00361973460906396
+  ],
+  [
+   20000,
+   0.002689757645236781
+  ],
+  [
+   21000,
+   0.0016517243703511632
+  ],
+  [
+   22000,
+   0.001484744391478956
+  ],
+  [
+   23000,
+   0.000951557260425775
+  ],
+  [
+   24000,
+   0.000883275074060394
+  ]
+ ],
+ "early_escape": true,
+ "early_window_min_ratio": 0.8268266856306643,
+ "escape_step": 2600,
+ "final_train_loss": 0.003439719722548034,
+ "eval_sec": 5132
+}
