@@ -1,0 +1,269 @@
+{'step': 100, 'loss': 1.3487464283406734, 'sec': 47, 'stage': 0}
+{'step': 200, 'loss': 0.9714949110150337, 'sec': 91, 'stage': 0}
+{'step': 300, 'loss': 0.7036854314804077, 'sec': 136, 'stage': 0}
+{'step': 400, 'loss': 0.39470667473971843, 'sec': 182, 'stage': 0}
+{'step': 500, 'loss': 0.2829334658011794, 'sec': 228, 'stage': 0}
+{'step': 600, 'loss': 0.15005759852938355, 'sec': 274, 'stage': 0}
+{'step': 700, 'loss': 0.05291959524154663, 'sec': 319, 'stage': 0}
+{'step': 800, 'loss': 0.01589043650426902, 'sec': 365, 'stage': 0}
+{'step': 900, 'loss': 0.009034482858260163, 'sec': 411, 'stage': 0}
+{'step': 1000, 'loss': 0.008265592664538418, 'sec': 458, 'stage': 0}
+{'step': 1100, 'loss': 0.0012230115396960172, 'sec': 504, 'stage': 0}
+{'step': 1200, 'loss': 0.0003238663647061912, 'sec': 550, 'stage': 0}
+{'step': 1300, 'loss': 0.00020281227141822456, 'sec': 597, 'stage': 0}
+{'step': 1400, 'loss': 0.0001733433627305203, 'sec': 642, 'stage': 0}
+{'step': 1500, 'loss': 0.00013352906353247818, 'sec': 689, 'stage': 0}
+{'step': 1600, 'loss': 0.00021222873678198085, 'sec': 734, 'stage': 0}
+{'step': 1700, 'loss': 0.0006147103344665084, 'sec': 779, 'stage': 0}
+{'step': 1800, 'loss': 0.0001190870121899934, 'sec': 825, 'stage': 0}
+{'step': 1900, 'loss': 8.329971721650509e-05, 'sec': 870, 'stage': 0}
+{'step': 2000, 'loss': 7.077130298966949e-05, 'sec': 916, 'stage': 0}
+{'step': 2100, 'loss': 6.360313735058298e-05, 'sec': 962, 'stage': 0}
+{'step': 2200, 'loss': 5.314301276484912e-05, 'sec': 1009, 'stage': 0}
+{'step': 2300, 'loss': 5.486317814757058e-05, 'sec': 1055, 'stage': 0}
+{'step': 2400, 'loss': 4.4382065107129164e-05, 'sec': 1101, 'stage': 0}
+{'step': 2500, 'loss': 3.887465630214138e-05, 'sec': 1146, 'stage': 0}
+{'step': 2600, 'loss': 3.5612899541774826e-05, 'sec': 1192, 'stage': 0}
+{'step': 2700, 'loss': 3.433212678828568e-05, 'sec': 1238, 'stage': 0}
+{'step': 2800, 'loss': 3.0499401286760986e-05, 'sec': 1284, 'stage': 0}
+{'step': 2900, 'loss': 2.721776997532288e-05, 'sec': 1328, 'stage': 0}
+{'step': 3000, 'loss': 2.534524140173744e-05, 'sec': 1373, 'stage': 0}
+{'step': 3100, 'loss': 2.4475357549818e-05, 'sec': 1418, 'stage': 0}
+{'step': 3200, 'loss': 2.2611627291553304e-05, 'sec': 1464, 'stage': 0}
+{'step': 3300, 'loss': 2.027921230364882e-05, 'sec': 1509, 'stage': 0}
+{'step': 3400, 'loss': 1.9294549942969753e-05, 'sec': 1554, 'stage': 0}
+{'step': 3500, 'loss': 1.8007159546868934e-05, 'sec': 1599, 'stage': 0}
+{'step': 3600, 'loss': 1.6806717435429165e-05, 'sec': 1644, 'stage': 0}
+{'step': 3700, 'loss': 1.5640172855455602e-05, 'sec': 1688, 'stage': 0}
+{'step': 3800, 'loss': 1.5001704807673378e-05, 'sec': 1734, 'stage': 0}
+{'step': 3900, 'loss': 1.3851628348220401e-05, 'sec': 1778, 'stage': 0}
+{'step': 4000, 'loss': 1.3168868010779988e-05, 'sec': 1823, 'stage': 0}
+{'step': 4100, 'loss': 0.9564096489548684, 'sec': 1883, 'stage': 1}
+{'step': 4200, 'loss': 0.18728491580113768, 'sec': 1943, 'stage': 1}
+{'step': 4300, 'loss': 0.12072679566219449, 'sec': 2003, 'stage': 1}
+{'step': 4400, 'loss': 0.10068103325553239, 'sec': 2064, 'stage': 1}
+{'step': 4500, 'loss': 0.07847439442761242, 'sec': 2124, 'stage': 1}
+{'step': 4600, 'loss': 0.06888190286234021, 'sec': 2184, 'stage': 1}
+{'step': 4700, 'loss': 0.06108587016351521, 'sec': 2245, 'stage': 1}
+{'step': 4800, 'loss': 0.06085815242491663, 'sec': 2306, 'stage': 1}
+{'step': 4900, 'loss': 0.053491620300337675, 'sec': 2367, 'stage': 1}
+{'step': 5000, 'loss': 0.04691445787902922, 'sec': 2427, 'stage': 1}
+{'step': 5100, 'loss': 0.04379615820944309, 'sec': 2486, 'stage': 1}
+{'step': 5200, 'loss': 0.04631344509776682, 'sec': 2545, 'stage': 1}
+{'step': 5300, 'loss': 0.03156050995923579, 'sec': 2604, 'stage': 1}
+{'step': 5400, 'loss': 0.025079714118037374, 'sec': 2664, 'stage': 1}
+{'step': 5500, 'loss': 0.022316927389474585, 'sec': 2724, 'stage': 1}
+{'step': 5600, 'loss': 0.017698526802705603, 'sec': 2784, 'stage': 1}
+{'step': 5700, 'loss': 0.014121483674971387, 'sec': 2846, 'stage': 1}
+{'step': 5800, 'loss': 0.016299747293815017, 'sec': 2909, 'stage': 1}
+{'step': 5900, 'loss': 0.02034881777537521, 'sec': 2967, 'stage': 1}
+{'step': 6000, 'loss': 0.014934215985122137, 'sec': 3027, 'stage': 1}
+{'step': 6100, 'loss': 0.007454074269335251, 'sec': 3085, 'stage': 1}
+{'step': 6200, 'loss': 0.004497904744785047, 'sec': 3147, 'stage': 1}
+{'step': 6300, 'loss': 0.0035551459603448167, 'sec': 3208, 'stage': 1}
+{'step': 6400, 'loss': 0.005325492566626054, 'sec': 3270, 'stage': 1}
+{'step': 6500, 'loss': 0.006398681533319177, 'sec': 3332, 'stage': 1}
+{'step': 6600, 'loss': 0.0017933539357909466, 'sec': 3403, 'stage': 1}
+{'step': 6700, 'loss': 0.001182966745691374, 'sec': 3475, 'stage': 1}
+{'step': 6800, 'loss': 0.0009787195816534221, 'sec': 3536, 'stage': 1}
+{'step': 6900, 'loss': 0.00097722511181928, 'sec': 3613, 'stage': 1}
+{'step': 7000, 'loss': 0.0007353454647636682, 'sec': 3693, 'stage': 1}
+{'step': 7100, 'loss': 0.001290155733913707, 'sec': 3753, 'stage': 1}
+{'step': 7200, 'loss': 0.0017721236777651938, 'sec': 3814, 'stage': 1}
+{'step': 7300, 'loss': 0.001422723755968036, 'sec': 3875, 'stage': 1}
+{'step': 7400, 'loss': 0.0006014362188398082, 'sec': 3932, 'stage': 1}
+{'step': 7500, 'loss': 0.003090465648492682, 'sec': 3991, 'stage': 1}
+{'step': 7600, 'loss': 0.016316055064671674, 'sec': 4052, 'stage': 1}
+{'step': 7700, 'loss': 0.008057883834262612, 'sec': 4113, 'stage': 1}
+{'step': 7800, 'loss': 0.015097451032488607, 'sec': 4172, 'stage': 1}
+{'step': 7900, 'loss': 0.0008751710501019261, 'sec': 4234, 'stage': 1}
+{'step': 8000, 'loss': 0.0002737400784280908, 'sec': 4294, 'stage': 1}
+{'step': 8100, 'loss': 0.7617292013019323, 'sec': 4370, 'stage': 2}
+{'step': 8200, 'loss': 0.17945619098842144, 'sec': 4448, 'stage': 2}
+{'step': 8300, 'loss': 0.16867094457149506, 'sec': 4526, 'stage': 2}
+{'step': 8400, 'loss': 0.1636781220510602, 'sec': 4607, 'stage': 2}
+{'step': 8500, 'loss': 0.15942432461306452, 'sec': 4685, 'stage': 2}
+{'step': 8600, 'loss': 0.1555840977653861, 'sec': 4765, 'stage': 2}
+{'step': 8700, 'loss': 0.15088250370696188, 'sec': 4842, 'stage': 2}
+{'step': 8800, 'loss': 0.13996481126174332, 'sec': 4923, 'stage': 2}
+{'step': 8900, 'loss': 0.13422385774552822, 'sec': 5002, 'stage': 2}
+{'step': 9000, 'loss': 0.12949865270406008, 'sec': 5082, 'stage': 2}
+{'step': 9100, 'loss': 0.12537321485579014, 'sec': 5156, 'stage': 2}
+{'step': 9200, 'loss': 0.12167159549891948, 'sec': 5229, 'stage': 2}
+{'step': 9300, 'loss': 0.12547399798408151, 'sec': 5301, 'stage': 2}
+{'step': 9400, 'loss': 0.11708269206807018, 'sec': 5373, 'stage': 2}
+{'step': 9500, 'loss': 0.11673974992707371, 'sec': 5445, 'stage': 2}
+{'step': 9600, 'loss': 0.11257249996066093, 'sec': 5515, 'stage': 2}
+{'step': 9700, 'loss': 0.11136195581406355, 'sec': 5607, 'stage': 2}
+{'step': 9800, 'loss': 0.11107749169692398, 'sec': 5692, 'stage': 2}
+{'step': 9900, 'loss': 0.10997357971966266, 'sec': 5765, 'stage': 2}
+{'step': 10000, 'loss': 0.10721064200624823, 'sec': 5844, 'stage': 2}
+{'step': 10100, 'loss': 0.10557808842509984, 'sec': 5933, 'stage': 2}
+{'step': 10200, 'loss': 0.10360098749399185, 'sec': 6021, 'stage': 2}
+{'step': 10300, 'loss': 0.10243157289922238, 'sec': 6109, 'stage': 2}
+{'step': 10400, 'loss': 0.10287001051008701, 'sec': 6196, 'stage': 2}
+{'step': 10500, 'loss': 0.10281547022983432, 'sec': 6281, 'stage': 2}
+{'step': 10600, 'loss': 0.0988816696126014, 'sec': 6369, 'stage': 2}
+{'step': 10700, 'loss': 0.09858507296070457, 'sec': 6456, 'stage': 2}
+{'step': 10800, 'loss': 0.09985547911375761, 'sec': 6544, 'stage': 2}
+{'step': 10900, 'loss': 0.09604287818074227, 'sec': 6630, 'stage': 2}
+{'step': 11000, 'loss': 0.09426076194271445, 'sec': 6719, 'stage': 2}
+{'step': 11100, 'loss': 0.09478404937312007, 'sec': 6808, 'stage': 2}
+{'step': 11200, 'loss': 0.09349956255406142, 'sec': 6895, 'stage': 2}
+{'step': 11300, 'loss': 0.09297079959884286, 'sec': 6980, 'stage': 2}
+{'step': 11400, 'loss': 0.09211791252717376, 'sec': 7067, 'stage': 2}
+{'step': 11500, 'loss': 0.09114792089909315, 'sec': 7158, 'stage': 2}
+{'step': 11600, 'loss': 0.09053347222507, 'sec': 7867, 'stage': 2}
+{'step': 11700, 'loss': 0.08965074569918215, 'sec': 8016, 'stage': 2}
+{'step': 11800, 'loss': 0.09151449888944625, 'sec': 8167, 'stage': 2}
+{'step': 11900, 'loss': 0.0899058978818357, 'sec': 8300, 'stage': 2}
+{'step': 12000, 'loss': 0.08989088739268482, 'sec': 10286, 'stage': 2}
+{'step': 12100, 'loss': 1.013652809932828, 'sec': 10395, 'stage': 3}
+{'step': 12200, 'loss': 0.2996960037201643, 'sec': 10514, 'stage': 3}
+{'step': 12300, 'loss': 0.26936943471431735, 'sec': 10623, 'stage': 3}
+{'step': 12400, 'loss': 0.2560773677006364, 'sec': 10734, 'stage': 3}
+{'step': 12500, 'loss': 0.25458682533353566, 'sec': 10842, 'stage': 3}
+{'step': 12600, 'loss': 0.2564400965347886, 'sec': 10950, 'stage': 3}
+{'step': 12700, 'loss': 0.2553209657594562, 'sec': 11054, 'stage': 3}
+{'step': 12800, 'loss': 0.25541716642677786, 'sec': 11160, 'stage': 3}
+{'step': 12900, 'loss': 0.2547450209036469, 'sec': 11271, 'stage': 3}
+{'step': 13000, 'loss': 0.2527820472791791, 'sec': 11382, 'stage': 3}
+{'step': 13100, 'loss': 0.25241067200899125, 'sec': 11490, 'stage': 3}
+{'step': 13200, 'loss': 0.2507067991420627, 'sec': 11589, 'stage': 3}
+{'step': 13300, 'loss': 0.25046822633594273, 'sec': 11667, 'stage': 3}
+{'step': 13400, 'loss': 0.24895555697381497, 'sec': 11746, 'stage': 3}
+{'step': 13500, 'loss': 0.2471380392089486, 'sec': 11859, 'stage': 3}
+{'step': 13600, 'loss': 0.2477626583352685, 'sec': 11938, 'stage': 3}
+{'step': 13700, 'loss': 0.2464144392311573, 'sec': 12014, 'stage': 3}
+{'step': 13800, 'loss': 0.24548998534679412, 'sec': 12129, 'stage': 3}
+{'step': 13900, 'loss': 0.24465312637388706, 'sec': 12249, 'stage': 3}
+{'step': 14000, 'loss': 0.24280308239161968, 'sec': 12338, 'stage': 3}
+{'step': 14100, 'loss': 0.24346365544945, 'sec': 12415, 'stage': 3}
+{'step': 14200, 'loss': 0.24204444158822297, 'sec': 12495, 'stage': 3}
+{'step': 14300, 'loss': 0.2422393472492695, 'sec': 12571, 'stage': 3}
+{'step': 14400, 'loss': 0.24033500999212265, 'sec': 12648, 'stage': 3}
+{'step': 14500, 'loss': 0.23935460399836303, 'sec': 12726, 'stage': 3}
+{'step': 14600, 'loss': 0.24110745929181576, 'sec': 12802, 'stage': 3}
+{'step': 14700, 'loss': 0.24134404364973305, 'sec': 12878, 'stage': 3}
+{'step': 14800, 'loss': 0.238654569350183, 'sec': 12954, 'stage': 3}
+{'step': 14900, 'loss': 0.238512625657022, 'sec': 13031, 'stage': 3}
+{'step': 15000, 'loss': 0.23966445039957762, 'sec': 13107, 'stage': 3}
+{'step': 15100, 'loss': 0.2354552524909377, 'sec': 13184, 'stage': 3}
+{'step': 15200, 'loss': 0.2357290843501687, 'sec': 13260, 'stage': 3}
+{'step': 15300, 'loss': 0.23790851201862095, 'sec': 13334, 'stage': 3}
+{'step': 15400, 'loss': 0.23359685711562633, 'sec': 13410, 'stage': 3}
+{'step': 15500, 'loss': 0.2327934591472149, 'sec': 13490, 'stage': 3}
+{'step': 15600, 'loss': 0.23334038242697716, 'sec': 13617, 'stage': 3}
+{'step': 15700, 'loss': 0.23209906738251448, 'sec': 13726, 'stage': 3}
+{'step': 15800, 'loss': 0.23083342529833317, 'sec': 13835, 'stage': 3}
+{'step': 15900, 'loss': 0.2320190817117691, 'sec': 13943, 'stage': 3}
+{'step': 16000, 'loss': 0.23109270300716162, 'sec': 14053, 'stage': 3}
+{'step': 16100, 'loss': 1.4683048698306083, 'sec': 14177, 'stage': 4}
+{'step': 16200, 'loss': 0.6911608099937439, 'sec': 14301, 'stage': 4}
+{'step': 16300, 'loss': 0.6864828531444073, 'sec': 14431, 'stage': 4}
+{'step': 16400, 'loss': 0.6141570916771889, 'sec': 14563, 'stage': 4}
+{'step': 16500, 'loss': 0.5505492485314608, 'sec': 14693, 'stage': 4}
+{'step': 16600, 'loss': 0.5489178428798914, 'sec': 14799, 'stage': 4}
+{'step': 16700, 'loss': 0.5475534873455763, 'sec': 14896, 'stage': 4}
+{'step': 16800, 'loss': 0.5422666447609663, 'sec': 15026, 'stage': 4}
+{'step': 16900, 'loss': 0.5447832456976175, 'sec': 15129, 'stage': 4}
+{'step': 17000, 'loss': 0.5416879313439131, 'sec': 15219, 'stage': 4}
+{'step': 17100, 'loss': 0.5445165561884642, 'sec': 15361, 'stage': 4}
+{'step': 17200, 'loss': 0.5407197215408087, 'sec': 15507, 'stage': 4}
+{'step': 17300, 'loss': 0.5393715716153383, 'sec': 15655, 'stage': 4}
+{'step': 17400, 'loss': 0.5377834398299456, 'sec': 15797, 'stage': 4}
+{'step': 17500, 'loss': 0.5394358264654875, 'sec': 15927, 'stage': 4}
+{'step': 17600, 'loss': 0.537277992144227, 'sec': 16058, 'stage': 4}
+{'step': 17700, 'loss': 0.5360011693090201, 'sec': 16189, 'stage': 4}
+{'step': 17800, 'loss': 0.5364833334833383, 'sec': 16316, 'stage': 4}
+{'step': 17900, 'loss': 0.5373226734250784, 'sec': 16445, 'stage': 4}
+{'step': 18000, 'loss': 0.5343055264651775, 'sec': 16578, 'stage': 4}
+{'step': 18100, 'loss': 0.532933306246996, 'sec': 16705, 'stage': 4}
+{'step': 18200, 'loss': 0.5332471498101949, 'sec': 16831, 'stage': 4}
+{'step': 18300, 'loss': 0.5319977115094662, 'sec': 16942, 'stage': 4}
+{'step': 18400, 'loss': 0.5336213897913694, 'sec': 17029, 'stage': 4}
+{'step': 18500, 'loss': 0.5323889326304198, 'sec': 17120, 'stage': 4}
+{'step': 18600, 'loss': 0.5339087879657746, 'sec': 17208, 'stage': 4}
+{'step': 18700, 'loss': 0.5305792172253132, 'sec': 17296, 'stage': 4}
+{'step': 18800, 'loss': 0.5304833969473839, 'sec': 17383, 'stage': 4}
+{'step': 18900, 'loss': 0.5307678285986185, 'sec': 17471, 'stage': 4}
+{'step': 19000, 'loss': 0.5309040725231171, 'sec': 17561, 'stage': 4}
+{'step': 19100, 'loss': 0.5294816167652607, 'sec': 17650, 'stage': 4}
+{'step': 19200, 'loss': 0.5267021323740483, 'sec': 17740, 'stage': 4}
+{'step': 19300, 'loss': 0.5282334181666374, 'sec': 17828, 'stage': 4}
+{'step': 19400, 'loss': 0.5301904103159905, 'sec': 17916, 'stage': 4}
+{'step': 19500, 'loss': 0.5287934997677803, 'sec': 18006, 'stage': 4}
+{'step': 19600, 'loss': 0.527469577640295, 'sec': 18094, 'stage': 4}
+{'step': 19700, 'loss': 0.5280515619367361, 'sec': 18185, 'stage': 4}
+{'step': 19800, 'loss': 0.5268280647695065, 'sec': 18275, 'stage': 4}
+{'step': 19900, 'loss': 0.5254123970866204, 'sec': 18365, 'stage': 4}
+{'step': 20000, 'loss': 0.5258529333025217, 'sec': 18455, 'stage': 4}
+{'step': 20100, 'loss': 1.5945677244663239, 'sec': 18558, 'stage': 5}
+{'step': 20200, 'loss': 1.3499874198436737, 'sec': 18683, 'stage': 5}
+{'step': 20300, 'loss': 1.2979212629795074, 'sec': 18830, 'stage': 5}
+{'step': 20400, 'loss': 1.2970563146471976, 'sec': 18937, 'stage': 5}
+{'step': 20500, 'loss': 1.2941285854578017, 'sec': 19089, 'stage': 5}
+{'step': 20600, 'loss': 1.291904597878456, 'sec': 19224, 'stage': 5}
+{'step': 20700, 'loss': 1.2900850594043731, 'sec': 19358, 'stage': 5}
+{'step': 20800, 'loss': 1.2772044491767884, 'sec': 19465, 'stage': 5}
+{'step': 20900, 'loss': 1.2639681428670884, 'sec': 19569, 'stage': 5}
+{'step': 21000, 'loss': 1.2550416454672813, 'sec': 19672, 'stage': 5}
+{'step': 21100, 'loss': 1.249511123597622, 'sec': 19772, 'stage': 5}
+{'step': 21200, 'loss': 1.2431799426674843, 'sec': 19876, 'stage': 5}
+{'step': 21300, 'loss': 1.2357579225301742, 'sec': 19978, 'stage': 5}
+{'step': 21400, 'loss': 1.2337880718708039, 'sec': 20084, 'stage': 5}
+{'step': 21500, 'loss': 1.2348960715532302, 'sec': 20187, 'stage': 5}
+{'step': 21600, 'loss': 1.230960148870945, 'sec': 20287, 'stage': 5}
+{'step': 21700, 'loss': 1.2296866196393967, 'sec': 20388, 'stage': 5}
+{'step': 21800, 'loss': 1.225830843448639, 'sec': 20490, 'stage': 5}
+{'step': 21900, 'loss': 1.2232394233345985, 'sec': 20594, 'stage': 5}
+{'step': 22000, 'loss': 1.2232381618022918, 'sec': 20698, 'stage': 5, 'acc': 0.0}
+{'step': 22100, 'loss': 1.2226949429512024, 'sec': 20808, 'stage': 5}
+{'step': 22200, 'loss': 1.2194039165973662, 'sec': 20913, 'stage': 5}
+{'step': 22300, 'loss': 1.218537014722824, 'sec': 21016, 'stage': 5}
+{'step': 22400, 'loss': 1.2154219901561738, 'sec': 21120, 'stage': 5}
+{'step': 22500, 'loss': 1.2174366742372513, 'sec': 21229, 'stage': 5}
+{'step': 22600, 'loss': 1.2175171977281571, 'sec': 21331, 'stage': 5}
+{'step': 22700, 'loss': 1.2138006487488746, 'sec': 21432, 'stage': 5}
+{'step': 22800, 'loss': 1.2176432743668557, 'sec': 21536, 'stage': 5}
+{'step': 22900, 'loss': 1.2181501188874244, 'sec': 21637, 'stage': 5}
+{'step': 23000, 'loss': 1.213956068456173, 'sec': 21739, 'stage': 5}
+{'step': 23100, 'loss': 1.2158487039804458, 'sec': 21844, 'stage': 5}
+{'step': 23200, 'loss': 1.2176441964507103, 'sec': 21948, 'stage': 5}
+{'step': 23300, 'loss': 1.2150190779566765, 'sec': 22049, 'stage': 5}
+{'step': 23400, 'loss': 1.2122633278369903, 'sec': 22149, 'stage': 5}
+{'step': 23500, 'loss': 1.2161203998327255, 'sec': 22251, 'stage': 5}
+{'step': 23600, 'loss': 1.2147659224271774, 'sec': 22354, 'stage': 5}
+{'step': 23700, 'loss': 1.2161942878365517, 'sec': 22461, 'stage': 5}
+{'step': 23800, 'loss': 1.2144430419802665, 'sec': 22563, 'stage': 5}
+{'step': 23900, 'loss': 1.2133695170283318, 'sec': 22666, 'stage': 5}
+{'step': 24000, 'loss': 1.2138023319840432, 'sec': 22766, 'stage': 5, 'acc': 0.0}
+[W1004 04:43:56.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 81788928 bytes (free: 0, total: 8589410304).
+[W1004 04:43:56.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 81788928 bytes (free: 0, total: 8589410304).
+[W1004 04:43:56.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 81788928 bytes (free: 0, total: 8589410304).
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\Latent\boxes\mult98.py", line 448, in <module>
+    res["acc_test"] = float(ok.mean()); res["compute"] = meter.as_dict()
+    ^^
+  File "D:\Latent\boxes\mult98.py", line 444, in main
+    _, o_w, _ = rollout_safe(m, Dw, dev, amp, a.eval_bs, override=(0, donor))
+    ^^^^^^^^^^^^^^
+  File "D:\Latent\boxes\mult98.py", line 425, in train
+    meter, meter_x = MeterR(g), MeterR(g)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "D:\Latent\boxes\mult98.py", line 316, in coco_mean_thoughts
+    N = len(D["A"]); n = D["n"]; ok = np.zeros(N, bool)
+    
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\modules\module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\modules\module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "D:\Latent\boxes\core.py", line 121, in forward
+    a = F.layer_norm(h, (D,), self.w(pre + "ln_1.weight"), self.w(pre + "ln_1.bias"))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 78.00 MiB. GPU 1 has a total capacity of 8.00 GiB of which 0 bytes is free. Including non-PyTorch memory, this process has 17179869184.00 GiB memory in use. Of the allocated memory 6.07 GiB is allocated by PyTorch, and 1.19 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)

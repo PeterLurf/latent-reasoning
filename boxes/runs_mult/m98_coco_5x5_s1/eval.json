@@ -1,0 +1,34 @@
+{
+ "arm": "coco",
+ "task": "5x5",
+ "seed": 1,
+ "gpu": "NVIDIA GeForce RTX 3070",
+ "train_sec": 22766,
+ "eval_dtype": "torch.bfloat16",
+ "test_items": 1000,
+ "training": {
+  "epochs": 1.900990099009901,
+  "flops": 2.6286058635264e+16,
+  "flops_convention": "Meter forward FLOPs per trained problem (full-vocab LM head) x 3 (fwd+bwd) x steps x bs"
+ },
+ "acc_test": 0.0,
+ "compute": {
+  "tokens_processed": 28,
+  "flops": 5704439808.0,
+  "seq_passes": 18,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "lm_head_rows": 12,
+  "sequential_passes": 18
+ },
+ "removal": {
+  "zero": {
+   "answer_acc": 0.0
+  },
+  "mean": {
+   "answer_acc": 0.0
+  }
+ },
+ "eval_sec": 13
+}
