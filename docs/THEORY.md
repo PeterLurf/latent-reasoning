@@ -1872,6 +1872,18 @@ analysis).**
 * §114's l1 (the LOOP-R s1 proof) is restarted on the new code if it has not passed 6k. Otherwise its flag is computed
   as the final-checkpoint shuffled ratio, and labelled as such.
 
+**Note 114-3 (2026-10-04 17:35 EDT, before any §114 result; calibration disclosed).**
+* **Calibration data** (§108 MK-4 s1–4, `rel_ratio_final_shuffled` = main loss / loss with carried latents shuffled
+  across the batch): **1e-6 / 0.742 / 9.7e-5 / 0.771**.
+  - The readers (s1, s3) are ≤ 1e-4; the non-readers (s2, s4) are 0.74–0.77.
+  - The non-readers' own latents still carry something the forks use: their loss is at chance (3.61), against 4.86
+    with another row's latent. So no null sits at exactly 1 when unread.
+* **114-2's flag (≥ 0.9 at the first log ≥ 6k) would misclassify.** The non-readers sit below 0.9, and a late escaper
+  (s3 escaped only after k = 4) may still be near 0.7 at 6k.
+* **The no-read flag (final):** a seed is **no-read if its final-checkpoint shuffled-null ratio is ≥ 0.5**. That sits
+  between the calibration groups, with orders of magnitude of margin. It is used exactly as before: such seeds count as
+  fails and are also reported separately.
+
 ## 115. Without snaps, and snapping only when needed: no-snap Markov chains and a round-trip snap trigger (eval only) (pre-registered 2026-10-04 15:55 EDT, after Literature's check c70d55e3 (P4) and before running on any checkpoint; the user's go-ahead for P4 via Audit)
 
 **Why.** Every success so far snaps at hand-set points (C5 unmet), and length generalisation comes from the snap scaffold
