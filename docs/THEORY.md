@@ -700,6 +700,11 @@ with `theory/score_s99.py`, committed before any run; `theory/results/score_s99.
   - removal acts on the fed input.
 * **What followed:** §107 (width vs compute, running), §105 / §108 / §111 (forced carriage on S5), and Audit's
   no-read-basin diagnosis (111-1), which explains why chunk-start text lets the reader never learn.
+* **Audit's reproduction and observation (faa08817).**
+  - No eligible log in any run meets the threshold.
+  - **Most levers ended below CTRL** at 24k (COMBO ≤ 0.014, TEXT-FIRST(-MASK) ≤ 0.07, MARKOV ≤ 0.047, K-CURR
+    ≤ 0.118, against CTRL's 0.14–0.18). They slowed learning, consistent with 111-1's no-read basin: anything that
+    delays pressure on the latent (text first, gold inputs) costs time.
 
 ## 100. Shorter silent stretches on multiplication: §98's recipe with a text snap every 2 steps (k = 2) (pre-registered 2026-10-03 23:54 EDT, after Literature's check 478cc193 and before any implementation or run; the user's request for an overnight plan, via Audit)
 
