@@ -157,15 +157,33 @@ def main():
     ap.add_argument("--val_n", type=int, default=None, help="smoke only"); ap.add_argument("--test_n", type=int, default=None, help="smoke only")
     ap.add_argument("--train_limit", type=int, default=0, help="smoke only"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smoke only: scales the schedule step boundaries")
     ap.add_argument("--train_dir", default=os.path.join(ROOT, "bench", "data", "mult_train"))
+    ap.add_argument("--final_eval_bs", type=int, default=100, help="stop-eval batch (OOM: halved and retried)")
+    ap.add_argument("--eval_only", action="store_true", help="re-run the stop eval of a finished run (model.pt, log.jsonl)")
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); t_start = time.time()
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     Dtr = load(os.path.join(a.train_dir, "4x4_train.txt"), limit=a.train_limit or None)
     Dva = load(os.path.join(a.train_dir, "4x4_valid.txt"), limit=a.val_n)
     Dte = load(os.path.join(ROOT, "bench", "data", "mult_4x4_test.txt"), limit=a.test_n)
-    os.makedirs(a.out, exist_ok=True); json.dump({**vars(a), "eligible_from": ARMS[a.arm99]}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
     sc = a.sched_scale; arm = a.arm99; elig = int(ARMS[arm] * sc)
     cfg = lambda s: config(arm, s / sc)  # noqa: E731
+    if a.eval_only:                                                         # re-run the stop eval of a finished run from its model.pt
+        g = s5.load_gpt2(dev); m = MultGen99(g, "mask" if arm == "textfirst_mask" else "genm", std=arm in ("std", "combo")).to(dev)
+        m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev))
+        recs = [json.loads(x) for x in open(os.path.join(a.out, "log.jsonl"))]; curve = [
+            {"step": r["step"], "per_slot": r["per_slot"], "val_acc": r["val_acc"], "gold_share": r["gold_share"], "k_train": r["k_train"],
+             "phase": r["phase"], "eligible": r["eligible"]} for r in recs if "per_slot" in r]
+        hit = next((c["step"] for c in curve if c["eligible"] and min(c["per_slot"]) >= 0.95 and c["val_acc"] >= 0.95), None)
+        stop_step = hit or a.steps; assert recs[-1]["step"] == stop_step, "log does not end at the stop step"
+        flops = 0.0; fc = {}
+        m.eval()
+        for st in range(1, stop_step + 1):
+            ph, L, _ = cfg(st)
+            if (ph, L) not in fc:
+                fc[(ph, L)] = flops_per_problem(m, g, Dtr, dev, ph, L)
+            flops += 3 * fc[(ph, L)] * a.bs
+        finish(a, m, Dtr, Dte, dev, amp, arm, elig, hit, stop_step, curve, flops, None, recs[-1]["sec"]); return
+    os.makedirs(a.out, exist_ok=True); json.dump({**vars(a), "eligible_from": ARMS[a.arm99]}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
     g = s5.load_gpt2(dev)
     m = MultGen99(g, "mask" if arm == "textfirst_mask" else "genm", std=arm in ("std", "combo")).to(dev)
     opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
@@ -209,15 +227,34 @@ def main():
                 stop_step = step; break
     wall = round(time.time() - t_start)
     torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
-    m.eval(); per, ok, _ = gen_rollout(m, Dte, dev, amp, a.eval_bs); mu = gen_mean_inputs(m, Dtr, dev, amp)
+    del opt; m.zero_grad(set_to_none=True)
+    finish(a, m, Dtr, Dte, dev, amp, arm, elig, hit, stop_step, curve, flops, wall, round(time.time() - t0))
+
+
+def rollout_safe(m, D, dev, amp, bs, **kw):
+    """gen_rollout, halving the batch on CUDA OOM (three runs on one card can finish and evaluate together)."""
+    while True:
+        try:
+            return gen_rollout(m, D, dev, amp, bs, **kw)
+        except torch.OutOfMemoryError:
+            if bs <= 10:
+                raise
+            torch.cuda.empty_cache(); bs //= 2; print("eval OOM: retry at bs", bs, flush=True)
+
+
+def finish(a, m, Dtr, Dte, dev, amp, arm, elig, hit, stop_step, curve, flops, wall, train_sec):
+    m.eval(); bs = a.final_eval_bs
+    if dev.startswith("cuda"):
+        torch.cuda.empty_cache()
+    per, ok, _ = rollout_safe(m, Dte, dev, amp, bs); mu = gen_mean_inputs(m, Dtr, dev, amp)
     res = {"arm": arm, "task": "4x4", "seed": a.seed, "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
            "eval_dtype": str(amp), "eligible_from": elig, "steps_to_threshold": hit, "stopped_step": stop_step, "curve": curve,
            "test_acc": float(ok.mean()), "per_slot_decode_acc": per.mean(0).tolist(), "removal": {},
-           "training": {"flops": flops, "wall_sec": wall, "train_sec": round(time.time() - t0) - 0,
+           "training": {"flops": flops, "wall_sec": wall, "train_sec": train_sec,
                         "flops_convention": "sum over updates of Meter forward FLOPs per trained problem (config of that update) x 3 x bs; tfslot updates at the latent config"},
            "std_stats": {"seen": int(m.seen), "sd_floor": float(0.05 * m.sdH.median())} if m.std else None}
     for ab in ("zero", "mean"):
-        _, o_, _ = gen_rollout(m, Dte, dev, amp, a.eval_bs, ablate=ab, mean_in=mu); res["removal"][ab] = {"answer_acc": float(o_.mean())}
+        _, o_, _ = rollout_safe(m, Dte, dev, amp, bs, ablate=ab, mean_in=mu); res["removal"][ab] = {"answer_acc": float(o_.mean())}
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     print("EVAL", json.dumps({k: res[k] for k in ("steps_to_threshold", "stopped_step", "test_acc")}), flush=True); print("DONE", a.out, flush=True)
 
