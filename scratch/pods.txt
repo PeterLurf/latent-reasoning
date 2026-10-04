@@ -565,3 +565,9 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 54093648 vast offer 49745142 created 2026-10-03 22:20: label gen-z5, queue scratch/gen_q_z5.txt (logged at create by vdeploy_toy.sh)
 54069464 vast | gen_y1 DESTROYED_VERIFIED 2026-10-03 22:23 after verified per-run fetch (boxes/runs_mult/m98_genm_4x4_s3 boxes/runs_mult/m98_genm_4x4_s2 boxes/runs_mult/m98_genm_4x4_s1)
 54093635 vast | gen_z2 DESTROYED 2026-10-03 22:41 stuck loading 21 min (15-min rule); never started; z2's queue (kcurr s1-3, std s1) deferred until z1 proves eval.json + gen4 partial drain (Audit)
+54092744 vast | gen_z1 DESTROYED_VERIFIED 2026-10-03 23:59 ABORTED: GEN-M/MASK final-slot fork conflict (Theory, note 98-3): runs void; logs + run args/log.jsonl/eval.json (no models) in logs/vast_69.156.116.250_40006/aborted
+54093648 vast | gen_z5 DESTROYED_VERIFIED 2026-10-03 23:59 ABORTED: GEN-M/MASK final-slot fork conflict (Theory, note 98-3): runs void; logs + run args/log.jsonl/eval.json (no models) in logs/vast_96.20.36.104_40074/aborted
+54093642 vast | gen_z4 DESTROYED_VERIFIED 2026-10-03 23:59 ABORTED: GEN-M/MASK final-slot fork conflict (Theory, note 98-3): runs void; logs + run args/log.jsonl/eval.json (no models) in logs/vast_218.150.198.117_51914/aborted
+54093638 vast | gen_z3 DESTROYED_VERIFIED 2026-10-03 23:59 ABORTED: GEN-M/MASK final-slot fork conflict (Theory, note 98-3): runs void; logs + run args/log.jsonl/eval.json (no models) in logs/vast_167.179.138.57_42234/aborted
+54070493 vast | gen_y3 DESTROYED_VERIFIED 2026-10-03 23:59 ABORTED: GEN-M/MASK final-slot fork conflict (Theory, note 98-3): runs void; logs + run args/log.jsonl/eval.json (no models) in logs/vast_167.179.138.57_42229/aborted
+54067034 vast | gen_x5 DESTROYED_VERIFIED 2026-10-04 00:51 after verified per-run fetch (boxes/runs_s5/g97_hyb4_s4 boxes/runs_s5/g97_hyb4_s5)
