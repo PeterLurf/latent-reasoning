@@ -1,0 +1,5 @@
+# §99 relaunch on fixed code (notes 98-3, 99-3), C1 batch: markov
+# P=3
+boxes/runs_mult/a99_markov_4x4_s1 boxes.accel99 --arm99 markov --seed 1 --eval_bs 100
+boxes/runs_mult/a99_markov_4x4_s2 boxes.accel99 --arm99 markov --seed 2 --eval_bs 100
+boxes/runs_mult/a99_markov_4x4_s3 boxes.accel99 --arm99 markov --seed 3 --eval_bs 100

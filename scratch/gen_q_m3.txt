@@ -1,0 +1,5 @@
+# §99 relaunch on fixed code (notes 98-3, 99-3), C1 batch: kcurr
+# P=3
+boxes/runs_mult/a99_kcurr_4x4_s1 boxes.accel99 --arm99 kcurr --seed 1 --eval_bs 100
+boxes/runs_mult/a99_kcurr_4x4_s2 boxes.accel99 --arm99 kcurr --seed 2 --eval_bs 100
+boxes/runs_mult/a99_kcurr_4x4_s3 boxes.accel99 --arm99 kcurr --seed 3 --eval_bs 100
