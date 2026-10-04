@@ -9,8 +9,8 @@ Pre-registrations (`PROTOCOL*.md`) are append-only and are never rewritten.
 | File | What |
 |---|---|
 | `NORTH_STAR.md` | The goal (C1–C7), one status line per condition, current design, open questions |
-| `CURRENT_TASKS.md` | Live handoff: what is running, where, how to check/fetch/stop it |
-| `THEORY.md` | Every registration (§1–§98+), its predictions, amendments and results; summary at the top |
+| `CURRENT_TASKS.md` | Live handoff: what is running, where, how to check/fetch/stop it (history in `archive/CURRENT_TASKS_history_to_2026-10-03.md`) |
+| `THEORY.md` | One row per registration (§0 onward) plus the live sections in full; closed §0–§96 verbatim in `archive/THEORY_s0-s96.md` |
 | `PROTOCOL12.md` | Scorecards for the recent registrations run by Experiments (§61b onward) |
 | `../report/findings.md` | Plain-language write-up of what stands |
 | `../bench/LEADERBOARD.md` | Our models vs published numbers on the shared benchmark items |
