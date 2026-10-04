@@ -156,7 +156,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 97 | General latent thinker, step 1 | G4 met 3/3; C6 met 5/5; but mean ablation leaves HYB-4 s5 at 1.000 (fork bypass; C1 qualified) | closed (C1 → §104/§105) |
 | 98 | Step 2a: multiplication vs ICoT-SI, Coconut, text CoT | not met at either size (GEN-M 0.163 / 0.005; TC 1.0; ICoT-SI 0.998 / 0.996); the k = 4 hand-off wall | closed |
 | 99 | Speeding up the latent hand-off (k-curriculum, standardised slots, text-first, combo) | on fixed code (99-2) | **open** |
-| 100 | Shorter silent stretches: multiplication at k = 2 (GEN2, MASK2) | 4×4: M1, SOTA (1.000 vs 0.998), C3 (0.89×) met; C1 not (MASK2 0.89); 5×5 pending | **open** |
+| 100 | Shorter silent stretches: multiplication at k = 2 (GEN2, MASK2) | 4×4: M1, SOTA (1.000 vs 0.998), C3 (0.89×) met, C1 not; 5×5: not met (GEN2 0.09) | closed |
 | 101 | Snap-strength dose-response (β_min 1 / 0.1 / 0.01 / 0) on S5 | registered | **open** |
 | 102 | State in depth: gated slot-to-slot residual path (4×4, in §99's harness) | does not accelerate (all censored; test 0.01–0.17) | closed |
 | 103 | Filtered self-training by length (C4 inside the LM, S5) | SELF not met: 0 / 0.9615 / 0.9585 at 512 from final answers only; pseudo-label precision ~0.98 caps it | closed |
@@ -758,6 +758,20 @@ committed before any run; 5×5 is pending).**
   (ICoT-SI) and costs ≤ text CoT. But its latents are partly bypassed, and the latent-only (masked) variant falls short.
   Tags: C3 (SOTA parity at 4×4), not C1.
   - MASK2's donor protocol (running, 106-4's question) says whether its 0.89 median is hand-off or recomputation.
+
+**§100 result, 5×5 (2026-10-04 10:14 EDT; same scorer; §100 is now complete). Not met at 5×5.**
+* GEN2: 0.100 / 0.093 / 0.091; MASK2: 0.060 / 0.016 / 0.002 (s2 and s3 evaluated `--eval_only` after eval OOMs).
+  - TC-M is 1.000; ICoT-SI 0.996.
+  - M1-2, M-SOTA-2, M-C3-2 and M-C1-2 are all not met.
+* **Where it fails.** MASK2's per-slot decode is [1, 0.86, 0.77, 0.065, 1] / [1, 0.85, 0.75, 0.017, 1] /
+  [1, 0.44, 0.08, 0.01, 1].
+  - Chunk 1's hand-off (slot 2) is partly learned.
+  - **Chunk 2's hand-off (slot 4) collapses**, as in notes 100-2 / 100-3: a chunk that starts from a visible checkpoint
+    text, with a larger running sum at 5×5.
+* **§100 overall.**
+  - 4×4: k = 2 matches SOTA (1.000 vs 0.998) at ≤ text CoT's cost, with C1 not shown.
+  - 5×5: the hand-off after a visible checkpoint fails.
+  - Tags: C3 at 4×4 only.
 
 **Note 100-2 (2026-10-04 09:27 EDT; descriptive; §104-style donor protocol on §100 MASK2 4×4, run by the experiments
 session, `boxes/donor100.py`, `boxes/runs_mult/m100_mask2_4x4_s*/donor100.json`; n = 2000, masked decodes).**
