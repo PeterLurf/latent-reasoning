@@ -154,7 +154,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 95 | Foothold dose-response | no dose sufficient (0/9) | closed |
 | 96 | Amortised self-labels from a final-answer teacher | P1, P2 met: 4/5 certified at p 0.05; labels 1.000; pipeline C4 (qualified) | closed |
 | 97 | General latent thinker, step 1 | G4 met 3/3; C6 met 5/5; but mean ablation leaves HYB-4 s5 at 1.000 (fork bypass; C1 qualified) | closed (C1 → §104/§105) |
-| 98 | Step 2a: multiplication vs ICoT-SI, Coconut, text CoT | GEN arms void (final-fork conflict, 98-3), rerun on fixed code; comparators valid | **open** |
+| 98 | Step 2a: multiplication vs ICoT-SI, Coconut, text CoT | not met at either size (GEN-M 0.163 / 0.005; TC 1.0; ICoT-SI 0.998 / 0.996); the k = 4 hand-off wall | closed |
 | 99 | Speeding up the latent hand-off (k-curriculum, standardised slots, text-first, combo) | on fixed code (99-2) | **open** |
 | 100 | Shorter silent stretches: multiplication at k = 2 (GEN2, MASK2) | 4×4: M1, SOTA (1.000 vs 0.998), C3 (0.89×) met; C1 not (MASK2 0.89); 5×5 pending | **open** |
 | 101 | Snap-strength dose-response (β_min 1 / 0.1 / 0.01 / 0) on S5 | registered | **open** |
@@ -532,6 +532,27 @@ fork mask, Coconut and TC from the GSM8K pipelines, and an ICoT-SI checkpoint lo
   - the guard used 150 steps at lr 3e-4;
   - MASK 5×5's slot-only fork emits 23 tokens and needed 400 steps (1.000 / 1.000; also at 800).
 * The reruns proceed C1-first: MASK 4×4 / 5×5, MASK2, MARKOV with its comparators, §105; then §101; then the C3 parts.
+
+**§98 result (2026-10-04 09:57 EDT; GEN-M / MASK reruns on fixed code (98-3), comparators, and ICoT-SI's released
+checkpoints, all run by the experiments session; scored by Theory with `theory/score_s98.py`, committed before any run;
+`theory/results/score_s98.json`; COCO-M's s3 runs are still local, descriptive). M1, M-SOTA, M-C1 and M-C3 are not met at
+either size.**
+
+| median accuracy | 4×4 | 5×5 |
+|---|---|---|
+| GEN-M (k = 4) | **0.163** | 0.005 |
+| GEN-M-MASK | 0.034 | 0.0 |
+| COCO-M (first Coconut measurement on these items) | ≈ 0.001 | 0.0 |
+| TC-M (text CoT, matched budget) | 1.000 | 1.000 |
+| ICoT-SI (released, our eval) | 0.998 | 0.996 |
+
+* **Where it fails.** GEN-M 4×4's per-slot decode is [1, 1, 0.80–0.92, 1]; MASK 4×4's is [1, 0.90–1.0, 0.22–0.25, 1].
+  - The loss sits at slot 3, the first true latent hand-off (98-3's diagnostic), and at the answer that depends on it.
+  - Removal: zero 0, mean ≤ 0.015, so there is no bypass but also no carriage.
+* **Reading (98-1).** **"Not acquired within budget"** (about 1.9 epochs against ICoT-SI's ~200), at k = 4. The 98-1
+  4× follow-up is not triggered, since M1 is not held.
+* §100 shows the same recipe at **k = 2** reaching 1.000 at 4×4 (SOTA parity, 0.89× text CoT FLOPs). The wall is
+  several silent hand-offs of a growing sum per chunk (§107 / §106-k2 / notes 100-2, 100-3).
 
 ## 99. Speeding up the latent hand-off: k-curriculum, standardised slot inputs, a text-first stage, and their combination (pre-registered 2026-10-03 21:27 EDT, after Literature's check cfeea0b8 and before any implementation or run; the user's directive via Audit, ~21:20, to run in parallel with §98)
 
