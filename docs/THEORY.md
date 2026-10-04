@@ -1723,6 +1723,11 @@ restricted to a **fixed random subset T_f of transitions**.
 * **The realised coverage is computed when T_f is built and logged** in args.json and eval.json (`coverage_target`,
   `coverage_realised`). The doses are reported by realised coverage.
 * **Consistency:** §110's natural 71.5 % (a full row e plus randomly sampled inner pairs) corresponds to (b) at f ≈ 0.715.
+* **Addendum (Audit).** The **reported dose and the "never labelled" set are defined by the R0 shorts actually drawn**
+  (the 1,200 × 64 draws, as in `theory/s110_unlabelled.py`), not by |T_f|. §110's 71.5 % came from incomplete sampling,
+  not a restriction. At f = 0.5, about 38k length-2 draws over about 7.1k transitions should nearly saturate T_f; at
+  lower doses the pool size and mix decide it. Both `coverage_target` (|T_f|) and `coverage_drawn` are logged; the drawn
+  value is the dose.
 * The doses (f = 0.5 / 0.25 / 0.1), seeds, rules and scorer are otherwise unchanged.
 
 ## 113. The auxiliary reader inside self-training: §110 plus a reader on the model's own decodes (pre-registered 2026-10-04 15:00 EDT, after Literature's check b1352c3e and before any implementation or run; conditional on §111 MK-4-READ meeting REL)
