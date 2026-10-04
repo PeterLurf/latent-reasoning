@@ -41,14 +41,14 @@ from boxes import s5  # noqa: E402
 from boxes.mult98 import (DIGIT_IDS, TOK, MeterR, MultGen, gen_mean_inputs, gen_rollout, load, seq_batch,  # noqa: E402
                           seq_forward)
 
-ARMS = {"ctrl": 0, "kcurr": 6000, "std": 0, "textfirst": 3000, "textfirst_mask": 3000, "combo": 9000, "tfslot": 12000, "markov": 6000, "statepath": 0}
+ARMS = {"ctrl": 0, "kcurr": 6000, "std": 0, "textfirst": 3000, "textfirst_mask": 3000, "combo": 9000, "tfslot": 12000, "markov": 6000, "statepath": 0, "lat2": 6000, "lat4": 6000, "pause4": 6000}
 
 
 def config(arm, step):
     """-> (phase 'text' | 'latent', training chunk length, gold share rho) at this update."""
     if arm in ("textfirst", "textfirst_mask", "combo") and step <= 3000:
         return "text", 4, 0.0
-    if arm in ("kcurr", "markov"):                                         # markov (note 99-3): K-CURR's schedule
+    if arm in ("kcurr", "markov", "lat2", "lat4", "pause4"):              # markov (note 99-3) and §107: K-CURR's schedule
         return "latent", 1 if step <= 2000 else (2 if step <= 6000 else 4), 0.0
     if arm == "combo":
         return "latent", 1 if step <= 5000 else (2 if step <= 9000 else 4), 0.0
@@ -61,10 +61,17 @@ class MultGen99(MultGen):
     def __init__(self, g, fork, std):
         super().__init__(g, fork)
         self.std = std; self.markov = False; self.statepath = False; self.ablate_mode = None
+        self.m_lat = 1; self.n_pause = 0; self.rec_lat = False; self._latrec = []
         E = g.w("wte.weight").detach()
         self.register_buffer("muE", E.mean(0).clone()); self.register_buffer("sdE", E.std(0).clone())
         self.register_buffer("muH", torch.zeros(768)); self.register_buffer("sdH", torch.ones(768)); self.register_buffer("seen", torch.tensor(0))
         self._raw = []; self.gold = None
+
+    def enable_mlat(self, m_lat, n_pause):
+        """§107: m chained latents per op (lat2, lat4) or n_pause shared learned pause embeddings before 1 latent (pause4)."""
+        self.m_lat = m_lat; self.n_pause = n_pause
+        if n_pause:
+            self.pause = torch.nn.Parameter(self.g.w("wte.weight").detach().mean(0).clone())
 
     def enable_statepath(self):
         """§102: h(4)_slot_j += gamma * W h(9)_slot_{j-1} within a chunk; W = identity, gamma = 0 at init."""
@@ -92,6 +99,8 @@ class MultGen99(MultGen):
         (a set of j; training only; the gold tokens are step_tgt[j])."""
         B, c = ops.shape; g = self.g
         parts = [g.embed(prefix)] + ([g.embed(start)] if start is not None else []) + [g.embed(self.digtok[ops[:, 0]])[:, None]]
+        if self.n_pause:                                                    # §107 pause4: pauses after op 1 as well
+            parts = parts + [self.pause.to(parts[0].dtype)[None, None].expand(B, self.n_pause, -1)]
         x = torch.cat(parts, 1); past = None; losses, decs, ins = [], [], []; ans = None; h9_prev = None; pos_prev = None
         for j in range(c):
             if self.markov:                                                 # §99 note 99-3: every slot step is a fresh-cache segment
@@ -100,6 +109,34 @@ class MultGen99(MultGen):
             h, past = g(x, past)
             if meter:
                 meter.step(x.shape[1], ctx, 0)
+            if self.m_lat > 1 or self.n_pause > 0:                          # §107: m chained latents per op (or pauses + 1 latent)
+                cur = h[:, -1]; lats = []
+                for i in range(self.m_lat):
+                    if j < c - 1 and ablate in ("zero", "mean"):
+                        cur = torch.zeros_like(cur) if ablate == "zero" else mean_in[j][i][None].expand_as(cur).to(cur.dtype)
+                    if j < c - 1 and self.ablate_mode == f"latent{i}":
+                        cur = torch.zeros_like(cur)
+                    lats.append(cur); ctx = past[0][0].shape[2]; hs, past = g(cur[:, None], past)
+                    if meter:
+                        meter.step(1, ctx, 0)
+                    cur = hs[:, 0]                                          # latent i+1's input = latent i's last hidden
+                hslot = cur; ins.append(torch.stack(lats, 1))               # (B, m, D): carried to the next segment
+                if self.rec_lat:
+                    self._latrec.append(torch.stack(lats, 1).float())
+                final = j == c - 1 and (ans_tgt is not None or ans_len is not None)
+                if step_tgt is not None:
+                    tgt = torch.cat([step_tgt[j], ans_tgt], 1) if (final and ans_tgt is not None) else step_tgt[j]
+                    losses.append(self.fork_tf(hslot, past, tgt))
+                if final and ans_len is not None:
+                    d = self.fork_greedy(hslot, past, step_len[j] + ans_len, meter)
+                    decs.append(d[:, :step_len[j]]); ans = d[:, step_len[j]:]
+                elif step_len is not None and (decode == "all" or j == c - 1):
+                    decs.append(self.fork_greedy(hslot, past, step_len[j], meter if (snap and j == c - 1) else meter_x))
+                if j + 1 < c:                                               # [a, op j's m latents, op j+1, pauses]
+                    dt = g.embed(prefix).dtype
+                    x = torch.cat([g.embed(prefix), ins[-1].to(dt), g.embed(self.digtok[ops[:, j + 1]])[:, None]]
+                                  + ([self.pause.to(dt)[None, None].expand(B, self.n_pause, -1)] if self.n_pause else []), 1)
+                continue
             if self.gold and j in self.gold and step_tgt is not None and j < c - 1:   # tfslot: gold step text in place of slot j
                 gt = step_tgt[j]; ctx = past[0][0].shape[2]; _, past = g(g.embed(gt), past)
                 ins.append(torch.zeros_like(h[:, -1]))
@@ -188,7 +225,9 @@ def main():
     sc = a.sched_scale; arm = a.arm99; elig = int(ARMS[arm] * sc)
     cfg = lambda s: config(arm, s / sc)  # noqa: E731
     if a.eval_only:                                                         # re-run the stop eval of a finished run from its model.pt
-        g = s5.load_gpt2(dev); m = MultGen99(g, "mask" if arm == "textfirst_mask" else "genm", std=arm in ("std", "combo")).to(dev); m.markov = arm == "markov"
+        g = s5.load_gpt2(dev); m = MultGen99(g, "mask" if arm == "textfirst_mask" else "genm", std=arm in ("std", "combo")).to(dev); m.markov = arm in ("markov", "lat2", "lat4", "pause4")
+        if arm in ("lat2", "lat4", "pause4"):
+            m.enable_mlat({"lat2": 2, "lat4": 4, "pause4": 1}[arm], 3 if arm == "pause4" else 0); m.to(dev)
         if arm == "statepath":
             m.enable_statepath(); m.to(dev)
         m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev))
@@ -207,7 +246,9 @@ def main():
         finish(a, m, Dtr, Dte, dev, amp, arm, elig, hit, stop_step, curve, flops, None, recs[-1]["sec"]); return
     os.makedirs(a.out, exist_ok=True); json.dump({**vars(a), "eligible_from": ARMS[a.arm99]}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
     g = s5.load_gpt2(dev)
-    m = MultGen99(g, "mask" if arm == "textfirst_mask" else "genm", std=arm in ("std", "combo")).to(dev); m.markov = arm == "markov"
+    m = MultGen99(g, "mask" if arm == "textfirst_mask" else "genm", std=arm in ("std", "combo")).to(dev); m.markov = arm in ("markov", "lat2", "lat4", "pause4")
+    if arm in ("lat2", "lat4", "pause4"):
+        m.enable_mlat({"lat2": 2, "lat4": 4, "pause4": 1}[arm], 3 if arm == "pause4" else 0); m.to(dev)
     if arm == "statepath":
         m.enable_statepath(); m.to(dev)
     opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
@@ -273,14 +314,22 @@ def finish(a, m, Dtr, Dte, dev, amp, arm, elig, hit, stop_step, curve, flops, wa
     m.eval(); bs = a.final_eval_bs
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
-    per, ok, _ = rollout_safe(m, Dte, dev, amp, bs); mu = gen_mean_inputs(m, Dtr, dev, amp)
+    meter = MeterR(m.g); per, ok, _ = rollout_safe(m, Dte, dev, amp, bs, meter=meter); mu = gen_mean_inputs(m, Dtr, dev, amp)
     res = {"arm": arm, "task": "4x4", "seed": a.seed, "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
            "eval_dtype": str(amp), "eligible_from": elig, "steps_to_threshold": hit, "stopped_step": stop_step, "curve": curve,
-           "test_acc": float(ok.mean()), "per_slot_decode_acc": per.mean(0).tolist(), "removal": {},
+           "test_acc": float(ok.mean()), "per_slot_decode_acc": per.mean(0).tolist(), "removal": {}, "compute": meter.as_dict(),
            "training": {"flops": flops, "wall_sec": wall, "train_sec": train_sec,
                         "flops_convention": "sum over updates of Meter forward FLOPs per trained problem (config of that update) x 3 x bs; tfslot updates at the latent config"},
            "std_stats": {"seen": int(m.seen), "sd_floor": float(0.05 * m.sdH.median())} if m.std else None,
            "code": {f: hashlib.md5(open(os.path.join(ROOT, "boxes", f), "rb").read()).hexdigest() for f in ("accel99.py", "mult98.py")}}
+    if m.m_lat > 1:                                                         # §107 lat-m: per-latent removal and latent cosine
+        res["per_latent_removal"] = {}
+        for i in range(m.m_lat):
+            m.ablate_mode = f"latent{i}"; _, o_, _ = rollout_safe(m, Dte, dev, amp, bs); res["per_latent_removal"][str(i + 1)] = {"zero_answer_acc": float(o_.mean())}
+        m.ablate_mode = None; m.rec_lat = True; m._latrec = []
+        rollout_safe(m, Dte, dev, amp, bs); m.rec_lat = False
+        L = torch.cat(m._latrec); Ln = torch.nn.functional.normalize(L, dim=-1); C = Ln @ Ln.transpose(1, 2)   # (N, m, m)
+        iu = torch.triu_indices(m.m_lat, m.m_lat, 1); res["latent_cosine"] = float(C[:, iu[0], iu[1]].mean()); m._latrec = []
     if m.statepath:                                                         # §102: separate test ablations
         res["ablation"] = {}; res["gate_curve"] = [[c["step"], c.get("gate")] for c in curve]
         for mode in ("wpath", "attn_prev"):
