@@ -1,0 +1,2 @@
+# §112 f=0.1 s21 on the local 3070 (free compute; removed from the Vast d-queues)
+boxes/runs_s5/s112_f010_s21 boxes.self110 --cov 0.1 --save_rounds --seed 21

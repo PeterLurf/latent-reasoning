@@ -21,6 +21,11 @@ lens, keep, targets (N, L_max) chained decodes, -1 padded, before_last (N, 6) to
 final relabelling) starts from a uniform random given state written as state text (the start is input, not a label);
 the self-consistency restart at t = 0 uses that start; truth is the chain from that start. R0 logs
 short_transition_coverage {direct, incl_2step} (distinct (state, op) pairs over 14,400). eval.json arm "self110b".
+§112 (--cov f, note 112-1 + addendum): R0 shorts restricted to T_f (all (e, a); for every op b a fraction g of the 119
+non-identity states; length-2 shorts need (e.a, b) in T_f); R0 count fixed. coverage_drawn (transitions labelled by the
+shorts actually drawn) defines "labelled"; eval adds k1_labelled_acc / k1_never_labelled_acc / k1_certified (all 14,400
+k = 1 restarts, masked fork), k1_never_labelled_in_pool / _not_in_pool (true transitions of kept problems), and
+per_round_split (k = 1 accuracy split after each training round); --save_rounds keeps an fp16 model per round in rounds/.
 Checkpoint <out>/ckpt.pt at each round boundary (model, optimiser, RNGs, schedule state); resumed if present.
     python -m boxes.self110 --seed 1 --out boxes/runs_s5/s110_s1
 """
@@ -46,6 +51,59 @@ from boxes.self103 import Gen103, draw, make_pool, r0_items  # noqa: E402
 
 K = 4
 GATE = 0.995
+
+
+def build_tf(f, seed):
+    """§112 (note 112-1) transition subset T_f (state, op) -> bool: all 120 first-step transitions (e, a); for every op
+    b, a random fraction g = (f 14400 - 120) / (14400 - 120) of the 119 non-identity states (stratified by op)."""
+    r = np.random.default_rng(12000 + seed); T = np.zeros((120, 120), bool); T[0, :] = True
+    g = (f * 14400 - 120) / (14400 - 120); nb = int(round(g * 119))
+    for b in range(120):
+        T[1 + r.choice(119, nb, replace=False), b] = True
+    return T, g
+
+
+def r0_items_cov(rng, T, n=50000):
+    """R0 shorts restricted to T_f (count fixed): length 1 (e; a) always allowed (T[0] is all True); length 2 (e; a, b)
+    allowed iff (e.a, b) in T_f. Ops drawn uniformly over the allowed sets (uniform ops, as the data's)."""
+    lens = rng.integers(1, 3, n); g = {}
+    a1 = np.where(T[0])[0]; pairs = np.array([(a, b) for a in a1 for b in np.where(T[s5.COMP[0, a]])[0]])
+    for L in (1, 2):
+        m_ = int((lens == L).sum())
+        ops = a1[rng.integers(0, len(a1), m_)][:, None] if L == 1 else pairs[rng.integers(0, len(pairs), m_)]
+        tg = np.full((m_, L), -1); tg[:, -1] = true_chain(np.zeros(m_, np.int64), ops)[:, -1]
+        g[L] = (np.tile(STTOK[0], (m_, 1)), ops, tg)
+    return g
+
+
+def r0_labelled(r0):
+    """(120, 120) transitions labelled by R0's shorts: (e, a) of every short, and (e.a, b) of length-2 shorts."""
+    T = np.zeros((120, 120), bool)
+    for L, (_, ops, _) in r0.items():
+        T[0, ops[:, 0]] = True
+        if L == 2:
+            T[s5.COMP[0, ops[:, 0]], ops[:, 1]] = True
+    return T
+
+
+@torch.no_grad()
+def k1_table(m, dev, amp, bs=1000):
+    """k = 1 restart from every state's text with every op (all 14,400, masked fork): (120, 120) correct."""
+    S_, O_ = [x.ravel() for x in np.meshgrid(np.arange(120), np.arange(120), indexing="ij")]; ok = np.zeros(len(S_), bool)
+    for i in range(0, len(S_), bs):
+        with amp_ctx(amp):
+            _, d, _ = m.chunk(torch.tensor(STTOK[S_[i:i + bs]], device=dev), torch.tensor(O_[i:i + bs, None], device=dev), decode="all")
+        e, _ = decode_to_el(d.cpu().numpy().reshape(-1, NST)); ok[i:i + bs] = e == s5.COMP[S_[i:i + bs], O_[i:i + bs]]
+    return ok.reshape(120, 120)
+
+
+def kept_transitions(X, pool, starts_true):
+    """(120, 120) true transitions (state before, op) inside the kept problems of a labelled pool."""
+    T = np.zeros((120, 120), bool)
+    for i in np.where(pool["keep"])[0]:
+        L = int(pool["lens"][i]); ops = X[pool["rows"][i], :L]; st = starts_true[i]
+        T[np.concatenate([[pool["starts"][i]], st[:-1]]), ops] = True
+    return T
 
 
 class Gen110(Gen103):
@@ -192,6 +250,8 @@ def main():
     ap.add_argument("--final_steps", type=int, default=4000); ap.add_argument("--pool", type=int, default=50000); ap.add_argument("--lengths", default="4,8,16,32")
     ap.add_argument("--max_insert", type=int, default=2)
     ap.add_argument("--random_start", action="store_true", help="§110b: problems of length >= 3 start from a uniform random given state (as text)")
+    ap.add_argument("--cov", type=float, default=None, help="§112: R0 shorts restricted to T_f with target coverage f (note 112-1)")
+    ap.add_argument("--save_rounds", action="store_true", help="§112 (Audit): fp16 model at each round boundary -> <out>/rounds/")
     ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--test_n", type=int, default=s5.TEST_N); ap.add_argument("--ext_n", type=int, default=500)
     ap.add_argument("--ext_len", type=int, default=2048, help="< 2048: smoke only"); ap.add_argument("--check_n", type=int, default=100_000, help="< 100k: smoke only")
     ap.add_argument("--donor_n", type=int, default=2000); ap.add_argument("--data_dir", default=os.path.join(ROOT, "bench", "data", "s5"))
@@ -202,7 +262,9 @@ def main():
     s5.check_interface()
     Xtr, Ytr = s5.load_csv(os.path.join(a.data_dir, "S5=128.csv")); s5.check_labels(Xtr, Ytr)
     Xte, Yte = s5.load_csv(os.path.join(a.data_dir, "S5=512.csv"), limit=a.test_n); s5.check_labels(Xte, Yte)
-    os.makedirs(a.out, exist_ok=True); json.dump(vars(a), open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
+    Tf, g_inner = build_tf(a.cov, a.seed) if a.cov is not None else (None, None)
+    covinfo = {} if Tf is None else {"coverage_target": a.cov, "coverage_tf": float(Tf.mean()), "inner_fraction_g": g_inner}
+    os.makedirs(a.out, exist_ok=True); json.dump({**vars(a), **covinfo}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
     m = Gen110(s5.load_gpt2(dev)).to(dev); opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
     lengths = [int(x) for x in a.lengths.split(",")]; ck = os.path.join(a.out, "ckpt.pt"); lp = os.path.join(a.out, "log.jsonl")
     S = {"step": 0, "short": 0, "rounds": [], "prev": 2, "remaining": a.steps - a.r0_steps - a.final_steps, "todo": list(lengths),
@@ -231,6 +293,10 @@ def main():
             for gr in opt.param_groups:
                 gr["lr"] = a.lr * min(1, step / 100) * 0.5 * (1 + math.cos(math.pi * min(step, a.steps) / a.steps))
             st, o_, tg = draw(items, drng, a.bs, dev)
+            if short:                                                       # §112 (112-1 addendum): the transitions the drawn shorts label
+                oo = o_.cpu().numpy(); drawn[0, oo[:, 0]] = True
+                if oo.shape[1] == 2:
+                    drawn[s5.COMP[0, oo[:, 0]], oo[:, 1]] = True
             with amp_ctx(amp):
                 loss = m.chunk_masked(st, o_, tg)
             opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(loss.item())
@@ -242,16 +308,32 @@ def main():
         rows, lens = make_pool(rng, Xtr, a.pool, 3, Lmax)
         return rows, lens, (rng.integers(0, 120, a.pool) if a.random_start else np.zeros(a.pool, np.int64))
 
+    drawn = S.setdefault("drawn", np.zeros((120, 120), bool)); S.setdefault("kept_trans", np.zeros((120, 120), bool))
+    S.setdefault("per_round_split", [])
+
+    def round_end(name):
+        """§112: k = 1 accuracy on the drawn-labelled / never-labelled transitions after each training round (+ fp16 model)."""
+        m.eval(); kt = k1_table(m, dev, amp); m.train(); lab = S["drawn"]
+        S["per_round_split"].append({"step": S["step"], "round": name, "labelled_acc": float(kt[lab].mean()) if lab.any() else None,
+                                     "never_labelled_acc": float(kt[~lab].mean()) if (~lab).any() else None, "all_acc": float(kt.mean())})
+        print("k1 split", S["per_round_split"][-1], flush=True)
+        if a.save_rounds:
+            os.makedirs(os.path.join(a.out, "rounds"), exist_ok=True)
+            torch.save({k_: v.half() if v.is_floating_point() else v for k_, v in m.state_dict().items()},
+                       os.path.join(a.out, "rounds", f"r{len(S['per_round_split']):02d}_{name}_step{S['step']}.pt"))
+
     if S["phase"] == "R0":
-        r0 = r0_items(rng, Xtr, Ytr)[0]; o1 = np.concatenate([r0[1][1][:, 0], r0[2][1][:, 0]])
+        r0 = r0_items_cov(rng, Tf) if Tf is not None else r0_items(rng, Xtr, Ytr)[0]
+        o1 = np.concatenate([r0[1][1][:, 0], r0[2][1][:, 0]])
         direct = {(0, int(x)) for x in o1}; two = direct | {(int(s5.COMP[0, x]), int(y)) for x, y in r0[2][1]}
         train_round(r0, a.r0_steps, "R0", True)
         S["rounds"].append({"length": "1-2", "steps": a.r0_steps, "targets": "final answer only", "start": "identity",
-                            "short_transition_coverage": {"direct": len(direct) / 14400, "incl_2step": len(two) / 14400}})
-        S["phase"] = "rounds"; save_ck()
+                            "short_transition_coverage": {"direct": len(direct) / 14400, "incl_2step": len(two) / 14400},
+                            "coverage_pool": float(r0_labelled(r0).mean()), "coverage_drawn": float(drawn.mean()), **covinfo})
+        round_end("R0"); S["phase"] = "rounds"; save_ck()
     while S["phase"] == "rounds" and S["todo"]:
         Lmax = S["todo"][0]; rows, lens, starts = pool_of(Lmax)
-        items, st, _ = label_round(m, Xtr, Ytr, rows, lens, starts, dev, amp); prev = S["prev"]; mid = (prev + Lmax) // 2
+        items, st, pl = label_round(m, Xtr, Ytr, rows, lens, starts, dev, amp); prev = S["prev"]; mid = (prev + Lmax) // 2
         why = [w for w, bad in (("gate %.4f < %.3f" % (st["gate"], GATE), st["gate"] < GATE),
                                 ("kept share %.3f < 0.20" % st["kept_share"], st["kept_share"] < 0.20)) if bad]
         if why and S["ins"] < a.max_insert and prev < mid < Lmax:
@@ -260,7 +342,8 @@ def main():
         n_steps = S["remaining"] // len(S["todo"]); S["remaining"] -= n_steps; S["todo"].pop(0)
         st.update({"length": Lmax, "steps": n_steps}); S["rounds"].append(st); S["ins"] = 0
         print("round", {k: v for k, v in st.items() if k != "op_hist"}, flush=True)
-        train_round(items, n_steps, f"L{Lmax}", False); S["prev"] = Lmax; save_ck()
+        S["kept_trans"] |= kept_transitions(Xtr, pl, true_states(Xtr, rows, lens, starts))
+        train_round(items, n_steps, f"L{Lmax}", False); S["prev"] = Lmax; round_end(f"L{Lmax}"); save_ck()
     if S["phase"] == "rounds":
         S["phase"] = "final"
     if S["phase"] == "final":
@@ -269,7 +352,8 @@ def main():
         np.savez_compressed(os.path.join(a.out, "pool_final.npz"), **pool)
         st.update({"length": Lmax, "steps": a.final_steps, "action": "final relabelling"}); S["rounds"].append(st)
         print("final", {k: v for k, v in st.items() if k != "op_hist"}, flush=True)
-        train_round(items, a.final_steps, "final", False); S["phase"] = "done"
+        S["kept_trans"] |= kept_transitions(Xtr, pool, true_states(Xtr, rows, lens, starts))
+        train_round(items, a.final_steps, "final", False); round_end("final"); S["phase"] = "done"
     train_sec = round(time.time() - t0)
     torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
     if os.path.exists(ck):
@@ -277,7 +361,7 @@ def main():
     del opt; m.eval(); t1 = time.time()
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
-    r = {"arm": "self110b" if a.random_start else "self110", "start_ge3": "random" if a.random_start else "identity", "seed": a.seed, "k": K, "fork": "mask", "train_sec": train_sec, "eval_dtype": str(amp), "test_sequences": len(Xte),
+    r = {"arm": "self112" if a.cov is not None else ("self110b" if a.random_start else "self110"), "start_ge3": "random" if a.random_start else "identity", "seed": a.seed, "k": K, "fork": "mask", "train_sec": train_sec, "eval_dtype": str(amp), "test_sequences": len(Xte),
          "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
          "short_fraction": S["short"] / max(1, S["step"]), "updates": S["step"], "rounds": S["rounds"]}
     pred, comp, val = rollout(m, Xte, K, dev, amp, a.eval_bs); cum = s5.cumulative(pred, Yte)
@@ -292,7 +376,14 @@ def main():
     mu = mean_slot_inputs(m, Xtr, Ytr, K, dev, amp)
     r["removal"] = {ab: chunk_check(m, K, dev, amp, a.eval_bs, n=min(10_000, a.check_n), seed=7106, ablate=ab, mean_in=mu) for ab in ("zero", "mean")}
     r["donor"] = donor(m, K, dev, amp, a.eval_bs, n=a.donor_n)
-    r["edit_iia"] = edit_iia(m, K, dev, amp, a.eval_bs, n=min(5000, a.check_n)); r["eval_sec"] = round(time.time() - t1)
+    r["edit_iia"] = edit_iia(m, K, dev, amp, a.eval_bs, n=min(5000, a.check_n))
+    kt = k1_table(m, dev, amp); lab = S["drawn"]; nl = ~lab; kp = S["kept_trans"]          # §112 keys (drawn set = labelled)
+    acc = lambda msk: float(kt[msk].mean()) if msk.any() else None  # noqa: E731
+    r.update({**covinfo, "coverage_drawn": float(lab.mean()), "coverage_realised": float(lab.mean()),
+              "k1_labelled_acc": acc(lab), "k1_never_labelled_acc": acc(nl), "k1_certified": bool(kt.all()), "k1_all_acc": float(kt.mean()),
+              "k1_never_labelled_in_pool": acc(nl & kp), "k1_never_labelled_not_in_pool": acc(nl & ~kp),
+              "n_never_labelled": int(nl.sum()), "n_never_labelled_in_pool": int((nl & kp).sum()), "per_round_split": S["per_round_split"]})
+    r["eval_sec"] = round(time.time() - t1)
     json.dump(r, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     print("EVAL", json.dumps(r["cumulative"]), json.dumps(r["donor"]), flush=True); print("DONE", a.out, flush=True)
 
