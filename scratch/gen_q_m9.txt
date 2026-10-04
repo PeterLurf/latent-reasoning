@@ -1,0 +1,5 @@
+# §99 relaunch on fixed code (C3 part): combo
+# P=3
+boxes/runs_mult/a99_combo_4x4_s1 boxes.accel99 --arm99 combo --seed 1 --eval_bs 100
+boxes/runs_mult/a99_combo_4x4_s2 boxes.accel99 --arm99 combo --seed 2 --eval_bs 100
+boxes/runs_mult/a99_combo_4x4_s3 boxes.accel99 --arm99 combo --seed 3 --eval_bs 100
