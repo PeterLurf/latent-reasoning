@@ -1,0 +1,5 @@
+# §100 (fixed code, note 98-3): MASK 4x4, k = 2
+# P=3
+boxes/runs_mult/m100_mask2_4x4_s1 boxes.mult98 train --arm mask --task 4x4 --seed 1 --k 2 --eval_bs 100
+boxes/runs_mult/m100_mask2_4x4_s2 boxes.mult98 train --arm mask --task 4x4 --seed 2 --k 2 --eval_bs 100
+boxes/runs_mult/m100_mask2_4x4_s3 boxes.mult98 train --arm mask --task 4x4 --seed 3 --k 2 --eval_bs 100

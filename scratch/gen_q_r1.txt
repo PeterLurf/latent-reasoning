@@ -1,0 +1,5 @@
+# §98 rerun on fixed code (note 98-3): GEN-M 4x4
+# P=3
+boxes/runs_mult/m98_genm_4x4_s1 boxes.mult98 train --arm genm --task 4x4 --seed 1 --eval_bs 100
+boxes/runs_mult/m98_genm_4x4_s2 boxes.mult98 train --arm genm --task 4x4 --seed 2 --eval_bs 100
+boxes/runs_mult/m98_genm_4x4_s3 boxes.mult98 train --arm genm --task 4x4 --seed 3 --eval_bs 100

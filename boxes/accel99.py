@@ -109,16 +109,18 @@ class MultGen99(MultGen):
                 if meter:
                     meter.step(1, ctx, 0)
                 hslot = hs[:, 0]
+                final = j == c - 1 and (ans_tgt is not None or ans_len is not None)
+                # note 98-3: one final fork, step text then " #### <product>" (as mult98)
                 if step_tgt is not None:
-                    losses.append(self.fork_tf(hslot, past, step_tgt[j]))
-                if step_len is not None and (decode == "all" or j == c - 1):
+                    tgt = torch.cat([step_tgt[j], ans_tgt], 1) if (final and ans_tgt is not None) else step_tgt[j]
+                    losses.append(self.fork_tf(hslot, past, tgt))
+                if final and ans_len is not None:
+                    d = self.fork_greedy(hslot, past, step_len[j] + ans_len, meter)
+                    decs.append(d[:, :step_len[j]]); ans = d[:, step_len[j]:]
+                elif step_len is not None and (decode == "all" or j == c - 1):
                     decs.append(self.fork_greedy(hslot, past, step_len[j], meter if (snap and j == c - 1) else meter_x))
             if j + 1 < c:
                 x = g.embed(self.digtok[ops[:, j + 1]])[:, None]
-        if ans_tgt is not None:
-            losses.append(self.fork_tf(hslot, past, ans_tgt))
-        if ans_len is not None:
-            ans = self.fork_greedy(hslot, past, ans_len, meter)
         loss = torch.stack(losses).mean() if losses else None
         return loss, decs, ans, torch.stack(ins, 1)
 
@@ -145,7 +147,7 @@ def flops_per_problem(m, g, D, dev, phase, L):
         gold, m.gold = m.gold, None; m.chunk(pre, stt, T(D["B"][idx, c0:c1]), meter=mt); m.gold = gold
         fork_tokens = sum(D["steps"][j].shape[1] for j in range(c0, c1)) + (D["ans"].shape[1] if c1 == n else 0)
         ctx_end = pre.shape[1] + (0 if stt is None else stt.shape[1]) + 2 * (c1 - c0)
-        for _ in range(fork_tokens - ((c1 - c0) + (1 if c1 == n else 0))):
+        for _ in range(fork_tokens - (c1 - c0)):                           # one fork per slot (note 98-3)
             mt.step(1, ctx_end, 0)
         out.append(mt.flops + 2 * 768 * 50257 * fork_tokens)
     return float(np.mean(out))

@@ -1,0 +1,3 @@
+# note 98-3 guard test (fixed vs old mult98 x genm/mask x 4x4/5x5; 150 steps, lr 3e-4, fp32)
+# P=1
+boxes/runs_mult/guard98_3 boxes.guard98_3

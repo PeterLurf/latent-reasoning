@@ -168,16 +168,19 @@ class MultGen(nn.Module):
             if meter:
                 meter.step(1, ctx, 0)
             hslot = hs[:, 0]
+            final = j == c - 1 and (ans_tgt is not None or ans_len is not None)
+            # note 98-3: the final slot has ONE fork, the step text followed by " #### <product>" (the dataset's own CoT
+            # continuation); two forks from the same slot with different first tokens cannot both be decoded
             if step_tgt is not None:
-                losses.append(self.fork_tf(hslot, past, step_tgt[j]))
-            if step_len is not None and (decode == "all" or j == c - 1):
+                tgt = torch.cat([step_tgt[j], ans_tgt], 1) if (final and ans_tgt is not None) else step_tgt[j]
+                losses.append(self.fork_tf(hslot, past, tgt))
+            if final and ans_len is not None:
+                d = self.fork_greedy(hslot, past, step_len[j] + ans_len, meter)       # the method's decode (step n + answer)
+                decs.append(d[:, :step_len[j]]); ans = d[:, step_len[j]:]
+            elif step_len is not None and (decode == "all" or j == c - 1):
                 decs.append(self.fork_greedy(hslot, past, step_len[j], meter if (snap and j == c - 1) else meter_x))
             if j + 1 < c:
                 x = g.embed(self.digtok[ops[:, j + 1]])[:, None]
-        if ans_tgt is not None:
-            losses.append(self.fork_tf(hslot, past, ans_tgt))
-        if ans_len is not None:
-            ans = self.fork_greedy(hslot, past, ans_len, meter)
         loss = torch.stack(losses).mean() if losses else None
         return loss, decs, ans, torch.stack(ins, 1)
 
@@ -319,6 +322,8 @@ def coco_mean_thoughts(g, D, dev, amp, n_rows=2000, seed=9806):
 
 # ---------------------------------------------------------------- train / eval
 def train(a):
+    global K
+    K = a.k                                                                 # §100: chunk length (default 4 = §98)
     dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     n = int(a.task[0])
@@ -388,7 +393,7 @@ def train(a):
                 stt = T(Dtr["steps"][c0 - 1][idx]) if c0 > 0 else None
                 m.chunk(pre, stt, T(Dtr["B"][idx, c0:c1]), meter=mt)
                 fork_tokens = sum(Dtr["steps"][j].shape[1] for j in range(c0, c1)) + (Dtr["ans"].shape[1] if c1 == n else 0)
-                n_forks = (c1 - c0) + (1 if c1 == n else 0)
+                n_forks = c1 - c0                                    # one fork per slot (note 98-3: the answer continues the last fork)
                 ctx_end = pre.shape[1] + (0 if stt is None else stt.shape[1]) + 2 * (c1 - c0)
                 for _ in range(fork_tokens - n_forks):                     # teacher-forced fork tokens (approx. ctx)
                     mt.step(1, ctx_end, 0)
@@ -402,6 +407,7 @@ def train(a):
         meter, meter_x = MeterR(g), MeterR(g)
         per, ok, snaps = gen_rollout(m, Dte, dev, amp, a.eval_bs, meter=meter, meter_x=meter_x)
         res["acc_test"] = float(ok.mean()); res["per_slot_decode_acc"] = per.mean(0).tolist()
+        res["k"] = K; res["per_chunk_acc"] = [float(per[:, c1 - 1].mean()) for c0, c1 in chunks_of(n)]   # §100: each chunk's end state
         res["compute"] = {**meter.as_dict(), "measurement_decode_flops": meter_x.flops}
         mu = gen_mean_inputs(m, Dtr, dev, amp); res["removal"] = {}
         for ab in ("zero", "mean"):
@@ -413,7 +419,8 @@ def train(a):
             perm = np.random.default_rng(9807).permutation(len(Dte["A"])); donor = Dte["steps"][K - 1][perm]
             _, o_e, _ = gen_rollout(m, Dte, dev, amp, a.eval_bs, override=(0, donor))
             S_d = to_int(np.array([[int(DIGIT_IDS.tolist().index(t)) for t in row[2 + L_P:2 + L_P + L_S]] for row in donor]))
-            a_int = to_int(Dte["A"]); want = [S + ai * int(b5) * 10 ** K for S, ai, b5 in zip(S_d, a_int, Dte["B"][:, K])]
+            a_int = to_int(Dte["A"])                                        # edited S_K plus a times the remaining ops (j >= K, 0-based)
+            want = [S + ai * sum(int(Dte["B"][r, j]) * 10 ** j for j in range(K, n)) for r, (S, ai) in enumerate(zip(S_d, a_int))]
             # decode under the edit, then compare with the edited composition
             Dw = dict(Dte); Dw["prod"] = np.array([digits_lsb(v, Dte["prod"].shape[1]) for v in want])
             _, o_w, _ = gen_rollout(m, Dw, dev, amp, a.eval_bs, override=(0, donor))
@@ -436,6 +443,7 @@ def main():
     ap.add_argument("--steps", type=int, default=24000); ap.add_argument("--bs", type=int, default=64)
     ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--eval_bs", type=int, default=250)
     ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt of a finished run only (log.jsonl and args.json untouched)")
+    ap.add_argument("--k", type=int, default=4, help="§100: ops per chunk (snap every k; training chunks aligned)")
     ap.add_argument("--micro", type=int, default=0, help="micro-batches per update (0: 1 for genm/mask, 2 for coco/tc/nc: 3 stage-0 jobs OOM a 24 GB card)")
     ap.add_argument("--test_n", type=int, default=None, help="smoke only"); ap.add_argument("--train_limit", type=int, default=0, help="smoke only")
     ap.add_argument("--log_every", type=int, default=2000); ap.add_argument("--log_n", type=int, default=200)
