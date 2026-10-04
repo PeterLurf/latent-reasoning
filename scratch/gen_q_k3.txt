@@ -1,0 +1,5 @@
+# §108 forced latent carriage on S5 (Markov segments; donor protocol primary)
+# P=3
+boxes/runs_s5/s108_mk8_s1 boxes.mk108 --k 8 --seed 1
+boxes/runs_s5/s108_mk8_s2 boxes.mk108 --k 8 --seed 2
+boxes/runs_s5/s108_mk8_s3 boxes.mk108 --k 8 --seed 3
