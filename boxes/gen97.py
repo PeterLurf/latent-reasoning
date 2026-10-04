@@ -83,12 +83,22 @@ class Gen97(nn.Module):
         t = self.g.logits(hslot).argmax(-1); out = [t]
         if meter:
             meter.step(0, 0, 1)
+        past, pos = self.fork_past(past)
         for _ in range(NST - 1):
-            ctx = past[0][0].shape[2]; h, past = self.g(self.g.embed(t)[:, None], past)
+            ctx = past[0][0].shape[2]; h, past = self.g(self.g.embed(t)[:, None], past, pos0=pos)
             if meter:
                 meter.step(1, ctx, 1)
+            pos = None if pos is None else pos + 1
             t = self.g.logits(h[:, 0]).argmax(-1); out.append(t)
         return torch.stack(out, 1)
+
+    def fork_past(self, past):
+        """§105 (--fork mask, §98's mask): a fork sees only the slot's own cached K/V (all layers) and its own tokens, at
+        their true positions. Default: the whole cache."""
+        if not getattr(self, "mask", False):
+            return past, None
+        P = past[0][0].shape[2]
+        return [(k[:, :, -1:], v[:, :, -1:]) for k, v in past], P
 
     def chunk(self, start, ops, tgt=None, decode="all", ablate=None, mean_in=None, meter=None, meter_x=None):
         """start: see start_emb; ops (B, k) element ids; tgt (B, k) element ids (fork CE) or None. decode: "all" | "last"
@@ -111,7 +121,7 @@ class Gen97(nn.Module):
             hslot = hs[:, 0]
             if tgt is not None:                                              # fork: teacher-forced step text, side branch
                 st = self.sttok[tgt[:, j]]
-                hf, _ = g(g.embed(st[:, :-1]), past)
+                fp, p0 = self.fork_past(past); hf, _ = g(g.embed(st[:, :-1]), fp, pos0=p0)
                 lg = g.logits(torch.cat([hslot[:, None], hf], 1)).float()
                 losses.append(F.cross_entropy(lg.reshape(-1, lg.shape[-1]), st.reshape(-1), reduction="none").view(B, NST).sum(-1).mean())
             if decode == "all" or (decode == "last" and j == k - 1):
@@ -221,7 +231,7 @@ def train(a):
     os.makedirs(a.out, exist_ok=True)
     json.dump({**vars(a), "train_sequences": len(Xtr), "op_tokens": len(OPTOK[0]), "state_tokens": NST},
               open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
-    m = Gen97(s5.load_gpt2(dev), a.arm).to(dev); w0 = wte_rows(m)
+    m = Gen97(s5.load_gpt2(dev), a.arm).to(dev); m.mask = a.fork == "mask"; w0 = wte_rows(m)
     opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
     log = open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t0 = time.time(); hist = []
     for step in range(1, a.steps + 1):
@@ -239,7 +249,7 @@ def train(a):
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
     train_sec = round(time.time() - t0)
     torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
-    m.eval(); res = {"arm": a.arm, "k": a.k, "seed": a.seed, "train_sec": train_sec, "eval_dtype": str(amp), "test_sequences": len(Xte)}
+    m.eval(); res = {"arm": a.arm, "fork": a.fork, "k": a.k, "seed": a.seed, "train_sec": train_sec, "eval_dtype": str(amp), "test_sequences": len(Xte)}
     res["gpu"] = torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"      # Audit: arms run on 3090 / 4090
     t1 = time.time(); pred, comp, val = rollout(m, Xte, a.k, dev, amp, a.eval_bs)
     np.save(os.path.join(a.out, "preds_test.npy"), pred); cum = s5.cumulative(pred, Yte)
@@ -269,6 +279,7 @@ def train(a):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("cmd", choices=["train"])
     ap.add_argument("--arm", required=True, choices=["gen", "hyb"])
+    ap.add_argument("--fork", default="full", choices=["full", "mask"], help="§105: mask = each fork sees only its slot's K/V and its own tokens")
     ap.add_argument("--k", type=int, default=4); ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--steps", type=int, default=24000); ap.add_argument("--bs", type=int, default=64)
     ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--eval_bs", type=int, default=500)
