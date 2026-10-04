@@ -1,0 +1,26 @@
+{
+ "arm": "tc",
+ "task": "5x5",
+ "seed": 3,
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "train_sec": 14640,
+ "eval_dtype": "torch.bfloat16",
+ "test_items": 1000,
+ "training": {
+  "epochs": 1.900990099009901,
+  "flops": 1.07434724032512e+17,
+  "flops_convention": "Meter forward FLOPs per trained problem (full-vocab LM head) x 3 (fwd+bwd) x steps x bs"
+ },
+ "acc_test": 1.0,
+ "compute": {
+  "tokens_processed": 97,
+  "flops": 23314827264.0,
+  "seq_passes": 87,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "lm_head_rows": 86,
+  "sequential_passes": 87
+ },
+ "eval_sec": 7
+}

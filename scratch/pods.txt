@@ -592,3 +592,5 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 54110967 vast | gen_r4 DESTROYED_VERIFIED 2026-10-04 05:09 after verified per-run fetch (boxes/runs_mult/m98_mask_5x5_s3 boxes/runs_mult/m98_mask_5x5_s2 boxes/runs_mult/m98_mask_5x5_s1)
 54130307 vast offer 52692620 created 2026-10-04 05:10: label gen-r1, queue scratch/gen_q_r1.txt (logged at create by vdeploy_toy.sh)
 54111478 vast | gen_m3 DESTROYED_VERIFIED 2026-10-04 05:24 after verified per-run fetch (boxes/runs_mult/a99_kcurr_4x4_s3 boxes/runs_mult/a99_kcurr_4x4_s1 boxes/runs_mult/a99_kcurr_4x4_s2)
+54131469 vast offer 52692613 created 2026-10-04 05:25: label gen-u1, queue scratch/gen_q_u1.txt (logged at create by vdeploy_toy.sh)
+54073316 vast | gen_y5 DESTROYED_VERIFIED 2026-10-04 05:27 after verified per-run fetch (boxes/runs_mult/m98_tc_4x4_s2 boxes/runs_mult/m98_tc_4x4_s3 boxes/runs_mult/m98_tc_4x4_s1 boxes/runs_mult/m98_tc_5x5_s1 boxes/runs_mult/m98_tc_5x5_s3 boxes/runs_mult/m98_tc_5x5_s2 boxes/runs_mult/m98_nc_4x4_s2 boxes/runs_mult/m98_nc_4x4_s3 boxes/runs_mult/m98_nc_4x4_s1 boxes/runs_mult/m98_nc_5x5_s1 boxes/runs_mult/m98_nc_5x5_s2 boxes/runs_mult/m98_nc_5x5_s3)
