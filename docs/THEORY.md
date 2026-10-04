@@ -1715,3 +1715,28 @@ select by a **training-data-only** criterion.
   - The in-LM route needs a way into the basin (§85 / §87: short-label warm start, oracle-like initialisation) or the
     amortised teacher (§96).
   - §110 (identity starts) s1–3 complete for the record.
+
+**Note 110-3 (2026-10-04 14:31 EDT; §110 s1–3 finished, fetched e394f62d; scored with `theory/score_s110.py`; s4–5 now
+running). It corrects 110-1.**
+* **Correction to 110-1.** "The gate cannot pass" was wrong. Under identity-start training, **restart competence emerged
+  from the final-only rounds at L ≥ 5**, which start from the model's own checkpoint texts.
+  - s3's gate went from ≈ 0 (L4 / 3 / 4 / 8 / 6 / 5) to **1.0 at L6** (kept 0.754), then 1.0 with kept ≥ 0.9998 at L8 /
+    16 / 32 and in the final round.
+  - s1's gate rose more slowly (0.28 → 0.71–0.88 → 0.97). s2's stayed ≈ 0.
+  - Seeds 4–5, held under 110-1, are now run to restore the registered panel. They also decide STUDENT's trigger.
+* **Interim results (s1–3).**
+
+  | seed | cumulative 512 / 2,048 | donor-consistent, slots 1 / 2 / 3 | recipient-consistent | mean-removal |
+  |---|---|---|---|---|
+  | **s3** | **0.999 / 0.994** | **0.962 / 0.983 / 0.968** | 0.012 / 0.011 / 0.009 | 0.011 |
+  | s1 | 0.9505 / 0.826 | slot 1 recipient **0.9995** (bypass); slots 2–3 neither | — | 0.016 |
+  | s2 | 0 / 0 | chance | — | — |
+
+  - **s3 individually meets SELF2 and §110's donor C1 rule.** A pretrained LM learns S5 latent restarts **from final
+    answers only** (≤ 5 % identity-start short problems, about 71–79 % transition coverage; note C4-coverage). Its
+    latents carry the state at every in-chunk slot (masked fork, donor-consistent ≥ 0.96), exact to 2,048.
+  - That is one seed: SELF2 and C1 need ≥ 4/5, and are at 1/3 now (at most 3/5).
+  - Unlike §105 (supervised, masked fork), where slot 1 was recomputed from the chunk start (donor 0.13–0.87), s3 also
+    carries slot 1 (0.962).
+* **Reading (interim).** C4 (qualified) + C1 (masked fork, donor) + C2 to 2,048 are shown together **in one seed**. It is
+  the same reliability picture as §108: the mechanism exists, and seeds lottery.
