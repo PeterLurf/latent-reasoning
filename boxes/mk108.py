@@ -71,6 +71,8 @@ class MK108(Gen97):
             if meter:
                 meter.step(x.shape[1], 0, 0)
             s_in = h[:, -1]
+            if ablate == "shuffle" and j < k - 1:                    # note 114-2 / 111-2: the carried latent of another row (in distribution)
+                s_in = s_in[self.perm]
             if ablate in ("zero", "mean") and j < k - 1:
                 s_in = torch.zeros_like(s_in) if ablate == "zero" else mean_in[j][None].expand_as(s_in).to(s_in.dtype)
             if self.override is not None and self.override[0] == j:
@@ -231,13 +233,15 @@ def evaluate(m, a, dev, amp, Xtr, Ytr, Xte, Yte):
 def rel_ratio_final(m, X, Y, k, dev, amp, n_batches=20, bs=64, seed=11102):
     """Note 111-2 (theory's (a), "reads at the end"): at the final model, mean main loss / mean main loss with the carried
     latents 1..k-1 zeroed, over n_batches training chunks of k ops (true starts, no gold)."""
-    rng = np.random.default_rng(seed); l1 = l0 = 0.0; T = lambda x: torch.tensor(x, device=dev)  # noqa: E731
+    rng = np.random.default_rng(seed); l1 = l0 = ls = 0.0; T = lambda x: torch.tensor(x, device=dev)  # noqa: E731
     for _ in range(n_batches):
-        st, o, tg = batch(rng, X, Y, k, bs)
+        st, o, tg = batch(rng, X, Y, k, bs); m.perm = torch.from_numpy(rng.permutation(bs)).to(dev)
         with amp_ctx(amp):
             m.chunk(m.start_from(els=st, dev=dev), T(o), T(tg), decode=None); l1 += m.parts[0]
             m.chunk(m.start_from(els=st, dev=dev), T(o), T(tg), decode=None, ablate="zero"); l0 += m.parts[0]
-    return {"rel_ratio_final": l1 / max(1e-9, l0), "main_loss": l1 / n_batches, "zeroed_loss": l0 / n_batches, "n_batches": n_batches, "bs": bs}
+            m.chunk(m.start_from(els=st, dev=dev), T(o), T(tg), decode=None, ablate="shuffle"); ls += m.parts[0]
+    return {"rel_ratio_final": l1 / max(1e-9, l0), "rel_ratio_final_shuffled": l1 / max(1e-9, ls), "main_loss": l1 / n_batches,
+            "zeroed_loss": l0 / n_batches, "shuffled_loss": ls / n_batches, "n_batches": n_batches, "bs": bs}
 
 
 def read_log(lp):
@@ -334,7 +338,10 @@ def main():
                 with torch.no_grad(), amp_ctx(amp):
                     m.chunk(m.start_from(els=st, dev=dev), T(o[:, :L]), T(tg[:, :L]), decode=None); p1 = m.parts[0]
                     m.chunk(m.start_from(els=st, dev=dev), T(o[:, :L]), T(tg[:, :L]), decode=None, ablate="zero"); p0 = m.parts[0]
-                m.gold = None; m.train(); rec["rel_main"] = p1; rec["rel_null"] = p0; rec["rel_ratio"] = p1 / max(1e-9, p0)
+                    m.perm = torch.from_numpy(np.random.default_rng(step).permutation(o.shape[0])).to(dev)
+                    m.chunk(m.start_from(els=st, dev=dev), T(o[:, :L]), T(tg[:, :L]), decode=None, ablate="shuffle"); ps = m.parts[0]
+                m.gold = None; m.train(); rec["rel_main"] = p1; rec["rel_null"] = ps; rec["rel_null_zero"] = p0
+                rec["rel_ratio"] = p1 / max(1e-9, ps); rec["rel_ratio_zero"] = p1 / max(1e-9, p0)
             if reads:
                 rec["reader_loss"] = float(np.mean(reads))
             if dag:
