@@ -173,6 +173,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 111 | Reliability of the Markov hand-off: 2× budget vs DAgger-style own-state training; best-of-n | registered | **open** |
 | 112 | Short-coverage dose-response for self-training (f = 0.5 / 0.25 / 0.1; never-labelled k = 1 accuracy) | registered | **open** |
 | 113 | Auxiliary reader inside self-training (conditional on §111-READ) | registered (conditional) | **open** |
+| 114 | Looped depth per op (LOOP-R vs LOOP-1 vs §107 PAUSE) for multiplication's hand-off | registered | **open** |
 
 ## Live sections
 
@@ -1755,6 +1756,67 @@ use (Literature): C1 is scored with the donor protocol only.
 * **Not REL.** The no-read account does not cover §110's failures.
 
 **Placement.** 5 runs, about $2–4, **launched only if §111 MK-4-READ meets REL**. Otherwise it is not run (noted then).
+
+## 114. Looped depth per op: serial depth, not positions, for multiplication's latent hand-off (pre-registered 2026-10-04 15:54 EDT, after Literature's check c70d55e3 and before any implementation or run; the user's directive "register now", via Audit)
+
+**Why.** Multiplication's latent hand-off fails at k = 4: §98 0.16, §99 none accelerates, §107 neither width (LAT) nor
+extra token positions (PAUSE-4: 0.055 / 0.042 / 0.007) helps. Each op is a multi-digit multiply-add, and carries need
+**serial depth** (Saunshi), which extra positions do not add. §114 adds depth per op by looping a middle block.
+* **Prior** (c70d55e3, `docs/LIT_LOOPED_PROPOSALS_2026-10-04.md`).
+  - Huginn 2502.05171, Ouro 2510.25741, UT, CoTFormer 2310.10845, Relaxed Recursive Transformers 2410.20672, MoR
+    2507.10524.
+  - Pretrained retrofits: Shapiro 2608.11233, McLeish 2511.07384, T²MLR 2607.15178.
+  - Flags: untargeted iterations are slack (hence per-iteration targets); test-time depth scaling transfers modestly to
+    retrofits; overthinking at large r.
+
+**Harness** (§107's, so the two can be compared directly): 4×4 multiplication on the fixed code (98-3).
+* Accel99's MARKOV segments: [a, *, op j−1's carried latent (or the chunk start text), op j] → slot j, fresh cache,
+  forks on their own segment.
+* The K-CURR bootstrap (k = 1 / 2 / 4 at 2k / 6k), eligible from 6k, a 24k cap, the valid-split early stop.
+
+**The looped block.** GPT-2 layers 4–7 run **r times** over the segment's positions.
+* Input injection: the layer-3 output is re-added before each iteration.
+* Weights are tied across iterations, plus a per-(iteration, layer) LoRA (rank 8, zero-initialised), so r = 1 is GPT-2
+  exactly.
+* Layers 8–11 then run once on the final iteration.
+* **Per-iteration targets:** each iteration's output, passed through layers 8–11 and the segment's fork, gets the step
+  text's CE. The losses are averaged over iterations.
+
+**Arms (seeds 1–3, paired with each other).**
+* **LOOP-R:** r drawn uniformly from 1..8 per batch in training. The test uses **r = 8** (primary).
+* **LOOP-1 (same-harness control; Audit (b)):** the same code path with r = 1 throughout. Depth is the only difference
+  from LOOP-R.
+* **Positions comparator:** §107 PAUSE-4 (existing, same harness; it failed CARRY-3).
+
+**Measures.** §107's (per-op decode on the test split, test accuracy, removal of every carried latent, steps to
+threshold), plus:
+* **§104's donor protocol** on the carried latent at every in-chunk slot;
+* the loss/null ratio at every log and `early_escape` (111-1);
+* test-time **accuracy against r** ∈ {1, 2, 4, 8, 12, 16};
+* FLOPs and sequential passes.
+
+**Rules (fixed now).**
+* **CARRY-3** (per arm): op-3 decode ≥ 0.95 in ≥ 2/3 seeds.
+* **C1-donor:** in those seeds, §104 USE (single-patch donor-consistent ≥ 0.90) at every in-chunk slot, with no BYPASS
+  (recipient < 0.10), and removal answer accuracy ≤ §98 NC-M 4×4 + 0.05.
+* **DEPTH:** LOOP-R meets CARRY-3 + C1-donor while LOOP-1 does not, and PAUSE-4 did not.
+* **No-read seeds (Audit (a), fixed now).** A seed with `early_escape` = false (loss/null ratio not < 0.9 within 1k steps
+  of k = 2) is flagged **"no-read basin"**.
+  - It **counts as a fail** in every rule above.
+  - Results are **also reported among escaped seeds only**, as the conditional reading "among seeds that read their
+    latent, does depth lift op 3?".
+  - This keeps "loop depth didn't help" separate from "the latent was never read".
+
+**Readings.**
+* **DEPTH.** Serial depth per op, not extra positions, unlocks multiplication's latent hand-off: C1 on arithmetic with
+  forced carriage. Accuracy against test-time r gives C2-in-depth and a C5 handle (P5 follows).
+* **LOOP-R passes only among escaped seeds.** Depth works when the latent is read. Reliability waits on §111's fix.
+* **Neither passes, even among escaped seeds.** Neither depth nor positions per op is the blocker at this budget. The
+  running-sum auxiliary (§109-A's draft) is next.
+* **Tags:** C1 (arithmetic, donor), C6 (descriptive), C5 handle (r); not C4.
+
+**Placement.** 6 runs (2 arms × 3 seeds), about $6–9 (LOOP-R costs about 2.5–3× per step). Proof host first.
+Projection to Audit. Implementation: the experiments session (accel99 plus a looped-block option in the GPT2KV forward).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
