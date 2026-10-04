@@ -9,7 +9,7 @@ pq=$(grep -o "^# P=[0-9]*" "$q" | head -1 | cut -d= -f2); [ -n "$pq" ] && P=$pq 
 pip install -q transformers==4.46.2 tiktoken > logs/pip_gen.log 2>&1
 for try in 1 2 3; do python -c "from transformers import GPT2LMHeadModel, GPT2TokenizerFast; GPT2LMHeadModel.from_pretrained('openai-community/gpt2'); GPT2TokenizerFast.from_pretrained('openai-community/gpt2')" >> logs/pip_gen.log 2>&1 && break; sleep 30; done
 if grep -q "boxes.fade89" "$q"; then sha256sum prosqa/ckpt/gpt2_pretrained.bin | grep -q "^7c5d3f4b8b76583b" || { echo "$(date +%T) GPT2_SHA_MISMATCH rc 9" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }; fi
-if grep -q -E "boxes.(latent86|gen97|snap101)" "$q"; then
+if grep -q -E "boxes.(latent86|gen97|snap101|self103)" "$q"; then
   W=prosqa/ckpt/gpt2_pretrained.bin; sha256sum $W | grep -q '^7c5d3f4b8b76583b' || { echo "$(date +%T) GPT2_SHA_MISMATCH rc 9" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }
   SHA128=6ee3ef95405dc43b094824dff8973753c587fe95a00762d2023bd64a941504f2; SHA512=a0087fe4a7496a47f76d9436e6bb089c8a8869f3f343f71057355e127d0c33da
   pip install -q polars fire pyrootutils "git+https://github.com/jopetty/abstract_algebra" >> logs/pip_gen.log 2>&1
