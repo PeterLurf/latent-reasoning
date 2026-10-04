@@ -1,0 +1,3 @@
+# §98 COCO-M reruns on local cards after §104 (4x4 s3 restarted: the first attempt was stopped at 23.7k, *.void_contention); --micro 4, eval_bs 50
+boxes/runs_mult/m98_coco_4x4_s3 boxes.mult98 train --arm coco --task 4x4 --seed 3 --micro 4 --eval_bs 50
+boxes/runs_mult/m98_coco_5x5_s3 boxes.mult98 train --arm coco --task 5x5 --seed 3 --micro 4 --eval_bs 50
