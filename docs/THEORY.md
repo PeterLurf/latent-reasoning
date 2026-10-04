@@ -146,6 +146,7 @@ appended at the end of this file.
 | 97 | General latent thinker, step 1 | G4 met 3/3 (0.998–1.0 at 512; 1.0 at 2,048); 0.56× | **open** (C6 seeds) |
 | 98 | Step 2a: multiplication vs ICoT-SI, Coconut, text CoT | running | **open** |
 | 99 | Speeding up the latent hand-off (k-curriculum, standardised slots, text-first, combo) | running | **open** |
+| 100 | Shorter silent stretches: multiplication at k = 2 (GEN2, MASK2) | registered | **open** |
 
 ## Live sections
 
@@ -526,5 +527,66 @@ At the stopping checkpoint, on the 1,000 bench test items:
   dilute the panel; noted for later.
 * **Panel and cost:** 7 arms × 3 seeds = 21 runs, about $6–10. The rule, readings and no-bypass condition are as §99. The
   scorer is updated in the same commit (arms `tfslot`, `textfirst_mask`).
+
+## 100. Shorter silent stretches on multiplication: §98's recipe with a text snap every 2 steps (k = 2) (pre-registered 2026-10-03 23:54 EDT, after Literature's check 478cc193 and before any implementation or run; the user's request for an overnight plan, via Audit)
+
+**Why.** On multiplication the first latent hand-off is learned and the second is the wall. §98's and §99's training logs
+(raw, unscored): slots 1–2 ≈ 1.0 and slot 3 at 0.26–0.52 at 9k–20k steps.
+* §100 shortens every silent stretch to one hand-off: a text snap every 2 steps.
+* It asks whether the general recipe then solves multiplication, and whether it stays cheaper than text CoT at matched
+  accuracy (C3), which is the real question at k = 2.
+* It runs in parallel with §98 and §99 and does not depend on them. If §99 finds an accelerator, it can be combined
+  later.
+* **Prior** (478cc193, `docs/LIT_S100_K2_2026-10-03.md`).
+  - No snap-frequency sweep has been published for arithmetic. §98 (k = 4) against §100 (k = 2) is the first.
+  - Coconut's c thoughts per step and CoLaR's compression factor vary latents per step, not snap frequency.
+
+**Task and recipe.** §98's data, test items, code path and budget (24k steps, bs 64, lr 1e-4), with **k = 2**.
+* The test-time chunks are ops {1, 2}, {3, 4} and (5×5) {5}.
+* At each chunk end the step text (which carries S_j at steps 2 and 4) is greedy-decoded and re-embedded as the next
+  start, with the history cut.
+* Training chunks are aligned to the test chunks, as 98-2.
+
+**Arms (seeds 1–3, each task).**
+* **GEN2:** GEN-M at k = 2.
+* **MASK2:** GEN-M-MASK at k = 2 (each fork attends only to its slot and its own tokens).
+* Comparators, from §98 on the same items: TC-M, NC-M, and the released ICoT-SI (0.998 / 0.996).
+
+**Measures (§98's keys).**
+* Test accuracy.
+* Per-slot decode.
+* Zero- and mean-removal answer accuracy (slot input 1 of each 2-op chunk).
+* Checkpoint validity and edit IIA.
+* FLOPs (as metered and restricted), sequential passes, and training compute.
+
+**Rules (fixed now; per task, medians over seeds 1–3).**
+* **M1-2:** GEN2 ≥ 0.95.
+* **M-SOTA-2:** GEN2 ≥ the ICoT-SI bar (0.998 at 4×4, 0.996 at 5×5).
+* **M-C3-2:** GEN2 ≥ TC-M − 0.01, at ≤ TC-M's median FLOPs (as metered; restricted reported).
+* **M-C1-2:** MASK2 ≥ 0.95, and in those seeds zero- and mean-removal answer accuracy ≤ §98's NC-M median + 0.05.
+* **Slot-1 removal decides the reading (Literature (1)).** At k = 2 the fork sees S_{j−1}, a, b_j and b_{j+1} in
+  context, and two steps in one pass are within GPT-2's reach (ICoT-SI does a whole product in one pass).
+  - If GEN2 keeps M1-level accuracy with the slot-1 latent zero- or mean-ablated, the result is **"text checkpoints every
+    2 ops", not latent carriage**.
+  - C1 is claimed only through M-C1-2.
+* **C3 scope (Literature (2)).** "Cheaper" means cheaper than text CoT only. ICoT-SI writes no CoT and dominates on
+  FLOPs at matched accuracy. Sequential passes are metered too.
+* **Per-chunk accuracy** is reported, so a failure on 5×5's final single-op chunk is not confused with hand-off failure.
+  Training chunks are aligned to test chunks, so single-op final chunks are trained.
+
+**Readings.**
+* **M1-2 + M-C3-2, with MASK2 and slot-1 removal showing latent use.** One latent hand-off between text checkpoints
+  suffices on 4×4 / 5×5, more cheaply than text CoT. Without that latent-use evidence, it is a text-checkpoint result.
+  - The snap interval k is the knob between latent work and written state.
+  - Tags: C1 (unqualified if M-C1-2), C3, and C7 for checkpoints. Not C2 (in-distribution; 98-2). Not C4.
+* **M1-2 only.** It solves the task, but the extra checkpoints cost as much as text CoT.
+* **M1-2 fails.** Even single hand-offs between text checkpoints are not acquired in budget, so the obstacle is not
+  hand-off depth.
+* **Not run now:** a "train longer" reference (GEN-M k = 4 at 10× budget against ICoT-SI's ~200 epochs, about $20–40).
+  It is deferred until §99 is scored.
+
+**Placement.** 12 runs (2 arms × 2 tasks × 3 seeds), Vast (proof host first, ≤ 5) or local cards, about $8–12. Projection
+to Audit. Run dirs `boxes/runs_mult/m100_{gen2,mask2}_{4x4,5x5}_s{1,2,3}`, with §98's eval.json keys. The scorer is
+committed before any run.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
