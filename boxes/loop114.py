@@ -11,9 +11,10 @@ is iteration r's) and after iteration u (layers 8-11 on iteration u's output, th
 truncated network); per slot loss = (CE_r + (r - 1) CE_u) / r, an unbiased estimate of the mean over iterations 1..r.
 The segment trunk (layers 0-3 and the loop iterations) is shared between the two targets.
 Arms: loopr (test r = 8), loop1 (r = 1 always; same code path).
-Loss/null ratio (111-1 analogue for multiplication): every 100 steps, the same batch's loss with every carried latent
-zeroed (no grad) is the model-relative null; ratio = loss / null (k >= 2 only). early_escape = ratio < 0.9 at some log
-within 1k steps after k = 2 starts.
+Loss/null ratio (note 114-2): every 100 steps, the same batch's loss with the carried latents permuted across the batch
+rows (shuffled null, in distribution; no grad) is the model-relative null; ratio = loss / null (k >= 2 only; the zeroed
+null is logged as ratio_zero). no_read = ratio >= 0.9 at the first log at or after 6k (114-2's flag); early_escape = ratio
+< 0.9 at some log within 1k steps after k = 2 starts (descriptive).
 Eval (eval.json): §107's (test_acc, per_slot_decode_acc, removal zero / mean of every carried latent, steps_to_threshold,
 curve) + donor (§104 single patch of the carried latent at slots 1-3, n = 2000, random donors and same-a donors; the
 final answer scored donor-consistent = S_j^B + a_A sum_{t>j} b_t^A 10^(t-1), recipient-consistent = a_A b_A),
@@ -151,6 +152,8 @@ class Loop114(MultGen99):
         for j in range(c):
             br = self.lp.trunk(x, R, {R} | ({U} if U else set())); mstep(meter, x.shape[1], 0, 0, depth(R))
             out_R, past_R = br[R]; s_in = out_R[:, -1]
+            if ablate == "shuffle" and j < c - 1:                    # note 114-2 / 111-2: the carried latent of another row (in distribution)
+                s_in = s_in[self.perm]
             if ablate in ("zero", "mean") and j < c - 1:
                 s_in = torch.zeros_like(s_in) if ablate == "zero" else mean_in[j][None].expand_as(s_in).to(s_in.dtype)
             if self.override is not None and self.override[0] == j:
@@ -254,7 +257,10 @@ def main():
                 with torch.no_grad(), torch.autocast("cuda", dtype=amp, enabled=amp is not None):
                     l1, _, _, _ = m.chunk(prefix, start, ops, step_tgt=st, ans_tgt=ans)
                     l0, _, _, _ = m.chunk(prefix, start, ops, step_tgt=st, ans_tgt=ans, ablate="zero")
-                m.train(); rec["loss_eval"] = float(l1); rec["null"] = float(l0); rec["ratio"] = float(l1) / max(1e-9, float(l0))
+                    m.perm = torch.from_numpy(np.random.default_rng(step).permutation(ops.shape[0])).to(dev)
+                    ls, _, _, _ = m.chunk(prefix, start, ops, step_tgt=st, ans_tgt=ans, ablate="shuffle")
+                m.train(); rec["loss_eval"] = float(l1); rec["null"] = float(ls); rec["null_zero"] = float(l0)
+                rec["ratio"] = float(l1) / max(1e-9, float(ls)); rec["ratio_zero"] = float(l1) / max(1e-9, float(l0))
                 ratios.append((step, rec["ratio"]))
             if step % a.log_every == 0:
                 m.eval(); m.r, m.u = test_r, None; per, ok, _ = gen_rollout(m, Dva, dev, amp, a.eval_bs); m.train()
@@ -281,7 +287,9 @@ def main():
                         "flops_convention": "sum over updates of a 12-layer Meter forward of the chunk shape x (depth(r) + depth(u)) / 12 x 3 x bs (an upper bound: the trunk is shared)"},
            "ratio_per_1k": [[s_, q] for s_, q in ratios if s_ % 1000 == 0], "early_escape": bool(win) and min(win) < 0.9,
            "early_window_min_ratio": min(win) if win else None, "escape_step": next((s_ for s_, q in ratios if q < 0.9), None),
-           "null_convention": "loss with every carried latent zeroed on the same batch (no grad), test-mode r = the batch's r"}
+           "null_convention": "note 114-2: loss with the carried latents permuted across the batch rows (shuffled null; same batch, no grad, test-mode r = the batch's r); ratio_zero = the zeroed-latent null (descriptive)"}
+    first6 = next(((s_, q) for s_, q in ratios if s_ >= 6000 * sc), None)
+    res["ratio_at_6k"] = None if first6 is None else first6[1]; res["no_read"] = None if first6 is None else bool(first6[1] >= 0.9)
     for ab in ("zero", "mean"):
         _, o_, _ = rollout_safe(m, Dte, dev, amp, bs, ablate=ab, mean_in=mu); res["removal"][ab] = {"answer_acc": float(o_.mean())}
     res["donor"] = donor(m, dev, amp, n=a.donor_n, bs=bs); res["donor_same_a"] = donor(m, dev, amp, n=a.donor_n, bs=bs, same_a=True)
