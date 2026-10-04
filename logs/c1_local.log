@@ -392,3 +392,11 @@
 11:35:41 WORKER_DONE cuda:0 scratch/c1_q_110b_local.txt
 11:36:11 s110b_s4 STOPPED at step ~6.1k per note 110b-2 (aborted after a clear null, read): run dir + log kept *.aborted_null; s110b_s5 locked (c1/runs/locks/s110b_s5), never started
 11:36:34 §108 MK-4 s4/s5 queued locally (scratch/c1_q_108_local.txt): cuda:0 now, cuda:1 after COCO 5x5 s3
+12:26:23 s83 wc0k4r_s2_ext rc 0 (cuda:2 --fp32 --bs 64)
+15:09:39 s108_mk4_s4 rc 0 (cuda:0)
+15:51:13 m98_coco_5x5_s3 rc 0 (cuda:1)
+15:51:13 WORKER_DONE cuda:1 scratch/c1_q_98coco_b.txt
+15:51:28 WORKER_DONE cuda:1 scratch/c1_q_98coco_c.txt
+15:52:09 WORKER_DONE cuda:1 scratch/c1_q_110b_local.txt
+15:52:52 WORKER_DONE cuda:1 scratch/c1_q_108_local.txt
+15:53:58 cuda:1: §108 MK-4 s4 --backfill, then §112 f010 s21 (scratch/c1_q_112_local.txt)

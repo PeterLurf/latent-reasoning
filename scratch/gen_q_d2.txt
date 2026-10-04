@@ -1,0 +1,4 @@
+# §112 coverage dose-response (note 112-1 + addendum); host 2 of 8
+# P=2
+boxes/runs_s5/s112_f050_s23 boxes.self110 --cov 0.5 --save_rounds --seed 23
+boxes/runs_s5/s112_f050_s24 boxes.self110 --cov 0.5 --save_rounds --seed 24
