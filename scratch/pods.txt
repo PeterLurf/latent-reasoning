@@ -556,3 +556,4 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 54073316 vast offer 53493696 created 2026-10-03 18:37: label gen-y5, queue scratch/gen_q_y5.txt (logged at create by vdeploy_toy.sh)
 54022268 vast | gen_w2 DESTROYED_VERIFIED 2026-10-03 18:49 after verified per-run fetch (boxes/runs/f94_fadestd3x_s7 boxes/runs/f94_stddec3x_s7 boxes/runs/f94_stddecinv3x_s7)
 54067029 vast | gen_x4 DESTROYED_VERIFIED 2026-10-03 20:32 after verified per-run fetch (boxes/runs_s5/g97_gen4_s5 boxes/runs_s5/g97_gen4_s4)
+54070499 vast | gen_y4 DESTROYED_VERIFIED 2026-10-03 20:48 after verified MANUAL fetch (boxes/runs_mult/m98_coco_4x4_s1 m98_coco_4x4_s2 + logs); coco_4x4_s3 and coco_5x5_s1-3 FAILED (CUDA OOM at P3 before --micro; logs kept as logs/vast_96.20.36.104_40069/gen_m98_*.oom_p3.void; rerun locally); auto-drain watcher had exited at 18:24 on the new failure lines
