@@ -502,4 +502,29 @@ At the stopping checkpoint, on the 1,000 bench test items:
 (≤ 5 hosts, proof host first), about $4–8. Projection to Audit. Implementation: the experiments session, as flags on
 `boxes/mult98.py` (`--kcurr`, `--std_slots`, `--text_first`, the valid-split early stop).
 
+**Note 99-1 (2026-10-03 21:29 EDT, before any §99 implementation or run; Literature's addendum e19579b5 and Audit).**
+* **New arm TF-SLOT** (teacher-forced slot inputs; scheduled sampling for slots; priors 1506.03099, PCCoT 2506.18582,
+  C-MTP 2607.16972).
+  - In training, at each slot position j < 4, a per-position coin with probability ρ(step) replaces slot j's latent with
+    the **re-embedded gold step-j text**: the tokens, in context, with no history cut. Later slots therefore learn their
+    transitions in parallel.
+  - ρ anneals linearly from 1 at step 0 to **exactly 0 at step 12k (50 % of the cap)** and stays 0. That meets Audit's
+    "0 before the last ≥ 25 %".
+  - **ρ is logged at every 1k log** (Audit (c)).
+* **New arm TEXTFIRST-MASK:** TEXT-FIRST with §98's masked fork (each fork attends only to its slot and its own tokens).
+  It is TEXT-FIRST's bypass check, alongside slot removal (Literature's bypass table).
+* **Threshold eligibility (fixed now; Audit (b)).** steps-to-threshold counts only logs taken in the arm's final
+  configuration:
+  - K-CURR from step 6k (k = 4);
+  - COMBO from 9k;
+  - TF-SLOT from 12k (ρ = 0);
+  - TEXT-FIRST and TEXTFIRST-MASK from 3k (the latent phase);
+  - CTRL and STD from step 0.
+  - Earlier logs are recorded but cannot stop a run. **Every arm ends at k = 4** with no gold inputs, and is tested only
+    at k = 4.
+* **Not added:** up-weighting the later slots' loss, and a running-sum probe loss (2510.00184). Both are cheap but would
+  dilute the panel; noted for later.
+* **Panel and cost:** 7 arms × 3 seeds = 21 runs, about $6–10. The rule, readings and no-bypass condition are as §99. The
+  scorer is updated in the same commit (arms `tfslot`, `textfirst_mask`).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
