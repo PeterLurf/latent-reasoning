@@ -39,6 +39,9 @@ appended at the end of this file.
   - The label-free ladder (Pilots K–M).
   - The checkpointed latent reasoner (§33–§51).
   - Full text is in the archive.
+* **Directions memo** (2026-10-04, `docs/THEORY_DIRECTIONS_2026-10-04.md`): candidates for fast hand-offs, C4 without step
+  labels, and latent chains without snaps. Top picks: a snap-strength dose-response, state-in-depth recurrence, filtered
+  self-training by length.
 * **Next (the user's plan):** §98 → the bench ladder (ProsQA-NA, a held-out task) → C4 by final-answer self-training
   (pending the user) → a general readout.
   - Queued: a routed snap for C5, with a non-confidence trigger (Literature 2af8ca18; §83 showed confidence fails out of
