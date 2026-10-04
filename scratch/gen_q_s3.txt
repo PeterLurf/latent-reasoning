@@ -1,0 +1,6 @@
+# §101 snap strength, --micro 2 (P2: one job ~12 GB without micro)
+# P=2
+boxes/runs_s5/s101_b1_s3 boxes.snap101 --beta_min 1 --seed 3 --micro 2
+boxes/runs_s5/s101_b0.1_s1 boxes.snap101 --beta_min 0.1 --seed 1 --micro 2
+boxes/runs_s5/s101_b0.1_s2 boxes.snap101 --beta_min 0.1 --seed 2 --micro 2
+boxes/runs_s5/s101_b0.1_s3 boxes.snap101 --beta_min 0.1 --seed 3 --micro 2

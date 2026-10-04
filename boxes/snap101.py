@@ -151,6 +151,7 @@ def main():
     ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--test_n", type=int, default=s5.TEST_N); ap.add_argument("--ext_n", type=int, default=500)
     ap.add_argument("--ext_len", type=int, default=2048, help="< 2048: smoke only"); ap.add_argument("--check_n", type=int, default=100_000, help="< 100k: smoke only")
     ap.add_argument("--log_every", type=int, default=2000); ap.add_argument("--log_n", type=int, default=2000)
+    ap.add_argument("--micro", type=int, default=2, help="micro-batches per update (4-chunk backprop at bs 64 is ~12 GB/job: P2 OOMs a 3090)")
     ap.add_argument("--data_dir", default=os.path.join(ROOT, "bench", "data", "s5"))
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
@@ -168,20 +169,23 @@ def main():
             gr["lr"] = a.lr * min(1, step / 100) * 0.5 * (1 + math.cos(math.pi * step / a.steps))
         q = max(0.0, 1.0 - step / (0.6 * a.steps)); late = step > 2 * a.steps / 3
         nch = int(rng.integers(1, 5)); st, o, tg = batch(rng, Xtr, Ytr, K * nch, a.bs)
-        start = torch.tensor(st, device=dev); tot = 0.0
-        with amp_ctx(amp):
-            for c in range(nch):
-                oc = torch.tensor(o[:, K * c:K * (c + 1)], device=dev); tc = torch.tensor(tg[:, K * c:K * (c + 1)], device=dev)
-                loss, _, _ = m.chunk(start, oc, tc, decode=None, collect=True); tot = tot + loss
-                if c + 1 < nch:
-                    u = m.u_of(m._hlast)
-                    if late:
-                        u = u + torch.randn_like(u) * (0.05 * m.sdE)
-                    beta = 1.0 if rng.random() < q else a.beta_min
-                    start = (1 - beta) * u + beta * m.code_emb(tc[:, -1]).float()
-            loss = tot / nch
-        opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); m.update_stats()
-        hist.append(loss.item()); nb.append(nch)
+        betas = [1.0 if rng.random() < q else a.beta_min for _ in range(nch - 1)]   # one coin per boundary per update
+        opt.zero_grad(); mb = a.bs // a.micro; ltot = 0.0
+        for i in range(a.micro):                                            # micro-batches (memory), same effective batch
+            sl = slice(i * mb, (i + 1) * mb); start = torch.tensor(st[sl], device=dev); tot = 0.0
+            with amp_ctx(amp):
+                for c in range(nch):
+                    oc = torch.tensor(o[sl, K * c:K * (c + 1)], device=dev); tc = torch.tensor(tg[sl, K * c:K * (c + 1)], device=dev)
+                    loss, _, _ = m.chunk(start, oc, tc, decode=None, collect=True); tot = tot + loss
+                    if c + 1 < nch:
+                        u = m.u_of(m._hlast)
+                        if late:
+                            u = u + torch.randn_like(u) * (0.05 * m.sdE)
+                        start = (1 - betas[c]) * u + betas[c] * m.code_emb(tc[:, -1]).float()
+                loss = tot / nch
+            (loss / a.micro).backward(); ltot += loss.item() / a.micro
+        torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); m.update_stats()
+        hist.append(ltot); nb.append(nch)
         if step % 100 == 0 or step == a.steps:
             rec = {"step": step, "loss": float(np.mean(hist)), "q": q, "late_noise": late, "mean_chunks": float(np.mean(nb)), "sec": round(time.time() - t0)}; hist = []; nb = []
             if a.log_every and step % a.log_every == 0:
