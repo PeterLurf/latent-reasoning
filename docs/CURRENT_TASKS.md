@@ -43,9 +43,12 @@ and §99 runs are voided (`*.void_forkconflict`, kept); their hosts were aborted
 | f1 | 54111560 | `-p 9195 136.36.139.116` | §105 gen97 GEN-4 --fork mask s1-3 (keep model.pt; Theory runs s104_serial) |
 | s1 | deploying | | §101 proof: snap101 beta_min 0 s1-3, P2 |
 
-**Queued, not yet deployed** (in order): §101 other arms (b0.1, b0.01, b1); §103 and §102 (not yet implemented);
-then the C3 parts: §98 GEN-M reruns (`gen_q_r1/r2`), §100 GEN2 (`gen_q_u1/u2`), and the rest of §99 (std,
-textfirst(_mask), tfslot, combo); §106 (after §98 GEN-M shows multiplication is learned).
+**Queued, not yet deployed** (deploy as hosts drain; keep <= ~10 live). In order:
+1. §101 (C6): `gen_q_s2..s4` via `scratch/gen_deploy_101.sh`, P2 with --micro 2.
+2. §103 (C4): `gen_q_t1` via `gen_deploy_103.sh`; one process, 3 seeds in lockstep. Move `boxes/runs_s5/s103/s103_s*` to `boxes/runs_s5/` on fetch.
+3. §102 (statepath): `gen_q_m4` via `gen_deploy_99b.sh`.
+4. The C3 parts: §98 GEN-M (`gen_q_r1/r2`, `gen_deploy_98r.sh`); §100 GEN2 (`gen_q_u1/u2`, `gen_deploy_100.sh`); the rest of §99 (std, textfirst, textfirst_mask, tfslot, combo: queues to write).
+5. §106: not implemented; waits for §98 GEN-M to show multiplication is learned.
 
 ### Local PC (torch `cuda:0` = 4060, `cuda:1` = 3070, `cuda:2` = 2070)
 
