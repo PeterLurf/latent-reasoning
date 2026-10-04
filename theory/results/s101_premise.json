@@ -1,0 +1,24 @@
+{
+ "runs": {
+  "1": {
+   "purity": 0.05845,
+   "nmi": 0.19960713734090207,
+   "n": 20000,
+   "clusters_used": 240
+  },
+  "2": {
+   "purity": 0.10865,
+   "nmi": 0.3744284443587614,
+   "n": 20000,
+   "clusters_used": 240
+  },
+  "3": {
+   "purity": 0.06505,
+   "nmi": 0.2318334396052498,
+   "n": 20000,
+   "clusters_used": 240
+  }
+ },
+ "median_purity": 0.06505,
+ "gate_selfsnap_runs": false
+}
