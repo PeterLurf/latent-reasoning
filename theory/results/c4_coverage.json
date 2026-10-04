@@ -1,0 +1,36 @@
+{
+ "s96_teacher_mixP0.05": {
+  "2161": {
+   "pairs_from_len2": 0.9986805555555556,
+   "row_e_from_len1": 1.0,
+   "coverage_all": 0.9986805555555556
+  },
+  "2162": {
+   "pairs_from_len2": 0.9989583333333333,
+   "row_e_from_len1": 1.0,
+   "coverage_all": 0.9989583333333333
+  },
+  "2163": {
+   "pairs_from_len2": 0.999375,
+   "row_e_from_len1": 1.0,
+   "coverage_all": 0.999375
+  },
+  "2164": {
+   "pairs_from_len2": 0.9993055555555556,
+   "row_e_from_len1": 1.0,
+   "coverage_all": 0.9993055555555556
+  },
+  "2165": {
+   "pairs_from_len2": 0.9993055555555556,
+   "row_e_from_len1": 1.0,
+   "coverage_all": 0.9993055555555556
+  }
+ },
+ "s103_R0": {
+  "pool_len2_coverage": 0.7820138888888889,
+  "pool_len2_items": 25008,
+  "seed1_trained_len2_coverage": 0.7117361111111111,
+  "seed2_trained_len2_coverage": 0.7111111111111111,
+  "seed3_trained_len2_coverage": 0.7134722222222222
+ }
+}

@@ -1533,3 +1533,17 @@ experiments session (self103 with the masked fork, the self-consistency filter a
 * **Reading.** With the step decoder, the state is linearly available in every seed. Without it, availability is
   seed-dependent (1/3), and that tracks the no-decoder arm's behaviour (s6 is the one seed that answers both types).
   - This supports keeping the side step decoder in the §97 recipe.
+
+**Note C4-coverage (2026-10-04 09:54 EDT; Audit's request after 110b-1; exact replays of the samplers,
+`theory/c4_coverage.py`, `theory/results/c4_coverage.json`; descriptive).** This is the share of the 14,400 S5
+(state, op) transitions labelled by short (length 1–2) problems in each C4-qualified result.
+* **§96 teacher** (mixP 0.05, M 240, 16k updates × 256): **99.87 / 99.90 / 99.94 / 99.93 / 99.93 %** (seeds 2161–2165).
+  Essentially the full Cayley table, from length-2 problems; row e is complete from length 1.
+* **§103 R0** (identity-start lengths 1–2, 1,200 updates × 64): the 50k pool covers **78.2 %**. Each seed's R0 batches
+  covered **71.1 / 71.1 / 71.3 %**.
+* **§110b R0:** logged by its implementation (`short_transition_coverage`); 0.79 in the smoke.
+* **Wording.** Every C4-qualified claim line carries its number:
+  - "§96: C4 for the pipeline, qualified by p = 0.05 short problems covering ≈ 99.9 % of transitions, and oracle M";
+  - "§103: ≤ 5 % short problems covering ≈ 71 % of transitions".
+  - **Strict C4** (lengths ≥ 3 only, as ge3) is **unmet**. Per §85, that route needs an optimisation advance (a way into
+    the basin), not self-training.
