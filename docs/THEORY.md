@@ -144,9 +144,9 @@ appended at the end of this file.
 | 95 | Foothold dose-response | no dose sufficient (0/9) | closed |
 | 96 | Amortised self-labels from a final-answer teacher | P1, P2 met: 4/5 certified at p 0.05; labels 1.000; pipeline C4 (qualified) | closed |
 | 97 | General latent thinker, step 1 | G4 met 3/3 (0.998–1.0 at 512; 1.0 at 2,048); 0.56× | **open** (C6 seeds) |
-| 98 | Step 2a: multiplication vs ICoT-SI, Coconut, text CoT | running | **open** |
-| 99 | Speeding up the latent hand-off (k-curriculum, standardised slots, text-first, combo) | running | **open** |
-| 100 | Shorter silent stretches: multiplication at k = 2 (GEN2, MASK2) | registered | **open** |
+| 98 | Step 2a: multiplication vs ICoT-SI, Coconut, text CoT | GEN arms void (final-fork conflict, 98-3), rerun on fixed code; comparators valid | **open** |
+| 99 | Speeding up the latent hand-off (k-curriculum, standardised slots, text-first, combo) | on fixed code (99-2) | **open** |
+| 100 | Shorter silent stretches: multiplication at k = 2 (GEN2, MASK2) | registered; fixed code only (100-1) | **open** |
 
 ## Live sections
 
