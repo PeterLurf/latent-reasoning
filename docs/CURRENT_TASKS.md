@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-04 11:45 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-04 13:40 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -32,23 +32,27 @@ kept as `*.void_forkconflict`.
 | Tag | Instance | ssh (`-i ~/.ssh/runpod_ed25519 root@…`) | Work |
 |---|---|---|---|
 | s2 | 54122048 | `-p 42390 167.179.138.57` | §101 micro proof: b0 s1/s3, then b1 s1/s2 |
-| k5 | 54148202 | `-p 40471 142.198.191.106` | §108 MK-4 s1-3 rerun (mk108 checkpoints every 2k; resume fix copied) |
-| e1 | 54151372 | `-p 40051 96.20.36.104` | §110 s1-3 for the record (note 110-1); s1/s3 resumed by hand at 4960 after an OOM (manual python jobs hold the drain) |
-| m7 | 54152770 | `-p 6946 142.127.68.223` | §99 textfirst_mask s1-3 |
-| m9 | 54152775 | `-p 28568 149.200.35.231` | §99 combo s1-3 |
+| e1 | 54151372 | `-p 40051 96.20.36.104` | §110 s1-3 for the record (note 110-1); s1/s3 resumed by hand (manual jobs hold the drain) |
 | m11 | 54153333 | `-p 23005 5.2.174.20` | §107 lat4 s1-3 |
 | m12 | 54153339 | `-p 16997 89.221.67.137` | §107 pause4 s1-3 |
+| k3 | 54171632 | `-p 28163 149.200.35.231` | §108 MK-8 s1-2 (P=2) |
+| k4 | 54171649 | `-p 40040 96.20.36.104` | §108 MK-8 s3-4 (P=2) |
+| k6 | 54173915 | `-p 42386 167.179.138.57` | §108 MK-8 s5; + manual §111 backfills in /workspace/bf (MK-4 s1-3 s111_backfill.json, s3 eval_fp32.json; fetch by hand) |
+| n1 | 54179841 | `-p 33603 136.59.129.136` | §111 MK-4-2x s6-8 (48k) |
+| n2 | 54179856 | `-p 51966 218.150.198.117` | §111 MK-4-2x s9-10 |
+| n3 | 54177773 | `-p 35341 142.172.103.36` | §111 MK-4-DAG s6-8 (proof) |
+| n4 | 54177993 | `-p 40251 167.179.138.57` | §111 MK-4-READ s6-8 (proof) |
 
 **Queued, not yet deployed** (a second host of an experiment only after its first host's first eval.json and drain):
-1. §108 k3-k4 (`gen_q_k3..k4`, `gen_deploy_108.sh`) after k5 (k2's MK-4 s4/s5 run locally).
-2. §110b: stopped after a clear null (note 110b-2); e4 not run. §110 s4-5 (`gen_q_e2`): not run (note 110-1).
-3. §101 `gen_q_s3/s4` after s2.
+1. §111 DAG s9-10 (`gen_q_n5`) after n3; READ s9-10 (`gen_q_n6`) after n4 (`gen_deploy_111.sh`).
+2. §101 `gen_q_s3/s4` after s2.
+3. §110b stopped (110b-2); §110 s4-5 not run (110-1).
 * Watchers don't detect host reboots: check uptime on the C1 hosts each pass.
 
 ### Local PC (torch `cuda:0` = 4060, `cuda:1` = 3070, `cuda:2` = 2070)
 
-* 4060: §108 MK-4 s4 (`scratch/c1_q_108_local.txt`).
-* 3070: COCO 5x5 s3, then §108 MK-4 s5 (same queue, chained worker).
+* 4060: §108 MK-4 s4 (old mk108 code: needs `--backfill` after it finishes).
+* 3070: COCO 5x5 s3, then §108 MK-4 s5 (`scratch/c1_q_108_local.txt`, chained worker; new code, §111 keys native).
 * 2070: §83 extras (fp32).
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
