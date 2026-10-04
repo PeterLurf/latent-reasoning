@@ -1,0 +1,3 @@
+# §114 LOOP-R s1 (proof host; P=1, memory at r=8)
+# P=1
+boxes/runs_mult/a114_loopr_4x4_s1 boxes.loop114 --arm loopr --seed 1
