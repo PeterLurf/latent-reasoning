@@ -225,6 +225,17 @@ def gen_rollout(m, D, dev, amp, bs, ablate=None, mean_in=None, override=None, me
     return per, ok, [np.concatenate(x) for x in snaps]
 
 
+def rollout_safe(m, D, dev, amp, bs, **kw):
+    """gen_rollout, halving the batch on CUDA OOM (three runs on one card can finish and evaluate together; y2/y3)."""
+    while True:
+        try:
+            return gen_rollout(m, D, dev, amp, bs, **kw)
+        except torch.OutOfMemoryError:
+            if bs <= 10:
+                raise
+            torch.cuda.empty_cache(); bs //= 2; print("eval OOM: retry at bs", bs, flush=True)
+
+
 @torch.no_grad()
 def gen_mean_inputs(m, D, dev, amp, n_rows=2000, seed=9805):
     rng = np.random.default_rng(seed); out = []
@@ -380,6 +391,9 @@ def train(a):
                 log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
         train_sec = round(time.time() - t0)
         torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
+        del opt; m.zero_grad(set_to_none=True)                              # free optimizer state before the final eval
+    if dev.startswith("cuda"):
+        torch.cuda.empty_cache()
     m.eval(); t1 = time.time()
     res = {"arm": a.arm, "task": a.task, "seed": a.seed, "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
            "train_sec": train_sec, "eval_dtype": str(amp), "test_items": len(Dte["A"])}
@@ -405,25 +419,25 @@ def train(a):
                        "flops_convention": "Meter forward FLOPs per trained problem (full-vocab LM head) x 3 (fwd+bwd) x steps x bs"}
     if a.arm in ("genm", "mask"):
         meter, meter_x = MeterR(g), MeterR(g)
-        per, ok, snaps = gen_rollout(m, Dte, dev, amp, a.eval_bs, meter=meter, meter_x=meter_x)
+        per, ok, snaps = rollout_safe(m, Dte, dev, amp, a.eval_bs, meter=meter, meter_x=meter_x)
         res["acc_test"] = float(ok.mean()); res["per_slot_decode_acc"] = per.mean(0).tolist()
         res["k"] = K; res["per_chunk_acc"] = [float(per[:, c1 - 1].mean()) for c0, c1 in chunks_of(n)]   # §100: each chunk's end state
         res["compute"] = {**meter.as_dict(), "measurement_decode_flops": meter_x.flops}
         mu = gen_mean_inputs(m, Dtr, dev, amp); res["removal"] = {}
         for ab in ("zero", "mean"):
-            p_, o_, _ = gen_rollout(m, Dte, dev, amp, a.eval_bs, ablate=ab, mean_in=mu)
+            p_, o_, _ = rollout_safe(m, Dte, dev, amp, a.eval_bs, ablate=ab, mean_in=mu)
             res["removal"][ab] = {"answer_acc": float(o_.mean()), "per_slot_decode_acc": p_.mean(0).tolist()}
         if n > K:                                                           # 5x5: the snap after op 4
             L_P, L_S = n + 1 + (K - 1), n + K
             res["checkpoint_validity"] = {"snaps": len(snaps[0]), "rate": float(valid_step(snaps[0], L_P, L_S).mean())}
             perm = np.random.default_rng(9807).permutation(len(Dte["A"])); donor = Dte["steps"][K - 1][perm]
-            _, o_e, _ = gen_rollout(m, Dte, dev, amp, a.eval_bs, override=(0, donor))
+            _, o_e, _ = rollout_safe(m, Dte, dev, amp, a.eval_bs, override=(0, donor))
             S_d = to_int(np.array([[int(DIGIT_IDS.tolist().index(t)) for t in row[2 + L_P:2 + L_P + L_S]] for row in donor]))
             a_int = to_int(Dte["A"])                                        # edited S_K plus a times the remaining ops (j >= K, 0-based)
             want = [S + ai * sum(int(Dte["B"][r, j]) * 10 ** j for j in range(K, n)) for r, (S, ai) in enumerate(zip(S_d, a_int))]
             # decode under the edit, then compare with the edited composition
             Dw = dict(Dte); Dw["prod"] = np.array([digits_lsb(v, Dte["prod"].shape[1]) for v in want])
-            _, o_w, _ = gen_rollout(m, Dw, dev, amp, a.eval_bs, override=(0, donor))
+            _, o_w, _ = rollout_safe(m, Dw, dev, amp, a.eval_bs, override=(0, donor))
             res["edit_iia"] = {"n": len(Dte["A"]), "iia": float(o_w.mean()), "answer_acc_vs_original": float(o_e.mean())}
     else:
         meter = MeterR(g); ok = seq_eval(g, Dte, dev, amp, a.eval_bs, a.arm, meter=meter)
