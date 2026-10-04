@@ -1014,6 +1014,16 @@ That makes a train-short / test-long test possible on a real task.
 **Placement.** 12 runs (4 arms × 3 seeds), about $8–12. One proof host first; launched after §98's fixed GEN-M reruns
 show the recipe learns multiplication. Projection to Audit.
 
+**Note 106-1 (2026-10-04 03:31 EDT, before any §106 run; Audit's 03:13 steward pass).**
+* **Why move it earlier.** §99's fixed-code logs locate multiplication's C1 blocker at carrying a multi-digit running sum
+  through one latent vector (slot 3). §106's streaming format carries only a bounded carry (≤ len(a) + 1 digits), and the
+  emitted digit is final.
+* **The pilot.** **GEN-S-MASK seeds 1–3 launch first** (one host, about $2–3), without waiting for §98's scoring.
+  - These runs **are** §106's GEN-S-MASK arm: evaluated at every b, under §106's rules.
+* **Gate for the rest of §106** (GEN-S, WC-S, TC-S): GEN-S-MASK's in-range accuracy (b = 4) ≥ 0.95 in ≥ 2/3 seeds.
+  - If the gate fails, the latent arms are not run further. WC-S and TC-S may still run as a written-format C2 reference
+    (descriptive).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
