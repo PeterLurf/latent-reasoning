@@ -162,7 +162,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 103 | Filtered self-training by length (C4 inside the LM, S5) | registered | **open** |
 | 104 | Serial causal use of slots: donor patching, blocking (§92, §97; eval only) | SERIAL not met: §92 2/5; §97 0/3 with donor latents ignored (state recomputed from visible ops) | closed |
 | 105 | C1 for the headline: S5 GEN-4 with a masked fork + donor protocol | registered | **open** |
-| 106 | C2 on a real task: bounded streaming multiplication (latent vs the written format) | registered | **open** |
+| 106 | C2 on a real task: bounded streaming multiplication (latent vs the written format) | pilot gate fails (b = 4 ≈ 0.005; a bounded carry is not carried past step 1); latent arms stop | closed |
 | 107 | Multiplication's blocker: carrier width (m latents) vs compute (pause), carriage forced | registered | **open** |
 | 108 | Forced latent carriage on S5 (Markov segments, sink fix, TF bootstrap; donor-scored) | registered | **open** |
 
@@ -1054,6 +1054,21 @@ show the recipe learns multiplication. Projection to Audit.
 * **Gate for the rest of §106** (GEN-S, WC-S, TC-S): GEN-S-MASK's in-range accuracy (b = 4) ≥ 0.95 in ≥ 2/3 seeds.
   - If the gate fails, the latent arms are not run further. WC-S and TC-S may still run as a written-format C2 reference
     (descriptive).
+
+**Note 106-2 (2026-10-04 06:45 EDT; the §106 pilot, GEN-S-MASK s1–3, run by the experiments session; descriptive under
+106-1). The gate fails, so the latent arms are not run further.**
+* **Result.**
+  - Exact product at b = 4: **0.004 / 0.005 / 0.006**. 0 at b = 8 / 16 / 32 and a5b8.
+  - Per-step decode at b = 4: 1.0 / ≈ 0.21 / ≈ 0.037 / ≈ 0.008.
+  - Checkpoint validity 1.0; removal at b = 8 is 0.
+  - s1's curve: step 1 reaches 1.0 by 20k; step 2 plateaus at about 0.23 from 10k on, with the loss at about 3.0.
+* **Reading (descriptive).** The first emitted digit is learned. But **even a bounded carry (≤ 5 digits) is not carried
+  past one latent hand-off** under the masked fork at k = 4.
+  - So multiplication's C1 wall is **not** state growth (contrast §98's growing S_j).
+  - It fits §107's compute-per-op reframing: each step needs carry + a · b_j, a multi-digit multiply-add, in one pass.
+  - §100 MASK2 (one hand-off per chunk) and §107 (pause vs width) are the live tests.
+* **WC-S / TC-S** (the written-format C2 reference) are **deferred** under the user's C1 priority. They would describe
+  only the written format, not the latents. They are run only if a latent arm learns the streaming task.
 
 ## 107. Multiplication's C1 blocker: carrier width or compute per op? m latents per op vs pause positions, with carriage forced (pre-registered 2026-10-04 03:32 EDT, after Literature's check 640ffe59 and before any implementation or run; Audit's 03:13 steward pick)
 
