@@ -1,0 +1,8 @@
+NVIDIA GeForce RTX 3090, 555.58.02
+05:49:05 start boxes/runs_mult/m100_mask2_4x4_s1
+05:49:05 start boxes/runs_mult/m100_mask2_4x4_s2
+05:49:05 start boxes/runs_mult/m100_mask2_4x4_s3
+08:04:34 evaluated boxes/runs_mult/m100_mask2_4x4_s2 rc 1 no-eval
+08:04:34 evaluated boxes/runs_mult/m100_mask2_4x4_s1 rc 0
+08:04:48 evaluated boxes/runs_mult/m100_mask2_4x4_s3 rc 0
+08:04:48 QUEUE_DONE
