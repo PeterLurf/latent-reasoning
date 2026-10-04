@@ -114,9 +114,11 @@
  "eval_dtype": "torch.bfloat16",
  "sec": 1239,
  "rel_final": {
-  "rel_ratio_final": 0.00018215789377615203,
-  "main_loss": 0.004578381068859017,
-  "zeroed_loss": 25.13413486480713,
+  "rel_ratio_final": 0.0002201609568756186,
+  "rel_ratio_final_shuffled": 9.663527195591363e-05,
+  "main_loss": 0.005543697599205188,
+  "zeroed_loss": 25.18020305633545,
+  "shuffled_loss": 57.367227172851564,
   "n_batches": 20,
   "bs": 64
  },
