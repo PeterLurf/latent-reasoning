@@ -1,0 +1,4 @@
+# §98 COCO-M reruns moved to Vast (local 4060 deadlock with §104; 5x5 s3 held locally); --micro 2, eval_bs 100
+# P=2
+boxes/runs_mult/m98_coco_4x4_s3 boxes.mult98 train --arm coco --task 4x4 --seed 3 --micro 2 --eval_bs 100
+boxes/runs_mult/m98_coco_5x5_s3 boxes.mult98 train --arm coco --task 5x5 --seed 3 --micro 2 --eval_bs 100

@@ -366,3 +366,20 @@
 16:30:57 s83 v2 first attempt: fp32 at bs 250 OOM'd (logs *.fp32_bs250_oom.void); rerun with --bs 64
 16:57:49 f89_fade_raw_s2 rc 0 (cuda:1)
 19:14:51 §89 fade_soft_s3 and fade_gold_s3 DROPPED (user directive via Audit, 19:15: fade line closed); lock dirs held so no worker claims them; raw_s3 (cuda:0) and soft_s2 (cuda:1) finish
+19:51:47 f89_fade_raw_s3 rc 0 (cuda:0)
+19:51:47 WORKER_DONE cuda:0 scratch/c1_q_next.txt
+19:52:38 cuda:0: §89 worker done; starting §98 COCO reruns (scratch/c1_q_98coco.txt)
+20:03:12 s83 wc0k4r_s2 rc 0 (cuda:2 --fp32 --bs 64)
+22:23:34 f89_fade_soft_s2 rc 0 (cuda:1)
+22:23:34 WORKER_DONE cuda:1 scratch/c1_q_next.txt
+22:23:58 cuda:1: §89 worker done; starting §98 COCO reruns (scratch/c1_q_98coco.txt)
+23:12:55 s83 wc0k4r_s3 rc 0 (cuda:2 --fp32 --bs 64)
+03:48:24 HOLD: m98_coco_5x5_s2/s3 lock dirs created so the 4060 frees for Theory's §104 (C1, WDDM contention); release by rmdir and start py_local_worker2 on a free card after §104
+04:44:04 m98_coco_5x5_s1 rc 1 no-eval (cuda:1)
+04:44:05 WORKER_DONE cuda:1 scratch/c1_q_98coco.txt
+04:46:02 s83 wc0k4r_s1_ext rc 0 (cuda:2 --fp32 --bs 64)
+04:53:23 m98_coco_5x5_s1: trained to 24k, eval OOM on the 3070 at eval_bs 250 -> eval_only at eval_bs 50; then release m98_coco_5x5_s2 onto cuda:1 via scratch/c1_q_98coco_b.txt (s3 still held for §104 on the 4060)
+04:54:11 m98_coco_5x5_s1 eval_only rc 0 ok (cuda:1)
+05:36:22 m98_coco_4x4_s3 rc 127 no-eval (cuda:0)
+05:36:22 WORKER_DONE cuda:0 scratch/c1_q_98coco.txt
+05:36:24 m98_coco_4x4_s3 STOPPED at step 23,700 (aborted unread): 4060 deadlock in WDDM fallback with Theory's §104 (C1); run dir and log kept *.void_contention; requeue on Vast
