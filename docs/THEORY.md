@@ -1819,6 +1819,20 @@ threshold), plus:
 **Placement.** 6 runs (2 arms × 3 seeds), about $6–9 (LOOP-R costs about 2.5–3× per step). Proof host first.
 Projection to Audit. Implementation: the experiments session (accel99 plus a looped-block option in the GPT2KV forward).
 
+**Note 114-1 (2026-10-04 15:56 EDT, before any §114 run; the experiments session's implementation choices, accepted).**
+* **Per-iteration targets are an unbiased 2-sample estimator.** Each step takes CE at the final iteration r plus one
+  uniform u ∈ {1..r−1}, with loss (CE_r + (r − 1) · CE_u) / r.
+  - That is an unbiased estimate of the per-iteration average the registration specifies.
+  - Its cost is about 3.5× per step, against about 8× for the literal all-iterations version. The literal version stays
+    available as `--iter_targets all`.
+  - LOOP-1 is unaffected.
+* **Test r > 8** (`acc_by_r` at 12 and 16, descriptive) **reuses iteration 8's LoRA**, with the injection still applied.
+* **LoRA:** rank 8 on c_attn and c_fc of layers 4–7, B zero-initialised (so r = 1 equals GPT-2), alpha/r = 1. Base
+  weights stay trainable, as in accel99.
+* **Injection:** iteration t ≥ 2's input is h_out(t − 1) + h3, with h3 the layer-3 output of the same positions.
+* **The carried latent** is the final iteration's segment output. The donor patch replaces it at each in-chunk slot.
+* Rules and arms are unchanged.
+
 ## 115. Without snaps, and snapping only when needed: no-snap Markov chains and a round-trip snap trigger (eval only) (pre-registered 2026-10-04 15:55 EDT, after Literature's check c70d55e3 (P4) and before running on any checkpoint; the user's go-ahead for P4 via Audit)
 
 **Why.** Every success so far snaps at hand-set points (C5 unmet), and length generalisation comes from the snap scaffold
