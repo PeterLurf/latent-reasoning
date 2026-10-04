@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-04 17:10 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-04 19:45 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -34,27 +34,31 @@ kept as `*.void_forkconflict`.
 | s2 | 54122048 | `-p 42390 167.179.138.57` | §101 micro proof |
 | m11 | 54153333 | `-p 23005 5.2.174.20` | §107 lat4 s1-3 |
 | n1 | 54179841 | `-p 33603 136.59.129.136` | §111 MK-4-2x s6-8 (48k) |
-| n2 | 54179856 | `-p 51966 218.150.198.117` | §111 MK-4-2x s9-10 |
-| n3 | 54177773 | `-p 35341 142.172.103.36` | §111 MK-4-DAG s6-8 (proof) |
-| n4 | 54177993 | `-p 40251 167.179.138.57` | §111 MK-4-READ s6-8 (proof) |
-| e2 | 54186234 | `-p 40060 96.20.36.104` | §110 s4-5 (note 110-3) |
-| l1 | 54199003 | `-p 45266 223.167.245.91` | §114 LOOP-R s1 (early proof per Audit: 1k log + r=8 memory + eval smoke [passed 2.4 GiB]) |
+| n5 | 54215540 | `-p 35368 142.172.103.36` | §111 MK-4-DAG s9-10 |
+| n6 | 54215806 | `-p 40070 96.20.36.104` | §111 MK-4-READ s9-10 (decides REL -> §113) |
+| l1 | 54199003 | `-p 45266 223.167.245.91` | §114 LOOP-R s1 (proof passed; ~10 h; needs --rel_only after) |
+| l2 | 54217478 | `-p 12446 81.166.162.13` | §114 LOOP-R s2 |
+| l3 | 54217482 | `-p 48053 86.123.234.69` | §114 LOOP-R s3 |
+| l4 | 54217490 | `-p 49343 86.123.234.69` | §114 LOOP-1 s1-3 |
 | d1 | 54201369 | `-p 40042 96.20.36.104` | §112 f050 s21-22 (proof) |
-| d2 | 54202470 | `-p 28142 149.200.35.231` | §112 f050 s23-24 |
+| d2 | 54209664 | `-p 53089 108.55.118.247` | §112 f050 s23-24 (redeploy) |
 | d3 | 54202521 | `-p 2660 142.180.224.148` | §112 f050 s25 + f025 s21 |
+| d4 | 54212376 | `-p 46960 79.116.20.245` | §112 f025 s22-23 |
+| d5 | (deploying) | 167.179.138.57 | §112 f025 s24-25 |
+| e5 | 54216219 | `-p 28525 46.107.144.5` | §110 STUDENT s1/s3/s5 (gen_deploy_110s.sh ships the pools) |
 
 **Queued, not yet deployed** (Audit: fleet <= 14-16; stagger §112 into freed hosts):
-1. §114 l2/l3 (LOOP-R s2, s3, P=1) + l4 (LOOP-1 s1-3) after l1's early proof (`gen_deploy_114.sh`).
-2. §111 DAG s9-10 (`gen_q_n5`) after n3; READ s9-10 (`gen_q_n6`) after n4 (`gen_deploy_111.sh`).
-3. §112 d4-d7 (`gen_deploy_112.sh`) as hosts free up (f010 s21 runs on the local 3070).
-4. §101 `gen_q_s3/s4` after s2. §113 only if §111 READ meets REL. §115 (eval-only, $0) to implement.
+1. §113 (`gen_q_e7..e9`, `gen_deploy_110.sh`): implemented; launch only on Theory's REL call after READ s9-10.
+2. §110 STUDENT s2/s4 (`gen_q_e6`, `gen_deploy_110s.sh`) after e5.
+3. §112 d6, d7 as hosts free up.
+4. §101 `gen_q_s3/s4` after s2.
 * Watchers don't detect host reboots: check uptime on the C1 hosts each pass.
 
 ### Local PC (torch `cuda:0` = 4060, `cuda:1` = 3070, `cuda:2` = 2070)
 
-* 4060: §108 MK-4 s5 (new mk108 keys except early_escape_rel; rel backfill after).
-* 3070: §112 f010 s21 (`scratch/c1_q_112_local.txt`).
-* 2070: §83 extras (fp32).
+* 4060: §115 chain (MK-4 s5 rel backfill, then snap115 on MK-4 s1/s3/s5, then g105 s1-3 at n=500).
+* 3070: §112 f010 s21.
+* 2070: §115 on READ s6-8 (descriptive), then rel backfills for §111 2x s9-10.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
