@@ -1740,3 +1740,18 @@ running). It corrects 110-1.**
     carries slot 1 (0.962).
 * **Reading (interim).** C4 (qualified) + C1 (masked fork, donor) + C2 to 2,048 are shown together **in one seed**. It is
   the same reliability picture as §108: the mechanism exists, and seeds lottery.
+
+**Note 110-4 (2026-10-04 14:32 EDT; Audit's caveats on 110-3, for the write-up).**
+* **Resumed runs, disclosed.** s1 and s3 were OOM-killed and resumed from `ckpt.pt` at step 4960 (after the RNG-device
+  fix). `self110.py`'s checkpoint restores the model, the optimiser, the numpy pool and draw RNGs, the torch and CUDA RNG
+  states, and the round state (step, rounds, pending lengths, remaining budget). They are therefore not uninterrupted
+  runs, but the resume is state-complete.
+* **s3's own short-problem coverage** (an exact replay of `self110.py`'s R0 sampler and draws): **71.5 %** of the 14,400
+  transitions labelled by R0's short problems (s1 71.4 %, s2 71.9 %). s3's claim line: "C4 qualified by ≤ 5 %
+  identity-start short problems covering 71.5 % of transitions".
+* **The abrupt switch.** s3's gate went from 0 (L5) to 1.0 (L6), and accuracy at the new length went 0.67 → 0.75 →
+  0.9998. Whether s4 / s5 show the same switch, and at what length, is logged when they land (`rounds`: gate,
+  acc_new_length_before).
+* **Filter audit (Audit, read in `self110.label_round`).** Keep = valid ∧ final == truth ∧ the restart self-consistency;
+  the targets are the model's own decodes. Truth enters only through the final answer and logged statistics, so no
+  intermediate label is used.
