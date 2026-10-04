@@ -164,6 +164,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 105 | C1 for the headline: S5 GEN-4 with a masked fork + donor protocol | registered | **open** |
 | 106 | C2 on a real task: bounded streaming multiplication (latent vs the written format) | registered | **open** |
 | 107 | Multiplication's blocker: carrier width (m latents) vs compute (pause), carriage forced | registered | **open** |
+| 108 | Forced latent carriage on S5 (Markov segments, sink fix, TF bootstrap; donor-scored) | registered | **open** |
 
 ## Live sections
 
@@ -1101,6 +1102,72 @@ bootstrap, 24k cap, the valid-split early stop, eligibility from 6k; seeds 1–3
 
 **Placement.** 9 runs (3 arms × 3 seeds), about $5, queued behind §101 / §103 / the §106 pilot as hosts free up.
 Projection to Audit.
+
+## 108. Forced latent carriage on S5: Markov segments, scored by donor patching (pre-registered 2026-10-04 05:48 EDT, after Literature's check de57be3f and before any implementation or run; C1-first)
+
+**Why.** §104's donor patching shows our C1 claims rested on zero ablation.
+* §97's latents are ignored: the state is recomputed from the visible start text and ops.
+* §92's slot alone carries the state in only 2/5 seeds.
+* Only designs that remove the visible route can claim serial latent carriage. On multiplication, forced carriage (§99
+  MARKOV) is blocked by per-op compute (§107's reframing). S5's per-op update is a table lookup, so S5 is the most
+  likely place for the first unqualified, serial C1 in a pretrained LM.
+* **Prior** (de57be3f, `docs/LIT_S108_MARKOV_S5_2026-10-04.md`). New as scoped: no pretrained-LM S5 run under a
+  latent-only carry was found. Nearest: T²MLR, LIFT, RMT, Markovian Transformers; from scratch, 2510.14095.
+  - Unbottlenecked pretrained transformers use parallel-scan or shortcut mechanisms that fail out of distribution (Li
+    2503.02854, Liu 2210.10749, 2602.14814). MARKOV removes them.
+  - §71 WC₀₄'s in-pass composition is irrelevant here: a segment only needs read-latent + apply-one-op, which §92's
+    slot 1 shows is easy. The open question is a self-consistent latent code.
+
+**Model.** §97's GEN recipe (text step target through the tied LM head; text snap every k ops with a history cut), with
+**Markov segments** (as §99 MARKOV).
+* Each op step is a fresh-cache segment **[<|endoftext|>, slot j−1's latent (or the chunk's start text, for the first
+  op), op j's tokens] → slot j**, with positions re-indexed from 0, identically in training and test.
+  - **<|endoftext|> sits at position 0, GPT-2's attention sink** (massive activations; §72; 2402.17762 / 2410.10781), so
+    the latent sits at position 1, never at the sink (Literature (1), the main fix).
+* Step forks attend only to their own segment. S_j can reach slot j **only through slot j−1's latent**: earlier ops and
+  slots are invisible.
+* **Bootstrap (Literature (2)).**
+  - K-CURR: k = 1 for the first 2k steps, 2 to 6k, then the arm's k.
+  - **Teacher-forced segment inputs:** with probability ρ per segment (one coin per batch per position), the segment's
+    input is the **gold previous step text** (as at a chunk start) instead of slot j−1's latent. ρ anneals linearly
+    from 1 to **exactly 0 at 12k**, so all segments learn in parallel, and the last 50 % of training uses only the
+    model's own latents.
+  - Budget 24k steps, bs 64, lr 1e-4.
+* **Segment-type balance (Literature (3)):** start-text segments and latent segments are both trained in every batch
+  (the chunk structure gives a 1 : (k − 1) ratio). The ratio is reported.
+
+**Arms (seeds 1–5; ≥ 5 because §104's §92 split looks like a per-seed solution choice; Audit).**
+* **MK-4:** test snap every 4 ops.
+* **MK-8:** test snap every 8 ops (a longer silent stretch; trained with k up to 8).
+
+**Measures.**
+* §97's: cumulative accuracy at 512 and 2,048, per-slot decode, checkpoint validity and edit IIA, FLOPs.
+* **§104's donor protocol as the primary C1 measure** (from now on, per Audit): single-slot donor patching at every
+  in-chunk slot, scored donor- vs recipient-consistent at the chunk's last slot.
+* Zero and mean ablation, secondary.
+* **Per-hand-off accuracy** (Literature): cumulative ≥ 0.99 at 512 needs about 0.9999 per hand-off.
+* ρ is logged at every log, and the threshold is evaluated only once ρ = 0 (as 99-1).
+
+**Rules (fixed now; per arm).**
+* **ACC:** cumulative ≥ 0.99 at 512 in ≥ 4/5 seeds.
+* **SERIAL** (per model): USE(j) (single donor-consistent ≥ 0.90) at every in-chunk slot, with no BYPASS
+  (recipient-consistent ≥ 0.10).
+* **C1-MK:** ACC, plus SERIAL in ≥ 4/5 seeds.
+* **C6:** ACC at 2,048 (cumulative ≥ 0.99) in ≥ 4/5.
+
+**Readings.**
+* **C1-MK at MK-4 (and MK-8).** The first **unqualified, serial C1** in a pretrained LM: the S5 state is carried hop by
+  hop through latents, with no visible route, exact to 512 (2,048), with readable text checkpoints. Tags: C1, C2
+  (within training-length chunks, plus restarts), C6 (if ≥ 4/5 at 2,048), C7 for checkpoints. Not C4.
+* **ACC fails.** Forced carriage is not acquired at this budget even for table-lookup steps. Budget (§92) and
+  teacher-forced slots (§99 TF-SLOT) are the next levers.
+* **ACC holds, SERIAL fails.** This should be impossible by construction, since the segments are fork-isolated. If seen,
+  it means a leak in the segment construction, and it is reported as a bug. The donor protocol here is the sanity check
+  (USE ≈ 1, BYPASS ≈ 0; Literature (4)).
+
+**Placement.** 10 runs (2 arms × 5 seeds), about $6–8 on Vast (proof host MK-4 s1 first, ≤ 5 hosts). Projection to
+Audit. Implementation: the experiments session (gen97 plus accel99's markov segment construction). Scorer committed
+before any run.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
