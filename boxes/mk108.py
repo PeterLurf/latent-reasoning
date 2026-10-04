@@ -162,7 +162,17 @@ def log_stats(recs, sc=1.0):
     return {"ratio_per_1k": [[s, q] for s, _, q, _ in rows if s % 1000 == 0],
             "early_escape": bool(win) and min(win) < 0.9, "early_window_min_ratio": min(win) if win else None,
             "escape_step": esc[0] if esc else None,
-            "final_train_loss": float(np.mean([ml for s, ml, _, _ in rows if s > last - 1000])) if rows else None}
+            "final_train_loss": float(np.mean([ml for s, ml, _, _ in rows if s > last - 1000])) if rows else None,
+            **rel_stats(recs, sc)}
+
+
+def rel_stats(recs, sc=1.0):
+    """Note 111-2 (post-hoc, descriptive): early_escape_rel = main loss / model-relative null < 0.9 at the first log at or
+    after step 6k (k = 4 starts); rel_ratio_per_1k. None when the log has no rel_ratio (runs started before 111-2)."""
+    rr = [(r["step"], r["rel_ratio"]) for r in recs if r.get("rel_ratio") is not None]
+    first = next(((s, q) for s, q in rr if s >= 6000 * sc), None)
+    return {"early_escape_rel": None if first is None else bool(first[1] < 0.9), "rel_ratio_at_6k": None if first is None else first[1],
+            "rel_ratio_per_1k": [[s, q] for s, q in rr if s % 1000 == 0]}
 
 
 @torch.no_grad()
@@ -211,9 +221,23 @@ def evaluate(m, a, dev, amp, Xtr, Ytr, Xte, Yte):
     res["removal"] = {ab: chunk_check(m, a.k, dev, amp, a.eval_bs, n=min(10_000, a.check_n), seed=7106, ablate=ab, mean_in=mu) for ab in ("zero", "mean")}
     res["edit_iia"] = edit_iia(m, a.k, dev, amp, a.eval_bs, n=min(5000, a.check_n))
     res["train_handoff_err"] = train_handoff_err(m, Xtr, Ytr, a.k, dev, amp, a.eval_bs, n=min(a.handoff_n, len(Xtr)))
+    res["rel_final"] = rel_ratio_final(m, Xtr, Ytr, a.k, dev, amp)
     if a.arm == "read":
         res["reader_acc"] = reader_acc(m, a.k, dev, amp, a.eval_bs, n=min(a.handoff_n, a.check_n))
     return res
+
+
+@torch.no_grad()
+def rel_ratio_final(m, X, Y, k, dev, amp, n_batches=20, bs=64, seed=11102):
+    """Note 111-2 (theory's (a), "reads at the end"): at the final model, mean main loss / mean main loss with the carried
+    latents 1..k-1 zeroed, over n_batches training chunks of k ops (true starts, no gold)."""
+    rng = np.random.default_rng(seed); l1 = l0 = 0.0; T = lambda x: torch.tensor(x, device=dev)  # noqa: E731
+    for _ in range(n_batches):
+        st, o, tg = batch(rng, X, Y, k, bs)
+        with amp_ctx(amp):
+            m.chunk(m.start_from(els=st, dev=dev), T(o), T(tg), decode=None); l1 += m.parts[0]
+            m.chunk(m.start_from(els=st, dev=dev), T(o), T(tg), decode=None, ablate="zero"); l0 += m.parts[0]
+    return {"rel_ratio_final": l1 / max(1e-9, l0), "main_loss": l1 / n_batches, "zeroed_loss": l0 / n_batches, "n_batches": n_batches, "bs": bs}
 
 
 def read_log(lp):
@@ -232,6 +256,7 @@ def main():
     ap.add_argument("--ckpt_every", type=int, default=2000, help="training checkpoint <out>/ckpt.pt (model, optimiser, RNGs); resumed if present")
     ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt (writes eval.json, or eval_fp32.json with --fp32)")
     ap.add_argument("--fp32", action="store_true", help="evaluation without autocast (fp32 throughout, the carry included)")
+    ap.add_argument("--rel_only", action="store_true", help="with --backfill: add only rel_final to an existing s111_backfill.json")
     ap.add_argument("--backfill", action="store_true", help="§111 keys only for a finished run: train_handoff_err + log stats -> <out>/s111_backfill.json")
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); sc = a.sched_scale
@@ -243,6 +268,11 @@ def main():
     m = MK108(s5.load_gpt2(dev)).to(dev); m.reader = a.arm == "read"
     if a.eval_only or a.backfill:
         m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval(); t1 = time.time()
+        if a.backfill and a.rel_only:
+            bp = os.path.join(a.out, "s111_backfill.json"); r = json.load(open(bp)) if os.path.exists(bp) else {}
+            r["rel_final"] = rel_ratio_final(m, Xtr, Ytr, a.k, dev, amp); r.update(rel_stats(read_log(lp), sc))
+            json.dump(r, open(bp, "w", newline="\n"), indent=1); print("REL", json.dumps(r["rel_final"]), flush=True)
+            return
         if a.backfill:
             r = {"train_handoff_err": train_handoff_err(m, Xtr, Ytr, a.k, dev, amp, a.eval_bs, n=min(a.handoff_n, len(Xtr))), **log_stats(read_log(lp), sc),
                  "eval_dtype": str(amp), "sec": round(time.time() - t1)}
@@ -293,11 +323,18 @@ def main():
             mp = m.parts[0]
             if m.parts[1] is not None:
                 reads.append(m.parts[1])
-        opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(loss.item()); mains.append(mp); m.gold = None
+        opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(loss.item()); mains.append(mp)
+        gold_last = m.gold; m.gold = None
         if step % 100 == 0 or step == a.steps:
             ml = float(np.mean(mains)); nl = null_loss(L, rho)
             rec = {"step": step, "loss": float(np.mean(hist)), "main_loss": ml, "null": nl, "ratio": ml / nl if nl > 0 else None,
                    "rho": rho, "k_train": L, "sec": round(time.time() - t0)}
+            if L >= 2:                                                      # note 111-2: model-relative null (same batch, carried latents zeroed)
+                m.eval(); m.gold = gold_last if o.shape[1] == L else None
+                with torch.no_grad(), amp_ctx(amp):
+                    m.chunk(m.start_from(els=st, dev=dev), T(o[:, :L]), T(tg[:, :L]), decode=None); p1 = m.parts[0]
+                    m.chunk(m.start_from(els=st, dev=dev), T(o[:, :L]), T(tg[:, :L]), decode=None, ablate="zero"); p0 = m.parts[0]
+                m.gold = None; m.train(); rec["rel_main"] = p1; rec["rel_null"] = p0; rec["rel_ratio"] = p1 / max(1e-9, p0)
             if reads:
                 rec["reader_loss"] = float(np.mean(reads))
             if dag:
