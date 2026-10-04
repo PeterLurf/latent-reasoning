@@ -159,6 +159,8 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 102 | State in depth: gated slot-to-slot residual path (4×4, in §99's harness) | registered | **open** |
 | 103 | Filtered self-training by length (C4 inside the LM, S5) | registered | **open** |
 | 104 | Serial causal use of slots: donor patching, blocking (§92, §97; eval only) | registered | **open** |
+| 105 | C1 for the headline: S5 GEN-4 with a masked fork + donor protocol | registered | **open** |
+| 106 | C2 on a real task: bounded streaming multiplication (latent vs the written format) | registered | **open** |
 
 ## Live sections
 
@@ -908,6 +910,91 @@ chunks B, with random starts and ops. Donors are patched at the same slot index 
 
 **Placement.** Eval only: about 20 GPU-minutes on a local card (as the experiments session offers), or the CPU at
 Idle priority. $0.
+
+## 105. C1 for the headline result: §97's S5 recipe with a masked fork, scored by donor patching (pre-registered 2026-10-04 01:34 EDT, after Literature's check 78a12af7 and before any implementation or run; Audit's steward pick, C1-first)
+
+**Why.** §97's general recipe carries S5 exactly to 2,048 (C6: 5/5). But its C1 is qualified: under mean ablation the text
+fork recomputes from the visible ops (note 97-3; HYB-4 s5 keeps 1.000).
+* §105 removes that route: each side decode sees only its own slot.
+* **Prior** (78a12af7): SIM-CoT's latent-conditioned auxiliary decoder; the input-only-control rationale (2509.13316);
+  SCIT 2608.27265 and Li 2602.08783 for interventions. A masked fork as the main bypass control is new as a design.
+
+**Model.** §97 GEN-4 (text step target, text snap every 4 ops, 24k steps, seeds 1–3; 4–5 added on a pass), with **§98's
+fork mask**.
+* Every step fork attends only to its own slot's cached K/V (all layers) and its own decode tokens.
+* The chain is unchanged.
+
+**Measures:** §97's (cumulative at 512 / 2,048, zero- and mean-removal, per-slot decode, validity, edit IIA, FLOPs), plus
+**§104's donor protocol** run on the trained models (`theory/s104_serial.py`, models added).
+
+**Rules (fixed now).**
+* **G4-M:** cumulative ≥ 0.99 at 512 in ≥ 2/3 seeds, with zero-removal ≤ 0.10 (§97's G4).
+* **MASK-DEC:** in those seeds, mean-removal accuracy after the first ablated slot ≤ 0.06 (chance 1/120 + 0.05).
+* **HANDOFF:** §104's USE(j) for j = 1..3 (single-patch donor-consistent ≥ 0.90) with no BYPASS, in ≥ 2/3 models.
+* **Wording (Literature).** A MASK pass shows only "decodable from the slot alone". The slot's own forward pass still
+  sees the ops, so the hand-off claim needs HANDOFF too.
+  - **Unqualified C1 for the headline result = G4-M + MASK-DEC + HANDOFF.**
+
+**Readings.**
+* **All three.** The general recipe's latents carry the S5 state hop by hop: C1 without qualification, plus §97's C2 /
+  C6 (C6 at seeds 4–5) / C7 for checkpoints.
+* **G4-M only.** The fork was the bypass route, but the slot recomputes in-pass. Report it, with the donor split.
+* **G4-M fails.** The masked decoder cannot be trained at this budget.
+
+**Placement.** About $3–4 (3 runs, then 2) on Vast. Projection to Audit.
+
+## 106. C2 on a real task: bounded-state streaming multiplication, latent chains against the same format written out (pre-registered 2026-10-04 01:34 EDT, after Literature's check 78a12af7 and before any implementation or run; Audit's steward pick)
+
+**Why.** The published multiplication CoT is not restartable: the running sum grows, and P_j carries a counter (98-2). So
+§98 has no C2 test. Streaming long multiplication has a **bounded** state:
+* at step j, T = C + a·b_j;
+* **emit** d_j = T mod 10, which is final;
+* carry C ← ⌊T / 10⌋, at most len(a) + 1 digits for any length of b.
+
+That makes a train-short / test-long test possible on a real task.
+
+**Prior** (78a12af7):
+* Jelassi 2306.15400: 5×3 → 35×3, only with priming; relative PE alone fails.
+* Cho 2410.15787; Lee 2502.01612; Turing Programs 2407.03310; Neural GPU 1511.08228 (bounded local state, long
+  extrapolation).
+* **Literature's key point:** a written-carry CoT *with a history cut* should already extrapolate. So C2 is credited to
+  the format plus cut. The latents' contribution is C1 / C3 against the same format written out.
+
+**Data (a generator; seeds fixed by the implementation).**
+* Digits are least-significant first. a has 4 digits.
+* **Train** b ∈ 1..5 digits. **Test** b = 4, 8, 16, 32 (1,000 items each), plus a = 5 at b = 8 (descriptive
+  carry-width shift).
+* Step text "emit d_j , carry C_j" (C_j written at fixed width len(a) + 1). A final **flush step** writes the remaining
+  carry digits, and it is trained (Literature (b)).
+* The product is **assembled outside the chunk** from the emitted digits and the flush (Literature (a)), so no emitted
+  digits accumulate in context.
+
+**Arms (seeds 1–3; §97's budget).**
+* **GEN-S:** §97's recipe with k = 4 (latent per step; a text snap of "emit, carry" every 4 steps, history cut).
+* **GEN-S-MASK:** as GEN-S, with §98's masked fork.
+* **WC-S:** the same format **written out** with a history cut every 4 steps: text CoT per step, with the restart from the
+  last written carry. This is Literature's required comparator.
+* **TC-S:** the same format as one continuous text CoT, with no cut (the classic baseline).
+* ICoT-SI: the released 4×4 checkpoint on our a = 4, b = 4 items only (in range, descriptive; it is per-size and cannot
+  extrapolate).
+
+**Rules (fixed now; exact product).**
+* **C2-S** (per arm): ≥ 0.95 at b = 16 and ≥ 0.90 at b = 32 in ≥ 2/3 seeds (trained on b ≤ 5).
+* **C1-S** (MASK): GEN-S-MASK meets C2-S, and in those seeds zero- and mean-removal of the slot inputs gives exact
+  accuracy at b = 8 ≤ 0.05.
+* **Attribution (descriptive, fixed now).**
+  - If WC-S also meets C2-S, length generalisation belongs to the format plus cut.
+  - The latents' contribution is then C1 (C1-S) and C3 (GEN-S FLOPs against WC-S at matched accuracy).
+  - If only the latent arms meet C2-S, the latents add C2 beyond the written format.
+
+**Readings.**
+* **GEN-S-MASK meets C2-S and C1-S.** On a real task, latent chains with restartable checkpoints extrapolate from 5 to 32
+  multiplier digits with the state carried in the latents. Tags: C1, C2 (with WC-S's attribution), C3 against WC-S.
+* **Only WC-S / TC-S extrapolate.** The written format does it; the latents do not add length generalisation here.
+* **TC-S fails while WC-S passes.** The range principle again: the cut, not the format alone, is what extrapolates.
+
+**Placement.** 12 runs (4 arms × 3 seeds), about $8–12. One proof host first; launched after §98's fixed GEN-M reruns
+show the recipe learns multiplication. Projection to Audit.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
