@@ -1,0 +1,519 @@
+{
+ "models": {
+  "l92_k4_s1": {
+   "slots": {
+    "1": {
+     "use": true,
+     "bypass": false,
+     "joint_use": true,
+     "single": {
+      "donor_consistent": 0.9735,
+      "recipient_consistent": 0.008
+     },
+     "joint": {
+      "donor_consistent": 1.0,
+      "recipient_consistent": 0.0075
+     }
+    },
+    "2": {
+     "use": true,
+     "bypass": false,
+     "joint_use": true,
+     "single": {
+      "donor_consistent": 0.987,
+      "recipient_consistent": 0.0115
+     },
+     "joint": {
+      "donor_consistent": 0.9995,
+      "recipient_consistent": 0.0115
+     }
+    },
+    "3": {
+     "use": true,
+     "bypass": false,
+     "joint_use": true,
+     "single": {
+      "donor_consistent": 0.9965,
+      "recipient_consistent": 0.007
+     },
+     "joint": {
+      "donor_consistent": 1.0,
+      "recipient_consistent": 0.007
+     }
+    }
+   },
+   "SERIAL": true,
+   "joint_all_slots": true
+  },
+  "l92_k4_s2": {
+   "slots": {
+    "1": {
+     "use": false,
+     "bypass": false,
+     "joint_use": true,
+     "single": {
+      "donor_consistent": 0.141,
+      "recipient_consistent": 0.075
+     },
+     "joint": {
+      "donor_consistent": 1.0,
+      "recipient_consistent": 0.009
+     }
+    },
+    "2": {
+     "use": false,
+     "bypass": false,
+     "joint_use": true,
+     "single": {
+      "donor_consistent": 0.081,
+      "recipient_consistent": 0.054
+     },
+     "joint": {
+      "donor_consistent": 0.9985,
+      "recipient_consistent": 0.012
+     }
+    },
+    "3": {
+     "use": false,
+     "bypass": false,
+     "joint_use": true,
+     "single": {
+      "donor_consistent": 0.06,
+      "recipient_consistent": 0.0445
+     },
+     "joint": {
+      "donor_consistent": 0.98,
+      "recipient_consistent": 0.0105
+     }
+    }
+   },
+   "SERIAL": false,
+   "joint_all_slots": true
+  },
+  "l92_k4_s3": {
+   "slots": {
+    "1": {
+     "use": false,
+     "bypass": false,
+     "joint_use": true,
+     "single": {
+      "donor_consistent": 0.3175,
+      "recipient_consistent": 0.0395
+     },
+     "joint": {
+      "donor_consistent": 1.0,
+      "recipient_consistent": 0.0075
+     }
+    },
+    "2": {
+     "use": false,
+     "bypass": true,
+     "joint_use": false,
+     "single": {
+      "donor_consistent": 0.0375,
+      "recipient_consistent": 0.286
+     },
+     "joint": {
+      "donor_consistent": 0.728,
+      "recipient_consistent": 0.0115
+     }
+    },
+    "3": {
+     "use": false,
+     "bypass": false,
+     "joint_use": false,
+     "single": {
+      "donor_consistent": 0.0335,
+      "recipient_consistent": 0.07
+     },
+     "joint": {
+      "donor_consistent": 0.397,
+      "recipient_consistent": 0.006
+     }
+    }
+   },
+   "SERIAL": false,
+   "joint_all_slots": false
+  },
+  "l92_k4_s4": {
+   "slots": {
+    "1": {
+     "use": true,
+     "bypass": false,
+     "joint_use": true,
+     "single": {
+      "donor_consistent": 1.0,
+      "recipient_consistent": 0.0075
+     },
+     "joint": {
+      "donor_consistent": 1.0,
+      "recipient_consistent": 0.0075
+     }
+    },
+    "2": {
+     "use": true,
+     "bypass": false,
+     "joint_use": true,
+     "single": {
+      "donor_consistent": 1.0,
+      "recipient_consistent": 0.0095
+     },
+     "joint": {
+      "donor_consistent": 1.0,
+      "recipient_consistent": 0.0095
+     }
+    },
+    "3": {
+     "use": true,
+     "bypass": false,
+     "joint_use": true,
+     "single": {
+      "donor_consistent": 1.0,
+      "recipient_consistent": 0.006
+     },
+     "joint": {
+      "donor_consistent": 1.0,
+      "recipient_consistent": 0.006
+     }
+    }
+   },
+   "SERIAL": true,
+   "joint_all_slots": true
+  },
+  "l92_k4_s5": {
+   "slots": {
+    "1": {
+     "use": false,
+     "bypass": true,
+     "joint_use": true,
+     "single": {
+      "donor_consistent": 0.043,
+      "recipient_consistent": 0.2625
+     },
+     "joint": {
+      "donor_consistent": 1.0,
+      "recipient_consistent": 0.007
+     }
+    },
+    "2": {
+     "use": false,
+     "bypass": false,
+     "joint_use": false,
+     "single": {
+      "donor_consistent": 0.0875,
+      "recipient_consistent": 0.0725
+     },
+     "joint": {
+      "donor_consistent": 0.844,
+      "recipient_consistent": 0.0085
+     }
+    },
+    "3": {
+     "use": false,
+     "bypass": false,
+     "joint_use": false,
+     "single": {
+      "donor_consistent": 0.0715,
+      "recipient_consistent": 0.0535
+     },
+     "joint": {
+      "donor_consistent": 0.768,
+      "recipient_consistent": 0.005
+     }
+    }
+   },
+   "SERIAL": false,
+   "joint_all_slots": false
+  },
+  "g97_gen4_s1": {
+   "slots": {
+    "1": {
+     "use": false,
+     "bypass": true,
+     "joint_use": false,
+     "single": {
+      "donor_consistent": 0.005,
+      "recipient_consistent": 0.206
+     },
+     "joint": {
+      "donor_consistent": 0.011,
+      "recipient_consistent": 0.006
+     }
+    },
+    "2": {
+     "use": false,
+     "bypass": true,
+     "joint_use": false,
+     "single": {
+      "donor_consistent": 0.011,
+      "recipient_consistent": 0.221
+     },
+     "joint": {
+      "donor_consistent": 0.092,
+      "recipient_consistent": 0.008
+     }
+    },
+    "3": {
+     "use": false,
+     "bypass": true,
+     "joint_use": false,
+     "single": {
+      "donor_consistent": 0.0095,
+      "recipient_consistent": 0.2785
+     },
+     "joint": {
+      "donor_consistent": 0.0995,
+      "recipient_consistent": 0.0045
+     }
+    }
+   },
+   "SERIAL": false,
+   "joint_all_slots": false
+  },
+  "g97_gen4_s2": {
+   "slots": {
+    "1": {
+     "use": false,
+     "bypass": true,
+     "joint_use": false,
+     "single": {
+      "donor_consistent": 0.0085,
+      "recipient_consistent": 0.9995
+     },
+     "joint": {
+      "donor_consistent": 0.011,
+      "recipient_consistent": 0.01
+     }
+    },
+    "2": {
+     "use": false,
+     "bypass": true,
+     "joint_use": false,
+     "single": {
+      "donor_consistent": 0.0065,
+      "recipient_consistent": 0.2915
+     },
+     "joint": {
+      "donor_consistent": 0.313,
+      "recipient_consistent": 0.0095
+     }
+    },
+    "3": {
+     "use": false,
+     "bypass": true,
+     "joint_use": false,
+     "single": {
+      "donor_consistent": 0.021,
+      "recipient_consistent": 0.285
+     },
+     "joint": {
+      "donor_consistent": 0.0475,
+      "recipient_consistent": 0.0065
+     }
+    }
+   },
+   "SERIAL": false,
+   "joint_all_slots": false
+  },
+  "g97_gen4_s3": {
+   "slots": {
+    "1": {
+     "use": false,
+     "bypass": true,
+     "joint_use": false,
+     "single": {
+      "donor_consistent": 0.004,
+      "recipient_consistent": 0.391
+     },
+     "joint": {
+      "donor_consistent": 0.007,
+      "recipient_consistent": 0.0065
+     }
+    },
+    "2": {
+     "use": false,
+     "bypass": true,
+     "joint_use": false,
+     "single": {
+      "donor_consistent": 0.007,
+      "recipient_consistent": 0.3215
+     },
+     "joint": {
+      "donor_consistent": 0.0145,
+      "recipient_consistent": 0.002
+     }
+    },
+    "3": {
+     "use": false,
+     "bypass": true,
+     "joint_use": false,
+     "single": {
+      "donor_consistent": 0.0055,
+      "recipient_consistent": 0.4305
+     },
+     "joint": {
+      "donor_consistent": 0.0545,
+      "recipient_consistent": 0.0035
+     }
+    }
+   },
+   "SERIAL": false,
+   "joint_all_slots": false
+  },
+  "g97_hyb4_s1": {
+   "slots": {
+    "1": {
+     "use": false,
+     "bypass": true,
+     "joint_use": true,
+     "single": {
+      "donor_consistent": 0.023,
+      "recipient_consistent": 0.4475
+     },
+     "joint": {
+      "donor_consistent": 1.0,
+      "recipient_consistent": 0.006
+     }
+    },
+    "2": {
+     "use": false,
+     "bypass": false,
+     "joint_use": true,
+     "single": {
+      "donor_consistent": 0.2735,
+      "recipient_consistent": 0.0495
+     },
+     "joint": {
+      "donor_consistent": 0.982,
+      "recipient_consistent": 0.012
+     }
+    },
+    "3": {
+     "use": false,
+     "bypass": true,
+     "joint_use": false,
+     "single": {
+      "donor_consistent": 0.0095,
+      "recipient_consistent": 1.0
+     },
+     "joint": {
+      "donor_consistent": 0.0115,
+      "recipient_consistent": 0.0035
+     }
+    }
+   },
+   "SERIAL": false,
+   "joint_all_slots": false
+  },
+  "g97_hyb4_s2": {
+   "slots": {
+    "1": {
+     "use": false,
+     "bypass": true,
+     "joint_use": true,
+     "single": {
+      "donor_consistent": 0.011,
+      "recipient_consistent": 0.953
+     },
+     "joint": {
+      "donor_consistent": 1.0,
+      "recipient_consistent": 0.0085
+     }
+    },
+    "2": {
+     "use": false,
+     "bypass": true,
+     "joint_use": false,
+     "single": {
+      "donor_consistent": 0.0195,
+      "recipient_consistent": 0.443
+     },
+     "joint": {
+      "donor_consistent": 0.112,
+      "recipient_consistent": 0.004
+     }
+    },
+    "3": {
+     "use": false,
+     "bypass": true,
+     "joint_use": false,
+     "single": {
+      "donor_consistent": 0.02,
+      "recipient_consistent": 0.435
+     },
+     "joint": {
+      "donor_consistent": 0.3315,
+      "recipient_consistent": 0.0105
+     }
+    }
+   },
+   "SERIAL": false,
+   "joint_all_slots": false
+  },
+  "g97_hyb4_s3": {
+   "slots": {
+    "1": {
+     "use": false,
+     "bypass": true,
+     "joint_use": true,
+     "single": {
+      "donor_consistent": 0.0075,
+      "recipient_consistent": 1.0
+     },
+     "joint": {
+      "donor_consistent": 1.0,
+      "recipient_consistent": 0.0075
+     }
+    },
+    "2": {
+     "use": false,
+     "bypass": true,
+     "joint_use": false,
+     "single": {
+      "donor_consistent": 0.0165,
+      "recipient_consistent": 0.237
+     },
+     "joint": {
+      "donor_consistent": 0.0785,
+      "recipient_consistent": 0.0075
+     }
+    },
+    "3": {
+     "use": false,
+     "bypass": true,
+     "joint_use": false,
+     "single": {
+      "donor_consistent": 0.0085,
+      "recipient_consistent": 0.8815
+     },
+     "joint": {
+      "donor_consistent": 0.1185,
+      "recipient_consistent": 0.0015
+     }
+    }
+   },
+   "SERIAL": false,
+   "joint_all_slots": false
+  }
+ },
+ "families": {
+  "l92": {
+   "n": 5,
+   "serial": 2,
+   "SERIAL": false,
+   "joint_all": 3
+  },
+  "gen4": {
+   "n": 3,
+   "serial": 0,
+   "SERIAL": false,
+   "joint_all": 0
+  },
+  "hyb4": {
+   "n": 3,
+   "serial": 0,
+   "SERIAL": false,
+   "joint_all": 0
+  }
+ }
+}
