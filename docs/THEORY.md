@@ -1506,6 +1506,20 @@ with an independent pool** and no cross-seed vote.
 **Placement.** 5 seeds, independent, about $8–10 on Vast (proof seed first). Projection to Audit. Implementation: the
 experiments session (self103 with the masked fork, the self-consistency filter and gate, and independent pools).
 
+**Note 110b-1 (2026-10-04 09:52 EDT; before any §110b result; on the experiments session's implementation fea7ca46).**
+* **What a "short problem" labels in S5, stated explicitly.** An identity-start length-2 problem (e; a, b) has the final
+  answer a · b, which is exactly the transition of state a under op b. Since a ranges over all 120 states, length-2
+  problems **label Cayley-table entries from every state**. The R0 log's `short_transition_coverage` reads, in the
+  smoke, 0.008 direct (e's row, from length-1 problems) and **0.79 including the 2-step pairs** (of 14,400).
+* **Consequence for the C4 wording (§103, §110, §110b).** "≤ 5 % short problems" means ≤ 5 % of training problems are
+  Cayley-table examples: §85's short-label fraction p, the same qualifier as §96's teacher.
+  - Each result line carries the measured transition coverage next to p. Strict C4 would exclude them, as ge3 does,
+    which §85 / §87 showed needs a basin-entry device.
+  - Audit's earlier concern about random-start shorts applies in kind to identity-start length-2 problems too. The
+    difference is only coverage (row e plus pairs vs every (s, a)).
+* The test and rules are unchanged. The implementation (R0 identity-start shorts; uniform random textual starts for
+  length ≥ 3; the test on identity starts) matches §110b.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
