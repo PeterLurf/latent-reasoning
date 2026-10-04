@@ -1,0 +1,5 @@
+# §100 (fixed code, note 98-3): GEN-M 5x5, k = 2
+# P=3
+boxes/runs_mult/m100_gen2_5x5_s1 boxes.mult98 train --arm genm --task 5x5 --seed 1 --k 2 --eval_bs 100
+boxes/runs_mult/m100_gen2_5x5_s2 boxes.mult98 train --arm genm --task 5x5 --seed 2 --k 2 --eval_bs 100
+boxes/runs_mult/m100_gen2_5x5_s3 boxes.mult98 train --arm genm --task 5x5 --seed 3 --k 2 --eval_bs 100
