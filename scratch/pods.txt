@@ -660,3 +660,7 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 54202470 vast | gen_d2 DESTROYED_VERIFIED 2026-10-04 18:06 UNREACHABLE by ssh from 17:44 (> 20 min; instance status running); §112 f050 s23-24 lost at ~round 2 (aborted unread; no logs fetchable); queue redeployed
 54209664 vast offer 53546318 created 2026-10-04 18:06: label gen-d2, queue scratch/gen_q_d2.txt (logged at create by vdeploy_toy.sh)
 54186234 vast | gen_e2 DESTROYED_VERIFIED 2026-10-04 18:29 after verified per-run fetch (boxes/runs_s5/s110_s4 boxes/runs_s5/s110_s5)
+54212376 vast offer 49407946 created 2026-10-04 18:30: label gen-d4, queue scratch/gen_q_d4.txt (logged at create by vdeploy_toy.sh)
+54214532 vast offer 49745140 created 2026-10-04 18:52: label gen-e5, queue scratch/gen_q_e5.txt (logged at create by vdeploy_toy.sh)
+54177773 vast | gen_n3 DESTROYED_VERIFIED 2026-10-04 19:01 after verified per-run fetch (boxes/runs_s5/s111_mk4_dag_s6 boxes/runs_s5/s111_mk4_dag_s8 boxes/runs_s5/s111_mk4_dag_s7)
+54177993 vast | gen_n4 DESTROYED_VERIFIED 2026-10-04 19:02 after verified per-run fetch (boxes/runs_s5/s111_mk4_read_s7 boxes/runs_s5/s111_mk4_read_s8 boxes/runs_s5/s111_mk4_read_s6)
