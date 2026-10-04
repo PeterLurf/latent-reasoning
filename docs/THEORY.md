@@ -162,7 +162,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 103 | Filtered self-training by length (C4 inside the LM, S5) | registered | **open** |
 | 104 | Serial causal use of slots: donor patching, blocking (§92, §97; eval only) | SERIAL not met: §92 2/5; §97 0/3 with donor latents ignored (state recomputed from visible ops) | closed |
 | 105 | C1 for the headline: S5 GEN-4 with a masked fork + donor protocol | registered | **open** |
-| 106 | C2 on a real task: bounded streaming multiplication (latent vs the written format) | pilot gate fails (b = 4 ≈ 0.005; a bounded carry is not carried past step 1); latent arms stop | closed |
+| 106 | C2 on a real task: bounded streaming multiplication (latent vs the written format) | k = 4 pilot gate fails (b = 4 ≈ 0.005); k = 2 MASK + written comparator added (106-3) | **open** |
 | 107 | Multiplication's blocker: carrier width (m latents) vs compute (pause), carriage forced | registered | **open** |
 | 108 | Forced latent carriage on S5 (Markov segments, sink fix, TF bootstrap; donor-scored) | registered | **open** |
 
@@ -1069,6 +1069,25 @@ show the recipe learns multiplication. Projection to Audit.
   - §100 MASK2 (one hand-off per chunk) and §107 (pause vs width) are the live tests.
 * **WC-S / TC-S** (the written-format C2 reference) are **deferred** under the user's C1 priority. They would describe
   only the written format, not the latents. They are run only if a latent arm learns the streaming task.
+
+**Note 106-3 (2026-10-04 06:46 EDT, before any k = 2 run; Audit's caution).**
+* **Correction to 106-2's reading.** The pilot ran at k = 4, with several silent hand-offs per chunk. That **confounds**
+  the bounded-carry format with the multi-hand-off wall already seen in §98 MASK 5×5 and §99. 106-2's "not state
+  growth" is withdrawn pending this test. §100 MASK2 4×4 at k = 2 (one hand-off per chunk) learned in 2/3 (answers 0.89
+  / 0.32 / 0.985), with removal at 0.
+* **New arms (part of §106; seeds 1–3; train b ≤ 5, test b = 4 / 8 / 16 / 32):**
+  - **GEN-S-MASK-k2:** the masked fork with a text snap every **2** steps (one latent hand-off per chunk).
+  - **WC-S-k2:** the same format written out, with a history cut every 2 steps (the written comparator; Literature
+    78a12af7).
+* **Rules (§106's, unchanged):**
+  - C2-S: ≥ 0.95 at b = 16 and ≥ 0.90 at b = 32 in ≥ 2/3.
+  - C1-S for the MASK arm: C2-S plus zero/mean removal ≤ 0.05 at b = 8.
+  - Attribution: if WC-S-k2 also meets C2-S, C2 belongs to format + cut, and the latents get C1 (and C3 vs WC-S).
+* **Reading if GEN-S-MASK-k2 meets C2-S and C1-S:** latent hand-offs between restartable written carries extrapolate
+  multiplication from 5 to 32 multiplier digits, with the carry passing through the latents. That would be C1 and C2 on
+  a real task.
+* About $4–6 (6 runs). It joins the C1 group after tfslot and §108. Scored with `theory/score_s106.py`, extended to
+  the dirs `s106_gens_mask_k2_s*` and `s106_wcs_k2_s*`.
 
 ## 107. Multiplication's C1 blocker: carrier width or compute per op? m latents per op vs pause positions, with carriage forced (pre-registered 2026-10-04 03:32 EDT, after Literature's check 640ffe59 and before any implementation or run; Audit's 03:13 steward pick)
 

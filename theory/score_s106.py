@@ -13,7 +13,7 @@ import os
 import numpy as np
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ARMS = {"GEN-S": "gens", "GEN-S-MASK": "gens_mask", "WC-S": "wcs", "TC-S": "tcs"}
+ARMS = {"GEN-S": "gens", "GEN-S-MASK": "gens_mask", "WC-S": "wcs", "TC-S": "tcs", "GEN-S-MASK-k2": "gens_mask_k2", "WC-S-k2": "wcs_k2"}
 
 
 def main():
@@ -30,6 +30,10 @@ def main():
              "flops_by_b": {s: r.get("compute", {}).get("flops_by_b") for s, r in runs.items()}}
         res["arms"][name] = A
         print("%-11s n %d C2-S %s seeds %s | acc_by_b %s" % (name, len(runs), A["C2_S"], c2, A["acc_by_b"]))
+    for mk, wk in (("GEN-S-MASK-k2", "WC-S-k2"),):
+        mm = res["arms"][mk]
+        res["C1_S_" + mk] = mm["C2_S"] and all(mm["removal_b8"][s]["zero"]["acc_b8"] <= 0.05 and mm["removal_b8"][s]["mean"]["acc_b8"] <= 0.05 for s in mm["c2_seeds"])
+        res["attribution_format_plus_cut_" + wk] = res["arms"][wk]["C2_S"]
     m = res["arms"]["GEN-S-MASK"]
     res["C1_S"] = m["C2_S"] and all(m["removal_b8"][s]["zero"]["acc_b8"] <= 0.05 and m["removal_b8"][s]["mean"]["acc_b8"] <= 0.05 for s in m["c2_seeds"])
     res["attribution_format_plus_cut"] = res["arms"]["WC-S"]["C2_S"]
