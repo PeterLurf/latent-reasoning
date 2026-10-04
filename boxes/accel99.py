@@ -41,7 +41,7 @@ from boxes import s5  # noqa: E402
 from boxes.mult98 import (DIGIT_IDS, TOK, MeterR, MultGen, gen_mean_inputs, gen_rollout, load, seq_batch,  # noqa: E402
                           seq_forward)
 
-ARMS = {"ctrl": 0, "kcurr": 6000, "std": 0, "textfirst": 3000, "textfirst_mask": 3000, "combo": 9000, "tfslot": 12000, "markov": 6000}
+ARMS = {"ctrl": 0, "kcurr": 6000, "std": 0, "textfirst": 3000, "textfirst_mask": 3000, "combo": 9000, "tfslot": 12000, "markov": 6000, "statepath": 0}
 
 
 def config(arm, step):
@@ -60,11 +60,16 @@ def config(arm, step):
 class MultGen99(MultGen):
     def __init__(self, g, fork, std):
         super().__init__(g, fork)
-        self.std = std; self.markov = False
+        self.std = std; self.markov = False; self.statepath = False; self.ablate_mode = None
         E = g.w("wte.weight").detach()
         self.register_buffer("muE", E.mean(0).clone()); self.register_buffer("sdE", E.std(0).clone())
         self.register_buffer("muH", torch.zeros(768)); self.register_buffer("sdH", torch.ones(768)); self.register_buffer("seen", torch.tensor(0))
         self._raw = []; self.gold = None
+
+    def enable_statepath(self):
+        """§102: h(4)_slot_j += gamma * W h(9)_slot_{j-1} within a chunk; W = identity, gamma = 0 at init."""
+        self.statepath = True
+        self.Wsp = torch.nn.Linear(768, 768, bias=False); torch.nn.init.eye_(self.Wsp.weight); self.gamma = torch.nn.Parameter(torch.zeros(()))
 
     def g_std(self, h):
         sd = torch.maximum(self.sdH, 0.05 * self.sdH.median())
@@ -87,7 +92,7 @@ class MultGen99(MultGen):
         (a set of j; training only; the gold tokens are step_tgt[j])."""
         B, c = ops.shape; g = self.g
         parts = [g.embed(prefix)] + ([g.embed(start)] if start is not None else []) + [g.embed(self.digtok[ops[:, 0]])[:, None]]
-        x = torch.cat(parts, 1); past = None; losses, decs, ins = [], [], []; ans = None
+        x = torch.cat(parts, 1); past = None; losses, decs, ins = [], [], []; ans = None; h9_prev = None; pos_prev = None
         for j in range(c):
             if self.markov:                                                 # §99 note 99-3: every slot step is a fresh-cache segment
                 past = None
@@ -107,7 +112,14 @@ class MultGen99(MultGen):
                 if ablate in ("zero", "mean") and j < c - 1:
                     s_in = torch.zeros_like(s_in) if ablate == "zero" else mean_in[j][None].expand_as(s_in).to(s_in.dtype)
                 ins.append(s_in)
-                ctx = past[0][0].shape[2]; hs, past = g(s_in[:, None], past)
+                ctx = past[0][0].shape[2]
+                if self.statepath:                                          # §102 state path (off under removal / wpath ablation)
+                    off = ablate in ("zero", "mean") or self.ablate_mode == "wpath" or h9_prev is None
+                    inj = None if off else (4, self.gamma * self.Wsp(h9_prev.to(self.Wsp.weight.dtype)))
+                    kvm = [pos_prev] if (self.ablate_mode == "attn_prev" and pos_prev is not None) else None
+                    pos_prev = ctx; hs, past, h9_prev = g(s_in[:, None], past, inject=inj, capture=9, kv_mask=kvm)
+                else:
+                    hs, past = g(s_in[:, None], past)
                 if meter:
                     meter.step(1, ctx, 0)
                 hslot = hs[:, 0]
@@ -177,10 +189,12 @@ def main():
     cfg = lambda s: config(arm, s / sc)  # noqa: E731
     if a.eval_only:                                                         # re-run the stop eval of a finished run from its model.pt
         g = s5.load_gpt2(dev); m = MultGen99(g, "mask" if arm == "textfirst_mask" else "genm", std=arm in ("std", "combo")).to(dev); m.markov = arm == "markov"
+        if arm == "statepath":
+            m.enable_statepath(); m.to(dev)
         m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev))
         recs = [json.loads(x) for x in open(os.path.join(a.out, "log.jsonl"))]; curve = [
             {"step": r["step"], "per_slot": r["per_slot"], "val_acc": r["val_acc"], "gold_share": r["gold_share"], "k_train": r["k_train"],
-             "phase": r["phase"], "eligible": r["eligible"]} for r in recs if "per_slot" in r]
+             "phase": r["phase"], "eligible": r["eligible"], "gate": r.get("gate")} for r in recs if "per_slot" in r]
         hit = next((c["step"] for c in curve if c["eligible"] and min(c["per_slot"]) >= 0.95 and c["val_acc"] >= 0.95), None)
         stop_step = hit or a.steps; assert recs[-1]["step"] == stop_step, "log does not end at the stop step"
         flops = 0.0; fc = {}
@@ -194,6 +208,8 @@ def main():
     os.makedirs(a.out, exist_ok=True); json.dump({**vars(a), "eligible_from": ARMS[a.arm99]}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
     g = s5.load_gpt2(dev)
     m = MultGen99(g, "mask" if arm == "textfirst_mask" else "genm", std=arm in ("std", "combo")).to(dev); m.markov = arm == "markov"
+    if arm == "statepath":
+        m.enable_statepath(); m.to(dev)
     opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
     log = open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t0 = time.time(); hist = []; curve = []; flops = 0.0; fcache = {}
     stop_step, hit = a.steps, None
@@ -225,9 +241,9 @@ def main():
             rec = {"step": step, "loss": float(np.mean(hist)), "sec": round(time.time() - t0), "phase": phase, "k_train": L, "gold_share": rho}; hist = []
             if step % a.log_every == 0:
                 m.eval(); per, ok, _ = gen_rollout(m, Dva, dev, amp, a.eval_bs); m.train()
-                e = {"step": step, "per_slot": per.mean(0).tolist(), "val_acc": float(ok.mean()), "gold_share": rho, "k_train": L,
+                e = {"step": step, "per_slot": per.mean(0).tolist(), "val_acc": float(ok.mean()), "gold_share": rho, "k_train": L, "gate": float(m.gamma) if m.statepath else None,
                      "phase": phase, "eligible": step >= elig}
-                curve.append(e); rec.update({k: e[k] for k in ("per_slot", "val_acc", "eligible")})
+                curve.append(e); rec.update({k: e[k] for k in ("per_slot", "val_acc", "eligible", "gate")})
                 if e["eligible"] and min(e["per_slot"]) >= 0.95 and e["val_acc"] >= 0.95:
                     hit = step
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
@@ -265,6 +281,11 @@ def finish(a, m, Dtr, Dte, dev, amp, arm, elig, hit, stop_step, curve, flops, wa
                         "flops_convention": "sum over updates of Meter forward FLOPs per trained problem (config of that update) x 3 x bs; tfslot updates at the latent config"},
            "std_stats": {"seen": int(m.seen), "sd_floor": float(0.05 * m.sdH.median())} if m.std else None,
            "code": {f: hashlib.md5(open(os.path.join(ROOT, "boxes", f), "rb").read()).hexdigest() for f in ("accel99.py", "mult98.py")}}
+    if m.statepath:                                                         # §102: separate test ablations
+        res["ablation"] = {}; res["gate_curve"] = [[c["step"], c.get("gate")] for c in curve]
+        for mode in ("wpath", "attn_prev"):
+            m.ablate_mode = mode; _, o_, _ = rollout_safe(m, Dte, dev, amp, bs); res["ablation"][mode] = {"answer_acc": float(o_.mean())}
+        m.ablate_mode = None
     for ab in ("zero", "mean"):
         _, o_, _ = rollout_safe(m, Dte, dev, amp, bs, ablate=ab, mean_in=mu); res["removal"][ab] = {"answer_acc": float(o_.mean())}
     res["eval_bs"] = {"requested": a.final_eval_bs, "used": sorted(set(USED_BS))}
