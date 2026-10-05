@@ -27,7 +27,9 @@ def main():
                     runs[s] = json.load(open(p))
                     pc = os.path.join(R, "s120_%s_%s_s%d" % (fam, arm, s), "eval_cert.json")      # note 120-3: post-hoc CERT
                     if os.path.exists(pc):
-                        runs[s]["cert"] = json.load(open(pc)).get("cert", json.load(open(pc)))
+                        jc = json.load(open(pc)); runs[s]["cert"] = jc.get("cert", jc)
+                        if fam == "ff" and jc.get("cert_task") is not None:                       # note 120-7: FF CERT over the task language
+                            runs[s]["cert_registered"] = runs[s]["cert"]; runs[s]["cert"] = dict(jc["cert_task"])
                     c = runs[s].get("cert") or {}
                     if c.get("status") in ("inconclusive_cap", "inconclusive_time", "deferred") or c.get("capped"):
                         c["holds"] = False; c["certified_claim"] = False                         # no certification claim
@@ -35,6 +37,7 @@ def main():
             C = {"n": len(runs), "long_acc": {s: r.get("long_acc") for s, r in runs.items()},
                  "PILOT_PASS": len(runs) == 2 and all((r.get("long_acc") or 0) >= 0.99 for r in runs.values()),
                  "cert": {s: (r.get("cert") or {}).get("holds") for s, r in runs.items()},
+                 "cert_registered_ff": {s: (r.get("cert_registered") or {}).get("holds") for s, r in runs.items()} if fam == "ff" else None,
                  "n_reachable": {s: (r.get("cert") or {}).get("n_reachable") for s, r in runs.items()},
                  "n_moore": {s: (r.get("cert") or {}).get("n_moore") for s, r in runs.items()},
                  "codes_per_state": {s: r.get("codes_per_state") for s, r in runs.items()},
