@@ -3700,6 +3700,12 @@ caveat.**
   - **It stays in CAUSAL:** "does σ 0.5 cause failure" is what (iii) tests, so excluding it would be circular.
 * **The two basins are reported separately:** the chance plateau (ln 120, flagged by 123-3) and the ~3.2 basin (left the
   plateau, then stuck). A "final loss > 1.0" flag is post hoc and descriptive only.
+* **Training GPUs (the experiments session's deploy logs).**
+  - §120: S5 FINAL s1 / s2 on 3090 Ti; S5 TRACE s1 on 4090 (its first attempt, which reached the same ~3.2 basin by 14k,
+    on 3090 Ti, so that basin is not hardware); S5 TRACE s2 on 3090.
+  - §120 flip-flop: FINAL s1 / s2 on 3090; TRACE s1 on 3090, TRACE s2 on 4090.
+  - §123: every cell on 3090 except b9's σ 0.5 pair (4090; rerun on 3090, 123-8).
+  - From now on, `train_gpu` is logged in args.json and eval.json.
 * **Hardware caveat.** Trajectories depend on seed **and** GPU type. σ 0.5 (RTX 4090) and σ 0 (RTX 3090) at seed 2 are
   matched by seed but not by trajectory. The training GPU is listed per cell in the result.
 
