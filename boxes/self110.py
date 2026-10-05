@@ -180,7 +180,6 @@ class Gen110(Gen103):
         self.parts = (float(main.detach()) if torch.is_tensor(main) else main, None if rd is None else (float(rd.detach()) if torch.is_tensor(rd) else rd))
         return main + rd if self.reader else main
 
-    @torch.no_grad()
     def copy_loss(self, start, states):
         """§116 NONE+COPY (note 116-2): a length-0 copy problem - the start text's last hidden is fed as a slot (as at an op
         position, no marker token) and the masked fork decodes it; target = the start state's own text (input only)."""
@@ -189,6 +188,7 @@ class Gen110(Gen103):
         lg = g.logits(torch.cat([hslot[:, None], hf], 1)).float()
         return F.cross_entropy(lg.reshape(-1, lg.shape[-1]), st.reshape(-1), reduction="none").view(-1, NST).sum(-1).mean()
 
+    @torch.no_grad()
     def read_greedy(self, s_in):
         """§113 reader: a fresh segment [EOT, slot latent] (positions 0..1) -> 6 greedy state-text tokens."""
         g = self.g; B = s_in.shape[0]; eot = g.embed(torch.full((B, 1), 50256, device=s_in.device))
@@ -460,7 +460,7 @@ def main():
         return 1 if step <= 2000 else (2 if step <= 6000 else K)
 
     def train_round(items, n_steps, name, short, pool=None):
-        hist = []; rhist = []; cache = {}
+        hist = []; rhist = []; chist = []; cache = {}
         for i_ in range(n_steps):
             S["step"] += 1; S["short"] += int(short); step = S["step"]; H = S.get("H", a.steps)
             if a.st_switch and not S.get("switched") and step == a.switch_at:   # note 117-1: forced switch at 12,000 exactly
@@ -484,7 +484,8 @@ def main():
                 loss = m.chunk_masked(st, o_, tg)
                 if nc:
                     cs = drng.integers(0, 120, nc)
-                    loss = (loss * (a.bs - nc) + m.copy_loss(torch.tensor(STTOK[cs], device=dev), torch.tensor(cs, device=dev)) * nc) / a.bs
+                    lc = m.copy_loss(torch.tensor(STTOK[cs], device=dev), torch.tensor(cs, device=dev)); chist.append(float(lc.detach()))
+                    loss = (loss * (a.bs - nc) + lc * nc) / a.bs
             opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(loss.item())
             if m.reader:
                 rhist.append(m.parts[1])
@@ -492,6 +493,8 @@ def main():
                 rec = {"step": step, "round": name, "loss": float(np.mean(hist)), "sec": round(time.time() - t0)}; hist = []
                 if rhist:
                     rec["reader_loss"] = float(np.mean(rhist)); rhist.clear()
+                if chist:                                                   # §116 NONE+COPY copy CE (Theory 116-4 addendum)
+                    rec["copy_loss"] = float(np.mean(chist)); chist.clear()
                 log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
 
     def pool_of(Lmax):
