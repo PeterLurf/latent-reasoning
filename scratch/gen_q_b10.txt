@@ -1,0 +1,4 @@
+# §123 FSQ+DITHER s5 (launch on Theory's call; CERT/growth post-hoc locally)
+# P=2
+boxes/runs_fsq/s123_s5_fsqdither_s1 boxes.fsq120 --family s5 --arm final --fsq_dither 0.25 --no_cert --seed 1
+boxes/runs_fsq/s123_s5_fsqdither_s2 boxes.fsq120 --family s5 --arm final --fsq_dither 0.25 --no_cert --seed 2
