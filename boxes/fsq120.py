@@ -292,7 +292,9 @@ def margin_flip(m, fam, s0, X, dev, amp, bs=250, seed=12002):
             with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
                 h = m.segment(prev, torch.tensor(X[sl, t], device=dev)); qs, q, zb = m.quant(h)
                 nz = (torch.rand(zb.shape, generator=g_) - 0.5).to(zb.device); qn = torch.round(zb + nz)
-            flips += int((qn != q).any(-1).sum()); tot += B; prev = m.embed_code(qs)[:, None]
+            flips += int((qn != q).any(-1).sum()); tot += B
+            with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+                prev = m.embed_code(qs)[:, None]                            # bf16 qs: embed under autocast (as run_test)
     return flips / max(1, tot)
 
 
