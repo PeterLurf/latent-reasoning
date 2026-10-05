@@ -14,6 +14,7 @@ advisory notes are in `archive/`.
 | LIT_THEORY_LEADS_2026-10-02 | 3–6 leads each: acquisition, composition, OOD confidence, paraphrase semantics, latent-vs-text length |
 | LIT_S92_NOVELTY_2026-10-03 | §92 claim line: new as scoped; closest mechanism 2510.14095; no certified latent S5 in a pretrained LM |
 | LIT_SOTA_TARGETS_2026-10-01 | comparator numbers: S5/A5 (DeltaProduct 2502.10297, Zhang 2607.20594), multiplication (Cho 2410.15787, Lee 2502.01612), Chomsky (MLP-LDRU 2605.26035) |
+| LIT_PROJECT_AUDIT_2026-10-04 | whole-project audit: 8 headline findings → prior, novelty, overclaim, reviewer demand; contradictions; 3 missing comparisons |
 | LIT_NORTHSTAR_2026-09-29 | C1–C7 audit requirements (substitution, IIA edit, input-only control); hold firsts to 2404.18988 |
 
 ## Per-registration checks (chronological)
@@ -66,3 +67,22 @@ advisory notes are in `archive/`.
 | LIT_SELF_LABELS_2026-10-03 | §96 | DNN-HMM forced-alignment precedent; pipeline C4 qualified by p |
 | LIT_S97_TEXT_SNAP_2026-10-03 | §97 | new by combination (SELR 2608.13570, Thinking States); k = 1 = written-state loop |
 | LIT_S98_MULT_2026-10-03 | §98 | ICoT-SI 5×5 release 0.996; no latent baselines on multiplication; 2510.00184 running sum |
+| LIT_S99_ACCEL_2026-10-03 | §99 | no published speed-up figures; teacher-forced slot inputs missing candidate |
+| LIT_S99_MARKOV_2026-10-03 | §99-3 | MARKOV arm: fork must be chain-masked; position re-indexing |
+| LIT_S100_K2_2026-10-03 | §100 | k = 2 bypass plausible (ICoT-SI one-pass); compute claim vs text CoT only |
+| LIT_DIRECTIONS_LEADS_2026-10-04 | memo | A/B/C leads: LIFT parallel state training, filtered length self-training, Howe channel / fixed points |
+| LIT_S101_103_DESIGN_2026-10-04 | §101–103 | per-chunk stochastic β; T²MLR gate; same-weights vote weaker than cross-seed |
+| LIT_SELF_SNAP_2026-10-04 | §101 SELF-SNAP | SR-RNN 1901.08817 closest; purity premise check |
+| LIT_S104_INTERVENTIONS_2026-10-04 | §104 | IIA / patching citations; resample over zero/mean; donor- vs recipient-consistent |
+| LIT_S105_106_2026-10-04 | §105–106 | MASK = decodable not hand-off; Jelassi 2306.15400, Neural GPU 1511.08228 |
+| LIT_S107_MULTISLOT_2026-10-04 | §107 | capacity vs compute; pause control |
+| LIT_S108_MARKOV_S5_2026-10-04 | §108 | position-0 sink fix; compounding arithmetic |
+| LIT_S109_PRECHECK_2026-10-04 | §109 | latent vs pause (2609.35643); 2510.00184 = scalar MSE, 2L4H from scratch |
+| LIT_S110_SELFTRAIN_2026-10-04 | §110 | agreement overestimates precision with shared weights; STaR restart |
+| LIT_S110B_STARTS_2026-10-04 | §110b | random starts label the full Cayley table: restate the C4 qualifier |
+| LIT_S111_RELIABILITY_2026-10-04 | §111 | budget fixes timing, not basin lotteries; DAgger 1011.0686 |
+| LIT_S112_113_2026-10-04 | §112–113 | never-labelled transitions constrained by long finals; reader priors |
+| LIT_LOOPED_PROPOSALS_2026-10-04 | P1–P4 | RRT 2410.20672, MoR 2507.10524, retrofits; ST-Gumbel; early triage |
+| LIT_S116_STRICT_C4_2026-10-04 | §116 | the cut makes self-started shorts (leap L → L − k); NONE must start at L > k |
+| LIT_S117_INTEGRATED_2026-10-04 | §117 | staged-bottleneck fallback; foothold_yield is truth-scored (log only) |
+| LIT_S118_ANCHOR_2026-10-04 | §118 | anchor = professor forcing 1610.09038; LONG moves the range boundary |
