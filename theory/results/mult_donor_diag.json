@@ -114,5 +114,33 @@
     "input_donor": 0.09298998569384835
    }
   }
+ },
+ "a121_anchorread_4x4_s1": {
+  "intact_recipient": 0.23333333333333334,
+  "SAMEPREFIX": {
+   "recipient": 0.07333333333333333,
+   "sum_donor": 0.01,
+   "input_donor": 0.0033333333333333335,
+   "unchanged_vs_intact": 0.07333333333333333
+  },
+  "SAMESUM": {
+   "recipient": 0.004291845493562232,
+   "prefix_donor": 0.07296137339055794,
+   "input_donor": 0.0,
+   "unchanged_vs_intact": 0.004291845493562232
+  },
+  "digits2_4": {
+   "intact_recipient": 0.5066666666666667,
+   "SAMEPREFIX": {
+    "recipient": 0.22666666666666666,
+    "sum_donor": 0.1811111111111111,
+    "input_donor": 0.10444444444444445
+   },
+   "SAMESUM": {
+    "recipient": 0.19313304721030042,
+    "prefix_donor": 0.21602288984263232,
+    "input_donor": 0.12160228898426322
+   }
+  }
  }
 }
