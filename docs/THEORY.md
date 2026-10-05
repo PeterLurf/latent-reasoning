@@ -2559,6 +2559,9 @@ disclosed). Is the hand-off map an attractor, and does that explain why READ s8 
     drifting seeds have basins ≤ 0.1.
   - (b) ρ < 1 holds broadly. ρ alone does not separate success from drift: the decode margin (basin) does.
   - (c) §108 seeds (no reader) have smaller basins than every no-snap-passing READ seed.
+* **Scoring split (Audit, fixed before the full run).** The split in (a) was chosen after seeing s6 and s8, so they are
+  reported as the **calibration pair** only. (a)–(c) are confirmatory only on the held-out models: READ s7, s9, s10 and
+  §108 s1 / s3 / s5.
 * **Implication if (a) holds.** No-snap success needs a wide decode basin around the state code, not just contraction.
   - That favours objectives that **widen margins**: noise injection on the carried latent (P-B's denoising), or the
     discrete snap (§120), over plain norm control.
