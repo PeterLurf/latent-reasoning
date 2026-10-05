@@ -3,6 +3,6 @@
  "ANNEAL": {},
  "BOTTLENECK_CAUSE": "incomplete (0 / 4)",
  "ANNEAL_INHERITS": "incomplete (0 / 0)",
- "STOP_RULE_FIRES": "incomplete",
+ "STOP_RULE_FIRES": "incomplete (seed 2 pending)",
  "rawh_plateau_count": 0
 }
