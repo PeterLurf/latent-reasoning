@@ -3703,6 +3703,24 @@ caveat.**
 * **Hardware caveat.** Trajectories depend on seed **and** GPU type. σ 0.5 (RTX 4090) and σ 0 (RTX 3090) at seed 2 are
   matched by seed but not by trajectory. The training GPU is listed per cell in the result.
 
+**Note 123-8 (2026-10-05 16:00 EDT, before the reruns and before CAUSAL is scored; Audit-approved about $1). The σ = 0.5 pair is rerun
+on RTX 3090s.**
+* Both b9 cells (RTX 4090) deviate from their 3090 twins in the pre-dither window, in opposite directions:
+  - σ 0.5 s1 is a plateau seed, while 3090 seed 1 left the plateau by 2k (3.90);
+  - σ 0.5 s2 left the plateau, while 3090 seed 2 stayed on it.
+* So the σ = 0.5 pair is hardware-confounded.
+* **CAUSAL reads σ = 0.5 from new RTX 3090 reruns of S5 σ 0.5 s1–s2** (dirs `s123_s5_dither050_s{1,2}_3090`). The b9 4090
+  cells are reported descriptively, as a GPU-variance observation.
+* Every §123 cell entering CAUSAL then trains on the 3090 class. If a cell outside the class is used, its GPU is stated.
+
+**Note 125-3 (2026-10-05 16:00 EDT, before any §125 result; Audit / claude-13's pre-launch review).**
+* Post-hoc jobs (`--growth_only`, `--cert_only`, `--contraction_only`) on STD models must carry `--std`. A strict load
+  fails loudly without it.
+* The `check_fsq120_std` gradient-flow PASS is committed before the §125 verdict.
+* **Wording:** the carried code is standardised **from the second update**. Step 1's forward uses μ = 0 / sd = 1, because
+  the EMA initialises after the first optimiser step. This is harmless.
+* b13 (STD S5 s2) must be an RTX 3090 / 3090 Ti (125-2). Otherwise its seed-2 reading is excluded.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
