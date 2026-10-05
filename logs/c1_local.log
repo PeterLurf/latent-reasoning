@@ -429,3 +429,6 @@
 05:55:07 s120_s5_final_s1 eval_only --no_cert rc 0 (cuda:1)
 05:56:15 NOTE: 05:55 no_cert eval crashed in margin_flip (bf16 embed outside autocast; fixed); cert_only killed; rerun chain
 06:10:54 s120_s5_final_s1 eval_only --no_cert rc 0 (cuda:1, margin fix)
+06:42:03 s115 s111_mk4_read_s9 rc 0 (cuda:2, fp32)
+06:59:37 s120_s5_final_s1 cert_only rc 0 (cuda:1)
+07:04:29 contraction_diag rc 0 (cuda:0)
