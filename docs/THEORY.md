@@ -3352,8 +3352,9 @@ text). Scorer
   CERT printed beside it. The scorer had read the registered BFS, which fails by construction on unreachable prefixes.
 * **The codes-per-state baseline is per family:** "below §120 FINAL's".
   - S5: 34.2 (FINAL s1 at 2,048).
-  - Flip-flop: **14.0** (the mean of FF FINAL s1 / s2's 10 / 18; flip-flop's code set saturates by position 16). The
-    registration's parenthetical gave only the S5 number.
+  - Flip-flop: **13.75**, the mean of FF FINAL s1's 10.0 (eval.json, all positions; it has no growth file) and s2's
+    17.5 (eval_growth at 2,048). Flip-flop's code set saturates by position 16. Corrected from 14.0 (Audit), before any
+    §123 cell. The registration's parenthetical gave only the S5 number.
 * **ρ's distance metric is kept as registered:** the median Euclidean distance ratio in z_b. The perturbation is
   per-coordinate normalised (δ = ε · std_d · u), the distance is not.
   - A std-normalised ρ is reported beside it as descriptive. Over 8 hand-offs the geometric-mean ratio approaches the

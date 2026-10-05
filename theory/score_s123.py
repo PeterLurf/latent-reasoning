@@ -6,7 +6,7 @@ of the median normalised distance ratio at eps 0.1), basin, grid_share (implicit
 eval_growth.json (codes per state by position, '2048') and eval_cert.json (cert {status, holds}).
 CAUSAL: (i) S5 mean rho falls from sigma 0 to 0.5, and flip-flop rho at sigma* < its sigma-0 control; (ii) every continuous cell with rho < 0.3 has long_acc >= 0.99;
 (iii) every continuous cell with rho > 0.6 has long_acc < 0.99. Continuous-stabiliser reading needs passing cells'
-grid_share < 0.5. CANONICAL: codes per state at 2048 below §120 FINAL's per family (S5 34.2; FF 14.0, note 123-2) in both
+grid_share < 0.5. CANONICAL: codes per state at 2048 below §120 FINAL's per family (S5 34.2; FF 13.75, note 123-2) in both
 seeds AND CERT done & holds in >= 1 seed (FF: the task-language CERT, 120-8; the registered CERT printed beside).
     python theory/score_s123.py
 """
@@ -62,7 +62,7 @@ def main():
             seeds[s] = {"long_acc": r.get("long_acc"), "codes_per_state_2048": cps,
                         "cert_holds": cert.get("status") == "done" and bool(cert.get("holds")),
                         "cert_registered_holds": reg.get("status") == "done" and bool(reg.get("holds"))}
-        base = {"s5": 34.2, "ff": 14.0}[fam]                                           # note 123-2: §120 FINAL's codes per state, per family
+        base = {"s5": 34.2, "ff": 13.75}[fam]                                           # note 123-2: §120 FINAL's codes per state, per family
         canon[fam] = {"seeds": seeds, "codes_per_state_baseline": base,
                       "CANONICAL": len(seeds) == 2 and all((v["codes_per_state_2048"] or 1e9) < base for v in seeds.values()) and any(v["cert_holds"] for v in seeds.values())}
     res["fsqdither"] = canon
