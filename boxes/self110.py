@@ -26,6 +26,19 @@ non-identity states; length-2 shorts need (e.a, b) in T_f); R0 count fixed. cove
 shorts actually drawn) defines "labelled"; eval adds k1_labelled_acc / k1_never_labelled_acc / k1_certified (all 14,400
 k = 1 restarts, masked fork), k1_never_labelled_in_pool / _not_in_pool (true transitions of kept problems), and
 per_round_split (k = 1 accuracy split after each training round); --save_rounds keeps an fp16 model per round in rounds/.
+§117 (notes 117-1): --markov (MK: Markov segments [EOT, carried latent / start text, op] with own-segment forks from step 0)
+or --st_switch (ST: §105 masked-fork KV chunks until final-answer accuracy >= 0.5 on 5k fresh length 5-6 problems at a
+round end, or step 12,000 exactly, then Markov; 12k Markov steps incl. the rest of that round + the 4k final relabel; the
+cosine horizon becomes switch_step + 16k), --kcurr (training chunks cut at k_train 1 / 2 / 4 at 2k / 6k via items_for),
+--reader (§113 reader from step 0). No gold teacher forcing, no rho.
+WHERE TRUE STATES ENTER (Theory / Audit rule: in-run decisions use final answers only):
+  in-run decisions (final answer only): label_round's final filter (true FINAL answer of each chain via true_states(...)[-1]),
+    r0_items / r0_items_cov final-answer targets, items_for / items_from_pool final-only targets (true_final), the ST switch
+    check (final answers of length 5-6 problems); the self-consistency gate, kept_share and insertion use no truth.
+  logging / eval only (never feed a decision): label_round's truth_precision_kept / truth_rate_final_correct /
+    agreement_vs_truth_gap, kept_transitions, the reader_target_precision log, round_end's k1_table split and
+    foothold_yield / acc_by_length, and the final eval (rollout, chunk_check, removal, donor, edit_iia, handoff,
+    rel_ratio_final, k1 keys).
 Checkpoint <out>/ckpt.pt at each round boundary (model, optimiser, RNGs, schedule state); resumed if present.
     python -m boxes.self110 --seed 1 --out boxes/runs_s5/s110_s1
 """
@@ -108,7 +121,63 @@ def kept_transitions(X, pool, starts_true):
 
 class Gen110(Gen103):
     def __init__(self, g):
-        super().__init__(g, "gen"); self.mask = True; self.override = None; self.reader = False; self.parts = None
+        super().__init__(g, "gen"); self.mask = True; self.override = None; self.reader = False; self.parts = None; self.markov = False
+
+    def set_markov(self, on):
+        """§117: Markov segments [EOT, carried latent (or start text), op] with own-segment (full) forks; off = §105's
+        masked-fork KV chunk."""
+        self.markov = on; self.mask = not on
+
+    def chunk(self, start, ops, tgt=None, decode="all", ablate=None, mean_in=None, meter=None, meter_x=None):
+        if not self.markov:
+            return super().chunk(start, ops, tgt, decode, ablate, mean_in, meter, meter_x)
+        B, k = ops.shape; g = self.g; eot = g.embed(torch.full((B, 1), 50256, device=ops.device))
+        ins, losses, decs = [], [], []; prev = g.embed(start)
+        for j in range(k):
+            x = torch.cat([eot, prev, g.embed(self.optok[ops[:, j]])], 1); h, past = g(x, None)
+            if meter:
+                meter.step(x.shape[1], 0, 0)
+            s_in = h[:, -1]
+            if ablate == "shuffle" and j < k - 1:
+                s_in = s_in[self.perm]
+            if ablate in ("zero", "mean") and j < k - 1:
+                s_in = torch.zeros_like(s_in) if ablate == "zero" else mean_in[j][None].expand_as(s_in).to(s_in.dtype)
+            if self.override is not None and self.override[0] == j:
+                s_in = self.override[1].to(s_in.dtype)
+            ins.append(s_in); ctx = past[0][0].shape[2]; hs, past = g(s_in[:, None], past)
+            if meter:
+                meter.step(1, ctx, 0)
+            hslot = hs[:, 0]
+            if tgt is not None:
+                st = self.sttok[tgt[:, j]]; hf, _ = g(g.embed(st[:, :-1]), past)
+                lg = g.logits(torch.cat([hslot[:, None], hf], 1)).float()
+                losses.append(F.cross_entropy(lg.reshape(-1, lg.shape[-1]), st.reshape(-1), reduction="none").view(B, NST).sum(-1).mean())
+            if decode == "all" or (decode == "last" and j == k - 1):
+                decs.append(self.greedy(hslot, past, meter if j == k - 1 else meter_x))
+            prev = s_in[:, None].to(eot.dtype)
+        loss = torch.stack(losses).mean() if losses else None
+        self.parts = (None if loss is None else float(loss.detach()), None)
+        return loss, (torch.stack(decs, 1) if decs else None), torch.stack(ins, 1)
+
+    def markov_masked(self, start, ops, tgt):
+        """§117 training chunk (Markov segments): fork CE (+ the reader) only where tgt >= 0 (-1 = no target)."""
+        B, c = ops.shape; g = self.g; eot1 = g.embed(torch.full((B, 1), 50256, device=ops.device)); prev = g.embed(start)
+        tot = rtot = 0.0; n = 0
+        for j in range(c):
+            x = torch.cat([eot1, prev, g.embed(self.optok[ops[:, j]])], 1); h, past = g(x, None); s_in = h[:, -1]
+            hs, past = g(s_in[:, None], past); hslot = hs[:, 0]; sel = tgt[:, j] >= 0
+            if bool(sel.any()):
+                st = self.sttok[tgt[sel, j]]; hf, _ = g(g.embed(st[:, :-1]), [(k_[sel], v_[sel]) for k_, v_ in past])
+                lg = g.logits(torch.cat([hslot[sel][:, None], hf], 1)).float()
+                tot = tot + F.cross_entropy(lg.reshape(-1, lg.shape[-1]), st.reshape(-1), reduction="none").view(-1, NST).sum(-1).sum(); n += int(sel.sum())
+                if self.reader:
+                    e_ = eot1[sel]; hr, _ = g(torch.cat([e_, s_in[sel][:, None].to(e_.dtype), g.embed(st[:, :-1])], 1), None)
+                    lr_ = g.logits(hr[:, 1:]).float()
+                    rtot = rtot + F.cross_entropy(lr_.reshape(-1, lr_.shape[-1]), st.reshape(-1), reduction="none").view(-1, NST).sum(-1).sum()
+            prev = s_in[:, None].to(eot1.dtype)
+        main = tot / max(1, n); rd = rtot / max(1, n) if self.reader else None
+        self.parts = (float(main.detach()) if torch.is_tensor(main) else main, None if rd is None else (float(rd.detach()) if torch.is_tensor(rd) else rd))
+        return main + rd if self.reader else main
 
     @torch.no_grad()
     def read_greedy(self, s_in):
@@ -121,6 +190,8 @@ class Gen110(Gen103):
 
     def chunk_masked(self, start, ops, tgt):
         """Gen103.chunk_masked with §105's masked fork (the fork sees only the slot's own K/V, true positions)."""
+        if self.markov:
+            return self.markov_masked(start, ops, tgt)
         B, c = ops.shape; g = self.g
         x = torch.cat([g.embed(start), g.embed(self.optok[ops[:, 0]])], 1); past = None; tot = 0.0; rtot = 0.0; n = 0
         for j in range(c):
@@ -240,6 +311,32 @@ def items_from_pool(X, pool):
     return {cl: (np.array(a), np.array(b), np.array(t)) for cl, (a, b, t) in g.items()}
 
 
+def items_for(X, pool, kc, fallback=False):
+    """§117 K-CURR items (note 117-1) from a labelled pool: kept problems are cut into chunks of kc, each from the
+    pseudo-label text at the cut (the start text at 0); discarded problems give the final answer on their last kc-chunk,
+    from the model's own decode at the cut (dropped if that decode does not parse; a label-free validity filter).
+    No true intermediate state enters (targets = the model's own filtered decodes + the true FINAL answer)."""
+    g = {}
+
+    def add(cl, st, op, tg):
+        g.setdefault(cl, ([], [], [])); g[cl][0].append(st); g[cl][1].append(op); g[cl][2].append(tg)
+    for i in range(len(pool["rows"])):
+        r, L = int(pool["rows"][i]), int(pool["lens"][i]); ops = X[r, :L]; d = pool["targets"][i, :L].astype(np.int64); s0 = int(pool["starts"][i])
+        if pool["keep"][i]:
+            for c in range(0, L, kc):
+                add(min(kc, L - c), STTOK[s0] if c == 0 else STTOK[d[c - 1]], ops[c:c + kc], d[c:c + kc])
+        else:
+            c = ((L - 1) // kc) * kc
+            if c > 0 and d[c - 1] < 0:
+                if not fallback:
+                    continue
+                while c > 0 and d[c - 1] < 0:                                # only when nothing else is trainable: the nearest earlier valid cut
+                    c -= kc
+            cl = L - c; tg = np.full(cl, -1); tg[-1] = int(pool["true_final"][i])
+            add(cl, STTOK[s0] if c == 0 else STTOK[d[c - 1]], ops[c:], tg)
+    return {cl: (np.array(a), np.array(b), np.array(t)) for cl, (a, b, t) in g.items()}
+
+
 def label_round(m, X, Y, rows, lens, starts, dev, amp):
     """One seed's pool: rollouts, filters, items and stats (truth for logging only, except the final answer)."""
     m.eval(); decs, okck, fin, before = rollout_var(m, X, rows, lens, starts, dev, amp)
@@ -288,6 +385,10 @@ def main():
     ap.add_argument("--max_insert", type=int, default=2)
     ap.add_argument("--random_start", action="store_true", help="§110b: problems of length >= 3 start from a uniform random given state (as text)")
     ap.add_argument("--cov", type=float, default=None, help="§112: R0 shorts restricted to T_f with target coverage f (note 112-1)")
+    ap.add_argument("--markov", action="store_true", help="§117 MK: Markov segments + own-segment forks from step 0")
+    ap.add_argument("--st_switch", action="store_true", help="§117 ST: masked-fork KV chunks until final-answer acc >= 0.5 on 5k length 5-6 problems (round ends) or step 12000, then Markov for 12k + final relabel")
+    ap.add_argument("--switch_n", type=int, default=5000, help="< 5000: smoke only"); ap.add_argument("--switch_at", type=int, default=12000, help="!= 12000: smoke only")
+    ap.add_argument("--kcurr", action="store_true", help="§117: training chunks cut at k_train = 1 / 2 / 4 (steps <= 2k / <= 6k / later) via items_for")
     ap.add_argument("--opdef", action="store_true", help="§116 OPDEF: T_f = only the 120 (e, a) transitions (g = 0)")
     ap.add_argument("--no_r0", action="store_true", help="§116 NONE: no R0 / no shorts; its updates go to round 1; insertion never below 5")
     ap.add_argument("--foothold_n", type=int, default=5000, help="< 5000: smoke only")
@@ -311,6 +412,8 @@ def main():
     covinfo = {} if Tf is None else {"coverage_target": a.cov, "coverage_tf": float(Tf.mean()), "inner_fraction_g": g_inner}
     os.makedirs(a.out, exist_ok=True); json.dump({**vars(a), **covinfo}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
     m = Gen110(s5.load_gpt2(dev)).to(dev); m.reader = a.reader; opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
+    if a.markov:
+        m.set_markov(True)
     lengths = [int(x) for x in a.lengths.split(",")]; ck = os.path.join(a.out, "ckpt.pt"); lp = os.path.join(a.out, "log.jsonl")
     S = {"step": 0, "short": 0, "rounds": [], "prev": 2, "remaining": a.steps - a.r0_steps - a.final_steps, "todo": list(lengths),
          "ins": 0, "phase": "R0", "sec": 0}
@@ -324,6 +427,8 @@ def main():
         if dev.startswith("cuda"):
             torch.cuda.set_rng_state(c["cuda_rng"].cpu(), dev)
         S = c["S"]; t0 -= S["sec"]
+        if S.get("switched"):
+            m.set_markov(True)
         keep = [r for r in open(lp, encoding="utf-8") if r.strip() and json.loads(r)["step"] <= S["step"]] if os.path.exists(lp) else []
         open(lp, "w", newline="\n").writelines(keep); print("RESUMED", S["step"], S["phase"], flush=True); del c
     log = open(lp, "a", newline="\n")
@@ -334,12 +439,29 @@ def main():
              "torch_rng": torch.get_rng_state(), "cuda_rng": torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else None, "S": S}
         torch.save(c, ck + ".tmp"); os.replace(ck + ".tmp", ck)
 
-    def train_round(items, n_steps, name, short):
-        hist = []; rhist = []
-        for _ in range(n_steps):
-            S["step"] += 1; S["short"] += int(short); step = S["step"]
+    def do_switch(left_in_round):
+        """§117 ST: switch to Markov segments; 12k Markov steps (incl. the rest of the current round) + the final relabel."""
+        m.set_markov(True); S["switched"] = True; S["switch_step"] = S["step"]; S["remaining"] = max(0, 12000 - left_in_round)
+        S["H"] = S["step"] + 12000 + a.final_steps; print("SWITCH at", S["step"], flush=True)
+
+    def kc_now(step):
+        return 1 if step <= 2000 else (2 if step <= 6000 else K)
+
+    def train_round(items, n_steps, name, short, pool=None):
+        hist = []; rhist = []; cache = {}
+        for i_ in range(n_steps):
+            S["step"] += 1; S["short"] += int(short); step = S["step"]; H = S.get("H", a.steps)
+            if a.st_switch and not S.get("switched") and step == a.switch_at:   # note 117-1: forced switch at 12,000 exactly
+                do_switch(n_steps - i_ - 1); H = S["H"]
             for gr in opt.param_groups:
-                gr["lr"] = a.lr * min(1, step / 100) * 0.5 * (1 + math.cos(math.pi * min(step, a.steps) / a.steps))
+                gr["lr"] = a.lr * min(1, step / 100) * 0.5 * (1 + math.cos(math.pi * min(step, H) / H))
+            if a.kcurr and pool is not None:                               # §117 K-CURR items (rebuilt when k_train changes)
+                kc = kc_now(step)
+                if kc not in cache:
+                    cache[kc] = items_for(Xtr, pool, kc) or items_for(Xtr, pool, kc, fallback=True)
+                    if not items_for(Xtr, pool, kc):
+                        S.setdefault("fallback_items", []).append([S["step"], name, kc]); print("fallback items", S["step"], name, kc, flush=True)
+                items = cache[kc]
             st, o_, tg = draw(items, drng, a.bs, dev)
             if short:                                                       # §112 (112-1 addendum): the transitions the drawn shorts label
                 oo = o_.cpu().numpy(); drawn[0, oo[:, 0]] = True
@@ -411,7 +533,20 @@ def main():
         st.update({"length": Lmax, "steps": n_steps}); S["rounds"].append(st); S["ins"] = 0
         print("round", {k: v for k, v in st.items() if k != "op_hist"}, flush=True)
         S["kept_trans"] |= kept_transitions(Xtr, pl, true_states(Xtr, rows, lens, starts))
-        train_round(items, n_steps, f"L{Lmax}", False); S["prev"] = Lmax; round_end(f"L{Lmax}"); save_ck()
+        if a.kcurr:                                                         # §117 (truth, logged only): reader/fork target precision
+            tst_ = true_states(Xtr, rows, lens, starts); kk = np.where(pl["keep"])[0]
+            sl_ok = [int((pl["targets"][i, :lens[i]] == tst_[i]).sum()) for i in kk]; sl_n = sum(int(lens[i]) for i in kk)
+            nd = int((~pl["keep"]).sum()); st["reader_target_precision"] = (sum(sl_ok) + nd) / max(1, sl_n + nd)
+        train_round(items, n_steps, f"L{Lmax}", False, pl); S["prev"] = Lmax; round_end(f"L{Lmax}")
+        if a.st_switch and not S.get("switched"):                          # label-free check: final answers on 5k length 5-6
+            fr = np.random.default_rng(11700 + S["step"]); r5, l5 = make_pool(fr, Xtr, a.switch_n, 5, 6); z5 = np.zeros(a.switch_n, np.int64)
+            m.eval(); _, _, f5, _ = rollout_var(m, Xtr, r5, l5, z5, dev, amp); m.train()
+            acc56 = float(np.mean(f5 == np.array([t[-1] for t in true_states(Xtr, r5, l5, z5)]))); st["switch_check_acc56"] = acc56
+            if acc56 >= 0.5:
+                do_switch(0)
+        save_ck()
+        if not S["todo"] and S["remaining"] > 0:                            # post-switch budget left: more rounds at L_max
+            S["todo"].append(lengths[-1])
     if S["phase"] == "rounds":
         S["phase"] = "final"
     if S["phase"] == "final":
@@ -421,7 +556,7 @@ def main():
         st.update({"length": Lmax, "steps": a.final_steps, "action": "final relabelling"}); S["rounds"].append(st)
         print("final", {k: v for k, v in st.items() if k != "op_hist"}, flush=True)
         S["kept_trans"] |= kept_transitions(Xtr, pool, true_states(Xtr, rows, lens, starts))
-        train_round(items, a.final_steps, "final", False); round_end("final"); S["phase"] = "done"
+        train_round(items, a.final_steps, "final", False, pool); round_end("final"); S["phase"] = "done"
     train_sec = round(time.time() - t0)
     torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
     if os.path.exists(ck):
@@ -429,7 +564,7 @@ def main():
     del opt; m.eval(); t1 = time.time()
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
-    r = {"arm": ("self116_opdef" if a.opdef else "self116_none") if (a.opdef or a.no_r0) else "self113" if a.reader else "self110_student" if a.student_pool else "self112" if a.cov is not None else ("self110b" if a.random_start else "self110"), "start_ge3": "random" if a.random_start else "identity", "seed": a.seed, "k": K, "fork": "mask", "train_sec": train_sec, "eval_dtype": str(amp), "test_sequences": len(Xte),
+    r = {"arm": ("self117_mk" if a.markov else "self117_st") if (a.markov or a.st_switch) else ("self116_opdef" if a.opdef else "self116_none") if (a.opdef or a.no_r0) else "self113" if a.reader else "self110_student" if a.student_pool else "self112" if a.cov is not None else ("self110b" if a.random_start else "self110"), "start_ge3": "random" if a.random_start else "identity", "seed": a.seed, "k": K, "fork": "mask", "train_sec": train_sec, "eval_dtype": str(amp), "test_sequences": len(Xte),
          "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
          "short_fraction": S["short"] / max(1, S["step"]), "updates": S["step"], "rounds": S["rounds"]}
     pred, comp, val = rollout(m, Xte, K, dev, amp, a.eval_bs); cum = s5.cumulative(pred, Yte)
@@ -444,6 +579,12 @@ def main():
     mu = mean_slot_inputs(m, Xtr, Ytr, K, dev, amp)
     r["removal"] = {ab: chunk_check(m, K, dev, amp, a.eval_bs, n=min(10_000, a.check_n), seed=7106, ablate=ab, mean_in=mu) for ab in ("zero", "mean")}
     r["donor"] = donor(m, K, dev, amp, a.eval_bs, n=a.donor_n)
+    if m.markov:                                                            # §117 (eval only): per-hand-off and the shuffled no-read flag
+        from boxes.mk108 import handoff, rel_ratio_final
+        r["per_handoff_acc"] = handoff(m, K, dev, amp, a.eval_bs, n=min(20000, a.check_n)); r["rel_final"] = rel_ratio_final(m, Xtr, Ytr, K, dev, amp)
+        r["no_read_final"] = bool(r["rel_final"]["rel_ratio_final_shuffled"] >= 0.5)
+    r["switch_step"] = S.get("switch_step"); r["markov_at_eval"] = bool(m.markov)
+    r["fallback_items"] = S.get("fallback_items", [])                      # note 117-2: [step, round, k_train] where the fallback was used
     r["edit_iia"] = edit_iia(m, K, dev, amp, a.eval_bs, n=min(5000, a.check_n))
     if m.reader:                                                            # §113: the reader's own decode per slot on fresh chunks
         rng_r = np.random.default_rng(11301); nr = min(20000, a.check_n); S_ = rng_r.integers(0, 120, nr); O_ = rng_r.integers(0, 120, (nr, K)); Cr = []

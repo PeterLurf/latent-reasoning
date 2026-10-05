@@ -159,6 +159,34 @@ def trigger_g97(m, X, Y, dev, amp):
             "false_snap_rate": ev["false_snap"] / h, "miss_rate": ev["miss"] / h, "forced_snap_rate": ev["forced"] / h, "events": ev}
 
 
+def run_markov(m, run, dev, amp, bs=250, test_n=s5.TEST_N, ext_n=500, data_dir=os.path.join(ROOT, "bench", "data", "s5"), k=4, parts="A,B", max_len=0):
+    """§115 (A)/(B) on a loaded mk108-style Markov model (also called in-process by mk108 --s115 for §118); writes
+    <run>/eval_s115.json. No-snap uses only the latent chain: no test-time text path, reader or decode feedback."""
+    t0 = time.time(); m.eval()
+    Xte, Yte = s5.load_csv(os.path.join(data_dir, "S5=512.csv"), limit=test_n); s5.check_labels(Xte, Yte)
+    Xx, Yx = s5.load_csv(os.path.join(data_dir, "S5=2048.csv"), limit=ext_n); s5.check_labels(Xx, Yx)
+    if max_len:
+        Xte, Yte, Xx, Yx = Xte[:, :max_len], Yte[:, :max_len], Xx[:, :max_len], Yx[:, :max_len]
+    out = {"run": run, "k": k, "eval_dtype": str(amp), "test_n": len(Xte), "ext_n": len(Xx), "cap": CAP}
+    if "A" in parts:
+        p5, l5, e5 = nosnap(m, Xte, Yte, dev, amp, bs); ps, ls = snapped(m, Xte, dev, amp, bs, k)
+        px, _, _ = nosnap(m, Xx, Yx, dev, amp, bs // 2)
+        C = p5 == Yte; ho = [(C[:, t] & C[:, t - 1]).sum() / max(1, C[:, t - 1].sum()) for t in range(1, C.shape[1])]
+        nrm = np.linalg.norm(l5, axis=-1); cos = (l5 * ls).sum(-1) / (nrm * np.linalg.norm(ls, axis=-1) + 1e-9)
+        out["nosnap"] = {"cumulative": {**{str(t): float(C[:, :t].all(1).mean()) for t in (128, 256, 512) if t <= C.shape[1]}, "2048": float((px == Yx).all(1).mean())},
+                         "per_handoff_by_position": {str(b): float(np.mean(ho[b:b + 64])) for b in range(0, len(ho), 64)},
+                         "drift": {str(t): {"latent_norm": float(nrm[:, i].mean()), "norm_ratio": float((nrm[:, i] / e5).mean()), "cos_to_snapped": float(cos[:, i].mean())}
+                                   for i, t in enumerate(range(0, Xte.shape[1], 64))}}
+        Cs = ps == Yte; out["fixed_k4"] = {"cumulative": {str(t): float(Cs[:, :t].all(1).mean()) for t in (128, 256, 512) if t <= Cs.shape[1]}, "snaps_per_problem": Xte.shape[1] // k - 1}
+        print("A", json.dumps(out["nosnap"]["cumulative"]), flush=True)
+    if "B" in parts:
+        tr = trigger(m, Xte, Yte, dev, amp, bs); tx = trigger(m, Xx, Yx, dev, amp, bs // 2)
+        tr["cumulative"][str(Xx.shape[1])] = tx["cumulative"][str(Xx.shape[1])]; tr["ext_2048"] = tx; out["trigger"] = tr
+        print("B", json.dumps({k: tr[k] for k in ("cumulative", "snaps_per_problem", "first_error_detection", "false_snap_rate", "miss_rate")}), flush=True)
+    out["sec"] = round(time.time() - t0)
+    json.dump(out, open(os.path.join(run, "eval_s115.json"), "w", newline="\n"), indent=1); print("DONE", run, flush=True)
+
+
 def main_g97(a, dev, amp):
     """§115 (B) on a gen97 run (g105_mask4_s*): n problems at 512 (114-layout approval: n = 500, 512 only)."""
     from boxes.gen97 import Gen97, rollout
@@ -186,29 +214,8 @@ def main():
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     if a.model == "g97":
         main_g97(a, dev, amp); return
-    Xte, Yte = s5.load_csv(os.path.join(a.data_dir, "S5=512.csv"), limit=a.test_n); s5.check_labels(Xte, Yte)
-    Xx, Yx = s5.load_csv(os.path.join(a.data_dir, "S5=2048.csv"), limit=a.ext_n); s5.check_labels(Xx, Yx)
-    if a.max_len:
-        Xte, Yte, Xx, Yx = Xte[:, :a.max_len], Yte[:, :a.max_len], Xx[:, :a.max_len], Yx[:, :a.max_len]
     m = MK108(s5.load_gpt2(dev)).to(dev); m.load_state_dict(torch.load(os.path.join(a.run, "model.pt"), map_location=dev)); m.eval()
-    out = {"run": a.run, "k": a.k, "eval_dtype": str(amp), "test_n": len(Xte), "ext_n": len(Xx), "cap": CAP}
-    if "A" in a.parts:
-        p5, l5, e5 = nosnap(m, Xte, Yte, dev, amp, a.bs); ps, ls = snapped(m, Xte, dev, amp, a.bs, a.k)
-        px, _, _ = nosnap(m, Xx, Yx, dev, amp, a.bs // 2)
-        C = p5 == Yte; ho = [(C[:, t] & C[:, t - 1]).sum() / max(1, C[:, t - 1].sum()) for t in range(1, C.shape[1])]
-        nrm = np.linalg.norm(l5, axis=-1); cos = (l5 * ls).sum(-1) / (nrm * np.linalg.norm(ls, axis=-1) + 1e-9)
-        out["nosnap"] = {"cumulative": {**{str(t): float(C[:, :t].all(1).mean()) for t in (128, 256, 512) if t <= C.shape[1]}, "2048": float((px == Yx).all(1).mean())},
-                         "per_handoff_by_position": {str(b): float(np.mean(ho[b:b + 64])) for b in range(0, len(ho), 64)},
-                         "drift": {str(t): {"latent_norm": float(nrm[:, i].mean()), "norm_ratio": float((nrm[:, i] / e5).mean()), "cos_to_snapped": float(cos[:, i].mean())}
-                                   for i, t in enumerate(range(0, Xte.shape[1], 64))}}
-        Cs = ps == Yte; out["fixed_k4"] = {"cumulative": {str(t): float(Cs[:, :t].all(1).mean()) for t in (128, 256, 512) if t <= Cs.shape[1]}, "snaps_per_problem": Xte.shape[1] // a.k - 1}
-        print("A", json.dumps(out["nosnap"]["cumulative"]), flush=True)
-    if "B" in a.parts:
-        tr = trigger(m, Xte, Yte, dev, amp, a.bs); tx = trigger(m, Xx, Yx, dev, amp, a.bs // 2)
-        tr["cumulative"][str(Xx.shape[1])] = tx["cumulative"][str(Xx.shape[1])]; tr["ext_2048"] = tx; out["trigger"] = tr
-        print("B", json.dumps({k: tr[k] for k in ("cumulative", "snaps_per_problem", "first_error_detection", "false_snap_rate", "miss_rate")}), flush=True)
-    out["sec"] = round(time.time() - t0)
-    json.dump(out, open(os.path.join(a.run, "eval_s115.json"), "w", newline="\n"), indent=1); print("DONE", a.run, flush=True)
+    run_markov(m, a.run, dev, amp, a.bs, a.test_n, a.ext_n, a.data_dir, a.k, a.parts, a.max_len)
 
 
 if __name__ == "__main__":
