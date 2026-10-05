@@ -1,3 +1,3 @@
-# §118 LONG s83 (after h2's proof)
+# §118 LONG s81 RESUME from ckpt step 18000 (OOM at k=32 at P=2 on a2; ckpt/log/args shipped in the upload)
 # P=1
-boxes/runs_s5/s118_long_s83 boxes.mk108 --k 4 --arm read --long --s115 --seed 83
+boxes/runs_s5/s118_long_s81 boxes.mk108 --k 4 --arm read --long --s115 --seed 81
