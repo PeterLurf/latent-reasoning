@@ -3074,6 +3074,20 @@ after §120's pilot reads**; flip-flop σ* after the S5 cells read. Implementati
 the experiments session (fsq120 `--dither σ` / `--no_round`, `--fsq_dither 0.25`, and the ported contraction eval).
 Scorer `theory/score_s123.py`, committed before any run.
 
+**Note 123-1 (2026-10-05 08:02 EDT, before any §123 run; the experiments session's implementation, accepted; not launched until §120's
+pilot reads).**
+* `--no_round` (W_up(z_b), unrounded at train and test), `--dither σ` (training hand-offs after 2k) and
+  `--fsq_dither σ` (before rounding, after 4k), as registered.
+* **ρ / basin** as registered: 500 chains from the training distribution, T0 = 4, δ = ε · std_d · u (std_d over
+  positions of clean carried z_b), ρ at ε = 0.1 as the geometric mean over k = 1..8. In FSQ arms the perturbation goes
+  before rounding.
+* **grid_share:** the share of test z_b within 0.1 of an integer (z_b includes FSQ's −0.5 offset).
+* **Rule for FSQ arms (fixed now).** Rounding can absorb a perturbation exactly (distance 0), which makes the ratio
+  meaningless. So in FSQ arms ρ is reported as:
+  - (a) the **exact-recovery share** (chains with distance 0 at every k = 1..8);
+  - (b) ρ over the chains with nonzero distance at k − 1.
+  - ρ enters CAUSAL only for the continuous cells, where this does not arise.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
