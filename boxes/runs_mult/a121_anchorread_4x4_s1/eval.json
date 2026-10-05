@@ -1,0 +1,450 @@
+{
+ "arm": "anchorread",
+ "task": "4x4",
+ "seed": 1,
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "eval_dtype": "torch.bfloat16",
+ "eligible_from": 6000,
+ "steps_to_threshold": null,
+ "stopped_step": 24000,
+ "curve": [
+  {
+   "step": 1000,
+   "per_slot": [
+    0.691,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "val_acc": 0.0,
+   "gold_share": 0.0,
+   "k_train": 1,
+   "gate": null,
+   "phase": "latent",
+   "eligible": false
+  },
+  {
+   "step": 2000,
+   "per_slot": [
+    0.994,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "val_acc": 0.0,
+   "gold_share": 0.0,
+   "k_train": 1,
+   "gate": null,
+   "phase": "latent",
+   "eligible": false
+  },
+  {
+   "step": 3000,
+   "per_slot": [
+    1.0,
+    0.109,
+    0.0,
+    0.999
+   ],
+   "val_acc": 0.0,
+   "gold_share": 0.0,
+   "k_train": 2,
+   "gate": null,
+   "phase": "latent",
+   "eligible": false
+  },
+  {
+   "step": 4000,
+   "per_slot": [
+    0.999,
+    0.189,
+    0.0,
+    0.999
+   ],
+   "val_acc": 0.0,
+   "gold_share": 0.0,
+   "k_train": 2,
+   "gate": null,
+   "phase": "latent",
+   "eligible": false
+  },
+  {
+   "step": 5000,
+   "per_slot": [
+    1.0,
+    0.33,
+    0.0,
+    0.999
+   ],
+   "val_acc": 0.0,
+   "gold_share": 0.0,
+   "k_train": 2,
+   "gate": null,
+   "phase": "latent",
+   "eligible": false
+  },
+  {
+   "step": 6000,
+   "per_slot": [
+    1.0,
+    0.411,
+    0.0,
+    0.991
+   ],
+   "val_acc": 0.0,
+   "gold_share": 0.0,
+   "k_train": 2,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true
+  },
+  {
+   "step": 7000,
+   "per_slot": [
+    0.999,
+    0.602,
+    0.056,
+    0.998
+   ],
+   "val_acc": 0.001,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true
+  },
+  {
+   "step": 8000,
+   "per_slot": [
+    1.0,
+    0.754,
+    0.081,
+    1.0
+   ],
+   "val_acc": 0.001,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true
+  },
+  {
+   "step": 9000,
+   "per_slot": [
+    1.0,
+    0.868,
+    0.101,
+    0.997
+   ],
+   "val_acc": 0.008,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true
+  },
+  {
+   "step": 10000,
+   "per_slot": [
+    1.0,
+    0.953,
+    0.12,
+    1.0
+   ],
+   "val_acc": 0.009,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true
+  },
+  {
+   "step": 11000,
+   "per_slot": [
+    1.0,
+    0.94,
+    0.122,
+    0.999
+   ],
+   "val_acc": 0.011,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true
+  },
+  {
+   "step": 12000,
+   "per_slot": [
+    1.0,
+    0.976,
+    0.124,
+    0.997
+   ],
+   "val_acc": 0.004,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true
+  },
+  {
+   "step": 13000,
+   "per_slot": [
+    1.0,
+    0.987,
+    0.141,
+    1.0
+   ],
+   "val_acc": 0.014,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true
+  },
+  {
+   "step": 14000,
+   "per_slot": [
+    1.0,
+    0.991,
+    0.144,
+    1.0
+   ],
+   "val_acc": 0.013,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true
+  },
+  {
+   "step": 15000,
+   "per_slot": [
+    1.0,
+    0.996,
+    0.148,
+    1.0
+   ],
+   "val_acc": 0.019,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true
+  },
+  {
+   "step": 16000,
+   "per_slot": [
+    1.0,
+    0.998,
+    0.158,
+    1.0
+   ],
+   "val_acc": 0.02,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true
+  },
+  {
+   "step": 17000,
+   "per_slot": [
+    1.0,
+    0.997,
+    0.168,
+    1.0
+   ],
+   "val_acc": 0.022,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true
+  },
+  {
+   "step": 18000,
+   "per_slot": [
+    1.0,
+    0.997,
+    0.177,
+    1.0
+   ],
+   "val_acc": 0.024,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true
+  },
+  {
+   "step": 19000,
+   "per_slot": [
+    1.0,
+    0.999,
+    0.182,
+    1.0
+   ],
+   "val_acc": 0.027,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true
+  },
+  {
+   "step": 20000,
+   "per_slot": [
+    1.0,
+    1.0,
+    0.195,
+    1.0
+   ],
+   "val_acc": 0.027,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true
+  },
+  {
+   "step": 21000,
+   "per_slot": [
+    1.0,
+    0.999,
+    0.198,
+    1.0
+   ],
+   "val_acc": 0.03,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true
+  },
+  {
+   "step": 22000,
+   "per_slot": [
+    1.0,
+    1.0,
+    0.202,
+    1.0
+   ],
+   "val_acc": 0.031,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true
+  },
+  {
+   "step": 23000,
+   "per_slot": [
+    1.0,
+    1.0,
+    0.208,
+    1.0
+   ],
+   "val_acc": 0.03,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true
+  },
+  {
+   "step": 24000,
+   "per_slot": [
+    1.0,
+    1.0,
+    0.205,
+    1.0
+   ],
+   "val_acc": 0.032,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true
+  }
+ ],
+ "test_acc": 0.031,
+ "per_slot_decode_acc": [
+  1.0,
+  0.999,
+  0.231,
+  1.0
+ ],
+ "removal": {
+  "zero": {
+   "answer_acc": 0.0
+  },
+  "mean": {
+   "answer_acc": 0.0
+  }
+ },
+ "compute": {
+  "tokens_processed": 49,
+  "flops": 9818813952.0,
+  "seq_passes": 27,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "lm_head_rows": 19,
+  "sequential_passes": 27
+ },
+ "training": {
+  "flops": 7.419391229952e+16,
+  "wall_sec": 6461,
+  "train_sec": 6448,
+  "flops_convention": "sum over updates of Meter forward FLOPs per trained problem (config of that update) x 3 x bs; tfslot updates at the latent config; \u00a7121 reader/anchor auxiliary passes not counted"
+ },
+ "std_stats": null,
+ "code": {
+  "accel99.py": "63bad59224a2e30d83e04a563cb64e01",
+  "mult98.py": "877bba3173ad7cf1ee186c08f6679081",
+  "loop114.py": "ac350da3b9aa47e9a945db982c1624d8"
+ },
+ "donor": {
+  "slot1": {
+   "donor_consistent": 0.0245,
+   "recipient_consistent": 0.0015,
+   "unparsed": 0.0,
+   "chance_overlap": 0.011
+  },
+  "slot2": {
+   "donor_consistent": 0.009,
+   "recipient_consistent": 0.0005,
+   "unparsed": 0.0025,
+   "chance_overlap": 0.0005
+  },
+  "slot3": {
+   "donor_consistent": 0.004,
+   "recipient_consistent": 0.0,
+   "unparsed": 0.004,
+   "chance_overlap": 0.0
+  }
+ },
+ "reader_acc": [
+  1.0,
+  0.985,
+  0.162
+ ],
+ "anchor_cos_by_pos": {
+  "1": 0.9803821444511414,
+  "2": 0.9845146536827087,
+  "3": 0.9897492527961731
+ },
+ "anchor_lognorm_gap_by_pos": {
+  "1": 0.026848364621400833,
+  "2": 0.02980348840355873,
+  "3": 0.02668209746479988
+ },
+ "eval_bs": {
+  "requested": 100,
+  "used": [
+   100
+  ]
+ }
+}
