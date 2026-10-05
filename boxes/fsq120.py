@@ -311,8 +311,14 @@ def contraction(m, fam, dev, amp, n=500, T0=4, K=16, seed=12301):
         D = torch.stack(dist).cpu().numpy(); ratio = D[1:] / np.maximum(D[:-1], 1e-6); rho_k = np.median(ratio, axis=1)
         R[str(eps)] = {"rho_k": rho_k.round(4).tolist(), "rho_geo_1_8": float(np.exp(np.log(np.maximum(rho_k[:8], 1e-6)).mean())),
                        "agree_k": [round(v, 4) for v in agree], "dist_med_k": np.median(D, axis=1).round(4).tolist()}
+        # note 123-1 (FSQ arms): chains rounded back exactly (D = 0 at every k = 1..8), and rho over chains with D_{k-1} > 0 only
+        R[str(eps)]["exact_recovery_share"] = float((D[1:9] == 0).all(0).mean())
+        rk_nz = [float(np.median(ratio[k][D[k] > 0])) for k in range(8) if (D[k] > 0).any()]
+        R[str(eps)]["rho_k_nonzero"] = [round(v, 4) for v in rk_nz]
+        R[str(eps)]["rho_nonzero"] = float(np.exp(np.log(np.maximum(rk_nz, 1e-6)).mean())) if rk_nz else None
     basin = max([e_ for e_ in CONTRACT_EPS if R[str(e_)]["agree_k"][7] >= 0.99], default=0.0)
-    return {"rho": R["0.1"]["rho_geo_1_8"], "basin": basin, "detail": {"T0": T0, "K": K, "n": n, "std_d": std_d.cpu().numpy().round(4).tolist(), "eps": R}}
+    return {"rho": R["0.1"]["rho_geo_1_8"], "basin": basin, "exact_recovery_share": R["0.1"]["exact_recovery_share"],
+            "rho_nonzero": R["0.1"]["rho_nonzero"], "detail": {"T0": T0, "K": K, "n": n, "std_d": std_d.cpu().numpy().round(4).tolist(), "eps": R}}
 
 
 GROWTH_POS = (16, 64, 128, 256, 512, 1024, 2048)
@@ -380,6 +386,7 @@ def main():
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     ap.add_argument("--no_round", action="store_true", help="§123: carry z_b continuously (never rounded)")
     ap.add_argument("--contract_n", type=int, default=500, help="§123 rho / basin chains (< 500: smoke only)")
+    ap.add_argument("--micro", type=int, default=1, help="micro-batches (gradient accumulation) for training chains of length >= 32 (OOM guard)")
     ap.add_argument("--dither", type=float, default=0.0, help="§123: U(-s, s) on carried z_b at training hand-offs after 2k (with --no_round)")
     ap.add_argument("--fsq_dither", type=float, default=0.0, help="§123: U(-s, s) on z_b before rounding at training hand-offs after 4k")
     ap.add_argument("--no_cert", action="store_true", help="skip CERT in the main eval (run post-hoc with --cert_only; Audit 2026-10-05)")
@@ -436,9 +443,14 @@ def main():
         tm = None
         if a.arm == "trace":
             tm = torch.ones(a.bs, L, dtype=torch.bool, device=dev) if fam.name == "s5" else torch.tensor(x == RD, device=dev)
-        with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
-            loss, _, _, _ = m.chain(m.start(a.bs, dev, s0 if fam.name == "s5" else None), torch.tensor(x, device=dev), lab, tm)
-        opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(loss.item())
+        nmb = a.micro if L >= 32 else 1; opt.zero_grad(); tot = 0.0           # gradient accumulation at L >= 32 (OOM, 2026-10-05)
+        for mi in range(nmb):
+            sl = slice(mi * a.bs // nmb, (mi + 1) * a.bs // nmb)
+            with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+                loss, _, _, _ = m.chain(m.start(len(x[sl]), dev, s0[sl] if fam.name == "s5" else None), torch.tensor(x[sl], device=dev), lab[sl],
+                                        None if tm is None else tm[sl])
+            (loss / nmb).backward(); tot += loss.item() / nmb
+        torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(tot)
         if step % a.log_every == 0 or step == a.steps:
             rec = {"step": step, "loss": float(np.mean(hist)), "L_max": lmax_at(step / sc), "p_hard": m.p_hard, "noise": m.noise, "sec": round(time.time() - t0)}; hist = []
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
@@ -478,6 +490,7 @@ def main():
         s0m, Xm = None, Xte[:a.margin_n, :128]
     res["grid_share"] = grid[0] / max(1, grid[1])                         # §123 implicit quantisation
     ct = contraction(m, fam, dev, amp, n=a.contract_n); res["rho"] = ct["rho"]; res["basin"] = ct["basin"]; res["contraction"] = ct["detail"]
+    res["exact_recovery_share"] = ct["exact_recovery_share"]; res["rho_nonzero"] = ct["rho_nonzero"]
     if a.no_round:                                                          # continuous: no codes / CERT / margin (§123)
         res["n_codes"] = res["code_perplexity"] = res["codes_per_state"] = res["margin_flip_rate"] = None
         res["cert"] = {"status": "n/a (continuous)", "holds": None}; res["donor"] = donor(m, fam, dev, amp, n=a.donor_n)
