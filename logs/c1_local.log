@@ -428,3 +428,4 @@
 05:41:05 NOTE: the 05:40:51 s120 eval_only line = killed by me (Audit: CERT BFS 2h+ held the queue); rerun --no_cert + post-hoc --cert_only (45 min)
 05:55:07 s120_s5_final_s1 eval_only --no_cert rc 0 (cuda:1)
 05:56:15 NOTE: 05:55 no_cert eval crashed in margin_flip (bf16 embed outside autocast; fixed); cert_only killed; rerun chain
+06:10:54 s120_s5_final_s1 eval_only --no_cert rc 0 (cuda:1, margin fix)
