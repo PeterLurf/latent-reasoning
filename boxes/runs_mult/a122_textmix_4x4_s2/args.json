@@ -1,0 +1,21 @@
+{
+ "arm99": "read",
+ "seed": 2,
+ "steps": 24000,
+ "bs": 64,
+ "lr": 0.0001,
+ "log_every": 1000,
+ "eval_bs": 250,
+ "val_n": null,
+ "test_n": null,
+ "train_limit": 0,
+ "sched_scale": 1.0,
+ "train_dir": "/workspace/Latent/bench/data/mult_train",
+ "final_eval_bs": 100,
+ "donor_n": 2000,
+ "textmix": 0.25,
+ "eval_only": false,
+ "device": "cuda:0",
+ "out": "boxes/runs_mult/a122_textmix_4x4_s2",
+ "eligible_from": 6000
+}

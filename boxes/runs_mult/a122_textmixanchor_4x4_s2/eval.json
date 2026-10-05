@@ -1,0 +1,601 @@
+{
+ "arm": "anchorread_textmix",
+ "textmix": 0.25,
+ "task": "4x4",
+ "seed": 2,
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "eval_dtype": "torch.bfloat16",
+ "eligible_from": 6000,
+ "steps_to_threshold": null,
+ "stopped_step": 24000,
+ "curve": [
+  {
+   "step": 1000,
+   "per_slot": [
+    0.395,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "val_acc": 0.0,
+   "gold_share": 0.0,
+   "k_train": 1,
+   "gate": null,
+   "phase": "latent",
+   "eligible": false,
+   "text_acc": {
+    "2": 0.792,
+    "3": 0.867,
+    "4": 0.912
+   },
+   "t1": 0.867
+  },
+  {
+   "step": 2000,
+   "per_slot": [
+    0.975,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "val_acc": 0.0,
+   "gold_share": 0.0,
+   "k_train": 1,
+   "gate": null,
+   "phase": "latent",
+   "eligible": false,
+   "text_acc": {
+    "2": 0.991,
+    "3": 0.989,
+    "4": 0.993
+   },
+   "t1": 0.989
+  },
+  {
+   "step": 3000,
+   "per_slot": [
+    1.0,
+    0.121,
+    0.0,
+    0.954
+   ],
+   "val_acc": 0.0,
+   "gold_share": 0.0,
+   "k_train": 2,
+   "gate": null,
+   "phase": "latent",
+   "eligible": false,
+   "text_acc": {
+    "2": 0.989,
+    "3": 0.999,
+    "4": 0.999
+   },
+   "t1": 0.999
+  },
+  {
+   "step": 4000,
+   "per_slot": [
+    0.997,
+    0.271,
+    0.0,
+    0.998
+   ],
+   "val_acc": 0.0,
+   "gold_share": 0.0,
+   "k_train": 2,
+   "gate": null,
+   "phase": "latent",
+   "eligible": false,
+   "text_acc": {
+    "2": 0.997,
+    "3": 0.998,
+    "4": 0.995
+   },
+   "t1": 0.998
+  },
+  {
+   "step": 5000,
+   "per_slot": [
+    1.0,
+    0.373,
+    0.0,
+    0.995
+   ],
+   "val_acc": 0.0,
+   "gold_share": 0.0,
+   "k_train": 2,
+   "gate": null,
+   "phase": "latent",
+   "eligible": false,
+   "text_acc": {
+    "2": 0.998,
+    "3": 0.999,
+    "4": 1.0
+   },
+   "t1": 0.999
+  },
+  {
+   "step": 6000,
+   "per_slot": [
+    1.0,
+    0.514,
+    0.0,
+    1.0
+   ],
+   "val_acc": 0.0,
+   "gold_share": 0.0,
+   "k_train": 2,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true,
+   "text_acc": {
+    "2": 0.998,
+    "3": 0.999,
+    "4": 1.0
+   },
+   "t1": 0.999
+  },
+  {
+   "step": 7000,
+   "per_slot": [
+    1.0,
+    0.674,
+    0.036,
+    0.894
+   ],
+   "val_acc": 0.0,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true,
+   "text_acc": {
+    "2": 0.996,
+    "3": 0.996,
+    "4": 0.995
+   },
+   "t1": 0.996
+  },
+  {
+   "step": 8000,
+   "per_slot": [
+    1.0,
+    0.815,
+    0.076,
+    1.0
+   ],
+   "val_acc": 0.002,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true,
+   "text_acc": {
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0
+   },
+   "t1": 1.0
+  },
+  {
+   "step": 9000,
+   "per_slot": [
+    1.0,
+    0.87,
+    0.114,
+    0.999
+   ],
+   "val_acc": 0.008,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true,
+   "text_acc": {
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0
+   },
+   "t1": 1.0
+  },
+  {
+   "step": 10000,
+   "per_slot": [
+    1.0,
+    0.927,
+    0.121,
+    1.0
+   ],
+   "val_acc": 0.01,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true,
+   "text_acc": {
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0
+   },
+   "t1": 1.0
+  },
+  {
+   "step": 11000,
+   "per_slot": [
+    1.0,
+    0.935,
+    0.143,
+    1.0
+   ],
+   "val_acc": 0.014,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true,
+   "text_acc": {
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0
+   },
+   "t1": 1.0
+  },
+  {
+   "step": 12000,
+   "per_slot": [
+    1.0,
+    0.979,
+    0.164,
+    1.0
+   ],
+   "val_acc": 0.019,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true,
+   "text_acc": {
+    "2": 1.0,
+    "3": 0.999,
+    "4": 1.0
+   },
+   "t1": 0.999
+  },
+  {
+   "step": 13000,
+   "per_slot": [
+    1.0,
+    0.99,
+    0.184,
+    1.0
+   ],
+   "val_acc": 0.02,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true,
+   "text_acc": {
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0
+   },
+   "t1": 1.0
+  },
+  {
+   "step": 14000,
+   "per_slot": [
+    1.0,
+    0.993,
+    0.195,
+    1.0
+   ],
+   "val_acc": 0.023,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true,
+   "text_acc": {
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0
+   },
+   "t1": 1.0
+  },
+  {
+   "step": 15000,
+   "per_slot": [
+    1.0,
+    0.997,
+    0.192,
+    1.0
+   ],
+   "val_acc": 0.026,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true,
+   "text_acc": {
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0
+   },
+   "t1": 1.0
+  },
+  {
+   "step": 16000,
+   "per_slot": [
+    1.0,
+    0.996,
+    0.227,
+    1.0
+   ],
+   "val_acc": 0.029,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true,
+   "text_acc": {
+    "2": 0.999,
+    "3": 1.0,
+    "4": 1.0
+   },
+   "t1": 1.0
+  },
+  {
+   "step": 17000,
+   "per_slot": [
+    1.0,
+    0.999,
+    0.254,
+    1.0
+   ],
+   "val_acc": 0.034,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true,
+   "text_acc": {
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0
+   },
+   "t1": 1.0
+  },
+  {
+   "step": 18000,
+   "per_slot": [
+    1.0,
+    1.0,
+    0.257,
+    1.0
+   ],
+   "val_acc": 0.038,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true,
+   "text_acc": {
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0
+   },
+   "t1": 1.0
+  },
+  {
+   "step": 19000,
+   "per_slot": [
+    1.0,
+    1.0,
+    0.295,
+    1.0
+   ],
+   "val_acc": 0.044,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true,
+   "text_acc": {
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0
+   },
+   "t1": 1.0
+  },
+  {
+   "step": 20000,
+   "per_slot": [
+    1.0,
+    1.0,
+    0.304,
+    1.0
+   ],
+   "val_acc": 0.048,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true,
+   "text_acc": {
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0
+   },
+   "t1": 1.0
+  },
+  {
+   "step": 21000,
+   "per_slot": [
+    1.0,
+    1.0,
+    0.344,
+    1.0
+   ],
+   "val_acc": 0.046,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true,
+   "text_acc": {
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0
+   },
+   "t1": 1.0
+  },
+  {
+   "step": 22000,
+   "per_slot": [
+    1.0,
+    1.0,
+    0.361,
+    1.0
+   ],
+   "val_acc": 0.047,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true,
+   "text_acc": {
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0
+   },
+   "t1": 1.0
+  },
+  {
+   "step": 23000,
+   "per_slot": [
+    1.0,
+    1.0,
+    0.347,
+    1.0
+   ],
+   "val_acc": 0.052,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true,
+   "text_acc": {
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0
+   },
+   "t1": 1.0
+  },
+  {
+   "step": 24000,
+   "per_slot": [
+    1.0,
+    1.0,
+    0.362,
+    1.0
+   ],
+   "val_acc": 0.048,
+   "gold_share": 0.0,
+   "k_train": 4,
+   "gate": null,
+   "phase": "latent",
+   "eligible": true,
+   "text_acc": {
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0
+   },
+   "t1": 1.0
+  }
+ ],
+ "test_acc": 0.053,
+ "per_slot_decode_acc": [
+  1.0,
+  1.0,
+  0.408,
+  1.0
+ ],
+ "removal": {
+  "zero": {
+   "answer_acc": 0.0
+  },
+  "mean": {
+   "answer_acc": 0.0
+  }
+ },
+ "compute": {
+  "tokens_processed": 49,
+  "flops": 9818813952.0,
+  "seq_passes": 27,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "lm_head_rows": 19,
+  "sequential_passes": 27
+ },
+ "training": {
+  "flops": 7.419391229952e+16,
+  "wall_sec": 17709,
+  "train_sec": 17692,
+  "flops_convention": "sum over updates of Meter forward FLOPs per trained problem (config of that update) x 3 x bs; tfslot updates at the latent config; \u00a7121 reader/anchor auxiliary passes not counted"
+ },
+ "std_stats": null,
+ "code": {
+  "accel99.py": "77b81f9494761c91341f4654283aa0e3",
+  "mult98.py": "877bba3173ad7cf1ee186c08f6679081",
+  "loop114.py": "ac350da3b9aa47e9a945db982c1624d8"
+ },
+ "donor": {
+  "slot1": {
+   "donor_consistent": 0.0365,
+   "recipient_consistent": 0.005,
+   "unparsed": 0.0,
+   "chance_overlap": 0.011
+  },
+  "slot2": {
+   "donor_consistent": 0.009,
+   "recipient_consistent": 0.0005,
+   "unparsed": 0.0,
+   "chance_overlap": 0.0005
+  },
+  "slot3": {
+   "donor_consistent": 0.0015,
+   "recipient_consistent": 0.0,
+   "unparsed": 0.001,
+   "chance_overlap": 0.0
+  }
+ },
+ "reader_acc": [
+  1.0,
+  0.998,
+  0.179
+ ],
+ "anchor_cos_by_pos": {
+  "1": 0.9905158877372742,
+  "2": 0.9897723197937012,
+  "3": 0.9925927519798279
+ },
+ "anchor_lognorm_gap_by_pos": {
+  "1": 0.015399119816720486,
+  "2": 0.0160920899361372,
+  "3": 0.012924791313707829
+ },
+ "text_acc": {
+  "2": 1.0,
+  "3": 1.0,
+  "4": 1.0
+ },
+ "t1": 1.0,
+ "eval_bs": {
+  "requested": 100,
+  "used": [
+   100
+  ]
+ }
+}
