@@ -93,3 +93,4 @@ advisory notes are in `archive/`.
 | LIT_S121_CARRY_2026-10-05 | §121 | input-prefix carriage new as diagnosis (2510.00184 recomputes partial products; Liang&Pan late fusion); reader alone can be met by carrying (a,b≤j) — force via teacher-forced S_{j−1} text segments + ANCHOR |
 | LIT_S122_TEXTMIX_2026-10-05 | §122 | competent anchor target required: TEXT-MIX = CODI's γ·L_teacher; frozen teacher as fallback; needs a TEXT-MIX-only control; not C4 |
 | LIT_S123_DITHER_2026-10-05 | §123 | dither = Ballé 1611.01704 proxy / universal quantisation 2006.09952; ±0.5 ⇒ implicit quantisation, sweep σ; 8-dim continuous no-noise control; normalise ρ |
+| LIT_S124_COPY_2026-10-05 | §124 | copy foothold; C4-safe exposure control TEXT-EXPOSE (LM loss on start text only); 4/5 vs historical 3/5 not distinguishable — matched rerun or descriptive + timing signature |
