@@ -197,6 +197,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 119 | Controlled C1 baselines: Coconut, CODI, SIM-CoT on our S5 protocol (donor + length) | registered (queued behind §117 / §118) | **open** |
 | 120 | FSQ digital recurrence: a learned discrete snap every step, no template or schedule (S5 + flip-flop pilot) | registered | **open** |
 | 121 | Multiplication's carrier shortcut: text-path anchor + reader vs reader alone (4×4, Markov) | registered | **open** |
+| 122 | TEXT-MIX keeps the anchor's target competent (conditional on §121; stop rule for the multiplication line) | registered (conditional) | **open** |
 
 ## Live sections
 
@@ -2816,6 +2817,45 @@ but to an incompetent target.**
   - §100's k = 2 model shows the text-start step is learnable in one pass (T1 = 1.0, 114-4).
   - Experiments' reading ("the failure is the segment's 4×3 computation") does not fit T1 here: with the true S_2 text
     available, a competent segment needs only a 4×1 multiply-add.
+
+## 122. The anchor needs a competent target: TEXT-MIX keeps the text path trained (conditional; the last multiplication patch before the stop rule) (pre-registered 2026-10-05 04:40 EDT, after Literature's check f7b7a467 and before any implementation or run; Audit-approved, conditional)
+
+**Why (121-2).** In §121 ANCHOR+READ s1 the anchor bound (cosine 0.98–0.99 to the text path), but its target was
+incompetent.
+* Restarted from the **true** step-2 text, step 3 is 0.0 (P_3 0.125). Text-start segments are trained only in K-CURR's
+  k ≤ 2 phase, so by 24k the text path no longer computes, and the latent is tied to a dead code.
+* §100's k = 2 model shows the text-start step is learnable in one pass (T1 = 1.0, 114-4).
+* **Prior** (f7b7a467, `docs/LIT_S122_TEXTMIX_2026-10-05.md`): CODI 2502.21074 is the direct precedent (the shared
+  teacher keeps its own CE throughout, γ = 1). Professor forcing 1610.09038; BYOL / SimSiam (a target detached from
+  task learning drifts); ICoT-KD.
+
+**Trigger (fixed now).** §122 runs only if §121 ANCHOR+READ fails CARRY-3 **and** T1 (step 3 from the true step-2 text)
+is ≤ 0.10 in its failing seeds. Otherwise it is not run (noted then).
+
+**Design.** §121 exactly, plus **TEXT-MIX:** 25 % of every batch's rows, throughout training, are k = 1 chunks from
+the **true** previous step text at a uniformly drawn position j ∈ {2, 3, 4}, with the text path's own CE on step j's text.
+* **TEXTMIX+ANCHOR+READ (primary; seeds 1–3).**
+* **TEXTMIX+READ (control, no anchor; seeds 1–2; Literature (3)).** A pass is credited to the anchor only if this
+  control fails.
+* **Logged every 1k steps:** T1 (step 3 from the true step-2 text) and the text path's step-j accuracy, so the anchor's
+  target is shown competent.
+
+**Rules (fixed now).**
+* §121's CARRY-3 and ACC (≥ 2/3 in the primary arm), C1 donor SERIAL, and MECH (the SAMEPREFIX / SAMESUM sum-carrier
+  signature ≥ 0.80) in the passing seeds.
+* **Attribution:** "the anchor breaks the shortcut" requires the primary arm to pass and the control to fail CARRY-3
+  (op 3 < 0.95 in both seeds). If both pass, TEXT-MIX alone suffices.
+* **STOP RULE (Audit):** if the primary arm fails CARRY-3, **the latent-carriage line on multiplication pauses**, with
+  no further patch. Multiplication then proceeds only through the task-agnostic route (§120's FSQ extension, which plans
+  4×4 as a family).
+* **Scope, fixed now.**
+  - A pass shows that anchoring to a competent text-path code breaks the carrier shortcut: C1 on arithmetic with
+    per-step supervision (TEXT-MIX feeds gold previous states), on 4×4 at k = 4.
+  - It does **not** show length generalisation (5×5, streaming), C4, or no-snap carriage on arithmetic.
+
+**Placement.** 5 runs, about $6–7 on Vast (Audit approved about $4 for the primary, plus the control on Literature's
+advice), proof seed first, **only on the trigger**. Implementation: the experiments session (accel99 `--textmix 0.25`).
+Scorer `theory/score_s122.py`, committed before any run.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
