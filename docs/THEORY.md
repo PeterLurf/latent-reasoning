@@ -197,7 +197,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 119 | Controlled C1 baselines: Coconut, CODI, SIM-CoT on our S5 protocol (donor + length) | registered (queued behind §117 / §118) | **open** |
 | 120 | FSQ digital recurrence: a learned discrete snap every step, no template or schedule (S5 + flip-flop pilot) | pilot not met (S5 1/2 per arm: code collapse / loss basin); **flip-flop 4/4 in both arms, 2 seeds certified (Moore 2)**; extension deferred to §123 | closed (pilot) |
 | 121 | Multiplication's carrier shortcut: text-path anchor + reader vs reader alone (4×4, Markov) | CARRY-3 0/3: the anchor binds to a dead text path (T1 = 0); READ lifts op 3 to 0.64 / 0.93 by recomputation, with no sum carrier; triggers §122 | closed |
-| 122 | TEXT-MIX keeps the anchor's target competent (conditional on §121; stop rule for the multiplication line) | **triggered** (§121 CARRY-3 0/3, T1 = 0) | **open** |
+| 122 | TEXT-MIX keeps the anchor's target competent (conditional on §121; stop rule for the multiplication line) | **STOP RULE fires**: op 3 0.362 / 0.408 (primary), 0.246 / 0.344 (control), with a competent text path; the multiplication latent-carriage line pauses (122-4) | **open** (s3 for the record) |
 | 123 | Attractor strength causal for no-snap? Dither dose-response (σ 0–0.5) + dithered FSQ (canonical codes), §120 harness | registered (after §120's pilot) | **open** |
 | 124 | Does reading a given state fix self-training's lottery? §112 f = 0.1 + copy objective vs exposure control | registered | **open** |
 
@@ -3496,6 +3496,24 @@ no-read-plateau flag, so a basin seed cannot fake contraction.**
   plateaus at about §120's rate, and its CANONICAL is readable only on non-plateau seeds.
 * **Flagged as engineering, not run:** restart-on-plateau at 2k. **Mechanism pointer:** an objective that makes the
   bottleneck read in the first 2k (a reader on z_b) is the task-agnostic fix, not noise after 4k.
+
+**Note 122-4 (2026-10-05 14:13 EDT; decided before s3 lands, from local files, reproduced by Audit). §122's STOP RULE fires: the
+multiplication latent-carriage line pauses.**
+* Primary TEXTMIX+ANCHOR+READ: op 3 is **0.362 (s1), 0.408 (s2)**, test 0.047 / 0.053. CARRY-3 (≥ 2/3 at ≥ 0.95) cannot
+  be met whatever s3 does.
+* Control TEXTMIX+READ: op 3 0.246 / 0.344.
+* These are valid tests: t1 = 1.0 in all four, so the anchor's target is competent. The donor test is "neither" at every
+  slot.
+* **Reading** (121-2 / 121-3 / 122-2 / 122-3):
+  - In every Markov multiplication model, the carried slot-2 code holds the multiplier prefix or an entangled code,
+    never the running sum.
+  - Anchoring to a competent single-step text path binds the shared component (raw cosine 0.99) but only weakly the
+    state (centred 0.74, own-match 24 %). The text path's own latent is never read downstream, so it need not carry the
+    sum.
+* **Per the stop rule there is no further patch.** Multiplication proceeds only through the task-agnostic route
+  (§120's extension and §123), with 4×4 as a family.
+* The lesson stands for any future design: anchor to a text-started chain of at least two hand-offs, and report centred
+  binding. The formal §122 result follows when s3 lands.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
