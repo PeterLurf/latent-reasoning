@@ -3105,6 +3105,15 @@ pilot reads).**
   - (b) ρ over the chains with nonzero distance at k − 1.
   - ρ enters CAUSAL only for the continuous cells, where this does not arise.
 
+**Note 117-5 (2026-10-05 08:32 EDT, before any §117 result; a decision rule fixed in advance, Audit). Whether to run a direct test of
+112-4 (§112's f = 0.1 setting plus 10 % copy rows) depends on §117's acquisition rate.**
+* **Acquisition** = final k = 1 never-labelled accuracy ≥ 0.99 (as §116's MECH).
+* It is counted over §117's first wave: MK s51–53 and ST s61–63, 6 seeds.
+* **≥ 5/6 acquire:** Markov segments (with the reader) solved the lottery, and the copy test is dropped.
+* **≤ 3/6 acquire:** the lottery persists. §112+COPY is registered after a Literature check: 5 seeds, about $6, rule
+  acquisition ≥ 4/5 against §112 f = 0.1's 3/5.
+* **4/6:** decided after §117's extension seeds if an arm extends; otherwise §112+COPY runs.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
