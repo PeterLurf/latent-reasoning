@@ -2150,6 +2150,23 @@ Descriptive, where cheap: C3 (FLOPs vs the written state), C5 (§115's round-tri
 otherwise not run (noted then). Implementation: the experiments session (self110 + mk108's segment construction +
 §113's reader + the ST switch). Scorer `theory/score_s117.py`, committed before any run. Projection to Audit.
 
+**Note 117-1 (2026-10-04 22:25 EDT, before any §117 implementation or run; the experiments session's implementation readings, accepted).**
+* **The reader is on from step 0 in both arms.** In ST before the switch it reads the masked-fork chunk's slot input,
+  as §113.
+* **K-CURR with self-training items.** Training chunks are cut at k_train (1 / 2 / 4 at §108's 2k / 6k); items are
+  rebuilt when k_train changes. Labelling rollouts stay at k = 4.
+  - Kept problems: k_train-chunks, each starting from the pseudo-label text at the cut.
+  - Discarded problems: a final-only target on the last k_train-chunk, which starts from the model's own decode at that
+    position in the labelling rollout. Problems whose decode there does not parse are dropped (a validity filter,
+    label-free).
+* **The ST switch** is checked at each round's end: final-answer accuracy on 5k fresh length-5–6 identity-start problems
+  ≥ 0.5.
+  - **The forced switch is at step 12,000 exactly**, mid-round if needed, as registered.
+  - After the switch: 12k Markov steps plus the 4k final relabel. switch_step is logged.
+* **No ρ-forcing** (the registration allowed it on kept pseudo-labels; it is not used).
+* **Truth audit:** the experiments session lists every function where true intermediate states enter, in the
+  implementation's docstring, for Audit's grep before launch.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
