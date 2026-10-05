@@ -408,3 +408,11 @@
 19:20:21 §111 s6-8 rel backfills (cuda:2, fp32)
 20:50:00 s112_f010_s21 rc 0 (cuda:1)
 20:50:00 WORKER_DONE cuda:1 scratch/c1_q_112_local.txt
+20:50:27 cuda:1: §110 STUDENT s2, s4 (scratch/c1_q_student_local.txt)
+21:56:44 s115 s108_mk4_s1 rc 0 (cuda:0)
+22:13:47 s115 s111_mk4_read_s6 rc 0 (cuda:2, fp32)
+23:54:52 s110_student_s2 rc 0 (cuda:1)
+01:07:57 s115 s108_mk4_s3 rc 0 (cuda:0)
+01:22:43 s115 s111_mk4_read_s7 rc 0 (cuda:2, fp32)
+03:39:09 s110_student_s4 rc 0 (cuda:1)
+03:39:09 WORKER_DONE cuda:1 scratch/c1_q_student_local.txt
