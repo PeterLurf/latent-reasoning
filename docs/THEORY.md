@@ -188,7 +188,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 110b | Self-training v2 corrected: identity-start shorts plus random textual starts for length ≥ 3 | stopped after a clear null: loss at chance from random starts (110b-2) | closed |
 | 111 | Reliability of the Markov hand-off: 2× budget vs DAgger-style own-state training; best-of-n | **READ meets REL (5/5 serial at 512, 4/5 at 2,048)**; 2× 0/5, DAG 1/5: the lottery is the no-read basin | closed |
 | 112 | Short-coverage dose-response for self-training (f = 0.5 / 0.25 / 0.1; never-labelled k = 1 accuracy) | **FOOTHOLD at every dose; smallest f = 0.1** (2/5, certified); acquisition 2–3/5 at every dose (start-reading basin, 112-4); C1 0/6 | closed |
-| 113 | Auxiliary reader inside self-training (conditional on §111-READ) | registered (conditional) | **open** |
+| 113 | Auxiliary reader inside self-training (conditional on §111-READ) | not REL: SELF2 2/5, C1 0/5 (slot-1 bypass persists); acquisition 2/5, as 113-1 predicted | closed |
 | 114 | Looped depth per op (LOOP-R vs LOOP-1 vs §107 PAUSE) for multiplication's hand-off | registered | **open** |
 | 115 | No-snap Markov chains, and a round-trip snap trigger (eval only) | registered | **open** |
 | 116 | Strict C4: final-answer training through self-decoded restarts (OPDEF: op definitions only; NONE: no shorts) | registered (conditional on §112 f = 0.1) | **open** |
@@ -1981,6 +1981,30 @@ seeds fail to read the **start text** (restarts at chance while identity-start c
 * **Predicted:** §113's acquisition rate stays near §110's (about 3/5 acquire). SELF2 is therefore unlikely at ≥ 4/5.
 * Any C1 gain (fewer slot-1 bypasses) would come in the seeds that acquire.
 * If §113 acquires in ≥ 4/5 anyway, 112-4's start-text account is incomplete, and that is reported as such.
+
+**§113 result (2026-10-05 04:48 EDT; 5 runs by the experiments session; scored by Theory alone with `theory/score_s110.py` (s113),
+committed before any run). REL is not met: SELF2 2/5, C1 0/5. The 113-1 prediction holds.**
+
+| seed | 512 / 2,048 | donor / recipient (slots 1 / 2 / 3) | reader accuracy (slots 1–4) |
+|---|---|---|---|
+| s11 | **0.998 / 0.994** | 0.105 / 0.172; **0.992**; **0.990** | 1.0 throughout |
+| s12 | 0 / 0 | chance | 0.72 / 0.12 / 0.05 / 0.03 |
+| s13 | **0.9945** / 0.976 | 0.011 / **1.0** (slot-1 bypass); 0.011; **1.0** | about 1.0 |
+| s14 | 0 / 0 | chance | about 0.08 |
+| s15 | 0 / 0 | chance | about 0.1 |
+
+* **Acquisition is 2/5, against §110's 3/5.** As predicted before any result (113-1), a reader of the slot latent does
+  not open 112-4's start-text no-read basin. The three failing seeds never learn to read a start state (k = 1
+  never-labelled 0.73 / 0.15 / 0.16).
+* **C1 is not met in the acquirers.** s11's slots 2–3 are SERIAL, but slot 1 is neither (0.105 / 0.172). s13 bypasses
+  slot 1 (recipient 1.0).
+  - Under the masked fork, slot 1 can still recompute from the visible chunk start: the reader makes the latent readable,
+    not used (Literature's caution, §113).
+* `reader_target_precision` is logged in the round stats, not in eval.json; it is not used here.
+* **Reading ("not REL").** The reader does not repair self-training's lottery or its slot-1 bypass. The two failure
+  causes are separately addressed:
+  - §116 NONE+COPY (start reading);
+  - §117 (Markov segments, which remove the slot-1 route).
 
 ## 114. Looped depth per op: serial depth, not positions, for multiplication's latent hand-off (pre-registered 2026-10-04 15:54 EDT, after Literature's check c70d55e3 and before any implementation or run; the user's directive "register now", via Audit)
 
