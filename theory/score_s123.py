@@ -6,7 +6,8 @@ of the median normalised distance ratio at eps 0.1), basin, grid_share (implicit
 eval_growth.json (codes per state by position, '2048') and eval_cert.json (cert {status, holds}).
 CAUSAL: (i) S5 mean rho falls from sigma 0 to 0.5, and flip-flop rho at sigma* < its sigma-0 control; (ii) every continuous cell with rho < 0.3 has long_acc >= 0.99;
 (iii) every continuous cell with rho > 0.6 has long_acc < 0.99. Continuous-stabiliser reading needs passing cells'
-grid_share < 0.5. CANONICAL: codes per state at 2048 < 34.2 in both seeds of a family AND CERT done & holds in >= 1 seed.
+grid_share < 0.5. CANONICAL: codes per state at 2048 below §120 FINAL's per family (S5 34.2; FF 14.0, note 123-2) in both
+seeds AND CERT done & holds in >= 1 seed (FF: the task-language CERT, 120-8; the registered CERT printed beside).
     python theory/score_s123.py
 """
 import json
@@ -53,12 +54,17 @@ def main():
             if r is None:
                 continue
             g = load(d, "eval_growth.json") or {}; c = load(d, "eval_cert.json") or {}
-            cert = c.get("cert", c)
+            reg = c.get("cert", c); task = c.get("cert_task")
+            cert = task if (fam == "ff" and task is not None) else reg                 # note 120-8 / 123-2: FF uses the task-language CERT
             cps = ((g.get("codes_per_state") or {}).get("2048")) if isinstance(g.get("codes_per_state"), dict) else g.get("codes_per_state_2048")
+            if cps is None:
+                cps = g.get("codes_per_state_2048")
             seeds[s] = {"long_acc": r.get("long_acc"), "codes_per_state_2048": cps,
-                        "cert_holds": cert.get("status") == "done" and bool(cert.get("holds"))}
-        canon[fam] = {"seeds": seeds,
-                      "CANONICAL": len(seeds) == 2 and all((v["codes_per_state_2048"] or 1e9) < 34.2 for v in seeds.values()) and any(v["cert_holds"] for v in seeds.values())}
+                        "cert_holds": cert.get("status") == "done" and bool(cert.get("holds")),
+                        "cert_registered_holds": reg.get("status") == "done" and bool(reg.get("holds"))}
+        base = {"s5": 34.2, "ff": 14.0}[fam]                                           # note 123-2: §120 FINAL's codes per state, per family
+        canon[fam] = {"seeds": seeds, "codes_per_state_baseline": base,
+                      "CANONICAL": len(seeds) == 2 and all((v["codes_per_state_2048"] or 1e9) < base for v in seeds.values()) and any(v["cert_holds"] for v in seeds.values())}
     res["fsqdither"] = canon
     print("continuous cells:", {k: (v["rho"], v["long_acc"], v["grid_share"]) for k, v in res["continuous"].items()})
     print("CAUSAL", res["CAUSAL"], res["CAUSAL_parts"], "| continuous-stabiliser reading", res["continuous_stabiliser_reading"])
