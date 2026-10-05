@@ -3855,6 +3855,20 @@ Audit / claude-13). ρ_ff, the floor-free fp32 ρ. This is the last metric amend
   same-host controls; otherwise it is descriptive.
 * The training GPU is logged and reported.
 
+**Note 126-4 (2026-10-05 17:45 EDT; the decisive seed-2 readout as reported from the host, RTX 3090; the formal score follows from the
+fetched files). Without the bottleneck, seed 2 does not plateau: the 8-d bottleneck causes the basin at that seed.**
+
+| step | RAW-H s2 (3090) | §120 FINAL s2 (3090 Ti) | §125 STD s2 (3090) |
+|---|---|---|---|
+| 1k | **3.423** | 4.98 | 4.984 |
+| 2k | **1.648** | (4.98 at 1.5k) | 5.000 |
+
+* RAW-H s2 descends faster than any bottlenecked seed (§120 FINAL s1 was 4.76 at 1.5k). By 123-3's flag it is not a
+  plateau.
+* **The STOP RULE does not fire.** Stage 2 (ANNEAL) is triggered for seed 2 and deploys on a 3090.
+  - RAW-H s1 / s3 / s4 (b20) complete BOTTLENECK-CAUSE's count clause.
+  - Long accuracy, final loss and donor are reported beside the flag when b19 lands.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
