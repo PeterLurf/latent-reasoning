@@ -1,0 +1,26 @@
+{
+ "arms": {
+  "ANCHOR+READ": {
+   "n": 0,
+   "op3": {},
+   "test_acc": {},
+   "CARRY3_seeds": [],
+   "ACC_seeds": [],
+   "CARRY3": false,
+   "ACC": false,
+   "C1_serial": {},
+   "MECH": {}
+  },
+  "READ": {
+   "n": 0,
+   "op3": {},
+   "test_acc": {},
+   "CARRY3_seeds": [],
+   "ACC_seeds": [],
+   "CARRY3": null,
+   "ACC": null,
+   "C1_serial": {},
+   "MECH": {}
+  }
+ }
+}
