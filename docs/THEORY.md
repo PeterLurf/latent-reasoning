@@ -2383,6 +2383,12 @@ panel is scored; rules unchanged). NONE+COPY fails upstream of the mechanism it 
   - 112-4's mechanism can only be tested where in-chunk composition is learned, i.e. with a short foothold (§112's
     setting plus copy rows).
   - §117-COPY's trigger (MECH passes) will then not fire, and a direct test of 112-4 would need its own registration.
+* **Addendum (2026-10-05 08:34 EDT; Theory's CPU check on the trained models): the copy objective itself was not learned.**
+  - On 300 random states, the zero-op copy decode gives accuracy **0.0** in s41 (copy CE 5.58, above the 4.79 null) and in
+    s45 (CE 27.1, no valid decode).
+  - So NONE+COPY never delivered its intervention: neither the copy rows nor the main task trained.
+  - A copy-only unit test (the experiments session) will tell an implementation fault from interference by the stuck main
+    loss. Either way the arm is uninformative about 112-4.
 
 ## 117. One model for C1 + C4 + C6: final-answer training through self-decoded restarts under Markov segments, with the auxiliary reader (pre-registered 2026-10-04 22:24 EDT, after Literature's check f9ce7210 / 3b9c8d61 and before any implementation or run; launched only if §111 MK-4-READ meets REL)
 
