@@ -24,6 +24,14 @@ delta(decode(c), x) for every reachable pair incl. the start; n_moore = Moore-mi
 z_b), coverage_drawn (note 120-1: share of (state, item) transitions labelled by the length-1 / length-2 training
 problems drawn: (s, x1), and (delta(s, x1), x2)).
     python -m boxes.fsq120 --family s5 --arm final --seed 1 --out boxes/runs_fsq/s120_s5_final_s1
+THEORY §123 (same harness): --no_round carries z_b continuously (W_up(z_b), never rounded, test too); --dither s adds
+U(-s, s) per coordinate to z_b at every TRAINING hand-off after 2k (test clean); --fsq_dither s keeps §120's rounding and
+adds U(-s, s) to z_b before rounding at every training hand-off after 4k. Eval adds (all runs): rho / basin (contraction
+diag ported: n chains of length T0 + K = 4 + 16 from training-distribution starts; at T0 z_b += eps * std_d * u, std_d =
+per-coordinate std of clean carried z_b, u Gaussian per chain; rho = geometric mean over k = 1..8 of the median distance
+ratio ||z'_k - z_k|| / ||z'_{k-1} - z_{k-1}|| at eps 0.1; basin = the largest eps in {0.03, 0.1, 0.3, 1.0} with decode
+agreement >= 0.99 at k = 8), grid_share (share of test-time z_b coordinates within 0.1 of an integer grid point; z_b
+already carries the -0.5 offset). Continuous runs skip the code statistics, CERT and margin_flip.
 """
 import os
 os.environ["BOXES_NB"] = "5"
@@ -95,11 +103,16 @@ class FSQ120(nn.Module):
         self.g = g; self.fam = fam; self.ln = nn.LayerNorm(768); self.down = nn.Linear(768, D_Q); self.up = nn.Linear(D_Q, 768)
         self.register_buffer("itok", torch.tensor(fam.item_tok))
         self.p_hard = 1.0                                                   # training schedule sets it; test = 1
+        self.no_round = False; self.noise = 0.0                             # §123: continuous carry; training dither (set per step)
 
     def quant(self, h, noise=None):
         z = self.down(self.ln(h.float())); zb = torch.tanh(z + SHIFT) * HALF - OFF
+        if self.training and self.noise > 0:                                # §123 dither (continuous) / pre-rounding dither (FSQ)
+            zb = zb + (torch.rand_like(zb) * 2 - 1) * self.noise
         if noise is not None:
             zb = zb + noise
+        if self.no_round:                                                   # §123: carried continuously, never rounded
+            return zb, zb, zb
         q = torch.round(zb); hard = self.training is False or (torch.rand(()) < self.p_hard).item()
         qs = zb + (q - zb).detach() if hard else zb
         return qs, q, zb
@@ -171,18 +184,20 @@ def make_batch(fam, rng, bs, L):
 
 
 @torch.no_grad()
-def run_test(m, fam, s0, X, dev, amp, bs, every=True):
+def run_test(m, fam, s0, X, dev, amp, bs, every=True, grid=None):
     """Hard chains; decode at every position (every=True) or at reads only (flip-flop). Returns decoded states (N, L) and
     the codes (N, L, 8) int8."""
-    N, L = X.shape; pred = np.full((N, L), -1); codes = np.zeros((N, L, D_Q), np.int8); ntok = NST if fam.name == "s5" else 1
+    N, L = X.shape; pred = np.full((N, L), -1); codes = np.zeros((N, L, D_Q), np.float32 if m.no_round else np.int8); ntok = NST if fam.name == "s5" else 1
     for i in range(0, N, bs):
         sl = slice(i, i + bs); B = len(X[sl]); prev = m.start(B, dev, s0[sl] if fam.name == "s5" else None)
         for t in range(L):
             with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
-                h = m.segment(prev, torch.tensor(X[sl, t], device=dev)); qs, q, _ = m.quant(h); e = m.embed_code(qs)
+                h = m.segment(prev, torch.tensor(X[sl, t], device=dev)); qs, q, zb = m.quant(h); e = m.embed_code(qs)
                 if every or (X[sl, t] == RD).any():
                     pred[sl, t] = fam.decode(m.answer_greedy(e, ntok).cpu().numpy())
-            codes[sl, t] = q.float().cpu().numpy().astype(np.int8); prev = e[:, None]
+            codes[sl, t] = q.float().cpu().numpy(); prev = e[:, None]
+            if grid is not None:                                            # §123 grid_share
+                zf = zb.float(); grid[0] += int(((zf - torch.round(zf)).abs() <= 0.1).sum()); grid[1] += zf.numel()
     return pred, codes
 
 
@@ -266,6 +281,40 @@ def certificate(m, fam, dev, amp, cap, bs=2048, time_limit=None):
             "layers": layers, "n_start_pairs": int(len(S))}
 
 
+CONTRACT_EPS = (0.03, 0.1, 0.3, 1.0)
+
+
+@torch.no_grad()
+def contraction(m, fam, dev, amp, n=500, T0=4, K=16, seed=12301):
+    """§123 rho / basin (theory/contraction_diag.py ported): perturb carried z_b at T0 by eps * std_d * u, run K hand-offs."""
+    rng = np.random.default_rng(seed); s0, x, _ = make_batch(fam, rng, n, T0 + K); X = torch.tensor(x, device=dev)
+    ntok = NST if fam.name == "s5" else 1; ac = lambda: torch.autocast("cuda", dtype=amp, enabled=amp is not None)  # noqa: E731
+    def step(prev, t, add=None):
+        with ac():
+            h = m.segment(prev, X[:, t]); qs, q, zb = m.quant(h, noise=add); e = m.embed_code(qs)
+        return zb.float(), e
+    def dec(e):
+        with ac():
+            return fam.decode(m.answer_greedy(e, ntok).cpu().numpy())
+    prev = m.start(n, dev, s0 if fam.name == "s5" else None); zs = []
+    for t in range(T0 - 1):
+        z, e = step(prev, t); zs.append(z); prev = e[:, None]
+    pre_T0 = prev; zT0, eT0 = step(prev, T0 - 1); zs.append(zT0); clean = [zT0]; cdec = []; c = eT0[:, None]
+    for k in range(K):
+        z, e = step(c, T0 + k); zs.append(z); clean.append(z); cdec.append(dec(e)); c = e[:, None]
+    std_d = torch.cat(zs).std(0)                                            # per-coordinate std of clean carried z_b
+    U = torch.tensor(rng.standard_normal((n, D_Q)), dtype=torch.float32, device=dev); R = {}
+    for eps in CONTRACT_EPS:
+        delta = eps * std_d * U; zp, ep = step(pre_T0, T0 - 1, add=delta); dist = [(zp - zT0).norm(dim=-1)]; agree = []; c = ep[:, None]
+        for k in range(K):
+            z, e = step(c, T0 + k); dist.append((z - clean[k + 1]).norm(dim=-1)); agree.append(float((dec(e) == cdec[k]).mean())); c = e[:, None]
+        D = torch.stack(dist).cpu().numpy(); ratio = D[1:] / np.maximum(D[:-1], 1e-6); rho_k = np.median(ratio, axis=1)
+        R[str(eps)] = {"rho_k": rho_k.round(4).tolist(), "rho_geo_1_8": float(np.exp(np.log(np.maximum(rho_k[:8], 1e-6)).mean())),
+                       "agree_k": [round(v, 4) for v in agree], "dist_med_k": np.median(D, axis=1).round(4).tolist()}
+    basin = max([e_ for e_ in CONTRACT_EPS if R[str(e_)]["agree_k"][7] >= 0.99], default=0.0)
+    return {"rho": R["0.1"]["rho_geo_1_8"], "basin": basin, "detail": {"T0": T0, "K": K, "n": n, "std_d": std_d.cpu().numpy().round(4).tolist(), "eps": R}}
+
+
 GROWTH_POS = (16, 64, 128, 256, 512, 1024, 2048)
 
 
@@ -329,6 +378,10 @@ def main():
     ap.add_argument("--donor_n", type=int, default=2000); ap.add_argument("--margin_n", type=int, default=500); ap.add_argument("--sched_scale", type=float, default=1.0, help="smoke only")
     ap.add_argument("--log_every", type=int, default=100); ap.add_argument("--data_dir", default=os.path.join(ROOT, "bench", "data", "s5"))
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
+    ap.add_argument("--no_round", action="store_true", help="§123: carry z_b continuously (never rounded)")
+    ap.add_argument("--contract_n", type=int, default=500, help="§123 rho / basin chains (< 500: smoke only)")
+    ap.add_argument("--dither", type=float, default=0.0, help="§123: U(-s, s) on carried z_b at training hand-offs after 2k (with --no_round)")
+    ap.add_argument("--fsq_dither", type=float, default=0.0, help="§123: U(-s, s) on z_b before rounding at training hand-offs after 4k")
     ap.add_argument("--no_cert", action="store_true", help="skip CERT in the main eval (run post-hoc with --cert_only; Audit 2026-10-05)")
     ap.add_argument("--growth_only", action="store_true", help="distinct codes vs position on ext_n 2,048-step rollouts -> <out>/eval_growth.json")
     ap.add_argument("--cert_only", action="store_true", help="CERT alone from <out>/model.pt -> <out>/eval_cert.json")
@@ -337,8 +390,10 @@ def main():
     a = ap.parse_args(); dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); sc = a.sched_scale
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     fam = Family(a.family); os.makedirs(a.out, exist_ok=True)
+    assert not (a.dither and not a.no_round) and not (a.fsq_dither and a.no_round), "§123: --dither needs --no_round; --fsq_dither is FSQ"
+    mk = lambda: (lambda m_: (setattr(m_, "no_round", a.no_round), m_)[1])(FSQ120(s5.load_gpt2(dev), fam).to(dev))  # noqa: E731
     if a.growth_only:                                                       # Theory / Audit: distinct codes vs length on 2,048-step rollouts
-        m = FSQ120(s5.load_gpt2(dev), fam).to(dev); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval()
+        m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval()
         if fam.name == "s5":
             Xx, Yx = s5.load_csv(os.path.join(a.data_dir, "S5=2048.csv"), limit=a.ext_n); s5.check_labels(Xx, Yx)
             px, cx = run_test(m, fam, np.zeros(len(Xx), np.int64), Xx, dev, amp, a.eval_bs); acc = float((px == Yx).all(1).mean())
@@ -347,14 +402,16 @@ def main():
             for t in range(Xx.shape[1]):
                 s_ = fam.delta(s_, Xx[:, t]); Yx[:, t] = s_
             px, cx = run_test(m, fam, None, Xx, dev, amp, a.eval_bs, every=False); r_ = Xx == RD; acc = float(((px == Yx) & r_).sum() / r_.sum())
-        g_ = {"n": len(Xx), "len": int(Xx.shape[1]), "acc": acc, "code_growth": code_growth(cx, Yx), "eval_dtype": str(amp)}
+        cg = code_growth(cx, Yx)
+        g_ = {"n": len(Xx), "len": int(Xx.shape[1]), "acc": acc, "code_growth": cg, "eval_dtype": str(amp),
+              "codes_per_state": {k: v.get("per_state_mean") for k, v in cg.items()}, "codes_per_state_2048": (cg.get("2048") or {}).get("per_state_mean")}
         json.dump(g_, open(os.path.join(a.out, "eval_growth.json"), "w", newline="\n"), indent=1); print("GROWTH", json.dumps(g_), flush=True); return
     if a.cert_only:                                                         # post-hoc CERT (scoring as registered; only its scheduling moved)
-        m = FSQ120(s5.load_gpt2(dev), fam).to(dev); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval()
+        m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval()
         c = certificate(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time); c.update({"eval_dtype": str(amp), "cert_cap": a.cert_cap})
         json.dump(c, open(os.path.join(a.out, "eval_cert.json"), "w", newline="\n"), indent=1); print("CERT", json.dumps(c), flush=True); return
     json.dump(vars(a), open(os.path.join(a.out, "args_eval.json" if a.eval_only else "args.json"), "w", newline="\n"), indent=1)
-    m = FSQ120(s5.load_gpt2(dev), fam).to(dev); drawn = np.zeros((fam.n_states, fam.n_items), bool)
+    m = mk(); drawn = np.zeros((fam.n_states, fam.n_items), bool)
     if a.eval_only:                                                         # replay the training draws (rng only) for coverage_drawn
         for step in range(1, a.steps + 1):
             L = int(rng.integers(1, lmax_at(step / sc) + 1)); s0, x, lab = make_batch(fam, rng, a.bs, L)
@@ -370,6 +427,7 @@ def main():
         for gr in opt.param_groups:
             gr["lr"] = a.lr * min(1, step / 100) * 0.5 * (1 + math.cos(math.pi * step / a.steps))
         m.p_hard = 0.0 if step <= 2000 * sc else min(1.0, (step - 2000 * sc) / (2000 * sc)); m.train()
+        m.noise = (a.dither if step > 2000 * sc else 0.0) if a.no_round else (a.fsq_dither if step > 4000 * sc else 0.0)
         L = int(rng.integers(1, lmax_at(step / sc) + 1)); s0, x, lab = make_batch(fam, rng, a.bs, L)
         if L <= 2:                                                          # note 120-1: transitions labelled by short problems
             drawn[s0, x[:, 0]] = True
@@ -382,32 +440,33 @@ def main():
             loss, _, _, _ = m.chain(m.start(a.bs, dev, s0 if fam.name == "s5" else None), torch.tensor(x, device=dev), lab, tm)
         opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(loss.item())
         if step % a.log_every == 0 or step == a.steps:
-            rec = {"step": step, "loss": float(np.mean(hist)), "L_max": lmax_at(step / sc), "p_hard": m.p_hard, "sec": round(time.time() - t0)}; hist = []
+            rec = {"step": step, "loss": float(np.mean(hist)), "L_max": lmax_at(step / sc), "p_hard": m.p_hard, "noise": m.noise, "sec": round(time.time() - t0)}; hist = []
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
     if not a.eval_only:
         train_sec = round(time.time() - t0); torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
-    del opt; m.eval(); t1 = time.time()
+    del opt; m.eval(); m.noise = 0.0; t1 = time.time()
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
-    res = {"family": a.family, "arm": a.arm, "seed": a.seed, "train_sec": train_sec, "eval_only": a.eval_only, "eval_dtype": str(amp), "coverage_drawn": float(drawn.mean()),
+    res = {"family": a.family, "arm": a.arm, "seed": a.seed, "train_sec": train_sec, "eval_only": a.eval_only, "no_round": a.no_round, "dither": a.dither, "fsq_dither": a.fsq_dither, "eval_dtype": str(amp), "coverage_drawn": float(drawn.mean()),
            "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"}
     if fam.name == "s5":
         Xte, Yte = s5.load_csv(os.path.join(a.data_dir, "S5=512.csv"), limit=a.test_n); s5.check_labels(Xte, Yte); Xte, Yte = Xte[:, :a.test_len], Yte[:, :a.test_len]
-        pred, codes = run_test(m, fam, np.zeros(len(Xte), np.int64), Xte, dev, amp, a.eval_bs); C = pred == Yte
+        grid = [0, 0]; pred, codes = run_test(m, fam, np.zeros(len(Xte), np.int64), Xte, dev, amp, a.eval_bs, grid=grid); C = pred == Yte
         res["long_acc"] = float(C.all(1).mean()); res["acc_by_length"] = {str(t): float(C[:, :t].all(1).mean()) for t in (16, 32, 64, 128, 256, 512) if t <= C.shape[1]}
         lab = Yte
         if a.ext_n:
             el = 2048 if a.test_len >= 512 else a.test_len
             Xx, Yx = s5.load_csv(os.path.join(a.data_dir, "S5=2048.csv"), limit=a.ext_n); s5.check_labels(Xx, Yx); Xx, Yx = Xx[:, :el], Yx[:, :el]
             px, cx = run_test(m, fam, np.zeros(len(Xx), np.int64), Xx, dev, amp, a.eval_bs); res["ext_2048"] = {"n": len(Xx), "len": Xx.shape[1], "cumulative": float((px == Yx).all(1).mean())}
-            res["code_growth_ext"] = code_growth(cx, Yx)
+            if not a.no_round:
+                res["code_growth_ext"] = code_growth(cx, Yx)
         s0m, Xm = np.zeros(a.margin_n, np.int64), Xte[:a.margin_n, :128]
     else:
         trng = np.random.default_rng(12000); Xte = ff_sequences(trng, a.test_n, a.test_len)
         lab = np.zeros_like(Xte); s = np.zeros(len(Xte), np.int64)
         for t in range(Xte.shape[1]):
             s = fam.delta(s, Xte[:, t]); lab[:, t] = s
-        pred, codes = run_test(m, fam, None, Xte, dev, amp, a.eval_bs, every=False); rd = Xte == RD; ok = (pred == lab) & rd
+        grid = [0, 0]; pred, codes = run_test(m, fam, None, Xte, dev, amp, a.eval_bs, every=False, grid=grid); rd = Xte == RD; ok = (pred == lab) & rd
         res["long_acc"] = float(ok.sum() / rd.sum()); res["long_acc_seq"] = float(((pred == lab) | ~rd).all(1).mean())
         res["acc_by_length"] = {str(t): float(ok[:, :t].sum() / max(1, rd[:, :t].sum())) for t in (16, 32, 64, 128, 256, 512) if t <= Xte.shape[1]}
         for p_ig in (0.98, 0.1):
@@ -417,14 +476,21 @@ def main():
             pd_, _ = run_test(m, fam, None, Xd, dev, amp, a.eval_bs, every=False); r_ = Xd == RD
             res[f"long_acc_pignore_{p_ig}"] = float(((pd_ == ld) & r_).sum() / r_.sum())
         s0m, Xm = None, Xte[:a.margin_n, :128]
-    flat = codes.reshape(-1, D_Q); keys, cnt = np.unique(flat, axis=0, return_counts=True); p = cnt / cnt.sum()
-    res["n_codes"] = int(len(keys)); res["code_perplexity"] = float(np.exp(-(p * np.log(p)).sum()))
-    st = lab.reshape(-1); per = {}
-    for c, s_ in zip(map(bytes, flat), st):
-        per.setdefault(int(s_), set()).add(c)
-    res["codes_per_state"] = float(np.mean([len(v) for v in per.values()]))
-    res["cert"] = {"status": "deferred", "holds": None} if a.no_cert else certificate(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time); res["donor"] = donor(m, fam, dev, amp, n=a.donor_n)
-    res["margin_flip_rate"] = margin_flip(m, fam, s0m, Xm, dev, amp); res["eval_sec"] = round(time.time() - t1)
+    res["grid_share"] = grid[0] / max(1, grid[1])                         # §123 implicit quantisation
+    ct = contraction(m, fam, dev, amp, n=a.contract_n); res["rho"] = ct["rho"]; res["basin"] = ct["basin"]; res["contraction"] = ct["detail"]
+    if a.no_round:                                                          # continuous: no codes / CERT / margin (§123)
+        res["n_codes"] = res["code_perplexity"] = res["codes_per_state"] = res["margin_flip_rate"] = None
+        res["cert"] = {"status": "n/a (continuous)", "holds": None}; res["donor"] = donor(m, fam, dev, amp, n=a.donor_n)
+    else:
+        flat = codes.reshape(-1, D_Q); keys, cnt = np.unique(flat, axis=0, return_counts=True); p = cnt / cnt.sum()
+        res["n_codes"] = int(len(keys)); res["code_perplexity"] = float(np.exp(-(p * np.log(p)).sum()))
+        st = lab.reshape(-1); per = {}
+        for c, s_ in zip(map(bytes, flat), st):
+            per.setdefault(int(s_), set()).add(c)
+        res["codes_per_state"] = float(np.mean([len(v) for v in per.values()]))
+        res["cert"] = {"status": "deferred", "holds": None} if a.no_cert else certificate(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time); res["donor"] = donor(m, fam, dev, amp, n=a.donor_n)
+        res["margin_flip_rate"] = margin_flip(m, fam, s0m, Xm, dev, amp)
+    res["eval_sec"] = round(time.time() - t1)
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     print("EVAL", json.dumps({k: res[k] for k in ("long_acc", "n_codes", "cert")}), flush=True); print("DONE", a.out, flush=True)
 
