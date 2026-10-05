@@ -454,7 +454,8 @@ def main():
     if a.opdef:                                                             # §116 OPDEF: only (e, a); length-2 shorts only with an identity first op
         Tf = np.zeros((120, 120), bool); Tf[0, :] = True; g_inner = 0.0; a.cov = 120 / 14400
     covinfo = {} if Tf is None else {"coverage_target": a.cov, "coverage_tf": float(Tf.mean()), "inner_fraction_g": g_inner}
-    os.makedirs(a.out, exist_ok=True); json.dump({**vars(a), **covinfo}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
+    os.makedirs(a.out, exist_ok=True); json.dump({**vars(a), **covinfo, "train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"},
+                                                 open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)   # train_gpu: notes 123-8 / 125-3
     m = Gen110(s5.load_gpt2(dev)).to(dev); m.reader = a.reader; opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
     if a.markov:
         m.set_markov(True)
@@ -637,7 +638,7 @@ def main():
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
     r = {"arm": ("self117_mk" if a.markov else "self117_st") if (a.markov or a.st_switch) else ("self116_opdef" if a.opdef else ("self116_nonecopy" if a.copy_frac else "self116_none")) if (a.opdef or a.no_r0) else "self113" if a.reader else "self110_student" if a.student_pool else "self112" if a.cov is not None else ("self110b" if a.random_start else "self110"), "start_ge3": "random" if a.random_start else "identity", "seed": a.seed, "k": K, "fork": "mask", "train_sec": train_sec, "eval_dtype": str(amp), "test_sequences": len(Xte),
-         "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
+         "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_gpu": json.load(open(os.path.join(a.out, "args.json"))).get("train_gpu"),
          "short_fraction": S["short"] / max(1, S["step"]), "updates": S["step"], "rounds": S["rounds"]}
     pred, comp, val = rollout(m, Xte, K, dev, amp, a.eval_bs); cum = s5.cumulative(pred, Yte)
     np.save(os.path.join(a.out, "preds_test.npy"), pred)

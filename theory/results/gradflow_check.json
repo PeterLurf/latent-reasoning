@@ -22,7 +22,17 @@
  "fsq120.ff.no_round.dither_grad": 162.2938232421875,
  "fsq120.ff.no_round.dither_loss_delta": 0.08837604522705078,
  "fsq120.ff.no_round.down_grad": 64.42829895019531,
+ "fsq120.s5.std.main": 503.3026123046875,
+ "fsq120.s5.std.up_grad": 10.620287895202637,
+ "fsq120.s5.std.down_grad": 106.62628936767578,
+ "fsq120.s5.std.stats_seen": 1.0,
+ "fsq120.ff.std.main": 239.91065979003906,
+ "fsq120.ff.std.up_grad": 11.240992546081543,
+ "fsq120.ff.std.down_grad": 87.91461944580078,
+ "fsq120.ff.std.stats_seen": 1.0,
  "self110.copy": 1146.5679931640625,
+ "self110.expose": 436.6533203125,
+ "self110.resume_main": 0.0009304643608629704,
  "_status": "PASS",
  "_zero_terms": []
 }

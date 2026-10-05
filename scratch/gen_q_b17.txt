@@ -1,0 +1,4 @@
+# §123 S5 sigma=0.5 RERUN on RTX 3090 (notes 123-8/125-3; b9 4090 cells are descriptive). 3090-class host ONLY.
+# P=2
+boxes/runs_fsq/s123_s5_dither050_s1_3090 boxes.fsq120 --family s5 --arm final --no_round --dither 0.5 --seed 1 --micro 2
+boxes/runs_fsq/s123_s5_dither050_s2_3090 boxes.fsq120 --family s5 --arm final --no_round --dither 0.5 --seed 2 --micro 2
