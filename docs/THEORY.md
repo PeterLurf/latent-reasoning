@@ -2431,6 +2431,19 @@ panel is scored; rules unchanged). NONE+COPY fails upstream of the mechanism it 
 * OPDEF (operator definitions, 0.83 %) is still running and is scored at panel end. It is now the arm that says whether
   any foothold below §112's 10 % works.
 
+**Note 116-7 (2026-10-05 19:32 EDT; descriptive, OPDEF s33 / s34 / s35 of 5; FOOTHOLD-OPDEF is scored at panel end). With only the
+operators' definitions as foothold, one seed learns S5's entire transition table.**
+* **OPDEF s33** (local 4060): k = 1 never-labelled **1.0**, **certified on all 14,400** k = 1 transitions.
+  - Only the 120 operator-definition problems (each op applied to the identity) were labelled: coverage 0.83 %.
+  - Cumulative 0.9985 / 0.9925 / **0.987** at 128 / 256 / 512: just under FOOTHOLD's 0.99 bar. 112-5's
+    post-acquisition-budget effect is a likely cause (descriptive).
+* s34 and s35: never acquired (k = 1 never-labelled 0.04).
+* **Reading (one seed, descriptive).** Final-answer training through self-decoded restarts can recover the whole S5 table
+  from the operators' own definitions alone, with no transition composition labelled. That is "C4 qualified by operator
+  definitions", in one seed.
+  - Strict C4 (no definitions, NONE) failed in 4/4 at chance (116-6). The definitions are the minimum foothold seen.
+* The remaining seeds (NONE s41, OPDEF s31 / s32) run on the local 2070 ($0).
+
 ## 117. One model for C1 + C4 + C6: final-answer training through self-decoded restarts under Markov segments, with the auxiliary reader (pre-registered 2026-10-04 22:24 EDT, after Literature's check f9ce7210 / 3b9c8d61 and before any implementation or run; launched only if §111 MK-4-READ meets REL)
 
 **Why.** Three results point at one design.
