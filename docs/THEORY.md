@@ -2666,8 +2666,10 @@ rate is final.**
 * **Reading.** No-snap success is graded with attractor strength. ρ ≈ 0.25–0.28 with basin 0.5 passes (s8, s10); ρ 0.38
   with basin 0.3 drifts mildly (s9); ρ ≥ 0.66 drifts (s6, s7, §108).
   - The boundary lies between ρ 0.28 and 0.38. Within READ this is correlational; §123 tests it causally.
-  - §118 ANCHOR (3/3 so far) supplies the attractor through the text-path anchor. Its seeds' ρ is not yet measured; a
-    contraction run on s71–75 is a cheap check.
+  - **§118 ANCHOR s71–73 (2026-10-05 10:14 EDT):** ρ = 0.191 / 0.188 / 0.194 at ε 0.1, the strongest attractors measured, with basins
+    0.2 / 0.1 / 0.1, all no-snap exact.
+  - So **ρ, not basin, tracks no-snap success** across both READ and ANCHOR: every model with ρ ≤ 0.28 passes, every
+    model with ρ ≥ 0.38 fails. The anchor works by making the hand-off strongly contractive.
 
 ## 119. Controlled baselines for C1: published latent-CoT methods on our S5 protocol, scored with the donor and length protocols (pre-registered 2026-10-04 23:14 EDT, after Literature's checks 2bf76954 (project audit, missing comparison 2) and 1a473f82, and before any implementation or run; Audit's guards)
 
@@ -3201,6 +3203,20 @@ composition from final answers.**
 * That is Literature's predicted risk (b0bca3c4 / f9ce7210 (b)): without the in-pass parallel shortcut that seeded the
   checkpoints in §112, the composition is not learned from outcomes. It is the ST arm's reason to exist.
 * For 117-5's rule: 0/2 acquired so far (MK s51 and ST s61–63 pending).
+
+**Note 120-7 (2026-10-05 10:14 EDT; amendment after data, disclosed). Flip-flop CERT was ill-posed as registered.**
+* 120-2's CERT for flip-flop runs BFS from the empty start over all 5 items, including ignore and read before any
+  write. The true state there is "no write yet", which has no answer text (the decoder emits a bit). The task never
+  produces those prefixes, since every sequence starts with a write.
+* So a perfect model fails the registered CERT by construction. FF TRACE s2 shows it: 47 reachable codes, 18 violations,
+  all codes decode validly as bits.
+* **Corrected definition (applied to every flip-flop cell; both reported):** CERT over the task's input language. The
+  BFS starts from the empty start with **write items only** (w0, w1) as the first item, then all 5 items.
+  - It holds iff every reachable code decodes validly and the transition law holds on every reachable pair.
+  - S5's CERT is unchanged (every S5 prefix is valid).
+* **FF TRACE s2, descriptive:** long_acc 1.0 (p_ignore 0.8, 0.98 and 0.1 all 1.0), donor 1.0 at positions 2 / 4 / 6. Its
+  code machine **closes**: 7 codes on test (3.5 per state), saturated from position 16 to 2,048; registered-CERT BFS
+  closes at depth 8 with 47 codes (Moore 20). The corrected CERT is to follow.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
