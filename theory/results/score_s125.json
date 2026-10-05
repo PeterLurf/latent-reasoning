@@ -1,5 +1,29 @@
 {
- "STD_S5": {},
+ "STD_S5": {
+  "2": {
+   "long_acc": 0.0,
+   "plateau": true,
+   "serial": false,
+   "carried_norm": {
+    "init": {
+     "row_norm": 3.9363059997558594,
+     "per_coord_std_across_inputs": 0.011861885897815228,
+     "std_vector_norm": 0.34483766555786133,
+     "wte_row_norm": 3.958536148071289,
+     "n": 1024
+    },
+    "2k": {
+     "row_norm": 35.214385986328125,
+     "per_coord_std_across_inputs": 0.1835678517818451,
+     "std_vector_norm": 6.019409656524658,
+     "wte_row_norm": 3.9555482864379883,
+     "n": 1024
+    }
+   },
+   "codes_per_state": 1.0,
+   "final_loss": 4.79914354801178
+  }
+ },
  "CONTROL_S5": {
   "1": {
    "long_acc": 1.0,
@@ -19,11 +43,11 @@
   }
  },
  "FF_STD": {},
- "PLATEAU_FIX": "incomplete (0 / 4)",
+ "PLATEAU_FIX": "incomplete (1 / 4)",
  "ACC": "incomplete",
  "FF_GUARD": "incomplete",
  "plateau_counts": {
-  "STD": 0,
+  "STD": 1,
   "CONTROL": 1,
   "CONTROL_n": 2
  }

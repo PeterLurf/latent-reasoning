@@ -212,7 +212,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 122 | TEXT-MIX keeps the anchor's target competent (conditional on §121; stop rule for the multiplication line) | CARRY-3 0/3 (op 3 0.32–0.41) with a competent text path (t1 1.0); **STOP RULE fired**: the multiplication latent-carriage line pauses | closed |
 | 123 | Attractor strength causal for no-snap? Dither dose-response (σ 0–0.5) + dithered FSQ (canonical codes), §120 harness | registered (after §120's pilot) | **open** |
 | 124 | Does reading a given state fix self-training's lottery? §112 f = 0.1 + copy objective vs exposure control | registered | **open** |
-| 125 | Readable bottleneck from step 0: standardised carried code vs the soft-phase no-read basin (task-agnostic, §120 harness) | registered | **open** |
+| 125 | Readable bottleneck from step 0: standardised carried code vs the soft-phase no-read basin (task-agnostic, §120 harness) | PLATEAU-FIX not met: STD s2 plateaued throughout (carried norm matched at init, 35 by 2k); other runs held | closed |
 | 126 | Is the bottleneck the cause of the soft-phase basin? RAW-H vs ANNEAL (stop rule → restart-on-plateau) | registered | **open** |
 
 ## Live sections
@@ -3672,6 +3672,19 @@ bottleneck alone is exact: snapping was not what made §120 work.**
     open on S5).
   - CAUSAL waits for every dose cell and its fp32 ρ (123-5).
 
+**§125 result (2026-10-05 18:09 EDT; the proof seed only, by design: the remaining runs were held once PLATEAU-FIX was decided (125-4),
+with Audit's agreement, disclosed). PLATEAU-FIX is not met: standardising the carried code does not rescue the basin
+seed.**
+* **STD S5 s2** (RTX 3090, the within-seed twin of §120 FINAL s2): plateaued throughout. Final loss 4.80, long accuracy 0,
+  1 code.
+* **carried_norm:** row norm 3.94 at init (wte 3.96: matched, as designed), but **35.2 at 2k** (per-coordinate std 0.012
+  → 0.184).
+  - Under the EMA, a few coordinates with tiny variance are amplified by the division, so the standardised code does
+    not stay at embedding scale once training moves the encoder.
+* STD S5 s1 / s3 / s4, the control s3–4 and FF STD were **not run**: ACC and the FF guard are untested.
+* **Reading.** Matching the injected code's initial statistics to the LM's embeddings does not prevent the soft-phase
+  basin. §126 shows the bottleneck itself is the cause (RAW-H s2 escapes; 126-4, provisional).
+
 **Note 125-1 (2026-10-05 15:51 EDT, before any §125 run; the experiments session's implementation d93e105b, accepted).**
 * `--std` sits inside `embed_code`, so every path where a code enters GPT-2 uses e′: segments, the answer decoder, the
   flip-flop empty start, eval, CERT, donor and contraction.
@@ -3872,6 +3885,14 @@ fetched files). Without the bottleneck, seed 2 does not plateau: the 8-d bottlen
   0.48, so no plateau). It then bumps to 3.06 at 2.5k and 2.57 at 3k, the L_max step-up at 2k that §120 cells also show.
   - The escape at 2k is established. Whether seed 2 finishes exact is open until b19's long accuracy and final loss land.
     "The bottleneck causes the basin" is provisional until then.
+
+**Note 126-5 (2026-10-05 18:09 EDT; descriptive). ANNEAL s2 also escapes before 2k, but is not bit-identical to RAW-H there.**
+* ANNEAL s2 (RTX 3090, driver 560): loss 2.546 at 1k and 1.351 at 2k, against RAW-H s2's 3.423 / 1.648 (RTX 3090, driver
+  550).
+* **Cause (the experiments session):** at λ = 0, ANNEAL's carrier is cast to W_up's bf16 output dtype under autocast,
+  while RAW-H carries std(h) in fp32. The driver difference may add to it.
+* Both seed-2 runs escape, so the seed-2 plateau readout (126-4) holds in either form. No rerun.
+* ANNEAL's own question, whether the bottleneck holds at λ = 1, is read from its final accuracy.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
