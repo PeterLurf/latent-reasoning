@@ -3229,6 +3229,17 @@ composition from final answers.**
   - Scope: TRACE ("task-agnostic architecture, per-task supervision"), one seed. The pilot reading needs FINAL in both
     families.
 
+**Note 120-8 (2026-10-05 10:15 EDT; Audit). The headline wording keeps the registered verdicts, and the corrected definitions are
+pre-registered from now on.**
+* **FF TRACE s2 headline, fixed:**
+  - "registered CERT: fails (unreachable read/ignore-before-write prefixes); task-language CERT: holds (7 codes, Moore 2)";
+  - "SERIAL (registered): fails on chance overlap; corrected (recipient − chance overlap): holds".
+* **Pre-registered from this note on** (before the remaining §120 flip-flop cells — FF FINAL s1, FF FINAL s2's CERT, FF
+  TRACE s1 — and every §123 flip-flop cell land):
+  - flip-flop CERT is the task-language CERT (first item a write), with the registered CERT reported beside it;
+  - SERIAL everywhere is donor ≥ 0.90 and recipient − chance_overlap < 0.10. Both verdicts are still printed for
+    flip-flop.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
