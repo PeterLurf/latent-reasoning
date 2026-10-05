@@ -184,7 +184,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 106 | C2 on a real task: bounded streaming multiplication (latent vs the written format) | written format + cut extrapolates 1.000 to b = 32 (WC-S-k2 3/3); masked latent arm fails even at k = 2 (106-4) | closed |
 | 107 | Multiplication's blocker: carrier width (m latents) vs compute (pause), carriage forced | neither: CARRY-3 0/3 in LAT-2, LAT-4 and PAUSE-4; the carrier holds the multiplier prefix (114-4) | closed |
 | 108 | Forced latent carriage on S5 (Markov segments, sink fix, TF bootstrap; donor-scored) | ACC not met (MK-4 2/5, MK-8 0/5); serial in all 5 learning seeds; MK-4 s1 1.0 at 512, 0.996 at 2,048 (unqualified serial C1, one seed); failures: no-read basin or precision | closed |
-| 110 | Self-training v2: independent seeds, label-free gate, masked fork (C4 + C1) | SELF2 2/5, C1 1/5 (s3: C4 + C1 + C2 in one seed, certified k = 1); STUDENT triggered | **open** (STUDENT) |
+| 110 | Self-training v2: independent seeds, label-free gate, masked fork (C4 + C1) | SELF2 2/5, C1 1/5 (s3: C4 + C1 + C2, certified k = 1); STUDENT 3/5 (s1's student drops the slot-1 bypass) | closed |
 | 110b | Self-training v2 corrected: identity-start shorts plus random textual starts for length ≥ 3 | stopped after a clear null: loss at chance from random starts (110b-2) | closed |
 | 111 | Reliability of the Markov hand-off: 2× budget vs DAgger-style own-state training; best-of-n | **READ meets REL (5/5 serial at 512, 4/5 at 2,048)**; 2× 0/5, DAG 1/5: the lottery is the no-read basin | closed |
 | 112 | Short-coverage dose-response for self-training (f = 0.5 / 0.25 / 0.1; never-labelled k = 1 accuracy) | f = 0.1 s21: certified, never-labelled 1.0, 0.996 at 512; C1 joint only (112-2) | **open** |
@@ -2890,3 +2890,21 @@ are not met. The STUDENT trigger fires.**
     is 0.0077. The latents are necessary but do not transplant across problems: the state is encoded jointly with
     row-specific context (multiple mediators, as §104 / §97).
   - s5's STUDENT may show whether that encoding is an artefact of the training path.
+
+
+**§110 STUDENT result (2026-10-05 03:45 EDT; 5 students by the experiments session; scored by Theory alone with
+`theory/score_s110.py`, committed before any run). SELF2 is not met (3/5); C1 is 2/5; C6 at 2,048 is 1/5.**
+
+| student (teacher) | 512 / 2,048 | donor / recipient (slots 1 / 2 / 3) | against the teacher |
+|---|---|---|---|
+| s1 (slot-1 bypass) | 0.999 / 0.982 | **1.0 / 0.011**; 1.0; 0.999 | **bypass gone: SERIAL** |
+| s2 (never acquired) | 0 / 0 | chance | near-empty pool: never acquires |
+| s3 (C4 + C1) | **1.0 / 1.0** | 1.0; 1.0; 0.999 | reproduced, exact to 2,048 |
+| s4 (never acquired) | 0 / 0 | chance | near-empty pool: never acquires |
+| s5 (partial bypass) | 0.9955 / 0.988 | 0.055 / **0.475**; 0.948; 0.995 | slot-1 bypass persists |
+
+* **Reading.** The STUDENT pass reading ("the labels were good; the teacher's own training had locked in errors") does
+  not apply: 3/5, needing ≥ 4/5. The two empty-pool seeds carry 112-4's start-reading basin into their students.
+* Descriptive: retraining from s1's labels removes the teacher's slot-1 bypass (the student is SERIAL at every slot). The
+  bypass came from the training path, not the labels. s5's does not go away.
+* **§110 is closed.** §113 (the reader inside self-training) and §116 / §117 carry the line forward.
