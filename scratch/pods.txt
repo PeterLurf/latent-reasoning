@@ -762,3 +762,4 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 54349938 vast offer 53860915 created 2026-10-05 12:52: label gen-b9, queue scratch/gen_q_b9.txt (logged at create by vdeploy_toy.sh)
 54317792 vast | gen_a3 PRICE EXCEPTION (logged 2026-10-05 13:06): RTX 4090 $0.436/h since 08:54 - §118 LONG s81 resume at k=32 needs a 24 GB card alone; no clean 3090 offer then
 54349938 vast | gen_b9 PRICE EXCEPTION (logged 2026-10-05 13:06): RTX 4090 $0.382/h - §123 S5 sigma=0.5 dose end; no clean 3090 offer after the b9 DATA_SHA_MISMATCH host; Audit fallback (a) OK
+54318073 vast | gen_a5 DESTROYED_VERIFIED 2026-10-05 14:07 after verified per-run fetch (boxes/runs_s5/s118_anchor_s75 boxes/runs_s5/s118_anchor_s74)
