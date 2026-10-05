@@ -2488,6 +2488,15 @@ experiments session. Scorer `theory/score_s119.py`, committed before any run. Pr
 experiments session (a new module with both families, the FSQ snap and the CERT enumerator). Scorer
 `theory/score_s120.py`, committed before any run. Projection to Audit.
 
+**Note 120-1 (2026-10-05 00:39 EDT, before any §120 run; Audit).** FINAL's curriculum draws lengths 1..L_max, so length-1 and length-2
+problems make up about 50 % of early updates and about 1/L_max later. On S5 they start from **random** arrangements, so
+their final answers label the transition table directly, at far more than §110's ≤ 5 %.
+* **C4 is not claimed for §120.** A FINAL pass reads "final-answer supervision with a short-problem curriculum (C4
+  qualified: length-1–2 problems label transitions)".
+* The directive concerns snaps, not C4, so the design is unchanged.
+* **Logged:** coverage_drawn, the share of the 14,400 S5 transitions (s, a) labelled by length-1 and length-2 training
+  problems, as §112. For flip-flop, the same share over its (state, instruction) pairs.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
