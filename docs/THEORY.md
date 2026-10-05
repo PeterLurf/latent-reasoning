@@ -2179,6 +2179,30 @@ Projection to Audit.
   that reads foothold_yield after §116 is scored.
 * The implementation names every function where true intermediate states enter. Audit greps it before any run.
 
+**Note 116-2 (2026-10-05 01:34 EDT, before any §116 implementation run or launch; a pre-registered amendment, Audit-approved about $6,
+after Literature's check 15cf541a). New arm NONE+COPY: reading footholds against the start-text no-read basin (112-4).**
+* **Arm NONE+COPY (seeds 41–45, the same seed numbers as NONE; dirs `s116_nonecopy_s4x`).** NONE's design exactly,
+  except that **10 % of the rows of every batch**, from step 0 through the final relabel, are **length-0 copy problems**.
+  - The input is a random start state (uniform over the 120) as text. The chunk has **zero ops and no marker token**
+    (Literature (2)): the start text's last hidden state is fed as a slot, exactly as at an op position, and §105's
+    masked fork decodes it.
+  - The target is the start state's own text. No op is applied, so **no transition and no intermediate is ever
+    labelled**. The budget is unchanged: the copy rows replace ordinary rows.
+* **Logged (truth-scored, never used in any decision):**
+  - the **stay rate** on real ops (k = 1 restarts whose output equals the input state), against 1/120;
+  - accuracy on the L ≥ 5 share of each round's pool;
+  - k = 1 restart accuracy per round.
+* **Prediction (fixed now):** COPY lifts the L ≥ 5 pool accuracy off 0 and makes k = 1 restarts acquire in ≥ 4/5
+  seeds, while NONE stays near chance in most seeds.
+* **Rules (fixed now).**
+  - **STRICT-C4-COPY:** ≥ 2/5 with cumulative ≥ 0.99 at 512 (NONE's criterion).
+  - **MECH (the mechanism test):** NONE+COPY acquires (final k1_never_labelled_acc ≥ 0.99) in **≥ 4/5 seeds and in more
+    seeds than NONE**.
+* **Claim wording (fixed; Literature (1)).** A NONE+COPY pass is "C4: final answers plus a self-supervised copy objective
+  (no intermediate or transition labels)". "Strict C4" stays for NONE alone; both are reported side by side.
+* 116-1's truth-use rule is unchanged: copy problems use only the input. The launch condition (§112 FOOTHOLD-0.1) is
+  unchanged. Scorer `theory/score_s116.py`, extended now.
+
 ## 117. One model for C1 + C4 + C6: final-answer training through self-decoded restarts under Markov segments, with the auxiliary reader (pre-registered 2026-10-04 22:24 EDT, after Literature's check f9ce7210 / 3b9c8d61 and before any implementation or run; launched only if §111 MK-4-READ meets REL)
 
 **Why.** Three results point at one design.
