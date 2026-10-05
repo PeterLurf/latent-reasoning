@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-05 04:55 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-05 04:50 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -20,7 +20,7 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 Messages go through SendMessage. The names "Theory" and "Audit" currently need an identity confirm, pending the user,
 so send to the pipe addresses their messages come from.
 
-## Running now (04:55 2026-10-05, night mode: user asleep, "make progress throughout the night"; credit $104 at 03:50, floor $30; <= 16 hosts)
+## Running now (04:50 2026-10-05, night mode: user asleep, "make progress throughout the night"; credit $104 at 03:50, floor $30; <= 16 hosts)
 
 **Order (user, via Audit):** C1 > C6 > C4 = C2 > C3 > C5 > C7. Night launch order: §117 -> §113/§118 -> §120 -> §116 -> §119 (credit check).
 
