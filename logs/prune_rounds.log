@@ -6,3 +6,5 @@
 00:17:49 local rounds/ deleted for s112_f050_s22, s112_f050_s25 (Audit 00:11 (c): one archived set kept, s112_f010_s21)
 00:18:09 local rounds/ deleted for s112_f025_s22, s112_f050_s24 (Audit 00:11 (c))
 00:25:29 retention sweep: deleted 251 stale transfer tarballs (> 1 h old) in /tmp (C:), 34.4952 GB
+01:13:37 gen-d6 PRUNED boxes/runs_s5/s112_f010_s22 max_gate 0.9995581708272248 never_labelled 1.0 cum512 0.9645
+01:51:35 gen-d6 PRUNED boxes/runs_s5/s112_f010_s25 max_gate 0.009717987804878049 never_labelled 0.39266975308641977 cum512 0.0
