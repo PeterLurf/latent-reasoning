@@ -197,7 +197,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 119 | Controlled C1 baselines: Coconut, CODI, SIM-CoT on our S5 protocol (donor + length) | registered (queued behind §117 / §118) | **open** |
 | 120 | FSQ digital recurrence: a learned discrete snap every step, no template or schedule (S5 + flip-flop pilot) | pilot not met (S5 1/2 per arm: code collapse / loss basin); **flip-flop 4/4 in both arms, 2 seeds certified (Moore 2)**; extension deferred to §123 | closed (pilot) |
 | 121 | Multiplication's carrier shortcut: text-path anchor + reader vs reader alone (4×4, Markov) | CARRY-3 0/3: the anchor binds to a dead text path (T1 = 0); READ lifts op 3 to 0.64 / 0.93 by recomputation, with no sum carrier; triggers §122 | closed |
-| 122 | TEXT-MIX keeps the anchor's target competent (conditional on §121; stop rule for the multiplication line) | **STOP RULE fires**: op 3 0.362 / 0.408 (primary), 0.246 / 0.344 (control), with a competent text path; the multiplication latent-carriage line pauses (122-4) | **open** (s3 for the record) |
+| 122 | TEXT-MIX keeps the anchor's target competent (conditional on §121; stop rule for the multiplication line) | CARRY-3 0/3 (op 3 0.32–0.41) with a competent text path (t1 1.0); **STOP RULE fired**: the multiplication latent-carriage line pauses | closed |
 | 123 | Attractor strength causal for no-snap? Dither dose-response (σ 0–0.5) + dithered FSQ (canonical codes), §120 harness | registered (after §120's pilot) | **open** |
 | 124 | Does reading a given state fix self-training's lottery? §112 f = 0.1 + copy objective vs exposure control | registered | **open** |
 
@@ -3053,6 +3053,24 @@ the **true** previous step text at a uniformly drawn position j ∈ {2, 3, 4}, w
 **Placement.** 5 runs, about $6–7 on Vast (Audit approved about $4 for the primary, plus the control on Literature's
 advice), proof seed first, **only on the trigger**. Implementation: the experiments session (accel99 `--textmix 0.25`).
 Scorer `theory/score_s122.py`, committed before any run.
+
+**§122 result (2026-10-05 14:15 EDT; 5 runs by the experiments session; scored by Theory alone with `theory/score_s122.py`, committed
+before any run). CARRY-3 is not met (0/3); the STOP RULE fires (122-4).**
+
+| arm | op-3 decode (s1 / s2 / s3) | test | t1 (step 3 from the true step-2 text) |
+|---|---|---|---|
+| TEXTMIX+ANCHOR+READ | 0.362 / 0.408 / 0.324 | 0.047 / 0.053 / 0.051 | 1.0 / 1.0 / 1.0 |
+| TEXTMIX+READ (control) | 0.246 / 0.344 | 0.016 / 0.047 | 1.0 / 1.0 |
+
+* TEXT-MIX made the anchor's target competent everywhere (t1 = 1.0), so the question was tested. The anchor does not
+  break the carrier shortcut; attribution is moot.
+* **Reading** (121-2, 121-3, 122-2, 122-3).
+  - In every Markov multiplication model the carried code is the multiplier prefix, or an entangled code, never the
+    running sum.
+  - The anchor binds the shared component, not the state: centred binding is weak (0.74, own-match 24 %). The single-step
+    text path's latent is never consumed downstream, so it need not carry the sum.
+* **The multiplication latent-carriage line pauses (stop rule).** Multiplication continues only through the task-agnostic
+  route (§120's extension and §123).
 
 **Note 122-1 (2026-10-05 05:01 EDT, before any §122 run; the experiments session's implementation 94beeb42, accepted; not launched).**
 * `accel99 --textmix 0.25` with `--arm99 anchorread` (primary) or `read` (control).
