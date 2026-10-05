@@ -1,28 +1,35 @@
 {
  "cells": {
   "s5_final": {
-   "n": 1,
+   "n": 2,
    "long_acc": {
-    "1": 1.0
+    "1": 1.0,
+    "2": 0.0
    },
    "PILOT_PASS": false,
    "cert": {
-    "1": false
+    "1": false,
+    "2": false
    },
    "n_reachable": {
-    "1": null
+    "1": null,
+    "2": null
    },
    "n_moore": {
-    "1": null
+    "1": null,
+    "2": null
    },
    "codes_per_state": {
-    "1": 28.116666666666667
+    "1": 28.116666666666667,
+    "2": 8.516666666666667
    },
    "code_perplexity": {
-    "1": 811.9350680032192
+    "1": 811.9350680032192,
+    "2": 2.7911379612633636
    },
    "serial": {
-    "1": true
+    "1": true,
+    "2": false
    }
   },
   "s5_trace": {
