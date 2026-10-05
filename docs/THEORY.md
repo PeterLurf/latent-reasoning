@@ -3563,6 +3563,20 @@ with fewer codes, one plateaus.**
 * **Prediction P2 holds so far:** FSQ+DITHER S5 plateaus at §120's rate, on the same seed. The basin is set early, by
   seed, before any dither acts. So CANONICAL for S5 rests on s1 alone (codes per state 21 < 34.2 ✓; CERT pending).
 
+**Note 123-5 (2026-10-05 15:31 EDT, before any S5 continuous cell lands; a pre-data amendment, disclosed; Audit / claude-13). ρ for
+CAUSAL is computed in fp32.**
+* **The problem.** The 8-dimensional carried z_b is evaluated under bf16 autocast. After 3–4 hand-offs the perturbed and
+  clean chains become bit-identical (distance at one ulp, then 0), and the geometric mean floors those zeros at 1e-6.
+  - So a contracting continuous cell reports ρ ~ 1e-4 to 1e-5 whatever its true rate. Example: the FF σ = 0 control's
+    rho_k = [0.052, 0.251, 0.183, 0, 0, …], registered ρ 8.4e-5.
+  - CAUSAL (i) would then compare floors, and (ii) / (iii) would be met trivially. 118-3's 768-dimensional diagnostic
+    never hit this.
+* **Amendment.** **CAUSAL's ρ (and σ\*) is ρ_fp32**: the same contraction eval re-run post hoc in fp32 from model.pt
+  (`--contraction_only --fp32` → `eval_contraction_fp32.json`).
+  - The registered (bf16) ρ and rho_nonzero are printed beside it.
+  - A cell without ρ_fp32 makes CAUSAL "incomplete".
+  - rho_nonzero is not used, because dropping merged hand-offs biases it upward.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

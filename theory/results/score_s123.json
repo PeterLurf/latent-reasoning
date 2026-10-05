@@ -1,5 +1,18 @@
 {
- "continuous": {},
+ "continuous": {
+  "ff_000_s1": {
+   "fam": "ff",
+   "sigma": 0.0,
+   "seed": 1,
+   "long_acc": 1.0,
+   "rho": null,
+   "rho_bf16_registered": 8.358045306522399e-05,
+   "rho_nonzero": 0.40720707390655686,
+   "basin": 0.3,
+   "grid_share": 0.151957275390625,
+   "plateau": false
+  }
+ },
  "fsqdither": {
   "s5": {
    "seeds": {
@@ -23,13 +36,23 @@
    "CANONICAL": false
   },
   "ff": {
-   "seeds": {},
+   "seeds": {
+    "2": {
+     "long_acc": 1.0,
+     "codes_per_state_2048": null,
+     "plateau": false,
+     "cert_holds": false,
+     "cert_registered_holds": false
+    }
+   },
    "codes_per_state_baseline": 13.75,
    "CANONICAL_registered": false,
    "CANONICAL": false
   }
  },
- "plateau_count": {},
+ "plateau_count": {
+  "ff_0.0": 0
+ },
  "CAUSAL_registered_all_cells": {
   "i": false,
   "ii": true,
@@ -37,13 +60,13 @@
   "sigma_star": null
  },
  "sigma_star": null,
- "CAUSAL": "incomplete (n_cells = 0 / 10)",
+ "CAUSAL": "incomplete (n_cells = 1 / 10)",
  "CAUSAL_parts": {
   "i": false,
   "ii": true,
   "iii": true,
-  "n_cells_nonplateau": 0,
-  "n_cells": 0
+  "n_cells_nonplateau": 1,
+  "n_cells": 1
  },
- "continuous_stabiliser_reading": false
+ "continuous_stabiliser_reading": true
 }
