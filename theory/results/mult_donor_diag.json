@@ -198,5 +198,33 @@
     "input_donor": 0.11158798283261803
    }
   }
+ },
+ "a122_textmixanchor_4x4_s1": {
+  "intact_recipient": 0.30333333333333334,
+  "SAMEPREFIX": {
+   "recipient": 0.006666666666666667,
+   "sum_donor": 0.02,
+   "input_donor": 0.0033333333333333335,
+   "unchanged_vs_intact": 0.006666666666666667
+  },
+  "SAMESUM": {
+   "recipient": 0.02575107296137339,
+   "prefix_donor": 0.0,
+   "input_donor": 0.004291845493562232,
+   "unchanged_vs_intact": 0.02145922746781116
+  },
+  "digits2_4": {
+   "intact_recipient": 0.6477777777777778,
+   "SAMEPREFIX": {
+    "recipient": 0.2288888888888889,
+    "sum_donor": 0.17777777777777778,
+    "input_donor": 0.11555555555555555
+   },
+   "SAMESUM": {
+    "recipient": 0.2217453505007153,
+    "prefix_donor": 0.18311874105865525,
+    "input_donor": 0.13590844062947066
+   }
+  }
  }
 }

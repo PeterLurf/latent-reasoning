@@ -3360,6 +3360,23 @@ text). Scorer
   - A std-normalised ρ is reported beside it as descriptive. Over 8 hand-offs the geometric-mean ratio approaches the
     dominant contraction rate in either metric.
 
+**Note 122-2 (2026-10-05 13:14 EDT; descriptive, the primary arm's s1; s2–3 pending; rules and stop rule unchanged). A competent anchor
+target is not enough: the text path's latent never had to carry the sum.**
+* **s1:** op 3 0.362, test 0.047. The text path **is** competent: T1 = 1.0, P_3 1.0, text_acc 1.0 at steps 2–4. The
+  anchor binds (cosine 0.986–0.990).
+* **The carrier is unchanged.** Slot-2 probes: b_1 / b_2 1.0, S_2's middle digits 0.12–0.21 (chance). The donor test
+  is mixed (SAMEPREFIX recipient 0.23 vs sum-donor 0.18; SAMESUM recipient 0.22 vs prefix-donor 0.18).
+* **Why (structural).** TEXT-MIX's k = 1 chunks train the text path to decode step j, but the text path's own **carried
+  latent is never consumed by a following segment**.
+  - Its fork reads it together with the visible segment [a, S_{j−1} text, b_j], so nothing forces that latent to hold
+    S_j.
+  - The anchor ties the chain's latent to a code with no obligation to carry the sum.
+  - On S5 (§118) the text-start segment's latent **is** consumed by the next in-chunk segment (k = 4 chunks), so the
+    anchored code carries the state. That is why the anchor works there.
+* **Implication (recorded; not proposed as a run, per the stop rule).** An anchor transfers carriage only from a
+  teacher path whose carried state is itself read downstream. The general lesson for future designs: anchor to a
+  text-started chain of at least two hand-offs, not to a single text-started step.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
