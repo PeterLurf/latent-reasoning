@@ -1,0 +1,4 @@
+# §117 proof host (note 117-3: f = 0.1; code b464eb3f): MK s51 + ST s61
+# P=2
+boxes/runs_s5/s117_mk_s51 boxes.self110 --markov --kcurr --reader --cov 0.1 --foothold_log --seed 51
+boxes/runs_s5/s117_st_s61 boxes.self110 --st_switch --kcurr --reader --cov 0.1 --foothold_log --seed 61
