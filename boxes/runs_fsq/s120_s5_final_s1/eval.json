@@ -1,0 +1,50 @@
+{
+ "family": "s5",
+ "arm": "final",
+ "seed": 1,
+ "train_sec": 5545,
+ "eval_only": true,
+ "eval_dtype": "torch.bfloat16",
+ "coverage_drawn": 1.0,
+ "gpu": "NVIDIA GeForce RTX 3070",
+ "long_acc": 1.0,
+ "acc_by_length": {
+  "16": 1.0,
+  "32": 1.0,
+  "64": 1.0,
+  "128": 1.0,
+  "256": 1.0,
+  "512": 1.0
+ },
+ "ext_2048": {
+  "n": 500,
+  "len": 2048,
+  "cumulative": 0.998
+ },
+ "n_codes": 3374,
+ "code_perplexity": 811.9350680032192,
+ "codes_per_state": 28.116666666666667,
+ "cert": {
+  "status": "deferred",
+  "holds": null
+ },
+ "donor": {
+  "pos2": {
+   "donor_consistent": 1.0,
+   "recipient_consistent": 0.008,
+   "chance_overlap": 0.008
+  },
+  "pos4": {
+   "donor_consistent": 1.0,
+   "recipient_consistent": 0.009,
+   "chance_overlap": 0.009
+  },
+  "pos6": {
+   "donor_consistent": 1.0,
+   "recipient_consistent": 0.0065,
+   "chance_overlap": 0.0065
+  }
+ },
+ "margin_flip_rate": 0.91003125,
+ "eval_sec": 873
+}
