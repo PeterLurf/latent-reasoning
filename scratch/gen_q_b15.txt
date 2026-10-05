@@ -1,4 +1,4 @@
-# §125 STD S5 s4 + CONTROL S5 s3 (§120 FINAL, same code minus --std)
+# §125 matched unit seed 3: STD + CONTROL on one host (580-trial eligible)
 # P=2
-boxes/runs_fsq/s125_s5_std_s4 boxes.fsq120 --family s5 --arm final --std --micro 2 --seed 4 --no_cert
+boxes/runs_fsq/s125_s5_std_s3 boxes.fsq120 --family s5 --arm final --std --micro 2 --seed 3 --no_cert
 boxes/runs_fsq/s125_s5_ctrl_s3 boxes.fsq120 --family s5 --arm final --micro 2 --seed 3 --no_cert

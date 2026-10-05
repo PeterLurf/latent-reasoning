@@ -1,4 +1,5 @@
-# §124 copy (30e42608; same seeds 26-29 across arms)
-# P=2
-boxes/runs_s5/s124_copy_s28 boxes.self110 --cov 0.1 --copy_frac 0.1 --seed 28
+# §124 matched unit seed 29: EXPOSE + COPY + BASE on ONE host (Audit matched-unit rule; 580-driver trial eligible)
+# P=3
+boxes/runs_s5/s124_expose_s29 boxes.self110 --cov 0.1 --expose_frac 0.1 --seed 29
 boxes/runs_s5/s124_copy_s29 boxes.self110 --cov 0.1 --copy_frac 0.1 --seed 29
+boxes/runs_s5/s124_base_s29 boxes.self110 --cov 0.1 --seed 29

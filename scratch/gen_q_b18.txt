@@ -1,0 +1,4 @@
+# §125 STD FF s1-2
+# P=2
+boxes/runs_fsq/s125_ff_std_s1 boxes.fsq120 --family ff --arm final --std --seed 1 --no_cert
+boxes/runs_fsq/s125_ff_std_s2 boxes.fsq120 --family ff --arm final --std --seed 2 --no_cert
