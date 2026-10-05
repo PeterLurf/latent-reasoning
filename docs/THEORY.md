@@ -2197,6 +2197,25 @@ modes: `--no_snap`, and an `--adaptive_snap disagreement` policy).
   checkpoints, not compute. A C5 design that saves compute needs a latent-only predictor of disagreement.
 * The §115 result follows when MK-4 s3 / s5 and §105 s1–3 are in.
 
+**Note 115-2 (2026-10-05 04:19 EDT; partial; READ models are outside §115's registered set (descriptive), and are §118's registered
+control). One §111 READ seed runs fully latent to 2,048 with no snaps.**
+* **§111 MK-4-READ s8.** The no-snap Markov recurrence (only the start text at position 0, then [EOT, carried latent,
+  op] at every position, with no test-time text path, reader or decode feedback) gives **cumulative 1.0 at 128 / 256 /
+  512 / 2,048** (2,000 × 512; 500 × 2,048).
+  - Per-hand-off accuracy is 1.0 at every position. The latent norm ratio stays about 1.03, and the cosine to the
+    snapped rollout about 0.95 after position 64.
+  - Donor SERIAL is 1.0 (111-4). It is the first fully latent chain here that stays exact to 2,048 with no discrete
+    checkpoint.
+  - It is one seed: READ s6 / s7 drift (per-hand-off about 0.86 / 0.72); s9–10 are pending. It is per-step supervised,
+    so not C4.
+* **The trigger as a precision fix (registered models).** §108 MK-4 s3, which fixed k = 4 leaves at 0.585 at 512,
+  reaches **1.0 with the trigger at 61 snaps** (against 127). s5 reaches 0.992 → 1.0 at 25 snaps; s1 1.0 at 99.9 snaps.
+  §105 s2 reaches 1.0 at 112.6 snaps.
+  - Snapping on self-disagreement removes the precision errors that fixed snapping lets through. That is C5 with a
+    gain, though still using the text path (115-1's cost caveat).
+* For §118: the READ control already has 1 seed passing NOSNAP-512 and NOSNAP-2048 (s8). ANCHOR and LONG are read
+  against that rate.
+
 ## 116. Strict C4: final-answer training through self-decoded restarts, from operator definitions only and from no short problems (pre-registered 2026-10-04 21:03 EDT, after Literature's check b0bca3c4 and before any implementation or run; launched only if §112 f = 0.1 meets FOOTHOLD-f)
 
 **Why (112-2).** §112 f = 0.1 s21 is certified on all 14,400 k = 1 transitions, 90 % of them never labelled. Neither the
