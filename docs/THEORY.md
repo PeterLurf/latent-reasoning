@@ -2083,6 +2083,21 @@ step-3 wall is a shortcut: the latent carries the multiplier digits, not the run
   - A shortcut basin, not capacity: wider latents (§107 LAT), pauses (§107 PAUSE) and looped depth (§114 LOOP-R)
     cannot help, because nothing forces S_2 into the carrier.
 * **Restart tests (T1 / T2)** are out of distribution here (K-CURR's text-start chunks ended at 6k): 0.0, not read.
+* **All five models (2026-10-05 02:57 EDT, n = 200; Audit's generality check).**
+
+  | model | step-3 decode | probe b_1 / b_2 | probe S_2 digits 2–4 | digit-3 accuracy (carry / no carry) |
+  |---|---|---|---|---|
+  | §99 MARKOV s1 | 0.24 | 1.0 / 1.0 | 0.11 / 0.12 / 0.21 | 0.40 / 0.41 |
+  | §99 CTRL s1 (in context) | 0.815 | 1.0 / 1.0 | 0.12 / 0.11 / 0.13 | 0.90 / 0.88 |
+  | §99 TF-SLOT s1 | 0.53 | 1.0 / 1.0 | 0.11 / 0.11 / 0.14 | 0.70 / 0.68 |
+  | §107 PAUSE-4 s1 | 0.435 | 1.0 / 1.0 | 0.11 / 0.11 / 0.15 | 0.54 / 0.53 |
+  | §100 GEN-2 s1 (k = 2) | from step-2 text: **1.0**, answer 1.0 | 1.0 / 1.0 | 0.12 / 0.11 / 0.14 | — |
+
+  - **Prefix carriage is general:** every model's slot-2 latent holds b_1 / b_2 linearly at 1.0 and S_2's middle
+    digits at chance. Errors are carry-independent everywhere.
+  - §100's k = 2 model, restarted from the true step-2 text, computes step 3 and the answer at 1.0. The one-pass add
+    S_2 + a·b_3·100 is easy when S_2 arrives as text; the failure is carrying S_2 in a latent.
+  - (§100 evaluated as one k = 4 chunk is out of distribution: 0.)
 * **Matched design:** make the carrier hold the running sum. Use §111's reader on multiplication ([EOT, latent] → the
   step text, which contains S_j), registered next after Literature's check. Prior: 2510.00184 (a running-sum auxiliary
   unlocks multiplication).
