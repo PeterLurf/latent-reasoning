@@ -22,7 +22,7 @@
   "sigma_star": null
  },
  "sigma_star": null,
- "CAUSAL": false,
+ "CAUSAL": "incomplete (n_cells = 0 / 10)",
  "CAUSAL_parts": {
   "i": false,
   "ii": true,
