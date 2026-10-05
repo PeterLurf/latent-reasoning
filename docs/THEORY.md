@@ -2976,6 +2976,25 @@ at every step, with no text snaps and no schedule, is exact to 512 and serial.**
   - coverage_drawn is 1.0 (120-1: the short-problem curriculum labels every transition), so no C4.
   - One seed of one family. The pilot reading needs both seeds and both families (flip-flop, the non-group family).
 
+**Note 120-5 (2026-10-05 07:30 EDT; descriptive, S5 FINAL s1; Audit's questions). The learned code machine is open, not closed: it
+wanders slowly through new, correctly decoded codes.**
+* **CERT start set:** all first-step codes from the 120 start texts × 120 ops (14,400 pairs, deduplicated), as 120-2.
+  The first post-hoc CERT reached **537,873 reachable codes in 45 min without closure** (inconclusive_time, so no
+  certification claim). A layered rerun gives the growth by BFS depth (to follow).
+* **Distinct codes visited** on the 2,048-step extension rollouts (n = 500, cumulative 0.996):
+
+  | by position | 16 | 64 | 128 | 256 | 512 | 1,024 | 2,048 |
+  |---|---|---|---|---|---|---|---|
+  | distinct codes | 1,422 | 2,120 | 2,376 | 2,629 | 2,864 | 3,109 | 3,342 |
+  | codes per true state | 11.9 | 17.7 | 19.8 | 21.9 | 25.4 | 29.4 | 34.2 |
+
+  - After 128, about 240 new codes per doubling: roughly logarithmic, unsaturated.
+* **Reading.** Each hand-off is snapped, so there is no continuous drift. But the code is **not canonical**: a state's
+  code depends on the path that reached it, and long chains keep visiting new (state, code) pairs.
+  - Almost all are mapped correctly (0.996 at 2,048), but correctness on unvisited codes is not guaranteed. That is the
+    gap between "exact at 512" and "certified at any length".
+  - A closed machine would need canonical codes (codes per state → 1), which this objective does not ask for.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
