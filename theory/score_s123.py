@@ -94,8 +94,9 @@ def main():
     ii_ok = all((c["long_acc"] or 0) >= 0.99 for c in ii); iii_ok = all((c["long_acc"] or 0) < 0.99 for c in iii)
     levels = [("s5", sg) for sg in (0.0, 0.1, 0.25, 0.5)] + [("ff", 0.0)]
     evaluable = len(allcells) == 10 and all(mrho(f, sg) is not None for f, sg in levels) and sigma_star is not None and mrho("ff", sigma_star) is not None
-    if len(allcells) == 10 and any(c["rho"] is None for c in allcells):
-        res["CAUSAL"] = "incomplete (rho_ff missing or < 2 floor-free hand-offs for %d cells)" % sum(c["rho"] is None for c in allcells)
+    missing = [c for c in allcells if c["rho"] is None and not c["plateau"]]      # plateau cells are excluded anyway (123-3)
+    if len(allcells) == 10 and missing:
+        res["CAUSAL"] = "incomplete (rho_ff missing or < 2 floor-free hand-offs for %d non-plateau cells)" % len(missing)
     elif len(allcells) < 10:
         res["CAUSAL"] = "incomplete (n_cells = %d / 10)" % len(allcells)               # interim runs never read as a verdict
     else:
