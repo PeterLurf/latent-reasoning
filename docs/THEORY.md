@@ -2544,6 +2544,26 @@ single passing seed in ANCHOR or LONG shows nothing new.**
 * If the control itself reaches ≥ 4/5, the reader alone is the no-snap fix, and the arms are read only on NOSNAP-2048 and
   drift.
 
+**Note 118-3 (2026-10-05 05:33 EDT; a descriptive diagnostic, $0, Audit's idea; predictions fixed before the full run, with a smoke peek
+disclosed). Is the hand-off map an attractor, and does that explain why READ s8 runs without snaps while s6 / s7 drift?**
+* **Script:** `theory/contraction_diag.py`. At in-range position T0 = 4 of a no-snap chain, the carried latent is
+  perturbed by ε·‖z‖ in a random direction, and clean and perturbed chains run 16 more hand-offs on the same ops.
+  - ρ: the median per-hand-off distance ratio, geometric mean over the first 8.
+  - Decode agreement per hand-off.
+  - Basin: the largest ε with agreement ≥ 0.99 after 8.
+  - Models: READ s6–10, §108 MK-4 s1 / s3 / s5.
+* **Smoke peek (20 chains, K = 4, disclosed):** s8 has ρ ≈ 0.22 and basin 0.5; s6 has ρ ≈ 0.58 and basin 0.03. Both
+  contract in distance, but s6's decodes break at a far smaller perturbation.
+* **Predictions (fixed now, for the full run at n = 500, K = 16).**
+  - (a) Among READ s6–10, the seeds passing no-snap (s8, and any of s9 / s10) have the **largest basins (≥ 0.3)**. The
+    drifting seeds have basins ≤ 0.1.
+  - (b) ρ < 1 holds broadly. ρ alone does not separate success from drift: the decode margin (basin) does.
+  - (c) §108 seeds (no reader) have smaller basins than every no-snap-passing READ seed.
+* **Implication if (a) holds.** No-snap success needs a wide decode basin around the state code, not just contraction.
+  - That favours objectives that **widen margins**: noise injection on the carried latent (P-B's denoising), or the
+    discrete snap (§120), over plain norm control.
+  - If (a) fails, drift is not a local-stability property, and P-B drops behind §120.
+
 ## 119. Controlled baselines for C1: published latent-CoT methods on our S5 protocol, scored with the donor and length protocols (pre-registered 2026-10-04 23:14 EDT, after Literature's checks 2bf76954 (project audit, missing comparison 2) and 1a473f82, and before any implementation or run; Audit's guards)
 
 **Why.** Our C1 claim compares against the literature only on paper: no latent-CoT paper shows serial,
