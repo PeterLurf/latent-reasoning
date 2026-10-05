@@ -187,9 +187,10 @@ def run_test(m, fam, s0, X, dev, amp, bs, every=True):
 
 
 @torch.no_grad()
-def certificate(m, fam, dev, amp, cap, bs=2048):
-    """BFS over the code machine; decode each code; check the transition law on every reachable (code, item) pair."""
-    ntok = NST if fam.name == "s5" else 1; idx = {}; codes = []; dec = []; trans = {}
+def certificate(m, fam, dev, amp, cap, bs=2048, time_limit=None):
+    """BFS over the code machine; decode each code; check the transition law on every reachable (code, item) pair.
+    time_limit (s, Audit 2026-10-05): stop the BFS when exceeded -> timed_out (inconclusive, like the cap)."""
+    ntok = NST if fam.name == "s5" else 1; idx = {}; codes = []; dec = []; trans = {}; t_start = time.time(); timed_out = False
     def add(qrows):
         out = []
         for r in qrows:
@@ -220,6 +221,8 @@ def certificate(m, fam, dev, amp, cap, bs=2048):
         nxt = []
         pairs = [(c, x) for c in frontier for x in range(fam.n_items)]
         for i in range(0, len(pairs), bs):
+            if time_limit and time.time() - t_start > time_limit:
+                timed_out = True; break
             pc = pairs[i:i + bs]; q = torch.tensor(np.stack([codes[c] for c, _ in pc]).astype(np.float32), device=dev)
             with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
                 h = m.segment(m.embed_code(q)[:, None], torch.tensor([x for _, x in pc], device=dev)); _, qn, _ = m.quant(h)
@@ -230,6 +233,8 @@ def certificate(m, fam, dev, amp, cap, bs=2048):
                     seen.add(n); nxt.append(n)
         if len(codes) > cap:
             capped = True; break
+        if timed_out:
+            break
         frontier = nxt
     dec = decode_codes(list(range(len(codes))))
     valid = bool((dec >= 0).all())
@@ -241,6 +246,9 @@ def certificate(m, fam, dev, amp, cap, bs=2048):
                 viol += 1; continue
             want = fam.delta(np.array([dec[k[0]]]), np.array([k[1]]))[0]
         viol += int(dec[n] != want)
+    if timed_out:                                                           # inconclusive: no decode / Moore pass on a partial machine
+        return {"holds": None, "status": "inconclusive_time", "n_reachable_partial": len(codes), "capped": capped, "timed_out": True,
+                "time_limit": time_limit, "sec": round(time.time() - t_start)}
     holds = valid and viol == 0 and not capped
     # Moore minimisation of the code machine (outputs = decodes)
     n = len(codes); part = {c: int(dec[c]) for c in range(n)}
@@ -251,7 +259,7 @@ def certificate(m, fam, dev, amp, cap, bs=2048):
             break
         part = newp
     return {"holds": bool(holds), "n_reachable": n, "n_moore": len(set(part.values())), "capped": capped, "violations": viol,
-            "all_decode_valid": valid}
+            "all_decode_valid": valid, "status": "inconclusive_cap" if capped else "done", "timed_out": False, "sec": round(time.time() - t_start)}
 
 
 @torch.no_grad()
@@ -296,10 +304,17 @@ def main():
     ap.add_argument("--donor_n", type=int, default=2000); ap.add_argument("--margin_n", type=int, default=500); ap.add_argument("--sched_scale", type=float, default=1.0, help="smoke only")
     ap.add_argument("--log_every", type=int, default=100); ap.add_argument("--data_dir", default=os.path.join(ROOT, "bench", "data", "s5"))
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
+    ap.add_argument("--no_cert", action="store_true", help="skip CERT in the main eval (run post-hoc with --cert_only; Audit 2026-10-05)")
+    ap.add_argument("--cert_only", action="store_true", help="CERT alone from <out>/model.pt -> <out>/eval_cert.json")
+    ap.add_argument("--cert_time", type=int, default=2700, help="CERT wall-clock limit (s); exceeded -> inconclusive_time")
     ap.add_argument("--eval_only", action="store_true", help="re-run the eval from <out>/model.pt (training batch draws replayed for coverage_drawn)")
     a = ap.parse_args(); dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); sc = a.sched_scale
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     fam = Family(a.family); os.makedirs(a.out, exist_ok=True)
+    if a.cert_only:                                                         # post-hoc CERT (scoring as registered; only its scheduling moved)
+        m = FSQ120(s5.load_gpt2(dev), fam).to(dev); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval()
+        c = certificate(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time); c.update({"eval_dtype": str(amp), "cert_cap": a.cert_cap})
+        json.dump(c, open(os.path.join(a.out, "eval_cert.json"), "w", newline="\n"), indent=1); print("CERT", json.dumps(c), flush=True); return
     json.dump(vars(a), open(os.path.join(a.out, "args_eval.json" if a.eval_only else "args.json"), "w", newline="\n"), indent=1)
     m = FSQ120(s5.load_gpt2(dev), fam).to(dev); drawn = np.zeros((fam.n_states, fam.n_items), bool)
     if a.eval_only:                                                         # replay the training draws (rng only) for coverage_drawn
@@ -369,7 +384,7 @@ def main():
     for c, s_ in zip(map(bytes, flat), st):
         per.setdefault(int(s_), set()).add(c)
     res["codes_per_state"] = float(np.mean([len(v) for v in per.values()]))
-    res["cert"] = certificate(m, fam, dev, amp, a.cert_cap); res["donor"] = donor(m, fam, dev, amp, n=a.donor_n)
+    res["cert"] = {"status": "deferred", "holds": None} if a.no_cert else certificate(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time); res["donor"] = donor(m, fam, dev, amp, n=a.donor_n)
     res["margin_flip_rate"] = margin_flip(m, fam, s0m, Xm, dev, amp); res["eval_sec"] = round(time.time() - t1)
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     print("EVAL", json.dumps({k: res[k] for k in ("long_acc", "n_codes", "cert")}), flush=True); print("DONE", a.out, flush=True)

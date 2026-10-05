@@ -1,0 +1,4 @@
+# §120 (after b1's proof; CERT post-hoc per Audit 05:45: --no_cert, then --cert_only locally)
+# P=2
+boxes/runs_fsq/s120_s5_final_s2 boxes.fsq120 --family s5 --arm final --seed 2 --no_cert
+boxes/runs_fsq/s120_s5_trace_s1 boxes.fsq120 --family s5 --arm trace --seed 1 --no_cert
