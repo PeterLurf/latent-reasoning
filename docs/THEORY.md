@@ -3936,6 +3936,24 @@ bottleneck the basin seed escapes, but the raw carrier drifts with length.**
 * ANNEAL (enter wide, then narrow) aims to combine the two. So far it does not: s2's loss jumps to 5.43 when λ reaches 1
   at 6k, with a distillation residual of 0.49, and only partly recovers. The final verdict is pending.
 
+**Note 123-11 (2026-10-05 19:23 EDT, before flip-flop's σ* cell lands; Audit). The reading is fixed: the manipulation check failed, so §123
+does not reach the causal question.**
+* **The matched S5 dose panel is complete (RTX 3090).** Seed 1's ρ_ff at ε 0.1 is **0.146 / 0.180 / 0.149 / 0.156** at σ 0 /
+  0.1 / 0.25 / 0.5, with long accuracy 1.0 at every dose. Seed 2 plateaus at every σ.
+  - 123-10's pre-stated reading applies: **flat within single-seed noise** (σ 0.5 is inside the 0.146–0.180 spread).
+* **σ\* = 0.25** by rule (lowest mean ρ_ff over non-plateau σ > 0 cells: 0.149 against 0.156 / 0.180). It is a
+  single-seed pick, and flip-flop's σ\* cell (s123_ff_dither025_s1) is the 10th cell.
+* **Wording, fixed now:** "On this harness dither changes neither contraction, nor accuracy, nor the basin; the causal
+  question is not reached."
+  - CAUSAL (i) fails because the manipulation did not move ρ, not because ρ is non-causal.
+  - §123 is **uninformative** about causality, not evidence against it. 118-5's correlation stands untouched.
+  - The registered "Neither" reading ("stability needs something these objectives do not provide") **overstates** it and
+    is not used.
+* **The section's findings are descriptive:**
+  - the continuous 8-d carry is exact to 2,048 (123-6);
+  - the seed-2 basin appears at every σ;
+  - FSQ+DITHER codes are smaller (21 against 34 codes per state at 2,048) but open on S5.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
