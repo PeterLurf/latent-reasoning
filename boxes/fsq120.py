@@ -462,6 +462,7 @@ def main():
     ap.add_argument("--fsq_dither", type=float, default=0.0, help="§123: U(-s, s) on z_b before rounding at training hand-offs after 4k")
     ap.add_argument("--no_cert", action="store_true", help="skip CERT in the main eval (run post-hoc with --cert_only; Audit 2026-10-05)")
     ap.add_argument("--growth_only", action="store_true", help="distinct codes vs position on ext_n 2,048-step rollouts -> <out>/eval_growth.json")
+    ap.add_argument("--fp32", action="store_true", help="note 123-5: --contraction_only in fp32 (autocast off) -> eval_contraction_fp32.json")
     ap.add_argument("--contraction_only", action="store_true", help="note 123-2: rho / rho_norm / basin alone from <out>/model.pt -> <out>/eval_contraction.json")
     ap.add_argument("--cert_only", action="store_true", help="CERT alone from <out>/model.pt -> <out>/eval_cert.json")
     ap.add_argument("--cert_time", type=int, default=2700, help="CERT wall-clock limit (s); exceeded -> inconclusive_time")
@@ -487,8 +488,9 @@ def main():
         json.dump(g_, open(os.path.join(a.out, "eval_growth.json"), "w", newline="\n"), indent=1); print("GROWTH", json.dumps(g_), flush=True); return
     if a.contraction_only:                                                  # note 123-2: post-hoc contraction (rho, rho_norm, ...) from model.pt
         m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval()
-        ct = contraction(m, fam, dev, amp, n=a.contract_n); ct.update({"eval_dtype": str(amp)})
-        json.dump(ct, open(os.path.join(a.out, "eval_contraction.json"), "w", newline="\n"), indent=1)
+        amp_c = None if a.fp32 else amp                                     # note 123-5: bf16 makes 8-d chains bit-identical in 3-4 hand-offs
+        ct = contraction(m, fam, dev, amp_c, n=a.contract_n); ct.update({"eval_dtype": str(amp_c)})
+        json.dump(ct, open(os.path.join(a.out, "eval_contraction_fp32.json" if a.fp32 else "eval_contraction.json"), "w", newline="\n"), indent=1)
         print("CONTRACTION", json.dumps({k: ct[k] for k in ("rho", "rho_norm", "rho_nonzero", "exact_recovery_share", "basin")}), flush=True); return
     if a.cert_only:                                                         # post-hoc CERT (scoring as registered; only its scheduling moved)
         m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval()
