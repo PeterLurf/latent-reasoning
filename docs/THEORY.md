@@ -1891,6 +1891,26 @@ recipient-consistent per slot, single patch → joint (slot + op-token KV):
 * Only Markov segments (§108) exclude the last two by construction. This is why the integrated candidate (self-training
   + Markov + READ) keeps single-slot donor SERIAL as its primary C1 rule (Audit (a)).
 
+**Note 112-4 (2026-10-05 01:31 EDT; descriptive, $0, from eval.json `rounds`; Audit's question whether the never-acquiring seeds sit on a
+no-read null). The seed lottery is a basin of a different kind: the start-text no-read basin.**
+* Before acquisition, **every** seed (§112 f = 0.5 / 0.25 / 0.1, and §110 s1–5) has the same final-answer accuracy on
+  each new round's pool (lengths 3..L): **0.50 / 0.67 / 0.50 / 0.33 at L = 4 / 5 / 6 / 8**.
+  - So lengths 3–4 are solved exactly and every length ≥ 5 fails.
+* **Lengths 3–4 are one chunk from the identity**, which the model solves from the ops alone. Lengths ≥ 5 restart after
+  the cut from the model's own op-4 checkpoint.
+  - That checkpoint is correct, since length 4 is solved, so the restarts' targets are consistent. Yet they stay at 0,
+    and k = 1 restart accuracy stays at chance (0.008), until a seed acquires (abruptly, in L5–L8) or never does.
+* **Reading.** Before the cut, the start is always the identity text, which carries no information. The model never
+  learns to read a start state, the same chicken-and-egg as 111-1 but for the **start text**, not the latent.
+  - Acquisition means learning to read a given state. The coverage dose barely moves it (f = 0.5: 3/5; 0.25: 2/5; §110
+    natural: 3/5).
+* **Prediction for §113, written before any §113 result (note 113-1):** §111's reader reads the slot latent, not the
+  start text, so it should **not** raise the acquisition rate.
+* **Candidate fix (not registered): reading footholds.**
+  - Add **length-0 copy problems**: a random start state as text with no ops, whose answer is the start state.
+  - They teach reading a given state while labelling **no** transition, so they are C4-neutral.
+  - The same footholds may make §116 NONE (strict C4) acquirable.
+
 ## 113. The auxiliary reader inside self-training: §110 plus a reader on the model's own decodes (pre-registered 2026-10-04 15:00 EDT, after Literature's check b1352c3e and before any implementation or run; conditional on §111 MK-4-READ meeting REL)
 
 **Why.** §110's seed failures (s1: a slot-1 bypass; s2: never acquires) look like 111-1's no-read family. If §111's
@@ -1913,6 +1933,13 @@ use (Literature): C1 is scored with the donor protocol only.
 * **Not REL.** The no-read account does not cover §110's failures.
 
 **Placement.** 5 runs, about $2–4, **launched only if §111 MK-4-READ meets REL**. Otherwise it is not run (noted then).
+
+**Note 113-1 (2026-10-05 01:31 EDT, before any §113 result; Theory's prediction from 112-4).** §110's and §112's never-acquiring
+seeds fail to read the **start text** (restarts at chance while identity-start chunks are exact), not the slot latent.
+§111's reader trains [EOT, slot latent] → state.
+* **Predicted:** §113's acquisition rate stays near §110's (about 3/5 acquire). SELF2 is therefore unlikely at ≥ 4/5.
+* Any C1 gain (fewer slot-1 bypasses) would come in the seeds that acquire.
+* If §113 acquires in ≥ 4/5 anyway, 112-4's start-text account is incomplete, and that is reported as such.
 
 ## 114. Looped depth per op: serial depth, not positions, for multiplication's latent hand-off (pre-registered 2026-10-04 15:54 EDT, after Literature's check c70d55e3 and before any implementation or run; the user's directive "register now", via Audit)
 
