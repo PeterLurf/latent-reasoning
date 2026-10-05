@@ -1,0 +1,50 @@
+{
+ "cells": {
+  "s5_final": {
+   "n": 0,
+   "long_acc": {},
+   "PILOT_PASS": false,
+   "cert": {},
+   "n_reachable": {},
+   "n_moore": {},
+   "codes_per_state": {},
+   "code_perplexity": {},
+   "serial": {}
+  },
+  "s5_trace": {
+   "n": 0,
+   "long_acc": {},
+   "PILOT_PASS": false,
+   "cert": {},
+   "n_reachable": {},
+   "n_moore": {},
+   "codes_per_state": {},
+   "code_perplexity": {},
+   "serial": {}
+  },
+  "ff_final": {
+   "n": 0,
+   "long_acc": {},
+   "PILOT_PASS": false,
+   "cert": {},
+   "n_reachable": {},
+   "n_moore": {},
+   "codes_per_state": {},
+   "code_perplexity": {},
+   "serial": {}
+  },
+  "ff_trace": {
+   "n": 0,
+   "long_acc": {},
+   "PILOT_PASS": false,
+   "cert": {},
+   "n_reachable": {},
+   "n_moore": {},
+   "codes_per_state": {},
+   "code_perplexity": {},
+   "serial": {}
+  }
+ },
+ "PILOT_FINAL_BOTH": false,
+ "PILOT_TRACE_BOTH": false
+}
