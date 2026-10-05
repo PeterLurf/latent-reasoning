@@ -1,0 +1,3 @@
+# §123 FF sigma* = 0.25 s1 (note 123-11); RTX 3090-class (FF sigma 0 control ran on a 3090)
+# P=1
+boxes/runs_fsq/s123_ff_dither025_s1 boxes.fsq120 --family ff --arm final --no_round --dither 0.25 --seed 1
