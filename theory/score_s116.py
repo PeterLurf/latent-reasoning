@@ -3,7 +3,7 @@ Runs: boxes/runs_s5/s116_opdef_s{31..35}/eval.json and s116_none_s{41..45}/eval.
 (cumulative, extension_2048, k1_never_labelled_acc, k1_certified, coverage_drawn, donor, removal) plus
 foothold_yield / acc_by_length per round (descriptive).
 FOOTHOLD-OPDEF: >= 2/5 seeds with cumulative >= 0.99 at 512 AND k1_never_labelled_acc >= 0.99.
-STRICT-C4 (NONE): >= 2/5 seeds with cumulative >= 0.99 at 512.  STRICT-C4-COPY (NONECOPY, note 116-2): the same.
+STRICT-C4 (NONE): >= 2/5 seeds with cumulative >= 0.99 at 512.  C4-COPY (NONECOPY, note 116-2; not "strict"): the same.
 MECH (116-2): NONECOPY acquires (final k1_never_labelled_acc >= 0.99) in >= 4/5 seeds AND in more seeds than NONE.
 C1 tag: single-patch donor SERIAL (every in-chunk slot donor >= 0.90, recipient < 0.10). C6: seed rate; >= 0.99 at 2,048.
     python theory/score_s116.py

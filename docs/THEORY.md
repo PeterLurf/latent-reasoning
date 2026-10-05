@@ -2200,6 +2200,8 @@ after Literature's check 15cf541a). New arm NONE+COPY: reading footholds against
     seeds than NONE**.
 * **Claim wording (fixed; Literature (1)).** A NONE+COPY pass is "C4: final answers plus a self-supervised copy objective
   (no intermediate or transition labels)". "Strict C4" stays for NONE alone; both are reported side by side.
+* **Amendment (2026-10-05 01:36 EDT, before any run; Audit):** the rule STRICT-C4-COPY is renamed **C4-COPY** (the criterion is
+  unchanged), so a pass can never be printed as strict. "Strict C4" is reserved for NONE.
 * 116-1's truth-use rule is unchanged: copy problems use only the input. The launch condition (§112 FOOTHOLD-0.1) is
   unchanged. Scorer `theory/score_s116.py`, extended now.
 
