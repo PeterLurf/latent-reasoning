@@ -739,3 +739,10 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 54293047 vast | gen_j2 DESTROYED_VERIFIED 2026-10-05 08:47 after verified per-run fetch (boxes/runs_s5/s117_mk_s52 boxes/runs_s5/s117_mk_s53)
 54300440 vast | gen_b2 DESTROYED_VERIFIED 2026-10-05 08:48 after verified per-run fetch (boxes/runs_fsq/s120_s5_final_s2); FAILED (no eval.json, logs fetched): boxes/runs_fsq/s120_s5_trace_s1
 54287676 vast | gen_o7 DESTROYED_VERIFIED 2026-10-05 08:53 STOPPED EARLY on Theory's call (note 116-5: NONE+COPY no_grad bug; s43/s44 = NONE duplicates); logs fetched to *.void_nograd
+54317793 vast offer 38460296 created 2026-10-05 08:54: label gen-b12, queue scratch/gen_q_b12.txt (logged at create by vdeploy_toy.sh)
+54317791 vast offer 51428264 created 2026-10-05 08:54: label gen-i5, queue scratch/gen_q_i5.txt (logged at create by vdeploy_toy.sh)
+54317792 vast offer 53477897 created 2026-10-05 08:54: label gen-a3, queue scratch/gen_q_a3.txt (logged at create by vdeploy_toy.sh)
+54317800 vast offer 49607481 created 2026-10-05 08:54: label gen-i6, queue scratch/gen_q_i6.txt (logged at create by vdeploy_toy.sh)
+54318073 vast offer 35170923 created 2026-10-05 08:56: label gen-a5, queue scratch/gen_q_a5.txt (logged at create by vdeploy_toy.sh)
+54287700 vast | gen_o5 DESTROYED_VERIFIED 2026-10-05 09:22 after verified per-run fetch (boxes/runs_s5/s116_none_s45 boxes/runs_s5/s116_none_s44)
+54287692 vast | gen_o4 DESTROYED_VERIFIED 2026-10-05 09:24 after verified per-run fetch (boxes/runs_s5/s116_none_s42 boxes/runs_s5/s116_none_s43)
