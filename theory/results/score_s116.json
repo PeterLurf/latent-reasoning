@@ -1,0 +1,28 @@
+{
+ "arms": {
+  "OPDEF": {
+   "n": 0,
+   "pass_seeds": [],
+   "PASS": false,
+   "cum512": {},
+   "ext2048": {},
+   "k1_never": {},
+   "certified": {},
+   "coverage_drawn": {},
+   "serial_seeds": [],
+   "c6_2048_seeds": []
+  },
+  "NONE": {
+   "n": 0,
+   "pass_seeds": [],
+   "PASS": false,
+   "cum512": {},
+   "ext2048": {},
+   "k1_never": {},
+   "certified": {},
+   "coverage_drawn": {},
+   "serial_seeds": [],
+   "c6_2048_seeds": []
+  }
+ }
+}

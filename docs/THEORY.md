@@ -175,6 +175,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 113 | Auxiliary reader inside self-training (conditional on §111-READ) | registered (conditional) | **open** |
 | 114 | Looped depth per op (LOOP-R vs LOOP-1 vs §107 PAUSE) for multiplication's hand-off | registered | **open** |
 | 115 | No-snap Markov chains, and a round-trip snap trigger (eval only) | registered | **open** |
+| 116 | Strict C4: final-answer training through self-decoded restarts (OPDEF: op definitions only; NONE: no shorts) | registered (conditional on §112 f = 0.1) | **open** |
 
 ## Live sections
 
@@ -1977,6 +1978,73 @@ from the text path) only when the two disagree. There is no fixed k, apart from 
 
 **Placement.** Eval only, $0, on the local 3070 (idle). Implementation: the experiments session (mk108 / gen97 eval
 modes: `--no_snap`, and an `--adaptive_snap disagreement` policy).
+
+## 116. Strict C4: final-answer training through self-decoded restarts, from operator definitions only and from no short problems (pre-registered 2026-10-04 21:03 EDT, after Literature's check b0bca3c4 and before any implementation or run; launched only if §112 f = 0.1 meets FOOTHOLD-f)
+
+**Why (112-2).** §112 f = 0.1 s21 is certified on all 14,400 k = 1 transitions, 90 % of them never labelled. Neither the
+shorts nor pseudo-labels drove its acquisition.
+* At the end of R0, k = 1 accuracy on labelled transitions was only 0.078.
+* The gate kept the pools empty through rounds L3–L6 (kept share ≈ 2·10⁻⁵).
+* Never-labelled k = 1 jumped 0.072 → 0.999 during L6, on final-answer targets alone.
+* **Mechanism (Literature b0bca3c4).** Past the cut (L > k), the target is predicted from the model's **own decoded
+  checkpoint** plus the remaining L − k ops. Each such problem is in effect a short problem from a self-generated start:
+  the cut manufactures footholds, and the leap (Abbe 2302.11055) drops from L to L − k.
+  - Where the checkpoint is wrong, the target is inconsistent (§62 noise). Learning is a self-reinforcing bootstrap.
+* If the shorts are not the engine, the foothold may shrink to the operators' definitions, or vanish. No in-LM run has
+  met strict C4 (lengths ≥ 3 only; §93, §95, §110b).
+* **Prior** (b0bca3c4, `docs/LIT_S116_STRICT_C4_2026-10-04.md`): DAgger 1011.0686, TD bootstrapping, Delethink
+  2510.06557, Markovian Transformers 2404.18988, Lee 2502.01612, 2511.07378, Zhang 2607.20594 (operator-first), §85,
+  §110b. Acquisition of a non-solvable group's transitions through cut-induced self-started shorts: not found (new as
+  scoped).
+
+**Design.** §112's recipe unchanged except the short problems: §110 identity starts, masked fork, independent pools,
+validity → final → self-consistency filters with the label-free gate, final relabel, 24k steps, lengths drawn uniformly
+from 3..L_max per round.
+* **OPDEF (seeds 31–35; 112-1's option (b) with g = 0).** T_f holds only the 120 first-step transitions (e, a).
+  - R0 draws length-1 shorts (e; a), and length-2 shorts only where both transitions are in T_f (first op the
+    identity), at §112's R0 count (1,200 × 64).
+  - The round schedule is §112's, so OPDEF extends §112's dose curve. coverage_drawn ≈ 0.0083.
+* **NONE (seeds 41–45; strict C4).** No R0 and no short problems at all; every training problem has length ≥ 3.
+  - **Every round's L_max is ≥ k + 1 = 5** (Literature trap 1): round 1 is L_max = 6 (lengths 3..6), and §103's
+    adaptive insertion never goes below L_max = 5.
+  - So post-cut problems are present from the start. L ≤ 4 problems stay in the mix; they are the only targets for
+    the op-4 checkpoint's decode.
+  - The 1,200 R0 updates go to round 1 (24k total).
+* **Logging, both arms; truth-scored and never used in training or any training decision.**
+  - **Foothold yield per round** (Literature trap 2): on 5k fresh problems with L > k, the fraction whose decoded
+    checkpoint at every cut is correct. Near 1/120 means a stall by construction.
+  - **Accuracy by length per round** (trap 4): the per-length contribution.
+* Eval keys as §112: k1_never_labelled_acc, k1_certified, per_round_split, coverage_drawn, single-patch donor,
+  removal. Plus §104's joint patch (`theory/s112_donor.py`) on every seed meeting the per-seed criterion.
+
+**Rules (fixed now; per arm).**
+* **FOOTHOLD-OPDEF:** ≥ 2/5 seeds with cumulative ≥ 0.99 at 512 **and** k = 1 accuracy ≥ 0.99 on never-labelled
+  transitions (§112's criterion).
+* **STRICT-C4 (NONE):** ≥ 2/5 seeds with cumulative ≥ 0.99 at 512. Every transition is never-labelled; k1_certified is
+  reported.
+* C1, as §110 / §112: single-patch donor SERIAL (USE ≥ 0.90 at every in-chunk slot, no BYPASS ≥ 0.10), with the joint
+  patch reported where single fails. C6: the per-arm seed rate, and ≥ 0.99 at 2,048. All 5 seeds are reported.
+* **Claim wording (fixed; Literature (b), (3)).**
+  - Method: "final-answer training through self-decoded restarts" (not "filtered self-training").
+  - OPDEF: "C4 qualified by operator definitions (each op applied to the identity; 120 problems, no composition)". It
+    also fixes the action convention.
+  - NONE: "strict C4: final answers of problems of length ≥ 3 only".
+
+**Readings.**
+* **NONE passes.** The first strict-C4 result in a pretrained LM: S5 latent restarts learned from final answers alone
+  (certified if k1_certified). Tags C4 + C2, plus C1 / C6 as scored.
+* **OPDEF passes, NONE does not.** Operator definitions are the minimum foothold.
+  - NONE's round schedule differs (L_max ≥ 5 from round 1), so this reading is qualified by that difference.
+  - Foothold yield says whether NONE stalled by construction (yield ≈ 1/120) or bootstrapped too slowly.
+* **Neither.** The shorts carried a needed signal that R0's labelled accuracy hides. §112's dose curve gives the
+  threshold.
+* **A k = 2 variant** (more footholds, tail length L mod 2) is the registered follow-up if NONE stalls with yield near
+  chance. It is not run here.
+
+**Placement.** 10 runs, about $12–15 on Vast, **launched only if §112 f = 0.1 meets FOOTHOLD-f (≥ 2/5)**; otherwise not
+run (noted then). Implementation: the experiments session (self110: --cov with g = 0 for OPDEF; --no_r0 with an L_max
+floor for NONE; foothold-yield and per-length logging). Scorer `theory/score_s116.py`, committed before any run.
+Projection to Audit.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
