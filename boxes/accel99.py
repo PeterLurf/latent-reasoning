@@ -18,6 +18,9 @@ imported unchanged). Arms (--arm99) as flags on GEN-M:
                   stop-grad text path [a, gold step j-1 text, op j]); eval adds the random donor (loop114.donor), reader_acc,
                   anchor_cos_by_pos (eligible from 6k)
   read            §121: markov + the reader only (eligible from 6k)
+  --textmix f     §122 (with anchorread / read): a share f of every latent-phase batch's rows are k = 1 chunks from the TRUE
+                  previous step text at a uniform 1-based position j in {2, 3, 4} (CE on step j's text, + the answer at
+                  j = 4), row-weighted with the main chunk's loss; every log adds the text path's step-j decode (T1 = j 3)
 Every 1k steps, on the repo's 4x4 valid split (1,000 items; never the bench test): per-slot step-text decode and answer
 accuracy in the k = 4 test rollout (curve entries {step, per_slot, val_acc, gold_share, k_train, phase}). A run stops at the
 first ELIGIBLE log (step >= eligible_from) with every slot >= 0.95 and answer >= 0.95 (steps_to_threshold), else at 24k
@@ -222,6 +225,28 @@ def latent_batch(D, rng, bs, dev, L):
     return prefix, start, T(D["B"][idx, c0:c1]), [T(D["steps"][j][idx]) for j in range(c0, c1)], (T(D["ans"][idx]) if c1 == n else None)
 
 
+def textmix_batch(D, rng, bs, dev, j):
+    """§122: bs rows of the k = 1 chunk at 0-based op j >= 1 from the TRUE step j-1 text (answer target when j is last)."""
+    n = D["n"]; idx = rng.integers(0, len(D["A"]), bs); T = lambda a: torch.tensor(a, device=dev)  # noqa: E731
+    prefix = T(np.concatenate([DIGIT_IDS[D["A"][idx]], np.full((bs, 1), TOK["*"])], 1))
+    return prefix, T(D["steps"][j - 1][idx]), T(D["B"][idx, j:j + 1]), [T(D["steps"][j][idx])], (T(D["ans"][idx]) if j == n - 1 else None)
+
+
+@torch.no_grad()
+def text_path_acc(m, D, dev, amp, bs):
+    """§122: exact decode of step j's text (1-based j = 2, 3, 4) from the TRUE step j-1 text, k = 1 (T1 = j 3)."""
+    N, n = D["B"].shape; T = lambda a: torch.tensor(a, device=dev); out = {}  # noqa: E731
+    for j in range(1, n):
+        ok = []
+        for s in range(0, N, bs):
+            e = min(N, s + bs); pre = T(np.concatenate([DIGIT_IDS[D["A"][s:e]], np.full((e - s, 1), TOK["*"])], 1))
+            with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+                _, decs, _, _ = m.chunk(pre, T(D["steps"][j - 1][s:e]), T(D["B"][s:e, j:j + 1]), step_len=[D["steps"][j].shape[1]])
+            ok.append((decs[0].cpu().numpy() == D["steps"][j][s:e]).all(1))
+        out[str(j + 1)] = float(np.concatenate(ok).mean())
+    return out
+
+
 @torch.no_grad()
 def flops_per_problem(m, g, D, dev, phase, L):
     """Meter forward FLOPs of one trained problem in this configuration (averaged over the aligned chunk starts)."""
@@ -250,6 +275,7 @@ def main():
     ap.add_argument("--train_dir", default=os.path.join(ROOT, "bench", "data", "mult_train"))
     ap.add_argument("--final_eval_bs", type=int, default=100, help="stop-eval batch (OOM: halved and retried)")
     ap.add_argument("--donor_n", type=int, default=2000, help="§121 random-donor recipients")
+    ap.add_argument("--textmix", type=float, default=0.0, help="§122 TEXT-MIX share of rows (0.25)")
     ap.add_argument("--eval_only", action="store_true", help="re-run the stop eval of a finished run (model.pt, log.jsonl)")
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); t_start = time.time()
@@ -305,10 +331,17 @@ def main():
                     loss = F.cross_entropy(lg.reshape(-1, lg.shape[-1]), text[sl].reshape(-1))
                 (loss / 2).backward(); tot += loss.item() / 2
         else:
-            prefix, start, ops, st, ans = latent_batch(Dtr, rng, a.bs, dev, L)
+            n_tm = int(round(a.bs * a.textmix)); n_main = a.bs - n_tm
+            prefix, start, ops, st, ans = latent_batch(Dtr, rng, n_main, dev, L)
             m.gold = {j for j in range(ops.shape[1] - 1) if rng.random() < rho} if rho > 0 else None
             with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
                 loss, _, _, _ = m.chunk(prefix, start, ops, step_tgt=st, ans_tgt=ans, collect=True)
+                if n_tm:                                                    # §122 TEXT-MIX rows: true step j-1 text -> step j (k = 1)
+                    parts_main = m.parts; loss = loss * (n_main / a.bs); pos = rng.integers(1, Dtr["n"], n_tm)   # 0-based j in {1, 2, 3}
+                    for j in np.unique(pos):
+                        tb = textmix_batch(Dtr, rng, int((pos == j).sum()), dev, int(j))
+                        lt, _, _, _ = m.chunk(*tb[:3], step_tgt=tb[3], ans_tgt=tb[4]); loss = loss + lt * (int((pos == j).sum()) / a.bs)
+                    m.parts = parts_main
             loss.backward(); tot = loss.item(); m.gold = None
             if m.reader:
                 aux.append(m.parts)
@@ -328,6 +361,8 @@ def main():
                 m.eval(); per, ok, _ = gen_rollout(m, Dva, dev, amp, a.eval_bs); m.train()
                 e = {"step": step, "per_slot": per.mean(0).tolist(), "val_acc": float(ok.mean()), "gold_share": rho, "k_train": L, "gate": float(m.gamma) if m.statepath else None,
                      "phase": phase, "eligible": step >= elig}
+                if a.textmix:                                               # §122: the anchor's target is competent (T1 = text_acc["3"])
+                    m.eval(); e["text_acc"] = text_path_acc(m, Dva, dev, amp, a.eval_bs); e["t1"] = e["text_acc"]["3"]; m.train(); rec.update({"text_acc": e["text_acc"], "t1": e["t1"]})
                 curve.append(e); rec.update({k: e[k] for k in ("per_slot", "val_acc", "eligible", "gate")})
                 if e["eligible"] and min(e["per_slot"]) >= 0.95 and e["val_acc"] >= 0.95:
                     hit = step
@@ -380,7 +415,7 @@ def finish(a, m, Dtr, Dte, dev, amp, arm, elig, hit, stop_step, curve, flops, wa
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
     meter = MeterR(m.g); per, ok, _ = rollout_safe(m, Dte, dev, amp, bs, meter=meter); mu = gen_mean_inputs(m, Dtr, dev, amp)
-    res = {"arm": arm, "task": "4x4", "seed": a.seed, "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
+    res = {"arm": arm + ("_textmix" if getattr(a, "textmix", 0) else ""), "textmix": getattr(a, "textmix", 0), "task": "4x4", "seed": a.seed, "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
            "eval_dtype": str(amp), "eligible_from": elig, "steps_to_threshold": hit, "stopped_step": stop_step, "curve": curve,
            "test_acc": float(ok.mean()), "per_slot_decode_acc": per.mean(0).tolist(), "removal": {}, "compute": meter.as_dict(),
            "training": {"flops": flops, "wall_sec": wall, "train_sec": train_sec,
@@ -405,6 +440,8 @@ def finish(a, m, Dtr, Dte, dev, amp, arm, elig, hit, stop_step, curve, flops, wa
     if m.reader:                                                            # §121: random-donor test (§104 protocol, loop114's), reader, anchor cos
         from boxes.loop114 import donor
         res["donor"] = donor(m, dev, amp, n=a.donor_n, bs=bs); res.update(read_anchor(m, Dte, dev, amp, bs))
+        if getattr(a, "textmix", 0):
+            res["text_acc"] = text_path_acc(m, Dte, dev, amp, bs); res["t1"] = res["text_acc"]["3"]
         res["training"]["flops_convention"] += "; §121 reader/anchor auxiliary passes not counted"
     res["eval_bs"] = {"requested": a.final_eval_bs, "used": sorted(set(USED_BS))}
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
