@@ -3270,6 +3270,14 @@ not in S5. Flip-flop passes in both arms, with two seeds certified at every leng
 * **Extension (registered for passing family × arm cells):** deferred until §123's FSQ+DITHER reads. If dithering fixes
   S5's lottery, the extension (seeds 3–5, cycle navigation, multiplication) uses it. A note will precede that launch.
 
+**Note 117-7 (2026-10-05 12:00 EDT; descriptive, 4 of 6 first-wave seeds in; MK s51 and ST s61 pending). 117-5's rule fires.**
+* MK s52 / s53 and ST s62 / s63 all score 0 at 512, with never-labelled k = 1 at 0.008–0.041.
+  - In ST the label-free switch never fired: final-answer accuracy at lengths 5–6 never reached 0.5 under the masked
+    fork. So the forced switch came at 12,000, and nothing was acquired after it.
+* **Acquisition is 0/4, so the first wave is at most 2/6.** By 117-5 (≤ 3/6): the lottery persists, and the direct test
+  of 112-4 (§112's f = 0.1 recipe plus 10 % copy rows, with the fixed copy path) is registered after a Literature check.
+* §117's extension cannot fire (ALL ≤ 1/3 per arm). The §117 result follows when s51 / s61 land.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
