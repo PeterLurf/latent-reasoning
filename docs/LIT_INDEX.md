@@ -92,3 +92,4 @@ advisory notes are in `archive/`.
 | LIT_S116_COPY_2026-10-05 | §116 amend | copy = self-supervised autoencoding (1511.01432, 1410.5401); name it, keep strict C4 for NONE; prefer zero-op [EOT, start] segment over marker; log stay rate |
 | LIT_S121_CARRY_2026-10-05 | §121 | input-prefix carriage new as diagnosis (2510.00184 recomputes partial products; Liang&Pan late fusion); reader alone can be met by carrying (a,b≤j) — force via teacher-forced S_{j−1} text segments + ANCHOR |
 | LIT_S122_TEXTMIX_2026-10-05 | §122 | competent anchor target required: TEXT-MIX = CODI's γ·L_teacher; frozen teacher as fallback; needs a TEXT-MIX-only control; not C4 |
+| LIT_S123_DITHER_2026-10-05 | §123 | dither = Ballé 1611.01704 proxy / universal quantisation 2006.09952; ±0.5 ⇒ implicit quantisation, sweep σ; 8-dim continuous no-noise control; normalise ρ |
