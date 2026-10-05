@@ -2098,6 +2098,19 @@ step-3 wall is a shortcut: the latent carries the multiplier digits, not the run
   - §100's k = 2 model, restarted from the true step-2 text, computes step 3 and the answer at 1.0. The one-pass add
     S_2 + a·b_3·100 is easy when S_2 arrives as text; the failure is carrying S_2 in a latent.
   - (§100 evaluated as one k = 4 chunk is out of distribution: 0.)
+* **Causal donor test (2026-10-05 03:09 EDT; `theory/mult_donor_diag.py`, n = 300, 233 SAMESUM donors found; Audit (a)).** Step-3 S_3
+  is scored as mean agreement on digits 2–4 (chance about 0.1).
+
+  | model | SAMEPREFIX: recipient / sum-donor | SAMESUM: recipient / prefix-donor | reading |
+  |---|---|---|---|
+  | §99 MARKOV s1 | **0.35** / 0.11 | 0.10 / **0.37** | **prefix carrier** (causal) |
+  | §107 PAUSE-4 s1 | **0.56** / 0.10 | 0.11 / **0.59** | **prefix carrier** (causal) |
+  | §99 CTRL s1 (in context) | 0.90 / 0.11 (99 % unchanged) | 0.90 / 0.10 (93 % unchanged) | latent ignored; recomputed from the visible ops |
+  | §99 TF-SLOT s1 (in context) | 0.64 / 0.12 | 0.53 / 0.12 | mixed: partly read, partly recomputed |
+
+  - Under Markov segments the step-3 output follows the **carried multiplier prefix**, never the running sum. 114-4
+    holds causally, not only by probe.
+  - The in-context models mostly bypass the slot, as §104 found for §97.
 * **Matched design:** make the carrier hold the running sum. Use §111's reader on multiplication ([EOT, latent] → the
   step text, which contains S_j), registered next after Literature's check. Prior: 2510.00184 (a running-sum auxiliary
   unlocks multiplication).
