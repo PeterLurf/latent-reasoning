@@ -7,47 +7,48 @@
  "all_decode_valid": true,
  "status": "done",
  "timed_out": false,
- "sec": 0,
+ "moore_timed_out": false,
+ "sec": 52,
  "layers": [
   {
    "depth": 1,
    "frontier": 5,
    "cum": 5,
-   "sec": 0
+   "sec": 44
   },
   {
    "depth": 2,
    "frontier": 14,
    "cum": 19,
-   "sec": 0,
+   "sec": 50,
    "complete": true
   },
   {
    "depth": 3,
    "frontier": 13,
    "cum": 32,
-   "sec": 0,
+   "sec": 50,
    "complete": true
   },
   {
    "depth": 4,
    "frontier": 6,
    "cum": 38,
-   "sec": 0,
+   "sec": 50,
    "complete": true
   },
   {
    "depth": 5,
    "frontier": 4,
    "cum": 42,
-   "sec": 0,
+   "sec": 50,
    "complete": true
   },
   {
    "depth": 6,
    "frontier": 0,
    "cum": 42,
-   "sec": 0,
+   "sec": 52,
    "complete": true
   }
  ],
@@ -63,7 +64,8 @@
   "all_decode_valid": true,
   "status": "done",
   "timed_out": false,
-  "sec": 0,
+  "moore_timed_out": false,
+  "sec": 5,
   "layers": [
    {
     "depth": 1,
@@ -119,5 +121,16 @@
    "w0",
    "w1"
   ]
+ },
+ "cert_task_reads": {
+  "holds": true,
+  "status": "done",
+  "n_pairs": 35,
+  "n_codes": 35,
+  "n_read_transitions": 35,
+  "violations": 0,
+  "capped": false,
+  "timed_out": false,
+  "sec": 1
  }
 }

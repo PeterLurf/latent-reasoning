@@ -8,47 +8,47 @@
  "status": "done",
  "timed_out": false,
  "moore_timed_out": false,
- "sec": 1,
+ "sec": 43,
  "layers": [
   {
    "depth": 1,
    "frontier": 3,
    "cum": 3,
-   "sec": 0
+   "sec": 41
   },
   {
    "depth": 2,
    "frontier": 9,
    "cum": 12,
-   "sec": 0,
+   "sec": 43,
    "complete": true
   },
   {
    "depth": 3,
    "frontier": 8,
    "cum": 20,
-   "sec": 0,
+   "sec": 43,
    "complete": true
   },
   {
    "depth": 4,
    "frontier": 3,
    "cum": 23,
-   "sec": 0,
+   "sec": 43,
    "complete": true
   },
   {
    "depth": 5,
    "frontier": 1,
    "cum": 24,
-   "sec": 0,
+   "sec": 43,
    "complete": true
   },
   {
    "depth": 6,
    "frontier": 0,
    "cum": 24,
-   "sec": 0,
+   "sec": 43,
    "complete": true
   }
  ],
@@ -65,7 +65,7 @@
   "status": "done",
   "timed_out": false,
   "moore_timed_out": false,
-  "sec": 0,
+  "sec": 5,
   "layers": [
    {
     "depth": 1,
@@ -91,21 +91,21 @@
     "depth": 4,
     "frontier": 3,
     "cum": 19,
-    "sec": 0,
+    "sec": 5,
     "complete": true
    },
    {
     "depth": 5,
     "frontier": 1,
     "cum": 20,
-    "sec": 0,
+    "sec": 5,
     "complete": true
    },
    {
     "depth": 6,
     "frontier": 0,
     "cum": 20,
-    "sec": 0,
+    "sec": 5,
     "complete": true
    }
   ],
@@ -114,5 +114,16 @@
    "w0",
    "w1"
   ]
+ },
+ "cert_task_reads": {
+  "holds": true,
+  "status": "done",
+  "n_pairs": 20,
+  "n_codes": 20,
+  "n_read_transitions": 20,
+  "violations": 0,
+  "capped": false,
+  "timed_out": false,
+  "sec": 1
  }
 }

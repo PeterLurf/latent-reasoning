@@ -450,3 +450,4 @@
 13:13:46 s120_ff_trace_s1 cert_only (bounded) rc 0 (cuda:1)
 13:18:29 s120_ff_final_s1 growth_only rc 0 (cuda:1)
 13:18:36 s120_ff_final_s1 cert_only (bounded) rc 0 (cuda:1)
+13:28:42 §120 FF cert_task_reads (note 120-9) x4 (cuda:0)
