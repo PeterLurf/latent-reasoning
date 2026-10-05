@@ -182,7 +182,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 108 | Forced latent carriage on S5 (Markov segments, sink fix, TF bootstrap; donor-scored) | ACC not met (MK-4 2/5, MK-8 0/5); serial in all 5 learning seeds; MK-4 s1 1.0 at 512, 0.996 at 2,048 (unqualified serial C1, one seed); failures: no-read basin or precision | closed |
 | 110 | Self-training v2: independent seeds, label-free gate, masked fork (C4 + C1) | SELF2 2/5, C1 1/5 (s3: C4 + C1 + C2 in one seed, certified k = 1); STUDENT triggered | **open** (STUDENT) |
 | 110b | Self-training v2 corrected: identity-start shorts plus random textual starts for length ≥ 3 | stopped after a clear null: loss at chance from random starts (110b-2) | closed |
-| 111 | Reliability of the Markov hand-off: 2× budget vs DAgger-style own-state training; best-of-n | **READ meets REL: 5/5 exact and serial at 512, 4/5 at 2,048 (111-4)**; 2× 0/5 (111-3); DAG 0/3 so far | **open** (DAG s9–10) |
+| 111 | Reliability of the Markov hand-off: 2× budget vs DAgger-style own-state training; best-of-n | **READ meets REL (5/5 serial at 512, 4/5 at 2,048)**; 2× 0/5, DAG 1/5: the lottery is the no-read basin | closed |
 | 112 | Short-coverage dose-response for self-training (f = 0.5 / 0.25 / 0.1; never-labelled k = 1 accuracy) | f = 0.1 s21: certified, never-labelled 1.0, 0.996 at 512; C1 joint only (112-2) | **open** |
 | 113 | Auxiliary reader inside self-training (conditional on §111-READ) | registered (conditional) | **open** |
 | 114 | Looped depth per op (LOOP-R vs LOOP-1 vs §107 PAUSE) for multiplication's hand-off | registered | **open** |
@@ -1753,6 +1753,24 @@ select by a **training-data-only** criterion.
   - The fix cannot change 2×'s SEL: no 2× run passes ACC.
   - The pre-fix scorer is `theory/score_s111.py` at 4c4fc0b3. It crashed (TypeError in SEL) before writing any output,
     so there is no pre-fix score file; the crash is reproducible from that commit.
+
+**§111 result (2026-10-05 00:35 EDT; 15 runs by the experiments session; scored by Theory alone with `theory/score_s111.py` (fix 111-3
+disclosed); `theory/results/score_s111.json`). Only MK-4-READ meets REL.**
+
+| arm (s6–10) | cumulative 512 | pooled per-hand-off | reading |
+|---|---|---|---|
+| **READ** | 0.9995 / 0.9945 / 1 / 1 / 1 | ≥ 0.99998 | **REL (5/5, SERIAL); 4/5 at 2,048** |
+| 2× | 0 / 0 / 0 / 0 / 0 | 0.008 / 0.008 / 0.74 / 0.008 / 0.12 | no-read (3) or partial (2) |
+| DAG | 0 / 0.8805 / 0 / 0 / 1.0 | 0.010 / 0.9997 / 0.105 / 0.919 / 1.0 | 1/5 (s10); s7 precision-limited |
+
+* **Reading.** The Markov lottery is neither timing (2× is 0/5) nor exposure to the model's own states (DAG is 1/5).
+  - It is the no-read basin, and the auxiliary reader removes it: writer and reader trained together from step 0.
+  - That is the registered reading "neither 2× nor DAG", with the extra arm (111-1) supplying the fix.
+* **SEL:** the lowest training hand-off error picks a passing run in §108 (s1), DAG (s10) and READ (s8). 2× has none to
+  pick. AUC is 1.0 for both criteria, pooled over 20 runs.
+* **early_escape (111-1) does not discriminate:** it fired in 11 of 12 failing runs and 8 of 8 passing ones (111-2).
+* **Tags:** C1 (unqualified serial, S5) + C6 (5/5) + C2 to 2,048 (4/5), with per-step supervision (not C4). It
+  triggered §113 and §117.
 
 **Note 111-4 (2026-10-04 22:59 EDT; MK-4-READ complete, scored by Theory with `theory/score_s111.py`; DAG s9–10 still pending, so the §111
 result follows when they land). MK-4-READ meets REL: 5/5.**
