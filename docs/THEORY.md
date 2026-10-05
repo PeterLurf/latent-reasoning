@@ -196,8 +196,8 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 118 | Fully latent at inference: text-path anchor vs longer silent stretches (S5, on READ) | registered | **open** |
 | 119 | Controlled C1 baselines: Coconut, CODI, SIM-CoT on our S5 protocol (donor + length) | registered (queued behind §117 / §118) | **open** |
 | 120 | FSQ digital recurrence: a learned discrete snap every step, no template or schedule (S5 + flip-flop pilot) | registered | **open** |
-| 121 | Multiplication's carrier shortcut: text-path anchor + reader vs reader alone (4×4, Markov) | registered | **open** |
-| 122 | TEXT-MIX keeps the anchor's target competent (conditional on §121; stop rule for the multiplication line) | registered (conditional) | **open** |
+| 121 | Multiplication's carrier shortcut: text-path anchor + reader vs reader alone (4×4, Markov) | CARRY-3 0/3: the anchor binds to a dead text path (T1 = 0); READ lifts op 3 to 0.64 / 0.93 by recomputation, with no sum carrier; triggers §122 | closed |
+| 122 | TEXT-MIX keeps the anchor's target competent (conditional on §121; stop rule for the multiplication line) | **triggered** (§121 CARRY-3 0/3, T1 = 0) | **open** |
 
 ## Live sections
 
@@ -2810,6 +2810,26 @@ slot j; K-CURR (k = 1 to 2k, 2 to 6k, then 4); 24k cap; eligibility from 6k; the
 **Placement.** 5 runs, about $6–7 on Vast (Audit pre-approved about $4 for 3 seeds; the 2 READ-only seeds are posted to
 Audit as about $2.5 extra), proof seed first (ANCHOR+READ s1). Implementation: the experiments session (accel99 markov
 + `--reader` + `--anchor`). Scorer `theory/score_s121.py`, committed before any run.
+
+**§121 result (2026-10-05 07:02 EDT; 5 runs by the experiments session; scored by Theory alone with `theory/score_s121.py`, committed
+before any run; T1, probes and MECH from `theory/mult_step3_diag.py` / `theory/mult_donor_diag.py`). CARRY-3 is not met:
+the anchor did not break the shortcut. §122 triggers.**
+
+| run | op-3 decode | test | anchor cosine | T1 (step 3 from the true step-2 text) | S_2 probe, digits 2–4 |
+|---|---|---|---|---|---|
+| ANCHOR+READ s1 | 0.231 | 0.031 | 0.98–0.99 | **0.0** | 0.13 / 0.12 / 0.18 |
+| ANCHOR+READ s2 | 0.869 | 0.203 | 0.98–0.99 | **0.0** | 0.13 / 0.13 / 0.17 |
+| ANCHOR+READ s3 | 0.274 | 0.044 | 0.98–0.99 | **0.0** | 0.10 / 0.12 / 0.15 |
+| READ s1 (control) | 0.643 | 0.078 | — | about 0 | at chance |
+| READ s2 (control) | 0.927 | 0.219 | — | 0.0 | at chance |
+
+* **CARRY-3: 0/3** (primary); ACC 0/3. READ-only reaches 0.95 in neither seed. So C1 and MECH are moot.
+* **Reading ("neither").** The anchor binds (cosine about 0.98–0.99), but to a text path that no longer computes. T1 is
+  0.0 in every seed: text-start segments are untrained after K-CURR's k ≤ 2 phase (121-2).
+  - In every model the carried slot-2 code stays the multiplier prefix or an entangled code (121-3), never S_2.
+  - The reader raises op 3 (to 0.93 in one seed) by better recomputation, not by carrying the sum.
+* **§122's trigger is met** (CARRY-3 fails, and T1 ≤ 0.10 in all failing seeds). TEXT-MIX keeps the text path
+  competent. §122 is the last multiplication patch before its stop rule.
 
 **Note 121-1 (2026-10-05 02:30 EDT, before any §121 result; the experiments session's implementation 903b74f1, accepted).**
 * accel99 MARKOV with K-CURR as §99.
