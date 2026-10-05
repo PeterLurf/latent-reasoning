@@ -2603,8 +2603,8 @@ inference and exact to 2,048 with no snaps.**
 
 * **NOSNAP-512: 5/5** (needs ≥ 4/5) with single-slot SERIAL in all five. **NOSNAP-2048: 5/5.** The guard holds. The rate
   beats the READ control's 2/5 (118-2).
-* **Mechanism (118-5):** ANCHOR seeds have ρ ≈ 0.19 (s71–73; s74–75 pending), the strongest attractors measured. Every
-  model with ρ ≤ 0.28 passes no-snap, and every model with ρ ≥ 0.38 fails.
+* **Mechanism (118-5):** all five ANCHOR seeds have ρ(ε 0.1) = 0.19–0.21 (basins 0.1–0.2), the strongest attractors
+  measured. Every model with ρ ≤ 0.28 passes no-snap, and every model with ρ ≥ 0.38 fails.
 * **Reading.** Tying the latent path's carried state to the stop-gradient text-path state makes the pretrained LM's
   latent recurrence strongly contractive and drift-free. On S5 a chain of 2,048 hand-offs stays exact with no discrete
   checkpoint at inference, in every seed.
@@ -3306,6 +3306,9 @@ not in S5. Flip-flop passes in both arms, with two seeds certified at every leng
   - FF TRACE s1 is **not** certified (task CERT: 1,024 reachable, Moore 870, 685 violations; its code set does not
     saturate), consistent with its 0.885 all-reads-right rate. FF is certified in 2/4 cells. The other cells' CERT is
     pending.
+  - **S5 machines stay open.** TRACE s2 (accuracy 1.0 at 2,048) visits 1,156 codes by position 16 and 2,176 by 2,048,
+    still growing; CERT is inconclusive_time (344,527 reachable). TRACE s1 (the failed seed) saturates at about 100 codes
+    but is wrong (Moore 224, 39,641 violations).
 * **Reading.**
   - **(a) A learned, task-agnostic discrete snap at every step works where the state space is small.** Flip-flop passes
     4/4 seeds in both arms, from final answers too, with certified minimal machines in 2 seeds.
@@ -3488,6 +3491,11 @@ counts acquisition timing as well as acquisition.**
   - Prediction: cumulative ≥ 0.99 at 512 in both k = 1 = 1.0 seeds (s22, s24).
   - If confirmed, `--post_acq_steps 9k` (triggered label-free by gate ≥ 0.5 with kept ≥ 0.1) becomes a candidate for
     future self-training registrations.
+  - **Resume details, before the runs** (the experiments session):
+    - One extra L_max round of 4k steps, then the 4k final relabel.
+    - Fresh AdamW, warmup 100 plus cosine from 1e-4 over 8k, and fresh pools.
+    - The labelled set for the k = 1 split is T_f (the source's drawn matrix was not saved; flagged drawn_proxy). For §110
+      s1, never-labelled means all transitions.
 
 **Note 124-2 (2026-10-05 14:06 EDT, before any §124 run; no rule change).** 112-5 shows FOOTHOLD also counts the steps left after
 acquisition. So an arm that acquires earlier can gain FOOTHOLD from budget alone. §124's mechanism signal is the
