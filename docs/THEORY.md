@@ -195,6 +195,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 117 | One model for C1 + C4 + C6: self-decoded restarts + Markov segments + reader (MK vs staged ST) | registered (conditional on §111 READ REL) | **open** |
 | 118 | Fully latent at inference: text-path anchor vs longer silent stretches (S5, on READ) | registered | **open** |
 | 119 | Controlled C1 baselines: Coconut, CODI, SIM-CoT on our S5 protocol (donor + length) | registered (queued behind §117 / §118) | **open** |
+| 120 | FSQ digital recurrence: a learned discrete snap every step, no template or schedule (S5 + flip-flop pilot) | registered | **open** |
 
 ## Live sections
 
@@ -2401,6 +2402,91 @@ is SERIAL in ≥ 2/3 of its competent seeds**, while §111 READ is SERIAL in 5/5
 **Placement.** About 9 chunked + 3 native runs + lr sweeps + faithfulness evals, about $20–30 on Vast. **Queued behind
 §117 / §118.** Thinking States is an optional fourth arm if the budget allows (noted then). Implementation: the
 experiments session. Scorer `theory/score_s119.py`, committed before any run. Projection to Audit.
+
+## 120. A learned discrete snap at every step, with no template and no schedule: FSQ digital recurrence on S5 and flip-flop (pilot) (pre-registered 2026-10-05 00:38 EDT, after Literature's checks b284f980 / 46fe5ca0 and before any implementation or run; the user's no-snap directive, P-A in `docs/THEORY_AUTOSNAP_2026-10-05.md`; spend approved by Audit)
+
+**Why.** Every success so far snaps to a task-specific state text on a hand-set schedule. The user wants neither.
+* Without snaps the latent drifts in direction (115-1).
+* **The carried latent is not state-clustered even in range** (`theory/autosnap_premise.py`). On §111 READ s6, a
+  per-state centroid codebook fitted on in-range latents classifies held-out in-range latents at 3–5 % (chance 0.8 %),
+  while the reader decodes the state at about 1.0. A post-hoc snap cannot work; the discretisation must shape the code
+  in training.
+* P-A makes every hand-off a learned, task-agnostic discrete snap. If each step is exact on the reachable codes, the
+  chain is a learned finite-state machine: exact at any length, and certifiable by enumeration.
+* **Prior** (46fe5ca0): FSQ 2309.15505; closest SR-RNN 1901.08817 and QBN 1811.12530 (from scratch or post hoc). VQ in
+  latent CoT quantises text spans, not the carried state. New as scoped.
+
+**One harness (the same code and hyperparameters for both families).**
+* **Markov segment per input item** (the dataset's own item unit): [EOT, carried state embedding, item tokens] →
+  last hidden h (fresh cache, positions from 0, as §108).
+* **The FSQ snap (fixed now).**
+  - z = W_down(LN(h)), d = 8; z_b = tanh(z) · (L − 1) / 2 with L = 8 levels (half-integer offset as FSQ for even L);
+    q = round(z_b).
+  - Straight-through: q_st = z_b + stop-grad(q − z_b). The carried state embedding is W_up(q_st) (8 → 768) plus a
+    learned bias.
+  - Code space L^d = 8⁸ ≈ 1.7·10⁷, against minimal automata of 120 (S5) and 2 (flip-flop).
+  - **Rounding schedule:** soft (q = z_b) for steps 0–2k; then each hand-off is hard with probability rising linearly
+    0 → 1 over 2k–4k; hard from 4k on. Test is always hard.
+* **Start:** the start state as text at position 0, the only text input (S5: a random given start arrangement, as
+  §110b; flip-flop: none).
+* **Answer decoder:** a fresh segment [EOT, the final carried state embedding] → the answer text through the tied head
+  (S5: the 6-token state text; flip-flop: the bit token).
+* **Training:** lengths drawn uniformly from 1..L_max with L_max = 2 / 4 / 8 / 16 / 32 from steps 0 / 2k / 5k / 9k /
+  14k. Full backpropagation through the chain. 24k steps, bs 64, AdamW lr 1e-4 (FSQ projections included), warmup 100
+  + cosine.
+
+**Families and long test lengths (fixed now).**
+* **S5** (group): DeltaProduct's protocol test set (2,000 × 512, identity start as text), scored as cumulative accuracy
+  at **512**. Descriptive: 2,048 (500 sequences).
+* **Flip-flop** (2306.00946; non-group, with reset). Instructions w0 / w1 / i0 / i1 / r with p_ignore = 0.8 (p_w = p_r =
+  0.1); the first instruction is a write and the last a read. The answer is the bit last written.
+  - Test: 2,000 sequences of length **512** at p_ignore = 0.8, scored as accuracy at every read.
+  - Descriptive: sparse 0.98 and dense 0.1, at 512.
+
+**Arms (2 seeds each per family; 8 runs).**
+* **FINAL (primary):** only the final answer is supervised (S5: the final state; flip-flop: the last read's bit).
+* **TRACE:** plus the answer decoder applied at every position where the dataset has a native label (S5: the state after
+  every op; flip-flop: every read's bit), CE weight 1.
+  - Pre-registered wording: **"task-agnostic architecture, per-task supervision"**. The native trace is supervision,
+    not a snap template (Literature 46fe5ca0 (e)4); it is never fed back.
+
+**Measures.**
+* Long-length accuracy (above), and accuracy against length (16 … 512).
+* **Code usage:** perplexity of codes over test chains, and the number of distinct codes.
+* **Codes per state:** distinct codes visited per true state on test chains.
+* **CERT (reachable-table certificate).**
+  - BFS from every start code (S5: the 120 start texts; flip-flop: the empty start) over every item (S5: 120 ops;
+    flip-flop: 5 instructions), until closure or a cap of 10⁶ codes.
+  - Decode every reachable code with the answer decoder. CERT holds if every code decodes to a valid state and, for
+    every reachable (code, item), decode(next) = δ(decode(code), item).
+  - Moore minimisation gives the number of distinct behaviours, against 120 / 2.
+* **C1:** single-slot donor patching of the carried code at positions 2, 4 and 6 of length-8 chains (§104 rules: USE ≥
+  0.90, recipient < 0.10).
+* Code drift: none by construction. The number of hand-offs where the rounded code changes under ±0.5 noise on z_b
+  (the margin) is reported.
+
+**Rules (fixed now).**
+* **PILOT-PASS (per family × arm):** long-length accuracy ≥ 0.99 in **both** seeds.
+* **P-A pilot reading:** FINAL passes PILOT-PASS in **both** families, the directive's minimum of ≥ 2 families incl. ≥ 1
+  non-group, with the same code and hyperparameters. A TRACE-only pass is reported as "per-task supervision".
+* **CERT** is reported per seed. A passing seed with CERT is "certified at every length".
+* **Extension:** a passing family × arm gets seeds 3–5, plus cycle navigation (Delétang 2207.02098; train lengths 1–40,
+  test 41–500 at **500**) and 4×4 multiplication. That is a new note before launch, with spend posted to Audit.
+
+**Readings.**
+* **FINAL passes in both families (with CERT).** A pretrained LM learns, from final answers alone, a discrete latent
+  recurrence that is exact at 512 with no text snaps and no schedule, on a group and a non-group task, with one design.
+  The snap is learned and task-agnostic. Tags: C2 (length), C5 (no hand-set schedule: every step snaps to a learned
+  code), C1 (donor), C7 (codes per state); C6 at extension.
+* **Only TRACE passes.** The discrete recurrence works but needs per-step supervision on these tasks.
+* **Fails with high in-range accuracy.** The codes generalise poorly in length: report codes per state and margin.
+  P-B (continuous stabiliser) or a larger d / L is next.
+* **Fails in range.** The straight-through estimator or the no-read basin blocks learning. Report code usage and the
+  shuffled-null ratio.
+
+**Placement.** 8 runs, about $10 on Vast, approved by Audit. It goes ahead of §119 (credit floor). Implementation: the
+experiments session (a new module with both families, the FSQ snap and the CERT enumerator). Scorer
+`theory/score_s120.py`, committed before any run. Projection to Audit.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
