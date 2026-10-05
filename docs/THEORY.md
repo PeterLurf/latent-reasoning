@@ -2940,6 +2940,22 @@ make a sum carrier.**
     accuracy rose.
   - C1 on arithmetic in §121's sense (MECH) is not shown by READ-only.
 
+**Note 120-4 (2026-10-05 06:22 EDT; descriptive, the first §120 cell, before the pilot is scored). S5 FINAL s1: a learned discrete snap
+at every step, with no text snaps and no schedule, is exact to 512 and serial.**
+* **Accuracy:** long_acc **1.0** (cumulative at 512, 2,000 test chains; 1.0 at every length from 16 to 512). 2,048: **0.998**
+  (n = 500).
+* **C1:** single-code donor patching at positions 2 / 4 / 6 is donor-consistent **1.0 / 1.0 / 1.0**, with recipient
+  equal to chance overlap. Serial use of the discrete carrier.
+* **Code:** 3,374 distinct codes on test chains, **about 28 per state**, perplexity 812.
+  - margin_flip_rate is 0.91: under U(−0.5, 0.5) noise on z_b the code changes at most hand-offs, so exactness does
+    not come from centred codes.
+  - It comes from a redundant code: many codes per state, each mapped correctly.
+* **CERT** (post hoc, 120-3) is running. The 2,048 errors (0.998) suggest a few reachable code transitions are wrong, so
+  CERT may not hold.
+* **Scope:**
+  - coverage_drawn is 1.0 (120-1: the short-problem curriculum labels every transition), so no C4.
+  - One seed of one family. The pilot reading needs both seeds and both families (flip-flop, the non-group family).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
