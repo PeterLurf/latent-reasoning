@@ -2,8 +2,8 @@
 Runs: boxes/runs_fsq/s123_s5_dither{000,010,025,050}_s{1,2}/ and s123_ff_dither{000,<sigma*>}_s1/ (continuous, no
 rounding; flip-flop's sigma* = the S5 sigma > 0 with the lowest mean rho) and
 s123_{s5,ff}_fsqdither_s{1,2}/ (FSQ + pre-rounding dither). Keys: eval.json long_acc, rho (geometric mean over 8 hand-offs
-of the median normalised distance ratio at eps 0.1; note 123-5: CAUSAL reads rho from eval_contraction_fp32.json, the
-registered bf16 rho printed beside), basin, grid_share (implicit quantisation); FSQ+DITHER also
+of the median normalised distance ratio at eps 0.1; note 123-5 / 123-9: CAUSAL reads rho_ff, the floor-free fp32 rho
+from eval_contraction_fp32.json; the fp32 k = 1..8 and bf16 values are printed beside), basin, grid_share (implicit quantisation); FSQ+DITHER also
 eval_growth.json (codes per state by position, '2048') and eval_cert.json (cert {status, holds}).
 CAUSAL: (i) S5 mean rho falls from sigma 0 to 0.5, and flip-flop rho at sigma* < its sigma-0 control; (ii) every continuous cell with rho < 0.3 has long_acc >= 0.99;
 (iii) every continuous cell with rho > 0.6 has long_acc < 0.99. Continuous-stabiliser reading needs passing cells'
@@ -12,6 +12,7 @@ seeds AND CERT done & holds in >= 1 seed (FF: the task-language CERT, 120-8; the
     python theory/score_s123.py
 """
 import json
+import math
 import os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -35,6 +36,18 @@ def plateau(d):
     return bool(g(2000) >= 0.9 * g(1000) and g(2000) >= 0.25 * g(100))
 
 
+def rho_ff(cf, eps="0.1", floor=1e-3):
+    """note 123-9: geomean of fp32 rho_k over hand-offs whose preceding median distance exceeds 1e-3; >= 2 required."""
+    try:
+        e = cf["detail"]["eps"][eps]; rk, dk = e["rho_k"], e["dist_med_k"]
+    except (KeyError, TypeError):
+        return None
+    use = [rk[k] for k in range(len(rk)) if k < len(dk) and dk[k] > floor and rk[k] > 0]
+    if len(use) < 2:
+        return None
+    return math.exp(sum(math.log(x) for x in use) / len(use))
+
+
 def load(d, f="eval.json"):
     p = os.path.join(R, d, f)
     return json.load(open(p)) if os.path.exists(p) else None
@@ -53,7 +66,7 @@ def main():
                 if r is None:
                     continue
                 cf = load(dname, "eval_contraction_fp32.json") or {}                    # note 123-5: rho in fp32
-                c = {"fam": fam, "sigma": sig, "seed": sd, "long_acc": r.get("long_acc"), "rho": cf.get("rho"), "rho_bf16_registered": r.get("rho"),
+                c = {"fam": fam, "sigma": sig, "seed": sd, "long_acc": r.get("long_acc"), "rho": rho_ff(cf), "rho_fp32_registered": cf.get("rho"), "rho_bf16_registered": r.get("rho"),
                      "rho_nonzero": r.get("rho_nonzero"), "basin": cf.get("basin", r.get("basin")),
                      "grid_share": r.get("grid_share"), "plateau": plateau(dname), "gpu": r.get("train_gpu", r.get("gpu"))}
                 res["continuous"]["%s_%s_s%d" % (fam, tag, sd)] = c; cells.append(c)
@@ -82,7 +95,7 @@ def main():
     levels = [("s5", sg) for sg in (0.0, 0.1, 0.25, 0.5)] + [("ff", 0.0)]
     evaluable = len(allcells) == 10 and all(mrho(f, sg) is not None for f, sg in levels) and sigma_star is not None and mrho("ff", sigma_star) is not None
     if len(allcells) == 10 and any(c["rho"] is None for c in allcells):
-        res["CAUSAL"] = "incomplete (rho_fp32 missing for %d cells)" % sum(c["rho"] is None for c in allcells)
+        res["CAUSAL"] = "incomplete (rho_ff missing or < 2 floor-free hand-offs for %d cells)" % sum(c["rho"] is None for c in allcells)
     elif len(allcells) < 10:
         res["CAUSAL"] = "incomplete (n_cells = %d / 10)" % len(allcells)               # interim runs never read as a verdict
     else:
