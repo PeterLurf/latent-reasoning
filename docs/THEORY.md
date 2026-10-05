@@ -3551,6 +3551,18 @@ multiplication latent-carriage line pauses.**
 * The lesson stands for any future design: anchor to a text-started chain of at least two hand-offs, and report centred
   binding. The formal §122 result follows when s3 lands.
 
+**Note 123-4 (2026-10-05 15:15 EDT; descriptive, the first two §123 cells; rules as 123-2 / 123-3). S5 FSQ+DITHER: one seed learns
+with fewer codes, one plateaus.**
+* **s1: not plateau.** Accuracy 1.0 at 512 and 2,048; donor 1.0 at positions 2 / 4 / 6.
+  - **21.0 codes per state at 2,048, against §120 FINAL s1's 34.2.** The dither reduces code redundancy.
+  - Codes on the extension rollouts still grow (1,196 at 16 → 2,519 at 2,048), so the machine is likely still open.
+    CERT and growth are pending.
+* **s2: plateau by 123-3's flag.** It is decided in the soft phase before the dither starts: 2 codes, accuracy 0, the
+  same seed's basin as §120 FINAL s2.
+  - Its ρ ≈ 0 and basin 1.0 come from a constant-output machine, the artefact 123-3 guards against.
+* **Prediction P2 holds so far:** FSQ+DITHER S5 plateaus at §120's rate, on the same seed. The basin is set early, by
+  seed, before any dither acts. So CANONICAL for S5 rests on s1 alone (codes per state 21 < 34.2 ✓; CERT pending).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
