@@ -3335,6 +3335,16 @@ self110 `--cov 0.1` (BASE), plus `--copy_frac 0.1` (the fixed copy path) or `--e
 text). Scorer
 `theory/score_s124.py`, committed before any run.
 
+**Note 124-1 (2026-10-05 12:41 EDT, before any §124 run; the experiments session's implementation, accepted).**
+* `--expose_frac`: `Gen110.expose_loss` is plain next-token LM CE on [EOT] + the start text, with no slot, fork or state
+  decode. The rows replace ordinary rows, like copy rows.
+* copy_loss and expose_loss are logged separately; stay_rate is in per_round_split.
+* eval.json carries copy_acc for every arm (masked-fork greedy decode of the copy path, n = 1,000), BASE included as the
+  untrained baseline.
+* The gradient-flow check passes for both new losses (it guards against 116-5's no_grad fault).
+* Queues c1–c6 (P = 2): proof host c1 (EXPOSE s26–27), then EXPOSE s28–29, COPY s26–29, BASE s26–29. They run after
+  §123's b7 / b8.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
