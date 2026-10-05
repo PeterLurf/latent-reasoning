@@ -420,6 +420,11 @@ def main():
     ap.add_argument("--opdef", action="store_true", help="§116 OPDEF: T_f = only the 120 (e, a) transitions (g = 0)")
     ap.add_argument("--no_r0", action="store_true", help="§116 NONE: no R0 / no shorts; its updates go to round 1; insertion never below 5")
     ap.add_argument("--foothold_n", type=int, default=5000, help="< 5000: smoke only")
+    ap.add_argument("--resume", default=None, help="note 112-5 (descriptive): continue a FINISHED run from <dir>/model.pt (its args.json): one more "
+                    "labelling round at L_max (fresh pool, same filters / gate, no insertion) for --resume_round_steps, then the --final_steps relabel; "
+                    "fresh AdamW, warmup 100 + cosine from --lr over those steps; writes to --out (never the source dir)")
+    ap.add_argument("--resume_round_steps", type=int, default=4000)
+    ap.add_argument("--resume_lr", type=float, default=None, help="note 112-5: peak LR of the resume cosine (default --lr; Audit: consider the source's last-round LR)")
     ap.add_argument("--expose_frac", type=float, default=0.0, help="§124 TEXT-EXPOSE: share of each batch's rows that are LM-only start-text rows")
     ap.add_argument("--copy_frac", type=float, default=0.0, help="§116 NONE+COPY (note 116-2): share of each batch's rows that are length-0 copy problems")
     ap.add_argument("--foothold_log", action="store_true", help="§116: per round foothold_yield and acc_by_length on 5k fixed problems (truth, logged only)")
@@ -431,6 +436,15 @@ def main():
     ap.add_argument("--donor_n", type=int, default=2000); ap.add_argument("--data_dir", default=os.path.join(ROOT, "bench", "data", "s5"))
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); dev = a.device; torch.manual_seed(a.seed)
+    if a.resume:                                                            # note 112-5: the source run's recipe (seed, cov, lengths, ...)
+        assert os.path.abspath(a.resume) != os.path.abspath(a.out), "--resume writes to a new --out"
+        src = json.load(open(os.path.join(a.resume, "args.json")))
+        for k_, v_ in src.items():
+            if k_ in vars(a) and k_ not in ("out", "device", "resume", "resume_round_steps", "resume_lr", "eval_bs", "data_dir", "save_rounds"):
+                setattr(a, k_, v_)
+        a.save_rounds = False                                               # retention rule: no per-round snapshots
+        if a.resume_lr is not None:
+            a.lr = a.resume_lr
     rng = np.random.default_rng(11000 + a.seed); drng = np.random.default_rng(a.seed)          # pools / draws, per seed
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     s5.check_interface()
@@ -444,12 +458,18 @@ def main():
     m = Gen110(s5.load_gpt2(dev)).to(dev); m.reader = a.reader; opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
     if a.markov:
         m.set_markov(True)
+    if a.resume:                                                            # note 112-5: the finished source model (its optimiser state is not saved)
+        m.load_state_dict(torch.load(os.path.join(a.resume, "model.pt"), map_location=dev))
+        rng = np.random.default_rng(a.seed + 112500); drng = np.random.default_rng(a.seed + 112501)   # fresh pools, not the source's draws
     lengths = [int(x) for x in a.lengths.split(",")]; ck = os.path.join(a.out, "ckpt.pt"); lp = os.path.join(a.out, "log.jsonl")
     S = {"step": 0, "short": 0, "rounds": [], "prev": 2, "remaining": a.steps - a.r0_steps - a.final_steps, "todo": list(lengths),
          "ins": 0, "phase": "R0", "sec": 0}
     if a.no_r0:                                                             # §116 NONE: R0's updates go to round 1; lengths start at L_max >= 5
         assert min(lengths) >= 5, "NONE needs --lengths with L_max >= 5 (e.g. 6,8,16,32)"
         S.update({"phase": "rounds", "prev": 4, "bonus": a.r0_steps})
+    if a.resume:                                                            # (after no_r0) labelled set = T_f proxy (the source's drawn is not saved)
+        S.update({"phase": "resume_round", "H": a.resume_round_steps + a.final_steps, "resume_of": a.resume, "bonus": 0,
+                  "drawn": (Tf.copy() if Tf is not None else np.zeros((120, 120), bool))})
     t0 = time.time()
     if os.path.exists(ck):
         c = torch.load(ck, map_location=dev, weights_only=False); m.load_state_dict(c["model"]); opt.load_state_dict(c["opt"])
@@ -592,6 +612,13 @@ def main():
         save_ck()
         if not S["todo"] and S["remaining"] > 0:                            # post-switch budget left: more rounds at L_max
             S["todo"].append(lengths[-1])
+    if S["phase"] == "resume_round":                                        # note 112-5: one more round at L_max, then the final relabel
+        Lmax = lengths[-1]; rows, lens, starts = pool_of(Lmax)
+        items, st, pl = label_round(m, Xtr, Ytr, rows, lens, starts, dev, amp)
+        st.update({"length": Lmax, "steps": a.resume_round_steps, "action": "resume round (note 112-5)"}); S["rounds"].append(st)
+        print("resume round", {k: v for k, v in st.items() if k != "op_hist"}, flush=True)
+        S["kept_trans"] |= kept_transitions(Xtr, pl, true_states(Xtr, rows, lens, starts))
+        train_round(items, a.resume_round_steps, f"L{Lmax}_resume", False, pl); round_end(f"L{Lmax}_resume"); S["phase"] = "final"; save_ck()
     if S["phase"] == "rounds":
         S["phase"] = "final"
     if S["phase"] == "final":
@@ -624,6 +651,8 @@ def main():
     mu = mean_slot_inputs(m, Xtr, Ytr, K, dev, amp)
     r["removal"] = {ab: chunk_check(m, K, dev, amp, a.eval_bs, n=min(10_000, a.check_n), seed=7106, ablate=ab, mean_in=mu) for ab in ("zero", "mean")}
     r["donor"] = donor(m, K, dev, amp, a.eval_bs, n=a.donor_n)
+    if a.resume:
+        r["resume_of"] = a.resume; r["drawn_proxy"] = "T_f (resume: the source run's drawn set is not saved)" if Tf is not None else "none (no T_f)"
     r["copy_acc"] = m.copy_acc(dev); r["copy_frac"] = a.copy_frac; r["expose_frac"] = a.expose_frac   # §124 (all arms: BASE as baseline)
     if m.markov:                                                            # §117 (eval only): per-hand-off and the shuffled no-read flag
         from boxes.mk108 import handoff, rel_ratio_final
