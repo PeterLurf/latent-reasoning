@@ -435,3 +435,4 @@
 07:29:35 s120_s5_final_s1 growth_only rc 0 (cuda:0)
 08:14:52 s120_s5_final_s1 cert_only (layers) rc 0 (cuda:0)
 09:02:29 copy_unit_test rc 0 (cuda:0)
+09:15:11 s115 s111_mk4_read_s10 rc 0 (cuda:2, fp32)
