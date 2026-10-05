@@ -3412,6 +3412,44 @@ only at reads.**
   - The uncertified TRACE s1 shifts slightly across cards (Moore 869 → 841), which is cross-card bf16 nondeterminism on a
     large inexact machine.
 
+**Note 122-3 (2026-10-05 14:06 EDT; descriptive, $0; Audit / claude-13's anchor-floor question; `theory/anchor_floor.py`, n = 400, hand-off
+j = 2). The anchor binds state-specifically on S5, and only weakly on multiplication.**
+
+| model | raw cos(z, own b) | raw cos(b_i, b_k) (floor) | centred cos(z, own b) | centred cross | nearest centred b is own |
+|---|---|---|---|---|---|
+| §122 a122 s1 (4×4) | 0.987 | 0.786 | 0.737 | 0.024 | 0.235 |
+| §118 anchor s71 (S5) | 0.9998 | 0.848 | 0.971 | −0.001 | 0.83 |
+
+* The raw floor between different problems' text codes is 0.79–0.85, not about 0.98. A raw anchor cosine of 0.987 is
+  well above it.
+* Centred, the multiplication binding is real but weak (0.74, own-match 24 %), against S5's 0.97 / 83 %. Together with
+  122-2 (the text path's latent never has to carry the sum), the anchor transfers a loosely bound code that does not
+  hold S_2.
+* **Design fact for future anchors:** report centred anchor cosines and the own-match rate, not raw cosines. A future
+  anchor loss could use centred or standardised codes.
+
+**Note 112-5 (2026-10-05 14:06 EDT; Audit / claude-13's analysis of 32 self-training runs, descriptive; a $1 check pre-stated). FOOTHOLD
+counts acquisition timing as well as acquisition.**
+* **The label-free gate tracks acquisition:** it crosses 0.5 in the same round as never-labelled k = 1 in 8 of 10
+  acquirers and lags one round in 2, never leading. A gate rule also needs kept_share ≥ 0.1 (§116 NONE s43 showed gate
+  0.95 on 0.8 % kept).
+* **Nothing predicts acquisition before about 11k** (gate ≤ 0.007; every other signal interleaves), consistent with
+  112-4. Early-abort rules cannot work.
+* **Timing decides FOOTHOLD.**
+  - All 8 seeds acquiring by 14.9k pass.
+  - Of the 5 acquiring at ≥ 16.6k, 3 fail, two with k = 1 = 1.0 on every never-labelled transition (f = 0.1 s22 0.9645;
+    f = 0.5 s24 0.968), with < 7.5k steps left after acquisition against ≥ 9k for every passer.
+  - So by k = 1, acquisition is f = 0.1 3/5, f = 0.5 4/5, §110 3/5.
+* **Pre-stated $1 check (descriptive).** Resume f = 0.1 s22, f = 0.5 s24 and §110 s1 from their saved model and final pool
+  for one more labelling round plus the 4k relabel.
+  - Prediction: cumulative ≥ 0.99 at 512 in both k = 1 = 1.0 seeds (s22, s24).
+  - If confirmed, `--post_acq_steps 9k` (triggered label-free by gate ≥ 0.5 with kept ≥ 0.1) becomes a candidate for
+    future self-training registrations.
+
+**Note 124-2 (2026-10-05 14:06 EDT, before any §124 run; no rule change).** 112-5 shows FOOTHOLD also counts the steps left after
+acquisition. So an arm that acquires earlier can gain FOOTHOLD from budget alone. §124's mechanism signal is the
+**acquisition round** (and the count), as registered. FOOTHOLD per arm is reported but not read as mechanism.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
