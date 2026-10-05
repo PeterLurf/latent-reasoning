@@ -1,0 +1,1 @@
+REL {"rel_ratio_final_shuffled": 0.013709023059745798, "rel_ratio_final": 0.016953831523069434, "no_read_final": false, "main_loss": 1.5572879910469055, "shuffled_loss": 113.59584007263183, "zeroed_loss": 91.85463409423828, "n_batches": 20, "bs": 64}
