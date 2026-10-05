@@ -2713,6 +2713,13 @@ Audit as about $2.5 extra), proof seed first (ANCHOR+READ s1). Implementation: t
 * **Order:** proof seed ANCHOR+READ s1 first. Then ANCHOR+READ s2–3 and READ s1–2, after Audit's gate (a sane 1k-step
   log with all three losses, peak memory, an eval-path probe).
 
+**Note 117-3 (2026-10-05 02:59 EDT, before any §117 run; the dose, as 117-2 required). §112 meets FOOTHOLD-0.1 locally**
+(`theory/score_s112.py`): the passing seeds are [21, 23] (cumulative 512 0.996, 0.9985; never-labelled k = 1 1.0, certified).
+* **§117's dose is fixed at f = 0.1**: §112's T_f (112-1 option (b), with the drawn coverage logged).
+* The claim wording becomes "C4 qualified by 10 % identity-start short coverage".
+* The §116 launch condition is also met. §116 launches (OPDEF, NONE, NONE+COPY; 116-1 to 116-3).
+* The §112 result follows when f = 0.1 s24 lands.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
