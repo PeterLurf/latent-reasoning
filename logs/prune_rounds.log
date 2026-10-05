@@ -5,3 +5,4 @@
 00:16:25 gen-d5 rounds/ deleted on-host (Audit 00:11 (a)/(b): drain aborted under 70 %; re-drain without round models)
 00:17:49 local rounds/ deleted for s112_f050_s22, s112_f050_s25 (Audit 00:11 (c): one archived set kept, s112_f010_s21)
 00:18:09 local rounds/ deleted for s112_f025_s22, s112_f050_s24 (Audit 00:11 (c))
+00:25:29 retention sweep: deleted 251 stale transfer tarballs (> 1 h old) in /tmp (C:), 34.4952 GB
