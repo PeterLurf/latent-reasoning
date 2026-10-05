@@ -406,3 +406,5 @@
 19:16:45 s108_mk4_s5 rc 0 (cuda:0)
 19:16:46 WORKER_DONE cuda:0 scratch/c1_q_108_local.txt
 19:20:21 §111 s6-8 rel backfills (cuda:2, fp32)
+20:50:00 s112_f010_s21 rc 0 (cuda:1)
+20:50:00 WORKER_DONE cuda:1 scratch/c1_q_112_local.txt
