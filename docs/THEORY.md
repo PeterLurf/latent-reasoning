@@ -3671,6 +3671,18 @@ bottleneck alone is exact: snapping was not what made §120 work.**
     open on S5).
   - CAUSAL waits for every dose cell and its fp32 ρ (123-5).
 
+**Note 125-1 (2026-10-05 15:51 EDT, before any §125 run; the experiments session's implementation d93e105b, accepted).**
+* `--std` sits inside `embed_code`, so every path where a code enters GPT-2 uses e′: segments, the answer decoder, the
+  flip-flop empty start, eval, CERT, donor and contraction.
+  - Buffers are registered only under `--std`, so older models still load.
+  - The EMA is updated after each optimiser step, with the sd floor, and frozen at the end. It makes no random draws.
+* **Mechanism verified at initialisation** (CPU smoke, S5 s2): the carried-embedding row norm is **27.0 (control) → 3.93
+  (STD)**, against GPT-2's wte 3.96.
+* Gradient flow passes for the main path, W_up and W_down.
+* Every S5 run uses `--micro 2` (gradient accumulation, so each step sees the same batch). Data order matches §120 at
+  the same seed; numerics differ slightly.
+* Proof host: STD S5 s2 (the basin seed). Then STD S5 s1 / s3 / s4, CTRL S5 s3–4 and STD FF s1–2.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
