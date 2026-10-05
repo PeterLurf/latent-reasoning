@@ -3396,6 +3396,21 @@ only at reads.**
     notion for an output-at-reads task.
   - S5's CERT is unchanged: every S5 position is a potential final answer, so every code must decode.
 * The §120 and §123 verdicts stay on the pre-registered CERT (120-8). cert_task_reads is reported as a description.
+* **Results on all four §120 flip-flop cells** (4060, bf16):
+
+  | cell | cert_task_reads | cert_task (holds / Moore / violations) | registered |
+  |---|---|---|---|
+  | FF FINAL s1 | **holds** (20 pairs, 0 violations) | false / 4 / 13 | false / 4 / 16 |
+  | FF FINAL s2 | **holds** (35 pairs) | **true** / 2 / 0 | false / 2 / 3 |
+  | FF TRACE s1 | false (1,339 pairs, 521 violations) | false / 847 / 663 | false / 841 / 668 |
+  | FF TRACE s2 | **holds** (7 pairs) | **true** / 2 / 0 | false / 20 / 18 |
+
+  - Exact on every reachable read in **3/4** cells (descriptive). Certified under the verdict's cert_task in 2/4.
+  - FINAL s1's cert_task failures are all non-read outputs.
+* **Numerics caveat.** Certificates are computed in bf16 (the eval dtype), so they certify the bf16 model as deployed.
+  - The certified cells give identical results on two GPUs.
+  - The uncertified TRACE s1 shifts slightly across cards (Moore 869 → 841), which is cross-card bf16 nondeterminism on a
+    large inexact machine.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
