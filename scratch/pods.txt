@@ -753,3 +753,12 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 54303099 vast | gen_b3 DESTROYED_VERIFIED 2026-10-05 11:36 after verified per-run fetch (boxes/runs_fsq/s120_ff_final_s1 boxes/runs_fsq/s120_s5_trace_s2)
 54340003 vast offer 46840164 created 2026-10-05 11:39: label gen-b10, queue scratch/gen_q_b10.txt (logged at create by vdeploy_toy.sh)
 54293054 vast | gen_j3 DESTROYED_VERIFIED 2026-10-05 11:55 after verified per-run fetch (boxes/runs_s5/s117_st_s62 boxes/runs_s5/s117_st_s63)
+54342714 vast offer 31250690 created 2026-10-05 12:00: label gen-b10, queue scratch/gen_q_b10.txt (logged at create by vdeploy_toy.sh)
+54345203 vast offer 26678438 created 2026-10-05 12:17: label gen-b11, queue scratch/gen_q_b11.txt (logged at create by vdeploy_toy.sh)
+54345211 vast offer 31458818 created 2026-10-05 12:17: label gen-b6, queue scratch/gen_q_b6.txt (logged at create by vdeploy_toy.sh)
+54345215 vast offer 51066770 created 2026-10-05 12:17: label gen-b9, queue scratch/gen_q_b9.txt (logged at create by vdeploy_toy.sh)
+54309545 vast | gen_i4 DESTROYED_VERIFIED 2026-10-05 12:45 after verified per-run fetch (boxes/runs_mult/a122_textmixanchor_4x4_s1)
+54345215 vast | gen_b9 DESTROYED_VERIFIED 2026-10-05 12:47 after verified per-run fetch ()
+54349938 vast offer 53860915 created 2026-10-05 12:52: label gen-b9, queue scratch/gen_q_b9.txt (logged at create by vdeploy_toy.sh)
+54317792 vast | gen_a3 PRICE EXCEPTION (logged 2026-10-05 13:06): RTX 4090 $0.436/h since 08:54 - §118 LONG s81 resume at k=32 needs a 24 GB card alone; no clean 3090 offer then
+54349938 vast | gen_b9 PRICE EXCEPTION (logged 2026-10-05 13:06): RTX 4090 $0.382/h - §123 S5 sigma=0.5 dose end; no clean 3090 offer after the b9 DATA_SHA_MISMATCH host; Audit fallback (a) OK

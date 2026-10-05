@@ -79,6 +79,7 @@ def check_self110_copy(dev, out):
     from boxes.self110 import Gen110
     m = Gen110(s5.load_gpt2(dev)).to(dev); m.train(); cs = np.random.default_rng(0).integers(0, 120, 4)
     out["self110.copy"] = term(m, lambda: m.copy_loss(torch.tensor(STTOK[cs], device=dev), torch.tensor(cs, device=dev)))
+    out["self110.expose"] = term(m, lambda: m.expose_loss(torch.tensor(STTOK[cs], device=dev)))   # §124 TEXT-EXPOSE
 
 
 def main():

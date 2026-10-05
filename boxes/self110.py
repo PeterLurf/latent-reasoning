@@ -33,6 +33,7 @@ cosine horizon becomes switch_step + 16k), --kcurr (training chunks cut at k_tra
 --reader (§113 reader from step 0). No gold teacher forcing, no rho.
 WHERE TRUE STATES ENTER (Theory / Audit rule: in-run decisions use final answers only):
   §116 NONE+COPY copy rows (Gen110.copy_loss) use only the input: the start state's own text is its target.
+  §124 TEXT-EXPOSE rows (Gen110.expose_loss) use only the input: plain next-token LM loss on a random start state's text.
   in-run decisions (final answer only): label_round's final filter (true FINAL answer of each chain via true_states(...)[-1]),
     r0_items / r0_items_cov final-answer targets, items_for / items_from_pool final-only targets (true_final), the ST switch
     check (final answers of length 5-6 problems); the self-consistency gate, kept_share and insertion use no truth.
@@ -187,6 +188,22 @@ class Gen110(Gen103):
         st = self.sttok[states]; fp, p0 = self.fork_past(past); hf, _ = g(g.embed(st[:, :-1]), fp, pos0=p0)
         lg = g.logits(torch.cat([hslot[:, None], hf], 1)).float()
         return F.cross_entropy(lg.reshape(-1, lg.shape[-1]), st.reshape(-1), reduction="none").view(-1, NST).sum(-1).mean()
+
+    def expose_loss(self, start):
+        """§124 TEXT-EXPOSE: plain next-token LM loss on the start text ([EOT] + text, predicting the text; no slot, no fork,
+        no state decode). CE summed over the text tokens, mean over rows (as copy_loss)."""
+        g = self.g; B = start.shape[0]; eot = g.embed(torch.full((B, 1), 50256, device=start.device))
+        h, _ = g(torch.cat([eot, g.embed(start[:, :-1])], 1)); lg = g.logits(h).float()
+        return F.cross_entropy(lg.reshape(-1, lg.shape[-1]), start.reshape(-1), reduction="none").view(B, -1).sum(-1).mean()
+
+    @torch.no_grad()
+    def copy_acc(self, dev, n=1000, seed=11604):
+        """§124: copy accuracy (the copy_loss path decoded greedily through the masked fork) on n random start states."""
+        cs = np.random.default_rng(seed).integers(0, 120, n); g = self.g; ok = []
+        for i in range(0, n, 250):
+            st = torch.tensor(STTOK[cs[i:i + 250]], device=dev); h, past = g(g.embed(st)); s_in = h[:, -1]; hs, past = g(s_in[:, None], past)
+            e, _ = decode_to_el(self.greedy(hs[:, 0], past).cpu().numpy()); ok.append(e == cs[i:i + 250])
+        return float(np.concatenate(ok).mean())
 
     @torch.no_grad()
     def read_greedy(self, s_in):
@@ -403,6 +420,7 @@ def main():
     ap.add_argument("--opdef", action="store_true", help="§116 OPDEF: T_f = only the 120 (e, a) transitions (g = 0)")
     ap.add_argument("--no_r0", action="store_true", help="§116 NONE: no R0 / no shorts; its updates go to round 1; insertion never below 5")
     ap.add_argument("--foothold_n", type=int, default=5000, help="< 5000: smoke only")
+    ap.add_argument("--expose_frac", type=float, default=0.0, help="§124 TEXT-EXPOSE: share of each batch's rows that are LM-only start-text rows")
     ap.add_argument("--copy_frac", type=float, default=0.0, help="§116 NONE+COPY (note 116-2): share of each batch's rows that are length-0 copy problems")
     ap.add_argument("--foothold_log", action="store_true", help="§116: per round foothold_yield and acc_by_length on 5k fixed problems (truth, logged only)")
     ap.add_argument("--reader", action="store_true", help="§113: §111-READ's auxiliary reader at every targeted slot (the model's own filtered targets)")
@@ -460,7 +478,7 @@ def main():
         return 1 if step <= 2000 else (2 if step <= 6000 else K)
 
     def train_round(items, n_steps, name, short, pool=None):
-        hist = []; rhist = []; chist = []; cache = {}
+        hist = []; rhist = []; chist = []; ehist = []; cache = {}
         for i_ in range(n_steps):
             S["step"] += 1; S["short"] += int(short); step = S["step"]; H = S.get("H", a.steps)
             if a.st_switch and not S.get("switched") and step == a.switch_at:   # note 117-1: forced switch at 12,000 exactly
@@ -474,8 +492,9 @@ def main():
                     if not items_for(Xtr, pool, kc):
                         S.setdefault("fallback_items", []).append([S["step"], name, kc]); print("fallback items", S["step"], name, kc, flush=True)
                 items = cache[kc]
-            nc = int(round(a.copy_frac * a.bs)) if a.copy_frac else 0     # §116 NONE+COPY: copy rows replace ordinary rows
-            st, o_, tg = draw(items, drng, a.bs - nc, dev)
+            nc = int(round(a.copy_frac * a.bs)) if a.copy_frac else 0     # §116 NONE+COPY / §124 COPY: copy rows replace ordinary rows
+            ne = int(round(a.expose_frac * a.bs)) if a.expose_frac else 0  # §124 TEXT-EXPOSE rows replace ordinary rows too
+            st, o_, tg = draw(items, drng, a.bs - nc - ne, dev)
             if short:                                                       # §112 (112-1 addendum): the transitions the drawn shorts label
                 oo = o_.cpu().numpy(); drawn[0, oo[:, 0]] = True
                 if oo.shape[1] == 2:
@@ -485,7 +504,10 @@ def main():
                 if nc:
                     cs = drng.integers(0, 120, nc)
                     lc = m.copy_loss(torch.tensor(STTOK[cs], device=dev), torch.tensor(cs, device=dev)); chist.append(float(lc.detach()))
-                    loss = (loss * (a.bs - nc) + lc * nc) / a.bs
+                    loss = (loss * (a.bs - nc - ne) + lc * nc) / (a.bs - ne)
+                if ne:
+                    es = drng.integers(0, 120, ne); le = m.expose_loss(torch.tensor(STTOK[es], device=dev)); ehist.append(float(le.detach()))
+                    loss = (loss * (a.bs - ne) + le * ne) / a.bs
             opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(loss.item())
             if m.reader:
                 rhist.append(m.parts[1])
@@ -495,6 +517,8 @@ def main():
                     rec["reader_loss"] = float(np.mean(rhist)); rhist.clear()
                 if chist:                                                   # §116 NONE+COPY copy CE (Theory 116-4 addendum)
                     rec["copy_loss"] = float(np.mean(chist)); chist.clear()
+                if ehist:                                                   # §124 TEXT-EXPOSE LM CE
+                    rec["expose_loss"] = float(np.mean(ehist)); ehist.clear()
                 log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
 
     def pool_of(Lmax):
@@ -600,6 +624,7 @@ def main():
     mu = mean_slot_inputs(m, Xtr, Ytr, K, dev, amp)
     r["removal"] = {ab: chunk_check(m, K, dev, amp, a.eval_bs, n=min(10_000, a.check_n), seed=7106, ablate=ab, mean_in=mu) for ab in ("zero", "mean")}
     r["donor"] = donor(m, K, dev, amp, a.eval_bs, n=a.donor_n)
+    r["copy_acc"] = m.copy_acc(dev); r["copy_frac"] = a.copy_frac; r["expose_frac"] = a.expose_frac   # §124 (all arms: BASE as baseline)
     if m.markov:                                                            # §117 (eval only): per-hand-off and the shuffled no-read flag
         from boxes.mk108 import handoff, rel_ratio_final
         r["per_handoff_acc"] = handoff(m, K, dev, amp, a.eval_bs, n=min(20000, a.check_n)); r["rel_final"] = rel_ratio_final(m, Xtr, Ytr, K, dev, amp)
