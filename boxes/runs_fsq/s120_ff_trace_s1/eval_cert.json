@@ -1,166 +1,145 @@
 {
  "holds": false,
- "n_reachable": 1019,
- "n_moore": 869,
+ "n_reachable": 992,
+ "n_moore": 841,
  "capped": false,
- "violations": 715,
+ "violations": 668,
  "all_decode_valid": true,
  "status": "done",
  "timed_out": false,
  "moore_timed_out": false,
- "sec": 1,
+ "sec": 96,
  "layers": [
   {
    "depth": 1,
    "frontier": 4,
    "cum": 4,
-   "sec": 0
+   "sec": 42
   },
   {
    "depth": 2,
    "frontier": 10,
    "cum": 14,
-   "sec": 0,
+   "sec": 48,
    "complete": true
   },
   {
    "depth": 3,
    "frontier": 26,
    "cum": 40,
-   "sec": 0,
+   "sec": 48,
    "complete": true
   },
   {
    "depth": 4,
-   "frontier": 51,
-   "cum": 91,
-   "sec": 0,
+   "frontier": 48,
+   "cum": 88,
+   "sec": 48,
    "complete": true
   },
   {
    "depth": 5,
    "frontier": 70,
-   "cum": 161,
-   "sec": 0,
+   "cum": 158,
+   "sec": 48,
    "complete": true
   },
   {
    "depth": 6,
-   "frontier": 113,
-   "cum": 274,
-   "sec": 0,
+   "frontier": 114,
+   "cum": 272,
+   "sec": 48,
    "complete": true
   },
   {
    "depth": 7,
-   "frontier": 123,
-   "cum": 397,
-   "sec": 1,
+   "frontier": 118,
+   "cum": 390,
+   "sec": 69,
    "complete": true
   },
   {
    "depth": 8,
-   "frontier": 134,
-   "cum": 531,
-   "sec": 1,
+   "frontier": 128,
+   "cum": 518,
+   "sec": 77,
    "complete": true
   },
   {
    "depth": 9,
-   "frontier": 98,
-   "cum": 629,
-   "sec": 1,
+   "frontier": 108,
+   "cum": 626,
+   "sec": 79,
    "complete": true
   },
   {
    "depth": 10,
-   "frontier": 81,
-   "cum": 710,
-   "sec": 1,
+   "frontier": 87,
+   "cum": 713,
+   "sec": 79,
    "complete": true
   },
   {
    "depth": 11,
-   "frontier": 73,
-   "cum": 783,
-   "sec": 1,
+   "frontier": 82,
+   "cum": 795,
+   "sec": 79,
    "complete": true
   },
   {
    "depth": 12,
-   "frontier": 52,
-   "cum": 835,
-   "sec": 1,
+   "frontier": 61,
+   "cum": 856,
+   "sec": 79,
    "complete": true
   },
   {
    "depth": 13,
-   "frontier": 51,
-   "cum": 886,
-   "sec": 1,
+   "frontier": 52,
+   "cum": 908,
+   "sec": 79,
    "complete": true
   },
   {
    "depth": 14,
-   "frontier": 46,
-   "cum": 932,
-   "sec": 1,
+   "frontier": 33,
+   "cum": 941,
+   "sec": 79,
    "complete": true
   },
   {
    "depth": 15,
-   "frontier": 38,
-   "cum": 970,
-   "sec": 1,
+   "frontier": 23,
+   "cum": 964,
+   "sec": 86,
    "complete": true
   },
   {
    "depth": 16,
-   "frontier": 20,
-   "cum": 990,
-   "sec": 1,
+   "frontier": 17,
+   "cum": 981,
+   "sec": 86,
    "complete": true
   },
   {
    "depth": 17,
-   "frontier": 12,
-   "cum": 1002,
-   "sec": 1,
+   "frontier": 10,
+   "cum": 991,
+   "sec": 86,
    "complete": true
   },
   {
    "depth": 18,
-   "frontier": 12,
-   "cum": 1014,
-   "sec": 1,
+   "frontier": 1,
+   "cum": 992,
+   "sec": 86,
    "complete": true
   },
   {
    "depth": 19,
-   "frontier": 3,
-   "cum": 1017,
-   "sec": 1,
-   "complete": true
-  },
-  {
-   "depth": 20,
-   "frontier": 1,
-   "cum": 1018,
-   "sec": 1,
-   "complete": true
-  },
-  {
-   "depth": 21,
-   "frontier": 1,
-   "cum": 1019,
-   "sec": 1,
-   "complete": true
-  },
-  {
-   "depth": 22,
    "frontier": 0,
-   "cum": 1019,
-   "sec": 1,
+   "cum": 992,
+   "sec": 86,
    "complete": true
   }
  ],
@@ -169,15 +148,15 @@
  "cert_cap": 1000000,
  "cert_task": {
   "holds": false,
-  "n_reachable": 1024,
-  "n_moore": 870,
+  "n_reachable": 996,
+  "n_moore": 847,
   "capped": false,
-  "violations": 685,
+  "violations": 663,
   "all_decode_valid": true,
   "status": "done",
   "timed_out": false,
   "moore_timed_out": false,
-  "sec": 0,
+  "sec": 1,
   "layers": [
    {
     "depth": 1,
@@ -194,121 +173,121 @@
    },
    {
     "depth": 3,
-    "frontier": 26,
-    "cum": 36,
+    "frontier": 25,
+    "cum": 35,
     "sec": 0,
     "complete": true
    },
    {
     "depth": 4,
     "frontier": 49,
-    "cum": 85,
+    "cum": 84,
     "sec": 0,
     "complete": true
    },
    {
     "depth": 5,
-    "frontier": 71,
-    "cum": 156,
+    "frontier": 74,
+    "cum": 158,
     "sec": 0,
     "complete": true
    },
    {
     "depth": 6,
-    "frontier": 119,
-    "cum": 275,
+    "frontier": 115,
+    "cum": 273,
     "sec": 0,
     "complete": true
    },
    {
     "depth": 7,
-    "frontier": 117,
-    "cum": 392,
+    "frontier": 115,
+    "cum": 388,
     "sec": 0,
     "complete": true
    },
    {
     "depth": 8,
-    "frontier": 133,
-    "cum": 525,
+    "frontier": 126,
+    "cum": 514,
     "sec": 0,
     "complete": true
    },
    {
     "depth": 9,
-    "frontier": 92,
-    "cum": 617,
+    "frontier": 111,
+    "cum": 625,
     "sec": 0,
     "complete": true
    },
    {
     "depth": 10,
-    "frontier": 79,
-    "cum": 696,
+    "frontier": 89,
+    "cum": 714,
     "sec": 0,
     "complete": true
    },
    {
     "depth": 11,
-    "frontier": 84,
-    "cum": 780,
+    "frontier": 89,
+    "cum": 803,
     "sec": 0,
     "complete": true
    },
    {
     "depth": 12,
-    "frontier": 71,
-    "cum": 851,
+    "frontier": 61,
+    "cum": 864,
     "sec": 0,
     "complete": true
    },
    {
     "depth": 13,
-    "frontier": 68,
-    "cum": 919,
+    "frontier": 52,
+    "cum": 916,
     "sec": 0,
     "complete": true
    },
    {
     "depth": 14,
-    "frontier": 47,
-    "cum": 966,
+    "frontier": 33,
+    "cum": 949,
     "sec": 0,
     "complete": true
    },
    {
     "depth": 15,
-    "frontier": 27,
-    "cum": 993,
+    "frontier": 19,
+    "cum": 968,
     "sec": 0,
     "complete": true
    },
    {
     "depth": 16,
-    "frontier": 18,
-    "cum": 1011,
-    "sec": 0,
+    "frontier": 16,
+    "cum": 984,
+    "sec": 1,
     "complete": true
    },
    {
     "depth": 17,
-    "frontier": 8,
-    "cum": 1019,
-    "sec": 0,
+    "frontier": 11,
+    "cum": 995,
+    "sec": 1,
     "complete": true
    },
    {
     "depth": 18,
-    "frontier": 5,
-    "cum": 1024,
-    "sec": 0,
+    "frontier": 1,
+    "cum": 996,
+    "sec": 1,
     "complete": true
    },
    {
     "depth": 19,
     "frontier": 0,
-    "cum": 1024,
-    "sec": 0,
+    "cum": 996,
+    "sec": 1,
     "complete": true
    }
   ],
@@ -317,5 +296,16 @@
    "w0",
    "w1"
   ]
+ },
+ "cert_task_reads": {
+  "holds": false,
+  "status": "done",
+  "n_pairs": 1339,
+  "n_codes": 1025,
+  "n_read_transitions": 1339,
+  "violations": 521,
+  "capped": false,
+  "timed_out": false,
+  "sec": 13
  }
 }

@@ -7,61 +7,62 @@
  "all_decode_valid": true,
  "status": "done",
  "timed_out": false,
- "sec": 0,
+ "moore_timed_out": false,
+ "sec": 69,
  "layers": [
   {
    "depth": 1,
    "frontier": 3,
    "cum": 3,
-   "sec": 0
+   "sec": 55
   },
   {
    "depth": 2,
    "frontier": 10,
    "cum": 13,
-   "sec": 0,
+   "sec": 62,
    "complete": true
   },
   {
    "depth": 3,
    "frontier": 9,
    "cum": 22,
-   "sec": 0,
+   "sec": 62,
    "complete": true
   },
   {
    "depth": 4,
    "frontier": 12,
    "cum": 34,
-   "sec": 0,
+   "sec": 62,
    "complete": true
   },
   {
    "depth": 5,
    "frontier": 7,
    "cum": 41,
-   "sec": 0,
+   "sec": 62,
    "complete": true
   },
   {
    "depth": 6,
    "frontier": 5,
    "cum": 46,
-   "sec": 0,
+   "sec": 62,
    "complete": true
   },
   {
    "depth": 7,
    "frontier": 1,
    "cum": 47,
-   "sec": 0,
+   "sec": 69,
    "complete": true
   },
   {
    "depth": 8,
    "frontier": 0,
    "cum": 47,
-   "sec": 0,
+   "sec": 69,
    "complete": true
   }
  ],
@@ -77,6 +78,7 @@
   "all_decode_valid": true,
   "status": "done",
   "timed_out": false,
+  "moore_timed_out": false,
   "sec": 0,
   "layers": [
    {
@@ -105,5 +107,16 @@
    "w0",
    "w1"
   ]
+ },
+ "cert_task_reads": {
+  "holds": true,
+  "status": "done",
+  "n_pairs": 7,
+  "n_codes": 7,
+  "n_read_transitions": 7,
+  "violations": 0,
+  "capped": false,
+  "timed_out": false,
+  "sec": 6
  }
 }

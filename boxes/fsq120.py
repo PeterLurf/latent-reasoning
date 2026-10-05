@@ -284,6 +284,70 @@ def certificate(m, fam, dev, amp, cap, bs=2048, time_limit=None, first_items=Non
             "sec": round(time.time() - t_start), "layers": layers, "n_start_pairs": int(len(S))}
 
 
+@torch.no_grad()
+def cert_task_reads(m, fam, dev, amp, cap, bs=2048, time_limit=None):
+    """Note 120-9 (descriptive, flip-flop only): product-machine BFS over (code c, true state q), from (start, q0 = no
+    write); first item w0 / w1, then all 5 items: c' = next(c, x), q' = delta(q, x). Checked on READ transitions only:
+    decode(c') must equal the bit q holds (states 1 / 2 = bit 0 / 1, as fam.decode returns). holds iff every reachable read
+    transition is right and nothing was capped / timed out."""
+    assert fam.name == "ff"; t0 = time.time(); idx = {}; codes = []; nxt_tab = {}; dec = {}; ac = lambda: torch.autocast("cuda", dtype=amp, enabled=amp is not None)  # noqa: E731
+    def add(rows):
+        out = []
+        for r in rows:
+            k = r.tobytes()
+            if k not in idx:
+                idx[k] = len(codes); codes.append(r)
+            out.append(idx[k])
+        return out
+    def step(cs, xs):                                                       # next codes for (code, item) pairs, batched
+        out = []
+        for i in range(0, len(cs), bs):
+            q = torch.tensor(np.stack([codes[c] for c in cs[i:i + bs]]).astype(np.float32), device=dev)
+            with ac():
+                h = m.segment(m.embed_code(q)[:, None], torch.tensor(xs[i:i + bs], device=dev)); _, qn, _ = m.quant(h)
+            out += add(qn.float().cpu().numpy().astype(np.int8))
+        return out
+    def decode(cs):
+        todo = [c for c in cs if c not in dec]
+        for i in range(0, len(todo), bs):
+            q = torch.tensor(np.stack([codes[c] for c in todo[i:i + bs]]).astype(np.float32), device=dev)
+            with ac():
+                d = fam.decode(m.answer_greedy(m.embed_code(q), 1).cpu().numpy())
+            dec.update(zip(todo[i:i + bs], d.tolist()))
+    with ac():                                                              # first item: a write from the empty start
+        h = m.segment(m.start(2, dev, None), torch.tensor([W0, W1], device=dev)); _, q, _ = m.quant(h)
+    c1 = add(q.float().cpu().numpy().astype(np.int8))
+    frontier = [(c1[0], int(fam.delta(np.array([0]), np.array([W0]))[0])), (c1[1], int(fam.delta(np.array([0]), np.array([W1]))[0]))]
+    seen = set(frontier); viol = 0; n_read = 0; capped = timed_out = False
+    while frontier:
+        need = sorted({c for c, _ in frontier if c not in nxt_tab})
+        for x in range(fam.n_items):
+            if time_limit and time.time() - t0 > time_limit:
+                timed_out = True; break
+            if need:
+                for c, n in zip(need, step(need, [x] * len(need))):
+                    nxt_tab[(c, x)] = n
+        if timed_out:
+            break
+        for c in need:
+            nxt_tab[c] = True
+        reads = [nxt_tab[(c, RD)] for c, _ in frontier]; decode(reads); new = []
+        for c, qs in frontier:
+            for x in range(fam.n_items):
+                c2 = nxt_tab[(c, x)]; q2 = int(fam.delta(np.array([qs]), np.array([x]))[0])
+                if x == RD:
+                    n_read += 1; viol += int(dec[c2] != qs)
+                if (c2, q2) not in seen:
+                    seen.add((c2, q2)); new.append((c2, q2))
+        if len(seen) > cap:
+            capped = True; break
+        frontier = new
+    holds = None if (capped or timed_out) else (viol == 0)
+    return {"holds": holds, "status": "inconclusive_time" if timed_out else ("inconclusive_cap" if capped else "done"), "n_pairs": len(seen),
+            "n_codes": len(codes), "n_read_transitions": n_read, "violations": viol, "capped": capped, "timed_out": timed_out,
+            "sec": round(time.time() - t0)}
+
+
 CONTRACT_EPS = (0.03, 0.1, 0.3, 1.0)
 
 
@@ -431,6 +495,7 @@ def main():
         c = certificate(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time); c.update({"eval_dtype": str(amp), "cert_cap": a.cert_cap})
         if fam.name == "ff":                                                # note 120-7 (amendment after data): task-reachable CERT, first item w0 / w1
             c["cert_task"] = certificate(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time, first_items=[W0, W1]); c["cert_task"]["first_items"] = ["w0", "w1"]
+            c["cert_task_reads"] = cert_task_reads(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time)   # note 120-9 (descriptive)
         json.dump(c, open(os.path.join(a.out, "eval_cert.json"), "w", newline="\n"), indent=1); print("CERT", json.dumps(c), flush=True); return
     json.dump(vars(a), open(os.path.join(a.out, "args_eval.json" if a.eval_only else "args.json"), "w", newline="\n"), indent=1)
     m = mk(); drawn = np.zeros((fam.n_states, fam.n_items), bool)
