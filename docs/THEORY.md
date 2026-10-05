@@ -3496,8 +3496,13 @@ counts acquisition timing as well as acquisition.**
     - Fresh AdamW, warmup 100 plus cosine from 1e-4 over 8k, and fresh pools.
     - The labelled set for the k = 1 split is T_f (the source's drawn matrix was not saved; flagged drawn_proxy). For §110
       s1, never-labelled means all transitions.
-  - **Three-way reading, fixed before the runs** (claude-13, via Audit; the resume restarts AdamW on a converged model,
-    starting at the source's last-round learning rate where feasible).
+  - **Three-way reading, fixed before the runs** (claude-13, via Audit; the resume restarts AdamW on a converged model).
+  - **Resume learning rate (decided before the runs; replaces "the source's last-round LR"): peak 3e-5, cosine to 0
+    over the 8k steps** (`--resume_lr 3e-5`).
+    - Reason: the check simulates the passers' post-acquisition budget. On the 24k cosine from 1e-4, the latest passer
+      acquired at about 14.9k, where the LR was about 3e-5, and then decayed to about 0.
+    - 1e-4 risks an LR shock; the source's tail LR (about 7e-6) would barely move the model and could not test the
+      hypothesis.
     - Cumulative ≥ 0.99 with k = 1 = 1.0: **confirms** (the budget was the limit).
     - Cumulative < 0.99 with k = 1 < 1.0: **an optimiser / LR shock**, not a refutation.
     - Cumulative < 0.99 with k = 1 = 1.0: **refutes** (more budget does not close the gap).
