@@ -1,0 +1,3 @@
+# §122 proof host (Theory's launch call; code 94beeb42 + later): TEXTMIX+ANCHOR+READ s1
+# P=1
+boxes/runs_mult/a122_textmixanchor_4x4_s1 boxes.accel99 --textmix 0.25 --arm99 anchorread --seed 1
