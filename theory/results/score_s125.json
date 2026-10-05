@@ -1,0 +1,30 @@
+{
+ "STD_S5": {},
+ "CONTROL_S5": {
+  "1": {
+   "long_acc": 1.0,
+   "plateau": false,
+   "serial": true,
+   "carried_norm": null,
+   "codes_per_state": 28.116666666666667,
+   "final_loss": null
+  },
+  "2": {
+   "long_acc": 0.0,
+   "plateau": true,
+   "serial": false,
+   "carried_norm": null,
+   "codes_per_state": 8.516666666666667,
+   "final_loss": null
+  }
+ },
+ "FF_STD": {},
+ "PLATEAU_FIX": "incomplete (0 / 4)",
+ "ACC": "incomplete",
+ "FF_GUARD": "incomplete",
+ "plateau_counts": {
+  "STD": 0,
+  "CONTROL": 1,
+  "CONTROL_n": 2
+ }
+}
