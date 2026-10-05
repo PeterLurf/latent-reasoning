@@ -1,0 +1,4 @@
+# note 112-5 resume check (Theory: --resume_lr 3e-5, cosine to 0 over 8k; Audit-approved; local)
+boxes/runs_s5/s112_f010_s22_resume1 boxes.self110 --resume boxes/runs_s5/s112_f010_s22 --resume_lr 3e-5 --seed 22
+boxes/runs_s5/s112_f050_s24_resume1 boxes.self110 --resume boxes/runs_s5/s112_f050_s24 --resume_lr 3e-5 --seed 24
+boxes/runs_s5/s110_s1_resume1 boxes.self110 --resume boxes/runs_s5/s110_s1 --resume_lr 3e-5 --seed 1
