@@ -1,0 +1,3 @@
+# §126 RAW-H s4 RERUN from scratch at P=1 (OOM at P=3 on b20; same flags as the s2 proof b19); RTX 3090-class only
+# P=1
+boxes/runs_fsq/s126_s5_rawh_s4 boxes.fsq120 --family s5 --arm final --raw_h --micro 2 --seed 4 --no_cert
