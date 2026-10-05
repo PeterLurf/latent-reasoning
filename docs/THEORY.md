@@ -713,7 +713,8 @@ with `theory/score_s99.py`, committed before any run; `theory/results/score_s99.
 
 * **Reading ("none accelerates"):** none of these levers makes multiplication's latent hand-off learnable within 24k at
   k = 4. Removal is at the floor everywhere, so there is no bypass, but also no carriage.
-  - **H-starve (descriptive) is not supported:** MARKOV is not faster than K-CURR.
+  - **H-starve (descriptive) is not supported:** MARKOV did not reach threshold either (both censored), and ended no
+    higher than K-CURR at 24k.
   - The best partial results are TF-SLOT (one seed 0.37) and STD s3 (0.42).
 * **Implementation details recorded (the experiments session):**
   - TF-SLOT's coin is per position per batch, and replaced slots skip their fork CE;
@@ -725,8 +726,11 @@ with `theory/score_s99.py`, committed before any run; `theory/results/score_s99.
 * **Audit's reproduction and observation (faa08817).**
   - No eligible log in any run meets the threshold.
   - **Most levers ended below CTRL** at 24k (COMBO ≤ 0.014, TEXT-FIRST(-MASK) ≤ 0.07, MARKOV ≤ 0.047, K-CURR
-    ≤ 0.118, against CTRL's 0.14–0.18). They slowed learning, consistent with 111-1's no-read basin: anything that
-    delays pressure on the latent (text first, gold inputs) costs time.
+    ≤ 0.118, against CTRL's 0.14–0.18). Every run is censored, so this is a level at 24k, not a speed claim. It is
+    consistent with 111-1's no-read basin: anything that delays pressure on the latent (text first, gold inputs) leaves
+    it lower at the cap.
+  - **Wording (2026-10-04 23:09 EDT; Literature's project audit 2bf76954, via Audit):** §99's claims read "none reached threshold within
+    24k", never "slower" or "faster".
 
 ## 100. Shorter silent stretches on multiplication: §98's recipe with a text snap every 2 steps (k = 2) (pre-registered 2026-10-03 23:54 EDT, after Literature's check 478cc193 and before any implementation or run; the user's request for an overnight plan, via Audit)
 
@@ -987,8 +991,8 @@ mean-removal answer accuracy ≤ §98's NC-M 4×4 + 0.05 in its threshold-reachi
 `theory/score_s99.py` (arm `statepath`), committed before any run). STATEPATH does not accelerate.**
 * All 3 runs reached the 24k cap without reaching threshold (CTRL is also censored, so the bar was ≤ 12k).
 * Test accuracy: 0.170 / 0.032 / 0.013, against CTRL's 0.163 / 0.143 / 0.184. Removal: zero 0.0, mean ≤ 0.007.
-* **Reading ("No").** A direct, gated residual state path from slot j−1 to slot j does not speed up multiplication's
-  hand-off. The staircase is not about the attention-retrieval route. Consistent with §107 / 106-2: compute per op or the
+* **Reading ("No").** With a direct, gated residual state path from slot j−1 to slot j, multiplication's hand-off still
+  does not reach threshold within 24k (all censored; no speed claim). The staircase is not about the attention-retrieval route. Consistent with §107 / 106-2: compute per op or the
   carrier's format, not routing.
 
 ## 103. Learning step states without step labels: filtered self-training by length (pre-registered 2026-10-04 00:17 EDT, after Literature's checks a214bb6d and 5c2e080e and before any implementation or run; the user's go-ahead via Audit)
