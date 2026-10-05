@@ -95,3 +95,4 @@ advisory notes are in `archive/`.
 | LIT_S123_DITHER_2026-10-05 | §123 | dither = Ballé 1611.01704 proxy / universal quantisation 2006.09952; ±0.5 ⇒ implicit quantisation, sweep σ; 8-dim continuous no-noise control; normalise ρ |
 | LIT_S124_COPY_2026-10-05 | §124 | copy foothold; C4-safe exposure control TEXT-EXPOSE (LM loss on start text only); 4/5 vs historical 3/5 not distinguishable — matched rerun or descriptive + timing signature |
 | LIT_S125_STD_2026-10-05 | §125 | scale/distribution-mismatch priors (Lester, prefix-tuning, HRPO, CODI, LT-Tuning, §73); RECON risks nuisance PCs → prefer next-latent prediction; EMA re-estimate at soft→hard switch (Batch Renorm 1702.03275) |
+| LIT_S126_ANNEAL_2026-10-05 | §126 | wide→narrow = QBN 1811.12530 (distil), KL annealing; Burgess 1804.03599 is narrow→wide; RAW-H likely plateaus (§108) → supervision not bottleneck; ANNEAL inherits RAW-H to 2k; distil + stochastic λ |
