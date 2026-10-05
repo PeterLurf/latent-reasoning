@@ -3683,6 +3683,26 @@ bottleneck alone is exact: snapping was not what made §120 work.**
   the same seed; numerics differ slightly.
 * Proof host: STD S5 s2 (the basin seed). Then STD S5 s1 / s3 / s4, CTRL S5 s3–4 and STD FF s1–2.
 
+**Note 125-2 (2026-10-05 15:57 EDT, before any §125 result; Audit / claude-13). The GPU type is fixed.**
+* Training trajectories are seed-and-GPU-dependent. §123 S5 seed 2 stayed on the ln-120 plateau bit-for-bit through 2k on
+  three RTX 3090-class cards, but left it on an RTX 4090.
+* **Every §125 run (STD and CTRL) trains on an RTX 3090 or 3090 Ti,** the class of §120 FINAL s2 (the seed-2 control).
+  A run on another GPU type is reported but excluded from PLATEAU-FIX.
+* The **training** GPU is logged per run (eval.json's `gpu` key records the evaluating card).
+
+**Note 123-7 (2026-10-05 15:57 EDT; descriptive, before CAUSAL is scored; Audit / claude-13). A second failure mode, and a hardware
+caveat.**
+* **S5 σ = 0.5 s2** (b9, RTX 4090): loss 5.00 / 4.78 / 4.08 at 1.0 / 1.5 / 2.0k, so it left the plateau before any dither
+  and 123-3 does not flag it.
+  - It jumped to 4.66 when the dither started at 2.1k and ended in the **~3.2 basin** (final 3.20, accuracy 0), like §120
+    TRACE s1.
+  - Registered ρ 5e-4, rho_nonzero 0.52. The fp32 ρ (123-5) decides its role in (ii) / (iii).
+  - **It stays in CAUSAL:** "does σ 0.5 cause failure" is what (iii) tests, so excluding it would be circular.
+* **The two basins are reported separately:** the chance plateau (ln 120, flagged by 123-3) and the ~3.2 basin (left the
+  plateau, then stuck). A "final loss > 1.0" flag is post hoc and descriptive only.
+* **Hardware caveat.** Trajectories depend on seed **and** GPU type. σ 0.5 (RTX 4090) and σ 0 (RTX 3090) at seed 2 are
+  matched by seed but not by trajectory. The training GPU is listed per cell in the result.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
