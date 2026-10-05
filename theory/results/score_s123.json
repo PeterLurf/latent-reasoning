@@ -2,7 +2,22 @@
  "continuous": {},
  "fsqdither": {
   "s5": {
-   "seeds": {},
+   "seeds": {
+    "1": {
+     "long_acc": 1.0,
+     "codes_per_state_2048": null,
+     "plateau": false,
+     "cert_holds": false,
+     "cert_registered_holds": false
+    },
+    "2": {
+     "long_acc": 0.0,
+     "codes_per_state_2048": null,
+     "plateau": true,
+     "cert_holds": false,
+     "cert_registered_holds": false
+    }
+   },
    "codes_per_state_baseline": 34.2,
    "CANONICAL_registered": false,
    "CANONICAL": false
