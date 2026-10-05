@@ -1,9 +1,13 @@
 {
  "arms": {
   "ANCHOR+READ": {
-   "n": 0,
-   "op3": {},
-   "test_acc": {},
+   "n": 1,
+   "op3": {
+    "1": 0.231
+   },
+   "test_acc": {
+    "1": 0.031
+   },
    "CARRY3_seeds": [],
    "ACC_seeds": [],
    "CARRY3": false,
