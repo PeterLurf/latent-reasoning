@@ -11,6 +11,7 @@
     "1": false,
     "2": false
    },
+   "cert_registered_ff": null,
    "n_reachable": {
     "1": null,
     "2": null
@@ -37,6 +38,7 @@
    "long_acc": {},
    "PILOT_PASS": false,
    "cert": {},
+   "cert_registered_ff": null,
    "n_reachable": {},
    "n_moore": {},
    "codes_per_state": {},
@@ -44,26 +46,60 @@
    "serial": {}
   },
   "ff_final": {
-   "n": 0,
-   "long_acc": {},
+   "n": 1,
+   "long_acc": {
+    "2": 1.0
+   },
    "PILOT_PASS": false,
-   "cert": {},
-   "n_reachable": {},
-   "n_moore": {},
-   "codes_per_state": {},
-   "code_perplexity": {},
-   "serial": {}
+   "cert": {
+    "2": false
+   },
+   "cert_registered_ff": {
+    "2": null
+   },
+   "n_reachable": {
+    "2": null
+   },
+   "n_moore": {
+    "2": null
+   },
+   "codes_per_state": {
+    "2": 18.0
+   },
+   "code_perplexity": {
+    "2": 18.150665240065038
+   },
+   "serial": {
+    "2": false
+   }
   },
   "ff_trace": {
-   "n": 0,
-   "long_acc": {},
+   "n": 1,
+   "long_acc": {
+    "2": 1.0
+   },
    "PILOT_PASS": false,
-   "cert": {},
-   "n_reachable": {},
-   "n_moore": {},
-   "codes_per_state": {},
-   "code_perplexity": {},
-   "serial": {}
+   "cert": {
+    "2": false
+   },
+   "cert_registered_ff": {
+    "2": null
+   },
+   "n_reachable": {
+    "2": 47
+   },
+   "n_moore": {
+    "2": 20
+   },
+   "codes_per_state": {
+    "2": 3.5
+   },
+   "code_perplexity": {
+    "2": 4.616111955980161
+   },
+   "serial": {
+    "2": false
+   }
   }
  },
  "PILOT_FINAL_BOTH": false,
