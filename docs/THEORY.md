@@ -2390,6 +2390,21 @@ panel is scored; rules unchanged). NONE+COPY fails upstream of the mechanism it 
   - A copy-only unit test (the experiments session) will tell an implementation fault from interference by the stuck main
     loss. Either way the arm is uninformative about 112-4.
 
+**Note 116-5 (2026-10-05 08:45 EDT; the NONE+COPY fault, and what follows; written before the NONE / OPDEF arms are scored).**
+* **Fault (the experiments session's diagnosis).** `copy_loss` sat under a `@torch.no_grad()` decorator that belonged to
+  `read_greedy`. The copy CE entered the loss as a constant, with no gradient.
+  - **Every NONE+COPY run (s41–45) was effectively a NONE replica.** The intervention was never delivered.
+  - s41 / s42 / s45 are **voided** (logs kept, `*.void`, "intervention not delivered: no_grad bug"). s43–44 are stopped
+    and voided the same way.
+* **No automatic rerun (fixed now).**
+  - NONE+COPY tests 112-4's start-reading account only if the in-chunk stage is reached. 116-4 shows the no-shorts
+    setting never reaches it: pool accuracy at chance even at lengths 3–4.
+  - **NONE+COPY is rerun (with the fix) only if ≥ 1 NONE seed shows in-chunk acquisition** (pool accuracy at L ≤ 4
+    above 0.25 in some round). Otherwise it is not rerun.
+  - The direct test of 112-4 is decided by note 117-5's rule (§112 f = 0.1 + copy rows).
+* The fixed `copy_loss` is unit-tested copy-only before any future use.
+* NONE and OPDEF are unaffected (no copy path) and are scored as registered.
+
 ## 117. One model for C1 + C4 + C6: final-answer training through self-decoded restarts under Markov segments, with the auxiliary reader (pre-registered 2026-10-04 22:24 EDT, after Literature's check f9ce7210 / 3b9c8d61 and before any implementation or run; launched only if §111 MK-4-READ meets REL)
 
 **Why.** Three results point at one design.
