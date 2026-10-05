@@ -1,0 +1,42 @@
+{
+ "doses": {
+  "0.5": {
+   "n": 0,
+   "pass_seeds": [],
+   "FOOTHOLD": false,
+   "cum512": {},
+   "k1_never": {},
+   "certified": {},
+   "coverage": {}
+  },
+  "0.25": {
+   "n": 0,
+   "pass_seeds": [],
+   "FOOTHOLD": false,
+   "cum512": {},
+   "k1_never": {},
+   "certified": {},
+   "coverage": {}
+  },
+  "0.1": {
+   "n": 1,
+   "pass_seeds": [
+    21
+   ],
+   "FOOTHOLD": false,
+   "cum512": {
+    "21": 0.996
+   },
+   "k1_never": {
+    "21": 1.0
+   },
+   "certified": {
+    "21": true
+   },
+   "coverage": {
+    "21": 0.1
+   }
+  }
+ },
+ "smallest_f": null
+}
