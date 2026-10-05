@@ -1,0 +1,4 @@
+# §121 ANCHOR+READ s2-3 (after the s1 proof)
+# P=2
+boxes/runs_mult/a121_anchorread_4x4_s2 boxes.accel99 --arm99 anchorread --seed 2
+boxes/runs_mult/a121_anchorread_4x4_s3 boxes.accel99 --arm99 anchorread --seed 3
