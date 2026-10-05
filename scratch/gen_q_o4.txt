@@ -1,0 +1,4 @@
+# §116 (931186cb): launch only on Theory's call (after §112 f=0.1 FOOTHOLD); host 4 of 5
+# P=2
+boxes/runs_s5/s116_none_s42 boxes.self110 --no_r0 --lengths 6,8,16,32 --foothold_log --seed 42
+boxes/runs_s5/s116_none_s43 boxes.self110 --no_r0 --lengths 6,8,16,32 --foothold_log --seed 43
