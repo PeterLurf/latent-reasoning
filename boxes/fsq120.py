@@ -546,7 +546,8 @@ def main():
             c["cert_task"] = certificate(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time, first_items=[W0, W1]); c["cert_task"]["first_items"] = ["w0", "w1"]
             c["cert_task_reads"] = cert_task_reads(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time)   # note 120-9 (descriptive)
         json.dump(c, open(os.path.join(a.out, "eval_cert.json"), "w", newline="\n"), indent=1); print("CERT", json.dumps(c), flush=True); return
-    json.dump(vars(a), open(os.path.join(a.out, "args_eval.json" if a.eval_only else "args.json"), "w", newline="\n"), indent=1)
+    json.dump({**vars(a), **({} if a.eval_only else {"train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"})},
+              open(os.path.join(a.out, "args_eval.json" if a.eval_only else "args.json"), "w", newline="\n"), indent=1)   # notes 123-8 / 125-3
     m = mk(); drawn = np.zeros((fam.n_states, fam.n_items), bool)
     if a.eval_only:                                                         # replay the training draws (rng only) for coverage_drawn
         for step in range(1, a.steps + 1):
@@ -599,7 +600,8 @@ def main():
         torch.cuda.empty_cache()
     res = {"family": a.family, "arm": a.arm, "seed": a.seed, "train_sec": train_sec, "eval_only": a.eval_only, "std": a.std,
            "carried_norm": carried or None, "final_loss": last_loss, "no_round": a.no_round, "dither": a.dither, "fsq_dither": a.fsq_dither, "eval_dtype": str(amp), "coverage_drawn": float(drawn.mean()),
-           "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"}
+           "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
+           "train_gpu": json.load(open(os.path.join(a.out, "args.json"))).get("train_gpu")}
     if fam.name == "s5":
         Xte, Yte = s5.load_csv(os.path.join(a.data_dir, "S5=512.csv"), limit=a.test_n); s5.check_labels(Xte, Yte); Xte, Yte = Xte[:, :a.test_len], Yte[:, :a.test_len]
         grid = [0, 0]; pred, codes = run_test(m, fam, np.zeros(len(Xte), np.int64), Xte, dev, amp, a.eval_bs, grid=grid); C = pred == Yte

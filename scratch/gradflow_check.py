@@ -104,7 +104,7 @@ def check_fsq120_std(dev, out):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--paths", nargs="*", default=["accel99", "mk108", "fsq120", "self110_copy"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--paths", nargs="*", default=["accel99", "mk108", "fsq120", "fsq120_std", "self110_copy", "self110_resume"])
     ap.add_argument("--device", default="cpu"); ap.add_argument("--out", default=os.path.join(ROOT, "theory", "results", "gradflow_check.json"))
     a = ap.parse_args(); out = {}
     for p in a.paths:
