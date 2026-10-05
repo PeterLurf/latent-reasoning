@@ -19,11 +19,11 @@ for j in $runs $keep logs; do n=$(echo $j | tr '/' '_'); ok=0
   for try in 1 2 3; do
     if [ $j = logs ]; then src="logs"; else src="$j logs/gen_$(basename $j).log"; fi
     rs=$($S "cd /workspace/Latent && tar -czf /tmp/f_$n.tgz $src 2>/dev/null; sha256sum /tmp/f_$n.tgz" 2>/dev/null | grep -o '^[0-9a-f]\{64\}')
-    scp -q -o ServerAliveInterval=15 -i ~/.ssh/runpod_ed25519 -P $P root@$H:/tmp/f_$n.tgz /tmp/f_${H}_$n.tgz 2>/dev/null
-    [ -n "$rs" ] && [ "$rs" = "$(sha256sum /tmp/f_${H}_$n.tgz | cut -c1-64)" ] && { ok=1; break; }; sleep 20
+    scp -q -o ServerAliveInterval=15 -i ~/.ssh/runpod_ed25519 -P $P root@$H:/tmp/f_$n.tgz /d/drain_tmp/f_${H}_$n.tgz 2>/dev/null
+    [ -n "$rs" ] && [ "$rs" = "$(sha256sum /d/drain_tmp/f_${H}_$n.tgz | cut -c1-64)" ] && { ok=1; break; }; sleep 20
   done
   [ $ok = 1 ] || { echo "FETCH_INCOMPLETE $ID ($j)"; exit 1; }
-  tar --no-same-owner -xzf /tmp/f_${H}_$n.tgz -C . --transform "s|^logs/|logs/vast_${H}_${P}/|" && rm -f /tmp/f_${H}_$n.tgz   # extracted and sha-verified: drop the local copy (C: filled up 2026-10-03)
+  tar --no-same-owner -xzf /d/drain_tmp/f_${H}_$n.tgz -C . --transform "s|^logs/|logs/vast_${H}_${P}/|" && rm -f /d/drain_tmp/f_${H}_$n.tgz   # extracted and sha-verified: drop the local copy (C: filled up 2026-10-03)
 done
 for j in $runs; do [ -s $j/eval.json ] || { echo "FETCH_INCOMPLETE $ID missing $j/eval.json"; exit 1; }; done
 bash scratch/vdestroy.sh "$ID" | grep -q "^DESTROYED_VERIFIED" || { echo "DESTROY_UNVERIFIED $ID"; exit 1; }
