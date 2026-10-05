@@ -108,12 +108,21 @@ def kept_transitions(X, pool, starts_true):
 
 class Gen110(Gen103):
     def __init__(self, g):
-        super().__init__(g, "gen"); self.mask = True; self.override = None
+        super().__init__(g, "gen"); self.mask = True; self.override = None; self.reader = False; self.parts = None
+
+    @torch.no_grad()
+    def read_greedy(self, s_in):
+        """§113 reader: a fresh segment [EOT, slot latent] (positions 0..1) -> 6 greedy state-text tokens."""
+        g = self.g; B = s_in.shape[0]; eot = g.embed(torch.full((B, 1), 50256, device=s_in.device))
+        h, past = g(torch.cat([eot, s_in[:, None].to(eot.dtype)], 1), None); t = g.logits(h[:, -1]).argmax(-1); out = [t]
+        for _ in range(NST - 1):
+            h, past = g(g.embed(t)[:, None], past); t = g.logits(h[:, 0]).argmax(-1); out.append(t)
+        return torch.stack(out, 1)
 
     def chunk_masked(self, start, ops, tgt):
         """Gen103.chunk_masked with §105's masked fork (the fork sees only the slot's own K/V, true positions)."""
         B, c = ops.shape; g = self.g
-        x = torch.cat([g.embed(start), g.embed(self.optok[ops[:, 0]])], 1); past = None; tot = 0.0; n = 0
+        x = torch.cat([g.embed(start), g.embed(self.optok[ops[:, 0]])], 1); past = None; tot = 0.0; rtot = 0.0; n = 0
         for j in range(c):
             h, past = g(x, past); s_in = h[:, -1]
             hs, past = g(s_in[:, None], past); hslot = hs[:, 0]
@@ -124,9 +133,16 @@ class Gen110(Gen103):
                 lg = g.logits(torch.cat([hslot[sel][:, None], hf], 1)).float()
                 tot = tot + F.cross_entropy(lg.reshape(-1, lg.shape[-1]), st.reshape(-1), reduction="none").view(-1, NST).sum(-1).sum()
                 n += int(sel.sum())
+                if self.reader:                                             # §113: [EOT, slot latent] -> the same (filtered) target text
+                    eot = g.embed(torch.full((int(sel.sum()), 1), 50256, device=st.device))
+                    hr, _ = g(torch.cat([eot, s_in[sel][:, None].to(eot.dtype), g.embed(st[:, :-1])], 1), None)
+                    lr_ = g.logits(hr[:, 1:]).float()
+                    rtot = rtot + F.cross_entropy(lr_.reshape(-1, lr_.shape[-1]), st.reshape(-1), reduction="none").view(-1, NST).sum(-1).sum()
             if j + 1 < c:
                 x = g.embed(self.optok[ops[:, j + 1]])
-        return tot / max(1, n)
+        main = tot / max(1, n); rd = rtot / max(1, n) if self.reader else None
+        self.parts = (float(main.detach()) if torch.is_tensor(main) else main, None if rd is None else (float(rd.detach()) if torch.is_tensor(rd) else rd))
+        return main + rd if self.reader else main
 
 
 @torch.no_grad()
@@ -272,6 +288,7 @@ def main():
     ap.add_argument("--max_insert", type=int, default=2)
     ap.add_argument("--random_start", action="store_true", help="§110b: problems of length >= 3 start from a uniform random given state (as text)")
     ap.add_argument("--cov", type=float, default=None, help="§112: R0 shorts restricted to T_f with target coverage f (note 112-1)")
+    ap.add_argument("--reader", action="store_true", help="§113: §111-READ's auxiliary reader at every targeted slot (the model's own filtered targets)")
     ap.add_argument("--student_pool", default=None, help="§110 STUDENT: train a fresh model --steps on this pool_final.npz only (no R0 / rounds)")
     ap.add_argument("--save_rounds", action="store_true", help="§112 (Audit): fp16 model at each round boundary -> <out>/rounds/")
     ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--test_n", type=int, default=s5.TEST_N); ap.add_argument("--ext_n", type=int, default=500)
@@ -287,7 +304,7 @@ def main():
     Tf, g_inner = build_tf(a.cov, a.seed) if a.cov is not None else (None, None)
     covinfo = {} if Tf is None else {"coverage_target": a.cov, "coverage_tf": float(Tf.mean()), "inner_fraction_g": g_inner}
     os.makedirs(a.out, exist_ok=True); json.dump({**vars(a), **covinfo}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
-    m = Gen110(s5.load_gpt2(dev)).to(dev); opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
+    m = Gen110(s5.load_gpt2(dev)).to(dev); m.reader = a.reader; opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
     lengths = [int(x) for x in a.lengths.split(",")]; ck = os.path.join(a.out, "ckpt.pt"); lp = os.path.join(a.out, "log.jsonl")
     S = {"step": 0, "short": 0, "rounds": [], "prev": 2, "remaining": a.steps - a.r0_steps - a.final_steps, "todo": list(lengths),
          "ins": 0, "phase": "R0", "sec": 0}
@@ -309,7 +326,7 @@ def main():
         torch.save(c, ck + ".tmp"); os.replace(ck + ".tmp", ck)
 
     def train_round(items, n_steps, name, short):
-        hist = []
+        hist = []; rhist = []
         for _ in range(n_steps):
             S["step"] += 1; S["short"] += int(short); step = S["step"]
             for gr in opt.param_groups:
@@ -322,8 +339,12 @@ def main():
             with amp_ctx(amp):
                 loss = m.chunk_masked(st, o_, tg)
             opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(loss.item())
+            if m.reader:
+                rhist.append(m.parts[1])
             if step % 100 == 0:
                 rec = {"step": step, "round": name, "loss": float(np.mean(hist)), "sec": round(time.time() - t0)}; hist = []
+                if rhist:
+                    rec["reader_loss"] = float(np.mean(rhist)); rhist.clear()
                 log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
 
     def pool_of(Lmax):
@@ -389,7 +410,7 @@ def main():
     del opt; m.eval(); t1 = time.time()
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
-    r = {"arm": "self110_student" if a.student_pool else "self112" if a.cov is not None else ("self110b" if a.random_start else "self110"), "start_ge3": "random" if a.random_start else "identity", "seed": a.seed, "k": K, "fork": "mask", "train_sec": train_sec, "eval_dtype": str(amp), "test_sequences": len(Xte),
+    r = {"arm": "self113" if a.reader else "self110_student" if a.student_pool else "self112" if a.cov is not None else ("self110b" if a.random_start else "self110"), "start_ge3": "random" if a.random_start else "identity", "seed": a.seed, "k": K, "fork": "mask", "train_sec": train_sec, "eval_dtype": str(amp), "test_sequences": len(Xte),
          "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
          "short_fraction": S["short"] / max(1, S["step"]), "updates": S["step"], "rounds": S["rounds"]}
     pred, comp, val = rollout(m, Xte, K, dev, amp, a.eval_bs); cum = s5.cumulative(pred, Yte)
@@ -405,6 +426,15 @@ def main():
     r["removal"] = {ab: chunk_check(m, K, dev, amp, a.eval_bs, n=min(10_000, a.check_n), seed=7106, ablate=ab, mean_in=mu) for ab in ("zero", "mean")}
     r["donor"] = donor(m, K, dev, amp, a.eval_bs, n=a.donor_n)
     r["edit_iia"] = edit_iia(m, K, dev, amp, a.eval_bs, n=min(5000, a.check_n))
+    if m.reader:                                                            # §113: the reader's own decode per slot on fresh chunks
+        rng_r = np.random.default_rng(11301); nr = min(20000, a.check_n); S_ = rng_r.integers(0, 120, nr); O_ = rng_r.integers(0, 120, (nr, K)); Cr = []
+        with torch.no_grad():
+            for i in range(0, nr, a.eval_bs):
+                with amp_ctx(amp):
+                    _, _, ins = m.chunk(m.start_from(els=S_[i:i + a.eval_bs], dev=dev), torch.tensor(O_[i:i + a.eval_bs], device=dev), decode=None)
+                    d = torch.stack([m.read_greedy(ins[:, j]) for j in range(K)], 1)
+                el, _ = decode_to_el(d.cpu().numpy().reshape(-1, NST)); Cr.append(el.reshape(-1, K) == true_chain(S_[i:i + a.eval_bs], O_[i:i + a.eval_bs]))
+        r["reader_acc"] = {"n": nr, "per_slot_acc": np.concatenate(Cr).mean(0).tolist()}
     kt = k1_table(m, dev, amp); lab = S["drawn"]; nl = ~lab; kp = S["kept_trans"]          # §112 keys (drawn set = labelled)
     acc = lambda msk: float(kt[msk].mean()) if msk.any() else None  # noqa: E731
     r.update({**covinfo, "coverage_drawn": float(lab.mean()), "coverage_realised": float(lab.mean()),
