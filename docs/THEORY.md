@@ -3921,6 +3921,21 @@ response.**
   with ρ_ff > 0.6).
 * So far, dither changes neither which seed escapes nor how strongly the escaping seed contracts.
 
+**Note 126-7 (2026-10-05 19:20 EDT; descriptive, RAW-H s2 final; the §126 verdict waits for s1 / s3 / s4 and ANNEAL). Without the
+bottleneck the basin seed escapes, but the raw carrier drifts with length.**
+* **RAW-H s2** (RTX 3090):
+  - Accuracy 1.0 at 16 / 32 / 64, 0.9945 at 128, 0.93 at 256, **0.846 at 512**, **0.732 at 2,048**. Final loss 1.6e-5.
+  - Donor 1.0 at positions 2 / 4 / 6 (recipient at chance): serial.
+  - **The map was in force (126-6):** carried_norm row 2.18 → 3.91 at 2k (wte 3.96), with no blow-up. So this is a verdict
+    on standardised h.
+* **The emerging split in the task-agnostic harness:**
+  - **768-d raw carrier (standardised): reliable entry** (seed 2 escapes), but **drift with length** (bf16 ρ 0.695;
+    the fp32 value is pending). This is the §111 READ / §108 pattern without an anchor.
+  - **8-d bottleneck: no drift once entered** (ρ_ff about 0.15; exact to 2,048 in every non-plateau seed), but **entry is a
+    seed lottery** (seed 2 plateaus in every arm).
+* ANNEAL (enter wide, then narrow) aims to combine the two. So far it does not: s2's loss jumps to 5.43 when λ reaches 1
+  at 6k, with a distillation residual of 0.49, and only partly recovers. The final verdict is pending.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
