@@ -13,7 +13,9 @@ R = os.path.join(ROOT, "boxes", "runs_fsq")
 
 
 def serial(d):
-    return bool(d) and all(v["donor_consistent"] >= 0.90 and v["recipient_consistent"] < 0.10 for v in d.values())
+    """§104 SERIAL: donor >= 0.90 and recipient - chance_overlap < 0.10 (note 120-7: flip-flop's binary answers coincide
+    by chance; for S5 chance_overlap is about 0.008, so this equals the registered recipient < 0.10)."""
+    return bool(d) and all(v["donor_consistent"] >= 0.90 and v["recipient_consistent"] - v.get("chance_overlap", 0.0) < 0.10 for v in d.values())
 
 
 def main():
