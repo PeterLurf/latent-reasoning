@@ -2044,6 +2044,31 @@ analysis).**
   between the calibration groups, with orders of magnitude of margin. It is used exactly as before: such seeds count as
   fails and are also reported separately.
 
+**Note 114-4 (2026-10-05 02:10 EDT; descriptive, $0, CPU; the user's step-3 directive via Audit; `theory/mult_step3_diag.py`,
+`theory/results/mult_step3_diag.json`; first model §99 MARKOV s1, n = 200; the other models follow). Multiplication's
+step-3 wall is a shortcut: the latent carries the multiplier digits, not the running sum.**
+* **Measurement.** per_slot_decode_acc is the test rollout: the chain runs on the model's own slot inputs, and forks are
+  read, never fed back. The step texts are " P_1", " + P_j ( S_j )" for j = 2, 3, and " + P_4" (no sum). So steps 1 and
+  4 need no carried state.
+* **Step-3 anatomy.**
+  - P_3 = a · b_3 is exact (1.0). S_3's digits 0–1, copied from S_2, are 1.0.
+  - Digits 2 / 3 / 4 are 0.38 / 0.41 / 0.87.
+  - **Errors do not track carries:** digit 3 is 0.40 with a carry-in against 0.41 without. Digit 2 is 0.38 although no
+    carry can enter it. So this is not an addition-carry failure.
+* **Linear probes on the carried slot-2 latent** (ridge, 1,500 synthetic problems, scored on 1,000 more):
+  - **b_1 1.0, b_2 1.0** (b_3 0.08, b_4 0.12: future digits, at chance);
+  - **S_2's digits 0.60 / 0.14 / 0.11 / 0.12 / 0.21 / 0.81** (chance about 0.10; the low and leading digits carry
+    little entropy).
+* **Reading.** The latent hands over b_1 and b_2, and each segment recomputes the sum from a (visible) and the multiplier
+  prefix.
+  - Step 2 then needs a 4×2 multiply in one pass (solved); step 3 a 4×3 multiply (fails).
+  - A shortcut basin, not capacity: wider latents (§107 LAT), pauses (§107 PAUSE) and looped depth (§114 LOOP-R)
+    cannot help, because nothing forces S_2 into the carrier.
+* **Restart tests (T1 / T2)** are out of distribution here (K-CURR's text-start chunks ended at 6k): 0.0, not read.
+* **Matched design:** make the carrier hold the running sum. Use §111's reader on multiplication ([EOT, latent] → the
+  step text, which contains S_j), registered next after Literature's check. Prior: 2510.00184 (a running-sum auxiliary
+  unlocks multiplication).
+
 ## 115. Without snaps, and snapping only when needed: no-snap Markov chains and a round-trip snap trigger (eval only) (pre-registered 2026-10-04 15:55 EDT, after Literature's check c70d55e3 (P4) and before running on any checkpoint; the user's go-ahead for P4 via Audit)
 
 **Why.** Every success so far snaps at hand-set points (C5 unmet), and length generalisation comes from the snap scaffold
