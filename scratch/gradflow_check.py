@@ -92,6 +92,17 @@ def check_self110_resume(dev, out):
     out["self110.resume_main"] = term(m, lambda: m.chunk_masked(torch.tensor(STTOK[S], device=dev), torch.tensor(O, device=dev), torch.tensor(tc, device=dev)))
 
 
+def check_fsq120_std(dev, out):
+    """§125 STD: the standardised carried embedding (map inside embed_code) passes gradient to W_up / W_down."""
+    from boxes.fsq120 import FSQ120, Family, make_batch
+    for fam_name in ("s5", "ff"):
+        fam = Family(fam_name); m = FSQ120(s5.load_gpt2(dev), fam).to(dev); m.enable_std(); m.train(); m.p_hard = 1.0
+        s0, x, lab = make_batch(fam, np.random.default_rng(0), 4, 4); X = torch.tensor(x, device=dev)
+        out[f"fsq120.{fam_name}.std.main"] = term(m, lambda: m.chain(m.start(4, dev, s0 if fam_name == "s5" else None), X, lab)[0])
+        out[f"fsq120.{fam_name}.std.up_grad"] = float(m.up.weight.grad.norm()); out[f"fsq120.{fam_name}.std.down_grad"] = float(m.down.weight.grad.norm())
+        m.update_stats(); out[f"fsq120.{fam_name}.std.stats_seen"] = float(int(m.seen))
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--paths", nargs="*", default=["accel99", "mk108", "fsq120", "self110_copy"])
     ap.add_argument("--device", default="cpu"); ap.add_argument("--out", default=os.path.join(ROOT, "theory", "results", "gradflow_check.json"))
