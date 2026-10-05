@@ -306,11 +306,15 @@ def contraction(m, fam, dev, amp, n=500, T0=4, K=16, seed=12301):
     U = torch.tensor(rng.standard_normal((n, D_Q)), dtype=torch.float32, device=dev); R = {}
     for eps in CONTRACT_EPS:
         delta = eps * std_d * U; zp, ep = step(pre_T0, T0 - 1, add=delta); dist = [(zp - zT0).norm(dim=-1)]; agree = []; c = ep[:, None]
+        distn = [((zp - zT0) / std_d.clamp_min(1e-6)).norm(dim=-1)]                        # note 123-2: std-normalised coordinates
         for k in range(K):
             z, e = step(c, T0 + k); dist.append((z - clean[k + 1]).norm(dim=-1)); agree.append(float((dec(e) == cdec[k]).mean())); c = e[:, None]
+            distn.append(((z - clean[k + 1]) / std_d.clamp_min(1e-6)).norm(dim=-1))
         D = torch.stack(dist).cpu().numpy(); ratio = D[1:] / np.maximum(D[:-1], 1e-6); rho_k = np.median(ratio, axis=1)
+        Dn = torch.stack(distn).cpu().numpy(); rho_kn = np.median(Dn[1:] / np.maximum(Dn[:-1], 1e-6), axis=1)
         R[str(eps)] = {"rho_k": rho_k.round(4).tolist(), "rho_geo_1_8": float(np.exp(np.log(np.maximum(rho_k[:8], 1e-6)).mean())),
-                       "agree_k": [round(v, 4) for v in agree], "dist_med_k": np.median(D, axis=1).round(4).tolist()}
+                       "agree_k": [round(v, 4) for v in agree], "dist_med_k": np.median(D, axis=1).round(4).tolist(),
+                       "rho_k_norm": rho_kn.round(4).tolist(), "rho_norm_geo_1_8": float(np.exp(np.log(np.maximum(rho_kn[:8], 1e-6)).mean()))}
         # note 123-1 (FSQ arms): chains rounded back exactly (D = 0 at every k = 1..8), and rho over chains with D_{k-1} > 0 only
         R[str(eps)]["exact_recovery_share"] = float((D[1:9] == 0).all(0).mean())
         rk_nz = [float(np.median(ratio[k][D[k] > 0])) for k in range(8) if (D[k] > 0).any()]
@@ -318,7 +322,7 @@ def contraction(m, fam, dev, amp, n=500, T0=4, K=16, seed=12301):
         R[str(eps)]["rho_nonzero"] = float(np.exp(np.log(np.maximum(rk_nz, 1e-6)).mean())) if rk_nz else None
     basin = max([e_ for e_ in CONTRACT_EPS if R[str(e_)]["agree_k"][7] >= 0.99], default=0.0)
     return {"rho": R["0.1"]["rho_geo_1_8"], "basin": basin, "exact_recovery_share": R["0.1"]["exact_recovery_share"],
-            "rho_nonzero": R["0.1"]["rho_nonzero"], "detail": {"T0": T0, "K": K, "n": n, "std_d": std_d.cpu().numpy().round(4).tolist(), "eps": R}}
+            "rho_nonzero": R["0.1"]["rho_nonzero"], "rho_norm": R["0.1"]["rho_norm_geo_1_8"], "detail": {"T0": T0, "K": K, "n": n, "std_d": std_d.cpu().numpy().round(4).tolist(), "eps": R}}
 
 
 GROWTH_POS = (16, 64, 128, 256, 512, 1024, 2048)
@@ -391,6 +395,7 @@ def main():
     ap.add_argument("--fsq_dither", type=float, default=0.0, help="§123: U(-s, s) on z_b before rounding at training hand-offs after 4k")
     ap.add_argument("--no_cert", action="store_true", help="skip CERT in the main eval (run post-hoc with --cert_only; Audit 2026-10-05)")
     ap.add_argument("--growth_only", action="store_true", help="distinct codes vs position on ext_n 2,048-step rollouts -> <out>/eval_growth.json")
+    ap.add_argument("--contraction_only", action="store_true", help="note 123-2: rho / rho_norm / basin alone from <out>/model.pt -> <out>/eval_contraction.json")
     ap.add_argument("--cert_only", action="store_true", help="CERT alone from <out>/model.pt -> <out>/eval_cert.json")
     ap.add_argument("--cert_time", type=int, default=2700, help="CERT wall-clock limit (s); exceeded -> inconclusive_time")
     ap.add_argument("--eval_only", action="store_true", help="re-run the eval from <out>/model.pt (training batch draws replayed for coverage_drawn)")
@@ -413,6 +418,11 @@ def main():
         g_ = {"n": len(Xx), "len": int(Xx.shape[1]), "acc": acc, "code_growth": cg, "eval_dtype": str(amp),
               "codes_per_state": {k: v.get("per_state_mean") for k, v in cg.items()}, "codes_per_state_2048": (cg.get("2048") or {}).get("per_state_mean")}
         json.dump(g_, open(os.path.join(a.out, "eval_growth.json"), "w", newline="\n"), indent=1); print("GROWTH", json.dumps(g_), flush=True); return
+    if a.contraction_only:                                                  # note 123-2: post-hoc contraction (rho, rho_norm, ...) from model.pt
+        m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval()
+        ct = contraction(m, fam, dev, amp, n=a.contract_n); ct.update({"eval_dtype": str(amp)})
+        json.dump(ct, open(os.path.join(a.out, "eval_contraction.json"), "w", newline="\n"), indent=1)
+        print("CONTRACTION", json.dumps({k: ct[k] for k in ("rho", "rho_norm", "rho_nonzero", "exact_recovery_share", "basin")}), flush=True); return
     if a.cert_only:                                                         # post-hoc CERT (scoring as registered; only its scheduling moved)
         m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval()
         c = certificate(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time); c.update({"eval_dtype": str(amp), "cert_cap": a.cert_cap})
@@ -492,7 +502,7 @@ def main():
         s0m, Xm = None, Xte[:a.margin_n, :128]
     res["grid_share"] = grid[0] / max(1, grid[1])                         # §123 implicit quantisation
     ct = contraction(m, fam, dev, amp, n=a.contract_n); res["rho"] = ct["rho"]; res["basin"] = ct["basin"]; res["contraction"] = ct["detail"]
-    res["exact_recovery_share"] = ct["exact_recovery_share"]; res["rho_nonzero"] = ct["rho_nonzero"]
+    res["exact_recovery_share"] = ct["exact_recovery_share"]; res["rho_nonzero"] = ct["rho_nonzero"]; res["rho_norm"] = ct["rho_norm"]   # note 123-2
     if a.no_round:                                                          # continuous: no codes / CERT / margin (§123)
         res["n_codes"] = res["code_perplexity"] = res["codes_per_state"] = res["margin_flip_rate"] = None
         res["cert"] = {"status": "n/a (continuous)", "holds": None}; res["donor"] = donor(m, fam, dev, amp, n=a.donor_n)
