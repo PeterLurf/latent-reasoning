@@ -288,6 +288,10 @@ def main():
     ap.add_argument("--max_insert", type=int, default=2)
     ap.add_argument("--random_start", action="store_true", help="§110b: problems of length >= 3 start from a uniform random given state (as text)")
     ap.add_argument("--cov", type=float, default=None, help="§112: R0 shorts restricted to T_f with target coverage f (note 112-1)")
+    ap.add_argument("--opdef", action="store_true", help="§116 OPDEF: T_f = only the 120 (e, a) transitions (g = 0)")
+    ap.add_argument("--no_r0", action="store_true", help="§116 NONE: no R0 / no shorts; its updates go to round 1; insertion never below 5")
+    ap.add_argument("--foothold_n", type=int, default=5000, help="< 5000: smoke only")
+    ap.add_argument("--foothold_log", action="store_true", help="§116: per round foothold_yield and acc_by_length on 5k fixed problems (truth, logged only)")
     ap.add_argument("--reader", action="store_true", help="§113: §111-READ's auxiliary reader at every targeted slot (the model's own filtered targets)")
     ap.add_argument("--student_pool", default=None, help="§110 STUDENT: train a fresh model --steps on this pool_final.npz only (no R0 / rounds)")
     ap.add_argument("--save_rounds", action="store_true", help="§112 (Audit): fp16 model at each round boundary -> <out>/rounds/")
@@ -302,12 +306,17 @@ def main():
     Xtr, Ytr = s5.load_csv(os.path.join(a.data_dir, "S5=128.csv")); s5.check_labels(Xtr, Ytr)
     Xte, Yte = s5.load_csv(os.path.join(a.data_dir, "S5=512.csv"), limit=a.test_n); s5.check_labels(Xte, Yte)
     Tf, g_inner = build_tf(a.cov, a.seed) if a.cov is not None else (None, None)
+    if a.opdef:                                                             # §116 OPDEF: only (e, a); length-2 shorts only with an identity first op
+        Tf = np.zeros((120, 120), bool); Tf[0, :] = True; g_inner = 0.0; a.cov = 120 / 14400
     covinfo = {} if Tf is None else {"coverage_target": a.cov, "coverage_tf": float(Tf.mean()), "inner_fraction_g": g_inner}
     os.makedirs(a.out, exist_ok=True); json.dump({**vars(a), **covinfo}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
     m = Gen110(s5.load_gpt2(dev)).to(dev); m.reader = a.reader; opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
     lengths = [int(x) for x in a.lengths.split(",")]; ck = os.path.join(a.out, "ckpt.pt"); lp = os.path.join(a.out, "log.jsonl")
     S = {"step": 0, "short": 0, "rounds": [], "prev": 2, "remaining": a.steps - a.r0_steps - a.final_steps, "todo": list(lengths),
          "ins": 0, "phase": "R0", "sec": 0}
+    if a.no_r0:                                                             # §116 NONE: R0's updates go to round 1; lengths start at L_max >= 5
+        assert min(lengths) >= 5, "NONE needs --lengths with L_max >= 5 (e.g. 6,8,16,32)"
+        S.update({"phase": "rounds", "prev": 4, "bonus": a.r0_steps})
     t0 = time.time()
     if os.path.exists(ck):
         c = torch.load(ck, map_location=dev, weights_only=False); m.load_state_dict(c["model"]); opt.load_state_dict(c["opt"])
@@ -359,7 +368,15 @@ def main():
         m.eval(); kt = k1_table(m, dev, amp); m.train(); lab = S["drawn"]
         S["per_round_split"].append({"step": S["step"], "round": name, "labelled_acc": float(kt[lab].mean()) if lab.any() else None,
                                      "never_labelled_acc": float(kt[~lab].mean()) if (~lab).any() else None, "all_acc": float(kt.mean())})
-        print("k1 split", S["per_round_split"][-1], flush=True)
+        if a.foothold_log:                                                  # §116 (truth, logged only; never used in training)
+            fr = np.random.default_rng(11600); rows, lens = make_pool(fr, Xtr, a.foothold_n, 3, 32); st0 = np.zeros(a.foothold_n, np.int64)
+            m.eval(); decs, _, fin, _ = rollout_var(m, Xtr, rows, lens, st0, dev, amp); m.train(); tst = true_states(Xtr, rows, lens, st0)
+            okf = np.array([d[-1] == t[-1] for d, t in zip(decs, tst)])
+            cut_ok = np.array([all(decs[i][c + K - 1] == tst[i][c + K - 1] for c in range(0, lens[i], K) if c + K < lens[i]) for i in range(a.foothold_n)])
+            big = lens > 4
+            S["per_round_split"][-1]["foothold_yield"] = float(cut_ok[big].mean())
+            S["per_round_split"][-1]["acc_by_length"] = {str(L): float(okf[lens == L].mean()) for L in range(3, 33) if (lens == L).any()}
+        print("k1 split", {k_: v for k_, v in S["per_round_split"][-1].items() if k_ != "acc_by_length"}, flush=True)
         if a.save_rounds:
             os.makedirs(os.path.join(a.out, "rounds"), exist_ok=True)
             torch.save({k_: v.half() if v.is_floating_point() else v for k_, v in m.state_dict().items()},
@@ -389,6 +406,8 @@ def main():
             st.update({"length": Lmax, "action": "; ".join(why) + f": insert length {mid}"}); S["rounds"].append(st)
             S["todo"].insert(0, mid); S["ins"] += 1; print("insert length", mid, why, flush=True); continue
         n_steps = S["remaining"] // len(S["todo"]); S["remaining"] -= n_steps; S["todo"].pop(0)
+        if S.get("bonus"):
+            n_steps += S["bonus"]; S["bonus"] = 0
         st.update({"length": Lmax, "steps": n_steps}); S["rounds"].append(st); S["ins"] = 0
         print("round", {k: v for k, v in st.items() if k != "op_hist"}, flush=True)
         S["kept_trans"] |= kept_transitions(Xtr, pl, true_states(Xtr, rows, lens, starts))
@@ -410,7 +429,7 @@ def main():
     del opt; m.eval(); t1 = time.time()
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
-    r = {"arm": "self113" if a.reader else "self110_student" if a.student_pool else "self112" if a.cov is not None else ("self110b" if a.random_start else "self110"), "start_ge3": "random" if a.random_start else "identity", "seed": a.seed, "k": K, "fork": "mask", "train_sec": train_sec, "eval_dtype": str(amp), "test_sequences": len(Xte),
+    r = {"arm": ("self116_opdef" if a.opdef else "self116_none") if (a.opdef or a.no_r0) else "self113" if a.reader else "self110_student" if a.student_pool else "self112" if a.cov is not None else ("self110b" if a.random_start else "self110"), "start_ge3": "random" if a.random_start else "identity", "seed": a.seed, "k": K, "fork": "mask", "train_sec": train_sec, "eval_dtype": str(amp), "test_sequences": len(Xte),
          "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
          "short_fraction": S["short"] / max(1, S["step"]), "updates": S["step"], "rounds": S["rounds"]}
     pred, comp, val = rollout(m, Xte, K, dev, amp, a.eval_bs); cum = s5.cumulative(pred, Yte)
