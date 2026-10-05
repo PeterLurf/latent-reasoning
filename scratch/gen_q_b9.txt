@@ -1,4 +1,4 @@
 # §123 S5 continuous dither 0.5 (launch on Theory's call after §120's pilot reads)
 # P=2
-boxes/runs_fsq/s123_s5_dither050_s1 boxes.fsq120 --family s5 --arm final --no_round --dither 0.5 --seed 1
-boxes/runs_fsq/s123_s5_dither050_s2 boxes.fsq120 --family s5 --arm final --no_round --dither 0.5 --seed 2
+boxes/runs_fsq/s123_s5_dither050_s1 boxes.fsq120 --family s5 --arm final --no_round --dither 0.5 --seed 1 --micro 2
+boxes/runs_fsq/s123_s5_dither050_s2 boxes.fsq120 --family s5 --arm final --no_round --dither 0.5 --seed 2 --micro 2
