@@ -1,0 +1,4 @@
+# §116 remaining seeds on the local 2070 (replaces Vast o3 NONE s41 and o1 OPDEF s31-32; no GPU-matching constraint for §116)
+boxes/runs_s5/s116_none_s41 boxes.self110 --no_r0 --lengths 6,8,16,32 --foothold_log --seed 41
+boxes/runs_s5/s116_opdef_s31 boxes.self110 --opdef --foothold_log --seed 31
+boxes/runs_s5/s116_opdef_s32 boxes.self110 --opdef --foothold_log --seed 32

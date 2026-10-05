@@ -1,3 +1,4 @@
+# RUN LOCALLY instead (scratch/c1_q_116c_local.txt, 2026-10-05) - do not deploy
 # §116 (931186cb): host 3 of 5 -> NONE s41 only (OPDEF s35 runs locally, scratch/c1_q_116b_local.txt)
 # P=1
 boxes/runs_s5/s116_none_s41 boxes.self110 --no_r0 --lengths 6,8,16,32 --foothold_log --seed 41
