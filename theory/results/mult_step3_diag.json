@@ -967,5 +967,245 @@
    "b3": 0.096,
    "b4": 0.11
   }
+ },
+ "a121_anchorread_4x4_s2": {
+  "base": {
+   "per_slot": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 0.86,
+    "4": 1.0
+   },
+   "answer": 0.2,
+   "step3": {
+    "P3_exact": 1.0,
+    "S3_exact": 0.86,
+    "S3_exact_given_P3_ok": 0.86,
+    "S3_digit_acc_lsb_first": [
+     1.0,
+     1.0,
+     0.985,
+     0.87,
+     0.955,
+     0.99,
+     0.995
+    ]
+   },
+   "step3_carry_split": {
+    "0": {
+     "acc_carry": null,
+     "n_carry": 0,
+     "acc_nocarry": 1.0
+    },
+    "1": {
+     "acc_carry": null,
+     "n_carry": 0,
+     "acc_nocarry": 1.0
+    },
+    "2": {
+     "acc_carry": null,
+     "n_carry": 0,
+     "acc_nocarry": 0.985
+    },
+    "3": {
+     "acc_carry": 0.9285714285714286,
+     "n_carry": 70,
+     "acc_nocarry": 0.8384615384615385
+    },
+    "4": {
+     "acc_carry": 0.9634146341463414,
+     "n_carry": 82,
+     "acc_nocarry": 0.9491525423728814
+    },
+    "5": {
+     "acc_carry": 1.0,
+     "n_carry": 77,
+     "acc_nocarry": 0.983739837398374
+    },
+    "6": {
+     "acc_carry": 1.0,
+     "n_carry": 48,
+     "acc_nocarry": 0.993421052631579
+    }
+   }
+  },
+  "T1_restart_from_true_step2": {
+   "op3_alone": {
+    "3": 0.0
+   },
+   "ops3_4": {
+    "3": 0.0,
+    "4": 0.755
+   },
+   "answer": 0.0,
+   "step3": {
+    "P3_exact": 0.095,
+    "S3_exact": 0.0,
+    "S3_exact_given_P3_ok": 0.0,
+    "S3_digit_acc_lsb_first": [
+     0.865,
+     0.595,
+     0.255,
+     0.12,
+     0.08,
+     0.235,
+     0.6
+    ]
+   }
+  },
+  "T2_restart_from_true_step1": {
+   "ops2_4": {
+    "2": 0.0,
+    "3": 0.015,
+    "4": 1.0
+   },
+   "answer": 0.0,
+   "step3": {
+    "P3_exact": 1.0,
+    "S3_exact": 0.015,
+    "S3_exact_given_P3_ok": 0.015,
+    "S3_digit_acc_lsb_first": [
+     0.66,
+     0.39,
+     0.27,
+     0.11,
+     0.34,
+     0.92,
+     1.0
+    ]
+   }
+  },
+  "probe_slot2_latent": {
+   "S2_digit0": 0.881,
+   "S2_digit1": 0.167,
+   "S2_digit2": 0.129,
+   "S2_digit3": 0.132,
+   "S2_digit4": 0.172,
+   "S2_digit5": 0.458,
+   "b1": 0.952,
+   "b2": 1.0,
+   "b3": 0.091,
+   "b4": 0.114
+  }
+ },
+ "a121_anchorread_4x4_s3": {
+  "base": {
+   "per_slot": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 0.275,
+    "4": 1.0
+   },
+   "answer": 0.045,
+   "step3": {
+    "P3_exact": 1.0,
+    "S3_exact": 0.275,
+    "S3_exact_given_P3_ok": 0.275,
+    "S3_digit_acc_lsb_first": [
+     1.0,
+     1.0,
+     0.305,
+     0.635,
+     0.91,
+     0.99,
+     1.0
+    ]
+   },
+   "step3_carry_split": {
+    "0": {
+     "acc_carry": null,
+     "n_carry": 0,
+     "acc_nocarry": 1.0
+    },
+    "1": {
+     "acc_carry": null,
+     "n_carry": 0,
+     "acc_nocarry": 1.0
+    },
+    "2": {
+     "acc_carry": null,
+     "n_carry": 0,
+     "acc_nocarry": 0.305
+    },
+    "3": {
+     "acc_carry": 0.7571428571428571,
+     "n_carry": 70,
+     "acc_nocarry": 0.5692307692307692
+    },
+    "4": {
+     "acc_carry": 0.9390243902439024,
+     "n_carry": 82,
+     "acc_nocarry": 0.8898305084745762
+    },
+    "5": {
+     "acc_carry": 1.0,
+     "n_carry": 77,
+     "acc_nocarry": 0.983739837398374
+    },
+    "6": {
+     "acc_carry": 1.0,
+     "n_carry": 48,
+     "acc_nocarry": 1.0
+    }
+   }
+  },
+  "T1_restart_from_true_step2": {
+   "op3_alone": {
+    "3": 0.0
+   },
+   "ops3_4": {
+    "3": 0.0,
+    "4": 0.265
+   },
+   "answer": 0.0,
+   "step3": {
+    "P3_exact": 0.245,
+    "S3_exact": 0.0,
+    "S3_exact_given_P3_ok": 0.0,
+    "S3_digit_acc_lsb_first": [
+     0.715,
+     0.225,
+     0.25,
+     0.085,
+     0.105,
+     0.245,
+     0.745
+    ]
+   }
+  },
+  "T2_restart_from_true_step1": {
+   "ops2_4": {
+    "2": 0.0,
+    "3": 0.0,
+    "4": 0.99
+   },
+   "answer": 0.005,
+   "step3": {
+    "P3_exact": 1.0,
+    "S3_exact": 0.0,
+    "S3_exact_given_P3_ok": 0.0,
+    "S3_digit_acc_lsb_first": [
+     0.62,
+     0.33,
+     0.245,
+     0.08,
+     0.375,
+     0.94,
+     1.0
+    ]
+   }
+  },
+  "probe_slot2_latent": {
+   "S2_digit0": 0.899,
+   "S2_digit1": 0.157,
+   "S2_digit2": 0.104,
+   "S2_digit3": 0.125,
+   "S2_digit4": 0.152,
+   "S2_digit5": 0.572,
+   "b1": 1.0,
+   "b2": 1.0,
+   "b3": 0.094,
+   "b4": 0.116
+  }
  }
 }
