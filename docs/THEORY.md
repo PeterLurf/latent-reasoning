@@ -3831,6 +3831,18 @@ Audit / claude-13). ρ_ff, the floor-free fp32 ρ. This is the last metric amend
 * **Cap (Audit):** no further metric amendments for §123. If ρ_ff misbehaves on the dose cells, it is reported as a
   measurement limitation.
 
+**Note 126-2 (2026-10-05 17:00 EDT, before any §126 run; ANNEAL implementation 535f5a98, accepted; not launched).**
+* The distillation runs only during the ramp (2k < step ≤ 6k), so ANNEAL is identical to RAW-H through the window where
+  the plateau is decided (before 2k).
+* std(h) statistics are re-estimated once at 6k (the FSQ switch), then frozen. After λ = 1 they no longer enter the carrier.
+
+**Note 124-3 (2026-10-05 17:00 EDT, before §124 is scored). Matched units are per seed and per GPU type.**
+* Trajectories are seed-and-GPU-dependent (125-2), so each seed's trio (BASE, COPY, EXPOSE) must train on one GPU type.
+* Seeds 28–29 run as trios on single RTX 4090 hosts (Audit's within-seed rule).
+* For seeds 26–27, COPY and BASE must run on the same GPU type as EXPOSE (c1). A seed whose trio spans GPU types is
+  reported but excluded from MECH-112.
+* The training GPU is listed per run.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
