@@ -254,9 +254,10 @@ def certificate(m, fam, dev, amp, cap, bs=2048, time_limit=None, first_items=Non
         if timed_out:
             break
         frontier = nxt
-    if timed_out:                                                           # inconclusive: no decode / Moore pass on a partial machine
-        return {"holds": None, "status": "inconclusive_time", "n_reachable_partial": len(codes), "capped": capped, "timed_out": True,
-                "time_limit": time_limit, "sec": round(time.time() - t_start), "layers": layers, "n_start_pairs": int(len(S))}
+    if timed_out or capped:                                                 # inconclusive: no decode / Moore pass on a partial machine (the cap too:
+        return {"holds": None, "status": "inconclusive_time" if timed_out else "inconclusive_cap", "n_reachable_partial": len(codes),   # a 10^6-code
+                "capped": capped, "timed_out": timed_out, "time_limit": time_limit, "sec": round(time.time() - t_start),   # Python Moore ran for hours)
+                "layers": layers, "n_start_pairs": int(len(S))}
     dec = decode_codes(list(range(len(codes))))
     valid = bool((dec >= 0).all())
     for k, n in trans.items():
@@ -269,16 +270,18 @@ def certificate(m, fam, dev, amp, cap, bs=2048, time_limit=None, first_items=Non
         viol += int(dec[n] != want)
     holds = valid and viol == 0 and not capped
     # Moore minimisation of the code machine (outputs = decodes)
-    n = len(codes); part = {c: int(dec[c]) for c in range(n)}
+    n = len(codes); part = {c: int(dec[c]) for c in range(n)}; t_moore = time.time(); moore_timed_out = False
     while True:
+        if time_limit and time.time() - t_moore > time_limit:              # Moore bounded like the BFS (n_moore then None)
+            moore_timed_out = True; break
         sig = {c: (part[c],) + tuple(part.get(trans.get((c, x), -1), -2) for x in range(fam.n_items)) for c in range(n)}
         relabel = {}; newp = {c: relabel.setdefault(sig[c], len(relabel)) for c in range(n)}
         if len(set(newp.values())) == len(set(part.values())):
             break
         part = newp
-    return {"holds": bool(holds), "n_reachable": n, "n_moore": len(set(part.values())), "capped": capped, "violations": viol,
-            "all_decode_valid": valid, "status": "inconclusive_cap" if capped else "done", "timed_out": False, "sec": round(time.time() - t_start),
-            "layers": layers, "n_start_pairs": int(len(S))}
+    return {"holds": bool(holds), "n_reachable": n, "n_moore": None if moore_timed_out else len(set(part.values())), "capped": capped,
+            "violations": viol, "all_decode_valid": valid, "status": "done", "timed_out": False, "moore_timed_out": moore_timed_out,
+            "sec": round(time.time() - t_start), "layers": layers, "n_start_pairs": int(len(S))}
 
 
 CONTRACT_EPS = (0.03, 0.1, 0.3, 1.0)
