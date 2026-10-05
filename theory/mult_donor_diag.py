@@ -7,10 +7,16 @@ compared with three hypotheses:
   recipient-consistent   S_3(R) = a_R * (m_R + 100 b3_R)
   sum-donor-consistent   S_2(D) + 100 * a_R * b3_R           (the latent carries the running sum)
   prefix-donor-consistent a_R * (m_D + 100 b3_R)             (the latent carries the multiplier prefix)
+  input-donor-consistent  a_D * (m_D + 100 b3_R)             (the latent carries a and the prefix; the segment uses the
+                                                             carried a, not the visible one; added after the n = 20 smoke)
 Donor types: SAMEPREFIX (m_D = m_R, a_D != a_R, so S_2 differs) and SAMESUM (a_D * m_D = a_R * m_R with m_D != m_R, found by
 search over 4-digit a_D). Plus INTACT (no patch) for reference. A prefix carrier gives SAMEPREFIX -> recipient-consistent
 and SAMESUM -> prefix-donor-consistent; a sum carrier gives SAMEPREFIX -> sum-donor-consistent and SAMESUM ->
-recipient-consistent. Scored on S_3's 7 digits exactly (LSB first). Output theory/results/mult_donor_diag.json.
+recipient-consistent. Scored on S_3's 7 digits exactly (LSB first), and as mean per-digit agreement on digits 2-4 (the digits the step-3
+add and the recompute determine; chance 0.1). In-context models (§99 CTRL / TF-SLOT: the chunk keeps the recipient's ops
+visible) patch the slot-2 INPUT through mult98.MultGen.chunk's override; §107 PAUSE-4 adds its 3 pauses per segment;
+§100 k = 2 models are skipped (step 3 starts from the snapped step-2 text, so no latent carries S_2 across it).
+Output theory/results/mult_donor_diag.json.
     python theory/mult_donor_diag.py --runs a99_markov_4x4_s1 --n 300
 """
 import argparse
@@ -25,7 +31,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from boxes import s5  # noqa: E402
 from boxes.accel99 import MultGen99  # noqa: E402
-from boxes.mult98 import DIGIT_IDS, TOK  # noqa: E402
+from boxes.mult98 import DIGIT_IDS, TOK, MultGen  # noqa: E402
 
 TOK2DIG = {int(t): d for d, t in enumerate(DIGIT_IDS)}
 STEP3_LEN = 17                                                             # " + P_3(7) ( S_3(7) )"
@@ -37,20 +43,30 @@ def lsb(v, L):
 
 @torch.no_grad()
 def seg(m, prefix, prev, op):
-    g = m.g; parts = [g.embed(prefix)] + ([prev[:, None].to(g.embed(prefix).dtype)] if prev is not None else []) + [g.embed(m.digtok[op])[:, None]]
+    """One Markov segment [prefix, prev latent, op (, pauses)] -> (carried latent, slot hidden, cache), as accel99."""
+    g = m.g; dt = g.embed(prefix).dtype
+    parts = [g.embed(prefix)] + ([prev[:, None].to(dt)] if prev is not None else []) + [g.embed(m.digtok[op])[:, None]]
+    if m.n_pause:
+        parts.append(m.pause.to(dt)[None, None].expand(len(prefix), m.n_pause, -1))
     h, past = g(torch.cat(parts, 1), None); s_in = h[:, -1]; hs, past = g(s_in[:, None], past)
     return s_in, hs[:, 0], past
 
 
 @torch.no_grad()
 def run(m, A, B, patch2=None):
-    """A (N, 4) a digits LSB, B (N, 4) b digits LSB. Returns slot-2 carried latent and the step-3 decoded S_3 digits."""
+    """A (N, 4) a digits LSB, B (N, 4) b digits LSB. Returns the slot-2 carried latent (Markov) or slot-2 input (in-context
+    chunk) and the step-3 decoded S_3 digits. In-context models (markov False) use mult98.MultGen.chunk's override."""
     prefix = torch.tensor(np.concatenate([DIGIT_IDS[A], np.full((len(A), 1), TOK["*"])], 1))
-    s1, _, _ = seg(m, prefix, None, torch.tensor(B[:, 0]))
-    s2, _, _ = seg(m, prefix, s1, torch.tensor(B[:, 1]))
-    lat2 = s2 if patch2 is None else patch2
-    _, h3, past = seg(m, prefix, lat2, torch.tensor(B[:, 2]))
-    d = m.fork_greedy(h3, past, STEP3_LEN).numpy()
+    if m.markov:
+        s1, _, _ = seg(m, prefix, None, torch.tensor(B[:, 0]))
+        s2, _, _ = seg(m, prefix, s1, torch.tensor(B[:, 1]))
+        lat2 = s2 if patch2 is None else patch2
+        _, h3, past = seg(m, prefix, lat2, torch.tensor(B[:, 2]))
+        d = m.fork_greedy(h3, past, STEP3_LEN).numpy()
+    else:
+        m.override = None if patch2 is None else (1, patch2)
+        _, decs, _, ins = MultGen.chunk(m, prefix, None, torch.tensor(B[:, :3]), step_len=[5, 15, STEP3_LEN], decode="last")
+        m.override = None; s2 = ins[:, 1]; d = decs[-1].numpy()
     lp = 1 + 7                                                              # '+', 7 P digits, then '('
     S3 = np.array([[TOK2DIG.get(int(t), -1) for t in row[lp + 1:lp + 8]] for row in d])
     return s2, S3
@@ -87,9 +103,12 @@ def main():
     res["_meta"] = {"n": n, "samesum_found": int(keep.sum())}
     for run_name in a.runs:
         args = json.load(open(os.path.join(ROOT, "boxes", "runs_mult", run_name, "args.json")))
-        m = MultGen99(s5.load_gpt2("cpu"), "genm", std=False); m.markov = True
-        if args.get("arm99") == "pause4":
-            continue                                                        # pause segments differ; not covered here
+        arm = args.get("arm99")
+        if arm is None:
+            continue                                                        # §100 k = 2: step 3 starts from snapped text (no slot-2 carrier)
+        m = MultGen99(s5.load_gpt2("cpu"), "genm", std=False); m.markov = arm in ("markov", "pause4") or bool(args.get("markov"))
+        if arm == "pause4":
+            m.enable_mlat(1, 3)
         m.load_state_dict(torch.load(os.path.join(ROOT, "boxes", "runs_mult", run_name, "model.pt"), map_location="cpu")); m.eval()
         AR, BR = D(aR), D(bR)
         lat_R, s3_int = run(m, AR, BR)
@@ -99,9 +118,14 @@ def main():
         sumP = np.array([lsb(int(x) * int(y) + 100 * int(z) * int(w), 7) for x, y, z, w in zip(aP, mR, aR, b3R)])
         preS = S3(aR, mS, b3R)
         eq = lambda u, v, sel=None: float((u == v).all(1)[sel].mean()) if sel is not None else float((u == v).all(1).mean())  # noqa: E731
+        inpP = S3(aP, mR, b3R); inpS = S3(aS, mS, b3R)                     # the latent carries (a, prefix) and the segment uses the carried a
         R = {"intact_recipient": eq(s3_int, rec),
-             "SAMEPREFIX": {"recipient": eq(s3_P, rec), "sum_donor": eq(s3_P, sumP), "unchanged_vs_intact": eq(s3_P, s3_int)},
-             "SAMESUM": {"recipient": eq(s3_S, rec, keep), "prefix_donor": eq(s3_S, preS, keep), "unchanged_vs_intact": eq(s3_S, s3_int, keep)}}
+             "SAMEPREFIX": {"recipient": eq(s3_P, rec), "sum_donor": eq(s3_P, sumP), "input_donor": eq(s3_P, inpP), "unchanged_vs_intact": eq(s3_P, s3_int)},
+             "SAMESUM": {"recipient": eq(s3_S, rec, keep), "prefix_donor": eq(s3_S, preS, keep), "input_donor": eq(s3_S, inpS, keep), "unchanged_vs_intact": eq(s3_S, s3_int, keep)}}
+        dg = lambda u, v, sel=None: float((u[:, 2:5] == v[:, 2:5]).mean(1)[sel].mean()) if sel is not None else float((u[:, 2:5] == v[:, 2:5]).mean())  # noqa: E731
+        R["digits2_4"] = {"intact_recipient": dg(s3_int, rec),
+                          "SAMEPREFIX": {"recipient": dg(s3_P, rec), "sum_donor": dg(s3_P, sumP), "input_donor": dg(s3_P, inpP)},
+                          "SAMESUM": {"recipient": dg(s3_S, rec, keep), "prefix_donor": dg(s3_S, preS, keep), "input_donor": dg(s3_S, inpS, keep)}}
         res[run_name] = R; print(run_name, json.dumps(R), flush=True)
         json.dump(res, open(out_p, "w", newline="\n"), indent=1)
 
