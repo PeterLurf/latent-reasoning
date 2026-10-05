@@ -2696,6 +2696,11 @@ rate is final.**
     0.2 / 0.1 / 0.1, all no-snap exact.
   - So **ρ, not basin, tracks no-snap success** across both READ and ANCHOR: every model with ρ ≤ 0.28 passes, every
     model with ρ ≥ 0.38 fails. The anchor works by making the hand-off strongly contractive.
+  - **Floor check (Audit / claude-13; contraction_diag ran in fp32, so the bf16 issue of 123-5 does not apply).** In ANCHOR
+    the distance falls below 5e-5 by k = 4–5, so the late ratios are noise and the k = 1..8 geometric means are upper
+    bounds.
+    - ρ over k = 1..5 at ε 0.1: ANCHOR 0.09–0.18; READ s8 / s10 0.23 / 0.24; s9 0.35; s6 / s7 0.59 / 0.64; §108 0.73–0.88.
+    - The ordering and the boundary (pass ≤ 0.24, fail ≥ 0.35 on k = 1..5) are unchanged.
 
 ## 119. Controlled baselines for C1: published latent-CoT methods on our S5 protocol, scored with the donor and length protocols (pre-registered 2026-10-04 23:14 EDT, after Literature's checks 2bf76954 (project audit, missing comparison 2) and 1a473f82, and before any implementation or run; Audit's guards)
 
