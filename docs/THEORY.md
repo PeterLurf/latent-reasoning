@@ -2922,6 +2922,24 @@ blocked the queue, so it now runs post hoc.
 * A long BFS is itself informative: many reachable codes per state. n_reachable and codes per state are reported.
 * `theory/score_s120.py` reads eval_cert.json.
 
+**Note 121-3 (2026-10-05 06:19 EDT; descriptive, the READ-only arm, before the panel is scored). The reader improves step 3 but does not
+make a sum carrier.**
+* **Step 3:** READ s1 0.643, s2 0.927, against §99 MARKOV's 0.24–0.27 and ANCHOR+READ s1's 0.231. Test answers 0.078 /
+  0.219. The answer still needs S_3 carried into slot 4.
+* **Probes on the slot-2 latent** (both seeds): b_1 / b_2 1.0, S_2's middle digits 0.11–0.20 (chance). Linearly, still
+  the multiplier prefix.
+* **Causal donor test** (S_3 digits 2–4).
+  - s1 is the prefix-carrier signature: SAMEPREFIX recipient 0.30 vs sum-donor 0.14; SAMESUM prefix-donor 0.28 vs
+    recipient 0.11.
+  - s2 is **neither**: intact agreement 0.97, but every patched hypothesis is 0.20–0.26. The carried code is
+    problem-specific and entangled; it transplants as neither S_2 nor the prefix.
+* **T1** (step 3 from the true step-2 text) is about 0 in both: the text path is dead here too (121-2).
+* **Reading (provisional).** The reader made the segment better at recomputing from the carried code (s1's digit 2 is
+  0.815, against MARKOV's 0.38). It did not install S_2 as the carried quantity.
+  - Literature's prediction (c9651bff: the reader can be satisfied without forcing S) holds for the carrier, even though
+    accuracy rose.
+  - C1 on arithmetic in §121's sense (MECH) is not shown by READ-only.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
