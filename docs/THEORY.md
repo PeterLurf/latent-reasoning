@@ -195,7 +195,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 117 | One model for C1 + C4 + C6: self-decoded restarts + Markov segments + reader (MK vs staged ST) | registered (conditional on §111 READ REL) | **open** |
 | 118 | Fully latent at inference: text-path anchor vs longer silent stretches (S5, on READ) | registered | **open** |
 | 119 | Controlled C1 baselines: Coconut, CODI, SIM-CoT on our S5 protocol (donor + length) | registered (queued behind §117 / §118) | **open** |
-| 120 | FSQ digital recurrence: a learned discrete snap every step, no template or schedule (S5 + flip-flop pilot) | registered | **open** |
+| 120 | FSQ digital recurrence: a learned discrete snap every step, no template or schedule (S5 + flip-flop pilot) | pilot not met (S5 1/2 per arm: code collapse / loss basin); **flip-flop 4/4 in both arms, 2 seeds certified (Moore 2)**; extension deferred to §123 | closed (pilot) |
 | 121 | Multiplication's carrier shortcut: text-path anchor + reader vs reader alone (4×4, Markov) | CARRY-3 0/3: the anchor binds to a dead text path (T1 = 0); READ lifts op 3 to 0.64 / 0.93 by recomputation, with no sum carrier; triggers §122 | closed |
 | 122 | TEXT-MIX keeps the anchor's target competent (conditional on §121; stop rule for the multiplication line) | **triggered** (§121 CARRY-3 0/3, T1 = 0) | **open** |
 | 123 | Attractor strength causal for no-snap? Dither dose-response (σ 0–0.5) + dithered FSQ (canonical codes), §120 harness | registered (after §120's pilot) | **open** |
@@ -3239,6 +3239,36 @@ pre-registered from now on.**
   - flip-flop CERT is the task-language CERT (first item a write), with the registered CERT reported beside it;
   - SERIAL everywhere is donor ≥ 0.90 and recipient − chance_overlap < 0.10. Both verdicts are still printed for
     flip-flop.
+
+**§120 result (2026-10-05 11:38 EDT; 8 runs by the experiments session; scored by Theory alone with `theory/score_s120.py`, committed before
+any run; amendments 120-3, 120-7 and 120-8 disclosed). The P-A pilot reading is not met: FINAL passes in flip-flop but
+not in S5. Flip-flop passes in both arms, with two seeds certified at every length.**
+
+| family × arm | s1 | s2 | PILOT-PASS |
+|---|---|---|---|
+| S5 FINAL | **1.0** (2,048: 0.998; 28 codes per state) | 0 (code collapse: 9 codes) | ✗ |
+| S5 TRACE | 0 (a failure basin, loss 3.23 in two realisations) | **1.0** (2,048: 1.0; 18 codes per state) | ✗ |
+| FF FINAL | **1.0** (10 codes per state) | **1.0**: task CERT **holds** (36 reachable, **Moore 2**) | **✓** |
+| FF TRACE | **0.995** (all reads right in 0.885 of sequences; 268 codes per state) | **1.0**: task CERT **holds** (7 reachable, **Moore 2**) | **✓** |
+
+* **Every passing seed is serial** (single-code donor 1.0). For flip-flop that is the corrected rule (recipient − chance
+  < 0.10); the registered rule fails there on chance overlap (120-8).
+* **Certification:**
+  - **FF FINAL s2 and FF TRACE s2 are certified at every length on the task language.** Their learned code machines
+    minimise to flip-flop's 2-state automaton.
+  - The registered CERT fails in both, on unreachable read-before-write prefixes (120-7).
+  - S5 FINAL s1's machine is open (120-5), so it is not certified. Other cells' CERT is pending or not applicable.
+* **Reading.**
+  - **(a) A learned, task-agnostic discrete snap at every step works where the state space is small.** Flip-flop passes
+    4/4 seeds in both arms, from final answers too, with certified minimal machines in 2 seeds.
+  - **(b) On S5 (120 states) it is a seed lottery: 2/4 S5 seeds fail in range.** S5 FINAL s2 collapses its codes; S5
+    TRACE s1 sits in a loss basin. Where S5 succeeds, the code is redundant and open (17–34 codes per state, growing
+    with length).
+  - So the directive's minimum (≥ 2 families with the same design) is met for flip-flop only: "fails in range" in S5.
+* **Scope:** coverage_drawn is 1.0 (S5) and 0.27 (flip-flop), from the short curriculum (120-1), so no C4. §123's
+  FSQ+DITHER arm targets S5's reliability and canonical codes.
+* **Extension (registered for passing family × arm cells):** deferred until §123's FSQ+DITHER reads. If dithering fixes
+  S5's lottery, the extension (seeds 3–5, cycle navigation, multiplication) uses it. A note will precede that launch.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
