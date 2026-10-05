@@ -1,0 +1,26 @@
+{
+ "arms": {
+  "TEXTMIX+ANCHOR+READ": {
+   "n": 0,
+   "op3": {},
+   "test_acc": {},
+   "CARRY3_seeds": [],
+   "ACC_seeds": [],
+   "C1_serial": {},
+   "MECH": {},
+   "CARRY3": false,
+   "ACC": false
+  },
+  "TEXTMIX+READ": {
+   "n": 0,
+   "op3": {},
+   "test_acc": {},
+   "CARRY3_seeds": [],
+   "ACC_seeds": [],
+   "C1_serial": {},
+   "MECH": {}
+  }
+ },
+ "ATTRIBUTED_TO_ANCHOR": false,
+ "STOP_RULE_FIRES": false
+}
