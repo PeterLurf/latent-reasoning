@@ -683,3 +683,4 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 54242010 vast offer 53493692 created 2026-10-04 23:02: label gen-d7, queue scratch/gen_q_d7.txt (logged at create by vdeploy_toy.sh)
 54241860 vast | gen_e7 DESTROYED_VERIFIED 2026-10-04 23:35 upload arrived corrupt (gzip CRC), job never started (false STARTED from pgrep matching its own ssh command); vdeploy now sha-checks the upload and requires the job process; redeployed
 54246779 vast offer 53246719 created 2026-10-04 23:35: label gen-e7, queue scratch/gen_q_e7.txt (logged at create by vdeploy_toy.sh)
+54217490 vast | gen_l4 DESTROYED_VERIFIED 2026-10-04 23:42 after verified per-run fetch (boxes/runs_mult/a114_loop1_4x4_s1 boxes/runs_mult/a114_loop1_4x4_s3 boxes/runs_mult/a114_loop1_4x4_s2)
