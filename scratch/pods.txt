@@ -790,3 +790,7 @@ TRIAL RESULT 2026-10-05 16:33: 580-driver host 137.175.22.196 (offer 41028909, i
 54375147 vast | gen_c2 DESTROYED_VERIFIED 2026-10-05 16:33 (logged 2026-10-05 17:45) - 580-driver trial: ssh closed 20 min, never ran; destroyed by hand
 54386737 vast | gen_c2 create probe on offer 44544438 (A10, NL) succeeded unintentionally (probe parse bug); DESTROYED_VERIFIED 2026-10-05 17:46 before any use
 54386763 vast offer 44544438 created 2026-10-05 17:46: label gen-c2, queue scratch/gen_q_c2.txt (logged at create by vdeploy_toy.sh)
+54387596 vast offer 38997599 created 2026-10-05 17:56: label gen-b22, queue scratch/gen_q_b22.txt (logged at create by vdeploy_toy.sh)
+54365252 vast | gen_b7 DESTROYED_VERIFIED 2026-10-05 18:00 after verified per-run fetch (boxes/runs_fsq/s123_s5_dither010_s2 boxes/runs_fsq/s123_s5_dither010_s1)
+54372622 vast | gen_b13 DESTROYED_VERIFIED 2026-10-05 18:01 after verified per-run fetch (boxes/runs_fsq/s125_s5_std_s2)
+54388750 vast offer 49745142 created 2026-10-05 18:08: label gen-b20, queue scratch/gen_q_b20.txt (logged at create by vdeploy_toy.sh)
