@@ -1,0 +1,57 @@
+{
+ "arms": {
+  "ANCHOR": {
+   "n": 0,
+   "nosnap": {},
+   "NOSNAP512_seeds": [],
+   "NOSNAP512": false,
+   "EXIST": false,
+   "NOSNAP2048_seeds": [],
+   "NOSNAP2048": false,
+   "guard": {},
+   "extend": null,
+   "snapped512": {},
+   "trigger_snaps": {}
+  },
+  "LONG": {
+   "n": 0,
+   "nosnap": {},
+   "NOSNAP512_seeds": [],
+   "NOSNAP512": false,
+   "EXIST": false,
+   "NOSNAP2048_seeds": [],
+   "NOSNAP2048": false,
+   "guard": {},
+   "extend": null,
+   "snapped512": {},
+   "trigger_snaps": {}
+  },
+  "CONTROL (\u00a7111 READ)": {
+   "n": 1,
+   "nosnap": {
+    "6": {
+     "128": 0.002,
+     "256": 0.0,
+     "512": 0.0,
+     "2048": 0.0
+    }
+   },
+   "NOSNAP512_seeds": [],
+   "NOSNAP512": false,
+   "EXIST": false,
+   "NOSNAP2048_seeds": [],
+   "NOSNAP2048": false,
+   "guard": {},
+   "extend": null,
+   "snapped512": {
+    "6": 0.9995
+   },
+   "trigger_snaps": {
+    "6": {
+     "mean": 19.716,
+     "median": 20.0
+    }
+   }
+  }
+ }
+}

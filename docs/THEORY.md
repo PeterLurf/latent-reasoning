@@ -189,6 +189,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 115 | No-snap Markov chains, and a round-trip snap trigger (eval only) | registered | **open** |
 | 116 | Strict C4: final-answer training through self-decoded restarts (OPDEF: op definitions only; NONE: no shorts) | registered (conditional on §112 f = 0.1) | **open** |
 | 117 | One model for C1 + C4 + C6: self-decoded restarts + Markov segments + reader (MK vs staged ST) | registered (conditional on §111 READ REL) | **open** |
+| 118 | Fully latent at inference: text-path anchor vs longer silent stretches (S5, on READ) | registered | **open** |
 
 ## Live sections
 
@@ -2224,6 +2225,71 @@ otherwise not run (noted then). Implementation: the experiments session (self110
     final-only target.
   - It uses validity only, never truth. A real model after R0 is not expected to hit it; the count is reported.
 * The dose is still open. It is fixed in a further note when §112 FOOTHOLD-0.1 is decided.
+
+## 118. Fully latent at inference: anchoring the carried latent to the text path, against longer silent stretches (pre-registered 2026-10-04 23:07 EDT, after Literature's check bd1db295 and before any implementation or run; C2 without snaps, the user's "full latent thinking without snaps")
+
+**Why (115-1).** With the reader (§111 READ s6), the Markov latent code is far more stable across generations, but it
+still drifts.
+* Without snaps, per-hand-off accuracy is 0.94 → 0.86 over positions 0–512, against about 0.2 for §108 s1.
+* The disagreement trigger needs 19.7 snaps per 512 ops, against 127 fixed.
+* Snaps remain a test-time scaffold. §118 asks whether training can make the recurrence stationary, so a chain stays
+  exact with **no discrete checkpoint at test**.
+* **Prior** (bd1db295, `docs/LIT_S118_ANCHOR_2026-10-04.md`).
+  - ANCHOR is professor forcing (1610.09038) in concept: free-running dynamics aligned to teacher-forced dynamics.
+    Also CODI, KaVa, ICoT-KD, System-1.5, LIFT 2609.38149.
+  - Drift priors: DEQ, Attractor Models, 2609.26487, nGPT, 2609.02049. SimSiam / BYOL for stop-gradient asymmetry.
+  - Range: §41 (reach about 1.5–2× trained depth), §22 (no clock), §56 / §62.
+  - A per-hand-off text-path anchor of a pretrained LM's carried latent, for no-snap stability, scored by drift and
+    donor SERIAL: new as scoped, not as concept.
+
+**Base.** §111 MK-4-READ exactly: S5, Markov segments with the sink fix, the TF bootstrap ending at 12k, the reader from
+step 0, 24k steps, bs 64, lr 1e-4.
+
+**Arms (3 seeds each first; extended to 5 when NOSNAP-512 holds in ≥ 2/3).**
+* **ANCHOR (seeds 71–73, +74–75).** At every latent-fed segment j (training k ≤ 4), the latent path [EOT, latent_{j−1},
+  op_j] gives carried latent a.
+  - The text path [EOT, gold state text of j−1, op_j] gives b, with **stop-gradient** on b.
+  - **L_anchor = (1 − cos(a, b)) + |log‖a‖ − log‖b‖|**, weight 1, added to the fork and reader losses (Literature (b)).
+  - The latent code is pushed to be a function of the state alone (the generation-1 code): a soft snap without
+    decoding.
+* **LONG (seeds 81–83, +84–85).** No anchor. K-CURR continues past 4: k_train = 1 / 2 / 4 / 8 / 16 / 32 from steps 0 /
+  2k / 6k / 10k / 14k / 18k. Training snaps every k_train; the TF bootstrap is as §111.
+* **Control:** §111 READ s6–10, with the same no-snap evaluation (no new training).
+
+**Measures.**
+* **No-snap evaluation** (§115 (A)): the Markov recurrence from the identity text at position 0, then [EOT, carried
+  latent, op] at every position.
+  - **No test-time text path, reader or decode feedback** (Literature (d)). The per-step fork decode is read for scoring
+    only.
+  - Cumulative at 128 / 512 / 2,048, per-hand-off by position, and drift (norm ratio, cosine to the snapped rollout).
+* Also measured:
+  - §115 (B)'s trigger snap count;
+  - the standard k = 4 snapped cumulative at 512 / 2,048;
+  - §104's single-slot donor protocol;
+  - reader_acc;
+  - the **effective rank** of the carried latents (Literature (b));
+  - the anchor cosine and log-norm gap at test, by position.
+
+**Rules (fixed now; per arm).**
+* **NOSNAP-512:** no-snap cumulative ≥ 0.99 at 512 in ≥ 4/5 (extended arm), with single-slot donor SERIAL (§104, at k =
+  4 chunks) in those seeds. **EXIST:** ≥ 1 seed.
+* **NOSNAP-2048 (C2 at length):** no-snap cumulative ≥ 0.99 at 2,048 in ≥ 4/5.
+* **Guard:** the standard k = 4 snapped cumulative stays ≥ 0.99 at 512 in the passing seeds.
+* **Claim wording (fixed):** "fully latent at inference, text-anchored in training: C1 + C2 + C6 with per-step state
+  supervision (not C4)".
+
+**Readings.**
+* **ANCHOR passes NOSNAP-512 and -2048.** A pretrained LM's latent recurrence stays exact to 2,048 with no discrete
+  checkpoint at test. Text is needed only as a training anchor. This is the first fully latent chain at length here.
+* **LONG passes at 512 but fails at 2,048 (or beyond about 2× k_train).** The range-principle signature: longer
+  training stretches move the boundary but do not remove it.
+* **Neither.** Drift is not the only error: 0.99 at 512 needs about 0.99998 per hand-off. Snapping on the label-free
+  trigger (§115 B) remains the route to C5.
+* **Diagnostics:** effective-rank collapse or a shrinking norm under ANCHOR is reported as a pathology, not a pass.
+
+**Placement.** 6 runs first (up to 10), about $9–15 on Vast. Not conditional (§111 READ met REL). Implementation: the
+experiments session (mk108 `--arm read` plus `--anchor` and an extended `--kcurr`; snap115 (A)/(B) on every model).
+Scorer `theory/score_s118.py`, committed before any run. Projection to Audit.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
