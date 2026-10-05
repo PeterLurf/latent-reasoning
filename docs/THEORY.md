@@ -167,7 +167,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 105 | C1 for the headline: S5 GEN-4 with a masked fork + donor protocol | G4-M + MASK-DEC met; HANDOFF 0/3 (slots 2–3 latent-carried in 2/3; slot 1 recomputed from the visible start) | closed |
 | 106 | C2 on a real task: bounded streaming multiplication (latent vs the written format) | written format + cut extrapolates 1.000 to b = 32 (WC-S-k2 3/3); masked latent arm fails even at k = 2 (106-4) | closed |
 | 107 | Multiplication's blocker: carrier width (m latents) vs compute (pause), carriage forced | registered | **open** |
-| 108 | Forced latent carriage on S5 (Markov segments, sink fix, TF bootstrap; donor-scored) | registered | **open** |
+| 108 | Forced latent carriage on S5 (Markov segments, sink fix, TF bootstrap; donor-scored) | ACC not met (MK-4 2/5, MK-8 0/5); serial in all 5 learning seeds; MK-4 s1 exact to 2,048 (unqualified serial C1, one seed); failures: no-read basin or precision | closed |
 | 110 | Self-training v2: independent seeds, label-free gate, masked fork (C4 + C1) | SELF2 2/5, C1 1/5 (s3: C4 + C1 + C2 in one seed, certified k = 1); STUDENT triggered | **open** (STUDENT) |
 | 110b | Self-training v2 corrected: identity-start shorts plus random textual starts for length ≥ 3 | stopped after a clear null: loss at chance from random starts (110b-2) | closed |
 | 111 | Reliability of the Markov hand-off: 2× budget vs DAgger-style own-state training; best-of-n | 2× 0/5 (no REL; 111-3); READ 3/3 so far; DAG 0/3 so far | **open** |
@@ -1417,6 +1417,29 @@ Projection to Audit.
 **Placement.** 10 runs (2 arms × 5 seeds), about $6–8 on Vast (proof host MK-4 s1 first, ≤ 5 hosts). Projection to
 Audit. Implementation: the experiments session (gen97 plus accel99's markov segment construction). Scorer committed
 before any run.
+
+**§108 result (2026-10-04 20:59 EDT; 10 runs by the experiments session; scored by Theory alone with `theory/score_s108.py`, committed
+before any run; `theory/results/score_s108.json`). ACC, C1-MK and C6 are not met in either arm. Every seed that
+learns carries the state serially.**
+
+| seed | MK-4: 512 / 2,048 | per-hand-off | donor min / recipient max | MK-8: 512 / 2,048 | per-hand-off | donor min / recipient max |
+|---|---|---|---|---|---|---|
+| s1 | **1.0 / 0.996** | 1.0 | 1.0 / 0.011 | 0.797 / 0.446 | 0.99941 | 0.996 / 0.011 |
+| s2 | 0 / 0 | 0.008 | chance | 0 / 0 | 0.008 | chance |
+| s3 | 0.59 / 0.12 | 0.99845 | 0.995 / 0.011 | 0.982 / 0.93 | 0.99995 | 0.999 / 0.010 |
+| s4 | 0 / 0 | 0.008 | chance | 0 / 0 | 0.008 | chance |
+| s5 | **0.994** / 0.982 | 0.99997 | 0.9995 / 0.011 | 0 / 0 | 0.674 | 0.072 / 0.011 |
+
+* **ACC:** MK-4 2/5 (s1, s5), MK-8 0/5 (needs ≥ 4/5). **C6 at 2,048:** MK-4 1/5 (s1), MK-8 0/5.
+* **SERIAL holds in all 5 seeds that learn** (MK-4 s1 / s3 / s5, MK-8 s1 / s3): donor ≥ 0.995 and recipient ≤ 0.011 at
+  every in-chunk slot. That is the registered sanity check: no leak in the segment construction.
+* **Two failure modes:**
+  - **No-read basin** (MK-4 s2 / s4, MK-8 s2 / s4): per-hand-off at chance (111-1). MK-8 s5 is a partial reader.
+  - **Precision:** MK-4 s3 and MK-8 s1 carry serially but err about once per 700–1,700 hand-offs, which compounds
+    below 0.99 at 512.
+* **Reading.** Forced carriage gives **unqualified serial C1 on S5 in single seeds**: MK-4 s1 is exact to 2,048 with the
+  state carried hop by hop through latents and no visible route. It is not reliable (C6). The registered next levers:
+  §111 tests budget (2×: 0/5, 111-3), own-state training (DAG) and the auxiliary reader (READ: 3/3 so far).
 
 ## 110. Self-training by length, v2: independent seeds, label-free precision gate, masked fork (C4 + C1) (pre-registered 2026-10-04 08:24 EDT, after Literature's check 552c57a5 and before any implementation or run; Audit's request after §103)
 
