@@ -1,0 +1,406 @@
+{
+ "arms": {
+  "MK-4": {
+   "n": 5,
+   "acc_seeds": [
+    1,
+    5
+   ],
+   "ACC": false,
+   "serial_seeds": [
+    1,
+    3,
+    5
+   ],
+   "C1_MK": false,
+   "C6": false,
+   "cum512": {
+    "1": 1.0,
+    "2": 0.0,
+    "3": 0.59,
+    "4": 0.0,
+    "5": 0.994
+   },
+   "ext2048": {
+    "1": 0.996,
+    "2": 0.0,
+    "3": 0.12,
+    "4": 0.0,
+    "5": 0.982
+   },
+   "per_handoff": {
+    "1": {
+     "per_position": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "pooled": 1.0,
+     "first_slot": 1.0,
+     "n": 20000
+    },
+    "2": {
+     "per_position": [
+      0.00775,
+      0.01935483870967742,
+      0.012903225806451613
+     ],
+     "pooled": 0.007877892663712457,
+     "first_slot": 1.0,
+     "n": 20000
+    },
+    "3": {
+     "per_position": [
+      1.0,
+      1.0,
+      0.99535
+     ],
+     "pooled": 0.99845,
+     "first_slot": 1.0,
+     "n": 20000
+    },
+    "4": {
+     "per_position": [
+      0.0075,
+      0.013333333333333334,
+      0.019867549668874173
+     ],
+     "pooled": 0.007635091867395694,
+     "first_slot": 1.0,
+     "n": 20000
+    },
+    "5": {
+     "per_position": [
+      1.0,
+      1.0,
+      0.9999
+     ],
+     "pooled": 0.9999666666666667,
+     "first_slot": 1.0,
+     "n": 20000
+    }
+   },
+   "donor": {
+    "1": {
+     "slot1": {
+      "donor_consistent": 1.0,
+      "recipient_consistent": 0.0105
+     },
+     "slot2": {
+      "donor_consistent": 1.0,
+      "recipient_consistent": 0.0095
+     },
+     "slot3": {
+      "donor_consistent": 1.0,
+      "recipient_consistent": 0.0075
+     }
+    },
+    "2": {
+     "slot1": {
+      "donor_consistent": 0.011,
+      "recipient_consistent": 0.01
+     },
+     "slot2": {
+      "donor_consistent": 0.0085,
+      "recipient_consistent": 0.008
+     },
+     "slot3": {
+      "donor_consistent": 0.0065,
+      "recipient_consistent": 0.009
+     }
+    },
+    "3": {
+     "slot1": {
+      "donor_consistent": 0.9955,
+      "recipient_consistent": 0.0105
+     },
+     "slot2": {
+      "donor_consistent": 0.995,
+      "recipient_consistent": 0.0095
+     },
+     "slot3": {
+      "donor_consistent": 0.996,
+      "recipient_consistent": 0.0075
+     }
+    },
+    "4": {
+     "slot1": {
+      "donor_consistent": 0.0075,
+      "recipient_consistent": 0.011
+     },
+     "slot2": {
+      "donor_consistent": 0.0095,
+      "recipient_consistent": 0.009
+     },
+     "slot3": {
+      "donor_consistent": 0.0065,
+      "recipient_consistent": 0.0065
+     }
+    },
+    "5": {
+     "slot1": {
+      "donor_consistent": 0.9995,
+      "recipient_consistent": 0.0105
+     },
+     "slot2": {
+      "donor_consistent": 1.0,
+      "recipient_consistent": 0.0095
+     },
+     "slot3": {
+      "donor_consistent": 1.0,
+      "recipient_consistent": 0.0075
+     }
+    }
+   }
+  },
+  "MK-8": {
+   "n": 5,
+   "acc_seeds": [],
+   "ACC": false,
+   "serial_seeds": [
+    1,
+    3
+   ],
+   "C1_MK": false,
+   "C6": false,
+   "cum512": {
+    "1": 0.797,
+    "2": 0.0,
+    "3": 0.982,
+    "4": 0.0,
+    "5": 0.0
+   },
+   "ext2048": {
+    "1": 0.446,
+    "2": 0.0,
+    "3": 0.93,
+    "4": 0.0,
+    "5": 0.0
+   },
+   "per_handoff": {
+    "1": {
+     "per_position": [
+      1.0,
+      1.0,
+      1.0,
+      0.99965,
+      0.9989496323713299,
+      0.9990488110137672,
+      0.9982464051305175
+     ],
+     "pooled": 0.9994139801467908,
+     "first_slot": 1.0,
+     "n": 20000
+    },
+    "2": {
+     "per_position": [
+      0.0079,
+      0.012658227848101266,
+      0.006329113924050633,
+      0.013793103448275862,
+      0.017241379310344827,
+      0.005780346820809248,
+      0.029069767441860465
+     ],
+     "pooled": 0.008198284080076263,
+     "first_slot": 1.0,
+     "n": 20000
+    },
+    "3": {
+     "per_position": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.9999,
+      0.9998999899989999,
+      0.9998499699939988
+     ],
+     "pooled": 0.999949997857051,
+     "first_slot": 1.0,
+     "n": 20000
+    },
+    "4": {
+     "per_position": [
+      0.0082,
+      0.012195121951219513,
+      0.006289308176100629,
+      0.013245033112582781,
+      0.011299435028248588,
+      0.0058823529411764705,
+      0.029585798816568046
+     ],
+     "pooled": 0.00843258694616484,
+     "first_slot": 1.0,
+     "n": 20000
+    },
+    "5": {
+     "per_position": [
+      0.99995,
+      0.9274963748187409,
+      0.5445822102425876,
+      0.33876069966505395,
+      0.2283584617990852,
+      0.17688266199649738,
+      0.12790697674418605
+     ],
+     "pooled": 0.6737905816079458,
+     "first_slot": 1.0,
+     "n": 20000
+    }
+   },
+   "donor": {
+    "1": {
+     "slot1": {
+      "donor_consistent": 0.9955,
+      "recipient_consistent": 0.0105
+     },
+     "slot2": {
+      "donor_consistent": 0.997,
+      "recipient_consistent": 0.0085
+     },
+     "slot3": {
+      "donor_consistent": 0.999,
+      "recipient_consistent": 0.0095
+     },
+     "slot4": {
+      "donor_consistent": 0.997,
+      "recipient_consistent": 0.0095
+     },
+     "slot5": {
+      "donor_consistent": 0.9975,
+      "recipient_consistent": 0.0065
+     },
+     "slot6": {
+      "donor_consistent": 0.9965,
+      "recipient_consistent": 0.0095
+     },
+     "slot7": {
+      "donor_consistent": 0.9975,
+      "recipient_consistent": 0.0045
+     }
+    },
+    "2": {
+     "slot1": {
+      "donor_consistent": 0.011,
+      "recipient_consistent": 0.011
+     },
+     "slot2": {
+      "donor_consistent": 0.0085,
+      "recipient_consistent": 0.012
+     },
+     "slot3": {
+      "donor_consistent": 0.0085,
+      "recipient_consistent": 0.012
+     },
+     "slot4": {
+      "donor_consistent": 0.009,
+      "recipient_consistent": 0.012
+     },
+     "slot5": {
+      "donor_consistent": 0.011,
+      "recipient_consistent": 0.011
+     },
+     "slot6": {
+      "donor_consistent": 0.008,
+      "recipient_consistent": 0.012
+     },
+     "slot7": {
+      "donor_consistent": 0.007,
+      "recipient_consistent": 0.012
+     }
+    },
+    "3": {
+     "slot1": {
+      "donor_consistent": 0.9995,
+      "recipient_consistent": 0.01
+     },
+     "slot2": {
+      "donor_consistent": 1.0,
+      "recipient_consistent": 0.009
+     },
+     "slot3": {
+      "donor_consistent": 1.0,
+      "recipient_consistent": 0.0095
+     },
+     "slot4": {
+      "donor_consistent": 0.9995,
+      "recipient_consistent": 0.0095
+     },
+     "slot5": {
+      "donor_consistent": 0.999,
+      "recipient_consistent": 0.0065
+     },
+     "slot6": {
+      "donor_consistent": 0.9995,
+      "recipient_consistent": 0.0095
+     },
+     "slot7": {
+      "donor_consistent": 0.9995,
+      "recipient_consistent": 0.0045
+     }
+    },
+    "4": {
+     "slot1": {
+      "donor_consistent": 0.011,
+      "recipient_consistent": 0.0125
+     },
+     "slot2": {
+      "donor_consistent": 0.01,
+      "recipient_consistent": 0.0115
+     },
+     "slot3": {
+      "donor_consistent": 0.009,
+      "recipient_consistent": 0.0115
+     },
+     "slot4": {
+      "donor_consistent": 0.009,
+      "recipient_consistent": 0.012
+     },
+     "slot5": {
+      "donor_consistent": 0.0115,
+      "recipient_consistent": 0.0115
+     },
+     "slot6": {
+      "donor_consistent": 0.008,
+      "recipient_consistent": 0.011
+     },
+     "slot7": {
+      "donor_consistent": 0.0075,
+      "recipient_consistent": 0.012
+     }
+    },
+    "5": {
+     "slot1": {
+      "donor_consistent": 0.0755,
+      "recipient_consistent": 0.01
+     },
+     "slot2": {
+      "donor_consistent": 0.0745,
+      "recipient_consistent": 0.0105
+     },
+     "slot3": {
+      "donor_consistent": 0.072,
+      "recipient_consistent": 0.0105
+     },
+     "slot4": {
+      "donor_consistent": 0.0735,
+      "recipient_consistent": 0.006
+     },
+     "slot5": {
+      "donor_consistent": 0.076,
+      "recipient_consistent": 0.0095
+     },
+     "slot6": {
+      "donor_consistent": 0.0805,
+      "recipient_consistent": 0.0075
+     },
+     "slot7": {
+      "donor_consistent": 0.0785,
+      "recipient_consistent": 0.0085
+     }
+    }
+   }
+  }
+ }
+}
