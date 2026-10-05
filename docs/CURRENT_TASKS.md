@@ -39,9 +39,9 @@ so send to the pipe addresses their messages come from.
 | j1, j3 | §117 MK s51 + ST s61 / ST s62-63 (MK s52-53 done: 0/0) |
 | o4, o5 | §116 NONE s42-45 (NONE+COPY VOID: no_grad bug, note 116-5; o7 stopped) |
 
-**Queued:** a4 = §118 LONG s83 (P=1; needs a 24 GB host), §116 o1 (OPDEF 31-32) / o3 (OPDEF 35 + NONE 41) as slots free;
-§123 queues b6-b11 (S5 dither 0/0.1/0.25/0.5, FSQ+DITHER s5/ff) **on Theory's call only** (after §120's pilot reads;
-FF σ* later). §119 not implemented.
+**Queued (slot order, Theory + Audit 09:15; each step only while burn < ~$3.5/h, 3090s only):** (1) finish running work
+incl. a4 = §118 LONG s83 (P=1, 24 GB); (2) §123 once §120's pilot reads, on Theory's call (S5 dose b6-b9 first, then
+FSQ+DITHER b10-b11 if credit binds; FF σ* later); (3) §116 OPDEF o1 / o3; (4) §119 deferred.
 
 **Data retention (user, 2026-10-05 via Audit):** keep eval / log / args / preds and all logs; keep a final model.pt only
 where a later analysis can use it (passing / acquired seeds, models named by a registered analysis); delete transfer
