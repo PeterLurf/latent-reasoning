@@ -440,3 +440,11 @@
 10:05:23 contraction_diag anchor s71-73 rc 0 (cuda:0)
 10:11:56 s120_ff_trace_s2 growth_only rc 0 (cuda:0)
 10:12:01 s120_ff_trace_s2 cert_only rc 0 (cuda:0)
+10:25:04 s120_ff_final_s2 growth_only rc 0 (cuda:0)
+10:25:11 s120_ff_final_s2 cert_only rc 0 (cuda:0)
+10:31:38 s120_ff_trace_s1 growth_only rc 0 (cuda:0)
+13:11:59 s116_opdef_s34 rc 0 (cuda:1)
+13:11:59 WORKER_DONE cuda:1 scratch/c1_q_116_local.txt
+13:13:35 s120_ff_trace_s1 cert_only rc 0 (cuda:0)
+13:13:38 NOTE: s120_ff_trace_s1 cert_only killed after 2.7 h (capped BFS then unbounded Moore); rerun on cuda:1 with the bounded code
+13:13:46 s120_ff_trace_s1 cert_only (bounded) rc 0 (cuda:1)

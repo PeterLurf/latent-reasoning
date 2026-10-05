@@ -1,0 +1,321 @@
+{
+ "holds": false,
+ "n_reachable": 1019,
+ "n_moore": 869,
+ "capped": false,
+ "violations": 715,
+ "all_decode_valid": true,
+ "status": "done",
+ "timed_out": false,
+ "moore_timed_out": false,
+ "sec": 1,
+ "layers": [
+  {
+   "depth": 1,
+   "frontier": 4,
+   "cum": 4,
+   "sec": 0
+  },
+  {
+   "depth": 2,
+   "frontier": 10,
+   "cum": 14,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 3,
+   "frontier": 26,
+   "cum": 40,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 4,
+   "frontier": 51,
+   "cum": 91,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 5,
+   "frontier": 70,
+   "cum": 161,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 6,
+   "frontier": 113,
+   "cum": 274,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 7,
+   "frontier": 123,
+   "cum": 397,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 8,
+   "frontier": 134,
+   "cum": 531,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 9,
+   "frontier": 98,
+   "cum": 629,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 10,
+   "frontier": 81,
+   "cum": 710,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 11,
+   "frontier": 73,
+   "cum": 783,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 12,
+   "frontier": 52,
+   "cum": 835,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 13,
+   "frontier": 51,
+   "cum": 886,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 14,
+   "frontier": 46,
+   "cum": 932,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 15,
+   "frontier": 38,
+   "cum": 970,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 16,
+   "frontier": 20,
+   "cum": 990,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 17,
+   "frontier": 12,
+   "cum": 1002,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 18,
+   "frontier": 12,
+   "cum": 1014,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 19,
+   "frontier": 3,
+   "cum": 1017,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 20,
+   "frontier": 1,
+   "cum": 1018,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 21,
+   "frontier": 1,
+   "cum": 1019,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 22,
+   "frontier": 0,
+   "cum": 1019,
+   "sec": 1,
+   "complete": true
+  }
+ ],
+ "n_start_pairs": 5,
+ "eval_dtype": "torch.bfloat16",
+ "cert_cap": 1000000,
+ "cert_task": {
+  "holds": false,
+  "n_reachable": 1024,
+  "n_moore": 870,
+  "capped": false,
+  "violations": 685,
+  "all_decode_valid": true,
+  "status": "done",
+  "timed_out": false,
+  "moore_timed_out": false,
+  "sec": 0,
+  "layers": [
+   {
+    "depth": 1,
+    "frontier": 2,
+    "cum": 2,
+    "sec": 0
+   },
+   {
+    "depth": 2,
+    "frontier": 8,
+    "cum": 10,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 3,
+    "frontier": 26,
+    "cum": 36,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 4,
+    "frontier": 49,
+    "cum": 85,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 5,
+    "frontier": 71,
+    "cum": 156,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 6,
+    "frontier": 119,
+    "cum": 275,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 7,
+    "frontier": 117,
+    "cum": 392,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 8,
+    "frontier": 133,
+    "cum": 525,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 9,
+    "frontier": 92,
+    "cum": 617,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 10,
+    "frontier": 79,
+    "cum": 696,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 11,
+    "frontier": 84,
+    "cum": 780,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 12,
+    "frontier": 71,
+    "cum": 851,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 13,
+    "frontier": 68,
+    "cum": 919,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 14,
+    "frontier": 47,
+    "cum": 966,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 15,
+    "frontier": 27,
+    "cum": 993,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 16,
+    "frontier": 18,
+    "cum": 1011,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 17,
+    "frontier": 8,
+    "cum": 1019,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 18,
+    "frontier": 5,
+    "cum": 1024,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 19,
+    "frontier": 0,
+    "cum": 1024,
+    "sec": 0,
+    "complete": true
+   }
+  ],
+  "n_start_pairs": 2,
+  "first_items": [
+   "w0",
+   "w1"
+  ]
+ }
+}
