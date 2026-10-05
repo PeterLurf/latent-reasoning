@@ -1,0 +1,83 @@
+{
+ "holds": null,
+ "status": "inconclusive_time",
+ "n_reachable_partial": 344527,
+ "capped": false,
+ "timed_out": true,
+ "time_limit": 2700,
+ "sec": 2707,
+ "layers": [
+  {
+   "depth": 1,
+   "frontier": 751,
+   "cum": 751,
+   "sec": 2
+  },
+  {
+   "depth": 2,
+   "frontier": 1673,
+   "cum": 2424,
+   "sec": 9,
+   "complete": true
+  },
+  {
+   "depth": 3,
+   "frontier": 677,
+   "cum": 3101,
+   "sec": 24,
+   "complete": true
+  },
+  {
+   "depth": 4,
+   "frontier": 682,
+   "cum": 3783,
+   "sec": 30,
+   "complete": true
+  },
+  {
+   "depth": 5,
+   "frontier": 4847,
+   "cum": 8630,
+   "sec": 36,
+   "complete": true
+  },
+  {
+   "depth": 6,
+   "frontier": 28214,
+   "cum": 36844,
+   "sec": 80,
+   "complete": true
+  },
+  {
+   "depth": 7,
+   "frontier": 64487,
+   "cum": 101331,
+   "sec": 342,
+   "complete": true
+  },
+  {
+   "depth": 8,
+   "frontier": 67952,
+   "cum": 169283,
+   "sec": 943,
+   "complete": true
+  },
+  {
+   "depth": 9,
+   "frontier": 85967,
+   "cum": 255250,
+   "sec": 1576,
+   "complete": true
+  },
+  {
+   "depth": 10,
+   "frontier": 89277,
+   "cum": 344527,
+   "sec": 2707,
+   "complete": false
+  }
+ ],
+ "n_start_pairs": 14400,
+ "eval_dtype": "torch.bfloat16",
+ "cert_cap": 1000000
+}

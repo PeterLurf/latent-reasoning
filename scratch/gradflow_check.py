@@ -82,6 +82,16 @@ def check_self110_copy(dev, out):
     out["self110.expose"] = term(m, lambda: m.expose_loss(torch.tensor(STTOK[cs], device=dev)))   # §124 TEXT-EXPOSE
 
 
+def check_self110_resume(dev, out):
+    """note 112-5: the resume path trains the masked-chunk loss from a LOADED finished model (s112_f010_s22)."""
+    from boxes.gen97 import STTOK, true_chain
+    from boxes.self110 import Gen110
+    m = Gen110(s5.load_gpt2(dev)).to(dev); src = os.path.join(ROOT, "boxes", "runs_s5", "s112_f010_s22", "model.pt")
+    m.load_state_dict(torch.load(src, map_location=dev)); m.train(); rng = np.random.default_rng(0)
+    S = np.zeros(4, np.int64); O = rng.integers(0, 120, (4, 4)); tc = true_chain(S, O)
+    out["self110.resume_main"] = term(m, lambda: m.chunk_masked(torch.tensor(STTOK[S], device=dev), torch.tensor(O, device=dev), torch.tensor(tc, device=dev)))
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--paths", nargs="*", default=["accel99", "mk108", "fsq120", "self110_copy"])
     ap.add_argument("--device", default="cpu"); ap.add_argument("--out", default=os.path.join(ROOT, "theory", "results", "gradflow_check.json"))
