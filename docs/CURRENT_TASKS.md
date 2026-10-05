@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-04 19:45 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-05 00:30 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -29,36 +29,37 @@ kept as `*.void_forkconflict`.
 
 ### Vast (all `scratch/gen_deploy_*.sh`, watchers gen4/gen5 + partial drains; `scratch/watch_any2.sh` waiters)
 
-| Tag | Instance | ssh (`-i ~/.ssh/runpod_ed25519 root@…`) | Work |
-|---|---|---|---|
-| s2 | 54122048 | `-p 42390 167.179.138.57` | §101 micro proof |
-| m11 | 54153333 | `-p 23005 5.2.174.20` | §107 lat4 s1-3 |
-| n1 | 54179841 | `-p 33603 136.59.129.136` | §111 MK-4-2x s6-8 (48k) |
-| n5 | 54215540 | `-p 35368 142.172.103.36` | §111 MK-4-DAG s9-10 |
-| n6 | 54215806 | `-p 40070 96.20.36.104` | §111 MK-4-READ s9-10 (decides REL -> §113) |
-| l1 | 54199003 | `-p 45266 223.167.245.91` | §114 LOOP-R s1 (proof passed; ~10 h; needs --rel_only after) |
-| l2 | 54217478 | `-p 12446 81.166.162.13` | §114 LOOP-R s2 |
-| l3 | 54217482 | `-p 48053 86.123.234.69` | §114 LOOP-R s3 |
-| l4 | 54217490 | `-p 49343 86.123.234.69` | §114 LOOP-1 s1-3 |
-| d1 | 54201369 | `-p 40042 96.20.36.104` | §112 f050 s21-22 (proof) |
-| d2 | 54209664 | `-p 53089 108.55.118.247` | §112 f050 s23-24 (redeploy) |
-| d3 | 54202521 | `-p 2660 142.180.224.148` | §112 f050 s25 + f025 s21 |
-| d4 | 54212376 | `-p 46960 79.116.20.245` | §112 f025 s22-23 |
-| d5 | (deploying) | 167.179.138.57 | §112 f025 s24-25 |
-| e5 | 54216219 | `-p 28525 46.107.144.5` | §110 STUDENT s1/s3/s5 (gen_deploy_110s.sh ships the pools) |
+| Tag | Work |
+|---|---|
+| m11 | §107 lat4 s1-3 |
+| l1, l3 | §114 LOOP-R s1, s3 (l2 s2 and l4 LOOP-1 done) |
+| d1, d2, d3, d5 | §112 re-draining without rounds/ (Audit 00:11) |
+| d6 | §112 f010 s22 + s25 (decide §117 dose / §116) |
+| d7 | §112 f010 s23-24 |
+| s3, s4 | §101 b1 s3 + b0.1 s1-3 / b0.01 s1-3 |
+| e7, e8, e9 | §113 s11-12 / s13-14 / s15 |
 
-**Queued, not yet deployed** (Audit: fleet <= 14-16; stagger §112 into freed hosts):
-1. §113 (`gen_q_e7..e9`, `gen_deploy_110.sh`): implemented; launch only on Theory's REL call after READ s9-10.
-2. §110 STUDENT s2/s4 (`gen_q_e6`, `gen_deploy_110s.sh`) after e5.
-3. §112 d6, d7 as hosts free up.
-4. §101 `gen_q_s3/s4` after s2.
+(Instance ids, ssh: `scratch/live_hosts.txt`, `scratch/pods.txt`.) Deploys verify the upload sha and a running job before STARTED
+(vdeploy_toy.sh, after e7's corrupt upload). §112 rounds/ are pruned on-host (`scratch/prune_rounds.sh`, ALWAYS on d6/d7).
+
+**Queued, not yet deployed** (launch order per Audit: §117 > §113 / §118 > §116 > §119; ≤ 16 hosts; projection to Audit before §119):
+1. §117 (`self110 --markov|--st_switch --kcurr --reader`): waits for Theory's dose note (after §112 f010 s22/s25).
+2. §118 a1-a3 (`gen_deploy_118.sh`): launch when the CPU smokes pass (Theory approved, 118-1).
+3. §116 o1-o5 (`gen_deploy_116.sh`): waits for §112 f = 0.1 FOOTHOLD (Theory's call); smoke passed.
+4. §119: not implemented yet (after §117/§118).
+
+**Data retention (user, 2026-10-05 via Audit):** keep eval / log / args / preds and all logs; keep a final model.pt only
+where a later analysis can use it (passing / acquired seeds, models named by a registered analysis); delete transfer
+tarballs, staging, ckpt.pt after verification and per-round snapshots unless a registration needs them; record every
+deletion (logs/prune_rounds.log); ask Audit / Theory before any new bulky artefact. One-off sweep of closed sections pending
+(model.pt candidate list to Audit / Theory first).
 * Watchers don't detect host reboots: check uptime on the C1 hosts each pass.
 
 ### Local PC (torch `cuda:0` = 4060, `cuda:1` = 3070, `cuda:2` = 2070)
 
-* 4060: §115 chain (MK-4 s5 rel backfill, then snap115 on MK-4 s1/s3/s5, then g105 s1-3 at n=500).
-* 3070: §112 f010 s21.
-* 2070: §115 on READ s6-8 (descriptive), then rel backfills for §111 2x s9-10.
+* 4060: §115 chain (MK-4 s1/s3/s5, then g105 s1-3 at n=500).
+* 3070: §110 STUDENT s2, s4 (`scratch/c1_q_student_local.txt`).
+* 2070: §115 on READ s6-8, then rel backfills for §111 2x s9-10, then §115 on READ s9-10.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
