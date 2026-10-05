@@ -103,8 +103,17 @@ def check_fsq120_std(dev, out):
         m.update_stats(); out[f"fsq120.{fam_name}.std.stats_seen"] = float(int(m.seen))
 
 
+def check_fsq120_rawh(dev, out):
+    """§126 RAW-H: carrier = std(last hidden); gradient reaches GPT-2 through the carried path."""
+    from boxes.fsq120 import FSQ120, Family, make_batch
+    fam = Family("s5"); m = FSQ120(s5.load_gpt2(dev), fam).to(dev); m.raw_h = True; m.enable_std(); m.train()
+    s0, x, lab = make_batch(fam, np.random.default_rng(0), 4, 4); X = torch.tensor(x, device=dev)
+    out["fsq120.s5.rawh.main"] = term(m, lambda: m.chain(m.start(4, dev, s0), X, lab)[0])
+    m.update_stats(); out["fsq120.s5.rawh.stats_seen"] = float(int(m.seen))
+
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--paths", nargs="*", default=["accel99", "mk108", "fsq120", "fsq120_std", "self110_copy", "self110_resume"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--paths", nargs="*", default=["accel99", "mk108", "fsq120", "fsq120_std", "fsq120_rawh", "self110_copy", "self110_resume"])
     ap.add_argument("--device", default="cpu"); ap.add_argument("--out", default=os.path.join(ROOT, "theory", "results", "gradflow_check.json"))
     a = ap.parse_args(); out = {}
     for p in a.paths:

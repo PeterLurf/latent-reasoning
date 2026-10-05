@@ -1,0 +1,3 @@
+# §126 Stage 1 PROOF: RAW-H S5 s2 (d9381241 + 126-1); RTX 3090 / 3090 Ti ONLY
+# P=1
+boxes/runs_fsq/s126_s5_rawh_s2 boxes.fsq120 --family s5 --arm final --raw_h --micro 2 --seed 2 --no_cert

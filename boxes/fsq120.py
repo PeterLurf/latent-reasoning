@@ -105,6 +105,7 @@ class FSQ120(nn.Module):
         self.p_hard = 1.0                                                   # training schedule sets it; test = 1
         self.no_round = False; self.noise = 0.0                             # §123: continuous carry; training dither (set per step)
         self.std = False; self._acc = []                                    # §125 (enable_std registers its buffers)
+        self.raw_h = False                                                  # §126 RAW-H: no bottleneck, carried = std(h) (needs enable_std)
 
     def enable_std(self):
         """§125 STD: every carried embedding e = W_up(q) entering GPT-2 becomes mu_E + sd_E * (e - mu_e) / sd_e (wte stats; EMA
@@ -134,6 +135,9 @@ class FSQ120(nn.Module):
         self._acc = []
 
     def quant(self, h, noise=None):
+        if self.raw_h:                                                      # §126: the carrier IS the segment's last hidden (768-d)
+            hh = h.float() + (noise if noise is not None else 0)
+            return hh, hh, hh
         z = self.down(self.ln(h.float())); zb = torch.tanh(z + SHIFT) * HALF - OFF
         if self.training and self.noise > 0:                                # §123 dither (continuous) / pre-rounding dither (FSQ)
             zb = zb + (torch.rand_like(zb) * 2 - 1) * self.noise
@@ -146,7 +150,7 @@ class FSQ120(nn.Module):
         return qs, q, zb
 
     def embed_code(self, qs):
-        e = self.up(qs)
+        e = qs if self.raw_h else self.up(qs)                              # §126: std(h) directly; else W_up(code)
         return self.std_map(e) if self.std else e                          # §125: the same map everywhere a code enters GPT-2
 
     def segment(self, prev, items):
@@ -216,7 +220,8 @@ def make_batch(fam, rng, bs, L):
 def run_test(m, fam, s0, X, dev, amp, bs, every=True, grid=None):
     """Hard chains; decode at every position (every=True) or at reads only (flip-flop). Returns decoded states (N, L) and
     the codes (N, L, 8) int8."""
-    N, L = X.shape; pred = np.full((N, L), -1); codes = np.zeros((N, L, D_Q), np.float32 if m.no_round else np.int8); ntok = NST if fam.name == "s5" else 1
+    N, L = X.shape; pred = np.full((N, L), -1); ntok = NST if fam.name == "s5" else 1
+    codes = np.zeros((N, L, 1 if m.raw_h else D_Q), np.float32 if (m.no_round or m.raw_h) else np.int8)   # §126: 768-d carriers not stored
     for i in range(0, N, bs):
         sl = slice(i, i + bs); B = len(X[sl]); prev = m.start(B, dev, s0[sl] if fam.name == "s5" else None)
         for t in range(L):
@@ -224,8 +229,10 @@ def run_test(m, fam, s0, X, dev, amp, bs, every=True, grid=None):
                 h = m.segment(prev, torch.tensor(X[sl, t], device=dev)); qs, q, zb = m.quant(h); e = m.embed_code(qs)
                 if every or (X[sl, t] == RD).any():
                     pred[sl, t] = fam.decode(m.answer_greedy(e, ntok).cpu().numpy())
-            codes[sl, t] = q.float().cpu().numpy(); prev = e[:, None]
-            if grid is not None:                                            # §123 grid_share
+            if not m.raw_h:
+                codes[sl, t] = q.float().cpu().numpy()
+            prev = e[:, None]
+            if grid is not None and not m.raw_h:                            # §123 grid_share
                 zf = zb.float(); grid[0] += int(((zf - torch.round(zf)).abs() <= 0.1).sum()); grid[1] += zf.numel()
     return pred, codes
 
@@ -412,7 +419,7 @@ def contraction(m, fam, dev, amp, n=500, T0=4, K=16, seed=12301):
     for k in range(K):
         z, e = step(c, T0 + k); zs.append(z); clean.append(z); cdec.append(dec(e)); c = e[:, None]
     std_d = torch.cat(zs).std(0)                                            # per-coordinate std of clean carried z_b
-    U = torch.tensor(rng.standard_normal((n, D_Q)), dtype=torch.float32, device=dev); R = {}
+    U = torch.tensor(rng.standard_normal((n, zT0.shape[-1])), dtype=torch.float32, device=dev); R = {}   # 8 (FSQ) or 768 (§126 RAW-H)
     for eps in CONTRACT_EPS:
         delta = eps * std_d * U; zp, ep = step(pre_T0, T0 - 1, add=delta); dist = [(zp - zT0).norm(dim=-1)]; agree = []; c = ep[:, None]
         distn = [((zp - zT0) / std_d.clamp_min(1e-6)).norm(dim=-1)]                        # note 123-2: std-normalised coordinates
@@ -504,6 +511,7 @@ def main():
     ap.add_argument("--fsq_dither", type=float, default=0.0, help="§123: U(-s, s) on z_b before rounding at training hand-offs after 4k")
     ap.add_argument("--no_cert", action="store_true", help="skip CERT in the main eval (run post-hoc with --cert_only; Audit 2026-10-05)")
     ap.add_argument("--growth_only", action="store_true", help="distinct codes vs position on ext_n 2,048-step rollouts -> <out>/eval_growth.json")
+    ap.add_argument("--raw_h", action="store_true", help="§126 RAW-H: no bottleneck; carried vector = §125-standardised last hidden h")
     ap.add_argument("--std", action="store_true", help="§125 STD: standardised carried embedding (task-agnostic)")
     ap.add_argument("--fp32", action="store_true", help="note 123-5: --contraction_only in fp32 (autocast off) -> eval_contraction_fp32.json")
     ap.add_argument("--contraction_only", action="store_true", help="note 123-2: rho / rho_norm / basin alone from <out>/model.pt -> <out>/eval_contraction.json")
@@ -515,8 +523,8 @@ def main():
     fam = Family(a.family); os.makedirs(a.out, exist_ok=True)
     assert not (a.dither and not a.no_round) and not (a.fsq_dither and a.no_round), "§123: --dither needs --no_round; --fsq_dither is FSQ"
     def mk():
-        m_ = FSQ120(s5.load_gpt2(dev), fam).to(dev); m_.no_round = a.no_round
-        if a.std:
+        m_ = FSQ120(s5.load_gpt2(dev), fam).to(dev); m_.no_round = a.no_round; m_.raw_h = a.raw_h
+        if a.std or a.raw_h:
             m_.enable_std()
         return m_
     if a.growth_only:                                                       # Theory / Audit: distinct codes vs length on 2,048-step rollouts
@@ -598,7 +606,7 @@ def main():
     del opt; m.eval(); m.noise = 0.0; t1 = time.time()
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
-    res = {"family": a.family, "arm": a.arm, "seed": a.seed, "train_sec": train_sec, "eval_only": a.eval_only, "std": a.std,
+    res = {"family": a.family, "arm": a.arm, "seed": a.seed, "train_sec": train_sec, "eval_only": a.eval_only, "std": a.std, "raw_h": a.raw_h,
            "carried_norm": carried or None, "final_loss": last_loss, "no_round": a.no_round, "dither": a.dither, "fsq_dither": a.fsq_dither, "eval_dtype": str(amp), "coverage_drawn": float(drawn.mean()),
            "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
            "train_gpu": json.load(open(os.path.join(a.out, "args.json"))).get("train_gpu")}
@@ -611,7 +619,7 @@ def main():
             el = 2048 if a.test_len >= 512 else a.test_len
             Xx, Yx = s5.load_csv(os.path.join(a.data_dir, "S5=2048.csv"), limit=a.ext_n); s5.check_labels(Xx, Yx); Xx, Yx = Xx[:, :el], Yx[:, :el]
             px, cx = run_test(m, fam, np.zeros(len(Xx), np.int64), Xx, dev, amp, a.eval_bs); res["ext_2048"] = {"n": len(Xx), "len": Xx.shape[1], "cumulative": float((px == Yx).all(1).mean())}
-            if not a.no_round:
+            if not (a.no_round or a.raw_h):
                 res["code_growth_ext"] = code_growth(cx, Yx)
         s0m, Xm = np.zeros(a.margin_n, np.int64), Xte[:a.margin_n, :128]
     else:
@@ -629,10 +637,10 @@ def main():
             pd_, _ = run_test(m, fam, None, Xd, dev, amp, a.eval_bs, every=False); r_ = Xd == RD
             res[f"long_acc_pignore_{p_ig}"] = float(((pd_ == ld) & r_).sum() / r_.sum())
         s0m, Xm = None, Xte[:a.margin_n, :128]
-    res["grid_share"] = grid[0] / max(1, grid[1])                         # §123 implicit quantisation
+    res["grid_share"] = None if a.raw_h else grid[0] / max(1, grid[1])   # §123 implicit quantisation
     ct = contraction(m, fam, dev, amp, n=a.contract_n); res["rho"] = ct["rho"]; res["basin"] = ct["basin"]; res["contraction"] = ct["detail"]
     res["exact_recovery_share"] = ct["exact_recovery_share"]; res["rho_nonzero"] = ct["rho_nonzero"]; res["rho_norm"] = ct["rho_norm"]   # note 123-2
-    if a.no_round:                                                          # continuous: no codes / CERT / margin (§123)
+    if a.no_round or a.raw_h:                                               # continuous: no codes / CERT / margin (§123 / §126)
         res["n_codes"] = res["code_perplexity"] = res["codes_per_state"] = res["margin_flip_rate"] = None
         res["cert"] = {"status": "n/a (continuous)", "holds": None}; res["donor"] = donor(m, fam, dev, amp, n=a.donor_n)
     else:

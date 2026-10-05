@@ -1,0 +1,5 @@
+# §126 Stage 1: RAW-H S5 s1, s3, s4 (after the s2 proof); RTX 3090 / 3090 Ti ONLY
+# P=3
+boxes/runs_fsq/s126_s5_rawh_s1 boxes.fsq120 --family s5 --arm final --raw_h --micro 2 --seed 1 --no_cert
+boxes/runs_fsq/s126_s5_rawh_s3 boxes.fsq120 --family s5 --arm final --raw_h --micro 2 --seed 3 --no_cert
+boxes/runs_fsq/s126_s5_rawh_s4 boxes.fsq120 --family s5 --arm final --raw_h --micro 2 --seed 4 --no_cert
