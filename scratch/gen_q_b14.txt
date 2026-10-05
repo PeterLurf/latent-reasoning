@@ -1,3 +1,4 @@
+# RETIRED (note 125-4: §125 closed on the proof seed; Theory 2026-10-05) - do not deploy
 # §125 STD S5 s1 alone (control = §120 FINAL s1, RTX 3090 Ti): NON-580 3090-class only
 # P=1
 boxes/runs_fsq/s125_s5_std_s1 boxes.fsq120 --family s5 --arm final --std --micro 2 --seed 1 --no_cert
