@@ -170,8 +170,8 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 108 | Forced latent carriage on S5 (Markov segments, sink fix, TF bootstrap; donor-scored) | registered | **open** |
 | 110 | Self-training v2: independent seeds, label-free gate, masked fork (C4 + C1) | SELF2 2/5, C1 1/5 (s3: C4 + C1 + C2 in one seed, certified k = 1); STUDENT triggered | **open** (STUDENT) |
 | 110b | Self-training v2 corrected: identity-start shorts plus random textual starts for length ≥ 3 | stopped after a clear null: loss at chance from random starts (110b-2) | closed |
-| 111 | Reliability of the Markov hand-off: 2× budget vs DAgger-style own-state training; best-of-n | registered | **open** |
-| 112 | Short-coverage dose-response for self-training (f = 0.5 / 0.25 / 0.1; never-labelled k = 1 accuracy) | registered | **open** |
+| 111 | Reliability of the Markov hand-off: 2× budget vs DAgger-style own-state training; best-of-n | 2× 0/5 (no REL; 111-3); READ 3/3 so far; DAG 0/3 so far | **open** |
+| 112 | Short-coverage dose-response for self-training (f = 0.5 / 0.25 / 0.1; never-labelled k = 1 accuracy) | f = 0.1 s21: certified, never-labelled 1.0, 0.996 at 512; C1 joint only (112-2) | **open** |
 | 113 | Auxiliary reader inside self-training (conditional on §111-READ) | registered (conditional) | **open** |
 | 114 | Looped depth per op (LOOP-R vs LOOP-1 vs §107 PAUSE) for multiplication's hand-off | registered | **open** |
 | 115 | No-snap Markov chains, and a round-trip snap trigger (eval only) | registered | **open** |
@@ -1698,6 +1698,17 @@ select by a **training-data-only** criterion.
   - The criterion is main loss / model-relative-null loss < 0.9 at the first log at or after k = 4 (6k).
   - Its hit table is reported next to `train_handoff_err`'s AUC, but it is not a pre-registered criterion.
 
+**Note 111-3 (2026-10-04 20:57 EDT; MK-4-2× complete; scorer fix disclosed).**
+* **MK-4-2× is 0/5 at 512, so REL is not met for 2×.**
+  - s6, s7 and s9 are no-read: per-hand-off accuracy about 0.008, at chance.
+  - s8 and s10 are partial readers: per-hand-off 0.738 and 0.123.
+  - Doubling the budget does not rescue the lottery. That fits Literature's prior: budget fixes timing lotteries, not
+    basins. DAG (s6–8: 0, 0.88, 0) and READ (s6–8: 3/3) are still open.
+* **Scorer fix, made after the 2× results were read; no rule changed.**
+  - `train_handoff_err` arrives as a dict, which crashed SEL. It is now read as `in_chunk_err`, the scalar 111-2 defines.
+  - §108's `s111_backfill.json` values are merged in.
+  - The fix cannot change 2×'s SEL: no 2× run passes ACC.
+
 ## 112. How small can the foothold be? A short-coverage dose-response for §110's self-training (pre-registered 2026-10-04 15:00 EDT, after Literature's check b1352c3e and before any implementation or run; Audit's steward idea)
 
 **Why.** §110 s3, whose short problems label 71.5 % of S5's transitions, is correct on **all** 14,400 k = 1
@@ -1757,6 +1768,24 @@ restricted to a **fixed random subset T_f of transitions**.
   lower doses the pool size and mix decide it. Both `coverage_target` (|T_f|) and `coverage_drawn` are logged; the drawn
   value is the dose.
 * The doses (f = 0.5 / 0.25 / 0.1), seeds, rules and scorer are otherwise unchanged.
+
+**Note 112-2 (2026-10-04 20:57 EDT; f = 0.1 s21, the first §112 run; descriptive, not the dose result).**
+* **The seed meets FOOTHOLD-f's per-seed criterion** (1 of the 2 needed at f = 0.1).
+  - coverage_drawn 0.10. k = 1 is 1.0 on the 12,960 never-labelled transitions and certified on all 14,400.
+  - Cumulative 0.996 at 512 and 0.99 at 2,048.
+* **C1: the slot alone fails, the joint patch passes.**
+  - Single-slot donor-consistency is 0.12 / 0.12 / 0.34, with recipient-consistency 0.11 / 0.11 / 0.05: BYPASS at
+    slots 1–2.
+  - Mean-removal ≤ 0.055 at every slot, so the latents are necessary.
+  - §104's joint patch (slot + op-token KV; `theory/s112_donor.py`, CPU, n = 100) gives **1.0 / 0.86 / 1.0**. The state
+    is carried jointly by the slot and the op tokens, as §92 in 3/5. The n = 500 run, including §110 s1 / s3 / s5, is
+    pending.
+* **Mechanism (descriptive): the acquisition was not driven by pseudo-labels.**
+  - The kept share stayed ≈ 2·10⁻⁵ through rounds L3–L6: the self-consistency gate held the pools empty.
+  - Never-labelled k = 1 jumped 0.072 → 0.999 during L6.
+  - The likely driver: on lengths 5–6 (just past k = 4), the final answer is read from the model's own decoded
+    checkpoint after the history cut, so final-answer targets train k = 1 / k = 2 transitions from self-decoded states.
+  - The pools filled only after acquisition (L8, 0.36 → 0.999).
 
 ## 113. The auxiliary reader inside self-training: §110 plus a reader on the model's own decodes (pre-registered 2026-10-04 15:00 EDT, after Literature's check b1352c3e and before any implementation or run; conditional on §111 MK-4-READ meeting REL)
 

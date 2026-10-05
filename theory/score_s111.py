@@ -22,7 +22,18 @@ def load(prefix, seeds):
         f = os.path.join(R, "%s_s%d" % (prefix, s), "eval.json")
         if os.path.exists(f):
             out[s] = json.load(open(f))
+            b = os.path.join(R, "%s_s%d" % (prefix, s), "s111_backfill.json")  # §108 backfills (111-2); fix 111-3
+            if os.path.exists(b):
+                for k, v in json.load(open(b)).items():
+                    if out[s].get(k) is None:
+                        out[s][k] = v
+            out[s]["train_handoff_err"] = the(out[s].get("train_handoff_err"))
     return out
+
+
+def the(v):
+    """train_handoff_err as a scalar: the in-chunk (latent) hand-off error, as 111-2 defines it (fix 111-3)."""
+    return v.get("in_chunk_err") if isinstance(v, dict) else v
 
 
 def passes(r):
