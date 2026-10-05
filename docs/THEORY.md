@@ -200,6 +200,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 122 | TEXT-MIX keeps the anchor's target competent (conditional on §121; stop rule for the multiplication line) | CARRY-3 0/3 (op 3 0.32–0.41) with a competent text path (t1 1.0); **STOP RULE fired**: the multiplication latent-carriage line pauses | closed |
 | 123 | Attractor strength causal for no-snap? Dither dose-response (σ 0–0.5) + dithered FSQ (canonical codes), §120 harness | registered (after §120's pilot) | **open** |
 | 124 | Does reading a given state fix self-training's lottery? §112 f = 0.1 + copy objective vs exposure control | registered | **open** |
+| 125 | Readable bottleneck from step 0: standardised carried code vs the soft-phase no-read basin (task-agnostic, §120 harness) | registered | **open** |
 
 ## Live sections
 
@@ -3581,6 +3582,66 @@ CAUSAL is computed in fp32.**
   - The registered (bf16) ρ and rho_nonzero are printed beside it.
   - A cell without ρ_fp32 makes CAUSAL "incomplete".
   - rho_nonzero is not used, because dropping merged hand-offs biases it upward.
+
+## 125. A readable bottleneck from step 0: standardising the carried code against the soft-phase no-read basin (task-agnostic) (pre-registered 2026-10-05 15:34 EDT, after Literature's check 1974cd64 and before any implementation or run; the user's task-agnostic directive (~15:30, via Audit); spend pre-approved)
+
+**Why.** The task-agnostic design (§120's every-step learned snap) is unreliable on S5 because seeds fall into a
+**soft-phase no-read basin** before any rounding or dither acts.
+* §120 FINAL s2 and TRACE s1, and §123 FSQ+DITHER s2 (the same seed as §120 FINAL s2), all sit at the null loss by 2k
+  (123-3).
+* A reader alone does not prevent it: §120 TRACE decodes at every step and s1 still plateaued.
+* **Diagnosis at initialisation ($0).** The carried embedding W_up(z_b) has row norm about **29**, against about **4** for
+  GPT-2 token embeddings and about 2.9 for the start text.
+  - Its input-dependent part is small (per-coordinate std across inputs 0.14, i.e. norm about 3.9).
+  - So GPT-2 receives a large, nearly constant vector with the state signal buried in it, a plausible trigger for §111's
+    writer–reader chicken-and-egg.
+* **Prior** (1974cd64, `docs/LIT_S125_STD_2026-10-05.md`): Lester 2104.08691 and prefix-tuning 2101.00190 (scale and
+  init sensitivity of injected vectors); HRPO (raw hidden injection fails, a normalised projection trains); CODI (MLP +
+  LN); our §72b / §73 / §89 (standardisation, with centring load-bearing); posterior collapse (He 1901.05534). New as
+  scoped.
+
+**Design.** §120's harness exactly (FINAL supervision, d = 8, L = 8, the soft → hard schedule, the length curriculum,
+24k steps, bs 64), plus, in the STD arm, a **standardised carried embedding**:
+* e′ = μ_E + sd_E ⊙ (e − μ_e) / sd_e, where μ_E and sd_E are GPT-2's token-embedding per-coordinate mean and std, and
+  μ_e and sd_e are per-coordinate EMA statistics (momentum 0.99) of the carried embeddings in each update, from step 1
+  (as §72b / fade89). The statistics are frozen at the end of training and used unchanged at test.
+  - Literature (3)'s EMA lag at the soft → hard shift lasts about 100 steps around 4k; the statistics are frozen 20k
+    steps later, so test sees hard-phase statistics.
+  - The same e′ is used everywhere a carried code enters GPT-2: segments and the answer decoder.
+* It is task-agnostic: no task information, the same for every family. It draws no random numbers, so a seed fixes the
+  initialisation **and** the data order: STD at seed k is a within-seed comparison with §120 at seed k (Audit (a)).
+
+**Arms and seeds.**
+* **STD:** S5 seeds 1–4 and flip-flop seeds 1–2.
+* **CONTROL (concurrent):** §120 FINAL S5 seeds 3–4. Seeds 1–2 already exist: s1 learned, s2 plateaued, and s2 plateaued
+  again in §123.
+* 8 runs. A next-latent-prediction arm (Literature (2); NextLat 2511.05963) is the noted follow-up if STD is
+  insufficient. Reconstruction of h is not run (Literature: it keeps nuisance PCs).
+
+**Measures.** §120's: long accuracy, acc_by_length, 2,048, donor, codes, growth, and CERT (task-language and reads-only
+for flip-flop). Plus:
+* the 123-3 **plateau flag** per seed, and the final loss;
+* **the carried-embedding row norm and per-coordinate std across inputs, at initialisation and at 2k, in every arm**
+  (control included), so the mechanism is measured (Audit (c)).
+
+**Rules (fixed now).**
+* **PLATEAU-FIX:** STD's S5 plateau count ≤ 1/4, **and** seed 2 (the known basin seed) is not plateaued.
+* **ACC:** S5 long accuracy ≥ 0.99 in ≥ 3/4 STD seeds.
+* **FF guard (Audit (b)):** flip-flop long accuracy ≥ 0.99 in 2/2, single-code SERIAL (recipient − chance < 0.10), and
+  CERT reported.
+* The CONTROL plateau count is reported as the concurrent baseline for seeds 3–4.
+* Code statistics (codes per state, growth, CERT) are descriptive.
+
+**Readings.**
+* **PLATEAU-FIX + ACC.** Matching the injected code's statistics to the LM's own embeddings removes the soft-phase
+  basin. The task-agnostic every-step snap becomes reliable on S5 (C6 for P-A), and the extension to more families uses
+  STD.
+* **PLATEAU-FIX without ACC.** The basin is removed, but another failure limits S5. Report it.
+* **Neither.** The scale mismatch is not the cause. The next-latent arm is next.
+
+**Placement.** 8 runs, about $4–5 on Vast (Audit pre-approved), proof seed first (STD S5 s2, the basin seed).
+Implementation: the experiments session (fsq120 `--std`, plus the init / 2k carried-norm logging). Scorer
+`theory/score_s125.py`, committed before any run.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
