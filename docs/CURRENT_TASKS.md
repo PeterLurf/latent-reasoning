@@ -40,6 +40,7 @@ so send to the pipe addresses their messages come from.
 | o4, o5 | §116 NONE s42-45 (NONE+COPY VOID: no_grad bug, note 116-5; o7 stopped) |
 
 **§124 seed 28 trio (c2): DEFERRED** - no host (4090 deploy stuck, 3090 creates refused 403); re-place on any clean 24 GB host (whole trio on one host).
+**§126 RAW-H s1/s4 OOM'd at P=3 on b20 (s3 survives there); reruns from scratch on b24 / b25 (P=1, 3090). WHEN b20 DRAINS: rename its partial boxes/runs_fsq/s126_s5_rawh_s{1,4} to *.void_oom BEFORE b24/b25 drain into the same names.**
 **Queued (slot order, Theory + Audit 09:15; each step only while burn < ~$3.5/h, 3090s only):** (1) finish running work
 incl. a4 = §118 LONG s83 (P=1, 24 GB); (2) §123 once §120's pilot reads, on Theory's call (S5 dose b6-b9 first, then
 FSQ+DITHER b10-b11 if credit binds; FF σ* later); (3) §116 OPDEF o1 / o3; (4) §119 deferred.
