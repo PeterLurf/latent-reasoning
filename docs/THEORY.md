@@ -3727,6 +3727,25 @@ on RTX 3090s.**
   the EMA initialises after the first optimiser step. This is harmless.
 * b13 (STD S5 s2) must be an RTX 3090 / 3090 Ti (125-2). Otherwise its seed-2 reading is excluded.
 
+**Note 125-4 (2026-10-05 16:24 EDT; PLATEAU-FIX decided before the panel, rules unchanged; descriptive analysis). Standardisation does not
+rescue the basin seed.**
+* **STD S5 s2** (RTX 3090, the within-seed twin of §120 FINAL s2) has loss 4.984 at 1k and **5.000 at 2k**, so 123-3's
+  flag marks it a plateau. PLATEAU-FIX requires seed 2 not plateaued, so **PLATEAU-FIX cannot be met.**
+  - b13 runs to completion (does anything change after 2k?). The remaining §125 runs (b14–b16, b18) are held pending it,
+    to save about $3.
+* **Initialisation analysis ($0, CPU, seeds 1–4, 256 random (state, op) segments).**
+  - **No tanh saturation:** mean tanh′ is 0.76–0.81, and 0 % of coordinates have tanh′ < 0.1.
+  - In **every** seed the bottleneck input barely depends on the input: z's per-coordinate std across inputs is 0.03–0.04,
+    against a shared level of about 0.5, and z_b's is 0.08–0.10 (the level spacing is 1).
+  - Seed 1 (which escapes) and seed 2 (which plateaus) are indistinguishable at init. The basin is set by training
+    dynamics and data order, not by initial geometry or scale. STD amplifies the decoder-side signal, but that is not
+    enough.
+* **Candidate (not registered; Audit to weigh against fix loops): bottleneck annealing from a carrier known to escape.**
+  - §111 READ, which carries the raw 768-d hidden state with a reader, escaped in 5/5.
+  - Start with e = std(h) and blend to W_up(z_b) over 2k–6k (task-agnostic), so the decoder learns to read a trained
+    carrier before the bottleneck takes over.
+  - Literature's next-latent auxiliary (2511.05963) is the other option.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
