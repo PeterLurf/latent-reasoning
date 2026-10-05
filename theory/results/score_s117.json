@@ -1,17 +1,29 @@
 {
  "arms": {
   "MK": {
-   "n": 0,
+   "n": 2,
    "ALL_seeds": [],
    "EXIST": false,
    "INTEGRATED": false,
    "C6_2048": false,
    "extend": null,
    "LEAK": [],
-   "cum512": {},
-   "ext2048": {},
-   "k1_never": {},
-   "switch_step": {}
+   "cum512": {
+    "52": 0.0,
+    "53": 0.0
+   },
+   "ext2048": {
+    "52": 0,
+    "53": 0
+   },
+   "k1_never": {
+    "52": 0.008256172839506172,
+    "53": 0.008410493827160494
+   },
+   "switch_step": {
+    "52": null,
+    "53": null
+   }
   },
   "ST": {
    "n": 0,

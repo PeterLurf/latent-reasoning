@@ -2619,6 +2619,23 @@ disclosed). Is the hand-off map an attractor, and does that explain why READ s8 
     discrete snap (§120), over plain norm control.
   - If (a) fails, drift is not a local-stability property, and P-B drops behind §120.
 
+**Note 118-4 (2026-10-05 08:55 EDT; descriptive, the first three ANCHOR seeds; the verdict waits for the extension). ANCHOR removes the
+drift: 3/3 seeds are fully latent and exact to 2,048 with no snaps.**
+
+| seed | no-snap 128 / 512 / 2,048 | cosine to snapped (pos 448) | donor min / recipient max | effective rank | anchor cosine |
+|---|---|---|---|---|---|
+| s71 | 1.0 / 1.0 / 1.0 | 0.9998 | 1.0 / 0.011 | 48 | 0.9998 |
+| s72 | 1.0 / 1.0 / 1.0 | 0.9998 | 1.0 / 0.011 | 83 | 0.9998 |
+| s73 | 1.0 / 1.0 / 1.0 | 0.9982 | 1.0 / 0.011 | 122 | 0.998 |
+
+* The snapped guard holds (1.0 at 512). The disagreement trigger only ever fires its forced cap (7 snaps per 512, no
+  disagreement).
+* **Against the READ control:** 1/4 so far (s8 passes; s6 / s7 / s9 drift; s10 pending).
+* **Extension fires** (≥ 2/3 of the first three). Seeds 74–75 run. NOSNAP-512 needs ≥ 4/5 and a rate above the
+  control's (118-2).
+* **Scope:** "fully latent at inference, text-anchored in training" (the anchor uses the state's text in training;
+  per-step supervised, not C4, not task-agnostic).
+
 ## 119. Controlled baselines for C1: published latent-CoT methods on our S5 protocol, scored with the donor and length protocols (pre-registered 2026-10-04 23:14 EDT, after Literature's checks 2bf76954 (project audit, missing comparison 2) and 1a473f82, and before any implementation or run; Audit's guards)
 
 **Why.** Our C1 claim compares against the literature only on paper: no latent-CoT paper shows serial,
@@ -3134,6 +3151,23 @@ pilot reads).**
 * **≤ 3/6 acquire:** the lottery persists. §112+COPY is registered after a Literature check: 5 seeds, about $6, rule
   acquisition ≥ 4/5 against §112 f = 0.1's 3/5.
 * **4/6:** decided after §117's extension seeds if an arm extends; otherwise §112+COPY runs.
+
+**Note 120-6 (2026-10-05 08:55 EDT; descriptive, S5 FINAL s2). The FSQ chain has a seed lottery: code collapse.**
+* s2 uses **9 codes in all** (perplexity 2.8; far fewer codes than the 120 states). Accuracy is 0 at
+  every length.
+* So S5 FINAL fails PILOT-PASS (1/2: s1 1.0, s2 0). The pilot reading needs both seeds in both families, so FINAL cannot
+  pass the pilot.
+* Flip-flop and TRACE cells are pending. The collapse is a training-time basin (FSQ's usual codebook-usage failure);
+  §123's FSQ+DITHER arm and code-usage monitoring bear on it.
+
+**Note 117-6 (2026-10-05 08:55 EDT; descriptive, MK s52–53 of the first wave). Markov from step 0 does not acquire in-chunk
+composition from final answers.**
+* Both seeds score 0 at 512, with never-labelled k = 1 at chance.
+* Pool accuracy is 0.008–0.039 at lengths 3–4 in every round: even single-chunk problems are never solved, against
+  §112's 0.50 at L = 4 with the masked fork.
+* That is Literature's predicted risk (b0bca3c4 / f9ce7210 (b)): without the in-pass parallel shortcut that seeded the
+  checkpoints in §112, the composition is not learned from outcomes. It is the ST arm's reason to exist.
+* For 117-5's rule: 0/2 acquired so far (MK s51 and ST s61–63 pending).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
