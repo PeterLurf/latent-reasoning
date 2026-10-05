@@ -3816,6 +3816,21 @@ matching the readings and Audit's sequential plan ("if RAW-H s2 also plateaus �
 * As registered, a seed-2 plateau with a count of 1/4 would have met neither BOTTLENECK-CAUSE nor the STOP RULE. Now it
   fires the STOP RULE.
 
+**Note 123-9 (2026-10-05 16:39 EDT; defined after the σ = 0 cells landed and before any dose cell (σ 0.1 / 0.25 / 0.5-3090); disclosed;
+Audit / claude-13). ρ_ff, the floor-free fp32 ρ. This is the last metric amendment before the §123 verdict.**
+* **The problem.** In the 8-d bottleneck the fp32 floor arrives by hand-off 4–5, after which rho_k is noise over noise
+  (0.45–0.85), inflating the k = 1..8 geometric mean.
+  - S5 σ 0 s1's median distance runs 0.46 → 0.06 → 0.0099 → 0.0015 → 0.0002 → 0.
+* **ρ_ff := the geometric mean of fp32 rho_k at ε = 0.1 over hand-offs whose preceding median distance exceeds 1e-3.**
+  At least 2 such hand-offs are required; otherwise the cell has no ρ and CAUSAL is "incomplete".
+  - Examples: S5 σ 0 s1 **0.146** (fp32-registered 0.191), FF σ 0 s1 0.050 (0.172).
+* CAUSAL (i)–(iii) and σ* read ρ_ff. The fp32 k = 1..8 and bf16 values are printed beside.
+* **The thresholds (0.3 / 0.6) are unchanged.** Note the scale: ρ_ff sits lower than §118's fp32 k = 1..8 values (themselves
+  floor-inflated upper bounds), so the thresholds bind more cells.
+* **The 123-3 plateau exclusion is still what protects (ii):** a basin seed has ρ < 0.3 at accuracy 0 in any precision.
+* **Cap (Audit):** no further metric amendments for §123. If ρ_ff misbehaves on the dose cells, it is reported as a
+  measurement limitation.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
