@@ -1,0 +1,2 @@
+# §116 OPDEF s35 on the local 2070 (fp32; replaces it in Vast o3; Audit 09:31)
+boxes/runs_s5/s116_opdef_s35 boxes.self110 --opdef --foothold_log --seed 35
