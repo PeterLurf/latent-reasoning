@@ -1,0 +1,136 @@
+{
+ "run": "boxes/runs_s5/s118_anchor_s71",
+ "k": 4,
+ "eval_dtype": "torch.bfloat16",
+ "test_n": 2000,
+ "ext_n": 500,
+ "cap": 64,
+ "nosnap": {
+  "cumulative": {
+   "128": 1.0,
+   "256": 1.0,
+   "512": 1.0,
+   "2048": 1.0
+  },
+  "per_handoff_by_position": {
+   "0": 1.0,
+   "64": 1.0,
+   "128": 1.0,
+   "192": 1.0,
+   "256": 1.0,
+   "320": 1.0,
+   "384": 1.0,
+   "448": 1.0
+  },
+  "drift": {
+   "0": {
+    "latent_norm": 57.21351623535156,
+    "norm_ratio": 1.0023413467470659,
+    "cos_to_snapped": 1.0
+   },
+   "64": {
+    "latent_norm": 57.27397537231445,
+    "norm_ratio": 1.0060125957019126,
+    "cos_to_snapped": 0.9997778534889221
+   },
+   "128": {
+    "latent_norm": 57.182064056396484,
+    "norm_ratio": 1.004346217962462,
+    "cos_to_snapped": 0.9997756481170654
+   },
+   "192": {
+    "latent_norm": 57.22119140625,
+    "norm_ratio": 1.0051046561676067,
+    "cos_to_snapped": 0.9997796416282654
+   },
+   "256": {
+    "latent_norm": 57.412254333496094,
+    "norm_ratio": 1.0084625266956777,
+    "cos_to_snapped": 0.9997766613960266
+   },
+   "320": {
+    "latent_norm": 57.02549362182617,
+    "norm_ratio": 1.0014936735725655,
+    "cos_to_snapped": 0.9997758865356445
+   },
+   "384": {
+    "latent_norm": 57.06874465942383,
+    "norm_ratio": 1.0023599736332247,
+    "cos_to_snapped": 0.9997762441635132
+   },
+   "448": {
+    "latent_norm": 57.06293869018555,
+    "norm_ratio": 1.0024907423776352,
+    "cos_to_snapped": 0.9997752904891968
+   }
+  }
+ },
+ "fixed_k4": {
+  "cumulative": {
+   "128": 1.0,
+   "256": 1.0,
+   "512": 1.0
+  },
+  "snaps_per_problem": 127
+ },
+ "trigger": {
+  "cumulative": {
+   "512": 1.0,
+   "2048": 1.0
+  },
+  "cum_curve": {
+   "128": 1.0,
+   "256": 1.0,
+   "512": 1.0
+  },
+  "snaps_per_problem": {
+   "mean": 7.0,
+   "median": 7.0
+  },
+  "first_error_detection": null,
+  "n_first_errors": 0,
+  "per_event_detection": 0.0,
+  "false_snap_rate": 0.0,
+  "miss_rate": 0.0,
+  "forced_snap_rate": 0.0136986301369863,
+  "events": {
+   "handoffs": 1022000,
+   "false_snap": 0,
+   "miss": 0,
+   "forced": 14000,
+   "lat_wrong": 0,
+   "lat_wrong_detected": 0
+  },
+  "ext_2048": {
+   "cumulative": {
+    "2048": 1.0
+   },
+   "cum_curve": {
+    "128": 1.0,
+    "256": 1.0,
+    "512": 1.0,
+    "1024": 1.0,
+    "2048": 1.0
+   },
+   "snaps_per_problem": {
+    "mean": 31.0,
+    "median": 31.0
+   },
+   "first_error_detection": null,
+   "n_first_errors": 0,
+   "per_event_detection": 0.0,
+   "false_snap_rate": 0.0,
+   "miss_rate": 0.0,
+   "forced_snap_rate": 0.015144113336590131,
+   "events": {
+    "handoffs": 1023500,
+    "false_snap": 0,
+    "miss": 0,
+    "forced": 15500,
+    "lat_wrong": 0,
+    "lat_wrong_detected": 0
+   }
+  }
+ },
+ "sec": 5543
+}
