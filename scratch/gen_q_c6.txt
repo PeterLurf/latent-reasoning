@@ -1,4 +1,1 @@
-# §124 base (30e42608; same seeds 26-29 across arms)
-# P=2
-boxes/runs_s5/s124_base_s28 boxes.self110 --cov 0.1 --seed 28
-boxes/runs_s5/s124_base_s29 boxes.self110 --cov 0.1 --seed 29
+# §124 c6 RETIRED (seeds 28-29 regrouped by seed into c2 / c4, Audit matched-unit rule)

@@ -1,4 +1,4 @@
-# §124 base (30e42608; same seeds 26-29 across arms)
+# §124 base s26-27 (matched to c1 EXPOSE s26-27 on a 570-driver 3090): NON-580 3090 only
 # P=2
 boxes/runs_s5/s124_base_s26 boxes.self110 --cov 0.1 --seed 26
 boxes/runs_s5/s124_base_s27 boxes.self110 --cov 0.1 --seed 27
