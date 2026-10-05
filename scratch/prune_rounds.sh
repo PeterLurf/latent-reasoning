@@ -5,14 +5,16 @@
 #   bash scratch/prune_rounds.sh d2 d3 ...   (tags as in scratch/live_hosts.txt: gen-<tag>)
 cd "$(dirname "$0")/.."
 TAGS="$*"
-PY='import json,glob,os,shutil
+# ALWAYS=1 (Audit 00:11): delete every finished run's rounds/ (per_round_split in eval.json already records the acquisition)
+PY="ALWAYS=${ALWAYS:-0}"'
+import json,glob,os,shutil
 for e in glob.glob("boxes/runs_s5/s112_*/eval.json"):
     d=os.path.dirname(e); r=os.path.join(d,"rounds")
     if not os.path.isdir(r): continue
     j=json.load(open(e)); gates=[x.get("gate") for x in j.get("rounds",[]) if x.get("gate") is not None]
     keep=any(g>=0.5 for g in gates) or j["cumulative"]["512"]>=0.5
-    if (not keep) and gates and max(gates)<0.01 and (j.get("k1_never_labelled_acc") or 0)<0.1:
-        shutil.rmtree(r); print("PRUNED", d, "max_gate", max(gates), "never_labelled", j.get("k1_never_labelled_acc"), "cum512", j["cumulative"]["512"])'
+    if ALWAYS or ((not keep) and gates and max(gates)<0.01 and (j.get("k1_never_labelled_acc") or 0)<0.1):
+        shutil.rmtree(r); print("PRUNED", d, "max_gate", max(gates) if gates else None, "never_labelled", j.get("k1_never_labelled_acc"), "cum512", j["cumulative"]["512"])'
 while :; do
   for t in $TAGS; do
     read -r H P _ < <(grep " gen-$t\$" scratch/live_hosts.txt | tail -1); [ -z "$H" ] && continue

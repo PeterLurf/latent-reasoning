@@ -1,0 +1,549 @@
+{
+ "arm": "loopr",
+ "task": "4x4",
+ "seed": 2,
+ "test_r": 8,
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "eval_dtype": "torch.bfloat16",
+ "eligible_from": 6000,
+ "steps_to_threshold": null,
+ "stopped_step": 24000,
+ "curve": [
+  {
+   "step": 1000,
+   "per_slot": [
+    0.473,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "val_acc": 0.0,
+   "k_train": 1,
+   "eligible": false
+  },
+  {
+   "step": 2000,
+   "per_slot": [
+    0.916,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "val_acc": 0.0,
+   "k_train": 1,
+   "eligible": false
+  },
+  {
+   "step": 3000,
+   "per_slot": [
+    0.997,
+    0.242,
+    0.0,
+    0.949
+   ],
+   "val_acc": 0.0,
+   "k_train": 2,
+   "eligible": false
+  },
+  {
+   "step": 4000,
+   "per_slot": [
+    0.994,
+    0.369,
+    0.0,
+    0.992
+   ],
+   "val_acc": 0.0,
+   "k_train": 2,
+   "eligible": false
+  },
+  {
+   "step": 5000,
+   "per_slot": [
+    0.961,
+    0.5,
+    0.0,
+    0.925
+   ],
+   "val_acc": 0.0,
+   "k_train": 2,
+   "eligible": false
+  },
+  {
+   "step": 6000,
+   "per_slot": [
+    0.998,
+    0.729,
+    0.0,
+    0.998
+   ],
+   "val_acc": 0.0,
+   "k_train": 2,
+   "eligible": true
+  },
+  {
+   "step": 7000,
+   "per_slot": [
+    1.0,
+    0.928,
+    0.011,
+    0.998
+   ],
+   "val_acc": 0.0,
+   "k_train": 4,
+   "eligible": true
+  },
+  {
+   "step": 8000,
+   "per_slot": [
+    1.0,
+    0.96,
+    0.027,
+    1.0
+   ],
+   "val_acc": 0.002,
+   "k_train": 4,
+   "eligible": true
+  },
+  {
+   "step": 9000,
+   "per_slot": [
+    1.0,
+    0.984,
+    0.039,
+    1.0
+   ],
+   "val_acc": 0.004,
+   "k_train": 4,
+   "eligible": true
+  },
+  {
+   "step": 10000,
+   "per_slot": [
+    0.999,
+    0.984,
+    0.056,
+    1.0
+   ],
+   "val_acc": 0.006,
+   "k_train": 4,
+   "eligible": true
+  },
+  {
+   "step": 11000,
+   "per_slot": [
+    1.0,
+    0.987,
+    0.051,
+    1.0
+   ],
+   "val_acc": 0.012,
+   "k_train": 4,
+   "eligible": true
+  },
+  {
+   "step": 12000,
+   "per_slot": [
+    1.0,
+    0.992,
+    0.059,
+    1.0
+   ],
+   "val_acc": 0.015,
+   "k_train": 4,
+   "eligible": true
+  },
+  {
+   "step": 13000,
+   "per_slot": [
+    1.0,
+    0.992,
+    0.073,
+    1.0
+   ],
+   "val_acc": 0.018,
+   "k_train": 4,
+   "eligible": true
+  },
+  {
+   "step": 14000,
+   "per_slot": [
+    1.0,
+    0.991,
+    0.051,
+    1.0
+   ],
+   "val_acc": 0.014,
+   "k_train": 4,
+   "eligible": true
+  },
+  {
+   "step": 15000,
+   "per_slot": [
+    1.0,
+    0.997,
+    0.088,
+    1.0
+   ],
+   "val_acc": 0.016,
+   "k_train": 4,
+   "eligible": true
+  },
+  {
+   "step": 16000,
+   "per_slot": [
+    1.0,
+    0.995,
+    0.1,
+    0.999
+   ],
+   "val_acc": 0.024,
+   "k_train": 4,
+   "eligible": true
+  },
+  {
+   "step": 17000,
+   "per_slot": [
+    1.0,
+    0.997,
+    0.128,
+    1.0
+   ],
+   "val_acc": 0.027,
+   "k_train": 4,
+   "eligible": true
+  },
+  {
+   "step": 18000,
+   "per_slot": [
+    1.0,
+    0.999,
+    0.17,
+    1.0
+   ],
+   "val_acc": 0.034,
+   "k_train": 4,
+   "eligible": true
+  },
+  {
+   "step": 19000,
+   "per_slot": [
+    1.0,
+    1.0,
+    0.192,
+    1.0
+   ],
+   "val_acc": 0.034,
+   "k_train": 4,
+   "eligible": true
+  },
+  {
+   "step": 20000,
+   "per_slot": [
+    1.0,
+    1.0,
+    0.171,
+    1.0
+   ],
+   "val_acc": 0.032,
+   "k_train": 4,
+   "eligible": true
+  },
+  {
+   "step": 21000,
+   "per_slot": [
+    1.0,
+    0.999,
+    0.185,
+    1.0
+   ],
+   "val_acc": 0.034,
+   "k_train": 4,
+   "eligible": true
+  },
+  {
+   "step": 22000,
+   "per_slot": [
+    1.0,
+    1.0,
+    0.197,
+    1.0
+   ],
+   "val_acc": 0.029,
+   "k_train": 4,
+   "eligible": true
+  },
+  {
+   "step": 23000,
+   "per_slot": [
+    1.0,
+    1.0,
+    0.198,
+    1.0
+   ],
+   "val_acc": 0.037,
+   "k_train": 4,
+   "eligible": true
+  },
+  {
+   "step": 24000,
+   "per_slot": [
+    1.0,
+    1.0,
+    0.195,
+    1.0
+   ],
+   "val_acc": 0.034,
+   "k_train": 4,
+   "eligible": true
+  }
+ ],
+ "test_acc": 0.026,
+ "per_slot_decode_acc": [
+  1.0,
+  1.0,
+  0.195,
+  1.0
+ ],
+ "removal": {
+  "zero": {
+   "answer_acc": 0.0
+  },
+  "mean": {
+   "answer_acc": 0.0
+  }
+ },
+ "compute": {
+  "tokens_processed": 49,
+  "flops": 29307079168.0,
+  "seq_passes": 27,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "lm_head_rows": 19,
+  "sequential_passes": 27,
+  "layer_depth": 40
+ },
+ "training": {
+  "flops": 1.1898981186030797e+17,
+  "wall_sec": 15680,
+  "train_sec": 15665,
+  "flops_convention": "sum over updates of a 12-layer Meter forward of the chunk shape x (depth(r) + depth(u)) / 12 x 3 x bs (an upper bound: the trunk is shared)"
+ },
+ "ratio_per_1k": [
+  [
+   3000,
+   0.057423659265699124
+  ],
+  [
+   4000,
+   0.2107777066966092
+  ],
+  [
+   5000,
+   0.012190603748896536
+  ],
+  [
+   6000,
+   0.18780996346541168
+  ],
+  [
+   7000,
+   0.09321305721877933
+  ],
+  [
+   8000,
+   0.0666281094010612
+  ],
+  [
+   9000,
+   0.05980422277434117
+  ],
+  [
+   10000,
+   0.05119949077007628
+  ],
+  [
+   11000,
+   0.04921950146200382
+  ],
+  [
+   12000,
+   0.03775440988652702
+  ],
+  [
+   13000,
+   0.038142962792096495
+  ],
+  [
+   14000,
+   0.04306582530478544
+  ],
+  [
+   15000,
+   0.027862546398546947
+  ],
+  [
+   16000,
+   0.025627438357524825
+  ],
+  [
+   17000,
+   0.02534996072519062
+  ],
+  [
+   18000,
+   0.031724854577949636
+  ],
+  [
+   19000,
+   0.023497333243991423
+  ],
+  [
+   20000,
+   0.02307568722917814
+  ],
+  [
+   21000,
+   0.02945931822559139
+  ],
+  [
+   22000,
+   0.03176020582996774
+  ],
+  [
+   23000,
+   0.024775542454400435
+  ],
+  [
+   24000,
+   0.02544028161515154
+  ]
+ ],
+ "early_escape": true,
+ "early_window_min_ratio": 0.046252559109955696,
+ "escape_step": 2100,
+ "null_convention": "note 114-2: loss with the carried latents permuted across the batch rows (shuffled null; same batch, no grad, test-mode r = the batch's r); ratio_zero = the zeroed-latent null (descriptive)",
+ "ratio_at_6k": 0.18780996346541168,
+ "no_read": false,
+ "rel_final": {
+  "rel_ratio_final_shuffled": 0.028565318281681885,
+  "rel_ratio_final": 0.02718862682375289,
+  "no_read_final": false,
+  "main_loss": 2.334751546382904,
+  "shuffled_loss": 81.73378372192383,
+  "zeroed_loss": 85.87235984802246,
+  "n_batches": 20,
+  "bs": 64
+ },
+ "rel_ratio_final_shuffled": 0.028565318281681885,
+ "no_read_final": false,
+ "donor": {
+  "slot1": {
+   "donor_consistent": 0.0225,
+   "recipient_consistent": 0.003,
+   "unparsed": 0.0,
+   "chance_overlap": 0.011
+  },
+  "slot2": {
+   "donor_consistent": 0.009,
+   "recipient_consistent": 0.0005,
+   "unparsed": 0.0,
+   "chance_overlap": 0.0005
+  },
+  "slot3": {
+   "donor_consistent": 0.0015,
+   "recipient_consistent": 0.0,
+   "unparsed": 0.0,
+   "chance_overlap": 0.0
+  }
+ },
+ "donor_same_a": {
+  "slot1": {
+   "donor_consistent": 0.0375,
+   "recipient_consistent": 0.0045,
+   "unparsed": 0.0,
+   "chance_overlap": 0.1045
+  },
+  "slot2": {
+   "donor_consistent": 0.03,
+   "recipient_consistent": 0.001,
+   "unparsed": 0.0,
+   "chance_overlap": 0.0145
+  },
+  "slot3": {
+   "donor_consistent": 0.032,
+   "recipient_consistent": 0.0005,
+   "unparsed": 0.0,
+   "chance_overlap": 0.0025
+  }
+ },
+ "acc_by_r": {
+  "1": {
+   "test_acc": 0.028,
+   "per_slot": [
+    1.0,
+    1.0,
+    0.205,
+    1.0
+   ],
+   "flops": 9818813952.0,
+   "layer_depth": 12
+  },
+  "2": {
+   "test_acc": 0.029,
+   "per_slot": [
+    1.0,
+    1.0,
+    0.213,
+    1.0
+   ],
+   "flops": 12602851840.0,
+   "layer_depth": 16
+  },
+  "4": {
+   "test_acc": 0.032,
+   "per_slot": [
+    1.0,
+    1.0,
+    0.215,
+    1.0
+   ],
+   "flops": 18170927616.0,
+   "layer_depth": 24
+  },
+  "8": {
+   "test_acc": 0.026,
+   "per_slot": [
+    1.0,
+    1.0,
+    0.195,
+    1.0
+   ],
+   "flops": 29307079168.0,
+   "layer_depth": 40
+  },
+  "12": {
+   "test_acc": 0.018,
+   "per_slot": [
+    1.0,
+    0.967,
+    0.153,
+    0.997
+   ],
+   "flops": 40443230720.0,
+   "layer_depth": 56
+  },
+  "16": {
+   "test_acc": 0.009,
+   "per_slot": [
+    0.986,
+    0.795,
+    0.086,
+    0.961
+   ],
+   "flops": 51579382272.0,
+   "layer_depth": 72
+  }
+ }
+}

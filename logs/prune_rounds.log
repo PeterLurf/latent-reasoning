@@ -1,0 +1,7 @@
+23:26:33 gen-d4 PRUNED boxes/runs_s5/s112_f025_s23 max_gate 0.008375209380234505 never_labelled 0.0422600332901794 cum512 0.0
+00:16:09 gen-d1 rounds/ deleted on-host (Audit 00:11 (a)/(b): drain aborted under 70 %; re-drain without round models)
+00:16:15 gen-d3 rounds/ deleted on-host (Audit 00:11 (a)/(b): drain aborted under 70 %; re-drain without round models)
+00:16:20 gen-d2 rounds/ deleted on-host (Audit 00:11 (a)/(b): drain aborted under 70 %; re-drain without round models)
+00:16:25 gen-d5 rounds/ deleted on-host (Audit 00:11 (a)/(b): drain aborted under 70 %; re-drain without round models)
+00:17:49 local rounds/ deleted for s112_f050_s22, s112_f050_s25 (Audit 00:11 (c): one archived set kept, s112_f010_s21)
+00:18:09 local rounds/ deleted for s112_f025_s22, s112_f050_s24 (Audit 00:11 (c))
