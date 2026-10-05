@@ -196,6 +196,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 118 | Fully latent at inference: text-path anchor vs longer silent stretches (S5, on READ) | registered | **open** |
 | 119 | Controlled C1 baselines: Coconut, CODI, SIM-CoT on our S5 protocol (donor + length) | registered (queued behind §117 / §118) | **open** |
 | 120 | FSQ digital recurrence: a learned discrete snap every step, no template or schedule (S5 + flip-flop pilot) | registered | **open** |
+| 121 | Multiplication's carrier shortcut: text-path anchor + reader vs reader alone (4×4, Markov) | registered | **open** |
 
 ## Live sections
 
@@ -2603,6 +2604,70 @@ their final answers label the transition table directly, at far more than §110'
 * **margin_flip_rate:** 500 test chains × the first 128 hand-offs, with U(−0.5, 0.5) noise on z_b.
 * **coverage_drawn** (120-1): (s, x₁) from every drawn length-1 and length-2 problem, plus (δ(s, x₁), x₂) from length-2
   problems.
+
+## 121. Breaking multiplication's carrier shortcut: a text-path anchor on the carried latent, against the reader alone (pre-registered 2026-10-05 02:15 EDT, after Literature's check c9651bff and before any implementation or run; the user's step-3 directive via Audit; spend pre-approved by Audit)
+
+**Why (114-4).** On 4×4 multiplication under Markov segments, the carried slot-2 latent holds the **multiplier prefix**,
+not the running sum.
+* Linear probes read b_1 / b_2 at 1.0, while S_2's middle digits sit at chance.
+* Each segment recomputes a × prefix: 4×2 at step 2 works, 4×3 at step 3 fails (0.24). Step-3 errors do not track
+  carries.
+* A causal donor smoke (`theory/mult_donor_diag.py`, n = 40) agrees. Same prefix with a different sum leaves the step-3
+  output recipient-like (0.15, intact 0.225) with no sum-donor answers (0.0); same sum with a different prefix never
+  stays recipient-consistent (0.0).
+* So width, pauses and looped depth could not help (§107, §114): nothing forces the sum into the carrier.
+* **Prior** (c9651bff, `docs/LIT_S121_CARRY_2026-10-05.md`).
+  - Input-prefix carriage in latent multiplication chains: not documented (new as a diagnosis). 2510.00184's ICoT
+    model recomputes pairwise partial products, and a running-sum auxiliary unlocks it. Liang & Pan 2602.00449 (late
+    fusion).
+  - **Literature's design point:** the reader alone may not force the sum. A latent carrying (a, b_1, b_2) lets
+    [EOT, latent] decode S_2 in one pass. The lever is computation: tie the latent to a state code that cannot contain
+    the prefix.
+
+**Base.** §99 MARKOV on 4×4, exactly: Markov segments [prefix a, slot j−1's latent (or the chunk start text), op j] →
+slot j; K-CURR (k = 1 to 2k, 2 to 6k, then 4); 24k cap; eligibility from 6k; the valid-split early stop; bs 64, lr 1e-4.
+
+**Arms.**
+* **ANCHOR+READ (primary; seeds 1–3).**
+  - The reader (§111): at every slot whose latent is carried, a fresh segment [EOT, carried latent] decodes the
+    dataset's step-j text (CE, weight 1), from step 0.
+  - **The anchor (§118's form):** at every latent-fed segment j, the text path [prefix a, gold step j−1 text, op j]
+    (the chunk-start format, which contains S_{j−1} and no prefix code) gives carried latent b, with stop-gradient.
+    L_anchor = (1 − cos(a, b)) + |log‖a‖ − log‖b‖|, weight 1, where a is the latent path's carried latent.
+* **READ only (seeds 1–2; it tests Literature's prediction):** the reader without the anchor.
+* **Control:** §99 MARKOV s1–3 (existing).
+
+**Measures.**
+* §99's: per-slot test decode, test answer accuracy, removal.
+* §104's random-donor protocol at slots 1–3.
+* **MECH, the shortcut-blocking donor test** (`theory/mult_donor_diag.py`, n = 300, Audit (a)):
+  - SAMEPREFIX donors (same b_1 b_2, different a, so a different S_2);
+  - SAMESUM donors (a_D · m_D = a_R · m_R, with a different prefix);
+  - S_3 scored as recipient-, sum-donor- or prefix-donor-consistent.
+* **Probes on the slot-2 latent** (descriptive; Literature): S_2 digits up, b-prefix down, and an **a-probe** (a
+  decodable while S is not is the input-carriage signature).
+* The anchor cosine at test.
+
+**Rules (fixed now).**
+* **CARRY-3 (ANCHOR+READ):** op-3 test decode ≥ 0.95 in ≥ 2/3 seeds.
+* **ACC:** test answer accuracy ≥ 0.95 in ≥ 2/3.
+* **C1:** §104 donor SERIAL (USE ≥ 0.90 at slots 1–3, recipient < 0.10) in the passing seeds.
+* **MECH:** in the passing seeds, SAMEPREFIX → sum-donor-consistent ≥ 0.80 **and** SAMESUM → recipient-consistent ≥ 0.80
+  (the sum-carrier signature).
+* READ-only is reported descriptively against the same thresholds.
+* **Claim wording (fixed):** "C1 on arithmetic with per-step text supervision (not C4)".
+
+**Readings.**
+* **ANCHOR+READ passes (CARRY-3 + MECH), READ only does not.** The carrier shortcut is broken by tying the latent to the
+  text-path state code, not by readability. One mechanism (§118's anchor) serves no-snap stability and the arithmetic
+  hand-off.
+* **Both pass.** The reader alone forces the sum (Literature's trap did not bite).
+* **Neither.** The anchor does not transfer the text-path code under K-CURR. Finer step granularity (one partial-product
+  digit per item) is next.
+
+**Placement.** 5 runs, about $6–7 on Vast (Audit pre-approved about $4 for 3 seeds; the 2 READ-only seeds are posted to
+Audit as about $2.5 extra), proof seed first (ANCHOR+READ s1). Implementation: the experiments session (accel99 markov
++ `--reader` + `--anchor`). Scorer `theory/score_s121.py`, committed before any run.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
