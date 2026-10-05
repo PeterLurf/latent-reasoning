@@ -2511,6 +2511,14 @@ Scorer `theory/score_s118.py`, committed before any run. Projection to Audit.
   - No-snap uses no text path, reader or decode feedback.
 * **Control:** snap115 on §111 READ s7–10 on a local GPU.
 
+**Note 118-2 (2026-10-05 04:20 EDT, before any §118 result; Audit). The control already passes in one seed (§111 READ s8, 115-2), so a
+single passing seed in ANCHOR or LONG shows nothing new.**
+* **EXIST is read as uninformative** for the arms.
+* **An arm's claim requires NOSNAP-512 in ≥ 4/5** (as registered), **and** a seed rate above the control's final rate
+  over READ s6–10 (s6–8: 1/3; s9–10 pending).
+* If the control itself reaches ≥ 4/5, the reader alone is the no-snap fix, and the arms are read only on NOSNAP-2048 and
+  drift.
+
 ## 119. Controlled baselines for C1: published latent-CoT methods on our S5 protocol, scored with the donor and length protocols (pre-registered 2026-10-04 23:14 EDT, after Literature's checks 2bf76954 (project audit, missing comparison 2) and 1a473f82, and before any implementation or run; Audit's guards)
 
 **Why.** Our C1 claim compares against the literature only on paper: no latent-CoT paper shows serial,
