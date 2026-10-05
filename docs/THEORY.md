@@ -212,7 +212,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 122 | TEXT-MIX keeps the anchor's target competent (conditional on §121; stop rule for the multiplication line) | CARRY-3 0/3 (op 3 0.32–0.41) with a competent text path (t1 1.0); **STOP RULE fired**: the multiplication latent-carriage line pauses | closed |
 | 123 | Attractor strength causal for no-snap? Dither dose-response (σ 0–0.5) + dithered FSQ (canonical codes), §120 harness | registered (after §120's pilot) | **open** |
 | 124 | Does reading a given state fix self-training's lottery? §112 f = 0.1 + copy objective vs exposure control | registered | **open** |
-| 125 | Readable bottleneck from step 0: standardised carried code vs the soft-phase no-read basin (task-agnostic, §120 harness) | PLATEAU-FIX not met: STD s2 plateaued throughout (carried norm matched at init, 35 by 2k); other runs held | closed |
+| 125 | Readable bottleneck from step 0: standardised carried code vs the soft-phase no-read basin (task-agnostic, §120 harness) | **untested**: the EMA standardisation was not in force at 2k (carried norm 35); STD s2 plateaued; other runs held | closed (untested) |
 | 126 | Is the bottleneck the cause of the soft-phase basin? RAW-H vs ANNEAL (stop rule → restart-on-plateau) | registered | **open** |
 
 ## Live sections
@@ -3673,8 +3673,8 @@ bottleneck alone is exact: snapping was not what made §120 work.**
   - CAUSAL waits for every dose cell and its fp32 ρ (123-5).
 
 **§125 result (2026-10-05 18:09 EDT; the proof seed only, by design: the remaining runs were held once PLATEAU-FIX was decided (125-4),
-with Audit's agreement, disclosed). PLATEAU-FIX is not met: standardising the carried code does not rescue the basin
-seed.**
+with Audit's agreement, disclosed). PLATEAU-FIX is untested: the standardisation was not in force at 2k, where the
+plateau is decided (correction 2026-10-05 18:16 EDT, Audit / claude-13).**
 * **STD S5 s2** (RTX 3090, the within-seed twin of §120 FINAL s2): plateaued throughout. Final loss 4.80, long accuracy 0,
   1 code.
 * **carried_norm:** row norm 3.94 at init (wte 3.96: matched, as designed), but **35.2 at 2k** (per-coordinate std 0.012
@@ -3682,8 +3682,12 @@ seed.**
   - Under the EMA, a few coordinates with tiny variance are amplified by the division, so the standardised code does
     not stay at embedding scale once training moves the encoder.
 * STD S5 s1 / s3 / s4, the control s3–4 and FF STD were **not run**: ACC and the FF guard are untested.
-* **Reading.** Matching the injected code's initial statistics to the LM's embeddings does not prevent the soft-phase
-  basin. §126 shows the bottleneck itself is the cause (RAW-H s2 escapes; 126-4, provisional).
+* **Reading (corrected 2026-10-05 18:16 EDT).** The intervention was **not delivered** at 2k.
+  - The EMA-0.99 mean lags a fast-moving raw embedding (|μ| about 44), and dividing by a tiny sd (median 0.054,
+    amplification up to 48×) blows the lag up. GPT-2 again received a norm-35, nearly constant vector.
+  - So §125 does **not** falsify the scale-mismatch account. It is untested.
+  - Whether to rerun with correctly delivered standardisation (per-update batch statistics with stop-gradient, as §72b,
+    or an absolute floor) is an explicit decision, taken after §126's RAW-H result.
 
 **Note 125-1 (2026-10-05 15:51 EDT, before any §125 run; the experiments session's implementation d93e105b, accepted).**
 * `--std` sits inside `embed_code`, so every path where a code enters GPT-2 uses e′: segments, the answer decoder, the
@@ -3747,6 +3751,9 @@ rescue the basin seed.**
   flag marks it a plateau. PLATEAU-FIX requires seed 2 not plateaued, so **PLATEAU-FIX cannot be met.**
   - b13 runs to completion (does anything change after 2k?). The remaining §125 runs (b14–b16, b18) are held pending it,
     to save about $3.
+* **Correction (2026-10-05 18:16 EDT):** "PLATEAU-FIX cannot be met" stands as a rule outcome, but the reading "scale mismatch falsified"
+  is withdrawn. The standardisation was not in force at 2k (§125 result). The initialisation analysis below is
+  unaffected.
 * **Initialisation analysis ($0, CPU, seeds 1–4, 256 random (state, op) segments).**
   - **No tanh saturation:** mean tanh′ is 0.76–0.81, and 0 % of coordinates have tanh′ < 0.1.
   - In **every** seed the bottleneck input barely depends on the input: z's per-coordinate std across inputs is 0.03–0.04,
@@ -3764,7 +3771,8 @@ rescue the basin seed.**
 
 **Why.** In the task-agnostic harness (§120), S5 seed 2 plateaus at the ln-120 null by 2k in every arm tried: §120
 FINAL, §123 FSQ+DITHER and σ = 0, and §125 STD.
-* Standardising the carried code did not rescue it (125-4), and no tanh saturates at init.
+* §125's standardisation, as implemented, was not in force at 2k, so it is untested (correction 2026-10-05 18:16 EDT); and no tanh saturates at
+  init.
 * Seeds 1 and 2 are indistinguishable at init (125-4).
 * §111 READ, which carries the raw h with a reader and per-step supervision, never plateaued (5/5).
 * Two candidate causes: the 8-d bottleneck, or final-answer supervision without a reader.
@@ -3893,6 +3901,14 @@ fetched files). Without the bottleneck, seed 2 does not plateau: the 8-d bottlen
   while RAW-H carries std(h) in fp32. The driver difference may add to it.
 * Both seed-2 runs escape, so the seed-2 plateau readout (126-4) holds in either form. No rerun.
 * ANNEAL's own question, whether the bottleneck holds at λ = 1, is read from its final accuracy.
+
+**Note 126-6 (2026-10-05 18:16 EDT; Audit / claude-13). Before RAW-H is read, check its carried norm.** RAW-H uses the same EMA standard-
+isation map, on the 768-d h.
+* The carried_norm at init and at 2k is reported beside RAW-H's plateau flag and verdict.
+* If the map blew up at 2k as in §125, RAW-H's escape was made with a carrier of uncontrolled scale. The verdict then reads
+  "no 8-d bottleneck, carrier as delivered" rather than "standardised h". The bottleneck-vs-no-bottleneck contrast stands
+  either way.
+* Any RAW-H plateau would equally be on an arm whose map was not in force.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
