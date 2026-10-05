@@ -39,6 +39,7 @@ MODELS = {  # name -> (constructor kind, markov, m_lat, n_pause)
     "a99_markov_4x4_s1": ("a99", True, 1, 0), "a99_ctrl_4x4_s1": ("a99", False, 1, 0), "a99_tfslot_4x4_s1": ("a99", False, 1, 0),
     "a99_tfslot_4x4_s3": ("a99", False, 1, 0), "a107_pause4_4x4_s1": ("a99", True, 1, 3), "m100_gen2_4x4_s1": ("m98", False, 1, 0),
     "m100_mask2_4x4_s1": ("m98mask", False, 1, 0)}
+MODELS.update({"a121_%s_4x4_s%d" % (arm, s): ("a99", True, 1, 0) for arm in ("anchorread", "read") for s in (1, 2, 3)})   # §121 (Markov)
 
 
 def build(name):

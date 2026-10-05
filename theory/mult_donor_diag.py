@@ -106,7 +106,7 @@ def main():
         arm = args.get("arm99")
         if arm is None:
             continue                                                        # §100 k = 2: step 3 starts from snapped text (no slot-2 carrier)
-        m = MultGen99(s5.load_gpt2("cpu"), "genm", std=False); m.markov = arm in ("markov", "pause4") or bool(args.get("markov"))
+        m = MultGen99(s5.load_gpt2("cpu"), "genm", std=False); m.markov = arm in ("markov", "pause4", "anchorread", "read") or bool(args.get("markov"))   # §121 arms are Markov
         if arm == "pause4":
             m.enable_mlat(1, 3)
         m.load_state_dict(torch.load(os.path.join(ROOT, "boxes", "runs_mult", run_name, "model.pt"), map_location="cpu")); m.eval()
