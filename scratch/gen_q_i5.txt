@@ -1,0 +1,4 @@
+# §122 TEXTMIX+ANCHOR+READ s2-3 (after the i4 proof)
+# P=2
+boxes/runs_mult/a122_textmixanchor_4x4_s2 boxes.accel99 --textmix 0.25 --arm99 anchorread --seed 2
+boxes/runs_mult/a122_textmixanchor_4x4_s3 boxes.accel99 --textmix 0.25 --arm99 anchorread --seed 3

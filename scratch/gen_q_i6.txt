@@ -1,0 +1,4 @@
+# §122 TEXTMIX+READ control s1-2 (after the i4 proof)
+# P=2
+boxes/runs_mult/a122_textmix_4x4_s1 boxes.accel99 --textmix 0.25 --arm99 read --seed 1
+boxes/runs_mult/a122_textmix_4x4_s2 boxes.accel99 --textmix 0.25 --arm99 read --seed 2
