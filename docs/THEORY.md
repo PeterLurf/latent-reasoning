@@ -2301,6 +2301,17 @@ step 0, 24k steps, bs 64, lr 1e-4.
 experiments session (mk108 `--arm read` plus `--anchor` and an extended `--kcurr`; snap115 (A)/(B) on every model).
 Scorer `theory/score_s118.py`, committed before any run. Projection to Audit.
 
+**Note 118-1 (2026-10-04 23:14 EDT, before any §118 run; the experiments session's implementation, accepted).**
+* **ANCHOR** applies only at latent-fed segments, not at gold-forced ones (TF bootstrap). The anchor latent is the
+  stop-gradient text path [EOT, gold text of state j−1, op_j]. The loss is as registered.
+* **LONG:** k_train 1 / 2 / 4 / 8 / 16 / 32 at 0 / 2k / 6k / 10k / 14k / 18k, as registered.
+  - Micro-batches of bs / max(1, k // 8) with gradient accumulation: same effective batch, for memory.
+  - TF bootstrap as §111.
+* **Eval:** `latent_geometry` (effective rank over 2k carried latents; anchor cosine and log-norm gap by position
+  against the text path from the true state, eval only), then snap115 (A)/(B) in-process → eval_s115.json.
+  - No-snap uses no text path, reader or decode feedback.
+* **Control:** snap115 on §111 READ s7–10 on a local GPU.
+
 ## 119. Controlled baselines for C1: published latent-CoT methods on our S5 protocol, scored with the donor and length protocols (pre-registered 2026-10-04 23:14 EDT, after Literature's checks 2bf76954 (project audit, missing comparison 2) and 1a473f82, and before any implementation or run; Audit's guards)
 
 **Why.** Our C1 claim compares against the literature only on paper: no latent-CoT paper shows serial,
