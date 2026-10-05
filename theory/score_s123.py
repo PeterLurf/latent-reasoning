@@ -46,13 +46,16 @@ def main():
     for fam, seeds in (("s5", (1, 2)), ("ff", (1,))):
         for tag, sig in SIG.items():
             for sd in seeds:
-                r = load("s123_%s_dither%s_s%d" % (fam, tag, sd))
+                dname = "s123_%s_dither%s_s%d" % (fam, tag, sd)
+                if fam == "s5" and tag == "050":                                         # note 123-8: CAUSAL reads the RTX 3090 reruns
+                    dname = dname + "_3090"
+                r = load(dname)
                 if r is None:
                     continue
-                cf = load("s123_%s_dither%s_s%d" % (fam, tag, sd), "eval_contraction_fp32.json") or {}   # note 123-5: rho in fp32
+                cf = load(dname, "eval_contraction_fp32.json") or {}                    # note 123-5: rho in fp32
                 c = {"fam": fam, "sigma": sig, "seed": sd, "long_acc": r.get("long_acc"), "rho": cf.get("rho"), "rho_bf16_registered": r.get("rho"),
                      "rho_nonzero": r.get("rho_nonzero"), "basin": cf.get("basin", r.get("basin")),
-                     "grid_share": r.get("grid_share"), "plateau": plateau("s123_%s_dither%s_s%d" % (fam, tag, sd))}
+                     "grid_share": r.get("grid_share"), "plateau": plateau(dname), "gpu": r.get("train_gpu", r.get("gpu"))}
                 res["continuous"]["%s_%s_s%d" % (fam, tag, sd)] = c; cells.append(c)
     allcells = cells; res["plateau_count"] = {"%s_%s" % (c["fam"], c["sigma"]): 0 for c in allcells}
     for c in allcells:
