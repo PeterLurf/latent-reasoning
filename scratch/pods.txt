@@ -764,3 +764,4 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 54349938 vast | gen_b9 PRICE EXCEPTION (logged 2026-10-05 13:06): RTX 4090 $0.382/h - §123 S5 sigma=0.5 dose end; no clean 3090 offer after the b9 DATA_SHA_MISMATCH host; Audit fallback (a) OK
 54318073 vast | gen_a5 DESTROYED_VERIFIED 2026-10-05 14:07 after verified per-run fetch (boxes/runs_s5/s118_anchor_s75 boxes/runs_s5/s118_anchor_s74)
 54317800 vast | gen_i6 DESTROYED_VERIFIED 2026-10-05 14:11 after verified per-run fetch (boxes/runs_mult/a122_textmix_4x4_s2 boxes/runs_mult/a122_textmix_4x4_s1)
+54317791 vast | gen_i5 DESTROYED_VERIFIED 2026-10-05 14:14 after verified per-run fetch (boxes/runs_mult/a122_textmixanchor_4x4_s2 boxes/runs_mult/a122_textmixanchor_4x4_s3)
