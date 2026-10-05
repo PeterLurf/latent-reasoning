@@ -3342,6 +3342,8 @@ text). Scorer
 * eval.json carries copy_acc for every arm (masked-fork greedy decode of the copy path, n = 1,000), BASE included as the
   untrained baseline.
 * The gradient-flow check passes for both new losses (it guards against 116-5's no_grad fault).
+* **"Matched seeds"** (Audit) means the same initialisation and the same labelling pools. The batch streams diverge
+  after step 1, because the extra rows draw from the same RNG.
 * Queues c1–c6 (P = 2): proof host c1 (EXPOSE s26–27), then EXPOSE s28–29, COPY s26–29, BASE s26–29. They run after
   §123's b7 / b8.
 
