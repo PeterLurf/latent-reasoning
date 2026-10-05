@@ -3810,6 +3810,12 @@ proof seed first (RAW-H s2).
 Implementation: the experiments session (fsq120 `--raw_h` and `--anneal`). Scorer `theory/score_s126.py`, committed
 before any run.
 
+**Note 126-1 (2026-10-05 16:27 EDT, before any §126 run; a consistency fix).** The STOP RULE's trigger is **RAW-H seed 2 plateaued**,
+matching the readings and Audit's sequential plan ("if RAW-H s2 also plateaus … the stop rule fires").
+* The plateau-count clause (≥ 2/4) is descriptive.
+* As registered, a seed-2 plateau with a count of 1/4 would have met neither BOTTLENECK-CAUSE nor the STOP RULE. Now it
+  fires the STOP RULE.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

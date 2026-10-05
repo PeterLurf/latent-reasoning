@@ -4,7 +4,7 @@ Plateau flag (123-3): loss(2k) >= 0.9 loss(1k) and loss(2k) >= 0.25 loss(100).
 BOTTLENECK-CAUSE: RAW-H seed 2 not plateaued AND RAW-H plateau count <= 1/4.
 ANNEAL-INHERITS (stage 2, only if RAW-H s2 escaped; on the RAW-H non-plateau seeds): ANNEAL long_acc >= 0.99 at
 lambda = 1 in all of them.
-STOP RULE: RAW-H does not rescue seed 2 AND its plateau count is not below 2/4 -> adopt restart-on-plateau (engineering).
+STOP RULE (note 126-1): RAW-H seed 2 plateaued -> adopt restart-on-plateau (engineering); the count is descriptive.
     python theory/score_s126.py
 """
 import json
@@ -54,7 +54,7 @@ def main():
         ai = "skipped (RAW-H s2 plateaued; stage 2 not triggered)"
     else:
         ai = (bool(nonpl) and all(s in ann and (ann[s]["long_acc"] or 0) >= 0.99 for s in nonpl)) if all(s in ann for s in nonpl) and nonpl else "incomplete (%d / %d)" % (len(ann), len(nonpl))
-    stop = (full and (2 not in raw or raw[2]["plateau"]) and n_pl >= 2) if full else "incomplete"
+    stop = bool(raw[2]["plateau"]) if 2 in raw else "incomplete (seed 2 pending)"   # note 126-1: trigger = RAW-H s2 plateaued
     res = {"RAW_H": raw, "ANNEAL": ann, "BOTTLENECK_CAUSE": bc, "ANNEAL_INHERITS": ai, "STOP_RULE_FIRES": stop, "rawh_plateau_count": n_pl}
     print("RAW-H", {s: (v["long_acc"], v["plateau"], v["gpu"]) for s, v in raw.items()})
     print("ANNEAL", {s: (v["long_acc"], v["plateau"], v["gpu"]) for s, v in ann.items()})
