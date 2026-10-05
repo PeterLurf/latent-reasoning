@@ -421,3 +421,8 @@
 04:11:59 s115 s111_mk4_read_s8 rc 0 (cuda:2, fp32)
 04:12:55 §111 2x s9-10 rel backfills (cuda:2)
 04:13:07 s115 g105_mask4_s2 rc 0 (cuda:0)
+04:23:45 s115 g105_mask4_s3 rc 0 (cuda:0)
+04:23:45 S115_LOCAL_DONE
+04:24:51 s115 g105_mask4_s1 rc 0 (cuda:0, bs 60 rerun after OOM at 125)
+05:40:51 s120_s5_final_s1 eval_only rc 0 (cuda:1)
+05:41:05 NOTE: the 05:40:51 s120 eval_only line = killed by me (Audit: CERT BFS 2h+ held the queue); rerun --no_cert + post-hoc --cert_only (45 min)

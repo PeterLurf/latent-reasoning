@@ -1,0 +1,4 @@
+# §120
+# P=2
+boxes/runs_fsq/s120_ff_final_s2 boxes.fsq120 --family ff --arm final --seed 2 --no_cert
+boxes/runs_fsq/s120_ff_trace_s1 boxes.fsq120 --family ff --arm trace --seed 1 --no_cert
