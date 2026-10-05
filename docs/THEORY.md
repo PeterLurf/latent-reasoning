@@ -3258,7 +3258,11 @@ not in S5. Flip-flop passes in both arms, with two seeds certified at every leng
   - **FF FINAL s2 and FF TRACE s2 are certified at every length on the task language.** Their learned code machines
     minimise to flip-flop's 2-state automaton.
   - The registered CERT fails in both, on unreachable read-before-write prefixes (120-7).
-  - S5 FINAL s1's machine is open (120-5), so it is not certified. Other cells' CERT is pending or not applicable.
+  - S5 FINAL s1's machine is open (120-5), so it is not certified.
+  - FF FINAL s2's growth saturates at 35 codes on 2,048-step rollouts.
+  - FF TRACE s1 is **not** certified (task CERT: 1,024 reachable, Moore 870, 685 violations; its code set does not
+    saturate), consistent with its 0.885 all-reads-right rate. FF is certified in 2/4 cells. The other cells' CERT is
+    pending.
 * **Reading.**
   - **(a) A learned, task-agnostic discrete snap at every step works where the state space is small.** Flip-flop passes
     4/4 seeds in both arms, from final answers too, with certified minimal machines in 2 seeds.
