@@ -10,7 +10,7 @@ can travel only through the latents (MASK, MARKOV), with removal and bypass cont
 removal is the headline. 5 seeds and long-rollout drift for any passing arm (C6). Train short, test long on every new
 task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 
-## Where things stand (2026-10-04, night)
+## Where things stand (2026-10-05, afternoon)
 
 * **North star:** one pretrained LM meeting C1–C7 (`docs/NORTH_STAR.md`).
 * **Serial C1 + C6 on S5 (§108, §111).**
@@ -23,8 +23,20 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
   - Mechanism: the history cut turns long final-answer problems into short problems that start from the model's own
     checkpoint (112-2).
   - Under the masked fork the carrier is seed-dependent (112-3). Reliability is open.
-* **Live:** §113 (the reader inside §110); §116 (strict C4: operator definitions only, or no shorts; conditional);
-  **§117 (C1 + C4 + C6 in one model; after Audit's grep and the dose note)**.
+* **No snaps at inference (§118, §115).** With a text-path anchor in training, 5/5 S5 seeds run fully latent and exact to
+  2,048 with no snaps, serially (C1 + C2 + C6; text-anchored, not task-agnostic). Success tracks the hand-off's
+  contraction ρ (pass ≤ 0.24, fail ≥ 0.35; 118-5).
+* **Task-agnostic line (the user's directive; §120, §123, §125).** One harness (a Markov segment per item, an 8-d
+  bottleneck, an answer decoder) on S5 and flip-flop.
+  - The continuous bottleneck alone is exact to 2,048 on S5 (123-6). The learned discrete snap adds certification:
+    flip-flop machines are certified at every length (minimal 2 states); S5's are open.
+  - The reliability blocker is a soft-phase no-read basin (seed-specific; 123-3). §125 (a standardised carried code)
+    tests the fix.
+* **Multiplication:** the carrier holds the multiplier prefix, not the running sum (114-4, causal). Width, pauses,
+  looped depth and anchoring did not fix it, so the line is paused by §122's stop rule. It returns only as a family in
+  the task-agnostic harness.
+* **C4:** final answers with a 10 % short foothold work in 2/5 (§112). Strict C4 fails (§116 NONE at chance). The
+  reliability lottery (112-4) is tested by §124.
 * **Range principle (§26, §64, §66, §71).** Every length failure is a quantity that grows with the problem and leaves its
   trained range. Every working fix restarts from a written or snapped state with the history cut.
 * **Latent restarts in GPT-2 (§86, §92).**
@@ -3642,6 +3654,22 @@ for flip-flop). Plus:
 **Placement.** 8 runs, about $4–5 on Vast (Audit pre-approved), proof seed first (STD S5 s2, the basin seed).
 Implementation: the experiments session (fsq120 `--std`, plus the init / 2k carried-norm logging). Scorer
 `theory/score_s125.py`, committed before any run.
+
+**Note 123-6 (2026-10-05 15:45 EDT; descriptive, §123 cells landed so far, before CAUSAL is scored; Audit's framing). The continuous 8-d
+bottleneck alone is exact: snapping was not what made §120 work.**
+* **S5 σ = 0 s1** (continuous z_b, no rounding, no dither, FINAL): long accuracy 1.0 at 16–512, **1.0 at 2,048** (n =
+  500), and single-code donor 1.0 at positions 2 / 4 / 6.
+  - grid_share is 0.21, about uniform (no implicit quantisation), and it does not plateau.
+  - So **a task-agnostic continuous carry is exact to 2,048 on S5**: no text, no template, no schedule, no rounding.
+* **S5 σ = 0 s2 plateaus** (123-3 flag; accuracy 0): the same seed-2 basin as §120 FINAL s2 and §123 FSQ+DITHER s2. The
+  basin is shared across every arm at that seed and is decided before rounding or dither.
+* **Flip-flop:** σ = 0 s1 1.0; FSQ+DITHER s1 1.0 (15 codes per state) and s2 1.0 (4 codes per state).
+* **Reading.**
+  - The task-agnostic line is best stated as **"continuous bottleneck + reliable entry"**, not "discrete snap".
+  - The reliability blocker is the soft-phase no-read basin, which §125 tests.
+  - Discretisation's distinct value is **enumerability** (CERT), and it requires canonical codes (closed on flip-flop,
+    open on S5).
+  - CAUSAL waits for every dose cell and its fp32 ρ (123-5).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
