@@ -199,6 +199,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 121 | Multiplication's carrier shortcut: text-path anchor + reader vs reader alone (4×4, Markov) | CARRY-3 0/3: the anchor binds to a dead text path (T1 = 0); READ lifts op 3 to 0.64 / 0.93 by recomputation, with no sum carrier; triggers §122 | closed |
 | 122 | TEXT-MIX keeps the anchor's target competent (conditional on §121; stop rule for the multiplication line) | **triggered** (§121 CARRY-3 0/3, T1 = 0) | **open** |
 | 123 | Attractor strength causal for no-snap? Dither dose-response (σ 0–0.5) + dithered FSQ (canonical codes), §120 harness | registered (after §120's pilot) | **open** |
+| 124 | Does reading a given state fix self-training's lottery? §112 f = 0.1 + copy objective vs exposure control | registered | **open** |
 
 ## Live sections
 
@@ -3277,6 +3278,62 @@ not in S5. Flip-flop passes in both arms, with two seeds certified at every leng
 * **Acquisition is 0/4, so the first wave is at most 2/6.** By 117-5 (≤ 3/6): the lottery persists, and the direct test
   of 112-4 (§112's f = 0.1 recipe plus 10 % copy rows, with the fixed copy path) is registered after a Literature check.
 * §117's extension cannot fire (ALL ≤ 1/3 per arm). The §117 result follows when s51 / s61 land.
+
+## 124. Does reading a given state fix self-training's lottery? §112 f = 0.1 plus a self-supervised copy objective, against an exposure control (pre-registered 2026-10-05 12:03 EDT, after Literature's check b5078932 and before any run; triggered by note 117-5's rule (117-7); Audit's matched design)
+
+**Why (112-4, 116-4 to 116-6, 117-7).** Self-training's acquisition is a lottery: §112 f = 0.1 acquires in 3/5, §110 in
+3/5, §117's first wave in 0/4.
+* 112-4's account: every seed solves single-chunk identity-start problems, but post-cut lengths need **reading a given
+  start state**, which identity-start training never exercises. The start-text no-read basin.
+* §116 never tested it: NONE has no in-chunk stage, and NONE+COPY's copy path had a no_grad bug. The fixed path is
+  unit-tested (copy accuracy 1.0 within 100 steps).
+* **Prior** (b5078932, `docs/LIT_S124_COPY_2026-10-05.md`; also 15cf541a): Dai & Le 1511.01432, NTM copy, He 1901.05534
+  (reconstruction forces encoder use), Ruiz & Gu 2507.02782 (state coverage), Abbe's leap.
+  - Our §110b: random textual starts without a reading objective stayed at chance, so the active ingredient should be
+    the read, not exposure. New as scoped.
+
+**Scope (Audit).** §124 tests 112-4 in the **masked-fork** setting only. §117's Markov seeds never learn even
+single-chunk composition (117-6 / 117-7): that is §85's saddle again, not 112-4's basin.
+
+**Design (matched and concurrent; Audit, Literature (2)).** §112's f = 0.1 recipe exactly (masked fork, identity
+starts, T_f with all (e, a) plus inner g, independent pools, validity → final → self-consistency filters with the
+label-free gate, final relabel, 24k steps). **Three arms on the same new seeds 26–29, launched together:**
+* **BASE:** §112 f = 0.1 unchanged (no extra rows), as a concurrent baseline on the same code.
+* **COPY:** plus 10 % of every batch's rows, from step 0 through the final relabel, as copy problems.
+  - Each is a random start state (uniform over 120) as text, with zero ops. The start text's last hidden is fed as a
+    slot, and the masked fork decodes the start's own text.
+  - Self-supervised: no transition or intermediate labels.
+* **TEXT-EXPOSE (Literature (2)):** the same 10 % random-start rows trained only with plain next-token LM loss on the
+  start text. No slot readout, nothing labelled.
+* Extra rows replace ordinary rows (the budget is unchanged). copy_loss is logged separately, along with the stay rate
+  on real ops (truth, logged only).
+
+**Measures.** §112's: cumulative 512 / 2,048, k1_never_labelled_acc, k1_certified, per_round_split, coverage_drawn,
+single-patch donor. Plus:
+* the **acquisition round**: the first round whose never-labelled k = 1 exceeds 0.5;
+* the round at which L ≥ 5 pool accuracy first exceeds 0.5;
+* copy accuracy at the end.
+
+**Rules (fixed now; at n = 4 per arm the counts are descriptive unless the difference is large).**
+* **Primary readout:** the acquisition count per arm (final never-labelled k = 1 ≥ 0.99) and the timing signature (the
+  acquisition round).
+* **MECH-112 (supports 112-4):** COPY acquires in **4/4**, **and** BASE in ≤ 2/4, **and** TEXT-EXPOSE in ≤ 2/4.
+* **NOT 112-4:** COPY acquires in no more seeds than BASE, and no earlier (median acquisition round).
+* Otherwise the result is **descriptive**: counts and rounds per arm are reported, with no mechanism claim.
+* FOOTHOLD (as §112) is reported per arm.
+* **Claim wording (fixed):** "C4 qualified by f = 0.1 short-problem coverage (identity starts) plus a self-supervised copy
+  objective (no intermediate or transition labels)".
+
+**Readings.**
+* **MECH-112.** Self-training's lottery is the start-reading basin, and a label-free copy objective removes it: a
+  reliable C4-qualified recipe (C6 for C4).
+* **NOT 112-4.** Something other than start reading limits acquisition. Report per-round splits; the account is
+  revised.
+
+**Placement.** 12 runs (3 arms × seeds 26–29), about $10–12 on Vast, **after §123 in the queue** (Audit). Implementation:
+self110 `--cov 0.1` (BASE), plus `--copy_frac 0.1` (the fixed copy path) or `--expose_frac 0.1` (LM loss on the start
+text). Scorer
+`theory/score_s124.py`, committed before any run.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
