@@ -176,6 +176,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 114 | Looped depth per op (LOOP-R vs LOOP-1 vs §107 PAUSE) for multiplication's hand-off | registered | **open** |
 | 115 | No-snap Markov chains, and a round-trip snap trigger (eval only) | registered | **open** |
 | 116 | Strict C4: final-answer training through self-decoded restarts (OPDEF: op definitions only; NONE: no shorts) | registered (conditional on §112 f = 0.1) | **open** |
+| 117 | One model for C1 + C4 + C6: self-decoded restarts + Markov segments + reader (MK vs staged ST) | registered (conditional on §111 READ REL) | **open** |
 
 ## Live sections
 
@@ -2060,6 +2061,94 @@ from 3..L_max per round.
 run (noted then). Implementation: the experiments session (self110: --cov with g = 0 for OPDEF; --no_r0 with an L_max
 floor for NONE; foothold-yield and per-length logging). Scorer `theory/score_s116.py`, committed before any run.
 Projection to Audit.
+
+**Note 116-1 (2026-10-04 22:24 EDT, before any §116 implementation or run; Audit, Literature 3b9c8d61).**
+* **Every in-run decision uses only final-answer quantities:** length insertion, filters, selection, stopping and any
+  fallback. §116 has no in-run switch.
+* Truth-scored intermediates are logged only: foothold_yield, truth_precision_kept and every k = 1 accuracy.
+* The k = 2 follow-up is a between-registration diagnostic, not an in-run trigger. It would be a new registration
+  that reads foothold_yield after §116 is scored.
+* The implementation names every function where true intermediate states enter. Audit greps it before any run.
+
+## 117. One model for C1 + C4 + C6: final-answer training through self-decoded restarts under Markov segments, with the auxiliary reader (pre-registered 2026-10-04 22:24 EDT, after Literature's check f9ce7210 / 3b9c8d61 and before any implementation or run; launched only if §111 MK-4-READ meets REL)
+
+**Why.** Three results point at one design.
+* **§108:** Markov segments make the latent the only route. Every seed that learns is single-slot SERIAL (unqualified
+  C1), but 4/10 seeds sit in the no-read basin.
+* **§111 READ:** an auxiliary reader from step 0 removes the no-read basin (3/3 so far).
+* **§112 / §116:** final-answer training through self-decoded restarts learns S5's table from a small foothold (112-2).
+  - Under the masked fork the carrier is seed-dependent (112-3): the slot alone (§110 s3), the slot plus op tokens
+    (§112 s21), or the whole prefix (§110 s1 / s5).
+  - Markov segments exclude the last two by construction.
+* No run so far has single-slot SERIAL C1 + C4 + C6 in one recipe.
+* **Prior** (f9ce7210, `docs/LIT_S117_INTEGRATED_2026-10-04.md`): Markovian Transformers 2404.18988, RMT, Delethink
+  2510.06557 (outcome-trained bottlenecks); SIM-CoT, SELR 2608.13570, ReLAT 2606.06252, 2606.20075, MUX
+  (collapse-preventing readers); Arazo 1908.02983 (confirmation bias); Allchin 2607.11953 (warning). An outcome-trained
+  carrier with a self-target reader, certified on a non-solvable group: not found (new as scoped).
+
+**Common design (both arms).** §112's recipe (identity starts, final answers only, independent pools, validity → final
+→ self-consistency filters with the label-free gate, final relabel, rounds 3..L_max, 24k steps), plus:
+* **Markov segments (§108):** each op is a fresh-cache segment [EOT, slot j−1's latent (or the chunk's start text: the
+  model's own decoded checkpoint after a cut), op j] → slot j. The step fork sees only its segment. Snaps every k = 4
+  with a history cut.
+* **No gold teacher forcing** (C4). §108's K-CURR runs on training k (1 → 2 → 4, at §108's step counts). At k = 1 every
+  op restarts from the model's own decoded text.
+  - Where a kept pseudo-label exists, a segment input may be that text, under §108's ρ schedule (the model's own
+    filtered decode, never gold).
+* **Auxiliary reader (§111 READ, as §113):** a fresh [EOT, carried latent] segment decodes the slot's state text (CE,
+  weight 1) at every targeted slot from step 0.
+  - Targets: the model's own filtered decodes (kept problems' per-slot pseudo-labels), and the true final answer at
+    final slots, with the final-answer filter in front.
+  - Final-slot reader updates continue in every round (Literature (c)).
+* **Dose:** f = 0.1 (§112's T_f) if §112 meets FOOTHOLD-0.1, otherwise §110's natural shorts. It is fixed in a dated
+  note before launch.
+* **Every in-run decision uses only final-answer quantities** (Literature (d); Audit). That covers fallbacks, length
+  insertion, the ST switch, filters, selection, stopping and reader targets.
+  - Truth-scored intermediates are logged only: foothold_yield, truth_precision_kept, every k = 1 accuracy, and
+    reader-vs-truth precision.
+  - The implementation names every function where true intermediate states enter. Audit greps it before any run.
+
+**Arms.**
+* **MK (seeds 51–53, extended to 54–55):** Markov segments from step 0.
+* **ST, staged bottleneck (seeds 61–63, extended to 64–65; Literature (b)).**
+  - §112's masked fork (non-Markov, so the parallel in-pass shortcut can seed checkpoints) until a **label-free switch**:
+    final-answer accuracy ≥ 0.5 on 5k fresh problems of length k + 1..k + 2, checked at each round's end, or at 12k at
+    the latest.
+  - Then Markov segments (with the reader) for **12k further steps**, plus the final relabel.
+  - C1 is scored on the final model only. The switch step is logged.
+* **Extension rule:** an arm with ALL in ≥ 2/3 of its first three seeds gets its two further seeds. Otherwise it stops
+  at 3, reported.
+
+**Measures.** §112's (cumulative 512 / 2,048, k1_never_labelled_acc, k1_certified, coverage_drawn, removal,
+per_round_split) and §116's (foothold_yield, acc_by_length). §104's donor protocol (single and joint) at every in-chunk
+slot; the shuffled-null no-read flag (114-3); per-hand-off accuracy; the **reader confirmation-bias measure**: the truth-scored precision of the reader's
+self-targets on kept slots, per round (logged only).
+Descriptive, where cheap: C3 (FLOPs vs the written state), C5 (§115's round-trip trigger), C7 (checkpoint edit IIA).
+
+**Rules (fixed now; per arm).**
+* **ALL (per seed):** cumulative ≥ 0.99 at 512, **and** single-slot donor SERIAL (USE ≥ 0.90 at every in-chunk slot,
+  recipient < 0.10; Audit (a)), **and** k = 1 ≥ 0.99 on never-labelled transitions.
+* **INTEGRATED (C1 + C4 + C6):** ALL in ≥ 4/5 seeds (extended arm). **EXIST:** ALL in ≥ 1 seed (an existence proof,
+  reported separately from reliability).
+* **C6 at length:** ALL plus ≥ 0.99 at 2,048, in ≥ 4/5.
+* **Sanity:** an accuracy pass with single-slot SERIAL failing in a Markov final model means a leak, and is reported
+  as a bug (as §108).
+* **Claim wording (fixed):** "unqualified serial C1 + C4 qualified by <dose> identity-start shorts + C6 (seed rate)",
+  with the method named "final-answer training through self-decoded restarts". ST adds "staged: masked fork first".
+
+**Readings.**
+* **INTEGRATED in MK.** One pretrained LM learns S5 latent restarts from final answers with a small foothold. Its
+  latents carry the state hop by hop with no other route, reliably. C1 + C4 (qualified) + C6, with C2 by restarts.
+* **INTEGRATED in ST only.** The same, but the bottleneck must come after acquisition: in-pass shortcuts seed the
+  checkpoints, and Markov carriage is learned afterwards.
+* **EXIST only.** The combination is possible; reliability is the gap. Report the failure modes (no-read flag, final
+  accuracy at L > k, precision).
+* **Neither.** Markov carriage and outcome-only acquisition do not combine at this budget. Report per-arm switch steps
+  and no-read flags.
+
+**Placement.** 6 runs first (3 per arm), up to 10, about $15–30 on Vast. **Launched only if §111 MK-4-READ meets REL**;
+otherwise not run (noted then). Implementation: the experiments session (self110 + mk108's segment construction +
+§113's reader + the ST switch). Scorer `theory/score_s117.py`, committed before any run. Projection to Audit.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

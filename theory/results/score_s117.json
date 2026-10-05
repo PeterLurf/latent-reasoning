@@ -1,0 +1,30 @@
+{
+ "arms": {
+  "MK": {
+   "n": 0,
+   "ALL_seeds": [],
+   "EXIST": false,
+   "INTEGRATED": false,
+   "C6_2048": false,
+   "extend": null,
+   "LEAK": [],
+   "cum512": {},
+   "ext2048": {},
+   "k1_never": {},
+   "switch_step": {}
+  },
+  "ST": {
+   "n": 0,
+   "ALL_seeds": [],
+   "EXIST": false,
+   "INTEGRATED": false,
+   "C6_2048": false,
+   "extend": null,
+   "LEAK": [],
+   "cum512": {},
+   "ext2048": {},
+   "k1_never": {},
+   "switch_step": {}
+  }
+ }
+}
