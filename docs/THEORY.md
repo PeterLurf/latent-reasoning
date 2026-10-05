@@ -2028,6 +2028,21 @@ from the text path) only when the two disagree. There is no fixed k, apart from 
 **Placement.** Eval only, $0, on the local 3070 (idle). Implementation: the experiments session (mk108 / gen97 eval
 modes: `--no_snap`, and an `--adaptive_snap disagreement` policy).
 
+**Note 115-1 (2026-10-04 23:04 EDT; partial, descriptive; scorer format fix disclosed).**
+* **Scorer fix after data was seen:** `fixed_k4.snaps_per_problem` is a number, not {mean, median}, which crashed the
+  TRIGGER line. The scorer now accepts both. No rule changed.
+* **So far, §108 MK-4 s1** (registered): NOSNAP fails (0 at 128; per-hand-off ≈ 0.2 past the 4-op horizon). TRIGGER
+  holds: first-error detection 1.0, false-snap and miss rates 0, 1.0 at 512 / 2,048, but 99.9 snaps against fixed k = 4's
+  127.
+* **§111 READ s6** (an extra model, not in §115's registered set; descriptive only):
+  - NOSNAP fails (0.002 at 128), but per-hand-off without snaps is **0.94 → 0.86** over positions 0–512, against s1's
+    0.2.
+  - **The trigger needs 19.7 snaps per 512 ops**, against 127 fixed (6.4× fewer). Detection is 1.0, false-snap and miss
+    rates are 0, and accuracy is 1.0 at 512 / 2,048.
+  - The reader makes the latent code far more stable across generations: an average silent stretch of about 26 ops,
+    from training at 4.
+* The §115 result follows when MK-4 s3 / s5 and §105 s1–3 are in.
+
 ## 116. Strict C4: final-answer training through self-decoded restarts, from operator definitions only and from no short problems (pre-registered 2026-10-04 21:03 EDT, after Literature's check b0bca3c4 and before any implementation or run; launched only if §112 f = 0.1 meets FOOTHOLD-f)
 
 **Why (112-2).** §112 f = 0.1 s21 is certified on all 14,400 k = 1 transitions, 90 % of them never labelled. Neither the
