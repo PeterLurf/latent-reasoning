@@ -182,7 +182,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 104 | Serial causal use of slots: donor patching, blocking (§92, §97; eval only) | SERIAL not met: §92 2/5; §97 0/3 with donor latents ignored (state recomputed from visible ops) | closed |
 | 105 | C1 for the headline: S5 GEN-4 with a masked fork + donor protocol | G4-M + MASK-DEC met; HANDOFF 0/3 (slots 2–3 latent-carried in 2/3; slot 1 recomputed from the visible start) | closed |
 | 106 | C2 on a real task: bounded streaming multiplication (latent vs the written format) | written format + cut extrapolates 1.000 to b = 32 (WC-S-k2 3/3); masked latent arm fails even at k = 2 (106-4) | closed |
-| 107 | Multiplication's blocker: carrier width (m latents) vs compute (pause), carriage forced | registered | **open** |
+| 107 | Multiplication's blocker: carrier width (m latents) vs compute (pause), carriage forced | neither: CARRY-3 0/3 in LAT-2, LAT-4 and PAUSE-4; the carrier holds the multiplier prefix (114-4) | closed |
 | 108 | Forced latent carriage on S5 (Markov segments, sink fix, TF bootstrap; donor-scored) | ACC not met (MK-4 2/5, MK-8 0/5); serial in all 5 learning seeds; MK-4 s1 1.0 at 512, 0.996 at 2,048 (unqualified serial C1, one seed); failures: no-read basin or precision | closed |
 | 110 | Self-training v2: independent seeds, label-free gate, masked fork (C4 + C1) | SELF2 2/5, C1 1/5 (s3: C4 + C1 + C2 in one seed, certified k = 1); STUDENT triggered | **open** (STUDENT) |
 | 110b | Self-training v2 corrected: identity-start shorts plus random textual starts for length ≥ 3 | stopped after a clear null: loss at chance from random starts (110b-2) | closed |
@@ -1377,6 +1377,23 @@ bootstrap, 24k cap, the valid-split early stop, eligibility from 6k; seeds 1–3
 
 **Placement.** 9 runs (3 arms × 3 seeds), about $5, queued behind §101 / §103 / the §106 pilot as hosts free up.
 Projection to Audit.
+
+**§107 result (2026-10-05 02:37 EDT; 9 runs by the experiments session; scored by Theory alone with `theory/score_s107.py`, committed
+before any run; `theory/results/score_s107.json`). Neither lever unblocks step 3.**
+
+| arm (4×4, MARKOV, seeds 1–3) | op-3 decode | test answer |
+|---|---|---|
+| m = 1 (§99 MARKOV) | 0.253 / 0.273 / 0.236 | 0.047 / 0.041 / 0.020 |
+| LAT-2 | 0.143 / 0.592 / 0.154 | 0.014 / 0.063 / 0.023 |
+| LAT-4 | 0.235 / 0.316 / 0.375 | 0.042 / 0.053 / 0.023 |
+| PAUSE-4 | 0.454 / 0.285 / 0.065 | 0.055 / 0.042 / 0.007 |
+
+* **CARRY-3 is 0/3 in every arm**, so NO-BYPASS is moot. Every run reached the 24k cap without reaching threshold.
+* LAT-4's latents are partly redundant (cosine 0.76–0.78), and removing any single latent leaves answers at 0.0–0.019.
+* **Reading ("neither").** Neither carrier width nor extra positions per op unblocks multiplication's step-3 hand-off.
+  - The registered next step was the running-sum auxiliary. 114-4 then explained why: the carrier holds the multiplier
+    prefix, not the sum, so neither width nor compute can help.
+  - §121 (text-path anchor + reader) targets the shortcut directly.
 
 ## 108. Forced latent carriage on S5: Markov segments, scored by donor patching (pre-registered 2026-10-04 05:48 EDT, after Literature's check de57be3f and before any implementation or run; C1-first)
 
