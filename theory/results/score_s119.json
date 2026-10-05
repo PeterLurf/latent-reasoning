@@ -1,0 +1,43 @@
+{
+ "methods": {
+  "coconut": {
+   "n": 0,
+   "competent": [],
+   "did_not_learn": [],
+   "faithful": null,
+   "intact_acc": {},
+   "cum512": {},
+   "donor": {},
+   "serial_seeds": [],
+   "counts": false,
+   "serial_majority": false
+  },
+  "simcot": {
+   "n": 0,
+   "competent": [],
+   "did_not_learn": [],
+   "faithful": null,
+   "intact_acc": {},
+   "cum512": {},
+   "donor": {},
+   "serial_seeds": [],
+   "counts": false,
+   "serial_majority": false
+  },
+  "codi": {
+   "n": 0,
+   "competent": [],
+   "did_not_learn": [],
+   "faithful": null,
+   "intact_acc": {},
+   "cum512": {},
+   "donor": {}
+  }
+ },
+ "counted": [],
+ "CONTROLLED_C1": null,
+ "inconclusive": [
+  "coconut",
+  "simcot"
+ ]
+}
