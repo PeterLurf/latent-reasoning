@@ -1,9 +1,15 @@
 {
  "arms": {
   "TEXTMIX+ANCHOR+READ": {
-   "n": 0,
-   "op3": {},
-   "test_acc": {},
+   "n": 2,
+   "op3": {
+    "1": 0.362,
+    "2": 0.408
+   },
+   "test_acc": {
+    "1": 0.047,
+    "2": 0.053
+   },
    "CARRY3_seeds": [],
    "ACC_seeds": [],
    "C1_serial": {},
@@ -12,9 +18,15 @@
    "ACC": false
   },
   "TEXTMIX+READ": {
-   "n": 0,
-   "op3": {},
-   "test_acc": {},
+   "n": 2,
+   "op3": {
+    "1": 0.246,
+    "2": 0.344
+   },
+   "test_acc": {
+    "1": 0.016,
+    "2": 0.047
+   },
    "CARRY3_seeds": [],
    "ACC_seeds": [],
    "C1_serial": {},
