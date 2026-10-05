@@ -2405,6 +2405,17 @@ panel is scored; rules unchanged). NONE+COPY fails upstream of the mechanism it 
 * The fixed `copy_loss` is unit-tested copy-only before any future use.
 * NONE and OPDEF are unaffected (no copy path) and are scored as registered.
 
+**Note 116-6 (2026-10-05 09:27 EDT; NONE s42–45 scored; s41 pending). STRICT-C4 is decided: not met.**
+* All four seeds sit at chance throughout: cumulative 0, k = 1 never-labelled 0.0083 = 1/120, and pool accuracy 0.0–0.009
+  at every length in every round.
+* STRICT-C4 needs ≥ 2/5, so it cannot pass whatever s41 does.
+* The strict-C4 saddle holds in-LM with final answers only (§85, 116-4): there is no in-chunk acquisition, even at
+  L ≤ 4.
+* **116-5's NONE+COPY rerun condition is not met** by s42–45 (no in-chunk acquisition). It stays unmet unless s41 shows
+  it.
+* OPDEF (operator definitions, 0.83 %) is still running and is scored at panel end. It is now the arm that says whether
+  any foothold below §112's 10 % works.
+
 ## 117. One model for C1 + C4 + C6: final-answer training through self-decoded restarts under Markov segments, with the auxiliary reader (pre-registered 2026-10-04 22:24 EDT, after Literature's check f9ce7210 / 3b9c8d61 and before any implementation or run; launched only if §111 MK-4-READ meets REL)
 
 **Why.** Three results point at one design.
