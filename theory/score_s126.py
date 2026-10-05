@@ -45,6 +45,12 @@ def arm(pre):
 
 def main():
     raw, ann = arm("s126_s5_rawh"), arm("s126_s5_anneal")
+    ctrl2 = load("s126_s5_ctrl_s2")                                           # note 126-3: same-host control (fallback only)
+    if ctrl2 is not None:
+        cp = plateau("s126_s5_ctrl_s2")
+        print("same-host control s2: plateau", cp, "gpu", ctrl2.get("train_gpu", ctrl2.get("gpu")))
+        if cp is False:
+            print("UNINFORMATIVE on this host (control escaped; 126-3): retry on another host")
     n_pl = sum(bool(v["plateau"]) for v in raw.values())
     full = len(raw) == 4
     bc = (full and 2 in raw and not raw[2]["plateau"] and n_pl <= 1) if full else "incomplete (%d / 4)" % len(raw)
