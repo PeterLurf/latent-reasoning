@@ -1,0 +1,46 @@
+{
+ "run": "boxes/runs_s5/g105_mask4_s2",
+ "model": "gen97",
+ "fork": "mask",
+ "k": 4,
+ "eval_dtype": "torch.bfloat16",
+ "test_n": 500,
+ "cap": 64,
+ "trigger": {
+  "cumulative": {
+   "512": 1.0
+  },
+  "cum_curve": {
+   "128": 1.0,
+   "256": 1.0,
+   "512": 1.0
+  },
+  "snaps_per_problem": {
+   "mean": 112.648,
+   "median": 113.0
+  },
+  "first_error_detection": 1.0,
+  "n_first_errors": 500,
+  "per_event_detection": 1.0,
+  "false_snap_rate": 0.0,
+  "miss_rate": 0.0,
+  "forced_snap_rate": 0.0,
+  "events": {
+   "handoffs": 255500,
+   "false_snap": 0,
+   "miss": 0,
+   "forced": 0,
+   "lat_wrong": 56324,
+   "lat_wrong_detected": 56324
+  }
+ },
+ "fixed_k4": {
+  "cumulative": {
+   "128": 1.0,
+   "256": 1.0,
+   "512": 0.998
+  },
+  "snaps_per_problem": 127
+ },
+ "sec": 641
+}

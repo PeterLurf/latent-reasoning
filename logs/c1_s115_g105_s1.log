@@ -1,0 +1,36 @@
+[W1005 04:02:14.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 52428800 bytes (free: 0, total: 8585216000).
+[W1005 04:02:15.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 62914560 bytes (free: 0, total: 8585216000).
+[W1005 04:02:15.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2097152 bytes (free: 0, total: 8585216000).
+[W1005 04:02:17.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 56623104 bytes (free: 0, total: 8585216000).
+[W1005 04:02:17.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 56623104 bytes (free: 0, total: 8585216000).
+[W1005 04:02:17.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 56623104 bytes (free: 0, total: 8585216000).
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\Latent\boxes\snap115.py", line 222, in <module>
+    main()
+    ~~~~^^
+  File "D:\Latent\boxes\snap115.py", line 216, in main
+    main_g97(a, dev, amp); return
+    ~~~~~~~~^^^^^^^^^^^^^
+  File "D:\Latent\boxes\snap115.py", line 198, in main_g97
+    t0 = time.time(); tr = trigger_g97(m, Xte, Yte, dev, amp)
+                           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "D:\Latent\boxes\snap115.py", line 141, in trigger_g97
+    pa, d = g97_step(m, opv[ii], past)
+            ~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "D:\Latent\boxes\snap115.py", line 118, in g97_step
+    g = m.g; h, past = g(x, past); s_in = h[:, -1]; hs, past = g(s_in[:, None], past)
+                                                               ~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\modules\module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\modules\module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "D:\Latent\boxes\core.py", line 125, in forward
+    k = torch.cat([past[i][0], k], 2); v = torch.cat([past[i][1], v], 2)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 54.00 MiB. GPU 0 has a total capacity of 8.00 GiB of which 0 bytes is free. Process 24624 has 17179869184.00 GiB memory in use. Including non-PyTorch memory, this process has 17179869184.00 GiB memory in use. Of the allocated memory 5.56 GiB is allocated by PyTorch, and 1.68 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
