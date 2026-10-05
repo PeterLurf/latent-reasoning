@@ -1,0 +1,4 @@
+# §118 ANCHOR extension s74-75 (note 118-4, Theory 2026-10-05)
+# P=2
+boxes/runs_s5/s118_anchor_s74 boxes.mk108 --k 4 --arm read --anchor --s115 --seed 74
+boxes/runs_s5/s118_anchor_s75 boxes.mk108 --k 4 --arm read --anchor --s115 --seed 75
