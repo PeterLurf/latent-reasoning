@@ -193,7 +193,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 115 | No-snap Markov chains, and a round-trip snap trigger (eval only) | registered | **open** |
 | 116 | Strict C4: final-answer training through self-decoded restarts (OPDEF: op definitions only; NONE: no shorts) | registered (conditional on §112 f = 0.1) | **open** |
 | 117 | One model for C1 + C4 + C6: self-decoded restarts + Markov segments + reader (MK vs staged ST) | registered (conditional on §111 READ REL) | **open** |
-| 118 | Fully latent at inference: text-path anchor vs longer silent stretches (S5, on READ) | registered | **open** |
+| 118 | Fully latent at inference: text-path anchor vs longer silent stretches (S5, on READ) | **ANCHOR 5/5 no-snap exact to 2,048, serial (C1 + C2 + C6, text-anchored)**; READ control 2/5; LONG running | **open** (LONG) |
 | 119 | Controlled C1 baselines: Coconut, CODI, SIM-CoT on our S5 protocol (donor + length) | registered (queued behind §117 / §118) | **open** |
 | 120 | FSQ digital recurrence: a learned discrete snap every step, no template or schedule (S5 + flip-flop pilot) | pilot not met (S5 1/2 per arm: code collapse / loss basin); **flip-flop 4/4 in both arms, 2 seeds certified (Moore 2)**; extension deferred to §123 | closed (pilot) |
 | 121 | Multiplication's carrier shortcut: text-path anchor + reader vs reader alone (4×4, Markov) | CARRY-3 0/3: the anchor binds to a dead text path (T1 = 0); READ lifts op 3 to 0.64 / 0.93 by recomputation, with no sum carrier; triggers §122 | closed |
@@ -2588,6 +2588,31 @@ step 0, 24k steps, bs 64, lr 1e-4.
 **Placement.** 6 runs first (up to 10), about $9–15 on Vast. Not conditional (§111 READ met REL). Implementation: the
 experiments session (mk108 `--arm read` plus `--anchor` and an extended `--kcurr`; snap115 (A)/(B) on every model).
 Scorer `theory/score_s118.py`, committed before any run. Projection to Audit.
+
+**§118 result, ANCHOR arm (2026-10-05 14:11 EDT; 5 runs by the experiments session; scored by Theory alone with `theory/score_s118.py`,
+committed before any run; LONG still running). ANCHOR meets NOSNAP-512 and NOSNAP-2048: 5/5 seeds are fully latent at
+inference and exact to 2,048 with no snaps.**
+
+| seed | no-snap 128 / 512 / 2,048 | snapped 512 (guard) | donor min / recipient max | effective rank |
+|---|---|---|---|---|
+| s71 | 1.0 / 1.0 / 1.0 | 1.0 | 1.0 / 0.011 | 48 |
+| s72 | 1.0 / 1.0 / 1.0 | 1.0 | 1.0 / 0.011 | 83 |
+| s73 | 1.0 / 1.0 / 1.0 | 1.0 | 1.0 / 0.011 | 122 |
+| s74 | 1.0 / 1.0 / 1.0 | 1.0 | 1.0 / 0.011 | 108 |
+| s75 | 1.0 / 1.0 / 1.0 | 1.0 | 1.0 / 0.011 | 59 |
+
+* **NOSNAP-512: 5/5** (needs ≥ 4/5) with single-slot SERIAL in all five. **NOSNAP-2048: 5/5.** The guard holds. The rate
+  beats the READ control's 2/5 (118-2).
+* **Mechanism (118-5):** ANCHOR seeds have ρ ≈ 0.19 (s71–73; s74–75 pending), the strongest attractors measured. Every
+  model with ρ ≤ 0.28 passes no-snap, and every model with ρ ≥ 0.38 fails.
+* **Reading.** Tying the latent path's carried state to the stop-gradient text-path state makes the pretrained LM's
+  latent recurrence strongly contractive and drift-free. On S5 a chain of 2,048 hand-offs stays exact with no discrete
+  checkpoint at inference, in every seed.
+* **Claim wording (fixed in §118):** "fully latent at inference, text-anchored in training: C1 + C2 + C6 with per-step
+  state supervision (not C4)". It is **not task-agnostic**: the anchor uses the task's state text in training. §120 /
+  §123 carry the task-agnostic line.
+* **Tags:** C1 (serial, 5/5), C2 (2,048 with no snaps, from training chunks of 4), C6 (5/5), C7 (snapped checkpoints
+  remain readable). Not C4.
 
 **Note 118-1 (2026-10-04 23:14 EDT, before any §118 run; the experiments session's implementation, accepted).**
 * **ANCHOR** applies only at latent-fed segments, not at gold-forced ones (TF bootstrap). The anchor latent is the
