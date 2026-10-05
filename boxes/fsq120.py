@@ -202,7 +202,7 @@ def run_test(m, fam, s0, X, dev, amp, bs, every=True, grid=None):
 
 
 @torch.no_grad()
-def certificate(m, fam, dev, amp, cap, bs=2048, time_limit=None):
+def certificate(m, fam, dev, amp, cap, bs=2048, time_limit=None, first_items=None):
     """BFS over the code machine; decode each code; check the transition law on every reachable (code, item) pair.
     time_limit (s, Audit 2026-10-05): stop the BFS when exceeded -> timed_out (inconclusive, like the cap)."""
     ntok = NST if fam.name == "s5" else 1; idx = {}; codes = []; dec = []; trans = {}; t_start = time.time(); timed_out = False
@@ -223,7 +223,7 @@ def certificate(m, fam, dev, amp, cap, bs=2048, time_limit=None):
         return np.concatenate(res) if res else np.zeros(0, int)
     # start transitions
     starts = np.arange(120) if fam.name == "s5" else np.array([0]); ok = True; frontier = []; viol = 0
-    S, X = np.meshgrid(starts, np.arange(fam.n_items), indexing="ij"); S, X = S.ravel(), X.ravel()
+    S, X = np.meshgrid(starts, np.arange(fam.n_items) if first_items is None else np.array(first_items), indexing="ij"); S, X = S.ravel(), X.ravel()   # note 120-7: FF task start = a write
     for i in range(0, len(S), bs):
         B = len(S[i:i + bs])
         with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
@@ -416,6 +416,8 @@ def main():
     if a.cert_only:                                                         # post-hoc CERT (scoring as registered; only its scheduling moved)
         m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval()
         c = certificate(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time); c.update({"eval_dtype": str(amp), "cert_cap": a.cert_cap})
+        if fam.name == "ff":                                                # note 120-7 (amendment after data): task-reachable CERT, first item w0 / w1
+            c["cert_task"] = certificate(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time, first_items=[W0, W1]); c["cert_task"]["first_items"] = ["w0", "w1"]
         json.dump(c, open(os.path.join(a.out, "eval_cert.json"), "w", newline="\n"), indent=1); print("CERT", json.dumps(c), flush=True); return
     json.dump(vars(a), open(os.path.join(a.out, "args_eval.json" if a.eval_only else "args.json"), "w", newline="\n"), indent=1)
     m = mk(); drawn = np.zeros((fam.n_states, fam.n_items), bool)
