@@ -3496,6 +3496,11 @@ counts acquisition timing as well as acquisition.**
     - Fresh AdamW, warmup 100 plus cosine from 1e-4 over 8k, and fresh pools.
     - The labelled set for the k = 1 split is T_f (the source's drawn matrix was not saved; flagged drawn_proxy). For §110
       s1, never-labelled means all transitions.
+  - **Three-way reading, fixed before the runs** (claude-13, via Audit; the resume restarts AdamW on a converged model,
+    starting at the source's last-round learning rate where feasible).
+    - Cumulative ≥ 0.99 with k = 1 = 1.0: **confirms** (the budget was the limit).
+    - Cumulative < 0.99 with k = 1 < 1.0: **an optimiser / LR shock**, not a refutation.
+    - Cumulative < 0.99 with k = 1 = 1.0: **refutes** (more budget does not close the gap).
 
 **Note 124-2 (2026-10-05 14:06 EDT, before any §124 run; no rule change).** 112-5 shows FOOTHOLD also counts the steps left after
 acquisition. So an arm that acquires earlier can gain FOOTHOLD from budget alone. §124's mechanism signal is the
