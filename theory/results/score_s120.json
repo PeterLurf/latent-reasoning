@@ -70,7 +70,7 @@
     "2": 18.150665240065038
    },
    "serial": {
-    "2": false
+    "2": true
    }
   },
   "ff_trace": {
@@ -80,16 +80,16 @@
    },
    "PILOT_PASS": false,
    "cert": {
-    "2": false
+    "2": true
    },
    "cert_registered_ff": {
-    "2": null
+    "2": false
    },
    "n_reachable": {
-    "2": 47
+    "2": 7
    },
    "n_moore": {
-    "2": 20
+    "2": 2
    },
    "codes_per_state": {
     "2": 3.5
@@ -98,7 +98,7 @@
     "2": 4.616111955980161
    },
    "serial": {
-    "2": false
+    "2": true
    }
   }
  },

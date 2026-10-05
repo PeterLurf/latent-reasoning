@@ -3217,6 +3217,10 @@ composition from final answers.**
 * **FF TRACE s2, descriptive:** long_acc 1.0 (p_ignore 0.8, 0.98 and 0.1 all 1.0), donor 1.0 at positions 2 / 4 / 6. Its
   code machine **closes**: 7 codes on test (3.5 per state), saturated from position 16 to 2,048; registered-CERT BFS
   closes at depth 8 with 47 codes (Moore 20). The corrected CERT is to follow.
+* **Donor rule for flip-flop (the same amendment, disclosed).** With binary answers, the donor's and recipient's answers
+  coincide by chance (chance_overlap 0.54–0.71). So SERIAL's "recipient < 0.10" is read as **recipient − chance_overlap
+  < 0.10**, §104's intent; for S5, chance_overlap is about 0.008, so nothing changes there.
+  - FF FINAL s2 and TRACE s2: donor 1.0 at positions 2 / 4 / 6, recipient exactly at chance overlap, so SERIAL.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
