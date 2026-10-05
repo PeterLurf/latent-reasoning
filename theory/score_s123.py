@@ -2,7 +2,8 @@
 Runs: boxes/runs_fsq/s123_s5_dither{000,010,025,050}_s{1,2}/ and s123_ff_dither{000,<sigma*>}_s1/ (continuous, no
 rounding; flip-flop's sigma* = the S5 sigma > 0 with the lowest mean rho) and
 s123_{s5,ff}_fsqdither_s{1,2}/ (FSQ + pre-rounding dither). Keys: eval.json long_acc, rho (geometric mean over 8 hand-offs
-of the median normalised distance ratio at eps 0.1), basin, grid_share (implicit quantisation); FSQ+DITHER also
+of the median normalised distance ratio at eps 0.1; note 123-5: CAUSAL reads rho from eval_contraction_fp32.json, the
+registered bf16 rho printed beside), basin, grid_share (implicit quantisation); FSQ+DITHER also
 eval_growth.json (codes per state by position, '2048') and eval_cert.json (cert {status, holds}).
 CAUSAL: (i) S5 mean rho falls from sigma 0 to 0.5, and flip-flop rho at sigma* < its sigma-0 control; (ii) every continuous cell with rho < 0.3 has long_acc >= 0.99;
 (iii) every continuous cell with rho > 0.6 has long_acc < 0.99. Continuous-stabiliser reading needs passing cells'
@@ -48,7 +49,9 @@ def main():
                 r = load("s123_%s_dither%s_s%d" % (fam, tag, sd))
                 if r is None:
                     continue
-                c = {"fam": fam, "sigma": sig, "seed": sd, "long_acc": r.get("long_acc"), "rho": r.get("rho"), "basin": r.get("basin"),
+                cf = load("s123_%s_dither%s_s%d" % (fam, tag, sd), "eval_contraction_fp32.json") or {}   # note 123-5: rho in fp32
+                c = {"fam": fam, "sigma": sig, "seed": sd, "long_acc": r.get("long_acc"), "rho": cf.get("rho"), "rho_bf16_registered": r.get("rho"),
+                     "rho_nonzero": r.get("rho_nonzero"), "basin": cf.get("basin", r.get("basin")),
                      "grid_share": r.get("grid_share"), "plateau": plateau("s123_%s_dither%s_s%d" % (fam, tag, sd))}
                 res["continuous"]["%s_%s_s%d" % (fam, tag, sd)] = c; cells.append(c)
     allcells = cells; res["plateau_count"] = {"%s_%s" % (c["fam"], c["sigma"]): 0 for c in allcells}
@@ -75,7 +78,9 @@ def main():
     ii_ok = all((c["long_acc"] or 0) >= 0.99 for c in ii); iii_ok = all((c["long_acc"] or 0) < 0.99 for c in iii)
     levels = [("s5", sg) for sg in (0.0, 0.1, 0.25, 0.5)] + [("ff", 0.0)]
     evaluable = len(allcells) == 10 and all(mrho(f, sg) is not None for f, sg in levels) and sigma_star is not None and mrho("ff", sigma_star) is not None
-    if len(allcells) < 10:
+    if len(allcells) == 10 and any(c["rho"] is None for c in allcells):
+        res["CAUSAL"] = "incomplete (rho_fp32 missing for %d cells)" % sum(c["rho"] is None for c in allcells)
+    elif len(allcells) < 10:
         res["CAUSAL"] = "incomplete (n_cells = %d / 10)" % len(allcells)               # interim runs never read as a verdict
     else:
         res["CAUSAL"] = "not_evaluable" if not evaluable else bool(i_ok and ii_ok and iii_ok)   # 123-3: non-plateau cells
