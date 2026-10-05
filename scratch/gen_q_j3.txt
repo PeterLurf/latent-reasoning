@@ -1,0 +1,4 @@
+# §117 ST s62-63 (after j1's proof)
+# P=2
+boxes/runs_s5/s117_st_s62 boxes.self110 --st_switch --kcurr --reader --cov 0.1 --foothold_log --seed 62
+boxes/runs_s5/s117_st_s63 boxes.self110 --st_switch --kcurr --reader --cov 0.1 --foothold_log --seed 63

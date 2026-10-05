@@ -1,0 +1,4 @@
+# §117 MK s52-53 (after j1's proof)
+# P=2
+boxes/runs_s5/s117_mk_s52 boxes.self110 --markov --kcurr --reader --cov 0.1 --foothold_log --seed 52
+boxes/runs_s5/s117_mk_s53 boxes.self110 --markov --kcurr --reader --cov 0.1 --foothold_log --seed 53
