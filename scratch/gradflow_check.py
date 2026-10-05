@@ -112,8 +112,19 @@ def check_fsq120_rawh(dev, out):
     m.update_stats(); out["fsq120.s5.rawh.stats_seen"] = float(int(m.seen))
 
 
+def check_fsq120_anneal(dev, out):
+    """§126 ANNEAL (ramp, lam 0.5): the QBN distillation term trains the bottleneck (W_up / W_down)."""
+    from boxes.fsq120 import FSQ120, Family, make_batch
+    fam = Family("s5"); m = FSQ120(s5.load_gpt2(dev), fam).to(dev); m.enable_std(); m.std = False; m.anneal = True
+    m.lam = 0.5; m.distill_on = True; m.p_hard = 0.0; m.train()
+    s0, x, lab = make_batch(fam, np.random.default_rng(0), 4, 4); X = torch.tensor(x, device=dev)
+    def dist():
+        m._dist = []; m.chain(m.start(4, dev, s0), X, lab); d = torch.stack(m._dist).mean(); m._dist = []; return d
+    out["fsq120.s5.anneal.distill"] = term(m, dist); out["fsq120.s5.anneal.up_grad"] = float(m.up.weight.grad.norm())
+
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--paths", nargs="*", default=["accel99", "mk108", "fsq120", "fsq120_std", "fsq120_rawh", "self110_copy", "self110_resume"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--paths", nargs="*", default=["accel99", "mk108", "fsq120", "fsq120_std", "fsq120_rawh", "fsq120_anneal", "self110_copy", "self110_resume"])
     ap.add_argument("--device", default="cpu"); ap.add_argument("--out", default=os.path.join(ROOT, "theory", "results", "gradflow_check.json"))
     a = ap.parse_args(); out = {}
     for p in a.paths:
