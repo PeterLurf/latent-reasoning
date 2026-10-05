@@ -4,13 +4,22 @@
   "s5": {
    "seeds": {},
    "codes_per_state_baseline": 34.2,
+   "CANONICAL_registered": false,
    "CANONICAL": false
   },
   "ff": {
    "seeds": {},
-   "codes_per_state_baseline": 14.0,
+   "codes_per_state_baseline": 13.75,
+   "CANONICAL_registered": false,
    "CANONICAL": false
   }
+ },
+ "plateau_count": {},
+ "CAUSAL_registered_all_cells": {
+  "i": false,
+  "ii": true,
+  "iii": true,
+  "sigma_star": null
  },
  "sigma_star": null,
  "CAUSAL": false,
@@ -18,6 +27,7 @@
   "i": false,
   "ii": true,
   "iii": true,
+  "n_cells_nonplateau": 0,
   "n_cells": 0
  },
  "continuous_stabiliser_reading": false
