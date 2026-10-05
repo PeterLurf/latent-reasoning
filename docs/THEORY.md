@@ -3221,6 +3221,13 @@ composition from final answers.**
   coincide by chance (chance_overlap 0.54–0.71). So SERIAL's "recipient < 0.10" is read as **recipient − chance_overlap
   < 0.10**, §104's intent; for S5, chance_overlap is about 0.008, so nothing changes there.
   - FF FINAL s2 and TRACE s2: donor 1.0 at positions 2 / 4 / 6, recipient exactly at chance overlap, so SERIAL.
+* **FF TRACE s2 is certified (2026-10-05 10:15 EDT).** The corrected CERT (task language) is done and **holds**: 7 reachable codes, all
+  decoding validly, the transition law exact on every reachable (code, item) pair.
+  - **Moore minimisation gives 2 states: exactly flip-flop's minimal automaton after the first write.**
+  - So a pretrained LM with a learned, task-agnostic discrete snap at every step is a learned finite-state machine,
+    exact at every length by enumeration, discovering the minimal automaton.
+  - Scope: TRACE ("task-agnostic architecture, per-task supervision"), one seed. The pilot reading needs FINAL in both
+    families.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
