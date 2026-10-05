@@ -1,0 +1,4 @@
+# §121 READ only s1-2 (after the s1 proof; Audit OK'd the extra ~$2.3)
+# P=2
+boxes/runs_mult/a121_read_4x4_s1 boxes.accel99 --arm99 read --seed 1
+boxes/runs_mult/a121_read_4x4_s2 boxes.accel99 --arm99 read --seed 2

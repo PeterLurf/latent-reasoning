@@ -13,6 +13,11 @@ imported unchanged). Arms (--arm99) as flags on GEN-M:
   tfslot          each training update, at each slot position j < c (not the chunk's last slot) a coin with probability
                   rho(step) (one coin per position per batch) replaces slot j's latent with the re-embedded GOLD step-j
                   text tokens, in context, no cut; that slot's fork CE is skipped. rho = 1 - step / 12k, 0 from 12k (from 12k)
+  anchorread      §121: markov + the reader (at every carried slot j < c-1, a fresh segment [EOT, carried latent] decodes
+                  step j's text, CE weight 1) + the anchor (at every latent-fed segment j, (1 - cos) + |log-norm gap| to the
+                  stop-grad text path [a, gold step j-1 text, op j]); eval adds the random donor (loop114.donor), reader_acc,
+                  anchor_cos_by_pos (eligible from 6k)
+  read            §121: markov + the reader only (eligible from 6k)
 Every 1k steps, on the repo's 4x4 valid split (1,000 items; never the bench test): per-slot step-text decode and answer
 accuracy in the k = 4 test rollout (curve entries {step, per_slot, val_acc, gold_share, k_train, phase}). A run stops at the
 first ELIGIBLE log (step >= eligible_from) with every slot >= 0.95 and answer >= 0.95 (steps_to_threshold), else at 24k
@@ -41,14 +46,16 @@ from boxes import s5  # noqa: E402
 from boxes.mult98 import (DIGIT_IDS, TOK, MeterR, MultGen, gen_mean_inputs, gen_rollout, load, seq_batch,  # noqa: E402
                           seq_forward)
 
-ARMS = {"ctrl": 0, "kcurr": 6000, "std": 0, "textfirst": 3000, "textfirst_mask": 3000, "combo": 9000, "tfslot": 12000, "markov": 6000, "statepath": 0, "lat2": 6000, "lat4": 6000, "pause4": 6000}
+ARMS = {"ctrl": 0, "kcurr": 6000, "std": 0, "textfirst": 3000, "textfirst_mask": 3000, "combo": 9000, "tfslot": 12000, "markov": 6000, "statepath": 0, "lat2": 6000, "lat4": 6000, "pause4": 6000, "anchorread": 6000, "read": 6000}
+EOT = 50256
+MARKOV = ("markov", "lat2", "lat4", "pause4", "anchorread", "read")
 
 
 def config(arm, step):
     """-> (phase 'text' | 'latent', training chunk length, gold share rho) at this update."""
     if arm in ("textfirst", "textfirst_mask", "combo") and step <= 3000:
         return "text", 4, 0.0
-    if arm in ("kcurr", "markov", "lat2", "lat4", "pause4"):              # markov (note 99-3) and §107: K-CURR's schedule
+    if arm in ("kcurr",) + MARKOV:                                       # markov (note 99-3), §107, §121: K-CURR's schedule
         return "latent", 1 if step <= 2000 else (2 if step <= 6000 else 4), 0.0
     if arm == "combo":
         return "latent", 1 if step <= 5000 else (2 if step <= 9000 else 4), 0.0
@@ -66,6 +73,7 @@ class MultGen99(MultGen):
         self.register_buffer("muE", E.mean(0).clone()); self.register_buffer("sdE", E.std(0).clone())
         self.register_buffer("muH", torch.zeros(768)); self.register_buffer("sdH", torch.ones(768)); self.register_buffer("seen", torch.tensor(0))
         self._raw = []; self.gold = None
+        self.reader = False; self.anchor = False; self.override = None; self.parts = (None, None, None)   # §121 (default off)
 
     def enable_mlat(self, m_lat, n_pause):
         """§107: m chained latents per op (lat2, lat4) or n_pause shared learned pause embeddings before 1 latent (pause4)."""
@@ -102,6 +110,7 @@ class MultGen99(MultGen):
         if self.n_pause:                                                    # §107 pause4: pauses after op 1 as well
             parts = parts + [self.pause.to(parts[0].dtype)[None, None].expand(B, self.n_pause, -1)]
         x = torch.cat(parts, 1); past = None; losses, decs, ins = [], [], []; ans = None; h9_prev = None; pos_prev = None
+        rlosses, alosses = [], []
         for j in range(c):
             if self.markov:                                                 # §99 note 99-3: every slot step is a fresh-cache segment
                 past = None
@@ -142,12 +151,24 @@ class MultGen99(MultGen):
                 ins.append(torch.zeros_like(h[:, -1]))
             else:
                 s_in = h[:, -1]
+                if self.anchor and self.markov and j > 0 and step_tgt is not None:   # §121 anchor: latent-fed segment j vs the
+                    with torch.no_grad():                                            # stop-grad text path [a, gold step j-1 text, op j]
+                        hb, _ = g(torch.cat([g.embed(prefix), g.embed(step_tgt[j - 1]), g.embed(self.digtok[ops[:, j]])[:, None]], 1), None)
+                        b = hb[:, -1].float()
+                    a_ = s_in.float(); cos = F.cosine_similarity(a_, b, dim=-1)
+                    alosses.append(((1 - cos) + (a_.norm(dim=-1).log() - b.norm(dim=-1).log()).abs()).mean())
                 if self.std:
                     if collect:
                         self._raw.append(s_in.detach().float())
                     s_in = self.g_std(s_in)
                 if ablate in ("zero", "mean") and j < c - 1:
                     s_in = torch.zeros_like(s_in) if ablate == "zero" else mean_in[j][None].expand_as(s_in).to(s_in.dtype)
+                if self.override is not None and self.override[0] == j:     # §121 donor patch (j, (B, D)); default off
+                    s_in = self.override[1].to(s_in.dtype)
+                if self.reader and step_tgt is not None and j < c - 1:       # §121 reader: [EOT, carried latent] -> step j text (CE, weight 1)
+                    st_ = step_tgt[j]; eot = g.embed(torch.full((B, 1), EOT, device=ops.device))
+                    hr, _ = g(torch.cat([eot, s_in[:, None].to(eot.dtype), g.embed(st_[:, :-1])], 1), None); lr_ = g.logits(hr[:, 1:]).float()
+                    rlosses.append(F.cross_entropy(lr_.reshape(-1, lr_.shape[-1]), st_.reshape(-1), reduction="none").view(st_.shape).sum(-1).mean())
                 ins.append(s_in)
                 ctx = past[0][0].shape[2]
                 if self.statepath:                                          # §102 state path (off under removal / wpath ablation)
@@ -176,7 +197,20 @@ class MultGen99(MultGen):
                 else:
                     x = g.embed(self.digtok[ops[:, j + 1]])[:, None]
         loss = torch.stack(losses).mean() if losses else None
+        rl = torch.stack(rlosses).mean() if rlosses else None; al = torch.stack(alosses).mean() if alosses else None
+        self.parts = (None if loss is None else float(loss.detach()), None if rl is None else float(rl.detach()), None if al is None else float(al.detach()))
+        if loss is not None:
+            loss = loss + (rl if rl is not None else 0) + (al if al is not None else 0)
         return loss, decs, ans, torch.stack(ins, 1)
+
+    @torch.no_grad()
+    def read_greedy(self, s_in, L):
+        """§121 reader decode: a fresh segment [EOT, carried latent], L greedy tokens."""
+        g = self.g; eot = g.embed(torch.full((s_in.shape[0], 1), EOT, device=s_in.device))
+        h, past = g(torch.cat([eot, s_in[:, None].to(eot.dtype)], 1), None); t = g.logits(h[:, -1]).argmax(-1); out = [t]
+        for _ in range(L - 1):
+            h, past = g(g.embed(t)[:, None], past); t = g.logits(h[:, 0]).argmax(-1); out.append(t)
+        return torch.stack(out, 1)
 
 
 def latent_batch(D, rng, bs, dev, L):
@@ -215,6 +249,7 @@ def main():
     ap.add_argument("--train_limit", type=int, default=0, help="smoke only"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smoke only: scales the schedule step boundaries")
     ap.add_argument("--train_dir", default=os.path.join(ROOT, "bench", "data", "mult_train"))
     ap.add_argument("--final_eval_bs", type=int, default=100, help="stop-eval batch (OOM: halved and retried)")
+    ap.add_argument("--donor_n", type=int, default=2000, help="§121 random-donor recipients")
     ap.add_argument("--eval_only", action="store_true", help="re-run the stop eval of a finished run (model.pt, log.jsonl)")
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); t_start = time.time()
@@ -225,7 +260,7 @@ def main():
     sc = a.sched_scale; arm = a.arm99; elig = int(ARMS[arm] * sc)
     cfg = lambda s: config(arm, s / sc)  # noqa: E731
     if a.eval_only:                                                         # re-run the stop eval of a finished run from its model.pt
-        g = s5.load_gpt2(dev); m = MultGen99(g, "mask" if arm == "textfirst_mask" else "genm", std=arm in ("std", "combo")).to(dev); m.markov = arm in ("markov", "lat2", "lat4", "pause4")
+        g = s5.load_gpt2(dev); m = MultGen99(g, "mask" if arm == "textfirst_mask" else "genm", std=arm in ("std", "combo")).to(dev); m.markov = arm in MARKOV; m.reader = arm in ("anchorread", "read"); m.anchor = arm == "anchorread"
         if arm in ("lat2", "lat4", "pause4"):
             m.enable_mlat({"lat2": 2, "lat4": 4, "pause4": 1}[arm], 3 if arm == "pause4" else 0); m.to(dev)
         if arm == "statepath":
@@ -246,13 +281,13 @@ def main():
         finish(a, m, Dtr, Dte, dev, amp, arm, elig, hit, stop_step, curve, flops, None, recs[-1]["sec"]); return
     os.makedirs(a.out, exist_ok=True); json.dump({**vars(a), "eligible_from": ARMS[a.arm99]}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
     g = s5.load_gpt2(dev)
-    m = MultGen99(g, "mask" if arm == "textfirst_mask" else "genm", std=arm in ("std", "combo")).to(dev); m.markov = arm in ("markov", "lat2", "lat4", "pause4")
+    m = MultGen99(g, "mask" if arm == "textfirst_mask" else "genm", std=arm in ("std", "combo")).to(dev); m.markov = arm in MARKOV; m.reader = arm in ("anchorread", "read"); m.anchor = arm == "anchorread"
     if arm in ("lat2", "lat4", "pause4"):
         m.enable_mlat({"lat2": 2, "lat4": 4, "pause4": 1}[arm], 3 if arm == "pause4" else 0); m.to(dev)
     if arm == "statepath":
         m.enable_statepath(); m.to(dev)
     opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
-    log = open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t0 = time.time(); hist = []; curve = []; flops = 0.0; fcache = {}
+    log = open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t0 = time.time(); hist = []; aux = []; curve = []; flops = 0.0; fcache = {}
     stop_step, hit = a.steps, None
     for step in range(1, a.steps + 1):
         for gr in opt.param_groups:
@@ -275,11 +310,20 @@ def main():
             with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
                 loss, _, _, _ = m.chunk(prefix, start, ops, step_tgt=st, ans_tgt=ans, collect=True)
             loss.backward(); tot = loss.item(); m.gold = None
+            if m.reader:
+                aux.append(m.parts)
         torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(tot)
         if m.std and phase == "latent":
             m.update_stats()
         if step % 100 == 0 or step % a.log_every == 0:
             rec = {"step": step, "loss": float(np.mean(hist)), "sec": round(time.time() - t0), "phase": phase, "k_train": L, "gold_share": rho}; hist = []
+            for i_, nm in ((0, "main_loss"), (1, "reader_loss"), (2, "anchor_loss")):
+                v_ = [p_[i_] for p_ in aux if p_[i_] is not None]
+                if v_:
+                    rec[nm] = float(np.mean(v_))
+            aux = []
+            if dev.startswith("cuda"):
+                rec["max_mem_gb"] = round(torch.cuda.max_memory_allocated(dev) / 2 ** 30, 2)
             if step % a.log_every == 0:
                 m.eval(); per, ok, _ = gen_rollout(m, Dva, dev, amp, a.eval_bs); m.train()
                 e = {"step": step, "per_slot": per.mean(0).tolist(), "val_acc": float(ok.mean()), "gold_share": rho, "k_train": L, "gate": float(m.gamma) if m.statepath else None,
@@ -310,6 +354,27 @@ def rollout_safe(m, D, dev, amp, bs, **kw):
             torch.cuda.empty_cache(); bs //= 2; print("eval OOM: retry at bs", bs, flush=True)
 
 
+@torch.no_grad()
+def read_anchor(m, D, dev, amp, bs):
+    """§121 test: per carried slot j (0-based 0..2) the reader's exact decode of step j's text, and per latent-fed segment
+    j (1..3) the cosine / |log-norm gap| between its carried latent and the text path [a, TRUE step j-1 text, op j]."""
+    N, n = D["B"].shape; T = lambda x: torch.tensor(x, device=dev); g = m.g  # noqa: E731
+    rd = [[] for _ in range(n - 1)]; cs = [[] for _ in range(n)]; gp = [[] for _ in range(n)]
+    for s in range(0, N, bs):
+        e = min(N, s + bs); pre = T(np.concatenate([DIGIT_IDS[D["A"][s:e]], np.full((e - s, 1), TOK["*"])], 1)); ops = T(D["B"][s:e])
+        with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+            _, _, _, ins = m.chunk(pre, None, ops)
+            for j in range(n - 1):
+                tj = D["steps"][j][s:e]; rd[j].append((m.read_greedy(ins[:, j], tj.shape[1]).cpu().numpy() == tj).all(1))
+            for j in range(1, n):
+                hb, _ = g(torch.cat([g.embed(pre), g.embed(T(D["steps"][j - 1][s:e])), g.embed(m.digtok[ops[:, j]])[:, None]], 1), None)
+                a_, b = ins[:, j].float(), hb[:, -1].float()
+                cs[j].append(F.cosine_similarity(a_, b, dim=-1).cpu().numpy()); gp[j].append((a_.norm(dim=-1).log() - b.norm(dim=-1).log()).abs().cpu().numpy())
+    return {"reader_acc": [float(np.concatenate(r).mean()) for r in rd],
+            "anchor_cos_by_pos": {str(j): float(np.concatenate(cs[j]).mean()) for j in range(1, n)},
+            "anchor_lognorm_gap_by_pos": {str(j): float(np.concatenate(gp[j]).mean()) for j in range(1, n)}}
+
+
 def finish(a, m, Dtr, Dte, dev, amp, arm, elig, hit, stop_step, curve, flops, wall, train_sec):
     m.eval(); bs = a.final_eval_bs
     if dev.startswith("cuda"):
@@ -321,7 +386,7 @@ def finish(a, m, Dtr, Dte, dev, amp, arm, elig, hit, stop_step, curve, flops, wa
            "training": {"flops": flops, "wall_sec": wall, "train_sec": train_sec,
                         "flops_convention": "sum over updates of Meter forward FLOPs per trained problem (config of that update) x 3 x bs; tfslot updates at the latent config"},
            "std_stats": {"seen": int(m.seen), "sd_floor": float(0.05 * m.sdH.median())} if m.std else None,
-           "code": {f: hashlib.md5(open(os.path.join(ROOT, "boxes", f), "rb").read()).hexdigest() for f in ("accel99.py", "mult98.py")}}
+           "code": {f: hashlib.md5(open(os.path.join(ROOT, "boxes", f), "rb").read()).hexdigest() for f in ("accel99.py", "mult98.py", "loop114.py")}}
     if m.m_lat > 1:                                                         # §107 lat-m: per-latent removal and latent cosine
         res["per_latent_removal"] = {}
         for i in range(m.m_lat):
@@ -337,6 +402,10 @@ def finish(a, m, Dtr, Dte, dev, amp, arm, elig, hit, stop_step, curve, flops, wa
         m.ablate_mode = None
     for ab in ("zero", "mean"):
         _, o_, _ = rollout_safe(m, Dte, dev, amp, bs, ablate=ab, mean_in=mu); res["removal"][ab] = {"answer_acc": float(o_.mean())}
+    if m.reader:                                                            # §121: random-donor test (§104 protocol, loop114's), reader, anchor cos
+        from boxes.loop114 import donor
+        res["donor"] = donor(m, dev, amp, n=a.donor_n, bs=bs); res.update(read_anchor(m, Dte, dev, amp, bs))
+        res["training"]["flops_convention"] += "; §121 reader/anchor auxiliary passes not counted"
     res["eval_bs"] = {"requested": a.final_eval_bs, "used": sorted(set(USED_BS))}
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     print("EVAL", json.dumps({k: res[k] for k in ("steps_to_threshold", "stopped_step", "test_acc")}), flush=True); print("DONE", a.out, flush=True)
