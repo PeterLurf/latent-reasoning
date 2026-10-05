@@ -2733,6 +2733,22 @@ Audit as about $2.5 extra), proof seed first (ANCHOR+READ s1). Implementation: t
 * The §116 launch condition is also met. §116 launches (OPDEF, NONE, NONE+COPY; 116-1 to 116-3).
 * The §112 result follows when f = 0.1 s24 lands.
 
+**Note 117-4 (2026-10-05 03:30 EDT, before any §117 or §116 result; a conditional follow-up fixed in advance, Audit's proposal; no
+spend until it triggers). §117-COPY.**
+* **Trigger:** §116's MECH passes (NONE+COPY acquires in ≥ 4/5, and in more seeds than NONE; 116-2).
+* **Design:** §117's recipe at f = 0.1, plus 116-2's copy rows. 10 % of every batch's rows are length-0 copy problems:
+  a random start text and zero ops, the slot read from the start text, decoded to the start state. Self-supervised;
+  no transition labels.
+  - Under Markov segments the copy slot is the carried state of the zero-op segment [EOT, start text], read by the
+    reader / fork.
+* **Arm:** the §117 arm with more ALL seeds among its first three (MK if tied), seeds 56–58 (MK) or 66–68 (ST).
+* **Rules:** §117's ALL / EXIST / INTEGRATED and C6 rules unchanged, with the wording "C4 qualified by 10 % short
+  coverage, plus a self-supervised copy objective".
+* **Placement:** 3 runs, about $2–3. Literature's copy check (15cf541a) applies; a one-line confirm is requested at
+  trigger time.
+* §121 is not included: it is step-supervised with text-start K-CURR chunks, so 112-4's start-reading basin does not
+  arise there.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
