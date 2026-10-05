@@ -1,0 +1,4 @@
+# §125 STD S5 s1, s3
+# P=2
+boxes/runs_fsq/s125_s5_std_s1 boxes.fsq120 --family s5 --arm final --std --micro 2 --seed 1 --no_cert
+boxes/runs_fsq/s125_s5_std_s3 boxes.fsq120 --family s5 --arm final --std --micro 2 --seed 3 --no_cert

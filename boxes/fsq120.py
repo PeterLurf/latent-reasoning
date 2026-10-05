@@ -104,6 +104,34 @@ class FSQ120(nn.Module):
         self.register_buffer("itok", torch.tensor(fam.item_tok))
         self.p_hard = 1.0                                                   # training schedule sets it; test = 1
         self.no_round = False; self.noise = 0.0                             # §123: continuous carry; training dither (set per step)
+        self.std = False; self._acc = []                                    # §125 (enable_std registers its buffers)
+
+    def enable_std(self):
+        """§125 STD: every carried embedding e = W_up(q) entering GPT-2 becomes mu_E + sd_E * (e - mu_e) / sd_e (wte stats; EMA
+        0.99 of the carried embeddings of each update from step 1, sd floored at 0.05 median as fade89 / accel99; frozen at the
+        end). Draws no random numbers."""
+        E = self.g.w("wte.weight").detach().float()
+        self.register_buffer("muE", E.mean(0).clone()); self.register_buffer("sdE", E.std(0).clone())
+        self.register_buffer("muH", torch.zeros(768, device=E.device)); self.register_buffer("sdH", torch.ones(768, device=E.device))
+        self.register_buffer("seen", torch.tensor(0, device=E.device)); self.register_buffer("frozen", torch.tensor(0, device=E.device)); self.std = True
+
+    def std_map(self, e):
+        if self.training and not int(self.frozen):
+            self._acc.append(e.detach().float().reshape(-1, e.shape[-1]))
+        sd = torch.maximum(self.sdH, 0.05 * self.sdH.median())
+        return (self.muE + self.sdE * (e.float() - self.muH) / sd).to(e.dtype)
+
+    @torch.no_grad()
+    def update_stats(self):
+        """§125: EMA (momentum 0.99) over this update's carried embeddings (first update initialises), after opt.step()."""
+        if self.std and self._acc and not int(self.frozen):
+            H = torch.cat(self._acc); hm, hs = H.mean(0), H.std(0) + 1e-5
+            if int(self.seen) == 0:
+                self.muH.copy_(hm); self.sdH.copy_(hs)
+            else:
+                self.muH.mul_(0.99).add_(0.01 * hm); self.sdH.mul_(0.99).add_(0.01 * hs)
+            self.seen += 1
+        self._acc = []
 
     def quant(self, h, noise=None):
         z = self.down(self.ln(h.float())); zb = torch.tanh(z + SHIFT) * HALF - OFF
@@ -118,7 +146,8 @@ class FSQ120(nn.Module):
         return qs, q, zb
 
     def embed_code(self, qs):
-        return self.up(qs)
+        e = self.up(qs)
+        return self.std_map(e) if self.std else e                          # §125: the same map everywhere a code enters GPT-2
 
     def segment(self, prev, items):
         """prev (B, P, D) carried embedding(s) or start text embeddings; items (B,) -> last hidden (B, D)."""
@@ -348,6 +377,19 @@ def cert_task_reads(m, fam, dev, amp, cap, bs=2048, time_limit=None):
             "sec": round(time.time() - t0)}
 
 
+@torch.no_grad()
+def carried_stats(m, fam, dev, amp, n=256, L=4, seed=12500):
+    """§125: on a fixed batch (own RNG; eval mode, so no torch draws), the carried embeddings that enter GPT-2: mean row norm and
+    the per-coordinate std across inputs (mean over coordinates, and its norm), plus GPT-2 wte's row norm for reference."""
+    was = m.training; m.eval(); s0, x, _ = make_batch(fam, np.random.default_rng(seed), n, L)
+    with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+        _, _, _, embs = m.chain(m.start(n, dev, s0 if fam.name == "s5" else None), torch.tensor(x, device=dev), record=True)
+    E = torch.cat([e.float() for e in embs]); sd = E.std(0); W = m.g.w("wte.weight").float()
+    out = {"row_norm": float(E.norm(dim=-1).mean()), "per_coord_std_across_inputs": float(sd.mean()), "std_vector_norm": float(sd.norm()),
+           "wte_row_norm": float(W.norm(dim=-1).mean()), "n": int(E.shape[0])}
+    m.train(was); return out
+
+
 CONTRACT_EPS = (0.03, 0.1, 0.3, 1.0)
 
 
@@ -462,6 +504,7 @@ def main():
     ap.add_argument("--fsq_dither", type=float, default=0.0, help="§123: U(-s, s) on z_b before rounding at training hand-offs after 4k")
     ap.add_argument("--no_cert", action="store_true", help="skip CERT in the main eval (run post-hoc with --cert_only; Audit 2026-10-05)")
     ap.add_argument("--growth_only", action="store_true", help="distinct codes vs position on ext_n 2,048-step rollouts -> <out>/eval_growth.json")
+    ap.add_argument("--std", action="store_true", help="§125 STD: standardised carried embedding (task-agnostic)")
     ap.add_argument("--fp32", action="store_true", help="note 123-5: --contraction_only in fp32 (autocast off) -> eval_contraction_fp32.json")
     ap.add_argument("--contraction_only", action="store_true", help="note 123-2: rho / rho_norm / basin alone from <out>/model.pt -> <out>/eval_contraction.json")
     ap.add_argument("--cert_only", action="store_true", help="CERT alone from <out>/model.pt -> <out>/eval_cert.json")
@@ -471,7 +514,11 @@ def main():
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     fam = Family(a.family); os.makedirs(a.out, exist_ok=True)
     assert not (a.dither and not a.no_round) and not (a.fsq_dither and a.no_round), "§123: --dither needs --no_round; --fsq_dither is FSQ"
-    mk = lambda: (lambda m_: (setattr(m_, "no_round", a.no_round), m_)[1])(FSQ120(s5.load_gpt2(dev), fam).to(dev))  # noqa: E731
+    def mk():
+        m_ = FSQ120(s5.load_gpt2(dev), fam).to(dev); m_.no_round = a.no_round
+        if a.std:
+            m_.enable_std()
+        return m_
     if a.growth_only:                                                       # Theory / Audit: distinct codes vs length on 2,048-step rollouts
         m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval()
         if fam.name == "s5":
@@ -509,9 +556,13 @@ def main():
                 if L == 2:
                     drawn[lab[:, 0], x[:, 1]] = True
         m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev))
-        train_sec = [json.loads(r) for r in open(os.path.join(a.out, "log.jsonl"))][-1]["sec"]
+        _last = [json.loads(r) for r in open(os.path.join(a.out, "log.jsonl"))][-1]; train_sec = _last["sec"]; last_loss = _last.get("loss")
     opt = None if a.eval_only else torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
     log = None if a.eval_only else open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t0 = time.time(); hist = []
+    carried = {} if a.eval_only else {"init": carried_stats(m, fam, dev, amp)}   # §125 (every arm; own RNG, eval mode: no draws)
+    if not a.eval_only:
+        last_loss = None
+    m.train()
     for step in range(1, 0 if a.eval_only else a.steps + 1):
         for gr in opt.param_groups:
             gr["lr"] = a.lr * min(1, step / 100) * 0.5 * (1 + math.cos(math.pi * step / a.steps))
@@ -532,16 +583,22 @@ def main():
                 loss, _, _, _ = m.chain(m.start(len(x[sl]), dev, s0[sl] if fam.name == "s5" else None), torch.tensor(x[sl], device=dev), lab[sl],
                                         None if tm is None else tm[sl])
             (loss / nmb).backward(); tot += loss.item() / nmb
-        torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(tot)
+        torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(tot); m.update_stats()
+        if step == int(2000 * sc):                                         # §125: carried-embedding statistics at 2k (every arm)
+            carried["2k"] = carried_stats(m, fam, dev, amp); m.train()
         if step % a.log_every == 0 or step == a.steps:
-            rec = {"step": step, "loss": float(np.mean(hist)), "L_max": lmax_at(step / sc), "p_hard": m.p_hard, "noise": m.noise, "sec": round(time.time() - t0)}; hist = []
+            rec = {"step": step, "loss": float(np.mean(hist)), "L_max": lmax_at(step / sc), "p_hard": m.p_hard, "noise": m.noise, "sec": round(time.time() - t0)}; hist = []; last_loss = rec["loss"]
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
     if not a.eval_only:
-        train_sec = round(time.time() - t0); torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
+        train_sec = round(time.time() - t0)
+        if m.std:
+            m.frozen.fill_(1)                                               # §125: statistics frozen at the end, used unchanged at test
+        torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
     del opt; m.eval(); m.noise = 0.0; t1 = time.time()
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
-    res = {"family": a.family, "arm": a.arm, "seed": a.seed, "train_sec": train_sec, "eval_only": a.eval_only, "no_round": a.no_round, "dither": a.dither, "fsq_dither": a.fsq_dither, "eval_dtype": str(amp), "coverage_drawn": float(drawn.mean()),
+    res = {"family": a.family, "arm": a.arm, "seed": a.seed, "train_sec": train_sec, "eval_only": a.eval_only, "std": a.std,
+           "carried_norm": carried or None, "final_loss": last_loss, "no_round": a.no_round, "dither": a.dither, "fsq_dither": a.fsq_dither, "eval_dtype": str(amp), "coverage_drawn": float(drawn.mean()),
            "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"}
     if fam.name == "s5":
         Xte, Yte = s5.load_csv(os.path.join(a.data_dir, "S5=512.csv"), limit=a.test_n); s5.check_labels(Xte, Yte); Xte, Yte = Xte[:, :a.test_len], Yte[:, :a.test_len]

@@ -458,3 +458,8 @@
 14:06:27 s120_ff_final_s1 cert_only rc 0 (cuda:0)
 14:19:01 s120_s5_trace_s2 cert_only rc 0 (cuda:1)
 14:20:13 contraction_diag anchor s74-75 rc 0 (cuda:1)
+15:39:37 s123_s5_fsqdither_s1 contraction fp32 rc 0 (cuda:2)
+15:41:05 s123_s5_fsqdither_s2 contraction fp32 rc 0 (cuda:2)
+15:41:36 s123_ff_fsqdither_s1 contraction fp32 rc 0 (cuda:2)
+15:42:06 s123_ff_fsqdither_s2 contraction fp32 rc 0 (cuda:2)
+15:42:37 s123_ff_dither000_s1 contraction fp32 rc 0 (cuda:2)
