@@ -3910,6 +3910,17 @@ isation map, on the 768-d h.
   either way.
 * Any RAW-H plateau would equally be on an arm whose map was not in force.
 
+**Note 123-10 (2026-10-05 18:29 EDT, before the σ = 0.5 RTX 3090 cells land; Audit / claude-13). A reading pre-stated for the dose
+response.**
+* **Matched 3090 cells so far.** Seed 1 has ρ_ff 0.146 / 0.180 / 0.149 at σ 0 / 0.1 / 0.25, long accuracy 1.0 at every dose.
+  Seed 2 plateaus at every σ (plateau count 1/2 per level).
+* **Pre-stated:** the dose response reads **"flat within single-seed noise"** unless σ 0.5's ρ_ff (seed 1, if not
+  plateaued) differs from 0.146 by more than the spread already seen (0.146–0.180).
+* In the result: CAUSAL (i) rests on one non-plateau seed per level; σ* for flip-flop (currently 0.25, by 0.149 against
+  0.180) is a single-seed pick; (ii) is checked on the non-plateau cells; and (iii) has no cell (no non-plateau cell
+  with ρ_ff > 0.6).
+* So far, dither changes neither which seed escapes nor how strongly the escaping seed contracts.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
