@@ -1,0 +1,3 @@
+A {"128": 0.0, "256": 0.0, "512": 0.0, "2048": 0.0}
+B {"cumulative": {"512": 1.0, "2048": 1.0}, "snaps_per_problem": {"mean": 99.8765, "median": 100.0}, "first_error_detection": 1.0, "false_snap_rate": 0.0, "miss_rate": 0.0}
+DONE boxes/runs_s5/s108_mk4_s1
