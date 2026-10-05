@@ -1,0 +1,22 @@
+{
+ "continuous": {},
+ "fsqdither": {
+  "s5": {
+   "seeds": {},
+   "CANONICAL": false
+  },
+  "ff": {
+   "seeds": {},
+   "CANONICAL": false
+  }
+ },
+ "sigma_star": null,
+ "CAUSAL": false,
+ "CAUSAL_parts": {
+  "i": false,
+  "ii": true,
+  "iii": true,
+  "n_cells": 0
+ },
+ "continuous_stabiliser_reading": false
+}
