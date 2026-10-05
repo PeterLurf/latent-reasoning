@@ -2881,6 +2881,15 @@ the **true** previous step text at a uniformly drawn position j ∈ {2, 3, 4}, w
 advice), proof seed first, **only on the trigger**. Implementation: the experiments session (accel99 `--textmix 0.25`).
 Scorer `theory/score_s122.py`, committed before any run.
 
+**Note 122-1 (2026-10-05 05:01 EDT, before any §122 run; the experiments session's implementation 94beeb42, accepted; not launched).**
+* `accel99 --textmix 0.25` with `--arm99 anchorread` (primary) or `read` (control).
+  - 25 % of every latent-phase batch's rows are k = 1 chunks from the true step j−1 text, j uniform in {2, 3, 4}.
+  - CE on step j's text, plus the answer at j = 4, row-weighted with the main chunk.
+  - Neither the reader nor the anchor fires on those rows (no carried latent).
+* text_acc {2, 3, 4} and t1 = text_acc["3"] are logged every 1k steps on the valid split, and in eval.json on test.
+  Logging only.
+* If triggered: proof seed first, with §121's GPU memory and eval probe.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
