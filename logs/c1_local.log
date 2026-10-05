@@ -481,3 +481,5 @@
 19:21:46 s123_s5_dither050_s1_3090 contraction fp32 rc 0 (cuda:2)
 19:23:19 s123_s5_dither050_s2_3090 contraction fp32 rc 0 (cuda:2)
 19:24:53 s126_s5_rawh_s2 contraction fp32 rc 0 (cuda:2)
+19:31:35 s116_opdef_s35 rc 0 (cuda:2)
+19:31:35 WORKER_DONE cuda:2 scratch/c1_q_116b_local.txt
