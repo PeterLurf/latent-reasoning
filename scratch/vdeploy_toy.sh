@@ -48,6 +48,13 @@ $S "python -c \"import ctypes;print('CUINIT',ctypes.CDLL('libcuda.so.1').cuInit(
 $S "python -c \"import ctypes;exit(ctypes.CDLL('libcuda.so.1').cuInit(0))\"" 2>/dev/null || { echo "BAD HOST"; exit 2; }
 tar -czf /tmp/up_$LBL.tgz --exclude=__pycache__ latent scratch/queue_worker2.sh scratch/stage1_guard.py scratch/eval_battery.sh $EXTRA ${EXTRA_FILES:-} $Q
 echo "UPLOAD_BYTES $(stat -c %s /tmp/up_$LBL.tgz) START $(date +%s)"
-scp -q -i ~/.ssh/runpod_ed25519 -P $P /tmp/up_$LBL.tgz root@$H:/tmp/up.tgz; rm -f /tmp/up_$LBL.tgz   # upload bundle no longer needed (C: filled up 2026-10-03)
+LSUM=$(sha256sum /tmp/up_$LBL.tgz | cut -c1-64)                    # 2026-10-04: e7's upload arrived corrupt (gzip CRC) and was never checked
+for try in 1 2 3; do
+  scp -q -i ~/.ssh/runpod_ed25519 -P $P /tmp/up_$LBL.tgz root@$H:/tmp/up.tgz
+  [ "$($S "sha256sum /tmp/up.tgz" 2>/dev/null | cut -c1-64)" = "$LSUM" ] && break
+  echo "UPLOAD_SHA_MISMATCH try $try"; [ $try = 3 ] && { rm -f /tmp/up_$LBL.tgz; echo "FAILED upload"; exit 3; }
+done
+rm -f /tmp/up_$LBL.tgz   # upload bundle no longer needed (C: filled up 2026-10-03)
 echo "UPLOAD_DONE $(date +%s)"
-$S "mkdir -p /workspace/Latent && cd /workspace/Latent && tar --no-same-owner -xzf /tmp/up.tgz && mkdir -p logs runs results && (setsid nohup bash $W $TAG cuda:0 $Q > /dev/null 2>&1 < /dev/null &) ; sleep 5; pgrep -fa queue_worker | head -1" 2>/dev/null | grep -q queue_worker && echo STARTED
+WB=$(basename $W); WP="[${WB:0:1}]${WB:1}"                          # bracket pattern: pgrep must not match this ssh command itself (it did: false STARTED)
+$S "mkdir -p /workspace/Latent && cd /workspace/Latent && tar --no-same-owner -xzf /tmp/up.tgz && mkdir -p logs runs results && (setsid nohup bash $W $TAG cuda:0 $Q > /dev/null 2>&1 < /dev/null &) ; sleep 8; [ -d /workspace/Latent/boxes ] && pgrep -f '$WP' > /dev/null && echo JOB_RUNNING" 2>/dev/null | grep -q JOB_RUNNING && echo STARTED
