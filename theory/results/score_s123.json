@@ -3,10 +3,12 @@
  "fsqdither": {
   "s5": {
    "seeds": {},
+   "codes_per_state_baseline": 34.2,
    "CANONICAL": false
   },
   "ff": {
    "seeds": {},
+   "codes_per_state_baseline": 14.0,
    "CANONICAL": false
   }
  },

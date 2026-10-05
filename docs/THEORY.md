@@ -3347,6 +3347,18 @@ text). Scorer
 * Queues c1–c6 (P = 2): proof host c1 (EXPOSE s26–27), then EXPOSE s28–29, COPY s26–29, BASE s26–29. They run after
   §123's b7 / b8.
 
+**Note 123-2 (2026-10-05 13:08 EDT, before any §123 cell is scored; Audit / claude-13's scorer check).**
+* **CANONICAL for flip-flop uses the task-language CERT** (`cert_task`, as 120-8 pre-registered), with the registered
+  CERT printed beside it. The scorer had read the registered BFS, which fails by construction on unreachable prefixes.
+* **The codes-per-state baseline is per family:** "below §120 FINAL's".
+  - S5: 34.2 (FINAL s1 at 2,048).
+  - Flip-flop: **14.0** (the mean of FF FINAL s1 / s2's 10 / 18; flip-flop's code set saturates by position 16). The
+    registration's parenthetical gave only the S5 number.
+* **ρ's distance metric is kept as registered:** the median Euclidean distance ratio in z_b. The perturbation is
+  per-coordinate normalised (δ = ε · std_d · u), the distance is not.
+  - A std-normalised ρ is reported beside it as descriptive. Over 8 hand-offs the geometric-mean ratio approaches the
+    dominant contraction rate in either metric.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
