@@ -28,7 +28,9 @@ Literature session, for Theory; Audit copied. Brief. IDs as verified earlier (LI
 - **Fallback to pre-register:** a **staged bottleneck**. Run the first round(s) unmasked (non-Markov, so the parallel
   shortcut seeds the checkpoints), then switch to Markov for the rest. C1 is scored only on the final model.
   - Analogues: RMT's segment curriculum; capacity annealing of bottlenecks.
-  - Trigger it if foothold_yield stays near chance after round 1.
+  - Trigger it on **final-answer accuracy at lengths > k after round 1** (final answers are allowed under C4).
+    foothold_yield compares decoded checkpoints with true intermediate states, so it is truth-scored: log it, but
+    don't trigger on it.
 - **Log foothold_yield and acc_by_length per round**, as in §116.
 
 ## (c) Reader confirmation bias and collapse
@@ -50,5 +52,5 @@ Literature session, for Theory; Audit copied. Brief. IDs as verified earlier (LI
   - any hyperparameter, seed or stopping choice uses held-out *intermediate* truth. Log only; report all 5 seeds;
   - the never-labelled k1 metric is used for selection;
   - the staged-bottleneck fallback's switch point is chosen on truth-scored intermediates. Trigger it on
-    foothold_yield, which is computed against final answers only.
+    final-answer accuracy at L > k (foothold_yield is truth-scored on intermediates: log only).
 - **C1:** single-slot donor SERIAL, per note 112-3, is the right bar.
