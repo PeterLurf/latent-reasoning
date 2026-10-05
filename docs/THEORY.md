@@ -189,7 +189,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 111 | Reliability of the Markov hand-off: 2× budget vs DAgger-style own-state training; best-of-n | **READ meets REL (5/5 serial at 512, 4/5 at 2,048)**; 2× 0/5, DAG 1/5: the lottery is the no-read basin | closed |
 | 112 | Short-coverage dose-response for self-training (f = 0.5 / 0.25 / 0.1; never-labelled k = 1 accuracy) | **FOOTHOLD at every dose; smallest f = 0.1** (2/5, certified); acquisition 2–3/5 at every dose (start-reading basin, 112-4); C1 0/6 | closed |
 | 113 | Auxiliary reader inside self-training (conditional on §111-READ) | not REL: SELF2 2/5, C1 0/5 (slot-1 bypass persists); acquisition 2/5, as 113-1 predicted | closed |
-| 114 | Looped depth per op (LOOP-R vs LOOP-1 vs §107 PAUSE) for multiplication's hand-off | registered | **open** |
+| 114 | Looped depth per op (LOOP-R vs LOOP-1 vs §107 PAUSE) for multiplication's hand-off | DEPTH not met: CARRY-3 0/3 in every arm, acc flat in r; the carrier holds the multiplier prefix (114-4) | closed |
 | 115 | No-snap Markov chains, and a round-trip snap trigger (eval only) | registered | **open** |
 | 116 | Strict C4: final-answer training through self-decoded restarts (OPDEF: op definitions only; NONE: no shorts) | registered (conditional on §112 f = 0.1) | **open** |
 | 117 | One model for C1 + C4 + C6: self-decoded restarts + Markov segments + reader (MK vs staged ST) | registered (conditional on §111 READ REL) | **open** |
@@ -2067,6 +2067,22 @@ threshold), plus:
 
 **Placement.** 6 runs (2 arms × 3 seeds), about $6–9 (LOOP-R costs about 2.5–3× per step). Proof host first.
 Projection to Audit. Implementation: the experiments session (accel99 plus a looped-block option in the GPT2KV forward).
+
+**§114 result (2026-10-05 07:51 EDT; 6 runs by the experiments session; scored by Theory alone with `theory/score_s114.py`, committed
+before any run). DEPTH is not met: looped depth does not unlock step 3.**
+
+| arm (4×4, MARKOV, seeds 1–3) | op-3 decode | test | accuracy by test-time r |
+|---|---|---|---|
+| LOOP-R (r ∈ 1..8, input injection, tied + LoRA) | 0.342 / 0.195 / 0.362 | 0.055 / 0.026 / 0.062 | flat (r = 1 → 8: 0.056 → 0.055; it declines at r ≥ 12) |
+| LOOP-1 (same harness, r = 1) | 0.174 / 0.165 / 0.245 | 0.012 / 0.019 / 0.031 | — |
+| §107 PAUSE-4 (comparator) | 0.454 / 0.285 / 0.065 | 0.055 / 0.042 / 0.007 | — |
+
+* **CARRY-3 is 0/3 in every arm.** No seed is in the no-read basin (the shuffled ratio shows the latent is read), so
+  these are carriage failures, not reading failures.
+* **Reading.** Serial depth per op does not help; the extra iterations change nothing (acc_by_r is flat).
+  - 114-4 explains why: every carrier holds the multiplier prefix, not the running sum (causal donor test). No amount
+    of compute inside a segment can supply a sum that is not carried.
+  - The multiplication line moved to §121 (anchor) and §122 (anchor to a competent text path, with a stop rule).
 
 **Note 114-1 (2026-10-04 15:56 EDT, before any §114 run; the experiments session's implementation choices, accepted).**
 * **Per-iteration targets are an unbiased 2-sample estimator.** Each step takes CE at the final iteration r plus one
