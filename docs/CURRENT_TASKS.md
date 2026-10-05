@@ -52,7 +52,9 @@ kept as `*.void_forkconflict`.
 where a later analysis can use it (passing / acquired seeds, models named by a registered analysis); delete transfer
 tarballs, staging, ckpt.pt after verification and per-round snapshots unless a registration needs them; record every
 deletion (logs/prune_rounds.log); ask Audit / Theory before any new bulky artefact. One-off sweep of closed sections pending
-(model.pt candidate list to Audit / Theory first).
+(model.pt candidate list to Audit / Theory first). **02:14 sweep:** Audit+Theory OK'd scratch/retention_candidates.txt, but the
+permission classifier blocked the deletes -> **USER DECISION PENDING** (delete 19 void .pt 7 GB; delete D: side of 266 B .pt
+91 GB once archived). Copy-only archive running: scratch/retention_archive_copy.sh -> E:atentarchive + manifest.txt (sha256).
 * Watchers don't detect host reboots: check uptime on the C1 hosts each pass.
 
 ### Local PC (torch `cuda:0` = 4060, `cuda:1` = 3070, `cuda:2` = 2070)
