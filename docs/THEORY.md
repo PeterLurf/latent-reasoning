@@ -1805,13 +1805,28 @@ restricted to a **fixed random subset T_f of transitions**.
   - Mean-removal ≤ 0.055 at every slot, so the latents are necessary.
   - §104's joint patch (slot + op-token KV; `theory/s112_donor.py`, CPU, n = 100) gives **1.0 / 0.86 / 1.0**. The state
     is carried jointly by the slot and the op tokens, as §92 in 3/5. The n = 500 run, including §110 s1 / s3 / s5, is
-    pending.
+    in 112-3.
 * **Mechanism (descriptive): the acquisition was not driven by pseudo-labels.**
   - The kept share stayed ≈ 2·10⁻⁵ through rounds L3–L6: the self-consistency gate held the pools empty.
   - Never-labelled k = 1 jumped 0.072 → 0.999 during L6.
   - The likely driver: on lengths 5–6 (just past k = 4), the final answer is read from the model's own decoded
     checkpoint after the history cut, so final-answer targets train k = 1 / k = 2 transitions from self-decoded states.
   - The pools filled only after acquisition (L8, 0.36 → 0.999).
+
+**Note 112-3 (2026-10-04 22:20 EDT; descriptive; 112-2's joint patch at n = 500, `theory/results/s112_donor.json`, CPU).** Donor- /
+recipient-consistent per slot, single patch → joint (slot + op-token KV):
+
+| model | slot 1 | slot 2 | slot 3 | reading |
+|---|---|---|---|---|
+| §112 s21 | 0.15 / 0.14 → **1.0** / 0.02 | 0.11 / 0.11 → **0.82** / 0.00 | 0.32 / 0.06 → **1.0** / 0.01 | carried jointly by the slot and the op tokens |
+| §110 s3 | **0.96** / 0.02 → 1.0 / 0.02 | **0.99** / 0.01 → 1.0 / 0.00 | **0.98** / 0.01 → 1.0 / 0.01 | the slot alone (reproduces §110) |
+| §110 s5 | 0.01 / 0.43 → 0.02 / 0.02 | 0.01 / 0.01 → 0.02 / 0.01 | 0.02 / 0.01 → 0.02 / 0.01 | neither: the state is spread over the prefix |
+| §110 s1 | 0.02 / **1.0** → 0.02 / 0.02 | 0.02 / 0.09 → 0.02 / 0.01 | 0.00 / 0.09 → 0.02 / 0.01 | slot-1 bypass; joint gives chance |
+
+* Under the masked fork, self-training lands on three different carriers: the slot alone (s3), the slot plus op tokens
+  (s21), or a code spread over the whole prefix (s1, s5).
+* Only Markov segments (§108) exclude the last two by construction. This is why the integrated candidate (self-training
+  + Markov + READ) keeps single-slot donor SERIAL as its primary C1 rule (Audit (a)).
 
 ## 113. The auxiliary reader inside self-training: §110 plus a reader on the model's own decodes (pre-registered 2026-10-04 15:00 EDT, after Literature's check b1352c3e and before any implementation or run; conditional on §111 MK-4-READ meeting REL)
 
