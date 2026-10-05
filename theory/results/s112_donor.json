@@ -1,0 +1,294 @@
+{
+ "s112_f010_s21": {
+  "intact_per_slot": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "patch": {
+   "slot1_single": {
+    "donor_consistent": 0.146,
+    "recipient_consistent": 0.138
+   },
+   "slot1_joint": {
+    "donor_consistent": 1.0,
+    "recipient_consistent": 0.018
+   },
+   "slot2_single": {
+    "donor_consistent": 0.108,
+    "recipient_consistent": 0.112
+   },
+   "slot2_joint": {
+    "donor_consistent": 0.824,
+    "recipient_consistent": 0.004
+   },
+   "slot3_single": {
+    "donor_consistent": 0.322,
+    "recipient_consistent": 0.056
+   },
+   "slot3_joint": {
+    "donor_consistent": 1.0,
+    "recipient_consistent": 0.008
+   }
+  },
+  "secondary": {
+   "slot1_zero": [
+    0.016,
+    0.026,
+    0.036,
+    0.046
+   ],
+   "slot1_mean": [
+    0.052,
+    0.516,
+    0.594,
+    0.578
+   ],
+   "slot2_zero": [
+    1.0,
+    0.002,
+    0.308,
+    0.278
+   ],
+   "slot2_mean": [
+    1.0,
+    0.048,
+    0.492,
+    0.434
+   ],
+   "slot3_zero": [
+    1.0,
+    1.0,
+    0.002,
+    0.05
+   ],
+   "slot3_mean": [
+    1.0,
+    1.0,
+    0.022,
+    0.124
+   ]
+  },
+  "n": 500
+ },
+ "s110_s5": {
+  "intact_per_slot": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "patch": {
+   "slot1_single": {
+    "donor_consistent": 0.012,
+    "recipient_consistent": 0.432
+   },
+   "slot1_joint": {
+    "donor_consistent": 0.016,
+    "recipient_consistent": 0.016
+   },
+   "slot2_single": {
+    "donor_consistent": 0.014,
+    "recipient_consistent": 0.012
+   },
+   "slot2_joint": {
+    "donor_consistent": 0.016,
+    "recipient_consistent": 0.01
+   },
+   "slot3_single": {
+    "donor_consistent": 0.016,
+    "recipient_consistent": 0.012
+   },
+   "slot3_joint": {
+    "donor_consistent": 0.016,
+    "recipient_consistent": 0.012
+   }
+  },
+  "secondary": {
+   "slot1_zero": [
+    0.004,
+    0.092,
+    0.084,
+    0.092
+   ],
+   "slot1_mean": [
+    0.006,
+    0.82,
+    0.798,
+    0.798
+   ],
+   "slot2_zero": [
+    1.0,
+    0.012,
+    0.022,
+    0.018
+   ],
+   "slot2_mean": [
+    1.0,
+    0.008,
+    0.008,
+    0.008
+   ],
+   "slot3_zero": [
+    1.0,
+    1.0,
+    0.008,
+    0.006
+   ],
+   "slot3_mean": [
+    1.0,
+    1.0,
+    0.01,
+    0.006
+   ]
+  },
+  "n": 500
+ },
+ "s110_s3": {
+  "intact_per_slot": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "patch": {
+   "slot1_single": {
+    "donor_consistent": 0.962,
+    "recipient_consistent": 0.02
+   },
+   "slot1_joint": {
+    "donor_consistent": 1.0,
+    "recipient_consistent": 0.018
+   },
+   "slot2_single": {
+    "donor_consistent": 0.986,
+    "recipient_consistent": 0.006
+   },
+   "slot2_joint": {
+    "donor_consistent": 1.0,
+    "recipient_consistent": 0.004
+   },
+   "slot3_single": {
+    "donor_consistent": 0.976,
+    "recipient_consistent": 0.01
+   },
+   "slot3_joint": {
+    "donor_consistent": 1.0,
+    "recipient_consistent": 0.008
+   }
+  },
+  "secondary": {
+   "slot1_zero": [
+    0.046,
+    0.012,
+    0.012,
+    0.01
+   ],
+   "slot1_mean": [
+    0.114,
+    0.06,
+    0.072,
+    0.058
+   ],
+   "slot2_zero": [
+    1.0,
+    0.074,
+    0.022,
+    0.022
+   ],
+   "slot2_mean": [
+    1.0,
+    0.106,
+    0.022,
+    0.018
+   ],
+   "slot3_zero": [
+    1.0,
+    1.0,
+    0.002,
+    0.008
+   ],
+   "slot3_mean": [
+    1.0,
+    1.0,
+    0.124,
+    0.058
+   ]
+  },
+  "n": 500
+ },
+ "s110_s1": {
+  "intact_per_slot": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "patch": {
+   "slot1_single": {
+    "donor_consistent": 0.018,
+    "recipient_consistent": 1.0
+   },
+   "slot1_joint": {
+    "donor_consistent": 0.016,
+    "recipient_consistent": 0.016
+   },
+   "slot2_single": {
+    "donor_consistent": 0.022,
+    "recipient_consistent": 0.09
+   },
+   "slot2_joint": {
+    "donor_consistent": 0.016,
+    "recipient_consistent": 0.01
+   },
+   "slot3_single": {
+    "donor_consistent": 0.002,
+    "recipient_consistent": 0.086
+   },
+   "slot3_joint": {
+    "donor_consistent": 0.016,
+    "recipient_consistent": 0.012
+   }
+  },
+  "secondary": {
+   "slot1_zero": [
+    0.0,
+    0.078,
+    0.046,
+    0.042
+   ],
+   "slot1_mean": [
+    0.018,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "slot2_zero": [
+    1.0,
+    0.0,
+    0.04,
+    0.056
+   ],
+   "slot2_mean": [
+    1.0,
+    0.014,
+    0.072,
+    0.098
+   ],
+   "slot3_zero": [
+    1.0,
+    1.0,
+    0.0,
+    0.086
+   ],
+   "slot3_mean": [
+    1.0,
+    1.0,
+    0.01,
+    0.156
+   ]
+  },
+  "n": 500
+ }
+}
