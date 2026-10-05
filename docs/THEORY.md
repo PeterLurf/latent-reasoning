@@ -2798,6 +2798,25 @@ spend until it triggers). §117-COPY.**
 * §121 is not included: it is step-supervised with text-start K-CURR chunks, so 112-4's start-reading basin does not
   arise there.
 
+**Note 121-2 (2026-10-05 04:39 EDT; descriptive, ANCHOR+READ s1 only, before the panel is scored; rules unchanged). The anchor bound,
+but to an incompetent target.**
+* **s1.** Op-3 decode 0.231 and test 0.031 at the 24k cap.
+  - The anchor did bind: test cosine to the true text path 0.98–0.99 at positions 1–3, log-norm gap about 0.03.
+* **The anchor's target has stopped working.** Restarted from the **true** step-2 text (T1, `theory/mult_step3_diag.py`),
+  step 3 is 0.0 and even P_3 is right only 0.125.
+  - In 4×4 at k = 4 every test chunk starts from no text. Text-start segments are trained only in K-CURR's k ≤ 2 phase
+    (≤ 6k).
+  - So by 24k the text path [a, step j−1 text, op j] no longer computes the step, and the latent is tied to an
+    incompetent code.
+* **The carrier is unchanged.** Slot-2 probes: b_1 / b_2 1.0, S_2's middle digits 0.12–0.19 (chance).
+  - The causal donor test is now mixed: SAMEPREFIX recipient 0.23 vs sum-donor 0.18; SAMESUM recipient 0.19 vs
+    prefix-donor 0.22, against MARKOV's clean prefix signature.
+* **Reading (provisional, one seed).** The anchor transfers whatever code the text path writes. The text path must itself
+  stay competent (trained throughout) for the code to carry S_j.
+  - §100's k = 2 model shows the text-start step is learnable in one pass (T1 = 1.0, 114-4).
+  - Experiments' reading ("the failure is the segment's 4×3 computation") does not fit T1 here: with the true S_2 text
+    available, a competent segment needs only a 4×1 multiply-add.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
