@@ -182,7 +182,7 @@ def run_test(m, fam, s0, X, dev, amp, bs, every=True):
                 h = m.segment(prev, torch.tensor(X[sl, t], device=dev)); qs, q, _ = m.quant(h); e = m.embed_code(qs)
                 if every or (X[sl, t] == RD).any():
                     pred[sl, t] = fam.decode(m.answer_greedy(e, ntok).cpu().numpy())
-            codes[sl, t] = q.cpu().numpy().astype(np.int8); prev = e[:, None]
+            codes[sl, t] = q.float().cpu().numpy().astype(np.int8); prev = e[:, None]
     return pred, codes
 
 
@@ -212,7 +212,7 @@ def certificate(m, fam, dev, amp, cap, bs=2048):
         B = len(S[i:i + bs])
         with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
             h = m.segment(m.start(B, dev, S[i:i + bs] if fam.name == "s5" else None), torch.tensor(X[i:i + bs], device=dev)); _, q, _ = m.quant(h)
-        ids = add(q.cpu().numpy().astype(np.int8)); frontier += ids
+        ids = add(q.float().cpu().numpy().astype(np.int8)); frontier += ids
         for s_, x_, c in zip(S[i:i + bs], X[i:i + bs], ids):
             trans[("start", int(s_), int(x_))] = c
     frontier = sorted(set(frontier)); seen = set(frontier); capped = False
@@ -223,7 +223,7 @@ def certificate(m, fam, dev, amp, cap, bs=2048):
             pc = pairs[i:i + bs]; q = torch.tensor(np.stack([codes[c] for c, _ in pc]).astype(np.float32), device=dev)
             with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
                 h = m.segment(m.embed_code(q)[:, None], torch.tensor([x for _, x in pc], device=dev)); _, qn, _ = m.quant(h)
-            ids = add(qn.cpu().numpy().astype(np.int8))
+            ids = add(qn.float().cpu().numpy().astype(np.int8))
             for (c, x), n in zip(pc, ids):
                 trans[(c, x)] = n
                 if n not in seen:
@@ -296,13 +296,24 @@ def main():
     ap.add_argument("--donor_n", type=int, default=2000); ap.add_argument("--margin_n", type=int, default=500); ap.add_argument("--sched_scale", type=float, default=1.0, help="smoke only")
     ap.add_argument("--log_every", type=int, default=100); ap.add_argument("--data_dir", default=os.path.join(ROOT, "bench", "data", "s5"))
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
+    ap.add_argument("--eval_only", action="store_true", help="re-run the eval from <out>/model.pt (training batch draws replayed for coverage_drawn)")
     a = ap.parse_args(); dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); sc = a.sched_scale
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
-    fam = Family(a.family); os.makedirs(a.out, exist_ok=True); json.dump(vars(a), open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
-    m = FSQ120(s5.load_gpt2(dev), fam).to(dev); opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
-    log = open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t0 = time.time(); hist = []
-    drawn = np.zeros((fam.n_states, fam.n_items), bool)
-    for step in range(1, a.steps + 1):
+    fam = Family(a.family); os.makedirs(a.out, exist_ok=True)
+    json.dump(vars(a), open(os.path.join(a.out, "args_eval.json" if a.eval_only else "args.json"), "w", newline="\n"), indent=1)
+    m = FSQ120(s5.load_gpt2(dev), fam).to(dev); drawn = np.zeros((fam.n_states, fam.n_items), bool)
+    if a.eval_only:                                                         # replay the training draws (rng only) for coverage_drawn
+        for step in range(1, a.steps + 1):
+            L = int(rng.integers(1, lmax_at(step / sc) + 1)); s0, x, lab = make_batch(fam, rng, a.bs, L)
+            if L <= 2:
+                drawn[s0, x[:, 0]] = True
+                if L == 2:
+                    drawn[lab[:, 0], x[:, 1]] = True
+        m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev))
+        train_sec = [json.loads(r) for r in open(os.path.join(a.out, "log.jsonl"))][-1]["sec"]
+    opt = None if a.eval_only else torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
+    log = None if a.eval_only else open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t0 = time.time(); hist = []
+    for step in range(1, 0 if a.eval_only else a.steps + 1):
         for gr in opt.param_groups:
             gr["lr"] = a.lr * min(1, step / 100) * 0.5 * (1 + math.cos(math.pi * step / a.steps))
         m.p_hard = 0.0 if step <= 2000 * sc else min(1.0, (step - 2000 * sc) / (2000 * sc)); m.train()
@@ -320,10 +331,12 @@ def main():
         if step % a.log_every == 0 or step == a.steps:
             rec = {"step": step, "loss": float(np.mean(hist)), "L_max": lmax_at(step / sc), "p_hard": m.p_hard, "sec": round(time.time() - t0)}; hist = []
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
-    train_sec = round(time.time() - t0); torch.save(m.state_dict(), os.path.join(a.out, "model.pt")); del opt; m.eval(); t1 = time.time()
+    if not a.eval_only:
+        train_sec = round(time.time() - t0); torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
+    del opt; m.eval(); t1 = time.time()
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
-    res = {"family": a.family, "arm": a.arm, "seed": a.seed, "train_sec": train_sec, "eval_dtype": str(amp), "coverage_drawn": float(drawn.mean()),
+    res = {"family": a.family, "arm": a.arm, "seed": a.seed, "train_sec": train_sec, "eval_only": a.eval_only, "eval_dtype": str(amp), "coverage_drawn": float(drawn.mean()),
            "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"}
     if fam.name == "s5":
         Xte, Yte = s5.load_csv(os.path.join(a.data_dir, "S5=512.csv"), limit=a.test_n); s5.check_labels(Xte, Yte); Xte, Yte = Xte[:, :a.test_len], Yte[:, :a.test_len]
