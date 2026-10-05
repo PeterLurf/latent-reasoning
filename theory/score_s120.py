@@ -25,6 +25,13 @@ def main():
                 p = os.path.join(R, "s120_%s_%s_s%d" % (fam, arm, s), "eval.json")
                 if os.path.exists(p):
                     runs[s] = json.load(open(p))
+                    pc = os.path.join(R, "s120_%s_%s_s%d" % (fam, arm, s), "eval_cert.json")      # note 120-3: post-hoc CERT
+                    if os.path.exists(pc):
+                        runs[s]["cert"] = json.load(open(pc)).get("cert", json.load(open(pc)))
+                    c = runs[s].get("cert") or {}
+                    if c.get("status") in ("inconclusive_cap", "inconclusive_time", "deferred") or c.get("capped"):
+                        c["holds"] = False; c["certified_claim"] = False                         # no certification claim
+                    runs[s]["cert"] = c
             C = {"n": len(runs), "long_acc": {s: r.get("long_acc") for s, r in runs.items()},
                  "PILOT_PASS": len(runs) == 2 and all((r.get("long_acc") or 0) >= 0.99 for r in runs.values()),
                  "cert": {s: (r.get("cert") or {}).get("holds") for s, r in runs.items()},
