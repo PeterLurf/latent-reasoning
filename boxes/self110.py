@@ -32,6 +32,7 @@ round end, or step 12,000 exactly, then Markov; 12k Markov steps incl. the rest 
 cosine horizon becomes switch_step + 16k), --kcurr (training chunks cut at k_train 1 / 2 / 4 at 2k / 6k via items_for),
 --reader (§113 reader from step 0). No gold teacher forcing, no rho.
 WHERE TRUE STATES ENTER (Theory / Audit rule: in-run decisions use final answers only):
+  §116 NONE+COPY copy rows (Gen110.copy_loss) use only the input: the start state's own text is its target.
   in-run decisions (final answer only): label_round's final filter (true FINAL answer of each chain via true_states(...)[-1]),
     r0_items / r0_items_cov final-answer targets, items_for / items_from_pool final-only targets (true_final), the ST switch
     check (final answers of length 5-6 problems); the self-consistency gate, kept_share and insertion use no truth.
@@ -100,14 +101,14 @@ def r0_labelled(r0):
 
 
 @torch.no_grad()
-def k1_table(m, dev, amp, bs=1000):
-    """k = 1 restart from every state's text with every op (all 14,400, masked fork): (120, 120) correct."""
-    S_, O_ = [x.ravel() for x in np.meshgrid(np.arange(120), np.arange(120), indexing="ij")]; ok = np.zeros(len(S_), bool)
+def k1_table(m, dev, amp, bs=1000, return_dec=False):
+    """k = 1 restart from every state's text with every op (all 14,400, masked fork): (120, 120) correct (and the decodes)."""
+    S_, O_ = [x.ravel() for x in np.meshgrid(np.arange(120), np.arange(120), indexing="ij")]; ok = np.zeros(len(S_), bool); dec = np.zeros(len(S_), np.int64)
     for i in range(0, len(S_), bs):
         with amp_ctx(amp):
             _, d, _ = m.chunk(torch.tensor(STTOK[S_[i:i + bs]], device=dev), torch.tensor(O_[i:i + bs, None], device=dev), decode="all")
-        e, _ = decode_to_el(d.cpu().numpy().reshape(-1, NST)); ok[i:i + bs] = e == s5.COMP[S_[i:i + bs], O_[i:i + bs]]
-    return ok.reshape(120, 120)
+        e, _ = decode_to_el(d.cpu().numpy().reshape(-1, NST)); ok[i:i + bs] = e == s5.COMP[S_[i:i + bs], O_[i:i + bs]]; dec[i:i + bs] = e
+    return (ok.reshape(120, 120), dec.reshape(120, 120)) if return_dec else ok.reshape(120, 120)
 
 
 def kept_transitions(X, pool, starts_true):
@@ -180,6 +181,14 @@ class Gen110(Gen103):
         return main + rd if self.reader else main
 
     @torch.no_grad()
+    def copy_loss(self, start, states):
+        """§116 NONE+COPY (note 116-2): a length-0 copy problem - the start text's last hidden is fed as a slot (as at an op
+        position, no marker token) and the masked fork decodes it; target = the start state's own text (input only)."""
+        g = self.g; h, past = g(g.embed(start)); s_in = h[:, -1]; hs, past = g(s_in[:, None], past); hslot = hs[:, 0]
+        st = self.sttok[states]; fp, p0 = self.fork_past(past); hf, _ = g(g.embed(st[:, :-1]), fp, pos0=p0)
+        lg = g.logits(torch.cat([hslot[:, None], hf], 1)).float()
+        return F.cross_entropy(lg.reshape(-1, lg.shape[-1]), st.reshape(-1), reduction="none").view(-1, NST).sum(-1).mean()
+
     def read_greedy(self, s_in):
         """§113 reader: a fresh segment [EOT, slot latent] (positions 0..1) -> 6 greedy state-text tokens."""
         g = self.g; B = s_in.shape[0]; eot = g.embed(torch.full((B, 1), 50256, device=s_in.device))
@@ -353,6 +362,7 @@ def label_round(m, X, Y, rows, lens, starts, dev, amp):
     stats = {"pool": N, "filtered_by": {"validity": float((~okck).mean()), "final": float((okck & ~f_ok).mean()),
                                          "self_consistency": float((f_ok & ~sc).mean())},
              "kept_share": float(keep.mean()), "gate": gate, "acc_new_length_before": float(f_ok.mean()),
+             "acc_L5plus": float(f_ok[lens >= 5].mean()) if (lens >= 5).any() else None,
              "truth_precision_kept": float(truth[keep].mean()) if keep.any() else None, "truth_rate_final_correct": tr_fc,
              "agreement_vs_truth_gap": (gate - tr_fc) if tr_fc is not None else None,
              "op_hist": {"all": oh_all.tolist(), "kept": oh_keep.tolist()}, "op_tv": float(0.5 * np.abs(pa - pk).sum()) if keep.any() else None}
@@ -388,10 +398,12 @@ def main():
     ap.add_argument("--markov", action="store_true", help="§117 MK: Markov segments + own-segment forks from step 0")
     ap.add_argument("--st_switch", action="store_true", help="§117 ST: masked-fork KV chunks until final-answer acc >= 0.5 on 5k length 5-6 problems (round ends) or step 12000, then Markov for 12k + final relabel")
     ap.add_argument("--switch_n", type=int, default=5000, help="< 5000: smoke only"); ap.add_argument("--switch_at", type=int, default=12000, help="!= 12000: smoke only")
+    ap.add_argument("--switch_len", type=int, default=12000, help="Markov steps after the switch; != 12000: smoke only")
     ap.add_argument("--kcurr", action="store_true", help="§117: training chunks cut at k_train = 1 / 2 / 4 (steps <= 2k / <= 6k / later) via items_for")
     ap.add_argument("--opdef", action="store_true", help="§116 OPDEF: T_f = only the 120 (e, a) transitions (g = 0)")
     ap.add_argument("--no_r0", action="store_true", help="§116 NONE: no R0 / no shorts; its updates go to round 1; insertion never below 5")
     ap.add_argument("--foothold_n", type=int, default=5000, help="< 5000: smoke only")
+    ap.add_argument("--copy_frac", type=float, default=0.0, help="§116 NONE+COPY (note 116-2): share of each batch's rows that are length-0 copy problems")
     ap.add_argument("--foothold_log", action="store_true", help="§116: per round foothold_yield and acc_by_length on 5k fixed problems (truth, logged only)")
     ap.add_argument("--reader", action="store_true", help="§113: §111-READ's auxiliary reader at every targeted slot (the model's own filtered targets)")
     ap.add_argument("--student_pool", default=None, help="§110 STUDENT: train a fresh model --steps on this pool_final.npz only (no R0 / rounds)")
@@ -441,8 +453,8 @@ def main():
 
     def do_switch(left_in_round):
         """§117 ST: switch to Markov segments; 12k Markov steps (incl. the rest of the current round) + the final relabel."""
-        m.set_markov(True); S["switched"] = True; S["switch_step"] = S["step"]; S["remaining"] = max(0, 12000 - left_in_round)
-        S["H"] = S["step"] + 12000 + a.final_steps; print("SWITCH at", S["step"], flush=True)
+        m.set_markov(True); S["switched"] = True; S["switch_step"] = S["step"]; S["remaining"] = max(0, a.switch_len - left_in_round)
+        S["H"] = S["step"] + a.switch_len + a.final_steps; print("SWITCH at", S["step"], flush=True)
 
     def kc_now(step):
         return 1 if step <= 2000 else (2 if step <= 6000 else K)
@@ -462,13 +474,17 @@ def main():
                     if not items_for(Xtr, pool, kc):
                         S.setdefault("fallback_items", []).append([S["step"], name, kc]); print("fallback items", S["step"], name, kc, flush=True)
                 items = cache[kc]
-            st, o_, tg = draw(items, drng, a.bs, dev)
+            nc = int(round(a.copy_frac * a.bs)) if a.copy_frac else 0     # §116 NONE+COPY: copy rows replace ordinary rows
+            st, o_, tg = draw(items, drng, a.bs - nc, dev)
             if short:                                                       # §112 (112-1 addendum): the transitions the drawn shorts label
                 oo = o_.cpu().numpy(); drawn[0, oo[:, 0]] = True
                 if oo.shape[1] == 2:
                     drawn[s5.COMP[0, oo[:, 0]], oo[:, 1]] = True
             with amp_ctx(amp):
                 loss = m.chunk_masked(st, o_, tg)
+                if nc:
+                    cs = drng.integers(0, 120, nc)
+                    loss = (loss * (a.bs - nc) + m.copy_loss(torch.tensor(STTOK[cs], device=dev), torch.tensor(cs, device=dev)) * nc) / a.bs
             opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(loss.item())
             if m.reader:
                 rhist.append(m.parts[1])
@@ -487,9 +503,11 @@ def main():
 
     def round_end(name):
         """§112: k = 1 accuracy on the drawn-labelled / never-labelled transitions after each training round (+ fp16 model)."""
-        m.eval(); kt = k1_table(m, dev, amp); m.train(); lab = S["drawn"]
+        m.eval(); kt, kd = k1_table(m, dev, amp, return_dec=True); m.train(); lab = S["drawn"]
+        moves = s5.COMP[np.arange(120)[:, None], np.arange(120)[None]] != np.arange(120)[:, None]   # ops that change the state
         S["per_round_split"].append({"step": S["step"], "round": name, "labelled_acc": float(kt[lab].mean()) if lab.any() else None,
-                                     "never_labelled_acc": float(kt[~lab].mean()) if (~lab).any() else None, "all_acc": float(kt.mean())})
+                                     "never_labelled_acc": float(kt[~lab].mean()) if (~lab).any() else None, "all_acc": float(kt.mean()),
+                                     "stay_rate": float((kd == np.arange(120)[:, None])[moves].mean())})   # §116-2 (truth, logged only)
         if a.foothold_log:                                                  # §116 (truth, logged only; never used in training)
             fr = np.random.default_rng(11600); rows, lens = make_pool(fr, Xtr, a.foothold_n, 3, 32); st0 = np.zeros(a.foothold_n, np.int64)
             m.eval(); decs, _, fin, _ = rollout_var(m, Xtr, rows, lens, st0, dev, amp); m.train(); tst = true_states(Xtr, rows, lens, st0)
@@ -564,7 +582,7 @@ def main():
     del opt; m.eval(); t1 = time.time()
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
-    r = {"arm": ("self117_mk" if a.markov else "self117_st") if (a.markov or a.st_switch) else ("self116_opdef" if a.opdef else "self116_none") if (a.opdef or a.no_r0) else "self113" if a.reader else "self110_student" if a.student_pool else "self112" if a.cov is not None else ("self110b" if a.random_start else "self110"), "start_ge3": "random" if a.random_start else "identity", "seed": a.seed, "k": K, "fork": "mask", "train_sec": train_sec, "eval_dtype": str(amp), "test_sequences": len(Xte),
+    r = {"arm": ("self117_mk" if a.markov else "self117_st") if (a.markov or a.st_switch) else ("self116_opdef" if a.opdef else ("self116_nonecopy" if a.copy_frac else "self116_none")) if (a.opdef or a.no_r0) else "self113" if a.reader else "self110_student" if a.student_pool else "self112" if a.cov is not None else ("self110b" if a.random_start else "self110"), "start_ge3": "random" if a.random_start else "identity", "seed": a.seed, "k": K, "fork": "mask", "train_sec": train_sec, "eval_dtype": str(amp), "test_sequences": len(Xte),
          "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
          "short_fraction": S["short"] / max(1, S["step"]), "updates": S["step"], "rounds": S["rounds"]}
     pred, comp, val = rollout(m, Xte, K, dev, amp, a.eval_bs); cum = s5.cumulative(pred, Yte)
