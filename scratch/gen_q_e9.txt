@@ -1,0 +1,3 @@
+# §113 self110 + §111-READ reader (seeds 11-15); launch only after READ s9-10 confirm REL (Theory); host 3
+# P=1
+boxes/runs_s5/s113_s15 boxes.self110 --reader --seed 15
