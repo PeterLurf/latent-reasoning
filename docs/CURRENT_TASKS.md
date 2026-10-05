@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-05 04:50 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-05 09:05 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -20,27 +20,28 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 Messages go through SendMessage. The names "Theory" and "Audit" currently need an identity confirm, pending the user,
 so send to the pipe addresses their messages come from.
 
-## Running now (04:50 2026-10-05, night mode: user asleep, "make progress throughout the night"; credit $104 at 03:50, floor $30; <= 16 hosts)
+## Running now (09:05 2026-10-05, night mode; credit ~$95, floor $30; <= 16 hosts; gradflow_check PASS required for new code paths)
 
-**Order (user, via Audit):** C1 > C6 > C4 = C2 > C3 > C5 > C7. Night launch order: §117 -> §113/§118 -> §120 -> §116 -> §119 (credit check).
+**Order (user, via Audit):** C1 > C6 > C4 = C2 > C3 > C5 > C7.
 
 ### Vast (all `scratch/gen_deploy_*.sh`, auto_drain_gen5 + `watch_any2.sh` waiters; ids/ssh in `scratch/live_hosts.txt`, `scratch/pods.txt`)
 
 | Tag | Work |
 |---|---|
-| l1 | §114 LOOP-R s1 (then `loop114 --rel_only` locally) |
 | s3, s4 | §101 b0.1 / b0.01 seeds |
-| a1 | §118 ANCHOR s71-73 |
-| a2 | §118 LONG s81-82 (proof host for LONG; a3 = s83 after it) |
-| i2, i3 | §121 ANCHOR+READ s2-3 / READ s1-2 (i1 = s1 done: op3 0.231, fail) |
-| o6 | §116 NONE+COPY s41-42 (proof host passed: 13.4 GB at P=2) |
-| o4, o5, o7, o8 | §116 NONE 42-45 / NONE+COPY 43-45 (deploying 04:48) |
-| j1 | §117 MK s51 + ST s61 (proof host, f = 0.1, note 117-3; deploying) |
+| a2 | §118 LONG s82 alone at k=32 (s81 OOM'd here at P=2) |
+| a3 | §118 LONG s81 RESUMED from ckpt 18000 (shipped; `gen_deploy_118r.sh` RESUME_FILES), P=1 |
+| a5 | §118 ANCHOR extension s74-75 (note 118-4) |
+| b3 | §120 FF FINAL s1 + S5 TRACE s2 (**SIGSTOPped at 12.7k**; on-host watcher SIGCONTs after FF FINAL s1's eval) |
+| b4, b5 | §120 FF FINAL s2 + FF TRACE s1 / FF TRACE s2 |
+| b12 | §120 S5 TRACE s1 rerun from scratch (OOM at P=2 -> *.void_oom), P=1 `--micro 2` |
+| i4, i5, i6 | §122 TEXTMIX+ANCHOR+READ s1 (proof, t1 rising) / s2-3 / control TEXTMIX+READ s1-2 |
+| j1, j3 | §117 MK s51 + ST s61 / ST s62-63 (MK s52-53 done: 0/0) |
+| o4, o5 | §116 NONE s42-45 (NONE+COPY VOID: no_grad bug, note 116-5; o7 stopped) |
 
-**Queued:** j2 (MK s52-53), j3 (ST s62-63) after j1's 1k log + memory; §120 remaining 7 runs (P=2, 4 hosts, ~$3) after b1's
-local eval_only is clean (fix 577ca96b: bf16 -> numpy); §116 o1 (OPDEF 31-32), o3 (OPDEF 35 + NONE 41) when slots free;
-o2 (OPDEF 33-34) runs LOCALLY. §122 (accel99 `--textmix 0.25`) implemented, **conditional: launch only on Theory's call**.
-§119 not implemented (spend projection to Audit first).
+**Queued:** a4 = §118 LONG s83 (P=1; needs a 24 GB host), §116 o1 (OPDEF 31-32) / o3 (OPDEF 35 + NONE 41) as slots free;
+§123 queues b6-b11 (S5 dither 0/0.1/0.25/0.5, FSQ+DITHER s5/ff) **on Theory's call only** (after §120's pilot reads;
+FF σ* later). §119 not implemented.
 
 **Data retention (user, 2026-10-05 via Audit):** keep eval / log / args / preds and all logs; keep a final model.pt only
 where a later analysis can use it (passing / acquired seeds, models named by a registered analysis); delete transfer
@@ -53,10 +54,9 @@ permission classifier blocked the deletes -> **USER DECISION PENDING** (delete 1
 
 ### Local PC (torch `cuda:0` = 4060, `cuda:1` = 3070, `cuda:2` = 2070)
 
-* 4060: §116 OPDEF s33 (`scratch/c1_q_116_local.txt`, py_local_worker2).
-* 3070: §120 b1 `fsq120 --eval_only` (boxes/runs_fsq/s120_s5_final_s1), then §116 OPDEF s34 from the same queue.
-* 2070: §115 on READ s9-10. g105 s1 §115 OOMs at the same 5.56 GiB at bs 125 and 60 (trigger_g97 ignores --bs?); pending.
-* §115 done: READ s8 no-snap 2048 = 1.0; MK-4 s1/s3/s5, READ s6/s7 no-snap 0; trigger 1.0 everywhere.
+* 4060 / 3070: §116 OPDEF s33 / s34 (`scratch/c1_q_116_local.txt`, py_local_worker2).
+* 2070: §115 on READ s10 (Theory wants the no-snap result), then `loop114 --rel_only` on a114_loopr_4x4_s1.
+* Post-hoc for every drained §120 / §123 FSQ cell: `fsq120 --growth_only` and `--cert_only` (45 min) locally.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
