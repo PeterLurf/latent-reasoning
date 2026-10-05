@@ -1,0 +1,37 @@
+{
+ "arms": {
+  "base": {
+   "n": 0,
+   "acquired": [],
+   "acq_rounds": {},
+   "median_round_rank": null,
+   "foothold_seeds": [],
+   "FOOTHOLD": false,
+   "cum512": {},
+   "copy_acc": {}
+  },
+  "copy": {
+   "n": 0,
+   "acquired": [],
+   "acq_rounds": {},
+   "median_round_rank": null,
+   "foothold_seeds": [],
+   "FOOTHOLD": false,
+   "cum512": {},
+   "copy_acc": {}
+  },
+  "expose": {
+   "n": 0,
+   "acquired": [],
+   "acq_rounds": {},
+   "median_round_rank": null,
+   "foothold_seeds": [],
+   "FOOTHOLD": false,
+   "cum512": {},
+   "copy_acc": {}
+  }
+ },
+ "MECH_112": false,
+ "NOT_112_4": false,
+ "descriptive": false
+}
