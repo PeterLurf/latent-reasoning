@@ -2636,6 +2636,28 @@ drift: 3/3 seeds are fully latent and exact to 2,048 with no snaps.**
 * **Scope:** "fully latent at inference, text-anchored in training" (the anchor uses the state's text in training;
   per-step supervised, not C4, not task-agnostic).
 
+**Note 118-5 (2026-10-05 09:15 EDT; descriptive). 118-3's contraction diagnostic is scored on the held-out models, and the READ control
+rate is final.**
+* **READ control, no-snap** (§115 (A), serial): s6 0 / s7 0 / **s8 1.0** / s9 0.87 at 512 (0.55 at 2,048) / **s10 1.0
+  (0.998 at 2,048)**. The control rate is **2/5**, so ANCHOR must reach ≥ 4/5 (118-2).
+* **Held-out scoring of 118-3** (READ s7 / s9 / s10, §108 s1 / s3 / s5; s6 and s8 were the calibration pair).
+
+  | model | ρ (ε 0.1) | basin | no-snap 512 | prediction (a) |
+  |---|---|---|---|---|
+  | READ s10 | 0.25 | 0.5 | 1.0 | ✓ (pass, basin ≥ 0.3) |
+  | READ s7 | 0.75 | 0.0 | 0 | ✓ (drift, basin ≤ 0.1) |
+  | READ s9 | 0.38 | 0.3 | 0.87 | ✗ (drifts with basin 0.3) |
+  | §108 s1 / s3 / s5 | 0.99 / 0.87 / 0.82 | 0.0 | 0 | (c) ✓ |
+
+  - (a) holds in 2 of 3 held-out READ seeds.
+  - **(b) is refuted:** ρ separates as well as basin does.
+  - (c) holds.
+* **Reading.** No-snap success is graded with attractor strength. ρ ≈ 0.25–0.28 with basin 0.5 passes (s8, s10); ρ 0.38
+  with basin 0.3 drifts mildly (s9); ρ ≥ 0.66 drifts (s6, s7, §108).
+  - The boundary lies between ρ 0.28 and 0.38. Within READ this is correlational; §123 tests it causally.
+  - §118 ANCHOR (3/3 so far) supplies the attractor through the text-path anchor. Its seeds' ρ is not yet measured; a
+    contraction run on s71–75 is a cheap check.
+
 ## 119. Controlled baselines for C1: published latent-CoT methods on our S5 protocol, scored with the donor and length protocols (pre-registered 2026-10-04 23:14 EDT, after Literature's checks 2bf76954 (project audit, missing comparison 2) and 1a473f82, and before any implementation or run; Audit's guards)
 
 **Why.** Our C1 claim compares against the literature only on paper: no latent-CoT paper shows serial,
