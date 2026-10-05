@@ -780,3 +780,8 @@ vast 52844008 (G seed 0) DESTROYED 2026-09-27 14:30 after checksum-verified fetc
 TRIAL 2026-10-05 16:12: first 580-driver Vast host (Audit OK, matched-unit rule): offer 41028909 RTX 3090 driver 580.159.03 at 137.175.22.196 -> gen-c2 (§124 seed-28 trio). Destroy on any health / sha / 1k-log failure.
 54375147 vast offer 41028909 created 2026-10-05 16:12: label gen-c2, queue scratch/gen_q_c2.txt (logged at create by vdeploy_toy.sh)
 TRIAL RESULT 2026-10-05 16:33: 580-driver host 137.175.22.196 (offer 41028909, instance 54375147) FAILED - 'running' per Vast but ssh 'Connection closed' for 20 min; vdeploy never reached the health check; destroyed. 580 exclusion stays.
+54379969 vast offer 45473518 created 2026-10-05 16:50: label gen-c2, queue scratch/gen_q_c2.txt (logged at create by vdeploy_toy.sh)
+54379980 vast offer 39184686 created 2026-10-05 16:50: label gen-c4, queue scratch/gen_q_c4.txt (logged at create by vdeploy_toy.sh)
+54379969 vast | gen_c2 PRICE EXCEPTION (logged 2026-10-05 17:21): RTX 4090 ~$0.42/h - §124 seed trio (BASE/COPY/EXPOSE on one host; within-seed comparison, Audit: any clean 24 GB card); no clean 3090 supply
+54379980 vast | gen_c4 PRICE EXCEPTION (logged 2026-10-05 17:21): RTX 4090 ~$0.42/h - §124 seed trio (BASE/COPY/EXPOSE on one host; within-seed comparison, Audit: any clean 24 GB card); no clean 3090 supply
+54240462 vast | gen_s3 DESTROYED_VERIFIED 2026-10-05 17:23 after verified per-run fetch (boxes/runs_s5/s101_b0.1_s1 boxes/runs_s5/s101_b1_s3 boxes/runs_s5/s101_b0.1_s2 boxes/runs_s5/s101_b0.1_s3)
