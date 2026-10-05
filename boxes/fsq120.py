@@ -106,6 +106,7 @@ class FSQ120(nn.Module):
         self.no_round = False; self.noise = 0.0                             # §123: continuous carry; training dither (set per step)
         self.std = False; self._acc = []                                    # §125 (enable_std registers its buffers)
         self.raw_h = False                                                  # §126 RAW-H: no bottleneck, carried = std(h) (needs enable_std)
+        self.anneal = False; self.lam = 1.0; self._h_last = None; self._dist = []; self.distill_on = False   # §126 ANNEAL (test lam = 1)
 
     def enable_std(self):
         """§125 STD: every carried embedding e = W_up(q) entering GPT-2 becomes mu_E + sd_E * (e - mu_e) / sd_e (wte stats; EMA
@@ -138,6 +139,8 @@ class FSQ120(nn.Module):
         if self.raw_h:                                                      # §126: the carrier IS the segment's last hidden (768-d)
             hh = h.float() + (noise if noise is not None else 0)
             return hh, hh, hh
+        if self.anneal:                                                     # §126 ANNEAL: keep h for the mixed carrier (embed_code)
+            self._h_last = h
         z = self.down(self.ln(h.float())); zb = torch.tanh(z + SHIFT) * HALF - OFF
         if self.training and self.noise > 0:                                # §123 dither (continuous) / pre-rounding dither (FSQ)
             zb = zb + (torch.rand_like(zb) * 2 - 1) * self.noise
@@ -150,6 +153,15 @@ class FSQ120(nn.Module):
         return qs, q, zb
 
     def embed_code(self, qs):
+        if self.anneal:                                                     # §126 ANNEAL: (1 - lam) std(h) + lam W_up(z_b) (+ QBN distillation)
+            ec = self.up(qs); h = self._h_last; self._h_last = None
+            if self.lam >= 1.0 or h is None or h.shape[0] != ec.shape[0]:
+                return ec
+            sh = self.std_map(h.float())
+            if self.training and self.distill_on:                          # ||W_up(z_b) - sg(std h)||^2 / ||sg(std h)||^2 (weight 1, RAMP ONLY:
+                # before 2k the distill gradient would reach GPT-2 through z_b(h), so ANNEAL would not equal RAW-H there)
+                t = sh.detach().float(); self._dist.append((((ec.float() - t) ** 2).sum(-1) / (t ** 2).sum(-1).clamp_min(1e-6)).mean())
+            return ((1 - self.lam) * sh.float() + self.lam * ec.float()).to(ec.dtype)
         e = qs if self.raw_h else self.up(qs)                              # §126: std(h) directly; else W_up(code)
         return self.std_map(e) if self.std else e                          # §125: the same map everywhere a code enters GPT-2
 
@@ -160,6 +172,7 @@ class FSQ120(nn.Module):
         return h[:, -1]
 
     def start(self, B, dev, states=None):
+        self._h_last = None
         if self.fam.name == "s5":
             return self.g.embed(torch.tensor(STTOK[states], device=dev))
         return self.embed_code(torch.zeros(B, D_Q, device=dev))[:, None]
@@ -511,6 +524,7 @@ def main():
     ap.add_argument("--fsq_dither", type=float, default=0.0, help="§123: U(-s, s) on z_b before rounding at training hand-offs after 4k")
     ap.add_argument("--no_cert", action="store_true", help="skip CERT in the main eval (run post-hoc with --cert_only; Audit 2026-10-05)")
     ap.add_argument("--growth_only", action="store_true", help="distinct codes vs position on ext_n 2,048-step rollouts -> <out>/eval_growth.json")
+    ap.add_argument("--anneal", action="store_true", help="§126 Stage 2 ANNEAL: (1-lam) std(h) + lam W_up(z_b), lam 2k->6k, QBN distill, FSQ 6k->8k")
     ap.add_argument("--raw_h", action="store_true", help="§126 RAW-H: no bottleneck; carried vector = §125-standardised last hidden h")
     ap.add_argument("--std", action="store_true", help="§125 STD: standardised carried embedding (task-agnostic)")
     ap.add_argument("--fp32", action="store_true", help="note 123-5: --contraction_only in fp32 (autocast off) -> eval_contraction_fp32.json")
@@ -524,8 +538,10 @@ def main():
     assert not (a.dither and not a.no_round) and not (a.fsq_dither and a.no_round), "§123: --dither needs --no_round; --fsq_dither is FSQ"
     def mk():
         m_ = FSQ120(s5.load_gpt2(dev), fam).to(dev); m_.no_round = a.no_round; m_.raw_h = a.raw_h
-        if a.std or a.raw_h:
+        if a.std or a.raw_h or a.anneal:
             m_.enable_std()
+        if a.anneal:                                                        # std buffers serve std(h) only; embed_code mixes (no std on W_up)
+            m_.std = False; m_.anneal = True
         return m_
     if a.growth_only:                                                       # Theory / Audit: distinct codes vs length on 2,048-step rollouts
         m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval()
@@ -571,11 +587,20 @@ def main():
     carried = {} if a.eval_only else {"init": carried_stats(m, fam, dev, amp)}   # §125 (every arm; own RNG, eval mode: no draws)
     if not a.eval_only:
         last_loss = None
+    reest = False; dist_hist = []
     m.train()
     for step in range(1, 0 if a.eval_only else a.steps + 1):
         for gr in opt.param_groups:
             gr["lr"] = a.lr * min(1, step / 100) * 0.5 * (1 + math.cos(math.pi * step / a.steps))
         m.p_hard = 0.0 if step <= 2000 * sc else min(1.0, (step - 2000 * sc) / (2000 * sc)); m.train()
+        if a.anneal:                                                        # §126: lam 0 -> 1 over 2k-6k; FSQ soft -> hard over 6k-8k
+            m.lam = 0.0 if step <= 2000 * sc else min(1.0, (step - 2000 * sc) / (4000 * sc))
+            m.distill_on = 2000 * sc < step <= 6000 * sc
+            m.p_hard = 0.0 if step <= 6000 * sc else min(1.0, (step - 6000 * sc) / (2000 * sc))
+            if step == int(2000 * sc) + 1:
+                m.frozen.fill_(1)                                           # std(h) statistics frozen at 2k
+            if step == int(6000 * sc) + 1:                                  # ... re-estimated once at the FSQ switch, then frozen
+                m.frozen.fill_(0); m.seen.fill_(0); reest = True
         m.noise = (a.dither if step > 2000 * sc else 0.0) if a.no_round else (a.fsq_dither if step > 4000 * sc else 0.0)
         L = int(rng.integers(1, lmax_at(step / sc) + 1)); s0, x, lab = make_batch(fam, rng, a.bs, L)
         if L <= 2:                                                          # note 120-1: transitions labelled by short problems
@@ -591,22 +616,33 @@ def main():
             with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
                 loss, _, _, _ = m.chain(m.start(len(x[sl]), dev, s0[sl] if fam.name == "s5" else None), torch.tensor(x[sl], device=dev), lab[sl],
                                         None if tm is None else tm[sl])
+            if m.anneal and m._dist:                                        # §126 QBN distillation during the ramp (weight 1)
+                dl = torch.stack(m._dist).mean(); m._dist = []; loss = loss + dl; dist_hist.append(float(dl.detach()))
+            m._dist = []
             (loss / nmb).backward(); tot += loss.item() / nmb
-        torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(tot); m.update_stats()
+        torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(tot)
+        if m.anneal:                                                        # std(h) EMA (std_map collects while not frozen)
+            m.std = True; m.update_stats(); m.std = False
+            if reest:
+                m.frozen.fill_(1); reest = False
+        else:
+            m.update_stats()
         if step == int(2000 * sc):                                         # §125: carried-embedding statistics at 2k (every arm)
             carried["2k"] = carried_stats(m, fam, dev, amp); m.train()
         if step % a.log_every == 0 or step == a.steps:
             rec = {"step": step, "loss": float(np.mean(hist)), "L_max": lmax_at(step / sc), "p_hard": m.p_hard, "noise": m.noise, "sec": round(time.time() - t0)}; hist = []; last_loss = rec["loss"]
+            if m.anneal:
+                rec.update({"lam": m.lam, "distill": float(np.mean(dist_hist)) if dist_hist else None}); dist_hist = []
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
     if not a.eval_only:
         train_sec = round(time.time() - t0)
         if m.std:
             m.frozen.fill_(1)                                               # §125: statistics frozen at the end, used unchanged at test
         torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
-    del opt; m.eval(); m.noise = 0.0; t1 = time.time()
+    del opt; m.eval(); m.noise = 0.0; m.lam = 1.0; t1 = time.time()            # §126: test at lam = 1, hard
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
-    res = {"family": a.family, "arm": a.arm, "seed": a.seed, "train_sec": train_sec, "eval_only": a.eval_only, "std": a.std, "raw_h": a.raw_h,
+    res = {"family": a.family, "arm": a.arm, "seed": a.seed, "train_sec": train_sec, "eval_only": a.eval_only, "std": a.std, "raw_h": a.raw_h, "anneal": a.anneal,
            "carried_norm": carried or None, "final_loss": last_loss, "no_round": a.no_round, "dither": a.dither, "fsq_dither": a.fsq_dither, "eval_dtype": str(amp), "coverage_drawn": float(drawn.mean()),
            "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
            "train_gpu": json.load(open(os.path.join(a.out, "args.json"))).get("train_gpu")}
