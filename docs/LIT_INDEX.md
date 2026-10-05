@@ -86,3 +86,4 @@ advisory notes are in `archive/`.
 | LIT_S116_STRICT_C4_2026-10-04 | §116 | the cut makes self-started shorts (leap L → L − k); NONE must start at L > k |
 | LIT_S117_INTEGRATED_2026-10-04 | §117 | staged-bottleneck fallback; foothold_yield is truth-scored (log only) |
 | LIT_S118_ANCHOR_2026-10-04 | §118 | anchor = professor forcing 1610.09038; LONG moves the range boundary |
+| LIT_S119_BASELINES_2026-10-04 | §119 | faithful Coconut/CODI/SIM-CoT recipes (configs read); native + chunked hosts; MASK ≈ SIM-CoT with tied in-context decoder; Thinking States as 4th arm |
