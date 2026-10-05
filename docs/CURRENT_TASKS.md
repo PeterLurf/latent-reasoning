@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-05 00:30 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-05 04:55 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -20,33 +20,27 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 Messages go through SendMessage. The names "Theory" and "Audit" currently need an identity confirm, pending the user,
 so send to the pipe addresses their messages come from.
 
-## Running now (07:00 2026-10-04; credit about $155; Audit: ~14 live, temporarily 16 for C1 items; one proof host per new code path)
+## Running now (04:55 2026-10-05, night mode: user asleep, "make progress throughout the night"; credit $104 at 03:50, floor $30; <= 16 hosts)
 
-**Note 98-3 (Theory, 2026-10-03 ~23:40):** mult98's GEN-M/MASK final slot had two forks sharing a first token. Fixed
-(one final fork, step text ++ " #### product"); guard test in `theory/results/s98_smoke/guard98_3_output.txt`; old runs
-kept as `*.void_forkconflict`.
-**Order (user, via Audit):** C1 > C6 > C4 = C2 > C3 > C5 > C7.
+**Order (user, via Audit):** C1 > C6 > C4 = C2 > C3 > C5 > C7. Night launch order: §117 -> §113/§118 -> §120 -> §116 -> §119 (credit check).
 
-### Vast (all `scratch/gen_deploy_*.sh`, watchers gen4/gen5 + partial drains; `scratch/watch_any2.sh` waiters)
+### Vast (all `scratch/gen_deploy_*.sh`, auto_drain_gen5 + `watch_any2.sh` waiters; ids/ssh in `scratch/live_hosts.txt`, `scratch/pods.txt`)
 
 | Tag | Work |
 |---|---|
-| m11 | §107 lat4 s1-3 |
-| l1, l3 | §114 LOOP-R s1, s3 (l2 s2 and l4 LOOP-1 done) |
-| d1, d2, d3, d5 | §112 re-draining without rounds/ (Audit 00:11) |
-| d6 | §112 f010 s22 + s25 (decide §117 dose / §116) |
-| d7 | §112 f010 s23-24 |
-| s3, s4 | §101 b1 s3 + b0.1 s1-3 / b0.01 s1-3 |
-| e7, e8, e9 | §113 s11-12 / s13-14 / s15 |
+| l1 | §114 LOOP-R s1 (then `loop114 --rel_only` locally) |
+| s3, s4 | §101 b0.1 / b0.01 seeds |
+| a1 | §118 ANCHOR s71-73 |
+| a2 | §118 LONG s81-82 (proof host for LONG; a3 = s83 after it) |
+| i2, i3 | §121 ANCHOR+READ s2-3 / READ s1-2 (i1 = s1 done: op3 0.231, fail) |
+| o6 | §116 NONE+COPY s41-42 (proof host passed: 13.4 GB at P=2) |
+| o4, o5, o7, o8 | §116 NONE 42-45 / NONE+COPY 43-45 (deploying 04:48) |
+| j1 | §117 MK s51 + ST s61 (proof host, f = 0.1, note 117-3; deploying) |
 
-(Instance ids, ssh: `scratch/live_hosts.txt`, `scratch/pods.txt`.) Deploys verify the upload sha and a running job before STARTED
-(vdeploy_toy.sh, after e7's corrupt upload). §112 rounds/ are pruned on-host (`scratch/prune_rounds.sh`, ALWAYS on d6/d7).
-
-**Queued, not yet deployed** (launch order per Audit: §117 > §113 / §118 > §116 > §119; ≤ 16 hosts; projection to Audit before §119):
-1. §117 (`self110 --markov|--st_switch --kcurr --reader`): waits for Theory's dose note (after §112 f010 s22/s25).
-2. §118 a1-a3 (`gen_deploy_118.sh`): launch when the CPU smokes pass (Theory approved, 118-1).
-3. §116 o1-o5 (`gen_deploy_116.sh`): waits for §112 f = 0.1 FOOTHOLD (Theory's call); smoke passed.
-4. §119: not implemented yet (after §117/§118).
+**Queued:** j2 (MK s52-53), j3 (ST s62-63) after j1's 1k log + memory; §120 remaining 7 runs (P=2, 4 hosts, ~$3) after b1's
+local eval_only is clean (fix 577ca96b: bf16 -> numpy); §116 o1 (OPDEF 31-32), o3 (OPDEF 35 + NONE 41) when slots free;
+o2 (OPDEF 33-34) runs LOCALLY. §122 (accel99 `--textmix 0.25`) implemented, **conditional: launch only on Theory's call**.
+§119 not implemented (spend projection to Audit first).
 
 **Data retention (user, 2026-10-05 via Audit):** keep eval / log / args / preds and all logs; keep a final model.pt only
 where a later analysis can use it (passing / acquired seeds, models named by a registered analysis); delete transfer
@@ -59,9 +53,10 @@ permission classifier blocked the deletes -> **USER DECISION PENDING** (delete 1
 
 ### Local PC (torch `cuda:0` = 4060, `cuda:1` = 3070, `cuda:2` = 2070)
 
-* 4060: §115 chain (MK-4 s1/s3/s5, then g105 s1-3 at n=500).
-* 3070: §110 STUDENT s2, s4 (`scratch/c1_q_student_local.txt`).
-* 2070: §115 on READ s6-8, then rel backfills for §111 2x s9-10, then §115 on READ s9-10.
+* 4060: §116 OPDEF s33 (`scratch/c1_q_116_local.txt`, py_local_worker2).
+* 3070: §120 b1 `fsq120 --eval_only` (boxes/runs_fsq/s120_s5_final_s1), then §116 OPDEF s34 from the same queue.
+* 2070: §115 on READ s9-10. g105 s1 §115 OOMs at the same 5.56 GiB at bs 125 and 60 (trigger_g97 ignores --bs?); pending.
+* §115 done: READ s8 no-snap 2048 = 1.0; MK-4 s1/s3/s5, READ s6/s7 no-snap 0; trigger 1.0 everywhere.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
