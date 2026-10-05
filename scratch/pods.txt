@@ -785,3 +785,6 @@ TRIAL RESULT 2026-10-05 16:33: 580-driver host 137.175.22.196 (offer 41028909, i
 54379969 vast | gen_c2 PRICE EXCEPTION (logged 2026-10-05 17:21): RTX 4090 ~$0.42/h - §124 seed trio (BASE/COPY/EXPOSE on one host; within-seed comparison, Audit: any clean 24 GB card); no clean 3090 supply
 54379980 vast | gen_c4 PRICE EXCEPTION (logged 2026-10-05 17:21): RTX 4090 ~$0.42/h - §124 seed trio (BASE/COPY/EXPOSE on one host; within-seed comparison, Audit: any clean 24 GB card); no clean 3090 supply
 54240462 vast | gen_s3 DESTROYED_VERIFIED 2026-10-05 17:23 after verified per-run fetch (boxes/runs_s5/s101_b0.1_s1 boxes/runs_s5/s101_b1_s3 boxes/runs_s5/s101_b0.1_s2 boxes/runs_s5/s101_b0.1_s3)
+54385493 vast offer 53546323 created 2026-10-05 17:33: label gen-b19, queue scratch/gen_q_b19.txt (logged at create by vdeploy_toy.sh)
+54379969 vast | gen_c2 DESTROYED_VERIFIED 2026-10-05 17:21 (logged 2026-10-05 17:45) - stuck in deploy 30 min (ssh timeout), never ran; destroyed by hand
+54375147 vast | gen_c2 DESTROYED_VERIFIED 2026-10-05 16:33 (logged 2026-10-05 17:45) - 580-driver trial: ssh closed 20 min, never ran; destroyed by hand
