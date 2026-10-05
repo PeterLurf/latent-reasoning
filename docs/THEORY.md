@@ -2042,6 +2042,11 @@ modes: `--no_snap`, and an `--adaptive_snap disagreement` policy).
     rates are 0, and accuracy is 1.0 at 512 / 2,048.
   - The reader makes the latent code far more stable across generations: an average silent stretch of about 26 ops,
     from training at 4.
+* **Drift (Audit):** the free-running latent keeps its norm (ratio about 1.1), but its cosine to the snapped latent falls
+  to about 0.01 by position 64. The no-snap failure is direction drift, not norm blow-up, which supports §118's cosine
+  anchor.
+* **Cost caveat (Audit; it goes into the §115 result):** the trigger runs the text path at every hand-off, so it saves
+  checkpoints, not compute. A C5 design that saves compute needs a latent-only predictor of disagreement.
 * The §115 result follows when MK-4 s3 / s5 and §105 s1–3 are in.
 
 ## 116. Strict C4: final-answer training through self-decoded restarts, from operator definitions only and from no short problems (pre-registered 2026-10-04 21:03 EDT, after Literature's check b0bca3c4 and before any implementation or run; launched only if §112 f = 0.1 meets FOOTHOLD-f)
