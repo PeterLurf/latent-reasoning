@@ -64,6 +64,10 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 * **Looped / recurrent-depth proposals** (2026-10-04, `docs/THEORY_LOOPED_2026-10-04.md`): P1 looped depth per op (vs
   PAUSE), P2 redundant state coding, P3 straight-through Gumbel snaps (strict C4), P4 round-trip-triggered snapping
   (C5), P5 adaptive depth, P6 early triage.
+* **Without hand-designed snaps** (2026-10-05, `docs/THEORY_AUTOSNAP_2026-10-05.md`; the user's directive): P-A FSQ
+  digital recurrence (a learned discrete snap every step, certified by code enumeration), P-B continuous stabiliser,
+  P-E learned what + when, P-C learned-notation text; one harness across S5, flip-flop, cycle navigation and
+  multiplication, final answers primary.
 * **Next (the user's plan):** §98 → the bench ladder (ProsQA-NA, a held-out task) → C4 by final-answer self-training
   (pending the user) → a general readout.
   - Queued: a routed snap for C5, with a non-confidence trigger (Literature 2af8ca18; §83 showed confidence fails out of
