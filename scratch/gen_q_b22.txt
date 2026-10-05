@@ -1,0 +1,3 @@
+# §126 Stage 2 ANNEAL s2 (Theory: trigger met, RAW-H s2 escaped; 535f5a98 + note 126-2); RTX 3090 / 3090 Ti ONLY
+# P=1
+boxes/runs_fsq/s126_s5_anneal_s2 boxes.fsq120 --family s5 --arm final --anneal --micro 2 --seed 2 --no_cert
