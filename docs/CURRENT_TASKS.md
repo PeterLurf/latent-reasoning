@@ -55,7 +55,8 @@ the sha-verified copies, MANIFEST.txt); logs/retention_delete_20261005.log. Rest
 
 * 4060 / 3070: §116 OPDEF s33 / s34 (`scratch/c1_q_116_local.txt`, py_local_worker2).
 * 2070: §115 on READ s10 (Theory wants the no-snap result), then `loop114 --rel_only` on a114_loopr_4x4_s1.
-* Post-hoc for every drained §120 / §123 FSQ cell: `fsq120 --growth_only` and `--cert_only` (45 min) locally.
+* Post-hoc for every drained §120 / §123 FSQ cell: `fsq120 --growth_only` and `--cert_only` (45 min; FF adds cert_task, note
+  120-7) locally. §123 cells from b6/b9/b10/b11 (pre-123-2 code) also need `--contraction_only` (rho_norm); b7/b8/FF σ* have it.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
