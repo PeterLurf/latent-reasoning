@@ -3933,14 +3933,15 @@ bottleneck the basin seed escapes, but the raw carrier drifts with length.**
     the fp32 value is pending). This is the §111 READ / §108 pattern without an anchor.
   - **8-d bottleneck: no drift once entered** (ρ_ff about 0.15; exact to 2,048 in every non-plateau seed), but **entry is a
     seed lottery** (seed 2 plateaus in every arm).
-* **RAW-H s2 fp32 contraction (Audit / claude-13, verified):** ρ_ff = **0.653** (rho_k 0.12 → 0.95; the floor is never
-  reached), against 0.146–0.180 in every exact bottlenecked seed.
+* **RAW-H s2 fp32 contraction (Audit / claude-13; verified, with a correction):** ρ_ff = **0.794** under 123-9's
+  definition (the floor is never reached, so all 16 hand-offs count; rho_k 0.12 → 0.95). The fp32 k = 1..8 value is 0.653.
+  Either way it sits against 0.146–0.180 in every exact bottlenecked seed.
   - So **the 8-d bottleneck supplies both the basin and the attractor**. This reproduces 118-5's ρ ↔ exactness link in fp32,
     without artefacts. It is a point outside §123 that fits (iii): ρ > 0.6 gives long accuracy < 0.99.
   - §126 wording: "RAW-H s2 escapes (valid; carrier standardised at 2k) but is not exact (0.846 at 512 / 0.732 at 2,048,
-    ρ_ff 0.653)".
+    ρ_ff 0.794)".
 * **ANNEAL-INHERITS is now the load-bearing question.** ANNEAL s2's final long accuracy and ρ_ff are compared with RAW-H's
-  0.846 / 0.653 and the bottlenecked s1's 1.0 / about 0.15.
+  0.846 / 0.794 and the bottlenecked s1's 1.0 / about 0.15.
 * ANNEAL (enter wide, then narrow) aims to combine the two. So far it does not: s2's loss jumps to 5.43 when λ reaches 1
   at 6k, with a distillation residual of 0.49, and only partly recovers. The final verdict is pending.
 
