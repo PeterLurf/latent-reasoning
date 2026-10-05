@@ -1,0 +1,4 @@
+# §124 expose (30e42608; same seeds 26-29 across arms) - PROOF host for the expose path
+# P=2
+boxes/runs_s5/s124_expose_s26 boxes.self110 --cov 0.1 --expose_frac 0.1 --seed 26
+boxes/runs_s5/s124_expose_s27 boxes.self110 --cov 0.1 --expose_frac 0.1 --seed 27
