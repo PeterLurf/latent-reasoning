@@ -2370,6 +2370,20 @@ after Literature's check 15cf541a). New arm NONE+COPY: reading footholds against
   - k1 accuracy per round.
 * The copy path is in the truth-entry docstring (input only).
 
+**Note 116-4 (2026-10-05 08:32 EDT; descriptive, written after 3/5 NONE+COPY seeds were seen (s41, s42, s45, all 0), before the §116
+panel is scored; rules unchanged). NONE+COPY fails upstream of the mechanism it was meant to test.**
+* In all three seeds, each round's pool accuracy is about **0.008 (chance) at every length, including 3–4**. Those are
+  single-chunk identity-start problems that every §110 / §112 seed solved early with shorts (pool 0.50 at L = 4; 112-4).
+  - The training loss stays at about 4.7–5.0, the per-answer null (ln 120 ≈ 4.79), for 24k steps.
+* So without short problems the model never learns even a 3-op composition from final answers: the strict-C4 saddle
+  (§85; Literature b0bca3c4 trap 1).
+  - The start-text reading basin of 112-4 is never reached, so the copy rows have nothing to act on.
+* **Reading for MECH (stated before the panel is scored):** a MECH failure with in-chunk pool accuracy at chance does
+  **not** test 112-4; it is uninformative about it.
+  - 112-4's mechanism can only be tested where in-chunk composition is learned, i.e. with a short foothold (§112's
+    setting plus copy rows).
+  - §117-COPY's trigger (MECH passes) will then not fire, and a direct test of 112-4 would need its own registration.
+
 ## 117. One model for C1 + C4 + C6: final-answer training through self-decoded restarts under Markov segments, with the auxiliary reader (pre-registered 2026-10-04 22:24 EDT, after Literature's check f9ce7210 / 3b9c8d61 and before any implementation or run; launched only if §111 MK-4-READ meets REL)
 
 **Why.** Three results point at one design.
@@ -3006,6 +3020,9 @@ wanders slowly through new, correctly decoded codes.**
   | codes per true state | 11.9 | 17.7 | 19.8 | 21.9 | 25.4 | 29.4 | 34.2 |
 
   - After 128, about 240 new codes per doubling: roughly logarithmic, unsaturated.
+* **Layered CERT (rerun on a shared GPU, inconclusive_time):** the 14,400 first-step pairs collapse to **734 codes**
+  (about 6 per state). The frontier keeps growing: 2,591 at depth 2, 3,079 at depth 3, ≥ 4,737 at depth 4 (partial).
+  No closure, consistent with the rollout growth.
 * **Reading.** Each hand-off is snapped, so there is no continuous drift. But the code is **not canonical**: a state's
   code depends on the path that reached it, and long chains keep visiting new (state, code) pairs.
   - Almost all are mapped correctly (0.996 at 2,048), but correctness on unvisited codes is not guaranteed. That is the
