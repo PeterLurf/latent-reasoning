@@ -1,0 +1,4 @@
+# §118 LONG s81-82 (proof host for the long path; k up to 32 with micro-batches)
+# P=2
+boxes/runs_s5/s118_long_s81 boxes.mk108 --k 4 --arm read --long --s115 --seed 81
+boxes/runs_s5/s118_long_s82 boxes.mk108 --k 4 --arm read --long --s115 --seed 82

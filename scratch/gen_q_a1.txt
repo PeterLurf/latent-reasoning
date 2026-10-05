@@ -1,0 +1,5 @@
+# §118 ANCHOR s71-73 (proof host for the anchor path)
+# P=3
+boxes/runs_s5/s118_anchor_s71 boxes.mk108 --k 4 --arm read --anchor --s115 --seed 71
+boxes/runs_s5/s118_anchor_s72 boxes.mk108 --k 4 --arm read --anchor --s115 --seed 72
+boxes/runs_s5/s118_anchor_s73 boxes.mk108 --k 4 --arm read --anchor --s115 --seed 73

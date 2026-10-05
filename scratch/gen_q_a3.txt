@@ -1,0 +1,3 @@
+# §118 LONG s83 (after h2's proof)
+# P=1
+boxes/runs_s5/s118_long_s83 boxes.mk108 --k 4 --arm read --long --s115 --seed 83

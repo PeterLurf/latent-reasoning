@@ -64,13 +64,18 @@ class MK108(Gen97):
         positions j >= 1 whose segment input is the gold previous step text (training; needs tgt). self.override:
         (j, (B, D)) replaces slot j's input (0-based j < c-1; the donor patch)."""
         B, k = ops.shape; g = self.g; eot = g.embed(torch.full((B, 1), EOT, device=ops.device))
-        ins, losses, decs, rlosses = [], [], [], []; prev = g.embed(start)
+        ins, losses, decs, rlosses, alosses = [], [], [], [], []; prev = g.embed(start); fed_latent = False
         for j in range(k):
             x = torch.cat([eot, prev, g.embed(self.optok[ops[:, j]])], 1)
             h, past = g(x, None)                                             # a fresh segment, positions from 0
             if meter:
                 meter.step(x.shape[1], 0, 0)
             s_in = h[:, -1]
+            if getattr(self, "anchor", False) and tgt is not None and fed_latent:   # §118 ANCHOR: latent-fed segment j vs the text path from gold state j-1
+                with torch.no_grad():
+                    hb, _ = g(torch.cat([eot, g.embed(self.sttok[tgt[:, j - 1]]), g.embed(self.optok[ops[:, j]])], 1), None); b = hb[:, -1].float()
+                a_ = s_in.float(); cos = F.cosine_similarity(a_, b, dim=-1)
+                alosses.append(((1 - cos) + (a_.norm(dim=-1).log() - b.norm(dim=-1).log()).abs()).mean())
             if ablate == "shuffle" and j < k - 1:                    # note 114-2 / 111-2: the carried latent of another row (in distribution)
                 s_in = s_in[self.perm]
             if ablate in ("zero", "mean") and j < k - 1:
@@ -95,13 +100,16 @@ class MK108(Gen97):
                 decs.append(self.greedy(hslot, past, meter if j == k - 1 else meter_x))
             if j + 1 < k:
                 if self.gold is not None and (j + 1) in self.gold and tgt is not None:
-                    prev = g.embed(self.sttok[tgt[:, j]])                    # gold previous step text (teacher-forced input)
+                    prev = g.embed(self.sttok[tgt[:, j]]); fed_latent = False   # gold previous step text (teacher-forced input)
                 else:
-                    prev = s_in[:, None].to(eot.dtype)
+                    prev = s_in[:, None].to(eot.dtype); fed_latent = True
         loss = torch.stack(losses).mean() if losses else None
         self.parts = (None if loss is None else float(loss.detach()), float(torch.stack(rlosses).mean().detach()) if rlosses else None)
         if rlosses:
             loss = loss + torch.stack(rlosses).mean()
+        self.anchor_val = float(torch.stack(alosses).mean().detach()) if alosses else None
+        if alosses:
+            loss = loss + torch.stack(alosses).mean()
         return loss, (torch.stack(decs, 1) if decs else None), torch.stack(ins, 1)
 
 
@@ -139,6 +147,14 @@ def donor(m, k, dev, amp, bs, n=2000, seed=10802):
 
 def k_train(step, k, sc):
     return 1 if step <= 2000 * sc else (2 if step <= 6000 * sc else k)
+
+
+def k_long(step, sc):
+    """§118 LONG: K-CURR 1 / 2 / 4 / 8 / 16 / 32 from steps 0 / 2k / 6k / 10k / 14k / 18k."""
+    for lim, kk in ((2000, 1), (6000, 2), (10000, 4), (14000, 8), (18000, 16)):
+        if step <= lim * sc:
+            return kk
+    return 32
 
 
 LN120 = math.log(120)
@@ -224,6 +240,7 @@ def evaluate(m, a, dev, amp, Xtr, Ytr, Xte, Yte):
     res["edit_iia"] = edit_iia(m, a.k, dev, amp, a.eval_bs, n=min(5000, a.check_n))
     res["train_handoff_err"] = train_handoff_err(m, Xtr, Ytr, a.k, dev, amp, a.eval_bs, n=min(a.handoff_n, len(Xtr)))
     res["rel_final"] = rel_ratio_final(m, Xtr, Ytr, a.k, dev, amp)
+    res["latent_geometry"] = latent_geometry(m, a.k, dev, amp, a.eval_bs)
     if a.arm == "read":
         res["reader_acc"] = reader_acc(m, a.k, dev, amp, a.eval_bs, n=min(a.handoff_n, a.check_n))
     return res
@@ -244,6 +261,28 @@ def rel_ratio_final(m, X, Y, k, dev, amp, n_batches=20, bs=64, seed=11102):
             "zeroed_loss": l0 / n_batches, "shuffled_loss": ls / n_batches, "n_batches": n_batches, "bs": bs}
 
 
+@torch.no_grad()
+def latent_geometry(m, k, dev, amp, bs, n=2000, seed=11801):
+    """§118 eval: effective rank (exp of the entropy of the normalised singular values) of n carried latents from fresh
+    k-chunks (slots 1..k-1), and per in-chunk position j >= 1 the cosine / |log-norm gap| between the latent-path
+    segment output (fed by latent j-1) and the text-path output [EOT, TRUE state j-1 text, op_j] (truth: eval only)."""
+    rng = np.random.default_rng(seed); S = rng.integers(0, 120, n); O = rng.integers(0, 120, (n, k)); g = m.g; lat = []; cs = [[] for _ in range(k)]; gp = [[] for _ in range(k)]
+    for i in range(0, n, bs):
+        s_, o_ = S[i:i + bs], O[i:i + bs]; B = len(s_); tc = true_chain(s_, o_)
+        with amp_ctx(amp):
+            _, _, ins = m.chunk(m.start_from(els=s_, dev=dev), torch.tensor(o_, device=dev), decode=None)
+            eot = g.embed(torch.full((B, 1), EOT, device=dev))
+            for j in range(1, k):
+                hb, _ = g(torch.cat([eot, g.embed(m.sttok[torch.tensor(tc[:, j - 1], device=dev)]), g.embed(m.optok[torch.tensor(o_[:, j], device=dev)])], 1), None)
+                a_, b = ins[:, j].float(), hb[:, -1].float()
+                cs[j].append(F.cosine_similarity(a_, b, dim=-1).cpu().numpy()); gp[j].append((a_.norm(dim=-1).log() - b.norm(dim=-1).log()).abs().cpu().numpy())
+        lat.append(ins[:, :k - 1].float().reshape(-1, ins.shape[-1]).cpu())
+    Lm = torch.cat(lat)[:n]; sv = torch.linalg.svdvals(Lm - Lm.mean(0)); pr = sv / sv.sum()
+    return {"n": int(Lm.shape[0]), "effective_rank": float(torch.exp(-(pr * pr.clamp_min(1e-12).log()).sum())),
+            "anchor_cos_by_pos": {str(j): float(np.concatenate(cs[j]).mean()) for j in range(1, k)},
+            "anchor_lognorm_gap_by_pos": {str(j): float(np.concatenate(gp[j]).mean()) for j in range(1, k)}}
+
+
 def read_log(lp):
     return [json.loads(r) for r in open(lp, encoding="utf-8") if r.strip()] if os.path.exists(lp) else []
 
@@ -260,6 +299,9 @@ def main():
     ap.add_argument("--ckpt_every", type=int, default=2000, help="training checkpoint <out>/ckpt.pt (model, optimiser, RNGs); resumed if present")
     ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt (writes eval.json, or eval_fp32.json with --fp32)")
     ap.add_argument("--fp32", action="store_true", help="evaluation without autocast (fp32 throughout, the carry included)")
+    ap.add_argument("--anchor", action="store_true", help="§118 ANCHOR: (1 - cos) + |log-norm gap| between each latent-fed carried latent and the stop-grad text-path latent from the gold previous state")
+    ap.add_argument("--long", action="store_true", help="§118 LONG: K-CURR up to 32 (k_long); micro-batches of bs / max(1, k_train // 8)")
+    ap.add_argument("--s115", action="store_true", help="§118: run snap115 (A)/(B) in-process after the eval -> eval_s115.json")
     ap.add_argument("--rel_only", action="store_true", help="with --backfill: add only rel_final to an existing s111_backfill.json")
     ap.add_argument("--backfill", action="store_true", help="§111 keys only for a finished run: train_handoff_err + log stats -> <out>/s111_backfill.json")
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
@@ -269,7 +311,7 @@ def main():
     Xtr, Ytr = s5.load_csv(os.path.join(a.data_dir, "S5=128.csv")); s5.check_labels(Xtr, Ytr)
     Xte, Yte = s5.load_csv(os.path.join(a.data_dir, "S5=512.csv"), limit=a.test_n); s5.check_labels(Xte, Yte)
     os.makedirs(a.out, exist_ok=True); lp = os.path.join(a.out, "log.jsonl")
-    m = MK108(s5.load_gpt2(dev)).to(dev); m.reader = a.arm == "read"
+    m = MK108(s5.load_gpt2(dev)).to(dev); m.reader = a.arm == "read"; m.anchor = a.anchor
     if a.eval_only or a.backfill:
         m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval(); t1 = time.time()
         if a.backfill and a.rel_only:
@@ -282,7 +324,7 @@ def main():
                  "eval_dtype": str(amp), "sec": round(time.time() - t1)}
             json.dump(r, open(os.path.join(a.out, "s111_backfill.json"), "w", newline="\n"), indent=1); print("BACKFILL", json.dumps(r)[:400], flush=True)
             return
-        res = {"arm": f"mk{a.k}" + ("" if a.arm == "mk" else "_" + a.arm), "k": a.k, "seed": a.seed, "eval_only": True, "eval_dtype": str(amp),
+        res = {"arm": f"mk{a.k}" + ("" if a.arm == "mk" else "_" + a.arm) + ("_anchor" if a.anchor else "") + ("_long" if a.long else ""), "k": a.k, "seed": a.seed, "eval_only": True, "eval_dtype": str(amp),
                "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", **evaluate(m, a, dev, amp, Xtr, Ytr, Xte, Yte),
                **log_stats(read_log(lp), sc)}
         res["eval_sec"] = round(time.time() - t1)
@@ -291,7 +333,7 @@ def main():
         return
     json.dump({**vars(a), "train_sequences": len(Xtr)}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
     opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
-    t0 = time.time(); hist = []; mains = []; reads = []; dag = []; seg_types = [0, 0]; step0 = 0; ck = os.path.join(a.out, "ckpt.pt")
+    t0 = time.time(); hist = []; mains = []; reads = []; dag = []; anchors = []; seg_types = [0, 0]; step0 = 0; ck = os.path.join(a.out, "ckpt.pt")
     if os.path.exists(ck):                                                  # resume after a host restart (k1, 2026-10-04)
         c = torch.load(ck, map_location=dev, weights_only=False); m.load_state_dict(c["model"]); opt.load_state_dict(c["opt"])
         rng.bit_generator.state = c["np_rng"]; torch.set_rng_state(c["torch_rng"].cpu()); step0 = c["step"]; seg_types = c["seg_types"]; t0 -= c["sec"]
@@ -303,7 +345,7 @@ def main():
     for step in range(step0 + 1, a.steps + 1):
         for gr in opt.param_groups:
             gr["lr"] = a.lr * min(1, step / 100) * 0.5 * (1 + math.cos(math.pi * step / a.steps))
-        L = k_train(step, a.k, sc); rho = max(0.0, 1.0 - step / (12000 * sc))
+        L = k_long(step, sc) if a.long else k_train(step, a.k, sc); rho = max(0.0, 1.0 - step / (12000 * sc)); done_bwd = False
         if a.arm == "dag" and rho == 0 and L == a.k and rng.random() < 0.5:
             # §111 MK-4-DAG: two chunks; chunk 2 starts from the model's OWN greedy snap of chunk 1 (DAgger: its targets are
             # the true chain from the snapped state; rows whose snap does not parse are dropped from chunk 2)
@@ -322,12 +364,34 @@ def main():
             st, o, tg = batch(rng, Xtr, Ytr, L, a.bs)
             m.gold = {j for j in range(1, L) if rng.random() < rho} or None
             seg_types[0] += 1 + (len(m.gold) if m.gold else 0); seg_types[1] += L - 1 - (len(m.gold) if m.gold else 0)
-            with amp_ctx(amp):
-                loss, _, _ = m.chunk(m.start_from(els=st, dev=dev), T(o), T(tg), decode=None)
-            mp = m.parts[0]
-            if m.parts[1] is not None:
-                reads.append(m.parts[1])
-        opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(loss.item()); mains.append(mp)
+            micro = max(1, L // 8) if a.long else 1
+            if micro > 1:                                                   # §118 LONG: gradient accumulation over micro-batches
+                opt.zero_grad(); lt = mt = 0.0; rt = []; at = []
+                for sl in np.array_split(np.arange(a.bs), micro):
+                    with amp_ctx(amp):
+                        li, _, _ = m.chunk(m.start_from(els=st[sl], dev=dev), T(o[sl]), T(tg[sl]), decode=None)
+                    (li / micro).backward(); lt += li.item() / micro; mt += m.parts[0] / micro
+                    if m.parts[1] is not None:
+                        rt.append(m.parts[1])
+                    if m.anchor_val is not None:
+                        at.append(m.anchor_val)
+                loss_val = lt; mp = mt; done_bwd = True
+                if rt:
+                    reads.append(float(np.mean(rt)))
+                if at:
+                    anchors.append(float(np.mean(at)))
+            else:
+                with amp_ctx(amp):
+                    loss, _, _ = m.chunk(m.start_from(els=st, dev=dev), T(o), T(tg), decode=None)
+                mp = m.parts[0]
+                if m.parts[1] is not None:
+                    reads.append(m.parts[1])
+                if m.anchor_val is not None:
+                    anchors.append(m.anchor_val)
+        if done_bwd:
+            torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(loss_val); mains.append(mp)
+        else:
+            opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(loss.item()); mains.append(mp)
         gold_last = m.gold; m.gold = None
         if step % 100 == 0 or step == a.steps:
             ml = float(np.mean(mains)); nl = null_loss(L, rho)
@@ -344,6 +408,8 @@ def main():
                 rec["rel_ratio"] = p1 / max(1e-9, ps); rec["rel_ratio_zero"] = p1 / max(1e-9, p0)
             if reads:
                 rec["reader_loss"] = float(np.mean(reads))
+            if anchors:
+                rec["anchor_loss"] = float(np.mean(anchors)); anchors.clear()
             if dag:
                 rec["dag_two_chunk_batches"] = len(dag); rec["dag_snap_valid"] = float(np.mean([v for v, _ in dag]))
                 rec["dag_snap_correct"] = float(np.mean([c_ for _, c_ in dag]))
@@ -364,12 +430,16 @@ def main():
     del opt; m.zero_grad(set_to_none=True); m.eval(); t1 = time.time()
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
-    res = {"arm": f"mk{a.k}" + ("" if a.arm == "mk" else "_" + a.arm), "k": a.k, "seed": a.seed, "steps": a.steps, "train_sec": train_sec,
+    res = {"arm": f"mk{a.k}" + ("" if a.arm == "mk" else "_" + a.arm) + ("_anchor" if a.anchor else "") + ("_long" if a.long else ""), "k": a.k, "seed": a.seed, "steps": a.steps, "train_sec": train_sec,
            "eval_dtype": str(amp), "test_sequences": len(Xte), "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
            "segment_types": {"start_or_gold_text": seg_types[0], "latent": seg_types[1]}}
     res.update(evaluate(m, a, dev, amp, Xtr, Ytr, Xte, Yte)); res.update(log_stats(read_log(lp), sc)); res["eval_sec"] = round(time.time() - t1)
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
-    print("EVAL", json.dumps({kk: res[kk] for kk in ("cumulative", "donor")}), flush=True); print("DONE", a.out, flush=True)
+    print("EVAL", json.dumps({kk: res[kk] for kk in ("cumulative", "donor")}), flush=True)
+    if a.s115:                                                              # §118: snap115 (A)/(B) in-process -> eval_s115.json
+        from boxes.snap115 import run_markov
+        run_markov(m, a.out, dev, amp, a.eval_bs, a.test_n, a.ext_n, a.data_dir, a.k, "A,B", a.ext_len if a.ext_len < 2048 else 0)
+    print("DONE", a.out, flush=True)
 
 
 if __name__ == "__main__":
