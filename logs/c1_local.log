@@ -437,3 +437,6 @@
 09:02:29 copy_unit_test rc 0 (cuda:0)
 09:15:11 s115 s111_mk4_read_s10 rc 0 (cuda:2, fp32)
 09:16:23 a114_loopr_4x4_s1 rel_only rc 0 (cuda:2)
+10:05:23 contraction_diag anchor s71-73 rc 0 (cuda:0)
+10:11:56 s120_ff_trace_s2 growth_only rc 0 (cuda:0)
+10:12:01 s120_ff_trace_s2 cert_only rc 0 (cuda:0)
