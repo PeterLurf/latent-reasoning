@@ -2913,6 +2913,15 @@ Scorer `theory/score_s122.py`, committed before any run.
   Logging only.
 * If triggered: proof seed first, with §121's GPU memory and eval probe.
 
+**Note 120-3 (2026-10-05 05:42 EDT, before any §120 result is read; CERT scheduling, Audit's request).** CERT's BFS on b1 ran over 2 h and
+blocked the queue, so it now runs post hoc.
+* The main eval uses `--no_cert`. A separate `--cert_only` job writes `<run>/eval_cert.json` under a 45-minute limit.
+* Status "done" carries holds true / false as registered.
+* "inconclusive_cap" (10⁶ codes) or "inconclusive_time" mean **no certification claim** for that seed, the same as
+  120-2's "capped ⇒ does not hold". They are not a training failure, and PILOT-PASS (accuracy) is unaffected.
+* A long BFS is itself informative: many reachable codes per state. n_reachable and codes per state are reported.
+* `theory/score_s120.py` reads eval_cert.json.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
