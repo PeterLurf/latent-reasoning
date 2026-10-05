@@ -2205,6 +2205,17 @@ after Literature's check 15cf541a). New arm NONE+COPY: reading footholds against
 * 116-1's truth-use rule is unchanged: copy problems use only the input. The launch condition (§112 FOOTHOLD-0.1) is
   unchanged. Scorer `theory/score_s116.py`, extended now.
 
+**Note 116-3 (2026-10-05 01:36 EDT, before any §116 run; the experiments session's NONE+COPY implementation, accepted).**
+* `self110 --no_r0 --copy_frac 0.1`: 6 of 64 rows per step are copy problems, from the same draw RNG, from step 0 through
+  the final relabel.
+* `Gen110.copy_loss` runs the KV chunk over the start text alone; its last hidden is the slot, and the masked fork
+  decodes the start's own text. Loss = (58 · main + 6 · copy) / 64.
+* Logged only:
+  - stay_rate: the share of k = 1 restarts whose decode equals s, over the (s, op) pairs with δ(s, op) ≠ s;
+  - acc_L5plus per round;
+  - k1 accuracy per round.
+* The copy path is in the truth-entry docstring (input only).
+
 ## 117. One model for C1 + C4 + C6: final-answer training through self-decoded restarts under Markov segments, with the auxiliary reader (pre-registered 2026-10-04 22:24 EDT, after Literature's check f9ce7210 / 3b9c8d61 and before any implementation or run; launched only if §111 MK-4-READ meets REL)
 
 **Why.** Three results point at one design.
