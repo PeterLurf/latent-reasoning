@@ -217,6 +217,7 @@ def certificate(m, fam, dev, amp, cap, bs=2048, time_limit=None):
         for s_, x_, c in zip(S[i:i + bs], X[i:i + bs], ids):
             trans[("start", int(s_), int(x_))] = c
     frontier = sorted(set(frontier)); seen = set(frontier); capped = False
+    layers = [{"depth": 1, "frontier": len(frontier), "cum": len(codes), "sec": round(time.time() - t_start)}]   # Theory: growth curve
     while frontier:
         nxt = []
         pairs = [(c, x) for c in frontier for x in range(fam.n_items)]
@@ -233,9 +234,14 @@ def certificate(m, fam, dev, amp, cap, bs=2048, time_limit=None):
                     seen.add(n); nxt.append(n)
         if len(codes) > cap:
             capped = True; break
+        layers.append({"depth": layers[-1]["depth"] + 1, "frontier": len(nxt), "cum": len(codes), "sec": round(time.time() - t_start),
+                       "complete": not timed_out})
         if timed_out:
             break
         frontier = nxt
+    if timed_out:                                                           # inconclusive: no decode / Moore pass on a partial machine
+        return {"holds": None, "status": "inconclusive_time", "n_reachable_partial": len(codes), "capped": capped, "timed_out": True,
+                "time_limit": time_limit, "sec": round(time.time() - t_start), "layers": layers, "n_start_pairs": int(len(S))}
     dec = decode_codes(list(range(len(codes))))
     valid = bool((dec >= 0).all())
     for k, n in trans.items():
@@ -246,9 +252,6 @@ def certificate(m, fam, dev, amp, cap, bs=2048, time_limit=None):
                 viol += 1; continue
             want = fam.delta(np.array([dec[k[0]]]), np.array([k[1]]))[0]
         viol += int(dec[n] != want)
-    if timed_out:                                                           # inconclusive: no decode / Moore pass on a partial machine
-        return {"holds": None, "status": "inconclusive_time", "n_reachable_partial": len(codes), "capped": capped, "timed_out": True,
-                "time_limit": time_limit, "sec": round(time.time() - t_start)}
     holds = valid and viol == 0 and not capped
     # Moore minimisation of the code machine (outputs = decodes)
     n = len(codes); part = {c: int(dec[c]) for c in range(n)}
@@ -259,7 +262,27 @@ def certificate(m, fam, dev, amp, cap, bs=2048, time_limit=None):
             break
         part = newp
     return {"holds": bool(holds), "n_reachable": n, "n_moore": len(set(part.values())), "capped": capped, "violations": viol,
-            "all_decode_valid": valid, "status": "inconclusive_cap" if capped else "done", "timed_out": False, "sec": round(time.time() - t_start)}
+            "all_decode_valid": valid, "status": "inconclusive_cap" if capped else "done", "timed_out": False, "sec": round(time.time() - t_start),
+            "layers": layers, "n_start_pairs": int(len(S))}
+
+
+GROWTH_POS = (16, 64, 128, 256, 512, 1024, 2048)
+
+
+def code_growth(codes, lab=None):
+    """Theory (Audit): distinct codes visited by position p over all chains (and the mean distinct codes per true state)."""
+    out = {}
+    for p_ in GROWTH_POS:
+        if p_ > codes.shape[1]:
+            continue
+        flat = codes[:, :p_].reshape(-1, codes.shape[-1]); r = {"distinct": int(len(np.unique(flat, axis=0)))}
+        if lab is not None:
+            per = {}
+            for c, s_ in zip(map(bytes, flat), lab[:, :p_].reshape(-1)):
+                per.setdefault(int(s_), set()).add(c)
+            r["per_state_mean"] = float(np.mean([len(v) for v in per.values()]))
+        out[str(p_)] = r
+    return out
 
 
 @torch.no_grad()
@@ -307,12 +330,25 @@ def main():
     ap.add_argument("--log_every", type=int, default=100); ap.add_argument("--data_dir", default=os.path.join(ROOT, "bench", "data", "s5"))
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     ap.add_argument("--no_cert", action="store_true", help="skip CERT in the main eval (run post-hoc with --cert_only; Audit 2026-10-05)")
+    ap.add_argument("--growth_only", action="store_true", help="distinct codes vs position on ext_n 2,048-step rollouts -> <out>/eval_growth.json")
     ap.add_argument("--cert_only", action="store_true", help="CERT alone from <out>/model.pt -> <out>/eval_cert.json")
     ap.add_argument("--cert_time", type=int, default=2700, help="CERT wall-clock limit (s); exceeded -> inconclusive_time")
     ap.add_argument("--eval_only", action="store_true", help="re-run the eval from <out>/model.pt (training batch draws replayed for coverage_drawn)")
     a = ap.parse_args(); dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); sc = a.sched_scale
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     fam = Family(a.family); os.makedirs(a.out, exist_ok=True)
+    if a.growth_only:                                                       # Theory / Audit: distinct codes vs length on 2,048-step rollouts
+        m = FSQ120(s5.load_gpt2(dev), fam).to(dev); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval()
+        if fam.name == "s5":
+            Xx, Yx = s5.load_csv(os.path.join(a.data_dir, "S5=2048.csv"), limit=a.ext_n); s5.check_labels(Xx, Yx)
+            px, cx = run_test(m, fam, np.zeros(len(Xx), np.int64), Xx, dev, amp, a.eval_bs); acc = float((px == Yx).all(1).mean())
+        else:
+            Xx = ff_sequences(np.random.default_rng(12004), a.ext_n, 2048); Yx = np.zeros_like(Xx); s_ = np.zeros(len(Xx), np.int64)
+            for t in range(Xx.shape[1]):
+                s_ = fam.delta(s_, Xx[:, t]); Yx[:, t] = s_
+            px, cx = run_test(m, fam, None, Xx, dev, amp, a.eval_bs, every=False); r_ = Xx == RD; acc = float(((px == Yx) & r_).sum() / r_.sum())
+        g_ = {"n": len(Xx), "len": int(Xx.shape[1]), "acc": acc, "code_growth": code_growth(cx, Yx), "eval_dtype": str(amp)}
+        json.dump(g_, open(os.path.join(a.out, "eval_growth.json"), "w", newline="\n"), indent=1); print("GROWTH", json.dumps(g_), flush=True); return
     if a.cert_only:                                                         # post-hoc CERT (scoring as registered; only its scheduling moved)
         m = FSQ120(s5.load_gpt2(dev), fam).to(dev); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval()
         c = certificate(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time); c.update({"eval_dtype": str(amp), "cert_cap": a.cert_cap})
@@ -363,7 +399,8 @@ def main():
         if a.ext_n:
             el = 2048 if a.test_len >= 512 else a.test_len
             Xx, Yx = s5.load_csv(os.path.join(a.data_dir, "S5=2048.csv"), limit=a.ext_n); s5.check_labels(Xx, Yx); Xx, Yx = Xx[:, :el], Yx[:, :el]
-            px, _ = run_test(m, fam, np.zeros(len(Xx), np.int64), Xx, dev, amp, a.eval_bs); res["ext_2048"] = {"n": len(Xx), "len": Xx.shape[1], "cumulative": float((px == Yx).all(1).mean())}
+            px, cx = run_test(m, fam, np.zeros(len(Xx), np.int64), Xx, dev, amp, a.eval_bs); res["ext_2048"] = {"n": len(Xx), "len": Xx.shape[1], "cumulative": float((px == Yx).all(1).mean())}
+            res["code_growth_ext"] = code_growth(cx, Yx)
         s0m, Xm = np.zeros(a.margin_n, np.int64), Xte[:a.margin_n, :128]
     else:
         trng = np.random.default_rng(12000); Xte = ff_sequences(trng, a.test_n, a.test_len)
