@@ -44,7 +44,8 @@ def main():
                  "n_moore": {s: (r.get("cert") or {}).get("n_moore") for s, r in runs.items()},
                  "codes_per_state": {s: r.get("codes_per_state") for s, r in runs.items()},
                  "code_perplexity": {s: r.get("code_perplexity") for s, r in runs.items()},
-                 "serial": {s: serial(r.get("donor")) for s, r in runs.items()}}
+                 "serial": {s: serial(r.get("donor")) for s, r in runs.items()},
+                 "serial_registered": {s: bool(r.get("donor")) and all(v["donor_consistent"] >= 0.90 and v["recipient_consistent"] < 0.10 for v in r["donor"].values()) for s, r in runs.items()}}   # 120-8: printed beside
             res["cells"]["%s_%s" % (fam, arm)] = C
             print("%-9s n %d PILOT_PASS %s | long %s | cert %s reach %s moore %s | serial %s | ppl %s" % (
                 "%s_%s" % (fam, arm), C["n"], C["PILOT_PASS"], C["long_acc"], C["cert"], C["n_reachable"], C["n_moore"], C["serial"], C["code_perplexity"]))

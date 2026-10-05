@@ -31,6 +31,10 @@
    "serial": {
     "1": true,
     "2": false
+   },
+   "serial_registered": {
+    "1": true,
+    "2": false
    }
   },
   "s5_trace": {
@@ -43,7 +47,8 @@
    "n_moore": {},
    "codes_per_state": {},
    "code_perplexity": {},
-   "serial": {}
+   "serial": {},
+   "serial_registered": {}
   },
   "ff_final": {
    "n": 1,
@@ -71,6 +76,9 @@
    },
    "serial": {
     "2": true
+   },
+   "serial_registered": {
+    "2": false
    }
   },
   "ff_trace": {
@@ -99,6 +107,9 @@
    },
    "serial": {
     "2": true
+   },
+   "serial_registered": {
+    "2": false
    }
   }
  },
