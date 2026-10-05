@@ -1,0 +1,146 @@
+{
+ "nc_floor_plus_0.05": 0.053000000000000005,
+ "arms": {
+  "m=1 (\u00a799 MARKOV)": {
+   "n": 3,
+   "op3": {
+    "1": 0.253,
+    "2": 0.273,
+    "3": 0.236
+   },
+   "carry_seeds": [],
+   "CARRY_3": false,
+   "NO_BYPASS": false,
+   "test_acc": {
+    "1": 0.047,
+    "2": 0.041,
+    "3": 0.02
+   },
+   "steps": {
+    "1": null,
+    "2": null,
+    "3": null
+   },
+   "removal": {
+    "1": {
+     "zero": 0.0,
+     "mean": 0.0
+    },
+    "2": {
+     "zero": 0.0,
+     "mean": 0.0
+    },
+    "3": {
+     "zero": 0.0,
+     "mean": 0.0
+    }
+   }
+  },
+  "LAT-2": {
+   "n": 3,
+   "op3": {
+    "1": 0.143,
+    "2": 0.592,
+    "3": 0.154
+   },
+   "carry_seeds": [],
+   "CARRY_3": false,
+   "NO_BYPASS": false,
+   "test_acc": {
+    "1": 0.014,
+    "2": 0.063,
+    "3": 0.023
+   },
+   "steps": {
+    "1": null,
+    "2": null,
+    "3": null
+   },
+   "removal": {
+    "1": {
+     "zero": 0.0,
+     "mean": 0.0
+    },
+    "2": {
+     "zero": 0.0,
+     "mean": 0.0
+    },
+    "3": {
+     "zero": 0.0,
+     "mean": 0.0
+    }
+   }
+  },
+  "LAT-4": {
+   "n": 3,
+   "op3": {
+    "1": 0.235,
+    "2": 0.316,
+    "3": 0.375
+   },
+   "carry_seeds": [],
+   "CARRY_3": false,
+   "NO_BYPASS": false,
+   "test_acc": {
+    "1": 0.042,
+    "2": 0.053,
+    "3": 0.023
+   },
+   "steps": {
+    "1": null,
+    "2": null,
+    "3": null
+   },
+   "removal": {
+    "1": {
+     "zero": 0.0,
+     "mean": 0.0
+    },
+    "2": {
+     "zero": 0.0,
+     "mean": 0.0
+    },
+    "3": {
+     "zero": 0.0,
+     "mean": 0.0
+    }
+   }
+  },
+  "PAUSE-4": {
+   "n": 3,
+   "op3": {
+    "1": 0.454,
+    "2": 0.285,
+    "3": 0.065
+   },
+   "carry_seeds": [],
+   "CARRY_3": false,
+   "NO_BYPASS": false,
+   "test_acc": {
+    "1": 0.055,
+    "2": 0.042,
+    "3": 0.007
+   },
+   "steps": {
+    "1": null,
+    "2": null,
+    "3": null
+   },
+   "removal": {
+    "1": {
+     "zero": 0.0,
+     "mean": 0.0
+    },
+    "2": {
+     "zero": 0.0,
+     "mean": 0.0
+    },
+    "3": {
+     "zero": 0.0,
+     "mean": 0.0
+    }
+   }
+  }
+ },
+ "reading": "neither"
+}
