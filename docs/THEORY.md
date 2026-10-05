@@ -3868,6 +3868,10 @@ fetched files). Without the bottleneck, seed 2 does not plateau: the 8-d bottlen
 * **The STOP RULE does not fire.** Stage 2 (ANNEAL) is triggered for seed 2 and deploys on a 3090.
   - RAW-H s1 / s3 / s4 (b20) complete BOTTLENECK-CAUSE's count clause.
   - Long accuracy, final loss and donor are reported beside the flag when b19 lands.
+* **Provisional (Audit's reproduction from log.jsonl).** Loss is 8.09 at step 100, 3.42 at 1k and 1.65 at 2k (ratio
+  0.48, so no plateau). It then bumps to 3.06 at 2.5k and 2.57 at 3k, the L_max step-up at 2k that §120 cells also show.
+  - The escape at 2k is established. Whether seed 2 finishes exact is open until b19's long accuracy and final loss land.
+    "The bottleneck causes the basin" is provisional until then.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
