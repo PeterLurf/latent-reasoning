@@ -3381,6 +3381,22 @@ target is not enough: the text path's latent never had to carry the sum.**
   teacher path whose carried state is itself read downstream. The general lesson for future designs: anchor to a
   text-started chain of at least two hand-offs, not to a single text-started step.
 
+**Note 120-9 (2026-10-05 13:19 EDT; descriptive, after data, disclosed). A behavioural certificate for flip-flop, whose outputs exist
+only at reads.**
+* **FF FINAL s1:** perfect reads (long_acc and long_acc_seq 1.0; 2,048-step accuracy 1.0; 20 codes, saturated). But the
+  task-language CERT fails: 20 reachable codes, Moore 4, 13 violations.
+  - FINAL supervises only reads, so a code reached after a write or ignore need not decode to the true bit. Only its
+    read successor must.
+  - The decode-every-code CERT (120-7 / 120-8) therefore demands outputs that the task never observes.
+* **cert_task_reads (descriptive, reported beside the registered and task-language CERTs; no rule changes).** BFS over
+  the product of the code machine and the true flip-flop automaton.
+  - It starts from (start code, no-write state) and follows only valid sequences (first item a write).
+  - It checks decode(next(c, read)) = the true last-written bit **only on read transitions**.
+  - It holds iff every reachable read is correct, which certifies correct reads at every length. It is the right
+    notion for an output-at-reads task.
+  - S5's CERT is unchanged: every S5 position is a potential final answer, so every code must decode.
+* The §120 and §123 verdicts stay on the pre-registered CERT (120-8). cert_task_reads is reported as a description.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
