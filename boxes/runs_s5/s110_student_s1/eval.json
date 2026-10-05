@@ -1,0 +1,129 @@
+{
+ "arm": "self110_student",
+ "start_ge3": "identity",
+ "seed": 1,
+ "k": 4,
+ "fork": "mask",
+ "train_sec": 13365,
+ "eval_dtype": "torch.bfloat16",
+ "test_sequences": 2000,
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "short_fraction": 0.0,
+ "updates": 24000,
+ "rounds": [
+  {
+   "student_of": "boxes/runs_s5/s110_s1/pool_final.npz",
+   "pool": 50000,
+   "kept_share": 0.99508,
+   "items": {
+    "4": 199059,
+    "1": 11862,
+    "3": 13292,
+    "2": 11593
+   },
+   "steps": 24000
+  }
+ ],
+ "cumulative": {
+  "128": 1.0,
+  "256": 0.9995,
+  "512": 0.999
+ },
+ "final_state_acc_512": 0.9995,
+ "compute_512_per_problem": {
+  "tokens_processed": 4992,
+  "flops": 911386607616.0,
+  "seq_passes": 1792,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "latent_slots": 512,
+  "measurement_decode_flops": 504754864128.0
+ },
+ "checkpoint_validity": {
+  "snaps": 256000,
+  "valid": 256000,
+  "rate": 1.0
+ },
+ "extension_2048": {
+  "n": 500,
+  "len": 2048,
+  "cumulative": {
+   "512": 0.992,
+   "1024": 0.988,
+   "2048": 0.982
+  }
+ },
+ "chunk_check": {
+  "k": 4,
+  "n": 100000,
+  "per_chunk_acc": 0.99999,
+  "per_slot_acc": [
+   1.0,
+   1.0,
+   1.0,
+   0.99999
+  ],
+  "pred_seq_acc_512": 0.9987208124587365
+ },
+ "removal": {
+  "zero": {
+   "k": 4,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.0,
+    0.0008,
+    0.0004,
+    0.0083
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "zero",
+   "acc_after_first_ablated_slot": 0.0031666666666666666
+  },
+  "mean": {
+   "k": 4,
+   "n": 10000,
+   "per_chunk_acc": 0.0,
+   "per_slot_acc": [
+    0.0099,
+    0.0068,
+    0.0083,
+    0.0091
+   ],
+   "pred_seq_acc_512": 0.0,
+   "ablate": "mean",
+   "acc_after_first_ablated_slot": 0.008066666666666666
+  }
+ },
+ "donor": {
+  "slot1": {
+   "donor_consistent": 0.9995,
+   "recipient_consistent": 0.0105
+  },
+  "slot2": {
+   "donor_consistent": 1.0,
+   "recipient_consistent": 0.0095
+  },
+  "slot3": {
+   "donor_consistent": 0.9985,
+   "recipient_consistent": 0.0075
+  }
+ },
+ "edit_iia": {
+  "n": 5000,
+  "iia": 1.0
+ },
+ "coverage_drawn": 0.0,
+ "coverage_realised": 0.0,
+ "k1_labelled_acc": null,
+ "k1_never_labelled_acc": 1.0,
+ "k1_certified": true,
+ "k1_all_acc": 1.0,
+ "k1_never_labelled_in_pool": null,
+ "k1_never_labelled_not_in_pool": 1.0,
+ "n_never_labelled": 14400,
+ "n_never_labelled_in_pool": 0,
+ "per_round_split": [],
+ "eval_sec": 982
+}
