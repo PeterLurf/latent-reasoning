@@ -1,0 +1,48 @@
+{
+ "family": "ff",
+ "arm": "trace",
+ "seed": 1,
+ "train_sec": 9851,
+ "eval_only": false,
+ "eval_dtype": "torch.bfloat16",
+ "coverage_drawn": 0.26666666666666666,
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "long_acc": 0.9952499086520895,
+ "long_acc_seq": 0.885,
+ "acc_by_length": {
+  "16": 0.9996567112941984,
+  "32": 0.998531810766721,
+  "64": 0.9973572515416033,
+  "128": 0.996409973173426,
+  "256": 0.9951976792049709,
+  "512": 0.9952499086520895
+ },
+ "long_acc_pignore_0.98": 0.9974334295797241,
+ "long_acc_pignore_0.1": 0.9754823255773587,
+ "n_codes": 459,
+ "code_perplexity": 45.223680098510194,
+ "codes_per_state": 267.5,
+ "cert": {
+  "status": "deferred",
+  "holds": null
+ },
+ "donor": {
+  "pos2": {
+   "donor_consistent": 1.0,
+   "recipient_consistent": 0.712,
+   "chance_overlap": 0.712
+  },
+  "pos4": {
+   "donor_consistent": 0.9995,
+   "recipient_consistent": 0.63,
+   "chance_overlap": 0.6305
+  },
+  "pos6": {
+   "donor_consistent": 1.0,
+   "recipient_consistent": 0.5385,
+   "chance_overlap": 0.5385
+  }
+ },
+ "margin_flip_rate": 0.9131875,
+ "eval_sec": 107
+}
