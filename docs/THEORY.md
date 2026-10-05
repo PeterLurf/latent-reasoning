@@ -213,6 +213,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 123 | Attractor strength causal for no-snap? Dither dose-response (σ 0–0.5) + dithered FSQ (canonical codes), §120 harness | registered (after §120's pilot) | **open** |
 | 124 | Does reading a given state fix self-training's lottery? §112 f = 0.1 + copy objective vs exposure control | registered | **open** |
 | 125 | Readable bottleneck from step 0: standardised carried code vs the soft-phase no-read basin (task-agnostic, §120 harness) | registered | **open** |
+| 126 | Is the bottleneck the cause of the soft-phase basin? RAW-H vs ANNEAL (stop rule → restart-on-plateau) | registered | **open** |
 
 ## Live sections
 
@@ -3745,6 +3746,69 @@ rescue the basin seed.**
   - Start with e = std(h) and blend to W_up(z_b) over 2k–6k (task-agnostic), so the decoder learns to read a trained
     carrier before the bottleneck takes over.
   - Literature's next-latent auxiliary (2511.05963) is the other option.
+
+## 126. Is the bottleneck the cause of the soft-phase basin? Raw-h carriage against an annealed bottleneck, with a stop rule (pre-registered 2026-10-05 16:27 EDT, after Literature's check d30785f9 and before any implementation or run; Audit's decisive-test framing; the user's task-agnostic directive)
+
+**Why.** In the task-agnostic harness (§120), S5 seed 2 plateaus at the ln-120 null by 2k in every arm tried: §120
+FINAL, §123 FSQ+DITHER and σ = 0, and §125 STD.
+* Standardising the carried code did not rescue it (125-4), and no tanh saturates at init.
+* Seeds 1 and 2 are indistinguishable at init (125-4).
+* §111 READ, which carries the raw h with a reader and per-step supervision, never plateaued (5/5).
+* Two candidate causes: the 8-d bottleneck, or final-answer supervision without a reader.
+* **Prior** (d30785f9, `docs/LIT_S126_ANNEAL_2026-10-05.md`):
+  - QBN 1811.12530 is the wide-then-narrow precedent for recurrent latents (continuous first, then quantised bottlenecks
+    distilled to reproduce the hidden states). KL annealing (Bowman) runs the same direction; Burgess 1804.03599 the
+    opposite.
+  - §89's α → 1 collapse is the warning. §108 (raw latent, per-step targets, no reader) hit the basin in 2/4, so RAW-H
+    may plateau.
+
+**Harness.** §120's exactly (FINAL supervision: final answers only; a Markov segment per item; the answer decoder; the
+length curriculum; 24k steps; bs 64). S5 seeds 1–4, **RTX 3090 / 3090 Ti only** (125-2).
+
+**Arms (sequential; Audit / Literature (3)1).**
+* **Stage 1, RAW-H (the decisive control), S5 s1–4, proof seed s2.** No bottleneck: the carried vector is the segment's last hidden h, standardised to
+  GPT-2's embedding statistics (§72b / §73 / 125's map, EMA statistics frozen at the end). It separates bottleneck from
+  supervision.
+* **Stage 2, ANNEAL, run only if RAW-H s2 is not plateaued, and only on the RAW-H seeds that escaped.** e = (1 − λ) ·
+  std(h) + λ · W_up(z_b), with λ = 0 until 2k, then rising linearly to 1 at 6k.
+  - During the ramp a QBN-style distillation loss trains the bottleneck to reproduce the carrier: ‖W_up(z_b) − sg(std(h))‖²
+    / ‖sg(std(h))‖², weight 1 (Literature (3)2).
+  - FSQ's soft → hard rounding is shifted to 6k–8k. Test uses λ = 1, hard.
+  - The std(h) statistics are frozen at 2k and re-estimated at the FSQ switch (Literature (3)4).
+* ANNEAL equals RAW-H until 2k, where the plateau is decided, so it cannot answer the plateau question. It tests only
+  whether narrowing to the 8-d bottleneck survives after escape. Literature notes the α → 1 collapse risk, and that QBN
+  used distillation.
+* **If RAW-H s2 plateaus:** ANNEAL is skipped and the STOP RULE fires as written.
+
+**Measures.** The 123-3 plateau flag per seed (at 2k), final loss, long accuracy (S5 cumulative at 512 with no snaps;
+2,048), single-code / single-carrier donor, and carried_norm at init / 2k. For ANNEAL: accuracy at λ = 1, codes per
+state, and growth.
+
+**Rules (fixed now).**
+* **BOTTLENECK-CAUSE:** RAW-H's seed 2 is **not** plateaued **and** RAW-H's plateau count ≤ 1/4. Then the bottleneck
+  causes the basin.
+* **ANNEAL-INHERI2026-10-05 16:27 EDT (Stage 2 only):** ANNEAL reaches long accuracy ≥ 0.99 at λ = 1 in every seed it runs on. The narrow
+  code inherits the carrier.
+* **STOP RULE (Audit, fixed now):** if RAW-H does not rescue seed 2 and its plateau count is not below §120's S5 rate
+  (2/4), the task-agnostic line **stops trying to remove the basin**.
+  - It adopts label-free restart-on-plateau at 2k (re-seed the run when 123-3's flag fires) as a disclosed engineering
+    reliability procedure: best-of-n with early triage (Dodge 2002.06305). Restarts and **cost per accepted seed** are
+    reported.
+  - It extends the families (cycle navigation, multiplication via items) with that procedure. There is no fourth basin
+    fix.
+
+**Readings.**
+* **BOTTLENECK-CAUSE + ANNEAL-INHERI2026-10-05 16:27 EDT.** The 8-d bottleneck causes the basin, and entering through a wide carrier fixes
+  it. ANNEAL joins the harness.
+* **BOTTLENECK-CAUSE without ANNEAL-INHERI2026-10-05 16:27 EDT.** The bottleneck causes it, but a narrow code cannot take over. Restart-on-
+  plateau, as the stop rule.
+* **RAW-H plateaus on seed 2.** The basin comes from final-answer supervision without a reader, not the bottleneck. Per
+  the stop rule: restart-on-plateau. (Literature: the mechanistic fix would be a reader or COPY, noted and not run.)
+
+**Placement.** Stage 1: 4 runs, about $2.5. Stage 2: ≤ 4 runs, about $2.5, only on the trigger. RTX 3090-class only,
+proof seed first (RAW-H s2).
+Implementation: the experiments session (fsq120 `--raw_h` and `--anneal`). Scorer `theory/score_s126.py`, committed
+before any run.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
