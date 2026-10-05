@@ -161,7 +161,7 @@ class FSQ120(nn.Module):
             if self.training and self.distill_on:                          # ||W_up(z_b) - sg(std h)||^2 / ||sg(std h)||^2 (weight 1, RAMP ONLY:
                 # before 2k the distill gradient would reach GPT-2 through z_b(h), so ANNEAL would not equal RAW-H there)
                 t = sh.detach().float(); self._dist.append((((ec.float() - t) ** 2).sum(-1) / (t ** 2).sum(-1).clamp_min(1e-6)).mean())
-            return ((1 - self.lam) * sh.float() + self.lam * ec.float()).to(ec.dtype)
+            return (1 - self.lam) * sh.float() + self.lam * ec.float()     # fp32 while lam < 1, as RAW-H (note 126-5; ANNEAL s2 ran bf16-cast)
         e = qs if self.raw_h else self.up(qs)                              # §126: std(h) directly; else W_up(code)
         return self.std_map(e) if self.std else e                          # §125: the same map everywhere a code enters GPT-2
 
