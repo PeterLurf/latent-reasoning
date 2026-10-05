@@ -38,77 +38,119 @@
    }
   },
   "s5_trace": {
-   "n": 0,
-   "long_acc": {},
-   "PILOT_PASS": false,
-   "cert": {},
-   "cert_registered_ff": null,
-   "n_reachable": {},
-   "n_moore": {},
-   "codes_per_state": {},
-   "code_perplexity": {},
-   "serial": {},
-   "serial_registered": {}
-  },
-  "ff_final": {
-   "n": 1,
+   "n": 2,
    "long_acc": {
+    "1": 0.0,
     "2": 1.0
    },
    "PILOT_PASS": false,
    "cert": {
+    "1": false,
     "2": false
    },
-   "cert_registered_ff": {
-    "2": null
-   },
+   "cert_registered_ff": null,
    "n_reachable": {
+    "1": null,
     "2": null
    },
    "n_moore": {
+    "1": null,
     "2": null
    },
    "codes_per_state": {
-    "2": 18.0
+    "1": 16.166666666666668,
+    "2": 17.941666666666666
    },
    "code_perplexity": {
-    "2": 18.150665240065038
+    "1": 30.880416592870255,
+    "2": 621.4584118551631
    },
    "serial": {
+    "1": false,
     "2": true
    },
    "serial_registered": {
+    "1": false,
+    "2": true
+   }
+  },
+  "ff_final": {
+   "n": 2,
+   "long_acc": {
+    "1": 1.0,
+    "2": 1.0
+   },
+   "PILOT_PASS": true,
+   "cert": {
+    "1": false,
+    "2": true
+   },
+   "cert_registered_ff": {
+    "1": null,
+    "2": false
+   },
+   "n_reachable": {
+    "1": null,
+    "2": 36
+   },
+   "n_moore": {
+    "1": null,
+    "2": 2
+   },
+   "codes_per_state": {
+    "1": 10.0,
+    "2": 18.0
+   },
+   "code_perplexity": {
+    "1": 13.224525414322725,
+    "2": 18.150665240065038
+   },
+   "serial": {
+    "1": true,
+    "2": true
+   },
+   "serial_registered": {
+    "1": false,
     "2": false
    }
   },
   "ff_trace": {
-   "n": 1,
+   "n": 2,
    "long_acc": {
+    "1": 0.9952499086520895,
     "2": 1.0
    },
-   "PILOT_PASS": false,
+   "PILOT_PASS": true,
    "cert": {
+    "1": false,
     "2": true
    },
    "cert_registered_ff": {
+    "1": null,
     "2": false
    },
    "n_reachable": {
+    "1": null,
     "2": 7
    },
    "n_moore": {
+    "1": null,
     "2": 2
    },
    "codes_per_state": {
+    "1": 267.5,
     "2": 3.5
    },
    "code_perplexity": {
+    "1": 45.223680098510194,
     "2": 4.616111955980161
    },
    "serial": {
+    "1": true,
     "2": true
    },
    "serial_registered": {
+    "1": false,
     "2": false
    }
   }
