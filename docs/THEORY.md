@@ -10,9 +10,21 @@ can travel only through the latents (MASK, MARKOV), with removal and bypass cont
 removal is the headline. 5 seeds and long-rollout drift for any passing arm (C6). Train short, test long on every new
 task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 
-## Where things stand (2026-10-03)
+## Where things stand (2026-10-04, night)
 
 * **North star:** one pretrained LM meeting C1–C7 (`docs/NORTH_STAR.md`).
+* **Serial C1 + C6 on S5 (§108, §111).**
+  - Markov segments (the latent is the only route) give unqualified serial C1 in every seed that learns.
+  - The auxiliary reader removes the no-read basin: **5/5 exact at 512 with single-slot donor SERIAL, 4/5 at 2,048**
+    (111-4).
+  - Per-step supervised, so not C4. Twice the budget does not help (0/5, 111-3).
+* **C4 by final-answer training through self-decoded restarts (§110, §112).**
+  - §110 s3 (71.5 % short coverage) and §112 s21 (10 %) are certified on all 14,400 transitions.
+  - Mechanism: the history cut turns long final-answer problems into short problems that start from the model's own
+    checkpoint (112-2).
+  - Under the masked fork the carrier is seed-dependent (112-3). Reliability is open.
+* **Live:** §113 (the reader inside §110); §116 (strict C4: operator definitions only, or no shorts; conditional);
+  **§117 (C1 + C4 + C6 in one model; after Audit's grep and the dose note)**.
 * **Range principle (§26, §64, §66, §71).** Every length failure is a quantity that grows with the problem and leaves its
   trained range. Every working fix restarts from a written or snapped state with the history cut.
 * **Latent restarts in GPT-2 (§86, §92).**
