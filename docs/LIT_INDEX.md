@@ -88,3 +88,4 @@ advisory notes are in `archive/`.
 | LIT_S118_ANCHOR_2026-10-04 | §118 | anchor = professor forcing 1610.09038; LONG moves the range boundary |
 | LIT_S119_BASELINES_2026-10-04 | §119 | faithful Coconut/CODI/SIM-CoT recipes (configs read); native + chunked hosts; MASK ≈ SIM-CoT with tied in-context decoder; Thinking States as 4th arm |
 | LIT_TASK_AGNOSTIC_2026-10-04 | directive | no-snap stabilisers (Attractor/DEQ, nGPT, Howe, LIFT/NextLat), learned discretisation (FSQ, SR-RNN, Abstract-CoT), self-summarisation (Delethink fixed timing, LightThinker learned, PENCIL per-task traces), learned halting (MoR, CALM); gap: learned what + when in latent space |
+| LIT_TASK_AGNOSTIC_PROPOSALS_2026-10-04 | P-A..P-D | FSQ-every-hand-off new as scoped (SR-RNN/QBN closest; Moore minimisation); P-B weaker than P-A; ST-Gumbel notation (1705.11192) not compositional (1706.08502); flip-flop 2306.00946 + Delétang as families; final-answer-only primary |
