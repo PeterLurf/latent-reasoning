@@ -18,6 +18,22 @@ R = os.path.join(ROOT, "boxes", "runs_fsq")
 SIG = {"000": 0.0, "010": 0.1, "025": 0.25, "050": 0.5}
 
 
+def plateau(d):
+    """note 123-3: loss(2k) >= 0.9 loss(1k) and loss(2k) >= 0.25 loss(100) (label-free, from log.jsonl)."""
+    p = os.path.join(R, d, "log.jsonl")
+    if not os.path.exists(p):
+        return None
+    L = {}
+    for line in open(p):
+        x = json.loads(line)
+        if "loss" in x and "step" in x:
+            L[x["step"]] = x["loss"]
+    if not L:
+        return None
+    g = lambda t: L[min(L, key=lambda s: abs(s - t))]  # noqa: E731
+    return bool(g(2000) >= 0.9 * g(1000) and g(2000) >= 0.25 * g(100))
+
+
 def load(d, f="eval.json"):
     p = os.path.join(R, d, f)
     return json.load(open(p)) if os.path.exists(p) else None
@@ -32,8 +48,23 @@ def main():
                 r = load("s123_%s_dither%s_s%d" % (fam, tag, sd))
                 if r is None:
                     continue
-                c = {"fam": fam, "sigma": sig, "seed": sd, "long_acc": r.get("long_acc"), "rho": r.get("rho"), "basin": r.get("basin"), "grid_share": r.get("grid_share")}
+                c = {"fam": fam, "sigma": sig, "seed": sd, "long_acc": r.get("long_acc"), "rho": r.get("rho"), "basin": r.get("basin"),
+                     "grid_share": r.get("grid_share"), "plateau": plateau("s123_%s_dither%s_s%d" % (fam, tag, sd))}
                 res["continuous"]["%s_%s_s%d" % (fam, tag, sd)] = c; cells.append(c)
+    allcells = cells; res["plateau_count"] = {"%s_%s" % (c["fam"], c["sigma"]): 0 for c in allcells}
+    for c in allcells:
+        res["plateau_count"]["%s_%s" % (c["fam"], c["sigma"])] += int(bool(c["plateau"]))
+    reg = dict(cells=cells)                                                     # registered verdict computed below on all cells
+    def causal(cs):
+        mrho_ = lambda fam, sig: (lambda v: sum(v) / len(v) if v else None)([c["rho"] for c in cs if c["fam"] == fam and c["sigma"] == sig and c["rho"] is not None])  # noqa: E731
+        s5_ok_ = mrho_("s5", 0.5) is not None and mrho_("s5", 0.0) is not None and mrho_("s5", 0.5) < mrho_("s5", 0.0)
+        pos_ = [sg for sg in (0.1, 0.25, 0.5) if mrho_("s5", sg) is not None]
+        ss = min(pos_, key=lambda sg: mrho_("s5", sg)) if pos_ else None
+        ff_ok_ = ss is not None and mrho_("ff", ss) is not None and mrho_("ff", 0.0) is not None and mrho_("ff", ss) < mrho_("ff", 0.0)
+        ii_ = [c for c in cs if c["rho"] is not None and c["rho"] < 0.3]; iii_ = [c for c in cs if c["rho"] is not None and c["rho"] > 0.6]
+        return {"i": s5_ok_ and ff_ok_, "ii": all((c["long_acc"] or 0) >= 0.99 for c in ii_), "iii": all((c["long_acc"] or 0) < 0.99 for c in iii_), "sigma_star": ss}
+    res["CAUSAL_registered_all_cells"] = causal(allcells)
+    cells = [c for c in allcells if not c["plateau"]]                           # note 123-3: non-plateau cells only
     mrho = lambda fam, sig: (lambda v: sum(v) / len(v) if v else None)([c["rho"] for c in cells if c["fam"] == fam and c["sigma"] == sig and c["rho"] is not None])  # noqa: E731
     s5_ok = mrho("s5", 0.5) is not None and mrho("s5", 0.0) is not None and mrho("s5", 0.5) < mrho("s5", 0.0)
     pos = [sg for sg in (0.1, 0.25, 0.5) if mrho("s5", sg) is not None]
@@ -42,8 +73,8 @@ def main():
     i_ok = s5_ok and ff_ok
     ii = [c for c in cells if c["rho"] is not None and c["rho"] < 0.3]; iii = [c for c in cells if c["rho"] is not None and c["rho"] > 0.6]
     ii_ok = all((c["long_acc"] or 0) >= 0.99 for c in ii); iii_ok = all((c["long_acc"] or 0) < 0.99 for c in iii)
-    res["CAUSAL"] = (len(cells) == 10) and i_ok and ii_ok and iii_ok
-    res["CAUSAL_parts"] = {"i": i_ok, "ii": ii_ok, "iii": iii_ok, "n_cells": len(cells)}
+    res["CAUSAL"] = (len(allcells) == 10) and i_ok and ii_ok and iii_ok           # over non-plateau cells (123-3)
+    res["CAUSAL_parts"] = {"i": i_ok, "ii": ii_ok, "iii": iii_ok, "n_cells_nonplateau": len(cells), "n_cells": len(allcells)}
     passing = [c for c in cells if (c["long_acc"] or 0) >= 0.99]
     res["continuous_stabiliser_reading"] = bool(passing) and all((c["grid_share"] or 1) < 0.5 for c in passing)
     canon = {}
@@ -59,15 +90,16 @@ def main():
             cps = ((g.get("codes_per_state") or {}).get("2048")) if isinstance(g.get("codes_per_state"), dict) else g.get("codes_per_state_2048")
             if cps is None:
                 cps = g.get("codes_per_state_2048")
-            seeds[s] = {"long_acc": r.get("long_acc"), "codes_per_state_2048": cps,
+            seeds[s] = {"long_acc": r.get("long_acc"), "codes_per_state_2048": cps, "plateau": plateau(d),
                         "cert_holds": cert.get("status") == "done" and bool(cert.get("holds")),
                         "cert_registered_holds": reg.get("status") == "done" and bool(reg.get("holds"))}
         base = {"s5": 34.2, "ff": 13.75}[fam]                                           # note 123-2: §120 FINAL's codes per state, per family
         canon[fam] = {"seeds": seeds, "codes_per_state_baseline": base,
-                      "CANONICAL": len(seeds) == 2 and all((v["codes_per_state_2048"] or 1e9) < base for v in seeds.values()) and any(v["cert_holds"] for v in seeds.values())}
+                      "CANONICAL_registered": len(seeds) == 2 and all((v["codes_per_state_2048"] or 1e9) < base for v in seeds.values()) and any(v["cert_holds"] for v in seeds.values()),
+                      "CANONICAL": (lambda np_: len(seeds) == 2 and len(np_) >= 1 and all((v["codes_per_state_2048"] or 1e9) < base for v in np_) and any(v["cert_holds"] for v in np_))([v for v in seeds.values() if not v["plateau"]])}   # 123-3
     res["fsqdither"] = canon
     print("continuous cells:", {k: (v["rho"], v["long_acc"], v["grid_share"]) for k, v in res["continuous"].items()})
-    print("CAUSAL", res["CAUSAL"], res["CAUSAL_parts"], "| continuous-stabiliser reading", res["continuous_stabiliser_reading"])
+    print("CAUSAL (non-plateau, 123-3)", res["CAUSAL"], res["CAUSAL_parts"], "| registered (all cells)", res["CAUSAL_registered_all_cells"], "| plateau counts", res["plateau_count"], "| continuous-stabiliser reading", res["continuous_stabiliser_reading"])
     print("FSQ+DITHER", {f: (v["CANONICAL"], v["seeds"]) for f, v in canon.items()})
     json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s123.json"), "w", newline="\n"), indent=1, default=float)
 

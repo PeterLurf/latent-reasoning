@@ -3450,6 +3450,28 @@ counts acquisition timing as well as acquisition.**
 acquisition. So an arm that acquires earlier can gain FOOTHOLD from budget alone. §124's mechanism signal is the
 **acquisition round** (and the count), as registered. FOOTHOLD per arm is reported but not read as mechanism.
 
+**Note 123-3 (2026-10-05 14:08 EDT, before any §123 cell lands; pre-data amendment, disclosed; Audit / claude-13). A per-cell
+no-read-plateau flag, so a basin seed cannot fake contraction.**
+* **Finding.** Both failed §120 S5 seeds were decided in the soft phase (before any rounding or dither): loss(2k) /
+  loss(1k) was 0.99 (FINAL s2) and 0.96 (TRACE s1), against 0.78 / 0.40 for the passers.
+  - 120-6's "code collapse" is the symptom; a no-read basin (§108 / §111) is the cause.
+  - A basin seed ignores its carried state, so perturbations do not propagate. ρ is then near 0 with long accuracy 0,
+    which would fail CAUSAL (ii) as an artefact.
+* **Plateau flag (label-free: the training loss only).** plateau ⇔ loss(2k) ≥ 0.9 · loss(1k) **and** loss(2k) ≥
+  0.25 · loss(100). The second clause excludes cells already near zero, e.g. flip-flop, which learns within 1k.
+  - Calibrated on §120's 8 cells (disclosed): it flags exactly the two failed S5 seeds.
+  - The final loss is reported per cell.
+* **Rule changes (fixed now).**
+  - CAUSAL (i)–(iii) and σ* are evaluated over **non-plateau** cells only. A σ level with no non-plateau cell makes (i)
+    unevaluable, and CAUSAL is then "not evaluable".
+  - CANONICAL counts non-plateau seeds only; "both seeds" becomes "all non-plateau seeds, at least one".
+  - The plateau count is reported per arm. **Check:** it should not depend on σ (the dither starts after 2k).
+  - The registered verdicts are printed beside, as 120-8.
+* **Predictions (claude-13).** (P1) Continuous S5 cells split into plateau and not, at any σ. (P2) FSQ+DITHER S5
+  plateaus at about §120's rate, and its CANONICAL is readable only on non-plateau seeds.
+* **Flagged as engineering, not run:** restart-on-plateau at 2k. **Mechanism pointer:** an objective that makes the
+  bottleneck read in the first 2k (a reader on z_b) is the task-agnostic fix, not noise after 4k.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
