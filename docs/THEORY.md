@@ -2497,6 +2497,24 @@ their final answers label the transition table directly, at far more than §110'
 * **Logged:** coverage_drawn, the share of the 14,400 S5 transitions (s, a) labelled by length-1 and length-2 training
   problems, as §112. For flip-flop, the same share over its (state, instruction) pairs.
 
+**Note 120-2 (2026-10-05 00:51 EDT, before any §120 run; the experiments session's implementation in `boxes/fsq120.py`, accepted).**
+* **FSQ:** z_b = tanh(z + atanh(0.5 / 3.5)) · 3.5 − 0.5, so q ∈ {−4, …, 3}: FSQ's even-L form with 8 levels.
+  - In the 2k–4k ramp, one Bernoulli(p_hard) coin per hand-off, batch-wide.
+  - The flip-flop start is W_up(0) + bias.
+* **Items:**
+  - S5: an op's 6 tokens, trained from uniform random start texts and tested from the identity text.
+  - Flip-flop: 2-token items (" write 0/1", " ignore 0/1", " read."), with the answer " 0" / " 1". Its automaton has 3
+    states (none, last bit 0, last bit 1).
+* **long_acc (flip-flop)** is the mean read accuracy. long_acc_seq (every read right) is reported too.
+* **CERT** starts from all first-step codes (S5: 120 start texts × 120 ops; flip-flop: the empty start × 5 items) and
+  runs BFS over every item, capped at 10⁶.
+  - It holds iff every code decodes validly, the transition law holds on every pair, and nothing was capped.
+  - n_moore comes from partition refinement on (decode, successors).
+* **donor:** random-start length-8 chains, single-code patch at positions 2 / 4 / 6.
+* **margin_flip_rate:** 500 test chains × the first 128 hand-offs, with U(−0.5, 0.5) noise on z_b.
+* **coverage_drawn** (120-1): (s, x₁) from every drawn length-1 and length-2 problem, plus (δ(s, x₁), x₂) from length-2
+  problems.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
