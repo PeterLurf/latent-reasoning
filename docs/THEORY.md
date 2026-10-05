@@ -3843,6 +3843,18 @@ Audit / claude-13). ρ_ff, the floor-free fp32 ρ. This is the last metric amend
   reported but excluded from MECH-112.
 * The training GPU is listed per run.
 
+**Note 126-3 (2026-10-05 17:24 EDT, before any §126 run; Audit's supply fallback).**
+* **Trigger:** if no clean RTX 3090 / 3090 Ti rents within about 1 h, Stage 1's proof runs as a **matched pair on one
+  clean 24 GB host of any class**: RAW-H s2 plus a fresh §120 FINAL s2 control (same flags, P = 2, about +$0.6).
+* **Decisive readout: RAW-H s2 against the same-host control s2.**
+  - Control plateaus (as on 3090-class): RAW-H s2 decides. Plateau fires the STOP RULE (126-1); escape is
+    BOTTLENECK-CAUSE's seed-2 condition.
+  - Control escapes on that host: the host has changed the trajectory, the test is **uninformative** there, and it is
+    retried on another host.
+* RAW-H s1 / s3 / s4 (b20) then run on the same host type. Their plateau count enters BOTTLENECK-CAUSE only with
+  same-host controls; otherwise it is descriptive.
+* The training GPU is logged and reported.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
