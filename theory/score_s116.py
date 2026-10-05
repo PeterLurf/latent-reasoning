@@ -3,7 +3,8 @@ Runs: boxes/runs_s5/s116_opdef_s{31..35}/eval.json and s116_none_s{41..45}/eval.
 (cumulative, extension_2048, k1_never_labelled_acc, k1_certified, coverage_drawn, donor, removal) plus
 foothold_yield / acc_by_length per round (descriptive).
 FOOTHOLD-OPDEF: >= 2/5 seeds with cumulative >= 0.99 at 512 AND k1_never_labelled_acc >= 0.99.
-STRICT-C4 (NONE): >= 2/5 seeds with cumulative >= 0.99 at 512.
+STRICT-C4 (NONE): >= 2/5 seeds with cumulative >= 0.99 at 512.  STRICT-C4-COPY (NONECOPY, note 116-2): the same.
+MECH (116-2): NONECOPY acquires (final k1_never_labelled_acc >= 0.99) in >= 4/5 seeds AND in more seeds than NONE.
 C1 tag: single-patch donor SERIAL (every in-chunk slot donor >= 0.90, recipient < 0.10). C6: seed rate; >= 0.99 at 2,048.
     python theory/score_s116.py
 """
@@ -11,7 +12,8 @@ import json
 import os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ARMS = {"OPDEF": ("s116_opdef", range(31, 36)), "NONE": ("s116_none", range(41, 46))}
+ARMS = {"OPDEF": ("s116_opdef", range(31, 36)), "NONE": ("s116_none", range(41, 46)),
+        "NONECOPY": ("s116_nonecopy", range(41, 46))}                  # note 116-2
 
 
 def serial(r):
@@ -42,6 +44,10 @@ def main():
         res["arms"][arm] = A
         print("%-5s n %d PASS %s seeds %s | serial %s | 2048 %s | cum512 %s | k1 never %s | cert %s | cov %s" % (
             arm, A["n"], A["PASS"], ok, A["serial_seeds"], A["c6_2048_seeds"], A["cum512"], A["k1_never"], A["certified"], A["coverage_drawn"]))
+    acq = {arm: [s for s, v in res["arms"][arm]["k1_never"].items() if (v or 0) >= 0.99] for arm in ("NONE", "NONECOPY")}
+    res["acquired"] = acq
+    res["MECH"] = (len(acq["NONECOPY"]) >= 4 and len(acq["NONECOPY"]) > len(acq["NONE"])) if res["arms"]["NONECOPY"]["n"] else None
+    print("acquired", acq, "| MECH", res["MECH"])
     json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s116.json"), "w", newline="\n"), indent=1, default=float)
 
 

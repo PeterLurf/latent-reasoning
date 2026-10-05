@@ -23,6 +23,23 @@
    "coverage_drawn": {},
    "serial_seeds": [],
    "c6_2048_seeds": []
+  },
+  "NONECOPY": {
+   "n": 0,
+   "pass_seeds": [],
+   "PASS": false,
+   "cum512": {},
+   "ext2048": {},
+   "k1_never": {},
+   "certified": {},
+   "coverage_drawn": {},
+   "serial_seeds": [],
+   "c6_2048_seeds": []
   }
- }
+ },
+ "acquired": {
+  "NONE": [],
+  "NONECOPY": []
+ },
+ "MECH": null
 }
