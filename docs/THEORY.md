@@ -190,6 +190,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 116 | Strict C4: final-answer training through self-decoded restarts (OPDEF: op definitions only; NONE: no shorts) | registered (conditional on §112 f = 0.1) | **open** |
 | 117 | One model for C1 + C4 + C6: self-decoded restarts + Markov segments + reader (MK vs staged ST) | registered (conditional on §111 READ REL) | **open** |
 | 118 | Fully latent at inference: text-path anchor vs longer silent stretches (S5, on READ) | registered | **open** |
+| 119 | Controlled C1 baselines: Coconut, CODI, SIM-CoT on our S5 protocol (donor + length) | registered (queued behind §117 / §118) | **open** |
 
 ## Live sections
 
@@ -2299,6 +2300,74 @@ step 0, 24k steps, bs 64, lr 1e-4.
 **Placement.** 6 runs first (up to 10), about $9–15 on Vast. Not conditional (§111 READ met REL). Implementation: the
 experiments session (mk108 `--arm read` plus `--anchor` and an extended `--kcurr`; snap115 (A)/(B) on every model).
 Scorer `theory/score_s118.py`, committed before any run. Projection to Audit.
+
+## 119. Controlled baselines for C1: published latent-CoT methods on our S5 protocol, scored with the donor and length protocols (pre-registered 2026-10-04 23:14 EDT, after Literature's checks 2bf76954 (project audit, missing comparison 2) and 1a473f82, and before any implementation or run; Audit's guards)
+
+**Why.** Our C1 claim compares against the literature only on paper: no latent-CoT paper shows serial,
+donor-consistent use. §119 makes it a controlled claim. Published methods are trained on our S5 data and scored with
+§104's donor protocol and our length protocol.
+* **Prior** (1a473f82, `docs/LIT_S119_BASELINES_2026-10-04.md`): Coconut 2412.06769, CODI 2502.21074, SIM-CoT
+  2509.20317. Thinking States 2602.08332 is an optional fourth arm. Related: KaVa, CoLaR, PCCoT, System-1.5, LIFT, SELR,
+  MUX.
+* Literature (3): §105 MASK ≈ "SIM-CoT with a tied, in-context decoder, one latent per op, plus snaps". §97 GEN differs
+  decisively, because its decoder sees the context.
+
+**Methods** (GPT-2 small, the official recipes adapted to S5; Literature (1)).
+* **Coconut.** The question is visible and thoughts attend to the full prefix. Stage s replaces s steps with s·c
+  thoughts, with CE on the remaining text and the answer, and an optimiser reset per stage. c = 1, 4 stages per chunk,
+  from the base model.
+* **CODI.** One shared model, α = β = γ = 1. An L1 loss (stop-gradient teacher) on the hidden state of a fixed
+  pre-answer token, across all layers, per-layer std-normalised. 4 thoughts, an MLP + LN projection, LoRA r128 / α32 as
+  published. Optionally, a full fine-tuning variant (reported separately).
+* **SIM-CoT.** Coconut with c = 2, initialised from the trained S5 Coconut checkpoint. A **separate** decoder copy
+  (φ ≠ θ), conditioned on z_k only, generates step k's state text (λ_step from the official code defaults, recorded).
+  The decoder is removed at inference.
+
+**Hosts (Literature (2)).**
+* **Chunked (primary).** §97 / §108's harness: the chunk start state as text, 4 ops, the chunk's final state as text,
+  restarts from the decoded answer every 4 ops at test (cumulative 512 / 2,048). The only host that reaches 512 / 2,048.
+* **Native (descriptive).** One sequence with no restarts, trained up to 16 ops. Length curve 4–64 (context-limited),
+  with the donor protocol in range.
+
+**Fairness.** Equal small lr sweeps per method (3 values, chosen on a training-split final-answer criterion).
+Trainable parameters and updates are reported. 3 seeds per method on the chunked host, 1 per method native.
+
+**Guards (Audit, fixed now).**
+* **(a) Competence gate.** A chunked seed is scored for SERIAL / BYPASS only if its in-chunk final-state accuracy
+  (§104's intact accuracy at the chunk's last slot, random starts) is ≥ 0.90. Otherwise it is reported as **"did not
+  learn"**, not "not serial".
+  - A method counts toward CONTROLLED-C1 only with ≥ 2 competent seeds; otherwise "inconclusive".
+* **(b) Faithfulness.** Each method's port must first reproduce one published number with our implementation.
+  - Coconut: our ProsQA run of the official recipe gives 97.6, against the published 97.0 (bench, 0ef4a78).
+  - CODI and SIM-CoT: the released GPT-2 checkpoints' published GSM8K numbers, through our inference port; or a
+    published training curve if there is no checkpoint (to within ±2 points).
+  - A method failing (b) is reported as "port unverified" and excluded from CONTROLLED-C1.
+* **(c) Wording.** READ's serial use includes the Markov bottleneck by design. §108 without the reader was already
+  SERIAL in every seed that learned. The comparison shows that existing methods do not give serial latent use on this
+  protocol. It does not show that the reader alone causes it.
+
+**Scoring.**
+* **Coconut and SIM-CoT:** §104 single-slot donor at latent positions 1–3. For SIM-CoT, slot j means op j's 2 thoughts
+  patched jointly. SERIAL = USE ≥ 0.90 at every slot, recipient < 0.10; BYPASS = recipient ≥ 0.10.
+* **CODI:** its thoughts are not aligned to ops, so per-step SERIAL is undefined. It gets a **block donor** test
+  (every thought patched): donor- vs recipient-consistent final answer. Descriptive, excluded from CONTROLLED-C1's
+  per-step claim.
+* Removal (zero / mean) and the length curves are descriptive.
+
+**Rule (fixed now).** **CONTROLLED-C1:** among Coconut and SIM-CoT (each faithful, with ≥ 2 competent seeds), **neither
+is SERIAL in ≥ 2/3 of its competent seeds**, while §111 READ is SERIAL in 5/5 (111-4).
+
+**Readings.**
+* **CONTROLLED-C1 holds.** Published latent-CoT methods, trained on the same data and scored the same way, do not carry
+  the S5 state serially through their latents (bypass or neither). Serial use on this protocol needs a forced
+  bottleneck (§108) and is made reliable by the reader (§111). The literature comparison becomes a controlled one.
+* **A baseline is SERIAL.** Our C1 is not unique to the bottleneck design. Report it and re-scope the claim.
+* **Inconclusive** (a method did not learn or its port is unverified). Report it; no claim either way for that
+  method.
+
+**Placement.** About 9 chunked + 3 native runs + lr sweeps + faithfulness evals, about $20–30 on Vast. **Queued behind
+§117 / §118.** Thinking States is an optional fourth arm if the budget allows (noted then). Implementation: the
+experiments session. Scorer `theory/score_s119.py`, committed before any run. Projection to Audit.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
