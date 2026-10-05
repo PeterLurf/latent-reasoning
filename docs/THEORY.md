@@ -2669,6 +2669,18 @@ slot j; K-CURR (k = 1 to 2k, 2 to 6k, then 4); 24k cap; eligibility from 6k; the
 Audit as about $2.5 extra), proof seed first (ANCHOR+READ s1). Implementation: the experiments session (accel99 markov
 + `--reader` + `--anchor`). Scorer `theory/score_s121.py`, committed before any run.
 
+**Note 121-1 (2026-10-05 02:30 EDT, before any §121 result; the experiments session's implementation 903b74f1, accepted).**
+* accel99 MARKOV with K-CURR as §99.
+* **Reader:** at every carried slot (j < c − 1), a fresh segment [EOT, carried latent] decodes step j's text (CE, weight
+  1).
+* **Anchor:** at every latent-fed segment, (1 − cos) + |log-norm gap| against the stop-gradient text path [a, gold step
+  j−1 text, op j].
+* **eval.json:** §99's keys, plus donor slot1–3 (random donors, n = 2,000), reader_acc per carried slot, and the anchor
+  cosine and log-norm gap by position against the true text path. model.pt is kept for the MECH donor test and the
+  probes.
+* **Order:** proof seed ANCHOR+READ s1 first. Then ANCHOR+READ s2–3 and READ s1–2, after Audit's gate (a sane 1k-step
+  log with all three losses, peak memory, an eval-path probe).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
