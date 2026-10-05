@@ -13,6 +13,11 @@ import os
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+def _mean(v):
+    """snaps_per_problem is {mean, median} for the trigger but a plain number for fixed_k4 (format fix, note 115-1)."""
+    return v.get("mean") if isinstance(v, dict) else v
+
+
 def main():
     res = {"models": {}}
     for f in sorted(glob.glob(os.path.join(ROOT, "boxes", "runs_s5", "*", "eval_s115.json"))):
@@ -27,12 +32,12 @@ def main():
             M["fixed_k4"] = fk
             M["TRIGGER"] = (tr["first_error_detection"] is not None and tr["first_error_detection"] >= 0.95
                             and tr["cumulative"]["512"] >= fk["cumulative"]["512"]
-                            and tr["snaps_per_problem"]["mean"] < fk["snaps_per_problem"]["mean"])
+                            and _mean(tr["snaps_per_problem"]) < _mean(fk["snaps_per_problem"]))
         res["models"][name] = M
         print("%-16s NOSNAP %s %s | TRIGGER %s fed %s snaps %s vs %s | cum %s vs %s" % (
             name, M.get("NOSNAP"), (M.get("nosnap_cum") or {}).get("512"), M.get("TRIGGER"),
-            (M.get("trigger") or {}).get("first_error_detection"), ((M.get("trigger") or {}).get("snaps_per_problem") or {}).get("mean"),
-            ((M.get("fixed_k4") or {}).get("snaps_per_problem") or {}).get("mean"),
+            (M.get("trigger") or {}).get("first_error_detection"), _mean((M.get("trigger") or {}).get("snaps_per_problem") or {}),
+            _mean((M.get("fixed_k4") or {}).get("snaps_per_problem") or {}),
             ((M.get("trigger") or {}).get("cumulative") or {}).get("512"), ((M.get("fixed_k4") or {}).get("cumulative") or {}).get("512")))
     json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s115.json"), "w", newline="\n"), indent=1, default=float)
 

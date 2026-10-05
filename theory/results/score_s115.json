@@ -1,0 +1,150 @@
+{
+ "models": {
+  "s108_mk4_s1": {
+   "nosnap_cum": {
+    "128": 0.0,
+    "256": 0.0,
+    "512": 0.0,
+    "2048": 0.0
+   },
+   "NOSNAP": false,
+   "drift": {
+    "0": {
+     "latent_norm": 134.44158935546875,
+     "norm_ratio": 1.2390534858665392,
+     "cos_to_snapped": 1.0
+    },
+    "64": {
+     "latent_norm": 119.09891510009766,
+     "norm_ratio": 1.099434508731295,
+     "cos_to_snapped": 0.007581887301057577
+    },
+    "128": {
+     "latent_norm": 119.56781005859375,
+     "norm_ratio": 1.1042543752832235,
+     "cos_to_snapped": 0.022864973172545433
+    },
+    "192": {
+     "latent_norm": 119.34439849853516,
+     "norm_ratio": 1.1019707322799461,
+     "cos_to_snapped": 0.017533078789711
+    },
+    "256": {
+     "latent_norm": 118.75768280029297,
+     "norm_ratio": 1.0962937544995035,
+     "cos_to_snapped": 0.013593742623925209
+    },
+    "320": {
+     "latent_norm": 118.42463684082031,
+     "norm_ratio": 1.093402669029,
+     "cos_to_snapped": 0.0064727431163191795
+    },
+    "384": {
+     "latent_norm": 118.65362548828125,
+     "norm_ratio": 1.0955724719517739,
+     "cos_to_snapped": 0.005693042650818825
+    },
+    "448": {
+     "latent_norm": 118.94279479980469,
+     "norm_ratio": 1.0983086618751794,
+     "cos_to_snapped": 0.01569683849811554
+    }
+   },
+   "trigger": {
+    "first_error_detection": 1.0,
+    "false_snap_rate": 0.0,
+    "miss_rate": 0.0,
+    "cumulative": {
+     "512": 1.0,
+     "2048": 1.0
+    },
+    "snaps_per_problem": {
+     "mean": 99.8765,
+     "median": 100.0
+    }
+   },
+   "fixed_k4": {
+    "cumulative": {
+     "128": 1.0,
+     "256": 1.0,
+     "512": 1.0
+    },
+    "snaps_per_problem": 127
+   },
+   "TRIGGER": true
+  },
+  "s111_mk4_read_s6": {
+   "nosnap_cum": {
+    "128": 0.002,
+    "256": 0.0,
+    "512": 0.0,
+    "2048": 0.0
+   },
+   "NOSNAP": false,
+   "drift": {
+    "0": {
+     "latent_norm": 60.71211624145508,
+     "norm_ratio": 0.6321631573020063,
+     "cos_to_snapped": 1.0
+    },
+    "64": {
+     "latent_norm": 103.05398559570312,
+     "norm_ratio": 1.0758057806828856,
+     "cos_to_snapped": -0.25548338890075684
+    },
+    "128": {
+     "latent_norm": 103.18467712402344,
+     "norm_ratio": 1.0762862278329455,
+     "cos_to_snapped": -0.2679373025894165
+    },
+    "192": {
+     "latent_norm": 102.77579498291016,
+     "norm_ratio": 1.07253374088452,
+     "cos_to_snapped": -0.26246893405914307
+    },
+    "256": {
+     "latent_norm": 103.27484893798828,
+     "norm_ratio": 1.0775508969959262,
+     "cos_to_snapped": -0.2564733922481537
+    },
+    "320": {
+     "latent_norm": 103.27584075927734,
+     "norm_ratio": 1.0780769344274095,
+     "cos_to_snapped": -0.2669815719127655
+    },
+    "384": {
+     "latent_norm": 102.8523178100586,
+     "norm_ratio": 1.0733287407427032,
+     "cos_to_snapped": -0.2620374262332916
+    },
+    "448": {
+     "latent_norm": 102.32192993164062,
+     "norm_ratio": 1.0677438075025625,
+     "cos_to_snapped": -0.2625736594200134
+    }
+   },
+   "trigger": {
+    "first_error_detection": 1.0,
+    "false_snap_rate": 0.0,
+    "miss_rate": 0.0,
+    "cumulative": {
+     "512": 1.0,
+     "2048": 1.0
+    },
+    "snaps_per_problem": {
+     "mean": 19.716,
+     "median": 20.0
+    }
+   },
+   "fixed_k4": {
+    "cumulative": {
+     "128": 1.0,
+     "256": 0.9995,
+     "512": 0.9995
+    },
+    "snaps_per_problem": 127
+   },
+   "TRIGGER": true
+  }
+ }
+}
