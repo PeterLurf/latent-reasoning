@@ -187,7 +187,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 110 | Self-training v2: independent seeds, label-free gate, masked fork (C4 + C1) | SELF2 2/5, C1 1/5 (s3: C4 + C1 + C2, certified k = 1); STUDENT 3/5 (s1's student drops the slot-1 bypass) | closed |
 | 110b | Self-training v2 corrected: identity-start shorts plus random textual starts for length ≥ 3 | stopped after a clear null: loss at chance from random starts (110b-2) | closed |
 | 111 | Reliability of the Markov hand-off: 2× budget vs DAgger-style own-state training; best-of-n | **READ meets REL (5/5 serial at 512, 4/5 at 2,048)**; 2× 0/5, DAG 1/5: the lottery is the no-read basin | closed |
-| 112 | Short-coverage dose-response for self-training (f = 0.5 / 0.25 / 0.1; never-labelled k = 1 accuracy) | f = 0.1 s21: certified, never-labelled 1.0, 0.996 at 512; C1 joint only (112-2) | **open** |
+| 112 | Short-coverage dose-response for self-training (f = 0.5 / 0.25 / 0.1; never-labelled k = 1 accuracy) | **FOOTHOLD at every dose; smallest f = 0.1** (2/5, certified); acquisition 2–3/5 at every dose (start-reading basin, 112-4); C1 0/6 | closed |
 | 113 | Auxiliary reader inside self-training (conditional on §111-READ) | registered (conditional) | **open** |
 | 114 | Looped depth per op (LOOP-R vs LOOP-1 vs §107 PAUSE) for multiplication's hand-off | registered | **open** |
 | 115 | No-snap Markov chains, and a round-trip snap trigger (eval only) | registered | **open** |
@@ -1908,6 +1908,28 @@ recipient-consistent per slot, single patch → joint (slot + op-token KV):
   (s21), or a code spread over the whole prefix (s1, s5).
 * Only Markov segments (§108) exclude the last two by construction. This is why the integrated candidate (self-training
   + Markov + READ) keeps single-slot donor SERIAL as its primary C1 rule (Audit (a)).
+
+**§112 result (2026-10-05 03:57 EDT; 15 runs by the experiments session; scored by Theory alone with `theory/score_s112.py`, committed
+before any run; `theory/results/score_s112.json`). FOOTHOLD is met at every dose; the smallest dose meeting it is f =
+0.1 (coverage_drawn 0.10).**
+
+| dose (coverage_drawn) | passing seeds (512) | certified k = 1 (never-labelled 1.0) | never acquired |
+|---|---|---|---|
+| f = 0.5 (0.47) | s23 0.9935, s25 0.9985 | s23, s24, s25 | s21, s22 |
+| f = 0.25 (0.25) | s22 0.9995, s25 0.9995 | s22, s25 | s21, s23, s24 |
+| **f = 0.1 (0.10)** | **s21 0.996, s23 0.9985** | s21, s22, s23 | s24, s25 (partial 0.39) |
+
+* **Reading ("FOOTHOLD at f = 0.1").** About a 10 % short foothold suffices. Seeds learn the 90 % of S5's table they
+  never see labelled from long final answers, certified at k = 1. That is C4 qualified by coverage, in 2/5 seeds.
+* **The dose barely moves acquisition** (3/5, 2/5, 3/5). The lottery is 112-4's start-text no-read basin, not
+  coverage. §116 NONE+COPY tests that.
+* **C1 (single-slot donor SERIAL) is 0/6 in the passing seeds.**
+  - Five show a slot-1 bypass (recipient 0.42–1.0) or the joint slot + op-token carrier (s21, 112-3).
+  - f = 0.25 s22 comes closest (0.99 / 1.0 / 0.64).
+  - Under the masked fork, self-training does not give serial latent use. That is §117's reason for Markov segments.
+* **C6 at 2,048 (≥ 0.99):** f = 0.5 s25 (0.992), f = 0.25 s22 (0.998) and s25 (1.0), f = 0.1 s21 (0.99) and s23
+  (0.996).
+* **Tags:** C4 (qualified by 10 % short coverage), C2 (certified restarts), C6 per-dose seed rate 2/5. Not C1.
 
 **Note 112-4 (2026-10-05 01:31 EDT; descriptive, $0, from eval.json `rounds`; Audit's question whether the never-acquiring seeds sit on a
 no-read null). The seed lottery is a basin of a different kind: the start-text no-read basin.**
