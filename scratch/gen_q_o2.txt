@@ -1,4 +1,4 @@
-# §116 (931186cb): launch only on Theory's call (after §112 f=0.1 FOOTHOLD); host 2 of 5
+# §116 (931186cb): host 2 of 5 -> RUN LOCALLY instead (scratch/c1_q_116_local.txt, 2026-10-05); do not deploy
 # P=2
 boxes/runs_s5/s116_opdef_s33 boxes.self110 --opdef --foothold_log --seed 33
 boxes/runs_s5/s116_opdef_s34 boxes.self110 --opdef --foothold_log --seed 34

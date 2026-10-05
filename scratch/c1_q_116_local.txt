@@ -1,0 +1,3 @@
+# §116 OPDEF s33-34 on the local cards (replaces Vast o2; code b464eb3f)
+boxes/runs_s5/s116_opdef_s33 boxes.self110 --opdef --foothold_log --seed 33
+boxes/runs_s5/s116_opdef_s34 boxes.self110 --opdef --foothold_log --seed 34
