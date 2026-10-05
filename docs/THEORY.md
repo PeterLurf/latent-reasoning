@@ -2200,6 +2200,16 @@ otherwise not run (noted then). Implementation: the experiments session (self110
 * **Truth audit:** the experiments session lists every function where true intermediate states enter, in the
   implementation's docstring, for Audit's grep before launch.
 
+**Note 117-2 (2026-10-04 23:02 EDT, before any §117 run; implementation choices accepted; Audit's truth-use grep passed at HEAD).**
+* **ST's learning rate:** at the switch, the cosine horizon becomes switch_step + 16k (12k Markov steps + the 4k final
+  relabel).
+* **Empty-item fallback (label-free, logged as `fallback_items`).** It applies only when no item would be trainable
+  (seen in the untrained CPU smoke, where every cut decode failed to parse).
+  - A discarded problem then falls back to the nearest earlier cut with a parsing decode, or to the start, with the
+    final-only target.
+  - It uses validity only, never truth. A real model after R0 is not expected to hit it; the count is reported.
+* The dose is still open. It is fixed in a further note when §112 FOOTHOLD-0.1 is decided.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
