@@ -198,6 +198,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 120 | FSQ digital recurrence: a learned discrete snap every step, no template or schedule (S5 + flip-flop pilot) | registered | **open** |
 | 121 | Multiplication's carrier shortcut: text-path anchor + reader vs reader alone (4×4, Markov) | CARRY-3 0/3: the anchor binds to a dead text path (T1 = 0); READ lifts op 3 to 0.64 / 0.93 by recomputation, with no sum carrier; triggers §122 | closed |
 | 122 | TEXT-MIX keeps the anchor's target competent (conditional on §121; stop rule for the multiplication line) | **triggered** (§121 CARRY-3 0/3, T1 = 0) | **open** |
+| 123 | Attractor strength causal for no-snap? Dither dose-response (σ 0–0.5) + dithered FSQ (canonical codes), §120 harness | registered (after §120's pilot) | **open** |
 
 ## Live sections
 
@@ -2994,6 +2995,68 @@ wanders slowly through new, correctly decoded codes.**
   - Almost all are mapped correctly (0.996 at 2,048), but correctness on unvisited codes is not guaranteed. That is the
     gap between "exact at 512" and "certified at any length".
   - A closed machine would need canonical codes (codes per state → 1), which this objective does not ask for.
+
+## 123. Is attractor strength causal for chains without snaps? A dither dose-response on §120's harness, and dithered FSQ for canonical codes (pre-registered 2026-10-05 07:46 EDT, after Literature's check 597edee9 and before any implementation or run; Audit's P-B proposal; launched after §120's pilot reads)
+
+**Why.**
+* **118-3:** no-snap quality grades with attractor strength across trained models. The per-hand-off perturbation ratio
+  ρ is about 0.25 in the READ seeds that run without snaps, 0.38 with mild drift, 0.66–0.75 for drift, and 0.77–1.0 for
+  §108.
+* **120-5:** §120's FSQ machine is exact to 512 but open, with non-canonical codes (codes per state growing with
+  length; 537k reachable codes).
+* A correlation across seeds is not causation. §123 **intervenes** on attractor strength with a task-agnostic objective,
+  denoising dither on the carried state, in §120's harness.
+* **Prior** (597edee9, `docs/LIT_S123_DITHER_2026-10-05.md`): Ballé 1611.01704 and Agustsson & Theis 2006.09952 (uniform
+  noise as a quantisation proxy; universal quantisation); 2510.14095; Rifai 1104.4153 (contractive AE); Stable Recurrent
+  Models 1805.10369; Attractor Models / DEQ; 2609.26487 (perturbation-measured stability, the closest to ρ). New as
+  scoped: the dose-response framing.
+
+**Harness.** §120's exactly: a Markov segment per item, z_b = tanh(W_down LN(h) + c) · 3.5 − 0.5 (d = 8), carried
+embedding W_up(·), the answer decoder, the length curriculum, 24k steps, FINAL supervision only. Families: S5 (512) and
+flip-flop (512, p_ignore 0.8).
+
+**Arms.**
+* **Continuous dose-response (Audit's layout).** z_b is carried **without rounding**. At every training hand-off after
+  2k, additive dither U(−σ, σ) is applied per coordinate; test is clean.
+  - **S5: σ ∈ {0, 0.1, 0.25, 0.5} × seeds 1–2** (8 runs). σ = 0 is the 8-dim continuous no-noise control (Literature
+    (c): compare within the harness, not with READ).
+  - **Flip-flop: σ = 0 (seed 1), plus σ* (seed 1).** σ* is the σ > 0 with the lowest mean S5 ρ, chosen by that rule once
+    the S5 cells read (2 runs).
+* **FSQ+DITHER, 2 seeds per family.** §120's hard rounding, plus pre-rounding noise U(−0.25, 0.25) on z_b at every
+  training hand-off after 4k. 4 runs.
+
+**Measures.**
+* No-snap long accuracy (the outcome), and accuracy against length.
+* **ρ and basin** (contraction_diag ported to fsq120; Literature (c)): perturbation δ = ε · std_d · u_d, with std_d the
+  per-coordinate std of carried z_b on clean test chains and u Gaussian.
+  - **ρ := the geometric mean over 8 hand-offs of the median distance ratio at ε = 0.1** (fixed now).
+  - Basin := the largest ε ∈ {0.03, 0.1, 0.3, 1.0} with decode agreement ≥ 0.99 after 8 hand-offs.
+* **Implicit quantisation:** the share of test-time z_b coordinates within 0.1 of a grid point (q − 0.5 offsets as FSQ).
+* Codes per state against length and the layered CERT (120-5's measures), plus Moore minimisation, for FSQ+DITHER.
+
+**Rules (fixed now).**
+* **CAUSAL (attractor strength causes no-snap success):** all of (i)–(iii).
+  - (i) The S5 mean ρ falls from σ = 0 to σ = 0.5, and the flip-flop ρ at σ* is below its σ = 0 control.
+  - (ii) Every continuous cell with ρ < 0.3 has long accuracy ≥ 0.99.
+  - (iii) Every continuous cell with ρ > 0.6 has long accuracy < 0.99.
+* **NOT CAUSAL:** ρ falls with σ (i) but some cell with ρ < 0.3 fails, or long accuracy does not track ρ. P-B is then
+  dropped as a stabiliser.
+* **The continuous-stabiliser reading** additionally requires that the passing cells are **not** implicitly quantised
+  (grid share < 0.5). Otherwise the reading is "attractors via implicit quantisation".
+* **CANONICAL (FSQ+DITHER):** codes per state at 2,048 below §120 FINAL's (S5 s1: 34.2) in both seeds of a family,
+  **and** CERT done with holds = true in ≥ 1 seed (certified at every length).
+* **Task-agnostic claims** need both families, with the same code and hyperparameters.
+
+**Readings.**
+* **CAUSAL.** Attractor strength is a cause of no-snap success, and a task-agnostic denoising objective supplies it.
+* **CANONICAL.** Dithered FSQ gives a closed, certified learned machine: fully discrete-latent reasoning, exact at every
+  length, with no template and no schedule.
+* **Neither.** Stability needs something these objectives do not provide. §120's every-step snap stands as the route.
+
+**Placement.** 14 runs (S5 8, flip-flop 2, FSQ+DITHER 4), about $7–10 on Vast (within Audit's about $12), **launched
+after §120's pilot reads**; flip-flop σ* after the S5 cells read. Implementation:
+the experiments session (fsq120 `--dither σ` / `--no_round`, `--fsq_dither 0.25`, and the ported contraction eval).
+Scorer `theory/score_s123.py`, committed before any run.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
