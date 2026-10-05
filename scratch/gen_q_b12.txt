@@ -1,0 +1,3 @@
+# §120 S5 TRACE s1 rerun (OOM at L_max 32 at P=2 on b2): P=1 + --micro 2 (gradient accumulation at L >= 32)
+# P=1
+boxes/runs_fsq/s120_s5_trace_s1 boxes.fsq120 --family s5 --arm trace --seed 1 --no_cert --micro 2
