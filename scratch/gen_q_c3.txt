@@ -1,4 +1,6 @@
-# §124 copy s26-27 (matched to c1 EXPOSE s26-27 on a 570-driver 3090): NON-580 3090 only
+# §124 COPY + BASE s26-27 (note 124-3: same GPU type as c1 EXPOSE s26-27 = RTX 3090, ideally c1's own machine, offer 53415905 @ 65.7.12.94)
 # P=2
 boxes/runs_s5/s124_copy_s26 boxes.self110 --cov 0.1 --copy_frac 0.1 --seed 26
 boxes/runs_s5/s124_copy_s27 boxes.self110 --cov 0.1 --copy_frac 0.1 --seed 27
+boxes/runs_s5/s124_base_s26 boxes.self110 --cov 0.1 --seed 26
+boxes/runs_s5/s124_base_s27 boxes.self110 --cov 0.1 --seed 27
