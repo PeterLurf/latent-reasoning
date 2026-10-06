@@ -4526,6 +4526,29 @@ basin, and what seed 2 should show.**
     trigger is on the decoder side, SKIP's direction.
   - **P2 fails.** Seed 2's decoder reads its code by 2k, against the plateau. Then the replay is not faithful to §120 s2.
 
+**Note 119-2 (2026-10-06 00:15 EDT; Coconut's seed-1 LR sweep read on-host by the experiments session; before Coconut seeds 2–3 or any SIM-CoT run).
+Coconut did not learn at any of the three LRs, and §119 continues exactly as registered.**
+* **Coconut s1** (chunked host, RTX A5000), at lr 1e-4 / 3e-4 / 3e-5:
+  - intact accuracy 0.0085 / 0.0075 / 0.0070, and train_split_final_acc 0.0076 / 0.0092 / 0.0102. Chance is 1/120 = 0.0083.
+  - Cumulative 0 at every length; donor and removal at chance.
+  - Stage-3 loss 0.70–0.72, which is about ln 120 / 7: the answer is at chance per token.
+  - The port does learn text CoT: stage 0 reaches loss 1e-4 at lr 3e-5. Latent composition fails by stage 3.
+  - **Guard (a): "did not learn", in all three.**
+* **Decision: run as registered.**
+  - The LR picked by the registered criterion is 3e-5 (0.0102). All three values are at chance, so the pick is
+    noise-level; disclosed.
+  - Coconut seeds 2–3 at 3e-5 (about $2).
+  - SIM-CoT as registered: its own 3-value LR sweep on s1, initialised from Coconut s1 at 3e-5, then seeds 2–3 from Coconut
+    s2–3.
+  - No amendment to Coconut's curriculum or c. A longer schedule or c = 2 would be a new design chosen after data.
+* **Pre-stated expectations:**
+  - Coconut s2–3 also "did not learn". Coconut is then **inconclusive** for CONTROLLED-C1 (0 competent seeds), as guard (a)
+    reads.
+  - SIM-CoT is the informative arm. Its published claim is that step supervision stabilises latents where Coconut
+    collapses (2509.20317). Whether it becomes competent from a Coconut start that has not learned is reported as is.
+* **Wording:** "Coconut (c = 1, the published stage schedule scaled to 24k updates) did not learn 4-op S5 composition
+  through latent thoughts on the chunked host". This is not "Coconut is not serial".
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
