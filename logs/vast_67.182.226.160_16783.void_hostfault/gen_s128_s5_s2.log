@@ -1,0 +1,21 @@
+{'step': 100, 'loss': 8.260688104629516, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 15}
+{'step': 200, 'loss': 5.06210506439209, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 28}
+{'step': 300, 'loss': 4.997447805404663, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 42}
+{'step': 400, 'loss': 5.002755913734436, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 55}
+{'step': 500, 'loss': 4.996655721664428, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 69}
+{'step': 600, 'loss': 5.004961071014404, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 83}
+{'step': 700, 'loss': 5.028046236038208, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 97}
+{'step': 800, 'loss': 5.018532338142395, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 110}
+{'step': 900, 'loss': 5.011017341613769, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 124}
+{'step': 1000, 'loss': 4.983645057678222, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 138}
+{'step': 1100, 'loss': 4.979330825805664, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 151}
+{'step': 1200, 'loss': 4.992694091796875, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 165}
+{'step': 1300, 'loss': 4.981298666000367, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 179}
+{'step': 1400, 'loss': 4.979959197044373, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 192}
+{'step': 1500, 'loss': 4.977276077270508, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 206}
+{'step': 1600, 'loss': 4.964711308479309, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 219}
+{'step': 1700, 'loss': 4.956043996810913, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 233}
+{'step': 1800, 'loss': 4.952622666358947, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 247}
+{'step': 1900, 'loss': 4.96149703502655, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 260}
+{'step': 2000, 'loss': 4.952950630187988, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 275}
+STOPPED plateau at 2k

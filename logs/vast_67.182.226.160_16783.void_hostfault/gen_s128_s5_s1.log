@@ -1,0 +1,100 @@
+{'step': 100, 'loss': 7.555175194740295, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 15}
+{'step': 200, 'loss': 5.092599978446961, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 28}
+{'step': 300, 'loss': 5.024437780380249, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 42}
+{'step': 400, 'loss': 5.0099336576461795, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 55}
+{'step': 500, 'loss': 5.037459492683411, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 69}
+{'step': 600, 'loss': 4.9953430557250975, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 83}
+{'step': 700, 'loss': 4.98158721446991, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 97}
+{'step': 800, 'loss': 4.978494048118591, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 110}
+{'step': 900, 'loss': 4.97595428943634, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 124}
+{'step': 1000, 'loss': 4.978418531417847, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 138}
+{'step': 1100, 'loss': 4.9734478950500485, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 151}
+{'step': 1200, 'loss': 4.915823473930359, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 165}
+{'step': 1300, 'loss': 4.904123687744141, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 178}
+{'step': 1400, 'loss': 4.796631212234497, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 192}
+{'step': 1500, 'loss': 4.759566450119019, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 205}
+{'step': 1600, 'loss': 4.66057822227478, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 219}
+{'step': 1700, 'loss': 4.551433162689209, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 232}
+{'step': 1800, 'loss': 4.50014970779419, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 246}
+{'step': 1900, 'loss': 3.9074950051307678, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 259}
+{'step': 2000, 'loss': 3.895546703338623, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 273}
+{'step': 2100, 'loss': 4.319791240692139, 'L_max': 4, 'p_hard': 0.05, 'noise': 0.0, 'sec': 283}
+{'step': 2200, 'loss': 4.2417215991020205, 'L_max': 4, 'p_hard': 0.1, 'noise': 0.0, 'sec': 291}
+{'step': 2300, 'loss': 4.365603942871093, 'L_max': 4, 'p_hard': 0.15, 'noise': 0.0, 'sec': 301}
+{'step': 2400, 'loss': 4.34283855676651, 'L_max': 4, 'p_hard': 0.2, 'noise': 0.0, 'sec': 318}
+{'step': 2500, 'loss': 4.125701260566712, 'L_max': 4, 'p_hard': 0.25, 'noise': 0.0, 'sec': 334}
+{'step': 2600, 'loss': 3.832400840520859, 'L_max': 4, 'p_hard': 0.3, 'noise': 0.0, 'sec': 350}
+{'step': 2700, 'loss': 4.1187506198883055, 'L_max': 4, 'p_hard': 0.35, 'noise': 0.0, 'sec': 367}
+{'step': 2800, 'loss': 3.788685872554779, 'L_max': 4, 'p_hard': 0.4, 'noise': 0.0, 'sec': 384}
+{'step': 2900, 'loss': 3.6481870740652083, 'L_max': 4, 'p_hard': 0.45, 'noise': 0.0, 'sec': 400}
+{'step': 3000, 'loss': 3.7441846644878387, 'L_max': 4, 'p_hard': 0.5, 'noise': 0.0, 'sec': 417}
+{'step': 3100, 'loss': 3.8004854202270506, 'L_max': 4, 'p_hard': 0.55, 'noise': 0.0, 'sec': 434}
+{'step': 3200, 'loss': 3.492736001163721, 'L_max': 4, 'p_hard': 0.6, 'noise': 0.0, 'sec': 450}
+{'step': 3300, 'loss': 3.983037061691284, 'L_max': 4, 'p_hard': 0.65, 'noise': 0.0, 'sec': 467}
+{'step': 3400, 'loss': 3.691043437644839, 'L_max': 4, 'p_hard': 0.7, 'noise': 0.0, 'sec': 483}
+{'step': 3500, 'loss': 3.823171097636223, 'L_max': 4, 'p_hard': 0.75, 'noise': 0.0, 'sec': 500}
+{'step': 3600, 'loss': 3.0023806883394717, 'L_max': 4, 'p_hard': 0.8, 'noise': 0.0, 'sec': 516}
+{'step': 3700, 'loss': 3.546953512430191, 'L_max': 4, 'p_hard': 0.85, 'noise': 0.0, 'sec': 533}
+{'step': 3800, 'loss': 2.7434166797250508, 'L_max': 4, 'p_hard': 0.9, 'noise': 0.0, 'sec': 550}
+{'step': 3900, 'loss': 2.571493327394128, 'L_max': 4, 'p_hard': 0.95, 'noise': 0.0, 'sec': 566}
+{'step': 4000, 'loss': 2.6970260302722453, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 583}
+{'step': 4100, 'loss': 2.126460718549788, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 599}
+{'step': 4200, 'loss': 2.4171655590552836, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 615}
+{'step': 4300, 'loss': 2.3881476295460016, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 632}
+{'step': 4400, 'loss': 2.8170627017086374, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 650}
+{'step': 4500, 'loss': 2.545596888700966, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 667}
+{'step': 4600, 'loss': 2.2799714481737463, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 683}
+{'step': 4700, 'loss': 2.3435401179944164, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 699}
+{'step': 4800, 'loss': 2.562691274849931, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 716}
+{'step': 4900, 'loss': 2.306510075414553, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 733}
+{'step': 5000, 'loss': 2.523183182971552, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 750}
+{'step': 5100, 'loss': 3.68559202821576, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 774}
+{'step': 5200, 'loss': 4.115106452815235, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 797}
+{'step': 5300, 'loss': 3.5417270389059556, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 819}
+{'step': 5400, 'loss': 3.546195312656928, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 843}
+{'step': 5500, 'loss': 3.7901056062569842, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 868}
+{'step': 5600, 'loss': 3.0495228078827497, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 891}
+{'step': 5700, 'loss': 3.0841551104490645, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 915}
+{'step': 5800, 'loss': 3.168378443620168, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 937}
+{'step': 5900, 'loss': 3.6756907504796983, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 960}
+{'step': 6000, 'loss': 3.102884947927669, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 984}
+{'step': 6100, 'loss': 3.1009834084799515, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1007}
+{'step': 6200, 'loss': 3.01657096656505, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1031}
+{'step': 6300, 'loss': 3.158502606730908, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1054}
+{'step': 6400, 'loss': 2.8143379069445653, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1077}
+{'step': 6500, 'loss': 3.1174621212901545, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1102}
+{'step': 6600, 'loss': 3.2407397042075172, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1126}
+{'step': 6700, 'loss': 2.888034031311981, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1149}
+{'step': 6800, 'loss': 3.404983487389982, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1172}
+{'step': 6900, 'loss': 3.0075519588333552, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1196}
+{'step': 7000, 'loss': 2.7841274596238508, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1220}
+{'step': 7100, 'loss': 2.9322170535026815, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1244}
+{'step': 7200, 'loss': 2.7207902351263327, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1267}
+{'step': 7300, 'loss': 2.8999871909886132, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1290}
+{'step': 7400, 'loss': 2.893171559512848, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1315}
+{'step': 7500, 'loss': 2.8689530887777073, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1339}
+{'step': 7600, 'loss': 2.52899357010494, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1362}
+{'step': 7700, 'loss': 2.7081812657319824, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1384}
+{'step': 7800, 'loss': 2.522050730887859, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1406}
+{'step': 7900, 'loss': 2.7113208898169976, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1429}
+{'step': 8000, 'loss': 2.608687612254871, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1451}
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/Latent/boxes/fsq120.py", line 1142, in <module>
+    main()
+  File "/workspace/Latent/boxes/fsq120.py", line 1011, in main
+    (loss / nmb).backward(); tot += loss.item() / nmb
+    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.11/site-packages/torch/_tensor.py", line 581, in backward
+    torch.autograd.backward(
+  File "/opt/conda/lib/python3.11/site-packages/torch/autograd/__init__.py", line 347, in backward
+    _engine_run_backward(
+  File "/opt/conda/lib/python3.11/site-packages/torch/autograd/graph.py", line 825, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA error: unspecified launch failure
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+

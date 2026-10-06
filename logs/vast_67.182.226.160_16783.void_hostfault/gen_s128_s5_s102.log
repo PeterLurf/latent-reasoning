@@ -1,0 +1,82 @@
+{'step': 100, 'loss': 8.382795109748841, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 16}
+{'step': 200, 'loss': 5.06357476234436, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 29}
+{'step': 300, 'loss': 4.9828989744186405, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 43}
+{'step': 400, 'loss': 4.989539384841919, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 57}
+{'step': 500, 'loss': 5.024838242530823, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 71}
+{'step': 600, 'loss': 5.032631940841675, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 84}
+{'step': 700, 'loss': 5.010526471138, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 98}
+{'step': 800, 'loss': 5.0180537176132205, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 112}
+{'step': 900, 'loss': 4.9771985960006715, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 125}
+{'step': 1000, 'loss': 4.946369957923889, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 139}
+{'step': 1100, 'loss': 4.948050127029419, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 153}
+{'step': 1200, 'loss': 4.868619647026062, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 166}
+{'step': 1300, 'loss': 4.793915700912476, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 180}
+{'step': 1400, 'loss': 4.730250959396362, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 194}
+{'step': 1500, 'loss': 4.713141598701477, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 207}
+{'step': 1600, 'loss': 4.8303362035751345, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 221}
+{'step': 1700, 'loss': 4.48207389831543, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 235}
+{'step': 1800, 'loss': 3.9130504012107847, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 248}
+{'step': 1900, 'loss': 3.9663865542411805, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 262}
+{'step': 2000, 'loss': 3.023014510273933, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 276}
+{'step': 2100, 'loss': 4.749259661436081, 'L_max': 4, 'p_hard': 0.05, 'noise': 0.0, 'sec': 294}
+{'step': 2200, 'loss': 3.969515808224678, 'L_max': 4, 'p_hard': 0.1, 'noise': 0.0, 'sec': 311}
+{'step': 2300, 'loss': 4.244408287703991, 'L_max': 4, 'p_hard': 0.15, 'noise': 0.0, 'sec': 328}
+{'step': 2400, 'loss': 4.229358121752739, 'L_max': 4, 'p_hard': 0.2, 'noise': 0.0, 'sec': 345}
+{'step': 2500, 'loss': 3.274857536405325, 'L_max': 4, 'p_hard': 0.25, 'noise': 0.0, 'sec': 361}
+{'step': 2600, 'loss': 3.7920088213309646, 'L_max': 4, 'p_hard': 0.3, 'noise': 0.0, 'sec': 378}
+{'step': 2700, 'loss': 3.847501117065549, 'L_max': 4, 'p_hard': 0.35, 'noise': 0.0, 'sec': 395}
+{'step': 2800, 'loss': 3.595220397338271, 'L_max': 4, 'p_hard': 0.4, 'noise': 0.0, 'sec': 412}
+{'step': 2900, 'loss': 3.6454424268007277, 'L_max': 4, 'p_hard': 0.45, 'noise': 0.0, 'sec': 429}
+{'step': 3000, 'loss': 3.6850318544358016, 'L_max': 4, 'p_hard': 0.5, 'noise': 0.0, 'sec': 447}
+{'step': 3100, 'loss': 3.393607531171292, 'L_max': 4, 'p_hard': 0.55, 'noise': 0.0, 'sec': 464}
+{'step': 3200, 'loss': 3.62040115846321, 'L_max': 4, 'p_hard': 0.6, 'noise': 0.0, 'sec': 480}
+{'step': 3300, 'loss': 3.368310837522149, 'L_max': 4, 'p_hard': 0.65, 'noise': 0.0, 'sec': 496}
+{'step': 3400, 'loss': 3.751778431683779, 'L_max': 4, 'p_hard': 0.7, 'noise': 0.0, 'sec': 513}
+{'step': 3500, 'loss': 3.216706537827849, 'L_max': 4, 'p_hard': 0.75, 'noise': 0.0, 'sec': 530}
+{'step': 3600, 'loss': 3.279042962752283, 'L_max': 4, 'p_hard': 0.8, 'noise': 0.0, 'sec': 547}
+{'step': 3700, 'loss': 3.347275645043701, 'L_max': 4, 'p_hard': 0.85, 'noise': 0.0, 'sec': 565}
+{'step': 3800, 'loss': 3.017297514807433, 'L_max': 4, 'p_hard': 0.9, 'noise': 0.0, 'sec': 582}
+{'step': 3900, 'loss': 2.6405516559747046, 'L_max': 4, 'p_hard': 0.95, 'noise': 0.0, 'sec': 598}
+{'step': 4000, 'loss': 2.833529521198943, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 615}
+{'step': 4100, 'loss': 3.092928921841085, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 633}
+{'step': 4200, 'loss': 2.393992786081508, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 649}
+{'step': 4300, 'loss': 2.0539271950395777, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 666}
+{'step': 4400, 'loss': 2.2178457973664627, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 683}
+{'step': 4500, 'loss': 1.8047060315031558, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 701}
+{'step': 4600, 'loss': 2.82666389563703, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 717}
+{'step': 4700, 'loss': 2.4121092921495437, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 735}
+{'step': 4800, 'loss': 1.30653094897978, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 752}
+{'step': 4900, 'loss': 0.9334255383885466, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 769}
+{'step': 5000, 'loss': 0.8157867848151363, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 786}
+{'step': 5100, 'loss': 2.712395479164552, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 810}
+{'step': 5200, 'loss': 2.6628245722793507, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 834}
+{'step': 5300, 'loss': 2.6860733642755075, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 858}
+{'step': 5400, 'loss': 2.2209593931166456, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 882}
+{'step': 5500, 'loss': 2.99685946859885, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 906}
+{'step': 5600, 'loss': 4.899136769771576, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 931}
+{'step': 5700, 'loss': 4.452078731060028, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 954}
+{'step': 5800, 'loss': 3.2015723991394043, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 978}
+{'step': 5900, 'loss': 3.1689774799346924, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1002}
+{'step': 6000, 'loss': 2.7788743489980696, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1026}
+{'step': 6100, 'loss': 3.2915753293037415, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1049}
+{'step': 6200, 'loss': 2.3275627261400222, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1072}
+{'step': 6300, 'loss': 2.0669808453321457, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1096}
+{'step': 6400, 'loss': 1.9405394378304481, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1119}
+{'step': 6500, 'loss': 1.81687880307436, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1143}
+{'step': 6600, 'loss': 1.2580695760250091, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1166}
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/Latent/boxes/fsq120.py", line 1142, in <module>
+    main()
+  File "/workspace/Latent/boxes/fsq120.py", line 1004, in main
+    loss, _, _, _ = m.chain(m.start(len(x[sl]), dev, s0[sl] if fam.name == "s5" else None), torch.tensor(x[sl], device=dev), lab[sl],
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Latent/boxes/fsq120.py", line 359, in start
+    return self.g.embed(torch.tensor(STTOK[states], device=dev))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA error: unspecified launch failure
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
