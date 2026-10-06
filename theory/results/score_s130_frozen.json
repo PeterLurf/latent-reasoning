@@ -1,0 +1,55 @@
+{
+ "frozen_at": "2026-10-06 07:05 EDT",
+ "primary": "dip|flag",
+ "n_cells": 4,
+ "cells": {
+  "dip|flag": {
+   "theta": 0.08,
+   "window": [
+    700,
+    1200
+   ],
+   "family": "dip",
+   "label": "flag",
+   "role": "primary (registered)",
+   "fit_precision": 0.6,
+   "fit_recall": 1.0
+  },
+  "dip|basin": {
+   "theta": 0.03,
+   "window": [
+    700,
+    1000
+   ],
+   "family": "dip",
+   "label": "basin",
+   "role": "secondary (descriptive)",
+   "fit_precision": 0.3333333333333333,
+   "fit_recall": 0.5
+  },
+  "persist|flag": {
+   "theta": 0.08,
+   "window": [
+    700,
+    1000
+   ],
+   "family": "persist",
+   "label": "flag",
+   "role": "secondary (descriptive)",
+   "fit_precision": 0.6666666666666666,
+   "fit_recall": 0.3333333333333333
+  },
+  "persist|basin": {
+   "theta": 0.03,
+   "window": [
+    700,
+    1000
+   ],
+   "family": "persist",
+   "label": "basin",
+   "role": "secondary (descriptive)",
+   "fit_precision": 0.5,
+   "fit_recall": 0.5
+  }
+ }
+}

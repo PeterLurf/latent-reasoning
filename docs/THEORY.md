@@ -5077,6 +5077,33 @@ any LR. The tied criterion is broken by the published LR, and seeds 2–3 run as
 * **Logging bug, disclosed.** In these logs, stage ≥ 1 lines have `"step"` overwritten by the decoder CE (a key collision); line i
   is step 100·i. Training and eval are unaffected. Fixed for later runs (`step_ce`).
 
+**Note 130-1 (2026-10-06 07:05 EDT; THE FREEZE, from all 16 FIT replays (4060 s3–10, s35–42); `python theory/score_s130.py fit`, then
+`theory/results/score_s130_frozen.json`; before any TEST replay is read). Four cells are frozen. The registered marker fails
+its bar even in-sample.**
+* **Frozen cells (4; the multiplicity is stated):**
+
+| Cell | Role | θ | Window | FIT precision | FIT recall | Neighbours' min(P, R) |
+|---|---|---|---|---|---|---|
+| dip, FLAG | **primary (registered)** | 0.08 | 700–1200 | 0.60 | 1.0 | 0.55 / 0.55 / 0.55 / 0.55 |
+| dip, BASIN | secondary | 0.03 | 700–1000 | 0.33 | 0.5 | 0.25–0.33 |
+| persist, FLAG | secondary | 0.08 | 700–1000 | 0.67 | 0.33 | 0.17 |
+| persist, BASIN | secondary | 0.03 | 700–1000 | 0.50 | 0.5 | 0–0.5 |
+
+* **Tie rule as used:** max min(P, R); ties go to the earlier window end, then the smaller θ, then the earlier window start.
+* **What FIT shows (descriptive, 4060):**
+  - FLAG fires in 6/16 (s5, s6, s7, s37, s41, s42), so the escape rate is 10/16. BASIN (flag and no pull by 2k) holds in
+    only 2/16 (s6, s37).
+  - **The code-variance collapse at about 650 is common and mostly transient.** It occurs in 7/16 seeds, and in all 7 the
+    spread recovers (at 700–1,700).
+    - Two of the 7 never pull (s6, s37): the basin. Two flag after a late pull (s42). Four escape (s9, s10, s36, s38).
+  - **H-127-7 fails both ways:** 3/6 flagged seeds collapse; every non-flagged seed pulls (10/10, dmean_max ≥ 1.97).
+* **Pre-stated:** the primary cell is at min(P, R) = 0.60 in-sample, so a TEST PASS (≥ 0.9 / ≥ 0.9) is very unlikely. TEST is
+  scored as registered (`python theory/score_s130.py test` reads the frozen file).
+  - The expected reading is "no PASS: on these cards the early code-variance marker does not predict the 2k plateau".
+  - Restart-on-plateau keeps the 2k flag.
+* **The 2k flag's own reliability** is the next question: FIT's s5 / s7 / s41 / s42 flag after a pull. The 24k check runs of s5,
+  s6 and s7 (130-0) answer it on the 4060, and §127's ctrl-s4 full run answers it on a 3090.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
