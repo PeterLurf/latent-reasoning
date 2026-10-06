@@ -4,7 +4,9 @@ theory/results/replay130/{card}_s{seed}.jsonl, one seed at a time, skipping comp
 4060: FIT 3..10 (+ 35..42 if FIT has < 3 flagged or < 3 non-flagged), then TEST-SAME 19..26, 59..82 until >= 8 flagged and >= 8
 non-flagged. 3070: TEST-CROSS 11..18, 27..34, 43..58 until >= 8 / >= 8 or the list ends.
 BLINDING: block completion counts only the 123-3 flag computed from each replay's own LOSS lines (score_s130.features' formula);
-no zb_std_in / L1_dmean / marker value is read here. Stops when scratch/run130.stop exists."""
+no zb_std_in / L1_dmean / marker value is read here. Logging (Audit, blinding): logs/c1_local.log gets the flag for FIT seeds
+only; TEST seeds are logged there as "complete", their flags only in theory/results/replay130/.blind_runner.log (not opened before
+note 130-1). Stops when scratch/run130.stop exists."""
 import argparse
 import json
 import os
@@ -32,6 +34,9 @@ def flag_from_loss(path):
     return bool(g(2000) >= 0.9 * g(1000) and g(2000) >= 0.25 * g(100))
 
 
+FIT = set(range(3, 11)) | set(range(35, 43))                              # 4060 FIT seeds: the only ones whose flag is logged openly
+
+
 def run(card, seed, dev, log):
     out = os.path.join(D, "%s_s%d.jsonl" % (card, seed))
     f = flag_from_loss(out)
@@ -43,8 +48,11 @@ def run(card, seed, dev, log):
     rc = subprocess.call([sys.executable, "-u", os.path.join(ROOT, "scratch", "replay_basin.py"), "--seed", str(seed), "--steps", "2000",
                           "--every", "50", "--amp", "bf16", "--threads", "3", "--device", dev, "--out", out],
                          stdout=open(os.path.join(ROOT, "logs", "c1_s130_%s_s%d.log" % (card, seed)), "w"), stderr=subprocess.STDOUT, cwd=ROOT)
-    f = flag_from_loss(out)
-    log.write("%s s130 %s s%d rc %d flag %s (%s, %ds)\n" % (time.strftime("%H:%M:%S"), card, seed, rc, f, dev, time.time() - t0)); log.flush()
+    f = flag_from_loss(out); fit = card == "4060" and seed in FIT
+    log.write("%s s130 %s s%d rc %d %s (%s, %ds)\n" % (time.strftime("%H:%M:%S"), card, seed, rc, ("flag %s" % f) if fit else "complete", dev, time.time() - t0)); log.flush()
+    if not fit:                                                             # TEST: the flag goes to the blind log only (Audit)
+        with open(os.path.join(D, ".blind_runner.log"), "a") as bl:
+            bl.write("%s %s s%d flag %s\n" % (time.strftime("%H:%M:%S"), card, seed, f))
     return f
 
 
