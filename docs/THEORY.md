@@ -6070,6 +6070,12 @@ Implementation: the experiments session (fsq120 `--tsd {teacher,text}`, `--tsd_t
   the probe. A CPU fp32 smoke must assert that hidden_layers(ids)[-1] equals the model's own final hidden state on one batch (to about
   1e-4). A mismatch voids the gates until it is fixed.
 
+**Note 128-7 (2026-10-06 17:14 EDT; descriptive; completes 128-6).** rdfa s1's fp32 cover certificate (local 2070, `s128cc2070_rdfa_s1`) holds:
+90 reachable, Moore 8, eval distinct 90, **n_uncovered 0**. Its bf16 certificate had 98, an over-count by 8. **All 12 CLOSED runs now
+carry an fp32 certificate that covers every code the eval visits** (14 certificates, counting 128-4's two 4060 duplicates).
+* The visited set equals the fp32-reachable set where code growth saturates (cyc s3 / s4, rdfa s1 / s3). It is a strict subset where
+  growth is still open (MOD s1–s4).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
