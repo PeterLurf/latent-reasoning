@@ -285,7 +285,7 @@ def main():
                     log.write(json.dumps({"step": step, "stopped": "plateau (123-3 flag at 2k)", "loss_100": gl(100), "loss_1k": gl(1000), "loss_2k": gl(2000)}) + "\n")
                     log.close(); print("STOPPED plateau at 2k", flush=True); return
         if a.stop_after and step >= a.stop_after:                           # local prototype only: no model / eval
-            log.write(json.dumps({"step": step, "stopped": "stop_after"}) + "\n"); log.close(); print("STOP_AFTER", step, flush=True); return
+            log.write(json.dumps({"step": step, "proto_stop": step}) + "\n"); log.close(); print("STOP_AFTER", step, flush=True); return   # not "stopped": restart128/132.status() read that as a plateau (Audit)
     train_sec = round(time.time() - t0); torch.save(m.state_dict(), os.path.join(a.out, "model.pt")); m.eval()
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
