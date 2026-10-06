@@ -743,3 +743,23 @@
 14:35:56 bl4060: s132proto k6 lines OOMed in training at L 2 / bs 64 (5.88 GiB alloc, 6.68 reserved; the 4.0 GiB figure was an estimate, not a measurement) -> --max_tokens 4800 (memory only), measured peak 5352 MiB card incl. init probe (now chunked 256); OOM'd dirs *.void_oom
 14:35:56 bl4060 backlog worker start: scratch/c1_backlog_4060.txt on cuda:0 (nvidia-smi 1 'RTX 4060', limit 6652 MiB of 8188)
 14:35:58 bl4060 start: python -u -m boxes.table132 --k 6 --m 3 --seed 1 --steps 24000 --stop_after 2000 --stop_plateau --max_tokens 4800 --device cuda:0 --out boxes/runs_fsq/s132proto_k6_s1_4060 && echo ok > boxes/runs_fsq/s132proto_k6_s1_4060/.done
+14:36:35 bl3070b done rc 0 out NO peak_card_mem 4493 MiB (measured 4.5 GiB) : theory/results/replay_x/3070_s510.jsonl.done
+14:36:40 bl3070b start: python -u scratch/replay_basin.py --seed 511 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:1 --out theory/results/replay_x/3070_s511.jsonl && echo ok > theory/results/replay_x/3070_s511.jsonl.done
+14:37:36 bl2070b done rc 0 out yes peak_card_mem 1514 MiB (measured 3.0 GiB) : boxes/runs_fsq/s128_cyc_s3/eval_growth.json
+14:37:36 bl2070b start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_cyc_s4/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_cyc_s4
+14:41:17 bl3070b done rc 0 out yes peak_card_mem 4493 MiB (measured 4.5 GiB) : theory/results/replay_x/3070_s511.jsonl.done
+14:41:22 bl3070b start: python -u scratch/replay_basin.py --seed 512 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:1 --out theory/results/replay_x/3070_s512.jsonl && echo ok > theory/results/replay_x/3070_s512.jsonl.done
+14:42:34 bl2070b done rc 0 out yes peak_card_mem 1514 MiB (measured 3.0 GiB) : boxes/runs_fsq/s128_cyc_s4/eval_growth.json
+14:42:35 bl2070b start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_ff_s3/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_ff_s3
+14:46:00 bl3070b done rc 0 out yes peak_card_mem 4419 MiB (measured 4.5 GiB) : theory/results/replay_x/3070_s512.jsonl.done
+14:46:04 bl3070b start: python -u scratch/replay_basin.py --seed 513 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:1 --out theory/results/replay_x/3070_s513.jsonl && echo ok > theory/results/replay_x/3070_s513.jsonl.done
+14:48:16 bl2070b done rc 0 out yes peak_card_mem 1517 MiB (measured 3.0 GiB) : boxes/runs_fsq/s128_ff_s3/eval_growth.json
+14:48:18 bl2070b start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_ff_s4/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_ff_s4
+14:48:31 bl4060 done rc 0 out yes peak_card_mem 6934 MiB (measured 5.3 GiB) : boxes/runs_fsq/s132proto_k6_s1_4060/.done
+14:48:31 bl4060 HALT: peak 6934 MiB > limit 6652
+14:48:31 bl4060 IDLE: backlog empty (polling)
+14:49:55 bl4060: s132proto_k6_s1 finished rc 0 but its full-run card peak was 6934 MiB (50-step measurement 5352: allocator growth over the run) -> worker HALT (as designed); k6 s2-s4 lines OFF; worker restarted on the replay / flag4proto lines
+14:49:55 bl4060 backlog worker start: scratch/c1_backlog_4060.txt on cuda:0 (nvidia-smi 1 'RTX 4060', limit 6652 MiB of 8188)
+14:49:57 bl4060 start: python -u scratch/replay_basin.py --seed 502 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:0 --out theory/results/replay_x/4060_s502.jsonl && echo ok > theory/results/replay_x/4060_s502.jsonl.done
+14:50:34 bl4060 start: python -u scratch/replay_basin.py --seed 503 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:0 --out theory/results/replay_x/4060_s503.jsonl && echo ok > theory/results/replay_x/4060_s503.jsonl.done
+14:50:40 bl3070b done rc 0 out yes peak_card_mem 4493 MiB (measured 4.5 GiB) : theory/results/replay_x/3070_s513.jsonl.done
