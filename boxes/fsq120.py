@@ -200,15 +200,15 @@ class FSQ120(nn.Module):
         self.no_round = False; self.noise = 0.0                             # §123: continuous carry; training dither (set per step)
         self.soft_beta = 0.0; self.carrier_ln = False                       # §133 SOFT (s = (1-b) z_b + b round(z_b)) / PIN (LayerNorm before W_up)
         self.tsd_on = False; self._tsd_e = []                              # §135: carried embeddings (with grad) of every hand-off
-
-    def enable_tsd(self, dim=256):
-        """§135 TSD / BASE: P_s (student, 768 -> 256) and P_t (target, 768 -> 256), one each, shared across hand-offs."""
-        dev = self.up.weight.device; self.tsd_ps = nn.Linear(768, dim).to(dev); self.tsd_pt = nn.Linear(768, dim).to(dev); self.tsd_on = True
         self.std = False; self._acc = []                                    # §125 (enable_std registers its buffers)
         self.raw_h = False                                                  # §126 RAW-H: no bottleneck, carried = std(h) (needs enable_std)
         self.anneal = False; self.lam = 1.0; self._h_last = None; self._dist = []; self.distill_on = False   # §126 ANNEAL (test lam = 1)
         self.skip = False; self.std2 = False; self.var_on = False; self._var = []; self.last_qs = None   # §127 (enable_* register)
         self.det_train = False                                              # §127 checks: training semantics without RNG draws
+
+    def enable_tsd(self, dim=256):
+        """§135 TSD / BASE: P_s (student, 768 -> 256) and P_t (target, 768 -> 256), one each, shared across hand-offs."""
+        dev = self.up.weight.device; self.tsd_ps = nn.Linear(768, dim).to(dev); self.tsd_pt = nn.Linear(768, dim).to(dev); self.tsd_on = True
 
     def enable_skip(self, seed):
         """§127 B: 7 maps 8 -> 768 (blocks 6..11, then the final hidden), no bias, N(0, 0.02^2) from their own generator."""
