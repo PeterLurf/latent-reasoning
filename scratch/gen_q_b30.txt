@@ -1,0 +1,5 @@
+# §127 Stage 2 for SKIP (127-3) + shared §120 FINAL control, part 1: driver 595 class for the whole matched unit (Audit); guard on; boxes.fsq120
+# P=2
+boxes/runs_fsq/s127_s5_skip_s1 boxes.fsq120 --family s5 --arm final --micro 2 --no_cert --stop_plateau --probe127 --seed 1 --skip_dec
+boxes/runs_fsq/s127_s5_skip_s3 boxes.fsq120 --family s5 --arm final --micro 2 --no_cert --stop_plateau --probe127 --seed 3 --skip_dec
+boxes/runs_fsq/s127_s5_ctrl_s3 boxes.fsq120 --family s5 --arm final --micro 2 --no_cert --stop_plateau --probe127 --seed 3

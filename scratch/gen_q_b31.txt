@@ -1,0 +1,6 @@
+# §127 Stage 2 for SKIP (127-3) + shared control, part 2 (driver 595 class); guard on; boxes.fsq120
+# P=2
+boxes/runs_fsq/s127_s5_skip_s4 boxes.fsq120 --family s5 --arm final --micro 2 --no_cert --stop_plateau --probe127 --seed 4 --skip_dec
+boxes/runs_fsq/s127_s5_ctrl_s4 boxes.fsq120 --family s5 --arm final --micro 2 --no_cert --stop_plateau --probe127 --seed 4
+boxes/runs_fsq/s127_ff_skip_s1 boxes.fsq120 --family ff --arm final --micro 2 --no_cert --stop_plateau --probe127 --seed 1 --skip_dec
+boxes/runs_fsq/s127_ff_skip_s2 boxes.fsq120 --family ff --arm final --micro 2 --no_cert --stop_plateau --probe127 --seed 2 --skip_dec
