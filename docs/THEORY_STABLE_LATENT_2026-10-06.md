@@ -112,8 +112,16 @@ with the same code and settings across families.
       - **F2b-transition** (lr10 s2): 0.957 / 0.037. The write and read work, but the transition on its own code fails. ρ₁ 0.
       - **F2a** (s5, s7, skip_s2_rerun, ctrl_s4_full, s128 s3): 0.04–0.10 / under 0.05. The first write or read already fails, even
         with ρ₁ in band (skip_s2_rerun 0.175; ctrl_s4_full 0.14).
+      - **F2b-dialect** (s6, provisional): 0.048 / 0.021, then flat at about 3× chance, with no decay. Yet the end probe reads the
+        state at every L (R² 0.81) and the decoder depends on the code (abl 6.0); ρ₁ 0.12, in band.
+        - The code carries the state, but the decoder maps it wrong: a writer / reader dialect. That is what §134's dialect probe
+          measures.
+        - s6 was a 2k-flagged plateau that reorganised late (131-8).
       - **F1** (s30): chance at both positions.
-    - **Ranking that follows** (Audit): a wrong transition or write/read dominates (6 of 9 failures; contraction 2). So the
+    - **The discriminator is a triple:** positions 1 and 2 plus the end probe (R²_state with abl_dloss). F2b-dialect and F2a share
+      the low prefix profile, and only the end probe separates them (state 0.81 / abl 6.0, against ≤ 0.31 / ≤ 1.9).
+      - Counts: 5 exact, 2 compounding, 1 transition, 1 dialect, 5 F2a, 1 F1.
+    - **Ranking that follows** (Audit): a wrong transition, write/read or dialect dominates (7 of 10 failures; contraction 2). So the
       transition-side fixes come first for S5 entry: COPY (§134) for F2a's write/read, and SELF-ANCHOR (2b) for F2b-transition's
       reading of its own code. §133 / 2 stay for compounding and capacity. ρ₁ in band is not sufficient (skip_s2_rerun).
 * **F3, drift:** a continuous or wide carrier has no attractor (RAW-H, CONT).
