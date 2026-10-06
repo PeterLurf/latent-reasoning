@@ -5235,6 +5235,20 @@ stays.**
   - stopping the collapse (VAR) fills the code with non-state content (127-9);
   - LR10 inflates the carrier (row norm 47 at 2k).
 
+**Note 128-3 (2026-10-06 07:46 EDT, before any §128 S5 or FF slot is accepted; Audit's forecast; no rule change). How an S5 failure is read.**
+* **The risk.** On the RTX 3090, plain §120 FINAL S5 is exact in 1 of 4 seeds in §127's control: s2 plateaus, s4 flags
+  (borderline), and s3 escapes the 2k flag and ends at 0.
+  - §128's restart rule acts only at 2k. It accepts an escaped seed like s3, so that slot then fails.
+  - At that rate FAMILY-PASS(S5), and with it TASK-AGNOSTIC, is at real risk.
+* **Reading, fixed now:** if FAMILY-PASS(S5) fails because accepted runs escaped the 2k flag and ended below 0.99, the result says
+  **"S5 fails by escape-without-learning, not by entry"**, and TASK-AGNOSTIC is false as registered.
+  - If slots exhaust their restarts instead, it is "fails by entry".
+  - The same applies to FF.
+* **Follow-up (a separate registration, not a change to §128):** §128's recipe plus §131's 4k restart point. It is registered
+  only if §131 passes held-out (0 false positives among S5 learners, and ≥ 2/3 recall).
+* The held-out families' result (MOD and CYC pass, RDFA pending) stands on its own either way. It is reported as "the recipe
+  learns three held-out regular families without restarts", whatever S5 does.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
