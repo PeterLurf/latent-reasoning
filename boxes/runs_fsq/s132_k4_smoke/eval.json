@@ -1,0 +1,181 @@
+{
+ "family": "table",
+ "k": 4,
+ "m": 2,
+ "seed": 1,
+ "train_sec": 35,
+ "final_loss": 0.9747305726527702,
+ "n_nonfinite": 0,
+ "eval_dtype": "torch.bfloat16",
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "train_gpu": "NVIDIA GeForce RTX 3090",
+ "train_driver": "595.71.05",
+ "split": {
+  "held_out": 68,
+  "ood": 240,
+  "train": 268,
+  "train_rejected_draws": 0,
+  "train_heldout_overlap": 0
+ },
+ "long_acc_transitive": 0.0,
+ "transitive_share": 0.82,
+ "long_acc": 0.09,
+ "heldout_n_tables": 68,
+ "heldout_overlap": 0,
+ "train_acc": 0.01,
+ "acc_by_length": {
+  "16": 0.09,
+  "32": 0.09,
+  "64": 0.09,
+  "128": 0.09,
+  "256": 0.09,
+  "512": 0.09
+ },
+ "ext_2048": {
+  "n": 20,
+  "len": 2048,
+  "cumulative": 0.1
+ },
+ "donor": {
+  "pos2": {
+   "donor_consistent": 0.28,
+   "recipient_consistent": 0.25,
+   "chance_overlap": 0.43
+  },
+  "pos4": {
+   "donor_consistent": 0.22,
+   "recipient_consistent": 0.24,
+   "chance_overlap": 0.35
+  },
+  "pos6": {
+   "donor_consistent": 0.35,
+   "recipient_consistent": 0.24,
+   "chance_overlap": 0.25
+  }
+ },
+ "donor_difftable": {
+  "pos2": {
+   "donor_consistent": 0.31,
+   "recipient_consistent": 0.25,
+   "chance_overlap": 0.28
+  },
+  "pos4": {
+   "donor_consistent": 0.22,
+   "recipient_consistent": 0.26,
+   "chance_overlap": 0.29
+  },
+  "pos6": {
+   "donor_consistent": 0.14,
+   "recipient_consistent": 0.25,
+   "chance_overlap": 0.22
+  }
+ },
+ "table_swap": {
+  "n": 100,
+  "switch": 256,
+  "acc_before_cum": 0.08,
+  "acc_after_cum": 0.01,
+  "acc_after_mean": 0.253125,
+  "acc_after_first8": 0.265,
+  "same_table_share": 0.02
+ },
+ "ood_acc": 0.11,
+ "cert_sample": {
+  "n": 3,
+  "holds": 0,
+  "moore_eq_reachable": 0,
+  "moore_eq_k": 0,
+  "tables": [
+   {
+    "table": [
+     [
+      1,
+      3,
+      2,
+      0
+     ],
+     [
+      1,
+      2,
+      0,
+      3
+     ]
+    ],
+    "holds": false,
+    "n_moore": 3,
+    "status": "done",
+    "n_reachable": 5,
+    "reachable_states": 4
+   },
+   {
+    "table": [
+     [
+      3,
+      1,
+      0,
+      2
+     ],
+     [
+      2,
+      3,
+      0,
+      1
+     ]
+    ],
+    "holds": false,
+    "n_moore": 6,
+    "status": "done",
+    "n_reachable": 6,
+    "reachable_states": 4
+   },
+   {
+    "table": [
+     [
+      1,
+      2,
+      0,
+      3
+     ],
+     [
+      3,
+      1,
+      2,
+      0
+     ]
+    ],
+    "holds": false,
+    "n_moore": 6,
+    "status": "done",
+    "n_reachable": 6,
+    "reachable_states": 4
+   }
+  ]
+ },
+ "probe_ophist": {
+  "init": {
+   "n": 1024,
+   "positions": "2-7",
+   "r2_last1": 0.4904226064682007,
+   "r2_last2": 0.4986402988433838,
+   "r2_last3": 0.49749618768692017,
+   "r2_state": 0.0007800459861755371
+  },
+  "2k": {
+   "n": 1024,
+   "positions": "2-7",
+   "r2_last1": 0.21729153394699097,
+   "r2_last2": 0.21978545188903809,
+   "r2_last3": 0.21879208087921143,
+   "r2_state": 0.08376473188400269
+  },
+  "end": {
+   "n": 1024,
+   "positions": "2-7",
+   "r2_last1": 0.09858971834182739,
+   "r2_last2": 0.10296821594238281,
+   "r2_last3": 0.1032942533493042,
+   "r2_state": 0.10475504398345947
+  }
+ },
+ "eval_sec": 76
+}
