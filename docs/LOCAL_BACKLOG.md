@@ -54,11 +54,11 @@ entries, keeping ≥ 3 open per card.
      - Then add **s127_s5_ctrl_s4_full** (a plateau that ran to 24k) and, when fetched, the §127 lever models (std2 s1–s3, lr10 s2 / s3, skip s2 /
        rerun / s3). The helper asked for these; the line format is as above.
 
-4. **§115 completion (registered eval, short; Theory).** §115's registered models without eval_s115.json:
+4. **§115 completion (short; Theory).** Missing eval_s115.json. Correction: only **g105_mask4_s1** is in §115's registered set (§108 MK-4 s1 / s3 / s5 plus §105 s1–3). s108_mk4_s2 / s4 are basin seeds outside it, so they are **descriptive only**:
    - `python -m boxes.snap115 --run boxes/runs_s5/s108_mk4_s2 --device <3070>`
    - `python -m boxes.snap115 --run boxes/runs_s5/s108_mk4_s4 --device <3070>`
    - `python -m boxes.snap115 --run boxes/runs_s5/g105_mask4_s1 --model g97 --device <3070>` (part B only, as for g105 s2 / s3)
-   - Memcheck first; eval only, bs 250. Stop: done. This finishes §115's per-model rules, so it has priority over the replay pairs.
+   - Memcheck first; eval only, bs 250. Stop: done. g105_mask4_s1 finishes §115's per-model rules.
 
 ## RTX 2070 (Turing, fp32 only, 8 GB, slowest)
 
