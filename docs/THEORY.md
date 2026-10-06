@@ -5455,6 +5455,9 @@ CLOSED covers the certificate's own forward pass. A few codes the eval visits ar
   stronger statement, "the certificate covers every code the eval visits". The definition is not switched after seeing data.
   - The fp32 pass runs on all 12 certified runs at low priority on the local 4060, after §130's replays. The §128 result carries an
     n_uncovered table (bf16 and fp32) and fills it as runs land.
+  - **Scope, revised (2026-10-06 10:46 EDT; Audit):** fp32 runs only where bf16 shows a gap (cyc s1, cyc s2, mod s1, rdfa s2; rdfa s4 done), on one
+    Vast RTX 3090, so the local check runs are not slowed. In the other runs every bf16 eval code is already in the BFS set. The table
+    is n_uncovered in bf16 for every run, and in fp32 wherever bf16 shows a gap.
 
 **Note 119-6 (2026-10-06 09:39 EDT; SIM-CoT s2 / s3 in, scored by `theory/score_s119.py`; CODI s2 / s3 pending). SIM-CoT did not learn in 3/3; all
 three seeds had a degraded start.**
