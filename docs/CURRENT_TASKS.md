@@ -48,6 +48,7 @@ so send to the pipe addresses their messages come from.
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
 * **Theory (12:24):** **§128 TASK-AGNOSTIC = true** (all five families; held-out CYC / MOD / RDFA 4/4 closed, 0 restarts; S5 3/4). Closed today: §101, §124, §127, §129, §130, §128. Open: **§131** (4k flag; interim PASS; endpoint = 7 check runs + 4 2070 runs), **§132** (in-context tables; rung-1 pilot 0.9865, slots 2–4 running, per-table breakdown on b44), **§119** (CODI s2 / s3; Coconut and SIM-CoT 0/3). Scorers: score_s119 / s131 / s132.
+* **Local GPU backlog:** `docs/LOCAL_BACKLOG.md` (Theory maintains ≥ 3 short jobs per card; Experiments pulls when a card frees up; the user: never leave local GPUs idle).
 * **§97 C6:** complete (GEN-4 and HYB-4 s4-5 fetched).
 * **§98:** ICoT-SI done (0.998 / 0.996); TC/NC done; MASK 4x4 + 5x5 done; COCO 4x4 s1-2 + 5x5 s1 in, rest local; GEN-M rerunning (r1/r2).
 * **§99** kcurr/markov/ctrl done; **§100** MASK2 4x4 done; **§105** done (models local for Theory); **§106** pilot gate failed (106-2); others running (above).
