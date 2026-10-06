@@ -28,6 +28,15 @@ entries, keeping ≥ 3 open per card.
      for S = 601..620.
    - Peak about 6 GB (L_max ≤ 4 up to 5k). About 20 min each. Stop: 4.5k steps.
 
+4. **Ramp-disentangling prototype** (Theory, stable-latent candidate 3; descriptive). Does escape without learning move with the rounding
+   ramp?
+   - Paired short runs on seeds 601–610, fsq120 S5 FINAL, `--stop_after 8000`:
+     - **plain;**
+     - **late-ramp:** p_hard 0 → 1 over 6k–8k, L_max unchanged. Needs a `--p_hard_start` / `--p_hard_end` option (Experiments).
+   - Outputs `boxes/runs_fsq/rampproto_{plain,late}_s{S}_4060`.
+   - Read loss(4k) / loss(2.6k) and loss(7k) / loss(5.6k) per run.
+   - Peak about 6 GB (L_max 8 from 5k; micro as needed; memcheck first). About 30 min each. Stop: 8k steps.
+
 ## RTX 3070 (Ampere, bf16, 8 GB)
 
 1. [queued: scratch/c1_backlog_3070.txt, after the fp32 contraction filler] **Cross-card replay pairs:** as 4060 #2, `--device <3070>`, output `theory/results/replay_x/3070_s{S}.jsonl`, S = 501..520.
