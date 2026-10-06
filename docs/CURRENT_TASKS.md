@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-06 10:45 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-06 13:55 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -20,30 +20,30 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 Messages go through SendMessage. The names "Theory" and "Audit" currently need an identity confirm, pending the user,
 so send to the pipe addresses their messages come from.
 
-## Running now (10:45 2026-10-06; credit ~$120, cap $4/h, floor $30; <= 16 hosts; gradflow_check PASS required for new code paths)
+## Running now (13:55 2026-10-06; credit ~$117, ~15 hosts, ~$2.3/h; cap $4/h, <= 16 hosts, floor $30)
 
-**Order (user, via Audit):** C1 > C6 > C4 = C2 > C3 > C5 > C7.
+**User rules (2026-10-06):** full training runs on Vast (>= 16 GB, --ckpt_every 2000); local cards: short jobs only, memory-checked
+(>= 1.5 GiB free), one per card, never idle (standing backlog docs/LOCAL_BACKLOG.md). Order C1 > C6 > C4 = C2 > C3 > C5 > C7.
 
-### Vast (4 hosts; auto_drain_gen6 + drain_gen_partial (2-slot fetch semaphore, small files first, model-skip rule
-`scratch/drain_posthoc.py` + `scratch/model_keep_patterns.txt`); waiter `watch_any3.sh a4 b43 d8 e31`; exclusions `scratch/vast_exclude_ips.txt`)
+### Vast (auto_drain_gen6; waiters watch_any3.sh; GPT-2 now fetched on-host from HF, SHIP_GPT2=1 to ship)
 
-| Tag | Work | Next |
+| Tag | Card | Work |
 |---|---|---|
-| a4 | §118 LONG s83 | drain, commit, report |
-| b43 | §132 rung-1 slot 1 (`scratch/restart132.py`) | if accepted run exact -> slots 2-4; 4 failed attempts -> stop + report; rung 2 only after rung-1 PASS; alert if projection > $6 |
-| d8 | §119 CODI s2/s3 lr 1e-3 (3090, bf16) | drain, report to Theory |
-| e31 | §128 FF s3/s4 | drain, commit, report (TASK-AGNOSTIC gate) |
+| b47 / b48 / b49 | 4060 Ti 16 GB | note 131-4 reruns s130chk_s5_s{5,6,7}_4060ti (b47: Ada parity_ckpt first) |
+| b50 / b51 / b52 / b53 | A4000 | s130chk_s5_s{17,30,34,12}_a4000 (b53: A4000 parity_ckpt first) |
+| b54 / b55 | 2080 Ti 22 GB | note 131-6 s131x_s5_s{401,403} / s{402,404}_2080ti (fp32) |
+| b44 / b45 / b46 | 3090 595.71 | §132 rung-1 slots 2 / 3 / 4 (b44: s132bd_k4_s1 per-table breakdown first) |
+| b61 | 3090 | §128 S5 fp32 CERTs (s128cert_s5_*) |
+| a4 / d8 | 3090 | §118 LONG s83 / §119 CODI s2-3 |
 
-* b30 destroyed 10:41: §127 ctrl s3 model.pt lost (scp stalled at 340/462 MB every try); fp32 contraction done on host (259a5cd9).
+* All reruns go through scratch/micro_gate.py (smallest micro of 1/2/4 fitting L 31/32 + L 16 at micro 1, 1.5 GiB margin; Audit:
+  report any micro > 1 before 14k). A RESUME (fsq120 --resume ckpt_last.pt) waits for its card class's parity PASS (Ada: PASS, local).
+* fsq120: --micro applies at L > 16 (root cause of the 14k OOMs); --ckpt_every / --resume / --stop_after / --probe_only.
 
-### Local PC (torch `cuda:0` = 4060, `cuda:1` = 3070, `cuda:2` = 2070; log `logs/c1_local.log`)
+### Local (scratch/c1_backlog_worker.sh per card; log logs/c1_local.log)
 
-* 4060: `scratch/run130.py --card 4060` (pid 18516): TEST-SAME done (s74), now s130chk_s5_s{5,6,7}_4060. Also 128-4
-  `cert_cover128` mod_s1 (pid 20316, fp32 pass). Then `scratch/c1_q_certcover128.sh` (waits on both pids via PowerShell)
-  runs the other 10 certified MOD/CYC/RDFA runs; stop file `scratch/certcover128.stop`. rdfa_s4 done: bf16 3 -> fp32 0.
-  Note: MSYS `kill -0` cannot see Windows pids (it started rdfa_s4 early at 10:03, in parallel).
-* 3070: run130 3070 s130chk s17/s30/s34/s12; `scratch/posthoc128_local.sh cuda:1` (contraction + CERT as runs land).
-* 2070: §116 NONE s41 rerun.
+* 4060 bl4060 <- scratch/c1_backlog_4060.txt; 3070 bl3070b <- c1_backlog_3070.txt; 2070 bl2070b <- c1_backlog_2070.txt (after the
+  2070 CERT queue, which stops at its memory gate after FF). Stop: touch scratch/<tag>.stop. New entries: append to the card's file.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
