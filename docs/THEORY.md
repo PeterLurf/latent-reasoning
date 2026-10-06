@@ -5909,6 +5909,19 @@ gradient unchanged, as in FSQ. Everything else matches §133 / 133-1 / 133-3.
   reading certified.
 * CLOSED is unchanged (the certificate as run, 128-4). The fp32 n_uncovered column is filled for these six as they land.
 
+**Note 131-7 (2026-10-06 15:39 EDT; interim, descriptive; the endpoint is not reached; helper's reading, Audit-reproduced). The first prospective FLAG4 miss: a late re-entry.**
+* **s130chk_s5_s17_a4000** (RTX A4000, driver 560.35.03, micro 1). Loss 8.343 / 4.502 / 3.666 at 100 / 1k / 2k: **no 2k flag**
+  (ratio 0.814). Then 3.930 at 2.6k and 3.063 at 4k, so **FLAG4 false** (0.779). Then 3.453 at 4.5k and 4.098 after the L_max 8
+  step (5.1k), ending at 4.105 at 24k. long_acc 0, ext_2048 0, n_codes 9,646, donor at chance.
+  - So the run escapes at 2k, descends to about 3.0 by 4k, and **re-enters failure at the L_max 8 step**. A 4k check cannot see this
+    by construction. It is a miss class distinct from the ~3.2 basin and the partial learner.
+* **Parity (131-4):** it does not reproduce its 3070 replay. Both the replay and the crashed 3070 partial flagged at 2k (ratios 0.964
+  / 0.966). |Δloss(1k)| = 0.709 with opposite flag outcomes, so seed 17's 2k outcome depends on the host within GA104 (the 125-2
+  pattern). It is read on its own flags, and the "late learner" question for s17 stays unanswered.
+* **score_s131 now:** held-out escaped-and-failed recall is 4/5 (all held-out and prospective); precision is 1.0 (0 of 22 / 9 exact
+  flagged). (ii) still holds at ≥ 2/3. The verdict waits for the endpoint.
+* **134-2(b):** statistic A at 4.5k is 3.453, on the failure side of ≤ 3.0, as predicted. The exact runs' maximum is 2.746.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
