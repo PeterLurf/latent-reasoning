@@ -215,7 +215,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 125 | Readable bottleneck from step 0: standardised carried code vs the soft-phase no-read basin (task-agnostic, §120 harness) | **untested**: the EMA standardisation was not in force at 2k (carried norm 35); STD s2 plateaued; other runs held | closed (untested) |
 | 126 | Is the bottleneck the cause of the soft-phase basin? RAW-H vs ANNEAL (stop rule → restart-on-plateau) | **BOTTLENECK-CAUSE** (RAW-H s1–3 escape the 2k flag; every bottlenecked s2 plateaus) **without ANNEAL-INHERITS** (s2 0 in both casts): the wide carrier enters but doesn't learn long chains (0.846 / 0 / 0); restart-on-plateau is the procedure; s4 descriptive | closed |
 | 127 | Reliable entry without restarts? VAR / SKIP / STD2 / LR10 on §120's harness vs restart-on-plateau | **no arm adopted** (ENTRY-FIX false in all four): escaping the 2k flag is easy, learning afterwards fails (escape-without-learning dominates → §131); SKIP 2/4 exact vs plain 1/4 (descriptive); restart-on-plateau stays | closed |
-| 128 | One recipe, five state-tracking families (S5, FF + held-out CYC / MOD / RDFA), restart-on-plateau; FAMILY-PASS = 3/4 exact + SERIAL (+ CLOSED) | registered | **open** |
+| 128 | One recipe, five state-tracking families (S5, FF + held-out CYC / MOD / RDFA), restart-on-plateau; FAMILY-PASS = 3/4 exact + SERIAL (+ CLOSED) | **TASK-AGNOSTIC = true**: all five families pass; held-out CYC / MOD / RDFA 4/4 exact, SERIAL, CLOSED with 0 restarts; S5 3/4 (one escape without learning); fp32 certificate covers all visited codes | closed |
 | 129 | Where does the entry basin live? Head-only re-draw at the 2k flag vs a CLOCK-ONLY warm restart (S5, 4 flagged seeds): LR / HEAD / BODY | **descriptive** (none of LR / HEAD / BODY): a fresh head escapes in 2/4 vs 0/4 for the warm restart, but no re-drawn seed learns; the trained body reads a fresh head (R²_state 0.4–0.96 by clock 700) | closed |
 | 130 | Early label-free plateau marker (code variance at ~1k): fit on 4060 replays, frozen, tested cross-card (3070, primary) and same-card | **no PASS** (primary P 0.70 / R 0.78 cross-card, 0.47 / 0.88 same-card; 0.60 in-sample): both fail, so the marker is noisy, not card-specific: the early marker does not predict the 2k plateau; the collapse at ~650 is common and transient; the 2k flag fires after early pulls | closed |
 | 131 | Second restart point at 4k: FLAG4 = loss(4k) ≥ 0.9·loss(2.6k) (floored), held-out precision / recall for "escape without learning" | registered | **open** |
@@ -5535,6 +5535,41 @@ fixed before any further §132 run). The pilot is near-exact, in context, SERIAL
     |long_acc_replay − 0.9865| × 2,000 is read as host-dependent flips, not a scorer error.
   - **The fresh 68-table sample (100 problems × 512 per table) is the primary measure** of where the residual sits. The replay's
     per-table attribution is the breakdown host's forward only.
+
+**§128 result (2026-10-06 12:23 EDT; scored by `theory/score_s128.py`, all 20 slots; RTX 3090 / 3090 Ti, drivers 565 / 595; Audit reproduced).
+TASK-AGNOSTIC = true. One fixed recipe gives exact, serial latent state tracking on five regular families, three held out, with
+the held-out families closed.**
+
+| Family | FAMILY-PASS | Slots exact + SERIAL (+ CLOSED) | Restarts | Delétang score | Notes |
+|---|---|---|---|---|---|
+| S5 | **true** | 3/4 (s1 0.9985, s102 0.9995, s104 1.0) | 2 (slots 2, 4) | 0.9995–1.0 | slot 3 accepted, then escaped without learning (0) |
+| FF | **true** | 4/4 (1.0) | 0 | – | |
+| CYC (held out) | **true** | 4/4, CLOSED (Moore 5) | 0 | 1.0 (Transformer 61.9) | 1.0 at 2,048 and 8,192 |
+| MOD (held out) | **true** | 4/4, CLOSED (Moore 5) | 0 | 1.0 (Transformer 24.2) | 1.0 at 2,048 |
+| RDFA (held out) | **true** | 4/4, CLOSED (Moore 8) | 0 | 1.0 | 1.0 at 2,048 |
+
+* **Registered reading, TASK-AGNOSTIC:** one fixed recipe gives exact, serial, discrete latent state tracking in a pretrained LM on
+  five regular families, three of them held out. The recipe is GPT-2 small, an 8-d FSQ carrier, FINAL supervision, and the
+  label-free 2k restart, with no per-task template or schedule. It covers C1 + C2 + C6 (with restarts), and C4 as final-answer
+  supervision.
+  - The held-out families needed **no restarts** (0 in 12 slots). The recipe's only restarts (2 in 20 slots) were on S5.
+* **Caveats, stated with the claim:**
+  - **S5 is the weak family:** exactly 3/4. One accepted run escaped the 2k flag and never learned (128-3's failure mode,
+    occurring once). §131's 4k flag is the registered tool for it.
+  - **CLOSED is as registered** (the CERT holds, with Moore = the minimal state count). The bf16 certificate is host-dependent:
+    1–14 eval codes per run fall outside the bf16 BFS set. **In fp32 the certificate covers every code the eval visits in 7/7
+    passes, and reproduces across GPUs** (128-4).
+  - **Donor power varies by family.** S5's chance overlap is 0.01, so its SERIAL test is strong. In FF / MOD / RDFA the overlap is
+    0.3–0.7, because resets and synchronisation make many chains uninformative. The donor is followed in every informative chain,
+    but fewer chains test it.
+  - MOD and RDFA are suffix-dominated (MOD's ×0 resets; RDFA synchronises in a median of 9 steps). CLOSED is what keeps them
+    non-trivial.
+* **Scope, and what this does not show:**
+  - It covers regular-language state tracking only: no stack- or tape-bound task.
+  - It uses GPT-2 small, not a model at pretraining scale.
+  - Each automaton is stored in the weights. Whether the same carrier tracks state from rules given in context is §132 (rung 1
+    near-exact so far, 132-4).
+  - S5's 2k-restart rule leaves escape-without-learning uncaught; §131 is open.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

@@ -99,31 +99,91 @@
  "ff": {
   "slots": {
    "1": {
-    "attempts": [],
-    "status": "open",
-    "accepted": null
+    "attempts": [
+     {
+      "seed": 1,
+      "plateau": false
+     }
+    ],
+    "status": "accepted",
+    "accepted": {
+     "seed": 1,
+     "long_acc": 1.0,
+     "serial": true,
+     "nonfinite_share": 0.0,
+     "ext_2048": null,
+     "cert_holds": null,
+     "rho_ff": null,
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "pass": true
+    }
    },
    "2": {
-    "attempts": [],
-    "status": "open",
-    "accepted": null
+    "attempts": [
+     {
+      "seed": 2,
+      "plateau": false
+     }
+    ],
+    "status": "accepted",
+    "accepted": {
+     "seed": 2,
+     "long_acc": 1.0,
+     "serial": true,
+     "nonfinite_share": 0.0,
+     "ext_2048": null,
+     "cert_holds": null,
+     "rho_ff": null,
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "pass": true
+    }
    },
    "3": {
-    "attempts": [],
-    "status": "open",
-    "accepted": null
+    "attempts": [
+     {
+      "seed": 3,
+      "plateau": false
+     }
+    ],
+    "status": "accepted",
+    "accepted": {
+     "seed": 3,
+     "long_acc": 1.0,
+     "serial": true,
+     "nonfinite_share": 0.0,
+     "ext_2048": null,
+     "cert_holds": null,
+     "rho_ff": null,
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "pass": true
+    }
    },
    "4": {
-    "attempts": [],
-    "status": "open",
-    "accepted": null
+    "attempts": [
+     {
+      "seed": 4,
+      "plateau": false
+     }
+    ],
+    "status": "accepted",
+    "accepted": {
+     "seed": 4,
+     "long_acc": 1.0,
+     "serial": true,
+     "nonfinite_share": 0.0,
+     "ext_2048": null,
+     "cert_holds": null,
+     "rho_ff": null,
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "pass": true
+    }
    }
   },
-  "FAMILY_PASS": "incomplete (0 / 4 slots decided)",
+  "FAMILY_PASS": true,
   "flag_checks": [],
-  "n_pass": 0,
+  "n_pass": 4,
   "plateaued_attempts": 0,
-  "cost_per_exact_seed": null
+  "cost_per_exact_seed": 1.0
  },
  "cyc": {
   "slots": {
@@ -394,16 +454,28 @@
       "plateau": false
      }
     ],
-    "status": "accepted (CERT pending)",
-    "accepted": null
+    "status": "accepted",
+    "accepted": {
+     "seed": 4,
+     "long_acc": 1.0,
+     "serial": true,
+     "nonfinite_share": 0.0,
+     "ext_2048": 1.0,
+     "cert_holds": true,
+     "rho_ff": null,
+     "gpu": "NVIDIA GeForce RTX 3090 Ti",
+     "n_moore": 8,
+     "closed": true,
+     "pass": true
+    }
    }
   },
   "FAMILY_PASS": true,
   "flag_checks": [],
-  "n_pass": 3,
+  "n_pass": 4,
   "plateaued_attempts": 0,
   "cost_per_exact_seed": 1.0
  },
- "TASK_AGNOSTIC": "incomplete",
+ "TASK_AGNOSTIC": true,
  "skipped_smoke_dirs": []
 }
