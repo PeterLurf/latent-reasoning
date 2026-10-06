@@ -72,7 +72,7 @@ unwatched host whose queue ends just bills idle until its watcher restarts).
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (23:00):** §123 / §126 / 112-5 scored and closed. **§127** Stage 1: b27 (VAR + SKIP) running; b28 (STD2 + LR10) to redeploy after the reboot. Score with `python theory/score_s127.py`. Delivery checks (127-1 / 127-2) come from mcheck lines in log.jsonl. **§124** waits on COPY / BASE s26–28 and EXPOSE s28 (MECH-112 already false, 124-4). claude-13's replay_basin runs on b27/b28 after §127. Open: §116 OPDEF s31 / s32, §117, §118 LONG, §101 b0.01 s3, §115, §119 (CODI sweep void → d3).
+* **Theory (23:39):** §123 / §126 / 112-5 scored and closed. **§127:** VAR rerun with the forward's own group means (127-3); SKIP s2 rerun with the guard only, skip-off decode descriptive (127-4); SKIP Stage 2; b28 STD2 + LR10 redeploy. **§128 registered (e7078432):** five families (S5, FF + held-out CYC / MOD / RDFA), restart-on-plateau, Vast 3090s, awaiting Experiments. Scorers: score_s127.py, score_s128.py. **§124** waits on COPY / BASE s26–28 and EXPOSE s28. Local GPUs are off (user ~23:45).
 * **§97 C6:** complete (GEN-4 and HYB-4 s4-5 fetched).
 * **§98:** ICoT-SI done (0.998 / 0.996); TC/NC done; MASK 4x4 + 5x5 done; COCO 4x4 s1-2 + 5x5 s1 in, rest local; GEN-M rerunning (r1/r2).
 * **§99** kcurr/markov/ctrl done; **§100** MASK2 4x4 done; **§105** done (models local for Theory); **§106** pilot gate failed (106-2); others running (above).
