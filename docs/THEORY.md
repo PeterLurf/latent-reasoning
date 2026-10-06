@@ -5335,6 +5335,19 @@ scoring checks and a naming rule.**
 * **Smoke and memory-check runs use non-slot names** (e.g. `s132_k4_smoke`), never `s132_k4_s{seed}`. A smoke args.json inside a slot
   dir would hide that slot's later attempts.
 
+**Note 132-2 (2026-10-06 07:59 EDT, before the pilot; Audit / claude-13's harness review of `boxes/table132.py`, which matches §132 on
+everything PASS depends on; no rule change). Unreachable states in rung-1 tables.**
+* **(A) 26 % of the 576 k4 / m2 tables do not reach all 4 states from start 0** (36 reach only 0, 36 reach 2, 78 reach 3).
+  - Held-out 68: 10 intransitive tables, 4 of which never leave state 0. So about 6 % of held-out problems are trivial. That
+    cannot carry a run to 0.99, and PASS is unchanged.
+  - OOD 240: 42 % intransitive, 24 never leave 0, so ood_acc is softer than it looks.
+  - **(i)** cert_sample reports `moore_eq_reachable` (n_moore against the table's reachable-from-0 count), not "Moore = k". A perfect
+    machine on an intransitive table would otherwise count as a miss.
+  - **(ii)** eval.json reports **long_acc_transitive** (held-out tables that reach all k states) beside the registered long_acc,
+    descriptively.
+* **(B)** The scorer's smoke filter also skips any args with mem_check set.
+* The bf16 smoke runs under a non-slot name before the pilot. The fsq120 gradflow carries over: there is no new loss term.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
