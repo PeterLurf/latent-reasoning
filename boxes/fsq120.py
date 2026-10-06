@@ -632,8 +632,9 @@ def mcheck127(m, fam, dev, amp, opt, ng=256):
         m._var = [(z, torch.tensor(x[:, t], device=dev), torch.full((len(x),), t, device=dev)) for t, (z, _, _) in enumerate(hs_)]
         vl = m.var_loss(update=False); m.var_on = on
         out["var_grad_down"] = float(torch.autograd.grad(vl, m.down.weight, retain_graph=True)[0].norm()); out["var_term"] = float(vl.detach())
-    lrs = [gr["lr"] for gr in opt.param_groups]; out["lr_ratio"] = lrs[1] / lrs[0] if len(lrs) > 1 and lrs[0] > 0 else 1.0
-    out["lrs"] = lrs; m.train(was)
+    if opt is not None:
+        lrs = [gr["lr"] for gr in opt.param_groups]; out["lr_ratio"] = lrs[1] / lrs[0] if len(lrs) > 1 and lrs[0] > 0 else 1.0; out["lrs"] = lrs
+    m.train(was)
     return out
 
 
@@ -758,6 +759,7 @@ def main():
     ap.add_argument("--std2", action="store_true", help="§127 C STD2: standardised carried embedding with an absolute floor")
     ap.add_argument("--lr_new", type=float, default=1.0, help="§127 D LR10: LN / W_down / W_up at this multiple of lr")
     ap.add_argument("--probe127", action="store_true", help="§127 / note 127-1 logging (implied by any §127 arm)")
+    ap.add_argument("--mcheck_only", action="store_true", help="§127 (note 127-2): end-of-training mcheck from <out>/model.pt (p_hard 1) -> eval_mcheck_end.json")
     ap.add_argument("--stop_plateau", action="store_true", help="§127: stop at 2k when 123-3's flag fires (log kept, no eval.json)")
     ap.add_argument("--anneal", action="store_true", help="§126 Stage 2 ANNEAL: (1-lam) std(h) + lam W_up(z_b), lam 2k->6k, QBN distill, FSQ 6k->8k")
     ap.add_argument("--raw_h", action="store_true", help="§126 RAW-H: no bottleneck; carried vector = §125-standardised last hidden h")
@@ -799,6 +801,10 @@ def main():
         g_ = {"n": len(Xx), "len": int(Xx.shape[1]), "acc": acc, "code_growth": cg, "eval_dtype": str(amp),
               "codes_per_state": {k: v.get("per_state_mean") for k, v in cg.items()}, "codes_per_state_2048": (cg.get("2048") or {}).get("per_state_mean")}
         json.dump(g_, open(os.path.join(a.out, "eval_growth.json"), "w", newline="\n"), indent=1); print("GROWTH", json.dumps(g_), flush=True); return
+    if a.mcheck_only:                                                       # note 127-2: STD2 train / test row norm at the end, post-hoc
+        m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.p_hard = 1.0
+        mc = mcheck127(m, fam, dev, amp, None); mc["eval_dtype"] = str(amp)
+        json.dump(mc, open(os.path.join(a.out, "eval_mcheck_end.json"), "w", newline="\n"), indent=1); print("MCHECK", json.dumps(mc), flush=True); return
     if a.contraction_only:                                                  # note 123-2: post-hoc contraction (rho, rho_norm, ...) from model.pt
         m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval()
         amp_c = None if a.fp32 else amp                                     # note 123-5: bf16 makes 8-d chains bit-identical in 3-4 hand-offs
@@ -876,7 +882,7 @@ def main():
         else:
             m.update_stats()
         m.update_std2() if m.std2 else None
-        if p127 and step in (1, int(500 * sc), int(2000 * sc)):              # note 127-1 delivery checks (after this update)
+        if p127 and step in (1, int(500 * sc), int(2000 * sc), a.steps):     # note 127-1 delivery checks (after this update); + end (127-2)
             log.write(json.dumps({"step": step, "mcheck": mcheck127(m, fam, dev, amp, opt)}) + "\n"); log.flush(); m.train()
         if step == int(2000 * sc):                                         # §125: carried-embedding statistics at 2k (every arm)
             carried["2k"] = carried_stats(m, fam, dev, amp); m.train()

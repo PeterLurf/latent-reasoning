@@ -1,6 +1,6 @@
 """Queue wrapper so gen_vast_job + the drain can run and fetch scratch/replay_basin.py (claude-13 / Audit, 2026-10-05):
     python -m scratch.replay_wrap <replay_basin args> --device D --out DIR  ->  DIR/replay.jsonl, then DIR/eval.json on rc 0.
-replay_basin.py itself is unchanged (md5 0fd7ea391c52b98e69a8fb1429ca6329); it runs with the repo root on PYTHONPATH."""
+replay_basin.py is claude-13's file (md5 0fd7ea391c52b98e69a8fb1429ca6329 as CRLF; LF-converted in the repo); it runs with the repo root on PYTHONPATH."""
 import json
 import os
 import subprocess
