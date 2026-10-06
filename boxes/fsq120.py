@@ -986,6 +986,12 @@ def main():
         res["codes_per_state"] = float(np.mean([len(v) for v in per.values()]))
         res["cert"] = {"status": "deferred", "holds": None} if a.no_cert else certificate(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time); res["donor"] = donor(m, fam, dev, amp, n=a.donor_n)
         res["margin_flip_rate"] = margin_flip(m, fam, s0m, Xm, dev, amp)
+    if m.skip and fam.name == "s5":                                         # note 127-4 (descriptive): skip maps zeroed at test
+        w_keep = m.skip_w.data.clone(); m.skip_w.data.zero_()
+        po, _ = run_test(m, fam, np.zeros(len(Xte), np.int64), Xte, dev, amp, a.eval_bs); Co = po == Yte
+        res["skip_off"] = {"long_acc": float(Co.all(1).mean()), "acc_by_length": {str(t): float(Co[:, :t].all(1).mean()) for t in (16, 64, 512) if t <= Co.shape[1]},
+                           "donor": donor(m, fam, dev, amp, n=a.donor_n)}
+        m.skip_w.data.copy_(w_keep)
     res["eval_sec"] = round(time.time() - t1)
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     print("EVAL", json.dumps({k: res[k] for k in ("long_acc", "n_codes", "cert")}), flush=True); print("DONE", a.out, flush=True)

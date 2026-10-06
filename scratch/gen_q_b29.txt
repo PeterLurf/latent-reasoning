@@ -1,0 +1,4 @@
+# §127 reruns (note 127-3 / 127-4): VAR with the forward's own group means; SKIP with the non-finite guard only (+ skip-off readout); RTX 3090 only
+# P=2
+boxes/runs_fsq/s127_s5_var_s2_rerun boxes.fsq120 --family s5 --arm final --micro 2 --no_cert --stop_plateau --seed 2 --var_res --var_est batch
+boxes/runs_fsq/s127_s5_skip_s2_rerun boxes.fsq120 --family s5 --arm final --micro 2 --no_cert --stop_plateau --seed 2 --skip_dec
