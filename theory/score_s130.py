@@ -12,7 +12,7 @@ ties -> the earlier window end, then the smaller theta. The choice is frozen in 
     python theory/score_s130.py fit
 TEST: the frozen marker's precision and recall against FLAG; PASS (primary = CROSS) = both >= 0.9 with >= 8 flagged and >= 8
 non-flagged seeds per block (otherwise "incomplete"); COLLAPSE needs both probes at or after 600:
-    python theory/score_s130.py test <theta> <window_lo> <window_hi>
+    python theory/score_s130.py test <theta> <lo> <hi> [<theta_basin> <lo_b> <hi_b>]   (BASIN = FLAG and no PULL by 2k; 130-1)
 H-127-7 (descriptive, all seeds): every FLAG seed has COLLAPSE; every non-FLAG seed reaches L1_dmean >= 0.1 by 2k.
 """
 import json
@@ -46,7 +46,7 @@ def features(rows):
     pull = next((r["step"] for r in pr if (r.get("L1_dmean") or 0) > 0.05), None)
     low = [r["step"] for i, r in enumerate(pr[1:], 1) if pr[i - 1]["step"] >= 600 and r["zb_std_in"] < 0.04 and pr[i - 1]["zb_std_in"] < 0.04]
     dmax = max([(r.get("L1_dmean") or 0) for r in pr if r["step"] <= 2000] or [0])
-    return {"flag": flag, "pull": pull, "collapse": bool(low), "collapse_step": low[0] if low else None, "dmean_max": dmax,
+    return {"flag": flag, "basin": bool(flag and pull is None), "pull": pull, "collapse": bool(low), "collapse_step": low[0] if low else None, "dmean_max": dmax,
             "loss_1k": g(1000), "loss_2k": g(2000), "probes": [(r["step"], r["zb_std_in"]) for r in pr]}
 
 
@@ -55,9 +55,9 @@ def marker(f, theta, lo, hi):
     return any(pr[i][1] < theta and pr[i - 1][1] < theta for i in range(1, len(pr)))
 
 
-def prf(fs, theta, lo, hi):
-    tp = sum(1 for f in fs if f["flag"] and marker(f, theta, lo, hi)); fp = sum(1 for f in fs if not f["flag"] and marker(f, theta, lo, hi))
-    fn = sum(1 for f in fs if f["flag"] and not marker(f, theta, lo, hi))
+def prf(fs, theta, lo, hi, label="flag"):
+    tp = sum(1 for f in fs if f[label] and marker(f, theta, lo, hi)); fp = sum(1 for f in fs if not f[label] and marker(f, theta, lo, hi))
+    fn = sum(1 for f in fs if f[label] and not marker(f, theta, lo, hi))
     prec = tp / (tp + fp) if tp + fp else None; rec = tp / (tp + fn) if tp + fn else None
     return prec, rec
 
@@ -85,9 +85,9 @@ def cp(x, n, alpha=0.05):
     return (lo, hi)
 
 
-def counts(fs, theta, lo, hi):
-    tp = sum(1 for f in fs if f["flag"] and marker(f, theta, lo, hi)); fp = sum(1 for f in fs if not f["flag"] and marker(f, theta, lo, hi))
-    fn = sum(1 for f in fs if f["flag"] and not marker(f, theta, lo, hi))
+def counts(fs, theta, lo, hi, label="flag"):
+    tp = sum(1 for f in fs if f[label] and marker(f, theta, lo, hi)); fp = sum(1 for f in fs if not f[label] and marker(f, theta, lo, hi))
+    fn = sum(1 for f in fs if f[label] and not marker(f, theta, lo, hi))
     return tp, fp, fn
 
 
@@ -100,10 +100,10 @@ def h1277(fs):
             "nonflag_seeds_with_pull_0.1": "%d / %d" % (sum(f["dmean_max"] >= 0.1 for f in fs if not f["flag"]), sum(not f["flag"] for f in fs))}
 
 
-def evaluate(card, seeds, th, lo, hi, label):
+def evaluate(card, seeds, th, lo, hi, label, truth="flag"):
     T = collect(card, seeds); fs = list(T.values())
-    nf, nn = sum(f["flag"] for f in fs), sum(not f["flag"] for f in fs)
-    tp, fp, fn = counts(fs, th, lo, hi)
+    nf, nn = sum(f[truth] for f in fs), sum(not f[truth] for f in fs)
+    tp, fp, fn = counts(fs, th, lo, hi, truth)
     p = tp / (tp + fp) if tp + fp else None; r = tp / (tp + fn) if tp + fn else None
     ok = nf >= NEED and nn >= NEED
     verdict = (bool(p is not None and r is not None and p >= 0.9 and r >= 0.9) if ok else
@@ -111,7 +111,7 @@ def evaluate(card, seeds, th, lo, hi, label):
     out = {"label": label, "card": card, "n": len(fs), "flagged": nf, "nonflagged": nn, "precision": p, "recall": r,
            "precision_ci95": cp(tp, tp + fp), "recall_ci95": cp(tp, tp + fn), "PASS": verdict, "h1277": h1277(fs),
            "escape_rate": nn / len(fs) if fs else None,
-           "seeds": {s: {"flag": f["flag"], "marker": marker(f, th, lo, hi), "pull": f["pull"], "collapse_step": f["collapse_step"]} for s, f in T.items()}}
+           "truth": truth, "seeds": {s: {"flag": f["flag"], "basin": f["basin"], "marker": marker(f, th, lo, hi), "pull": f["pull"], "collapse_step": f["collapse_step"]} for s, f in T.items()}}
     print(label, "card", card, "| n", len(fs), "flagged", nf, "| P %s %s R %s %s | PASS %s" % (p, out["precision_ci95"], r, out["recall_ci95"], verdict))
     print("  H-127-7", out["h1277"], "| escape rate", out["escape_rate"])
     return out
@@ -125,25 +125,35 @@ def main():
         nf, nn = sum(f["flag"] for f in fs), sum(not f["flag"] for f in fs)
         if nf < 3 or nn < 3:
             print("FIT incomplete: %d flagged, %d non-flagged (need >= 3 each; extend with seeds 35..42)" % (nf, nn)); return
-        grid = {}
-        for (lo, hi) in WINDOWS:
-            for th in THETAS:
-                p, r = prf(fs, th, lo, hi); grid[(th, lo, hi)] = min(p or 0, r or 0)
-        best = min(grid, key=lambda k: (-grid[k], k[2], k[0]))
-        th, lo, hi = best; p, r = prf(fs, th, lo, hi)
-        i = THETAS.index(th)
-        nb = {"theta %s" % THETAS[j]: grid[(THETAS[j], lo, hi)] for j in (i - 1, i + 1) if 0 <= j < len(THETAS)}
-        nb.update({"window %d-%d" % w: grid[(th, w[0], w[1])] for w in WINDOWS if w != (lo, hi)})
-        print("FIT choice: theta %s window %d-%d | fit precision %s recall %s" % (th, lo, hi, p, r))
-        print("FIT neighbours (min(P, R)):", nb); print("H-127-7 (FIT)", h1277(fs))
-        json.dump({"mode": "fit", "seeds": {s: {k: v for k, v in f.items() if k != "probes"} for s, f in F.items()}, "theta": th, "window": [lo, hi],
-                   "precision": p, "recall": r, "neighbours": nb, "h1277": h1277(fs)},
-                  open(os.path.join(ROOT, "theory", "results", "score_s130_fit.json"), "w", newline=chr(10)), indent=1)
+        out = {"mode": "fit", "seeds": {s: {k: v for k, v in f.items() if k != "probes"} for s, f in F.items()}, "h1277": h1277(fs)}
+        for lab in ("flag", "basin"):
+            if sum(f[lab] for f in fs) == 0 or all(f[lab] for f in fs):
+                print("FIT [%s]: label has a single class on FIT; no cell" % lab); out[lab] = None; continue
+            grid = {}
+            for (lo, hi) in WINDOWS:
+                for th in THETAS:
+                    p, r = prf(fs, th, lo, hi, lab); grid[(th, lo, hi)] = min(p or 0, r or 0)
+            best = min(grid, key=lambda k: (-grid[k], k[2], k[0]))
+            th, lo, hi = best; p, r = prf(fs, th, lo, hi, lab)
+            i = THETAS.index(th)
+            nb = {"theta %s" % THETAS[j]: grid[(THETAS[j], lo, hi)] for j in (i - 1, i + 1) if 0 <= j < len(THETAS)}
+            nb.update({"window %d-%d" % w: grid[(th, w[0], w[1])] for w in WINDOWS if w != (lo, hi)})
+            print("FIT [%s] choice: theta %s window %d-%d | fit precision %s recall %s" % (lab, th, lo, hi, p, r))
+            print("FIT [%s] neighbours (min(P, R)):" % lab, nb)
+            out[lab] = {"theta": th, "window": [lo, hi], "precision": p, "recall": r, "neighbours": nb,
+                        "grid": {"%s|%d-%d" % k: v for k, v in grid.items()}}
+        print("H-127-7 (FIT)", h1277(fs))
+        json.dump(out, open(os.path.join(ROOT, "theory", "results", "score_s130_fit.json"), "w", newline=chr(10)), indent=1)
     else:
         th, lo, hi = float(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4])
         res = {"theta": th, "window": [lo, hi],
                "CROSS (primary, 3070)": evaluate("3070", CROSS_SEEDS, th, lo, hi, "CROSS (primary)"),
                "SAME (secondary, 4060)": evaluate("4060", SAME_SEEDS, th, lo, hi, "SAME (secondary)")}
+        if len(sys.argv) >= 8:                                               # 130-1: the BASIN-label cell (secondary, descriptive)
+            t2, l2, h2 = float(sys.argv[5]), int(sys.argv[6]), int(sys.argv[7])
+            res["BASIN cell"] = {"theta": t2, "window": [l2, h2],
+                                 "CROSS": evaluate("3070", CROSS_SEEDS, t2, l2, h2, "BASIN CROSS", "basin"),
+                                 "SAME": evaluate("4060", SAME_SEEDS, t2, l2, h2, "BASIN SAME", "basin")}
         json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s130_test.json"), "w", newline=chr(10)), indent=1)
 
 
