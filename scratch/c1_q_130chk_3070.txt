@@ -1,0 +1,5 @@
+# §130 / §131 check runs on the local RTX 3070 (Theory 1c0e53cf): fsq120 §120 FINAL S5 24k, no --stop_plateau, --micro 4 (8 GB), guard via --probe127, --no_cert; sequential
+boxes/runs_fsq/s130chk_s5_s17_3070 boxes.fsq120 --family s5 --arm final --seed 17 --micro 4 --no_cert --probe127
+boxes/runs_fsq/s130chk_s5_s30_3070 boxes.fsq120 --family s5 --arm final --seed 30 --micro 4 --no_cert --probe127
+boxes/runs_fsq/s130chk_s5_s34_3070 boxes.fsq120 --family s5 --arm final --seed 34 --micro 4 --no_cert --probe127
+boxes/runs_fsq/s130chk_s5_s12_3070 boxes.fsq120 --family s5 --arm final --seed 12 --micro 4 --no_cert --probe127
