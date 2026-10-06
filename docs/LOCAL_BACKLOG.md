@@ -35,7 +35,7 @@ entries, keeping ≥ 3 open per card.
      - **late-ramp:** p_hard 0 → 1 over 6k–8k, L_max unchanged. Needs a `--p_hard_start` / `--p_hard_end` option (Experiments).
    - Outputs `boxes/runs_fsq/rampproto_{plain,late}_s{S}_4060`.
    - Read loss(4k) / loss(2.6k) and loss(7k) / loss(5.6k) per run.
-   - **Reading fixed before any run:** `theory/proto_ramp.py`. Window A (2.6k → 4k) and the late arm's ramp-only window R (6.6k → 8k), in FLAG4 form. ROUNDING if the late arm's A-flags are at most half of plain's; L_MAX if they are at least 3/4 of plain's; needs ≥ 2 plain A-flags.
+   - **Reading fixed before any late run** (`theory/proto_ramp.py`, revised after the helper's review; late arm stops at 8.9k). Outcomes: STAYS (late A-flags ≥ ¾ of plain's), MOVES (late R′ = 8.9k / 6.6k flags cover ≥ ½ of the plain A-flagged seeds), VANISHES (late A-flags ≤ ½ of plain's, ≤ 1 late R′-flag, and lower late loss on most of those seeds; candidate 3's claim). Needs ≥ 2 plain A-flags. Pooled verdict, with per-card readings printed.
    - Peak about 6 GB (L_max 8 from 5k; micro as needed; memcheck first). About 30 min each. Stop: 8k steps.
 
 ## RTX 3070 (Ampere, bf16, 8 GB)
