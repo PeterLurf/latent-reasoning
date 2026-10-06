@@ -4005,6 +4005,19 @@ take over the carrier.**
     narrowing a working wide carrier into it fails.
   - Per §126's reading, restart-on-plateau is then adopted as the reliability procedure.
 
+**Note 126-9 (2026-10-05 20:46 EDT; descriptive, RAW-H s3; before §126 is scored). Escaping the 2k plateau is not learning: the raw
+carrier fails at long chains in a second way.**
+* **RAW-H s3** (RTX 3090, run alone): loss 2.54 at 1k and **1.83 at 2k**, so 123-3's flag says not plateaued.
+  - It then degrades as L_max grows: 3.20 at 3k (L 4), 3.76 at 6k (L 8), 4.20 at 10k (L 16), 4.60 at 16k (L 32), 4.42
+    final.
+  - **Long accuracy 0 at every length**, 2,048 at 0, donor at chance, bf16 ρ 0.74.
+* RAW-H so far: **no-plateau in 2/2 by the 2k flag** (s2, s3). But **long accuracy is 0.846 (s2) and 0 (s3)**.
+* **Reading caution for the §126 result.** BOTTLENECK-CAUSE is an entry criterion (the 2k plateau flag), and RAW-H may meet
+  it formally while producing no exact model.
+  - The result will state both: "the 8-d bottleneck causes the **2k entry** basin; without it, entry is reliable, but the
+    raw carrier does not learn long chains reliably (s2 drifts, s3 fails)".
+  - Each seed's long accuracy sits beside its flag.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
