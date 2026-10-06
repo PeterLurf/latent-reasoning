@@ -1,6 +1,7 @@
 {
  "in_sample": {
   "s120_s5_final_s1": {
+   "family": "s5",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -12,6 +13,7 @@
    "gpu": "NVIDIA GeForce RTX 3070"
   },
   "s120_s5_final_s2": {
+   "family": "s5",
    "flag2k": true,
    "flag4k": true,
    "flag4k_windowed": true,
@@ -23,6 +25,7 @@
    "gpu": "NVIDIA GeForce RTX 3090 Ti"
   },
   "s120_s5_trace_s1": {
+   "family": "s5",
    "flag2k": true,
    "flag4k": true,
    "flag4k_windowed": true,
@@ -34,6 +37,7 @@
    "gpu": "NVIDIA GeForce RTX 4090"
   },
   "s120_s5_trace_s2": {
+   "family": "s5",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -45,6 +49,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s123_s5_dither000_s1": {
+   "family": "s5",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -56,6 +61,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s123_s5_dither000_s2": {
+   "family": "s5",
    "flag2k": true,
    "flag4k": true,
    "flag4k_windowed": true,
@@ -67,6 +73,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s123_s5_dither010_s1": {
+   "family": "s5",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -78,6 +85,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s123_s5_dither010_s2": {
+   "family": "s5",
    "flag2k": true,
    "flag4k": true,
    "flag4k_windowed": true,
@@ -89,6 +97,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s123_s5_dither025_s1": {
+   "family": "s5",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -100,6 +109,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s123_s5_dither025_s2": {
+   "family": "s5",
    "flag2k": true,
    "flag4k": true,
    "flag4k_windowed": true,
@@ -111,6 +121,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s123_s5_dither050_s1": {
+   "family": "s5",
    "flag2k": true,
    "flag4k": true,
    "flag4k_windowed": true,
@@ -122,6 +133,7 @@
    "gpu": "NVIDIA GeForce RTX 4090"
   },
   "s123_s5_dither050_s1_3090": {
+   "family": "s5",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -133,6 +145,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s123_s5_dither050_s2": {
+   "family": "s5",
    "flag2k": false,
    "flag4k": true,
    "flag4k_windowed": true,
@@ -144,6 +157,7 @@
    "gpu": "NVIDIA GeForce RTX 4090"
   },
   "s123_s5_dither050_s2_3090": {
+   "family": "s5",
    "flag2k": true,
    "flag4k": true,
    "flag4k_windowed": true,
@@ -155,6 +169,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s123_s5_fsqdither_s1": {
+   "family": "s5",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -166,6 +181,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s123_s5_fsqdither_s2": {
+   "family": "s5",
    "flag2k": true,
    "flag4k": true,
    "flag4k_windowed": true,
@@ -177,6 +193,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s125_s5_std_s2": {
+   "family": "s5",
    "flag2k": true,
    "flag4k": true,
    "flag4k_windowed": true,
@@ -188,6 +205,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s126_s5_anneal_s2": {
+   "family": "s5",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -199,6 +217,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s126_s5_anneal_s2_fp32cast": {
+   "family": "s5",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -210,6 +229,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s126_s5_rawh_s1": {
+   "family": "s5",
    "flag2k": false,
    "flag4k": true,
    "flag4k_windowed": false,
@@ -221,6 +241,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s126_s5_rawh_s2": {
+   "family": "s5",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -232,6 +253,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s126_s5_rawh_s3": {
+   "family": "s5",
    "flag2k": false,
    "flag4k": true,
    "flag4k_windowed": true,
@@ -243,6 +265,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s126_s5_rawh_s4": {
+   "family": "s5",
    "flag2k": false,
    "flag4k": true,
    "flag4k_windowed": false,
@@ -254,6 +277,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s127_s5_lr10_s2": {
+   "family": "s5",
    "flag2k": false,
    "flag4k": true,
    "flag4k_windowed": true,
@@ -264,18 +288,8 @@
    "final_loss": 4.585044524371624,
    "gpu": "NVIDIA GeForce RTX 3090"
   },
-  "s127_s5_skip_s2": {
-   "flag2k": false,
-   "flag4k": true,
-   "flag4k_windowed": true,
-   "ratio": 1.057,
-   "loss_4k": 4.766,
-   "long_acc": 0.0,
-   "exact": false,
-   "final_loss": NaN,
-   "gpu": "NVIDIA GeForce RTX 3090"
-  },
   "s127_s5_skip_s2_rerun": {
+   "family": "s5",
    "flag2k": false,
    "flag4k": true,
    "flag4k_windowed": true,
@@ -287,6 +301,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s127_s5_skip_s4": {
+   "family": "s5",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -298,6 +313,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s127_s5_std2_s1": {
+   "family": "s5",
    "flag2k": false,
    "flag4k": true,
    "flag4k_windowed": true,
@@ -309,6 +325,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s127_s5_std2_s2": {
+   "family": "s5",
    "flag2k": false,
    "flag4k": true,
    "flag4k_windowed": true,
@@ -320,6 +337,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s127_s5_var_s2_rerun": {
+   "family": "s5",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -333,6 +351,7 @@
  },
  "held_out": {
   "s127_ff_skip_s1": {
+   "family": "ff",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -344,6 +363,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s127_ff_skip_s2": {
+   "family": "ff",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -355,6 +375,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s128_cyc_s1": {
+   "family": "cyc",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -366,6 +387,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s128_cyc_s2": {
+   "family": "cyc",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -377,6 +399,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s128_cyc_s3": {
+   "family": "cyc",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -388,6 +411,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s128_mod_s1": {
+   "family": "mod",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -399,6 +423,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s128_mod_s2": {
+   "family": "mod",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -410,6 +435,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s128_mod_s3": {
+   "family": "mod",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -421,6 +447,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s128_mod_s4": {
+   "family": "mod",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -432,6 +459,7 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s128_rdfa_s1": {
+   "family": "rdfa",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -443,6 +471,7 @@
    "gpu": "NVIDIA GeForce RTX 3090 Ti"
   },
   "s128_rdfa_s2": {
+   "family": "rdfa",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -454,6 +483,7 @@
    "gpu": "NVIDIA GeForce RTX 3090 Ti"
   },
   "s128_rdfa_s3": {
+   "family": "rdfa",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -465,6 +495,7 @@
    "gpu": "NVIDIA GeForce RTX 3090 Ti"
   },
   "s128_rdfa_s4": {
+   "family": "rdfa",
    "flag2k": false,
    "flag4k": false,
    "flag4k_windowed": false,
@@ -477,6 +508,28 @@
   }
  },
  "summary_in": {
+  "exact_s5": [
+   "s120_s5_final_s1",
+   "s120_s5_trace_s2",
+   "s123_s5_dither000_s1",
+   "s123_s5_dither010_s1",
+   "s123_s5_dither025_s1",
+   "s123_s5_dither050_s1_3090",
+   "s123_s5_fsqdither_s1",
+   "s127_s5_skip_s4"
+  ],
+  "fp_s5": [],
+  "exact_not_flag2k": [
+   "s120_s5_final_s1",
+   "s120_s5_trace_s2",
+   "s123_s5_dither000_s1",
+   "s123_s5_dither010_s1",
+   "s123_s5_dither025_s1",
+   "s123_s5_dither050_s1_3090",
+   "s123_s5_fsqdither_s1",
+   "s127_s5_skip_s4"
+  ],
+  "fp_not_flag2k": [],
   "exact": [
    "s120_s5_final_s1",
    "s120_s5_trace_s2",
@@ -497,7 +550,6 @@
    "s126_s5_rawh_s3",
    "s126_s5_rawh_s4",
    "s127_s5_lr10_s2",
-   "s127_s5_skip_s2",
    "s127_s5_skip_s2_rerun",
    "s127_s5_std2_s1",
    "s127_s5_std2_s2",
@@ -509,7 +561,6 @@
    "s126_s5_rawh_s3",
    "s126_s5_rawh_s4",
    "s127_s5_lr10_s2",
-   "s127_s5_skip_s2",
    "s127_s5_skip_s2_rerun",
    "s127_s5_std2_s1",
    "s127_s5_std2_s2"
@@ -521,17 +572,35 @@
    "s127_s5_var_s2_rerun"
   ],
   "precision": 1.0,
-  "recall": 0.6923076923076923,
+  "recall": 0.6666666666666666,
   "precision_ci95": [
-   0.6637328831200571,
+   0.6305833524471807,
    1.0
   ],
   "recall_ci95": [
-   0.3857383382492947,
-   0.9090796054279033
+   0.34887550641881404,
+   0.9007539088504166
   ]
  },
  "summary_held": {
+  "exact_s5": [],
+  "fp_s5": [],
+  "exact_not_flag2k": [
+   "s127_ff_skip_s1",
+   "s127_ff_skip_s2",
+   "s128_cyc_s1",
+   "s128_cyc_s2",
+   "s128_cyc_s3",
+   "s128_mod_s1",
+   "s128_mod_s2",
+   "s128_mod_s3",
+   "s128_mod_s4",
+   "s128_rdfa_s1",
+   "s128_rdfa_s2",
+   "s128_rdfa_s3",
+   "s128_rdfa_s4"
+  ],
+  "fp_not_flag2k": [],
   "exact": [
    "s127_ff_skip_s1",
    "s127_ff_skip_s2",
@@ -564,6 +633,10 @@
  },
  "PASS": "incomplete (13 exact, need >= 5; 0 escaped-and-failed, need >= 3)",
  "summary_prospective": {
+  "exact_s5": [],
+  "fp_s5": [],
+  "exact_not_flag2k": [],
+  "fp_not_flag2k": [],
   "exact": [],
   "false_pos": [],
   "escaped_failed": [],

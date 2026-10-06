@@ -5130,7 +5130,7 @@ its bar even in-sample.**
   - The ~3.2 basin (late plateaus at L_max 8–16) is out of scope: a later rule.
 * **In-sample** (where the rule was derived; descriptive): the 30 fsq120 S5 runs on disk with ≥ 4k logged steps when it was
   derived, listed in `theory/score_s131.py`.
-  - Learners 8, flagged 0. Escaped-and-failed 13, flagged 9.
+  - Learners 8, flagged 0. Escaped-and-failed 13, flagged 9. **Corrected in 131-1:** 12 distinct trajectories, 8 flagged (0.667).
   - The 4 misses are a named class: ANNEAL s2 ×2 (0.87 / 0.75), RAW-H s2 (0.85; the 0.846 partial learner), and the VAR s2 rerun
     (0.88; it ends in the ~3.2 basin).
 * **Held-out:** every other fsq120 run (§127, §128 any family, s130chk) with ≥ 4k logged steps, an eval.json and no 2k stop.
@@ -5190,6 +5190,20 @@ across cards. Restart-on-plateau keeps the 2k flag.**
   - Ground truth: §131's 24k check runs on the 4060 (s5, s6, s7) and 3070 (s17, s30, s34, s12), and §127's ctrl-s4 full run on a
     3090.
   - §131 tests the 4k flag held-out.
+
+**Note 131-1 (2026-10-06 07:16 EDT, before any held-out run passes 4k; Audit / claude-13's pre-launch review; no rule change). Four scoring
+clarifications.**
+* **(a) Criterion (i) outside S5.** FF / CYC / MOD / RDFA sit near zero loss by 2.6k, so the floor stops FLAG4 from firing on them,
+  and "0 false positives" there is nearly vacuous.
+  - The scorer also reports (i) for S5 runs alone. The reading is worded "0 false positives among N S5 learners".
+  - The 13 held-out runs seen at registration are all non-S5.
+* **(b) In-sample double count.** SKIP s2 and its rerun follow the same trajectory to 9k (ratio 1.057 for both), so they count
+  once. The in-sample tally is **8/12 escaped-and-failed flagged** (0.667, exactly the bar) and 0/8 learners, not 9/13.
+* **(c)** Held-out excludes `*.void*` dirs.
+* **(d) Runs flagged at 2k that ran on** (ctrl s4 full, the s130chk runs): if one ends exact, it counts in (i) as registered,
+  which is conservative. A FLAG4 hit there would be a false positive that a deployed 2k + 4k rule never reaches.
+  - The scorer also reports (i) for learners **not** flagged at 2k, the population a two-point rule acts on.
+  - A failure of (i) confined to 2k-flagged runs is read that way.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

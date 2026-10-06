@@ -24,6 +24,7 @@ IN_SAMPLE = {
     "s125_s5_std_s2", "s126_s5_anneal_s2", "s126_s5_anneal_s2_fp32cast", "s126_s5_rawh_s1", "s126_s5_rawh_s2", "s126_s5_rawh_s3",
     "s126_s5_rawh_s4", "s127_s5_lr10_s2", "s127_s5_skip_s2", "s127_s5_skip_s2_rerun", "s127_s5_skip_s4", "s127_s5_std2_s1",
     "s127_s5_std2_s2", "s127_s5_var_s2_rerun"}
+SAME_TRAJECTORY = {"s127_s5_skip_s2"}   # 131-1 (b): identical to s127_s5_skip_s2_rerun up to 9k (ratio 1.057 both); counted once, as the rerun
 HELD = re.compile(r"^(s127_|s128_|s130chk_)")
 SEEN_AT_REG = set(["s127_ff_skip_s1", "s127_ff_skip_s2", "s128_cyc_s1", "s128_cyc_s2", "s128_cyc_s3", "s128_mod_s1", "s128_mod_s2", "s128_mod_s3", "s128_mod_s4", "s128_rdfa_s1", "s128_rdfa_s2", "s128_rdfa_s3", "s128_rdfa_s4"])   # held-out runs on disk when the scorer first ran (all exact, none flagged); the rest are "prospective"
 
@@ -79,7 +80,8 @@ def collect(names):
             continue
         f2, f4, r, l4, f4w = ratios(L)
         e = json.load(open(ev)); a = e.get("long_acc")
-        out[d] = {"flag2k": f2, "flag4k": f4, "flag4k_windowed": f4w, "ratio": round(r, 3), "loss_4k": round(l4, 3), "long_acc": a, "exact": (a or 0) >= 0.99,
+        fam = d.split("_")[1] if d.startswith(("s127_", "s128_")) else ("s5" if "_s5_" in d else "?")
+        out[d] = {"family": fam, "flag2k": f2, "flag4k": f4, "flag4k_windowed": f4w, "ratio": round(r, 3), "loss_4k": round(l4, 3), "long_acc": a, "exact": (a or 0) >= 0.99,
                   "final_loss": e.get("final_loss"), "gpu": e.get("train_gpu", e.get("gpu"))}
     return out
 
@@ -92,15 +94,20 @@ def summary(runs, label):
     print("%s: exact %d (flagged %d) | escaped-and-failed %d (flagged %d) | precision %s %s | recall %s %s" % (
         label, len(ex), len(fp), len(fail), len(tp), prec, cp(len(tp), len(tp) + len(fp)), rec, cp(len(tp), len(fail))))
     print("  misses:", {d: (runs[d]["ratio"], runs[d]["final_loss"]) for d in miss}, "| false positives:", {d: runs[d]["ratio"] for d in fp})
+    ex_s5 = [d for d in ex if runs[d]["family"] == "s5"]; ex_nf2 = [d for d in ex if not runs[d]["flag2k"]]
+    print("  (i) restricted: S5 learners flagged %d / %d (131-1 (a)); learners not flagged at 2k flagged %d / %d (131-1 (d))" % (
+        sum(runs[d]["flag4k"] for d in ex_s5), len(ex_s5), sum(runs[d]["flag4k"] for d in ex_nf2), len(ex_nf2)))
     print("  windowed form (descriptive): exact flagged %d / %d, escaped-and-failed flagged %d / %d" % (
         sum(runs[d]["flag4k_windowed"] for d in ex), len(ex), sum(runs[d]["flag4k_windowed"] for d in fail), len(fail)))
-    return {"exact": ex, "false_pos": fp, "escaped_failed": fail, "true_pos": tp, "misses": miss, "precision": prec, "recall": rec,
+    return {"exact_s5": ex_s5, "fp_s5": [d for d in ex_s5 if runs[d]["flag4k"]], "exact_not_flag2k": ex_nf2,
+            "fp_not_flag2k": [d for d in ex_nf2 if runs[d]["flag4k"]], "exact": ex, "false_pos": fp, "escaped_failed": fail, "true_pos": tp, "misses": miss, "precision": prec, "recall": rec,
             "precision_ci95": cp(len(tp), len(tp) + len(fp)), "recall_ci95": cp(len(tp), len(fail))}
 
 
 def main():
     names = sorted(d for d in os.listdir(R) if os.path.isdir(os.path.join(R, d))) if os.path.isdir(R) else []
-    ins = collect([d for d in names if d in IN_SAMPLE]); held = collect([d for d in names if HELD.match(d) and d not in IN_SAMPLE])
+    ins = collect([d for d in names if d in IN_SAMPLE and d not in SAME_TRAJECTORY])
+    held = collect([d for d in names if HELD.match(d) and d not in IN_SAMPLE and ".void" not in d])   # 131-1 (c)
     s_in = summary(ins, "IN-SAMPLE (descriptive)"); s_h = summary(held, "HELD-OUT")
     def verdict_of(s):
         ok_n = len(s["exact"]) >= 5 and len(s["escaped_failed"]) >= 3
