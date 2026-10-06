@@ -176,5 +176,6 @@
    "verdict": "not run"
   }
  },
- "stage2": {}
+ "stage2": {},
+ "capacity_reading": "incomplete"
 }

@@ -5748,6 +5748,23 @@ Which contraction number each arm is held to, plus scoring checks.**
 * **(c)** A warning prints when an arm's accepted runs span more than one GPU name (125-2).
 * **(d)** JAC was not run and counts for nothing: no arm, no verdict, no evidence either way.
 
+**Note 133-2 (2026-10-06 14:55 EDT, before any §133 proof result exists; Audit / claude-13). The proof-slot near-miss rule, a mechanical capacity
+reading, and a refinement of 133-1 (a).**
+* **(1) Near miss at the proof slot (the §132 lesson; FSQ-8's own s1 is 0.998).** An arm is **dropped only if its proof seed is below 0.95
+  at 2,048.**
+  - Between 0.95 and 0.99, the proof counts as a non-exact slot and slots 2–4 run, so PASS then needs all three exact, as in 132-4.
+    Each step still needs Audit's re-approval.
+* **(2) The capacity reading is computed by the scorer from the files, not judged by hand:**
+  - **CAPACITY** = FSQ-8 passes S5×2, **and** FSQ-8 enters S5×4 (no exhausted slot; accepted runs past 2k) and fails it, **and** a wide arm
+    or FSQ-8 at 16 levels passes S5×4.
+  - Otherwise: "difficulty" (FSQ-8 fails S5×2, or nothing passes S5×4), "entry" (FSQ-8 does not enter S5×4), or "no capacity limit
+    shown".
+* **(3) Refinement of 133-1 (a)** (helper: a 64-d contractive carrier reaches the floor in about 3 hand-offs, and the hand-off that
+  lands there carries a ratio of 0.5–0.6). The continuous and soft arms' ρ is the geomean over the first 3 hand-offs, **excluding
+  any whose post-hand-off median distance is ≤ 1e-2.** If none qualify, it is ρ₁.
+  - Tested: a carrier at 0.10 with a floor-landing third step scores 0.10, not about 0.18. RAW-H-style drift (distances 5.4 → 0.7
+    → 0.4) stays separable.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
