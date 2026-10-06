@@ -5761,7 +5761,8 @@ reading, and a refinement of 133-1 (a).**
     shown".
 * **(3) Refinement of 133-1 (a)** (helper: a 64-d contractive carrier reaches the floor in about 3 hand-offs, and the hand-off that
   lands there carries a ratio of 0.5–0.6). The continuous and soft arms' ρ is the geomean over the first 3 hand-offs, **excluding
-  any whose post-hand-off median distance is ≤ 1e-2.** If none qualify, it is ρ₁.
+  any whose preceding median distance is ≤ 1e-2** (as 123-9 defines it: this drops floor-to-floor ratios; a hand-off landing
+  on the floor from above stays in and only understates contraction). If none qualify, it is ρ₁.
   - Tested: a carrier at 0.10 with a floor-landing third step scores 0.10, not about 0.18. RAW-H-style drift (distances 5.4 → 0.7
     → 0.4) stays separable.
 
