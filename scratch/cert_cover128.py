@@ -15,7 +15,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 os.environ.setdefault("BOXES_NB", "5")
 from boxes import s5  # noqa: E402
-from boxes.fsq120 import FSQ120, Family, certificate, run_test  # noqa: E402
+from boxes.fsq120 import FSQ120, Family, certificate, driver_version, run_test  # noqa: E402
 
 
 def main(d, dev="cuda:0", test_n=None, od=None):
@@ -24,7 +24,8 @@ def main(d, dev="cuda:0", test_n=None, od=None):
     m = FSQ120(s5.load_gpt2(dev), fam).to(dev); m.load_state_dict(torch.load(os.path.join(d, "model.pt"), map_location=dev)); m.eval()
     X = np.random.default_rng(12801).integers(0, fam.n_items, (test_n, int(a.get("test_len", 512))))
     bf = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
-    out = {"run": d, "test_n": test_n, "test_len": int(X.shape[1]), "device": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"}
+    out = {"run": d, "test_n": test_n, "test_len": int(X.shape[1]), "device": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
+           "driver": driver_version(), "amp_bf16_available": bf is not None}
     for name, amp in (("bf16", bf), ("fp32", None)):
         if name == "bf16" and bf is None:
             continue
@@ -35,7 +36,7 @@ def main(d, dev="cuda:0", test_n=None, od=None):
         out[name] = {"eval_distinct": len(ev), "bfs_reachable": len(bs), "n_uncovered": len(ev - bs), "cert_holds": c.get("holds"),
                      "n_moore": c.get("n_moore"), "cert_status": c.get("status")}
         if name == "fp32":
-            c.update({"eval_dtype": "None", "cert_cap": int(a.get("cert_cap", 1_000_000))})
+            c.update({"eval_dtype": "None", "cert_cap": int(a.get("cert_cap", 1_000_000)), "device": out["device"], "driver": out["driver"]})
             json.dump(c, open(os.path.join(od, "eval_cert_fp32.json"), "w", newline="\n"), indent=1)
         print(name, json.dumps(out[name]), flush=True)
     json.dump(out, open(os.path.join(od, "eval_cert_cover.json"), "w", newline="\n"), indent=1)

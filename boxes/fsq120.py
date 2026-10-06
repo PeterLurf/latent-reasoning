@@ -1026,13 +1026,14 @@ def main():
     if a.contraction_only:                                                  # note 123-2: post-hoc contraction (rho, rho_norm, ...) from model.pt
         m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval()
         amp_c = None if a.fp32 else amp                                     # note 123-5: bf16 makes 8-d chains bit-identical in 3-4 hand-offs
-        ct = contraction(m, fam, dev, amp_c, n=a.contract_n); ct.update({"eval_dtype": str(amp_c)})
+        ct = contraction(m, fam, dev, amp_c, n=a.contract_n); ct.update({"eval_dtype": str(amp_c), "device": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "driver": driver_version()})
         json.dump(ct, open(os.path.join(a.out, "eval_contraction_fp32.json" if a.fp32 else "eval_contraction.json"), "w", newline="\n"), indent=1)
         print("CONTRACTION", json.dumps({k: ct[k] for k in ("rho", "rho_norm", "rho_nonzero", "exact_recovery_share", "basin")}), flush=True); return
     if a.cert_only:                                                         # post-hoc CERT (scoring as registered; only its scheduling moved)
         m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval()
         amp = None if a.fp32 else amp                                       # note 128-4: --cert_only --fp32 -> eval_cert_fp32.json
         c = certificate(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time); c.update({"eval_dtype": str(amp), "cert_cap": a.cert_cap})
+        c.update({"device": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "driver": driver_version()})   # Theory 2026-10-06: card + driver per CERT
         if fam.name == "ff":                                                # note 120-7 (amendment after data): task-reachable CERT, first item w0 / w1
             c["cert_task"] = certificate(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time, first_items=[W0, W1]); c["cert_task"]["first_items"] = ["w0", "w1"]
             c["cert_task_reads"] = cert_task_reads(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time)   # note 120-9 (descriptive)
