@@ -1,0 +1,17 @@
+{
+ "family": "s5",
+ "slot": 3,
+ "accepted_seed": 3,
+ "attempts": [
+  {
+   "seed": 3,
+   "dir": "boxes/runs_fsq/s128_s5_s3",
+   "status": "accepted",
+   "rc": 0,
+   "sec": 10680
+  }
+ ],
+ "n_restarts": 0,
+ "error": null,
+ "extra_args": []
+}
