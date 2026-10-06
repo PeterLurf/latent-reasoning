@@ -133,3 +133,49 @@ arXiv API or abstract pages (2026-09-29 → 10-06; see LIT_INDEX).
 
 **Kill line:** if the snap with β ≤ 0.1 plus consistency doesn't beat RAW-H's drift (ρ_ff) in ≥ 3/4 seeds, the weak
 attractor isn't enough in a wide carrier, and the hard 8-d FSQ (§128) stays the method.
+
+## Addendum (2026-10-06): Theory's candidates (COPY-anchored entry; round-trip attractor; with SKIP)
+
+**(a) Decode → re-encode as a train-and-test attractor for a recurrent LM latent: the closest work.**
+- **Hard versions:**
+  - 2510.14095 (argmax-decode factored symbols, re-embed every iteration, from scratch);
+  - our §97 / HYB (text snap every k with a history cut);
+  - Thinking States 2602.08332 (text thoughts re-embedded as state);
+  - our §101 (a soft pull to a *structured* code: the soft version with a fixed codebook).
+- **Related consistency mechanisms:**
+  - self-conditioning in diffusion, *Analog Bits* 2208.04202 (feed the model's own previous estimate back in);
+  - cycle consistency, CycleGAN 1703.10593;
+  - back-translation, 1511.06709;
+  - ReLAT 2606.06252 (a question → latent → question cycle);
+  - SELR 2608.13570 (self-decoding);
+  - Soft Thinking 2505.15778 (a mixture over token embeddings, which isn't an attractor and collapses per 2609.02049).
+- **Not found:** a *soft, every-hand-off* pull of a wide continuous carrier toward enc(dec(z)) of its own decoded
+  state text. **New as scoped.**
+
+**(b) Traps for the round-trip attractor.**
+1. **The decoder must read the carried code only** (the MASK / §111-reader isolation). If dec sees the visible ops, its
+   decode is a *recomputed* state, and the attractor injects recomputation into the chain, the §104 bypass smuggled
+   in. Keep the fork's mask.
+2. **Lock-in at init:** before dec is accurate, enc(dec(z)) is near-constant text. The pull then drives every z to one
+   point, the ANNEAL / posterior-collapse failure again.
+   - Gate it label-free: β = 0 until the decode-*validity* rate (well-formed state text) and the code's input variance
+     (active units, 1509.00519) pass thresholds, or run COPY warm-up first. Then ramp β per hand-off, stochastically.
+3. **Self-reinforcing wrong decodes:** the attractor stabilises *whatever* is decoded. A wrong decode becomes a stable
+   wrong state, and only the final-answer loss can correct it (confirmation bias, 1908.02983). Fine as long as β stays
+   small (§101: 0.01 suffices), so the carrier isn't overwritten.
+4. **Gradient through argmax:** not needed. Treat sg(enc(dec(z))) as a target, as in BYOL / SimSiam (asymmetry =
+   text path vs latent path). Cost: an extra decode-plus-encode per hand-off (≈ 2× forward). Report FLOPs.
+5. **Task-agnosticism:** the attractor needs a decodable *state text*. For FINAL-only families without one, use the
+   **"answer if queried now"** in the task's native output vocabulary.
+   - That is the full state for S5 / CYC / MOD / RDFA (answer ≅ state).
+   - **Not for FF**, where the answer is the last written bit, not the full state. State the restriction.
+
+**(c) Copy / autoencoding auxiliaries that fix entry without step labels.**
+- Sequence-autoencoder pretraining, Dai & Le 1511.01432; word dropout and annealing, Bowman 1511.06349; aggressive
+  encoder, 1901.05534; Z-Forcing 1711.05411; the NTM copy task 1410.5401.
+- **Interface warm-up analogue: LP-FT**, Kumar 2202.10054 (train the interface or head first, then fine-tune jointly, so
+  random head gradients don't distort features).
+- Our §124: copy rows give uniform early acquisition, 4/4 at L5.
+- **Prediction:** COPY plus a gated round-trip attractor is the coherent pair. COPY trains enc / dec to be accurate at
+  entry, exactly what the attractor needs before β > 0. SKIP adds the decoder gradient path. Order the arms as COPY →
+  COPY + RT → COPY + RT + SKIP so each addition's contribution is identifiable.
