@@ -179,3 +179,22 @@ attractor isn't enough in a wide carrier, and the hard 8-d FSQ (§128) stays the
 - **Prediction:** COPY plus a gated round-trip attractor is the coherent pair. COPY trains enc / dec to be accurate at
   entry, exactly what the attractor needs before β > 0. SKIP adds the decoder gradient path. Order the arms as COPY →
   COPY + RT → COPY + RT + SKIP so each addition's contribution is identifiable.
+
+## Addendum 2 (2026-10-06): §134 COPY-ANCHOR design points
+- **(i) Text cache vs composable code.**
+  - Copy trains *write-from-text* and *read-to-text* for the code space. That fixes the interface (entry), not
+    composition. Composition still has to come from the final-answer loss.
+  - §124's transfer ran through the history cut's self-started shorts, which this FINAL harness lacks.
+  - **Specific risk: two "dialects".** Copy codes are written by [EOT, text] segments, transition codes by
+    [EOT, code, item]. The two writers can occupy different regions of code space, so the transition path never reads
+    copy-shaped codes.
+  - **Probe it:** for the same state, the rate at which the copy code equals the transition code (FSQ code identity),
+    or the cosine distance. Also the R²_state vs op-history probe (as planned).
+  - Don't "fix" this with copy → one op → answer rows. A random-start one-op problem labels Cayley transitions
+    (LIT_S110B), which strengthens supervision beyond FINAL. Keep it as a disclosed variant at most.
+- **Family caveat:** "final-answer text" = the full state for S5 / CYC / MOD / RDFA. For FF it is the read bit, so
+  copy anchors only 2 codes there. Expect the FF guard to show little effect.
+- **(ii) Constant vs decayed f: keep it constant** (as registered). The copy loss is an interface anchor like the
+  reader (§111, constant). Removing an anchor after entry risks the ANNEAL / α → 1 collapse. 10% costs little.
+  - Log copy-decode accuracy and the dialect probe over training. A decay schedule is a later variant only if constant
+    copy measurably competes with learning.
