@@ -69,6 +69,11 @@ with the same code and settings across families.
   switches. The code is read by the decoder, but its content is not the state (VAR: R²_state −0.05; LR10 / SKIP s2: 0.25–0.28).
 * **F3, drift:** a continuous or wide carrier has no attractor (RAW-H, CONT).
 * **F4, capacity:** 8⁸ codes (24 bits) cannot hold large states (S5×4, multiplication, graph sets).
+  - On the §128 families the cap is far from binding (helper's growth reading, fp32, 500 rollouts to 2,048, acc 1.0):
+    - MOD's code_growth distinct is still rising at 2,048 (214–456), at codes_per_state_2048 43–91;
+    - but it stays at or below the fp32 BFS-reachable count from 128-4 (s1: 383 against 386).
+    - So the 8-d code spreads one state over many codes and stays exact. F4 bites only where the state space itself exceeds 24 bits
+      (§133 stage 2).
 
 ## Candidate 1 (rank 1): COPY-ANCHOR, a label-free state-reading auxiliary from step 0 (targets F1 + F2)
 * **Mechanism.** A fraction of each batch (copy rows, e.g. 10 %) is **autoencoding through the carrier:** [EOT, state text] →
