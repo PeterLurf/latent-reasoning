@@ -217,6 +217,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 127 | Reliable entry without restarts? VAR (item-residual variance) / SKIP (skip-to-decoder) / STD2 (§125-v2) / LR10 on §120's harness vs restart-on-plateau | registered | **open** |
 | 128 | One recipe, five state-tracking families (S5, FF + held-out CYC / MOD / RDFA), restart-on-plateau; FAMILY-PASS = 3/4 exact + SERIAL (+ CLOSED) | registered | **open** |
 | 129 | Where does the entry basin live? Head-only re-draw at the 2k flag vs a CLOCK-ONLY warm restart (S5, 4 flagged seeds): LR / HEAD / BODY | registered | **open** |
+| 130 | Early label-free plateau marker (code variance at ~1k): fit on 4060 replays, frozen, tested cross-card (3070, primary) and same-card | registered | **open** |
 
 ## Live sections
 
@@ -4848,6 +4849,65 @@ fail the gradient delivery check.**
 * **No effect on S5 cells:** S5 losses at 500 and 2,000 are about 5 in every run so far. The rule is fixed before any SKIP S5
   Stage 2 cell is read. `score_s127.py` implements it (tested: FF solved early → delivered; S5 unsolved with a tiny gradient →
   not delivered).
+
+## 130. An early, label-free plateau marker: fitted on one GPU class, tested on another, from $0 replays of §120's first 2k steps (pre-registered 2026-10-06 05:22 EDT, after Literature's check 722b9f4c and before any §130 replay; Audit's steward idea for the idle local cards; C6: the cost of seed reliability)
+
+**Why.**
+* Restart-on-plateau (§126) is the working entry procedure, and §128 uses it. Each plateaued attempt costs 2k steps before the
+  123-3 flag can fire.
+* The two 3090 replays (127-5, 127-7) show an earlier signal. In the plateau seed, the code's spread across inputs (zb_std_in)
+  collapses to about 0.02–0.03 by 700, after a failed first pull at 650. In the escaping seed it stays at 0.05–0.14 and then
+  grows when the decoder pulls.
+* A marker that fires by about 1k would halve each restart's cost, but it is n = 1 per seed. §130 fits a marker on one card
+  class and tests it on another, before any rule uses it.
+* **Prior** (722b9f4c): `docs/LIT_S130_MARKER_2026-10-06.md`: seed triage from loss curves (Dodge 2002.06305; Hyperband 1603.06560 /
+  successive halving; Domhan's learning-curve extrapolation). **zb_std_in is the "active units" statistic of Burda et al.
+  (IWAE 1509.00519)**; VICReg uses per-dimension std as its collapse signal. New as scoped: an early representation-variance
+  marker for a no-read basin, validated prospectively across GPU classes.
+
+**Replays.**
+* `scratch/replay_basin.py` (reviewed, 0baed523): fsq120 FINAL S5's first 2k steps, the same init and data RNG, bf16 autocast;
+  fp32 probes every 50 steps. One card class per block. A gradflow smoke runs on each card first.
+* **FIT:** local RTX 4060, seeds 3–10, extended with 35–42 if it has fewer than 3 flagged or 3 non-flagged seeds.
+* **TEST-CROSS (primary):** local RTX 3070, seeds 11–18, then 27–34, then 43–58.
+* **TEST-SAME (secondary):** local RTX 4060, seeds 19–26, then 59–82. It runs after FIT, so a cross-card failure can be read as
+  "card" rather than "overfit" (Literature (b)).
+* **Each TEST block runs until it has ≥ 8 flagged and ≥ 8 non-flagged seeds** (Literature (c)), or its seed list is used up.
+* **Blinding:** every TEST replay, on either card, stays unread until the freeze note.
+* Outputs: `theory/results/replay130/{card}_s{seed}.jsonl`.
+
+**Definitions** (from each replay's own log).
+* FLAG: 123-3's flag on the replay loss (nearest logged steps to 100 / 1k / 2k).
+* PULL: the first probe with L1_dmean > 0.05.
+* COLLAPSE: zb_std_in < 0.04 at two consecutive probes at or after 600.
+* marker(θ, window): zb_std_in < θ at two consecutive probes inside the window.
+
+**Rules (fixed now).**
+* **FIT** (FIT seeds only): choose θ ∈ {0.03, 0.04, 0.05, 0.06, 0.08} and window ∈ {600–1000, 700–1000, 700–1200, 600–1500}
+  that maximise min(precision, recall) against FLAG. Ties go to the earlier window end, then the smaller θ.
+  - The neighbouring cells' scores are reported: a flat optimum is more trustworthy.
+  - The choice is **frozen in a dated note (130-1) before any TEST replay is read.**
+* **PASS (primary, TEST-CROSS):** the frozen marker's precision and recall against FLAG are both ≥ 0.9, with ≥ 8 flagged and ≥ 8
+  non-flagged seeds. Otherwise the result is incomplete, with its counts.
+  - TEST-SAME is scored the same way, as secondary.
+  - Two-sided 95 % Clopper–Pearson intervals are reported (8/8 gives a lower bound of 0.63).
+* **Descriptive:**
+  - **H-127-7:** every flagged seed shows COLLAPSE, and every non-flagged seed reaches L1_dmean ≥ 0.1 by 2k. Counts per block.
+  - The escape rate per card class.
+  - The frozen marker on §129's 3090 phase-1 logs.
+
+**Readings.**
+* **PASS (cross-card).** A label-free marker at about 1k predicts the 2k plateau across GPU classes. An early restart rule built
+  on it becomes a candidate for registration, halving each restart's cost. §130 itself changes no procedure.
+* **TEST-SAME passes, CROSS fails.** The marker holds on its own card class but not across classes, consistent with the GPU
+  sensitivity of the basin (125-2). A per-card threshold is not adopted from this.
+* **Both fail.** The marker is noisy or overfit. Restart-on-plateau keeps the 2k flag.
+* **H-127-7 fails in some seeds.** The collapse-after-failed-pull account (127-7) does not generalise. Counterexamples are
+  reported.
+
+**Placement.** About 40–60 replays of 2k steps (about 20–40 min each) on the two idle local cards, running roughly 8–16 h; $0.
+* Implementation: the experiments session (a queue around replay_basin.py per card).
+* Scorer: `theory/score_s130.py`, committed before any replay. Run `fit` first, then `test θ lo hi` after note 130-1.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
