@@ -1,0 +1,6 @@
+# §132 rung-1 pilot host (Audit: slot 1 alone; stop + report if it exhausts its 4 attempts): memory checks at L 32 (k6 / k4) and a GPU bf16 smoke under non-slot names (note 132-1), then slot 1 via scratch.restart132 -> boxes.table132 (built on boxes.fsq120's model); RTX 3090, one GPU class per rung
+# P=1
+boxes/runs_fsq/s132_k6_memcheck boxes.table132 --k 6 --m 3 --mem_check 3
+boxes/runs_fsq/s132_k4_memcheck boxes.table132 --k 4 --m 2 --mem_check 3
+boxes/runs_fsq/s132_k4_smoke boxes.table132 --k 4 --m 2 --seed 1 --steps 300 --sched_scale 0.1 --test_n 100 --ext_n 20 --donor_n 100 --cert_n 3 --cert_time 120
+boxes/runs_fsq/s132_slots/k4_k1 scratch.restart132 --k 4 --m 2 --slot 1
