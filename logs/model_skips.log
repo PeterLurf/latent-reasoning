@@ -1,0 +1,1 @@
+2026-10-06 06:43:12 54448033 gen_b36 boxes/runs_fsq/s127_s5_std2_s1 model.pt 497875494 bytes NOT FETCHED: SKIP not exact (long_acc 0.0000, ext_2048 0.0000) | posthoc: fp32 contraction (run now)

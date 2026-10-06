@@ -1,0 +1,7 @@
+07:26:42 data sha 6ee3ef95405dc43b094824dff8973753c587fe95a00762d2023bd64a941504f2 a0087fe4a7496a47f76d9436e6bb089c8a8869f3f343f71057355e127d0c33da
+NVIDIA GeForce RTX 3090, 595.71.05
+07:26:42 start boxes/runs_fsq/s127_s5_std2_s1
+07:26:42 start boxes/runs_fsq/s127_s5_lr10_s1
+07:32:37 evaluated boxes/runs_fsq/s127_s5_lr10_s1 rc 0 no-eval
+10:13:09 evaluated boxes/runs_fsq/s127_s5_std2_s1 rc 0
+10:13:09 QUEUE_DONE
