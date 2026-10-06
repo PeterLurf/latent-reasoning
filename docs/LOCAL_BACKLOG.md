@@ -50,6 +50,8 @@ entries, keeping ≥ 3 open per card.
      R²_state, at chain positions L 2 / 4 / 8.
      - Does the code that escaped without learning carry the op history (the short-chain shortcut) where the learners carry the state?
      - Run these four first.
+     - Then add **s127_s5_ctrl_s4_full** (a plateau that ran to 24k) and, when fetched, the §127 lever models (std2 s1–s3, lr10 s2 / s3, skip s2 /
+       rerun / s3). The helper asked for these; the line format is as above.
 
 ## RTX 2070 (Turing, fp32 only, 8 GB, slowest)
 
