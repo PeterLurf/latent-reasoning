@@ -83,6 +83,16 @@ with the same code and settings across families.
     - Candidate causes: approximate encoding compounding with L (contraction, ρ₁); a wrong transition; or the decoder reading another
       mapping than the transition writes (a within-model dialect: §134's dialect probe; 2b ties the writers).
     - Discriminating measures on F2b models: accuracy at prefixes 1 / 2 / 4 / 8, R²_state by L (opprobe), and the fp32 ρ₁.
+  - **End-probe profiles of the six cloud reruns** (opprobe R²_state at L 2 / 4 / 8; abl_dloss; Theory-verified from the probe files):
+    - s12 exact: 0.997 / 0.997 / 0.997, abl 25.6;
+    - **F2b flat** (s6): 0.82 / 0.81 / 0.81, abl 6.0, long_acc 0. Not compounding, so a wrong transition or a dialect mismatch;
+    - **F2b compounding** (s17): 0.72 / 0.33 / −0.02, abl 8.0. The state decays with L;
+    - **F2a** (s7, s5): about 0 at every L, abl 1.8–1.9.
+      - s5 is wrong **from the first hand-off** (acc at prefix 1 / 2 / 4 / 8 = 0.097 / 0.0035 / 0 / 0; chance 0.008) while
+        **strongly contractive** (fp32 ρ₁ 0.072): a stable map to the wrong attractor, not drift;
+    - **F1** (s30): an unread 4-code buffer of the last op (last1 R² 0.69 / 0.99 / 0.99, abl about 0).
+  - **Provisional reading** (Audit): where ρ₁ is in band and the failure starts at prefix 1, the fix is in the transition (COPY /
+    SELF-ANCHOR / a reader), not contraction (§133 / 2). Prefix accuracy and ρ₁ for s6 / s17 decide whether F2b is the same.
 * **F3, drift:** a continuous or wide carrier has no attractor (RAW-H, CONT).
 * **F4, capacity:** 8⁸ codes (24 bits) cannot hold large states (S5×4, multiplication, graph sets).
   - On the §128 families the cap is far from binding (helper's growth reading, fp32, 500 rollouts to 2,048, acc 1.0):
