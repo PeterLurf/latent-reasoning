@@ -1,0 +1,13 @@
+15:18:26 data sha 6ee3ef95405dc43b094824dff8973753c587fe95a00762d2023bd64a941504f2 a0087fe4a7496a47f76d9436e6bb089c8a8869f3f343f71057355e127d0c33da
+NVIDIA GeForce RTX 3090, 570.211.01
+15:18:26 start boxes/runs_fsq/s128cc3090_cyc_s1
+15:18:26 start boxes/runs_fsq/s128cc3090_cyc_s2
+15:24:12 evaluated boxes/runs_fsq/s128cc3090_cyc_s1 rc 0
+15:24:12 start boxes/runs_fsq/s128cc3090_rdfa_s2
+15:24:12 evaluated boxes/runs_fsq/s128cc3090_cyc_s2 rc 0
+15:24:12 start boxes/runs_fsq/s128cc3090_mod_s1
+15:29:59 evaluated boxes/runs_fsq/s128cc3090_rdfa_s2 rc 0
+15:29:59 start boxes/runs_fsq/s128cc3090_rdfa_s4
+15:30:22 evaluated boxes/runs_fsq/s128cc3090_mod_s1 rc 0
+15:32:53 evaluated boxes/runs_fsq/s128cc3090_rdfa_s4 rc 0
+15:32:53 QUEUE_DONE

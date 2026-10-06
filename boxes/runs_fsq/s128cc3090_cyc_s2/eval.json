@@ -1,0 +1,23 @@
+{
+ "run": "boxes/runs_fsq/s128_cyc_s2",
+ "test_n": 2000,
+ "test_len": 512,
+ "device": "NVIDIA GeForce RTX 3090",
+ "bf16": {
+  "eval_distinct": 40,
+  "bfs_reachable": 33,
+  "n_uncovered": 8,
+  "cert_holds": true,
+  "n_moore": 5,
+  "cert_status": "done"
+ },
+ "fp32": {
+  "eval_distinct": 31,
+  "bfs_reachable": 31,
+  "n_uncovered": 0,
+  "cert_holds": true,
+  "n_moore": 5,
+  "cert_status": "done"
+ },
+ "gpu_driver": "570.211.01"
+}
