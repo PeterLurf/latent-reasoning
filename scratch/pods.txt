@@ -815,3 +815,5 @@ PRICE EXCEPTION 2026-10-05 22:00 gen-d2 offer 21171765 A100 SXM4 $0.369/h: §119
 54418163 vast offer 51147422 created 2026-10-05 22:30: label gen-b28, queue scratch/gen_q_b28.txt (logged at create by vdeploy_toy.sh)
 54399657 vast | gen_b24 DESTROYED_VERIFIED 2026-10-05 22:32 after verified per-run fetch (boxes/runs_fsq/s126_s5_rawh_s1)
 54406366 vast | gen_b26 DESTROYED_VERIFIED 2026-10-05 22:36 after verified per-run fetch (boxes/runs_fsq/s126_s5_anneal_s2_fp32cast)
+54399661 vast | gen_b25 DESTROYED_VERIFIED 2026-10-05 22:46 after verified per-run fetch (boxes/runs_fsq/s126_s5_rawh_s4)
+54414073 vast | gen_d2 DESTROYED_VERIFIED 2026-10-05 22:48 after verified per-run fetch ()
