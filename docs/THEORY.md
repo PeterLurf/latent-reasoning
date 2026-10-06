@@ -5348,6 +5348,21 @@ everything PASS depends on; no rule change). Unreachable states in rung-1 tables
 * **(B)** The scorer's smoke filter also skips any args with mem_check set.
 * The bf16 smoke runs under a non-slot name before the pilot. The fsq120 gradflow carries over: there is no new loss term.
 
+**Note 131-2 (2026-10-06 08:20 EDT; interim score, and the end of held-out collection fixed so there is no optional stopping; no rule change).
+The PASS conditions are met on the held-out runs so far. The verdict is read once the scheduled runs are in.**
+* **Interim** (`score_s131.py`; SKIP s2 / rerun and s128_s5_s3 ≡ s127_s5_ctrl_s3 each counted once):
+  - Held-out exact 18, flagged 0. Of these, 4 are S5 learners, flagged 0; the 14 non-S5 runs are near-vacuous (131-1 (a)).
+  - Escaped-and-failed: 4 distinct, 4 flagged (LR10 s3 0.988, STD2 s3 0.994, ctrl s3 / s128 S5 s3, SKIP s3).
+  - Precision 1.0 (CI 0.40–1.0), recall 1.0 (0.40–1.0). The prospective subset gives the same: 5 exact, 4 / 4 flagged.
+* **§131 did not fix where held-out collection ends, so it is fixed now, before more lands.** The verdict is read once all of
+  these have landed (or are void):
+  - §128 FF slots 1–4 and RDFA s3 / s4;
+  - §127 ctrl s4 full (b42);
+  - the s130chk check runs: 4060 s5, s6, s7 and 3070 s17, s30, s34, s12.
+  - Runs landing after that are reported but not scored.
+* **Not yet deployable** either way (Literature (c)): 4 flagged so far, against the ≥ 10 flagged with 0 false positives needed
+  for a restart rule.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
