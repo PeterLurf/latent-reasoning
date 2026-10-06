@@ -1,4 +1,4 @@
-# §112 coverage dose-response (note 112-1 + addendum); host 4 of 8
+# §119 Coconut seeds 2-3 at the criterion's lr 3e-5 (note 119-2: all three s1 lrs at chance, pick disclosed as noise-level); any 24 GB class; boxes.base119
 # P=2
-boxes/runs_s5/s112_f025_s22 boxes.self110 --cov 0.25 --save_rounds --seed 22
-boxes/runs_s5/s112_f025_s23 boxes.self110 --cov 0.25 --save_rounds --seed 23
+boxes/runs_s5/s119_coconut_s2 boxes.base119 --method coconut --lr 3e-5 --seed 2
+boxes/runs_s5/s119_coconut_s3 boxes.base119 --method coconut --lr 3e-5 --seed 3

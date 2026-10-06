@@ -1,4 +1,4 @@
-# §119 CODI lr sweep s1 RERUN with the autocast-cache fix (c1caef75; d2 runs void: LoRA got no gradient) (LoRA r128; Audit: any clean 24 GB class; gradflow PASS)
+# §119 CODI lr sweep s1 RERUN with the autocast-cache fix (c1caef75; d2's runs void: LoRA got no gradient); LoRA r128; any 24 GB class; boxes.base119
 # P=3
 boxes/runs_s5/s119_codi_lr1e-3_s1 boxes.base119 --method codi --lr 1e-3 --seed 1
 boxes/runs_s5/s119_codi_lr3e-3_s1 boxes.base119 --method codi --lr 3e-3 --seed 1
