@@ -6084,6 +6084,22 @@ carry an fp32 certificate that covers every code the eval visits** (14 certifica
   (L > 16). The registration's "every other target in the batch" holds at micro 1. The micro factor per run is recorded (micro_gate)
   and reported beside the result.
 
+**Note 135-4 (2026-10-06 17:19 EDT, before any §135 student run; the Audit helper's read of 5387d85e). The duplicate mask uses gold-state identity, and CUDA gradflow is filed.**
+* **The risk.** The centred-cosine mask removes same-state negatives only if the target model's hidden state for a repeated state is
+  context-invariant to within cos 0.99. It probably is not: the hidden state of a state text depends on its position and history, and
+  more so for BASE's pretrained GPT-2.
+  - Unmasked same-state targets are false negatives (about 1/120 of pairs). The InfoNCE gradient then pushes the student's code to
+    **separate same-state chains by their history**: anti-Markov, the F4 open-growth pattern. The two arms would also be masked to
+    different degrees.
+* **Fixed now, for both arms:** a negative is masked when its **gold intermediate state equals the positive's** (lab_i == lab_j).
+  - This uses per-step state identity, which is inside §135's declared scope ("per-step supervision by proxy, not C4"; the teacher
+    and its probe already use these labels). The arms stay identical in masking.
+  - The centred-cosine share is still logged, as descriptive (`s135.masked_share_cos`), beside the label-mask share
+    (`s135.masked_share`, expected about 1/120).
+* **Gradflow under CUDA bf16** (registered before any run): the json is committed under theory/results before the first student
+  starts. It gives the norms on W_down, the layer-3 attention weight, W_up, P_s and P_t at p_hard 0 and 1, and the target model's no-grad
+  check.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
