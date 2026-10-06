@@ -3866,8 +3866,14 @@ Audit / claude-13). ρ_ff, the floor-free fp32 ρ. This is the last metric amend
   measurement limitation.
 
 **Note 126-2 (2026-10-05 17:00 EDT, before any §126 run; ANNEAL implementation 535f5a98, accepted; not launched).**
-* The distillation runs only during the ramp (2k < step ≤ 6k), so ANNEAL is identical to RAW-H through the window where
-  the plateau is decided (before 2k).
+* The distillation runs only during the ramp (2k < step ≤ 6k), so ANNEAL equals RAW-H **in definition** through the
+  window where the plateau is decided (before 2k).
+  - **In practice it is not bit-identical** (Audit). ANNEAL s2 is 2.55 / 1.35 at 1k / 2k, against RAW-H s2's 3.42 / 1.65.
+  - The causes: the bf16 cast of the mixed carrier (126-5), and a different host / driver.
+  - Not causes: both arms build the same ln / down / up modules (same init RNG); data comes from a numpy RNG seeded by the
+    seed (same order); and W_up and W_down get zero gradient at λ = 0 (the branch is multiplied by 0) and draw no dither
+    before 6k.
+  - Both escaped by 2k, so the verdict is unaffected.
 * std(h) statistics are re-estimated once at 6k (the FSQ switch), then frozen. After λ = 1 they no longer enter the carrier.
 
 **Note 124-3 (2026-10-05 17:00 EDT, before §124 is scored). Matched units are per seed and per GPU type.**
