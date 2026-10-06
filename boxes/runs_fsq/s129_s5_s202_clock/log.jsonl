@@ -1,0 +1,70 @@
+{"step": 2000, "clock_only": true, "clock": 0, "phase": 2}
+{"step": 2000, "probe": {"r2_item": -0.07455086708068848, "r2_state": 0.3196433186531067, "r2_start": -0.1364525556564331, "abl_dloss": 0.13932228088378906, "ce_intact": 4.852604866027832, "ce_ablated": 4.991927146911621, "n": 1024}, "clock": 0, "phase": 2}
+{"step": 2000, "zb_std_in": 1.324112892150879, "clock": 0, "phase": 2}
+{"step": 2001, "mcheck": {"grad_rows": 256, "semantics": "train (deterministic)", "row_norm": 29.790115356445312, "resid_std": 1.0171455144882202, "row_norm_eval": 30.910144805908203, "resid_std_eval": 1.0185737609863281, "wte_row_norm": 3.953078031539917, "lr_ratio": 1.0, "lrs": [9.999999957163176e-07]}, "clock": 1, "phase": 2}
+{"step": 2050, "zb_std_in": 1.4429987668991089, "clock": 50, "phase": 2}
+{"step": 2100, "loss": 4.55302972316742, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 15, "clock": 100, "phase": 2}
+{"step": 2100, "zb_std_in": 1.5607497692108154, "clock": 100, "phase": 2}
+{"step": 2150, "zb_std_in": 1.5118505954742432, "clock": 150, "phase": 2}
+{"step": 2200, "loss": 4.572730226516724, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 28, "clock": 200, "phase": 2}
+{"step": 2200, "zb_std_in": 1.6059999465942383, "clock": 200, "phase": 2}
+{"step": 2250, "zb_std_in": 1.8828659057617188, "clock": 250, "phase": 2}
+{"step": 2300, "loss": 4.406752080917358, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 41, "clock": 300, "phase": 2}
+{"step": 2300, "zb_std_in": 2.0864315032958984, "clock": 300, "phase": 2}
+{"step": 2350, "zb_std_in": 1.9664528369903564, "clock": 350, "phase": 2}
+{"step": 2400, "loss": 4.19831874370575, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 55, "clock": 400, "phase": 2}
+{"step": 2400, "zb_std_in": 2.264160633087158, "clock": 400, "phase": 2}
+{"step": 2450, "zb_std_in": 2.257009744644165, "clock": 450, "phase": 2}
+{"step": 2500, "mcheck": {"grad_rows": 256, "semantics": "train (deterministic)", "row_norm": 32.94749450683594, "resid_std": 1.7966817617416382, "row_norm_eval": 33.62005615234375, "resid_std_eval": 1.7953922748565674, "wte_row_norm": 3.9519829750061035, "lr_ratio": 1.0, "lrs": [9.989294616193017e-05]}, "clock": 500, "phase": 2}
+{"step": 2500, "loss": 3.972964890003204, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 68, "clock": 500, "phase": 2}
+{"step": 2500, "zb_std_in": 2.298900604248047, "clock": 500, "phase": 2}
+{"step": 2550, "zb_std_in": 2.355192184448242, "clock": 550, "phase": 2}
+{"step": 2600, "loss": 4.095443871021271, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 82, "clock": 600, "phase": 2}
+{"step": 2600, "zb_std_in": 2.3588151931762695, "clock": 600, "phase": 2}
+{"step": 2650, "zb_std_in": 2.3158907890319824, "clock": 650, "phase": 2}
+{"step": 2700, "loss": 3.9991221046447754, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 95, "clock": 700, "phase": 2}
+{"step": 2700, "zb_std_in": 2.298539161682129, "clock": 700, "phase": 2}
+{"step": 2700, "probe": {"r2_item": -0.09741652011871338, "r2_state": 0.44391006231307983, "r2_start": -0.14026248455047607, "abl_dloss": 0.375216007232666, "ce_intact": 4.533790588378906, "ce_ablated": 4.909006595611572, "n": 1024}, "clock": 700, "phase": 2}
+{"step": 2750, "zb_std_in": 2.304943084716797, "clock": 750, "phase": 2}
+{"step": 2800, "loss": 3.907226309776306, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 109, "clock": 800, "phase": 2}
+{"step": 2800, "zb_std_in": 2.2885870933532715, "clock": 800, "phase": 2}
+{"step": 2850, "zb_std_in": 2.0733766555786133, "clock": 850, "phase": 2}
+{"step": 2900, "loss": 3.9374727821350097, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 122, "clock": 900, "phase": 2}
+{"step": 2900, "zb_std_in": 2.086700201034546, "clock": 900, "phase": 2}
+{"step": 2950, "zb_std_in": 2.105207920074463, "clock": 950, "phase": 2}
+{"step": 3000, "loss": 3.913508379459381, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 136, "clock": 1000, "phase": 2}
+{"step": 3000, "zb_std_in": 1.999497413635254, "clock": 1000, "phase": 2}
+{"step": 3050, "zb_std_in": 2.0144081115722656, "clock": 1050, "phase": 2}
+{"step": 3100, "loss": 4.1616616988182065, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 149, "clock": 1100, "phase": 2}
+{"step": 3100, "zb_std_in": 1.9620102643966675, "clock": 1100, "phase": 2}
+{"step": 3150, "zb_std_in": 2.1210482120513916, "clock": 1150, "phase": 2}
+{"step": 3200, "loss": 3.9398074316978455, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 162, "clock": 1200, "phase": 2}
+{"step": 3200, "zb_std_in": 1.807776927947998, "clock": 1200, "phase": 2}
+{"step": 3200, "probe": {"r2_item": -0.10455071926116943, "r2_state": 0.3835315704345703, "r2_start": -0.1263134479522705, "abl_dloss": 0.40683555603027344, "ce_intact": 4.729952812194824, "ce_ablated": 5.136788368225098, "n": 1024}, "clock": 1200, "phase": 2}
+{"step": 3250, "zb_std_in": 1.9032418727874756, "clock": 1250, "phase": 2}
+{"step": 3300, "loss": 4.0979095602035525, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 176, "clock": 1300, "phase": 2}
+{"step": 3300, "zb_std_in": 1.9337198734283447, "clock": 1300, "phase": 2}
+{"step": 3350, "zb_std_in": 1.6788699626922607, "clock": 1350, "phase": 2}
+{"step": 3400, "loss": 3.681528866291046, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 189, "clock": 1400, "phase": 2}
+{"step": 3400, "zb_std_in": 1.7169010639190674, "clock": 1400, "phase": 2}
+{"step": 3450, "zb_std_in": 1.735706090927124, "clock": 1450, "phase": 2}
+{"step": 3500, "loss": 3.492224843502045, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 202, "clock": 1500, "phase": 2}
+{"step": 3500, "zb_std_in": 1.6204142570495605, "clock": 1500, "phase": 2}
+{"step": 3550, "zb_std_in": 1.659719705581665, "clock": 1550, "phase": 2}
+{"step": 3600, "loss": 3.31665228843689, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 215, "clock": 1600, "phase": 2}
+{"step": 3600, "zb_std_in": 1.693070650100708, "clock": 1600, "phase": 2}
+{"step": 3650, "zb_std_in": 1.5932340621948242, "clock": 1650, "phase": 2}
+{"step": 3700, "loss": 3.5871400094032286, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 229, "clock": 1700, "phase": 2}
+{"step": 3700, "zb_std_in": 1.6469907760620117, "clock": 1700, "phase": 2}
+{"step": 3750, "zb_std_in": 1.685861587524414, "clock": 1750, "phase": 2}
+{"step": 3800, "loss": 3.4673548901081084, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 242, "clock": 1800, "phase": 2}
+{"step": 3800, "zb_std_in": 1.664414644241333, "clock": 1800, "phase": 2}
+{"step": 3850, "zb_std_in": 1.6680312156677246, "clock": 1850, "phase": 2}
+{"step": 3900, "loss": 2.3935900288820267, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 255, "clock": 1900, "phase": 2}
+{"step": 3900, "zb_std_in": 1.6766915321350098, "clock": 1900, "phase": 2}
+{"step": 3950, "zb_std_in": 1.6730446815490723, "clock": 1950, "phase": 2}
+{"step": 4000, "mcheck": {"grad_rows": 256, "semantics": "train (deterministic)", "row_norm": 26.41219139099121, "resid_std": 1.0818724632263184, "row_norm_eval": 27.641529083251953, "resid_std_eval": 1.0813027620315552, "wte_row_norm": 3.9498956203460693, "lr_ratio": 1.0, "lrs": [9.829629131445342e-05]}, "clock": 2000, "phase": 2}
+{"step": 4000, "loss": 3.8521715563535692, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 269, "clock": 2000, "phase": 2}
+{"step": 4000, "zb_std_in": 1.474273443222046, "clock": 2000, "phase": 2}
+{"step": 4000, "probe": {"r2_item": -0.07333493232727051, "r2_state": 0.14260947704315186, "r2_start": -0.09802901744842529, "abl_dloss": 0.20193719863891602, "ce_intact": 4.862823009490967, "ce_ablated": 5.064760208129883, "n": 1024}, "clock": 2000, "phase": 2}
+{"step": 4000, "stopped": "plateau (123-3 flag at 2k)", "loss_100": 4.55302972316742, "loss_1k": 3.913508379459381, "loss_2k": 3.8521715563535692, "carried_norm": {"init": {"row_norm": 29.963600158691406, "per_coord_std_across_inputs": 0.4748205840587616, "std_vector_norm": 14.457639694213867, "wte_row_norm": 3.953078031539917, "n": 1024}, "2k": {"row_norm": 26.16571044921875, "per_coord_std_across_inputs": 0.5700642466545105, "std_vector_norm": 16.745771408081055, "wte_row_norm": 3.9498956203460693, "n": 1024}}, "clock": 2000, "phase": 2}

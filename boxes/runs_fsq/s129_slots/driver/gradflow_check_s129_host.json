@@ -1,0 +1,11 @@
+{
+ "fsq120.s129.amp_bf16": 1.0,
+ "fsq120.s129.head_state_dropped": 1.0,
+ "fsq120.s129.body_state_unchanged": 1.0,
+ "fsq120.s129.head_redrawn": 1.0,
+ "fsq120.s129.phase2_grad_down": 74.1019287109375,
+ "fsq120.s129.phase2_grad_up": 11.446170806884766,
+ "fsq120.s129.phase2_grad_ln": 0.6147933006286621,
+ "_status": "PASS",
+ "_zero_terms": []
+}

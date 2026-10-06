@@ -1,0 +1,135 @@
+{
+ "seeds": [
+  {
+   "seed": 1,
+   "run": "phase1",
+   "dir": "boxes/runs_fsq/s129_s5_s1",
+   "flagged": false
+  },
+  {
+   "seed": 2,
+   "run": "redraw",
+   "dir": "boxes/runs_fsq/s129_s5_s2",
+   "rc": 0,
+   "eval": false,
+   "stopped": true
+  },
+  {
+   "seed": 2,
+   "run": "clock",
+   "dir": "boxes/runs_fsq/s129_s5_s2_clock",
+   "rc": 0,
+   "eval": false,
+   "stopped": true
+  },
+  {
+   "seed": 3,
+   "run": "phase1",
+   "dir": "boxes/runs_fsq/s129_s5_s3",
+   "flagged": false
+  },
+  {
+   "seed": 101,
+   "run": "phase1",
+   "dir": "boxes/runs_fsq/s129_s5_s101",
+   "flagged": false
+  },
+  {
+   "seed": 4,
+   "run": "clock",
+   "dir": "boxes/runs_fsq/s129_s5_s4_clock",
+   "rc": 0,
+   "eval": false,
+   "stopped": true
+  },
+  {
+   "seed": 102,
+   "run": "phase1",
+   "dir": "boxes/runs_fsq/s129_s5_s102",
+   "flagged": false
+  },
+  {
+   "seed": 103,
+   "run": "phase1",
+   "dir": "boxes/runs_fsq/s129_s5_s103",
+   "flagged": false
+  },
+  {
+   "seed": 104,
+   "run": "phase1",
+   "dir": "boxes/runs_fsq/s129_s5_s104",
+   "flagged": false
+  },
+  {
+   "seed": 201,
+   "run": "phase1",
+   "dir": "boxes/runs_fsq/s129_s5_s201",
+   "flagged": false
+  },
+  {
+   "seed": 203,
+   "run": "phase1",
+   "dir": "boxes/runs_fsq/s129_s5_s203",
+   "flagged": false
+  },
+  {
+   "seed": 204,
+   "run": "phase1",
+   "dir": "boxes/runs_fsq/s129_s5_s204",
+   "flagged": false
+  },
+  {
+   "seed": 4,
+   "run": "redraw",
+   "dir": "boxes/runs_fsq/s129_s5_s4",
+   "rc": 0,
+   "eval": true,
+   "stopped": false
+  },
+  {
+   "seed": 202,
+   "run": "clock",
+   "dir": "boxes/runs_fsq/s129_s5_s202_clock",
+   "rc": 0,
+   "eval": false,
+   "stopped": true
+  },
+  {
+   "seed": 202,
+   "run": "redraw",
+   "dir": "boxes/runs_fsq/s129_s5_s202",
+   "rc": 0,
+   "eval": true,
+   "stopped": false
+  },
+  {
+   "seed": 301,
+   "run": "redraw",
+   "dir": "boxes/runs_fsq/s129_s5_s301",
+   "rc": 0,
+   "eval": false,
+   "stopped": true
+  },
+  {
+   "seed": 301,
+   "run": "clock",
+   "dir": "boxes/runs_fsq/s129_s5_s301_clock",
+   "rc": 0,
+   "eval": false,
+   "stopped": true
+  }
+ ],
+ "panel": [
+  2,
+  4,
+  202,
+  301
+ ],
+ "deleted_ckpts": [
+  "boxes/runs_fsq/s129_s5_s2/ckpt_2k.pt",
+  "boxes/runs_fsq/s129_s5_s4/ckpt_2k.pt",
+  "boxes/runs_fsq/s129_s5_s202/ckpt_2k.pt",
+  "boxes/runs_fsq/s129_s5_s301/ckpt_2k.pt"
+ ],
+ "gradflow_rc": 0
+}

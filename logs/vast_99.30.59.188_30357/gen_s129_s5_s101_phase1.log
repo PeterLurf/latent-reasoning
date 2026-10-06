@@ -1,0 +1,21 @@
+{'step': 100, 'loss': 8.200061044692994, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 20}
+{'step': 200, 'loss': 5.0286503553390505, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 40}
+{'step': 300, 'loss': 4.999912600517273, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 59}
+{'step': 400, 'loss': 5.007812914848327, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 79}
+{'step': 500, 'loss': 4.993771815299988, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 100}
+{'step': 600, 'loss': 5.014793009757995, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 120}
+{'step': 700, 'loss': 5.026940612792969, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 140}
+{'step': 800, 'loss': 4.999535269737244, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 160}
+{'step': 900, 'loss': 5.0003298568725585, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 180}
+{'step': 1000, 'loss': 4.926967463493347, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 199}
+{'step': 1100, 'loss': 4.83835458278656, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 219}
+{'step': 1200, 'loss': 4.816416869163513, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 238}
+{'step': 1300, 'loss': 4.656534795761108, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 258}
+{'step': 1400, 'loss': 4.7591313552856445, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 278}
+{'step': 1500, 'loss': 4.679215307235718, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 298}
+{'step': 1600, 'loss': 4.734888532161713, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 317}
+{'step': 1700, 'loss': 4.371400423049927, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 337}
+{'step': 1800, 'loss': 4.046737065315247, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 357}
+{'step': 1900, 'loss': 3.993205146789551, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 377}
+{'step': 2000, 'loss': 4.006169123649597, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 398}
+§129 PHASE1 NOT FLAGGED

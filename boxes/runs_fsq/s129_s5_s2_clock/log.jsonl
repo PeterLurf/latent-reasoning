@@ -1,0 +1,70 @@
+{"step": 2000, "clock_only": true, "clock": 0, "phase": 2}
+{"step": 2000, "probe": {"r2_item": -0.06773293018341064, "r2_state": -0.20365679264068604, "r2_start": 0.004395902156829834, "abl_dloss": -0.05383157730102539, "ce_intact": 4.9861297607421875, "ce_ablated": 4.932298183441162, "n": 1024}, "clock": 0, "phase": 2}
+{"step": 2000, "zb_std_in": 0.021100446581840515, "clock": 0, "phase": 2}
+{"step": 2001, "mcheck": {"grad_rows": 256, "semantics": "train (deterministic)", "row_norm": 26.026206970214844, "resid_std": 0.011287562549114227, "row_norm_eval": 26.711925506591797, "resid_std_eval": 0.01135976705700159, "wte_row_norm": 3.9540088176727295, "lr_ratio": 1.0, "lrs": [9.999999957163176e-07]}, "clock": 1, "phase": 2}
+{"step": 2050, "zb_std_in": 0.022036444395780563, "clock": 50, "phase": 2}
+{"step": 2100, "loss": 4.92774733543396, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 23, "clock": 100, "phase": 2}
+{"step": 2100, "zb_std_in": 0.021836578845977783, "clock": 100, "phase": 2}
+{"step": 2150, "zb_std_in": 0.02049446478486061, "clock": 150, "phase": 2}
+{"step": 2200, "loss": 4.971047873497009, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 43, "clock": 200, "phase": 2}
+{"step": 2200, "zb_std_in": 0.02116067335009575, "clock": 200, "phase": 2}
+{"step": 2250, "zb_std_in": 0.02145293913781643, "clock": 250, "phase": 2}
+{"step": 2300, "loss": 4.936249866485595, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 62, "clock": 300, "phase": 2}
+{"step": 2300, "zb_std_in": 0.023935232311487198, "clock": 300, "phase": 2}
+{"step": 2350, "zb_std_in": 0.029659083113074303, "clock": 350, "phase": 2}
+{"step": 2400, "loss": 4.9830460405349735, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 82, "clock": 400, "phase": 2}
+{"step": 2400, "zb_std_in": 0.02686791867017746, "clock": 400, "phase": 2}
+{"step": 2450, "zb_std_in": 0.028143260627985, "clock": 450, "phase": 2}
+{"step": 2500, "mcheck": {"grad_rows": 256, "semantics": "train (deterministic)", "row_norm": 25.93669319152832, "resid_std": 0.01629963330924511, "row_norm_eval": 27.428226470947266, "resid_std_eval": 0.016409171745181084, "wte_row_norm": 3.953705072402954, "lr_ratio": 1.0, "lrs": [9.989294616193017e-05]}, "clock": 500, "phase": 2}
+{"step": 2500, "loss": 5.008580994606018, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 102, "clock": 500, "phase": 2}
+{"step": 2500, "zb_std_in": 0.030800679698586464, "clock": 500, "phase": 2}
+{"step": 2550, "zb_std_in": 0.03985748440027237, "clock": 550, "phase": 2}
+{"step": 2600, "loss": 5.038759689331055, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 122, "clock": 600, "phase": 2}
+{"step": 2600, "zb_std_in": 0.03887421637773514, "clock": 600, "phase": 2}
+{"step": 2650, "zb_std_in": 0.06388425827026367, "clock": 650, "phase": 2}
+{"step": 2700, "loss": 5.017252645492554, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 142, "clock": 700, "phase": 2}
+{"step": 2700, "zb_std_in": 0.0497777946293354, "clock": 700, "phase": 2}
+{"step": 2700, "probe": {"r2_item": -0.019338011741638184, "r2_state": -0.14542818069458008, "r2_start": 0.20357471704483032, "abl_dloss": 0.0, "ce_intact": 4.923028945922852, "ce_ablated": 4.923028945922852, "n": 1024}, "clock": 700, "phase": 2}
+{"step": 2750, "zb_std_in": 0.07587002962827682, "clock": 750, "phase": 2}
+{"step": 2800, "loss": 5.047481546401977, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 162, "clock": 800, "phase": 2}
+{"step": 2800, "zb_std_in": 0.04937742277979851, "clock": 800, "phase": 2}
+{"step": 2850, "zb_std_in": 0.033817537128925323, "clock": 850, "phase": 2}
+{"step": 2900, "loss": 5.081395292282105, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 182, "clock": 900, "phase": 2}
+{"step": 2900, "zb_std_in": 0.03300787881016731, "clock": 900, "phase": 2}
+{"step": 2950, "zb_std_in": 0.04756411910057068, "clock": 950, "phase": 2}
+{"step": 3000, "loss": 5.069018187522889, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 202, "clock": 1000, "phase": 2}
+{"step": 3000, "zb_std_in": 0.04346949979662895, "clock": 1000, "phase": 2}
+{"step": 3050, "zb_std_in": 0.03544583171606064, "clock": 1050, "phase": 2}
+{"step": 3100, "loss": 5.052625608444214, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 221, "clock": 1100, "phase": 2}
+{"step": 3100, "zb_std_in": 0.03954554349184036, "clock": 1100, "phase": 2}
+{"step": 3150, "zb_std_in": 0.036206960678100586, "clock": 1150, "phase": 2}
+{"step": 3200, "loss": 5.082757363319397, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 241, "clock": 1200, "phase": 2}
+{"step": 3200, "zb_std_in": 0.03023511916399002, "clock": 1200, "phase": 2}
+{"step": 3200, "probe": {"r2_item": -0.057109832763671875, "r2_state": -0.19836413860321045, "r2_start": 0.004608154296875, "abl_dloss": 0.0, "ce_intact": 5.204580307006836, "ce_ablated": 5.204580307006836, "n": 1024}, "clock": 1200, "phase": 2}
+{"step": 3250, "zb_std_in": 0.03514843434095383, "clock": 1250, "phase": 2}
+{"step": 3300, "loss": 5.037656464576721, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 261, "clock": 1300, "phase": 2}
+{"step": 3300, "zb_std_in": 0.04134742170572281, "clock": 1300, "phase": 2}
+{"step": 3350, "zb_std_in": 0.05133814364671707, "clock": 1350, "phase": 2}
+{"step": 3400, "loss": 5.071299524307251, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 281, "clock": 1400, "phase": 2}
+{"step": 3400, "zb_std_in": 0.04534902051091194, "clock": 1400, "phase": 2}
+{"step": 3450, "zb_std_in": 0.034786589443683624, "clock": 1450, "phase": 2}
+{"step": 3500, "loss": 5.033042416572571, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 301, "clock": 1500, "phase": 2}
+{"step": 3500, "zb_std_in": 0.041201334446668625, "clock": 1500, "phase": 2}
+{"step": 3550, "zb_std_in": 0.03318450227379799, "clock": 1550, "phase": 2}
+{"step": 3600, "loss": 5.045279688835144, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 320, "clock": 1600, "phase": 2}
+{"step": 3600, "zb_std_in": 0.039341773837804794, "clock": 1600, "phase": 2}
+{"step": 3650, "zb_std_in": 0.03430971875786781, "clock": 1650, "phase": 2}
+{"step": 3700, "loss": 5.099147062301636, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 340, "clock": 1700, "phase": 2}
+{"step": 3700, "zb_std_in": 0.03492951765656471, "clock": 1700, "phase": 2}
+{"step": 3750, "zb_std_in": 0.046967536211013794, "clock": 1750, "phase": 2}
+{"step": 3800, "loss": 5.0823157787322994, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 360, "clock": 1800, "phase": 2}
+{"step": 3800, "zb_std_in": 0.03310946747660637, "clock": 1800, "phase": 2}
+{"step": 3850, "zb_std_in": 0.04155026003718376, "clock": 1850, "phase": 2}
+{"step": 3900, "loss": 5.115011825561523, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 380, "clock": 1900, "phase": 2}
+{"step": 3900, "zb_std_in": 0.041943132877349854, "clock": 1900, "phase": 2}
+{"step": 3950, "zb_std_in": 0.05987151712179184, "clock": 1950, "phase": 2}
+{"step": 4000, "mcheck": {"grad_rows": 256, "semantics": "train (deterministic)", "row_norm": 26.081649780273438, "resid_std": 0.01857757568359375, "row_norm_eval": 27.775320053100586, "resid_std_eval": 0.018320582807064056, "wte_row_norm": 3.9542195796966553, "lr_ratio": 1.0, "lrs": [9.829629131445342e-05]}, "clock": 2000, "phase": 2}
+{"step": 4000, "loss": 5.054803218841553, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 399, "clock": 2000, "phase": 2}
+{"step": 4000, "zb_std_in": 0.03376209735870361, "clock": 2000, "phase": 2}
+{"step": 4000, "probe": {"r2_item": -0.05562996864318848, "r2_state": -0.197076678276062, "r2_start": 0.012514770030975342, "abl_dloss": 0.0, "ce_intact": 5.076481342315674, "ce_ablated": 5.076481342315674, "n": 1024}, "clock": 2000, "phase": 2}
+{"step": 4000, "stopped": "plateau (123-3 flag at 2k)", "loss_100": 4.92774733543396, "loss_1k": 5.069018187522889, "loss_2k": 5.054803218841553, "carried_norm": {"init": {"row_norm": 26.881866455078125, "per_coord_std_across_inputs": 0.11352980136871338, "std_vector_norm": 3.3387317657470703, "wte_row_norm": 3.9540088176727295, "n": 1024}, "2k": {"row_norm": 27.48061752319336, "per_coord_std_across_inputs": 0.10253933072090149, "std_vector_norm": 3.451997756958008, "wte_row_norm": 3.9542195796966553, "n": 1024}}, "clock": 2000, "phase": 2}
