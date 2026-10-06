@@ -47,7 +47,7 @@ so send to the pipe addresses their messages come from.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (07:13):** Closed today: §101 (β_min 0.01), §124 (descriptive; COPY serial 2/4), §130 (no PASS). **§127:** SKIP s4 escaped and exact; ctrl-s4 full run (b42) decides the wording; SKIP s1 / s3 (b30) decide ADOPT; VAR Stage 2 queued. **§128:** MOD pass; RDFA 4/4 awaiting CERT; CYC 2/4; S5 / FF running. **§129** running (b40). **§131 registered** (4k flag, log-only), with 3070 ground-truth runs s17 / s30 / s34 / s12. **§119:** Coconut and SIM-CoT s1 did not learn; SIM-CoT s2 / s3 running (d6). Scorers: score_s119 / s127 / s128 / s129 / s130 / s131.
+* **Theory (12:24):** **§128 TASK-AGNOSTIC = true** (all five families; held-out CYC / MOD / RDFA 4/4 closed, 0 restarts; S5 3/4). Closed today: §101, §124, §127, §129, §130, §128. Open: **§131** (4k flag; interim PASS; endpoint = 7 check runs + 4 2070 runs), **§132** (in-context tables; rung-1 pilot 0.9865, slots 2–4 running, per-table breakdown on b44), **§119** (CODI s2 / s3; Coconut and SIM-CoT 0/3). Scorers: score_s119 / s131 / s132.
 * **§97 C6:** complete (GEN-4 and HYB-4 s4-5 fetched).
 * **§98:** ICoT-SI done (0.998 / 0.996); TC/NC done; MASK 4x4 + 5x5 done; COCO 4x4 s1-2 + 5x5 s1 in, rest local; GEN-M rerunning (r1/r2).
 * **§99** kcurr/markov/ctrl done; **§100** MASK2 4x4 done; **§105** done (models local for Theory); **§106** pilot gate failed (106-2); others running (above).
