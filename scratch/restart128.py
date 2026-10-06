@@ -26,6 +26,8 @@ def qlog_line(msg):
 
 
 def status(out):
+    if os.path.exists(os.path.join(out, "CHECK_RUN")):                     # claude-13: a (finished) check run is never the slot's run
+        return "check_run"
     if os.path.exists(os.path.join(out, "eval.json")) and os.path.getsize(os.path.join(out, "eval.json")) > 0:
         return "accepted"
     lp = os.path.join(out, "log.jsonl")
