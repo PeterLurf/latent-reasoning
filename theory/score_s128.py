@@ -27,9 +27,24 @@ def load(d, f="eval.json"):
     return json.load(open(p)) if os.path.exists(p) else None
 
 
+STOPPED_FROM_VOID = []
+
+
+def stopped_void(d):
+    """A run stopped at 2k by its plateau flag, drained as <d>.void_partial and not yet renamed back: its log lines, if the log
+    has the "stopped: plateau" record (a real attempt, 127-2); else None. Printed by main()."""
+    p = os.path.join(R, d + ".void_partial", "log.jsonl")
+    if os.path.isdir(os.path.join(R, d)) or not os.path.exists(p):
+        return None
+    lines = [json.loads(x) for x in open(p)]
+    if any(str(x.get("stopped", "")).startswith("plateau") for x in lines):
+        STOPPED_FROM_VOID.append(d); return lines
+    return None
+
+
 def log_lines(d):
     p = os.path.join(R, d, "log.jsonl")
-    return [json.loads(x) for x in open(p)] if os.path.exists(p) else None
+    return [json.loads(x) for x in open(p)] if os.path.exists(p) else stopped_void(d)
 
 
 SKIPPED = []
@@ -146,6 +161,8 @@ def main():
         if d.startswith("s128_") and os.path.isdir(os.path.join(R, d)):
             smoke(d)
     res["skipped_smoke_dirs"] = sorted(set((d, tuple(w)) for d, w in SKIPPED))
+    if STOPPED_FROM_VOID:
+        print("READ FROM .void_partial (stopped at 2k, not renamed back):", sorted(set(STOPPED_FROM_VOID)))
     if SKIPPED:
         print("SKIPPED (smoke, not scored):", res["skipped_smoke_dirs"])
     json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s128.json"), "w", newline="\n"), indent=1, default=float)
