@@ -1,0 +1,1 @@
+copy of s119_codi_lr1e-3_s1 (note 119-5: the lr criterion's pick, noise-level; model.pt not fetched under the skip rule)
