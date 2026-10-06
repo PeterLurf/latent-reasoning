@@ -4590,6 +4590,29 @@ whether that counts.**
   Stage 1, not on 595. So they are outside the confound whatever the replay shows. SKIP's Stage 2 matched unit (b30 / b31) and
   b28 are on 595.71. Drivers per §128 host: e31 595.71, e33 595.91, e34 595.58 (3090 Ti), e30 595.71, CYC redeploy 565.57.
 
+**Note 119-3 (2026-10-06 01:39 EDT, before any SIM-CoT run, the CODI rerun or Coconut s2–3 read; Audit's steward pass). The all-inconclusive case
+is pre-stated, and SIM-CoT's initialisation is kept as registered.**
+* **SIM-CoT's initialisation is unchanged:** the same seed's trained Coconut checkpoint, as §119 registered and the
+  released pipeline does. Reasons:
+  - SIM-CoT's curriculum restarts at stage 0, where all steps are text. On this host the port relearns that stage to loss
+    1e-4 within its 3k steps (Coconut s1 at lr 3e-5, 119-2). So Coconut's stage-3 failure need not carry over.
+  - Starting from the base model instead would depart from the released recipe, which is the comparison §119 promises.
+* **Reported to show the start was not degraded** (descriptive): SIM-CoT's loss at the end of its stage 0 against
+  Coconut's (1e-4). If SIM-CoT fails to relearn stage 0 (loss above 0.1 at the end of stage 0), its seed reads "did not
+  learn (degraded start)". A base-model SIM-CoT then becomes a candidate for a new registration, not a §119 arm.
+* **The all-inconclusive case, pre-stated.** If no method reaches ≥ 2 competent seeds, CONTROLLED-C1 is **not readable**.
+  The result then says:
+  - "Under their released recipes, at our matched budget (24k updates, bs 64, a 3-value LR sweep per method) on the
+    chunked S5 host, Coconut, SIM-CoT and CODI do not learn 4-op S5 composition through latent thoughts (in-chunk
+    final-state accuracy below 0.90 in every seed). Text chain-of-thought does learn (stage 0)."
+  - "There is no competent published comparator for our serial C1 on this protocol, so the C1 claim stays uncontrolled by
+    baselines."
+  - "This is a competence finding (C3: latent methods below text at matched compute on this task), not evidence about
+    their serial use."
+  - Wording limit: "at this budget on this host", never "cannot".
+  - No budget extension or recipe change is run under §119. Either would be a new registration.
+* **Mixed case:** a method with ≥ 2 competent seeds is scored as registered. The others are reported as above.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
