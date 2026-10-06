@@ -6,7 +6,8 @@
 cd "$(dirname "$0")/.."
 tag=$1; dev=$2; q=$3; P=${4:-1}; log=logs/queue_$tag.out; mkdir -p logs
 pq=$(grep -o "^# P=[0-9]*" "$q" | head -1 | cut -d= -f2); [ -n "$pq" ] && P=$pq          # concurrency from the queue header
-pip install -q transformers==4.46.2 tiktoken > logs/pip_gen.log 2>&1
+for try in 1 2 3 4; do pip install -q transformers==4.46.2 tiktoken >> logs/pip_gen.log 2>&1; python -c "import transformers, tiktoken" >> logs/pip_gen.log 2>&1 && break; sleep 30; done   # 2026-10-06: a pip network blip left e32 without tiktoken
+python -c "import transformers, tiktoken" 2>/dev/null || { echo "$(date +%T) PIP_FAILED rc 9 (transformers / tiktoken missing after 4 tries)" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }
 for try in 1 2 3; do python -c "from transformers import GPT2LMHeadModel, GPT2TokenizerFast; GPT2LMHeadModel.from_pretrained('openai-community/gpt2'); GPT2TokenizerFast.from_pretrained('openai-community/gpt2')" >> logs/pip_gen.log 2>&1 && break; sleep 30; done
 if grep -q "boxes.fade89" "$q"; then sha256sum prosqa/ckpt/gpt2_pretrained.bin | grep -q "^7c5d3f4b8b76583b" || { echo "$(date +%T) GPT2_SHA_MISMATCH rc 9" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }; fi
 if grep -q -E "boxes.(latent86|gen97|snap101|self103|mk108|self110|fsq120|base119)" "$q"; then

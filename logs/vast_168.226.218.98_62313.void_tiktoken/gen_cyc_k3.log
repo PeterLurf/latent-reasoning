@@ -1,0 +1,1 @@
+SLOT {"family": "cyc", "slot": 3, "accepted_seed": null, "attempts": [{"seed": 3, "dir": "boxes/runs_fsq/s128_cyc_s3", "status": "error", "rc": 1, "sec": 20}], "n_restarts": 0, "error": "attempt seed 3 ended without eval.json or a plateau stop (rc 1)", "extra_args": []}
