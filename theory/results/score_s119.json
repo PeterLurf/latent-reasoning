@@ -104,25 +104,145 @@
    "serial_majority": false
   },
   "simcot": {
-   "n": 0,
+   "n": 3,
    "competent": [],
-   "did_not_learn": [],
-   "faithful": null,
-   "intact_acc": {},
-   "cum512": {},
-   "donor": {},
+   "did_not_learn": [
+    1,
+    2,
+    3
+   ],
+   "faithful": true,
+   "intact_acc": {
+    "1": 0.007,
+    "2": 0.014,
+    "3": 0.007
+   },
+   "cum512": {
+    "1": 0.0,
+    "2": 0.0,
+    "3": 0.0
+   },
+   "donor": {
+    "1": {
+     "slot1": {
+      "thoughts": [
+       0,
+       1
+      ],
+      "donor_consistent": 0.0065,
+      "recipient_consistent": 0.007,
+      "chance_overlap": 0.0085
+     },
+     "slot2": {
+      "thoughts": [
+       2,
+       3
+      ],
+      "donor_consistent": 0.01,
+      "recipient_consistent": 0.007,
+      "chance_overlap": 0.008
+     },
+     "slot3": {
+      "thoughts": [
+       4,
+       5
+      ],
+      "donor_consistent": 0.008,
+      "recipient_consistent": 0.007,
+      "chance_overlap": 0.0055
+     }
+    },
+    "2": {
+     "slot1": {
+      "thoughts": [
+       0,
+       1
+      ],
+      "donor_consistent": 0.005,
+      "recipient_consistent": 0.009,
+      "chance_overlap": 0.0085
+     },
+     "slot2": {
+      "thoughts": [
+       2,
+       3
+      ],
+      "donor_consistent": 0.01,
+      "recipient_consistent": 0.013,
+      "chance_overlap": 0.008
+     },
+     "slot3": {
+      "thoughts": [
+       4,
+       5
+      ],
+      "donor_consistent": 0.01,
+      "recipient_consistent": 0.012,
+      "chance_overlap": 0.0055
+     }
+    },
+    "3": {
+     "slot1": {
+      "thoughts": [
+       0,
+       1
+      ],
+      "donor_consistent": 0.0065,
+      "recipient_consistent": 0.007,
+      "chance_overlap": 0.0085
+     },
+     "slot2": {
+      "thoughts": [
+       2,
+       3
+      ],
+      "donor_consistent": 0.01,
+      "recipient_consistent": 0.007,
+      "chance_overlap": 0.008
+     },
+     "slot3": {
+      "thoughts": [
+       4,
+       5
+      ],
+      "donor_consistent": 0.008,
+      "recipient_consistent": 0.007,
+      "chance_overlap": 0.0055
+     }
+    }
+   },
    "serial_seeds": [],
    "counts": false,
    "serial_majority": false
   },
   "codi": {
-   "n": 0,
+   "n": 1,
    "competent": [],
-   "did_not_learn": [],
-   "faithful": null,
-   "intact_acc": {},
-   "cum512": {},
-   "donor": {}
+   "did_not_learn": [
+    1
+   ],
+   "faithful": true,
+   "intact_acc": {
+    "1": 0.0075
+   },
+   "cum512": {
+    "1": 0.0
+   },
+   "donor": {
+    "1": {
+     "block": {
+      "thoughts": [
+       0,
+       1,
+       2,
+       3
+      ],
+      "donor_consistent": 0.0095,
+      "recipient_consistent": 0.008,
+      "chance_overlap": 0.005
+     }
+    }
+   }
   }
  },
  "counted": [],
