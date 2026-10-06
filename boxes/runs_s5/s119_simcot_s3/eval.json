@@ -1,0 +1,77 @@
+{
+ "method": "simcot",
+ "seed": 3,
+ "lr": 0.0001,
+ "c": 2,
+ "n_thoughts": 6,
+ "eval_dtype": "torch.bfloat16",
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "trainable_params": 248881152,
+ "faithful": true,
+ "faithful_ref": "SIM-CoT + Coconut GPT-2 (HF checkpoint_28) GSM8K through our port: 44.8 vs published 44.8 (docs/GSM8K_REPRO.md)",
+ "cumulative_definition": "chunk ends only (in-chunk states latent)",
+ "intact_acc": 0.007,
+ "donor": {
+  "slot1": {
+   "thoughts": [
+    0,
+    1
+   ],
+   "donor_consistent": 0.0065,
+   "recipient_consistent": 0.007,
+   "chance_overlap": 0.0085
+  },
+  "slot2": {
+   "thoughts": [
+    2,
+    3
+   ],
+   "donor_consistent": 0.01,
+   "recipient_consistent": 0.007,
+   "chance_overlap": 0.008
+  },
+  "slot3": {
+   "thoughts": [
+    4,
+    5
+   ],
+   "donor_consistent": 0.008,
+   "recipient_consistent": 0.007,
+   "chance_overlap": 0.0055
+  }
+ },
+ "cumulative": {
+  "128": 0.0,
+  "256": 0.0,
+  "512": 0.0
+ },
+ "final_state_acc_512": 0.008,
+ "checkpoint_validity": {
+  "snaps": 256000,
+  "valid": 256000,
+  "rate": 1.0
+ },
+ "extension_2048": {
+  "n": 500,
+  "len": 2048,
+  "cumulative": {
+   "512": 0.0,
+   "1024": 0.0,
+   "2048": 0.0
+  }
+ },
+ "chunk_check": {
+  "n": 20000,
+  "per_chunk_acc": 0.0087
+ },
+ "train_split_final_acc": 0.0104,
+ "removal": {
+  "zero": 0.0001,
+  "mean": 0.0091
+ },
+ "eval_sec": 601,
+ "train_sec": 7994,
+ "updates": 24000,
+ "train_gpu": "NVIDIA GeForce RTX 3090",
+ "train_driver": "570.211.01"
+}
