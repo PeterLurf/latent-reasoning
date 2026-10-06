@@ -1,0 +1,74 @@
+{
+ "method": "coconut",
+ "seed": 3,
+ "lr": 3e-05,
+ "c": 1,
+ "n_thoughts": 3,
+ "eval_dtype": "torch.bfloat16",
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "trainable_params": 124441344,
+ "faithful": true,
+ "faithful_ref": "ProsQA, official recipe through our port: 97.6 vs published 97.0 (bench, 0ef4a78)",
+ "cumulative_definition": "chunk ends only (in-chunk states latent)",
+ "intact_acc": 0.0115,
+ "donor": {
+  "slot1": {
+   "thoughts": [
+    0
+   ],
+   "donor_consistent": 0.005,
+   "recipient_consistent": 0.01,
+   "chance_overlap": 0.0085
+  },
+  "slot2": {
+   "thoughts": [
+    1
+   ],
+   "donor_consistent": 0.0065,
+   "recipient_consistent": 0.011,
+   "chance_overlap": 0.008
+  },
+  "slot3": {
+   "thoughts": [
+    2
+   ],
+   "donor_consistent": 0.011,
+   "recipient_consistent": 0.0115,
+   "chance_overlap": 0.0055
+  }
+ },
+ "cumulative": {
+  "128": 0.0,
+  "256": 0.0,
+  "512": 0.0
+ },
+ "final_state_acc_512": 0.0065,
+ "checkpoint_validity": {
+  "snaps": 256000,
+  "valid": 256000,
+  "rate": 1.0
+ },
+ "extension_2048": {
+  "n": 500,
+  "len": 2048,
+  "cumulative": {
+   "512": 0.0,
+   "1024": 0.0,
+   "2048": 0.0
+  }
+ },
+ "chunk_check": {
+  "n": 20000,
+  "per_chunk_acc": 0.0083
+ },
+ "train_split_final_acc": 0.0098,
+ "removal": {
+  "zero": 0.0085,
+  "mean": 0.009
+ },
+ "eval_sec": 541,
+ "train_sec": 5080,
+ "updates": 24000,
+ "train_gpu": "NVIDIA GeForce RTX 3090",
+ "train_driver": "550.163.01"
+}
