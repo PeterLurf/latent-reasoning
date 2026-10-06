@@ -15,10 +15,23 @@ runs=$(echo "$st" | sed -n 's/^RUN //p'); bad=$(echo "$st" | sed -n 's/^BADM\{0,
 # failed runs WITH a model.pt are fetched too (an eval OOM must not lose a trained model), unless a local dir of that name exists
 keep=""; for j in $(echo "$st" | sed -n 's/^BADM //p'); do [ -e "$j" ] || keep="$keep $j"; done
 mkdir -p logs/vast_${H}_${P}
+# Model-skip rule (Theory + Audit 2026-10-06): scratch/drain_posthoc.py decides KEEP / SKIP per run ON THE HOST (and runs the registered
+# on-host post-hoc before a SKIP); a SKIP drops only <run>/model.pt from the tarball and is logged to logs/model_skips.log. Any
+# failure to decide -> KEEP.
+SC="scp -q -o ConnectTimeout=20 -i $HOME/.ssh/runpod_ed25519 -P $P"; skipset=" "
+if $SC scratch/drain_posthoc.py scratch/model_keep_patterns.txt root@$H:/workspace/Latent/scratch/ 2>/dev/null; then
+  for j in $runs; do
+    dec=$(timeout 900 $S "cd /workspace/Latent && python scratch/drain_posthoc.py $j cuda:0 2>/dev/null | tail -n 1; stat -c %s $j/model.pt 2>/dev/null" 2>/dev/null)
+    if echo "$dec" | head -n 1 | grep -q "^SKIP "; then
+      skipset="$skipset$j "; echo "$(date '+%F %T') $ID $TAG $j model.pt $(echo "$dec" | sed -n 2p) bytes NOT FETCHED: $(echo "$dec" | head -n 1)" >> logs/model_skips.log
+    fi
+  done
+fi
 for j in $runs $keep logs; do n=$(echo $j | tr '/' '_'); ok=0
   for try in 1 2 3; do
     if [ $j = logs ]; then src="logs"; else src="$j logs/gen_$(basename $j).log"; fi
-    rs=$($S "cd /workspace/Latent && tar -czf /tmp/f_$n.tgz $src 2>/dev/null; sha256sum /tmp/f_$n.tgz" 2>/dev/null | grep -o '^[0-9a-f]\{64\}')
+    ex=""; case "$skipset" in *" $j "*) ex="--exclude=$j/model.pt";; esac
+    rs=$($S "cd /workspace/Latent && tar -czf /tmp/f_$n.tgz $ex $src 2>/dev/null; sha256sum /tmp/f_$n.tgz" 2>/dev/null | grep -o '^[0-9a-f]\{64\}')
     scp -q -o ServerAliveInterval=15 -i ~/.ssh/runpod_ed25519 -P $P root@$H:/tmp/f_$n.tgz /d/drain_tmp/f_${H}_$n.tgz 2>/dev/null
     [ -n "$rs" ] && [ "$rs" = "$(sha256sum /d/drain_tmp/f_${H}_$n.tgz | cut -c1-64)" ] && { ok=1; break; }; sleep 20
   done
@@ -39,5 +52,6 @@ vp=""; for j in $(echo "$st" | sed -n 's/^BADM\{0,1\} //p'); do case " $keep " i
   rm -f /d/drain_tmp/f_${H}_$n.tgz
 done
 bash scratch/vdestroy.sh "$ID" | grep -q "^DESTROYED_VERIFIED" || { echo "DESTROY_UNVERIFIED $ID"; exit 1; }
-echo "$ID vast | $TAG DESTROYED_VERIFIED $(date '+%Y-%m-%d %H:%M') after verified per-run fetch ($(echo $runs))${bad:+; FAILED (no eval.json, logs fetched): $(echo $bad)}${vp:+; partial logs kept:$vp}" >> scratch/pods.txt
+nsk=$(echo $skipset | wc -w)
+echo "$ID vast | $TAG DESTROYED_VERIFIED $(date '+%Y-%m-%d %H:%M') after verified per-run fetch ($(echo $runs))${bad:+; FAILED (no eval.json, logs fetched): $(echo $bad)}${vp:+; partial logs kept:$vp}$( [ "$nsk" -gt 0 ] && echo "; model.pt not fetched (rule, logs/model_skips.log):$skipset")" >> scratch/pods.txt
 echo "DRAINED $ID${bad:+ PARTIAL failed: $(echo $bad)}"
