@@ -488,3 +488,4 @@
 19:59:10 s123_ff_fsqdither_s1 cert_only rc 0 (cuda:1)
 20:45:02 s123_ff_fsqdither_s2 growth_only rc 0 (cuda:1)
 20:45:45 s123_ff_fsqdither_s2 cert_only rc 0 (cuda:1)
+21:14:31 s123_ff_dither025_s1 contraction_only --fp32 rc 0 (cpu, Idle; GPUs full)
