@@ -1,0 +1,51 @@
+{
+ "r2_item": -0.12022316455841064,
+ "r2_state": 0.30990320444107056,
+ "r2_start": -0.09911143779754639,
+ "abl_dloss": 1.760627031326294,
+ "ce_intact": 3.280449628829956,
+ "ce_ablated": 5.04107666015625,
+ "n": 1024,
+ "ophist": {
+  "n": 4096,
+  "seed": 12703,
+  "L2": {
+   "r2_state": 0.09402793645858765,
+   "r2_start": -0.06765973567962646,
+   "r2_last1": 0.05954259634017944,
+   "r2_last2": -0.09677541255950928,
+   "coverage_state": 1.0,
+   "coverage_start": 1.0,
+   "coverage_last1": 1.0,
+   "coverage_last2": 0.13818359375
+  },
+  "L4": {
+   "r2_state": -0.06304287910461426,
+   "r2_start": -0.07742083072662354,
+   "r2_last1": -0.022379755973815918,
+   "r2_last2": -0.1404660940170288,
+   "r2_last3": 2.485513687133789e-05,
+   "coverage_state": 1.0,
+   "coverage_start": 1.0,
+   "coverage_last1": 1.0,
+   "coverage_last2": 0.1318359375,
+   "coverage_last3": 0.001953125
+  },
+  "L8": {
+   "r2_state": -0.03310704231262207,
+   "r2_start": -0.03374218940734863,
+   "r2_last1": 0.37364572286605835,
+   "r2_last2": 0.05380362272262573,
+   "r2_last3": 0.00042134523391723633,
+   "coverage_state": 1.0,
+   "coverage_start": 1.0,
+   "coverage_last1": 1.0,
+   "coverage_last2": 0.1376953125,
+   "coverage_last3": 0.00146484375
+  }
+ },
+ "eval_dtype": "torch.bfloat16",
+ "device": "NVIDIA GeForce RTX 4060 Ti",
+ "driver": "595.91.07",
+ "p_hard": 1.0
+}
