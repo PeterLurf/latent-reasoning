@@ -5505,6 +5505,32 @@ runs on the idle local RTX 2070.**
 * **Why:** criterion (i) as registered (≥ 5 exact held-out runs) is already met (18), but only 4 of those are S5 learners. The
   non-S5 ones are near-vacuous for (i) (131-1 (a)). These runs add S5 learners for (i), and possibly escaped-and-failed runs for (ii).
 
+**Note 132-4 (2026-10-06 11:58 EDT; the rung-1 pilot, read by Theory from eval.json; Audit reproduced; a disclosed amendment to the pilot gate,
+fixed before any further §132 run). The pilot is near-exact, in context, SERIAL and not memorised. Slots 2–4 open.**
+* **Pilot `s132_k4_s1`** (RTX 3090, driver 595.71.05; accepted on its first attempt):
+  - **long accuracy 0.9865** on held-out tables (just under 0.99), 0.988 at 2,048; by length 0.9985 / 0.998 / 0.994 / 0.9915 / 0.9875 /
+    0.9865 at 16–512, a slow per-step error, not a collapse.
+  - **train_acc 1.0; held-out overlap 0.** Not MEMORISED.
+  - **SERIAL:** same-table donor 1.0 at positions 2 / 4 / 6, recipient = chance.
+  - **The code holds the absolute state:** a different-table donor is read correctly under the recipient's table (0.985 / 0.9885 /
+    0.99).
+  - Table swap at 256: 0.981 over the next 8 steps, cumulative 0.958.
+  - **No op-history shortcut:** at the end, R² on the last 1–3 ops is about 0.01, on the state 0.41.
+  - cert_sample: 19/20 held-out tables closed with Moore = reachable states. One is open (56 codes, Moore 33, for 4 states).
+  - **OOD (involution-a tables) 0.18.** The in-context lookup generalises within the training distribution of table shapes, not
+    to involution-a tables.
+* **The gap in §132.** The pilot gate opened slots 2–4 only for an exact pilot, so rung 1 would stop at "incomplete (1/4)" with no
+  registered outcome.
+* **Amendment (disclosed; fixed before any further run; Audit proposed it):** the gate was a cost gate. Slots 2–4 open when the
+  pilot is accepted with long accuracy ≥ 0.95. The rules are unchanged.
+  - The pilot counts as a non-exact slot, so **PASS now needs s2, s3 and s4 all exact.** NOT-LEARNED needs one more accepted run
+    below 0.99.
+  - About $6 more, inside the $20 ceiling.
+* **Wording, fixed now, for a NOT-LEARNED made of near-exact runs** (accepted runs at 0.95–0.99 that are SERIAL, not memorised, and
+  carry state across tables): "NOT-LEARNED (registered label): near-exact in-context tracking, with residual errors concentrated on
+  tables whose code machine is open". The per-table breakdown comes from the kept model (descriptive).
+* Rung 2 still opens only on a rung-1 PASS.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
