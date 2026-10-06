@@ -71,7 +71,8 @@ with the same code and settings across families.
 * **F4, capacity:** 8⁸ codes (24 bits) cannot hold large states (S5×4, multiplication, graph sets).
   - On the §128 families the cap is far from binding (helper's growth reading, fp32, 500 rollouts to 2,048, acc 1.0):
     - MOD's code_growth distinct is still rising at 2,048 (214–456), at codes_per_state_2048 43–91;
-    - but it stays at or below the fp32 BFS-reachable count from 128-4 (s1: 383 against 386).
+    - but by count it stays at or below the BFS-reachable set: fp32 for s1 (383 against 386), bf16 only for s2–s4 (391 / 214 / 456
+      against 407 / 226 / 511). fp32 certificates for s2–s4 are queued with 128-4's extension.
     - So the 8-d code spreads one state over many codes and stays exact. F4 bites only where the state space itself exceeds 24 bits
       (§133 stage 2).
 
