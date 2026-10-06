@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-06 13:55 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-06 18:55 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -20,30 +20,32 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 Messages go through SendMessage. The names "Theory" and "Audit" currently need an identity confirm, pending the user,
 so send to the pipe addresses their messages come from.
 
-## Running now (13:55 2026-10-06; credit ~$117, ~15 hosts, ~$2.3/h; cap $4/h, <= 16 hosts, floor $30)
+## Running now (18:55 2026-10-06; credit ~$106, 16 hosts = cap, ~$3/h; < $4/h)
 
-**User rules (2026-10-06):** full training runs on Vast (>= 16 GB, --ckpt_every 2000); local cards: short jobs only, memory-checked
-(>= 1.5 GiB free), one per card, never idle (standing backlog docs/LOCAL_BACKLOG.md). Order C1 > C6 > C4 = C2 > C3 > C5 > C7.
+**User rules (2026-10-06):** full runs on Vast (>= 16 GB, --ckpt_every); local cards: short jobs, never idle, hard 6 GiB cap per job
+(boxes/memcap.py via s5.load_gpt2; scratch/c1_backlog_worker2.sh). **Before any commit touching boxes/fsq120.py / table132.py / core.py
+run `python scratch/smoke_plain.py`** (CPU ~2 min, incl. fsq120 main() end-to-end); vdeploy runs it before create; gen_deploy runs
+`bash -n` on the deploy / job / drain scripts and logs DEPLOY_SILENT_FAIL. Three placement bugs in fsq120 today (5387d85e / 81e37687) - all
+fixed, no real run affected.
 
-### Vast (auto_drain_gen6; waiters watch_any3.sh; GPT-2 now fetched on-host from HF, SHIP_GPT2=1 to ship)
+### Vast (gen7 watchers; drains: gzip -t on host, on-host probe / prefix / fp32 contraction for failed s130chk / s131x; GPT-2 from HF)
 
 | Tag | Card | Work |
 |---|---|---|
-| b47 / b48 / b49 | 4060 Ti 16 GB | note 131-4 reruns s130chk_s5_s{5,6,7}_4060ti (b47: Ada parity_ckpt first) |
-| b50 / b51 / b52 / b53 | A4000 | s130chk_s5_s{17,30,34,12}_a4000 (b53: A4000 parity_ckpt first) |
-| b54 / b55 | 2080 Ti 22 GB | note 131-6 s131x_s5_s{401,403} / s{402,404}_2080ti (fp32) |
-| b44 / b45 / b46 | 3090 595.71 | §132 rung-1 slots 2 / 3 / 4 (b44: s132bd_k4_s1 per-table breakdown first) |
-| b61 | 3090 | §128 S5 fp32 CERTs (s128cert_s5_*) |
-| a4 / d8 | 3090 | §118 LONG s83 / §119 CODI s2-3 |
+| b62-b68 | 3090 (drivers vary) | §133 stage-1 proof slot 1: cont64 / fsq16 / fsq64 / soft16 / soft64 / noise64 / pin64 (scratch/restart133.py) |
+| b70-b73 | 3090 595.71 | §134 COPY-ANCHOR s134_copy_s5_s{1..4} (no restarts / plateau stop) |
+| b54 / b55 | 2080 Ti | §131x s401->s403 / s402->s404 (fp32) |
+| a5 / a6 | 3090 | §118 LONG s84 / s85 (mk108, ~27 h) |
+| b45 | 3090 | §132 rung-1 slot 3 draining (s132_k4_s3 exact) |
+| queued | 3090 | §135 teacher b69 (next free slot), then 8 students after gates A1 / A2; §132 rung 2 slot 1 b74 (after §133-§135 settle) |
 
-* All reruns go through scratch/micro_gate.py (smallest micro of 1/2/4 fitting L 31/32 + L 16 at micro 1, 1.5 GiB margin; Audit:
-  report any micro > 1 before 14k). A RESUME (fsq120 --resume ckpt_last.pt) waits for its card class's parity PASS (Ada: PASS, local).
-* fsq120: --micro applies at L > 16 (root cause of the 14k OOMs); --ckpt_every / --resume / --stop_after / --probe_only.
+* §132 rung 1 PASS (s2 / s3 / s4 exact; pilot residual = held-out table 63). Rung 2 approved, staged (b74 queue ready).
+* Note 131-4 reruns done except s131x: failures split by prefix accuracy (compounding vs wrong-from-step-1), details in THEORY.
 
-### Local (scratch/c1_backlog_worker.sh per card; log logs/c1_local.log)
+### Local (v2 workers c4060 / c3070 / c2070 <- scratch/c1_backlog_<card>.txt; log logs/c1_local.log)
 
-* 4060 bl4060 <- scratch/c1_backlog_4060.txt; 3070 bl3070b <- c1_backlog_3070.txt; 2070 bl2070b <- c1_backlog_2070.txt (after the
-  2070 CERT queue, which stops at its memory gate after FF). Stop: touch scratch/<tag>.stop. New entries: append to the card's file.
+* Ramp prototypes (Theory 1ff94042: 4060 s603 / 3 / 4 / 8; 3070 s14 / 16 / 27 / 28 / 31; plain --stop_plateau, late skipped if plain flags),
+  then replays / flag4proto / k6 protos / growth / contraction filler. Stop: scratch/<tag>.stop.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
