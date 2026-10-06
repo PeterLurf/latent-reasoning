@@ -62,7 +62,8 @@ def probe():
     m.train(); return out
 
 out = open(a.out, "w"); hist = []; t0 = time.time()
-rec0 = {"step": 0, "config": {"seed": a.seed, "device": dev, "amp": a.amp, "bs": a.bs, "lr": a.lr, "total": a.total, "steps": a.steps, "every": a.every, "torch": torch.__version__}, **probe()}; out.write(json.dumps(rec0) + "\n"); out.flush(); print(json.dumps(rec0), flush=True)
+rec0 = {"step": 0, "config": {"seed": a.seed, "device": dev, "amp": a.amp, "bs": a.bs, "lr": a.lr, "total": a.total, "steps": a.steps, "every": a.every, "torch": torch.__version__, "cuda": torch.version.cuda,
+                            "cudnn": torch.backends.cudnn.version() if torch.cuda.is_available() else None, "image_tag": os.environ.get("IMAGE_TAG")}, **probe()}; out.write(json.dumps(rec0) + "\n"); out.flush(); print(json.dumps(rec0), flush=True)
 m.train()
 for step in range(1, a.steps + 1):
     for gr in opt.param_groups:

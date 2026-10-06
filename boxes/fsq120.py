@@ -657,6 +657,13 @@ def lr_at(base, gr, step, steps):
     return base * gr.get("mult", 1.0) * min(1, step / 100) * 0.5 * (1 + math.cos(math.pi * step / steps))
 
 
+def env_info():
+    """Audit 2026-10-06: software stack per run (cross-host non-parity becomes attributable): torch / CUDA / cuDNN / python, the Vast image."""
+    import platform
+    return {"torch_version": torch.__version__, "cuda_version": torch.version.cuda, "cudnn_version": torch.backends.cudnn.version() if torch.cuda.is_available() else None,
+            "python_version": platform.python_version(), "image_tag": os.environ.get("IMAGE_TAG")}
+
+
 def driver_version():
     """Theory note 127-6: the NVIDIA driver version of the training host (nvidia-smi), recorded in args.json."""
     import subprocess
@@ -1068,6 +1075,7 @@ def main():
     ap.add_argument("--p_hard_start", type=int, default=2000, help="FSQ soft -> hard ramp start step (LOCAL_BACKLOG 4060 #4; default = §120)")
     ap.add_argument("--p_hard_end", type=int, default=4000, help="FSQ soft -> hard ramp end step (default = §120)")
     ap.add_argument("--micro_from", type=int, default=17, help="--micro applies at L >= this (17 since 2026-10-06; §128 / §133 recipe: 32)")
+    ap.add_argument("--prefix_only", action="store_true", help="post-hoc (Theory 57d6b89e): cumulative accuracy at prefixes 1 / 2 / 4 / 8 of the eval's own test chains (8-step rollout; causal, so = the eval's first 8 positions) -> <out>/eval_prefix.json")
     ap.add_argument("--probe_only", action="store_true", help="post-hoc (descriptive): probe127 on <out>/model.pt at p_hard 1 -> <out>/eval_probe_posthoc.json")
     ap.add_argument("--check_marker", default=None, help="§128 note 128-1: with --stop_plateau, the first attempt to mkdir this path when its flag fires keeps training")
     ap.add_argument("--stop_plateau", action="store_true", help="§127: stop at 2k when 123-3's flag fires (log kept, no eval.json)")
@@ -1083,7 +1091,7 @@ def main():
     if a.from_args:                                                         # Audit 2026-10-06: post-hoc runs reproduce the run's configuration exactly
         MODE = {"out", "device", "from_args", "contraction_only", "fp32", "cert_only", "cert_time", "growth_only", "mcheck_only", "eval_only",
                 "resume_2k", "save_at_flag", "redraw_head", "clock_only", "check_marker", "stop_plateau", "data_dir", "ext_n", "eval_bs", "contract_n",
-                "ckpt_every", "resume", "stop_after", "probe_only"}
+                "ckpt_every", "resume", "stop_after", "probe_only", "prefix_only"}
         src = json.load(open(a.from_args)); unknown = []
         for k_, v_ in src.items():
             if k_ in MODE:
@@ -1138,6 +1146,19 @@ def main():
         m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.p_hard = 1.0
         mc = mcheck127(m, fam, dev, amp, None); mc["eval_dtype"] = str(amp)
         json.dump(mc, open(os.path.join(a.out, "eval_mcheck_end.json"), "w", newline="\n"), indent=1); print("MCHECK", json.dumps(mc), flush=True); return
+    if a.prefix_only:                                                       # Theory 57d6b89e (F2a / F2b): where a failing chain breaks
+        m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval(); P8 = 8
+        if fam.name == "s5":                                               # the eval's own test chains (S5=512, identity start), first 8 steps
+            Xte, Yte = s5.load_csv(os.path.join(a.data_dir, "S5=512.csv"), limit=a.test_n); s5.check_labels(Xte, Yte); Xte, Yte = Xte[:, :P8], Yte[:, :P8]
+            pred, _ = run_test(m, fam, np.zeros(len(Xte), np.int64), Xte, dev, amp, a.eval_bs)
+        elif fam.name in HELD:                                              # the held-out eval's draw at full length, then the first 8 steps
+            Xte = np.random.default_rng(12801).integers(0, fam.n_items, (a.test_n, a.test_len))[:, :P8]; Yte = labels_of(fam, np.zeros(len(Xte), np.int64), Xte)
+            pred, _ = run_test(m, fam, None, Xte, dev, amp, a.eval_bs)
+        else:
+            raise SystemExit("--prefix_only: s5 / cyc / mod / rdfa only")
+        C = pred == Yte; pf = {"acc_by_prefix": {str(t): float(C[:, :t].all(1).mean()) for t in (1, 2, 4, 8)}, "acc_at_pos": {str(t + 1): float(C[:, t].mean()) for t in range(P8)},
+              "n": int(len(Xte)), "eval_dtype": str(amp), "device": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "driver": driver_version()}
+        json.dump(pf, open(os.path.join(a.out, "eval_prefix.json"), "w", newline="\n"), indent=1); print("PREFIX", json.dumps(pf), flush=True); return
     if a.probe_only:                                                        # docs/LOCAL_BACKLOG.md (descriptive): §127's probe on a trained model.pt
         m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.p_hard = 1.0
         pr = probe127(m, fam, dev, amp); pr["ophist"] = opprobe(m, fam, dev, amp); pr.update({"eval_dtype": str(amp), "device": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
@@ -1159,7 +1180,7 @@ def main():
             c["cert_task_reads"] = cert_task_reads(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time)   # note 120-9 (descriptive)
         json.dump(c, open(os.path.join(a.out, "eval_cert_fp32.json" if a.fp32 else "eval_cert.json"), "w", newline="\n"), indent=1); print("CERT", json.dumps(c), flush=True); return
     assert not (a.redraw_head and a.clock_only) and not ((a.redraw_head or a.clock_only) and not a.resume_2k), "§129 flags"
-    _ainfo = {**vars(a), **({} if a.eval_only else {"train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version()})}
+    _ainfo = {**vars(a), **({} if a.eval_only else {"train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version(), **env_info()})}
     if a.resume_2k:                                                         # §129 phase 2: phase-1 args.json kept (REDRAW shares the dir)
         json.dump(_ainfo, open(os.path.join(a.out, "args_phase2.json"), "w", newline="\n"), indent=1)
         if not os.path.exists(os.path.join(a.out, "args.json")):
@@ -1362,7 +1383,7 @@ def main():
         Xte, Yte = s5.load_csv(os.path.join(a.data_dir, "S5=512.csv"), limit=a.test_n); s5.check_labels(Xte, Yte); Xte, Yte = Xte[:, :a.test_len], Yte[:, :a.test_len]
         grid = [0, 0]; drift = {}; pred, codes = run_test(m, fam, np.zeros(len(Xte), np.int64), Xte, dev, amp, a.eval_bs, grid=grid, drift=drift)
         res["angular_drift"] = {k_: v_[0] / max(1, v_[1]) for k_, v_ in drift.items()}   # §133 PIN (descriptive): mean cos(z_b(p), z_b(1)); C = pred == Yte
-        res["long_acc"] = float(C.all(1).mean()); res["acc_by_length"] = {str(t): float(C[:, :t].all(1).mean()) for t in (16, 32, 64, 128, 256, 512) if t <= C.shape[1]}
+        res["long_acc"] = float(C.all(1).mean()); res["acc_by_length"] = {str(t): float(C[:, :t].all(1).mean()) for t in (1, 2, 4, 8, 16, 32, 64, 128, 256, 512) if t <= C.shape[1]}
         lab = Yte
         if a.ext_n:
             el = 2048 if a.test_len >= 512 else a.test_len
@@ -1375,7 +1396,7 @@ def main():
     elif fam.name in HELD:                                                  # §128: iid uniform items from start 0, every position
         trng = np.random.default_rng(12801); Xte = trng.integers(0, fam.n_items, (a.test_n, a.test_len)); lab = labels_of(fam, np.zeros(len(Xte), np.int64), Xte)
         grid = [0, 0]; pred, codes = run_test(m, fam, None, Xte, dev, amp, a.eval_bs, grid=grid); C = pred == lab
-        res["long_acc"] = float(C.all(1).mean()); res["acc_by_length"] = {str(t): float(C[:, :t].all(1).mean()) for t in (16, 32, 64, 128, 256, 512) if t <= C.shape[1]}
+        res["long_acc"] = float(C.all(1).mean()); res["acc_by_length"] = {str(t): float(C[:, :t].all(1).mean()) for t in (1, 2, 4, 8, 16, 32, 64, 128, 256, 512) if t <= C.shape[1]}
         res["deletang"] = deletang(pred, lab)
         if fam.name in ("mod", "rdfa"):
             res["effective_suffix"] = suffix_report(effective_suffix(fam, Xte), C)

@@ -1,6 +1,9 @@
 # 4060 backlog: 2k replay_basin seeds 75-82 (the rest of §130's registered TEST-SAME list, not needed by its block) -> theory/results/replay_extra/ (descriptive; not read by score_s130); ~3.5 GiB, ~5 min each
 # memcap self-test (v2 worker): under LATENT_MEM_CAP_GB a 6.5 GiB allocation must OOM inside the 6.0 cap
 0.6 theory/results/memcap_test_4060.ok python scratch/memcap_selftest.py {DEV} theory/results/memcap_test_4060.ok
+# Theory d90771e8 (F2b): prefix accuracy + fp32 contraction on s17_a4000 (model local); prefix in this card's bf16 (the run evaluated on an A4000 - stated)
+3.0 boxes/runs_fsq/s130chk_s5_s17_a4000/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s130chk_s5_s17_a4000/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s130chk_s5_s17_a4000
+3.0 boxes/runs_fsq/s130chk_s5_s17_a4000/eval_contraction_fp32.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s130chk_s5_s17_a4000/args.json --contraction_only --fp32 --device {DEV} --out boxes/runs_fsq/s130chk_s5_s17_a4000
 # Theory 2026-10-06 PRIORITY: rampproto s601-605 (plain + late) first - gates candidate 3 of the stable-latent synthesis; s606-610 run on the 3070
 5.0 boxes/runs_fsq/rampproto_plain_s601_4060/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 601 --stop_after 8000 --no_cert --device {DEV} --out boxes/runs_fsq/rampproto_plain_s601_4060 && echo ok > boxes/runs_fsq/rampproto_plain_s601_4060/.done
 5.0 boxes/runs_fsq/rampproto_late_s601_4060/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 601 --stop_after 8900 --no_cert --p_hard_start 6000 --p_hard_end 8000 --device {DEV} --out boxes/runs_fsq/rampproto_late_s601_4060 && echo ok > boxes/runs_fsq/rampproto_late_s601_4060/.done

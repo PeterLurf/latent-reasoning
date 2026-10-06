@@ -43,7 +43,7 @@ except ImportError:
     memcap = None
 from boxes import s5  # noqa: E402
 from boxes import core as bc  # noqa: E402
-from boxes.fsq120 import DIGTOK, EOT, FSQ120, _r2, certificate, driver_version, lmax_at, lr_at, make_opt  # noqa: E402
+from boxes.fsq120 import DIGTOK, EOT, FSQ120, _r2, certificate, driver_version, env_info, lmax_at, lr_at, make_opt  # noqa: E402
 
 OPTOK = [bc.tok(" " + c)[0] for c in "abc"]
 NUMTOK = [bc.tok(str(d))[0] for d in range(10)]
@@ -244,7 +244,7 @@ def main():
     os.makedirs(a.out, exist_ok=True); sp = Splits(a.k, a.m); fam = TableFam(a.k, a.m)
     seglen = 1 + a.m * a.k * 4 + 1 + 1
     json.dump({**vars(a), "family": "table", "arm": "final", "segment_tokens": seglen, "train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
-               "train_driver": driver_version()}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
+               "train_driver": driver_version(), **env_info()}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
     json.dump({"k": a.k, "m": a.m, "held_out": [T.tolist() for T in sp.held], "ood": [T.tolist() for T in sp.ood],
                "train": None if sp.train is None else [T.tolist() for T in sp.train]}, open(os.path.join(a.out, "split.json"), "w", newline="\n"))
     m = Table132(s5.load_gpt2(dev), fam).to(dev); opt = make_opt(m, a.lr)
