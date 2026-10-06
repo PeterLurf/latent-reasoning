@@ -1,7 +1,7 @@
-# A stable latent method: design synthesis (2026-10-06) — candidate 1 registered as §134; helper's data pending
+# A stable latent method: design synthesis (2026-10-06) — candidate 1 registered as §134; helper's data in
 
 The user's directive (via Audit): "ask literature and helper to work together with theory to invent and synthesize a stable latent
-method". Theory leads. Literature maps the prior art (4da2f672 / e0909d0b / ebc2a039); the Audit helper mines our raw runs (pending).
+method". Theory leads. Literature maps the prior art (4da2f672 / e0909d0b / ebc2a039); the Audit helper mined our raw runs (report 2026-10-06 15:10, `scratchpad/report_early_separators.md` in its session).
 **Goal:** one task-agnostic method that is
 (1) **stable to train** (enters without restarts),
 (2) **stable to run** (contractive, exact over long chains; C6 / C2),
@@ -27,10 +27,27 @@ with the same code and settings across families.
   the op history, not the state, at 2k.
 * §133 (running) tests SOFT / NOISE / PIN / FSQ-W error correction on a wide carrier, plus an S5×4 capacity probe.
 
+## What the helper's mining shows (n in brackets; hard-rounded S5 unless stated)
+* **Nothing at or before 2k separates learners from escape-without-learning:**
+  - the 2k ratio is 0.78 (exact, n 12) against 0.79 (escape-fail, n 18);
+  - the 2k probe matches: the state is read (R²_state 0.25–0.47) and the current op is gone, in 5/5 learners and in 6/11 escape-fails;
+  - the carried norm matches.
+  - Only the **plateau** group shows at 2k: an unread code (abl about 0, R²_state ≤ 0.2) in 10/11, and no or tiny decoder pulls in the
+    replays (no pull or dmax < 0.5 → flagged 26/26 on the 4060 and 3070).
+* **The earliest separator is the 2.6k → 4k window: loss(4k) / loss(2.6k)** at 0.71 (exact) against 0.997 (escape-fail).
+  - At 0.9: 0/12 learners against 14/18 escape-fails flagged (§131's FLAG4).
+  - By 4.5k, every exact hard-rounded run is at ≤ 2.49 and every escape-fail at ≥ 3.45.
+  - **That window is the soft → hard rounding ramp (p_hard 0 → 1 over 2k–4k) together with L_max 4,** two changes at once.
+* **ρ₁ is necessary, not sufficient:** the exact band is 0.12–0.22 on S5, but 5 non-exact runs share it. ρ₁ = 0 marks the
+  collapsed-code null (9 runs).
+* **COPY (§124) gives the earliest, seed-uniform, sharpest acquisition event** (4/4 at the same round, jumps 0.99, no precursor), against
+  BASE (2/4) and EXPOSE (precursors, later).
+* **Partial outcomes:** a state-bearing code at 2k is not enough (3070 s17: R²_next 0.86 → the 3.2 basin).
+
 ## Failure taxonomy (what a method must fix)
 * **F1, entry basin:** the first decoder pull fails and the code's variance collapses (127-7). Card-dependent, and often transient
   (§130).
-* **F2, escape without learning (dominant):** the run passes the 2k flag but never composes. The loss rises at the L_max 2 → 4 → 8
+* **F2, escape without learning (dominant; it shows only in the 2.6k → 4k window, during the rounding ramp at L 4):** the run passes the 2k flag but never composes. The loss rises at the L_max 2 → 4 → 8
   switches. The code is read by the decoder, but its content is not the state (VAR: R²_state −0.05; LR10 / SKIP s2: 0.25–0.28).
 * **F3, drift:** a continuous or wide carrier has no attractor (RAW-H, CONT).
 * **F4, capacity:** 8⁸ codes (24 bits) cannot hold large states (S5×4, multiplication, graph sets).
@@ -77,6 +94,19 @@ with the same code and settings across families.
   CONT-64 / SOFT-64.
 * **Composes with Candidate 1** (enc is Candidate 1's copy path). Candidate 1 alone fixes entry; Candidates 1 and 2 together are the
   proposed full method: a **COPY-anchored, round-trip-stabilised wide carrier.**
+
+## Candidate 3 (new, from the helper's data): ROUNDING-AWARE ENTRY (targets F2)
+* **Hypothesis.** Escape without learning happens when FSQ rounding hardens (2k–4k) before the code has separated the states. The soft code
+  that carried state at 2k (R²_state 0.3–0.4) loses it when it is quantised.
+  - Rival: the L_max 2 → 4 step (composition demand) is the cause. The two are confounded in §120's schedule.
+* **$0 disentangling prototype first** (LOCAL_BACKLOG): the same seeds, plain vs **delayed rounding ramp** (p_hard 0 → 1 over 6k–8k, L_max
+  schedule unchanged), short runs to 6k, reading loss(4k) / loss(2.6k) and loss(7k) / loss(5.6k).
+  - If the failure window moves with the ramp, rounding is the cause.
+* **If so, the fix candidates:**
+  - a soft-snap carrier (§133 SOFT, a constant weak pull instead of a hard ramp);
+  - or a label-free gated ramp, which hardens only when the code is separable: grid margin, active units (1509.00519), or the decoder's
+    agreement between soft and rounded codes.
+  - Registered only after the prototype.
 
 ## Not proposed
 * More entry levers of §127's kind (escape without learning).

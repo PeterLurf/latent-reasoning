@@ -5848,6 +5848,13 @@ no rule change.**
 * If the copy and transition writers share a dialect, accuracy matches the intact chain. If they split, it drops. Descriptive.
 * A split means the copy loss trained an interface, not the carrier.
 
+**Note 134-2 (2026-10-06 15:06 EDT, before any §134 run; descriptive predictions from the helper's mining; no rule change).** Escape without learning
+shows only in the 2.6k → 4k window: loss(4k) / loss(2.6k) is 0.71 for learners against 0.997 for escape-fails (0/12 against 14/18 at 0.9).
+Two predictions, fixed now:
+* **(a)** If COPY fixes F2, every COPY seed's loss(4k) / loss(2.6k) is below 0.9, including s3 (plain 0.99) and s2 / s4 (plain plateau).
+* **(b)** Its 4.5k loss is ≤ 2.5, the hard-rounded learners' band.
+* Both are read from log.jsonl, and are descriptive beside §134's PASS rule.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
