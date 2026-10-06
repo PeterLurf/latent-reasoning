@@ -5090,6 +5090,8 @@ its bar even in-sample.**
 | persist, BASIN | secondary | 0.03 | 700–1000 | 0.50 | 0.5 | 0–0.5 |
 
 * **Tie rule as used:** max min(P, R); ties go to the earlier window end, then the smaller θ, then the earlier window start.
+* **The primary optimum sits at the θ grid's upper edge** (0.08, the largest value tried), on a near-flat row (0.55–0.56 next door).
+  A larger θ was not tried, and is not tried now: the grid was fixed in §130.
 * **What FIT shows (descriptive, 4060):**
   - FLAG fires in 6/16 (s5, s6, s7, s37, s41, s42), so the escape rate is 10/16. BASIN (flag and no pull by 2k) holds in
     only 2/16 (s6, s37).
