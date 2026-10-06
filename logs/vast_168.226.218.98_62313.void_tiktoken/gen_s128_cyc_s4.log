@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/Latent/boxes/fsq120.py", line 80, in <module>
+    from boxes import s5  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Latent/boxes/s5.py", line 37, in <module>
+    from boxes import core as bc  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Latent/boxes/core.py", line 23, in <module>
+    import tiktoken
+ModuleNotFoundError: No module named 'tiktoken'
