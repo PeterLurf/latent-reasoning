@@ -57,4 +57,4 @@ done
 rm -f /tmp/up_$LBL.tgz   # upload bundle no longer needed (C: filled up 2026-10-03)
 echo "UPLOAD_DONE $(date +%s)"
 WB=$(basename $W); WP="[${WB:0:1}]${WB:1}"                          # bracket pattern: pgrep must not match this ssh command itself (it did: false STARTED)
-$S "mkdir -p /workspace/Latent && cd /workspace/Latent && tar --no-same-owner -xzf /tmp/up.tgz && mkdir -p logs runs results && (setsid nohup bash $W $TAG cuda:0 $Q > /dev/null 2>&1 < /dev/null &) ; sleep 8; [ -d /workspace/Latent/boxes ] && pgrep -f '$WP' > /dev/null && echo JOB_RUNNING" 2>/dev/null | grep -q JOB_RUNNING && echo STARTED
+$S "mkdir -p /workspace/Latent && cd /workspace/Latent && tar --no-same-owner -xzf /tmp/up.tgz && mkdir -p logs runs results && (IMAGE_TAG=pytorch/pytorch:2.5.1-cuda12.4-cudnn9-devel setsid nohup bash $W $TAG cuda:0 $Q > /dev/null 2>&1 < /dev/null &) ; sleep 8; [ -d /workspace/Latent/boxes ] && pgrep -f '$WP' > /dev/null && echo JOB_RUNNING" 2>/dev/null | grep -q JOB_RUNNING && echo STARTED
