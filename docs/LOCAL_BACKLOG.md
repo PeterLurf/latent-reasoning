@@ -39,7 +39,8 @@ entries, keeping ≥ 3 open per card.
 
 ## RTX 2070 (Turing, fp32 only, 8 GB, slowest)
 
-1. [running; FF ff_s1 peaked 6.7 GB > the 6.5 GiB limit, so the gated queue stops after it - S5 CERTs need a decision] **§128 S5 / FF CERT** (already queued): `--cert_only` on s128_s5_s1, s102, s104 (FF done). Stop: --cert_time 2700.
+1. [moved to the cloud, Theory 2026-10-06: the FF certs are done locally; the S5 CERT needs more than 6.5 GiB in fp32, over the memory gate] **§128 S5 CERT**: run as a **tail job on a cloud 3090** (an existing rerun host after its runs), `--cert_only --fp32` only (128-4: the fp32 cert is the reproducible record), on s128_s5_s1, s102, s104, --cert_time 2700. Descriptive.
+4. [shared filler, Experiments] fp32 contraction on the remaining kept s120 / s123 / s126 / s127 / s129 models.
 2. [queued: scratch/c1_backlog_2070.txt] **§128 code growth** (codes against position on 2,048-step rollouts, descriptive).
    - `python -m boxes.fsq120 --from_args <run dir> --growth_only` for the 19 learners. Peak about 2 GB. Minutes each. Stop: done.
 3. [queued: c1_backlog_2070.txt] **Cross-card replay pairs, Turing fp32:** `python scratch/replay_basin.py --seed S --steps 2000 --every 50 --amp none --device <2070> --out theory/results/replay_x/2070_s{S}.jsonl`
