@@ -5452,6 +5452,15 @@ three seeds had a degraded start.**
 * **Tally:** Coconut 3/3 and SIM-CoT 3/3 "did not learn"; CODI s1 "did not learn", with s2 / s3 running (all bf16 on 3090 / A5000).
   CONTROLLED-C1 is so far not readable. 119-3's all-inconclusive wording is expected once CODI lands.
 
+**Note 132-3 (2026-10-06 09:51 EDT; disclosure, before the pilot's result is read). The per-term gradflow check ran after slot 1 started, not
+before.**
+* §132's order put the CUDA-bf16 gradflow check before the pilot. Only the bf16 GPU smoke (training runs) preceded slot 1.
+* The explicit check ran afterwards on the pilot host (b43, RTX 3090, driver 595.71) and **passes**
+  (`theory/results/gradflow_check_s132_host.json`):
+  - k4 / m2: main-loss gradient 81.9, reaching W_down 48.6, W_up 7.6, LN 0.16;
+  - k6 / m3: 97.7, reaching W_down 56.0, W_up 4.7, LN 0.73.
+* So the pilot ran on a delivered code path. The ordering slip is recorded. The pilot is not rerun.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
