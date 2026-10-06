@@ -111,5 +111,33 @@
   "plateaued_attempts": 0,
   "cost_per_exact_seed": null
  },
+ "rdfa": {
+  "slots": {
+   "1": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "2": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "3": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "4": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   }
+  },
+  "FAMILY_PASS": "incomplete (0 / 4 slots decided)",
+  "n_pass": 0,
+  "plateaued_attempts": 0,
+  "cost_per_exact_seed": null
+ },
  "TASK_AGNOSTIC": "incomplete"
 }
