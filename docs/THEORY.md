@@ -5411,6 +5411,26 @@ where a warm restart does not, but no re-drawn seed learns.**
   void. Phase-2 checkpoints were deleted after both continuations (listed in the driver summary). Audit's line (129-2): "keep
   the body" includes its small Adam second moments.
 
+**Note 128-4 (2026-10-06 09:27 EDT; descriptive, before §128's result is written; Audit's check against fsq120.certificate(); no rule change).
+CLOSED covers the certificate's own forward pass. A few codes the eval visits are uncertified.**
+* **RDFA s4's CERT is closed** (110 reachable, Moore 8), so RDFA is CLOSED in 4/4. Every certified MOD / CYC / RDFA run is closed
+  with Moore = the minimal state count.
+* **Caveat.** For non-S5 families, the CERT's BFS starts from the same start code the eval chains use. Yet in 5 of 12 certified
+  runs the eval visits a few more distinct codes than the BFS reaches:
+  - cyc s1 89 / 88; cyc s2 40 / 39; mod s1 387 / 375; rdfa s2 83 / 80; rdfa s4 123 / 110.
+  - With deterministic rounding every visited code should be reachable. The likely cause is bf16 batch sensitivity: the eval runs at
+    batch 250 / 500 and the CERT at 2,048, so a few borderline codes round differently (the same class as the bf16 contraction
+    artefact, 123-5).
+  - So "CERT holds" certifies the BFS set under the CERT's own forward pass. 1–13 codes the eval visits are correct (long accuracy
+    1.0) but uncertified.
+* **Checks (descriptive):**
+  - **(a)** CERT re-run in fp32 (`--cert_only` with autocast off) on mod s1 and rdfa s4, then on all 12 if cheap, against an fp32
+    eval's code set.
+  - **(b)** `n_uncovered` = |eval codes − BFS set| reported per run.
+  - If the excess vanishes in fp32, it is a bf16 artefact, and §128's result says so.
+* **Wording for the §128 result, fixed now:** CLOSED is stated as "closed under the certificate's forward pass; n_uncovered eval
+  codes are correct but uncertified". The fp32 outcome goes beside it.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
