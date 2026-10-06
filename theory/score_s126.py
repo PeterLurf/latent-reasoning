@@ -45,6 +45,10 @@ def arm(pre):
 
 def main():
     raw, ann = arm("s126_s5_rawh"), arm("s126_s5_anneal")
+    fx = load("s126_s5_anneal_s2_fp32cast")                                   # note 126-10: fixed-cast rerun replaces s2 if present
+    if fx is not None:
+        ann[2] = {"long_acc": fx.get("long_acc"), "plateau": plateau("s126_s5_anneal_s2_fp32cast"), "gpu": fx.get("train_gpu", fx.get("gpu")),
+                  "carried_norm": fx.get("carried_norm"), "note": "fixed-cast rerun (126-10)"}
     ctrl2 = load("s126_s5_ctrl_s2")                                           # note 126-3: same-host control (fallback only)
     if ctrl2 is not None:
         cp = plateau("s126_s5_ctrl_s2")
