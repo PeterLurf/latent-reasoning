@@ -374,6 +374,18 @@
    "final_loss": 8.463297243110901e-07,
    "gpu": "NVIDIA GeForce RTX 3090"
   },
+  "s127_s5_ctrl_s3": {
+   "family": "s5",
+   "flag2k": false,
+   "flag4k": true,
+   "flag4k_windowed": true,
+   "ratio": 1.029,
+   "loss_4k": 4.523,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": 4.789306137561798,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
   "s127_s5_lr10_s3": {
    "family": "s5",
    "flag2k": false,
@@ -384,6 +396,30 @@
    "long_acc": 0.0,
    "exact": false,
    "final_loss": 4.662384928285028,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s127_s5_skip_s1": {
+   "family": "s5",
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.806,
+   "loss_4k": 3.06,
+   "long_acc": 0.999,
+   "exact": true,
+   "final_loss": 3.3427209646106346e-05,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s127_s5_skip_s3": {
+   "family": "s5",
+   "flag2k": false,
+   "flag4k": true,
+   "flag4k_windowed": true,
+   "ratio": 1.003,
+   "loss_4k": 4.503,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": 4.64988658159331,
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s127_s5_std2_s3": {
@@ -541,6 +577,42 @@
    "exact": true,
    "final_loss": 8.827073923356465e-08,
    "gpu": "NVIDIA GeForce RTX 3090 Ti"
+  },
+  "s128_s5_s1": {
+   "family": "s5",
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.704,
+   "loss_4k": 2.697,
+   "long_acc": 0.9985,
+   "exact": true,
+   "final_loss": 1.0983487482008058e-05,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s128_s5_s102": {
+   "family": "s5",
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.747,
+   "loss_4k": 2.834,
+   "long_acc": 0.9995,
+   "exact": true,
+   "final_loss": 1.671568866186135e-05,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s128_s5_s104": {
+   "family": "s5",
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.326,
+   "loss_4k": 0.99,
+   "long_acc": 1.0,
+   "exact": true,
+   "final_loss": 4.910029490929446e-05,
+   "gpu": "NVIDIA GeForce RTX 3090"
   }
  },
  "summary_in": {
@@ -619,11 +691,17 @@
   ]
  },
  "summary_held": {
-  "exact_s5": [],
+  "exact_s5": [
+   "s127_s5_skip_s1",
+   "s128_s5_s1",
+   "s128_s5_s102",
+   "s128_s5_s104"
+  ],
   "fp_s5": [],
   "exact_not_flag2k": [
    "s127_ff_skip_s1",
    "s127_ff_skip_s2",
+   "s127_s5_skip_s1",
    "s128_cyc_s1",
    "s128_cyc_s2",
    "s128_cyc_s3",
@@ -635,12 +713,16 @@
    "s128_rdfa_s1",
    "s128_rdfa_s2",
    "s128_rdfa_s3",
-   "s128_rdfa_s4"
+   "s128_rdfa_s4",
+   "s128_s5_s1",
+   "s128_s5_s102",
+   "s128_s5_s104"
   ],
   "fp_not_flag2k": [],
   "exact": [
    "s127_ff_skip_s1",
    "s127_ff_skip_s2",
+   "s127_s5_skip_s1",
    "s128_cyc_s1",
    "s128_cyc_s2",
    "s128_cyc_s3",
@@ -652,60 +734,84 @@
    "s128_rdfa_s1",
    "s128_rdfa_s2",
    "s128_rdfa_s3",
-   "s128_rdfa_s4"
+   "s128_rdfa_s4",
+   "s128_s5_s1",
+   "s128_s5_s102",
+   "s128_s5_s104"
   ],
   "false_pos": [],
   "escaped_failed": [
+   "s127_s5_ctrl_s3",
    "s127_s5_lr10_s3",
+   "s127_s5_skip_s3",
    "s127_s5_std2_s3"
   ],
   "true_pos": [
+   "s127_s5_ctrl_s3",
    "s127_s5_lr10_s3",
+   "s127_s5_skip_s3",
    "s127_s5_std2_s3"
   ],
   "misses": [],
   "precision": 1.0,
   "recall": 1.0,
   "precision_ci95": [
-   0.15811388300841894,
+   0.3976353643835253,
    1.0
   ],
   "recall_ci95": [
-   0.15811388300841894,
+   0.3976353643835253,
    1.0
   ]
  },
- "PASS": "incomplete (14 exact, need >= 5; 2 escaped-and-failed, need >= 3)",
+ "PASS": true,
  "summary_prospective": {
-  "exact_s5": [],
+  "exact_s5": [
+   "s127_s5_skip_s1",
+   "s128_s5_s1",
+   "s128_s5_s102",
+   "s128_s5_s104"
+  ],
   "fp_s5": [],
   "exact_not_flag2k": [
-   "s128_cyc_s4"
+   "s127_s5_skip_s1",
+   "s128_cyc_s4",
+   "s128_s5_s1",
+   "s128_s5_s102",
+   "s128_s5_s104"
   ],
   "fp_not_flag2k": [],
   "exact": [
-   "s128_cyc_s4"
+   "s127_s5_skip_s1",
+   "s128_cyc_s4",
+   "s128_s5_s1",
+   "s128_s5_s102",
+   "s128_s5_s104"
   ],
   "false_pos": [],
   "escaped_failed": [
+   "s127_s5_ctrl_s3",
    "s127_s5_lr10_s3",
+   "s127_s5_skip_s3",
    "s127_s5_std2_s3"
   ],
   "true_pos": [
+   "s127_s5_ctrl_s3",
    "s127_s5_lr10_s3",
+   "s127_s5_skip_s3",
    "s127_s5_std2_s3"
   ],
   "misses": [],
   "precision": 1.0,
   "recall": 1.0,
   "precision_ci95": [
-   0.15811388300841894,
+   0.3976353643835253,
    1.0
   ],
   "recall_ci95": [
-   0.15811388300841894,
+   0.3976353643835253,
    1.0
   ]
  },
- "PASS_prospective": "incomplete (1 exact, need >= 5; 2 escaped-and-failed, need >= 3)"
+ "PASS_prospective": true
 }
