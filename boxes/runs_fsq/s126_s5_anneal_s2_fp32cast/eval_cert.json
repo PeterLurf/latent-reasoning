@@ -1,0 +1,34 @@
+{
+ "holds": null,
+ "status": "inconclusive_time",
+ "n_reachable_partial": 169516,
+ "capped": false,
+ "timed_out": true,
+ "time_limit": 2700,
+ "sec": 2700,
+ "layers": [
+  {
+   "depth": 1,
+   "frontier": 4526,
+   "cum": 4526,
+   "sec": 6
+  },
+  {
+   "depth": 2,
+   "frontier": 85992,
+   "cum": 90518,
+   "sec": 174,
+   "complete": true
+  },
+  {
+   "depth": 3,
+   "frontier": 78998,
+   "cum": 169516,
+   "sec": 2700,
+   "complete": false
+  }
+ ],
+ "n_start_pairs": 14400,
+ "eval_dtype": "None",
+ "cert_cap": 1000000
+}
