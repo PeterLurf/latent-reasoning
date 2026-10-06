@@ -374,6 +374,30 @@
    "final_loss": 8.463297243110901e-07,
    "gpu": "NVIDIA GeForce RTX 3090"
   },
+  "s127_s5_lr10_s3": {
+   "family": "s5",
+   "flag2k": false,
+   "flag4k": true,
+   "flag4k_windowed": true,
+   "ratio": 0.988,
+   "loss_4k": 4.308,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": 4.662384928285028,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s127_s5_std2_s3": {
+   "family": "s5",
+   "flag2k": false,
+   "flag4k": true,
+   "flag4k_windowed": true,
+   "ratio": 0.994,
+   "loss_4k": 4.6,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": 4.765720007419586,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
   "s128_cyc_s1": {
    "family": "cyc",
    "flag2k": false,
@@ -408,6 +432,18 @@
    "long_acc": 1.0,
    "exact": true,
    "final_loss": 6.560234691477263e-08,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s128_cyc_s4": {
+   "family": "cyc",
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.105,
+   "loss_4k": 0.069,
+   "long_acc": 1.0,
+   "exact": true,
+   "final_loss": 1.165604887205518e-06,
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "s128_mod_s1": {
@@ -591,6 +627,7 @@
    "s128_cyc_s1",
    "s128_cyc_s2",
    "s128_cyc_s3",
+   "s128_cyc_s4",
    "s128_mod_s1",
    "s128_mod_s2",
    "s128_mod_s3",
@@ -607,6 +644,7 @@
    "s128_cyc_s1",
    "s128_cyc_s2",
    "s128_cyc_s3",
+   "s128_cyc_s4",
    "s128_mod_s1",
    "s128_mod_s2",
    "s128_mod_s3",
@@ -617,41 +655,57 @@
    "s128_rdfa_s4"
   ],
   "false_pos": [],
-  "escaped_failed": [],
-  "true_pos": [],
+  "escaped_failed": [
+   "s127_s5_lr10_s3",
+   "s127_s5_std2_s3"
+  ],
+  "true_pos": [
+   "s127_s5_lr10_s3",
+   "s127_s5_std2_s3"
+  ],
   "misses": [],
-  "precision": null,
-  "recall": null,
+  "precision": 1.0,
+  "recall": 1.0,
   "precision_ci95": [
-   null,
-   null
+   0.15811388300841894,
+   1.0
   ],
   "recall_ci95": [
-   null,
-   null
+   0.15811388300841894,
+   1.0
   ]
  },
- "PASS": "incomplete (13 exact, need >= 5; 0 escaped-and-failed, need >= 3)",
+ "PASS": "incomplete (14 exact, need >= 5; 2 escaped-and-failed, need >= 3)",
  "summary_prospective": {
   "exact_s5": [],
   "fp_s5": [],
-  "exact_not_flag2k": [],
+  "exact_not_flag2k": [
+   "s128_cyc_s4"
+  ],
   "fp_not_flag2k": [],
-  "exact": [],
+  "exact": [
+   "s128_cyc_s4"
+  ],
   "false_pos": [],
-  "escaped_failed": [],
-  "true_pos": [],
+  "escaped_failed": [
+   "s127_s5_lr10_s3",
+   "s127_s5_std2_s3"
+  ],
+  "true_pos": [
+   "s127_s5_lr10_s3",
+   "s127_s5_std2_s3"
+  ],
   "misses": [],
-  "precision": null,
-  "recall": null,
+  "precision": 1.0,
+  "recall": 1.0,
   "precision_ci95": [
-   null,
-   null
+   0.15811388300841894,
+   1.0
   ],
   "recall_ci95": [
-   null,
-   null
+   0.15811388300841894,
+   1.0
   ]
  },
- "PASS_prospective": "incomplete (0 exact, need >= 5; 0 escaped-and-failed, need >= 3)"
+ "PASS_prospective": "incomplete (1 exact, need >= 5; 2 escaped-and-failed, need >= 3)"
 }
