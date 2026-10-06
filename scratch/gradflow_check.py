@@ -329,7 +329,7 @@ def check_s135(dev, out):
             with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
                 m.chain(m.start(4, dev, s0), X, lab)
             E = torch.stack(m._tsd_e, 1).reshape(-1, 768); m._tsd_e = []
-            return F120.tsd_loss135(m, E, T, 0.1)[0]
+            return F120.tsd_loss135(m, E, T, 0.1, lab)[0]
         out[f"s135.aux_p{int(ph)}.main"] = term(m, A)
         for nm_, w_ in (("down", m.down.weight), ("trunk_h3", trunk), ("up", m.up.weight), ("P_s", m.tsd_ps.weight), ("P_t", m.tsd_pt.weight)):
             out[f"s135.aux_p{int(ph)}.{nm_}_grad"] = float(w_.grad.norm()) if w_.grad is not None else 0.0

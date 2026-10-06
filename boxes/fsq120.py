@@ -903,19 +903,21 @@ def copy_donor134(m, fam, dev, amp, n=1000, L=16, positions=(2, 4, 8), seed=1340
     m.train(was); return res
 
 
-def tsd_loss135(m, E, T, tau):
-    """§135 InfoNCE: E (N, 768) carried embeddings with grad; T (N, 768) CENTRED frozen targets (no grad). s = norm(P_s E), t = norm(P_t T);
-    row i's positive is t_i, every other target a negative, except near-duplicates (centred cos(T_i, T_j) > 0.99, masked).
-    Returns (loss, top-1 retrieval, masked share of negatives)."""
+def tsd_loss135(m, E, T, tau, lab):
+    """§135 InfoNCE: E (N, 768) carried embeddings with grad; T (N, 768) CENTRED frozen targets (no grad); lab (N,) gold states.
+    s = norm(P_s E), t = norm(P_t T); row i's positive is t_i, every other target a negative, except those with the SAME gold state
+    (note 135-4: lab_i == lab_j masked - a cos mask would leave same-state targets differing by context as negatives, anti-Markov).
+    Returns (loss, top-1 retrieval, label-masked share, centred-cos > 0.99 share (descriptive))."""
     s = F.normalize(m.tsd_ps(E.float()), dim=-1); t = F.normalize(m.tsd_pt(T.float()), dim=-1); N = len(s)
     lg = s @ t.T / tau; eye = torch.eye(N, dtype=torch.bool, device=s.device)
     with torch.no_grad():
-        Tn = F.normalize(T.float(), dim=-1); dup = (Tn @ Tn.T > 0.99) & ~eye
+        Tn = F.normalize(T.float(), dim=-1); dup_cos = (Tn @ Tn.T > 0.99) & ~eye
+        L_ = torch.as_tensor(np.asarray(lab).reshape(-1), device=s.device); dup = (L_[:, None] == L_[None, :]) & ~eye
     lg = lg.masked_fill(dup, float("-inf")); y = torch.arange(N, device=s.device)
     loss = F.cross_entropy(lg, y)
     with torch.no_grad():
-        top1 = float((lg.argmax(-1) == y).float().mean()); share = float(dup.sum()) / max(1, N * (N - 1))
-    return loss, top1, share
+        top1 = float((lg.argmax(-1) == y).float().mean()); share = float(dup.sum()) / max(1, N * (N - 1)); share_cos = float(dup_cos.sum()) / max(1, N * (N - 1))
+    return loss, top1, share, share_cos
 
 
 def mcheck127(m, fam, dev, amp, opt, ng=256):
@@ -1255,7 +1257,7 @@ def main():
         last_loss = None
     reest = False; dist_hist = []; var_hist = []; L127 = {}; n_nonfinite = 0
     n_copy = int(round(a.copy_frac * a.bs)) if a.copy_frac else 0; crng = np.random.default_rng(a.seed + 13400); copy_hist = []; tot_hist = []   # §134
-    tsd_g = tsd_mu = None; tsd_hist = []; tsd_top1 = []; tsd_share = []; tsd_share_all = []   # §135
+    tsd_g = tsd_mu = None; tsd_hist = []; tsd_top1 = []; tsd_share = []; tsd_share_all = []; tsd_share_cos = []; tsd_share_cos_all = []   # §135
     if a.tsd and not a.eval_only:                                           # frozen target model + its centring mean (fixed at gate A2, note 135-1)
         from boxes.teacher135 import load_teacher, teacher_targets
         tm_ = torch.load(os.path.join(a.tsd_teacher, "target_means.pt"), map_location="cpu")
@@ -1319,7 +1321,7 @@ def main():
             if tsd_g is not None and m._tsd_e:                              # §135 InfoNCE over this micro-batch's (row, hand-off) pairs
                 E_ = torch.stack(m._tsd_e, 1).reshape(-1, 768)
                 T_ = (teacher_targets(tsd_g, a.tsd_layer, s0[sl], x[sl], lab[sl], dev, amp) - tsd_mu).reshape(-1, 768)   # centred (note 135-1)
-                la_, t1_, sh_ = tsd_loss135(m, E_, T_, a.tsd_tau); atot += la_.item() / nmb; tsd_top1.append(t1_); tsd_share.append(sh_); tsd_share_all.append(sh_)
+                la_, t1_, sh_, shc_ = tsd_loss135(m, E_, T_, a.tsd_tau, lab[sl]); atot += la_.item() / nmb; tsd_top1.append(t1_); tsd_share.append(sh_); tsd_share_all.append(sh_); tsd_share_cos.append(shc_); tsd_share_cos_all.append(shc_)
                 loss_all = loss + a.tsd_w * la_
             else:
                 loss_all = loss
@@ -1363,8 +1365,8 @@ def main():
                 rec["loss_total"] = float(np.mean(tot_hist)) if tot_hist else None; tot_hist = []
             if tsd_g is not None:                                           # §135: aux InfoNCE, top-1 retrieval, masked share of negatives
                 rec.update({"tsd_loss": float(np.mean(tsd_hist)) if tsd_hist else None, "tsd_top1": float(np.mean(tsd_top1)) if tsd_top1 else None,
-                            "tsd_masked_share": float(np.mean(tsd_share)) if tsd_share else None,
-                            "loss_total": float(np.mean(tot_hist)) if tot_hist else None}); tsd_hist = []; tsd_top1 = []; tsd_share = []; tot_hist = []
+                            "tsd_masked_share": float(np.mean(tsd_share)) if tsd_share else None, "tsd_masked_share_cos": float(np.mean(tsd_share_cos)) if tsd_share_cos else None,
+                            "loss_total": float(np.mean(tot_hist)) if tot_hist else None}); tsd_hist = []; tsd_top1 = []; tsd_share = []; tsd_share_cos = []; tot_hist = []
                 if step % 500 == 0 or step == a.steps:
                     rec["copy_acc"] = copy_acc134(m, fam, dev, amp); m.train()
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True); L127[step] = rec["loss"]
@@ -1507,9 +1509,10 @@ def main():
         hs_ = _probe_chain(m, fam, dev, amp, s0e, xe)
         with torch.no_grad():
             Ee = torch.stack([e_.float() for _, _, e_ in hs_], 1).reshape(-1, 768)
-            Te = (teacher_targets(tsd_g, a.tsd_layer, s0e, xe, labe, dev, amp) - tsd_mu).reshape(-1, 768); _, top1_e, share_e = tsd_loss135(m, Ee, Te, a.tsd_tau)
+            Te = (teacher_targets(tsd_g, a.tsd_layer, s0e, xe, labe, dev, amp) - tsd_mu).reshape(-1, 768); _, top1_e, share_e, share_cos_e = tsd_loss135(m, Ee, Te, a.tsd_tau, labe)
         res["s135"] = {"tsd": a.tsd, "layer": a.tsd_layer, "tsd_w": a.tsd_w, "tsd_tau": a.tsd_tau, "retrieval_top1": top1_e, "retrieval_n": int(len(Ee)),
-                       "masked_share": float(np.mean(tsd_share_all)) if tsd_share_all else None, "masked_share_eval": share_e}
+                       "masked_share": float(np.mean(tsd_share_all)) if tsd_share_all else None, "masked_share_eval": share_e,
+                       "masked_share_cos": float(np.mean(tsd_share_cos_all)) if tsd_share_cos_all else None, "masked_share_cos_eval": share_cos_e, "mask": "gold state (note 135-4)"}
     res["p_hard_ramp"] = [a.p_hard_start, a.p_hard_end]
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     if os.path.exists(os.path.join(a.out, "ckpt_last.pt")):                # retention (user 2026-10-06): the checkpoint goes once eval.json exists
