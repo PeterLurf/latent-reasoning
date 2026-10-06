@@ -1,0 +1,79 @@
+{
+ "arms": {
+  "var": {
+   "S5": {},
+   "FF": {},
+   "ESCAPE": "pending",
+   "delivered": true,
+   "ENTRY_FIX": "incomplete (0 / 4)",
+   "FF_GUARD": "incomplete",
+   "ADOPT": "pending",
+   "cost": null
+  },
+  "skip": {
+   "S5": {},
+   "FF": {},
+   "ESCAPE": "pending",
+   "delivered": true,
+   "ENTRY_FIX": "incomplete (0 / 4)",
+   "FF_GUARD": "incomplete",
+   "ADOPT": "pending",
+   "cost": null
+  },
+  "std2": {
+   "S5": {},
+   "FF": {},
+   "ESCAPE": "pending",
+   "delivered": true,
+   "ENTRY_FIX": "incomplete (0 / 4)",
+   "FF_GUARD": "incomplete",
+   "ADOPT": "pending",
+   "cost": null
+  },
+  "lr10": {
+   "S5": {},
+   "FF": {},
+   "ESCAPE": "pending",
+   "delivered": true,
+   "ENTRY_FIX": "incomplete (0 / 4)",
+   "FF_GUARD": "incomplete",
+   "ADOPT": "pending",
+   "cost": null
+  }
+ },
+ "control": {
+  "S5": {
+   "1": {
+    "plateau": false,
+    "long_acc": 1.0,
+    "status": "done",
+    "rho_ff": null,
+    "ext_2048": 0.998,
+    "codes_per_state": 28.116666666666667,
+    "row_norm_2k": null,
+    "wte_row_norm": null,
+    "probe": null,
+    "gpu": "NVIDIA GeForce RTX 3070"
+   },
+   "2": {
+    "plateau": true,
+    "long_acc": 0.0,
+    "status": "done",
+    "rho_ff": null,
+    "ext_2048": 0.0,
+    "codes_per_state": 8.516666666666667,
+    "row_norm_2k": null,
+    "wte_row_norm": null,
+    "probe": null,
+    "gpu": "NVIDIA GeForce RTX 3090 Ti"
+   }
+  },
+  "cost": {
+   "p": 0.5,
+   "a": 1.0,
+   "cost": 1.0833333333333333,
+   "n": 2
+  }
+ },
+ "DEFAULT": null
+}
