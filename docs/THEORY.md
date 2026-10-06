@@ -4310,7 +4310,7 @@ and narrowing it into the bottleneck fails.**
 | RAW-H s1 | no | 0 | 0 | 3.11 | 4.06 |
 | RAW-H s2 | no | 0.846 | 0.732 | 1.6e-5 | 3.91 |
 | RAW-H s3 | no | 0 | 0 | 4.42 | 3.81 |
-| RAW-H s4 | pending | pending | | | |
+| RAW-H s4 | no | 0 | | 4.07 | |
 | ANNEAL s2 (bf16 cast) | no | 0 | 0 | 3.18 | |
 | ANNEAL s2 (fixed cast, 126-10) | no | 0 | 0 | 2.46 | 3.91 |
 
@@ -4332,6 +4332,8 @@ and narrowing it into the bottleneck fails.**
   - §127 (registered after this reading's direction was known) tests task-agnostic entry fixes on the bottleneck itself,
     with restart-on-plateau as the baseline to beat. §126 does not change §127.
   - fp32 contraction for RAW-H s1 and the ANNEAL rerun is descriptive. RAW-H s4 is added when it lands.
+  - **RAW-H s4 landed (2026-10-05 23:00 EDT):** not plateaued at 2k, long accuracy 0, final loss 4.07 (bf16 ρ 0.715). The count is 0/4
+    plateaued, and long accuracy is 0.846 / 0 / 0 / 0. Nothing changes.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
