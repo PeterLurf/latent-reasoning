@@ -1279,6 +1279,9 @@ def main():
         torch.set_rng_state(rck["torch_rng"].cpu()); rng.bit_generator.state = rck["np_rng"]
         if "crng" in rck:                                                   # §134 copy-row draws
             crng.bit_generator.state = rck["crng"]; copy_hist = rck["copy_hist"]; tot_hist = rck.get("tot_hist", [])
+        if "tsd" in rck:                                                    # §135 tallies (masked_share stays whole-run across a resume)
+            t_ = rck["tsd"]; tsd_hist, tsd_top1, tsd_share, tsd_share_all, tsd_share_cos, tsd_share_cos_all = (t_["hist"], t_["top1"], t_["share"], t_["share_all"],
+                                                                                t_["share_cos"], t_["share_cos_all"])
         if dev.startswith("cuda") and rck.get("cuda_rng") is not None:
             torch.cuda.set_rng_state(rck["cuda_rng"].cpu(), device=dev)
         log.write(json.dumps({"step": rck["step"], "resumed": a.resume}) + "\n"); log.flush(); print("RESUMED at step", rck["step"], flush=True)
@@ -1415,7 +1418,9 @@ def main():
                         "cuda_rng": torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else None, "np_rng": rng.bit_generator.state, "drawn": drawn,
                         "step": step, "L127": L127, "n_nonfinite": n_nonfinite, "last_loss": last_loss, "hist": hist, "carried": carried,
                         "dist_hist": dist_hist, "var_hist": var_hist, "reest": reest, "elapsed": time.time() - t0,
-                        "crng": crng.bit_generator.state, "copy_hist": copy_hist, "tot_hist": tot_hist}, cp + ".tmp")
+                        "crng": crng.bit_generator.state, "copy_hist": copy_hist, "tot_hist": tot_hist,
+                        "tsd": {"hist": tsd_hist, "top1": tsd_top1, "share": tsd_share, "share_all": tsd_share_all, "share_cos": tsd_share_cos,
+                                "share_cos_all": tsd_share_cos_all}}, cp + ".tmp")   # Audit: a resumed §135 student keeps whole-run tallies
             os.replace(cp + ".tmp", cp); log.write(json.dumps({"step": step, "ckpt": "ckpt_last.pt"}) + "\n"); log.flush()
         if a.stop_after and step >= a.stop_after:                           # resume-parity test only
             log.close(); print("STOP_AFTER", step, flush=True); return
