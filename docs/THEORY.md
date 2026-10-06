@@ -5095,7 +5095,7 @@ its bar even in-sample.**
     only 2/16 (s6, s37).
   - **The code-variance collapse at about 650 is common and mostly transient.** It occurs in 7/16 seeds, and in all 7 the
     spread recovers (at 700–1,700).
-    - Two of the 7 never pull (s6, s37): the basin. Two flag after a late pull (s42). Four escape (s9, s10, s36, s38).
+    - Two of the 7 never pull (s6, s37): the basin. One flags after a late pull (s42, pull at 1,400). Four escape (s9, s10, s36, s38).
   - **H-127-7 fails both ways:** 3/6 flagged seeds collapse; every non-flagged seed pulls (10/10, dmean_max ≥ 1.97).
 * **Pre-stated:** the primary cell is at min(P, R) = 0.60 in-sample, so a TEST PASS (≥ 0.9 / ≥ 0.9) is very unlikely. TEST is
   scored as registered (`python theory/score_s130.py test` reads the frozen file).
