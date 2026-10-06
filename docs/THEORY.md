@@ -6059,6 +6059,17 @@ Implementation: the experiments session (fsq120 `--tsd {teacher,text}`, `--tsd_t
   dist_med > 1e-3 and ρ > 0, else ρ₁. It is not 133-1's first-three form, since §135's carrier is rounded.
 * score_s135.py is updated to match: arms tsd / base, the masked share, and the claim wording.
 
+**Note 135-2 (2026-10-06 17:13 EDT, before the teacher run is read; the Audit helper's read of boxes/teacher135.py, 547ba6e1 / 6f78d8a2). Teacher details fixed, and one equivalence check.**
+* **Teacher schedule (unregistered until now, fixed here):** AdamW, lr 1e-4, warmup 100, cosine decay. CE on the state texts and the answer
+  only; ops are inputs.
+* **Gate A2 and the centring means are computed at L 8** (1,024 held-out problems, seed 13502), while students train to L_max 32. The
+  layer and the means are therefore chosen at L 8.
+  - "Probe accuracy" is the held-out-half accuracy of a linear probe fitted with 300 Adam steps (lr 1e-2, standardised features), not
+    a closed-form value.
+* **Equivalence check (before gate A2 is read):** `hidden_layers` re-implements GPT-2's forward and is the only path to the targets and
+  the probe. A CPU fp32 smoke must assert that hidden_layers(ids)[-1] equals the model's own final hidden state on one batch (to about
+  1e-4). A mismatch voids the gates until it is fixed.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
