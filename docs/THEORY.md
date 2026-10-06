@@ -5967,6 +5967,74 @@ gradient unchanged, as in FSQ. Everything else matches §133 / 133-1 / 133-3.
 * CLOSED is unchanged (the certificate as run, 128-4). The stronger statement holds for 11 of 12: **the fp32 certificate covers every
   code the eval visits.**
 
+## 135. TEACHER-STATE DISTILLATION: a text-CoT model's hidden states, not its text, as per-hand-off targets for the latent carrier (pre-registered 2026-10-06 17:07 EDT, after Literature's check 0bb148e9 and before any implementation or run; the user's idea "natural language CoT is not really a good training artifact for latent reasoning; can we distill a CoT model into a latent model?" (via Audit), candidate 4 of `docs/THEORY_STABLE_LATENT_2026-10-06.md`)
+
+**Why.**
+* The user's point: a CoT model's **internal state**, not its text, should be the training artifact for a latent reasoner.
+* Our latent carrier is exact once entered (§128). It fails at entry on S5, and the failures are mostly **transition-side** (synthesis:
+  F2a / F2b-transition / dialect in 7 of 10 failures). It also hits the k = 4 wall on multiplication (§98 GEN-M 0.163 / 0.005, where
+  text CoT is 1.0).
+* **Prior** (0bb148e9, `docs/LIT_COT_DISTILL_2026-10-06.md`): ICoT-KD 2311.01460 (hidden states across layers); KaVa 2510.02312 (stepwise
+  KV distillation, robust to natural-language traces); CODI 2502.21074 (one token); SIM-CoT; Distill S2→S1 2407.06023; System-1.5
+  2505.18962; LIFT 2609.38149; geometric imitation collapses latents, contrastive targets preserve them (2606.20075).
+  - New as scoped: a per-hand-off target through a discrete Markov carrier, scored by certificate, donor and length.
+
+**Teacher (frozen; gate first).**
+* GPT-2 small, pretrained, trained on S5 text CoT in TC's format: the start state text, then each op followed by the state text
+  " > A B C D E", then the answer. L ~ U(1, 32), 8k steps, bs 32, lr 1e-4, cloud RTX 3090. Dir `boxes/runs_fsq/s135_teacher_s5`.
+* **Gate A1:** greedy final-answer accuracy ≥ 0.99 at L = 32 on 1,000 held-out problems.
+* **Gate A2 (teacher probe; Literature (d)):** a linear 120-way state probe on the hidden state at **the last token of each step's
+  state text**, at every layer, on held-out problems. The layer with the highest probe accuracy is chosen (ties → the later layer),
+  fixed before any student run. It needs probe accuracy ≥ 0.95. The curve is reported.
+  - The probe uses state labels on the teacher side only. That is disclosed, and it is part of why §135 is not C4.
+* If A1 or A2 fails, no student run happens.
+
+**Student.** §128's S5 recipe exactly (fsq120 FINAL, FSQ d 8 / L 8, the length curriculum, p_hard 2000 → 4000, 24k, bs 64, the 127-3
+guard; cloud RTX 3090 / 595.71 class, checkpoints), with **no restarts and no plateau stop**, as in §134. Plus one auxiliary loss:
+* At every hand-off j of a training chain: s_j = normalise(P_s(e_j)), where e_j = W_up(code_j) is the carried embedding.
+  t_j = normalise(P_t(sg(target_j))). P_s and P_t are learned linear maps 768 → 256 into one shared space: student → shared,
+  teacher → shared, **one P_s and one P_t shared across all hand-offs**.
+* **InfoNCE** (τ 0.1): s_j against t_j, with every other (row, hand-off) target in the batch as a negative. Negatives with
+  cos(target, target_j) > 0.99 are masked: a label-free near-duplicate mask (Literature (b) / (c): a contrastive target, so the
+  8-d code does not spend capacity on the teacher's token or format nuisance, and no regression residual leaks into the encoder).
+* **Weight 1, constant from step 0** (Literature 4; §126). Inference never uses the teacher.
+* **Arms (one change: the target's source):**
+  - **TSD:** target_j = the teacher's hidden state at the chosen layer, at the last token of step j's state text, for the same problem
+    (no_grad).
+  - **TEXT (control, the same per-step information as text; the same step boundary: step j's gold state text in TC's format):** target_j = the student's own text-path embedding of the gold state text
+    j, W_up(copy_write(state text j)) (§134's writer, sg). This is §118 ANCHOR's information, in InfoNCE form.
+* **Gradflow under CUDA bf16 before any run** (the Audit helper; the §116 lesson):
+  - the auxiliary loss must give a nonzero gradient into the **carrier's encoder**: W_down and the GPT-2 trunk that writes z_b,
+    through the FSQ straight-through path. Reaching W_up, P_s and P_t alone would leave the code's content unchanged;
+  - **no** gradient may reach the teacher.
+
+**Seeds.** S5 seeds 1–4 on the 3090 / 595.71 class, where the plain recipe without restarts is 1/4 (§134's comparator).
+
+**Rules (fixed now; per arm).**
+* **PASS:** all four seeds exact at 2,048 (ext_2048 ≥ 0.99), SERIAL (donor ≥ 0.90, recipient − chance < 0.10) and contractive (127-12's
+  ρ clause ≤ 0.28). **IMPROVES** (descriptive): 3/4. **FAIL:** ≤ 2/4.
+* **The user's claim on S5 (teacher internals against step text):**
+  - TSD PASS and TEXT not: the teacher's hidden state helps entry beyond the step text;
+  - both PASS: S5 does not separate them (expected: per-step supervision solves S5, §111 / §118);
+  - TEXT PASS and TSD not: the text target is better here.
+* **Stage B (multiplication; registered after stage A reads, with Audit's approval).** Teachers are §98's kept TC 4×4 models
+  (`boxes/runs_mult/m98_tc_4x4_s*`, acc_test 1.0, $0), in §98's latent harness. The intended rule is exact ≥ 0.99 on §98's 4×4 test
+  items in ≥ 3/4 seeds with SERIAL, against ICoT-SI 0.998 and GEN-M 0.163. B decides the user's claim where latent methods fail.
+* **Claim wording (fixed):** "latent at inference, distilled from a CoT model's hidden states: C1 / C6 / C2 with per-step supervision
+  by proxy (not C4)".
+
+**Scope by failure class (the Audit helper).** TSD and TEXT supervise the **write** side, the code's content at each hand-off. That
+bears directly on F2a and F2b-transition, and on F2b-compounding through a cleaner target. F2b-dialect (state present and read but
+mapped wrong) is not addressed by a write-side target alone; there the answer CE carries the reader. So the prefix profile
+(positions 1 and 2) is reported per seed beside PASS.
+
+**Mechanism (descriptive, every run).** Prefix accuracy at 1 / 2 / 4 / 8, the end probe (R²_state by L, abl_dloss), the fp32 ρ₁, and
+the InfoNCE top-1 retrieval accuracy over training (the student's code picks out its own teacher step).
+
+**Placement.** Teacher: 1 run (about 1 h, about $0.3). Students: 8 runs (about $7). About $7.5 in all, cloud only, with Audit's approval.
+Implementation: the experiments session (fsq120 `--tsd {teacher,text}`, `--tsd_teacher <dir>`, `--tsd_layer`, `--tsd_w 1.0`,
+`--tsd_tau 0.1`). Dirs `s135_{tsd,text}_s5_s{1..4}`. Scorer: `theory/score_s135.py`, committed before any run.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
