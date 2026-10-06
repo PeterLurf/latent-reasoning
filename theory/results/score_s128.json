@@ -23,6 +23,7 @@
    }
   },
   "FAMILY_PASS": "incomplete (0 / 4 slots decided)",
+  "flag_checks": [],
   "n_pass": 0,
   "plateaued_attempts": 0,
   "cost_per_exact_seed": null
@@ -51,6 +52,7 @@
    }
   },
   "FAMILY_PASS": "incomplete (0 / 4 slots decided)",
+  "flag_checks": [],
   "n_pass": 0,
   "plateaued_attempts": 0,
   "cost_per_exact_seed": null
@@ -79,6 +81,7 @@
    }
   },
   "FAMILY_PASS": "incomplete (0 / 4 slots decided)",
+  "flag_checks": [],
   "n_pass": 0,
   "plateaued_attempts": 0,
   "cost_per_exact_seed": null
@@ -107,6 +110,7 @@
    }
   },
   "FAMILY_PASS": "incomplete (0 / 4 slots decided)",
+  "flag_checks": [],
   "n_pass": 0,
   "plateaued_attempts": 0,
   "cost_per_exact_seed": null
@@ -135,6 +139,7 @@
    }
   },
   "FAMILY_PASS": "incomplete (0 / 4 slots decided)",
+  "flag_checks": [],
   "n_pass": 0,
   "plateaued_attempts": 0,
   "cost_per_exact_seed": null

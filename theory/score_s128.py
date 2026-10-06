@@ -71,6 +71,8 @@ def slot(fam, k):
         if pl is None and load(d) is None:
             break                                                            # not run yet (or before 2k): the slot is open
         att.append({"seed": k + o, "plateau": pl})
+        if pl and load(d) is not None:                                       # note 128-1: a flagged attempt trained on (flag check)
+            att[-1]["flag_check_long_acc"] = load(d).get("long_acc")
         if pl is False:
             r = load(d)
             if r is None:
@@ -104,7 +106,8 @@ def family(fam):
     n_pl = sum(sum(bool(a["plateau"]) for a in v["attempts"]) for v in sl.values())
     exact = sum((a["long_acc"] or 0) >= 0.99 for a in acc)
     cost = (len(acc) + n_pl / 12) / exact if exact else None
-    return {"slots": sl, "FAMILY_PASS": fp, "n_pass": n_pass, "plateaued_attempts": n_pl, "cost_per_exact_seed": cost}
+    fc = [a for v in sl.values() for a in v["attempts"] if "flag_check_long_acc" in a]
+    return {"slots": sl, "FAMILY_PASS": fp, "flag_checks": fc, "n_pass": n_pass, "plateaued_attempts": n_pl, "cost_per_exact_seed": cost}
 
 
 def main():
@@ -114,7 +117,7 @@ def main():
     for f in FAMS:
         v = res[f]
         print(f.upper(), {k: (s["status"], s["accepted"] and (s["accepted"]["long_acc"], s["accepted"]["serial"], s["accepted"].get("closed"), s["accepted"]["pass"])) for k, s in v["slots"].items()},
-              "| FAMILY-PASS", v["FAMILY_PASS"], "| plateaued attempts", v["plateaued_attempts"], "| cost", v["cost_per_exact_seed"])
+              "| FAMILY-PASS", v["FAMILY_PASS"], "| plateaued attempts", v["plateaued_attempts"], "| cost", v["cost_per_exact_seed"], "| flag checks (128-1)", [(a["seed"], a["flag_check_long_acc"]) for a in v["flag_checks"]])
     print("TASK-AGNOSTIC", res["TASK_AGNOSTIC"])
     json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s128.json"), "w", newline="\n"), indent=1, default=float)
 
