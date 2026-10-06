@@ -216,6 +216,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 126 | Is the bottleneck the cause of the soft-phase basin? RAW-H vs ANNEAL (stop rule → restart-on-plateau) | **BOTTLENECK-CAUSE** (RAW-H s1–3 escape the 2k flag; every bottlenecked s2 plateaus) **without ANNEAL-INHERITS** (s2 0 in both casts): the wide carrier enters but doesn't learn long chains (0.846 / 0 / 0); restart-on-plateau is the procedure; s4 descriptive | closed |
 | 127 | Reliable entry without restarts? VAR (item-residual variance) / SKIP (skip-to-decoder) / STD2 (§125-v2) / LR10 on §120's harness vs restart-on-plateau | registered | **open** |
 | 128 | One recipe, five state-tracking families (S5, FF + held-out CYC / MOD / RDFA), restart-on-plateau; FAMILY-PASS = 3/4 exact + SERIAL (+ CLOSED) | registered | **open** |
+| 129 | Where does the entry basin live? Head-only re-draw at the 2k flag vs a CLOCK-ONLY warm restart (S5, 4 flagged seeds): LR / HEAD / BODY | registered | **open** |
 
 ## Live sections
 
@@ -4682,6 +4683,74 @@ fails on the letter at one step. Both seeds make the same first pull attempt; se
     matching SKIP's control hosts.
 * **Pre-stated for Stage 2:** STD2 and LR10 are unlikely to meet ENTRY-FIX (3/4 exact), given seed 2's drift-back. They run
   because the rule says so.
+
+## 129. Where does the entry basin live? Re-drawing only the bottleneck head at the 2k plateau flag, with GPT-2's body kept (pre-registered 2026-10-06 03:47 EDT, after Literature's check 3fd1f1fe and before any implementation or run; Audit's steward idea A (03:45), on note 127-7)
+
+**Why.**
+* In §120's harness the entry basin is a seed property on 3090-class cards: S5 seed 2 plateaus in every bottlenecked arm.
+* The seed-2 replay (127-7) times it. The first decoder pull, at step 650, fails. The code's variance then collapses
+  (zb_std_in 0.73 → 0.03 at 700), and the decoder never pulls again. Seed 1's first pull looks the same, but its next one
+  holds.
+* §127's entry fixes that let seed 2 escape the 2k flag did not make it learn (127-7). Restart-on-plateau (§126) is the
+  working procedure.
+* §129 asks where the basin is stored once the flag fires:
+  - in the bottleneck head's state (its init and its weights after the collapse); or
+  - in GPT-2's body, which by 2k has learned to ignore the carrier.
+* **Prior** (3fd1f1fe): `docs/LIT_S129_HEAD_REDRAW_2026-10-06.md`: primacy bias / resets 2205.07802, ReDo 2302.12902, shrink-and-perturb 1910.08475,
+  fortuitous forgetting 2202.00155, RIFLE 2007.03349 (periodic head re-init in fine-tuning), dead-code re-init in VQ (2005.08520,
+  Jukebox). New as scoped: a head-only re-draw of an injected-latent bottleneck as a head-versus-body diagnostic.
+
+**Design.**
+* §120 FINAL S5 exactly, plus 127-3's non-finite guard. RTX 3090 / 3090 Ti, with train_driver recorded.
+* **Phase 1.** Train to 2k. If 123-3's flag fires, **re-draw the head**: ln, W_down and W_up get a fresh init from a dedicated
+  generator (seed 12900 + the run's seed) and fresh Adam moments.
+  - **GPT-2's body weights and its Adam state are kept.** Literature (b): "keep" is a fair single test. After a no-read regime, the body's
+    second moments for code-carrying rows are small, which makes their steps larger, and stale first moments decay in about 10 steps.
+    Shrink-and-perturb on the body is noted, not run.
+* **Phase 2.**
+  - The schedule clock restarts: LR warmup and cosine, the soft phase (p_hard 0 to 2k), and L_max 2 to 2k.
+  - The 123-3 flag is applied again at clock 2k. A re-plateaued seed stops there.
+  - Otherwise it trains 24k phase-2 steps to the usual eval.
+* **CLOCK-ONLY control (Literature (c), Audit).** Restarting the clock is an LR warm restart, which can break a plateau on
+  its own (SGDR-like).
+  - Every PANEL seed saves its 2k checkpoint: model, both optimizers' state, and RNG.
+  - From that checkpoint a second continuation restarts the schedule clock **without** re-drawing the head (dir
+    `s129_s5_s{seed}_clock`).
+  - Same flag at clock 2k, then 24k if it escapes.
+* **Seeds,** in a fixed order: 2, 1, 3, 4, 101–104, 201–204, and so on.
+  - A seed whose phase-1 flag does not fire stops at 2k and is reported.
+  - **PANEL** = the first 4 seeds whose phase-1 flag fires.
+* **Logging:** zb_std_in on a fixed probe batch every 50 steps over 0–2k in both phases (descriptive), plus the §127 probe at 0 /
+  2k of each phase.
+
+**Rules (fixed now), checked in this order.** ESC = the phase-2 flag does not fire. PASS = ESC and long accuracy ≥ 0.99 (S5
+cumulative at 512).
+* **LR:** CLOCK-ONLY escapes in at least 3/4. The warm restart alone breaks the plateau. REDRAW is reported beside it.
+* **HEAD:** REDRAW passes in at least 3/4, **and** REDRAW escapes in at least 2 more seeds than CLOCK-ONLY (Audit).
+* **BODY:** REDRAW's phase-2 flag fires in all 4.
+* Otherwise, descriptive. Fresh seeds escape at about 0.5, so 1–2/4 REDRAW passes are consistent with a head-init lottery at
+  the fresh-seed rate.
+
+**Readings.**
+* **LR.** Restarting the LR schedule from a plateaued 2k state is enough to enter, so the plateau is an optimisation-schedule
+  basin. A clock-restart rule (no re-draw) is then a candidate procedure. Whether the escaped CLOCK-ONLY seeds also learn is
+  reported (escape ≠ learning, 127-7).
+* **HEAD.** The basin is held in the head's state. A re-drawn head enters on a body trained 2k steps without reading it,
+  where a warm restart alone does not. The head re-draw is a restart that keeps the body; its success rate is compared with
+  fresh seeds' 1 − p.
+* **BODY (Audit's wording, fixed now).** "By 2k the body ignores a fresh head."
+  - This does **not** show the basin was in the body at 650: the body had 1.3k more steps to adapt after the collapse.
+  - An earlier-trigger arm would be a separate registration, not a reinterpretation of §129.
+* **Otherwise.** Not distinguishable from a head-init lottery. Reported as such.
+
+**Placement.**
+* About 8 phase-1 runs of 2k steps (to find 4 flagged seeds at p ≈ 0.5).
+* Then 4 REDRAW plus 4 CLOCK-ONLY continuations of 2k steps, and at most 8 continuations to 24k.
+* About $4–8 on one RTX 3090 host (Audit-approved).
+* Implementation: the experiments session (fsq120 `--redraw_head`, `--save_at_flag`, `--resume_2k <ckpt> --clock_only`; logs carry
+  "phase": 2 and "clock" after the trigger).
+* Scorer: `theory/score_s129.py`, committed before any run.
+* Dirs: `boxes/runs_fsq/s129_s5_s{seed}` (REDRAW) and `s129_s5_s{seed}_clock`.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
