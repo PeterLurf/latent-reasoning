@@ -211,7 +211,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 121 | Multiplication's carrier shortcut: text-path anchor + reader vs reader alone (4×4, Markov) | CARRY-3 0/3: the anchor binds to a dead text path (T1 = 0); READ lifts op 3 to 0.64 / 0.93 by recomputation, with no sum carrier; triggers §122 | closed |
 | 122 | TEXT-MIX keeps the anchor's target competent (conditional on §121; stop rule for the multiplication line) | CARRY-3 0/3 (op 3 0.32–0.41) with a competent text path (t1 1.0); **STOP RULE fired**: the multiplication latent-carriage line pauses | closed |
 | 123 | Attractor strength causal for no-snap? Dither dose-response (σ 0–0.5) + dithered FSQ (canonical codes), §120 harness | **causal question not reached**: dither moved neither ρ_ff (S5 s1 0.146–0.180; FF 0.050 → 0.087) nor accuracy nor the basin (S5 s2 plateaus at every σ); continuous 8-d carry exact to 2,048 (123-6); CANONICAL not met | closed |
-| 124 | Does reading a given state fix self-training's lottery? §112 f = 0.1 + copy objective vs exposure control | registered | **open** |
+| 124 | Does reading a given state fix self-training's lottery? §112 f = 0.1 + copy objective vs exposure control | **descriptive** (MECH-112 and NOT-112-4 both false): COPY 4/4 acquired, all at L5; EXPOSE 4/4 (L5–L8); BASE 2/4. COPY is the only arm with serial carriage (2/4: s26, s27 meet C4-qualified + C1 + C2) | closed |
 | 125 | Readable bottleneck from step 0: standardised carried code vs the soft-phase no-read basin (task-agnostic, §120 harness) | **untested**: the EMA standardisation was not in force at 2k (carried norm 35); STD s2 plateaued; other runs held | closed (untested) |
 | 126 | Is the bottleneck the cause of the soft-phase basin? RAW-H vs ANNEAL (stop rule → restart-on-plateau) | **BOTTLENECK-CAUSE** (RAW-H s1–3 escape the 2k flag; every bottlenecked s2 plateaus) **without ANNEAL-INHERITS** (s2 0 in both casts): the wide carrier enters but doesn't learn long chains (0.846 / 0 / 0); restart-on-plateau is the procedure; s4 descriptive | closed |
 | 127 | Reliable entry without restarts? VAR (item-residual variance) / SKIP (skip-to-decoder) / STD2 (§125-v2) / LR10 on §120's harness vs restart-on-plateau | registered | **open** |
@@ -5032,6 +5032,28 @@ open.**
 * **SKIP's FF guard is met: FF s1 / s2 long accuracy 1.0**, 0 non-finite steps (delivery read per 127-10).
 * SKIP's ENTRY-FIX still needs s1 and s3 exact (b30). The ρ clause reads ρ₁ (127-12). ADOPT is read on cost against the
   control.
+
+**§124 result (2026-10-06 06:43 EDT; scored by `theory/score_s124.py`, all 12 runs; each seed's three arms on one card type (s26–27
+RTX 3090, s28 A10, s29 RTX 4090); Audit reproduced). Descriptive: both COPY and plain exposure lift acquisition. COPY is uniform
+and earliest, and is the only arm with serial slot carriage.**
+
+| Arm | Acquired (never-labelled k = 1 ≥ 0.99) | Round (s26 / s27 / s28 / s29) | FOOTHOLD (descriptive) | Single-slot SERIAL (descriptive) |
+|---|---|---|---|---|
+| BASE | 2/4 | L6 / – / L6 / – | 2/4 | 0/2 acquirers (both slot-1 bypass) |
+| COPY | **4/4** | **L5 / L5 / L5 / L5** | 3/4 | **2/4** (s26, s27) |
+| TEXT-EXPOSE | 4/4 | L6 / L5 / L6 / L8 | 2/4 | 0/4 |
+
+* **Rules:** MECH-112 is false (124-4: EXPOSE acquired in 4/4, not ≤ 2/4). NOT-112-4 is false (COPY acquires in more seeds than
+  BASE, 4 against 2, and earlier). So the result is **descriptive**, as registered.
+* **Reading:**
+  - **By count**, the copy objective and plain LM exposure to random start texts both lift acquisition above BASE. So
+    "reading a given state" is not separable from "seeing non-identity start text" at this n.
+  - **By timing**, COPY is the only arm with a uniform signature: L5 in every seed, the sharpest jump.
+  - **Descriptive, beyond the registered readouts:** COPY gives single-slot SERIAL carriage in 2/4 seeds (s27 at every slot,
+    with no bypass). EXPOSE gives it in 0/4, and BASE's two acquirers both bypass slot 1.
+* **Claim wording (fixed in §124):** "C4 qualified by f = 0.1 short-problem coverage (identity starts) plus a self-supervised
+  copy objective (no intermediate or transition labels)". COPY s26 / s27 meet it together with C1 (serial) and C2 (exact to
+  2,048): the first self-training seeds to do so (124-6, 124-7).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

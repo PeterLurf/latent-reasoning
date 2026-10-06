@@ -1,24 +1,32 @@
 {
  "arms": {
   "base": {
-   "n": 2,
+   "n": 4,
    "acquired": [
+    26,
     28
    ],
    "acq_rounds": {
+    "26": "L6",
+    "27": null,
     "28": "L6",
     "29": null
    },
    "median_round_rank": 999,
    "foothold_seeds": [
+    26,
     28
    ],
-   "FOOTHOLD": false,
+   "FOOTHOLD": true,
    "cum512": {
+    "26": 0.9975,
+    "27": 0.0,
     "28": 0.998,
     "29": 0.0
    },
    "copy_acc": {
+    "26": 0.0,
+    "27": 0.0,
     "28": 0.0,
     "29": 0.029
    }
@@ -93,5 +101,5 @@
  },
  "MECH_112": false,
  "NOT_112_4": false,
- "descriptive": false
+ "descriptive": true
 }
