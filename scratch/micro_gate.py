@@ -1,5 +1,5 @@
 """Audit 2026-10-06 (note 131-4 reruns): pick the smallest --micro in (1, 2, 4) whose training step fits this card at L 31 and L 32
-(fsq120 applies --micro at L > 16; L 31 at micro 1 is the largest micro-1 shape), with >= MARGIN GiB left, then run fsq120 with it.
+(fsq120 applies --micro at L > 16; L 31 at micro 1 is the largest micro-1 shape; at micro > 1 also L 16 at micro 1), with >= MARGIN GiB left, then run fsq120 with it.
 Measurements -> <out>/micro_gate.json; fsq120 records the chosen micro in args.json.
     python -m scratch.micro_gate --device cuda:0 --out <run dir> [--gate_only] [--Ls 31,32] <fsq120 args without --micro / --device / --out>"""
 import argparse
@@ -22,10 +22,11 @@ rec = {"device": torch.cuda.get_device_name(a.device), "total_gib": round(total,
 chosen = None
 for mc in (1, 2, 4):
     ok = True
-    for L in [int(x) for x in a.Ls.split(",")]:
-        p = subprocess.run([sys.executable, os.path.join(ROOT, "scratch", "memcheck_fsq120.py"), a.device, str(mc), "64", str(L)], capture_output=True, text=True, cwd=ROOT)
+    shapes = [(mc, int(x)) for x in a.Ls.split(",")] + ([(1, 16)] if mc > 1 else [])   # Audit: at micro > 1 the L 16 stage still runs micro 1
+    for mc_, L in shapes:
+        p = subprocess.run([sys.executable, os.path.join(ROOT, "scratch", "memcheck_fsq120.py"), a.device, str(mc_), "64", str(L)], capture_output=True, text=True, cwd=ROOT)
         mm = re.search(r"peak_alloc ([0-9.]+) GiB reserved ([0-9.]+) GiB", p.stdout)
-        r = {"micro": mc, "L": L, "rc": p.returncode, "peak_alloc": float(mm.group(1)) if mm else None, "reserved": float(mm.group(2)) if mm else None,
+        r = {"micro": mc_, "for_micro": mc, "L": L, "rc": p.returncode, "peak_alloc": float(mm.group(1)) if mm else None, "reserved": float(mm.group(2)) if mm else None,
              "oom": "OutOfMemoryError" in p.stderr}
         rec["checks"].append(r); print("GATE", json.dumps(r), flush=True)
         if not mm or r["reserved"] > total - MARGIN:

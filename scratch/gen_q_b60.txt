@@ -1,0 +1,3 @@
+# fsq120 checkpoint resume-parity smoke (user 2026-10-06; Audit tolerance pre-stated in scratch/parity_ckpt.py) on an RTX A4000; boxes.fsq120
+# P=1
+boxes/runs_fsq/parity_ckpt_a4000 scratch.parity_ckpt

@@ -1,0 +1,4 @@
+# note 131-6 (Theory 2026-10-06): s131x held-out S5 seeds on an RTX 2080 Ti 22 GB (Turing, fp32 - no bf16): fsq120 §120 FINAL S5 24k, no --stop_plateau, guard (--probe127), --no_cert, --ckpt_every 2000, --micro from scratch/micro_gate.py (smallest of 1 / 2 / 4 fitting L 31 + 32 with 1.5 GiB margin); two seeds in sequence (only 2 offers); boxes.fsq120
+# P=1
+boxes/runs_fsq/s131x_s5_s402_2080ti scratch.micro_gate --family s5 --arm final --seed 402 --no_cert --probe127 --ckpt_every 2000
+boxes/runs_fsq/s131x_s5_s404_2080ti scratch.micro_gate --family s5 --arm final --seed 404 --no_cert --probe127 --ckpt_every 2000
