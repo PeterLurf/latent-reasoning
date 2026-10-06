@@ -3831,7 +3831,7 @@ state, and growth.
 **Rules (fixed now).**
 * **BOTTLENECK-CAUSE:** RAW-H's seed 2 is **not** plateaued **and** RAW-H's plateau count ≤ 1/4. Then the bottleneck
   causes the basin.
-* **ANNEAL-INHERI2026-10-05 16:27 EDT (Stage 2 only):** ANNEAL reaches long accuracy ≥ 0.99 at λ = 1 in every seed it runs on. The narrow
+* **ANNEAL-INHERITS (Stage 2 only):** ANNEAL reaches long accuracy ≥ 0.99 at λ = 1 in every seed it runs on. The narrow
   code inherits the carrier.
 * **STOP RULE (Audit, fixed now):** if RAW-H does not rescue seed 2 and its plateau count is not below §120's S5 rate
   (2/4), the task-agnostic line **stops trying to remove the basin**.
@@ -3842,9 +3842,9 @@ state, and growth.
     fix.
 
 **Readings.**
-* **BOTTLENECK-CAUSE + ANNEAL-INHERI2026-10-05 16:27 EDT.** The 8-d bottleneck causes the basin, and entering through a wide carrier fixes
+* **BOTTLENECK-CAUSE + ANNEAL-INHERITS.** The 8-d bottleneck causes the basin, and entering through a wide carrier fixes
   it. ANNEAL joins the harness.
-* **BOTTLENECK-CAUSE without ANNEAL-INHERI2026-10-05 16:27 EDT.** The bottleneck causes it, but a narrow code cannot take over. Restart-on-
+* **BOTTLENECK-CAUSE without ANNEAL-INHERITS.** The bottleneck causes it, but a narrow code cannot take over. Restart-on-
   plateau, as the stop rule.
 * **RAW-H plateaus on seed 2.** The basin comes from final-answer supervision without a reader, not the bottleneck. Per
   the stop rule: restart-on-plateau. (Literature: the mechanistic fix would be a reader or COPY, noted and not run.)
@@ -3992,16 +3992,16 @@ does not reach the causal question.**
   - the seed-2 basin appears at every σ;
   - FSQ+DITHER codes are smaller (21 against 34 codes per state at 2,048) but open on S5.
 
-**Note 126-8 (2026-10-05 20:35 EDT; ANNEAL s2 final, RTX 3090, pre-126-5 cast). ANNEAL-INHERI2026-10-05 20:35 EDT cannot be met: the narrow code does not
+**Note 126-8 (2026-10-05 20:35 EDT; ANNEAL s2 final, RTX 3090, pre-126-5 cast). ANNEAL-INHERITS cannot be met: the narrow code does not
 take over the carrier.**
 * **ANNEAL s2:** long accuracy 0 at every length 16–512, 2,048 at 0, final loss 3.18. 5,462 codes (359 per state), donor
   near chance (0.04).
   - It escaped like RAW-H to 2k (1.35). The loss jumped to 5.43 when λ reached 1 at 6k (distillation residual 0.49) and
     never recovered.
-* ANNEAL-INHERI2026-10-05 20:35 EDT needs ≥ 0.99 in every ANNEAL seed, so **it is decided false**. No further ANNEAL seeds are run on the
+* ANNEAL-INHERITS needs ≥ 0.99 in every ANNEAL seed, so **it is decided false**. No further ANNEAL seeds are run on the
   remaining escaped RAW-H seeds: they cannot change it, and the run is saved.
 * **Pending:** RAW-H s1 / s3 / s4, for BOTTLENECK-CAUSE's count.
-  - If they escape, §126 reads "BOTTLENECK-CAUSE without ANNEAL-INHERI2026-10-05 20:35 EDT": the bottleneck causes the basin, but
+  - If they escape, §126 reads "BOTTLENECK-CAUSE without ANNEAL-INHERITS": the bottleneck causes the basin, but
     narrowing a working wide carrier into it fails.
   - Per §126's reading, restart-on-plateau is then adopted as the reliability procedure.
 
@@ -4031,10 +4031,16 @@ settles it.**
     alone.
 * **Decision (credit is no longer binding):** one rerun of **ANNEAL s2 with the fixed cast** (fp32 carrier while λ < 1;
   RTX 3090; dir `s126_s5_anneal_s2_fp32cast`). Reading, fixed now:
-  - **Fails** (long accuracy < 0.99 at λ = 1): ANNEAL-INHERI2026-10-05 20:53 EDT = false stands on a delivered arm.
-  - **Succeeds** (≥ 0.99): the first ANNEAL s2 is reclassified as undelivered, and ANNEAL-INHERI2026-10-05 20:53 EDT is re-scored on the
+  - **Fails** (long accuracy < 0.99 at λ = 1): ANNEAL-INHERITS = false stands on a delivered arm.
+  - **Succeeds** (≥ 0.99): the first ANNEAL s2 is reclassified as undelivered, and ANNEAL-INHERITS is re-scored on the
     rerun. ANNEAL then also runs on the other escaped RAW-H seeds.
 * §126's verdict waits for this rerun and for RAW-H s1 / s4.
+
+**Note 126-11 (2026-10-05 21:18 EDT; erratum, wording only). "ANNEAL-INHERITS" was corrupted by the doc-writing script.**
+* The script substituted the timestamp for the placeholder "TS", which also matched the end of "ANNEAL-INHERITS". The rule
+  name became "ANNEAL-INHERI<timestamp>" in 8 places: §126's rules and readings, and notes 126-8 and 126-10.
+* All 8 are restored to "ANNEAL-INHERITS". No rule, number or reading changes (`git show` on this commit shows the diff).
+* Theory's patch scripts now use a placeholder that can't occur in text.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
