@@ -33,7 +33,8 @@ def smoke(d):
         return False
     why = [w for w, bad in (("steps %s" % a.get("steps"), int(a.get("steps", 24000)) != 24000),
                             ("sched_scale %s" % a.get("sched_scale"), float(a.get("sched_scale", 1.0)) != 1.0),
-                            ("cpu", str(a.get("device", "")).startswith("cpu") or str(a.get("train_gpu", "")).lower() == "cpu")) if bad]
+                            ("cpu", str(a.get("device", "")).startswith("cpu") or str(a.get("train_gpu", "")).lower() == "cpu"),
+                            ("mem_check %s" % a.get("mem_check"), bool(a.get("mem_check")))) if bad]   # 132-2 (B)
     if why:
         SKIPPED.append((d, why))
     return bool(why)
@@ -92,6 +93,7 @@ def slot(k, rung):
             acc = {"seed": k + o, "long_acc": r.get("long_acc"), "train_acc": r.get("train_acc"), "heldout_n_tables": r.get("heldout_n_tables"), "serial": serial(r.get("donor")), "ext_2048": (r.get("ext_2048") or {}).get("cumulative"),
                    "donor_difftable": r.get("donor_difftable"), "table_swap": r.get("table_swap"), "ood_acc": r.get("ood_acc"),
                    "cert_sample": r.get("cert_sample"), "probe_ophist": r.get("probe_ophist"),
+                   "long_acc_transitive": r.get("long_acc_transitive"),               # 132-2 (A)(ii), descriptive
                    "gpu": r.get("train_gpu", r.get("gpu")), "driver": r.get("train_driver")}
             acc["exact"] = (acc["long_acc"] or 0) >= 0.99; acc["pass"] = bool(acc["exact"] and acc["serial"])
             return {"attempts": att, "status": "accepted", "accepted": acc}
