@@ -215,6 +215,38 @@ with the same code and settings across families.
     agreement between soft and rounded codes.
   - Registered only after the prototype.
 
+## Candidate 4 (the user's idea, via Audit): TEACHER-STATE DISTILLATION (TSD), from a CoT model's hidden states into the carrier
+* **The user's point:** natural-language CoT is a poor training artifact for a latent reasoner. Use the CoT **model's internal
+  state**, not its text.
+* **Mechanism.**
+  - Teacher: a text-CoT GPT-2 on the same task, frozen. Text CoT learns S5 and multiplication (§98 TC 1.0).
+  - Student: §128's carrier.
+  - At every hand-off j, an auxiliary loss pulls the student's carried embedding (W_up(code_j), 768-d) toward the teacher's hidden
+    state at the matching step boundary: the last token of CoT step j, at one layer chosen by a held-out state probe on the
+    teacher and fixed before any student run.
+  - It passes through a learned linear map, with §118 ANCHOR's loss (1 − cos + log-norm gap) and sg on the teacher.
+* **Changes from Audit's draft (Theory):**
+  - **Constant weight, no anneal.** Inference never touches the teacher, so the model is pure latent at test whatever the weight.
+    Annealing to 0 buys only a FINAL-only last phase, and fading an anchor after entry is the §126 ANNEAL / α → 1 collapse pattern.
+    The anneal is a later ablation.
+  - **S5 is a weak test of TSD's specific claim.** Per-step state supervision already solves S5 (§111 READ, §118 ANCHOR 5/5), so
+    the S5 stage checks the mechanism and the entry fix. The question "teacher hidden state beats step text" is decided on
+    **multiplication**, where the latent methods hit the k = 4 wall (§98 GEN-M 0.163 / 0.005) and text CoT is 1.0.
+  - **A text-target control** with the same per-step information isolates the user's claim: the student's own text-path latent of
+    the teacher's step text (§118 ANCHOR in this harness).
+* **Why it may succeed where §119 CODI did not** (0/3; Audit):
+  - alignment at every hand-off, not one token;
+  - it acts through the carrier;
+  - it supervises the **transition** directly, which is the dominant S5 failure (F2a + F2b-transition + dialect, 7 of 10 above).
+* **Scope (honest):** not C4. The teacher's CoT carries step states, as §118's reader does. It is a C1 / C6 / C2 and multiplication
+  tool, not a label-free result. Shortcut check: SERIAL plus the prefix profile (positions 1 and 2 = 1.0).
+* **Cheapest decisive staging:**
+  - **(A)** S5 on §128's carrier, seeds 1–4, no restarts: TSD vs the text-target control. PASS = 4/4 exact at 2,048 + SERIAL,
+    against plain 1/4. Teacher models: reuse a kept S5 TC model if one exists.
+  - **(B)** only after A: 4×4 multiplication, against §98's latent arms and ICoT-SI 0.998.
+  - Literature's check comes first (it is new as scoped only if the per-hand-off hidden-state target through a discrete carrier
+    is). Registration after that, with Audit's budget.
+
 ## Not proposed
 * More entry levers of §127's kind (escape without learning).
 * A global contraction penalty (it fights S5's isometric carry; Literature 7dbdb426).
