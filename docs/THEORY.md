@@ -5320,6 +5320,21 @@ RTX 3090 / 3090 Ti; restart-on-plateau slots as §128).
 * Implementation: the experiments session (fsq120 `--family table --k --m`). Scorer: `theory/score_s132.py`, committed before any
   run.
 
+**Note 132-1 (2026-10-06 07:53 EDT, before any §132 implementation or run; Audit / claude-13's review). MEMORISED can arise at rung 1, plus two
+scoring checks and a naming rule.**
+* **MEMORISED (rung 1).** k = 4 / m = 2 draws from a finite pool of 268 training tables, each seen about 5,700 times over 24k × 64
+  problems. So a weight-stored table lookup is available, unlike rung 2's 6!³ pool.
+  - eval.json reports **train-table accuracy** (2,000 sequences on training tables) beside held-out accuracy, in both rungs.
+  - **MEMORISED = ≥ 2 accepted runs with train-table accuracy ≥ 0.99 and held-out accuracy < 0.5.** It reads as weight-stored lookup,
+    not in-context use.
+  - Precedence: PASS, ENTRY-FAIL, MEMORISED, NOT-LEARNED.
+  - Like any rung-1 result other than PASS, it **stops the ladder** (Audit's condition (1)). Whether rung 2's unmemorisable pool
+    is then worth running is a new decision, not part of §132.
+* **Scorer checks:** a run whose args k / m do not match its rung (s132_k4_* must be k 4 / m 2), or whose eval reports a nonzero
+  held-out overlap, is an **error** and is not a valid attempt. The held-out set size is printed.
+* **Smoke and memory-check runs use non-slot names** (e.g. `s132_k4_smoke`), never `s132_k4_s{seed}`. A smoke args.json inside a slot
+  dir would hide that slot's later attempts.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
