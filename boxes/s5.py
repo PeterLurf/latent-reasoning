@@ -112,6 +112,11 @@ def cumulative(pred, Y):
 
 # ---------------------------------------------------------------- model
 def load_gpt2(dev):
+    try:                                                                    # local hard memory cap (LATENT_MEM_CAP_GB; no-op on the cloud):
+        from boxes import memcap                                            # every model loads GPT-2 here, so every local job is capped
+        memcap.apply(dev)
+    except ImportError:
+        pass
     sd = torch.load(os.path.join(ROOT, "prosqa", "ckpt", "gpt2_pretrained.bin"), map_location="cpu", weights_only=True)
     return bc.GPT2KV(sd).to(dev)
 

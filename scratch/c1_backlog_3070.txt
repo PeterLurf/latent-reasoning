@@ -1,4 +1,8 @@
 # local 3070 backlog: the fp32 contraction filler (same lines as c1_backlog_fp32.txt: shared locks), then docs/LOCAL_BACKLOG.md 3070 entries
+# LOCAL_BACKLOG 3070 #4 (Theory 2026-10-06, priority over the replay pairs): §115 completion - snap115 eval only; peak = estimate, protected by the hard cap (now applied in s5.load_gpt2 for every model)
+5.0 boxes/runs_s5/s108_mk4_s2/eval_s115.json python -u -m boxes.snap115 --run boxes/runs_s5/s108_mk4_s2 --device {DEV}
+5.0 boxes/runs_s5/s108_mk4_s4/eval_s115.json python -u -m boxes.snap115 --run boxes/runs_s5/s108_mk4_s4 --device {DEV}
+5.0 boxes/runs_s5/g105_mask4_s1/eval_s115.json python -u -m boxes.snap115 --run boxes/runs_s5/g105_mask4_s1 --model g97 --device {DEV}
 # §133 / §134 GPU smokes v2 (2026-10-06 15:12): without --probe127 (its step-0 probe needs > the 6 GiB local cap; not a new path - §128 used it on 3090s); the new paths only
 2.0 theory/results/gradflow_s134_cuda.json python -u scratch/gradflow_check.py --paths s134 --device {DEV} --out theory/results/gradflow_s134_cuda.json
 3.0 D:/drain_tmp/smoke133v2_cont64/eval.json python -u -m boxes.fsq120 --family s5 --arm final --seed 1 --steps 60 --sched_scale 0.003 --bs 8 --micro 2 --micro_from 32 --no_cert --ckpt_every 30 --d_q 64 --no_round --test_n 8 --test_len 32 --ext_n 4 --donor_n 8 --margin_n 8 --eval_bs 8 --device {DEV} --out D:/drain_tmp/smoke133v2_cont64
