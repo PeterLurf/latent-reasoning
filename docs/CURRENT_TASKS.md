@@ -73,7 +73,7 @@ unwatched host whose queue ends just bills idle until its watcher restarts).
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (23:39):** §123 / §126 / 112-5 scored and closed. **§127:** VAR rerun with the forward's own group means (127-3); SKIP s2 rerun with the guard only, skip-off decode descriptive (127-4); SKIP Stage 2; b28 STD2 + LR10 redeploy. **§128 registered (e7078432):** five families (S5, FF + held-out CYC / MOD / RDFA), restart-on-plateau, Vast 3090s, awaiting Experiments. Scorers: score_s127.py, score_s128.py. **§124** waits on COPY / BASE s26–28 and EXPOSE s28. Local GPUs are off (user ~23:45).
+* **Theory (04:23):** **§127:** STD2 / LR10 decided false (127-8). VAR delivered, escapes, acc 0 (127-9); its Stage 2 runs s4 → s3 → s1 behind §129, stopping at the first failure. SKIP is the only adoptable arm (b30 / b31 plus the b35 rerun). **§128** running (five families). **§129 registered** (e4f9afa5): head re-draw vs CLOCK-ONLY at the 2k flag, one 3090. **§119:** Coconut did not learn 3/3 (inconclusive); SIM-CoT and the CODI rerun next. **§124:** COPY / BASE s26–27 pending. Scorers: score_s119 / s124 / s127 / s128 / s129.
 * **§97 C6:** complete (GEN-4 and HYB-4 s4-5 fetched).
 * **§98:** ICoT-SI done (0.998 / 0.996); TC/NC done; MASK 4x4 + 5x5 done; COCO 4x4 s1-2 + 5x5 s1 in, rest local; GEN-M rerunning (r1/r2).
 * **§99** kcurr/markov/ctrl done; **§100** MASK2 4x4 done; **§105** done (models local for Theory); **§106** pilot gate failed (106-2); others running (above).
