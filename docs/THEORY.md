@@ -4644,6 +4644,42 @@ consistent signature so far is timing.**
 * **Not run:** resuming the k = 1 = 1.0 FOOTHOLD misses (112-5's lever). §124's question is acquisition count and round,
   and FOOTHOLD is not read as mechanism (124-2), so resumes would not inform it.
 
+**Note 127-7 (2026-10-06 03:12 EDT; descriptive, the seed-2 basin replay (bf16, b28 RTX 3090, driver 595.71; `theory/results/replay_basin_s2/`) read by
+Theory from replay.jsonl; Audit reproduced; 127-5's predictions scored as written). The driver confound is closed. P1 fails, and P2
+fails on the letter at one step. Both seeds make the same first pull attempt; seed 2's fails and its code collapses.**
+* **Parity holds:** loss 4.99 / 4.953 at 1k / 2k, against §120 FINAL s2's 4.98 / 4.95. Plain seed 2 plateaus on the same host
+  and driver where STD2 and LR10 escaped.
+  - **127-6's confound is closed:** STD2's and LR10's ESCAPEs stand. **Stage 2 now runs for both, as registered.**
+* **127-5's predictions, as written:**
+  - **P1 fails.** R²_start ≥ R²_op (3-point running means) at steps 450–600. Seed 2's code also drifts off the item early:
+    R²_op 0.96 → 0.44, R²_start 0.31 → 0.62 by 400–600. It then reverts: at 700, R²_op 0.82 and R²_start 0.45.
+  - **P2 fails on the letter at one logged step:** dmean 0.060 at 650. Otherwise it is ≤ 0.027, and exactly 0 from 700 to
+    2k.
+  - 127-5's reading for a P2 failure ("the decoder reads its code by 2k; the replay is not faithful") does **not** describe
+    this. Parity holds, and dmean is 0 at 2k. So no registered reading applies cleanly, and the outcome is reported as
+    observed.
+* **What separates the seeds (n = 1 each, descriptive):**
+  - **Seed 2 at 650: one pull attempt.** dmean 0.060, code spread across inputs (zb_std_in) 0.725, W_down gradient 10.3.
+    - It fails. By 700 the code's spread collapses to 0.030 (0.021 at 2k), and dmean stays at 0.
+  - **Seed 1's first attempt at 1,050 looks the same:** dmean 0.059, spread 0.698. It also dips, to 0.015 / 0.37 at 1,100.
+    - But the next attempts stick: dmean 0.34 and spread 0.70 at 1,200; R²_next 0.93 by 2k.
+  - **Reading (a hypothesis):** the basin is a **collapse of the code's variance after a failed first pull**, a measured
+    instance of posterior collapse. It is not a failure to leave the item.
+* **Consequences, no new arm:**
+  - **(a)** The VAR rerun (in-forward group-mean residual, w = 1 from step 1 to 2k) is active through 650–700. It is the
+    live test of whether keeping the code's within-group spread up prevents this collapse. Its delivery checks at 500 and
+    2,000 are read with that in mind.
+  - **(b)** The code spread at 700–1,000 (0.02–0.03 in the basin seed, against 0.05–0.14 before it) is a candidate
+    label-free early plateau marker, about 1.3k steps before 123-3's flag. **Descriptive only.** A restart rule built on it
+    needs its own registration and a check on §128's attempts.
+* **LR10 s2 final** (Audit reproduced): escape without learning.
+  - Loss 4.34 at 3k, 4.72 at 4k, final 4.585. Long accuracy 0 at every length, 2,048 at 0, donor at chance; 440 codes, 23.2
+    per state.
+  - The carrier is inflated (row norm 47.2 at 2k).
+  - The same pattern as SKIP s2 and RAW-H. STD2 s2's eval is pending.
+* **Pre-stated for Stage 2:** STD2 and LR10 are unlikely to meet ENTRY-FIX (3/4 exact), given seed 2's drift-back. They run
+  because the rule says so.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
