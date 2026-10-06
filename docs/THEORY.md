@@ -4376,6 +4376,26 @@ with a non-finite guard.**
   The plain bf16 value is logged beside it (descriptive).
 * The scorer counts "nonfinite" log lines. A run above 1 % of its logged steps fails delivery.
 
+**Note 127-4 (2026-10-05 23:31 EDT, before SKIP's rerun or any SKIP Stage 2 run; Literature f12b031b, Audit). SKIP reruns as registered. A
+skip-ablated readout is added as descriptive.**
+* **No design change to SKIP.** Literature's stability lead (LayerScale 2103.17239 / ReZero 2003.04887 scale, a norm on the
+  injected term, a post-entry decay of the skip) is recorded and **not run**.
+  - Each would be a new SKIP variant after seeing data, the loop 127-3 closed: one rerun, the non-finite guard only.
+  - If SKIP is "not deliverable as specified" (> 1 % skipped steps) or fails ENTRY-FIX, a bounded skip is a candidate for
+    a new registration, not a §127 arm.
+* **Where the skip acts.** The skip maps feed q_st only into the **answer decoder**. Segments still hand state forward
+  through W_up(q) alone.
+  - So the registered donor patch at positions 2 / 4 / 6 already tests serial carriage on the slot carrier: the patched
+    code reaches the end only through later segments' W_up path.
+* **Added (descriptive, every SKIP run with an eval.json):** with the skip maps zeroed at test (the decoder reads the slot
+  embedding alone):
+  - long accuracy at 512;
+  - the donor profile;
+  - abl_dloss at 2k (already logged).
+  - A large gap between skip-on and skip-off accuracy means the decoder relies on the skip path. For SKIP, C1 is read on
+    the skip-off donor beside the registered one.
+* No rule changes.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
