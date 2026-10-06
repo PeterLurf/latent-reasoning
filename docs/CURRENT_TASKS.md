@@ -24,6 +24,8 @@ so send to the pipe addresses their messages come from.
 
 **Order (user, via Audit):** C1 > C6 > C4 = C2 > C3 > C5 > C7.
 
+### PAUSE (user, ~23:40 2026-10-05, via Audit): "pause experiments on GPUs for now". Do NOT restart the local queues or workers on the 2070 / 4060 / 3070 (§116 OPDEF s31 / s32 resume, post-hoc jobs) until the user says so. Vast hosts are unaffected unless the user says otherwise.
+
 ### REBOOT (user, ~23:00 2026-10-05, to free the 2070 wedged by PID 6904) - post-reboot checklist (Experiments)
 
 Safe at 23:00: no drain / deploy in flight; local §116 OPDEF s31 (3070) / s32 (4060) checkpoint at every round boundary
