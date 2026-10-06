@@ -167,7 +167,7 @@ class Base119(nn.Module):
             hd, _ = self.dec(torch.cat([Z.to(h.dtype), g.embed(T).to(h.dtype)], 1), pos0=1)
             lgd = self.dec.logits(hd[:, self.c - 1:]).float()
             st = F.cross_entropy(lgd.reshape(-1, lgd.shape[-1]), lab.reshape(-1), reduction="sum") / (B * stage)
-            parts["step"] = st; loss = loss + st
+            parts["step_ce"] = st; loss = loss + st   # (was "step": it overwrote the log record's step number, 2026-10-06)
         return loss, parts
 
     def loss_codi(self, stt, ops, tgt):
