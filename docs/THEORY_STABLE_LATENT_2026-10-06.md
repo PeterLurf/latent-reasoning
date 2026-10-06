@@ -56,6 +56,14 @@ with the same code and settings across families.
 * **COPY (§124) gives the earliest, seed-uniform, sharpest acquisition event** (4/4 at the same round, jumps 0.99, no precursor), against
   BASE (2/4) and EXPOSE (precursors, later).
 * **Partial outcomes:** a state-bearing code at 2k is not enough (3070 s17: R²_next 0.86 → the 3.2 basin).
+* **Exact runs self-correct after late collapses; failures do not** (helper; Theory's recount on the 12 exact runs plus s12_a4000, n 13).
+  - After the L_max 8 step (5k), 11/13 rise by at least 1.0 above their 4.9k–5k loss and revisit the null level (≥ 3.5). Some
+    excursions last up to about 8k steps. All 13 recover to ≤ 0.01 by 24k.
+  - **The depth before the step separates:** loss at 5k is 0.23–2.55 in the exact runs, against 3.34 (s17_a4000) and 4.26
+    (s7_4060ti) in the failures, which re-enter and never recover. This is the same cut as 134-2(b)'s 4.5k statistic, one step
+    later.
+  - So the trained carrier already corrects large late errors once its basin is deep. The open problem is reaching that depth
+    before the L_max 8 step.
 * **End-of-training probes** (§128 S5, kept models):
   - learners hold the state at every length (R² 0.98–1.00);
   - the escape-fail s3 **reverts**: state R² 0.44 at 2k, then about 0 at L 2 / 4 / 8 by 24k, with the current op back at L 8 (0.83).
