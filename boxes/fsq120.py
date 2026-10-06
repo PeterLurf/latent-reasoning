@@ -381,6 +381,12 @@ class FSQ120(nn.Module):
             return self.std2_map(self.up(z0), acc=False)[:, None]
         return self.embed_code(z0)[:, None]
 
+    def copy_write(self, ans):
+        """§134 COPY-ANCHOR writer: [EOT, answer text] -> GPT-2 -> last hidden -> quantised code -> embedding (no bypass: decoded from the code)."""
+        g = self.g; eot = g.embed(torch.full((ans.shape[0], 1), EOT, device=ans.device))
+        h, _ = g(torch.cat([eot, g.embed(ans)], 1), None); qs, q, zb = self.quant(h[:, -1])
+        return self.embed_code(qs), qs, q, zb
+
     def answer_ce(self, e, ans, qs=None):
         """Answer decoder: [EOT, carried embedding] + teacher-forced answer tokens -> CE (summed over tokens, mean rows).
         §127 SKIP: qs (the carried q_st) feeds the skip maps at every position after EOT."""
@@ -823,6 +829,62 @@ def opprobe(m, fam, dev, amp, n=4096, L=8, seed=12703, positions=(2, 4, 8), chun
     return out
 
 
+@torch.no_grad()
+def copy_acc134(m, fam, dev, amp, n_per=2):
+    """§134: copy accuracy - every state's answer text through the copy writer, greedy-decoded from the code alone (exact match)."""
+    was = m.training; m.eval(); S = np.repeat(np.arange(fam.n_states), n_per); ans = torch.tensor(fam.answer_tokens(S), device=dev)
+    with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+        e, qs, q, zb = m.copy_write(ans); out = m.answer_greedy(e, ans.shape[1], qs)
+    m.train(was); return float((out.cpu().numpy() == ans.cpu().numpy()).all(1).mean())
+
+
+@torch.no_grad()
+def copy_codes134(m, fam, dev, amp):
+    """The copy-written (hard) code / z_b / embedding of every state (eval mode)."""
+    ans = torch.tensor(fam.answer_tokens(np.arange(fam.n_states)), device=dev)
+    with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+        e, qs, q, zb = m.copy_write(ans)
+    return torch.round(zb.float()), zb.float()
+
+
+@torch.no_grad()
+def dialect134(m, fam, dev, amp, n=1024, L=8, seed=13401, chunk=512):
+    """§134 dialect probe: for the same true state, does the transition writer ([EOT, code, item]) produce the copy writer's code
+    ([EOT, state text])? Code-identity rate and cos(z_b) over every position of n random chains (start states random), plus by position."""
+    was = m.training; m.eval(); Qc, Zc = copy_codes134(m, fam, dev, amp); s0, x, lab = make_batch(fam, np.random.default_rng(seed), n, L)
+    idn = np.zeros((n, L)); cs = np.zeros((n, L))
+    for i in range(0, n, chunk):
+        sl = slice(i, i + chunk); hs = _probe_chain(m, fam, dev, amp, s0[sl] if fam.name == "s5" else None, x[sl])
+        for t, (zb, qs, e) in enumerate(hs):
+            st = torch.tensor(lab[sl, t], device=dev); z = zb.float()
+            idn[sl, t] = (torch.round(z) == Qc[st]).all(-1).float().cpu().numpy(); cs[sl, t] = F.cosine_similarity(z, Zc[st], dim=-1).cpu().numpy()
+    m.train(was)
+    return {"identity_rate": float(idn.mean()), "cos_mean": float(cs.mean()), "n": n, "L": L,
+            "by_pos": {str(t + 1): {"identity": float(idn[:, t].mean()), "cos": float(cs[:, t].mean())} for t in range(L)}}
+
+
+@torch.no_grad()
+def copy_donor134(m, fam, dev, amp, n=1000, L=16, positions=(2, 4, 8), seed=13402, chunk=500):
+    """Note 134-1: at position j of a transition chain, replace the carried code with the copy-written code of the same true state,
+    then score the chain's final answer (exact). Intact accuracy alongside."""
+    was = m.training; m.eval(); Qc, _ = copy_codes134(m, fam, dev, amp); s0, x, lab = make_batch(fam, np.random.default_rng(seed), n, L)
+    ntok = NST if fam.name == "s5" else 1; res = {"n": n, "L": L}
+    for j in (0,) + tuple(positions):
+        ok = 0
+        for i in range(0, n, chunk):
+            sl = slice(i, i + chunk); B = len(x[sl]); prev = m.start(B, dev, s0[sl] if fam.name == "s5" else None); X = torch.tensor(x[sl], device=dev)
+            with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+                for t in range(L):
+                    h = m.segment(prev, X[:, t]); qs, q, zb = m.quant(h)
+                    if t == j - 1:
+                        qs = Qc[torch.tensor(lab[sl, t], device=dev)].to(qs.dtype)
+                    e = m.embed_code(qs); prev = e[:, None]
+                pred = fam.decode(m.answer_greedy(e, ntok, qs).cpu().numpy())
+            ok += int((pred == lab[sl, -1]).sum())
+        res["intact" if j == 0 else "donor_pos%d" % j] = ok / n
+    m.train(was); return res
+
+
 def mcheck127(m, fam, dev, amp, opt, ng=256):
     """Note 127-1 delivery checks on the fixed probe batch (eval mode; grads by autograd.grad, so .grad is untouched). The two
     gradient checks use its first ng chains (activation memory), the other keys all 1,024. Every check uses training semantics
@@ -1002,6 +1064,9 @@ def main():
     ap.add_argument("--d_q", type=int, default=8, help="§133: code width (z_b dims)"); ap.add_argument("--levels", type=int, default=8, help="§133: FSQ levels")
     ap.add_argument("--soft_beta", type=float, default=0.0, help="§133 SOFT: carried s = (1-b) z_b + b round(z_b) at every hand-off, train and test")
     ap.add_argument("--carrier_ln", action="store_true", help="§133 PIN: parameter-free LayerNorm on z_b before W_up")
+    ap.add_argument("--copy_frac", type=float, default=0.0, help="§134 COPY-ANCHOR: this fraction of each batch's rows are copy rows (another problem's final-answer text -> code -> answer CE, weight 1)")
+    ap.add_argument("--p_hard_start", type=int, default=2000, help="FSQ soft -> hard ramp start step (LOCAL_BACKLOG 4060 #4; default = §120)")
+    ap.add_argument("--p_hard_end", type=int, default=4000, help="FSQ soft -> hard ramp end step (default = §120)")
     ap.add_argument("--micro_from", type=int, default=17, help="--micro applies at L >= this (17 since 2026-10-06; §128 / §133 recipe: 32)")
     ap.add_argument("--probe_only", action="store_true", help="post-hoc (descriptive): probe127 on <out>/model.pt at p_hard 1 -> <out>/eval_probe_posthoc.json")
     ap.add_argument("--check_marker", default=None, help="§128 note 128-1: with --stop_plateau, the first attempt to mkdir this path when its flag fires keeps training")
@@ -1137,6 +1202,7 @@ def main():
     if not a.eval_only:
         last_loss = None
     reest = False; dist_hist = []; var_hist = []; L127 = {}; n_nonfinite = 0
+    n_copy = int(round(a.copy_frac * a.bs)) if a.copy_frac else 0; crng = np.random.default_rng(a.seed + 13400); copy_hist = []   # §134
     if p127 and not a.eval_only and rck is None:                            # note 127-1: probe at step 0 (done before the checkpoint on resume)
         log.write(json.dumps({"step": 0, "probe": probe127(m, fam, dev, amp)}) + "\n"); log.flush()
     s129 = a.save_at_flag or bool(a.resume_2k)
@@ -1148,6 +1214,8 @@ def main():
         L127 = rck["L127"]; n_nonfinite = rck["n_nonfinite"]; last_loss = rck["last_loss"]; hist = rck["hist"]; carried = rck["carried"]
         dist_hist = rck["dist_hist"]; var_hist = rck["var_hist"]; reest = rck["reest"]; t0 = time.time() - rck["elapsed"]; step0 = rck["step"] + 1
         torch.set_rng_state(rck["torch_rng"].cpu()); rng.bit_generator.state = rck["np_rng"]
+        if "crng" in rck:                                                   # §134 copy-row draws
+            crng.bit_generator.state = rck["crng"]; copy_hist = rck["copy_hist"]
         if dev.startswith("cuda") and rck.get("cuda_rng") is not None:
             torch.cuda.set_rng_state(rck["cuda_rng"].cpu(), device=dev)
         log.write(json.dumps({"step": rck["step"], "resumed": a.resume}) + "\n"); log.flush(); print("RESUMED at step", rck["step"], flush=True)
@@ -1155,7 +1223,7 @@ def main():
     for step in range(step0, 0 if a.eval_only else a.steps + 1):
         for gr in opt.param_groups:
             gr["lr"] = lr_at(a.lr, gr, step, a.steps)
-        m.p_hard = 0.0 if step <= 2000 * sc else min(1.0, (step - 2000 * sc) / (2000 * sc)); m.train()
+        m.p_hard = 0.0 if step <= a.p_hard_start * sc else min(1.0, (step - a.p_hard_start * sc) / ((a.p_hard_end - a.p_hard_start) * sc)); m.train()
         if a.anneal:                                                        # §126: lam 0 -> 1 over 2k-6k; FSQ soft -> hard over 6k-8k
             m.lam = 0.0 if step <= 2000 * sc else min(1.0, (step - 2000 * sc) / (4000 * sc))
             m.distill_on = 2000 * sc < step <= 6000 * sc
@@ -1167,18 +1235,18 @@ def main():
         m.noise = (a.dither if step > 2000 * sc else 0.0) if a.no_round else (a.fsq_dither if step > 4000 * sc else 0.0)
         var_w = (a.var_w * (1.0 if step <= 2000 * sc else max(0.0, 1 - (step - 2000 * sc) / (4000 * sc)))) if a.var_res else 0.0
         m.var_on = var_w > 0; m._var = []
-        L = int(rng.integers(1, lmax_at(step / sc) + 1)); s0, x, lab = make_batch(fam, rng, a.bs, L)
+        L = int(rng.integers(1, lmax_at(step / sc) + 1)); s0, x, lab = make_batch(fam, rng, a.bs - n_copy, L)   # §134: copy rows take n_copy of bs
         if L <= 2:                                                          # note 120-1: transitions labelled by short problems
             drawn[s0, x[:, 0]] = True
             if L == 2:
                 drawn[lab[:, 0], x[:, 1]] = True
         tm = None
         if a.arm == "trace":
-            tm = torch.ones(a.bs, L, dtype=torch.bool, device=dev) if fam.name == "s5" else torch.tensor(x == RD, device=dev)
+            tm = torch.ones(len(x), L, dtype=torch.bool, device=dev) if fam.name == "s5" else torch.tensor(x == RD, device=dev)
         nmb = a.micro if L >= a.micro_from else 1; opt.zero_grad(); tot = 0.0            # gradient accumulation at L > 16 (OOM, 2026-10-05; was L >= 32,
         #   but L is drawn U(1, L_max): L 17-31 batches ran at micro 1 and OOMed 8 GB cards at 14k, s130chk_s5_s17_3070, 2026-10-06). Memory only; no-op at --micro 1
         for mi in range(nmb):
-            sl = slice(mi * a.bs // nmb, (mi + 1) * a.bs // nmb)
+            sl = slice(mi * len(x) // nmb, (mi + 1) * len(x) // nmb)
             with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
                 loss, _, _, _ = m.chain(m.start(len(x[sl]), dev, s0[sl] if fam.name == "s5" else None), torch.tensor(x[sl], device=dev), lab[sl],
                                         None if tm is None else tm[sl])
@@ -1188,6 +1256,11 @@ def main():
                 dl = torch.stack(m._dist).mean(); m._dist = []; loss = loss + dl; dist_hist.append(float(dl.detach()))
             m._dist = []
             (loss / nmb).backward(); tot += loss.item() / nmb
+        if n_copy:                                                          # §134 COPY-ANCHOR: another problem's final answer -> copy writer -> CE
+            cst = lab[crng.integers(0, len(lab), n_copy), -1]; cans = torch.tensor(fam.answer_tokens(cst), device=dev)
+            with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+                ce_, cqs_, _, _ = m.copy_write(cans); lc = m.answer_ce(ce_, cans, cqs_)
+            lc.backward(); tot += lc.item(); copy_hist.append(lc.item())
         gnorm_ = torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0)
         if p127 and not (math.isfinite(tot) and bool(torch.isfinite(gnorm_))):   # note 127-3 guard: skip the update, log it
             bad = "loss" if not math.isfinite(tot) else next((n_ for n_, p_ in m.named_parameters() if p_.grad is not None and not bool(torch.isfinite(p_.grad).all())), "grad_norm")
@@ -1212,6 +1285,10 @@ def main():
                 rec.update({"lam": m.lam, "distill": float(np.mean(dist_hist)) if dist_hist else None}); dist_hist = []
             if a.var_res:
                 rec.update({"var_w": var_w, "var": float(np.mean(var_hist)) if var_hist else None}); var_hist = []
+            if n_copy:                                                      # §134: copy loss every log line, copy accuracy every 500
+                rec["copy_loss"] = float(np.mean(copy_hist)) if copy_hist else None; copy_hist = []
+                if step % 500 == 0 or step == a.steps:
+                    rec["copy_acc"] = copy_acc134(m, fam, dev, amp); m.train()
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True); L127[step] = rec["loss"]
         if m.skip and step % int(1000 * sc) == 0:                           # note 127-3: skip-map norms every 1k (descriptive)
             log.write(json.dumps({"step": step, "skip_norms": [float(w_.norm()) for w_ in m.skip_w.detach().float()]}) + chr(10)); log.flush()
@@ -1219,6 +1296,9 @@ def main():
             log.write(json.dumps({"step": step, "zb_std_in": zb_std_in(m, dev)}) + "\n"); log.flush(); m.train()
         if p127 and a.resume_2k and step in (int(700 * sc), int(1200 * sc)):  # note 129-1: phase-2 probes at clock 700 / 1,200 too
             log.write(json.dumps({"step": step, "probe": probe127(m, fam, dev, amp)}) + chr(10)); log.flush(); m.train()
+        if n_copy and step == int(2000 * sc):                               # §134 mechanism probes at 2k (the end ones go to eval.json)
+            log.write(json.dumps({"step": step, "s134": {"dialect": dialect134(m, fam, dev, amp), "copy_donor": copy_donor134(m, fam, dev, amp),
+                                                        "ophist": opprobe(m, fam, dev, amp)}}) + "\n"); log.flush(); m.train()
         if p127 and step == int(2000 * sc):                                 # note 127-1: probe at 2k (before any stop)
             log.write(json.dumps({"step": step, "probe": probe127(m, fam, dev, amp)}) + "\n"); log.flush(); m.train()
         if a.stop_plateau and step == int(2000 * sc) and L127:              # 123-3's flag (log steps nearest 100 / 1k / 2k)
@@ -1254,7 +1334,8 @@ def main():
             torch.save({"model": m.state_dict(), "opt": opt.state_dict(), "torch_rng": torch.get_rng_state(),
                         "cuda_rng": torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else None, "np_rng": rng.bit_generator.state, "drawn": drawn,
                         "step": step, "L127": L127, "n_nonfinite": n_nonfinite, "last_loss": last_loss, "hist": hist, "carried": carried,
-                        "dist_hist": dist_hist, "var_hist": var_hist, "reest": reest, "elapsed": time.time() - t0}, cp + ".tmp")
+                        "dist_hist": dist_hist, "var_hist": var_hist, "reest": reest, "elapsed": time.time() - t0,
+                        "crng": crng.bit_generator.state, "copy_hist": copy_hist}, cp + ".tmp")
             os.replace(cp + ".tmp", cp); log.write(json.dumps({"step": step, "ckpt": "ckpt_last.pt"}) + "\n"); log.flush()
         if a.stop_after and step >= a.stop_after:                           # resume-parity test only
             log.close(); print("STOP_AFTER", step, flush=True); return
@@ -1340,6 +1421,10 @@ def main():
                            "donor": donor(m, fam, dev, amp, n=a.donor_n)}
         m.skip_w.data.copy_(w_keep)
     res["eval_sec"] = round(time.time() - t1)
+    if a.copy_frac and not a.eval_only:                                     # §134 mechanism at the end
+        res["s134"] = {"copy_frac": a.copy_frac, "n_copy_rows": int(round(a.copy_frac * a.bs)), "copy_acc": copy_acc134(m, fam, dev, amp),
+                       "dialect": dialect134(m, fam, dev, amp), "copy_donor": copy_donor134(m, fam, dev, amp), "ophist": opprobe(m, fam, dev, amp)}
+    res["p_hard_ramp"] = [a.p_hard_start, a.p_hard_end]
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     if os.path.exists(os.path.join(a.out, "ckpt_last.pt")):                # retention (user 2026-10-06): the checkpoint goes once eval.json exists
         os.remove(os.path.join(a.out, "ckpt_last.pt"))

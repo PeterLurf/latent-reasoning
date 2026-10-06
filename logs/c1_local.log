@@ -775,3 +775,35 @@
 14:58:54 bl2070b backlog worker exit (stop)
 14:59:37 c2070 backlog worker v2 start (cap 6.0 GiB): scratch/c1_backlog_2070.txt on cuda:2 (nvidia-smi 0 'RTX 2070', limit 6656 MiB of 8192)
 14:59:39 c2070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_mod_s2/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_mod_s2
+15:01:43 c3070 done rc 0 out yes peak_card_mem 4493 MiB (measured 4.5 GiB) : theory/results/replay_x/3070_s515.jsonl.done
+15:01:43 c3070 start: python -u scratch/gradflow_check.py --paths s133 --device cuda:1 --out theory/results/gradflow_s133_cuda.json
+15:02:00 c3070 done rc 0 out yes peak_card_mem 1579 MiB (measured 2.0 GiB) : theory/results/gradflow_s133_cuda.json
+15:02:01 c3070 start: python -u -m boxes.fsq120 --family s5 --arm final --seed 1 --steps 60 --sched_scale 0.003 --bs 8 --micro 2 --micro_from 32 --no_cert --probe127 --ckpt_every 30 --d_q 64 --no_round --test_n 8 --test_len 32 --ext_n 4 --donor_n 8 --margin_n 8 --eval_bs 8 --device cuda:1 --out D:/drain_tmp/smoke133_cont64
+15:02:21 c3070 done rc 1 out NO peak_card_mem 5587 MiB (measured 3.0 GiB) : D:/drain_tmp/smoke133_cont64/eval.json
+15:02:22 c3070 start: python -u -m boxes.fsq120 --family s5 --arm final --seed 1 --steps 60 --sched_scale 0.003 --bs 8 --micro 2 --micro_from 32 --no_cert --probe127 --ckpt_every 30 --d_q 16 --test_n 8 --test_len 32 --ext_n 4 --donor_n 8 --margin_n 8 --eval_bs 8 --device cuda:1 --out D:/drain_tmp/smoke133_fsq16
+15:02:42 c3070 done rc 1 out NO peak_card_mem 5585 MiB (measured 3.0 GiB) : D:/drain_tmp/smoke133_fsq16/eval.json
+15:02:43 c3070 start: python -u -m boxes.fsq120 --family s5 --arm final --seed 1 --steps 60 --sched_scale 0.003 --bs 8 --micro 2 --micro_from 32 --no_cert --probe127 --ckpt_every 30 --d_q 64 --test_n 8 --test_len 32 --ext_n 4 --donor_n 8 --margin_n 8 --eval_bs 8 --device cuda:1 --out D:/drain_tmp/smoke133_fsq64
+15:03:03 c3070 done rc 1 out NO peak_card_mem 5591 MiB (measured 3.0 GiB) : D:/drain_tmp/smoke133_fsq64/eval.json
+15:03:04 c3070 start: python -u -m boxes.fsq120 --family s5 --arm final --seed 1 --steps 60 --sched_scale 0.003 --bs 8 --micro 2 --micro_from 32 --no_cert --probe127 --ckpt_every 30 --d_q 16 --soft_beta 0.1 --test_n 8 --test_len 32 --ext_n 4 --donor_n 8 --margin_n 8 --eval_bs 8 --device cuda:1 --out D:/drain_tmp/smoke133_soft16
+15:03:24 c3070 done rc 1 out NO peak_card_mem 5589 MiB (measured 3.0 GiB) : D:/drain_tmp/smoke133_soft16/eval.json
+15:03:26 c3070 start: python -u -m boxes.fsq120 --family s5 --arm final --seed 1 --steps 60 --sched_scale 0.003 --bs 8 --micro 2 --micro_from 32 --no_cert --probe127 --ckpt_every 30 --d_q 64 --soft_beta 0.1 --test_n 8 --test_len 32 --ext_n 4 --donor_n 8 --margin_n 8 --eval_bs 8 --device cuda:1 --out D:/drain_tmp/smoke133_soft64
+15:03:45 c3070 done rc 1 out NO peak_card_mem 5587 MiB (measured 3.0 GiB) : D:/drain_tmp/smoke133_soft64/eval.json
+15:03:47 c3070 start: python -u -m boxes.fsq120 --family s5 --arm final --seed 1 --steps 60 --sched_scale 0.003 --bs 8 --micro 2 --micro_from 32 --no_cert --probe127 --ckpt_every 30 --d_q 64 --no_round --dither 0.25 --test_n 8 --test_len 32 --ext_n 4 --donor_n 8 --margin_n 8 --eval_bs 8 --device cuda:1 --out D:/drain_tmp/smoke133_noise64
+15:04:06 c3070 done rc 1 out NO peak_card_mem 5587 MiB (measured 3.0 GiB) : D:/drain_tmp/smoke133_noise64/eval.json
+15:04:08 c3070 start: python -u -m boxes.fsq120 --family s5 --arm final --seed 1 --steps 60 --sched_scale 0.003 --bs 8 --micro 2 --micro_from 32 --no_cert --probe127 --ckpt_every 30 --d_q 64 --no_round --carrier_ln --test_n 8 --test_len 32 --ext_n 4 --donor_n 8 --margin_n 8 --eval_bs 8 --device cuda:1 --out D:/drain_tmp/smoke133_pin64
+15:04:27 c3070 done rc 1 out NO peak_card_mem 5615 MiB (measured 3.0 GiB) : D:/drain_tmp/smoke133_pin64/eval.json
+15:04:29 c3070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_s5_s3/args.json --probe_only --device cuda:1 --out boxes/runs_fsq/s128_s5_s3
+15:04:41 c3070 done rc 0 out yes peak_card_mem 4405 MiB (measured 2.5 GiB) : boxes/runs_fsq/s128_s5_s3/eval_probe_posthoc.json
+15:04:44 c3070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_s5_s1/args.json --probe_only --device cuda:1 --out boxes/runs_fsq/s128_s5_s1
+15:04:54 c3070 done rc 0 out yes peak_card_mem 4405 MiB (measured 2.5 GiB) : boxes/runs_fsq/s128_s5_s1/eval_probe_posthoc.json
+15:04:54 c2070 done rc 0 out yes peak_card_mem 1514 MiB (measured 3.0 GiB) : boxes/runs_fsq/s128_mod_s2/eval_growth.json
+15:04:56 c2070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_mod_s3/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_mod_s3
+15:04:57 c3070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_s5_s102/args.json --probe_only --device cuda:1 --out boxes/runs_fsq/s128_s5_s102
+15:05:08 c3070 done rc 0 out yes peak_card_mem 4405 MiB (measured 2.5 GiB) : boxes/runs_fsq/s128_s5_s102/eval_probe_posthoc.json
+15:05:11 c3070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_s5_s104/args.json --probe_only --device cuda:1 --out boxes/runs_fsq/s128_s5_s104
+15:05:22 c3070 done rc 0 out yes peak_card_mem 4405 MiB (measured 2.5 GiB) : boxes/runs_fsq/s128_s5_s104/eval_probe_posthoc.json
+15:05:30 c3070 start: python -u scratch/replay_basin.py --seed 516 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:1 --out theory/results/replay_x/3070_s516.jsonl && echo ok > theory/results/replay_x/3070_s516.jsonl.done
+15:10:11 c2070 done rc 0 out yes peak_card_mem 1521 MiB (measured 3.0 GiB) : boxes/runs_fsq/s128_mod_s3/eval_growth.json
+15:10:13 c2070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_mod_s4/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_mod_s4
+15:10:32 c3070 done rc 0 out yes peak_card_mem 4493 MiB (measured 4.5 GiB) : theory/results/replay_x/3070_s516.jsonl.done
+15:10:41 c3070 start: python -u scratch/replay_basin.py --seed 517 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:1 --out theory/results/replay_x/3070_s517.jsonl && echo ok > theory/results/replay_x/3070_s517.jsonl.done
