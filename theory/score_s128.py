@@ -120,7 +120,7 @@ def slot(fam, k):
             nf = nonfinite_share(d)
             ok = (r.get("long_acc") or 0) >= 0.99 and nf <= 0.01
             acc = {"seed": k + o, "long_acc": r.get("long_acc"), "serial": serial(r.get("donor")), "nonfinite_share": nf,
-                   "ext_2048": (r.get("ext_2048") or {}).get("cumulative"), "cert_holds": (r.get("cert") or {}).get("holds"),
+                   "ext_2048": (r.get("ext_2048") or {}).get("cumulative"), "cert_holds": (load(d, "eval_cert.json") or r.get("cert") or {}).get("holds"),
                    "rho_ff": rho_ff(load(d, "eval_contraction_fp32.json")), "gpu": r.get("train_gpu", r.get("gpu"))}
             if fam in NST:
                 c = load(d, "eval_cert.json") or r.get("cert") or {}
