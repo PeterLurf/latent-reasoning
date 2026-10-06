@@ -188,7 +188,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 98 | Step 2a: multiplication vs ICoT-SI, Coconut, text CoT | not met at either size (GEN-M 0.163 / 0.005; TC 1.0; ICoT-SI 0.998 / 0.996); the k = 4 hand-off wall | closed |
 | 99 | Speeding up the latent hand-off (k-curriculum, standardised slots, text-first, combo) | no arm accelerates (all censored; best partials TF-SLOT 0.37, STD 0.42) | closed |
 | 100 | Shorter silent stretches: multiplication at k = 2 (GEN2, MASK2) | 4×4: M1, SOTA (1.000 vs 0.998), C3 (0.89×) met, C1 not; 5×5: not met (GEN2 0.09) | closed |
-| 101 | Snap-strength dose-response (β_min 1 / 0.1 / 0.01 / 0) on S5 | registered | **open** |
+| 101 | Snap-strength dose-response (β_min 1 / 0.1 / 0.01 / 0) on S5 | **smallest passing β_min = 0.01** (2/3; β 0 1/3): a weak attractor suffices, "soft snap" is the honest design; failing seeds collapse the carrier norm after chunk 1; mixed GPUs stated | closed |
 | 102 | State in depth: gated slot-to-slot residual path (4×4, in §99's harness) | does not accelerate (all censored; test 0.01–0.17) | closed |
 | 103 | Filtered self-training by length (C4 inside the LM, S5) | SELF not met: 0 / 0.9615 / 0.9585 at 512 from final answers only; pseudo-label precision ~0.98 caps it | closed |
 | 104 | Serial causal use of slots: donor patching, blocking (§92, §97; eval only) | SERIAL not met: §92 2/5; §97 0/3 with donor latents ignored (state recomputed from visible ops) | closed |
@@ -4950,6 +4950,26 @@ clause on rounded codes.**
   made for it.
   - The exact §123 seeds' band, for comparison, is 0.146–0.180.
 * Exact-recovery share and ρ₁ are reported beside the clause for every exact seed.
+
+**§101 result (2026-10-06 05:47 EDT; scored by `theory/score_s101.py`; the decisive b0.01 s3 is in). The smallest passing β_min is 0.01: a weak
+attractor suffices.**
+
+| β_min | Cumulative 512 (s1 / s2 / s3) | 2,048 | Passing seeds | Arm | GPUs |
+|---|---|---|---|---|---|
+| 1 | 1.0 / 1.0 / 1.0 | 1.0 / 1.0 / 1.0 | 3/3 | PASS | A5000 |
+| 0.1 | 0.9995 / 0.0005 / 1.0 | 1.0 / 0 / 1.0 | 2/3 | PASS | A5000 |
+| **0.01** | 0 / 0.9995 / 1.0 | 0 / 0.996 / 1.0 | **2/3** | **PASS** | RTX 3090 |
+| 0 | 0 / 0 / 0.9965 | 0 / 0 / 0.988 | 1/3 | not met | A5000 (s1, s3), 3090 (s2) |
+
+* Zero-removal after the first ablated slot is ≤ 0.007 in every cell, so the latents are used wherever a seed passes.
+* **Registered reading, "only 0.01 or 0.1":** a weak attractor suffices, and "soft snap" is the honest design. β_min = 0 (no
+  discrete correction) is exact in only 1/3 seeds.
+* **Descriptive.** Every failing seed shows a carrier-norm drop after the first chunk, held for the rest of the chain:
+  b0.01 s1 4.96 → 3.31; b0 s1 4.88 → 3.09; b0 s2 4.58 → 4.19; b0.1 s2 to 3.82.
+  - Passing seeds hold about 3.96 throughout (u_code_norm_ratio 0.94–1.0, against 0.77–0.88 in the failing seeds that
+    collapsed).
+* **Caveat:** the arms trained on different GPU classes (A5000 against RTX 3090). Seed counts are per arm, so there is no
+  within-seed comparison across β, but the GPU sensitivity of the basins (125-2) is stated.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
