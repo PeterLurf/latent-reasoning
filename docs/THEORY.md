@@ -4754,6 +4754,20 @@ cumulative at 512).
 * Scorer: `theory/score_s129.py`, committed before any run.
 * Dirs: `boxes/runs_fsq/s129_s5_s{seed}` (REDRAW) and `s129_s5_s{seed}_clock`.
 
+**Note 127-8 (2026-10-06 04:19 EDT; Stage 2, scored by `theory/score_s127.py`; Audit reproduced). STD2 and LR10 are decided: ENTRY-FIX = false,
+ADOPT = false. SKIP is the only adoptable arm.**
+* **Seed 4 plateaus in both arms** (RTX 3090, driver 595.71; both delivered):
+  - **LR10 s4:** 8.49 / 5.015 / 4.789 at 100 / 1k / 2k; LR ratio 10 at every check.
+  - **STD2 s4:** 8.40 / 4.982 / 4.948; row norm 0.53–0.94× wte.
+* With seed 2 at long accuracy 0 (127-7), at most 2/4 seeds can be exact in each arm. **ENTRY-FIX and ADOPT are false**
+  whatever s1 / s3 do. The scorer now decides this as soon as two seeds can no longer be exact.
+* **Remaining cells (cost):**
+  - STD2 / LR10 S5 s1 / s3 are already running and **continue**. They are descriptive: does "escape without learning"
+    (127-7) hold beyond seed 2?
+  - The STD2 / LR10 flip-flop cells (b39, not started) are **not run**. They could only feed a guard on a decided arm.
+* **SKIP:** ADOPT still needs its s2 rerun not to plateau (b35, guard only), s1 / s3 / s4 exact (b30 / b31) and the FF guard.
+  - Given s2's drift-back and every escaped seed so far at 0, it is unlikely. That is stated, not used.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

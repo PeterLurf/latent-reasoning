@@ -175,8 +175,11 @@ def main():
         else:
             valid = True if dv and all(v is True for v in dv.values()) else "checks pending"
         decided = [v for v in s5.values() if v["plateau"] is not None and (v["plateau"] or v["status"] == "done")]
+        not_exact = [v for v in decided if v["plateau"] or (v["long_acc"] or 0) < 0.99]   # seeds that can no longer count as exact
         if esc is False:
             ef = False
+        elif len(not_exact) >= 2 or sum(bool(v["plateau"]) for v in decided) > 1:
+            ef = False                                                       # decided early: at most 2/4 can be exact
         elif len(decided) < 4:
             ef = "incomplete (%d / 4)" % len(decided)
         else:
