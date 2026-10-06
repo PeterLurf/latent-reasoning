@@ -1,0 +1,20 @@
+{
+ "base119.coconut.stage0.ce": 27.68441390991211,
+ "base119.coconut.stage3.ce": 107.90179443359375,
+ "base119.coconut.special": 1.8874013423919678,
+ "base119.simcot.stage3.ce": 95.05641174316406,
+ "base119.simcot.stage3.step": 1568.2841796875,
+ "base119.simcot.step.theta": 164.33860778808594,
+ "base119.simcot.step.phi": 1559.64794921875,
+ "base119.codi.student": 52.543148040771484,
+ "base119.codi.student.lora": 1.4679325819015503,
+ "base119.codi.student.prj": 52.522640228271484,
+ "base119.codi.teacher": 0.5846712589263916,
+ "base119.codi.teacher.lora": 0.5846712589263916,
+ "base119.codi.kd": 5.318233489990234,
+ "base119.codi.kd.lora": 0.11004269868135452,
+ "base119.codi.kd.prj": 5.317094802856445,
+ "base119.codi.base_frozen": 1.0,
+ "_status": "PASS",
+ "_zero_terms": []
+}
