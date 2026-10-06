@@ -5034,6 +5034,10 @@ open.**
 * **SKIP's FF guard is met: FF s1 / s2 long accuracy 1.0**, 0 non-finite steps (delivery read per 127-10).
 * SKIP's ENTRY-FIX still needs s1 and s3 exact (b30). The ρ clause reads ρ₁ (127-12). ADOPT is read on cost against the
   control.
+* **Outcome (2026-10-06 09:28 EDT; Audit reproduced): the unstopped plain s4 run (`s127_s5_ctrl_s4_full`, RTX 3090, driver 595.71) ends at the
+  null:** loss 4.551 / 4.922 / 4.539 at 100 / 1k / 2k (identical to the stopped ctrl s4), 4.59 at 4k, 4.69 at 24k; long accuracy 0,
+  2,048 at 0, donor at chance. By the reading fixed above, **seed 4 is a basin seed on this card, and "SKIP rescued a basin seed" is
+  earned (n = 1).** The borderline 2k flag (0.922) was a true positive here.
 
 **§124 result (2026-10-06 06:43 EDT; scored by `theory/score_s124.py`, all 12 runs; each seed's three arms on one card type (s26–27
 RTX 3090, s28 A10, s29 RTX 4090); Audit reproduced). Descriptive: both COPY and plain exposure lift acquisition. COPY is uniform
@@ -5229,8 +5233,8 @@ stays.**
   - It never broke a learner (plain s1 learns, and so does SKIP s1).
   - Its trained chains run on the slot carrier alone (skip-off 0.999 / 1.0, SERIAL).
   - ρ₁ (127-12) is 0.183 in s4 (s1 pending). FF guard 2/2.
-* **Seed 4 is open (127-13).** SKIP s4 escaped and became exact where the plain recipe flagged at 2k, borderline. The unstopped
-  plain s4 run (b42) decides whether "rescued a basin seed" is earned.
+* **Seed 4 (127-13, decided):** SKIP s4 escaped and became exact, while the unstopped plain s4 ends at the null (4.69 at 24k,
+  accuracy 0). **SKIP rescued a basin seed (n = 1).**
 * **Mechanism notes kept (descriptive):**
   - the code-variance collapse at about 650 (127-7) is common and mostly transient across cards (§130);
   - stopping the collapse (VAR) fills the code with non-state content (127-9);
