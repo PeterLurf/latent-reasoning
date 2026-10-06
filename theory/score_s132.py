@@ -6,7 +6,8 @@ PASS. Restart-on-plateau slots as §128: slot k in 1..4 tries seeds k, k+100, k+
 attempt whose 123-3 flag does not fire. eval.json: long_acc (cumulative 512 on held-out tables), ext_2048, donor (same-table),
 donor_difftable, table_swap, ood_acc, cert_sample, probe_ophist (descriptive).
 Per rung: PASS = >= 3/4 slots exact (>= 0.99) and SERIAL (same-table donor >= 0.90, recipient - chance < 0.10 at every position);
-ENTRY-FAIL = >= 2 slots exhaust their attempts; NOT-LEARNED = >= 2 accepted runs below 0.99. §132's verdict is rung 2's; a rung-1
+ENTRY-FAIL = >= 2 slots exhaust their attempts; MEMORISED (132-1) = >= 2 accepted runs with train-table accuracy >= 0.99 and
+held-out < 0.5; NOT-LEARNED = >= 2 accepted runs below 0.99. Errors: args k / m not matching the rung, held-out overlap != 0. §132's verdict is rung 2's; a rung-1
 failure stops the ladder and is the verdict ("stops at rung 1: ...").
 Audit nits: smoke dirs (args steps != 24000 or sched_scale != 1 or cpu) are skipped and printed; a run before 2k is "running
 (phase 1)"; an eval.json whose log has no 2k decision is an error row; accepted runs on more than one GPU name print a warning.
@@ -80,7 +81,15 @@ def slot(k, rung):
         if pl is False:
             if r is None:
                 return {"attempts": att, "status": "running", "accepted": None}
-            acc = {"seed": k + o, "long_acc": r.get("long_acc"), "serial": serial(r.get("donor")), "ext_2048": (r.get("ext_2048") or {}).get("cumulative"),
+            a_ = load(d, "args.json") or {}; kk, mm = {"k4": (4, 2), "k6": (6, 3)}[rung]
+            bad = []
+            if (a_.get("k"), a_.get("m")) != (kk, mm):
+                bad.append("args k/m %s/%s != %s" % (a_.get("k"), a_.get("m"), rung))
+            if r.get("heldout_overlap", 0):
+                bad.append("held-out overlap %s != 0" % r.get("heldout_overlap"))
+            if bad:                                                          # 132-1: not a valid run of this rung
+                ERRORS.extend((d, b_) for b_ in bad); return {"attempts": att, "status": "error", "accepted": None}
+            acc = {"seed": k + o, "long_acc": r.get("long_acc"), "train_acc": r.get("train_acc"), "heldout_n_tables": r.get("heldout_n_tables"), "serial": serial(r.get("donor")), "ext_2048": (r.get("ext_2048") or {}).get("cumulative"),
                    "donor_difftable": r.get("donor_difftable"), "table_swap": r.get("table_swap"), "ood_acc": r.get("ood_acc"),
                    "cert_sample": r.get("cert_sample"), "probe_ophist": r.get("probe_ophist"),
                    "gpu": r.get("train_gpu", r.get("gpu")), "driver": r.get("train_driver")}
@@ -96,11 +105,14 @@ def rung_verdict(rung):
     n_pass = sum(bool(v["accepted"] and v["accepted"]["pass"]) for v in sl.values())
     n_notlearned = sum(bool(v["accepted"] and not v["accepted"]["exact"]) for v in sl.values())
     n_exh = sum(v["status"] == "exhausted" for v in sl.values())
+    n_mem = sum(bool(v["accepted"] and (v["accepted"]["train_acc"] or 0) >= 0.99 and (v["accepted"]["long_acc"] or 0) < 0.5) for v in sl.values())
     decided = sum(1 for v in sl.values() if v["status"] == "exhausted" or (v["status"] == "accepted" and v["accepted"] is not None))
     if n_pass >= 3:
         verdict = "PASS"
     elif n_exh >= 2:
         verdict = "ENTRY-FAIL"
+    elif n_mem >= 2:
+        verdict = "MEMORISED"                                                # 132-1: train-table exact, held-out < 0.5
     elif n_notlearned >= 2:
         verdict = "NOT-LEARNED"
     elif decided == 4:
@@ -112,7 +124,7 @@ def rung_verdict(rung):
         print("WARNING (%s): accepted runs span GPU names %s (125-2)" % (rung, sorted(map(str, gpus))))
     for k, v in sl.items():
         a = v["accepted"]
-        print(rung, "slot", k, v["status"], [(x["seed"], x["plateau"]) for x in v["attempts"]], a and {x: a[x] for x in ("seed", "long_acc", "serial", "ext_2048", "pass")})
+        print(rung, "slot", k, v["status"], [(x["seed"], x["plateau"]) for x in v["attempts"]], a and {x: a[x] for x in ("seed", "long_acc", "train_acc", "heldout_n_tables", "serial", "ext_2048", "pass")})
     return sl, verdict
 
 
