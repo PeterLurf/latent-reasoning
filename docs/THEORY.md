@@ -214,7 +214,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 124 | Does reading a given state fix self-training's lottery? §112 f = 0.1 + copy objective vs exposure control | **descriptive** (MECH-112 and NOT-112-4 both false): COPY 4/4 acquired, all at L5; EXPOSE 4/4 (L5–L8); BASE 2/4. COPY is the only arm with serial carriage (2/4: s26, s27 meet C4-qualified + C1 + C2) | closed |
 | 125 | Readable bottleneck from step 0: standardised carried code vs the soft-phase no-read basin (task-agnostic, §120 harness) | **untested**: the EMA standardisation was not in force at 2k (carried norm 35); STD s2 plateaued; other runs held | closed (untested) |
 | 126 | Is the bottleneck the cause of the soft-phase basin? RAW-H vs ANNEAL (stop rule → restart-on-plateau) | **BOTTLENECK-CAUSE** (RAW-H s1–3 escape the 2k flag; every bottlenecked s2 plateaus) **without ANNEAL-INHERITS** (s2 0 in both casts): the wide carrier enters but doesn't learn long chains (0.846 / 0 / 0); restart-on-plateau is the procedure; s4 descriptive | closed |
-| 127 | Reliable entry without restarts? VAR (item-residual variance) / SKIP (skip-to-decoder) / STD2 (§125-v2) / LR10 on §120's harness vs restart-on-plateau | registered | **open** |
+| 127 | Reliable entry without restarts? VAR / SKIP / STD2 / LR10 on §120's harness vs restart-on-plateau | **no arm adopted** (ENTRY-FIX false in all four): escaping the 2k flag is easy, learning afterwards fails (escape-without-learning dominates → §131); SKIP 2/4 exact vs plain 1/4 (descriptive); restart-on-plateau stays | closed |
 | 128 | One recipe, five state-tracking families (S5, FF + held-out CYC / MOD / RDFA), restart-on-plateau; FAMILY-PASS = 3/4 exact + SERIAL (+ CLOSED) | registered | **open** |
 | 129 | Where does the entry basin live? Head-only re-draw at the 2k flag vs a CLOCK-ONLY warm restart (S5, 4 flagged seeds): LR / HEAD / BODY | registered | **open** |
 | 130 | Early label-free plateau marker (code variance at ~1k): fit on 4060 replays, frozen, tested cross-card (3070, primary) and same-card | **no PASS** (primary P 0.70, R 0.78 on 17 3070 seeds; 0.60 in-sample): the early marker does not predict the 2k plateau; the collapse at ~650 is common and transient; the 2k flag fires after early pulls | closed (SAME pending, descriptive) |
@@ -5204,6 +5204,36 @@ clarifications.**
   which is conservative. A FLAG4 hit there would be a false positive that a deployed 2k + 4k rule never reaches.
   - The scorer also reports (i) for learners **not** flagged at 2k, the population a two-point rule acts on.
   - A failure of (i) confined to 2k-flagged runs is read that way.
+
+**§127 result (2026-10-06 07:45 EDT; scored by `theory/score_s127.py`; all four arms decided; RTX 3090 class, Stage 2 on driver 595.71; Audit
+reproduced). No entry fix is adopted. Escaping the 2k flag is easy; learning afterwards is the failure. Restart-on-plateau
+stays.**
+
+| Arm (S5 seeds 1 / 2 / 3 / 4) | Long accuracy at 512 (or plateau at 2k) | Exact | ENTRY-FIX | ADOPT |
+|---|---|---|---|---|
+| VAR (item-residual variance) | – / 0 (rerun) / – / plateau | 0/2 run | false | false |
+| SKIP (skip-to-decoder) | **0.999** / 0 / 0 / **1.0** | **2/4** | false | false |
+| STD2 (standardisation) | 0 / 0 / 0 / plateau | 0/4 | false | false |
+| LR10 (10× new-module LR) | plateau / 0 / 0 / plateau | 0/4 | false | false |
+| Plain control (§120 FINAL) | 1.0 (3070) / plateau / 0 / plateau (borderline) | 1/4 | – | – |
+
+* **Registered reading, "ESCAPE without ENTRY-FIX":** entry is fixed for some seeds, but something later fails.
+  Restart-on-plateau stays the procedure.
+  - VAR's Stage 2 stopped at its first failure (s4 plateaued), as 127-9 sequenced. STD2 and LR10 were decided at s4 (127-8).
+* **The dominant failure is escape without learning.** It hits STD2 3/3 escaped seeds, LR10 2/2, SKIP 2/4, VAR 1/1, and the plain
+  control s3. §131 registers a label-free 4k flag for it (2/2 caught held-out so far).
+* **SKIP, descriptive:**
+  - 2/4 exact against the plain control's 1/4 on the same host class. Its cost per exact seed is 2.0 run-equivalents, against
+    the control's 2.17.
+  - It never broke a learner (plain s1 learns, and so does SKIP s1).
+  - Its trained chains run on the slot carrier alone (skip-off 0.999 / 1.0, SERIAL).
+  - ρ₁ (127-12) is 0.183 in s4 (s1 pending). FF guard 2/2.
+* **Seed 4 is open (127-13).** SKIP s4 escaped and became exact where the plain recipe flagged at 2k, borderline. The unstopped
+  plain s4 run (b42) decides whether "rescued a basin seed" is earned.
+* **Mechanism notes kept (descriptive):**
+  - the code-variance collapse at about 650 (127-7) is common and mostly transient across cards (§130);
+  - stopping the collapse (VAR) fills the code with non-state content (127-9);
+  - LR10 inflates the carrier (row norm 47 at 2k).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
