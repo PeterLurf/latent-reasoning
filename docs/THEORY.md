@@ -4545,6 +4545,8 @@ Coconut did not learn at any of the three LRs, and §119 continues exactly as re
 * **Pre-stated expectations:**
   - Coconut s2–3 also "did not learn". Coconut is then **inconclusive** for CONTROLLED-C1 (0 competent seeds), as guard (a)
     reads.
+  - **Confirmed (03:47):** Coconut s2 / s3 (RTX 3090, driver 550.163) have intact accuracy 0.0085 / 0.0115 and cumulative 0, so they
+    did not learn: 3/3. `score_s119.py`: Coconut is inconclusive for CONTROLLED-C1.
   - SIM-CoT is the informative arm. Its published claim is that step supervision stabilises latents where Coconut
     collapses (2509.20317). Whether it becomes competent from a Coconut start that has not learned is reported as is.
 * **Wording:** "Coconut (c = 1, the published stage schedule scaled to 24k updates) did not learn 4-op S5 composition

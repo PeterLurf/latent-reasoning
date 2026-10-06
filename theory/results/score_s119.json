@@ -1,13 +1,104 @@
 {
  "methods": {
   "coconut": {
-   "n": 0,
+   "n": 3,
    "competent": [],
-   "did_not_learn": [],
-   "faithful": null,
-   "intact_acc": {},
-   "cum512": {},
-   "donor": {},
+   "did_not_learn": [
+    1,
+    2,
+    3
+   ],
+   "faithful": true,
+   "intact_acc": {
+    "1": 0.007,
+    "2": 0.0085,
+    "3": 0.0115
+   },
+   "cum512": {
+    "1": 0.0,
+    "2": 0.0,
+    "3": 0.0
+   },
+   "donor": {
+    "1": {
+     "slot1": {
+      "thoughts": [
+       0
+      ],
+      "donor_consistent": 0.006,
+      "recipient_consistent": 0.007,
+      "chance_overlap": 0.0085
+     },
+     "slot2": {
+      "thoughts": [
+       1
+      ],
+      "donor_consistent": 0.0095,
+      "recipient_consistent": 0.007,
+      "chance_overlap": 0.008
+     },
+     "slot3": {
+      "thoughts": [
+       2
+      ],
+      "donor_consistent": 0.008,
+      "recipient_consistent": 0.0065,
+      "chance_overlap": 0.0055
+     }
+    },
+    "2": {
+     "slot1": {
+      "thoughts": [
+       0
+      ],
+      "donor_consistent": 0.0095,
+      "recipient_consistent": 0.007,
+      "chance_overlap": 0.0085
+     },
+     "slot2": {
+      "thoughts": [
+       1
+      ],
+      "donor_consistent": 0.0075,
+      "recipient_consistent": 0.01,
+      "chance_overlap": 0.008
+     },
+     "slot3": {
+      "thoughts": [
+       2
+      ],
+      "donor_consistent": 0.0095,
+      "recipient_consistent": 0.012,
+      "chance_overlap": 0.0055
+     }
+    },
+    "3": {
+     "slot1": {
+      "thoughts": [
+       0
+      ],
+      "donor_consistent": 0.005,
+      "recipient_consistent": 0.01,
+      "chance_overlap": 0.0085
+     },
+     "slot2": {
+      "thoughts": [
+       1
+      ],
+      "donor_consistent": 0.0065,
+      "recipient_consistent": 0.011,
+      "chance_overlap": 0.008
+     },
+     "slot3": {
+      "thoughts": [
+       2
+      ],
+      "donor_consistent": 0.011,
+      "recipient_consistent": 0.0115,
+      "chance_overlap": 0.0055
+     }
+    }
+   },
    "serial_seeds": [],
    "counts": false,
    "serial_majority": false
