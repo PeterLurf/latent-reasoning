@@ -880,3 +880,4 @@ PRICE EXCEPTION 2026-10-06 04:58 gen-b41 offer 53010473 RTX 3090 595.71 $0.267: 
 54488708 vast offer 49607479 created 2026-10-06 09:31: label gen-d8, queue scratch/gen_q_d8.txt (logged at create by vdeploy_toy.sh)
 54469339 vast | gen_b42 DESTROYED_VERIFIED 2026-10-06 09:38 after verified per-run fetch (boxes/runs_fsq/s127_s5_ctrl_s4_full)
 54470397 vast | gen_d6 DESTROYED_VERIFIED 2026-10-06 09:38 after verified per-run fetch (boxes/runs_s5/s119_simcot_s2 boxes/runs_s5/s119_simcot_s3); model.pt not fetched (rule, logs/model_skips.log): boxes/runs_s5/s119_simcot_s2 boxes/runs_s5/s119_simcot_s3 
+54432854 vast | gen_b30 DESTROYED_VERIFIED 2026-10-06 10:41 after verified per-run fetch (s127_s5_skip_s1 s127_s5_skip_s3 s127_s5_ctrl_s3); ctrl_s3 model.pt NOT fetched: scp stalled at 340.8/462.4 MB on every retry (09:27-10:39) and a tail fetch stalled at 43/122 MB; fp32 contraction run on host instead (Audit fallback) -> eval_contraction_fp32.json fetched; model lost
