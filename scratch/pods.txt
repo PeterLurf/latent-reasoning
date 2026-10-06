@@ -907,3 +907,4 @@ PRICE EXCEPTION 2026-10-06 04:58 gen-b41 offer 53010473 RTX 3090 595.71 $0.267: 
 54517396 vast offer 46301464 created 2026-10-06 13:30: label gen-b51, queue scratch/gen_q_b51.txt (logged at create by vdeploy_toy.sh)
 54520476 vast offer 52692620 created 2026-10-06 13:46: label gen-b61, queue scratch/gen_q_b61.txt (logged at create by vdeploy_toy.sh)
 54488708 vast | gen_d8 DESTROYED_VERIFIED 2026-10-06 13:59 after verified per-run fetch (boxes/runs_s5/s119_codi_s2 boxes/runs_s5/s119_codi_s3); model.pt not fetched (rule, logs/model_skips.log): boxes/runs_s5/s119_codi_s2 boxes/runs_s5/s119_codi_s3 
+54326779 vast | gen_a4 DESTROYED_VERIFIED 2026-10-06 15:11 after verified per-run fetch (boxes/runs_s5/s118_long_s83)
