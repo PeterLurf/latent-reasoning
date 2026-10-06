@@ -4204,6 +4204,44 @@ lr 1e-4.
   - the group LRs (LR10);
   - the std map's row norm (STD2).
 
+**Note 119-1 (2026-10-05 21:28 EDT, before any §119 run is read; Audit's guard (b); the experiments session's port spec, read from the released
+code). The ports are fixed as below, with two calls.**
+* **Shared.**
+  - Chunk: the start text plus op_1..op_4 texts. Steps are the state texts after ops 1–3, and the answer is the state
+    after op 4, then EOS.
+  - Test: a snap every 4 ops with a history cut (gen97).
+  - Budget: 24k updates at bs 64 per method.
+  - LR sweep: 3 values ×3 apart around each published LR, on seed 1. The criterion is train_split_final_acc (5,000
+    training chunks). Seeds 2–3 run at the chosen LR.
+* **Coconut** (code-confirmed):
+  - `<bot>`, n = c·s thoughts (the previous position's ln_f hidden), `<eot>`; stage s replaces steps 1..s.
+  - AdamW wd 0.01, constant LR, no clipping, optimiser reset per stage.
+  - Stages 0–2 at 3k steps each, stage 3 for the remaining 15k.
+* **SIM-CoT** (code-confirmed):
+  - c = 2, initialised from the same seed's Coconut.
+  - The step decoder φ is a separate GPT-2 from the **pretrained base**. It sees only step k's thoughts, then step k's
+    text through θ's wte.
+  - λ_step = 1 (`loss += 1.0 * loss_explain_all / c_thought_num`). φ is unused at test.
+* **CODI** (code-confirmed):
+  - LoRA r 128 / α 32, dropout 0.1, on attention and MLP projections; base frozen. `<bot>` / `<eot>` frozen at the wte
+    mean. prj = Linear-GELU-Linear-LN. 4 latents.
+  - Loss: student + teacher + KD, weights 1. AdamW wd 0.1, 3 % warmup + cosine, clip 2.0.
+* **Faithfulness (b) is met by all three:** Coconut ProsQA 97.6 vs 97.0; SIM-CoT GSM8K 44.8 vs 44.8; CODI 42.5 vs 43.7.
+  Trainable parameters are reported (CODI about 20M; Coconut 124M; SIM-CoT 249M with φ).
+* **Call 1: CODI's KD loss is SmoothL1, as in the released code.** §119's "L1" followed the paper's text. The released
+  code is the method that reproduced the published number (b), so it is used, and disclosed.
+* **Call 2: chunk-end cumulative.**
+  - For the baselines, in-chunk states are latent, so cumulative 512 / 2,048 counts **chunk ends only**. This is weaker
+    than READ's all-positions cumulative.
+  - The length curves are descriptive (§119), and CONTROLLED-C1 rests on the donor test.
+  - Wherever the two are compared, READ's own chunk-end cumulative is reported beside its all-positions number, so the
+    comparison is like for like.
+* **Donor:**
+  - Coconut: slot j = thought j.
+  - SIM-CoT: slot j = thoughts 2j−1 and 2j, jointly.
+  - CODI: a block patch of all 4 latents, with the donor target B's final state.
+  - Removal (zero / mean) is descriptive.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
