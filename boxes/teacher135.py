@@ -155,6 +155,14 @@ def main():
     res = {"acc_L32": acc, "step_acc_L32": step_acc, "eval_n": a.eval_n, "eval_L": a.eval_L, "gate_A1": acc >= 0.99, "train_sec": round(t1 - t0),
            "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "eval_dtype": str(amp)}
     pr = probe_layers(g, dev, amp, n=a.probe_n); pr["gate_A2"] = pr["chosen_acc"] >= 0.95; res["eval_sec"] = round(time.time() - t1)
+    # note 135-1: target centring means fixed at gate-A2 time on the held-out probe problems - the teacher's (TSD) and pretrained
+    # GPT-2's (BASE), at the chosen layer, at the last token of each step's state text -> <out>/target_means.pt
+    s0, x, lab = make_batch(fam, np.random.default_rng(13502), a.probe_n, 8); base = s5.load_gpt2(dev); base.eval(); means = {}
+    for nm, mod in (("tsd", g), ("base", base)):
+        T_ = [teacher_targets(mod, pr["chosen_layer"], s0[i:i + 128], x[i:i + 128], lab[i:i + 128], dev, amp).reshape(-1, 768) for i in range(0, a.probe_n, 128)]
+        means[nm] = torch.cat(T_).mean(0).cpu()
+    torch.save({"layer": pr["chosen_layer"], "tsd": means["tsd"], "base": means["base"], "n": a.probe_n, "L": 8, "seed": 13502}, os.path.join(a.out, "target_means.pt"))
+    pr["target_means"] = {"file": "target_means.pt", "tsd_norm": float(means["tsd"].norm()), "base_norm": float(means["base"].norm())}
     json.dump(pr, open(os.path.join(a.out, "teacher_probe.json"), "w", newline="\n"), indent=1)
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     print("EVAL", json.dumps(res), "PROBE", json.dumps({k: pr[k] for k in ("chosen_layer", "chosen_acc", "gate_A2")}), flush=True)
