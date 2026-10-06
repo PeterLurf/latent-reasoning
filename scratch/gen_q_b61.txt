@@ -1,0 +1,5 @@
+# Theory 2026-10-06: §128 S5 CERTs, fp32 only (--cert_only --fp32, --cert_time 2700), descriptive, one RTX 3090; models shipped; boxes.fsq120
+# P=1
+boxes/runs_fsq/s128cert_s5_s1 scratch.cert_job --run boxes/runs_fsq/s128_s5_s1
+boxes/runs_fsq/s128cert_s5_s102 scratch.cert_job --run boxes/runs_fsq/s128_s5_s102
+boxes/runs_fsq/s128cert_s5_s104 scratch.cert_job --run boxes/runs_fsq/s128_s5_s104
