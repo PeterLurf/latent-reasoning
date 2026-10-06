@@ -4242,6 +4242,20 @@ code). The ports are fixed as below, with two calls.**
   - CODI: a block patch of all 4 latents, with the donor target B's final state.
   - Removal (zero / mean) is descriptive.
 
+**Note 124-4 (2026-10-05 21:55 EDT; MECH-112 decided by count, before §124 is complete; Audit / claude-13, reproduced by `theory/score_s124.py`). MECH-112
+is false: TEXT-EXPOSE has already acquired in 3 seeds.**
+* **EXPOSE acquires in s26 (L6), s27 (L5) and s29 (L8).** "TEXT-EXPOSE in ≤ 2/4" cannot hold whatever s28 does, so
+  MECH-112 is false.
+  - s29 acquires late: k = 1 at 1.0, cumulative 512 0.80, with the slot-1 bypass.
+* **Still open:** NOT-112-4 versus the descriptive reading, on COPY / BASE s26–28 and EXPOSE s28.
+  - So far there is one complete trio (s29): COPY acquires at L5, and BASE does not.
+* **The result will report,** within the registered readouts (count and acquisition round; FOOTHOLD per arm, not read as
+  mechanism, 124-2):
+  - by count, whether COPY and plain exposure to random start texts both lift acquisition above BASE. If they do,
+    "reading a given state" and "seeing non-identity start text" are not separable at this n;
+  - by round, whether COPY acquires earlier than EXPOSE;
+  - descriptively, each arm's donor profile (slot carriage against the slot-1 bypass).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
