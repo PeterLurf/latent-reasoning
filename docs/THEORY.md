@@ -6122,6 +6122,19 @@ carry an fp32 certificate that covers every code the eval visits** (14 certifica
   starts. It gives the norms on W_down, the layer-3 attention weight, W_up, P_s and P_t at p_hard 0 and 1, and the target model's no-grad
   check.
 
+**Note 128-8 (2026-10-06 17:42 EDT; descriptive; S5 fp32 certificates; the experiments session disclosed the confound, the helper read the files, Theory verified).**
+* `s128cert_s5_{s1,s102,s104}` (cloud RTX 3090 b61, driver 570.211.01, cap 10⁶, 2,700 s) all read **inconclusive by time**.
+  - **Confound:** two queue runners ran each certificate concurrently on the one GPU, at about half throughput. The files parse as
+    single complete JSONs.
+  - The clean single-runner point is the local 2070's s1 pass, also inconclusive (173,486 partial). The 3090 s1 agrees with it to 1 %.
+* **Depth-complete lower bounds** on the fp32 BFS-reachable code set: s1 **164,748** (depth 6), s102 **157,618** (depth 5), s104 **99,853**
+  (depth 5). Partials are 175,535 / 349,249 / 380,394, with frontiers still multiplying at the cut.
+* So the S5 learners' reachable code sets (over all start states and op sequences) are at least about 10⁵, against 2.3–2.9 × 10³ distinct
+  codes visited by 500 eval rollouts of 2,048 steps. The S5 carrier spreads each state over many codes and stays exact (§128 S5 learners:
+  ext_2048 1.0).
+* S5 certification is out of reach at this budget, by construction. Further S5 certificates are not run. FAMILY-PASS is unaffected
+  (CERT was not required for S5).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

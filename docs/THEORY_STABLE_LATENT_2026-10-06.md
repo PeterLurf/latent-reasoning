@@ -140,7 +140,7 @@ with the same code and settings across families.
   - The S5 learners (s1 / s102 / s104; fp32, 500 × 2,048) are the same in kind, with an open code set:
     - distinct codes 2,946 / 2,683 / 2,344 at 2,048, still up about 6 % over the last doubling;
     - 20–31 codes per state, accuracy 1.0 / 0.996 / 1.0;
-    - no certified bound, since the S5 CERT is inconclusive by time.
+    - no certified bound: the S5 CERT is inconclusive by time, with fp32 BFS-reachable sets of at least 1.0–1.6 × 10⁵ codes (128-8).
     - The code wanders within each state's basin without error at this length. The stability measure for S5 is per-step survival
       (s12: 1.0 at every position), not the code count.
 
