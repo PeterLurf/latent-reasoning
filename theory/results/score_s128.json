@@ -372,8 +372,20 @@
       "plateau": false
      }
     ],
-    "status": "accepted (CERT pending)",
-    "accepted": null
+    "status": "accepted",
+    "accepted": {
+     "seed": 3,
+     "long_acc": 1.0,
+     "serial": true,
+     "nonfinite_share": 0.0,
+     "ext_2048": 1.0,
+     "cert_holds": true,
+     "rho_ff": null,
+     "gpu": "NVIDIA GeForce RTX 3090 Ti",
+     "n_moore": 8,
+     "closed": true,
+     "pass": true
+    }
    },
    "4": {
     "attempts": [
@@ -386,9 +398,9 @@
     "accepted": null
    }
   },
-  "FAMILY_PASS": "incomplete (2 / 4 slots decided)",
+  "FAMILY_PASS": true,
   "flag_checks": [],
-  "n_pass": 2,
+  "n_pass": 3,
   "plateaued_attempts": 0,
   "cost_per_exact_seed": 1.0
  },
