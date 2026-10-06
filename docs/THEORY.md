@@ -221,6 +221,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 131 | Second restart point at 4k: FLAG4 = loss(4k) ≥ 0.9·loss(2.6k) (floored), held-out precision / recall for "escape without learning" | registered | **open** |
 | 132 | Rules in context: per-problem permutation tables (explicit pairs) on §120's carrier; size ladder k4/m2 → k6/m3; PASS 3/4 exact + SERIAL on held-out tables | registered | **open** |
 | 133 | Can error correction make a wide latent carrier exact? CONT / FSQ / SOFT / NOISE / PIN at d 16–64 on S5, then an S5×4 capacity probe (FSQ-8 controls) | registered | **open** |
+| 134 | COPY-ANCHOR: label-free state-reading auxiliary (final-answer text autoencoded through the carrier) on §128's S5 recipe, no restarts; PASS 4/4 exact (plain 1/4) | registered | **open** |
 
 ## Live sections
 
@@ -5765,6 +5766,72 @@ reading, and a refinement of 133-1 (a).**
   on the floor from above stays in and only understates contraction). If none qualify, it is ρ₁.
   - Tested: a carrier at 0.10 with a floor-landing third step scores 0.10, not about 0.18. RAW-H-style drift (distances 5.4 → 0.7
     → 0.4) stays separable.
+
+## 134. COPY-ANCHOR: a label-free state-reading auxiliary from step 0, against entry failure and escape without learning (pre-registered 2026-10-06 15:01 EDT, after Literature's check 4da2f672 / e0909d0b / ebc2a039 and before any implementation or run; the user's "invent and synthesize a stable latent method" (via Audit), candidate 1 of `docs/THEORY_STABLE_LATENT_2026-10-06.md`)
+
+**Why.**
+* §128's task-agnostic recipe needs restarts on S5. Its dominant failure is **escape without learning** (F2): the run passes the 2k
+  flag, then never composes, and the code is read by the decoder but does not hold the state (127-9; §127).
+* The strongest entry aids we have both make the model **read a given state**:
+  - §124 COPY: acquisition at L5 in 4/4, serial in 2/4 against 0/4;
+  - §111 READ: reliable hand-off 5/5, but with step labels.
+* **Prior** (4da2f672 / e0909d0b / ebc2a039): autoencoding / copy auxiliaries against posterior collapse (Dai & Le 1511.01432; Bowman;
+  He 1901.05534; Z-Forcing); NTM copy; LP-FT 2202.10054 (interface warm-up). New as scoped (a state-copy anchor through a quantised
+  recurrent carrier of a pretrained LM).
+
+**Design.** §128's S5 recipe exactly (fsq120 FINAL, FSQ d 8 / L 8, the length curriculum, 24k, bs 64, the 127-3 guard; cloud RTX 3090 /
+driver 595.71 class, checkpoints), plus **copy rows**:
+* A fraction **f = 0.1** of each batch's rows are copy rows. Each takes **the final-answer text of another problem in the batch**: a
+  final-answer-only target, so task-agnostic and C4-compatible. On S5 it is a uniformly random state text.
+* It runs that text through the carrier: [EOT, answer text] → segment → last hidden → quantised code → embedding.
+* It decodes **from the code alone**, in a fresh [EOT, code] answer-decoder segment (as every answer is decoded; Audit / Literature:
+  no bypass through the input text).
+* The CE on the same text is added to the main loss with weight 1, from step 0 to the end.
+* **Gradflow under CUDA bf16 before any run:** the copy loss reaches W_down and W_up (the §116 lesson).
+* **No restarts and no plateau stop:** each seed is one 24k run, so the test is "stable to train without restarts".
+
+**Seeds.** S5 seeds 1–4 on the RTX 3090 / 595.71 class, where the plain recipe gives:
+* s1 exact;
+* s2 plateau (§120 / §128);
+* s3 escaped and failed (§128 slot 3; §127 ctrl s3);
+* s4 plateau, a basin seed (127-13).
+* So **plain is 1/4 without restarts.**
+
+**Rules (fixed now).**
+* **PASS:** all four seeds exact at 2,048 (≥ 0.99), SERIAL (donor ≥ 0.90, recipient − chance < 0.10) and contractive (127-12's ρ clause ≤
+  0.28).
+* **IMPROVES** (descriptive): 3/4. **FAIL:** ≤ 2/4.
+* **Guard (only after PASS; 1 seed each):** FF / CYC / MOD / RDFA with copy rows must stay exact and SERIAL, and closed where §128
+  required (CERT holds, Moore = minimal), or the copy anchor is not task-agnostic.
+
+**Mechanism (logged in every run; Audit).**
+* The probe at 2k and at the end: R²_state, R²_item, and op-history R² (last 1–3 ops).
+* **Dialect probe** (Literature ebc2a039 (i)): for the same state, the FSQ-code identity rate (and cosine) between the **copy code** (from
+  [EOT, text]) and the **transition code** (from [EOT, code, item]), at 2k and at the end, with copy accuracy logged over training.
+  - Copy fixes the text ↔ code interface; composition must still come from the final-answer loss. If the two writers use different
+    code regions ("two dialects"), the copy anchor does not transfer.
+  - No copy → one-op → answer rows are added: random-start one-op problems would label transitions, which is more than FINAL.
+* **f stays constant** (Literature (ii)): an interface anchor like §111's reader. Removing it after entry is the ANNEAL / α → 1 collapse
+  pattern.
+* **FF caveat:** FF's final answer is the read bit, so copy anchors only 2 codes there. The FF guard is expected to show little.
+* **Pre-stated:** if F2 is the short-chain op-history shortcut (Literature 4da2f672), COPY seeds show R²_state above op-history R² at 2k,
+  where plain escape-without-learning seeds show the reverse. The local probe of s128_s5_s3 against the learners measures the plain
+  side.
+
+**Readings.**
+* **PASS (+ guard).** A label-free state-reading anchor makes the recipe stable to train on S5 without restarts. §128's recipe plus COPY
+  becomes the default, and candidate 2 (the round-trip attractor) builds on it.
+* **IMPROVES.** COPY helps but does not remove the failure. The mechanism probe says which failure survives.
+* **FAIL.** Reading a copy of the state is not enough on S5. The failure lies in composition itself, and the probe reports what the
+  code holds.
+* **IMPROVES / FAIL with high copy accuracy but low dialect agreement:** "two dialects": the anchor fixed the interface, not the
+  transition path. The next step is a registration that ties the two writers (e.g. the round-trip attractor, candidate 2).
+
+**Placement.**
+* Main: 4 runs, about $3.5. Guard: 4 runs, about $2.5. About $6 in all, staged (Audit).
+* Implementation: the experiments session (fsq120 `--copy_frac 0.1`, copy rows as above; dirs `s134_copy_s5_s{1..4}`,
+  `s134_copy_{ff,cyc,mod,rdfa}_s1`).
+* Scorer: `theory/score_s134.py`, committed before any run.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
