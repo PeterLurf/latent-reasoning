@@ -1,0 +1,51 @@
+{
+ "r2_item": -0.09670543670654297,
+ "r2_state": 0.15845924615859985,
+ "r2_start": -0.08745086193084717,
+ "abl_dloss": 0.8919939994812012,
+ "ce_intact": 3.9247913360595703,
+ "ce_ablated": 4.8167853355407715,
+ "n": 1024,
+ "ophist": {
+  "n": 4096,
+  "seed": 12703,
+  "L2": {
+   "r2_state": 0.037711262702941895,
+   "r2_start": -0.05591452121734619,
+   "r2_last1": 0.04072540998458862,
+   "r2_last2": -0.09740149974822998,
+   "coverage_state": 1.0,
+   "coverage_start": 1.0,
+   "coverage_last1": 1.0,
+   "coverage_last2": 0.13818359375
+  },
+  "L4": {
+   "r2_state": -0.05941164493560791,
+   "r2_start": -0.08293807506561279,
+   "r2_last1": 0.044650912284851074,
+   "r2_last2": -0.145987868309021,
+   "r2_last3": 6.99758529663086e-05,
+   "coverage_state": 1.0,
+   "coverage_start": 1.0,
+   "coverage_last1": 1.0,
+   "coverage_last2": 0.1318359375,
+   "coverage_last3": 0.001953125
+  },
+  "L8": {
+   "r2_state": -0.05531179904937744,
+   "r2_start": -0.05057799816131592,
+   "r2_last1": 0.8335613012313843,
+   "r2_last2": 0.11460614204406738,
+   "r2_last3": 0.0019840598106384277,
+   "coverage_state": 1.0,
+   "coverage_start": 1.0,
+   "coverage_last1": 1.0,
+   "coverage_last2": 0.1376953125,
+   "coverage_last3": 0.00146484375
+  }
+ },
+ "eval_dtype": "torch.bfloat16",
+ "device": "NVIDIA GeForce RTX 3070",
+ "driver": "591.86",
+ "p_hard": 1.0
+}

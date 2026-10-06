@@ -286,6 +286,28 @@ def check_s133(dev, out):
     F120.D_Q, F120.LEV, F120.HALF, F120.SHIFT = saved
 
 
+def check_s134(dev, out):
+    """§134 COPY-ANCHOR (Theory 26bc216e; the §116 lesson): the copy loss ALONE ([EOT, answer text] -> code -> [EOT, code] decoder CE)
+    reaches W_down and W_up (and GPT-2), under CUDA bf16, in the soft (p_hard 0) and hard (p_hard 1) regimes; plus the chain loss."""
+    import boxes.fsq120 as F120
+    amp = torch.bfloat16 if str(dev).startswith("cuda") else None
+    fam = F120.Family("s5"); m = F120.FSQ120(s5.load_gpt2(dev), fam).to(dev); m.train(); rng = np.random.default_rng(0)
+    cans = torch.tensor(fam.answer_tokens(rng.integers(0, 120, 6)), device=dev)
+    for ph in (0.0, 1.0):
+        m.p_hard = ph
+        def C():
+            with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+                e, qs, _, _ = m.copy_write(cans); return m.answer_ce(e, cans, qs)
+        out[f"s134.copy_p{int(ph)}.main"] = term(m, C)
+        for nm_, w_ in (("down", m.down.weight), ("up", m.up.weight)):
+            out[f"s134.copy_p{int(ph)}.{nm_}_grad"] = float(w_.grad.norm()) if w_.grad is not None else 0.0
+    s0, x, lab = F120.make_batch(fam, rng, 4, 4); X = torch.tensor(x, device=dev)
+    def M():
+        with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+            return m.chain(m.start(4, dev, s0), X, lab)[0]
+    out["s134.chain.main"] = term(m, M)
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--paths", nargs="*", default=["accel99", "mk108", "fsq120", "fsq120_std", "fsq120_rawh", "fsq120_anneal", "self110_copy", "self110_resume"])
     ap.add_argument("--device", default="cpu"); ap.add_argument("--out", default=os.path.join(ROOT, "theory", "results", "gradflow_check.json"))
