@@ -1,27 +1,36 @@
 {
  "arms": {
   "base": {
-   "n": 1,
-   "acquired": [],
+   "n": 2,
+   "acquired": [
+    28
+   ],
    "acq_rounds": {
+    "28": "L6",
     "29": null
    },
    "median_round_rank": 999,
-   "foothold_seeds": [],
+   "foothold_seeds": [
+    28
+   ],
    "FOOTHOLD": false,
    "cum512": {
+    "28": 0.998,
     "29": 0.0
    },
    "copy_acc": {
+    "28": 0.0,
     "29": 0.029
    }
   },
   "copy": {
-   "n": 1,
+   "n": 2,
    "acquired": [
+    28,
     29
    ],
    "acq_rounds": {
+    "28": "L5",
     "29": "L5"
    },
    "median_round_rank": 3,
@@ -30,37 +39,44 @@
    ],
    "FOOTHOLD": false,
    "cum512": {
+    "28": 0.9495,
     "29": 0.999
    },
    "copy_acc": {
+    "28": 1.0,
     "29": 1.0
    }
   },
   "expose": {
-   "n": 3,
+   "n": 4,
    "acquired": [
     26,
     27,
+    28,
     29
    ],
    "acq_rounds": {
     "26": "L6",
     "27": "L5",
+    "28": "L6",
     "29": "L8"
    },
    "median_round_rank": 4,
    "foothold_seeds": [
-    26
+    26,
+    28
    ],
-   "FOOTHOLD": false,
+   "FOOTHOLD": true,
    "cum512": {
     "26": 0.9985,
     "27": 0.9795,
+    "28": 0.993,
     "29": 0.8005
    },
    "copy_acc": {
     "26": 0.032,
     "27": 0.093,
+    "28": 0.141,
     "29": 0.0
    }
   }

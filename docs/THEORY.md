@@ -4617,6 +4617,33 @@ is pre-stated, and SIM-CoT's initialisation is kept as registered.**
   - No budget extension or recipe change is run under §119. Either would be a new registration.
 * **Mixed case:** a method with ≥ 2 competent seeds is scored as registered. The others are reported as above.
 
+**Note 124-5 (2026-10-06 02:43 EDT; descriptive, 8 of 12 §124 runs in (s28 trio on an A10, s29 trio on a 4090, EXPOSE s26–27 on 3090s), read by
+Theory from the eval.json files; Audit / claude-13 reproduced; no rule change). Carrier type varies within every arm. COPY's
+consistent signature so far is timing.**
+
+| Arm | Acquired (round) | Cumulative 512 | Slots 1 / 2 / 3, donor (recipient) |
+|---|---|---|---|
+| BASE s28 | L6 | 0.998 | 0.011 (1.0) / 0.007 / 0.007: slot-1 bypass |
+| BASE s29 | no | 0 | chance |
+| COPY s28 | L5 | 0.9495 | 0.065 (0.28) / 0.044 (0.34) / 0.076 (0.18): mixed |
+| COPY s29 | L5 | 0.999 | 0.883 / 0.747 / 0.516 (≤ 0.02): slot-carried |
+| EXPOSE s26 | L6 | 0.9985 | 0.011 (1.0): slot-1 bypass |
+| EXPOSE s27 | L5 | 0.9795 | 0.017 (0.80) / 0.389 / 0.411: bypass + partial |
+| EXPOSE s28 | L6 | 0.993 | 0.618 / 0.701 / 0.751 (≤ 0.024): slot-carried |
+| EXPOSE s29 | L8 | 0.8005 | 0.011 (0.999): slot-1 bypass |
+
+* **Acquisition:** EXPOSE 4/4, COPY 2/2 (both at L5), BASE 1/2. FOOTHOLD (descriptive, 124-2): EXPOSE 2/4, COPY 1/2,
+  BASE 1/2.
+* **Correction to 124-4 / 112-6.** Seed 29 suggested that COPY gives slot carriage. Seed 28 reverses it: COPY s28 is mixed,
+  and EXPOSE s28 is slot-carried.
+  - So 112-6's line "slot carriage in self-training, so far, comes only with §124's COPY" is **withdrawn**. Slot carriage
+    appears in 1 of 2 COPY seeds and 1 of 4 EXPOSE seeds.
+  - "COPY → C1" is not claimed unless COPY s26–27 change the picture.
+* **COPY's one consistent signature so far is timing:** L5 in both seeds, and the sharpest jump. That is §124's registered
+  readout (acquisition round), read when COPY / BASE s26–27 land.
+* **Not run:** resuming the k = 1 = 1.0 FOOTHOLD misses (112-5's lever). §124's question is acquisition count and round,
+  and FOOTHOLD is not read as mechanism (124-2), so resumes would not inform it.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
