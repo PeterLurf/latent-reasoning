@@ -1,0 +1,9 @@
+05:28:32 data sha 6ee3ef95405dc43b094824dff8973753c587fe95a00762d2023bd64a941504f2 a0087fe4a7496a47f76d9436e6bb089c8a8869f3f343f71057355e127d0c33da
+NVIDIA RTX A5000, 595.84
+05:28:32 start boxes/runs_s5/s119_codi_lr1e-3_s1
+05:28:32 start boxes/runs_s5/s119_codi_lr3e-3_s1
+05:28:32 start boxes/runs_s5/s119_codi_lr1e-2_s1
+11:55:55 evaluated boxes/runs_s5/s119_codi_lr1e-3_s1 rc 0
+11:55:56 evaluated boxes/runs_s5/s119_codi_lr3e-3_s1 rc 0
+11:55:56 evaluated boxes/runs_s5/s119_codi_lr1e-2_s1 rc 0
+11:55:56 QUEUE_DONE
