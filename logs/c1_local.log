@@ -828,3 +828,5 @@
 15:24:48 c2070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_rdfa_s3/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_rdfa_s3
 15:29:36 c2070 done rc 0 out yes peak_card_mem 1526 MiB (measured 3.0 GiB) : boxes/runs_fsq/s128_rdfa_s3/eval_growth.json
 15:29:39 c2070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_rdfa_s4/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_rdfa_s4
+15:34:44 c2070 done rc 0 out yes peak_card_mem 1526 MiB (measured 3.0 GiB) : boxes/runs_fsq/s128_rdfa_s4/eval_growth.json
+15:34:48 c2070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_s5_s1/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_s5_s1
