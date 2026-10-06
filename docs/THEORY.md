@@ -4477,6 +4477,24 @@ skip-ablated readout is added as descriptive.**
 * Multiplication is excluded: about 10¹² states, against 8⁸ ≈ 1.7·10⁷ codes, and widening d would change every family's
   harness. The AGL(1, 5) variant of MOD (no resets) is noted, not run.
 
+**Note 128-1 (2026-10-05 23:43 EDT, before any §128 run; Audit / claude-13; no rule change). What CLOSED means, and a check of the plateau flag on
+the held-out families.**
+* **CLOSED is not "canonical."** The Moore clause passes a code that is redundant but correct: several codes for one state
+  are Moore-equivalent and minimise to it, as with FF FINAL s2's 36 → 2.
+  - A counter code fails through the CERT cap or timeout: its reachable codes keep growing.
+  - So CLOSED reads "a closed machine whose minimisation is the task automaton". Codes per state is reported beside it.
+* **The plateau flag on 5- and 8-state families.** 123-3 was calibrated on S5's ln 120 null. Its two clauses are ratios
+  (loss(2k) / loss(1k), loss(2k) / loss(100)), but they have been validated only on S5 and FF.
+  - **The registered restart rule is unchanged.**
+  - **Added check (descriptive):** in each held-out family (CYC, MOD, RDFA), the first attempt whose flag fires is **not
+    stopped**. It trains to 24k beside the replacement seed, which starts as the rule says.
+  - Its final long accuracy is reported as the flag's false-positive check for that family. At most 3 extra runs, about
+    $2–3.
+  - The slot still takes the next seed, per the rule.
+  - Every attempt's 2k loss is also reported against its family's null (ln 5 ≈ 1.61 for CYC and MOD; ln 8 ≈ 2.08 for RDFA).
+* If a check run ends exact, the flag misfires on that family. This is reported in the result, and the cost per accepted
+  seed is given both ways. The registered verdict still uses the registered rule.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
