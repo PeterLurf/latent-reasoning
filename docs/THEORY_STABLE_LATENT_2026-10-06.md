@@ -143,7 +143,11 @@ with the same code and settings across families.
   - β ≈ 0.01, with β = 0 until decodes are valid;
   - decode "the answer if queried now" (= the state for S5 / CYC / MOD / RDFA, not FF);
   - arm order COPY → COPY + RT → COPY + RT + SKIP.
-* Literature's $0 test (does escape without learning carry the op history?) is queued on the local 3070 (LOCAL_BACKLOG).
+* Literature's $0 test (does escape without learning carry the op history?) **is done** (3070, eval_probe_posthoc.json; n = 1 failure):
+  - learners s1 / s102 / s104 hold the state at L 2 / 4 / 8 (R² 0.995–0.997), with no op history (last-op R² < 0);
+  - the escape-fail s3 holds neither the state (R² ≤ 0.04) nor the last op at L 2 / 4 (0.04), but does hold the last op at L 8 (0.83).
+  - Last-2 / last-3 R² cannot be read: probe coverage is 0.14 / 0.002 of those classes.
+  - So the failure is a decayed state code, not a stored op history, as in the "What the helper's mining shows" section above.
 
 ## Order
 * Register Candidate 1 first (cheap, decisive, targets the dominant failure).
