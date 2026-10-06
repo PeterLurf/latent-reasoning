@@ -214,6 +214,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 124 | Does reading a given state fix self-training's lottery? §112 f = 0.1 + copy objective vs exposure control | registered | **open** |
 | 125 | Readable bottleneck from step 0: standardised carried code vs the soft-phase no-read basin (task-agnostic, §120 harness) | **untested**: the EMA standardisation was not in force at 2k (carried norm 35); STD s2 plateaued; other runs held | closed (untested) |
 | 126 | Is the bottleneck the cause of the soft-phase basin? RAW-H vs ANNEAL (stop rule → restart-on-plateau) | registered | **open** |
+| 127 | Reliable entry without restarts? VAR (item-residual variance) / SKIP (skip-to-decoder) / STD2 (§125-v2) / LR10 on §120's harness vs restart-on-plateau | registered | **open** |
 
 ## Live sections
 
@@ -4062,6 +4063,117 @@ The causal question is not reached: dither moved neither contraction, nor accura
 * **Descriptive findings kept:**
   - the continuous 8-d carry is exact to 2,048 in every non-plateau seed, with no implicit quantisation (grid share 0.15–0.24);
   - the seed-2 entry basin appears at every σ, on S5 only.
+
+## 127. Reliable entry without restarts? Four task-agnostic entry fixes on §120's harness, against restart-on-plateau (pre-registered 2026-10-05 21:25 EDT, after Literature's checks 86df4b3a / ba531055 / e925cf3e and before any implementation or run; the user's "do more research" (~21:20, via Audit); Audit's compact parallel panel)
+
+**Why.**
+* On §120's harness the 8-d bottleneck is both the attractor and the entry basin.
+  - It is the attractor: every non-plateau seed is exact to 2,048, ρ_ff 0.146–0.180 (§123 result).
+  - It is the basin: S5 seed 2 plateaus by 2k in every bottlenecked arm on 3090-class cards (§120, §123 at every σ,
+    FSQ+DITHER, §125).
+  - Without it, seed 2 escapes, but the wide carrier does not hold (126-7, 126-9). Narrowing it fails (126-8).
+* **Diagnosis: posterior collapse** (He 1901.05534).
+  - At init, z_b's per-coordinate std across inputs is 0.03 (125-4).
+  - claude-13's early replay (seed 1, steps 3–6, fp32): z_b encodes the current op (R² 0.95), far more than the start or
+    next state (0.32 / 0.23).
+  - With uniform S5 starts, the op alone says nothing about the state. A code that holds the op is useless to the decoder,
+    which learns to ignore it.
+* **Relation to §126.** §126's registered readings point to restart-on-plateau, and §127 does not amend them.
+  Restart-on-plateau is the baseline each arm must beat, and the line falls back to it if no arm is adopted.
+* **Prior** (Literature 86df4b3a / ba531055 / e925cf3e):
+  - skip connections from the latent into the decoder (Dieng 1807.04863);
+  - VICReg 2105.04906, and its use on latent dynamics (PLDM 2502.14819);
+  - aggressive encoder training, and a higher LR for new modules (He 1901.05534; LoRA+ 2402.12354);
+  - batch standardisation with an absolute floor (Batch Renorm 1702.03275; §72b).
+  - New as scoped.
+
+**Harness.** §120 FINAL exactly: S5; FSQ d = 8, L = 8; soft → hard rounding over 2k–4k; L_max 2 until 2k; 24k steps; bs 64;
+lr 1e-4.
+* RTX 3090 / 3090 Ti only (125-2).
+* Each arm adds one change and draws nothing from §120's random streams (new buffers start at zero; B's maps use their
+  own generator). So seed k shares §120 seed k's initialisation and data order.
+
+**Arms (one change each).**
+* **A. VAR: item-residual variance on z_b (VICReg-style).**
+  - Residual: r = z_b − m[x, j], where x is the item the segment read and j the segment's position in the chain. m is a
+    stop-gradient EMA (momentum 0.99) of z_b per (item, position); a pair's first sighting initialises its row.
+    Position is included because it varies before 2k (Literature e925cf3e (1)).
+  - Loss term, over all hand-offs of each forward: w(step) · [mean_d max(0, 1 − sqrt(Var(r_d) + 1e-4)) + 0.04 · (1/8)
+    Σ_{d≠d′} Cov(r)²_{dd′}]. w = 1 to 2k, then linear to 0 at 6k.
+  - **Why the residual, not Literature's time-wise variance** (ba531055 (b)): before 2k, chains have only 1–2 hand-offs, so
+    a within-chain variance has at most 2 samples. Batch-wise and time-wise variance are both met by item identity (R² 0.95
+    at init). The residual can only be supplied by what the segment brought in: the start text or the carried code.
+  - It uses only the input items, so it is task-agnostic.
+* **B. SKIP: skip-to-decoder (Dieng).** Applies at every answer-decoder position after EOT: the carried slot, and every
+  teacher-forced or generated answer position.
+  - S_ℓ(q_st) is added to the residual stream entering GPT-2 blocks ℓ = 6..11, and S_f(q_st) to the final hidden before
+    ln_f. Each S is 8 → 768, with no bias, initialised N(0, 0.02²) from a dedicated generator (seed 12700 + the run's
+    seed), so the global random stream is unchanged.
+  - Not zero-initialised: zero init gives q_st no gradient at step 0 (Literature e925cf3e (3)).
+  - Segments are unchanged. The skip is part of the decoder at test (greedy decoding, donor, CERT).
+* **C. STD2: §125-v2, standardisation delivered.**
+  - Everywhere a carried embedding enters GPT-2: e′ = μ_E + sd_E ⊙ (e − mean(e)) / max(sd(e), 0.5 · sd_E). The statistics
+    come from the current forward's hand-offs, with stop-gradient.
+  - At test: an EMA (0.99) of the same statistics, frozen at the end of training.
+  - **Manipulation check** (§125's failure): the carried row norm at 2k must be within 0.5×–2× of wte's (3.96). Outside
+    that, C is scored "not delivered", not failed.
+* **D. LR10.** The new modules (LN, W_down, W_up) train at 10× GPT-2's LR (1e-3), with the same warmup and cosine, AdamW
+  wd 0.01, and the global clip unchanged.
+* **Not run: a predictive aux on z** (CPC / NextLat). On S5, a code that holds only the op makes the next code exactly
+  predictable from the next op, so the trap is built in. Without the next op, uniform ops make the next state independent
+  of the current one. Literature agrees (e925cf3e (2)), and notes it would carry signal on flip-flop.
+
+**Stages.**
+* **Stage 1:** seed 2 in every arm, in parallel. Seed 2 is the basin seed, plateaued in at least 7 bottlenecked
+  3090-class runs. A run whose 2k flag fires may be stopped at 2k; its log is kept, and it is scored plateaued.
+* **Stage 2, only for arms whose seed 2 escapes:** S5 seeds 1, 3 and 4, and flip-flop seeds 1–2, in that arm.
+  - Plus one shared concurrent control: §120 FINAL S5 seeds 3–4 (run once, if any arm reaches Stage 2).
+* **Drop rule (fixed now):** an arm whose seed 2 plateaus is dropped, with no follow-up patch or variant.
+  - If no arm escapes, restart-on-plateau is the reliability procedure, and the line moves to the family extension
+    (`docs/THEORY_ENTRY_2026-10-05.md`).
+
+**Measures.**
+* The 123-3 plateau flag at 2k; final loss; long accuracy (S5 cumulative at 512, no snaps) and at 2,048.
+* ρ_ff (fp32, 123-9); donor SERIAL (chance-corrected); codes per state.
+* The carried row norm and per-coordinate std at init and at 2k, in every arm.
+* **Probe** (claude-13 / Audit; every arm and the control; at init and 2k).
+  - Data: a fixed batch with its own RNG, 1,024 chains of length 2, in eval mode.
+  - R²_item is the share of z_b's variance explained by the item read; R²_state is the share explained by the state
+    after it.
+  - Method: per-group means are fitted on half the rows and R² is scored on the other half. Groups unseen in the fit are
+    predicted by the global mean.
+
+**Rules (fixed now).**
+* **ESCAPE(arm):** seed 2 is not plateaued.
+* **ENTRY-FIX(arm):** all of
+  - ESCAPE;
+  - S5 plateau count ≤ 1/4 over seeds 1–4;
+  - long accuracy ≥ 0.99 in at least 3/4 seeds;
+  - ρ_ff ≤ 0.28 (118-5's pass band) in every seed with long accuracy ≥ 0.99, so the attractor survives.
+* **FF guard:** flip-flop long accuracy ≥ 0.99 in 2/2.
+* **ADOPT:** ENTRY-FIX and the FF guard. If several arms are adopted, the harness default is the one with the lowest cost
+  per accepted seed; ties go to the fewest new terms (D, C, B, A).
+* **Cost (descriptive, n = 4):** cost per accepted seed = (1 + (p / (1 − p)) / 12) / a run-equivalents.
+  - p is the S5 plateau rate, and a is the share of escaped seeds with long accuracy ≥ 0.99. A plateaued attempt costs
+    about 1/12 of a run.
+  - Reported for each arm and for restart-on-plateau on the control (§120 FINAL S5 s1–4; s1 trained on a 3070, and its
+    GPU is stated).
+
+**Readings.**
+* **An arm is adopted.** A task-agnostic entry fix replaces restarts, and the family extension uses it.
+  - Mechanism, if the probe shows it: "the fix moves the code off the item onto the state". That is, R²_state exceeds
+    R²_item by 2k where the control's does not.
+* **ESCAPE without ENTRY-FIX.** Entry is fixed, but something later fails (the attractor is lost, or other seeds plateau).
+  It is reported, and restart-on-plateau stays.
+* **No arm escapes.** These four task-agnostic levers do not move the basin. Restart-on-plateau is the procedure, and the
+  line moves to the family extension.
+
+**Placement.**
+* Stage 1: 4 runs, about $1–4 (stopped at 2k if plateaued).
+* Stage 2: at most 5 runs per escaped arm, plus 2 controls. At most about 26 runs in all, about $20–26. RTX 3090-class only.
+* Implementation: the experiments session (fsq120 `--var_res`, `--skip_dec`, `--std2`, `--lr_new 10`, and the R² probe).
+* Scorer: `theory/score_s127.py`, committed before any run.
+* Dirs: `boxes/runs_fsq/s127_s5_{var,skip,std2,lr10}_s{1..4}`, `s127_ff_{arm}_s{1,2}`, `s127_s5_ctrl_s{3,4}`.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
