@@ -5493,6 +5493,18 @@ before.**
   - k6 / m3: 97.7, reaching W_down 56.0, W_up 4.7, LN 0.73.
 * So the pilot ran on a delivered code path. The ordering slip is recorded. The pilot is not rerun.
 
+**Note 131-3 (2026-10-06 11:50 EDT, before the runs exist; Audit's suggestion; an extension of 131-2's endpoint, disclosed). Four more held-out S5
+runs on the idle local RTX 2070.**
+* **Runs:** `s131x_s5_s{401,402,403,404}_2070`, plain fsq120 §120 FINAL S5, 24k, **no plateau stop**, run sequentially, with the guard,
+  train_driver and a memory check at L 32 first (`--micro` as needed).
+  - The 2070 (Turing) has no bf16, so they train in **fp32**: a different numerics class from every other held-out run, stated per
+    run.
+* **They join §131's held-out set and its endpoint.** The verdict is read once they land too.
+  - Extending the endpoint after 131-2's interim reading is the conservative direction: each added run is another chance for a
+    learner to be flagged. It is fixed before any of them runs.
+* **Why:** criterion (i) as registered (≥ 5 exact held-out runs) is already met (18), but only 4 of those are S5 learners. The
+  non-S5 ones are near-vacuous for (i) (131-1 (a)). These runs add S5 learners for (i), and possibly escaped-and-failed runs for (ii).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
