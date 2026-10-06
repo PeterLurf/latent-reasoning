@@ -5944,6 +5944,29 @@ gradient unchanged, as in FSQ. Everything else matches §133 / 133-1 / 133-3.
 * **score_s131 now:** held-out and prospective escaped-and-failed are flagged 5 / 6; exact runs flagged 0 (22 held-out, 9 prospective;
   the S5 learners 0 / 4). The verdict waits for the endpoint (the remaining s130chk and s131x reruns).
 
+**Note 128-6 (2026-10-06 16:59 EDT; descriptive; completes 128-5, Audit-approved local run; helper-read, Theory-verified from the files). Every fp32 certificate covers the eval.**
+* **Six fp32 cover certificates**, local RTX 2070 (Turing, fp32-native), driver 591.86, under the 6 GiB per-process cap; 1–2 s each, none
+  capped or timed out. Dirs `boxes/runs_fsq/s128cc2070_*`.
+
+| Run | bf16 reachable | fp32 reachable | fp32 eval distinct | fp32 n_uncovered | fp32 CERT |
+|---|---|---|---|---|---|
+| cyc s3 | 57 | 62 | 62 | **0** | holds, Moore 5 |
+| cyc s4 | 171 | 135 | 135 | **0** | holds, Moore 5 |
+| rdfa s3 | 151 | 154 | 154 | **0** | holds, Moore 8 |
+| mod s2 | 407 | 423 | 393 | **0** | holds, Moore 5 |
+| mod s3 | 226 | 229 | 214 | **0** | holds, Moore 5 |
+| mod s4 | 511 | 505 | 465 | **0** | holds, Moore 5 |
+
+* **With 128-4's five** (cyc s1 / s2, mod s1, rdfa s2 / s4 on the 3090), **11 of the 12 CLOSED runs** have an fp32 certificate that
+  holds with Moore minimal and **n_uncovered 0**. The 13th and 14th certificates are 128-4's local 4060 cross-checks, also 0.
+  - rdfa s1 is bf16-only. Its bf16 eval showed no gap, and its fp32 growth count (90 at 2,048) is below its bf16 reachable count (98).
+* **bf16 certificates err both ways:** under by 3–32 (cyc s3, rdfa s3, mod s1 / s2 / s3) and over by 6 and 36 (mod s4, cyc s4). That
+  is 128-4's artefact class in full.
+* The fp32 sets equal the visited set in cyc s3 / s4 and rdfa s3. In MOD they are strict supersets (slack 4–40), so they bound MOD's
+  still-rising fp32 growth.
+* CLOSED is unchanged (the certificate as run, 128-4). The stronger statement holds for 11 of 12: **the fp32 certificate covers every
+  code the eval visits.**
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
