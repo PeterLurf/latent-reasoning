@@ -52,3 +52,19 @@ in the remedy map of LIT_COLLAPSE_REMEDIES (86df4b3a).
 - Correct as the engineering bar: a fix must beat restarts' **expected compute per accepted seed** (Dodge
   1909.03004 / 2002.06305 style).
 - Report the plateau probability p and the restart cost: expected runs per success = 1/(1 − p).
+
+## Addendum (2026-10-05): §127 panel points
+1. **Item-residual variance (VAR) closes the op-identity trap, modulo position.**
+   - Priors: conditioning out a nuisance variable: conditional contrastive learning 2106.02866 (contrasting
+     *within* a sensitive attribute); fair-representation residualisation / partialling-out; DANN 1505.07818 (the
+     adversarial counterpart).
+   - r = z_b − E[z_b | item] can only vary through the segment's other inputs (the start text or carried code). But
+     **segment position j also varies** (j = 1 vs 2 before 2k), so residualise on (item, j): m[x, j].
+   - Per-item EMA means are noisy for the first few hundred steps (120 items), which is harmless as an entry
+     device.
+2. **Agreed: drop the predictive aux for S5.** With uniform ops, the next state is independent of the current one
+   without the next item. With the next item, an op-only code predicts op-only next codes trivially. (It would carry
+   signal on non-group tasks such as flip-flop.)
+3. **Zero-init SKIP gives q_st no gradient at step 0:** ∂L/∂q = W_skipᵀ g = 0 until W_skip grows.
+   - Use a small random init (std ≈ 0.02) or a raised LR on the skip maps, so code gradient arrives early.
+   - Upper half plus final hidden is a reasonable subset of Dieng's every-layer skip.
