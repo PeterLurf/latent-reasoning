@@ -4589,6 +4589,10 @@ whether that counts.**
 * **Addendum (2026-10-06 01:02 EDT, before any rerun reads).** The VAR and SKIP reruns run on b27's own host (b35, driver 565.77), the machine of
   Stage 1, not on 595. So they are outside the confound whatever the replay shows. SKIP's Stage 2 matched unit (b30 / b31) and
   b28 are on 595.71. Drivers per §128 host: e31 595.71, e33 595.91, e34 595.58 (3090 Ti), e30 595.71, CYC redeploy 565.57.
+* **Corroboration (2026-10-06 01:57 EDT; Audit / claude-13, read by Theory from the log).** Plain seed 2 under §128's S5 recipe (§120 FINAL plus the guard,
+  a no-op on finite steps), on a second 595.71 host (first e30, RTX 3090, `s128_s5_s2`), plateaus with the same digits as on
+  550–565: 8.261 / 4.984 / 4.953 at 100 / 1k / 2k, flagged at 2k (probe R²_state −0.20, R²_item −0.07). So the STD2 / LR10
+  escapes on b28 are not a driver artefact on this evidence. b28's same-host replay remains the registered decider.
 
 **Note 119-3 (2026-10-06 01:39 EDT, before any SIM-CoT run, the CODI rerun or Coconut s2–3 read; Audit's steward pass). The all-inconclusive case
 is pre-stated, and SIM-CoT's initialisation is kept as registered.**
