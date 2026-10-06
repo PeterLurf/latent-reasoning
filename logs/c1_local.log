@@ -491,3 +491,6 @@
 21:14:31 s123_ff_dither025_s1 contraction_only --fp32 rc 0 (cpu, Idle; GPUs full)
 21:57:14 s112_f010_s22_resume1 rc 0 (cuda:1)
 21:57:14 WORKER_DONE cuda:1 scratch/c1_q_112r_local.txt
+22:07:06 s110_s1_resume1 rc 0 (cuda:0)
+22:07:07 WORKER_DONE cuda:0 scratch/c1_q_112r_local.txt
+22:37:53 s116_none_s41 ABORTED at step 16,800 (round L11, loss 4.75 = chance): CUDA OOM in a labelling rollout (self110.rollout_var -> gen97.greedy) at 22:07:50 on the 2070; process hung, force-stopped 22:35; run dir + log kept as *.void_oom (not resumed: NONE saddle, low value; Audit OK)
