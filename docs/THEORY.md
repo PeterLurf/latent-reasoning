@@ -4676,7 +4676,10 @@ fails on the letter at one step. Both seeds make the same first pull attempt; se
   - Loss 4.34 at 3k, 4.72 at 4k, final 4.585. Long accuracy 0 at every length, 2,048 at 0, donor at chance; 440 codes, 23.2
     per state.
   - The carrier is inflated (row norm 47.2 at 2k).
-  - The same pattern as SKIP s2 and RAW-H. STD2 s2's eval is pending.
+  - The same pattern as SKIP s2 and RAW-H.
+  - **STD2 s2 final (03:22):** the same. Long accuracy 0 at every length, final loss 4.81, 23.8 codes per state,
+    donor at chance, 0 non-finite steps. Stage 2 for STD2 / LR10 is deploying on four RTX 3090s with driver 595.71 (b36–b39),
+    matching SKIP's control hosts.
 * **Pre-stated for Stage 2:** STD2 and LR10 are unlikely to meet ENTRY-FIX (3/4 exact), given seed 2's drift-back. They run
   because the rule says so.
 

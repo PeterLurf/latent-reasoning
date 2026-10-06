@@ -57,26 +57,66 @@
    }
   },
   "std2": {
-   "S5": {},
+   "S5": {
+    "2": {
+     "plateau": false,
+     "long_acc": 0.0,
+     "status": "done",
+     "rho_ff": null,
+     "ext_2048": 0.0,
+     "codes_per_state": 23.816666666666666,
+     "row_norm_2k": 7.2330780029296875,
+     "wte_row_norm": 3.9550135135650635,
+     "probe": null,
+     "gpu": "NVIDIA GeForce RTX 3090"
+    }
+   },
    "FF": {},
-   "ESCAPE": "pending (checks pending)",
-   "delivered": {},
-   "delivery": "checks pending",
-   "ENTRY_FIX": "checks pending",
+   "ESCAPE": true,
+   "delivered": {
+    "2": true
+   },
+   "delivery": true,
+   "ENTRY_FIX": "incomplete (1 / 4)",
    "FF_GUARD": "incomplete",
    "ADOPT": "pending",
-   "cost": null
+   "cost": {
+    "p": 0.0,
+    "a": 0.0,
+    "cost": Infinity,
+    "n": 1
+   }
   },
   "lr10": {
-   "S5": {},
+   "S5": {
+    "2": {
+     "plateau": false,
+     "long_acc": 0.0,
+     "status": "done",
+     "rho_ff": null,
+     "ext_2048": 0.0,
+     "codes_per_state": 23.158333333333335,
+     "row_norm_2k": 47.179805755615234,
+     "wte_row_norm": 3.9541163444519043,
+     "probe": null,
+     "gpu": "NVIDIA GeForce RTX 3090"
+    }
+   },
    "FF": {},
-   "ESCAPE": "pending (checks pending)",
-   "delivered": {},
-   "delivery": "checks pending",
-   "ENTRY_FIX": "checks pending",
+   "ESCAPE": true,
+   "delivered": {
+    "2": true
+   },
+   "delivery": true,
+   "ENTRY_FIX": "incomplete (1 / 4)",
    "FF_GUARD": "incomplete",
    "ADOPT": "pending",
-   "cost": null
+   "cost": {
+    "p": 0.0,
+    "a": 0.0,
+    "cost": Infinity,
+    "n": 1
+   }
   }
  },
  "control": {
