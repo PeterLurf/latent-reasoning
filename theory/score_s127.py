@@ -96,9 +96,12 @@ def nonfinite_share(d):
     """Note 127-3: share of logged training steps whose update was skipped as non-finite ({"step": s, "nonfinite": 1})."""
     p = os.path.join(R, d, "log.jsonl"); n_bad, last = 0, 0
     rows = [json.loads(line) for line in open(p)] if os.path.exists(p) else (stopped_void(d) or [])
+    n_loss = n_nan = 0
     for x in rows:
         n_bad += 1 if x.get("nonfinite") else 0; last = max(last, int(x.get("step", 0)))
-    return n_bad / last if last else 0.0
+        if "loss" in x:                                                      # 127-3: an unguarded run's NaN losses (one line per log interval)
+            n_loss += 1; n_nan += 1 if not math.isfinite(float(x["loss"])) else 0
+    return max(n_bad / last if last else 0.0, n_nan / n_loss if n_loss else 0.0)
 
 
 def delivered(arm, d):
