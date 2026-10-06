@@ -6,7 +6,9 @@ A run stopped at 2k after its flag fired has no eval.json and is scored plateaue
 ESCAPE(arm): seed 2 not plateaued.  ENTRY-FIX(arm): ESCAPE, S5 plateau count <= 1/4 (s1-4), long_acc >= 0.99 in >= 3/4, and
 rho_ff (123-9, fp32) <= 0.28 in every seed with long_acc >= 0.99.  FF guard: flip-flop long_acc >= 0.99 in 2/2.
 ADOPT: ENTRY-FIX and FF guard (ties: lowest cost per accepted seed, then fewest new terms D, C, B, A).
-C (std2) validity: carried row norm at 2k within 0.5x-2x wte's, else "not delivered".
+Delivery (note 127-1, mcheck lines in log.jsonl at steps 1 / 500 / 2000): SKIP skip_grad_q > 0; VAR var_grad_down > 0 at 1 and
+resid_std >= 0.5 at 2000; STD2 row norm within 0.5x-2x wte's; LR10 lr_ratio 10 (+-1 %). A failed check -> "undelivered" (the
+idea is not judged); one fixed rerun in <dir>_rerun replaces it; a rerun that fails again -> "not deliverable as specified".
 Cost per accepted seed (descriptive): (1 + (p / (1 - p)) / 12) / a; p = S5 plateau rate, a = share of escaped seeds with
 long_acc >= 0.99.
     python theory/score_s127.py
@@ -39,6 +41,33 @@ def plateau(d):
         return None                                                          # 2k not reached: undecided
     g = lambda t: L[min(L, key=lambda s: abs(s - t))]  # noqa: E731
     return bool(g(2000) >= 0.9 * g(1000) and g(2000) >= 0.25 * g(100))
+
+
+def mchecks(d):
+    """Note 127-1: {"step": s, "mcheck": {...}} lines in log.jsonl at s = 1 / 500 / 2000 -> {s: mcheck}."""
+    p = os.path.join(R, d, "log.jsonl"); out = {}
+    if os.path.exists(p):
+        for line in open(p):
+            x = json.loads(line)
+            if "mcheck" in x:
+                out[int(x["step"])] = x["mcheck"]
+    return out
+
+
+def delivered(arm, d):
+    """Note 127-1 delivery check for one run: True / False / None (checks not all logged yet)."""
+    mc = mchecks(d)
+    if arm == "skip":
+        need = [(s, "skip_grad_q") for s in (1, 500, 2000)]; ok = lambda s, k: mc[s][k] > 1e-8  # noqa: E731
+    elif arm == "var":
+        need = [(1, "var_grad_down"), (2000, "resid_std")]; ok = lambda s, k: mc[s][k] > 1e-8 if s == 1 else mc[s][k] >= 0.5  # noqa: E731
+    elif arm == "std2":
+        need = [(s, "row_norm") for s in (1, 500, 2000)]; ok = lambda s, k: 0.5 <= mc[s][k] / mc[s]["wte_row_norm"] <= 2.0  # noqa: E731
+    else:
+        need = [(s, "lr_ratio") for s in (1, 500, 2000)]; ok = lambda s, k: abs(mc[s][k] / 10 - 1) <= 0.01  # noqa: E731
+    if any(s not in mc or mc[s].get(k) is None for s, k in need):
+        return None
+    return all(ok(s, k) for s, k in need)
 
 
 def rho_ff(cf, eps="0.1", floor=1e-3):                                       # note 123-9
@@ -79,12 +108,18 @@ def cost(cells):
 def main():
     res = {"arms": {}, "control": None}
     for arm in ARMS:
-        s5 = {s: cell("s127_s5_%s_s%d" % (arm, s)) for s in (1, 2, 3, 4)}; s5 = {k: v for k, v in s5.items() if v}
+        dirs = {s: "s127_s5_%s_s%d" % (arm, s) for s in (1, 2, 3, 4)}
+        rerun = {s: d + "_rerun" for s, d in dirs.items() if os.path.isdir(os.path.join(R, d + "_rerun"))}   # note 127-1: one fixed rerun
+        first_fail = {s: delivered(arm, dirs[s]) is False for s in rerun}
+        dirs.update(rerun)
+        s5 = {s: cell(d) for s, d in dirs.items()}; s5 = {k: v for k, v in s5.items() if v}
+        dv = {s: delivered(arm, dirs[s]) for s in s5}
         ff = {s: cell("s127_ff_%s_s%d" % (arm, s)) for s in (1, 2)}; ff = {k: v for k, v in ff.items() if v}
         esc = (not s5[2]["plateau"]) if 2 in s5 and s5[2]["plateau"] is not None else "pending"
-        valid = True
-        if arm == "std2" and 2 in s5 and s5[2].get("row_norm_2k") is not None:
-            ratio = s5[2]["row_norm_2k"] / s5[2]["wte_row_norm"]; valid = 0.5 <= ratio <= 2.0
+        if any(v is False for v in dv.values()):
+            valid = "not deliverable as specified" if any(first_fail.get(s) and dv[s] is False for s in dv) else "undelivered (one fixed rerun, 127-1)"
+        else:
+            valid = True if dv and all(v is True for v in dv.values()) else "checks pending"
         decided = [v for v in s5.values() if v["plateau"] is not None and (v["plateau"] or v["status"] == "done")]
         if esc is False:
             ef = False
@@ -100,8 +135,9 @@ def main():
                 ef = all(v["rho_ff"] <= 0.28 for v in ok)
         ffg = (len(ff) == 2 and all((v["long_acc"] or 0) >= 0.99 for v in ff.values())) if len(ff) == 2 and all(v["status"] == "done" for v in ff.values()) else "incomplete"
         adopt = (ef is True and ffg is True) if isinstance(ef, bool) and (ef is False or isinstance(ffg, bool)) else "pending"
-        res["arms"][arm] = {"S5": s5, "FF": ff, "ESCAPE": esc, "delivered": valid if arm == "std2" else True, "ENTRY_FIX": ef if valid else "not delivered",
-                            "FF_GUARD": ffg, "ADOPT": adopt if valid else False, "cost": cost(s5)}
+        res["arms"][arm] = {"S5": s5, "FF": ff, "ESCAPE": esc if valid is True else "%s (%s)" % (esc, valid), "delivered": dv, "delivery": valid,
+                            "ENTRY_FIX": ef if valid is True else valid,
+                            "FF_GUARD": ffg, "ADOPT": adopt if valid is True else (False if valid == "not deliverable as specified" else "pending"), "cost": cost(s5)}
     ctrl = {s: cell("s127_s5_ctrl_s%d" % s) for s in (3, 4)}; ctrl.update({s: cell("s120_s5_final_s%d" % s) for s in (1, 2)})
     ctrl = {k: v for k, v in ctrl.items() if v}; res["control"] = {"S5": ctrl, "cost": cost(ctrl)}
     ad = [a for a in ARMS if res["arms"][a]["ADOPT"] is True]
@@ -109,7 +145,7 @@ def main():
     for a in ARMS:
         v = res["arms"][a]
         print(a.upper(), {s: (c["plateau"], c["long_acc"], c["rho_ff"], c["status"]) for s, c in v["S5"].items()},
-              "| ESCAPE", v["ESCAPE"], "| ENTRY-FIX", v["ENTRY_FIX"], "| FF", v["FF_GUARD"], "| ADOPT", v["ADOPT"], "| cost", v["cost"])
+              "| delivery", v["delivery"], "| ESCAPE", v["ESCAPE"], "| ENTRY-FIX", v["ENTRY_FIX"], "| FF", v["FF_GUARD"], "| ADOPT", v["ADOPT"], "| cost", v["cost"])
     print("CONTROL", {s: (c["plateau"], c["long_acc"], c.get("gpu")) for s, c in ctrl.items()}, "| cost", res["control"]["cost"])
     print("DEFAULT", res["DEFAULT"], "| no arm escapes -> restart-on-plateau" if all(res["arms"][a]["ESCAPE"] is False for a in ARMS) else "")
     json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s127.json"), "w", newline="\n"), indent=1, default=float)

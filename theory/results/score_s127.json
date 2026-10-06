@@ -3,9 +3,10 @@
   "var": {
    "S5": {},
    "FF": {},
-   "ESCAPE": "pending",
-   "delivered": true,
-   "ENTRY_FIX": "incomplete (0 / 4)",
+   "ESCAPE": "pending (checks pending)",
+   "delivered": {},
+   "delivery": "checks pending",
+   "ENTRY_FIX": "checks pending",
    "FF_GUARD": "incomplete",
    "ADOPT": "pending",
    "cost": null
@@ -13,9 +14,10 @@
   "skip": {
    "S5": {},
    "FF": {},
-   "ESCAPE": "pending",
-   "delivered": true,
-   "ENTRY_FIX": "incomplete (0 / 4)",
+   "ESCAPE": "pending (checks pending)",
+   "delivered": {},
+   "delivery": "checks pending",
+   "ENTRY_FIX": "checks pending",
    "FF_GUARD": "incomplete",
    "ADOPT": "pending",
    "cost": null
@@ -23,9 +25,10 @@
   "std2": {
    "S5": {},
    "FF": {},
-   "ESCAPE": "pending",
-   "delivered": true,
-   "ENTRY_FIX": "incomplete (0 / 4)",
+   "ESCAPE": "pending (checks pending)",
+   "delivered": {},
+   "delivery": "checks pending",
+   "ENTRY_FIX": "checks pending",
    "FF_GUARD": "incomplete",
    "ADOPT": "pending",
    "cost": null
@@ -33,9 +36,10 @@
   "lr10": {
    "S5": {},
    "FF": {},
-   "ESCAPE": "pending",
-   "delivered": true,
-   "ENTRY_FIX": "incomplete (0 / 4)",
+   "ESCAPE": "pending (checks pending)",
+   "delivered": {},
+   "delivery": "checks pending",
+   "ENTRY_FIX": "checks pending",
    "FF_GUARD": "incomplete",
    "ADOPT": "pending",
    "cost": null

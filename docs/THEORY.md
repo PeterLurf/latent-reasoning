@@ -4175,6 +4175,35 @@ lr 1e-4.
 * Scorer: `theory/score_s127.py`, committed before any run.
 * Dirs: `boxes/runs_fsq/s127_s5_{var,skip,std2,lr10}_s{1..4}`, `s127_ff_{arm}_s{1,2}`, `s127_s5_ctrl_s{3,4}`.
 
+**Note 127-1 (2026-10-05 21:27 EDT, before any implementation or run; Audit, after two undelivered interventions today, §116's copy no_grad and §125's std at 2k). Delivery checks per arm, and the undelivered rule.**
+* **Logging.** Every §127 run writes lines {"step": s, "mcheck": {...}} to log.jsonl at s = 1, 500 and 2000, on a fixed
+  probe batch. These lines carry no "loss" key, so 123-3's flag is unchanged.
+  - Also {"step": 0 / 2000, "probe": {...}}: 127's R² probe, plus the descriptive z-ablation Δloss.
+  - So a run stopped at 2k still carries its checks.
+* **Delivery checks** (they test that the intervention acts, not that it succeeds):
+  - **SKIP:** the gradient of the answer loss with respect to q_st through the skip maps alone (q_st fed to them as a
+    leaf) is nonzero at steps 1, 500 and 2000 (`skip_grad_q` > 1e-8).
+  - **VAR:**
+    - (i) the VAR term's gradient into W_down is nonzero at step 1 (`var_grad_down` > 1e-8);
+    - (ii) the item-and-position residual std of z_b on the probe batch (mean over dims) is ≥ γ / 2 = 0.5 at 2000
+      (`resid_std`). This is the dose check: the term must actually spread the residual.
+  - **STD2:** the carried row norm is within 0.5×–2× of wte's at steps 1, 500 and 2000 (`row_norm`, `wte_row_norm`). This
+    replaces the 2k-only check in §127.
+  - **LR10:** the new-module / GPT-2 LR ratio is 10 (±1 %) at steps 1, 500 and 2000 (`lr_ratio`).
+* **Descriptive, not a delivery check:** the answer-loss change at 2k when the carried code (slot and skip) is replaced by
+  the batch-mean code.
+  - That is the outcome itself: a plateaued model ignores its code by definition.
+* **Undelivered rule (Audit).** An arm that fails a delivery check reads **"undelivered"**: its seed-2 plateau is not read
+  as a failure of the idea.
+  - It gets **one** rerun with a fix fixed now:
+    - a code fix, if the cause is a bug;
+    - for VAR's dose check (ii), w = 10 in place of 1.
+  - If the rerun also fails its check, the arm is "not deliverable as specified" and is dropped. No further reruns.
+* **Before Stage 1:** Experiments' gradflow check shows the following at step 1, and a failure blocks launch:
+  - VAR's and SKIP's gradients reach W_down;
+  - the group LRs (LR10);
+  - the std map's row norm (STD2).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
