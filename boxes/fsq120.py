@@ -1363,12 +1363,12 @@ def main():
             if n_copy:                                                      # §134: copy loss every log line, copy accuracy every 500
                 rec["copy_loss"] = float(np.mean(copy_hist)) if copy_hist else None; copy_hist = []
                 rec["loss_total"] = float(np.mean(tot_hist)) if tot_hist else None; tot_hist = []
+                if step % 500 == 0 or step == a.steps:
+                    rec["copy_acc"] = copy_acc134(m, fam, dev, amp); m.train()
             if tsd_g is not None:                                           # §135: aux InfoNCE, top-1 retrieval, masked share of negatives
                 rec.update({"tsd_loss": float(np.mean(tsd_hist)) if tsd_hist else None, "tsd_top1": float(np.mean(tsd_top1)) if tsd_top1 else None,
                             "tsd_masked_share": float(np.mean(tsd_share)) if tsd_share else None, "tsd_masked_share_cos": float(np.mean(tsd_share_cos)) if tsd_share_cos else None,
                             "loss_total": float(np.mean(tot_hist)) if tot_hist else None}); tsd_hist = []; tsd_top1 = []; tsd_share = []; tsd_share_cos = []; tot_hist = []
-                if step % 500 == 0 or step == a.steps:
-                    rec["copy_acc"] = copy_acc134(m, fam, dev, amp); m.train()
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True); L127[step] = rec["loss"]
         if m.skip and step % int(1000 * sc) == 0:                           # note 127-3: skip-map norms every 1k (descriptive)
             log.write(json.dumps({"step": step, "skip_norms": [float(w_.norm()) for w_ in m.skip_w.detach().float()]}) + chr(10)); log.flush()
@@ -1438,7 +1438,8 @@ def main():
     if fam.name == "s5":
         Xte, Yte = s5.load_csv(os.path.join(a.data_dir, "S5=512.csv"), limit=a.test_n); s5.check_labels(Xte, Yte); Xte, Yte = Xte[:, :a.test_len], Yte[:, :a.test_len]
         grid = [0, 0]; drift = {}; pred, codes = run_test(m, fam, np.zeros(len(Xte), np.int64), Xte, dev, amp, a.eval_bs, grid=grid, drift=drift)
-        res["angular_drift"] = {k_: v_[0] / max(1, v_[1]) for k_, v_ in drift.items()}   # §133 PIN (descriptive): mean cos(z_b(p), z_b(1)); C = pred == Yte
+        res["angular_drift"] = {k_: v_[0] / max(1, v_[1]) for k_, v_ in drift.items()}   # §133 PIN (descriptive): mean cos(z_b(p), z_b(1))
+        C = pred == Yte
         res["long_acc"] = float(C.all(1).mean()); res["acc_by_length"] = {str(t): float(C[:, :t].all(1).mean()) for t in (1, 2, 4, 8, 16, 32, 64, 128, 256, 512) if t <= C.shape[1]}
         lab = Yte
         if a.ext_n:

@@ -38,6 +38,18 @@ def main():
         opt = F.make_opt(m, 1e-4); m.train(); m.p_hard = 1.0; c, x, lab = T.problems(np.random.default_rng(0), sp.draw_train(np.random.default_rng(0), 2), 3, 2)
         m.ctx = torch.tensor(c); loss, _, _, _ = m.chain(m.start(2, "cpu"), torch.tensor(x), lab); opt.zero_grad(); loss.backward(); opt.step(); m.eval()
         pred = T.rollout(m, c, x, "cpu", None, 2); print("ok Table132: train loss %.3f, rollout %s" % (float(loss), pred.shape), flush=True)
+    # end-to-end main() on tiny shapes: training loop + the FULL S5 eval branch (81e37687 dropped `C = pred == Yte` into a comment there)
+    import shutil
+    import subprocess
+    out = os.path.join(os.environ.get("TEMP", "/tmp"), "smoke_plain_fsq120_main"); shutil.rmtree(out, ignore_errors=True)
+    rc = subprocess.call([sys.executable, "-u", "-m", "boxes.fsq120", "--family", "s5", "--arm", "final", "--seed", "1", "--steps", "3", "--sched_scale", "0.001",
+                          "--bs", "2", "--test_n", "4", "--test_len", "8", "--ext_n", "2", "--donor_n", "4", "--margin_n", "4", "--eval_bs", "4", "--contract_n", "4",
+                          "--no_cert", "--device", "cpu", "--out", out], cwd=os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                         stdout=open(out + ".log", "w"), stderr=subprocess.STDOUT)
+    if rc != 0 or not os.path.exists(os.path.join(out, "eval.json")):
+        print("FAIL fsq120 main() end-to-end (rc %d); see %s.log" % (rc, out)); ok = False
+    else:
+        print("ok fsq120 main() end-to-end: eval.json written", flush=True)
     print("SMOKE_PLAIN", "PASS" if ok else "FAIL", "(%.0f s)" % (time.time() - t0), flush=True)
     sys.exit(0 if ok else 1)
 

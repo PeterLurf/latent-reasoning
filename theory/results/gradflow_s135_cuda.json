@@ -1,0 +1,18 @@
+{
+ "s135.aux_p0.main": 12.86939811706543,
+ "s135.aux_p0.down_grad": 6.410398006439209,
+ "s135.aux_p0.trunk_h3_grad": 0.2677057087421417,
+ "s135.aux_p0.up_grad": 0.7788789868354797,
+ "s135.aux_p0.P_s_grad": 7.838197231292725,
+ "s135.aux_p0.P_t_grad": 7.788209438323975,
+ "s135.aux_p0.target_no_grad": 1.0,
+ "s135.aux_p1.main": 12.118836402893066,
+ "s135.aux_p1.down_grad": 6.337288856506348,
+ "s135.aux_p1.trunk_h3_grad": 0.26582643389701843,
+ "s135.aux_p1.up_grad": 0.7185180187225342,
+ "s135.aux_p1.P_s_grad": 7.258144378662109,
+ "s135.aux_p1.P_t_grad": 7.186286449432373,
+ "s135.aux_p1.target_no_grad": 1.0,
+ "_status": "PASS",
+ "_zero_terms": []
+}

@@ -989,3 +989,33 @@
 17:24:15 c3070 start: python -u -m boxes.fsq120 --family s5 --arm final --seed 16 --stop_after 8000 --no_cert --stop_plateau --device cuda:1 --out boxes/runs_fsq/rampproto_plain_s16_3070 && echo ok > boxes/runs_fsq/rampproto_plain_s16_3070/.done
 17:24:32 BUG (Experiments): 5387d85e put 5 lines of FSQ120.__init__ inside enable_tsd (std / raw_h / anneal / skip / std2 / var / det_train undefined) -> every fsq120 / table132 / replay job started 17:05-17:25 failed fast (rc 1, no outputs); fixed; claims of the failed lines released for rerun
 17:24:38 c2070 start: python -u scratch/replay_basin.py --seed 502 --steps 2000 --every 50 --amp none --threads 3 --device cuda:2 --out theory/results/replay_x/2070_s502.jsonl && echo ok > theory/results/replay_x/2070_s502.jsonl.done
+17:34:31 c2070 done rc 0 out yes peak_card_mem 4686 MiB (measured 4.5 GiB) : theory/results/replay_x/2070_s502.jsonl.done
+17:34:38 c2070 start: python -u scratch/replay_basin.py --seed 503 --steps 2000 --every 50 --amp none --threads 3 --device cuda:2 --out theory/results/replay_x/2070_s503.jsonl && echo ok > theory/results/replay_x/2070_s503.jsonl.done
+17:44:36 c2070 done rc 0 out yes peak_card_mem 4680 MiB (measured 4.5 GiB) : theory/results/replay_x/2070_s503.jsonl.done
+17:44:43 c2070 start: python -u scratch/replay_basin.py --seed 504 --steps 2000 --every 50 --amp none --threads 3 --device cuda:2 --out theory/results/replay_x/2070_s504.jsonl && echo ok > theory/results/replay_x/2070_s504.jsonl.done
+17:49:40 c3070 done rc 0 out yes peak_card_mem 4433 MiB (measured 5.0 GiB) : boxes/runs_fsq/rampproto_plain_s16_3070/.done
+17:49:41 c3070 start: python -u scratch/gradflow_check.py --paths s134 --device cuda:1 --out theory/results/gradflow_s134_cuda.json
+17:49:48 c3070 done rc 0 out yes peak_card_mem 1543 MiB (measured 2.0 GiB) : theory/results/gradflow_s134_cuda.json
+17:49:49 c3070 start: python -u -m boxes.fsq120 --family s5 --arm final --seed 1 --steps 60 --sched_scale 0.003 --bs 8 --micro 2 --micro_from 32 --no_cert --ckpt_every 30 --d_q 64 --no_round --test_n 8 --test_len 32 --ext_n 4 --donor_n 8 --margin_n 8 --eval_bs 8 --device cuda:1 --out D:/drain_tmp/smoke133v2_cont64
+17:50:31 c3070 done rc 1 out NO peak_card_mem 3923 MiB (measured 3.0 GiB) : D:/drain_tmp/smoke133v2_cont64/eval.json
+17:50:32 c3070 start: python -u -m boxes.fsq120 --family s5 --arm final --seed 1 --steps 60 --sched_scale 0.003 --bs 8 --micro 2 --micro_from 32 --no_cert --ckpt_every 30 --d_q 16 --test_n 8 --test_len 32 --ext_n 4 --donor_n 8 --margin_n 8 --eval_bs 8 --device cuda:1 --out D:/drain_tmp/smoke133v2_fsq16
+17:51:18 c3070 done rc 1 out NO peak_card_mem 3923 MiB (measured 3.0 GiB) : D:/drain_tmp/smoke133v2_fsq16/eval.json
+17:51:20 c3070 start: python -u -m boxes.fsq120 --family s5 --arm final --seed 1 --steps 60 --sched_scale 0.003 --bs 8 --micro 2 --micro_from 32 --no_cert --ckpt_every 30 --d_q 64 --test_n 8 --test_len 32 --ext_n 4 --donor_n 8 --margin_n 8 --eval_bs 8 --device cuda:1 --out D:/drain_tmp/smoke133v2_fsq64
+17:51:26 c4060 done rc 0 out yes peak_card_mem 4821 MiB (measured 5.0 GiB) : boxes/runs_fsq/rampproto_plain_s3_4060/.done
+17:51:26 c4060 start: python -u scratch/gradflow_check.py --paths s135 --device cuda:0 --out theory/results/gradflow_s135_cuda.json
+17:51:35 c4060 done rc 0 out yes peak_card_mem 2301 MiB (measured 2.0 GiB) : theory/results/gradflow_s135_cuda.json
+17:51:37 c4060 start: python -u -m boxes.fsq120 --family s5 --arm final --seed 1 --steps 60 --sched_scale 0.003 --bs 8 --micro 2 --micro_from 32 --no_cert --ckpt_every 30 --d_q 16 --soft_beta 0.1 --test_n 8 --test_len 32 --ext_n 4 --donor_n 8 --margin_n 8 --eval_bs 8 --device cuda:0 --out D:/drain_tmp/smoke133v2_soft16
+17:52:07 c3070 done rc 1 out NO peak_card_mem 3923 MiB (measured 3.0 GiB) : D:/drain_tmp/smoke133v2_fsq64/eval.json
+17:52:10 c3070 start: python -u -m boxes.fsq120 --family s5 --arm final --seed 1 --steps 60 --sched_scale 0.003 --bs 8 --micro 2 --micro_from 32 --no_cert --ckpt_every 30 --d_q 64 --soft_beta 0.1 --test_n 8 --test_len 32 --ext_n 4 --donor_n 8 --margin_n 8 --eval_bs 8 --device cuda:1 --out D:/drain_tmp/smoke133v2_soft64
+17:52:21 c4060 done rc 1 out NO peak_card_mem 4034 MiB (measured 3.0 GiB) : D:/drain_tmp/smoke133v2_soft16/eval.json
+17:52:24 c4060 start: python -u -m boxes.fsq120 --family s5 --arm final --seed 1 --steps 60 --sched_scale 0.003 --bs 8 --micro 2 --micro_from 32 --no_cert --ckpt_every 30 --d_q 64 --no_round --dither 0.25 --test_n 8 --test_len 32 --ext_n 4 --donor_n 8 --margin_n 8 --eval_bs 8 --device cuda:0 --out D:/drain_tmp/smoke133v2_noise64
+17:52:56 c3070 done rc 1 out NO peak_card_mem 3923 MiB (measured 3.0 GiB) : D:/drain_tmp/smoke133v2_soft64/eval.json
+17:53:04 c3070 start: python -u -m boxes.fsq120 --family s5 --arm final --seed 1 --steps 60 --sched_scale 0.003 --bs 8 --micro 2 --micro_from 32 --no_cert --ckpt_every 30 --d_q 64 --no_round --carrier_ln --test_n 8 --test_len 32 --ext_n 4 --donor_n 8 --margin_n 8 --eval_bs 8 --device cuda:1 --out D:/drain_tmp/smoke133v2_pin64
+17:53:47 c4060 done rc 0 out yes peak_card_mem 4127 MiB (measured 3.0 GiB) : D:/drain_tmp/smoke133v2_noise64/eval.json
+17:53:55 c4060 start: python -u -m boxes.fsq120 --family s5 --arm final --seed 1 --steps 80 --sched_scale 0.03 --bs 8 --copy_frac 0.25 --micro 2 --micro_from 32 --no_cert --ckpt_every 40 --log_every 20 --test_n 8 --test_len 32 --ext_n 4 --donor_n 8 --margin_n 8 --eval_bs 8 --device cuda:0 --out D:/drain_tmp/smoke134_copy
+17:54:40 c2070 done rc 0 out yes peak_card_mem 4530 MiB (measured 4.5 GiB) : theory/results/replay_x/2070_s504.jsonl.done
+17:54:41 c3070 done rc 0 out yes peak_card_mem 3923 MiB (measured 3.0 GiB) : D:/drain_tmp/smoke133v2_pin64/eval.json
+17:54:48 c3070 start: python -u -m boxes.snap115 --run boxes/runs_s5/g105_mask4_s1 --model g97 --device cuda:1
+17:54:53 c2070 start: python -u scratch/replay_basin.py --seed 505 --steps 2000 --every 50 --amp none --threads 3 --device cuda:2 --out theory/results/replay_x/2070_s505.jsonl && echo ok > theory/results/replay_x/2070_s505.jsonl.done
+17:55:00 c3070 done rc 1 out NO peak_card_mem 5821 MiB (measured 5.0 GiB) : boxes/runs_s5/g105_mask4_s1/eval_s115.json
+17:55:12 BUG (Experiments): 81e37687 (§133) left 'C = pred == Yte' inside a comment in the S5 eval branch -> every fsq120 S5 run WITH an eval crashed at eval since ~15:00 (only smokes were affected: prototypes use --stop_after, no cloud fsq120 S5 deploy since); fixed; smoke claims released
