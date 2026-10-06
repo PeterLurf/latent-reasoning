@@ -1,0 +1,11 @@
+{
+ "acc_L32": 1.0,
+ "step_acc_L32": 1.0,
+ "eval_n": 1000,
+ "eval_L": 32,
+ "gate_A1": true,
+ "train_sec": 1308,
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "eval_dtype": "torch.bfloat16",
+ "eval_sec": 30
+}
