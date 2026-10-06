@@ -24,7 +24,7 @@ IN_SAMPLE = {
     "s125_s5_std_s2", "s126_s5_anneal_s2", "s126_s5_anneal_s2_fp32cast", "s126_s5_rawh_s1", "s126_s5_rawh_s2", "s126_s5_rawh_s3",
     "s126_s5_rawh_s4", "s127_s5_lr10_s2", "s127_s5_skip_s2", "s127_s5_skip_s2_rerun", "s127_s5_skip_s4", "s127_s5_std2_s1",
     "s127_s5_std2_s2", "s127_s5_var_s2_rerun"}
-SAME_TRAJECTORY = {"s127_s5_skip_s2", "s128_s5_s3"}   # s128_s5_s3 is record-for-record s127_s5_ctrl_s3 (Audit, 08:20); each counted once   # 131-1 (b): identical to s127_s5_skip_s2_rerun up to 9k (ratio 1.057 both); counted once, as the rerun
+SAME_TRAJECTORY = {"s127_s5_skip_s2", "s128_s5_s3", "s128_s5_s1"}   # 131-8: s128_s5_s1 is record-for-record s120_s5_final_s1 (in-sample) to 14k; counted once, in-sample   # s128_s5_s3 is record-for-record s127_s5_ctrl_s3 (Audit, 08:20); each counted once   # 131-1 (b): identical to s127_s5_skip_s2_rerun up to 9k (ratio 1.057 both); counted once, as the rerun
 HELD = re.compile(r"^(s127_|s128_|s130chk_|s131x_)")   # 131-3: s131x_* added before those runs exist
 SEEN_AT_REG = set(["s127_ff_skip_s1", "s127_ff_skip_s2", "s128_cyc_s1", "s128_cyc_s2", "s128_cyc_s3", "s128_mod_s1", "s128_mod_s2", "s128_mod_s3", "s128_mod_s4", "s128_rdfa_s1", "s128_rdfa_s2", "s128_rdfa_s3", "s128_rdfa_s4"])   # held-out runs on disk when the scorer first ran (all exact, none flagged); the rest are "prospective"
 

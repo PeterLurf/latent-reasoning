@@ -5922,6 +5922,28 @@ gradient unchanged, as in FSQ. Everything else matches §133 / 133-1 / 133-3.
   flagged). (ii) still holds at ≥ 2/3. The verdict waits for the endpoint.
 * **134-2(b):** statistic A at 4.5k is 3.453, on the failure side of ≤ 3.0, as predicted. The exact runs' maximum is 2.746.
 
+**Note 131-8 (2026-10-06 16:09 EDT; interim, before the endpoint; the helper's and Audit's record-identity sweeps, re-run by Theory). A duplicate removed, cloud reruns read, and host disclosure.**
+* **Duplicate (131-1 (b)'s rule, applied as written):** s128_s5_s1 (held-out) is record-for-record s120_s5_final_s1 (in-sample) for
+  140 / 140 loss records to 14k. It diverges only from 14.1k, where the old micro rule engaged. So it is **counted once, as in-sample**
+  (score_s131 SAME_TRAJECTORY).
+  - This removes an unflagged held-out S5 learner, which is the conservative direction for (i).
+  - Theory's sweep of every in-sample / held-out S5 pair finds no other held-out duplicate through 4.5k. In-sample,
+    s123_s5_fsqdither_s1 equals s120_s5_final_s1 through 4k (the dither starts after 4k), so the two share one FLAG4 value. The
+    in-sample figures are descriptive and are left as they are.
+  - Runs sharing only the first 2k (same seed, recipe and card class) are expected, and their FLAG4 windows differ.
+* **Cloud reruns read so far (131-4):**
+  - s12_a4000 is **exact** (FLAG4 0.513; ext_2048 0.996).
+  - s7_4060ti escaped and failed, and is **caught** (FLAG4 0.953).
+  - s17_a4000 is the miss (131-7).
+  - s6_4060ti is flagged at 2k (a plateau, not escaped), with long_acc 0 at 24k although the end probe reads the state (R²_state
+    0.79): the first 24k answer to §130's "late learner" question on a flagged seed is no.
+* **Parity:** within 0.1 at 1k and 2k, with a matching flag, in 1 of the 4 reruns so far (s6). Flags match in 2 / 4.
+* **Disclosed:** 131-4's "one host per card class" was not met. The A4000 seeds ran on two hosts (drivers 560.35.03 / 595.71.05),
+  and the 4060 Ti seeds on two (595.84 / 595.71.05). Each run is read on its own flags, as 131-4 allows. s7's non-parity is on a
+  595.71.05 host, so the driver does not explain it.
+* **score_s131 now:** held-out and prospective escaped-and-failed are flagged 5 / 6; exact runs flagged 0 (22 held-out, 9 prospective;
+  the S5 learners 0 / 4). The verdict waits for the endpoint (the remaining s130chk and s131x reruns).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
