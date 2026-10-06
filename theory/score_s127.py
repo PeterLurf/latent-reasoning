@@ -54,8 +54,21 @@ def mchecks(d):
     return out
 
 
+def nonfinite_share(d):
+    """Note 127-3: share of logged training steps whose update was skipped as non-finite ({"step": s, "nonfinite": 1})."""
+    p = os.path.join(R, d, "log.jsonl"); n_bad, last = 0, 0
+    if os.path.exists(p):
+        for line in open(p):
+            x = json.loads(line)
+            n_bad += 1 if x.get("nonfinite") else 0; last = max(last, int(x.get("step", 0)))
+    return n_bad / last if last else 0.0
+
+
 def delivered(arm, d):
-    """Note 127-1 delivery check for one run: True / False / None (checks not all logged yet)."""
+    """Note 127-1 delivery check for one run: True / False / None (checks not all logged yet); 127-3: > 1 % non-finite
+    steps fails delivery."""
+    if nonfinite_share(d) > 0.01:
+        return False
     mc = mchecks(d)
     if arm == "skip":
         need = [(s, "skip_grad_q") for s in (1, 500, 2000)]; ok = lambda s, k: mc[s][k] > 1e-8  # noqa: E731
@@ -110,14 +123,13 @@ def main():
     for arm in ARMS:
         dirs = {s: "s127_s5_%s_s%d" % (arm, s) for s in (1, 2, 3, 4)}
         rerun = {s: d + "_rerun" for s, d in dirs.items() if os.path.isdir(os.path.join(R, d + "_rerun"))}   # note 127-1: one fixed rerun
-        first_fail = {s: delivered(arm, dirs[s]) is False for s in rerun}
         dirs.update(rerun)
         s5 = {s: cell(d) for s, d in dirs.items()}; s5 = {k: v for k, v in s5.items() if v}
         dv = {s: delivered(arm, dirs[s]) for s in s5}
         ff = {s: cell("s127_ff_%s_s%d" % (arm, s)) for s in (1, 2)}; ff = {k: v for k, v in ff.items() if v}
         esc = (not s5[2]["plateau"]) if 2 in s5 and s5[2]["plateau"] is not None else "pending"
         if any(v is False for v in dv.values()):
-            valid = "not deliverable as specified" if any(first_fail.get(s) and dv[s] is False for s in dv) else "undelivered (one fixed rerun, 127-1)"
+            valid = "not deliverable as specified" if any(s in rerun and dv[s] is False for s in dv) else "undelivered (one fixed rerun, 127-1)"   # 127-3: a failed rerun ends the arm
         else:
             valid = True if dv and all(v is True for v in dv.values()) else "checks pending"
         decided = [v for v in s5.values() if v["plateau"] is not None and (v["plateau"] or v["status"] == "done")]
