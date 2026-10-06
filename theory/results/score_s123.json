@@ -28,6 +28,90 @@
    "plateau": true,
    "gpu": "NVIDIA GeForce RTX 3090"
   },
+  "s5_010_s1": {
+   "fam": "s5",
+   "sigma": 0.1,
+   "seed": 1,
+   "long_acc": 1.0,
+   "rho": 0.1803667111821766,
+   "rho_fp32_registered": 0.20484519004821777,
+   "rho_bf16_registered": 0.013895917683839798,
+   "rho_nonzero": 0.5584896289229835,
+   "basin": 0.1,
+   "grid_share": 0.2010277099609375,
+   "plateau": false,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s5_010_s2": {
+   "fam": "s5",
+   "sigma": 0.1,
+   "seed": 2,
+   "long_acc": 0.0,
+   "rho": null,
+   "rho_fp32_registered": 0.22771793603897095,
+   "rho_bf16_registered": 2.6256224373355508e-05,
+   "rho_nonzero": 0.7009663010598944,
+   "basin": 1.0,
+   "grid_share": 0.000452392578125,
+   "plateau": true,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s5_025_s1": {
+   "fam": "s5",
+   "sigma": 0.25,
+   "seed": 1,
+   "long_acc": 1.0,
+   "rho": 0.14916674230116964,
+   "rho_fp32_registered": 0.19126112759113312,
+   "rho_bf16_registered": 0.002673923969268799,
+   "rho_nonzero": 0.5228346059759631,
+   "basin": 0.1,
+   "grid_share": 0.16547216796875,
+   "plateau": false,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s5_025_s2": {
+   "fam": "s5",
+   "sigma": 0.25,
+   "seed": 2,
+   "long_acc": 0.0,
+   "rho": null,
+   "rho_fp32_registered": 0.2289711982011795,
+   "rho_bf16_registered": 9.99999883788405e-07,
+   "rho_nonzero": 0.01194921987273086,
+   "basin": 1.0,
+   "grid_share": 0.375244140625,
+   "plateau": true,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s5_050_s1": {
+   "fam": "s5",
+   "sigma": 0.5,
+   "seed": 1,
+   "long_acc": 1.0,
+   "rho": 0.15584765539193485,
+   "rho_fp32_registered": 0.1937202513217926,
+   "rho_bf16_registered": 0.0023708639200776815,
+   "rho_nonzero": 0.506931232262539,
+   "basin": 0.1,
+   "grid_share": 0.191850830078125,
+   "plateau": false,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s5_050_s2": {
+   "fam": "s5",
+   "sigma": 0.5,
+   "seed": 2,
+   "long_acc": 0.0,
+   "rho": 0.018714699923433026,
+   "rho_fp32_registered": 0.20710398256778717,
+   "rho_bf16_registered": 0.0006209561252035201,
+   "rho_nonzero": 0.6973141918828641,
+   "basin": 1.0,
+   "grid_share": 0.1526695556640625,
+   "plateau": true,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
   "ff_000_s1": {
    "fam": "ff",
    "sigma": 0.0,
@@ -41,6 +125,20 @@
    "grid_share": 0.151957275390625,
    "plateau": false,
    "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "ff_025_s1": {
+   "fam": "ff",
+   "sigma": 0.25,
+   "seed": 1,
+   "long_acc": 1.0,
+   "rho": 0.08684361972593309,
+   "rho_fp32_registered": 0.1716604083776474,
+   "rho_bf16_registered": 2.0095056243008003e-05,
+   "rho_nonzero": 0.4340940840826581,
+   "basin": 0.3,
+   "grid_share": 0.240976806640625,
+   "plateau": false,
+   "gpu": "NVIDIA GeForce RTX 3090"
   }
  },
  "fsqdither": {
@@ -48,14 +146,14 @@
    "seeds": {
     "1": {
      "long_acc": 1.0,
-     "codes_per_state_2048": null,
+     "codes_per_state_2048": 20.925,
      "plateau": false,
      "cert_holds": false,
      "cert_registered_holds": false
     },
     "2": {
      "long_acc": 0.0,
-     "codes_per_state_2048": null,
+     "codes_per_state_2048": 1.9666666666666666,
      "plateau": true,
      "cert_holds": false,
      "cert_registered_holds": false
@@ -69,14 +167,14 @@
    "seeds": {
     "1": {
      "long_acc": 1.0,
-     "codes_per_state_2048": null,
+     "codes_per_state_2048": 15.5,
      "plateau": false,
-     "cert_holds": false,
+     "cert_holds": true,
      "cert_registered_holds": false
     },
     "2": {
      "long_acc": 1.0,
-     "codes_per_state_2048": null,
+     "codes_per_state_2048": 4.0,
      "plateau": false,
      "cert_holds": false,
      "cert_registered_holds": false
@@ -89,22 +187,26 @@
  },
  "plateau_count": {
   "s5_0.0": 1,
-  "ff_0.0": 0
+  "s5_0.1": 1,
+  "s5_0.25": 1,
+  "s5_0.5": 1,
+  "ff_0.0": 0,
+  "ff_0.25": 0
  },
  "CAUSAL_registered_all_cells": {
   "i": false,
-  "ii": true,
+  "ii": false,
   "iii": true,
-  "sigma_star": null
+  "sigma_star": 0.5
  },
- "sigma_star": null,
- "CAUSAL": "incomplete (n_cells = 3 / 10)",
+ "sigma_star": 0.25,
+ "CAUSAL": false,
  "CAUSAL_parts": {
   "i": false,
   "ii": true,
   "iii": true,
-  "n_cells_nonplateau": 2,
-  "n_cells": 3
+  "n_cells_nonplateau": 6,
+  "n_cells": 10
  },
  "continuous_stabiliser_reading": true
 }
