@@ -53,9 +53,36 @@
   "fsq64": {
    "slots": {
     "1": {
-     "attempts": [],
-     "status": "open",
-     "accepted": null
+     "attempts": [
+      {
+       "seed": 1,
+       "plateau": true,
+       "source": "slot file (raw log not fetched)"
+      },
+      {
+       "seed": 101,
+       "plateau": true,
+       "source": "slot file (raw log not fetched)"
+      },
+      {
+       "seed": 201,
+       "plateau": false
+      }
+     ],
+     "status": "accepted",
+     "accepted": {
+      "seed": 201,
+      "long_acc": 0.998,
+      "ext_2048": 0.998,
+      "serial": true,
+      "grid_share": 0.18816532897949217,
+      "rho": null,
+      "rho_k_row": null,
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "driver": "570.195.03",
+      "exact2048": true,
+      "pass": null
+     }
     },
     "2": {
      "attempts": [],
@@ -73,7 +100,7 @@
      "accepted": null
     }
    },
-   "verdict": "not run"
+   "verdict": "incomplete (0 / 4 slots decided)"
   },
   "soft16": {
    "slots": {
@@ -128,9 +155,36 @@
   "noise64": {
    "slots": {
     "1": {
-     "attempts": [],
-     "status": "open",
-     "accepted": null
+     "attempts": [
+      {
+       "seed": 1,
+       "plateau": true,
+       "source": "slot file (raw log not fetched)"
+      },
+      {
+       "seed": 101,
+       "plateau": true,
+       "source": "slot file (raw log not fetched)"
+      },
+      {
+       "seed": 201,
+       "plateau": false
+      }
+     ],
+     "status": "accepted",
+     "accepted": {
+      "seed": 201,
+      "long_acc": 0.998,
+      "ext_2048": 0.998,
+      "serial": true,
+      "grid_share": 0.1837990264892578,
+      "rho": null,
+      "rho_k_row": null,
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "driver": "595.84",
+      "exact2048": true,
+      "pass": null
+     }
     },
     "2": {
      "attempts": [],
@@ -148,7 +202,7 @@
      "accepted": null
     }
    },
-   "verdict": "not run"
+   "verdict": "incomplete (0 / 4 slots decided)"
   },
   "pin64": {
    "slots": {

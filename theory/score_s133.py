@@ -102,6 +102,10 @@ def slot(prefix, k, arm=None):
             break
         pl = plateau(d); r = load(d)
         if pl is None and r is None:
+            sf = load("s133_slots/%s_k%d" % (prefix.split("_", 1)[1], k)) if prefix.startswith("s133_") else None   # 133-5: plateau
+            got = [x for x in (sf or {}).get("attempts", []) if x.get("seed") == k + o and x.get("status") == "plateau"]    # attempt not fetched:
+            if got:                                                                                                      # read the host's slot
+                att.append({"seed": k + o, "plateau": True, "source": "slot file (raw log not fetched)"}); continue        # record, disclosed
             break
         if pl is None:
             return {"attempts": att, "status": "running (phase 1)", "accepted": None}
