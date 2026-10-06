@@ -103,10 +103,19 @@ with the same code and settings across families.
       error correction / candidate 2.
     - s6 (F2b flat) is pending, with prefix accuracy and ρ₁ on the 3070. It decides whether F2b also has a wrong-transition
       sub-type.
-    - **Accuracy at position 1 alone separates the classes** (acc_at_pos 1; chance 0.008):
-      - 1.0 in the exact run (s12) and in F2b-compounding (s17);
-      - 0.05–0.10 in F2a (s5 0.097, s7 0.047; s128 s3 0.040 on the CPU preview), with chance from position 3;
-      - chance in F1 (s30 0.0095).
+    - **Positions 1 and 2 together separate the classes** (helper's and Experiments' 14-model prefix batch, Theory-verified;
+      acc_by_prefix 1 / 2; chance 0.008).
+      - Position 1 is segment(START, op₁) → code → decode: a write and a read of one state. Position 2 is the first transition on a
+        self-written code.
+      - **Exact** (s12, skip_s1, s102, s104, final_s1): 1.0 / 1.0 at every prefix, ρ₁ 0.13–0.22.
+      - **F2b-compounding** (s17, s129 s202): 1.0, then 0.94 / 0.60, then decay; ρ₁ 0.80 / 0.48.
+      - **F2b-transition** (lr10 s2): 0.957 / 0.037. The write and read work, but the transition on its own code fails. ρ₁ 0.
+      - **F2a** (s5, s7, skip_s2_rerun, ctrl_s4_full, s128 s3): 0.04–0.10 / under 0.05. The first write or read already fails, even
+        with ρ₁ in band (skip_s2_rerun 0.175; ctrl_s4_full 0.14).
+      - **F1** (s30): chance at both positions.
+    - **Ranking that follows** (Audit): a wrong transition or write/read dominates (6 of 9 failures; contraction 2). So the
+      transition-side fixes come first for S5 entry: COPY (§134) for F2a's write/read, and SELF-ANCHOR (2b) for F2b-transition's
+      reading of its own code. §133 / 2 stay for compounding and capacity. ρ₁ in band is not sufficient (skip_s2_rerun).
 * **F3, drift:** a continuous or wide carrier has no attractor (RAW-H, CONT).
 * **F4, capacity:** 8⁸ codes (24 bits) cannot hold large states (S5×4, multiplication, graph sets).
   - On the §128 families the cap is far from binding (helper's growth reading, fp32, 500 rollouts to 2,048, acc 1.0):
