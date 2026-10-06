@@ -1,0 +1,7 @@
+# THEORY 128-4 (Theory 2026-10-06): cert_cover128 bf16 + fp32, full 2000 x 512, on ONE RTX 3090 (training card class) for cyc_s1, cyc_s2, rdfa_s2 (bf16 eval codes > BFS set), mod_s1 and rdfa_s4 (4060 cross-check). Models shipped from local; uses boxes.fsq120 (gpt2 sha guard)
+# P=2
+boxes/runs_fsq/s128cc3090_cyc_s1 scratch.cc_job --run boxes/runs_fsq/s128_cyc_s1
+boxes/runs_fsq/s128cc3090_cyc_s2 scratch.cc_job --run boxes/runs_fsq/s128_cyc_s2
+boxes/runs_fsq/s128cc3090_rdfa_s2 scratch.cc_job --run boxes/runs_fsq/s128_rdfa_s2
+boxes/runs_fsq/s128cc3090_mod_s1 scratch.cc_job --run boxes/runs_fsq/s128_mod_s1
+boxes/runs_fsq/s128cc3090_rdfa_s4 scratch.cc_job --run boxes/runs_fsq/s128_rdfa_s4
