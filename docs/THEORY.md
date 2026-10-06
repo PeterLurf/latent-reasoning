@@ -5855,6 +5855,25 @@ Two predictions, fixed now:
 * **(b)** Its 4.5k loss is ≤ 2.5, the hard-rounded learners' band.
 * Both are read from log.jsonl, and are descriptive beside §134's PASS rule.
 
+**Note 133-4 (2026-10-06 15:09 EDT, before any §133 result; the Audit helper's harness review of 81e37687; disclosure, no rule change).** SOFT's
+forward pass is the registered mix, (1 − β)·z_b + β·round(z_b). Its gradient is straight-through with unit slope: round() passes the
+gradient unchanged, as in FSQ. Everything else matches §133 / 133-1 / 133-3.
+
+**Note 134-3 (2026-10-06 15:09 EDT, before any §134 run; the helper's review and post-hoc probes; no rule change).**
+* **The mechanism prediction moves to the end-of-training probe,** where it can discriminate.
+  - At 2k, plain escape-fails already show R²_state 0.25–0.44, with the current op gone (n 6). So "op-history above state at 2k" does not
+    describe them.
+  - The post-hoc probe of the kept escape-fail (s128 S5 s3) shows a **reversion:** R²_state 0.04 / −0.06 / −0.06 at L 2 / 4 / 8 by 24k
+    (0.44 at 2k), with the current op back in the code at L 8 (0.83). The learners hold the state at every length (R² 0.98–1.00).
+  - **Pre-stated now:** COPY seeds hold the state at the end at L 2 / 4 / 8 (R²_state ≥ 0.9) with no op reversion. A COPY seed that still
+    escapes and fails is read against this.
+* **On S5, op-history is read from last1 only.** The last2 / last3 groups (14,400 / 1.7M) are unreadable at n 4,096 (coverage 0.13 / 0.00),
+  and are reported with their coverage.
+* **Scorer** (`score_s134.py`, updated now):
+  - smoke filter plus an args check (d_q 8, levels 8, family, copy_frac 0.1); a mismatch is an error row and an invalid run;
+  - the dialect and copy-donor fields are printed;
+  - a guard run without a CERT file reads "incomplete", not ok.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

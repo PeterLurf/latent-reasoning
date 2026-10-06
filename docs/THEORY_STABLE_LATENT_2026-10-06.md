@@ -43,6 +43,11 @@ with the same code and settings across families.
 * **COPY (§124) gives the earliest, seed-uniform, sharpest acquisition event** (4/4 at the same round, jumps 0.99, no precursor), against
   BASE (2/4) and EXPOSE (precursors, later).
 * **Partial outcomes:** a state-bearing code at 2k is not enough (3070 s17: R²_next 0.86 → the 3.2 basin).
+* **End-of-training probes** (§128 S5, kept models):
+  - learners hold the state at every length (R² 0.98–1.00);
+  - the escape-fail s3 **reverts**: state R² 0.44 at 2k, then about 0 at L 2 / 4 / 8 by 24k, with the current op back at L 8 (0.83).
+  - So F2 looks like an unanchored state code decaying (n = 1 probed), not a short-chain op-history shortcut. That fits candidates 1
+    and 3.
 
 ## Failure taxonomy (what a method must fix)
 * **F1, entry basin:** the first decoder pull fails and the code's variance collapses (127-7). Card-dependent, and often transient
