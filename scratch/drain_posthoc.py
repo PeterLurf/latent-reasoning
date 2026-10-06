@@ -1,0 +1,100 @@
+"""Model-skip rule for the drain (Theory + Audit, 2026-10-06), run ON THE HOST before a fetched run dir is tarred:
+    python scratch/drain_posthoc.py <run dir> [device]   ->   one line: "KEEP <reason>" or "SKIP <reason> | posthoc: <steps>"
+SKIP model.pt only if long_acc < 0.99 AND every ext < 0.99, and after every registered on-host post-hoc step has run:
+fp32 --contraction_only for fsq120 runs (eval_contraction_fp32.json). skip_off / donor are already in eval.json; CERT / growth
+belong to sections whose runs are always kept (§128) or are closed.
+ALWAYS KEEP: any exact run (long_acc / cumulative 512 / any ext >= 0.99); every §128 run (accepted or 128-1 check runs); §119
+Coconut (SIM-CoT inits) and any competent §119 run (intact_acc >= 0.90); runs matching scratch/model_keep_patterns.txt
+(registration-named runs, controls, §129 / §130); anything this script cannot judge (no eval / unknown layout -> KEEP).
+eval / log / args / preds_test.npy are always fetched (only model.pt is ever skipped)."""
+import json
+import os
+import subprocess
+import sys
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def accs(e):
+    """Long accuracy and every extension accuracy found in an eval.json of any of our layouts."""
+    out = {}
+    if isinstance(e.get("long_acc"), (int, float)):
+        out["long_acc"] = e["long_acc"]
+    cum = e.get("cumulative")
+    if isinstance(cum, dict) and cum.get("512") is not None:
+        out["cumulative_512"] = cum["512"]
+    for k in ("ext_2048", "ext_8192"):
+        v = e.get(k)
+        if isinstance(v, dict) and isinstance(v.get("cumulative"), (int, float)):
+            out[k] = v["cumulative"]
+    ex = e.get("extension_2048")
+    if isinstance(ex, dict) and isinstance(ex.get("cumulative"), dict):
+        for t, v in ex["cumulative"].items():
+            if v is not None:
+                out["extension_2048_" + t] = v
+    return out
+
+
+def patterns():
+    p = os.path.join(ROOT, "scratch", "model_keep_patterns.txt")
+    return [ln.strip() for ln in open(p) if ln.strip() and not ln.startswith("#")] if os.path.exists(p) else []
+
+
+def fsq_args(a):
+    f = ["--family", a["family"], "--arm", a["arm"], "--seed", str(a["seed"])]
+    for k, fl in (("no_round", "--no_round"), ("raw_h", "--raw_h"), ("anneal", "--anneal"), ("std", "--std"), ("std2", "--std2"),
+                  ("skip_dec", "--skip_dec"), ("var_res", "--var_res")):
+        if a.get(k):
+            f.append(fl)
+    for k, fl in (("dither", "--dither"), ("fsq_dither", "--fsq_dither")):
+        if a.get(k):
+            f += [fl, str(a[k])]
+    if a.get("lr_new", 1.0) not in (1.0, None):
+        f += ["--lr_new", str(a["lr_new"])]
+    if a.get("var_res") and a.get("var_est"):
+        f += ["--var_est", a["var_est"]]
+    return f
+
+
+def main():
+    d = sys.argv[1].rstrip("/"); dev = sys.argv[2] if len(sys.argv) > 2 else "cuda:0"; name = os.path.basename(d)
+    ep = os.path.join(d, "eval.json")
+    if not os.path.exists(os.path.join(d, "model.pt")):
+        print("KEEP no model.pt"); return
+    if not os.path.exists(ep):
+        print("KEEP no eval.json (partial / void: kept for investigation)"); return
+    for pat in patterns():
+        if pat in d:
+            print("KEEP pattern %s" % pat); return
+    if name.startswith("s128_"):
+        print("KEEP s128 run"); return
+    if name.startswith("s119_coconut"):
+        print("KEEP s119 Coconut (SIM-CoT init)"); return
+    try:
+        e = json.load(open(ep))
+    except Exception as ex:
+        print("KEEP eval.json unreadable (%s)" % ex); return
+    if name.startswith("s119_") and (e.get("intact_acc") or 0) >= 0.90:
+        print("KEEP s119 competent (intact %.3f)" % e["intact_acc"]); return
+    A = accs(e)
+    if not A:
+        print("KEEP no accuracy field recognised"); return
+    hi = {k: v for k, v in A.items() if v >= 0.99}
+    if hi:
+        print("KEEP exact (%s)" % ", ".join("%s %.4f" % kv for kv in hi.items())); return
+    steps = []
+    a = json.load(open(os.path.join(d, "args.json"))) if os.path.exists(os.path.join(d, "args.json")) else {}
+    if "family" in a and "arm" in a:                                        # fsq120 run: fp32 contraction on the host first
+        if not os.path.exists(os.path.join(d, "eval_contraction_fp32.json")):
+            rc = subprocess.call([sys.executable, "-u", "-m", "boxes.fsq120"] + fsq_args(a) + ["--contraction_only", "--fp32", "--device", dev, "--out", d],
+                                 stdout=open(os.path.join(ROOT, "logs", "gen_%s_contraction_fp32.log" % name), "w"), stderr=subprocess.STDOUT, cwd=ROOT)
+            if rc != 0 or not os.path.exists(os.path.join(d, "eval_contraction_fp32.json")):
+                print("KEEP fp32 contraction failed on host (rc %d)" % rc); return
+            steps.append("fp32 contraction (run now)")
+        else:
+            steps.append("fp32 contraction (present)")
+    print("SKIP not exact (%s) | posthoc: %s" % (", ".join("%s %.4f" % kv for kv in A.items()), "; ".join(steps) or "none registered"))
+
+
+if __name__ == "__main__":
+    main()

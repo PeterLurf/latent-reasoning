@@ -1,0 +1,6 @@
+# Model-skip rule: run dirs containing any of these substrings always keep model.pt (registration-named / controls / planned)
+s127_s5_ctrl_
+s127_ff_ctrl_
+s129_
+replay
+s130
