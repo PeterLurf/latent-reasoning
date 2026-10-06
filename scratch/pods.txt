@@ -886,3 +886,16 @@ PRICE EXCEPTION 2026-10-06 04:58 gen-b41 offer 53010473 RTX 3090 595.71 $0.267: 
 54506233 vast offer 48386182 created 2026-10-06 12:02: label gen-b45, queue scratch/gen_q_b45.txt (logged at create by vdeploy_toy.sh)
 54506242 vast offer 54051476 created 2026-10-06 12:02: label gen-b46, queue scratch/gen_q_b46.txt (logged at create by vdeploy_toy.sh)
 54480025 vast | gen_b43 DESTROYED_VERIFIED 2026-10-06 12:13 after verified per-run fetch (boxes/runs_fsq/s132_k4_smoke boxes/runs_fsq/s132_k4_s1 boxes/runs_fsq/s132_slots/k4_k1); FAILED (no eval.json, logs fetched): boxes/runs_fsq/s132_k6_memcheck boxes/runs_fsq/s132_k4_memcheck; partial logs kept: boxes/runs_fsq/s132_k6_memcheck.void_partial boxes/runs_fsq/s132_k4_memcheck.void_partial
+54507480 vast offer 49476173 created 2026-10-06 12:13: label gen-b44, queue scratch/gen_q_b44.txt (logged at create by vdeploy_toy.sh)
+54512176 vast offer 52272584 created 2026-10-06 12:49: label gen-b44, queue scratch/gen_q_b44.txt (logged at create by vdeploy_toy.sh)
+54513664 vast offer 36286716 created 2026-10-06 13:02: label gen-b60, queue scratch/gen_q_b60.txt (logged at create by vdeploy_toy.sh)
+54514142 vast offer 53613031 created 2026-10-06 13:06: label gen-b48, queue scratch/gen_q_b48.txt (logged at create by vdeploy_toy.sh)
+54514143 vast offer 53877826 created 2026-10-06 13:06: label gen-b47, queue scratch/gen_q_b47.txt (logged at create by vdeploy_toy.sh)
+54514160 vast offer 31011000 created 2026-10-06 13:06: label gen-b49, queue scratch/gen_q_b49.txt (logged at create by vdeploy_toy.sh)
+54514165 vast offer 45415095 created 2026-10-06 13:06: label gen-b50, queue scratch/gen_q_b50.txt (logged at create by vdeploy_toy.sh)
+54514169 vast offer 50588423 created 2026-10-06 13:06: label gen-b51, queue scratch/gen_q_b51.txt (logged at create by vdeploy_toy.sh)
+54514179 vast offer 51648674 created 2026-10-06 13:06: label gen-b52, queue scratch/gen_q_b52.txt (logged at create by vdeploy_toy.sh)
+54514182 vast offer 49634068 created 2026-10-06 13:06: label gen-b53, queue scratch/gen_q_b53.txt (logged at create by vdeploy_toy.sh)
+54514191 vast offer 51470055 created 2026-10-06 13:06: label gen-b54, queue scratch/gen_q_b54.txt (logged at create by vdeploy_toy.sh)
+54514197 vast offer 50286307 created 2026-10-06 13:07: label gen-b55, queue scratch/gen_q_b55.txt (logged at create by vdeploy_toy.sh)
+54429530 vast | gen_e31 DESTROYED_VERIFIED 2026-10-06 13:19 after verified per-run fetch (boxes/runs_fsq/s128_ff_s1 boxes/runs_fsq/s128_slots/ff_k1 boxes/runs_fsq/s128_ff_s2 boxes/runs_fsq/s128_slots/ff_k2 boxes/runs_fsq/s128_ff_s3 boxes/runs_fsq/s128_slots/ff_k3 boxes/runs_fsq/s128_ff_s4 boxes/runs_fsq/s128_slots/ff_k4)
