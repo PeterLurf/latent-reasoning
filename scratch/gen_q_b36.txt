@@ -1,0 +1,4 @@
+# §127 Stage 2 STD2 / LR10 (note 127-7: b28 replay plateau parity, confound closed); RTX 3090, driver 595.71 = the shared control's class (b30 / b31); guard on; boxes.fsq120
+# P=2
+boxes/runs_fsq/s127_s5_std2_s1 boxes.fsq120 --family s5 --arm final --micro 2 --no_cert --stop_plateau --probe127 --seed 1 --std2
+boxes/runs_fsq/s127_s5_lr10_s1 boxes.fsq120 --family s5 --arm final --micro 2 --no_cert --stop_plateau --probe127 --seed 1 --lr_new 10
