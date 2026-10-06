@@ -1,7 +1,7 @@
-# A stable latent method: design synthesis (2026-10-06) — DRAFT, pending Literature and helper inputs
+# A stable latent method: design synthesis (2026-10-06) — candidate 1 registered as §134; helper's data pending
 
 The user's directive (via Audit): "ask literature and helper to work together with theory to invent and synthesize a stable latent
-method". Theory leads. Literature maps the prior art (@@LIT@@); the Audit helper mines our raw runs (@@HELPER@@).
+method". Theory leads. Literature maps the prior art (4da2f672 / e0909d0b / ebc2a039); the Audit helper mines our raw runs (pending).
 **Goal:** one task-agnostic method that is
 (1) **stable to train** (enters without restarts),
 (2) **stable to run** (contractive, exact over long chains; C6 / C2),
@@ -82,6 +82,20 @@ with the same code and settings across families.
 * More entry levers of §127's kind (escape without learning).
 * A global contraction penalty (it fights S5's isometric carry; Literature 7dbdb426).
 * Learned codebooks (§101's SELF-SNAP premise failed).
+
+## Status
+* **Candidate 1 is registered as §134** (26bc216e; scorer `theory/score_s134.py`), with Literature's design checks:
+  - constant f;
+  - copy decoded from the code alone;
+  - a "two dialects" identity probe and a copy-code donor injection (134-1);
+  - no copy → one-op rows (they would label transitions);
+  - the FF caveat (copy anchors only 2 codes there).
+* **Candidate 2** waits for §133's stage 1. Literature's guards apply:
+  - dec reads the code only;
+  - β ≈ 0.01, with β = 0 until decodes are valid;
+  - decode "the answer if queried now" (= the state for S5 / CYC / MOD / RDFA, not FF);
+  - arm order COPY → COPY + RT → COPY + RT + SKIP.
+* Literature's $0 test (does escape without learning carry the op history?) is queued on the local 3070 (LOCAL_BACKLOG).
 
 ## Order
 * Register Candidate 1 first (cheap, decisive, targets the dominant failure).
