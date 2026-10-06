@@ -507,3 +507,8 @@
 04:01:35 s127_s5_lr10_s2 contraction_only --fp32 rc 0 (cpu)
 04:40:29 s116_opdef_s31 rc 0 (cuda:1)
 04:40:29 WORKER_DONE cuda:1 scratch/c1_q_116c_local.txt
+04:54:24 s128_mod_s2 contraction_only --fp32 rc 0 (cuda:1)
+04:54:30 s128_mod_s2 cert_only rc 0 (cuda:1)
+04:54:55 s127_s5_skip_s2 contraction_only --fp32 rc 0 (cuda:1)
+04:55:21 s127_s5_skip_s2_rerun contraction_only --fp32 rc 0 (cuda:1)
+04:55:48 s127_s5_var_s2_rerun contraction_only --fp32 rc 0 (cuda:1)
