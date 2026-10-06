@@ -1,0 +1,27 @@
+{
+ "run": "boxes/runs_fsq/s132_k4_s1",
+ "k": 4,
+ "m": 2,
+ "test_n": 2000,
+ "test_len": 512,
+ "eval_dtype": "torch.bfloat16",
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "n_held": 68,
+ "n_per": 100,
+ "long_acc_replay": 0.9865,
+ "long_acc_eval": 0.9865,
+ "replay_matches": true,
+ "summary": {
+  "eval_fail_total": 27,
+  "eval_fail_top3_share": 1.0,
+  "tables_with_eval_fail": 1,
+  "sample_acc_mean": 0.9852941176470589,
+  "sample_acc_min": 0.0,
+  "tables_sample_lt_0.99": 1,
+  "cert_holds": 67,
+  "moore_eq_reachable": 67,
+  "sample_acc_moore_eq_reachable": 1.0,
+  "sample_acc_open": 0.0
+ },
+ "sec": 1132
+}

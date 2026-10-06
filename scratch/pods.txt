@@ -917,3 +917,4 @@ PRICE EXCEPTION 2026-10-06 04:58 gen-b41 offer 53010473 RTX 3090 595.71 $0.267: 
 54517386 vast | gen_b47 DESTROYED_VERIFIED 2026-10-06 16:27 after verified per-run fetch (boxes/runs_fsq/parity_ckpt_4060ti boxes/runs_fsq/s130chk_s5_s5_4060ti)
 54514142 vast | gen_b48 DESTROYED_VERIFIED 2026-10-06 16:30 after verified per-run fetch (boxes/runs_fsq/s130chk_s5_s6_4060ti)
 54506242 vast | gen_b46 DESTROYED_VERIFIED 2026-10-06 16:59 after manual fetch: small files by the drain; model.pt fetched raw (sha 03154891...) - the host's disk was full (30G/30G overlay), its model tarball was truncated, drain retries looped FETCH_INCOMPLETE; host excluded
+54512176 vast | gen_b44 DESTROYED_VERIFIED 2026-10-06 17:17 after verified per-run fetch (boxes/runs_fsq/s132bd_k4_s1 boxes/runs_fsq/s132_k4_s2 boxes/runs_fsq/s132_slots/k4_k2)

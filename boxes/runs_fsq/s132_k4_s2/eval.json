@@ -1,0 +1,538 @@
+{
+ "family": "table",
+ "k": 4,
+ "m": 2,
+ "seed": 2,
+ "train_sec": 11049,
+ "final_loss": 1.2172383729414093e-07,
+ "n_nonfinite": 0,
+ "eval_dtype": "torch.bfloat16",
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "train_gpu": "NVIDIA GeForce RTX 3090",
+ "train_driver": "595.71.05",
+ "split": {
+  "held_out": 68,
+  "ood": 240,
+  "train": 268,
+  "train_rejected_draws": 0,
+  "train_heldout_overlap": 0
+ },
+ "long_acc_transitive": 1.0,
+ "transitive_share": 0.8565,
+ "long_acc": 1.0,
+ "heldout_n_tables": 68,
+ "heldout_overlap": 0,
+ "train_acc": 1.0,
+ "acc_by_length": {
+  "16": 1.0,
+  "32": 1.0,
+  "64": 1.0,
+  "128": 1.0,
+  "256": 1.0,
+  "512": 1.0
+ },
+ "ext_2048": {
+  "n": 500,
+  "len": 2048,
+  "cumulative": 1.0
+ },
+ "donor": {
+  "pos2": {
+   "donor_consistent": 1.0,
+   "recipient_consistent": 0.4565,
+   "chance_overlap": 0.4565
+  },
+  "pos4": {
+   "donor_consistent": 1.0,
+   "recipient_consistent": 0.346,
+   "chance_overlap": 0.346
+  },
+  "pos6": {
+   "donor_consistent": 1.0,
+   "recipient_consistent": 0.3475,
+   "chance_overlap": 0.3475
+  }
+ },
+ "donor_difftable": {
+  "pos2": {
+   "donor_consistent": 1.0,
+   "recipient_consistent": 0.2505,
+   "chance_overlap": 0.2505
+  },
+  "pos4": {
+   "donor_consistent": 1.0,
+   "recipient_consistent": 0.25,
+   "chance_overlap": 0.25
+  },
+  "pos6": {
+   "donor_consistent": 1.0,
+   "recipient_consistent": 0.2645,
+   "chance_overlap": 0.2645
+  }
+ },
+ "table_swap": {
+  "n": 1000,
+  "switch": 256,
+  "acc_before_cum": 1.0,
+  "acc_after_cum": 1.0,
+  "acc_after_mean": 1.0,
+  "acc_after_first8": 1.0,
+  "same_table_share": 0.016
+ },
+ "ood_acc": 0.074,
+ "cert_sample": {
+  "n": 20,
+  "holds": 20,
+  "moore_eq_reachable": 20,
+  "moore_eq_k": 17,
+  "tables": [
+   {
+    "table": [
+     [
+      1,
+      2,
+      3,
+      0
+     ],
+     [
+      2,
+      1,
+      0,
+      3
+     ]
+    ],
+    "holds": true,
+    "n_moore": 4,
+    "status": "done",
+    "n_reachable": 12,
+    "reachable_states": 4
+   },
+   {
+    "table": [
+     [
+      1,
+      3,
+      2,
+      0
+     ],
+     [
+      0,
+      3,
+      2,
+      1
+     ]
+    ],
+    "holds": true,
+    "n_moore": 3,
+    "status": "done",
+    "n_reachable": 9,
+    "reachable_states": 3
+   },
+   {
+    "table": [
+     [
+      1,
+      3,
+      2,
+      0
+     ],
+     [
+      1,
+      0,
+      2,
+      3
+     ]
+    ],
+    "holds": true,
+    "n_moore": 3,
+    "status": "done",
+    "n_reachable": 11,
+    "reachable_states": 3
+   },
+   {
+    "table": [
+     [
+      1,
+      3,
+      2,
+      0
+     ],
+     [
+      0,
+      2,
+      3,
+      1
+     ]
+    ],
+    "holds": true,
+    "n_moore": 4,
+    "status": "done",
+    "n_reachable": 15,
+    "reachable_states": 4
+   },
+   {
+    "table": [
+     [
+      2,
+      0,
+      3,
+      1
+     ],
+     [
+      2,
+      1,
+      3,
+      0
+     ]
+    ],
+    "holds": true,
+    "n_moore": 4,
+    "status": "done",
+    "n_reachable": 15,
+    "reachable_states": 4
+   },
+   {
+    "table": [
+     [
+      2,
+      3,
+      1,
+      0
+     ],
+     [
+      1,
+      2,
+      0,
+      3
+     ]
+    ],
+    "holds": true,
+    "n_moore": 4,
+    "status": "done",
+    "n_reachable": 13,
+    "reachable_states": 4
+   },
+   {
+    "table": [
+     [
+      2,
+      0,
+      3,
+      1
+     ],
+     [
+      3,
+      0,
+      2,
+      1
+     ]
+    ],
+    "holds": true,
+    "n_moore": 4,
+    "status": "done",
+    "n_reachable": 11,
+    "reachable_states": 4
+   },
+   {
+    "table": [
+     [
+      2,
+      1,
+      3,
+      0
+     ],
+     [
+      0,
+      3,
+      2,
+      1
+     ]
+    ],
+    "holds": true,
+    "n_moore": 4,
+    "status": "done",
+    "n_reachable": 13,
+    "reachable_states": 4
+   },
+   {
+    "table": [
+     [
+      2,
+      0,
+      3,
+      1
+     ],
+     [
+      3,
+      1,
+      2,
+      0
+     ]
+    ],
+    "holds": true,
+    "n_moore": 4,
+    "status": "done",
+    "n_reachable": 11,
+    "reachable_states": 4
+   },
+   {
+    "table": [
+     [
+      1,
+      3,
+      0,
+      2
+     ],
+     [
+      1,
+      3,
+      0,
+      2
+     ]
+    ],
+    "holds": true,
+    "n_moore": 4,
+    "status": "done",
+    "n_reachable": 12,
+    "reachable_states": 4
+   },
+   {
+    "table": [
+     [
+      0,
+      2,
+      3,
+      1
+     ],
+     [
+      0,
+      3,
+      2,
+      1
+     ]
+    ],
+    "holds": true,
+    "n_moore": 1,
+    "status": "done",
+    "n_reachable": 4,
+    "reachable_states": 1
+   },
+   {
+    "table": [
+     [
+      1,
+      2,
+      3,
+      0
+     ],
+     [
+      0,
+      2,
+      1,
+      3
+     ]
+    ],
+    "holds": true,
+    "n_moore": 4,
+    "status": "done",
+    "n_reachable": 11,
+    "reachable_states": 4
+   },
+   {
+    "table": [
+     [
+      0,
+      2,
+      3,
+      1
+     ],
+     [
+      3,
+      2,
+      0,
+      1
+     ]
+    ],
+    "holds": true,
+    "n_moore": 4,
+    "status": "done",
+    "n_reachable": 10,
+    "reachable_states": 4
+   },
+   {
+    "table": [
+     [
+      1,
+      2,
+      3,
+      0
+     ],
+     [
+      1,
+      3,
+      0,
+      2
+     ]
+    ],
+    "holds": true,
+    "n_moore": 4,
+    "status": "done",
+    "n_reachable": 10,
+    "reachable_states": 4
+   },
+   {
+    "table": [
+     [
+      3,
+      0,
+      2,
+      1
+     ],
+     [
+      2,
+      0,
+      1,
+      3
+     ]
+    ],
+    "holds": true,
+    "n_moore": 4,
+    "status": "done",
+    "n_reachable": 13,
+    "reachable_states": 4
+   },
+   {
+    "table": [
+     [
+      2,
+      0,
+      3,
+      1
+     ],
+     [
+      0,
+      3,
+      1,
+      2
+     ]
+    ],
+    "holds": true,
+    "n_moore": 4,
+    "status": "done",
+    "n_reachable": 14,
+    "reachable_states": 4
+   },
+   {
+    "table": [
+     [
+      1,
+      2,
+      0,
+      3
+     ],
+     [
+      1,
+      3,
+      0,
+      2
+     ]
+    ],
+    "holds": true,
+    "n_moore": 4,
+    "status": "done",
+    "n_reachable": 12,
+    "reachable_states": 4
+   },
+   {
+    "table": [
+     [
+      0,
+      3,
+      1,
+      2
+     ],
+     [
+      1,
+      3,
+      0,
+      2
+     ]
+    ],
+    "holds": true,
+    "n_moore": 4,
+    "status": "done",
+    "n_reachable": 12,
+    "reachable_states": 4
+   },
+   {
+    "table": [
+     [
+      2,
+      0,
+      1,
+      3
+     ],
+     [
+      1,
+      3,
+      2,
+      0
+     ]
+    ],
+    "holds": true,
+    "n_moore": 4,
+    "status": "done",
+    "n_reachable": 11,
+    "reachable_states": 4
+   },
+   {
+    "table": [
+     [
+      1,
+      2,
+      0,
+      3
+     ],
+     [
+      3,
+      1,
+      2,
+      0
+     ]
+    ],
+    "holds": true,
+    "n_moore": 4,
+    "status": "done",
+    "n_reachable": 10,
+    "reachable_states": 4
+   }
+  ]
+ },
+ "probe_ophist": {
+  "init": {
+   "n": 1024,
+   "positions": "2-7",
+   "r2_last1": 0.6683511734008789,
+   "r2_last2": 0.6686292290687561,
+   "r2_last3": 0.6683200001716614,
+   "r2_state": 0.000888824462890625
+  },
+  "2k": {
+   "n": 1024,
+   "positions": "2-7",
+   "r2_last1": 0.008066415786743164,
+   "r2_last2": 0.012904703617095947,
+   "r2_last3": 0.013725757598876953,
+   "r2_state": 0.1443272829055786
+  },
+  "end": {
+   "n": 1024,
+   "positions": "2-7",
+   "r2_last1": 0.0026409029960632324,
+   "r2_last2": 0.0031619668006896973,
+   "r2_last3": 0.0006697177886962891,
+   "r2_state": 0.9267750382423401
+  }
+ },
+ "eval_sec": 911
+}
