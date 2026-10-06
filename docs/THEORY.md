@@ -5055,6 +5055,21 @@ and earliest, and is the only arm with serial slot carriage.**
   copy objective (no intermediate or transition labels)". COPY s26 / s27 meet it together with C1 (serial) and C2 (exact to
   2,048): the first self-training seeds to do so (124-6, 124-7).
 
+**Note 119-4 (2026-10-06 06:44 EDT; SIM-CoT's s1 LR sweep read on-host by the experiments session; before SIM-CoT s2–3). SIM-CoT did not learn at
+any LR. The tied criterion is broken by the published LR, and seeds 2–3 run as registered.**
+* **SIM-CoT s1** (A5000, driver 595.71.05; initialised from Coconut s1 at 3e-5): intact 0.006 / 0.007 / 0.007; train-split
+  final accuracy **0.0104 at all three LRs**, an exact tie (constant output); cumulative 0.
+  - Step decoder φ's CE is about 4.95 per row from stage 1 on: the marginal (ln 120 plus EOS). So the thoughts carry no step
+    state.
+  - Guard (a): "did not learn", at all three LRs.
+  - Stage-0 relearning (119-3's degraded-start check) is read from the stage-0 loss in the logs and reported.
+* **Tie-break, fixed now:** the swept value nearest the published LR, **1e-4** (the middle of {3e-5, 1e-4, 3e-4}).
+  - **SIM-CoT s2 / s3 run at 1e-4** from Coconut s2 / s3, as registered (3 seeds per method), as for Coconut (119-2).
+  - Expected: "did not learn" in 3/3, so SIM-CoT is **inconclusive** for CONTROLLED-C1. 119-3's all-inconclusive wording then
+    applies to Coconut and SIM-CoT.
+* **Logging bug, disclosed.** In these logs, stage ≥ 1 lines have `"step"` overwritten by the decoder CE (a key collision); line i
+  is step 100·i. Training and eval are unaffected. Fixed for later runs (`step_ce`).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
