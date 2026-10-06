@@ -120,6 +120,11 @@ with the same code and settings across families.
     built on wrong decodes.
   - **Comparators:** §118 ANCHOR (gold text: the labelled upper bound), §133 CONT-64 and §126 RAW-H (unanchored).
   - Prediction: CONT-64 + 2b reaches ρ ≤ 0.28 and is exact at 2,048 where CONT-64 drifts.
+  - **Literature 5a416fff** (`docs/LIT_SELF_ANCHOR_2026-10-06.md`) finds it new as scoped, and adds three design guards:
+    - (a) train the text path b too, label-free: roll out from the self-decoded text to the final answer (§116's mechanism), so b
+      cannot go dead (the §121 / §122 lesson);
+    - (b) gate on decode diversity / active units as well as validity, against constant-decode collapse;
+    - (c) use a modest weight, optionally anchoring only final-answer-correct chains (§110's filter).
 * **Composes with Candidate 1** (enc is Candidate 1's copy path). Candidate 1 alone fixes entry; Candidates 1 and 2 together are the
   proposed full method: a **COPY-anchored, round-trip-stabilised wide carrier.**
 
