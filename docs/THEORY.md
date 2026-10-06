@@ -2442,6 +2442,8 @@ operators' definitions as foothold, one seed learns S5's entire transition table
   from the operators' own definitions alone, with no transition composition labelled. That is "C4 qualified by operator
   definitions", in one seed.
   - Strict C4 (no definitions, NONE) failed in 4/4 at chance (116-6). The definitions are the minimum foothold seen.
+* **Hardware:** s33 / s34 / s35 trained on three different local GPUs (4060 / 3070 / 2070). That is fine for a per-seed
+  count (no within-seed comparison), but stated given the GPU sensitivity seen today (125-2).
 * The remaining seeds (NONE s41, OPDEF s31 / s32) run on the local 2070 ($0).
 
 ## 117. One model for C1 + C4 + C6: final-answer training through self-decoded restarts under Markov segments, with the auxiliary reader (pre-registered 2026-10-04 22:24 EDT, after Literature's check f9ce7210 / 3b9c8d61 and before any implementation or run; launched only if §111 MK-4-READ meets REL)
@@ -3523,6 +3525,14 @@ counts acquisition timing as well as acquisition.**
   - Prediction: cumulative ≥ 0.99 at 512 in both k = 1 = 1.0 seeds (s22, s24).
   - If confirmed, `--post_acq_steps 9k` (triggered label-free by gate ≥ 0.5 with kept ≥ 0.1) becomes a candidate for
     future self-training registrations.
+  - **Disclosed exception (Audit / claude-13, verified): §124 EXPOSE s27.** It acquired at L5 (step 10,976, the earliest
+    in any self-training run: never-labelled 0.998 by L5's end), yet ended at cumulative 0.9795 at 512 and 0.934 at 2,048.
+    - It has a **slot-1 bypass** (donor 0.017 / recipient 0.804 at slot 1; slots 2–3 neither, about 0.4 / 0.05).
+    - So post-acquisition budget is sufficient in the data so far but not necessary-and-sufficient: a carrier with a
+      bypass can stay below 0.99 despite early acquisition.
+    - The resume results are read with each run's donor profile beside them.
+  - **First resume (f = 0.5 s24, local 4060): confirms.** 0.968 → **0.996** at 512 (0.982 at 2,048), never-labelled k = 1
+    still 1.0, certified.
   - **Resume details, before the runs** (the experiments session):
     - One extra L_max round of 4k steps, then the 4k final relabel.
     - Fresh AdamW, warmup 100 plus cosine from 1e-4 over 8k, and fresh pools.
