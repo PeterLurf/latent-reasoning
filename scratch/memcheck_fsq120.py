@@ -1,6 +1,6 @@
-"""Memory check for fsq120 FINAL S5 training at L = 32 (the largest shape), one optimizer step per --micro, under the card's own amp
+"""Memory check for fsq120 FINAL S5 training at chain length L (default 32), one optimizer step at --micro, under the card's own amp
 (bf16 on Ampere+, fp32 below). Prints peak allocated / reserved GiB.   python scratch/memcheck_fsq120.py <device> <micro> [bs] [L]
-(fsq120 applies --micro only at L >= 32: L 17-31 batches run at micro 1, so check L 31 micro 1 too - 2026-10-06 s17 OOM)"""
+(fsq120 applies --micro at L > 16 since 2026-10-06; before, only at L >= 32, so L 17-31 ran at micro 1 - the s17 / s5 OOMs. Check L 31 / 32 at the run's micro and L 16 at micro 1)"""
 import os
 import sys
 
