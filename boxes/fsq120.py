@@ -774,12 +774,14 @@ def probe127(m, fam, dev, amp):
         half = n // 2; it = x; st = lab
         Zf, Zs = Z[:half].reshape(-1, Z.shape[-1]), Z[half:].reshape(-1, Z.shape[-1])
         r2i = _r2(it[:half].reshape(-1), it[half:].reshape(-1), Zf, Zs); r2s = _r2(st[:half].reshape(-1), st[half:].reshape(-1), Zf, Zs)
+        S0 = np.repeat(np.asarray(s0)[:, None], x.shape[1], 1)               # note 129-1: the chain's start state at every hand-off
+        r2st = _r2(S0[:half].reshape(-1), S0[half:].reshape(-1), Zf, Zs)
         _, qs, e = hs[-1]; ans = torch.tensor(fam.answer_tokens(lab[:, -1]), device=dev)
         with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
             l0 = float(m.answer_ce(e, ans, qs)); qm = qs.float().mean(0, keepdim=True).expand_as(qs).to(qs.dtype)
             l1 = float(m.answer_ce(m.embed_code(qm), ans, qm))
     m.train(was)
-    return {"r2_item": r2i, "r2_state": r2s, "abl_dloss": l1 - l0, "ce_intact": l0, "ce_ablated": l1, "n": n}
+    return {"r2_item": r2i, "r2_state": r2s, "r2_start": r2st, "abl_dloss": l1 - l0, "ce_intact": l0, "ce_ablated": l1, "n": n}
 
 
 def mcheck127(m, fam, dev, amp, opt, ng=256):
@@ -1032,9 +1034,9 @@ def main():
     log = None if a.eval_only else open(os.path.join(a.out, "log.jsonl"), "a" if a.redraw_head else "w", newline="\n"); t0 = time.time(); hist = []
     if a.resume_2k:                                                         # §129 phase 2: restore the 2k state; REDRAW re-draws the head
         ck = torch.load(a.resume_2k, map_location=dev, weights_only=False)
-        m.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"]); torch.set_rng_state(ck["torch_rng"])
+        m.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"]); torch.set_rng_state(ck["torch_rng"].cpu())   # map_location moved it
         if dev.startswith("cuda") and ck.get("cuda_rng") is not None:
-            torch.cuda.set_rng_state(ck["cuda_rng"], device=dev)
+            torch.cuda.set_rng_state(ck["cuda_rng"].cpu(), device=dev)
         rng.bit_generator.state = ck["np_rng"]; drawn = ck["drawn"]; log = Phase2Log(log)
         if a.redraw_head:
             s129_redraw(m, opt, a.seed); log.write(json.dumps({"step": 0, "redraw": True, "generator_seed": 12900 + a.seed}))
@@ -1115,6 +1117,8 @@ def main():
             log.write(json.dumps({"step": step, "skip_norms": [float(w_.norm()) for w_ in m.skip_w.detach().float()]}) + chr(10)); log.flush()
         if s129 and step <= int(2000 * sc) and step % max(1, int(50 * sc)) == 0:     # §129: zb_std_in every 50 over 0-2k (each phase)
             log.write(json.dumps({"step": step, "zb_std_in": zb_std_in(m, dev)}) + "\n"); log.flush(); m.train()
+        if p127 and a.resume_2k and step in (int(700 * sc), int(1200 * sc)):  # note 129-1: phase-2 probes at clock 700 / 1,200 too
+            log.write(json.dumps({"step": step, "probe": probe127(m, fam, dev, amp)}) + chr(10)); log.flush(); m.train()
         if p127 and step == int(2000 * sc):                                 # note 127-1: probe at 2k (before any stop)
             log.write(json.dumps({"step": step, "probe": probe127(m, fam, dev, amp)}) + "\n"); log.flush(); m.train()
         if a.stop_plateau and step == int(2000 * sc) and L127:              # 123-3's flag (log steps nearest 100 / 1k / 2k)
