@@ -1,0 +1,4 @@
+# §119 CODI s2 / s3 at lr 1e-3 (moved from d7: slow V100 setup; now bf16 on a 3090) (note 119-5: the criterion's pick, noise-level), LoRA r128, autocast fix c1caef75; any 24 GB class; boxes.base119
+# P=2
+boxes/runs_s5/s119_codi_s2 boxes.base119 --method codi --lr 1e-3 --seed 2
+boxes/runs_s5/s119_codi_s3 boxes.base119 --method codi --lr 1e-3 --seed 3

@@ -462,7 +462,7 @@ def run_test(m, fam, s0, X, dev, amp, bs, every=True, grid=None):
 
 
 @torch.no_grad()
-def certificate(m, fam, dev, amp, cap, bs=2048, time_limit=None, first_items=None):
+def certificate(m, fam, dev, amp, cap, bs=2048, time_limit=None, first_items=None, codes_out=None):
     """BFS over the code machine; decode each code; check the transition law on every reachable (code, item) pair.
     time_limit (s, Audit 2026-10-05): stop the BFS when exceeded -> timed_out (inconclusive, like the cap)."""
     ntok = NST if fam.name == "s5" else 1; idx = {}; codes = []; dec = []; trans = {}; t_start = time.time(); timed_out = False
@@ -514,6 +514,8 @@ def certificate(m, fam, dev, amp, cap, bs=2048, time_limit=None, first_items=Non
         if timed_out:
             break
         frontier = nxt
+    if codes_out is not None:                                               # note 128-4: the BFS code set (for coverage checks)
+        codes_out.extend(codes)
     if timed_out or capped:                                                 # inconclusive: no decode / Moore pass on a partial machine (the cap too:
         return {"holds": None, "status": "inconclusive_time" if timed_out else "inconclusive_cap", "n_reachable_partial": len(codes),   # a 10^6-code
                 "capped": capped, "timed_out": timed_out, "time_limit": time_limit, "sec": round(time.time() - t_start),   # Python Moore ran for hours)
@@ -1022,11 +1024,12 @@ def main():
         print("CONTRACTION", json.dumps({k: ct[k] for k in ("rho", "rho_norm", "rho_nonzero", "exact_recovery_share", "basin")}), flush=True); return
     if a.cert_only:                                                         # post-hoc CERT (scoring as registered; only its scheduling moved)
         m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval()
+        amp = None if a.fp32 else amp                                       # note 128-4: --cert_only --fp32 -> eval_cert_fp32.json
         c = certificate(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time); c.update({"eval_dtype": str(amp), "cert_cap": a.cert_cap})
         if fam.name == "ff":                                                # note 120-7 (amendment after data): task-reachable CERT, first item w0 / w1
             c["cert_task"] = certificate(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time, first_items=[W0, W1]); c["cert_task"]["first_items"] = ["w0", "w1"]
             c["cert_task_reads"] = cert_task_reads(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time)   # note 120-9 (descriptive)
-        json.dump(c, open(os.path.join(a.out, "eval_cert.json"), "w", newline="\n"), indent=1); print("CERT", json.dumps(c), flush=True); return
+        json.dump(c, open(os.path.join(a.out, "eval_cert_fp32.json" if a.fp32 else "eval_cert.json"), "w", newline="\n"), indent=1); print("CERT", json.dumps(c), flush=True); return
     assert not (a.redraw_head and a.clock_only) and not ((a.redraw_head or a.clock_only) and not a.resume_2k), "§129 flags"
     _ainfo = {**vars(a), **({} if a.eval_only else {"train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version()})}
     if a.resume_2k:                                                         # §129 phase 2: phase-1 args.json kept (REDRAW shares the dir)
