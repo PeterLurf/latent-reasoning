@@ -31,6 +31,7 @@ EXTRA=""; [ "$W" = scratch/queue_worker3.sh ] && EXTRA="scratch/queue_worker3.sh
 V="C:/Users/peter/.local/vastai/vast.sh"
 export PYTHONIOENCODING=utf-8
 cd "$(dirname "$0")/.."
+python scratch/smoke_plain.py > /tmp/smoke_plain_$LBL.log 2>&1 || { echo "FAILED smoke_plain (plain-path smoke, Audit 2026-10-06): $(tail -n 2 /tmp/smoke_plain_$LBL.log | tr '
 ID=$(bash "$V" create instance $O --image pytorch/pytorch:2.5.1-cuda12.4-cudnn9-devel --disk 30 --ssh --direct --label $LBL --raw 2>&1 | grep -o '"new_contract": *[0-9]*' | grep -o '[0-9]*$')
 [ -n "$ID" ] || { echo "CREATE FAILED"; exit 1; }
 echo "$ID vast offer $O created $(date '+%Y-%m-%d %H:%M'): label $LBL, queue $Q (logged at create by vdeploy_toy.sh)" >> scratch/pods.txt
@@ -46,6 +47,7 @@ echo "$H $P $LBL" >> scratch/live_hosts.txt          # watched by gpu_watch2.sh 
 S="ssh -o ConnectTimeout=20 -i $HOME/.ssh/runpod_ed25519 -p $P root@$H"
 $S "python -c \"import ctypes;print('CUINIT',ctypes.CDLL('libcuda.so.1').cuInit(0))\"; nvidia-smi --query-gpu=name,driver_version,clocks.max.sm --format=csv,noheader" 2>/dev/null | grep -v -i "welcome\|have fun"
 $S "python -c \"import ctypes;exit(ctypes.CDLL('libcuda.so.1').cuInit(0))\"" 2>/dev/null || { echo "BAD HOST"; exit 2; }
+' ' ')"; [ -n "$ID" ] && bash scratch/vdestroy.sh $ID; exit 4; }   # before packing
 tar -czf /tmp/up_$LBL.tgz --exclude=__pycache__ latent scratch/queue_worker2.sh scratch/stage1_guard.py scratch/eval_battery.sh $EXTRA ${EXTRA_FILES:-} $Q
 echo "UPLOAD_BYTES $(stat -c %s /tmp/up_$LBL.tgz) START $(date +%s)"
 LSUM=$(sha256sum /tmp/up_$LBL.tgz | cut -c1-64)                    # 2026-10-04: e7's upload arrived corrupt (gzip CRC) and was never checked
