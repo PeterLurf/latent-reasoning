@@ -86,12 +86,17 @@ import torch.nn.functional as F  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
+try:                                                                        # local hard memory cap; absent on hosts that lack it -> no cap
+    from boxes import memcap  # noqa: E402
+except ImportError:
+    memcap = None
 from boxes import s5  # noqa: E402
 from boxes import core as bc  # noqa: E402
 from boxes.gen97 import NST, STTOK, decode_to_el  # noqa: E402
 from boxes.latent86 import OPTOK  # noqa: E402
 
-EOT, D_Q, LEV = 50256, 8, 8
+EOT, D_Q, LEV = 50256, 8, 8                                               # §133: --d_q / --levels rebind these in main()
+DRIFT_POS = (1, 16, 64, 256, 512)
 HALF = (LEV - 1) / 2; OFF = 0.5; SHIFT = math.atanh(OFF / HALF)
 FF_ITEMS = [bc.tok(" write 0"), bc.tok(" write 1"), bc.tok(" ignore 0"), bc.tok(" ignore 1"), bc.tok(" read.")]
 assert all(len(t) == 2 for t in FF_ITEMS), FF_ITEMS
@@ -193,6 +198,7 @@ class FSQ120(nn.Module):
         self.register_buffer("itok", torch.tensor(fam.item_tok))
         self.p_hard = 1.0                                                   # training schedule sets it; test = 1
         self.no_round = False; self.noise = 0.0                             # §123: continuous carry; training dither (set per step)
+        self.soft_beta = 0.0; self.carrier_ln = False                       # §133 SOFT (s = (1-b) z_b + b round(z_b)) / PIN (LayerNorm before W_up)
         self.std = False; self._acc = []                                    # §125 (enable_std registers its buffers)
         self.raw_h = False                                                  # §126 RAW-H: no bottleneck, carried = std(h) (needs enable_std)
         self.anneal = False; self.lam = 1.0; self._h_last = None; self._dist = []; self.distill_on = False   # §126 ANNEAL (test lam = 1)
@@ -334,6 +340,8 @@ class FSQ120(nn.Module):
         if self.no_round:                                                   # §123: carried continuously, never rounded
             return zb, zb, zb
         q = torch.round(zb)
+        if self.soft_beta > 0:                                              # §133 SOFT: every hand-off, train and test (round straight-through)
+            return (1 - self.soft_beta) * zb + self.soft_beta * (zb + (q - zb).detach()), q, zb
         if self.det_train:                                                  # §127 checks (eval mode): soft unless fully hard, no draw
             hard = self.p_hard >= 1.0
         else:
@@ -342,6 +350,8 @@ class FSQ120(nn.Module):
         return qs, q, zb
 
     def embed_code(self, qs):
+        if self.carrier_ln:                                                 # §133 PIN: parameter-free LayerNorm on z_b before W_up
+            qs = F.layer_norm(qs.float(), (qs.shape[-1],))
         if self.std2:                                                       # §127 C (the only change in its arm)
             return self.std2_map(self.up(qs))
         if self.anneal:                                                     # §126 ANNEAL: (1 - lam) std(h) + lam W_up(z_b) (+ QBN distillation)
@@ -441,7 +451,7 @@ def make_batch(fam, rng, bs, L):
 
 
 @torch.no_grad()
-def run_test(m, fam, s0, X, dev, amp, bs, every=True, grid=None):
+def run_test(m, fam, s0, X, dev, amp, bs, every=True, grid=None, drift=None):
     """Hard chains; decode at every position (every=True) or at reads only (flip-flop). Returns decoded states (N, L) and
     the codes (N, L, 8) int8."""
     N, L = X.shape; pred = np.full((N, L), -1); ntok = NST if fam.name == "s5" else 1
@@ -458,6 +468,11 @@ def run_test(m, fam, s0, X, dev, amp, bs, every=True, grid=None):
             prev = e[:, None]
             if grid is not None and not m.raw_h:                            # §123 grid_share
                 zf = zb.float(); grid[0] += int(((zf - torch.round(zf)).abs() <= 0.1).sum()); grid[1] += zf.numel()
+            if drift is not None and not m.raw_h:                          # §133 PIN: angular drift, cos(z_b(p), z_b(1)) at DRIFT_POS
+                if t == 0:
+                    z1 = zb.float()
+                if t + 1 in DRIFT_POS:
+                    c_ = F.cosine_similarity(zb.float(), z1, dim=-1); d_ = drift.setdefault(str(t + 1), [0.0, 0]); d_[0] += float(c_.sum()); d_[1] += c_.numel()
     return pred, codes
 
 
@@ -786,6 +801,28 @@ def probe127(m, fam, dev, amp):
     return {"r2_item": r2i, "r2_state": r2s, "r2_start": r2st, "abl_dloss": l1 - l0, "ce_intact": l0, "ce_ablated": l1, "n": n}
 
 
+def opprobe(m, fam, dev, amp, n=4096, L=8, seed=12703, positions=(2, 4, 8), chunk=1024):
+    """Theory 2026-10-06 (Literature's op-history test, descriptive): R^2 of z_b at chain positions 2 / 4 / 8 on the last 1 / 2 / 3
+    items read (op history) beside the state and the start state; per-group means fit on half the chains, scored on the other half
+    (as probe127's _r2). coverage = share of scored rows whose group occurs in the fit half (S5: 120 items -> sparse for last2 / last3)."""
+    was = m.training; m.eval(); s0, x, lab = make_batch(fam, np.random.default_rng(seed), n, L); Z = []
+    with torch.no_grad():
+        for i in range(0, n, chunk):
+            sl = slice(i, i + chunk); hs = _probe_chain(m, fam, dev, amp, s0[sl] if fam.name == "s5" else None, x[sl])
+            Z.append(torch.stack([z.float() for z, _, _ in hs], 1).cpu().numpy())
+    m.train(was); Z = np.concatenate(Z, 0); half = n // 2; K = fam.n_items; out = {"n": n, "seed": seed}
+    S0 = np.asarray(s0) if s0 is not None else np.zeros(n, np.int64)
+    for p_ in positions:
+        Zp = Z[:, p_ - 1]; Zf, Zs = Zp[:half], Zp[half:]; g = {"state": lab[:, p_ - 1], "start": S0, "last1": x[:, p_ - 1]}
+        if p_ >= 2:
+            g["last2"] = x[:, p_ - 2] * K + x[:, p_ - 1]
+        if p_ >= 3:
+            g["last3"] = (x[:, p_ - 3] * K + x[:, p_ - 2]) * K + x[:, p_ - 1]
+        out["L%d" % p_] = {("r2_" + k_): _r2(v_[:half], v_[half:], Zf, Zs) for k_, v_ in g.items()}
+        out["L%d" % p_].update({("coverage_" + k_): float(np.isin(v_[half:], v_[:half]).mean()) for k_, v_ in g.items()})
+    return out
+
+
 def mcheck127(m, fam, dev, amp, opt, ng=256):
     """Note 127-1 delivery checks on the fixed probe batch (eval mode; grads by autograd.grad, so .grad is untouched). The two
     gradient checks use its first ng chains (activation memory), the other keys all 1,024. Every check uses training semantics
@@ -929,6 +966,7 @@ def margin_flip(m, fam, s0, X, dev, amp, bs=250, seed=12002):
 
 
 def main():
+    global D_Q, LEV, HALF, SHIFT                                            # §133: --d_q / --levels
     ap = argparse.ArgumentParser(); ap.add_argument("--family", default=None, choices=["s5", "ff", "cyc", "mod", "rdfa"]); ap.add_argument("--arm", default=None, choices=["final", "trace"])
     ap.add_argument("--seed", type=int, default=1); ap.add_argument("--steps", type=int, default=24000); ap.add_argument("--bs", type=int, default=64)
     ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--test_n", type=int, default=2000)
@@ -961,6 +999,10 @@ def main():
     ap.add_argument("--resume", default=None, help="user 2026-10-06: continue from this ckpt_last.pt on the SAME schedule clock (unlike §129's --resume_2k); "
                     "log lines after the checkpoint step are dropped (the pre-resume log is kept as log.jsonl.pre_resume_<t>)")
     ap.add_argument("--stop_after", type=int, default=0, help="resume-parity test only: exit after this step as if crashed (no eval)")
+    ap.add_argument("--d_q", type=int, default=8, help="§133: code width (z_b dims)"); ap.add_argument("--levels", type=int, default=8, help="§133: FSQ levels")
+    ap.add_argument("--soft_beta", type=float, default=0.0, help="§133 SOFT: carried s = (1-b) z_b + b round(z_b) at every hand-off, train and test")
+    ap.add_argument("--carrier_ln", action="store_true", help="§133 PIN: parameter-free LayerNorm on z_b before W_up")
+    ap.add_argument("--micro_from", type=int, default=17, help="--micro applies at L >= this (17 since 2026-10-06; §128 / §133 recipe: 32)")
     ap.add_argument("--probe_only", action="store_true", help="post-hoc (descriptive): probe127 on <out>/model.pt at p_hard 1 -> <out>/eval_probe_posthoc.json")
     ap.add_argument("--check_marker", default=None, help="§128 note 128-1: with --stop_plateau, the first attempt to mkdir this path when its flag fires keeps training")
     ap.add_argument("--stop_plateau", action="store_true", help="§127: stop at 2k when 123-3's flag fires (log kept, no eval.json)")
@@ -989,11 +1031,15 @@ def main():
     assert a.family in ("s5", "ff", "cyc", "mod", "rdfa") and a.arm in ("final", "trace"), "--family and --arm are required (or --from_args)"
     assert not (a.resume and (a.resume_2k or a.save_at_flag or a.eval_only or a.redraw_head)), "--resume is the plain same-clock resume only"
     dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); sc = a.sched_scale
+    if a.d_q != D_Q or a.levels != LEV:                                     # §133: rebind the code width / levels before any model or eval
+        D_Q, LEV = a.d_q, a.levels; HALF = (LEV - 1) / 2; SHIFT = math.atanh(OFF / HALF)
+    assert not (a.soft_beta and a.no_round), "§133: SOFT rounds (no --no_round)"
+    memcap and memcap.apply(dev)                                                       # local hard cap (LATENT_MEM_CAP_GB; no-op on the cloud)
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     fam = Family(a.family); os.makedirs(a.out, exist_ok=True)
     assert not (a.dither and not a.no_round) and not (a.fsq_dither and a.no_round), "§123: --dither needs --no_round; --fsq_dither is FSQ"
     def mk():
-        m_ = FSQ120(s5.load_gpt2(dev), fam).to(dev); m_.no_round = a.no_round; m_.raw_h = a.raw_h
+        m_ = FSQ120(s5.load_gpt2(dev), fam).to(dev); m_.no_round = a.no_round; m_.raw_h = a.raw_h; m_.soft_beta = a.soft_beta; m_.carrier_ln = a.carrier_ln
         if a.std or a.raw_h or a.anneal:
             m_.enable_std()
         if a.anneal:                                                        # std buffers serve std(h) only; embed_code mixes (no std on W_up)
@@ -1029,7 +1075,7 @@ def main():
         json.dump(mc, open(os.path.join(a.out, "eval_mcheck_end.json"), "w", newline="\n"), indent=1); print("MCHECK", json.dumps(mc), flush=True); return
     if a.probe_only:                                                        # docs/LOCAL_BACKLOG.md (descriptive): §127's probe on a trained model.pt
         m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.p_hard = 1.0
-        pr = probe127(m, fam, dev, amp); pr.update({"eval_dtype": str(amp), "device": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
+        pr = probe127(m, fam, dev, amp); pr["ophist"] = opprobe(m, fam, dev, amp); pr.update({"eval_dtype": str(amp), "device": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
                                                     "driver": driver_version(), "p_hard": 1.0})
         json.dump(pr, open(os.path.join(a.out, "eval_probe_posthoc.json"), "w", newline="\n"), indent=1); print("PROBE", json.dumps(pr), flush=True); return
     if a.contraction_only:                                                  # note 123-2: post-hoc contraction (rho, rho_norm, ...) from model.pt
@@ -1129,7 +1175,7 @@ def main():
         tm = None
         if a.arm == "trace":
             tm = torch.ones(a.bs, L, dtype=torch.bool, device=dev) if fam.name == "s5" else torch.tensor(x == RD, device=dev)
-        nmb = a.micro if L > 16 else 1; opt.zero_grad(); tot = 0.0            # gradient accumulation at L > 16 (OOM, 2026-10-05; was L >= 32,
+        nmb = a.micro if L >= a.micro_from else 1; opt.zero_grad(); tot = 0.0            # gradient accumulation at L > 16 (OOM, 2026-10-05; was L >= 32,
         #   but L is drawn U(1, L_max): L 17-31 batches ran at micro 1 and OOMed 8 GB cards at 14k, s130chk_s5_s17_3070, 2026-10-06). Memory only; no-op at --micro 1
         for mi in range(nmb):
             sl = slice(mi * a.bs // nmb, (mi + 1) * a.bs // nmb)
@@ -1230,7 +1276,8 @@ def main():
            "train_gpu": json.load(open(os.path.join(a.out, "args.json"))).get("train_gpu"), "train_driver": json.load(open(os.path.join(a.out, "args.json"))).get("train_driver")}
     if fam.name == "s5":
         Xte, Yte = s5.load_csv(os.path.join(a.data_dir, "S5=512.csv"), limit=a.test_n); s5.check_labels(Xte, Yte); Xte, Yte = Xte[:, :a.test_len], Yte[:, :a.test_len]
-        grid = [0, 0]; pred, codes = run_test(m, fam, np.zeros(len(Xte), np.int64), Xte, dev, amp, a.eval_bs, grid=grid); C = pred == Yte
+        grid = [0, 0]; drift = {}; pred, codes = run_test(m, fam, np.zeros(len(Xte), np.int64), Xte, dev, amp, a.eval_bs, grid=grid, drift=drift)
+        res["angular_drift"] = {k_: v_[0] / max(1, v_[1]) for k_, v_ in drift.items()}   # §133 PIN (descriptive): mean cos(z_b(p), z_b(1)); C = pred == Yte
         res["long_acc"] = float(C.all(1).mean()); res["acc_by_length"] = {str(t): float(C[:, :t].all(1).mean()) for t in (16, 32, 64, 128, 256, 512) if t <= C.shape[1]}
         lab = Yte
         if a.ext_n:
@@ -1271,6 +1318,7 @@ def main():
             res[f"long_acc_pignore_{p_ig}"] = float(((pd_ == ld) & r_).sum() / r_.sum())
         s0m, Xm = None, Xte[:a.margin_n, :128]
     res["grid_share"] = None if a.raw_h else grid[0] / max(1, grid[1])   # §123 implicit quantisation
+    res["s133"] = {"d_q": a.d_q, "levels": a.levels, "no_round": a.no_round, "soft_beta": a.soft_beta, "dither": a.dither, "carrier_ln": a.carrier_ln, "micro_from": a.micro_from}
     ct = contraction(m, fam, dev, amp, n=a.contract_n); res["rho"] = ct["rho"]; res["basin"] = ct["basin"]; res["contraction"] = ct["detail"]
     res["exact_recovery_share"] = ct["exact_recovery_share"]; res["rho_nonzero"] = ct["rho_nonzero"]; res["rho_norm"] = ct["rho_norm"]   # note 123-2
     if a.no_round or a.raw_h:                                               # continuous: no codes / CERT / margin (§123 / §126)

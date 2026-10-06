@@ -1,0 +1,3 @@
+# THEORY §133 stage 1 (deb9d7fa; notes 133-1 / 133-2): proof slot 1 of arm pin64 via scratch.restart133 -> boxes.fsq120 (§128 S5 recipe, --micro 2 at L >= 32, --ckpt_every 2000); RTX 3090, driver recorded
+# P=1
+boxes/runs_fsq/s133_slots/pin64_k1 scratch.restart133 --arm pin64 --slot 1

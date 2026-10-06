@@ -7,6 +7,10 @@ scratchpad. Same init RNG (torch.manual_seed) and data RNG (np rng(seed)) as fsq
 import argparse, json, math, os, sys, time
 import numpy as np, torch, torch.nn.functional as F
 sys.path.insert(0, "D:/Latent"); os.environ.setdefault("BOXES_NB", "5")
+try:                                                                        # local hard memory cap; absent on hosts that lack it -> no cap
+    from boxes import memcap  # noqa: E402
+except ImportError:
+    memcap = None
 from boxes import s5
 from boxes.fsq120 import FSQ120, Family, make_batch, lmax_at, SHIFT, HALF, OFF, STTOK
 
@@ -14,6 +18,7 @@ ap = argparse.ArgumentParser(); ap.add_argument("--seed", type=int, required=Tru
 ap.add_argument("--every", type=int, default=50); ap.add_argument("--threads", type=int, default=2); ap.add_argument("--out", required=True)
 ap.add_argument("--device", default="cpu"); ap.add_argument("--amp", choices=["none", "bf16"], default="none", help="bf16: autocast the training step as fsq120.main does on Ampere+ (parity with the 3090 runs); probes stay fp32"); ap.add_argument("--bs", type=int, default=64); ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--total", type=int, default=24000)
 a = ap.parse_args(); torch.set_num_threads(a.threads); dev = a.device
+memcap and memcap.apply(dev)                                                           # local hard cap (LATENT_MEM_CAP_GB; no-op on the cloud)
 torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)                     # as fsq120.main: init RNG then data RNG
 fam = Family("s5"); m = FSQ120(s5.load_gpt2(dev), fam).to(dev); m.no_round = True
 opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)

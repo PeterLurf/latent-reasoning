@@ -763,3 +763,15 @@
 14:49:57 bl4060 start: python -u scratch/replay_basin.py --seed 502 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:0 --out theory/results/replay_x/4060_s502.jsonl && echo ok > theory/results/replay_x/4060_s502.jsonl.done
 14:50:34 bl4060 start: python -u scratch/replay_basin.py --seed 503 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:0 --out theory/results/replay_x/4060_s503.jsonl && echo ok > theory/results/replay_x/4060_s503.jsonl.done
 14:50:40 bl3070b done rc 0 out yes peak_card_mem 4493 MiB (measured 4.5 GiB) : theory/results/replay_x/3070_s513.jsonl.done
+14:50:45 bl3070b start: python -u scratch/replay_basin.py --seed 514 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:1 --out theory/results/replay_x/3070_s514.jsonl && echo ok > theory/results/replay_x/3070_s514.jsonl.done
+14:53:37 bl2070b done rc 0 out yes peak_card_mem 1515 MiB (measured 3.0 GiB) : boxes/runs_fsq/s128_ff_s4/eval_growth.json
+14:53:39 bl2070b start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_mod_s1/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_mod_s1
+14:54:17 BUG: two bl4060 workers (19404 resumed after its halt file was removed during its idle sleep; 19860 restarted) ran replays s502 + s503 together on the 4060 (7.9 GB) - stop files set for all old workers; v2 workers (hard cap + halt exits) take over at the job boundary
+14:55:42 bl3070b done rc 0 out yes peak_card_mem 4567 MiB (measured 4.5 GiB) : theory/results/replay_x/3070_s514.jsonl.done
+14:55:42 bl3070b backlog worker exit (stop)
+14:56:35 c3070 backlog worker v2 start (cap 6.0 GiB): scratch/c1_backlog_3070.txt on cuda:1 (nvidia-smi 2 'RTX 3070', limit 6656 MiB of 8192)
+14:56:40 c3070 start: python -u scratch/replay_basin.py --seed 515 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:1 --out theory/results/replay_x/3070_s515.jsonl && echo ok > theory/results/replay_x/3070_s515.jsonl.done
+14:58:54 bl2070b done rc 0 out yes peak_card_mem 1516 MiB (measured 3.0 GiB) : boxes/runs_fsq/s128_mod_s1/eval_growth.json
+14:58:54 bl2070b backlog worker exit (stop)
+14:59:37 c2070 backlog worker v2 start (cap 6.0 GiB): scratch/c1_backlog_2070.txt on cuda:2 (nvidia-smi 0 'RTX 2070', limit 6656 MiB of 8192)
+14:59:39 c2070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_mod_s2/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_mod_s2

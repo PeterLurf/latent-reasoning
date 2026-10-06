@@ -258,6 +258,34 @@ def check_base119_codi(dev, out):
     out["base119.codi.base_frozen"] = float(all(not p.requires_grad for p in m.g.p.values()))
 
 
+def check_s133(dev, out):
+    """§133 (Theory deb9d7fa): every stage-1 arm, chain loss under CUDA bf16 autocast at p_hard 1 (the hard regime): nonzero grad on the
+    total and on W_down / W_up (the carrier); NOISE also as a loss change under dither."""
+    import math
+    import boxes.fsq120 as F120
+    arms = {"cont64": dict(d=64, no_round=True), "fsq16": dict(d=16), "fsq64": dict(d=64), "soft16": dict(d=16, soft=0.1),
+            "soft64": dict(d=64, soft=0.1), "noise64": dict(d=64, no_round=True, noise=0.25), "pin64": dict(d=64, no_round=True, ln=True)}
+    saved = (F120.D_Q, F120.LEV, F120.HALF, F120.SHIFT); amp = torch.bfloat16 if str(dev).startswith("cuda") else None
+    for name, c in arms.items():
+        F120.D_Q = c["d"]; F120.LEV = 8; F120.HALF = (F120.LEV - 1) / 2; F120.SHIFT = math.atanh(F120.OFF / F120.HALF)
+        fam = F120.Family("s5"); m = F120.FSQ120(s5.load_gpt2(dev), fam).to(dev); m.train(); rng = np.random.default_rng(0)
+        m.no_round = c.get("no_round", False); m.soft_beta = c.get("soft", 0.0); m.carrier_ln = c.get("ln", False); m.p_hard = 1.0
+        assert m.down.out_features == c["d"] and m.up.in_features == c["d"]
+        s0, x, lab = F120.make_batch(fam, rng, 4, 4); X = torch.tensor(x, device=dev)
+        def L(noise=0.0):
+            m.noise = noise; torch.manual_seed(0)
+            with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+                return m.chain(m.start(4, dev, s0), X, lab)[0]
+        out[f"s133.{name}.main"] = term(m, lambda: L(c.get("noise", 0.0)))
+        for nm_, w_ in (("down", m.down.weight), ("up", m.up.weight)):
+            out[f"s133.{name}.{nm_}_grad"] = float(w_.grad.norm()) if w_.grad is not None else 0.0
+        if c.get("noise"):
+            with torch.no_grad():
+                out[f"s133.{name}.dither_loss_delta"] = abs(float(L(c["noise"])) - float(L(0.0)))
+        m.noise = 0.0; del m
+    F120.D_Q, F120.LEV, F120.HALF, F120.SHIFT = saved
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--paths", nargs="*", default=["accel99", "mk108", "fsq120", "fsq120_std", "fsq120_rawh", "fsq120_anneal", "self110_copy", "self110_resume"])
     ap.add_argument("--device", default="cpu"); ap.add_argument("--out", default=os.path.join(ROOT, "theory", "results", "gradflow_check.json"))
