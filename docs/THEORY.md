@@ -4828,6 +4828,8 @@ false. s32 is descriptive, and the GPU per seed is stated.**
   - Acquisition so far: s33 (4060) yes; s31 (3070), s34 (3070), s35 (2070) no.
   - If s32 (4060) acquires, it is reported as "2/2 on the 4060 vs 0/3 on other cards", a GPU-class confound (125-2), not a clean
     2/5.
+  - **s32 landed (05:16):** RTX 4060, never acquired (cumulative 0, k = 1 at chance). OPDEF ends **1/5 acquired** (s33). Since
+    s32 shares s33's card, the card confound does not arise.
 * **Wording, per Literature (ba531055 (d)):** operator definitions **suffice** as a C4 foothold in 1/5 seeds so far
   (s33: the whole table learned and certified, but not FOOTHOLD by 512 accuracy). "Minimum foothold" (116-7) is replaced by
   "sufficient in k/n seeds", since minimality is untested.
