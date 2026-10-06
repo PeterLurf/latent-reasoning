@@ -24,6 +24,25 @@ so send to the pipe addresses their messages come from.
 
 **Order (user, via Audit):** C1 > C6 > C4 = C2 > C3 > C5 > C7.
 
+### REBOOT (user, ~23:00 2026-10-05, to free the 2070 wedged by PID 6904) - post-reboot checklist (Experiments)
+
+Safe at 23:00: no drain / deploy in flight; local §116 OPDEF s31 (3070) / s32 (4060) checkpoint at every round boundary
+(ckpt.pt, auto-resumed by rerunning the same command); Vast hosts keep running (watchers live here: nothing is lost, an
+unwatched host whose queue ends just bills idle until its watcher restarts).
+1. `bash scratch/rebuild_live_hosts.sh`; check `vast show instances` (8 hosts: s4 a2 a4 j1 c2 c3 d1 b27).
+2. Restart every drain watcher: `bash scratch/post_reboot_redrain.sh` (auto_drain_gen5 per host, logs appended). A host
+   that finished during the reboot is drained by its restarted watcher.
+3. Local §116 seeds resume from ckpt.pt: the lock dirs block a plain restart, so
+   `rmdir c1/runs/locks/s116_opdef_s31 c1/runs/locks/s116_opdef_s32`, then
+   `nohup bash scratch/py_local_worker2.sh cuda:1 scratch/c1_q_116c_local.txt &` and the same for cuda:0
+   (each claims one seed; check log.jsonl continues from the last round). The 2070 (cuda:2) is free.
+4. Post-hoc on the 2070 (fp32, one at a time): fp32 `--contraction_only` for s126_s5_rawh_s1 (CPU run killed by the
+   reboot), s126_s5_rawh_s4, s126_s5_anneal_s2_fp32cast; then `--growth_only` / `--cert_only` on the ANNEAL rerun.
+5. Deferred until after the reboot (no deploy may straddle it): §127 b28 replacement (STD2 + LR10 + replay s2,
+   `EXTRA_120="scratch/replay_basin.py scratch/replay_wrap.py" bash scratch/gen_deploy_120.sh "<3090 offer> 28"`; the AT
+   host was BAD) and §119 CODI rerun `bash scratch/gen_deploy_119.sh "<offer> 3"` (scratch/gen_q_d3.txt, fix c1caef75).
+6. Re-arm the waiters (watch_any2.sh on all tags); Audit restarts its gpu_watch / cron.
+
 ### Vast (all `scratch/gen_deploy_*.sh`, auto_drain_gen5 + `watch_any2.sh` waiters; ids/ssh in `scratch/live_hosts.txt`, `scratch/pods.txt`)
 
 | Tag | GPU | Work |
@@ -31,13 +50,11 @@ so send to the pipe addresses their messages come from.
 | s4 | 3090 | §101 b0.01 s3 (decisive seed), ~10 h |
 | a2 / a4 | 3090 Ti / 3090 | §118 LONG s82 / s83 |
 | j1 | A5000 | §117 MK s51 + ST s61 (loss ~9.3, failing like the others) |
-| b24, b25 | 3090 | §126 RAW-H s1 / s4 reruns (pass 2k flag; loss rising with L_max like s3) |
-| b26 | 3090 | §126 ANNEAL s2 fixed-cast rerun (note 126-10) |
-| b27 / b28 | 3090 | §127 Stage 1 seed 2: VAR + SKIP / STD2 + LR10 (`--stop_plateau`), then Audit's replay_basin s1 / s2 (bf16) |
+| b27 | 3090 | §127 Stage 1 seed 2: VAR + SKIP (`--stop_plateau`), then replay_basin s1 (bf16); b28 (STD2 + LR10 + replay s2) was a BAD HOST -> redeploy after reboot |
 | c2 | A10 | §124 seed-28 trio |
 | c3 | 3090 | §124 COPY s26-27 (+BASE) |
 | d1 | A5000 | §119 Coconut lr sweep s1 (3e-5 / 1e-4 / 3e-4, P=3) |
-| d2 | A100 (PRICE EXCEPTION) | §119 CODI lr sweep s1 (1e-3 / 3e-3 / 1e-2, P=3) |
+| (d3) | - | §119 CODI sweep RERUN after the autocast-cache fix (d2's three runs void: LoRA got no gradient) - deploy after reboot |
 
 * §119 next: pick lr by train_split_final_acc -> rename the chosen s1 to s119_<method>_s1, seeds 2-3; SIM-CoT from Coconut s<seed> (--init model.pt).
 * §127: stopped runs (plateau at 2k) have no eval.json; the drain stores them as <dir>.void_partial -> rename back to <dir> (scorer reads log.jsonl). Escaped arms -> Stage 2 (S5 s1/s3/s4, FF s1-2, + ctrl s3-4).

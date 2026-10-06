@@ -1,0 +1,6 @@
+02:09:58 data sha 6ee3ef95405dc43b094824dff8973753c587fe95a00762d2023bd64a941504f2 a0087fe4a7496a47f76d9436e6bb089c8a8869f3f343f71057355e127d0c33da
+NVIDIA A100-SXM4-40GB, 550.120
+02:09:58 start boxes/runs_s5/s119_codi_lr1e-3_s1
+02:09:58 start boxes/runs_s5/s119_codi_lr3e-3_s1
+02:09:58 start boxes/runs_s5/s119_codi_lr1e-2_s1
+02:47:34 QUEUE_DONE
