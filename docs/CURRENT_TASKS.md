@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-06 01:45 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-06 10:45 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -20,56 +20,30 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 Messages go through SendMessage. The names "Theory" and "Audit" currently need an identity confirm, pending the user,
 so send to the pipe addresses their messages come from.
 
-## Running now (22:15 2026-10-05; credit ~$150, burn ~$3.3/h incl. new hosts, cap $4/h, floor $30; <= 16 hosts; gradflow_check PASS required for new code paths)
+## Running now (10:45 2026-10-06; credit ~$120, cap $4/h, floor $30; <= 16 hosts; gradflow_check PASS required for new code paths)
 
 **Order (user, via Audit):** C1 > C6 > C4 = C2 > C3 > C5 > C7.
 
-### PAUSE LIFTED (user, ~00:00 2026-10-06, via Audit): "you can restart the local jobs now". Resume the local queues (§116 OPDEF s31 / s32 from ckpt.pt; the 2070 post-hoc queue).
+### Vast (4 hosts; auto_drain_gen6 + drain_gen_partial (2-slot fetch semaphore, small files first, model-skip rule
+`scratch/drain_posthoc.py` + `scratch/model_keep_patterns.txt`); waiter `watch_any3.sh a4 b43 d8 e31`; exclusions `scratch/vast_exclude_ips.txt`)
 
-### REBOOT (user, ~23:00 2026-10-05, to free the 2070 wedged by PID 6904) - post-reboot checklist (Experiments)
-
-Safe at 23:00: no drain / deploy in flight; local §116 OPDEF s31 (3070) / s32 (4060) checkpoint at every round boundary
-(ckpt.pt, auto-resumed by rerunning the same command); Vast hosts keep running (watchers live here: nothing is lost, an
-unwatched host whose queue ends just bills idle until its watcher restarts).
-1. `bash scratch/rebuild_live_hosts.sh`; check `vast show instances` (8 hosts: s4 a2 a4 j1 c2 c3 d1 b27).
-2. Restart every drain watcher: `bash scratch/post_reboot_redrain.sh` (auto_drain_gen5 per host, logs appended). A host
-   that finished during the reboot is drained by its restarted watcher.
-3. Local §116 seeds resume from ckpt.pt: the lock dirs block a plain restart, so
-   `rmdir c1/runs/locks/s116_opdef_s31 c1/runs/locks/s116_opdef_s32`, then
-   `nohup bash scratch/py_local_worker2.sh cuda:1 scratch/c1_q_116c_local.txt &` and the same for cuda:0
-   (each claims one seed; check log.jsonl continues from the last round). The 2070 (cuda:2) is free.
-4. Post-hoc on the 2070 (fp32, one at a time): fp32 `--contraction_only` for s126_s5_rawh_s1 (CPU run killed by the
-   reboot), s126_s5_rawh_s4, s126_s5_anneal_s2_fp32cast; then `--growth_only` / `--cert_only` on the ANNEAL rerun.
-5. Deferred until after the reboot (no deploy may straddle it): §127 b28 replacement (STD2 + LR10 + replay s2,
-   `EXTRA_120="scratch/replay_basin.py scratch/replay_wrap.py" bash scratch/gen_deploy_120.sh "<3090 offer> 28"`; the AT
-   host was BAD) and §119 CODI rerun `bash scratch/gen_deploy_119.sh "<offer> 3"` (scratch/gen_q_d3.txt, fix c1caef75).
-6. Re-arm the waiters (watch_any2.sh on all tags); Audit restarts its gpu_watch / cron.
-
-### Vast (01:45 2026-10-06; 16 hosts = cap, ~$3.5/h, credit ~$145; `scratch/gen_deploy_*.sh`, auto_drain_gen5 + `watch_any2.sh`; exclusions `scratch/vast_exclude_ips.txt`; train_driver now in args.json)
-
-| Tag | GPU / driver | Work |
+| Tag | Work | Next |
 |---|---|---|
-| s4 | 3090 | §101 b0.01 s3 (decisive seed) |
-| a4 | 3090 | §118 LONG s83 |
-| c2 / c3 | A10 / 3090 | §124 seed-28 trio / COPY+BASE s26-27 |
-| b28 | 3090, 595.71 | §127 STD2 + LR10 s2 (both pass the 2k flag; drift to ~4.6-4.9 after), then replay_basin s2 = the driver-confound test (note 127-6) |
-| b35 | 3090, 565.77 (= b27's host) | §127 reruns s2: VAR (batch estimator) + SKIP (guard only) |
-| b30 / b31 | 3090, 595.71 | §127 Stage 2 SKIP s1/s3/s4, FF s1-2 + control s3-4 (one matched unit) |
-| e30-e34 | 3090 (Ti), 595.x / 565 | §128: e30 s5, e31 ff, e32 cyc (565.57 redeploy; first e32 pip failure *.void_tiktoken), e33 mod, e34 rdfa |
-| d3 | A5000, 595.84 | §119 CODI sweep s1 rerun (autocast fix) |
-| d4 | 3090, 550.163 | §119 Coconut s2-3 at 3e-5 (note 119-2) |
-| d5 | A5000, 595.71 | §119 SIM-CoT sweep s1 from Coconut s1 lr 3e-5 |
+| a4 | §118 LONG s83 | drain, commit, report |
+| b43 | §132 rung-1 slot 1 (`scratch/restart132.py`) | if accepted run exact -> slots 2-4; 4 failed attempts -> stop + report; rung 2 only after rung-1 PASS; alert if projection > $6 |
+| d8 | §119 CODI s2/s3 lr 1e-3 (3090, bf16) | drain, report to Theory |
+| e31 | §128 FF s3/s4 | drain, commit, report (TASK-AGNOSTIC gate) |
 
-* Held (note 127-6): STD2 / LR10 Stage 2 until the b28 replay reads (parity 4.98 / 4.95 at 1k / 2k).
-* §128 / §127: stopped runs come back as <dir>.void_partial -> rename to <dir>; held-out hosts: watch memory when a check run is claimed.
-* §119 after d4: SIM-CoT s2-3 from Coconut s2-3 (init their model.pt) at SIM-CoT's chosen lr.
+* b30 destroyed 10:41: §127 ctrl s3 model.pt lost (scp stalled at 340/462 MB every try); fp32 contraction done on host (259a5cd9).
 
-### Local PC (torch `cuda:0` = 4060, `cuda:1` = 3070, `cuda:2` = 2070; py_local_worker2, log `logs/c1_local.log`)
+### Local PC (torch `cuda:0` = 4060, `cuda:1` = 3070, `cuda:2` = 2070; log `logs/c1_local.log`)
 
-* 112-5 resumes done: f050 s24 0.968 -> 0.996, f010 s22 0.9645 -> 0.995 (confirms); §110 s1 resume finished on the 4060 (to report).
-* §116 (`scratch/c1_q_116c_local.txt`, lock-dir claims): 2070 NONE s41; 3070 OPDEF s31; 4060 OPDEF s32.
-* Post-hoc for every drained §120 / §123 / §126 FSQ cell: `fsq120 --growth_only` and `--cert_only` (FF adds cert_task, cert_task_reads)
-  and `--contraction_only --fp32` locally.
+* 4060: `scratch/run130.py --card 4060` (pid 18516): TEST-SAME done (s74), now s130chk_s5_s{5,6,7}_4060. Also 128-4
+  `cert_cover128` mod_s1 (pid 20316, fp32 pass). Then `scratch/c1_q_certcover128.sh` (waits on both pids via PowerShell)
+  runs the other 10 certified MOD/CYC/RDFA runs; stop file `scratch/certcover128.stop`. rdfa_s4 done: bf16 3 -> fp32 0.
+  Note: MSYS `kill -0` cannot see Windows pids (it started rdfa_s4 early at 10:03, in parallel).
+* 3070: run130 3070 s130chk s17/s30/s34/s12; `scratch/posthoc128_local.sh cuda:1` (contraction + CERT as runs land).
+* 2070: §116 NONE s41 rerun.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
