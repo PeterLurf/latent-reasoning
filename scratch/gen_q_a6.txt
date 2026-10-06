@@ -1,0 +1,3 @@
+# §118 LONG extension (Theory 2026-10-06: 3/3 passed -> s84 / s85), same recipe as s81-s83 (mk108 --arm read --long --s115, k 4), RTX 3090, ckpt.pt every 2000 (auto-resume), train_driver; k=32 needs P=1. AWAITING AUDIT APPROVAL (~$10) before deploy
+# P=1
+boxes/runs_s5/s118_long_s85 boxes.mk108 --k 4 --arm read --long --s115 --seed 85

@@ -30,6 +30,7 @@ import argparse  # noqa: E402
 import json  # noqa: E402
 import math  # noqa: E402
 import sys  # noqa: E402
+import subprocess  # noqa: E402
 import time  # noqa: E402
 
 import numpy as np  # noqa: E402
@@ -331,7 +332,12 @@ def main():
         json.dump(res, open(os.path.join(a.out, "eval_fp32.json" if a.fp32 else "eval.json"), "w", newline="\n"), indent=1)
         print("EVAL", json.dumps({kk: res[kk] for kk in ("cumulative", "donor")}), flush=True); print("DONE", a.out, flush=True)
         return
-    json.dump({**vars(a), "train_sequences": len(Xtr)}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
+    try:                                                                    # Theory 2026-10-06: card + driver per run (as fsq120's note 127-6)
+        _drv = subprocess.run(["nvidia-smi", "--query-gpu=driver_version", "--format=csv,noheader"], capture_output=True, text=True, timeout=30).stdout.strip().splitlines()[0]
+    except Exception:
+        _drv = None
+    json.dump({**vars(a), "train_sequences": len(Xtr), "train_gpu": torch.cuda.get_device_name(dev) if str(dev).startswith("cuda") else "cpu",
+               "train_driver": _drv}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
     opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
     t0 = time.time(); hist = []; mains = []; reads = []; dag = []; anchors = []; seg_types = [0, 0]; step0 = 0; ck = os.path.join(a.out, "ckpt.pt")
     if os.path.exists(ck):                                                  # resume after a host restart (k1, 2026-10-04)
