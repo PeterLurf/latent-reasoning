@@ -817,3 +817,16 @@ PRICE EXCEPTION 2026-10-05 22:00 gen-d2 offer 21171765 A100 SXM4 $0.369/h: §119
 54406366 vast | gen_b26 DESTROYED_VERIFIED 2026-10-05 22:36 after verified per-run fetch (boxes/runs_fsq/s126_s5_anneal_s2_fp32cast)
 54399661 vast | gen_b25 DESTROYED_VERIFIED 2026-10-05 22:46 after verified per-run fetch (boxes/runs_fsq/s126_s5_rawh_s4)
 54414073 vast | gen_d2 DESTROYED_VERIFIED 2026-10-05 22:48 after verified per-run fetch ()
+DRIVER TRIAL 2026-10-05 23:50 gen-b28 offer 47118064 RTX 3090 driver 595.71.05 $0.22: clean (<=570/610) 3090 supply is down to one host; a 595 trial (deploy cuInit check auto-destroys a bad host)
+54426675 vast offer 49745142 created 2026-10-05 23:50: label gen-b29, queue scratch/gen_q_b29.txt (logged at create by vdeploy_toy.sh)
+54426680 vast offer 47118064 created 2026-10-05 23:50: label gen-b28, queue scratch/gen_q_b28.txt (logged at create by vdeploy_toy.sh)
+54418137 vast | gen_b27 DESTROYED_VERIFIED 2026-10-06 00:09 after verified per-run fetch (theory/results/replay_basin_s1 boxes/runs_fsq/s127_s5_skip_s2); FAILED (no eval.json, logs fetched): boxes/runs_fsq/s127_s5_var_s2; partial logs kept: boxes/runs_fsq/s127_s5_var_s2.void_partial
+DRIVER CLASS 2026-10-06 00:15 §127 Stage 2 matched unit (b30 / b31) on RTX 3090 driver 595.71 (Audit); §128 e30-e34 on 595.x 3090 / 3090 Ti (per-slot rules; driver recorded per run). PRICE: all <= $0.241
+54429513 vast offer 51828400 created 2026-10-06 00:15: label gen-b30, queue scratch/gen_q_b30.txt (logged at create by vdeploy_toy.sh)
+54429519 vast offer 41812721 created 2026-10-06 00:15: label gen-e30, queue scratch/gen_q_e30.txt (logged at create by vdeploy_toy.sh)
+54429522 vast offer 54336644 created 2026-10-06 00:15: label gen-b31, queue scratch/gen_q_b31.txt (logged at create by vdeploy_toy.sh)
+54429530 vast offer 54428542 created 2026-10-06 00:15: label gen-e31, queue scratch/gen_q_e31.txt (logged at create by vdeploy_toy.sh)
+54429538 vast offer 47504972 created 2026-10-06 00:15: label gen-e32, queue scratch/gen_q_e32.txt (logged at create by vdeploy_toy.sh)
+54429543 vast offer 54328025 created 2026-10-06 00:15: label gen-e33, queue scratch/gen_q_e33.txt (logged at create by vdeploy_toy.sh)
+54429551 vast offer 35612014 created 2026-10-06 00:15: label gen-e34, queue scratch/gen_q_e34.txt (logged at create by vdeploy_toy.sh)
+54277416 vast | gen_a2 DESTROYED_VERIFIED 2026-10-06 00:16 after verified per-run fetch (boxes/runs_s5/s118_long_s82); FAILED (no eval.json, logs fetched): boxes/runs_s5/s118_long_s81; partial logs kept: boxes/runs_s5/s118_long_s81.void_partial
