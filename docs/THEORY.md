@@ -4909,6 +4909,16 @@ fail the gradient delivery check.**
 * Implementation: the experiments session (a queue around replay_basin.py per card).
 * Scorer: `theory/score_s130.py`, committed before any replay. Run `fit` first, then `test θ lo hi` after note 130-1.
 
+**Note 130-0 (2026-10-06 05:30 EDT, before any TEST replay finishes; Audit; a clarification of §130's blinding). What "unread" means for TEST
+seeds.**
+* **Blinded until note 130-1:** for every TEST seed (TEST-CROSS on the 3070, TEST-SAME on the 4060), zb_std_in, the marker values,
+  and anything derived from them: PULL and COLLAPSE steps, R² probes, L1_dmean, effective rank.
+* **Not blinded:** each TEST seed's 2k loss flag (123-3 on the replay's own loss). §130's stopping rule needs it: each TEST block
+  runs until it has ≥ 8 flagged and ≥ 8 non-flagged seeds.
+  - The marker is chosen on FIT seeds only, deterministically (max min(P, R), fixed ties), and frozen before TEST is scored.
+  - A stopping rule on label counts cannot inform θ or the window, or bias precision or recall.
+* This narrows §130's "every TEST replay stays unread" to the quantities above. The rules are unchanged.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
