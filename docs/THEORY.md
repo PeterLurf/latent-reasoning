@@ -5010,6 +5010,29 @@ L5 in 4/4 seeds, and gives single-slot SERIAL carriage in 2/4. EXPOSE gives it i
   - The second part is descriptive: §124 registered acquisition count and round, not C1. MECH-112 stays false (124-4).
   - NOT-112-4 versus the descriptive reading is decided when BASE s26–27 land.
 
+**Note 127-13 (2026-10-06 06:34 EDT; the concurrent control s4 and the SKIP FF guard, read from the raw files; Audit reproduced; a descriptive
+check fixed before it runs). SKIP s4 escaped and became exact where the plain recipe flagged at 2k. Whether s4 is a basin seed is
+open.**
+* **ctrl s4** (plain §120 FINAL plus the guard; b31, RTX 3090, driver 595.71.05; the same host group as SKIP s4): flagged at 2k
+  and stopped. Loss 8.55 / 4.922 / 4.539.
+* **The flag is borderline** (Audit):
+  - the 2k/1k ratio is 0.922 against the 0.9 cut;
+  - 4.54 is already under the ln 120 null (4.79);
+  - the carried embedding is not collapsed at 2k (per-coordinate std 0.53).
+  - That is the profile of §130's 4060 late learners (FIT s5 / s7: flagged, but pulling at 850–1,050).
+* **Wording, fixed now:** "SKIP s4 escaped and became exact where the plain recipe flagged at 2k". It is **not** "SKIP rescued a
+  basin seed" unless the check below shows s4 to be one.
+* **Descriptive check** (`s127_s5_ctrl_s4_full`): plain S5 s4 on an RTX 3090 (driver 595.71), with no plateau stop, to 24k;
+  about $0.4. Reading, fixed now:
+  - **It ends at the null** (long accuracy 0, loss near 4.8): s4 is a basin seed, and "SKIP rescued a basin seed" is earned
+    (n = 1).
+  - **It ends exact:** the 2k flag gave a false positive on a 3090 too. That is reported against restart-on-plateau's cost
+    and 128-1's check rate.
+  - **Anything else:** reported as observed.
+* **SKIP's FF guard is met: FF s1 / s2 long accuracy 1.0**, 0 non-finite steps (delivery read per 127-10).
+* SKIP's ENTRY-FIX still needs s1 and s3 exact (b30). The ρ clause reads ρ₁ (127-12). ADOPT is read on cost against the
+  control.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
