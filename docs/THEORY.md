@@ -4558,6 +4558,35 @@ Coconut did not learn at any of the three LRs, and §119 continues exactly as re
   independent input instead of one common word. Corrected, it gives median 9 / p90 18, and its effective_suffix agrees.
 * The registered measure (effective-suffix distribution and accuracy binned by it) is unchanged.
 
+**Note 127-6 (2026-10-06 00:50 EDT; descriptive, Stage 1 b28 read on-host by the experiments session; the reading of a driver-class check fixed before
+it runs; no rule change). STD2 and LR10 escape on seed 2 too, but on a newer driver. The same-host plain replay decides
+whether that counts.**
+* **b28** (RTX 3090, driver 595.71), seed 2, still training:
+  - **STD2:** loss 8.19 / 4.41 / **3.66** at 100 / 1k / 2k (ratio 0.83, no flag).
+    - Delivered: row norm in training semantics 3.27 / 3.23 / 3.81 (0.82–0.96× wte); plain eval 8.3 / 11.8 / 6.2.
+    - Probe at 2k: R²_item −0.04, R²_state −0.15.
+    - After 2k: 4.53 (4k), 4.83 (8k), 4.86 (11.5k).
+  - **LR10:** loss 8.16 / 4.97 / **4.01** (ratio 0.81, no flag).
+    - Delivered: LR ratio 10.0.
+    - Probe at 2k: **R²_state 0.25, R²_item −0.05.**
+    - After 2k: 4.72 (4k), 4.69 (8k), 4.61 (13k).
+* **The pattern so far:** SKIP (b27, driver 565), STD2 and LR10 all pass seed 2's 2k flag. Each then drifts back to about
+  4.5–4.9 as L_max grows: "escape is not learning", as RAW-H (126-9). VAR plateaued (undelivered, 127-3).
+* **Confound.** Every seed-2 basin so far (§120, §123, §125; 7 runs) trained on 3090s with drivers 550–565. b28 runs 595.71,
+  and GPU class is known to change which seed plateaus (125-2).
+* **The check:** `replay_basin` seed 2, plain §120 FINAL s2 with no §127 change, on the same b28 host. Reading, fixed now:
+  - **The replay plateaus** (loss at 1k / 2k within 0.1 of 4.98 / 4.95, the flag fires): seed 2 is still the basin seed on
+    595.71. STD2's and LR10's ESCAPE stand, as does any §127 run on that driver.
+  - **The replay escapes** (no flag): seed 2 is not a basin seed on 595.71. ESCAPE for every §127 arm trained on that
+    driver is uninformative: STD2, LR10, the VAR and SKIP reruns.
+    - SKIP's original escape (b27, driver 565) stands.
+    - The Stage 2 matched unit with its own concurrent control (b30 / b31, 595.71) governs the arms' reading, through
+      plateau counts against the control's.
+* **Order:** Stage 2 for STD2 / LR10 starts after this replay reads, not before. Stage 2 is still "only for arms whose seed 2
+  escapes"; only the timing waits.
+* **From now on,** every §127 / §128 run records its driver (`train_driver`, from nvidia-smi) beside train_gpu. §128 reports
+  the driver per attempt. Its slots stay valid across drivers, which adds to the robustness claim.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
