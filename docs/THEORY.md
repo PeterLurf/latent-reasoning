@@ -220,6 +220,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 130 | Early label-free plateau marker (code variance at ~1k): fit on 4060 replays, frozen, tested cross-card (3070, primary) and same-card | **no PASS** (primary P 0.70 / R 0.78 cross-card, 0.47 / 0.88 same-card; 0.60 in-sample): both fail, so the marker is noisy, not card-specific: the early marker does not predict the 2k plateau; the collapse at ~650 is common and transient; the 2k flag fires after early pulls | closed |
 | 131 | Second restart point at 4k: FLAG4 = loss(4k) ≥ 0.9·loss(2.6k) (floored), held-out precision / recall for "escape without learning" | registered | **open** |
 | 132 | Rules in context: per-problem permutation tables (explicit pairs) on §120's carrier; size ladder k4/m2 → k6/m3; PASS 3/4 exact + SERIAL on held-out tables | registered | **open** |
+| 133 | Can error correction make a wide latent carrier exact? CONT / FSQ / SOFT / NOISE / PIN at d 16–64 on S5, then an S5×4 capacity probe (FSQ-8 controls) | registered | **open** |
 
 ## Live sections
 
@@ -5662,6 +5663,76 @@ is not readable: no published method learned the task. 119-3's pre-stated wordin
   on an A5000.
 * **For contrast (not part of §119's rule):** our own method's serial C1 holds on this task family, e.g. §111 READ (5/5) and §128's S5 /
   CYC / MOD / RDFA (exact and SERIAL). No published baseline reaches competence here to compare against.
+
+## 133. Can error correction make a wide latent carrier exact? Width × correction on §128's S5 recipe, then a capacity probe a narrow code cannot hold (pre-registered 2026-10-06 14:52 EDT, after Literature's check 7dbdb426 and before any implementation or run; the user's question "can we fix error propagation to maintain latent expressiveness", via Audit)
+
+**Why.**
+* The 8-d FSQ code is exact and contractive (§128: every learner has ρ₁ 0.03–0.27), but its capacity is capped at 8⁸ ≈ 1.7·10⁷ codes
+  (24 bits).
+* Every wide carrier tried so far drifts: RAW-H 768-d, ρ_ff 0.5–0.8, 0/4 exact (§126). §119's continuous published methods did not
+  learn at all.
+* §133 asks whether a task-agnostic error-correction mechanism keeps a **wide** carrier exact, and whether the width then buys
+  capacity the 8-d code lacks.
+* **Prior** (7dbdb426, `docs/LIT_S133_WIDE_CARRIER_2026-10-06.md`):
+  - soft-to-hard VQ 1704.00648; FSQ 2309.15505; the dither proxy for quantisation (1611.01704 / 2006.09952);
+  - Lipschitz RNNs 2006.12070; Stable Recurrent Models 1805.10369; Jacobian regularisation 1908.02729; contractive autoencoders
+    (Rifai); nGPT.
+  - New as scoped.
+
+**Harness.** §128's recipe exactly: §120 FINAL fsq120 on S5, the length curriculum, 24k steps, bs 64, the 127-3 guard, and
+restart-on-plateau slots k, k+100, k+200, k+300.
+* **Cloud RTX 3090 only, with checkpoints** (the user's rule), driver recorded.
+* Only the carrier changes. z_b has width d, and how it is corrected at each hand-off is the arm.
+
+**Stage 1 arms (one change each).**
+* **CONT-64:** z_b of width 64, never rounded. The control: does a wide code drift?
+* **FSQ-16 / FSQ-64:** hard FSQ (8 levels) at width 16 / 64. Wide but discrete.
+* **SOFT-16 / SOFT-64:** s = (1 − β)·z_b + β·round(z_b) with **β = 0.1** at every hand-off, train and test. A weak attractor toward the
+  FSQ grid, with no learned codebook; §101 found β 0.01 enough on HYB-4. Grid share is reported (Literature (b)1).
+* **NOISE-64:** continuous width 64, plus training dither U(±0.25·std_d) at every hand-off after 2k (§123's dither at width 64).
+* **PIN-64:** continuous width 64, plus a parameter-free LayerNorm on z_b before W_up (a norm pin). Angular drift is reported
+  (Literature (b)4).
+* **JAC (contraction penalty): not run** (Literature (b)2, Audit). S5's carry is an isometry on its states, so a global ‖J‖ bound
+  merges states (stability means forgetting, 1805.10369). An anisotropic, off-data penalty would be a separate registration.
+* **Proof seed per arm: S5 slot 1 (seed 1),** a learner under FSQ-8 on the 3090 (§128). **If slot 1's accepted run is not exact at
+  2,048, the arm is dropped, with no further seeds and no variants.**
+
+**Stage 1 rule (fixed now).**
+* **PASS(arm):** at least 3/4 slots whose accepted run is **exact at 2,048** (ext_2048 ≥ 0.99), **SERIAL** (donor ≥ 0.90,
+  recipient − chance < 0.10), and **contractive** (ρ ≤ 0.28 by 127-12's clause: ρ_ff, or ρ₁ when rounding recovers exactly).
+* CERT is **not** part of PASS: it may not close at width 64 (Literature (b)3).
+  - Reported where feasible: a time-capped fp32 CERT plus n_uncovered (128-4), with "inconclusive by time" an allowed outcome.
+
+**Stage 2: capacity (only after Audit re-approves; arms = the stage-1 passers plus two FSQ-8 controls).**
+* **Tasks** (all registers queried at the end; final-answer only):
+  - **S5×2:** two independent S5 registers. Items are (register, op), and the state space is 120² = 14,400. The in-capacity control.
+  - **S5×4:** four registers, 120⁴ ≈ 2.07·10⁸ states (27.6 bits), more than FSQ-8's 24 bits. The capacity probe.
+  - The answer is all registers' states, so every register gets gradient on every problem (Literature (b)5).
+* **Controls:**
+  - **FSQ-8** (8 levels, 24 bits) on S5×2 and S5×4;
+  - **FSQ-8 at 16 levels** (32 bits, 16⁸ ≈ 4.3·10⁹ ≥ 120⁴) on S5×4. It separates "number of codes" from "width".
+* **CAP-PASS(arm, task):** long accuracy ≥ 0.99 at 512 in at least 3/4 slots.
+* **Reading a capacity limit, fixed now (Audit):** FSQ-8's S5×4 failure is read as **capacity** only if all three hold:
+  - (i) FSQ-8 passes S5×2, so the task is learnable at this size;
+  - (ii) FSQ-8 enters on S5×4 (no exhausted slots; accepted runs past the 2k flag) and ends below 0.99;
+  - (iii) a wide arm, or FSQ-8 at 16 levels, passes S5×4.
+  - Otherwise it is "difficulty" or "entry", and no capacity claim is made.
+  - Codes per state and per-register probe R² are reported beside it.
+
+**Readings.**
+* **A wide arm PASSES stage 1 and CAP-PASSES S5×4, where FSQ-8 fails by capacity.** Error correction keeps a wide latent exact, and the
+  width buys capacity the 8-d code lacks. The answer to the user's question is yes, with that mechanism.
+* **Only FSQ-W passes.** Width helps when the code is discrete; the soft or continuous mechanisms did not keep a wide carrier exact.
+* **No wide arm passes.** These task-agnostic corrections do not keep a wide carrier exact on S5. The 8-d discrete code stays the
+  exact carrier, and its capacity cap is stated.
+
+**Placement.**
+* Stage 1: 7 proof runs, about $6–7. Completing the passing arms: up to about $3 each.
+* Stage 2: about 4 runs per cell (S5×2: FSQ-8; S5×4: FSQ-8, FSQ-8-L16 and the passers), about $15–20.
+* About $35 in all. Audit approves each stage against credit.
+* Implementation: the experiments session (fsq120 `--d_q`, `--levels`, `--soft_beta`, `--carrier_ln`, and a `--family s5x{2,4}`).
+  Gradflow under CUDA bf16 for every arm before any run.
+* Scorer: `theory/score_s133.py`, committed before any run.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

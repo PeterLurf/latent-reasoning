@@ -25,7 +25,57 @@
    },
    "verdict": "not run"
   },
+  "fsq16": {
+   "slots": {
+    "1": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    },
+    "2": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    },
+    "3": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    },
+    "4": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    }
+   },
+   "verdict": "not run"
+  },
   "fsq64": {
+   "slots": {
+    "1": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    },
+    "2": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    },
+    "3": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    },
+    "4": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    }
+   },
+   "verdict": "not run"
+  },
+  "soft16": {
    "slots": {
     "1": {
      "attempts": [],
@@ -101,31 +151,6 @@
    "verdict": "not run"
   },
   "pin64": {
-   "slots": {
-    "1": {
-     "attempts": [],
-     "status": "open",
-     "accepted": null
-    },
-    "2": {
-     "attempts": [],
-     "status": "open",
-     "accepted": null
-    },
-    "3": {
-     "attempts": [],
-     "status": "open",
-     "accepted": null
-    },
-    "4": {
-     "attempts": [],
-     "status": "open",
-     "accepted": null
-    }
-   },
-   "verdict": "not run"
-  },
-  "jac64": {
    "slots": {
     "1": {
      "attempts": [],
