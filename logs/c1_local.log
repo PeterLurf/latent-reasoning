@@ -658,3 +658,57 @@
 13:44:26 bl3070b start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s120_s5_trace_s2/args.json --contraction_only --fp32 --device cuda:1 --out boxes/runs_fsq/s120_s5_trace_s2
 13:44:54 bl3070b done rc 0 out yes peak_card_mem 2319 MiB (measured 2.3 GiB) : boxes/runs_fsq/s120_s5_trace_s2/eval_contraction_fp32.json
 13:44:56 bl3070b start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s123_s5_dither050_s1/args.json --contraction_only --fp32 --device cuda:1 --out boxes/runs_fsq/s123_s5_dither050_s1
+13:45:24 bl3070b done rc 0 out yes peak_card_mem 2319 MiB (measured 2.3 GiB) : boxes/runs_fsq/s123_s5_dither050_s1/eval_contraction_fp32.json
+13:45:26 bl3070b start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s123_s5_dither050_s2/args.json --contraction_only --fp32 --device cuda:1 --out boxes/runs_fsq/s123_s5_dither050_s2
+13:45:55 bl3070b done rc 0 out yes peak_card_mem 2319 MiB (measured 2.3 GiB) : boxes/runs_fsq/s123_s5_dither050_s2/eval_contraction_fp32.json
+13:45:57 bl3070b start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s126_s5_anneal_s2/args.json --contraction_only --fp32 --device cuda:1 --out boxes/runs_fsq/s126_s5_anneal_s2
+13:46:25 bl3070b done rc 0 out yes peak_card_mem 2137 MiB (measured 2.3 GiB) : boxes/runs_fsq/s126_s5_anneal_s2/eval_contraction_fp32.json
+13:46:28 bl3070b start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s126_s5_rawh_s3/args.json --contraction_only --fp32 --device cuda:1 --out boxes/runs_fsq/s126_s5_rawh_s3
+13:46:48 bl4060 done rc 0 out yes peak_card_mem 4419 MiB (measured 3.5 GiB) : theory/results/replay_extra/4060_s75.jsonl
+13:46:49 bl4060 start: python -u scratch/replay_basin.py --seed 76 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:0 --out theory/results/replay_extra/4060_s76.jsonl
+13:46:56 bl3070b done rc 0 out yes peak_card_mem 2137 MiB (measured 2.3 GiB) : boxes/runs_fsq/s126_s5_rawh_s3/eval_contraction_fp32.json
+13:46:59 bl3070b start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s127_s5_ctrl_s4_full/args.json --contraction_only --fp32 --device cuda:1 --out boxes/runs_fsq/s127_s5_ctrl_s4_full
+13:47:27 bl3070b done rc 0 out yes peak_card_mem 2319 MiB (measured 2.3 GiB) : boxes/runs_fsq/s127_s5_ctrl_s4_full/eval_contraction_fp32.json
+13:47:30 bl3070b start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s129_s5_s202/args.json --contraction_only --fp32 --device cuda:1 --out boxes/runs_fsq/s129_s5_s202
+13:47:58 bl3070b done rc 0 out yes peak_card_mem 2319 MiB (measured 2.3 GiB) : boxes/runs_fsq/s129_s5_s202/eval_contraction_fp32.json
+13:48:01 bl3070b start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s129_s5_s4/args.json --contraction_only --fp32 --device cuda:1 --out boxes/runs_fsq/s129_s5_s4
+13:48:30 bl3070b done rc 0 out yes peak_card_mem 2319 MiB (measured 2.3 GiB) : boxes/runs_fsq/s129_s5_s4/eval_contraction_fp32.json
+13:48:33 bl3070b start: python -u scratch/replay_basin.py --seed 501 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:1 --out theory/results/replay_x/3070_s501.jsonl && touch theory/results/replay_x/3070_s501.jsonl.done
+13:52:34 bl4060 done rc 0 out yes peak_card_mem 4678 MiB (measured 3.5 GiB) : theory/results/replay_extra/4060_s76.jsonl
+13:52:35 bl4060 start: python -u scratch/replay_basin.py --seed 77 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:0 --out theory/results/replay_extra/4060_s77.jsonl
+13:53:21 bl3070b done rc 0 out NO peak_card_mem 4493 MiB (measured 4.5 GiB) : theory/results/replay_x/3070_s501.jsonl.done
+13:53:24 bl3070b start: python -u scratch/replay_basin.py --seed 502 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:1 --out theory/results/replay_x/3070_s502.jsonl && touch theory/results/replay_x/3070_s502.jsonl.done
+13:57:58 bl3070b done rc 0 out NO peak_card_mem 4419 MiB (measured 4.5 GiB) : theory/results/replay_x/3070_s502.jsonl.done
+13:58:02 bl3070b start: python -u scratch/replay_basin.py --seed 503 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:1 --out theory/results/replay_x/3070_s503.jsonl && touch theory/results/replay_x/3070_s503.jsonl.done
+13:58:06 bl4060 done rc 0 out yes peak_card_mem 4512 MiB (measured 3.5 GiB) : theory/results/replay_extra/4060_s77.jsonl
+13:58:06 bl4060 start: python -u scratch/replay_basin.py --seed 78 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:0 --out theory/results/replay_extra/4060_s78.jsonl
+14:02:36 bl3070b done rc 0 out NO peak_card_mem 4419 MiB (measured 4.5 GiB) : theory/results/replay_x/3070_s503.jsonl.done
+14:02:39 bl3070b start: python -u scratch/replay_basin.py --seed 504 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:1 --out theory/results/replay_x/3070_s504.jsonl && touch theory/results/replay_x/3070_s504.jsonl.done
+14:03:39 bl4060 done rc 0 out yes peak_card_mem 4512 MiB (measured 3.5 GiB) : theory/results/replay_extra/4060_s78.jsonl
+14:03:40 bl4060 start: python -u scratch/replay_basin.py --seed 79 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:0 --out theory/results/replay_extra/4060_s79.jsonl
+14:07:16 bl3070b done rc 0 out NO peak_card_mem 4493 MiB (measured 4.5 GiB) : theory/results/replay_x/3070_s504.jsonl.done
+14:07:19 bl3070b start: python -u scratch/replay_basin.py --seed 505 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:1 --out theory/results/replay_x/3070_s505.jsonl && touch theory/results/replay_x/3070_s505.jsonl.done
+14:09:12 bl4060 done rc 0 out yes peak_card_mem 4512 MiB (measured 3.5 GiB) : theory/results/replay_extra/4060_s79.jsonl
+14:09:14 bl4060 start: python -u scratch/replay_basin.py --seed 80 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:0 --out theory/results/replay_extra/4060_s80.jsonl
+14:09:49 c1_q_cert128_2070 s128_s5_s1 cert rc 0 out yes peak_card_mem 6733 MiB of 8192 (cuda:2)
+14:09:49 c1_q_cert128_2070 OVER_LIMIT: peak 6733 MiB > 6656; queue stopped
+14:09:49 c1_q_cert128_2070 done
+14:10:31 bl2070b backlog worker start: scratch/c1_backlog_2070.txt on cuda:2 (nvidia-smi 0 'RTX 2070', limit 6656 MiB of 8192)
+14:10:31 bl2070b start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_cyc_s1/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_cyc_s1
+14:10:35 bl2070b done rc 1 out NO peak_card_mem 335 MiB (measured 3.0 GiB) : boxes/runs_fsq/s128_cyc_s1/eval_growth.json
+14:10:36 bl2070b start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_cyc_s2/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_cyc_s2
+14:10:43 bl2070b done rc 1 out NO peak_card_mem 335 MiB (measured 3.0 GiB) : boxes/runs_fsq/s128_cyc_s2/eval_growth.json
+14:10:44 bl2070b start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_cyc_s3/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_cyc_s3
+14:10:51 bl2070b done rc 1 out NO peak_card_mem 346 MiB (measured 3.0 GiB) : boxes/runs_fsq/s128_cyc_s3/eval_growth.json
+14:10:52 bl2070b start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_cyc_s4/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_cyc_s4
+14:10:58 bl2070b done rc 1 out NO peak_card_mem 334 MiB (measured 3.0 GiB) : boxes/runs_fsq/s128_cyc_s4/eval_growth.json
+14:11:00 bl2070b start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_ff_s1/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_ff_s1
+14:11:11 bl2070 backlog worker start: scratch/c1_backlog_fp32.txt on cuda:2 (nvidia-smi 0 'RTX 2070', limit 6656 MiB of 8192)
+14:11:11 bl2070 backlog worker exit (stop)
+14:12:00 bl3070b done rc 0 out NO peak_card_mem 4493 MiB (measured 4.5 GiB) : theory/results/replay_x/3070_s505.jsonl.done
+14:12:05 bl3070b start: python -u scratch/replay_basin.py --seed 506 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:1 --out theory/results/replay_x/3070_s506.jsonl && touch theory/results/replay_x/3070_s506.jsonl.done
+14:15:14 bl4060 done rc 0 out yes peak_card_mem 4512 MiB (measured 3.5 GiB) : theory/results/replay_extra/4060_s80.jsonl
+14:15:15 bl4060 start: python -u scratch/replay_basin.py --seed 81 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:0 --out theory/results/replay_extra/4060_s81.jsonl
+14:16:55 bl2070b done rc 0 out yes peak_card_mem 1505 MiB (measured 3.0 GiB) : boxes/runs_fsq/s128_ff_s1/eval_growth.json
+14:16:57 bl2070b start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_ff_s2/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_ff_s2
+14:17:02 bl2070b: growth_only lacked a held-out branch (cyc/mod/rdfa IndexError, rc 1); fixed in fsq120, failed cyc s1-s4 lines unlocked for retry

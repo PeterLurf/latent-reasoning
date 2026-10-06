@@ -1,0 +1,143 @@
+{
+ "holds": false,
+ "n_reachable": 29,
+ "n_moore": 5,
+ "capped": false,
+ "violations": 34,
+ "all_decode_valid": true,
+ "status": "done",
+ "timed_out": false,
+ "moore_timed_out": false,
+ "sec": 0,
+ "layers": [
+  {
+   "depth": 1,
+   "frontier": 4,
+   "cum": 4,
+   "sec": 0
+  },
+  {
+   "depth": 2,
+   "frontier": 11,
+   "cum": 15,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 3,
+   "frontier": 11,
+   "cum": 26,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 4,
+   "frontier": 1,
+   "cum": 27,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 5,
+   "frontier": 1,
+   "cum": 28,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 6,
+   "frontier": 1,
+   "cum": 29,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 7,
+   "frontier": 0,
+   "cum": 29,
+   "sec": 0,
+   "complete": true
+  }
+ ],
+ "n_start_pairs": 5,
+ "eval_dtype": "None",
+ "cert_cap": 1000000,
+ "cert_task": {
+  "holds": false,
+  "n_reachable": 23,
+  "n_moore": 3,
+  "capped": false,
+  "violations": 21,
+  "all_decode_valid": true,
+  "status": "done",
+  "timed_out": false,
+  "moore_timed_out": false,
+  "sec": 0,
+  "layers": [
+   {
+    "depth": 1,
+    "frontier": 2,
+    "cum": 2,
+    "sec": 0
+   },
+   {
+    "depth": 2,
+    "frontier": 7,
+    "cum": 9,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 3,
+    "frontier": 11,
+    "cum": 20,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 4,
+    "frontier": 1,
+    "cum": 21,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 5,
+    "frontier": 1,
+    "cum": 22,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 6,
+    "frontier": 1,
+    "cum": 23,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 7,
+    "frontier": 0,
+    "cum": 23,
+    "sec": 0,
+    "complete": true
+   }
+  ],
+  "n_start_pairs": 2,
+  "first_items": [
+   "w0",
+   "w1"
+  ]
+ },
+ "cert_task_reads": {
+  "holds": true,
+  "status": "done",
+  "n_pairs": 23,
+  "n_codes": 23,
+  "n_read_transitions": 23,
+  "violations": 0,
+  "capped": false,
+  "timed_out": false,
+  "sec": 0
+ }
+}
