@@ -1,0 +1,1 @@
+copy of s119_coconut_lr3e-5_s1 (note 119-2: the lr criterion's pick, all three lrs at chance; model.pt stays in the sweep dir, SIM-CoT's init)

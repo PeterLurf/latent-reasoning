@@ -837,3 +837,8 @@ PRICE EXCEPTION 2026-10-06 00:48 gen-e30 offer 50807813 RTX 3090 595.71 $0.281: 
 54433443 vast offer 48396265 created 2026-10-06 00:54: label gen-b29, queue scratch/gen_q_b29.txt (logged at create by vdeploy_toy.sh)
 54290090 vast | gen_j1 DESTROYED_VERIFIED 2026-10-06 00:54 after verified per-run fetch (boxes/runs_s5/s117_mk_s51 boxes/runs_s5/s117_st_s61)
 54433443 vast | gen-b29 DESTROYED 2026-10-06 01:00 before start: the §127 VAR / SKIP reruns move to b27's own host (79.125.203.249, driver 565.77) as b35, removing the 595 driver confound (note 127-6)
+54434025 vast offer 32750800 created 2026-10-06 01:00: label gen-b35, queue scratch/gen_q_b35.txt (logged at create by vdeploy_toy.sh)
+54434913 vast offer 53246717 created 2026-10-06 01:09: label gen-e32, queue scratch/gen_q_e32.txt (logged at create by vdeploy_toy.sh)
+54435752 vast offer 49707053 created 2026-10-06 01:15: label gen-d3, queue scratch/gen_q_d3.txt (logged at create by vdeploy_toy.sh)
+54435841 vast offer 50807813 created 2026-10-06 01:16: label gen-e30, queue scratch/gen_q_e30.txt (logged at create by vdeploy_toy.sh)
+54411699 vast | gen_d1 DESTROYED_VERIFIED 2026-10-06 01:18 after verified per-run fetch (boxes/runs_s5/s119_coconut_lr1e-4_s1 boxes/runs_s5/s119_coconut_lr3e-4_s1 boxes/runs_s5/s119_coconut_lr3e-5_s1)
