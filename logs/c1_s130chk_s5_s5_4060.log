@@ -1,0 +1,168 @@
+D:\Latent\boxes\fsq120.py:805: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\torch\csrc\autograd\generated\python_variable_methods.cpp:821.)
+  out["wte_row_norm"] = float(m.g.w("wte.weight").float().norm(dim=-1).mean())
+{'step': 100, 'loss': 8.276857175827026, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 16}
+{'step': 200, 'loss': 5.054625792503357, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 31}
+{'step': 300, 'loss': 5.004584932327271, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 46}
+{'step': 400, 'loss': 5.018681569099426, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 60}
+{'step': 500, 'loss': 5.022454295158386, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 75}
+{'step': 600, 'loss': 5.023638091087341, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 90}
+{'step': 700, 'loss': 5.0257143306732175, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 104}
+{'step': 800, 'loss': 4.990610342025757, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 119}
+{'step': 900, 'loss': 4.989292402267456, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 133}
+{'step': 1000, 'loss': 4.963114957809449, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 147}
+{'step': 1100, 'loss': 4.951205306053161, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 162}
+{'step': 1200, 'loss': 4.937144565582275, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 176}
+{'step': 1300, 'loss': 4.940160002708435, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 190}
+{'step': 1400, 'loss': 4.982648220062256, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 205}
+{'step': 1500, 'loss': 4.909079713821411, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 219}
+{'step': 1600, 'loss': 4.862858462333679, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 233}
+{'step': 1700, 'loss': 4.870170793533325, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 248}
+{'step': 1800, 'loss': 4.709456171989441, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 262}
+{'step': 1900, 'loss': 4.661079959869385, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 276}
+{'step': 2000, 'loss': 4.72406955242157, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 291}
+{'step': 2100, 'loss': 4.89179223537445, 'L_max': 4, 'p_hard': 0.05, 'noise': 0.0, 'sec': 309}
+{'step': 2200, 'loss': 4.867697682380676, 'L_max': 4, 'p_hard': 0.1, 'noise': 0.0, 'sec': 327}
+{'step': 2300, 'loss': 4.860229978561401, 'L_max': 4, 'p_hard': 0.15, 'noise': 0.0, 'sec': 344}
+{'step': 2400, 'loss': 4.84842896938324, 'L_max': 4, 'p_hard': 0.2, 'noise': 0.0, 'sec': 362}
+{'step': 2500, 'loss': 4.8091043281555175, 'L_max': 4, 'p_hard': 0.25, 'noise': 0.0, 'sec': 380}
+{'step': 2600, 'loss': 4.925862641334533, 'L_max': 4, 'p_hard': 0.3, 'noise': 0.0, 'sec': 398}
+{'step': 2700, 'loss': 4.978565802574158, 'L_max': 4, 'p_hard': 0.35, 'noise': 0.0, 'sec': 417}
+{'step': 2800, 'loss': 4.9402813053131105, 'L_max': 4, 'p_hard': 0.4, 'noise': 0.0, 'sec': 435}
+{'step': 2900, 'loss': 4.744112315177918, 'L_max': 4, 'p_hard': 0.45, 'noise': 0.0, 'sec': 453}
+{'step': 3000, 'loss': 4.822054717540741, 'L_max': 4, 'p_hard': 0.5, 'noise': 0.0, 'sec': 471}
+{'step': 3100, 'loss': 4.742826483249664, 'L_max': 4, 'p_hard': 0.55, 'noise': 0.0, 'sec': 489}
+{'step': 3200, 'loss': 5.0483134078979495, 'L_max': 4, 'p_hard': 0.6, 'noise': 0.0, 'sec': 508}
+{'step': 3300, 'loss': 5.050976233482361, 'L_max': 4, 'p_hard': 0.65, 'noise': 0.0, 'sec': 525}
+{'step': 3400, 'loss': 5.072476754188537, 'L_max': 4, 'p_hard': 0.7, 'noise': 0.0, 'sec': 543}
+{'step': 3500, 'loss': 5.007657189369201, 'L_max': 4, 'p_hard': 0.75, 'noise': 0.0, 'sec': 561}
+{'step': 3600, 'loss': 5.025802493095398, 'L_max': 4, 'p_hard': 0.8, 'noise': 0.0, 'sec': 578}
+{'step': 3700, 'loss': 5.02634181022644, 'L_max': 4, 'p_hard': 0.85, 'noise': 0.0, 'sec': 597}
+{'step': 3800, 'loss': 5.0353212070465085, 'L_max': 4, 'p_hard': 0.9, 'noise': 0.0, 'sec': 710}
+{'step': 3900, 'loss': 5.015560140609741, 'L_max': 4, 'p_hard': 0.95, 'noise': 0.0, 'sec': 853}
+{'step': 4000, 'loss': 5.011422257423401, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1003}
+{'step': 4100, 'loss': 4.936818051338196, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1142}
+{'step': 4200, 'loss': 4.8387431621551515, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 1743}
+{'step': 4300, 'loss': 4.989070568084717, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 2414}
+{'step': 4400, 'loss': 4.972051739692688, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 3133}
+{'step': 4500, 'loss': 4.890098252296448, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 4053}
+{'step': 4600, 'loss': 4.756693410873413, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 4889}
+{'step': 4700, 'loss': 4.733496515750885, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 5766}
+{'step': 4800, 'loss': 4.832341852188111, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 6548}
+{'step': 4900, 'loss': 4.7333135986328125, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 6752}
+{'step': 5000, 'loss': 4.7999406433105465, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 6797}
+{'step': 5100, 'loss': 4.858184289932251, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 6862}
+{'step': 5200, 'loss': 4.877288188934326, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 6929}
+{'step': 5300, 'loss': 4.877012310028076, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 7005}
+{'step': 5400, 'loss': 4.759062168598175, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 7071}
+{'step': 5500, 'loss': 4.780256226062774, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 7138}
+{'step': 5600, 'loss': 4.876548862457275, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 7207}
+{'step': 5700, 'loss': 4.928568825721741, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 7281}
+{'step': 5800, 'loss': 4.956855392456054, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 7350}
+{'step': 5900, 'loss': 4.952737030982971, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 7424}
+{'step': 6000, 'loss': 4.929996099472046, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 7490}
+{'step': 6100, 'loss': 4.925542788505554, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 7562}
+{'step': 6200, 'loss': 4.932911887168884, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 7636}
+{'step': 6300, 'loss': 4.916958727836609, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 7706}
+{'step': 6400, 'loss': 4.944714016914368, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 7778}
+{'step': 6500, 'loss': 4.998122811317444, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 7852}
+{'step': 6600, 'loss': 5.001919827461243, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 7920}
+{'step': 6700, 'loss': 4.952997298240661, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 7989}
+{'step': 6800, 'loss': 4.928481674194336, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 8054}
+{'step': 6900, 'loss': 4.943850684165954, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 8123}
+{'step': 7000, 'loss': 4.941293501853943, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 8190}
+{'step': 7100, 'loss': 4.927092742919922, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 8264}
+{'step': 7200, 'loss': 4.947723178863526, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 8331}
+{'step': 7300, 'loss': 4.883750367164612, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 8398}
+{'step': 7400, 'loss': 4.983917169570923, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 8474}
+{'step': 7500, 'loss': 4.954580626487732, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 8545}
+{'step': 7600, 'loss': 4.92777250289917, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 8615}
+{'step': 7700, 'loss': 4.927171669006348, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 8683}
+{'step': 7800, 'loss': 4.891818490028381, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 8749}
+{'step': 7900, 'loss': 4.856525888442993, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 8814}
+{'step': 8000, 'loss': 4.871072254180908, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 8886}
+{'step': 8100, 'loss': 4.882313237190247, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 8948}
+{'step': 8200, 'loss': 4.9824424695968625, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 9015}
+{'step': 8300, 'loss': 4.939071168899536, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 9078}
+{'step': 8400, 'loss': 4.9603903865814205, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 9149}
+{'step': 8500, 'loss': 4.893014149665833, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 9221}
+{'step': 8600, 'loss': 4.9216071176528935, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 9289}
+{'step': 8700, 'loss': 4.96812164068222, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 9355}
+{'step': 8800, 'loss': 4.9218517637252805, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 9423}
+{'step': 8900, 'loss': 4.933361921310425, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 9486}
+{'step': 9000, 'loss': 4.8973777484893795, 'L_max': 8, 'p_hard': 1.0, 'noise': 0.0, 'sec': 9554}
+[W1006 11:58:19.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2097152 bytes (free: 0, total: 8585216000).
+{'step': 9100, 'loss': 4.947151565551758, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 9594}
+{'step': 9200, 'loss': 4.922520356178284, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 9635}
+{'step': 9300, 'loss': 4.937024388313294, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 9670}
+{'step': 9400, 'loss': 4.90958936214447, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 9705}
+{'step': 9500, 'loss': 4.919426217079162, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 9742}
+{'step': 9600, 'loss': 4.9061266756057735, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 9779}
+{'step': 9700, 'loss': 4.934113268852234, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 9816}
+{'step': 9800, 'loss': 4.938698797225952, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 9854}
+{'step': 9900, 'loss': 4.971275391578675, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 9887}
+{'step': 10000, 'loss': 4.978604989051819, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 9924}
+{'step': 10100, 'loss': 4.929215278625488, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 9958}
+{'step': 10200, 'loss': 4.908620662689209, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 9995}
+{'step': 10300, 'loss': 4.938244948387146, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10032}
+{'step': 10400, 'loss': 4.908625259399414, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10069}
+{'step': 10500, 'loss': 4.935272731781006, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10105}
+{'step': 10600, 'loss': 4.902270865440369, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10141}
+{'step': 10700, 'loss': 4.876175794601441, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10177}
+{'step': 10800, 'loss': 4.979450960159301, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10212}
+{'step': 10900, 'loss': 4.876064534187317, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10249}
+{'step': 11000, 'loss': 4.879936709403991, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10285}
+{'step': 11100, 'loss': 4.862084476947785, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10321}
+{'step': 11200, 'loss': 4.8963005113601685, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10358}
+{'step': 11300, 'loss': 4.871817574501038, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10394}
+{'step': 11400, 'loss': 4.873299517631531, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10430}
+{'step': 11500, 'loss': 4.876443281173706, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10465}
+{'step': 11600, 'loss': 4.843298597335815, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10500}
+{'step': 11700, 'loss': 4.883245816230774, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10536}
+{'step': 11800, 'loss': 4.830276007652283, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10574}
+{'step': 11900, 'loss': 4.840674955844879, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10610}
+{'step': 12000, 'loss': 4.81761932849884, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10645}
+{'step': 12100, 'loss': 4.837833456993103, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10682}
+{'step': 12200, 'loss': 4.839681596755981, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10719}
+{'step': 12300, 'loss': 4.823820433616638, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10755}
+{'step': 12400, 'loss': 4.821011219024658, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10795}
+{'step': 12500, 'loss': 4.862108688354493, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10830}
+{'step': 12600, 'loss': 4.874178929328918, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10869}
+{'step': 12700, 'loss': 4.942132868766785, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10909}
+{'step': 12800, 'loss': 4.828113341331482, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10945}
+{'step': 12900, 'loss': 4.846079988479614, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 10986}
+{'step': 13000, 'loss': 4.833477144241333, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 11023}
+{'step': 13100, 'loss': 4.8636794090271, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 11061}
+{'step': 13200, 'loss': 4.854662802219391, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 11099}
+{'step': 13300, 'loss': 4.90891049861908, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 11133}
+{'step': 13400, 'loss': 4.8741766595840454, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 11171}
+{'step': 13500, 'loss': 4.8819557762146, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 11209}
+{'step': 13600, 'loss': 4.942771525382995, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 11248}
+{'step': 13700, 'loss': 4.905374045372009, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 11283}
+{'step': 13800, 'loss': 4.866326847076416, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 11320}
+{'step': 13900, 'loss': 4.848028807640076, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 11359}
+{'step': 14000, 'loss': 4.78468398809433, 'L_max': 16, 'p_hard': 1.0, 'noise': 0.0, 'sec': 11395}
+[W1006 12:28:58.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 20971520 bytes (free: 0, total: 8585216000).
+[W1006 12:28:58.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 20971520 bytes (free: 0, total: 8585216000).
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\Latent\boxes\fsq120.py", line 1252, in <module>
+  File "D:\Latent\boxes\fsq120.py", line 1098, in main
+    for mi in range(nmb):
+    
+        sl = slice(mi * a.bs // nmb, (mi + 1) * a.bs // nmb)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Latent\boxes\fsq120.py", line 406, in chain
+    h = self.segment(prev, items[:, t]); qs, q, zb = self.quant(h)
+  File "D:\Latent\boxes\fsq120.py", line 362, in segment
+    x = torch.cat([eot, prev.to(eot.dtype), g.embed(self.itok[items])], 1); h, _ = g(x, None)
+                                                                                   ~^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\modules\module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\modules\module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "D:\Latent\boxes\core.py", line 136, in forward
+    m = F.gelu(a @ self.w(pre + "mlp.c_fc.weight") + self.w(pre + "mlp.c_fc.bias"), approximate="tanh")
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 20.00 MiB. GPU 0 has a total capacity of 8.00 GiB of which 0 bytes is free. Including non-PyTorch memory, this process has 17179869184.00 GiB memory in use. Process 12568 has 17179869184.00 GiB memory in use. Process 18208 has 17179869184.00 GiB memory in use. Of the allocated memory 6.80 GiB is allocated by PyTorch, and 447.85 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)

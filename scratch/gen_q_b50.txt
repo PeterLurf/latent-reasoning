@@ -1,0 +1,3 @@
+# §130 / §131 check-run rerun (note 131-4; user 2026-10-06: full runs on >= 16 GB cloud cards with checkpoints): fsq120 §120 FINAL S5 24k, no --stop_plateau, guard (--probe127), --no_cert, --micro 4 (applied at L > 16 since 2026-10-06; memory only), --ckpt_every 2000; RTX A4000 16 GB (GA104, as the 3070; the 3070 seeds); boxes.fsq120
+# P=1
+boxes/runs_fsq/s130chk_s5_s17_a4000 boxes.fsq120 --family s5 --arm final --seed 17 --micro 4 --no_cert --probe127 --ckpt_every 2000
