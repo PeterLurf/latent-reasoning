@@ -4502,7 +4502,8 @@ basin, and what seed 2 should show.**
 * **Seed 1's order of events** (R² of z_b on the op read, the chain's start state and the next state; dmean = the decoder's
   loss gain from the carrier, L1_dmean):
   - **0–1k: the decoder ignores the code** (dmean ≤ 0.009). The loss is flat at about 5.0.
-    - Meanwhile the code drifts off the item: R²_op 0.95 → 0.64; R²_start 0.32 → peak 0.64 at 750, back to 0.42 at 1k;
+    - Meanwhile the code drifts off the item: R²_op 0.95 → 0.59 (minimum before 1k; 0.64 at 1k); R²_start 0.32 → peak 0.68
+      at 800, back to 0.42 at 1k;
       R²_next flat at 0.22–0.24.
     - The gradient into W_down is 0.8–4.4, against GPT-2's 62–154.
   - **1.0–1.2k: the decoder starts reading** (dmean 0.006 → 0.34 at 1,200). In the same window the code re-targets to the
