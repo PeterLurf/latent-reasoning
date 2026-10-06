@@ -1,0 +1,3 @@
+# THEORY §134 COPY-ANCHOR main (26bc216e; notes 134-1..134-4): §128 S5 recipe (fsq120 FINAL, guard + probes via --probe127, --micro 2 at L >= 32) + --copy_frac 0.1; NO restarts, NO --stop_plateau (one 24k run); --ckpt_every 2000; RTX 3090 / 595.71 class; boxes.fsq120
+# P=1
+boxes/runs_fsq/s134_copy_s5_s4 boxes.fsq120 --family s5 --arm final --seed 4 --copy_frac 0.1 --micro 2 --micro_from 32 --no_cert --probe127 --ckpt_every 2000

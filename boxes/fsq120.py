@@ -660,7 +660,11 @@ def lr_at(base, gr, step, steps):
 def env_info():
     """Audit 2026-10-06: software stack per run (cross-host non-parity becomes attributable): torch / CUDA / cuDNN / python, the Vast image."""
     import platform
-    return {"torch_version": torch.__version__, "cuda_version": torch.version.cuda, "cudnn_version": torch.backends.cudnn.version() if torch.cuda.is_available() else None,
+    try:
+        cd = torch.backends.cudnn.version() if torch.cuda.is_available() else None
+    except Exception:                                                       # no visible GPU (CPU smokes)
+        cd = None
+    return {"torch_version": torch.__version__, "cuda_version": torch.version.cuda, "cudnn_version": cd,
             "python_version": platform.python_version(), "image_tag": os.environ.get("IMAGE_TAG")}
 
 

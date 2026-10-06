@@ -1,0 +1,3 @@
+# THEORY §135 stage A teacher (f1899abd; Audit-approved): S5 text-CoT GPT-2 small, 8k steps, bs 32, lr 1e-4, L ~ U(1, 32); gates A1 (acc_L32 >= 0.99) and A2 (probe >= 0.95) read before any student; RTX 3090; boxes.fsq120 (GPT-2 sha guard)
+# P=1
+boxes/runs_fsq/s135_teacher_s5 boxes.teacher135
