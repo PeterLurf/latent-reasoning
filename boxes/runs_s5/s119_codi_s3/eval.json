@@ -1,0 +1,61 @@
+{
+ "method": "codi",
+ "seed": 3,
+ "lr": 0.001,
+ "c": 1,
+ "n_thoughts": 4,
+ "eval_dtype": "torch.bfloat16",
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "trainable_params": 20057088,
+ "faithful": true,
+ "faithful_ref": "CODI GPT-2 GSM8K through our port: 42.5 vs published 43.7 (docs/GSM8K_REPRO.md; within 2 points)",
+ "cumulative_definition": "chunk ends only (in-chunk states latent)",
+ "intact_acc": 0.0085,
+ "donor": {
+  "block": {
+   "thoughts": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "donor_consistent": 0.006,
+   "recipient_consistent": 0.0085,
+   "chance_overlap": 0.005
+  }
+ },
+ "cumulative": {
+  "128": 0.0,
+  "256": 0.0,
+  "512": 0.0
+ },
+ "final_state_acc_512": 0.0075,
+ "checkpoint_validity": {
+  "snaps": 256000,
+  "valid": 256000,
+  "rate": 1.0
+ },
+ "extension_2048": {
+  "n": 500,
+  "len": 2048,
+  "cumulative": {
+   "512": 0.0,
+   "1024": 0.0,
+   "2048": 0.0
+  }
+ },
+ "chunk_check": {
+  "n": 20000,
+  "per_chunk_acc": 0.0098
+ },
+ "train_split_final_acc": 0.0092,
+ "removal": {
+  "zero": 0.0075,
+  "mean": 0.0095
+ },
+ "eval_sec": 769,
+ "train_sec": 14204,
+ "updates": 24000,
+ "train_gpu": "NVIDIA GeForce RTX 3090",
+ "train_driver": "550.144.03"
+}
