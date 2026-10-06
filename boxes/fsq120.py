@@ -625,6 +625,15 @@ def lr_at(base, gr, step, steps):
     return base * gr.get("mult", 1.0) * min(1, step / 100) * 0.5 * (1 + math.cos(math.pi * step / steps))
 
 
+def driver_version():
+    """Theory note 127-6: the NVIDIA driver version of the training host (nvidia-smi), recorded in args.json."""
+    import subprocess
+    try:
+        return subprocess.run(["nvidia-smi", "--query-gpu=driver_version", "--format=csv,noheader"], capture_output=True, text=True, timeout=30).stdout.strip().splitlines()[0]
+    except Exception:
+        return None
+
+
 def labels_of(fam, s0, X):
     lab = np.zeros(X.shape, np.int64); s_ = np.array(s0)
     for t in range(X.shape[1]):
@@ -944,7 +953,7 @@ def main():
             c["cert_task"] = certificate(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time, first_items=[W0, W1]); c["cert_task"]["first_items"] = ["w0", "w1"]
             c["cert_task_reads"] = cert_task_reads(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time)   # note 120-9 (descriptive)
         json.dump(c, open(os.path.join(a.out, "eval_cert.json"), "w", newline="\n"), indent=1); print("CERT", json.dumps(c), flush=True); return
-    json.dump({**vars(a), **({} if a.eval_only else {"train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"})},
+    json.dump({**vars(a), **({} if a.eval_only else {"train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version()})},
               open(os.path.join(a.out, "args_eval.json" if a.eval_only else "args.json"), "w", newline="\n"), indent=1)   # notes 123-8 / 125-3
     m = mk(); drawn = np.zeros((fam.n_states, fam.n_items), bool)
     if a.eval_only:                                                         # replay the training draws (rng only) for coverage_drawn
@@ -1060,7 +1069,7 @@ def main():
                     "n_nonfinite": None if a.eval_only else n_nonfinite, "guard": p127, "skip_dec": a.skip_dec, "std2": a.std2, "lr_new": a.lr_new, "probe127": p127},
            "carried_norm": carried or None, "final_loss": last_loss, "no_round": a.no_round, "dither": a.dither, "fsq_dither": a.fsq_dither, "eval_dtype": str(amp), "coverage_drawn": float(drawn.mean()),
            "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
-           "train_gpu": json.load(open(os.path.join(a.out, "args.json"))).get("train_gpu")}
+           "train_gpu": json.load(open(os.path.join(a.out, "args.json"))).get("train_gpu"), "train_driver": json.load(open(os.path.join(a.out, "args.json"))).get("train_driver")}
     if fam.name == "s5":
         Xte, Yte = s5.load_csv(os.path.join(a.data_dir, "S5=512.csv"), limit=a.test_n); s5.check_labels(Xte, Yte); Xte, Yte = Xte[:, :a.test_len], Yte[:, :a.test_len]
         grid = [0, 0]; pred, codes = run_test(m, fam, np.zeros(len(Xte), np.int64), Xte, dev, amp, a.eval_bs, grid=grid); C = pred == Yte
