@@ -219,6 +219,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 129 | Where does the entry basin live? Head-only re-draw at the 2k flag vs a CLOCK-ONLY warm restart (S5, 4 flagged seeds): LR / HEAD / BODY | registered | **open** |
 | 130 | Early label-free plateau marker (code variance at ~1k): fit on 4060 replays, frozen, tested cross-card (3070, primary) and same-card | **no PASS** (primary P 0.70, R 0.78 on 17 3070 seeds; 0.60 in-sample): the early marker does not predict the 2k plateau; the collapse at ~650 is common and transient; the 2k flag fires after early pulls | closed (SAME pending, descriptive) |
 | 131 | Second restart point at 4k: FLAG4 = loss(4k) ≥ 0.9·loss(2.6k) (floored), held-out precision / recall for "escape without learning" | registered | **open** |
+| 132 | Rules in context: per-problem permutation tables (explicit pairs) on §120's carrier; size ladder k4/m2 → k6/m3; PASS 3/4 exact + SERIAL on held-out tables | registered | **open** |
 
 ## Live sections
 
@@ -5248,6 +5249,76 @@ stays.**
   only if §131 passes held-out (0 false positives among S5 learners, and ≥ 2/3 recall).
 * The held-out families' result (MOD and CYC pass, RDFA pending) stands on its own either way. It is reported as "the recipe
   learns three held-out regular families without restarts", whatever S5 does.
+
+## 132. Rules in context: can the same latent carrier track state when each problem gives its own transition table? A size ladder on §120's recipe (pre-registered 2026-10-06 07:48 EDT, after Literature's check 54a30677 and before any implementation or run; Audit's steward idea; the bridge to ProsQA-NA)
+
+**Why.**
+* §128 shows that one fixed recipe learns held-out regular families with no restarts: MOD and CYC pass, and RDFA's slots are
+  exact. In every one the automaton is stored in the weights.
+* ProsQA-NA, multiplication and anything GSM8K-like give their rules in the prompt. The open question for C1 / C2 at scale is
+  whether the latent carrier tracks state when the transition table changes per problem.
+* **Prior** (54a30677, `docs/LIT_S132_INCONTEXT_TABLE_2026-10-06.md`):
+  - in-context language learning (Akyürek 2401.12973: regular languages induced from example strings);
+  - induction heads 2209.11895; Pointer Value Retrieval 2107.12580 (indirection failures);
+  - entity tracking with operations in text (2305.02363, 2402.14811).
+  - New as scoped: a latent carrier executing a per-problem in-context table, certified and serial.
+
+**Harness** (§120's recipe exactly: FSQ d = 8, L = 8, FINAL supervision, L_max 2 → 32, 24k steps, bs 64, lr 1e-4, the 127-3 guard;
+RTX 3090 / 3090 Ti; restart-on-plateau slots as §128).
+* **Table:** each problem draws m ops (" a" " b" …), each a uniformly random **permutation** of k states. Permutations never
+  synchronise, so the state depends on the whole history.
+* **Table text, as explicit pairs** (Literature (b)1: a content-addressed lookup, not a positional two-hop):
+  " a0>3 a1>5 … b0>2 …", 4 tokens per pair, in canonical order. The row format is a later, harder variant, not run here.
+* **Segment = [EOT, table text, carried code, item].** The table is a visible prefix in every segment, and **the state lives
+  only in the code** (114-4's rule). Start state 0. The answer is the state digit (" 0" …).
+* **Held-out tables are literal** (Audit): test tables are hashed and rejected from every training draw, and the overlap count
+  is logged (it must be 0).
+* **OOD set (descriptive; Audit):** training never draws a table whose op a is an involution (a∘a = identity). A separate test
+  set uses only such tables.
+
+**Size ladder (fixed now; Literature (c), Audit).**
+* **Rung 1: k = 4 states, m = 2 ops** (table 32 tokens; 576 possible tables).
+  - Held-out = 68 non-involution tables, split off before training. Training uses the remaining 268. OOD = the 240 tables with
+    an involution a.
+  - Dirs `s132_k4_s{seed}`.
+* **Rung 2: k = 6, m = 3** (table 72 tokens). Held-out = 2,000 random non-involution tables, hash-excluded. OOD = 500
+  involution-a tables. Dirs `s132_k6_s{seed}`.
+* **Moving up:** pilot = rung 1, slot 1. If its accepted run is exact, slots 2–4 run. **Rung 2 runs only if rung 1 is PASS.**
+* **What each failure means, fixed now, with no redesign under §132:**
+  - **Rung-1 ENTRY-FAIL:** entry is the limit for in-context tables at this scale.
+  - **Rung-1 NOT-LEARNED:** a per-step in-context lookup is not learned at this scale and budget.
+  - **Rung 2 fails after a rung-1 PASS:** a size limit between 4/2 and 6/3.
+  - A longer budget, the row format, or a bigger model would each be a new registration.
+
+**Rules (fixed now; per rung).**
+* **PASS:** ≥ 3/4 slots have an accepted run that is exact (cumulative ≥ 0.99 at 512 on held-out tables) and SERIAL. SERIAL uses
+  the same-table donor at positions 2 / 4 / 6: donor ≥ 0.90, recipient − chance < 0.10.
+* **ENTRY-FAIL:** ≥ 2 slots exhaust their four attempts.
+* **NOT-LEARNED:** ≥ 2 accepted runs below 0.99.
+* **§132's verdict is rung 2's.** A rung-1 failure stops the ladder and is the verdict.
+
+**Measures (descriptive unless stated).**
+* 2,048.
+* **Different-table donor:** a code from a problem with a different table, read against the recipient's table. Does the code hold
+  the absolute state number?
+* **Table swap** mid-chain at test (from position 256).
+* OOD accuracy.
+* CERT on 20 sampled held-out tables (Moore = k).
+* **Op-history probe** (Literature (b)3, Audit): R² of the code on the last 1–3 ops against on the state, at 2k and at the end.
+  An 8-d code can hold a short op history, so a short-length success must be attributed correctly; PASS at 512 cannot be met
+  that way.
+* The plateau flag's 2k and 4k ratios (§131) are logged.
+
+**Readings.**
+* **PASS.** The latent carrier tracks state from in-context rules, the bridge to ProsQA-NA (a graph given in context).
+* **NOT-LEARNED / ENTRY-FAIL.** As fixed in the ladder.
+
+**Placement.**
+* Rung 1: about $1.5 per run (segments about 35 tokens). Rung 2: about $3 per run (about 75 tokens). With restarts, at most about
+  $20; Audit's earlier estimate was about $8, so this is flagged.
+* Memory check at L 32 with the longest table on a 3090 first, then a CUDA-bf16 gradflow smoke.
+* Implementation: the experiments session (fsq120 `--family table --k --m`). Scorer: `theory/score_s132.py`, committed before any
+  run.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
