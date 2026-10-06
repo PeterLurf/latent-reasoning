@@ -1,5 +1,5 @@
-# §127 Stage 1 (seed 2; RTX 3090 / 3090 Ti only; gradflow PASS): STD2 + LR10; then Audit's replay_basin seed 2 (bf16)
+# §127 Stage 1 b28 replacement (first b28 was a BAD HOST): STD2 + LR10 seed 2 (127-3 guard + fp32 grad checks, e748cf36+), then Audit's replay_basin seed 2 (bf16); RTX 3090 / 3090 Ti only
 # P=2
-boxes/runs_fsq/s127_s5_std2_s2 boxes.fsq120 --family s5 --arm final --seed 2 --micro 2 --no_cert --stop_plateau --std2
-boxes/runs_fsq/s127_s5_lr10_s2 boxes.fsq120 --family s5 --arm final --seed 2 --micro 2 --no_cert --stop_plateau --lr_new 10
+boxes/runs_fsq/s127_s5_std2_s2 boxes.fsq120 --family s5 --arm final --micro 2 --no_cert --stop_plateau --seed 2 --std2
+boxes/runs_fsq/s127_s5_lr10_s2 boxes.fsq120 --family s5 --arm final --micro 2 --no_cert --stop_plateau --seed 2 --lr_new 10
 theory/results/replay_basin_s2 scratch.replay_wrap --seed 2 --steps 2000 --every 50 --amp bf16 --threads 4
