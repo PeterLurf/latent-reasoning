@@ -1,12 +1,15 @@
 """THEORY §132 scoring (rules fixed in §132; written before any §132 run; Theory is the only scorer).
-In-context transition tables on §120's FSQ carrier: per-problem random permutation tables in every segment's prefix, the state
-only in the 8-d code; test on held-out tables. Restart-on-plateau slots as §128: slot k in 1..4 tries seeds k, k+100, k+200,
-k+300; the slot's accepted run is its first attempt whose 123-3 flag does not fire. Pilot = slot 1; slots 2-4 only if it enters.
-Runs: boxes/runs_fsq/s132_tab_s{seed} (eval.json: long_acc = cumulative 512 on held-out tables, ext_2048, donor (same-table),
-donor_difftable, table_swap, cert_sample; log.jsonl).
-PASS: >= 3/4 slots whose accepted run is exact (long_acc >= 0.99) and SERIAL (same-table donor: donor_consistent >= 0.90 and
-recipient_consistent - chance_overlap < 0.10 at every position). NOT-LEARNED: accepted runs below 0.99 in >= 2 slots.
-ENTRY-FAIL: >= 2 slots exhaust their four attempts. Descriptive: different-table donor, table swap, sampled CERT, cost.
+In-context transition tables on §120's FSQ carrier: per-problem random permutation tables, written as explicit pairs
+(" a0>3 a1>5 ...") in every segment's prefix; the state only in the 8-d code; test on held-out tables.
+Size ladder: rung 1 = k 4 states, m 2 ops (dirs s132_k4_s{seed}); rung 2 = k 6, m 3 (s132_k6_s{seed}), run only after a rung-1
+PASS. Restart-on-plateau slots as §128: slot k in 1..4 tries seeds k, k+100, k+200, k+300; the accepted run is the slot's first
+attempt whose 123-3 flag does not fire. eval.json: long_acc (cumulative 512 on held-out tables), ext_2048, donor (same-table),
+donor_difftable, table_swap, ood_acc, cert_sample, probe_ophist (descriptive).
+Per rung: PASS = >= 3/4 slots exact (>= 0.99) and SERIAL (same-table donor >= 0.90, recipient - chance < 0.10 at every position);
+ENTRY-FAIL = >= 2 slots exhaust their attempts; NOT-LEARNED = >= 2 accepted runs below 0.99. §132's verdict is rung 2's; a rung-1
+failure stops the ladder and is the verdict ("stops at rung 1: ...").
+Audit nits: smoke dirs (args steps != 24000 or sched_scale != 1 or cpu) are skipped and printed; a run before 2k is "running
+(phase 1)"; an eval.json whose log has no 2k decision is an error row; accepted runs on more than one GPU name print a warning.
     python theory/score_s132.py
 """
 import json
@@ -15,6 +18,7 @@ import os
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 R = os.path.join(ROOT, "boxes", "runs_fsq")
 OFFS = (0, 100, 200, 300)
+SKIPPED, ERRORS = [], []
 
 
 def load(d, f="eval.json"):
@@ -22,17 +26,31 @@ def load(d, f="eval.json"):
     return json.load(open(p)) if os.path.exists(p) else None
 
 
-def plateau(d):
+def smoke(d):
+    a = load(d, "args.json")
+    if not a:
+        return False
+    why = [w for w, bad in (("steps %s" % a.get("steps"), int(a.get("steps", 24000)) != 24000),
+                            ("sched_scale %s" % a.get("sched_scale"), float(a.get("sched_scale", 1.0)) != 1.0),
+                            ("cpu", str(a.get("device", "")).startswith("cpu") or str(a.get("train_gpu", "")).lower() == "cpu")) if bad]
+    if why:
+        SKIPPED.append((d, why))
+    return bool(why)
+
+
+def log_rows(d):
     p = os.path.join(R, d, "log.jsonl")
-    if not os.path.exists(p):
-        p2 = os.path.join(R, d + ".void_partial", "log.jsonl")
-        if not os.path.exists(p2):
-            return None
+    if os.path.exists(p):
+        return [json.loads(x) for x in open(p)]
+    p2 = os.path.join(R, d + ".void_partial", "log.jsonl")                  # a 2k plateau stop drained as .void_partial (127-2)
+    if os.path.exists(p2):
         rows = [json.loads(x) for x in open(p2)]
-        if not any(str(x.get("stopped", "")).startswith("plateau") for x in rows):
-            return None
-    else:
-        rows = [json.loads(x) for x in open(p)]
+        if any(str(x.get("stopped", "")).startswith("plateau") for x in rows):
+            return rows
+    return None
+
+
+def plateau(rows):
     L = {x["step"]: x["loss"] for x in rows if "loss" in x and "step" in x}
     if not L or max(L) < 2000:
         return None
@@ -44,19 +62,27 @@ def serial(dn):
     return bool(dn) and all(v["donor_consistent"] >= 0.90 and v["recipient_consistent"] - v.get("chance_overlap", 0.0) < 0.10 for v in dn.values())
 
 
-def slot(k):
+def slot(k, rung):
     att = []
     for o in OFFS:
-        d = "s132_tab_s%d" % (k + o); pl = plateau(d)
-        if pl is None and load(d) is None:
+        d = "s132_%s_s%d" % (rung, k + o)
+        if smoke(d):
             break
+        rows = log_rows(d); r = load(d)
+        if rows is None and r is None:
+            break                                                            # not started
+        pl = plateau(rows) if rows else None
+        if pl is None:
+            if r is not None:
+                ERRORS.append((d, "eval.json present but no 2k decision in log.jsonl")); return {"attempts": att, "status": "error", "accepted": None}
+            return {"attempts": att, "status": "running (phase 1)", "accepted": None}
         att.append({"seed": k + o, "plateau": pl})
         if pl is False:
-            r = load(d)
             if r is None:
                 return {"attempts": att, "status": "running", "accepted": None}
             acc = {"seed": k + o, "long_acc": r.get("long_acc"), "serial": serial(r.get("donor")), "ext_2048": (r.get("ext_2048") or {}).get("cumulative"),
-                   "donor_difftable": r.get("donor_difftable"), "table_swap": r.get("table_swap"), "cert_sample": r.get("cert_sample"),
+                   "donor_difftable": r.get("donor_difftable"), "table_swap": r.get("table_swap"), "ood_acc": r.get("ood_acc"),
+                   "cert_sample": r.get("cert_sample"), "probe_ophist": r.get("probe_ophist"),
                    "gpu": r.get("train_gpu", r.get("gpu")), "driver": r.get("train_driver")}
             acc["exact"] = (acc["long_acc"] or 0) >= 0.99; acc["pass"] = bool(acc["exact"] and acc["serial"])
             return {"attempts": att, "status": "accepted", "accepted": acc}
@@ -65,12 +91,12 @@ def slot(k):
     return {"attempts": att, "status": "open", "accepted": None}
 
 
-def main():
-    sl = {k: slot(k) for k in (1, 2, 3, 4)}
+def rung_verdict(rung):
+    sl = {k: slot(k, rung) for k in (1, 2, 3, 4)}
     n_pass = sum(bool(v["accepted"] and v["accepted"]["pass"]) for v in sl.values())
     n_notlearned = sum(bool(v["accepted"] and not v["accepted"]["exact"]) for v in sl.values())
     n_exh = sum(v["status"] == "exhausted" for v in sl.values())
-    decided = sum(v["status"] in ("accepted", "exhausted") and (v["status"] == "exhausted" or v["accepted"] is not None) for v in sl.values())
+    decided = sum(1 for v in sl.values() if v["status"] == "exhausted" or (v["status"] == "accepted" and v["accepted"] is not None))
     if n_pass >= 3:
         verdict = "PASS"
     elif n_exh >= 2:
@@ -81,11 +107,32 @@ def main():
         verdict = "descriptive (%d pass, %d not learned, %d exhausted)" % (n_pass, n_notlearned, n_exh)
     else:
         verdict = "incomplete (%d / 4 slots decided)" % decided
+    gpus = {v["accepted"]["gpu"] for v in sl.values() if v["accepted"]}
+    if len(gpus) > 1:
+        print("WARNING (%s): accepted runs span GPU names %s (125-2)" % (rung, sorted(map(str, gpus))))
     for k, v in sl.items():
         a = v["accepted"]
-        print("slot", k, v["status"], [(x["seed"], x["plateau"]) for x in v["attempts"]], a and {x: a[x] for x in ("seed", "long_acc", "serial", "ext_2048", "pass")})
-    print("VERDICT", verdict)
-    json.dump({"slots": sl, "verdict": verdict}, open(os.path.join(ROOT, "theory", "results", "score_s132.json"), "w", newline=chr(10)), indent=1, default=float)
+        print(rung, "slot", k, v["status"], [(x["seed"], x["plateau"]) for x in v["attempts"]], a and {x: a[x] for x in ("seed", "long_acc", "serial", "ext_2048", "pass")})
+    return sl, verdict
+
+
+def main():
+    s1, v1 = rung_verdict("k4")                                             # rung 1: k = 4 states, m = 2 ops
+    s2, v2 = rung_verdict("k6")                                             # rung 2: k = 6, m = 3 (only after a rung-1 PASS)
+    if v1 == "PASS":
+        overall = v2 if not str(v2).startswith("incomplete") else "rung 1 PASS; rung 2 %s" % v2
+    elif str(v1).startswith("incomplete"):
+        overall = "rung 1 %s" % v1
+    else:
+        overall = "stops at rung 1: %s" % v1
+    if SKIPPED:
+        print("SKIPPED (smoke, not scored):", SKIPPED)
+    if ERRORS:
+        print("ERRORS:", ERRORS)
+    print("RUNG 1 (k4)", v1, "| RUNG 2 (k6)", v2, "| §132", overall)
+    json.dump({"rung1": {"slots": s1, "verdict": v1}, "rung2": {"slots": s2, "verdict": v2}, "verdict": overall,
+               "skipped_smoke": SKIPPED, "errors": ERRORS},
+              open(os.path.join(ROOT, "theory", "results", "score_s132.json"), "w", newline=chr(10)), indent=1, default=float)
 
 
 if __name__ == "__main__":

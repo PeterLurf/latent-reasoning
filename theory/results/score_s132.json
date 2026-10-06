@@ -1,0 +1,55 @@
+{
+ "rung1": {
+  "slots": {
+   "1": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "2": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "3": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "4": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   }
+  },
+  "verdict": "incomplete (0 / 4 slots decided)"
+ },
+ "rung2": {
+  "slots": {
+   "1": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "2": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "3": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "4": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   }
+  },
+  "verdict": "incomplete (0 / 4 slots decided)"
+ },
+ "verdict": "rung 1 incomplete (0 / 4 slots decided)",
+ "skipped_smoke": [],
+ "errors": []
+}
