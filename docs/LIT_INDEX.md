@@ -15,6 +15,7 @@ advisory notes are in `archive/`.
 | LIT_S92_NOVELTY_2026-10-03 | §92 claim line: new as scoped; closest mechanism 2510.14095; no certified latent S5 in a pretrained LM |
 | LIT_SOTA_TARGETS_2026-10-01 | comparator numbers: S5/A5 (DeltaProduct 2502.10297, Zhang 2607.20594), multiplication (Cho 2410.15787, Lee 2502.01612), Chomsky (MLP-LDRU 2605.26035) |
 | LIT_PROJECT_AUDIT_2026-10-04 | whole-project audit: 8 headline findings → prior, novelty, overclaim, reviewer demand; contradictions; 3 missing comparisons |
+| LIT_STABLE_LATENT_SYNTHESIS_2026-10-06 | stable-latent synthesis (user directive): 6 lines of prior work → predictions on §101/§123/§126/§127/§129; escape-without-learning likely a short-length shortcut, not collapse; proposed wide carrier + weak learned FSQ attractor + state-consistency + own-rollout + skip |
 | LIT_NORTHSTAR_2026-09-29 | C1–C7 audit requirements (substitution, IIA edit, input-only control); hold firsts to 2404.18988 |
 
 ## Per-registration checks (chronological)
