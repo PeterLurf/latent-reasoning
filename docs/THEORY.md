@@ -5734,6 +5734,20 @@ restart-on-plateau slots k, k+100, k+200, k+300.
   Gradflow under CUDA bf16 for every arm before any run.
 * Scorer: `theory/score_s133.py`, committed before any run.
 
+**Note 133-1 (2026-10-06 14:53 EDT, before any §133 implementation or run; Audit / claude-13's scorer review, which crossed with the registration).
+Which contraction number each arm is held to, plus scoring checks.**
+* **(a) The ρ clause per arm type, fixed now.**
+  - Rounded arms (FSQ-16, FSQ-64, and stage 2's FSQ-8 controls) use 127-12's clause: ρ_ff, or ρ₁ when rounding recovers exactly.
+  - Continuous and soft arms (CONT-64, SOFT-16, SOFT-64, NOISE-64, PIN-64) never collapse the perturbation at test, so hand-offs at the
+    fp32 floor would enter ρ_ff and could fail a genuinely contractive carrier on numerics. They are held to **the geometric mean of
+    ρ_k over the first 3 hand-offs.**
+  - The full ρ_k row is reported beside every value.
+  - **The 0.28 bound is carried over from d = 8** (118-5). It is stated as such, not re-derived for wide codes.
+* **(b) Args checks.** A run whose args do not match its arm is an error row and an invalid slot. Arms are checked on d_q, levels,
+  no_round, soft_beta, dither and carrier_ln. The smoke filter also skips mem_check args.
+* **(c)** A warning prints when an arm's accepted runs span more than one GPU name (125-2).
+* **(d)** JAC was not run and counts for nothing: no arm, no verdict, no evidence either way.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
