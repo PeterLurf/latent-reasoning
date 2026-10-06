@@ -10,8 +10,8 @@ theta at two consecutive probes inside the window.
 FIT (on FIT seeds only): choose (theta, window) from THETAS x WINDOWS maximising min(precision, recall) of the marker against FLAG;
 ties -> the earlier window end, then the smaller theta. The choice is frozen in THEORY (note 130-1) before any TEST seed is read:
     python theory/score_s130.py fit
-TEST: the frozen marker's precision and recall against FLAG on TEST seeds; PASS = both >= 0.9 (needs >= 3 flagged and >= 3
-non-flagged TEST seeds; otherwise "incomplete"):
+TEST: the frozen marker's precision and recall against FLAG; PASS (primary = CROSS) = both >= 0.9 with >= 8 flagged and >= 8
+non-flagged seeds per block (otherwise "incomplete"); COLLAPSE needs both probes at or after 600:
     python theory/score_s130.py test <theta> <window_lo> <window_hi>
 H-127-7 (descriptive, all seeds): every FLAG seed has COLLAPSE; every non-FLAG seed reaches L1_dmean >= 0.1 by 2k.
 """
@@ -44,7 +44,7 @@ def features(rows):
     flag = bool(g(2000) >= 0.9 * g(1000) and g(2000) >= 0.25 * g(100))
     pr = [r for r in rows if r.get("zb_std_in") is not None]
     pull = next((r["step"] for r in pr if (r.get("L1_dmean") or 0) > 0.05), None)
-    low = [r["step"] for i, r in enumerate(pr[1:], 1) if r["step"] >= 600 and r["zb_std_in"] < 0.04 and pr[i - 1]["zb_std_in"] < 0.04]
+    low = [r["step"] for i, r in enumerate(pr[1:], 1) if pr[i - 1]["step"] >= 600 and r["zb_std_in"] < 0.04 and pr[i - 1]["zb_std_in"] < 0.04]
     dmax = max([(r.get("L1_dmean") or 0) for r in pr if r["step"] <= 2000] or [0])
     return {"flag": flag, "pull": pull, "collapse": bool(low), "collapse_step": low[0] if low else None, "dmean_max": dmax,
             "loss_1k": g(1000), "loss_2k": g(2000), "probes": [(r["step"], r["zb_std_in"]) for r in pr]}
