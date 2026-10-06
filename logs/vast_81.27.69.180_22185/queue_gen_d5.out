@@ -1,0 +1,9 @@
+05:44:16 data sha 6ee3ef95405dc43b094824dff8973753c587fe95a00762d2023bd64a941504f2 a0087fe4a7496a47f76d9436e6bb089c8a8869f3f343f71057355e127d0c33da
+NVIDIA RTX A5000, 595.71.05
+05:44:16 start boxes/runs_s5/s119_simcot_lr3e-5_s1
+05:44:16 start boxes/runs_s5/s119_simcot_lr1e-4_s1
+08:14:17 evaluated boxes/runs_s5/s119_simcot_lr1e-4_s1 rc 0
+08:14:17 start boxes/runs_s5/s119_simcot_lr3e-4_s1
+08:14:17 evaluated boxes/runs_s5/s119_simcot_lr3e-5_s1 rc 0
+09:28:52 evaluated boxes/runs_s5/s119_simcot_lr3e-4_s1 rc 0
+09:28:52 QUEUE_DONE

@@ -225,7 +225,7 @@ def check_base119_simcot(dev, out):
     """§119 SIM-CoT: the main CE, and the step decoder term alone; the decoder term must reach theta (through the thoughts)."""
     m, b = _b119("simcot", dev)
     out["base119.simcot.stage3.ce"] = term(m, lambda: m.loss(*b, stage=3)[1]["ce"])
-    out["base119.simcot.stage3.step"] = term(m, lambda: m.loss(*b, stage=3)[1]["step"])
+    out["base119.simcot.stage3.step"] = term(m, lambda: m.loss(*b, stage=3)[1]["step_ce"])
     out["base119.simcot.step.theta"] = gnorm_of(m.g.parameters()); out["base119.simcot.step.phi"] = gnorm_of(m.dec.parameters())
 
 
