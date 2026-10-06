@@ -1243,7 +1243,7 @@ def main():
         tm = None
         if a.arm == "trace":
             tm = torch.ones(len(x), L, dtype=torch.bool, device=dev) if fam.name == "s5" else torch.tensor(x == RD, device=dev)
-        nmb = a.micro if L >= a.micro_from else 1; opt.zero_grad(); tot = 0.0            # gradient accumulation at L > 16 (OOM, 2026-10-05; was L >= 32,
+        nmb = a.micro if L >= a.micro_from else 1; opt.zero_grad(); tot = 0.0; ctot = 0.0            # gradient accumulation at L > 16 (OOM, 2026-10-05; was L >= 32,
         #   but L is drawn U(1, L_max): L 17-31 batches ran at micro 1 and OOMed 8 GB cards at 14k, s130chk_s5_s17_3070, 2026-10-06). Memory only; no-op at --micro 1
         for mi in range(nmb):
             sl = slice(mi * len(x) // nmb, (mi + 1) * len(x) // nmb)
@@ -1260,9 +1260,9 @@ def main():
             cst = lab[crng.integers(0, len(lab), n_copy), -1]; cans = torch.tensor(fam.answer_tokens(cst), device=dev)
             with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
                 ce_, cqs_, _, _ = m.copy_write(cans); lc = m.answer_ce(ce_, cans, cqs_)
-            lc.backward(); tot += lc.item(); copy_hist.append(lc.item())
+            lc.backward(); ctot = lc.item(); copy_hist.append(ctot)          # Audit: the logged "loss" stays the main chain's alone
         gnorm_ = torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0)
-        if p127 and not (math.isfinite(tot) and bool(torch.isfinite(gnorm_))):   # note 127-3 guard: skip the update, log it
+        if p127 and not (math.isfinite(tot) and math.isfinite(ctot) and bool(torch.isfinite(gnorm_))):   # note 127-3 guard (+ the §134 copy CE): skip the update, log it
             bad = "loss" if not math.isfinite(tot) else next((n_ for n_, p_ in m.named_parameters() if p_.grad is not None and not bool(torch.isfinite(p_.grad).all())), "grad_norm")
             log.write(json.dumps({"step": step, "nonfinite": 1, "first": bad}) + "\n"); log.flush(); n_nonfinite += 1
             opt.zero_grad(); m._s2acc = []; m._acc = []                    # no update and no statistics from this step
