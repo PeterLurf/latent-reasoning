@@ -5535,6 +5535,9 @@ fixed before any further §132 run). The pilot is near-exact, in context, SERIAL
     |long_acc_replay − 0.9865| × 2,000 is read as host-dependent flips, not a scorer error.
   - **The fresh 68-table sample (100 problems × 512 per table) is the primary measure** of where the residual sits. The replay's
     per-table attribution is the breakdown host's forward only.
+* **Probe change, disclosed (2026-10-06 14:36 EDT):** probe_ophist now runs in 256-row chunks on identical draws (the 1,024-row pass ran out of memory
+  on a local card). Rung-1 slots 2–4 use the old single pass. Values from later runs can differ in the last digits (bf16 batch-size
+  kernels), and they are compared at that resolution. The probe is descriptive.
 
 **§128 result (2026-10-06 12:23 EDT; scored by `theory/score_s128.py`, all 20 slots; RTX 3090 / 3090 Ti, drivers 565 / 595; Audit reproduced).
 TASK-AGNOSTIC = true. One fixed recipe gives exact, serial latent state tracking on five regular families, three held out, with
