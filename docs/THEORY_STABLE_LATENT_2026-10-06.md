@@ -67,6 +67,14 @@ with the same code and settings across families.
   (§130).
 * **F2, escape without learning (dominant; it shows only in the 2.6k → 4k window, during the rounding ramp at L 4):** the run passes the 2k flag but never composes. The loss rises at the L_max 2 → 4 → 8
   switches. The code is read by the decoder, but its content is not the state (VAR: R²_state −0.05; LR10 / SKIP s2: 0.25–0.28).
+* **F2 has at least two sub-types at the end of training** (Audit; on-host and post-hoc end probes, n small):
+  - **F2a, reversion** (s128_s5_s3): the code goes back to the op (R²_state about 0, last op 0.83 at L 8), and the decoder barely uses
+    it (abl 0.89). COPY (candidate 1) targets this.
+  - **F2b, state present but wrong** (s130chk_s5_s17_a4000: R²_state 0.80, abl 8.04, long_acc 0, loss 4.11; §129 s301: R²_state
+    0.96, abl 14.7). The code carries the state linearly and the decoder depends on it, yet the chain fails.
+    - Candidate causes: approximate encoding compounding with L (contraction, ρ₁); a wrong transition; or the decoder reading another
+      mapping than the transition writes (a within-model dialect: §134's dialect probe; 2b ties the writers).
+    - Discriminating measures on F2b models: accuracy at prefixes 1 / 2 / 4 / 8, R²_state by L (opprobe), and the fp32 ρ₁.
 * **F3, drift:** a continuous or wide carrier has no attractor (RAW-H, CONT).
 * **F4, capacity:** 8⁸ codes (24 bits) cannot hold large states (S5×4, multiplication, graph sets).
   - On the §128 families the cap is far from binding (helper's growth reading, fp32, 500 rollouts to 2,048, acc 1.0):
