@@ -4335,6 +4335,47 @@ and narrowing it into the bottleneck fails.**
   - **RAW-H s4 landed (2026-10-05 23:00 EDT):** not plateaued at 2k, long accuracy 0, final loss 4.07 (bf16 ρ 0.715). The count is 0/4
     plateaued, and long accuracy is 0.846 / 0 / 0 / 0. Nothing changes.
 
+**Note 127-3 (2026-10-05 23:07 EDT; Stage 1 b27 read on-host by the experiments session; before any rerun and before any Stage 2 run). VAR is
+undelivered and gets one rerun with its estimator corrected. SKIP escapes, but its run hit NaN at L16, so it gets one rerun
+with a non-finite guard.**
+* **VAR s2 (RTX 3090): plateaued.** Loss 8.84 / 5.02 / 4.98 at 100 / 1k / 2k; stopped at 2k.
+  - **Delivery check (i):** var_grad_down was NaN at steps 1 / 500 / 2000. The bf16 gradient *check* is unstable on b27's GPU
+    (118.7 on one call, non-finite on another; fp32 gives 0.131). Training stayed finite.
+  - **Delivery check (ii) fails:** resid_std (pooled within-(item, position) std on the probe) is **0.117** at 2k, below 0.5.
+  - **The cause is the estimator, not the dose.** The residual against the EMA rows reached 1.10 by step 500 (≥ γ). So the
+    hinge was satisfied by **the EMA lagging a moving z_b**, which differs by item. Item identity re-entered through the
+    lag, and the within-group spread never moved.
+  - The probe agrees: R²_item 0.47 → 0.42, R²_state −0.15 at 2k.
+* **Deviation from 127-1's pre-fixed rerun, with its reason.** 127-1 fixed w = 10 for a dose failure. Here the hinge was
+  already met, so a larger weight multiplies a term that is already about zero: w = 10 cannot address this cause.
+* **VAR's one rerun (`s127_s5_var_s2_rerun`):** the residual uses **the forward's own group means**. r = z_b − mean over
+  the forward's rows with the same (item, position).
+  - Variance and covariance are pooled within groups of ≥ 2 rows. Singleton rows contribute nothing, and a forward with
+    no such group skips the term.
+  - Weight w = 1 and the schedule are as registered. This is the estimator the delivery check (ii) already measures.
+  - If the rerun fails a delivery check or plateaus, VAR is dropped (127-1). No further variant.
+* **SKIP s2 (RTX 3090): ESCAPE.** Loss 8.25 / 4.86 / **3.81** at 100 / 1k / 2k (ratio 0.78).
+  - Delivered: skip_grad_q 0.0086 / 0.0014 / 0.0032.
+  - **Probe at 2k: R²_state 0.28 against R²_item −0.08** (init 0.47 / −0.15 the other way round). The code moved off the
+    item onto the state, the hypothesised mechanism (abl_dloss 0.68).
+  - For comparison, claude-13's replay of the learning seed 1 has R²_next 0.93 and R²_op 0.24 at 2k.
+  - **After 2k the loss returned to about the plateau:** 4.94 at 3k (L 4), about 4.5 at L 8.
+  - **Then training went NaN from the switch to L_max 16** (step 9,001). §120 FINAL without the skip never did.
+* **SKIP reading.** A NaN makes the run's final accuracy undefined, so it is treated as a numerics defect under 127-1's
+  undelivered rule.
+  - **One rerun of s2 (`s127_s5_skip_s2_rerun`) with a non-finite guard:** a step whose loss or gradient norm is not
+    finite skips its update, and is logged as {"step": s, "nonfinite": 1} with the first non-finite tensor's name.
+  - The skip maps' norms are logged every 1k (descriptive).
+  - **If more than 1 % of steps are skipped, SKIP is "not deliverable as specified"** and is dropped.
+* **Stage 2 opens for SKIP, as registered** (ESCAPE is true): S5 s1 / s3 / s4, FF s1–2, and the shared §120 FINAL control
+  s3–4.
+  - All of them run with the same guard. On finite steps it is a no-op, so finite runs are unchanged.
+  - From now on the guard is in every §127 run, including b28's STD2 / LR10 redeploy and the controls.
+  - The non-finite count is reported per run.
+* **Gradient checks are computed with autocast off (fp32)** in every run from now on: the same question, asked stably.
+  The plain bf16 value is logged beside it (descriptive).
+* The scorer counts "nonfinite" log lines. A run above 1 % of its logged steps fails delivery.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
