@@ -1,6 +1,9 @@
 """THEORY §130 scoring (rules fixed in §130; written before any §130 replay; Theory is the only scorer).
 Replays: theory/results/replay130/{card}_s{seed}.jsonl from scratch/replay_basin.py (bf16, --steps 2000 --every 50), card in
-{"4060", "3070"}. FIT = the 4060 seeds (3..10, extended 19..26 if needed); TEST = the 3070 seeds (11..18, extended 27..34).
+{"4060", "3070"}. FIT = 4060 seeds 3..10 (extended 35..42 if < 3 flagged / non-flagged); TEST-CROSS (primary) = 3070 seeds 11..18,
+27..34, 43..58; TEST-SAME (secondary) = 4060 seeds 19..26, 59..82; each TEST block runs until >= 8 flagged and >= 8 non-flagged
+(Literature 722b9f4c), and is read only after the freeze note. Clopper-Pearson 95 % CIs are reported; FIT reports the chosen
+cell's neighbours.
 Per seed: FLAG = 123-3's flag on the replay's own loss (nearest logged steps to 100 / 1k / 2k); PULL = the first probe step with
 L1_dmean > 0.05; COLLAPSE = zb_std_in < 0.04 at two consecutive probes at or after step 600; marker(theta, window) = zb_std_in <
 theta at two consecutive probes inside the window.
@@ -18,8 +21,10 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 D = os.path.join(ROOT, "theory", "results", "replay130")
-FIT_SEEDS = list(range(3, 11)) + list(range(19, 27))
-TEST_SEEDS = list(range(11, 19)) + list(range(27, 35))
+FIT_SEEDS = list(range(3, 11)) + list(range(35, 43))                       # 4060
+SAME_SEEDS = list(range(19, 27)) + list(range(59, 83))                      # 4060, disjoint held-out block (secondary)
+CROSS_SEEDS = list(range(11, 19)) + list(range(27, 35)) + list(range(43, 59))   # 3070 (primary)
+NEED = 8                                                                    # Literature 722b9f4c: >= 8 flagged and >= 8 non-flagged
 THETAS = (0.03, 0.04, 0.05, 0.06, 0.08)
 WINDOWS = ((600, 1000), (700, 1000), (700, 1200), (600, 1500))
 
@@ -57,6 +62,35 @@ def prf(fs, theta, lo, hi):
     return prec, rec
 
 
+def cp(x, n, alpha=0.05):
+    """Exact Clopper-Pearson interval for x / n, by bisection on the binomial tail (no scipy)."""
+    from math import comb
+    if n == 0:
+        return (None, None)
+    def tail_ge(p):
+        return sum(comb(n, k) * p ** k * (1 - p) ** (n - k) for k in range(x, n + 1))
+    def tail_le(p):
+        return sum(comb(n, k) * p ** k * (1 - p) ** (n - k) for k in range(0, x + 1))
+    def bis(f, target, increasing):
+        lo, hi = 0.0, 1.0
+        for _ in range(60):
+            mid = (lo + hi) / 2
+            if (f(mid) < target) == increasing:
+                lo = mid
+            else:
+                hi = mid
+        return (lo + hi) / 2
+    lo = 0.0 if x == 0 else bis(tail_ge, alpha / 2, True)
+    hi = 1.0 if x == n else bis(tail_le, alpha / 2, False)
+    return (lo, hi)
+
+
+def counts(fs, theta, lo, hi):
+    tp = sum(1 for f in fs if f["flag"] and marker(f, theta, lo, hi)); fp = sum(1 for f in fs if not f["flag"] and marker(f, theta, lo, hi))
+    fn = sum(1 for f in fs if f["flag"] and not marker(f, theta, lo, hi))
+    return tp, fp, fn
+
+
 def collect(card, seeds):
     return {s: features(r) for s in seeds for r in [load(card, s)] if r is not None}
 
@@ -66,6 +100,23 @@ def h1277(fs):
             "nonflag_seeds_with_pull_0.1": "%d / %d" % (sum(f["dmean_max"] >= 0.1 for f in fs if not f["flag"]), sum(not f["flag"] for f in fs))}
 
 
+def evaluate(card, seeds, th, lo, hi, label):
+    T = collect(card, seeds); fs = list(T.values())
+    nf, nn = sum(f["flag"] for f in fs), sum(not f["flag"] for f in fs)
+    tp, fp, fn = counts(fs, th, lo, hi)
+    p = tp / (tp + fp) if tp + fp else None; r = tp / (tp + fn) if tp + fn else None
+    ok = nf >= NEED and nn >= NEED
+    verdict = (bool(p is not None and r is not None and p >= 0.9 and r >= 0.9) if ok else
+               "incomplete (%d flagged, %d non-flagged; need >= %d each)" % (nf, nn, NEED))
+    out = {"label": label, "card": card, "n": len(fs), "flagged": nf, "nonflagged": nn, "precision": p, "recall": r,
+           "precision_ci95": cp(tp, tp + fp), "recall_ci95": cp(tp, tp + fn), "PASS": verdict, "h1277": h1277(fs),
+           "escape_rate": nn / len(fs) if fs else None,
+           "seeds": {s: {"flag": f["flag"], "marker": marker(f, th, lo, hi), "pull": f["pull"], "collapse_step": f["collapse_step"]} for s, f in T.items()}}
+    print(label, "card", card, "| n", len(fs), "flagged", nf, "| P %s %s R %s %s | PASS %s" % (p, out["precision_ci95"], r, out["recall_ci95"], verdict))
+    print("  H-127-7", out["h1277"], "| escape rate", out["escape_rate"])
+    return out
+
+
 def main():
     mode = sys.argv[1] if len(sys.argv) > 1 else "fit"
     if mode == "fit":
@@ -73,30 +124,27 @@ def main():
         print("FIT seeds", {s: (f["flag"], f["pull"], f["collapse_step"], round(f["dmean_max"], 3)) for s, f in F.items()})
         nf, nn = sum(f["flag"] for f in fs), sum(not f["flag"] for f in fs)
         if nf < 3 or nn < 3:
-            print("FIT incomplete: %d flagged, %d non-flagged (need >= 3 each; extend with seeds 19..26)" % (nf, nn)); return
-        best = None
+            print("FIT incomplete: %d flagged, %d non-flagged (need >= 3 each; extend with seeds 35..42)" % (nf, nn)); return
+        grid = {}
         for (lo, hi) in WINDOWS:
             for th in THETAS:
-                p, r = prf(fs, th, lo, hi); sc = min(p or 0, r or 0)
-                key = (-sc, hi, th)
-                if best is None or key < best[0]:
-                    best = (key, th, lo, hi, p, r)
-        _, th, lo, hi, p, r = best
-        print("FIT choice: theta %s window %d-%d | fit precision %s recall %s" % (th, lo, hi, p, r)); print("H-127-7 (FIT)", h1277(fs))
+                p, r = prf(fs, th, lo, hi); grid[(th, lo, hi)] = min(p or 0, r or 0)
+        best = min(grid, key=lambda k: (-grid[k], k[2], k[0]))
+        th, lo, hi = best; p, r = prf(fs, th, lo, hi)
+        i = THETAS.index(th)
+        nb = {"theta %s" % THETAS[j]: grid[(THETAS[j], lo, hi)] for j in (i - 1, i + 1) if 0 <= j < len(THETAS)}
+        nb.update({"window %d-%d" % w: grid[(th, w[0], w[1])] for w in WINDOWS if w != (lo, hi)})
+        print("FIT choice: theta %s window %d-%d | fit precision %s recall %s" % (th, lo, hi, p, r))
+        print("FIT neighbours (min(P, R)):", nb); print("H-127-7 (FIT)", h1277(fs))
         json.dump({"mode": "fit", "seeds": {s: {k: v for k, v in f.items() if k != "probes"} for s, f in F.items()}, "theta": th, "window": [lo, hi],
-                   "precision": p, "recall": r, "h1277": h1277(fs)}, open(os.path.join(ROOT, "theory", "results", "score_s130_fit.json"), "w", newline="\n"), indent=1)
+                   "precision": p, "recall": r, "neighbours": nb, "h1277": h1277(fs)},
+                  open(os.path.join(ROOT, "theory", "results", "score_s130_fit.json"), "w", newline=chr(10)), indent=1)
     else:
         th, lo, hi = float(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4])
-        T = collect("3070", TEST_SEEDS); fs = list(T.values())
-        nf, nn = sum(f["flag"] for f in fs), sum(not f["flag"] for f in fs)
-        p, r = prf(fs, th, lo, hi)
-        ok = (nf >= 3 and nn >= 3)
-        verdict = (bool(p is not None and r is not None and p >= 0.9 and r >= 0.9) if ok else
-                   "incomplete (%d flagged, %d non-flagged; extend with seeds 27..34)" % (nf, nn))
-        print("TEST seeds", {s: (f["flag"], marker(f, th, lo, hi), f["collapse_step"]) for s, f in T.items()})
-        print("TEST precision %s recall %s | PASS %s" % (p, r, verdict)); print("H-127-7 (TEST)", h1277(fs))
-        json.dump({"mode": "test", "theta": th, "window": [lo, hi], "seeds": {s: {k: v for k, v in f.items() if k != "probes"} for s, f in T.items()},
-                   "precision": p, "recall": r, "PASS": verdict, "h1277": h1277(fs)}, open(os.path.join(ROOT, "theory", "results", "score_s130_test.json"), "w", newline="\n"), indent=1)
+        res = {"theta": th, "window": [lo, hi],
+               "CROSS (primary, 3070)": evaluate("3070", CROSS_SEEDS, th, lo, hi, "CROSS (primary)"),
+               "SAME (secondary, 4060)": evaluate("4060", SAME_SEEDS, th, lo, hi, "SAME (secondary)")}
+        json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s130_test.json"), "w", newline=chr(10)), indent=1)
 
 
 if __name__ == "__main__":
