@@ -58,9 +58,16 @@ def smoke_or_bad(d, family):
     a = load(d, "args.json") or {}
     if int(a.get("steps", 24000)) != 24000 or float(a.get("sched_scale", 1.0)) != 1.0 or str(a.get("device", "")).startswith("cpu") or a.get("mem_check"):
         return "smoke"
-    exp = {"d_q": 8, "levels": 8, "family": family, "copy_frac": 0.1}
+    exp = {"d_q": 8, "levels": 8, "family": family, "copy_frac": 0.1, "p_hard_start": 2000, "p_hard_end": 4000}   # 134-4 (c): §120's ramp pinned
     bad = {k: a.get(k) for k, v in exp.items() if a.get(k, v if k in ("d_q", "levels") else None) != v}
-    return ("args mismatch %s" % bad) if bad else None
+    if bad:
+        return "args mismatch %s" % bad
+    lp = os.path.join(R, d, "log.jsonl")                                    # 134-4 (a): "loss" must be the main chain alone
+    if os.path.exists(lp):
+        recs = [x for x in map(json.loads, open(lp)) if "copy_loss" in x]
+        if recs and not any("loss_total" in x for x in recs):
+            return "old harness: log has copy_loss but no loss_total (loss contaminated by the copy term)"
+    return None
 
 
 def run(d, family="s5"):
