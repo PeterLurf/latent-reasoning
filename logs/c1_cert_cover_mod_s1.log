@@ -1,0 +1,2 @@
+bf16 {"eval_distinct": 377, "bfs_reachable": 373, "n_uncovered": 12, "cert_holds": true, "n_moore": 5, "cert_status": "done"}
+fp32 {"eval_distinct": 382, "bfs_reachable": 386, "n_uncovered": 0, "cert_holds": true, "n_moore": 5, "cert_status": "done"}
