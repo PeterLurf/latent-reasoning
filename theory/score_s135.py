@@ -89,7 +89,8 @@ def run(d, arm):
     out = {"long_acc": r.get("long_acc"), "ext_2048": (r.get("ext_2048") or {}).get("cumulative"), "serial": serial(r.get("donor")),
            "rho": rho_clause(load(d, "eval_contraction_fp32.json")), "prefix": prefix(d), "gpu": r.get("train_gpu", r.get("gpu")),
            "driver": r.get("train_driver"), "tsd_retrieval": (r.get("s135") or {}).get("retrieval_top1"),
-           "masked_share": (r.get("s135") or {}).get("masked_share")}           # 135-1 (d): expected about 1/120 (< 0.01)
+           "masked_share": (r.get("s135") or {}).get("masked_share"),          # 135-4: gold-state mask share, expected about 1/120
+           "masked_share_cos": (r.get("s135") or {}).get("masked_share_cos")}   # 135-4: centred-cos share (descriptive)
     out["exact"] = (out["ext_2048"] or 0) >= 0.99
     out["pass"] = None if out["rho"] is None else bool(out["exact"] and out["serial"] and out["rho"] <= 0.28)
     return out
