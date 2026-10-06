@@ -36,6 +36,7 @@ entries, keeping ≥ 3 open per card.
    - Outputs `boxes/runs_fsq/rampproto_{plain,late}_s{S}_4060`.
    - Read loss(4k) / loss(2.6k) and loss(7k) / loss(5.6k) per run.
    - **Reading fixed before any late run** (`theory/proto_ramp.py`, revised after the helper's review; late arm stops at 8.9k). Outcomes: STAYS (late A-flags ≥ ¾ of plain's), MOVES (late R′ = 8.9k / 6.6k flags cover ≥ ½ of the plain A-flagged seeds), VANISHES (late A-flags ≤ ½ of plain's, ≤ 1 late R′-flag, and lower late loss on most of those seeds; candidate 3's claim). Needs ≥ 2 plain A-flags. Pooled verdict, with per-card readings printed.
+   - **Seeds revised (Theory, after 601 / 602 flagged at 2k, before any informative pair):** 4060 runs 603 (running), then **3, 4, 8**; 3070 runs **14, 16, 27, 28, 31** (in place of 606–610). They are seeds whose same-card 2k replay was not flagged; seeds with a known 24k outcome (s130chk) are excluded. A plain run that flags at 2k stops there, and its late twin is skipped. Dirs `rampproto_{plain,late}_s{S}_{card}`.
    - Peak about 6 GB (L_max 8 from 5k; micro as needed; memcheck first). About 30 min each. Stop: 8k steps.
 
 ## RTX 3070 (Ampere, bf16, 8 GB)

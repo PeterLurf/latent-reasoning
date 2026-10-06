@@ -27,6 +27,11 @@ import os
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 R = os.path.join(ROOT, "boxes", "runs_fsq")
 SEEDS = [(s, "4060") for s in range(601, 606)] + [(s, "3070") for s in range(606, 611)]
+# Revised before any informative pair is read (the Audit helper): 601 / 602 flag at 2k (uninformative by construction). The rest are
+# drawn from seeds whose local 2k replay on the SAME card was NOT flagged (§130 replay130 / replay_x; selection uses only pre-2k data,
+# where both arms are identical; seeds with a known 24k outcome, the s130chk seeds, are excluded): 4060 3 / 4 / 8, 3070 14 / 16 / 27 / 28 / 31.
+# A plain run that flags at 2k may stop there and its late twin is not run (both arms are identical to 2k).
+SEEDS = [(601, "4060"), (602, "4060"), (603, "4060"), (3, "4060"), (4, "4060"), (8, "4060")] + [(s, "3070") for s in (14, 16, 27, 28, 31)]
 
 
 def losses(d):
@@ -67,6 +72,8 @@ def main():
     rows, out = [], {}
     for s, card in SEEDS:
         lp, ll = losses("rampproto_plain_s%d_%s" % (s, card)), losses("rampproto_late_s%d_%s" % (s, card))
+        if lp is not None and max(lp) >= 2000 and at(lp, 2000) >= 0.9 * at(lp, 1000) and at(lp, 2000) >= 0.25 * at(lp, 100):
+            print("s%d %s: flagged at 2k (uninformative by construction; excluded)" % (s, card)); continue
         if lp is None or ll is None or max(lp) < 7950 or max(ll) < 8850:
             print("s%d %s: missing or running (plain to %s, late to %s)" % (s, card, lp and max(lp), ll and max(ll))); continue
         f2k = bool(at(lp, 2000) >= 0.9 * at(lp, 1000) and at(lp, 2000) >= 0.25 * at(lp, 100))
