@@ -603,3 +603,5 @@
 10:03:13 cert_cover128 s128_mod_s1 done (orphaned run finished)
 10:17:58 NOTE: the 10:03:13 'cert_cover128 s128_mod_s1 done' line is FALSE (MSYS kill -0 cannot see Windows pids); mod_s1 pid 20316 and rdfa_s4 pid 20140 both still running on cuda:0
 10:40:12 cert_cover128 s128_rdfa_s4 rc 0 (cuda:0)
+10:46:10 posthoc128_local cuda:1 stop file set (Audit: no post-hoc beside the s130chk check runs); current job s127_s5_skip_s1 contraction (pid 20460) left to finish
+10:46:46 certcover128 local queue CANCELLED (stop file; Theory: 5 runs move to one Vast 3090)
