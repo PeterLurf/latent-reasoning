@@ -1,0 +1,264 @@
+RESUMED 4960 rounds
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.991, 'self_consistency': 0.009}, 'kept_share': 0.0, 'gate': 0.0, 'acc_new_length_before': 0.009, 'acc_L5plus': None, 'truth_precision_kept': None, 'truth_rate_final_correct': 0.0022222222222222222, 'agreement_vs_truth_gap': -0.0022222222222222222, 'op_tv': None, 'length': 4, 'steps': 3760}
+{'step': 5000, 'round': 'L4', 'loss': 5.045169270038604, 'sec': 2406}
+{'step': 5100, 'round': 'L4', 'loss': 5.023359303474426, 'sec': 2449}
+{'step': 5200, 'round': 'L4', 'loss': 5.026553874015808, 'sec': 2494}
+{'step': 5300, 'round': 'L4', 'loss': 5.055576658248901, 'sec': 2539}
+{'step': 5400, 'round': 'L4', 'loss': 5.021428294181824, 'sec': 2586}
+{'step': 5500, 'round': 'L4', 'loss': 5.011403121948242, 'sec': 2630}
+{'step': 5600, 'round': 'L4', 'loss': 5.024789447784424, 'sec': 2673}
+{'step': 5700, 'round': 'L4', 'loss': 5.019021110534668, 'sec': 2717}
+{'step': 5800, 'round': 'L4', 'loss': 5.030470581054687, 'sec': 2762}
+{'step': 5900, 'round': 'L4', 'loss': 5.017336640357971, 'sec': 2806}
+{'step': 6000, 'round': 'L4', 'loss': 5.016256303787231, 'sec': 2848}
+{'step': 6100, 'round': 'L4', 'loss': 4.988725590705871, 'sec': 2883}
+{'step': 6200, 'round': 'L4', 'loss': 4.998826360702514, 'sec': 2918}
+{'step': 6300, 'round': 'L4', 'loss': 4.9933138275146485, 'sec': 2953}
+{'step': 6400, 'round': 'L4', 'loss': 5.032274312973023, 'sec': 2988}
+{'step': 6500, 'round': 'L4', 'loss': 5.042316465377808, 'sec': 3023}
+{'step': 6600, 'round': 'L4', 'loss': 5.069185547828674, 'sec': 3058}
+{'step': 6700, 'round': 'L4', 'loss': 5.042732195854187, 'sec': 3093}
+{'step': 6800, 'round': 'L4', 'loss': 5.000504145622253, 'sec': 3130}
+{'step': 6900, 'round': 'L4', 'loss': 5.009773283004761, 'sec': 3176}
+{'step': 7000, 'round': 'L4', 'loss': 4.987673673629761, 'sec': 3222}
+{'step': 7100, 'round': 'L4', 'loss': 5.02559965133667, 'sec': 3273}
+{'step': 7200, 'round': 'L4', 'loss': 4.986820888519287, 'sec': 3311}
+{'step': 7300, 'round': 'L4', 'loss': 5.034826464653015, 'sec': 3358}
+{'step': 7400, 'round': 'L4', 'loss': 5.037240943908691, 'sec': 3406}
+{'step': 7500, 'round': 'L4', 'loss': 5.013514914512634, 'sec': 3467}
+{'step': 7600, 'round': 'L4', 'loss': 5.018615674972534, 'sec': 3525}
+{'step': 7700, 'round': 'L4', 'loss': 4.988650798797607, 'sec': 3567}
+{'step': 7800, 'round': 'L4', 'loss': 4.967018556594849, 'sec': 3617}
+{'step': 7900, 'round': 'L4', 'loss': 4.993315687179566, 'sec': 3658}
+{'step': 8000, 'round': 'L4', 'loss': 4.9779580783843995, 'sec': 3707}
+{'step': 8100, 'round': 'L4', 'loss': 4.969283466339111, 'sec': 3747}
+{'step': 8200, 'round': 'L4', 'loss': 4.953791561126709, 'sec': 3785}
+{'step': 8300, 'round': 'L4', 'loss': 4.986371340751648, 'sec': 3829}
+{'step': 8400, 'round': 'L4', 'loss': 4.95094024181366, 'sec': 3875}
+{'step': 8500, 'round': 'L4', 'loss': 4.987133488655091, 'sec': 3925}
+{'step': 8600, 'round': 'L4', 'loss': 4.989454379081726, 'sec': 3968}
+{'step': 8700, 'round': 'L4', 'loss': 4.973820085525513, 'sec': 4011}
+k1 split {'step': 8720, 'round': 'L4', 'labelled_acc': 0.03333333333333333, 'never_labelled_acc': 0.009453781512605041, 'all_acc': 0.009652777777777777, 'stay_rate': 0.00938375350140056, 'foothold_yield': 0.0012782275244993609}
+insert length 6 ['gate 0.0023 < 0.995', 'kept share 0.000 < 0.20']
+insert length 5 ['gate 0.0153 < 0.995', 'kept share 0.000 < 0.20']
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.99166, 'self_consistency': 0.0083}, 'kept_share': 4e-05, 'gate': 0.004796163069544364, 'acc_new_length_before': 0.00834, 'acc_L5plus': 0.007456852486619761, 'truth_precision_kept': 0.0, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.004796163069544364, 'op_tv': 0.9491368665230193, 'length': 5, 'steps': 2256}
+{'step': 8800, 'round': 'L5', 'loss': 4.997137290239334, 'sec': 4395}
+{'step': 8900, 'round': 'L5', 'loss': 4.96622673034668, 'sec': 4425}
+{'step': 9000, 'round': 'L5', 'loss': 4.975492277145386, 'sec': 4454}
+{'step': 9100, 'round': 'L5', 'loss': 4.970624642372131, 'sec': 4484}
+{'step': 9200, 'round': 'L5', 'loss': 4.95161735534668, 'sec': 4513}
+{'step': 9300, 'round': 'L5', 'loss': 4.918569717407227, 'sec': 4541}
+{'step': 9400, 'round': 'L5', 'loss': 4.919470849037171, 'sec': 4570}
+{'step': 9500, 'round': 'L5', 'loss': 4.960809097290039, 'sec': 4600}
+{'step': 9600, 'round': 'L5', 'loss': 4.960128111839294, 'sec': 4626}
+{'step': 9700, 'round': 'L5', 'loss': 4.95248553276062, 'sec': 4656}
+{'step': 9800, 'round': 'L5', 'loss': 4.966501040458679, 'sec': 4684}
+{'step': 9900, 'round': 'L5', 'loss': 4.970795121192932, 'sec': 4713}
+{'step': 10000, 'round': 'L5', 'loss': 4.98877646446228, 'sec': 4743}
+{'step': 10100, 'round': 'L5', 'loss': 4.955523452758789, 'sec': 4771}
+{'step': 10200, 'round': 'L5', 'loss': 4.9383966588974, 'sec': 4798}
+{'step': 10300, 'round': 'L5', 'loss': 4.95743537902832, 'sec': 4827}
+{'step': 10400, 'round': 'L5', 'loss': 4.939760217666626, 'sec': 4855}
+{'step': 10500, 'round': 'L5', 'loss': 4.951628131866455, 'sec': 4883}
+{'step': 10600, 'round': 'L5', 'loss': 4.98188853263855, 'sec': 4912}
+{'step': 10700, 'round': 'L5', 'loss': 4.940366835594177, 'sec': 4940}
+{'step': 10800, 'round': 'L5', 'loss': 4.931601495742798, 'sec': 4968}
+{'step': 10900, 'round': 'L5', 'loss': 4.921787967681885, 'sec': 4997}
+k1 split {'step': 10976, 'round': 'L5', 'labelled_acc': 0.016666666666666666, 'never_labelled_acc': 0.008753501400560224, 'all_acc': 0.008819444444444444, 'stay_rate': 0.010014005602240897, 'foothold_yield': 0.00042607584149978694}
+round {'pool': 50000, 'filtered_by': {'validity': 4e-05, 'final': 0.99072, 'self_consistency': 0.0092}, 'kept_share': 4e-05, 'gate': 0.004329004329004329, 'acc_new_length_before': 0.00924, 'acc_L5plus': 0.00951776649746193, 'truth_precision_kept': 0.0, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.004329004329004329, 'op_tv': 0.9591257954162752, 'length': 6, 'steps': 2256}
+{'step': 11000, 'round': 'L6', 'loss': 4.8992733756701154, 'sec': 5161}
+{'step': 11100, 'round': 'L6', 'loss': 4.936795969009399, 'sec': 5187}
+{'step': 11200, 'round': 'L6', 'loss': 4.92622416973114, 'sec': 5214}
+{'step': 11300, 'round': 'L6', 'loss': 4.918541898727417, 'sec': 5241}
+{'step': 11400, 'round': 'L6', 'loss': 4.928095107078552, 'sec': 5268}
+{'step': 11500, 'round': 'L6', 'loss': 4.935078897476196, 'sec': 5297}
+{'step': 11600, 'round': 'L6', 'loss': 4.930282483100891, 'sec': 5323}
+{'step': 11700, 'round': 'L6', 'loss': 4.973951940536499, 'sec': 5349}
+{'step': 11800, 'round': 'L6', 'loss': 4.973732557296753, 'sec': 5377}
+{'step': 11900, 'round': 'L6', 'loss': 4.9241678380966185, 'sec': 5404}
+{'step': 12000, 'round': 'L6', 'loss': 4.93056559085846, 'sec': 5431}
+{'step': 12100, 'round': 'L6', 'loss': 4.914171013832092, 'sec': 5458}
+{'step': 12200, 'round': 'L6', 'loss': 4.9208154249191285, 'sec': 5484}
+{'step': 12300, 'round': 'L6', 'loss': 4.9868121910095216, 'sec': 5510}
+{'step': 12400, 'round': 'L6', 'loss': 4.978406224250794, 'sec': 5536}
+{'step': 12500, 'round': 'L6', 'loss': 4.909512195587158, 'sec': 5563}
+{'step': 12600, 'round': 'L6', 'loss': 4.884867930412293, 'sec': 5589}
+{'step': 12700, 'round': 'L6', 'loss': 4.910390577316284, 'sec': 5615}
+{'step': 12800, 'round': 'L6', 'loss': 4.914570140838623, 'sec': 5640}
+{'step': 12900, 'round': 'L6', 'loss': 4.901744484901428, 'sec': 5667}
+{'step': 13000, 'round': 'L6', 'loss': 4.893974294662476, 'sec': 5695}
+{'step': 13100, 'round': 'L6', 'loss': 4.877524585723877, 'sec': 5722}
+{'step': 13200, 'round': 'L6', 'loss': 4.887823562622071, 'sec': 5751}
+k1 split {'step': 13232, 'round': 'L6', 'labelled_acc': 0.016666666666666666, 'never_labelled_acc': 0.008963585434173669, 'all_acc': 0.009027777777777777, 'stay_rate': 0.008893557422969187, 'foothold_yield': 0.0012782275244993609}
+insert length 7 ['gate 0.0022 < 0.995', 'kept share 0.000 < 0.20']
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.99194, 'self_consistency': 0.00806}, 'kept_share': 0.0, 'gate': 0.0, 'acc_new_length_before': 0.00806, 'acc_L5plus': 0.008010413537598878, 'truth_precision_kept': None, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.0, 'op_tv': None, 'length': 7, 'steps': 1692}
+{'step': 13300, 'round': 'L7', 'loss': 4.890937601818758, 'sec': 6028}
+{'step': 13400, 'round': 'L7', 'loss': 4.921781387329101, 'sec': 6056}
+{'step': 13500, 'round': 'L7', 'loss': 4.905636281967163, 'sec': 6083}
+{'step': 13600, 'round': 'L7', 'loss': 4.913530020713806, 'sec': 6112}
+{'step': 13700, 'round': 'L7', 'loss': 4.905373287200928, 'sec': 6142}
+{'step': 13800, 'round': 'L7', 'loss': 4.893921136856079, 'sec': 6173}
+{'step': 13900, 'round': 'L7', 'loss': 4.892444615364075, 'sec': 6202}
+{'step': 14000, 'round': 'L7', 'loss': 4.873129076957703, 'sec': 6233}
+{'step': 14100, 'round': 'L7', 'loss': 4.906776695251465, 'sec': 6263}
+{'step': 14200, 'round': 'L7', 'loss': 4.9070128107070925, 'sec': 6292}
+{'step': 14300, 'round': 'L7', 'loss': 4.90103175163269, 'sec': 6323}
+{'step': 14400, 'round': 'L7', 'loss': 4.901069521903992, 'sec': 6352}
+{'step': 14500, 'round': 'L7', 'loss': 4.891811790466309, 'sec': 6382}
+{'step': 14600, 'round': 'L7', 'loss': 4.880330891609192, 'sec': 6410}
+{'step': 14700, 'round': 'L7', 'loss': 4.870282964706421, 'sec': 6441}
+{'step': 14800, 'round': 'L7', 'loss': 4.903136534690857, 'sec': 6472}
+{'step': 14900, 'round': 'L7', 'loss': 4.902233929634094, 'sec': 6501}
+k1 split {'step': 14924, 'round': 'L7', 'labelled_acc': 0.016666666666666666, 'never_labelled_acc': 0.009173669467787115, 'all_acc': 0.009236111111111112, 'stay_rate': 0.008403361344537815, 'foothold_yield': 0.0014912654452492544}
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.99154, 'self_consistency': 0.0084}, 'kept_share': 6e-05, 'gate': 0.0070921985815602835, 'acc_new_length_before': 0.00846, 'acc_L5plus': 0.008438818565400843, 'truth_precision_kept': 0.0, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.0070921985815602835, 'op_tv': 0.9341495866626921, 'length': 8, 'steps': 1692}
+{'step': 15000, 'round': 'L8', 'loss': 4.877115538245754, 'sec': 6693}
+{'step': 15100, 'round': 'L8', 'loss': 4.894383082389831, 'sec': 6724}
+{'step': 15200, 'round': 'L8', 'loss': 4.898039307594299, 'sec': 6758}
+{'step': 15300, 'round': 'L8', 'loss': 4.899270224571228, 'sec': 6789}
+{'step': 15400, 'round': 'L8', 'loss': 4.894197664260864, 'sec': 6819}
+{'step': 15500, 'round': 'L8', 'loss': 4.893142809867859, 'sec': 6851}
+{'step': 15600, 'round': 'L8', 'loss': 4.880753240585327, 'sec': 6883}
+{'step': 15700, 'round': 'L8', 'loss': 4.8704009437561036, 'sec': 6914}
+{'step': 15800, 'round': 'L8', 'loss': 4.863779907226562, 'sec': 6947}
+{'step': 15900, 'round': 'L8', 'loss': 4.867875666618347, 'sec': 6980}
+{'step': 16000, 'round': 'L8', 'loss': 4.854055700302124, 'sec': 7011}
+{'step': 16100, 'round': 'L8', 'loss': 4.85782030582428, 'sec': 7043}
+{'step': 16200, 'round': 'L8', 'loss': 4.860201954841614, 'sec': 7074}
+{'step': 16300, 'round': 'L8', 'loss': 4.851641569137573, 'sec': 7106}
+{'step': 16400, 'round': 'L8', 'loss': 4.87025860786438, 'sec': 7136}
+{'step': 16500, 'round': 'L8', 'loss': 4.861225576400757, 'sec': 7166}
+{'step': 16600, 'round': 'L8', 'loss': 4.863790745735169, 'sec': 7197}
+k1 split {'step': 16616, 'round': 'L8', 'labelled_acc': 0.008333333333333333, 'never_labelled_acc': 0.009033613445378152, 'all_acc': 0.009027777777777777, 'stay_rate': 0.00784313725490196, 'foothold_yield': 0.0010651896037494673}
+insert length 12 ['gate 0.0130 < 0.995', 'kept share 0.000 < 0.20']
+insert length 10 ['gate 0.0255 < 0.995', 'kept share 0.000 < 0.20']
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.99096, 'self_consistency': 0.00892}, 'kept_share': 0.00012, 'gate': 0.01327433628318584, 'acc_new_length_before': 0.00904, 'acc_L5plus': 0.008476602981425876, 'truth_precision_kept': 0.0, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.01327433628318584, 'op_tv': 0.7917278361660698, 'length': 10, 'steps': 846}
+{'step': 16700, 'round': 'L10', 'loss': 4.859703767867315, 'sec': 7750}
+{'step': 16800, 'round': 'L10', 'loss': 4.849006505012512, 'sec': 7778}
+{'step': 16900, 'round': 'L10', 'loss': 4.849745335578919, 'sec': 7810}
+{'step': 17000, 'round': 'L10', 'loss': 4.855494136810303, 'sec': 7839}
+{'step': 17100, 'round': 'L10', 'loss': 4.873587188720703, 'sec': 7869}
+{'step': 17200, 'round': 'L10', 'loss': 4.8504852867126464, 'sec': 7898}
+{'step': 17300, 'round': 'L10', 'loss': 4.845292224884033, 'sec': 7927}
+{'step': 17400, 'round': 'L10', 'loss': 4.865232405662536, 'sec': 7956}
+k1 split {'step': 17462, 'round': 'L10', 'labelled_acc': 0.016666666666666666, 'never_labelled_acc': 0.008753501400560224, 'all_acc': 0.008819444444444444, 'stay_rate': 0.008263305322128852, 'foothold_yield': 0.0014912654452492544}
+insert length 11 ['gate 0.0046 < 0.995', 'kept share 0.000 < 0.20']
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.99088, 'self_consistency': 0.00906}, 'kept_share': 6e-05, 'gate': 0.006578947368421052, 'acc_new_length_before': 0.00912, 'acc_L5plus': 0.008657786885245902, 'truth_precision_kept': 0.0, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.006578947368421052, 'op_tv': 0.9241264616025353, 'length': 11, 'steps': 634}
+{'step': 17500, 'round': 'L11', 'loss': 4.902137957121196, 'sec': 8323}
+{'step': 17600, 'round': 'L11', 'loss': 4.891151909828186, 'sec': 8352}
+{'step': 17700, 'round': 'L11', 'loss': 4.893498811721802, 'sec': 8381}
+{'step': 17800, 'round': 'L11', 'loss': 4.882710509300232, 'sec': 8411}
+{'step': 17900, 'round': 'L11', 'loss': 4.8951476955413815, 'sec': 8441}
+{'step': 18000, 'round': 'L11', 'loss': 4.906220002174377, 'sec': 8470}
+k1 split {'step': 18096, 'round': 'L11', 'labelled_acc': 0.0, 'never_labelled_acc': 0.007072829131652661, 'all_acc': 0.007013888888888889, 'stay_rate': 0.008823529411764706, 'foothold_yield': 0.0017043033659991478}
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.99118, 'self_consistency': 0.0088}, 'kept_share': 2e-05, 'gate': 0.0022675736961451248, 'acc_new_length_before': 0.00882, 'acc_L5plus': 0.008298858595424414, 'truth_precision_kept': 0.0, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.0022675736961451248, 'op_tv': 0.9752546571963253, 'length': 12, 'steps': 634}
+{'step': 18100, 'round': 'L12', 'loss': 4.886709213256836, 'sec': 8701}
+{'step': 18200, 'round': 'L12', 'loss': 4.886440043449402, 'sec': 8732}
+{'step': 18300, 'round': 'L12', 'loss': 4.863984622955322, 'sec': 8762}
+{'step': 18400, 'round': 'L12', 'loss': 4.87226706981659, 'sec': 8793}
+{'step': 18500, 'round': 'L12', 'loss': 4.849969868659973, 'sec': 8825}
+{'step': 18600, 'round': 'L12', 'loss': 4.851282606124878, 'sec': 8855}
+{'step': 18700, 'round': 'L12', 'loss': 4.825410575866699, 'sec': 8885}
+k1 split {'step': 18730, 'round': 'L12', 'labelled_acc': 0.008333333333333333, 'never_labelled_acc': 0.007913165266106442, 'all_acc': 0.007916666666666667, 'stay_rate': 0.008263305322128852, 'foothold_yield': 0.0025564550489987218}
+insert length 14 ['gate 0.0025 < 0.995', 'kept share 0.000 < 0.20']
+insert length 13 ['gate 0.0045 < 0.995', 'kept share 0.000 < 0.20']
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.99062, 'self_consistency': 0.00936}, 'kept_share': 2e-05, 'gate': 0.0021321961620469083, 'acc_new_length_before': 0.00938, 'acc_L5plus': 0.008761653731634695, 'truth_precision_kept': 0.0, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.0021321961620469083, 'op_tv': 0.9750355459103496, 'length': 13, 'steps': 317}
+{'step': 18800, 'round': 'L13', 'loss': 4.842928613935198, 'sec': 9479}
+{'step': 18900, 'round': 'L13', 'loss': 4.834334774017334, 'sec': 9508}
+{'step': 19000, 'round': 'L13', 'loss': 4.864754962921142, 'sec': 9539}
+k1 split {'step': 19047, 'round': 'L13', 'labelled_acc': 0.008333333333333333, 'never_labelled_acc': 0.007773109243697479, 'all_acc': 0.0077777777777777776, 'stay_rate': 0.008613445378151261, 'foothold_yield': 0.0014912654452492544}
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.99142, 'self_consistency': 0.00856}, 'kept_share': 2e-05, 'gate': 0.002331002331002331, 'acc_new_length_before': 0.00858, 'acc_L5plus': 0.007986952246180413, 'truth_precision_kept': 0.0, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.002331002331002331, 'op_tv': 0.9754987428625138, 'length': 14, 'steps': 317}
+{'step': 19100, 'round': 'L14', 'loss': 4.877999746574546, 'sec': 9783}
+{'step': 19200, 'round': 'L14', 'loss': 4.8502322816848755, 'sec': 9812}
+{'step': 19300, 'round': 'L14', 'loss': 4.8557599973678585, 'sec': 9840}
+k1 split {'step': 19364, 'round': 'L14', 'labelled_acc': 0.0, 'never_labelled_acc': 0.009453781512605041, 'all_acc': 0.009375, 'stay_rate': 0.007072829131652661, 'foothold_yield': 0.0006391137622496804}
+insert length 15 ['gate 0.0000 < 0.995', 'kept share 0.000 < 0.20']
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.99062, 'self_consistency': 0.00938}, 'kept_share': 0.0, 'gate': 0.0, 'acc_new_length_before': 0.00938, 'acc_L5plus': 0.008727117922520221, 'truth_precision_kept': None, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.0, 'op_tv': None, 'length': 15, 'steps': 212}
+{'step': 19400, 'round': 'L15', 'loss': 4.847372810045878, 'sec': 10292}
+{'step': 19500, 'round': 'L15', 'loss': 4.845251803398132, 'sec': 10320}
+k1 split {'step': 19576, 'round': 'L15', 'labelled_acc': 0.016666666666666666, 'never_labelled_acc': 0.007913165266106442, 'all_acc': 0.00798611111111111, 'stay_rate': 0.008753501400560224, 'foothold_yield': 0.0006391137622496804}
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.99124, 'self_consistency': 0.00874}, 'kept_share': 2e-05, 'gate': 0.00228310502283105, 'acc_new_length_before': 0.00876, 'acc_L5plus': 0.008125715086277348, 'truth_precision_kept': 0.0, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.00228310502283105, 'op_tv': 0.9751154503089217, 'length': 16, 'steps': 212}
+{'step': 19600, 'round': 'L16', 'loss': 4.878513654073079, 'sec': 10594}
+{'step': 19700, 'round': 'L16', 'loss': 4.858641409873963, 'sec': 10622}
+k1 split {'step': 19788, 'round': 'L16', 'labelled_acc': 0.008333333333333333, 'never_labelled_acc': 0.009103641456582634, 'all_acc': 0.009097222222222222, 'stay_rate': 0.009033613445378152, 'foothold_yield': 0.002343417128248828}
+insert length 24 ['gate 0.0000 < 0.995', 'kept share 0.000 < 0.20']
+insert length 20 ['gate 0.0000 < 0.995', 'kept share 0.000 < 0.20']
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.99112, 'self_consistency': 0.00886}, 'kept_share': 2e-05, 'gate': 0.0022522522522522522, 'acc_new_length_before': 0.00888, 'acc_L5plus': 0.008074884402841999, 'truth_precision_kept': 0.0, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.0022522522522522522, 'op_tv': 0.9834115555493703, 'length': 20, 'steps': 70}
+{'step': 19800, 'round': 'L20', 'loss': 4.826624631881714, 'sec': 11554}
+k1 split {'step': 19858, 'round': 'L20', 'labelled_acc': 0.008333333333333333, 'never_labelled_acc': 0.008263305322128852, 'all_acc': 0.008263888888888888, 'stay_rate': 0.008823529411764706, 'foothold_yield': 0.0008521516829995739}
+insert length 22 ['gate 0.0024 < 0.995', 'kept share 0.000 < 0.20']
+insert length 21 ['gate 0.0000 < 0.995', 'kept share 0.000 < 0.20']
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.99174, 'self_consistency': 0.00822}, 'kept_share': 4e-05, 'gate': 0.004842615012106538, 'acc_new_length_before': 0.00826, 'acc_L5plus': 0.007517955832009487, 'truth_precision_kept': 0.0, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.004842615012106538, 'op_tv': 0.9500505341585854, 'length': 21, 'steps': 35}
+k1 split {'step': 19893, 'round': 'L21', 'labelled_acc': 0.016666666666666666, 'never_labelled_acc': 0.008333333333333333, 'all_acc': 0.008402777777777778, 'stay_rate': 0.008053221288515405, 'foothold_yield': 0.0014912654452492544}
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.9911, 'self_consistency': 0.0089}, 'kept_share': 0.0, 'gate': 0.0, 'acc_new_length_before': 0.0089, 'acc_L5plus': 0.00827895414391619, 'truth_precision_kept': None, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.0, 'op_tv': None, 'length': 22, 'steps': 35}
+{'step': 19900, 'round': 'L22', 'loss': 4.813379628317697, 'sec': 12697}
+k1 split {'step': 19928, 'round': 'L22', 'labelled_acc': 0.008333333333333333, 'never_labelled_acc': 0.007913165266106442, 'all_acc': 0.007916666666666667, 'stay_rate': 0.010364145658263305, 'foothold_yield': 0.0010651896037494673}
+insert length 23 ['gate 0.0000 < 0.995', 'kept share 0.000 < 0.20']
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.99076, 'self_consistency': 0.00924}, 'kept_share': 0.0, 'gate': 0.0, 'acc_new_length_before': 0.00924, 'acc_L5plus': 0.008440683209227301, 'truth_precision_kept': None, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.0, 'op_tv': None, 'length': 23, 'steps': 24}
+k1 split {'step': 19952, 'round': 'L23', 'labelled_acc': 0.0, 'never_labelled_acc': 0.009663865546218488, 'all_acc': 0.009583333333333333, 'stay_rate': 0.00819327731092437, 'foothold_yield': 0.0019173412867490413}
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.99166, 'self_consistency': 0.0083}, 'kept_share': 4e-05, 'gate': 0.004796163069544364, 'acc_new_length_before': 0.00834, 'acc_L5plus': 0.007788607511385888, 'truth_precision_kept': 0.0, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.004796163069544364, 'op_tv': 0.9498154053314196, 'length': 24, 'steps': 24}
+k1 split {'step': 19976, 'round': 'L24', 'labelled_acc': 0.008333333333333333, 'never_labelled_acc': 0.007773109243697479, 'all_acc': 0.0077777777777777776, 'stay_rate': 0.008823529411764706, 'foothold_yield': 0.0008521516829995739}
+insert length 28 ['gate 0.0115 < 0.995', 'kept share 0.000 < 0.20']
+insert length 26 ['gate 0.0115 < 0.995', 'kept share 0.000 < 0.20']
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.9909, 'self_consistency': 0.00902}, 'kept_share': 8e-05, 'gate': 0.008791208791208791, 'acc_new_length_before': 0.0091, 'acc_L5plus': 0.008708177830157794, 'truth_precision_kept': 0.0, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.008791208791208791, 'op_tv': 0.8162094167388132, 'length': 26, 'steps': 8}
+k1 split {'step': 19984, 'round': 'L26', 'labelled_acc': 0.008333333333333333, 'never_labelled_acc': 0.008123249299719889, 'all_acc': 0.008125, 'stay_rate': 0.008543417366946778, 'foothold_yield': 0.0010651896037494673}
+insert length 27 ['gate 0.0024 < 0.995', 'kept share 0.000 < 0.20']
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.99198, 'self_consistency': 0.00798}, 'kept_share': 4e-05, 'gate': 0.004987531172069825, 'acc_new_length_before': 0.00802, 'acc_L5plus': 0.007988680888114932, 'truth_precision_kept': 0.0, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.004987531172069825, 'op_tv': 0.9497089174390057, 'length': 27, 'steps': 5}
+k1 split {'step': 19989, 'round': 'L27', 'labelled_acc': 0.008333333333333333, 'never_labelled_acc': 0.008683473389355743, 'all_acc': 0.008680555555555556, 'stay_rate': 0.00938375350140056, 'foothold_yield': 0.0010651896037494673}
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.99182, 'self_consistency': 0.00812}, 'kept_share': 6e-05, 'gate': 0.007334963325183374, 'acc_new_length_before': 0.00818, 'acc_L5plus': 0.007623007623007623, 'truth_precision_kept': 0.0, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.007334963325183374, 'op_tv': 0.9088279090653366, 'length': 28, 'steps': 5}
+k1 split {'step': 19994, 'round': 'L28', 'labelled_acc': 0.016666666666666666, 'never_labelled_acc': 0.007913165266106442, 'all_acc': 0.00798611111111111, 'stay_rate': 0.00819327731092437, 'foothold_yield': 0.0012782275244993609}
+insert length 30 ['gate 0.0024 < 0.995', 'kept share 0.000 < 0.20']
+insert length 29 ['gate 0.0021 < 0.995', 'kept share 0.000 < 0.20']
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.99106, 'self_consistency': 0.0089}, 'kept_share': 4e-05, 'gate': 0.0044742729306487695, 'acc_new_length_before': 0.00894, 'acc_L5plus': 0.008340535868625756, 'truth_precision_kept': 0.0, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.0044742729306487695, 'op_tv': 0.9250427820790206, 'length': 29, 'steps': 2}
+k1 split {'step': 19996, 'round': 'L29', 'labelled_acc': 0.016666666666666666, 'never_labelled_acc': 0.008823529411764706, 'all_acc': 0.008888888888888889, 'stay_rate': 0.008543417366946778, 'foothold_yield': 0.0012782275244993609}
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.99156, 'self_consistency': 0.00842}, 'kept_share': 2e-05, 'gate': 0.002369668246445498, 'acc_new_length_before': 0.00844, 'acc_L5plus': 0.008103344510360244, 'truth_precision_kept': 0.0, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.002369668246445498, 'op_tv': 0.9748956407061191, 'length': 30, 'steps': 2}
+k1 split {'step': 19998, 'round': 'L30', 'labelled_acc': 0.008333333333333333, 'never_labelled_acc': 0.008123249299719889, 'all_acc': 0.008125, 'stay_rate': 0.008893557422969187, 'foothold_yield': 0.0006391137622496804}
+insert length 31 ['gate 0.0045 < 0.995', 'kept share 0.000 < 0.20']
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.99096, 'self_consistency': 0.00892}, 'kept_share': 0.00012, 'gate': 0.01327433628318584, 'acc_new_length_before': 0.00904, 'acc_L5plus': 0.008732685193151509, 'truth_precision_kept': 0.0, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.01327433628318584, 'op_tv': 0.8254395969516879, 'length': 31, 'steps': 1}
+k1 split {'step': 19999, 'round': 'L31', 'labelled_acc': 0.008333333333333333, 'never_labelled_acc': 0.008543417366946778, 'all_acc': 0.008541666666666666, 'stay_rate': 0.008473389355742296, 'foothold_yield': 0.0010651896037494673}
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.9915, 'self_consistency': 0.00848}, 'kept_share': 2e-05, 'gate': 0.002352941176470588, 'acc_new_length_before': 0.0085, 'acc_L5plus': 0.008098900863454245, 'truth_precision_kept': 0.0, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.002352941176470588, 'op_tv': 0.9752167632536963, 'length': 32, 'steps': 1}
+{'step': 20000, 'round': 'L32', 'loss': 4.840442657470703, 'sec': 18686}
+k1 split {'step': 20000, 'round': 'L32', 'labelled_acc': 0.008333333333333333, 'never_labelled_acc': 0.008403361344537815, 'all_acc': 0.008402777777777778, 'stay_rate': 0.009663865546218488, 'foothold_yield': 0.0017043033659991478}
+final {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.99182, 'self_consistency': 0.0081}, 'kept_share': 8e-05, 'gate': 0.009779951100244499, 'acc_new_length_before': 0.00818, 'acc_L5plus': 0.007997770058750376, 'truth_precision_kept': 0.0, 'truth_rate_final_correct': 0.0, 'agreement_vs_truth_gap': 0.009779951100244499, 'op_tv': 0.8752202424474775, 'length': 32, 'steps': 4000, 'action': 'final relabelling'}
+{'step': 20100, 'round': 'final', 'loss': 4.842426643371582, 'sec': 19213}
+{'step': 20200, 'round': 'final', 'loss': 4.840853524208069, 'sec': 19244}
+{'step': 20300, 'round': 'final', 'loss': 4.851009402275086, 'sec': 19276}
+{'step': 20400, 'round': 'final', 'loss': 4.833066997528076, 'sec': 19307}
+{'step': 20500, 'round': 'final', 'loss': 4.835895223617554, 'sec': 19341}
+{'step': 20600, 'round': 'final', 'loss': 4.825850887298584, 'sec': 19376}
+{'step': 20700, 'round': 'final', 'loss': 4.851663708686829, 'sec': 19413}
+{'step': 20800, 'round': 'final', 'loss': 4.834558758735657, 'sec': 19447}
+{'step': 20900, 'round': 'final', 'loss': 4.8445627307891845, 'sec': 19483}
+{'step': 21000, 'round': 'final', 'loss': 4.835198559761047, 'sec': 19517}
+{'step': 21100, 'round': 'final', 'loss': 4.843857374191284, 'sec': 19552}
+{'step': 21200, 'round': 'final', 'loss': 4.858231258392334, 'sec': 19588}
+{'step': 21300, 'round': 'final', 'loss': 4.859998331069947, 'sec': 19623}
+{'step': 21400, 'round': 'final', 'loss': 4.849780516624451, 'sec': 19659}
+{'step': 21500, 'round': 'final', 'loss': 4.827942600250244, 'sec': 19696}
+{'step': 21600, 'round': 'final', 'loss': 4.850943942070007, 'sec': 19733}
+{'step': 21700, 'round': 'final', 'loss': 4.8355875492095945, 'sec': 19769}
+{'step': 21800, 'round': 'final', 'loss': 4.836308045387268, 'sec': 19805}
+{'step': 21900, 'round': 'final', 'loss': 4.834988827705383, 'sec': 19837}
+{'step': 22000, 'round': 'final', 'loss': 4.834107465744019, 'sec': 19874}
+{'step': 22100, 'round': 'final', 'loss': 4.805403537750244, 'sec': 19911}
+{'step': 22200, 'round': 'final', 'loss': 4.834367699623108, 'sec': 19945}
+{'step': 22300, 'round': 'final', 'loss': 4.828538694381714, 'sec': 19974}
+{'step': 22400, 'round': 'final', 'loss': 4.8263848733901975, 'sec': 20003}
+{'step': 22500, 'round': 'final', 'loss': 4.822627091407776, 'sec': 20034}
+{'step': 22600, 'round': 'final', 'loss': 4.813609714508057, 'sec': 20065}
+{'step': 22700, 'round': 'final', 'loss': 4.821241192817688, 'sec': 20094}
+{'step': 22800, 'round': 'final', 'loss': 4.820047149658203, 'sec': 20122}
+{'step': 22900, 'round': 'final', 'loss': 4.817685327529907, 'sec': 20153}
+{'step': 23000, 'round': 'final', 'loss': 4.818609237670898, 'sec': 20183}
+{'step': 23100, 'round': 'final', 'loss': 4.82518102645874, 'sec': 20212}
+{'step': 23200, 'round': 'final', 'loss': 4.810698008537292, 'sec': 20241}
+{'step': 23300, 'round': 'final', 'loss': 4.818567924499511, 'sec': 20272}
+{'step': 23400, 'round': 'final', 'loss': 4.818530321121216, 'sec': 20301}
+{'step': 23500, 'round': 'final', 'loss': 4.814376244544983, 'sec': 20329}
+{'step': 23600, 'round': 'final', 'loss': 4.813975019454956, 'sec': 20357}
+{'step': 23700, 'round': 'final', 'loss': 4.811189484596253, 'sec': 20386}
+{'step': 23800, 'round': 'final', 'loss': 4.828615961074829, 'sec': 20414}
+{'step': 23900, 'round': 'final', 'loss': 4.822037553787231, 'sec': 20441}
+{'step': 24000, 'round': 'final', 'loss': 4.808765358924866, 'sec': 20468}
+k1 split {'step': 24000, 'round': 'final', 'labelled_acc': 0.0, 'never_labelled_acc': 0.008333333333333333, 'all_acc': 0.008263888888888888, 'stay_rate': 0.008753501400560224, 'foothold_yield': 0.0012782275244993609}
+EVAL {"128": 0.0, "256": 0.0, "512": 0.0} {"slot1": {"donor_consistent": 0.011, "recipient_consistent": 0.0075}, "slot2": {"donor_consistent": 0.011, "recipient_consistent": 0.0065}, "slot3": {"donor_consistent": 0.008, "recipient_consistent": 0.0115}}
+DONE boxes/runs_s5/s116_opdef_s32

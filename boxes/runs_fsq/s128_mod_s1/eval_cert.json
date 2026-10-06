@@ -1,0 +1,65 @@
+{
+ "holds": true,
+ "n_reachable": 375,
+ "n_moore": 5,
+ "capped": false,
+ "violations": 0,
+ "all_decode_valid": true,
+ "status": "done",
+ "timed_out": false,
+ "moore_timed_out": false,
+ "sec": 1,
+ "layers": [
+  {
+   "depth": 1,
+   "frontier": 12,
+   "cum": 12,
+   "sec": 0
+  },
+  {
+   "depth": 2,
+   "frontier": 96,
+   "cum": 108,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 3,
+   "frontier": 184,
+   "cum": 292,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 4,
+   "frontier": 75,
+   "cum": 367,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 5,
+   "frontier": 7,
+   "cum": 374,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 6,
+   "frontier": 1,
+   "cum": 375,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 7,
+   "frontier": 0,
+   "cum": 375,
+   "sec": 1,
+   "complete": true
+  }
+ ],
+ "n_start_pairs": 15,
+ "eval_dtype": "torch.bfloat16",
+ "cert_cap": 1000000
+}
