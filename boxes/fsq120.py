@@ -961,6 +961,7 @@ def main():
     ap.add_argument("--resume", default=None, help="user 2026-10-06: continue from this ckpt_last.pt on the SAME schedule clock (unlike §129's --resume_2k); "
                     "log lines after the checkpoint step are dropped (the pre-resume log is kept as log.jsonl.pre_resume_<t>)")
     ap.add_argument("--stop_after", type=int, default=0, help="resume-parity test only: exit after this step as if crashed (no eval)")
+    ap.add_argument("--probe_only", action="store_true", help="post-hoc (descriptive): probe127 on <out>/model.pt at p_hard 1 -> <out>/eval_probe_posthoc.json")
     ap.add_argument("--check_marker", default=None, help="§128 note 128-1: with --stop_plateau, the first attempt to mkdir this path when its flag fires keeps training")
     ap.add_argument("--stop_plateau", action="store_true", help="§127: stop at 2k when 123-3's flag fires (log kept, no eval.json)")
     ap.add_argument("--anneal", action="store_true", help="§126 Stage 2 ANNEAL: (1-lam) std(h) + lam W_up(z_b), lam 2k->6k, QBN distill, FSQ 6k->8k")
@@ -975,7 +976,7 @@ def main():
     if a.from_args:                                                         # Audit 2026-10-06: post-hoc runs reproduce the run's configuration exactly
         MODE = {"out", "device", "from_args", "contraction_only", "fp32", "cert_only", "cert_time", "growth_only", "mcheck_only", "eval_only",
                 "resume_2k", "save_at_flag", "redraw_head", "clock_only", "check_marker", "stop_plateau", "data_dir", "ext_n", "eval_bs", "contract_n",
-                "ckpt_every", "resume", "stop_after"}
+                "ckpt_every", "resume", "stop_after", "probe_only"}
         src = json.load(open(a.from_args)); unknown = []
         for k_, v_ in src.items():
             if k_ in MODE:
@@ -1023,6 +1024,11 @@ def main():
         m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.p_hard = 1.0
         mc = mcheck127(m, fam, dev, amp, None); mc["eval_dtype"] = str(amp)
         json.dump(mc, open(os.path.join(a.out, "eval_mcheck_end.json"), "w", newline="\n"), indent=1); print("MCHECK", json.dumps(mc), flush=True); return
+    if a.probe_only:                                                        # docs/LOCAL_BACKLOG.md (descriptive): §127's probe on a trained model.pt
+        m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.p_hard = 1.0
+        pr = probe127(m, fam, dev, amp); pr.update({"eval_dtype": str(amp), "device": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
+                                                    "driver": driver_version(), "p_hard": 1.0})
+        json.dump(pr, open(os.path.join(a.out, "eval_probe_posthoc.json"), "w", newline="\n"), indent=1); print("PROBE", json.dumps(pr), flush=True); return
     if a.contraction_only:                                                  # note 123-2: post-hoc contraction (rho, rho_norm, ...) from model.pt
         m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval()
         amp_c = None if a.fp32 else amp                                     # note 123-5: bf16 makes 8-d chains bit-identical in 3-4 hand-offs

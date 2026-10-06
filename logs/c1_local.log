@@ -636,3 +636,25 @@
 13:26:41 c1_q_contr128_3070 s128_s5_s104 contraction rc 0 out yes peak_card_mem 2319 MiB of 8192 (cuda:1)
 13:27:07 c1_q_contr128_3070 s128_s5_s3 contraction rc 0 out yes peak_card_mem 2319 MiB of 8192 (cuda:1)
 13:27:07 c1_q_contr128_3070 done
+13:41:03 bl4060 backlog worker start: scratch/c1_backlog_4060.txt on cuda:0 (nvidia-smi 1 'RTX 4060', limit 6652 MiB of 8188)
+13:41:03 bl3070 backlog worker start: scratch/c1_backlog_fp32.txt on cuda:1 (nvidia-smi 2 'RTX 3070', limit 6656 MiB of 8192)
+13:41:03 bl4060 start: python -u scratch/replay_basin.py --seed 75 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:0 --out theory/results/replay_extra/4060_s75.jsonl
+13:41:03 bl3070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s120_ff_final_s1/args.json --contraction_only --fp32 --device cuda:1 --out boxes/runs_fsq/s120_ff_final_s1
+13:41:17 bl3070 done rc 0 out yes peak_card_mem 1227 MiB (measured 2.3 GiB) : boxes/runs_fsq/s120_ff_final_s1/eval_contraction_fp32.json
+13:41:17 bl3070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s120_ff_final_s2/args.json --contraction_only --fp32 --device cuda:1 --out boxes/runs_fsq/s120_ff_final_s2
+13:41:30 bl3070 done rc 0 out yes peak_card_mem 1227 MiB (measured 2.3 GiB) : boxes/runs_fsq/s120_ff_final_s2/eval_contraction_fp32.json
+13:41:31 bl3070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s120_ff_trace_s1/args.json --contraction_only --fp32 --device cuda:1 --out boxes/runs_fsq/s120_ff_trace_s1
+13:41:44 bl3070 done rc 0 out yes peak_card_mem 1227 MiB (measured 2.3 GiB) : boxes/runs_fsq/s120_ff_trace_s1/eval_contraction_fp32.json
+13:41:45 bl3070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s120_ff_trace_s2/args.json --contraction_only --fp32 --device cuda:1 --out boxes/runs_fsq/s120_ff_trace_s2
+13:41:58 bl3070 done rc 0 out yes peak_card_mem 1227 MiB (measured 2.3 GiB) : boxes/runs_fsq/s120_ff_trace_s2/eval_contraction_fp32.json
+13:41:59 bl3070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s120_s5_final_s1/args.json --contraction_only --fp32 --device cuda:1 --out boxes/runs_fsq/s120_s5_final_s1
+13:42:27 bl3070 done rc 0 out yes peak_card_mem 2319 MiB (measured 2.3 GiB) : boxes/runs_fsq/s120_s5_final_s1/eval_contraction_fp32.json
+13:42:29 bl3070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s120_s5_final_s2/args.json --contraction_only --fp32 --device cuda:1 --out boxes/runs_fsq/s120_s5_final_s2
+13:42:57 bl3070 done rc 0 out yes peak_card_mem 2319 MiB (measured 2.3 GiB) : boxes/runs_fsq/s120_s5_final_s2/eval_contraction_fp32.json
+13:42:59 bl3070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s120_s5_trace_s1/args.json --contraction_only --fp32 --device cuda:1 --out boxes/runs_fsq/s120_s5_trace_s1
+13:43:28 bl3070 done rc 0 out yes peak_card_mem 2319 MiB (measured 2.3 GiB) : boxes/runs_fsq/s120_s5_trace_s1/eval_contraction_fp32.json
+13:43:28 bl3070 backlog worker exit (stop)
+13:44:24 bl3070b backlog worker start: scratch/c1_backlog_3070.txt on cuda:1 (nvidia-smi 2 'RTX 3070', limit 6656 MiB of 8192)
+13:44:26 bl3070b start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s120_s5_trace_s2/args.json --contraction_only --fp32 --device cuda:1 --out boxes/runs_fsq/s120_s5_trace_s2
+13:44:54 bl3070b done rc 0 out yes peak_card_mem 2319 MiB (measured 2.3 GiB) : boxes/runs_fsq/s120_s5_trace_s2/eval_contraction_fp32.json
+13:44:56 bl3070b start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s123_s5_dither050_s1/args.json --contraction_only --fp32 --device cuda:1 --out boxes/runs_fsq/s123_s5_dither050_s1
