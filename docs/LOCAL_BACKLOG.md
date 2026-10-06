@@ -36,6 +36,11 @@ entries, keeping ≥ 3 open per card.
 3. [queued: c1_backlog_3070.txt; fsq120 --probe_only added] **Probe sweep on §128's 19 learners** (R²_state / R²_item / op-history at the end of training).
    - Needs a small post-hoc CLI wrapping fsq120's `probe127` on a model.pt (Experiments).
    - Output: `<run dir>/eval_probe_posthoc.json`. Peak about 2 GB. Minutes each. Stop: done.
+   - **Priority addition (Theory, stable-latent synthesis; Literature 4da2f672's $0 test):** include **s128_s5_s3** (accepted, escaped
+     without learning; model kept) and the S5 learners s1 / s102 / s104. Extend the probe with **op-history R² (last 1 / 2 / 3 ops)** beside
+     R²_state, at chain positions L 2 / 4 / 8.
+     - Does the code that escaped without learning carry the op history (the short-chain shortcut) where the learners carry the state?
+     - Run these four first.
 
 ## RTX 2070 (Turing, fp32 only, 8 GB, slowest)
 
