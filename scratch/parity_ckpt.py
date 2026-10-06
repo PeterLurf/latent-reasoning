@@ -36,8 +36,8 @@ C = os.path.join(a.out, "C"); shutil.copytree(B, C)
 rC, _ = run("C", ["--ckpt_every", "200", "--resume", os.path.join(C, "ckpt_last.pt"), "--stop_after", "400"])
 with open(os.path.join(a.out, "D.log"), "w") as f:
     rD = subprocess.call([sys.executable, "-u", "-m", "boxes.fsq120", "--family", "s5", "--arm", "final", "--seed", "2", "--steps", "40", "--sched_scale", "0.002",
-                          "--micro", "1", "--probe127", "--no_cert", "--ckpt_every", "20", "--test_n", "4", "--test_len", "8", "--ext_n", "2", "--donor_n", "8",
-                          "--margin_n", "8", "--device", a.device, "--out", os.path.join(a.out, "D")], stdout=f, stderr=subprocess.STDOUT, cwd=ROOT)
+                          "--micro", "1", "--probe127", "--no_cert", "--ckpt_every", "20", "--test_n", "4", "--test_len", "8", "--ext_n", "2", "--donor_n", "4",
+                          "--margin_n", "4", "--device", a.device, "--out", os.path.join(a.out, "D")], stdout=f, stderr=subprocess.STDOUT, cwd=ROOT)
 LA, LB, LC, LA2 = losses(A), losses(B), losses(C), losses(A2)
 nd = max([abs(LA[s_] - LA2[s_]) for s_ in LA if s_ > 200 and s_ in LA2] or [float("nan")])
 b_ok = sorted(LB) == [s for s in sorted(LA) if s <= 200] and all(LA[s] == LB[s] for s in LB)
