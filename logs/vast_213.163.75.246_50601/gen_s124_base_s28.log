@@ -1,0 +1,271 @@
+{'step': 100, 'round': 'R0', 'loss': 9.178331665992737, 'sec': 29}
+{'step': 200, 'round': 'R0', 'loss': 4.503611747026444, 'sec': 58}
+{'step': 300, 'round': 'R0', 'loss': 3.4711588242650033, 'sec': 87}
+{'step': 400, 'round': 'R0', 'loss': 3.147434143424034, 'sec': 117}
+{'step': 500, 'round': 'R0', 'loss': 2.2992908711358906, 'sec': 146}
+{'step': 600, 'round': 'R0', 'loss': 2.5008018739521503, 'sec': 176}
+{'step': 700, 'round': 'R0', 'loss': 2.2616486950125547, 'sec': 206}
+{'step': 800, 'round': 'R0', 'loss': 2.0828537417808546, 'sec': 235}
+{'step': 900, 'round': 'R0', 'loss': 2.0608508325833825, 'sec': 265}
+{'step': 1000, 'round': 'R0', 'loss': 1.9175457007414662, 'sec': 295}
+{'step': 1100, 'round': 'R0', 'loss': 1.3982528442749753, 'sec': 323}
+{'step': 1200, 'round': 'R0', 'loss': 1.9725140668754466, 'sec': 353}
+k1 split {'step': 1200, 'round': 'R0', 'labelled_acc': 0.075, 'never_labelled_acc': 0.0008487654320987654, 'all_acc': 0.008263888888888888, 'stay_rate': 0.008333333333333333}
+insert length 3 ['gate 0.0020 < 0.995', 'kept share 0.000 < 0.20']
+round {'pool': 50000, 'filtered_by': {'validity': 0.00042, 'final': 0.9895, 'self_consistency': 0.01008}, 'kept_share': 0.0, 'gate': 0.0, 'acc_new_length_before': 0.01008, 'acc_L5plus': None, 'truth_precision_kept': None, 'truth_rate_final_correct': 0.09523809523809523, 'agreement_vs_truth_gap': -0.09523809523809523, 'op_tv': None, 'length': 3, 'steps': 3760}
+{'step': 1300, 'round': 'L3', 'loss': 4.871948304176331, 'sec': 615}
+{'step': 1400, 'round': 'L3', 'loss': 4.663782224655152, 'sec': 664}
+{'step': 1500, 'round': 'L3', 'loss': 4.527813167572021, 'sec': 707}
+{'step': 1600, 'round': 'L3', 'loss': 4.392814202308655, 'sec': 750}
+{'step': 1700, 'round': 'L3', 'loss': 4.254094524383545, 'sec': 793}
+{'step': 1800, 'round': 'L3', 'loss': 4.088342983722686, 'sec': 836}
+{'step': 1900, 'round': 'L3', 'loss': 3.9139294528961184, 'sec': 879}
+{'step': 2000, 'round': 'L3', 'loss': 3.725914080142975, 'sec': 922}
+{'step': 2100, 'round': 'L3', 'loss': 3.5028177094459534, 'sec': 964}
+{'step': 2200, 'round': 'L3', 'loss': 3.3490834069252013, 'sec': 1007}
+{'step': 2300, 'round': 'L3', 'loss': 3.2687755322456358, 'sec': 1050}
+{'step': 2400, 'round': 'L3', 'loss': 3.219740436077118, 'sec': 1093}
+{'step': 2500, 'round': 'L3', 'loss': 2.97810804605484, 'sec': 1135}
+{'step': 2600, 'round': 'L3', 'loss': 2.815881848335266, 'sec': 1178}
+{'step': 2700, 'round': 'L3', 'loss': 2.7594598484039308, 'sec': 1220}
+{'step': 2800, 'round': 'L3', 'loss': 2.433331079483032, 'sec': 1262}
+{'step': 2900, 'round': 'L3', 'loss': 2.2303242969512937, 'sec': 1304}
+{'step': 3000, 'round': 'L3', 'loss': 2.2431553280353547, 'sec': 1346}
+{'step': 3100, 'round': 'L3', 'loss': 2.099302948713303, 'sec': 1388}
+{'step': 3200, 'round': 'L3', 'loss': 2.0556321597099303, 'sec': 1430}
+{'step': 3300, 'round': 'L3', 'loss': 2.0139164292812346, 'sec': 1472}
+{'step': 3400, 'round': 'L3', 'loss': 1.9558876383304595, 'sec': 1514}
+{'step': 3500, 'round': 'L3', 'loss': 2.023014215230942, 'sec': 1556}
+{'step': 3600, 'round': 'L3', 'loss': 2.1089410078525543, 'sec': 1598}
+{'step': 3700, 'round': 'L3', 'loss': 1.9204899728298188, 'sec': 1641}
+{'step': 3800, 'round': 'L3', 'loss': 1.9855094969272613, 'sec': 1684}
+{'step': 3900, 'round': 'L3', 'loss': 1.8567517805099487, 'sec': 1726}
+{'step': 4000, 'round': 'L3', 'loss': 1.8314943742752074, 'sec': 1767}
+{'step': 4100, 'round': 'L3', 'loss': 1.7796142494678497, 'sec': 1808}
+{'step': 4200, 'round': 'L3', 'loss': 1.7364196681976318, 'sec': 1849}
+{'step': 4300, 'round': 'L3', 'loss': 1.719601948261261, 'sec': 1890}
+{'step': 4400, 'round': 'L3', 'loss': 1.5892186868190765, 'sec': 1932}
+{'step': 4500, 'round': 'L3', 'loss': 1.5300203454494476, 'sec': 1974}
+{'step': 4600, 'round': 'L3', 'loss': 1.2102299350500108, 'sec': 2015}
+{'step': 4700, 'round': 'L3', 'loss': 1.077481146454811, 'sec': 2057}
+{'step': 4800, 'round': 'L3', 'loss': 0.9449084347486496, 'sec': 2098}
+{'step': 4900, 'round': 'L3', 'loss': 0.924981449842453, 'sec': 2139}
+k1 split {'step': 4960, 'round': 'L3', 'labelled_acc': 0.04027777777777778, 'never_labelled_acc': 0.0049382716049382715, 'all_acc': 0.008472222222222223, 'stay_rate': 0.008263305322128852}
+round {'pool': 50000, 'filtered_by': {'validity': 0.04114, 'final': 0.69644, 'self_consistency': 0.26236}, 'kept_share': 6e-05, 'gate': 0.00022864110967151893, 'acc_new_length_before': 0.26242, 'acc_L5plus': None, 'truth_precision_kept': 0.3333333333333333, 'truth_rate_final_correct': 0.258059599115921, 'agreement_vs_truth_gap': -0.2578309580062495, 'op_tv': 0.9496650816149239, 'length': 4, 'steps': 3760}
+{'step': 5000, 'round': 'L4', 'loss': 5.667689020931721, 'sec': 2300}
+{'step': 5100, 'round': 'L4', 'loss': 2.7182875657081604, 'sec': 2355}
+{'step': 5200, 'round': 'L4', 'loss': 2.122504824399948, 'sec': 2407}
+{'step': 5300, 'round': 'L4', 'loss': 1.798913013935089, 'sec': 2465}
+{'step': 5400, 'round': 'L4', 'loss': 1.2300180354714394, 'sec': 2514}
+{'step': 5500, 'round': 'L4', 'loss': 0.7196928921341896, 'sec': 2560}
+{'step': 5600, 'round': 'L4', 'loss': 0.5140431549958885, 'sec': 2604}
+{'step': 5700, 'round': 'L4', 'loss': 0.3486282437480986, 'sec': 2649}
+{'step': 5800, 'round': 'L4', 'loss': 0.28418197374790904, 'sec': 2694}
+{'step': 5900, 'round': 'L4', 'loss': 0.19427198621677236, 'sec': 2738}
+{'step': 6000, 'round': 'L4', 'loss': 0.14811440761841368, 'sec': 2783}
+{'step': 6100, 'round': 'L4', 'loss': 0.08452689385216218, 'sec': 2828}
+{'step': 6200, 'round': 'L4', 'loss': 0.09850673098349944, 'sec': 2873}
+{'step': 6300, 'round': 'L4', 'loss': 0.07901238176127663, 'sec': 2918}
+{'step': 6400, 'round': 'L4', 'loss': 0.07361692663369468, 'sec': 2963}
+{'step': 6500, 'round': 'L4', 'loss': 0.040379034869692985, 'sec': 3008}
+{'step': 6600, 'round': 'L4', 'loss': 0.0397384730876729, 'sec': 3053}
+{'step': 6700, 'round': 'L4', 'loss': 0.026124196317095994, 'sec': 3098}
+{'step': 6800, 'round': 'L4', 'loss': 0.01783574232095816, 'sec': 3142}
+{'step': 6900, 'round': 'L4', 'loss': 0.059494389970968765, 'sec': 3187}
+{'step': 7000, 'round': 'L4', 'loss': 0.013688822611075012, 'sec': 3231}
+{'step': 7100, 'round': 'L4', 'loss': 0.04065710331511582, 'sec': 3276}
+{'step': 7200, 'round': 'L4', 'loss': 0.008191864049776995, 'sec': 3321}
+{'step': 7300, 'round': 'L4', 'loss': 0.017795761503202813, 'sec': 3366}
+{'step': 7400, 'round': 'L4', 'loss': 0.010273397719784043, 'sec': 3411}
+{'step': 7500, 'round': 'L4', 'loss': 0.01591536304201327, 'sec': 3457}
+{'step': 7600, 'round': 'L4', 'loss': 0.03149466889391988, 'sec': 3502}
+{'step': 7700, 'round': 'L4', 'loss': 0.013384688173991889, 'sec': 3547}
+{'step': 7800, 'round': 'L4', 'loss': 0.03138158102136913, 'sec': 3593}
+{'step': 7900, 'round': 'L4', 'loss': 0.007791263918120421, 'sec': 3638}
+{'step': 8000, 'round': 'L4', 'loss': 0.010564948729677327, 'sec': 3683}
+{'step': 8100, 'round': 'L4', 'loss': 0.01589591062131376, 'sec': 3729}
+{'step': 8200, 'round': 'L4', 'loss': 0.006315203205845137, 'sec': 3774}
+{'step': 8300, 'round': 'L4', 'loss': 0.02505268131718367, 'sec': 3819}
+{'step': 8400, 'round': 'L4', 'loss': 0.005155263788540196, 'sec': 3865}
+{'step': 8500, 'round': 'L4', 'loss': 0.007120627333047196, 'sec': 3910}
+{'step': 8600, 'round': 'L4', 'loss': 0.0016018445327881637, 'sec': 3956}
+{'step': 8700, 'round': 'L4', 'loss': 0.0014358276790346735, 'sec': 4001}
+k1 split {'step': 8720, 'round': 'L4', 'labelled_acc': 0.019444444444444445, 'never_labelled_acc': 0.0070987654320987656, 'all_acc': 0.008333333333333333, 'stay_rate': 0.008473389355742296}
+insert length 6 ['gate 0.0001 < 0.995', 'kept share 0.000 < 0.20']
+insert length 5 ['gate 0.0000 < 0.995', 'kept share 0.000 < 0.20']
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.33134, 'self_consistency': 0.66864}, 'kept_share': 2e-05, 'gate': 2.9910567403463644e-05, 'acc_new_length_before': 0.66866, 'acc_L5plus': 0.008025393783314369, 'truth_precision_kept': 0.0, 'truth_rate_final_correct': 0.17973259952741302, 'agreement_vs_truth_gap': -0.17970268896000957, 'op_tv': 0.9750670924601568, 'length': 5, 'steps': 2256}
+{'step': 8800, 'round': 'L5', 'loss': 2.56362967688363, 'sec': 4596}
+{'step': 8900, 'round': 'L5', 'loss': 1.893796536753871, 'sec': 4657}
+{'step': 9000, 'round': 'L5', 'loss': 1.3768580965453474, 'sec': 4713}
+{'step': 9100, 'round': 'L5', 'loss': 1.6767945394600248, 'sec': 4763}
+{'step': 9200, 'round': 'L5', 'loss': 1.4793819959556003, 'sec': 4814}
+{'step': 9300, 'round': 'L5', 'loss': 0.9833020243097417, 'sec': 4867}
+{'step': 9400, 'round': 'L5', 'loss': 1.4659004470657464, 'sec': 4918}
+{'step': 9500, 'round': 'L5', 'loss': 1.6218726515298567, 'sec': 4969}
+{'step': 9600, 'round': 'L5', 'loss': 1.522438928553065, 'sec': 5016}
+{'step': 9700, 'round': 'L5', 'loss': 2.2456576357473157, 'sec': 5052}
+{'step': 9800, 'round': 'L5', 'loss': 1.9035401953457949, 'sec': 5089}
+{'step': 9900, 'round': 'L5', 'loss': 1.786017459614095, 'sec': 5128}
+{'step': 10000, 'round': 'L5', 'loss': 1.3809023678010999, 'sec': 5166}
+{'step': 10100, 'round': 'L5', 'loss': 1.9209628034017805, 'sec': 5204}
+{'step': 10200, 'round': 'L5', 'loss': 1.6510467889868232, 'sec': 5242}
+{'step': 10300, 'round': 'L5', 'loss': 1.513463694279908, 'sec': 5281}
+{'step': 10400, 'round': 'L5', 'loss': 1.6005239027011158, 'sec': 5320}
+{'step': 10500, 'round': 'L5', 'loss': 1.3818712078903992, 'sec': 5359}
+{'step': 10600, 'round': 'L5', 'loss': 1.5382982069358833, 'sec': 5397}
+{'step': 10700, 'round': 'L5', 'loss': 1.0788196260102927, 'sec': 5436}
+{'step': 10800, 'round': 'L5', 'loss': 1.397869306948928, 'sec': 5475}
+{'step': 10900, 'round': 'L5', 'loss': 1.4046579894614115, 'sec': 5513}
+k1 split {'step': 10976, 'round': 'L5', 'labelled_acc': 0.043055555555555555, 'never_labelled_acc': 0.036265432098765434, 'all_acc': 0.036944444444444446, 'stay_rate': 0.021288515406162466}
+round {'pool': 50000, 'filtered_by': {'validity': 0.00026, 'final': 0.48592, 'self_consistency': 0.51364}, 'kept_share': 0.00018, 'gate': 0.00035031723171538673, 'acc_new_length_before': 0.51382, 'acc_L5plus': 0.022361647361647363, 'truth_precision_kept': 0.0, 'truth_rate_final_correct': 0.049005488303296874, 'agreement_vs_truth_gap': -0.04865517107158149, 'op_tv': 0.8158844283483344, 'length': 6, 'steps': 2256}
+{'step': 11000, 'round': 'L6', 'loss': 5.192552279168278, 'sec': 5703}
+{'step': 11100, 'round': 'L6', 'loss': 2.550550526776351, 'sec': 5751}
+{'step': 11200, 'round': 'L6', 'loss': 2.0340266518470527, 'sec': 5801}
+{'step': 11300, 'round': 'L6', 'loss': 2.4215404194707664, 'sec': 5849}
+{'step': 11400, 'round': 'L6', 'loss': 1.743402568144611, 'sec': 5888}
+{'step': 11500, 'round': 'L6', 'loss': 1.8168555513452338, 'sec': 5925}
+{'step': 11600, 'round': 'L6', 'loss': 1.7505733816715565, 'sec': 5962}
+{'step': 11700, 'round': 'L6', 'loss': 1.5271391091228543, 'sec': 5997}
+{'step': 11800, 'round': 'L6', 'loss': 1.2956284519754808, 'sec': 6034}
+{'step': 11900, 'round': 'L6', 'loss': 0.9317558576157126, 'sec': 6072}
+{'step': 12000, 'round': 'L6', 'loss': 0.8561043657251821, 'sec': 6120}
+{'step': 12100, 'round': 'L6', 'loss': 0.8884669227449012, 'sec': 6167}
+{'step': 12200, 'round': 'L6', 'loss': 0.5175788702187493, 'sec': 6215}
+{'step': 12300, 'round': 'L6', 'loss': 0.3410847413672036, 'sec': 6256}
+{'step': 12400, 'round': 'L6', 'loss': 0.4366590528398638, 'sec': 6290}
+{'step': 12500, 'round': 'L6', 'loss': 0.3099120436892804, 'sec': 6324}
+{'step': 12600, 'round': 'L6', 'loss': 0.25978107601910777, 'sec': 6358}
+{'step': 12700, 'round': 'L6', 'loss': 0.2765053318497553, 'sec': 6393}
+{'step': 12800, 'round': 'L6', 'loss': 0.2554351692477621, 'sec': 6426}
+{'step': 12900, 'round': 'L6', 'loss': 0.1723538952970921, 'sec': 6460}
+{'step': 13000, 'round': 'L6', 'loss': 0.13394532616338892, 'sec': 6494}
+{'step': 13100, 'round': 'L6', 'loss': 0.08957031407478552, 'sec': 6530}
+{'step': 13200, 'round': 'L6', 'loss': 0.1177904211019154, 'sec': 6565}
+k1 split {'step': 13232, 'round': 'L6', 'labelled_acc': 0.9145833333333333, 'never_labelled_acc': 0.942283950617284, 'all_acc': 0.9395138888888889, 'stay_rate': 7.002801120448179e-05}
+insert length 7 ['gate 0.4823 < 0.995']
+round {'pool': 50000, 'filtered_by': {'validity': 0.00066, 'final': 0.21574, 'self_consistency': 0.4014}, 'kept_share': 0.3822, 'gate': 0.4877488514548239, 'acc_new_length_before': 0.7836, 'acc_L5plus': 0.6396, 'truth_precision_kept': 0.998953427524856, 'truth_rate_final_correct': 0.5989280245022971, 'agreement_vs_truth_gap': -0.11117917304747321, 'op_tv': 0.09466603643308313, 'length': 7, 'steps': 1692}
+{'step': 13300, 'round': 'L7', 'loss': 1.7306163692299057, 'sec': 7014}
+{'step': 13400, 'round': 'L7', 'loss': 0.5069102819706314, 'sec': 7101}
+{'step': 13500, 'round': 'L7', 'loss': 0.18756704829109366, 'sec': 7191}
+{'step': 13600, 'round': 'L7', 'loss': 0.1344188645342365, 'sec': 7275}
+{'step': 13700, 'round': 'L7', 'loss': 0.10297857537167147, 'sec': 7330}
+{'step': 13800, 'round': 'L7', 'loss': 0.07492976279230788, 'sec': 7382}
+{'step': 13900, 'round': 'L7', 'loss': 0.06424731908482499, 'sec': 7436}
+{'step': 14000, 'round': 'L7', 'loss': 0.0518958879179263, 'sec': 7488}
+{'step': 14100, 'round': 'L7', 'loss': 0.04933659431859269, 'sec': 7564}
+{'step': 14200, 'round': 'L7', 'loss': 0.06115342899327516, 'sec': 7649}
+{'step': 14300, 'round': 'L7', 'loss': 0.03594012310670223, 'sec': 7729}
+{'step': 14400, 'round': 'L7', 'loss': 0.023990681090581348, 'sec': 7815}
+{'step': 14500, 'round': 'L7', 'loss': 0.026689621972400344, 'sec': 7877}
+{'step': 14600, 'round': 'L7', 'loss': 0.020990372769956592, 'sec': 7929}
+{'step': 14700, 'round': 'L7', 'loss': 0.019967170188392627, 'sec': 7978}
+{'step': 14800, 'round': 'L7', 'loss': 0.01656686687041656, 'sec': 8029}
+{'step': 14900, 'round': 'L7', 'loss': 0.016756404284533347, 'sec': 8081}
+k1 split {'step': 14924, 'round': 'L7', 'labelled_acc': 0.9888888888888889, 'never_labelled_acc': 0.99375, 'all_acc': 0.9932638888888888, 'stay_rate': 0.0004901960784313725}
+round {'pool': 50000, 'filtered_by': {'validity': 0.0006, 'final': 0.07652, 'self_consistency': 0.08538}, 'kept_share': 0.8375, 'gate': 0.9074852635228848, 'acc_new_length_before': 0.92288, 'acc_L5plus': 0.8840475116523832, 'truth_precision_kept': 0.9998805970149254, 'truth_rate_final_correct': 0.9299367198335645, 'agreement_vs_truth_gap': -0.022451456310679685, 'op_tv': 0.01295440148025668, 'length': 8, 'steps': 1692}
+{'step': 15000, 'round': 'L8', 'loss': 0.050442708685295656, 'sec': 8344}
+{'step': 15100, 'round': 'L8', 'loss': 0.013675141998101025, 'sec': 8403}
+{'step': 15200, 'round': 'L8', 'loss': 0.008443174395069945, 'sec': 8490}
+{'step': 15300, 'round': 'L8', 'loss': 0.0051331394484441266, 'sec': 8585}
+{'step': 15400, 'round': 'L8', 'loss': 0.0021301437197689664, 'sec': 8663}
+{'step': 15500, 'round': 'L8', 'loss': 0.0025625937835138755, 'sec': 8721}
+{'step': 15600, 'round': 'L8', 'loss': 0.014198987745330668, 'sec': 8780}
+{'step': 15700, 'round': 'L8', 'loss': 0.0015314485442650039, 'sec': 8838}
+{'step': 15800, 'round': 'L8', 'loss': 0.0024235443280122126, 'sec': 8898}
+{'step': 15900, 'round': 'L8', 'loss': 0.0017102341361533036, 'sec': 8959}
+{'step': 16000, 'round': 'L8', 'loss': 0.0009260179109696764, 'sec': 9019}
+{'step': 16100, 'round': 'L8', 'loss': 0.003197627672343515, 'sec': 9113}
+{'step': 16200, 'round': 'L8', 'loss': 0.000584900006542739, 'sec': 9212}
+{'step': 16300, 'round': 'L8', 'loss': 0.0007470450772780169, 'sec': 9275}
+{'step': 16400, 'round': 'L8', 'loss': 0.0005568094551927061, 'sec': 9335}
+{'step': 16500, 'round': 'L8', 'loss': 0.0011812917242059484, 'sec': 9394}
+{'step': 16600, 'round': 'L8', 'loss': 0.0004953830242266122, 'sec': 9453}
+k1 split {'step': 16616, 'round': 'L8', 'labelled_acc': 0.9993055555555556, 'never_labelled_acc': 1.0, 'all_acc': 0.9999305555555555, 'stay_rate': 0.0}
+insert length 12 ['gate 0.9896 < 0.995']
+insert length 10 ['gate 0.9909 < 0.995']
+round {'pool': 50000, 'filtered_by': {'validity': 2e-05, 'final': 0.001, 'self_consistency': 0.0095}, 'kept_share': 0.98948, 'gate': 0.9904903001061083, 'acc_new_length_before': 0.99898, 'acc_L5plus': 0.9986480396575034, 'truth_precision_kept': 1.0, 'truth_rate_final_correct': 0.9909307493643517, 'agreement_vs_truth_gap': -0.00044044925824338055, 'op_tv': 0.0017317768011291383, 'length': 10, 'steps': 846}
+{'step': 16700, 'round': 'L10', 'loss': 0.008886499360717911, 'sec': 10582}
+{'step': 16800, 'round': 'L10', 'loss': 0.0011186653910772292, 'sec': 10680}
+{'step': 16900, 'round': 'L10', 'loss': 0.01025066733101994, 'sec': 10779}
+{'step': 17000, 'round': 'L10', 'loss': 0.00187908999476349, 'sec': 10874}
+{'step': 17100, 'round': 'L10', 'loss': 0.017613229516427964, 'sec': 10983}
+{'step': 17200, 'round': 'L10', 'loss': 0.004247820493255858, 'sec': 11085}
+{'step': 17300, 'round': 'L10', 'loss': 0.03882672629872104, 'sec': 11179}
+{'step': 17400, 'round': 'L10', 'loss': 0.01656006334364065, 'sec': 11281}
+k1 split {'step': 17462, 'round': 'L10', 'labelled_acc': 1.0, 'never_labelled_acc': 1.0, 'all_acc': 1.0, 'stay_rate': 0.0}
+round {'pool': 50000, 'filtered_by': {'validity': 2e-05, 'final': 0.00116, 'self_consistency': 0.0004}, 'kept_share': 0.99842, 'gate': 0.999599527442382, 'acc_new_length_before': 0.99882, 'acc_L5plus': 0.9985218589502693, 'truth_precision_kept': 1.0, 'truth_rate_final_correct': 0.999599527442382, 'agreement_vs_truth_gap': 0.0, 'op_tv': 0.0004108268567508291, 'length': 12, 'steps': 846}
+{'step': 17500, 'round': 'L12', 'loss': 0.00043030785922095865, 'sec': 11747}
+{'step': 17600, 'round': 'L12', 'loss': 0.0017368825397716136, 'sec': 11809}
+{'step': 17700, 'round': 'L12', 'loss': 0.0002646418607037049, 'sec': 11887}
+{'step': 17800, 'round': 'L12', 'loss': 0.011866834792599548, 'sec': 11989}
+{'step': 17900, 'round': 'L12', 'loss': 0.0026418789891613417, 'sec': 12096}
+{'step': 18000, 'round': 'L12', 'loss': 0.0005974622209032531, 'sec': 12195}
+{'step': 18100, 'round': 'L12', 'loss': 0.0006090674196821055, 'sec': 12300}
+{'step': 18200, 'round': 'L12', 'loss': 0.01893280070493347, 'sec': 12397}
+{'step': 18300, 'round': 'L12', 'loss': 0.017122501735502737, 'sec': 12462}
+k1 split {'step': 18308, 'round': 'L12', 'labelled_acc': 1.0, 'never_labelled_acc': 0.9997685185185186, 'all_acc': 0.9997916666666666, 'stay_rate': 0.0}
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.00062, 'self_consistency': 0.00178}, 'kept_share': 0.9976, 'gate': 0.9982188957153435, 'acc_new_length_before': 0.99938, 'acc_L5plus': 0.9992781968892614, 'truth_precision_kept': 1.0, 'truth_rate_final_correct': 0.9996798014769157, 'agreement_vs_truth_gap': -0.0014609057615722065, 'op_tv': 0.00047293950234902297, 'length': 16, 'steps': 846}
+{'step': 18400, 'round': 'L16', 'loss': 0.0009541275289255124, 'sec': 12948}
+{'step': 18500, 'round': 'L16', 'loss': 0.00038425639249908274, 'sec': 13069}
+{'step': 18600, 'round': 'L16', 'loss': 0.0003352512755373027, 'sec': 13210}
+{'step': 18700, 'round': 'L16', 'loss': 0.005213377950894937, 'sec': 13315}
+{'step': 18800, 'round': 'L16', 'loss': 0.011227125365694519, 'sec': 13390}
+{'step': 18900, 'round': 'L16', 'loss': 0.01400790571111429, 'sec': 13458}
+{'step': 19000, 'round': 'L16', 'loss': 0.0012015900783444522, 'sec': 13522}
+{'step': 19100, 'round': 'L16', 'loss': 0.005911618719110266, 'sec': 13586}
+k1 split {'step': 19154, 'round': 'L16', 'labelled_acc': 1.0, 'never_labelled_acc': 1.0, 'all_acc': 1.0, 'stay_rate': 0.0}
+round {'pool': 50000, 'filtered_by': {'validity': 0.0, 'final': 0.00038, 'self_consistency': 6e-05}, 'kept_share': 0.99956, 'gate': 0.9999399771913327, 'acc_new_length_before': 0.99962, 'acc_L5plus': 0.9995933045078984, 'truth_precision_kept': 1.0, 'truth_rate_final_correct': 0.9999399771913327, 'agreement_vs_truth_gap': 0.0, 'op_tv': 0.00012672627909815232, 'length': 32, 'steps': 846}
+{'step': 19200, 'round': 'L32', 'loss': 0.0024998676409545032, 'sec': 14527}
+{'step': 19300, 'round': 'L32', 'loss': 0.014310442738496932, 'sec': 14677}
+{'step': 19400, 'round': 'L32', 'loss': 0.00029074435453367185, 'sec': 14829}
+{'step': 19500, 'round': 'L32', 'loss': 0.00022464747831691057, 'sec': 14978}
+{'step': 19600, 'round': 'L32', 'loss': 0.0005355903991221566, 'sec': 15133}
+{'step': 19700, 'round': 'L32', 'loss': 0.00015109453896002377, 'sec': 15258}
+{'step': 19800, 'round': 'L32', 'loss': 0.01440037926488003, 'sec': 15343}
+{'step': 19900, 'round': 'L32', 'loss': 0.00016428232622274662, 'sec': 15410}
+{'step': 20000, 'round': 'L32', 'loss': 0.0001193247984701884, 'sec': 15505}
+k1 split {'step': 20000, 'round': 'L32', 'labelled_acc': 1.0, 'never_labelled_acc': 1.0, 'all_acc': 1.0, 'stay_rate': 0.0}
+final {'pool': 50000, 'filtered_by': {'validity': 4e-05, 'final': 0.00014, 'self_consistency': 4e-05}, 'kept_share': 0.99978, 'gate': 0.9999599927987037, 'acc_new_length_before': 0.99982, 'acc_L5plus': 0.9998071401020014, 'truth_precision_kept': 1.0, 'truth_rate_final_correct': 0.9999599927987037, 'agreement_vs_truth_gap': 0.0, 'op_tv': 9.446245341272145e-05, 'length': 32, 'steps': 4000, 'action': 'final relabelling'}
+{'step': 20100, 'round': 'final', 'loss': 0.0001053122556550079, 'sec': 16398}
+{'step': 20200, 'round': 'final', 'loss': 0.00010133520314411726, 'sec': 16512}
+{'step': 20300, 'round': 'final', 'loss': 0.0001080986682427465, 'sec': 16620}
+{'step': 20400, 'round': 'final', 'loss': 0.001447849600626796, 'sec': 16762}
+{'step': 20500, 'round': 'final', 'loss': 8.240269587986404e-05, 'sec': 16909}
+{'step': 20600, 'round': 'final', 'loss': 0.007372747889203311, 'sec': 17037}
+{'step': 20700, 'round': 'final', 'loss': 0.00014943830907213852, 'sec': 17143}
+{'step': 20800, 'round': 'final', 'loss': 0.00012626093714061427, 'sec': 17267}
+{'step': 20900, 'round': 'final', 'loss': 0.0010034774094310707, 'sec': 17417}
+{'step': 21000, 'round': 'final', 'loss': 9.122798175667412e-05, 'sec': 17537}
+{'step': 21100, 'round': 'final', 'loss': 7.763013652947848e-05, 'sec': 17648}
+{'step': 21200, 'round': 'final', 'loss': 0.0007083211764620501, 'sec': 17715}
+{'step': 21300, 'round': 'final', 'loss': 7.22839269292308e-05, 'sec': 17785}
+{'step': 21400, 'round': 'final', 'loss': 0.0004812650697022036, 'sec': 17887}
+{'step': 21500, 'round': 'final', 'loss': 7.454378081092727e-05, 'sec': 17996}
+{'step': 21600, 'round': 'final', 'loss': 6.301017411715293e-05, 'sec': 18107}
+{'step': 21700, 'round': 'final', 'loss': 5.804494627227541e-05, 'sec': 18218}
+{'step': 21800, 'round': 'final', 'loss': 0.0002805742545206158, 'sec': 18332}
+{'step': 21900, 'round': 'final', 'loss': 0.0011378721831715665, 'sec': 18435}
+{'step': 22000, 'round': 'final', 'loss': 7.161577623264748e-05, 'sec': 18539}
+{'step': 22100, 'round': 'final', 'loss': 5.9679828464140886e-05, 'sec': 18648}
+{'step': 22200, 'round': 'final', 'loss': 7.254997314703359e-05, 'sec': 18756}
+{'step': 22300, 'round': 'final', 'loss': 5.9671848775906254e-05, 'sec': 18866}
+{'step': 22400, 'round': 'final', 'loss': 5.468718235533743e-05, 'sec': 18978}
+{'step': 22500, 'round': 'final', 'loss': 5.719336313632084e-05, 'sec': 19087}
+{'step': 22600, 'round': 'final', 'loss': 6.499939883724436e-05, 'sec': 19195}
+{'step': 22700, 'round': 'final', 'loss': 5.3187678549875275e-05, 'sec': 19307}
+{'step': 22800, 'round': 'final', 'loss': 4.822593246899487e-05, 'sec': 19403}
+{'step': 22900, 'round': 'final', 'loss': 5.083197705971543e-05, 'sec': 19493}
+{'step': 23000, 'round': 'final', 'loss': 5.9234909786027855e-05, 'sec': 19600}
+{'step': 23100, 'round': 'final', 'loss': 0.0001541992993588792, 'sec': 19708}
+{'step': 23200, 'round': 'final', 'loss': 0.007860856837960456, 'sec': 19822}
+{'step': 23300, 'round': 'final', 'loss': 6.693414516121266e-05, 'sec': 19939}
+{'step': 23400, 'round': 'final', 'loss': 4.967958151610219e-05, 'sec': 20048}
+{'step': 23500, 'round': 'final', 'loss': 0.007216911681816782, 'sec': 20156}
+{'step': 23600, 'round': 'final', 'loss': 6.300441708845028e-05, 'sec': 20271}
+{'step': 23700, 'round': 'final', 'loss': 5.384819180108025e-05, 'sec': 20385}
+{'step': 23800, 'round': 'final', 'loss': 5.8899478299281325e-05, 'sec': 20496}
+{'step': 23900, 'round': 'final', 'loss': 5.564448327277205e-05, 'sec': 20609}
+{'step': 24000, 'round': 'final', 'loss': 0.0024797484532791715, 'sec': 20719}
+k1 split {'step': 24000, 'round': 'final', 'labelled_acc': 1.0, 'never_labelled_acc': 1.0, 'all_acc': 1.0, 'stay_rate': 0.0}
+EVAL {"128": 0.9995, "256": 0.9995, "512": 0.998} {"slot1": {"donor_consistent": 0.0105, "recipient_consistent": 0.9995}, "slot2": {"donor_consistent": 0.007, "recipient_consistent": 0.011}, "slot3": {"donor_consistent": 0.007, "recipient_consistent": 0.0055}}
+DONE boxes/runs_s5/s124_base_s28
