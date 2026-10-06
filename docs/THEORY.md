@@ -5833,6 +5833,21 @@ driver 595.71 class, checkpoints), plus **copy rows**:
   `s134_copy_{ff,cyc,mod,rdfa}_s1`).
 * Scorer: `theory/score_s134.py`, committed before any run.
 
+**Note 133-3 (2026-10-06 15:03 EDT, before any §133 run; questions from the experiments session's implementation, 81e37687). Two clarifications,
+no rule change.**
+* **NOISE-64's dither is §123's, absolute:** U(±0.25) per coordinate on z_b at every training hand-off after 2k (`--dither 0.25`).
+  §133's text said "U(±0.25·std_d)", which contradicts its own "§123's dither". That was a writing error, corrected here before any run.
+* **SOFT-16 / SOFT-64 run at β = 0.1 from step 0,** train and test, with no p_hard ramp. This is intended: the soft snap is a constant
+  weak pull. round() is straight-through as in FSQ, and the recorded codes are round(z_b).
+* As implemented: §128's micro rule (micro 2 only at L ≥ 32, `--micro_from 32`); angular_drift at positions 1 / 16 / 64 / 256 / 512 for
+  every arm; grid_share as §123.
+
+**Note 134-1 (2026-10-06 15:03 EDT, before any §134 implementation or run; Audit). A second dialect test.** Beside the code-identity rate:
+* **Copy-code donor injection:** in a transition chain, replace the carried code at position j with **the copy-written code of the same
+  true state** (from [EOT, that state's answer text]), then score the chain's final answer.
+* If the copy and transition writers share a dialect, accuracy matches the intact chain. If they split, it drops. Descriptive.
+* A split means the copy loss trained an interface, not the carrier.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
