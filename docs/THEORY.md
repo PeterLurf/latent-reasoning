@@ -5575,6 +5575,13 @@ the held-out families closed.**
   - The task-language cert_task holds in s3 / s4 (Moore 2) and fails in s1 / s2.
   - The reads-only certificate (120-9) holds in 4/4.
   - The CERT output did not record device or dtype; it is labelled here from the run log. --cert_only is asked to record both.
+* **Contraction (descriptive; 2026-10-06 13:30 EDT; fp32, local RTX 3070 and earlier runs). The first-hand-off ratio ρ₁ (127-12) is the informative
+  number: the overall ρ is vacuous (about 1e-6) under hard rounding.**
+  - **Every learning run contracts, ρ₁ 0.03–0.22, inside 118-5's pass band (≤ 0.28):** FF 0.03–0.12; MOD s1 0.15; CYC s1 0.18; RDFA
+    s1 0.22; S5 0.13–0.20.
+  - Exact-recovery share 0.08–0.27. Basin 0.1 (S5) to 0.3–1.0 (FF / MOD / CYC / RDFA).
+  - **S5 s3, which never learned, shows ρ₁ 0, exact recovery 0.56 and basin 1.0.** A collapsed code is contractive without
+    information, as in §123's plateaued cell.
 
 **Note 131-4 (2026-10-06 12:40 EDT, before any rerun is read; the user's directive via Audit). Two check runs crashed (out of memory at 14k), and
 all seven are rerun with checkpoints on larger cloud cards.**
