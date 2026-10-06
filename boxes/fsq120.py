@@ -1202,7 +1202,7 @@ def main():
     if not a.eval_only:
         last_loss = None
     reest = False; dist_hist = []; var_hist = []; L127 = {}; n_nonfinite = 0
-    n_copy = int(round(a.copy_frac * a.bs)) if a.copy_frac else 0; crng = np.random.default_rng(a.seed + 13400); copy_hist = []   # §134
+    n_copy = int(round(a.copy_frac * a.bs)) if a.copy_frac else 0; crng = np.random.default_rng(a.seed + 13400); copy_hist = []; tot_hist = []   # §134
     if p127 and not a.eval_only and rck is None:                            # note 127-1: probe at step 0 (done before the checkpoint on resume)
         log.write(json.dumps({"step": 0, "probe": probe127(m, fam, dev, amp)}) + "\n"); log.flush()
     s129 = a.save_at_flag or bool(a.resume_2k)
@@ -1215,7 +1215,7 @@ def main():
         dist_hist = rck["dist_hist"]; var_hist = rck["var_hist"]; reest = rck["reest"]; t0 = time.time() - rck["elapsed"]; step0 = rck["step"] + 1
         torch.set_rng_state(rck["torch_rng"].cpu()); rng.bit_generator.state = rck["np_rng"]
         if "crng" in rck:                                                   # §134 copy-row draws
-            crng.bit_generator.state = rck["crng"]; copy_hist = rck["copy_hist"]
+            crng.bit_generator.state = rck["crng"]; copy_hist = rck["copy_hist"]; tot_hist = rck.get("tot_hist", [])
         if dev.startswith("cuda") and rck.get("cuda_rng") is not None:
             torch.cuda.set_rng_state(rck["cuda_rng"].cpu(), device=dev)
         log.write(json.dumps({"step": rck["step"], "resumed": a.resume}) + "\n"); log.flush(); print("RESUMED at step", rck["step"], flush=True)
@@ -1268,6 +1268,8 @@ def main():
             opt.zero_grad(); m._s2acc = []; m._acc = []                    # no update and no statistics from this step
         else:
             opt.step(); hist.append(tot)
+            if n_copy:                                                      # note 134-4: main + copy per step -> "loss_total"
+                tot_hist.append(tot + ctot)
         if m.anneal:                                                        # std(h) EMA (std_map collects while not frozen)
             m.std = True; m.update_stats(); m.std = False
             if reest:
@@ -1287,6 +1289,7 @@ def main():
                 rec.update({"var_w": var_w, "var": float(np.mean(var_hist)) if var_hist else None}); var_hist = []
             if n_copy:                                                      # §134: copy loss every log line, copy accuracy every 500
                 rec["copy_loss"] = float(np.mean(copy_hist)) if copy_hist else None; copy_hist = []
+                rec["loss_total"] = float(np.mean(tot_hist)) if tot_hist else None; tot_hist = []
                 if step % 500 == 0 or step == a.steps:
                     rec["copy_acc"] = copy_acc134(m, fam, dev, amp); m.train()
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True); L127[step] = rec["loss"]
@@ -1335,7 +1338,7 @@ def main():
                         "cuda_rng": torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else None, "np_rng": rng.bit_generator.state, "drawn": drawn,
                         "step": step, "L127": L127, "n_nonfinite": n_nonfinite, "last_loss": last_loss, "hist": hist, "carried": carried,
                         "dist_hist": dist_hist, "var_hist": var_hist, "reest": reest, "elapsed": time.time() - t0,
-                        "crng": crng.bit_generator.state, "copy_hist": copy_hist}, cp + ".tmp")
+                        "crng": crng.bit_generator.state, "copy_hist": copy_hist, "tot_hist": tot_hist}, cp + ".tmp")
             os.replace(cp + ".tmp", cp); log.write(json.dumps({"step": step, "ckpt": "ckpt_last.pt"}) + "\n"); log.flush()
         if a.stop_after and step >= a.stop_after:                           # resume-parity test only
             log.close(); print("STOP_AFTER", step, flush=True); return
