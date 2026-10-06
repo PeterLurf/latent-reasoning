@@ -5442,6 +5442,16 @@ CLOSED covers the certificate's own forward pass. A few codes the eval visits ar
 * **Wording for the §128 result, fixed now:** CLOSED is stated as "closed under the certificate's forward pass; n_uncovered eval
   codes are correct but uncertified". The fp32 outcome goes beside it.
 
+**Note 119-6 (2026-10-06 09:39 EDT; SIM-CoT s2 / s3 in, scored by `theory/score_s119.py`; CODI s2 / s3 pending). SIM-CoT did not learn in 3/3; all
+three seeds had a degraded start.**
+* **SIM-CoT s2 / s3** (lr 1e-4 from Coconut s2 / s3; RTX 3090, driver 570.211, bf16):
+  - intact 0.014 / 0.007, train split 0.0106 / 0.0104, cumulative 0;
+  - stage-0 CE at 3k 0.193 / 0.759, both > 0.1, so **degraded start** (119-3) in 3/3 with s1.
+* **Descriptive:** in s3, the step decoder φ partly reads step state from the thoughts (final step CE 3.33, against about 4.9 at
+  chance), but the answer path stays at chance. That is partial state in the latents without use.
+* **Tally:** Coconut 3/3 and SIM-CoT 3/3 "did not learn"; CODI s1 "did not learn", with s2 / s3 running (all bf16 on 3090 / A5000).
+  CONTROLLED-C1 is so far not readable. 119-3's all-inconclusive wording is expected once CODI lands.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
