@@ -28,6 +28,27 @@ def load(d, f="eval.json"):
     return json.load(open(p)) if os.path.exists(p) else None
 
 
+SKIPPED = []
+
+
+def smoke(d):
+    """Audit / claude-13 (2026-10-06): a smoke run written under a real dir name is not a run. Skip it (and print it) if its
+    args.json shows sched_scale != 1, steps < 24000, or a cpu device / train_gpu. CHECK_RUN dirs (note 128-1) are real runs."""
+    p = os.path.join(R, d, "args.json")
+    if not os.path.exists(p):
+        return False
+    a = json.load(open(p)); why = []
+    if float(a.get("sched_scale", 1.0)) != 1.0:
+        why.append("sched_scale %s" % a.get("sched_scale"))
+    if int(a.get("steps", 24000)) < 24000:
+        why.append("steps %s" % a.get("steps"))
+    if str(a.get("device", "")).startswith("cpu") or str(a.get("train_gpu", "")).lower() == "cpu":
+        why.append("cpu")
+    if why:
+        SKIPPED.append((d, why))
+    return bool(why)
+
+
 def plateau(d):
     p = os.path.join(R, d, "log.jsonl")
     if not os.path.exists(p):
@@ -95,6 +116,8 @@ def rho_ff(cf, eps="0.1", floor=1e-3):                                       # n
 
 
 def cell(d):
+    if smoke(d):
+        return None
     r, pl = load(d), plateau(d)
     if r is None and pl is None:
         return None                                                          # not started / before 2k
@@ -160,6 +183,9 @@ def main():
               "| delivery", v["delivery"], "| ESCAPE", v["ESCAPE"], "| ENTRY-FIX", v["ENTRY_FIX"], "| FF", v["FF_GUARD"], "| ADOPT", v["ADOPT"], "| cost", v["cost"])
     print("CONTROL", {s: (c["plateau"], c["long_acc"], c.get("gpu")) for s, c in ctrl.items()}, "| cost", res["control"]["cost"])
     print("DEFAULT", res["DEFAULT"], "| no arm escapes -> restart-on-plateau" if all(res["arms"][a]["ESCAPE"] is False for a in ARMS) else "")
+    res["skipped_smoke_dirs"] = sorted(set((d, tuple(w)) for d, w in SKIPPED))
+    if SKIPPED:
+        print("SKIPPED (smoke, not scored):", res["skipped_smoke_dirs"])
     json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s127.json"), "w", newline="\n"), indent=1, default=float)
 
 
