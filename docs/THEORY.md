@@ -5571,6 +5571,25 @@ the held-out families closed.**
     near-exact so far, 132-4).
   - S5's 2k-restart rule leaves escape-without-learning uncaught; §131 is open.
 
+**Note 131-4 (2026-10-06 12:40 EDT, before any rerun is read; the user's directive via Audit). Two check runs crashed (out of memory at 14k), and
+all seven are rerun with checkpoints on larger cloud cards.**
+* **Crashes:** `s130chk_s5_s5_4060` and `s130chk_s5_s17_3070` ran out of memory at about 14k (the L = 32 stage does not fit 8 GB at
+  micro 4). With no checkpoint they cannot resume.
+  - Their partial logs are kept (`*.void_oom`) and are **descriptive only**. At 14k, s5_4060 was at 4.78 (the null) and s17_3070 at
+    3.43 (the ~3.2 basin). Neither enters §131's counts.
+* **Reruns (user):** checkpointing (`--ckpt_every` / `--resume`, with a resume-parity smoke first). All seven s130chk runs restart
+  from scratch on 16 GB Vast cards, one host per card class, driver recorded:
+  - 4060 seeds (s5, s6, s7) on an **RTX 4060 Ti 16 GB**: the same Ada architecture, but a different die (AD106, against the desktop
+    4060's AD107);
+  - 3070 seeds (s17, s30, s34, s12) on an **RTX A4000 16 GB**: the same GA104 chip.
+  - Directory names carry the new card (e.g. `s130chk_s5_s5_4060ti`, `s130chk_s5_s17_a4000`).
+* **Card identity, as read:** each rerun is read on **its own** 2k flag and its own 24k outcome. That is all §131 and §130's held
+  question ("does the 2k flag fire on runs that learn?") need, so strict identity is not required.
+  - "This replay seed was a late learner" does need the same trajectory. So each rerun's loss at 1k and 2k is compared with its
+    replay's (parity: the flag outcome matches, and the losses agree within 0.1). The result says, per seed, whether the rerun
+    reproduces its replay.
+* §131's endpoint (131-2 / 131-3) now names the reruns in place of the crashed and unfinished local runs.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
