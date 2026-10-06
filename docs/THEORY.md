@@ -6135,6 +6135,16 @@ carry an fp32 certificate that covers every code the eval visits** (14 certifica
 * S5 certification is out of reach at this budget, by construction. Further S5 certificates are not run. FAMILY-PASS is unaffected
   (CERT was not required for S5).
 
+**Note 135-5 (2026-10-06 19:46 EDT, before any §135 student run; read by Theory with score_s135's teacher gate; helper-read). The teacher passes both gates.**
+* `s135_teacher_s5`: cloud RTX 3090, driver 590.48.01, torch 2.5.1+cu124; 8k steps, bs 32, lr 1e-4, L ~ U(1, 32), seed 1.
+* **A1:** acc_L32 **1.000** on 1,000 held-out problems at L 32, with every state text and the answer generated (step_acc_L32 1.000).
+* **A2:** held-out probe accuracy by layer, at L 8 with n 1,024, read at the last token of each step's state text: 0.039 (embeddings, ≈ 1/24,
+  as the last letter alone allows), 0.80, 0.97, 0.9998, then 1.000 at layers 4–7 and 10.
+  - The registered tie-break (the later layer) fixes **chosen_layer 10**. It was fixed before any data, and both arms use it. The
+    earliest saturated layer is 4; that is noted, not a change.
+* **Centring means** (layer 10, L 8, seed 13502): TSD norm 144.6, BASE norm 127.9, cosine between the means 0.57.
+* The students may start (after §133 / §134 launch, per Audit). The teacher's json files are committed before the first student.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
