@@ -14,6 +14,14 @@ with the same code and settings across families.
   restart; every learner has ρ₁ 0.03–0.27.
 * **Entry is the weak point, on S5 only:** 2 restarts in 4 slots, and 1 accepted run escaped without learning.
 * **Wide or continuous carriers drift.** RAW-H 768-d: ρ_ff 0.5–0.8, 0/4 exact. §119's published latent methods: 0/9 learned.
+* **Exception, with per-step supervision:** §118 LONG s81–83 (Audit-reproduced) is a **wide, unrounded** latent that stays exact
+  with no snap at test, at 512 and 2,048 (ext 1.0 / 1.0 / 0.998), and is SERIAL.
+  - Its carried 768-d latents have effective rank 149 / 197 / 173, above S5's 120 states.
+  - It uses §111's reader (per-step state labels), the TF bootstrap, training snaps every k_train, and K-CURR to 32.
+  - So **a high-dimensional latent can be stable without rounding**. Here the attractor comes from label-supervised reading plus a
+    long curriculum (not C4).
+  - Candidate 2 asks whether the model's own decode can take the reader's place, label-free. Comparators: §133's CONT-64 / SOFT-64
+    (FINAL-only) and §118 LONG (labelled).
 * **Entry fixes escape without learning** (§127: STD2 / LR10 / VAR / SKIP s2 all end at 0). §129: a fresh head escapes in 2/4 and learns
   in 0/4. SKIP did rescue one basin seed (s4).
 * **Early markers fail** (§130: the code-variance collapse at about 650 is common and transient). The 4k flag catches escaped
