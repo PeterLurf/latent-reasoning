@@ -217,7 +217,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 127 | Reliable entry without restarts? VAR (item-residual variance) / SKIP (skip-to-decoder) / STD2 (§125-v2) / LR10 on §120's harness vs restart-on-plateau | registered | **open** |
 | 128 | One recipe, five state-tracking families (S5, FF + held-out CYC / MOD / RDFA), restart-on-plateau; FAMILY-PASS = 3/4 exact + SERIAL (+ CLOSED) | registered | **open** |
 | 129 | Where does the entry basin live? Head-only re-draw at the 2k flag vs a CLOCK-ONLY warm restart (S5, 4 flagged seeds): LR / HEAD / BODY | registered | **open** |
-| 130 | Early label-free plateau marker (code variance at ~1k): fit on 4060 replays, frozen, tested cross-card (3070, primary) and same-card | registered | **open** |
+| 130 | Early label-free plateau marker (code variance at ~1k): fit on 4060 replays, frozen, tested cross-card (3070, primary) and same-card | **no PASS** (primary P 0.70, R 0.78 on 17 3070 seeds; 0.60 in-sample): the early marker does not predict the 2k plateau; the collapse at ~650 is common and transient; the 2k flag fires after early pulls | closed (SAME pending, descriptive) |
 | 131 | Second restart point at 4k: FLAG4 = loss(4k) ≥ 0.9·loss(2.6k) (floored), held-out precision / recall for "escape without learning" | registered | **open** |
 
 ## Live sections
@@ -5166,6 +5166,30 @@ its bar even in-sample.**
 
 **Placement.** $0, log-only, over the runs already scheduled, plus the four 3070 check runs (about 3–4 h each, sequential).
 Scorer: `theory/score_s131.py`, committed with this registration.
+
+**§130 result (2026-10-06 07:12 EDT; scored by `theory/score_s130.py test` from the frozen cells (130-1); TEST-CROSS complete, 17 replays on the
+RTX 3070 (9 flagged, 8 not); Audit reproduced two ways). No PASS: the early code-variance marker does not predict the 2k plateau
+across cards. Restart-on-plateau keeps the 2k flag.**
+
+| Frozen cell | Role | TEST-CROSS precision (95 % CI) | Recall (95 % CI) | Verdict |
+|---|---|---|---|---|
+| dip, FLAG (θ 0.08, 700–1200) | **primary** | 0.70 (0.35–0.93) | 0.78 (0.40–0.97) | **PASS = false** |
+| dip, BASIN (θ 0.03, 700–1000) | secondary | 0.50 | 0.67 | descriptive (BASIN n = 3) |
+| persist, FLAG (θ 0.08, 700–1000) | secondary | 1.0 | 0.33 | descriptive |
+| persist, BASIN (θ 0.03, 700–1000) | secondary | 1.0 | 0.33 | descriptive (BASIN n = 3) |
+
+* As pre-stated in 130-1: the primary cell reached only 0.60 in-sample.
+* **Both FLAG misses (s17, s30) pulled early but were still flagged.** s17's loss goes 3.79 → 3.66, far under the null. The ratio
+  flag has no family-null floor at the 1k end, which is Literature's §131 point seen here at 2k.
+* **Descriptive:**
+  - H-127-7 fails on both cards: flagged seeds collapse in 3/6 (4060) and 6/9 (3070), and every non-flagged seed pulls.
+  - Escape rate by the 2k flag: 10/16 on the 4060 (FIT), 8/17 on the 3070.
+  - The collapse at about 650 is common and mostly transient on both cards.
+* **TEST-SAME (secondary, 4060)** has 1 seed so far. It is added when complete, and cannot change the primary verdict.
+* **What follows:** the 2k flag's own reliability is in question. It fires after early pulls, on loss well under the null.
+  - Ground truth: §131's 24k check runs on the 4060 (s5, s6, s7) and 3070 (s17, s30, s34, s12), and §127's ctrl-s4 full run on a
+    3090.
+  - §131 tests the 4k flag held-out.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

@@ -1,0 +1,781 @@
+{
+ "frozen": {
+  "frozen_at": "2026-10-06 07:05 EDT",
+  "primary": "dip|flag",
+  "n_cells": 4,
+  "cells": {
+   "dip|flag": {
+    "theta": 0.08,
+    "window": [
+     700,
+     1200
+    ],
+    "family": "dip",
+    "label": "flag",
+    "role": "primary (registered)",
+    "fit_precision": 0.6,
+    "fit_recall": 1.0
+   },
+   "dip|basin": {
+    "theta": 0.03,
+    "window": [
+     700,
+     1000
+    ],
+    "family": "dip",
+    "label": "basin",
+    "role": "secondary (descriptive)",
+    "fit_precision": 0.3333333333333333,
+    "fit_recall": 0.5
+   },
+   "persist|flag": {
+    "theta": 0.08,
+    "window": [
+     700,
+     1000
+    ],
+    "family": "persist",
+    "label": "flag",
+    "role": "secondary (descriptive)",
+    "fit_precision": 0.6666666666666666,
+    "fit_recall": 0.3333333333333333
+   },
+   "persist|basin": {
+    "theta": 0.03,
+    "window": [
+     700,
+     1000
+    ],
+    "family": "persist",
+    "label": "basin",
+    "role": "secondary (descriptive)",
+    "fit_precision": 0.5,
+    "fit_recall": 0.5
+   }
+  }
+ },
+ "dip|flag": {
+  "CROSS (3070)": {
+   "label": "dip|flag CROSS",
+   "card": "3070",
+   "n": 17,
+   "flagged": 9,
+   "nonflagged": 8,
+   "precision": 0.7,
+   "recall": 0.7777777777777778,
+   "precision_ci95": [
+    0.3475471499400027,
+    0.9332604888222655
+   ],
+   "recall_ci95": [
+    0.3999064262836878,
+    0.9718550265221018
+   ],
+   "PASS": false,
+   "h1277": {
+    "flag_seeds_with_collapse": "6 / 9",
+    "nonflag_seeds_with_pull_0.1": "8 / 8"
+   },
+   "escape_rate": 0.47058823529411764,
+   "truth": "flag",
+   "seeds": {
+    "11": {
+     "flag": true,
+     "basin": false,
+     "marker": true,
+     "pull": 1650,
+     "collapse_step": 700
+    },
+    "12": {
+     "flag": false,
+     "basin": false,
+     "marker": true,
+     "pull": 1200,
+     "collapse_step": 850
+    },
+    "13": {
+     "flag": true,
+     "basin": false,
+     "marker": true,
+     "pull": 1300,
+     "collapse_step": 650
+    },
+    "14": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 850,
+     "collapse_step": null
+    },
+    "15": {
+     "flag": true,
+     "basin": true,
+     "marker": true,
+     "pull": null,
+     "collapse_step": 650
+    },
+    "16": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 750,
+     "collapse_step": null
+    },
+    "17": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 450,
+     "collapse_step": null
+    },
+    "18": {
+     "flag": true,
+     "basin": false,
+     "marker": true,
+     "pull": 1350,
+     "collapse_step": null
+    },
+    "27": {
+     "flag": false,
+     "basin": false,
+     "marker": true,
+     "pull": 1150,
+     "collapse_step": null
+    },
+    "28": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1050,
+     "collapse_step": null
+    },
+    "29": {
+     "flag": true,
+     "basin": false,
+     "marker": true,
+     "pull": 1350,
+     "collapse_step": 650
+    },
+    "30": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 650,
+     "collapse_step": null
+    },
+    "31": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 850,
+     "collapse_step": null
+    },
+    "32": {
+     "flag": true,
+     "basin": true,
+     "marker": true,
+     "pull": null,
+     "collapse_step": 650
+    },
+    "33": {
+     "flag": false,
+     "basin": false,
+     "marker": true,
+     "pull": 1200,
+     "collapse_step": null
+    },
+    "34": {
+     "flag": true,
+     "basin": true,
+     "marker": true,
+     "pull": null,
+     "collapse_step": 650
+    },
+    "43": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 450,
+     "collapse_step": null
+    }
+   }
+  },
+  "SAME (4060)": {
+   "label": "dip|flag SAME",
+   "card": "4060",
+   "n": 1,
+   "flagged": 0,
+   "nonflagged": 1,
+   "precision": 0.0,
+   "recall": null,
+   "precision_ci95": [
+    0.0,
+    0.9750000000000001
+   ],
+   "recall_ci95": [
+    null,
+    null
+   ],
+   "PASS": "incomplete (0 flagged, 1 non-flagged; need >= 8 each)",
+   "h1277": {
+    "flag_seeds_with_collapse": "0 / 0",
+    "nonflag_seeds_with_pull_0.1": "1 / 1"
+   },
+   "escape_rate": 1.0,
+   "truth": "flag",
+   "seeds": {
+    "19": {
+     "flag": false,
+     "basin": false,
+     "marker": true,
+     "pull": 1000,
+     "collapse_step": null
+    }
+   }
+  },
+  "role": "primary (registered)"
+ },
+ "dip|basin": {
+  "CROSS (3070)": {
+   "label": "dip|basin CROSS",
+   "card": "3070",
+   "n": 17,
+   "flagged": 3,
+   "nonflagged": 14,
+   "precision": 0.5,
+   "recall": 0.6666666666666666,
+   "precision_ci95": [
+    0.06758598648854294,
+    0.9324140135114571
+   ],
+   "recall_ci95": [
+    0.09429932405024608,
+    0.9915962413403874
+   ],
+   "PASS": "incomplete (3 flagged, 14 non-flagged; need >= 8 each)",
+   "h1277": {
+    "flag_seeds_with_collapse": "6 / 9",
+    "nonflag_seeds_with_pull_0.1": "8 / 8"
+   },
+   "escape_rate": 0.8235294117647058,
+   "truth": "basin",
+   "seeds": {
+    "11": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 1650,
+     "collapse_step": 700
+    },
+    "12": {
+     "flag": false,
+     "basin": false,
+     "marker": true,
+     "pull": 1200,
+     "collapse_step": 850
+    },
+    "13": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 1300,
+     "collapse_step": 650
+    },
+    "14": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 850,
+     "collapse_step": null
+    },
+    "15": {
+     "flag": true,
+     "basin": true,
+     "marker": true,
+     "pull": null,
+     "collapse_step": 650
+    },
+    "16": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 750,
+     "collapse_step": null
+    },
+    "17": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 450,
+     "collapse_step": null
+    },
+    "18": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 1350,
+     "collapse_step": null
+    },
+    "27": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1150,
+     "collapse_step": null
+    },
+    "28": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1050,
+     "collapse_step": null
+    },
+    "29": {
+     "flag": true,
+     "basin": false,
+     "marker": true,
+     "pull": 1350,
+     "collapse_step": 650
+    },
+    "30": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 650,
+     "collapse_step": null
+    },
+    "31": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 850,
+     "collapse_step": null
+    },
+    "32": {
+     "flag": true,
+     "basin": true,
+     "marker": false,
+     "pull": null,
+     "collapse_step": 650
+    },
+    "33": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1200,
+     "collapse_step": null
+    },
+    "34": {
+     "flag": true,
+     "basin": true,
+     "marker": true,
+     "pull": null,
+     "collapse_step": 650
+    },
+    "43": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 450,
+     "collapse_step": null
+    }
+   }
+  },
+  "SAME (4060)": {
+   "label": "dip|basin SAME",
+   "card": "4060",
+   "n": 1,
+   "flagged": 0,
+   "nonflagged": 1,
+   "precision": null,
+   "recall": null,
+   "precision_ci95": [
+    null,
+    null
+   ],
+   "recall_ci95": [
+    null,
+    null
+   ],
+   "PASS": "incomplete (0 flagged, 1 non-flagged; need >= 8 each)",
+   "h1277": {
+    "flag_seeds_with_collapse": "0 / 0",
+    "nonflag_seeds_with_pull_0.1": "1 / 1"
+   },
+   "escape_rate": 1.0,
+   "truth": "basin",
+   "seeds": {
+    "19": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1000,
+     "collapse_step": null
+    }
+   }
+  },
+  "role": "secondary (descriptive)"
+ },
+ "persist|flag": {
+  "CROSS (3070)": {
+   "label": "persist|flag CROSS",
+   "card": "3070",
+   "n": 17,
+   "flagged": 9,
+   "nonflagged": 8,
+   "precision": 1.0,
+   "recall": 0.3333333333333333,
+   "precision_ci95": [
+    0.2924017738212866,
+    1.0
+   ],
+   "recall_ci95": [
+    0.07485463141969181,
+    0.7007049437914596
+   ],
+   "PASS": false,
+   "h1277": {
+    "flag_seeds_with_collapse": "6 / 9",
+    "nonflag_seeds_with_pull_0.1": "8 / 8"
+   },
+   "escape_rate": 0.47058823529411764,
+   "truth": "flag",
+   "seeds": {
+    "11": {
+     "flag": true,
+     "basin": false,
+     "marker": true,
+     "pull": 1650,
+     "collapse_step": 700
+    },
+    "12": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1200,
+     "collapse_step": 850
+    },
+    "13": {
+     "flag": true,
+     "basin": false,
+     "marker": true,
+     "pull": 1300,
+     "collapse_step": 650
+    },
+    "14": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 850,
+     "collapse_step": null
+    },
+    "15": {
+     "flag": true,
+     "basin": true,
+     "marker": false,
+     "pull": null,
+     "collapse_step": 650
+    },
+    "16": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 750,
+     "collapse_step": null
+    },
+    "17": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 450,
+     "collapse_step": null
+    },
+    "18": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 1350,
+     "collapse_step": null
+    },
+    "27": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1150,
+     "collapse_step": null
+    },
+    "28": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1050,
+     "collapse_step": null
+    },
+    "29": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 1350,
+     "collapse_step": 650
+    },
+    "30": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 650,
+     "collapse_step": null
+    },
+    "31": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 850,
+     "collapse_step": null
+    },
+    "32": {
+     "flag": true,
+     "basin": true,
+     "marker": false,
+     "pull": null,
+     "collapse_step": 650
+    },
+    "33": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1200,
+     "collapse_step": null
+    },
+    "34": {
+     "flag": true,
+     "basin": true,
+     "marker": true,
+     "pull": null,
+     "collapse_step": 650
+    },
+    "43": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 450,
+     "collapse_step": null
+    }
+   }
+  },
+  "SAME (4060)": {
+   "label": "persist|flag SAME",
+   "card": "4060",
+   "n": 1,
+   "flagged": 0,
+   "nonflagged": 1,
+   "precision": null,
+   "recall": null,
+   "precision_ci95": [
+    null,
+    null
+   ],
+   "recall_ci95": [
+    null,
+    null
+   ],
+   "PASS": "incomplete (0 flagged, 1 non-flagged; need >= 8 each)",
+   "h1277": {
+    "flag_seeds_with_collapse": "0 / 0",
+    "nonflag_seeds_with_pull_0.1": "1 / 1"
+   },
+   "escape_rate": 1.0,
+   "truth": "flag",
+   "seeds": {
+    "19": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1000,
+     "collapse_step": null
+    }
+   }
+  },
+  "role": "secondary (descriptive)"
+ },
+ "persist|basin": {
+  "CROSS (3070)": {
+   "label": "persist|basin CROSS",
+   "card": "3070",
+   "n": 17,
+   "flagged": 3,
+   "nonflagged": 14,
+   "precision": 1.0,
+   "recall": 0.3333333333333333,
+   "precision_ci95": [
+    0.025,
+    1.0
+   ],
+   "recall_ci95": [
+    0.008403758659612636,
+    0.9057006759497539
+   ],
+   "PASS": "incomplete (3 flagged, 14 non-flagged; need >= 8 each)",
+   "h1277": {
+    "flag_seeds_with_collapse": "6 / 9",
+    "nonflag_seeds_with_pull_0.1": "8 / 8"
+   },
+   "escape_rate": 0.8235294117647058,
+   "truth": "basin",
+   "seeds": {
+    "11": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 1650,
+     "collapse_step": 700
+    },
+    "12": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1200,
+     "collapse_step": 850
+    },
+    "13": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 1300,
+     "collapse_step": 650
+    },
+    "14": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 850,
+     "collapse_step": null
+    },
+    "15": {
+     "flag": true,
+     "basin": true,
+     "marker": false,
+     "pull": null,
+     "collapse_step": 650
+    },
+    "16": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 750,
+     "collapse_step": null
+    },
+    "17": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 450,
+     "collapse_step": null
+    },
+    "18": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 1350,
+     "collapse_step": null
+    },
+    "27": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1150,
+     "collapse_step": null
+    },
+    "28": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1050,
+     "collapse_step": null
+    },
+    "29": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 1350,
+     "collapse_step": 650
+    },
+    "30": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 650,
+     "collapse_step": null
+    },
+    "31": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 850,
+     "collapse_step": null
+    },
+    "32": {
+     "flag": true,
+     "basin": true,
+     "marker": false,
+     "pull": null,
+     "collapse_step": 650
+    },
+    "33": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1200,
+     "collapse_step": null
+    },
+    "34": {
+     "flag": true,
+     "basin": true,
+     "marker": true,
+     "pull": null,
+     "collapse_step": 650
+    },
+    "43": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 450,
+     "collapse_step": null
+    }
+   }
+  },
+  "SAME (4060)": {
+   "label": "persist|basin SAME",
+   "card": "4060",
+   "n": 1,
+   "flagged": 0,
+   "nonflagged": 1,
+   "precision": null,
+   "recall": null,
+   "precision_ci95": [
+    null,
+    null
+   ],
+   "recall_ci95": [
+    null,
+    null
+   ],
+   "PASS": "incomplete (0 flagged, 1 non-flagged; need >= 8 each)",
+   "h1277": {
+    "flag_seeds_with_collapse": "0 / 0",
+    "nonflag_seeds_with_pull_0.1": "1 / 1"
+   },
+   "escape_rate": 1.0,
+   "truth": "basin",
+   "seeds": {
+    "19": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1000,
+     "collapse_step": null
+    }
+   }
+  },
+  "role": "secondary (descriptive)"
+ }
+}
