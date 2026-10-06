@@ -1,0 +1,16 @@
+06:05:59 data sha 6ee3ef95405dc43b094824dff8973753c587fe95a00762d2023bd64a941504f2 a0087fe4a7496a47f76d9436e6bb089c8a8869f3f343f71057355e127d0c33da
+NVIDIA GeForce RTX 3090, 595.71.05
+06:05:59 start boxes/runs_fsq/s128_slots/s5_k1
+06:05:59 start boxes/runs_fsq/s128_slots/s5_k2
+09:04:59 evaluated boxes/runs_fsq/s128_s5_s1 rc 0
+09:04:59 evaluated boxes/runs_fsq/s128_slots/s5_k1 rc 0
+09:04:59 start boxes/runs_fsq/s128_slots/s5_k3
+09:05:19 evaluated boxes/runs_fsq/s128_s5_s102 rc 0
+09:05:19 evaluated boxes/runs_fsq/s128_slots/s5_k2 rc 0
+09:05:19 start boxes/runs_fsq/s128_slots/s5_k4
+09:10:19 evaluated boxes/runs_fsq/s128_s5_s4 rc 0 no-eval
+12:02:59 evaluated boxes/runs_fsq/s128_s5_s3 rc 0
+12:02:59 evaluated boxes/runs_fsq/s128_slots/s5_k3 rc 0
+12:06:19 evaluated boxes/runs_fsq/s128_s5_s104 rc 0
+12:06:19 evaluated boxes/runs_fsq/s128_slots/s5_k4 rc 0
+12:06:19 QUEUE_DONE

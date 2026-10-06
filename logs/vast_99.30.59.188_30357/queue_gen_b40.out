@@ -1,0 +1,22 @@
+08:39:01 data sha 6ee3ef95405dc43b094824dff8973753c587fe95a00762d2023bd64a941504f2 a0087fe4a7496a47f76d9436e6bb089c8a8869f3f343f71057355e127d0c33da
+NVIDIA GeForce RTX 3090, 595.71.05
+08:39:01 start boxes/runs_fsq/s129_slots/driver
+08:48:34 evaluated boxes/runs_fsq/s129_s5_s1 rc 0 no-eval
+08:48:34 evaluated boxes/runs_fsq/s129_s5_s2 rc 0 no-eval
+08:48:34 evaluated boxes/runs_fsq/s129_s5_s2_clock rc 0 no-eval
+08:51:04 evaluated boxes/runs_fsq/s129_s5_s3 rc 0 no-eval
+09:00:34 evaluated boxes/runs_fsq/s129_s5_s101 rc 0 no-eval
+09:00:34 evaluated boxes/runs_fsq/s129_s5_s4_clock rc 0 no-eval
+09:05:04 evaluated boxes/runs_fsq/s129_s5_s102 rc 0 no-eval
+09:09:34 evaluated boxes/runs_fsq/s129_s5_s103 rc 0 no-eval
+09:14:34 evaluated boxes/runs_fsq/s129_s5_s104 rc 0 no-eval
+09:19:34 evaluated boxes/runs_fsq/s129_s5_s201 rc 0 no-eval
+09:29:34 evaluated boxes/runs_fsq/s129_s5_s203 rc 0 no-eval
+09:34:34 evaluated boxes/runs_fsq/s129_s5_s204 rc 0 no-eval
+10:37:34 evaluated boxes/runs_fsq/s129_s5_s4 rc 0
+10:42:34 evaluated boxes/runs_fsq/s129_s5_s202_clock rc 0 no-eval
+12:01:04 evaluated boxes/runs_fsq/s129_s5_s202 rc 0
+12:06:04 evaluated boxes/runs_fsq/s129_s5_s301 rc 0 no-eval
+12:06:04 evaluated boxes/runs_fsq/s129_s5_s301_clock rc 0 no-eval
+12:06:34 evaluated boxes/runs_fsq/s129_slots/driver rc 0
+12:06:34 QUEUE_DONE
