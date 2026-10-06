@@ -5530,6 +5530,11 @@ fixed before any further §132 run). The pilot is near-exact, in context, SERIAL
   carry state across tables): "NOT-LEARNED (registered label): near-exact in-context tracking, with residual errors concentrated on
   tables whose code machine is open". The per-table breakdown comes from the kept model (descriptive).
 * Rung 2 still opens only on a rung-1 PASS.
+* **Reading of the per-table breakdown, fixed before it runs (2026-10-06 12:04 EDT; Audit / claude-13's review of `scratch/table132_breakdown.py`):**
+  - The exact replay may miss 0.9865 by a few chains: bf16 forwards differ between 3090 hosts (128-4), and the training host is gone.
+    |long_acc_replay − 0.9865| × 2,000 is read as host-dependent flips, not a scorer error.
+  - **The fresh 68-table sample (100 problems × 512 per table) is the primary measure** of where the residual sits. The replay's
+    per-table attribution is the breakdown host's forward only.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
