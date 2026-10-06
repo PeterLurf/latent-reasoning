@@ -216,17 +216,23 @@
    "serial_majority": false
   },
   "codi": {
-   "n": 1,
+   "n": 3,
    "competent": [],
    "did_not_learn": [
-    1
+    1,
+    2,
+    3
    ],
    "faithful": true,
    "intact_acc": {
-    "1": 0.0075
+    "1": 0.0075,
+    "2": 0.0065,
+    "3": 0.0085
    },
    "cum512": {
-    "1": 0.0
+    "1": 0.0,
+    "2": 0.0,
+    "3": 0.0
    },
    "donor": {
     "1": {
@@ -239,6 +245,32 @@
       ],
       "donor_consistent": 0.0095,
       "recipient_consistent": 0.008,
+      "chance_overlap": 0.005
+     }
+    },
+    "2": {
+     "block": {
+      "thoughts": [
+       0,
+       1,
+       2,
+       3
+      ],
+      "donor_consistent": 0.009,
+      "recipient_consistent": 0.007,
+      "chance_overlap": 0.005
+     }
+    },
+    "3": {
+     "block": {
+      "thoughts": [
+       0,
+       1,
+       2,
+       3
+      ],
+      "donor_consistent": 0.006,
+      "recipient_consistent": 0.0085,
       "chance_overlap": 0.005
      }
     }

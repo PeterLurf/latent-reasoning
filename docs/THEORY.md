@@ -206,7 +206,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 116 | Strict C4: final-answer training through self-decoded restarts (OPDEF: op definitions only; NONE: no shorts) | registered (conditional on §112 f = 0.1) | **open** |
 | 117 | One model for C1 + C4 + C6: self-decoded restarts + Markov segments + reader (MK vs staged ST) | registered (conditional on §111 READ REL) | **open** |
 | 118 | Fully latent at inference: text-path anchor vs longer silent stretches (S5, on READ) | **ANCHOR 5/5 no-snap exact to 2,048, serial (C1 + C2 + C6, text-anchored)**; READ control 2/5; LONG running | **open** (LONG) |
-| 119 | Controlled C1 baselines: Coconut, CODI, SIM-CoT on our S5 protocol (donor + length) | registered (queued behind §117 / §118) | **open** |
+| 119 | Controlled C1 baselines: Coconut, CODI, SIM-CoT on our S5 protocol (donor + length) | **CONTROLLED-C1 not readable:** every baseline did not learn (Coconut 3/3, SIM-CoT 3/3, CODI 3/3 at chance; text CoT learns); no competent published comparator, so a competence (C3) finding, not a C1 one | closed |
 | 120 | FSQ digital recurrence: a learned discrete snap every step, no template or schedule (S5 + flip-flop pilot) | pilot not met (S5 1/2 per arm: code collapse / loss basin); **flip-flop 4/4 in both arms, 2 seeds certified (Moore 2)**; extension deferred to §123 | closed (pilot) |
 | 121 | Multiplication's carrier shortcut: text-path anchor + reader vs reader alone (4×4, Markov) | CARRY-3 0/3: the anchor binds to a dead text path (T1 = 0); READ lifts op 3 to 0.64 / 0.93 by recomputation, with no sum carrier; triggers §122 | closed |
 | 122 | TEXT-MIX keeps the anchor's target competent (conditional on §121; stop rule for the multiplication line) | CARRY-3 0/3 (op 3 0.32–0.41) with a competent text path (t1 1.0); **STOP RULE fired**: the multiplication latent-carriage line pauses | closed |
@@ -5630,6 +5630,29 @@ with checkpoints; local 8 GB cards run short tests only). The s131x held-out run
   - Fixed in 105545b8: micro now applies at L > 16. It is gradient accumulation, so memory only, and a no-op at micro 1.
   - Runs with micro > 1 after this fix differ from earlier runs at the bit level for L of 17–31 (summation order). Each run is read
     on its own.
+
+**§119 result (2026-10-06 14:02 EDT; scored by `theory/score_s119.py`; all nine seeds in; every port met faithfulness guard (b), 119-1). CONTROLLED-C1
+is not readable: no published method learned the task. 119-3's pre-stated wording applies.**
+
+| Method | Seeds | Intact final-state accuracy (chance 1/120 = 0.0083) | Guard (a) | Notes |
+|---|---|---|---|---|
+| Coconut (c = 1) | 3 | 0.007 / 0.0085 / 0.0115 | did not learn, 3/3 | text CoT (stage 0) learns, to loss 1e-4 |
+| SIM-CoT (c = 2, from Coconut) | 3 | 0.007 / 0.014 / 0.007 | did not learn, 3/3 | degraded start in 3/3 (119-3); s1 a constant predictor; s3's step decoder partly reads state |
+| CODI (4 latents, LoRA) | 3 | 0.0075 / 0.0065 / 0.0085 | did not learn, 3/3 | teacher (text CoT) CE 0.000; latent student at chance |
+
+* **Wording (fixed in 119-3):** "Under their released recipes, at our matched budget (24k updates, bs 64, a 3-value LR sweep per method)
+  on the chunked S5 host, Coconut, SIM-CoT and CODI do not learn 4-op S5 composition through latent thoughts. In-chunk final-state
+  accuracy is below 0.90 in every seed (at chance). Text chain-of-thought does learn (Coconut stage 0; CODI's teacher)."
+  - "There is no competent published comparator for our serial C1 on this protocol, so the C1 claim stays uncontrolled by
+    baselines."
+  - "This is a competence finding (C3: latent methods below text at matched compute on this task), not evidence about their serial
+    use."
+  - Limit: "at this budget on this host", never "cannot".
+* **Disclosures:** each LR was picked by the registered criterion at noise level (119-2 / 119-4 / 119-5). CODI's first sweep was
+  void (an autocast-cache bug, fixed in c1caef75). The step-key logging bug was fixed. CODI s2 / s3 ran bf16 on an RTX 3090, and s1
+  on an A5000.
+* **For contrast (not part of §119's rule):** our own method's serial C1 holds on this task family, e.g. §111 READ (5/5) and §128's S5 /
+  CYC / MOD / RDFA (exact and SERIAL). No published baseline reaches competence here to compare against.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
