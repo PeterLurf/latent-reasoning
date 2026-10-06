@@ -621,3 +621,12 @@
 13:08:33 certcover128 queue start (waited on pids 20316 18516)
 13:08:33 certcover128 queue done
 13:19:26 user via Audit ~13:10: local s6_4060 / s30_3070 / s131x s401_2070 (+ relaunched s402) stopped; partials -> *.void_stopped; c1_q_131x_2070.sh disabled (stop file + .disabled); local cards: short jobs that pass a memcheck with >= 1.5 GiB free, one per card (user rule)
+13:24:26 c1_q_cert128_2070 start: cert on cuda:2 (nvidia-smi 0 'RTX 2070', limit 6656 MiB of 8192)
+13:24:26 c1_q_contr128_3070 start: contraction on cuda:1 (nvidia-smi 2 'RTX 3070', limit 6656 MiB of 8192)
+13:24:30 c1_q_cert128_2070 s128_ff_s1 cert rc 0 out yes peak_card_mem 332 MiB of 8192 (cuda:2)
+13:24:34 c1_q_cert128_2070 s128_ff_s2 cert rc 0 out yes peak_card_mem 427 MiB of 8192 (cuda:2)
+13:24:39 c1_q_contr128_3070 s128_ff_s1 contraction rc 0 out yes peak_card_mem 1227 MiB of 8192 (cuda:1)
+13:24:39 c1_q_cert128_2070 s128_ff_s3 cert rc 0 out yes peak_card_mem 427 MiB of 8192 (cuda:2)
+13:24:43 c1_q_cert128_2070 s128_ff_s4 cert rc 0 out yes peak_card_mem 626 MiB of 8192 (cuda:2)
+13:24:52 c1_q_contr128_3070 s128_ff_s2 contraction rc 0 out yes peak_card_mem 1227 MiB of 8192 (cuda:1)
+13:25:05 c1_q_contr128_3070 s128_ff_s3 contraction rc 0 out yes peak_card_mem 1227 MiB of 8192 (cuda:1)

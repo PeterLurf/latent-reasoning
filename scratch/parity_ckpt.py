@@ -35,7 +35,7 @@ rB, B = run("B", ["--ckpt_every", "200", "--stop_after", "200"])
 C = os.path.join(a.out, "C"); shutil.copytree(B, C)
 rC, _ = run("C", ["--ckpt_every", "200", "--resume", os.path.join(C, "ckpt_last.pt"), "--stop_after", "400"])
 with open(os.path.join(a.out, "D.log"), "w") as f:
-    rD = subprocess.call([sys.executable, "-u", "-m", "boxes.fsq120", "--family", "s5", "--arm", "final", "--seed", "2", "--steps", "40", "--sched_scale", "0.002",
+    rD = subprocess.call([sys.executable, "-u", "-m", "boxes.fsq120", "--family", "s5", "--arm", "final", "--seed", "2", "--steps", "40", "--sched_scale", "0.002", "--bs", "8",
                           "--micro", "1", "--probe127", "--no_cert", "--ckpt_every", "20", "--test_n", "4", "--test_len", "8", "--ext_n", "2", "--donor_n", "4",
                           "--margin_n", "4", "--device", a.device, "--out", os.path.join(a.out, "D")], stdout=f, stderr=subprocess.STDOUT, cwd=ROOT)
 LA, LB, LC, LA2 = losses(A), losses(B), losses(C), losses(A2)
