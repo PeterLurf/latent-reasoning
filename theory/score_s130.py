@@ -46,7 +46,8 @@ def features(rows):
     pull = next((r["step"] for r in pr if (r.get("L1_dmean") or 0) > 0.05), None)
     low = [r["step"] for i, r in enumerate(pr[1:], 1) if pr[i - 1]["step"] >= 600 and r["zb_std_in"] < 0.04 and pr[i - 1]["zb_std_in"] < 0.04]
     dmax = max([(r.get("L1_dmean") or 0) for r in pr if r["step"] <= 2000] or [0])
-    return {"flag": flag, "basin": bool(flag and pull is None), "pull": pull, "collapse": bool(low), "collapse_step": low[0] if low else None, "dmean_max": dmax,
+    rec = next((r["step"] for r in pr if low and r["step"] > low[0] and r["zb_std_in"] >= 0.05), None)   # 130-1: recovery after collapse
+    return {"flag": flag, "basin": bool(flag and pull is None), "pull": pull, "collapse": bool(low), "collapse_step": low[0] if low else None, "recovery_step": rec, "dmean_max": dmax,
             "loss_1k": g(1000), "loss_2k": g(2000), "probes": [(r["step"], r["zb_std_in"]) for r in pr]}
 
 
@@ -121,7 +122,8 @@ def main():
     mode = sys.argv[1] if len(sys.argv) > 1 else "fit"
     if mode == "fit":
         F = collect("4060", FIT_SEEDS); fs = list(F.values())
-        print("FIT seeds", {s: (f["flag"], f["pull"], f["collapse_step"], round(f["dmean_max"], 3)) for s, f in F.items()})
+        print("FIT seeds (flag, basin, pull, collapse, recovery, dmean_max)",
+              {s: (f["flag"], f["basin"], f["pull"], f["collapse_step"], f["recovery_step"], round(f["dmean_max"], 3)) for s, f in F.items()})
         nf, nn = sum(f["flag"] for f in fs), sum(not f["flag"] for f in fs)
         if nf < 3 or nn < 3:
             print("FIT incomplete: %d flagged, %d non-flagged (need >= 3 each; extend with seeds 35..42)" % (nf, nn)); return
