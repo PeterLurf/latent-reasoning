@@ -4919,6 +4919,24 @@ seeds.**
   - A stopping rule on label counts cannot inform θ or the window, or bias precision or recall.
 * This narrows §130's "every TEST replay stays unread" to the quantities above. The rules are unchanged.
 
+**Note 127-11 (2026-10-06 05:37 EDT; descriptive, SKIP Stage 2 s4 read by Theory from the raw files; Audit reproduced; before s1 / s3, ρ_ff
+and the control s4 are read). The first entry-fix cell that escapes and learns, and its trained chain runs on the slot carrier
+alone.**
+* **SKIP s4** (b30 group, RTX 3090; driver to be recorded from nvidia-smi, since the host predates train_driver):
+  - Loss 8.54 / 4.72 / 3.32 at 100 / 1k / 2k (no flag), final 2e-5, 0 non-finite steps.
+  - Delivered: skip_grad_q 0.0078 / 0.0030 / 0.0063.
+  - **Long accuracy 1.0 at 16–512, 0.998 at 2,048.** Donor 1.0 at positions 2 / 4 / 6 with recipient = chance: SERIAL.
+  - **Skip-off (127-4; skip maps zeroed at test): 1.0 at 16 / 64 / 512, still SERIAL.** The skip paths are not needed at test,
+    so the skip acted as a training-time aid.
+* **What this does and does not show (Audit):**
+  - Whether s4 is a basin seed on the plain recipe is answered by the concurrent control s4 (`s127_s5_ctrl_s4`, same host
+    group). LR10 and STD2 s4 plateaued on 595.71, but under other changes.
+  - SKIP's ENTRY-FIX still needs s1 and s3 exact (s2 is not), ρ_ff ≤ 0.28 in the exact seeds (fp32 post-hoc pending), and
+    the FF guard (s1 passed on accuracy, 127-10; s2 pending).
+  - ADOPT is then read on cost per accepted seed against the control's.
+* **The record of escaped seeds, updated:** 1 of 6 escaped arm-seeds learned (SKIP s4). The others (SKIP / STD2 / LR10 / VAR s2,
+  and RAW-H) did not.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
