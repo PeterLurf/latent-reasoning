@@ -25,7 +25,7 @@ IN_SAMPLE = {
     "s126_s5_rawh_s4", "s127_s5_lr10_s2", "s127_s5_skip_s2", "s127_s5_skip_s2_rerun", "s127_s5_skip_s4", "s127_s5_std2_s1",
     "s127_s5_std2_s2", "s127_s5_var_s2_rerun"}
 SAME_TRAJECTORY = {"s127_s5_skip_s2", "s128_s5_s3"}   # s128_s5_s3 is record-for-record s127_s5_ctrl_s3 (Audit, 08:20); each counted once   # 131-1 (b): identical to s127_s5_skip_s2_rerun up to 9k (ratio 1.057 both); counted once, as the rerun
-HELD = re.compile(r"^(s127_|s128_|s130chk_)")
+HELD = re.compile(r"^(s127_|s128_|s130chk_|s131x_)")   # 131-3: s131x_* added before those runs exist
 SEEN_AT_REG = set(["s127_ff_skip_s1", "s127_ff_skip_s2", "s128_cyc_s1", "s128_cyc_s2", "s128_cyc_s3", "s128_mod_s1", "s128_mod_s2", "s128_mod_s3", "s128_mod_s4", "s128_rdfa_s1", "s128_rdfa_s2", "s128_rdfa_s3", "s128_rdfa_s4"])   # held-out runs on disk when the scorer first ran (all exact, none flagged); the rest are "prospective"
 
 
@@ -80,7 +80,7 @@ def collect(names):
             continue
         f2, f4, r, l4, f4w = ratios(L)
         e = json.load(open(ev)); a = e.get("long_acc")
-        fam = d.split("_")[1] if d.startswith(("s127_", "s128_")) else ("s5" if "_s5_" in d else "?")
+        fam = d.split("_")[1] if d.startswith(("s127_", "s128_", "s131x_")) else ("s5" if "_s5_" in d else "?")
         out[d] = {"family": fam, "flag2k": f2, "flag4k": f4, "flag4k_windowed": f4w, "ratio": round(r, 3), "loss_4k": round(l4, 3), "long_acc": a, "exact": (a or 0) >= 0.99,
                   "final_loss": e.get("final_loss"), "gpu": e.get("train_gpu", e.get("gpu"))}
     return out
