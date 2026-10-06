@@ -807,3 +807,5 @@ TRIAL RESULT 2026-10-05 16:33: 580-driver host 137.175.22.196 (offer 41028909, i
 54406366 vast offer 49745142 created 2026-10-05 20:54: label gen-b26, queue scratch/gen_q_b26.txt (logged at create by vdeploy_toy.sh)
 54396531 vast | gen_b23 DESTROYED_VERIFIED 2026-10-05 20:59 after verified per-run fetch (boxes/runs_fsq/s123_ff_dither025_s1)
 54406366 vast | gen-b26 RTX 3090 $0.176/h 96.20.36.104:40072 | §126 ANNEAL s2 fixed-cast rerun (note 126-10) | 2026-10-05 20:59
+54411699 vast offer 23307645 created 2026-10-05 21:40: label gen-d1, queue scratch/gen_q_d1.txt (logged at create by vdeploy_toy.sh)
+54379980 vast | gen_c4 DESTROYED_VERIFIED 2026-10-05 21:53 after verified per-run fetch (boxes/runs_s5/s124_base_s29 boxes/runs_s5/s124_copy_s29 boxes/runs_s5/s124_expose_s29)
