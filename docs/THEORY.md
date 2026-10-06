@@ -5879,6 +5879,27 @@ gradient unchanged, as in FSQ. Everything else matches §133 / 133-1 / 133-3.
   - the dialect and copy-donor fields are printed;
   - a guard run without a CERT file reads "incomplete", not ok.
 
+**Note 134-4 (2026-10-06 15:23 EDT, before any §134 run; the Audit helper's harness review of b693aa53, endorsed by Audit). Loss logging, copy weight and ramp pins.**
+* **(a) "loss" logs the main chain only.** The harness logged the total (main mean + copy CE) as "loss". That makes the 123-3 flag
+  reading, 134-2(b)'s 2.6k → 4k ratio and the 4.5k ≤ 3.0 statistic incomparable with every plain comparator.
+  - **Fixed now:** each training log record has "loss" = the mean CE over the main rows only, as in the plain recipe.
+  - "copy_loss" is logged separately, and **"loss_total"** (main + copy) is logged beside them. The 127-3 guard reads the total.
+  - A §134 run whose log has copy_loss but no loss_total is from the old harness: an **error row (invalid)**, and its loss-based
+    readings are not made.
+* **(b) Copy weight, fixed now:** **L = CE_main + 1.0 · CE_copy.** Each term is the mean over its own rows: 58 main rows and 6 copy
+  rows at bs 64.
+  - The two terms have **equal total weight**, so a copy row's gradient weight is about 9.7× a main row's. This is the standard
+    auxiliary-loss convention (λ = 1 on the mean, as for §118's anchor). Fast anchoring at entry is the point of the arm, and the copy CE
+    falls quickly, so its gradient shrinks after entry whatever its weight.
+  - The per-row-normalised alternative (copy weight 6/58 ≈ 0.10 on the mean) is a weaker anchor. It is not registered: it is a
+    possible ablation after a PASS.
+  - The weight is the same for every seed and guard run.
+* **(b′) Disclosed:** copy rows replace main rows, so the main task sees 58 rows per step against 64 in the plain comparator (9 %
+  fewer examples, a slightly noisier main gradient). That is as registered ("a fraction f of each batch's rows"). The direction of its
+  effect on entry is not known, and it is stated beside the result.
+* **(c) Ramp pins:** score_s134's args check now also requires **p_hard_start 2000 and p_hard_end 4000** (§120's ramp, recorded as
+  p_hard_ramp), so a candidate-3 ramp setting cannot enter a §134 directory unnoticed. stop_plateau false is already required.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
