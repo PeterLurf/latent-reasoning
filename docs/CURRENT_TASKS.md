@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-05 22:15 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-06 00:55 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -45,23 +45,23 @@ unwatched host whose queue ends just bills idle until its watcher restarts).
    host was BAD) and §119 CODI rerun `bash scratch/gen_deploy_119.sh "<offer> 3"` (scratch/gen_q_d3.txt, fix c1caef75).
 6. Re-arm the waiters (watch_any2.sh on all tags); Audit restarts its gpu_watch / cron.
 
-### Vast (all `scratch/gen_deploy_*.sh`, auto_drain_gen5 + `watch_any2.sh` waiters; ids/ssh in `scratch/live_hosts.txt`, `scratch/pods.txt`)
+### Vast (00:55 2026-10-06; `scratch/gen_deploy_*.sh`, auto_drain_gen5 + `watch_any2.sh`; exclusions `scratch/vast_exclude_ips.txt`; 595.x drivers OK)
 
-| Tag | GPU | Work |
+| Tag | GPU / driver | Work |
 |---|---|---|
-| s4 | 3090 | §101 b0.01 s3 (decisive seed), ~10 h |
-| a2 / a4 | 3090 Ti / 3090 | §118 LONG s82 / s83 |
-| j1 | A5000 | §117 MK s51 + ST s61 (loss ~9.3, failing like the others) |
-| b27 | 3090 | §127 Stage 1 seed 2: VAR + SKIP (`--stop_plateau`), then replay_basin s1 (bf16); b28 (STD2 + LR10 + replay s2) was a BAD HOST -> redeploy after reboot |
-| c2 | A10 | §124 seed-28 trio |
-| c3 | 3090 | §124 COPY s26-27 (+BASE) |
-| d1 | A5000 | §119 Coconut lr sweep s1 (3e-5 / 1e-4 / 3e-4, P=3) |
-| (d3) | - | §119 CODI sweep RERUN after the autocast-cache fix (d2's three runs void: LoRA got no gradient) - deploy after reboot |
+| s4 | 3090 | §101 b0.01 s3 (decisive seed) |
+| a4 | 3090 | §118 LONG s83 (s82 done: 1.0 / 2048 1.0) |
+| j1, d1 | A5000 | draining (§117 MK s51 + ST s61; §119 Coconut s1 sweep: all lrs at chance -> "did not learn") |
+| c2 / c3 | A10 / 3090 | §124 seed-28 trio / COPY+BASE s26-27 |
+| b28 | 3090, 595.71 | §127 Stage 1 STD2 + LR10 s2, then replay_basin s2 (Audit: parity check; rerun on <= 570 if it fails) |
+| b29 | 3090, 595.71 (deploying) | §127 reruns: VAR (batch estimator) + SKIP (guard), s2 |
+| b30 / b31 | 3090, 595.71 (b30 deploying) | §127 Stage 2 SKIP s1/s3/s4, FF s1-2 + control s3-4 (one driver class: matched unit) |
+| e30-e34 | 3090 / 3090 Ti, 595.x (e30 deploying) | §128 one family per host (s5 / ff / cyc / mod / rdfa), 4 restart slots each (scratch/restart128.py); held-out hosts: watch memory when a check run is claimed |
 
-* §119 next: pick lr by train_split_final_acc -> rename the chosen s1 to s119_<method>_s1, seeds 2-3; SIM-CoT from Coconut s<seed> (--init model.pt).
-* §127: stopped runs (plateau at 2k) have no eval.json; the drain stores them as <dir>.void_partial -> rename back to <dir> (scorer reads log.jsonl). Escaped arms -> Stage 2 (S5 s1/s3/s4, FF s1-2, + ctrl s3-4).
-* Drains keep failed runs' args.json + log.jsonl as `<dir>.void_partial` (99192404).
-* Local RAM: GPU jobs hold 7-10 GB private each; commit nearly full -> run CPU checks one at a time (two smokes died silently).
+* §128: slot summaries in boxes/runs_fsq/s128_slots/<fam>_k<k>/eval.json; stopped attempts come back as <dir>.void_partial -> rename to <dir>.
+* §127: stopped runs likewise; replay_basin outputs -> theory/results/replay_basin_s{1,2}.jsonl.
+* §119 next (after j1 / d1 destroyed, cap 16): d3 CODI sweep rerun (autocast fix c1caef75), d4 Coconut s2-3 at lr 3e-5 (note 119-2), then the SIM-CoT sweep from Coconut s1 lr 3e-5 (`--init` model.pt via RESUME_FILES).
+* Rename the chosen Coconut s1 (lr 3e-5) to s119_coconut_s1 for score_s119 (keep the sweep dirs).
 
 ### Local PC (torch `cuda:0` = 4060, `cuda:1` = 3070, `cuda:2` = 2070; py_local_worker2, log `logs/c1_local.log`)
 
