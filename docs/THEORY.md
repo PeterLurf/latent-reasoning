@@ -4554,7 +4554,8 @@ Coconut did not learn at any of the three LRs, and §119 continues exactly as re
   number of steps after which the state no longer depends on the start. 4,000 strings give median 9, p90 18.
 * For i.i.d. uniform inputs, this has the same distribution as the **effective suffix** at a position (the shortest
   synchronising suffix ending there). Measured on 2,830 positions of a 20,000-step string: median 9, p90 18, the same.
-* claude-13's 12 / 26 measures a different quantity, and is named in the result once claude-13 states its definition.
+* Earlier, claude-13 reported 12 / 26 for this statistic. It retracted that at 00:22: a scripting error fed each state its own
+  independent input instead of one common word. Corrected, it gives median 9 / p90 18, and its effective_suffix agrees.
 * The registered measure (effective-suffix distribution and accuracy binned by it) is unchanged.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
