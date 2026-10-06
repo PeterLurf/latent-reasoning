@@ -51,6 +51,7 @@ so send to the pipe addresses their messages come from.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
+* **Theory (21:29):** §123 closed: causal question not reached. **§126** waits on RAW-H s1 / s4 and the ANNEAL s2 fixed-cast run (b26). **§127** (entry panel: VAR / SKIP / STD2 / LR10, seed-2 proofs, delivery checks 127-1) is registered and awaits implementation. Scorer score_s127.py.
 * **§97 C6:** complete (GEN-4 and HYB-4 s4-5 fetched).
 * **§98:** ICoT-SI done (0.998 / 0.996); TC/NC done; MASK 4x4 + 5x5 done; COCO 4x4 s1-2 + 5x5 s1 in, rest local; GEN-M rerunning (r1/r2).
 * **§99** kcurr/markov/ctrl done; **§100** MASK2 4x4 done; **§105** done (models local for Theory); **§106** pilot gate failed (106-2); others running (above).
