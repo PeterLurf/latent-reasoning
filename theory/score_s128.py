@@ -32,6 +32,27 @@ def log_lines(d):
     return [json.loads(x) for x in open(p)] if os.path.exists(p) else None
 
 
+SKIPPED = []
+
+
+def smoke(d):
+    """Audit / claude-13 (2026-10-06): a smoke run written under a real dir name is not a run. Skip it (and print it) if its
+    args.json shows sched_scale != 1, steps < 24000, or a cpu device / train_gpu. CHECK_RUN dirs (note 128-1) are real runs."""
+    p = os.path.join(R, d, "args.json")
+    if not os.path.exists(p):
+        return False
+    a = json.load(open(p)); why = []
+    if float(a.get("sched_scale", 1.0)) != 1.0:
+        why.append("sched_scale %s" % a.get("sched_scale"))
+    if int(a.get("steps", 24000)) < 24000:
+        why.append("steps %s" % a.get("steps"))
+    if str(a.get("device", "")).startswith("cpu") or str(a.get("train_gpu", "")).lower() == "cpu":
+        why.append("cpu")
+    if why:
+        SKIPPED.append((d, why))
+    return bool(why)
+
+
 def plateau(d):
     lines = log_lines(d)
     if lines is None:
@@ -67,6 +88,8 @@ def slot(fam, k):
     att = []
     for o in OFFS:
         d = "s128_%s_s%d" % (fam, k + o)
+        if smoke(d):
+            break                                                            # a smoke dir: the attempt has not run
         pl = plateau(d)
         if pl is None and load(d) is None:
             break                                                            # not run yet (or before 2k): the slot is open
@@ -119,6 +142,12 @@ def main():
         print(f.upper(), {k: (s["status"], s["accepted"] and (s["accepted"]["long_acc"], s["accepted"]["serial"], s["accepted"].get("closed"), s["accepted"]["pass"])) for k, s in v["slots"].items()},
               "| FAMILY-PASS", v["FAMILY_PASS"], "| plateaued attempts", v["plateaued_attempts"], "| cost", v["cost_per_exact_seed"], "| flag checks (128-1)", [(a["seed"], a["flag_check_long_acc"]) for a in v["flag_checks"]])
     print("TASK-AGNOSTIC", res["TASK_AGNOSTIC"])
+    for d in sorted(os.listdir(R)) if os.path.isdir(R) else []:          # list every smoke dir, reached by a slot or not
+        if d.startswith("s128_") and os.path.isdir(os.path.join(R, d)):
+            smoke(d)
+    res["skipped_smoke_dirs"] = sorted(set((d, tuple(w)) for d, w in SKIPPED))
+    if SKIPPED:
+        print("SKIPPED (smoke, not scored):", res["skipped_smoke_dirs"])
     json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s128.json"), "w", newline="\n"), indent=1, default=float)
 
 

@@ -144,5 +144,39 @@
   "plateaued_attempts": 0,
   "cost_per_exact_seed": null
  },
- "TASK_AGNOSTIC": "incomplete"
+ "TASK_AGNOSTIC": "incomplete",
+ "skipped_smoke_dirs": [
+  [
+   "s128_cyc_s1",
+   [
+    "sched_scale 0.01",
+    "steps 40",
+    "cpu"
+   ]
+  ],
+  [
+   "s128_cyc_s101",
+   [
+    "sched_scale 0.01",
+    "steps 40",
+    "cpu"
+   ]
+  ],
+  [
+   "s128_cyc_s201",
+   [
+    "sched_scale 0.01",
+    "steps 40",
+    "cpu"
+   ]
+  ],
+  [
+   "s128_cyc_s301",
+   [
+    "sched_scale 0.01",
+    "steps 40",
+    "cpu"
+   ]
+  ]
+ ]
 }

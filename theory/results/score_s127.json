@@ -79,5 +79,6 @@
    "n": 2
   }
  },
- "DEFAULT": null
+ "DEFAULT": null,
+ "skipped_smoke_dirs": []
 }
