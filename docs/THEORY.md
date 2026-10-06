@@ -6145,6 +6145,21 @@ carry an fp32 certificate that covers every code the eval visits** (14 certifica
 * **Centring means** (layer 10, L 8, seed 13502): TSD norm 144.6, BASE norm 127.9, cosine between the means 0.57.
 * The students may start (after §133 / §134 launch, per Audit). The teacher's json files are committed before the first student.
 
+**Note 131-9 (2026-10-06 19:53 EDT; descriptive; findings from the Audit helper's archive (session closed) that no committed note held; Theory re-read each from the raw files).**
+* **The one "flagged and learning" candidate is unreproduced.** The stopped local 3070 partial of s30 (`s130chk_s5_s30_3070.void_stopped`,
+  driver 591.86, micro 4) flagged at 2k (4.644 → 4.501), then fell to 3.40 at 4k, 2.24 at 5k, 1.53 at 8k and **0.429 at 9k**, inside the
+  exact runs' 9k range. It was stopped at 10.7k.
+  - Its A4000 rerun is a 4-code null to 24k (131-8). The void partial enters no count. So §130's "late learner" wording has no
+    reproduced example.
+* **s6_4060ti's late re-organisation** (2k-flagged): loss 4.99 / 4.80 / 4.81 at 2k / 9k / 14k, then 3.51 at 20k and 3.36 at 24k. The end
+  code reads the state (R² 0.79, abl 6.05) with long_acc 0: the F2b-dialect profile.
+* **The 2.1k jump scales with depth at 2k:** s12_a4000 rose 1.939 → 3.673 (+1.73) at the L_max 4 step, against +0.4–0.5 in runs that sat at
+  3.8–4.1 at 2k.
+* **Replay-side pull rule** (§130 data, descriptive): dmax at 2k below 2.0 agrees with the 2k flag in 19 of 20 replay_x replays. The miss is
+  3070_s517: dmax 1.84, unflagged at ratio 0.874.
+* **§132:** slot 4's BFS-reachable code sets are smaller than the pilot's on the same sampled tables (13 / 12 / 8 / 12 / 16 / 16 against 38 / 22
+  / 16 / 42 / 28 / 17). The passing slots solved at 3,000–7,700 steps, against the pilot's 19,900.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
