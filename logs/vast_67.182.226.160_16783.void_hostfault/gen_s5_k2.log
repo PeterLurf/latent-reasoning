@@ -1,0 +1,1 @@
+SLOT {"family": "s5", "slot": 2, "accepted_seed": null, "attempts": [{"seed": 2, "dir": "boxes/runs_fsq/s128_s5_s2", "status": "plateau", "rc": 0, "sec": 300}, {"seed": 102, "dir": "boxes/runs_fsq/s128_s5_s102", "status": "error", "rc": 1, "sec": 1180}], "n_restarts": 1, "error": "attempt seed 102 ended without eval.json or a plateau stop (rc 1)", "extra_args": []}

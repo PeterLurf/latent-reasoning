@@ -842,3 +842,6 @@ PRICE EXCEPTION 2026-10-06 00:48 gen-e30 offer 50807813 RTX 3090 595.71 $0.281: 
 54435752 vast offer 49707053 created 2026-10-06 01:15: label gen-d3, queue scratch/gen_q_d3.txt (logged at create by vdeploy_toy.sh)
 54435841 vast offer 50807813 created 2026-10-06 01:16: label gen-e30, queue scratch/gen_q_e30.txt (logged at create by vdeploy_toy.sh)
 54411699 vast | gen_d1 DESTROYED_VERIFIED 2026-10-06 01:18 after verified per-run fetch (boxes/runs_s5/s119_coconut_lr1e-4_s1 boxes/runs_s5/s119_coconut_lr3e-4_s1 boxes/runs_s5/s119_coconut_lr3e-5_s1)
+54436749 vast offer 51224001 created 2026-10-06 01:25: label gen-d4, queue scratch/gen_q_d4.txt (logged at create by vdeploy_toy.sh)
+54437509 vast offer 52710386 created 2026-10-06 01:32: label gen-d5, queue scratch/gen_q_d5.txt (logged at create by vdeploy_toy.sh)
+54435841 vast | gen_e30 DESTROYED_VERIFIED 2026-10-06 01:56 after verified per-run fetch (); FAILED (no eval.json, logs fetched): boxes/runs_fsq/s128_s5_s2 boxes/runs_fsq/s128_s5_s1 boxes/runs_fsq/s128_s5_s102 boxes/runs_fsq/s128_slots/s5_k1 boxes/runs_fsq/s128_slots/s5_k2 boxes/runs_fsq/s128_s5_s3 boxes/runs_fsq/s128_s5_s4 boxes/runs_fsq/s128_slots/s5_k3 boxes/runs_fsq/s128_slots/s5_k4; partial logs kept: boxes/runs_fsq/s128_s5_s2.void_partial boxes/runs_fsq/s128_s5_s1.void_partial boxes/runs_fsq/s128_s5_s102.void_partial
