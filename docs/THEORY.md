@@ -6076,6 +6076,14 @@ carry an fp32 certificate that covers every code the eval visits** (14 certifica
 * The visited set equals the fp32-reachable set where code growth saturates (cyc s3 / s4, rdfa s1 / s3). It is a strict subset where
   growth is still open (MOD s1–s4).
 
+**Note 135-3 (2026-10-06 17:18 EDT, before any §135 student run; disclosure, no rule change).**
+* The equivalence check passes exactly (`theory/results/teacher135_equiv.json`: max |Δ| 0.0 in CPU fp32).
+* CPU gradflow passes: the auxiliary term reaches W_down and the trunk at p_hard 0 and 1, and no gradient reaches the target model.
+  CUDA bf16 is run before launch.
+* **Disclosed:** InfoNCE negatives are drawn **within the micro-batch**, so the negative set shrinks wherever `--micro` > 1 applies
+  (L > 16). The registration's "every other target in the batch" holds at micro 1. The micro factor per run is recorded (micro_gate)
+  and reported beside the result.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
