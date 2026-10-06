@@ -5067,6 +5067,10 @@ any LR. The tied criterion is broken by the published LR, and seeds 2–3 run as
   - **SIM-CoT s2 / s3 run at 1e-4** from Coconut s2 / s3, as registered (3 seeds per method), as for Coconut (119-2).
   - Expected: "did not learn" in 3/3, so SIM-CoT is **inconclusive** for CONTROLLED-C1. 119-3's all-inconclusive wording then
     applies to Coconut and SIM-CoT.
+* **119-3's degraded-start check fires (06:45):** SIM-CoT s1's loss at the end of stage 0 (step 3,000) is 0.195 / 0.796 / 0.794
+  at lr 3e-5 / 1e-4 / 3e-4, all above 0.1. Coconut s1 reached 1e-4 at 3e-5. So s1 reads **"did not learn (degraded start)"**.
+  - As pre-stated, a SIM-CoT started from the base model is a candidate for a new registration, not a §119 arm.
+  - s2 / s3 run as registered (d6, RTX 3090, driver 570.211). Their stage-0 loss is read with the same check.
 * **Logging bug, disclosed.** In these logs, stage ≥ 1 lines have `"step"` overwritten by the decoder CE (a key collision); line i
   is step 100·i. Training and eval are unaffected. Fixed for later runs (`step_ce`).
 
