@@ -4995,6 +4995,21 @@ The first self-training seed to meet C4 (qualified), C1 and C2 together.**
   - No arm-level "COPY → C1" claim. If s26 is also slot-carried, "COPY gives slot carriage in k/4" is a reasonable descriptive
     line, under §124's registered readings.
 
+**Note 124-7 (2026-10-06 06:14 EDT; descriptive, the COPY arm complete (s26 on an RTX 3090); Audit reproduced; BASE s26–27 pending). COPY acquires at
+L5 in 4/4 seeds, and gives single-slot SERIAL carriage in 2/4. EXPOSE gives it in 0/4.**
+* **COPY s26:** cumulative 0.9995 at 512; k = 1 never-labelled 1.0, certified. Donor 0.979 / 1.0 / 1.0 at slots 1 / 2 / 3, recipients
+  ≤ 0.0105: SERIAL.
+* **Registered readout, acquisition round:** COPY L5 in **4/4** (s26–s29); EXPOSE L5–L8 (L6 / L5 / L6 / L8); BASE 1/2 so far
+  (L6).
+* **Carrier type (descriptive, single-slot SERIAL = donor ≥ 0.90 at every slot, recipient − chance < 0.10):**
+  - COPY 2/4 (s26, s27); s29 is slot-carried but under 0.90 at slot 3 (0.88 / 0.75 / 0.52); s28 mixed.
+  - EXPOSE 0/4 (s28 slot-carried at 0.62–0.75; three seeds with a slot-1 bypass).
+  - BASE 0/1 acquirers so far (s28 bypass).
+* **Wording, within §124's registered readings:** "COPY makes acquisition early and uniform (L5 in 4/4), and gives serial slot
+  carriage in 2/4 seeds against 0/4 for EXPOSE."
+  - The second part is descriptive: §124 registered acquisition count and round, not C1. MECH-112 stays false (124-4).
+  - NOT-112-4 versus the descriptive reading is decided when BASE s26–27 land.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
