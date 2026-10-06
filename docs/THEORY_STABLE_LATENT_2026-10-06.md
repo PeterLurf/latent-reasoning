@@ -120,13 +120,13 @@ with the same code and settings across families.
       - **F1** (s30): chance at both positions.
     - **The discriminator is a triple:** positions 1 and 2 plus the end probe (R²_state with abl_dloss). F2b-dialect and F2a share
       the low prefix profile, and only the end probe separates them (state 0.81 / abl 6.0, against ≤ 0.31 / ≤ 1.9).
-      - Counts: 5 exact, 2 compounding, 1 transition, 1 dialect, 5 F2a, 1 F1.
+      - Counts: 5 exact, 2 compounding, 1 transition, 1 dialect, **6 F2a** (s34_a4000 added: prefix 0.058 / 0.0015, ρ₁ 0.069, last op back at L 8), 1 F1.
       - **ρ₁ is a measure for one class, not a classifier** (fp32, ε 0.1):
         - it is 0.07–0.29 within F2a (s5 0.072, s7 0.294), 0.12 in the dialect case, and 0 in F1;
         - only compounding stands apart (0.48, 0.80);
         - every failing model has ρ_k = 0 by the second or third hand-off. Perturbed and clean chains re-merge, in F2 on a **wrong**
           code: a contractive map to a wrong attractor, not §128-style drift.
-    - **Ranking that follows** (Audit): a wrong transition, write/read or dialect dominates (7 of 10 failures; contraction 2). So the
+    - **Ranking that follows** (Audit): a wrong transition, write/read or dialect dominates (8 of 11 failures; contraction 2). So the
       transition-side fixes come first for S5 entry: COPY (§134) for F2a's write/read, and SELF-ANCHOR (2b) for F2b-transition's
       reading of its own code. §133 / 2 stay for compounding and capacity. ρ₁ in band is not sufficient (skip_s2_rerun).
 * **F3, drift:** a continuous or wide carrier has no attractor (RAW-H, CONT).
