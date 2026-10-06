@@ -4796,6 +4796,23 @@ chain's start state).
 * Seed 1's replay had state content before spread and before the decoder's pull: R²_start 0.68 by 800, the pull at 1,050.
 * A REDRAW pass whose head shows no state content before its pull would not follow that order, and is reported as such.
 
+**Note 129-2 (2026-10-06 04:40 EDT, before any phase-2 result; disclosure, no rule change). The first seed-2 pair crashed at load and was voided.
+Seed 2 reruns on the same host.**
+* **What happened** (b40, RTX 3090, driver 595.71):
+  - The host gradflow passed under bf16. Phase 1 of seed 2 flagged at 2k, at parity: 8.26 / 4.98 / 4.95.
+  - Both continuations crashed when restoring the checkpoint. The saved CPU RNG state was moved to the GPU by `map_location`,
+    and `set_rng_state` rejected it.
+  - No phase-2 step ran, so **no phase-2 outcome was seen**. The driver then deleted that checkpoint.
+* **Kept as void** (aborted unread): `s129_s5_s2.void_rngbug` (phase-1 log, flag fired), `s129_s5_s2_clock.void_rngbug`,
+  and `s129_s5_s1.void_killed` (phase 1 halted at step 1,300 by the restart; no flag decision).
+* **Fixed** (5c16f261 / 621da899: RNG states moved to the CPU; an end-to-end GPU resume smoke passed). Restarted with the fixed
+  code, same host and order: seed 2's phase 1 reruns under the plain name, then its pair, then seeds 1, 3, 4, ….
+  - A rerun of the same seed on the same host can differ at the bit level. The registered seed order and PANEL rule are
+    unchanged.
+  - The voided phase 1 is reported in the result as seed 2's first attempt (flagged; the continuations crashed unread).
+* Checked in the code: the REDRAW continuation appends to the phase-1 log (mode "a"). CLOCK-ONLY writes its own dir.
+  129-1's probes (clock 700 / 1,200, with r2_start) are in.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
