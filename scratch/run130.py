@@ -2,7 +2,7 @@
 Runs scratch/replay_basin.py unchanged (--seed S --steps 2000 --every 50 --amp bf16 --threads 3) into
 theory/results/replay130/{card}_s{seed}.jsonl, one seed at a time, skipping complete outputs (restart-safe).
 4060: FIT 3..10, then FIT 35..42 (Theory: one fixed block, disclosed), then TEST-SAME 19..26, 59..82 until >= 8 flagged and >= 8
-non-flagged, then the check runs s130chk_s5_s{5,6,7}_4060 (fsq120 FINAL S5 24k, --micro 4 for 8 GB). 3070: TEST-CROSS 11..18, 27..34, 43..58 until >= 8 / >= 8 or the list ends.
+non-flagged, then the check runs s130chk_s5_s{5,6,7}_4060 (fsq120 FINAL S5 24k, --micro 4 for 8 GB, guard via --probe127 - added 2026-10-06 for parity with the 3070 checks). 3070: TEST-CROSS 11..18, 27..34, 43..58 until >= 8 / >= 8 or the list ends.
 BLINDING: block completion counts only the 123-3 flag computed from each replay's own LOSS lines (score_s130.features' formula);
 no zb_std_in / L1_dmean / marker value is read here. Logging (Audit, blinding): logs/c1_local.log gets the flag for FIT seeds
 only; TEST seeds are logged there as "complete", their flags only in theory/results/replay130/.blind_runner.log (not opened before
@@ -84,7 +84,7 @@ def main():
             if os.path.exists(os.path.join(ROOT, "scratch", "run130.stop")) or os.path.exists(os.path.join(ROOT, out, "eval.json")):
                 continue
             rc = subprocess.call([sys.executable, "-u", "-m", "boxes.fsq120", "--family", "s5", "--arm", "final", "--seed", str(s), "--micro", "4",
-                                  "--no_cert", "--device", a.device, "--out", out], cwd=ROOT,
+                                  "--no_cert", "--probe127", "--device", a.device, "--out", out], cwd=ROOT,   # guard (Theory: parity with the 3070 checks)
                                  stdout=open(os.path.join(ROOT, "logs", "c1_s130chk_s5_s%d_4060.log" % s), "w"), stderr=subprocess.STDOUT)
             log.write("%s s130chk_s5_s%d_4060 rc %d (%s)\n" % (time.strftime("%H:%M:%S"), s, rc, a.device)); log.flush()
     else:
