@@ -49,13 +49,31 @@ def smoke(d):
     return bool(why)
 
 
+STOPPED_FROM_VOID = []
+
+
+def stopped_void(d):
+    """A run stopped at 2k by its plateau flag, drained as <d>.void_partial and not yet renamed back: its log lines, if the log
+    has the "stopped: plateau" record (a real attempt, 127-2); else None. Printed by main()."""
+    p = os.path.join(R, d + ".void_partial", "log.jsonl")
+    if os.path.isdir(os.path.join(R, d)) or not os.path.exists(p):
+        return None
+    lines = [json.loads(x) for x in open(p)]
+    if any(str(x.get("stopped", "")).startswith("plateau") for x in lines):
+        STOPPED_FROM_VOID.append(d); return lines
+    return None
+
+
 def plateau(d):
     p = os.path.join(R, d, "log.jsonl")
-    if not os.path.exists(p):
-        return None
+    if os.path.exists(p):
+        rows = [json.loads(line) for line in open(p)]
+    else:
+        rows = stopped_void(d)
+        if rows is None:
+            return None
     L = {}
-    for line in open(p):
-        x = json.loads(line)
+    for x in rows:
         if "loss" in x and "step" in x:
             L[x["step"]] = x["loss"]
     if not L or max(L) < 2000:
@@ -67,21 +85,19 @@ def plateau(d):
 def mchecks(d):
     """Note 127-1: {"step": s, "mcheck": {...}} lines in log.jsonl at s = 1 / 500 / 2000 -> {s: mcheck}."""
     p = os.path.join(R, d, "log.jsonl"); out = {}
-    if os.path.exists(p):
-        for line in open(p):
-            x = json.loads(line)
-            if "mcheck" in x:
-                out[int(x["step"])] = x["mcheck"]
+    rows = [json.loads(line) for line in open(p)] if os.path.exists(p) else (stopped_void(d) or [])
+    for x in rows:
+        if "mcheck" in x:
+            out[int(x["step"])] = x["mcheck"]
     return out
 
 
 def nonfinite_share(d):
     """Note 127-3: share of logged training steps whose update was skipped as non-finite ({"step": s, "nonfinite": 1})."""
     p = os.path.join(R, d, "log.jsonl"); n_bad, last = 0, 0
-    if os.path.exists(p):
-        for line in open(p):
-            x = json.loads(line)
-            n_bad += 1 if x.get("nonfinite") else 0; last = max(last, int(x.get("step", 0)))
+    rows = [json.loads(line) for line in open(p)] if os.path.exists(p) else (stopped_void(d) or [])
+    for x in rows:
+        n_bad += 1 if x.get("nonfinite") else 0; last = max(last, int(x.get("step", 0)))
     return n_bad / last if last else 0.0
 
 
@@ -184,6 +200,8 @@ def main():
     print("CONTROL", {s: (c["plateau"], c["long_acc"], c.get("gpu")) for s, c in ctrl.items()}, "| cost", res["control"]["cost"])
     print("DEFAULT", res["DEFAULT"], "| no arm escapes -> restart-on-plateau" if all(res["arms"][a]["ESCAPE"] is False for a in ARMS) else "")
     res["skipped_smoke_dirs"] = sorted(set((d, tuple(w)) for d, w in SKIPPED))
+    if STOPPED_FROM_VOID:
+        print("READ FROM .void_partial (stopped at 2k, not renamed back):", sorted(set(STOPPED_FROM_VOID)))
     if SKIPPED:
         print("SKIPPED (smoke, not scored):", res["skipped_smoke_dirs"])
     json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s127.json"), "w", newline="\n"), indent=1, default=float)

@@ -7,7 +7,12 @@
     "accepted": null
    },
    "2": {
-    "attempts": [],
+    "attempts": [
+     {
+      "seed": 2,
+      "plateau": true
+     }
+    ],
     "status": "open",
     "accepted": null
    },
@@ -25,7 +30,7 @@
   "FAMILY_PASS": "incomplete (0 / 4 slots decided)",
   "flag_checks": [],
   "n_pass": 0,
-  "plateaued_attempts": 0,
+  "plateaued_attempts": 1,
   "cost_per_exact_seed": null
  },
  "ff": {
@@ -145,38 +150,5 @@
   "cost_per_exact_seed": null
  },
  "TASK_AGNOSTIC": "incomplete",
- "skipped_smoke_dirs": [
-  [
-   "s128_cyc_s1",
-   [
-    "sched_scale 0.01",
-    "steps 40",
-    "cpu"
-   ]
-  ],
-  [
-   "s128_cyc_s101",
-   [
-    "sched_scale 0.01",
-    "steps 40",
-    "cpu"
-   ]
-  ],
-  [
-   "s128_cyc_s201",
-   [
-    "sched_scale 0.01",
-    "steps 40",
-    "cpu"
-   ]
-  ],
-  [
-   "s128_cyc_s301",
-   [
-    "sched_scale 0.01",
-    "steps 40",
-    "cpu"
-   ]
-  ]
- ]
+ "skipped_smoke_dirs": []
 }

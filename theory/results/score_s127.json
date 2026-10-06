@@ -1,26 +1,60 @@
 {
  "arms": {
   "var": {
-   "S5": {},
+   "S5": {
+    "2": {
+     "plateau": true,
+     "long_acc": null,
+     "status": "stopped at 2k (plateau)",
+     "rho_ff": null
+    }
+   },
    "FF": {},
-   "ESCAPE": "pending (checks pending)",
-   "delivered": {},
-   "delivery": "checks pending",
-   "ENTRY_FIX": "checks pending",
+   "ESCAPE": "False (undelivered (one fixed rerun, 127-1))",
+   "delivered": {
+    "2": false
+   },
+   "delivery": "undelivered (one fixed rerun, 127-1)",
+   "ENTRY_FIX": "undelivered (one fixed rerun, 127-1)",
    "FF_GUARD": "incomplete",
    "ADOPT": "pending",
-   "cost": null
+   "cost": {
+    "p": 1.0,
+    "a": null,
+    "cost": null,
+    "n": 1
+   }
   },
   "skip": {
-   "S5": {},
+   "S5": {
+    "2": {
+     "plateau": false,
+     "long_acc": 0.0,
+     "status": "done",
+     "rho_ff": null,
+     "ext_2048": 0.0,
+     "codes_per_state": 1.0,
+     "row_norm_2k": 30.639400482177734,
+     "wte_row_norm": 3.9545533657073975,
+     "probe": null,
+     "gpu": "NVIDIA GeForce RTX 3090"
+    }
+   },
    "FF": {},
-   "ESCAPE": "pending (checks pending)",
-   "delivered": {},
-   "delivery": "checks pending",
-   "ENTRY_FIX": "checks pending",
+   "ESCAPE": true,
+   "delivered": {
+    "2": true
+   },
+   "delivery": true,
+   "ENTRY_FIX": "incomplete (1 / 4)",
    "FF_GUARD": "incomplete",
    "ADOPT": "pending",
-   "cost": null
+   "cost": {
+    "p": 0.0,
+    "a": 0.0,
+    "cost": Infinity,
+    "n": 1
+   }
   },
   "std2": {
    "S5": {},
