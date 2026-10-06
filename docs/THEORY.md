@@ -4495,6 +4495,36 @@ the held-out families.**
 * If a check run ends exact, the flag misfires on that family. This is reported in the result, and the cost per accepted
   seed is given both ways. The registered verdict still uses the registered rule.
 
+**Note 127-5 (2026-10-06 00:12 EDT; descriptive, the seed-1 basin replay (bf16, RTX 3090; `theory/results/replay_basin_s1/`), read by Theory from
+replay.jsonl after claude-13's account; a prediction for seed 2's replay, fixed before b28's replay lands). How seed 1 leaves the
+basin, and what seed 2 should show.**
+* **Parity:** loss 4.951 / 3.802 at 1k / 2k, against §120 FINAL s1's 4.978 / 3.896.
+* **Seed 1's order of events** (R² of z_b on the op read, the chain's start state and the next state; dmean = the decoder's
+  loss gain from the carrier, L1_dmean):
+  - **0–1k: the decoder ignores the code** (dmean ≤ 0.009). The loss is flat at about 5.0.
+    - Meanwhile the code drifts off the item: R²_op 0.95 → 0.64; R²_start 0.32 → peak 0.64 at 750, back to 0.42 at 1k;
+      R²_next flat at 0.22–0.24.
+    - The gradient into W_down is 0.8–4.4, against GPT-2's 62–154.
+  - **1.0–1.2k: the decoder starts reading** (dmean 0.006 → 0.34 at 1,200). In the same window the code re-targets to the
+    next state (R²_next 0.23 → 0.54), its spread grows (zb_std 0.14 → 0.70), and R²_op falls to 0.30.
+  - **1.2–2k: consolidation.** R²_next reaches 0.93 and the effective rank 2.8. The W_down gradient grows only after the
+    decoder pulls (23.7 at 2k).
+* **Reading (one seed, so a hypothesis):** the chicken-and-egg breaks on the decoder side, after the code has drifted off
+  the item. The drift precedes the pull, but the R² values are noisy step to step (R²_op rebounds to 0.67 at 1,100).
+* **Prediction for seed 2's replay, fixed now** (Audit / claude-13). R²s are compared as 3-point running means over the
+  logged steps (every 50):
+  - **(P1)** R²_start stays below R²_op at every logged step from 0 to 2k: the code never drifts off the item.
+  - **(P2)** dmean stays below 0.05 throughout: the decoder never pulls.
+  - Parity first: seed 2's replay loss at 1k / 2k must match §120 FINAL s2's (4.98 / 4.95) within 0.1, or the replay is
+    not read.
+* **Readings:**
+  - **P1 and P2 hold.** The basin seed's code stays on the item, and the seeds differ in the drift. This matches 127-3's
+    VAR probe (R²_item 0.42, R²_state −0.15 at 2k) and SKIP's change (R²_state 0.28). The registered VAR rerun (residuals
+    against the forward's own group means) is the test of pushing the early code off the item. **No new arm.**
+  - **P1 fails, P2 holds.** Seed 2's code drifts too, but the decoder never pulls, so the drift is not sufficient. The
+    trigger is on the decoder side, SKIP's direction.
+  - **P2 fails.** Seed 2's decoder reads its code by 2k, against the plateau. Then the replay is not faithful to §120 s2.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
