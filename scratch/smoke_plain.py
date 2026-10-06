@@ -41,7 +41,7 @@ def main():
     # end-to-end main() on tiny shapes: training loop + the FULL S5 eval branch (81e37687 dropped `C = pred == Yte` into a comment there)
     import shutil
     import subprocess
-    out = os.path.join(os.environ.get("TEMP", "/tmp"), "smoke_plain_fsq120_main"); shutil.rmtree(out, ignore_errors=True)
+    out = os.path.join(os.environ.get("TEMP", "/tmp"), "smoke_plain_fsq120_main_%d" % os.getpid()); shutil.rmtree(out, ignore_errors=True)   # per process: parallel deploys raced on one dir
     rc = subprocess.call([sys.executable, "-u", "-m", "boxes.fsq120", "--family", "s5", "--arm", "final", "--seed", "1", "--steps", "3", "--sched_scale", "0.001",
                           "--bs", "2", "--test_n", "4", "--test_len", "8", "--ext_n", "2", "--donor_n", "4", "--margin_n", "4", "--eval_bs", "4", "--contract_n", "4",
                           "--no_cert", "--device", "cpu", "--out", out], cwd=os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
