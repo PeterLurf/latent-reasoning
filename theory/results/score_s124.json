@@ -24,25 +24,30 @@
    }
   },
   "copy": {
-   "n": 2,
+   "n": 3,
    "acquired": [
+    27,
     28,
     29
    ],
    "acq_rounds": {
+    "27": "L5",
     "28": "L5",
     "29": "L5"
    },
    "median_round_rank": 3,
    "foothold_seeds": [
+    27,
     29
    ],
-   "FOOTHOLD": false,
+   "FOOTHOLD": true,
    "cum512": {
+    "27": 1.0,
     "28": 0.9495,
     "29": 0.999
    },
    "copy_acc": {
+    "27": 1.0,
     "28": 1.0,
     "29": 1.0
    }
