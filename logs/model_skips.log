@@ -9,3 +9,4 @@
 2026-10-06 09:37:16 54470397 gen_d6 boxes/runs_s5/s119_simcot_s2 model.pt 497814346 bytes NOT FETCHED: SKIP not exact (cumulative_512 0.0000, extension_2048_512 0.0000, extension_2048_1024 0.0000, extension_2048_2048 0.0000) | posthoc: none registered
 2026-10-06 09:37:31 54470397 gen_d6 boxes/runs_s5/s119_simcot_s3 model.pt 497814346 bytes NOT FETCHED: SKIP not exact (cumulative_512 0.0000, extension_2048_512 0.0000, extension_2048_1024 0.0000, extension_2048_2048 0.0000) | posthoc: none registered
 2026-10-06 09:38:57 54432854 gen_b30 boxes/runs_fsq/s127_s5_skip_s3 model.pt 498033978 bytes NOT FETCHED: SKIP not exact (long_acc 0.0000, ext_2048 0.0000) | posthoc: fp32 contraction (present)
+2026-10-06 11:55:22 local s116_none_s41 model.pt (475 MB) deleted: did not learn (final_state_acc_512 0.006, k1 not certified); data-retention rule
