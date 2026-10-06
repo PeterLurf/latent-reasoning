@@ -4060,7 +4060,7 @@ The causal question is not reached: dither moved neither contraction, nor accura
   - S5: s1 has 20.9 codes per state at 2,048 against 34.2, but s2 plateaued.
   - Flip-flop: 15.5 / 4.0 against 13.75. s1's task-language CERT holds; the registered CERT does not.
 * **Descriptive findings kept:**
-  - the continuous 8-d carry is exact to 2,048 in every non-plateau seed, with no implicit quantisation (grid share 0.17–0.24);
+  - the continuous 8-d carry is exact to 2,048 in every non-plateau seed, with no implicit quantisation (grid share 0.15–0.24);
   - the seed-2 entry basin appears at every σ, on S5 only.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
