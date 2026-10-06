@@ -5852,7 +5852,9 @@ no rule change.**
 shows only in the 2.6k → 4k window: loss(4k) / loss(2.6k) is 0.71 for learners against 0.997 for escape-fails (0/12 against 14/18 at 0.9).
 Two predictions, fixed now:
 * **(a)** If COPY fixes F2, every COPY seed's loss(4k) / loss(2.6k) is below 0.9, including s3 (plain 0.99) and s2 / s4 (plain plateau).
-* **(b)** Its 4.5k loss is ≤ 2.5, the hard-rounded learners' band.
+* **(b)** Its 4.5k loss is **≤ 3.0** (corrected 2026-10-06 15:09 EDT, before any §134 run; Audit's recomputation from raw logs: hard-rounded S5
+  learners reach 0.37–2.75 (n 8) and failures 3.42 and up (n 16), so the gap is 2.75–3.42. The earlier "≤ 2.5" would have mis-scored 4 of
+  the 8 known learners). The 4k / 2.6k ratio < 0.9 in (a) is the cleaner of the two.
 * Both are read from log.jsonl, and are descriptive beside §134's PASS rule.
 
 **Note 133-4 (2026-10-06 15:09 EDT, before any §133 result; the Audit helper's harness review of 81e37687; disclosure, no rule change).** SOFT's

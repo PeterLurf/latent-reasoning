@@ -36,8 +36,13 @@ with the same code and settings across families.
     replays (no pull or dmax < 0.5 → flagged 26/26 on the 4060 and 3070).
 * **The earliest separator is the 2.6k → 4k window: loss(4k) / loss(2.6k)** at 0.71 (exact) against 0.997 (escape-fail).
   - At 0.9: 0/12 learners against 14/18 escape-fails flagged (§131's FLAG4).
-  - By 4.5k, every exact hard-rounded run is at ≤ 2.49 and every escape-fail at ≥ 3.45.
+  - By 4.5k, exact hard-rounded runs reach 0.37–2.75 and failures 3.42 and up (Audit's recomputation; the helper's first figure said
+    ≤ 2.49 / ≥ 3.45).
   - **That window is the soft → hard rounding ramp (p_hard 0 → 1 over 2k–4k) together with L_max 4,** two changes at once.
+* **The 2.6k → 4k window separates outcomes only on S5.** FF / CYC / MOD / RDFA have already solved L ≤ 2 by 2k, before p_hard
+  rises (loss 0.000 at 1k–2k). Their 2.1k and 5k L-steps give transient bumps that recover fully, so their ratio is 0.00–0.21. S5
+  learners are still at 2.1–3.9, and failures at 3.8–4.4, when rounding begins to harden. **The ramp quantises an unseparated code
+  only on S5,** which is candidate 3's mechanism.
 * **ρ₁ is necessary, not sufficient:** the exact band is 0.12–0.22 on S5, but 5 non-exact runs share it. ρ₁ = 0 marks the
   collapsed-code null (9 runs).
 * **COPY (§124) gives the earliest, seed-uniform, sharpest acquisition event** (4/4 at the same round, jumps 0.99, no precursor), against
