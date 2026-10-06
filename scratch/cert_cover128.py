@@ -14,12 +14,16 @@ import torch
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 os.environ.setdefault("BOXES_NB", "5")
+try:                                                                        # local hard memory cap; absent on hosts that lack it -> no cap
+    from boxes import memcap  # noqa: E402
+except ImportError:
+    memcap = None
 from boxes import s5  # noqa: E402
 from boxes.fsq120 import FSQ120, Family, certificate, driver_version, run_test  # noqa: E402
 
 
 def main(d, dev="cuda:0", test_n=None, od=None):
-    d = d.rstrip("/"); od = od or d
+    d = d.rstrip("/"); od = od or d; memcap and memcap.apply(dev)                 # local hard cap (LATENT_MEM_CAP_GB; no-op on the cloud)
     a = json.load(open(os.path.join(d, "args.json"))); fam = Family(a["family"]); test_n = int(test_n or a.get("test_n", 2000))
     m = FSQ120(s5.load_gpt2(dev), fam).to(dev); m.load_state_dict(torch.load(os.path.join(d, "model.pt"), map_location=dev)); m.eval()
     X = np.random.default_rng(12801).integers(0, fam.n_items, (test_n, int(a.get("test_len", 512))))

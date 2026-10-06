@@ -37,6 +37,10 @@ import torch  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
+try:                                                                        # local hard memory cap; absent on hosts that lack it -> no cap
+    from boxes import memcap  # noqa: E402
+except ImportError:
+    memcap = None
 from boxes import s5  # noqa: E402
 from boxes import core as bc  # noqa: E402
 from boxes.fsq120 import DIGTOK, EOT, FSQ120, _r2, certificate, driver_version, lmax_at, lr_at, make_opt  # noqa: E402
@@ -235,6 +239,7 @@ def main():
     ap.add_argument("--stop_after", type=int, default=0, help="local prototype only (docs/LOCAL_BACKLOG.md): stop after this step (log kept, no model / eval)")
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); sc = a.sched_scale
+    memcap and memcap.apply(dev)                                                       # local hard cap (LATENT_MEM_CAP_GB; no-op on the cloud)
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     os.makedirs(a.out, exist_ok=True); sp = Splits(a.k, a.m); fam = TableFam(a.k, a.m)
     seglen = 1 + a.m * a.k * 4 + 1 + 1

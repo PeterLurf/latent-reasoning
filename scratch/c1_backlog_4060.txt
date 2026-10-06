@@ -1,4 +1,6 @@
 # 4060 backlog: 2k replay_basin seeds 75-82 (the rest of §130's registered TEST-SAME list, not needed by its block) -> theory/results/replay_extra/ (descriptive; not read by score_s130); ~3.5 GiB, ~5 min each
+# memcap self-test (v2 worker): under LATENT_MEM_CAP_GB a 6.5 GiB allocation must OOM inside the 6.0 cap
+0.6 theory/results/memcap_test_4060.ok python scratch/memcap_selftest.py {DEV} theory/results/memcap_test_4060.ok
 3.5 theory/results/replay_extra/4060_s75.jsonl python -u scratch/replay_basin.py --seed 75 --steps 2000 --every 50 --amp bf16 --threads 3 --device {DEV} --out theory/results/replay_extra/4060_s75.jsonl
 3.5 theory/results/replay_extra/4060_s76.jsonl python -u scratch/replay_basin.py --seed 76 --steps 2000 --every 50 --amp bf16 --threads 3 --device {DEV} --out theory/results/replay_extra/4060_s76.jsonl
 3.5 theory/results/replay_extra/4060_s77.jsonl python -u scratch/replay_basin.py --seed 77 --steps 2000 --every 50 --amp bf16 --threads 3 --device {DEV} --out theory/results/replay_extra/4060_s77.jsonl
