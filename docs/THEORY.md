@@ -216,7 +216,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 126 | Is the bottleneck the cause of the soft-phase basin? RAW-H vs ANNEAL (stop rule → restart-on-plateau) | **BOTTLENECK-CAUSE** (RAW-H s1–3 escape the 2k flag; every bottlenecked s2 plateaus) **without ANNEAL-INHERITS** (s2 0 in both casts): the wide carrier enters but doesn't learn long chains (0.846 / 0 / 0); restart-on-plateau is the procedure; s4 descriptive | closed |
 | 127 | Reliable entry without restarts? VAR / SKIP / STD2 / LR10 on §120's harness vs restart-on-plateau | **no arm adopted** (ENTRY-FIX false in all four): escaping the 2k flag is easy, learning afterwards fails (escape-without-learning dominates → §131); SKIP 2/4 exact vs plain 1/4 (descriptive); restart-on-plateau stays | closed |
 | 128 | One recipe, five state-tracking families (S5, FF + held-out CYC / MOD / RDFA), restart-on-plateau; FAMILY-PASS = 3/4 exact + SERIAL (+ CLOSED) | registered | **open** |
-| 129 | Where does the entry basin live? Head-only re-draw at the 2k flag vs a CLOCK-ONLY warm restart (S5, 4 flagged seeds): LR / HEAD / BODY | registered | **open** |
+| 129 | Where does the entry basin live? Head-only re-draw at the 2k flag vs a CLOCK-ONLY warm restart (S5, 4 flagged seeds): LR / HEAD / BODY | **descriptive** (none of LR / HEAD / BODY): a fresh head escapes in 2/4 vs 0/4 for the warm restart, but no re-drawn seed learns; the trained body reads a fresh head (R²_state 0.4–0.96 by clock 700) | closed |
 | 130 | Early label-free plateau marker (code variance at ~1k): fit on 4060 replays, frozen, tested cross-card (3070, primary) and same-card | **no PASS** (primary P 0.70, R 0.78 on 17 3070 seeds; 0.60 in-sample): the early marker does not predict the 2k plateau; the collapse at ~650 is common and transient; the 2k flag fires after early pulls | closed (SAME pending, descriptive) |
 | 131 | Second restart point at 4k: FLAG4 = loss(4k) ≥ 0.9·loss(2.6k) (floored), held-out precision / recall for "escape without learning" | registered | **open** |
 | 132 | Rules in context: per-problem permutation tables (explicit pairs) on §120's carrier; size ladder k4/m2 → k6/m3; PASS 3/4 exact + SERIAL on held-out tables | registered | **open** |
@@ -5379,6 +5379,37 @@ registered.**
 * **So far**, all three published methods read "did not learn" on this host: Coconut 3/3, SIM-CoT s1 (s2–3 running), CODI s1.
   - Text CoT learns in every port (Coconut stage 0, CODI's teacher).
   - If CODI s2–3 and SIM-CoT s2–3 also fail, 119-3's all-inconclusive wording applies.
+
+**§129 result (2026-10-06 08:50 EDT; scored by `theory/score_s129.py`; b40, RTX 3090, driver 595.71.05; host gradflow PASS under bf16; PANEL = s2, s4,
+s202, s301, the first 4 flagged in the fixed order, with 10 seeds unflagged; Audit reproduced). Descriptive: a fresh head escapes
+where a warm restart does not, but no re-drawn seed learns.**
+
+| PANEL seed | REDRAW: phase-2 flag / long accuracy | CLOCK-ONLY: phase-2 flag |
+|---|---|---|
+| s2 | re-plateaus | re-plateaus |
+| s4 | **escapes** / 0 (donor about 0.01) | re-plateaus |
+| s202 | **escapes** / 0 (donor about 0.14) | re-plateaus |
+| s301 | re-plateaus | re-plateaus |
+
+* **Registered rules:**
+  - LR (CLOCK-ONLY escapes ≥ 3/4): no, 0/4.
+  - HEAD (REDRAW passes ≥ 3/4 and escapes ≥ 2 more than CLOCK): no, 0 passes.
+  - BODY (REDRAW re-plateaus 4/4): no, 2/4.
+  - **Reading: descriptive** (129's "otherwise").
+* **What it shows (descriptive, n = 4):**
+  - **The warm restart alone never breaks the plateau (0/4). A fresh head does in 2/4.** The plateau is partly held in the
+    head's state.
+  - **But no re-drawn seed learns long chains.** Both escapes end at 0: escape without learning again, as in §127.
+  - **The trained body does not ignore a fresh head** (129-1's probes). Re-drawn heads pick up state content fast: R²_state about
+    0.41 at clock 700 in s4 and s202, and 0.96 in s301. The decoder reads them (abl_dloss 0.3–15).
+  - **s301:** its code holds the state (R²_state 0.96) and the decoder relies on it, yet its loss rose from 3.36 to 3.73 and the
+    clock-2k flag fired. That is another instance of the flag firing on a run whose code carries the state (§130; §131's check
+    runs).
+* **§131, descriptive (phase-2 runs are not scored there):** at clock 4k / 2.6k, s4's ratio is 0.80 (no FLAG4, fails) and
+  s202's is 1.01 (FLAG4, fails).
+* **Disclosures:** 129-2's voided first seed-2 attempt (phase 1 flagged; continuations crashed unread) and the killed s1 stay
+  void. Phase-2 checkpoints were deleted after both continuations (listed in the driver summary). Audit's line (129-2): "keep
+  the body" includes its small Adam second moments.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
