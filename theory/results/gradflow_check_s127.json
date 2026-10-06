@@ -1,0 +1,13 @@
+{
+ "fsq120.s127.var.grad_down": 0.13441617786884308,
+ "fsq120.s127.var.term": 0.9893474578857422,
+ "fsq120.s127.skip.grad_down": 10.164507865905762,
+ "fsq120.s127.skip.grad_maps": 9.249921798706055,
+ "fsq120.s127.lr10.ratio": 10.0,
+ "fsq120.s127.lr10.n_new": 14600.0,
+ "fsq120.s127.std2.row_norm_ratio": 0.8368281594039163,
+ "fsq120.s127.std2.in_band": 1.0,
+ "fsq120.s127.lr10.ratio_ok": 1.0,
+ "_status": "PASS",
+ "_zero_terms": []
+}
