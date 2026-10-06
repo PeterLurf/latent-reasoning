@@ -1,0 +1,1 @@
+SLOT {"family": "mod", "slot": 2, "accepted_seed": 2, "attempts": [{"seed": 2, "dir": "boxes/runs_fsq/s128_mod_s2", "status": "accepted", "rc": 0, "sec": 7060}], "n_restarts": 0, "error": null, "extra_args": []}

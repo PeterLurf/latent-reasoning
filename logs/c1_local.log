@@ -516,3 +516,8 @@
 04:59:38 WORKER_DONE cuda:0 scratch/c1_q_116c_local.txt
 05:11:01 s128_mod_s1 contraction_only --fp32 rc 0 (cuda:1)
 05:11:06 s128_mod_s1 cert_only rc 0 (cuda:1)
+05:16:19 s128_mod_s3 contraction_only --fp32 rc 0 (cuda:1)
+05:16:24 s128_mod_s3 cert_only rc 0 (cuda:1)
+05:21:38 s127_ff_skip_s1 contraction_only --fp32 rc 0 (cuda:1)
+05:26:51 s128_mod_s4 contraction_only --fp32 rc 0 (cuda:1)
+05:26:56 s128_mod_s4 cert_only rc 0 (cuda:1)
