@@ -88,6 +88,39 @@ FF_ITEMS = [bc.tok(" write 0"), bc.tok(" write 1"), bc.tok(" ignore 0"), bc.tok(
 assert all(len(t) == 2 for t in FF_ITEMS), FF_ITEMS
 FF_BIT = [bc.tok(" 0")[0], bc.tok(" 1")[0]]
 W0, W1, I0, I1, RD = range(5)
+# §128 held-out families (code-zero start as flip-flop; answers are one digit token " 0".." 7")
+DIGTOK = [bc.tok(" %d" % i)[0] for i in range(8)]
+CYC_ITEMS = [bc.tok(" stay"), bc.tok(" right"), bc.tok(" left")]; CYC_STEP = np.array([0, 1, -1])
+assert [t[0] for t in CYC_ITEMS] == [2652, 826, 1364] and all(len(t) == 1 for t in CYC_ITEMS), CYC_ITEMS
+MOD_ITEMS = [bc.tok(" %s %d" % (op, d)) for op in ("plus", "minus", "times") for d in range(5)]   # item = 5 * op + d
+assert all(len(t) == 2 for t in MOD_ITEMS), MOD_ITEMS
+RDFA_ITEMS = [bc.tok(" " + c) for c in "abcd"]
+assert [t[0] for t in RDFA_ITEMS] == [257, 275, 269, 288], RDFA_ITEMS
+RDFA_T = np.array([[4, 2, 0, 7], [3, 3, 2, 4], [3, 6, 5, 3], [4, 5, 2, 6], [7, 1, 0, 3], [4, 0, 5, 3], [5, 4, 7, 5], [7, 2, 6, 3]])
+
+
+def _rdfa_ok(T):
+    """§128: strongly connected, not a group (some input non-bijective), no constant input."""
+    n = T.shape[0]
+    for s0_ in range(n):                                                    # every state reaches every state
+        seen = {s0_}; fr = [s0_]
+        while fr:
+            fr = [int(t) for u in fr for t in T[u] if int(t) not in seen]; seen |= set(fr)
+        if len(seen) < n:
+            return False
+    return any(len(set(T[:, j])) < n for j in range(T.shape[1])) and all(len(set(T[:, j])) > 1 for j in range(T.shape[1]))
+
+
+def _rdfa_draw():
+    rng = np.random.default_rng(12800)
+    while True:
+        T = rng.integers(0, 8, (8, 4))
+        if _rdfa_ok(T):
+            return T
+
+
+assert (_rdfa_draw() == RDFA_T).all(), "§128 RDFA table != the first qualifying draw of default_rng(12800)"
+HELD = ("cyc", "mod", "rdfa")
 
 
 class Family:
@@ -97,6 +130,12 @@ class Family:
         self.name = name
         if name == "s5":
             self.n_items, self.n_states = 120, 120; self.item_tok = np.array([OPTOK[e] for e in range(120)])
+        elif name == "cyc":                                                 # §128: 5-cycle, stay / right / left
+            self.n_items, self.n_states = 3, 5; self.item_tok = np.array(CYC_ITEMS)
+        elif name == "mod":                                                 # §128: fold mod 5, plus / minus / times d
+            self.n_items, self.n_states = 15, 5; self.item_tok = np.array(MOD_ITEMS)
+        elif name == "rdfa":                                                # §128: the seeded random automaton
+            self.n_items, self.n_states = 4, 8; self.item_tok = np.array(RDFA_ITEMS)
         else:
             self.n_items, self.n_states = 5, 3; self.item_tok = np.array(FF_ITEMS)
 
@@ -104,16 +143,28 @@ class Family:
         if self.name == "s5":
             return s5.COMP[s, x]
         s = np.array(s); x = np.array(x)
+        if self.name == "cyc":
+            return (s + CYC_STEP[x]) % 5
+        if self.name == "mod":
+            op, d = x // 5, x % 5
+            return np.where(op == 0, (s + d) % 5, np.where(op == 1, (s - d) % 5, (s * d) % 5))
+        if self.name == "rdfa":
+            return RDFA_T[s, x]
         return np.where(x == W0, 1, np.where(x == W1, 2, s))
 
     def answer_tokens(self, s):
         """Answer token rows for states s (S5: 6-token state text; ff: the bit token)."""
+        if self.name in HELD:
+            return np.array(DIGTOK)[np.array(s)][:, None]
         return STTOK[s] if self.name == "s5" else np.array(FF_BIT)[np.clip(np.array(s) - 1, 0, 1)][:, None]
 
     def decode(self, toks):
         """Decoded answer token rows -> states (-1 = invalid)."""
         if self.name == "s5":
             return decode_to_el(toks)[0]
+        if self.name in HELD:                                               # a digit token naming a valid state, else -1
+            t = toks[:, 0]; lut = {tk: i for i, tk in enumerate(DIGTOK[:self.n_states])}
+            return np.array([lut.get(int(v), -1) for v in t])
         t = toks[:, 0]; return np.where(t == FF_BIT[0], 1, np.where(t == FF_BIT[1], 2, -1))
 
 
@@ -370,6 +421,8 @@ def lmax_at(step):
 def make_batch(fam, rng, bs, L):
     if fam.name == "s5":
         s0 = rng.integers(0, 120, bs); x = rng.integers(0, 120, (bs, L))
+    elif fam.name in HELD:                                                  # §128: start 0, items uniform
+        s0 = np.zeros(bs, np.int64); x = rng.integers(0, fam.n_items, (bs, L))
     else:
         s0 = np.zeros(bs, np.int64); x = ff_sequences(rng, bs, L)
     lab = np.zeros((bs, L), np.int64); s = s0.copy()
@@ -572,6 +625,58 @@ def lr_at(base, gr, step, steps):
     return base * gr.get("mult", 1.0) * min(1, step / 100) * 0.5 * (1 + math.cos(math.pi * step / steps))
 
 
+def labels_of(fam, s0, X):
+    lab = np.zeros(X.shape, np.int64); s_ = np.array(s0)
+    for t in range(X.shape[1]):
+        s_ = fam.delta(s_, X[:, t]); lab[:, t] = s_
+    return lab
+
+
+SUFFIX_BINS = ((1, 1), (2, 4), (5, 8), (9, 16), (17, 32), (33, 64), (65, 128), (129, 10 ** 9))
+
+
+def effective_suffix(fam, X):
+    """§128 (MOD / RDFA): at each position t, the length of the shortest suffix X[t-k+1..t] that maps EVERY state to one state
+    (the state is determined regardless of the past); 0 = never determined (the start state still matters)."""
+    n = fam.n_states; full = (1 << n) - 1
+    img = np.zeros((fam.n_items, 1 << n), np.int64)                         # image of a state set (bitmask) under each item
+    for x in range(fam.n_items):
+        nx = fam.delta(np.arange(n), np.full(n, x))
+        for msk in range(1 << n):
+            img[x, msk] = np.bitwise_or.reduce([1 << int(nx[i]) for i in range(n) if msk >> i & 1] or [0])
+    N, L = X.shape; sync = np.full((N, L), -1, np.int64)                    # sync[i, s]: first t >= s with |image(s..t)| = 1
+    for s_ in range(L):
+        m_ = np.full(N, full); done = np.zeros(N, bool)
+        for t in range(s_, L):
+            m_ = img[X[:, t], m_]; hit = (~done) & ((m_ & (m_ - 1)) == 0)
+            sync[hit, s_] = t; done |= hit
+            if done.all():
+                break
+    # sync[i, s] is non-decreasing in s (if s2..t is constant, so is s1..t for s1 < s2): the latest s with sync <= t by bisection
+    S = np.where(sync < 0, 10 ** 9, sync); T = np.arange(L); suf = np.zeros((N, L), np.int64)
+    for i in range(N):
+        last = np.searchsorted(S[i], T, side="right") - 1
+        suf[i] = np.where(last >= 0, T - last + 1, 0)
+    return suf
+
+
+def suffix_report(suf, correct):
+    out = {"never_determined": {"share": float((suf == 0).mean()), "acc": float(correct[suf == 0].mean()) if (suf == 0).any() else None}}
+    for lo, hi in SUFFIX_BINS:
+        b = (suf >= lo) & (suf <= hi)
+        out["%d-%s" % (lo, hi if hi < 10 ** 9 else "inf")] = {"share": float(b.mean()), "acc": float(correct[b].mean()) if b.any() else None}
+    d = suf[suf > 0]
+    out["median"] = float(np.median(d)) if len(d) else None; out["p90"] = float(np.percentile(d, 90)) if len(d) else None
+    return out
+
+
+def deletang(pred, lab, seed=12803, n=2000):
+    """§128: Delétang's score (final-output per-sequence accuracy) on n sequences with lengths U(41, 500), read as prefixes of
+    the iid test sequences (a prefix of an iid sequence is an iid sequence of that length; the chain is causal)."""
+    m_ = min(n, len(pred)); Ls = np.minimum(np.random.default_rng(seed).integers(41, 501, m_), pred.shape[1]); r = np.arange(m_)   # cap: smoke only
+    return {"n": int(m_), "acc": float((pred[r, Ls - 1] == lab[r, Ls - 1]).mean()), "lengths": "U(41, 500)" if pred.shape[1] >= 500 else "capped (smoke)"}
+
+
 def probe_batch127(fam):
     return make_batch(fam, np.random.default_rng(12702), 1024, 2)
 
@@ -758,7 +863,7 @@ def margin_flip(m, fam, s0, X, dev, amp, bs=250, seed=12002):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--family", required=True, choices=["s5", "ff"]); ap.add_argument("--arm", required=True, choices=["final", "trace"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--family", required=True, choices=["s5", "ff", "cyc", "mod", "rdfa"]); ap.add_argument("--arm", required=True, choices=["final", "trace"])
     ap.add_argument("--seed", type=int, default=1); ap.add_argument("--steps", type=int, default=24000); ap.add_argument("--bs", type=int, default=64)
     ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--test_n", type=int, default=2000)
     ap.add_argument("--test_len", type=int, default=512); ap.add_argument("--ext_n", type=int, default=500); ap.add_argument("--cert_cap", type=int, default=1_000_000)
@@ -780,6 +885,7 @@ def main():
     ap.add_argument("--lr_new", type=float, default=1.0, help="§127 D LR10: LN / W_down / W_up at this multiple of lr")
     ap.add_argument("--probe127", action="store_true", help="§127 / note 127-1 logging (implied by any §127 arm)")
     ap.add_argument("--mcheck_only", action="store_true", help="§127 (note 127-2): end-of-training mcheck from <out>/model.pt (p_hard 1) -> eval_mcheck_end.json")
+    ap.add_argument("--check_marker", default=None, help="§128 note 128-1: with --stop_plateau, the first attempt to mkdir this path when its flag fires keeps training")
     ap.add_argument("--stop_plateau", action="store_true", help="§127: stop at 2k when 123-3's flag fires (log kept, no eval.json)")
     ap.add_argument("--anneal", action="store_true", help="§126 Stage 2 ANNEAL: (1-lam) std(h) + lam W_up(z_b), lam 2k->6k, QBN distill, FSQ 6k->8k")
     ap.add_argument("--raw_h", action="store_true", help="§126 RAW-H: no bottleneck; carried vector = §125-standardised last hidden h")
@@ -926,8 +1032,19 @@ def main():
         if a.stop_plateau and step == int(2000 * sc) and L127:              # 123-3's flag (log steps nearest 100 / 1k / 2k)
             gl = lambda t_: L127[min(L127, key=lambda s_: abs(s_ - t_ * sc))]  # noqa: E731
             if gl(2000) >= 0.9 * gl(1000) and gl(2000) >= 0.25 * gl(100):
-                log.write(json.dumps({"step": step, "stopped": "plateau (123-3 flag at 2k)", "loss_100": gl(100), "loss_1k": gl(1000), "loss_2k": gl(2000),
-                                      "carried_norm": carried}) + "\n"); log.close(); print("STOPPED plateau at 2k", flush=True); return
+                claimed = False
+                if a.check_marker:                                          # note 128-1: the family's first flagged attempt keeps training
+                    try:
+                        os.makedirs(os.path.dirname(a.check_marker) or ".", exist_ok=True); os.mkdir(a.check_marker); claimed = True
+                    except FileExistsError:
+                        claimed = False
+                if claimed:
+                    open(os.path.join(a.out, "CHECK_RUN"), "w").write(a.out + chr(10))
+                    log.write(json.dumps({"step": step, "flagged": "plateau (123-3 flag at 2k)", "check_run": True, "loss_100": gl(100), "loss_1k": gl(1000),
+                                          "loss_2k": gl(2000)}) + "\n"); log.flush(); print("FLAGGED at 2k: check run continues (note 128-1)", flush=True)
+                else:
+                    log.write(json.dumps({"step": step, "stopped": "plateau (123-3 flag at 2k)", "loss_100": gl(100), "loss_1k": gl(1000), "loss_2k": gl(2000),
+                                          "carried_norm": carried}) + "\n"); log.close(); print("STOPPED plateau at 2k", flush=True); return
     if not a.eval_only:
         train_sec = round(time.time() - t0)
         if m.std:
@@ -956,6 +1073,21 @@ def main():
             if not (a.no_round or a.raw_h):
                 res["code_growth_ext"] = code_growth(cx, Yx)
         s0m, Xm = np.zeros(a.margin_n, np.int64), Xte[:a.margin_n, :128]
+        res["deletang"] = deletang(pred, Yte)                               # §128 (descriptive)
+    elif fam.name in HELD:                                                  # §128: iid uniform items from start 0, every position
+        trng = np.random.default_rng(12801); Xte = trng.integers(0, fam.n_items, (a.test_n, a.test_len)); lab = labels_of(fam, np.zeros(len(Xte), np.int64), Xte)
+        grid = [0, 0]; pred, codes = run_test(m, fam, None, Xte, dev, amp, a.eval_bs, grid=grid); C = pred == lab
+        res["long_acc"] = float(C.all(1).mean()); res["acc_by_length"] = {str(t): float(C[:, :t].all(1).mean()) for t in (16, 32, 64, 128, 256, 512) if t <= C.shape[1]}
+        res["deletang"] = deletang(pred, lab)
+        if fam.name in ("mod", "rdfa"):
+            res["effective_suffix"] = suffix_report(effective_suffix(fam, Xte), C)
+        for el, n_ in ((2048, a.ext_n), (8192, a.ext_n if fam.name == "cyc" else 0)):
+            if n_ and a.test_len >= 512:
+                Xx = np.random.default_rng(12804 + el).integers(0, fam.n_items, (n_, el)); Yx = labels_of(fam, np.zeros(n_, np.int64), Xx)
+                px, cx = run_test(m, fam, None, Xx, dev, amp, a.eval_bs); res["ext_%d" % el] = {"n": n_, "len": el, "cumulative": float((px == Yx).all(1).mean())}
+                if el == 2048:
+                    res["code_growth_ext"] = code_growth(cx, Yx)
+        s0m, Xm = None, Xte[:a.margin_n, :128]
     else:
         trng = np.random.default_rng(12000); Xte = ff_sequences(trng, a.test_n, a.test_len)
         lab = np.zeros_like(Xte); s = np.zeros(len(Xte), np.int64)

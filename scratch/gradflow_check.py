@@ -155,6 +155,16 @@ def check_fsq120_s127_varbatch(dev, out):
     out["fsq120.s127.varbatch.singletons_zero"] = float(m.var_loss() == 0)
 
 
+def check_fsq120_s128(dev, out):
+    """§128: the main answer loss reaches the bottleneck and GPT-2 on each held-out family (code-zero start, digit answers)."""
+    from boxes.fsq120 import FSQ120, Family, make_batch
+    for name in ("cyc", "mod", "rdfa"):
+        fam = Family(name); s0, x, lab = make_batch(fam, np.random.default_rng(0), 8, 3)
+        m = FSQ120(s5.load_gpt2(dev), fam).to(dev); m.train(); m.p_hard = 0.0
+        out["fsq120.s128.%s.main" % name] = term(m, lambda: m.chain(m.start(8, dev, None), torch.tensor(x, device=dev), lab)[0])
+        out["fsq120.s128.%s.down" % name] = float(m.down.weight.grad.norm())
+
+
 def _b119(method, dev):
     from boxes.base119 import Base119, load_gpt2x
     from boxes.gen97 import STTOK

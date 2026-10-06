@@ -1,0 +1,6 @@
+# §128 family cyc: 4 restart-on-plateau slots (scratch.restart128 -> boxes.fsq120 §120 FINAL + 127-3 guard + probe127, --stop_plateau; held-out: note 128-1 check run); RTX 3090 / 3090 Ti; record driver
+# P=2
+boxes/runs_fsq/s128_slots/cyc_k1 scratch.restart128 --family cyc --slot 1
+boxes/runs_fsq/s128_slots/cyc_k2 scratch.restart128 --family cyc --slot 2
+boxes/runs_fsq/s128_slots/cyc_k3 scratch.restart128 --family cyc --slot 3
+boxes/runs_fsq/s128_slots/cyc_k4 scratch.restart128 --family cyc --slot 4
