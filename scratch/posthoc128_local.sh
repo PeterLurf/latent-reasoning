@@ -10,14 +10,8 @@ while [ ! -f scratch/posthoc128.stop ]; do
   for d in boxes/runs_fsq/s128_*_s* boxes/runs_fsq/s127_*_s*; do
     case "$d" in *void*|*slots*) continue;; esac
     [ -s "$d/eval.json" ] && [ -s "$d/model.pt" ] || continue
-    A=$(python -c "
-import json; a=json.load(open('$d/args.json')); f=['--family', a['family'], '--arm', a['arm'], '--seed', str(a['seed'])]
-for k, fl in (('std2', '--std2'), ('skip_dec', '--skip_dec'), ('var_res', '--var_res')):
-    if a.get(k): f.append(fl)
-if a.get('lr_new', 1.0) != 1.0: f += ['--lr_new', str(a['lr_new'])]
-if a.get('var_res'): f += ['--var_est', a.get('var_est', 'ema')]
-print(' '.join(f))")
-    fam=$(echo "$A" | awk '{print $2}'); n=$(basename $d)
+    A="--from_args $d/args.json"                                            # the run's own configuration (Audit 2026-10-06)
+    fam=$(python -c "import json; print(json.load(open('$d/args.json'))['family'])"); n=$(basename $d)
     if [ ! -s "$d/eval_contraction_fp32.json" ]; then
       python -u -m boxes.fsq120 $A --contraction_only --fp32 --device $dev --out $d > logs/c1_${n}_contraction_fp32.log 2>&1
       echo "$(date +%T) ${n} contraction_only --fp32 rc $? ($dev)" >> logs/c1_local.log; did=1

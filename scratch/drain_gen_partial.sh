@@ -19,7 +19,7 @@ mkdir -p logs/vast_${H}_${P}
 # on-host post-hoc before a SKIP); a SKIP drops only <run>/model.pt from the tarball and is logged to logs/model_skips.log. Any
 # failure to decide -> KEEP.
 SC="scp -q -o ConnectTimeout=20 -i $HOME/.ssh/runpod_ed25519 -P $P"; skipset=" "
-if $SC scratch/drain_posthoc.py scratch/model_keep_patterns.txt root@$H:/workspace/Latent/scratch/ 2>/dev/null; then
+if $SC scratch/drain_posthoc.py scratch/model_keep_patterns.txt root@$H:/workspace/Latent/scratch/ 2>/dev/null && $SC boxes/fsq120.py root@$H:/workspace/Latent/boxes/fsq120_posthoc.py 2>/dev/null; then
   for j in $runs; do
     dec=$(timeout 900 $S "cd /workspace/Latent && python scratch/drain_posthoc.py $j cuda:0 2>/dev/null | tail -n 1; stat -c %s $j/model.pt 2>/dev/null" 2>/dev/null)
     if echo "$dec" | head -n 1 | grep -q "^SKIP "; then

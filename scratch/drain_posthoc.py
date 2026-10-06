@@ -40,22 +40,6 @@ def patterns():
     return [ln.strip() for ln in open(p) if ln.strip() and not ln.startswith("#")] if os.path.exists(p) else []
 
 
-def fsq_args(a):
-    f = ["--family", a["family"], "--arm", a["arm"], "--seed", str(a["seed"])]
-    for k, fl in (("no_round", "--no_round"), ("raw_h", "--raw_h"), ("anneal", "--anneal"), ("std", "--std"), ("std2", "--std2"),
-                  ("skip_dec", "--skip_dec"), ("var_res", "--var_res")):
-        if a.get(k):
-            f.append(fl)
-    for k, fl in (("dither", "--dither"), ("fsq_dither", "--fsq_dither")):
-        if a.get(k):
-            f += [fl, str(a[k])]
-    if a.get("lr_new", 1.0) not in (1.0, None):
-        f += ["--lr_new", str(a["lr_new"])]
-    if a.get("var_res") and a.get("var_est"):
-        f += ["--var_est", a["var_est"]]
-    return f
-
-
 def main():
     d = sys.argv[1].rstrip("/"); dev = sys.argv[2] if len(sys.argv) > 2 else "cuda:0"; name = os.path.basename(d)
     ep = os.path.join(d, "eval.json")
@@ -76,6 +60,8 @@ def main():
         print("KEEP eval.json unreadable (%s)" % ex); return
     if name.startswith("s119_") and (e.get("intact_acc") or 0) >= 0.90:
         print("KEEP s119 competent (intact %.3f)" % e["intact_acc"]); return
+    if e.get("k1_certified") is True or (e.get("k1_never_labelled_acc") or 0) >= 0.99:   # Audit: acquired self-training run (C4 evidence)
+        print("KEEP acquired self-training (k1_certified %s, never-labelled %s)" % (e.get("k1_certified"), e.get("k1_never_labelled_acc"))); return
     A = accs(e)
     if not A:
         print("KEEP no accuracy field recognised"); return
@@ -86,7 +72,9 @@ def main():
     a = json.load(open(os.path.join(d, "args.json"))) if os.path.exists(os.path.join(d, "args.json")) else {}
     if "family" in a and "arm" in a:                                        # fsq120 run: fp32 contraction on the host first
         if not os.path.exists(os.path.join(d, "eval_contraction_fp32.json")):
-            rc = subprocess.call([sys.executable, "-u", "-m", "boxes.fsq120"] + fsq_args(a) + ["--contraction_only", "--fp32", "--device", dev, "--out", d],
+            mod = "boxes.fsq120_posthoc" if os.path.exists(os.path.join(ROOT, "boxes", "fsq120_posthoc.py")) else "boxes.fsq120"   # current code, shipped by the drain
+            rc = subprocess.call([sys.executable, "-u", "-m", mod, "--from_args", os.path.join(d, "args.json"), "--contraction_only", "--fp32",
+                                  "--device", dev, "--out", d],                # the run's own configuration (Audit: no hand-rebuilt flags)
                                  stdout=open(os.path.join(ROOT, "logs", "gen_%s_contraction_fp32.log" % name), "w"), stderr=subprocess.STDOUT, cwd=ROOT)
             if rc != 0 or not os.path.exists(os.path.join(d, "eval_contraction_fp32.json")):
                 print("KEEP fp32 contraction failed on host (rc %d)" % rc); return

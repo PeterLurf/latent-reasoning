@@ -927,7 +927,7 @@ def margin_flip(m, fam, s0, X, dev, amp, bs=250, seed=12002):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--family", required=True, choices=["s5", "ff", "cyc", "mod", "rdfa"]); ap.add_argument("--arm", required=True, choices=["final", "trace"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--family", default=None, choices=["s5", "ff", "cyc", "mod", "rdfa"]); ap.add_argument("--arm", default=None, choices=["final", "trace"])
     ap.add_argument("--seed", type=int, default=1); ap.add_argument("--steps", type=int, default=24000); ap.add_argument("--bs", type=int, default=64)
     ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--test_n", type=int, default=2000)
     ap.add_argument("--test_len", type=int, default=512); ap.add_argument("--ext_n", type=int, default=500); ap.add_argument("--cert_cap", type=int, default=1_000_000)
@@ -948,6 +948,7 @@ def main():
     ap.add_argument("--std2", action="store_true", help="§127 C STD2: standardised carried embedding with an absolute floor")
     ap.add_argument("--lr_new", type=float, default=1.0, help="§127 D LR10: LN / W_down / W_up at this multiple of lr")
     ap.add_argument("--probe127", action="store_true", help="§127 / note 127-1 logging (implied by any §127 arm)")
+    ap.add_argument("--from_args", default=None, help="post-hoc: take every configuration flag from this args.json (the run's own); mode flags / --out / --device stay from the command line")
     ap.add_argument("--mcheck_only", action="store_true", help="§127 (note 127-2): end-of-training mcheck from <out>/model.pt (p_hard 1) -> eval_mcheck_end.json")
     ap.add_argument("--save_at_flag", action="store_true", help="§129 phase 1: at 2k, flag fired -> save ckpt_2k.pt and exit; else stop")
     ap.add_argument("--resume_2k", default=None, help="§129 phase 2: continue from this ckpt_2k.pt with the schedule clock restarted")
@@ -963,7 +964,21 @@ def main():
     ap.add_argument("--cert_only", action="store_true", help="CERT alone from <out>/model.pt -> <out>/eval_cert.json")
     ap.add_argument("--cert_time", type=int, default=2700, help="CERT wall-clock limit (s); exceeded -> inconclusive_time")
     ap.add_argument("--eval_only", action="store_true", help="re-run the eval from <out>/model.pt (training batch draws replayed for coverage_drawn)")
-    a = ap.parse_args(); dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); sc = a.sched_scale
+    a = ap.parse_args()
+    if a.from_args:                                                         # Audit 2026-10-06: post-hoc runs reproduce the run's configuration exactly
+        MODE = {"out", "device", "from_args", "contraction_only", "fp32", "cert_only", "cert_time", "growth_only", "mcheck_only", "eval_only",
+                "resume_2k", "save_at_flag", "redraw_head", "clock_only", "check_marker", "stop_plateau", "data_dir", "ext_n", "eval_bs", "contract_n"}
+        src = json.load(open(a.from_args)); unknown = []
+        for k_, v_ in src.items():
+            if k_ in MODE:
+                continue
+            if hasattr(a, k_):
+                setattr(a, k_, v_)
+            elif k_ not in ("train_gpu", "train_driver", "train_sequences"):
+                unknown.append(k_)
+        assert not unknown, "--from_args: keys this fsq120 does not know: %s" % unknown
+    assert a.family in ("s5", "ff", "cyc", "mod", "rdfa") and a.arm in ("final", "trace"), "--family and --arm are required (or --from_args)"
+    dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); sc = a.sched_scale
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     fam = Family(a.family); os.makedirs(a.out, exist_ok=True)
     assert not (a.dither and not a.no_round) and not (a.fsq_dither and a.no_round), "§123: --dither needs --no_round; --fsq_dither is FSQ"
