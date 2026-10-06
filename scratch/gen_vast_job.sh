@@ -18,7 +18,7 @@ if grep -q "boxes.fade89" "$q"; then sha256sum prosqa/ckpt/gpt2_pretrained.bin |
 if grep -q -E "boxes.(latent86|gen97|snap101|self103|mk108|self110|fsq120|base119)" "$q"; then
   W=prosqa/ckpt/gpt2_pretrained.bin; sha256sum $W | grep -q '^7c5d3f4b8b76583b' || { echo "$(date +%T) GPT2_SHA_MISMATCH rc 9" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }
   SHA128=6ee3ef95405dc43b094824dff8973753c587fe95a00762d2023bd64a941504f2; SHA512=a0087fe4a7496a47f76d9436e6bb089c8a8869f3f343f71057355e127d0c33da
-  pip install -q polars fire pyrootutils "git+https://github.com/jopetty/abstract_algebra" >> logs/pip_gen.log 2>&1
+  for try in 1 2 3 4; do pip install -q polars fire pyrootutils "git+https://github.com/jopetty/abstract_algebra" >> logs/pip_gen.log 2>&1; python -c "import polars, fire, pyrootutils" >> logs/pip_gen.log 2>&1 && break; sleep 30; done   # 2026-10-06: b68 lost fire to a pip build error -> empty data sha
   G=/workspace/s71gen; mkdir -p $G/src $G/data bench/data/s5; cp scratch/s71_gen/generate_data.py $G/src/; touch $G/.project-root
   ( cd $G && PYTHONPATH=$G python src/generate_data.py --group=S5 --k=128 --samples=100000 --seed=7101 && \
     PYTHONPATH=$G python src/generate_data.py --group=S5 --k=512 --samples=100000 --seed=7102 ) >> logs/pip_gen.log 2>&1
