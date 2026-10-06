@@ -176,9 +176,12 @@ class Base119(nn.Module):
         eos = torch.full((B, 1), EOS, device=dev); ans = self.sttok[tgt[:, 3]]
         ref = torch.cat([Q, self.sttok[tgt[:, :3]].reshape(B, -1), P, ans, eos], 1)
         ci = Q.shape[1] + 3 * NST + P.shape[1] - 1                               # ":" in the teacher sequence
-        with torch.no_grad():
-            _, _, hT = g(g.embed(ref), cap=ci)                                    # KD target (separate pass, as CODI)
         hR, _ = g(g.embed(ref)); lgR = g.logits(hR[:, Q.shape[1] - 1:-1]).float()
+        # KD target: a separate no-grad pass, as CODI. It must not populate autocast's weight-cast cache: a cast made under
+        # no_grad is cached without a graph and reused by later grad passes, which then give the LoRA no gradient (found on
+        # the first CODI sweep, 2026-10-05: teacher CE identical across lrs). Own autocast context, cache off, after the grad pass.
+        with torch.no_grad(), torch.autocast("cuda", dtype=torch.get_autocast_dtype("cuda"), enabled=torch.is_autocast_enabled("cuda"), cache_enabled=False):
+            _, _, hT = g(g.embed(ref), cap=ci)
         teach = F.cross_entropy(lgR.reshape(-1, lgR.shape[-1]), ref[:, Q.shape[1]:].reshape(-1))
         past, _ = self.thoughts(torch.cat([g.embed(Q), self.special[0].expand(B, 1, -1)], 1), self.n_final)
         dids = torch.cat([P, ans, eos], 1)
