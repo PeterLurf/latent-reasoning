@@ -4937,6 +4937,20 @@ alone.**
 * **The record of escaped seeds, updated:** 1 of 6 escaped arm-seeds learned (SKIP s4). The others (SKIP / STD2 / LR10 / VAR s2,
   and RAW-H) did not.
 
+**Note 127-12 (2026-10-06 05:41 EDT, before SKIP s1 / s3 and the controls are read; Audit / claude-13; a scoring clarification). ENTRY-FIX's ρ
+clause on rounded codes.**
+* **The issue.** With FSQ rounding, a perturbed chain snaps back exactly within one or two hand-offs. 123-9's ρ_ff then has fewer
+  than 2 usable hand-offs and is **undefined**, and the scorer would hold ENTRY-FIX at "incomplete (ρ_ff)" for ever. Read as about
+  0, the clause would be met by construction.
+  - SKIP s4 (fp32): ρ_k 0.183, then 0; median distance 0.74 → 0.14 → 0; exact recovery 0.154.
+* **The clause now reads ρ_ff when it is defined.** When it is undefined because the ε 0.1 median distance reaches ≤ 1e-3 (exact
+  recovery by rounding), it reads **the first-hand-off ratio ρ₁**. ρ₁ is the informative number (123-1), and it is not met by
+  construction.
+* Disclosure: SKIP s4's ρ₁ (0.183) was seen before this note. It passes under either reading, so the choice cannot have been
+  made for it.
+  - The exact §123 seeds' band, for comparison, is 0.146–0.180.
+* Exact-recovery share and ρ₁ are reported beside the clause for every exact seed.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

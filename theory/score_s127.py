@@ -135,6 +135,19 @@ def delivered(arm, d):
     return all(ok(s, k) for s, k in need)
 
 
+def rho_clause(cf, eps="0.1", floor=1e-3):
+    """Note 127-12: the value ENTRY-FIX's rho clause reads. rho_ff (123-9); when rho_ff is undefined because rounding recovers the
+    chain exactly (the eps-0.1 median distance reaches <= floor within the run), the first-hand-off ratio rho_1."""
+    r = rho_ff(cf, eps, floor)
+    if r is not None:
+        return r
+    try:
+        e = cf["detail"]["eps"][eps]; rk, dk = e["rho_k"], e["dist_med_k"]
+    except (KeyError, TypeError):
+        return None
+    return rk[0] if rk and any(x <= floor for x in dk) else None
+
+
 def rho_ff(cf, eps="0.1", floor=1e-3):                                       # note 123-9
     try:
         e = cf["detail"]["eps"][eps]; rk, dk = e["rho_k"], e["dist_med_k"]
@@ -155,7 +168,7 @@ def cell(d):
     if r is None:
         return {"plateau": pl, "long_acc": None, "status": "stopped at 2k (plateau)" if pl else "running", "rho_ff": None}
     cn = r.get("carried_norm") or {}; k2 = cn.get("2k") or {}
-    return {"plateau": pl, "long_acc": r.get("long_acc"), "status": "done", "rho_ff": rho_ff(load(d, "eval_contraction_fp32.json")),
+    return {"plateau": pl, "long_acc": r.get("long_acc"), "status": "done", "rho_ff": rho_clause(load(d, "eval_contraction_fp32.json")), "exact_recovery": (load(d, "eval_contraction_fp32.json") or {}).get("exact_recovery_share"),
             "ext_2048": (r.get("ext_2048") or {}).get("cumulative"), "codes_per_state": r.get("codes_per_state"),
             "row_norm_2k": k2.get("row_norm"), "wte_row_norm": k2.get("wte_row_norm"), "probe": r.get("probe"),
             "gpu": r.get("train_gpu", r.get("gpu"))}
