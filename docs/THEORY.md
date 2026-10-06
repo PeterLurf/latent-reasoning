@@ -5365,6 +5365,21 @@ The PASS conditions are met on the held-out runs so far. The verdict is read onc
 * **Not yet deployable** either way (Literature (c)): 4 flagged so far, against the ≥ 10 flagged with 0 false positives needed
   for a restart rule.
 
+**Note 119-5 (2026-10-06 08:36 EDT; CODI's s1 LR sweep, rerun with the autocast fix, read on-host by the experiments session; before CODI s2–3).
+CODI did not learn at any LR. Its teacher learns written-out CoT and its latent student stays at chance. Seeds 2–3 run as
+registered.**
+* **CODI s1** (d3, RTX A5000, driver 595.84): intact 0.0075 / 0.007 / 0.0075, train split 0.011 / 0.0104 / 0.0106 at lr 1e-3 / 3e-3 /
+  1e-2, cumulative 0; block donor and removal at chance.
+  - Guard (a): "did not learn", at every LR.
+* **The fix is delivered: the LoRA trains.** At 1e-3 the teacher (written-out CoT through the same model) reaches CE 0.000 by 6k.
+  - The student (4 latents) stays at about 0.44 per token, chance over the answer span.
+  - KD stays about 0.01: the hidden state at ":" can be matched without the latents carrying the S5 state.
+* **LR, by the registered criterion: 1e-3** (train split 0.011, the highest, though all three are noise-level; disclosed).
+  CODI s2 / s3 run at 1e-3, as registered (3 seeds per method), as for Coconut (119-2) and SIM-CoT (119-4).
+* **So far**, all three published methods read "did not learn" on this host: Coconut 3/3, SIM-CoT s1 (s2–3 running), CODI s1.
+  - Text CoT learns in every port (Coconut stage 0, CODI's teacher).
+  - If CODI s2–3 and SIM-CoT s2–3 also fail, 119-3's all-inconclusive wording applies.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
