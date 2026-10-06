@@ -803,3 +803,4 @@ TRIAL RESULT 2026-10-05 16:33: 580-driver host 137.175.22.196 (offer 41028909, i
 54371268 vast | gen_c1 DESTROYED_VERIFIED 2026-10-05 20:09 after verified per-run fetch (boxes/runs_s5/s124_expose_s27 boxes/runs_s5/s124_expose_s26)
 54401709 vast offer 53415905 created 2026-10-05 20:10: label gen-c3, queue scratch/gen_q_c3.txt (logged at create by vdeploy_toy.sh)
 54387596 vast | gen_b22 DESTROYED_VERIFIED 2026-10-05 20:32 after verified per-run fetch (boxes/runs_fsq/s126_s5_anneal_s2)
+54388750 vast | gen_b20 DESTROYED_VERIFIED 2026-10-05 20:44 after verified per-run fetch (boxes/runs_fsq/s126_s5_rawh_s3); FAILED (no eval.json, logs fetched): boxes/runs_fsq/s126_s5_rawh_s1 boxes/runs_fsq/s126_s5_rawh_s4
