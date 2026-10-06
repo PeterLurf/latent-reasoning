@@ -1,0 +1,24 @@
+{
+ "family": "s5",
+ "slot": 4,
+ "accepted_seed": 104,
+ "attempts": [
+  {
+   "seed": 4,
+   "dir": "boxes/runs_fsq/s128_s5_s4",
+   "status": "plateau",
+   "rc": 0,
+   "sec": 300
+  },
+  {
+   "seed": 104,
+   "dir": "boxes/runs_fsq/s128_s5_s104",
+   "status": "accepted",
+   "rc": 0,
+   "sec": 10560
+  }
+ ],
+ "n_restarts": 1,
+ "error": null,
+ "extra_args": []
+}
