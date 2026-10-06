@@ -144,6 +144,17 @@ def check_fsq120_s127(dev, out):
     out["fsq120.s127.lr10.ratio_ok"] = float(abs(lrs[1] / lrs[0] / 10 - 1) <= 0.01)
 
 
+def check_fsq120_s127_varbatch(dev, out):
+    """Note 127-3: VAR with the forward's own group means reaches W_down; a forward without a group of >= 2 rows gives 0."""
+    from boxes.fsq120 import FSQ120, Family, make_batch
+    fam = Family("s5"); s0, x, lab = make_batch(fam, np.random.default_rng(0), 64, 2); X = torch.tensor(x, device=dev)
+    m = FSQ120(s5.load_gpt2(dev), fam).to(dev); m.enable_var(fam.n_items); m.var_est = "batch"; m.train(); m.p_hard = 0.0
+    m.var_on = True; m._var = []; m.chain(m.start(64, dev, s0), X, lab); vl = m.var_loss()
+    out["fsq120.s127.varbatch.grad_down"] = float(torch.autograd.grad(vl, m.down.weight)[0].norm()); out["fsq120.s127.varbatch.term"] = float(vl.detach())
+    m._var = [(torch.randn(3, 8, device=dev), torch.tensor([1, 2, 3], device=dev), torch.zeros(3, dtype=torch.long, device=dev))]
+    out["fsq120.s127.varbatch.singletons_zero"] = float(m.var_loss() == 0)
+
+
 def _b119(method, dev):
     from boxes.base119 import Base119, load_gpt2x
     from boxes.gen97 import STTOK

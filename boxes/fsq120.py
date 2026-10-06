@@ -56,6 +56,10 @@ use their own generator, probes / checks run in eval mode with their own numpy R
               r2_state, abl_dloss}} (1,024 chains of length 2, own RNG; per-group means of z_b fit on chains 1-512, R^2 on
               513-1024, unseen groups -> the fit half's global mean; abl_dloss = answer CE at the last hand-off with the code
               (slot + skip) replaced by the batch-mean code, minus the intact CE). No "loss" key on these lines (123-3).
+  note 127-3 (every §127 run): non-finite guard (a step whose loss or clipped grad norm is not finite skips its update and
+              its statistics, logged {"step", "nonfinite": 1, "first": tensor}; eval.json s127.n_nonfinite); gradient checks
+              in fp32 with the bf16 value beside (*_bf16); SKIP logs {"step", "skip_norms"} every 1k; --var_est batch: VAR's
+              residual against the forward's own (item, position) group means, pooled within groups of >= 2 rows.
   --stop_plateau  stop at 2k if 123-3's flag fires (loss(2k) >= 0.9 loss(1k) and >= 0.25 loss(100)): log kept, no eval.json.
 """
 import os
@@ -177,8 +181,19 @@ class FSQ120(nn.Module):
 
     def var_loss(self, update=True):
         """VICReg variance + covariance on the item-and-position residual of this forward's hand-offs; update=False (checks)
-        leaves the EMA untouched."""
+        leaves the EMA untouched. note 127-3 (var_est "batch"): r = z_b - the forward's own (item, position) group mean;
+        variance / covariance pooled within groups of >= 2 rows (singletons contribute nothing; none -> the term is 0)."""
         Z = torch.cat([z for z, _, _ in self._var]).float(); key = torch.cat([x * self.jmax + j for _, x, j in self._var]); self._var = []
+        if getattr(self, "var_est", "ema") == "batch":
+            n = self.vm.shape[0]; cnt = torch.bincount(key, minlength=n).float()
+            gm = torch.zeros(n, D_Q, device=Z.device, dtype=Z.dtype).index_add_(0, key, Z) / cnt.clamp_min(1)[:, None]   # with gradient
+            keep = cnt[key] >= 2; G = int((cnt >= 2).sum())
+            if int(keep.sum()) - G < 1:
+                return Z.sum() * 0.0
+            r = (Z - gm[key])[keep]; dof = int(keep.sum()) - G
+            C = r.T @ r / dof                                               # pooled within-group covariance (group means removed)
+            v = torch.relu(1 - torch.sqrt(torch.diag(C) + 1e-4)).mean(); off = C - torch.diag(torch.diag(C))
+            return v + 0.04 * (off ** 2).sum() / D_Q
         with torch.no_grad():
             n = self.vm.shape[0]; cnt = torch.bincount(key, minlength=n).float()
             gm = torch.zeros(n, D_Q, device=Z.device).index_add_(0, key, Z.detach()) / cnt.clamp_min(1)[:, None]
@@ -620,18 +635,22 @@ def mcheck127(m, fam, dev, amp, opt, ng=256):
                 out["resid_std_ema"] = float((Z[seen] - m.vm[key[seen]]).std(0).mean()) if seen.sum() > 1 else None
     out["wte_row_norm"] = float(m.g.w("wte.weight").float().norm(dim=-1).mean())
     s0, x, lab = s0[:ng], x[:ng], lab[:ng]
-    if m.skip:
-        hs_ = _probe_chain(m, fam, dev, amp, s0, x, train_sem=True); _, qs, e = hs_[-1]; ql = qs.detach().float().requires_grad_(True)
-        ans = torch.tensor(fam.answer_tokens(lab[:, -1]), device=dev)
-        with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
-            L_ = m.answer_ce(e.detach(), ans, ql)
-        out["skip_grad_q"] = float(torch.autograd.grad(L_, ql)[0].norm())
-    if hasattr(m, "vm"):
-        on = m.var_on; m.var_on = True; m._var = []
-        hs_ = _probe_chain(m, fam, dev, amp, s0, x, grad=True, train_sem=True)
-        m._var = [(z, torch.tensor(x[:, t], device=dev), torch.full((len(x),), t, device=dev)) for t, (z, _, _) in enumerate(hs_)]
-        vl = m.var_loss(update=False); m.var_on = on
-        out["var_grad_down"] = float(torch.autograd.grad(vl, m.down.weight, retain_graph=True)[0].norm()); out["var_term"] = float(vl.detach())
+    for sfx, amp_g in (("", None), ("_bf16", amp)):                         # note 127-3: the checks in fp32; bf16 beside (descriptive)
+        if sfx and amp_g is None:
+            continue
+        if m.skip:
+            hs_ = _probe_chain(m, fam, dev, amp_g, s0, x, train_sem=True); _, qs, e = hs_[-1]; ql = qs.detach().float().requires_grad_(True)
+            ans = torch.tensor(fam.answer_tokens(lab[:, -1]), device=dev)
+            with torch.autocast("cuda", dtype=amp_g, enabled=amp_g is not None):
+                L_ = m.answer_ce(e.detach(), ans, ql)
+            out["skip_grad_q" + sfx] = float(torch.autograd.grad(L_, ql)[0].norm())
+        if hasattr(m, "vm"):
+            on = m.var_on; m.var_on = True; m._var = []
+            hs_ = _probe_chain(m, fam, dev, amp_g, s0, x, grad=True, train_sem=True)
+            m._var = [(z, torch.tensor(x[:, t], device=dev), torch.full((len(x),), t, device=dev)) for t, (z, _, _) in enumerate(hs_)]
+            vl = m.var_loss(update=False); m.var_on = on
+            out["var_grad_down" + sfx] = float(torch.autograd.grad(vl, m.down.weight, retain_graph=True)[0].norm()) if vl.requires_grad else 0.0
+            out["var_term" + sfx] = float(vl.detach())
     if opt is not None:
         lrs = [gr["lr"] for gr in opt.param_groups]; out["lr_ratio"] = lrs[1] / lrs[0] if len(lrs) > 1 and lrs[0] > 0 else 1.0; out["lrs"] = lrs
     m.train(was)
@@ -754,6 +773,7 @@ def main():
     ap.add_argument("--no_cert", action="store_true", help="skip CERT in the main eval (run post-hoc with --cert_only; Audit 2026-10-05)")
     ap.add_argument("--growth_only", action="store_true", help="distinct codes vs position on ext_n 2,048-step rollouts -> <out>/eval_growth.json")
     ap.add_argument("--var_res", action="store_true", help="§127 A VAR: item-and-position residual variance on z_b")
+    ap.add_argument("--var_est", default="ema", choices=["ema", "batch"], help="§127 A: note 127-3 rerun = batch (the forward's own group means)")
     ap.add_argument("--var_w", type=float, default=1.0, help="§127 A: VAR weight up to 2k (note 127-1 rerun: 10)")
     ap.add_argument("--skip_dec", action="store_true", help="§127 B SKIP: S_l(q_st) into decoder blocks 6-11 and before ln_f")
     ap.add_argument("--std2", action="store_true", help="§127 C STD2: standardised carried embedding with an absolute floor")
@@ -784,7 +804,7 @@ def main():
         if a.std2:
             m_.enable_std2()
         if a.var_res:
-            m_.enable_var(fam.n_items)
+            m_.enable_var(fam.n_items); m_.var_est = a.var_est
         return m_
     p127 = a.probe127 or a.var_res or a.skip_dec or a.std2 or a.lr_new != 1.0
     if a.growth_only:                                                       # Theory / Audit: distinct codes vs length on 2,048-step rollouts
@@ -835,7 +855,7 @@ def main():
     carried = {} if a.eval_only else {"init": carried_stats(m, fam, dev, amp)}   # §125 (every arm; own RNG, eval mode: no draws)
     if not a.eval_only:
         last_loss = None
-    reest = False; dist_hist = []; var_hist = []; L127 = {}
+    reest = False; dist_hist = []; var_hist = []; L127 = {}; n_nonfinite = 0
     if p127 and not a.eval_only:                                            # note 127-1: probe at step 0
         log.write(json.dumps({"step": 0, "probe": probe127(m, fam, dev, amp)}) + "\n"); log.flush()
     m.train()
@@ -874,7 +894,13 @@ def main():
                 dl = torch.stack(m._dist).mean(); m._dist = []; loss = loss + dl; dist_hist.append(float(dl.detach()))
             m._dist = []
             (loss / nmb).backward(); tot += loss.item() / nmb
-        torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); hist.append(tot)
+        gnorm_ = torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0)
+        if p127 and not (math.isfinite(tot) and bool(torch.isfinite(gnorm_))):   # note 127-3 guard: skip the update, log it
+            bad = "loss" if not math.isfinite(tot) else next((n_ for n_, p_ in m.named_parameters() if p_.grad is not None and not bool(torch.isfinite(p_.grad).all())), "grad_norm")
+            log.write(json.dumps({"step": step, "nonfinite": 1, "first": bad}) + "\n"); log.flush(); n_nonfinite += 1
+            opt.zero_grad(); m._s2acc = []; m._acc = []                    # no update and no statistics from this step
+        else:
+            opt.step(); hist.append(tot)
         if m.anneal:                                                        # std(h) EMA (std_map collects while not frozen)
             m.std = True; m.update_stats(); m.std = False
             if reest:
@@ -893,6 +919,8 @@ def main():
             if a.var_res:
                 rec.update({"var_w": var_w, "var": float(np.mean(var_hist)) if var_hist else None}); var_hist = []
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True); L127[step] = rec["loss"]
+        if m.skip and step % int(1000 * sc) == 0:                           # note 127-3: skip-map norms every 1k (descriptive)
+            log.write(json.dumps({"step": step, "skip_norms": [float(w_.norm()) for w_ in m.skip_w.detach().float()]}) + chr(10)); log.flush()
         if p127 and step == int(2000 * sc):                                 # note 127-1: probe at 2k (before any stop)
             log.write(json.dumps({"step": step, "probe": probe127(m, fam, dev, amp)}) + "\n"); log.flush(); m.train()
         if a.stop_plateau and step == int(2000 * sc) and L127:              # 123-3's flag (log steps nearest 100 / 1k / 2k)
@@ -911,7 +939,8 @@ def main():
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
     res = {"family": a.family, "arm": a.arm, "seed": a.seed, "train_sec": train_sec, "eval_only": a.eval_only, "std": a.std, "raw_h": a.raw_h, "anneal": a.anneal,
-           "s127": {"var_res": a.var_res, "var_w": a.var_w if a.var_res else None, "skip_dec": a.skip_dec, "std2": a.std2, "lr_new": a.lr_new, "probe127": p127},
+           "s127": {"var_res": a.var_res, "var_w": a.var_w if a.var_res else None, "var_est": a.var_est if a.var_res else None,
+                    "n_nonfinite": None if a.eval_only else n_nonfinite, "guard": p127, "skip_dec": a.skip_dec, "std2": a.std2, "lr_new": a.lr_new, "probe127": p127},
            "carried_norm": carried or None, "final_loss": last_loss, "no_round": a.no_round, "dither": a.dither, "fsq_dither": a.fsq_dither, "eval_dtype": str(amp), "coverage_drawn": float(drawn.mean()),
            "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
            "train_gpu": json.load(open(os.path.join(a.out, "args.json"))).get("train_gpu")}
