@@ -1,0 +1,81 @@
+{
+ "holds": true,
+ "n_reachable": 154,
+ "n_moore": 8,
+ "capped": false,
+ "violations": 0,
+ "all_decode_valid": true,
+ "status": "done",
+ "timed_out": false,
+ "moore_timed_out": false,
+ "sec": 0,
+ "layers": [
+  {
+   "depth": 1,
+   "frontier": 4,
+   "cum": 4,
+   "sec": 0
+  },
+  {
+   "depth": 2,
+   "frontier": 15,
+   "cum": 19,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 3,
+   "frontier": 35,
+   "cum": 54,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 4,
+   "frontier": 41,
+   "cum": 95,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 5,
+   "frontier": 26,
+   "cum": 121,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 6,
+   "frontier": 18,
+   "cum": 139,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 7,
+   "frontier": 12,
+   "cum": 151,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 8,
+   "frontier": 3,
+   "cum": 154,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 9,
+   "frontier": 0,
+   "cum": 154,
+   "sec": 0,
+   "complete": true
+  }
+ ],
+ "n_start_pairs": 4,
+ "eval_dtype": "None",
+ "cert_cap": 1000000,
+ "device": "NVIDIA GeForce RTX 2070",
+ "driver": "591.86"
+}
