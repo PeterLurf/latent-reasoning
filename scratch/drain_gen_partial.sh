@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # drain_gen.sh variant (2026-10-03, Audit: a failed run must not leave a 3090 idle): runs WITH eval.json on the host are
 # fetched (checksummed, 3 tries) with logs/; runs without one are recorded FAILED (their logs come with logs/, their dirs
-# are not fetched: local reruns may reuse the names); then vdestroy + pods.txt.  bash scratch/drain_gen_partial.sh <host> <port> <tag> <id>
+# are not fetched: local reruns may reuse the names; their args.json + log.jsonl ARE kept as <dir>.void_partial); then vdestroy + pods.txt.  bash scratch/drain_gen_partial.sh <host> <port> <tag> <id>
 set -u
 H=$1; P=$2; TAG=$3; ID=$4
 cd "$(dirname "$0")/.."
@@ -26,6 +26,18 @@ for j in $runs $keep logs; do n=$(echo $j | tr '/' '_'); ok=0
   tar --no-same-owner -xzf /d/drain_tmp/f_${H}_$n.tgz -C . --transform "s|^logs/|logs/vast_${H}_${P}/|" && rm -f /d/drain_tmp/f_${H}_$n.tgz   # extracted and sha-verified: drop the local copy (C: filled up 2026-10-03)
 done
 for j in $runs; do [ -s $j/eval.json ] || { echo "FETCH_INCOMPLETE $ID missing $j/eval.json"; exit 1; }; done
+# Theory 2026-10-05 (aborted-run rule): failed runs not fetched above keep their partial args.json + log.jsonl as <dir>.void_partial
+# (sha-verified; non-fatal - a miss is reported, the drain continues). Their run dir names stay free for local reruns.
+vp=""; for j in $(echo "$st" | sed -n 's/^BADM\{0,1\} //p'); do case " $keep " in *" $j "*) continue;; esac
+  n=$(echo $j | tr '/' '_')_vp; ok=0
+  for try in 1 2 3; do
+    rs=$($S "cd /workspace/Latent && tar -czf /tmp/f_$n.tgz --ignore-failed-read $j/args.json $j/log.jsonl 2>/dev/null; sha256sum /tmp/f_$n.tgz" 2>/dev/null | grep -o '^[0-9a-f]\{64\}')
+    scp -q -o ServerAliveInterval=15 -i ~/.ssh/runpod_ed25519 -P $P root@$H:/tmp/f_$n.tgz /d/drain_tmp/f_${H}_$n.tgz 2>/dev/null
+    [ -n "$rs" ] && [ "$rs" = "$(sha256sum /d/drain_tmp/f_${H}_$n.tgz | cut -c1-64)" ] && { ok=1; break; }; sleep 10
+  done
+  if [ $ok = 1 ] && tar --no-same-owner -xzf /d/drain_tmp/f_${H}_$n.tgz -C . --transform "s|^$j/|$j.void_partial/|" && [ -d $j.void_partial ]; then vp="$vp $j.void_partial"; else echo "PARTIAL_LOGS_UNFETCHED $j"; fi
+  rm -f /d/drain_tmp/f_${H}_$n.tgz
+done
 bash scratch/vdestroy.sh "$ID" | grep -q "^DESTROYED_VERIFIED" || { echo "DESTROY_UNVERIFIED $ID"; exit 1; }
-echo "$ID vast | $TAG DESTROYED_VERIFIED $(date '+%Y-%m-%d %H:%M') after verified per-run fetch ($(echo $runs))${bad:+; FAILED (no eval.json, logs fetched): $(echo $bad)}" >> scratch/pods.txt
+echo "$ID vast | $TAG DESTROYED_VERIFIED $(date '+%Y-%m-%d %H:%M') after verified per-run fetch ($(echo $runs))${bad:+; FAILED (no eval.json, logs fetched): $(echo $bad)}${vp:+; partial logs kept:$vp}" >> scratch/pods.txt
 echo "DRAINED $ID${bad:+ PARTIAL failed: $(echo $bad)}"
