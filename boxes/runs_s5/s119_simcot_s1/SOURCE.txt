@@ -1,0 +1,1 @@
+copy of s119_simcot_lr1e-4_s1 (note 119-4: the sweep tied at train-split 0.0104; 1e-4 = nearest the published lr). In log.jsonl, stage >= 1 lines carry the decoder CE in their 'step' field (key collision, disclosed in 119-4; line i = step 100 i)
