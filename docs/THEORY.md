@@ -4971,6 +4971,20 @@ attractor suffices.**
 * **Caveat:** the arms trained on different GPU classes (A5000 against RTX 3090). Seed counts are per arm, so there is no
   within-seed comparison across β, but the GPU sensitivity of the basins (125-2) is stated.
 
+**Note 124-6 (2026-10-06 05:54 EDT; descriptive, COPY s27 (RTX 3090) read from eval.json; Audit reproduced; COPY s26 and BASE s26–27 pending).
+The first self-training seed to meet C4 (qualified), C1 and C2 together.**
+* **COPY s27:**
+  - k = 1 never-labelled 1.0, certified on all 14,400 transitions.
+  - Cumulative 1.0 at 128–512, and 1.0 at 1,024 / 2,048.
+  - **Donor 1.0 at slots 1 / 2 / 3, recipients 0.0105 / 0.0095 / 0.0075:** single-slot SERIAL at every slot, with no slot-1
+    bypass. Zero / mean removal 0.0, copy accuracy 1.0. Acquired at L5.
+  - So final-answer self-training (C4 qualified by the f = 0.1 foothold) gives serial latent use (C1) and length
+    generalisation (C2), in one seed.
+* **COPY's registered readout, acquisition round, is L5 in 3/3 seeds so far** (s27, s28, s29). EXPOSE's is L5–L8.
+* **Carrier type still varies within the arm** (124-5): s27 SERIAL, s29 strongly slot-carried (0.88 / 0.75 / 0.52), s28 mixed.
+  - No arm-level "COPY → C1" claim. If s26 is also slot-carried, "COPY gives slot carriage in k/4" is a reasonable descriptive
+    line, under §124's registered readings.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
