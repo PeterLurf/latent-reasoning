@@ -562,3 +562,13 @@
 06:57:33 s130 4060 s41 rc 0 flag True (cuda:0, 325s)
 07:02:58 s130 4060 s42 rc 0 flag True (cuda:0, 325s)
 07:02:58 s130 4060 FIT done: 6 flagged / 10 non-flagged
+07:08:26 s130 4060 s19 rc 0 complete (cuda:0, 327s)
+07:10:09 s128_cyc_s3 contraction_only --fp32 rc 0 (cuda:1)
+07:10:14 s128_cyc_s3 cert_only rc 0 (cuda:1)
+07:13:55 s130 4060 s20 rc 0 complete (cuda:0, 329s)
+07:18:10 s128_rdfa_s1 contraction_only --fp32 rc 0 (cuda:1)
+07:18:21 s128_rdfa_s1 cert_only rc 0 (cuda:1)
+07:19:30 s130 4060 s21 rc 0 complete (cuda:0, 335s)
+07:19:30 s130 4060 RUNNER_DONE
+07:19:42 s130 4060 FIT done: 6 flagged / 10 non-flagged
+07:25:16 s130 4060 s22 rc 0 complete (cuda:0, 334s)
