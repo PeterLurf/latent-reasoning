@@ -1,3 +1,4 @@
-# §130 / §131 check-run rerun (note 131-4; user 2026-10-06: full runs on >= 16 GB cloud cards with checkpoints): fsq120 §120 FINAL S5 24k, no --stop_plateau, guard (--probe127), --no_cert, --micro = smallest of 1 / 2 / 4 that fits L 31 + 32 with 1.5 GiB margin (scratch/micro_gate.py, Audit 2026-10-06: micro 1 = the 3090 recipe), --ckpt_every 2000; RTX A4000 16 GB (GA104, as the 3070; the 3070 seeds); boxes.fsq120
+# §130 / §131 check-run rerun (note 131-4; user 2026-10-06: full runs on >= 16 GB cloud cards with checkpoints): fsq120 §120 FINAL S5 24k, no --stop_plateau, guard (--probe127), --no_cert, --micro = smallest of 1 / 2 / 4 that fits L 31 + 32 with 1.5 GiB margin (scratch/micro_gate.py, Audit 2026-10-06: micro 1 = the 3090 recipe), --ckpt_every 2000; RTX A4000 16 GB (GA104, as the 3070; the 3070 seeds); boxes.fsq120 [first: the A4000 resume-parity smoke (b60 on a bad host), Audit]
 # P=1
+boxes/runs_fsq/parity_ckpt_a4000 scratch.parity_ckpt
 boxes/runs_fsq/s130chk_s5_s12_a4000 scratch.micro_gate --family s5 --arm final --seed 12 --no_cert --probe127 --ckpt_every 2000
