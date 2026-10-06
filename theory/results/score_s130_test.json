@@ -203,25 +203,25 @@
   "SAME (4060)": {
    "label": "dip|flag SAME",
    "card": "4060",
-   "n": 1,
-   "flagged": 0,
-   "nonflagged": 1,
-   "precision": 0.0,
-   "recall": null,
+   "n": 24,
+   "flagged": 8,
+   "nonflagged": 16,
+   "precision": 0.4666666666666667,
+   "recall": 0.875,
    "precision_ci95": [
-    0.0,
-    0.9750000000000001
+    0.21266672951930787,
+    0.7341386527226035
    ],
    "recall_ci95": [
-    null,
-    null
+    0.4734903291247934,
+    0.9968402764687481
    ],
-   "PASS": "incomplete (0 flagged, 1 non-flagged; need >= 8 each)",
+   "PASS": false,
    "h1277": {
-    "flag_seeds_with_collapse": "0 / 0",
-    "nonflag_seeds_with_pull_0.1": "1 / 1"
+    "flag_seeds_with_collapse": "5 / 8",
+    "nonflag_seeds_with_pull_0.1": "16 / 16"
    },
-   "escape_rate": 1.0,
+   "escape_rate": 0.6666666666666666,
    "truth": "flag",
    "seeds": {
     "19": {
@@ -229,6 +229,167 @@
      "basin": false,
      "marker": true,
      "pull": 1000,
+     "collapse_step": null
+    },
+    "20": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 650,
+     "collapse_step": null
+    },
+    "21": {
+     "flag": true,
+     "basin": false,
+     "marker": true,
+     "pull": 1000,
+     "collapse_step": 750
+    },
+    "22": {
+     "flag": true,
+     "basin": false,
+     "marker": true,
+     "pull": 1400,
+     "collapse_step": 800
+    },
+    "23": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 700,
+     "collapse_step": null
+    },
+    "24": {
+     "flag": true,
+     "basin": false,
+     "marker": true,
+     "pull": 1800,
+     "collapse_step": 650
+    },
+    "25": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 650,
+     "collapse_step": null
+    },
+    "26": {
+     "flag": false,
+     "basin": false,
+     "marker": true,
+     "pull": 1350,
+     "collapse_step": null
+    },
+    "59": {
+     "flag": true,
+     "basin": false,
+     "marker": true,
+     "pull": 1400,
+     "collapse_step": null
+    },
+    "60": {
+     "flag": true,
+     "basin": false,
+     "marker": true,
+     "pull": 1500,
+     "collapse_step": 750
+    },
+    "61": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 750,
+     "collapse_step": null
+    },
+    "62": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 400,
+     "collapse_step": null
+    },
+    "63": {
+     "flag": false,
+     "basin": false,
+     "marker": true,
+     "pull": 900,
+     "collapse_step": 650
+    },
+    "64": {
+     "flag": false,
+     "basin": false,
+     "marker": true,
+     "pull": 1000,
+     "collapse_step": 650
+    },
+    "65": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 750,
+     "collapse_step": null
+    },
+    "66": {
+     "flag": false,
+     "basin": false,
+     "marker": true,
+     "pull": 1250,
+     "collapse_step": 800
+    },
+    "67": {
+     "flag": false,
+     "basin": false,
+     "marker": true,
+     "pull": 1100,
+     "collapse_step": null
+    },
+    "68": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 700,
+     "collapse_step": null
+    },
+    "69": {
+     "flag": false,
+     "basin": false,
+     "marker": true,
+     "pull": 1050,
+     "collapse_step": 650
+    },
+    "70": {
+     "flag": false,
+     "basin": false,
+     "marker": true,
+     "pull": 1300,
+     "collapse_step": 650
+    },
+    "71": {
+     "flag": true,
+     "basin": false,
+     "marker": true,
+     "pull": 550,
+     "collapse_step": null
+    },
+    "72": {
+     "flag": true,
+     "basin": false,
+     "marker": true,
+     "pull": 1950,
+     "collapse_step": 650
+    },
+    "73": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 500,
+     "collapse_step": null
+    },
+    "74": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 800,
      "collapse_step": null
     }
    }
@@ -384,23 +545,23 @@
   "SAME (4060)": {
    "label": "dip|basin SAME",
    "card": "4060",
-   "n": 1,
+   "n": 24,
    "flagged": 0,
-   "nonflagged": 1,
-   "precision": null,
+   "nonflagged": 24,
+   "precision": 0.0,
    "recall": null,
    "precision_ci95": [
-    null,
-    null
+    0.0,
+    0.7075982261787135
    ],
    "recall_ci95": [
     null,
     null
    ],
-   "PASS": "incomplete (0 flagged, 1 non-flagged; need >= 8 each)",
+   "PASS": "incomplete (0 flagged, 24 non-flagged; need >= 8 each)",
    "h1277": {
-    "flag_seeds_with_collapse": "0 / 0",
-    "nonflag_seeds_with_pull_0.1": "1 / 1"
+    "flag_seeds_with_collapse": "5 / 8",
+    "nonflag_seeds_with_pull_0.1": "16 / 16"
    },
    "escape_rate": 1.0,
    "truth": "basin",
@@ -410,6 +571,167 @@
      "basin": false,
      "marker": false,
      "pull": 1000,
+     "collapse_step": null
+    },
+    "20": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 650,
+     "collapse_step": null
+    },
+    "21": {
+     "flag": true,
+     "basin": false,
+     "marker": true,
+     "pull": 1000,
+     "collapse_step": 750
+    },
+    "22": {
+     "flag": true,
+     "basin": false,
+     "marker": true,
+     "pull": 1400,
+     "collapse_step": 800
+    },
+    "23": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 700,
+     "collapse_step": null
+    },
+    "24": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 1800,
+     "collapse_step": 650
+    },
+    "25": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 650,
+     "collapse_step": null
+    },
+    "26": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1350,
+     "collapse_step": null
+    },
+    "59": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 1400,
+     "collapse_step": null
+    },
+    "60": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 1500,
+     "collapse_step": 750
+    },
+    "61": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 750,
+     "collapse_step": null
+    },
+    "62": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 400,
+     "collapse_step": null
+    },
+    "63": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 900,
+     "collapse_step": 650
+    },
+    "64": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1000,
+     "collapse_step": 650
+    },
+    "65": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 750,
+     "collapse_step": null
+    },
+    "66": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1250,
+     "collapse_step": 800
+    },
+    "67": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1100,
+     "collapse_step": null
+    },
+    "68": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 700,
+     "collapse_step": null
+    },
+    "69": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1050,
+     "collapse_step": 650
+    },
+    "70": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1300,
+     "collapse_step": 650
+    },
+    "71": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 550,
+     "collapse_step": null
+    },
+    "72": {
+     "flag": true,
+     "basin": false,
+     "marker": true,
+     "pull": 1950,
+     "collapse_step": 650
+    },
+    "73": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 500,
+     "collapse_step": null
+    },
+    "74": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 800,
      "collapse_step": null
     }
    }
@@ -565,25 +887,25 @@
   "SAME (4060)": {
    "label": "persist|flag SAME",
    "card": "4060",
-   "n": 1,
-   "flagged": 0,
-   "nonflagged": 1,
-   "precision": null,
-   "recall": null,
+   "n": 24,
+   "flagged": 8,
+   "nonflagged": 16,
+   "precision": 0.75,
+   "recall": 0.375,
    "precision_ci95": [
-    null,
-    null
+    0.19412044968324338,
+    0.9936905367902902
    ],
    "recall_ci95": [
-    null,
-    null
+    0.08523341413725352,
+    0.7551367836334484
    ],
-   "PASS": "incomplete (0 flagged, 1 non-flagged; need >= 8 each)",
+   "PASS": false,
    "h1277": {
-    "flag_seeds_with_collapse": "0 / 0",
-    "nonflag_seeds_with_pull_0.1": "1 / 1"
+    "flag_seeds_with_collapse": "5 / 8",
+    "nonflag_seeds_with_pull_0.1": "16 / 16"
    },
-   "escape_rate": 1.0,
+   "escape_rate": 0.6666666666666666,
    "truth": "flag",
    "seeds": {
     "19": {
@@ -591,6 +913,167 @@
      "basin": false,
      "marker": false,
      "pull": 1000,
+     "collapse_step": null
+    },
+    "20": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 650,
+     "collapse_step": null
+    },
+    "21": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 1000,
+     "collapse_step": 750
+    },
+    "22": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 1400,
+     "collapse_step": 800
+    },
+    "23": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 700,
+     "collapse_step": null
+    },
+    "24": {
+     "flag": true,
+     "basin": false,
+     "marker": true,
+     "pull": 1800,
+     "collapse_step": 650
+    },
+    "25": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 650,
+     "collapse_step": null
+    },
+    "26": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1350,
+     "collapse_step": null
+    },
+    "59": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 1400,
+     "collapse_step": null
+    },
+    "60": {
+     "flag": true,
+     "basin": false,
+     "marker": true,
+     "pull": 1500,
+     "collapse_step": 750
+    },
+    "61": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 750,
+     "collapse_step": null
+    },
+    "62": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 400,
+     "collapse_step": null
+    },
+    "63": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 900,
+     "collapse_step": 650
+    },
+    "64": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1000,
+     "collapse_step": 650
+    },
+    "65": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 750,
+     "collapse_step": null
+    },
+    "66": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1250,
+     "collapse_step": 800
+    },
+    "67": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1100,
+     "collapse_step": null
+    },
+    "68": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 700,
+     "collapse_step": null
+    },
+    "69": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1050,
+     "collapse_step": 650
+    },
+    "70": {
+     "flag": false,
+     "basin": false,
+     "marker": true,
+     "pull": 1300,
+     "collapse_step": 650
+    },
+    "71": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 550,
+     "collapse_step": null
+    },
+    "72": {
+     "flag": true,
+     "basin": false,
+     "marker": true,
+     "pull": 1950,
+     "collapse_step": 650
+    },
+    "73": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 500,
+     "collapse_step": null
+    },
+    "74": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 800,
      "collapse_step": null
     }
    }
@@ -746,23 +1229,23 @@
   "SAME (4060)": {
    "label": "persist|basin SAME",
    "card": "4060",
-   "n": 1,
+   "n": 24,
    "flagged": 0,
-   "nonflagged": 1,
-   "precision": null,
+   "nonflagged": 24,
+   "precision": 0.0,
    "recall": null,
    "precision_ci95": [
-    null,
-    null
+    0.0,
+    0.9750000000000001
    ],
    "recall_ci95": [
     null,
     null
    ],
-   "PASS": "incomplete (0 flagged, 1 non-flagged; need >= 8 each)",
+   "PASS": "incomplete (0 flagged, 24 non-flagged; need >= 8 each)",
    "h1277": {
-    "flag_seeds_with_collapse": "0 / 0",
-    "nonflag_seeds_with_pull_0.1": "1 / 1"
+    "flag_seeds_with_collapse": "5 / 8",
+    "nonflag_seeds_with_pull_0.1": "16 / 16"
    },
    "escape_rate": 1.0,
    "truth": "basin",
@@ -772,6 +1255,167 @@
      "basin": false,
      "marker": false,
      "pull": 1000,
+     "collapse_step": null
+    },
+    "20": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 650,
+     "collapse_step": null
+    },
+    "21": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 1000,
+     "collapse_step": 750
+    },
+    "22": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 1400,
+     "collapse_step": 800
+    },
+    "23": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 700,
+     "collapse_step": null
+    },
+    "24": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 1800,
+     "collapse_step": 650
+    },
+    "25": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 650,
+     "collapse_step": null
+    },
+    "26": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1350,
+     "collapse_step": null
+    },
+    "59": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 1400,
+     "collapse_step": null
+    },
+    "60": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 1500,
+     "collapse_step": 750
+    },
+    "61": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 750,
+     "collapse_step": null
+    },
+    "62": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 400,
+     "collapse_step": null
+    },
+    "63": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 900,
+     "collapse_step": 650
+    },
+    "64": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1000,
+     "collapse_step": 650
+    },
+    "65": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 750,
+     "collapse_step": null
+    },
+    "66": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1250,
+     "collapse_step": 800
+    },
+    "67": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1100,
+     "collapse_step": null
+    },
+    "68": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 700,
+     "collapse_step": null
+    },
+    "69": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1050,
+     "collapse_step": 650
+    },
+    "70": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 1300,
+     "collapse_step": 650
+    },
+    "71": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 550,
+     "collapse_step": null
+    },
+    "72": {
+     "flag": true,
+     "basin": false,
+     "marker": true,
+     "pull": 1950,
+     "collapse_step": 650
+    },
+    "73": {
+     "flag": false,
+     "basin": false,
+     "marker": false,
+     "pull": 500,
+     "collapse_step": null
+    },
+    "74": {
+     "flag": true,
+     "basin": false,
+     "marker": false,
+     "pull": 800,
      "collapse_step": null
     }
    }
