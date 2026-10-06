@@ -86,13 +86,22 @@ with the same code and settings across families.
   - **End-probe profiles of the six cloud reruns** (opprobe R²_state at L 2 / 4 / 8; abl_dloss; Theory-verified from the probe files):
     - s12 exact: 0.997 / 0.997 / 0.997, abl 25.6;
     - **F2b flat** (s6): 0.82 / 0.81 / 0.81, abl 6.0, long_acc 0. Not compounding, so a wrong transition or a dialect mismatch;
-    - **F2b compounding** (s17): 0.72 / 0.33 / −0.02, abl 8.0. The state decays with L;
+    - **F2b compounding** (s17): 0.72 / 0.33 / −0.02, abl 8.0. The state decays with L.
+      - It is a **non-contracting code**: acc at prefix 1 / 2 / 4 / 8 = 1.000 / 0.939 / 0.344 / 0.025, so the first transition is
+        right.
+      - Per-position survival is about 0.6 per step after that.
+      - fp32 ρ₁ (ε 0.1) is 0.80, against 0.13–0.22 in the exact runs;
     - **F2a** (s7, s5): about 0 at every L, abl 1.8–1.9.
       - s5 is wrong **from the first hand-off** (acc at prefix 1 / 2 / 4 / 8 = 0.097 / 0.0035 / 0 / 0; chance 0.008) while
         **strongly contractive** (fp32 ρ₁ 0.072): a stable map to the wrong attractor, not drift;
     - **F1** (s30): an unread 4-code buffer of the last op (last1 R² 0.69 / 0.99 / 0.99, abl about 0).
-  - **Provisional reading** (Audit): where ρ₁ is in band and the failure starts at prefix 1, the fix is in the transition (COPY /
-    SELF-ANCHOR / a reader), not contraction (§133 / 2). Prefix accuracy and ρ₁ for s6 / s17 decide whether F2b is the same.
+  - **Reading so far: two mechanisms, two fixes.**
+    - F2a (s5; s128 s3 on a CPU preview) is **wrong from the first transition** with a contractive code (ρ₁ 0.07). That is a
+      transition fix: COPY / SELF-ANCHOR / a reader.
+    - F2b-compounding (s17) is **right at the first transition but not contractive** (ρ₁ 0.80). That is a contraction fix: §133's
+      error correction / candidate 2.
+    - s6 (F2b flat) is pending, with prefix accuracy and ρ₁ on the 3070. It decides whether F2b also has a wrong-transition
+      sub-type.
 * **F3, drift:** a continuous or wide carrier has no attractor (RAW-H, CONT).
 * **F4, capacity:** 8⁸ codes (24 bits) cannot hold large states (S5×4, multiplication, graph sets).
   - On the §128 families the cap is far from binding (helper's growth reading, fp32, 500 rollouts to 2,048, acc 1.0):
