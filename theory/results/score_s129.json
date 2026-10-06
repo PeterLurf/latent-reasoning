@@ -1,6 +1,166 @@
 {
- "runs": {},
- "clock": {},
- "panel": [],
- "verdict": "incomplete (panel 0 / 4)"
+ "runs": {
+  "s129_s5_s2": {
+   "phase1_flag": true,
+   "redrawn": true,
+   "phase2_flag": true,
+   "long_acc": null,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "driver": "595.71.05",
+   "status": "re-plateaued",
+   "pass": false,
+   "esc": false
+  },
+  "s129_s5_s1": {
+   "phase1_flag": false,
+   "redrawn": false,
+   "phase2_flag": null,
+   "long_acc": null,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "driver": "595.71.05",
+   "status": "not in panel (phase-1 flag did not fire)"
+  },
+  "s129_s5_s3": {
+   "phase1_flag": false,
+   "redrawn": false,
+   "phase2_flag": null,
+   "long_acc": null,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "driver": "595.71.05",
+   "status": "not in panel (phase-1 flag did not fire)"
+  },
+  "s129_s5_s4": {
+   "phase1_flag": true,
+   "redrawn": true,
+   "phase2_flag": false,
+   "long_acc": 0.0,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "driver": "595.71.05",
+   "status": "done",
+   "pass": false,
+   "esc": true
+  },
+  "s129_s5_s101": {
+   "phase1_flag": false,
+   "redrawn": false,
+   "phase2_flag": null,
+   "long_acc": null,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "driver": "595.71.05",
+   "status": "not in panel (phase-1 flag did not fire)"
+  },
+  "s129_s5_s102": {
+   "phase1_flag": false,
+   "redrawn": false,
+   "phase2_flag": null,
+   "long_acc": null,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "driver": "595.71.05",
+   "status": "not in panel (phase-1 flag did not fire)"
+  },
+  "s129_s5_s103": {
+   "phase1_flag": false,
+   "redrawn": false,
+   "phase2_flag": null,
+   "long_acc": null,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "driver": "595.71.05",
+   "status": "not in panel (phase-1 flag did not fire)"
+  },
+  "s129_s5_s104": {
+   "phase1_flag": false,
+   "redrawn": false,
+   "phase2_flag": null,
+   "long_acc": null,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "driver": "595.71.05",
+   "status": "not in panel (phase-1 flag did not fire)"
+  },
+  "s129_s5_s201": {
+   "phase1_flag": false,
+   "redrawn": false,
+   "phase2_flag": null,
+   "long_acc": null,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "driver": "595.71.05",
+   "status": "not in panel (phase-1 flag did not fire)"
+  },
+  "s129_s5_s202": {
+   "phase1_flag": true,
+   "redrawn": true,
+   "phase2_flag": false,
+   "long_acc": 0.0,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "driver": "595.71.05",
+   "status": "done",
+   "pass": false,
+   "esc": true
+  },
+  "s129_s5_s203": {
+   "phase1_flag": false,
+   "redrawn": false,
+   "phase2_flag": null,
+   "long_acc": null,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "driver": "595.71.05",
+   "status": "not in panel (phase-1 flag did not fire)"
+  },
+  "s129_s5_s204": {
+   "phase1_flag": false,
+   "redrawn": false,
+   "phase2_flag": null,
+   "long_acc": null,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "driver": "595.71.05",
+   "status": "not in panel (phase-1 flag did not fire)"
+  },
+  "s129_s5_s301": {
+   "phase1_flag": true,
+   "redrawn": true,
+   "phase2_flag": true,
+   "long_acc": null,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "driver": "595.71.05",
+   "status": "re-plateaued",
+   "pass": false,
+   "esc": false
+  }
+ },
+ "clock": {
+  "s129_s5_s2": {
+   "phase2_flag": true,
+   "long_acc": null,
+   "status": "re-plateaued",
+   "esc": false,
+   "pass": false
+  },
+  "s129_s5_s4": {
+   "phase2_flag": true,
+   "long_acc": null,
+   "status": "re-plateaued",
+   "esc": false,
+   "pass": false
+  },
+  "s129_s5_s202": {
+   "phase2_flag": true,
+   "long_acc": null,
+   "status": "re-plateaued",
+   "esc": false,
+   "pass": false
+  },
+  "s129_s5_s301": {
+   "phase2_flag": true,
+   "long_acc": null,
+   "status": "re-plateaued",
+   "esc": false,
+   "pass": false
+  }
+ },
+ "panel": [
+  "s129_s5_s2",
+  "s129_s5_s4",
+  "s129_s5_s202",
+  "s129_s5_s301"
+ ],
+ "verdict": "descriptive (REDRAW pass 0 / 4, CLOCK escape 0 / 4)"
 }
