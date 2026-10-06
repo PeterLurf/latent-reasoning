@@ -45,6 +45,14 @@ def probes(d):
     return {x["step"]: x["probe"] for x in map(json.loads, open(p)) if "probe" in x}
 
 
+def mech2k(d):
+    """fsq120 logs the §134 mechanism probes at 2k as {"step", "s134": {dialect, copy_donor, ophist}} in log.jsonl."""
+    p = os.path.join(R, d, "log.jsonl")
+    if not os.path.exists(p):
+        return None
+    return next((x["s134"] for x in map(json.loads, open(p)) if "s134" in x), None)
+
+
 def smoke_or_bad(d, family):
     """134-3 (b): smoke runs skipped; args must be d_q 8, levels 8, the family, copy_frac 0.1."""
     a = load(d, "args.json") or {}
@@ -66,7 +74,9 @@ def run(d, family="s5"):
     out = {"long_acc": r.get("long_acc"), "ext_2048": (r.get("ext_2048") or {}).get("cumulative"), "serial": serial(r.get("donor")),
            "rho": rho_clause(load(d, "eval_contraction_fp32.json")), "copy_frac": a.get("copy_frac"), "stop_plateau": a.get("stop_plateau"),
            "gpu": r.get("train_gpu", r.get("gpu")), "driver": r.get("train_driver"), "probes": probes(d),
-           "dialect": r.get("dialect"), "copy_donor": r.get("copy_donor"), "copy_acc": r.get("copy_acc")}   # 134-1 / 134-3 (c)
+           "dialect": (r.get("s134") or {}).get("dialect"), "copy_donor": (r.get("s134") or {}).get("copy_donor"),
+           "copy_acc": (r.get("s134") or {}).get("copy_acc"), "ophist_end": (r.get("s134") or {}).get("ophist"),
+           "mech_2k": mech2k(d)}                                           # 134-1 / 134-3 (c): end in eval.json["s134"], 2k in log.jsonl
     out["exact"] = (out["ext_2048"] if out["ext_2048"] is not None else out["long_acc"] or 0) >= 0.99
     out["pass"] = None if out["rho"] is None else bool(out["exact"] and out["serial"] and out["rho"] <= 0.28)
     out["valid"] = bool(a.get("copy_frac")) and not a.get("stop_plateau")       # COPY on, no plateau stop (no restarts)
