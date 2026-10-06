@@ -1,0 +1,20 @@
+{
+ "replay": "done",
+ "rc": 0,
+ "args": [
+  "--seed",
+  "2",
+  "--steps",
+  "2000",
+  "--every",
+  "50",
+  "--amp",
+  "bf16",
+  "--threads",
+  "4",
+  "--device",
+  "cuda:0",
+  "--out",
+  "theory/results/replay_basin_s2/replay.jsonl"
+ ]
+}
