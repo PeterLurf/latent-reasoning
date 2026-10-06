@@ -4812,6 +4812,25 @@ Seed 2 reruns on the same host.**
   - The voided phase 1 is reported in the result as seed 2's first attempt (flagged; the continuations crashed unread).
 * Checked in the code: the REDRAW continuation appends to the phase-1 log (mode "a"). CLOCK-ONLY writes its own dir.
   129-1's probes (clock 700 / 1,200, with r2_start) are in.
+* **For the result** (Audit's pre-launch review): "keep the body" includes the body's small Adam second moments
+  for the slot-reading rows, so its first phase-2 steps there are large (Literature (b)). That is part of what the arm tests.
+
+**Note 116-8 (2026-10-06 04:43 EDT; OPDEF s31 scored by `theory/score_s116.py`, Audit reproduced; before s32 lands). FOOTHOLD-OPDEF is decided
+false. s32 is descriptive, and the GPU per seed is stated.**
+* **OPDEF s31** (local RTX 3070): never acquired. k = 1 never-labelled 0.0083, cumulative 512 at 0, donor at chance.
+* **FOOTHOLD-OPDEF needs cumulative ≥ 0.99 at 512 *and* k = 1 ≥ 0.99, in ≥ 2/5 seeds.**
+  - s33 acquired the whole table (k = 1 1.0, certified) but ended at **0.987** at 512, under the bar (116-7). So no
+    scored seed passes: s31, s33, s34 and s35 do not.
+  - Only s32 remains, so the count can reach at most 1/5. **FOOTHOLD-OPDEF = false**, whatever s32 does.
+  - Correction to the 04:55 tally, which counted s33 as a FOOTHOLD seed.
+* STRICT-C4 (NONE) was already decided false (116-6, 0/4 at chance).
+* **s32 (local RTX 4060) is descriptive:** an acquisition count, with the card stated per seed.
+  - Acquisition so far: s33 (4060) yes; s31 (3070), s34 (3070), s35 (2070) no.
+  - If s32 (4060) acquires, it is reported as "2/2 on the 4060 vs 0/3 on other cards", a GPU-class confound (125-2), not a clean
+    2/5.
+* **Wording, per Literature (ba531055 (d)):** operator definitions **suffice** as a C4 foothold in 1/5 seeds so far
+  (s33: the whole table learned and certified, but not FOOTHOLD by 512 accuracy). "Minimum foothold" (116-7) is replaced by
+  "sufficient in k/n seeds", since minimality is untested.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
