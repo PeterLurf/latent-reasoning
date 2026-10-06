@@ -1011,6 +1011,9 @@ def main():
         if fam.name == "s5":
             Xx, Yx = s5.load_csv(os.path.join(a.data_dir, "S5=2048.csv"), limit=a.ext_n); s5.check_labels(Xx, Yx)
             px, cx = run_test(m, fam, np.zeros(len(Xx), np.int64), Xx, dev, amp, a.eval_bs); acc = float((px == Yx).all(1).mean())
+        elif fam.name in HELD:                                              # §128 (2026-10-06): as the held-out eval - iid items from start 0
+            Xx = np.random.default_rng(12004).integers(0, fam.n_items, (a.ext_n, 2048)); Yx = labels_of(fam, np.zeros(len(Xx), np.int64), Xx)
+            px, cx = run_test(m, fam, None, Xx, dev, amp, a.eval_bs); acc = float((px == Yx).all(1).mean())
         else:
             Xx = ff_sequences(np.random.default_rng(12004), a.ext_n, 2048); Yx = np.zeros_like(Xx); s_ = np.zeros(len(Xx), np.int64)
             for t in range(Xx.shape[1]):

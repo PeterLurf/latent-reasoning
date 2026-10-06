@@ -1,0 +1,129 @@
+{
+ "holds": false,
+ "n_reachable": 25,
+ "n_moore": 2,
+ "capped": false,
+ "violations": 3,
+ "all_decode_valid": true,
+ "status": "done",
+ "timed_out": false,
+ "moore_timed_out": false,
+ "sec": 0,
+ "layers": [
+  {
+   "depth": 1,
+   "frontier": 4,
+   "cum": 4,
+   "sec": 0
+  },
+  {
+   "depth": 2,
+   "frontier": 10,
+   "cum": 14,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 3,
+   "frontier": 7,
+   "cum": 21,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 4,
+   "frontier": 3,
+   "cum": 24,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 5,
+   "frontier": 1,
+   "cum": 25,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 6,
+   "frontier": 0,
+   "cum": 25,
+   "sec": 0,
+   "complete": true
+  }
+ ],
+ "n_start_pairs": 5,
+ "eval_dtype": "None",
+ "cert_cap": 1000000,
+ "cert_task": {
+  "holds": true,
+  "n_reachable": 21,
+  "n_moore": 2,
+  "capped": false,
+  "violations": 0,
+  "all_decode_valid": true,
+  "status": "done",
+  "timed_out": false,
+  "moore_timed_out": false,
+  "sec": 0,
+  "layers": [
+   {
+    "depth": 1,
+    "frontier": 2,
+    "cum": 2,
+    "sec": 0
+   },
+   {
+    "depth": 2,
+    "frontier": 7,
+    "cum": 9,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 3,
+    "frontier": 6,
+    "cum": 15,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 4,
+    "frontier": 4,
+    "cum": 19,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 5,
+    "frontier": 2,
+    "cum": 21,
+    "sec": 0,
+    "complete": true
+   },
+   {
+    "depth": 6,
+    "frontier": 0,
+    "cum": 21,
+    "sec": 0,
+    "complete": true
+   }
+  ],
+  "n_start_pairs": 2,
+  "first_items": [
+   "w0",
+   "w1"
+  ]
+ },
+ "cert_task_reads": {
+  "holds": true,
+  "status": "done",
+  "n_pairs": 21,
+  "n_codes": 21,
+  "n_read_transitions": 21,
+  "violations": 0,
+  "capped": false,
+  "timed_out": false,
+  "sec": 0
+ }
+}

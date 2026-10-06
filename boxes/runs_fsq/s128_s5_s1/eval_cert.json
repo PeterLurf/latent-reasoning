@@ -1,0 +1,62 @@
+{
+ "holds": null,
+ "status": "inconclusive_time",
+ "n_reachable_partial": 173486,
+ "capped": false,
+ "timed_out": true,
+ "time_limit": 2700,
+ "sec": 2700,
+ "layers": [
+  {
+   "depth": 1,
+   "frontier": 830,
+   "cum": 830,
+   "sec": 6
+  },
+  {
+   "depth": 2,
+   "frontier": 2717,
+   "cum": 3547,
+   "sec": 33,
+   "complete": true
+  },
+  {
+   "depth": 3,
+   "frontier": 2111,
+   "cum": 5658,
+   "sec": 126,
+   "complete": true
+  },
+  {
+   "depth": 4,
+   "frontier": 10106,
+   "cum": 15764,
+   "sec": 195,
+   "complete": true
+  },
+  {
+   "depth": 5,
+   "frontier": 55701,
+   "cum": 71465,
+   "sec": 511,
+   "complete": true
+  },
+  {
+   "depth": 6,
+   "frontier": 93283,
+   "cum": 164748,
+   "sec": 2482,
+   "complete": true
+  },
+  {
+   "depth": 7,
+   "frontier": 8738,
+   "cum": 173486,
+   "sec": 2700,
+   "complete": false
+  }
+ ],
+ "n_start_pairs": 14400,
+ "eval_dtype": "None",
+ "cert_cap": 1000000
+}
