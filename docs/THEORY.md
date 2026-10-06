@@ -215,6 +215,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 125 | Readable bottleneck from step 0: standardised carried code vs the soft-phase no-read basin (task-agnostic, §120 harness) | **untested**: the EMA standardisation was not in force at 2k (carried norm 35); STD s2 plateaued; other runs held | closed (untested) |
 | 126 | Is the bottleneck the cause of the soft-phase basin? RAW-H vs ANNEAL (stop rule → restart-on-plateau) | **BOTTLENECK-CAUSE** (RAW-H s1–3 escape the 2k flag; every bottlenecked s2 plateaus) **without ANNEAL-INHERITS** (s2 0 in both casts): the wide carrier enters but doesn't learn long chains (0.846 / 0 / 0); restart-on-plateau is the procedure; s4 descriptive | closed |
 | 127 | Reliable entry without restarts? VAR (item-residual variance) / SKIP (skip-to-decoder) / STD2 (§125-v2) / LR10 on §120's harness vs restart-on-plateau | registered | **open** |
+| 128 | One recipe, five state-tracking families (S5, FF + held-out CYC / MOD / RDFA), restart-on-plateau; FAMILY-PASS = 3/4 exact + SERIAL (+ CLOSED) | registered | **open** |
 
 ## Live sections
 
@@ -4395,6 +4396,86 @@ skip-ablated readout is added as descriptive.**
   - A large gap between skip-on and skip-off accuracy means the decoder relies on the skip path. For SKIP, C1 is read on
     the skip-off donor beside the registered one.
 * No rule changes.
+
+## 128. One recipe, five state-tracking families: §120's FSQ carrier with restart-on-plateau, on S5, flip-flop and three held-out families (pre-registered 2026-10-05 23:38 EDT, after Literature's check 4d50870d / 032eebf5 and before any implementation or run; the user's task-agnostic directive; §126's reading (restart-on-plateau); cloud spend within the user's "keep cloud running", via Audit)
+
+**Why.**
+* The user asked for a task-agnostic method. On §120's harness one fixed recipe already gives, in every seed that enters:
+  - exact S5 chains to 2,048 with a contractive code (ρ_ff 0.146–0.180, §123 result);
+  - certified flip-flop (§120, Moore 2).
+* §126 fixed label-free restart-on-plateau as the entry procedure. §127 tests whether an entry fix can replace it.
+* §128 asks whether **the same code and hyperparameters**, with restarts, work on families the recipe was never tuned on.
+  That is the step from "works on S5" to "a method".
+* **Prior** (Literature 4d50870d / 032eebf5, `docs/LIT_S128_FAMILIES_2026-10-06.md`):
+  - cross-task state tracking from scratch: Delétang 2207.02098, Ruoss 2305.16843, MLP-LDRU 2605.26035, DeltaProduct / Grazzi,
+    Liu 2210.10749 (shortcuts to automata), Merrill;
+  - in pretrained LMs, only Li 2503.02854 / 2602.14814, with no certificate and no cross-family result;
+  - held-out random automata: Allchin 2607.11953.
+  - New as scoped. The families cover the Krohn–Rhodes primitives: S5 (non-solvable group), CYC (abelian group), FF (reset), MOD
+    (group action + reset), and a random automaton.
+
+**Recipe (one code version, fixed at launch, identical for every family).**
+* §120 FINAL fsq120: d = 8, L = 8; soft → hard rounding over 2k–4k; L_max 2 / 4 / 8 / 16 / 32 (this curriculum is not Delétang's
+  U(1, 40)); 24k steps; bs 64; lr 1e-4.
+* Plus 127-3's non-finite guard, a no-op on finite steps. RTX 3090 / 3090 Ti only (125-2).
+* **Entry: restart-on-plateau.** Seed slot k ∈ 1..4 tries seeds k, k+100, k+200, k+300 in order. An attempt whose 123-3 flag fires
+  is stopped at 2k (log kept), and the next seed runs. The slot's accepted run is its first non-plateau attempt.
+* If §127 adopts an entry fix (ADOPT true), a follow-up reruns §128 with it; §128 is not changed.
+
+**Families** (non-S5 families start from the code-zero start, as flip-flop; answers are one digit token).
+* **S5** and **flip-flop (FF):** exactly §120's.
+* **CYC (held out), Delétang's Cycle Navigation:** a 5-cycle, start 0. Items " stay" / " right" / " left" (0 / +1 / −1, one token
+  each). Answer: the position " 0".." 4".
+* **MOD (held out), Delétang's Modular Arithmetic (Simple) with an implicit leading 0:** a left-to-right fold mod 5 from 0.
+  Items " plus d" / " minus d" / " times d", d ∈ 0..4 (15 items, two tokens each). Answer: the value " 0".." 4".
+  - " times 0" (1 in 15 items) resets the state.
+* **RDFA (held out), a seeded random automaton:** 8 states, 4 inputs " a" / " b" / " c" / " d", start 0, answer the state
+  " 0".." 7".
+  - The table is the first draw of `np.random.default_rng(12800).integers(0, 8, (8, 4))` that is strongly connected, not a group
+    (some input non-bijective), and has no constant input. Rows are states 0–7, columns inputs a–d:
+    [[4, 2, 0, 7], [3, 3, 2, 4], [3, 6, 5, 3], [4, 5, 2, 6], [7, 1, 0, 3], [4, 0, 5, 3], [5, 4, 7, 5], [7, 2, 6, 3]]
+  - The first draw qualified. Input image sizes are 4 / 7 / 5 / 5, and the shortest synchronising word has length 3.
+  - Random strings synchronise in a median of 9 steps (p90 18), so long chains depend mainly on a short suffix, as with MOD's
+    resets.
+* Nothing in the recipe was tuned on CYC, MOD or RDFA.
+
+**Measures.**
+* S5 / CYC / MOD / RDFA: cumulative all-positions accuracy at 512 (no snaps). FF: per-read accuracy at 512, as §120.
+* **Delétang's own score** (descriptive, so published numbers are comparable): final-output per-sequence accuracy on 2,000
+  sequences with lengths U(41, 500). Delétang's chance is 20 % for the 5-class tasks; RNN / LSTM score 100, Transformer 61.9
+  (CYC) / 24.2 (MOD).
+* 2,048 (descriptive); for CYC also 8,192 (descriptive).
+* Donor SERIAL at positions 2 / 4 / 6: donor ≥ 0.90 and recipient − chance overlap < 0.10.
+* Task-language CERT (BFS from the start code over every item; every reachable code decodes validly and obeys the transition
+  law) with its Moore-minimised size. ρ_ff (fp32, 123-9); codes per state; §127's R² probe at 0 and 2k.
+* MOD / RDFA: the distribution of the effective suffix (steps since the state was last determined regardless of the past), and
+  accuracy binned by it.
+* Restarts per slot, and cost per exact accepted seed.
+
+**Rules (fixed now).**
+* **FAMILY-PASS(f):** at least 3/4 slots have an accepted run that is exact (≥ 0.99 at 512) and SERIAL.
+  - **For CYC, MOD and RDFA it must also be CLOSED:** CERT holds, not capped or timed out, with Moore-minimised size equal to
+    the minimal state count (5 / 5 / 8).
+  - Literature (c): an unreduced counter code is exact at 512 on CYC without being the automaton.
+  - For S5 and FF, CERT is descriptive, as in §120 / §123.
+  - A slot whose four attempts all plateau fails. A run with more than 1 % skipped non-finite steps fails.
+* **TASK-AGNOSTIC:** FAMILY-PASS in all five families. RDFA counts toward it.
+* **Scope of a pass:** regular-language state tracking. Tasks needing a stack or tape are outside it.
+
+**Readings.**
+* **TASK-AGNOSTIC.** One fixed recipe with a label-free restart rule gives exact, serial, closed discrete latent state tracking in
+  a pretrained LM on five regular families, three of them held out. C1 + C2 + C6 (with restarts); C4 as final-answer supervision.
+* **The tuned families pass, a held-out one fails.** The recipe is fitted to S5 / FF. Report which property breaks it: exact but
+  not closed (a counter), not serial, or not exact.
+* **A held-out family fails by entry** (slots exhaust their restarts). Entry, not the attractor, limits generality.
+
+**Placement.**
+* 20 slots: at least 20 full runs, plus about 2k-step restarts. About $13–19 on Vast 3090s.
+* Implementation: the experiments session (fsq120 `--family cyc / mod / rdfa`, the restart driver, the Delétang eval and the
+  effective-suffix bins). Scorer: `theory/score_s128.py`, committed before any run.
+* Dirs: `boxes/runs_fsq/s128_{s5,ff,cyc,mod,rdfa}_s{seed}`.
+* Multiplication is excluded: about 10¹² states, against 8⁸ ≈ 1.7·10⁷ codes, and widening d would change every family's
+  harness. The AGL(1, 5) variant of MOD (no resets) is noted, not run.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

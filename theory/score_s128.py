@@ -4,7 +4,9 @@ restart-on-plateau (§126 reading): seed slot k in 1..4 tries seeds k, k+100, k+
 fires is stopped at 2k (log kept) and the next seed runs; the slot's accepted run is its first non-plateau attempt.
 Runs: boxes/runs_fsq/s128_{s5,ff,cyc,mod}_s{seed}  (eval.json: long_acc, ext_2048, donor, cert; log.jsonl; eval_contraction_fp32.json).
 FAMILY-PASS(f): >= 3/4 slots whose accepted run has long_acc >= 0.99 (512) and SERIAL (every donor position: donor_consistent >= 0.90
-and recipient_consistent - chance_overlap < 0.10).  TASK-AGNOSTIC: FAMILY-PASS in all four families.
+and recipient_consistent - chance_overlap < 0.10), and for CYC / MOD / RDFA also CLOSED (Literature 4d50870d: a counter code is exact
+at 512 without being the automaton): CERT holds, not capped / timed out, Moore-minimised size = the minimal state count (5 / 5 / 8);
+CERT from eval_cert.json if present, else eval.json.  TASK-AGNOSTIC: FAMILY-PASS in all five families.
 Descriptive: 2,048, CERT, rho_ff (123-9), restarts per slot, cost per accepted exact seed = (accepted runs + plateaued attempts / 12)
 / exact accepted runs (run-equivalents), non-finite skipped-step share (> 1 % -> the run is not delivered, scored as a failed slot).
     python theory/score_s128.py
@@ -15,7 +17,8 @@ import os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 R = os.path.join(ROOT, "boxes", "runs_fsq")
-FAMS = ("s5", "ff", "cyc", "mod")
+FAMS = ("s5", "ff", "cyc", "mod", "rdfa")
+NST = {"cyc": 5, "mod": 5, "rdfa": 8}                                       # CLOSED families: minimal state count
 OFFS = (0, 100, 200, 300)
 
 
@@ -77,7 +80,14 @@ def slot(fam, k):
             acc = {"seed": k + o, "long_acc": r.get("long_acc"), "serial": serial(r.get("donor")), "nonfinite_share": nf,
                    "ext_2048": (r.get("ext_2048") or {}).get("cumulative"), "cert_holds": (r.get("cert") or {}).get("holds"),
                    "rho_ff": rho_ff(load(d, "eval_contraction_fp32.json")), "gpu": r.get("train_gpu", r.get("gpu"))}
-            acc["pass"] = bool(ok and acc["serial"])
+            if fam in NST:
+                c = load(d, "eval_cert.json") or r.get("cert") or {}
+                acc["n_moore"] = c.get("n_moore")
+                acc["closed"] = (None if c.get("holds") is None and c.get("status") in (None, "deferred") else
+                                 bool(c.get("holds") and not c.get("capped") and not c.get("timed_out") and c.get("n_moore") == NST[fam]))
+                if acc["closed"] is None:
+                    return {"attempts": att, "status": "accepted (CERT pending)", "accepted": None}
+            acc["pass"] = bool(ok and acc["serial"] and acc.get("closed", True))
             return {"attempts": att, "status": "accepted", "accepted": acc}
     if len(att) == len(OFFS) and all(a["plateau"] for a in att):
         return {"attempts": att, "status": "failed (all attempts plateaued)", "accepted": None}
@@ -103,7 +113,7 @@ def main():
     res["TASK_AGNOSTIC"] = True if all(x is True for x in fps) else (False if any(x is False for x in fps) else "incomplete")
     for f in FAMS:
         v = res[f]
-        print(f.upper(), {k: (s["status"], s["accepted"] and (s["accepted"]["long_acc"], s["accepted"]["serial"])) for k, s in v["slots"].items()},
+        print(f.upper(), {k: (s["status"], s["accepted"] and (s["accepted"]["long_acc"], s["accepted"]["serial"], s["accepted"].get("closed"), s["accepted"]["pass"])) for k, s in v["slots"].items()},
               "| FAMILY-PASS", v["FAMILY_PASS"], "| plateaued attempts", v["plateaued_attempts"], "| cost", v["cost_per_exact_seed"])
     print("TASK-AGNOSTIC", res["TASK_AGNOSTIC"])
     json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s128.json"), "w", newline="\n"), indent=1, default=float)
