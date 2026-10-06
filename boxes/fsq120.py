@@ -60,6 +60,15 @@ use their own generator, probes / checks run in eval mode with their own numpy R
               its statistics, logged {"step", "nonfinite": 1, "first": tensor}; eval.json s127.n_nonfinite); gradient checks
               in fp32 with the bf16 value beside (*_bf16); SKIP logs {"step", "skip_norms"} every 1k; --var_est batch: VAR's
               residual against the forward's own (item, position) group means, pooled within groups of >= 2 rows.
+  §129 (head re-draw at the plateau flag): --save_at_flag (phase 1): at 2k apply 123-3's flag; not fired -> {"stopped": "not
+              flagged (§129 phase 1)"} and exit; fired -> save <out>/ckpt_2k.pt (model, AdamW state, torch / CUDA / numpy RNG,
+              coverage) and exit. --resume_2k CKPT continues from it with the schedule clock restarted (LR warmup + cosine, soft
+              phase to clock 2k, L_max 2 to clock 2k; the loop index IS the clock): log lines get "step" = 2000 + clock, "phase":
+              2, "clock"; the 123-3 flag again at clock 2k (with --stop_plateau), else 24k clock steps to the usual eval.
+              --redraw_head (REDRAW, same dir, log appended): ln / W_down / W_up re-drawn from torch.Generator(12900 + seed) (default
+              nn init) with their AdamW state dropped (fresh moments); GPT-2's body and its AdamW state kept; {"redraw": true}.
+              Without it (CLOCK-ONLY, its own dir): no re-draw. Both: zb_std_in (replay_basin's probe: 480 one-step segments,
+              fp32, eval) every 50 steps over 0-2k of each phase.
   --stop_plateau  stop at 2k if 123-3's flag fires (loss(2k) >= 0.9 loss(1k) and >= 0.25 loss(100)): log kept, no eval.json.
 """
 import os
@@ -634,6 +643,50 @@ def driver_version():
         return None
 
 
+ZB_PS = np.repeat(np.arange(120), 4); ZB_PO = np.random.default_rng(777).integers(0, 120, len(ZB_PS))   # replay_basin's probe
+
+
+@torch.no_grad()
+def zb_std_in(m, dev):
+    """§129 (replay_basin's zb_std_in): per-coordinate std of z_b across 480 one-step segments (4 per start state), fp32, eval."""
+    was = m.training; m.eval()
+    h = m.segment(m.start(len(ZB_PS), dev, ZB_PS), torch.tensor(ZB_PO, device=dev)); z = m.down(m.ln(h.float()))
+    zb = torch.tanh(z + SHIFT) * HALF - OFF; m.train(was)
+    return float(zb.std(0).mean())
+
+
+def s129_redraw(m, opt, seed):
+    """§129 REDRAW: ln / W_down / W_up re-drawn (nn defaults: LN 1 / 0; Linear U(+-1 / sqrt(fan_in)) for weight and bias) from
+    torch.Generator(12900 + seed) on CPU; their AdamW state dropped (fresh moments, step 0). The body and its state are kept."""
+    g = torch.Generator().manual_seed(12900 + seed)
+    with torch.no_grad():
+        m.ln.weight.fill_(1.0); m.ln.bias.zero_()
+        for lin in (m.down, m.up):
+            b = 1.0 / math.sqrt(lin.weight.shape[1])
+            lin.weight.copy_((torch.rand(lin.weight.shape, generator=g) * 2 - 1) * b)
+            lin.bias.copy_((torch.rand(lin.bias.shape, generator=g) * 2 - 1) * b)
+    for p_ in list(m.ln.parameters()) + list(m.down.parameters()) + list(m.up.parameters()):
+        opt.state.pop(p_, None)
+
+
+class Phase2Log:
+    """§129: phase-2 log lines carry "phase": 2, "clock" (the loop index) and "step" = 2000 + clock."""
+    def __init__(self, f, base=2000):
+        self.f = f; self.base = base
+
+    def write(self, line):
+        r = json.loads(line)
+        if "step" in r:
+            r["clock"] = r["step"]; r["step"] = self.base + r["step"]
+        r["phase"] = 2; self.f.write(json.dumps(r) + chr(10))
+
+    def flush(self):
+        self.f.flush()
+
+    def close(self):
+        self.f.close()
+
+
 def labels_of(fam, s0, X):
     lab = np.zeros(X.shape, np.int64); s_ = np.array(s0)
     for t in range(X.shape[1]):
@@ -894,6 +947,10 @@ def main():
     ap.add_argument("--lr_new", type=float, default=1.0, help="§127 D LR10: LN / W_down / W_up at this multiple of lr")
     ap.add_argument("--probe127", action="store_true", help="§127 / note 127-1 logging (implied by any §127 arm)")
     ap.add_argument("--mcheck_only", action="store_true", help="§127 (note 127-2): end-of-training mcheck from <out>/model.pt (p_hard 1) -> eval_mcheck_end.json")
+    ap.add_argument("--save_at_flag", action="store_true", help="§129 phase 1: at 2k, flag fired -> save ckpt_2k.pt and exit; else stop")
+    ap.add_argument("--resume_2k", default=None, help="§129 phase 2: continue from this ckpt_2k.pt with the schedule clock restarted")
+    ap.add_argument("--redraw_head", action="store_true", help="§129 REDRAW (with --resume_2k): re-draw ln / W_down / W_up, fresh moments")
+    ap.add_argument("--clock_only", action="store_true", help="§129 CLOCK-ONLY (with --resume_2k): no re-draw (the default; explicit flag)")
     ap.add_argument("--check_marker", default=None, help="§128 note 128-1: with --stop_plateau, the first attempt to mkdir this path when its flag fires keeps training")
     ap.add_argument("--stop_plateau", action="store_true", help="§127: stop at 2k when 123-3's flag fires (log kept, no eval.json)")
     ap.add_argument("--anneal", action="store_true", help="§126 Stage 2 ANNEAL: (1-lam) std(h) + lam W_up(z_b), lam 2k->6k, QBN distill, FSQ 6k->8k")
@@ -953,8 +1010,14 @@ def main():
             c["cert_task"] = certificate(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time, first_items=[W0, W1]); c["cert_task"]["first_items"] = ["w0", "w1"]
             c["cert_task_reads"] = cert_task_reads(m, fam, dev, amp, a.cert_cap, time_limit=a.cert_time)   # note 120-9 (descriptive)
         json.dump(c, open(os.path.join(a.out, "eval_cert.json"), "w", newline="\n"), indent=1); print("CERT", json.dumps(c), flush=True); return
-    json.dump({**vars(a), **({} if a.eval_only else {"train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version()})},
-              open(os.path.join(a.out, "args_eval.json" if a.eval_only else "args.json"), "w", newline="\n"), indent=1)   # notes 123-8 / 125-3
+    assert not (a.redraw_head and a.clock_only) and not ((a.redraw_head or a.clock_only) and not a.resume_2k), "§129 flags"
+    _ainfo = {**vars(a), **({} if a.eval_only else {"train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version()})}
+    if a.resume_2k:                                                         # §129 phase 2: phase-1 args.json kept (REDRAW shares the dir)
+        json.dump(_ainfo, open(os.path.join(a.out, "args_phase2.json"), "w", newline="\n"), indent=1)
+        if not os.path.exists(os.path.join(a.out, "args.json")):
+            json.dump(_ainfo, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
+    else:
+        json.dump(_ainfo, open(os.path.join(a.out, "args_eval.json" if a.eval_only else "args.json"), "w", newline="\n"), indent=1)   # notes 123-8 / 125-3
     m = mk(); drawn = np.zeros((fam.n_states, fam.n_items), bool)
     if a.eval_only:                                                         # replay the training draws (rng only) for coverage_drawn
         for step in range(1, a.steps + 1):
@@ -966,13 +1029,27 @@ def main():
         m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev))
         _last = [json.loads(r) for r in open(os.path.join(a.out, "log.jsonl"))][-1]; train_sec = _last["sec"]; last_loss = _last.get("loss")
     opt = None if a.eval_only else make_opt(m, a.lr, a.lr_new)
-    log = None if a.eval_only else open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t0 = time.time(); hist = []
+    log = None if a.eval_only else open(os.path.join(a.out, "log.jsonl"), "a" if a.redraw_head else "w", newline="\n"); t0 = time.time(); hist = []
+    if a.resume_2k:                                                         # §129 phase 2: restore the 2k state; REDRAW re-draws the head
+        ck = torch.load(a.resume_2k, map_location=dev, weights_only=False)
+        m.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"]); torch.set_rng_state(ck["torch_rng"])
+        if dev.startswith("cuda") and ck.get("cuda_rng") is not None:
+            torch.cuda.set_rng_state(ck["cuda_rng"], device=dev)
+        rng.bit_generator.state = ck["np_rng"]; drawn = ck["drawn"]; log = Phase2Log(log)
+        if a.redraw_head:
+            s129_redraw(m, opt, a.seed); log.write(json.dumps({"step": 0, "redraw": True, "generator_seed": 12900 + a.seed}))
+        else:
+            log.write(json.dumps({"step": 0, "clock_only": True}))
+        log.flush()
     carried = {} if a.eval_only else {"init": carried_stats(m, fam, dev, amp)}   # §125 (every arm; own RNG, eval mode: no draws)
     if not a.eval_only:
         last_loss = None
     reest = False; dist_hist = []; var_hist = []; L127 = {}; n_nonfinite = 0
     if p127 and not a.eval_only:                                            # note 127-1: probe at step 0
         log.write(json.dumps({"step": 0, "probe": probe127(m, fam, dev, amp)}) + "\n"); log.flush()
+    s129 = a.save_at_flag or bool(a.resume_2k)
+    if s129 and not a.eval_only:
+        log.write(json.dumps({"step": 0, "zb_std_in": zb_std_in(m, dev)}) + "\n"); log.flush()
     m.train()
     for step in range(1, 0 if a.eval_only else a.steps + 1):
         for gr in opt.param_groups:
@@ -1036,6 +1113,8 @@ def main():
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True); L127[step] = rec["loss"]
         if m.skip and step % int(1000 * sc) == 0:                           # note 127-3: skip-map norms every 1k (descriptive)
             log.write(json.dumps({"step": step, "skip_norms": [float(w_.norm()) for w_ in m.skip_w.detach().float()]}) + chr(10)); log.flush()
+        if s129 and step <= int(2000 * sc) and step % max(1, int(50 * sc)) == 0:     # §129: zb_std_in every 50 over 0-2k (each phase)
+            log.write(json.dumps({"step": step, "zb_std_in": zb_std_in(m, dev)}) + "\n"); log.flush(); m.train()
         if p127 and step == int(2000 * sc):                                 # note 127-1: probe at 2k (before any stop)
             log.write(json.dumps({"step": step, "probe": probe127(m, fam, dev, amp)}) + "\n"); log.flush(); m.train()
         if a.stop_plateau and step == int(2000 * sc) and L127:              # 123-3's flag (log steps nearest 100 / 1k / 2k)
@@ -1054,6 +1133,18 @@ def main():
                 else:
                     log.write(json.dumps({"step": step, "stopped": "plateau (123-3 flag at 2k)", "loss_100": gl(100), "loss_1k": gl(1000), "loss_2k": gl(2000),
                                           "carried_norm": carried}) + "\n"); log.close(); print("STOPPED plateau at 2k", flush=True); return
+        if a.save_at_flag and step == int(2000 * sc) and L127:            # §129 phase 1: save at the flag, or stop
+            gl = lambda t_: L127[min(L127, key=lambda s_: abs(s_ - t_ * sc))]  # noqa: E731
+            fired = gl(2000) >= 0.9 * gl(1000) and gl(2000) >= 0.25 * gl(100)
+            info = {"loss_100": gl(100), "loss_1k": gl(1000), "loss_2k": gl(2000), "carried_norm": carried}
+            if fired:
+                torch.save({"model": m.state_dict(), "opt": opt.state_dict(), "torch_rng": torch.get_rng_state(),
+                            "cuda_rng": torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else None, "np_rng": rng.bit_generator.state,
+                            "drawn": drawn, "step": step}, os.path.join(a.out, "ckpt_2k.pt"))
+                log.write(json.dumps({"step": step, "flag_fired": True, "saved": "ckpt_2k.pt", **info}) + "\n")
+            else:
+                log.write(json.dumps({"step": step, "stopped": "not flagged (§129 phase 1)", **info}) + "\n")
+            log.close(); print("§129 PHASE1", "FLAGGED (ckpt saved)" if fired else "NOT FLAGGED", flush=True); return
     if not a.eval_only:
         train_sec = round(time.time() - t0)
         if m.std:

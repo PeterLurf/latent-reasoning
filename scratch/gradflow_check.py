@@ -165,6 +165,32 @@ def check_fsq120_s128(dev, out):
         out["fsq120.s128.%s.down" % name] = float(m.down.weight.grad.norm())
 
 
+def check_fsq120_s129(dev, out):
+    """§129 (run on the host, CUDA bf16 as training): after 3 training steps, the head re-draw drops ln / W_down / W_up's AdamW
+    state and leaves the body's untouched; at the first phase-2 step the re-drawn head gets gradient."""
+    from boxes.fsq120 import FSQ120, Family, make_batch, make_opt, s129_redraw
+    fam = Family("s5"); amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
+    torch.manual_seed(2); m = FSQ120(s5.load_gpt2(dev), fam).to(dev); opt = make_opt(m, 1e-4); m.train(); m.p_hard = 0.0; rng = np.random.default_rng(2)
+    def step():
+        s0, x, lab = make_batch(fam, rng, 8, 2)
+        with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+            loss = m.chain(m.start(8, dev, s0), torch.tensor(x, device=dev), lab)[0]
+        opt.zero_grad(); loss.backward(); return loss
+    for _ in range(3):
+        step(); opt.step()
+    head = list(m.ln.parameters()) + list(m.down.parameters()) + list(m.up.parameters()); hid = {id(p_) for p_ in head}
+    body = [p_ for p_ in m.parameters() if id(p_) not in hid and p_ in opt.state]
+    snap = [(opt.state[p_]["exp_avg"].clone(), opt.state[p_]["exp_avg_sq"].clone()) for p_ in body]
+    w0 = m.down.weight.detach().clone(); s129_redraw(m, opt, 2)
+    out["fsq120.s129.amp_bf16"] = float(amp is not None)
+    out["fsq120.s129.head_state_dropped"] = float(all(p_ not in opt.state for p_ in head))
+    out["fsq120.s129.body_state_unchanged"] = float(all(torch.equal(opt.state[p_]["exp_avg"], a_) and torch.equal(opt.state[p_]["exp_avg_sq"], b_) for p_, (a_, b_) in zip(body, snap)))
+    out["fsq120.s129.head_redrawn"] = float(not torch.equal(w0, m.down.weight.detach()))
+    step()
+    out["fsq120.s129.phase2_grad_down"] = float(m.down.weight.grad.float().norm()); out["fsq120.s129.phase2_grad_up"] = float(m.up.weight.grad.float().norm())
+    out["fsq120.s129.phase2_grad_ln"] = float(m.ln.weight.grad.float().norm())
+
+
 def _b119(method, dev):
     from boxes.base119 import Base119, load_gpt2x
     from boxes.gen97 import STTOK
