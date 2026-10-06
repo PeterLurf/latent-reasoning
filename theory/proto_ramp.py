@@ -83,11 +83,21 @@ def main():
                 r["%s_%s" % (arm, w)] = flag(L, t0, t1)
             r["%s_8k" % arm] = round(at(L, 8000), 3)
         r["late_Rp"] = flag(ll, 6600, 8900); r["late_8.9k"] = round(at(ll, 8900), 3)
+        # Descriptive, added after reading the s14 pair (no label changes): the onset of the late arm's rise, i.e. the first logged step
+        # >= 5k where the loss exceeds its running minimum since 5k by >= 1.0. p_hard is 0 up to 6,000, so an onset <= 6,000 is a failure
+        # of the UNROUNDED carrier, not caused by the late ramp.
+        mn, onset = None, None
+        for st in sorted(x for x in ll if x >= 5000):
+            mn = ll[st] if mn is None else min(mn, ll[st])
+            if ll[st] >= mn + 1.0:
+                onset = st; break
+        r["late_rise_onset"] = onset; r["late_rise_before_ramp"] = None if onset is None else onset <= 6000
         out[s] = r; rows.append((s, r))
         print("s%d %s 2k-flag %s par %.4f | A plain %.3f %s late %.3f %s | R plain %.3f late %.3f %s | R' late %.3f %s | B plain %.3f late %.3f"
-              " | loss plain 8k %.3f late 8k %.3f 8.9k %.3f" % (
+              " | loss plain 8k %.3f late 8k %.3f 8.9k %.3f | late rise onset %s (before ramp %s)" % (
                   s, card, f2k, r["par2k"], r["plain_A"][0], r["plain_A"][1], r["late_A"][0], r["late_A"][1], r["plain_R"][0], r["late_R"][0],
-                  r["late_R"][1], r["late_Rp"][0], r["late_Rp"][1], r["plain_B"][0], r["late_B"][0], r["plain_8k"], r["late_8k"], r["late_8.9k"]))
+                  r["late_R"][1], r["late_Rp"][0], r["late_Rp"][1], r["plain_B"][0], r["late_B"][0], r["plain_8k"], r["late_8k"], r["late_8.9k"],
+                  r["late_rise_onset"], r["late_rise_before_ramp"]))
     res = {"runs": out, "pooled": reading(rows), "per_card": {c: reading([x for x in rows if x[1]["card"] == c]) for c in ("4060", "3070")}}
     for k in ("4060", "3070"):
         print("card %s (descriptive): %s" % (k, res["per_card"][k]))
