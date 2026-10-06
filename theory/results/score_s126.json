@@ -1,8 +1,52 @@
 {
- "RAW_H": {},
- "ANNEAL": {},
- "BOTTLENECK_CAUSE": "incomplete (0 / 4)",
- "ANNEAL_INHERITS": "incomplete (0 / 0)",
- "STOP_RULE_FIRES": "incomplete (seed 2 pending)",
+ "RAW_H": {
+  "2": {
+   "long_acc": 0.846,
+   "plateau": false,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "carried_norm": {
+    "init": {
+     "row_norm": 2.184866428375244,
+     "per_coord_std_across_inputs": 0.02822442352771759,
+     "std_vector_norm": 0.8476053476333618,
+     "wte_row_norm": 3.958536148071289,
+     "n": 1024
+    },
+    "2k": {
+     "row_norm": 3.9052486419677734,
+     "per_coord_std_across_inputs": 0.10927458852529526,
+     "std_vector_norm": 3.0819015502929688,
+     "wte_row_norm": 3.9534854888916016,
+     "n": 1024
+    }
+   }
+  }
+ },
+ "ANNEAL": {
+  "2": {
+   "long_acc": 0.0,
+   "plateau": false,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "carried_norm": {
+    "init": {
+     "row_norm": 27.038970947265625,
+     "per_coord_std_across_inputs": 0.09341250360012054,
+     "std_vector_norm": 2.718177080154419,
+     "wte_row_norm": 3.958536148071289,
+     "n": 1024
+    },
+    "2k": {
+     "row_norm": 3.9658899307250977,
+     "per_coord_std_across_inputs": 0.1153743714094162,
+     "std_vector_norm": 3.2486143112182617,
+     "wte_row_norm": 3.953287124633789,
+     "n": 1024
+    }
+   }
+  }
+ },
+ "BOTTLENECK_CAUSE": "incomplete (1 / 4)",
+ "ANNEAL_INHERITS": false,
+ "STOP_RULE_FIRES": false,
  "rawh_plateau_count": 0
 }
