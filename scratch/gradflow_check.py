@@ -123,6 +123,27 @@ def check_fsq120_anneal(dev, out):
     out["fsq120.s5.anneal.distill"] = term(m, dist); out["fsq120.s5.anneal.up_grad"] = float(m.up.weight.grad.norm())
 
 
+def check_fsq120_s127(dev, out):
+    """§127 (note 127-1, before Stage 1): VAR's and SKIP's gradients reach W_down at step 1; LR10's group LRs; STD2's row norm."""
+    from boxes.fsq120 import FSQ120, Family, lr_at, make_batch, make_opt
+    fam = Family("s5"); s0, x, lab = make_batch(fam, np.random.default_rng(0), 8, 2); X = torch.tensor(x, device=dev)
+    m = FSQ120(s5.load_gpt2(dev), fam).to(dev); m.enable_var(fam.n_items); m.train(); m.p_hard = 0.0; m.var_on = True; m._var = []
+    m.chain(m.start(8, dev, s0), X, lab); vl = m.var_loss()
+    out["fsq120.s127.var.grad_down"] = float(torch.autograd.grad(vl, m.down.weight)[0].norm()); out["fsq120.s127.var.term"] = float(vl)
+    m = FSQ120(s5.load_gpt2(dev), fam).to(dev); m.enable_skip(2); m.train(); m.p_hard = 0.0
+    _, e, _, _ = m.chain(m.start(8, dev, s0), X); ans = torch.tensor(fam.answer_tokens(lab[:, -1]), device=dev)
+    Ls = m.answer_ce(e.detach(), ans, m.last_qs)                           # the answer loss through the skip maps only
+    out["fsq120.s127.skip.grad_down"] = float(torch.autograd.grad(Ls, m.down.weight)[0].norm())
+    out["fsq120.s127.skip.grad_maps"] = float(torch.autograd.grad(m.answer_ce(e.detach(), ans, m.last_qs), m.skip_w)[0].norm())
+    m = FSQ120(s5.load_gpt2(dev), fam).to(dev); opt = make_opt(m, 1e-4, 10.0); lrs = [lr_at(1e-4, gr, 1, 24000) for gr in opt.param_groups]
+    out["fsq120.s127.lr10.ratio"] = lrs[1] / lrs[0]; out["fsq120.s127.lr10.n_new"] = float(sum(p_.numel() for p_ in opt.param_groups[1]["params"]))
+    m = FSQ120(s5.load_gpt2(dev), fam).to(dev); m.enable_std2(); m.train(); m.p_hard = 0.0
+    _, _, _, embs = m.chain(m.start(8, dev, s0), X, record=True); rn = float(torch.cat(embs).float().norm(dim=-1).mean())
+    wn = float(m.g.w("wte.weight").float().norm(dim=-1).mean()); out["fsq120.s127.std2.row_norm_ratio"] = rn / wn
+    out["fsq120.s127.std2.in_band"] = float(0.5 <= rn / wn <= 2.0)
+    out["fsq120.s127.lr10.ratio_ok"] = float(abs(lrs[1] / lrs[0] / 10 - 1) <= 0.01)
+
+
 def _b119(method, dev):
     from boxes.base119 import Base119, load_gpt2x
     from boxes.gen97 import STTOK
