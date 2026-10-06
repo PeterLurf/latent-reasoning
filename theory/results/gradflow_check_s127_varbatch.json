@@ -1,0 +1,7 @@
+{
+ "fsq120.s127.varbatch.grad_down": 0.12401415407657623,
+ "fsq120.s127.varbatch.term": 0.9845901131629944,
+ "fsq120.s127.varbatch.singletons_zero": 1.0,
+ "_status": "PASS",
+ "_zero_terms": []
+}

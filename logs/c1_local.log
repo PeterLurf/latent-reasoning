@@ -494,3 +494,7 @@
 22:07:06 s110_s1_resume1 rc 0 (cuda:0)
 22:07:07 WORKER_DONE cuda:0 scratch/c1_q_112r_local.txt
 22:37:53 s116_none_s41 ABORTED at step 16,800 (round L11, loss 4.75 = chance): CUDA OOM in a labelling rollout (self110.rollout_var -> gen97.greedy) at 22:07:50 on the 2070; process hung, force-stopped 22:35; run dir + log kept as *.void_oom (not resumed: NONE saddle, low value; Audit OK)
+23:30:13 s126_s5_rawh_s1_contraction_fp32 rc 0 (cuda:2)
+23:30:49 s126_s5_rawh_s4_contraction_fp32 rc 0 (cuda:2)
+23:31:27 s126_s5_anneal_s2_fp32cast_contraction_fp32 rc 0 (cuda:2)
+23:41:04 s126_s5_rawh_s1_contraction_fp32 rc 0 (cuda:2)
