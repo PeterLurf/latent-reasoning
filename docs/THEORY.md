@@ -5665,6 +5665,28 @@ is not readable: no published method learned the task. 119-3's pre-stated wordin
 * **For contrast (not part of §119's rule):** our own method's serial C1 holds on this task family, e.g. §111 READ (5/5) and §128's S5 /
   CYC / MOD / RDFA (exact and SERIAL). No published baseline reaches competence here to compare against.
 
+**§132 rung-1 result (2026-10-06 17:20 EDT; 4 accepted runs on RTX 3090 / 595.71.05 by the experiments session, each accepted on its first attempt with no
+restart; scored by Theory alone with `theory/score_s132.py`; helper-read and Audit-reproduced). Rung 1 (k 4, m 2) is PASS (3/4), so rung 2
+(k 6, m 3) opens.**
+* **Slots 2 / 3 / 4: exact and SERIAL.**
+  - long_acc 1.0 and ext_2048 1.0 on 68 held-out tables, train_acc 1.0, heldout_overlap 0 (not MEMORISED).
+  - Donor 1.0 with recipient − chance 0.000 at positions 2 / 4 / 6.
+  - cert_sample holds in 20/20, with Moore = reachable states.
+  - Solved (first loss ≤ 0.01) at 7,700 / 3,800 / 3,000 steps.
+  - The end probe holds the state (R²_state 0.93 / 0.84 / 0.88) with no op history (≤ 0.003). The per-family code is a state code,
+    as in §128.
+* **Slot 1, the pilot: near-exact, 0.9865, and not a pass.** The per-table breakdown (`s132bd_k4_s1/eval_breakdown.json`, a replay that
+  matches the eval) puts **all 27 eval failures on one held-out table**, i 63 = [[2, 1, 3, 0], [0, 3, 2, 1]], with 4 reachable states.
+  - That table has sample_acc 0.0, a median first error at position 106.5, and a CERT that does not hold (n_moore 33 against 4
+    states): an open, drifting code for one table.
+  - The other 67 tables sample at 1.0, with CERT holding and Moore = reachable.
+* **Descriptive:** ood_acc (involution tables, not a rule) is 0.074–0.39.
+  - Slot 3's files are read from the fetched run; the drain commit is pending.
+* **Next (registered):** rung 2 (k 6, m 3, 2,000 held-out non-involution tables), with a memory check at L 32 and a CUDA-bf16 gradflow
+  smoke first, then Audit's budget approval (about $3 per run). §132's verdict is rung 2's.
+  - **Risk, stated now:** the local k6 prototype (s132proto_k6_s1, 2k) stopped on the plateau flag with a code holding the last three
+    ops verbatim (R² 0.96–0.99, state 0.0). That is the op-history shortcut as a plateau code.
+
 ## 133. Can error correction make a wide latent carrier exact? Width × correction on §128's S5 recipe, then a capacity probe a narrow code cannot hold (pre-registered 2026-10-06 14:52 EDT, after Literature's check 7dbdb426 and before any implementation or run; the user's question "can we fix error propagation to maintain latent expressiveness", via Audit)
 
 **Why.**
