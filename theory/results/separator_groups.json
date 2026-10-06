@@ -1,0 +1,613 @@
+{
+ "definitions": {
+  "outcome": "exact: eval long_acc >= 0.99; plateau_null: 123-3 flag at 2k (loss(2k) >= 0.9 loss(1k) and >= 0.25 loss(100), nearest logged steps) and ran to eval with long_acc < 0.99; escape_fail: no flag, long_acc < 0.99; plateau_stopped: stopped at 2k, no eval",
+  "hard_rounded": "args no_round false and raw_h false and arm not rawh/anneal (the §123 dither arms are --no_round, so continuous)",
+  "loss_at_4500": "logged 100-step-mean loss at the step nearest 4500 (statistic A)",
+  "min_loss_le_4500": "minimum logged loss over steps <= 4500 (statistic B)",
+  "ratio_4k_over_2p6k": "loss(4000)/loss(2600), FLAG4's ratio",
+  "excluded": "*.void*, slots, proto/smoke/memcheck, s128cc*, cert, parity, breakdown, *_clock dirs; §129 phase-2 lines"
+ },
+ "source": "helper mine_train.py over boxes/runs_fsq S5 dirs, 2026-10-07",
+ "groups": {
+  "exact": [
+   {
+    "run": "s120_s5_final_s1",
+    "card": "3070",
+    "arm": "plain",
+    "hard_rounded": true,
+    "long_acc": 1.0,
+    "flag2k_ratio": 0.782,
+    "steps": 24000,
+    "loss_at_4500": 2.546,
+    "min_loss_le_4500": 2.126,
+    "ratio_4k_over_2p6k": 0.704
+   },
+   {
+    "run": "s120_s5_trace_s2",
+    "card": "3090",
+    "arm": "trace",
+    "hard_rounded": true,
+    "long_acc": 1.0,
+    "flag2k_ratio": 0.397,
+    "steps": 24000,
+    "loss_at_4500": 1.177,
+    "min_loss_le_4500": 1.164,
+    "ratio_4k_over_2p6k": 0.666
+   },
+   {
+    "run": "s123_s5_dither000_s1",
+    "card": "3090",
+    "arm": "plain",
+    "hard_rounded": false,
+    "long_acc": 1.0,
+    "flag2k_ratio": 0.782,
+    "steps": 24000,
+    "loss_at_4500": 2.126,
+    "min_loss_le_4500": 2.126,
+    "ratio_4k_over_2p6k": 0.679
+   },
+   {
+    "run": "s123_s5_dither010_s1",
+    "card": "3090",
+    "arm": "dither0.10",
+    "hard_rounded": false,
+    "long_acc": 1.0,
+    "flag2k_ratio": 0.782,
+    "steps": 24000,
+    "loss_at_4500": 3.31,
+    "min_loss_le_4500": 1.989,
+    "ratio_4k_over_2p6k": 0.717
+   },
+   {
+    "run": "s123_s5_dither025_s1",
+    "card": "3090",
+    "arm": "dither0.25",
+    "hard_rounded": false,
+    "long_acc": 1.0,
+    "flag2k_ratio": 0.782,
+    "steps": 24000,
+    "loss_at_4500": 2.333,
+    "min_loss_le_4500": 2.164,
+    "ratio_4k_over_2p6k": 0.729
+   },
+   {
+    "run": "s123_s5_dither050_s1_3090",
+    "card": "3090",
+    "arm": "dither0.50",
+    "hard_rounded": false,
+    "long_acc": 1.0,
+    "flag2k_ratio": 0.782,
+    "steps": 24000,
+    "loss_at_4500": 2.757,
+    "min_loss_le_4500": 2.192,
+    "ratio_4k_over_2p6k": 0.708
+   },
+   {
+    "run": "s123_s5_fsqdither_s1",
+    "card": "3090",
+    "arm": "fsqdither",
+    "hard_rounded": true,
+    "long_acc": 1.0,
+    "flag2k_ratio": 0.782,
+    "steps": 24000,
+    "loss_at_4500": 2.501,
+    "min_loss_le_4500": 2.115,
+    "ratio_4k_over_2p6k": 0.704
+   },
+   {
+    "run": "s127_s5_skip_s1",
+    "card": "3090",
+    "arm": "skip",
+    "hard_rounded": true,
+    "long_acc": 0.999,
+    "flag2k_ratio": 0.795,
+    "steps": 24000,
+    "loss_at_4500": 2.609,
+    "min_loss_le_4500": 2.494,
+    "ratio_4k_over_2p6k": 0.806
+   },
+   {
+    "run": "s127_s5_skip_s4",
+    "card": "3090",
+    "arm": "skip",
+    "hard_rounded": true,
+    "long_acc": 1.0,
+    "flag2k_ratio": 0.703,
+    "steps": 24000,
+    "loss_at_4500": 2.746,
+    "min_loss_le_4500": 2.31,
+    "ratio_4k_over_2p6k": 0.85
+   },
+   {
+    "run": "s128_s5_s1",
+    "card": "3090",
+    "arm": "plain",
+    "hard_rounded": true,
+    "long_acc": 0.9985,
+    "flag2k_ratio": 0.782,
+    "steps": 24000,
+    "loss_at_4500": 2.546,
+    "min_loss_le_4500": 2.126,
+    "ratio_4k_over_2p6k": 0.704
+   },
+   {
+    "run": "s128_s5_s102",
+    "card": "3090",
+    "arm": "plain",
+    "hard_rounded": true,
+    "long_acc": 0.9995,
+    "flag2k_ratio": 0.611,
+    "steps": 24000,
+    "loss_at_4500": 1.805,
+    "min_loss_le_4500": 1.805,
+    "ratio_4k_over_2p6k": 0.747
+   },
+   {
+    "run": "s128_s5_s104",
+    "card": "3090",
+    "arm": "plain",
+    "hard_rounded": true,
+    "long_acc": 1.0,
+    "flag2k_ratio": 0.42,
+    "steps": 24000,
+    "loss_at_4500": 0.371,
+    "min_loss_le_4500": 0.371,
+    "ratio_4k_over_2p6k": 0.326
+   }
+  ],
+  "escape_fail": [
+   {
+    "run": "s123_s5_dither050_s2",
+    "card": "4090",
+    "arm": "dither0.50",
+    "hard_rounded": false,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.816,
+    "steps": 24000,
+    "loss_at_4500": 4.278,
+    "min_loss_le_4500": 4.056,
+    "ratio_4k_over_2p6k": 1.081
+   },
+   {
+    "run": "s126_s5_anneal_s2",
+    "card": "3090",
+    "arm": "anneal",
+    "hard_rounded": false,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.531,
+    "steps": 24000,
+    "loss_at_4500": 2.782,
+    "min_loss_le_4500": 1.351,
+    "ratio_4k_over_2p6k": 0.865
+   },
+   {
+    "run": "s126_s5_anneal_s2_fp32cast",
+    "card": "3090",
+    "arm": "anneal",
+    "hard_rounded": false,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.481,
+    "steps": 24000,
+    "loss_at_4500": 1.958,
+    "min_loss_le_4500": 1.648,
+    "ratio_4k_over_2p6k": 0.746
+   },
+   {
+    "run": "s126_s5_rawh_s1",
+    "card": "3090",
+    "arm": "rawh",
+    "hard_rounded": false,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.479,
+    "steps": 24000,
+    "loss_at_4500": 2.417,
+    "min_loss_le_4500": 1.366,
+    "ratio_4k_over_2p6k": 0.99
+   },
+   {
+    "run": "s126_s5_rawh_s2",
+    "card": "3090",
+    "arm": "rawh",
+    "hard_rounded": false,
+    "long_acc": 0.846,
+    "flag2k_ratio": 0.481,
+    "steps": 24000,
+    "loss_at_4500": 2.228,
+    "min_loss_le_4500": 1.648,
+    "ratio_4k_over_2p6k": 0.85
+   },
+   {
+    "run": "s126_s5_rawh_s3",
+    "card": "3090",
+    "arm": "rawh",
+    "hard_rounded": false,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.719,
+    "steps": 24000,
+    "loss_at_4500": 2.828,
+    "min_loss_le_4500": 1.826,
+    "ratio_4k_over_2p6k": 0.987
+   },
+   {
+    "run": "s126_s5_rawh_s4",
+    "card": "3090",
+    "arm": "rawh",
+    "hard_rounded": false,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.679,
+    "steps": 24000,
+    "loss_at_4500": 2.747,
+    "min_loss_le_4500": 1.924,
+    "ratio_4k_over_2p6k": 0.946
+   },
+   {
+    "run": "s127_s5_ctrl_s3",
+    "card": "3090",
+    "arm": "plain",
+    "hard_rounded": true,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.824,
+    "steps": 24000,
+    "loss_at_4500": 4.388,
+    "min_loss_le_4500": 4.131,
+    "ratio_4k_over_2p6k": 1.029
+   },
+   {
+    "run": "s127_s5_lr10_s2",
+    "card": "3090",
+    "arm": "lr10",
+    "hard_rounded": true,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.806,
+    "steps": 24000,
+    "loss_at_4500": 4.768,
+    "min_loss_le_4500": 3.959,
+    "ratio_4k_over_2p6k": 1.047
+   },
+   {
+    "run": "s127_s5_lr10_s3",
+    "card": "3090",
+    "arm": "lr10",
+    "hard_rounded": true,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.78,
+    "steps": 24000,
+    "loss_at_4500": 4.025,
+    "min_loss_le_4500": 3.833,
+    "ratio_4k_over_2p6k": 0.988
+   },
+   {
+    "run": "s127_s5_skip_s2",
+    "card": "3090",
+    "arm": "skip",
+    "hard_rounded": true,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.785,
+    "steps": 24000,
+    "loss_at_4500": 4.207,
+    "min_loss_le_4500": 3.813,
+    "ratio_4k_over_2p6k": 1.057
+   },
+   {
+    "run": "s127_s5_skip_s2_rerun",
+    "card": "3090",
+    "arm": "skip",
+    "hard_rounded": true,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.785,
+    "steps": 24000,
+    "loss_at_4500": 4.207,
+    "min_loss_le_4500": 3.813,
+    "ratio_4k_over_2p6k": 1.057
+   },
+   {
+    "run": "s127_s5_skip_s3",
+    "card": "3090",
+    "arm": "skip",
+    "hard_rounded": true,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.859,
+    "steps": 24000,
+    "loss_at_4500": 4.704,
+    "min_loss_le_4500": 4.241,
+    "ratio_4k_over_2p6k": 1.003
+   },
+   {
+    "run": "s127_s5_std2_s1",
+    "card": "3090",
+    "arm": "std2",
+    "hard_rounded": true,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.804,
+    "steps": 24000,
+    "loss_at_4500": 4.069,
+    "min_loss_le_4500": 3.588,
+    "ratio_4k_over_2p6k": 1.056
+   },
+   {
+    "run": "s127_s5_std2_s2",
+    "card": "3090",
+    "arm": "std2",
+    "hard_rounded": true,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.83,
+    "steps": 24000,
+    "loss_at_4500": 4.098,
+    "min_loss_le_4500": 3.661,
+    "ratio_4k_over_2p6k": 0.999
+   },
+   {
+    "run": "s127_s5_std2_s3",
+    "card": "3090",
+    "arm": "std2",
+    "hard_rounded": true,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.888,
+    "steps": 24000,
+    "loss_at_4500": 4.51,
+    "min_loss_le_4500": 4.412,
+    "ratio_4k_over_2p6k": 0.994
+   },
+   {
+    "run": "s127_s5_var_s2_rerun",
+    "card": "3090",
+    "arm": "var",
+    "hard_rounded": true,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.808,
+    "steps": 24000,
+    "loss_at_4500": 3.448,
+    "min_loss_le_4500": 3.364,
+    "ratio_4k_over_2p6k": 0.882
+   },
+   {
+    "run": "s128_s5_s3",
+    "card": "3090",
+    "arm": "plain",
+    "hard_rounded": true,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.824,
+    "steps": 24000,
+    "loss_at_4500": 4.388,
+    "min_loss_le_4500": 4.131,
+    "ratio_4k_over_2p6k": 1.029
+   }
+  ],
+  "plateau_null": [
+   {
+    "run": "s120_s5_final_s2",
+    "card": "3090Ti",
+    "arm": "plain",
+    "hard_rounded": true,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.994,
+    "steps": 24000,
+    "loss_at_4500": 5.002,
+    "min_loss_le_4500": 4.939,
+    "ratio_4k_over_2p6k": 0.998
+   },
+   {
+    "run": "s120_s5_trace_s1",
+    "card": "4090",
+    "arm": "trace",
+    "hard_rounded": true,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.961,
+    "steps": 24000,
+    "loss_at_4500": 3.425,
+    "min_loss_le_4500": 3.289,
+    "ratio_4k_over_2p6k": 0.988
+   },
+   {
+    "run": "s123_s5_dither000_s2",
+    "card": "3090",
+    "arm": "plain",
+    "hard_rounded": false,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.994,
+    "steps": 24000,
+    "loss_at_4500": 5.023,
+    "min_loss_le_4500": 4.949,
+    "ratio_4k_over_2p6k": 0.994
+   },
+   {
+    "run": "s123_s5_dither010_s2",
+    "card": "3090",
+    "arm": "dither0.10",
+    "hard_rounded": false,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.994,
+    "steps": 24000,
+    "loss_at_4500": 4.983,
+    "min_loss_le_4500": 4.94,
+    "ratio_4k_over_2p6k": 1.001
+   },
+   {
+    "run": "s123_s5_dither025_s2",
+    "card": "3090",
+    "arm": "dither0.25",
+    "hard_rounded": false,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.994,
+    "steps": 24000,
+    "loss_at_4500": 5.008,
+    "min_loss_le_4500": 4.953,
+    "ratio_4k_over_2p6k": 0.999
+   },
+   {
+    "run": "s123_s5_dither050_s1",
+    "card": "4090",
+    "arm": "dither0.50",
+    "hard_rounded": false,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.992,
+    "steps": 24000,
+    "loss_at_4500": 4.472,
+    "min_loss_le_4500": 4.311,
+    "ratio_4k_over_2p6k": 0.92
+   },
+   {
+    "run": "s123_s5_dither050_s2_3090",
+    "card": "3090",
+    "arm": "dither0.50",
+    "hard_rounded": false,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.994,
+    "steps": 24000,
+    "loss_at_4500": 5.024,
+    "min_loss_le_4500": 4.944,
+    "ratio_4k_over_2p6k": 0.996
+   },
+   {
+    "run": "s123_s5_fsqdither_s2",
+    "card": "3090",
+    "arm": "fsqdither",
+    "hard_rounded": true,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.994,
+    "steps": 24000,
+    "loss_at_4500": 5.017,
+    "min_loss_le_4500": 4.939,
+    "ratio_4k_over_2p6k": 0.998
+   },
+   {
+    "run": "s125_s5_std_s2",
+    "card": "3090",
+    "arm": "std",
+    "hard_rounded": true,
+    "long_acc": 0.0,
+    "flag2k_ratio": 1.003,
+    "steps": 24000,
+    "loss_at_4500": 5.007,
+    "min_loss_le_4500": 4.949,
+    "ratio_4k_over_2p6k": 0.984
+   },
+   {
+    "run": "s127_s5_ctrl_s4_full",
+    "card": "3090",
+    "arm": "plain",
+    "hard_rounded": true,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.922,
+    "steps": 24000,
+    "loss_at_4500": 4.582,
+    "min_loss_le_4500": 4.391,
+    "ratio_4k_over_2p6k": 0.987
+   },
+   {
+    "run": "s129_s5_s202",
+    "card": "3090",
+    "arm": "plain",
+    "hard_rounded": true,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.944,
+    "steps": 2000
+   },
+   {
+    "run": "s129_s5_s4",
+    "card": "3090",
+    "arm": "plain",
+    "hard_rounded": true,
+    "long_acc": 0.0,
+    "flag2k_ratio": 0.922,
+    "steps": 2000
+   }
+  ],
+  "plateau_stopped": [
+   {
+    "run": "s127_s5_ctrl_s4",
+    "card": "3090",
+    "arm": "plain",
+    "hard_rounded": true,
+    "long_acc": null,
+    "flag2k_ratio": 0.922,
+    "steps": 2000
+   },
+   {
+    "run": "s127_s5_lr10_s1",
+    "card": "3090",
+    "arm": "lr10",
+    "hard_rounded": true,
+    "long_acc": null,
+    "flag2k_ratio": 0.993,
+    "steps": 2000
+   },
+   {
+    "run": "s127_s5_lr10_s4",
+    "card": "3090",
+    "arm": "lr10",
+    "hard_rounded": true,
+    "long_acc": null,
+    "flag2k_ratio": 0.955,
+    "steps": 2000
+   },
+   {
+    "run": "s127_s5_std2_s4",
+    "card": "3090",
+    "arm": "std2",
+    "hard_rounded": true,
+    "long_acc": null,
+    "flag2k_ratio": 0.993,
+    "steps": 2000
+   },
+   {
+    "run": "s127_s5_var_s2",
+    "card": "3090",
+    "arm": "var",
+    "hard_rounded": true,
+    "long_acc": null,
+    "flag2k_ratio": 0.992,
+    "steps": 2000
+   },
+   {
+    "run": "s127_s5_var_s4",
+    "card": "3090",
+    "arm": "var",
+    "hard_rounded": true,
+    "long_acc": null,
+    "flag2k_ratio": 0.988,
+    "steps": 2000
+   },
+   {
+    "run": "s128_s5_s2",
+    "card": "3090",
+    "arm": "plain",
+    "hard_rounded": true,
+    "long_acc": null,
+    "flag2k_ratio": 0.994,
+    "steps": 2000
+   },
+   {
+    "run": "s128_s5_s4",
+    "card": "3090",
+    "arm": "plain",
+    "hard_rounded": true,
+    "long_acc": null,
+    "flag2k_ratio": 0.922,
+    "steps": 2000
+   }
+  ]
+ },
+ "counts": {
+  "exact": {
+   "all": 12,
+   "hard_rounded": 8,
+   "hard_rounded_with_4500": 8
+  },
+  "escape_fail": {
+   "all": 18,
+   "hard_rounded": 11,
+   "hard_rounded_with_4500": 11
+  },
+  "plateau_null": {
+   "all": 12,
+   "hard_rounded": 7,
+   "hard_rounded_with_4500": 5
+  },
+  "plateau_stopped": {
+   "all": 8,
+   "hard_rounded": 8,
+   "hard_rounded_with_4500": 0
+  }
+ }
+}
