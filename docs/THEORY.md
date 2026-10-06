@@ -5192,6 +5192,13 @@ across cards. Restart-on-plateau keeps the 2k flag.**
   - The collapse at about 650 is common and mostly transient on both cards.
 * **TEST-SAME (secondary, 4060)** has 1 seed so far. It is added when complete, and cannot change the primary verdict.
 * **What follows:** the 2k flag's own reliability is in question. It fires after early pulls, on loss well under the null.
+* **Qualification (2026-10-06 09:38 EDT; Audit).** "The 2k flag fires on late learners" (130-0 addendum, 130-1) rests on the replays alone: a pull and
+  falling loss by 2k, with no learning outcome. **This wording is held** until the seven check runs reach 24k (4060 s5, s6, s7;
+  3070 s17, s30, s34, s12).
+  - Early sign the other way: 4060 s5's full run is heading to the null (4.72 at 2k, 4.93 at 2.6k, 5.01 at 4k; FLAG4 1.017).
+  - 3070 s17 is undecided (2k flag true, FLAG4 0.744, 3.81 at 7.9k).
+  - §127's ctrl s4 (borderline, 0.922) was a true positive (127-13 outcome).
+  - The registered §130 verdict (no PASS for the marker) is unaffected.
   - Ground truth: §131's 24k check runs on the 4060 (s5, s6, s7) and 3070 (s17, s30, s34, s12), and §127's ctrl-s4 full run on a
     3090.
   - §131 tests the 4k flag held-out.
