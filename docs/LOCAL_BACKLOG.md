@@ -53,6 +53,12 @@ entries, keeping ≥ 3 open per card.
      - Then add **s127_s5_ctrl_s4_full** (a plateau that ran to 24k) and, when fetched, the §127 lever models (std2 s1–s3, lr10 s2 / s3, skip s2 /
        rerun / s3). The helper asked for these; the line format is as above.
 
+4. **§115 completion (registered eval, short; Theory).** §115's registered models without eval_s115.json:
+   - `python -m boxes.snap115 --run boxes/runs_s5/s108_mk4_s2 --device <3070>`
+   - `python -m boxes.snap115 --run boxes/runs_s5/s108_mk4_s4 --device <3070>`
+   - `python -m boxes.snap115 --run boxes/runs_s5/g105_mask4_s1 --model g97 --device <3070>` (part B only, as for g105 s2 / s3)
+   - Memcheck first; eval only, bs 250. Stop: done. This finishes §115's per-model rules, so it has priority over the replay pairs.
+
 ## RTX 2070 (Turing, fp32 only, 8 GB, slowest)
 
 1. [moved to the cloud, Theory 2026-10-06: the FF certs are done locally; the S5 CERT needs more than 6.5 GiB in fp32, over the memory gate] **§128 S5 CERT**: run as a **tail job on a cloud 3090** (an existing rerun host after its runs), `--cert_only --fp32` only (128-4: the fp32 cert is the reproducible record), on s128_s5_s1, s102, s104, --cert_time 2700. Descriptive.
