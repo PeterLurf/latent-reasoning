@@ -1,4 +1,4 @@
-# §112 coverage dose-response (note 112-1 + addendum); host 7 of 8
+# §119 CODI s2 / s3 at lr 1e-3 (note 119-5: the criterion's pick, noise-level), LoRA r128, autocast fix c1caef75; any 24 GB class; boxes.base119
 # P=2
-boxes/runs_s5/s112_f010_s23 boxes.self110 --cov 0.1 --save_rounds --seed 23
-boxes/runs_s5/s112_f010_s24 boxes.self110 --cov 0.1 --save_rounds --seed 24
+boxes/runs_s5/s119_codi_s2 boxes.base119 --method codi --lr 1e-3 --seed 2
+boxes/runs_s5/s119_codi_s3 boxes.base119 --method codi --lr 1e-3 --seed 3
