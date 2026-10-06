@@ -6160,6 +6160,27 @@ carry an fp32 certificate that covers every code the eval visits** (14 certifica
 * **§132:** slot 4's BFS-reachable code sets are smaller than the pilot's on the same sampled tables (13 / 12 / 8 / 12 / 16 / 16 against 38 / 22
   / 16 / 42 / 28 / 17). The passing slots solved at 3,000–7,700 steps, against the pilot's 19,900.
 
+**Note 133-5 (2026-10-06 19:54 EDT; interim, descriptive; the first two stage-1 proof cells, read by Theory from the raw files; Audit-reproduced). FSQ-64 and NOISE-64 are exact at 2,048 on their proof slot; ρ waits for fp32.**
+* **Slot 1 of both arms:** seeds 1 and 101 flagged at 2k, and seed 201 was accepted (cloud RTX 3090; FSQ-64 on driver 570.195.03, NOISE-64 on
+  595.84; torch 2.5.1+cu124, micro 2).
+  - FSQ-64: long_acc 0.998, ext_2048 0.998, SERIAL (donor 1.0, recipient − chance 0.000), n_codes 437,698 (codes_per_state 3,650: almost
+    one code per visit, yet exact), grid_share 0.188.
+  - NOISE-64: 0.998 / 0.998, SERIAL, grid_share 0.184.
+  - **Both clear the proof criterion** (≥ 0.95 at 2,048, 133-2), so slots 2–4 run (Audit approved about $6).
+* **ρ (for PASS) waits for eval_contraction_fp32.json.** The in-eval bf16 numbers: FSQ-64 ρ_k 0.176 / 0.388 / 0 (127-12's clause ≈ 0.26).
+  NOISE-64 ρ_k 0.078 / 0.386 / 0.756, with the distance flattening at about 0.04 (rho_k3 ≈ 0.28, at the bound). bf16 is not the registered
+  measure.
+* **Scorer note:** the two flagged attempts' run dirs were not fetched. score_s133 reads their "plateau" status from the host's slot record
+  (`s133_slots/{arm}_k1/eval.json`) when the raw log is missing, and marks it as such. The raw logs are requested.
+* **Descriptive:**
+  - (a) **Width changes the entry basin.** The two arms are identical to 2k (both unrounded and undithered there; the losses agree to
+    three decimals). Seed 1 flags at d 64 but learns at d 8 on the 3090 (§128). The entry plateau depends on the code width, not on
+    rounding.
+  - (b) **The first FLAG4 false positive on record.** FSQ-64 s201 is flagged by FLAG4 (4k / 2.6k = 0.930), and its 4.5k loss is 3.52 (above
+    134-2(b)'s 3.0). It then learns: 0.008 at 14k, exact.
+    - s133_ runs are outside §131's registered set, so §131 is unaffected.
+    - FLAG4 and the 4.5k cut are calibrated on the 8-d carrier. Any use as a restart trigger must be per carrier width.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
