@@ -5577,9 +5577,14 @@ the held-out families closed.**
   - The CERT output did not record device or dtype; it is labelled here from the run log. --cert_only is asked to record both.
 * **Contraction (descriptive; 2026-10-06 13:30 EDT; fp32, local RTX 3070 and earlier runs). The first-hand-off ratio ρ₁ (127-12) is the informative
   number: the overall ρ is vacuous (about 1e-6) under hard rounding.**
-  - **Every learning run contracts, ρ₁ 0.03–0.22, inside 118-5's pass band (≤ 0.28):** FF 0.03–0.12; MOD s1 0.15; CYC s1 0.18; RDFA
-    s1 0.22; S5 0.13–0.20.
-  - Exact-recovery share 0.08–0.27. Basin 0.1 (S5) to 0.3–1.0 (FF / MOD / CYC / RDFA).
+  - **Every one of the 19 learning runs contracts, ρ₁ 0.03–0.27, inside 118-5's pass band (≤ 0.28):**
+    - FF 0.051 / 0.116 / 0.078 / 0.032;
+    - MOD 0.152 / 0.163 / 0.117 / 0.103;
+    - CYC 0.181 / 0.129 / 0.118 / 0.168;
+    - RDFA 0.216 / 0.149 / 0.269 / 0.185;
+    - S5 0.201 / 0.147 / 0.127.
+    - **RDFA s3 (0.269) is close to the bound.** (Corrected from an s1-only range of 0.03–0.22; Audit.)
+  - Exact-recovery share 0.084–0.266. Basin 0.1 (S5) to 0.3–1.0 (FF / MOD / CYC / RDFA).
   - **S5 s3, which never learned, shows ρ₁ 0, exact recovery 0.56 and basin 1.0.** A collapsed code is contractive without
     information, as in §123's plateaued cell.
 
