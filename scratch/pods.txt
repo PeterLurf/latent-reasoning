@@ -899,3 +899,9 @@ PRICE EXCEPTION 2026-10-06 04:58 gen-b41 offer 53010473 RTX 3090 595.71 $0.267: 
 54514191 vast offer 51470055 created 2026-10-06 13:06: label gen-b54, queue scratch/gen_q_b54.txt (logged at create by vdeploy_toy.sh)
 54514197 vast offer 50286307 created 2026-10-06 13:07: label gen-b55, queue scratch/gen_q_b55.txt (logged at create by vdeploy_toy.sh)
 54429530 vast | gen_e31 DESTROYED_VERIFIED 2026-10-06 13:19 after verified per-run fetch (boxes/runs_fsq/s128_ff_s1 boxes/runs_fsq/s128_slots/ff_k1 boxes/runs_fsq/s128_ff_s2 boxes/runs_fsq/s128_slots/ff_k2 boxes/runs_fsq/s128_ff_s3 boxes/runs_fsq/s128_slots/ff_k3 boxes/runs_fsq/s128_ff_s4 boxes/runs_fsq/s128_slots/ff_k4)
+54516359 vast offer 51454376 created 2026-10-06 13:23: label gen-b53, queue scratch/gen_q_b53.txt (logged at create by vdeploy_toy.sh)
+54513664 vast | gen_b60 DESTROYED_VERIFIED 2026-10-06 13:29 never left 'loading' (26 min, same machine as the BAD HOST b53 202.122.49.242); parity moved to b53's redeploy
+54514143 vast | gen_b47 DESTROYED_VERIFIED 2026-10-06 13:30 stuck in 'loading' 25 min (46.205.240.99); redeployed
+54514169 vast | gen_b51 DESTROYED_VERIFIED 2026-10-06 13:30 stuck in 'loading' 25 min (76.27.73.50); redeployed
+54517386 vast offer 54228370 created 2026-10-06 13:30: label gen-b47, queue scratch/gen_q_b47.txt (logged at create by vdeploy_toy.sh)
+54517396 vast offer 46301464 created 2026-10-06 13:30: label gen-b51, queue scratch/gen_q_b51.txt (logged at create by vdeploy_toy.sh)

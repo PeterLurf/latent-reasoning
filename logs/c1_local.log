@@ -630,3 +630,9 @@
 13:24:43 c1_q_cert128_2070 s128_ff_s4 cert rc 0 out yes peak_card_mem 626 MiB of 8192 (cuda:2)
 13:24:52 c1_q_contr128_3070 s128_ff_s2 contraction rc 0 out yes peak_card_mem 1227 MiB of 8192 (cuda:1)
 13:25:05 c1_q_contr128_3070 s128_ff_s3 contraction rc 0 out yes peak_card_mem 1227 MiB of 8192 (cuda:1)
+13:25:18 c1_q_contr128_3070 s128_ff_s4 contraction rc 0 out yes peak_card_mem 1227 MiB of 8192 (cuda:1)
+13:25:45 c1_q_contr128_3070 s128_s5_s1 contraction rc 0 out yes peak_card_mem 2319 MiB of 8192 (cuda:1)
+13:26:13 c1_q_contr128_3070 s128_s5_s102 contraction rc 0 out yes peak_card_mem 2319 MiB of 8192 (cuda:1)
+13:26:41 c1_q_contr128_3070 s128_s5_s104 contraction rc 0 out yes peak_card_mem 2319 MiB of 8192 (cuda:1)
+13:27:07 c1_q_contr128_3070 s128_s5_s3 contraction rc 0 out yes peak_card_mem 2319 MiB of 8192 (cuda:1)
+13:27:07 c1_q_contr128_3070 done
