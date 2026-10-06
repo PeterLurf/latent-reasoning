@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-05 21:00 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-05 22:15 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -20,7 +20,7 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 Messages go through SendMessage. The names "Theory" and "Audit" currently need an identity confirm, pending the user,
 so send to the pipe addresses their messages come from.
 
-## Running now (21:00 2026-10-05; burn $2.23/h, credit ~$154, floor $30; <= 16 hosts; gradflow_check PASS required for new code paths)
+## Running now (22:15 2026-10-05; credit ~$150, burn ~$3.3/h incl. new hosts, cap $4/h, floor $30; <= 16 hosts; gradflow_check PASS required for new code paths)
 
 **Order (user, via Audit):** C1 > C6 > C4 = C2 > C3 > C5 > C7.
 
@@ -28,24 +28,26 @@ so send to the pipe addresses their messages come from.
 
 | Tag | GPU | Work |
 |---|---|---|
-| s4 | 3090 | §101 b0.01 s3 (decisive seed; s1 = 0, s2 = 0.9995), ~10 h, at 4.5k |
-| a2 | 3090 Ti | §118 LONG s82 (k = 32), at 23k |
-| a4 | 3090 | §118 LONG s83, at 19k |
-| j1 | A5000 | §117 MK s51 + ST s61 (both at loss ~9.3; MK s52-53 and ST s62-63 were 0) |
-| b23 | 3090 | §123 FF σ* = 0.25 s1, at 24k (then local fp32 contraction, no `--std`) |
-| b24, b25 | 3090 | §126 RAW-H s1 / s4 reruns, P = 1 (both pass the 2k flag; loss rising with L_max like s3) |
-| c2 | A10 | §124 seed-28 trio (EXPOSE / COPY / BASE) |
-| c3 | 3090 | §124 COPY s26-27 (+BASE; same machine type as c1's EXPOSE s26-27) |
-| c4 | 4090 | §124 seed-29 trio (BASE, COPY evaluated; EXPOSE at L22) |
+| s4 | 3090 | §101 b0.01 s3 (decisive seed), ~10 h |
+| a2 / a4 | 3090 Ti / 3090 | §118 LONG s82 / s83 |
+| j1 | A5000 | §117 MK s51 + ST s61 (loss ~9.3, failing like the others) |
+| b24, b25 | 3090 | §126 RAW-H s1 / s4 reruns (pass 2k flag; loss rising with L_max like s3) |
+| b26 | 3090 | §126 ANNEAL s2 fixed-cast rerun (note 126-10) |
+| b27 / b28 | 3090 | §127 Stage 1 seed 2: VAR + SKIP / STD2 + LR10 (`--stop_plateau`), then Audit's replay_basin s1 / s2 (bf16) |
+| c2 | A10 | §124 seed-28 trio |
+| c3 | 3090 | §124 COPY s26-27 (+BASE) |
+| d1 | A5000 | §119 Coconut lr sweep s1 (3e-5 / 1e-4 / 3e-4, P=3) |
+| d2 | A100 (PRICE EXCEPTION) | §119 CODI lr sweep s1 (1e-3 / 3e-3 / 1e-2, P=3) |
 
-* Drains now keep failed runs' args.json + log.jsonl as `<dir>.void_partial` (99192404, Theory).
-* §126: no more ANNEAL (126-8). §125 closed. §119 deferred. No unrun registration pending.
+* §119 next: pick lr by train_split_final_acc -> rename the chosen s1 to s119_<method>_s1, seeds 2-3; SIM-CoT from Coconut s<seed> (--init model.pt).
+* §127: stopped runs (plateau at 2k) have no eval.json; the drain stores them as <dir>.void_partial -> rename back to <dir> (scorer reads log.jsonl). Escaped arms -> Stage 2 (S5 s1/s3/s4, FF s1-2, + ctrl s3-4).
+* Drains keep failed runs' args.json + log.jsonl as `<dir>.void_partial` (99192404).
+* Local RAM: GPU jobs hold 7-10 GB private each; commit nearly full -> run CPU checks one at a time (two smokes died silently).
 
 ### Local PC (torch `cuda:0` = 4060, `cuda:1` = 3070, `cuda:2` = 2070; py_local_worker2, log `logs/c1_local.log`)
 
-* 4060 / 3070: note 112-5 resume runs (`scratch/c1_q_112r_local.txt`): f050 s24 done (0.968 -> 0.996); s110 s1 (4060) and f010 s22 (3070)
-  running. f010 s22 stalled ~5 h at final-round step 4100 (15:38-20:45, 3070 contention; timing only, trajectory unaffected).
-* 2070: §116 NONE s41 -> OPDEF s31 -> s32 (`scratch/c1_q_116c_local.txt`).
+* 112-5 resumes done: f050 s24 0.968 -> 0.996, f010 s22 0.9645 -> 0.995 (confirms); §110 s1 resume finished on the 4060 (to report).
+* §116 (`scratch/c1_q_116c_local.txt`, lock-dir claims): 2070 NONE s41; 3070 OPDEF s31; 4060 OPDEF s32.
 * Post-hoc for every drained §120 / §123 / §126 FSQ cell: `fsq120 --growth_only` and `--cert_only` (FF adds cert_task, cert_task_reads)
   and `--contraction_only --fp32` locally.
 
