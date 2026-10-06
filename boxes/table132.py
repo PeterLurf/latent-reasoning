@@ -199,16 +199,21 @@ def donor(m, sp, dev, amp, rng, n=2000, bs=500, diff=False):
 
 
 @torch.no_grad()
-def probe_ophist(m, sp, dev, amp, n=1024, seed=13206):
-    """R^2 of z_b on the last 1 / 2 / 3 ops and on the state (positions 2..7 of length-8 chains on training-distribution tables)."""
+def probe_ophist(m, sp, dev, amp, n=1024, seed=13206, chunk=256):
+    """R^2 of z_b on the last 1 / 2 / 3 ops and on the state (positions 2..7 of length-8 chains on training-distribution tables).
+    The forward runs in row chunks (Audit 2026-10-06: 1,024 rows x 72-token prefixes in one pass OOMed an 8 GB card); all draws
+    happen before it, so inputs are unchanged (bf16 values may differ in the last digits with the batch size)."""
     was = m.training; m.eval(); rng = np.random.default_rng(seed)
     tables = train_tables(sp, rng, n)
-    c, x, lab = problems(rng, tables, 8, sp.m); m.ctx = torch.tensor(c, device=dev); prev = m.start(n, dev); Z = []
-    for t in range(8):
-        with amp_ctx(amp):
-            h = m.segment(prev, torch.tensor(x[:, t], device=dev)); qs, q, zb = m.quant(h); e = m.embed_code(qs)
-        Z.append(zb.float().cpu().numpy()); prev = e[:, None]
-    Z = np.stack(Z, 1); P = list(range(2, 8)); half = n // 2; M = sp.m
+    c, x, lab = problems(rng, tables, 8, sp.m); Zc = []
+    for i in range(0, n, chunk):
+        sl = slice(i, i + chunk); m.ctx = torch.tensor(c[sl], device=dev); prev = m.start(len(x[sl]), dev); Z = []
+        for t in range(8):
+            with amp_ctx(amp):
+                h = m.segment(prev, torch.tensor(x[sl, t], device=dev)); qs, q, zb = m.quant(h); e = m.embed_code(qs)
+            Z.append(zb.float().cpu().numpy()); prev = e[:, None]
+        Zc.append(np.stack(Z, 1))
+    m.ctx = None; Z = np.concatenate(Zc, 0); P = list(range(2, 8)); half = n // 2; M = sp.m
     keys = {"last1": x[:, P], "last2": x[:, [p - 1 for p in P]] * M + x[:, P], "last3": (x[:, [p - 2 for p in P]] * M + x[:, [p - 1 for p in P]]) * M + x[:, P],
             "state": lab[:, P]}
     Zf, Zs = Z[:half][:, P].reshape(-1, Z.shape[-1]), Z[half:][:, P].reshape(-1, Z.shape[-1]); out = {"n": n, "positions": "2-7"}
