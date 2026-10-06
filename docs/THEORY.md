@@ -4018,6 +4018,24 @@ carrier fails at long chains in a second way.**
     raw carrier does not learn long chains reliably (s2 drifts, s3 fails)".
   - Each seed's long accuracy sits beside its flag.
 
+**Note 126-10 (2026-10-05 20:53 EDT, before the rerun; Audit). Could the bf16 cast have caused ANNEAL s2's collapse? A fixed-cast rerun
+settles it.**
+* **Not the cause at λ = 1:** from 6k on, the carrier is W_up(z_b) alone, computed exactly as in every working
+  bottlenecked arm (§120 / §123, bf16 autocast). The fix (024150c0) changes only λ < 1. The collapse step itself is
+  identical in old and fixed code.
+* **Possibly a contributor during the ramp** (2k–6k, 0 < λ < 1): the old code bf16-rounded the mixed carrier (relative error
+  about 0.4 %).
+  - That is small against the 0.49 distillation residual at the switch. The residual is a capacity mismatch, since 8 dims
+    cannot reproduce std(h).
+  - But a different ramp trajectory could leave a different state at 6k, so the cast cannot be excluded by argument
+    alone.
+* **Decision (credit is no longer binding):** one rerun of **ANNEAL s2 with the fixed cast** (fp32 carrier while λ < 1;
+  RTX 3090; dir `s126_s5_anneal_s2_fp32cast`). Reading, fixed now:
+  - **Fails** (long accuracy < 0.99 at λ = 1): ANNEAL-INHERI2026-10-05 20:53 EDT = false stands on a delivered arm.
+  - **Succeeds** (≥ 0.99): the first ANNEAL s2 is reclassified as undelivered, and ANNEAL-INHERI2026-10-05 20:53 EDT is re-scored on the
+    rerun. ANNEAL then also runs on the other escaped RAW-H seeds.
+* §126's verdict waits for this rerun and for RAW-H s1 / s4.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
