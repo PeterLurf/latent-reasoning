@@ -4549,6 +4549,14 @@ Coconut did not learn at any of the three LRs, and §119 continues exactly as re
 * **Wording:** "Coconut (c = 1, the published stage schedule scaled to 24k updates) did not learn 4-op S5 composition
   through latent thoughts on the chunked host". This is not "Coconut is not serial".
 
+**Note 128-2 (2026-10-06 00:20 EDT, before any §128 run; wording only, Audit / claude-13). What "median 9, p90 18" measures for RDFA.**
+* It is **the length of the shortest prefix of a uniformly random input string that maps all 8 states to one state**: the
+  number of steps after which the state no longer depends on the start. 4,000 strings give median 9, p90 18.
+* For i.i.d. uniform inputs, this has the same distribution as the **effective suffix** at a position (the shortest
+  synchronising suffix ending there). Measured on 2,830 positions of a 20,000-step string: median 9, p90 18, the same.
+* claude-13's 12 / 26 measures a different quantity, and is named in the result once claude-13 states its definition.
+* The registered measure (effective-suffix distribution and accuracy binned by it) is unchanged.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
