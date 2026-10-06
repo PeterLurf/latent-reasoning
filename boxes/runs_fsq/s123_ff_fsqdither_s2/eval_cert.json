@@ -1,0 +1,115 @@
+{
+ "holds": false,
+ "n_reachable": 14,
+ "n_moore": 3,
+ "capped": false,
+ "violations": 12,
+ "all_decode_valid": true,
+ "status": "done",
+ "timed_out": false,
+ "moore_timed_out": false,
+ "sec": 11,
+ "layers": [
+  {
+   "depth": 1,
+   "frontier": 4,
+   "cum": 4,
+   "sec": 6
+  },
+  {
+   "depth": 2,
+   "frontier": 6,
+   "cum": 10,
+   "sec": 7,
+   "complete": true
+  },
+  {
+   "depth": 3,
+   "frontier": 3,
+   "cum": 13,
+   "sec": 8,
+   "complete": true
+  },
+  {
+   "depth": 4,
+   "frontier": 1,
+   "cum": 14,
+   "sec": 9,
+   "complete": true
+  },
+  {
+   "depth": 5,
+   "frontier": 0,
+   "cum": 14,
+   "sec": 10,
+   "complete": true
+  }
+ ],
+ "n_start_pairs": 5,
+ "eval_dtype": "torch.bfloat16",
+ "cert_cap": 1000000,
+ "cert_task": {
+  "holds": false,
+  "n_reachable": 8,
+  "n_moore": 3,
+  "capped": false,
+  "violations": 8,
+  "all_decode_valid": true,
+  "status": "done",
+  "timed_out": false,
+  "moore_timed_out": false,
+  "sec": 5,
+  "layers": [
+   {
+    "depth": 1,
+    "frontier": 2,
+    "cum": 2,
+    "sec": 1
+   },
+   {
+    "depth": 2,
+    "frontier": 2,
+    "cum": 4,
+    "sec": 2,
+    "complete": true
+   },
+   {
+    "depth": 3,
+    "frontier": 3,
+    "cum": 7,
+    "sec": 3,
+    "complete": true
+   },
+   {
+    "depth": 4,
+    "frontier": 1,
+    "cum": 8,
+    "sec": 4,
+    "complete": true
+   },
+   {
+    "depth": 5,
+    "frontier": 0,
+    "cum": 8,
+    "sec": 4,
+    "complete": true
+   }
+  ],
+  "n_start_pairs": 2,
+  "first_items": [
+   "w0",
+   "w1"
+  ]
+ },
+ "cert_task_reads": {
+  "holds": true,
+  "status": "done",
+  "n_pairs": 8,
+  "n_codes": 8,
+  "n_read_transitions": 8,
+  "violations": 0,
+  "capped": false,
+  "timed_out": false,
+  "sec": 21
+ }
+}

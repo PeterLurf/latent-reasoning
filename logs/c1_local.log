@@ -483,3 +483,8 @@
 19:24:53 s126_s5_rawh_s2 contraction fp32 rc 0 (cuda:2)
 19:31:35 s116_opdef_s35 rc 0 (cuda:2)
 19:31:35 WORKER_DONE cuda:2 scratch/c1_q_116b_local.txt
+19:53:09 s112_f050_s24_resume1 rc 0 (cuda:0)
+19:58:12 s123_ff_fsqdither_s1 growth_only rc 0 (cuda:1)
+19:59:10 s123_ff_fsqdither_s1 cert_only rc 0 (cuda:1)
+20:45:02 s123_ff_fsqdither_s2 growth_only rc 0 (cuda:1)
+20:45:45 s123_ff_fsqdither_s2 cert_only rc 0 (cuda:1)
