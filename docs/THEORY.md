@@ -4256,6 +4256,29 @@ is false: TEXT-EXPOSE has already acquired in 3 seeds.**
   - by round, whether COPY acquires earlier than EXPOSE;
   - descriptively, each arm's donor profile (slot carriage against the slot-1 bypass).
 
+**Note 112-6 (2026-10-05 22:08 EDT; the result of 112-5's pre-stated check, all three resumes in, read by Theory from the raw eval.json files; Audit /
+claude-13 reproduced s22 / s24). The budget was the limit. One extra round confirms 3/3, through a bypassing carrier.**
+
+| Resume (`--resume_lr 3e-5`) | GPU | 512: source → resume | 2,048: source → resume | k = 1 (never-labelled) | Slot 1 donor / recipient | Slots 2–3 donor |
+|---|---|---|---|---|---|---|
+| f = 0.1 s22 | 3070 | 0.9645 → **0.995** | 0.858 → **0.984** | 1.0 (12,960), certified | 0.009 / 0.716 | ≤ 0.007 |
+| f = 0.5 s24 | 4060 | 0.968 → **0.996** | 0.886 → **0.982** | 1.0 (7,200), certified | 0.0095 / 0.602 | ≤ 0.01 |
+| §110 s1 | 4060 | 0.9505 → **0.994** | 0.826 → **0.986** | 1.0 (all 14,400), certified | 0.0105 / 1.0 | ≤ 0.013 |
+
+* **The three-way reading is "confirms" in every resume:** cumulative ≥ 0.99 at 512 with k = 1 at 1.0. The pre-stated
+  prediction (s22, s24) holds 2/2, and §110 s1 agrees.
+* **Candidate default (as 112-5 stated):** `--post_acq_steps 9k`, triggered label-free when the gate reaches 0.5 with
+  kept_share ≥ 0.1, for future self-training registrations.
+* **Caveats:**
+  - n = 3, on mixed GPUs.
+  - A resume is not the same as in-run budget: AdamW and the pools are fresh, at 3e-5 cosine.
+  - §124 EXPOSE s27 is the disclosed exception: it acquired early and still ended at 0.9795. So the budget is sufficient
+    here but not guaranteed.
+* **No C1.** All three resumed models carry no state in the slots (donor ≤ 0.013 at every slot), and slot 1 is a bypass
+  (recipient 0.60–1.0).
+  - The extra budget fixes C6 / C2 (cumulative 512 and 2,048) through a bypassing carrier.
+  - Slot carriage in self-training, so far, comes only with §124's COPY (s29: donor 0.88 / 0.75 / 0.52).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
