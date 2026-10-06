@@ -227,6 +227,7 @@ def main():
     ap.add_argument("--sched_scale", type=float, default=1.0, help="smoke only"); ap.add_argument("--log_every", type=int, default=100)
     ap.add_argument("--stop_plateau", action="store_true"); ap.add_argument("--check_marker", default=None, help="as fsq120 (note 128-1)")
     ap.add_argument("--mem_check", type=int, default=0, help="run N steps at L_max 32, print peak memory, exit")
+    ap.add_argument("--stop_after", type=int, default=0, help="local prototype only (docs/LOCAL_BACKLOG.md): stop after this step (log kept, no model / eval)")
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); sc = a.sched_scale
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
@@ -283,6 +284,8 @@ def main():
                 else:
                     log.write(json.dumps({"step": step, "stopped": "plateau (123-3 flag at 2k)", "loss_100": gl(100), "loss_1k": gl(1000), "loss_2k": gl(2000)}) + "\n")
                     log.close(); print("STOPPED plateau at 2k", flush=True); return
+        if a.stop_after and step >= a.stop_after:                           # local prototype only: no model / eval
+            log.write(json.dumps({"step": step, "stopped": "stop_after"}) + "\n"); log.close(); print("STOP_AFTER", step, flush=True); return
     train_sec = round(time.time() - t0); torch.save(m.state_dict(), os.path.join(a.out, "model.pt")); m.eval()
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
