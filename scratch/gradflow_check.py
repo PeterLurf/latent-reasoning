@@ -308,6 +308,34 @@ def check_s134(dev, out):
     out["s134.chain.main"] = term(m, M)
 
 
+def check_s135(dev, out):
+    """§135 (f1899abd / note 135-1): the aux InfoNCE ALONE gives a nonzero gradient into the carrier's ENCODER - W_down and the GPT-2
+    trunk that writes z_b, through FSQ's straight-through (p_hard 0 and 1) - plus W_up / P_s / P_t, and NONE into the frozen target
+    model. Under CUDA bf16. The target model here is pretrained GPT-2 (BASE's), layer 6, centred by its batch mean."""
+    import boxes.fsq120 as F120
+    from boxes.teacher135 import teacher_targets
+    amp = torch.bfloat16 if str(dev).startswith("cuda") else None
+    fam = F120.Family("s5"); m = F120.FSQ120(s5.load_gpt2(dev), fam).to(dev); m.enable_tsd(); m.train(); rng = np.random.default_rng(0)
+    tg = s5.load_gpt2(dev).eval()
+    for p_ in tg.parameters():
+        p_.requires_grad_(False)
+    s0, x, lab = F120.make_batch(fam, rng, 4, 4); X = torch.tensor(x, device=dev)
+    T = teacher_targets(tg, 6, s0, x, lab, dev, amp); T = (T - T.mean((0, 1))).reshape(-1, 768)
+    trunk = m.g.p["h_3_attn_c_attn_weight"]
+    for ph in (0.0, 1.0):
+        m.p_hard = ph
+        def A():
+            m._tsd_e = []
+            with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+                m.chain(m.start(4, dev, s0), X, lab)
+            E = torch.stack(m._tsd_e, 1).reshape(-1, 768); m._tsd_e = []
+            return F120.tsd_loss135(m, E, T, 0.1)[0]
+        out[f"s135.aux_p{int(ph)}.main"] = term(m, A)
+        for nm_, w_ in (("down", m.down.weight), ("trunk_h3", trunk), ("up", m.up.weight), ("P_s", m.tsd_ps.weight), ("P_t", m.tsd_pt.weight)):
+            out[f"s135.aux_p{int(ph)}.{nm_}_grad"] = float(w_.grad.norm()) if w_.grad is not None else 0.0
+        out[f"s135.aux_p{int(ph)}.target_no_grad"] = 1.0 if all(p_.grad is None for p_ in tg.parameters()) else 0.0
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--paths", nargs="*", default=["accel99", "mk108", "fsq120", "fsq120_std", "fsq120_rawh", "fsq120_anneal", "self110_copy", "self110_resume"])
     ap.add_argument("--device", default="cpu"); ap.add_argument("--out", default=os.path.join(ROOT, "theory", "results", "gradflow_check.json"))
