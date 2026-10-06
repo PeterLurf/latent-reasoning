@@ -5570,6 +5570,11 @@ the held-out families closed.**
   - Each automaton is stored in the weights. Whether the same carrier tracks state from rules given in context is §132 (rung 1
     near-exact so far, 132-4).
   - S5's 2k-restart rule leaves escape-without-learning uncaught; §131 is open.
+* **FF certificates (descriptive; 2026-10-06 13:27 EDT; post-hoc on the local RTX 2070, so fp32; Audit reproduced).**
+  - The generic CERT fails in 4/4: it reads from an undefined start before any write, the ill-posed case known from §120 (120-7).
+  - The task-language cert_task holds in s3 / s4 (Moore 2) and fails in s1 / s2.
+  - The reads-only certificate (120-9) holds in 4/4.
+  - The CERT output did not record device or dtype; it is labelled here from the run log. --cert_only is asked to record both.
 
 **Note 131-4 (2026-10-06 12:40 EDT, before any rerun is read; the user's directive via Audit). Two check runs crashed (out of memory at 14k), and
 all seven are rerun with checkpoints on larger cloud cards.**
