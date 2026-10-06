@@ -5035,7 +5035,7 @@ open.**
 * SKIP's ENTRY-FIX still needs s1 and s3 exact (b30). The ρ clause reads ρ₁ (127-12). ADOPT is read on cost against the
   control.
 * **Outcome (2026-10-06 09:28 EDT; Audit reproduced): the unstopped plain s4 run (`s127_s5_ctrl_s4_full`, RTX 3090, driver 595.71) ends at the
-  null:** loss 4.551 / 4.922 / 4.539 at 100 / 1k / 2k (identical to the stopped ctrl s4), 4.59 at 4k, 4.69 at 24k; long accuracy 0,
+  null:** loss 8.551 / 4.922 / 4.539 at 100 / 1k / 2k (identical to the stopped ctrl s4), 4.59 at 4k, 4.69 at 24k; long accuracy 0,
   2,048 at 0, donor at chance. By the reading fixed above, **seed 4 is a basin seed on this card, and "SKIP rescued a basin seed" is
   earned (n = 1).** The borderline 2k flag (0.922) was a true positive here.
 
