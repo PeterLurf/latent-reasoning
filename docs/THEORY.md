@@ -213,7 +213,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 123 | Attractor strength causal for no-snap? Dither dose-response (σ 0–0.5) + dithered FSQ (canonical codes), §120 harness | **causal question not reached**: dither moved neither ρ_ff (S5 s1 0.146–0.180; FF 0.050 → 0.087) nor accuracy nor the basin (S5 s2 plateaus at every σ); continuous 8-d carry exact to 2,048 (123-6); CANONICAL not met | closed |
 | 124 | Does reading a given state fix self-training's lottery? §112 f = 0.1 + copy objective vs exposure control | registered | **open** |
 | 125 | Readable bottleneck from step 0: standardised carried code vs the soft-phase no-read basin (task-agnostic, §120 harness) | **untested**: the EMA standardisation was not in force at 2k (carried norm 35); STD s2 plateaued; other runs held | closed (untested) |
-| 126 | Is the bottleneck the cause of the soft-phase basin? RAW-H vs ANNEAL (stop rule → restart-on-plateau) | registered | **open** |
+| 126 | Is the bottleneck the cause of the soft-phase basin? RAW-H vs ANNEAL (stop rule → restart-on-plateau) | **BOTTLENECK-CAUSE** (RAW-H s1–3 escape the 2k flag; every bottlenecked s2 plateaus) **without ANNEAL-INHERITS** (s2 0 in both casts): the wide carrier enters but doesn't learn long chains (0.846 / 0 / 0); restart-on-plateau is the procedure; s4 descriptive | closed |
 | 127 | Reliable entry without restarts? VAR (item-residual variance) / SKIP (skip-to-decoder) / STD2 (§125-v2) / LR10 on §120's harness vs restart-on-plateau | registered | **open** |
 
 ## Live sections
@@ -4300,6 +4300,38 @@ no rule change). The delivery checks measure what GPT-2 sees in training.**
   reads its log. This is disclosed in the drain commit.
 * **Training details:** `--micro 2` acts only at L ≥ 32 (after 14k), so it cannot touch Stage 1's 2k reading. `--no_cert`:
   CERT is post-hoc.
+
+**§126 result (2026-10-05 22:38 EDT; scored by `theory/score_s126.py` and by count; RAW-H s4 pending, descriptive, since it cannot change either rule).
+The 8-d bottleneck causes the 2k entry basin. Without it entry is reliable, but the wide carrier does not learn long chains,
+and narrowing it into the bottleneck fails.**
+
+| Arm, seed (RTX 3090) | 2k plateau flag | Long accuracy (512) | 2,048 | Final loss | Row norm at 2k (wte 3.95) |
+|---|---|---|---|---|---|
+| RAW-H s1 | no | 0 | 0 | 3.11 | 4.06 |
+| RAW-H s2 | no | 0.846 | 0.732 | 1.6e-5 | 3.91 |
+| RAW-H s3 | no | 0 | 0 | 4.42 | 3.81 |
+| RAW-H s4 | pending | pending | | | |
+| ANNEAL s2 (bf16 cast) | no | 0 | 0 | 3.18 | |
+| ANNEAL s2 (fixed cast, 126-10) | no | 0 | 0 | 2.46 | 3.91 |
+
+* **BOTTLENECK-CAUSE = true (decided).** RAW-H's seed 2 is not plateaued, and the plateau count is 0 over s1–s3, so ≤ 1/4
+  holds whatever s4 does. Every bottlenecked seed 2 on the 3090 class plateaued: 7 runs.
+  - The map was in force (row norm about 4 at 2k).
+* **ANNEAL-INHERITS = false (decided, 126-8; delivered by 126-10).** Both casts collapse when λ reaches 1 at 6k (loss 5.43 /
+  5.31) and never recover (264–359 codes per state, donor at chance).
+  - The cast changed the trajectory from step 1, but not the outcome.
+* **The STOP RULE did not fire** (RAW-H seed 2 escaped).
+* **Registered reading: "BOTTLENECK-CAUSE without ANNEAL-INHERITS":** the bottleneck causes the basin, but a narrow code
+  cannot take over from the wide carrier. Restart-on-plateau is the reliability procedure.
+* **126-9's wording, with per-seed accuracy beside the flags:** escaping the 2k flag is not learning.
+  - The raw carrier drifts (s2: 0.846 at 512, ρ_ff 0.794) or fails as L_max grows (s1, s3: loss rises after 4k to 3.1–4.4,
+    accuracy 0).
+  - So on this harness the 8-d bottleneck supplies **both** the entry basin and the attractor (ρ_ff 0.146–0.180, exact, in
+    every bottlenecked seed that enters).
+* **What follows:**
+  - §127 (registered after this reading's direction was known) tests task-agnostic entry fixes on the bottleneck itself,
+    with restart-on-plateau as the baseline to beat. §126 does not change §127.
+  - fp32 contraction for RAW-H s1 and the ANNEAL rerun is descriptive. RAW-H s4 is added when it lands.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
