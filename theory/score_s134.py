@@ -45,14 +45,28 @@ def probes(d):
     return {x["step"]: x["probe"] for x in map(json.loads, open(p)) if "probe" in x}
 
 
-def run(d):
+def smoke_or_bad(d, family):
+    """134-3 (b): smoke runs skipped; args must be d_q 8, levels 8, the family, copy_frac 0.1."""
+    a = load(d, "args.json") or {}
+    if int(a.get("steps", 24000)) != 24000 or float(a.get("sched_scale", 1.0)) != 1.0 or str(a.get("device", "")).startswith("cpu") or a.get("mem_check"):
+        return "smoke"
+    exp = {"d_q": 8, "levels": 8, "family": family, "copy_frac": 0.1}
+    bad = {k: a.get(k) for k, v in exp.items() if a.get(k, v if k in ("d_q", "levels") else None) != v}
+    return ("args mismatch %s" % bad) if bad else None
+
+
+def run(d, family="s5"):
     r = load(d)
     if r is None:
         return None
     a = load(d, "args.json") or {}
+    sb = smoke_or_bad(d, family)
+    if sb:
+        return {"error": sb}
     out = {"long_acc": r.get("long_acc"), "ext_2048": (r.get("ext_2048") or {}).get("cumulative"), "serial": serial(r.get("donor")),
            "rho": rho_clause(load(d, "eval_contraction_fp32.json")), "copy_frac": a.get("copy_frac"), "stop_plateau": a.get("stop_plateau"),
-           "gpu": r.get("train_gpu", r.get("gpu")), "driver": r.get("train_driver"), "probes": probes(d)}
+           "gpu": r.get("train_gpu", r.get("gpu")), "driver": r.get("train_driver"), "probes": probes(d),
+           "dialect": r.get("dialect"), "copy_donor": r.get("copy_donor"), "copy_acc": r.get("copy_acc")}   # 134-1 / 134-3 (c)
     out["exact"] = (out["ext_2048"] if out["ext_2048"] is not None else out["long_acc"] or 0) >= 0.99
     out["pass"] = None if out["rho"] is None else bool(out["exact"] and out["serial"] and out["rho"] <= 0.28)
     out["valid"] = bool(a.get("copy_frac")) and not a.get("stop_plateau")       # COPY on, no plateau stop (no restarts)
@@ -61,8 +75,9 @@ def run(d):
 
 def main():
     main_runs = {s: run("s134_copy_s5_s%d" % s) for s in (1, 2, 3, 4)}
-    done = {s: v for s, v in main_runs.items() if v}
-    bad = [s for s, v in done.items() if not v["valid"]]
+    errs = {s: v["error"] for s, v in main_runs.items() if v and "error" in v}
+    done = {s: v for s, v in main_runs.items() if v and "error" not in v}
+    bad = [s for s, v in done.items() if not v["valid"]] + list(errs)
     n_pass = sum(1 for v in done.values() if v["pass"])
     if bad:
         verdict = "invalid runs %s (copy off or plateau stop on)" % bad
@@ -75,12 +90,21 @@ def main():
         d = "s134_copy_%s_s1" % f; r = load(d)
         if r is None:
             continue
-        c = load(d, "eval_cert_fp32.json") or load(d, "eval_cert.json") or r.get("cert") or {}
-        closed = None if f not in NST else bool(c.get("holds") and not c.get("capped") and c.get("n_moore") == NST[f])
+        c = load(d, "eval_cert_fp32.json") or load(d, "eval_cert.json") or {}
+        if f not in NST:
+            closed = None
+        elif not c or c.get("holds") is None:
+            closed = "pending"                                              # 134-3 (a): no cert yet -> incomplete, not ok
+        else:
+            closed = bool(c.get("holds") and not c.get("capped") and c.get("n_moore") == NST[f])
+        acc_ok = (r.get("long_acc") or 0) >= 0.99 and serial(r.get("donor"))
         guard[f] = {"long_acc": r.get("long_acc"), "serial": serial(r.get("donor")), "closed": closed,
-                    "ok": bool((r.get("long_acc") or 0) >= 0.99 and serial(r.get("donor")) and closed is not False)}
+                    "ok": "incomplete (CERT pending)" if closed == "pending" else bool(acc_ok and closed is not False)}
     for s, v in main_runs.items():
-        print("S5 s%d" % s, v and {k: v[k] for k in ("long_acc", "ext_2048", "serial", "rho", "pass", "valid", "gpu")},
+        if v and "error" in v:
+            print("S5 s%d ERROR" % s, v["error"]); continue
+        print("S5 s%d" % s, v and {k: v[k] for k in ("long_acc", "ext_2048", "serial", "rho", "pass", "valid", "gpu", "copy_acc")},
+              v and {"dialect": v["dialect"], "copy_donor": v["copy_donor"]},
               v and {st: {k: p.get(k) for k in ("r2_state", "r2_item", "r2_last1", "r2_last2", "r2_last3") if k in p} for st, p in v["probes"].items()})
     print("GUARD", {f: g["ok"] for f, g in guard.items()})
     print("VERDICT", verdict)
