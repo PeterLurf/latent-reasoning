@@ -610,3 +610,6 @@
 11:41:38 WORKER_DONE cuda:2 scratch/c1_q_116d_local.txt
 11:42:29 s127_s5_skip_s1 contraction_only --fp32 rc 0 (cuda:1)
 11:42:30 POSTHOC128_STOPPED cuda:1
+12:10:30 s130chk_s5_s17_3070 rc 1 no-eval (cuda:1)
+12:28:59 s130chk_s5_s5_4060 rc 1 (cuda:0)
+12:42:49 HOLD: run130.stop set (no s7_4060) + lock dirs pre-claimed for s130chk_s5_s34/s12_3070 (user via Audit: the 7 check runs move to Vast 4060 Ti / A4000 with checkpoints, note 131-4); running s6_4060 / s30_3070 have the old micro rule (OOM at 14k)
