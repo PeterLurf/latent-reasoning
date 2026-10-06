@@ -5441,6 +5441,15 @@ CLOSED covers the certificate's own forward pass. A few codes the eval visits ar
   - If the excess vanishes in fp32, it is a bf16 artefact, and §128's result says so.
 * **Wording for the §128 result, fixed now:** CLOSED is stated as "closed under the certificate's forward pass; n_uncovered eval
   codes are correct but uncertified". The fp32 outcome goes beside it.
+* **First fp32 outcome (2026-10-06 10:41 EDT; rdfa s4, local RTX 4060, 2,000 × 512; Audit reproduced): the gap is a bf16 artefact.**
+  - bf16: eval 119 codes, BFS 119, n_uncovered 3; holds, Moore 8.
+  - **fp32: eval 123, BFS 125, n_uncovered 0;** holds, Moore 8, not capped.
+  - The bf16 BFS set is device-dependent (110 on the original 3090 Ti, 119 on the 4060). A mod s1 bf16 re-run gives 377 eval codes
+    against 387 originally.
+* **CLOSED stays as registered** (the CERT as run, which holds in all 12 runs). The fp32 certificate is reported beside it as the
+  stronger statement, "the certificate covers every code the eval visits". The definition is not switched after seeing data.
+  - The fp32 pass runs on all 12 certified runs at low priority on the local 4060, after §130's replays. The §128 result carries an
+    n_uncovered table (bf16 and fp32) and fills it as runs land.
 
 **Note 119-6 (2026-10-06 09:39 EDT; SIM-CoT s2 / s3 in, scored by `theory/score_s119.py`; CODI s2 / s3 pending). SIM-CoT did not learn in 3/3; all
 three seeds had a degraded start.**
