@@ -1,0 +1,9 @@
+21:52:49 data sha 6ee3ef95405dc43b094824dff8973753c587fe95a00762d2023bd64a941504f2 a0087fe4a7496a47f76d9436e6bb089c8a8869f3f343f71057355e127d0c33da
+NVIDIA A10, 570.144
+21:52:49 start boxes/runs_s5/s124_expose_s28
+21:52:49 start boxes/runs_s5/s124_copy_s28
+21:52:49 start boxes/runs_s5/s124_base_s28
+04:01:25 evaluated boxes/runs_s5/s124_base_s28 rc 0
+04:22:46 evaluated boxes/runs_s5/s124_copy_s28 rc 0
+06:11:11 evaluated boxes/runs_s5/s124_expose_s28 rc 0
+06:11:11 QUEUE_DONE
