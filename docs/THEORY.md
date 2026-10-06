@@ -210,7 +210,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 120 | FSQ digital recurrence: a learned discrete snap every step, no template or schedule (S5 + flip-flop pilot) | pilot not met (S5 1/2 per arm: code collapse / loss basin); **flip-flop 4/4 in both arms, 2 seeds certified (Moore 2)**; extension deferred to §123 | closed (pilot) |
 | 121 | Multiplication's carrier shortcut: text-path anchor + reader vs reader alone (4×4, Markov) | CARRY-3 0/3: the anchor binds to a dead text path (T1 = 0); READ lifts op 3 to 0.64 / 0.93 by recomputation, with no sum carrier; triggers §122 | closed |
 | 122 | TEXT-MIX keeps the anchor's target competent (conditional on §121; stop rule for the multiplication line) | CARRY-3 0/3 (op 3 0.32–0.41) with a competent text path (t1 1.0); **STOP RULE fired**: the multiplication latent-carriage line pauses | closed |
-| 123 | Attractor strength causal for no-snap? Dither dose-response (σ 0–0.5) + dithered FSQ (canonical codes), §120 harness | registered (after §120's pilot) | **open** |
+| 123 | Attractor strength causal for no-snap? Dither dose-response (σ 0–0.5) + dithered FSQ (canonical codes), §120 harness | **causal question not reached**: dither moved neither ρ_ff (S5 s1 0.146–0.180; FF 0.050 → 0.087) nor accuracy nor the basin (S5 s2 plateaus at every σ); continuous 8-d carry exact to 2,048 (123-6); CANONICAL not met | closed |
 | 124 | Does reading a given state fix self-training's lottery? §112 f = 0.1 + copy objective vs exposure control | registered | **open** |
 | 125 | Readable bottleneck from step 0: standardised carried code vs the soft-phase no-read basin (task-agnostic, §120 harness) | **untested**: the EMA standardisation was not in force at 2k (carried norm 35); STD s2 plateaued; other runs held | closed (untested) |
 | 126 | Is the bottleneck the cause of the soft-phase basin? RAW-H vs ANNEAL (stop rule → restart-on-plateau) | registered | **open** |
@@ -4041,6 +4041,27 @@ settles it.**
   name became "ANNEAL-INHERI<timestamp>" in 8 places: §126's rules and readings, and notes 126-8 and 126-10.
 * All 8 are restored to "ANNEAL-INHERITS". No rule, number or reading changes (`git show` on this commit shows the diff).
 * Theory's patch scripts now use a placeholder that can't occur in text.
+
+**§123 result (2026-10-05 21:19 EDT; scored by `theory/score_s123.py`, all 10 dose cells and 4 FSQ+DITHER runs, ρ_ff under 123-9).
+The causal question is not reached: dither moved neither contraction, nor accuracy, nor the basin.**
+* **Wording, as fixed by 123-11:** "On this harness dither changes neither contraction, nor accuracy, nor the basin; the
+  causal question is not reached."
+* **CAUSAL = false, by (i) on both families.** (ii) and (iii) hold on the non-plateau cells, (iii) vacuously.
+  - S5 seed 1: ρ_ff 0.146 / 0.180 / 0.149 / 0.156 at σ 0 / 0.1 / 0.25 / 0.5, long accuracy 1.0 at every dose.
+  - S5 seed 2: plateaued at every σ.
+  - Flip-flop s1, ρ_ff **0.050 at σ 0 against 0.087 at σ\* = 0.25**: the ρ rose, and both cells are exact (1.0; p_ignore 0.98 / 0.1 also
+    1.0).
+  - (i) fails because the manipulation did not lower ρ, so §123 is **uninformative about causality**. 118-5's correlation
+    stands, and 126-7's RAW-H point (ρ_ff 0.794, not exact) fits it.
+* **The registered all-cells reading is printed beside.** (ii) is false there only because of a plateaued cell (S5 σ 0.5 s2:
+  ρ_ff 0.019, accuracy 0). **A collapsed code is contractive without information**, which is why 123-3 excludes
+  plateaued cells.
+* **CANONICAL is not met:**
+  - S5: s1 has 20.9 codes per state at 2,048 against 34.2, but s2 plateaued.
+  - Flip-flop: 15.5 / 4.0 against 13.75. s1's task-language CERT holds; the registered CERT does not.
+* **Descriptive findings kept:**
+  - the continuous 8-d carry is exact to 2,048 in every non-plateau seed, with no implicit quantisation (grid share 0.17–0.24);
+  - the seed-2 entry basin appears at every σ, on S5 only.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
