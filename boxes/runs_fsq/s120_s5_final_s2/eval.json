@@ -1,0 +1,50 @@
+{
+ "family": "s5",
+ "arm": "final",
+ "seed": 2,
+ "train_sec": 6742,
+ "eval_only": false,
+ "eval_dtype": "torch.bfloat16",
+ "coverage_drawn": 1.0,
+ "gpu": "NVIDIA GeForce RTX 3090 Ti",
+ "long_acc": 0.0,
+ "acc_by_length": {
+  "16": 0.0,
+  "32": 0.0,
+  "64": 0.0,
+  "128": 0.0,
+  "256": 0.0,
+  "512": 0.0
+ },
+ "ext_2048": {
+  "n": 500,
+  "len": 2048,
+  "cumulative": 0.0
+ },
+ "n_codes": 9,
+ "code_perplexity": 2.7911379612633636,
+ "codes_per_state": 8.516666666666667,
+ "cert": {
+  "status": "deferred",
+  "holds": null
+ },
+ "donor": {
+  "pos2": {
+   "donor_consistent": 0.0085,
+   "recipient_consistent": 0.005,
+   "chance_overlap": 0.008
+  },
+  "pos4": {
+   "donor_consistent": 0.0095,
+   "recipient_consistent": 0.005,
+   "chance_overlap": 0.009
+  },
+  "pos6": {
+   "donor_consistent": 0.0055,
+   "recipient_consistent": 0.005,
+   "chance_overlap": 0.0065
+  }
+ },
+ "margin_flip_rate": 0.927859375,
+ "eval_sec": 326
+}
