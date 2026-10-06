@@ -865,3 +865,5 @@ PRICE EXCEPTION 2026-10-06 04:58 gen-b41 offer 53010473 RTX 3090 595.71 $0.267: 
 54437509 vast | gen_d5 DESTROYED_VERIFIED 2026-10-06 06:37 after verified per-run fetch (boxes/runs_s5/s119_simcot_lr1e-4_s1 boxes/runs_s5/s119_simcot_lr3e-5_s1 boxes/runs_s5/s119_simcot_lr3e-4_s1)
 54401709 vast | gen_c3 DESTROYED_VERIFIED 2026-10-06 06:38 after verified per-run fetch (boxes/runs_s5/s124_copy_s27 boxes/runs_s5/s124_copy_s26 boxes/runs_s5/s124_base_s26 boxes/runs_s5/s124_base_s27)
 54240473 vast | gen_s4 DESTROYED_VERIFIED 2026-10-06 06:38 after verified per-run fetch (boxes/runs_s5/s101_b0.01_s1 boxes/runs_s5/s101_b0.01_s2 boxes/runs_s5/s101_b0.01_s3)
+54448033 vast | gen_b36 DESTROYED_VERIFIED 2026-10-06 06:45 after verified per-run fetch (boxes/runs_fsq/s127_s5_std2_s1); FAILED (no eval.json, logs fetched): boxes/runs_fsq/s127_s5_lr10_s1; partial logs kept: boxes/runs_fsq/s127_s5_lr10_s1.void_partial; model.pt not fetched (rule, logs/model_skips.log): boxes/runs_fsq/s127_s5_std2_s1 
+54470397 vast offer 31458809 created 2026-10-06 06:45: label gen-d6, queue scratch/gen_q_d6.txt (logged at create by vdeploy_toy.sh)
