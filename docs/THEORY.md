@@ -4586,6 +4586,9 @@ whether that counts.**
   escapes"; only the timing waits.
 * **From now on,** every §127 / §128 run records its driver (`train_driver`, from nvidia-smi) beside train_gpu. §128 reports
   the driver per attempt. Its slots stay valid across drivers, which adds to the robustness claim.
+* **Addendum (2026-10-06 01:02 EDT, before any rerun reads).** The VAR and SKIP reruns run on b27's own host (b35, driver 565.77), the machine of
+  Stage 1, not on 595. So they are outside the confound whatever the replay shows. SKIP's Stage 2 matched unit (b30 / b31) and
+  b28 are on 595.71. Drivers per §128 host: e31 595.71, e33 595.91, e34 595.58 (3090 Ti), e30 595.71, CYC redeploy 565.57.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
