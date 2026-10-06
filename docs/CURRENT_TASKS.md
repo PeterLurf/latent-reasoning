@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-06 00:55 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-06 01:45 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -45,23 +45,24 @@ unwatched host whose queue ends just bills idle until its watcher restarts).
    host was BAD) and §119 CODI rerun `bash scratch/gen_deploy_119.sh "<offer> 3"` (scratch/gen_q_d3.txt, fix c1caef75).
 6. Re-arm the waiters (watch_any2.sh on all tags); Audit restarts its gpu_watch / cron.
 
-### Vast (00:55 2026-10-06; `scratch/gen_deploy_*.sh`, auto_drain_gen5 + `watch_any2.sh`; exclusions `scratch/vast_exclude_ips.txt`; 595.x drivers OK)
+### Vast (01:45 2026-10-06; 16 hosts = cap, ~$3.5/h, credit ~$145; `scratch/gen_deploy_*.sh`, auto_drain_gen5 + `watch_any2.sh`; exclusions `scratch/vast_exclude_ips.txt`; train_driver now in args.json)
 
 | Tag | GPU / driver | Work |
 |---|---|---|
 | s4 | 3090 | §101 b0.01 s3 (decisive seed) |
-| a4 | 3090 | §118 LONG s83 (s82 done: 1.0 / 2048 1.0) |
-| j1, d1 | A5000 | draining (§117 MK s51 + ST s61; §119 Coconut s1 sweep: all lrs at chance -> "did not learn") |
+| a4 | 3090 | §118 LONG s83 |
 | c2 / c3 | A10 / 3090 | §124 seed-28 trio / COPY+BASE s26-27 |
-| b28 | 3090, 595.71 | §127 Stage 1 STD2 + LR10 s2, then replay_basin s2 (Audit: parity check; rerun on <= 570 if it fails) |
-| b29 | 3090, 595.71 (deploying) | §127 reruns: VAR (batch estimator) + SKIP (guard), s2 |
-| b30 / b31 | 3090, 595.71 (b30 deploying) | §127 Stage 2 SKIP s1/s3/s4, FF s1-2 + control s3-4 (one driver class: matched unit) |
-| e30-e34 | 3090 / 3090 Ti, 595.x (e30 deploying) | §128 one family per host (s5 / ff / cyc / mod / rdfa), 4 restart slots each (scratch/restart128.py); held-out hosts: watch memory when a check run is claimed |
+| b28 | 3090, 595.71 | §127 STD2 + LR10 s2 (both pass the 2k flag; drift to ~4.6-4.9 after), then replay_basin s2 = the driver-confound test (note 127-6) |
+| b35 | 3090, 565.77 (= b27's host) | §127 reruns s2: VAR (batch estimator) + SKIP (guard only) |
+| b30 / b31 | 3090, 595.71 | §127 Stage 2 SKIP s1/s3/s4, FF s1-2 + control s3-4 (one matched unit) |
+| e30-e34 | 3090 (Ti), 595.x / 565 | §128: e30 s5, e31 ff, e32 cyc (565.57 redeploy; first e32 pip failure *.void_tiktoken), e33 mod, e34 rdfa |
+| d3 | A5000, 595.84 | §119 CODI sweep s1 rerun (autocast fix) |
+| d4 | 3090, 550.163 | §119 Coconut s2-3 at 3e-5 (note 119-2) |
+| d5 | A5000, 595.71 | §119 SIM-CoT sweep s1 from Coconut s1 lr 3e-5 |
 
-* §128: slot summaries in boxes/runs_fsq/s128_slots/<fam>_k<k>/eval.json; stopped attempts come back as <dir>.void_partial -> rename to <dir>.
-* §127: stopped runs likewise; replay_basin outputs -> theory/results/replay_basin_s{1,2}.jsonl.
-* §119 next (after j1 / d1 destroyed, cap 16): d3 CODI sweep rerun (autocast fix c1caef75), d4 Coconut s2-3 at lr 3e-5 (note 119-2), then the SIM-CoT sweep from Coconut s1 lr 3e-5 (`--init` model.pt via RESUME_FILES).
-* Rename the chosen Coconut s1 (lr 3e-5) to s119_coconut_s1 for score_s119 (keep the sweep dirs).
+* Held (note 127-6): STD2 / LR10 Stage 2 until the b28 replay reads (parity 4.98 / 4.95 at 1k / 2k).
+* §128 / §127: stopped runs come back as <dir>.void_partial -> rename to <dir>; held-out hosts: watch memory when a check run is claimed.
+* §119 after d4: SIM-CoT s2-3 from Coconut s2-3 (init their model.pt) at SIM-CoT's chosen lr.
 
 ### Local PC (torch `cuda:0` = 4060, `cuda:1` = 3070, `cuda:2` = 2070; py_local_worker2, log `logs/c1_local.log`)
 
