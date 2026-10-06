@@ -1,12 +1,13 @@
 """THEORY §133 scoring (rules fixed in §133; written before any §133 run; Theory is the only scorer).
 Wide-carrier error correction on §128's S5 recipe (fsq120 FINAL, restart-on-plateau slots k, k+100, k+200, k+300; RTX 3090 cloud,
-checkpoints). Arms (carrier width d = 64): cont64, fsq64, soft64, noise64, pin64 (+ jac64 if run).
+checkpoints). Arms: cont64, fsq16, fsq64, soft16, soft64, noise64, pin64 (JAC dropped after Literature 7dbdb426).
 Stage 1 dirs: boxes/runs_fsq/s133_{arm}_s{seed}; eval.json long_acc (512), ext_2048.cumulative, donor; eval_contraction_fp32.json.
 PASS(arm): >= 3/4 slots whose accepted run is exact at 2,048 (ext_2048 >= 0.99), SERIAL (donor >= 0.90, recipient - chance < 0.10
 at every position) and contractive (rho_1 <= 0.28, as 127-12's clause: rho_ff if defined, else the first-hand-off ratio).
 DROP (no follow-up): the proof slot (slot 1) is accepted but not exact at 2,048 -> the arm stops ("dropped at proof").
-Stage 2 (capacity; passing arms + the FSQ-8 control): dirs boxes/runs_fsq/s133cap_{arm}_s{seed} on S5x4; CAP-PASS = long_acc >= 0.99
-at 512 in >= 3/4 slots.
+Stage 2 (capacity): S5x2 (in-capacity control, dirs s133cap2_{arm}_s{seed}) and S5x4 (probe, dirs s133cap4_{arm}_s{seed}), all registers
+queried at the end; arms = passing wide arms + fsq8 (8 levels, 24 bits) + fsq8L16 (16 levels, 32 bits); CAP-PASS = long_acc >= 0.99 at
+512 in >= 3/4 slots.
     python theory/score_s133.py
 """
 import json
@@ -15,7 +16,7 @@ import os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 R = os.path.join(ROOT, "boxes", "runs_fsq")
-ARMS = ("cont64", "fsq64", "soft64", "noise64", "pin64", "jac64")
+ARMS = ("cont64", "fsq16", "fsq64", "soft16", "soft64", "noise64", "pin64")   # 133 after Literature 7dbdb426: JAC dropped, d 16 added
 OFFS = (0, 100, 200, 300)
 SKIPPED = []
 
@@ -104,8 +105,8 @@ def arm_verdict(arm):
     return sl, "incomplete (%d / 4 slots decided)" % len(decided)
 
 
-def cap_verdict(arm):
-    sl = {k: slot("s133cap_%s" % arm, k) for k in (1, 2, 3, 4)}
+def cap_verdict(arm, task="cap4"):
+    sl = {k: slot("s133%s_%s" % (task, arm), k) for k in (1, 2, 3, 4)}
     acc = [v["accepted"] for v in sl.values() if v["accepted"]]
     n_ok = sum((a["long_acc"] or 0) >= 0.99 for a in acc)
     dec = sum(1 for v in sl.values() if v["status"] in ("accepted", "exhausted") and (v["status"] == "exhausted" or v["accepted"]))
@@ -119,10 +120,11 @@ def main():
     for arm in ARMS:
         sl, v = arm_verdict(arm); res["stage1"][arm] = {"slots": sl, "verdict": v}
         print("S1", arm, v, {k: (s["status"], s["accepted"] and (s["accepted"]["ext_2048"], s["accepted"]["serial"], s["accepted"]["rho"])) for k, s in sl.items()})
-    for arm in ARMS + ("fsq8",):
-        sl, v = cap_verdict(arm)
-        if v != "not run":
-            res["stage2"][arm] = {"slots": sl, "verdict": v}; print("S2", arm, v)
+    for task in ("cap2", "cap4"):                                            # S5x2 (in-capacity control), S5x4 (capacity probe)
+        for arm in ARMS + ("fsq8", "fsq8L16"):
+            sl, v = cap_verdict(arm, task)
+            if v != "not run":
+                res["stage2"]["%s|%s" % (task, arm)] = {"slots": sl, "verdict": v}; print("S2", task, arm, v)
     if SKIPPED:
         print("SKIPPED (smoke):", SKIPPED)
     json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s133.json"), "w", newline=chr(10)), indent=1, default=float)
