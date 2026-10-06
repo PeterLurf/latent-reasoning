@@ -1,0 +1,3 @@
+# §126 ANNEAL s2 fixed-cast rerun (note 126-10; fsq120 024150c0: fp32 carrier while lam < 1); same args as b22; RTX 3090 / 3090 Ti ONLY
+# P=1
+boxes/runs_fsq/s126_s5_anneal_s2_fp32cast boxes.fsq120 --family s5 --arm final --anneal --micro 2 --seed 2 --no_cert
