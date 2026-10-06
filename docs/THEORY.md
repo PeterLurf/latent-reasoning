@@ -5602,6 +5602,18 @@ with checkpoints; local 8 GB cards run short tests only). The s131x held-out run
 * Any 2070 partial is kept as descriptive only (`*.void_moved`) and does not enter §131's counts.
 * §131's endpoint names the moved runs in place of the 2070 ones. Seeds and settings are otherwise as in 131-3.
 
+**Note 131-6 (2026-10-06 12:55 EDT, before any s131x run is read). The s131x card, and the root cause of the 14k crashes.**
+* **Card:** 131-5's option (a) is widened from "Titan RTX" to **"a cloud Turing card with ≥ 16 GB"**. The four s131x seeds (401–404) run
+  on **RTX 2080 Ti 22 GB** hosts (TU102; no bf16, so fp32 as 131-3 intended), with checkpointing. Dirs `s131x_s5_s{seed}_2080ti`.
+  - It is a different die from the 2070 (TU106) in the same architecture. Each run is read on its own flags and outcome (131-4).
+  - The local 2070's s401 (old code) will run out of memory at 14k. Its partial is descriptive only (`*.void_moved` / `*.void_oom`)
+    and never counted.
+* **Root cause of the out-of-memory crashes (the experiments session):** fsq120 applied `--micro` only at L ≥ 32, while training draws
+  L ~ U(1, L_max). After 14k, every batch with L of 17–31 ran at the full 64 rows.
+  - Fixed in 105545b8: micro now applies at L > 16. It is gradient accumulation, so memory only, and a no-op at micro 1.
+  - Runs with micro > 1 after this fix differ from earlier runs at the bit level for L of 17–31 (summation order). Each run is read
+    on its own.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
