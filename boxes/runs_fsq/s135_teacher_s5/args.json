@@ -1,0 +1,21 @@
+{
+ "steps": 8000,
+ "bs": 32,
+ "lr": 0.0001,
+ "Lmax": 32,
+ "seed": 1,
+ "eval_n": 1000,
+ "eval_L": 32,
+ "log_every": 100,
+ "probe_n": 1024,
+ "device": "cuda:0",
+ "out": "boxes/runs_fsq/s135_teacher_s5",
+ "format": "start STTOK + per step (OPTOK, STTOK) + ' a:' + STTOK",
+ "train_gpu": "NVIDIA GeForce RTX 3090",
+ "train_driver": "590.48.01",
+ "torch_version": "2.5.1+cu124",
+ "cuda_version": "12.4",
+ "cudnn_version": 90100,
+ "python_version": "3.11.10",
+ "image_tag": "pytorch/pytorch:2.5.1-cuda12.4-cudnn9-devel"
+}
