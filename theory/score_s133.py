@@ -66,11 +66,13 @@ CONTINUOUS = {"cont64", "soft16", "soft64", "noise64", "pin64"}             # 13
 def rho_k3(cf, eps="0.1"):
     """133-1 (a), continuous / soft arms: geometric mean of rho_k over the first 3 hand-offs (avoids fp32-floor hand-offs)."""
     try:
-        rk = cf["detail"]["eps"][eps]["rho_k"][:3]
+        e = cf["detail"]["eps"][eps]; rk, dk = e["rho_k"], e["dist_med_k"]
     except (KeyError, TypeError):
         return None
-    rk = [x for x in rk if x > 0]
-    return math.exp(sum(math.log(x) for x in rk) / len(rk)) if len(rk) == 3 else None
+    use = [rk[k] for k in range(min(3, len(rk), len(dk))) if dk[k] > 1e-2 and rk[k] > 0]   # 133-2: drop hand-offs landing near the floor
+    if not use:
+        return rk[0] if rk else None
+    return math.exp(sum(math.log(x) for x in use) / len(use))
 
 
 EXPECT = {"cont64": {"d_q": 64, "no_round": True}, "fsq16": {"d_q": 16}, "fsq64": {"d_q": 64}, "soft16": {"d_q": 16, "soft_beta": 0.1},
@@ -128,8 +130,8 @@ def arm_verdict(arm):
     if len(gpus) > 1:
         print("WARNING (%s): accepted runs span GPU names %s (125-2)" % (arm, sorted(map(str, gpus))))
     s1 = sl[1]["accepted"]
-    if s1 is not None and not s1["exact2048"]:
-        return sl, "dropped at proof (s1 not exact at 2,048)"
+    if s1 is not None and (s1["ext_2048"] or 0) < 0.95:                     # 133-2: drop only below 0.95; 0.95-0.99 = non-exact slot
+        return sl, "dropped at proof (s1 < 0.95 at 2,048)"
     if not any(v["attempts"] or v["status"] != "open" for v in sl.values()):
         return sl, "not run"
     passes = [v["accepted"]["pass"] for v in sl.values() if v["accepted"]]
@@ -162,6 +164,26 @@ def main():
             sl, v = cap_verdict(arm, task)
             if v != "not run":
                 res["stage2"]["%s|%s" % (task, arm)] = {"slots": sl, "verdict": v}; print("S2", task, arm, v)
+    st2 = res["stage2"]
+    def v(key):
+        return (st2.get(key) or {}).get("verdict")
+    def entered(key):
+        sl = (st2.get(key) or {}).get("slots") or {}
+        return bool(sl) and not any(x["status"] == "exhausted" for x in sl.values()) and any(x["accepted"] for x in sl.values())
+    wide_cap = [a for a in ARMS if v("cap4|%s" % a) == "CAP-PASS"]
+    if v("cap2|fsq8") is None or v("cap4|fsq8") is None:
+        cap = "incomplete"
+    elif v("cap2|fsq8") != "CAP-PASS":
+        cap = "difficulty (FSQ-8 fails S5x2)"
+    elif not entered("cap4|fsq8"):
+        cap = "entry (FSQ-8 does not enter S5x4)"
+    elif v("cap4|fsq8") == "CAP-FAIL" and (wide_cap or v("cap4|fsq8L16") == "CAP-PASS"):
+        cap = "CAPACITY (FSQ-8 fails S5x4 after entering; passes: %s)" % (wide_cap + (["fsq8L16"] if v("cap4|fsq8L16") == "CAP-PASS" else []))
+    elif v("cap4|fsq8") == "CAP-FAIL":
+        cap = "difficulty (nothing passes S5x4)"
+    else:
+        cap = "no capacity limit shown (FSQ-8 %s on S5x4)" % v("cap4|fsq8")
+    res["capacity_reading"] = cap; print("CAPACITY READING (133-2):", cap)
     if SKIPPED:
         print("SKIPPED (smoke):", SKIPPED)
     if ERRORS:
