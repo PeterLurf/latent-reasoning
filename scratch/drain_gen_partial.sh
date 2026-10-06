@@ -40,7 +40,7 @@ trap release EXIT
 fetch() {   # fetch <name> <remote tar arguments>: sha-verified, 3 tries, extracted with logs/ -> logs/vast_<host>_<port>/
   local n=$1; shift; local ok=0
   for try in 1 2 3; do
-    rs=$($S "cd /workspace/Latent && tar -czf /tmp/f_$n.tgz $* 2>/dev/null; sha256sum /tmp/f_$n.tgz" 2>/dev/null | grep -o '^[0-9a-f]\{64\}')
+    rs=$($S "cd /workspace/Latent && rm -f /tmp/f_$n.tgz && tar -czf /tmp/f_$n.tgz $* 2>/dev/null; gzip -t /tmp/f_$n.tgz 2>/dev/null && sha256sum /tmp/f_$n.tgz || { df -h / | tail -1 | sed 's/^/ARCHIVE_TRUNCATED /'; }" 2>/dev/null | grep -o '^[0-9a-f]\{64\}')   # 2026-10-06: gzip -t on the host (b46: a full host disk truncated the archive and its sha still matched)
     scp -q -o ServerAliveInterval=15 -i ~/.ssh/runpod_ed25519 -P $P root@$H:/tmp/f_$n.tgz /d/drain_tmp/f_${H}_$n.tgz 2>/dev/null
     [ -n "$rs" ] && [ "$rs" = "$(sha256sum /d/drain_tmp/f_${H}_$n.tgz | cut -c1-64)" ] && { ok=1; break; }; sleep 20
   done
