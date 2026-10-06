@@ -5590,6 +5590,18 @@ all seven are rerun with checkpoints on larger cloud cards.**
     reproduces its replay.
 * §131's endpoint (131-2 / 131-3) now names the reruns in place of the crashed and unfinished local runs.
 
+**Note 131-5 (2026-10-06 12:43 EDT, before any s131x run is read; the user's directive via Audit: full training runs go to cloud cards of ≥ 16 GB
+with checkpoints; local 8 GB cards run short tests only). The s131x held-out runs move off the local RTX 2070.**
+* **Where they run:** the four held-out S5 runs of 131-3 (seeds 401–404) move to a cloud card with checkpointing, chosen in this order,
+  fixed now:
+  - (a) **a cloud Turing card with ≥ 16 GB (Titan RTX)**, keeping fp32 numerics (no bf16 on Turing), as 131-3 intended. Dirs
+    `s131x_s5_s{seed}_titanrtx`.
+  - (b) if none is available, **an RTX 3090 in the default bf16**, the card class of most §131 held-out runs. Dirs
+    `s131x_s5_s{seed}_3090`.
+    - The fp32 angle is then dropped. It was incidental: the rule is loss-only, and these runs exist to add S5 learners.
+* Any 2070 partial is kept as descriptive only (`*.void_moved`) and does not enter §131's counts.
+* §131's endpoint names the moved runs in place of the 2070 ones. Seeds and settings are otherwise as in 131-3.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
