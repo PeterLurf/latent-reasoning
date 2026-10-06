@@ -41,12 +41,12 @@
     }
    },
    "FF": {},
-   "ESCAPE": true,
+   "ESCAPE": "True (undelivered (one fixed rerun, 127-1))",
    "delivered": {
-    "2": true
+    "2": false
    },
-   "delivery": true,
-   "ENTRY_FIX": "incomplete (1 / 4)",
+   "delivery": "undelivered (one fixed rerun, 127-1)",
+   "ENTRY_FIX": "undelivered (one fixed rerun, 127-1)",
    "FF_GUARD": "incomplete",
    "ADOPT": "pending",
    "cost": {

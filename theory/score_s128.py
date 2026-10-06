@@ -82,7 +82,9 @@ def plateau(d):
 def nonfinite_share(d):
     lines = log_lines(d) or []
     last = max([int(x.get("step", 0)) for x in lines] or [0])
-    return sum(1 for x in lines if x.get("nonfinite")) / last if last else 0.0
+    loss = [x["loss"] for x in lines if "loss" in x]                         # NaN losses of an unguarded interval (127-3)
+    nan = sum(1 for v in loss if not math.isfinite(float(v))) / len(loss) if loss else 0.0
+    return max(sum(1 for x in lines if x.get("nonfinite")) / last if last else 0.0, nan)
 
 
 def serial(dn):
