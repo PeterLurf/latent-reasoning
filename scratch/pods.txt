@@ -930,3 +930,9 @@ PRICE EXCEPTION 2026-10-06 04:58 gen-b41 offer 53010473 RTX 3090 595.71 $0.267: 
 54548684 vast offer 47504972 created 2026-10-06 18:13: label gen-b71, queue scratch/gen_q_b71.txt (logged at create by vdeploy_toy.sh)
 54548693 vast offer 44730076 created 2026-10-06 18:13: label gen-b72, queue scratch/gen_q_b72.txt (logged at create by vdeploy_toy.sh)
 54514179 vast | gen_b52 DESTROYED_VERIFIED 2026-10-06 18:22 after verified per-run fetch (boxes/runs_fsq/s130chk_s5_s34_a4000)
+54506233 vast | gen_b45 DESTROYED_VERIFIED 2026-10-06 18:28 after verified per-run fetch (boxes/runs_fsq/s132_k4_s3 boxes/runs_fsq/s132_slots/k4_k3)
+54551117 vast offer 45636823 created 2026-10-06 18:36: label gen-b62, queue scratch/gen_q_b62.txt (logged at create by vdeploy_toy.sh)
+54551264 vast offer 53387560 created 2026-10-06 18:38: label gen-b73, queue scratch/gen_q_b73.txt (logged at create by vdeploy_toy.sh)
+54551695 vast offer 54311343 created 2026-10-06 18:43: label gen-b68, queue scratch/gen_q_b68.txt (logged at create by vdeploy_toy.sh)
+54551699 vast offer 52755888 created 2026-10-06 18:43: label gen-b70, queue scratch/gen_q_b70.txt (logged at create by vdeploy_toy.sh)
+54551695 vast | gen_b68 DESTROYED_VERIFIED 2026-10-06 19:10 host went offline ~19:0x (§133 pin64 slot 1 lost early, nothing fetchable); replaced, IP excluded
