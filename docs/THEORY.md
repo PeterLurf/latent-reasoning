@@ -5071,6 +5071,9 @@ any LR. The tied criterion is broken by the published LR, and seeds 2–3 run as
   at lr 3e-5 / 1e-4 / 3e-4, all above 0.1. Coconut s1 reached 1e-4 at 3e-5. So s1 reads **"did not learn (degraded start)"**.
   - As pre-stated, a SIM-CoT started from the base model is a candidate for a new registration, not a §119 arm.
   - s2 / s3 run as registered (d6, RTX 3090, driver 570.211). Their stage-0 loss is read with the same check.
+* **A collapsed predictor, not noisy chance** (Audit): at lr 1e-4 and 3e-4 SIM-CoT s1 outputs **one constant final answer** for all
+  2,000 test sequences (top share 1.0). At 3e-5 it gives 2 distinct answers (top share 0.986). That is why the 1e-4 and 3e-4 cells match
+  to the digit. It is consistent with the degraded stage-0 start.
 * **Logging bug, disclosed.** In these logs, stage ≥ 1 lines have `"step"` overwritten by the decoder CE (a key collision); line i
   is step 100·i. Training and eval are unaffected. Fixed for later runs (`step_ce`).
 

@@ -8,7 +8,7 @@ Per seed: FLAG = 123-3's flag on the replay's own loss (nearest logged steps to 
 L1_dmean > 0.05; COLLAPSE = zb_std_in < 0.04 at two consecutive probes at or after step 600; marker(theta, window) = zb_std_in <
 theta at two consecutive probes inside the window.
 FIT (on FIT seeds only): choose (theta, window) from THETAS x WINDOWS maximising min(precision, recall) of the marker against FLAG;
-ties -> the earlier window end, then the smaller theta. The choice is frozen in THEORY (note 130-1) before any TEST seed is read:
+ties -> the earlier window end, then the smaller theta, then the earlier window start (130-1). The choice is frozen in THEORY (note 130-1) before any TEST seed is read:
     python theory/score_s130.py fit
 TEST: the frozen marker's precision and recall against FLAG; PASS (primary = CROSS) = both >= 0.9 with >= 8 flagged and >= 8
 non-flagged seeds per block (otherwise "incomplete"); COLLAPSE needs both probes at or after 600:
@@ -144,7 +144,7 @@ def main():
             for (lo, hi) in wins:
                 for th in THETAS:
                     p, r = prf(fs, th, lo, hi, lab, fam); grid[(th, lo, hi)] = min(p or 0, r or 0)
-            best = min(grid, key=lambda k: (-grid[k], k[2], k[0]))
+            best = min(grid, key=lambda k: (-grid[k], k[2], k[0], k[1]))   # ties: earlier window end, smaller theta, then earlier window start (130-1)
             th, lo, hi = best; p, r = prf(fs, th, lo, hi, lab, fam)
             i = THETAS.index(th)
             nb = {"theta %s" % THETAS[j]: grid[(THETAS[j], lo, hi)] for j in (i - 1, i + 1) if 0 <= j < len(THETAS)}
