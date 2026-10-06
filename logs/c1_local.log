@@ -807,3 +807,24 @@
 15:10:13 c2070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_mod_s4/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_mod_s4
 15:10:32 c3070 done rc 0 out yes peak_card_mem 4493 MiB (measured 4.5 GiB) : theory/results/replay_x/3070_s516.jsonl.done
 15:10:41 c3070 start: python -u scratch/replay_basin.py --seed 517 --steps 2000 --every 50 --amp bf16 --threads 3 --device cuda:1 --out theory/results/replay_x/3070_s517.jsonl && echo ok > theory/results/replay_x/3070_s517.jsonl.done
+15:15:31 c2070 done rc 0 out yes peak_card_mem 1524 MiB (measured 3.0 GiB) : boxes/runs_fsq/s128_mod_s4/eval_growth.json
+15:15:34 c2070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_rdfa_s1/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_rdfa_s1
+15:15:42 c3070 done rc 0 out yes peak_card_mem 4567 MiB (measured 4.5 GiB) : theory/results/replay_x/3070_s517.jsonl.done
+15:15:42 c3070 start: python -u -m boxes.snap115 --run boxes/runs_s5/s108_mk4_s2 --device cuda:1
+15:20:14 c2070 done rc 0 out yes peak_card_mem 1526 MiB (measured 3.0 GiB) : boxes/runs_fsq/s128_rdfa_s1/eval_growth.json
+15:20:16 c2070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_rdfa_s2/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_rdfa_s2
+15:20:24 bl4060 done rc 0 out yes peak_card_mem 7934 MiB (measured 4.5 GiB) : theory/results/replay_x/4060_s502.jsonl.done
+15:20:24 bl4060 HALT: peak 7934 MiB > limit 6652
+15:20:25 bl4060 IDLE: backlog empty (polling)
+15:21:04 bl4060 done rc 0 out yes peak_card_mem 7934 MiB (measured 4.5 GiB) : theory/results/replay_x/4060_s503.jsonl.done
+15:21:04 bl4060 HALT: peak 7934 MiB > limit 6652
+15:22:25 bl4060 backlog worker exit (halt)
+15:23:04 bl4060 backlog worker exit (halt)
+15:23:35 c4060 backlog worker v2 start (cap 6.0 GiB): scratch/c1_backlog_4060.txt on cuda:0 (nvidia-smi 1 'RTX 4060', limit 6652 MiB of 8188)
+15:23:36 c4060 start: python scratch/memcap_selftest.py cuda:0 theory/results/memcap_test_4060.ok
+15:23:40 c4060 done rc 0 out yes peak_card_mem 93 MiB (measured 0.6 GiB) : theory/results/memcap_test_4060.ok
+15:23:41 c4060 start: python -u -m boxes.fsq120 --family s5 --arm final --seed 601 --stop_after 8000 --no_cert --device cuda:0 --out boxes/runs_fsq/rampproto_plain_s601_4060 && echo ok > boxes/runs_fsq/rampproto_plain_s601_4060/.done
+15:24:45 c2070 done rc 0 out yes peak_card_mem 1533 MiB (measured 3.0 GiB) : boxes/runs_fsq/s128_rdfa_s2/eval_growth.json
+15:24:48 c2070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_rdfa_s3/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_rdfa_s3
+15:29:36 c2070 done rc 0 out yes peak_card_mem 1526 MiB (measured 3.0 GiB) : boxes/runs_fsq/s128_rdfa_s3/eval_growth.json
+15:29:39 c2070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_rdfa_s4/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_rdfa_s4
