@@ -2,9 +2,507 @@
  "rung1": {
   "slots": {
    "1": {
-    "attempts": [],
-    "status": "open",
-    "accepted": null
+    "attempts": [
+     {
+      "seed": 1,
+      "plateau": false
+     }
+    ],
+    "status": "accepted",
+    "accepted": {
+     "seed": 1,
+     "long_acc": 0.9865,
+     "train_acc": 1.0,
+     "heldout_n_tables": 68,
+     "serial": true,
+     "ext_2048": 0.988,
+     "donor_difftable": {
+      "pos2": {
+       "donor_consistent": 0.985,
+       "recipient_consistent": 0.2505,
+       "chance_overlap": 0.2505
+      },
+      "pos4": {
+       "donor_consistent": 0.9885,
+       "recipient_consistent": 0.2515,
+       "chance_overlap": 0.25
+      },
+      "pos6": {
+       "donor_consistent": 0.99,
+       "recipient_consistent": 0.265,
+       "chance_overlap": 0.2645
+      }
+     },
+     "table_swap": {
+      "n": 1000,
+      "switch": 256,
+      "acc_before_cum": 0.988,
+      "acc_after_cum": 0.958,
+      "acc_after_mean": 0.9708828125,
+      "acc_after_first8": 0.98125,
+      "same_table_share": 0.016
+     },
+     "ood_acc": 0.181,
+     "cert_sample": {
+      "n": 20,
+      "holds": 19,
+      "moore_eq_reachable": 19,
+      "moore_eq_k": 16,
+      "tables": [
+       {
+        "table": [
+         [
+          1,
+          2,
+          3,
+          0
+         ],
+         [
+          2,
+          1,
+          0,
+          3
+         ]
+        ],
+        "holds": true,
+        "n_moore": 4,
+        "status": "done",
+        "n_reachable": 38,
+        "reachable_states": 4
+       },
+       {
+        "table": [
+         [
+          1,
+          3,
+          2,
+          0
+         ],
+         [
+          0,
+          3,
+          2,
+          1
+         ]
+        ],
+        "holds": true,
+        "n_moore": 3,
+        "status": "done",
+        "n_reachable": 22,
+        "reachable_states": 3
+       },
+       {
+        "table": [
+         [
+          1,
+          3,
+          2,
+          0
+         ],
+         [
+          1,
+          0,
+          2,
+          3
+         ]
+        ],
+        "holds": true,
+        "n_moore": 3,
+        "status": "done",
+        "n_reachable": 16,
+        "reachable_states": 3
+       },
+       {
+        "table": [
+         [
+          1,
+          3,
+          2,
+          0
+         ],
+         [
+          0,
+          2,
+          3,
+          1
+         ]
+        ],
+        "holds": true,
+        "n_moore": 4,
+        "status": "done",
+        "n_reachable": 42,
+        "reachable_states": 4
+       },
+       {
+        "table": [
+         [
+          2,
+          0,
+          3,
+          1
+         ],
+         [
+          2,
+          1,
+          3,
+          0
+         ]
+        ],
+        "holds": true,
+        "n_moore": 4,
+        "status": "done",
+        "n_reachable": 28,
+        "reachable_states": 4
+       },
+       {
+        "table": [
+         [
+          2,
+          3,
+          1,
+          0
+         ],
+         [
+          1,
+          2,
+          0,
+          3
+         ]
+        ],
+        "holds": true,
+        "n_moore": 4,
+        "status": "done",
+        "n_reachable": 17,
+        "reachable_states": 4
+       },
+       {
+        "table": [
+         [
+          2,
+          0,
+          3,
+          1
+         ],
+         [
+          3,
+          0,
+          2,
+          1
+         ]
+        ],
+        "holds": true,
+        "n_moore": 4,
+        "status": "done",
+        "n_reachable": 19,
+        "reachable_states": 4
+       },
+       {
+        "table": [
+         [
+          2,
+          1,
+          3,
+          0
+         ],
+         [
+          0,
+          3,
+          2,
+          1
+         ]
+        ],
+        "holds": false,
+        "n_moore": 33,
+        "status": "done",
+        "n_reachable": 56,
+        "reachable_states": 4
+       },
+       {
+        "table": [
+         [
+          2,
+          0,
+          3,
+          1
+         ],
+         [
+          3,
+          1,
+          2,
+          0
+         ]
+        ],
+        "holds": true,
+        "n_moore": 4,
+        "status": "done",
+        "n_reachable": 26,
+        "reachable_states": 4
+       },
+       {
+        "table": [
+         [
+          1,
+          3,
+          0,
+          2
+         ],
+         [
+          1,
+          3,
+          0,
+          2
+         ]
+        ],
+        "holds": true,
+        "n_moore": 4,
+        "status": "done",
+        "n_reachable": 31,
+        "reachable_states": 4
+       },
+       {
+        "table": [
+         [
+          0,
+          2,
+          3,
+          1
+         ],
+         [
+          0,
+          3,
+          2,
+          1
+         ]
+        ],
+        "holds": true,
+        "n_moore": 1,
+        "status": "done",
+        "n_reachable": 8,
+        "reachable_states": 1
+       },
+       {
+        "table": [
+         [
+          1,
+          2,
+          3,
+          0
+         ],
+         [
+          0,
+          2,
+          1,
+          3
+         ]
+        ],
+        "holds": true,
+        "n_moore": 4,
+        "status": "done",
+        "n_reachable": 15,
+        "reachable_states": 4
+       },
+       {
+        "table": [
+         [
+          0,
+          2,
+          3,
+          1
+         ],
+         [
+          3,
+          2,
+          0,
+          1
+         ]
+        ],
+        "holds": true,
+        "n_moore": 4,
+        "status": "done",
+        "n_reachable": 20,
+        "reachable_states": 4
+       },
+       {
+        "table": [
+         [
+          1,
+          2,
+          3,
+          0
+         ],
+         [
+          1,
+          3,
+          0,
+          2
+         ]
+        ],
+        "holds": true,
+        "n_moore": 4,
+        "status": "done",
+        "n_reachable": 39,
+        "reachable_states": 4
+       },
+       {
+        "table": [
+         [
+          3,
+          0,
+          2,
+          1
+         ],
+         [
+          2,
+          0,
+          1,
+          3
+         ]
+        ],
+        "holds": true,
+        "n_moore": 4,
+        "status": "done",
+        "n_reachable": 17,
+        "reachable_states": 4
+       },
+       {
+        "table": [
+         [
+          2,
+          0,
+          3,
+          1
+         ],
+         [
+          0,
+          3,
+          1,
+          2
+         ]
+        ],
+        "holds": true,
+        "n_moore": 4,
+        "status": "done",
+        "n_reachable": 18,
+        "reachable_states": 4
+       },
+       {
+        "table": [
+         [
+          1,
+          2,
+          0,
+          3
+         ],
+         [
+          1,
+          3,
+          0,
+          2
+         ]
+        ],
+        "holds": true,
+        "n_moore": 4,
+        "status": "done",
+        "n_reachable": 32,
+        "reachable_states": 4
+       },
+       {
+        "table": [
+         [
+          0,
+          3,
+          1,
+          2
+         ],
+         [
+          1,
+          3,
+          0,
+          2
+         ]
+        ],
+        "holds": true,
+        "n_moore": 4,
+        "status": "done",
+        "n_reachable": 23,
+        "reachable_states": 4
+       },
+       {
+        "table": [
+         [
+          2,
+          0,
+          1,
+          3
+         ],
+         [
+          1,
+          3,
+          2,
+          0
+         ]
+        ],
+        "holds": true,
+        "n_moore": 4,
+        "status": "done",
+        "n_reachable": 20,
+        "reachable_states": 4
+       },
+       {
+        "table": [
+         [
+          1,
+          2,
+          0,
+          3
+         ],
+         [
+          3,
+          1,
+          2,
+          0
+         ]
+        ],
+        "holds": true,
+        "n_moore": 4,
+        "status": "done",
+        "n_reachable": 42,
+        "reachable_states": 4
+       }
+      ]
+     },
+     "probe_ophist": {
+      "init": {
+       "n": 1024,
+       "positions": "2-7",
+       "r2_last1": 0.4904226064682007,
+       "r2_last2": 0.4986402988433838,
+       "r2_last3": 0.49749618768692017,
+       "r2_state": 0.0007800459861755371
+      },
+      "2k": {
+       "n": 1024,
+       "positions": "2-7",
+       "r2_last1": 0.027613520622253418,
+       "r2_last2": 0.03515195846557617,
+       "r2_last3": 0.03860962390899658,
+       "r2_state": 0.01964801549911499
+      },
+      "end": {
+       "n": 1024,
+       "positions": "2-7",
+       "r2_last1": 0.013158261775970459,
+       "r2_last2": 0.01427990198135376,
+       "r2_last3": 0.012283742427825928,
+       "r2_state": 0.40993809700012207
+      }
+     },
+     "long_acc_transitive": 0.9842381786339754,
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "driver": "595.71.05",
+     "exact": false,
+     "pass": false
+    }
    },
    "2": {
     "attempts": [],
@@ -22,7 +520,7 @@
     "accepted": null
    }
   },
-  "verdict": "incomplete (0 / 4 slots decided)"
+  "verdict": "incomplete (1 / 4 slots decided)"
  },
  "rung2": {
   "slots": {
@@ -49,7 +547,7 @@
   },
   "verdict": "incomplete (0 / 4 slots decided)"
  },
- "verdict": "rung 1 incomplete (0 / 4 slots decided)",
+ "verdict": "rung 1 incomplete (1 / 4 slots decided)",
  "skipped_smoke": [],
  "errors": []
 }
