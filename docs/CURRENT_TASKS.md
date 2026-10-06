@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-05 09:05 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-05 21:00 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -20,45 +20,34 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 Messages go through SendMessage. The names "Theory" and "Audit" currently need an identity confirm, pending the user,
 so send to the pipe addresses their messages come from.
 
-## Running now (09:05 2026-10-05, night mode; credit ~$95, floor $30; <= 16 hosts; gradflow_check PASS required for new code paths)
+## Running now (21:00 2026-10-05; burn $2.23/h, credit ~$154, floor $30; <= 16 hosts; gradflow_check PASS required for new code paths)
 
 **Order (user, via Audit):** C1 > C6 > C4 = C2 > C3 > C5 > C7.
 
 ### Vast (all `scratch/gen_deploy_*.sh`, auto_drain_gen5 + `watch_any2.sh` waiters; ids/ssh in `scratch/live_hosts.txt`, `scratch/pods.txt`)
 
-| Tag | Work |
-|---|---|
-| s3, s4 | §101 b0.1 / b0.01 seeds |
-| a2 | §118 LONG s82 alone at k=32 (s81 OOM'd here at P=2) |
-| a3 | §118 LONG s81 RESUMED from ckpt 18000 (shipped; `gen_deploy_118r.sh` RESUME_FILES), P=1 |
-| a5 | §118 ANCHOR extension s74-75 (note 118-4) |
-| b3 | §120 FF FINAL s1 + S5 TRACE s2 (**SIGSTOPped at 12.7k**; on-host watcher SIGCONTs after FF FINAL s1's eval) |
-| b4, b5 | §120 FF FINAL s2 + FF TRACE s1 / FF TRACE s2 |
-| b12 | §120 S5 TRACE s1 rerun from scratch (OOM at P=2 -> *.void_oom), P=1 `--micro 2` |
-| i4, i5, i6 | §122 TEXTMIX+ANCHOR+READ s1 (proof, t1 rising) / s2-3 / control TEXTMIX+READ s1-2 |
-| j1, j3 | §117 MK s51 + ST s61 / ST s62-63 (MK s52-53 done: 0/0) |
-| o4, o5 | §116 NONE s42-45 (NONE+COPY VOID: no_grad bug, note 116-5; o7 stopped) |
+| Tag | GPU | Work |
+|---|---|---|
+| s4 | 3090 | §101 b0.01 s3 (decisive seed; s1 = 0, s2 = 0.9995), ~10 h, at 4.5k |
+| a2 | 3090 Ti | §118 LONG s82 (k = 32), at 23k |
+| a4 | 3090 | §118 LONG s83, at 19k |
+| j1 | A5000 | §117 MK s51 + ST s61 (both at loss ~9.3; MK s52-53 and ST s62-63 were 0) |
+| b23 | 3090 | §123 FF σ* = 0.25 s1, at 24k (then local fp32 contraction, no `--std`) |
+| b24, b25 | 3090 | §126 RAW-H s1 / s4 reruns, P = 1 (both pass the 2k flag; loss rising with L_max like s3) |
+| c2 | A10 | §124 seed-28 trio (EXPOSE / COPY / BASE) |
+| c3 | 3090 | §124 COPY s26-27 (+BASE; same machine type as c1's EXPOSE s26-27) |
+| c4 | 4090 | §124 seed-29 trio (BASE, COPY evaluated; EXPOSE at L22) |
 
-**§124 seed 28 trio (c2): DEFERRED** - no host (4090 deploy stuck, 3090 creates refused 403); re-place on any clean 24 GB host (whole trio on one host).
-**§126 RAW-H s1/s4 OOM'd at P=3 on b20 (s3 survives there); reruns from scratch on b24 / b25 (P=1, 3090). WHEN b20 DRAINS: rename its partial boxes/runs_fsq/s126_s5_rawh_s{1,4} to *.void_oom BEFORE b24/b25 drain into the same names.**
-**Queued (slot order, Theory + Audit 09:15; each step only while burn < ~$3.5/h, 3090s only):** (1) finish running work
-incl. a4 = §118 LONG s83 (P=1, 24 GB); (2) §123 once §120's pilot reads, on Theory's call (S5 dose b6-b9 first, then
-FSQ+DITHER b10-b11 if credit binds; FF σ* later); (3) §116 OPDEF o1 / o3; (4) §119 deferred.
+* Drains now keep failed runs' args.json + log.jsonl as `<dir>.void_partial` (99192404, Theory).
+* §126: no more ANNEAL (126-8). §125 closed. §119 deferred. No unrun registration pending.
 
-**Data retention (user, 2026-10-05 via Audit):** keep eval / log / args / preds and all logs; keep a final model.pt only
-where a later analysis can use it (passing / acquired seeds, models named by a registered analysis); delete transfer
-tarballs, staging, ckpt.pt after verification and per-round snapshots unless a registration needs them; record every
-deletion (logs/prune_rounds.log); ask Audit / Theory before any new bulky artefact. One-off sweep of closed sections pending
-(model.pt candidate list to Audit / Theory first). **Sweep DONE (user approved in Audit's session, ~10:30):** 15 void .pt + 266 D: originals deleted (E:\LatentArchive keeps
-the sha-verified copies, MANIFEST.txt); logs/retention_delete_20261005.log. Restore = copy back from E:\LatentArchive\<same path>.
-* Watchers don't detect host reboots: check uptime on the C1 hosts each pass.
+### Local PC (torch `cuda:0` = 4060, `cuda:1` = 3070, `cuda:2` = 2070; py_local_worker2, log `logs/c1_local.log`)
 
-### Local PC (torch `cuda:0` = 4060, `cuda:1` = 3070, `cuda:2` = 2070)
-
-* 4060 / 3070: §116 OPDEF s33 / s34 (`scratch/c1_q_116_local.txt`, py_local_worker2).
-* 2070: §115 on READ s10 (Theory wants the no-snap result), then `loop114 --rel_only` on a114_loopr_4x4_s1.
-* Post-hoc for every drained §120 / §123 FSQ cell: `fsq120 --growth_only` and `--cert_only` (45 min; FF adds cert_task, note
-  120-7) locally. §123 cells from b6/b9/b10/b11 (pre-123-2 code) also need `--contraction_only` (rho_norm); b7/b8/FF σ* have it.
+* 4060 / 3070: note 112-5 resume runs (`scratch/c1_q_112r_local.txt`): f050 s24 done (0.968 -> 0.996); s110 s1 (4060) and f010 s22 (3070)
+  running. f010 s22 stalled ~5 h at final-round step 4100 (15:38-20:45, 3070 contention; timing only, trajectory unaffected).
+* 2070: §116 NONE s41 -> OPDEF s31 -> s32 (`scratch/c1_q_116c_local.txt`).
+* Post-hoc for every drained §120 / §123 / §126 FSQ cell: `fsq120 --growth_only` and `--cert_only` (FF adds cert_task, cert_task_reads)
+  and `--contraction_only --fp32` locally.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
