@@ -291,6 +291,15 @@ def removal(m, Xtr, Ytr, dev, amp, bs, n=10_000, mean_n=2000):
     return res
 
 
+def driver_version():
+    """Theory note 127-6: the NVIDIA driver version of the training host (nvidia-smi), recorded in args.json."""
+    import subprocess
+    try:
+        return subprocess.run(["nvidia-smi", "--query-gpu=driver_version", "--format=csv,noheader"], capture_output=True, text=True, timeout=30).stdout.strip().splitlines()[0]
+    except Exception:
+        return None
+
+
 def trainable(m):
     return int(sum(p.numel() for p in m.parameters() if p.requires_grad))
 
@@ -348,7 +357,7 @@ def train(a):
     m = build(a, dev)
     if not a.eval_only:
         json.dump({**vars(a), "train_sequences": len(Xtr), "trainable_params": trainable(m),
-                   "train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"},
+                   "train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version()},
                   open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
         log = open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t0 = time.time(); hist = []; parts_h = {}
         opt = None; cur = "init"; warm = max(1, int(0.03 * a.steps))
@@ -380,7 +389,7 @@ def train(a):
     else:
         m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev, weights_only=True), strict=False); train_sec = None
     res = evaluate(m, a, dev, amp, Xtr, Ytr); res["train_sec"] = train_sec; res["updates"] = a.steps
-    res["train_gpu"] = json.load(open(os.path.join(a.out, "args.json"))).get("train_gpu")
+    res["train_gpu"] = json.load(open(os.path.join(a.out, "args.json"))).get("train_gpu"); res["train_driver"] = json.load(open(os.path.join(a.out, "args.json"))).get("train_driver")
     json.dump(res, open(os.path.join(a.out, "eval_only.json" if a.eval_only else "eval.json"), "w", newline="\n"), indent=1)
     print("EVAL", json.dumps({k_: res[k_] for k_ in ("intact_acc", "donor", "cumulative", "train_split_final_acc")}), flush=True)
     print("DONE", a.out, flush=True)
