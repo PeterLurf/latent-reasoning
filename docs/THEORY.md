@@ -217,7 +217,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 127 | Reliable entry without restarts? VAR / SKIP / STD2 / LR10 on §120's harness vs restart-on-plateau | **no arm adopted** (ENTRY-FIX false in all four): escaping the 2k flag is easy, learning afterwards fails (escape-without-learning dominates → §131); SKIP 2/4 exact vs plain 1/4 (descriptive); restart-on-plateau stays | closed |
 | 128 | One recipe, five state-tracking families (S5, FF + held-out CYC / MOD / RDFA), restart-on-plateau; FAMILY-PASS = 3/4 exact + SERIAL (+ CLOSED) | registered | **open** |
 | 129 | Where does the entry basin live? Head-only re-draw at the 2k flag vs a CLOCK-ONLY warm restart (S5, 4 flagged seeds): LR / HEAD / BODY | **descriptive** (none of LR / HEAD / BODY): a fresh head escapes in 2/4 vs 0/4 for the warm restart, but no re-drawn seed learns; the trained body reads a fresh head (R²_state 0.4–0.96 by clock 700) | closed |
-| 130 | Early label-free plateau marker (code variance at ~1k): fit on 4060 replays, frozen, tested cross-card (3070, primary) and same-card | **no PASS** (primary P 0.70, R 0.78 on 17 3070 seeds; 0.60 in-sample): the early marker does not predict the 2k plateau; the collapse at ~650 is common and transient; the 2k flag fires after early pulls | closed (SAME pending, descriptive) |
+| 130 | Early label-free plateau marker (code variance at ~1k): fit on 4060 replays, frozen, tested cross-card (3070, primary) and same-card | **no PASS** (primary P 0.70 / R 0.78 cross-card, 0.47 / 0.88 same-card; 0.60 in-sample): both fail, so the marker is noisy, not card-specific: the early marker does not predict the 2k plateau; the collapse at ~650 is common and transient; the 2k flag fires after early pulls | closed |
 | 131 | Second restart point at 4k: FLAG4 = loss(4k) ≥ 0.9·loss(2.6k) (floored), held-out precision / recall for "escape without learning" | registered | **open** |
 | 132 | Rules in context: per-problem permutation tables (explicit pairs) on §120's carrier; size ladder k4/m2 → k6/m3; PASS 3/4 exact + SERIAL on held-out tables | registered | **open** |
 
@@ -5191,6 +5191,11 @@ across cards. Restart-on-plateau keeps the 2k flag.**
   - Escape rate by the 2k flag: 10/16 on the 4060 (FIT), 8/17 on the 3070.
   - The collapse at about 650 is common and mostly transient on both cards.
 * **TEST-SAME (secondary, 4060)** has 1 seed so far. It is added when complete, and cannot change the primary verdict.
+* **TEST-SAME complete (2026-10-06 10:42 EDT; 24 seeds on the RTX 4060, 8 flagged).** The primary cell gets precision 0.47 (CI 0.21–0.73) and recall 0.88
+  (0.47–1.0): **PASS = false here too.**
+  - persist | FLAG: 0.75 / 0.38. BASIN occurs in 0/24 seeds (no flagged seed failed to pull).
+  - Both the cross-card and same-card tests fail, so the registered reading is **"Both fail: the marker is noisy or overfit"**, not
+    card-specific.
 * **What follows:** the 2k flag's own reliability is in question. It fires after early pulls, on loss well under the null.
 * **Qualification (2026-10-06 09:38 EDT; Audit).** "The 2k flag fires on late learners" (130-0 addendum, 130-1) rests on the replays alone: a pull and
   falling loss by 2k, with no learning outcome. **This wording is held** until the seven check runs reach 24k (4060 s5, s6, s7;
