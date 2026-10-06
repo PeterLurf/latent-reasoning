@@ -1,0 +1,3 @@
+16:01:46 gen_b46 UNREACHABLE (3 polls; still polling)
+16:43:58 gen_b46 fetch retry 1: FETCH_INCOMPLETE 54506242 (boxes/runs_fsq/s132_k4_s4 model.pt)
+16:56:09 gen_b46 fetch retry 2: FETCH_INCOMPLETE 54506242 (boxes/runs_fsq/s132_k4_s4 model.pt)

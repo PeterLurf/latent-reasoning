@@ -908,3 +908,12 @@ PRICE EXCEPTION 2026-10-06 04:58 gen-b41 offer 53010473 RTX 3090 595.71 $0.267: 
 54520476 vast offer 52692620 created 2026-10-06 13:46: label gen-b61, queue scratch/gen_q_b61.txt (logged at create by vdeploy_toy.sh)
 54488708 vast | gen_d8 DESTROYED_VERIFIED 2026-10-06 13:59 after verified per-run fetch (boxes/runs_s5/s119_codi_s2 boxes/runs_s5/s119_codi_s3); model.pt not fetched (rule, logs/model_skips.log): boxes/runs_s5/s119_codi_s2 boxes/runs_s5/s119_codi_s3 
 54326779 vast | gen_a4 DESTROYED_VERIFIED 2026-10-06 15:11 after verified per-run fetch (boxes/runs_s5/s118_long_s83)
+54530501 vast offer 21554246 created 2026-10-06 15:16: label gen-a5, queue scratch/gen_q_a5.txt (logged at create by vdeploy_toy.sh)
+54530508 vast offer 27741141 created 2026-10-06 15:16: label gen-a6, queue scratch/gen_q_a6.txt (logged at create by vdeploy_toy.sh)
+54516359 vast | gen_b53 DESTROYED_VERIFIED 2026-10-06 15:59 after verified per-run fetch (boxes/runs_fsq/parity_ckpt_a4000 boxes/runs_fsq/s130chk_s5_s12_a4000)
+54514165 vast | gen_b50 DESTROYED_VERIFIED 2026-10-06 16:10 after verified per-run fetch (boxes/runs_fsq/s130chk_s5_s17_a4000)
+54514160 vast | gen_b49 DESTROYED_VERIFIED 2026-10-06 16:12 after verified per-run fetch (boxes/runs_fsq/s130chk_s5_s7_4060ti)
+54517396 vast | gen_b51 DESTROYED_VERIFIED 2026-10-06 16:12 after verified per-run fetch (boxes/runs_fsq/s130chk_s5_s30_a4000)
+54517386 vast | gen_b47 DESTROYED_VERIFIED 2026-10-06 16:27 after verified per-run fetch (boxes/runs_fsq/parity_ckpt_4060ti boxes/runs_fsq/s130chk_s5_s5_4060ti)
+54514142 vast | gen_b48 DESTROYED_VERIFIED 2026-10-06 16:30 after verified per-run fetch (boxes/runs_fsq/s130chk_s5_s6_4060ti)
+54506242 vast | gen_b46 DESTROYED_VERIFIED 2026-10-06 16:59 after manual fetch: small files by the drain; model.pt fetched raw (sha 03154891...) - the host's disk was full (30G/30G overlay), its model tarball was truncated, drain retries looped FETCH_INCOMPLETE; host excluded
