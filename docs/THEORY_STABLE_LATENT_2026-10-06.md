@@ -90,7 +90,8 @@ with the same code and settings across families.
       - It is a **non-contracting code**: acc at prefix 1 / 2 / 4 / 8 = 1.000 / 0.939 / 0.344 / 0.025, so the first transition is
         right.
       - Per-position survival is about 0.6 per step after that.
-      - fp32 ρ₁ (ε 0.1) is 0.80, against 0.13–0.22 in the exact runs;
+      - fp32 ρ₁ (ε 0.1) is 0.80, against 0.13–0.22 in the exact runs. 127-12's clause gives 0.42. The file's top-level "rho" is the
+        vacuous hard-rounded summary.
     - **F2a** (s7, s5): about 0 at every L, abl 1.8–1.9.
       - s5 is wrong **from the first hand-off** (acc at prefix 1 / 2 / 4 / 8 = 0.097 / 0.0035 / 0 / 0; chance 0.008) while
         **strongly contractive** (fp32 ρ₁ 0.072): a stable map to the wrong attractor, not drift;
@@ -102,6 +103,10 @@ with the same code and settings across families.
       error correction / candidate 2.
     - s6 (F2b flat) is pending, with prefix accuracy and ρ₁ on the 3070. It decides whether F2b also has a wrong-transition
       sub-type.
+    - **Accuracy at position 1 alone separates the classes** (acc_at_pos 1; chance 0.008):
+      - 1.0 in the exact run (s12) and in F2b-compounding (s17);
+      - 0.05–0.10 in F2a (s5 0.097, s7 0.047; s128 s3 0.040 on the CPU preview), with chance from position 3;
+      - chance in F1 (s30 0.0095).
 * **F3, drift:** a continuous or wide carrier has no attractor (RAW-H, CONT).
 * **F4, capacity:** 8⁸ codes (24 bits) cannot hold large states (S5×4, multiplication, graph sets).
   - On the §128 families the cap is far from binding (helper's growth reading, fp32, 500 rollouts to 2,048, acc 1.0):

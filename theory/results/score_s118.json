@@ -90,17 +90,65 @@
    }
   },
   "LONG": {
-   "n": 0,
-   "nosnap": {},
-   "NOSNAP512_seeds": [],
+   "n": 3,
+   "nosnap": {
+    "81": {
+     "128": 1.0,
+     "256": 1.0,
+     "512": 1.0,
+     "2048": 1.0
+    },
+    "82": {
+     "128": 1.0,
+     "256": 1.0,
+     "512": 1.0,
+     "2048": 1.0
+    },
+    "83": {
+     "128": 1.0,
+     "256": 1.0,
+     "512": 1.0,
+     "2048": 0.998
+    }
+   },
+   "NOSNAP512_seeds": [
+    81,
+    82,
+    83
+   ],
    "NOSNAP512": false,
-   "EXIST": false,
-   "NOSNAP2048_seeds": [],
+   "EXIST": true,
+   "NOSNAP2048_seeds": [
+    81,
+    82,
+    83
+   ],
    "NOSNAP2048": false,
-   "guard": {},
-   "extend": null,
-   "snapped512": {},
-   "trigger_snaps": {}
+   "guard": {
+    "81": true,
+    "82": true,
+    "83": true
+   },
+   "extend": true,
+   "snapped512": {
+    "81": 1.0,
+    "82": 1.0,
+    "83": 1.0
+   },
+   "trigger_snaps": {
+    "81": {
+     "mean": 7.0,
+     "median": 7.0
+    },
+    "82": {
+     "mean": 7.0,
+     "median": 7.0
+    },
+    "83": {
+     "mean": 7.0,
+     "median": 7.0
+    }
+   }
   },
   "CONTROL (\u00a7111 READ)": {
    "n": 5,
