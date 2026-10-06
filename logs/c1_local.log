@@ -503,3 +503,7 @@
 23:58:48 s126_s5_anneal_s2_fp32cast_growth rc 0 (cuda:2)
 00:43:57 s126_s5_anneal_s2_fp32cast_cert rc 0 (cuda:2)
 00:43:57 POSTHOC_2070_DONE
+03:39:29 s127_s5_std2_s2 contraction_only --fp32 rc 0 (cpu)
+04:01:35 s127_s5_lr10_s2 contraction_only --fp32 rc 0 (cpu)
+04:40:29 s116_opdef_s31 rc 0 (cuda:1)
+04:40:29 WORKER_DONE cuda:1 scratch/c1_q_116c_local.txt
