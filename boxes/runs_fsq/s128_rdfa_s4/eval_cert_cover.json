@@ -1,0 +1,22 @@
+{
+ "run": "boxes/runs_fsq/s128_rdfa_s4",
+ "test_n": 2000,
+ "test_len": 512,
+ "device": "NVIDIA GeForce RTX 4060",
+ "bf16": {
+  "eval_distinct": 119,
+  "bfs_reachable": 119,
+  "n_uncovered": 3,
+  "cert_holds": true,
+  "n_moore": 8,
+  "cert_status": "done"
+ },
+ "fp32": {
+  "eval_distinct": 123,
+  "bfs_reachable": 125,
+  "n_uncovered": 0,
+  "cert_holds": true,
+  "n_moore": 8,
+  "cert_status": "done"
+ }
+}
