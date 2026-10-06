@@ -4768,6 +4768,34 @@ ADOPT = false. SKIP is the only adoptable arm.**
 * **SKIP:** ADOPT still needs its s2 rerun not to plateau (b35, guard only), s1 / s3 / s4 exact (b30 / b31) and the FF guard.
   - Given s2's drift-back and every escaped seed so far at 0, it is unlikely. That is stated, not used.
 
+**Note 127-9 (2026-10-06 04:23 EDT; the VAR s2 rerun (b35, RTX 3090, driver 565.77), read by Theory from the raw files; Audit reproduced).
+VAR is delivered and escapes, but does not learn. Stopping the variance collapse fills the code with something other than the
+state.**
+* **Delivered** (in-forward group-mean residual, w = 1; 127-3):
+  - resid_std 0.015 → **1.10** (500) → **1.16** (2k); check (ii) passes.
+  - var_grad_down 0.185 / 5.23 / 0.55 at steps 1 / 500 / 2000, finite in fp32 and bf16. 0 non-finite steps.
+* **ESCAPE:** loss 8.94 / 4.85 / 3.92 at 100 / 1k / 2k (ratio 0.81).
+* **Then it fails:** final loss 3.22 (the ~3.2 basin, 123-7, not the ln 120 null). Long accuracy 0; 2,048 at 0; 2,444 codes, 126
+  per state; donor 0.04 at every position, recipient ≤ 0.005.
+* **Probe at 2k:** R²_state −0.05, R²_item −0.05. The decoder reads the carrier (abl_dloss +0.48).
+  - Not a driver artefact: plain seed 2 plateaus on 550–565 (127-6), and this host runs 565.77.
+* **Reading (descriptive):** preventing 127-7's collapse of the code's variance is not sufficient. The variance is filled, and
+  read, with content that is not the state.
+  - claude-13 / Audit: in seed 1's replay, content (R²_start 0.68) came before spread. VAR forces spread first.
+* **VAR Stage 2, as registered, sequenced for cost.** Seed 2 is not exact, so ENTRY-FIX needs s1, s3 and s4 all exact.
+  - They run **one at a time, behind §129**, in the order s4, s3, s1. The first that plateaus or ends below 0.99 decides
+    ENTRY-FIX = false, and the rest are not run.
+  - The flip-flop cells run only if all three are exact.
+  - The rule is unchanged; only the order and stopping are cost choices.
+* **The record so far:** every arm that escaped seed 2's flag ended at long accuracy 0: SKIP (NaN), STD2, LR10, VAR, and RAW-H
+  s1 / s3 / s4.
+
+**Note 129-1 (2026-10-06 04:23 EDT, before any §129 run; claude-13 / Audit; descriptive, no rule change).** In both continuations (REDRAW and
+CLOCK-ONLY), add the R² probe at clock 700 and 1,200 as well as 0 / 2k. Report R²_item, R²_state (next state) and R²_start (the
+chain's start state).
+* Seed 1's replay had state content before spread and before the decoder's pull: R²_start 0.68 by 800, the pull at 1,050.
+* A REDRAW pass whose head shows no state content before its pull would not follow that order, and is reported as such.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

@@ -3,25 +3,31 @@
   "var": {
    "S5": {
     "2": {
-     "plateau": true,
-     "long_acc": null,
-     "status": "stopped at 2k (plateau)",
-     "rho_ff": null
+     "plateau": false,
+     "long_acc": 0.0,
+     "status": "done",
+     "rho_ff": null,
+     "ext_2048": 0.0,
+     "codes_per_state": 125.76666666666667,
+     "row_norm_2k": 28.410781860351562,
+     "wte_row_norm": 3.954181671142578,
+     "probe": null,
+     "gpu": "NVIDIA GeForce RTX 3090"
     }
    },
    "FF": {},
-   "ESCAPE": "False (undelivered (one fixed rerun, 127-1))",
+   "ESCAPE": true,
    "delivered": {
-    "2": false
+    "2": true
    },
-   "delivery": "undelivered (one fixed rerun, 127-1)",
-   "ENTRY_FIX": "undelivered (one fixed rerun, 127-1)",
+   "delivery": true,
+   "ENTRY_FIX": "incomplete (1 / 4)",
    "FF_GUARD": "incomplete",
    "ADOPT": "pending",
    "cost": {
-    "p": 1.0,
-    "a": null,
-    "cost": null,
+    "p": 0.0,
+    "a": 0.0,
+    "cost": Infinity,
     "n": 1
    }
   },
