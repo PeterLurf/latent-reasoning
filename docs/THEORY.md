@@ -5458,6 +5458,21 @@ CLOSED covers the certificate's own forward pass. A few codes the eval visits ar
   - **Scope, revised (2026-10-06 10:46 EDT; Audit):** fp32 runs only where bf16 shows a gap (cyc s1, cyc s2, mod s1, rdfa s2; rdfa s4 done), on one
     Vast RTX 3090, so the local check runs are not slowed. In the other runs every bf16 eval code is already in the BFS set. The table
     is n_uncovered in bf16 for every run, and in fp32 wherever bf16 shows a gap.
+* **Complete (2026-10-06 11:35 EDT; 5 runs on one RTX 3090, `boxes/runs_fsq/s128cc3090_*`, plus 2 local 4060 cross-checks; Audit reproduced).**
+
+| Run | bf16 n_uncovered (3090) | fp32 n_uncovered | fp32 CERT |
+|---|---|---|---|
+| cyc s1 | 1 | **0** | holds, Moore 5 |
+| cyc s2 | 8 | **0** | holds, Moore 5 |
+| mod s1 | 14 (4060: 12) | **0** (4060: 0) | holds, Moore 5 |
+| rdfa s2 | 1 | **0** | holds, Moore 8 |
+| rdfa s4 | 11 (4060: 3) | **0** (4060: 0) | holds, Moore 8 |
+
+  - **In fp32 the certificate covers every code the eval visits, in 7/7 passes,** with an unchanged minimal machine. fp32 code sets
+    reproduce across cards (mod s1 382 / 386 and rdfa s4 123 / 125, on both the 4060 and the 3090).
+  - bf16 counts are host-dependent even within the 3090 class (mod s1 BFS 375 originally, 379 here).
+  - **Wording:** "CLOSED (as registered); in fp32 the certificate covers every visited code and reproduces across GPUs". The bf16
+    uncovered codes are a rounding artefact.
 
 **Note 119-6 (2026-10-06 09:39 EDT; SIM-CoT s2 / s3 in, scored by `theory/score_s119.py`; CODI s2 / s3 pending). SIM-CoT did not learn in 3/3; all
 three seeds had a degraded start.**
