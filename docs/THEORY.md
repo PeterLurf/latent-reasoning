@@ -5900,6 +5900,15 @@ gradient unchanged, as in FSQ. Everything else matches §133 / 133-1 / 133-3.
 * **(c) Ramp pins:** score_s134's args check now also requires **p_hard_start 2000 and p_hard_end 4000** (§120's ramp, recorded as
   p_hard_ramp), so a candidate-3 ramp setting cannot enter a §134 directory unnoticed. stop_plateau false is already required.
 
+**Note 128-5 (2026-10-06 15:38 EDT; descriptive, extends 128-4's fp32 table; Audit and the helper's growth reading). fp32 rollouts find codes beyond two bf16 certificates.**
+* The fp32 growth rollouts (2070, 500 × 2,048; eval_growth.json, all at acc 1.0) visit more distinct codes than the bf16 BFS set
+  reaches in **cyc s3 (62 against 57)** and **rdfa s3 (154 against 151)**. That is 128-4's bf16 artefact class, in runs where the bf16
+  eval had shown no gap.
+* **Queued (cloud RTX 3090, gen-b61, after its S5 certificates; ~$0):** fp32 cert_cover for cyc s3 and rdfa s3. Also cyc s4 and mod
+  s2 / s3 / s4: their fp32 growth counts are at or below their bf16 BFS counts, but only an fp32 certificate makes the bounded-growth
+  reading certified.
+* CLOSED is unchanged (the certificate as run, 128-4). The fp32 n_uncovered column is filled for these six as they land.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
