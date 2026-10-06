@@ -1,0 +1,69 @@
+{
+ "holds": null,
+ "status": "inconclusive_time",
+ "n_reachable_partial": 444165,
+ "capped": false,
+ "timed_out": true,
+ "time_limit": 2700,
+ "sec": 2700,
+ "layers": [
+  {
+   "depth": 1,
+   "frontier": 746,
+   "cum": 746,
+   "sec": 3
+  },
+  {
+   "depth": 2,
+   "frontier": 2030,
+   "cum": 2776,
+   "sec": 12,
+   "complete": true
+  },
+  {
+   "depth": 3,
+   "frontier": 1356,
+   "cum": 4132,
+   "sec": 38,
+   "complete": true
+  },
+  {
+   "depth": 4,
+   "frontier": 2468,
+   "cum": 6600,
+   "sec": 55,
+   "complete": true
+  },
+  {
+   "depth": 5,
+   "frontier": 19695,
+   "cum": 26295,
+   "sec": 86,
+   "complete": true
+  },
+  {
+   "depth": 6,
+   "frontier": 91571,
+   "cum": 117866,
+   "sec": 337,
+   "complete": true
+  },
+  {
+   "depth": 7,
+   "frontier": 181218,
+   "cum": 299084,
+   "sec": 1505,
+   "complete": true
+  },
+  {
+   "depth": 8,
+   "frontier": 145081,
+   "cum": 444165,
+   "sec": 2700,
+   "complete": false
+  }
+ ],
+ "n_start_pairs": 14400,
+ "eval_dtype": "torch.bfloat16",
+ "cert_cap": 1000000
+}
