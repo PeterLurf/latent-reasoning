@@ -809,3 +809,8 @@ TRIAL RESULT 2026-10-05 16:33: 580-driver host 137.175.22.196 (offer 41028909, i
 54406366 vast | gen-b26 RTX 3090 $0.176/h 96.20.36.104:40072 | §126 ANNEAL s2 fixed-cast rerun (note 126-10) | 2026-10-05 20:59
 54411699 vast offer 23307645 created 2026-10-05 21:40: label gen-d1, queue scratch/gen_q_d1.txt (logged at create by vdeploy_toy.sh)
 54379980 vast | gen_c4 DESTROYED_VERIFIED 2026-10-05 21:53 after verified per-run fetch (boxes/runs_s5/s124_base_s29 boxes/runs_s5/s124_copy_s29 boxes/runs_s5/s124_expose_s29)
+PRICE EXCEPTION 2026-10-05 22:00 gen-d2 offer 21171765 A100 SXM4 $0.369/h: §119 CODI lr sweep s1 (3 runs P=3); clean 3090s reserved for §127 Stage 1 (Audit: any 24 GB class for §119); A100 throughput makes it about the same cost per run
+54414073 vast offer 21171765 created 2026-10-05 22:00: label gen-d2, queue scratch/gen_q_d2.txt (logged at create by vdeploy_toy.sh)
+54418137 vast offer 51780145 created 2026-10-05 22:30: label gen-b27, queue scratch/gen_q_b27.txt (logged at create by vdeploy_toy.sh)
+54418163 vast offer 51147422 created 2026-10-05 22:30: label gen-b28, queue scratch/gen_q_b28.txt (logged at create by vdeploy_toy.sh)
+54399657 vast | gen_b24 DESTROYED_VERIFIED 2026-10-05 22:32 after verified per-run fetch (boxes/runs_fsq/s126_s5_rawh_s1)
