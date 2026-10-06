@@ -57,7 +57,8 @@ appendix and §4); other IDs as in LIT_INDEX.
      15 whatever the total length.
    - Long-length accuracy is therefore much easier than the nominal length suggests (the same for flip-flop writes).
    - Report the effective-suffix length distribution at test, and the accuracy binned by it. Optionally a variant
-     without "times 0" (pure group part on nonzero values plus …).
+     without "times 0": the remaining maps x ↦ x ± d and x ↦ cx (c ≠ 0) are bijections of Z5, so it becomes the affine
+     group AGL(1, 5) (order 20, solvable, non-abelian) with no resets.
 4. **Curriculum vs Delétang's U(1, 40):** your 2 → 32 curriculum is a different training distribution. Fine, but state
    it when citing their numbers.
 
