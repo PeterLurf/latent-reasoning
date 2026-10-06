@@ -6035,6 +6035,30 @@ the InfoNCE top-1 retrieval accuracy over training (the student's code picks out
 Implementation: the experiments session (fsq120 `--tsd {teacher,text}`, `--tsd_teacher <dir>`, `--tsd_layer`, `--tsd_w 1.0`,
 `--tsd_tau 0.1`). Dirs `s135_{tsd,text}_s5_s{1..4}`. Scorer: `theory/score_s135.py`, committed before any run.
 
+**Note 135-1 (2026-10-06 17:11 EDT, before any §135 implementation or run; the Audit helper's read of f1899abd). The control becomes stationary, targets are centred, and the scorer's details are named.**
+* **(c) The control changes from TEXT to BASE.** TEXT's target, W_up(copy_write(state text)), runs through the student's own trunk,
+  which the answer CE keeps moving. TSD's target is frozen. A TSD-over-TEXT result would therefore mix target stationarity with the
+  information source.
+  - **BASE (replaces TEXT):** target_j = the **pretrained, not fine-tuned, GPT-2's** hidden state at the same chosen layer and the
+    same token (the last token of step j's state text), on **the same CoT text** the teacher reads. It is frozen, with no_grad.
+  - TSD and BASE now differ only in the encoder's weights: CoT-fine-tuned against pretrained. A TSD-over-BASE result reads as "the
+    CoT model's internals help, beyond a generic encoding of the same text". That is the user's claim.
+  - Dirs `s135_base_s5_s{1..4}`, args `--tsd base`. §118 ANCHOR (the student's own text path, 5/5 in its harness) remains the
+    known positive reference; it is not rerun.
+  - Same budget: two arms × 4 seeds.
+* **(d) Centring and the mask.** GPT-2 hidden states are anisotropic, so a raw-cosine mask could remove almost no negatives at one
+  layer and most of the batch at another.
+  - Both arms' targets are centred, with a mean fixed at gate-A2 time from the held-out problems (the teacher's mean for TSD,
+    pretrained GPT-2's for BASE), before the mask and before P_t.
+  - The mask is centred cos > 0.99. The masked share of negatives is logged per batch and reported as `s135.masked_share`.
+    - **Expected:** about the same-state share of pairs, about 1/120 (under 0.01).
+    - A share above 0.05 in either arm is reported as a mask failure (descriptive).
+* **(a) Image pin:** §135 runs must come from the current fsq120 (args carry p_hard_start / p_hard_end and the version fields). Args
+  missing those keys mean an old image, which is an error row in score_s135.
+* **(b) ρ:** the ρ in PASS is 127-12's clause as implemented in score_s134: the geometric mean of ρ_k over the hand-offs with
+  dist_med > 1e-3 and ρ > 0, else ρ₁. It is not 133-1's first-three form, since §135's carrier is rounded.
+* score_s135.py is updated to match: arms tsd / base, the masked share, and the claim wording.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

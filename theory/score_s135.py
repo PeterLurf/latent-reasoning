@@ -3,11 +3,13 @@ TEACHER-STATE DISTILLATION on §128's S5 recipe (fsq120 FINAL, FSQ-8, RTX 3090 c
 Teacher: boxes/runs_fsq/s135_teacher_s5 - gate A1 (eval.json acc_L32 >= 0.99 on 1,000 held-out at L = 32) and gate A2
 (teacher_probe.json: per-layer 120-way state probe accuracy at the last token of each step's state text; chosen layer = argmax, ties
 to the later layer; needs >= 0.95). No student run is read unless both gates pass.
-Students: boxes/runs_fsq/s135_{tsd,text}_s5_s{1,2,3,4}; args must be d_q 8, levels 8, family s5, p_hard 2000 / 4000, tsd = arm
-("teacher" / "text"), tsd_w 1.0, tsd_tau 0.1, no stop_plateau, 24k, sched_scale 1 (smokes skipped).
+Students: boxes/runs_fsq/s135_{tsd,base}_s5_s{1,2,3,4} (135-1: the control is BASE, the pretrained GPT-2 on the same CoT text); args must
+be d_q 8, levels 8, family s5, p_hard 2000 / 4000 (135-1: missing keys = an old image = error), tsd = arm ("teacher" / "base"), tsd_w 1.0, tsd_tau 0.1, no stop_plateau, 24k, sched_scale 1 (smokes skipped).
 PASS(arm): all four seeds exact at 2,048 (ext_2048 >= 0.99), SERIAL (donor >= 0.90, recipient - chance < 0.10) and contractive
-(127-12's rho clause <= 0.28). IMPROVES (descriptive) 3/4; FAIL <= 2/4. The user's claim on S5: TSD PASS and TEXT not -> teacher
-internals help; both PASS -> S5 does not separate; TEXT PASS and TSD not -> the text target is better here.
+(127-12's rho clause as in score_s134: geomean of rho_k over hand-offs with dist_med > 1e-3 and rho > 0, else rho_1;
+<= 0.28). IMPROVES (descriptive) 3/4; FAIL <= 2/4. The user's claim on S5: TSD PASS and BASE not -> the CoT model's
+internals help beyond a generic encoding of the same text; both PASS -> S5 does not separate; BASE PASS and TSD not -> the generic
+encoding is better here.
 Descriptive per seed: prefix accuracy (eval_prefix.json or eval.json acc_by_length 1 / 2 / 4 / 8), end probe, InfoNCE retrieval.
     python theory/score_s135.py
 """
@@ -17,7 +19,7 @@ import os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 R = os.path.join(ROOT, "boxes", "runs_fsq")
-ARMS = {"tsd": "teacher", "text": "text"}
+ARMS = {"tsd": "teacher", "base": "base"}                               # 135-1: TEXT -> BASE (stationary, same input)
 SKIPPED, ERRORS = [], []
 
 
@@ -86,7 +88,8 @@ def run(d, arm):
         return {"error": b}
     out = {"long_acc": r.get("long_acc"), "ext_2048": (r.get("ext_2048") or {}).get("cumulative"), "serial": serial(r.get("donor")),
            "rho": rho_clause(load(d, "eval_contraction_fp32.json")), "prefix": prefix(d), "gpu": r.get("train_gpu", r.get("gpu")),
-           "driver": r.get("train_driver"), "tsd_retrieval": (r.get("s135") or {}).get("retrieval_top1")}
+           "driver": r.get("train_driver"), "tsd_retrieval": (r.get("s135") or {}).get("retrieval_top1"),
+           "masked_share": (r.get("s135") or {}).get("masked_share")}           # 135-1 (d): expected about 1/120 (< 0.01)
     out["exact"] = (out["ext_2048"] or 0) >= 0.99
     out["pass"] = None if out["rho"] is None else bool(out["exact"] and out["serial"] and out["rho"] <= 0.28)
     return out
@@ -112,17 +115,17 @@ def main():
             runs = {s: run("s135_%s_s5_s%d" % (arm, s), arm) for s in (1, 2, 3, 4)}
             v = verdict(runs); res["arms"][arm] = {"runs": runs, "verdict": v}
             for s, x in runs.items():
-                print(arm, "s%d" % s, x and {k: x.get(k) for k in ("long_acc", "ext_2048", "serial", "rho", "pass", "prefix", "gpu", "tsd_retrieval", "error")})
+                print(arm, "s%d" % s, x and {k: x.get(k) for k in ("long_acc", "ext_2048", "serial", "rho", "pass", "prefix", "gpu", "tsd_retrieval", "masked_share", "error")})
             print("VERDICT", arm, v)
-        vt, vx = res["arms"]["tsd"]["verdict"], res["arms"]["text"]["verdict"]
+        vt, vx = res["arms"]["tsd"]["verdict"], res["arms"]["base"]["verdict"]
         if vt.startswith(("incomplete", "invalid")) or vx.startswith(("incomplete", "invalid")):
             claim = "pending"
         elif vt == "PASS" and vx != "PASS":
-            claim = "teacher internals help entry beyond the step text"
+            claim = "the CoT model's internals help beyond a generic encoding of the same text"
         elif vt == "PASS" and vx == "PASS":
             claim = "S5 does not separate (both PASS)"
         elif vx == "PASS":
-            claim = "the text target is better here"
+            claim = "the generic (pretrained) encoding is better here"
         else:
             claim = "neither PASS"
         res["claim_s5"] = claim; print("USER CLAIM ON S5:", claim)
