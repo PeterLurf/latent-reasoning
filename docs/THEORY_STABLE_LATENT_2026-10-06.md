@@ -115,6 +115,12 @@ with the same code and settings across families.
       against 407 / 226 / 511). fp32 certificates for s2–s4 are queued with 128-4's extension.
     - So the 8-d code spreads one state over many codes and stays exact. F4 bites only where the state space itself exceeds 24 bits
       (§133 stage 2).
+  - The S5 learners (s1 / s102 / s104; fp32, 500 × 2,048) are the same in kind, with an open code set:
+    - distinct codes 2,946 / 2,683 / 2,344 at 2,048, still up about 6 % over the last doubling;
+    - 20–31 codes per state, accuracy 1.0 / 0.996 / 1.0;
+    - no certified bound, since the S5 CERT is inconclusive by time.
+    - The code wanders within each state's basin without error at this length. The stability measure for S5 is per-step survival
+      (s12: 1.0 at every position), not the code count.
 
 ## Candidate 1 (rank 1): COPY-ANCHOR, a label-free state-reading auxiliary from step 0 (targets F1 + F2)
 * **Mechanism.** A fraction of each batch (copy rows, e.g. 10 %) is **autoencoding through the carrier:** [EOT, state text] →
