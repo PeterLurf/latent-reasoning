@@ -1,0 +1,7 @@
+{
+ "check": "hidden_layers vs GPT2KV.forward (pretrained GPT-2, CPU fp32, batch 4 x 110 tokens)",
+ "max_abs_diff_final_after_ln_f": 0.0,
+ "max_abs_diff_layer9_vs_capture9_last_pos": 0.0,
+ "tol": 0.0001,
+ "PASS": true
+}

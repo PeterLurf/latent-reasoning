@@ -199,6 +199,11 @@ class FSQ120(nn.Module):
         self.p_hard = 1.0                                                   # training schedule sets it; test = 1
         self.no_round = False; self.noise = 0.0                             # §123: continuous carry; training dither (set per step)
         self.soft_beta = 0.0; self.carrier_ln = False                       # §133 SOFT (s = (1-b) z_b + b round(z_b)) / PIN (LayerNorm before W_up)
+        self.tsd_on = False; self._tsd_e = []                              # §135: carried embeddings (with grad) of every hand-off
+
+    def enable_tsd(self, dim=256):
+        """§135 TSD / BASE: P_s (student, 768 -> 256) and P_t (target, 768 -> 256), one each, shared across hand-offs."""
+        dev = self.up.weight.device; self.tsd_ps = nn.Linear(768, dim).to(dev); self.tsd_pt = nn.Linear(768, dim).to(dev); self.tsd_on = True
         self.std = False; self._acc = []                                    # §125 (enable_std registers its buffers)
         self.raw_h = False                                                  # §126 RAW-H: no bottleneck, carried = std(h) (needs enable_std)
         self.anneal = False; self.lam = 1.0; self._h_last = None; self._dist = []; self.distill_on = False   # §126 ANNEAL (test lam = 1)
@@ -425,6 +430,8 @@ class FSQ120(nn.Module):
             if override is not None and override[0] == t:
                 q = override[1]; qs = q.to(qs.dtype)
             e = self.embed_code(qs)
+            if self.tsd_on and self.training:                               # §135: e_j = W_up(code_j), kept with its graph
+                self._tsd_e.append(e)
             if record:
                 codes.append(q.detach()); embs.append(e.detach())
             if labels is not None and (t == L - 1 or (trace_mask is not None and trace_mask[:, t].any())):
@@ -896,6 +903,21 @@ def copy_donor134(m, fam, dev, amp, n=1000, L=16, positions=(2, 4, 8), seed=1340
     m.train(was); return res
 
 
+def tsd_loss135(m, E, T, tau):
+    """§135 InfoNCE: E (N, 768) carried embeddings with grad; T (N, 768) CENTRED frozen targets (no grad). s = norm(P_s E), t = norm(P_t T);
+    row i's positive is t_i, every other target a negative, except near-duplicates (centred cos(T_i, T_j) > 0.99, masked).
+    Returns (loss, top-1 retrieval, masked share of negatives)."""
+    s = F.normalize(m.tsd_ps(E.float()), dim=-1); t = F.normalize(m.tsd_pt(T.float()), dim=-1); N = len(s)
+    lg = s @ t.T / tau; eye = torch.eye(N, dtype=torch.bool, device=s.device)
+    with torch.no_grad():
+        Tn = F.normalize(T.float(), dim=-1); dup = (Tn @ Tn.T > 0.99) & ~eye
+    lg = lg.masked_fill(dup, float("-inf")); y = torch.arange(N, device=s.device)
+    loss = F.cross_entropy(lg, y)
+    with torch.no_grad():
+        top1 = float((lg.argmax(-1) == y).float().mean()); share = float(dup.sum()) / max(1, N * (N - 1))
+    return loss, top1, share
+
+
 def mcheck127(m, fam, dev, amp, opt, ng=256):
     """Note 127-1 delivery checks on the fixed probe batch (eval mode; grads by autograd.grad, so .grad is untouched). The two
     gradient checks use its first ng chains (activation memory), the other keys all 1,024. Every check uses training semantics
@@ -1079,6 +1101,9 @@ def main():
     ap.add_argument("--p_hard_start", type=int, default=2000, help="FSQ soft -> hard ramp start step (LOCAL_BACKLOG 4060 #4; default = §120)")
     ap.add_argument("--p_hard_end", type=int, default=4000, help="FSQ soft -> hard ramp end step (default = §120)")
     ap.add_argument("--micro_from", type=int, default=17, help="--micro applies at L >= this (17 since 2026-10-06; §128 / §133 recipe: 32)")
+    ap.add_argument("--tsd", default=None, choices=["teacher", "base"], help="§135 (note 135-1): per-hand-off InfoNCE target = the frozen S5 text-CoT teacher's (teacher) or pretrained GPT-2's (base) hidden at --tsd_layer, last token of step j's state text, centred")
+    ap.add_argument("--tsd_teacher", default=None, help="§135: the teacher dir (model.pt, target_means.pt)"); ap.add_argument("--tsd_layer", type=int, default=None)
+    ap.add_argument("--tsd_w", type=float, default=1.0); ap.add_argument("--tsd_tau", type=float, default=0.1)
     ap.add_argument("--prefix_only", action="store_true", help="post-hoc (Theory 57d6b89e): cumulative accuracy at prefixes 1 / 2 / 4 / 8 of the eval's own test chains (8-step rollout; causal, so = the eval's first 8 positions) -> <out>/eval_prefix.json")
     ap.add_argument("--probe_only", action="store_true", help="post-hoc (descriptive): probe127 on <out>/model.pt at p_hard 1 -> <out>/eval_probe_posthoc.json")
     ap.add_argument("--check_marker", default=None, help="§128 note 128-1: with --stop_plateau, the first attempt to mkdir this path when its flag fires keeps training")
@@ -1127,6 +1152,8 @@ def main():
             m_.enable_std2()
         if a.var_res:
             m_.enable_var(fam.n_items); m_.var_est = a.var_est
+        if a.tsd:                                                           # §135 heads (also so post-hoc loads find them)
+            m_.enable_tsd()
         return m_
     p127 = a.probe127 or a.var_res or a.skip_dec or a.std2 or a.lr_new != 1.0
     if a.growth_only:                                                       # Theory / Audit: distinct codes vs length on 2,048-step rollouts
@@ -1228,6 +1255,15 @@ def main():
         last_loss = None
     reest = False; dist_hist = []; var_hist = []; L127 = {}; n_nonfinite = 0
     n_copy = int(round(a.copy_frac * a.bs)) if a.copy_frac else 0; crng = np.random.default_rng(a.seed + 13400); copy_hist = []; tot_hist = []   # §134
+    tsd_g = tsd_mu = None; tsd_hist = []; tsd_top1 = []; tsd_share = []; tsd_share_all = []   # §135
+    if a.tsd and not a.eval_only:                                           # frozen target model + its centring mean (fixed at gate A2, note 135-1)
+        from boxes.teacher135 import load_teacher, teacher_targets
+        tm_ = torch.load(os.path.join(a.tsd_teacher, "target_means.pt"), map_location="cpu")
+        assert a.tsd_layer == tm_["layer"], "§135: --tsd_layer %s != the teacher's chosen layer %s" % (a.tsd_layer, tm_["layer"])
+        tsd_g = load_teacher(a.tsd_teacher, dev) if a.tsd == "teacher" else s5.load_gpt2(dev).eval()
+        for p_ in tsd_g.parameters():
+            p_.requires_grad_(False)
+        tsd_mu = tm_["tsd" if a.tsd == "teacher" else "base"].to(dev).float()
     if p127 and not a.eval_only and rck is None:                            # note 127-1: probe at step 0 (done before the checkpoint on resume)
         log.write(json.dumps({"step": 0, "probe": probe127(m, fam, dev, amp)}) + "\n"); log.flush()
     s129 = a.save_at_flag or bool(a.resume_2k)
@@ -1268,7 +1304,7 @@ def main():
         tm = None
         if a.arm == "trace":
             tm = torch.ones(len(x), L, dtype=torch.bool, device=dev) if fam.name == "s5" else torch.tensor(x == RD, device=dev)
-        nmb = a.micro if L >= a.micro_from else 1; opt.zero_grad(); tot = 0.0; ctot = 0.0            # gradient accumulation at L > 16 (OOM, 2026-10-05; was L >= 32,
+        nmb = a.micro if L >= a.micro_from else 1; opt.zero_grad(); tot = 0.0; ctot = 0.0; atot = 0.0            # gradient accumulation at L > 16 (OOM, 2026-10-05; was L >= 32,
         #   but L is drawn U(1, L_max): L 17-31 batches ran at micro 1 and OOMed 8 GB cards at 14k, s130chk_s5_s17_3070, 2026-10-06). Memory only; no-op at --micro 1
         for mi in range(nmb):
             sl = slice(mi * len(x) // nmb, (mi + 1) * len(x) // nmb)
@@ -1280,21 +1316,31 @@ def main():
             if m.anneal and m._dist:                                        # §126 QBN distillation during the ramp (weight 1)
                 dl = torch.stack(m._dist).mean(); m._dist = []; loss = loss + dl; dist_hist.append(float(dl.detach()))
             m._dist = []
-            (loss / nmb).backward(); tot += loss.item() / nmb
+            if tsd_g is not None and m._tsd_e:                              # §135 InfoNCE over this micro-batch's (row, hand-off) pairs
+                E_ = torch.stack(m._tsd_e, 1).reshape(-1, 768)
+                T_ = (teacher_targets(tsd_g, a.tsd_layer, s0[sl], x[sl], lab[sl], dev, amp) - tsd_mu).reshape(-1, 768)   # centred (note 135-1)
+                la_, t1_, sh_ = tsd_loss135(m, E_, T_, a.tsd_tau); atot += la_.item() / nmb; tsd_top1.append(t1_); tsd_share.append(sh_); tsd_share_all.append(sh_)
+                loss_all = loss + a.tsd_w * la_
+            else:
+                loss_all = loss
+            m._tsd_e = []
+            (loss_all / nmb).backward(); tot += loss.item() / nmb            # the logged "loss" stays the main chain's alone
         if n_copy:                                                          # §134 COPY-ANCHOR: another problem's final answer -> copy writer -> CE
             cst = lab[crng.integers(0, len(lab), n_copy), -1]; cans = torch.tensor(fam.answer_tokens(cst), device=dev)
             with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
                 ce_, cqs_, _, _ = m.copy_write(cans); lc = m.answer_ce(ce_, cans, cqs_)
             lc.backward(); ctot = lc.item(); copy_hist.append(ctot)          # Audit: the logged "loss" stays the main chain's alone
         gnorm_ = torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0)
-        if p127 and not (math.isfinite(tot) and math.isfinite(ctot) and bool(torch.isfinite(gnorm_))):   # note 127-3 guard (+ the §134 copy CE): skip the update, log it
+        if p127 and not (math.isfinite(tot) and math.isfinite(ctot) and math.isfinite(atot) and bool(torch.isfinite(gnorm_))):   # note 127-3 guard (+ the §134 copy CE): skip the update, log it
             bad = "loss" if not math.isfinite(tot) else next((n_ for n_, p_ in m.named_parameters() if p_.grad is not None and not bool(torch.isfinite(p_.grad).all())), "grad_norm")
             log.write(json.dumps({"step": step, "nonfinite": 1, "first": bad}) + "\n"); log.flush(); n_nonfinite += 1
             opt.zero_grad(); m._s2acc = []; m._acc = []                    # no update and no statistics from this step
         else:
             opt.step(); hist.append(tot)
-            if n_copy:                                                      # note 134-4: main + copy per step -> "loss_total"
-                tot_hist.append(tot + ctot)
+            if n_copy or tsd_g is not None:                                 # note 134-4 / §135: main + aux per step -> "loss_total"
+                tot_hist.append(tot + ctot + a.tsd_w * atot)
+            if tsd_g is not None:
+                tsd_hist.append(atot)
         if m.anneal:                                                        # std(h) EMA (std_map collects while not frozen)
             m.std = True; m.update_stats(); m.std = False
             if reest:
@@ -1315,6 +1361,10 @@ def main():
             if n_copy:                                                      # §134: copy loss every log line, copy accuracy every 500
                 rec["copy_loss"] = float(np.mean(copy_hist)) if copy_hist else None; copy_hist = []
                 rec["loss_total"] = float(np.mean(tot_hist)) if tot_hist else None; tot_hist = []
+            if tsd_g is not None:                                           # §135: aux InfoNCE, top-1 retrieval, masked share of negatives
+                rec.update({"tsd_loss": float(np.mean(tsd_hist)) if tsd_hist else None, "tsd_top1": float(np.mean(tsd_top1)) if tsd_top1 else None,
+                            "tsd_masked_share": float(np.mean(tsd_share)) if tsd_share else None,
+                            "loss_total": float(np.mean(tot_hist)) if tot_hist else None}); tsd_hist = []; tsd_top1 = []; tsd_share = []; tot_hist = []
                 if step % 500 == 0 or step == a.steps:
                     rec["copy_acc"] = copy_acc134(m, fam, dev, amp); m.train()
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True); L127[step] = rec["loss"]
@@ -1452,6 +1502,14 @@ def main():
     if a.copy_frac and not a.eval_only:                                     # §134 mechanism at the end
         res["s134"] = {"copy_frac": a.copy_frac, "n_copy_rows": int(round(a.copy_frac * a.bs)), "copy_acc": copy_acc134(m, fam, dev, amp),
                        "dialect": dialect134(m, fam, dev, amp), "copy_donor": copy_donor134(m, fam, dev, amp), "ophist": opprobe(m, fam, dev, amp)}
+    if tsd_g is not None:                                                   # §135 end: retrieval top-1 on fresh chains (eval mode), run-mean masked share
+        s0e, xe, labe = make_batch(fam, np.random.default_rng(13503), 64, 8)
+        hs_ = _probe_chain(m, fam, dev, amp, s0e, xe)
+        with torch.no_grad():
+            Ee = torch.stack([e_.float() for _, _, e_ in hs_], 1).reshape(-1, 768)
+            Te = (teacher_targets(tsd_g, a.tsd_layer, s0e, xe, labe, dev, amp) - tsd_mu).reshape(-1, 768); _, top1_e, share_e = tsd_loss135(m, Ee, Te, a.tsd_tau)
+        res["s135"] = {"tsd": a.tsd, "layer": a.tsd_layer, "tsd_w": a.tsd_w, "tsd_tau": a.tsd_tau, "retrieval_top1": top1_e, "retrieval_n": int(len(Ee)),
+                       "masked_share": float(np.mean(tsd_share_all)) if tsd_share_all else None, "masked_share_eval": share_e}
     res["p_hard_ramp"] = [a.p_hard_start, a.p_hard_end]
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     if os.path.exists(os.path.join(a.out, "ckpt_last.pt")):                # retention (user 2026-10-06): the checkpoint goes once eval.json exists
