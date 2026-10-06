@@ -1,0 +1,28 @@
+D:\Latent\boxes\fsq120.py:807: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\torch\csrc\autograd\generated\python_variable_methods.cpp:821.)
+  out["wte_row_norm"] = float(m.g.w("wte.weight").float().norm(dim=-1).mean())
+{'step': 100, 'loss': 8.18179368495941, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 27}
+{'step': 200, 'loss': 5.030062913894653, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 51}
+{'step': 300, 'loss': 4.934190921783447, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 76}
+{'step': 400, 'loss': 4.920042500495911, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 100}
+{'step': 500, 'loss': 4.915344853401184, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 125}
+{'step': 600, 'loss': 4.8855334615707395, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 149}
+{'step': 700, 'loss': 4.864302983283997, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 172}
+{'step': 800, 'loss': 4.858921089172363, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 196}
+{'step': 900, 'loss': 4.782127342224121, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 220}
+{'step': 1000, 'loss': 4.597382941246033, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 244}
+{'step': 1100, 'loss': 4.400792968273163, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 268}
+{'step': 1200, 'loss': 4.224062428474427, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 291}
+{'step': 1300, 'loss': 3.979008641242981, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 313}
+{'step': 1400, 'loss': 3.67926082611084, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 336}
+{'step': 1500, 'loss': 3.2907519161701204, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 358}
+{'step': 1600, 'loss': 2.754029098749161, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 381}
+{'step': 1700, 'loss': 2.0928273862600326, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 402}
+{'step': 1800, 'loss': 2.385782888531685, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 424}
+{'step': 1900, 'loss': 1.7726533884182571, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 446}
+{'step': 2000, 'loss': 1.60593580853194, 'L_max': 2, 'p_hard': 0.0, 'noise': 0.0, 'sec': 469}
+{'step': 2100, 'loss': 3.2393554598093033, 'L_max': 4, 'p_hard': 0.05, 'noise': 0.0, 'sec': 498}
+{'step': 2200, 'loss': 2.6146070696227253, 'L_max': 4, 'p_hard': 0.1, 'noise': 0.0, 'sec': 524}
+{'step': 2300, 'loss': 2.7697651331475934, 'L_max': 4, 'p_hard': 0.15, 'noise': 0.0, 'sec': 551}
+{'step': 2400, 'loss': 2.9098560723569245, 'L_max': 4, 'p_hard': 0.2, 'noise': 0.0, 'sec': 579}
+{'step': 2500, 'loss': 2.3225656959344634, 'L_max': 4, 'p_hard': 0.25, 'noise': 0.0, 'sec': 607}
