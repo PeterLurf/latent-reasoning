@@ -3976,6 +3976,19 @@ does not reach the causal question.**
   - the seed-2 basin appears at every σ;
   - FSQ+DITHER codes are smaller (21 against 34 codes per state at 2,048) but open on S5.
 
+**Note 126-8 (2026-10-05 20:35 EDT; ANNEAL s2 final, RTX 3090, pre-126-5 cast). ANNEAL-INHERI2026-10-05 20:35 EDT cannot be met: the narrow code does not
+take over the carrier.**
+* **ANNEAL s2:** long accuracy 0 at every length 16–512, 2,048 at 0, final loss 3.18. 5,462 codes (359 per state), donor
+  near chance (0.04).
+  - It escaped like RAW-H to 2k (1.35). The loss jumped to 5.43 when λ reached 1 at 6k (distillation residual 0.49) and
+    never recovered.
+* ANNEAL-INHERI2026-10-05 20:35 EDT needs ≥ 0.99 in every ANNEAL seed, so **it is decided false**. No further ANNEAL seeds are run on the
+  remaining escaped RAW-H seeds: they cannot change it, and the run is saved.
+* **Pending:** RAW-H s1 / s3 / s4, for BOTTLENECK-CAUSE's count.
+  - If they escape, §126 reads "BOTTLENECK-CAUSE without ANNEAL-INHERI2026-10-05 20:35 EDT": the bottleneck causes the basin, but
+    narrowing a working wide carrier into it fails.
+  - Per §126's reading, restart-on-plateau is then adopted as the reliability procedure.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
