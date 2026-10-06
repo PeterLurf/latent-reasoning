@@ -4918,6 +4918,16 @@ seeds.**
   - The marker is chosen on FIT seeds only, deterministically (max min(P, R), fixed ties), and frozen before TEST is scored.
   - A stopping rule on label counts cannot inform θ or the window, or bias precision or recall.
 * This narrows §130's "every TEST replay stays unread" to the quantities above. The rules are unchanged.
+* **Addendum (2026-10-06 06:13 EDT, before the freeze; a disclosed deviation). FIT is extended with 4060 seeds 35–42, one fixed block,
+  with no further extension.**
+  - §130's trigger (fewer than 3 flagged or 3 non-flagged FIT seeds) is not met.
+  - But FIT s3–s9 show the 2k flag firing on late learners (s5 and s7 pull at 1,050 / 850, loss still falling). s9 collapses
+    from 600 to 1,000, recovers at 1,100–1,300, and escapes. At n = 8 the grid's choice hinges on single seeds.
+  - The extension touches only the fitting set. TEST stays blind, and the freeze (130-1) uses all 16 FIT seeds.
+  - It also fixes before the freeze: the secondary BASIN label (FLAG and no PULL by 2k), with its own FIT cell scored on TEST
+    descriptively, and per-seed collapse and recovery steps.
+  - Descriptive check runs follow TEST-SAME: full fsq120 FINAL S5 24k for 4060 s5, s6 and s7.
+    - Pre-stated: if s5 and s7 end exact and s6 does not, the 2k flag has false positives on this card class.
 
 **Note 127-11 (2026-10-06 05:37 EDT; descriptive, SKIP Stage 2 s4 read by Theory from the raw files; Audit reproduced; before s1 / s3, ρ_ff
 and the control s4 are read). The first entry-fix cell that escapes and learns, and its trained chain runs on the slot carrier
