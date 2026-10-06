@@ -4279,6 +4279,28 @@ claude-13 reproduced s22 / s24). The budget was the limit. One extra round confi
   - The extra budget fixes C6 / C2 (cumulative 512 and 2,048) through a bypassing carrier.
   - Slot carriage in self-training, so far, comes only with §124's COPY (s29: donor 0.88 / 0.75 / 0.52).
 
+**Note 127-2 (2026-10-05 22:31 EDT, Stage 1 deploying, before any §127 result is read; implementation details from the experiments session, 0baed523;
+no rule change). The delivery checks measure what GPT-2 sees in training.**
+* **Training semantics.** 127-1's checks run deterministically: eval mode, no RNG draws.
+  - Codes are soft unless p_hard = 1. Every check step (1 / 500 / 2000) is in the soft phase.
+  - STD2 uses the hand-off's batch statistics.
+  - Why: plain eval mode hard-rounds codes and gives STD2 its test-time EMA. In the smoke that gave a row norm 2.0–4.3×
+    wte's, a carrier GPT-2 never sees in training. On training semantics it is 0.83×.
+  - The plain-eval values are logged beside the checks as descriptive (`row_norm_eval`, `resid_std_eval`).
+  - The R² probe stays in plain eval mode, as registered.
+* **STD2's statistics are per hand-off**, from that hand-off's batch rows. §127 said "the current forward's hand-offs", but a
+  sequential chain cannot standardise hand-off t with statistics from later hand-offs.
+  - The test EMA is updated once per optimiser step, from that forward's per-hand-off average.
+  - The flip-flop start is not a hand-off: it uses the EMA once one exists.
+  - The train / test gap (Batch Renorm 1702.03275's issue) is reported descriptively at the end: row_norm in training
+    semantics against plain eval.
+* **The gradient checks** (skip_grad_q, var_grad_down) use the first 256 of the 1,024 probe chains, for memory. The other
+  keys use all 1,024.
+* **Stopped runs.** A run stopped at 2k is drained as `<dir>.void_partial` and renamed back to its run dir, so the scorer
+  reads its log. This is disclosed in the drain commit.
+* **Training details:** `--micro 2` acts only at L ≥ 32 (after 14k), so it cannot touch Stage 1's 2k reading. `--no_cert`:
+  CERT is post-hoc.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
