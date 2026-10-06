@@ -1,0 +1,26 @@
+{
+ "device": "NVIDIA GeForce RTX 4060 Ti",
+ "total_gib": 15.58,
+ "margin_gib": 1.5,
+ "checks": [
+  {
+   "micro": 1,
+   "for_micro": 1,
+   "L": 31,
+   "rc": 0,
+   "peak_alloc": 8.55,
+   "reserved": 9.5,
+   "oom": false
+  },
+  {
+   "micro": 1,
+   "for_micro": 1,
+   "L": 32,
+   "rc": 0,
+   "peak_alloc": 8.76,
+   "reserved": 9.7,
+   "oom": false
+  }
+ ],
+ "chosen_micro": 1
+}

@@ -830,3 +830,23 @@
 15:29:39 c2070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_rdfa_s4/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_rdfa_s4
 15:34:44 c2070 done rc 0 out yes peak_card_mem 1526 MiB (measured 3.0 GiB) : boxes/runs_fsq/s128_rdfa_s4/eval_growth.json
 15:34:48 c2070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_s5_s1/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_s5_s1
+15:49:22 c4060 done rc 0 out yes peak_card_mem 4401 MiB (measured 5.0 GiB) : boxes/runs_fsq/rampproto_plain_s601_4060/.done
+15:49:22 c4060 start: python -u -m boxes.fsq120 --family s5 --arm final --seed 601 --stop_after 8900 --no_cert --p_hard_start 6000 --p_hard_end 8000 --device cuda:0 --out boxes/runs_fsq/rampproto_late_s601_4060 && echo ok > boxes/runs_fsq/rampproto_late_s601_4060/.done
+15:51:41 c2070 done rc 0 out yes peak_card_mem 2022 MiB (measured 3.0 GiB) : boxes/runs_fsq/s128_s5_s1/eval_growth.json
+15:51:45 c2070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_s5_s102/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_s5_s102
+16:09:08 c2070 done rc 0 out yes peak_card_mem 2031 MiB (measured 3.0 GiB) : boxes/runs_fsq/s128_s5_s102/eval_growth.json
+16:09:13 c2070 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_s5_s104/args.json --growth_only --device cuda:2 --out boxes/runs_fsq/s128_s5_s104
+16:18:02 c3070 done rc 0 out yes peak_card_mem 2291 MiB (measured 5.0 GiB) : boxes/runs_s5/s108_mk4_s2/eval_s115.json
+16:18:03 c3070 start: python -u -m boxes.snap115 --run boxes/runs_s5/s108_mk4_s4 --device cuda:1
+16:19:34 c4060 done rc 0 out yes peak_card_mem 4401 MiB (measured 5.0 GiB) : boxes/runs_fsq/rampproto_late_s601_4060/.done
+16:19:34 c4060 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s130chk_s5_s17_a4000/args.json --prefix_only --device cuda:0 --out boxes/runs_fsq/s130chk_s5_s17_a4000
+16:19:47 c4060 done rc 0 out yes peak_card_mem 1647 MiB (measured 3.0 GiB) : boxes/runs_fsq/s130chk_s5_s17_a4000/eval_prefix.json
+16:19:48 c4060 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s130chk_s5_s17_a4000/args.json --contraction_only --fp32 --device cuda:0 --out boxes/runs_fsq/s130chk_s5_s17_a4000
+16:20:23 c4060 done rc 0 out yes peak_card_mem 2245 MiB (measured 3.0 GiB) : boxes/runs_fsq/s130chk_s5_s17_a4000/eval_contraction_fp32.json
+16:20:24 c4060 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s130chk_s5_s12_a4000/args.json --prefix_only --device cuda:0 --out boxes/runs_fsq/s130chk_s5_s12_a4000
+16:20:37 c4060 done rc 0 out yes peak_card_mem 1647 MiB (measured 3.0 GiB) : boxes/runs_fsq/s130chk_s5_s12_a4000/eval_prefix.json
+16:20:38 c4060 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s130chk_s5_s7_4060ti/args.json --prefix_only --device cuda:0 --out boxes/runs_fsq/s130chk_s5_s7_4060ti
+16:20:51 c4060 done rc 0 out yes peak_card_mem 1647 MiB (measured 3.0 GiB) : boxes/runs_fsq/s130chk_s5_s7_4060ti/eval_prefix.json
+16:20:53 c4060 start: python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s130chk_s5_s30_a4000/args.json --prefix_only --device cuda:0 --out boxes/runs_fsq/s130chk_s5_s30_a4000
+16:21:06 c4060 done rc 0 out yes peak_card_mem 1647 MiB (measured 3.0 GiB) : boxes/runs_fsq/s130chk_s5_s30_a4000/eval_prefix.json
+16:21:07 c4060 start: python -u -m boxes.fsq120 --family s5 --arm final --seed 602 --stop_after 8000 --no_cert --device cuda:0 --out boxes/runs_fsq/rampproto_plain_s602_4060 && echo ok > boxes/runs_fsq/rampproto_plain_s602_4060/.done
