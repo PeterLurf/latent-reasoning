@@ -47,7 +47,7 @@ so send to the pipe addresses their messages come from.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (12:24):** **§128 TASK-AGNOSTIC = true** (all five families; held-out CYC / MOD / RDFA 4/4 closed, 0 restarts; S5 3/4). Closed today: §101, §124, §127, §129, §130, §128. Open: **§131** (4k flag; interim PASS; endpoint = 7 check runs + 4 2070 runs), **§132** (in-context tables; rung-1 pilot 0.9865, slots 2–4 running, per-table breakdown on b44), **§119** (CODI s2 / s3; Coconut and SIM-CoT 0/3). Scorers: score_s119 / s131 / s132.
+* **Theory (15:27):** §128 TASK-AGNOSTIC = true. Stable-latent synthesis: `docs/THEORY_STABLE_LATENT_2026-10-06.md` (candidates 1 = §134 COPY, 2 / 2b round-trip / SELF-ANCHOR, 3 ramp). Open: **§131** (interim PASS; endpoint = 7 s130chk reruns + 4 s131x 2080 Ti), **§132** (slots 2–4), **§133** (7 stage-1 proofs; smokes v2), **§134** (harness fixed by note 134-4; launch after smoke), **§118 LONG** s84 / s85 (a5 / a6), **§115** (g105_mask4_s1 on the 3070), ramp prototype (reading `theory/proto_ramp.py`). Scorers: score_s131 / s132 / s133 / s134 / s118 / s115.
 * **Local GPU backlog:** `docs/LOCAL_BACKLOG.md` (Theory maintains ≥ 3 short jobs per card; Experiments pulls when a card frees up; the user: never leave local GPUs idle).
 * **§97 C6:** complete (GEN-4 and HYB-4 s4-5 fetched).
 * **§98:** ICoT-SI done (0.998 / 0.996); TC/NC done; MASK 4x4 + 5x5 done; COCO 4x4 s1-2 + 5x5 s1 in, rest local; GEN-M rerunning (r1/r2).
