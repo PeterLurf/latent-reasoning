@@ -218,6 +218,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 128 | One recipe, five state-tracking families (S5, FF + held-out CYC / MOD / RDFA), restart-on-plateau; FAMILY-PASS = 3/4 exact + SERIAL (+ CLOSED) | registered | **open** |
 | 129 | Where does the entry basin live? Head-only re-draw at the 2k flag vs a CLOCK-ONLY warm restart (S5, 4 flagged seeds): LR / HEAD / BODY | registered | **open** |
 | 130 | Early label-free plateau marker (code variance at ~1k): fit on 4060 replays, frozen, tested cross-card (3070, primary) and same-card | registered | **open** |
+| 131 | Second restart point at 4k: FLAG4 = loss(4k) ≥ 0.9·loss(2.6k) (floored), held-out precision / recall for "escape without learning" | registered | **open** |
 
 ## Live sections
 
@@ -5105,6 +5106,66 @@ its bar even in-sample.**
   - Restart-on-plateau keeps the 2k flag.
 * **The 2k flag's own reliability** is the next question: FIT's s5 / s7 / s41 / s42 flag after a pull. The 24k check runs of s5,
   s6 and s7 (130-0) answer it on the 4060, and §127's ctrl-s4 full run answers it on a 3090.
+
+## 131. A second restart point at 4k: flagging "escape without learning" from the loss alone (pre-registered 2026-10-06 07:10 EDT, after Literature's check 2d097e1c; Audit / claude-13's observation; $0, log-only; C6: the cost of seed reliability)
+
+**Why.**
+* §127's main failure mode is "escape without learning". Every entry fix that cleared the 2k flag on seed 2 (SKIP, STD2, LR10,
+  VAR, plus RAW-H) still ended with long accuracy 0, and each such run costs a full 24k steps.
+* claude-13's observation: at 2.1k (L_max 2 → 4) every S5 loss jumps 0.4–0.8. Learners descend again by 4k (ratio
+  loss(4k) / loss(2.6k) of 0.67–0.85). Escaped-but-failed runs stay flat or rise.
+* A label-free check at 4k would cut such a run's cost from 24k to about 4k steps.
+* **Prior** (2d097e1c): `docs/LIT_S131_FLAG4_2026-10-06.md`: learning progress after a task change, used to schedule tasks rather than to stop runs
+  (Graves 1704.03003; TSCL 1707.00183); run triage from loss curves (Dodge 2002.06305, Hyperband, Domhan). Stage-conditioned
+  triage is new as scoped.
+
+**Rule (fixed now).**
+* **FLAG4 = loss(4k) ≥ 0.9 · loss(2.6k) AND loss(4k) ≥ 0.25 · loss(100),** on the nearest logged steps. The second clause is
+  123-3's floor, so a solved task near zero loss cannot flag.
+* **Target:** the run does not learn (final long accuracy < 0.99).
+* **Single points, not windows.** Literature (b) suggested windowed means (3.8–4k against 2.4–2.6k). In-sample, windows lowered recall
+  from 9/13 to 7/13, because slowly rising runs average under the threshold. On the 13 held-out runs seen at registration the two
+  forms agree (0 flagged). The single-point rule is registered, and the windowed form is reported beside it.
+* **Scope:** the held-out set is pre-filtered to runs that passed the 2k flag, so precision holds among those runs.
+  - The ~3.2 basin (late plateaus at L_max 8–16) is out of scope: a later rule.
+* **In-sample** (where the rule was derived; descriptive): the 30 fsq120 S5 runs on disk with ≥ 4k logged steps when it was
+  derived, listed in `theory/score_s131.py`.
+  - Learners 8, flagged 0. Escaped-and-failed 13, flagged 9.
+  - The 4 misses are a named class: ANNEAL s2 ×2 (0.87 / 0.75), RAW-H s2 (0.85; the 0.846 partial learner), and the VAR s2 rerun
+    (0.88; it ends in the ~3.2 basin).
+* **Held-out:** every other fsq120 run (§127, §128 any family, s130chk) with ≥ 4k logged steps, an eval.json and no 2k stop.
+  - §129's continuations (schedule clock restarted) are reported separately, not scored.
+  - **Disclosure:** the scorer was run once before this registration, after the rule was fixed. It saw 13 held-out runs then on
+    disk, all exact §128 runs (MOD, CYC, RDFA), and none was flagged.
+  - Those 13 are reported as "seen at registration". Runs landing afterwards are "prospective". The PASS is computed on both
+    together and on the prospective subset alone.
+
+**PASS (fixed now).**
+* (i) No held-out run that ends exact is flagged, with ≥ 5 exact held-out runs.
+* (ii) At least 2/3 of the held-out runs that escape the 2k flag and end below 0.99 are flagged, with ≥ 3 such runs.
+* Otherwise the result is incomplete, with its counts.
+* Precision and recall are reported with two-sided 95 % Clopper–Pearson intervals.
+* **"Deployable"** as a restart rule needs ≥ 10 flagged held-out runs with 0 false positives (Literature (c); the 95 % lower
+  bound is then about 0.74). A 5/5 PASS has a lower bound of about 0.55.
+
+**Readings.**
+* **PASS.** A label-free 4k check catches most escape-without-learning runs and never kills a learner on held-out data. A
+  two-point restart rule (2k and 4k) becomes a candidate procedure. Its adoption, with a cost comparison, is a separate
+  registration.
+* **(i) fails.** The 4k check kills learners, so it is not usable as a restart rule.
+* **(ii) fails.** The 4k check misses too many failures. The ~3.2 basin and partial learners are reported as classes.
+
+**Held-out runs added for ground truth (Audit; local RTX 3070, $0).** Full fsq120 FINAL S5, 24k, no plateau stop, for four
+§130 TEST-CROSS seeds (`s130chk_s5_s{17,30,34,12}_3070`). Their 2k status is known from the replays:
+* s17 and s30 were flagged after an early pull (s17: loss 3.79 → 3.66, far under the null);
+* s34 is BASIN (persistent collapse);
+* s12 was a marker false positive and escaped.
+* **Pre-stated:** if s17 and s30 end exact, the 2k flag gives false positives on the 3070 too (the 4060 counterpart is
+  s130chk_s5_s{5,6,7}). This is reported against restart-on-plateau's cost and 128-1's check rate.
+* Each run reaching 4k also counts as held-out for FLAG4.
+
+**Placement.** $0, log-only, over the runs already scheduled, plus the four 3070 check runs (about 3–4 h each, sequential).
+Scorer: `theory/score_s131.py`, committed with this registration.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

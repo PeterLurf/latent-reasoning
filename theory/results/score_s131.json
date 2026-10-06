@@ -1,0 +1,584 @@
+{
+ "in_sample": {
+  "s120_s5_final_s1": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.704,
+   "loss_4k": 2.697,
+   "long_acc": 1.0,
+   "exact": true,
+   "final_loss": null,
+   "gpu": "NVIDIA GeForce RTX 3070"
+  },
+  "s120_s5_final_s2": {
+   "flag2k": true,
+   "flag4k": true,
+   "flag4k_windowed": true,
+   "ratio": 0.998,
+   "loss_4k": 5.034,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": null,
+   "gpu": "NVIDIA GeForce RTX 3090 Ti"
+  },
+  "s120_s5_trace_s1": {
+   "flag2k": true,
+   "flag4k": true,
+   "flag4k_windowed": true,
+   "ratio": 0.988,
+   "loss_4k": 3.376,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": null,
+   "gpu": "NVIDIA GeForce RTX 4090"
+  },
+  "s120_s5_trace_s2": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.666,
+   "loss_4k": 1.558,
+   "long_acc": 1.0,
+   "exact": true,
+   "final_loss": null,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s123_s5_dither000_s1": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.679,
+   "loss_4k": 2.53,
+   "long_acc": 1.0,
+   "exact": true,
+   "final_loss": null,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s123_s5_dither000_s2": {
+   "flag2k": true,
+   "flag4k": true,
+   "flag4k_windowed": true,
+   "ratio": 0.994,
+   "loss_4k": 5.005,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": null,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s123_s5_dither010_s1": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.717,
+   "loss_4k": 2.731,
+   "long_acc": 1.0,
+   "exact": true,
+   "final_loss": null,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s123_s5_dither010_s2": {
+   "flag2k": true,
+   "flag4k": true,
+   "flag4k_windowed": true,
+   "ratio": 1.001,
+   "loss_4k": 5.042,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": null,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s123_s5_dither025_s1": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.729,
+   "loss_4k": 2.798,
+   "long_acc": 1.0,
+   "exact": true,
+   "final_loss": null,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s123_s5_dither025_s2": {
+   "flag2k": true,
+   "flag4k": true,
+   "flag4k_windowed": true,
+   "ratio": 0.999,
+   "loss_4k": 5.0,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": null,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s123_s5_dither050_s1": {
+   "flag2k": true,
+   "flag4k": true,
+   "flag4k_windowed": true,
+   "ratio": 0.92,
+   "loss_4k": 4.579,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": null,
+   "gpu": "NVIDIA GeForce RTX 4090"
+  },
+  "s123_s5_dither050_s1_3090": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.708,
+   "loss_4k": 2.795,
+   "long_acc": 1.0,
+   "exact": true,
+   "final_loss": 0.00521594114952677,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s123_s5_dither050_s2": {
+   "flag2k": false,
+   "flag4k": true,
+   "flag4k_windowed": true,
+   "ratio": 1.081,
+   "loss_4k": 4.829,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": null,
+   "gpu": "NVIDIA GeForce RTX 4090"
+  },
+  "s123_s5_dither050_s2_3090": {
+   "flag2k": true,
+   "flag4k": true,
+   "flag4k_windowed": true,
+   "ratio": 0.996,
+   "loss_4k": 5.008,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": 4.803446257114411,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s123_s5_fsqdither_s1": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.704,
+   "loss_4k": 2.697,
+   "long_acc": 1.0,
+   "exact": true,
+   "final_loss": null,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s123_s5_fsqdither_s2": {
+   "flag2k": true,
+   "flag4k": true,
+   "flag4k_windowed": true,
+   "ratio": 0.998,
+   "loss_4k": 5.034,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": null,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s125_s5_std_s2": {
+   "flag2k": true,
+   "flag4k": true,
+   "flag4k_windowed": true,
+   "ratio": 0.984,
+   "loss_4k": 5.011,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": 4.79914354801178,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s126_s5_anneal_s2": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.865,
+   "loss_4k": 3.241,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": 3.17754296330153,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s126_s5_anneal_s2_fp32cast": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.746,
+   "loss_4k": 2.887,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": 2.4619274760014376,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s126_s5_rawh_s1": {
+   "flag2k": false,
+   "flag4k": true,
+   "flag4k_windowed": false,
+   "ratio": 0.99,
+   "loss_4k": 2.571,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": 3.1098450827015722,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s126_s5_rawh_s2": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.85,
+   "loss_4k": 2.671,
+   "long_acc": 0.846,
+   "exact": false,
+   "final_loss": 1.5664607808503206e-05,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s126_s5_rawh_s3": {
+   "flag2k": false,
+   "flag4k": true,
+   "flag4k_windowed": true,
+   "ratio": 0.987,
+   "loss_4k": 3.239,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": 4.415337165397505,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s126_s5_rawh_s4": {
+   "flag2k": false,
+   "flag4k": true,
+   "flag4k_windowed": false,
+   "ratio": 0.946,
+   "loss_4k": 2.97,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": 4.0669308307917165,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s127_s5_lr10_s2": {
+   "flag2k": false,
+   "flag4k": true,
+   "flag4k_windowed": true,
+   "ratio": 1.047,
+   "loss_4k": 4.719,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": 4.585044524371624,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s127_s5_skip_s2": {
+   "flag2k": false,
+   "flag4k": true,
+   "flag4k_windowed": true,
+   "ratio": 1.057,
+   "loss_4k": 4.766,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": NaN,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s127_s5_skip_s2_rerun": {
+   "flag2k": false,
+   "flag4k": true,
+   "flag4k_windowed": true,
+   "ratio": 1.057,
+   "loss_4k": 4.766,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": 4.726709432601929,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s127_s5_skip_s4": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.85,
+   "loss_4k": 2.847,
+   "long_acc": 1.0,
+   "exact": true,
+   "final_loss": 1.944562548487738e-05,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s127_s5_std2_s1": {
+   "flag2k": false,
+   "flag4k": true,
+   "flag4k_windowed": true,
+   "ratio": 1.056,
+   "loss_4k": 4.332,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": 4.752245935797691,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s127_s5_std2_s2": {
+   "flag2k": false,
+   "flag4k": true,
+   "flag4k_windowed": true,
+   "ratio": 0.999,
+   "loss_4k": 4.526,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": 4.81156420469284,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s127_s5_var_s2_rerun": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.882,
+   "loss_4k": 3.78,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": 3.221700676422188,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  }
+ },
+ "held_out": {
+  "s127_ff_skip_s1": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.393,
+   "loss_4k": 0.076,
+   "long_acc": 1.0,
+   "exact": true,
+   "final_loss": 2.4028120571006893e-09,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s127_ff_skip_s2": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.0,
+   "loss_4k": 0.0,
+   "long_acc": 1.0,
+   "exact": true,
+   "final_loss": 8.463297243110901e-07,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s128_cyc_s1": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.0,
+   "loss_4k": 0.0,
+   "long_acc": 1.0,
+   "exact": true,
+   "final_loss": 1.5579161413370457e-07,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s128_cyc_s2": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.175,
+   "loss_4k": 0.0,
+   "long_acc": 1.0,
+   "exact": true,
+   "final_loss": 6.109475082283212e-08,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s128_cyc_s3": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.12,
+   "loss_4k": 0.0,
+   "long_acc": 1.0,
+   "exact": true,
+   "final_loss": 6.560234691477263e-08,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s128_mod_s1": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.108,
+   "loss_4k": 0.0,
+   "long_acc": 1.0,
+   "exact": true,
+   "final_loss": 1.3452019681281513e-07,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s128_mod_s2": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.001,
+   "loss_4k": 0.0,
+   "long_acc": 1.0,
+   "exact": true,
+   "final_loss": 8.748843033146159e-08,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s128_mod_s3": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.209,
+   "loss_4k": 0.0,
+   "long_acc": 1.0,
+   "exact": true,
+   "final_loss": 6.720422813799587e-08,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s128_mod_s4": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.014,
+   "loss_4k": 0.002,
+   "long_acc": 1.0,
+   "exact": true,
+   "final_loss": 4.677101265393446e-08,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "s128_rdfa_s1": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.0,
+   "loss_4k": 0.0,
+   "long_acc": 1.0,
+   "exact": true,
+   "final_loss": 1.7993150248640787e-08,
+   "gpu": "NVIDIA GeForce RTX 3090 Ti"
+  },
+  "s128_rdfa_s2": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.0,
+   "loss_4k": 0.0,
+   "long_acc": 1.0,
+   "exact": true,
+   "final_loss": 9.581445166162439e-08,
+   "gpu": "NVIDIA GeForce RTX 3090 Ti"
+  },
+  "s128_rdfa_s3": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.123,
+   "loss_4k": 0.0,
+   "long_acc": 1.0,
+   "exact": true,
+   "final_loss": 1.560337482686691e-07,
+   "gpu": "NVIDIA GeForce RTX 3090 Ti"
+  },
+  "s128_rdfa_s4": {
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.0,
+   "loss_4k": 0.0,
+   "long_acc": 1.0,
+   "exact": true,
+   "final_loss": 8.827073923356465e-08,
+   "gpu": "NVIDIA GeForce RTX 3090 Ti"
+  }
+ },
+ "summary_in": {
+  "exact": [
+   "s120_s5_final_s1",
+   "s120_s5_trace_s2",
+   "s123_s5_dither000_s1",
+   "s123_s5_dither010_s1",
+   "s123_s5_dither025_s1",
+   "s123_s5_dither050_s1_3090",
+   "s123_s5_fsqdither_s1",
+   "s127_s5_skip_s4"
+  ],
+  "false_pos": [],
+  "escaped_failed": [
+   "s123_s5_dither050_s2",
+   "s126_s5_anneal_s2",
+   "s126_s5_anneal_s2_fp32cast",
+   "s126_s5_rawh_s1",
+   "s126_s5_rawh_s2",
+   "s126_s5_rawh_s3",
+   "s126_s5_rawh_s4",
+   "s127_s5_lr10_s2",
+   "s127_s5_skip_s2",
+   "s127_s5_skip_s2_rerun",
+   "s127_s5_std2_s1",
+   "s127_s5_std2_s2",
+   "s127_s5_var_s2_rerun"
+  ],
+  "true_pos": [
+   "s123_s5_dither050_s2",
+   "s126_s5_rawh_s1",
+   "s126_s5_rawh_s3",
+   "s126_s5_rawh_s4",
+   "s127_s5_lr10_s2",
+   "s127_s5_skip_s2",
+   "s127_s5_skip_s2_rerun",
+   "s127_s5_std2_s1",
+   "s127_s5_std2_s2"
+  ],
+  "misses": [
+   "s126_s5_anneal_s2",
+   "s126_s5_anneal_s2_fp32cast",
+   "s126_s5_rawh_s2",
+   "s127_s5_var_s2_rerun"
+  ],
+  "precision": 1.0,
+  "recall": 0.6923076923076923,
+  "precision_ci95": [
+   0.6637328831200571,
+   1.0
+  ],
+  "recall_ci95": [
+   0.3857383382492947,
+   0.9090796054279033
+  ]
+ },
+ "summary_held": {
+  "exact": [
+   "s127_ff_skip_s1",
+   "s127_ff_skip_s2",
+   "s128_cyc_s1",
+   "s128_cyc_s2",
+   "s128_cyc_s3",
+   "s128_mod_s1",
+   "s128_mod_s2",
+   "s128_mod_s3",
+   "s128_mod_s4",
+   "s128_rdfa_s1",
+   "s128_rdfa_s2",
+   "s128_rdfa_s3",
+   "s128_rdfa_s4"
+  ],
+  "false_pos": [],
+  "escaped_failed": [],
+  "true_pos": [],
+  "misses": [],
+  "precision": null,
+  "recall": null,
+  "precision_ci95": [
+   null,
+   null
+  ],
+  "recall_ci95": [
+   null,
+   null
+  ]
+ },
+ "PASS": "incomplete (13 exact, need >= 5; 0 escaped-and-failed, need >= 3)",
+ "summary_prospective": {
+  "exact": [],
+  "false_pos": [],
+  "escaped_failed": [],
+  "true_pos": [],
+  "misses": [],
+  "precision": null,
+  "recall": null,
+  "precision_ci95": [
+   null,
+   null
+  ],
+  "recall_ci95": [
+   null,
+   null
+  ]
+ },
+ "PASS_prospective": "incomplete (0 exact, need >= 5; 0 escaped-and-failed, need >= 3)"
+}
