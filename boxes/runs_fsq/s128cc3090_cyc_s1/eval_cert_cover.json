@@ -1,0 +1,22 @@
+{
+ "run": "boxes/runs_fsq/s128_cyc_s1",
+ "test_n": 2000,
+ "test_len": 512,
+ "device": "NVIDIA GeForce RTX 3090",
+ "bf16": {
+  "eval_distinct": 89,
+  "bfs_reachable": 90,
+  "n_uncovered": 1,
+  "cert_holds": true,
+  "n_moore": 5,
+  "cert_status": "done"
+ },
+ "fp32": {
+  "eval_distinct": 91,
+  "bfs_reachable": 92,
+  "n_uncovered": 0,
+  "cert_holds": true,
+  "n_moore": 5,
+  "cert_status": "done"
+ }
+}

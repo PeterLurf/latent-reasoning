@@ -1,0 +1,72 @@
+{
+ "holds": true,
+ "n_reachable": 386,
+ "n_moore": 5,
+ "capped": false,
+ "violations": 0,
+ "all_decode_valid": true,
+ "status": "done",
+ "timed_out": false,
+ "moore_timed_out": false,
+ "sec": 1,
+ "layers": [
+  {
+   "depth": 1,
+   "frontier": 12,
+   "cum": 12,
+   "sec": 0
+  },
+  {
+   "depth": 2,
+   "frontier": 91,
+   "cum": 103,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 3,
+   "frontier": 186,
+   "cum": 289,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 4,
+   "frontier": 76,
+   "cum": 365,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 5,
+   "frontier": 13,
+   "cum": 378,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 6,
+   "frontier": 7,
+   "cum": 385,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 7,
+   "frontier": 1,
+   "cum": 386,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 8,
+   "frontier": 0,
+   "cum": 386,
+   "sec": 1,
+   "complete": true
+  }
+ ],
+ "n_start_pairs": 15,
+ "eval_dtype": "None",
+ "cert_cap": 1000000
+}
