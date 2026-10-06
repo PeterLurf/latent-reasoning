@@ -1,4 +1,5 @@
-# §112 coverage dose-response (note 112-1 + addendum); host 2 of 8
-# P=2
-boxes/runs_s5/s112_f050_s23 boxes.self110 --cov 0.5 --save_rounds --seed 23
-boxes/runs_s5/s112_f050_s24 boxes.self110 --cov 0.5 --save_rounds --seed 24
+# §119 proof unit + lr sweep, CODI seed 1 (LoRA r128; Audit: any clean 24 GB class; gradflow PASS)
+# P=3
+boxes/runs_s5/s119_codi_lr1e-3_s1 boxes.base119 --method codi --lr 1e-3 --seed 1
+boxes/runs_s5/s119_codi_lr3e-3_s1 boxes.base119 --method codi --lr 3e-3 --seed 1
+boxes/runs_s5/s119_codi_lr1e-2_s1 boxes.base119 --method codi --lr 1e-2 --seed 1

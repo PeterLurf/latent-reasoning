@@ -1,4 +1,5 @@
-# §112 coverage dose-response (note 112-1 + addendum); host 1 of 8
-# P=2
-boxes/runs_s5/s112_f050_s21 boxes.self110 --cov 0.5 --save_rounds --seed 21
-boxes/runs_s5/s112_f050_s22 boxes.self110 --cov 0.5 --save_rounds --seed 22
+# §119 proof unit + lr sweep, Coconut seed 1 (Audit: any clean 24 GB class; gradflow PASS theory/results/gradflow_check_s119.json)
+# P=3
+boxes/runs_s5/s119_coconut_lr3e-5_s1 boxes.base119 --method coconut --lr 3e-5 --seed 1
+boxes/runs_s5/s119_coconut_lr1e-4_s1 boxes.base119 --method coconut --lr 1e-4 --seed 1
+boxes/runs_s5/s119_coconut_lr3e-4_s1 boxes.base119 --method coconut --lr 3e-4 --seed 1

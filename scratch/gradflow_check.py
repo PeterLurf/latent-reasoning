@@ -123,6 +123,55 @@ def check_fsq120_anneal(dev, out):
     out["fsq120.s5.anneal.distill"] = term(m, dist); out["fsq120.s5.anneal.up_grad"] = float(m.up.weight.grad.norm())
 
 
+def _b119(method, dev):
+    from boxes.base119 import Base119, load_gpt2x
+    from boxes.gen97 import STTOK
+    from boxes.latent86 import batch
+    if method == "codi":
+        m = Base119(load_gpt2x(dev, lora_r=128), "codi").to(dev)
+        with torch.no_grad():                                               # LoRA B = 0 at init: nudge it so dL/dA is testable
+            for p_ in m.g.lb.values():
+                p_.normal_(0, 1e-3)
+    else:
+        m = Base119(load_gpt2x(dev), method, c=2 if method == "simcot" else 1, dec=load_gpt2x(dev) if method == "simcot" else None).to(dev)
+    m.train(); X = np.random.default_rng(0).integers(0, 120, (8, 128)); Y = np.zeros_like(X); w = np.zeros(8, dtype=np.int64)
+    for t in range(128):
+        w = s5.COMP[w, X[:, t]]; Y[:, t] = w
+    st, o, tg = batch(np.random.default_rng(1), X, Y, 4, 4)
+    return m, (torch.tensor(STTOK[st], device=dev), torch.tensor(o, device=dev), torch.tensor(tg, device=dev))
+
+
+def gnorm_of(params):
+    return float(torch.sqrt(sum((p.grad.float() ** 2).sum() for p in params if p.grad is not None)))
+
+
+def check_base119_coconut(dev, out):
+    """§119 Coconut: CE on the remaining text at stage 0 and at the final stage (gradient through the thoughts)."""
+    m, b = _b119("coconut", dev)
+    for s in (0, 3):
+        out[f"base119.coconut.stage{s}.ce"] = term(m, lambda: m.loss(*b, stage=s)[0])
+    out["base119.coconut.special"] = float(m.special.grad.norm())
+
+
+def check_base119_simcot(dev, out):
+    """§119 SIM-CoT: the main CE, and the step decoder term alone; the decoder term must reach theta (through the thoughts)."""
+    m, b = _b119("simcot", dev)
+    out["base119.simcot.stage3.ce"] = term(m, lambda: m.loss(*b, stage=3)[1]["ce"])
+    out["base119.simcot.stage3.step"] = term(m, lambda: m.loss(*b, stage=3)[1]["step"])
+    out["base119.simcot.step.theta"] = gnorm_of(m.g.parameters()); out["base119.simcot.step.phi"] = gnorm_of(m.dec.parameters())
+
+
+def check_base119_codi(dev, out):
+    """§119 CODI: student CE, teacher CE and KD each alone; KD and the student CE must reach the LoRA and the projection."""
+    m, b = _b119("codi", dev)
+    for t in ("student", "teacher", "kd"):
+        out[f"base119.codi.{t}"] = term(m, lambda: m.loss(*b)[1][t])
+        out[f"base119.codi.{t}.lora"] = gnorm_of(list(m.g.la.values()) + list(m.g.lb.values()))
+        if t != "teacher":
+            out[f"base119.codi.{t}.prj"] = gnorm_of(m.prj.parameters())
+    out["base119.codi.base_frozen"] = float(all(not p.requires_grad for p in m.g.p.values()))
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--paths", nargs="*", default=["accel99", "mk108", "fsq120", "fsq120_std", "fsq120_rawh", "fsq120_anneal", "self110_copy", "self110_resume"])
     ap.add_argument("--device", default="cpu"); ap.add_argument("--out", default=os.path.join(ROOT, "theory", "results", "gradflow_check.json"))
