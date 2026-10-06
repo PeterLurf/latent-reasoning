@@ -191,6 +191,24 @@ def check_fsq120_s129(dev, out):
     out["fsq120.s129.phase2_grad_ln"] = float(m.ln.weight.grad.float().norm())
 
 
+def check_table132(dev, out):
+    """§132: the answer loss reaches the bottleneck (W_down / W_up / LN) and GPT-2 through the table-prefixed segments; CUDA bf16 when
+    available (as training)."""
+    from boxes.table132 import Splits, Table132, TableFam, problems
+    amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
+    for k, mm in ((4, 2), (6, 3)):
+        sp = Splits(k, mm); rng = np.random.default_rng(0); tabs = sp.train[:4] if sp.train is not None else sp.held[:4]
+        c, x, lab = problems(rng, tabs, 3, mm)
+        m = Table132(s5.load_gpt2(dev), TableFam(k, mm)).to(dev); m.train(); m.p_hard = 0.0; m.ctx = torch.tensor(c, device=dev)
+        def L():
+            with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+                return m.chain(m.start(4, dev), torch.tensor(x, device=dev), lab)[0]
+        out["table132.k%d.main" % k] = term(m, L)
+        for nm, p_ in (("down", m.down.weight), ("up", m.up.weight), ("ln", m.ln.weight)):
+            out["table132.k%d.%s" % (k, nm)] = float(p_.grad.float().norm())
+    out["table132.amp_bf16"] = float(amp is not None)
+
+
 def _b119(method, dev):
     from boxes.base119 import Base119, load_gpt2x
     from boxes.gen97 import STTOK
