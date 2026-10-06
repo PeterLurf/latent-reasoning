@@ -104,14 +104,26 @@ def nonfinite_share(d):
     return max(n_bad / last if last else 0.0, n_nan / n_loss if n_loss else 0.0)
 
 
+def solved(d, step, tol=1e-3):
+    """Note 127-10: training loss (nearest logged step) <= tol at `step` -> no gradient reaches any parameter (task solved)."""
+    p = os.path.join(R, d, "log.jsonl")
+    rows = [json.loads(line) for line in open(p)] if os.path.exists(p) else (stopped_void(d) or [])
+    L = {x["step"]: x["loss"] for x in rows if "loss" in x and "step" in x and x.get("phase", 1) == 1}
+    if not L:
+        return False
+    v = L[min(L, key=lambda s: abs(s - step))]
+    return bool(math.isfinite(float(v)) and float(v) <= tol)
+
+
 def delivered(arm, d):
     """Note 127-1 delivery check for one run: True / False / None (checks not all logged yet); 127-3: > 1 % non-finite
     steps fails delivery."""
     if nonfinite_share(d) > 0.01:
         return False
     mc = mchecks(d)
-    if arm == "skip":
-        need = [(s, "skip_grad_q") for s in (1, 500, 2000)]; ok = lambda s, k: mc[s][k] > 1e-8  # noqa: E731
+    if arm == "skip":                                                        # note 127-10: at 500 / 2000 only while the task is unsolved
+        need = [(s, "skip_grad_q") for s in (1, 500, 2000) if s == 1 or not solved(d, s)]
+        ok = lambda s, k: mc[s][k] > 1e-8  # noqa: E731
     elif arm == "var":
         need = [(1, "var_grad_down"), (2000, "resid_std")]; ok = lambda s, k: mc[s][k] > 1e-8 if s == 1 else mc[s][k] >= 0.5  # noqa: E731
     elif arm == "std2":
@@ -190,11 +202,12 @@ def main():
                 ef = "incomplete (rho_ff)"
             else:
                 ef = all(v["rho_ff"] <= 0.28 for v in ok)
+        ff_dv = {s: delivered(arm, "s127_ff_%s_s%d" % (arm, s)) for s in ff}   # descriptive (127-10): FF guard is read on accuracy
         ffg = (len(ff) == 2 and all((v["long_acc"] or 0) >= 0.99 for v in ff.values())) if len(ff) == 2 and all(v["status"] == "done" for v in ff.values()) else "incomplete"
         adopt = (ef is True and ffg is True) if isinstance(ef, bool) and (ef is False or isinstance(ffg, bool)) else "pending"
         res["arms"][arm] = {"S5": s5, "FF": ff, "ESCAPE": esc if valid is True else "%s (%s)" % (esc, valid), "delivered": dv, "delivery": valid,
                             "ENTRY_FIX": ef if valid is True else valid,
-                            "FF_GUARD": ffg, "ADOPT": adopt if valid is True else (False if valid == "not deliverable as specified" else "pending"), "cost": cost(s5)}
+                            "FF_GUARD": ffg, "FF_delivery": ff_dv, "ADOPT": adopt if valid is True else (False if valid == "not deliverable as specified" else "pending"), "cost": cost(s5)}
     ctrl = {s: cell("s127_s5_ctrl_s%d" % s) for s in (3, 4)}; ctrl.update({s: cell("s120_s5_final_s%d" % s) for s in (1, 2)})
     ctrl = {k: v for k, v in ctrl.items() if v}; res["control"] = {"S5": ctrl, "cost": cost(ctrl)}
     ad = [a for a in ARMS if res["arms"][a]["ADOPT"] is True]

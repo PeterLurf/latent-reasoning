@@ -4834,6 +4834,21 @@ false. s32 is descriptive, and the GPU per seed is stated.**
   (s33: the whole table learned and certified, but not FOOTHOLD by 512 accuracy). "Minimum foothold" (116-7) is replaced by
   "sufficient in k/n seeds", since minimality is untested.
 
+**Note 127-10 (2026-10-06 05:20 EDT, before any SKIP Stage 2 S5 cell is read; Audit / claude-13; a clarification of 127-1). A solved task cannot
+fail the gradient delivery check.**
+* **The case:** SKIP's FF s1 has long accuracy 1.0, is SERIAL, and has R²_state 0.95. Its skip_grad_q is 0.0023 at step 1, then 9e-10 /
+  3e-9 at 500 / 2000, below 127-1's 1e-8.
+  - The cause: FF's training loss is about 0 by then, so no gradient reaches any parameter. That is not an intervention failing to
+    act.
+* **Rule (applies to every SKIP cell, S5 and FF):**
+  - skip_grad_q > 1e-8 is required at step 1.
+  - At steps 500 and 2,000 it is required only while the training loss at that step (nearest logged) is above 1e-3.
+  - At a step where the loss is ≤ 1e-3, the check is recorded as "no gradient (loss ≈ 0)", not as a failure.
+  - The FF guard stays a rule on accuracy, as registered. FF delivery is reported descriptively.
+* **No effect on S5 cells:** S5 losses at 500 and 2,000 are about 5 in every run so far. The rule is fixed before any SKIP S5
+  Stage 2 cell is read. `score_s127.py` implements it (tested: FF solved early → delivered; S5 unsolved with a tiny gradient →
+  not delivered).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
