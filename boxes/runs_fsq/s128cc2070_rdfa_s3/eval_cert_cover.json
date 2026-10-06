@@ -1,0 +1,16 @@
+{
+ "run": "boxes/runs_fsq/s128_rdfa_s3",
+ "test_n": 2000,
+ "test_len": 512,
+ "device": "NVIDIA GeForce RTX 2070",
+ "driver": "591.86",
+ "amp_bf16_available": false,
+ "fp32": {
+  "eval_distinct": 154,
+  "bfs_reachable": 154,
+  "n_uncovered": 0,
+  "cert_holds": true,
+  "n_moore": 8,
+  "cert_status": "done"
+ }
+}
