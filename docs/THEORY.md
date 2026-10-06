@@ -5354,7 +5354,9 @@ The PASS conditions are met on the held-out runs so far. The verdict is read onc
   - Held-out exact 18, flagged 0. Of these, 4 are S5 learners, flagged 0; the 14 non-S5 runs are near-vacuous (131-1 (a)).
   - Escaped-and-failed: 4 distinct, 4 flagged (LR10 s3 0.988, STD2 s3 0.994, ctrl s3 / s128 S5 s3, SKIP s3).
   - Precision 1.0 (CI 0.40–1.0), recall 1.0 (0.40–1.0). The prospective subset gives the same: 5 exact, 4 / 4 flagged.
-* **§131 did not fix where held-out collection ends, so it is fixed now, before more lands.** The verdict is read once all of
+* **§131 did not fix where held-out collection ends, so it is fixed now, before more lands.** Disclosure (Audit): the endpoint was fixed
+  *after* an interim reading that already met PASS (18 exact / 0 flagged; 4 / 4 escaped-and-failed flagged). It extends collection
+  rather than stopping at that reading, the conservative direction. The verdict is read once all of
   these have landed (or are void):
   - §128 FF slots 1–4 and RDFA s3 / s4;
   - §127 ctrl s4 full (b42);
