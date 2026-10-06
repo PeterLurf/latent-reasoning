@@ -110,6 +110,16 @@ with the same code and settings across families.
   - (b) On S5×4 it CAP-PASSES where FSQ-8 fails by capacity (§133's reading).
 * **Cheapest decisive test:** as a §133-style arm (CONT-64 + RT, β 0.1 from 2k) on the S5 proof seed, then S5×4. Its comparator is §133's
   CONT-64 / SOFT-64.
+* **Variant 2b, SELF-ANCHOR (training only; added after §118 LONG / ANCHOR).** §118 ANCHOR made a wide 768-d latent exact with no snap
+  to 2,048 in 5/5. It did that by pulling the free-running latent a = [EOT, latent_{j−1}, op_j] toward the text path
+  b = [EOT, **gold** state text, op_j] (sg on b; 1 − cos + log-norm gap) in training only.
+  - 2b swaps the gold text for **the model's own greedy decode** of latent_{j−1} ("the answer if queried now"). That makes it
+    label-free, so C4-compatible.
+  - **Zero test-time cost:** the attractor is learned, not applied at inference, unlike 2's per-hand-off mixing.
+  - Guards as for 2: weight 0 until decodes are valid (copy accuracy or decoder confidence), then constant. Report the share of anchors
+    built on wrong decodes.
+  - **Comparators:** §118 ANCHOR (gold text: the labelled upper bound), §133 CONT-64 and §126 RAW-H (unanchored).
+  - Prediction: CONT-64 + 2b reaches ρ ≤ 0.28 and is exact at 2,048 where CONT-64 drifts.
 * **Composes with Candidate 1** (enc is Candidate 1's copy path). Candidate 1 alone fixes entry; Candidates 1 and 2 together are the
   proposed full method: a **COPY-anchored, round-trip-stabilised wide carrier.**
 
