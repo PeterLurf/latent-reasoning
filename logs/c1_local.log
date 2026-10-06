@@ -613,3 +613,11 @@
 12:10:30 s130chk_s5_s17_3070 rc 1 no-eval (cuda:1)
 12:28:59 s130chk_s5_s5_4060 rc 1 (cuda:0)
 12:42:49 HOLD: run130.stop set (no s7_4060) + lock dirs pre-claimed for s130chk_s5_s34/s12_3070 (user via Audit: the 7 check runs move to Vast 4060 Ti / A4000 with checkpoints, note 131-4); running s6_4060 / s30_3070 have the old micro rule (OOM at 14k)
+13:08:04 s130chk_s5_s6_4060 rc 4294967295 (cuda:0)
+13:08:04 s130 4060 RUNNER_DONE
+13:08:04 s131x_s5_s401_2070 rc 0 eval NO (cuda:2)
+13:08:04 s130chk_s5_s30_3070 rc 127 no-eval (cuda:1)
+13:08:04 WORKER_DONE cuda:1 scratch/c1_q_130chk_3070.txt
+13:08:33 certcover128 queue start (waited on pids 20316 18516)
+13:08:33 certcover128 queue done
+13:19:26 user via Audit ~13:10: local s6_4060 / s30_3070 / s131x s401_2070 (+ relaunched s402) stopped; partials -> *.void_stopped; c1_q_131x_2070.sh disabled (stop file + .disabled); local cards: short jobs that pass a memcheck with >= 1.5 GiB free, one per card (user rule)
