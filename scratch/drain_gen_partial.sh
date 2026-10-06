@@ -27,16 +27,36 @@ if $SC scratch/drain_posthoc.py scratch/model_keep_patterns.txt root@$H:/workspa
     fi
   done
 fi
-for j in $runs $keep logs; do n=$(echo $j | tr '/' '_'); ok=0
+# Audit 2026-10-06: (1) small files first - pass 1 fetches every run dir WITHOUT model.pt (eval / args / log / preds) plus logs, so
+# a finished host's result is safe early; pass 2 fetches model.pt only for kept runs. (2) at most 2 model transfers at once across all
+# drains (lock dirs D:/drain_tmp/locks/slot{1,2} holding the drain's pid; a dead holder's slot is reclaimed).
+SLOT=""
+acquire() { mkdir -p /d/drain_tmp/locks; while :; do for k in 1 2; do
+    if mkdir /d/drain_tmp/locks/slot$k 2>/dev/null; then echo $$ > /d/drain_tmp/locks/slot$k/pid; SLOT=$k; return; fi
+    op=$(cat /d/drain_tmp/locks/slot$k/pid 2>/dev/null); [ -n "$op" ] && ! kill -0 "$op" 2>/dev/null && rm -rf /d/drain_tmp/locks/slot$k
+  done; sleep 30; done; }
+release() { [ -n "$SLOT" ] && rm -rf /d/drain_tmp/locks/slot$SLOT; SLOT=""; }
+trap release EXIT
+fetch() {   # fetch <name> <remote tar arguments>: sha-verified, 3 tries, extracted with logs/ -> logs/vast_<host>_<port>/
+  local n=$1; shift; local ok=0
   for try in 1 2 3; do
-    if [ $j = logs ]; then src="logs"; else src="$j logs/gen_$(basename $j).log"; fi
-    ex=""; case "$skipset" in *" $j "*) ex="--exclude=$j/model.pt";; esac
-    rs=$($S "cd /workspace/Latent && tar -czf /tmp/f_$n.tgz $ex $src 2>/dev/null; sha256sum /tmp/f_$n.tgz" 2>/dev/null | grep -o '^[0-9a-f]\{64\}')
+    rs=$($S "cd /workspace/Latent && tar -czf /tmp/f_$n.tgz $* 2>/dev/null; sha256sum /tmp/f_$n.tgz" 2>/dev/null | grep -o '^[0-9a-f]\{64\}')
     scp -q -o ServerAliveInterval=15 -i ~/.ssh/runpod_ed25519 -P $P root@$H:/tmp/f_$n.tgz /d/drain_tmp/f_${H}_$n.tgz 2>/dev/null
     [ -n "$rs" ] && [ "$rs" = "$(sha256sum /d/drain_tmp/f_${H}_$n.tgz | cut -c1-64)" ] && { ok=1; break; }; sleep 20
   done
-  [ $ok = 1 ] || { echo "FETCH_INCOMPLETE $ID ($j)"; exit 1; }
+  [ $ok = 1 ] || return 1
   tar --no-same-owner -xzf /d/drain_tmp/f_${H}_$n.tgz -C . --transform "s|^logs/|logs/vast_${H}_${P}/|" && rm -f /d/drain_tmp/f_${H}_$n.tgz   # extracted and sha-verified: drop the local copy (C: filled up 2026-10-03)
+}
+for j in $runs $keep; do n=$(echo $j | tr '/' '_')
+  fetch $n --exclude=$j/model.pt $j logs/gen_$(basename $j).log || { echo "FETCH_INCOMPLETE $ID ($j small files)"; exit 1; }
+done
+fetch logs logs || { echo "FETCH_INCOMPLETE $ID (logs)"; exit 1; }
+for j in $runs $keep; do case "$skipset" in *" $j "*) continue;; esac
+  has=$($S "cd /workspace/Latent && { [ -e $j/model.pt ] && echo Y || echo N; }" 2>/dev/null | tail -n 1)
+  [ "$has" = N ] && continue; [ "$has" = Y ] || { echo "FETCH_INCOMPLETE $ID ($j model check: no answer)"; exit 1; }
+  n=$(echo $j | tr '/' '_')_model; acquire
+  fetch $n $j/model.pt || { release; echo "FETCH_INCOMPLETE $ID ($j model.pt)"; exit 1; }
+  release
 done
 for j in $runs; do [ -s $j/eval.json ] || { echo "FETCH_INCOMPLETE $ID missing $j/eval.json"; exit 1; }; done
 # Theory 2026-10-05 (aborted-run rule): failed runs not fetched above keep their partial args.json + log.jsonl as <dir>.void_partial
