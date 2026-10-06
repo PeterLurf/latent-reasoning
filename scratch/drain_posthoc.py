@@ -47,6 +47,13 @@ def main():
         print("KEEP no model.pt"); return
     if not os.path.exists(ep):
         print("KEEP no eval.json (partial / void: kept for investigation)"); return
+    if name.startswith(("s130chk_", "s131x_")) and not os.path.exists(os.path.join(d, "eval_probe_posthoc.json")):
+        # Audit 2026-10-06: the end-of-training probe (probe127 + opprobe) on the host before destroy; the json then comes back with the
+        # small files (pass 1). Output to a log (the drain reads this script's LAST stdout line as the decision).
+        mod = "boxes.fsq120_posthoc" if os.path.exists(os.path.join(ROOT, "boxes", "fsq120_posthoc.py")) else "boxes.fsq120"
+        with open(os.path.join(ROOT, "logs", "probe_posthoc_%s.log" % name), "w") as lg:
+            subprocess.call([sys.executable, "-u", "-m", mod, "--from_args", os.path.join(d, "args.json"), "--probe_only", "--device", dev, "--out", d],
+                            cwd=ROOT, stdout=lg, stderr=subprocess.STDOUT)
     for pat in patterns():
         if pat in d:
             print("KEEP pattern %s" % pat); return
