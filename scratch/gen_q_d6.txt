@@ -1,4 +1,4 @@
-# §112 coverage dose-response (note 112-1 + addendum); host 6 of 7
+# §119 SIM-CoT s2 / s3 at lr 1e-4 (note 119-4: the sweep tied; nearest the published lr), init = Coconut s2 / s3 (shipped via RESUME_FILES); any 24 GB class; boxes.base119
 # P=2
-boxes/runs_s5/s112_f010_s22 boxes.self110 --cov 0.1 --save_rounds --seed 22
-boxes/runs_s5/s112_f010_s25 boxes.self110 --cov 0.1 --save_rounds --seed 25
+boxes/runs_s5/s119_simcot_s2 boxes.base119 --method simcot --init boxes/runs_s5/s119_coconut_s2/model.pt --lr 1e-4 --seed 2
+boxes/runs_s5/s119_simcot_s3 boxes.base119 --method simcot --init boxes/runs_s5/s119_coconut_s3/model.pt --lr 1e-4 --seed 3
