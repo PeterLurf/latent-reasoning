@@ -5575,6 +5575,12 @@ the held-out families closed.**
   - The task-language cert_task holds in s3 / s4 (Moore 2) and fails in s1 / s2.
   - The reads-only certificate (120-9) holds in 4/4.
   - The CERT output did not record device or dtype; it is labelled here from the run log. --cert_only is asked to record both.
+* **S5 certificates (descriptive; 2026-10-06 14:15 EDT; wording fixed before the cloud pass on b61 is read).** The local 2070 fp32 CERT on S5 s1 hit
+  its 45-min limit with **173,486 reachable codes** (from 14,400 start pairs, still growing), against 3,042 codes visited by the eval.
+  - So S5's code machine, explored from every (state, item) start, is far larger than the part the eval chains use. It is not a
+    clean 120-state machine off the eval distribution.
+  - If b61's fp32 pass also times out, the S5 row reads **"CERT inconclusive by time, 173k+ reachable"**, nothing implying a closed
+    machine. FAMILY-PASS(S5) is unaffected: CERT is descriptive for S5.
 * **Contraction (descriptive; 2026-10-06 13:30 EDT; fp32, local RTX 3070 and earlier runs). The first-hand-off ratio ρ₁ (127-12) is the informative
   number: the overall ρ is vacuous (about 1e-6) under hard rounding.**
   - **Every one of the 19 learning runs contracts, ρ₁ 0.03–0.27, inside 118-5's pass band (≤ 0.28):**
