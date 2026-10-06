@@ -830,3 +830,6 @@ DRIVER CLASS 2026-10-06 00:15 §127 Stage 2 matched unit (b30 / b31) on RTX 3090
 54429543 vast offer 54328025 created 2026-10-06 00:15: label gen-e33, queue scratch/gen_q_e33.txt (logged at create by vdeploy_toy.sh)
 54429551 vast offer 35612014 created 2026-10-06 00:15: label gen-e34, queue scratch/gen_q_e34.txt (logged at create by vdeploy_toy.sh)
 54277416 vast | gen_a2 DESTROYED_VERIFIED 2026-10-06 00:16 after verified per-run fetch (boxes/runs_s5/s118_long_s82); FAILED (no eval.json, logs fetched): boxes/runs_s5/s118_long_s81; partial logs kept: boxes/runs_s5/s118_long_s81.void_partial
+54429513 vast | gen-b30 DESTROYED 2026-10-06 00:47 by hand: upload failed (no /workspace/Latent), deploy's auto-destroy did not run; idle ~30 min
+PRICE EXCEPTION 2026-10-06 00:48 gen-e30 offer 50807813 RTX 3090 595.71 $0.281: 3090 supply thin; §128 slot host
+54432854 vast offer 44133016 created 2026-10-06 00:48: label gen-b30, queue scratch/gen_q_b30.txt (logged at create by vdeploy_toy.sh)
