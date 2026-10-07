@@ -5,8 +5,9 @@ Arms (dirs boxes/runs_fsq/s138_{arm}_s{seed}):
   full_fsq    d 768, hard FSQ (8 levels)
   full_noise  d 768, continuous + dither U(+-0.25) at training hand-offs after 2k (NOISE-64's)
   full_cont   d 768, continuous, no correction (CONT-64's; the direct contrast with §126 RAW-H)
-  full_hinge  full_cont + the local contraction hinge (candidate 6; Literature d4f0d18b): from 2k, perturb the pre-quantisation z by eps =
-              0.15 x the nearest-neighbour state-centroid distance (measured at 2k), one segment, penalise max(0, rho_hat - 0.3), weight 1
+  full_hinge  full_cont + the local contraction hinge (candidate 6; Literature d4f0d18b): from 2k, perturb the pre-quantisation z_b along a
+              RANDOM direction (138-2) by eps = 0.1 x the median random-pair z_b distance at 2k (138-3 / 138-4; label-free), one segment,
+              penalise max(0, rho_hat - 0.3), weight 1 (args hinge_eps_frac 0.1)
 PASS(arm): >= 3/4 slots whose accepted run is exact at 2,048 (ext_2048 >= 0.99), SERIAL and contractive (rho <= 0.28: 127-12's clause for
 full_fsq; 133-1's first-3 form for the continuous arms). DROP at proof: slot 1 accepted with ext_2048 < 0.95 stops the arm.
     python theory/score_s138.py
@@ -76,7 +77,7 @@ def rho_k3(cf, eps="0.1"):
 
 
 EXPECT = {"full_fsq": {"d_q": 768, "levels": 8}, "full_noise": {"d_q": 768, "no_round": True, "dither": 0.25},
-          "full_cont": {"d_q": 768, "no_round": True}, "full_hinge": {"d_q": 768, "no_round": True, "hinge": True, "hinge_eps_frac": 0.15}}
+          "full_cont": {"d_q": 768, "no_round": True}, "full_hinge": {"d_q": 768, "no_round": True, "hinge": True, "hinge_eps_frac": 0.1}}   # note 138-3 (before any HINGE run): 0.1 x median random-pair z_b distance
 ERRORS = []
 
 

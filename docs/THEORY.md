@@ -225,11 +225,12 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 135 | TEACHER-STATE DISTILLATION: a CoT model's hidden states (vs pretrained GPT-2 on the same text) as per-hand-off InfoNCE targets on §128's S5 carrier | **FAIL both arms (0/4)**: worse than plain; the aux pulls context into the code (135-9) | closed (stage B not run) |
 | 136 | GROW (the user's idea): narrow → wide function-preserving latent growth at a loss threshold / plateau; GROW-P, COPY+GROW / STAGED / GROW-NOISE, GROW-4, NESTED-64 on S5 (S5×4 decides) | **stage 1: COPY+GROW / COPY+GROW-NOISE PASS 4/4** (growth safe; the new dims carry the state, R² 0.95–0.98); STAGED 3/4; GROW-P 1/4 (no rescue); GROW-4 0/4 (no entry at d 4); NESTED-64 does not enter (descriptive) | **open** (benefit: S5×4 with §133 stage 2) |
 | 137 | Multiplication on fsq120, column-major: carried carry (FSQ-8), streamed product digits (C4 qualifier), restart slots; 4×4 → 5×5 → 4×8 | **4×4 DROP at proof** (test_acc 0.0; middle columns at chance; carry in h R² 0.69, in the code 0.24) → §140 | closed |
-| 138 | FULL WIDTH (the user's trigger): §133's harness at d 768, no COPY; FULL-FSQ / FULL-NOISE / FULL-CONT (vs RAW-H) / FULL-HINGE; fails-to-improve → revisit; S5×4 as the benefit test | registered | **open** |
+| 138 | FULL WIDTH (the user's trigger): §133's harness at d 768, no COPY; FULL-FSQ / FULL-NOISE / FULL-CONT (vs RAW-H) / FULL-HINGE; fails-to-improve → revisit; S5×4 as the benefit test | **all four dropped at proof** (ext 0.0; escape after the 2k flag to ≈ ln 120, like RAW-H on 3/4; the hinge never engaged) → rule (i): one revised method, §143 | closed (→ §143) |
 | 139 | DISTILL-2 (user's go): a CoT teacher's state (probe or its text) as a warm-start fading to 0 by 4k, on multiplier-major multiplication; A = SOFT-16 + COPY (FINAL), B = A + DISTILL-2, C = constant weight | **stopped at proof** (139-1(c) copy gate; A′ / B s1 test_acc 0.0, B learns only step 1 at 0.59) | closed |
 | 140 | DIGPAIR (§137's fallback; runs only on §137 4×4 DROP / FAIL): one digit pair per segment, carried column accumulator (FSQ-8), streamed digits; design-forced C1 | **4×4 DROP at proof** (0.002; columns 1–2 exact, first errors at the 3- and 4-pair columns; accumulator R² h 0.92 vs code 0.61) | closed |
 | 141 | After §137's DROP: latent repeats per column (r4 + repeat index) × carrier (FSQ-8 / SOFT-16); r1×SOFT-16 gated on a nonlinear code probe; readings crossed with §140 | **r1s16 and r4f8 DROP at proof** (test_acc 0.0; repeats change nothing: columns as §137, the sum's R² ≤ 0.28 after any repeat); r4s16 pending | **open** (r4s16) |
 | 142 | MULT-READ (the user's go): a per-step reader of the running sum (the teacher's S_j text) on NOISE-64, multiplier-major 4×4, 48k; then ICoT-style earliest-first removal to final-answer only (B-EARLY; B-LATE and CTRL descriptive); with the multiplication post-mortem | registered | **open** |
+| 143 | FULL-GROW (§138's one revised method): §136 COPY+GROW-NOISE to 64, then 64 → 768 at ≥ 6k with μP lr on the new columns; e-space ρ; paired per seed with s136_cnoise; if it fails, full width stops | registered | **open** |
 
 ## Live sections
 
@@ -7236,6 +7237,41 @@ centroid distance) are logged in the same space. At init these are 0.13 / 2.09; 
 * **Reading (as registered: r4 DROP with §140 DROP):** multiplication is not reached by this harness at this budget. Extra latent steps without new input do not buy the
   per-column compute. r4s16 (b131, about 19:00) completes §141. §142's post-mortem table shows it as pending.
 
+**§138 result (2026-10-07 15:18 EDT; proof slot 1 per arm, cloud RTX 3090s, drivers recorded per run; scored by Theory with score_s138). All four full-width arms are dropped at proof
+(ext_2048 0.0 on slot 1, an accepted run unflagged at 2k). Rule (i) applies: full width is not adopted; post-mortem below; one revised method follows as §143 (below).**
+
+| Arm (d 768, s1) | ext_2048 | acc at length 1 / 2 | fp32 ρ (rule form) | ρ along state directions / Jacobian top | eff rank | spread / between | final loss |
+|---|---|---|---|---|---|---|---|
+| FULL-FSQ | 0.0 | 0.0095 / 0.0 | 0.088 | 0.21 / 0.67 | 2.8 | 17.9 | 4.82 |
+| FULL-NOISE | 0.0 | 0.0485 / 0.001 | 0.070 | 0.20 / 0.66 | 4.8 | 13.8 | 4.78 |
+| FULL-CONT | 0.0 | 0.0685 / 0.0025 | 0.207 | 0.43 / **1.14** | 3.5 | 21.1 | 4.64 |
+| FULL-HINGE | 0.0 | 0.0415 / 0.001 | 0.042 | 0.13 / 0.41 | 2.3 | 22.6 | 4.79 |
+
+* **Post-mortem (rule (i)'s measures):**
+  - **One path, then escape.** All arms are identical to 2k (same seed and base; the FSQ ramp and the dither start at 2k): loss 3.87 at 2k, not flagged by 123-3. Each then
+    climbs back to ≈ ln 120 (4.6–4.8) as L_max grows (L 4 at 2k, 8 at 5k) and stays there to 24k. Accuracy at length 1 ends at chance or near it: an F2a-like
+    contractive map to a state-blind code, not drift.
+  - **ρ is in band but the code holds no state:** fp32 ρ 0.04–0.21 by the rule, while the within-state spread is 14–23 times the distance between state centroids.
+    FULL-CONT's hand-off Jacobian expands along its top direction (1.14), Literature's (3b) case.
+  - **Dimension use:** effective rank 2.3–4.8, with 92 % of the variance beyond the first 64 dimensions. FULL-FSQ uses all 768 dimensions and 8,132 codes per state
+    (`codes_per_state`): every chain gets its own code.
+  - **The carried norm doubles by 2k** (25 → 53; CONT-64: 26 → 21).
+  - **The hinge never engaged.**
+    - ε at 2k is 2.79: 0.155 of the within-state spread (18.0) and 2.75 times the median nearest-centroid distance (1.01). The states were not separated at 2k.
+    - The median ρ̂ was 0.047–0.05 throughout, far below the 0.3 margin, with an active share of 1.6 % at 2.1k and 0.008 % at 24k.
+    - That is Literature's random-direction warning (3b): the bulk contracts, so a random-δ hinge is inert.
+  - **The same failure at 768 without the learned map:** §126 RAW-H (raw h) cleared the 2k flag 4/4 at lower loss (1.65–2.06), then escaped on s1 / s3 / s4 (ext 0.0) and
+    learned only on s2 (0.73 at 2,048, drifting). Of 8 decided 768-d runs, 1 learned. At d 64 the same harness's accepted runs learn (§133 stage 1).
+  - **Read:** at full width the failure is **learning from scratch** (escape after the 2k flag), common to the raw and the learned bounded carriers, not instability of a learned
+    code. Every proof is seed 1 (one path to 2k), so this is n = 1 per arm under the registered proof rule; RAW-H's 3/4 escapes are the independent support.
+* **The one revised method (rule (i)), §143 FULL-GROW:**
+  - enter at d 8 with COPY, and grow to 64 exactly as §136's 4/4 passer;
+  - then widen 64 → 768 with a μP-scaled learning rate.
+  - It removes exactly the failing step: learning at 768 from scratch.
+* The benefit question (rule (ii)) is moot unless §143 passes. S5×4 proceeds with the 64-d passers.
+* **Scorer fix, disclosed:** `score_s138.py` still expected `hinge_eps_frac` 0.15 (§138's first text) and flagged the run as an args error. 138-3 had set 0.1 before
+  any HINGE run, and the run used 0.1. The expected value now follows 138-3. No threshold or rule changed.
+
 ## 142. MULT-READ: a per-step reader of the running sum on a wide continuous carrier, then ICoT-style removal to final-answer only (pre-registered 2026-10-07 14:56 EDT, after Literature's checks bb1f4eeb / 602541ab and Audit's review, before any implementation or run; the user's "yes go ahead" (via Audit); registered with the multiplication post-mortem once §141's r4f8 cell read, r4s16 pending (Audit's ruling))
 
 **Why: the multiplication post-mortem (§98, §100, §137, §139, §140, §141).**
@@ -7346,6 +7382,79 @@ No COPY (139-5: 8-digit copy learns slowly). No restarts.
   - args record label_source "teacher_generated" and the cache sha.
   - The mismatch and invalid shares are computed over the whole cache.
   - **139-2's CE-mode gate applies:** teacher format validity ≥ 0.99 on the cache, or the section stops and reports before any run.
+
+## 143. FULL-GROW: full width by staged growth from an entered 64-d carrier (§138's one revised method; pre-registered 2026-10-07 15:18 EDT, after Literature's checks 9dc25047 / 5b22bd7f and Audit's review, before any implementation or run)
+
+**Why (§138's post-mortem, above).**
+* Every 768-d carrier tried fails at **learning from scratch**: it escapes after the 2k flag. That covers §138's four proofs and §126 RAW-H on 3 of 4 seeds.
+* §136 shows that growth from an entered narrow code is safe at 64 (COPY+GROW-NOISE 4/4), and that the new dimensions carry the state.
+* FULL-GROW removes the failing step: the carrier enters at d 8 (with COPY), grows to 64 exactly as §136's passer, and only then to 768.
+* **Prior** (9dc25047, `docs/LIT_S143_FULLGROW_2026-10-07.md`):
+  - there is no ~100× single-step growth; practice is about 2× per stage (Net2Net, bert2BERT, LiGO, MSG 2305.02869, FLM-101B 2309.03852, ProGAN);
+  - zero-init outgoing weights are fine (ReZero 2003.04887, GradMax); the pitfall is Adam's step at a large fan-in (μP 2203.03466);
+  - new as scoped.
+
+**Design: §136's COPY+GROW-NOISE exactly, plus one second widening.** The base is fsq120 S5 FINAL, FSQ with 8 levels, COPY rows f 0.1 from step 0, the length curriculum,
+p_hard 2000 → 4000, 24k, bs 64, no restarts and no plateau stop, RTX 3090 class, checkpoints and the host check.
+* **Switch 1 (8 → 64):** at THRESHOLD (the first logged step ≥ 2,000 with loss ≤ 2.5). The 56 new dimensions are continuous with dither U(±0.25).
+  - Each seed is therefore **identical to `s136_cnoise_s5_s{seed}` (PASS 4/4) up to switch 2**, on the same 3090 / driver. The scorer checks the logged losses for
+    identity. A mismatch makes the comparison unpaired, and it is stated. The readings use each run's own pre-switch-2 state either way.
+* **Switch 2 (64 → 768):** at the first logged step ≥ 6,000 (after the rounding ramp and the L_max 8 step) that is ≥ 1,000 steps after switch 1 and has loss ≤ 2.5.
+  §136's GROW-NOISE runs would fire at 6.0–6.1k.
+  - The 704 new dimensions are continuous with dither U(±0.25).
+  - W_up's new columns start at 0 with a 500-step fade-in. The new parameters form their own Adam group with a 300-step warm-up.
+  - **μP-style learning rate:** the 704 new W_up columns train at **64/768 × the base lr**. The old 64 keep the base lr, so the pairing holds, and W_down is unscaled
+    (its fan-in is still 768). Under Adam the output change per step grows with fan-in (Literature 9dc25047 (b), 5b22bd7f (1)). The per-group effective step size is
+    logged.
+  - **The state right before switch 2 is measured on the host:** accuracy at 512, fp32 ρ, directional ρ, the Jacobian top and the carried norm. The checkpoint is then
+    deleted.
+* A seed whose second trigger never fires stays at 64 and does not count as full width.
+
+**Rules (fixed now; §138's bar).**
+* **PASS:** ≥ 3/4 seeds exact at 2,048 (ext_2048 ≥ 0.99), SERIAL, and contractive by the **e-space** first-three form ≤ 0.28.
+  - **The e-space ρ:** fp32 contraction() perturbs all 768 coordinates of z_b as usual, but measures every distance as ‖Δe‖, with e = W_up(z) the carried embedding.
+  - **Why e-space:** while W_up_new ≈ 0 a z-space ratio is deflated by perturbation that does not propagate (Literature 5b22bd7f; Audit). Once the new dimensions are
+    used, their perturbations count.
+  - The z-space rho_k3, the 64-block e-space ρ and the Jacobian top are reported beside it.
+  - §136's 4/4 count is reported beside the verdict.
+* **DROP at proof:** s1 below 0.95 at 2,048 stops the section.
+* **The user's rule, explicit:** if §143 fails or drops, **full width stops**. 64-d stays the operating width, with no further fixes.
+* **Readings per seed (fixed now; against the same seed's state right before switch 2):**
+  - **LOCATED at the 64 → 768 step:** exact before switch 2 (accuracy at 512 ≥ 0.99), not exact at the end.
+  - **INHERITS FULL-CONT's expansion:** a failing seed whose Jacobian top ρ at the end is > 1, or whose **carried-embedding norm ‖e‖ = ‖W_up z‖** at the end is ≥ 2× its
+    value right before switch 2. The code's own norm would double by construction (704 new bounded dimensions), while ‖e‖ is preserved at the switch (Literature
+    5b22bd7f).
+  - **AVOIDS it:** a passing seed (so the e-space rule holds) with the Jacobian top ρ ≤ 1 at the end. Both are fp32 (contraction() and the power iteration).
+  - **A pass reads "stable at 768", not a benefit.** The benefit is S5×4's question.
+  - **The switches:** the loss spike (max over the 1,000 steps after, minus the loss at the switch) and the recovery.
+    - Switch 1 is expected to repeat §136 (+1.4 to +2.1 nats, recovered).
+    - A failure before switch 2 reads as §136 not replicating, not as a full-width failure.
+* **PASS reading:** a pretrained LM's latent carrier reaches the residual width exact, SERIAL and contractive by staged growth. It joins the S5×4 proposal as the full-width arm
+  (§138 rule (ii)).
+
+**Descriptive.**
+* §138's measures: effective rank, variance beyond the first 64 dimensions, spread over between, directional ρ, Jacobian power, carried norm.
+* §136's measures: switch spikes and new-dimension use.
+* Literature (c):
+  - ‖W_up_new‖ and the new block's share of W_up's output;
+  - ρ split by block (FSQ-8, the 56, the 704), and the 64-block e-space ρ (`s143.rho_block64_e`);
+  - R²_state from the 704-dimension block alone.
+
+**Placement.**
+* **Cost:** proof s1 about $0.3–0.4, then s2–s4 about $1; about $1.2–1.5 in all.
+* **Implementation (the experiments session):**
+  - fsq120 `--grow2 768 --grow2_min_step 6000 --grow2_lr_scale 0.0833`;
+  - the switch-2 pre-eval in grow.json (`pre_eval`: acc_512, rho_k3, the directional ρ, the Jacobian top, and the carried norm ‖e‖);
+  - per-group step logging;
+  - **the e-space distances in `eval_contraction_fp32.json`** (`rho_k_e`, `dist_med_k_e`, beside the z-space `rho_k` / `dist_med_k`);
+  - the block-split ρ, and in eval.json `s143.{block704_var_share, block704_r2_state, w_up_new_norm, rho_by_block, rho_block64_e}` plus `carried_norm.end` (‖e‖).
+* **Gates:**
+  - function preservation at a forced switch 2 (max |Δ logits| = 0);
+  - gradflow under CUDA bf16 into the new W_up columns from the first step after switch 2;
+  - memory at L 32 with d 768 plus COPY rows;
+  - smoke_plain;
+  - Audit's diff review.
+* Dirs `s143_fullgrow_s5_s{1..4}`. Scorer: `theory/score_s143.py`, committed with this registration.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
