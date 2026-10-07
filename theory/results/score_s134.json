@@ -834,5 +834,30 @@
   }
  },
  "verdict": "PASS",
- "guard": {}
+ "guard": {
+  "ff": {
+   "long_acc": 1.0,
+   "serial": true,
+   "closed": null,
+   "ok": true
+  },
+  "cyc": {
+   "long_acc": 1.0,
+   "serial": true,
+   "closed": true,
+   "ok": true
+  },
+  "mod": {
+   "long_acc": 1.0,
+   "serial": true,
+   "closed": false,
+   "ok": false
+  },
+  "rdfa": {
+   "long_acc": 1.0,
+   "serial": true,
+   "closed": true,
+   "ok": true
+  }
+ }
 }

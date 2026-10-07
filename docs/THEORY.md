@@ -221,7 +221,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 131 | Second restart point at 4k: FLAG4 = loss(4k) ≥ 0.9·loss(2.6k) (floored), held-out precision / recall for "escape without learning" | **PASS**: 0/23 learners flagged, 8/11 escape-fails caught (recall 0.73); not deployable (8 < 10); 8-d carrier only | closed |
 | 132 | Rules in context: per-problem permutation tables (explicit pairs) on §120's carrier; size ladder k4/m2 → k6/m3; PASS 3/4 exact + SERIAL on held-out tables | **rung 1 PASS 3/4** (slots 2–4 exact + SERIAL, certified; pilot 0.9865 = one unclosed table); rung 2 next | **open** |
 | 133 | Can error correction make a wide latent carrier exact? CONT / FSQ / SOFT / NOISE / PIN at d 16–64 on S5, then an S5×4 capacity probe (FSQ-8 controls) | registered | **open** |
-| 134 | COPY-ANCHOR: label-free state-reading auxiliary (final-answer text autoencoded through the carrier) on §128's S5 recipe, no restarts; PASS 4/4 exact (plain 1/4) | **PASS on S5: 4/4 exact at 2,048 + SERIAL + ρ 0.14–0.22, no restarts** (plain 1/4); guard stage next | **open** (guard) |
+| 134 | COPY-ANCHOR: label-free state-reading auxiliary (final-answer text autoencoded through the carrier) on §128's S5 recipe, no restarts; PASS 4/4 exact (plain 1/4) | **PASS on S5: 4/4 exact at 2,048 + SERIAL + ρ 0.14–0.22, no restarts** (plain 1/4); **guard FAILS on MOD** (exact + SERIAL, but not closed: 70k reachable codes); not adopted as default | closed |
 | 135 | TEACHER-STATE DISTILLATION: a CoT model's hidden states (vs pretrained GPT-2 on the same text) as per-hand-off InfoNCE targets on §128's S5 carrier | **FAIL both arms (0/4)**: worse than plain; the aux pulls context into the code (135-9) | closed (stage B not run) |
 | 136 | GROW (the user's idea): narrow → wide function-preserving latent growth at a loss threshold / plateau; GROW-P, COPY+GROW / STAGED / GROW-NOISE, GROW-4, NESTED-64 on S5 (S5×4 decides) | registered | **open** |
 | 137 | Multiplication on fsq120, column-major: carried carry (FSQ-8), streamed product digits (C4 qualifier), restart slots; 4×4 → 5×5 → 4×8 | registered | **open** |
@@ -6073,6 +6073,31 @@ scored by Theory alone with `theory/score_s134.py`, committed before any run; Au
   stable to train on S5 without restarts.** It turns all three failure types (plateau, escape without learning, basin) into exact learners.
   - §134 registered "PASS (+ guard)" for adoption as the default. **The guard stage (FF / CYC / MOD / RDFA, one seed each, ~$2.5) is approved and
     runs next.** The "default recipe" reading waits for it.
+
+**§134 guard result (2026-10-07 04:48 EDT; FF / CYC / MOD / RDFA, one seed each with COPY rows, RTX 3090 / 595.71.05, trained --no_cert, fp32 cover certificates post hoc as 128-6;
+scored by Theory with score_s134). The guard FAILS on MOD: COPY keeps every family exact and SERIAL, but MOD's carrier is no longer closed.**
+
+| Family | long_acc | ext_2048 | SERIAL | fp32 CERT | reachable codes (fp32 BFS) | Moore classes | §128 plain (same family) |
+|---|---|---|---|---|---|---|---|
+| FF | 1.0 | n/a | yes | n/a (not required) | — | — | — |
+| CYC | 1.0 | 1.0 | yes | **holds** | 38 | 5 | holds |
+| RDFA | 1.0 | 1.0 | yes | **holds** | 218 | 8 | holds |
+| MOD | 1.0 | 1.0 | yes | **does not hold** (185,903 violations) | **70,012** | 34,725 | holds (s1: 386, Moore 5) |
+
+* **MOD with COPY.**
+  - Random test chains visit only 560–572 codes, and all are correct (long_acc 1.0, ext 1.0).
+  - The exhaustive BFS over every op sequence from the start explodes from depth 10 (frontier 83 → 13,990 at depth 16) into a transient region of about 70k
+    codes, and dies out by depth 32. Along those paths the decoded answers are inconsistent with a 5-state machine.
+  - So particular op sequences of about 10–20 steps, which random chains almost never sample, lead the MOD + COPY carrier astray. Plain §128 MOD is closed
+    on all of them.
+* **Reading (as registered):** the guard requires closure where §128 required it. MOD fails, so **the copy anchor is not task-agnostic in §134's sense.**
+  - **§128's recipe + COPY is not adopted as the default.**
+  - What stands: §134's S5 result (4/4 exact without restarts, a fix for entry on S5), and COPY's exactness and SERIAL on all five families. The cost
+    is closure on MOD.
+  - Descriptive: COPY's final-answer copy rows add a second writer whose code region the transition writer moves into (134-5). On MOD this seems to
+    leave the transition map defined only near the visited codes. That is a hypothesis, not tested.
+* **Consequence for §139 (COPY base):** multiplication has no certificate, so a closure loss there would not show in §139's rules. That limitation is
+  stated beside §139's result.
 
 ## 135. TEACHER-STATE DISTILLATION: a text-CoT model's hidden states, not its text, as per-hand-off targets for the latent carrier (pre-registered 2026-10-06 17:07 EDT, after Literature's check 0bb148e9 and before any implementation or run; the user's idea "natural language CoT is not really a good training artifact for latent reasoning; can we distill a CoT model into a latent model?" (via Audit), candidate 4 of `docs/THEORY_STABLE_LATENT_2026-10-06.md`)
 
