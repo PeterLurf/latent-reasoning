@@ -745,6 +745,54 @@
    "exact": false,
    "final_loss": 4.680485701560974,
    "gpu": "NVIDIA GeForce RTX 4060 Ti"
+  },
+  "s131x_s5_s401_2080ti": {
+   "family": "s5",
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.387,
+   "loss_4k": 1.208,
+   "long_acc": 0.987,
+   "exact": false,
+   "final_loss": 0.009304280590149573,
+   "gpu": "NVIDIA GeForce RTX 2080 Ti"
+  },
+  "s131x_s5_s402_2080ti": {
+   "family": "s5",
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.754,
+   "loss_4k": 3.268,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": 3.2065522181772392,
+   "gpu": "NVIDIA GeForce RTX 2080 Ti"
+  },
+  "s131x_s5_s403_2080ti": {
+   "family": "s5",
+   "flag2k": false,
+   "flag4k": false,
+   "flag4k_windowed": false,
+   "ratio": 0.198,
+   "loss_4k": 0.527,
+   "long_acc": 0.9985,
+   "exact": true,
+   "final_loss": 6.310999942797935e-05,
+   "gpu": "NVIDIA GeForce RTX 2080 Ti"
+  },
+  "s131x_s5_s404_2080ti": {
+   "family": "s5",
+   "flag2k": false,
+   "flag4k": true,
+   "flag4k_windowed": true,
+   "ratio": 0.976,
+   "loss_4k": 4.117,
+   "long_acc": 0.0,
+   "exact": false,
+   "final_loss": 3.1197293457001067,
+   "gpu": "NVIDIA GeForce RTX 2080 Ti"
   }
  },
  "summary_in": {
@@ -827,7 +875,8 @@
    "s127_s5_skip_s1",
    "s128_s5_s102",
    "s128_s5_s104",
-   "s130chk_s5_s12_a4000"
+   "s130chk_s5_s12_a4000",
+   "s131x_s5_s403_2080ti"
   ],
   "fp_s5": [],
   "exact_not_flag2k": [
@@ -852,7 +901,8 @@
    "s128_rdfa_s4",
    "s128_s5_s102",
    "s128_s5_s104",
-   "s130chk_s5_s12_a4000"
+   "s130chk_s5_s12_a4000",
+   "s131x_s5_s403_2080ti"
   ],
   "fp_not_flag2k": [],
   "exact": [
@@ -877,7 +927,8 @@
    "s128_rdfa_s4",
    "s128_s5_s102",
    "s128_s5_s104",
-   "s130chk_s5_s12_a4000"
+   "s130chk_s5_s12_a4000",
+   "s131x_s5_s403_2080ti"
   ],
   "false_pos": [],
   "escaped_failed": [
@@ -888,7 +939,10 @@
    "s130chk_s5_s17_a4000",
    "s130chk_s5_s34_a4000",
    "s130chk_s5_s5_4060ti",
-   "s130chk_s5_s7_4060ti"
+   "s130chk_s5_s7_4060ti",
+   "s131x_s5_s401_2080ti",
+   "s131x_s5_s402_2080ti",
+   "s131x_s5_s404_2080ti"
   ],
   "true_pos": [
    "s127_s5_ctrl_s3",
@@ -897,20 +951,23 @@
    "s127_s5_std2_s3",
    "s130chk_s5_s34_a4000",
    "s130chk_s5_s5_4060ti",
-   "s130chk_s5_s7_4060ti"
+   "s130chk_s5_s7_4060ti",
+   "s131x_s5_s404_2080ti"
   ],
   "misses": [
-   "s130chk_s5_s17_a4000"
+   "s130chk_s5_s17_a4000",
+   "s131x_s5_s401_2080ti",
+   "s131x_s5_s402_2080ti"
   ],
   "precision": 1.0,
-  "recall": 0.875,
+  "recall": 0.7272727272727273,
   "precision_ci95": [
-   0.5903836027749965,
+   0.6305833524471807,
    1.0
   ],
   "recall_ci95": [
-   0.4734903291247934,
-   0.9968402764687481
+   0.3902574404275787,
+   0.9397822658270933
   ]
  },
  "PASS": true,
@@ -919,7 +976,8 @@
    "s127_s5_skip_s1",
    "s128_s5_s102",
    "s128_s5_s104",
-   "s130chk_s5_s12_a4000"
+   "s130chk_s5_s12_a4000",
+   "s131x_s5_s403_2080ti"
   ],
   "fp_s5": [],
   "exact_not_flag2k": [
@@ -931,7 +989,8 @@
    "s128_ff_s4",
    "s128_s5_s102",
    "s128_s5_s104",
-   "s130chk_s5_s12_a4000"
+   "s130chk_s5_s12_a4000",
+   "s131x_s5_s403_2080ti"
   ],
   "fp_not_flag2k": [],
   "exact": [
@@ -943,7 +1002,8 @@
    "s128_ff_s4",
    "s128_s5_s102",
    "s128_s5_s104",
-   "s130chk_s5_s12_a4000"
+   "s130chk_s5_s12_a4000",
+   "s131x_s5_s403_2080ti"
   ],
   "false_pos": [],
   "escaped_failed": [
@@ -954,7 +1014,10 @@
    "s130chk_s5_s17_a4000",
    "s130chk_s5_s34_a4000",
    "s130chk_s5_s5_4060ti",
-   "s130chk_s5_s7_4060ti"
+   "s130chk_s5_s7_4060ti",
+   "s131x_s5_s401_2080ti",
+   "s131x_s5_s402_2080ti",
+   "s131x_s5_s404_2080ti"
   ],
   "true_pos": [
    "s127_s5_ctrl_s3",
@@ -963,20 +1026,23 @@
    "s127_s5_std2_s3",
    "s130chk_s5_s34_a4000",
    "s130chk_s5_s5_4060ti",
-   "s130chk_s5_s7_4060ti"
+   "s130chk_s5_s7_4060ti",
+   "s131x_s5_s404_2080ti"
   ],
   "misses": [
-   "s130chk_s5_s17_a4000"
+   "s130chk_s5_s17_a4000",
+   "s131x_s5_s401_2080ti",
+   "s131x_s5_s402_2080ti"
   ],
   "precision": 1.0,
-  "recall": 0.875,
+  "recall": 0.7272727272727273,
   "precision_ci95": [
-   0.5903836027749965,
+   0.6305833524471807,
    1.0
   ],
   "recall_ci95": [
-   0.4734903291247934,
-   0.9968402764687481
+   0.3902574404275787,
+   0.9397822658270933
   ]
  },
  "PASS_prospective": true
