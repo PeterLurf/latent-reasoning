@@ -1,0 +1,4 @@
+# THEORY §134 guard stage (Theory 2026-10-06, Audit-approved ~$2.5; S5 verdict PASS 2026-10-06): §128 cyc recipe + --copy_frac 0.1, no restarts; --no_cert as §128, then scratch.cc_job (post-hoc fp32 cert + cover, 128-6; eval_cert_fp32.json copied into the run dir after fetch); prefix + fp32 contraction on host by drain_posthoc; RTX 3090; boxes.fsq120
+# P=1
+boxes/runs_fsq/s134_copy_cyc_s1 boxes.fsq120 --family cyc --arm final --seed 1 --copy_frac 0.1 --micro 2 --micro_from 32 --no_cert --probe127 --ckpt_every 2000
+boxes/runs_fsq/s134cc_cyc_s1 scratch.cc_job --run boxes/runs_fsq/s134_copy_cyc_s1

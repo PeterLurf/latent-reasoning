@@ -205,6 +205,33 @@ class FSQ120(nn.Module):
         self.anneal = False; self.lam = 1.0; self._h_last = None; self._dist = []; self.distill_on = False   # §126 ANNEAL (test lam = 1)
         self.skip = False; self.std2 = False; self.var_on = False; self._var = []; self.last_qs = None   # §127 (enable_* register)
         self.det_train = False                                              # §127 checks: training semantics without RNG draws
+        self.grow_d0 = None; self.n_grow = 0; self.grow_noise = 0.0; self.nest_mask = None   # §136 (grow() / --grow_noise / --nested)
+
+    def width(self):
+        """§136: the current code width (d0 + every grown block)."""
+        return self.down.out_features + (sum(d_.out_features for d_ in self.down_g) if self.grow_d0 is not None else 0)
+
+    def grow(self, k):
+        """§136 GROW (function-preserving widening by k dims): new W_down rows with fresh nn.Linear default init, new W_up columns at
+        exactly 0 (outgoing side only), scaled by the fade-in buffer grow_alpha_<i> (0 here; the loop sets min(1, (t - t_s) / 500)).
+        Rebinds the module's D_Q to the new width. Returns the new parameters (their own AdamW group with a warm-up)."""
+        global D_Q
+        dev = self.up.weight.device
+        if self.grow_d0 is None:
+            self.grow_d0 = self.down.out_features; self.down_g = nn.ModuleList(); self.up_g = nn.ParameterList()
+        dn = nn.Linear(768, k).to(dev); upw = nn.Parameter(torch.zeros(768, k, device=dev))
+        self.down_g.append(dn); self.up_g.append(upw); self.register_buffer("grow_alpha_%d" % self.n_grow, torch.zeros((), device=dev)); self.n_grow += 1
+        D_Q = self.width()
+        return list(dn.parameters()) + [upw]
+
+    def _up(self, qs):
+        """W_up(code); §136: the base W_up on the first d0 dims plus alpha_i x (new columns) on each grown block (exact 0 at the switch)."""
+        if self.grow_d0 is None:
+            return self.up(qs)
+        o = self.grow_d0; e = self.up(qs[..., :o])
+        for i, w_ in enumerate(self.up_g):
+            k = w_.shape[1]; e = e + getattr(self, "grow_alpha_%d" % i) * F.linear(qs[..., o:o + k], w_); o += k
+        return e
 
     def enable_tsd(self, dim=256):
         """§135 TSD / BASE: P_s (student, 768 -> 256) and P_t (target, 768 -> 256), one each, shared across hand-offs."""
@@ -337,7 +364,10 @@ class FSQ120(nn.Module):
             return hh, hh, hh
         if self.anneal:                                                     # §126 ANNEAL: keep h for the mixed carrier (embed_code)
             self._h_last = h
-        z = self.down(self.ln(h.float())); zb = torch.tanh(z + SHIFT) * HALF - OFF
+        hl = self.ln(h.float()); z = self.down(hl)
+        if self.grow_d0 is not None:                                        # §136: the grown W_down rows (the first d0 dims unchanged)
+            z = torch.cat([z] + [d_(hl) for d_ in self.down_g], -1)
+        zb = torch.tanh(z + SHIFT) * HALF - OFF
         if self.training and self.noise > 0:                                # §123 dither (continuous) / pre-rounding dither (FSQ)
             zb = zb + (torch.rand_like(zb) * 2 - 1) * self.noise
         if noise is not None:
@@ -352,6 +382,13 @@ class FSQ120(nn.Module):
         else:
             hard = self.training is False or (torch.rand(()) < self.p_hard).item()
         qs = zb + (q - zb).detach() if hard else zb
+        if self.grow_noise and self.grow_d0 is not None:                    # §136 COPY+GROW-NOISE: grown dims continuous, never rounded,
+            o = self.grow_d0; zn = zb[..., o:]                              #   dither U(+-grow_noise) at training hand-offs; first d0 stay FSQ
+            if self.training and not self.det_train:
+                zn = zn + (torch.rand_like(zn) * 2 - 1) * self.grow_noise
+            qs = torch.cat([qs[..., :o], zn], -1); q = torch.cat([q[..., :o], zn], -1)
+        if self.nest_mask is not None:                                      # §136 NESTED: dims beyond the chain's prefix width zeroed
+            qs = qs * self.nest_mask.to(qs.dtype); q = q * self.nest_mask.to(q.dtype)
         return qs, q, zb
 
     def embed_code(self, qs):
@@ -368,7 +405,7 @@ class FSQ120(nn.Module):
                 # before 2k the distill gradient would reach GPT-2 through z_b(h), so ANNEAL would not equal RAW-H there)
                 t = sh.detach().float(); self._dist.append((((ec.float() - t) ** 2).sum(-1) / (t ** 2).sum(-1).clamp_min(1e-6)).mean())
             return (1 - self.lam) * sh.float() + self.lam * ec.float()     # fp32 while lam < 1, as RAW-H (note 126-5; ANNEAL s2 ran bf16-cast)
-        e = qs if self.raw_h else self.up(qs)                              # §126: std(h) directly; else W_up(code)
+        e = qs if self.raw_h else self._up(qs)                             # §126: std(h) directly; else W_up(code) (§136: + grown blocks)
         return self.std_map(e) if self.std else e                          # §125: the same map everywhere a code enters GPT-2
 
     def segment(self, prev, items):
@@ -468,7 +505,7 @@ def run_test(m, fam, s0, X, dev, amp, bs, every=True, grid=None, drift=None):
     """Hard chains; decode at every position (every=True) or at reads only (flip-flop). Returns decoded states (N, L) and
     the codes (N, L, 8) int8."""
     N, L = X.shape; pred = np.full((N, L), -1); ntok = NST if fam.name == "s5" else 1
-    codes = np.zeros((N, L, 1 if m.raw_h else D_Q), np.float32 if (m.no_round or m.raw_h) else np.int8)   # §126: 768-d carriers not stored
+    codes = np.zeros((N, L, 1 if m.raw_h else D_Q), np.float32 if (m.no_round or m.raw_h or m.grow_noise) else np.int8)   # §126: 768-d carriers not stored
     for i in range(0, N, bs):
         sl = slice(i, i + bs); B = len(X[sl]); prev = m.start(B, dev, s0[sl] if fam.name == "s5" else None)
         for t in range(L):
@@ -660,8 +697,19 @@ def make_opt(m, lr, lr_new=1.0):
                               {"params": newp, "mult": lr_new}], lr=lr, weight_decay=0.01)
 
 
-def lr_at(base, gr, step, steps):
-    return base * gr.get("mult", 1.0) * min(1, step / 100) * 0.5 * (1 + math.cos(math.pi * step / steps))
+def lr_at(base, gr, step, steps, warm=300):
+    """§136: a grown block's group ("warm_from": its switch step) adds a linear warm-up over `warm` steps."""
+    w_ = 1.0 if gr.get("warm_from") is None else min(1.0, max(0, step - gr["warm_from"]) / warm)
+    return base * gr.get("mult", 1.0) * w_ * min(1, step / 100) * 0.5 * (1 + math.cos(math.pi * step / steps))
+
+
+def s136_fire(L, t, sc, thr=2.5):
+    """§136 triggers at logged step t (fixed at registration; step windows scaled by sc for smokes): THRESHOLD = t >= 2,000 and loss
+    <= thr; PLATEAU = t >= 4,000, mean loss over (t - 500, t] >= 0.5 and >= 0.98 x mean over (t - 1,000, t - 500]."""
+    th = t >= 2000 * sc and L[t] <= thr
+    w1 = [v for s_, v in L.items() if t - 500 * sc < s_ <= t]; w0 = [v for s_, v in L.items() if t - 1000 * sc < s_ <= t - 500 * sc]
+    pl = t >= 4000 * sc and bool(w1) and bool(w0) and np.mean(w1) >= 0.5 and np.mean(w1) >= 0.98 * np.mean(w0)
+    return bool(th), bool(pl)
 
 
 def env_info():
@@ -823,6 +871,21 @@ def probe127(m, fam, dev, amp):
             l1 = float(m.answer_ce(m.embed_code(qm), ans, qm))
     m.train(was)
     return {"r2_item": r2i, "r2_state": r2s, "r2_start": r2st, "abl_dloss": l1 - l0, "ce_intact": l0, "ce_ablated": l1, "n": n}
+
+
+@torch.no_grad()
+def s136_dim_use(m, fam, dev, amp, d0):
+    """§136 (descriptive): on probe127's fixed chains (eval, hard): the variance share of z_b in dims >= d0, R^2_state from dims >= d0
+    alone (probe127's _r2: group means fit on chains 1-512, scored on the rest), and the effective rank of z_b (exp of the entropy of
+    the normalised covariance spectrum, all dims)."""
+    was = m.training; m.eval(); s0, x, lab = probe_batch127(fam); hs = _probe_chain(m, fam, dev, amp, s0, x); m.train(was)
+    Z = torch.stack([z.float() for z, _, _ in hs], 1).cpu().numpy(); half = len(x) // 2; Fz = Z.reshape(-1, Z.shape[-1]); var = Fz.var(0)
+    ev = np.clip(np.linalg.eigvalsh(np.atleast_2d(np.cov(Fz.T))), 0, None); p = ev[ev > 0] / max(ev.sum(), 1e-12)
+    out = {"d0": d0, "width": int(Z.shape[-1]), "eff_rank": float(np.exp(-(p * np.log(p)).sum())) if len(p) else 0.0, "new_dim_var_share": None, "new_dim_r2_state": None}
+    if Z.shape[-1] > d0:
+        Zn = Z[..., d0:]; out["new_dim_var_share"] = float(var[d0:].sum() / max(var.sum(), 1e-12))
+        out["new_dim_r2_state"] = _r2(lab[:half].reshape(-1), lab[half:].reshape(-1), Zn[:half].reshape(-1, Zn.shape[-1]), Zn[half:].reshape(-1, Zn.shape[-1]))
+    return out
 
 
 def opprobe(m, fam, dev, amp, n=4096, L=8, seed=12703, positions=(2, 4, 8), chunk=1024):
@@ -1106,6 +1169,11 @@ def main():
     ap.add_argument("--tsd", default=None, choices=["teacher", "base"], help="§135 (note 135-1): per-hand-off InfoNCE target = the frozen S5 text-CoT teacher's (teacher) or pretrained GPT-2's (base) hidden at --tsd_layer, last token of step j's state text, centred")
     ap.add_argument("--tsd_teacher", default=None, help="§135: the teacher dir (model.pt, target_means.pt)"); ap.add_argument("--tsd_layer", type=int, default=None)
     ap.add_argument("--tsd_w", type=float, default=1.0); ap.add_argument("--tsd_tau", type=float, default=0.1)
+    ap.add_argument("--grow", default=None, help="§136 GROW D0:D1 (D0 = --d_q): widen the code from D0 to D1 at the trigger (function-preserving)")
+    ap.add_argument("--grow_trigger", default=None, help="§136: a loss threshold (THRESHOLD, e.g. 2.5) or 'plateau' (PLATEAU)")
+    ap.add_argument("--grow_staged", action="store_true", help="§136 STAGED: D0 -> 2 D0 at the trigger, then x2 every >= 1,000 steps at loss <= 2.5, up to D1")
+    ap.add_argument("--grow_noise", type=float, default=0.0, help="§136 GROW-NOISE: grown dims continuous + training dither U(+-this)")
+    ap.add_argument("--nested", action="store_true", help="§136 NESTED: each training chain zeroes code dims beyond a prefix width from {4, 8, 16, 32, 64}")
     ap.add_argument("--prefix_only", action="store_true", help="post-hoc (Theory 57d6b89e): cumulative accuracy at prefixes 1 / 2 / 4 / 8 of the eval's own test chains (8-step rollout; causal, so = the eval's first 8 positions) -> <out>/eval_prefix.json")
     ap.add_argument("--probe_only", action="store_true", help="post-hoc (descriptive): probe127 on <out>/model.pt at p_hard 1 -> <out>/eval_probe_posthoc.json")
     ap.add_argument("--check_marker", default=None, help="§128 note 128-1: with --stop_plateau, the first attempt to mkdir this path when its flag fires keeps training")
@@ -1138,12 +1206,25 @@ def main():
     if a.d_q != D_Q or a.levels != LEV:                                     # §133: rebind the code width / levels before any model or eval
         D_Q, LEV = a.d_q, a.levels; HALF = (LEV - 1) / 2; SHIFT = math.atanh(OFF / HALF)
     assert not (a.soft_beta and a.no_round), "§133: SOFT rounds (no --no_round)"
+    G0 = G1 = None
+    if a.grow:                                                              # §136: growth on the plain FSQ carrier only
+        G0, G1 = map(int, a.grow.split(":")); assert G0 == a.d_q and G1 > G0, "§136: --grow D0:D1 needs D0 = --d_q < D1"
+        assert a.grow_trigger == "plateau" or float(a.grow_trigger) > 0, "§136: --grow_trigger <loss> | plateau"
+        assert not (a.no_round or a.raw_h or a.anneal or a.std or a.std2 or a.skip_dec or a.var_res or a.soft_beta or a.carrier_ln or a.lr_new != 1.0
+                    or a.resume_2k or a.save_at_flag or a.redraw_head or a.nested or a.tsd), "§136: --grow on the plain FSQ carrier (+ §134 copy rows) only"
+    assert a.grow or not (a.grow_staged or a.grow_noise or a.grow_trigger), "§136: --grow_staged / --grow_noise / --grow_trigger need --grow"
+    assert not a.nested or (a.d_q == 64 and not (a.no_round or a.soft_beta or a.carrier_ln)), "§136 NESTED: --d_q 64 on the plain FSQ carrier"
     memcap and memcap.apply(dev)                                                       # local hard cap (LATENT_MEM_CAP_GB; no-op on the cloud)
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     fam = Family(a.family); os.makedirs(a.out, exist_ok=True)
     assert not (a.dither and not a.no_round) and not (a.fsq_dither and a.no_round), "§123: --dither needs --no_round; --fsq_dither is FSQ"
-    def mk():
+    def mk(apply_grow=True):
         m_ = FSQ120(s5.load_gpt2(dev), fam).to(dev); m_.no_round = a.no_round; m_.raw_h = a.raw_h; m_.soft_beta = a.soft_beta; m_.carrier_ln = a.carrier_ln
+        m_.grow_noise = a.grow_noise
+        gj = os.path.join(a.out, "grow.json")
+        if a.grow and apply_grow and os.path.exists(gj):                    # §136 post-hoc / eval_only: the run's widenings (weights from model.pt)
+            for ev_ in json.load(open(gj))["events"]:
+                m_.grow(ev_["to"] - ev_["from"])
         if a.std or a.raw_h or a.anneal:
             m_.enable_std()
         if a.anneal:                                                        # std buffers serve std(h) only; embed_code mixes (no std on W_up)
@@ -1222,7 +1303,9 @@ def main():
         json.dump({**_ainfo, "resumed_at": time.strftime("%Y-%m-%d %H:%M:%S")}, open(os.path.join(a.out, "args_resume_%d.json" % int(time.time())), "w", newline="\n"), indent=1)
     else:
         json.dump(_ainfo, open(os.path.join(a.out, "args_eval.json" if a.eval_only else "args.json"), "w", newline="\n"), indent=1)   # notes 123-8 / 125-3
-    m = mk(); drawn = np.zeros((fam.n_states, fam.n_items), bool)
+    m = mk(apply_grow=a.eval_only); drawn = np.zeros((fam.n_states, fam.n_items), bool)   # §136: training rebuilds widenings from the checkpoint
+    if a.grow and not (a.eval_only or a.resume) and os.path.exists(os.path.join(a.out, "grow.json")):
+        os.remove(os.path.join(a.out, "grow.json"))                         # a fresh run in a reused dir: no stale widening record
     if a.eval_only:                                                         # replay the training draws (rng only) for coverage_drawn
         for step in range(1, a.steps + 1):
             L = int(rng.integers(1, lmax_at(step / sc) + 1)); s0, x, lab = make_batch(fam, rng, a.bs, L)
@@ -1258,6 +1341,11 @@ def main():
     reest = False; dist_hist = []; var_hist = []; L127 = {}; n_nonfinite = 0
     n_copy = int(round(a.copy_frac * a.bs)) if a.copy_frac else 0; crng = np.random.default_rng(a.seed + 13400); copy_hist = []; tot_hist = []   # §134
     tsd_g = tsd_mu = None; tsd_hist = []; tsd_top1 = []; tsd_share = []; tsd_share_all = []; tsd_share_cos = []; tsd_share_cos_all = []   # §135
+    g136 = {"events": [], "thr": None, "plat": None}; nrng = np.random.default_rng(a.seed + 13600)   # §136 widenings / trigger steps; NESTED widths
+    NEST_W = (4, 8, 16, 32, 64)
+
+    def grow_json():                                                        # §136: the widenings, for post-hoc rebuilds (mk) of model.pt
+        json.dump({"d0": G0, "events": g136["events"]}, open(os.path.join(a.out, "grow.json"), "w", newline="\n"), indent=1)
     if a.tsd and not a.eval_only:                                           # frozen target model + its centring mean (fixed at gate A2, note 135-1)
         from boxes.teacher135 import load_teacher, teacher_targets
         tm_ = torch.load(os.path.join(a.tsd_teacher, "target_means.pt"), map_location="cpu")
@@ -1273,6 +1361,12 @@ def main():
         log.write(json.dumps({"step": 0, "zb_std_in": zb_std_in(m, dev)}) + "\n"); log.flush()
     step0 = 1
     if rck is not None:                                                     # user 2026-10-06: same-clock resume (RNG restored last, after the
+        if "s136" in rck:                                                   # §136: rebuild the checkpoint's widenings (+ their AdamW groups) first
+            g136 = rck["s136"]["g136"]; nrng.bit_generator.state = rck["s136"]["nrng"]
+            for ev_ in g136["events"]:
+                opt.add_param_group({"params": m.grow(ev_["to"] - ev_["from"]), "mult": 1.0, "warm_from": ev_["step"]})
+            if a.grow:
+                grow_json()
         m.load_state_dict(rck["model"]); opt.load_state_dict(rck["opt"]); drawn = rck["drawn"]   # step-0 work above, which a fresh run did before)
         L127 = rck["L127"]; n_nonfinite = rck["n_nonfinite"]; last_loss = rck["last_loss"]; hist = rck["hist"]; carried = rck["carried"]
         dist_hist = rck["dist_hist"]; var_hist = rck["var_hist"]; reest = rck["reest"]; t0 = time.time() - rck["elapsed"]; step0 = rck["step"] + 1
@@ -1288,7 +1382,9 @@ def main():
     m.train()
     for step in range(step0, 0 if a.eval_only else a.steps + 1):
         for gr in opt.param_groups:
-            gr["lr"] = lr_at(a.lr, gr, step, a.steps)
+            gr["lr"] = lr_at(a.lr, gr, step, a.steps, warm=max(1, int(300 * sc)))   # §136: a grown block's group warms up over 300 steps
+        for i_, ev_ in enumerate(g136["events"]):                           # §136 fade-in: alpha = min(1, (t - t_switch) / 500)
+            getattr(m, "grow_alpha_%d" % i_).fill_(min(1.0, (step - ev_["step"]) / max(1, int(500 * sc))))
         m.p_hard = 0.0 if step <= a.p_hard_start * sc else min(1.0, (step - a.p_hard_start * sc) / ((a.p_hard_end - a.p_hard_start) * sc)); m.train()
         if a.anneal:                                                        # §126: lam 0 -> 1 over 2k-6k; FSQ soft -> hard over 6k-8k
             m.lam = 0.0 if step <= 2000 * sc else min(1.0, (step - 2000 * sc) / (4000 * sc))
@@ -1311,8 +1407,12 @@ def main():
             tm = torch.ones(len(x), L, dtype=torch.bool, device=dev) if fam.name == "s5" else torch.tensor(x == RD, device=dev)
         nmb = a.micro if L >= a.micro_from else 1; opt.zero_grad(); tot = 0.0; ctot = 0.0; atot = 0.0            # gradient accumulation at L > 16 (OOM, 2026-10-05; was L >= 32,
         #   but L is drawn U(1, L_max): L 17-31 batches ran at micro 1 and OOMed 8 GB cards at 14k, s130chk_s5_s17_3070, 2026-10-06). Memory only; no-op at --micro 1
+        nmask = None
+        if a.nested:                                                        # §136 NESTED: one prefix width per training chain (own RNG)
+            nw = nrng.choice(NEST_W, size=len(x)); nmask = torch.tensor((np.arange(D_Q)[None, :] < nw[:, None]).astype(np.float32), device=dev)
         for mi in range(nmb):
             sl = slice(mi * len(x) // nmb, (mi + 1) * len(x) // nmb)
+            m.nest_mask = None if nmask is None else nmask[sl]
             with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
                 loss, _, _, _ = m.chain(m.start(len(x[sl]), dev, s0[sl] if fam.name == "s5" else None), torch.tensor(x[sl], device=dev), lab[sl],
                                         None if tm is None else tm[sl])
@@ -1330,6 +1430,7 @@ def main():
                 loss_all = loss
             m._tsd_e = []
             (loss_all / nmb).backward(); tot += loss.item() / nmb            # the logged "loss" stays the main chain's alone
+        m.nest_mask = None
         if n_copy:                                                          # §134 COPY-ANCHOR: another problem's final answer -> copy writer -> CE
             cst = lab[crng.integers(0, len(lab), n_copy), -1]; cans = torch.tensor(fam.answer_tokens(cst), device=dev)
             with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
@@ -1373,6 +1474,27 @@ def main():
                             "tsd_masked_share": float(np.mean(tsd_share)) if tsd_share else None, "tsd_masked_share_cos": float(np.mean(tsd_share_cos)) if tsd_share_cos else None,
                             "loss_total": float(np.mean(tot_hist)) if tot_hist else None}); tsd_hist = []; tsd_top1 = []; tsd_share = []; tsd_share_cos = []; tot_hist = []
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True); L127[step] = rec["loss"]
+            if a.grow and step < a.steps:                                   # §136: both triggers tracked (the unused one's would-be step reported)
+                thv = 2.5 if a.grow_trigger == "plateau" else float(a.grow_trigger); th_, pl_ = s136_fire(L127, step, sc, thv)
+                g136["thr"] = step if (th_ and g136["thr"] is None) else g136["thr"]; g136["plat"] = step if (pl_ and g136["plat"] is None) else g136["plat"]
+                w0_ = m.width(); to_ = None
+                if w0_ < G1 and not g136["events"]:
+                    if (g136["plat"] if a.grow_trigger == "plateau" else g136["thr"]) == step:
+                        to_ = min(G1, 2 * w0_) if a.grow_staged else G1
+                elif w0_ < G1 and a.grow_staged and step - g136["events"][-1]["step"] >= 1000 * sc and rec["loss"] <= 2.5:
+                    to_ = min(G1, 2 * w0_)
+                if to_:                                                     # pre-switch fp32 contraction on the host (rho before), then widen
+                    rs_ = torch.get_rng_state(); crs_ = torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else None; m.eval()
+                    with torch.no_grad():
+                        ct_ = contraction(m, fam, dev, None, n=a.contract_n)
+                    m.train(); torch.set_rng_state(rs_)
+                    if crs_ is not None:
+                        torch.cuda.set_rng_state(crs_, device=dev)
+                    opt.add_param_group({"params": m.grow(to_ - w0_), "mult": 1.0, "warm_from": step})
+                    pre_ = {k_: ct_[k_] for k_ in ("rho", "rho_nonzero", "rho_norm", "basin", "exact_recovery_share")}
+                    g136["events"].append({"step": step, "from": w0_, "to": to_, "loss": rec["loss"], "pre_contraction_fp32": pre_}); grow_json()
+                    log.write(json.dumps({"step": step, "grow": {"from": w0_, "to": to_}, "pre_contraction_fp32": pre_}) + "\n"); log.flush()
+                    print("§136 GROW", w0_, "->", to_, "at", step, pre_, flush=True)
         if m.skip and step % int(1000 * sc) == 0:                           # note 127-3: skip-map norms every 1k (descriptive)
             log.write(json.dumps({"step": step, "skip_norms": [float(w_.norm()) for w_ in m.skip_w.detach().float()]}) + chr(10)); log.flush()
         if s129 and step <= int(2000 * sc) and step % max(1, int(50 * sc)) == 0:     # §129: zb_std_in every 50 over 0-2k (each phase)
@@ -1420,7 +1542,7 @@ def main():
                         "dist_hist": dist_hist, "var_hist": var_hist, "reest": reest, "elapsed": time.time() - t0,
                         "crng": crng.bit_generator.state, "copy_hist": copy_hist, "tot_hist": tot_hist,
                         "tsd": {"hist": tsd_hist, "top1": tsd_top1, "share": tsd_share, "share_all": tsd_share_all, "share_cos": tsd_share_cos,
-                                "share_cos_all": tsd_share_cos_all}}, cp + ".tmp")   # Audit: a resumed §135 student keeps whole-run tallies
+                                "share_cos_all": tsd_share_cos_all}, "s136": {"g136": g136, "nrng": nrng.bit_generator.state}}, cp + ".tmp")   # Audit: a resumed §135 student keeps whole-run tallies
             if os.path.exists(cp):                                          # Theory note 135-6: the previous save is kept too, so a fault
                 os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))         #   after a save (b78 VRAM) still leaves a clean state to resume from
             os.replace(cp + ".tmp", cp); log.write(json.dumps({"step": step, "ckpt": "ckpt_last.pt"}) + "\n"); log.flush()
@@ -1436,6 +1558,8 @@ def main():
     del opt; m.eval(); m.noise = 0.0; m.lam = 1.0; t1 = time.time()            # §126: test at lam = 1, hard
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
+    def hard_codes(c_):                                                     # §136 GROW-NOISE: codes = the hard first d0 dims (grown dims continuous)
+        return c_[..., :m.grow_d0].astype(np.int8) if (m.grow_noise and m.grow_d0 is not None) else c_
     res = {"family": a.family, "arm": a.arm, "seed": a.seed, "train_sec": train_sec, "eval_only": a.eval_only, "std": a.std, "raw_h": a.raw_h, "anneal": a.anneal,
            "s127": {"var_res": a.var_res, "var_w": a.var_w if a.var_res else None, "var_est": a.var_est if a.var_res else None,
                     "n_nonfinite": None if a.eval_only else n_nonfinite, "guard": p127, "skip_dec": a.skip_dec, "std2": a.std2, "lr_new": a.lr_new, "probe127": p127},
@@ -1454,7 +1578,7 @@ def main():
             Xx, Yx = s5.load_csv(os.path.join(a.data_dir, "S5=2048.csv"), limit=a.ext_n); s5.check_labels(Xx, Yx); Xx, Yx = Xx[:, :el], Yx[:, :el]
             px, cx = run_test(m, fam, np.zeros(len(Xx), np.int64), Xx, dev, amp, a.eval_bs); res["ext_2048"] = {"n": len(Xx), "len": Xx.shape[1], "cumulative": float((px == Yx).all(1).mean())}
             if not (a.no_round or a.raw_h):
-                res["code_growth_ext"] = code_growth(cx, Yx)
+                res["code_growth_ext"] = code_growth(hard_codes(cx), Yx)
         s0m, Xm = np.zeros(a.margin_n, np.int64), Xte[:a.margin_n, :128]
         res["deletang"] = deletang(pred, Yte)                               # §128 (descriptive)
     elif fam.name in HELD:                                                  # §128: iid uniform items from start 0, every position
@@ -1494,7 +1618,7 @@ def main():
         res["n_codes"] = res["code_perplexity"] = res["codes_per_state"] = res["margin_flip_rate"] = None
         res["cert"] = {"status": "n/a (continuous)", "holds": None}; res["donor"] = donor(m, fam, dev, amp, n=a.donor_n)
     else:
-        flat = codes.reshape(-1, D_Q); keys, cnt = np.unique(flat, axis=0, return_counts=True); p = cnt / cnt.sum()
+        hc_ = hard_codes(codes); flat = hc_.reshape(-1, hc_.shape[-1]); keys, cnt = np.unique(flat, axis=0, return_counts=True); p = cnt / cnt.sum()
         res["n_codes"] = int(len(keys)); res["code_perplexity"] = float(np.exp(-(p * np.log(p)).sum()))
         st = lab.reshape(-1); per = {}
         for c, s_ in zip(map(bytes, flat), st):
@@ -1508,6 +1632,17 @@ def main():
         res["skip_off"] = {"long_acc": float(Co.all(1).mean()), "acc_by_length": {str(t): float(Co[:, :t].all(1).mean()) for t in (16, 64, 512) if t <= Co.shape[1]},
                            "donor": donor(m, fam, dev, amp, n=a.donor_n)}
         m.skip_w.data.copy_(w_keep)
+    if a.grow or a.nested:                                                  # §136 end: widening record, trigger steps, dimension use
+        g_ = {"grow": a.grow, "grow_trigger": a.grow_trigger, "grow_staged": a.grow_staged, "grow_noise": a.grow_noise, "nested": a.nested,
+              "width_final": m.width(), "d0": G0 if a.grow else 8}
+        if not a.eval_only and a.grow:
+            g_.update({"events": g136["events"], "trigger_steps": {"threshold": g136["thr"], "plateau": g136["plat"]}})
+        g_.update({k_: v_ for k_, v_ in s136_dim_use(m, fam, dev, amp, g_["d0"]).items() if k_ != "d0"})
+        if a.nested and fam.name == "s5":                                   # NESTED: test accuracy with only the first 8 dims (the rest zeroed)
+            m.nest_mask = torch.tensor((np.arange(D_Q) < 8).astype(np.float32), device=dev)[None]
+            p8, _ = run_test(m, fam, np.zeros(len(Xte), np.int64), Xte, dev, amp, a.eval_bs); m.nest_mask = None
+            g_["acc_w8"] = float((p8 == Yte).all(1).mean())
+        res["s136"] = g_
     res["eval_sec"] = round(time.time() - t1)
     if a.copy_frac and not a.eval_only:                                     # §134 mechanism at the end
         res["s134"] = {"copy_frac": a.copy_frac, "n_copy_rows": int(round(a.copy_frac * a.bs)), "copy_acc": copy_acc134(m, fam, dev, amp),
