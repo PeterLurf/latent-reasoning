@@ -15,7 +15,8 @@ if [ ! -s $G ]; then                                                    # (SHIP_
   echo "$(date +%T) gpt2 bin from the HF hub: $([ -s $G ] && echo ok || echo FAILED)" >> $log
 fi
 if grep -q "boxes.fade89" "$q"; then sha256sum prosqa/ckpt/gpt2_pretrained.bin | grep -q "^7c5d3f4b8b76583b" || { echo "$(date +%T) GPT2_SHA_MISMATCH rc 9" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }; fi
-if grep -q -E "boxes.(latent86|gen97|snap101|self103|mk108|self110|fsq120|base119)" "$q"; then
+if grep -q -E "boxes.(latent86|gen97|snap101|self103|mk108|self110|fsq120|base119)|scratch.(restart1[0-9]+|wait_then|cert_job|cc_job)" "$q"; then   # Audit 2026-10-06 23:08: wrapper
+  # modules run fsq120 too - §133 slot queues (scratch.restart133) skipped this step and crashed at eval on the missing S5=512.csv
   W=prosqa/ckpt/gpt2_pretrained.bin; sha256sum $W | grep -q '^7c5d3f4b8b76583b' || { echo "$(date +%T) GPT2_SHA_MISMATCH rc 9" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }
   SHA128=6ee3ef95405dc43b094824dff8973753c587fe95a00762d2023bd64a941504f2; SHA512=a0087fe4a7496a47f76d9436e6bb089c8a8869f3f343f71057355e127d0c33da
   for try in 1 2 3 4; do pip install -q polars fire pyrootutils "git+https://github.com/jopetty/abstract_algebra" >> logs/pip_gen.log 2>&1; python -c "import polars, fire, pyrootutils" >> logs/pip_gen.log 2>&1 && break; sleep 30; done   # 2026-10-06: b68 lost fire to a pip build error -> empty data sha
@@ -30,6 +31,9 @@ if grep -q -E "boxes.(latent86|gen97|snap101|self103|mk108|self110|fsq120|base11
     [ "$s1" = "$SHA128" ] && [ "$s2" = "$SHA512" ] && break
   done
   [ "$s1" = "$SHA128" ] && [ "$s2" = "$SHA512" ] || { echo "$(date +%T) DATA_SHA_MISMATCH rc 9" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }
+fi
+if grep -q -E -- "--family s5|scratch.restart1[0-9]+|_s5_" "$q"; then           # Audit 2026-10-06: every S5 eval file present before any training
+  for f_ in S5=128.csv S5=512.csv S5=2048.csv; do [ -s bench/data/s5/$f_ ] || { echo "$(date +%T) DATA_MISSING $f_ rc 9" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }; done
 fi
 nvidia-smi --query-gpu=name,driver_version --format=csv,noheader >> $log
 if [ -f scratch/hostcheck.py ]; then                                     # Theory note 135-6: VRAM pattern test over most of the card (b78 fault at 6.75-14 GiB)
