@@ -60,6 +60,7 @@ without hand-built state (§97), and its step labels can come from a table train
 - GPT-2 anisotropy blocks latent acquisition until features are standardised (§72b/§73: 0/5 → 10/10).
 - In-pass composition of seen steps into unseen sequences needs per-iteration targets, word diversity and budget (§88, §90, §91).
 - Pretraining helps operation discrimination, not paraphrase transfer (§79).
+- **§135 teacher-state distillation (the user's idea) FAIL in both arms, 0/4 each: ext_2048 cumulative 0.0 in all 8 S5 students (TSD and BASE), worse than plain (s1 exact) and COPY (4/4); the weight-1 InfoNCE pulls context into the code (codes_per_state 1,957-6,870 vs 14-29 exact); stage B not run, awaiting the user (Audit-reproduced on ext_2048; rho not needed for the verdict).**
 - Closed lines: GSM8K length split at GPT-2 small (§78/§84); fade line (closed positively, §89/§94; its side decoder lives on in §97); sparse-label thinning (§93/§95).
 
 ## Current design and open questions
