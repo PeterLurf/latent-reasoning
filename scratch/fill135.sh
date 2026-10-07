@@ -2,8 +2,8 @@
 # §135 student filler (Theory option (a), Audit 2026-10-06): deploy the students as fleet slots free, one MATCHED PAIR per seed
 # (seed S: TSD on gen-b(75+2(S-1)), BASE on gen-b(76+2(S-1))). Every 10 min: if live Vast instances <= 14 (cap 16) and the summed
 # $/h + 2 x $0.25 < $4, deploy the next pair (gen_deploy_120: smoke / bash -n gates, gen7 watcher).
-# Teacher model (Audit: no repeated home uploads): the FIRST TSD host gets model.pt in its tarball; every later TSD host gets the
-# teacher dir host-to-host (`vastai copy C.<a TSD host>:dir C.<new>:dir`; fallback local:dir if none is up). TSD jobs start through
+# Teacher model: every TSD host gets model.pt in its tarball from home (one pair at a time, so uploads never overlap); a
+# host-to-host `vastai copy` test left a dangling file on the target (2026-10-06), so it is not used. TSD jobs start through
 # scratch.wait_then, which waits for model.pt and verifies its sha256 before running fsq120. BASE needs only target_means.pt.
 # Stop: touch scratch/fill135.stop.   nohup bash scratch/fill135.sh > logs/fill135.out 2>&1 &
 cd "$(dirname "$0")/.."
@@ -41,19 +41,13 @@ print(' '.join(str(r[2]) for r in sorted(rows)[:2]))")
   if [ $# -lt $need ]; then log "seed $S: fewer than $need offers, retry in 10 min"; sleep 600; continue; fi
   oT=""; oB=""; [ $okT = 0 ] && { oT=$1; shift; }; [ $okB = 0 ] && oB=$1
   log "seed $S: deploying${oT:+ TSD b$nt (offer $oT)}${oB:+ BASE b$nb (offer $oB)}; $n live, \$${burn}/h"
-  if [ -z "$tsd_ids" ]; then XT="boxes/teacher135.py scratch/wait_then.py $T/model.pt $T/target_means.pt $T/args.json"
-  else XT="boxes/teacher135.py scratch/wait_then.py $T/target_means.pt $T/args.json"; fi
+  XT="boxes/teacher135.py scratch/wait_then.py $T/model.pt $T/target_means.pt $T/args.json"   # vastai copy instance->instance left a dangling file (2026-10-06 test): ship from home, one pair at a time
   [ -n "$oT" ] && { EXTRA_120="$XT" bash scratch/gen_deploy_120.sh "$oT $nt" & }
   [ -n "$oB" ] && { EXTRA_120="boxes/teacher135.py $T/target_means.pt $T/args.json" bash scratch/gen_deploy_120.sh "$oB $nb" & }
   wait
   [ -n "$oB" ] && started $nb $oB && okB=1
   if [ -n "$oT" ] && started $nt $oT; then
     okT=1; id=$(grep "gen host b$nt offer $oT:" logs/gen_deploy.log | tail -1 | grep -o "INSTANCE [0-9]*" | awk '{print $2}')
-    if [ -n "$tsd_ids" ]; then                                              # host-to-host from a live TSD host, else from local
-      src=""; for s_ in $tsd_ids; do bash $V show instance $s_ --raw 2>/dev/null | grep -q '"actual_status": *"running"' && { src=$s_; break; }; done
-      if [ -n "$src" ]; then log "seed $S: vastai copy C.$src:$TD/ -> C.$id:$TD/"; timeout 1800 bash $V copy "C.$src:$TD/" "C.$id:$TD/" >> logs/fill135.out 2>&1
-      else log "seed $S: no TSD source up; copying from local"; timeout 3600 bash $V copy "local:$T/" "C.$id:$TD/" >> logs/fill135.out 2>&1; fi
-    fi
     tsd_ids="$tsd_ids $id"
   fi
   bash scratch/rebuild_live_hosts.sh > /dev/null 2>&1
