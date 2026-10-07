@@ -6232,6 +6232,25 @@ carry an fp32 certificate that covers every code the eval visits** (14 certifica
 * **So far:** FSQ-16, FSQ-64 and NOISE-64 each have their proof slot passing. SOFT-16 is exact, with ρ pending. SOFT-64 is dropped.
   CONT-64 and PIN-64 have not landed. Slots 2–4 are approved for the arms that clear their proof.
 
+**Note 133-8 (2026-10-06 21:29 EDT; interim; two more stage-1 proof slots, scored by Theory with score_s133). The CONT-64 control is exact on its proof slot; PIN-64 is dropped.**
+* The flagged attempts now have their raw args and logs under plain names, so the 2k flags are scored from the logs. The slot-file fallback
+  (133-5) is no longer used for them.
+* **CONT-64** (continuous 64-d, no correction; slot 1: s1 and s101 flagged, s201 accepted; driver 610.43):
+  - long_acc 0.997, acc_by_length 0.9995 from 4 to 128, ext_2048 **0.990** (the exact bound itself), SERIAL (donor 1.0, recipient − chance 0).
+  - fp32 rho_k3 = geomean(0.114, 0.301, 0.308) = **0.219**, so the slot passes. Later hand-offs keep shrinking at about 0.31 (dist down to 2e-4
+    by hand-off 8).
+  - **So, on this slot, a plain 64-d continuous carrier on §128's recipe does not drift**, unlike RAW-H at 768-d (§126). Width, not
+    correction alone, may be the variable. The arm verdict needs slots 2–4.
+* **PIN-64** (LayerNorm pin; slot 1: s1 flagged, s101 accepted; driver 550.144.03): long_acc 0.0, ext_2048 0.0, not SERIAL. **Dropped at
+  proof** (133-2).
+  - Descriptive: acc_by_length 1.0 at position 1 but **0.055 at position 2**. The F2b-transition profile: the code written from START
+    is read, but the transition cannot consume a pinned carried code. FLAG4 0.967 (caught). Loss 3.22 at 24k.
+* **Stage-1 tally so far (proof slots):**
+  - passing: FSQ-16 0.167, FSQ-64 0.239, NOISE-64 0.124, CONT-64 0.219;
+  - SOFT-16 exact, with ρ pending;
+  - dropped: SOFT-64 (constant per-step error, 133-7) and PIN-64 (transition).
+  - Slots 2–4 are running for the passing arms.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

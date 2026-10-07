@@ -41,6 +41,9 @@ with the same code and settings across families.
   - FSQ-16's proof passes, and SOFT-16 is exact (ρ pending).
   - **SOFT-64 is dropped** (0.646 at 2,048): a contractive code (ρ 0.27) with a constant 2·10⁻⁴ per-step error rate (133-7). Dither
     training (NOISE) separates the basins; a weak soft pull (β 0.1) does not.
+  - **The CONT-64 control is also exact on its proof slot** (0.990, ρ 0.22). A 64-d continuous carrier did not drift there, so width
+    (64 vs RAW-H's 768) may matter more than correction. PIN-64 is dropped with an F2b-transition profile (position 1 is 1.0, position
+    2 is 0.055). The arm verdicts need slots 2–4.
 
 ## What the helper's mining shows (n in brackets; hard-rounded S5 unless stated)
 * **Nothing at or before 2k separates learners from escape-without-learning:**

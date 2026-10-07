@@ -3,9 +3,51 @@
   "cont64": {
    "slots": {
     "1": {
-     "attempts": [],
-     "status": "open",
-     "accepted": null
+     "attempts": [
+      {
+       "seed": 1,
+       "plateau": true
+      },
+      {
+       "seed": 101,
+       "plateau": true
+      },
+      {
+       "seed": 201,
+       "plateau": false
+      }
+     ],
+     "status": "accepted",
+     "accepted": {
+      "seed": 201,
+      "long_acc": 0.997,
+      "ext_2048": 0.99,
+      "serial": true,
+      "grid_share": 0.18665859985351563,
+      "rho": 0.21933215225713018,
+      "rho_k_row": [
+       0.11400000005960464,
+       0.30070000886917114,
+       0.3077999949455261,
+       0.3133000135421753,
+       0.32510000467300415,
+       0.3070000112056732,
+       0.30660000443458557,
+       0.32899999618530273,
+       0.3695000112056732,
+       0.41780000925064087,
+       0.5910999774932861,
+       0.8087999820709229,
+       0.9126999974250793,
+       0.9790999889373779,
+       0.9718999862670898,
+       0.9962999820709229
+      ],
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "driver": "610.43.02",
+      "exact2048": true,
+      "pass": true
+     }
     },
     "2": {
      "attempts": [],
@@ -23,7 +65,7 @@
      "accepted": null
     }
    },
-   "verdict": "not run"
+   "verdict": "incomplete (1 / 4 slots decided)"
   },
   "fsq16": {
    "slots": {
@@ -90,13 +132,11 @@
      "attempts": [
       {
        "seed": 1,
-       "plateau": true,
-       "source": "slot file (raw log not fetched)"
+       "plateau": true
       },
       {
        "seed": 101,
-       "plateau": true,
-       "source": "slot file (raw log not fetched)"
+       "plateau": true
       },
       {
        "seed": 201,
@@ -201,8 +241,7 @@
      "attempts": [
       {
        "seed": 1,
-       "plateau": true,
-       "source": "slot file (raw log not fetched)"
+       "plateau": true
       },
       {
        "seed": 101,
@@ -265,13 +304,11 @@
      "attempts": [
       {
        "seed": 1,
-       "plateau": true,
-       "source": "slot file (raw log not fetched)"
+       "plateau": true
       },
       {
        "seed": 101,
-       "plateau": true,
-       "source": "slot file (raw log not fetched)"
+       "plateau": true
       },
       {
        "seed": 201,
@@ -334,8 +371,7 @@
      "attempts": [
       {
        "seed": 1,
-       "plateau": true,
-       "source": "slot file (raw log not fetched)"
+       "plateau": true
       },
       {
        "seed": 101,
