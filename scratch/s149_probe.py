@@ -92,6 +92,18 @@ def referenced_downstream(chain, t):
     return any(t - 1 in [k for k in refs if k is not None] for _, refs in typed(chain)[t:])
 
 
+def qnumbers(question):
+    """Numbers in the question text (commas removed)."""
+    return {float(x) for x in NUM.findall(question.replace(",", ""))}
+
+
+def ambiguous_ref(chain, t, qn):
+    """Audit (§149 review): a later step's operand typed S<t-1> whose value also occurs in the question text cannot be attributed to step t
+    (it may be the question's number); pairs whose step-t reference is ambiguous are dropped."""
+    v = chain[t - 1][1]
+    return v in qn and any(t - 1 in [k for k in refs if k is not None] for _, refs in typed(chain)[t:])
+
+
 def unit_tests():
     c = parse_chain("<<16-3-4=9>> <<9*2=18>>"); assert c == [("16-3-4", 9.0), ("9*2", 18.0)]
     assert template(c) == ("Q-Q-Q", "S0*Q") and referenced_downstream(c, 1) and not referenced_downstream(c, 2)
@@ -101,6 +113,7 @@ def unit_tests():
     assert substitute(c, 2, 100.0) == 80100.0 and not referenced_downstream(c, 1) and referenced_downstream(c, 2)
     c = parse_chain("<<2/2=1>> <<2+1=3>>"); assert template(c) == ("Q/Q", "Q+S0") and substitute(c, 1, 4.0) == 6.0
     c = parse_chain("<<3*4=12>> <<12/2=6>> <<12-6=6>>"); assert template(c) == ("Q*Q", "S0/Q", "S0-S1") and substitute(c, 1, 20.0) == 10.0
+    c = parse_chain("<<3*1=3>> <<3+5=8>>"); assert ambiguous_ref(c, 1, {3.0, 5.0}) and not ambiguous_ref(c, 1, {1.0, 5.0})
     assert parse_chain("<<2+2=5>>") is None
     return "ok"
 
@@ -215,6 +228,7 @@ def main():
     aug = cp.gsm8k(10_000); lines = open(os.path.join(ROOT, "bench", "data", "gsm8k_aug", "test.txt"), encoding="utf-8").read().splitlines()
     assert len(aug) == len(lines) == 1319
     N = nlim or len(aug); qs = np.array([q for q, _, _ in aug[:N]], dtype=object); gold = np.array([a for _, a, _ in aug[:N]])
+    qn = [qnumbers(l.split("||")[0]) for l in lines[:N]]
     chains = [parse_chain(l.split("||")[1]) if "||" in l else None for l in lines[:N]]
     ns = np.array([len(c) if c else (aug[i][2] or 0) for i, c in enumerate(chains)])
     valid = np.array([c is not None and abs(c[-1][1] - gold[i]) < 1e-4 for i, c in enumerate(chains)]); res["chains"] = {"n": int(N), "valid_final_eq_answer": int(valid.sum())}
@@ -252,7 +266,8 @@ def main():
         js = align[str(t)]; cell = {}
         for mode in ("same_template", "all"):
             f0 = [i for i in range(N) if valid[i]]; f1 = [i for i in f0 if ok[i]]; f2 = [i for i in f1 if len(chains[i]) > t]
-            rec = [i for i in f2 if referenced_downstream(chains[i], t)]; cands, pairs = 0, []; ex_same_val = ex_same_ans = no_donor = 0
+            f3 = [i for i in f2 if referenced_downstream(chains[i], t)]; rec = [i for i in f3 if not ambiguous_ref(chains[i], t, qn[i])]
+            cands, pairs = 0, []; ex_same_val = ex_same_ans = no_donor = 0
             for i in rec:
                 tp = template(chains[i])
                 pool = [j for j in range(N) if j != i and valid[j] and len(chains[j]) >= t and (mode == "all" or template(chains[j]) == tp)]
@@ -273,11 +288,12 @@ def main():
                 ov = {jj: T[di, jj] for jj in js}; p_, _ = R(qs[ri], override=ov)
                 cell[mode] = {"n": n, "donor_consistent": float((np.abs(p_ - ex) < 1e-4).mean()), "recipient_consistent": float((np.abs(p_ - gold[ri]) < 1e-4).mean()),
                               "chance_overlap": 0.0, "excluded_share": float(1 - n / max(1, len(rec))), "recipients_eligible": len(rec), "candidates_seen": cands, "thoughts_swapped": js,
-                              "funnel": {"valid_chain": len(f0), "correct_unpatched": len(f1), "has_step_after_t": len(f2), "step_t_referenced_downstream": len(rec),
-                                         "no_donor_in_pool": no_donor, "donor_excluded_same_step_value": ex_same_val, "donor_excluded_same_or_invalid_answer": ex_same_ans, "pairs": n}}
+                              "funnel": {"valid_chain": len(f0), "correct_unpatched": len(f1), "has_step_after_t": len(f2), "step_t_referenced_downstream": len(f3), "dropped_ambiguous_reference": len(f3) - len(rec),
+                                         "recipients": len(rec), "no_donor_in_pool": no_donor, "donor_excluded_same_step_value": ex_same_val, "donor_excluded_same_or_invalid_answer": ex_same_ans, "pairs": n}}
             else:
                 cell[mode] = {"n": 0, "recipients_eligible": len(rec), "funnel": {"valid_chain": len(f0), "correct_unpatched": len(f1), "has_step_after_t": len(f2),
-                                                                                 "step_t_referenced_downstream": len(rec), "no_donor_in_pool": no_donor, "pairs": 0}}
+                                                                                 "step_t_referenced_downstream": len(f3), "dropped_ambiguous_reference": len(f3) - len(rec),
+                                                                                 "recipients": len(rec), "no_donor_in_pool": no_donor, "pairs": 0}}
         donor[str(t)] = cell
     res["donor"] = donor; print("DONOR done %.0fs" % (time.time() - t0), flush=True)
     # contraction: perturb the first thought by 0.1 x its norm, follow the later fed thoughts (median ratios); finite-difference power iteration
@@ -290,8 +306,8 @@ def main():
         fd = 1e-2 * np.median(np.linalg.norm(T[jn, 0], axis=1))
         _, Ta = R(qs[jn], perturb={0: fd * v}, decode=False, keep_k=2); _, Tb = R(qs[jn], perturb={0: -fd * v}, decode=False, keep_k=2)
         Jv = (Ta[:, 1] - Tb[:, 1]) / (2 * fd); sig = np.linalg.norm(Jv, axis=1); v = Jv / np.maximum(sig[:, None], 1e-12)
-    res["contraction"] = {"rho_k": rk.round(4).tolist(), "dist_med_k": dk.round(5).tolist(), "jacobian_top": float(np.median(sig)),
-                          "jacobian_method": "power iteration on J by central differences (top |eigenvalue| of thought_0 -> thought_1, fed space)", "n": int(len(ci)),
+    res["contraction"] = {"rho_k": rk.round(4).tolist(), "dist_med_k": dk.round(5).tolist(), "jacobian_top_eig": float(np.median(sig)),
+                          "jacobian_method": "power iteration on J by central differences: the top |EIGENVALUE| of thought_0 -> thought_1 (fed space), not the spectral norm (Audit)", "n": int(len(ci)),
                           "eps": "0.1 x ||thought_0||, random direction", "space": "fed-back raw hidden" if kind == "coconut" else "after prj (fed latent)"}
     res["sec"] = round(time.time() - t0)
     json.dump(res, open(os.path.join(out_d, "eval.json"), "w", newline="\n"), indent=1, default=float)
