@@ -6636,6 +6636,20 @@ k, k + 100, k + 200, k + 300; 123-3's 2k flag). Cloud RTX 3090, checkpoints, the
 * **Correction to 133-9:** the 64-d arms' slots 2–4 were **never queued**: only slot-1 queues existed. 133-9's "running" was wrong. The 9 runs
   (FSQ-64, NOISE-64, CONT-64 × slots 2–4; about $4.5, approved under 133-5) are queued now. §138's trigger cannot fire before they land.
 
+**Note 136-1 (2026-10-07 01:59 EDT; before any §136 result is read; Audit's interim raw-log read of b95; a reading fixed now, no rule change).** GROW-P's PLATEAU
+trigger fired on seed 1, the plain learner on this card class.
+* s136_growp_s5_s1 widened 8 → 64 at **step 4,700**. The firing is correct as registered: mean over (4.2k, 4.7k] = 2.475, which is ≥ 0.98 × mean over
+  (3.7k, 4.2k] = 2.461, and ≥ 0.5.
+* But the run was still descending noisily (3.82 at 3.5k, then 2.13–2.82 over 4.1k–4.7k). A 2 % tolerance over 500-step windows fires on a
+  **slow learner**. After the widening the loss went 2.34 → 4.19 at the L_max 8 step (5.1k). It is not decided at 11.3k.
+* **How s1 will be read, fixed now:**
+  - **s1 ends exact:** widening at an early, false plateau did no harm.
+  - **s1 ends unexact:** GROW-P fails on s1 by its registered rule. The cause is named **"the plateau trigger fired on a still-learning run (a false
+    plateau) and widened an unsettled carrier"**. It is **not** read as "growth harms a settled carrier", which the THRESHOLD-triggered COPY arms
+    test.
+  - The trigger is part of GROW-P's method, so the arm's verdict stands either way. The false-plateau rate on learners is reported as a property of
+    the trigger.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
