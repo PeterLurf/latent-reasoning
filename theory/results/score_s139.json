@@ -1,0 +1,25 @@
+{
+ "teacher_gate": [
+  null,
+  "teacher probe pending"
+ ],
+ "arms": {
+  "a": {
+   "runs": {
+    "1": null,
+    "2": null,
+    "3": null,
+    "4": null
+   },
+   "verdict": "incomplete (0 / 4)",
+   "n_pass": 0
+  },
+  "b": {
+   "verdict": "not read (teacher gate)"
+  },
+  "c": {
+   "verdict": "not read (teacher gate)"
+  }
+ },
+ "claim": "pending"
+}

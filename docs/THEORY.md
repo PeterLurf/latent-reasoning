@@ -225,6 +225,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 135 | TEACHER-STATE DISTILLATION: a CoT model's hidden states (vs pretrained GPT-2 on the same text) as per-hand-off InfoNCE targets on §128's S5 carrier | **FAIL both arms (0/4)**: worse than plain; the aux pulls context into the code (135-9) | closed (stage B not run) |
 | 136 | GROW (the user's idea): narrow → wide function-preserving latent growth at a loss threshold / plateau; GROW-P, COPY+GROW / STAGED / GROW-NOISE, GROW-4, NESTED-64 on S5 (S5×4 decides) | registered | **open** |
 | 137 | Multiplication on fsq120, column-major: carried carry (FSQ-8), streamed product digits (C4 qualifier), restart slots; 4×4 → 5×5 → 4×8 | registered | **open** |
+| 139 | DISTILL-2 (user's go): a CoT teacher's state (probe or its text) as a warm-start fading to 0 by 4k, on multiplier-major multiplication; A = SOFT-16 + COPY (FINAL), B = A + DISTILL-2, C = constant weight | registered | **open** |
 
 ## Live sections
 
@@ -6649,6 +6650,84 @@ trigger fired on seed 1, the plain learner on this card class.
     test.
   - The trigger is part of GROW-P's method, so the arm's verdict stands either way. The false-plateau rate on learners is reported as a property of
     the trigger.
+
+## 139. DISTILL-2: a CoT teacher's state as a fading warm-start for the latent carrier, on multiplier-major multiplication (pre-registered 2026-10-07 02:10 EDT, after Literature's checks 0bb148e9 / ff34ece2 and Audit's notes, before any implementation or run; the user's "go on distill" (via Audit), plan `docs/THEORY_DISTILL_PLAN_2026-10-07.md`)
+
+**Why.**
+* §135 failed: a weight-1 InfoNCE to a teacher's full hidden state never vanished and pulled context into the code (135-9).
+* The user still asks whether a CoT model can be distilled into a latent model.
+* DISTILL-2 fixes the three causes:
+  - a **state-only, achievable** target;
+  - a **warm-start that fades to exactly 0**;
+  - **COPY's base** for entry.
+* It is tested on a task where final-answer-only latent training may hit a wall: **multiplier-major multiplication**, where the carried state is the
+  running sum S_j.
+* **Prior** (ff34ece2, `docs/LIT_DISTILL2_2026-10-07.md`): KD soft targets 1503.02531, FitNets 1412.6550, Concept Bottleneck Models 2007.04612;
+  ICoT-KD, KaVa, CODI. Distilling a teacher's *probe-decoded* state into a discrete carrier is new as scoped.
+
+**Task (fsq120 `--family mult_row --task 4x4`).**
+* Segment j = [EOT, carried code, a's digits, b_j, position token j], for j = 1 … L.
+* **Final answer only:** the product a × (b_1 … b_L) = S_L, decoded from the final code.
+* Train on the bench 4×4 train split (only a, b and the product; commuted test pairs removed, 137-1), and score on the 1,000 published test items.
+* **Curriculum:** L ~ U(1, L_max), with L_max = 1 / 2 / 3 / 4 at steps 0 / 1k / 2k / 3k. It is compressed so that the full length is reached **before**
+  the fade ends (Literature (a)); see below.
+
+**Carrier and base (arm A).**
+* **SOFT-16** (d 16, 8 levels, β 0.1 at every hand-off, train and test), §133's only stage-1 PASS (4/4). Its FSQ grid holds 8¹⁶ codes (48 bits) and the
+  soft mix is continuous, so 4×4's S_j < 10⁸ (26.6 bits) fits.
+* **§134 copy rows** (f 0.1; CE_main + 1.0 CE_copy, 134-4). Their targets are other problems' products, numbers of the same kind as S_j.
+* 24k steps, bs 64, lr 1e-4, the 127-3 guard, **no restarts, no plateau stop**. Cloud RTX 3090, checkpoints, the host check.
+* **A is final-answer content only (strict C4).**
+
+**DISTILL-2 (arm B = A + one change).**
+* **Teacher:** §98's kept TC-M 4×4 GPT-2 (`boxes/runs_mult/m98_tc_4x4_s1`, acc_test 1.0), frozen.
+  - For each training problem it **generates its own CoT** (greedy).
+  - At the last token of each S_j text in that generated CoT (P_1 for j = 1), its hidden state at a probe-chosen layer is read.
+* **Teacher gate (before any student):**
+  - per-layer, per-digit linear probes (10-way for each digit of S_j, padded to 2n digits) are **fit on the teacher's own decoded S_j text** (C4
+    as reworded: a text-CoT model's outputs, not simulator labels), on 4,096 training problems;
+  - the chosen layer is the argmax of held-out exact-match over all S_j digits (ties go to the later layer), and it needs ≥ 0.95.
+  - Also reported: the probe's agreement with the teacher's decoded S_j, and with the **gold** S_j.
+* **Target mode, fixed now (Literature (2)):**
+  - **KL** to the probe's per-digit distribution if the probe agrees with the teacher's decoded S_j at ≥ 0.99 per digit (held-out);
+  - otherwise **CE on the teacher's own generated S_j text**.
+  - Both are C4 as reworded. The mode is recorded as s139.target_mode.
+* **Student:** a linear readout head on e_j = W_up(code_j) predicts S_j's digits. The loss is averaged over digits and hand-offs, and reaches the
+  carrier's encoder through the code.
+* **Weight:** 1 until step 3,000 (when the curriculum reaches L 4), then linear to **exactly 0 at 4,000**. This keeps the user-approved "faded by
+  4k", and every hand-off length is covered before the fade (Literature (a); Audit (1)).
+* **Arm C (constant-weight control; Literature):** B with the weight held at 1 for all 24k. It is READ-like, with teacher targets.
+* **Gradflow under CUDA bf16 before any run:**
+  - the auxiliary loss reaches W_down and the trunk through the code (nonzero) before 3k;
+  - its gradient is **exactly 0** from step 4,000 in B;
+  - no gradient reaches the teacher.
+
+**Rules (fixed now; per arm, seeds 1–4).**
+* **PASS:** at least 3/4 seeds with test_acc ≥ 0.99, SERIAL and contractive (133-1's first-three form, ρ ≤ 0.28, since SOFT is continuous). **FAIL:**
+  otherwise.
+  - **SERIAL:** inject a donor's code after step 2. The answer must equal the donor's S_2 continued with the recipient's a and remaining digits (donor
+    ≥ 0.90; recipient − chance < 0.10). The ground truth is exact.
+* **Readings, fixed now (Audit (2)):**
+  - **B passes where A does not** (or B has the higher exact count): **a CoT teacher's state can stand in for gold step labels**, as supervision that
+    exists at scale (C4 as reworded).
+    - Because TC-M is about perfect at 4×4, its probe-decoded state ≈ its text ≈ the gold S_j. This **does not** show that hidden-state
+      distillation adds value beyond the teacher's text.
+    - The claim wording carries the measured probe agreement with gold S_j. If it is about 1.0, the claim says so.
+  - **A passes:** final-answer content plus COPY already suffices on 4×4. B is then read on steps-to-exact and the seed count (descriptive).
+  - **B worse than A:** the warm-start harms, as §135 did.
+  - **C against B (descriptive):** whether keeping the teacher signal on longer helps or hurts.
+* **Descriptive (Literature (b); Audit (3)):**
+  - after the fade, the frozen readout's S_j accuracy on the code, beside a **b-prefix probe** (the shortcut);
+  - steps to first exact; acc_by_length; codes per state.
+
+**Order and placement.**
+* §139 runs **after §137's 4×4 proof reads and the §134 guard reads** (COPY's no-harm gate).
+* Teacher probe first ($0, local).
+* Then a 1-host proof (A s1 and B s1).
+* Then seeds 2–4 for A / B / C: 12 runs, about $3–4 (Audit approves the extra for C).
+* 5×5 comes only after the 4×4 reading, with its own approval.
+* Implementation: the experiments session (fsq120 `--family mult_row`, `--distill`, `--distill_full 3000`, `--distill_end 4000|0`, `--distill_teacher
+  <dir>`, `--distill_layer`). Dirs `s139_{a,b,c}_4x4_s{1..4}`; probe `s139_teacher_probe/`. Scorer: `theory/score_s139.py`, committed before any run.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
