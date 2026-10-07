@@ -1,4 +1,68 @@
 # local 2070 backlog (Turing, fp32): docs/LOCAL_BACKLOG.md 2070 entries #2 / #3, then the shared fp32 contraction filler
+# LOCAL_BACKLOG 2070 #5 (Theory 2026-10-07, PRIORITY): s133_soft16_s1 fp32 contraction - its §133 slot verdict waits on it
+3.0 boxes/runs_fsq/s133_soft16_s1/eval_contraction_fp32.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_soft16_s1/args.json --contraction_only --fp32 --device {DEV} --out boxes/runs_fsq/s133_soft16_s1
+# §136 dim-use comparator (descriptive, Experiments 2026-10-07): fsq120.s136_dim_use on fixed-width S5 models (d 64 / 16 / 8), fp32 on the 2070 -> <run>/eval_dimuse136.json
+4.0 boxes/runs_fsq/s133_fsq64_s201/eval_dimuse136.json python -u scratch/dimuse136.py boxes/runs_fsq/s133_fsq64_s201 {DEV} --fp32
+4.0 boxes/runs_fsq/s133_noise64_s201/eval_dimuse136.json python -u scratch/dimuse136.py boxes/runs_fsq/s133_noise64_s201 {DEV} --fp32
+4.0 boxes/runs_fsq/s133_cont64_s201/eval_dimuse136.json python -u scratch/dimuse136.py boxes/runs_fsq/s133_cont64_s201 {DEV} --fp32
+4.0 boxes/runs_fsq/s133_fsq16_s1/eval_dimuse136.json python -u scratch/dimuse136.py boxes/runs_fsq/s133_fsq16_s1 {DEV} --fp32
+4.0 boxes/runs_fsq/s133_fsq16_s3/eval_dimuse136.json python -u scratch/dimuse136.py boxes/runs_fsq/s133_fsq16_s3 {DEV} --fp32
+4.0 boxes/runs_fsq/s133_fsq16_s4/eval_dimuse136.json python -u scratch/dimuse136.py boxes/runs_fsq/s133_fsq16_s4 {DEV} --fp32
+4.0 boxes/runs_fsq/s133_soft16_s1/eval_dimuse136.json python -u scratch/dimuse136.py boxes/runs_fsq/s133_soft16_s1 {DEV} --fp32
+4.0 boxes/runs_fsq/s133_soft16_s102/eval_dimuse136.json python -u scratch/dimuse136.py boxes/runs_fsq/s133_soft16_s102 {DEV} --fp32
+4.0 boxes/runs_fsq/s133_soft16_s4/eval_dimuse136.json python -u scratch/dimuse136.py boxes/runs_fsq/s133_soft16_s4 {DEV} --fp32
+4.0 boxes/runs_fsq/s128_s5_s1/eval_dimuse136.json python -u scratch/dimuse136.py boxes/runs_fsq/s128_s5_s1 {DEV} --fp32
+4.0 boxes/runs_fsq/s128_s5_s3/eval_dimuse136.json python -u scratch/dimuse136.py boxes/runs_fsq/s128_s5_s3 {DEV} --fp32
+4.0 boxes/runs_fsq/s134_copy_s5_s1/eval_dimuse136.json python -u scratch/dimuse136.py boxes/runs_fsq/s134_copy_s5_s1 {DEV} --fp32
+4.0 boxes/runs_fsq/s134_copy_s5_s2/eval_dimuse136.json python -u scratch/dimuse136.py boxes/runs_fsq/s134_copy_s5_s2 {DEV} --fp32
+4.0 boxes/runs_fsq/s134_copy_s5_s3/eval_dimuse136.json python -u scratch/dimuse136.py boxes/runs_fsq/s134_copy_s5_s3 {DEV} --fp32
+4.0 boxes/runs_fsq/s134_copy_s5_s4/eval_dimuse136.json python -u scratch/dimuse136.py boxes/runs_fsq/s134_copy_s5_s4 {DEV} --fp32
+# LOCAL_BACKLOG 2070 #6 (Theory 2026-10-07, descriptive, F2 taxonomy): --prefix_only + --probe_only on local s133 / s134 models
+3.0 boxes/runs_fsq/s133_cont64_s201/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_cont64_s201/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_cont64_s201
+3.0 boxes/runs_fsq/s133_cont64_s201/eval_probe_posthoc.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_cont64_s201/args.json --probe_only --device {DEV} --out boxes/runs_fsq/s133_cont64_s201
+3.0 boxes/runs_fsq/s133_fsq16_s1/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_fsq16_s1/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_fsq16_s1
+3.0 boxes/runs_fsq/s133_fsq16_s1/eval_probe_posthoc.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_fsq16_s1/args.json --probe_only --device {DEV} --out boxes/runs_fsq/s133_fsq16_s1
+3.0 boxes/runs_fsq/s133_fsq64_s201/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_fsq64_s201/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_fsq64_s201
+3.0 boxes/runs_fsq/s133_fsq64_s201/eval_probe_posthoc.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_fsq64_s201/args.json --probe_only --device {DEV} --out boxes/runs_fsq/s133_fsq64_s201
+3.0 boxes/runs_fsq/s133_noise64_s201/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_noise64_s201/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_noise64_s201
+3.0 boxes/runs_fsq/s133_noise64_s201/eval_probe_posthoc.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_noise64_s201/args.json --probe_only --device {DEV} --out boxes/runs_fsq/s133_noise64_s201
+3.0 boxes/runs_fsq/s133_soft16_s1/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_soft16_s1/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_soft16_s1
+3.0 boxes/runs_fsq/s133_soft16_s1/eval_probe_posthoc.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_soft16_s1/args.json --probe_only --device {DEV} --out boxes/runs_fsq/s133_soft16_s1
+3.0 boxes/runs_fsq/s133_soft16_s4/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_soft16_s4/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_soft16_s4
+3.0 boxes/runs_fsq/s133_soft16_s4/eval_probe_posthoc.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_soft16_s4/args.json --probe_only --device {DEV} --out boxes/runs_fsq/s133_soft16_s4
+3.0 boxes/runs_fsq/s134_copy_s5_s1/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s134_copy_s5_s1/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s134_copy_s5_s1
+3.0 boxes/runs_fsq/s134_copy_s5_s1/eval_probe_posthoc.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s134_copy_s5_s1/args.json --probe_only --device {DEV} --out boxes/runs_fsq/s134_copy_s5_s1
+3.0 boxes/runs_fsq/s134_copy_s5_s2/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s134_copy_s5_s2/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s134_copy_s5_s2
+3.0 boxes/runs_fsq/s134_copy_s5_s2/eval_probe_posthoc.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s134_copy_s5_s2/args.json --probe_only --device {DEV} --out boxes/runs_fsq/s134_copy_s5_s2
+3.0 boxes/runs_fsq/s134_copy_s5_s3/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s134_copy_s5_s3/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s134_copy_s5_s3
+3.0 boxes/runs_fsq/s134_copy_s5_s3/eval_probe_posthoc.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s134_copy_s5_s3/args.json --probe_only --device {DEV} --out boxes/runs_fsq/s134_copy_s5_s3
+3.0 boxes/runs_fsq/s134_copy_s5_s4/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s134_copy_s5_s4/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s134_copy_s5_s4
+3.0 boxes/runs_fsq/s134_copy_s5_s4/eval_probe_posthoc.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s134_copy_s5_s4/args.json --probe_only --device {DEV} --out boxes/runs_fsq/s134_copy_s5_s4
+# LOCAL_BACKLOG 2070 #7 (Theory 2026-10-07): §136 d 4 vs d 8 entry prototype at 2k, paired / interleaved, seeds 501-512 (~15 min each)
+3.0 boxes/runs_fsq/proto136_d4_s501_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 501 --d_q 4 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d4_s501_2070 && echo ok > boxes/runs_fsq/proto136_d4_s501_2070/.done
+3.0 boxes/runs_fsq/proto136_d8_s501_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 501 --d_q 8 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d8_s501_2070 && echo ok > boxes/runs_fsq/proto136_d8_s501_2070/.done
+3.0 boxes/runs_fsq/proto136_d4_s502_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 502 --d_q 4 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d4_s502_2070 && echo ok > boxes/runs_fsq/proto136_d4_s502_2070/.done
+3.0 boxes/runs_fsq/proto136_d8_s502_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 502 --d_q 8 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d8_s502_2070 && echo ok > boxes/runs_fsq/proto136_d8_s502_2070/.done
+3.0 boxes/runs_fsq/proto136_d4_s503_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 503 --d_q 4 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d4_s503_2070 && echo ok > boxes/runs_fsq/proto136_d4_s503_2070/.done
+3.0 boxes/runs_fsq/proto136_d8_s503_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 503 --d_q 8 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d8_s503_2070 && echo ok > boxes/runs_fsq/proto136_d8_s503_2070/.done
+3.0 boxes/runs_fsq/proto136_d4_s504_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 504 --d_q 4 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d4_s504_2070 && echo ok > boxes/runs_fsq/proto136_d4_s504_2070/.done
+3.0 boxes/runs_fsq/proto136_d8_s504_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 504 --d_q 8 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d8_s504_2070 && echo ok > boxes/runs_fsq/proto136_d8_s504_2070/.done
+3.0 boxes/runs_fsq/proto136_d4_s505_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 505 --d_q 4 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d4_s505_2070 && echo ok > boxes/runs_fsq/proto136_d4_s505_2070/.done
+3.0 boxes/runs_fsq/proto136_d8_s505_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 505 --d_q 8 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d8_s505_2070 && echo ok > boxes/runs_fsq/proto136_d8_s505_2070/.done
+3.0 boxes/runs_fsq/proto136_d4_s506_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 506 --d_q 4 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d4_s506_2070 && echo ok > boxes/runs_fsq/proto136_d4_s506_2070/.done
+3.0 boxes/runs_fsq/proto136_d8_s506_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 506 --d_q 8 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d8_s506_2070 && echo ok > boxes/runs_fsq/proto136_d8_s506_2070/.done
+3.0 boxes/runs_fsq/proto136_d4_s507_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 507 --d_q 4 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d4_s507_2070 && echo ok > boxes/runs_fsq/proto136_d4_s507_2070/.done
+3.0 boxes/runs_fsq/proto136_d8_s507_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 507 --d_q 8 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d8_s507_2070 && echo ok > boxes/runs_fsq/proto136_d8_s507_2070/.done
+3.0 boxes/runs_fsq/proto136_d4_s508_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 508 --d_q 4 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d4_s508_2070 && echo ok > boxes/runs_fsq/proto136_d4_s508_2070/.done
+3.0 boxes/runs_fsq/proto136_d8_s508_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 508 --d_q 8 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d8_s508_2070 && echo ok > boxes/runs_fsq/proto136_d8_s508_2070/.done
+3.0 boxes/runs_fsq/proto136_d4_s509_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 509 --d_q 4 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d4_s509_2070 && echo ok > boxes/runs_fsq/proto136_d4_s509_2070/.done
+3.0 boxes/runs_fsq/proto136_d8_s509_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 509 --d_q 8 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d8_s509_2070 && echo ok > boxes/runs_fsq/proto136_d8_s509_2070/.done
+3.0 boxes/runs_fsq/proto136_d4_s510_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 510 --d_q 4 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d4_s510_2070 && echo ok > boxes/runs_fsq/proto136_d4_s510_2070/.done
+3.0 boxes/runs_fsq/proto136_d8_s510_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 510 --d_q 8 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d8_s510_2070 && echo ok > boxes/runs_fsq/proto136_d8_s510_2070/.done
+3.0 boxes/runs_fsq/proto136_d4_s511_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 511 --d_q 4 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d4_s511_2070 && echo ok > boxes/runs_fsq/proto136_d4_s511_2070/.done
+3.0 boxes/runs_fsq/proto136_d8_s511_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 511 --d_q 8 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d8_s511_2070 && echo ok > boxes/runs_fsq/proto136_d8_s511_2070/.done
+3.0 boxes/runs_fsq/proto136_d4_s512_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 512 --d_q 4 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d4_s512_2070 && echo ok > boxes/runs_fsq/proto136_d4_s512_2070/.done
+3.0 boxes/runs_fsq/proto136_d8_s512_2070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 512 --d_q 8 --stop_after 2000 --no_cert --device {DEV} --out boxes/runs_fsq/proto136_d8_s512_2070 && echo ok > boxes/runs_fsq/proto136_d8_s512_2070/.done
 3.0 boxes/runs_fsq/s128_cyc_s1/eval_growth.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_cyc_s1/args.json --growth_only --device {DEV} --out boxes/runs_fsq/s128_cyc_s1
 3.0 boxes/runs_fsq/s128_cyc_s2/eval_growth.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_cyc_s2/args.json --growth_only --device {DEV} --out boxes/runs_fsq/s128_cyc_s2
 3.0 boxes/runs_fsq/s128_cyc_s3/eval_growth.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s128_cyc_s3/args.json --growth_only --device {DEV} --out boxes/runs_fsq/s128_cyc_s3
