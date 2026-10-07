@@ -32,6 +32,11 @@ if grep -q -E "boxes.(latent86|gen97|snap101|self103|mk108|self110|fsq120|base11
   [ "$s1" = "$SHA128" ] && [ "$s2" = "$SHA512" ] || { echo "$(date +%T) DATA_SHA_MISMATCH rc 9" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }
 fi
 nvidia-smi --query-gpu=name,driver_version --format=csv,noheader >> $log
+if [ -f scratch/hostcheck.py ]; then                                     # Theory note 135-6: VRAM pattern test over most of the card (b78 fault at 6.75-14 GiB)
+  gib=$(nvidia-smi --query-gpu=memory.total --format=csv,noheader,nounits | head -1 | awk '{printf "%.0f", $1 / 1024 - 2}')
+  python -u scratch/hostcheck.py --gib $gib > logs/hostcheck.log 2>&1; tail -1 logs/hostcheck.log >> $log
+  tail -1 logs/hostcheck.log | grep -q "HOSTCHECK PASS" || { echo "$(date +%T) HOSTCHECK_FAIL rc 9" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }
+fi
 grep -v '^#' "$q" | grep -v '^$' | while read -r out mod rest; do n=$(basename $out)
   echo "echo \"\$(date +%T) start $out\" >> $log; python -u -m $mod $rest --device $dev --out $out > logs/gen_$n.log 2>&1; rc=\$?; [ -s $out/eval.json ] || rc=\"\$rc no-eval\"; echo \"\$(date +%T) evaluated $out rc \$rc\" >> $log"
 done > /tmp/gen_cmds.txt
