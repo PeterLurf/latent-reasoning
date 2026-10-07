@@ -24,7 +24,7 @@ import time
 from rich import box
 from rich.console import Console, Group
 from rich.live import Live
-from rich.panel import Panel
+from rich.rule import Rule
 from rich.table import Table
 from rich.text import Text
 
@@ -242,21 +242,29 @@ def cloud_loop(use_ssh):
 
 
 # ---------------------------------------------------------------- render
+def T():
+    """Compact table (fits a 1080p full-screen terminal): no blank top / bottom edge rows, one header rule."""
+    return Table(box=box.SIMPLE_HEAD, show_edge=False, expand=True, pad_edge=False, padding=(0, 1))
+
+
 def render(gpus, procs):
     now = time.time()
     # LOCAL GPUs
-    tg = Table(box=box.SIMPLE_HEAD, expand=True, pad_edge=False)
-    for c, j in (("GPU", "left"), ("CUDA", "left"), ("util", "left"), ("", "right"), ("VRAM", "left"), ("", "right"), ("temp", "right"), ("power", "right"), ("fan", "right"), ("processes", "left")):
+    tg = T()
+    for c, j in (("GPU", "left"), ("CUDA", "left"), ("util", "left"), ("", "right"), ("VRAM", "left"), ("", "right"), ("temp", "right"), ("power", "right"), ("fan", "right")):
         tg.add_column(c, justify=j, no_wrap=True)
+    tg.add_column("processes", no_wrap=True, ratio=1, overflow="ellipsis")   # the only flexible column: it absorbs the width
     for g in gpus:
         cuda = next((d for _, n, d in WORKERS if n in g["name"]), "?"); mu, mt = num(g["memory.used"]), num(g["memory.total"], 1)
-        pr = procs.get(g["pci.bus_id"], []); ptxt = ", ".join("%s %s" % (p[1].replace(".exe", ""), p[0]) for p in pr[:3]) or "-"
+        pr = [p for p in procs.get(g["pci.bus_id"], []) if not p[1].startswith("[")]   # drop "[Insufficient Permissions]" system entries
+        ptxt = ", ".join("%s %s" % (p[1].replace(".exe", ""), p[0]) for p in pr[:4]) or "-"
         tg.add_row("%s %s" % (g["index"], g["name"].replace("NVIDIA GeForce ", "")), cuda, bar(num(g["utilization.gpu"]) / 100, 14), "%3d%%" % num(g["utilization.gpu"]),
                    bar(mu / mt, 14, 0.80, 0.90), "%.1f/%.0fG" % (mu / 1024, mt / 1024), "%d°C" % num(g["temperature.gpu"]),
                    "%.0f/%.0fW" % (num(g["power.draw"]), num(g["power.limit"])), "%s%%" % g["fan.speed"].replace("[N/A]", "-"), ptxt)
     # LOCAL JOBS
-    jobs = worker_jobs(); tj = Table(box=box.SIMPLE_HEAD, expand=True, pad_edge=False)
-    tj.add_column("worker", no_wrap=True); tj.add_column("running", ratio=3); tj.add_column("age", justify="right", no_wrap=True); tj.add_column("next up (runnable)", ratio=4); tj.add_column("left", justify="right")
+    jobs = worker_jobs(); tj = T()
+    tj.add_column("worker", no_wrap=True); tj.add_column("running", ratio=2, no_wrap=True, overflow="ellipsis"); tj.add_column("age", justify="right", no_wrap=True)
+    tj.add_column("next up (runnable)", ratio=5, no_wrap=True, overflow="ellipsis"); tj.add_column("left", justify="right", no_wrap=True)
     for tag, card, cuda in WORKERS:
         g = next((x for x in gpus if card in x["name"]), None); total = int(num(g["memory.total"], 8192)) if g else 8192
         nxt, left = backlog_next(card, total); j = jobs.get(tag); alive = STATE["workers"].get(tag)
@@ -273,15 +281,15 @@ def render(gpus, procs):
         if alive is False:
             flags.append("NO WORKER")
         wt = Text("%s %s" % (tag, cuda)) + (Text(" " + " ".join(flags), style="bold red") if flags else Text(""))
-        tj.add_row(wt, run, age, "\n".join("%s  %sG" % (s, m) for m, s in nxt) or "-", str(left))
+        tj.add_row(wt, run, age, Text(" · ".join("%s %sG" % (s, m) for m, s in nxt) or "-", style="grey70"), str(left))   # one line per worker
     # CLOUD
     with LOCK:
         inst = list(STATE["vast"]); sshd = dict(STATE["ssh"]); vt, st, credit, err = STATE["vast_t"], STATE["ssh_t"], STATE["credit"], STATE["vast_err"]
         fl = list(STATE["fillers"]); dep = STATE.get("deploy_log", "")
-    tc = Table(box=box.SIMPLE_HEAD, expand=True, pad_edge=False)
+    tc = T()
     for c, j in (("host", "left"), ("GPU", "left"), ("status", "left"), ("util", "left"), ("", "right"), ("VRAM", "right"), ("temp", "right"), ("$/h", "right"), ("up", "right"),
                  ("current run", "left"), ("step", "right"), ("loss", "right"), ("L", "right"), ("queue", "right")):
-        tc.add_column(c, justify=j, no_wrap=True)
+        tc.add_column(c, justify=j, no_wrap=True, **({"ratio": 1, "overflow": "ellipsis"} if c == "current run" else {}))
     burn = 0.0
     for o in sorted(inst, key=lambda o: o.get("label") or ""):
         burn += o.get("dph_total") or 0; s = sshd.get(o["id"], {}); lab = (o.get("label") or str(o["id"])).replace("gen-", ""); stt = o.get("actual_status") or "?"
@@ -297,7 +305,7 @@ def render(gpus, procs):
                    "%.1f/%.0fG" % (vu, vtot), "%d°C" % (o.get("gpu_temp") or 0), "%.3f" % (o.get("dph_total") or 0), ago(now - (o.get("start_date") or now)),
                    Text(cur, style="cyan"), "%s%s" % (last.get("step", ""), " eval" if q and q[1] < q[0] and last.get("step") == 24000 else ""), "%.4g" % last["loss"] if isinstance(last.get("loss"), (int, float)) else "", str(last.get("L_max", "")), qtxt)
     # CLOUD QUEUE
-    tq = Table(box=box.SIMPLE_HEAD, expand=True, pad_edge=False); tq.add_column("source", no_wrap=True); tq.add_column("lined up (not deployed yet)", ratio=1)
+    tq = T(); tq.add_column("source", no_wrap=True); tq.add_column("lined up (not deployed yet)", ratio=1, no_wrap=True, overflow="ellipsis")
     live = {(o.get("label") or "").replace("gen-", "") for o in inst}; held = set()
     for name, pend in fl:
         held.update("b" + n for n in pend)
@@ -324,8 +332,9 @@ def render(gpus, procs):
     hdr = Text.assemble(("LATENT TOP ", "bold white on blue"), ("  %s   " % time.strftime("%Y-%m-%d %H:%M:%S"), "bold"),
                         ("cloud %d hosts  $%.2f/h  credit $%s   " % (len(inst), burn, "%.2f" % credit if isinstance(credit, (int, float)) else "?"), "bold yellow"),
                         ("vast %s ago, ssh %s ago" % (ago(now - vt) if vt else "-", ago(now - st) if st else "-"), "grey50"), ("   " + err if err else "", "red"))
-    return Group(hdr, Panel(tg, title="LOCAL GPUs", border_style="blue"), Panel(tj, title="LOCAL JOBS (v2 backlog workers)", border_style="blue"),
-                 Panel(tc, title="CLOUD (Vast)", border_style="magenta"), Panel(tq, title="CLOUD QUEUE", border_style="magenta"))
+    sec = lambda t_, c_: Rule(Text(" %s " % t_, style="bold " + c_), style=c_, align="left")  # noqa: E731  (1 row; panels cost 4)
+    return Group(hdr, sec("LOCAL GPUs", "blue"), tg, sec("LOCAL JOBS (v2 backlog workers)", "blue"), tj, sec("CLOUD (Vast)", "magenta"), tc,
+                 sec("CLOUD QUEUE", "magenta"), tq)
 
 
 def short_q(tag):
