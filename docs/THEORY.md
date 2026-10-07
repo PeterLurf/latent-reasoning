@@ -7800,6 +7800,17 @@ matters.**
 * **Amendment (2026-10-07 17:40 EDT, before any run; Audit on the implementation):** both gains are log-parametrised, g = exp(s), with s initialised at log(the initial ratio) (s_delta = 0).
   A raw g_add near 2·10⁻⁴ under Adam (lr about 10⁻⁴) would move about 50 % per step and could change sign. exp(s) is identical at step 0, takes relative steps and stays positive.
 
+**Note 147-3 (2026-10-07 17:52 EDT, before any §147 run; the CUDA gradflow recheck after 147-2). The decay gate α is exempt from the 10× bar; β must meet it.**
+* **The recheck:** W_o delta / additive 0.70 (passes). The α / β gate rows are 0.080 under bf16 (CPU 0.18): β rows 0.129, α rows 0.012.
+  - α's bias +5 (α ≈ 0.993) sits where σ′ ≈ 0.0066.
+* **Why α is exempt:**
+  - Near α ≈ 1 the forgetting rate 1 − α ≈ 0.007 is small, and any parametrisation's raw gradient scales with it. exp(−softplus(u)) behaves the same: at large bias,
+    σ(b) ≈ 1 − e^(−b) is already a log-rate form.
+  - Under Adam the logit still moves about lr per step (about 2.4 over 24k steps with a consistent sign), which spans α from about 0.93 to 0.9994.
+  - Lowering the bias to +3 (α 0.953) would force about 96 % forgetting over a chain and cripple the delta heads' memory.
+* **Decision (the experiments session's option (i)):** the gradflow gate applies to W_o (both groups) and β. α is exempt.
+* **Descriptive:** α per head at the end and at each checkpoint (`s147.alpha_by_head`), so whether decay was learned is visible.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
