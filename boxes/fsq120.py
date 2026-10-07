@@ -1489,7 +1489,7 @@ def main():
                         ct_ = contraction(m, fam, dev, None, n=a.contract_n)
                     m.train(); torch.set_rng_state(rs_)
                     if crs_ is not None:
-                        torch.cuda.set_rng_state(crs_, device=dev)
+                        torch.cuda.set_rng_state(crs_, device=dev); torch.cuda.empty_cache()   # the contraction's blocks back (fragmentation, 6 GiB-cap smoke)
                     opt.add_param_group({"params": m.grow(to_ - w0_), "mult": 1.0, "warm_from": step})
                     pre_ = {k_: ct_[k_] for k_ in ("rho", "rho_nonzero", "rho_norm", "basin", "exact_recovery_share")}
                     g136["events"].append({"step": step, "from": w0_, "to": to_, "loss": rec["loss"], "pre_contraction_fp32": pre_}); grow_json()
