@@ -1,0 +1,3 @@
+# THEORY §133 stage 1 slots 2-4 (note 133-5, approved ~$6; Audit 01:57: never queued before): arm noise64 slot 4 via scratch.restart133 -> boxes.fsq120 (§128 S5 recipe, --micro 2 at L >= 32, --ckpt_every 2000); RTX 3090, driver recorded
+# P=1
+boxes/runs_fsq/s133_slots/noise64_k4 scratch.restart133 --arm noise64 --slot 4
