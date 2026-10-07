@@ -1,4 +1,6 @@
 # local 3070 backlog: the fp32 contraction filler (same lines as c1_backlog_fp32.txt: shared locks), then docs/LOCAL_BACKLOG.md 3070 entries
+# §134 verdict blocker (Theory 2026-10-06 22:1x): s134_copy_s5_s2 fp32 contraction (model.pt local)
+2.3 boxes/runs_fsq/s134_copy_s5_s2/eval_contraction_fp32.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s134_copy_s5_s2/args.json --contraction_only --fp32 --device {DEV} --out boxes/runs_fsq/s134_copy_s5_s2
 # §115 final eval, retry (Theory 2026-10-06): the 19:32 attempt OOMed with only 942 MiB free - the previous job's memory not yet released / a co-tenant; this run waits until the 3070 (nvidia-smi 2) holds < 600 MiB, then runs alone; --bs 100, test_n 500 as s2 / s3
 5.5 boxes/runs_s5/g105_mask4_s1/eval_s115.json sleep 15; for i in $(seq 1 60); do u=$(nvidia-smi --id=2 --query-gpu=memory.used --format=csv,noheader,nounits | tr -d ' \r'); [ "$u" -lt 600 ] && break; sleep 10; done; python -u -m boxes.snap115 --run boxes/runs_s5/g105_mask4_s1 --model g97 --test_n 500 --bs 100 --device {DEV}
 # Theory: the last registered §115 piece - g105_mask4_s1 at test_n 500 (as s2 / s3, g97 layout, part B), --bs 100 (bs 250 OOMed in the 6 GiB cap; memory only); ~15 min
