@@ -7611,6 +7611,14 @@ curriculum; restart slots; 24k), except for the carrier:
   - Audit's diff review.
 * Dirs `s145_{slot4,carry1}_4x4_s{seed}`. Scorer: `theory/score_s145.py`, committed with this registration.
 
+**Note 145-1 (2026-10-07 15:52 EDT, before any §145 run; found by the experiments session's gradflow check). CARRY1 carries the slot read at the last write position.**
+* **The flaw:** GPT-2 attends causally, and the segment ends [..., w₁, w₂, w₃, w₄]. A slot read at w₁ cannot see w₂–w₄. As registered, CARRY1 (slot 1 carried) gave exactly zero
+  gradient into w₂–w₄ and their maps: one write position plus inert compute, not "the same write compute".
+* **Fixed now (`--carry_from last`):** CARRY1 carries **the slot read at w₄**, through w₄'s own maps, so w₁–w₃ are compute that feeds the one carried vector. The decoder reads
+  that one slot.
+* This is the registered intent: the same 4 write positions and compute, one carried vector. SLOT4 is unchanged (every w_k and map gets gradient), and so are the rules
+  and readings.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
