@@ -29,6 +29,18 @@ import boxes.multcol as MC  # noqa: E402
 from boxes import s5  # noqa: E402
 
 
+def ridge_cv_r2(Xf, yf, Xs, ys, grid=(1e-3, 1e-2, 1e-1, 1.0, 10.0, 100.0), folds=5):
+    """Ridge with lambda (x n, standardised features) chosen by 5-fold CV on the fit half - for h (768 features vs ~500 fit rows the fixed
+    1e-3 penalty overfits: negative held-out R^2). Returns (R^2 on the held-out half, the chosen lambda)."""
+    mu, sd = Xf.mean(0), Xf.std(0) + 1e-6; Z = (Xf - mu) / sd; Zs = (Xs - mu) / sd; idx = np.arange(len(Z)) % folds
+    def fit(Za, ya, lam):
+        Za1 = np.c_[Za, np.ones(len(Za))]; return np.linalg.solve(Za1.T @ Za1 + lam * len(Za) * np.eye(Za1.shape[1]), Za1.T @ ya)
+    def r2(w, Zb, yb):
+        r = yb - np.c_[Zb, np.ones(len(Zb))] @ w; return 1 - (r ** 2).sum() / max(((yb - yb.mean()) ** 2).sum(), 1e-12)
+    best = max(grid, key=lambda lam: np.mean([r2(fit(Z[idx != f], yf[idx != f], lam), Z[idx == f], yf[idx == f]) for f in range(folds)]))
+    return float(r2(fit(Z, yf, best), Zs, ys)), best
+
+
 def logit_acc(Xf, yf, Xs, ys, dev, steps=500, lr=0.05, wd=1e-4):
     torch.manual_seed(0); Xf = torch.tensor(Xf, dtype=torch.float32, device=dev); Xs = torch.tensor(Xs, dtype=torch.float32, device=dev)
     mu, sd = Xf.mean(0), Xf.std(0) + 1e-6; Xf, Xs = (Xf - mu) / sd, (Xs - mu) / sd; y = torch.tensor(yf, device=dev)
@@ -59,6 +71,8 @@ def main():
         for src, X in (("h", H[:, k]), ("code", Q[:, k])):
             for name, y in (("carry_out", C[:, k]), ("carry_in", cin[:, k]), ("colsum", colsum[:, k])):
                 r["%s_r2_%s" % (name, src)] = MC.ridge_r2(X[:h], y[:h].astype(float), X[h:], y[h:].astype(float)) if len(np.unique(y)) > 1 else None
+                if len(np.unique(y)) > 1:                                   # v2 (2026-10-07): lambda by 5-fold CV on the fit half
+                    r["%s_r2cv_%s" % (name, src)], r["%s_lamcv_%s" % (name, src)] = ridge_cv_r2(X[:h], y[:h].astype(float), X[h:], y[h:].astype(float))
             r["digit_acc_%s" % src] = logit_acc(X[:h], P[:h, k], X[h:], P[h:, k], dev)
         r["digit_majority_rate"] = float(np.bincount(P[h:, k], minlength=10).max() / (N - h)); r["model_digit_acc"] = float((pred[:, k] == P[:, k]).mean())
         r["n_carry_values"] = int(len(np.unique(C[:, k]))); res["by_column"][str(k + 1)] = {k_: (round(v, 4) if isinstance(v, float) else v) for k_, v in r.items()}
@@ -80,7 +94,7 @@ def main():
     res["carry_code_nonlinear_acc"] = float(sum(pooled_hit) / ((N - h) * L)); res["r1s16_gate_open"] = bool(res["carry_code_nonlinear_acc"] < 0.9)
     print("carry_code_nonlinear_acc pooled", round(res["carry_code_nonlinear_acc"], 4), "gate open (< 0.9):", res["r1s16_gate_open"], flush=True)
     res.update({"eval_dtype": str(amp), "device": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"})
-    json.dump(res, open(os.path.join(d, "eval_probe_percol.json"), "w", newline="\n"), indent=1)
+    json.dump(res, open(os.path.join(d, os.environ.get("PERCOL_OUT", "eval_probe_percol.json")), "w", newline="\n"), indent=1)   # v2 (CV ridge): PERCOL_OUT
 
 
 if __name__ == "__main__":

@@ -1,4 +1,6 @@
 # 4060 backlog: 2k replay_basin seeds 75-82 (the rest of §130's registered TEST-SAME list, not needed by its block) -> theory/results/replay_extra/ (descriptive; not read by score_s130); ~3.5 GiB, ~5 min each
+# §137 per-column probe v2: h / code ridge with CV-chosen lambda (the fixed-penalty h probes overfit 768 features on 500 rows)
+3.0 boxes/runs_fsq/s137_col_4x4_s1/eval_probe_percol_cv.json PERCOL_OUT=eval_probe_percol_cv.json python -u scratch/probe137_percol.py boxes/runs_fsq/s137_col_4x4_s1 {DEV}
 # §141 pre-launch gates (9e45b92b / note 141-1): CUDA bf16 gradflow through the repeats, GPU smoke (R 4 SOFT-16), memory (R 4: bs 16 micro 1 and bs 64 micro 4 -> extrapolate for the 3090)
 2.5 theory/results/gradflow_s141_cuda.json python -u scratch/gradflow_check.py --paths s141 --device {DEV} --out theory/results/gradflow_s141_cuda.json
 4.0 D:/drain_tmp/smoke141g/eval.json python -u -m boxes.multcol --family mult_col --task 4x4 --seed 1 --repeats 4 --repeat_index --d_q 16 --soft_beta 0.1 --steps 40 --sched_scale 0.002 --bs 16 --log_every 5 --train_n 4000 --test_n 100 --ext_n 100 --donor_n 100 --contract_n 100 --eval_bs 100 --ckpt_every 20 --device {DEV} --out D:/drain_tmp/smoke141g
