@@ -1,0 +1,13 @@
+{"step": 1, "loss": 29.748455047607422, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 14}
+{"step": 2, "loss": 30.166566848754883, "L_max": 2, "p_hard": 0.0, "noise": 0.0, "sec": 27}
+{"step": 2, "grow": {"from": 8, "to": 64}, "pre_contraction_fp32": {"rho": 9.99999883788405e-07, "rho_nonzero": 1.0000000000000004e-06, "rho_norm": 9.99999883788405e-07, "basin": 1.0, "exact_recovery_share": 1.0}}
+{"step": 3, "loss": 29.26236343383789, "L_max": 4, "p_hard": 0.5, "noise": 0.0, "sec": 62}
+{"step": 4, "loss": 29.55948257446289, "L_max": 4, "p_hard": 1.0, "noise": 0.0, "sec": 63}
+{"step": 5, "loss": 27.15322494506836, "L_max": 4, "p_hard": 1.0, "noise": 0.0, "sec": 65}
+{"step": 6, "loss": 24.50949478149414, "L_max": 8, "p_hard": 1.0, "noise": 0.0, "sec": 67}
+{"step": 7, "loss": 26.821834564208984, "L_max": 8, "p_hard": 1.0, "noise": 0.0, "sec": 68}
+{"step": 8, "loss": 25.726028442382812, "L_max": 8, "p_hard": 1.0, "noise": 0.0, "sec": 70}
+{"step": 9, "loss": 22.848722457885742, "L_max": 8, "p_hard": 1.0, "noise": 0.0, "sec": 73}
+{"step": 10, "loss": 23.918628692626953, "L_max": 16, "p_hard": 1.0, "noise": 0.0, "sec": 77}
+{"step": 11, "loss": 23.806808471679688, "L_max": 16, "p_hard": 1.0, "noise": 0.0, "sec": 81}
+{"step": 12, "loss": 21.844284057617188, "L_max": 16, "p_hard": 1.0, "noise": 0.0, "sec": 83}
