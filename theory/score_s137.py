@@ -62,6 +62,19 @@ def plateau(d):
     return bool(g(2000) >= 0.9 * g(1000) and g(2000) >= 0.25 * g(100))
 
 
+def misfire(d):
+    """137-1 (3): the 123-3 flag 'misfires' on digit CE if it fires while loss(2k) is already below 1.0 nat per digit."""
+    p = os.path.join(R, d, "log.jsonl")
+    if not os.path.exists(p):
+        return None
+    L = {x["step"]: x["loss"] for x in map(json.loads, open(p)) if "loss" in x and "step" in x}
+    if not L or max(L) < 2000:
+        return None
+    g = lambda t: L[min(L, key=lambda s: abs(s - t))]  # noqa: E731
+    fl = g(2000) >= 0.9 * g(1000) and g(2000) >= 0.25 * g(100)
+    return bool(fl and g(2000) < 1.0)
+
+
 def rho_clause(cf, eps="0.1", floor=1e-3):
     try:
         e = cf["detail"]["eps"][eps]; rk, dk = e["rho_k"], e["dist_med_k"]
@@ -88,7 +101,7 @@ def slot(size, k):
             break
         if pl is None:
             return {"attempts": att, "status": "running (phase 1)", "accepted": None}
-        att.append({"seed": k + o, "plateau": pl})
+        att.append({"seed": k + o, "plateau": pl, "misfire": misfire(d) if pl else None})
         if pl is False:
             if r is None:
                 return {"attempts": att, "status": "running", "accepted": None}
@@ -99,6 +112,10 @@ def slot(size, k):
                  "gpu": r.get("train_gpu", r.get("gpu")), "driver": r.get("train_driver")}
             a["exact"] = (a["test_acc"] or 0) >= 0.99
             a["pass"] = None if a["rho"] is None else bool(a["exact"] and a["serial"] and a["rho"] <= 0.28)
+            a["reading"] = "IN-PASS (ICoT-like), not a latent carry" if (a["exact"] and not a["serial"]) else None   # 137-1 (2)
+            r2 = (r.get("s137_probe") or {})
+            a["carry_r2"] = {k: r2.get(k) for k in ("r2_carry_code", "r2_carry_h", "r2_colsum_context")}       # 137-1 (2): code_k and pre-W_down h_k
+            a["flag2k_misfire"] = misfire(d)                                                                     # 137-1 (3)
             return {"attempts": att, "status": "accepted", "accepted": a}
     if len(att) == len(OFFS) and all(x["plateau"] for x in att):
         return {"attempts": att, "status": "exhausted", "accepted": None}
