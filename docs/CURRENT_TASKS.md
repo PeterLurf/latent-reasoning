@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-07 09:25 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-07 09:58 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -31,17 +31,17 @@ boxes/fsq120.py / table132.py / core.py run `python scratch/smoke_plain.py`. Nev
 |---|---|
 | b111-b114 | §136 GROW grow4 s1-s4 (fill_s136; b112 ssh flaky - kex resets - but training fine, 13.1k at 09:01) |
 | b128 / b129 | §134 MOD s2 / s3 (copy_mod + cc_job) |
-| b130 / b131 | §141 r4f8 / r4s16 slot 1 (--micro 4) |
+| b130 / b131 | §141 r4f8 / r4s16 slot 1 (--micro 4); **b130's model.pt: run s141 per-repeat probe on it after drain (Theory 09:55), keep it** |
 | b126 | §139 proof done (A stopped by copy gate; A' / B in hand); drain fetching models |
 | b102 | §136 cgrow s4: post-hoc done on host; model.pt via scratch/chunk_fetch.sh (link ~53 KB/s; 8/56 pieces at 09:20; waiter verifies tarball + model sha, then destroys) |
 | a5 / a6 | §118 LONG s84 / s85 (mk108) |
-| **staged** | **§138 proofs gen-b133..b136** (slot 1 per arm, restart138 --memcheck first); CUDA gradflow PASS (bd507312); deploy after Audit's diff review |
+| **staged** | **§138 proofs gen-b133..b136** (slot 1 per arm, restart138 --memcheck first); label-free HINGE (notes 138-2 / 138-3) + s138_desc fix 39a3c268, e2e smokes logs/smoke138e2e/; Audit released all four; chain logs/fill_s138p.out deploys after fill_s136 exits |
 
 * Pending swap: scratch/vdeploy_toy.sh.new (serialised 16-host cap gate) waits for no running vdeploy (waiter task), then its own commit.
 
 ### Local (v2 workers c4060 / c3070 / c2070 <- scratch/c1_backlog_<card>.txt; log logs/c1_local.log; stop: scratch/<tag>.stop)
 
-* 4060 / 3070: §141 / §133 filler protos. 2070: prefix for 16 local s133 / s134 / s136 models + c7 for 5 plain s133 (refilled 09:05; c7 refuses grown carriers).
+* 4060 / 3070: §141 / §133 filler protos. 2070: Theory 09:45 block - 16 paired SOFT-16 / FSQ-16 S5 protos to 4.5k fp32 (S 509-516, ~10 h), then replay_x 541-560.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
