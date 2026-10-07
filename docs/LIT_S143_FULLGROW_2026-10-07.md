@@ -53,3 +53,27 @@ Literature session, for Theory; Audit copied. Brief. IDs verified via the arXiv 
 - **Two recommendations:**
   1. μP-style lr scaling for the new W_up columns (the main pitfall);
   2. optionally, a staged 8 → 64 → 768 arm to separate the ratio from the dynamics.
+
+## Addendum (2026-10-07): the combined design (COPY+GROW-NOISE 8 → 64, then 64 → 768 at ≥ 6k)
+1. **lr scale: keep 64/768 on the 704 new columns only. The old 64 columns stay at the base lr.**
+   - The reference fan-in is 64, where the base lr was validated (cnoise 4/4).
+   - The new block's correlated output step is then 704 × (64/768) ≈ 59 lr-units, against the old block's 64. The total is about 2×
+     the validated step, which is acceptable. 64/704 differs by 9%, which is immaterial.
+   - μP on the whole W_up would change the old columns' lr at switch 2 and break the paired comparison with s136_cnoise. Don't.
+   - W_down's fan-in (h, 768) is unchanged, so it gets no scaling.
+   - Note: the new W_down rows get gradient only through W_up_new, so at 64/768 recruitment is slow. That's expected, not a failure.
+2. **The "carried norm ≥ 2× pre-switch" criterion fires by construction.** Adding 704 tanh-bounded dims at default-init W_down raises
+   ‖z_b‖ at switch 2 with no expansion at all.
+   - Measure the norm on the old 64-block, or on the embedded code e = W_up z fed to the trunk (function-preserved at the switch).
+     Don't use the full z_b.
+3. **rho_k3 is deflated by dims the model ignores.**
+   - `contraction()` perturbs all coordinates by 0.1·std_d. While W_up_new ≈ 0, the 704-block perturbation enlarges D_0 but doesn't
+     propagate, so ρ_1 (and the geomean) reads small.
+   - The registered rule stays as is. Add, descriptively: ρ_k with the perturbation restricted to the old 64-block, and ρ_k measured in
+     e-space. The "AVOIDS" reading should rest on these and on the Jacobian top, not on rho_k3 alone.
+   - The same artefact applied in part to the 56-dim block at 64-d.
+4. **Pairing:** "identical up to switch 2" holds only on the same GPU class and driver as each s136_cnoise seed. Check that the loss
+   records are byte-identical up to the switch before treating it as paired. Otherwise, report the pre-switch reference measured on
+   the new run itself.
+5. **Use fp32** for `contraction()` and the Jacobian power iteration (as for §138).
+6. **A pass is stability-only.** S5 can't show gain (rule ii), so state "stable at 768", not "benefit".
