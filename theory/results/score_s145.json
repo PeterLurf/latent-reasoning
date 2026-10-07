@@ -1,0 +1,305 @@
+{
+ "slot4": {
+  "slots": {
+   "1": {
+    "attempts": [
+     {
+      "seed": 1,
+      "plateau": false
+     }
+    ],
+    "status": "accepted",
+    "accepted": {
+     "seed": 1,
+     "test_acc": 0.0,
+     "serial": false,
+     "rho": 0.2632640747088943,
+     "per_column": [
+      1.0,
+      0.306,
+      0.118,
+      0.103,
+      0.076,
+      0.104,
+      0.211,
+      0.951
+     ],
+     "ext_4x8": {
+      "test_acc": 0.0,
+      "acc_by_column": {
+       "per_column": [
+        1.0,
+        0.345,
+        0.144,
+        0.083,
+        0.117,
+        0.084,
+        0.096,
+        0.112,
+        0.122,
+        0.096,
+        0.199,
+        0.938
+       ],
+       "cumulative": [
+        1.0,
+        0.345,
+        0.071,
+        0.011,
+        0.003,
+        0.002,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      "digit_acc": 0.278,
+      "n": 1000,
+      "per_step_given_correct_prefix": [
+       1.0,
+       0.345,
+       0.2058,
+       0.1549,
+       0.2727,
+       0.6667,
+       0.0,
+       null,
+       null,
+       null,
+       null,
+       null
+      ],
+      "first_error_position": {
+       "none": 0,
+       "1": 0,
+       "2": 655,
+       "3": 274,
+       "4": 60,
+       "5": 8,
+       "6": 1,
+       "7": 2,
+       "8": 0,
+       "9": 0,
+       "10": 0,
+       "11": 0,
+       "12": 0
+      },
+      "dedup_removed": 0,
+      "seeds": [
+       14004,
+       14005
+      ]
+     },
+     "probe": {
+      "per_slot_digit_r2": {
+       "slot1": {
+        "units": 0.12575098696237197,
+        "tens": 0.2872049649331221,
+        "hundreds": 0.10201301473695112
+       },
+       "slot2": {
+        "units": 0.12943067927062413,
+        "tens": 0.32770202369972223,
+        "hundreds": 0.09840826694611404
+       },
+       "slot3": {
+        "units": 0.1274421042277949,
+        "tens": 0.36050048027738935,
+        "hundreds": 0.10060819447052671
+       },
+       "slot4": {
+        "units": 0.1420026437511115,
+        "tens": 0.32080974199591394,
+        "hundreds": 0.10924636299480828
+       }
+      },
+      "r2_acc_all_slots": 0.5366099589598736,
+      "r2_acc_carried_slots": 0.5366099589598736,
+      "carried": [
+       1,
+       2,
+       3,
+       4
+      ],
+      "n": 1000,
+      "steps": 17
+     },
+     "acc_by_magnitude": {
+      "lt100": 0.39008983717012913,
+      "100_199": 0.10208816705336426,
+      "ge200": 0.14285714285714285
+     },
+     "slot_cosine": {
+      "pairwise_mean": 0.005370572209358215,
+      "pairs": [
+       0.022167420014739037,
+       0.006738031283020973,
+       -0.03814558684825897,
+       0.0366809219121933,
+       0.1572244018316269,
+       -0.15244175493717194
+      ]
+     },
+     "slot_swap": {
+      "slot1": {
+       "donor_consistent": 0.2982,
+       "recipient_consistent": 0.2892,
+       "chance_overlap": 0.5684,
+       "later_digits": 5,
+       "row_level": {
+        "donor_consistent": 0.0,
+        "recipient_consistent": 0.0,
+        "chance_overlap": 0.012
+       },
+       "pos": 8
+      },
+      "slot2": {
+       "donor_consistent": 0.2962,
+       "recipient_consistent": 0.2866,
+       "chance_overlap": 0.5684,
+       "later_digits": 5,
+       "row_level": {
+        "donor_consistent": 0.001,
+        "recipient_consistent": 0.0,
+        "chance_overlap": 0.012
+       },
+       "pos": 8
+      },
+      "slot3": {
+       "donor_consistent": 0.2972,
+       "recipient_consistent": 0.288,
+       "chance_overlap": 0.5684,
+       "later_digits": 5,
+       "row_level": {
+        "donor_consistent": 0.001,
+        "recipient_consistent": 0.0,
+        "chance_overlap": 0.012
+       },
+       "pos": 8
+      },
+      "slot4": {
+       "donor_consistent": 0.2962,
+       "recipient_consistent": 0.287,
+       "chance_overlap": 0.5684,
+       "later_digits": 5,
+       "row_level": {
+        "donor_consistent": 0.0,
+        "recipient_consistent": 0.0,
+        "chance_overlap": 0.012
+       },
+       "pos": 8
+      }
+     },
+     "slot_ablation": {
+      "slot1": {
+       "test_acc": 0.0,
+       "per_column": [
+        0.917,
+        0.242,
+        0.105,
+        0.115,
+        0.096,
+        0.094,
+        0.101,
+        0.412
+       ]
+      },
+      "slot2": {
+       "test_acc": 0.0,
+       "per_column": [
+        0.898,
+        0.267,
+        0.107,
+        0.111,
+        0.096,
+        0.101,
+        0.092,
+        0.236
+       ]
+      },
+      "slot3": {
+       "test_acc": 0.001,
+       "per_column": [
+        0.99,
+        0.258,
+        0.112,
+        0.121,
+        0.107,
+        0.099,
+        0.12,
+        0.304
+       ]
+      },
+      "slot4": {
+       "test_acc": 0.0,
+       "per_column": [
+        0.11,
+        0.035,
+        0.004,
+        0.0,
+        0.0,
+        0.0,
+        0.017,
+        0.001
+       ]
+      }
+     },
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "driver": "595.71.05",
+     "exact": false,
+     "pass": false,
+     "reading": null
+    }
+   },
+   "2": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "3": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "4": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   }
+  },
+  "verdict": "dropped at proof (slot 1 test_acc < 0.95)"
+ },
+ "carry1": {
+  "slots": {
+   "1": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "2": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "3": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "4": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   }
+  },
+  "verdict": "not run"
+ },
+ "improves": {
+  "slot4": false,
+  "carry1": null
+ },
+ "reading": "spreading the carrier over K positions does not fix the accumulator at this budget"
+}
