@@ -58,6 +58,10 @@ def main():
         with open(os.path.join(ROOT, "logs", "posthoc_contraction_%s.log" % name), "w") as lg:
             subprocess.call([sys.executable, "-u", "-m", "boxes.multrow", "--from_args", os.path.join(d, "args.json"), "--contraction_only", "--fp32", "--device", dev, "--out", d],
                             cwd=ROOT, stdout=lg, stderr=subprocess.STDOUT)
+    if name.startswith("s140_pair_") and not os.path.exists(os.path.join(d, "eval_contraction_fp32.json")):   # §140: fp32 contraction on-host via boxes.multpair
+        with open(os.path.join(ROOT, "logs", "posthoc_contraction_%s.log" % name), "w") as lg:
+            subprocess.call([sys.executable, "-u", "-m", "boxes.multpair", "--from_args", os.path.join(d, "args.json"), "--contraction_only", "--fp32", "--device", dev, "--out", d],
+                            cwd=ROOT, stdout=lg, stderr=subprocess.STDOUT)
     if name.startswith("s137_col_"):                                        # §137 (9c9b1899): fp32 contraction + prefix on-host via boxes.multcol
         for flag, outf in ((["--contraction_only", "--fp32"], "eval_contraction_fp32.json"), (["--prefix_only"], "eval_prefix.json")):
             if not os.path.exists(os.path.join(d, outf)):

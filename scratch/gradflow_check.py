@@ -336,6 +336,32 @@ def check_s135(dev, out):
         out[f"s135.aux_p{int(ph)}.target_no_grad"] = 1.0 if all(p_.grad is None for p_ in tg.parameters()) else 0.0
 
 
+def check_s140(dev, out):
+    """§140 (ce1b3442 / note 140-1): the digit CE at a column's last pair ALONE reaches W_down / W_up and - through the carried code - the
+    embedding carried out of earlier steps (the step before the column's first pair), under CUDA bf16, soft and hard."""
+    import boxes.multcol as MC
+    import boxes.multpair as MP
+    amp = torch.bfloat16 if str(dev).startswith("cuda") else None; fam = MP.PairFam(); m = MP.MultPair(s5.load_gpt2(dev), fam).to(dev); m.train()
+    rng = np.random.default_rng(0); A, B = MC.gen_operands(rng, 8, 4), MC.gen_operands(rng, 8, 4); _, dig, _, pairs, col, emit = MP.accumulators(A, B); MP.set_ops(m, A, B, dev)
+    ends = [int(t) for t in np.where(emit)[0]]
+    for ph in (0.0, 1.0):
+        m.p_hard = ph
+        for k in (2, 4, 7):                                                 # 1-based column whose digit CE is the only loss (its last pair)
+            te = ends[k - 1]; t_carry = int(np.where(col == k - 1)[0][0]) - 1   # the hand-off before the column's first pair
+            m.zero_grad(set_to_none=True); prev = m.start(8, dev); carried = None
+            with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+                for t in range(te + 1):
+                    h = m.segment(prev, torch.full((8,), t, device=dev)); qs, q, zb = m.quant(h); e = m.embed_code(qs)
+                    if t == t_carry:
+                        e.retain_grad(); carried = e
+                    prev = e[:, None]
+                loss = m.answer_ce(e, torch.tensor(fam.answer_tokens(dig[:, te]), device=dev), qs)
+            loss.backward()
+            out[f"s140.p{int(ph)}.col{k}.carried_grad"] = float(carried.grad.float().norm())
+            out[f"s140.p{int(ph)}.col{k}.down_grad"] = float(m.down.weight.grad.float().norm()); out[f"s140.p{int(ph)}.col{k}.up_grad"] = float(m.up.weight.grad.float().norm())
+    del m
+
+
 def check_s139(dev, out):
     """§139 (683318e2; notes 139-1 / 139-2, CE mode): the readout aux on e_j = W_up(code_j) ALONE (CE on the teacher's decoded S_j digits)
     reaches the readout, W_up, W_down and the GPT-2 trunk under CUDA bf16, soft and hard, and nothing reaches the frozen teacher. Schedule:
