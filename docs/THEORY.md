@@ -7336,6 +7336,17 @@ No COPY (139-5: 8-digit copy learns slowly). No restarts.
   - Audit's diff review.
 * Dirs `s142_{a,bearly,blate,ctrl}_4x4_s{seed}`. Scorer: `theory/score_s142.py`, committed with this registration.
 
+**Note 142-1 (2026-10-07 14:59 EDT, before any §142 run; the experiments session's implementation questions). Two implementation details fixed.**
+* **4×8 (descriptive) is `ext_4x8_low8`.** With an 8-digit multiplier, S_5 … S_8 reach 12 digits, beyond the 8-token answer format. The measure is exact match of
+  **S_j mod 10⁸** at j = 5–8, on 1,000 random 4×8 items, with positions 5–8 unseen in training.
+  - The low 8 digits of S_j depend only on S_(j−1) mod 10⁸ and a × b_j × 10^(j−1) mod 10⁸, so a carrier that tracks them suffices. It remains a fair length-extrapolation
+    probe.
+* **Teacher targets are precomputed once** (as registered) into a cache: the teacher's greedy S_j digits and validity for the deduplicated train split.
+  - The cache is keyed by the split's sha and the teacher's model.pt sha; multrow refuses on a mismatch.
+  - args record label_source "teacher_generated" and the cache sha.
+  - The mismatch and invalid shares are computed over the whole cache.
+  - **139-2's CE-mode gate applies:** teacher format validity ≥ 0.99 on the cache, or the section stops and reports before any run.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
