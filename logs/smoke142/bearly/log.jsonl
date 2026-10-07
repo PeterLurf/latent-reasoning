@@ -1,0 +1,19 @@
+{"step": 0, "fork_start": {"test_acc": 0.0, "acc_by_length": {"1": 0.0, "2": 0.0, "3": 0.0, "4": 0.0}, "donor": {"pos2": {"donor_consistent": 0.0, "recipient_consistent": 0.0, "chance_overlap": 0.125, "bprefix_consistent": 0.0, "operands_consistent": 0.0, "n": 8}}}}
+{"step": 1, "loss": 24.766870498657227, "L_max": 4, "L_drawn": [4], "p_hard": 0.0, "sec": 11, "reader_loss": 26.721643447875977, "noise": 0.25, "removed": [1], "lr": 4.914814565722671e-05}
+{"step": 2, "loss": 22.37518310546875, "L_max": 4, "L_drawn": [4], "p_hard": 0.0, "sec": 14, "reader_loss": 21.1768856048584, "noise": 0.25, "removed": [1], "lr": 9.330127018922194e-05}
+{"step": 3, "loss": 23.22930335998535, "L_max": 4, "L_drawn": [4], "p_hard": 0.0, "sec": 18, "reader_loss": 19.228759765625, "noise": 0.25, "removed": [1], "lr": 8.535533905932738e-05}
+{"step": 3, "ckpt": "ckpt_last.pt"}
+{"step": 4, "loss": 20.878746032714844, "L_max": 4, "L_drawn": [4], "p_hard": 0.0, "sec": 23, "reader_loss": 18.318422317504883, "noise": 0.25, "removed": [1], "lr": 7.500000000000001e-05}
+{"stage": {"step": 4, "removed": [1], "test_acc": 0.0, "acc_by_length": {"1": 0.0, "2": 0.0, "3": 0.0, "4": 0.0}, "donor": {"pos2": {"donor_consistent": 0.0, "recipient_consistent": 0.0, "chance_overlap": 0.125, "bprefix_consistent": 0.0, "operands_consistent": 0.0, "n": 8}}}}
+{"step": 5, "loss": 20.028444290161133, "L_max": 4, "L_drawn": [4], "p_hard": 0.0, "sec": 33, "reader_loss": 18.518957138061523, "noise": 0.25, "removed": [1, 2], "lr": 3.147047612756302e-05}
+{"step": 6, "loss": 20.998088836669922, "L_max": 4, "L_drawn": [4], "p_hard": 0.0, "sec": 35, "reader_loss": 18.119853973388672, "noise": 0.25, "removed": [1, 2], "lr": 5e-05}
+{"step": 6, "ckpt": "ckpt_last.pt"}
+{"step": 6, "resumed": "D:/drain_tmp/smoke142/bearly_ck6.pt"}
+{"step": 7, "loss": 20.705657958984375, "L_max": 4, "L_drawn": [4], "p_hard": 0.0, "sec": 39, "reader_loss": 18.120241165161133, "noise": 0.25, "removed": [1, 2], "lr": 3.705904774487397e-05}
+{"step": 8, "loss": 18.859981536865234, "L_max": 4, "L_drawn": [4], "p_hard": 0.0, "sec": 42, "reader_loss": 17.66693115234375, "noise": 0.25, "removed": [1, 2], "lr": 2.500000000000001e-05}
+{"stage": {"step": 8, "removed": [1, 2], "test_acc": 0.0, "acc_by_length": {"1": 0.0, "2": 0.0, "3": 0.0, "4": 0.0}, "donor": {"pos2": {"donor_consistent": 0.0, "recipient_consistent": 0.0, "chance_overlap": 0.125, "bprefix_consistent": 0.0, "operands_consistent": 0.0, "n": 8}}}}
+{"step": 9, "loss": 19.064525604248047, "L_max": 4, "L_drawn": [4], "p_hard": 0.0, "sec": 51, "reader_loss": null, "noise": 0.25, "removed": [1, 2, 3], "lr": 7.3223304703363135e-06}
+{"step": 9, "ckpt": "ckpt_last.pt"}
+{"step": 10, "loss": 18.742794036865234, "L_max": 4, "L_drawn": [4], "p_hard": 0.0, "sec": 57, "reader_loss": null, "noise": 0.25, "removed": [1, 2, 3], "lr": 6.698729810778065e-06}
+{"step": 11, "loss": 18.993886947631836, "L_max": 4, "L_drawn": [4], "p_hard": 0.0, "sec": 60, "reader_loss": null, "noise": 0.25, "removed": [1, 2, 3], "lr": 1.70370868554659e-06}
+{"step": 12, "loss": 18.564668655395508, "L_max": 4, "L_drawn": [4], "p_hard": 0.0, "sec": 62, "reader_loss": null, "noise": 0.25, "removed": [1, 2, 3], "lr": 0.0}

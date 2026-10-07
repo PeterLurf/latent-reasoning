@@ -1,0 +1,24 @@
+{
+ "n": 300,
+ "train_n": 300,
+ "split_sha": "d2e3060de9e13b6566cd86be9f388aa51d35bd9b90f63c5e6aeadbc15d7a0f44",
+ "teacher": "boxes/runs_mult/m98_tc_4x4_s1",
+ "teacher_sha": "699b549799b8d6ca20f78c5f7641a9f9a338cdcf6ff3fa348881597ee2da8b8a",
+ "teacher_invalid_share": 0.0,
+ "teacher_vs_gold_mismatch_share": 0.0,
+ "invalid_by_j": [
+  0.0,
+  0.0,
+  0.0,
+  0.0
+ ],
+ "mismatch_by_j": [
+  0.0,
+  0.0,
+  0.0,
+  0.0
+ ],
+ "sec": 63,
+ "device": "cpu",
+ "dtype": "None"
+}

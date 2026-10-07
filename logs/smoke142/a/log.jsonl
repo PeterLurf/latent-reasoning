@@ -1,0 +1,6 @@
+{"step": 4, "ckpt": "ckpt_last.pt"}
+{"step": 8, "gate_train_exact": 0.0}
+{"step": 8, "gate_open": true, "gate_train_exact": 0.0}
+{"step": 8, "ckpt": "ckpt_last.pt"}
+{"step": 10, "loss": 26.74385356903076, "L_max": 4, "L_drawn": [1, 2, 3], "p_hard": 0.0, "sec": 34, "reader_loss": 23.746614456176758, "noise": 0.0}
+{"step": 10, "gate_train_exact": 0.0}

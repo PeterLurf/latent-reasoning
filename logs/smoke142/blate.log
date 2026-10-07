@@ -1,0 +1,14 @@
+{'step': 1, 'loss': 24.766870498657227, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 10, 'reader_loss': 26.229978561401367, 'noise': 0.25, 'removed': [3], 'lr': 4.914814565722671e-05}
+{'step': 2, 'loss': 22.270687103271484, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 13, 'reader_loss': 19.085735321044922, 'noise': 0.25, 'removed': [3], 'lr': 9.330127018922194e-05}
+{'step': 3, 'loss': 25.0814208984375, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 16, 'reader_loss': 16.500164031982422, 'noise': 0.25, 'removed': [3], 'lr': 8.535533905932738e-05}
+{'step': 4, 'loss': 21.461803436279297, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 20, 'reader_loss': 13.57007122039795, 'noise': 0.25, 'removed': [3], 'lr': 7.500000000000001e-05}
+{'step': 5, 'loss': 20.009429931640625, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 29, 'reader_loss': 14.975677490234375, 'noise': 0.25, 'removed': [3, 2], 'lr': 3.147047612756302e-05}
+{'step': 6, 'loss': 21.75823974609375, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 32, 'reader_loss': 13.452245712280273, 'noise': 0.25, 'removed': [3, 2], 'lr': 5e-05}
+{'step': 7, 'loss': 21.76040267944336, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 35, 'reader_loss': 13.970115661621094, 'noise': 0.25, 'removed': [3, 2], 'lr': 3.705904774487397e-05}
+{'step': 8, 'loss': 19.404998779296875, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 38, 'reader_loss': 11.160938262939453, 'noise': 0.25, 'removed': [3, 2], 'lr': 2.500000000000001e-05}
+{'step': 9, 'loss': 19.78780174255371, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 47, 'reader_loss': None, 'noise': 0.25, 'removed': [3, 2, 1], 'lr': 7.3223304703363135e-06}
+{'step': 10, 'loss': 19.358978271484375, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 49, 'reader_loss': None, 'noise': 0.25, 'removed': [3, 2, 1], 'lr': 6.698729810778065e-06}
+{'step': 11, 'loss': 19.30196189880371, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 51, 'reader_loss': None, 'noise': 0.25, 'removed': [3, 2, 1], 'lr': 1.70370868554659e-06}
+{'step': 12, 'loss': 18.985628128051758, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 54, 'reader_loss': None, 'noise': 0.25, 'removed': [3, 2, 1], 'lr': 0.0}
+EVAL {"test_acc": 0.0, "acc_by_length": {"1": 0.0, "2": 0.0, "3": 0.0, "4": 0.0}, "rho": 0.03716364875435829}
+DONE D:/drain_tmp/smoke142/blate
