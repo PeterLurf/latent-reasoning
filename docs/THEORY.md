@@ -6820,6 +6820,18 @@ trigger fired on seed 1, the plain learner on this card class.
   gates apply (dedup, exact ground truth against integer arithmetic, gradflow, memory, Audit's diff review). Dirs `s140_pair_{4x4,5x5}_s{seed}`.
   Scorer: `theory/score_s140.py`, committed now.
 
+**Note 140-1 (2026-10-07 03:42 EDT, before any §140 implementation or run; Literature acf778d8, `docs/LIT_S140_DIGPAIR_2026-10-07.md`: new as scoped).**
+* **Index-free segments (replacing the (i, j) index tokens).** Absolute indices would make j up to 7 unseen when testing 4×8 after 4×4 training.
+  - Segment = [EOT, carried code, a_i, b_j, a **column-boundary flag**]. The flag marks the first pair of a new column (the code is then read as the old
+    accumulator, carried as ⌊acc / 10⌋ before the new product is added).
+  - The flush segment = [EOT, code, flush flag].
+  - The harness reads the code at each column's last pair to emit p_k = acc mod 10. **The op is then identical at every position.**
+  - There is no index-token variant.
+* **Range, stated:** the accumulator is at most 81 · min(|a|, |b|) + carry. That is < 400 for 4 × n at any n (good for 4×8), but it grows for n × n. Length
+  generalisation therefore holds along one operand only.
+* **Reported:** per-step accuracy and the first-error position. 4×8 has 33 steps, so it needs a per-step accuracy of roughly 0.997 or more.
+* Emitted digits are temporally split final-answer supervision, as stated in §140. C1 is design-forced, also as stated.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
