@@ -125,6 +125,8 @@ def arm_verdict(arm):
     s1 = sl[1]["accepted"]
     if s1 is not None and (s1["long_acc"] or 0) < 0.95:
         return sl, "dropped at proof (slot 1 < 0.95 at 512)"
+    if sl[1]["status"] == "exhausted":                                       # note 144-1
+        return sl, "dropped at proof (slot 1 exhausted: no entry within 2k in 4 attempts)"
     if not any(v["attempts"] or v["status"] != "open" for v in sl.values()):
         return sl, "not run"
     passes = [v["accepted"]["pass"] for v in sl.values() if v["accepted"]]
@@ -169,6 +171,17 @@ def main():
                 lad["%s|%d" % (arm, mod)] = r.get("long_acc")
     if lad:
         res["ladder"] = lad; print("LADDER (long_acc at 512 by modulus):", lad)
+    nf = {}
+    for arm in ARMS:                                                         # note 144-1 (ii): NOFLAG, mod 10^4, no plateau stop (descriptive)
+        d = "s144_%s_noflag_s1" % arm; r = load(d); a = load(d, "args.json") or {}
+        if r is not None:
+            if a.get("stop_plateau") or a.get("sum_mod") != 10000 or a.get("family") != "sum4":
+                ERRORS.append((d, "noflag args stop_plateau %s sum_mod %s" % (a.get("stop_plateau"), a.get("sum_mod"))))
+            la = r.get("long_acc")
+            nf[arm] = {"long_acc": la, "ext_2048": (r.get("ext_2048") or {}).get("cumulative"), "serial": serial(r.get("donor")),
+                       "reading": None if la is None else ("carries a 4-digit running sum when given time to enter" if la >= 0.99 else "does not within 24k")}
+    if nf:
+        res["noflag"] = nf; print("NOFLAG (note 144-1):", nf)
     if SKIPPED:
         print("SKIPPED (smoke):", SKIPPED)
     if ERRORS:

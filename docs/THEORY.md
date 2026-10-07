@@ -8015,6 +8015,21 @@ itself. It is not evidence of "no causal loop state". Everything else in the res
 * Zeroing slot 4 collapses everything (column 1 0.11, column 8 0.001).
 * **Corrected reading:** slot 4 carries the state, slots 1–3 contribute to the top digit, and none specialise by digit position.
 
+**Note 144-1 (2026-10-07 19:51 EDT, before SUM-N64's proof reads; Audit's raw read of SUM-F8's proof). The 2k stop and a no-stop follow-up.**
+* **SUM-F8's proof slot is exhausted.** All four attempts (s1 / s101 / s201 / s301) were flagged at 2k by 123-3. Losses ℓ100 / ℓ1k / ℓ2k are about 10.3 / 9.7 / 9.6,
+  against chance 4 · ln 10 ≈ 9.21: no entry.
+  - It reads as **DROP at proof** (the arm stops), the registered intent for a failed proof slot. The wording is **"no entry within 2k in 4 attempts"**, not "cannot carry a
+    running sum".
+* **Why the wording matters:** the 2k flag was calibrated on S5's entry timescale.
+  - Local sum4 prototypes without the flag (stopped at 5k) enter later on some seeds: proto144_f8_s502 goes 7.2 at 1k → 5.1 at 5k, and proto144_n64_s501 7.2 → 5.0.
+  - The misfire rule (ℓ2k < 1.0) does not cover this case.
+* **Follow-ups for a dropped arm, fixed now:**
+  - **(i) The ladder, as registered:** mod 10² / 10³, slot 1, the same harness.
+  - **(ii) NOFLAG:** one 24k run at mod 10⁴ with **no plateau stop** (seed 1; dir `s144_{arm}_noflag_s1`), read descriptively as exact at 512 or not.
+    - "It carries a 4-digit running sum when given time to enter", or "it does not within 24k". This answers the diagnostic directly.
+  - About $0.35 per run.
+* score_s144 reads an exhausted proof slot as dropped at proof, and prints the ladder and NOFLAG rows.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
