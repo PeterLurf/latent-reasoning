@@ -1,0 +1,80 @@
+{
+ "r4f8": {
+  "slots": {
+   "1": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "2": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "3": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "4": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   }
+  },
+  "verdict": "not run",
+  "median_test_acc": null
+ },
+ "r4s16": {
+  "slots": {
+   "1": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "2": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "3": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "4": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   }
+  },
+  "verdict": "not run",
+  "median_test_acc": null
+ },
+ "r1s16": {
+  "slots": {
+   "1": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "2": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "3": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "4": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   }
+  },
+  "verdict": "not run",
+  "median_test_acc": null
+ }
+}

@@ -227,6 +227,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 137 | Multiplication on fsq120, column-major: carried carry (FSQ-8), streamed product digits (C4 qualifier), restart slots; 4×4 → 5×5 → 4×8 | **4×4 DROP at proof** (test_acc 0.0; middle columns at chance; carry in h R² 0.69, in the code 0.24) → §140 | closed |
 | 139 | DISTILL-2 (user's go): a CoT teacher's state (probe or its text) as a warm-start fading to 0 by 4k, on multiplier-major multiplication; A = SOFT-16 + COPY (FINAL), B = A + DISTILL-2, C = constant weight | registered | **open** |
 | 140 | DIGPAIR (§137's fallback; runs only on §137 4×4 DROP / FAIL): one digit pair per segment, carried column accumulator (FSQ-8), streamed digits; design-forced C1 | registered (conditional) | **open** |
+| 141 | After §137's DROP: latent repeats per column (r4 + repeat index) × carrier (FSQ-8 / SOFT-16); r1×SOFT-16 gated on a nonlinear code probe; readings crossed with §140 | registered | **open** |
 
 ## Live sections
 
@@ -6903,6 +6904,56 @@ trigger fired on seed 1, the plain learner on this card class.
 
 **Note 137-3 (2026-10-07 05:21 EDT; a wording fix to §137's result, after Audit's reproduction).** The context-only column-sum probe per column is 0.78 / 0.15 / 0.01 / −0.03 / … The result's
 "not at all from column 2 on (≤ 0.15)" should read: **0.15 at column 2, and about 0 from column 3 on.** The reading is unchanged.
+
+## 141. After §137's DROP: latent repeats per column, and a wider carrier (pre-registered 2026-10-07 05:41 EDT, after Literature's check 6bf78643 and before any implementation or run; Audit's steward ideas; the user's "revisit methods if fail to improve")
+
+**Why.**
+* §137's column-major 4×4 dropped at proof: test_acc 0.000, with the carry-dependent middle columns at chance (§137 result).
+* The carry was readable from h before W_down at R² 0.69, but from the 8-d code at R² 0.24 (linear).
+* Two latent-side questions follow, crossed with §140 (digit pairs, pair-only visibility):
+  - **Repeats:** do extra latent steps without new input buy the per-column compute?
+  - **Width:** was the 8-d code the bottleneck?
+* **Prior** (6bf78643, `docs/LIT_S137_FOLLOWUP_2026-10-07.md`, new as scoped): the closest is Huginn 2502.05171 (the same injected input each recurrence
+  through a carried state). Also UT / ACT / PonderNet, Ouro 2510.25741, looped transformers (2409.15647, 2502.17416), and pause tokens (§107's PAUSE-4 did
+  not unblock). Repeats carried through a discrete code are new.
+  - Literature's prediction is **r4 > SOFT-16**, since capacity is not binding (the column state is about 9 bits).
+
+**Cells (§137's family, recipe and rules otherwise unchanged; 4×4; restart slots).**
+* **r4f8:** r = 4 segments per column. Each is [EOT, carried code, a's digits, b's digits, column token k, **repeat-index token q = 1 … 4**], chained through the
+  code, and the digit p_k is decoded only after q = 4. FSQ-8.
+  - The repeat index avoids a fixed point after one repeat (Literature). r is fixed at 4, so the index never leaves the trained range.
+* **r4s16:** r4f8 with **SOFT-16** (d 16, β 0.1). FSQ rounding can erase sub-level increments between repeats; the soft code does not (Literature).
+* **r1s16:** §137 unchanged but with SOFT-16. **It runs only if a nonlinear code probe on §137's model shows the carry missing from the code:**
+  - the probe maps each distinct code_k to its majority true carry (a lookup), fit and scored on held-out halves, on s137_col_4x4_s1;
+  - the cell runs if that accuracy is < 0.9. Otherwise the code holds the carry nonlinearly, width is not the bottleneck, and the cell is not run.
+  - Output: `s137_col_4x4_s1/eval_probe_percol.json` (carry_code_nonlinear_acc).
+* **Rules (§137's):**
+  - **M-PASS:** ≥ 3/4 slots at test_acc ≥ 0.99, SERIAL (a donor code injected after column 2 / 4 / 6, at that column's last repeat) and ρ ≤ 0.28 (127-12's clause
+    for FSQ-8, 133-1's first-three form for SOFT-16);
+  - **FAIL:** ≥ 2 decided slots not passing;
+  - **DROP at proof:** slot 1 below 0.95 stops the cell.
+  - The C4 qualifier (streamed digits) and the IN-PASS reading (137-1 (2)) carry over.
+* **Descriptive:**
+  - **per-repeat probes:** R² of the column's partial product sum and of the carry from code after each repeat, plus ‖Δcode‖ per repeat. A sum rising across
+    repeats is the mechanism;
+  - acc_by_column; 4×8.
+
+**Readings (fixed now; crossed with §140).**
+* **r4 PASS:** extra latent steps without new input buy the per-column compute. That is direct evidence that latent recurrence adds computation (C3), and r is a
+  later C5 handle.
+  - **With §140 PASS:** one product per step suffices whether the step sees only the pair (§140, forced C1) or the whole column (r4, unforced C1).
+  - **With §140 FAIL:** whole-column visibility plus repeats works where pair-only steps do not.
+* **r4 DROP or FAIL:**
+  - **with §140 PASS:** the input must be decomposed (pair-only steps); repeats over the whole column do not build sums;
+  - **with §140 FAIL:** multiplication is not reached by this harness at this budget, and the post-mortem reads the probes.
+* **r4s16 against r4f8:** whether FSQ rounding blocks the per-repeat accumulation.
+* **r1s16 (if it runs):** PASS means the 8-d code was the bottleneck; DROP means the in-pass load reading stands alone.
+
+**Placement.**
+* Proof slot per cell: r4 costs 4× the segments, about $1.2 each; r1s16 about $0.3. About $2.7 for the proofs; slots 2–4 only for cells that clear the proof.
+* After §140's proof starts. The adapter extends §137's multcol (`--repeats 4 --repeat_index`, SOFT-16 flags) with §137's gates (gradflow through the repeats,
+  memory, smoke_plain, Audit's diff review).
+* The nonlinear probe runs first, locally, $0. Dirs `s141_{r4f8,r4s16,r1s16}_4x4_s{seed}`. Scorer: `theory/score_s141.py`, committed before any run.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
