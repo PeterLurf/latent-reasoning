@@ -28,3 +28,4 @@ c1/runs/*/model.pt
 
 # external released checkpoints (ICoT-SI, §98): ~0.5 GB each, never committed
 ext/
+scratch/.vdeploy_cap.lock/
