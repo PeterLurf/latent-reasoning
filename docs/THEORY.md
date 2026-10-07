@@ -202,7 +202,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 112 | Short-coverage dose-response for self-training (f = 0.5 / 0.25 / 0.1; never-labelled k = 1 accuracy) | **FOOTHOLD at every dose; smallest f = 0.1** (2/5, certified); acquisition 2–3/5 at every dose (start-reading basin, 112-4); C1 0/6 | closed |
 | 113 | Auxiliary reader inside self-training (conditional on §111-READ) | not REL: SELF2 2/5, C1 0/5 (slot-1 bypass persists); acquisition 2/5, as 113-1 predicted | closed |
 | 114 | Looped depth per op (LOOP-R vs LOOP-1 vs §107 PAUSE) for multiplication's hand-off | DEPTH not met: CARRY-3 0/3 in every arm, acc flat in r; the carrier holds the multiplier prefix (114-4) | closed |
-| 115 | No-snap Markov chains, and a round-trip snap trigger (eval only) | registered | **open** |
+| 115 | No-snap Markov chains, and a round-trip snap trigger (eval only) | **NOSNAP 0/3; TRIGGER 6/6** (first-error detection 1.0, accuracy ≥ fixed k 4 at fewer snaps; miss 0): C5 label-free | closed |
 | 116 | Strict C4: final-answer training through self-decoded restarts (OPDEF: op definitions only; NONE: no shorts) | registered (conditional on §112 f = 0.1) | **open** |
 | 117 | One model for C1 + C4 + C6: self-decoded restarts + Markov segments + reader (MK vs staged ST) | registered (conditional on §111 READ REL) | **open** |
 | 118 | Fully latent at inference: text-path anchor vs longer silent stretches (S5, on READ) | **ANCHOR 5/5 no-snap exact to 2,048, serial (C1 + C2 + C6, text-anchored)**; READ control 2/5; LONG running | **open** (LONG) |
@@ -2280,6 +2280,32 @@ control). One §111 READ seed runs fully latent to 2,048 with no snaps.**
     gain, though still using the text path (115-1's cost caveat).
 * For §118: the READ control already has 1 seed passing NOSNAP-512 and NOSNAP-2048 (s8). ANCHOR and LONG are read
   against that rate.
+
+**§115 result (2026-10-07 00:29 EDT; eval only, $0; the registered models are §108 MK-4 s1 / s3 / s5 for (A) and (B), and §105 GEN-4-MASK s1–3 for (B); scored by Theory
+alone with `theory/score_s115.py`). NOSNAP fails, TRIGGER holds (6/6): the latent drifts, but the model detects its own drift without labels.**
+
+| Model | (A) no-snap cumulative 128 / 512 / 2,048 | (B) trigger cumulative 512 | trigger snaps per problem (fixed k 4: 127) | first-error detection | false-snap / miss | fixed k 4 at 512 |
+|---|---|---|---|---|---|---|
+| §108 MK-4 s1 | 0 / 0 / 0 | 1.000 (2,048: 1.000) | 99.9 | 1.00 | 0 / 0 | 1.000 |
+| §108 MK-4 s3 | 0 / 0 / 0 | 1.000 (2,048: 1.000) | 61.0 | 1.00 | 0 / 0 | 0.585 |
+| §108 MK-4 s5 | 0 / 0 / 0 | 1.000 (2,048: 1.000) | 25.3 | 1.00 | 0 / 0 | 0.992 |
+| §105 GEN-4-MASK s1 | — | 1.000 | 124.0 | 1.00 | 0 / 0 | 1.000 |
+| §105 GEN-4-MASK s2 | — | 1.000 | 112.6 | 1.00 | 0 / 0 | 0.998 |
+| §105 GEN-4-MASK s3 | — | 1.000 | 118.3 | 1.00 | 0 / 0 | 1.000 |
+
+* **NOSNAP:** 0/3 registered Markov models. Without snaps the latent fails before 128 (per-hand-off decay as in 115-1).
+* **TRIGGER:** **6/6.** First-error detection is 1.0 (≥ 0.95), and accuracy is at least fixed k = 4's at fewer snaps in every model.
+  - Snapping on disagreement removes the precision errors that fixed snapping lets through (MK-4 s3: 0.585 → 1.000 at 61 snaps instead of 127).
+  - Literature's worry, that a shared-weight round trip can miss consistent errors, did not occur here: miss rate 0 and false-snap rate 0 in all six.
+* **Reading (as registered):** NOSNAP fails, TRIGGER holds. **C5 for when to write**, label-free.
+  - Caveats: the trigger still runs the text path at every hand-off (115-1's cost caveat, about twice the compute).
+  - For GEN-4-MASK the saving is small (113–124 snaps against 127).
+* **Disclosed:**
+  - g105_mask4_s1's trigger ran in row chunks of 100 under the local 6 GiB cap. The merged statistics use the same formulas as unchunked, but the
+    bf16 batch composition differs from s2 / s3, which ran unchunked.
+  - The GEN-4-MASK models use n 500 at 512 (the 114 layout); MK-4 uses 2,000 at 512 and 500 at 2,048.
+* **Descriptive, outside the registered set:** §108 MK-4 s2 / s4 (no-read basin seeds) reach 1.0 with the trigger, but at about 507 snaps (every
+  hand-off), so no saving. The READ / ANCHOR / LONG models are §118's (no-snap exact in ANCHOR 5/5, LONG s81–83, READ s8 / s10).
 
 ## 116. Strict C4: final-answer training through self-decoded restarts, from operator definitions only and from no short problems (pre-registered 2026-10-04 21:03 EDT, after Literature's check b0bca3c4 and before any implementation or run; launched only if §112 f = 0.1 meets FOOTHOLD-f)
 
