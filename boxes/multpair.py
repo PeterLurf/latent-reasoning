@@ -593,7 +593,7 @@ def main():
               open(os.path.join(a.out, ("args_resume_%d.json" % int(time.time())) if a.resume else "args.json"), "w", newline="\n"), indent=1)
     m = mk(); m.train(); pairs, col, emit = schedule(n, n)
     if a.carrier == "deltamem" and not a.resume and not a.mem_check:        # note 147-2: g_add = median ||read_del|| / ||read_add|| at step 0
-        rr0, med0 = read_ratio_by_handoff(m, teA, teB, dev, amp); m.mem.g_add.data.fill_(med0); rr1, med1 = read_ratio_by_handoff(m, teA, teB, dev, amp)
+        rr0, med0 = read_ratio_by_handoff(m, teA, teB, dev, amp); m.mem.s_add.data.fill_(math.log(med0)); rr1, med1 = read_ratio_by_handoff(m, teA, teB, dev, amp)
         init147 = {"g_add_init": med0, "g_del_init": 1.0, "ratio_by_handoff_before_gain": rr0, "read_norm_ratio_by_handoff_step0": rr1, "pooled_median_after_gain": med1}
         json.dump(init147, open(os.path.join(a.out, "s147_init.json"), "w", newline="\n"), indent=1); print("S147_INIT", json.dumps(init147), flush=True)
     if a.carrier == "deltamem":                                             # §147: the branch's own AdamW group, 300-step warm-up (warm_from 0)
@@ -641,6 +641,8 @@ def main():
             opt.step(); hist.append(tot)
         if step % a.log_every == 0 or step == a.steps:
             rec = {"step": step, "loss": float(np.mean(hist)) if hist else None, "c_max": cmax(step / sc, a.task), "p_hard": m.p_hard, "sec": round(time.time() - t0)}; hist = []
+            if a.carrier == "deltamem":                                     # note 147-2 (Audit): the read gains per window
+                rec.update({"g_add": float(torch.exp(m.mem.s_add)), "g_del": float(torch.exp(m.mem.s_del)), "fade": float(m.mem.fade)})
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True); L127[step] = rec["loss"]
         if step == int(2000 * sc) and L127:                                 # 123-3's flag logged for every attempt; stops only with --stop_plateau
             gl = lambda t_: L127[min(L127, key=lambda s_: abs(s_ - t_ * sc))]  # noqa: E731
@@ -681,7 +683,7 @@ def main():
         res["s147"] = {**s147_extras(m, teA, teB, dev, amp, a.eval_bs, pred), "mem_layer": a.mem_layer, "mem_add_heads": a.mem_add_heads, "mem_delta_heads": a.mem_delta_heads}
         i147 = json.load(open(os.path.join(a.out, "s147_init.json"))) if os.path.exists(os.path.join(a.out, "s147_init.json")) else {}
         res["s147"]["read_norm_ratio_by_handoff"] = {"step0": i147.get("read_norm_ratio_by_handoff_step0"), "end": read_ratio_by_handoff(m, teA, teB, dev, amp)[0]}
-        res["s147"].update({"g_add_init": i147.get("g_add_init"), "g_add": float(m.mem.g_add), "g_del": float(m.mem.g_del), "mem_group_gain": True})
+        res["s147"].update({"g_add_init": i147.get("g_add_init"), "g_add": float(torch.exp(m.mem.s_add)), "g_del": float(torch.exp(m.mem.s_del)), "mem_group_gain": True, "gain_param": "exp(s)"})
         res["n_codes"] = None; res["eval_sec"] = round(time.time() - t1)
     elif a.slots:                                                           # §145
         res["donor"], sw_ = donor_slots(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(14002), n=a.donor_n)

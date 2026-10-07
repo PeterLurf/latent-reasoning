@@ -3,7 +3,7 @@ digit-pair multiplication harness (boxes/multpair.py --carrier deltamem).
     branch after block l_m (6 blocks done; entering block 6, the core.py inject convention): x <- x + fade * W_o [additive heads || delta heads](LN_m(x))
     6 additive heads: S <- S + phi(k) v^T (phi = elu + 1; no decay, no erase), read phi(q)^T S
     6 gated-delta heads: S <- alpha S (I - beta k k^T) + beta v k^T (k, q L2-normalised; beta = 2 sigmoid(.) in (0, 2); alpha = sigmoid(.), bias +5), read S q
-    note 147-2: per-type learnable read gains g_add / g_del (the branch's AdamW group); g_del = 1, g_add = the median ||read_del|| / ||read_add||
+    note 147-2: per-type learnable read gains g = exp(s) (log-parametrised, Audit: a relative Adam step), s in the branch's AdamW group; g_del = 1 (s 0), g_add = the median ||read_del|| / ||read_add||
     over a probe batch's hand-offs at step 0 (W_o = 0 then, so still function-preserving)
 q / k / v (and LN_m) are initialised from block l_m's own ln_1 / attn.c_attn; W_o = 0 (fade-in buffer, 500 steps): the pretrained function is
 unchanged at step 0 (max |delta logits| = 0). Segments [EOT, a_i, b_j, column flag] (pairs) / [EOT, " ="] (flush): each a fresh GPT-2 pass,
@@ -35,7 +35,7 @@ class DeltaMem(nn.Module):
         with torch.no_grad():
             self.wo.weight.zero_(); self.wo.bias.zero_()
         self.register_buffer("fade", torch.zeros((), device=dev)); self.ablate = None   # "add" | "delta": that head type's read zeroed
-        self.g_add = nn.Parameter(torch.ones((), device=dev)); self.g_del = nn.Parameter(torch.ones((), device=dev))   # note 147-2: per-type read gains
+        self.s_add = nn.Parameter(torch.zeros((), device=dev)); self.s_del = nn.Parameter(torch.zeros((), device=dev))   # note 147-2: gains g = exp(s) (Audit: log-param.)
         self.norms = None                                                   # list -> per segment (last token): (||g_del read_del||, ||g_add read_add||) per row
 
     def zero_state(self, B, dev):
@@ -59,7 +59,7 @@ class DeltaMem(nn.Module):
             b_ = be[:, t][..., None, None]; Skk = torch.einsum("bhvk,bhk->bhv", Sd, kd)   # S (v x k): S (I - b k k^T) = S - b (S k) k^T
             Sd = al[:, t][..., None, None] * (Sd - b_ * Skk[..., :, None] * kd[..., None, :]) + b_ * vd[..., :, None] * kd[..., None, :]
             od = torch.einsum("bhvk,bhk->bhv", Sd, qd)
-            oa = self.g_add * oa; od = self.g_del * od                      # note 147-2: x <- x + W_o [g_add read_add || g_del read_del]
+            oa = torch.exp(self.s_add) * oa; od = torch.exp(self.s_del) * od   # note 147-2: x <- x + W_o [g_add read_add || g_del read_del], g = exp(s)
             if self.norms is not None and t == T - 1:
                 self.norms.append((od.flatten(1).norm(dim=1).detach(), oa.flatten(1).norm(dim=1).detach()))
             if self.ablate == "add":
