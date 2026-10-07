@@ -233,6 +233,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 143 | FULL-GROW (§138's one revised method): §136 COPY+GROW-NOISE to 64, then 64 → 768 at ≥ 6k with μP lr on the new columns; e-space ρ; paired per seed with s136_cnoise; if it fails, full width stops | registered | **open** |
 | 144 | RUNNING-SUM (the user's "fix the multiplication"; diagnostic): sum mod 10⁴ with 2-digit items on fsq120, FSQ-8 / NOISE-64; can the carrier carry a growing number? (conditional magnitude ladder) | registered | **open** |
 | 145 | MULTI-SLOT: K = 4 carried NOISE-64 slots (one write position each) on §140's digit-pair multiplication; CARRY1 control (same writes, 1 carried) if SLOT4 IMPROVES | registered | **open** |
+| 146 | MID-PROBE ($0): layer-wise probes (0–12) of the accumulator on s140 / s137; MID-STACK SIGNAL = R² ≥ 0.5 at 100–200 in some layer ≤ 9 (top 0.05) → register a mid-stack hand-off | registered | **open** |
 
 ## Live sections
 
@@ -7639,6 +7640,28 @@ matters.**
   - the K slots are written in parallel at K positions of one pass, not chained;
   - each slot is a bounded NOISE-64 code.
 * §107's redundancy is the named risk. The slot cosine and the per-slot ablation report it.
+
+## 146. MID-PROBE: is the accumulator readable mid-stack where the top layer loses it? (the $0 first test of the research program's mid-stack hand-off bet; pre-registered 2026-10-07 16:43 EDT, before the probe is run; the user's "wide research sweep… major new architecture changes" (via Audit, 16:40))
+
+**Why.** Every carrier so far hands off the **top** layer's last hidden state (after ln_f) into the next segment's input embeddings.
+* 140-3: on §140's digit-pair model (forced carriage), accumulators of 100–200 are **not** linearly readable from that top state (R² 0.05; > 200 negative).
+* Mid-layer recurrence (T²MLR 2607.15178, to be verified by Literature) hands off a middle layer instead. If the accumulator exists mid-stack and is lost by the top, the
+  hand-off point is a fix. If it exists nowhere, it is not.
+
+**Probe (descriptive; `theory/probe_midstack.py`, CPU, $0).**
+* On `s140_pair_4x4_s1` (primary) and `s137_col_4x4_s1`, with the model's own hard chains over the 1,000 test items, the residual stream at the segment's last position
+  after each block ℓ = 0 … 12 (pre ln_f) is recorded at every pair step.
+* **For each ℓ:** 140-3's method exactly. One ridge fit over all pair steps (λ by 5-fold CV on the fit half; fit on half the problems, scored on the other half) of the
+  true accumulator. Held-out R² is reported within the bins < 100, 100–200 and > 200.
+* **Also, descriptive:** the same per layer for §137's carry-out and column sum (per column).
+
+**Decision rule (fixed now; on s140).**
+* **MID-STACK SIGNAL:** some layer ℓ ≤ 9 reaches held-out **R² ≥ 0.5 in the 100–200 bin**, against the top layer's 0.05.
+  - The accumulator is then computed mid-stack and lost by the top. A mid-stack hand-off (layer ℓ_out → an early layer of the next segment) is registered next on the
+    digit-pair task, after Literature's check.
+* **NO SIGNAL:** no layer reaches 0.5 in that bin. The accumulator ≥ 100 is not computed anywhere in this model, so the hand-off point is not the fix (on this evidence),
+  and the mid-stack bet ranks below the others.
+* n = 1 model per task, as stated. A model trained with a mid-stack hand-off could differ, so NO SIGNAL lowers the bet's rank but does not falsify it.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
