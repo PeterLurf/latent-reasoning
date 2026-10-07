@@ -1,0 +1,104 @@
+{
+ "stage1": {
+  "full_fsq": {
+   "slots": {
+    "1": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    },
+    "2": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    },
+    "3": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    },
+    "4": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    }
+   },
+   "verdict": "not run"
+  },
+  "full_noise": {
+   "slots": {
+    "1": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    },
+    "2": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    },
+    "3": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    },
+    "4": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    }
+   },
+   "verdict": "not run"
+  },
+  "full_cont": {
+   "slots": {
+    "1": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    },
+    "2": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    },
+    "3": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    },
+    "4": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    }
+   },
+   "verdict": "not run"
+  },
+  "full_hinge": {
+   "slots": {
+    "1": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    },
+    "2": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    },
+    "3": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    },
+    "4": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    }
+   },
+   "verdict": "not run"
+  }
+ }
+}
