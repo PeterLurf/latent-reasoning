@@ -15,7 +15,7 @@ import time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ARMS = {"full_fsq": ["--d_q", "768", "--tanh_fp32"], "full_noise": ["--d_q", "768", "--no_round", "--dither", "0.25", "--tanh_fp32"],
-        "full_cont": ["--d_q", "768", "--no_round", "--tanh_fp32"], "full_hinge": ["--d_q", "768", "--no_round", "--hinge", "--hinge_eps_frac", "0.15", "--tanh_fp32"]}
+        "full_cont": ["--d_q", "768", "--no_round", "--tanh_fp32"], "full_hinge": ["--d_q", "768", "--no_round", "--hinge", "--hinge_eps_frac", "0.1", "--tanh_fp32"]}
 
 
 def qlog_line(msg):

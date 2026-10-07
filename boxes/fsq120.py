@@ -480,9 +480,7 @@ class FSQ120(nn.Module):
             if self.hinge_on and self.training and not self.det_train and t < L - 1 and labels is not None:   # §138 local contraction hinge
                 nr = max(1, int(round(B * self.hinge_rows))); rows = torch.randperm(B, device=items.device)[:nr]
                 zr = zb[rows].float(); rnd = torch.randn_like(zr); rnd = rnd / rnd.norm(dim=-1, keepdim=True).clamp_min(1e-12)
-                cdir = self.hinge_dir[torch.as_tensor(labels[rows.cpu().numpy(), t], device=items.device)]
-                half = (torch.arange(nr, device=items.device) % 2 == 0)[:, None]   # half random, half toward the nearest other state centroid
-                delta = self.hinge_eps * torch.where(half, rnd, cdir)
+                delta = self.hinge_eps * rnd                                # note 138-2: a random direction only (no labels in the hinge)
                 e_p = self.embed_code((zr + delta).to(zb.dtype))
                 z_c = self.zb_of(self.segment(e[rows][:, None], items[rows, t + 1])); z_p = self.zb_of(self.segment(e_p[:, None], items[rows, t + 1]))
                 rho = (z_p.float() - z_c.float()).norm(dim=-1) / delta.norm(dim=-1).clamp_min(1e-12)
@@ -915,17 +913,23 @@ def _s138_probe(m, fam, dev, amp, seed=13801, n=1024, L=8):
 
 @torch.no_grad()
 def s138_hinge_ref(m, fam, dev, amp, frac):
-    """§138 hinge reference, measured once at 2k: state centroids of the pre-quantisation z_b (the space the hinge perturbs) on a fixed probe
-    batch; eps = frac x the median over states of each centroid's distance to its nearest other centroid; per state the unit direction
-    toward that nearest other centroid."""
+    """§138 hinge reference, measured once at 2k, LABEL-FREE (notes 138-2 / 138-3): on a fixed probe batch, every hand-off's pre-quantisation
+    z_b (the space the hinge perturbs); eps = frac (0.1) x the median Euclidean distance between n_pairs random pairs of those codes (i != j,
+    fixed generator). No directions: delta is random. Descriptive only (labels read here and nowhere in training): eps over the within-state
+    spread (mean distance of a code to its own state's mean code) and over the median nearest-other-centroid distance."""
     was = m.training; m.eval(); _, _, lab, Z, _ = _s138_probe(m, fam, dev, amp); m.train(was)
-    Zf = Z.reshape(-1, Z.shape[-1]); lf = torch.tensor(lab.reshape(-1), device=Zf.device); S = int(fam.n_states)
+    Zf = Z.reshape(-1, Z.shape[-1]).float(); N = len(Zf); g = torch.Generator().manual_seed(13802); n_pairs = 20000
+    i_ = torch.randint(0, N, (n_pairs,), generator=g); j_ = (i_ + torch.randint(1, N, (n_pairs,), generator=g)) % N   # j != i
+    med = float((Zf[i_.to(Zf.device)] - Zf[j_.to(Zf.device)]).norm(dim=-1).median()); eps = frac * med
+    lf = torch.tensor(lab.reshape(-1), device=Zf.device); S = int(fam.n_states)                       # descriptive (labels) from here on
     cnt = torch.zeros(S, device=Zf.device).index_add_(0, lf, torch.ones_like(lf, dtype=torch.float32))
     cen = torch.zeros(S, Zf.shape[-1], device=Zf.device).index_add_(0, lf, Zf) / cnt.clamp_min(1)[:, None]
-    seen = cnt > 0; D = torch.cdist(cen, cen); D[~seen] = float("inf"); D[:, ~seen] = float("inf"); D.fill_diagonal_(float("inf"))
-    nn_d, nn_i = D.min(1); med = float(nn_d[seen].median()); dirs = cen[nn_i] - cen; dirs = dirs / dirs.norm(dim=-1, keepdim=True).clamp_min(1e-12)
-    dirs[~seen] = 0.0
-    return {"eps": frac * med, "dir": dirs, "info": {"hinge_eps": frac * med, "median_nn_centroid_dist": med, "states_seen": int(seen.sum()), "space": "z_b (pre-quantisation)"}}
+    spread = float((Zf - cen[lf]).norm(dim=-1).mean()); seen = cnt > 0
+    D = torch.cdist(cen, cen); D[~seen] = float("inf"); D[:, ~seen] = float("inf"); D.fill_diagonal_(float("inf")); nnc = float(D.min(1).values[seen].median())
+    return {"eps": eps, "dir": None, "info": {"hinge_eps": eps, "hinge_eps_frac": frac, "median_random_pair_dist": med, "n_pairs": n_pairs, "n_codes": int(N),
+                                              "within_state_spread": spread, "median_nn_centroid_dist": nnc, "states_seen": int(seen.sum()),
+                                              "eps_over_within_state_spread": eps / max(spread, 1e-12), "eps_over_nn_centroid": eps / max(nnc, 1e-12),
+                                              "ref": "frac x median random-pair distance of hand-off codes, label-free (note 138-3)", "space": "z_b (pre-quantisation)"}}
 
 
 @torch.no_grad()
@@ -1256,7 +1260,7 @@ def main():
     ap.add_argument("--grow_noise", type=float, default=0.0, help="§136 GROW-NOISE: grown dims continuous + training dither U(+-this)")
     ap.add_argument("--nested", action="store_true", help="§136 NESTED: each training chain zeroes code dims beyond a prefix width from {4, 8, 16, 32, 64}")
     ap.add_argument("--hinge", action="store_true", help="§138 FULL-HINGE: from 2k, the local contraction hinge max(0, rho-hat - 0.3) on 1 in 4 hand-off rows")
-    ap.add_argument("--hinge_eps_frac", type=float, default=0.15, help="§138: eps = this x the median nearest-other-centroid distance (z_b space, 2k probe batch)")
+    ap.add_argument("--hinge_eps_frac", type=float, default=0.1, help="§138 (note 138-3): eps = this x the median random-pair distance of hand-off codes (z_b space, 2k probe batch, label-free)")
     ap.add_argument("--hinge_rows", type=float, default=0.25, help="§138: share of each batch's rows hinged at every hand-off")
     ap.add_argument("--tanh_fp32", action="store_true", help="§138: the tanh before rounding in fp32 (Literature (3e))")
     ap.add_argument("--prefix_only", action="store_true", help="post-hoc (Theory 57d6b89e): cumulative accuracy at prefixes 1 / 2 / 4 / 8 of the eval's own test chains (8-step rollout; causal, so = the eval's first 8 positions) -> <out>/eval_prefix.json")
@@ -1449,7 +1453,7 @@ def main():
     step0 = 1
     if rck is not None:                                                     # user 2026-10-06: same-clock resume (RNG restored last, after the
         if rck.get("s138", {}).get("eps") is not None:                       # §138: the hinge's fixed eps / directions (measured at 2k)
-            h138 = rck["s138"]; m.hinge_eps = h138["eps"]; m.hinge_dir = h138["dir"].to(dev); m.hinge_on = True
+            h138 = rck["s138"]; m.hinge_eps = h138["eps"]; m.hinge_dir = None if h138["dir"] is None else h138["dir"].to(dev); m.hinge_on = True
         if "s136" in rck:                                                   # §136: rebuild the checkpoint's widenings (+ their AdamW groups) first
             g136 = rck["s136"]["g136"]; nrng.bit_generator.state = rck["s136"]["nrng"]
             for ev_ in g136["events"]:
