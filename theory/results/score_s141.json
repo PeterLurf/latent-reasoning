@@ -2,9 +2,123 @@
  "r4f8": {
   "slots": {
    "1": {
-    "attempts": [],
-    "status": "open",
-    "accepted": null
+    "attempts": [
+     {
+      "seed": 1,
+      "plateau": false,
+      "misfire": null
+     }
+    ],
+    "status": "accepted",
+    "accepted": {
+     "seed": 1,
+     "test_acc": 0.0,
+     "serial": false,
+     "rho": 0.0,
+     "acc_by_column": {
+      "per_column": [
+       1.0,
+       0.371,
+       0.137,
+       0.099,
+       0.073,
+       0.104,
+       0.1,
+       0.813
+      ],
+      "cumulative": [
+       1.0,
+       0.371,
+       0.077,
+       0.01,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "ext_4x8": {
+      "test_acc": 0.0,
+      "acc_by_column": {
+       "per_column": [
+        0.992,
+        0.286,
+        0.129,
+        0.101,
+        0.102,
+        0.102,
+        0.098,
+        0.092,
+        0.095,
+        0.111,
+        0.085,
+        0.234
+       ],
+       "cumulative": [
+        0.992,
+        0.286,
+        0.057,
+        0.004,
+        0.002,
+        0.001,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      "digit_acc": 0.20225,
+      "n": 1000,
+      "dedup_removed": 0,
+      "seeds": [
+       13704,
+       13705
+      ]
+     },
+     "probe": {
+      "R": 4,
+      "n": 1000,
+      "per_repeat": {
+       "1": {
+        "r2_partial": 0.12573906667451584,
+        "r2_partial_nocarry": 0.10216688192056989,
+        "r2_carry": 0.21693783011978496,
+        "mean_dcode": 4.890096664428711
+       },
+       "2": {
+        "r2_partial": 0.20089466867324268,
+        "r2_partial_nocarry": 0.1882449390214278,
+        "r2_carry": 0.22958441594406953,
+        "mean_dcode": 2.0214054584503174
+       },
+       "3": {
+        "r2_partial": 0.28073273648376984,
+        "r2_partial_nocarry": 0.26509761137484955,
+        "r2_carry": 0.27406452728823705,
+        "mean_dcode": 1.532881498336792
+       },
+       "4": {
+        "r2_partial": 0.2134615611148979,
+        "r2_partial_nocarry": 0.19895367107774342,
+        "r2_carry": 0.21242896909069808,
+        "mean_dcode": 3.009324312210083
+       }
+      }
+     },
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "driver": "595.71.05",
+     "exact": false,
+     "pass": false,
+     "reading": null,
+     "carry_r2": {
+      "r2_carry_code": null,
+      "r2_carry_h": null,
+      "r2_colsum_context": null
+     },
+     "flag2k_misfire": false
+    }
    },
    "2": {
     "attempts": [],
@@ -22,15 +136,129 @@
     "accepted": null
    }
   },
-  "verdict": "not run",
-  "median_test_acc": null
+  "verdict": "dropped at proof (slot 1 test_acc < 0.95)",
+  "median_test_acc": 0.0
  },
  "r4s16": {
   "slots": {
    "1": {
-    "attempts": [],
-    "status": "open",
-    "accepted": null
+    "attempts": [
+     {
+      "seed": 1,
+      "plateau": false,
+      "misfire": null
+     }
+    ],
+    "status": "accepted",
+    "accepted": {
+     "seed": 1,
+     "test_acc": 0.0,
+     "serial": false,
+     "rho": 0.0,
+     "acc_by_column": {
+      "per_column": [
+       1.0,
+       0.495,
+       0.154,
+       0.109,
+       0.075,
+       0.1,
+       0.09,
+       0.901
+      ],
+      "cumulative": [
+       1.0,
+       0.495,
+       0.095,
+       0.014,
+       0.001,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "ext_4x8": {
+      "test_acc": 0.0,
+      "acc_by_column": {
+       "per_column": [
+        0.994,
+        0.409,
+        0.135,
+        0.101,
+        0.09,
+        0.11,
+        0.092,
+        0.087,
+        0.111,
+        0.113,
+        0.089,
+        0.201
+       ],
+       "cumulative": [
+        0.994,
+        0.409,
+        0.074,
+        0.004,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      "digit_acc": 0.211,
+      "n": 1000,
+      "dedup_removed": 0,
+      "seeds": [
+       13704,
+       13705
+      ]
+     },
+     "probe": {
+      "R": 4,
+      "n": 1000,
+      "per_repeat": {
+       "1": {
+        "r2_partial": 0.16606004889768788,
+        "r2_partial_nocarry": 0.12050290656863938,
+        "r2_carry": 0.32163331175703913,
+        "mean_dcode": 9.453225135803223
+       },
+       "2": {
+        "r2_partial": 0.22072280036108993,
+        "r2_partial_nocarry": 0.20133221323005368,
+        "r2_carry": 0.24632197244266296,
+        "mean_dcode": 8.025861740112305
+       },
+       "3": {
+        "r2_partial": 0.34541822622413365,
+        "r2_partial_nocarry": 0.32875435038628176,
+        "r2_carry": 0.35241270810582614,
+        "mean_dcode": 7.292464733123779
+       },
+       "4": {
+        "r2_partial": 0.284105234335855,
+        "r2_partial_nocarry": 0.2665461380303972,
+        "r2_carry": 0.26412894259022324,
+        "mean_dcode": 9.098398208618164
+       }
+      }
+     },
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "driver": "595.71.05",
+     "exact": false,
+     "pass": false,
+     "reading": null,
+     "carry_r2": {
+      "r2_carry_code": null,
+      "r2_carry_h": null,
+      "r2_colsum_context": null
+     },
+     "flag2k_misfire": false
+    }
    },
    "2": {
     "attempts": [],
@@ -48,8 +276,8 @@
     "accepted": null
    }
   },
-  "verdict": "not run",
-  "median_test_acc": null
+  "verdict": "dropped at proof (slot 1 test_acc < 0.95)",
+  "median_test_acc": 0.0
  },
  "r1s16": {
   "slots": {
