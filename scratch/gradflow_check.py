@@ -475,6 +475,52 @@ def check_s144(dev, out):
     F120.D_Q, F120.LEV, F120.HALF, F120.SHIFT, F120.SUM_MOD = saved
 
 
+def check_s147(dev, out):
+    """§147 DELTA-STATE (b1d7741c / note 147-1): MultDelta on a full 4x4 chain (16 pairs + flush), emission CE under CUDA bf16.
+    Step 0 (W_o = 0, fade 1/500): only W_o gets gradient (q / k / v / alpha / beta exactly 0: no path while W_o = 0, flagged). After one update
+    (W_o small random, fade 1/500): q / k / v (qkv), W_o, the alpha / beta gate, LN_m and the GPT-2 trunk all get gradient; both head types
+    carry it (the additive and delta halves of W_o's input columns)."""
+    import boxes.multcol as MC
+    import boxes.multpair as MP
+    amp = torch.bfloat16 if str(dev).startswith("cuda") else None; rng = np.random.default_rng(0); A, B = MC.gen_operands(rng, 8, 4), MC.gen_operands(rng, 8, 4)
+    _, dig, _, pairs, col, emit = MP.accumulators(A, B); T = len(pairs)
+    m = MP.MultDelta(s5.load_gpt2(dev), MP.PairFam(), 6).to(dev); m.train(); MP.set_ops(m, A, B, dev)
+    X = torch.tensor(np.tile(np.arange(T), (8, 1)), device=dev); tm = torch.tensor(np.tile(emit, (8, 1)), device=dev); lab = np.where(dig >= 0, dig, 0)
+    gn = lambda p_: float(p_.grad.float().norm()) if p_.grad is not None else 0.0  # noqa: E731
+    for phase in ("step0", "after1"):
+        if phase == "after1":
+            with torch.no_grad():
+                m.mem.wo.weight.normal_(0, 0.02)
+        m.mem.fade.fill_(1 / 500); m.zero_grad(set_to_none=True)
+        with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+            loss, _, _, _ = m.chain(m.start(8, dev), X, lab, tm)
+        loss.backward(); w_ = m.mem.wo.weight.grad
+        if phase == "step0":
+            out["s147.step0.wo_grad"] = gn(m.mem.wo.weight)
+            out["s147.step0.qkv_gate_zero_grad"] = 1.0 if (gn(m.mem.qkv.weight) == 0.0 and gn(m.mem.gate.weight) == 0.0) else 0.0
+        else:
+            for nm_, p_ in (("qkv", m.mem.qkv.weight), ("wo", m.mem.wo.weight), ("gate_alpha_beta", m.mem.gate.weight), ("ln_m", m.mem.ln.weight), ("trunk", m.g.w("h.0.attn.c_attn.weight"))):
+                out[f"s147.after1.{nm_}_grad"] = gn(p_)
+            out["s147.after1.wo_additive_cols_grad"] = float(w_[:, :384].float().norm()); out["s147.after1.wo_delta_cols_grad"] = float(w_[:, 384:].float().norm())
+    del m
+
+
+def check_s148(dev, out):
+    """§148 LOOP-RETRO (b1d7741c): LoopGPT (prelude 0-3 / weight-tied loop 4-7 / coda 8-11, P zero-init, eta 0.25) under CUDA bf16; the deep-
+    supervised loss (CE at r = 4 and at r = 2) reaches P, the prelude (h.0), the loop (h.4) and the coda (h.8)."""
+    import boxes.loop148 as LP
+    amp = torch.bfloat16 if str(dev).startswith("cuda") else None; rng = np.random.default_rng(0); A, B = rng.integers(0, 10, (8, 4)), rng.integers(0, 10, (8, 4))
+    m = LP.LoopGPT(s5.load_gpt2(dev), 0.25); m.train(); P = LP.prompt_tokens(A, B); Y = np.array(LP.DTOK)[LP.answer_digits(A, B)]
+    x = torch.tensor(np.c_[P, Y[:, :-1]], device=dev); y = torch.tensor(Y, device=dev); m.zero_grad(set_to_none=True)
+    with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+        o, _, _ = m.run(x, 4, want={2, 4})
+    loss = 0.5 * sum(torch.nn.functional.cross_entropy(o[r][:, P.shape[1] - 1:].float().reshape(-1, o[r].shape[-1]), y.reshape(-1)) for r in (2, 4)); loss.backward()
+    gn = lambda p_: float(p_.grad.float().norm()) if p_.grad is not None else 0.0  # noqa: E731
+    for nm_, p_ in (("P", m.P.weight), ("prelude_h0", m.g.w("h.0.attn.c_attn.weight")), ("loop_h4", m.g.w("h.4.attn.c_attn.weight")), ("coda_h8", m.g.w("h.8.attn.c_attn.weight"))):
+        out[f"s148.{nm_}_grad"] = gn(p_)
+    del m
+
+
 def check_s141(dev, out):
     """§141 (9e45b92b / note 141-1): with R = 4 repeats per column (FSQ-8 and SOFT-16), the digit CE of column k (decoded after its last
     repeat) ALONE reaches every repeat's embedding of column k, the previous column's last-repeat embedding (the carried code) and

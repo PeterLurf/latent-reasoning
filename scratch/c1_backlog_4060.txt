@@ -1,3 +1,5 @@
+# 2026-10-07 s148 memory: loop4 at bs 64, train r = 4 (+ deep-sup r 3) + greedy eval to r = 16 - first
+3.0 D:/drain_tmp/mem148/mem_check.json python -u -m boxes.loop148 --arm loop4 --seed 1 --mem_check --device {DEV} --out D:/drain_tmp/mem148
 # 2026-10-07 s142 teacher-target cache (note 142-1): TC-M greedy S_1..S_4 on the deduped 808k train split, bf16, bs 512 - first
 3.0 boxes/runs_fsq/s142_teacher_cache/teacher_sj_4x4_train.npz.json python -u scratch/teacher_cache142.py boxes/runs_fsq/s142_teacher_cache/teacher_sj_4x4_train.npz {DEV} 512
 # 2026-10-07 s142 memory at L 4 with the reader (registration gate; full bs 64 / eval_bs 250; needs the cache above)

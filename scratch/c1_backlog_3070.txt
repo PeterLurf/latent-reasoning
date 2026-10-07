@@ -1,5 +1,8 @@
+# 2026-10-07 s145 memory, bs 32 (bs 64 OOMed the local 6 GiB cap at 16:36; extrapolate x2 for the 3090's bs 64)
+4.5 D:/drain_tmp/mem145b32/mem_check.json python -u -m boxes.multpair --family mult_pair --task 4x4 --seed 1 --slots 4 --carry_slots 4 --d_q 64 --no_round --dither 0.25 --mem_check --bs 32 --device {DEV} --out D:/drain_tmp/mem145b32
 # 2026-10-07 s145 memory at the longest chain (full 4x4 chain bs 64 train + 4x8 eval rollout, K 4 slots) - first
 4.5 D:/drain_tmp/mem145/mem_check.json python -u -m boxes.multpair --family mult_pair --task 4x4 --seed 1 --slots 4 --carry_slots 4 --d_q 64 --no_round --dither 0.25 --mem_check --device {DEV} --out D:/drain_tmp/mem145
+2.5 logs/gradflow_s144_s145_cuda_3070.json python -u scratch/gradflow_check.py --paths s144 s145 --device {DEV} --out logs/gradflow_s144_s145_cuda_3070.json
 # 2026-10-07 s142 CUDA bf16 gradflow (registration gate) - first
 2.5 logs/gradflow_s142_cuda_3070.json python -u scratch/gradflow_check.py --paths s142 --device {DEV} --out logs/gradflow_s142_cuda_3070.json
 # 2026-10-07 s138 CUDA bf16 gradflow (registration: hinge term reaches W_down / W_up / trunk) - first, before the filler protos
@@ -289,3 +292,15 @@
 2.0 boxes/runs_fsq/s134_copy_s5_s4/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s134_copy_s5_s4 {DEV}
 # §137 post-hoc per-column probe (Theory 2026-10-07, descriptive, low priority, after the C7 lines): h vs code for carry_out / carry_in / colsum / digit
 3.0 boxes/runs_fsq/s137_col_4x4_s1/eval_probe_percol.json python -u scratch/probe137_percol.py boxes/runs_fsq/s137_col_4x4_s1 {DEV}
+# 2026-10-07 17:10 refill (3070 idle): s147 / s148 CUDA gradflow + s147 memory (bs 64; bs 32 fallback), then s144 sum4 protos to 5k (F8 / N64 pairs, S 501-504)
+2.5 logs/gradflow_s147_s148_cuda_3070.json python -u scratch/gradflow_check.py --paths s147 s148 --device {DEV} --out logs/gradflow_s147_s148_cuda_3070.json
+4.5 D:/drain_tmp/mem147/mem_check.json python -u -m boxes.multpair --family mult_pair --task 4x4 --seed 1 --carrier deltamem --mem_check --device {DEV} --out D:/drain_tmp/mem147
+4.5 D:/drain_tmp/mem147b32/mem_check.json python -u -m boxes.multpair --family mult_pair --task 4x4 --seed 1 --carrier deltamem --mem_check --bs 32 --device {DEV} --out D:/drain_tmp/mem147b32
+4.0 boxes/runs_fsq/proto144_f8_s501_3070/.done python -u -m boxes.fsq120 --family sum4 --sum_mod 10000 --arm final --seed 501 --d_q 8 --micro 2 --micro_from 32 --no_cert --stop_after 5000 --device {DEV} --out boxes/runs_fsq/proto144_f8_s501_3070 && echo ok > boxes/runs_fsq/proto144_f8_s501_3070/.done
+4.0 boxes/runs_fsq/proto144_n64_s501_3070/.done python -u -m boxes.fsq120 --family sum4 --sum_mod 10000 --arm final --seed 501 --d_q 64 --no_round --dither 0.25 --micro 2 --micro_from 32 --no_cert --stop_after 5000 --device {DEV} --out boxes/runs_fsq/proto144_n64_s501_3070 && echo ok > boxes/runs_fsq/proto144_n64_s501_3070/.done
+4.0 boxes/runs_fsq/proto144_f8_s502_3070/.done python -u -m boxes.fsq120 --family sum4 --sum_mod 10000 --arm final --seed 502 --d_q 8 --micro 2 --micro_from 32 --no_cert --stop_after 5000 --device {DEV} --out boxes/runs_fsq/proto144_f8_s502_3070 && echo ok > boxes/runs_fsq/proto144_f8_s502_3070/.done
+4.0 boxes/runs_fsq/proto144_n64_s502_3070/.done python -u -m boxes.fsq120 --family sum4 --sum_mod 10000 --arm final --seed 502 --d_q 64 --no_round --dither 0.25 --micro 2 --micro_from 32 --no_cert --stop_after 5000 --device {DEV} --out boxes/runs_fsq/proto144_n64_s502_3070 && echo ok > boxes/runs_fsq/proto144_n64_s502_3070/.done
+4.0 boxes/runs_fsq/proto144_f8_s503_3070/.done python -u -m boxes.fsq120 --family sum4 --sum_mod 10000 --arm final --seed 503 --d_q 8 --micro 2 --micro_from 32 --no_cert --stop_after 5000 --device {DEV} --out boxes/runs_fsq/proto144_f8_s503_3070 && echo ok > boxes/runs_fsq/proto144_f8_s503_3070/.done
+4.0 boxes/runs_fsq/proto144_n64_s503_3070/.done python -u -m boxes.fsq120 --family sum4 --sum_mod 10000 --arm final --seed 503 --d_q 64 --no_round --dither 0.25 --micro 2 --micro_from 32 --no_cert --stop_after 5000 --device {DEV} --out boxes/runs_fsq/proto144_n64_s503_3070 && echo ok > boxes/runs_fsq/proto144_n64_s503_3070/.done
+4.0 boxes/runs_fsq/proto144_f8_s504_3070/.done python -u -m boxes.fsq120 --family sum4 --sum_mod 10000 --arm final --seed 504 --d_q 8 --micro 2 --micro_from 32 --no_cert --stop_after 5000 --device {DEV} --out boxes/runs_fsq/proto144_f8_s504_3070 && echo ok > boxes/runs_fsq/proto144_f8_s504_3070/.done
+4.0 boxes/runs_fsq/proto144_n64_s504_3070/.done python -u -m boxes.fsq120 --family sum4 --sum_mod 10000 --arm final --seed 504 --d_q 64 --no_round --dither 0.25 --micro 2 --micro_from 32 --no_cert --stop_after 5000 --device {DEV} --out boxes/runs_fsq/proto144_n64_s504_3070 && echo ok > boxes/runs_fsq/proto144_n64_s504_3070/.done
