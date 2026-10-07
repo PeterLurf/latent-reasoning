@@ -45,6 +45,8 @@ boxes/fsq120.py / table132.py / core.py run `python scratch/smoke_plain.py`. Nev
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
+* **Theory (11:37):** §142 MULT-READ is drafted (scratchpad `sec142.md`; `theory/score_s142.py` not yet committed). It registers with the multiplication
+  post-mortem once §141 r4 reads (b130 / b131, about 14:00–15:00). Then §136 (grow4 s4, NESTED s1), §138 proofs, and the S5×4 stage-2 proposal after §138.
 * **§136** GROW: 16 local runs with eval.json; grow4 s1-s4 running; then score_s136 (fp32 contractions in hand).
 * **§139** A' / B proof (descriptive). **§141** r4f8 / r4s16 (r1s16 DROP, note 141-4). **§134** MOD s2 / s3.
 * **§138** after its proofs. Closed today: §137 DROP, §140 DROP, §133 stage 1 PASS (FSQ-64 / NOISE-64 / CONT-64 / SOFT-16).
