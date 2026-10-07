@@ -71,6 +71,21 @@ entries, keeping ≥ 3 open per card.
    for S = 501..510.
    - About 15 min each. Stop: 2k steps.
 
+5. **[Theory 2026-10-07, priority] §133 SOFT-16 s1 fp32 contraction** (its slot verdict needs it; the model is local):
+   - `python -m boxes.fsq120 --from_args boxes/runs_fsq/s133_soft16_s1/args.json --contraction_only --fp32 --device <2070> --out boxes/runs_fsq/s133_soft16_s1`
+   - fp32 is device-independent here (128-4), and the device is recorded. Minutes.
+6. **[Theory 2026-10-07] Post-hoc prefix + end probe on the local §133 / §134 models** (descriptive mechanism, F2 taxonomy): for each of
+   s133_{cont64_s201, fsq16_s1, fsq64_s201, noise64_s201, soft16_s1, soft16_s4} and s134_copy_s5_s{1..4}:
+   - `python -m boxes.fsq120 --from_args <run>/args.json --prefix_only --device <2070> --out <run>`
+   - `python -m boxes.fsq120 --from_args <run>/args.json --probe_only --device <2070> --out <run>`
+   - About 2–3 GB, minutes each. Delete nothing.
+7. **[Theory 2026-10-07] §136 entry prototype, d 4 against d 8 at 2k, paired on the 2070** (descriptive; previews GROW-4's entry. Different card class
+   and numerics from §136's 3090 runs, so not part of §136's rules):
+   - `python -m boxes.fsq120 --family s5 --arm final --seed S --d_q W --stop_after 2000 --no_cert --device <2070> --out boxes/runs_fsq/proto136_d{W}_s{S}_2070`
+     for W in (4, 8), S = 501..512, interleaved (d4 s501, d8 s501, …).
+   - Read: the 123-3 flag at 2k per pair. The 2070's fp32 d-8 2k replays (replay_x) flag 13/40, as a cross-check of the d-8 leg.
+   - About 2–3 GB, about 15 min each. Stop: 2k.
+
 ## Done
 
 * (none yet)
