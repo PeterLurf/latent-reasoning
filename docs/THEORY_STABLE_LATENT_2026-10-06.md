@@ -287,6 +287,17 @@ with the same code and settings across families.
     - **Literature is asked to recheck.**
   - Target: RAW-H-style drift at 768-d (ρ 0.5–0.8). It does not address SOFT-64's failure, a constant per-step error with ρ in band.
   - **Falsifiable:** the hinge arm holds ext_2048 ≥ 0.99 with fp32 ρ ≤ 0.28 where its unpenalised twin drifts.
+* **Literature d4f0d18b** (`docs/LIT_CAND5_6_2026-10-07.md`) finds both new as scoped.
+  - **For 5:**
+    - Abstract-CoT is the closest precedent.
+    - The categorical's logits are −|z − ℓ|²/τ, with τ starting near-deterministic.
+    - GRPO's group baseline or RLOO, plus a KL to the 4×4 policy.
+    - **Pre-registered fallback reward:** the fraction of correct product digits (still final-answer content only) if zero-shot 5×5 is below 0.05.
+    - SERIAL is re-scored after RL.
+  - **For 6:** the argument holds (local, not global).
+    - ε = 0.1–0.25 × the measured nearest-neighbour distance between state centroids in e-space.
+    - ρ̂ is computed on the pre-quantisation z.
+    - It is switched on after entry.
 
 ## Not proposed
 * More entry levers of §127's kind (escape without learning).
