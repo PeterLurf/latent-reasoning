@@ -7100,6 +7100,14 @@ checkpoints, the host check).
   - A FULL-CONT PASS where RAW-H drifted is therefore read as "the bounded learned code (with restarts for entry)". RAW-H entered 4/4 without restarts, so (b) bears on
     entry, not on drift.
 
+**Note 141-4 (2026-10-07 08:30 EDT; interim, one cell decided; scored by Theory with score_s141).** **r1s16 (§137's column task with SOFT-16) is dropped at proof:** s1 test_acc 0.000
+(train_acc 0.000).
+* Per column: 1.0 / **0.663** / 0.19 / 0.121 / 0.099 / 0.104 / 0.193 / 0.966, against FSQ-8 r1's 1.0 / 0.326 / 0.124 / 0.103 / 0.077 / 0.104 / 0.105 / 0.953.
+* fp32 rho_k3 is 0.090.
+* **Reading (descriptive, consistent with 141-3's stacked failures):** the wider code roughly doubles column 2 (2 digit products) but leaves columns 3–7 (3–4 products)
+  at about chance. Width helps where the in-pass load is small, not where it is large.
+* The decisive cells are r4f8 and r4s16 (repeats), still running. The 2×2's width-only cell reads DROP.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
