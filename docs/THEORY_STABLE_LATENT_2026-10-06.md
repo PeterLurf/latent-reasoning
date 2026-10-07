@@ -149,6 +149,11 @@ with the same code and settings across families.
       (s12: 1.0 at every position), not the code count.
 
 ## Candidate 1 (rank 1): COPY-ANCHOR, a label-free state-reading auxiliary from step 0 (targets F1 + F2)
+* **Interim result (§134, note 134-5; 3 of 4 seeds):** the three seeds where the plain recipe fails all become **exact at 2,048 and SERIAL,
+  with no restart**: s2 (plateau), s3 (escape without learning) and s4 (basin). fp32 ρ is 0.18 / 0.22 (s2 pending).
+  - The code holds the state at the end (R² 0.995).
+  - The two writers' codes differ but are interchangeable (copy-donor about 1.0 at the end, chance at 2k).
+  - The verdict waits on s1 and s2's ρ.
 * **Mechanism.** A fraction of each batch (copy rows, e.g. 10 %) is **autoencoding through the carrier:** [EOT, state text] →
   segment → code → answer decoder → the same state text (CE).
   - The text is either the problem's given start state (S5), or **the final answer text of another problem**. That is a
