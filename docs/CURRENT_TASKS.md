@@ -34,7 +34,7 @@ fixed, no real run affected.
 |---|---|---|
 | b62-b68 | 3090 (drivers vary) | §133 stage-1 slot 1 done except b68 pin64 (accepted: fsq64 / noise64 / cont64 s201); slots 2-4 = fsq16 / soft16 via scratch/fill_generic.sh (tag s133s, b83 / b84 running, b85-b88 as slots free) |
 | b70 | 3090 595.71 | §134 COPY-ANCHOR (b71-b73 drained) |
-| b75-b82 | 3090 | §135 students: TSD b75 / b77 / b79 / b81, BASE b76 / b78 / b80 / b82 (seeds 1-4). **b78 BASE s2 DIVERGED at 14002** (4e31863a); idle host holds ckpt 16000, Theory to rule (score / rerun / descriptive eval), destroy by 22:45 if no ruling |
+| b75-b82, b89 | 3090 | §135 students: TSD b75 / b77 / b79 / b81, BASE b76 / b80 / b82 + **b89 = BASE s2 rerun from scratch** (b78 VRAM fault, note 135-6, s135_base_s5_s2.void_hostfault; b78 destroyed). New: hostcheck gate in gen_vast_job (ship scratch/hostcheck.py), fsq120 keeps ckpt_prev.pt |
 | b54 / b55 | 2080 Ti | §131x s401->s403 / s402->s404 (fp32) |
 | a5 / a6 | 3090 | §118 LONG s84 / s85 (mk108, ~27 h) |
 | queued | 3090 | §132 rung 2 slot 1 b74 (after §133-§135 settle) |
