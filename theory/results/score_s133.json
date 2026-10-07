@@ -76,10 +76,69 @@
       "ext_2048": 0.998,
       "serial": true,
       "grid_share": 0.18816532897949217,
+      "rho": 0.23903882607381094,
+      "rho_k_row": [
+       0.16619999706745148,
+       0.34380000829696655,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ],
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "driver": "570.195.03",
+      "exact2048": true,
+      "pass": true
+     }
+    },
+    "2": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    },
+    "3": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    },
+    "4": {
+     "attempts": [],
+     "status": "open",
+     "accepted": null
+    }
+   },
+   "verdict": "incomplete (1 / 4 slots decided)"
+  },
+  "soft16": {
+   "slots": {
+    "1": {
+     "attempts": [
+      {
+       "seed": 1,
+       "plateau": false
+      }
+     ],
+     "status": "accepted",
+     "accepted": {
+      "seed": 1,
+      "long_acc": 1.0,
+      "ext_2048": 0.998,
+      "serial": true,
+      "grid_share": 0.1903194580078125,
       "rho": null,
       "rho_k_row": null,
       "gpu": "NVIDIA GeForce RTX 3090",
-      "driver": "570.195.03",
+      "driver": "590.48.01",
       "exact2048": true,
       "pass": null
      }
@@ -102,37 +161,51 @@
    },
    "verdict": "incomplete (0 / 4 slots decided)"
   },
-  "soft16": {
-   "slots": {
-    "1": {
-     "attempts": [],
-     "status": "open",
-     "accepted": null
-    },
-    "2": {
-     "attempts": [],
-     "status": "open",
-     "accepted": null
-    },
-    "3": {
-     "attempts": [],
-     "status": "open",
-     "accepted": null
-    },
-    "4": {
-     "attempts": [],
-     "status": "open",
-     "accepted": null
-    }
-   },
-   "verdict": "not run"
-  },
   "soft64": {
    "slots": {
     "1": {
-     "attempts": [],
-     "status": "open",
-     "accepted": null
+     "attempts": [
+      {
+       "seed": 1,
+       "plateau": true,
+       "source": "slot file (raw log not fetched)"
+      },
+      {
+       "seed": 101,
+       "plateau": false
+      }
+     ],
+     "status": "accepted",
+     "accepted": {
+      "seed": 101,
+      "long_acc": 0.902,
+      "ext_2048": 0.646,
+      "serial": true,
+      "grid_share": 0.20134272766113281,
+      "rho": 0.2722722634405546,
+      "rho_k_row": [
+       0.156700000166893,
+       0.35760000348091125,
+       0.3601999878883362,
+       0.36059999465942383,
+       0.32179999351501465,
+       0.32600000500679016,
+       0.3441999852657318,
+       0.3273000121116638,
+       0.32749998569488525,
+       0.3799999952316284,
+       0.4357999861240387,
+       0.6371999979019165,
+       0.7645999789237976,
+       0.8661999702453613,
+       0.9908000230789185,
+       0.9634000062942505
+      ],
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "driver": "595.84",
+      "exact2048": false,
+      "pass": false
+     }
     },
     "2": {
      "attempts": [],
@@ -150,7 +223,7 @@
      "accepted": null
     }
    },
-   "verdict": "not run"
+   "verdict": "dropped at proof (s1 < 0.95 at 2,048)"
   },
   "noise64": {
    "slots": {
@@ -178,12 +251,29 @@
       "ext_2048": 0.998,
       "serial": true,
       "grid_share": 0.1837990264892578,
-      "rho": null,
-      "rho_k_row": null,
+      "rho": 0.12365924564006828,
+      "rho_k_row": [
+       0.06840000301599503,
+       0.163100004196167,
+       0.16949999332427979,
+       0.17159999907016754,
+       0.16750000417232513,
+       0.17299999296665192,
+       0.2718000113964081,
+       0.661899983882904,
+       0.9090999960899353,
+       1.0006999969482422,
+       0.968999981880188,
+       1.0083999633789062,
+       0.9866999983787537,
+       1.0139000415802002,
+       0.9955000281333923,
+       1.0240000486373901
+      ],
       "gpu": "NVIDIA GeForce RTX 3090",
       "driver": "595.84",
       "exact2048": true,
-      "pass": null
+      "pass": true
      }
     },
     "2": {
@@ -202,7 +292,7 @@
      "accepted": null
     }
    },
-   "verdict": "incomplete (0 / 4 slots decided)"
+   "verdict": "incomplete (1 / 4 slots decided)"
   },
   "pin64": {
    "slots": {

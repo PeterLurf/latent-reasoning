@@ -35,8 +35,9 @@ with the same code and settings across families.
   the op history, not the state, at 2k.
 * §133 (running) tests SOFT / NOISE / PIN / FSQ-W error correction on a wide carrier, plus an S5×4 capacity probe.
   - **First proof slots (note 133-5, provisional):** FSQ-64 (rounded) and NOISE-64 (continuous, with dither) are both **exact at 2,048
-    and SERIAL** at d 64. That is a wide code that does not drift, unlike RAW-H. ρ waits for fp32: NOISE-64's bf16 value sits at the
-    bound. Slots 2–4 are running. The wider code also changed the entry basin (seed 1 flags at d 64).
+    and SERIAL** at d 64, and **contractive in fp32** (133-6: FSQ-64 0.24; NOISE-64 0.12, shrinking about 0.17 per hand-off down to 1e-4).
+    That is a wide code that does not drift, unlike RAW-H. Slots 2–4 are running. The wider code also changed the entry basin (seed 1
+    flags at d 64).
 
 ## What the helper's mining shows (n in brackets; hard-rounded S5 unless stated)
 * **Nothing at or before 2k separates learners from escape-without-learning:**
