@@ -6869,6 +6869,17 @@ trigger fired on seed 1, the plain learner on this card class.
   - the donor continuation is self-consistent.
 * **eval.json** carries per_step_given_correct_prefix and first_error_position (140-1), in ext_4x8 too.
 
+**Note 134-6 (2026-10-07 04:49 EDT; descriptive follow-up to the guard, before these runs exist; Audit's caution: the guard's MOD failure is n = 1).**
+* The plain side is already established: **§128's plain MOD is fp32-closed in 4/4 seeds** (128-6: 386 / 423 / 229 / 505 reachable, Moore 5, n_uncovered 0, all on
+  the 3090 class).
+* Proposed, about $1, Audit to approve: **s134_copy_mod_s2 and s134_copy_mod_s3** (the guard's recipe, the 3090 class, --no_cert plus the post-hoc fp32 cover
+  certificate).
+* **Readings, fixed now:**
+  - both fail closure: COPY causes the loss of closure on MOD (3/3 against plain's 0/4);
+  - both close: s1's failure is seed-specific.
+  - One of each is reported as mixed.
+* §134's verdict is unchanged either way (the registered guard rule decided it). This bears only on the mechanism.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
