@@ -8003,6 +8003,12 @@ itself. It is not evidence of "no causal loop state". Everything else in the res
   - **r4s16 against r4f8:** soft rounding helps slightly (column 2 0.50 against 0.37; probe peak 0.35 against 0.28), so FSQ rounding is not the main block.
 * **This completes §142's post-mortem table** (the r4s16 row: 0.000, with columns 3–7 at chance), as that table promised.
 
+**Note 150-2 (2026-10-07 19:40 EDT, before any §150 result; Audit / the experiments session, 5affcd31).** The arms differ in slot-head precision at s1.
+* DIGIT s1 (b145, multpair 8efc841e) runs its slot logits under bf16 autocast, with the 11-row gather.
+* FULL s1 (b144, 2bc2adad) runs its slot head in fp32 with autocast off, after a fix to a full-vocabulary memory bug (a wte[V] copy per hand-off). Its effective batch
+  stays 64, with --micro chosen on the host.
+* Seeds 2–4 use the fp32 slot head for both arms. A DIGIT-vs-FULL difference at s1 alone is read with this caveat.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
