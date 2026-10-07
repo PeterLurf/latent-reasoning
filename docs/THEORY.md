@@ -235,7 +235,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 145 | MULTI-SLOT: K = 4 carried NOISE-64 slots (one write position each) on §140's digit-pair multiplication; CARRY1 control (same writes, 1 carried) if SLOT4 IMPROVES | registered | **open** |
 | 146 | MID-PROBE ($0): layer-wise probes (0–12) of the accumulator on s140 / s137; MID-STACK SIGNAL = R² ≥ 0.5 at 100–200 in some layer ≤ 9 (top 0.05) → register a mid-stack hand-off | **NO SIGNAL** (best layer 4: 0.217 at 100–200; layers 1–12 flat; the top reproduces 140-3): the accumulator ≥ 100 is computed nowhere; B2 ranks last | closed |
 | 147 | DELTA-STATE (program B1): a linear-recurrent memory (6 additive + 6 gated-delta heads) as GPT-2's only cross-segment channel, on §140's digit-pair 4×4; PASS = exact + SERIAL | registered | **open** |
-| 148 | LOOP-RETRO (program B3): prelude / weight-tied loop (blocks 4–7, damped) / coda retrofit for direct-answer 4×4; LOOP-4 vs PLAIN; C2 at r = 8 / 16 | registered | **open** |
+| 148 | LOOP-RETRO (program B3): prelude / weight-tied loop (blocks 4–7, damped) / coda retrofit for direct-answer 4×4; LOOP-4 vs PLAIN; C2 at r = 8 / 16 | **no improvement** (LOOP-4 0.002 = PLAIN 0.002; loops unused, acc flat in r): B3 stops at this budget; the direct baseline fails at the same middle columns as every latent design | closed |
 | 149 | SOTA-PROBE (eval only): donor SERIAL (equation substitution), ablation and ρ on released GPT-2 Coconut / SIM-CoT / CODI, at release | registered | **open** |
 | 150 | VOCAB-SLOT (program B4; the user's token-like working memory): 4 Gumbel-ST slots on GPT-2's vocabulary (FULL) or digits + blank (DIGIT, an abacus) as the only cross-segment channel, on §140's digit-pair 4×4 | registered | **open** |
 
@@ -7812,6 +7812,25 @@ matters.**
   - Lowering the bias to +3 (α 0.953) would force about 96 % forgetting over a chain and cripple the delta heads' memory.
 * **Decision (the experiments session's option (i)):** the gradflow gate applies to W_o (both groups) and β. α is exempt.
 * **Descriptive:** α per head at the end and at each checkpoint (`s147.alpha_by_head`), so whether decay was learned is visible.
+
+**§148 result (2026-10-07 18:26 EDT; the two proof runs, RTX 3090 / 595.71.05; scored by Theory with score_s148). No improvement: LOOP-4 0.002 = PLAIN 0.002. B3 stops at this
+budget (147-1 (3)).**
+* **Per column (PLAIN / LOOP-4):** 1.0 / 1.0 / 0.41 / 0.13 / 0.08 / 0.10 / 0.66 / 0.96 against 1.0 / 1.0 / 0.39 / 0.13 / 0.08 / 0.11 / 0.67 / 0.97. They are identical, and
+  the final losses are 1.011 / 1.018.
+* **The loops go unused:**
+  - accuracy is flat over test r = 1–16 (0.000–0.006);
+  - CE is 1.018 at r = 1–4 and rises past r = 8, so C2 is not shown;
+  - convergence halting never fires (mean r = 16);
+  - the loop map barely contracts (ρ 0.96 at ε 0.1);
+  - a loop-state swap gives donor-consistent 0.002, so no causal loop state.
+* PLAIN's 0.002 sits with our §98 harness's 0.003, against ICoT-SI's 0.29 for no-CoT GPT-2 with long training. The budget binds direct answers.
+* **A cross-design finding (descriptive):** the direct-answer model fails at exactly the columns every latent design failed at: the 3–4-product columns 3–6.
+  - §137: 0.33 / 0.12 / 0.10 / 0.08. §140: 0.32 / 0.13 / 0.10 / 0.24. §141 r4f8: 0.37 / 0.14 / 0.10 / 0.07.
+  - At this budget GPT-2 small does not learn multi-product column sums **in any format we have tried**, with or without a latent carrier, so the carrier is not what fails
+    there.
+  - Text CoT (TC-M 1.000) succeeds by writing the partial products and running sums as tokens.
+* **For the program:** designs that keep text CoT's per-step decomposition (§142's reader, supervised states) are the ones that remove this wall at this budget. FINAL-only
+  designs (§147, §150) face it, with their registered readings unchanged.
 
 ## 149. SOTA-PROBE: our donor SERIAL, ablation and contraction on released GPT-2 latent reasoners, at release (eval only; pre-registered 2026-10-07 17:54 EDT, after Literature's notes 478cac66 / 029e8e4a and Audit's GO, before any run; the user's request for SOTA shortcomings (via Literature and Audit))
 

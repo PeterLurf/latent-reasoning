@@ -33,6 +33,8 @@ paradigms. Don't get stuck in the minuscule improvements loop. Take the lessons 
    - **First test, §148** (about $0.8): direct-answer 4×4 (no CoT, no latent chain), LOOP-4 against PLAIN at the same budget; C2 at test r = 8 / 16.
    - ICoT-SI reaches 1.00 with no loops, so B3's distinctive claims are C2 and C5 (Literature).
    - **Second stage, if it improves:** ICoT-SI's stepwise internalisation into depth, with loops added as CoT tokens are removed.
+   - **§148 read no improvement (2026-10-07 18:26 EDT):** LOOP-4 = PLAIN = 0.002, with the loops unused. **B3 stops.** The direct baseline fails at the same middle columns as
+     every latent design, so the shared wall is learning multi-product column sums at this budget.
 3. **B2 MID-STACK HAND-OFF: carry a middle layer, not the top.**
    - **$0 first test, §146** (registered; running): is the accumulator readable mid-stack where the top loses it?
    - If MID-STACK SIGNAL, a mid-layer carrier is registered on digit-pair, and B2 moves up, since it is the cheapest. If NO SIGNAL, it stays third.
