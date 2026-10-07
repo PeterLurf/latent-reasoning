@@ -7087,6 +7087,19 @@ checkpoints, the host check).
   forward).
 * Dirs `s138_{full_fsq,full_noise,full_cont,full_hinge}_s{seed}`. Scorer: `theory/score_s138.py`, committed before any run.
 
+**Note 138-1 (2026-10-07 07:49 EDT, before any §138 run; Audit on Literature db3df361).**
+* **(1) The ρ reading at d 768:** the rounded arm (FULL-FSQ) uses 127-12's geometric-mean branch over non-zero hand-offs (**rho_nonzero / ρ_ff**). exact_recovery_share
+  collapses with d, so the ρ₁ fallback would be degenerate. Already in §138, restated here as the binding reading.
+* **(2) The centroid-direction ρ** (and the power-iteration estimate) is **descriptive only**, never gated.
+* **(3) The actual differences between FULL-CONT and §126 RAW-H, listed explicitly:**
+  - **(a) The carried vector:** a learned W_down projection to a **tanh-bounded 768-d code**, then W_up, against RAW-H's **standardised raw last hidden h** (std(h), no
+    learned projection, no bound).
+  - **(b) The harness:** §133's **restart-on-plateau slots** (§128) against RAW-H's single run per seed (§120's harness, before §128's slots).
+  - **(c) The same:** the S5 FINAL recipe, the length curriculum, 24k steps, bs 64, the RTX 3090 class.
+  - There is **no COPY in either.**
+  - A FULL-CONT PASS where RAW-H drifted is therefore read as "the bounded learned code (with restarts for entry)". RAW-H entered 4/4 without restarts, so (b) bears on
+    entry, not on drift.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
