@@ -1,7 +1,7 @@
 {
  "teacher_gate": [
-  null,
-  "teacher probe pending"
+  true,
+  "CE mode (139-2): probe gate failed (layer 8 heldout exact 0.1741); teacher text valid 1.000, vs gold 1.000"
  ],
  "arms": {
   "a": {
@@ -15,10 +15,24 @@
    "n_pass": 0
   },
   "b": {
-   "verdict": "not read (teacher gate)"
+   "runs": {
+    "1": null,
+    "2": null,
+    "3": null,
+    "4": null
+   },
+   "verdict": "incomplete (0 / 4)",
+   "n_pass": 0
   },
   "c": {
-   "verdict": "not read (teacher gate)"
+   "runs": {
+    "1": null,
+    "2": null,
+    "3": null,
+    "4": null
+   },
+   "verdict": "incomplete (0 / 4)",
+   "n_pass": 0
   }
  },
  "claim": "pending"

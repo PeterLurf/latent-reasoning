@@ -6746,6 +6746,24 @@ trigger fired on seed 1, the plain learner on this card class.
   - a memory check;
   - Audit's diff review.
 
+**Note 139-2 (2026-10-07 02:28 EDT, before any §139 student run; the teacher-probe gate read; a registration conflict resolved and disclosed).**
+* **The teacher probe** (`boxes/runs_fsq/s139_teacher_probe/teacher_probe.json`; 4,096 deduplicated train problems; RTX 4060 bf16):
+  - **The teacher itself is perfect:** format valid 1.000, its decoded S_j equals gold 1.000.
+  - **But its S_j is not linearly decodable** at the last token of the S_j text. The best held-out exact match over all 8 digits is **0.174** (layer 8), the
+    per-digit agreement with the teacher's text is 0.814, and the gate (≥ 0.95) **fails**.
+* **The conflict in 139's text.** The registered target-mode rule falls back to **CE on the teacher's own generated S_j text** when the probe agrees
+  < 0.99 per digit. Any such probe has all-8-digit exactness around 0.99⁸ ≈ 0.92 or less, so it also fails the 0.95 gate. Read literally, the fallback
+  could never run.
+  - Its purpose (Literature ff34ece2 (2)) was exactly this case. **Resolution:** the probe gate governs the **probe (KL) mode only**. In CE mode the
+    teacher gate is the validity of the teacher's own text (format valid ≥ 0.99; here 1.000).
+  - **B and C proceed in CE mode** (target_mode "ce"): the teacher's generated S_j digits, which here equal gold.
+  - The readout position is **not** changed to rescue the probe; that would be a fix after seeing the result.
+  - score_s139's teacher gate is updated to match.
+* **Descriptive, and relevant to the user's premise** (diagnostics are pending: per-j exactness, per-digit position, fit-set exactness):
+  - a perfect text-CoT teacher **keeps its running sum in its text**. It is not a linearly readable compact state at that position.
+  - Here "the CoT model's internals" give no better target than its outputs. §139 therefore tests whether **a CoT teacher's outputs** can replace
+    gold step labels as a fading warm-start, as 139 pre-stated (C4 as reworded).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
