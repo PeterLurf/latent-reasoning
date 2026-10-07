@@ -6181,6 +6181,16 @@ carry an fp32 certificate that covers every code the eval visits** (14 certifica
     - s133_ runs are outside §131's registered set, so §131 is unaffected.
     - FLAG4 and the 4.5k cut are calibrated on the 8-d carrier. Any use as a restart trigger must be per carrier width.
 
+**Note 133-6 (2026-10-06 20:07 EDT; interim; completes 133-5's proof slots with the registered fp32 ρ; Theory with score_s133).** Both proof slots are **contractive**: slot 1 passes in FSQ-64 and in NOISE-64.
+* **FSQ-64 s201** (rounded; 127-12's clause on detail.eps 0.1): ρ_k 0.166 / 0.344 / 0, giving **0.239 ≤ 0.28**.
+* **NOISE-64 s201** (continuous; 133-1 (a) / 133-2 rho_k3): ρ_k 0.068 / 0.163 / 0.170, giving **0.124**.
+  - In fp32 the perturbation keeps shrinking geometrically, by about 0.17 per hand-off: dist_med 1.66 → 0.11 → 0.018 → 0.003 → 5e-4 →
+    1e-4.
+  - **133-5's bf16 "flattening at about 0.04" was a bf16 floor**, not the carrier.
+  - A 64-d **continuous** carrier trained with dither is an attractor with genuine contraction (descriptive, one slot).
+* Both slots are exact at 2,048, SERIAL and contractive, so 1 of 4 slots passes in each arm. PASS(arm) needs 3/4. Slots 2–4 are running.
+* Fields named: the files' top-level "rho" (2.2e-5 for FSQ-64) is the vacuous hard-rounded summary, not the registered measure.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
