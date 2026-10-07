@@ -231,6 +231,8 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 141 | After §137's DROP: latent repeats per column (r4 + repeat index) × carrier (FSQ-8 / SOFT-16); r1×SOFT-16 gated on a nonlinear code probe; readings crossed with §140 | **r1s16 and r4f8 DROP at proof** (test_acc 0.0; repeats change nothing: columns as §137, the sum's R² ≤ 0.28 after any repeat); r4s16 pending | **open** (r4s16) |
 | 142 | MULT-READ (the user's go): a per-step reader of the running sum (the teacher's S_j text) on NOISE-64, multiplier-major 4×4, 48k; then ICoT-style earliest-first removal to final-answer only (B-EARLY; B-LATE and CTRL descriptive); with the multiplication post-mortem | registered | **open** |
 | 143 | FULL-GROW (§138's one revised method): §136 COPY+GROW-NOISE to 64, then 64 → 768 at ≥ 6k with μP lr on the new columns; e-space ρ; paired per seed with s136_cnoise; if it fails, full width stops | registered | **open** |
+| 144 | RUNNING-SUM (the user's "fix the multiplication"; diagnostic): sum mod 10⁴ with 2-digit items on fsq120, FSQ-8 / NOISE-64; can the carrier carry a growing number? (conditional magnitude ladder) | registered | **open** |
+| 145 | MULTI-SLOT: K = 4 carried NOISE-64 slots (one write position each) on §140's digit-pair multiplication; CARRY1 control (same writes, 1 carried) if SLOT4 IMPROVES | registered | **open** |
 
 ## Live sections
 
@@ -7492,6 +7494,122 @@ on S5×4, with the PLATEAU trigger.**
   - **CAP-PASS where S5×4 FSQ-8 fails by capacity:** widening at a plateau supplies the capacity the narrow code lacks (the user's GROW idea, with a benefit).
   - **Against NOISE-64** (fixed width from step 0): if both pass, growth costs nothing; if GROW passes where NOISE-64 fails, a narrow-first entry helps at capacity.
   - **CAP-FAIL:** no benefit shown.
+
+## 144. RUNNING-SUM: can the task-agnostic carrier carry a growing multi-digit number? (a diagnostic for multiplication; pre-registered 2026-10-07 15:40 EDT, after Literature's check d8ccceb5 and Audit's draft, before any implementation or run; the user's "do another research run, we gotta figure out how to fix the multiplication" (via Audit))
+
+**Why.**
+* Every multiplication design on the carrier fails where a step must hold or build a multi-digit running quantity (§142's post-mortem).
+* **Note 140-3:** §140's accumulator values ≥ 100 are not represented even in h.
+* §144 removes multiplication's structure (in-pass products, column bookkeeping) and asks only whether the carrier can carry and update a 4-digit number.
+* **Prior** (d8ccceb5, `docs/LIT_RUNSUM_MULTISLOT_2026-10-07.md`):
+  - LMs code numbers digit-wise (2410.11781), with Fourier features where addition is a rotation (2406.03445), as a helix (2502.00873), or by heuristics (2410.21272);
+  - carry cascades are the hard case (2310.13121), and significance must be explicit (Abacus 2405.17399);
+  - single units don't extrapolate magnitudes (NALU 1808.00508);
+  - a discrete latent carrier holding a growing multi-digit number is new as scoped.
+
+**The family (`--family sum4`, fsq120's harness).**
+* **State:** s ∈ {0 … 9,999}.
+* **Start:** the 4-digit text of a uniform random s0, as S5's random start. Every state then occurs in training, so no length test needs unseen magnitudes.
+* **Items:** x ∈ {0 … 99}, written as two digit tokens, least-significant first.
+* **Transition:** s ← (s + x) mod 10⁴.
+* **Segment:** [EOT, carried code, x's two digits].
+* **FINAL answer:** s as four digit tokens, least-significant first. Shorter chains' answers are partial sums, as in every fsq120 family.
+* **Recipe:** §133's harness exactly: §128's S5 recipe (L_max 2 → 32 by 14k), restart slots k / k + 100 / k + 200 / k + 300, 24k, bs 64, RTX 3090, checkpoints, the
+  host check.
+
+**Arms (seeds: slots 1–4).**
+* **SUM-F8:** FSQ-8, §140's carrier.
+* **SUM-N64:** NOISE-64 (`--d_q 64 --no_round --dither 0.25`), §142's carrier.
+* **The magnitude ladder (conditional; Literature (3)):** an arm whose proof drops at 10⁴ is rerun at **mod 10² and mod 10³**, slot 1, to locate where carriage breaks
+  (dirs `s144_{arm}_m{2,3}_s1`; items 0–99 at both moduli). mod 10² sits close to §128's closed CYC / MOD families.
+
+**Rules (fixed now; §128's FAMILY-PASS form).**
+* **PASS(arm):** ≥ 3/4 slots exact at 512 (long_acc ≥ 0.99), SERIAL (a donor's code after positions 2 / 4 / 6; donor ≥ 0.90 and recipient − chance < 0.10, exact ground
+  truth) and contractive (ρ ≤ 0.28: 127-12's clause for FSQ-8, the first-three form for NOISE-64).
+* **DROP at proof:** slot 1 accepted with long_acc < 0.95 at 512 stops the arm. FAIL: ≥ 2 decided slots not passing.
+* **Readings:**
+  - **Either arm PASSES:** the carrier carries and updates a 4-digit number exactly. Number carriage is not the barrier, and multiplication's failures point to the in-pass
+    products and column bookkeeping, or to the missing per-step supervision that §142 adds.
+  - **Both FAIL, with the per-digit profile below losing the high digits:** number carriage itself is the barrier, which every single-vector design inherits. §145's multi-slot
+    layout is the response.
+  - **SUM-F8 FAILS and SUM-N64 PASSES:** the 8-d rounded code is the bottleneck for numbers.
+* **Descriptive:**
+  - per-digit accuracy (units / tens / hundreds / thousands) by length;
+  - probe R² of each digit and of the value from the code and from h before W_down (as 140-3);
+  - **which code is used** (Literature (2)): digit-wise R² against clock R² (cos / sin(2πs / T) for T = 10, 100, 1,000, 10⁴). A digit-wise code must resolve carries in
+    one pass; a clock code is carry-free but needs a phase-to-digit decoder;
+  - **start-decode accuracy** (the start text decoded at length 0), so that a start-encoding failure is not read as a carriage failure (Literature (5));
+  - accuracy at 2,048;
+  - codes per state (SUM-F8).
+  - **CERT** is not part of PASS (about 10⁶ transitions); it runs time-capped, with "inconclusive by time" allowed.
+
+**Placement.**
+* **Proofs:** slot 1 per arm on cloud 3090s, about $0.3–0.4 each. Local 5k prototypes ($0, descriptive) may run first as filler.
+* The conditional ladder costs about $0.3 per run. Only an arm that drops at 10⁴ triggers it.
+* Slots 2–4 only for arms whose proof ≥ 0.95, with Audit's approval against the credit.
+* **Implementation (the experiments session):** the `sum4` family in fsq120 (start text, item tokens, answer format, labels).
+* **Gates:** exact ground truth against integer arithmetic, gradflow, memory at L 32, smoke_plain, Audit's diff review.
+* Dirs `s144_{f8,n64}_s{seed}`. Scorer: `theory/score_s144.py`, committed with this registration.
+
+## 145. MULTI-SLOT: carry K = 4 latent vectors per hand-off, one write position each (§140's digit-pair multiplication; pre-registered 2026-10-07 15:40 EDT, after Literature's check d8ccceb5 and Audit's draft, before any implementation or run; the user's "we gotta figure out how to fix the multiplication" (via Audit))
+
+**Why.**
+* Every carrier so far hands one vector to the next step. A number is several digits.
+* TC-M, which multiplies perfectly in text, does not hold S_j linearly in one hidden state (0.174 exact, 139-2). It spreads each sum over one position per digit.
+* §140 (one product per step, 1 × FSQ-8) failed from column 3: accumulators ≥ 100 are absent even from h (140-3).
+* **§145 gives the latent a digit-like layout without tokens:** K = 4 carried slots, written at K positions in one pass.
+* **Prior** (d8ccceb5):
+  - recurrent memory of several vectors: Memory Transformer 2006.11527, RMT 2207.06881, ARMT 2407.04841, Block-Recurrent Transformer 2203.07852;
+  - several latent thoughts: Coconut 2412.06769, PCCoT 2506.18582; pause tokens 2310.02226 (§107's PAUSE-4 did not help);
+  - specialisation by competition: Slot Attention 2006.15055, RIMs 1909.10893;
+  - digit-position specialisation of carried slots: not found (Abacus 2405.17399 is the nearest, in token space). New as scoped.
+
+**Design: §140 exactly** (mult_pair 4×4, one segment per digit pair in output-column order plus a flush; the column flag; streamed product digits; the column
+curriculum; restart slots; 24k), except for the carrier:
+* **Segment:** [EOT, slot₁ … slot_K (carried), a_i, b_j, column flag, w₁ … w_K]. The flush segment is [EOT, slot₁ … slot_K, " =", w₁ … w_K].
+  - w₁ … w_K are K write positions: learned embeddings, initialised from four distinct unused tokens.
+* **Each write position's last hidden state** goes through its own W_down_k → NOISE-64 (continuous; dither U(±0.25) at training hand-offs after 2k) → its own W_up_k.
+  It becomes slot_k of the next segment.
+* **The start** is K zero codes (as fsq120's non-S5 start).
+* **The decoder** reads [EOT, slot₁ … slot_K] and emits p_k at a column's last pair, as §140.
+* **The slots are told apart** by their positions, their write embeddings and their own maps. The decoder sees only the K slots (the GEN-M-MASK lesson).
+* **All slots are NOISE-64, our stage-1 passer.** Chains are 17 hand-offs, so long-range drift without rounding is not the risk here (Literature (5)).
+* **Arms:**
+  - **SLOT4:** K = 4 write positions, 4 carried slots.
+  - **CARRY1 (the control; Literature (1)):** the same 4 write positions and compute, but **only slot 1 is carried** (slots 2–4 are written and dropped). It runs **only if
+    SLOT4's proof IMPROVES** (below).
+    - It holds NOISE-64 and the extra write compute fixed, so it isolates the multi-vector state from both.
+
+**Rules (fixed now; §140's).**
+* **M-PASS:** ≥ 3/4 slots with test_acc ≥ 0.99 on the 1,000 items, SERIAL, and contractive.
+  - **SERIAL:** all K slots of a donor injected after pair 4 / 8 / 12; the later digits must follow the recipient's pairs with the donor's accumulator (exact).
+    - It is read at the **row level** (all later digits), since digit-level chance is 0.46–0.67 here (§140).
+  - Contractive: the first-three form, ρ ≤ 0.28, on the concatenated K × 64 code.
+  - DROP at proof: slot 1 below 0.95. FAIL: ≥ 2 decided slots not passing.
+* **IMPROVES (the user's falsifiable claim, descriptive):** per-column accuracy at columns 3–7 ≥ 0.9 on SLOT4's proof, where §140's 1 × FSQ-8 had 0.10–0.50.
+* **Readings:**
+  - **SLOT4 PASS:** a pretrained LM multiplies exactly through a multi-slot latent carrier (design-forced C1, C4 as reworded: streamed digits, as §140).
+  - **SLOT4 IMPROVES, CARRY1 not:** the multi-vector state is what represents the larger accumulators.
+  - **Both IMPROVE:** NOISE-64 plus the extra write compute was enough; the carried slots are not shown to matter.
+  - **SLOT4 DROPS:** spreading the carrier over K positions does not fix the accumulator at this budget.
+* **Descriptive:**
+  - **specialisation (Literature (3)):** a per-slot × per-digit probe matrix (R² of the accumulator's units / tens / hundreds from each slot), per-slot donor swaps
+    (C1 per slot), and per-slot ablation (zeroing one slot);
+  - the whole accumulator's R² from all slots (against §140's code 0.61 and h 0.92);
+  - accuracy by accumulator magnitude (< 100, 100–199, ≥ 200);
+  - acc_by_column, ext_4x8, the slot-symmetry check (the pairwise cosine of the K slots).
+
+**Placement.**
+* **Cost:** SLOT4's proof about $0.5 (longer segments); CARRY1's conditional proof about $0.5. Slots 2–4 only after a proof ≥ 0.95, with Audit's approval.
+* **Implementation (the experiments session):** multpair `--slots K --carry_slots C` (C = K for SLOT4, C = 1 for CARRY1), with write embeddings, per-slot W_down /
+  W_up / NOISE, the K-slot decoder input, the K-slot donor injection and contraction, and the per-slot swaps and ablations.
+* **Gates:**
+  - gradflow under CUDA bf16 into every W_down_k / W_up_k and the write embeddings;
+  - exact ground truth as §140;
+  - memory at the longest chain;
+  - smoke_plain;
+  - Audit's diff review.
+* Dirs `s145_{slot4,carry1}_4x4_s{seed}`. Scorer: `theory/score_s145.py`, committed with this registration.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
