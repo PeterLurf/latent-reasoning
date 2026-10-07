@@ -209,6 +209,7 @@ def main():
     ap.add_argument("--seed", type=int, default=1); ap.add_argument("--steps", type=int, default=24000); ap.add_argument("--bs", type=int, default=64)
     ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--test_n", type=int, default=1000)
     ap.add_argument("--d_q", type=int, default=16); ap.add_argument("--levels", type=int, default=8); ap.add_argument("--soft_beta", type=float, default=0.1)
+    ap.add_argument("--fixed_L", type=int, default=0, help="§139 arm A' (note 139-3): every training chain has this L (no prefix problems / curriculum); 0 = the curriculum")
     ap.add_argument("--copy_frac", type=float, default=0.1); ap.add_argument("--copy_gate_4k", action="store_true", help="§139: stop if copy_acc < 0.9 at 4k (arm a s1)")
     ap.add_argument("--sched_scale", type=float, default=1.0); ap.add_argument("--p_hard_start", type=int, default=2000); ap.add_argument("--p_hard_end", type=int, default=4000)
     ap.add_argument("--log_every", type=int, default=100); ap.add_argument("--quick_every", type=int, default=1000); ap.add_argument("--ckpt_every", type=int, default=0)
@@ -261,7 +262,7 @@ def main():
               open(os.path.join(a.out, ("args_resume_%d.json" % int(time.time())) if a.resume else "args.json"), "w", newline="\n"), indent=1)
     m = mk(); opt = make_opt(m, a.lr); m.train()
     log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time(); hist = []; chist = []; dhist = []; L127 = {}; n_nonfinite = 0; step0 = 1
-    crng = np.random.default_rng(a.seed + 13400); first_exact = None; n_copy = int(round(a.copy_frac * a.bs)) if a.copy_frac else 0
+    Ls = []; crng = np.random.default_rng(a.seed + 13400); first_exact = None; n_copy = int(round(a.copy_frac * a.bs)) if a.copy_frac else 0
     if a.resume:
         ck = torch.load(a.resume, map_location=dev, weights_only=False); m.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"])
         rng.bit_generator.state = ck["np_rng"]; crng.bit_generator.state = ck["crng"]; torch.set_rng_state(ck["torch_rng"].cpu()); L127 = ck["L127"]; n_nonfinite = ck["n_nonfinite"]
@@ -295,7 +296,7 @@ def main():
         for gr in opt.param_groups:
             gr["lr"] = lr_at(a.lr, gr, step, a.steps)
         m.p_hard = 0.0 if step <= a.p_hard_start * sc else min(1.0, (step - a.p_hard_start * sc) / ((a.p_hard_end - a.p_hard_start) * sc)); m.train()
-        L = int(rng.integers(1, lmax(step / sc) + 1)); ii = rng.integers(0, len(trA), a.bs - n_copy); w = w_at(step)
+        L = a.fixed_L if a.fixed_L else int(rng.integers(1, lmax(step / sc) + 1)); Ls.append(L); ii = rng.integers(0, len(trA), a.bs - n_copy); w = w_at(step)
         opt.zero_grad(); loss, aux = train_step(step, L, trA[ii], trB[ii], w)
         tot_loss = loss + (w * aux if aux is not None else 0)
         ctot = 0.0
@@ -313,7 +314,8 @@ def main():
             if aux is not None:
                 dhist.append(float(aux.item()))
         if step % a.log_every == 0 or step == a.steps:
-            rec = {"step": step, "loss": float(np.mean(hist)) if hist else None, "L_max": lmax(step / sc), "p_hard": m.p_hard, "sec": round(time.time() - t0)}
+            rec = {"step": step, "loss": float(np.mean(hist)) if hist else None, "L_max": a.fixed_L or lmax(step / sc), "L_drawn": sorted(set(Ls)), "p_hard": m.p_hard,
+                   "sec": round(time.time() - t0)}; Ls = []
             if n_copy:
                 rec["copy_loss"] = float(np.mean(chist)) if chist else None
             if a.distill:
