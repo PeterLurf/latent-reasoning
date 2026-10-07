@@ -1,3 +1,9 @@
+# 2026-10-07 s150 gates first: CUDA gradflow, then memory at the longest chain (bs 64; bs 32 to extrapolate if 64 exceeds the local cap)
+2.5 logs/gradflow_s150_cuda_3070.json python -u scratch/gradflow_check.py --paths s150 --device {DEV} --out logs/gradflow_s150_cuda_3070.json
+4.5 D:/drain_tmp/mem150_full_b64/mem_check.json python -u -m boxes.multpair --family mult_pair --task 4x4 --seed 1 --slots 4 --carry_slots 4 --slot_gumbel --mem_check --slot_space vocab --bs 64 --device {DEV} --out D:/drain_tmp/mem150_full_b64
+4.5 D:/drain_tmp/mem150_full_b32/mem_check.json python -u -m boxes.multpair --family mult_pair --task 4x4 --seed 1 --slots 4 --carry_slots 4 --slot_gumbel --mem_check --slot_space vocab --bs 32 --device {DEV} --out D:/drain_tmp/mem150_full_b32
+4.5 D:/drain_tmp/mem150_digit_b64/mem_check.json python -u -m boxes.multpair --family mult_pair --task 4x4 --seed 1 --slots 4 --carry_slots 4 --slot_gumbel --mem_check --slot_space digits --bs 64 --device {DEV} --out D:/drain_tmp/mem150_digit_b64
+4.5 D:/drain_tmp/mem150_digit_b32/mem_check.json python -u -m boxes.multpair --family mult_pair --task 4x4 --seed 1 --slots 4 --carry_slots 4 --slot_gumbel --mem_check --slot_space digits --bs 32 --device {DEV} --out D:/drain_tmp/mem150_digit_b32
 # 2026-10-07 s147 Audit: log-parametrised read gains (g = exp(s)) CUDA gradflow recheck - first
 2.5 logs/gradflow_s147c_cuda_3070.json python -u scratch/gradflow_check.py --paths s147 --device {DEV} --out logs/gradflow_s147c_cuda_3070.json
 # 2026-10-07 s147 note 147-2 CUDA gradflow recheck (read gains; delta W_o / gate within 10x) - first

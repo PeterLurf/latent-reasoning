@@ -1,0 +1,23 @@
+{"step": 1, "loss": 6.442160606384277, "c_max": 1, "p_hard": 0.0, "sec": 1}
+{"step": 1, "s150": {"tau": 1.0, "p_hard_slot": 0.0, "wte_drift": 2.1830062451044796e-06}}
+{"step": 2, "loss": 6.59205436706543, "c_max": 1, "p_hard": 0.0, "sec": 3}
+{"step": 2, "flag_123_3": true, "loss_100": 6.442160606384277, "loss_1k": 6.442160606384277, "loss_2k": 6.59205436706543, "stop_plateau": false}
+{"step": 2, "s150": {"tau": 1.0, "p_hard_slot": 0.0, "wte_drift": 5.127303211338585e-06}}
+{"step": 3, "loss": 6.615137577056885, "c_max": 2, "p_hard": 0.5, "sec": 4}
+{"step": 3, "s150": {"tau": 0.825, "p_hard_slot": 0.0, "wte_drift": 8.40718530525919e-06}}
+{"step": 4, "loss": 4.816515922546387, "c_max": 2, "p_hard": 1.0, "sec": 7}
+{"step": 4, "s150": {"tau": 0.65, "p_hard_slot": 0.0, "wte_drift": 1.1589150744839571e-05}}
+{"step": 5, "loss": 5.112576484680176, "c_max": 2, "p_hard": 1.0, "sec": 8}
+{"step": 5, "s150": {"tau": 0.4750000000000001, "p_hard_slot": 0.0, "wte_drift": 1.4566230674972758e-05}}
+{"step": 5, "ckpt": "ckpt_last.pt"}
+{"step": 5, "resumed": "D:/drain_tmp/smoke150/full_ck5.pt"}
+{"step": 6, "loss": 5.5527215003967285, "c_max": 4, "p_hard": 1.0, "sec": 13}
+{"step": 6, "s150": {"tau": 0.3, "p_hard_slot": 0.0, "wte_drift": 1.708666968625039e-05}}
+{"step": 7, "loss": 4.564824104309082, "c_max": 4, "p_hard": 1.0, "sec": 15}
+{"step": 7, "s150": {"tau": 0.3, "p_hard_slot": 0.5, "wte_drift": 1.8795231881085783e-05}}
+{"step": 8, "loss": 5.74361515045166, "c_max": 4, "p_hard": 1.0, "sec": 16}
+{"step": 8, "s150": {"tau": 0.3, "p_hard_slot": 1.0, "wte_drift": 1.9741011783480644e-05}}
+{"step": 9, "loss": 5.476850509643555, "c_max": 4, "p_hard": 1.0, "sec": 21}
+{"step": 9, "s150": {"tau": 0.3, "p_hard_slot": 1.0, "wte_drift": 2.0017667338834144e-05}}
+{"step": 10, "loss": 6.546485900878906, "c_max": 8, "p_hard": 1.0, "sec": 26}
+{"step": 10, "s150": {"tau": 0.3, "p_hard_slot": 1.0, "wte_drift": 2.0017667338834144e-05}}

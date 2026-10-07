@@ -1,0 +1,21 @@
+{"step": 1, "loss": 5.13072395324707, "c_max": 1, "p_hard": 0.0, "sec": 1}
+{"step": 1, "s150": {"tau": 1.0, "p_hard_slot": 0.0, "wte_drift": 8.973428862191213e-07}}
+{"step": 2, "loss": 5.12040376663208, "c_max": 1, "p_hard": 0.0, "sec": 2}
+{"step": 2, "flag_123_3": true, "loss_100": 5.13072395324707, "loss_1k": 5.13072395324707, "loss_2k": 5.12040376663208, "stop_plateau": false}
+{"step": 2, "s150": {"tau": 1.0, "p_hard_slot": 0.0, "wte_drift": 2.82235896520433e-06}}
+{"step": 3, "loss": 4.417270660400391, "c_max": 2, "p_hard": 0.5, "sec": 4}
+{"step": 3, "s150": {"tau": 0.825, "p_hard_slot": 0.0, "wte_drift": 5.665357548423344e-06}}
+{"step": 4, "loss": 3.509097099304199, "c_max": 2, "p_hard": 1.0, "sec": 6}
+{"step": 4, "s150": {"tau": 0.65, "p_hard_slot": 0.0, "wte_drift": 8.879663255356718e-06}}
+{"step": 5, "loss": 2.445068597793579, "c_max": 2, "p_hard": 1.0, "sec": 7}
+{"step": 5, "s150": {"tau": 0.4750000000000001, "p_hard_slot": 0.0, "wte_drift": 1.2019640053040348e-05}}
+{"step": 6, "loss": 3.4605424404144287, "c_max": 4, "p_hard": 1.0, "sec": 11}
+{"step": 6, "s150": {"tau": 0.3, "p_hard_slot": 0.0, "wte_drift": 1.4865978300804272e-05}}
+{"step": 7, "loss": 3.1194283962249756, "c_max": 4, "p_hard": 1.0, "sec": 12}
+{"step": 7, "s150": {"tau": 0.3, "p_hard_slot": 0.5, "wte_drift": 1.704376336419955e-05}}
+{"step": 8, "loss": 3.285134792327881, "c_max": 4, "p_hard": 1.0, "sec": 14}
+{"step": 8, "s150": {"tau": 0.3, "p_hard_slot": 1.0, "wte_drift": 1.820136640162673e-05}}
+{"step": 9, "loss": 3.282304525375366, "c_max": 4, "p_hard": 1.0, "sec": 18}
+{"step": 9, "s150": {"tau": 0.3, "p_hard_slot": 1.0, "wte_drift": 1.8569937310530804e-05}}
+{"step": 10, "loss": 3.3464515209198, "c_max": 8, "p_hard": 1.0, "sec": 21}
+{"step": 10, "s150": {"tau": 0.3, "p_hard_slot": 1.0, "wte_drift": 1.8569937310530804e-05}}
