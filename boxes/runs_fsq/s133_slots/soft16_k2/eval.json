@@ -1,0 +1,36 @@
+{
+ "arm": "soft16",
+ "slot": 2,
+ "accepted_seed": 102,
+ "arm_args": [
+  "--d_q",
+  "16",
+  "--soft_beta",
+  "0.1"
+ ],
+ "extra_args": [],
+ "n_restarts": 1,
+ "error": null,
+ "attempts": [
+  {
+   "seed": 2,
+   "dir": "boxes/runs_fsq/s133_soft16_s2",
+   "status": "plateau",
+   "stopped": "plateau (123-3 flag at 2k)",
+   "train_host": "gen-b84"
+  },
+  {
+   "seed": 102,
+   "dir": "boxes/runs_fsq/s133_soft16_s102",
+   "status": "accepted",
+   "rc": 0,
+   "sec": 5800,
+   "train_host": "gen-b84 (RTX 3090, 570.211.01)",
+   "eval_host": "gen-b94 (RTX 3090, 595.71.05), eval-only",
+   "long_acc": 0.9995,
+   "ext_2048": 1.0,
+   "eval_gpu": "NVIDIA GeForce RTX 3090"
+  }
+ ],
+ "note": "Written by Experiments 2026-10-07 (Audit 23:08 / 23:28 notes): the queue log recorded this slot's accepted attempt as 'error rc 1' / accepted_seed null because the attempt trained the full 24k steps and then crashed at eval on the missing S5=512.csv (restart133 queues skipped gen_vast_job's data step, fixed bfc98e91). The attempt was NOT flagged at 2k (no 'stopped' record), so under restart133's rule it is the slot's accepted attempt; its eval ran eval-only from the trained model.pt on gen-b94 (RTX 3090, 595.71.05). Verdicts rest on the fp32 contraction (on-host drain)."
+}

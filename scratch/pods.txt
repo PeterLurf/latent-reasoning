@@ -994,3 +994,10 @@ PRICE EXCEPTION 2026-10-06 04:58 gen-b41 offer 53010473 RTX 3090 595.71 $0.267: 
 54583148 vast offer 52755888 created 2026-10-07 00:13: label gen-b93, queue scratch/gen_q_b93.txt (logged at create by vdeploy_toy.sh)
 54583973 vast offer 51828400 created 2026-10-07 00:21: label gen-b94, queue scratch/gen_q_b94.txt (logged at create by vdeploy_toy.sh)
 54582427 vast | gen_b92 DESTROYED_VERIFIED 2026-10-07 00:21 after verified per-run fetch ()
+54568208 vast | gen_b89 DESTROYED_VERIFIED 2026-10-07 00:32 after verified per-run fetch (boxes/runs_fsq/s135_base_s5_s2); model.pt not fetched (rule, logs/model_skips.log): boxes/runs_fsq/s135_base_s5_s2 
+54585062 vast offer 43573725 created 2026-10-07 00:32: label gen-b95, queue scratch/gen_q_b95.txt (logged at create by vdeploy_toy.sh)
+54575439 vast | gen_b88 DESTROYED_VERIFIED 2026-10-07 00:35 after verified per-run fetch (boxes/runs_fsq/s133_soft16_s4 boxes/runs_fsq/s133_slots/soft16_k4)
+54575075 vast | gen_b87 DESTROYED_VERIFIED 2026-10-07 00:50 after verified per-run fetch (boxes/runs_fsq/s133_fsq16_s4 boxes/runs_fsq/s133_slots/fsq16_k4)
+54588332 vast offer 48386175 created 2026-10-07 01:05: label gen-b95, queue scratch/gen_q_b95.txt (logged at create by vdeploy_toy.sh)
+54588782 vast offer 47504972 created 2026-10-07 01:10: label gen-b96, queue scratch/gen_q_b96.txt (logged at create by vdeploy_toy.sh)
+54583973 vast | gen_b94 DESTROYED_VERIFIED 2026-10-07 01:11 after verified per-run fetch (boxes/runs_fsq/s133_soft16_s102 boxes/runs_fsq/s133_fsq16_s3)
