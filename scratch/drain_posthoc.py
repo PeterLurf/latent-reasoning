@@ -61,12 +61,13 @@ def main():
         with open(os.path.join(ROOT, "logs", "posthoc_contraction_%s.log" % name), "w") as lg:
             subprocess.call([sys.executable, "-u", "-m", mod, "--from_args", os.path.join(d, "args.json"), "--contraction_only", "--fp32", "--device", dev, "--out", d],
                             cwd=ROOT, stdout=lg, stderr=subprocess.STDOUT)
-    if name.startswith(("s130chk_", "s131x_")):                             # Theory 57d6b89e: FAILED runs also get prefix accuracy + fp32 contraction
+    guard134 = name.startswith(("s134_copy_ff_", "s134_copy_cyc_", "s134_copy_mod_", "s134_copy_rdfa_"))   # Theory 2026-10-06: §134 guard runs, prefix always
+    if name.startswith(("s130chk_", "s131x_")) or guard134:                 # Theory 57d6b89e: FAILED runs also get prefix accuracy + fp32 contraction
         try:
             la = json.load(open(ep)).get("long_acc")
         except Exception:
             la = None
-        if la is not None and la < 0.99:
+        if guard134 or (la is not None and la < 0.99):
             mod = "boxes.fsq120_posthoc" if os.path.exists(os.path.join(ROOT, "boxes", "fsq120_posthoc.py")) else "boxes.fsq120"
             for flag, outf in ((["--prefix_only"], "eval_prefix.json"), (["--contraction_only", "--fp32"], "eval_contraction_fp32.json")):
                 if not os.path.exists(os.path.join(d, outf)):

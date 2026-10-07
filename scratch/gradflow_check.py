@@ -336,6 +336,85 @@ def check_s135(dev, out):
         out[f"s135.aux_p{int(ph)}.target_no_grad"] = 1.0 if all(p_.grad is None for p_ in tg.parameters()) else 0.0
 
 
+def check_s136(dev, out):
+    """§136 GROW pre-launch asserts (Theory bccf643b) at a forced switch, every arm's widening op, CUDA bf16 autocast:
+    (1) function preserved: max |delta logits| = 0 (decoder logits of the final carried code, eval / hard) across the switch;
+    (2) not inert: >= 90 % of the new dims take >= 2 values on a fixed 64-chain batch (eval / hard);
+    (3) gradflow: nonzero grad into the new W_up columns at the first step after the switch; the new W_down rows get none then
+        (W_up columns exactly 0) and a nonzero grad at the next step (after one AdamW step with the warm-up LR);
+    NESTED: chains of prefix width 4 send no grad into dims >= 4; full width does. Pass flags are 1 / 0 (all must be > 0);
+    the raw numbers go to theory/results/s136_switch_asserts_<dev>.json."""
+    import math
+    import boxes.fsq120 as F120
+    saved = (F120.D_Q, F120.LEV, F120.HALF, F120.SHIFT); amp = torch.bfloat16 if str(dev).startswith("cuda") else None; raw = {}
+    ac = lambda: torch.autocast("cuda", dtype=amp, enabled=amp is not None)  # noqa: E731
+    def build(d0, base=None):
+        """A forced switch happens on a trained trunk (loss <= 2.5 / a plateau), so the grow arms start from a trained S5 d-8 model.pt
+        (plain s128_s5_s1 or COPY s134_copy_s5_s1); d0 4 (GROW-4 proxy): that trunk with the first 4 W_down rows / W_up columns."""
+        F120.D_Q = d0; F120.LEV = 8; F120.HALF = (F120.LEV - 1) / 2; F120.SHIFT = math.atanh(F120.OFF / F120.HALF)
+        torch.manual_seed(0); fam = F120.Family("s5"); m_ = F120.FSQ120(s5.load_gpt2(dev), fam).to(dev)
+        if base:
+            sd = torch.load(os.path.join(ROOT, "boxes", "runs_fsq", base, "model.pt"), map_location=dev)
+            if d0 < 8:
+                sd["down.weight"], sd["down.bias"], sd["up.weight"] = sd["down.weight"][:d0], sd["down.bias"][:d0], sd["up.weight"][:, :d0]
+            m_.load_state_dict(sd); raw["base." + str(d0)] = base
+        return fam, m_
+    def logits(m, s0, X, lab):
+        m.eval()
+        with torch.no_grad(), ac():
+            _, e, _, _ = m.chain(m.start(len(s0), dev, s0), X, lab); ans = torch.tensor(m.fam.answer_tokens(lab[:, -1]), device=dev); g = m.g
+            eot = g.embed(torch.full((len(s0), 1), F120.EOT, device=dev)); h, _ = g(torch.cat([eot, e[:, None].to(eot.dtype), g.embed(ans[:, :-1])], 1), None)
+            return g.logits(h[:, 1:]).float()
+    def chain_loss(m, s0, X, lab):
+        with ac():
+            return m.chain(m.start(len(s0), dev, s0), X, lab)[0]
+    arms = {"grow": [(8, 56)], "cgrow": [(8, 56)], "staged": [(8, 8), (16, 16)], "noise": [(8, 56)], "grow4": [(4, 60)]}
+    bases = {"grow": "s128_s5_s1", "grow4": "s128_s5_s1", "cgrow": "s134_copy_s5_s1", "staged": "s134_copy_s5_s1", "noise": "s134_copy_s5_s1"}
+    for name, ops in arms.items():
+        fam, m = build(ops[0][0], bases[name]); m.grow_noise = 0.25 if name == "noise" else 0.0; rng = np.random.default_rng(0)
+        s0, x, lab = F120.make_batch(fam, rng, 64, 4); X = torch.tensor(x, device=dev); opt = F120.make_opt(m, 1e-4); t_s = 2000
+        for j, (d0, k) in enumerate(ops):
+            before = logits(m, s0, X, lab); newp = m.grow(k); after = logits(m, s0, X, lab); md = float((after - before).abs().max())
+            raw[f"{name}.{j}.max_abs_dlogits"] = md; out[f"s136.{name}.{j}.fn_preserved"] = 1.0 if md == 0.0 else 0.0
+            m.eval()
+            with torch.no_grad(), ac():
+                _, _, codes, _ = m.chain(m.start(len(s0), dev, s0), X, lab, record=True)
+            Q = torch.cat([c_.float() for c_ in codes])[:, d0:d0 + k]; nlev = [int(torch.unique(Q[:, i]).numel()) for i in range(k)]
+            share = float(np.mean([n_ >= 2 for n_ in nlev])); raw[f"{name}.{j}.new_dims_ge2_levels_share"] = share; raw[f"{name}.{j}.levels_min"] = min(nlev)
+            out[f"s136.{name}.{j}.not_inert"] = 1.0 if share >= 0.90 else 0.0
+            gr = {"params": newp, "mult": 1.0, "warm_from": t_s}; opt.add_param_group(gr); dn, upw = m.down_g[-1], m.up_g[-1]; ia = m.n_grow - 1
+            m.train(); m.p_hard = 1.0; s1, x1, l1 = F120.make_batch(fam, rng, 8, 4); X1 = torch.tensor(x1, device=dev)
+            for st in (1, 2):                                               # the first two steps after the switch
+                getattr(m, "grow_alpha_%d" % ia).fill_(st / 500.0)
+                for g_ in opt.param_groups:
+                    g_["lr"] = F120.lr_at(1e-4, g_, t_s + st, 24000)
+                opt.zero_grad(set_to_none=True); torch.manual_seed(st); chain_loss(m, s1, X1, l1).backward()
+                gu = float(upw.grad.float().norm()) if upw.grad is not None else 0.0; gd = float(dn.weight.grad.float().norm()) if dn.weight.grad is not None else 0.0
+                raw[f"{name}.{j}.step{st}.new_up_grad"] = gu; raw[f"{name}.{j}.step{st}.new_down_grad"] = gd
+                if st == 1:
+                    out[f"s136.{name}.{j}.up_grad_step1"] = gu; out[f"s136.{name}.{j}.down_zero_step1"] = 1.0 if gd == 0.0 else 0.0
+                else:
+                    out[f"s136.{name}.{j}.down_grad_step2"] = gd
+                opt.step()
+            t_s += 1000
+        if name == "noise":                                                 # grown dims continuous + dithered in training only
+            m.train(); m.p_hard = 1.0
+            with torch.no_grad(), ac():
+                h = m.segment(m.start(8, dev, s0[:8]), X[:8, 0]); torch.manual_seed(1); qa = m.quant(h)[0]; torch.manual_seed(2); qb = m.quant(h)[0]
+            out["s136.noise.dither_active"] = float((qa[:, 8:] - qb[:, 8:]).abs().max()); raw["noise.first8_identical"] = float((qa[:, :8] - qb[:, :8]).abs().max())
+            out["s136.noise.first8_hard"] = 1.0 if raw["noise.first8_identical"] == 0.0 else 0.0
+        del m, opt
+    fam, m = build(64); m.train(); m.p_hard = 1.0; s0, x, lab = F120.make_batch(fam, np.random.default_rng(0), 8, 4); X = torch.tensor(x, device=dev)
+    for w_ in (4, 64):                                                      # NESTED: the mask blocks / passes gradient beyond the prefix
+        m.nest_mask = torch.tensor((np.arange(64) < w_).astype(np.float32), device=dev)[None].expand(8, 64); m.zero_grad(set_to_none=True)
+        chain_loss(m, s0, X, lab).backward(); gb = float(m.down.weight.grad[4:].float().norm()); raw[f"nested.w{w_}.down_grad_dims_ge4"] = gb
+        out[f"s136.nested.w{w_}." + ("blocked" if w_ == 4 else "passes")] = (1.0 if gb == 0.0 else 0.0) if w_ == 4 else gb
+    m.nest_mask = None; del m
+    F120.D_Q, F120.LEV, F120.HALF, F120.SHIFT = saved
+    json.dump(raw, open(os.path.join(ROOT, "theory", "results", "s136_switch_asserts_%s.json" % str(dev).replace(":", "")), "w", newline="\n"), indent=1)
+    print("s136 raw", raw, flush=True)
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--paths", nargs="*", default=["accel99", "mk108", "fsq120", "fsq120_std", "fsq120_rawh", "fsq120_anneal", "self110_copy", "self110_resume"])
     ap.add_argument("--device", default="cpu"); ap.add_argument("--out", default=os.path.join(ROOT, "theory", "results", "gradflow_check.json"))
