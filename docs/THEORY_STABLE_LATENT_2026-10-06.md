@@ -38,7 +38,8 @@ with the same code and settings across families.
     and SERIAL** at d 64, and **contractive in fp32** (133-6: FSQ-64 0.24; NOISE-64 0.12, shrinking about 0.17 per hand-off down to 1e-4).
     That is a wide code that does not drift, unlike RAW-H. Slots 2–4 are running. The wider code also changed the entry basin (seed 1
     flags at d 64).
-  - FSQ-16's proof passes, and SOFT-16 is exact (ρ pending).
+  - **16-d verdicts (133-10): SOFT-16 PASS, 4/4** (ρ 0.10–0.13). It learns seed 3, which escapes and fails under FSQ-8 / FSQ-16. **FSQ-16 FAIL, 2/4** (s2 and s3
+    escape without learning). The 64-d arms' slots 2–4 are queued (they had never been queued).
   - **SOFT-64 is dropped** (0.646 at 2,048): a contractive code (ρ 0.27) with a constant 2·10⁻⁴ per-step error rate (133-7). Dither
     training (NOISE) separates the basins; a weak soft pull (β 0.1) does not.
   - **The CONT-64 control is also exact on its proof slot** (0.990, ρ 0.22). A 64-d continuous carrier did not drift there, so width
