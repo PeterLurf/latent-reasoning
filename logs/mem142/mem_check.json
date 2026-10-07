@@ -1,0 +1,8 @@
+{
+ "peak_gib": 3.242554187774658,
+ "bs": 64,
+ "eval_bs": 250,
+ "distill": false,
+ "reader": true,
+ "L": 4
+}
