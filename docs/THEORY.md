@@ -229,7 +229,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 139 | DISTILL-2 (user's go): a CoT teacher's state (probe or its text) as a warm-start fading to 0 by 4k, on multiplier-major multiplication; A = SOFT-16 + COPY (FINAL), B = A + DISTILL-2, C = constant weight | **stopped at proof** (139-1(c) copy gate; A′ / B s1 test_acc 0.0, B learns only step 1 at 0.59) | closed |
 | 140 | DIGPAIR (§137's fallback; runs only on §137 4×4 DROP / FAIL): one digit pair per segment, carried column accumulator (FSQ-8), streamed digits; design-forced C1 | **4×4 DROP at proof** (0.002; columns 1–2 exact, first errors at the 3- and 4-pair columns; accumulator R² h 0.92 vs code 0.61) | closed |
 | 141 | After §137's DROP: latent repeats per column (r4 + repeat index) × carrier (FSQ-8 / SOFT-16); r1×SOFT-16 gated on a nonlinear code probe; readings crossed with §140 | **r1s16 and r4f8 DROP at proof** (test_acc 0.0; repeats change nothing: columns as §137, the sum's R² ≤ 0.28 after any repeat); r4s16 pending | **open** (r4s16) |
-| 142 | MULT-READ (the user's go): a per-step reader of the running sum (the teacher's S_j text) on NOISE-64, multiplier-major 4×4, 48k; then ICoT-style earliest-first removal to final-answer only (B-EARLY; B-LATE and CTRL descriptive); with the multiplication post-mortem | registered | **open** |
+| 142 | MULT-READ (the user's go): a per-step reader of the running sum (the teacher's S_j text) on NOISE-64, multiplier-major 4×4, 48k; then ICoT-style earliest-first removal to final-answer only (B-EARLY; B-LATE and CTRL descriptive); with the multiplication post-mortem | **DROP at proof** (A s1 0.002; S₁ 1.0, S₂ 0.35, S₃ 0.05; the gate never opened): not acquired within budget; the bounded-carrier multiplication line is parked | closed |
 | 143 | FULL-GROW (§138's one revised method): §136 COPY+GROW-NOISE to 64, then 64 → 768 at ≥ 6k with μP lr on the new columns; e-space ρ; paired per seed with s136_cnoise; if it fails, full width stops | registered | **open** |
 | 144 | RUNNING-SUM (the user's "fix the multiplication"; diagnostic): sum mod 10⁴ with 2-digit items on fsq120, FSQ-8 / NOISE-64; can the carrier carry a growing number? (conditional magnitude ladder) | registered | **open** |
 | 145 | MULTI-SLOT: K = 4 carried NOISE-64 slots (one write position each) on §140's digit-pair multiplication; CARRY1 control (same writes, 1 carried) if SLOT4 IMPROVES | registered | **open** |
@@ -7389,6 +7389,19 @@ No COPY (139-5: 8-digit copy learns slowly). No restarts.
   - args record label_source "teacher_generated" and the cache sha.
   - The mismatch and invalid shares are computed over the whole cache.
   - **139-2's CE-mode gate applies:** teacher format validity ≥ 0.99 on the cache, or the section stops and reports before any run.
+
+**§142 result (2026-10-07 18:52 EDT; the A s1 proof, 48k steps, RTX 3090 / 565.57.01; scored by Theory with score_s142). DROP at proof: test_acc 0.002. The section stops (no B forks,
+CTRL or further seeds). Reading as registered: "not acquired within budget".**
+* **By step** (the reader on 4-step test chains): S₁ **1.0** / S₂ 0.352 / S₃ 0.052 / S₄ 0.002. The 4 × 1 first step is learned exactly; nothing past the second hand-off.
+  - Against §139 B's 0.586 / 0.017 / 0.001, the reader on NOISE-64 helps the first two steps only.
+* **The removal gate never opened** (gate_step none), so B-EARLY / B-LATE did not run, as registered.
+* **The loss was still falling** (4.7 at 30k → 3.66 at 48k), consistent with "not acquired within budget": about 3.8 epochs against ICoT-SI's ~200.
+* **SERIAL is untestable**, since the model fails at the later steps itself: donor / recipient / b-prefix / operand rates all 0.0 (chance 0.001).
+  - The log-magnitude probes do not separate S_j from the b-prefix (R² 0.98 / 0.90 / 0.78 against 0.98 / 0.91 / 0.82), because log S_j = log a + log b-prefix.
+* fp32 ρ (rho_k3) 0.581: not contractive.
+* **As registered (§142, 142-2): the bounded single-vector carrier's multiplication line is parked.** It is the closest repeat of §121's READ, at twice the budget.
+  - The user-directed §144 / §145 and the program's new architectures (§147, §150) continue as registered.
+  - §148's cross-design finding applies: the middle-column wall appears in every format at this budget.
 
 ## 143. FULL-GROW: full width by staged growth from an entered 64-d carrier (§138's one revised method; pre-registered 2026-10-07 15:18 EDT, after Literature's checks 9dc25047 / 5b22bd7f and Audit's review, before any implementation or run)
 
