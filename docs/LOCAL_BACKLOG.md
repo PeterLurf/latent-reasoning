@@ -92,6 +92,15 @@ text token (S5: the first state token; FF / CYC / MOD / RDFA: the answer token) 
 * A short script (the experiments session), eval only, about 1–2 GB, minutes per model. Output `<run>/eval_c7_lmhead.json`.
 * It is a cheap number for C7 (a human-readable latent) and does not enter any rule.
 
+**[Theory 2026-10-07 04:10, night filler; descriptive prototypes only, read for no rule; each a short run under the 6 GiB cap]**
+* **4060 + 3070 (bf16): §140 digit-pair 4×4 entry prototypes to 5k.** `python -m boxes.multpair --task 4x4 --seed S --stop_after 5000 --no_cert --device <card> --out
+  boxes/runs_fsq/proto140_4x4_s{S}_{card}` for S = 501..508 (alternating cards).
+  - Read the per-step CE at c_max 2 (2k–5k) and the 2k flag. It previews whether the pair op enters before §140 could launch.
+* **4060 + 3070: §137 column 4×4 prototypes to 5k, the same seeds 501..504** (`--family mult_col --task 4x4 --stop_after 5000`, out `proto137_4x4_s{S}_{card}`).
+  - This is the paired comparison with the pair op at c_max 2 and 4, on the same cards. The §137 proof on b116 shows the per-column CE rising with L_max.
+* **2070 (fp32): §136 d4-vs-d8 2k entry pairs, more seeds**: as item 7 for S = 513..524, interleaved. That takes the paired comparison to n = 24.
+* Order per card: the §140 prototypes, then §137, then the §136 pairs. About 25–40 min per 5k run; together with the C7 checks this fills the night.
+
 ## Done
 
 * (none yet)
