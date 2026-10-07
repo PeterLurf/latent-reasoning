@@ -1,0 +1,21 @@
+{
+ "s139.p0.readout_grad": 3.9049904346466064,
+ "s139.p0.up_grad": 0.6101301908493042,
+ "s139.p0.down_grad": 6.317461967468262,
+ "s139.p0.trunk_grad": 0.17191080749034882,
+ "s139.p0.teacher_no_grad": 1.0,
+ "s139.p0.teacher_valid_rows": 1.0,
+ "s139.p1.readout_grad": 3.9049904346466064,
+ "s139.p1.up_grad": 0.6101301908493042,
+ "s139.p1.down_grad": 6.317461967468262,
+ "s139.p1.trunk_grad": 0.17191080749034882,
+ "s139.p1.teacher_no_grad": 1.0,
+ "s139.p1.teacher_valid_rows": 1.0,
+ "s139.sched_b_1_at_3k": 1.0,
+ "s139.sched_b_half_at_3500": 1.0,
+ "s139.sched_b_zero_from_4k": 1.0,
+ "s139.sched_c_one_throughout": 1.0,
+ "s139.sched_a_zero": 1.0,
+ "_status": "PASS",
+ "_zero_terms": []
+}

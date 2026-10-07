@@ -35,7 +35,7 @@ fi
 if grep -q -E -- "--family s5|scratch.restart1[0-9]+|_s5_" "$q"; then           # Audit 2026-10-06: every S5 eval file present before any training
   for f_ in S5=128.csv S5=512.csv S5=2048.csv; do [ -s bench/data/s5/$f_ ] || { echo "$(date +%T) DATA_MISSING $f_ rc 9" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }; done
 fi
-if grep -q -E "boxes.multcol|scratch.restart137" "$q"; then                # §137: the task's bench files shipped and non-empty before any training
+if grep -q -E "boxes.multcol|boxes.multrow|scratch.restart137" "$q"; then                # §137: the task's bench files shipped and non-empty before any training
   for t_ in $(grep -o -E -- "--task [45]x[45]" "$q" | awk '{print $2}' | sort -u); do
     for f_ in bench/data/mult_${t_}_test.txt bench/data/mult_train/${t_}_train.txt; do [ -s $f_ ] || { echo "$(date +%T) DATA_MISSING $f_ rc 9" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }; done
   done
