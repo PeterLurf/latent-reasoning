@@ -6901,6 +6901,9 @@ trigger fired on seed 1, the plain learner on this card class.
 * **A "closes" reading needs an uncapped fp32 certificate** (capped false, not timed out). A capped or timed-out certificate reads as inconclusive for that seed.
 * Audit approved the two runs (about $1, descriptive), deployed after §137 / §139 / §140.
 
+**Note 137-3 (2026-10-07 05:21 EDT; a wording fix to §137's result, after Audit's reproduction).** The context-only column-sum probe per column is 0.78 / 0.15 / 0.01 / −0.03 / … The result's
+"not at all from column 2 on (≤ 0.15)" should read: **0.15 at column 2, and about 0 from column 3 on.** The reading is unchanged.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
