@@ -24,8 +24,8 @@ with the same code and settings across families.
     (FINAL-only) and §118 LONG (labelled).
 * **Entry fixes escape without learning** (§127: STD2 / LR10 / VAR / SKIP s2 all end at 0). §129: a fresh head escapes in 2/4 and learns
   in 0/4. SKIP did rescue one basin seed (s4).
-* **Early markers fail** (§130: the code-variance collapse at about 650 is common and transient). The 4k flag catches escaped
-  failures 4/4 so far (§131, interim).
+* **Early markers fail** (§130: the code-variance collapse at about 650 is common and transient). **§131 PASS:** the 4k flag catches 8 of 11
+  held-out escape-fails and flags 0 of 23 learners. It is not deployable (8 < 10), and it is calibrated on the 8-d carrier only.
 * **A weak attractor suffices** (§101: β_min 0.01 passes with a given codebook).
 * **Reading a given state is the strongest entry aid we have:**
   - §111 READ (a per-step reader, with labels): 5/5 reliable hand-off.

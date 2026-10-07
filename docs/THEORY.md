@@ -218,7 +218,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 128 | One recipe, five state-tracking families (S5, FF + held-out CYC / MOD / RDFA), restart-on-plateau; FAMILY-PASS = 3/4 exact + SERIAL (+ CLOSED) | **TASK-AGNOSTIC = true**: all five families pass; held-out CYC / MOD / RDFA 4/4 exact, SERIAL, CLOSED with 0 restarts; S5 3/4 (one escape without learning); fp32 certificate covers all visited codes | closed |
 | 129 | Where does the entry basin live? Head-only re-draw at the 2k flag vs a CLOCK-ONLY warm restart (S5, 4 flagged seeds): LR / HEAD / BODY | **descriptive** (none of LR / HEAD / BODY): a fresh head escapes in 2/4 vs 0/4 for the warm restart, but no re-drawn seed learns; the trained body reads a fresh head (R²_state 0.4–0.96 by clock 700) | closed |
 | 130 | Early label-free plateau marker (code variance at ~1k): fit on 4060 replays, frozen, tested cross-card (3070, primary) and same-card | **no PASS** (primary P 0.70 / R 0.78 cross-card, 0.47 / 0.88 same-card; 0.60 in-sample): both fail, so the marker is noisy, not card-specific: the early marker does not predict the 2k plateau; the collapse at ~650 is common and transient; the 2k flag fires after early pulls | closed |
-| 131 | Second restart point at 4k: FLAG4 = loss(4k) ≥ 0.9·loss(2.6k) (floored), held-out precision / recall for "escape without learning" | registered | **open** |
+| 131 | Second restart point at 4k: FLAG4 = loss(4k) ≥ 0.9·loss(2.6k) (floored), held-out precision / recall for "escape without learning" | **PASS**: 0/23 learners flagged, 8/11 escape-fails caught (recall 0.73); not deployable (8 < 10); 8-d carrier only | closed |
 | 132 | Rules in context: per-problem permutation tables (explicit pairs) on §120's carrier; size ladder k4/m2 → k6/m3; PASS 3/4 exact + SERIAL on held-out tables | **rung 1 PASS 3/4** (slots 2–4 exact + SERIAL, certified; pilot 0.9865 = one unclosed table); rung 2 next | **open** |
 | 133 | Can error correction make a wide latent carrier exact? CONT / FSQ / SOFT / NOISE / PIN at d 16–64 on S5, then an S5×4 capacity probe (FSQ-8 controls) | registered | **open** |
 | 134 | COPY-ANCHOR: label-free state-reading auxiliary (final-answer text autoencoded through the carrier) on §128's S5 recipe, no restarts; PASS 4/4 exact (plain 1/4) | **PASS on S5: 4/4 exact at 2,048 + SERIAL + ρ 0.14–0.22, no restarts** (plain 1/4); guard stage next | **open** (guard) |
@@ -5267,6 +5267,31 @@ stays.**
   only if §131 passes held-out (0 false positives among S5 learners, and ≥ 2/3 recall).
 * The held-out families' result (MOD and CYC pass, RDFA pending) stands on its own either way. It is reported as "the recipe
   learns three held-out regular families without restarts", whatever S5 does.
+
+**§131 result (2026-10-06 22:38 EDT; scored by Theory alone with `theory/score_s131.py` at the registered endpoint: 131-2, 131-3, 131-4, 131-5, 131-6, all inputs in
+(s131x a39d4e65); Audit-reproduced independently). PASS on held-out and on prospective runs. Not deployable (8 flagged held-out runs, below 10).**
+* **(i) No learner is flagged.** Held-out exact runs: 23, of which 0 are flagged (S5 learners 0/5; learners not flagged at 2k 0/23). Prospective:
+  10 exact, 0 flagged. Precision 1.0 (95 % CI 0.63–1.0).
+* **(ii) Most escape-without-learning runs are caught.** Held-out escaped-and-failed runs: 11, of which **8 are flagged**. Recall **0.73** (0.39–0.94),
+  at least 2/3.
+  - The prospective set is the same 11 (none was seen at registration).
+* **The three misses, by class:**
+  - s130chk_s5_s17_a4000: FLAG4 0.779, a late re-entry at the L_max 8 step (131-7).
+  - s131x_s5_s402_2080ti: FLAG4 0.754, ending at 3.21, the ~3.2 basin.
+  - s131x_s5_s401_2080ti: FLAG4 0.387, a **near-learner**. Its loss is 0.009 at 24k, with long_acc 0.987 and ext_2048 0.976. It counts as failed only
+    by the 0.99 threshold.
+* **Not deployable:** "deployable" as a restart rule needs ≥ 10 flagged held-out runs with 0 false positives (Literature (c)), and 8 are flagged.
+* **Disclosed:**
+  - The endpoint was extended twice after an interim reading (131-3, 131-5 / 131-6). Both were the conservative direction and fixed before
+    the added runs existed.
+  - s128_s5_s1 counted once, as its in-sample twin (131-8).
+  - 131-4's "one host per card class" was not met (each run read on its own flags).
+  - The s131x runs trained in fp32 on RTX 2080 Ti / 595.71.05.
+* **Scope:** FLAG4 and its thresholds are calibrated on the 8-d FSQ carrier. Outside the registered set, a 64-d FSQ learner is flagged (133-5:
+  s133_fsq64_s201, 0.930, then exact), and a 4060 prototype run is flagged at 0.906 while still descending (unresolved). Any use as a restart
+  trigger is per carrier width.
+* **Reading (as registered):** a label-free 4k check catches most escape-without-learning runs and never killed an 8-d learner on held-out data.
+  As a restart rule it is not yet deployable. On S5, §134's copy anchor makes restarts unnecessary (4/4 without restarts).
 
 ## 132. Rules in context: can the same latent carrier track state when each problem gives its own transition table? A size ladder on §120's recipe (pre-registered 2026-10-06 07:48 EDT, after Literature's check 54a30677 and before any implementation or run; Audit's steward idea; the bridge to ProsQA-NA)
 
