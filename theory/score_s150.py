@@ -40,7 +40,7 @@ def smoke(d):
 
 def args_ok(d, arm):
     a = load(d, "args.json") or {}
-    exp = {"family": "mult_pair", "task": "4x4", "slots": 4, "slot_space": ARMS[arm], "slot_gumbel": True, "slot_wte_detached": True}
+    exp = {"family": "mult_pair", "task": "4x4", "slots": 4, "slot_space": ARMS[arm], "slot_gumbel": True, "slot_wte_detached": True}   # 150-1: logits too
     bad = {k: a.get(k) for k, v in exp.items() if a.get(k) != v}
     if a.get("copy_frac"):
         bad["copy_frac"] = a.get("copy_frac")
@@ -119,6 +119,7 @@ def slot(arm, k):
                  "per_column": (r.get("acc_by_column") or {}).get("per_column"), "ext_4x8": r.get("ext_4x8"), "probe": r.get("s150_probe"),
                  "acc_by_magnitude": s0.get("acc_by_magnitude"), "soft_test_acc": s0.get("soft_test_acc"), "slot_tokens": s0.get("slot_token_hist"),
                  "spells_accumulator": s0.get("spells_accumulator_share"), "distinct_tokens_per_slot": s0.get("distinct_tokens_per_slot"),
+                 "slot_margin": s0.get("slot_margin"), "wte_drift": s0.get("wte_drift"),                 # note 150-1
                  "gpu": r.get("train_gpu", r.get("gpu")), "driver": r.get("train_driver")}
             a["exact"] = (a["test_acc"] or 0) >= 0.99
             a["pass"] = None if a["rho"] is None else bool(a["exact"] and a["serial"] and a["rho"] <= 0.28)
@@ -161,6 +162,7 @@ def main():
             print("   proof per column", s1["per_column"], "| §140 1 x FSQ-8", S140_PROOF, "| IMPROVES (cols 3-7 >= 0.9):", improves(s1))
             print("   hard vs soft at test:", s1["test_acc"], "/", s1["soft_test_acc"], "| spells accumulator:", s1["spells_accumulator"],
                   "| distinct tokens per slot:", s1["distinct_tokens_per_slot"], "| by magnitude:", s1["acc_by_magnitude"])
+            print("   slot margin:", s1["slot_margin"], "| wte drift:", s1["wte_drift"])
         res[arm]["improves"] = improves(s1)
     vf, vd = res["full"]["verdict"], res["digit"]["verdict"]; i_f, i_d = res["full"]["improves"], res["digit"]["improves"]
     out = lambda v: v.startswith("dropped") or v.startswith("FAIL")  # noqa: E731
