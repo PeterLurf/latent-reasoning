@@ -7761,6 +7761,17 @@ matters.**
 * **Gates:** r = 1 equivalence with GPT-2 (max |Δ logits| = 0), gradflow, memory at r = 4, smoke_plain, Audit's diff review.
 * Dirs `s148_{loop4,plain}_4x4_s{seed}`. Scorer: `theory/score_s148.py`, committed with this registration.
 
+**Note 147-1 (2026-10-07 16:50 EDT, before any §147 / §148 run; Audit's formal review, approved). Three pre-run points.**
+* **(1) The 2k flag's misfire rule (137-1 (3)) applies to §147's restart slots.** Digit-pair losses are near 0 early (s140: 1.7·10⁻⁶ at 1k), where the ratio test is
+  numerically noisy. A flag with loss(2k) < 1.0 is a **misfire**: logged, not a stop, and the run is accepted.
+  - score_s147 and the restart driver both apply it. §148 runs one run per seed, so it has no restarts.
+* **(2) §147: interference from the never-decaying additive heads.** Every column's writes stay in S, so later columns read through growing interference.
+  - Descriptive: the per-column readout R² of the column sum against the column index (`s147.colsum_readout_r2_by_column`).
+  - It locates a DROP: accumulation is fine but interference grows, against a failed readout.
+* **(3) §148: "no improvement" refutes loops only at this budget.** PLAIN's own number is reported beside ICoT-SI's 0.29 (long training, no CoT). Our §98 harness gave
+  0.003.
+* **Order (Audit):** §147's proof runs in parallel with §142–§145; §148 follows.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

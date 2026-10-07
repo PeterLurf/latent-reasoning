@@ -6,7 +6,8 @@ Dirs boxes/runs_fsq/s147_delta_4x4_s{seed}.
 PASS: >= 3/4 slots whose accepted run has test_acc >= 0.99 and SERIAL (the donor's whole memory state swapped in after pair 4 / 8 / 12; later digits
 follow the recipient's pairs with the donor's accumulator; row level). Contraction is NOT part of PASS (an exact integrator has eigenvalue 1 on its
 additive subspace by design; stated in §147); ext_4x8 is the stability read. DROP at proof: slot 1 accepted with test_acc < 0.95. FAIL: >= 2 decided
-slots not passing. IMPROVES (descriptive): columns 3-7 all >= 0.9 on the proof.
+slots not passing. IMPROVES (descriptive): columns 3-7 all >= 0.9 on the proof. Note 147-1: a 2k flag with loss(2k) < 1.0 is a misfire (logged,
+not a restart); s147.colsum_readout_r2_by_column (the column sum read from the additive state, per column index) locates interference.
     python theory/score_s147.py
 """
 import json
@@ -18,7 +19,7 @@ R = os.path.join(ROOT, "boxes", "runs_fsq")
 OFFS = (0, 100, 200, 300)
 ARMS = {"delta": None}
 S140_PROOF = [1.0, 1.0, 0.315, 0.132, 0.104, 0.24, 0.50, 0.936]              # §140 result: s140_pair_4x4_s1 per column (comparator)
-SKIPPED, ERRORS = [], []
+SKIPPED, ERRORS, MISFIRES = [], [], []
 
 
 def load(d, f="eval.json"):
@@ -56,7 +57,10 @@ def plateau(d):
     if not L or max(L) < 2000:
         return None
     g = lambda t: L[min(L, key=lambda s: abs(s - t))]  # noqa: E731
-    return bool(g(2000) >= 0.9 * g(1000) and g(2000) >= 0.25 * g(100))
+    fl = bool(g(2000) >= 0.9 * g(1000) and g(2000) >= 0.25 * g(100))
+    if fl and g(2000) < 1.0:                                                 # note 147-1 (137-1 (3)): a misfire on near-0 digit CE: logged, not a stop
+        MISFIRES.append(d); return False
+    return fl
 
 
 def rho_k3(cf, eps="0.1"):
@@ -101,7 +105,7 @@ def slot(arm, k):
             s7 = r.get("s147") or {}
             a = {"seed": k + o, "test_acc": r.get("test_acc"), "serial": serial(r.get("donor")), "per_column": (r.get("acc_by_column") or {}).get("per_column"),
                  "ext_4x8": r.get("ext_4x8"), "acc_by_magnitude": s7.get("acc_by_magnitude"), "head_ablation": s7.get("head_ablation"),
-                 "colsum_readout_r2": s7.get("colsum_readout_r2"), "rho_by_head_type": s7.get("rho_by_head_type"),
+                 "colsum_readout_r2": s7.get("colsum_readout_r2"), "colsum_readout_r2_by_column": s7.get("colsum_readout_r2_by_column"), "rho_by_head_type": s7.get("rho_by_head_type"),
                  "gpu": r.get("train_gpu", r.get("gpu")), "driver": r.get("train_driver")}
             a["exact"] = (a["test_acc"] or 0) >= 0.99
             a["pass"] = bool(a["exact"] and a["serial"])                   # §147: no contraction term (integrator by design)
@@ -151,6 +155,8 @@ def main():
     else:
         rd = "pending"
     res["reading"] = rd; print("READING:", rd)
+    if MISFIRES:
+        print("2k-flag misfires (loss(2k) < 1.0; not stops, note 147-1):", MISFIRES); res["misfires"] = MISFIRES
     if SKIPPED:
         print("SKIPPED (smoke):", SKIPPED)
     if ERRORS:

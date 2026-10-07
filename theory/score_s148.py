@@ -59,7 +59,9 @@ def main():
     imp = None if p1 is None or l1 is None else bool(l1 >= p1 + 0.2)
     res["improves_proof"] = imp
     rd = ("looped depth buys implicit computation at this budget (stage 2: removal coupled to loops, a new registration)" if imp
-          else "depth alone does not buy direct multiplication at this budget: B3 stops" if imp is False else "pending")
+          else ("depth alone does not buy direct multiplication AT THIS BUDGET (refutes loops only at this budget; note 147-1): B3 stops"
+                if imp is False else "pending"))
+    res["plain_vs_icot_table"] = {"plain_s1": p1, "icot_si_long_training_no_cot": 0.29}
     res["reading"] = rd
     print("VERDICT loop4:", v, "| IMPROVES (proof, loop4 >= plain + 0.2):", imp, "(loop4 %s, plain %s)" % (l1, p1)); print("READING:", rd)
     if SKIPPED:
