@@ -1,0 +1,4 @@
+# §133 eval-only recovery (Audit 2026-10-06 23:08): s133_soft16_s102 (slot soft16 k2, b84) and s133_fsq16_s3 (slot fsq16 k3, b85) trained the full 24k steps, then crashed at eval on the missing S5=512.csv (restart133 queues skipped gen_vast_job's data step; fixed). Eval only, from each run's model.pt / args.json; these are the slots' attempts (no fresh seed). RTX 3090; boxes.fsq120
+# P=2
+boxes/runs_fsq/s133_soft16_s102 boxes.fsq120 --from_args boxes/runs_fsq/s133_soft16_s102/args.json --eval_only
+boxes/runs_fsq/s133_fsq16_s3 boxes.fsq120 --from_args boxes/runs_fsq/s133_fsq16_s3/args.json --eval_only
