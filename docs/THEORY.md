@@ -7160,6 +7160,10 @@ checkpoints, the host check).
   - if ε is several times the within-state spread and well below the inter-state spacing, the hinge probes contraction "locally at the inter-state scale";
   - if ε is at or below the within-state spread, a HINGE result is read as an infinitesimal-Jacobian constraint, and stated so.
 
+**Note 138-4 (2026-10-07 09:30 EDT, before any FULL-HINGE run; the implementation 1d76fc3c).** 138-3's "hand-off codes" means the **pre-quantisation z_b**, the space the hinge perturbs (not
+e_j = W_up(code)). ε = 0.1 × the median distance between 20k random pairs of z_b on the probe batch at 2k, as implemented. The ratios (ε / within-state spread, ε / nearest-
+centroid distance) are logged in the same space. At init these are 0.13 / 2.09; that is uninformative, since the states are not yet separated.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
