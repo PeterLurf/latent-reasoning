@@ -46,6 +46,12 @@ paradigms. Don't get stuck in the minuscule improvements loop. Take the lessons 
    - Literature's prediction: emergent token states help arithmetic only when supervised. The DIGIT arm and the C7 token-semantics test make it direct.
    - Ranked beside B1: the first tests run in parallel.
 
+5. **B5 ITEM-AGNOSTIC SEGMENTATION (open; not registered):** the remaining task-agnostic step (Literature 7f3afba0).
+   - Our carrier has no supervision scaffold, but the segment = item layout is chosen per task.
+   - **The bet:** fixed-width token chunks of the raw input stream (no item boundaries), with the carrier between chunks.
+   - **First test, after B1 / B4 read:** S5 and the running sum written as plain token streams.
+   - Most SOTA latent methods use task scaffolds; only Huginn / Ouro and the soft-token methods are task-agnostic.
+
 ## Paradigms applied across the bets
 * **Function-preserving installation** (zero-init outputs, fade-in, μP-scaled learning rates; §136 / §143) for every new module.
 * **Shortcut-free task design first (L1).** Multiplier-major only with SERIAL and the b-prefix rate.
