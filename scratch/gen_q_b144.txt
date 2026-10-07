@@ -1,3 +1,3 @@
-# THEORY §150 VOCAB-SLOT (note 150-1) PROOF slot 1, arm FULL via scratch.restart150 -> boxes.multpair (--slots 4 --slot_space vocab --slot_gumbel, tau 1->0.3 over 2k-6k, straight-through 6k-8k, wte detached on the slot path; §140's harness, restart slots, 147-1 misfire rule); RTX 3090 (~$0.5)
+# THEORY §150 VOCAB-SLOT (note 150-1) PROOF slot 1, arm FULL via scratch.restart150 -> boxes.multpair (--slots 4 --slot_space vocab --slot_gumbel, tau 1->0.3 over 2k-6k, straight-through 6k-8k, wte detached on the slot path; §140's harness, restart slots, 147-1 misfire rule); RTX 3090 (~$0.5); --memcheck (Audit): multpair --mem_check at bs 64 with micro 1 / 2 / 4 on this 3090, the smallest fitting micro is used (effective batch 64)
 # P=1
-boxes/runs_fsq/s150_slots/full_4x4_k1 scratch.restart150 --arm full --task 4x4 --slot 1
+boxes/runs_fsq/s150_slots/full_4x4_k1 scratch.restart150 --arm full --task 4x4 --slot 1 --memcheck

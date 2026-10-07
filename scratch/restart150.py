@@ -40,11 +40,43 @@ def status(out):
     return None
 
 
+def memcheck(a):
+    """Audit (§150 FULL): on this 3090, multpair --mem_check at the run's args, bs 64, micro 1 / 2 / 4 in turn (one chunk of 64 / micro rows +
+    the eval rollout); the smallest micro with peak <= limit is used by every attempt (effective batch stays 64). -> SLOTDIR/memcheck.json
+    and logs/memcheck150_<arm>_k<slot>.json; none fits -> exit 3 before any attempt."""
+    res = {"arm": a.arm, "limit_gib": a.mem_limit_gib, "tries": [], "micro": None}
+    for mi in (1, 2, 4):
+        d = os.path.join(a.out, "memcheck_micro%d" % mi).replace(os.sep, "/")
+        cmd = [sys.executable, "-u", "-m", "boxes.multpair", "--family", "mult_pair", "--task", a.task, "--seed", "1", "--slots", "4", "--carry_slots", "4",
+               "--slot_space", "vocab" if a.arm == "full" else "digits", "--slot_gumbel", "--mem_check", "--bs", "64", "--micro", str(mi), "--device", a.device, "--out", d]
+        with open(os.path.join(a.out, "memcheck_micro%d.log" % mi), "w") as lg:
+            rc = subprocess.call(cmd, stdout=lg, stderr=subprocess.STDOUT)
+        pk = None
+        if os.path.exists(os.path.join(d, "mem_check.json")):
+            pk = json.load(open(os.path.join(d, "mem_check.json"))).get("peak_gib")
+        res["tries"].append({"micro": mi, "rc": rc, "peak_gib": pk})
+        if rc == 0 and pk is not None and pk <= a.mem_limit_gib:
+            res["micro"] = mi; break
+    res["pass"] = res["micro"] is not None
+    return res
+
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--task", required=True, choices=["4x4", "5x5"]); ap.add_argument("--arm", required=True, choices=["full", "digit"]); ap.add_argument("--slot", type=int, required=True)
+    ap = argparse.ArgumentParser(); ap.add_argument("--task", required=True, choices=["4x4", "5x5"]); ap.add_argument("--arm", required=True, choices=["full", "digit"]); ap.add_argument("--memcheck", action="store_true"); ap.add_argument("--mem_limit_gib", type=float, default=21.0); ap.add_argument("--slot", type=int, required=True)
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     ap.add_argument("--runs_root", default=os.path.join("boxes", "runs_fsq"), help="smokes: a scratch dir, never the real run names (Audit)")
     a, extra = ap.parse_known_args(); os.chdir(ROOT); os.makedirs(a.out, exist_ok=True)
+    if a.memcheck:                                                          # Audit: measured on this 3090; micro chosen here, effective bs 64
+        mp_ = os.path.join(a.out, "memcheck.json")
+        if not os.path.exists(mp_):
+            mc = memcheck(a); json.dump(mc, open(mp_, "w", newline="\n"), indent=1)
+            if os.path.isdir("logs"):
+                json.dump(mc, open(os.path.join("logs", "memcheck150_%s_k%d.json" % (a.arm, a.slot)), "w", newline="\n"), indent=1)
+            qlog_line("MEMCHECK %s %s micro %s tries %s" % (a.arm, "PASS" if mc["pass"] else "FAIL", mc["micro"], mc["tries"]))
+        mc = json.load(open(mp_))
+        if not mc["pass"]:
+            sys.exit(3)
+        extra = extra + ["--micro", str(mc["micro"])]
     attempts = []; accepted = None; err = None
     for seed in [a.slot + 100 * i for i in range(4)]:
         out = os.path.join(a.runs_root, "s150_%s_%s_s%d" % (a.arm, a.task, seed)).replace(os.sep, "/"); st = status(out)
