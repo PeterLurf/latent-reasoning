@@ -1,8 +1,8 @@
 {
- "s138.hinge_rho_median": 7.85380744934082,
- "s138.hinge_down_grad": 142.8381805419922,
- "s138.hinge_up_grad": 151.11241149902344,
- "s138.hinge_trunk_grad": 62.55636978149414,
+ "s138.hinge_rho_median": 0.529097318649292,
+ "s138.hinge_down_grad": 2.235156297683716,
+ "s138.hinge_up_grad": 2.2587199211120605,
+ "s138.hinge_trunk_grad": 0.7609927654266357,
  "_status": "PASS",
  "_zero_terms": []
 }

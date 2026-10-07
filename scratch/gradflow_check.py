@@ -344,7 +344,7 @@ def check_s138(dev, out):
     import boxes.fsq120 as F120
     saved = (F120.D_Q, F120.LEV, F120.HALF, F120.SHIFT); F120.D_Q, F120.LEV = 768, 8; F120.HALF = (F120.LEV - 1) / 2; F120.SHIFT = math.atanh(F120.OFF / F120.HALF)
     amp = torch.bfloat16 if str(dev).startswith("cuda") else None; fam = F120.Family("s5"); m = F120.FSQ120(s5.load_gpt2(dev), fam).to(dev)
-    m.no_round = True; m.tanh_fp32 = True; ref = F120.s138_hinge_ref(m, fam, dev, amp, 0.15); m.hinge_eps, m.hinge_dir, m.hinge_on = ref["eps"], ref["dir"], True
+    m.no_round = True; m.tanh_fp32 = True; ref = F120.s138_hinge_ref(m, fam, dev, amp, 0.1); m.hinge_eps, m.hinge_dir, m.hinge_on = ref["eps"], ref["dir"], True
     m.train(); m.p_hard = 1.0; m.hinge_rows = 1.0; m.hinge_margin = 0.0; s0, x, lab = F120.make_batch(fam, np.random.default_rng(0), 8, 4)
     m.zero_grad(set_to_none=True); m._hinge = []
     with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
