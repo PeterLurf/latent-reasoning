@@ -224,7 +224,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 134 | COPY-ANCHOR: label-free state-reading auxiliary (final-answer text autoencoded through the carrier) on §128's S5 recipe, no restarts; PASS 4/4 exact (plain 1/4) | **PASS on S5: 4/4 exact at 2,048 + SERIAL + ρ 0.14–0.22, no restarts** (plain 1/4); **guard FAILS on MOD** (exact + SERIAL, but not closed: 70k reachable codes); not adopted as default | closed |
 | 135 | TEACHER-STATE DISTILLATION: a CoT model's hidden states (vs pretrained GPT-2 on the same text) as per-hand-off InfoNCE targets on §128's S5 carrier | **FAIL both arms (0/4)**: worse than plain; the aux pulls context into the code (135-9) | closed (stage B not run) |
 | 136 | GROW (the user's idea): narrow → wide function-preserving latent growth at a loss threshold / plateau; GROW-P, COPY+GROW / STAGED / GROW-NOISE, GROW-4, NESTED-64 on S5 (S5×4 decides) | registered | **open** |
-| 137 | Multiplication on fsq120, column-major: carried carry (FSQ-8), streamed product digits (C4 qualifier), restart slots; 4×4 → 5×5 → 4×8 | registered | **open** |
+| 137 | Multiplication on fsq120, column-major: carried carry (FSQ-8), streamed product digits (C4 qualifier), restart slots; 4×4 → 5×5 → 4×8 | **4×4 DROP at proof** (test_acc 0.0; middle columns at chance; carry in h R² 0.69, in the code 0.24) → §140 | closed |
 | 139 | DISTILL-2 (user's go): a CoT teacher's state (probe or its text) as a warm-start fading to 0 by 4k, on multiplier-major multiplication; A = SOFT-16 + COPY (FINAL), B = A + DISTILL-2, C = constant weight | registered | **open** |
 | 140 | DIGPAIR (§137's fallback; runs only on §137 4×4 DROP / FAIL): one digit pair per segment, carried column accumulator (FSQ-8), streamed digits; design-forced C1 | registered (conditional) | **open** |
 
@@ -6676,6 +6676,21 @@ trigger fired on seed 1, the plain learner on this card class.
     test.
   - The trigger is part of GROW-P's method, so the arm's verdict stands either way. The false-plateau rate on learners is reported as a property of
     the trigger.
+
+**§137 result (2026-10-07 05:21 EDT; the 4×4 proof, s137_col_4x4_s1, RTX 3090 / 595.71.05, unflagged at 2k; scored by Theory with score_s137). DROP at proof: test_acc 0.000.
+4×4 stops there (no further slots, no 5×5). §140 (DIGPAIR) triggers.**
+* **Where it fails** (acc_by_column, per column): **1.000 / 0.326 / 0.124 / 0.103 / 0.077 / 0.104 / 0.105 / 0.953**. Cumulative: 1.0 / 0.33 / 0.06 / 0.01 / 0 / 0 / 0 / 0.
+  - Column 1 is solved (a₁b₁ mod 10, computable from the context alone) and the top digit is easy. The carry-dependent middle columns are near chance.
+  - The per-digit CE rose with L_max: 0.43 at L 2, 0.89 at L 4, then about 1.30 from 6k to 24k. train_acc is 0.000 too, so this is not overfitting.
+* **Probe (137-1 (2)):**
+  - the true carry is linearly readable from **h before W_down at R² 0.69**, but from the **code only at 0.24**;
+  - the context-only column sum is readable at column 1 (R² 0.78) and not at all from column 2 on (≤ 0.15).
+  - Read: the segment does not compute the middle columns' digit-product sums from the in-context operands. Part of the carry reaches the segment's last
+    hidden state but not the 8-d code. Descriptive, n = 1.
+* **SERIAL:** not met (donor 0.24–0.36, about equal to recipient). As expected for a run that never learned the carry.
+* **Fits the pre-registered reading (DROP or FAIL):** the per-column step (up to n products plus a carry, in one segment) is too hard at this budget. Audit's
+  interim read located the load in-pass. The registered fallback is §140 (digit-pair ops: one product per step, the code carrying the accumulator).
+* **What 4×4 = 0 does not show:** the latent carry itself was never tested, because the transition was never learned. §140 tests that, with design-forced C1.
 
 ## 139. DISTILL-2: a CoT teacher's state as a fading warm-start for the latent carrier, on multiplier-major multiplication (pre-registered 2026-10-07 02:10 EDT, after Literature's checks 0bb148e9 / ff34ece2 and Audit's notes, before any implementation or run; the user's "go on distill" (via Audit), plan `docs/THEORY_DISTILL_PLAN_2026-10-07.md`)
 
