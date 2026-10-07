@@ -105,7 +105,8 @@ def slot(arm, k):
             s7 = r.get("s147") or {}
             a = {"seed": k + o, "test_acc": r.get("test_acc"), "serial": serial(r.get("donor")), "per_column": (r.get("acc_by_column") or {}).get("per_column"),
                  "ext_4x8": r.get("ext_4x8"), "acc_by_magnitude": s7.get("acc_by_magnitude"), "head_ablation": s7.get("head_ablation"),
-                 "colsum_readout_r2": s7.get("colsum_readout_r2"), "colsum_readout_r2_by_column": s7.get("colsum_readout_r2_by_column"), "rho_by_head_type": s7.get("rho_by_head_type"),
+                 "colsum_readout_r2": s7.get("colsum_readout_r2"), "colsum_readout_r2_by_column": s7.get("colsum_readout_r2_by_column"),
+                 "read_norm_ratio_by_handoff": s7.get("read_norm_ratio_by_handoff"),   # note 147-2 (Audit): {"step0": [...], "end": [...]} "rho_by_head_type": s7.get("rho_by_head_type"),
                  "gpu": r.get("train_gpu", r.get("gpu")), "driver": r.get("train_driver")}
             a["exact"] = (a["test_acc"] or 0) >= 0.99
             a["pass"] = bool(a["exact"] and a["serial"])                   # §147: no contraction term (integrator by design)
@@ -146,6 +147,7 @@ def main():
     if s1:
         print("   proof per column", s1["per_column"], "| §140 1 x FSQ-8", S140_PROOF, "| IMPROVES (cols 3-7 >= 0.9):", improves(s1))
         print("   ext_4x8", s1["ext_4x8"], "| by magnitude", s1["acc_by_magnitude"], "| head ablation", s1["head_ablation"], "| colsum readout R2", s1["colsum_readout_r2"])
+        print("   read-norm ratio delta / additive by hand-off (step 0 / end):", s1["read_norm_ratio_by_handoff"])
     i4 = improves(s1); res["improves"] = i4
     if v == "PASS":
         rd = "a linear-recurrent memory as the sole cross-step channel makes a pretrained LM multiply exactly (C1 by design + SERIAL; C4 as reworded)"
