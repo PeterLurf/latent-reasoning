@@ -4,7 +4,8 @@ streamed product digits; column curriculum; restart slots k, k+100, k+200, k+300
 positions; each one's last hidden state -> its own W_down_k -> NOISE-64 (continuous, dither U(+-0.25) after 2k) -> its own W_up_k = slot_k of the
 next segment; the decoder reads [EOT, slot_1..slot_K].
 Arms (dirs boxes/runs_fsq/s145_{arm}_4x4_s{seed}): slot4 (K = 4 write positions, 4 carried slots); carry1 (the control, Literature d8ccceb5 (1): the same
-4 write positions and compute, only slot 1 carried; runs ONLY if slot4's proof IMPROVES). SERIAL is read at the row level (all later digits).
+4 write positions and compute, only the slot read at the LAST write position carried (note 145-1: --carry_from last); runs ONLY if slot4's
+proof IMPROVES). SERIAL is read at the row level (all later digits).
 M-PASS(arm): >= 3/4 slots whose accepted run has test_acc >= 0.99 (the 1,000 bench items), SERIAL (all K slots of a donor injected after pair 4 / 8 / 12;
 later digits follow the recipient's pairs with the donor's accumulator, exact) and contractive (133-1's first-3 form on the concatenated K x 64 code,
 rho <= 0.28). DROP at proof: slot 1 accepted with test_acc < 0.95. FAIL: >= 2 decided slots not passing.
@@ -42,6 +43,8 @@ def smoke(d):
 def args_ok(d, arm):
     a = load(d, "args.json") or {}
     exp = {"family": "mult_pair", "task": "4x4", "slots": ARMS[arm][0], "carry_slots": ARMS[arm][1], "d_q": 64, "no_round": True, "dither": 0.25}
+    if arm == "carry1":
+        exp["carry_from"] = "last"                                          # note 145-1: the slot read at w_4 (causal attention)
     bad = {k: a.get(k) for k, v in exp.items() if a.get(k) != v}
     if a.get("copy_frac"):
         bad["copy_frac"] = a.get("copy_frac")
