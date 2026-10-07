@@ -7149,6 +7149,17 @@ checkpoints, the host check).
 * **FULL-HINGE now differs from FULL-CONT only by the label-free hinge.** A HINGE PASS where FULL-CONT fails reads "a label-free local stabiliser removes full-width drift".
 * Literature's concern that random δ can miss state-separating directions stays descriptive (the directional ρ is reported).
 
+**Note 138-3 (2026-10-07 09:21 EDT, before any FULL-HINGE run; Audit on 138-2). The label-free ε reference is corrected.**
+* 138-2's "nearest distinct code" fails on the CONT carrier: same-state codes are not identical, so a code's nearest distinct code is almost always a **same-state** neighbour.
+  That measures within-state spread, not inter-state spacing.
+* **Fixed now (Audit's option (i)):** **ε = 0.1 × the median distance between random pairs of hand-off codes** on the fixed probe batch at 2k. That is a global scale; with
+  120 states, most pairs are cross-state. It is measured once, label-free.
+  - 0.1 of a typical cross-state distance is roughly 0.15 of the nearest-centroid spacing, the low end of Literature's 0.1–0.25 range.
+* **Logged (descriptive, labels used only here):** ε, ε / the measured within-state spread, and ε / the median nearest-centroid distance.
+* **Reading:**
+  - if ε is several times the within-state spread and well below the inter-state spacing, the hinge probes contraction "locally at the inter-state scale";
+  - if ε is at or below the within-state spread, a HINGE result is read as an infinitesimal-Jacobian constraint, and stated so.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
