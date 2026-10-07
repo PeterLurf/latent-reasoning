@@ -6615,6 +6615,15 @@ k, k + 100, k + 200, k + 300; 123-3's 2k flag). Cloud RTX 3090, checkpoints, the
   stretch goal for surpassing the teacher.
   - **§137's streamed product digits qualify under C4.** Simulator states (S5's per-step state labels, §111 / §118) do not.
 
+**Note 137-2 (2026-10-07 01:55 EDT, before any §137 result; the experiments session's implementation, Audit-approved). As implemented.**
+* **Curriculum:** **column prefixes of full bench items**. A chain of L ~ U(1, L_max) columns has the product's low L digits as targets. **No
+  generated or synthetic training items** (no shorter multipliers).
+* **Dedup (137-1 (1)):** commuted (a, b) pairs against the 1,000 test items. **17 bench train items removed at 4×4.** The ext_4x8 descriptive set had
+  0 to remove.
+* **Gates before launch:** CUDA bf16 gradflow PASS (`theory/results/gradflow_s137_cuda.json`), GPU smoke PASS, peak memory 4.47 GiB (4×4) / 5.78
+  GiB (5×5 eval at bs 250). 5×5 evaluations stay on 3090s, since 5.78 GiB is near the local cap.
+* The 4×4 proof (slot 1: seeds 1 / 101 / 201 / 301, 123-3's 2k flag) deploys on one RTX 3090.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
