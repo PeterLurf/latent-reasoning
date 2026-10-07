@@ -6251,6 +6251,24 @@ carry an fp32 certificate that covers every code the eval visits** (14 certifica
   - dropped: SOFT-64 (constant per-step error, 133-7) and PIN-64 (transition).
   - Slots 2–4 are running for the passing arms.
 
+**Note 135-6 (2026-10-06 21:33 EDT; before any rerun and before the cause is known; a ruling stated in advance). s135_base_s5_s2 broke at step 14,002 on b78.**
+* **What happened** (the experiments session; log and args committed in 4e31863a): healthy to 14k (loss 4.41, retrieval top-1 0.71, masked share
+  0.0083).
+  - From 14,002, the first step at L_max 32 and with micro-batching, the nonfinite-gradient guard fired on 3,198 of about 3,400 steps.
+  - The logged label-mask share rose to about 1.5·10⁸, and a device-side index assert appeared inside teacher_targets at 17,425. No
+    eval.json.
+  - The other seven students had no nonfinite steps; three of them were already past 14k.
+* **Evidence:** the masked share is computed from **integer gold labels only** (tsd_loss135: (lab_i == lab_j) & ~eye summed over N(N − 1), at
+  most 2 by construction). A value of 10⁸ cannot arise from training dynamics, which points to a device or CUDA-context fault.
+  teacher_targets' indices are data-only as well.
+* **Ruling, fixed now:**
+  - (1) **Host fault** (the CPU repro across 14k is clean and b78 fails a deterministic GPU check): the run is void (kept as
+    `.void_hostfault`, read for nothing) and rerun from scratch on a different 3090 host, as for 131-4's crashed runs. "No restarts"
+    governs plateau restarts, not host faults.
+  - (2) **Harness bug** at the L 32 / micro switch: it is fixed, and every affected student resumes from its last checkpoint before
+    14k. Students already past 14k are read as they are if the bug cannot have touched them; otherwise they rerun.
+  - (3) **If the rerun on a healthy host also breaks** at the switch, BASE s2 is scored as a failure.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
