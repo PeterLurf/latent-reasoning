@@ -105,6 +105,76 @@ def since_hms(hms):
         return 0
 
 
+ARM_NAMES = {"fsq64": "FSQ-64", "noise64": "NOISE-64", "cont64": "continuous-64", "fsq16": "FSQ-16", "soft16": "SOFT-16", "soft64": "SOFT-64", "pin64": "PIN-64"}
+GROW_NAMES = {"growp": "grow 8→64 at plateau", "cgrow": "copy + grow 8→64", "cstaged": "copy + staged growth 8→64", "cnoise": "copy + grow, noisy new dims",
+              "grow4": "grow 4→64", "nested": "nested widths 4–64"}
+FAM_NAMES = {"s5": "S5", "ff": "flip-flop", "cyc": "cycle", "mod": "modular", "rdfa": "random automaton"}
+NAME_RULES = [                                                              # (regex on a run / slot name, label) - first match wins
+    (r"^(?:s133_slots/)?(fsq64|noise64|cont64|fsq16|soft16|soft64|pin64)_k(\d+)$", lambda m: "§133 width test: %s, slot %s" % (ARM_NAMES[m[1]], m[2])),
+    (r"^s133_(fsq64|noise64|cont64|fsq16|soft16|soft64|pin64)_s(\d+)$", lambda m: "§133 width test: %s, seed %s" % (ARM_NAMES[m[1]], m[2])),
+    (r"^s134_copy_s5_s(\d+)$", lambda m: "§134 copy anchor (S5), seed %s" % m[1]),
+    (r"^s134_copy_(ff|cyc|mod|rdfa)_s(\d+)$", lambda m: "§134 copy-anchor guard: %s" % FAM_NAMES[m[1]]),
+    (r"^s134cc_(\w+?)_s\d+$", lambda m: "§134 certificate check: %s" % FAM_NAMES.get(m[1], m[1])),
+    (r"^s135_teacher", lambda m: "§135 teacher model"),
+    (r"^s135_tsd_s5_s(\d+)$", lambda m: "§135 teacher distillation, seed %s" % m[1]),
+    (r"^s135_base_s5_s(\d+)$", lambda m: "§135 base-model targets (control), seed %s" % m[1]),
+    (r"^s136_(growp|cgrow|cstaged|cnoise|grow4|nested)_s5_s(\d+)$", lambda m: "§136 %s, seed %s" % (GROW_NAMES[m[1]], m[2])),
+    (r"^(?:s137_slots/)?col_(\dx\d)_k(\d+)$", lambda m: "§137 multiplication %s, slot %s" % (m[1].replace("x", "×"), m[2])),
+    (r"^s137_col_(\dx\d)_s(\d+)$", lambda m: "§137 multiplication %s, seed %s" % (m[1].replace("x", "×"), m[2])),
+    (r"^s118_long_s(\d+)$", lambda m: "§118 long training run, seed %s" % m[1]),
+    (r"^s131x_s5_s(\d+)", lambda m: "§131 extension run, seed %s" % m[1]),
+    (r"^s130chk_s5_s(\d+)", lambda m: "§130 check run, seed %s" % m[1]),
+    (r"^s128cert_s5_s(\d+)", lambda m: "§128 S5 certificate, seed %s" % m[1]),
+    (r"^s128_(\w+?)_s(\d+)$", lambda m: "§128 %s run, seed %s" % (FAM_NAMES.get(m[1], m[1]), m[2])),
+    (r"^s132proto_k(\d+)_s(\d+)", lambda m: "§132 prototype, %s states, seed %s" % (m[1], m[2])),
+    (r"^s132\w*?_k(\d+)_s(\d+)", lambda m: "§132 in-context tables, %s states, seed %s" % (m[1], m[2])),
+    (r"^proto136_d(\d+)_s(\d+)", lambda m: "§136 entry prototype, width %s, seed %s" % (m[1], m[2])),
+    (r"^flag4proto_s5_s(\d+)", lambda m: "plateau-flag prototype, seed %s" % m[1]),
+    (r"^rampproto_(\w+?)_s(\d+)", lambda m: "ramp prototype (%s), seed %s" % (m[1], m[2])),
+    (r"^g105_mask4_s(\d+)", lambda m: "§115 g105 model, seed %s" % m[1]),
+    (r"^(?:\d{4}_)?s(\d+)\.jsonl", lambda m: "basin replay, seed %s" % m[1]),
+    (r"^smoke", lambda m: "smoke test"), (r"^mem\d+", lambda m: "memory check"),
+    (r"^s(\d{3})_(.+?)(?:_s(\d+))?$", lambda m: "§%s %s%s" % (m[1], m[2].replace("_", " "), ", seed %s" % m[3] if m[3] else "")),   # generic §NNN fallback
+]
+
+
+def human_name(name):
+    n = name.replace("\\", "/").rstrip("/"); b = n.split("/")[-1]
+    for cand in (n.split("runs_fsq/")[-1], b):
+        for rx, f in NAME_RULES:
+            m = re.match(rx, cand)
+            if m:
+                return f(m)
+    return None
+
+
+def human(cmd):
+    """Plain-English label for a job command or a run / slot name (user 2026-10-07); falls back to short()."""
+    c = cmd.replace("\\", "/")
+    def target():
+        mm = re.search(r"--(?:out|run) (\S+)", c) or re.search(r"dimuse136\.py (\S+)", c)
+        return (human_name(mm.group(1)) or os.path.basename(mm.group(1).rstrip("/"))) if mm else None
+    if "gradflow_check" in c:
+        mm = re.search(r"--paths ([\w ]+?)(?: --|$)", c); return "Gradient-flow check (%s)" % (mm.group(1).strip() if mm else "")
+    if "hostcheck" in c:
+        return "GPU host check"
+    if "replay_basin" in c:
+        mm = re.search(r"--seed (\d+)", c); return "Basin replay, seed %s" % (mm.group(1) if mm else "?")
+    if "restart133" in c:
+        a_, k_ = re.search(r"--arm (\w+)", c), re.search(r"--slot (\d+)", c); return "§133 width test: %s, slot %s" % (ARM_NAMES.get(a_.group(1), a_.group(1)) if a_ else "?", k_.group(1) if k_ else "?")
+    if "restart137" in c:
+        t_, k_ = re.search(r"--task (\S+)", c), re.search(r"--slot (\d+)", c); return "§137 multiplication %s, slot %s" % ((t_.group(1) if t_ else "?").replace("x", "×"), k_.group(1) if k_ else "?")
+    for flag, what in (("--contraction_only", "Contraction test"), ("--probe_only", "Probe"), ("--prefix_only", "Prefix accuracy"), ("--growth_only", "Code-growth test"),
+                       ("--eval_only", "Re-evaluation"), ("--mem_check", "Memory check"), ("--cert_only", "Certificate"), ("dimuse136", "Dimension-use baseline"),
+                       ("cert_cover128", "Certificate cover"), ("cc_job", "Certificate cover"), ("snap115", "§115 snapshot eval")):
+        if flag in c:
+            t = target(); return "%s%s%s" % (what, " (fp32)" if "--fp32" in c and what == "Contraction test" else "", ": " + t if t else "")
+    t = target()
+    if t:
+        return ("Smoke test: " if "drain_tmp" in c and "smoke" in c else "") + t
+    return human_name(c) or short(cmd)
+
+
 def short(cmd):
     """A readable label for a job command: its --out (or a done file / --run), plus the module."""
     mo = re.search(r"-m (\S+)", cmd) or re.search(r"python -u (\S+)", cmd); mod = mo.group(1).split(".")[-1].replace(".py", "") if mo else cmd.split()[0]
@@ -140,7 +210,7 @@ def backlog_next(card, total_mib, n=4):
             continue
         left += 1
         if len(nxt) < n:
-            nxt.append((mem, short(cmd)))
+            nxt.append((mem, human(cmd)))
     return nxt, left
 
 
@@ -257,7 +327,10 @@ def render(gpus, procs):
     for g in gpus:
         cuda = next((d for _, n, d in WORKERS if n in g["name"]), "?"); mu, mt = num(g["memory.used"]), num(g["memory.total"], 1)
         pr = [p for p in procs.get(g["pci.bus_id"], []) if not p[1].startswith("[")]   # drop "[Insufficient Permissions]" system entries
-        ptxt = ", ".join("%s %s" % (p[1].replace(".exe", ""), p[0]) for p in pr[:4]) or "-"
+        pyc = STATE.get("pycmd", {})                                        # python pids -> the job's plain-English name
+        jobs_here = [human(c_) for pid_, c_ in pyc.items() if ("--device " + cuda) in c_]   # our jobs on this card by their --device (Windows' attribution is unreliable)
+        other = [p for p in pr if p[0] not in pyc]                          # non-python processes as nvidia-smi attributes them (desktop apps on the display card)
+        ptxt = ", ".join(jobs_here + ["%s %s" % (p[1].replace(".exe", ""), p[0]) for p in other][:max(0, 4 - len(jobs_here))]) or "-"
         tg.add_row("%s %s" % (g["index"], g["name"].replace("NVIDIA GeForce ", "")), cuda, bar(num(g["utilization.gpu"]) / 100, 14), "%3d%%" % num(g["utilization.gpu"]),
                    bar(mu / mt, 14, 0.80, 0.90), "%.1f/%.0fG" % (mu / 1024, mt / 1024), "%d°C" % num(g["temperature.gpu"]),
                    "%.0f/%.0fW" % (num(g["power.draw"]), num(g["power.limit"])), "%s%%" % g["fan.speed"].replace("[N/A]", "-"), ptxt)
@@ -269,7 +342,7 @@ def render(gpus, procs):
         g = next((x for x in gpus if card in x["name"]), None); total = int(num(g["memory.total"], 8192)) if g else 8192
         nxt, left = backlog_next(card, total); j = jobs.get(tag); alive = STATE["workers"].get(tag)
         if j and "cmd" in j:
-            run, age = Text(short(j["cmd"]), style="bold cyan"), ago(since_hms(j["t"]))
+            run, age = Text(human(j["cmd"]), style="bold cyan"), ago(since_hms(j["t"]))
         elif j:
             run, age = Text(j["state"], style="yellow"), ago(since_hms(j["t"]))
         else:
@@ -298,7 +371,7 @@ def render(gpus, procs):
             vu, vtot = num(s["gpu"][1]) / 1024, num(s["gpu"][2], 1) / 1024
         else:
             vu, vtot = o.get("vmem_usage") or 0, (o.get("gpu_totalram") or 0) / 1024
-        last = s.get("last") or {}; q = s.get("q"); ql = len(queue_lines(lab)); cur = os.path.basename(s.get("cur") or "") or ("(no ssh)" if not s else "-")
+        last = s.get("last") or {}; q = s.get("q"); ql = len(queue_lines(lab)); cur = (human_name(s["cur"]) or os.path.basename(s["cur"])) if s.get("cur") else ("(no ssh)" if not s else "-")
         qtxt = "%d/%d%s" % (min(q[1], ql or q[0]), ql or q[0], " DONE" if q[2] else "") if q else "-"   # restart slots evaluate several attempts per line
         sty = "green" if stt == "running" else "yellow" if stt in ("loading", "created") else "red"
         tc.add_row(lab, "%s %s" % (o.get("gpu_name", "").replace("RTX ", ""), (o.get("driver_version") or "")[:6]), Text(stt, style=sty), bar(util / 100, 10), "%3d%%" % util,
@@ -341,7 +414,7 @@ def short_q(tag):
     ql = queue_lines(tag)
     if not ql:
         return "(empty)"
-    names = [os.path.basename(l.split()[0]) for l in ql]
+    names = [human(l) if "restart13" in l else (human_name(l.split()[0]) or os.path.basename(l.split()[0])) for l in ql]
     return "%s%s" % (names[0], " +%d" % (len(names) - 1) if len(names) > 1 else "")
 
 
@@ -351,6 +424,9 @@ def worker_loop():
         out = sh(["powershell", "-NoProfile", "-Command", ps], 20)
         with LOCK:
             STATE["workers"] = {t: t in out.split() for t, _, _ in WORKERS} if out.strip() else {}   # empty output: unknown (no flag)
+        po = sh(["powershell", "-NoProfile", "-Command", "Get-CimInstance Win32_Process -Filter \"Name='python.exe'\" | % { \"$($_.ProcessId)`t$($_.CommandLine)\" }"], 20)
+        with LOCK:
+            STATE["pycmd"] = {ln.split("	", 1)[0].strip(): ln.split("	", 1)[1] for ln in po.splitlines() if "	" in ln}
         time.sleep(30)
 
 
