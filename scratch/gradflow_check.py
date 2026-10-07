@@ -336,6 +336,27 @@ def check_s135(dev, out):
         out[f"s135.aux_p{int(ph)}.target_no_grad"] = 1.0 if all(p_.grad is None for p_ in tg.parameters()) else 0.0
 
 
+def check_s138(dev, out):
+    """§138 (fa1720ff / note 138-1) FULL-HINGE: d 768 CONT carrier, tanh in fp32; eps / directions measured on the probe batch as at 2k.
+    The hinge term ALONE (rho-hat on the pre-quantisation z) reaches W_down, W_up and the GPT-2 trunk under CUDA bf16. The margin is set to 0
+    for the check (term = rho-hat > 0, slope 1): at init rho-hat can sit below 0.3, where the hinge is correctly flat."""
+    import math
+    import boxes.fsq120 as F120
+    saved = (F120.D_Q, F120.LEV, F120.HALF, F120.SHIFT); F120.D_Q, F120.LEV = 768, 8; F120.HALF = (F120.LEV - 1) / 2; F120.SHIFT = math.atanh(F120.OFF / F120.HALF)
+    amp = torch.bfloat16 if str(dev).startswith("cuda") else None; fam = F120.Family("s5"); m = F120.FSQ120(s5.load_gpt2(dev), fam).to(dev)
+    m.no_round = True; m.tanh_fp32 = True; ref = F120.s138_hinge_ref(m, fam, dev, amp, 0.15); m.hinge_eps, m.hinge_dir, m.hinge_on = ref["eps"], ref["dir"], True
+    m.train(); m.p_hard = 1.0; m.hinge_rows = 1.0; m.hinge_margin = 0.0; s0, x, lab = F120.make_batch(fam, np.random.default_rng(0), 8, 4)
+    m.zero_grad(set_to_none=True); m._hinge = []
+    with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+        m.chain(m.start(8, dev, s0), torch.tensor(x, device=dev), lab)
+    tot = torch.stack([h_ for h_, _ in m._hinge]).mean(); out["s138.hinge_rho_median"] = float(torch.cat([r_ for _, r_ in m._hinge]).median()); m._hinge = []
+    tot.backward()
+    for nm_, w_ in (("down", m.down.weight), ("up", m.up.weight), ("trunk", m.g.w("h.0.attn.c_attn.weight"))):
+        out["s138.hinge_%s_grad" % nm_] = float(w_.grad.float().norm()) if w_.grad is not None else 0.0
+    del m
+    F120.D_Q, F120.LEV, F120.HALF, F120.SHIFT = saved
+
+
 def check_s141(dev, out):
     """§141 (9e45b92b / note 141-1): with R = 4 repeats per column (FSQ-8 and SOFT-16), the digit CE of column k (decoded after its last
     repeat) ALONE reaches every repeat's embedding of column k, the previous column's last-repeat embedding (the carried code) and
