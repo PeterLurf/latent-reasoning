@@ -512,6 +512,14 @@ def read_ratio_by_handoff(m, A, Bd, dev, amp, n=256):
     return [float(np.median(x)) for x in r], float(np.median(np.concatenate(r)))
 
 
+@torch.no_grad()
+def alpha_by_head(m, A, Bd, dev, amp, n=256):
+    """§147 note 147-3: per delta head, the mean decay alpha over a fixed probe batch (n test items, every token of every segment), and the
+    input-independent sigmoid(gate bias)."""
+    was = m.training; m.eval(); m.mem.alpha_rec = []; rollout_delta(m, A[:n], Bd[:n], dev, amp, n); r = torch.stack(m.mem.alpha_rec).mean(0); m.mem.alpha_rec = None; m.train(was)
+    return {"mean_alpha": [round(float(v), 6) for v in r], "sigmoid_bias": [round(float(v), 6) for v in torch.sigmoid(m.mem.gate.bias[:DM.H_DEL].detach())]}
+
+
 def s147_extras(m, teA, teB, dev, amp, bs, pred):
     """§147 descriptive: acc_by_magnitude; head_ablation (additive / delta reads zeroed at test); colsum_readout_r2 (ridge of the true column
     accumulator from the additive heads' read phi(q)^T S at each segment's last token, fit on half the problems, pooled over steps) and per
@@ -602,13 +610,14 @@ def main():
                                  {"params": list(m.mem.parameters()), "mult": 1.0, "warm_from": 0, "name": "deltamem"}], lr=a.lr, weight_decay=0.01)
     else:
         opt = make_opt(m, a.lr)
-    log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time(); hist = []; L127 = {}; n_nonfinite = 0; step0 = 1
+    log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time(); hist = []; L127 = {}; n_nonfinite = 0; step0 = 1; alpha_hist = []
     if a.resume:
         ck = torch.load(a.resume, map_location=dev, weights_only=False); m.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"])
         rng.bit_generator.state = ck["np_rng"]; torch.set_rng_state(ck["torch_rng"].cpu()); L127 = ck["L127"]; n_nonfinite = ck["n_nonfinite"]
         if dev.startswith("cuda") and ck.get("cuda_rng") is not None:
             torch.cuda.set_rng_state(ck["cuda_rng"].cpu(), device=dev)
         step0 = ck["step"] + 1; t0 = time.time() - ck["elapsed"]; log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
+        alpha_hist = ck.get("alpha_hist", [])
     def batch(c, bs_):
         """A chain over the pairs of the first c columns (+ the flush when c = 2n); labels / trace mask at the emission steps."""
         ii = rng.integers(0, len(trA), bs_); A, Bd = trA[ii], trB[ii]; _, dig, _, _, _, _ = accumulators(A, Bd)
@@ -654,9 +663,11 @@ def main():
                 log.write(json.dumps({"step": step, "stopped": "plateau (123-3 flag at 2k)", "loss_100": gl(100), "loss_1k": gl(1000), "loss_2k": gl(2000)}) + "\n")
                 log.close(); print("STOPPED plateau at 2k", flush=True); return
         if a.ckpt_every and step % a.ckpt_every == 0 and step < a.steps:
+            if a.carrier == "deltamem":                                     # note 147-3: alpha per head at each checkpoint
+                ah_ = {"step": step, **alpha_by_head(m, teA, teB, dev, amp)}; alpha_hist.append(ah_); log.write(json.dumps({"step": step, "alpha_by_head": ah_}) + chr(10)); log.flush()
             cp = os.path.join(a.out, "ckpt_last.pt")
             torch.save({"model": m.state_dict(), "opt": opt.state_dict(), "torch_rng": torch.get_rng_state(), "cuda_rng": torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else None,
-                        "np_rng": rng.bit_generator.state, "step": step, "L127": L127, "n_nonfinite": n_nonfinite, "elapsed": time.time() - t0}, cp + ".tmp")
+                        "np_rng": rng.bit_generator.state, "step": step, "L127": L127, "n_nonfinite": n_nonfinite, "elapsed": time.time() - t0, "alpha_hist": alpha_hist}, cp + ".tmp")
             if os.path.exists(cp):
                 os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))
             os.replace(cp + ".tmp", cp); log.write(json.dumps({"step": step, "ckpt": "ckpt_last.pt"}) + "\n"); log.flush()
@@ -683,6 +694,7 @@ def main():
         res["s147"] = {**s147_extras(m, teA, teB, dev, amp, a.eval_bs, pred), "mem_layer": a.mem_layer, "mem_add_heads": a.mem_add_heads, "mem_delta_heads": a.mem_delta_heads}
         i147 = json.load(open(os.path.join(a.out, "s147_init.json"))) if os.path.exists(os.path.join(a.out, "s147_init.json")) else {}
         res["s147"]["read_norm_ratio_by_handoff"] = {"step0": i147.get("read_norm_ratio_by_handoff_step0"), "end": read_ratio_by_handoff(m, teA, teB, dev, amp)[0]}
+        res["s147"]["alpha_by_head"] = {"end": alpha_by_head(m, teA, teB, dev, amp), "checkpoints": alpha_hist}
         res["s147"].update({"g_add_init": i147.get("g_add_init"), "g_add": float(torch.exp(m.mem.s_add)), "g_del": float(torch.exp(m.mem.s_del)), "mem_group_gain": True, "gain_param": "exp(s)"})
         res["n_codes"] = None; res["eval_sec"] = round(time.time() - t1)
     elif a.slots:                                                           # §145
