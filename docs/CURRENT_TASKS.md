@@ -32,11 +32,12 @@ fixed, no real run affected.
 
 | Tag | Card | Work |
 |---|---|---|
-| b62-b68 | 3090 (drivers vary) | §133 stage-1 slot 1 done except b68 pin64 (accepted: fsq64 / noise64 / cont64 s201); slots 2-4 = fsq16 / soft16 via scratch/fill_generic.sh (tag s133s, b83 / b84 running, b85-b88 as slots free) |
-| b70 | 3090 595.71 | §134 COPY-ANCHOR (b71-b73 drained) |
-| b75-b82, b89 | 3090 | §135 students: TSD b75 / b77 / b79 / b81, BASE b76 / b80 / b82 + **b89 = BASE s2 rerun from scratch** (b78 VRAM fault, note 135-6, s135_base_s5_s2.void_hostfault; b78 destroyed). New: hostcheck gate in gen_vast_job (ship scratch/hostcheck.py), fsq120 keeps ckpt_prev.pt |
-| b54 / b55 | 2080 Ti | §131x s401->s403 / s402->s404 (fp32) |
-| a5 / a6 | 3090 | §118 LONG s84 / s85 (mk108, ~27 h) |
+| b83 / b86-b88 | 3090 | §133 slots 2-4 (fsq16 / soft16 via restart133); S5 data fixed on-host 23:16 (scratch/s5_data_fix.sh; gen_vast_job gate fixed bfc98e91) |
+| b94 | 3090 | §133 eval-only recovery: s133_soft16_s102 (slot soft16 k2, b84) + s133_fsq16_s3 (slot fsq16 k3, b85) crashed at eval (missing S5=512.csv); record b94 as eval host in both slot jsons (Audit) |
+| b90-b93 | 3090 | §134 guard s134_copy_{ff,cyc,mod,rdfa}_s1, --no_cert; cyc / mod / rdfa then scratch.cc_job (fp32 cert -> copy eval_cert_fp32.json into the run dir after fetch) |
+| b95-b115 | 3090 | §136 GROW stage 1 via fill_s136 (21 runs, Audit-approved); after drains run scratch/s136_triggers.py |
+| b75-b82, b89 | 3090 | §135 students (b89 = BASE s2 rerun; b78 VRAM fault) |
+| a5 / a6 | 3090 | §118 LONG s84 / s85 (mk108) |
 | queued | 3090 | §132 rung 2 slot 1 b74 (after §133-§135 settle) |
 
 * §132 rung 1 PASS (s2 / s3 / s4 exact; pilot residual = held-out table 63). Rung 2 approved, staged (b74 queue ready).
