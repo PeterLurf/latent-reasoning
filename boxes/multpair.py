@@ -48,6 +48,7 @@ import boxes.deltamem as DM  # noqa: E402
 
 EQTOK, NEWTOK, SAMETOK = bc.tok(" =")[0], bc.tok(" ;")[0], bc.tok(" ,")[0]   # flush / new-column / same-column flags (note 140-1)
 WTOK = [bc.tok(w)[0] for w in (" W", " X", " Y", " Z")]                    # §145 write-embedding initialisers (single, unused tokens)
+BLANK = bc.tok(" _")[0]                                                     # §150 DIGIT arm's blank slot token (" _", single, unused here)
 assert all(len(bc.tok(w)) == 1 for w in (" W", " X", " Y", " Z")) and not set(WTOK) & (set(DTOK) | {EQTOK, NEWTOK, SAMETOK})
 assert all(len(bc.tok(w)) == 1 for w in (" =", " ;", " ,")) and len({EQTOK, NEWTOK, SAMETOK}) == 3 and not {EQTOK, NEWTOK, SAMETOK} & set(DTOK)
 CMAX = {"4x4": ((2000, 1), (5000, 2), (9000, 4), (None, 8)), "5x5": ((2000, 1), (5000, 2), (9000, 4), (12000, 8), (None, 10))}   # 5x5: note 140-2
@@ -354,7 +355,7 @@ def contraction_slots(m, A, Bd, dev, amp, T0=2, n=500, seed=12301):
         with amp_ctx(amp):
             nz = None
             if add is not None:
-                nz = torch.zeros(N, m.K, F.D_Q, device=dev); nz[:, m.cidx] = add.view(N, C, -1)
+                nz = torch.zeros(N, m.K, getattr(m, "zdim", F.D_Q), device=dev); nz[:, m.cidx] = add.view(N, C, -1)
             Z, E = m.write(prev, t, noise=nz)
         return Z[:, m.cidx].reshape(N, -1).float(), E[:, m.cidx]
     def dec(Ec):
@@ -542,6 +543,144 @@ def s147_extras(m, teA, teB, dev, amp, bs, pred):
     return out
 
 
+def sched_tau(step, spec, sc=1.0):
+    """§150 --slot_tau t0:t1:a:b: tau = t0 until a, linear to t1 at b, t1 after."""
+    t0, t1, a_, b_ = (float(v) for v in spec.split(":")); a_, b_ = a_ * sc, b_ * sc
+    return t0 if step <= a_ else (t1 if step >= b_ else t0 + (t1 - t0) * (step - a_) / (b_ - a_))
+
+
+def sched_hard(step, spec, sc=1.0):
+    """§150 --slot_hard a:b: the straight-through fraction p_hard, 0 until a, linear to 1 at b."""
+    a_, b_ = (float(v) for v in spec.split(":")); a_, b_ = a_ * sc, b_ * sc
+    return 0.0 if step <= a_ else (1.0 if step >= b_ else (step - a_) / (b_ - a_))
+
+
+class MultVocab(MultSlot):
+    """§150 VOCAB-SLOT: §145's K write positions; slot_k is a token of GPT-2's own vocabulary (FULL: all 50,257; DIGIT: the 10 digit tokens +
+    the blank " _"). logits_k = ln_f(h(w_k)) . wte.detach()[V]^T (g's output is already after ln_f); training: Gumbel-softmax at tau, soft
+    slot = p . wte.detach()[V]; straight-through (one-hot forward, soft backward) on a per-row fraction p_hard; test: hard argmax, no noise
+    (soft test: no Gumbel, tau_final). All K slots are carried; the start is K blank (DIGIT) / " _" (FULL) tokens."""
+    def __init__(self, g, fam, K, space):
+        super().__init__(g, fam, K, K); self.space = space; dev = g.w("wte.weight").device
+        V = torch.tensor(DTOK + [BLANK] if space == "digits" else list(range(g.w("wte.weight").shape[0])), device=dev)
+        self.register_buffer("V", V); self.tau = 1.0; self.p_hard_slot = 0.0; self.soft_test = False; self.tau_final = 0.3
+        self.last_ids = None; self.last_p = None; self.zdim = 768
+
+    def Wv(self):
+        return self.g.w("wte.weight").detach()[self.V]                     # note 150-1: the slot path never moves the vocabulary
+
+    def start(self, B, dev, states=None):
+        i0 = int((self.V == BLANK).nonzero()[0, 0]) if self.space == "digits" else BLANK
+        e = self.g.w("wte.weight").detach()[BLANK]; self.last_ids = None
+        return e[None, None].expand(B, self.K, -1).float().clone()
+
+    def write(self, prev, t, noise=None):
+        g = self.g; B = prev.shape[0]; dev = prev.device; eot = g.embed(torch.full((B, 1), EOT, device=dev)); i, j = (int(v) for v in self.pairs[t])
+        if i < 0:
+            tail = torch.full((B, 1), EQTOK, device=dev)
+        else:
+            tail = torch.cat([self.adig[:, i:i + 1], self.bdig[:, j:j + 1], torch.full((B, 1), NEWTOK if self.newcol[t] else SAMETOK, device=dev)], 1)
+        x = torch.cat([eot, prev.to(eot.dtype), g.embed(tail), self.w[None].expand(B, -1, -1).to(eot.dtype)], 1); h, _ = g(x, None)
+        Hw = h[:, -self.K:].float()
+        if noise is not None:                                               # contraction: perturb h(w_k) before the head (note 150-1 (2))
+            Hw = Hw + noise
+        W = self.Wv().float(); lg = Hw @ W.T                                # (B, K, |V|)
+        if self.training and not self.soft_test:
+            gum = -torch.log((-torch.log(torch.rand_like(lg).clamp_min(1e-10))).clamp_min(1e-10))   # Gumbel(0, 1)
+            p = torch.softmax((lg + gum) / self.tau, -1); ids = p.argmax(-1)
+            if self.p_hard_slot > 0:                                         # straight-through on a per-row fraction
+                hard = (torch.rand(B, 1, 1, device=dev) < self.p_hard_slot).float(); oh = Fn.one_hot(ids, W.shape[0]).float()
+                p = hard * (oh - p).detach() + hard * p + (1 - hard) * p
+            E = p @ W
+        elif self.soft_test:
+            p = torch.softmax(lg / self.tau_final, -1); ids = p.argmax(-1); E = p @ W
+        else:
+            p = torch.softmax(lg, -1); ids = lg.argmax(-1); E = W[ids]
+        self.last_ids = ids; self.last_p = p; self.last_lg = lg
+        return Hw, E
+
+    def embed_ids(self, ids):
+        return self.Wv().float()[ids]
+
+
+@torch.no_grad()
+def rollout_vocab(m, A, Bd, dev, amp, bs, override=None, record=False, extra=False):
+    """§150 hard chains; override (t, ids (N, K)) replaces every slot token after step t (1-based). record -> slot token ids (N, T, K) (indices
+    into V) and slot embeddings (N, T, K, 768); extra -> per hand-off slot entropy / top-2 margin."""
+    N = len(A); pairs, col, emit = schedule(A.shape[1], Bd.shape[1]); T = len(pairs); out = np.full((N, A.shape[1] + Bd.shape[1]), -1)
+    ids_all = np.zeros((N, T, m.K), np.int64) if (record or extra) else None; E_all = np.zeros((N, T, m.K, 768), np.float32) if record else None
+    ent = np.zeros((N, T, m.K), np.float32) if extra else None; mar = np.zeros((N, T, m.K), np.float32) if extra else None
+    for s_ in range(0, N, bs):
+        sl = slice(s_, s_ + bs); B = len(A[sl]); set_ops(m, A[sl], Bd[sl], dev); prev = m.start(B, dev)
+        for t in range(T):
+            with amp_ctx(amp):
+                _, E = m.write(prev, t)
+            ids = m.last_ids
+            if override is not None and override[0] == t + 1:
+                ids = torch.tensor(override[1][sl], device=dev); E = m.embed_ids(ids)
+            with amp_ctx(amp):
+                if emit[t]:
+                    out[sl, col[t]] = m.fam.decode(m.logits(E).argmax(-1).cpu().numpy()[:, None])
+            if ids_all is not None:
+                ids_all[sl, t] = ids.cpu().numpy()
+            if record:
+                E_all[sl, t] = E.float().cpu().numpy()
+            if extra:
+                pp = torch.softmax(m.last_lg.float(), -1); ent[sl, t] = (-(pp * pp.clamp_min(1e-12).log()).sum(-1)).cpu().numpy()
+                top2 = m.last_lg.float().topk(2, -1).values; mar[sl, t] = (top2[..., 0] - top2[..., 1]).cpu().numpy()
+            prev = E.float()
+    return out, ids_all, E_all, ent, mar
+
+
+def donor_vocab(m, A, Bd, dev, amp, bs, rng, positions=(4, 8, 12), n=2000):
+    """§150 SERIAL: all K slot tokens of a donor swapped in after pair p; the recipient's later digits with the donor's accumulator (row level)."""
+    N = min(n, len(A)); ir, idn = rng.permutation(len(A))[:N], rng.permutation(len(A))[:N]; Ar, Br, Ad, Bdn = A[ir], Bd[ir], A[idn], Bd[idn]
+    pairs, col, emit = schedule(A.shape[1], Bd.shape[1]); Pr, _, _ = columns(Ar, Br); accd, _, _, _, _, _ = accumulators(Ad, Bdn)
+    _, dids, _, _, _ = rollout_vocab(m, Ad, Bdn, dev, amp, bs, extra=True); res = {}
+    for p in positions:
+        if p >= len(pairs):
+            continue
+        got = rollout_vocab(m, Ar, Br, dev, amp, bs, override=(p, dids[:, p - 1]))[0]; gt, sl = later_gt(Ar, Br, accd[:, p - 1], p, pairs, col, emit, Pr)
+        res["pos%d" % p] = {**consist(got, gt, Pr, sl), "n": N}
+    return res
+
+
+def s150_extras(m, teA, teB, dev, amp, bs, pred, wte0, n=1024, seed=15001):
+    """§150 descriptive: soft_test_acc, acc_by_magnitude, slot_token_hist (top 20 per slot, token text), distinct_tokens_per_slot,
+    spells_accumulator_share (DIGIT: the 4 slots read LSB first, blank = 0, equal the accumulator), slot_entropy, nn_wte_dist (soft test slot
+    embedding's distance to the nearest slot-vocabulary row, over that row's norm), slot_margin {median, p05} (top-1 minus top-2 logit, hard
+    test), wte_drift (||wte - wte0|| / ||wte0||), s150_probe (per slot x digit R^2 of the accumulator's units / tens / hundreds from the slot
+    embedding, ridge, fit on half the problems)."""
+    P, _, _ = columns(teA, teB); out = {"acc_by_magnitude": acc_by_magnitude(pred, teA, teB)}
+    m.soft_test = True; ps = rollout_vocab(m, teA, teB, dev, amp, bs)[0]; out["soft_test_acc"] = acc_report(ps, P)["test_acc"]
+    set_ops(m, teA[:bs], teB[:bs], dev); prev = m.start(min(bs, len(teA)), dev); d_ = []
+    with torch.no_grad():
+        for t in range(len(schedule(teA.shape[1], teB.shape[1])[0])):
+            with amp_ctx(amp):
+                _, E = m.write(prev, t)
+            W = m.Wv().float(); dd = torch.cdist(E.float().reshape(-1, 768), W).min(1); d_.append((dd.values / W[dd.indices].norm(dim=-1).clamp_min(1e-9)).cpu().numpy()); prev = E.float()
+    m.soft_test = False; out["nn_wte_dist"] = {"median": float(np.median(np.concatenate(d_))), "p95": float(np.percentile(np.concatenate(d_), 95)), "mode": "soft test (tau_final, no Gumbel)"}
+    _, ids, _, ent, mar = rollout_vocab(m, teA, teB, dev, amp, bs, extra=True); acc, _, _, pairs, col, _ = accumulators(teA, teB); Vl = m.V.cpu().numpy()
+    hist = {}; dist = {}
+    for k in range(m.K):
+        u, c = np.unique(Vl[ids[:, :, k]].ravel(), return_counts=True); o = np.argsort(-c)[:20]
+        hist["slot%d" % (k + 1)] = [[int(u[i]), bc.dec_arr([int(u[i])]), int(c[i])] for i in o]   # [token id, text, count]; dist["slot%d" % (k + 1)] = int(len(u))
+    out["slot_token_hist"] = hist; out["distinct_tokens_per_slot"] = dist
+    out["slot_entropy"] = {"slot%d" % (k + 1): float(ent[:, :, k].mean()) for k in range(m.K)}
+    out["slot_margin"] = {"median": float(np.median(mar)), "p05": float(np.percentile(mar, 5))}
+    if m.space == "digits":                                                 # index 0..9 = the digit, 10 = blank (read as 0)
+        dg = np.where(ids == 10, 0, ids); val = (dg * (10 ** np.arange(m.K))[None, None]).sum(-1); out["spells_accumulator_share"] = float((val == acc).mean())
+    else:
+        out["spells_accumulator_share"] = None
+    out["wte_drift"] = float((m.g.w("wte.weight").detach().float() - wte0).norm() / wte0.norm())
+    rng = np.random.default_rng(seed); idx = rng.permutation(len(teA))[:n]; A, Bd = teA[idx], teB[idx]; ac, _, _, _, _, _ = accumulators(A, Bd)
+    _, _, Q, _, _ = rollout_vocab(m, A, Bd, dev, amp, bs, record=True); h = len(A) // 2; T = ac.shape[1]
+    def pool(X, y):
+        return ridge_r2(X[:h].reshape(h * T, -1), y[:h].reshape(-1).astype(float), X[h:].reshape((len(A) - h) * T, -1), y[h:].reshape(-1).astype(float))
+    pr = {"slot%d" % (k + 1): {nm_: pool(Q[:, :, k], (ac // 10 ** e_) % 10) for e_, nm_ in ((0, "units"), (1, "tens"), (2, "hundreds"))} for k in range(m.K)}
+    return out, {"per_slot_digit_r2": pr, "r2_acc_all_slots": pool(Q.reshape(len(A), T, -1), ac), "n": int(len(A)), "steps": int(T)}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--family", default="mult_pair", choices=["mult_pair"]); ap.add_argument("--task", default="4x4", choices=["4x4", "5x5"])
@@ -558,6 +697,8 @@ def main():
     ap.add_argument("--carry_from", default="first", choices=["first", "last"], help="§145 note 145-1: carry the slots read at the LAST write positions (CARRY1: w_K)")
     ap.add_argument("--no_round", action="store_true", help="§145 NOISE-64 carrier"); ap.add_argument("--dither", type=float, default=0.0)
     ap.add_argument("--carrier", default="code", choices=["code", "deltamem"], help="§147: deltamem = the linear-recurrent memory, no carried code")
+    ap.add_argument("--slot_space", default=None, choices=[None, "vocab", "digits"], help="§150 VOCAB-SLOT: slots are GPT-2 vocabulary tokens")
+    ap.add_argument("--slot_gumbel", action="store_true"); ap.add_argument("--slot_tau", default="1:0.3:2000:6000"); ap.add_argument("--slot_hard", default="6000:8000")
     ap.add_argument("--mem_layer", type=int, default=6); ap.add_argument("--mem_add_heads", type=int, default=6); ap.add_argument("--mem_delta_heads", type=int, default=6)
     a = ap.parse_args()
     if a.from_args:
@@ -567,8 +708,10 @@ def main():
                 setattr(a, k, v)
         for k, v in keep.items():
             setattr(a, k, v)
-    assert not a.slots or (a.no_round and 1 <= a.carry_slots <= a.slots <= 4), "§145: --slots K (<= 4) needs --no_round and 1 <= --carry_slots <= K"
+    assert not a.slots or a.slot_space or (a.no_round and 1 <= a.carry_slots <= a.slots <= 4), "§145: --slots K (<= 4) needs --no_round and 1 <= --carry_slots <= K"
     a.mem_group_gain = a.carrier == "deltamem"                               # note 147-2 (the scorer checks it)
+    a.slot_wte_detached = bool(a.slot_space)                                # note 150-1: the whole slot path (logits + mixture) uses wte.detach()
+    assert not a.slot_space or (a.slots == 4 and a.slot_gumbel and not a.no_round), "§150: --slots 4 --slot_space vocab|digits --slot_gumbel (no NOISE carrier)"
     dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); sc = a.sched_scale; n = int(a.task[0])
     if a.d_q != F.D_Q or a.levels != F.LEV:
         F.D_Q, F.LEV = a.d_q, a.levels; F.HALF = (F.LEV - 1) / 2; F.SHIFT = math.atanh(F.OFF / F.HALF)
@@ -580,9 +723,12 @@ def main():
     def mk():
         if a.carrier == "deltamem":
             return MultDelta(s5.load_gpt2(dev), fam, a.mem_layer).to(dev)
+        if a.slot_space:
+            m_ = MultVocab(s5.load_gpt2(dev), fam, a.slots, a.slot_space).to(dev); m_.tau_final = float(a.slot_tau.split(":")[1]); return m_
         m_ = (MultSlot(s5.load_gpt2(dev), fam, a.slots, a.carry_slots, a.carry_from) if a.slots else MultPair(s5.load_gpt2(dev), fam)).to(dev); m_.no_round = a.no_round
         return m_
-    RO = (lambda *x, **k: rollout_delta(*x, **{kk: vv for kk, vv in k.items() if kk != "record"})[0]) if a.carrier == "deltamem" else (rollout_slots if a.slots else rollout)
+    RO = (lambda *x, **k: rollout_delta(*x, **{kk: vv for kk, vv in k.items() if kk != "record"})[0]) if a.carrier == "deltamem" else (
+        (lambda *x, **k: rollout_vocab(*x, **{kk: vv for kk, vv in k.items() if kk != "record"})[0]) if a.slot_space else (rollout_slots if a.slots else rollout))
     if a.contraction_only:
         m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval(); m.p_hard = 1.0
         ampc = None if a.fp32 else amp; ct = (contraction_slots if a.slots else contraction)(m, teA, teB, dev, ampc, T0=a.contract_T0, n=a.contract_n); ct.update({"eval_dtype": str(ampc), "device": dname(), "driver": driver_version()})
@@ -599,7 +745,7 @@ def main():
             "train_driver": driver_version(), **env_info()}
     json.dump({**info, "resumed_at": time.strftime("%Y-%m-%d %H:%M:%S")} if a.resume else info,
               open(os.path.join(a.out, ("args_resume_%d.json" % int(time.time())) if a.resume else "args.json"), "w", newline="\n"), indent=1)
-    m = mk(); m.train(); pairs, col, emit = schedule(n, n)
+    m = mk(); m.train(); pairs, col, emit = schedule(n, n); wte0 = m.g.w("wte.weight").detach().float().clone()
     if a.carrier == "deltamem" and not a.resume and not a.mem_check:        # note 147-2: g_add = median ||read_del|| / ||read_add|| at step 0
         rr0, med0 = read_ratio_by_handoff(m, teA, teB, dev, amp); m.mem.s_add.data.fill_(math.log(med0)); rr1, med1 = read_ratio_by_handoff(m, teA, teB, dev, amp)
         init147 = {"g_add_init": med0, "g_del_init": 1.0, "ratio_by_handoff_before_gain": rr0, "read_norm_ratio_by_handoff_step0": rr1, "pooled_median_after_gain": med1}
@@ -639,6 +785,8 @@ def main():
         m.noise = (a.dither if step > 2000 * sc else 0.0) if a.no_round else 0.0   # §145 NOISE-64: dither after 2k (no draws otherwise)
         if a.carrier == "deltamem":
             m.mem.fade.fill_(min(1.0, step / max(1, int(500 * sc))))         # §147: W_o fade-in over 500 steps
+        if a.slot_space:                                                    # §150: Gumbel tau and the straight-through fraction
+            m.tau = sched_tau(step, a.slot_tau, sc); m.p_hard_slot = sched_hard(step, a.slot_hard, sc)
         c = int(rng.integers(1, cmax(step / sc, a.task) + 1)); X, lab, tm, T = batch(c, a.bs); opt.zero_grad()
         with amp_ctx(amp):
             loss, _, _, _ = m.chain(m.start(a.bs, dev), X, lab, tm)          # CE at the emission steps (mean over them)
@@ -657,11 +805,13 @@ def main():
             gl = lambda t_: L127[min(L127, key=lambda s_: abs(s_ - t_ * sc))]  # noqa: E731
             fl = bool(gl(2000) >= 0.9 * gl(1000) and gl(2000) >= 0.25 * gl(100))
             log.write(json.dumps({"step": step, "flag_123_3": fl, "loss_100": gl(100), "loss_1k": gl(1000), "loss_2k": gl(2000), "stop_plateau": a.stop_plateau}) + "\n"); log.flush()
-            if fl and a.stop_plateau and a.carrier == "deltamem" and gl(2000) < 1.0:   # note 147-1 (1): a flag with loss(2k) < 1.0 is a misfire
+            if fl and a.stop_plateau and (a.carrier == "deltamem" or a.slot_space) and gl(2000) < 1.0:   # note 147-1 (1) (§147, §150): a misfire
                 log.write(json.dumps({"step": step, "flag_misfire_147_1": True, "loss_2k": gl(2000)}) + "\n"); log.flush(); fl = False
             if fl and a.stop_plateau:
                 log.write(json.dumps({"step": step, "stopped": "plateau (123-3 flag at 2k)", "loss_100": gl(100), "loss_1k": gl(1000), "loss_2k": gl(2000)}) + "\n")
                 log.close(); print("STOPPED plateau at 2k", flush=True); return
+        if a.slot_space and (step % a.log_every == 0 or step == a.steps):      # §150: tau / p_hard / wte drift per window
+            log.write(json.dumps({"step": step, "s150": {"tau": m.tau, "p_hard_slot": m.p_hard_slot, "wte_drift": float((m.g.w("wte.weight").detach().float() - wte0).norm() / wte0.norm())}}) + chr(10)); log.flush()
         if a.ckpt_every and step % a.ckpt_every == 0 and step < a.steps:
             if a.carrier == "deltamem":                                     # note 147-3: alpha per head at each checkpoint
                 ah_ = {"step": step, **alpha_by_head(m, teA, teB, dev, amp)}; alpha_hist.append(ah_); log.write(json.dumps({"step": step, "alpha_by_head": ah_}) + chr(10)); log.flush()
@@ -677,7 +827,7 @@ def main():
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
     m.noise = 0.0; Pte, _, _ = columns(teA, teB)
-    if a.carrier == "deltamem":
+    if a.carrier == "deltamem" or a.slot_space:
         pred = RO(m, teA, teB, dev, amp, a.eval_bs); codes = None
     else:
         pred, codes = RO(m, teA, teB, dev, amp, a.eval_bs, record=True)[:2]
@@ -696,6 +846,11 @@ def main():
         res["s147"]["read_norm_ratio_by_handoff"] = {"step0": i147.get("read_norm_ratio_by_handoff_step0"), "end": read_ratio_by_handoff(m, teA, teB, dev, amp)[0]}
         res["s147"]["alpha_by_head"] = {"end": alpha_by_head(m, teA, teB, dev, amp), "checkpoints": alpha_hist}
         res["s147"].update({"g_add_init": i147.get("g_add_init"), "g_add": float(torch.exp(m.mem.s_add)), "g_del": float(torch.exp(m.mem.s_del)), "mem_group_gain": True, "gain_param": "exp(s)"})
+        res["n_codes"] = None; res["eval_sec"] = round(time.time() - t1)
+    elif a.slot_space:                                                      # §150 (contraction = the on-host fp32 file, perturbing h(w_k))
+        res["donor"] = donor_vocab(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(14002), n=a.donor_n)
+        ex_, pr_ = s150_extras(m, teA, teB, dev, amp, a.eval_bs, pred, wte0); res["s150"] = {**ex_, "slot_space": a.slot_space, "slot_tau": a.slot_tau, "slot_hard": a.slot_hard}
+        res["s150_probe"] = pr_; ct = contraction_slots(m, teA, teB, dev, amp, T0=a.contract_T0, n=a.contract_n); res.update({"rho": ct["rho"], "basin": ct["basin"], "contraction": ct["detail"]})
         res["n_codes"] = None; res["eval_sec"] = round(time.time() - t1)
     elif a.slots:                                                           # §145
         res["donor"], sw_ = donor_slots(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(14002), n=a.donor_n)

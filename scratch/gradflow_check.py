@@ -529,6 +529,32 @@ def check_s148(dev, out):
     del m
 
 
+def check_s150(dev, out):
+    """§150 VOCAB-SLOT (note 150-1), both arms (FULL vocab, DIGIT 10 + blank), training mode, Gumbel tau 1, p_hard 0 (soft path): the emission
+    CE over a full 4x4 chain reaches the write embeddings w_k, ln_f and the trunk under CUDA bf16; a loss on the slot embeddings ALONE (one
+    write) still reaches w_k, and the slot vocabulary matrix (logits and mixture) is wte.detach() (requires_grad False)."""
+    import boxes.multcol as MC
+    import boxes.multpair as MP
+    amp = torch.bfloat16 if str(dev).startswith("cuda") else None; rng = np.random.default_rng(0); A, B = MC.gen_operands(rng, 8, 4), MC.gen_operands(rng, 8, 4)
+    _, dig, _, pairs, col, emit = MP.accumulators(A, B); T = len(pairs)
+    gn = lambda p_: float(p_.grad.float().norm()) if p_.grad is not None else 0.0  # noqa: E731
+    for arm, space in (("full", "vocab"), ("digit", "digits")):
+        m = MP.MultVocab(s5.load_gpt2(dev), MP.PairFam(), 4, space).to(dev); m.train(); m.tau = 1.0; m.p_hard_slot = 0.0; MP.set_ops(m, A, B, dev)
+        X = torch.tensor(np.tile(np.arange(T), (8, 1)), device=dev); tm = torch.tensor(np.tile(emit, (8, 1)), device=dev); lab = np.where(dig >= 0, dig, 0)
+        m.zero_grad(set_to_none=True)
+        with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+            loss, _, _, _ = m.chain(m.start(8, dev), X, lab, tm)
+        loss.backward()
+        out[f"s150.{arm}.w_grad"] = gn(m.w); out[f"s150.{arm}.ln_f_grad"] = gn(m.g.w("ln_f.weight")); out[f"s150.{arm}.trunk_grad"] = gn(m.g.w("h.0.attn.c_attn.weight"))
+        m.zero_grad(set_to_none=True)
+        with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+            _, E = m.write(m.start(8, dev), 0)
+        E.float().pow(2).sum().backward()                                   # (wte still gets grad via the segment's INPUT token embeddings, as §140)
+        out[f"s150.{arm}.slot_vocab_matrix_detached"] = 1.0 if not m.Wv().requires_grad else 0.0   # the slot logits + mixture use wte.detach()
+        out[f"s150.{arm}.slot_path_w_grad"] = gn(m.w)
+        del m
+
+
 def check_s141(dev, out):
     """§141 (9e45b92b / note 141-1): with R = 4 repeats per column (FSQ-8 and SOFT-16), the digit CE of column k (decoded after its last
     repeat) ALONE reaches every repeat's embedding of column k, the previous column's last-repeat embedding (the carried code) and
