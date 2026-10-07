@@ -47,11 +47,11 @@ after create): record the host's sha256 and commit exactly that file.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (16:52):** the research program (the user's wide sweep, 16:40) is in `docs/THEORY_PROGRAM_2026-10-07.md`.
-  - **Ranking:** B1 DELTA-STATE (§147) > B3 LOOP-RETRO (§148); B2 MID-STACK parked by §146's NO SIGNAL.
-  - **Registered and Audit-approved for proofs:** §142 MULT-READ (b137), §143 FULL-GROW, §144 RUNNING-SUM, §145 MULTI-SLOT, §147 (in parallel), §148 (after).
-  - **Disclosures:** 142-2 / 145-2 (internal priors §121 / §107); pre-run notes 145-1 / 147-1.
-  - **Pending:** §141 r4s16 (b131, about 19:00). §133 stage-2 proofs (133-11 / 136-2) come after these.
+* **Theory (18:06):** the research program (`docs/THEORY_PROGRAM_2026-10-07.md`): B1 §147 DELTA-STATE and B4 §150 VOCAB-SLOT first, then B3 §148 LOOP-RETRO;
+  B2 parked by §146.
+  - **Registered and approved:** §142–§145, §147, §148, §149 SOTA-PROBE (eval only) and §150 (notes 150-1, 149-1, 147-1/2/3, 145-1/2, 142-1/2).
+  - **Experiments' queue:** §142 b137 and §145 b139 training; §147 b141 and §148 b140 deploying; §143 b138 retrying; §144, §149 and §150 to implement.
+  - **Pending:** §141 r4s16 (b131, about 19:00).
 * **§136** GROW: 16 local runs with eval.json; grow4 s1-s4 running; then score_s136 (fp32 contractions in hand).
 * **§139** A' / B proof (descriptive). **§141** r4f8 / r4s16 (r1s16 DROP, note 141-4). **§134** MOD s2 / s3.
 * **§138** after its proofs. Closed today: §137 DROP, §140 DROP, §133 stage 1 PASS (FSQ-64 / NOISE-64 / CONT-64 / SOFT-16).
