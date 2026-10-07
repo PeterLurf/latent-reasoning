@@ -479,12 +479,15 @@ def check_s147(dev, out):
     """§147 DELTA-STATE (b1d7741c / note 147-1): MultDelta on a full 4x4 chain (16 pairs + flush), emission CE under CUDA bf16.
     Step 0 (W_o = 0, fade 1/500): only W_o gets gradient (q / k / v / alpha / beta exactly 0: no path while W_o = 0, flagged). After one update
     (W_o small random, fade 1/500): q / k / v (qkv), W_o, the alpha / beta gate, LN_m and the GPT-2 trunk all get gradient; both head types
-    carry it (the additive and delta halves of W_o's input columns)."""
+    carry it (the additive and delta halves of W_o's input columns). Note 147-2: g_add initialised as in training (median read-norm ratio); the
+    delta columns' W_o grad and the alpha / beta gate grad are each within 10x of the additive ones (W_o additive columns; additive q / k / v rows)."""
     import boxes.multcol as MC
     import boxes.multpair as MP
     amp = torch.bfloat16 if str(dev).startswith("cuda") else None; rng = np.random.default_rng(0); A, B = MC.gen_operands(rng, 8, 4), MC.gen_operands(rng, 8, 4)
     _, dig, _, pairs, col, emit = MP.accumulators(A, B); T = len(pairs)
-    m = MP.MultDelta(s5.load_gpt2(dev), MP.PairFam(), 6).to(dev); m.train(); MP.set_ops(m, A, B, dev)
+    m = MP.MultDelta(s5.load_gpt2(dev), MP.PairFam(), 6).to(dev); m.train()
+    _, med0 = MP.read_ratio_by_handoff(m, A, B, dev, amp, n=8); m.mem.g_add.data.fill_(med0); out["s147.g_add_init"] = float(med0)   # note 147-2 init
+    MP.set_ops(m, A, B, dev)
     X = torch.tensor(np.tile(np.arange(T), (8, 1)), device=dev); tm = torch.tensor(np.tile(emit, (8, 1)), device=dev); lab = np.where(dig >= 0, dig, 0)
     gn = lambda p_: float(p_.grad.float().norm()) if p_.grad is not None else 0.0  # noqa: E731
     for phase in ("step0", "after1"):
@@ -502,6 +505,10 @@ def check_s147(dev, out):
             for nm_, p_ in (("qkv", m.mem.qkv.weight), ("wo", m.mem.wo.weight), ("gate_alpha_beta", m.mem.gate.weight), ("ln_m", m.mem.ln.weight), ("trunk", m.g.w("h.0.attn.c_attn.weight"))):
                 out[f"s147.after1.{nm_}_grad"] = gn(p_)
             out["s147.after1.wo_additive_cols_grad"] = float(w_[:, :384].float().norm()); out["s147.after1.wo_delta_cols_grad"] = float(w_[:, 384:].float().norm())
+            qg = m.mem.qkv.weight.grad.float(); qadd = float(torch.cat([qg[o_:o_ + 384] for o_ in (0, 768, 1536)]).norm())   # additive heads' q / k / v rows
+            r1 = out["s147.after1.wo_delta_cols_grad"] / max(out["s147.after1.wo_additive_cols_grad"], 1e-12); r2 = out["s147.after1.gate_alpha_beta_grad"] / max(qadd, 1e-12)
+            out["s147.after1.qkv_additive_rows_grad"] = qadd; out["s147.after1.ratio_wo_delta_over_add"] = r1; out["s147.after1.ratio_gate_over_qkv_add"] = r2
+            out["s147.after1.within_10x_wo"] = 1.0 if 0.1 <= r1 <= 10 else 0.0; out["s147.after1.within_10x_gate"] = 1.0 if 0.1 <= r2 <= 10 else 0.0
     del m
 
 

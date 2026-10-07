@@ -1,3 +1,5 @@
+# 2026-10-07 s147 note 147-2 CUDA gradflow recheck (read gains; delta W_o / gate within 10x) - first
+2.5 logs/gradflow_s147b_cuda_3070.json python -u scratch/gradflow_check.py --paths s147 --device {DEV} --out logs/gradflow_s147b_cuda_3070.json
 # 2026-10-07 s145 memory, bs 32 (bs 64 OOMed the local 6 GiB cap at 16:36; extrapolate x2 for the 3090's bs 64)
 4.5 D:/drain_tmp/mem145b32/mem_check.json python -u -m boxes.multpair --family mult_pair --task 4x4 --seed 1 --slots 4 --carry_slots 4 --d_q 64 --no_round --dither 0.25 --mem_check --bs 32 --device {DEV} --out D:/drain_tmp/mem145b32
 # 2026-10-07 s145 memory at the longest chain (full 4x4 chain bs 64 train + 4x8 eval rollout, K 4 slots) - first
