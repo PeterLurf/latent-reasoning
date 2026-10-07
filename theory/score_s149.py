@@ -23,7 +23,7 @@ R = os.path.join(ROOT, "boxes", "runs_fsq")
 MODELS = {"coconut": 33.1, "simcot_coconut": 44.8, "simcot_codi": 39.4, "codi": 42.5}          # our bench accuracy (GSM8K_REPRO), the sanity anchor
 ALIGNED = {"coconut", "simcot_coconut", "simcot_codi"}
 VERDICT_MODELS = {"simcot_coconut", "simcot_codi"}                            # note 149-1: only code-documented alignments feed a C1 verdict
-ERRORS = []
+ERRORS, SKIPPED = [], []
 
 
 def load(d, f="eval.json"):
@@ -40,6 +40,8 @@ def model_read(name):
     r = load("s149_%s" % name)
     if r is None:
         return None
+    if r.get("n") != 1319:                                                   # the registered eval is the full GSM8K-Aug test (1,319); smokes are skipped
+        SKIPPED.append(("s149_%s" % name, "n = %s (smoke)" % r.get("n"))); return None
     acc = r.get("test_acc")
     out = {"test_acc": acc, "gate": None if acc is None else bool(abs(100 * acc - MODELS[name]) <= 2.0)}
     if not out["gate"]:
@@ -80,6 +82,8 @@ def main():
     pred = {"coconut": "EXPANDING", "codi": "CONTRACTIVE"}                  # 2607.09698's prediction, tested descriptively
     res["lyapunov_prediction"] = {k: {"predicted": v, "observed": (res.get(k) or {}).get("rho_class")} for k, v in pred.items()}
     print("2607.09698 prediction:", res["lyapunov_prediction"])
+    if SKIPPED:
+        print("SKIPPED (smoke / not the full 1,319):", SKIPPED)
     if ERRORS:
         print("ERRORS:", ERRORS)
     json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s149.json"), "w", newline=chr(10)), indent=1, default=float)
