@@ -6729,6 +6729,23 @@ trigger fired on seed 1, the plain learner on this card class.
 * Implementation: the experiments session (fsq120 `--family mult_row`, `--distill`, `--distill_full 3000`, `--distill_end 4000|0`, `--distill_teacher
   <dir>`, `--distill_layer`). Dirs `s139_{a,b,c}_4x4_s{1..4}`; probe `s139_teacher_probe/`. Scorer: `theory/score_s139.py`, committed before any run.
 
+**Note 139-1 (2026-10-07 02:10 EDT, before any §139 implementation or run; Audit's approval of 683318e2, including arm C, total about $3.7).**
+* **(a)** The compressed curriculum (L_max 1 / 2 / 3 / 4 at 0 / 1k / 2k / 3k) applies to **A, B and C alike**. A therefore does not use §98 GEN-M's schedule,
+  so A against GEN-M is descriptive only. **The decisive comparison is B against A on the same schedule.**
+* **(b) Remaining readings, fixed now:**
+  - both PASS: multiplier-major 4×4 does not separate them (steps-to-exact and seed counts are descriptive);
+  - both FAIL: DISTILL-2 does not rescue final-answer-only multiplier-major at d 16;
+  - C better than B: the fade costs accuracy;
+  - B better than C: the fade matters.
+* **(c) SOFT-16 + COPY has never been run together** (COPY was proven on FSQ-8). The 1-host proof logs copy_acc and copy_loss. **If copy_acc < 0.9 at 4k in
+  A s1, the stage stops and is reported before seeds 2–4**, so that an A failure can be told apart from the combination breaking.
+* **(d) The multiplier-major adapter is new code**, so it gets §137's gates:
+  - dedup including commuted pairs;
+  - the exact S_j ground truth tested against integer arithmetic;
+  - gradflow: the aux nonzero before 3k, exactly 0 from 4k in B, nonzero throughout in C, and 0 into the teacher;
+  - a memory check;
+  - Audit's diff review.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
