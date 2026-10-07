@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-06 18:55 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-07 09:25 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -20,43 +20,34 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 Messages go through SendMessage. The names "Theory" and "Audit" currently need an identity confirm, pending the user,
 so send to the pipe addresses their messages come from.
 
-## Running now (18:55 2026-10-06; credit ~$106, 16 hosts = cap, ~$3/h; < $4/h)
+## Running now (09:25 2026-10-07; credit $64.5, 12 hosts, $2.41/h; cap 16 hosts / < $4/h; floor $30)
 
-**User rules (2026-10-06):** full runs on Vast (>= 16 GB, --ckpt_every); local cards: short jobs, never idle, hard 6 GiB cap per job
-(boxes/memcap.py via s5.load_gpt2; scratch/c1_backlog_worker2.sh). **Before any commit touching boxes/fsq120.py / table132.py / core.py
-run `python scratch/smoke_plain.py`** (CPU ~2 min, incl. fsq120 main() end-to-end); vdeploy runs it before create; gen_deploy runs
-`bash -n` on the deploy / job / drain scripts and logs DEPLOY_SILENT_FAIL. Three placement bugs in fsq120 today (5387d85e / 81e37687) - all
-fixed, no real run affected.
+**User rules:** full runs on Vast 3090s (>= 16 GB, --ckpt_every); local cards short memory-capped jobs only, never idle. Before any commit touching
+boxes/fsq120.py / table132.py / core.py run `python scratch/smoke_plain.py`. Never edit a running .sh (stage `.new`; Windows refuses the swap while open).
 
-### Vast (gen7 watchers; drains: gzip -t on host, on-host probe / prefix / fp32 contraction for failed s130chk / s131x; GPT-2 from HF)
+### Vast (gen7 watchers -> drain_gen_partial; model transfers 2 at a time via D:/drain_tmp/locks)
 
-| Tag | Card | Work |
-|---|---|---|
-| b83 / b86-b88 | 3090 | §133 slots 2-4 (fsq16 / soft16 via restart133); S5 data fixed on-host 23:16 (scratch/s5_data_fix.sh; gen_vast_job gate fixed bfc98e91) |
-| b94 | 3090 | §133 eval-only recovery: s133_soft16_s102 (slot soft16 k2, b84) + s133_fsq16_s3 (slot fsq16 k3, b85) crashed at eval (missing S5=512.csv); record b94 as eval host in both slot jsons (Audit) |
-| b90-b93 | 3090 | §134 guard s134_copy_{ff,cyc,mod,rdfa}_s1, --no_cert; cyc / mod / rdfa then scratch.cc_job (fp32 cert -> copy eval_cert_fp32.json into the run dir after fetch) |
-| b95-b115 | 3090 | §136 GROW stage 1 via fill_s136 (21 runs, Audit-approved); after drains run scratch/s136_triggers.py |
-| b75-b82, b89 | 3090 | §135 students (b89 = BASE s2 rerun; b78 VRAM fault) |
-| a5 / a6 | 3090 | §118 LONG s84 / s85 (mk108) |
-| queued | 3090 | §132 rung 2 slot 1 b74 (after §133-§135 settle) |
+| Tag | Work |
+|---|---|
+| b111-b114 | §136 GROW grow4 s1-s4 (fill_s136; b112 ssh flaky - kex resets - but training fine, 13.1k at 09:01) |
+| b128 / b129 | §134 MOD s2 / s3 (copy_mod + cc_job) |
+| b130 / b131 | §141 r4f8 / r4s16 slot 1 (--micro 4) |
+| b126 | §139 proof done (A stopped by copy gate; A' / B in hand); drain fetching models |
+| b102 | §136 cgrow s4: post-hoc done on host; model.pt via scratch/chunk_fetch.sh (link ~53 KB/s; 8/56 pieces at 09:20; waiter verifies tarball + model sha, then destroys) |
+| a5 / a6 | §118 LONG s84 / s85 (mk108) |
+| **staged** | **§138 proofs gen-b133..b136** (slot 1 per arm, restart138 --memcheck first); CUDA gradflow PASS (bd507312); deploy after Audit's diff review |
 
-* §132 rung 1 PASS (s2 / s3 / s4 exact; pilot residual = held-out table 63). Rung 2 approved, staged (b74 queue ready).
-* Note 131-4 reruns done except s131x: failures split by prefix accuracy (compounding vs wrong-from-step-1), details in THEORY.
+* Pending swap: scratch/vdeploy_toy.sh.new (serialised 16-host cap gate) waits for no running vdeploy (waiter task), then its own commit.
 
-### Local (v2 workers c4060 / c3070 / c2070 <- scratch/c1_backlog_<card>.txt; log logs/c1_local.log)
+### Local (v2 workers c4060 / c3070 / c2070 <- scratch/c1_backlog_<card>.txt; log logs/c1_local.log; stop: scratch/<tag>.stop)
 
-* Ramp prototypes (Theory 1ff94042: 4060 s603 / 3 / 4 / 8; 3070 s14 / 16 / 27 / 28 / 31; plain --stop_plateau, late skipped if plain flags),
-  then replays / flag4proto / k6 protos / growth / contraction filler. Stop: scratch/<tag>.stop.
+* 4060 / 3070: §141 / §133 filler protos. 2070: prefix for 16 local s133 / s134 / s136 models + c7 for 5 plain s133 (refilled 09:05; c7 refuses grown carriers).
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (22:17):** **§134 COPY-ANCHOR PASS on S5** (4/4 exact + SERIAL + ρ 0.14–0.22, no restarts; plain 1/4); guard (FF / CYC / MOD / RDFA) next. §128 TASK-AGNOSTIC (fp32 certs cover all 12 CLOSED). Registered: **§135** TEACHER-STATE DISTILLATION (students running; BASE s2 void host fault, rerun), **§136** GROW (the user's idea; 21 runs after §133 / §135). Open: §133 (proof slots: FSQ-16 / FSQ-64 / NOISE-64 / CONT-64 pass, SOFT-64 / PIN-64 dropped; slots 2–4 running), §131 (7/8 caught, 0 FP; s131x pending), §132 rung 2 (staged), §118 LONG s84 / s85, §115 (g105 at bs 40), ramp prototype (5 pairs read so far; F2 mostly without rounding). Synthesis: `docs/THEORY_STABLE_LATENT_2026-10-06.md`.
-* **Local GPU backlog:** `docs/LOCAL_BACKLOG.md` (Theory maintains ≥ 3 short jobs per card; Experiments pulls when a card frees up; the user: never leave local GPUs idle).
-* **§97 C6:** complete (GEN-4 and HYB-4 s4-5 fetched).
-* **§98:** ICoT-SI done (0.998 / 0.996); TC/NC done; MASK 4x4 + 5x5 done; COCO 4x4 s1-2 + 5x5 s1 in, rest local; GEN-M rerunning (r1/r2).
-* **§99** kcurr/markov/ctrl done; **§100** MASK2 4x4 done; **§105** done (models local for Theory); **§106** pilot gate failed (106-2); others running (above).
-* **§83 s2/s3** extras (local, fp32); **§89** soft s2 / raw s3 landed (descriptive; F1 final from the arms in hand).
-* **§94 Step 0** on the 13 §94 models: done (5d07f7fa).
+* **§136** GROW: 16 local runs with eval.json; grow4 s1-s4 running; then score_s136 (fp32 contractions in hand).
+* **§139** A' / B proof (descriptive). **§141** r4f8 / r4s16 (r1s16 DROP, note 141-4). **§134** MOD s2 / s3.
+* **§138** after its proofs. Closed today: §137 DROP, §140 DROP, §133 stage 1 PASS (FSQ-64 / NOISE-64 / CONT-64 / SOFT-16).
 
 ## Recently done (details in THEORY / PROTOCOL12 / git log)
 
