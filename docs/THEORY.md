@@ -226,7 +226,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 136 | GROW (the user's idea): narrow → wide function-preserving latent growth at a loss threshold / plateau; GROW-P, COPY+GROW / STAGED / GROW-NOISE, GROW-4, NESTED-64 on S5 (S5×4 decides) | registered | **open** |
 | 137 | Multiplication on fsq120, column-major: carried carry (FSQ-8), streamed product digits (C4 qualifier), restart slots; 4×4 → 5×5 → 4×8 | **4×4 DROP at proof** (test_acc 0.0; middle columns at chance; carry in h R² 0.69, in the code 0.24) → §140 | closed |
 | 138 | FULL WIDTH (the user's trigger): §133's harness at d 768, no COPY; FULL-FSQ / FULL-NOISE / FULL-CONT (vs RAW-H) / FULL-HINGE; fails-to-improve → revisit; S5×4 as the benefit test | registered | **open** |
-| 139 | DISTILL-2 (user's go): a CoT teacher's state (probe or its text) as a warm-start fading to 0 by 4k, on multiplier-major multiplication; A = SOFT-16 + COPY (FINAL), B = A + DISTILL-2, C = constant weight | registered | **open** |
+| 139 | DISTILL-2 (user's go): a CoT teacher's state (probe or its text) as a warm-start fading to 0 by 4k, on multiplier-major multiplication; A = SOFT-16 + COPY (FINAL), B = A + DISTILL-2, C = constant weight | **stopped at proof** (139-1(c) copy gate; A′ / B s1 test_acc 0.0, B learns only step 1 at 0.59) | closed |
 | 140 | DIGPAIR (§137's fallback; runs only on §137 4×4 DROP / FAIL): one digit pair per segment, carried column accumulator (FSQ-8), streamed digits; design-forced C1 | **4×4 DROP at proof** (0.002; columns 1–2 exact, first errors at the 3- and 4-pair columns; accumulator R² h 0.92 vs code 0.61) | closed |
 | 141 | After §137's DROP: latent repeats per column (r4 + repeat index) × carrier (FSQ-8 / SOFT-16); r1×SOFT-16 gated on a nonlinear code probe; readings crossed with §140 | registered | **open** |
 
@@ -7181,6 +7181,18 @@ centroid distance) are logged in the same space. At init these are 0.13 / 2.09; 
 * **Reading (as pre-stated in 134-6 / 134-7, "both close"):** s1's loss of closure is seed-specific. COPY closes MOD in 2/3 seeds against plain's 4/4, so the evidence that COPY
   causes open transients is **weak** (one seed).
   - **§134's registered guard verdict stands as decided** (not adopted as the default). A later default decision could revisit it with more seeds.
+
+**Note 139-6 (2026-10-07 11:18 EDT; descriptive: the 1-host proof runs after the 139-4 / 139-5 stop; scored with score_s139). No arm learns multiplier-major 4×4.**
+* **A s1:** stopped at 4k by its copy gate (139-5: slow 8-digit copy, no fault). Not read further.
+* **A′ s1** (strict C4: L fixed at 4, final answer plus COPY only): test_acc 0.000, train_acc 0.000, accuracy by length 0 / 0 / 0 / 0, fp32 ρ (rho_k3) 0.56. COPY itself
+  was learned by the end (copy_acc 0.996).
+* **B s1** (A plus the teacher-text warm start, faded to 0 by 4k; CE mode, 139-2): test_acc 0.000.
+  - Accuracy by length is **0.586 / 0.017 / 0.001 / 0**: the first step (a × b₁, a 4 × 1 product) is partly learned, and nothing beyond it.
+  - The frozen readout's S_j accuracy at the end is 0.03. ρ 0.65.
+* **Reading (descriptive, n = 1 per arm):** on multiplier-major multiplication, neither final-answer training (A′) nor a teacher-text warm start that fades by 4k (B)
+  gets past the first hand-off.
+  - This matches §137 / §140 / §141-r1s16: every design so far fails once a step must carry or accumulate a multi-digit number.
+  - The user's DISTILL-2 question has no positive reading on this task. **§139 is closed at the proof stage.**
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

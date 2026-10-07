@@ -16,22 +16,60 @@
   },
   "ap": {
    "runs": {
-    "1": null,
+    "1": {
+     "test_acc": 0.0,
+     "serial": false,
+     "rho": 0.5578576047768883,
+     "acc_by_length": {
+      "1": 0.0,
+      "2": 0.0,
+      "3": 0.0,
+      "4": 0.0
+     },
+     "probe": null,
+     "distill_kl_end": null,
+     "first_exact_step": null,
+     "readout_acc_end": null,
+     "target_mode": null,
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "driver": "595.71.05",
+     "exact": false,
+     "pass": false
+    },
     "2": null,
     "3": null,
     "4": null
    },
-   "verdict": "incomplete (0 / 4)",
+   "verdict": "incomplete (1 / 4)",
    "n_pass": 0
   },
   "b": {
    "runs": {
-    "1": null,
+    "1": {
+     "test_acc": 0.0,
+     "serial": false,
+     "rho": 0.6483930923730467,
+     "acc_by_length": {
+      "1": 0.586,
+      "2": 0.017,
+      "3": 0.001,
+      "4": 0.0
+     },
+     "probe": null,
+     "distill_kl_end": null,
+     "first_exact_step": null,
+     "readout_acc_end": 0.03,
+     "target_mode": "ce",
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "driver": "595.71.05",
+     "exact": false,
+     "pass": false
+    },
     "2": null,
     "3": null,
     "4": null
    },
-   "verdict": "incomplete (0 / 4)",
+   "verdict": "incomplete (1 / 4)",
    "n_pass": 0
   },
   "c": {
