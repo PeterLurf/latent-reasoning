@@ -59,7 +59,11 @@ def teacher_gate():
         ERRORS.append("teacher chosen_layer %s != argmax %d" % (p.get("chosen_layer"), layer))
     if p.get("label_source") != "teacher_generated":
         ERRORS.append("probe labels must come from the teacher's own generated CoT (C4 as reworded): %s" % p.get("label_source"))
-    return bool(best >= 0.95), "layer %d heldout exact %.4f" % (layer, best)
+    if best >= 0.95:
+        return True, "probe (KL) mode: layer %d heldout exact %.4f" % (layer, best)
+    valid = p.get("teacher_format_valid") or 0                               # 139-2: the probe gate governs KL mode only; in CE mode the
+    return bool(valid >= 0.99), ("CE mode (139-2): probe gate failed (layer %d heldout exact %.4f); teacher text valid %.3f, vs gold %.3f"
+                                 % (layer, best, valid, p.get("teacher_sj_vs_gold_exact") or 0))
 
 
 def bad_args(d, arm):
