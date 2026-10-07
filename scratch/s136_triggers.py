@@ -30,8 +30,10 @@ def one(d):
 
 
 def main():
-    out = [one(d) for d in sorted(glob.glob(os.path.join(ROOT, "boxes", "runs_fsq", "s136_*_s5_s*"))) if os.path.isdir(d) and "." not in os.path.basename(d)
-           and os.path.exists(os.path.join(d, "log.jsonl"))]
+    out = []
+    for d in sorted(glob.glob(os.path.join(ROOT, "boxes", "runs_fsq", "s136_*_s5_s*"))):  # void attempts (host cuts) kept, marked (Audit 02:48)
+        if os.path.isdir(d) and os.path.exists(os.path.join(d, "log.jsonl")):
+            r = one(d); r["void"] = os.path.basename(d).split(".", 1)[1] if "." in os.path.basename(d) else None; out.append(r)
     json.dump(out, open(os.path.join(ROOT, "boxes", "runs_fsq", "s136_triggers.json"), "w", newline="\n"), indent=1)
     for r in out:
         print(r["run"], "events", [(e["step"], e["from"], e["to"]) for e in r["events"]], "recomputed", r["recomputed"], "match", r["first_fire_matches_recomputed"])

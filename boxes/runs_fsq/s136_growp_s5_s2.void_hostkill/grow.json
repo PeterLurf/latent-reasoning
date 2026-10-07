@@ -1,0 +1,18 @@
+{
+ "d0": 8,
+ "events": [
+  {
+   "step": 4000,
+   "from": 8,
+   "to": 64,
+   "loss": 5.033500370979309,
+   "pre_contraction_fp32": {
+    "rho": 9.99999883788405e-07,
+    "rho_nonzero": 1.0000000000000004e-06,
+    "rho_norm": 9.99999883788405e-07,
+    "basin": 1.0,
+    "exact_recovery_share": 0.97
+   }
+  }
+ ]
+}

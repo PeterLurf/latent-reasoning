@@ -1,0 +1,29 @@
+[
+ {
+  "run": "s136_growp_s5_s2.void_hostkill",
+  "grow": "8:64",
+  "trigger": "plateau",
+  "staged": false,
+  "nested": false,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "driver": "595.71.05",
+  "last_step": 7300,
+  "events": [
+   {
+    "step": 4000,
+    "from": 8,
+    "to": 64,
+    "loss_at_step": 5.033500370979309
+   }
+  ],
+  "recomputed": {
+   "threshold": null,
+   "plateau": 4000
+  },
+  "run_reported": null,
+  "width_final": null,
+  "first_fire_matches_recomputed": true,
+  "evaluated": false,
+  "void": "void_hostkill"
+ }
+]
