@@ -58,7 +58,7 @@ def main():
         with open(os.path.join(ROOT, "logs", "posthoc_contraction_%s.log" % name), "w") as lg:
             subprocess.call([sys.executable, "-u", "-m", "boxes.multrow", "--from_args", os.path.join(d, "args.json"), "--contraction_only", "--fp32", "--device", dev, "--out", d],
                             cwd=ROOT, stdout=lg, stderr=subprocess.STDOUT)
-    if name.startswith("s140_pair_") and not os.path.exists(os.path.join(d, "eval_contraction_fp32.json")):   # §140: fp32 contraction on-host via boxes.multpair
+    if name.startswith(("s140_pair_", "s145_", "s150_")) and not os.path.exists(os.path.join(d, "eval_contraction_fp32.json")):   # §140: fp32 contraction on-host via boxes.multpair
         with open(os.path.join(ROOT, "logs", "posthoc_contraction_%s.log" % name), "w") as lg:
             subprocess.call([sys.executable, "-u", "-m", "boxes.multpair", "--from_args", os.path.join(d, "args.json"), "--contraction_only", "--fp32", "--device", dev, "--out", d],
                             cwd=ROOT, stdout=lg, stderr=subprocess.STDOUT)
@@ -68,7 +68,7 @@ def main():
                 with open(os.path.join(ROOT, "logs", "posthoc_%s_%s.log" % (outf.split(".")[0], name)), "w") as lg:
                     subprocess.call([sys.executable, "-u", "-m", "boxes.multcol", "--from_args", os.path.join(d, "args.json")] + flag + ["--device", dev, "--out", d],
                                     cwd=ROOT, stdout=lg, stderr=subprocess.STDOUT)
-    if name.startswith(("s133_", "s134_", "s135_", "s136_", "s138_", "s143_")) and not os.path.exists(os.path.join(d, "eval_contraction_fp32.json")):   # s136_ added 2026-10-07 (gap)
+    if name.startswith(("s133_", "s134_", "s135_", "s136_", "s138_", "s143_", "s144_")) and not os.path.exists(os.path.join(d, "eval_contraction_fp32.json")):   # s136_ added 2026-10-07 (gap)
         # Theory 133-5: PASS's rho reads only the post-hoc fp32 contraction - every accepted §133 / §134 / §135 run, on the host, before
         # any keep / skip decision (kept models used to skip it)
         mod = "boxes.fsq120_posthoc" if os.path.exists(os.path.join(ROOT, "boxes", "fsq120_posthoc.py")) else "boxes.fsq120"
