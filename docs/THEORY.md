@@ -7137,6 +7137,18 @@ checkpoints, the host check).
   - The 0.9-at-4k threshold, set from FSQ-8 / S5's copy (one of 120 state texts), was unreachable for this copy target.
   - **The stop stands as registered** (seeds 2–4 are not run). A′ and B's proof runs (24k, 0 nonfinite) are read descriptively when their evals land.
 
+**Note 138-2 (2026-10-07 09:20 EDT, before any FULL-HINGE run; Audit's code review: HINGE on hold, the other three arms deploying). FULL-HINGE is made label-free.**
+* **The issue:** the implemented hinge drew its δ direction from the gold S5 state at every training hand-off, and built its ε reference from gold-label centroids. That is
+  per-step simulator state during training: not C4-clean under the revised wording, and a second difference from FULL-CONT besides the hinge.
+* **Fixed now (Audit's option (a), plus a label-free ε):**
+  - **δ is a random direction only** (the centroid-difference half is dropped);
+  - **ε = 0.15 × the median, over the probe batch's hand-off codes at 2k, of each code's distance to its nearest distinct code** (distance > 10⁻³). The nearest distinct
+    code tracks the inter-state spacing without labels.
+  - Everything else is as §138: the CONT base, from 2k, max(0, ρ̂ − 0.3) on the pre-quantisation z, 1 in 4 hand-offs, weight 1.
+* **Labels remain only in the descriptive measures** (the centroid-direction ρ, the spread ratios), which never feed training.
+* **FULL-HINGE now differs from FULL-CONT only by the label-free hinge.** A HINGE PASS where FULL-CONT fails reads "a label-free local stabiliser removes full-width drift".
+* Literature's concern that random δ can miss state-separating directions stays descriptive (the directional ρ is reported).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
