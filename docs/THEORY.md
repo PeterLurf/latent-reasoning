@@ -6279,6 +6279,92 @@ carry an fp32 certificate that covers every code the eval visits** (14 certifica
   - That holds provided the experiments session's CPU repro across the 14k switch is clean; that repro is pending.
 * New deploys run a host memory check before their queue and refuse to start on a failure.
 
+## 136. GROW: start the latent narrow, widen it once the loss reaches a threshold or a plateau (pre-registered 2026-10-06 22:16 EDT, after Literature's check 15ef99be / 1b5b7ea9 and Audit's review, before any implementation or run; the user's idea "restrict the latent size in early training, then gradually widen it once a loss threshold or plateau is reached", with "a few arms with unique modifications that hope to improve latent training" (via Audit))
+
+**Why.**
+* **Entry got worse with width:** at d 64 every §133 arm flagged seeds 1 and 101, while d 8 / d 16 entered seed 1.
+* **Once entered, width is safe:** FSQ-64, NOISE-64 and CONT-64 are exact and contractive on their proof slots (133-6 / 133-8).
+* **Capacity needs width:** FSQ-8 has 8⁸ codes, and §133 stage 2 tests S5×4.
+* §126 ANNEAL (wide → narrow) failed 0/4. **Narrow → wide is the untested direction.**
+* **Prior** (`docs/LIT_S136_GROW_2026-10-06.md`, new as scoped):
+  - Net2Net 1511.05641, GradMax 2201.05125, NeST 1711.02017, DEN 1708.01547, Self-Expanding NNs 2307.04526;
+  - ProGAN 1710.10196 (fade-in); RVQ / SoundStream 2107.03312;
+  - Burgess 1804.03599 (controlled capacity increase, the closest concept);
+  - nested dropout 1402.0915, Matryoshka 2205.13147, MatQuant 2502.06786.
+  - Growth mechanisms are known; their use on an LM's latent carrier, scored by exactness, SERIAL and capacity, is not.
+* **Scope of stage 1 (Literature, Audit):** on S5 an 8-d code already suffices, so new dimensions get no capacity pressure. S5 tests **entry,
+  rescue and no harm**. **S5×4 (stage 2) decides the benefit.**
+
+**Base.** §128's S5 recipe (fsq120 FINAL, FSQ with 8 levels, the length curriculum, p_hard 2000 → 4000, 24k, bs 64, the 127-3 guard; cloud RTX
+3090, checkpoints, host memory check), with **no restarts and no plateau stop** (as §134).
+
+**The growth operation (every widening, d → d′).**
+* W_down gains d′ − d rows with fresh default initialisation. W_up gains d′ − d columns at **exactly 0** (zero only the outgoing side; zero on
+  both sides is a dead saddle, Literature).
+* **Fade-in:** the new W_up columns are scaled by α(t) = min(1, (t − t_switch) / 500) (ProGAN).
+* **Optimiser:** the new parameters form their own Adam group with fresh moments and a linear learning-rate warm-up over 300 steps. Old
+  parameters keep their state.
+* **Asserted at a forced switch before launch:**
+  - max |Δ logits| = 0 on a fixed batch (function preserved);
+  - at least 90 % of the new dimensions take at least 2 FSQ levels on that batch (not inert);
+  - gradflow under CUDA bf16: nonzero gradient into the new W_up columns from the first step after the switch, and into the new W_down
+    rows from the next.
+* Each widening is logged as {"step", "grow": {"from", "to"}}. A pre-switch checkpoint is kept until its fp32 contraction is computed on the
+  host (ρ before / after, descriptive), then deleted.
+
+**Triggers (label-free; fixed now).**
+* **THRESHOLD:** the first logged step t ≥ 2,000 whose main-chain loss is ≤ 2.5. Exact S5 runs reach 0.37–2.75 by 4.5k; failures stay ≥ 3.4.
+* **PLATEAU (at a non-zero loss; DEN-style):** the first logged step t ≥ 4,000 (after the rounding ramp) where the mean logged loss over
+  (t − 500, t] is ≥ 0.5 and ≥ 0.98 × the mean over (t − 1,000, t − 500].
+* Each run reports the would-be step of the trigger it does not use.
+
+**Arms (S5 seeds 1–4, RTX 3090 class, one 24k run each).**
+* **GROW-P** (the user's plateau version, plain base): d 8 → 64 once, at PLATEAU. On seeds where plain d 8 stalls (s2–s4 on the 3090), this
+  tests whether **widening rescues a stuck narrow run**. Where d 8 learns, PLATEAU should not fire.
+* **COPY+GROW** (the threshold version, on §134's base, which enters 4/4): d 8 → 64 once, at THRESHOLD. This tests **no harm** from growth on
+  entered runs.
+* **COPY+STAGED** (the user's "gradually"): d 8 → 16 at THRESHOLD, then doubling (→ 32 → 64), each time at least 1,000 steps have passed
+  since the last widening and the loss is ≤ 2.5.
+* **COPY+GROW-NOISE:** COPY+GROW, with the 56 new dimensions continuous (never rounded) and dither-trained, U(±0.25) at training hand-offs
+  (NOISE-64's stabiliser). The first 8 stay hard FSQ.
+* **GROW-4** (the narrower start; plain base): d **4** → 64 once, at THRESHOLD. **Entry at d 4 is pre-registered against d 8's 1/4** on these
+  seeds (Literature, Audit).
+* **NESTED-64** (one run, seed 1; the no-trigger comparator): d 64 from step 0. Each training chain draws a prefix width from
+  {4, 8, 16, 32, 64}, and code dimensions beyond it are zeroed at every hand-off (training only; the test uses all 64). Accuracy with only
+  the first 8 dimensions at test is reported.
+* COPY arms use §134's copy rows from step 0 exactly (f 0.1; CE_main + 1.0 CE_copy, 134-4).
+
+**Comparators (existing; not rerun).**
+* Plain FSQ-8 on these seeds and card class, no restarts: 1/4 (s1; s2 plateau, s3 escape-fail, s4 basin).
+* COPY-8 (§134): 4/4.
+* Fixed d 64 (§133): entry flagged on s1 / s101.
+
+**Rules (fixed now; per arm, 4 seeds).**
+* **PASS:** all four seeds exact at 2,048 (ext_2048 ≥ 0.99), SERIAL (donor ≥ 0.90, recipient − chance < 0.10) and contractive (ρ ≤ 0.28:
+  127-12's clause as in score_s134; 133-1's first-three form for COPY+GROW-NOISE, whose new dimensions never round). **IMPROVES**
+  (descriptive): 3/4. **FAIL:** ≤ 2/4.
+* NESTED-64 (one run) is descriptive.
+
+**Readings.**
+* **GROW-P PASS** (plain 1/4): widening at a plateau rescues stuck narrow runs. That is a new entry fix by the user's mechanism.
+* **COPY+GROW / COPY+STAGED / COPY+GROW-NOISE PASS** (COPY-8 4/4): growth is **safe** on entered runs. Otherwise, the widening harmed a settled
+  carrier; the switch spikes and ρ before / after say how.
+* **GROW-4:** entry at d 4 (THRESHOLD fired) in ≥ 3/4 reads "a narrower start enters more reliably". PASS reads as for GROW-P.
+* **Grown runs exact but the new dimensions unused:** expected on S5, as stated. Stage 2 decides.
+
+**Descriptive (every run).**
+* The trigger steps, the switch spike (max loss over the 1,000 steps after a widening, minus the loss at the switch) and ρ before / after.
+* Dimension use at the end: the variance share in the new dimensions, probe R²_state from the new dimensions alone, effective rank.
+* Codes per state, prefix accuracy at 1 / 2 / 4 / 8, and the end probe.
+
+**Stage 2 (a separate registration and approval; shared with §133 stage 2).** S5×4 with the PLATEAU trigger at a non-zero loss: the GROW arms
+that are safe on S5, against FSQ-8, FSQ-8-L16 and the fixed-width §133 passers.
+
+**Placement.** Stage 1: 5 arms × 4 seeds + 1 nested run = 21 runs, about $10.5 (Audit approved $8; the extra $2.5 is requested). They deploy as
+slots free, under 16 hosts and $4/h, after §133's slots 2–4 and §135's students. Implementation: the experiments session (fsq120 `--grow
+8:64`, `--grow_trigger 2.5|plateau`, `--grow_staged`, `--grow_noise 0.25`, `--nested`; the current width saved in the checkpoint and resume
+path). Smoke_plain plus the asserts above before launch. Scorer: `theory/score_s136.py`, committed before any run.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
