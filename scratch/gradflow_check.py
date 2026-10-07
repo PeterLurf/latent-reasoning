@@ -336,6 +336,40 @@ def check_s135(dev, out):
         out[f"s135.aux_p{int(ph)}.target_no_grad"] = 1.0 if all(p_.grad is None for p_ in tg.parameters()) else 0.0
 
 
+def check_s139(dev, out):
+    """§139 (683318e2; notes 139-1 / 139-2, CE mode): the readout aux on e_j = W_up(code_j) ALONE (CE on the teacher's decoded S_j digits)
+    reaches the readout, W_up, W_down and the GPT-2 trunk under CUDA bf16, soft and hard, and nothing reaches the frozen teacher. Schedule:
+    arm b weight 1 at 3k, 0.5 at 3.5k, exactly 0 from 4k (aux + teacher skipped); arm c 1 throughout. Flags are 1 / 0."""
+    import math
+    import torch.nn as nn
+    import boxes.fsq120 as F120
+    import boxes.multcol as MC
+    import boxes.multrow as R
+    saved = (F120.D_Q, F120.LEV, F120.HALF, F120.SHIFT); F120.D_Q, F120.LEV = 16, 8; F120.HALF = (F120.LEV - 1) / 2; F120.SHIFT = math.atanh(F120.OFF / F120.HALF)
+    amp = torch.bfloat16 if str(dev).startswith("cuda") else None; fam = R.RowFam(); m = R.MultRow(s5.load_gpt2(dev), fam).to(dev); m.soft_beta = 0.1
+    m.readout = nn.Linear(768, 80).to(dev); m.train(); T = R.Teacher(os.path.join(ROOT, "boxes", "runs_mult", "m98_tc_4x4_s1"), 8, None, dev)
+    rng = np.random.default_rng(0); A, B = MC.gen_operands(rng, 8, 4), MC.gen_operands(rng, 8, 4)
+    for ph in (0.0, 1.0):
+        m.p_hard = ph; m.zero_grad(set_to_none=True); R.set_ops(m, A, B, dev); m.tsd_on = True; m._tsd_e = []
+        with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+            m.chain(m.start(8, dev), torch.tensor(np.tile(np.arange(4), (8, 1)), device=dev), R.sj_values(A, B))
+        _, dec, ok = T.targets(A, B, 4, amp); E = torch.stack(m._tsd_e, 1).float(); lg = m.readout(E).view(8, 4, 8, 10).float()
+        aux = (torch.nn.functional.cross_entropy(lg.reshape(-1, 10), dec.clamp_min(0).reshape(-1), reduction="none").view(8, 4, 8).mean(-1) * ok).sum() / ok.sum().clamp_min(1)
+        aux.backward(); m.tsd_on = False; m._tsd_e = []
+        out[f"s139.p{int(ph)}.readout_grad"] = float(m.readout.weight.grad.float().norm()); out[f"s139.p{int(ph)}.up_grad"] = float(m.up.weight.grad.float().norm())
+        out[f"s139.p{int(ph)}.down_grad"] = float(m.down.weight.grad.float().norm()); out[f"s139.p{int(ph)}.trunk_grad"] = float(m.g.w("h.0.attn.c_attn.weight").grad.float().norm())
+        out[f"s139.p{int(ph)}.teacher_no_grad"] = 1.0 if all(p_.grad is None for p_ in T.g.parameters()) else 0.0
+        out[f"s139.p{int(ph)}.teacher_valid_rows"] = float(ok.float().mean())
+    w = R.distill_weight
+    out["s139.sched_b_1_at_3k"] = 1.0 if w(3000, True, 3000, 4000) == 1.0 else 0.0
+    out["s139.sched_b_half_at_3500"] = 1.0 if abs(w(3500, True, 3000, 4000) - 0.5) < 1e-9 else 0.0
+    out["s139.sched_b_zero_from_4k"] = 1.0 if all(w(s_, True, 3000, 4000) == 0.0 for s_ in (4000, 4001, 12000, 24000)) else 0.0
+    out["s139.sched_c_one_throughout"] = 1.0 if all(w(s_, True, 3000, 0) == 1.0 for s_ in (1, 3000, 4000, 24000)) else 0.0
+    out["s139.sched_a_zero"] = 1.0 if all(w(s_, False, 3000, 4000) == 0.0 for s_ in (1, 3000, 24000)) else 0.0
+    del m, T
+    F120.D_Q, F120.LEV, F120.HALF, F120.SHIFT = saved
+
+
 def check_s137(dev, out):
     """§137 (9c9b1899): the digit CE at a column k >= 2 ALONE reaches W_down / W_up and - through the carried code - the embedding
     carried out of column k-1 (dL_k / d e_{k-1} != 0), under CUDA bf16, soft (p_hard 0) and hard (p_hard 1)."""

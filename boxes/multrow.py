@@ -60,6 +60,15 @@ def sj_values(A, B):
     a = to_int(A); return np.stack([a * to_int(B[:, :j]) for j in range(1, B.shape[1] + 1)], 1)
 
 
+def distill_weight(step, on, full, end, sc=1.0):
+    """§139 aux weight: 1 to `full`, linear to 0 at `end`, 0 after; end <= 0 = never fades (arm c); 0 when distillation is off."""
+    if not on:
+        return 0.0
+    if end <= 0 or step <= full * sc:
+        return 1.0
+    return max(0.0, 1.0 - (step - full * sc) / ((end - full) * sc))
+
+
 class RowFam:
     name = "mult_row"; n_items = 4; n_states = 10 ** NDIG
     item_tok = np.zeros((4, 1), np.int64)                                   # unused (MultRow.segment builds the tokens)
@@ -169,8 +178,10 @@ class Teacher:
         self.M98 = M98; self.g = s5.load_gpt2(dev); self.g.load_state_dict(torch.load(os.path.join(d, "model.pt"), map_location=dev)); self.g.eval()
         for p_ in self.g.parameters():
             p_.requires_grad_(False)
-        self.layer = layer; self.dev = dev; pr = torch.load(probe_path, map_location=dev); assert pr["layer"] == layer, "probe layer != --distill_layer"
-        self.W, self.b, self.mu, self.sd = (pr[k].to(dev).float() for k in ("W", "b", "mu", "sd"))
+        self.layer = layer; self.dev = dev; self.kl = probe_path is not None                # CE mode (note 139-2): no probe, no hidden pass
+        if self.kl:
+            pr = torch.load(probe_path, map_location=dev); assert pr["layer"] == layer, "probe layer != --distill_layer"
+            self.W, self.b, self.mu, self.sd = (pr[k].to(dev).float() for k in ("W", "b", "mu", "sd"))
         self.dig = {int(t): i for i, t in enumerate(M98.DIGIT_IDS)}
 
     @torch.no_grad()
@@ -180,9 +191,11 @@ class Teacher:
         q = torch.tensor(self.M98.question({"A": A, "B": B}, np.arange(len(A))), device=self.dev)
         with amp_ctx(amp):
             last, past = self.M98.seq_forward(self.g, q, 0, None); out = self.M98.seq_greedy(self.g, last, past, 56)
-            hs = hidden_layers(self.g, torch.cat([q, out], 1), upto=self.layer)[self.layer]
-        pos = torch.tensor([q.shape[1] + self.SJ_END[j] - 1 for j in range(1, L + 1)], device=self.dev)
-        H = (hs[:, pos].float() - self.mu) / self.sd; P = torch.softmax((H @ self.W + self.b).view(len(A), L, NDIG, 10), -1)
+            P = None
+            if self.kl:
+                hs = hidden_layers(self.g, torch.cat([q, out], 1), upto=self.layer)[self.layer]
+                pos = torch.tensor([q.shape[1] + self.SJ_END[j] - 1 for j in range(1, L + 1)], device=self.dev)
+                H = (hs[:, pos].float() - self.mu) / self.sd; P = torch.softmax((H @ self.W + self.b).view(len(A), L, NDIG, 10), -1)
         gen = out.cpu().numpy(); dec = np.zeros((len(A), L, NDIG), np.int64)
         st = {1: 0, 2: 13, 3: 29, 4: 48}
         for j in range(1, L + 1):
@@ -240,7 +253,8 @@ def main():
     if a.distill:
         pj = json.load(open(os.path.join(ROOT, a.distill_probe_dir, "teacher_probe.json"))); a.distill_layer = a.distill_layer if a.distill_layer is not None else pj["chosen_layer"]
         target_mode = "kl" if pj["probe_vs_teacher_digit_agree"] >= 0.99 else "ce"; probe_info = {k: pj.get(k) for k in ("chosen_layer", "gate", "probe_vs_teacher_digit_agree", "probe_vs_gold_exact")}
-        teacher = Teacher(os.path.join(ROOT, a.distill_teacher), a.distill_layer, os.path.join(ROOT, a.distill_probe_dir, "probe_L%d.pt" % a.distill_layer), dev)
+        teacher = Teacher(os.path.join(ROOT, a.distill_teacher), a.distill_layer,
+                          os.path.join(ROOT, a.distill_probe_dir, "probe_L%d.pt" % a.distill_layer) if target_mode == "kl" else None, dev)
     info = {**vars(a), "train_items": int(len(trA)), "train_items_raw": int(n_raw), "train_removed_test_overlap": n_rem, "target_mode": target_mode, "teacher_probe": probe_info,
             "train_gpu": dname(), "train_driver": driver_version(), **env_info()}
     json.dump({**info, "resumed_at": time.strftime("%Y-%m-%d %H:%M:%S")} if a.resume else info,
@@ -255,12 +269,8 @@ def main():
         if dev.startswith("cuda") and ck.get("cuda_rng") is not None:
             torch.cuda.set_rng_state(ck["cuda_rng"].cpu(), device=dev)
         step0 = ck["step"] + 1; t0 = time.time() - ck["elapsed"]; log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
-    def w_at(step):                                                         # distill weight: 1 to distill_full, linear to 0 at distill_end; end 0 = never fades
-        if not a.distill:
-            return 0.0
-        if a.distill_end <= 0 or step <= a.distill_full * sc:
-            return 1.0
-        return max(0.0, 1.0 - (step - a.distill_full * sc) / ((a.distill_end - a.distill_full) * sc))
+    def w_at(step):
+        return distill_weight(step, a.distill, a.distill_full, a.distill_end, sc)
     def train_step(step, L, A, B, w, do_step=True):
         set_ops(m, A, B, dev); X = torch.tensor(np.tile(np.arange(L), (len(A), 1)), device=dev); lab = sj_values(A, B)[:, :L]
         m.tsd_on = w > 0; m._tsd_e = []
