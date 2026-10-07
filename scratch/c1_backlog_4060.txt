@@ -1,3 +1,7 @@
+# 2026-10-07 s142 teacher-target cache (note 142-1): TC-M greedy S_1..S_4 on the deduped 808k train split, bf16, bs 512 - first
+3.0 boxes/runs_fsq/s142_teacher_cache/teacher_sj_4x4_train.npz.json python -u scratch/teacher_cache142.py boxes/runs_fsq/s142_teacher_cache/teacher_sj_4x4_train.npz {DEV} 512
+# 2026-10-07 s142 memory at L 4 with the reader (registration gate; full bs 64 / eval_bs 250; needs the cache above)
+4.5 D:/drain_tmp/mem142/mem_check.json python -u -m boxes.multrow --family mult_row --task 4x4 --seed 1 --d_q 64 --no_round --dither 0.25 --soft_beta 0 --copy_frac 0 --reader --lmax_steps 2000,5000,9000 --mem_check --device {DEV} --out D:/drain_tmp/mem142
 # 4060 backlog: 2k replay_basin seeds 75-82 (the rest of §130's registered TEST-SAME list, not needed by its block) -> theory/results/replay_extra/ (descriptive; not read by score_s130); ~3.5 GiB, ~5 min each
 # §140 post-hoc accumulator probe (Theory 2026-10-07, descriptive): by step-within-column and by magnitude, code vs h
 3.0 boxes/runs_fsq/s140_pair_4x4_s1/eval_probe_acc.json python -u scratch/probe140_acc.py boxes/runs_fsq/s140_pair_4x4_s1 {DEV}
