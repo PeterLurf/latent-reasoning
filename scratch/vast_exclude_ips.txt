@@ -40,3 +40,5 @@
 142.127.68.223  # gen-b112 2026-10-07: stuck 'created' 16+ min
 167.99.190.68  # gen-b113 2026-10-07: unreachable over ssh 20+ min after create
 97.88.82.118 # 2026-10-07 b115 stuck 'loading/stopped' 20 min (image pull; b129 runs on this host's other slot)
+154.64.230.67 # 2026-10-07 b137 BAD HOST (cuInit failed) at 16:29; b126's slow-link machine
+92.97.193.95 # 2026-10-07 b138 stuck 'loading/stopped' 24 min (second slot; b139 runs on this host)
