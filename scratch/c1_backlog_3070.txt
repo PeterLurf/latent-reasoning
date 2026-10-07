@@ -231,3 +231,5 @@
 2.0 boxes/runs_fsq/s134_copy_s5_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s134_copy_s5_s2 {DEV}
 2.0 boxes/runs_fsq/s134_copy_s5_s3/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s134_copy_s5_s3 {DEV}
 2.0 boxes/runs_fsq/s134_copy_s5_s4/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s134_copy_s5_s4 {DEV}
+# §137 post-hoc per-column probe (Theory 2026-10-07, descriptive, low priority, after the C7 lines): h vs code for carry_out / carry_in / colsum / digit
+3.0 boxes/runs_fsq/s137_col_4x4_s1/eval_probe_percol.json python -u scratch/probe137_percol.py boxes/runs_fsq/s137_col_4x4_s1 {DEV}
