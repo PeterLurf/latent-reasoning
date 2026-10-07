@@ -1,0 +1,21 @@
+{
+ "arm": "fsq16",
+ "slot": 1,
+ "accepted_seed": 1,
+ "attempts": [
+  {
+   "seed": 1,
+   "dir": "boxes/runs_fsq/s133_fsq16_s1",
+   "status": "accepted",
+   "rc": 0,
+   "sec": 8236
+  }
+ ],
+ "n_restarts": 0,
+ "error": null,
+ "arm_args": [
+  "--d_q",
+  "16"
+ ],
+ "extra_args": []
+}
