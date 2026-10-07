@@ -1129,7 +1129,7 @@ def main():
                 continue
             if hasattr(a, k_):
                 setattr(a, k_, v_)
-            elif k_ not in ("train_gpu", "train_driver", "train_sequences"):
+            elif k_ not in ("train_gpu", "train_driver", "train_sequences", "torch_version", "cuda_version", "cudnn_version", "python_version", "image_tag"):   # run records, not flags
                 unknown.append(k_)
         assert not unknown, "--from_args: keys this fsq120 does not know: %s" % unknown
     assert a.family in ("s5", "ff", "cyc", "mod", "rdfa") and a.arm in ("final", "trace"), "--family and --arm are required (or --from_args)"

@@ -1,0 +1,35 @@
+{
+ "arm": "fsq64",
+ "slot": 1,
+ "accepted_seed": 201,
+ "attempts": [
+  {
+   "seed": 1,
+   "dir": "boxes/runs_fsq/s133_fsq64_s1",
+   "status": "plateau",
+   "rc": 0,
+   "sec": 130
+  },
+  {
+   "seed": 101,
+   "dir": "boxes/runs_fsq/s133_fsq64_s101",
+   "status": "plateau",
+   "rc": 0,
+   "sec": 127
+  },
+  {
+   "seed": 201,
+   "dir": "boxes/runs_fsq/s133_fsq64_s201",
+   "status": "accepted",
+   "rc": 0,
+   "sec": 4935
+  }
+ ],
+ "n_restarts": 2,
+ "error": null,
+ "arm_args": [
+  "--d_q",
+  "64"
+ ],
+ "extra_args": []
+}
