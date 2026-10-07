@@ -119,10 +119,21 @@ def g97_step(m, x, past):
     return past, m.greedy(hs[:, 0], past)
 
 
+def trigger_summary(pred, Y, snaps, first_det, ev):
+    """§115 (B) summary from the raw per-row arrays (shared by trigger_g97 and its row-chunked merge in main_g97)."""
+    L = Y.shape[1]; h = max(1, ev["handoffs"]); C = pred == Y
+    return {"cumulative": {str(L): float(C.all(1).mean())}, "cum_curve": {str(t): float(C[:, :t].all(1).mean()) for t in (128, 256, 512) if t <= L},
+            "snaps_per_problem": {"mean": float(snaps.mean()), "median": float(np.median(snaps))},
+            "first_error_detection": float(np.mean(first_det)) if first_det else None, "n_first_errors": len(first_det),
+            "per_event_detection": ev["lat_wrong_detected"] / max(1, ev["lat_wrong"]),
+            "false_snap_rate": ev["false_snap"] / h, "miss_rate": ev["miss"] / h, "forced_snap_rate": ev["forced"] / h, "events": ev}
+
+
 @torch.no_grad()
-def trigger_g97(m, X, Y, dev, amp):
+def trigger_g97(m, X, Y, dev, amp, raw=False):
     """§115 (B) for gen97 (§105 masked fork): latent path = continue the row's chunk cache with op t; text path = a new chunk
-    from the decoded text of state t-1. Rows' caches are kept per row and batched by cache length."""
+    from the decoded text of state t-1. Rows' caches are kept per row and batched by cache length (all N rows at once: memory
+    grows with N - main_g97 --rows_chunk calls this per row chunk with raw=True and merges). raw: (pred, snaps, first_det, ev)."""
     N, L = X.shape; g = m.g; pred = np.full((N, L), -1); snaps = np.zeros(N, int); since = np.zeros(N, int)
     ev = {"handoffs": 0, "false_snap": 0, "miss": 0, "forced": 0, "lat_wrong": 0, "lat_wrong_detected": 0}; first_det = []; seen = np.zeros(N, bool)
     E = lambda toks: g.embed(torch.tensor(toks, device=dev))  # noqa: E731
@@ -151,12 +162,7 @@ def trigger_g97(m, X, Y, dev, amp):
         fe = ok_prev & ~lat_ok & ~seen; first_det += list((~agree)[fe]); seen |= fe
         caches = [new_txt[i] if sn[i] else new_lat[i] for i in range(N)]; dec = np.where(sn[:, None], d_txt, d_lat)
         pred[:, t] = np.where(sn, e_txt, e_lat); snaps += sn; since = np.where(sn, 0, since + 1)
-    h = max(1, ev["handoffs"]); C = pred == Y
-    return {"cumulative": {str(L): float(C.all(1).mean())}, "cum_curve": {str(t): float(C[:, :t].all(1).mean()) for t in (128, 256, 512) if t <= L},
-            "snaps_per_problem": {"mean": float(snaps.mean()), "median": float(np.median(snaps))},
-            "first_error_detection": float(np.mean(first_det)) if first_det else None, "n_first_errors": len(first_det),
-            "per_event_detection": ev["lat_wrong_detected"] / max(1, ev["lat_wrong"]),
-            "false_snap_rate": ev["false_snap"] / h, "miss_rate": ev["miss"] / h, "forced_snap_rate": ev["forced"] / h, "events": ev}
+    return (pred, snaps, first_det, ev) if raw else trigger_summary(pred, Y, snaps, first_det, ev)
 
 
 def run_markov(m, run, dev, amp, bs=250, test_n=s5.TEST_N, ext_n=500, data_dir=os.path.join(ROOT, "bench", "data", "s5"), k=4, parts="A,B", max_len=0):
@@ -195,9 +201,19 @@ def main_g97(a, dev, amp):
         Xte, Yte = Xte[:, :a.max_len], Yte[:, :a.max_len]
     args = json.load(open(os.path.join(a.run, "args.json"))); m = Gen97(s5.load_gpt2(dev), "gen")
     m.mask = args.get("fork") == "mask"; m.to(dev); m.load_state_dict(torch.load(os.path.join(a.run, "model.pt"), map_location=dev)); m.eval()
-    t0 = time.time(); tr = trigger_g97(m, Xte, Yte, dev, amp)
+    t0 = time.time(); rc = a.rows_chunk if a.rows_chunk and a.rows_chunk < len(Xte) else 0
+    if rc:                                                                  # Theory 2026-10-06: per-row KV caches of all rows at once OOM the
+        P, S, FD = [], [], []; EV = {}                                      #   6 GiB cap - row chunks, merged (rows independent; bf16 batch composition differs)
+        for i in range(0, len(Xte), rc):
+            p_, s_, fd_, ev_ = trigger_g97(m, Xte[i:i + rc], Yte[i:i + rc], dev, amp, raw=True); P.append(p_); S.append(s_); FD += fd_
+            EV = {k_: EV.get(k_, 0) + v_ for k_, v_ in ev_.items()}
+            if dev.startswith("cuda"):
+                torch.cuda.empty_cache()
+        tr = trigger_summary(np.concatenate(P), Yte, np.concatenate(S), FD, EV)
+    else:
+        tr = trigger_g97(m, Xte, Yte, dev, amp)
     ps, _, _ = rollout(m, Xte, a.k, dev, amp, a.bs); Cs = ps == Yte
-    out = {"run": a.run, "model": "gen97", "fork": args.get("fork"), "k": a.k, "eval_dtype": str(amp), "test_n": len(Xte), "cap": CAP, "trigger": tr,
+    out = {"run": a.run, "model": "gen97", "fork": args.get("fork"), "k": a.k, "eval_dtype": str(amp), "test_n": len(Xte), "cap": CAP, "trigger": tr, "rows_chunk": rc or None,
            "fixed_k4": {"cumulative": {str(t): float(Cs[:, :t].all(1).mean()) for t in (128, 256, 512) if t <= Cs.shape[1]}, "snaps_per_problem": Xte.shape[1] // a.k - 1},
            "sec": round(time.time() - t0)}
     json.dump(out, open(os.path.join(a.run, "eval_s115.json"), "w", newline="\n"), indent=1)
@@ -210,6 +226,7 @@ def main():
     ap.add_argument("--parts", default="A,B"); ap.add_argument("--data_dir", default=os.path.join(ROOT, "bench", "data", "s5"))
     ap.add_argument("--max_len", type=int, default=0, help="smoke only: truncate sequences"); ap.add_argument("--device", default="cuda:0")
     ap.add_argument("--model", default="mk108", choices=["mk108", "g97"], help="g97: (B) only, n = test_n at 512 (layout: 500)")
+    ap.add_argument("--rows_chunk", type=int, default=0, help="g97 only: run the trigger on row chunks of this size and merge (memory; rows are independent)")
     a = ap.parse_args(); dev = a.device; t0 = time.time()
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     if a.model == "g97":
