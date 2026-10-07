@@ -7619,6 +7619,27 @@ curriculum; restart slots; 24k), except for the carrier:
 * This is the registered intent: the same 4 write positions and compute, one carried vector. SLOT4 is unchanged (every w_k and map gets gradient), and so are the rules
   and readings.
 
+**Note 142-2 (2026-10-07 16:40 EDT, before any §142 result; Theory's disclosure of internal priors missed at registration). §121 / §122 are the closest internal priors and predict a DROP.**
+* **§121's READ arm is §142's mechanism on §99's harness.** At every carried slot, [EOT, carried latent] decoded the step-j text from step 0.
+  - It lifted op 3 to 0.64 / 0.93 **by recomputation**. The carried latent held the multiplier prefix, with S_2's digits at chance (114-4).
+  - §122 (TEXT-MIX + anchor + reader) failed too, and its **stop rule paused the multiplication latent-carriage line** (2026-10-05).
+  - The user's later directives ("start multiplication", "yes go ahead") reopened multiplication on fsq120 (§137–§142).
+* **What differs in §142:** the bounded 64-d carrier on fsq120's segment format, twice the budget (48k), the L curriculum, S_j-only targets, and the removal forks.
+  - Literature's §121 design point applies unchanged: a code holding (a, b₁ … b_j) lets the reader decode S_j by recomputation, so a reader alone need not force the sum.
+* **Expectation, sharpened:** a DROP at proof, or exactness without SERIAL (the b-prefix shortcut, which §142's SERIAL and b-prefix rate detect). The approved proof (about
+  $1) proceeds. No rule changes.
+
+**Note 145-2 (2026-10-07 16:40 EDT, before any §145 run; disclosure of an internal prior missed at registration). §107's LAT-4 carried m latents per op and failed; §145 differs where it
+matters.**
+* **§107 LAT-m** (m = 2, 4; §99's MARKOV harness, multiplier-major): CARRY-3 0/3, test ≤ 0.063. LAT-4's latents were partly redundant (cosine 0.76–0.78).
+  - 114-4 explained it: the carrier held the multiplier prefix, so no carrier change could help (§114's looped depth failed the same way).
+* **How §145 differs:**
+  - the digit-pair ordering removes the prefix shortcut: only a_i and b_j are visible, so the accumulator must be carried (design-forced C1);
+  - there, §140's failure is the accumulator's representation (140-3), which §145 targets;
+  - the K slots are written in parallel at K positions of one pass, not chained;
+  - each slot is a bounded NOISE-64 code.
+* §107's redundancy is the named risk. The slot cosine and the per-slot ablation report it.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
