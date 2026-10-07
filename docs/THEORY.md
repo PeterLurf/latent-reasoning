@@ -6594,6 +6594,27 @@ k, k + 100, k + 200, k + 300; 123-3's 2k flag). Cloud RTX 3090, checkpoints, the
 * Scorer: `theory/score_s137.py`, committed before any run.
 * The full-width plan (`docs/THEORY_FULLWIDTH_PLAN_2026-10-07.md`) becomes §138 when it triggers.
 
+**Note 137-1 (2026-10-07 01:37 EDT, before any §137 implementation or run; Audit's review of 9c9b1899, APPROVED with four additions).**
+* **(1) Leakage.** Every generated item (synthetic 4×4 / 5×5 if any, and the 4×8 descriptive set) is deduplicated against the 1,000 test items by
+  (a, b), with commuted pairs included. The bench train split is also checked against the test items. The generator logs the counts removed.
+* **(2) The bypass reading, stated now.** Each segment sees all of a and b plus k, so carry_k and p_k can be computed **in-pass**, without the
+  carried code. ICoT-SI's 0.998 / 0.996 shows that GPT-2 small can learn in-pass multiplication.
+  - A run with test_acc ≥ 0.99 but **SERIAL failing** reads **"IN-PASS (ICoT-like), not a latent carry"**. It counts as not passing for M-PASS,
+    and it is reported as that class, not as a capacity failure.
+  - The shortcut probe gains a column: R² of the true carry from **h_k before W_down**, beside code_k and the context-only column sum. score_s137
+    prints all three.
+* **(3) The 2k flag on digit CE.** The 123-3 flag was calibrated on S5 losses. On per-digit CE (chance ln 10 ≈ 2.30, with the early columns easy)
+  its ratios may misfire. It stays in force as registered.
+  - Its decision on every attempt is logged.
+  - A **misfire** (the flag fires while loss(2k) is already below 1.0 nat per digit) on the proof slot voids the proof as a harness issue, not a
+    method failure. The proof is then rerun with restarts off, disclosed.
+* **(4) SERIAL chance** is computed **per donor–recipient pair**, as the share of later columns whose digit is the same under both carries. It is
+  reported per position (2 / 4 / 6), since the carry range grows with k at 5×5.
+* **C-tags from now on: the user approved the C4 rewording** (Audit, NORTH_STAR). C4 = trainable from supervision that exists at scale: final
+  answers or rewards, or a text-CoT model's outputs. No hand-built intermediate states. Strict C4 (final answers and rewards only) is kept as the
+  stretch goal for surpassing the teacher.
+  - **§137's streamed product digits qualify under C4.** Simulator states (S5's per-step state labels, §111 / §118) do not.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
