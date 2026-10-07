@@ -8,7 +8,7 @@ in output-column order (column k = i + j - 1 ascending, i ascending within a col
 The carried quantity is the column accumulator: acc after a pair = (carry into its column) + the column's products so far. At the last pair
 of column k the answer decoder reads the code and emits p_k = acc mod 10 (CE); the next column starts from acc // 10; the flush emits
 p_2n = the final carry. Nothing is emitted at other steps. Curriculum: chains over the pairs of the first c columns (+ the flush when c = 2n),
-targets = the low c digits, c ~ U(1, c_max), c_max 1 / 2 / 4 / 8 at 0 / 2k / 5k / 9k (4x4; 5x5's schedule is not registered yet).
+targets = the low c digits, c ~ U(1, c_max), c_max 1 / 2 / 4 / 8 at 0 / 2k / 5k / 9k (4x4); 1 / 2 / 4 / 8 / 10 at 0 / 2k / 5k / 9k / 12k (5x5, note 140-2; 10 = 9 columns + the flush).
 eval.json: test_acc (all 2n digits exact on the 1,000 bench items), acc_by_column {per_column, cumulative}, train_acc, donor (pos4 / pos8 /
 pos12: the code after pair t from a donor; the recipient's later digits with the donor's accumulator, exact; digit-level donor /
 recipient / chance per position + row level), s140_probe {r2_acc_code, r2_acc_h (h before W_down), r2_colsum_context} at full length,
@@ -39,7 +39,7 @@ from boxes.multcol import DTOK, columns, dedup, gen_operands, load_bench, ridge_
 
 EQTOK, NEWTOK, SAMETOK = bc.tok(" =")[0], bc.tok(" ;")[0], bc.tok(" ,")[0]   # flush / new-column / same-column flags (note 140-1)
 assert all(len(bc.tok(w)) == 1 for w in (" =", " ;", " ,")) and len({EQTOK, NEWTOK, SAMETOK}) == 3 and not {EQTOK, NEWTOK, SAMETOK} & set(DTOK)
-CMAX = {"4x4": ((2000, 1), (5000, 2), (9000, 4), (None, 8))}
+CMAX = {"4x4": ((2000, 1), (5000, 2), (9000, 4), (None, 8)), "5x5": ((2000, 1), (5000, 2), (9000, 4), (12000, 8), (None, 10))}   # 5x5: note 140-2
 
 
 def cmax(step, task):
