@@ -36,6 +36,7 @@ paradigms. Don't get stuck in the minuscule improvements loop. Take the lessons 
 3. **B2 MID-STACK HAND-OFF: carry a middle layer, not the top.**
    - **$0 first test, §146** (registered; running): is the accumulator readable mid-stack where the top loses it?
    - If MID-STACK SIGNAL, a mid-layer carrier is registered on digit-pair, and B2 moves up, since it is the cheapest. If NO SIGNAL, it stays third.
+   - **§146 read NO SIGNAL (2026-10-07 16:52 EDT):** layers 1–12 are flat at 0.10–0.22 for accumulators 100–200. **B2 is parked**, and §147 keeps ℓ_m = 6.
 
 ## Paradigms applied across the bets
 * **Function-preserving installation** (zero-init outputs, fade-in, μP-scaled learning rates; §136 / §143) for every new module.

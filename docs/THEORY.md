@@ -233,7 +233,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 143 | FULL-GROW (§138's one revised method): §136 COPY+GROW-NOISE to 64, then 64 → 768 at ≥ 6k with μP lr on the new columns; e-space ρ; paired per seed with s136_cnoise; if it fails, full width stops | registered | **open** |
 | 144 | RUNNING-SUM (the user's "fix the multiplication"; diagnostic): sum mod 10⁴ with 2-digit items on fsq120, FSQ-8 / NOISE-64; can the carrier carry a growing number? (conditional magnitude ladder) | registered | **open** |
 | 145 | MULTI-SLOT: K = 4 carried NOISE-64 slots (one write position each) on §140's digit-pair multiplication; CARRY1 control (same writes, 1 carried) if SLOT4 IMPROVES | registered | **open** |
-| 146 | MID-PROBE ($0): layer-wise probes (0–12) of the accumulator on s140 / s137; MID-STACK SIGNAL = R² ≥ 0.5 at 100–200 in some layer ≤ 9 (top 0.05) → register a mid-stack hand-off | registered | **open** |
+| 146 | MID-PROBE ($0): layer-wise probes (0–12) of the accumulator on s140 / s137; MID-STACK SIGNAL = R² ≥ 0.5 at 100–200 in some layer ≤ 9 (top 0.05) → register a mid-stack hand-off | **NO SIGNAL** (best layer 4: 0.217 at 100–200; layers 1–12 flat; the top reproduces 140-3): the accumulator ≥ 100 is computed nowhere; B2 ranks last | closed |
 | 147 | DELTA-STATE (program B1): a linear-recurrent memory (6 additive + 6 gated-delta heads) as GPT-2's only cross-segment channel, on §140's digit-pair 4×4; PASS = exact + SERIAL | registered | **open** |
 | 148 | LOOP-RETRO (program B3): prelude / weight-tied loop (blocks 4–7, damped) / coda retrofit for direct-answer 4×4; LOOP-4 vs PLAIN; C2 at r = 8 / 16 | registered | **open** |
 
@@ -7664,6 +7664,19 @@ matters.**
 * **NO SIGNAL:** no layer reaches 0.5 in that bin. The accumulator ≥ 100 is not computed anywhere in this model, so the hand-off point is not the fix (on this evidence),
   and the mid-stack bet ranks below the others.
 * n = 1 model per task, as stated. A model trained with a mid-stack hand-off could differ, so NO SIGNAL lowers the bet's rank but does not falsify it.
+
+**§146 result (2026-10-07 16:52 EDT; s140_pair_4x4_s1 on CPU in fp32; the layer mirror matches the model exactly (max difference 0.0); scored by Theory with `theory/probe_midstack.py`;
+`theory/results/probe_midstack_s140_pair_4x4_s1.json`). NO SIGNAL: no layer holds the accumulator ≥ 100.**
+* **Held-out R² of the true accumulator by layer** (bins < 100 / 100–200):
+  - layer 0 (embeddings): 0.11 / −10.1;
+  - **layers 1–12: flat at 0.85–0.88 / 0.10–0.22** (best ≤ 9: layer 4, 0.217);
+  - the top state after ln_f: 0.87 / 0.054, which reproduces 140-3's 0.05;
+  - > 200 (n = 9) is negative at every layer.
+* **Reading (as registered):** the accumulator above 100 is not computed anywhere in the stack, so on this evidence the hand-off point is not the fix.
+  - **The mid-stack bet (B2) ranks below B1 and B3.** §147 keeps ℓ_m = 6.
+* The small-accumulator information is already present at layer 1 and stays flat. What a step can use is what the carried code delivers, plus the current product; no layer
+  adds the missing magnitude. L2 is a learning failure, not a storage one (Literature 75f51298).
+* The descriptive s137 leg is not run, since the decision rests on s140 by registration.
 
 ## 147. DELTA-STATE: a linear-recurrent associative memory as the only cross-step channel of GPT-2 (the research program's first bet, B1; pre-registered 2026-10-07 16:49 EDT, after Literature's checks 87cd2af5 / 75f51298 and Audit's sweep, before any implementation or run; the user's "major new architecture changes… don't get stuck in the minuscule improvements loop" (via Audit))
 
