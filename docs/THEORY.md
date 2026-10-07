@@ -222,6 +222,8 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 132 | Rules in context: per-problem permutation tables (explicit pairs) on §120's carrier; size ladder k4/m2 → k6/m3; PASS 3/4 exact + SERIAL on held-out tables | **rung 1 PASS 3/4** (slots 2–4 exact + SERIAL, certified; pilot 0.9865 = one unclosed table); rung 2 next | **open** |
 | 133 | Can error correction make a wide latent carrier exact? CONT / FSQ / SOFT / NOISE / PIN at d 16–64 on S5, then an S5×4 capacity probe (FSQ-8 controls) | registered | **open** |
 | 134 | COPY-ANCHOR: label-free state-reading auxiliary (final-answer text autoencoded through the carrier) on §128's S5 recipe, no restarts; PASS 4/4 exact (plain 1/4) | **PASS on S5: 4/4 exact at 2,048 + SERIAL + ρ 0.14–0.22, no restarts** (plain 1/4); guard stage next | **open** (guard) |
+| 135 | TEACHER-STATE DISTILLATION: a CoT model's hidden states (vs pretrained GPT-2 on the same text) as per-hand-off InfoNCE targets on §128's S5 carrier | **FAIL both arms (0/4)**: worse than plain; the aux pulls context into the code (135-9) | closed (stage B not run) |
+| 136 | GROW (the user's idea): narrow → wide function-preserving latent growth at a loss threshold / plateau; GROW-P, COPY+GROW / STAGED / GROW-NOISE, GROW-4, NESTED-64 on S5 (S5×4 decides) | registered | **open** |
 
 ## Live sections
 
@@ -6358,6 +6360,23 @@ carry an fp32 certificate that covers every code the eval visits** (14 certifica
 * Under 135-6 (1), the run is **void** (kept, read for nothing) and **BASE s2 is rerun from scratch** on another 3090 (gen-b89, 595.71).
   - That holds provided the experiments session's CPU repro across the 14k switch is clean; that repro is pending.
 * New deploys run a host memory check before their queue and refuse to start on a failure.
+
+**§135 stage-A result (2026-10-07 00:52 EDT; 8 student runs on RTX 3090 / 595.71.05, no restarts; the BASE s2 attempt on b78 is void (host fault, 135-6–135-8) and was
+rerun on b89; scored by Theory alone with `theory/score_s135.py`; post-mortem 135-9 / 135-10). FAIL in both arms (0/4 each). The user's claim on S5:
+neither arm passes.**
+* **TSD** (teacher hidden state): 0/4 exact.
+  - acc at prefix 1 is 0.05–0.54, so the runs are wrong from the first step.
+  - ρ 0.15–0.35. The main loss ends at 3.2–4.7 (chance 4.79).
+  - codes_per_state 1,957–2,557.
+* **BASE** (pretrained GPT-2 on the same text): 0/4 exact.
+  - acc at prefix 1 is 0.95–1.0 and at prefix 2 0.08–0.62: compounding.
+  - ρ 0.48–0.78, non-contracting. The main loss ends at 1.6–4.6.
+  - codes_per_state 3,049–6,870.
+* **Both are worse than no distillation** on the same seeds (plain s1 exact, 1/4 overall), and far below §134 COPY (4/4).
+* **Mechanism (135-9):** the weight-1 InfoNCE has a floor and never vanishes (its minimum is at 2k, then it rises to about 2 by 24k). Its
+  context-specific positive pulls history into the code: 2,000–6,900 codes per state, against 14–29 in exact runs. That breaks the Markov carrier.
+* **Consequences (as registered):** stage B (multiplication) is not run. A revision would be a new registration, after the user's decision (Audit
+  is relaying the post-mortem).
 
 ## 136. GROW: start the latent narrow, widen it once the loss reaches a threshold or a plateau (pre-registered 2026-10-06 22:16 EDT, after Literature's check 15ef99be / 1b5b7ea9 and Audit's review, before any implementation or run; the user's idea "restrict the latent size in early training, then gradually widen it once a loss threshold or plateau is reached", with "a few arms with unique modifications that hope to improve latent training" (via Audit))
 
