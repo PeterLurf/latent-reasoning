@@ -1,4 +1,49 @@
 # local 3070 backlog: the fp32 contraction filler (same lines as c1_backlog_fp32.txt: shared locks), then docs/LOCAL_BACKLOG.md 3070 entries
+# Day filler (Theory 2026-10-07 LOCAL_BACKLOG, descriptive prototypes): 1. §141 r4f8 / r4s16 4x4 to 5k (s501-504, --micro 4); 2. §140 s501-508 already ran; 3. S5 FSQ-16 vs SOFT-16 entry to 4.5k (s501-508, paired, 133-10); 4. C7 on the remaining exact models
+4.5 boxes/runs_fsq/proto141_r4f8_4x4_s502_3070/.done python -u -m boxes.multcol --family mult_col --task 4x4 --seed 502 --repeats 4 --repeat_index --micro 4 --stop_after 5000 --device {DEV} --out boxes/runs_fsq/proto141_r4f8_4x4_s502_3070 && echo ok > boxes/runs_fsq/proto141_r4f8_4x4_s502_3070/.done
+4.5 boxes/runs_fsq/proto141_r4f8_4x4_s504_3070/.done python -u -m boxes.multcol --family mult_col --task 4x4 --seed 504 --repeats 4 --repeat_index --micro 4 --stop_after 5000 --device {DEV} --out boxes/runs_fsq/proto141_r4f8_4x4_s504_3070 && echo ok > boxes/runs_fsq/proto141_r4f8_4x4_s504_3070/.done
+4.5 boxes/runs_fsq/proto141_r4s16_4x4_s502_3070/.done python -u -m boxes.multcol --family mult_col --task 4x4 --seed 502 --repeats 4 --repeat_index --d_q 16 --soft_beta 0.1 --micro 4 --stop_after 5000 --device {DEV} --out boxes/runs_fsq/proto141_r4s16_4x4_s502_3070 && echo ok > boxes/runs_fsq/proto141_r4s16_4x4_s502_3070/.done
+4.5 boxes/runs_fsq/proto141_r4s16_4x4_s504_3070/.done python -u -m boxes.multcol --family mult_col --task 4x4 --seed 504 --repeats 4 --repeat_index --d_q 16 --soft_beta 0.1 --micro 4 --stop_after 5000 --device {DEV} --out boxes/runs_fsq/proto141_r4s16_4x4_s504_3070 && echo ok > boxes/runs_fsq/proto141_r4s16_4x4_s504_3070/.done
+4.0 boxes/runs_fsq/proto133_soft16_s5_s501_3070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 501 --d_q 16 --soft_beta 0.1 --micro 2 --micro_from 32 --no_cert --stop_after 4500 --device {DEV} --out boxes/runs_fsq/proto133_soft16_s5_s501_3070 && echo ok > boxes/runs_fsq/proto133_soft16_s5_s501_3070/.done
+4.0 boxes/runs_fsq/proto133_soft16_s5_s502_3070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 502 --d_q 16 --soft_beta 0.1 --micro 2 --micro_from 32 --no_cert --stop_after 4500 --device {DEV} --out boxes/runs_fsq/proto133_soft16_s5_s502_3070 && echo ok > boxes/runs_fsq/proto133_soft16_s5_s502_3070/.done
+4.0 boxes/runs_fsq/proto133_soft16_s5_s503_3070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 503 --d_q 16 --soft_beta 0.1 --micro 2 --micro_from 32 --no_cert --stop_after 4500 --device {DEV} --out boxes/runs_fsq/proto133_soft16_s5_s503_3070 && echo ok > boxes/runs_fsq/proto133_soft16_s5_s503_3070/.done
+4.0 boxes/runs_fsq/proto133_soft16_s5_s504_3070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 504 --d_q 16 --soft_beta 0.1 --micro 2 --micro_from 32 --no_cert --stop_after 4500 --device {DEV} --out boxes/runs_fsq/proto133_soft16_s5_s504_3070 && echo ok > boxes/runs_fsq/proto133_soft16_s5_s504_3070/.done
+4.0 boxes/runs_fsq/proto133_soft16_s5_s505_3070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 505 --d_q 16 --soft_beta 0.1 --micro 2 --micro_from 32 --no_cert --stop_after 4500 --device {DEV} --out boxes/runs_fsq/proto133_soft16_s5_s505_3070 && echo ok > boxes/runs_fsq/proto133_soft16_s5_s505_3070/.done
+4.0 boxes/runs_fsq/proto133_soft16_s5_s506_3070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 506 --d_q 16 --soft_beta 0.1 --micro 2 --micro_from 32 --no_cert --stop_after 4500 --device {DEV} --out boxes/runs_fsq/proto133_soft16_s5_s506_3070 && echo ok > boxes/runs_fsq/proto133_soft16_s5_s506_3070/.done
+4.0 boxes/runs_fsq/proto133_soft16_s5_s507_3070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 507 --d_q 16 --soft_beta 0.1 --micro 2 --micro_from 32 --no_cert --stop_after 4500 --device {DEV} --out boxes/runs_fsq/proto133_soft16_s5_s507_3070 && echo ok > boxes/runs_fsq/proto133_soft16_s5_s507_3070/.done
+4.0 boxes/runs_fsq/proto133_soft16_s5_s508_3070/.done python -u -m boxes.fsq120 --family s5 --arm final --seed 508 --d_q 16 --soft_beta 0.1 --micro 2 --micro_from 32 --no_cert --stop_after 4500 --device {DEV} --out boxes/runs_fsq/proto133_soft16_s5_s508_3070 && echo ok > boxes/runs_fsq/proto133_soft16_s5_s508_3070/.done
+2.0 boxes/runs_fsq/s120_ff_final_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s120_ff_final_s1 {DEV}
+2.0 boxes/runs_fsq/s120_ff_final_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s120_ff_final_s2 {DEV}
+2.0 boxes/runs_fsq/s120_ff_trace_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s120_ff_trace_s1 {DEV}
+2.0 boxes/runs_fsq/s120_ff_trace_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s120_ff_trace_s2 {DEV}
+2.0 boxes/runs_fsq/s120_s5_final_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s120_s5_final_s1 {DEV}
+2.0 boxes/runs_fsq/s120_s5_trace_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s120_s5_trace_s2 {DEV}
+2.0 boxes/runs_fsq/s123_ff_dither000_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s123_ff_dither000_s1 {DEV}
+2.0 boxes/runs_fsq/s123_ff_dither025_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s123_ff_dither025_s1 {DEV}
+2.0 boxes/runs_fsq/s123_ff_fsqdither_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s123_ff_fsqdither_s1 {DEV}
+2.0 boxes/runs_fsq/s123_ff_fsqdither_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s123_ff_fsqdither_s2 {DEV}
+2.0 boxes/runs_fsq/s123_s5_dither000_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s123_s5_dither000_s1 {DEV}
+2.0 boxes/runs_fsq/s123_s5_dither010_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s123_s5_dither010_s1 {DEV}
+2.0 boxes/runs_fsq/s123_s5_dither025_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s123_s5_dither025_s1 {DEV}
+2.0 boxes/runs_fsq/s123_s5_dither050_s1_3090/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s123_s5_dither050_s1_3090 {DEV}
+2.0 boxes/runs_fsq/s123_s5_fsqdither_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s123_s5_fsqdither_s1 {DEV}
+2.0 boxes/runs_fsq/s130chk_s5_s12_a4000/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s130chk_s5_s12_a4000 {DEV}
+2.0 boxes/runs_fsq/s131x_s5_s403_2080ti/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s131x_s5_s403_2080ti {DEV}
+2.0 boxes/runs_fsq/s133_cont64_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_cont64_s2 {DEV}
+2.0 boxes/runs_fsq/s133_cont64_s201/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_cont64_s201 {DEV}
+2.0 boxes/runs_fsq/s133_fsq16_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_fsq16_s1 {DEV}
+2.0 boxes/runs_fsq/s133_fsq16_s4/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_fsq16_s4 {DEV}
+2.0 boxes/runs_fsq/s133_fsq64_s104/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_fsq64_s104 {DEV}
+2.0 boxes/runs_fsq/s133_fsq64_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_fsq64_s2 {DEV}
+2.0 boxes/runs_fsq/s133_fsq64_s201/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_fsq64_s201 {DEV}
+2.0 boxes/runs_fsq/s133_fsq64_s3/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_fsq64_s3 {DEV}
+2.0 boxes/runs_fsq/s133_noise64_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_noise64_s2 {DEV}
+2.0 boxes/runs_fsq/s133_noise64_s201/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_noise64_s201 {DEV}
+2.0 boxes/runs_fsq/s133_noise64_s3/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_noise64_s3 {DEV}
+2.0 boxes/runs_fsq/s134_copy_cyc_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s134_copy_cyc_s1 {DEV}
+2.0 boxes/runs_fsq/s134_copy_ff_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s134_copy_ff_s1 {DEV}
+2.0 boxes/runs_fsq/s134_copy_mod_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s134_copy_mod_s1 {DEV}
+2.0 boxes/runs_fsq/s134_copy_rdfa_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s134_copy_rdfa_s1 {DEV}
 # §141 pre-launch gates (9e45b92b / note 141-1): CUDA bf16 gradflow through the repeats, GPU smoke (R 4 SOFT-16), memory (R 4: bs 16 micro 1 and bs 64 micro 4 -> extrapolate for the 3090)
 2.5 theory/results/gradflow_s141_cuda.json python -u scratch/gradflow_check.py --paths s141 --device {DEV} --out theory/results/gradflow_s141_cuda.json
 4.0 D:/drain_tmp/smoke141g/eval.json python -u -m boxes.multcol --family mult_col --task 4x4 --seed 1 --repeats 4 --repeat_index --d_q 16 --soft_beta 0.1 --steps 40 --sched_scale 0.002 --bs 16 --log_every 5 --train_n 4000 --test_n 100 --ext_n 100 --donor_n 100 --contract_n 100 --eval_bs 100 --ckpt_every 20 --device {DEV} --out D:/drain_tmp/smoke141g
