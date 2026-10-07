@@ -1,48 +1,762 @@
 {
  "growp": {
   "runs": {
-   "1": null,
-   "2": null,
-   "3": null,
-   "4": null
+   "1": {
+    "long_acc": 0.9965,
+    "ext_2048": 0.99,
+    "serial": true,
+    "rho": 0.13659351904978936,
+    "grows": [
+     [
+      4700,
+      {
+       "from": 8,
+       "to": 64
+      }
+     ]
+    ],
+    "switch_spikes": [
+     1.853
+    ],
+    "entered": null,
+    "width_final": 64,
+    "dim_use": {
+     "new_dim_var_share": 0.7836880087852478,
+     "new_dim_r2_state": 0.9702336192131042,
+     "eff_rank": 6.446145609765712,
+     "acc_w8": null
+    },
+    "codes_per_state": 1607.5,
+    "prefix": {
+     "1": 1.0,
+     "2": 1.0,
+     "4": 1.0,
+     "8": 1.0
+    },
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "595.71.05",
+    "exact": true,
+    "pass": true
+   },
+   "2": {
+    "long_acc": 0.0,
+    "ext_2048": 0.0,
+    "serial": false,
+    "rho": 0.0,
+    "grows": [
+     [
+      4000,
+      {
+       "from": 8,
+       "to": 64
+      }
+     ]
+    ],
+    "switch_spikes": [
+     0.003
+    ],
+    "entered": null,
+    "width_final": 64,
+    "dim_use": {
+     "new_dim_var_share": 0.9565617442131042,
+     "new_dim_r2_state": -0.18761229515075684,
+     "eff_rank": 1.5092919711941648,
+     "acc_w8": null
+    },
+    "codes_per_state": 5.691666666666666,
+    "prefix": {
+     "1": 0.0075,
+     "2": 0.0,
+     "4": 0.0,
+     "8": 0.0
+    },
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "595.71.05",
+    "exact": false,
+    "pass": false
+   },
+   "3": {
+    "long_acc": 0.0,
+    "ext_2048": 0.0,
+    "serial": false,
+    "rho": 0.02419999986886978,
+    "grows": [
+     [
+      4000,
+      {
+       "from": 8,
+       "to": 64
+      }
+     ]
+    ],
+    "switch_spikes": [
+     0.069
+    ],
+    "entered": null,
+    "width_final": 64,
+    "dim_use": {
+     "new_dim_var_share": 0.7203276753425598,
+     "new_dim_r2_state": 0.07635033130645752,
+     "eff_rank": 4.15289929841878,
+     "acc_w8": null
+    },
+    "codes_per_state": 33.358333333333334,
+    "prefix": {
+     "1": 0.048,
+     "2": 0.001,
+     "4": 0.0,
+     "8": 0.0
+    },
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "595.71.05",
+    "exact": false,
+    "pass": false
+   },
+   "4": {
+    "long_acc": 0.0,
+    "ext_2048": 0.0,
+    "serial": false,
+    "rho": 0.10109312516565627,
+    "grows": [
+     [
+      4000,
+      {
+       "from": 8,
+       "to": 64
+      }
+     ]
+    ],
+    "switch_spikes": [
+     0.104
+    ],
+    "entered": null,
+    "width_final": 64,
+    "dim_use": {
+     "new_dim_var_share": 0.6688956618309021,
+     "new_dim_r2_state": 0.06875026226043701,
+     "eff_rank": 8.410908162593067,
+     "acc_w8": null
+    },
+    "codes_per_state": 185.825,
+    "prefix": {
+     "1": 0.0485,
+     "2": 0.0015,
+     "4": 0.0,
+     "8": 0.0
+    },
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "595.71.05",
+    "exact": false,
+    "pass": false
+   }
   },
-  "verdict": "incomplete (0 / 4)"
+  "verdict": "FAIL (1 / 4)"
  },
  "cgrow": {
   "runs": {
-   "1": null,
-   "2": null,
-   "3": null,
-   "4": null
+   "1": {
+    "long_acc": 0.999,
+    "ext_2048": 0.998,
+    "serial": true,
+    "rho": 0.10172202480865657,
+    "grows": [
+     [
+      2000,
+      {
+       "from": 8,
+       "to": 64
+      }
+     ]
+    ],
+    "switch_spikes": [
+     1.48
+    ],
+    "entered": true,
+    "width_final": 64,
+    "dim_use": {
+     "new_dim_var_share": 0.8348644375801086,
+     "new_dim_r2_state": 0.9674403071403503,
+     "eff_rank": 6.551442114723661,
+     "acc_w8": null
+    },
+    "codes_per_state": 1334.975,
+    "prefix": {
+     "1": 1.0,
+     "2": 1.0,
+     "4": 1.0,
+     "8": 1.0
+    },
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "595.71.05",
+    "exact": true,
+    "pass": true
+   },
+   "2": {
+    "long_acc": 0.9995,
+    "ext_2048": 1.0,
+    "serial": true,
+    "rho": 0.09707146663711279,
+    "grows": [
+     [
+      2000,
+      {
+       "from": 8,
+       "to": 64
+      }
+     ]
+    ],
+    "switch_spikes": [
+     1.559
+    ],
+    "entered": true,
+    "width_final": 64,
+    "dim_use": {
+     "new_dim_var_share": 0.8526701331138611,
+     "new_dim_r2_state": 0.9722437262535095,
+     "eff_rank": 6.664492585125085,
+     "acc_w8": null
+    },
+    "codes_per_state": 1369.3083333333334,
+    "prefix": {
+     "1": 1.0,
+     "2": 1.0,
+     "4": 1.0,
+     "8": 1.0
+    },
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "595.84",
+    "exact": true,
+    "pass": true
+   },
+   "3": {
+    "long_acc": 1.0,
+    "ext_2048": 0.998,
+    "serial": true,
+    "rho": 0.10704017851361686,
+    "grows": [
+     [
+      2000,
+      {
+       "from": 8,
+       "to": 64
+      }
+     ]
+    ],
+    "switch_spikes": [
+     2.072
+    ],
+    "entered": true,
+    "width_final": 64,
+    "dim_use": {
+     "new_dim_var_share": 0.8402823805809021,
+     "new_dim_r2_state": 0.9757906198501587,
+     "eff_rank": 6.043494016047376,
+     "acc_w8": null
+    },
+    "codes_per_state": 1356.175,
+    "prefix": {
+     "1": 1.0,
+     "2": 1.0,
+     "4": 1.0,
+     "8": 1.0
+    },
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "595.71.05",
+    "exact": true,
+    "pass": true
+   },
+   "4": {
+    "long_acc": 0.9985,
+    "ext_2048": 0.992,
+    "serial": true,
+    "rho": 0.14159968007034385,
+    "grows": [
+     [
+      2000,
+      {
+       "from": 8,
+       "to": 64
+      }
+     ]
+    ],
+    "switch_spikes": [
+     1.385
+    ],
+    "entered": true,
+    "width_final": 64,
+    "dim_use": {
+     "new_dim_var_share": 0.8551870584487915,
+     "new_dim_r2_state": 0.9614319205284119,
+     "eff_rank": 7.86831335487055,
+     "acc_w8": null
+    },
+    "codes_per_state": 1981.1916666666666,
+    "prefix": {
+     "1": 1.0,
+     "2": 0.9995,
+     "4": 0.999,
+     "8": 0.999
+    },
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "570.211.01",
+    "exact": true,
+    "pass": true
+   }
   },
-  "verdict": "incomplete (0 / 4)"
+  "verdict": "PASS"
  },
  "cstaged": {
   "runs": {
-   "1": null,
-   "2": null,
-   "3": null,
-   "4": null
+   "1": {
+    "long_acc": 1.0,
+    "ext_2048": 1.0,
+    "serial": true,
+    "rho": 0.08732216359983516,
+    "grows": [
+     [
+      2000,
+      {
+       "from": 8,
+       "to": 16
+      }
+     ],
+     [
+      3600,
+      {
+       "from": 16,
+       "to": 32
+      }
+     ],
+     [
+      4600,
+      {
+       "from": 32,
+       "to": 64
+      }
+     ]
+    ],
+    "switch_spikes": [
+     1.494,
+     0.409,
+     1.501
+    ],
+    "entered": true,
+    "width_final": 64,
+    "dim_use": {
+     "new_dim_var_share": 0.7807337045669556,
+     "new_dim_r2_state": 0.9475185871124268,
+     "eff_rank": 7.050564121488557,
+     "acc_w8": null
+    },
+    "codes_per_state": 930.8833333333333,
+    "prefix": null,
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "595.84",
+    "exact": true,
+    "pass": true
+   },
+   "2": {
+    "long_acc": 0.9995,
+    "ext_2048": 0.998,
+    "serial": true,
+    "rho": 0.08090346052215963,
+    "grows": [
+     [
+      2000,
+      {
+       "from": 8,
+       "to": 16
+      }
+     ],
+     [
+      3000,
+      {
+       "from": 16,
+       "to": 32
+      }
+     ],
+     [
+      4000,
+      {
+       "from": 32,
+       "to": 64
+      }
+     ]
+    ],
+    "switch_spikes": [
+     1.516,
+     0.239,
+     -0.097
+    ],
+    "entered": true,
+    "width_final": 64,
+    "dim_use": {
+     "new_dim_var_share": 0.8056868314743042,
+     "new_dim_r2_state": 0.9603100419044495,
+     "eff_rank": 7.188708309193166,
+     "acc_w8": null
+    },
+    "codes_per_state": 1075.8,
+    "prefix": {
+     "1": 1.0,
+     "2": 1.0,
+     "4": 1.0,
+     "8": 1.0
+    },
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "570.211.01",
+    "exact": true,
+    "pass": true
+   },
+   "3": {
+    "long_acc": 0.994,
+    "ext_2048": 0.976,
+    "serial": true,
+    "rho": 0.1029260907664237,
+    "grows": [
+     [
+      2000,
+      {
+       "from": 8,
+       "to": 16
+      }
+     ],
+     [
+      3000,
+      {
+       "from": 16,
+       "to": 32
+      }
+     ],
+     [
+      4000,
+      {
+       "from": 32,
+       "to": 64
+      }
+     ]
+    ],
+    "switch_spikes": [
+     1.619,
+     -0.121,
+     0.094
+    ],
+    "entered": true,
+    "width_final": 64,
+    "dim_use": {
+     "new_dim_var_share": 0.8076633214950562,
+     "new_dim_r2_state": 0.9621574878692627,
+     "eff_rank": 5.882187826896622,
+     "acc_w8": null
+    },
+    "codes_per_state": 1157.025,
+    "prefix": {
+     "1": 1.0,
+     "2": 1.0,
+     "4": 1.0,
+     "8": 1.0
+    },
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "595.71.05",
+    "exact": false,
+    "pass": false
+   },
+   "4": {
+    "long_acc": 0.9985,
+    "ext_2048": 0.992,
+    "serial": true,
+    "rho": 0.10104493874939359,
+    "grows": [
+     [
+      2000,
+      {
+       "from": 8,
+       "to": 16
+      }
+     ],
+     [
+      3900,
+      {
+       "from": 16,
+       "to": 32
+      }
+     ],
+     [
+      4900,
+      {
+       "from": 32,
+       "to": 64
+      }
+     ]
+    ],
+    "switch_spikes": [
+     1.344,
+     0.175,
+     2.691
+    ],
+    "entered": true,
+    "width_final": 64,
+    "dim_use": {
+     "new_dim_var_share": 0.8158203363418579,
+     "new_dim_r2_state": 0.9519583582878113,
+     "eff_rank": 8.000375857860119,
+     "acc_w8": null
+    },
+    "codes_per_state": 1449.65,
+    "prefix": null,
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "595.84",
+    "exact": true,
+    "pass": true
+   }
   },
-  "verdict": "incomplete (0 / 4)"
+  "verdict": "IMPROVES (3/4, descriptive)"
  },
  "cnoise": {
   "runs": {
-   "1": null,
-   "2": null,
-   "3": null,
-   "4": null
+   "1": {
+    "long_acc": 1.0,
+    "ext_2048": 1.0,
+    "serial": true,
+    "rho": 0.11023159922086619,
+    "grows": [
+     [
+      2000,
+      {
+       "from": 8,
+       "to": 64
+      }
+     ]
+    ],
+    "switch_spikes": [
+     1.523
+    ],
+    "entered": true,
+    "width_final": 64,
+    "dim_use": {
+     "new_dim_var_share": 0.8157588243484497,
+     "new_dim_r2_state": 0.9551441669464111,
+     "eff_rank": 6.969677714701091,
+     "acc_w8": null
+    },
+    "codes_per_state": 16.758333333333333,
+    "prefix": {
+     "1": 1.0,
+     "2": 1.0,
+     "4": 1.0,
+     "8": 1.0
+    },
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "595.80",
+    "exact": true,
+    "pass": true
+   },
+   "2": {
+    "long_acc": 0.9985,
+    "ext_2048": 0.99,
+    "serial": true,
+    "rho": 0.07317971115021514,
+    "grows": [
+     [
+      2000,
+      {
+       "from": 8,
+       "to": 64
+      }
+     ]
+    ],
+    "switch_spikes": [
+     1.505
+    ],
+    "entered": true,
+    "width_final": 64,
+    "dim_use": {
+     "new_dim_var_share": 0.8433998227119446,
+     "new_dim_r2_state": 0.9726980924606323,
+     "eff_rank": 6.692584294778669,
+     "acc_w8": null
+    },
+    "codes_per_state": 33.125,
+    "prefix": {
+     "1": 1.0,
+     "2": 1.0,
+     "4": 0.9995,
+     "8": 0.9995
+    },
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "595.71.05",
+    "exact": true,
+    "pass": true
+   },
+   "3": {
+    "long_acc": 1.0,
+    "ext_2048": 1.0,
+    "serial": true,
+    "rho": 0.08153323118108996,
+    "grows": [
+     [
+      2000,
+      {
+       "from": 8,
+       "to": 64
+      }
+     ]
+    ],
+    "switch_spikes": [
+     2.015
+    ],
+    "entered": true,
+    "width_final": 64,
+    "dim_use": {
+     "new_dim_var_share": 0.8407578468322754,
+     "new_dim_r2_state": 0.9779263138771057,
+     "eff_rank": 5.865292276343822,
+     "acc_w8": null
+    },
+    "codes_per_state": 27.516666666666666,
+    "prefix": {
+     "1": 1.0,
+     "2": 1.0,
+     "4": 1.0,
+     "8": 1.0
+    },
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "595.71.05",
+    "exact": true,
+    "pass": true
+   },
+   "4": {
+    "long_acc": 0.999,
+    "ext_2048": 0.998,
+    "serial": true,
+    "rho": 0.0717407972710473,
+    "grows": [
+     [
+      2000,
+      {
+       "from": 8,
+       "to": 64
+      }
+     ]
+    ],
+    "switch_spikes": [
+     1.422
+    ],
+    "entered": true,
+    "width_final": 64,
+    "dim_use": {
+     "new_dim_var_share": 0.8517313003540039,
+     "new_dim_r2_state": 0.9574671387672424,
+     "eff_rank": 8.170942495880361,
+     "acc_w8": null
+    },
+    "codes_per_state": 33.95,
+    "prefix": {
+     "1": 1.0,
+     "2": 1.0,
+     "4": 0.9995,
+     "8": 0.9995
+    },
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "595.71.05",
+    "exact": true,
+    "pass": true
+   }
   },
-  "verdict": "incomplete (0 / 4)"
+  "verdict": "PASS"
  },
  "grow4": {
   "runs": {
-   "1": null,
-   "2": null,
-   "3": null,
-   "4": null
+   "1": {
+    "long_acc": 0.0,
+    "ext_2048": 0.0,
+    "serial": false,
+    "rho": 0.066600002348423,
+    "grows": [],
+    "switch_spikes": [],
+    "entered": false,
+    "width_final": 4,
+    "dim_use": {
+     "new_dim_var_share": null,
+     "new_dim_r2_state": null,
+     "eff_rank": 2.6560045634003515,
+     "acc_w8": null
+    },
+    "codes_per_state": 14.9,
+    "prefix": null,
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "595.71.05",
+    "exact": false,
+    "pass": false
+   },
+   "2": {
+    "long_acc": 0.0,
+    "ext_2048": 0.0,
+    "serial": false,
+    "rho": 0.0,
+    "grows": [],
+    "switch_spikes": [],
+    "entered": false,
+    "width_final": 4,
+    "dim_use": {
+     "new_dim_var_share": null,
+     "new_dim_r2_state": null,
+     "eff_rank": 3.8686525045670153,
+     "acc_w8": null
+    },
+    "codes_per_state": 13.325,
+    "prefix": null,
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "595.71.05",
+    "exact": false,
+    "pass": false
+   },
+   "3": {
+    "long_acc": 0.0,
+    "ext_2048": 0.0,
+    "serial": false,
+    "rho": 0.0,
+    "grows": [],
+    "switch_spikes": [],
+    "entered": false,
+    "width_final": 4,
+    "dim_use": {
+     "new_dim_var_share": null,
+     "new_dim_r2_state": null,
+     "eff_rank": 3.845709577267267,
+     "acc_w8": null
+    },
+    "codes_per_state": 31.908333333333335,
+    "prefix": null,
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "595.71.05",
+    "exact": false,
+    "pass": false
+   },
+   "4": {
+    "long_acc": 0.0,
+    "ext_2048": 0.0,
+    "serial": false,
+    "rho": 0.0,
+    "grows": [],
+    "switch_spikes": [],
+    "entered": false,
+    "width_final": 4,
+    "dim_use": {
+     "new_dim_var_share": null,
+     "new_dim_r2_state": null,
+     "eff_rank": 3.1290764682499965,
+     "acc_w8": null
+    },
+    "codes_per_state": 15.166666666666666,
+    "prefix": null,
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "595.71.05",
+    "exact": false,
+    "pass": false
+   }
   },
-  "verdict": "incomplete (0 / 4)"
+  "verdict": "FAIL (0 / 4)"
  },
  "nested": {
   "runs": {
@@ -51,15 +765,47 @@
   "verdict": "pending"
  },
  "entry_d4": {
-  "1": null,
-  "2": null,
-  "3": null,
-  "4": null
+  "1": false,
+  "2": false,
+  "3": false,
+  "4": false
  },
  "growp_fired": {
-  "1": null,
-  "2": null,
-  "3": null,
-  "4": null
+  "1": [
+   [
+    4700,
+    {
+     "from": 8,
+     "to": 64
+    }
+   ]
+  ],
+  "2": [
+   [
+    4000,
+    {
+     "from": 8,
+     "to": 64
+    }
+   ]
+  ],
+  "3": [
+   [
+    4000,
+    {
+     "from": 8,
+     "to": 64
+    }
+   ]
+  ],
+  "4": [
+   [
+    4000,
+    {
+     "from": 8,
+     "to": 64
+    }
+   ]
+  ]
  }
 }
