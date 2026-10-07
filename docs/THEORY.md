@@ -6516,6 +6516,17 @@ per state over the 2,000 × 512 test chains. It reads BASE 6,870 / 3,049 / 3,568
 * Both fields give the same reading: the §135 codes carry 60–470 times more codes per state than exact runs. The prose range "2,000–6,900" in
   135-9 should read 1,957–6,870 (`codes_per_state`), or 1,754–6,901 (`code_growth_ext`).
 
+**Note 133-9 (2026-10-07 01:19 EDT; interim; scored by Theory with score_s133). SOFT-16 reads stage-1 PASS. FSQ-16 is decided by its slot 2.**
+* **SOFT-16: PASS** (≥ 3/4 slots).
+  - slot 1 s1: ext 0.998, ρ 0.134 (fp32 rho_k3, now computed);
+  - slot 2 s102 (s2 flagged at 2k): ext 1.000, ρ 0.113;
+  - slot 4 s4: ext 1.000, ρ 0.111.
+  - All are SERIAL. Slot 3 is still running and is descriptive for the verdict.
+  - A weak soft pull (β 0.1) toward the FSQ grid keeps a **16-d** carrier exact and contractive, where it did not at d 64 (SOFT-64 dropped, 133-7).
+* **FSQ-16:** slot 1 passes (0.996, ρ 0.167), slot 4 passes (s4: 1.000, ρ 0.176), and slot 3 fails (s3 unflagged at 2k, ext 0.0). **Slot 2 (running)
+  decides PASS or FAIL.**
+* **64-d arms** (FSQ-64, NOISE-64, CONT-64): only slot 1 is decided (all pass). Slots 2–4 are running.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
