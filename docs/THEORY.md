@@ -228,7 +228,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 138 | FULL WIDTH (the user's trigger): §133's harness at d 768, no COPY; FULL-FSQ / FULL-NOISE / FULL-CONT (vs RAW-H) / FULL-HINGE; fails-to-improve → revisit; S5×4 as the benefit test | **all four dropped at proof** (ext 0.0; escape after the 2k flag to ≈ ln 120, like RAW-H on 3/4; the hinge never engaged) → rule (i): one revised method, §143 | closed (→ §143) |
 | 139 | DISTILL-2 (user's go): a CoT teacher's state (probe or its text) as a warm-start fading to 0 by 4k, on multiplier-major multiplication; A = SOFT-16 + COPY (FINAL), B = A + DISTILL-2, C = constant weight | **stopped at proof** (139-1(c) copy gate; A′ / B s1 test_acc 0.0, B learns only step 1 at 0.59) | closed |
 | 140 | DIGPAIR (§137's fallback; runs only on §137 4×4 DROP / FAIL): one digit pair per segment, carried column accumulator (FSQ-8), streamed digits; design-forced C1 | **4×4 DROP at proof** (0.002; columns 1–2 exact, first errors at the 3- and 4-pair columns; accumulator R² h 0.92 vs code 0.61) | closed |
-| 141 | After §137's DROP: latent repeats per column (r4 + repeat index) × carrier (FSQ-8 / SOFT-16); r1×SOFT-16 gated on a nonlinear code probe; readings crossed with §140 | **r1s16 and r4f8 DROP at proof** (test_acc 0.0; repeats change nothing: columns as §137, the sum's R² ≤ 0.28 after any repeat); r4s16 pending | **open** (r4s16) |
+| 141 | After §137's DROP: latent repeats per column (r4 + repeat index) × carrier (FSQ-8 / SOFT-16); r1×SOFT-16 gated on a nonlinear code probe; readings crossed with §140 | **all three cells DROP at proof** (r1s16 / r4f8 / r4s16 test 0.0; repeats change nothing, the column sum's R² ≤ 0.35 after any repeat; soft rounding slightly better) | closed |
 | 142 | MULT-READ (the user's go): a per-step reader of the running sum (the teacher's S_j text) on NOISE-64, multiplier-major 4×4, 48k; then ICoT-style earliest-first removal to final-answer only (B-EARLY; B-LATE and CTRL descriptive); with the multiplication post-mortem | **DROP at proof** (A s1 0.002; S₁ 1.0, S₂ 0.35, S₃ 0.05; the gate never opened): not acquired within budget; the bounded-carrier multiplication line is parked | closed |
 | 143 | FULL-GROW (§138's one revised method): §136 COPY+GROW-NOISE to 64, then 64 → 768 at ≥ 6k with μP lr on the new columns; e-space ρ; paired per seed with s136_cnoise; if it fails, full width stops | registered | **open** |
 | 144 | RUNNING-SUM (the user's "fix the multiplication"; diagnostic): sum mod 10⁴ with 2-digit items on fsq120, FSQ-8 / NOISE-64; can the carrier carry a growing number? (conditional magnitude ladder) | registered | **open** |
@@ -7979,6 +7979,17 @@ budget (147-1 (3)).**
 
 **Note 148-1 (2026-10-07 18:30 EDT; a wording fix to the §148 result, after Audit's reproduction).** The loop-state swap (donor-consistent 0.002) is **untestable** here: the model is at 0.002
 itself. It is not evidence of "no causal loop state". Everything else in the result stands as Audit reproduced it (loop ρ_k 0.988 → 1.000 at ε 0.01).
+
+**§141 result (2026-10-07 19:03 EDT; all three cells' proof slots, RTX 3090s; scored by Theory with score_s141). Every cell is dropped at proof (test_acc 0.000), so §141 is closed.**
+* **r4s16** (b131, 24k): per column 1.0 / **0.495** / 0.154 / 0.109 / 0.075 / 0.100 / 0.090 / 0.901, against r4f8's 1.0 / 0.371 / 0.137 / … (141-5) and r1s16's 1.0 / 0.663 / 0.19
+  / … (141-4).
+  - **Per-repeat probe:** the column sum's R² 0.17 / 0.22 / 0.35 / 0.28, with ‖Δcode‖ 9.5 / 8.0 / 7.3 / 9.1. This is r4f8's shape (rising through repeat 3, lost at repeat 4)
+    at a slightly higher level.
+  - SERIAL is untestable (row-level donor 0.000–0.001; the model fails these columns itself).
+* **Reading (as registered: r4 DROP with §140 DROP):** multiplication is not reached by this harness at this budget. Extra latent steps without new input do not buy the
+  per-column compute.
+  - **r4s16 against r4f8:** soft rounding helps slightly (column 2 0.50 against 0.37; probe peak 0.35 against 0.28), so FSQ rounding is not the main block.
+* **This completes §142's post-mortem table** (the r4s16 row: 0.000, with columns 3–7 at chance), as that table promised.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
