@@ -1421,6 +1421,8 @@ def main():
                         "crng": crng.bit_generator.state, "copy_hist": copy_hist, "tot_hist": tot_hist,
                         "tsd": {"hist": tsd_hist, "top1": tsd_top1, "share": tsd_share, "share_all": tsd_share_all, "share_cos": tsd_share_cos,
                                 "share_cos_all": tsd_share_cos_all}}, cp + ".tmp")   # Audit: a resumed §135 student keeps whole-run tallies
+            if os.path.exists(cp):                                          # Theory note 135-6: the previous save is kept too, so a fault
+                os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))         #   after a save (b78 VRAM) still leaves a clean state to resume from
             os.replace(cp + ".tmp", cp); log.write(json.dumps({"step": step, "ckpt": "ckpt_last.pt"}) + "\n"); log.flush()
         if a.stop_after and step >= a.stop_after:                           # resume-parity test only
             log.close(); print("STOP_AFTER", step, flush=True); return
@@ -1521,8 +1523,9 @@ def main():
                        "masked_share_cos": float(np.mean(tsd_share_cos_all)) if tsd_share_cos_all else None, "masked_share_cos_eval": share_cos_e, "mask": "gold state (note 135-4)"}
     res["p_hard_ramp"] = [a.p_hard_start, a.p_hard_end]
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
-    if os.path.exists(os.path.join(a.out, "ckpt_last.pt")):                # retention (user 2026-10-06): the checkpoint goes once eval.json exists
-        os.remove(os.path.join(a.out, "ckpt_last.pt"))
+    for ck_ in ("ckpt_last.pt", "ckpt_prev.pt"):                            # retention (user 2026-10-06): the checkpoints go once eval.json exists
+        if os.path.exists(os.path.join(a.out, ck_)):
+            os.remove(os.path.join(a.out, ck_))
     print("EVAL", json.dumps({k: res[k] for k in ("long_acc", "n_codes", "cert")}), flush=True); print("DONE", a.out, flush=True)
 
 
