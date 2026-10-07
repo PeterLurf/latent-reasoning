@@ -6880,6 +6880,12 @@ trigger fired on seed 1, the plain learner on this card class.
   - One of each is reported as mixed.
 * §134's verdict is unchanged either way (the registered guard rule decided it). This bears only on the mechanism.
 
+**Note 134-7 (2026-10-07 04:50 EDT; before the 134-6 runs exist; Audit's addition).**
+* **The mixed outcome, stated now:** if exactly 1 of s2 / s3 fails closure, the reading is "COPY raises the risk of an open transient region on MOD (2/3 against
+  plain's 0/4), not a certainty". COPY remains non-default.
+* **A "closes" reading needs an uncapped fp32 certificate** (capped false, not timed out). A capped or timed-out certificate reads as inconclusive for that seed.
+* Audit approved the two runs (about $1, descriptive), deployed after §137 / §139 / §140.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
