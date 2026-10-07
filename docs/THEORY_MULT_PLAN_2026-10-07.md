@@ -27,6 +27,14 @@
   - MULTIPLIER as in v1.
   - About $1–2 per size for COLUMN (L = 2n segments of about 12 tokens, about 30–60 min per run).
 
+* **Later, toward strict C4 (final answers / rewards only; Literature 070703ea, `docs/LIT_GENERAL_LATENT_MAP_2026-10-07.md`):**
+  - every published latent-RL success warm-starts from a supervised or self-distilled latent model (SLPO 2607.19691, Abstract-CoT 2604.22709,
+    HRPO, SofT-GRPO).
+  - So, from an **entered §137 carrier**: make each FSQ dimension's level choice stochastic (a categorical over its levels), which gives an exact
+    per-step log-likelihood, then run GRPO with a final-answer reward.
+  - Abstract-CoT (bottleneck SFT ↔ self-distillation → RL over discrete codes) is the template.
+  - A separate registration, only after §137 passes.
+
 ## v1 (2026-10-07 01:30): multiplier-major
 
 The user asked "when can we run multiplication". Their standing rule: multiplication returns only through the task-agnostic harness
