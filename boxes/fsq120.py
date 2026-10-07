@@ -104,6 +104,13 @@ FF_BIT = [bc.tok(" 0")[0], bc.tok(" 1")[0]]
 W0, W1, I0, I1, RD = range(5)
 # §128 held-out families (code-zero start as flip-flop; answers are one digit token " 0".." 7")
 DIGTOK = [bc.tok(" %d" % i)[0] for i in range(8)]
+DIG10 = [bc.tok(" %d" % i)[0] for i in range(10)]                           # §144 sum4: digit tokens 0..9
+SUM_MOD = 10000                                                             # §144: --sum_mod (the ladder: 100 / 1000)
+
+
+def digits4(v):
+    """§144: four decimal digits, least-significant first."""
+    v = np.asarray(v, np.int64); return np.stack([(v // 10 ** k) % 10 for k in range(4)], -1)
 CYC_ITEMS = [bc.tok(" stay"), bc.tok(" right"), bc.tok(" left")]; CYC_STEP = np.array([0, 1, -1])
 assert [t[0] for t in CYC_ITEMS] == [2652, 826, 1364] and all(len(t) == 1 for t in CYC_ITEMS), CYC_ITEMS
 MOD_ITEMS = [bc.tok(" %s %d" % (op, d)) for op in ("plus", "minus", "times") for d in range(5)]   # item = 5 * op + d
@@ -141,7 +148,7 @@ class Family:
     """S5: states 0..119 (element ids), items 0..119 (ops), delta = COMP. Flip-flop: states 0 (none) / 1 (last bit 0) /
     2 (last bit 1), items W0 W1 I0 I1 RD; delta: writes set the bit, others keep it; the answer is the bit (state - 1)."""
     def __init__(self, name):
-        self.name = name
+        self.name = name; self.rstart = name in ("s5", "sum4")                 # §144: random start text (as S5)
         if name == "s5":
             self.n_items, self.n_states = 120, 120; self.item_tok = np.array([OPTOK[e] for e in range(120)])
         elif name == "cyc":                                                 # §128: 5-cycle, stay / right / left
@@ -150,13 +157,18 @@ class Family:
             self.n_items, self.n_states = 15, 5; self.item_tok = np.array(MOD_ITEMS)
         elif name == "rdfa":                                                # §128: the seeded random automaton
             self.n_items, self.n_states = 4, 8; self.item_tok = np.array(RDFA_ITEMS)
+        elif name == "sum4":                                                # §144: s <- (s + x) mod SUM_MOD, x = 0..99 as two digit tokens LSB first
+            self.n_items, self.n_states = 100, SUM_MOD; self.item_tok = np.array([[DIG10[x % 10], DIG10[x // 10]] for x in range(100)])
         else:
             self.n_items, self.n_states = 5, 3; self.item_tok = np.array(FF_ITEMS)
+        self.ntok = NST if name == "s5" else (4 if name == "sum4" else 1)     # answer tokens (§144: 4 digits, LSB first)
 
     def delta(self, s, x):
         if self.name == "s5":
             return s5.COMP[s, x]
         s = np.array(s); x = np.array(x)
+        if self.name == "sum4":
+            return (s + x) % self.n_states
         if self.name == "cyc":
             return (s + CYC_STEP[x]) % 5
         if self.name == "mod":
@@ -168,6 +180,8 @@ class Family:
 
     def answer_tokens(self, s):
         """Answer token rows for states s (S5: 6-token state text; ff: the bit token)."""
+        if self.name == "sum4":
+            return np.array(DIG10)[digits4(s)]
         if self.name in HELD:
             return np.array(DIGTOK)[np.array(s)][:, None]
         return STTOK[s] if self.name == "s5" else np.array(FF_BIT)[np.clip(np.array(s) - 1, 0, 1)][:, None]
@@ -176,6 +190,9 @@ class Family:
         """Decoded answer token rows -> states (-1 = invalid)."""
         if self.name == "s5":
             return decode_to_el(toks)[0]
+        if self.name == "sum4":                                             # four digit tokens -> value, -1 if any token is not a digit
+            lut = {t: i for i, t in enumerate(DIG10)}; d = np.vectorize(lambda t: lut.get(int(t), -1))(toks[:, :4])
+            return np.where((d >= 0).all(1), (d * (10 ** np.arange(4))[None]).sum(1), -1)
         if self.name in HELD:                                               # a digit token naming a valid state, else -1
             t = toks[:, 0]; lut = {tk: i for i, tk in enumerate(DIGTOK[:self.n_states])}
             return np.array([lut.get(int(v), -1) for v in t])
@@ -426,6 +443,8 @@ class FSQ120(nn.Module):
         self._h_last = None
         if self.fam.name == "s5":
             return self.g.embed(torch.tensor(STTOK[states], device=dev))
+        if self.fam.name == "sum4":                                         # §144: the start is s0's 4-digit text (LSB first, as the answer)
+            return self.g.embed(torch.tensor(np.array(DIG10)[digits4(states)], device=dev))
         z0 = torch.zeros(B, D_Q, device=dev)
         if self.std2:                                                       # §127 C: the start is not a hand-off (see std2_map)
             return self.std2_map(self.up(z0), acc=False)[:, None]
@@ -506,6 +525,8 @@ def lmax_at(step):
 def make_batch(fam, rng, bs, L):
     if fam.name == "s5":
         s0 = rng.integers(0, 120, bs); x = rng.integers(0, 120, (bs, L))
+    elif fam.name == "sum4":                                                # §144: uniform random start, items uniform 0..99
+        s0 = rng.integers(0, fam.n_states, bs); x = rng.integers(0, 100, (bs, L))
     elif fam.name in HELD:                                                  # §128: start 0, items uniform
         s0 = np.zeros(bs, np.int64); x = rng.integers(0, fam.n_items, (bs, L))
     else:
@@ -520,11 +541,11 @@ def make_batch(fam, rng, bs, L):
 def run_test(m, fam, s0, X, dev, amp, bs, every=True, grid=None, drift=None):
     """Hard chains; decode at every position (every=True) or at reads only (flip-flop). Returns decoded states (N, L) and
     the codes (N, L, 8) int8."""
-    N, L = X.shape; pred = np.full((N, L), -1); ntok = NST if fam.name == "s5" else 1
+    N, L = X.shape; pred = np.full((N, L), -1); ntok = fam.ntok
     W_ = 1 if m.raw_h else (min(D_Q, 64) if m.grow_d0 is not None else D_Q)   # §143: a 768-wide grown code keeps its first 64 dims (GROW-NOISE reads only d0)
     codes = np.zeros((N, L, W_), np.float32 if (m.no_round or m.raw_h or m.grow_noise) else np.int8)   # §126: 768-d carriers not stored
     for i in range(0, N, bs):
-        sl = slice(i, i + bs); B = len(X[sl]); prev = m.start(B, dev, s0[sl] if fam.name == "s5" else None)
+        sl = slice(i, i + bs); B = len(X[sl]); prev = m.start(B, dev, s0[sl] if fam.rstart else None)
         for t in range(L):
             with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
                 h = m.segment(prev, torch.tensor(X[sl, t], device=dev)); qs, q, zb = m.quant(h); e = m.embed_code(qs)
@@ -547,7 +568,7 @@ def run_test(m, fam, s0, X, dev, amp, bs, every=True, grid=None, drift=None):
 def certificate(m, fam, dev, amp, cap, bs=2048, time_limit=None, first_items=None, codes_out=None):
     """BFS over the code machine; decode each code; check the transition law on every reachable (code, item) pair.
     time_limit (s, Audit 2026-10-05): stop the BFS when exceeded -> timed_out (inconclusive, like the cap)."""
-    ntok = NST if fam.name == "s5" else 1; idx = {}; codes = []; dec = []; trans = {}; t_start = time.time(); timed_out = False
+    ntok = fam.ntok; idx = {}; codes = []; dec = []; trans = {}; t_start = time.time(); timed_out = False
     def add(qrows):
         out = []
         for r in qrows:
@@ -564,12 +585,12 @@ def certificate(m, fam, dev, amp, cap, bs=2048, time_limit=None, first_items=Non
                 res.append(fam.decode(m.answer_greedy(m.embed_code(q), ntok, q).cpu().numpy()))
         return np.concatenate(res) if res else np.zeros(0, int)
     # start transitions
-    starts = np.arange(120) if fam.name == "s5" else np.array([0]); ok = True; frontier = []; viol = 0
+    starts = np.arange(fam.n_states) if fam.rstart else np.array([0]); ok = True; frontier = []; viol = 0
     S, X = np.meshgrid(starts, np.arange(fam.n_items) if first_items is None else np.array(first_items), indexing="ij"); S, X = S.ravel(), X.ravel()   # note 120-7: FF task start = a write
     for i in range(0, len(S), bs):
         B = len(S[i:i + bs])
         with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
-            h = m.segment(m.start(B, dev, S[i:i + bs] if fam.name == "s5" else None), torch.tensor(X[i:i + bs], device=dev)); _, q, _ = m.quant(h)
+            h = m.segment(m.start(B, dev, S[i:i + bs] if fam.rstart else None), torch.tensor(X[i:i + bs], device=dev)); _, q, _ = m.quant(h)
         ids = add(q.float().cpu().numpy().astype(np.int8)); frontier += ids
         for s_, x_, c in zip(S[i:i + bs], X[i:i + bs], ids):
             trans[("start", int(s_), int(x_))] = c
@@ -698,7 +719,7 @@ def carried_stats(m, fam, dev, amp, n=256, L=4, seed=12500):
     the per-coordinate std across inputs (mean over coordinates, and its norm), plus GPT-2 wte's row norm for reference."""
     was = m.training; m.eval(); s0, x, _ = make_batch(fam, np.random.default_rng(seed), n, L)
     with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
-        _, _, _, embs = m.chain(m.start(n, dev, s0 if fam.name == "s5" else None), torch.tensor(x, device=dev), record=True)
+        _, _, _, embs = m.chain(m.start(n, dev, s0 if fam.rstart else None), torch.tensor(x, device=dev), record=True)
     E = torch.cat([e.float() for e in embs]); sd = E.std(0); W = m.g.w("wte.weight").float()
     out = {"row_norm": float(E.norm(dim=-1).mean()), "per_coord_std_across_inputs": float(sd.mean()), "std_vector_norm": float(sd.norm()),
            "wte_row_norm": float(W.norm(dim=-1).mean()), "n": int(E.shape[0])}
@@ -913,7 +934,7 @@ def probe_batch127(fam):
 def _probe_chain(m, fam, dev, amp, s0, x, grad=False, train_sem=False):
     """Run the probe chains in eval mode (no torch draws); returns per-hand-off (zb, qs, e). train_sem: what training feeds
     GPT-2 at this step, deterministically (soft codes unless p_hard = 1; STD2 on this hand-off's batch statistics)."""
-    m.det_train = train_sem; prev = m.start(len(x), dev, s0 if fam.name == "s5" else None); X = torch.tensor(x, device=dev); out = []
+    m.det_train = train_sem; prev = m.start(len(x), dev, s0 if fam.rstart else None); X = torch.tensor(x, device=dev); out = []
     try:
         with torch.set_grad_enabled(grad), torch.autocast("cuda", dtype=amp, enabled=amp is not None):
             for t in range(X.shape[1]):
@@ -968,7 +989,7 @@ def s136_dim_use(m, fam, dev, amp, d0):
 
 def _s138_probe(m, fam, dev, amp, seed=13801, n=1024, L=8):
     """§138's fixed probe batch: eval-mode chains; per hand-off z_b (fp32), the hard code q and the true state."""
-    s0, x, lab = make_batch(fam, np.random.default_rng(seed), n, L); hs = _probe_chain(m, fam, dev, amp, s0 if fam.name == "s5" else None, x)
+    s0, x, lab = make_batch(fam, np.random.default_rng(seed), n, L); hs = _probe_chain(m, fam, dev, amp, s0 if fam.rstart else None, x)
     Z = torch.stack([z.float() for z, _, _ in hs], 1); Q = torch.stack([q.float() for _, q, _ in hs], 1)
     return s0, x, lab, Z, Q
 
@@ -1044,7 +1065,7 @@ def opprobe(m, fam, dev, amp, n=4096, L=8, seed=12703, positions=(2, 4, 8), chun
     was = m.training; m.eval(); s0, x, lab = make_batch(fam, np.random.default_rng(seed), n, L); Z = []
     with torch.no_grad():
         for i in range(0, n, chunk):
-            sl = slice(i, i + chunk); hs = _probe_chain(m, fam, dev, amp, s0[sl] if fam.name == "s5" else None, x[sl])
+            sl = slice(i, i + chunk); hs = _probe_chain(m, fam, dev, amp, s0[sl] if fam.rstart else None, x[sl])
             Z.append(torch.stack([z.float() for z, _, _ in hs], 1).cpu().numpy())
     m.train(was); Z = np.concatenate(Z, 0); half = n // 2; K = fam.n_items; out = {"n": n, "seed": seed}
     S0 = np.asarray(s0) if s0 is not None else np.zeros(n, np.int64)
@@ -1084,7 +1105,7 @@ def dialect134(m, fam, dev, amp, n=1024, L=8, seed=13401, chunk=512):
     was = m.training; m.eval(); Qc, Zc = copy_codes134(m, fam, dev, amp); s0, x, lab = make_batch(fam, np.random.default_rng(seed), n, L)
     idn = np.zeros((n, L)); cs = np.zeros((n, L))
     for i in range(0, n, chunk):
-        sl = slice(i, i + chunk); hs = _probe_chain(m, fam, dev, amp, s0[sl] if fam.name == "s5" else None, x[sl])
+        sl = slice(i, i + chunk); hs = _probe_chain(m, fam, dev, amp, s0[sl] if fam.rstart else None, x[sl])
         for t, (zb, qs, e) in enumerate(hs):
             st = torch.tensor(lab[sl, t], device=dev); z = zb.float()
             idn[sl, t] = (torch.round(z) == Qc[st]).all(-1).float().cpu().numpy(); cs[sl, t] = F.cosine_similarity(z, Zc[st], dim=-1).cpu().numpy()
@@ -1098,11 +1119,11 @@ def copy_donor134(m, fam, dev, amp, n=1000, L=16, positions=(2, 4, 8), seed=1340
     """Note 134-1: at position j of a transition chain, replace the carried code with the copy-written code of the same true state,
     then score the chain's final answer (exact). Intact accuracy alongside."""
     was = m.training; m.eval(); Qc, _ = copy_codes134(m, fam, dev, amp); s0, x, lab = make_batch(fam, np.random.default_rng(seed), n, L)
-    ntok = NST if fam.name == "s5" else 1; res = {"n": n, "L": L}
+    ntok = fam.ntok; res = {"n": n, "L": L}
     for j in (0,) + tuple(positions):
         ok = 0
         for i in range(0, n, chunk):
-            sl = slice(i, i + chunk); B = len(x[sl]); prev = m.start(B, dev, s0[sl] if fam.name == "s5" else None); X = torch.tensor(x[sl], device=dev)
+            sl = slice(i, i + chunk); B = len(x[sl]); prev = m.start(B, dev, s0[sl] if fam.rstart else None); X = torch.tensor(x[sl], device=dev)
             with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
                 for t in range(L):
                     h = m.segment(prev, X[:, t]); qs, q, zb = m.quant(h)
@@ -1181,7 +1202,7 @@ CONTRACT_EPS = (0.03, 0.1, 0.3, 1.0)
 def contraction(m, fam, dev, amp, n=500, T0=4, K=16, seed=12301):
     """§123 rho / basin (theory/contraction_diag.py ported): perturb carried z_b at T0 by eps * std_d * u, run K hand-offs."""
     rng = np.random.default_rng(seed); s0, x, _ = make_batch(fam, rng, n, T0 + K); X = torch.tensor(x, device=dev)
-    ntok = NST if fam.name == "s5" else 1; ac = lambda: torch.autocast("cuda", dtype=amp, enabled=amp is not None)  # noqa: E731
+    ntok = fam.ntok; ac = lambda: torch.autocast("cuda", dtype=amp, enabled=amp is not None)  # noqa: E731
     def step(prev, t, add=None):
         with ac():
             h = m.segment(prev, X[:, t]); qs, q, zb = m.quant(h, noise=add); e = m.embed_code(qs)
@@ -1190,7 +1211,7 @@ def contraction(m, fam, dev, amp, n=500, T0=4, K=16, seed=12301):
     def dec(e):
         with ac():
             return fam.decode(m.answer_greedy(e, ntok, e.qs_).cpu().numpy())
-    prev = m.start(n, dev, s0 if fam.name == "s5" else None); zs = []
+    prev = m.start(n, dev, s0 if fam.rstart else None); zs = []
     for t in range(T0 - 1):
         z, e = step(prev, t); zs.append(z); prev = e[:, None]
     pre_T0 = prev; zT0, eT0 = step(prev, T0 - 1); zs.append(zT0); clean = [zT0]; cdec = []; c = eT0[:, None]
@@ -1261,15 +1282,15 @@ def code_growth(codes, lab=None):
 
 @torch.no_grad()
 def donor(m, fam, dev, amp, n=2000, seed=12001, bs=500):
-    rng = np.random.default_rng(seed); res = {}; ntok = NST if fam.name == "s5" else 1
+    rng = np.random.default_rng(seed); res = {}; ntok = fam.ntok
     sA, xA, labA = make_batch(fam, rng, n, 8); sB, xB, labB = make_batch(fam, rng, n, 8)   # S5: random given starts (as training)
     for pos in (2, 4, 6):
         got = []
         for i in range(0, n, bs):
             sl = slice(i, i + bs); B = len(xA[sl])
             with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
-                _, _, cB, _ = m.chain(m.start(B, dev, sB[sl] if fam.name == "s5" else None), torch.tensor(xB[sl], device=dev), record=True)
-                _, eA, _, _ = m.chain(m.start(B, dev, sA[sl] if fam.name == "s5" else None), torch.tensor(xA[sl], device=dev),
+                _, _, cB, _ = m.chain(m.start(B, dev, sB[sl] if fam.rstart else None), torch.tensor(xB[sl], device=dev), record=True)
+                _, eA, _, _ = m.chain(m.start(B, dev, sA[sl] if fam.rstart else None), torch.tensor(xA[sl], device=dev),
                                       override=(pos - 1, cB[pos - 1].float()))
                 got.append(fam.decode(m.answer_greedy(eA, ntok, m.last_qs).cpu().numpy()))
         got = np.concatenate(got); d = labB[:, pos - 1].copy()
@@ -1284,7 +1305,7 @@ def donor(m, fam, dev, amp, n=2000, seed=12001, bs=500):
 def margin_flip(m, fam, s0, X, dev, amp, bs=250, seed=12002):
     g_ = torch.Generator(device="cpu").manual_seed(seed); flips = tot = 0
     for i in range(0, len(X), bs):
-        sl = slice(i, i + bs); B = len(X[sl]); prev = m.start(B, dev, s0[sl] if fam.name == "s5" else None)
+        sl = slice(i, i + bs); B = len(X[sl]); prev = m.start(B, dev, s0[sl] if fam.rstart else None)
         for t in range(X.shape[1]):
             with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
                 h = m.segment(prev, torch.tensor(X[sl, t], device=dev)); qs, q, zb = m.quant(h)
@@ -1295,9 +1316,68 @@ def margin_flip(m, fam, s0, X, dev, amp, bs=250, seed=12002):
     return flips / max(1, tot)
 
 
+def _ridge_cv_r2(Xf, yf, Xt, yt, lams=(1e-3, 1e-2, 1e-1, 1.0, 10.0)):
+    """§144: ridge on standardised features; lambda (x n) by 3-fold CV on the fit half; held-out R^2 on the score half."""
+    mu, sd = Xf.mean(0), Xf.std(0) + 1e-6; Z = np.c_[(Xf - mu) / sd, np.ones(len(Xf))]; Zt = np.c_[(Xt - mu) / sd, np.ones(len(Xt))]
+    def fit(Z_, y_, lam):
+        return np.linalg.solve(Z_.T @ Z_ + lam * len(Z_) * np.eye(Z_.shape[1]), Z_.T @ y_)
+    def r2(y_, p_):
+        return float(1 - ((y_ - p_) ** 2).sum() / max(((y_ - y_.mean()) ** 2).sum(), 1e-12))
+    fold = np.arange(len(Z)) % 3; best = max(lams, key=lambda l_: np.mean([r2(yf[fold == k], Z[fold == k] @ fit(Z[fold != k], yf[fold != k], l_)) for k in range(3)]))
+    return r2(yt, Zt @ fit(Z, yf, best)), best
+
+
+def _ridge_cls_acc(Xf, yf, Xt, yt, k=10, lams=(1e-3, 1e-2, 1e-1, 1.0, 10.0)):
+    """§144 (Theory): a 10-way linear classifier per digit - multi-output ridge on one-hot targets, argmax; lambda by 3-fold CV accuracy on the
+    fit half; held-out accuracy on the score half."""
+    mu, sd = Xf.mean(0), Xf.std(0) + 1e-6; Z = np.c_[(Xf - mu) / sd, np.ones(len(Xf))]; Zt = np.c_[(Xt - mu) / sd, np.ones(len(Xt))]
+    Y = np.eye(k)[yf.astype(int)]
+    def fit(Z_, Y_, lam):
+        return np.linalg.solve(Z_.T @ Z_ + lam * len(Z_) * np.eye(Z_.shape[1]), Z_.T @ Y_)
+    fold = np.arange(len(Z)) % 3
+    best = max(lams, key=lambda l_: np.mean([((Z[fold == j] @ fit(Z[fold != j], Y[fold != j], l_)).argmax(1) == yf[fold == j]).mean() for j in range(3)]))
+    return float(((Zt @ fit(Z, Y, best)).argmax(1) == yt).mean())
+
+
+@torch.no_grad()
+def s144_eval(m, fam, dev, amp, pred, lab, n=2000, L=8, seed=14403):
+    """§144 descriptive block. digit_acc_by_length: per digit (units / tens / hundreds / thousands), every position up to t exact for that digit;
+    probe_r2: ridge R^2 of each digit and of the value (s / modulus) from the code z_b and from h before W_down, on fixed random-start chains
+    (n x L hand-offs, fit on half the chains, scored on the other half); code_form: on z_b, the mean digit-wise R^2 against the clock R^2
+    (mean of cos and sin(2 pi s / T)) for T = 10, 100, 1000, 10^4; start_acc: chains of ONE item x = 0 (s0 unchanged), decoded exact."""
+    out = {}; pd_ = digits4(np.clip(pred, 0, None)); ld = digits4(lab); ok = (pd_ == ld) & (pred >= 0)[..., None]
+    out["digit_acc_by_length"] = {str(t): [float(ok[:, :t, k].all(1).mean()) for k in range(4)] for t in (1, 2, 4, 8, 16, 32, 64, 128, 256, 512) if t <= ok.shape[1]}
+    was = m.training; m.eval(); s0, x, lb = make_batch(fam, np.random.default_rng(seed), n, L); X = torch.tensor(x, device=dev); H, Zb = [], []
+    prev = m.start(n, dev, s0)
+    for t in range(L):
+        with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+            h = m.segment(prev, X[:, t]); qs, q, zb = m.quant(h); e = m.embed_code(qs)
+        H.append(h.float().cpu().numpy()); Zb.append(zb.float().cpu().numpy()); prev = e[:, None]
+    H, Zb = np.stack(H, 1), np.stack(Zb, 1); half = n // 2; D = digits4(lb).astype(float); V = lb / float(fam.n_states)
+    def r2_of(F_, y):
+        return _ridge_cv_r2(F_[:half].reshape(half * L, -1), y[:half].reshape(-1), F_[half:].reshape((n - half) * L, -1), y[half:].reshape(-1))[0]
+    pr = {}
+    for src, F_ in (("code", Zb), ("h", H)):
+        pr[src] = {"digit%d" % k: r2_of(F_, D[..., k]) for k in range(4)}; pr[src]["value"] = r2_of(F_, V)
+    out["probe_r2"] = pr
+    def acc_of(F_, y):
+        return _ridge_cls_acc(F_[:half].reshape(half * L, -1), y[:half].reshape(-1), F_[half:].reshape((n - half) * L, -1), y[half:].reshape(-1))
+    cls = [acc_of(Zb, D[..., k]) for k in range(4)]
+    cf = {"digitwise_cls_acc": cls, "digitwise_cls_acc_mean": float(np.mean(cls)), "digitwise_r2": [pr["code"]["digit%d" % k] for k in range(4)],
+          "digitwise": float(np.mean([pr["code"]["digit%d" % k] for k in range(4)]))}
+    for T in (10, 100, 1000, 10000):
+        ang = 2 * np.pi * (lb % T) / T; cf["clock_%d" % T] = float(np.mean([r2_of(Zb, np.cos(ang)), r2_of(Zb, np.sin(ang))]))
+    out["code_form"] = cf
+    s1 = np.random.default_rng(seed + 1).integers(0, fam.n_states, n); x0 = torch.zeros((n, 1), dtype=torch.long, device=dev)
+    with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+        _, e1, _, _ = m.chain(m.start(n, dev, s1), x0, record=True); dec = fam.decode(m.answer_greedy(e1, fam.ntok, m.last_qs).cpu().numpy())
+    out["start_acc"] = float((dec == s1).mean()); out["start_acc_def"] = "one item x = 0 (s0 unchanged), decoded exact"; out["sum_mod"] = fam.n_states
+    m.train(was); return out
+
+
 def main():
     global D_Q, LEV, HALF, SHIFT                                            # §133: --d_q / --levels
-    ap = argparse.ArgumentParser(); ap.add_argument("--family", default=None, choices=["s5", "ff", "cyc", "mod", "rdfa"]); ap.add_argument("--arm", default=None, choices=["final", "trace"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--family", default=None, choices=["s5", "ff", "cyc", "mod", "rdfa", "sum4"]); ap.add_argument("--arm", default=None, choices=["final", "trace"])
     ap.add_argument("--seed", type=int, default=1); ap.add_argument("--steps", type=int, default=24000); ap.add_argument("--bs", type=int, default=64)
     ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--test_n", type=int, default=2000)
     ap.add_argument("--test_len", type=int, default=512); ap.add_argument("--ext_n", type=int, default=500); ap.add_argument("--cert_cap", type=int, default=1_000_000)
@@ -1343,6 +1423,7 @@ def main():
     ap.add_argument("--grow_trigger", default=None, help="§136: a loss threshold (THRESHOLD, e.g. 2.5) or 'plateau' (PLATEAU)")
     ap.add_argument("--grow_staged", action="store_true", help="§136 STAGED: D0 -> 2 D0 at the trigger, then x2 every >= 1,000 steps at loss <= 2.5, up to D1")
     ap.add_argument("--grow_noise", type=float, default=0.0, help="§136 GROW-NOISE: grown dims continuous + training dither U(+-this)")
+    ap.add_argument("--sum_mod", type=int, default=10000, help="§144 sum4: the modulus (10^4; the ladder 100 / 1000)")
     ap.add_argument("--grow2", type=int, default=0, help="§143 FULL-GROW: a second widening 64 -> this (768) after switch 1")
     ap.add_argument("--grow2_min_step", type=int, default=6000); ap.add_argument("--grow2_lr_scale", type=float, default=1.0, help="§143: lr x this on the new W_up columns only (64/768)")
     ap.add_argument("--grow_force_smoke", action="store_true", help="smoke / memory check only: both widenings fire on step alone (no loss condition)")
@@ -1377,7 +1458,7 @@ def main():
             elif k_ not in ("train_gpu", "train_driver", "train_sequences", "torch_version", "cuda_version", "cudnn_version", "python_version", "image_tag"):   # run records, not flags
                 unknown.append(k_)
         assert not unknown, "--from_args: keys this fsq120 does not know: %s" % unknown
-    assert a.family in ("s5", "ff", "cyc", "mod", "rdfa") and a.arm in ("final", "trace"), "--family and --arm are required (or --from_args)"
+    assert a.family in ("s5", "ff", "cyc", "mod", "rdfa", "sum4") and a.arm in ("final", "trace"), "--family and --arm are required (or --from_args)"
     assert not (a.resume and (a.resume_2k or a.save_at_flag or a.eval_only or a.redraw_head)), "--resume is the plain same-clock resume only"
     dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); sc = a.sched_scale
     if a.d_q != D_Q or a.levels != LEV:                                     # §133: rebind the code width / levels before any model or eval
@@ -1395,6 +1476,7 @@ def main():
     assert not a.hinge or (a.no_round and not (a.grow or a.nested or a.raw_h or a.anneal or a.std or a.std2 or a.skip_dec or a.tsd)), "§138 HINGE: on the CONT carrier (--no_round) only"
     memcap and memcap.apply(dev)                                                       # local hard cap (LATENT_MEM_CAP_GB; no-op on the cloud)
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
+    globals()["SUM_MOD"] = a.sum_mod                                       # §144: before the Family is built
     fam = Family(a.family); os.makedirs(a.out, exist_ok=True)
     assert not (a.dither and not a.no_round) and not (a.fsq_dither and a.no_round), "§123: --dither needs --no_round; --fsq_dither is FSQ"
     def mk(apply_grow=True):
@@ -1444,11 +1526,14 @@ def main():
         if fam.name == "s5":                                               # the eval's own test chains (S5=512, identity start), first 8 steps
             Xte, Yte = s5.load_csv(os.path.join(a.data_dir, "S5=512.csv"), limit=a.test_n); s5.check_labels(Xte, Yte); Xte, Yte = Xte[:, :P8], Yte[:, :P8]
             pred, _ = run_test(m, fam, np.zeros(len(Xte), np.int64), Xte, dev, amp, a.eval_bs)
+        elif fam.name == "sum4":                                            # §144: the eval's own random-start chains, first 8 steps
+            trng = np.random.default_rng(14401); s0te = trng.integers(0, fam.n_states, a.test_n); Xte = trng.integers(0, 100, (a.test_n, a.test_len))[:, :P8]
+            Yte = labels_of(fam, s0te, Xte); pred, _ = run_test(m, fam, s0te, Xte, dev, amp, a.eval_bs)
         elif fam.name in HELD:                                              # the held-out eval's draw at full length, then the first 8 steps
             Xte = np.random.default_rng(12801).integers(0, fam.n_items, (a.test_n, a.test_len))[:, :P8]; Yte = labels_of(fam, np.zeros(len(Xte), np.int64), Xte)
             pred, _ = run_test(m, fam, None, Xte, dev, amp, a.eval_bs)
         else:
-            raise SystemExit("--prefix_only: s5 / cyc / mod / rdfa only")
+            raise SystemExit("--prefix_only: s5 / cyc / mod / rdfa / sum4 only")
         C = pred == Yte; pf = {"acc_by_prefix": {str(t): float(C[:, :t].all(1).mean()) for t in (1, 2, 4, 8)}, "acc_at_pos": {str(t + 1): float(C[:, t].mean()) for t in range(P8)},
               "n": int(len(Xte)), "eval_dtype": str(amp), "device": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "driver": driver_version()}
         json.dump(pf, open(os.path.join(a.out, "eval_prefix.json"), "w", newline="\n"), indent=1); print("PREFIX", json.dumps(pf), flush=True); return
@@ -1597,7 +1682,7 @@ def main():
             sl = slice(mi * len(x) // nmb, (mi + 1) * len(x) // nmb)
             m.nest_mask = None if nmask is None else nmask[sl]
             with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
-                loss, _, _, _ = m.chain(m.start(len(x[sl]), dev, s0[sl] if fam.name == "s5" else None), torch.tensor(x[sl], device=dev), lab[sl],
+                loss, _, _, _ = m.chain(m.start(len(x[sl]), dev, s0[sl] if fam.rstart else None), torch.tensor(x[sl], device=dev), lab[sl],
                                         None if tm is None else tm[sl])
             if m.var_on and m._var:                                         # §127 A: VAR over this forward's hand-offs
                 vl = m.var_loss(); loss = loss + var_w * vl; var_hist.append(float(vl.detach()))
@@ -1646,7 +1731,7 @@ def main():
             carried["2k"] = carried_stats(m, fam, dev, amp); m.train()
         if step % a.log_every == 0 or step == a.steps:
             rec = {"step": step, "loss": float(np.mean(hist)), "L_max": lmax_at(step / sc), "p_hard": m.p_hard, "noise": m.noise, "sec": round(time.time() - t0)}; hist = []; last_loss = rec["loss"]
-            if dev.startswith("cuda") and (a.d_q >= 768 or a.hinge or a.grow2):   # §138 / §143: peak memory per window (the 3090 memory check reads it)
+            if dev.startswith("cuda") and (a.d_q >= 768 or a.hinge or a.grow2 or a.family == "sum4"):   # §138 / §143 / §144: peak memory per window (the 3090 memory check reads it)
                 rec["mem_gib"] = round(torch.cuda.max_memory_allocated(dev) / 2 ** 30, 3)
             if a.grow2:                                                     # §143: per-group lr and effective Adam step (no RNG)
                 rec["group_steps"] = group_steps(opt)
@@ -1791,6 +1876,18 @@ def main():
                 res["code_growth_ext"] = code_growth(hard_codes(cx), Yx)
         s0m, Xm = np.zeros(a.margin_n, np.int64), Xte[:a.margin_n, :128]
         res["deletang"] = deletang(pred, Yte)                               # §128 (descriptive)
+    elif fam.name == "sum4":                                                # §144: random start + iid items 0..99, every position
+        trng = np.random.default_rng(14401); s0te = trng.integers(0, fam.n_states, a.test_n); Xte = trng.integers(0, 100, (a.test_n, a.test_len))
+        lab = labels_of(fam, s0te, Xte); grid = [0, 0]; pred, codes = run_test(m, fam, s0te, Xte, dev, amp, a.eval_bs, grid=grid); C = pred == lab
+        res["long_acc"] = float(C.all(1).mean()); res["acc_by_length"] = {str(t): float(C[:, :t].all(1).mean()) for t in (1, 2, 4, 8, 16, 32, 64, 128, 256, 512) if t <= C.shape[1]}
+        res["deletang"] = deletang(pred, lab)
+        if a.ext_n and a.test_len >= 512:
+            xr = np.random.default_rng(14402); s0x = xr.integers(0, fam.n_states, a.ext_n); Xx = xr.integers(0, 100, (a.ext_n, 2048)); Yx = labels_of(fam, s0x, Xx)
+            px, cx = run_test(m, fam, s0x, Xx, dev, amp, a.eval_bs); res["ext_2048"] = {"n": a.ext_n, "len": 2048, "cumulative": float((px == Yx).all(1).mean())}
+            if not (a.no_round or a.raw_h):
+                res["code_growth_ext"] = code_growth(cx, Yx); res["codes_per_state"] = (res["code_growth_ext"].get("2048") or {}).get("per_state_mean")
+        s0m, Xm = s0te[:a.margin_n], Xte[:a.margin_n, :128]
+        res["s144"] = s144_eval(m, fam, dev, amp, pred, lab)
     elif fam.name in HELD:                                                  # §128: iid uniform items from start 0, every position
         trng = np.random.default_rng(12801); Xte = trng.integers(0, fam.n_items, (a.test_n, a.test_len)); lab = labels_of(fam, np.zeros(len(Xte), np.int64), Xte)
         grid = [0, 0]; pred, codes = run_test(m, fam, None, Xte, dev, amp, a.eval_bs, grid=grid); C = pred == lab
