@@ -3,9 +3,43 @@
   "full_fsq": {
    "slots": {
     "1": {
-     "attempts": [],
-     "status": "open",
-     "accepted": null
+     "attempts": [
+      {
+       "seed": 1,
+       "plateau": false
+      }
+     ],
+     "status": "accepted",
+     "accepted": {
+      "seed": 1,
+      "long_acc": 0.0,
+      "ext_2048": 0.0,
+      "serial": false,
+      "grid_share": 0.19483045450846354,
+      "rho": 0.08819166587744742,
+      "rho_k_row": [
+       0.042899999767541885,
+       0.18129999935626984,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ],
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "driver": "595.71.05",
+      "exact2048": false,
+      "pass": false
+     }
     },
     "2": {
      "attempts": [],
@@ -23,14 +57,48 @@
      "accepted": null
     }
    },
-   "verdict": "not run"
+   "verdict": "dropped at proof (s1 < 0.95 at 2,048)"
   },
   "full_noise": {
    "slots": {
     "1": {
-     "attempts": [],
-     "status": "open",
-     "accepted": null
+     "attempts": [
+      {
+       "seed": 1,
+       "plateau": false
+      }
+     ],
+     "status": "accepted",
+     "accepted": {
+      "seed": 1,
+      "long_acc": 0.0,
+      "ext_2048": 0.0,
+      "serial": false,
+      "grid_share": 0.18086661529541015,
+      "rho": 0.07023446553553092,
+      "rho_k_row": [
+       0.019700000062584877,
+       0.25040000677108765,
+       0.2337999939918518,
+       0.24709999561309814,
+       0.24580000340938568,
+       0.35580000281333923,
+       0.5030999779701233,
+       0.7192999720573425,
+       0.9039000272750854,
+       0.9521999955177307,
+       0.9480999708175659,
+       1.0221999883651733,
+       0.9775000214576721,
+       0.9761000275611877,
+       0.9790999889373779,
+       1.0047999620437622
+      ],
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "driver": "570.172.08",
+      "exact2048": false,
+      "pass": false
+     }
     },
     "2": {
      "attempts": [],
@@ -48,14 +116,48 @@
      "accepted": null
     }
    },
-   "verdict": "not run"
+   "verdict": "dropped at proof (s1 < 0.95 at 2,048)"
   },
   "full_cont": {
    "slots": {
     "1": {
-     "attempts": [],
-     "status": "open",
-     "accepted": null
+     "attempts": [
+      {
+       "seed": 1,
+       "plateau": false
+      }
+     ],
+     "status": "accepted",
+     "accepted": {
+      "seed": 1,
+      "long_acc": 0.0,
+      "ext_2048": 0.0,
+      "serial": false,
+      "grid_share": 0.20516389338175456,
+      "rho": 0.2066793570319111,
+      "rho_k_row": [
+       0.03099999949336052,
+       0.5178999900817871,
+       0.5498999953269958,
+       0.5878000259399414,
+       0.588699996471405,
+       0.5406000018119812,
+       0.5587999820709229,
+       0.597000002861023,
+       0.6086999773979187,
+       0.6894999742507935,
+       0.7390000224113464,
+       0.8305000066757202,
+       0.82669997215271,
+       0.8708000183105469,
+       0.8741000294685364,
+       0.9430000185966492
+      ],
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "driver": "595.84",
+      "exact2048": false,
+      "pass": false
+     }
     },
     "2": {
      "attempts": [],
@@ -73,14 +175,48 @@
      "accepted": null
     }
    },
-   "verdict": "not run"
+   "verdict": "dropped at proof (s1 < 0.95 at 2,048)"
   },
   "full_hinge": {
    "slots": {
     "1": {
-     "attempts": [],
-     "status": "open",
-     "accepted": null
+     "attempts": [
+      {
+       "seed": 1,
+       "plateau": false
+      }
+     ],
+     "status": "accepted",
+     "accepted": {
+      "seed": 1,
+      "long_acc": 0.0,
+      "ext_2048": 0.0,
+      "serial": false,
+      "grid_share": 0.18116973876953124,
+      "rho": 0.04150482005612746,
+      "rho_k_row": [
+       0.013100000098347664,
+       0.1315000057220459,
+       0.13279999792575836,
+       0.1379999965429306,
+       0.21220000088214874,
+       0.5486999750137329,
+       0.8970999717712402,
+       0.9728000164031982,
+       1.0082999467849731,
+       1.0032000541687012,
+       1.0228999853134155,
+       0.9797000288963318,
+       1.007099986076355,
+       0.9970999956130981,
+       0.9976999759674072,
+       0.984000027179718
+      ],
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "driver": "590.48.01",
+      "exact2048": false,
+      "pass": false
+     }
     },
     "2": {
      "attempts": [],
@@ -98,7 +234,7 @@
      "accepted": null
     }
    },
-   "verdict": "not run"
+   "verdict": "dropped at proof (s1 < 0.95 at 2,048)"
   }
  }
 }
