@@ -1,0 +1,48 @@
+# gen-b78 (instance 54561298, 77.28.214.234, RTX 3090, driver 565.77) host check, 2026-10-06 21:35:57 EDT, Theory note 135-6
+## python scratch/hostcheck.py --gib 16 (16 GiB in 256 MiB int32 blocks, 3 passes; label share at N 1024 x1000; fp32 matmul x100)
+{"gpu": "NVIDIA GeForce RTX 3090", "torch": "2.5.1+cu124"}
+{"test": "memory", "gib": 16.0, "passes": 3, "bad_blocks": [{"pass": 0, "block": 29, "mismatches": 108}, {"pass": 0, "block": 30, "mismatches": 158}, {"pass": 0, "block": 31, "mismatches": 158}, {"pass": 0, "block": 32, "mismatches": 163}, {"pass": 0, "block": 33, "mismatches": 158}, {"pass": 0, "block": 34, "mismatches": 165}, {"pass": 0, "block": 35, "mismatches": 158}, {"pass": 0, "block": 36, "mismatches": 161}, {"pass": 0, "block": 37, "mismatches": 159}, {"pass": 0, "block": 38, "mismatches": 157}, {"pass": 1, "block": 30, "mismatches": 157}, {"pass": 1, "block": 34, "mismatches": 159}, {"pass": 1, "block": 38, "mismatches": 161}, {"pass": 1, "block": 42, "mismatches": 158}, {"pass": 1, "block": 46, "mismatches": 165}, {"pass": 1, "block": 50, "mismatches": 158}, {"pass": 1, "block": 53, "mismatches": 158}, {"pass": 1, "block": 54, "mismatches": 163}, {"pass": 1, "block": 55, "mismatches": 108}, {"pass": 1, "block": 56, "mismatches": 158}, {"pass": 2, "block": 27, "mismatches": 108}, {"pass": 2, "block": 28, "mismatches": 158}, {"pass": 2, "block": 29, "mismatches": 158}, {"pass": 2, "block": 30, "mismatches": 163}, {"pass": 2, "block": 31, "mismatches": 158}, {"pass": 2, "block": 32, "mismatches": 165}, {"pass": 2, "block": 33, "mismatches": 158}, {"pass": 2, "block": 34, "mismatches": 161}, {"pass": 2, "block": 49, "mismatches": 159}, {"pass": 2, "block": 56, "mismatches": 157}]}
+{"test": "label_share", "n": 1024, "reps": 1000, "cpu_sum": 8768, "cpu_share": 0.008369990224828934, "bad_reps": 0, "first_bad": []}
+{"test": "matmul", "reps": 100, "cpu_sum": 66805.18910622204, "gpu_first": 66805.19487307686, "bad_reps": 0, "first_bad": []}
+HOSTCHECK FAIL (3 s)
+## resume of ckpt_last (step 16000, finite params) on this GPU: logs/hwtest_b78.log tail + log.jsonl
+12
+{"step": 16000, "resumed": "boxes/runs_fsq/hwtest_b78/ckpt_in.pt"}
+{"step": 16001, "nonfinite": 1, "first": "g.p.h_0_attn_c_attn_bias"}
+{"step": 16002, "nonfinite": 1, "first": "g.p.h_0_attn_c_attn_bias"}
+## nvidia-smi -q (ECC / retired pages / remapped rows / clocks)
+    ECC Mode
+        Current                           : N/A
+        Pending                           : N/A
+    ECC Errors
+        Volatile
+            SRAM Correctable              : N/A
+            SRAM Uncorrectable Parity     : N/A
+            SRAM Uncorrectable SEC-DED    : N/A
+            DRAM Correctable              : N/A
+            DRAM Uncorrectable            : N/A
+        Aggregate
+            SRAM Correctable              : N/A
+            SRAM Uncorrectable Parity     : N/A
+            SRAM Uncorrectable SEC-DED    : N/A
+            DRAM Correctable              : N/A
+            DRAM Uncorrectable            : N/A
+            SRAM Threshold Exceeded       : N/A
+        Aggregate Uncorrectable SRAM Sources
+            SRAM L2                       : N/A
+            SRAM SM                       : N/A
+            SRAM Microcontroller          : N/A
+            SRAM PCIE                     : N/A
+            SRAM Other                    : N/A
+    Retired Pages
+        Single Bit ECC                    : N/A
+        Double Bit ECC                    : N/A
+        Pending Page Blacklist            : N/A
+    Remapped Rows                         : N/A
+    Temperature
+Driver Version                            : 565.77
+    Product Name                          : NVIDIA GeForce RTX 3090
+    Serial Number                         : N/A
+    VBIOS Version                         : 94.02.59.00.D6
+        RACK Serial Number                : N/A
+## dmesg Xid

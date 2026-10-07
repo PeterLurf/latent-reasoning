@@ -964,3 +964,7 @@ PRICE EXCEPTION 2026-10-06 04:58 gen-b41 offer 53010473 RTX 3090 595.71 $0.267: 
 54566115 vast offer 44280029 created 2026-10-06 21:14: label gen-b83, queue scratch/gen_q_b83.txt (logged at create by vdeploy_toy.sh)
 54566917 vast offer 31458820 created 2026-10-06 21:23: label gen-b84, queue scratch/gen_q_b84.txt (logged at create by vdeploy_toy.sh)
 54551117 vast | gen_b62 DESTROYED_VERIFIED 2026-10-06 21:26 after verified per-run fetch (boxes/runs_fsq/s133_cont64_s201 boxes/runs_fsq/s133_slots/cont64_k1); FAILED (no eval.json, logs fetched): boxes/runs_fsq/s133_cont64_s1 boxes/runs_fsq/s133_cont64_s101; partial logs kept: boxes/runs_fsq/s133_cont64_s1.void_partial boxes/runs_fsq/s133_cont64_s101.void_partial
+2026-10-06 21:36:08 gen-b78 54561298 77.28.214.234 RTX 3090 565.77 $0.182/h DESTROYED: VRAM fault (scratch/hostcheck.py FAIL), s135_base_s5_s2 -> .void_hostfault (note 135-6); log/args/hostcheck fetched, ckpt (post-fault) discarded
+54561298 vast | gen_b78 DESTROYED_VERIFIED 2026-10-06 21:37 after verified per-run fetch (); FAILED (no eval.json, logs fetched): boxes/runs_fsq/s135_base_s5_s2
+54568105 vast offer 47118064 created 2026-10-06 21:37: label gen-b85, queue scratch/gen_q_b85.txt (logged at create by vdeploy_toy.sh)
+54568208 vast offer 49290341 created 2026-10-06 21:38: label gen-b89, queue scratch/gen_q_b89.txt (logged at create by vdeploy_toy.sh)
