@@ -221,7 +221,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 131 | Second restart point at 4k: FLAG4 = loss(4k) ≥ 0.9·loss(2.6k) (floored), held-out precision / recall for "escape without learning" | registered | **open** |
 | 132 | Rules in context: per-problem permutation tables (explicit pairs) on §120's carrier; size ladder k4/m2 → k6/m3; PASS 3/4 exact + SERIAL on held-out tables | **rung 1 PASS 3/4** (slots 2–4 exact + SERIAL, certified; pilot 0.9865 = one unclosed table); rung 2 next | **open** |
 | 133 | Can error correction make a wide latent carrier exact? CONT / FSQ / SOFT / NOISE / PIN at d 16–64 on S5, then an S5×4 capacity probe (FSQ-8 controls) | registered | **open** |
-| 134 | COPY-ANCHOR: label-free state-reading auxiliary (final-answer text autoencoded through the carrier) on §128's S5 recipe, no restarts; PASS 4/4 exact (plain 1/4) | registered | **open** |
+| 134 | COPY-ANCHOR: label-free state-reading auxiliary (final-answer text autoencoded through the carrier) on §128's S5 recipe, no restarts; PASS 4/4 exact (plain 1/4) | **PASS on S5: 4/4 exact at 2,048 + SERIAL + ρ 0.14–0.22, no restarts** (plain 1/4); guard stage next | **open** (guard) |
 
 ## Live sections
 
@@ -5988,6 +5988,35 @@ gradient unchanged, as in FSQ. Everything else matches §133 / 133-1 / 133-3.
   still-rising fp32 growth.
 * CLOSED is unchanged (the certificate as run, 128-4). The stronger statement holds for 11 of 12: **the fp32 certificate covers every
   code the eval visits.**
+
+**§134 result (2026-10-06 22:17 EDT; 4 runs on RTX 3090 / 595.71.05 by the experiments session, one 24k run per seed with no restart and no plateau stop;
+scored by Theory alone with `theory/score_s134.py`, committed before any run; Audit-reproduced). COPY-ANCHOR is PASS on S5: 4/4 seeds exact at
+2,048, SERIAL and contractive, against 1/4 for the plain recipe on the same seeds and card class.**
+
+| Seed | Plain recipe (same seed, 3090) | long_acc | ext_2048 | SERIAL | fp32 ρ (127-12) | 4k / 2.6k | loss 4.5k | first loss ≤ 0.01 |
+|---|---|---|---|---|---|---|---|---|
+| s1 | exact | 1.000 | 0.998 | yes | 0.138 | 0.62 | 1.06 | 14.4k |
+| s2 | plateau | 0.999 | 0.994 | yes | 0.142 | 0.32 | 0.60 | 11.0k |
+| s3 | escape without learning | 1.000 | 0.998 | yes | 0.184 | 0.41 | 0.92 | 12.8k |
+| s4 | basin (ctrl s4 full null) | 0.998 | 0.998 | yes | 0.220 | 0.80 | 1.58 | 19.0k |
+
+* **Mechanism** (134-1 / 134-3; all four seeds):
+  - The end code holds the state at L 2 / 4 / 8 (R²_state 0.995–0.998), with no op reversion (last-op R² < 0). The prefix accuracy at 1 / 2 / 4 /
+    8 is 1.0, and copy_acc is 1.0.
+  - **Dialects:** the copy-written and transition-written codes are never identical (identity_rate 0.0) but close (cos 0.85–0.90).
+  - A copy-written code injected at position 2 / 4 / 8 is continued correctly (0.980–1.000; intact 1.0). At 2k the same injection is at
+    chance (0.006–0.013) while copy_acc is already 0.88–0.98. The anchor first fixes the decoder's reading; the transition writer then moves
+    into the copy region.
+  - Codes per state 14–29, as for the plain learners.
+* **134-2(b)'s descriptive predictions hold in 4/4:** the 4k / 2.6k ratio is < 0.9, and the loss at 4.5k is ≤ 3.0.
+* **Disclosed:**
+  - the main task saw 58 rows per step, against 64 in the plain comparator (134-4 b′);
+  - s2's fp32 contraction was computed on the local RTX 3070 (fp32 is device-independent here, 128-4); the others on their hosts;
+  - all four trained with micro 2 beyond L 16.
+* **Reading (as registered):** PASS on S5. **A label-free state-reading anchor (final-answer texts only, so C4-compatible) makes §128's recipe
+  stable to train on S5 without restarts.** It turns all three failure types (plateau, escape without learning, basin) into exact learners.
+  - §134 registered "PASS (+ guard)" for adoption as the default. **The guard stage (FF / CYC / MOD / RDFA, one seed each, ~$2.5) is approved and
+    runs next.** The "default recipe" reading waits for it.
 
 ## 135. TEACHER-STATE DISTILLATION: a text-CoT model's hidden states, not its text, as per-hand-off targets for the latent carrier (pre-registered 2026-10-06 17:07 EDT, after Literature's check 0bb148e9 and before any implementation or run; the user's idea "natural language CoT is not really a good training artifact for latent reasoning; can we distill a CoT model into a latent model?" (via Audit), candidate 4 of `docs/THEORY_STABLE_LATENT_2026-10-06.md`)
 

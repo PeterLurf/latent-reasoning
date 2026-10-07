@@ -1,11 +1,218 @@
 {
  "main": {
-  "1": null,
+  "1": {
+   "long_acc": 1.0,
+   "ext_2048": 0.998,
+   "serial": true,
+   "rho": 0.1379999965429306,
+   "copy_frac": 0.1,
+   "stop_plateau": false,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "driver": "595.71.05",
+   "probes": {
+    "0": {
+     "r2_item": 0.38735640048980713,
+     "r2_state": -0.1446831226348877,
+     "r2_start": -0.059967637062072754,
+     "abl_dloss": 0.18610572814941406,
+     "ce_intact": 29.300067901611328,
+     "ce_ablated": 29.486173629760742,
+     "n": 1024
+    },
+    "2000": {
+     "r2_item": -0.1012258529663086,
+     "r2_state": 0.5418721437454224,
+     "r2_start": -0.14455366134643555,
+     "abl_dloss": 0.6886839866638184,
+     "ce_intact": 4.439324855804443,
+     "ce_ablated": 5.128008842468262,
+     "n": 1024
+    }
+   },
+   "dialect": {
+    "identity_rate": 0.0,
+    "cos_mean": 0.8808930511950166,
+    "n": 1024,
+    "L": 8,
+    "by_pos": {
+     "1": {
+      "identity": 0.0,
+      "cos": 0.9436408432084136
+     },
+     "2": {
+      "identity": 0.0,
+      "cos": 0.8798461533151567
+     },
+     "3": {
+      "identity": 0.0,
+      "cos": 0.8711614526982885
+     },
+     "4": {
+      "identity": 0.0,
+      "cos": 0.8727330834371969
+     },
+     "5": {
+      "identity": 0.0,
+      "cos": 0.8710634707240388
+     },
+     "6": {
+      "identity": 0.0,
+      "cos": 0.8697388493164908
+     },
+     "7": {
+      "identity": 0.0,
+      "cos": 0.8692835646215826
+     },
+     "8": {
+      "identity": 0.0,
+      "cos": 0.8696769922389649
+     }
+    }
+   },
+   "copy_donor": {
+    "n": 1000,
+    "L": 16,
+    "intact": 1.0,
+    "donor_pos2": 0.993,
+    "donor_pos4": 0.995,
+    "donor_pos8": 0.998
+   },
+   "copy_acc": 1.0,
+   "ophist_end": {
+    "n": 4096,
+    "seed": 12703,
+    "L2": {
+     "r2_state": 0.9974920749664307,
+     "r2_start": -0.07248568534851074,
+     "r2_last1": -0.06000316143035889,
+     "r2_last2": -0.1294177770614624,
+     "coverage_state": 1.0,
+     "coverage_start": 1.0,
+     "coverage_last1": 1.0,
+     "coverage_last2": 0.13818359375
+    },
+    "L4": {
+     "r2_state": 0.9975643754005432,
+     "r2_start": -0.056639909744262695,
+     "r2_last1": -0.05582225322723389,
+     "r2_last2": -0.1277756690979004,
+     "r2_last3": -0.0028777122497558594,
+     "coverage_state": 1.0,
+     "coverage_start": 1.0,
+     "coverage_last1": 1.0,
+     "coverage_last2": 0.1318359375,
+     "coverage_last3": 0.001953125
+    },
+    "L8": {
+     "r2_state": 0.9975598454475403,
+     "r2_start": -0.06280148029327393,
+     "r2_last1": -0.07526195049285889,
+     "r2_last2": -0.14028143882751465,
+     "r2_last3": -0.0013036727905273438,
+     "coverage_state": 1.0,
+     "coverage_start": 1.0,
+     "coverage_last1": 1.0,
+     "coverage_last2": 0.1376953125,
+     "coverage_last3": 0.00146484375
+    }
+   },
+   "mech_2k": {
+    "dialect": {
+     "identity_rate": 0.0013427734375,
+     "cos_mean": 0.3834502231195529,
+     "n": 1024,
+     "L": 8,
+     "by_pos": {
+      "1": {
+       "identity": 0.0107421875,
+       "cos": 0.9463000605464913
+      },
+      "2": {
+       "identity": 0.0,
+       "cos": 0.4651710435591667
+      },
+      "3": {
+       "identity": 0.0,
+       "cos": 0.33684894522411923
+      },
+      "4": {
+       "identity": 0.0,
+       "cos": 0.28015639715067664
+      },
+      "5": {
+       "identity": 0.0,
+       "cos": 0.26748381934339704
+      },
+      "6": {
+       "identity": 0.0,
+       "cos": 0.2583479099084798
+      },
+      "7": {
+       "identity": 0.0,
+       "cos": 0.2567347291160331
+      },
+      "8": {
+       "identity": 0.0,
+       "cos": 0.2565588801080594
+      }
+     }
+    },
+    "copy_donor": {
+     "n": 1000,
+     "L": 16,
+     "intact": 0.005,
+     "donor_pos2": 0.007,
+     "donor_pos4": 0.006,
+     "donor_pos8": 0.008
+    },
+    "ophist": {
+     "n": 4096,
+     "seed": 12703,
+     "L2": {
+      "r2_state": 0.39793694019317627,
+      "r2_start": -0.05972898006439209,
+      "r2_last1": -0.025887608528137207,
+      "r2_last2": -0.12064969539642334,
+      "coverage_state": 1.0,
+      "coverage_start": 1.0,
+      "coverage_last1": 1.0,
+      "coverage_last2": 0.13818359375
+     },
+     "L4": {
+      "r2_state": -0.06198430061340332,
+      "r2_start": -0.05669057369232178,
+      "r2_last1": 0.19558459520339966,
+      "r2_last2": -0.04122483730316162,
+      "r2_last3": 0.00024706125259399414,
+      "coverage_state": 1.0,
+      "coverage_start": 1.0,
+      "coverage_last1": 1.0,
+      "coverage_last2": 0.1318359375,
+      "coverage_last3": 0.001953125
+     },
+     "L8": {
+      "r2_state": -0.07555675506591797,
+      "r2_start": -0.06510031223297119,
+      "r2_last1": 0.24324482679367065,
+      "r2_last2": -0.028604745864868164,
+      "r2_last3": 0.00011283159255981445,
+      "coverage_state": 1.0,
+      "coverage_start": 1.0,
+      "coverage_last1": 1.0,
+      "coverage_last2": 0.1376953125,
+      "coverage_last3": 0.00146484375
+     }
+    }
+   },
+   "exact": true,
+   "pass": true,
+   "valid": true
+  },
   "2": {
    "long_acc": 0.999,
    "ext_2048": 0.994,
    "serial": true,
-   "rho": null,
+   "rho": 0.14229999482631683,
    "copy_frac": 0.1,
    "stop_plateau": false,
    "gpu": "NVIDIA GeForce RTX 3090",
@@ -206,7 +413,7 @@
     }
    },
    "exact": true,
-   "pass": null,
+   "pass": true,
    "valid": true
   },
   "3": {
@@ -626,6 +833,6 @@
    "valid": true
   }
  },
- "verdict": "incomplete (3 / 4)",
+ "verdict": "PASS",
  "guard": {}
 }
