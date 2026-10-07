@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-07 11:05 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-07 19:50 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -20,26 +20,29 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 Messages go through SendMessage. The names "Theory" and "Audit" currently need an identity confirm, pending the user,
 so send to the pipe addresses their messages come from.
 
-## Running now (17:05 2026-10-07; credit ~$153 after the user's top-up; cap 16 hosts / < $4/h; Audit: proofs + their completions approved)
+## Running now (19:50 2026-10-07; credit ~$153 after the user's top-up; cap 16 hosts / < $4/h; Audit: proofs + their completions approved)
 
 **User rules:** full runs on Vast 3090s (>= 16 GB, --ckpt_every); local cards short memory-capped jobs only, never idle. Before any commit touching
 boxes/fsq120.py / table132.py / core.py run `python scratch/smoke_plain.py`. Never edit a module while a deploy is in flight (the tar happens minutes
 after create): record the host's sha256 and commit exactly that file.
 
-### Vast (fill_generic + vdeploy cap gate; auto_ship sends the queue's modules / file args / bench files, imports to a fixed point; host import gate)
+### Vast (fill_generic + vdeploy cap gate; auto_ship sends queue modules / file args / bench files, imports to a fixed point; host import gate)
 
 | Tag | Work |
 |---|---|
-| b137 | **§142 MULT-READ A s1** (48k; teacher cache 0 invalid / 0 mismatch; fsq120 7150979 = 366652ac) - training since 16:47 |
-| b138 | **§143 FULL-GROW s1** via scratch.memgate (deploying 16:57; 595.71, unpaired vs cnoise s1's 595.80) |
-| b139 | **§145 MULTI-SLOT SLOT4 slot 1** (restart145; multpair c4457fc) - setup since 17:00 |
-| b131 | §141 r4s16 slot 1 (ends ~18:15) |
+| b137 | §142 MULT-READ A s1 (48k) - fsq120 7150979 / multrow 435638c |
+| b138 | §143 FULL-GROW s1 (memgate PASS 7.9 GiB at L 32 width 768; 595.71, unpaired vs cnoise s1's 595.80) |
+| b139 | §145 MULTI-SLOT SLOT4 slot 1 (multpair c4457fc) |
+| b140 | §148 LOOP-RETRO loop4 + plain s1 (P=2) |
+| b141 | §147 DELTA-STATE slot 1 (exp(s) read gains, alpha_by_head; multpair c1ae4ec, deltamem e5a8d4e) |
+| b142 / b143 | §144 RUNNING-SUM F8 / N64 slot 1 (restart144 --memcheck); b142 retrying after a no-start host |
+| b145 | §150 VOCAB-SLOT DIGIT slot 1 (multpair 8efc841: slot head under bf16 autocast) |
+| b144 | §150 VOCAB-SLOT FULL slot 1 (restart150 --memcheck picks --micro; fp32 slot head) - deploying |
+| b131 | §141 r4s16 slot 1 (finishing) |
 
-### Built, gating (CPU smokes running; Audit review next)
-
-* **§144 RUNNING-SUM** (fsq120 sum4, committed 366652ac; restart144): ground truth + gradflow (CPU / CUDA) PASS; e2e smokes running.
-* **§147 DELTA-STATE** (boxes/deltamem.py + multpair --carrier deltamem, uncommitted): step-0 |d logits| 0; gradflow PASS; e2e smoke running.
-* **§148 LOOP-RETRO** (boxes/loop148.py, uncommitted): r = 1 |d logits| 0; gradflow PASS; e2e smoke running.
+* Drains: drain_posthoc runs the on-host fp32 contraction for s144_ / s145_ / s150_ too; keep patterns cover s142-s150.
+* Disk cleanup 19:10-19:40 (user): 277 cold models -> E:/latent_archive (manifest docs/archive/MODEL_ARCHIVE_MANIFEST_2026-10-07.tsv).
+* Next for Experiments: §149 SOTA-PROBE (eval-only, local card).
 
 ### Local (v2 workers c4060 / c3070 / c2070 <- scratch/c1_backlog_<card>.txt; log logs/c1_local.log; stop: scratch/<tag>.stop)
 
