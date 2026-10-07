@@ -936,3 +936,31 @@ PRICE EXCEPTION 2026-10-06 04:58 gen-b41 offer 53010473 RTX 3090 595.71 $0.267: 
 54551695 vast offer 54311343 created 2026-10-06 18:43: label gen-b68, queue scratch/gen_q_b68.txt (logged at create by vdeploy_toy.sh)
 54551699 vast offer 52755888 created 2026-10-06 18:43: label gen-b70, queue scratch/gen_q_b70.txt (logged at create by vdeploy_toy.sh)
 54551695 vast | gen_b68 DESTROYED_VERIFIED 2026-10-06 19:10 host went offline ~19:0x (§133 pin64 slot 1 lost early, nothing fetchable); replaced, IP excluded
+54554480 vast offer 52657078 created 2026-10-06 19:12: label gen-b68, queue scratch/gen_q_b68.txt (logged at create by vdeploy_toy.sh)
+54554483 vast offer 45558034 created 2026-10-06 19:12: label gen-b69, queue scratch/gen_q_b69.txt (logged at create by vdeploy_toy.sh)
+54554480 vast | gen_b68 DESTROYED_VERIFIED 2026-10-06 19:24 after verified per-run fetch ()
+54556101 vast offer 53258810 created 2026-10-06 19:26: label gen-b68, queue scratch/gen_q_b68.txt (logged at create by vdeploy_toy.sh)
+54554483 vast | gen_b69 DESTROYED_VERIFIED 2026-10-06 19:53 after verified per-run fetch (boxes/runs_fsq/s135_teacher_s5)
+54548646 vast | gen_b64 DESTROYED_VERIFIED 2026-10-06 20:06 after verified per-run fetch (boxes/runs_fsq/s133_fsq64_s201 boxes/runs_fsq/s133_slots/fsq64_k1); FAILED (no eval.json, logs fetched): boxes/runs_fsq/s133_fsq64_s1 boxes/runs_fsq/s133_fsq64_s101; partial logs kept: boxes/runs_fsq/s133_fsq64_s1.void_partial boxes/runs_fsq/s133_fsq64_s101.void_partial
+54548656 vast | gen_b66 DESTROYED_VERIFIED 2026-10-06 20:07 after verified per-run fetch (boxes/runs_fsq/s133_soft64_s101 boxes/runs_fsq/s133_slots/soft64_k1); FAILED (no eval.json, logs fetched): boxes/runs_fsq/s133_soft64_s1; partial logs kept: boxes/runs_fsq/s133_soft64_s1.void_partial; model.pt not fetched (rule, logs/model_skips.log): boxes/runs_fsq/s133_soft64_s101 
+54548664 vast | gen_b67 DESTROYED_VERIFIED 2026-10-06 20:09 after verified per-run fetch (boxes/runs_fsq/s133_noise64_s201 boxes/runs_fsq/s133_slots/noise64_k1); FAILED (no eval.json, logs fetched): boxes/runs_fsq/s133_noise64_s1 boxes/runs_fsq/s133_noise64_s101; partial logs kept: boxes/runs_fsq/s133_noise64_s1.void_partial boxes/runs_fsq/s133_noise64_s101.void_partial
+54559974 vast offer 48386175 created 2026-10-06 20:10: label gen-b75, queue scratch/gen_q_b75.txt (logged at create by vdeploy_toy.sh)
+54559982 vast offer 41812721 created 2026-10-06 20:10: label gen-b76, queue scratch/gen_q_b76.txt (logged at create by vdeploy_toy.sh)
+54548649 vast | gen_b65 DESTROYED_VERIFIED 2026-10-06 20:16 after verified per-run fetch (boxes/runs_fsq/s133_soft16_s1 boxes/runs_fsq/s133_slots/soft16_k1)
+54548684 vast | gen_b71 DESTROYED_VERIFIED 2026-10-06 20:20 after verified per-run fetch (boxes/runs_fsq/s134_copy_s5_s2)
+54551264 vast | gen_b73 DESTROYED_VERIFIED 2026-10-06 20:24 after verified per-run fetch (boxes/runs_fsq/s134_copy_s5_s4)
+54561298 vast offer 51780145 created 2026-10-06 20:24: label gen-b78, queue scratch/gen_q_b78.txt (logged at create by vdeploy_toy.sh)
+54561299 vast offer 54560694 created 2026-10-06 20:24: label gen-b77, queue scratch/gen_q_b77.txt (logged at create by vdeploy_toy.sh)
+54562170 vast offer 54526948 created 2026-10-06 20:33: label gen-b79, queue scratch/gen_q_b79.txt (logged at create by vdeploy_toy.sh)
+54562176 vast offer 47865397 created 2026-10-06 20:33: label gen-b80, queue scratch/gen_q_b80.txt (logged at create by vdeploy_toy.sh)
+54548693 vast | gen_b72 DESTROYED_VERIFIED 2026-10-06 20:39 after verified per-run fetch (boxes/runs_fsq/s134_copy_s5_s3)
+54563139 vast offer 39264709 created 2026-10-06 20:43: label gen-b81, queue scratch/gen_q_b81.txt (logged at create by vdeploy_toy.sh)
+54563141 vast offer 53293147 created 2026-10-06 20:43: label gen-b82, queue scratch/gen_q_b82.txt (logged at create by vdeploy_toy.sh)
+54562176 vast | gen_b80 DESTROYED_VERIFIED 2026-10-06 20:45 after verified per-run fetch ()
+54548638 vast | gen_b63 DESTROYED_VERIFIED 2026-10-06 20:54 after verified per-run fetch (boxes/runs_fsq/s133_fsq16_s1 boxes/runs_fsq/s133_slots/fsq16_k1)
+54565399 vast offer 46236533 created 2026-10-06 21:08: label gen-b81, queue scratch/gen_q_b81.txt (logged at create by vdeploy_toy.sh)
+54556101 vast | gen_b68 DESTROYED_VERIFIED 2026-10-06 21:10 after verified per-run fetch (boxes/runs_fsq/s133_pin64_s101 boxes/runs_fsq/s133_slots/pin64_k1); FAILED (no eval.json, logs fetched): boxes/runs_fsq/s133_pin64_s1; partial logs kept: boxes/runs_fsq/s133_pin64_s1.void_partial; model.pt not fetched (rule, logs/model_skips.log): boxes/runs_fsq/s133_pin64_s101 
+54565781 vast offer 30239909 created 2026-10-06 21:12: label gen-b80, queue scratch/gen_q_b80.txt (logged at create by vdeploy_toy.sh)
+54566115 vast offer 44280029 created 2026-10-06 21:14: label gen-b83, queue scratch/gen_q_b83.txt (logged at create by vdeploy_toy.sh)
+54566917 vast offer 31458820 created 2026-10-06 21:23: label gen-b84, queue scratch/gen_q_b84.txt (logged at create by vdeploy_toy.sh)
+54551117 vast | gen_b62 DESTROYED_VERIFIED 2026-10-06 21:26 after verified per-run fetch (boxes/runs_fsq/s133_cont64_s201 boxes/runs_fsq/s133_slots/cont64_k1); FAILED (no eval.json, logs fetched): boxes/runs_fsq/s133_cont64_s1 boxes/runs_fsq/s133_cont64_s101; partial logs kept: boxes/runs_fsq/s133_cont64_s1.void_partial boxes/runs_fsq/s133_cont64_s101.void_partial

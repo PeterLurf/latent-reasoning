@@ -1,0 +1,30 @@
+{
+ "arm": "soft64",
+ "slot": 1,
+ "accepted_seed": 101,
+ "attempts": [
+  {
+   "seed": 1,
+   "dir": "boxes/runs_fsq/s133_soft64_s1",
+   "status": "plateau",
+   "rc": 0,
+   "sec": 161
+  },
+  {
+   "seed": 101,
+   "dir": "boxes/runs_fsq/s133_soft64_s101",
+   "status": "accepted",
+   "rc": 0,
+   "sec": 6184
+  }
+ ],
+ "n_restarts": 1,
+ "error": null,
+ "arm_args": [
+  "--d_q",
+  "64",
+  "--soft_beta",
+  "0.1"
+ ],
+ "extra_args": []
+}

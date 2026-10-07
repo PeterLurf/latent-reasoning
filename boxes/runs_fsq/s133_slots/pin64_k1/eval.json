@@ -1,0 +1,30 @@
+{
+ "arm": "pin64",
+ "slot": 1,
+ "accepted_seed": 101,
+ "attempts": [
+  {
+   "seed": 1,
+   "dir": "boxes/runs_fsq/s133_pin64_s1",
+   "status": "plateau",
+   "rc": 0,
+   "sec": 135
+  },
+  {
+   "seed": 101,
+   "dir": "boxes/runs_fsq/s133_pin64_s101",
+   "status": "accepted",
+   "rc": 0,
+   "sec": 5606
+  }
+ ],
+ "n_restarts": 1,
+ "error": null,
+ "arm_args": [
+  "--d_q",
+  "64",
+  "--no_round",
+  "--carrier_ln"
+ ],
+ "extra_args": []
+}

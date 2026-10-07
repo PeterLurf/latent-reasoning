@@ -1,0 +1,36 @@
+{
+ "arm": "cont64",
+ "slot": 1,
+ "accepted_seed": 201,
+ "attempts": [
+  {
+   "seed": 1,
+   "dir": "boxes/runs_fsq/s133_cont64_s1",
+   "status": "plateau",
+   "rc": 0,
+   "sec": 195
+  },
+  {
+   "seed": 101,
+   "dir": "boxes/runs_fsq/s133_cont64_s101",
+   "status": "plateau",
+   "rc": 0,
+   "sec": 193
+  },
+  {
+   "seed": 201,
+   "dir": "boxes/runs_fsq/s133_cont64_s201",
+   "status": "accepted",
+   "rc": 0,
+   "sec": 8728
+  }
+ ],
+ "n_restarts": 2,
+ "error": null,
+ "arm_args": [
+  "--d_q",
+  "64",
+  "--no_round"
+ ],
+ "extra_args": []
+}
