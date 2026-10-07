@@ -38,6 +38,12 @@ paradigms. Don't get stuck in the minuscule improvements loop. Take the lessons 
    - If MID-STACK SIGNAL, a mid-layer carrier is registered on digit-pair, and B2 moves up, since it is the cheapest. If NO SIGNAL, it stays third.
    - **§146 read NO SIGNAL (2026-10-07 16:52 EDT):** layers 1–12 are flat at 0.10–0.22 for accumulators 100–200. **B2 is parked**, and §147 keeps ℓ_m = 6.
 
+4. **B4 VOCAB-SLOT, a working memory of token-shaped slots (the user's 18:20 idea; §150):** 4 slots on GPT-2's own vocabulary (Gumbel straight-through, soft → hard),
+   as the only cross-step channel. FULL-vocabulary and DIGIT (abacus) arms are run on digit-pair 4×4.
+   - New as scoped (Literature c583bb23).
+   - Literature's prediction: emergent token states help arithmetic only when supervised. The DIGIT arm and the C7 token-semantics test make it direct.
+   - Ranked beside B1: the first tests run in parallel.
+
 ## Paradigms applied across the bets
 * **Function-preserving installation** (zero-init outputs, fade-in, μP-scaled learning rates; §136 / §143) for every new module.
 * **Shortcut-free task design first (L1).** Multiplier-major only with SERIAL and the b-prefix rate.
