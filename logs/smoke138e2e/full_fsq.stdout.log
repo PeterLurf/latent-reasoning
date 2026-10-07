@@ -1,0 +1,6 @@
+D:\Latent\boxes\fsq120.py:1091: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\torch\csrc\autograd\generated\python_variable_methods.cpp:821.)
+  out["wte_row_norm"] = float(m.g.w("wte.weight").float().norm(dim=-1).mean())
+{'step': 5, 'loss': 33.409132385253905, 'L_max': 4, 'p_hard': 1.0, 'noise': 0.0, 'sec': 34, 'mem_gib': 5.0}
+EVAL {"long_acc": 0.0, "n_codes": 32, "cert": {"status": "deferred", "holds": null}}
+DONE D:/drain_tmp/smoke138e2e_gpu/full_fsq
