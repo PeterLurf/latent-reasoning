@@ -232,7 +232,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 142 | MULT-READ (the user's go): a per-step reader of the running sum (the teacher's S_j text) on NOISE-64, multiplier-major 4×4, 48k; then ICoT-style earliest-first removal to final-answer only (B-EARLY; B-LATE and CTRL descriptive); with the multiplication post-mortem | **DROP at proof** (A s1 0.002; S₁ 1.0, S₂ 0.35, S₃ 0.05; the gate never opened): not acquired within budget; the bounded-carrier multiplication line is parked | closed |
 | 143 | FULL-GROW (§138's one revised method): §136 COPY+GROW-NOISE to 64, then 64 → 768 at ≥ 6k with μP lr on the new columns; e-space ρ; paired per seed with s136_cnoise; if it fails, full width stops | registered | **open** |
 | 144 | RUNNING-SUM (the user's "fix the multiplication"; diagnostic): sum mod 10⁴ with 2-digit items on fsq120, FSQ-8 / NOISE-64; can the carrier carry a growing number? (conditional magnitude ladder) | registered | **open** |
-| 145 | MULTI-SLOT: K = 4 carried NOISE-64 slots (one write position each) on §140's digit-pair multiplication; CARRY1 control (same writes, 1 carried) if SLOT4 IMPROVES | registered | **open** |
+| 145 | MULTI-SLOT: K = 4 carried NOISE-64 slots (one write position each) on §140's digit-pair multiplication; CARRY1 control (same writes, 1 carried) if SLOT4 IMPROVES | **DROP at proof** (0.000; column 2 worse than §140, 0.31; one active slot, no digit specialisation): CARRY1 not run | closed |
 | 146 | MID-PROBE ($0): layer-wise probes (0–12) of the accumulator on s140 / s137; MID-STACK SIGNAL = R² ≥ 0.5 at 100–200 in some layer ≤ 9 (top 0.05) → register a mid-stack hand-off | **NO SIGNAL** (best layer 4: 0.217 at 100–200; layers 1–12 flat; the top reproduces 140-3): the accumulator ≥ 100 is computed nowhere; B2 ranks last | closed |
 | 147 | DELTA-STATE (program B1): a linear-recurrent memory (6 additive + 6 gated-delta heads) as GPT-2's only cross-segment channel, on §140's digit-pair 4×4; PASS = exact + SERIAL | registered | **open** |
 | 148 | LOOP-RETRO (program B3): prelude / weight-tied loop (blocks 4–7, damped) / coda retrofit for direct-answer 4×4; LOOP-4 vs PLAIN; C2 at r = 8 / 16 | **no improvement** (LOOP-4 0.002 = PLAIN 0.002; loops unused, acc flat in r): B3 stops at this budget; the direct baseline fails at the same middle columns as every latent design | closed |
@@ -7657,6 +7657,18 @@ matters.**
   - the K slots are written in parallel at K positions of one pass, not chained;
   - each slot is a bounded NOISE-64 code.
 * §107's redundancy is the named risk. The slot cosine and the per-slot ablation report it.
+
+**§145 result (2026-10-07 19:36 EDT; SLOT4's proof slot, RTX 3090; scored by Theory with score_s145). DROP at proof: test_acc 0.000. No improvement, so CARRY1 does not run (as registered).**
+* **Per column:** 1.0 / **0.306** / 0.118 / 0.103 / 0.076 / 0.104 / 0.211 / 0.951. It is **worse** than §140's 1 × FSQ-8 at column 2 (1.0) and the same elsewhere.
+  - The loss is ≈ 0 while only columns 1–2 train, then 0.60 at 3k and 1.38 at 24k, as §140.
+* **The slots do not specialise:** per-slot R² for the accumulator's units / tens / hundreds is about 0.13 / 0.29–0.36 / 0.10 in every slot.
+  - The whole accumulator's R² from all four slots is 0.54 (§140: code 0.61, h 0.92).
+  - By magnitude, accuracy is < 100: 0.39, 100–199: 0.10, ≥ 200: 0.14.
+* **One active slot (Literature's pitfall):** zeroing slot 4 (the last write position, which attends to the others) collapses every column, even column 1 (0.11). Zeroing
+  slots 1–3 leaves column 1 at 0.90–0.99.
+  - The slots are not copies (pairwise cosine 0.005, against §107 LAT-4's 0.76–0.78). The model funnels what it uses into the last slot.
+* **SERIAL is untestable** (row-level donor 0.000–0.001; the model fails these columns itself).
+* **Reading (as registered): spreading the carrier over K positions does not fix the accumulator at this budget.** It fits §148's cross-design wall.
 
 ## 146. MID-PROBE: is the accumulator readable mid-stack where the top layer loses it? (the $0 first test of the research program's mid-stack hand-off bet; pre-registered 2026-10-07 16:43 EDT, before the probe is run; the user's "wide research sweep… major new architecture changes" (via Audit, 16:40))
 
