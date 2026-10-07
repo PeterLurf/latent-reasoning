@@ -1,0 +1,3 @@
+# THEORY §137 (9c9b1899, note 137-1): mult_col 4x4 PROOF slot 1 via scratch.restart137 (seeds 1 / 101 / 201 / 301, 123-3 flag at 2k, --ckpt_every 2000); boxes.multcol; RTX 3090; DROP if the accepted run is < 0.95
+# P=1
+boxes/runs_fsq/s137_slots/col_4x4_k1 scratch.restart137 --task 4x4 --slot 1
