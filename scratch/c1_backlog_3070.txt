@@ -197,29 +197,30 @@
 4.5 theory/results/replay_x/3070_s539.jsonl.done python -u scratch/replay_basin.py --seed 539 --steps 2000 --every 50 --amp bf16 --threads 3 --device {DEV} --out theory/results/replay_x/3070_s539.jsonl && echo ok > theory/results/replay_x/3070_s539.jsonl.done
 4.5 theory/results/replay_x/3070_s540.jsonl.done python -u scratch/replay_basin.py --seed 540 --steps 2000 --every 50 --amp bf16 --threads 3 --device {DEV} --out theory/results/replay_x/3070_s540.jsonl && echo ok > theory/results/replay_x/3070_s540.jsonl.done
 # C7 readability check (Theory 2026-10-07 LOCAL_BACKLOG, low priority, descriptive): W_up(code) -> ln_f -> tied LM head on the 27 kept exact models (§134 COPY, §128 families, §133 SOFT-16)
-2.0 boxes/runs_fsqs128_cyc_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs128_cyc_s1 {DEV}
-2.0 boxes/runs_fsqs128_cyc_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs128_cyc_s2 {DEV}
-2.0 boxes/runs_fsqs128_cyc_s3/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs128_cyc_s3 {DEV}
-2.0 boxes/runs_fsqs128_cyc_s4/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs128_cyc_s4 {DEV}
-2.0 boxes/runs_fsqs128_ff_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs128_ff_s1 {DEV}
-2.0 boxes/runs_fsqs128_ff_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs128_ff_s2 {DEV}
-2.0 boxes/runs_fsqs128_ff_s3/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs128_ff_s3 {DEV}
-2.0 boxes/runs_fsqs128_ff_s4/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs128_ff_s4 {DEV}
-2.0 boxes/runs_fsqs128_mod_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs128_mod_s1 {DEV}
-2.0 boxes/runs_fsqs128_mod_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs128_mod_s2 {DEV}
-2.0 boxes/runs_fsqs128_mod_s3/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs128_mod_s3 {DEV}
-2.0 boxes/runs_fsqs128_mod_s4/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs128_mod_s4 {DEV}
-2.0 boxes/runs_fsqs128_rdfa_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs128_rdfa_s1 {DEV}
-2.0 boxes/runs_fsqs128_rdfa_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs128_rdfa_s2 {DEV}
-2.0 boxes/runs_fsqs128_rdfa_s3/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs128_rdfa_s3 {DEV}
-2.0 boxes/runs_fsqs128_rdfa_s4/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs128_rdfa_s4 {DEV}
-2.0 boxes/runs_fsqs128_s5_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs128_s5_s1 {DEV}
-2.0 boxes/runs_fsqs128_s5_s102/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs128_s5_s102 {DEV}
-2.0 boxes/runs_fsqs128_s5_s104/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs128_s5_s104 {DEV}
-2.0 boxes/runs_fsqs133_soft16_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs133_soft16_s1 {DEV}
-2.0 boxes/runs_fsqs133_soft16_s102/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs133_soft16_s102 {DEV}
-2.0 boxes/runs_fsqs133_soft16_s3/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs133_soft16_s3 {DEV}
-2.0 boxes/runs_fsqs133_soft16_s4/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs133_soft16_s4 {DEV}
-2.0 boxes/runs_fsqs134_copy_s5_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs134_copy_s5_s1 {DEV}
-2.0 boxes/runs_fsqs134_copy_s5_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs134_copy_s5_s2 {DEV}
-2.0 boxes/runs_fsqs134_copy_s5_s3/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsqs134_copy_s5_s3 {DEV}
+2.0 boxes/runs_fsq/s128_cyc_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s128_cyc_s1 {DEV}
+2.0 boxes/runs_fsq/s128_cyc_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s128_cyc_s2 {DEV}
+2.0 boxes/runs_fsq/s128_cyc_s3/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s128_cyc_s3 {DEV}
+2.0 boxes/runs_fsq/s128_cyc_s4/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s128_cyc_s4 {DEV}
+2.0 boxes/runs_fsq/s128_ff_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s128_ff_s1 {DEV}
+2.0 boxes/runs_fsq/s128_ff_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s128_ff_s2 {DEV}
+2.0 boxes/runs_fsq/s128_ff_s3/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s128_ff_s3 {DEV}
+2.0 boxes/runs_fsq/s128_ff_s4/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s128_ff_s4 {DEV}
+2.0 boxes/runs_fsq/s128_mod_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s128_mod_s1 {DEV}
+2.0 boxes/runs_fsq/s128_mod_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s128_mod_s2 {DEV}
+2.0 boxes/runs_fsq/s128_mod_s3/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s128_mod_s3 {DEV}
+2.0 boxes/runs_fsq/s128_mod_s4/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s128_mod_s4 {DEV}
+2.0 boxes/runs_fsq/s128_rdfa_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s128_rdfa_s1 {DEV}
+2.0 boxes/runs_fsq/s128_rdfa_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s128_rdfa_s2 {DEV}
+2.0 boxes/runs_fsq/s128_rdfa_s3/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s128_rdfa_s3 {DEV}
+2.0 boxes/runs_fsq/s128_rdfa_s4/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s128_rdfa_s4 {DEV}
+2.0 boxes/runs_fsq/s128_s5_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s128_s5_s1 {DEV}
+2.0 boxes/runs_fsq/s128_s5_s102/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s128_s5_s102 {DEV}
+2.0 boxes/runs_fsq/s128_s5_s104/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s128_s5_s104 {DEV}
+2.0 boxes/runs_fsq/s133_soft16_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_soft16_s1 {DEV}
+2.0 boxes/runs_fsq/s133_soft16_s102/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_soft16_s102 {DEV}
+2.0 boxes/runs_fsq/s133_soft16_s3/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_soft16_s3 {DEV}
+2.0 boxes/runs_fsq/s133_soft16_s4/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_soft16_s4 {DEV}
+2.0 boxes/runs_fsq/s134_copy_s5_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s134_copy_s5_s1 {DEV}
+2.0 boxes/runs_fsq/s134_copy_s5_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s134_copy_s5_s2 {DEV}
+2.0 boxes/runs_fsq/s134_copy_s5_s3/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s134_copy_s5_s3 {DEV}
+2.0 boxes/runs_fsq/s134_copy_s5_s4/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s134_copy_s5_s4 {DEV}
