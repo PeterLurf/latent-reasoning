@@ -54,9 +54,94 @@
  "r1s16": {
   "slots": {
    "1": {
-    "attempts": [],
-    "status": "open",
-    "accepted": null
+    "attempts": [
+     {
+      "seed": 1,
+      "plateau": false,
+      "misfire": null
+     }
+    ],
+    "status": "accepted",
+    "accepted": {
+     "seed": 1,
+     "test_acc": 0.0,
+     "serial": false,
+     "rho": 0.09033875234380973,
+     "acc_by_column": {
+      "per_column": [
+       1.0,
+       0.663,
+       0.19,
+       0.121,
+       0.099,
+       0.104,
+       0.193,
+       0.966
+      ],
+      "cumulative": [
+       1.0,
+       0.663,
+       0.162,
+       0.034,
+       0.005,
+       0.001,
+       0.0,
+       0.0
+      ]
+     },
+     "ext_4x8": {
+      "test_acc": 0.0,
+      "acc_by_column": {
+       "per_column": [
+        1.0,
+        0.52,
+        0.169,
+        0.108,
+        0.102,
+        0.092,
+        0.093,
+        0.092,
+        0.121,
+        0.121,
+        0.081,
+        0.121
+       ],
+       "cumulative": [
+        1.0,
+        0.52,
+        0.12,
+        0.018,
+        0.002,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      "digit_acc": 0.21833333333333332,
+      "n": 1000,
+      "dedup_removed": 0,
+      "seeds": [
+       13704,
+       13705
+      ]
+     },
+     "probe": null,
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "driver": "595.71.05",
+     "exact": false,
+     "pass": false,
+     "reading": null,
+     "carry_r2": {
+      "r2_carry_code": null,
+      "r2_carry_h": null,
+      "r2_colsum_context": null
+     },
+     "flag2k_misfire": false
+    }
    },
    "2": {
     "attempts": [],
@@ -74,7 +159,8 @@
     "accepted": null
    }
   },
-  "verdict": "not run",
-  "median_test_acc": null
- }
+  "verdict": "dropped at proof (slot 1 test_acc < 0.95)",
+  "median_test_acc": 0.0
+ },
+ "r1s16_gate": 0.32675
 }
