@@ -481,12 +481,13 @@ def check_s147(dev, out):
     (W_o small random, fade 1/500): q / k / v (qkv), W_o, the alpha / beta gate, LN_m and the GPT-2 trunk all get gradient; both head types
     carry it (the additive and delta halves of W_o's input columns). Note 147-2: g_add initialised as in training (median read-norm ratio); the
     delta columns' W_o grad and the alpha / beta gate grad are each within 10x of the additive ones (W_o additive columns; additive q / k / v rows)."""
+    import math
     import boxes.multcol as MC
     import boxes.multpair as MP
     amp = torch.bfloat16 if str(dev).startswith("cuda") else None; rng = np.random.default_rng(0); A, B = MC.gen_operands(rng, 8, 4), MC.gen_operands(rng, 8, 4)
     _, dig, _, pairs, col, emit = MP.accumulators(A, B); T = len(pairs)
     m = MP.MultDelta(s5.load_gpt2(dev), MP.PairFam(), 6).to(dev); m.train()
-    _, med0 = MP.read_ratio_by_handoff(m, A, B, dev, amp, n=8); m.mem.g_add.data.fill_(med0); out["s147.g_add_init"] = float(med0)   # note 147-2 init
+    _, med0 = MP.read_ratio_by_handoff(m, A, B, dev, amp, n=8); m.mem.s_add.data.fill_(math.log(med0)); out["s147.g_add_init"] = float(med0)   # note 147-2 init
     MP.set_ops(m, A, B, dev)
     X = torch.tensor(np.tile(np.arange(T), (8, 1)), device=dev); tm = torch.tensor(np.tile(emit, (8, 1)), device=dev); lab = np.where(dig >= 0, dig, 0)
     gn = lambda p_: float(p_.grad.float().norm()) if p_.grad is not None else 0.0  # noqa: E731
