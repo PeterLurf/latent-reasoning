@@ -223,7 +223,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 133 | Can error correction make a wide latent carrier exact? CONT / FSQ / SOFT / NOISE / PIN at d 16–64 on S5, then an S5×4 capacity probe (FSQ-8 controls) | **stage 1: FSQ-64 / NOISE-64 / CONT-64 / SOFT-16 PASS**; FSQ-16 FAIL; SOFT-64 / PIN-64 dropped; stage 2 (S5×4) not yet approved | **open** (stage 2) |
 | 134 | COPY-ANCHOR: label-free state-reading auxiliary (final-answer text autoencoded through the carrier) on §128's S5 recipe, no restarts; PASS 4/4 exact (plain 1/4) | **PASS on S5: 4/4 exact at 2,048 + SERIAL + ρ 0.14–0.22, no restarts** (plain 1/4); **guard FAILS on MOD** (exact + SERIAL, but not closed: 70k reachable codes); not adopted as default | closed |
 | 135 | TEACHER-STATE DISTILLATION: a CoT model's hidden states (vs pretrained GPT-2 on the same text) as per-hand-off InfoNCE targets on §128's S5 carrier | **FAIL both arms (0/4)**: worse than plain; the aux pulls context into the code (135-9) | closed (stage B not run) |
-| 136 | GROW (the user's idea): narrow → wide function-preserving latent growth at a loss threshold / plateau; GROW-P, COPY+GROW / STAGED / GROW-NOISE, GROW-4, NESTED-64 on S5 (S5×4 decides) | registered | **open** |
+| 136 | GROW (the user's idea): narrow → wide function-preserving latent growth at a loss threshold / plateau; GROW-P, COPY+GROW / STAGED / GROW-NOISE, GROW-4, NESTED-64 on S5 (S5×4 decides) | **stage 1: COPY+GROW / COPY+GROW-NOISE PASS 4/4** (growth safe; the new dims carry the state, R² 0.95–0.98); STAGED 3/4; GROW-P 1/4 (no rescue); GROW-4 0/4 (no entry at d 4); NESTED descriptive pending | **open** (benefit: S5×4 with §133 stage 2) |
 | 137 | Multiplication on fsq120, column-major: carried carry (FSQ-8), streamed product digits (C4 qualifier), restart slots; 4×4 → 5×5 → 4×8 | **4×4 DROP at proof** (test_acc 0.0; middle columns at chance; carry in h R² 0.69, in the code 0.24) → §140 | closed |
 | 138 | FULL WIDTH (the user's trigger): §133's harness at d 768, no COPY; FULL-FSQ / FULL-NOISE / FULL-CONT (vs RAW-H) / FULL-HINGE; fails-to-improve → revisit; S5×4 as the benefit test | registered | **open** |
 | 139 | DISTILL-2 (user's go): a CoT teacher's state (probe or its text) as a warm-start fading to 0 by 4k, on multiplier-major multiplication; A = SOFT-16 + COPY (FINAL), B = A + DISTILL-2, C = constant weight | **stopped at proof** (139-1(c) copy gate; A′ / B s1 test_acc 0.0, B learns only step 1 at 0.59) | closed |
@@ -6578,6 +6578,33 @@ per state over the 2,000 × 512 test chains. It reads BASE 6,870 / 3,049 / 3,568
 * **FSQ-16:** slot 1 passes (0.996, ρ 0.167), slot 4 passes (s4: 1.000, ρ 0.176), and slot 3 fails (s3 unflagged at 2k, ext 0.0). **Slot 2 (running)
   decides PASS or FAIL.**
 * **64-d arms** (FSQ-64, NOISE-64, CONT-64): only slot 1 is decided (all pass). Slots 2–4 are running.
+
+**§136 result (2026-10-07 12:35 EDT; stage 1, RTX 3090 class, one 24k run per seed, no restarts; scored by Theory with score_s136; NESTED-64, descriptive, still running).
+COPY+GROW and COPY+GROW-NOISE PASS 4/4. COPY+STAGED reads IMPROVES (3/4). GROW-P FAILS 1/4 and GROW-4 FAILS 0/4.**
+
+| Arm | Verdict | ext_2048 by seed | fp32 ρ at the end | Widening |
+|---|---|---|---|---|
+| COPY+GROW | **PASS 4/4** | 0.998 / 1.0 / 0.998 / 0.992 | 0.097–0.142 | 8 → 64 at 2k (THRESHOLD) |
+| COPY+GROW-NOISE | **PASS 4/4** | 1.0 / 0.99 / 1.0 / 0.998 | 0.072–0.110 | 8 → 64 at 2k, new dimensions continuous |
+| COPY+STAGED | IMPROVES 3/4 | 1.0 / 0.998 / **0.976** / 0.992 | 0.081–0.103 | 8 → 16 at 2k, → 32 at 3.0–3.9k, → 64 at 4.0–4.9k |
+| GROW-P | FAIL 1/4 | 0.99 / 0 / 0 / 0 | s1 0.137 | 8 → 64 at 4.7k (s1, 136-1) and at 4.0k (s2–s4) |
+| GROW-4 | FAIL 0/4 | 0 / 0 / 0 / 0 | — | never: THRESHOLD did not fire at d 4 |
+
+* **Readings (as registered):**
+  - **GROW-P (plain d 8 is 1/4 on these seeds):** widening at a plateau does **not** rescue stuck narrow runs. s2–s4 widened at 4.0k and stayed at ext 0,
+    with the state unreadable from the new dimensions (R² −0.19 to 0.08). On s1, widening at a false plateau did no harm (136-1).
+  - **COPY+GROW and COPY+GROW-NOISE (COPY-8 is 4/4):** growth is **safe** on entered runs. The 2k widening costs a loss spike of +1.39 to +2.07 nats, which
+    recovers.
+  - **COPY+STAGED:** s3 ends at 0.976 (SERIAL, ρ 0.10), so the arm does not pass. Its later widenings fell inside the rounding ramp, where the pre-switch ρ
+    was 0.43–0.96.
+  - **GROW-4:** no seed entered at d 4 (0/4, against d 8's 1/4). A narrower start enters **less** reliably.
+* **Not as expected: the new dimensions are used.** In the grown COPY runs they hold 0.78–0.86 of the code variance, and the state is readable from them
+  alone at R² 0.95–0.98. On S5 the code moves into the new width without capacity pressure.
+* **The PLATEAU trigger** would also have fired on every COPY learner (would-be steps 4.5–5.2k). Its 2 % tolerance fires on learners in general (136-1).
+* **Disclosed:** COPY+GROW, COPY+GROW-NOISE and COPY+STAGED are identical up to their 2k widening (same seed, base and card; pre-switch ρ 0.123 / 0.166 /
+  0.169 / 0.146 in all three). They are three continuations of one entry per seed, not independent entries.
+* **The user's idea, on S5:** widening a narrow latent at a loss threshold is safe, and the code uses the new width. Widening at a plateau does not rescue
+  failed runs, and a narrower start hurts entry. **The benefit is decided at S5×4** (§133 stage 2), where COPY+GROW and COPY+GROW-NOISE join the proposal.
 
 ## 137. Multiplication on the task-agnostic carrier, column by column: a carried carry, streamed product digits (pre-registered 2026-10-07 01:34 EDT, after Literature's check c5687f0c and before any implementation or run; the user's "start multiplication" (via Audit), plan `docs/THEORY_MULT_PLAN_2026-10-07.md` v2)
 
