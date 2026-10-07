@@ -1,0 +1,24 @@
+{
+ "n": 807983,
+ "train_n": 0,
+ "split_sha": "b26c12ea4146f0470cd6e159f6903bd08da47bf2b68c31a8c60bf0cae83ff865",
+ "teacher": "boxes/runs_mult/m98_tc_4x4_s1",
+ "teacher_sha": "699b549799b8d6ca20f78c5f7641a9f9a338cdcf6ff3fa348881597ee2da8b8a",
+ "teacher_invalid_share": 0.0,
+ "teacher_vs_gold_mismatch_share": 0.0,
+ "invalid_by_j": [
+  0.0,
+  0.0,
+  0.0,
+  0.0
+ ],
+ "mismatch_by_j": [
+  0.0,
+  0.0,
+  0.0,
+  0.0
+ ],
+ "sec": 3291,
+ "device": "NVIDIA GeForce RTX 4060",
+ "dtype": "torch.bfloat16"
+}
