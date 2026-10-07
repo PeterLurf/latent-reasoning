@@ -6832,6 +6832,18 @@ trigger fired on seed 1, the plain learner on this card class.
 * **Reported:** per-step accuracy and the first-error position. 4×8 has 33 steps, so it needs a per-step accuracy of roughly 0.997 or more.
 * Emitted digits are temporally split final-answer supervision, as stated in §140. C1 is design-forced, also as stated.
 
+**Note 140-2 (2026-10-07 03:52 EDT, before any §140 run; the experiments session's adapter, boxes/multpair.py; CPU gates PASS).**
+* **Flag tokens confirmed** (single GPT-2 tokens, distinct from the digits): " ;" = the first pair of a new column (take acc // 10), " ," = the same column, " =" =
+  the flush. Recorded as args pair_flags "column_start" and flag_tokens.
+* **5×5 curriculum, fixed now** (it was missing; used only after a 4×4 PASS): c_max = 1 / 2 / 4 / 8 / 10 at 0 / 2k / 5k / 9k / 12k, where 10 covers 5×5's 9 product
+  columns plus the flush, as 8 does for 4×4's 7 + 1.
+* **Semantics, as implemented:**
+  - acc = carry-in + the column's products so far;
+  - p_k = acc mod 10 at the column's last pair; the next column starts from acc // 10; the flush emits the final carry;
+  - the ground truth equals integer arithmetic on 4×4, 5×5, 4×8, 1×1 and 3×6 (3,000 each; maximum acc 296);
+  - the donor continuation is self-consistent.
+* **eval.json** carries per_step_given_correct_prefix and first_error_position (140-1), in ext_4x8 too.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
