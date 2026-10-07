@@ -336,6 +336,38 @@ def check_s135(dev, out):
         out[f"s135.aux_p{int(ph)}.target_no_grad"] = 1.0 if all(p_.grad is None for p_ in tg.parameters()) else 0.0
 
 
+def check_s141(dev, out):
+    """§141 (9e45b92b / note 141-1): with R = 4 repeats per column (FSQ-8 and SOFT-16), the digit CE of column k (decoded after its last
+    repeat) ALONE reaches every repeat's embedding of column k, the previous column's last-repeat embedding (the carried code) and
+    W_down / W_up, under CUDA bf16, soft and hard."""
+    import math
+    import boxes.fsq120 as F120
+    import boxes.multcol as MC
+    saved = (F120.D_Q, F120.LEV, F120.HALF, F120.SHIFT); amp = torch.bfloat16 if str(dev).startswith("cuda") else None; R = 4
+    for cell, dq, sb in (("r4f8", 8, 0.0), ("r4s16", 16, 0.1)):
+        F120.D_Q, F120.LEV = dq, 8; F120.HALF = (F120.LEV - 1) / 2; F120.SHIFT = math.atanh(F120.OFF / F120.HALF)
+        fam = MC.MultFam(); m = MC.MultCol(s5.load_gpt2(dev), fam).to(dev); m.R = R; m.rep_index = True; m.soft_beta = sb; m.train()
+        rng = np.random.default_rng(0); A, B = MC.gen_operands(rng, 8, 4), MC.gen_operands(rng, 8, 4); P, _, _ = MC.columns(A, B); m.ctx = torch.tensor(MC.ctx_tokens(A, B), device=dev)
+        for ph in (0.0, 1.0):
+            m.p_hard = ph
+            for k in (2, 5):                                                # 1-based column
+                m.zero_grad(set_to_none=True); prev = m.start(8, dev); keep = {}
+                with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+                    for t in range(k * R):
+                        h = m.segment(prev, torch.full((8,), t, device=dev)); qs, q, zb = m.quant(h); e = m.embed_code(qs)
+                        if t >= (k - 1) * R - 1:                            # the previous column's last repeat + every repeat of column k
+                            e.retain_grad(); keep[t] = e
+                        prev = e[:, None]
+                    loss = m.answer_ce(e, torch.tensor(fam.answer_tokens(P[:, k - 1]), device=dev), qs)
+                loss.backward()
+                for t, e_ in keep.items():
+                    lab = "prev_col_last" if t == (k - 1) * R - 1 else "rep%d" % (t - (k - 1) * R + 1)
+                    out[f"s141.{cell}.p{int(ph)}.col{k}.{lab}_grad"] = float(e_.grad.float().norm()) if t < k * R - 1 else 1.0   # the decoded repeat's own e: 1 (it is the CE input)
+                out[f"s141.{cell}.p{int(ph)}.col{k}.down_grad"] = float(m.down.weight.grad.float().norm()); out[f"s141.{cell}.p{int(ph)}.col{k}.up_grad"] = float(m.up.weight.grad.float().norm())
+        del m
+    F120.D_Q, F120.LEV, F120.HALF, F120.SHIFT = saved
+
+
 def check_s140(dev, out):
     """§140 (ce1b3442 / note 140-1): the digit CE at a column's last pair ALONE reaches W_down / W_up and - through the carried code - the
     embedding carried out of earlier steps (the step before the column's first pair), under CUDA bf16, soft and hard."""
