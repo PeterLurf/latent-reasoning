@@ -13,24 +13,35 @@ import torch
 ap = argparse.ArgumentParser(); ap.add_argument("--gib", type=float, default=8); ap.add_argument("--reps", type=int, default=1000)
 ap.add_argument("--n", type=int, default=1024); ap.add_argument("--device", default="cuda:0")
 a = ap.parse_args(); dev = a.device; ok = True; t0 = time.time()
-print(json.dumps({"gpu": torch.cuda.get_device_name(dev), "torch": torch.__version__}), flush=True)
+print(json.dumps({"gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "torch": torch.__version__}), flush=True)
 
-# 1. memory pattern
-blk = 64 * 2 ** 20                                                          # int32 elements per 256 MiB block
-nb = int(a.gib * 4); bad_mem = []
+# 1. memory pattern (2026-10-07: b92's check OOMed on its own int64 temporaries with another process holding 260 MiB -> a false FAIL;
+#    the pattern is now built / compared in 8M-element chunks (64 MiB temporaries) and an allocation OOM only ends the fill)
+blk = 64 * 2 ** 20; CH = 8 * 2 ** 20                                        # int32 elements per 256 MiB block; chunk for the int64 pattern math
+
+
+def pattern(b, p, i):
+    return torch.arange(i, i + CH, device=dev, dtype=torch.int64).mul_(2654435761).add_(b + 7 * p).remainder_(2 ** 31).to(torch.int32)
+
+
+nb = int(a.gib * 4); bad_mem = []; got = nb
 for p in range(3):
     bufs = []
     for b in range(nb):
-        x = torch.arange(blk, device=dev, dtype=torch.int64).mul_(2654435761).add_(b + 7 * p).remainder_(2 ** 31).to(torch.int32); bufs.append(x)
-    torch.cuda.synchronize()
+        try:
+            x = torch.empty(blk, device=dev, dtype=torch.int32)
+        except torch.OutOfMemoryError:
+            got = min(got, b); break
+        for i in range(0, blk, CH):
+            x[i:i + CH] = pattern(b, p, i)
+        bufs.append(x)
+    torch.cuda.synchronize() if dev.startswith("cuda") else None
     for b, x in enumerate(bufs):
-        ref = torch.arange(blk, device=dev, dtype=torch.int64).mul_(2654435761).add_(b + 7 * p).remainder_(2 ** 31).to(torch.int32)
-        nbad = int((x != ref).sum())
+        nbad = sum(int((x[i:i + CH] != pattern(b, p, i)).sum()) for i in range(0, blk, CH))
         if nbad:
             bad_mem.append({"pass": p, "block": b, "mismatches": nbad})
-        del ref
     del bufs; torch.cuda.empty_cache()
-print(json.dumps({"test": "memory", "gib": nb / 4, "passes": 3, "bad_blocks": bad_mem}), flush=True); ok &= not bad_mem
+print(json.dumps({"test": "memory", "gib": got / 4, "gib_requested": nb / 4, "passes": 3, "bad_blocks": bad_mem}), flush=True); ok &= not bad_mem
 
 # 2. label share at the L 32 micro-batch shape
 g = torch.Generator().manual_seed(135); lab = torch.randint(0, 120, (a.n,), generator=g)

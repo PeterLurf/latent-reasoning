@@ -37,7 +37,7 @@ if grep -q -E -- "--family s5|scratch.restart1[0-9]+|_s5_" "$q"; then           
 fi
 nvidia-smi --query-gpu=name,driver_version --format=csv,noheader >> $log
 if [ -f scratch/hostcheck.py ]; then                                     # Theory note 135-6: VRAM pattern test over most of the card (b78 fault at 6.75-14 GiB)
-  gib=$(nvidia-smi --query-gpu=memory.total --format=csv,noheader,nounits | head -1 | awk '{printf "%.0f", $1 / 1024 - 2}')
+  gib=$(nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits | head -1 | awk '{printf "%.0f", $1 / 1024 - 3}')   # free, not total (b92: a co-process held 260 MiB)
   python -u scratch/hostcheck.py --gib $gib > logs/hostcheck.log 2>&1; tail -1 logs/hostcheck.log >> $log
   tail -1 logs/hostcheck.log | grep -q "HOSTCHECK PASS" || { echo "$(date +%T) HOSTCHECK_FAIL rc 9" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }
 fi
