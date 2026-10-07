@@ -6191,6 +6191,28 @@ carry an fp32 certificate that covers every code the eval visits** (14 certifica
 * Both slots are exact at 2,048, SERIAL and contractive, so 1 of 4 slots passes in each arm. PASS(arm) needs 3/4. Slots 2–4 are running.
 * Fields named: the files' top-level "rho" (2.2e-5 for FSQ-64) is the vacuous hard-rounded summary, not the registered measure.
 
+**Note 134-5 (2026-10-06 20:31 EDT; interim, 3 of 4 seeds; scored by Theory with score_s134; Audit-reproduced). COPY-ANCHOR turns all three plain-failure seeds into exact learners, with no restarts.**
+* **s2** (plain: plateau), **s3** (plain: escape without learning), **s4** (plain: basin, the ctrl s4 full null). All on RTX 3090 /
+  595.71.05, one 24k run each, no restart or plateau stop.
+  - long_acc 0.999 / 1.000 / 0.998, ext_2048 **0.994 / 0.998 / 0.998**.
+  - SERIAL (donor ≥ 0.9995, recipient − chance 0). acc_by_length 1 / 2 / 4 / 8 = 1.0.
+  - fp32 ρ (127-12's clause): s3 **0.184**, s4 **0.220**; s2 pending.
+  - Each run first reaches loss ≤ 0.01 at 11.0k / 12.8k / 19.0k.
+* **134-2(b)'s predictions hold for all three:** the 4k / 2.6k ratio is 0.32 / 0.41 / 0.80 (< 0.9), and the loss at 4.5k is 0.60 / 0.92 / 1.58
+  (≤ 3.0).
+* **134-3's mechanism prediction holds:** at the end the code holds the state at L 2 / 4 / 8 (R²_state 0.995–0.996), with no op reversion (last-op
+  R² < 0).
+* **Dialect and copy-donor (134-1):**
+  - **At 2k** the decoder already reads copy-written codes (copy_acc 0.88–0.98). But the two writers are far apart: dialect cos 0.22–0.49,
+    and a copy-written code injected into a transition chain is continued at **chance** (copy-donor 0.006–0.013).
+  - **At the end** the codes are still never identical (identity_rate 0.0 at every position), but they are close (cos 0.85–0.90). A
+    copy-written code injected at position 2 / 4 / 8 **is continued correctly**: s2 0.999 / 1.000 / 0.998, s3 0.997 / 1.000 / 0.999,
+    s4 0.989 / 0.989 / 0.980, with intact chains 1.0.
+  - So there are two distinct but **functionally interchangeable** dialects (many codes per state, §128 / 128-8). The transition writer
+    moved into the region the copy anchor defined. The "two dialects" failure did not occur.
+* **Pending for the verdict** (PASS = 4/4 exact + SERIAL + ρ ≤ 0.28): s1 (training) and s2's fp32 ρ. The guard stage needs Audit's approval
+  after a PASS.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
