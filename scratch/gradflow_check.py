@@ -357,6 +357,38 @@ def check_s138(dev, out):
     F120.D_Q, F120.LEV, F120.HALF, F120.SHIFT = saved
 
 
+def check_s142(dev, out):
+    """§142 (a27cf1cf, note 142-1) MULT-READ on NOISE-64 (d 64, --no_round, training dither 0.25): each reader term CE_j (j = 1..3, the shared
+    answer decoder on code_j vs S_j's 8 tokens) ALONE reaches W_down, W_up and the GPT-2 trunk under CUDA bf16; a REMOVED target has exactly 0
+    gradient (with S_j removed, changing S_j's target tokens leaves every gradient bitwise identical), and with all three removed there is no
+    reader term. Targets here are gold digits (gradient flow only; runs use the teacher cache)."""
+    import math
+    import boxes.fsq120 as F120
+    import boxes.multcol as MC
+    import boxes.multrow as R
+    saved = (F120.D_Q, F120.LEV, F120.HALF, F120.SHIFT); F120.D_Q, F120.LEV = 64, 8; F120.HALF = (F120.LEV - 1) / 2; F120.SHIFT = math.atanh(F120.OFF / F120.HALF)
+    amp = torch.bfloat16 if str(dev).startswith("cuda") else None; fam = R.RowFam(); m = R.MultRow(s5.load_gpt2(dev), fam).to(dev)
+    m.soft_beta = 0.0; m.no_round = True; m.noise = 0.25; m.train(); rng = np.random.default_rng(0); A, B = MC.gen_operands(rng, 8, 4), MC.gen_operands(rng, 8, 4)
+    X = torch.tensor(np.tile(np.arange(4), (8, 1)), device=dev); lab = R.sj_values(A, B); rtok = torch.tensor(np.array(MC.DTOK)[R.digits8(lab[:, :3])], device=dev)
+    def run(mask, tok, seed=7):
+        m.zero_grad(set_to_none=True); R.set_ops(m, A, B, dev); torch.manual_seed(seed)
+        with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+            fin, rd, n = m.chain_read(m.start(8, dev), X, lab, tok, torch.tensor(mask, device=dev))
+        return fin, rd, n
+    for j in (1, 2, 3):
+        mk = np.zeros((8, 3), bool); mk[:, j - 1] = True; _, rd, n = run(mk, rtok); rd.backward()
+        out[f"s142.reader{j}.down_grad"] = float(m.down.weight.grad.float().norm()); out[f"s142.reader{j}.up_grad"] = float(m.up.weight.grad.float().norm())
+        out[f"s142.reader{j}.trunk_grad"] = float(m.g.w("h.0.attn.c_attn.weight").grad.float().norm()); out[f"s142.reader{j}.one_term"] = 1.0 if n == 1 else 0.0
+    for j in (1, 2, 3):                                                     # removed S_j: its target tokens do not enter the graph
+        mk = np.ones((8, 3), bool); mk[:, j - 1] = False; tok2 = rtok.clone(); tok2[:, j - 1] = torch.tensor(MC.DTOK[7], device=dev)
+        fin, rd, _ = run(mk, rtok); (fin + rd).backward(); g1 = [p_.grad.detach().clone() for p_ in (m.down.weight, m.up.weight, m.g.w("h.0.attn.c_attn.weight"))]
+        fin, rd, _ = run(mk, tok2); (fin + rd).backward(); g2 = [p_.grad.detach() for p_ in (m.down.weight, m.up.weight, m.g.w("h.0.attn.c_attn.weight"))]
+        out[f"s142.removed{j}.zero_grad_exact"] = 1.0 if all(torch.equal(x_, y_) for x_, y_ in zip(g1, g2)) else 0.0
+    _, rd, n = run(np.zeros((8, 3), bool), rtok); out["s142.all_removed_no_reader_term"] = 1.0 if (rd is None and n == 0) else 0.0
+    del m
+    F120.D_Q, F120.LEV, F120.HALF, F120.SHIFT = saved
+
+
 def check_s141(dev, out):
     """§141 (9e45b92b / note 141-1): with R = 4 repeats per column (FSQ-8 and SOFT-16), the digit CE of column k (decoded after its last
     repeat) ALONE reaches every repeat's embedding of column k, the previous column's last-repeat embedding (the carried code) and

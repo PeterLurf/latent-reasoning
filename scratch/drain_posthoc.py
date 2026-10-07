@@ -54,7 +54,7 @@ def main():
         with open(os.path.join(ROOT, "logs", "probe_posthoc_%s.log" % name), "w") as lg:
             subprocess.call([sys.executable, "-u", "-m", mod, "--from_args", os.path.join(d, "args.json"), "--probe_only", "--device", dev, "--out", d],
                             cwd=ROOT, stdout=lg, stderr=subprocess.STDOUT)
-    if name.startswith("s139_") and not os.path.exists(os.path.join(d, "eval_contraction_fp32.json")):   # §139: fp32 contraction on-host via boxes.multrow
+    if name.startswith(("s139_", "s142_")) and not os.path.exists(os.path.join(d, "eval_contraction_fp32.json")):   # §139 / §142: fp32 contraction on-host via boxes.multrow
         with open(os.path.join(ROOT, "logs", "posthoc_contraction_%s.log" % name), "w") as lg:
             subprocess.call([sys.executable, "-u", "-m", "boxes.multrow", "--from_args", os.path.join(d, "args.json"), "--contraction_only", "--fp32", "--device", dev, "--out", d],
                             cwd=ROOT, stdout=lg, stderr=subprocess.STDOUT)
