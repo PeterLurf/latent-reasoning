@@ -1,0 +1,67 @@
+{
+ "holds": true,
+ "n_reachable": 236,
+ "n_moore": 5,
+ "capped": false,
+ "violations": 0,
+ "all_decode_valid": true,
+ "status": "done",
+ "timed_out": false,
+ "moore_timed_out": false,
+ "sec": 0,
+ "layers": [
+  {
+   "depth": 1,
+   "frontier": 15,
+   "cum": 15,
+   "sec": 0
+  },
+  {
+   "depth": 2,
+   "frontier": 92,
+   "cum": 107,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 3,
+   "frontier": 99,
+   "cum": 206,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 4,
+   "frontier": 21,
+   "cum": 227,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 5,
+   "frontier": 7,
+   "cum": 234,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 6,
+   "frontier": 2,
+   "cum": 236,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 7,
+   "frontier": 0,
+   "cum": 236,
+   "sec": 0,
+   "complete": true
+  }
+ ],
+ "n_start_pairs": 15,
+ "eval_dtype": "None",
+ "cert_cap": 10000000,
+ "device": "NVIDIA GeForce RTX 3090",
+ "driver": "570.181"
+}
