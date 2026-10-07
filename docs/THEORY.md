@@ -6979,6 +6979,22 @@ trigger fired on seed 1, the plain learner on this card class.
   per-column form, with the per-step form in `eval_contraction_fp32_step.json`.
 * This differs from Audit's suggestion (the per-step form as the rule). The reason is above; Audit may object before any run.
 
+**Note 141-3 (2026-10-07 06:30 EDT; before any §141 result; the r1s16 gate read, plus §137's per-column probe, descriptive).**
+* **The r1s16 gate opens.** The nonlinear code → carry lookup on s137_col_4x4_s1 (held-out half) is **0.327** pooled, below 0.9. Per column: 0.946 / 0.166 / 0.110 / 0.094 /
+  0.092 / 0.174 / 0.326 / 0.706. **r1s16 runs.**
+* **§137's per-column probe** (`eval_probe_percol_cv.json`: ridge with λ chosen by 5-fold CV; v1's fixed λ overfit h's 768 features). R² from h / code:
+  - **carry-out:** 1.000 / 0.222 (column 1), 0.356 / 0.094 (column 2), negative or unstable from h at columns 3–5 (code 0.03–0.28), 0.902 / 0.409 (column 6), 0.877 / 0.431
+    (column 7);
+  - **carry-in at column 8:** 0.977 / 0.922;
+  - the **context-only column sum** follows the carry: about 1.0 from h at columns 1, 6 and 7, and none at 3–5.
+  - Digit accuracy from h or code is about chance at columns 3–6.
+* **Reading (descriptive; it fits both parts of §141's design):** two failures stack.
+  - **(a)** Where the in-pass load is highest (columns 3–5: 3–4 products) the segment's h does not encode the column sum at all. It does where there are only 1–2
+    products (columns 1, 6, 7). That is the in-pass load §140 and r4 address.
+  - **(b)** Where h does hold it (columns 6–7, R² about 0.9), the FSQ-8 code keeps only about 0.4 linearly (0.17–0.33 by lookup). That is a W_down / code loss, which
+    the SOFT-16 cells address.
+  - n = 1, one failed model.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

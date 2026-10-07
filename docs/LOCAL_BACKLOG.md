@@ -101,6 +101,16 @@ text token (S5: the first state token; FF / CYC / MOD / RDFA: the answer token) 
 * **2070 (fp32): §136 d4-vs-d8 2k entry pairs, more seeds**: as item 7 for S = 513..524, interleaved. That takes the paired comparison to n = 24.
 * Order per card: the §140 prototypes, then §137, then the §136 pairs. About 25–40 min per 5k run; together with the C7 checks this fills the night.
 
+**[Theory 2026-10-07 06:35, 3070 + 4060 day filler; descriptive prototypes, read for no rule; under the 6 GiB cap]** (in order; at least 3 jobs and at least 2 h per card)
+1. **§141 r4 entry prototypes, 4×4 to 5k:** `multcol --task 4x4 --repeats 4 --repeat_index --micro 4 --seed S --stop_after 5000 --no_cert` for S = 501..504 (FSQ-8),
+   alternating cards; out `proto141_r4f8_s{S}_{card}`. Read whether the middle columns move at c_max 2 → 4 against §137's r1 trajectory.
+2. **§140 digit-pair 4×4 prototypes to 5k:** S = 501..508, alternating; out `proto140_4x4_s{S}_{card}` (from the night list, if not run yet).
+3. **S5 soft against hard entry, to 4.5k** (the 133-10 hint that SOFT-16 learns seed 3 where FSQ-8 and FSQ-16 escape and fail):
+   - `fsq120 --family s5 --arm final --seed S --d_q 16 --soft_beta 0.1 --stop_after 4500 --no_cert`, and the same with `--d_q 16` only (FSQ-16);
+   - S = 501..508, paired, alternating cards; out `proto133_{soft16,fsq16}_s{S}_{card}`;
+   - read the 2k flag and FLAG4 per pair.
+4. **C7 LM-head check on every remaining exact model** (minutes each).
+
 ## Done
 
 * (none yet)
