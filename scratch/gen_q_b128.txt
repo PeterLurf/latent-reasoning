@@ -1,0 +1,4 @@
+# THEORY §134 notes 134-6 / 134-7 (Audit-approved ~$1, descriptive): s134_copy_mod_s2 - the guard's exact MOD recipe (+ --copy_frac 0.1, --no_cert), then the post-hoc fp32 cover cert (scratch.cc_job) with a 10M-code cap / 6 h limit so the BFS ends uncapped; RTX 3090; deploy after the §137 read, b126 and b127
+# P=1
+boxes/runs_fsq/s134_copy_mod_s2 boxes.fsq120 --family mod --arm final --seed 2 --copy_frac 0.1 --micro 2 --micro_from 32 --no_cert --probe127 --ckpt_every 2000 --cert_cap 10000000 --cert_time 21600
+boxes/runs_fsq/s134cc_mod_s2 scratch.cc_job --run boxes/runs_fsq/s134_copy_mod_s2
