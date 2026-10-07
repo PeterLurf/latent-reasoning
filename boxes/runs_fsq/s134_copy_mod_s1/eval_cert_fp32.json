@@ -1,0 +1,242 @@
+{
+ "holds": false,
+ "n_reachable": 70012,
+ "n_moore": 34725,
+ "capped": false,
+ "violations": 185903,
+ "all_decode_valid": true,
+ "status": "done",
+ "timed_out": false,
+ "moore_timed_out": false,
+ "sec": 76,
+ "layers": [
+  {
+   "depth": 1,
+   "frontier": 14,
+   "cum": 14,
+   "sec": 0
+  },
+  {
+   "depth": 2,
+   "frontier": 103,
+   "cum": 117,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 3,
+   "frontier": 192,
+   "cum": 309,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 4,
+   "frontier": 138,
+   "cum": 447,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 5,
+   "frontier": 86,
+   "cum": 533,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 6,
+   "frontier": 53,
+   "cum": 586,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 7,
+   "frontier": 18,
+   "cum": 604,
+   "sec": 0,
+   "complete": true
+  },
+  {
+   "depth": 8,
+   "frontier": 12,
+   "cum": 616,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 9,
+   "frontier": 25,
+   "cum": 641,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 10,
+   "frontier": 83,
+   "cum": 724,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 11,
+   "frontier": 222,
+   "cum": 946,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 12,
+   "frontier": 749,
+   "cum": 1695,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 13,
+   "frontier": 2502,
+   "cum": 4197,
+   "sec": 1,
+   "complete": true
+  },
+  {
+   "depth": 14,
+   "frontier": 6245,
+   "cum": 10442,
+   "sec": 3,
+   "complete": true
+  },
+  {
+   "depth": 15,
+   "frontier": 10940,
+   "cum": 21382,
+   "sec": 9,
+   "complete": true
+  },
+  {
+   "depth": 16,
+   "frontier": 13990,
+   "cum": 35372,
+   "sec": 17,
+   "complete": true
+  },
+  {
+   "depth": 17,
+   "frontier": 13057,
+   "cum": 48429,
+   "sec": 29,
+   "complete": true
+  },
+  {
+   "depth": 18,
+   "frontier": 9391,
+   "cum": 57820,
+   "sec": 39,
+   "complete": true
+  },
+  {
+   "depth": 19,
+   "frontier": 5726,
+   "cum": 63546,
+   "sec": 47,
+   "complete": true
+  },
+  {
+   "depth": 20,
+   "frontier": 3165,
+   "cum": 66711,
+   "sec": 52,
+   "complete": true
+  },
+  {
+   "depth": 21,
+   "frontier": 1655,
+   "cum": 68366,
+   "sec": 54,
+   "complete": true
+  },
+  {
+   "depth": 22,
+   "frontier": 861,
+   "cum": 69227,
+   "sec": 56,
+   "complete": true
+  },
+  {
+   "depth": 23,
+   "frontier": 396,
+   "cum": 69623,
+   "sec": 56,
+   "complete": true
+  },
+  {
+   "depth": 24,
+   "frontier": 185,
+   "cum": 69808,
+   "sec": 57,
+   "complete": true
+  },
+  {
+   "depth": 25,
+   "frontier": 85,
+   "cum": 69893,
+   "sec": 57,
+   "complete": true
+  },
+  {
+   "depth": 26,
+   "frontier": 45,
+   "cum": 69938,
+   "sec": 57,
+   "complete": true
+  },
+  {
+   "depth": 27,
+   "frontier": 45,
+   "cum": 69983,
+   "sec": 57,
+   "complete": true
+  },
+  {
+   "depth": 28,
+   "frontier": 18,
+   "cum": 70001,
+   "sec": 57,
+   "complete": true
+  },
+  {
+   "depth": 29,
+   "frontier": 8,
+   "cum": 70009,
+   "sec": 57,
+   "complete": true
+  },
+  {
+   "depth": 30,
+   "frontier": 2,
+   "cum": 70011,
+   "sec": 57,
+   "complete": true
+  },
+  {
+   "depth": 31,
+   "frontier": 1,
+   "cum": 70012,
+   "sec": 57,
+   "complete": true
+  },
+  {
+   "depth": 32,
+   "frontier": 0,
+   "cum": 70012,
+   "sec": 57,
+   "complete": true
+  }
+ ],
+ "n_start_pairs": 15,
+ "eval_dtype": "None",
+ "cert_cap": 1000000,
+ "device": "NVIDIA GeForce RTX 3090",
+ "driver": "595.71.05"
+}
