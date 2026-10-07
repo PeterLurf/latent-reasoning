@@ -23,7 +23,7 @@ import os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 R = os.path.join(ROOT, "boxes", "runs_fsq")
-ARMS = ("a", "b", "c")
+ARMS = ("a", "ap", "b", "c")                                            # 139-3: ap = A with L fixed at 4 (no prefix problems; strict C4)
 SKIPPED, ERRORS = [], []
 
 
@@ -76,7 +76,11 @@ def bad_args(d, arm):
     if arm == "c":
         exp.update({"distill": True, "distill_end": 0})
     bad = {k: a.get(k) for k, v in exp.items() if a.get(k) != v}
-    if arm == "a" and a.get("distill"):
+    if arm == "ap":
+        exp.update({"fixed_L": 4})
+    if arm != "ap" and a.get("fixed_L"):
+        bad["fixed_L"] = a.get("fixed_L")
+    if arm in ("a", "ap") and a.get("distill"):
         bad["distill"] = a.get("distill")
     if a.get("stop_plateau"):
         bad["stop_plateau"] = True

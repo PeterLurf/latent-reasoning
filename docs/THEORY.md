@@ -6764,6 +6764,24 @@ trigger fired on seed 1, the plain learner on this card class.
   - Here "the CoT model's internals" give no better target than its outputs. §139 therefore tests whether **a CoT teacher's outputs** can replace
     gold step labels as a fading warm-start, as 139 pre-stated (C4 as reworded).
 
+**Note 139-3 (2026-10-07 02:39 EDT, before any §139 run; Audit's review of boxes/multrow.py, code approved). What the curriculum labels, and a strict-C4 arm.**
+* **(1) A is not strict C4.** The curriculum draws L ~ U(1, L_max) over multiplier prefixes, and the FINAL CE on S_L = a × (b_1 … b_L) supervises S_1, S_2 and S_3
+  as the final answers of shortened problems. That is **110b-1's qualifier**, exactly as S5's short problems label transitions.
+  - A is renamed **"FINAL with prefix problems (110b-1-qualified)"**. It counts under C4 as reworded (final answers of real, shorter problems), not as
+    answers-only.
+* **(2) B adds no new information over A here,** because the teacher's text equals gold.
+  - B gives the same S_j labels at **every hand-off of one chain**, where A sees them only across different draws.
+  - **B better than A** therefore reads "per-hand-off targets within the chain help entry" (cf. §111 / §118), with the teacher only as the label source. "A
+    teacher replaces gold labels" cannot be told apart from that here.
+  - The wording of 139's B-better-than-A reading is revised accordingly, before any run.
+* **(3) New arm A′ (strict C4):** A with **L fixed at 4** (no prefix problems, no curriculum). Its only supervision is the full product and COPY's final-answer
+  texts. 4 seeds, about $1.2 (Audit: "your call"); taken.
+  - A′ s1 joins the 1-host proof beside A s1 and B s1.
+  - **Readings:**
+    - **A′ PASS:** strict-C4 multiplier-major multiplication on the latent carrier, the user's stretch goal on this task;
+    - **A′ FAIL with A PASS:** the prefix problems (110b-1 labels) are what make it learnable.
+  - Dirs `s139_ap_4x4_s{1..4}`, args `--fixed_L 4`. score_s139 is updated.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
