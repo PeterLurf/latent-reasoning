@@ -7785,6 +7785,19 @@ matters.**
   0.003.
 * **Order (Audit):** §147's proof runs in parallel with §142–§145; §148 follows.
 
+**Note 147-2 (2026-10-07 17:30 EDT, before any §147 run; Audit's code review of 44b6843d). Per-group read gains, so the delta heads can train.**
+* **The issue:** the additive read φ(q)ᵀS is unnormalised and grows with the number of writes, which is the point of an exact sum. It dominates the shared W_o.
+  - Measured on CUDA: W_o's gradient into the delta-head columns is about 6,000× smaller than into the additive columns (0.0025 against 15.0), and the α / β gate gradient is
+    about 3·10⁻⁴.
+  - The delta heads (B1's finite-state half) might never train. A PASS or DROP would then test the additive half alone.
+* **Fixed now (Audit's option (b)):** a learnable scalar gain per head group on its read before W_o: x ← x + W_o · [g_add · read_add ‖ g_delta · read_delta].
+  - **Initialisation:** g_delta = 1, and g_add = the median of ‖read_delta‖ / ‖read_add‖ over a probe batch's hand-offs at step 0. This is function-preserving, since W_o = 0.
+  - **A scalar keeps the additive sums exact** up to a learned scale. A LayerNorm would destroy their magnitude.
+  - The gains train in the new parameters' Adam group.
+* **Gate before launch:** a CUDA gradflow recheck with the delta-column W_o and gate gradients within 10× of the additive ones.
+* **A reading added (descriptive):** if zeroing the delta heads changes test_acc by < 0.01 at the end, B1 as tested reads "additive-only".
+* args record `mem_group_gain: true`.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
