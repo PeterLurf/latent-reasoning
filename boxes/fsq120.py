@@ -948,9 +948,11 @@ def s138_desc(m, fam, dev, amp, n_jac=64, iters=10):
     Zf = Z.reshape(-1, Z.shape[-1]); lf = lab.reshape(-1); Zn = Zf.cpu().numpy(); var = Zn.var(0); out = {}
     ev = np.clip(np.linalg.eigvalsh(np.cov(Zn.T)), 0, None); p = ev[ev > 0] / max(ev.sum(), 1e-12); out["eff_rank"] = float(np.exp(-(p * np.log(p)).sum()))
     out["var_share_beyond_64"] = float(var[64:].sum() / max(var.sum(), 1e-12)) if len(var) > 64 else None
-    ref = s138_hinge_ref(m, fam, dev, amp, 1.0); med = ref["info"]["median_nn_centroid_dist"]; S = int(fam.n_states)
-    cen = torch.zeros(S, Zf.shape[-1], device=Zf.device).index_add_(0, torch.tensor(lf, device=Zf.device), Zf)
-    cnt = np.bincount(lf, minlength=S); cen = cen / torch.tensor(np.maximum(cnt, 1), device=Zf.device, dtype=torch.float32)[:, None]
+    S = int(fam.n_states)                                                   # descriptive only: the label-based centroids / directions live here
+    cen = torch.zeros(S, Zf.shape[-1], device=Zf.device).index_add_(0, torch.tensor(lf, device=Zf.device), Zf)   # (Audit on 1d76fc3c: the hinge
+    cnt = np.bincount(lf, minlength=S); cen = cen / torch.tensor(np.maximum(cnt, 1), device=Zf.device, dtype=torch.float32)[:, None]   # ref has no dirs)
+    seen = torch.tensor(cnt > 0, device=Zf.device); D = torch.cdist(cen, cen); D[~seen] = float("inf"); D[:, ~seen] = float("inf"); D.fill_diagonal_(float("inf"))
+    nn_d, nn_i = D.min(1); med = float(nn_d[seen].median()); cdir = cen[nn_i] - cen; cdir = cdir / cdir.norm(dim=-1, keepdim=True).clamp_min(1e-12); cdir[~seen] = 0.0
     out["spread_over_between"] = float((Zf - cen[torch.tensor(lf, device=Zf.device)]).norm(dim=-1).mean() / max(med, 1e-12)); out["median_nn_centroid_dist"] = med
     t = 3; X = torch.tensor(x, device=dev)                                   # hand-off 4 (0-based t 3) -> 5
     def nxt(z_, rows):                                                      # the hand-off map z_t -> z_{t+1} (rounding off, fp32)
@@ -958,7 +960,7 @@ def s138_desc(m, fam, dev, amp, n_jac=64, iters=10):
     rows = torch.arange(min(n_jac, len(x)), device=dev); z0 = Z[rows, t].detach(); st = torch.tensor(lab[rows.cpu().numpy(), t], device=dev); d0 = 0.1 * med
     with torch.no_grad():
         base = nxt(z0, rows); rnd = torch.randn_like(z0); rnd = rnd / rnd.norm(dim=-1, keepdim=True)
-        rho_dir = ((nxt(z0 + d0 * ref["dir"][st], rows) - base).norm(dim=-1) / d0); rho_rnd = ((nxt(z0 + d0 * rnd, rows) - base).norm(dim=-1) / d0)
+        rho_dir = ((nxt(z0 + d0 * cdir[st], rows) - base).norm(dim=-1) / d0); rho_rnd = ((nxt(z0 + d0 * rnd, rows) - base).norm(dim=-1) / d0)
     out["rho_dir_onestep_median"] = float(rho_dir.median()); out["rho_rand_onestep_median"] = float(rho_rnd.median())
     v = torch.randn_like(z0); v = v / v.norm(dim=-1, keepdim=True); sig = None; fd = 1e-3 * float(z0.norm(dim=-1).median().clamp_min(1e-3))
     for _ in range(iters):                                                  # power iteration on J^T J per row (rows independent); SDPA has no

@@ -276,7 +276,7 @@
 3.0 boxes/runs_fsq/s133_noise64_s3/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_noise64_s3/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_noise64_s3
 3.0 boxes/runs_fsq/s133_soft16_s102/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_soft16_s102/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_soft16_s102
 3.0 boxes/runs_fsq/s133_soft16_s3/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_soft16_s3/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_soft16_s3
-3.0 boxes/runs_fsq/s134_copy_ff_s1/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s134_copy_ff_s1/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s134_copy_ff_s1
+# skipped (--prefix_only supports s5 / cyc / mod / rdfa, not ff): 3.0 boxes/runs_fsq/s134_copy_ff_s1/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s134_copy_ff_s1/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s134_copy_ff_s1
 3.0 boxes/runs_fsq/s136_cnoise_s5_s4/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_cnoise_s5_s4/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s136_cnoise_s5_s4
 2.0 boxes/runs_fsq/s133_cont64_s104/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_cont64_s104 {DEV}
 2.0 boxes/runs_fsq/s133_cont64_s3/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_cont64_s3 {DEV}

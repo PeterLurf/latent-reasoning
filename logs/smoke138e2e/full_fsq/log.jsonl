@@ -1,0 +1,10 @@
+{"step": 0, "probe": {"r2_item": 0.5376584529876709, "r2_state": -0.14640557765960693, "r2_start": -0.07859444618225098, "abl_dloss": -0.00887298583984375, "ce_intact": 33.62603759765625, "ce_ablated": 33.617164611816406, "n": 1024}}
+{"step": 1, "mcheck": {"grad_rows": 256, "semantics": "train (deterministic)", "row_norm": 25.357154846191406, "resid_std": 0.015701930969953537, "row_norm_eval": 25.661720275878906, "resid_std_eval": 0.018645532429218292, "wte_row_norm": 3.9585366249084473, "lr_ratio": 1.0, "lrs": [9.045084971874739e-07]}}
+{"step": 1, "code_diversity": {"distinct_codes": 8008, "dims_used": 509, "n": 8192}}
+{"step": 2, "mcheck": {"grad_rows": 256, "semantics": "train (deterministic)", "row_norm": 25.35405921936035, "resid_std": 0.015451420098543167, "row_norm_eval": 25.66033935546875, "resid_std_eval": 0.01821032539010048, "wte_row_norm": 3.9585375785827637, "lr_ratio": 1.0, "lrs": [1.3090169943749477e-06]}}
+{"step": 2, "code_diversity": {"distinct_codes": 7999, "dims_used": 502, "n": 8192}}
+{"step": 2, "probe": {"r2_item": 0.5431749820709229, "r2_state": -0.14702105522155762, "r2_start": -0.07661259174346924, "abl_dloss": -0.011516571044921875, "ce_intact": 32.710750579833984, "ce_ablated": 32.69923400878906, "n": 1024}}
+{"step": 2, "ckpt": "ckpt_last.pt"}
+{"step": 4, "ckpt": "ckpt_last.pt"}
+{"step": 5, "mcheck": {"grad_rows": 256, "semantics": "train (deterministic)", "row_norm": 25.657546997070312, "resid_std": 0.01789357326924801, "row_norm_eval": 25.657546997070312, "resid_std_eval": 0.017893575131893158, "wte_row_norm": 3.9585390090942383, "lr_ratio": 1.0, "lrs": [0.0]}}
+{"step": 5, "loss": 33.409132385253905, "L_max": 4, "p_hard": 1.0, "noise": 0.0, "sec": 34, "mem_gib": 5.0}
