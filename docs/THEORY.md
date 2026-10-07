@@ -7797,6 +7797,8 @@ matters.**
 * **Gate before launch:** a CUDA gradflow recheck with the delta-column W_o and gate gradients within 10× of the additive ones.
 * **A reading added (descriptive):** if zeroing the delta heads changes test_acc by < 0.01 at the end, B1 as tested reads "additive-only".
 * args record `mem_group_gain: true`.
+* **Amendment (2026-10-07 17:40 EDT, before any run; Audit on the implementation):** both gains are log-parametrised, g = exp(s), with s initialised at log(the initial ratio) (s_delta = 0).
+  A raw g_add near 2·10⁻⁴ under Adam (lr about 10⁻⁴) would move about 50 % per step and could change sign. exp(s) is identical at step 0, takes relative steps and stays positive.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
