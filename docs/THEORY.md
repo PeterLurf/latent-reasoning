@@ -7129,6 +7129,14 @@ checkpoints, the host check).
 * COPY learns in A′ and B but not in A, so A's log is to be checked for divergence or nonfinite steps before reading anything into it.
 * The three proof runs are scored when their files land (descriptive; no seeds 2–4).
 
+**Note 139-5 (2026-10-07 08:41 EDT; corrects 139-4's "COPY learns in A′ and B but not in A", from the experiments session's read of b126's logs).**
+* **There is no divergence in A:** 0 nonfinite steps.
+* **The copy loss falls slowly and alike in all three arms:** A 16.2 → 8.5, B 15.6 → 7.1, A′ 16.0 → 9.2 (500 → 4k).
+* **copy_acc at 4k is about 0 everywhere:** A 0.0, B 0.0, A′ 0.004. It is 0.02–0.03 at 5k.
+* **So the gate tripped on slow copy learning of 8-digit products through SOFT-16, not on a fault of A.** Only A carried the 4k gate.
+  - The 0.9-at-4k threshold, set from FSQ-8 / S5's copy (one of 120 state texts), was unreachable for this copy target.
+  - **The stop stands as registered** (seeds 2–4 are not run). A′ and B's proof runs (24k, 0 nonfinite) are read descriptively when their evals land.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
