@@ -1,0 +1,9 @@
+{"step": 1, "loss": 4.1682281494140625, "c_max": 1, "p_hard": 0.0, "sec": 1}
+{"step": 2, "loss": 4.589454650878906, "c_max": 1, "p_hard": 0.0, "sec": 2}
+{"step": 2, "flag_123_3": true, "loss_100": 4.1682281494140625, "loss_1k": 4.1682281494140625, "loss_2k": 4.589454650878906, "stop_plateau": false}
+{"step": 3, "loss": 3.614123582839966, "c_max": 2, "p_hard": 0.5, "sec": 3}
+{"step": 3, "ckpt": "ckpt_last.pt"}
+{"step": 3, "resumed": "D:/drain_tmp/smoke147/delta_ck3.pt"}
+{"step": 4, "loss": 3.798766613006592, "c_max": 2, "p_hard": 1.0, "sec": 5}
+{"step": 5, "loss": 3.6782310009002686, "c_max": 2, "p_hard": 1.0, "sec": 6}
+{"step": 6, "loss": 3.521509885787964, "c_max": 4, "p_hard": 1.0, "sec": 9}

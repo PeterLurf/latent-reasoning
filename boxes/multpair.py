@@ -44,6 +44,7 @@ from boxes import core as bc  # noqa: E402
 import boxes.fsq120 as F  # noqa: E402
 from boxes.fsq120 import EOT, FSQ120, driver_version, env_info, lr_at, make_opt  # noqa: E402
 from boxes.multcol import DTOK, columns, dedup, gen_operands, load_bench, ridge_r2  # noqa: E402
+import boxes.deltamem as DM  # noqa: E402
 
 EQTOK, NEWTOK, SAMETOK = bc.tok(" =")[0], bc.tok(" ;")[0], bc.tok(" ,")[0]   # flush / new-column / same-column flags (note 140-1)
 WTOK = [bc.tok(w)[0] for w in (" W", " X", " Y", " Z")]                    # §145 write-embedding initialisers (single, unused tokens)
@@ -404,6 +405,126 @@ def s145_extras(m, teA, teB, dev, amp, bs, pred, codes, n=1024, seed=14501):
                  "n": int(len(A)), "steps": int(T)}
 
 
+class MultDelta(MultPair):
+    """§147 DELTA-STATE: no carried code token; segment = [EOT, a_i, b_j, column flag] / [EOT, " ="], a fresh GPT-2 pass each, the DeltaMem state
+    (B, 12, 64, 64) the only cross-segment channel; emission = GPT-2's LM head at the segment's last position (full-vocabulary CE)."""
+    def __init__(self, g, fam, layer=6):
+        super().__init__(g, fam); self.mem = DM.DeltaMem(g, layer)
+
+    def start(self, B, dev, states=None):
+        return self.mem.zero_state(B, dev)
+
+    def tokens(self, t, B, dev):
+        i, j = (int(v) for v in self.pairs[t])
+        if i < 0:
+            tail = torch.full((B, 1), EQTOK, device=dev)
+        else:
+            tail = torch.cat([self.adig[:, i:i + 1], self.bdig[:, j:j + 1], torch.full((B, 1), NEWTOK if self.newcol[t] else SAMETOK, device=dev)], 1)
+        return torch.cat([torch.full((B, 1), EOT, device=dev), tail], 1)
+
+    def step(self, S, t, rec=None):
+        B = S.shape[0]; out, S = DM.gpt_forward_mem(self.g, self.g.embed(self.tokens(t, B, S.device)), self.mem, S, rec)
+        return self.g.logits(out[:, -1]).float(), S
+
+    def chain(self, start_emb, items, labels=None, trace_mask=None, record=False, override=None):
+        B, L = items.shape; S = start_emb; losses = []
+        for t in range(L):
+            lg, S = self.step(S, int(items[0, t]))
+            if labels is not None and trace_mask is not None and bool(trace_mask[:, t].any()):
+                rows = torch.nonzero(trace_mask[:, t]).squeeze(1); ans = torch.tensor(self.fam.answer_tokens(labels[rows.cpu().numpy(), t]), device=items.device)
+                losses.append(Fn.cross_entropy(lg[rows], ans[:, 0]))
+        return (torch.stack(losses).mean() if losses else None), S, None, None
+
+
+@torch.no_grad()
+def rollout_delta(m, A, Bd, dev, amp, bs, override=None, record=False, keep_pos=(), reads=False, perturb=None):
+    """§147 chains over all n^2 + 1 steps, decode at emission steps. override: (t, S_donor (N, 12, 64, 64)) replaces the whole state after step t
+    (1-based); keep_pos: steps whose state is returned; reads: the additive heads' read at each segment's last token (N, T, 384)."""
+    N = len(A); pairs, col, emit = schedule(A.shape[1], Bd.shape[1]); T = len(pairs); out = np.full((N, A.shape[1] + Bd.shape[1]), -1)
+    kept = {p_: np.zeros((N, 12, DM.DH, DM.DH), np.float32) for p_ in keep_pos}; R = np.zeros((N, T, DM.H_ADD * DM.DH), np.float32) if reads else None
+    for s_ in range(0, N, bs):
+        sl = slice(s_, s_ + bs); B = len(A[sl]); set_ops(m, A[sl], Bd[sl], dev); S = m.start(B, dev)
+        for t in range(T):
+            rec = [] if reads else None
+            with amp_ctx(amp):
+                lg, S = m.step(S, t, rec)
+            if override is not None and override[0] == t + 1:
+                S = torch.tensor(override[1][sl], device=dev, dtype=S.dtype)
+            if emit[t]:
+                out[sl, col[t]] = m.fam.decode(lg.argmax(-1).cpu().numpy()[:, None])
+            if t + 1 in kept:
+                kept[t + 1][sl] = S.float().cpu().numpy()
+            if reads:
+                R[sl, t] = rec[0].float().cpu().numpy()
+    return out, kept, R
+
+
+def donor_delta(m, A, Bd, dev, amp, bs, rng, positions=(4, 8, 12), n=1000):
+    """§147 SERIAL: the donor's whole memory state swapped in after pair p; the recipient's later digits with the donor's accumulator (row level)."""
+    N = min(n, len(A)); ir, idn = rng.permutation(len(A))[:N], rng.permutation(len(A))[:N]; Ar, Br, Ad, Bdn = A[ir], Bd[ir], A[idn], Bd[idn]
+    pairs, col, emit = schedule(A.shape[1], Bd.shape[1]); Pr, _, _ = columns(Ar, Br); accd, _, _, _, _, _ = accumulators(Ad, Bdn)
+    _, kept, _ = rollout_delta(m, Ad, Bdn, dev, amp, bs, keep_pos=[p_ for p_ in positions if p_ < len(pairs)]); res = {}
+    for p in kept:
+        got, _, _ = rollout_delta(m, Ar, Br, dev, amp, bs, override=(p, kept[p])); gt, sl = later_gt(Ar, Br, accd[:, p - 1], p, pairs, col, emit, Pr)
+        res["pos%d" % p] = {**consist(got, gt, Pr, sl), "n": N}
+    return res
+
+
+def acc_by_magnitude(pred, A, Bd):
+    acc, dig, _, pairs, col, emit = accumulators(A, Bd)
+    ok = np.stack([pred[:, col[t]] == dig[:, t] for t in range(len(pairs)) if emit[t]], 1); av = np.stack([acc[:, t] for t in range(len(pairs)) if emit[t]], 1)
+    return {nm_: (float(ok[msk].mean()) if msk.any() else None) for nm_, msk in (("lt100", av < 100), ("100_199", (av >= 100) & (av < 200)), ("ge200", av >= 200))}
+
+
+@torch.no_grad()
+def rho_delta(m, A, Bd, dev, amp, T0=2, n=300, seed=12301):
+    """§147 (descriptive): perturb the whole memory state after step T0 by eps x per-element std x u; follow the later steps; median distance
+    ratios per head type (additive / delta), and 133-1's first-3 form of each."""
+    rng = np.random.default_rng(seed); idx = rng.permutation(len(A))[:n]; A, Bd = A[idx], Bd[idx]; N = len(A); pairs, _, _ = schedule(A.shape[1], Bd.shape[1])
+    L = len(pairs); set_ops(m, A, Bd, dev); S = m.start(N, dev); clean = []
+    for t in range(L):
+        with amp_ctx(amp):
+            _, S = m.step(S, t)
+        clean.append(S.float())
+    sd = torch.stack(clean[T0 - 1:]).std(0).clamp_min(1e-6); U = torch.tensor(rng.standard_normal(tuple(clean[0].shape)), dtype=torch.float32, device=dev); out = {}
+    for eps in (0.01, 0.1):
+        S = clean[T0 - 1] + eps * sd * U; da, dd = [], []
+        for t in range(T0, L):
+            da.append((S[:, :DM.H_ADD] - clean[t - 1][:, :DM.H_ADD]).flatten(1).norm(dim=1)); dd.append((S[:, DM.H_ADD:] - clean[t - 1][:, DM.H_ADD:]).flatten(1).norm(dim=1))
+            with amp_ctx(amp):
+                _, S = m.step(S, t)
+            S = S.float()
+        r = {}
+        for nm_, D_ in (("additive", da), ("delta", dd)):
+            D_ = torch.stack(D_).cpu().numpy(); rk = np.median(D_[1:] / np.maximum(D_[:-1], 1e-9), axis=1); dk = np.median(D_, axis=1)
+            use = [rk[k] for k in range(min(3, len(rk))) if dk[k] > 1e-6 and rk[k] > 0]
+            r[nm_] = {"rho_k": rk.round(4).tolist(), "dist_med_k": dk.round(6).tolist(), "rho_k3": float(np.exp(np.mean(np.log(use)))) if use else None}
+        out[str(eps)] = r
+    return {"T0": T0, "n": N, "eps": out}
+
+
+def s147_extras(m, teA, teB, dev, amp, bs, pred):
+    """§147 descriptive: acc_by_magnitude; head_ablation (additive / delta reads zeroed at test); colsum_readout_r2 (ridge of the true column
+    accumulator from the additive heads' read phi(q)^T S at each segment's last token, fit on half the problems, pooled over steps) and per
+    column index; rho_by_head_type (rho_delta)."""
+    P, _, _ = columns(teA, teB); out = {"acc_by_magnitude": acc_by_magnitude(pred, teA, teB)}; abl = {}
+    for ht in ("add", "delta"):
+        m.mem.ablate = ht; pk, _, _ = rollout_delta(m, teA, teB, dev, amp, bs); m.mem.ablate = None; r_ = acc_report(pk, P)
+        abl[ht + "_zeroed"] = {"test_acc": r_["test_acc"], "per_column": r_["acc_by_column"]["per_column"]}
+    out["head_ablation"] = abl
+    acc, _, _, pairs, col, _ = accumulators(teA, teB); _, _, R = rollout_delta(m, teA, teB, dev, amp, bs, reads=True); h = len(teA) // 2; T = acc.shape[1]
+    out["colsum_readout_r2"] = ridge_r2(R[:h].reshape(h * T, -1), acc[:h].reshape(-1).astype(float), R[h:].reshape((len(teA) - h) * T, -1), acc[h:].reshape(-1).astype(float))
+    byc = {}
+    for c_ in sorted(set(col.tolist())):
+        ts = np.where(col == c_)[0]
+        if (acc[:, ts].std() > 0):
+            byc[str(int(c_) + 1)] = ridge_r2(R[:h][:, ts].reshape(-1, R.shape[-1]), acc[:h][:, ts].reshape(-1).astype(float), R[h:][:, ts].reshape(-1, R.shape[-1]), acc[h:][:, ts].reshape(-1).astype(float))
+    out["colsum_readout_r2_by_column"] = byc
+    out["colsum_readout_def"] = "ridge R^2 of the true column accumulator from the additive heads' read phi(q)^T S (384 d) at each segment's last token"
+    out["rho_by_head_type"] = rho_delta(m, teA, teB, dev, amp)
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--family", default="mult_pair", choices=["mult_pair"]); ap.add_argument("--task", default="4x4", choices=["4x4", "5x5"])
@@ -419,6 +540,8 @@ def main():
     ap.add_argument("--slots", type=int, default=0, help="§145: K write positions / slots (0 = §140's single code)"); ap.add_argument("--carry_slots", type=int, default=0)
     ap.add_argument("--carry_from", default="first", choices=["first", "last"], help="§145 note 145-1: carry the slots read at the LAST write positions (CARRY1: w_K)")
     ap.add_argument("--no_round", action="store_true", help="§145 NOISE-64 carrier"); ap.add_argument("--dither", type=float, default=0.0)
+    ap.add_argument("--carrier", default="code", choices=["code", "deltamem"], help="§147: deltamem = the linear-recurrent memory, no carried code")
+    ap.add_argument("--mem_layer", type=int, default=6); ap.add_argument("--mem_add_heads", type=int, default=6); ap.add_argument("--mem_delta_heads", type=int, default=6)
     a = ap.parse_args()
     if a.from_args:
         keep = {k: getattr(a, k) for k in ("contraction_only", "fp32", "device", "out", "from_args")}
@@ -435,10 +558,13 @@ def main():
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     os.makedirs(a.out, exist_ok=True); fam = PairFam(); dname = lambda: torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"  # noqa: E731
     teA, teB = load_bench(os.path.join(ROOT, "bench", "data", "mult_%s_test.txt" % a.task)); teA, teB = teA[:a.test_n], teB[:a.test_n]
+    assert a.carrier == "code" or (not a.slots and a.mem_add_heads == DM.H_ADD and a.mem_delta_heads == DM.H_DEL), "§147: --carrier deltamem (6 + 6 heads), no slots"
     def mk():
+        if a.carrier == "deltamem":
+            return MultDelta(s5.load_gpt2(dev), fam, a.mem_layer).to(dev)
         m_ = (MultSlot(s5.load_gpt2(dev), fam, a.slots, a.carry_slots, a.carry_from) if a.slots else MultPair(s5.load_gpt2(dev), fam)).to(dev); m_.no_round = a.no_round
         return m_
-    RO = rollout_slots if a.slots else rollout
+    RO = (lambda *x, **k: rollout_delta(*x, **{kk: vv for kk, vv in k.items() if kk != "record"})[0]) if a.carrier == "deltamem" else (rollout_slots if a.slots else rollout)
     if a.contraction_only:
         m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval(); m.p_hard = 1.0
         ampc = None if a.fp32 else amp; ct = (contraction_slots if a.slots else contraction)(m, teA, teB, dev, ampc, T0=a.contract_T0, n=a.contract_n); ct.update({"eval_dtype": str(ampc), "device": dname(), "driver": driver_version()})
@@ -455,7 +581,13 @@ def main():
             "train_driver": driver_version(), **env_info()}
     json.dump({**info, "resumed_at": time.strftime("%Y-%m-%d %H:%M:%S")} if a.resume else info,
               open(os.path.join(a.out, ("args_resume_%d.json" % int(time.time())) if a.resume else "args.json"), "w", newline="\n"), indent=1)
-    m = mk(); opt = make_opt(m, a.lr); m.train(); pairs, col, emit = schedule(n, n)
+    m = mk(); m.train(); pairs, col, emit = schedule(n, n)
+    if a.carrier == "deltamem":                                             # §147: the branch's own AdamW group, 300-step warm-up (warm_from 0)
+        mp = {id(p_) for p_ in m.mem.parameters()}
+        opt = torch.optim.AdamW([{"params": [p_ for p_ in m.parameters() if id(p_) not in mp], "mult": 1.0},
+                                 {"params": list(m.mem.parameters()), "mult": 1.0, "warm_from": 0, "name": "deltamem"}], lr=a.lr, weight_decay=0.01)
+    else:
+        opt = make_opt(m, a.lr)
     log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time(); hist = []; L127 = {}; n_nonfinite = 0; step0 = 1
     if a.resume:
         ck = torch.load(a.resume, map_location=dev, weights_only=False); m.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"])
@@ -474,7 +606,7 @@ def main():
         m.p_hard = 1.0; X, lab, tm, T = batch(2 * n, a.bs)
         with amp_ctx(amp):
             loss, _, _, _ = m.chain(m.start(a.bs, dev), X, lab, tm)
-        loss.backward(); m.eval(); RO(m, gen_operands(rng, a.eval_bs, n), gen_operands(rng, a.eval_bs, 2 * n), dev, amp, a.eval_bs, record=True)
+        loss.backward(); m.eval(); RO(m, gen_operands(rng, a.eval_bs, n), gen_operands(rng, a.eval_bs, 2 * n), dev, amp, a.eval_bs, record=not a.carrier == "deltamem")
         pk = torch.cuda.max_memory_allocated(dev) / 2 ** 30 if dev.startswith("cuda") else None
         json.dump({"peak_gib": pk, "bs": a.bs, "eval_bs": a.eval_bs, "task": a.task, "slots": a.slots, "longest_eval_chain": "4x8 (33 steps)"}, open(os.path.join(a.out, "mem_check.json"), "w", newline="\n"), indent=1); print("MEM", pk); return
     for step in range(step0, a.steps + 1):
@@ -482,6 +614,8 @@ def main():
             gr["lr"] = lr_at(a.lr, gr, step, a.steps)
         m.p_hard = 0.0 if step <= a.p_hard_start * sc else min(1.0, (step - a.p_hard_start * sc) / ((a.p_hard_end - a.p_hard_start) * sc)); m.train()
         m.noise = (a.dither if step > 2000 * sc else 0.0) if a.no_round else 0.0   # §145 NOISE-64: dither after 2k (no draws otherwise)
+        if a.carrier == "deltamem":
+            m.mem.fade.fill_(min(1.0, step / max(1, int(500 * sc))))         # §147: W_o fade-in over 500 steps
         c = int(rng.integers(1, cmax(step / sc, a.task) + 1)); X, lab, tm, T = batch(c, a.bs); opt.zero_grad()
         with amp_ctx(amp):
             loss, _, _, _ = m.chain(m.start(a.bs, dev), X, lab, tm)          # CE at the emission steps (mean over them)
@@ -498,6 +632,8 @@ def main():
             gl = lambda t_: L127[min(L127, key=lambda s_: abs(s_ - t_ * sc))]  # noqa: E731
             fl = bool(gl(2000) >= 0.9 * gl(1000) and gl(2000) >= 0.25 * gl(100))
             log.write(json.dumps({"step": step, "flag_123_3": fl, "loss_100": gl(100), "loss_1k": gl(1000), "loss_2k": gl(2000), "stop_plateau": a.stop_plateau}) + "\n"); log.flush()
+            if fl and a.stop_plateau and a.carrier == "deltamem" and gl(2000) < 1.0:   # note 147-1 (1): a flag with loss(2k) < 1.0 is a misfire
+                log.write(json.dumps({"step": step, "flag_misfire_147_1": True, "loss_2k": gl(2000)}) + "\n"); log.flush(); fl = False
             if fl and a.stop_plateau:
                 log.write(json.dumps({"step": step, "stopped": "plateau (123-3 flag at 2k)", "loss_100": gl(100), "loss_1k": gl(1000), "loss_2k": gl(2000)}) + "\n")
                 log.close(); print("STOPPED plateau at 2k", flush=True); return
@@ -513,7 +649,12 @@ def main():
     train_sec = round(time.time() - t0); torch.save(m.state_dict(), os.path.join(a.out, "model.pt")); m.eval(); m.p_hard = 1.0; t1 = time.time()
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
-    m.noise = 0.0; Pte, _, _ = columns(teA, teB); pred, codes = RO(m, teA, teB, dev, amp, a.eval_bs, record=True)[:2]; res = acc_report(pred, Pte)
+    m.noise = 0.0; Pte, _, _ = columns(teA, teB)
+    if a.carrier == "deltamem":
+        pred = RO(m, teA, teB, dev, amp, a.eval_bs); codes = None
+    else:
+        pred, codes = RO(m, teA, teB, dev, amp, a.eval_bs, record=True)[:2]
+    res = acc_report(pred, Pte)
     ti = np.random.default_rng(14000).integers(0, len(trA), 1000); Ptr, _, _ = columns(trA[ti], trB[ti])
     res.update({"family": a.family, "task": a.task, "seed": a.seed, "long_acc": res["test_acc"], "train_acc": float((RO(m, trA[ti], trB[ti], dev, amp, a.eval_bs) == Ptr).all(1).mean()),
                 "train_sec": train_sec, "final_loss": L127[max(L127)] if L127 else None, "n_nonfinite": n_nonfinite, "train_removed_test_overlap": n_rem, "eval_dtype": str(amp),
@@ -521,7 +662,11 @@ def main():
     if a.task == "4x4" and a.ext_n:
         xA, xB = gen_operands(np.random.default_rng(14004), a.ext_n, 4), gen_operands(np.random.default_rng(14005), a.ext_n, 8); xA, xB, rem = dedup(xA, xB, teA, teB)
         Px, _, _ = columns(xA, xB); res["ext_4x8"] = {**acc_report(RO(m, xA, xB, dev, amp, a.eval_bs), Px), "dedup_removed": rem, "seeds": [14004, 14005]}
-    if a.slots:                                                             # §145
+    if a.carrier == "deltamem":                                             # §147 (no contraction term: an integrator by design)
+        res["donor"] = donor_delta(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(14002), n=min(a.donor_n, 1000))
+        res["s147"] = {**s147_extras(m, teA, teB, dev, amp, a.eval_bs, pred), "mem_layer": a.mem_layer, "mem_add_heads": a.mem_add_heads, "mem_delta_heads": a.mem_delta_heads}
+        res["n_codes"] = None; res["eval_sec"] = round(time.time() - t1)
+    elif a.slots:                                                           # §145
         res["donor"], sw_ = donor_slots(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(14002), n=a.donor_n)
         ct = contraction_slots(m, teA, teB, dev, amp, T0=a.contract_T0, n=a.contract_n); res.update({"rho": ct["rho"], "basin": ct["basin"], "contraction": ct["detail"]})
         ex_, pr_ = s145_extras(m, teA, teB, dev, amp, a.eval_bs, pred, codes); res["s145"] = {**ex_, "slot_swap": sw_, "slots": a.slots, "carry_slots": a.carry_slots}
