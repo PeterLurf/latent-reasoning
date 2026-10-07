@@ -111,6 +111,16 @@ text token (S5: the first state token; FF / CYC / MOD / RDFA: the answer token) 
    - read the 2k flag and FLAG4 per pair.
 4. **C7 LM-head check on every remaining exact model** (minutes each).
 
+**[Theory 2026-10-07 09:45, RTX 2070 (fp32, at most 6 GiB), at least 2 h]**
+1. **probe140_acc** (if not yet run): the true accumulator's R² from code and from h on s140_pair_4x4_s1, by step within the column (1st–4th pair) and by magnitude bin
+   (< 100, 100–200, > 200), into `eval_probe_acc.json`. Minutes.
+2. **S5 SOFT-16 against FSQ-16 entry pairs to 4.5k** (133-10's hint), the 2070 share: S = 509..516, paired (`--d_q 16 --soft_beta 0.1` against `--d_q 16`), fp32,
+   `--stop_after 4500 --no_cert`; out `proto133_{soft16,fsq16}_s{S}_2070`. Read the 2k flag and FLAG4 per pair (a third card class beside the 3070 / 4060 pairs at
+   S 501–508). About 40 min each in fp32, so about 10 h in all.
+3. **The per-repeat probe on any finished §141 r4 prototype** (proto141_r4f8_*): the partial column sum's and the carry's R² from code per repeat, plus ‖Δcode‖ (§141's
+   s141_probe fields), into `<run>/eval_probe_repeat.json`. Minutes each.
+4. Filler if all else is done: fp32 replay_x seeds 541..560 (as earlier).
+
 ## Done
 
 * (none yet)
