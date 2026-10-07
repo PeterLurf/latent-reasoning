@@ -240,6 +240,8 @@ with the same code and settings across families.
   - 3 of those 4 (seeds 3 / 16 / 31) are also flagged in the late arm's **unrounded** window, stuck at a loss of 4.3–4.8 in both arms: they fail whatever the rounding;
   - only s14 moves cleanly (its late rise starts at the ramp, 6k). Seeds 603 and 28 improve under the late ramp (8.9k loss 1.73 / 2.02 against plain's 8k 2.84 / 3.12);
   - in 4 late runs the loss starts rising at 5.1–5.3k, at the L_max 8 step, before the ramp.
+  - **s27** (outside P, since its plain A window was not flagged) shows the largest late-ramp benefit: plain loss(8k) 4.18 against late loss(8.9k) 0.58 (Audit).
+    With 603 and 28, delaying the ramp clearly helps on 3 seeds. That fits seed 3 learning under SOFT-16 but not FSQ-8 / FSQ-16 (133-10): soft carriers enter better.
   - **Read:** rounding is one cause on some seeds, not the single cause. The curriculum steps carry most of the escape-without-learning failures. **No
     registration follows:** the carriers without a hard ramp (SOFT-16, NOISE-64, CONT-64) already pass (§133 stage 1).
 
