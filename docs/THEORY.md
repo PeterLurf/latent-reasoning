@@ -6419,6 +6419,12 @@ slots free, under 16 hosts and $4/h, after §133's slots 2–4 and §135's stude
 8:64`, `--grow_trigger 2.5|plateau`, `--grow_staged`, `--grow_noise 0.25`, `--nested`; the current width saved in the checkpoint and resume
 path). Smoke_plain plus the asserts above before launch. Scorer: `theory/score_s136.py`, committed before any run.
 
+**Note 135-8 (2026-10-06 23:02 EDT; closes 135-6 / 135-7).** The CPU repro across the L_max 32 / micro switch is clean
+(`s135_base_s5_s2.void_hostfault/repro_cpu_switch_log.jsonl`): 0 nonfinite steps through 260 steps past the switch, and the label-mask share
+stays in its expected range throughout.
+* **135-6's ruling (1) holds: a host fault, not the harness.**
+* `s135_base_s5_s2.void_hostfault` is read for nothing. BASE s2 is the rerun on gen-b89 (host check PASS).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
