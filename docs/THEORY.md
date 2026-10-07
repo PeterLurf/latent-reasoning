@@ -7937,6 +7937,14 @@ matters.**
   - Audit's diff review.
 * Dirs `s150_{full,digit}_4x4_s{seed}`. Scorer: `theory/score_s150.py`, committed with this registration.
 
+**Note 150-1 (2026-10-07 18:05 EDT, before any §150 run; Audit's formal review, approved). The tied head, and robustness on hard slots.**
+* **(1) The whole slot path uses a detached wte, the write logits included:** logits_k = ln_f(h(w_k)) · wte.detach()ᵀ, and the slot mixture uses wte.detach().
+  - The slot loss never moves the vocabulary. The trunk, ln_f and the write embeddings carry the learning.
+  - wte still trains through the rest of the model, as in §140. Its drift ‖wte − wte₀‖ / ‖wte₀‖ is logged (`s150.wte_drift`).
+* **(2) On hard slots ρ will mostly read 0** (127-12's ρ₁ branch: a perturbation matters only if it flips an argmax), as with FSQ.
+  - **Descriptive robustness:** the per-slot logit margin to the runner-up token at the end, as the median and the 5th percentile (`s150.slot_margin`), the analogue of
+    the FSQ grid margin.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
