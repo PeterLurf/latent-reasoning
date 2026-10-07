@@ -226,6 +226,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 136 | GROW (the user's idea): narrow → wide function-preserving latent growth at a loss threshold / plateau; GROW-P, COPY+GROW / STAGED / GROW-NOISE, GROW-4, NESTED-64 on S5 (S5×4 decides) | registered | **open** |
 | 137 | Multiplication on fsq120, column-major: carried carry (FSQ-8), streamed product digits (C4 qualifier), restart slots; 4×4 → 5×5 → 4×8 | registered | **open** |
 | 139 | DISTILL-2 (user's go): a CoT teacher's state (probe or its text) as a warm-start fading to 0 by 4k, on multiplier-major multiplication; A = SOFT-16 + COPY (FINAL), B = A + DISTILL-2, C = constant weight | registered | **open** |
+| 140 | DIGPAIR (§137's fallback; runs only on §137 4×4 DROP / FAIL): one digit pair per segment, carried column accumulator (FSQ-8), streamed digits; design-forced C1 | registered (conditional) | **open** |
 
 ## Live sections
 
@@ -6781,6 +6782,43 @@ trigger fired on seed 1, the plain learner on this card class.
     - **A′ PASS:** strict-C4 multiplier-major multiplication on the latent carrier, the user's stretch goal on this task;
     - **A′ FAIL with A PASS:** the prefix problems (110b-1 labels) are what make it learnable.
   - Dirs `s139_ap_4x4_s{1..4}`, args `--fixed_L 4`. score_s139 is updated.
+
+## 140. DIGPAIR: multiplication one digit pair at a time, §137's registered fallback (pre-registered 2026-10-07 03:40 EDT, **before §137's 4×4 proof reads**; runs only if §137 4×4 reads DROP at proof or FAIL; Literature named the ordering in c5687f0c; Audit's steward draft)
+
+**Why.**
+* §137 (column-major) asks each segment to sum up to n digit-pair products from the context in one pass. That is ICoT-style in-pass work.
+* Audit's interim read of the 4×4 proof: the per-column CE rises with L_max (0.43 at L 2, then 0.84–0.89 at L 4, then 1.19–1.37 at L 8, to 13.4k).
+* §137's readings registered this fallback for DROP or FAIL: digit-pair ops, n² easier steps, the same carry.
+
+**The family (fsq120 `--family mult_pair --task 4x4|5x5`).**
+* **One segment per digit pair (i, j)**, in output-column order (columns k = 1 … 2n − 1, pairs with i + j − 1 = k, ascending i), then **one flush
+  segment**: n² + 1 steps (17 / 26).
+* **Segment** = [EOT, carried code, a_i, b_j, index tokens i and j]. **Only the two digits are visible.**
+* **The carried code holds the running column accumulator:** carry + products so far, < 400 (about 9 bits), which fits FSQ-8.
+* **Emission:** at the last pair of column k the answer decoder reads the code and emits p_k. The flush segment emits p_{2n}. These are streamed
+  final-answer digits, §137's disclosed C4 qualifier (C4 as reworded). There are no accumulator labels.
+* **In-pass work** is one 1-digit product plus an add. It is length-general: 4×8 is 32 pairs.
+* **Unlike §137, C1 is design-forced here:** a segment cannot see the other digits, so the code must carry the accumulator. SERIAL shows a correct
+  latent accumulator, not an unforced choice. That is the trade-off for learnability.
+
+**Recipe, rules and placement: §137's exactly** (137-1 / 137-2 apply).
+* Bench train split, using (a, b, product) only, deduplicated including commuted pairs. Test on the 1,000 published items.
+* Curriculum over columns: chains covering the first c columns' pairs, targets = the low c digits, c ~ U(1, c_max), with c_max 1 / 2 / 4 / 8 at 0 / 2k
+  / 5k / 9k (4×4).
+* §128's FSQ-8 with restart slots, 24k steps.
+* **M-PASS:** ≥ 3/4 slots with test_acc ≥ 0.99, SERIAL and ρ ≤ 0.28.
+  - SERIAL: inject a donor's code after pair 4 / 8 / 12. The later digits must follow the recipient's pairs with the donor's accumulator (exact
+    ground truth).
+  - FAIL: ≥ 2 decided slots not passing. DROP at proof: slot 1 below 0.95.
+  - 5×5 only after 4×4 PASS. 4×8 is descriptive (j indices above 4 unseen).
+* **Descriptive:** M-SOTA against ICoT-SI / TC-M / GEN-M on the same items; acc_by_column; an accumulator probe (code_k, h_k before W_down).
+* **Readings:**
+  - **PASS:** a pretrained LM's latent carrier multiplies exactly when each step's in-pass work is small (design-forced C1, C4 as reworded).
+    Together with §137's failure, that locates the barrier in the per-segment in-pass load, not the latent carry.
+  - **DROP or FAIL:** even one-digit steps with a carried accumulator are not learned at this budget.
+* **Placement:** a 1-host proof (4×4 slot 1, about $0.3–1; steps are many but short), then slots 2–4 and 5×5 on PASS. The adapter is new code, so §137's
+  gates apply (dedup, exact ground truth against integer arithmetic, gradflow, memory, Audit's diff review). Dirs `s140_pair_{4x4,5x5}_s{seed}`.
+  Scorer: `theory/score_s140.py`, committed now.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
