@@ -1099,3 +1099,21 @@ PRICE EXCEPTION 2026-10-06 04:58 gen-b41 offer 53010473 RTX 3090 595.71 $0.267: 
 54656837 vast | gen_b133 154.64.230.67 RERUN IN PLACE 2026-10-07 10:55: first queue run died at launch (scratch/restart138.py + hostcheck.py not shipped: fill_s138p started without EXTRA_120); shipped both + the gated gen_vast_job.sh, old queue / run logs kept as *.void_nomodule, queue relaunched (imports + HOSTCHECK PASS), watcher re-armed
 54658084 vast | gen_b135 161.29.199.75 RERUN IN PLACE 2026-10-07 10:55: first queue run died at launch (scratch/restart138.py + hostcheck.py not shipped: fill_s138p started without EXTRA_120); shipped both + the gated gen_vast_job.sh, old queue / run logs kept as *.void_nomodule, queue relaunched (imports + HOSTCHECK PASS), watcher re-armed
 54658584 vast | gen_b136 89.221.67.136 RERUN IN PLACE 2026-10-07 10:55: first queue run died at launch (scratch/restart138.py + hostcheck.py not shipped: fill_s138p started without EXTRA_120); shipped both + the gated gen_vast_job.sh, old queue / run logs kept as *.void_nomodule, queue relaunched (imports + HOSTCHECK PASS), watcher re-armed
+54660112 vast offer 45557884 created 2026-10-07 10:56: label gen-b134, queue scratch/gen_q_b134.txt (logged at create by vdeploy_toy.sh)
+54645495 vast | gen_b113 DESTROYED_VERIFIED 2026-10-07 11:05 after verified per-run fetch (boxes/runs_fsq/s136_grow4_s5_s3)
+54637898 vast | gen_b112 DESTROYED_VERIFIED 2026-10-07 11:12 after verified per-run fetch (boxes/runs_fsq/s136_grow4_s5_s2)
+54629165 vast | gen_b111 DESTROYED_VERIFIED 2026-10-07 11:16 after verified per-run fetch (boxes/runs_fsq/s136_grow4_s5_s1)
+54658084 vast | gen_b135 DESTROYED_VERIFIED 2026-10-07 12:22 after verified per-run fetch (boxes/runs_fsq/s138_full_cont_s1 boxes/runs_fsq/s138_slots/full_cont_k1)
+54650976 vast | gen_b114 DESTROYED_VERIFIED 2026-10-07 12:38 after verified per-run fetch (boxes/runs_fsq/s136_grow4_s5_s4)
+54660112 vast | gen_b134 DESTROYED_VERIFIED 2026-10-07 12:57 after verified per-run fetch (boxes/runs_fsq/s138_full_noise_s1 boxes/runs_fsq/s138_slots/full_noise_k1)
+54530508 vast | gen_a6 DESTROYED_VERIFIED 2026-10-07 13:26 after verified per-run fetch (boxes/runs_s5/s118_long_s85)
+54657301 vast | gen_b115 DESTROYED_VERIFIED 2026-10-07 14:14 after verified per-run fetch (boxes/runs_fsq/s136_nested_s5_s1)
+54530501 vast | gen_a5 DESTROYED_VERIFIED 2026-10-07 14:30 after verified per-run fetch (boxes/runs_s5/s118_long_s84)
+54656837 vast | gen_b133 DESTROYED_VERIFIED 2026-10-07 14:59 after verified per-run fetch (boxes/runs_fsq/s138_full_fsq_s1 boxes/runs_fsq/s138_slots/full_fsq_k1)
+54629282 vast | gen_b130 DESTROYED_VERIFIED 2026-10-07 15:01 after verified per-run fetch (boxes/runs_fsq/s141_r4f8_4x4_s1 boxes/runs_fsq/s141_slots/r4f8_4x4_k1)
+54658584 vast | gen_b136 DESTROYED_VERIFIED 2026-10-07 15:19 after verified per-run fetch (boxes/runs_fsq/s138_full_hinge_s1 boxes/runs_fsq/s138_slots/full_hinge_k1)
+54708093 vast offer 43691167 created 2026-10-07 16:06: label gen-b137, queue scratch/gen_q_b137.txt (logged at create by vdeploy_toy.sh)
+54713763 vast offer 53246717 created 2026-10-07 16:44: label gen-b137, queue scratch/gen_q_b137.txt (logged at create by vdeploy_toy.sh)
+54715983 vast offer 53293154 created 2026-10-07 16:58: label gen-b139, queue scratch/gen_q_b139.txt (logged at create by vdeploy_toy.sh)
+54716392 vast offer 53293145 created 2026-10-07 17:00: label gen-b138, queue scratch/gen_q_b138.txt (logged at create by vdeploy_toy.sh)
+54716392 vast | gen_b138 DESTROYED 2026-10-07 17:21 stuck 'loading' 24 min after create (92.97.193.95, b139's machine), no job ran; IP excluded; fill_s143p retries
