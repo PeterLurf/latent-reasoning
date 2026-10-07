@@ -17,7 +17,7 @@ recipient - chance < 0.10; exact ground truth: donor S_2 + a_rec x (b_rec,3 b_re
 from the on-host --contraction_only --fp32 file). FAIL: >= 2 decided seeds not passing. DROP at proof: a s1 test_acc < 0.95 stops the section.
 B arms: a seed whose a run never opened the gate counts as not passing ("not reached"); PASS is read on the fork's final (final-answer-only) model.
 Descriptive: SERIAL before (fork_start) and after removal, b-prefix / operand-carry consistency under the donor swap, retention of each removed
-S_j (acc_by_length at every stage), reader accuracy per hand-off, ridge probes (S_j, b-prefix) on code_j, ext_4x8.
+S_j (acc_by_length at every stage), reader accuracy per hand-off, ridge probes (S_j, b-prefix) on code_j, ext_4x8_low8 (S_j mod 10^8 at j = 5-8; note 142-1).
     python theory/score_s142.py
 """
 import json
@@ -93,7 +93,7 @@ def run(arm, seed):
     out = {"status": "done", "test_acc": r.get("test_acc"), "serial": serial(r.get("donor")), "rho": rho_k3(load(d, "eval_contraction_fp32.json")),
            "acc_by_length": r.get("acc_by_length"), "train_acc": r.get("train_acc"), "n_nonfinite": r.get("n_nonfinite"),
            "donor": {k: dn.get(k) for k in ("donor_consistent", "recipient_consistent", "chance_overlap", "bprefix_consistent", "operands_consistent")},
-           "probe_r2": s.get("probe_r2"), "ext_4x8": r.get("ext_4x8"), "gpu": r.get("train_gpu", r.get("gpu")), "driver": r.get("train_driver")}
+           "probe_r2": s.get("probe_r2"), "ext_4x8_low8": r.get("ext_4x8_low8"), "gpu": r.get("train_gpu", r.get("gpu")), "driver": r.get("train_driver")}
     if arm == "a":
         out.update({"gate_step": s.get("gate_step"), "gate_train_exact": s.get("gate_train_exact"),
                     "teacher_vs_gold_mismatch": s.get("teacher_vs_gold_mismatch_share"), "teacher_invalid": s.get("teacher_invalid_share")})
