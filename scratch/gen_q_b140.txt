@@ -1,0 +1,4 @@
+# THEORY §148 LOOP-RETRO (b1d7741c + note 147-1 (3)) PROOFS: loop4 s1 and plain s1 on one RTX 3090 (P=2, --cotenant_runs 2 recorded; one run per seed, no restarts); boxes.loop148 (direct-answer 4x4, prelude 0-3 / loop 4-7 / coda 8-11, eta 0.25, r curriculum, deep supervision), ckpt every 2000 (~$0.75)
+# P=2
+boxes/runs_fsq/s148_loop4_4x4_s1 boxes.loop148 --task 4x4 --arm loop4 --seed 1 --ckpt_every 2000 --cotenant_runs 2
+boxes/runs_fsq/s148_plain_4x4_s1 boxes.loop148 --task 4x4 --arm plain --seed 1 --ckpt_every 2000 --cotenant_runs 2
