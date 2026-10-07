@@ -336,6 +336,31 @@ def check_s135(dev, out):
         out[f"s135.aux_p{int(ph)}.target_no_grad"] = 1.0 if all(p_.grad is None for p_ in tg.parameters()) else 0.0
 
 
+def check_s137(dev, out):
+    """§137 (9c9b1899): the digit CE at a column k >= 2 ALONE reaches W_down / W_up and - through the carried code - the embedding
+    carried out of column k-1 (dL_k / d e_{k-1} != 0), under CUDA bf16, soft (p_hard 0) and hard (p_hard 1)."""
+    import boxes.multcol as M
+    amp = torch.bfloat16 if str(dev).startswith("cuda") else None; fam = M.MultFam(); m = M.MultCol(s5.load_gpt2(dev), fam).to(dev); m.train()
+    rng = np.random.default_rng(0); A, B = M.gen_operands(rng, 8, 4), M.gen_operands(rng, 8, 4); P, _, _ = M.columns(A, B); m.ctx = torch.tensor(M.ctx_tokens(A, B), device=dev)
+    ans_all = torch.tensor(P, device=dev)
+    for ph in (0.0, 1.0):
+        m.p_hard = ph
+        for k in (2, 4, 8):                                                 # 1-based column whose digit CE is the only loss
+            m.zero_grad(set_to_none=True); torch.manual_seed(k)
+            with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+                prev = m.start(8, dev); carried = None
+                for t in range(k):
+                    h = m.segment(prev, torch.full((8,), t + 1, device=dev)); qs, q, zb = m.quant(h); e = m.embed_code(qs)
+                    if t == k - 2:
+                        e.retain_grad(); carried = e
+                    prev = e[:, None]
+                ans = torch.tensor(fam.answer_tokens(P[:, k - 1]), device=dev); loss = m.answer_ce(e, ans, qs)
+            loss.backward()
+            out[f"s137.p{int(ph)}.col{k}.carried_grad"] = float(carried.grad.float().norm())
+            out[f"s137.p{int(ph)}.col{k}.down_grad"] = float(m.down.weight.grad.float().norm()); out[f"s137.p{int(ph)}.col{k}.up_grad"] = float(m.up.weight.grad.float().norm())
+    del ans_all, m
+
+
 def check_s136(dev, out):
     """§136 GROW pre-launch asserts (Theory bccf643b) at a forced switch, every arm's widening op, CUDA bf16 autocast:
     (1) function preserved: max |delta logits| = 0 (decoder logits of the final carried code, eval / hard) across the switch;

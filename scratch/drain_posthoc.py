@@ -54,6 +54,12 @@ def main():
         with open(os.path.join(ROOT, "logs", "probe_posthoc_%s.log" % name), "w") as lg:
             subprocess.call([sys.executable, "-u", "-m", mod, "--from_args", os.path.join(d, "args.json"), "--probe_only", "--device", dev, "--out", d],
                             cwd=ROOT, stdout=lg, stderr=subprocess.STDOUT)
+    if name.startswith("s137_col_"):                                        # §137 (9c9b1899): fp32 contraction + prefix on-host via boxes.multcol
+        for flag, outf in ((["--contraction_only", "--fp32"], "eval_contraction_fp32.json"), (["--prefix_only"], "eval_prefix.json")):
+            if not os.path.exists(os.path.join(d, outf)):
+                with open(os.path.join(ROOT, "logs", "posthoc_%s_%s.log" % (outf.split(".")[0], name)), "w") as lg:
+                    subprocess.call([sys.executable, "-u", "-m", "boxes.multcol", "--from_args", os.path.join(d, "args.json")] + flag + ["--device", dev, "--out", d],
+                                    cwd=ROOT, stdout=lg, stderr=subprocess.STDOUT)
     if name.startswith(("s133_", "s134_", "s135_")) and not os.path.exists(os.path.join(d, "eval_contraction_fp32.json")):
         # Theory 133-5: PASS's rho reads only the post-hoc fp32 contraction - every accepted §133 / §134 / §135 run, on the host, before
         # any keep / skip decision (kept models used to skip it)

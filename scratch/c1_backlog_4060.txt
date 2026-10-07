@@ -1,4 +1,9 @@
 # 4060 backlog: 2k replay_basin seeds 75-82 (the rest of §130's registered TEST-SAME list, not needed by its block) -> theory/results/replay_extra/ (descriptive; not read by score_s130); ~3.5 GiB, ~5 min each
+# §137 pre-launch gates (Theory 9c9b1899 / note 137-1): CUDA bf16 gradflow, GPU end-to-end smoke, memory checks at the full shapes (shared 3070 / 4060)
+2.5 theory/results/gradflow_s137_cuda.json python -u scratch/gradflow_check.py --paths s137 --device {DEV} --out theory/results/gradflow_s137_cuda.json
+3.5 D:/drain_tmp/smoke137g/eval.json python -u -m boxes.multcol --family mult_col --task 4x4 --seed 1 --steps 40 --sched_scale 0.002 --bs 32 --log_every 5 --train_n 4000 --test_n 100 --ext_n 100 --donor_n 100 --contract_n 100 --eval_bs 100 --ckpt_every 20 --device {DEV} --out D:/drain_tmp/smoke137g
+4.5 D:/drain_tmp/mem137_4x4/mem_check.json python -u -m boxes.multcol --family mult_col --task 4x4 --seed 1 --mem_check --bs 64 --eval_bs 250 --train_n 2000 --device {DEV} --out D:/drain_tmp/mem137_4x4
+4.5 D:/drain_tmp/mem137_5x5/mem_check.json python -u -m boxes.multcol --family mult_col --task 5x5 --seed 1 --mem_check --bs 64 --eval_bs 250 --train_n 2000 --device {DEV} --out D:/drain_tmp/mem137_5x5
 # from the 2070 backlog (memory): 64-d probe in bf16
 3.5 boxes/runs_fsq/s133_noise64_s201/eval_probe_posthoc.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_noise64_s201/args.json --probe_only --device {DEV} --out boxes/runs_fsq/s133_noise64_s201
 # §136 smokes, round 2: staged doublings (loss <= the arm's threshold; forced 100 here) and PLATEAU firing (log_every 1 so the scaled windows hold logged steps)
