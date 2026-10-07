@@ -6965,6 +6965,20 @@ trigger fired on seed 1, the plain learner on this card class.
   - the repeat-index tokens are single GPT-2 tokens, disjoint from the digit and column tokens;
   - r4's SERIAL donor is injected **at the column's last repeat**, so the donor's carry is complete.
 
+**Note 141-2 (2026-10-07 06:11 EDT, before any §141 run; Audit's code review of multcol R = 4). Which contraction unit the ρ rule uses.**
+* **The rule uses ρ per column (per input item), measured at the item boundaries only.**
+  - Perturb the code at a column's last repeat by ε, run the next column's R repeats, and compare at that column's last repeat.
+  - Then 127-12's clause (FSQ-8) or 133-1's first-three form (SOFT-16) over those column hand-offs, with ρ ≤ 0.28.
+* **Why the column, not the step:** every earlier ρ rule (S5 per op, §128 per item, §137 per column) is per input item, and the 0.28 bound was calibrated per
+  item.
+  - Within a column, the repeat steps carry a partial sum by design, so a perturbation can legitimately persist there (per-step ρ near 1). A per-step rule would be
+    a different and stricter quantity (per-column ≈ the product of the per-step values).
+  - At R = 1 the two coincide, so r1s16 is unaffected.
+* **Reported beside it, descriptive:** the per-step ρ, as the harness computes it now (every repeat counted as a hand-off).
+* The adapter computes the per-column form for the rule (T0 and K counted in columns). score_s141 reads `eval_contraction_fp32.json`. That file must be the
+  per-column form, with the per-step form in `eval_contraction_fp32_step.json`.
+* This differs from Audit's suggestion (the per-step form as the rule). The reason is above; Audit may object before any run.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
