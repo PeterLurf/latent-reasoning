@@ -25,7 +25,7 @@
 3.0 boxes/runs_fsq/s133_fsq64_s201/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_fsq64_s201/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_fsq64_s201
 3.0 boxes/runs_fsq/s133_fsq64_s201/eval_probe_posthoc.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_fsq64_s201/args.json --probe_only --device {DEV} --out boxes/runs_fsq/s133_fsq64_s201
 3.0 boxes/runs_fsq/s133_noise64_s201/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_noise64_s201/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_noise64_s201
-3.0 boxes/runs_fsq/s133_noise64_s201/eval_probe_posthoc.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_noise64_s201/args.json --probe_only --device {DEV} --out boxes/runs_fsq/s133_noise64_s201
+# moved to the 4060 (bf16; the 64-d fsq64 probe peaked 6658 MiB > the 2070's 6656 limit in fp32, 00:58): 3.0 boxes/runs_fsq/s133_noise64_s201/eval_probe_posthoc.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_noise64_s201/args.json --probe_only --device {DEV} --out boxes/runs_fsq/s133_noise64_s201
 3.0 boxes/runs_fsq/s133_soft16_s1/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_soft16_s1/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_soft16_s1
 3.0 boxes/runs_fsq/s133_soft16_s1/eval_probe_posthoc.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_soft16_s1/args.json --probe_only --device {DEV} --out boxes/runs_fsq/s133_soft16_s1
 3.0 boxes/runs_fsq/s133_soft16_s4/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_soft16_s4/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_soft16_s4
