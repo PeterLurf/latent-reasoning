@@ -1,0 +1,14 @@
+{
+ "s150.full.w_grad": 2.687990427017212,
+ "s150.full.ln_f_grad": 7.456772327423096,
+ "s150.full.trunk_grad": 30.175064086914062,
+ "s150.full.slot_vocab_matrix_detached": 1.0,
+ "s150.full.slot_path_w_grad": 23.29153060913086,
+ "s150.digit.w_grad": 0.6103135943412781,
+ "s150.digit.ln_f_grad": 0.8137120008468628,
+ "s150.digit.trunk_grad": 4.974688529968262,
+ "s150.digit.slot_vocab_matrix_detached": 1.0,
+ "s150.digit.slot_path_w_grad": 27.828298568725586,
+ "_status": "PASS",
+ "_zero_terms": []
+}
