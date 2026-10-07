@@ -588,6 +588,8 @@ def certificate(m, fam, dev, amp, cap, bs=2048, time_limit=None, first_items=Non
     starts = np.arange(fam.n_states) if fam.rstart else np.array([0]); ok = True; frontier = []; viol = 0
     S, X = np.meshgrid(starts, np.arange(fam.n_items) if first_items is None else np.array(first_items), indexing="ij"); S, X = S.ravel(), X.ravel()   # note 120-7: FF task start = a write
     for i in range(0, len(S), bs):
+        if time_limit and time.time() - t_start > time_limit:              # §144 sum4: 10^4 starts x 100 items = 10^6 start transitions
+            timed_out = True; break
         B = len(S[i:i + bs])
         with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
             h = m.segment(m.start(B, dev, S[i:i + bs] if fam.rstart else None), torch.tensor(X[i:i + bs], device=dev)); _, q, _ = m.quant(h)
