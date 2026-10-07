@@ -261,3 +261,25 @@
 2.0 boxes/runs_fsq/s134_copy_s5_s4/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s134_copy_s5_s4 {DEV}
 # §137 post-hoc per-column probe (Theory 2026-10-07, descriptive, low priority, after the C7 lines): h vs code for carry_out / carry_in / colsum / digit
 3.0 boxes/runs_fsq/s137_col_4x4_s1/eval_probe_percol.json python -u scratch/probe137_percol.py boxes/runs_fsq/s137_col_4x4_s1 {DEV}
+# 2026-10-07 09:05 refill (2070 dry): prefix for local s133/s134/s136 models lacking eval_prefix.json; c7 for plain s133 models lacking it
+3.0 boxes/runs_fsq/s133_cont64_s104/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_cont64_s104/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_cont64_s104
+3.0 boxes/runs_fsq/s133_cont64_s2/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_cont64_s2/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_cont64_s2
+3.0 boxes/runs_fsq/s133_cont64_s3/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_cont64_s3/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_cont64_s3
+3.0 boxes/runs_fsq/s133_fsq16_s2/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_fsq16_s2/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_fsq16_s2
+3.0 boxes/runs_fsq/s133_fsq16_s3/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_fsq16_s3/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_fsq16_s3
+3.0 boxes/runs_fsq/s133_fsq16_s4/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_fsq16_s4/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_fsq16_s4
+3.0 boxes/runs_fsq/s133_fsq64_s104/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_fsq64_s104/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_fsq64_s104
+3.0 boxes/runs_fsq/s133_fsq64_s2/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_fsq64_s2/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_fsq64_s2
+3.0 boxes/runs_fsq/s133_fsq64_s3/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_fsq64_s3/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_fsq64_s3
+3.0 boxes/runs_fsq/s133_noise64_s104/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_noise64_s104/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_noise64_s104
+3.0 boxes/runs_fsq/s133_noise64_s2/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_noise64_s2/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_noise64_s2
+3.0 boxes/runs_fsq/s133_noise64_s3/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_noise64_s3/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_noise64_s3
+3.0 boxes/runs_fsq/s133_soft16_s102/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_soft16_s102/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_soft16_s102
+3.0 boxes/runs_fsq/s133_soft16_s3/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_soft16_s3/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s133_soft16_s3
+3.0 boxes/runs_fsq/s134_copy_ff_s1/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s134_copy_ff_s1/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s134_copy_ff_s1
+3.0 boxes/runs_fsq/s136_cnoise_s5_s4/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_cnoise_s5_s4/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s136_cnoise_s5_s4
+2.0 boxes/runs_fsq/s133_cont64_s104/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_cont64_s104 {DEV}
+2.0 boxes/runs_fsq/s133_cont64_s3/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_cont64_s3 {DEV}
+2.0 boxes/runs_fsq/s133_fsq16_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_fsq16_s2 {DEV}
+2.0 boxes/runs_fsq/s133_fsq16_s3/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_fsq16_s3 {DEV}
+2.0 boxes/runs_fsq/s133_noise64_s104/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_noise64_s104 {DEV}

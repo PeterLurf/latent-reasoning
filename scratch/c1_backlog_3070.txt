@@ -1,3 +1,5 @@
+# 2026-10-07 s138 CUDA bf16 gradflow (registration: hinge term reaches W_down / W_up / trunk) - first, before the filler protos
+2.5 logs/gradflow_s138_cuda_3070.json python -u scratch/gradflow_check.py --paths s138 --device {DEV} --out logs/gradflow_s138_cuda_3070.json
 # local 3070 backlog: the fp32 contraction filler (same lines as c1_backlog_fp32.txt: shared locks), then docs/LOCAL_BACKLOG.md 3070 entries
 # Day filler (Theory 2026-10-07 LOCAL_BACKLOG, descriptive prototypes): 1. §141 r4f8 / r4s16 4x4 to 5k (s501-504, --micro 4); 2. §140 s501-508 already ran; 3. S5 FSQ-16 vs SOFT-16 entry to 4.5k (s501-508, paired, 133-10); 4. C7 on the remaining exact models
 4.5 boxes/runs_fsq/proto141_r4f8_4x4_s502_3070/.done python -u -m boxes.multcol --family mult_col --task 4x4 --seed 502 --repeats 4 --repeat_index --micro 4 --stop_after 5000 --device {DEV} --out boxes/runs_fsq/proto141_r4f8_4x4_s502_3070 && echo ok > boxes/runs_fsq/proto141_r4f8_4x4_s502_3070/.done

@@ -40,11 +40,45 @@ def status(out):
     return None
 
 
+def memcheck(a, extra):
+    """§138 placement (fa1720ff): W_down / W_up 768 x 768 plus the hinge's extra forward, checked at L 32 with the micro rule on the run's own
+    card before the slot starts. The arm's exact flags at --sched_scale 0.05 (L_max 32 from step 700, the hinge from step 100), full bs 64,
+    stopped at 900 (--stop_after: no eval, no model); peak = max logged mem_gib (torch max_memory_allocated, cumulative). PASS = clean
+    STOP_AFTER and peak <= --mem_limit_gib (21 of the 3090's 24 GiB). Written under the slot dir, never under a run name."""
+    d = os.path.join(a.out, "memcheck_run").replace(os.sep, "/"); t0 = time.time()
+    cmd = [sys.executable, "-u", "-m", "boxes.fsq120", "--family", "s5", "--arm", "final", "--seed", "9", "--micro", "2", "--micro_from", "32",
+           "--no_cert", "--probe127", "--sched_scale", "0.05", "--stop_after", "900"] + ARMS[a.arm] + extra + ["--device", a.device, "--out", d]
+    with open(os.path.join(a.out, "memcheck.log"), "w") as lg:
+        rc = subprocess.call(cmd, stdout=lg, stderr=subprocess.STDOUT)
+    mem, lmax = [], 0
+    if os.path.exists(os.path.join(d, "log.jsonl")):
+        for line in open(os.path.join(d, "log.jsonl")):
+            try:
+                r = json.loads(line)
+            except ValueError:
+                continue
+            if "mem_gib" in r:
+                mem.append(r["mem_gib"]); lmax = max(lmax, r.get("L_max", 0))
+    stopped = "STOP_AFTER" in open(os.path.join(a.out, "memcheck.log")).read(); peak = max(mem) if mem else None
+    return {"arm": a.arm, "rc": rc, "stop_after_reached": stopped, "peak_gib": peak, "L_max_reached": lmax, "limit_gib": a.mem_limit_gib,
+            "pass": bool(rc == 0 and stopped and peak is not None and lmax >= 32 and peak <= a.mem_limit_gib), "sec": round(time.time() - t0),
+            "cmd": " ".join(cmd[1:])}
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--arm", required=True, choices=sorted(ARMS)); ap.add_argument("--slot", type=int, required=True)
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True); ap.add_argument("--poll", type=int, default=20)
     ap.add_argument("--runs_root", default=os.path.join("boxes", "runs_fsq"), help="smokes: a scratch dir, never the real run names (Audit)")
+    ap.add_argument("--memcheck", action="store_true", help="§138 placement: peak memory at L 32 on this card (micro rule) before any attempt")
+    ap.add_argument("--mem_limit_gib", type=float, default=21.0)
     a, extra = ap.parse_known_args(); os.chdir(ROOT); os.makedirs(a.out, exist_ok=True)
+    if a.memcheck and not os.path.exists(os.path.join(a.out, "memcheck.json")):
+        mc = memcheck(a, extra); json.dump(mc, open(os.path.join(a.out, "memcheck.json"), "w", newline="\n"), indent=1)
+        if os.path.isdir("logs"):                                           # logs/ is always drained; a FAILed slot dir (no eval.json) is not
+            json.dump(mc, open(os.path.join("logs", "memcheck138_%s_k%d.json" % (a.arm, a.slot)), "w", newline="\n"), indent=1)
+        qlog_line("MEMCHECK %s %s peak %s GiB (limit %s)" % (a.arm, "PASS" if mc["pass"] else "FAIL", mc["peak_gib"], a.mem_limit_gib)); print("MEMCHECK", json.dumps(mc), flush=True)
+    if a.memcheck and not json.load(open(os.path.join(a.out, "memcheck.json")))["pass"]:
+        sys.exit(3)                                                         # no attempt runs; the slot dir keeps memcheck.json + the check's log
     attempts = []; accepted = None; err = None
     for seed in [a.slot + 100 * i for i in range(4)]:
         out = os.path.join(a.runs_root, "s138_%s_s%d" % (a.arm, seed)).replace(os.sep, "/"); st = status(out)

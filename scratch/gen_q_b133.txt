@@ -1,0 +1,3 @@
+# THEORY §138 FULL WIDTH (fa1720ff + note 138-1) PROOF slot 1, arm full_fsq via scratch.restart138 -> boxes.fsq120 (§128 S5 recipe, d 768, tanh fp32, --micro 2 at L >= 32, --ckpt_every 2000); --memcheck first: the arm's own flags at sched_scale 0.05 to L 32 on this 3090, peak mem_gib <= 21 GiB or the slot stops (registration placement); RTX 3090, driver recorded
+# P=1
+boxes/runs_fsq/s138_slots/full_fsq_k1 scratch.restart138 --arm full_fsq --slot 1 --memcheck
