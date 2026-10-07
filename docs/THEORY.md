@@ -7964,6 +7964,9 @@ budget (147-1 (3)).**
   - **Descriptive robustness:** the per-slot logit margin to the runner-up token at the end, as the median and the 5th percentile (`s150.slot_margin`), the analogue of
     the FSQ grid margin.
 
+**Note 148-1 (2026-10-07 18:30 EDT; a wording fix to the §148 result, after Audit's reproduction).** The loop-state swap (donor-consistent 0.002) is **untestable** here: the model is at 0.002
+itself. It is not evidence of "no causal loop state". Everything else in the result stands as Audit reproduced it (loop ρ_k 0.988 → 1.000 at ε 0.01).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
