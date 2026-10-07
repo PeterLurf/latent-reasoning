@@ -57,7 +57,8 @@ hand-off.
    - Prefer a **gated** schedule: remove the next target only once final-answer exact has stayed at or above a threshold for N
      steps. A fixed schedule to 18k is a removal-step budget, not ICoT-SI's 200 epochs.
 3. **Retention after removal:** keep decoding the removed S_j (unweighted) and log their accuracy. A decay means the code moved to a
-   shortcut (in multiplier-major, a remains visible, so S_j can be recomputed only from the code plus the b digits seen so far).
+   shortcut. In multiplier-major, a is visible in every segment, so carrying the b-prefix (§121's input carriage) and recomputing
+   at the end is the likely one.
    Report SERIAL before and after removal.
 4. **C4 wording:** A uses the teacher's CoT text (revised C4). B ends at final answer only, but it is *trained through* CoT, so it
    is not strict C4. State it.
