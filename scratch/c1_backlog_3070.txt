@@ -1,3 +1,5 @@
+# 2026-10-07 s145 memory at the longest chain (full 4x4 chain bs 64 train + 4x8 eval rollout, K 4 slots) - first
+4.5 D:/drain_tmp/mem145/mem_check.json python -u -m boxes.multpair --family mult_pair --task 4x4 --seed 1 --slots 4 --carry_slots 4 --d_q 64 --no_round --dither 0.25 --mem_check --device {DEV} --out D:/drain_tmp/mem145
 # 2026-10-07 s142 CUDA bf16 gradflow (registration gate) - first
 2.5 logs/gradflow_s142_cuda_3070.json python -u scratch/gradflow_check.py --paths s142 --device {DEV} --out logs/gradflow_s142_cuda_3070.json
 # 2026-10-07 s138 CUDA bf16 gradflow (registration: hinge term reaches W_down / W_up / trunk) - first, before the filler protos
