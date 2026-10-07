@@ -20,28 +20,30 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 Messages go through SendMessage. The names "Theory" and "Audit" currently need an identity confirm, pending the user,
 so send to the pipe addresses their messages come from.
 
-## Running now (09:25 2026-10-07; credit $64.5, 12 hosts, $2.41/h; cap 16 hosts / < $4/h; floor $30)
+## Running now (17:05 2026-10-07; credit ~$153 after the user's top-up; cap 16 hosts / < $4/h; Audit: proofs + their completions approved)
 
 **User rules:** full runs on Vast 3090s (>= 16 GB, --ckpt_every); local cards short memory-capped jobs only, never idle. Before any commit touching
-boxes/fsq120.py / table132.py / core.py run `python scratch/smoke_plain.py`. Never edit a running .sh (stage `.new`; Windows refuses the swap while open).
+boxes/fsq120.py / table132.py / core.py run `python scratch/smoke_plain.py`. Never edit a module while a deploy is in flight (the tar happens minutes
+after create): record the host's sha256 and commit exactly that file.
 
-### Vast (gen7 watchers -> drain_gen_partial; model transfers 2 at a time via D:/drain_tmp/locks)
+### Vast (fill_generic + vdeploy cap gate; auto_ship sends the queue's modules / file args / bench files, imports to a fixed point; host import gate)
 
 | Tag | Work |
 |---|---|
-| b111-b114 | §136 GROW grow4 s1-s4 (fill_s136; b112 ssh flaky - kex resets - but training fine, 13.1k at 09:01) |
-| b128 / b129 | §134 MOD s2 / s3 (copy_mod + cc_job) |
-| b130 / b131 | §141 r4f8 / r4s16 slot 1 (--micro 4); **b130's model.pt: run s141 per-repeat probe on it after drain (Theory 09:55), keep it** |
-| b126 | §139 proof done (A stopped by copy gate; A' / B in hand); drain fetching models |
-| b102 | §136 cgrow s4: post-hoc done on host; model.pt via scratch/chunk_fetch.sh (link ~53 KB/s; 8/56 pieces at 09:20; waiter verifies tarball + model sha, then destroys) |
-| a5 / a6 | §118 LONG s84 / s85 (mk108) |
-| b133-b136 | **§138 proofs** slot 1: full_fsq / full_noise (b134, redeployed 10:57) / full_cont / full_hinge; first launch died (restart138 not shipped), b133 / b135 / b136 rerun in place 14:53 UTC; memchecks 8.5 / 8.5 / 11.4 GiB at L 32 (limit 21); deploys now auto-ship queue modules + import gate (ea2e417e) |
+| b137 | **§142 MULT-READ A s1** (48k; teacher cache 0 invalid / 0 mismatch; fsq120 7150979 = 366652ac) - training since 16:47 |
+| b138 | **§143 FULL-GROW s1** via scratch.memgate (deploying 16:57; 595.71, unpaired vs cnoise s1's 595.80) |
+| b139 | **§145 MULTI-SLOT SLOT4 slot 1** (restart145; multpair c4457fc) - setup since 17:00 |
+| b131 | §141 r4s16 slot 1 (ends ~18:15) |
 
-* Pending swap: scratch/vdeploy_toy.sh.new (serialised 16-host cap gate) waits for no running vdeploy (waiter task), then its own commit.
+### Built, gating (CPU smokes running; Audit review next)
+
+* **§144 RUNNING-SUM** (fsq120 sum4, committed 366652ac; restart144): ground truth + gradflow (CPU / CUDA) PASS; e2e smokes running.
+* **§147 DELTA-STATE** (boxes/deltamem.py + multpair --carrier deltamem, uncommitted): step-0 |d logits| 0; gradflow PASS; e2e smoke running.
+* **§148 LOOP-RETRO** (boxes/loop148.py, uncommitted): r = 1 |d logits| 0; gradflow PASS; e2e smoke running.
 
 ### Local (v2 workers c4060 / c3070 / c2070 <- scratch/c1_backlog_<card>.txt; log logs/c1_local.log; stop: scratch/<tag>.stop)
 
-* 4060 / 3070: §141 / §133 filler protos. 2070: Theory 09:45 block - 16 paired SOFT-16 / FSQ-16 S5 protos to 4.5k fp32 (S 509-516, ~10 h), then replay_x 541-560.
+* 4060 / 3070: §133 / §141 filler protos (+ queued gate jobs first); 2070: replay_x 543-560 (fp32).
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
