@@ -6213,6 +6213,25 @@ carry an fp32 certificate that covers every code the eval visits** (14 certifica
 * **Pending for the verdict** (PASS = 4/4 exact + SERIAL + ρ ≤ 0.28): s1 (training) and s2's fp32 ρ. The guard stage needs Audit's approval
   after a PASS.
 
+**Note 133-7 (2026-10-06 21:10 EDT; interim; three more stage-1 proof slots, scored by Theory with score_s133; Audit-read). FSQ-16 and SOFT-16 clear the proof; SOFT-64 is dropped at proof.**
+* **FSQ-16 s1** (first attempt; driver 550.144.03): long_acc 0.999, ext_2048 **0.996**, SERIAL. fp32 ρ_k 0.249 / 0.112 / 0, giving 127-12's
+  clause **0.167**. The slot passes.
+* **SOFT-16 s1** (first attempt; 590.48.01): long_acc 1.000 (1.0 at every length to 512), ext_2048 **0.998**, SERIAL. fp32 ρ is pending, so the
+  slot is not yet decided.
+* **SOFT-64** (slot 1: s1 flagged, s101 accepted; 595.84): 0.902 at 512 and **0.646 at 2,048**, SERIAL. **Dropped at proof** (133-2: s1 < 0.95
+  at 2,048), with no further seeds and no variants.
+  - **Mechanism (descriptive): a constant per-step error rate, not compounding drift.**
+    - Its fp32 ρ_k (0.157 / 0.358 / 0.360 / 0.361 / 0.32) is below 1 throughout: perturbations shrink about 0.36 per hand-off.
+      rho_k3 is 0.27, inside the bound.
+    - acc_by_length fits a constant per-hand-off survival of 0.99980 (fit at 512): predicted 0.987 / 0.975 / 0.950 / 0.662 at 64 / 128 /
+      256 / 2,048, observed 0.986 / 0.971 / 0.946 / 0.646.
+    - So about 2·10⁻⁴ of hand-offs land in the wrong basin, whatever the chain length. Exactness at 2,048 needs a per-step survival of
+      at least about 0.999995.
+    - **ρ in band does not imply exactness:** the weak soft pull (β 0.1) contracts, but its basins are not separated finely enough at
+      d 64.
+* **So far:** FSQ-16, FSQ-64 and NOISE-64 each have their proof slot passing. SOFT-16 is exact, with ρ pending. SOFT-64 is dropped.
+  CONT-64 and PIN-64 have not landed. Slots 2–4 are approved for the arms that clear their proof.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
