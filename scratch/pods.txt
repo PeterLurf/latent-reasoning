@@ -1083,3 +1083,7 @@ PRICE EXCEPTION 2026-10-06 04:58 gen-b41 offer 53010473 RTX 3090 595.71 $0.267: 
 54611297 vast | gen_b106 DESTROYED_VERIFIED 2026-10-07 09:14 after verified per-run fetch (boxes/runs_fsq/s136_cstaged_s5_s4)
 54631069 vast | gen_b103 DESTROYED_VERIFIED 2026-10-07 09:16 after verified per-run fetch (boxes/runs_fsq/s136_cstaged_s5_s1)
 54646139 vast | gen_b114 DESTROYED 2026-10-07 09:29 stuck 'loading' (image pull) 21 min after create; no job ran; fill_s136 retries b114 (Audit 09:18 sweep)
+54637959 vast | gen_b129 DESTROYED_VERIFIED 2026-10-07 09:46 after verified per-run fetch (boxes/runs_fsq/s134_copy_mod_s3 boxes/runs_fsq/s134cc_mod_s3)
+54650976 vast offer 53293154 created 2026-10-07 09:47: label gen-b114, queue scratch/gen_q_b114.txt (logged at create by vdeploy_toy.sh)
+54651709 vast offer 51112284 created 2026-10-07 09:51: label gen-b115, queue scratch/gen_q_b115.txt (logged at create by vdeploy_toy.sh)
+54608054 vast | gen-b102 104.233.209.157 RTX 3090 DESTROYED_VERIFIED 2026-10-07 09:59: s136_cgrow_s5_s4 complete (eval / log / grow / fp32 contraction + prefix run on-host); model.pt fetched via scratch/chunk_fetch.sh (link reset long transfers; 56 x 8 MB pieces, tarball sha ef006ac1 and model.pt sha 4ef98ef7 match the host; loads, finite)
