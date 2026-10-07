@@ -1,7 +1,171 @@
 {
  "teacher_gate": [
-  null,
-  "teacher pending"
+  true,
+  "A1 acc_L32 1.0 True | A2 layer 10 probe 1.0000 True"
  ],
- "arms": {}
+ "arms": {
+  "tsd": {
+   "runs": {
+    "1": {
+     "long_acc": 0.0,
+     "ext_2048": 0.0,
+     "serial": false,
+     "rho": 0.3467000126838684,
+     "prefix": {
+      "1": 0.3065,
+      "2": 0.0335,
+      "4": 0.0,
+      "8": 0.0
+     },
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "driver": "595.71.05",
+     "tsd_retrieval": 0.779296875,
+     "masked_share": 0.00832153497341289,
+     "masked_share_cos": 3.51021635806345e-05,
+     "exact": false,
+     "pass": false
+    },
+    "2": {
+     "long_acc": 0.0,
+     "ext_2048": 0.0,
+     "serial": false,
+     "rho": 0.17520000040531158,
+     "prefix": {
+      "1": 0.1335,
+      "2": 0.0015,
+      "4": 0.0,
+      "8": 0.0
+     },
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "driver": "595.71.05",
+     "tsd_retrieval": 0.7890625,
+     "masked_share": 0.008330736546905023,
+     "masked_share_cos": 3.546799175332267e-05,
+     "exact": false,
+     "pass": false
+    },
+    "3": {
+     "long_acc": 0.0,
+     "ext_2048": 0.0,
+     "serial": false,
+     "rho": 0.24240000545978546,
+     "prefix": {
+      "1": 0.541,
+      "2": 0.036,
+      "4": 0.0,
+      "8": 0.0
+     },
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "driver": "595.71.05",
+     "tsd_retrieval": 0.728515625,
+     "masked_share": 0.008329545624672608,
+     "masked_share_cos": 3.412560798859957e-05,
+     "exact": false,
+     "pass": false
+    },
+    "4": {
+     "long_acc": 0.0,
+     "ext_2048": 0.0,
+     "serial": false,
+     "rho": 0.1451999992132187,
+     "prefix": {
+      "1": 0.0495,
+      "2": 0.002,
+      "4": 0.0,
+      "8": 0.0
+     },
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "driver": "595.71.05",
+     "tsd_retrieval": 0.84375,
+     "masked_share": 0.008337375406143231,
+     "masked_share_cos": 3.4903078128430294e-05,
+     "exact": false,
+     "pass": false
+    }
+   },
+   "verdict": "FAIL (0 / 4)"
+  },
+  "base": {
+   "runs": {
+    "1": {
+     "long_acc": 0.0,
+     "ext_2048": 0.0,
+     "serial": false,
+     "rho": 0.6175000071525574,
+     "prefix": {
+      "1": 0.9525,
+      "2": 0.13,
+      "4": 0.0,
+      "8": 0.0
+     },
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "driver": "595.71.05",
+     "tsd_retrieval": 0.798828125,
+     "masked_share": 0.00832153497341289,
+     "masked_share_cos": 2.2690574994023984e-05,
+     "exact": false,
+     "pass": false
+    },
+    "2": {
+     "long_acc": 0.0,
+     "ext_2048": 0.0,
+     "serial": false,
+     "rho": 0.7777023851592971,
+     "prefix": {
+      "1": 0.9725,
+      "2": 0.079,
+      "4": 0.0,
+      "8": 0.0
+     },
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "driver": "595.71.05",
+     "tsd_retrieval": 0.7421875,
+     "masked_share": 0.008330736546905023,
+     "masked_share_cos": 2.238406127457317e-05,
+     "exact": false,
+     "pass": false
+    },
+    "3": {
+     "long_acc": 0.0,
+     "ext_2048": 0.0,
+     "serial": false,
+     "rho": 0.4834480290199034,
+     "prefix": {
+      "1": 1.0,
+      "2": 0.615,
+      "4": 0.145,
+      "8": 0.006
+     },
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "driver": "610.57.04",
+     "tsd_retrieval": 0.853515625,
+     "masked_share": 0.008329545624672608,
+     "masked_share_cos": 2.095853649505653e-05,
+     "exact": false,
+     "pass": false
+    },
+    "4": {
+     "long_acc": 0.0,
+     "ext_2048": 0.0,
+     "serial": false,
+     "rho": 0.5612000226974487,
+     "prefix": {
+      "1": 1.0,
+      "2": 0.3655,
+      "4": 0.0135,
+      "8": 0.0
+     },
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "driver": "595.71.05",
+     "tsd_retrieval": 0.87109375,
+     "masked_share": 0.008337375406143231,
+     "masked_share_cos": 2.1567801832312436e-05,
+     "exact": false,
+     "pass": false
+    }
+   },
+   "verdict": "FAIL (0 / 4)"
+  }
+ },
+ "claim_s5": "neither PASS"
 }
