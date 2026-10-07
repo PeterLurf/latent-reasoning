@@ -2,9 +2,130 @@
  "4x4": {
   "slots": {
    "1": {
-    "attempts": [],
-    "status": "open",
-    "accepted": null
+    "attempts": [
+     {
+      "seed": 1,
+      "plateau": false,
+      "misfire": null
+     }
+    ],
+    "status": "accepted",
+    "accepted": {
+     "seed": 1,
+     "test_acc": 0.0,
+     "serial": false,
+     "rho": 0.21199999749660492,
+     "acc_by_column": {
+      "per_column": [
+       1.0,
+       0.326,
+       0.124,
+       0.103,
+       0.077,
+       0.104,
+       0.105,
+       0.953
+      ],
+      "cumulative": [
+       1.0,
+       0.326,
+       0.057,
+       0.012,
+       0.001,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "ext_4x8": {
+      "test_acc": 0.0,
+      "acc_by_column": {
+       "per_column": [
+        1.0,
+        0.294,
+        0.123,
+        0.1,
+        0.098,
+        0.101,
+        0.099,
+        0.104,
+        0.101,
+        0.117,
+        0.084,
+        0.234
+       ],
+       "cumulative": [
+        1.0,
+        0.294,
+        0.056,
+        0.006,
+        0.003,
+        0.002,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      "digit_acc": 0.20458333333333334,
+      "n": 1000,
+      "dedup_removed": 0,
+      "seeds": [
+       13704,
+       13705
+      ]
+     },
+     "probe": {
+      "r2_carry_code": 0.23891026022290895,
+      "r2_carry_h": 0.6892745261623088,
+      "r2_colsum_context": 0.2696916814007905,
+      "n": 1000,
+      "L": 8,
+      "per_column": {
+       "1": {
+        "r2_carry_code": 0.2728744150741037,
+        "r2_colsum_context": 0.7838238078889203
+       },
+       "2": {
+        "r2_carry_code": 0.08835143845658555,
+        "r2_colsum_context": 0.15383796136839523
+       },
+       "3": {
+        "r2_carry_code": 0.03644854646927653,
+        "r2_colsum_context": 0.005396195354706368
+       },
+       "4": {
+        "r2_carry_code": 0.19999604658174808,
+        "r2_colsum_context": -0.025603781048808782
+       },
+       "5": {
+        "r2_carry_code": 0.33041195439920945,
+        "r2_colsum_context": -0.012666086612786787
+       },
+       "6": {
+        "r2_carry_code": 0.45394054443977006,
+        "r2_colsum_context": -0.036814269383609766
+       },
+       "7": {
+        "r2_carry_code": 0.41586712959931726,
+        "r2_colsum_context": 0.012985084052422935
+       }
+      }
+     },
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "driver": "595.71.05",
+     "exact": false,
+     "pass": false,
+     "reading": null,
+     "carry_r2": {
+      "r2_carry_code": 0.23891026022290895,
+      "r2_carry_h": 0.6892745261623088,
+      "r2_colsum_context": 0.2696916814007905
+     },
+     "flag2k_misfire": false
+    }
    },
    "2": {
     "attempts": [],
@@ -22,14 +143,14 @@
     "accepted": null
    }
   },
-  "verdict": "not run",
-  "median_test_acc": null,
+  "verdict": "dropped at proof (slot 1 test_acc < 0.95)",
+  "median_test_acc": 0.0,
   "bars": {
    "icot_si": 0.998,
    "gen_m": 0.163,
    "tc_m": 1.0
   },
-  "m_sota": null
+  "m_sota": false
  },
  "5x5": {
   "slots": {
