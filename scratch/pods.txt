@@ -968,3 +968,10 @@ PRICE EXCEPTION 2026-10-06 04:58 gen-b41 offer 53010473 RTX 3090 595.71 $0.267: 
 54561298 vast | gen_b78 DESTROYED_VERIFIED 2026-10-06 21:37 after verified per-run fetch (); FAILED (no eval.json, logs fetched): boxes/runs_fsq/s135_base_s5_s2
 54568105 vast offer 47118064 created 2026-10-06 21:37: label gen-b85, queue scratch/gen_q_b85.txt (logged at create by vdeploy_toy.sh)
 54568208 vast offer 49290341 created 2026-10-06 21:38: label gen-b89, queue scratch/gen_q_b89.txt (logged at create by vdeploy_toy.sh)
+54551699 vast | gen_b70 DESTROYED_VERIFIED 2026-10-06 22:06 after verified per-run fetch (boxes/runs_fsq/s134_copy_s5_s1)
+54571136 vast offer 52755888 created 2026-10-06 22:11: label gen-b86, queue scratch/gen_q_b86.txt (logged at create by vdeploy_toy.sh)
+54559982 vast | gen_b76 DESTROYED_VERIFIED 2026-10-06 22:13 after verified per-run fetch (boxes/runs_fsq/s135_base_s5_s1); model.pt not fetched (rule, logs/model_skips.log): boxes/runs_fsq/s135_base_s5_s1 
+54514191 vast | gen_b54 DESTROYED_VERIFIED 2026-10-06 22:14 after verified per-run fetch (boxes/runs_fsq/s131x_s5_s401_2080ti boxes/runs_fsq/s131x_s5_s403_2080ti)
+54561299 vast | gen_b77 DESTROYED_VERIFIED 2026-10-06 22:31 after verified per-run fetch (boxes/runs_fsq/s135_tsd_s5_s2); model.pt not fetched (rule, logs/model_skips.log): boxes/runs_fsq/s135_tsd_s5_s2 
+2026-10-06 22:32:16 gen-b86 54571136 220.130.209.122 RTX 3090 $0.248/h DESTROYED: stuck loading 21+ min, never reachable; IP excluded; fill_s133s retries b86
+2026-10-06 22:33:33 gen-b55 54514197 58.8.185.95 RTX 2080 Ti 595.71 $0.107/h DESTROYED: queue done (s131x s402 -> s404), files sha-verified vs host after the watcher went silent (last line 16:00 UNREACHABLE)
