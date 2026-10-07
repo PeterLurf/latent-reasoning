@@ -1,4 +1,62 @@
 # local 2070 backlog (Turing, fp32): docs/LOCAL_BACKLOG.md 2070 entries #2 / #3, then the shared fp32 contraction filler
+# §136 post-hoc (gap found 08:3x: drain_posthoc lacked s136_): fp32 contraction + prefix on the local §136 models (grown width rebuilt from grow.json); fp32-native 2070, FIRST
+3.0 boxes/runs_fsq/s136_cgrow_s5_s1/eval_contraction_fp32.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_cgrow_s5_s1/args.json --contraction_only --fp32 --device {DEV} --out boxes/runs_fsq/s136_cgrow_s5_s1
+3.0 boxes/runs_fsq/s136_cgrow_s5_s1/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_cgrow_s5_s1/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s136_cgrow_s5_s1
+3.0 boxes/runs_fsq/s136_cgrow_s5_s2/eval_contraction_fp32.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_cgrow_s5_s2/args.json --contraction_only --fp32 --device {DEV} --out boxes/runs_fsq/s136_cgrow_s5_s2
+3.0 boxes/runs_fsq/s136_cgrow_s5_s2/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_cgrow_s5_s2/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s136_cgrow_s5_s2
+3.0 boxes/runs_fsq/s136_cgrow_s5_s3/eval_contraction_fp32.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_cgrow_s5_s3/args.json --contraction_only --fp32 --device {DEV} --out boxes/runs_fsq/s136_cgrow_s5_s3
+3.0 boxes/runs_fsq/s136_cgrow_s5_s3/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_cgrow_s5_s3/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s136_cgrow_s5_s3
+3.0 boxes/runs_fsq/s136_cnoise_s5_s1/eval_contraction_fp32.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_cnoise_s5_s1/args.json --contraction_only --fp32 --device {DEV} --out boxes/runs_fsq/s136_cnoise_s5_s1
+3.0 boxes/runs_fsq/s136_cnoise_s5_s1/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_cnoise_s5_s1/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s136_cnoise_s5_s1
+3.0 boxes/runs_fsq/s136_cnoise_s5_s2/eval_contraction_fp32.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_cnoise_s5_s2/args.json --contraction_only --fp32 --device {DEV} --out boxes/runs_fsq/s136_cnoise_s5_s2
+3.0 boxes/runs_fsq/s136_cnoise_s5_s2/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_cnoise_s5_s2/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s136_cnoise_s5_s2
+3.0 boxes/runs_fsq/s136_cnoise_s5_s3/eval_contraction_fp32.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_cnoise_s5_s3/args.json --contraction_only --fp32 --device {DEV} --out boxes/runs_fsq/s136_cnoise_s5_s3
+3.0 boxes/runs_fsq/s136_cnoise_s5_s3/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_cnoise_s5_s3/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s136_cnoise_s5_s3
+3.0 boxes/runs_fsq/s136_cstaged_s5_s2/eval_contraction_fp32.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_cstaged_s5_s2/args.json --contraction_only --fp32 --device {DEV} --out boxes/runs_fsq/s136_cstaged_s5_s2
+3.0 boxes/runs_fsq/s136_cstaged_s5_s2/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_cstaged_s5_s2/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s136_cstaged_s5_s2
+3.0 boxes/runs_fsq/s136_cstaged_s5_s3/eval_contraction_fp32.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_cstaged_s5_s3/args.json --contraction_only --fp32 --device {DEV} --out boxes/runs_fsq/s136_cstaged_s5_s3
+3.0 boxes/runs_fsq/s136_cstaged_s5_s3/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_cstaged_s5_s3/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s136_cstaged_s5_s3
+3.0 boxes/runs_fsq/s136_growp_s5_s1/eval_contraction_fp32.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_growp_s5_s1/args.json --contraction_only --fp32 --device {DEV} --out boxes/runs_fsq/s136_growp_s5_s1
+3.0 boxes/runs_fsq/s136_growp_s5_s1/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_growp_s5_s1/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s136_growp_s5_s1
+3.0 boxes/runs_fsq/s136_growp_s5_s2/eval_contraction_fp32.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_growp_s5_s2/args.json --contraction_only --fp32 --device {DEV} --out boxes/runs_fsq/s136_growp_s5_s2
+3.0 boxes/runs_fsq/s136_growp_s5_s2/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_growp_s5_s2/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s136_growp_s5_s2
+3.0 boxes/runs_fsq/s136_growp_s5_s3/eval_contraction_fp32.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_growp_s5_s3/args.json --contraction_only --fp32 --device {DEV} --out boxes/runs_fsq/s136_growp_s5_s3
+3.0 boxes/runs_fsq/s136_growp_s5_s3/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_growp_s5_s3/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s136_growp_s5_s3
+3.0 boxes/runs_fsq/s136_growp_s5_s4/eval_contraction_fp32.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_growp_s5_s4/args.json --contraction_only --fp32 --device {DEV} --out boxes/runs_fsq/s136_growp_s5_s4
+3.0 boxes/runs_fsq/s136_growp_s5_s4/eval_prefix.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_growp_s5_s4/args.json --prefix_only --device {DEV} --out boxes/runs_fsq/s136_growp_s5_s4
+# C7 on the remaining exact models (shared lines with the 4060 / 3070 day filler)
+2.0 boxes/runs_fsq/s120_ff_final_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s120_ff_final_s1 {DEV}
+2.0 boxes/runs_fsq/s120_ff_final_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s120_ff_final_s2 {DEV}
+2.0 boxes/runs_fsq/s120_ff_trace_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s120_ff_trace_s1 {DEV}
+2.0 boxes/runs_fsq/s120_ff_trace_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s120_ff_trace_s2 {DEV}
+2.0 boxes/runs_fsq/s120_s5_final_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s120_s5_final_s1 {DEV}
+2.0 boxes/runs_fsq/s120_s5_trace_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s120_s5_trace_s2 {DEV}
+2.0 boxes/runs_fsq/s123_ff_dither000_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s123_ff_dither000_s1 {DEV}
+2.0 boxes/runs_fsq/s123_ff_dither025_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s123_ff_dither025_s1 {DEV}
+2.0 boxes/runs_fsq/s123_ff_fsqdither_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s123_ff_fsqdither_s1 {DEV}
+2.0 boxes/runs_fsq/s123_ff_fsqdither_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s123_ff_fsqdither_s2 {DEV}
+2.0 boxes/runs_fsq/s123_s5_dither000_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s123_s5_dither000_s1 {DEV}
+2.0 boxes/runs_fsq/s123_s5_dither010_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s123_s5_dither010_s1 {DEV}
+2.0 boxes/runs_fsq/s123_s5_dither025_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s123_s5_dither025_s1 {DEV}
+2.0 boxes/runs_fsq/s123_s5_dither050_s1_3090/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s123_s5_dither050_s1_3090 {DEV}
+2.0 boxes/runs_fsq/s123_s5_fsqdither_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s123_s5_fsqdither_s1 {DEV}
+2.0 boxes/runs_fsq/s130chk_s5_s12_a4000/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s130chk_s5_s12_a4000 {DEV}
+2.0 boxes/runs_fsq/s131x_s5_s403_2080ti/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s131x_s5_s403_2080ti {DEV}
+2.0 boxes/runs_fsq/s133_cont64_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_cont64_s2 {DEV}
+2.0 boxes/runs_fsq/s133_cont64_s201/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_cont64_s201 {DEV}
+2.0 boxes/runs_fsq/s133_fsq16_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_fsq16_s1 {DEV}
+2.0 boxes/runs_fsq/s133_fsq16_s4/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_fsq16_s4 {DEV}
+2.0 boxes/runs_fsq/s133_fsq64_s104/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_fsq64_s104 {DEV}
+2.0 boxes/runs_fsq/s133_fsq64_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_fsq64_s2 {DEV}
+2.0 boxes/runs_fsq/s133_fsq64_s201/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_fsq64_s201 {DEV}
+2.0 boxes/runs_fsq/s133_fsq64_s3/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_fsq64_s3 {DEV}
+2.0 boxes/runs_fsq/s133_noise64_s2/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_noise64_s2 {DEV}
+2.0 boxes/runs_fsq/s133_noise64_s201/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_noise64_s201 {DEV}
+2.0 boxes/runs_fsq/s133_noise64_s3/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s133_noise64_s3 {DEV}
+2.0 boxes/runs_fsq/s134_copy_cyc_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s134_copy_cyc_s1 {DEV}
+2.0 boxes/runs_fsq/s134_copy_ff_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s134_copy_ff_s1 {DEV}
+2.0 boxes/runs_fsq/s134_copy_mod_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s134_copy_mod_s1 {DEV}
+2.0 boxes/runs_fsq/s134_copy_rdfa_s1/eval_c7_lmhead.json python -u scratch/c7_lmhead.py boxes/runs_fsq/s134_copy_rdfa_s1 {DEV}
 # LOCAL_BACKLOG 2070 #5 (Theory 2026-10-07, PRIORITY): s133_soft16_s1 fp32 contraction - its §133 slot verdict waits on it
 3.0 boxes/runs_fsq/s133_soft16_s1/eval_contraction_fp32.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s133_soft16_s1/args.json --contraction_only --fp32 --device {DEV} --out boxes/runs_fsq/s133_soft16_s1
 # §136 dim-use comparator (descriptive, Experiments 2026-10-07): fsq120.s136_dim_use on fixed-width S5 models (d 64 / 16 / 8), fp32 on the 2070 -> <run>/eval_dimuse136.json

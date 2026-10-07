@@ -38,3 +38,4 @@
 79.116.20.245  # gen-b95 2026-10-07: stuck 'loading' 17+ min (Audit 00:48)
 82.178.70.50  # gen-b103 2026-10-07: rebooted mid-run (s136_cstaged_s5_s1 at 19.5k, job killed) - unreliable
 142.127.68.223  # gen-b112 2026-10-07: stuck 'created' 16+ min
+167.99.190.68  # gen-b113 2026-10-07: unreachable over ssh 20+ min after create
