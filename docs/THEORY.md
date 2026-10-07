@@ -220,7 +220,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 130 | Early label-free plateau marker (code variance at ~1k): fit on 4060 replays, frozen, tested cross-card (3070, primary) and same-card | **no PASS** (primary P 0.70 / R 0.78 cross-card, 0.47 / 0.88 same-card; 0.60 in-sample): both fail, so the marker is noisy, not card-specific: the early marker does not predict the 2k plateau; the collapse at ~650 is common and transient; the 2k flag fires after early pulls | closed |
 | 131 | Second restart point at 4k: FLAG4 = loss(4k) ≥ 0.9·loss(2.6k) (floored), held-out precision / recall for "escape without learning" | **PASS**: 0/23 learners flagged, 8/11 escape-fails caught (recall 0.73); not deployable (8 < 10); 8-d carrier only | closed |
 | 132 | Rules in context: per-problem permutation tables (explicit pairs) on §120's carrier; size ladder k4/m2 → k6/m3; PASS 3/4 exact + SERIAL on held-out tables | **rung 1 PASS 3/4** (slots 2–4 exact + SERIAL, certified; pilot 0.9865 = one unclosed table); rung 2 next | **open** |
-| 133 | Can error correction make a wide latent carrier exact? CONT / FSQ / SOFT / NOISE / PIN at d 16–64 on S5, then an S5×4 capacity probe (FSQ-8 controls) | registered | **open** |
+| 133 | Can error correction make a wide latent carrier exact? CONT / FSQ / SOFT / NOISE / PIN at d 16–64 on S5, then an S5×4 capacity probe (FSQ-8 controls) | **stage 1: FSQ-64 / NOISE-64 / CONT-64 / SOFT-16 PASS**; FSQ-16 FAIL; SOFT-64 / PIN-64 dropped; stage 2 (S5×4) not yet approved | **open** (stage 2) |
 | 134 | COPY-ANCHOR: label-free state-reading auxiliary (final-answer text autoencoded through the carrier) on §128's S5 recipe, no restarts; PASS 4/4 exact (plain 1/4) | **PASS on S5: 4/4 exact at 2,048 + SERIAL + ρ 0.14–0.22, no restarts** (plain 1/4); **guard FAILS on MOD** (exact + SERIAL, but not closed: 70k reachable codes); not adopted as default | closed |
 | 135 | TEACHER-STATE DISTILLATION: a CoT model's hidden states (vs pretrained GPT-2 on the same text) as per-hand-off InfoNCE targets on §128's S5 carrier | **FAIL both arms (0/4)**: worse than plain; the aux pulls context into the code (135-9) | closed (stage B not run) |
 | 136 | GROW (the user's idea): narrow → wide function-preserving latent growth at a loss threshold / plateau; GROW-P, COPY+GROW / STAGED / GROW-NOISE, GROW-4, NESTED-64 on S5 (S5×4 decides) | registered | **open** |
@@ -5845,6 +5845,28 @@ reading, and a refinement of 133-1 (a).**
   on the floor from above stays in and only understates contraction). If none qualify, it is ρ₁.
   - Tested: a carrier at 0.10 with a floor-landing third step scores 0.10, not about 0.18. RAW-H-style drift (distances 5.4 → 0.7
     → 0.4) stays separable.
+
+**§133 stage-1 result (2026-10-07 07:44 EDT; cloud RTX 3090s, several drivers, recorded per slot; restart slots as §128; scored by Theory alone with `theory/score_s133.py`; the
+interim notes 133-5 – 133-10). Four arms PASS stage 1 (three at d 64); FSQ-16 FAILS; SOFT-64 and PIN-64 were dropped at proof.**
+
+| Arm | Width / correction | Slots exact + SERIAL + ρ ≤ 0.28 | ρ (fp32; 127-12 for FSQ, first-three form for continuous) | Verdict |
+|---|---|---|---|---|
+| FSQ-64 | 64, hard FSQ | 4/4 (s201, s2, s3, s104) | 0.24 / 0.19 / 0.21 / 0.15 | **PASS** |
+| NOISE-64 | 64, continuous + dither | 4/4 (s201, s2, s3, s104) | 0.12 / 0.19 / 0.11 / 0.10 | **PASS** |
+| CONT-64 | 64, continuous, no correction | 3/3 decided (s201, s2, s3; slot 4 pending, descriptive) | 0.22 / 0.16 / 0.14 | **PASS** |
+| SOFT-16 | 16, soft pull β 0.1 | 4/4 | 0.13 / 0.11 / 0.11 / 0.11 | **PASS** |
+| FSQ-16 | 16, hard FSQ | 2/4 (s2, s3 escape and fail) | — | **FAIL** |
+| SOFT-64 | 64, soft pull β 0.1 | proof 0.646 at 2,048 (a constant 2·10⁻⁴ per-step error) | — | dropped |
+| PIN-64 | 64, LayerNorm pin | proof 0.0 (F2b-transition) | — | dropped |
+
+* **Reading (stage 1, as registered):** wide carriers stay exact at 2,048, SERIAL and contractive on S5.
+  - This holds with hard rounding (FSQ-64), with dither (NOISE-64) and **even uncorrected** (CONT-64).
+  - The earlier picture, "wide carriers drift", came from RAW-H's raw 768-d hidden state. The learned tanh-bounded code at d 64 does not drift.
+* **Entry costs restarts at d 64:** every 64-d arm flagged seeds 1 and 101 (133-5). The accepted runs needed 0–2 restarts per slot, and the width changed the basin.
+* **Capacity is not yet shown:** an 8-d code suffices on S5. Stage 2 (S5×4: CAP-PASS where FSQ-8 fails by capacity) needs Audit's re-approval and is proposed
+  separately.
+* **The user's trigger fires** ("if 64 wide latents pass, try full width"): §138 (768-d) is drafted from `docs/THEORY_FULLWIDTH_PLAN_2026-10-07.md` and goes to
+  Literature and Audit before registration.
 
 ## 134. COPY-ANCHOR: a label-free state-reading auxiliary from step 0, against entry failure and escape without learning (pre-registered 2026-10-06 15:01 EDT, after Literature's check 4da2f672 / e0909d0b / ebc2a039 and before any implementation or run; the user's "invent and synthesize a stable latent method" (via Audit), candidate 1 of `docs/THEORY_STABLE_LATENT_2026-10-06.md`)
 
