@@ -41,7 +41,14 @@ if grep -q -E "boxes.multcol|boxes.multrow|boxes.multpair|scratch.restart137|scr
   done
 fi
 nvidia-smi --query-gpu=name,driver_version --format=csv,noheader >> $log
-if [ -f scratch/hostcheck.py ]; then                                     # Theory note 135-6: VRAM pattern test over most of the card (b78 fault at 6.75-14 GiB)
+# Audit 2026-10-07 10:49 (§138 b133-b136 shipped without scratch/restart138.py + hostcheck.py: "No module named" -> silent rc 1, hostcheck
+# skipped): every queue module must import here, and hostcheck.py must be present - both are rc 9 setup failures (requeue_watch catches them)
+for mod_ in $(grep -v '^#' "$q" | awk 'NF >= 2 {print $2}' | sort -u); do
+  python -c "import importlib, sys; importlib.import_module(sys.argv[1])" "$mod_" > logs/import_check.log 2>&1 || { echo "$(date +%T) MODULE_MISSING $mod_ rc 9 ($(tail -n 1 logs/import_check.log | cut -c1-120))" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }
+done
+echo "$(date +%T) modules import: $(grep -v '^#' "$q" | awk 'NF >= 2 {print $2}' | sort -u | tr '\n' ' ')" >> $log
+[ -f scratch/hostcheck.py ] || { echo "$(date +%T) HOSTCHECK_FAIL rc 9 (scratch/hostcheck.py not shipped)" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }
+if [ -f scratch/hostcheck.py ]; then                                    # Theory note 135-6: VRAM pattern test over most of the card (b78 fault at 6.75-14 GiB)
   gib=$(nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits | head -1 | awk '{printf "%.0f", $1 / 1024 - 3}')   # free, not total (b92: a co-process held 260 MiB)
   python -u scratch/hostcheck.py --gib $gib > logs/hostcheck.log 2>&1; tail -1 logs/hostcheck.log >> $log
   tail -1 logs/hostcheck.log | grep -q "HOSTCHECK PASS" || { echo "$(date +%T) HOSTCHECK_FAIL rc 9" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }

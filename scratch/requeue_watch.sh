@@ -11,7 +11,7 @@ log() { echo "$(date '+%F %T') requeue_watch $*" >> logs/gen_deploy.log; echo "$
 log "start"
 while [ ! -f scratch/requeue_watch.stop ]; do
   for f in $(find logs -path 'logs/vast_*' -name 'queue_gen_b*.out' -newer logs/.requeue_watch_start 2>/dev/null); do
-    grep -q -E "(HOSTCHECK_FAIL|DATA_MISSING|DATA_SHA_MISMATCH|PIP_FAILED|GPT2_SHA_MISMATCH) rc 9" "$f" || continue
+    grep -q -E "(HOSTCHECK_FAIL|DATA_MISSING|DATA_SHA_MISMATCH|PIP_FAILED|GPT2_SHA_MISMATCH|MODULE_MISSING [a-z0-9_.]+) rc 9" "$f" || continue   # MODULE_MISSING: 2026-10-07 (§138)
     grep -q " start boxes" "$f" && continue                                 # something trained: not a setup-only failure
     n=$(basename "$f" .out | sed 's/queue_gen_b//'); key="$f"
     case "$done_list" in *" $key "*) continue;; esac
@@ -20,7 +20,7 @@ while [ ! -f scratch/requeue_watch.stop ]; do
     grep -q "cc_job" "$q" && ex="$ex scratch/cc_job.py scratch/cert_cover128.py"
     grep -q -E "multcol|restart137" "$q" && ex="$ex boxes/multcol.py scratch/restart137.py $(grep -o -E -- '--task [45]x[45]' "$q" | awk '{print "bench/data/mult_"$2"_test.txt bench/data/mult_train/"$2"_train.txt"}' | sort -u | tr '\n' ' ')"
     grep -q "restart133" "$q" && ex="$ex scratch/restart133.py"
-    log "b$n: setup failure in $f ($(grep -o -E '[A-Z_]+ rc 9' "$f" | head -1)) -> requeue via fill_generic rq$n"
+    log "b$n: setup failure in $f ($(grep -o -E "[A-Z_]+( [a-z0-9_.]+)? rc 9" "$f" | head -1)) -> requeue via fill_generic rq$n"
     rm -f scratch/fill_rq$n.stop; EXTRA_120="$ex" nohup bash scratch/fill_generic.sh rq$n "$n" > logs/fill_rq$n.out 2>&1 &
   done
   sleep 300
