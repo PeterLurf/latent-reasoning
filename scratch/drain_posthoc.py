@@ -68,7 +68,7 @@ def main():
                 with open(os.path.join(ROOT, "logs", "posthoc_%s_%s.log" % (outf.split(".")[0], name)), "w") as lg:
                     subprocess.call([sys.executable, "-u", "-m", "boxes.multcol", "--from_args", os.path.join(d, "args.json")] + flag + ["--device", dev, "--out", d],
                                     cwd=ROOT, stdout=lg, stderr=subprocess.STDOUT)
-    if name.startswith(("s133_", "s134_", "s135_", "s138_")) and not os.path.exists(os.path.join(d, "eval_contraction_fp32.json")):
+    if name.startswith(("s133_", "s134_", "s135_", "s136_", "s138_")) and not os.path.exists(os.path.join(d, "eval_contraction_fp32.json")):   # s136_ added 2026-10-07 (gap)
         # Theory 133-5: PASS's rho reads only the post-hoc fp32 contraction - every accepted §133 / §134 / §135 run, on the host, before
         # any keep / skip decision (kept models used to skip it)
         mod = "boxes.fsq120_posthoc" if os.path.exists(os.path.join(ROOT, "boxes", "fsq120_posthoc.py")) else "boxes.fsq120"
