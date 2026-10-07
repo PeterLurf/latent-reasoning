@@ -1,0 +1,19 @@
+{
+ "s147.g_add_init": 0.00022988398268353194,
+ "s147.step0.wo_grad": 0.006349482107907534,
+ "s147.step0.qkv_gate_zero_grad": 1.0,
+ "s147.after1.qkv_grad": 0.0018168292008340359,
+ "s147.after1.wo_grad": 0.006357612553983927,
+ "s147.after1.gate_alpha_beta_grad": 0.00019887962844222784,
+ "s147.after1.ln_m_grad": 0.0004934623721055686,
+ "s147.after1.trunk_grad": 3.9352540969848633,
+ "s147.after1.wo_additive_cols_grad": 0.005207038018852472,
+ "s147.after1.wo_delta_cols_grad": 0.003647737903520465,
+ "s147.after1.qkv_additive_rows_grad": 0.0015193686122074723,
+ "s147.after1.ratio_wo_delta_over_add": 0.7005399020159937,
+ "s147.after1.ratio_gate_over_qkv_add": 0.13089623337241252,
+ "s147.after1.within_10x_wo": 1.0,
+ "s147.after1.within_10x_gate": 1.0,
+ "_status": "PASS",
+ "_zero_terms": []
+}

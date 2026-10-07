@@ -503,6 +503,15 @@ def rho_delta(m, A, Bd, dev, amp, T0=2, n=300, seed=12301):
     return {"T0": T0, "n": N, "eps": out}
 
 
+@torch.no_grad()
+def read_ratio_by_handoff(m, A, Bd, dev, amp, n=256):
+    """§147 (note 147-2): per hand-off, the median over a probe batch of ||g_del read_del|| / ||g_add read_add|| at the segment's last token;
+    also the pooled median (all hand-offs). One batch of n test items, eval mode, no draws."""
+    was = m.training; m.eval(); m.mem.norms = []; rollout_delta(m, A[:n], Bd[:n], dev, amp, n); nr = m.mem.norms; m.mem.norms = None; m.train(was)
+    r = [(d_ / a_.clamp_min(1e-12)).float().cpu().numpy() for d_, a_ in nr]
+    return [float(np.median(x)) for x in r], float(np.median(np.concatenate(r)))
+
+
 def s147_extras(m, teA, teB, dev, amp, bs, pred):
     """§147 descriptive: acc_by_magnitude; head_ablation (additive / delta reads zeroed at test); colsum_readout_r2 (ridge of the true column
     accumulator from the additive heads' read phi(q)^T S at each segment's last token, fit on half the problems, pooled over steps) and per
@@ -551,6 +560,7 @@ def main():
         for k, v in keep.items():
             setattr(a, k, v)
     assert not a.slots or (a.no_round and 1 <= a.carry_slots <= a.slots <= 4), "§145: --slots K (<= 4) needs --no_round and 1 <= --carry_slots <= K"
+    a.mem_group_gain = a.carrier == "deltamem"                               # note 147-2 (the scorer checks it)
     dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); sc = a.sched_scale; n = int(a.task[0])
     if a.d_q != F.D_Q or a.levels != F.LEV:
         F.D_Q, F.LEV = a.d_q, a.levels; F.HALF = (F.LEV - 1) / 2; F.SHIFT = math.atanh(F.OFF / F.HALF)
@@ -582,6 +592,10 @@ def main():
     json.dump({**info, "resumed_at": time.strftime("%Y-%m-%d %H:%M:%S")} if a.resume else info,
               open(os.path.join(a.out, ("args_resume_%d.json" % int(time.time())) if a.resume else "args.json"), "w", newline="\n"), indent=1)
     m = mk(); m.train(); pairs, col, emit = schedule(n, n)
+    if a.carrier == "deltamem" and not a.resume and not a.mem_check:        # note 147-2: g_add = median ||read_del|| / ||read_add|| at step 0
+        rr0, med0 = read_ratio_by_handoff(m, teA, teB, dev, amp); m.mem.g_add.data.fill_(med0); rr1, med1 = read_ratio_by_handoff(m, teA, teB, dev, amp)
+        init147 = {"g_add_init": med0, "g_del_init": 1.0, "ratio_by_handoff_before_gain": rr0, "read_norm_ratio_by_handoff_step0": rr1, "pooled_median_after_gain": med1}
+        json.dump(init147, open(os.path.join(a.out, "s147_init.json"), "w", newline="\n"), indent=1); print("S147_INIT", json.dumps(init147), flush=True)
     if a.carrier == "deltamem":                                             # §147: the branch's own AdamW group, 300-step warm-up (warm_from 0)
         mp = {id(p_) for p_ in m.mem.parameters()}
         opt = torch.optim.AdamW([{"params": [p_ for p_ in m.parameters() if id(p_) not in mp], "mult": 1.0},
@@ -665,6 +679,9 @@ def main():
     if a.carrier == "deltamem":                                             # §147 (no contraction term: an integrator by design)
         res["donor"] = donor_delta(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(14002), n=min(a.donor_n, 1000))
         res["s147"] = {**s147_extras(m, teA, teB, dev, amp, a.eval_bs, pred), "mem_layer": a.mem_layer, "mem_add_heads": a.mem_add_heads, "mem_delta_heads": a.mem_delta_heads}
+        i147 = json.load(open(os.path.join(a.out, "s147_init.json"))) if os.path.exists(os.path.join(a.out, "s147_init.json")) else {}
+        res["s147"]["read_norm_ratio_by_handoff"] = {"step0": i147.get("read_norm_ratio_by_handoff_step0"), "end": read_ratio_by_handoff(m, teA, teB, dev, amp)[0]}
+        res["s147"].update({"g_add_init": i147.get("g_add_init"), "g_add": float(m.mem.g_add), "g_del": float(m.mem.g_del), "mem_group_gain": True})
         res["n_codes"] = None; res["eval_sec"] = round(time.time() - t1)
     elif a.slots:                                                           # §145
         res["donor"], sw_ = donor_slots(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(14002), n=a.donor_n)
