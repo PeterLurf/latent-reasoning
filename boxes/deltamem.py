@@ -36,6 +36,7 @@ class DeltaMem(nn.Module):
             self.wo.weight.zero_(); self.wo.bias.zero_()
         self.register_buffer("fade", torch.zeros((), device=dev)); self.ablate = None   # "add" | "delta": that head type's read zeroed
         self.s_add = nn.Parameter(torch.zeros((), device=dev)); self.s_del = nn.Parameter(torch.zeros((), device=dev))   # note 147-2: gains g = exp(s) (Audit: log-param.)
+        self.alpha_rec = None                                               # note 147-3: list -> per segment, mean alpha per delta head
         self.norms = None                                                   # list -> per segment (last token): (||g_del read_del||, ||g_add read_add||) per row
 
     def zero_state(self, B, dev):
@@ -51,6 +52,8 @@ class DeltaMem(nn.Module):
         B, T, D = x.shape; a = self.ln(x.float()); q, k, v = self.qkv(a).split(D, -1)
         q, k, v = (t.view(B, T, H_ADD + H_DEL, DH) for t in (q, k, v)); g_ = self.gate(a); al = torch.sigmoid(g_[..., :H_DEL]); be = 2 * torch.sigmoid(g_[..., H_DEL:])
         Sa, Sd = S[:, :H_ADD].float(), S[:, H_ADD:].float(); outs = []
+        if self.alpha_rec is not None:
+            self.alpha_rec.append(al.mean(dim=(0, 1)).detach())
         for t in range(T):
             pk, pq = F.elu(k[:, t, :H_ADD]) + 1, F.elu(q[:, t, :H_ADD]) + 1     # additive: S <- S + phi(k) v^T; read phi(q)^T S
             Sa = Sa + pk[..., :, None] * v[:, t, :H_ADD][..., None, :]
