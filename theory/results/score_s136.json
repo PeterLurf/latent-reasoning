@@ -760,9 +760,30 @@
  },
  "nested": {
   "runs": {
-   "1": null
+   "1": {
+    "long_acc": 0.0,
+    "ext_2048": 0.0,
+    "serial": false,
+    "rho": 0.009800000116229057,
+    "grows": [],
+    "switch_spikes": [],
+    "entered": null,
+    "width_final": 64,
+    "dim_use": {
+     "new_dim_var_share": 0.8383100628852844,
+     "new_dim_r2_state": -0.1933959722518921,
+     "eff_rank": 1.1688035241248038,
+     "acc_w8": 0.0
+    },
+    "codes_per_state": 14.875,
+    "prefix": null,
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "595.84",
+    "exact": false,
+    "pass": false
+   }
   },
-  "verdict": "pending"
+  "verdict": "not passing (descriptive)"
  },
  "entry_d4": {
   "1": false,
