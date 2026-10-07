@@ -7861,6 +7861,14 @@ matters.**
 * **Gates:** the sanity gate reproduced first, and unit tests of the substitution evaluator on hand-checked chains.
 * Dirs `s149_{coconut,simcot_coconut,simcot_codi,codi}`. Scorer: `theory/score_s149.py`, committed with this registration.
 
+**Note 149-1 (2026-10-07 17:55 EDT, before any §149 run; Audit's formal review, approved). Power and multiplicity.**
+* **(1) UNDERPOWERED:** any (model, t) cell with fewer than 30 pairs reads UNDERPOWERED, distinct from PARTIAL. n is reported for every cell.
+* **(2) Which cells decide:** only the code-documented alignments feed a per-model C1 verdict: **simcot_coconut and simcot_codi, t = 1–3.**
+  - **CAUSAL:** every read cell is SERIAL, with at least 2 cells read.
+  - **BYPASSED:** at least 2 BYPASS cells.
+  - PARTIAL otherwise.
+  - coconut (a training-history alignment), codi (probe-defined) and every ablation cell are descriptive. No single cell can decide a verdict by chance.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

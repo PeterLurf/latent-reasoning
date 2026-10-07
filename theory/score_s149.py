@@ -9,6 +9,9 @@ answer != the recipient's own (excluded share reported); swap the aligned though
 step t := the donor's value. SERIAL(t) = donor-consistent >= 0.90 and recipient-consistent < 0.10, read only with n >= 30 pairs. BYPASS(t) = recipient-consistent
 >= 0.5 (recomputed from the visible question, L1). codi: alignment probe-defined, SERIAL descriptive. RHO: thought t perturbed by eps = 0.1 x its norm (after
 prj for CODI-style), later thoughts' deviation ratios, the first-3 geometric mean; EXPANDING > 1, CONTRACTIVE <= 0.28 (our bound, carried over), else MARGINAL.
+Note 149-1: cells with n < 30 read UNDERPOWERED (distinct from PARTIAL; n reported per cell); only simcot_coconut / simcot_codi (code-documented alignment),
+t = 1-3, feed a per-model C1 verdict (CAUSAL = every read cell SERIAL with >= 2 read; BYPASSED = >= 2 BYPASS cells; else PARTIAL); coconut / codi and all
+ablation cells are descriptive.
     python theory/score_s149.py
 """
 import json
@@ -19,6 +22,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 R = os.path.join(ROOT, "boxes", "runs_fsq")
 MODELS = {"coconut": 33.1, "simcot_coconut": 44.8, "simcot_codi": 39.4, "codi": 42.5}          # our bench accuracy (GSM8K_REPRO), the sanity anchor
 ALIGNED = {"coconut", "simcot_coconut", "simcot_codi"}
+VERDICT_MODELS = {"simcot_coconut", "simcot_codi"}                            # note 149-1: only code-documented alignments feed a C1 verdict
 ERRORS = []
 
 
@@ -47,7 +51,7 @@ def model_read(name):
         n = st.get("n", 0) or 0
         d_, rc = st.get("donor_consistent"), st.get("recipient_consistent")
         if n < 30 or d_ is None:
-            ser[t] = {"n": n, "verdict": "too few pairs"}
+            ser[t] = {"n": n, "verdict": "UNDERPOWERED"}                   # note 149-1: distinct from PARTIAL
         else:
             ser[t] = {"n": n, "donor": d_, "recipient": rc, "excluded_share": st.get("excluded_share"),
                       "verdict": "SERIAL" if (d_ >= 0.90 and rc < 0.10) else ("BYPASS" if rc >= 0.5 else "PARTIAL"),
@@ -59,10 +63,13 @@ def model_read(name):
     rho = rho_k3(cf.get("rho_k") or [], cf.get("dist_med_k") or []) if cf else None
     out["rho"] = rho; out["rho_class"] = None if rho is None else ("EXPANDING" if rho > 1 else ("CONTRACTIVE" if rho <= 0.28 else "MARGINAL"))
     out["jacobian_top"] = cf.get("jacobian_top")
-    vs = [v["verdict"] for v in ser.values() if v["verdict"] != "too few pairs"]
-    if name in ALIGNED and vs:
-        out["c1_at_release"] = ("CAUSAL at every read step" if all(x == "SERIAL" for x in vs) else
-                                "BYPASSED at some step" if any(x == "BYPASS" for x in vs) else "PARTIAL")
+    vs = [v["verdict"] for k_, v in ser.items() if v["verdict"] != "UNDERPOWERED" and int(k_) <= 3]
+    if name in VERDICT_MODELS:                                               # note 149-1: >= 2 read cells; BYPASSED needs >= 2 BYPASS cells
+        out["c1_at_release"] = ("UNDERPOWERED (< 2 read cells)" if len(vs) < 2 else
+                                "CAUSAL (SERIAL at every read step)" if all(x == "SERIAL" for x in vs) else
+                                "BYPASSED (>= 2 BYPASS cells)" if sum(x == "BYPASS" for x in vs) >= 2 else "PARTIAL")
+    else:
+        out["c1_at_release"] = "descriptive only (note 149-1)"
     return out
 
 
