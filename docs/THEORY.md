@@ -8009,6 +8009,12 @@ itself. It is not evidence of "no causal loop state". Everything else in the res
   stays 64, with --micro chosen on the host.
 * Seeds 2–4 use the fp32 slot head for both arms. A DIGIT-vs-FULL difference at s1 alone is read with this caveat.
 
+**Note 145-3 (2026-10-07 19:41 EDT; a wording fix to the §145 result, after Audit's reproduction).** "The model funnels what it uses into the last slot" is too strong.
+* Zeroing slot 1 / 2 / 3 leaves columns 2–7 near their chance-level values. It drops **column 8 (the top digit)** from 0.951 to 0.412 / 0.236 / 0.304, and column 1 slightly
+  (0.92 / 0.90 / 0.99).
+* Zeroing slot 4 collapses everything (column 1 0.11, column 8 0.001).
+* **Corrected reading:** slot 4 carries the state, slots 1–3 contribute to the top digit, and none specialise by digit position.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
