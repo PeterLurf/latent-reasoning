@@ -237,6 +237,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 147 | DELTA-STATE (program B1): a linear-recurrent memory (6 additive + 6 gated-delta heads) as GPT-2's only cross-segment channel, on §140's digit-pair 4×4; PASS = exact + SERIAL | registered | **open** |
 | 148 | LOOP-RETRO (program B3): prelude / weight-tied loop (blocks 4–7, damped) / coda retrofit for direct-answer 4×4; LOOP-4 vs PLAIN; C2 at r = 8 / 16 | registered | **open** |
 | 149 | SOTA-PROBE (eval only): donor SERIAL (equation substitution), ablation and ρ on released GPT-2 Coconut / SIM-CoT / CODI, at release | registered | **open** |
+| 150 | VOCAB-SLOT (program B4; the user's token-like working memory): 4 Gumbel-ST slots on GPT-2's vocabulary (FULL) or digits + blank (DIGIT, an abacus) as the only cross-segment channel, on §140's digit-pair 4×4 | registered | **open** |
 
 ## Live sections
 
@@ -7868,6 +7869,73 @@ matters.**
   - **BYPASSED:** at least 2 BYPASS cells.
   - PARTIAL otherwise.
   - coconut (a training-history alignment), codi (probe-defined) and every ablation cell are descriptive. No single cell can decide a verdict by chance.
+
+## 150. VOCAB-SLOT: a working memory of K token-shaped slots between passes (program B4; the user's "working memory… that mimics discretised tokens in thought"; pre-registered 2026-10-07 18:05 EDT, after Literature's check c583bb23 and Audit's draft, before any implementation or run)
+
+**Why.**
+* **The user's idea, made concrete:** the state between passes is K slots, each a token on GPT-2's own vocabulary. It is soft during training and a real token at
+  inference.
+* **What it draws on:**
+  - L3: snapping to a discrete set corrects errors (FSQ).
+  - L2: numbers live across positions, and GPT-2 already represents digits as tokens.
+  - §145: the multi-slot layout.
+* **Prior** (c583bb23, `docs/LIT_VOCAB_SLOT_2026-10-07.md`; all 10 leads verify):
+  - text as the sole channel: Markovian Transformers 2404.18988, Delethink 2510.06557, our §100;
+  - Gumbel straight-through messages over a vocabulary: emergent communication 1705.11192;
+  - a frozen LM vocabulary as a codebook: LQAE 2302.00902, SPAE 2306.17842;
+  - soft tokens: Soft Thinking 2505.15778, 2509.19170 (train soft, infer hard).
+  - **K parallel slots on GPT-2's own vocabulary simplex as the sole state, trained on final answers only, is new as scoped.**
+* **Literature's prediction, stated now:** token states help arithmetic when supervised as numbers (scratchpads, §100), not when emergent. The in-pass computation (140-3) is
+  unchanged by the carrier's shape. A DROP is plausible.
+
+**Design: §140's digit-pair 4×4 harness with §145's K = 4 write positions.**
+* **Segments** as §145: [EOT, slot₁ … slot₄, a_i, b_j, column flag, w₁ … w₄], and the flush.
+* **Slot write:**
+  - logits_k = h(w_k) · wteᵀ over the slot vocabulary, using GPT-2's own head;
+  - **Gumbel-softmax** with temperature τ (1 → 0.3 over 2k–6k);
+  - soft slot_k = Σ p · wte.
+  - **Hardening:** straight-through (a one-hot forward, a soft backward) on a fraction p_hard of hand-offs, ramping 0 → 1 over **6k–8k**, after the read path forms
+    (Literature (5); the ramp prototype's late-ramp benefit).
+  - At test: hard argmax with no noise. **The slot path uses a detached wte**, so it never moves the vocabulary (Literature (6)).
+* **The slots are the only cross-segment channel.** The decoder reads [EOT, slot₁ … slot₄] and emits p_k at a column's last pair, as §140 (streamed digits; C4 as
+  reworded).
+* **Start:** four blank-token slots. Restart slots as §140, with 147-1's misfire rule.
+* **Arms (Literature (1)):**
+  - **FULL:** the whole GPT-2 vocabulary.
+  - **DIGIT:** the 10 digit tokens plus one blank token. Four slots then form an **abacus register**. This arm tests directly whether token-shaped number states help, and
+    makes the C7 test meaningful.
+
+**Rules (fixed now; per arm).**
+* **PASS:** ≥ 3/4 slots with test_acc ≥ 0.99 at **hard** inference, **SERIAL**, and **contractive**.
+  - SERIAL: all 4 slot tokens of a donor swapped in after pair 4 / 8 / 12; row level, exact.
+  - Contractive: 127-12's clause on the hard-token carrier, with the perturbation on h(w_k) before the head.
+  - DROP at proof: slot 1 below 0.95. FAIL: ≥ 2 decided slots not passing.
+* **IMPROVES (descriptive):** columns 3–7 all ≥ 0.9 on the proof.
+* **Readings:**
+  - **DIGIT PASS:** an abacus of digit tokens, never supervised, carries multiplication exactly. A token-shaped working memory works for numbers.
+  - **FULL PASS:** model-chosen tokens suffice.
+  - **DIGIT IMPROVES, FULL not:** the restricted digit manifold is what helps.
+  - **Both DROP:** token-shaped slots do not fix in-pass computation at this budget (Literature's prediction).
+  - **Hard vs soft at test:** hard ≥ soft means snapping corrects (C6); soft > hard means hardening loses information.
+* **C7, fixed now (Literature):** what can be claimed is "the state is K vocabulary tokens", certifiable over tokens, with single-token swaps causal. Semantics are claimed
+  only where the tokens match task quantities on held-out items: the share of steps whose DIGIT slots spell the accumulator's digits. It is not "human-readable reasoning".
+* **Descriptive:**
+  - per-slot token histograms and distinct tokens per slot (collapse);
+  - slot entropy and the distance to the nearest wte row in the soft phase (off-manifold);
+  - a per-slot × per-digit probe;
+  - accuracy by accumulator magnitude; ext_4x8.
+
+**Placement.**
+* **Cost:** 2 proofs, about $0.5 each. Slots 2–4 by the credit rule on a proof ≥ 0.95.
+* **Implementation (the experiments session):** multpair `--slots 4 --slot_space vocab|digits --slot_gumbel --slot_tau 1:0.3:2000:6000 --slot_hard 6000:8000`, with the
+  wte detached on the slot path (args `slot_gumbel`, `slot_wte_detached`).
+* **Gates:**
+  - gradflow under CUDA bf16 into w_k and the trunk through the soft path;
+  - exact ground truth;
+  - memory;
+  - smoke_plain;
+  - Audit's diff review.
+* Dirs `s150_{full,digit}_4x4_s{seed}`. Scorer: `theory/score_s150.py`, committed with this registration.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
