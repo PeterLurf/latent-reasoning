@@ -1,0 +1,54 @@
+{
+ "arms": {
+  "a": {
+   "runs": {
+    "1": {
+     "status": "done",
+     "test_acc": 0.002,
+     "serial": false,
+     "rho": 0.5814382442140085,
+     "acc_by_length": {
+      "1": 1.0,
+      "2": 0.352,
+      "3": 0.052,
+      "4": 0.002
+     },
+     "train_acc": 0.003,
+     "n_nonfinite": 0,
+     "donor": {
+      "donor_consistent": 0.0,
+      "recipient_consistent": 0.0,
+      "chance_overlap": 0.001,
+      "bprefix_consistent": 0.0,
+      "operands_consistent": 0.0
+     },
+     "probe_r2": {
+      "sj": {
+       "1": 0.9837197585570796,
+       "2": 0.9015708351597063,
+       "3": 0.7832312249910434,
+       "4": 0.9451013909019907
+      },
+      "bprefix": {
+       "1": 0.9776156459808358,
+       "2": 0.9088059954124277,
+       "3": 0.8249041072262773,
+       "4": 0.6565430520201749
+      }
+     },
+     "ext_4x8_low8": null,
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "driver": "565.57.01",
+     "gate_step": null,
+     "gate_train_exact": null,
+     "teacher_vs_gold_mismatch": 0.0,
+     "teacher_invalid": 0.0,
+     "exact": false,
+     "pass": false,
+     "reading": null
+    }
+   }
+  }
+ },
+ "verdict": "DROP at proof (a s1 test_acc 0.002 < 0.95): the section stops; reading 'not acquired within budget'"
+}
