@@ -43,6 +43,18 @@ DTOK = [bc.tok(" %d" % d)[0] for d in range(10)]                         # opera
 COLTOK = [bc.tok(str(k))[0] for k in range(25)]                           # column index k (bare number: never a " d" token)
 assert all(len(bc.tok(str(k))) == 1 for k in range(25)) and not set(DTOK) & set(COLTOK)
 DATA = os.path.join(ROOT, "bench", "data")
+REPTOK = [bc.tok(" " + c)[0] for c in "ABCDEFGH"]                         # §141 repeat-index tokens q = 1..8 (note 141-1: single, disjoint)
+assert all(len(bc.tok(" " + c)) == 1 for c in "ABCDEFGH") and not set(REPTOK) & (set(DTOK) | set(COLTOK))
+
+
+def chain_items(L, R):
+    """Item ids of a chain over L columns with R repeats each: R = 1 -> the column tokens' indices 1..L (§137); R > 1 -> step indices 0..L*R-1."""
+    return np.arange(1, L + 1) if R == 1 else np.arange(L * R)
+
+
+def emit_mask(L, R):
+    """Steps whose code is decoded into the column's digit: every step at R = 1, the last repeat of each column at R > 1 (§141)."""
+    return np.ones(L, bool) if R == 1 else (np.arange(L * R) % R == R - 1)
 LMAX = {"4x4": ((2000, 2), (5000, 4), (None, 8)), "5x5": ((2000, 2), (5000, 4), (9000, 8), (None, 10))}
 
 
@@ -62,11 +74,16 @@ class MultFam:
 class MultCol(FSQ120):
     """FSQ120 whose segment is [EOT, carried code, a digits, b digits, column token]; self.ctx: (B, 2n) operand token ids."""
     def __init__(self, g, fam):
-        super().__init__(g, fam); self.ctx = None; self.keep_h = False; self.last_h = None
+        super().__init__(g, fam); self.ctx = None; self.keep_h = False; self.last_h = None; self.R = 1; self.rep_index = False
 
     def segment(self, prev, items):
-        g = self.g; B = items.shape[0]; eot = g.embed(torch.full((B, 1), EOT, device=items.device))
-        x = torch.cat([eot, prev.to(eot.dtype), g.embed(self.ctx), g.embed(self.itok[items])], 1); h, _ = g(x, None)
+        g = self.g; B = items.shape[0]; dev = items.device; eot = g.embed(torch.full((B, 1), EOT, device=dev))
+        if self.R == 1:                                                     # §137: [.., column token k]
+            tail = g.embed(self.itok[items])
+        else:                                                               # §141: step s -> column k = s // R + 1, repeat q = s % R (+ its token)
+            s_ = int(items[0]); k, q = s_ // self.R + 1, s_ % self.R; t_ = [COLTOK[k]] + ([REPTOK[q]] if self.rep_index else [])
+            tail = g.embed(torch.tensor(t_, device=dev)[None].expand(B, -1))
+        x = torch.cat([eot, prev.to(eot.dtype), g.embed(self.ctx), tail], 1); h, _ = g(x, None)
         if self.keep_h:                                                     # the probe's h_k (before W_down)
             self.last_h = h[:, -1].float()
         return h[:, -1]
@@ -127,24 +144,33 @@ def amp_ctx(amp):
 
 
 @torch.no_grad()
-def rollout(m, A, Bd, dev, amp, bs, override=None, record=False):
-    """Hard chains over all columns 1 .. L; decode every step. override: (p, codes (N, d)) replaces the code after column p (1-based).
-    Returns pred (N, L) [, codes (N, L, d), h (N, L, 768)]."""
-    N = len(A); L = A.shape[1] + Bd.shape[1]; pred = np.full((N, L), -1); ctx = ctx_tokens(A, Bd)
+def rollout(m, A, Bd, dev, amp, bs, override=None, record=False, record_all=False):
+    """Hard chains over all columns 1 .. L (x R repeats, §141); decode at the emission steps. override: (p, codes (N, d)) replaces the code
+    after column p (1-based; at R > 1 after its LAST repeat, note 141-1). Returns pred (N, L) [, codes (N, L, d) and h (N, L, 768) at the
+    emission steps] [, every step's codes (N, L * R, d) with record_all]."""
+    N = len(A); L = A.shape[1] + Bd.shape[1]; R = m.R; T = L * R; items = chain_items(L, R); emit = emit_mask(L, R); pred = np.full((N, L), -1); ctx = ctx_tokens(A, Bd)
     codes = np.zeros((N, L, F.D_Q), np.float32) if record else None; H = np.zeros((N, L, 768), np.float32) if record else None; m.keep_h = record
+    allc = np.zeros((N, T, F.D_Q), np.float32) if record_all else None
     for i in range(0, N, bs):
         sl = slice(i, i + bs); B = len(A[sl]); prev = m.start(B, dev); m.ctx = torch.tensor(ctx[sl], device=dev)
-        for t in range(L):
+        for t in range(T):
+            k = t // R
             with amp_ctx(amp):
-                h = m.segment(prev, torch.full((B,), t + 1, device=dev)); qs, q, zb = m.quant(h)
-                if override is not None and override[0] == t + 1:
+                h = m.segment(prev, torch.full((B,), int(items[t]), device=dev)); qs, q, zb = m.quant(h)
+                if override is not None and emit[t] and override[0] == k + 1:
                     q = torch.tensor(override[1][sl], device=dev, dtype=qs.dtype); qs = q
-                e = m.embed_code(qs); pred[sl, t] = m.fam.decode(m.answer_greedy(e, 1).cpu().numpy())
-            if record:
-                codes[sl, t] = q.float().cpu().numpy(); H[sl, t] = m.last_h.cpu().numpy()
+                e = m.embed_code(qs)
+                if emit[t]:
+                    pred[sl, k] = m.fam.decode(m.answer_greedy(e, 1).cpu().numpy())
+            if record and emit[t]:
+                codes[sl, k] = q.float().cpu().numpy(); H[sl, k] = m.last_h.cpu().numpy()
+            if record_all:
+                allc[sl, t] = q.float().cpu().numpy()
             prev = e[:, None]
     m.keep_h = False
-    return (pred, codes, H) if record else pred
+    out = (pred, codes, H) if record else (pred,)
+    out = out + (allc,) if record_all else out
+    return out if len(out) > 1 else out[0]
 
 
 def acc_report(pred, P):
@@ -179,11 +205,12 @@ def donor(m, A, Bd, dev, amp, bs, rng, positions=(2, 4, 6), n=2000):
 def contraction(m, A, Bd, dev, amp, T0=2, n=500, seed=12301):
     """fsq120.contraction's formulas on column chains: perturb z_b after column T0 by eps * std_d * u and follow the K = L - T0
     remaining hand-offs; rho = the geometric mean of the per-hand-off median distance ratios over k = 1 .. min(8, K)."""
-    rng = np.random.default_rng(seed); idx = rng.permutation(len(A))[:n]; A, Bd = A[idx], Bd[idx]; N = len(A); L = A.shape[1] + Bd.shape[1]; K = L - T0; W = min(8, K)
+    rng = np.random.default_rng(seed); idx = rng.permutation(len(A))[:n]; A, Bd = A[idx], Bd[idx]; N = len(A); Lc = A.shape[1] + Bd.shape[1]
+    items = chain_items(Lc, m.R); L = len(items); T0 = T0 * m.R; K = L - T0; W = min(8, K)        # §141: hand-offs are steps (T0 in columns)
     m.ctx = torch.tensor(ctx_tokens(A, Bd), device=dev)
-    def step(prev, t, add=None):                                            # t = 0-based column; its token is t + 1
+    def step(prev, t, add=None):                                            # t = 0-based step
         with amp_ctx(amp):
-            h = m.segment(prev, torch.full((N,), t + 1, device=dev)); qs, q, zb = m.quant(h, noise=add); e = m.embed_code(qs)
+            h = m.segment(prev, torch.full((N,), int(items[t]), device=dev)); qs, q, zb = m.quant(h, noise=add); e = m.embed_code(qs)
         return zb.float(), e
     def dec(e):
         with amp_ctx(amp):
@@ -231,6 +258,26 @@ def s137_probe(m, A, Bd, dev, amp, bs, n=1024, seed=13701):
     return out
 
 
+def s141_probe(m, A, Bd, dev, amp, bs):
+    """§141 (note 141-1) per repeat q = 1..R, pooled over columns, ridge fit on half the problems, R^2 on the rest:
+    r2_partial (from code_q: carry-in + the column's first q products, i ascending - the "accumulation" target), r2_partial_nocarry (the
+    products only), r2_carry (the column's carry-out), and mean ||code_q - code_{q-1}|| (q = 1: the previous column's last repeat / the start)."""
+    R = m.R; Lc = A.shape[1] + Bd.shape[1]; mb = Bd.shape[1]; N = len(A); h = N // 2; _, C, _ = columns(A, Bd); cin = np.c_[np.zeros(N, np.int64), C[:, :-1]]
+    _, Q = rollout(m, A, Bd, dev, amp, bs, record_all=True); Q = Q.reshape(N, Lc, R, -1); prevQ = np.concatenate([np.zeros_like(Q[:, :1, -1:]), Q[:, :-1, -1:]], 1)
+    part = np.zeros((N, Lc, R), np.int64); part_nc = np.zeros((N, Lc, R), np.int64)
+    for k in range(Lc):
+        ii = [i for i in range(max(0, k - mb + 1), min(A.shape[1], k + 1))]
+        for q in range(R):
+            sp = sum((A[:, i] * Bd[:, k - i] for i in ii[:q + 1]), np.zeros(N, np.int64)); part_nc[:, k, q] = sp; part[:, k, q] = sp + cin[:, k]
+    out = {"R": R, "n": N, "per_repeat": {}}
+    for q in range(R):
+        X = Q[:, :, q]; dq = np.linalg.norm(Q[:, :, q] - (Q[:, :, q - 1] if q > 0 else prevQ[:, :, 0]), axis=-1)
+        def r2(y):
+            return ridge_r2(X[:h].reshape(h * Lc, -1), y[:h].reshape(-1).astype(float), X[h:].reshape((N - h) * Lc, -1), y[h:].reshape(-1).astype(float))
+        out["per_repeat"][str(q + 1)] = {"r2_partial": r2(part[:, :, q]), "r2_partial_nocarry": r2(part_nc[:, :, q]), "r2_carry": r2(C), "mean_dcode": float(dq.mean())}
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--family", default="mult_col", choices=["mult_col"]); ap.add_argument("--task", default="4x4", choices=sorted(LMAX))
@@ -244,6 +291,9 @@ def main():
     ap.add_argument("--train_n", type=int, default=0, help="smoke only: read the first N train lines"); ap.add_argument("--mem_check", action="store_true")
     ap.add_argument("--from_args", default=None); ap.add_argument("--contraction_only", action="store_true"); ap.add_argument("--fp32", action="store_true")
     ap.add_argument("--prefix_only", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
+    ap.add_argument("--repeats", type=int, default=1, help="§141: R segments per column (the digit decoded after the last)")
+    ap.add_argument("--repeat_index", action="store_true", help="§141: each repeat segment carries a repeat token q (' A' .. ' H')")
+    ap.add_argument("--soft_beta", type=float, default=0.0, help="§133 SOFT (with --d_q 16: SOFT-16)"); ap.add_argument("--micro", type=int, default=1, help="gradient accumulation (memory only)")
     a = ap.parse_args()
     if a.from_args:                                                         # post-hoc: the run's own configuration; mode / device / out from the call
         keep = {k: getattr(a, k) for k in ("contraction_only", "fp32", "prefix_only", "device", "out", "from_args")}
@@ -258,9 +308,13 @@ def main():
     memcap and memcap.apply(dev)
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     os.makedirs(a.out, exist_ok=True); fam = MultFam(); dname = lambda: torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"  # noqa: E731
+    assert 1 <= a.repeats <= len(REPTOK) and not (a.repeat_index and a.repeats == 1), "§141: --repeats 1..8; --repeat_index needs --repeats > 1"
+    def mk():
+        m_ = MultCol(s5.load_gpt2(dev), fam).to(dev); m_.R = a.repeats; m_.rep_index = a.repeat_index; m_.soft_beta = a.soft_beta
+        return m_
     teA, teB = load_bench(os.path.join(DATA, "mult_%s_test.txt" % a.task)); teA, teB = teA[:a.test_n], teB[:a.test_n]
     if a.contraction_only or a.prefix_only:
-        m = MultCol(s5.load_gpt2(dev), fam).to(dev); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval(); m.p_hard = 1.0
+        m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval(); m.p_hard = 1.0
         if a.contraction_only:
             ampc = None if a.fp32 else amp; ct = contraction(m, teA, teB, dev, ampc, T0=a.contract_T0, n=a.contract_n)
             ct.update({"eval_dtype": str(ampc), "device": dname(), "driver": driver_version()})
@@ -275,10 +329,11 @@ def main():
     trA, trB = load_bench(os.path.join(DATA, "mult_train", "%s_train.txt" % a.task)) if not a.train_n else load_bench_head(os.path.join(DATA, "mult_train", "%s_train.txt" % a.task), a.train_n)
     n_train_raw = len(trA); trA, trB, n_train_removed = dedup(trA, trB, teA, teB)
     info = {**vars(a), "train_items": int(len(trA)), "train_items_raw": int(n_train_raw), "train_removed_test_overlap": n_train_removed, "train_gpu": dname(),
+            "repeat_tokens": [" " + c for c in "ABCDEFGH"][:a.repeats] if a.repeat_index else None,
             "train_driver": driver_version(), **env_info()}
     json.dump({**info, "resumed_at": time.strftime("%Y-%m-%d %H:%M:%S")} if a.resume else info,
               open(os.path.join(a.out, ("args_resume_%d.json" % int(time.time())) if a.resume else "args.json"), "w", newline="\n"), indent=1)
-    m = MultCol(s5.load_gpt2(dev), fam).to(dev); opt = make_opt(m, a.lr); m.train()
+    m = mk(); opt = make_opt(m, a.lr); m.train()
     log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time(); hist = []; L127 = {}; n_nonfinite = 0; step0 = 1
     if a.resume:
         ck = torch.load(a.resume, map_location=dev, weights_only=False); m.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"])
@@ -286,25 +341,33 @@ def main():
         if dev.startswith("cuda") and ck.get("cuda_rng") is not None:
             torch.cuda.set_rng_state(ck["cuda_rng"].cpu(), device=dev)
         step0 = ck["step"] + 1; t0 = time.time() - ck["elapsed"]; log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
-    def batch(L_, bs_):
-        ii = rng.integers(0, len(trA), bs_); A, Bd = trA[ii], trB[ii]; P, _, _ = columns(A, Bd)
-        return torch.tensor(ctx_tokens(A, Bd), device=dev), torch.tensor(np.tile(np.arange(1, L_ + 1), (bs_, 1)), device=dev), P[:, :L_]
+    def batch(L_, bs_):                                                     # §141: step-level items; labels / trace mask at the emission steps
+        ii = rng.integers(0, len(trA), bs_); A, Bd = trA[ii], trB[ii]; P, _, _ = columns(A, Bd); em = emit_mask(L_, a.repeats)
+        lab = np.zeros((bs_, len(em)), np.int64); lab[:, em] = P[:, :L_]
+        return (torch.tensor(ctx_tokens(A, Bd), device=dev), torch.tensor(np.tile(chain_items(L_, a.repeats), (bs_, 1)), device=dev), lab,
+                torch.tensor(np.tile(em, (bs_, 1)), device=dev))
     if a.mem_check:                                                         # the largest training shape (L = 2n, bs) and the largest eval shape, then exit
-        m.p_hard = 1.0; m.ctx, X, P = batch(2 * n, a.bs); tm = torch.ones(a.bs, 2 * n, dtype=torch.bool, device=dev)
-        with amp_ctx(amp):
-            loss, _, _, _ = m.chain(m.start(a.bs, dev), X, P, tm)
-        loss.backward(); m.eval(); rollout(m, gen_operands(rng, a.eval_bs, n), gen_operands(rng, a.eval_bs, 2 * n), dev, amp, a.eval_bs, record=True)
+        m.p_hard = 1.0; ctx, X, P, tm = batch(2 * n, a.bs); mb_ = a.bs // a.micro
+        for mi in range(a.micro):
+            sl = slice(mi * mb_, (mi + 1) * mb_); m.ctx = ctx[sl]
+            with amp_ctx(amp):
+                loss, _, _, _ = m.chain(m.start(mb_, dev), X[sl], P[sl], tm[sl])
+            (loss / a.micro).backward()
+        m.eval(); rollout(m, gen_operands(rng, a.eval_bs, n), gen_operands(rng, a.eval_bs, 2 * n), dev, amp, a.eval_bs, record=True)
         pk = torch.cuda.max_memory_allocated(dev) / 2 ** 30 if dev.startswith("cuda") else None
-        json.dump({"peak_gib": pk, "bs": a.bs, "eval_bs": a.eval_bs, "task": a.task}, open(os.path.join(a.out, "mem_check.json"), "w", newline="\n"), indent=1); print("MEM", pk); return
+        json.dump({"peak_gib": pk, "bs": a.bs, "eval_bs": a.eval_bs, "task": a.task, "repeats": a.repeats, "micro": a.micro}, open(os.path.join(a.out, "mem_check.json"), "w", newline="\n"), indent=1); print("MEM", pk); return
     for step in range(step0, a.steps + 1):
         for gr in opt.param_groups:
             gr["lr"] = lr_at(a.lr, gr, step, a.steps)
         m.p_hard = 0.0 if step <= a.p_hard_start * sc else min(1.0, (step - a.p_hard_start * sc) / ((a.p_hard_end - a.p_hard_start) * sc)); m.train()
-        L = int(rng.integers(1, lmax(step / sc, a.task) + 1)); m.ctx, X, P = batch(L, a.bs); tm = torch.ones(a.bs, L, dtype=torch.bool, device=dev)
-        opt.zero_grad()
-        with amp_ctx(amp):
-            loss, _, _, _ = m.chain(m.start(a.bs, dev), X, P, tm)            # CE at every column (mean over columns)
-        loss.backward(); tot = float(loss.item()); gn = torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0)
+        L = int(rng.integers(1, lmax(step / sc, a.task) + 1)); ctx, X, P, tm = batch(L, a.bs)
+        opt.zero_grad(); mb_ = a.bs // a.micro; tot = 0.0
+        for mi in range(a.micro):                                           # --micro 1: one slice = the whole batch (the §137 path)
+            sl = slice(mi * mb_, (mi + 1) * mb_); m.ctx = ctx[sl]
+            with amp_ctx(amp):
+                loss, _, _, _ = m.chain(m.start(mb_, dev), X[sl], P[sl], tm[sl])   # CE at every emission step (mean over them)
+            (loss / a.micro).backward(); tot += float(loss.item()) / a.micro
+        gn = torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0)
         if not (math.isfinite(tot) and bool(torch.isfinite(gn))):          # 127-3 guard: skip the update, log it
             bad = "loss" if not math.isfinite(tot) else next((n_ for n_, p_ in m.named_parameters() if p_.grad is not None and not bool(torch.isfinite(p_.grad).all())), "grad_norm")
             log.write(json.dumps({"step": step, "nonfinite": 1, "first": bad}) + "\n"); log.flush(); n_nonfinite += 1; opt.zero_grad()
@@ -344,6 +407,9 @@ def main():
     ct = contraction(m, teA, teB, dev, amp, T0=a.contract_T0, n=a.contract_n)
     res.update({"rho": ct["rho"], "rho_nonzero": ct["rho_nonzero"], "basin": ct["basin"], "exact_recovery_share": ct["exact_recovery_share"], "contraction": ct["detail"]})
     res["s137_probe"] = s137_probe(m, teA, teB, dev, amp, a.eval_bs)
+    if a.repeats > 1:                                                       # §141 (note 141-1): per-repeat accumulation / depth reading
+        res["s141_probe"] = s141_probe(m, teA, teB, dev, amp, a.eval_bs)
+    res.update({"repeats": a.repeats, "repeat_index": a.repeat_index, "soft_beta": a.soft_beta, "d_q": a.d_q})
     flat = codes.reshape(-1, codes.shape[-1]); res["n_codes"] = int(len(np.unique(flat, axis=0))); per = {}
     for cd, cv in zip(map(bytes, flat.astype(np.int8)), Cte.reshape(-1)):
         per.setdefault(int(cv), set()).add(cd)
