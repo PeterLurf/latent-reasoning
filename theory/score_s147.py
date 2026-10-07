@@ -40,7 +40,7 @@ def smoke(d):
 
 def args_ok(d, arm):
     a = load(d, "args.json") or {}
-    exp = {"family": "mult_pair", "task": "4x4", "carrier": "deltamem", "mem_add_heads": 6, "mem_delta_heads": 6}
+    exp = {"family": "mult_pair", "task": "4x4", "carrier": "deltamem", "mem_add_heads": 6, "mem_delta_heads": 6, "mem_group_gain": True}   # note 147-2
     bad = {k: a.get(k) for k, v in exp.items() if a.get(k) != v}
     if a.get("copy_frac"):
         bad["copy_frac"] = a.get("copy_frac")
