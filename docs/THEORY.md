@@ -8030,6 +8030,12 @@ itself. It is not evidence of "no causal loop state". Everything else in the res
   - About $0.35 per run.
 * score_s144 reads an exhausted proof slot as dropped at proof, and prints the ladder and NOFLAG rows.
 
+**Note 144-2 (2026-10-07 19:56 EDT, before any ladder or NOFLAG run; Audit approved 144-1). The ladder rungs also run without the plateau stop.**
+* With the 2k flag, a rung could drop by "no entry within 2k" and confound slow entry with a magnitude limit. So the mod 10² / 10³ rungs run as single 24k runs with no plateau stop (seed 1), like NOFLAG.
+* **For a dropped arm, the ladder is three no-stop runs:** mod 10², 10³ and 10⁴ (the last is NOFLAG), read descriptively as long_acc at 512 by modulus.
+* About $0.35 each, so about $2.1 if both arms drop.
+* The local 8k no-stop prototypes (3070, S 509–512) give an early, descriptive read.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

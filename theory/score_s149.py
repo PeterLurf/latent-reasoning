@@ -53,7 +53,7 @@ def model_read(name):
         if n < 30 or d_ is None:
             ser[t] = {"n": n, "verdict": "UNDERPOWERED"}                   # note 149-1: distinct from PARTIAL
         else:
-            ser[t] = {"n": n, "donor": d_, "recipient": rc, "excluded_share": st.get("excluded_share"),
+            ser[t] = {"n": n, "donor": d_, "recipient": rc, "excluded_share": st.get("excluded_share"), "funnel": st.get("funnel"),
                       "verdict": "SERIAL" if (d_ >= 0.90 and rc < 0.10) else ("BYPASS" if rc >= 0.5 else "PARTIAL"),
                       "all_pairs": (v or {}).get("all")}
     out["serial"] = ser
@@ -62,7 +62,7 @@ def model_read(name):
     cf = r.get("contraction") or {}
     rho = rho_k3(cf.get("rho_k") or [], cf.get("dist_med_k") or []) if cf else None
     out["rho"] = rho; out["rho_class"] = None if rho is None else ("EXPANDING" if rho > 1 else ("CONTRACTIVE" if rho <= 0.28 else "MARGINAL"))
-    out["jacobian_top"] = cf.get("jacobian_top")
+    out["jacobian_top_eig"] = cf.get("jacobian_top_eig")                     # top |eigenvalue| by power iteration (not the spectral norm; can understate a non-normal J)
     vs = [v["verdict"] for k_, v in ser.items() if v["verdict"] != "UNDERPOWERED" and int(k_) <= 3]
     if name in VERDICT_MODELS:                                               # note 149-1: >= 2 read cells; BYPASSED needs >= 2 BYPASS cells
         out["c1_at_release"] = ("UNDERPOWERED (< 2 read cells)" if len(vs) < 2 else
