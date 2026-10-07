@@ -6955,6 +6955,16 @@ trigger fired on seed 1, the plain learner on this card class.
   memory, smoke_plain, Audit's diff review).
 * The nonlinear probe runs first, locally, $0. Dirs `s141_{r4f8,r4s16,r1s16}_4x4_s{seed}`. Scorer: `theory/score_s141.py`, committed before any run.
 
+**Note 141-1 (2026-10-07 05:42 EDT, before any §141 implementation or run; Audit's approval of 9e45b92b).**
+* **The mechanism reading, fixed now.** Every repeat sees the whole column, so an r4 PASS could come from extra serial depth (the 4th repeat doing the whole sum)
+  rather than accumulation across repeats.
+  - "**Accumulation across repeats**" is claimed only if the per-repeat probe shows the R² of the column's partial product sum **rising from repeat 1 to repeat 4**,
+    with ‖Δcode‖ > 0 at every repeat.
+  - Otherwise the reading is "**extra latent depth suffices**": still relevant to C3, but not stepwise.
+* **Implementation requirements:**
+  - the repeat-index tokens are single GPT-2 tokens, disjoint from the digit and column tokens;
+  - r4's SERIAL donor is injected **at the column's last repeat**, so the donor's carry is complete.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
