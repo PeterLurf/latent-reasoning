@@ -225,6 +225,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 135 | TEACHER-STATE DISTILLATION: a CoT model's hidden states (vs pretrained GPT-2 on the same text) as per-hand-off InfoNCE targets on §128's S5 carrier | **FAIL both arms (0/4)**: worse than plain; the aux pulls context into the code (135-9) | closed (stage B not run) |
 | 136 | GROW (the user's idea): narrow → wide function-preserving latent growth at a loss threshold / plateau; GROW-P, COPY+GROW / STAGED / GROW-NOISE, GROW-4, NESTED-64 on S5 (S5×4 decides) | registered | **open** |
 | 137 | Multiplication on fsq120, column-major: carried carry (FSQ-8), streamed product digits (C4 qualifier), restart slots; 4×4 → 5×5 → 4×8 | **4×4 DROP at proof** (test_acc 0.0; middle columns at chance; carry in h R² 0.69, in the code 0.24) → §140 | closed |
+| 138 | FULL WIDTH (the user's trigger): §133's harness at d 768, no COPY; FULL-FSQ / FULL-NOISE / FULL-CONT (vs RAW-H) / FULL-HINGE; fails-to-improve → revisit; S5×4 as the benefit test | registered | **open** |
 | 139 | DISTILL-2 (user's go): a CoT teacher's state (probe or its text) as a warm-start fading to 0 by 4k, on multiplier-major multiplication; A = SOFT-16 + COPY (FINAL), B = A + DISTILL-2, C = constant weight | registered | **open** |
 | 140 | DIGPAIR (§137's fallback; runs only on §137 4×4 DROP / FAIL): one digit pair per segment, carried column accumulator (FSQ-8), streamed digits; design-forced C1 | registered (conditional) | **open** |
 | 141 | After §137's DROP: latent repeats per column (r4 + repeat index) × carrier (FSQ-8 / SOFT-16); r1×SOFT-16 gated on a nonlinear code probe; readings crossed with §140 | registered | **open** |
@@ -7016,6 +7017,75 @@ trigger fired on seed 1, the plain learner on this card class.
   - **(b)** Where h does hold it (columns 6–7, R² about 0.9), the FSQ-8 code keeps only about 0.4 linearly (0.17–0.33 by lookup). That is a W_down / code loss, which
     the SOFT-16 cells address.
   - n = 1, one failed model.
+
+## 138. FULL WIDTH: the latent carrier at the residual width (768-d) (pre-registered 2026-10-07 07:49 EDT, after Literature's checks db3df361 / d4f0d18b (the hinge) and before any implementation or run; the user's directive "if throughout the night 64 wide latents pass, try full width latents. Revisit methods if fail to improve of course" (via Audit); the trigger fired with §133's stage-1 result)
+
+**Why.**
+* §133 stage 1: FSQ-64, NOISE-64 and **CONT-64** (uncorrected) are exact at 2,048, SERIAL and contractive at d 64. A learned tanh-bounded code of that width does not
+  drift.
+* §126's RAW-H, which carried the **raw, unbounded 768-d hidden state**, drifted (0.85 at 512, 0.73 at 2,048; ρ_ff 0.5–0.8).
+* §138 asks whether the carrier can be as wide as the model's residual stream, with no bottleneck in width.
+
+**Design: §133's harness exactly, with d = 768** (§128's S5 recipe, restart-on-plateau slots k, k + 100, k + 200, k + 300, 24k, bs 64, the 127-3 guard, cloud RTX 3090,
+checkpoints, the host check).
+* **What differs from RAW-H:** a learned projection with a bounded code, z_b = tanh(W_down(LN(h)) + shift) · HALF − OFF at width 768, then W_up. RAW-H carried h itself.
+  - With COPY dropped, FULL-CONT against RAW-H isolates the **bounded learned code** as the one design change. Any further differences between §126's harness and
+    §133's (the restart slots) are listed beside the result.
+  - Literature db3df361: bounded projections appear only as engineering choices (CODI, SoftCoT 2502.12134, HRPO, Soft Thinking 2505.15778, nGPT 2410.01131), never
+    isolated as a stability variable at matched width. FSQ at 768 has no precedent (FSQ / LFQ / BSQ stay at a few to tens of dimensions). New as scoped.
+* **Changed from the plan (`docs/THEORY_FULLWIDTH_PLAN_2026-10-07.md`), before registration:** **no COPY rows**.
+  - §133's passes used restart slots, not COPY, so width stays the only change.
+  - §134's guard showed COPY is not task-agnostic (MOD closure).
+  - Entry is handled by the restart slots, as at d 64.
+* **GROW-768 is not included:** §136 is not yet scored. It would be a separate note after §136 reads.
+
+**Arms.**
+* **FULL-FSQ:** d 768, hard FSQ with 8 levels.
+* **FULL-NOISE:** d 768, continuous, with dither U(±0.25) at training hand-offs after 2k.
+* **FULL-CONT:** d 768, continuous, no correction. This is the direct contrast with RAW-H.
+* **FULL-HINGE** (candidate 6; Literature d4f0d18b): FULL-CONT plus a **local contraction hinge**.
+  - **Base carrier: CONT** (FULL-CONT). From 2k, the pre-quantisation z of a carried code (continuous here) is perturbed by δ, with ‖δ‖ = ε.
+  - **ε reference (Audit):** state centroids are the mean e_j per true state over a fixed probe batch at 2k. ε = **0.15 × the median, over states, of each centroid's
+    distance to the nearest other centroid**. It is measured once at 2k and then fixed.
+  - Both are pushed through one segment, and **max(0, ρ̂ − 0.3)** is penalised, with ρ̂ = ‖Δz_{j+1}‖ / ‖δ‖, weight 1.
+  - **δ is drawn half along a random direction and half along the difference between the state's centroid and its nearest other centroid** (Literature (3d)).
+  - **Hinged hand-offs are subsampled** (1 in 4 per batch) to cap the extra forward cost.
+  - It is local, not the global penalty rejected for §133.
+* **Proof first:** slot 1 per arm. An arm whose slot 1 is accepted below 0.95 at 2,048 is dropped (as 133-2).
+
+**Rules (fixed now; §133's stage-1 rule).**
+* **PASS(arm):** ≥ 3/4 slots exact at 2,048, SERIAL and contractive (ρ ≤ 0.28: 127-12's clause for FULL-FSQ, 133-1's first-three form for the continuous arms).
+  - **At 768, exact recovery after a random perturbation of all coordinates becomes rare**, so 127-12's ρ₁ branch will seldom apply. FULL-FSQ is then read on the
+    clause's geometric-mean branch over non-zero hand-offs (ρ_ff / rho_nonzero), stated now (Literature (3a)).
+  - contraction() and the tanh before rounding run in fp32 (Literature (3e)).
+* **The user's "fails to improve → revisit", fixed now:**
+  - **(i) Stability:** if no full-width arm passes, full width is not adopted. A post-mortem (ρ, prefix 1 / 2, codes per state, dimension use) follows, and at most one
+    revised method, as a fresh registration.
+  - **(ii) Benefit:** S5 cannot show gain. A passing full-width arm is compared with the passing 64-d arm on a capacity task (S5×4, §133 stage 2, or multiplier-major
+    multiplication). Improves = it passes where 64-d fails, or a higher exact rate at an equal budget. Otherwise 64-d stays the operating width ("stable but no gain").
+    - **That benchmark is §133 stage 2 (S5×4), not yet approved.** Its proposal includes the full-width passers, so one capacity run serves both (Audit).
+* **Capacity task and budget for rule (ii), named now (Literature (3f)):** §133 stage 2, **S5×4** (CAP-PASS = long_acc ≥ 0.99 at 512 in ≥ 3/4 slots), with the 64-d
+  passers, the full-width passers and the FSQ-8 / FSQ-8-L16 controls. About $15–25, proposed to Audit separately.
+* **HINGE readings:**
+  - HINGE PASS where FULL-CONT fails: the local hinge removes full-width drift;
+  - both PASS: not needed on S5 at 768;
+  - HINGE FAIL where FULL-CONT passes: the hinge harms.
+
+**Descriptive (Audit).** At d 768, codes per state means nothing for the continuous arms, and the FSQ grid is 8⁷⁶⁸. In their place:
+* the **effective rank** of the carried code;
+* **descriptive ρ along the state-separating directions** (perturbations along centroid differences, plus power iteration on the hand-off Jacobian, 1705.10941),
+  reported and not gated. A random-δ ρ at 768 is a bulk average and could read contractive while a few directions expand (Literature (3b));
+* **FULL-FSQ: codes per state and the dimensions actually used** (Literature (2)), plus the initial code diversity at step 0 and at 2k (Literature (3c));
+* **within-state spread over between-state distance** (the mean distance of codes to their state centroid, over the median distance between centroids);
+* angular drift by position, grid share (FULL-FSQ), prefix 1 / 2 / 4 / 8, and dimension use (the variance share beyond the first 64 dimensions).
+* CERT is not part of PASS (as §133). An fp32 certificate is attempted for FULL-FSQ only, with "inconclusive by time" allowed.
+
+**Placement.**
+* Proofs: 4 runs, about $2. Full slots for the arms that clear their proof: up to about $6 more. Audit approves each stage against the credit.
+* Implementation: the experiments session (fsq120 `--d_q 768`; `--hinge --hinge_eps_frac 0.15`). Gradflow under CUDA bf16: the hinge term reaches W_down and the trunk,
+  and its ρ̂ is computed on the pre-quantisation z. **Memory is checked at L 32 on a 3090 with the micro rule** (W_down / W_up 768 × 768, plus the hinge's extra
+  forward).
+* Dirs `s138_{full_fsq,full_noise,full_cont,full_hinge}_s{seed}`. Scorer: `theory/score_s138.py`, committed before any run.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
