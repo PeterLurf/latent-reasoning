@@ -6425,6 +6425,45 @@ stays in its expected range throughout.
 * **135-6's ruling (1) holds: a host fault, not the harness.**
 * `s135_base_s5_s2.void_hostfault` is read for nothing. BASE s2 is the rerun on gen-b89 (host check PASS).
 
+**Note 135-9 (2026-10-06 23:50 EDT; post-mortem before any new arm; 6 of 8 students read from the raw files, TSD s1 and the BASE s2 rerun still training; Audit read
+the same files; the user flagged "distillation loss very bad"). Stage A fails in both arms, and both are worse than no distillation.**
+* **The verdict is already determined.** Each arm has 3 failing seeds of 4, so at most 1/4 can pass. Both arms read **FAIL** by the registered rule
+  (≤ 2/4). The formal score_s135 run follows when the last two land.
+
+| Run | ext_2048 | acc at 1 / 2 | fp32 ρ | codes per state | main loss 2k → 24k | aux InfoNCE 2k → 24k |
+|---|---|---|---|---|---|---|
+| BASE s1 | 0 | 0.95 / 0.13 | 0.62 | 6,870 | 2.50 → 3.15 | 0.80 → 2.20 |
+| BASE s3 | 0 | 1.00 / 0.62 | 0.48 | 3,049 | 2.07 → 1.63 | 0.73 → 2.05 |
+| BASE s4 | 0 | 1.00 / 0.37 | 0.56 | 3,568 | 2.40 → 1.76 | 0.70 → 1.93 |
+| TSD s2 | 0 | 0.13 / 0.002 | 0.18 | 1,995 | 3.97 → 4.71 | 0.61 → 1.98 |
+| TSD s3 | 0 | 0.54 / 0.04 | 0.24 | 2,557 | 3.61 → 4.74 | 0.67 → 2.15 |
+| TSD s4 | 0 | 0.05 / 0.002 | 0.15 | 1,957 | 3.53 → 3.18 | 0.68 → 1.76 |
+
+* **Comparators on the same seeds and card class:**
+  - plain s1 is exact (codes per state 29), while BASE s1 fails;
+  - §134 COPY is 4/4 exact (14–29 codes per state).
+* **Mechanism, as read from the data:**
+  - (a) **The auxiliary helps entry, then fights the task.** At 2k, BASE's main loss (2.1–2.5) is as low as COPY's (1.2–2.2), and the InfoNCE
+    is at its minimum (0.6–0.8, retrieval 0.87–0.92). From the rounding ramp on, the InfoNCE climbs at every stage (to 1.8–2.2, retrieval
+    0.57–0.87), and the main loss stalls.
+    - Unlike COPY's CE, which reaches ≈ 0 by 2k so its gradient vanishes, **the InfoNCE has an irreducible floor** (τ 0.1, a context-specific
+      positive), so a weight-1 gradient persists for 22k steps.
+  - (b) **It pushes context into the code.** The positive target is a hidden state that carries position and history. 135-4's mask removed
+    same-state *negatives*, but the pull toward the context-specific *positive* remains. Codes per state are 2,000–6,900, against 14–29 in
+    exact runs, so the code is history-dependent, not Markov.
+    - BASE ends F2b-compounding: right at step 1, then decaying, non-contracting (ρ 0.48–0.62).
+    - TSD, whose richer target dominates more, is wrong from step 1, with a contractive map to a wrong attractor (F2a-like).
+  - (c) masked_share is 0.0083 in every run, so the mask worked as designed and is not the cause.
+* **Design choices that contributed (Theory's, disclosed):**
+  - constant weight 1 (135 / 135-1; Audit's draft had an anneal);
+  - a contrastive target with a floor, where §118 ANCHOR used an achievable target (the student's own text path);
+  - the full hidden state rather than a state subspace (Literature 0bb148e9 (b) offered both, and InfoNCE was chosen).
+* **Consequences:**
+  - Stage B (multiplication) is **not run** as registered: its premise was a working stage-A method.
+  - **The user's claim (teacher internals against generic text encodings) is not readable from S5:** both arms sit below plain.
+  - Any revised design is a new registration, put to the user via Audit first, not a quick fix. The candidate directions are listed in the
+    synthesis.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

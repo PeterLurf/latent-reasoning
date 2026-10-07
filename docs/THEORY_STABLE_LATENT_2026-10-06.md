@@ -232,6 +232,13 @@ with the same code and settings across families.
   - Registered only after the prototype.
 
 ## Candidate 4 (the user's idea, via Audit): TEACHER-STATE DISTILLATION (TSD), from a CoT model's hidden states into the carrier
+* **Stage A failed in both arms (135-9).** Both are worse than plain. The weight-1 InfoNCE never vanishes and pulls context into the code (2,000–6,900
+  codes per state, against 14–29). The user's claim is unreadable on S5.
+  - **If pursued (user's call, a new registration), the principled revisions are:**
+    - an achievable, state-only target: the teacher's state-probe output or a ≤ 8-dimensional state subspace, so it reaches ≈ 0 like COPY's
+      CE;
+    - the auxiliary as a warm-start only, faded out by the end of the rounding ramp;
+    - on COPY's base, then straight to multiplication, where the teacher's internals could carry information that text does not.
 * **Registered as §135** (f1899abd) after Literature 0bb148e9 (`docs/LIT_COT_DISTILL_2026-10-06.md`: new as scoped). The registered target is **InfoNCE** into a shared 256-d space (not regression), at the last token of each step's state text, with a probe-gated teacher layer. Stage A is S5 (TSD vs **BASE**; note 135-1: the control is the pretrained GPT-2's hidden state on the same CoT text, frozen, so the arms differ only in CoT fine-tuning; targets centred); stage B is multiplication with §98's kept TC teachers.
 * **The user's point:** natural-language CoT is a poor training artifact for a latent reasoner. Use the CoT **model's internal
   state**, not its text.
