@@ -1,0 +1,8 @@
+{'step': 7, 'loss': 20.705657958984375, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 39, 'reader_loss': 18.120241165161133, 'noise': 0.25, 'removed': [1, 2], 'lr': 3.705904774487397e-05}
+{'step': 8, 'loss': 18.859981536865234, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 42, 'reader_loss': 17.66693115234375, 'noise': 0.25, 'removed': [1, 2], 'lr': 2.500000000000001e-05}
+{'step': 9, 'loss': 19.064525604248047, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 51, 'reader_loss': None, 'noise': 0.25, 'removed': [1, 2, 3], 'lr': 7.3223304703363135e-06}
+{'step': 10, 'loss': 18.742794036865234, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 57, 'reader_loss': None, 'noise': 0.25, 'removed': [1, 2, 3], 'lr': 6.698729810778065e-06}
+{'step': 11, 'loss': 18.993886947631836, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 60, 'reader_loss': None, 'noise': 0.25, 'removed': [1, 2, 3], 'lr': 1.70370868554659e-06}
+{'step': 12, 'loss': 18.564668655395508, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 62, 'reader_loss': None, 'noise': 0.25, 'removed': [1, 2, 3], 'lr': 0.0}
+EVAL {"test_acc": 0.0, "acc_by_length": {"1": 0.0, "2": 0.0, "3": 0.0, "4": 0.0}, "rho": 0.047128066420555115}
+DONE D:/drain_tmp/smoke142/bearly

@@ -1,0 +1,7 @@
+{'step': 1, 'loss': 24.766870498657227, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 11, 'reader_loss': 26.721643447875977, 'noise': 0.25, 'removed': [1], 'lr': 4.914814565722671e-05}
+{'step': 2, 'loss': 22.37518310546875, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 14, 'reader_loss': 21.1768856048584, 'noise': 0.25, 'removed': [1], 'lr': 9.330127018922194e-05}
+{'step': 3, 'loss': 23.22930335998535, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 18, 'reader_loss': 19.228759765625, 'noise': 0.25, 'removed': [1], 'lr': 8.535533905932738e-05}
+{'step': 4, 'loss': 20.878746032714844, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 23, 'reader_loss': 18.318422317504883, 'noise': 0.25, 'removed': [1], 'lr': 7.500000000000001e-05}
+{'step': 5, 'loss': 20.028444290161133, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 33, 'reader_loss': 18.518957138061523, 'noise': 0.25, 'removed': [1, 2], 'lr': 3.147047612756302e-05}
+{'step': 6, 'loss': 20.998088836669922, 'L_max': 4, 'L_drawn': [4], 'p_hard': 0.0, 'sec': 35, 'reader_loss': 18.119853973388672, 'noise': 0.25, 'removed': [1, 2], 'lr': 5e-05}
+STOP_AFTER 6

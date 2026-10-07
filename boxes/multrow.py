@@ -15,7 +15,17 @@ after segment 2 from a donor: expected = donor S_2 + a_rec x (b_rec,3 b_rec,4) x
 {target_mode, first_exact_step (first 1k-step quick test >= 0.99 on 256 test items), readout_sj_acc_end, probe_r2 {sj, bprefix} per j,
 copy_acc}, rho (bf16; the scored one = the on-host --contraction_only --fp32 file: T0 1, K 3).
     python -m boxes.multrow --family mult_row --task 4x4 --seed 1 --copy_frac 0.1 --out boxes/runs_fsq/s139_a_4x4_s1
-    python -m boxes.multrow ... --distill --distill_teacher boxes/runs_mult/m98_tc_4x4_s1 --distill_layer L --distill_full 3000 --distill_end 4000"""
+    python -m boxes.multrow ... --distill --distill_teacher boxes/runs_mult/m98_tc_4x4_s1 --distill_layer L --distill_full 3000 --distill_end 4000
+THEORY §142 MULT-READ (a27cf1cf, note 142-1): NOISE-64 carrier (--d_q 64 --no_round --dither 0.25 --soft_beta 0 --copy_frac 0: continuous z_b,
+U(+-0.25) at training hand-offs after 2k, clean at test), --lmax_steps 2000,5000,9000 (L_max 1 / 2 / 3 / 4 at 0 / 2k / 5k / 9k), --reader: at
+every hand-off j < L the shared answer decoder decodes S_j from code_j (answer_ce, the 8-digit answer format) against the TC-M teacher's own
+greedy S_j (--teacher_cache, built by scratch/teacher_cache142.py, sha-keyed to the deduped split; label_source "teacher_generated"); a row
+whose teacher text is invalid gets no term at that hand-off; loss = CE_final (gold S_L) + mean over hand-offs of CE_j. Gate: once L_max = 4,
+every 1k steps greedy final exact on a fixed 512-item train subset at L 4; the first >= 0.95 saves gate.pt (s142.gate_step).
+B forks: --fork_from <a run>/gate.pt --fork_steps 20000 --removal early|late --removal_every 4000 --rewarm 200 --fixed_L 4: reader targets
+removed S_1, S_2, S_3 (early) or S_3, S_2, S_1 (late) at +0 / +4k / +8k, each removal with a fresh AdamW and a 200-step LR re-warm-up
+(1e-4, cosine over the fork); 10% of rows also drop the next target; a removed target has no loss term (exactly 0 gradient).
+s142.fork_start / s142.stages: test_acc, acc_by_length, donor at the fork start, each removal boundary and the end."""
 import os
 os.environ["BOXES_NB"] = "5"
 import argparse  # noqa: E402
@@ -42,13 +52,21 @@ from boxes.fsq120 import EOT, FSQ120, driver_version, env_info, lr_at, make_opt 
 from boxes.multcol import DTOK, COLTOK, dedup, load_bench, to_int, ridge_r2  # noqa: E402
 
 NDIG = 8
-LMAX = ((1000, 1), (2000, 2), (3000, 3), (None, 4))
+LMAX = (1000, 2000, 3000)                                                   # §139: L_max 1 / 2 / 3 / 4 at 0 / 1k / 2k / 3k
 
 
-def lmax(step):
-    for lim, L in LMAX:
-        if lim is None or step <= lim:
+def lmax(step, th=None):
+    """L_max at `step`: L k while step <= th[k - 1], else 4 (§139 default LMAX; §142 --lmax_steps 2000,5000,9000)."""
+    for L, lim in enumerate(th or LMAX, 1):
+        if step <= lim:
             return L
+    return 4
+
+
+def split_sha(A, B):
+    """§142: the teacher cache key (as scratch/teacher_cache142.py)."""
+    import hashlib
+    h = hashlib.sha256(); h.update(np.ascontiguousarray(A, np.int8).tobytes()); h.update(np.ascontiguousarray(B, np.int8).tobytes()); return h.hexdigest()
 
 
 def digits8(v):
@@ -92,6 +110,19 @@ class MultRow(FSQ120):
         h, _ = g(x, None)
         return h[:, -1]
 
+    def chain_read(self, start_emb, items, labels, rtok, rmask):
+        """§142 reader chain: CE_final on the gold S_L after the last segment, and at every hand-off t < L - 1 (j = t + 1 < L) the shared answer
+        decoder on code_j against rtok[:, t] (8 teacher answer tokens) for the rows of rmask[:, t] (valid and not removed). A hand-off with no
+        rows adds no term. Returns (CE_final, mean over hand-offs of CE_j or None, number of reader hand-offs)."""
+        B, L = items.shape; prev = start_emb; rd = []
+        for t in range(L):
+            h = self.segment(prev, items[:, t]); qs, q, zb = self.quant(h); e = self.embed_code(qs)
+            if t < L - 1 and rmask is not None and bool(rmask[:, t].any()):
+                rows = torch.nonzero(rmask[:, t]).squeeze(1); rd.append(self.answer_ce(e[rows], rtok[rows, t], qs[rows]))
+            prev = e[:, None]
+        fin = self.answer_ce(e, torch.tensor(self.fam.answer_tokens(labels[:, L - 1]), device=items.device), qs)
+        return fin, (torch.stack(rd).mean() if rd else None), len(rd)
+
 
 def amp_ctx(amp):
     return torch.autocast("cuda", dtype=amp, enabled=amp is not None)
@@ -133,7 +164,20 @@ def donor_step2(m, A, B, dev, amp, bs, rng, n=1000):
     N = min(n, len(A)); ir, idn = rng.permutation(len(A))[:N], rng.permutation(len(A))[:N]; Ar, Br, Ad, Bd = A[ir], B[ir], A[idn], B[idn]
     _, dcodes, _ = rollout(m, Ad, Bd, dev, amp, bs, L=2, record=True); got = rollout(m, Ar, Br, dev, amp, bs, override=(2, dcodes[:, 1]))[:, -1]
     exp = sj_values(Ad, Bd)[:, 1] + to_int(Ar) * to_int(Br[:, 2:4]) * 100; own = sj_values(Ar, Br)[:, -1]
-    return {"pos2": {"donor_consistent": float((got == exp).mean()), "recipient_consistent": float((got == own).mean()), "chance_overlap": float((exp == own).mean()), "n": N}}
+    bmix = to_int(np.concatenate([Bd[:, :2], Br[:, 2:4]], 1))                # §142 (b_d1 b_d2 b_r3 b_r4): the donor's b-prefix, the recipient's rest
+    return {"pos2": {"donor_consistent": float((got == exp).mean()), "recipient_consistent": float((got == own).mean()), "chance_overlap": float((exp == own).mean()),
+                     "bprefix_consistent": float((got == to_int(Ar) * bmix).mean()), "operands_consistent": float((got == to_int(Ad) * bmix).mean()), "n": N}}
+
+
+@torch.no_grad()
+def ext_4x8_low8(m, dev, amp, bs, n=1000, seed=14204):
+    """§142 (note 142-1, descriptive): 4-digit a x 8-digit b, chains of 8 segments (positions 5-8 unseen: COLTOK[5..8] by segment()'s
+    position-j = COLTOK[j] convention); exact match of the decoded value with S_j mod 10^8 at every j (j = 5..8 is the extrapolation)."""
+    from boxes.multcol import gen_operands
+    rng = np.random.default_rng(seed); A = gen_operands(rng, n, 4); B = gen_operands(rng, n, 8)
+    dec = rollout(m, A, B, dev, amp, bs, L=8); S = sj_values(A, B) % 10 ** NDIG
+    acc = {str(j + 1): float((dec[:, j] == S[:, j]).mean()) for j in range(8)}
+    return {"acc_by_j": acc, "acc_5_8_mean": float(np.mean([acc[str(j)] for j in range(5, 9)])), "n": n, "metric": "S_j mod 1e8 exact (note 142-1 (a))"}
 
 
 @torch.no_grad()
@@ -219,6 +263,15 @@ def main():
     ap.add_argument("--distill_probe_dir", default="boxes/runs_fsq/s139_teacher_probe"); ap.add_argument("--distill_full", type=int, default=3000); ap.add_argument("--distill_end", type=int, default=4000)
     ap.add_argument("--donor_n", type=int, default=1000); ap.add_argument("--contract_n", type=int, default=500); ap.add_argument("--mem_check", action="store_true")
     ap.add_argument("--from_args", default=None); ap.add_argument("--contraction_only", action="store_true"); ap.add_argument("--fp32", action="store_true")
+    ap.add_argument("--no_round", action="store_true", help="§142 NOISE-64: carry z_b continuously (as fsq120 §123)")
+    ap.add_argument("--dither", type=float, default=0.0, help="§142: U(-s, s) on z_b at training hand-offs after 2k (with --no_round; clean at test)")
+    ap.add_argument("--lmax_steps", default="", help="§142: L_max k+1 from these steps, e.g. 2000,5000,9000 (default §139's 1000,2000,3000)")
+    ap.add_argument("--reader", action="store_true", help="§142: decode S_j from code_j at every hand-off j < L (teacher targets)")
+    ap.add_argument("--teacher_cache", default="boxes/runs_fsq/s142_teacher_cache/teacher_sj_4x4_train.npz")
+    ap.add_argument("--gate_every", type=int, default=1000); ap.add_argument("--gate_n", type=int, default=512); ap.add_argument("--gate_thr", type=float, default=0.95)
+    ap.add_argument("--fork_from", default=None, help="§142 B: start from this gate.pt"); ap.add_argument("--fork_steps", type=int, default=0)
+    ap.add_argument("--removal", default=None, choices=[None, "early", "late"]); ap.add_argument("--removal_every", type=int, default=4000)
+    ap.add_argument("--rewarm", type=int, default=200); ap.add_argument("--preview_frac", type=float, default=0.1); ap.add_argument("--ext_n", type=int, default=1000)
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args()
     if a.from_args:
@@ -228,6 +281,14 @@ def main():
                 setattr(a, k, v)
         for k, v in keep.items():
             setattr(a, k, v)
+    assert not (a.no_round and a.soft_beta), "§142 NOISE: --no_round needs --soft_beta 0 (SOFT rounds)"
+    assert not (a.dither and not a.no_round), "--dither needs --no_round"
+    assert not a.fork_from or (a.reader and a.removal and a.fixed_L == 4 and a.fork_steps > 0), "§142 B: --fork_from needs --reader --removal --fixed_L 4 --fork_steps"
+    assert not (a.reader and (a.distill or a.copy_frac)), "§142: the reader runs without §139's distill / copy rows"
+    if a.fork_from:
+        a.steps = a.fork_steps                                              # the fork's own schedule (scorer reads fork_steps)
+    th = tuple(int(x) for x in a.lmax_steps.split(",")) if a.lmax_steps else None; assert th is None or len(th) == 3, "--lmax_steps: 3 steps"
+    a.label_source = "teacher_generated" if a.reader else None
     dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); sc = a.sched_scale
     if a.d_q != F.D_Q or a.levels != F.LEV:
         F.D_Q, F.LEV = a.d_q, a.levels; F.HALF = (F.LEV - 1) / 2; F.SHIFT = math.atanh(F.OFF / F.HALF)
@@ -236,7 +297,7 @@ def main():
     os.makedirs(a.out, exist_ok=True); fam = RowFam(); dname = lambda: torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"  # noqa: E731
     teA, teB = load_bench(os.path.join(ROOT, "bench", "data", "mult_4x4_test.txt")); teA, teB = teA[:a.test_n], teB[:a.test_n]
     def mk():
-        m_ = MultRow(s5.load_gpt2(dev), fam).to(dev); m_.soft_beta = a.soft_beta
+        m_ = MultRow(s5.load_gpt2(dev), fam).to(dev); m_.soft_beta = a.soft_beta; m_.no_round = a.no_round
         if a.distill:
             m_.readout = nn.Linear(768, NDIG * 10).to(dev)
         return m_
@@ -251,6 +312,23 @@ def main():
     else:
         trA, trB = load_bench(os.path.join(ROOT, "bench", "data", "mult_train", "4x4_train.txt"))
     n_raw = len(trA); trA, trB, n_rem = dedup(trA, trB, teA, teB)
+    rdec = rok = None; s142 = {}
+    if a.reader:                                                            # §142 teacher targets: the sha-keyed cache (note 142-1)
+        cp_ = a.teacher_cache if os.path.isabs(a.teacher_cache) else os.path.join(ROOT, a.teacher_cache); z = np.load(cp_)
+        ssha = split_sha(trA, trB); assert str(z["split_sha"]) == ssha, "teacher cache split sha %s != this split %s" % (str(z["split_sha"])[:12], ssha[:12])
+        tpath = os.path.join(ROOT, a.distill_teacher, "model.pt")
+        if os.path.exists(tpath):                                           # the teacher is local (not shipped to Vast hosts): check its sha too
+            import hashlib
+            hh = hashlib.sha256()
+            with open(tpath, "rb") as f_:
+                for blk in iter(lambda: f_.read(1 << 22), b""):
+                    hh.update(blk)
+            assert hh.hexdigest() == str(z["teacher_sha"]), "teacher cache teacher sha mismatch"
+        rdec = z["dec"].astype(np.int64); rok = z["ok"].astype(bool); gold = digits8(sj_values(trA, trB)); mism = rok & (rdec != gold).any(-1)
+        s142.update({"teacher_invalid_share": float(1 - rok.mean()), "teacher_vs_gold_mismatch_share": float(mism.sum() / max(rok.sum(), 1)),
+                     "cache_split_sha": ssha, "cache_teacher_sha": str(z["teacher_sha"])})
+        assert s142["teacher_invalid_share"] <= 0.01, "139-2 gate: teacher format validity < 0.99 over the cache - stop and tell Theory"
+        a.teacher_cache_sha = str(z["teacher_sha"])[:16] + "/" + ssha[:16]; del gold, mism
     teacher = None; target_mode = None; probe_info = None
     if a.distill:
         pj = json.load(open(os.path.join(ROOT, a.distill_probe_dir, "teacher_probe.json"))); a.distill_layer = a.distill_layer if a.distill_layer is not None else pj["chosen_layer"]
@@ -262,19 +340,39 @@ def main():
     json.dump({**info, "resumed_at": time.strftime("%Y-%m-%d %H:%M:%S")} if a.resume else info,
               open(os.path.join(a.out, ("args_resume_%d.json" % int(time.time())) if a.resume else "args.json"), "w", newline="\n"), indent=1)
     m = mk(); opt = make_opt(m, a.lr); m.train()
+    gate_step = gate_exact = None; fork_start = None; stages = []; stage_start = 1; order = None
+    if a.fork_from:                                                         # §142 B: the A run's gate model, same seed
+        gk = torch.load(a.fork_from if os.path.isabs(a.fork_from) else os.path.join(ROOT, a.fork_from), map_location=dev, weights_only=False)
+        m.load_state_dict(gk["model"]); s142["fork_gate_step"] = gk.get("step"); s142["fork_gate_train_exact"] = gk.get("gate_train_exact")
+        order = (1, 2, 3) if a.removal == "early" else (3, 2, 1)
     log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time(); hist = []; chist = []; dhist = []; L127 = {}; n_nonfinite = 0; step0 = 1
     Ls = []; crng = np.random.default_rng(a.seed + 13400); first_exact = None; n_copy = int(round(a.copy_frac * a.bs)) if a.copy_frac else 0
     if a.resume:
         ck = torch.load(a.resume, map_location=dev, weights_only=False); m.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"])
         rng.bit_generator.state = ck["np_rng"]; crng.bit_generator.state = ck["crng"]; torch.set_rng_state(ck["torch_rng"].cpu()); L127 = ck["L127"]; n_nonfinite = ck["n_nonfinite"]
-        first_exact = ck.get("first_exact")
+        first_exact = ck.get("first_exact"); gate_step = ck.get("gate_step"); gate_exact = ck.get("gate_exact")   # §142 state
+        fork_start = ck.get("fork_start"); stages = ck.get("stages") or []; stage_start = ck.get("stage_start", 1)
         if dev.startswith("cuda") and ck.get("cuda_rng") is not None:
             torch.cuda.set_rng_state(ck["cuda_rng"].cpu(), device=dev)
         step0 = ck["step"] + 1; t0 = time.time() - ck["elapsed"]; log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
     def w_at(step):
         return distill_weight(step, a.distill, a.distill_full, a.distill_end, sc)
-    def train_step(step, L, A, B, w, do_step=True):
+    def reader_mask(ii, L, removed=(), preview=None):
+        """§142: (bs, L - 1) rows / hand-offs with a reader term: teacher-valid, not removed; preview (j, rows) also drops j on those rows."""
+        mk_ = rok[ii][:, :L - 1].copy()
+        for j in removed:
+            if j <= L - 1:
+                mk_[:, j - 1] = False
+        if preview is not None and preview[0] <= L - 1:
+            mk_[preview[1], preview[0] - 1] = False
+        return mk_
+    def train_step(step, L, A, B, w, do_step=True, ii=None, rmask=None):
         set_ops(m, A, B, dev); X = torch.tensor(np.tile(np.arange(L), (len(A), 1)), device=dev); lab = sj_values(A, B)[:, :L]
+        if a.reader:                                                        # §142: CE_final (gold S_L) + mean over hand-offs of CE_j (teacher S_j)
+            rtok = torch.tensor(np.array(DTOK)[rdec[ii][:, :max(L - 1, 1)].clip(0)], device=dev)
+            with amp_ctx(amp):
+                fin, rd, nrd = m.chain_read(m.start(len(A), dev), X, lab, rtok, torch.tensor(rmask, device=dev) if L > 1 else None)
+            return fin, rd
         m.tsd_on = w > 0; m._tsd_e = []
         with amp_ctx(amp):
             loss, _, _, _ = m.chain(m.start(len(A), dev), X, lab)            # FINAL only: CE on S_L after the last segment
@@ -289,17 +387,42 @@ def main():
         m.tsd_on = False; m._tsd_e = []
         return loss, aux
     if a.mem_check:
-        m.p_hard = 1.0; ii = rng.integers(0, len(trA), a.bs); loss, aux = train_step(1, 4, trA[ii], trB[ii], 1.0 if a.distill else 0.0)
+        m.p_hard = 1.0; m.noise = a.dither if a.no_round else 0.0; ii = rng.integers(0, len(trA), a.bs)
+        loss, aux = train_step(1, 4, trA[ii], trB[ii], 1.0 if a.distill else 0.0, ii=ii, rmask=np.ones((a.bs, 3), bool) if a.reader else None)
         (loss + (aux if aux is not None else 0)).backward(); m.eval(); rollout(m, teA[:a.eval_bs], teB[:a.eval_bs], dev, amp, a.eval_bs, record=True)
         pk = torch.cuda.max_memory_allocated(dev) / 2 ** 30 if dev.startswith("cuda") else None
-        json.dump({"peak_gib": pk, "bs": a.bs, "eval_bs": a.eval_bs, "distill": a.distill}, open(os.path.join(a.out, "mem_check.json"), "w", newline="\n"), indent=1); print("MEM", pk); return
+        json.dump({"peak_gib": pk, "bs": a.bs, "eval_bs": a.eval_bs, "distill": a.distill, "reader": a.reader, "L": 4}, open(os.path.join(a.out, "mem_check.json"), "w", newline="\n"), indent=1)
+        print("MEM", pk); return
+    def stage_eval():                                                       # §142 B: fork_start / stage records
+        was = m.training; m.eval(); nz = m.noise; m.noise = 0.0; d_ = rollout(m, teA, teB, dev, amp, a.eval_bs); S_ = sj_values(teA, teB)
+        r_ = {"test_acc": float((d_[:, -1] == S_[:, -1]).mean()), "acc_by_length": {str(L_ + 1): float((d_[:, L_] == S_[:, L_]).mean()) for L_ in range(4)},
+              "donor": donor_step2(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(13902), n=a.donor_n)}
+        m.noise = nz; m.train(was); return r_
+    gi = np.random.default_rng(14201).permutation(len(trA))[:a.gate_n]       # §142 gate: a fixed 512-item TRAIN subset at L 4
+    re_ = int(a.removal_every * sc)
+    if a.fork_from and fork_start is None:
+        fork_start = stage_eval(); log.write(json.dumps({"step": 0, "fork_start": fork_start}) + "\n"); log.flush()
     for step in range(step0, a.steps + 1):
-        for gr in opt.param_groups:
-            gr["lr"] = lr_at(a.lr, gr, step, a.steps)
+        removed, preview = (), None
+        if a.fork_from:                                                     # §142 B: stage k removes order[:k + 1]; fresh AdamW + re-warm-up at each removal
+            stg = min(2, (step - 1) // re_); removed = order[:stg + 1]
+            if step > 1 and (step - 1) % re_ == 0 and (step - 1) // re_ <= 2 and step != stage_start:
+                opt = make_opt(m, a.lr); stage_start = step
+            for gr in opt.param_groups:
+                gr["lr"] = a.lr * 0.5 * (1 + math.cos(math.pi * step / a.steps)) * min(1.0, (step - stage_start + 1) / (a.rewarm * sc))
+        else:
+            for gr in opt.param_groups:
+                gr["lr"] = lr_at(a.lr, gr, step, a.steps)
         m.p_hard = 0.0 if step <= a.p_hard_start * sc else min(1.0, (step - a.p_hard_start * sc) / ((a.p_hard_end - a.p_hard_start) * sc)); m.train()
-        L = a.fixed_L if a.fixed_L else int(rng.integers(1, lmax(step / sc) + 1)); Ls.append(L); ii = rng.integers(0, len(trA), a.bs - n_copy); w = w_at(step)
-        opt.zero_grad(); loss, aux = train_step(step, L, trA[ii], trB[ii], w)
-        tot_loss = loss + (w * aux if aux is not None else 0)
+        m.noise = (a.dither if (a.fork_from or step > 2000 * sc) else 0.0) if a.no_round else 0.0   # §142 NOISE: dither after 2k (the fork is past 2k)
+        L = a.fixed_L if a.fixed_L else int(rng.integers(1, lmax(step / sc, th) + 1)); Ls.append(L); ii = rng.integers(0, len(trA), a.bs - n_copy); w = w_at(step)
+        rmask = None
+        if a.reader:
+            if a.fork_from and len(removed) < 3:                            # ICoT-SI smoothing: 10% of rows also drop the next target
+                pr_ = np.nonzero(rng.random(len(ii)) < a.preview_frac)[0]; preview = (order[len(removed)], pr_)
+            rmask = reader_mask(ii, L, removed, preview)
+        opt.zero_grad(); loss, aux = train_step(step, L, trA[ii], trB[ii], w, ii=ii, rmask=rmask)
+        tot_loss = loss + ((aux if a.reader else w * aux) if aux is not None else 0)
         ctot = 0.0
         if n_copy:                                                          # §134 copy rows: another problem's S_L text -> copy writer -> decoder
             cv = sj_values(trA[crng.integers(0, len(trA), n_copy)], trB[crng.integers(0, len(trA), n_copy)])[:, -1]; cans = torch.tensor(fam.answer_tokens(cv), device=dev)
@@ -315,18 +438,31 @@ def main():
             if aux is not None:
                 dhist.append(float(aux.item()))
         if step % a.log_every == 0 or step == a.steps:
-            rec = {"step": step, "loss": float(np.mean(hist)) if hist else None, "L_max": a.fixed_L or lmax(step / sc), "L_drawn": sorted(set(Ls)), "p_hard": m.p_hard,
+            rec = {"step": step, "loss": float(np.mean(hist)) if hist else None, "L_max": a.fixed_L or lmax(step / sc, th), "L_drawn": sorted(set(Ls)), "p_hard": m.p_hard,
                    "sec": round(time.time() - t0)}; Ls = []
             if n_copy:
                 rec["copy_loss"] = float(np.mean(chist)) if chist else None
             if a.distill:
                 rec.update({"distill_w": w, "distill_loss": float(np.mean(dhist)) if dhist else None})
+            if a.reader:                                                    # §142: the reader term (mean over hand-offs); "loss" stays CE_final
+                rec.update({"reader_loss": float(np.mean(dhist)) if dhist else None, "noise": m.noise})
+                if a.fork_from:
+                    rec.update({"removed": list(removed), "lr": opt.param_groups[0]["lr"]})
             if n_copy and (step % 500 == 0 or step == a.steps):
                 m.eval(); rec["copy_acc"] = copy_acc(m, dev, amp, np.random.default_rng(13901)); m.train()
             hist, chist, dhist = [], [], []; log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True); L127[step] = rec["loss"]
             if a.copy_gate_4k and step == int(4000 * sc) and n_copy and (rec.get("copy_acc") or 0) < 0.9:
                 log.write(json.dumps({"step": step, "stopped": "copy_acc < 0.9 at 4k (§139 base check)", "copy_acc": rec.get("copy_acc")}) + "\n"); log.close()
                 print("STOPPED copy gate", flush=True); return
+        if not a.fork_from and step % int(a.gate_every * sc) == 0 and lmax(step / sc, th) == 4 and not a.fixed_L:   # §142 removal gate (A)
+            m.eval(); nz_ = m.noise; m.noise = 0.0; gx = float((rollout(m, trA[gi], trB[gi], dev, amp, a.eval_bs)[:, -1] == sj_values(trA[gi], trB[gi])[:, -1]).mean())
+            m.noise = nz_; m.train(); log.write(json.dumps({"step": step, "gate_train_exact": gx}) + "\n"); log.flush()
+            if gate_step is None and gx >= a.gate_thr:
+                gate_step, gate_exact = step, gx
+                torch.save({"model": m.state_dict(), "step": step, "gate_train_exact": gx, "seed": a.seed}, os.path.join(a.out, "gate.pt"))
+                log.write(json.dumps({"step": step, "gate_open": True, "gate_train_exact": gx}) + "\n"); log.flush()
+        if a.fork_from and step % re_ == 0 and step // re_ in (1, 2):       # §142 B: stage record at each removal boundary
+            st_ = {"step": step, "removed": list(removed), **stage_eval()}; stages.append(st_); log.write(json.dumps({"stage": st_}) + "\n"); log.flush()
         if a.quick_every and step % int(a.quick_every * sc) == 0:            # first_exact_step: 256 test items at L = 4
             m.eval(); qa = float((rollout(m, teA[:256], teB[:256], dev, amp, 256)[:, -1] == sj_values(teA[:256], teB[:256])[:, -1]).mean()); m.train()
             log.write(json.dumps({"step": step, "quick_test_acc": qa}) + "\n"); log.flush()
@@ -336,7 +472,8 @@ def main():
             cp = os.path.join(a.out, "ckpt_last.pt")
             torch.save({"model": m.state_dict(), "opt": opt.state_dict(), "torch_rng": torch.get_rng_state(), "cuda_rng": torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else None,
                         "np_rng": rng.bit_generator.state, "crng": crng.bit_generator.state, "step": step, "L127": L127, "n_nonfinite": n_nonfinite,
-                        "first_exact": first_exact, "elapsed": time.time() - t0}, cp + ".tmp")
+                        "first_exact": first_exact, "elapsed": time.time() - t0, "gate_step": gate_step, "gate_exact": gate_exact,
+                        "fork_start": fork_start, "stages": stages, "stage_start": stage_start}, cp + ".tmp")
             if os.path.exists(cp):
                 os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))
             os.replace(cp + ".tmp", cp); log.write(json.dumps({"step": step, "ckpt": "ckpt_last.pt"}) + "\n"); log.flush()
@@ -365,6 +502,12 @@ def main():
         ro = float((lg == digits8(S)).all(-1).mean())
     res["s139"] = {"target_mode": target_mode, "first_exact_step": first_exact, "readout_sj_acc_end": ro, "probe_r2": pr, "copy_acc": copy_acc(m, dev, amp, np.random.default_rng(13903)) if n_copy else None,
                    "distill": a.distill, "distill_layer": a.distill_layer, "distill_full": a.distill_full, "distill_end": a.distill_end, "teacher_probe": probe_info}
+    if a.reader or a.no_round or a.fork_from or a.lmax_steps:               # §142 block (scorer: s142.*, ext_4x8)
+        if a.fork_from:
+            stages.append({"step": a.steps, "removed": list(order), **stage_eval()})
+        s142.update({"gate_step": gate_step, "gate_train_exact": gate_exact, "fork_start": fork_start, "stages": stages or None, "probe_r2": pr,
+                     "label_source": a.label_source, "reader": a.reader, "removal": a.removal, "lmax_steps": a.lmax_steps})
+        res["s142"] = s142; res["ext_4x8"] = ext_4x8_low8(m, dev, amp, a.eval_bs, n=a.ext_n)
     res["eval_sec"] = round(time.time() - t1)
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     for ck_ in ("ckpt_last.pt", "ckpt_prev.pt"):
