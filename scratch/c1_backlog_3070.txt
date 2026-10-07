@@ -1,3 +1,7 @@
+# 2026-10-07 s150 FULL memory after the fix (no 154 MB wte copy per hand-off, fp32 slot head): bs 64 micro 1 / 2, bs 32
+4.5 D:/drain_tmp/mem150fix_full_b64m1/mem_check.json python -u -m boxes.multpair --family mult_pair --task 4x4 --seed 1 --slots 4 --carry_slots 4 --slot_gumbel --mem_check --slot_space vocab --bs 64 --micro 1 --device {DEV} --out D:/drain_tmp/mem150fix_full_b64m1
+4.5 D:/drain_tmp/mem150fix_full_b64m2/mem_check.json python -u -m boxes.multpair --family mult_pair --task 4x4 --seed 1 --slots 4 --carry_slots 4 --slot_gumbel --mem_check --slot_space vocab --bs 64 --micro 2 --device {DEV} --out D:/drain_tmp/mem150fix_full_b64m2
+4.5 D:/drain_tmp/mem150fix_full_b32m1/mem_check.json python -u -m boxes.multpair --family mult_pair --task 4x4 --seed 1 --slots 4 --carry_slots 4 --slot_gumbel --mem_check --slot_space vocab --bs 32 --micro 1 --device {DEV} --out D:/drain_tmp/mem150fix_full_b32m1
 # 2026-10-07 s150 FULL memory at bs 16 (bs 32 OOMed the local 6 GiB cap; extrapolate x4 to the 3090's bs 64)
 4.5 D:/drain_tmp/mem150_full_b16/mem_check.json python -u -m boxes.multpair --family mult_pair --task 4x4 --seed 1 --slots 4 --carry_slots 4 --slot_gumbel --mem_check --slot_space vocab --bs 16 --device {DEV} --out D:/drain_tmp/mem150_full_b16
 # 2026-10-07 s150 gates first: CUDA gradflow, then memory at the longest chain (bs 64; bs 32 to extrapolate if 64 exceeds the local cap)

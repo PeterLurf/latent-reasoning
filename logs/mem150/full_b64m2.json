@@ -1,0 +1,11 @@
+{
+ "peak_gib": 5.383114814758301,
+ "bs": 64,
+ "micro": 2,
+ "chunk": 32,
+ "eval_bs": 250,
+ "task": "4x4",
+ "slots": 4,
+ "slot_space": "vocab",
+ "longest_eval_chain": "4x8 (33 steps)"
+}

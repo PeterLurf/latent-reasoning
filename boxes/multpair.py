@@ -567,7 +567,8 @@ class MultVocab(MultSlot):
         self.last_ids = None; self.last_p = None; self.zdim = 768
 
     def Wv(self):
-        return self.g.w("wte.weight").detach()[self.V]                     # note 150-1: the slot path never moves the vocabulary
+        w_ = self.g.w("wte.weight").detach()                                # note 150-1: the slot path never moves the vocabulary
+        return w_ if self.space == "vocab" else w_[self.V]                  # FULL: the view itself (no 154 MB copy per hand-off)
 
     def start(self, B, dev, states=None):
         i0 = int((self.V == BLANK).nonzero()[0, 0]) if self.space == "digits" else BLANK
@@ -584,7 +585,11 @@ class MultVocab(MultSlot):
         Hw = h[:, -self.K:].float()
         if noise is not None:                                               # contraction: perturb h(w_k) before the head (note 150-1 (2))
             Hw = Hw + noise
-        W = self.Wv().float(); lg = Hw @ W.T                                # (B, K, |V|)
+        with torch.autocast("cuda", enabled=False):                         # fp32 slot head, no bf16 copy of W per hand-off
+            return self._head(Hw, B, dev)
+
+    def _head(self, Hw, B, dev):
+        W = self.Wv(); W = W if W.dtype == torch.float32 else W.float(); lg = Hw @ W.T   # (B, K, |V|)
         if self.training and not self.soft_test:
             gum = -torch.log((-torch.log(torch.rand_like(lg).clamp_min(1e-10))).clamp_min(1e-10))   # Gumbel(0, 1)
             p = torch.softmax((lg + gum) / self.tau, -1); ids = p.argmax(-1)
@@ -698,6 +703,7 @@ def main():
     ap.add_argument("--no_round", action="store_true", help="§145 NOISE-64 carrier"); ap.add_argument("--dither", type=float, default=0.0)
     ap.add_argument("--carrier", default="code", choices=["code", "deltamem"], help="§147: deltamem = the linear-recurrent memory, no carried code")
     ap.add_argument("--slot_space", default=None, choices=[None, "vocab", "digits"], help="§150 VOCAB-SLOT: slots are GPT-2 vocabulary tokens")
+    ap.add_argument("--micro", type=int, default=1, help="gradient accumulation chunks (memory only; bs must divide)")
     ap.add_argument("--slot_gumbel", action="store_true"); ap.add_argument("--slot_tau", default="1:0.3:2000:6000"); ap.add_argument("--slot_hard", default="6000:8000")
     ap.add_argument("--mem_layer", type=int, default=6); ap.add_argument("--mem_add_heads", type=int, default=6); ap.add_argument("--mem_delta_heads", type=int, default=6)
     a = ap.parse_args()
@@ -709,6 +715,7 @@ def main():
         for k, v in keep.items():
             setattr(a, k, v)
     assert not a.slots or a.slot_space or (a.no_round and 1 <= a.carry_slots <= a.slots <= 4), "§145: --slots K (<= 4) needs --no_round and 1 <= --carry_slots <= K"
+    assert a.bs % a.micro == 0, "--micro must divide --bs"
     a.mem_group_gain = a.carrier == "deltamem"                               # note 147-2 (the scorer checks it)
     a.slot_wte_detached = bool(a.slot_space)                                # note 150-1: the whole slot path (logits + mixture) uses wte.detach()
     assert not a.slot_space or (a.slots == 4 and a.slot_gumbel and not a.no_round), "§150: --slots 4 --slot_space vocab|digits --slot_gumbel (no NOISE carrier)"
@@ -769,15 +776,15 @@ def main():
         ii = rng.integers(0, len(trA), bs_); A, Bd = trA[ii], trB[ii]; _, dig, _, _, _, _ = accumulators(A, Bd)
         T = int(np.searchsorted(col, c - 1, side="right")) if c < 2 * n else len(pairs)     # steps whose column < c
         set_ops(m, A, Bd, dev); X = torch.tensor(np.tile(np.arange(T), (bs_, 1)), device=dev)
-        tm = torch.tensor(np.tile(emit[:T], (bs_, 1)), device=dev); lab = np.where(dig[:, :T] >= 0, dig[:, :T], 0)
+        tm = torch.tensor(np.tile(emit[:T], (bs_, 1)), device=dev); lab = np.where(dig[:, :T] >= 0, dig[:, :T], 0); batch.AB = (A, Bd)
         return X, lab, tm, T
-    if a.mem_check:
-        m.p_hard = 1.0; X, lab, tm, T = batch(2 * n, a.bs)
+    if a.mem_check:                                                         # --micro: one chunk of bs / micro rows (what training holds at once)
+        m.p_hard = 1.0; X, lab, tm, T = batch(2 * n, a.bs // a.micro)
         with amp_ctx(amp):
-            loss, _, _, _ = m.chain(m.start(a.bs, dev), X, lab, tm)
+            loss, _, _, _ = m.chain(m.start(a.bs // a.micro, dev), X, lab, tm)
         loss.backward(); m.eval(); RO(m, gen_operands(rng, a.eval_bs, n), gen_operands(rng, a.eval_bs, 2 * n), dev, amp, a.eval_bs, record=not a.carrier == "deltamem")
         pk = torch.cuda.max_memory_allocated(dev) / 2 ** 30 if dev.startswith("cuda") else None
-        json.dump({"peak_gib": pk, "bs": a.bs, "eval_bs": a.eval_bs, "task": a.task, "slots": a.slots, "longest_eval_chain": "4x8 (33 steps)"}, open(os.path.join(a.out, "mem_check.json"), "w", newline="\n"), indent=1); print("MEM", pk); return
+        json.dump({"peak_gib": pk, "bs": a.bs, "micro": a.micro, "chunk": a.bs // a.micro, "eval_bs": a.eval_bs, "task": a.task, "slots": a.slots, "slot_space": a.slot_space, "longest_eval_chain": "4x8 (33 steps)"}, open(os.path.join(a.out, "mem_check.json"), "w", newline="\n"), indent=1); print("MEM", pk); return
     for step in range(step0, a.steps + 1):
         for gr in opt.param_groups:
             gr["lr"] = lr_at(a.lr, gr, step, a.steps)
@@ -788,9 +795,19 @@ def main():
         if a.slot_space:                                                    # §150: Gumbel tau and the straight-through fraction
             m.tau = sched_tau(step, a.slot_tau, sc); m.p_hard_slot = sched_hard(step, a.slot_hard, sc)
         c = int(rng.integers(1, cmax(step / sc, a.task) + 1)); X, lab, tm, T = batch(c, a.bs); opt.zero_grad()
-        with amp_ctx(amp):
-            loss, _, _, _ = m.chain(m.start(a.bs, dev), X, lab, tm)          # CE at the emission steps (mean over them)
-        loss.backward(); tot = float(loss.item()); gn = torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0)
+        if a.micro == 1:
+            with amp_ctx(amp):
+                loss, _, _, _ = m.chain(m.start(a.bs, dev), X, lab, tm)      # CE at the emission steps (mean over them)
+            loss.backward(); tot = float(loss.item())
+        else:                                                               # Audit (§150 FULL): gradient accumulation, memory only
+            A_, B_ = batch.AB; ch = a.bs // a.micro; tot = 0.0
+            for k_ in range(a.micro):
+                sl_ = slice(k_ * ch, (k_ + 1) * ch); set_ops(m, A_[sl_], B_[sl_], dev)
+                with amp_ctx(amp):
+                    lk, _, _, _ = m.chain(m.start(ch, dev), X[sl_], lab[sl_], tm[sl_])
+                (lk / a.micro).backward(); tot += float(lk.item()) / a.micro
+            loss = torch.tensor(tot)
+        gn = torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0)
         if not (math.isfinite(tot) and bool(torch.isfinite(gn))):
             bad = "loss" if not math.isfinite(tot) else next((n_ for n_, p_ in m.named_parameters() if p_.grad is not None and not bool(torch.isfinite(p_.grad).all())), "grad_norm")
             log.write(json.dumps({"step": step, "nonfinite": 1, "first": bad}) + "\n"); log.flush(); n_nonfinite += 1; opt.zero_grad()
