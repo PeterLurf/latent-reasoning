@@ -389,6 +389,72 @@ def check_s142(dev, out):
     F120.D_Q, F120.LEV, F120.HALF, F120.SHIFT = saved
 
 
+def check_s143(dev, out):
+    """§143 FULL-GROW gates (dc546570): on the COPY+GROW-NOISE carrier (d0 8, switch 1 to 64 done, its fade-in complete), a forced switch 2
+    (grow 704, new W_up columns 0, alpha 0) leaves every carried embedding and the answer decoder's logits bitwise identical (max |delta logits|
+    = 0, eval mode, under CUDA bf16); at the first step after it (alpha = 1/500, training mode with dither) the step loss reaches the NEW W_up
+    columns (nonzero grad); the new W_down rows get exactly 0 there (their outgoing weights are still 0), and the old 64 columns keep theirs."""
+    import math
+    import boxes.fsq120 as F120
+    saved = (F120.D_Q, F120.LEV, F120.HALF, F120.SHIFT); F120.D_Q, F120.LEV = 8, 8; F120.HALF = (F120.LEV - 1) / 2; F120.SHIFT = math.atanh(F120.OFF / F120.HALF)
+    amp = torch.bfloat16 if str(dev).startswith("cuda") else None; fam = F120.Family("s5"); m = F120.FSQ120(s5.load_gpt2(dev), fam).to(dev)
+    m.grow_noise = 0.25; m.grow(56); m.grow_alpha_0.fill_(1.0)
+    with torch.no_grad():
+        m.up_g[0].normal_(0, 0.02)                                          # switch 1's columns trained (non-zero)
+    s0, x, lab = F120.make_batch(fam, np.random.default_rng(0), 8, 6); X = torch.tensor(x, device=dev)
+    def fwd():
+        m.eval()
+        with torch.no_grad(), torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+            _, e, _, embs = m.chain(m.start(8, dev, s0), X, record=True)
+            xx = torch.cat([m.g.embed(torch.full((8, 1), F120.EOT, device=dev)), e[:, None].to(m.g.embed(torch.full((8, 1), F120.EOT, device=dev)).dtype)], 1)
+            h, _ = m.g(xx, None); lg = m.g.logits(h).float()
+        return torch.stack([v.float() for v in embs]), lg
+    E0, L0 = fwd(); m.grow(704); E1, L1 = fwd()
+    out["s143.preserve_width_768"] = 1.0 if m.width() == 768 else 0.0
+    out["s143.preserve_embeddings_exact"] = 1.0 if torch.equal(E0, E1) else 0.0
+    out["s143.preserve_logits_exact"] = 1.0 if float((L0 - L1).abs().max()) == 0.0 else 0.0
+    m.grow_alpha_1.fill_(1 / 500); m.train(); m.p_hard = 1.0; m.zero_grad(set_to_none=True)
+    with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+        loss, _, _, _ = m.chain(m.start(8, dev, s0), X, lab)
+    loss.backward()
+    out["s143.new_up_cols_grad"] = float(m.up_g[1].grad.float().norm()) if m.up_g[1].grad is not None else 0.0
+    out["s143.old64_up_grad"] = float(m.up.weight.grad.float().norm()) + float(m.up_g[0].grad.float().norm())
+    g2 = m.down_g[1].weight.grad; out["s143.new_down_rows_zero_at_first_step"] = 1.0 if (g2 is None or float(g2.abs().max()) == 0.0) else 0.0
+    del m
+    F120.D_Q, F120.LEV, F120.HALF, F120.SHIFT = saved
+
+
+def check_s145(dev, out):
+    """§145 MULTI-SLOT (b1d7741c, note 145-1): K = 4 write positions, NOISE-64 (dither 0.25, training), the emission CE over a full 4x4 chain
+    (16 pairs + flush) under CUDA bf16. SLOT4 (carry the first 4 = all): every slot's W_down_k / W_up_k / LN_k and every write embedding w_k get
+    gradient. CARRY1 (--carry_from last: only w_4's slot carried and decoded): w_1..w_4 all get gradient (w_1..w_3 through attention into w_4),
+    slot 4's maps get gradient, and the unused maps 1..3 get exactly 0 (flagged 1 when exactly 0)."""
+    import math
+    import boxes.fsq120 as F120
+    import boxes.multcol as MC
+    import boxes.multpair as MP
+    saved = (F120.D_Q, F120.LEV, F120.HALF, F120.SHIFT); F120.D_Q, F120.LEV = 64, 8; F120.HALF = (F120.LEV - 1) / 2; F120.SHIFT = math.atanh(F120.OFF / F120.HALF)
+    amp = torch.bfloat16 if str(dev).startswith("cuda") else None; rng = np.random.default_rng(0); A, B = MC.gen_operands(rng, 8, 4), MC.gen_operands(rng, 8, 4)
+    _, dig, _, pairs, col, emit = MP.accumulators(A, B); T = len(pairs)
+    for arm, C, cf in (("slot4", 4, "first"), ("carry1", 1, "last")):
+        m = MP.MultSlot(s5.load_gpt2(dev), MP.PairFam(), 4, C, cf).to(dev); m.no_round = True; m.noise = 0.25; m.train(); MP.set_ops(m, A, B, dev); m.zero_grad(set_to_none=True)
+        X = torch.tensor(np.tile(np.arange(T), (8, 1)), device=dev); tm = torch.tensor(np.tile(emit, (8, 1)), device=dev); lab = np.where(dig >= 0, dig, 0)
+        with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+            loss, _, _, _ = m.chain(m.start(8, dev), X, lab, tm)
+        loss.backward()
+        gn = lambda p_: float(p_.grad.float().norm()) if p_.grad is not None else 0.0  # noqa: E731
+        for k in range(4):
+            ln, dn, up = m.maps(k)
+            out[f"s145.{arm}.w{k + 1}_grad"] = float(m.w.grad[k].float().norm()) if m.w.grad is not None else 0.0
+            if k in m.cidx:
+                out[f"s145.{arm}.down{k + 1}_grad"] = gn(dn.weight); out[f"s145.{arm}.up{k + 1}_grad"] = gn(up.weight); out[f"s145.{arm}.ln{k + 1}_grad"] = gn(ln.weight)
+            else:
+                out[f"s145.{arm}.unused_slot{k + 1}_maps_zero_grad"] = 1.0 if (gn(dn.weight) == 0.0 and gn(up.weight) == 0.0) else 0.0
+        out[f"s145.{arm}.trunk_grad"] = gn(m.g.w("h.0.attn.c_attn.weight"))
+        del m
+    F120.D_Q, F120.LEV, F120.HALF, F120.SHIFT = saved
+
+
 def check_s141(dev, out):
     """§141 (9e45b92b / note 141-1): with R = 4 repeats per column (FSQ-8 and SOFT-16), the digit CE of column k (decoded after its last
     repeat) ALONE reaches every repeat's embedding of column k, the previous column's last-repeat embedding (the carried code) and
