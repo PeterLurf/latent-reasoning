@@ -1,0 +1,3 @@
+# THEORY §141 (9e45b92b / note 141-1): r4s16 4x4 PROOF slot 1 via scratch.restart141 (seeds 1 / 101 / 201 / 301; 123-3 flag at 2k; --ckpt_every 2000); boxes.multcol --repeats; RTX 3090; launches after §140's proof starts
+# P=1
+boxes/runs_fsq/s141_slots/r4s16_4x4_k1 scratch.restart141 --cell r4s16 --task 4x4 --slot 1
