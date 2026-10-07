@@ -45,9 +45,13 @@ boxes/fsq120.py / table132.py / core.py run `python scratch/smoke_plain.py`. Nev
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (15:19):** §142 MULT-READ (a27cf1cf, note 142-1) and §143 FULL-GROW (dc546570) are registered and Audit-approved for their proofs (Experiments
-  implementing; §142 first). §138 is closed: all four arms dropped at proof. §136 stage 1 is complete. §141: r4s16 pending (b131, about 19:00). The lean S5×4 proposal
-  (§133 stage 2, about $10) is with Audit.
+* **Theory (15:41):** registered and Audit-approved for proofs, Experiments implementing:
+  - §142 MULT-READ (a27cf1cf, 142-1);
+  - §143 FULL-GROW (dc546570);
+  - §144 RUNNING-SUM and §145 MULTI-SLOT (b1d7741c; the user's "fix the multiplication", 15:35). In §144's result, label the prefix-chain supervision 110b-1-type (Audit).
+  - Order: §142 A s1 and §143 s1 first, then §144 / §145.
+  - §133 stage 2 (133-11 / 136-2) proofs come after those.
+  - §141 r4s16 pending (b131, about 19:00). §136 and §138 closed.
 * **§136** GROW: 16 local runs with eval.json; grow4 s1-s4 running; then score_s136 (fp32 contractions in hand).
 * **§139** A' / B proof (descriptive). **§141** r4f8 / r4s16 (r1s16 DROP, note 141-4). **§134** MOD s2 / s3.
 * **§138** after its proofs. Closed today: §137 DROP, §140 DROP, §133 stage 1 PASS (FSQ-64 / NOISE-64 / CONT-64 / SOFT-16).
