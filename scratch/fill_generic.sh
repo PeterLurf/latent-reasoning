@@ -14,7 +14,7 @@ for n in "$@"; do
       bash scratch/rebuild_live_hosts.sh > /dev/null 2>&1
       o=$(bash $V search offers 'gpu_name=RTX_3090 num_gpus=1 reliability>0.97 dph<=0.30 disk_space>=40 rentable=true inet_down>=300 cuda_vers>=12.4' -o dph --raw --limit 150 2>/dev/null | python -c "
 import json,sys
-ex={l.strip() for l in open('scratch/vast_exclude_ips.txt') if l.strip() and not l.startswith('#')}
+ex={l.split()[0] for l in open('scratch/vast_exclude_ips.txt') if l.strip() and not l.startswith('#')}   # first token: lines may carry a trailing comment
 used={l.split()[0] for l in open('scratch/live_hosts.txt') if l.strip()}
 rows=[(0 if str(x.get('driver_version','')).startswith('595.71') else 1, x['dph_total'], x['id']) for x in json.load(sys.stdin) if x.get('public_ipaddr') not in ex and x.get('public_ipaddr') not in used and not str(x.get('driver_version','')).startswith('580')]
 print(sorted(rows)[0][2] if rows else '')")

@@ -1481,7 +1481,7 @@ def main():
                 if w0_ < G1 and not g136["events"]:
                     if (g136["plat"] if a.grow_trigger == "plateau" else g136["thr"]) == step:
                         to_ = min(G1, 2 * w0_) if a.grow_staged else G1
-                elif w0_ < G1 and a.grow_staged and step - g136["events"][-1]["step"] >= 1000 * sc and rec["loss"] <= 2.5:
+                elif w0_ < G1 and a.grow_staged and step - g136["events"][-1]["step"] >= 1000 * sc and rec["loss"] <= thv:   # thv = 2.5 as registered (cstaged)
                     to_ = min(G1, 2 * w0_)
                 if to_:                                                     # pre-switch fp32 contraction on the host (rho before), then widen
                     rs_ = torch.get_rng_state(); crs_ = torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else None; m.eval()
