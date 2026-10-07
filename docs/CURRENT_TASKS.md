@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-07 09:58 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-07 11:05 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -35,7 +35,7 @@ boxes/fsq120.py / table132.py / core.py run `python scratch/smoke_plain.py`. Nev
 | b126 | §139 proof done (A stopped by copy gate; A' / B in hand); drain fetching models |
 | b102 | §136 cgrow s4: post-hoc done on host; model.pt via scratch/chunk_fetch.sh (link ~53 KB/s; 8/56 pieces at 09:20; waiter verifies tarball + model sha, then destroys) |
 | a5 / a6 | §118 LONG s84 / s85 (mk108) |
-| **staged** | **§138 proofs gen-b133..b136** (slot 1 per arm, restart138 --memcheck first); label-free HINGE (notes 138-2 / 138-3) + s138_desc fix 39a3c268, e2e smokes logs/smoke138e2e/; Audit released all four; chain logs/fill_s138p.out deploys after fill_s136 exits |
+| b133-b136 | **§138 proofs** slot 1: full_fsq / full_noise (b134, redeployed 10:57) / full_cont / full_hinge; first launch died (restart138 not shipped), b133 / b135 / b136 rerun in place 14:53 UTC; memchecks 8.5 / 8.5 / 11.4 GiB at L 32 (limit 21); deploys now auto-ship queue modules + import gate (ea2e417e) |
 
 * Pending swap: scratch/vdeploy_toy.sh.new (serialised 16-host cap gate) waits for no running vdeploy (waiter task), then its own commit.
 
