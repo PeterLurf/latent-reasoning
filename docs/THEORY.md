@@ -7456,6 +7456,43 @@ p_hard 2000 → 4000, 24k, bs 64, no restarts and no plateau stop, RTX 3090 clas
   - Audit's diff review.
 * Dirs `s143_fullgrow_s5_s{1..4}`. Scorer: `theory/score_s143.py`, committed with this registration.
 
+**Note 133-11 (2026-10-07 15:21 EDT, before any stage-2 implementation or run; Audit approved the proofs (about $2.5), and the completions wait for the credit). Stage 2's lean cell
+list, fixed now.**
+* **Cells (5):**
+  - S5×2 FSQ-8: the in-capacity control (condition (i));
+  - S5×4 FSQ-8: the probe (24 bits < 27.6);
+  - S5×4 FSQ-8-L16: 32 bits, separating codes from width;
+  - S5×4 NOISE-64: the stage-1 passer standing for the 64-d carriers;
+  - S5×4 COPY+GROW-NOISE with the PLATEAU trigger (§136 stage 2, note 136-2).
+  - FSQ-64, CONT-64 and SOFT-16 are not run (budget). FULL-GROW joins only if §143 passes (a dated note then).
+* **Harness:** §133's (the S5 recipe, restart slots k / k + 100 / k + 200 / k + 300, 24k, RTX 3090, checkpoints, the host check) with `--family s5x2 | s5x4`.
+  - k independent S5 registers; items are (register token, op); the answer is all k states (Literature (b)5); FINAL only.
+  - COPY+GROW-NOISE follows §136 (COPY from step 0, no restarts).
+* **Rules unchanged:** CAP-PASS(cell) = long_acc ≥ 0.99 at 512 in ≥ 3/4 slots. CAPACITY is read mechanically as 133-2 (2), with COPY+GROW-NOISE counted among the wide arms.
+* **Proofs first** (slot 1 per cell):
+  - A cell whose proof is accepted with long_acc < 0.95 at 512 is dropped, **except S5×4 FSQ-8**: its failure is the probe's expected outcome, so it completes to establish
+    CAP-FAIL with entry.
+  - **Proof-level reading** (descriptive, n = 1 per cell): 133-2 (2)'s logic on slot 1 alone.
+  - Completion (slots 2–4, about $7.5) needs Audit's approval against the live credit.
+* **Scorer (`score_s133.py`)** gains:
+  - the COPY+GROW-NOISE cell (no restarts);
+  - the family check (s5x2 / s5x4);
+  - the proof rule and the proof-level reading;
+  - a fix to the never-run stage-2 reading, made before any stage-2 data: an **incomplete** cell had read as a failure ("difficulty"). The reading now waits.
+
+**Note 136-2 (2026-10-07 15:21 EDT, before any stage-2 run; §136's stage 2, registered here as the paragraph §136 called for; it shares §133 stage 2's cells and budget). COPY+GROW-NOISE
+on S5×4, with the PLATEAU trigger.**
+* **The arm:** §136's COPY+GROW-NOISE (COPY rows from step 0, FSQ d 8, 56 new continuous dimensions with dither U(±0.25), §136's growth operation), triggered by
+  **PLATEAU** as §136's stage-2 text registered.
+  - PLATEAU, as §136 defines it: the first logged step t ≥ 4,000 whose mean loss over (t − 500, t] is ≥ 0.5 and ≥ 0.98 × the mean over (t − 1,000, t − 500].
+  - On S5×4 the d-8 code is short of capacity (24 bits < 27.6). A plateau at a non-zero loss is then the user's intended use: widen when the narrow code stalls.
+  - §136 found that PLATEAU also fires on still-learning runs (would-be 4.5–5.2k on S5). An early widening is safe there (§136), so this is disclosed, not corrected.
+* Seeds 1–4, no restarts (as §136). Dirs `s133cap4_cgrownoise_s{seed}`.
+* **Readings:**
+  - **CAP-PASS where S5×4 FSQ-8 fails by capacity:** widening at a plateau supplies the capacity the narrow code lacks (the user's GROW idea, with a benefit).
+  - **Against NOISE-64** (fixed width from step 0): if both pass, growth costs nothing; if GROW passes where NOISE-64 fails, a narrow-first entry helps at capacity.
+  - **CAP-FAIL:** no benefit shown.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
