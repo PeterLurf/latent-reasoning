@@ -28,7 +28,7 @@ entries, keeping ≥ 3 open per card.
      for S = 601..620.
    - Peak about 6 GB (L_max ≤ 4 up to 5k). About 20 min each. Stop: 4.5k steps.
 
-4. **Ramp-disentangling prototype** (Theory, stable-latent candidate 3; descriptive). Does escape without learning move with the rounding
+4. [done 2026-10-07 11:34 EDT: MOVES by the registered rule, mostly seeds stuck in both arms; details in `docs/THEORY_STABLE_LATENT_2026-10-06.md`, candidate 3] **Ramp-disentangling prototype** (Theory, stable-latent candidate 3; descriptive). Does escape without learning move with the rounding
    ramp?
    - Paired short runs on seeds 601–610, fsq120 S5 FINAL, `--stop_after 8000`:
      - **plain;**

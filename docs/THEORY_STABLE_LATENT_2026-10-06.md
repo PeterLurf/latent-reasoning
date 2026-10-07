@@ -235,6 +235,13 @@ with the same code and settings across families.
   - or a label-free gated ramp, which hardens only when the code is separable: grid margin, active units (1509.00519), or the decoder's
     agreement between soft and rounded codes.
   - Registered only after the prototype.
+* **Prototype read (2026-10-07 11:34 EDT; `theory/proto_ramp.py`, rule fixed before any late run; 9 informative seed pairs on the 4060 / 3070): the registered verdict
+  is MOVES** (pooled: 4 of the 7 plain-flagged seeds flag after the late ramp, R′; 3070 MOVES, 4060 MIXED). Decomposition (descriptive):
+  - 3 of those 4 (seeds 3 / 16 / 31) are also flagged in the late arm's **unrounded** window, stuck at a loss of 4.3–4.8 in both arms: they fail whatever the rounding;
+  - only s14 moves cleanly (its late rise starts at the ramp, 6k). Seeds 603 and 28 improve under the late ramp (8.9k loss 1.73 / 2.02 against plain's 8k 2.84 / 3.12);
+  - in 4 late runs the loss starts rising at 5.1–5.3k, at the L_max 8 step, before the ramp.
+  - **Read:** rounding is one cause on some seeds, not the single cause. The curriculum steps carry most of the escape-without-learning failures. **No
+    registration follows:** the carriers without a hard ramp (SOFT-16, NOISE-64, CONT-64) already pass (§133 stage 1).
 
 ## Candidate 4 (the user's idea, via Audit): TEACHER-STATE DISTILLATION (TSD), from a CoT model's hidden states into the carrier
 * **Stage A failed in both arms (135-9).** Both are worse than plain. The weight-1 InfoNCE never vanishes and pulls context into the code (2,000–6,900
