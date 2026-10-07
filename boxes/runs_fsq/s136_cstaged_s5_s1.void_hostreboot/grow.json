@@ -1,0 +1,44 @@
+{
+ "d0": 8,
+ "events": [
+  {
+   "step": 2000,
+   "from": 8,
+   "to": 16,
+   "loss": 2.07281623609364,
+   "pre_contraction_fp32": {
+    "rho": 9.99999883788405e-07,
+    "rho_nonzero": 0.12258264587655,
+    "rho_norm": 9.99999883788405e-07,
+    "basin": 0.0,
+    "exact_recovery_share": 0.756
+   }
+  },
+  {
+   "step": 3600,
+   "from": 16,
+   "to": 32,
+   "loss": 2.364088274538517,
+   "pre_contraction_fp32": {
+    "rho": 4.553571216092678e-06,
+    "rho_nonzero": 0.590417850150481,
+    "rho_norm": 4.597608949552523e-06,
+    "basin": 0.0,
+    "exact_recovery_share": 0.382
+   }
+  },
+  {
+   "step": 4600,
+   "from": 32,
+   "to": 64,
+   "loss": 0.7075196314475033,
+   "pre_contraction_fp32": {
+    "rho": 0.0005850815214216709,
+    "rho_nonzero": 0.8564998283222898,
+    "rho_norm": 0.0005870818858966231,
+    "basin": 0.0,
+    "exact_recovery_share": 0.05
+   }
+  }
+ ]
+}

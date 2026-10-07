@@ -1,5 +1,296 @@
 [
  {
+  "run": "s136_cgrow_s5_s1",
+  "grow": "8:64",
+  "trigger": "2.5",
+  "staged": false,
+  "nested": false,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "driver": "595.71.05",
+  "last_step": 24000,
+  "events": [
+   {
+    "step": 2000,
+    "from": 8,
+    "to": 64,
+    "loss_at_step": 2.07281623609364
+   }
+  ],
+  "recomputed": {
+   "threshold": 2000,
+   "plateau": 5200
+  },
+  "run_reported": {
+   "threshold": 2000,
+   "plateau": 5200
+  },
+  "width_final": 64,
+  "first_fire_matches_recomputed": true,
+  "evaluated": true,
+  "void": null
+ },
+ {
+  "run": "s136_cgrow_s5_s2",
+  "grow": "8:64",
+  "trigger": "2.5",
+  "staged": false,
+  "nested": false,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "driver": "595.84",
+  "last_step": 24000,
+  "events": [
+   {
+    "step": 2000,
+    "from": 8,
+    "to": 64,
+    "loss_at_step": 1.178320045787841
+   }
+  ],
+  "recomputed": {
+   "threshold": 2000,
+   "plateau": 4600
+  },
+  "run_reported": {
+   "threshold": 2000,
+   "plateau": 4600
+  },
+  "width_final": 64,
+  "first_fire_matches_recomputed": true,
+  "evaluated": true,
+  "void": null
+ },
+ {
+  "run": "s136_cgrow_s5_s3",
+  "grow": "8:64",
+  "trigger": "2.5",
+  "staged": false,
+  "nested": false,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "driver": "595.71.05",
+  "last_step": 24000,
+  "events": [
+   {
+    "step": 2000,
+    "from": 8,
+    "to": 64,
+    "loss_at_step": 1.6509496558550745
+   }
+  ],
+  "recomputed": {
+   "threshold": 2000,
+   "plateau": 5100
+  },
+  "run_reported": {
+   "threshold": 2000,
+   "plateau": 5100
+  },
+  "width_final": 64,
+  "first_fire_matches_recomputed": true,
+  "evaluated": true,
+  "void": null
+ },
+ {
+  "run": "s136_cnoise_s5_s1",
+  "grow": "8:64",
+  "trigger": "2.5",
+  "staged": false,
+  "nested": false,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "driver": "595.80",
+  "last_step": 24000,
+  "events": [
+   {
+    "step": 2000,
+    "from": 8,
+    "to": 64,
+    "loss_at_step": 2.07281623609364
+   }
+  ],
+  "recomputed": {
+   "threshold": 2000,
+   "plateau": 5100
+  },
+  "run_reported": {
+   "threshold": 2000,
+   "plateau": 5100
+  },
+  "width_final": 64,
+  "first_fire_matches_recomputed": true,
+  "evaluated": true,
+  "void": null
+ },
+ {
+  "run": "s136_cnoise_s5_s2",
+  "grow": "8:64",
+  "trigger": "2.5",
+  "staged": false,
+  "nested": false,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "driver": "595.71.05",
+  "last_step": 24000,
+  "events": [
+   {
+    "step": 2000,
+    "from": 8,
+    "to": 64,
+    "loss_at_step": 1.178320045787841
+   }
+  ],
+  "recomputed": {
+   "threshold": 2000,
+   "plateau": 5100
+  },
+  "run_reported": {
+   "threshold": 2000,
+   "plateau": 5100
+  },
+  "width_final": 64,
+  "first_fire_matches_recomputed": true,
+  "evaluated": true,
+  "void": null
+ },
+ {
+  "run": "s136_cstaged_s5_s1.void_hostreboot",
+  "grow": "8:64",
+  "trigger": "2.5",
+  "staged": true,
+  "nested": false,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "driver": "595.71.05",
+  "last_step": 19500,
+  "events": [
+   {
+    "step": 2000,
+    "from": 8,
+    "to": 16,
+    "loss_at_step": 2.07281623609364
+   },
+   {
+    "step": 3600,
+    "from": 16,
+    "to": 32,
+    "loss_at_step": 2.364088274538517
+   },
+   {
+    "step": 4600,
+    "from": 32,
+    "to": 64,
+    "loss_at_step": 0.7075196314475033
+   }
+  ],
+  "recomputed": {
+   "threshold": 2000,
+   "plateau": 5200
+  },
+  "run_reported": null,
+  "width_final": null,
+  "first_fire_matches_recomputed": true,
+  "evaluated": false,
+  "void": "void_hostreboot"
+ },
+ {
+  "run": "s136_cstaged_s5_s2",
+  "grow": "8:64",
+  "trigger": "2.5",
+  "staged": true,
+  "nested": false,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "driver": "570.211.01",
+  "last_step": 24000,
+  "events": [
+   {
+    "step": 2000,
+    "from": 8,
+    "to": 16,
+    "loss_at_step": 1.178320045787841
+   },
+   {
+    "step": 3000,
+    "from": 16,
+    "to": 32,
+    "loss_at_step": 1.4807609787024558
+   },
+   {
+    "step": 4000,
+    "from": 32,
+    "to": 64,
+    "loss_at_step": 0.8819067851861473
+   }
+  ],
+  "recomputed": {
+   "threshold": 2000,
+   "plateau": 5100
+  },
+  "run_reported": {
+   "threshold": 2000,
+   "plateau": 5100
+  },
+  "width_final": 64,
+  "first_fire_matches_recomputed": true,
+  "evaluated": true,
+  "void": null
+ },
+ {
+  "run": "s136_growp_s5_s1",
+  "grow": "8:64",
+  "trigger": "plateau",
+  "staged": false,
+  "nested": false,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "driver": "595.71.05",
+  "last_step": 24000,
+  "events": [
+   {
+    "step": 4700,
+    "from": 8,
+    "to": 64,
+    "loss_at_step": 2.3435401179944164
+   }
+  ],
+  "recomputed": {
+   "threshold": 4100,
+   "plateau": 4700
+  },
+  "run_reported": {
+   "threshold": 4100,
+   "plateau": 4700
+  },
+  "width_final": 64,
+  "first_fire_matches_recomputed": true,
+  "evaluated": true,
+  "void": null
+ },
+ {
+  "run": "s136_growp_s5_s2",
+  "grow": "8:64",
+  "trigger": "plateau",
+  "staged": false,
+  "nested": false,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "driver": "595.71.05",
+  "last_step": 24000,
+  "events": [
+   {
+    "step": 4000,
+    "from": 8,
+    "to": 64,
+    "loss_at_step": 5.033500370979309
+   }
+  ],
+  "recomputed": {
+   "threshold": null,
+   "plateau": 4000
+  },
+  "run_reported": {
+   "threshold": null,
+   "plateau": 4000
+  },
+  "width_final": 64,
+  "first_fire_matches_recomputed": true,
+  "evaluated": true,
+  "void": null
+ },
+ {
   "run": "s136_growp_s5_s2.void_hostkill",
   "grow": "8:64",
   "trigger": "plateau",
@@ -25,5 +316,65 @@
   "first_fire_matches_recomputed": true,
   "evaluated": false,
   "void": "void_hostkill"
+ },
+ {
+  "run": "s136_growp_s5_s3",
+  "grow": "8:64",
+  "trigger": "plateau",
+  "staged": false,
+  "nested": false,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "driver": "595.71.05",
+  "last_step": 24000,
+  "events": [
+   {
+    "step": 4000,
+    "from": 8,
+    "to": 64,
+    "loss_at_step": 4.522990727424622
+   }
+  ],
+  "recomputed": {
+   "threshold": null,
+   "plateau": 4000
+  },
+  "run_reported": {
+   "threshold": null,
+   "plateau": 4000
+  },
+  "width_final": 64,
+  "first_fire_matches_recomputed": true,
+  "evaluated": true,
+  "void": null
+ },
+ {
+  "run": "s136_growp_s5_s4",
+  "grow": "8:64",
+  "trigger": "plateau",
+  "staged": false,
+  "nested": false,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "driver": "595.71.05",
+  "last_step": 24000,
+  "events": [
+   {
+    "step": 4000,
+    "from": 8,
+    "to": 64,
+    "loss_at_step": 4.586071979999542
+   }
+  ],
+  "recomputed": {
+   "threshold": null,
+   "plateau": 4000
+  },
+  "run_reported": {
+   "threshold": null,
+   "plateau": 4000
+  },
+  "width_final": 64,
+  "first_fire_matches_recomputed": true,
+  "evaluated": true,
+  "void": null
  }
 ]
