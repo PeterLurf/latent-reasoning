@@ -1,0 +1,3 @@
+# THEORY §133 stage 1 slots 2-4 (Audit-approved after the proof; 133-2: PASS needs the remaining slots exact): arm fsq16 slot 2 via scratch.restart133; RTX 3090, driver recorded
+# P=1
+boxes/runs_fsq/s133_slots/fsq16_k2 scratch.restart133 --arm fsq16 --slot 2
