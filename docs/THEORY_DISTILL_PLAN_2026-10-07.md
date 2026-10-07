@@ -35,7 +35,11 @@ The user's idea: natural-language CoT is a poor training artifact for a latent r
     claim, on the right task);
   - B ≈ A: no gain over COPY;
   - B < A: harm, as in §135.
-* **Scope (stated):** per-step state supervision by proxy (the teacher read the CoT), so not C4. It is a C1 / C6 / C2 and multiplication tool.
+* **Scope under the C4 wording the user approved (2026-10-07):** "trainable from supervision that exists at scale: final answers / rewards, or a
+  text-CoT model's outputs; no hand-built intermediate states".
+  - **DISTILL-2 qualifies if the teacher-side state probe is fit on the teacher's own generated CoT** (its decoded S_j text), not on simulator
+    labels. That is the version to run.
+  - Strict C4 (final answers / rewards only) stays the stretch goal: the student surpassing the teacher.
 
 ## Order, cost and ETA
 * It runs **after** the multiplier-major final-answer-only arm reads (it needs a wide carrier, gate G1), because A is its comparator.
