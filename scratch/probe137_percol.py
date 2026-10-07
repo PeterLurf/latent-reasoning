@@ -63,6 +63,22 @@ def main():
         r["digit_majority_rate"] = float(np.bincount(P[h:, k], minlength=10).max() / (N - h)); r["model_digit_acc"] = float((pred[:, k] == P[:, k]).mean())
         r["n_carry_values"] = int(len(np.unique(C[:, k]))); res["by_column"][str(k + 1)] = {k_: (round(v, 4) if isinstance(v, float) else v) for k_, v in r.items()}
         print(k + 1, res["by_column"][str(k + 1)], flush=True)
+    # §141 gate (Theory 9e45b92b): NONLINEAR code -> carry lookup: each distinct code_k (the rounded FSQ tuple) -> its majority true carry_k on
+    # the fit half; accuracy on the held-out half (codes unseen in the fit half count wrong). Per column + pooled; pooled < 0.9 opens cell r1s16.
+    def lookup_acc(Qf, yf, Qs, ys):
+        tab = {}
+        for c_, y_ in zip(map(bytes, np.round(Qf).astype(np.int8)), yf):
+            tab.setdefault(c_, []).append(int(y_))
+        maj = {c_: np.bincount(v).argmax() for c_, v in tab.items()}
+        hits = [maj.get(c_, None) == int(y_) for c_, y_ in zip(map(bytes, np.round(Qs).astype(np.int8)), ys)]
+        unseen = sum(c_ not in maj for c_ in map(bytes, np.round(Qs).astype(np.int8)))
+        return float(np.mean(hits)), int(unseen)
+    pooled_hit = []
+    for k in range(L):
+        acc_k, uns = lookup_acc(Q[:h, k], C[:h, k], Q[h:, k], C[h:, k]); res["by_column"][str(k + 1)]["carry_code_nonlinear_acc"] = round(acc_k, 4)
+        res["by_column"][str(k + 1)]["carry_code_nonlinear_unseen"] = uns; pooled_hit.append(acc_k * (N - h))
+    res["carry_code_nonlinear_acc"] = float(sum(pooled_hit) / ((N - h) * L)); res["r1s16_gate_open"] = bool(res["carry_code_nonlinear_acc"] < 0.9)
+    print("carry_code_nonlinear_acc pooled", round(res["carry_code_nonlinear_acc"], 4), "gate open (< 0.9):", res["r1s16_gate_open"], flush=True)
     res.update({"eval_dtype": str(amp), "device": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"})
     json.dump(res, open(os.path.join(d, "eval_probe_percol.json"), "w", newline="\n"), indent=1)
 
