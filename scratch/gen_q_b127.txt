@@ -1,0 +1,3 @@
+# THEORY §140 DIGPAIR (ce1b3442 / note 140-1): mult_pair 4x4 PROOF slot 1 via scratch.restart140 (seeds 1 / 101 / 201 / 301; 123-3 flag at 2k; --ckpt_every 2000); boxes.multpair; RTX 3090; launches only if score_s137 reads 4x4 DROP or FAIL
+# P=1
+boxes/runs_fsq/s140_slots/pair_4x4_k1 scratch.restart140 --task 4x4 --slot 1

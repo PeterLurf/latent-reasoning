@@ -1,4 +1,8 @@
 # local 3070 backlog: the fp32 contraction filler (same lines as c1_backlog_fp32.txt: shared locks), then docs/LOCAL_BACKLOG.md 3070 entries
+# §140 pre-launch gates (ce1b3442 / note 140-1): CUDA bf16 gradflow, GPU end-to-end smoke, memory check (17 steps; 4x8 eval 33 steps)
+2.5 theory/results/gradflow_s140_cuda.json python -u scratch/gradflow_check.py --paths s140 --device {DEV} --out theory/results/gradflow_s140_cuda.json
+3.5 D:/drain_tmp/smoke140g/eval.json python -u -m boxes.multpair --family mult_pair --task 4x4 --seed 1 --steps 40 --sched_scale 0.002 --bs 32 --log_every 5 --train_n 4000 --test_n 100 --ext_n 100 --donor_n 100 --contract_n 100 --eval_bs 100 --ckpt_every 20 --device {DEV} --out D:/drain_tmp/smoke140g
+4.5 D:/drain_tmp/mem140/mem_check.json python -u -m boxes.multpair --family mult_pair --task 4x4 --seed 1 --mem_check --bs 64 --eval_bs 250 --train_n 2000 --device {DEV} --out D:/drain_tmp/mem140
 # §139 pre-launch gates (notes 139-1 / 139-2, CE mode): CUDA bf16 gradflow, memory check with the teacher (largest shape), GPU smoke of arm b
 3.0 theory/results/gradflow_s139_cuda.json python -u scratch/gradflow_check.py --paths s139 --device {DEV} --out theory/results/gradflow_s139_cuda.json
 4.5 D:/drain_tmp/mem139/mem_check.json python -u -m boxes.multrow --family mult_row --task 4x4 --seed 1 --mem_check --distill --bs 64 --eval_bs 250 --train_n 2000 --device {DEV} --out D:/drain_tmp/mem139
