@@ -44,7 +44,10 @@ def main():
     F.D_Q, F.LEV = int(a.get("d_q", 8)), int(a.get("levels", 8)); F.HALF = (F.LEV - 1) / 2; F.SHIFT = math.atanh(F.OFF / F.HALF); memcap and memcap.apply(dev)
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     m = MC.MultCol(s5.load_gpt2(dev), MC.MultFam()).to(dev); m.load_state_dict(torch.load(os.path.join(d, "model.pt"), map_location=dev)); m.eval(); m.p_hard = 1.0
-    A, B = MC.load_bench(os.path.join(ROOT, "bench", "data", "mult_%s_test.txt" % a["task"])); P, C, _ = MC.columns(A, B); L = P.shape[1]; N = len(A); h = N // 2
+    A, B = MC.load_bench(os.path.join(ROOT, "bench", "data", "mult_%s_test.txt" % a["task"]))
+    if len(sys.argv) > 3:                                                   # smoke only: the first N test items
+        A, B = A[:int(sys.argv[3])], B[:int(sys.argv[3])]
+    P, C, _ = MC.columns(A, B); L = P.shape[1]; N = len(A); h = N // 2
     colsum = np.zeros((N, L), np.int64)
     for k in range(L):
         for i in range(max(0, k - B.shape[1] + 1), min(A.shape[1], k + 1)):
