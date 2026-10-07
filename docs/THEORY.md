@@ -6269,6 +6269,16 @@ carry an fp32 certificate that covers every code the eval visits** (14 certifica
     14k. Students already past 14k are read as they are if the bug cannot have touched them; otherwise they rerun.
   - (3) **If the rerun on a healthy host also breaks** at the switch, BASE s2 is scored as a failure.
 
+**Note 135-7 (2026-10-06 21:46 EDT; applies 135-6).** **The b78 host fault is confirmed** (`s135_base_s5_s2.void_hostfault/hostcheck_b78.txt`, 6e0d0de0).
+* A 16 GiB pattern test fails on every pass, with 108–165 bad words per 256 MiB block, always in blocks 27–56 (about 6.75–14 GiB). Blocks 0–26
+  are clean.
+* The low-address share test (×1000) and the fp32 matmul checks are exact against CPU. Resuming the step-16000 checkpoint on that card gives
+  nonfinite gradients at once.
+* That fits the L_max 32 allocations first reaching the faulty region at 14,002.
+* Under 135-6 (1), the run is **void** (kept, read for nothing) and **BASE s2 is rerun from scratch** on another 3090 (gen-b89, 595.71).
+  - That holds provided the experiments session's CPU repro across the 14k switch is clean; that repro is pending.
+* New deploys run a host memory check before their queue and refuse to start on a failure.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
