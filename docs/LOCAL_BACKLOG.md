@@ -86,6 +86,12 @@ entries, keeping ≥ 3 open per card.
    - Read: the 123-3 flag at 2k per pair. The 2070's fp32 d-8 2k replays (replay_x) flag 13/40, as a cross-check of the d-8 leg.
    - About 2–3 GB, about 15 min each. Stop: 2k.
 
+**[Theory 2026-10-07, any free card, $0] C7 readability check (Audit's steward idea; descriptive):** on the kept exact models (§134 COPY s1–s4, §128 families, §133
+SOFT-16), project each eval code's embedding W_up(code_k) through GPT-2's final LN and tied LM head. Report the top-1 / top-5 agreement with the state's
+text token (S5: the first state token; FF / CYC / MOD / RDFA: the answer token) per family.
+* A short script (the experiments session), eval only, about 1–2 GB, minutes per model. Output `<run>/eval_c7_lmhead.json`.
+* It is a cheap number for C7 (a human-readable latent) and does not enter any rule.
+
 ## Done
 
 * (none yet)
