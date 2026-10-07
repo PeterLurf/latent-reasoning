@@ -234,6 +234,8 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 144 | RUNNING-SUM (the user's "fix the multiplication"; diagnostic): sum mod 10⁴ with 2-digit items on fsq120, FSQ-8 / NOISE-64; can the carrier carry a growing number? (conditional magnitude ladder) | registered | **open** |
 | 145 | MULTI-SLOT: K = 4 carried NOISE-64 slots (one write position each) on §140's digit-pair multiplication; CARRY1 control (same writes, 1 carried) if SLOT4 IMPROVES | registered | **open** |
 | 146 | MID-PROBE ($0): layer-wise probes (0–12) of the accumulator on s140 / s137; MID-STACK SIGNAL = R² ≥ 0.5 at 100–200 in some layer ≤ 9 (top 0.05) → register a mid-stack hand-off | registered | **open** |
+| 147 | DELTA-STATE (program B1): a linear-recurrent memory (6 additive + 6 gated-delta heads) as GPT-2's only cross-segment channel, on §140's digit-pair 4×4; PASS = exact + SERIAL | registered | **open** |
+| 148 | LOOP-RETRO (program B3): prelude / weight-tied loop (blocks 4–7, damped) / coda retrofit for direct-answer 4×4; LOOP-4 vs PLAIN; C2 at r = 8 / 16 | registered | **open** |
 
 ## Live sections
 
@@ -7662,6 +7664,102 @@ matters.**
 * **NO SIGNAL:** no layer reaches 0.5 in that bin. The accumulator ≥ 100 is not computed anywhere in this model, so the hand-off point is not the fix (on this evidence),
   and the mid-stack bet ranks below the others.
 * n = 1 model per task, as stated. A model trained with a mid-stack hand-off could differ, so NO SIGNAL lowers the bet's rank but does not falsify it.
+
+## 147. DELTA-STATE: a linear-recurrent associative memory as the only cross-step channel of GPT-2 (the research program's first bet, B1; pre-registered 2026-10-07 16:49 EDT, after Literature's checks 87cd2af5 / 75f51298 and Audit's sweep, before any implementation or run; the user's "major new architecture changes… don't get stuck in the minuscule improvements loop" (via Audit))
+
+**Why (the program note `docs/THEORY_PROGRAM_2026-10-07.md`, lessons L1–L6).**
+* Bounded single-vector hand-offs carry finite state (L3) but not a growing accumulator, even in h (L2; 140-3).
+* A **linear additive memory** accumulates without any in-pass addition: per-column sums sit as values under a column key, carry-save, with no squashing.
+* A **delta-rule** memory (erase-then-write; β ∈ (0, 2), so eigenvalues can go negative) tracks finite state (Grazzi 2411.12537, DeltaProduct 2502.10297).
+* **Prior** (75f51298, `docs/LIT_BIG_BETS_2026-10-07.md`): the architecture is not new.
+  - Infini-attention 2404.07143 (segment-local attention plus a linear memory with a delta variant, retrofitted at 1B / 8B).
+  - ARMT 2407.04841 (an associative memory on pretrained GPT-2).
+  - Both are evaluated on retrieval only. **New in use:** arithmetic and state tracking, with the memory as the sole cross-step channel and C1 by design.
+  - **Literature's key flag, adopted:** a delta write *replaces* the value at a key, so accumulating would still need the in-pass old + product (140-3's failure). Hence an
+    **additive, no-decay path** for sums beside the delta path.
+
+**Architecture (on the §140 digit-pair harness; no carried code token).**
+* **The memory branch** sits after block ℓ_m: x ← x + W_o · [additive heads ‖ delta heads](LN(x)), 12 heads with d_k = d_v = 64.
+  - **6 additive heads:** S ← S + φ(k) vᵀ, read φ(q)ᵀ S, with no decay and no erase (linear attention; φ = elu + 1).
+  - **6 gated-delta heads:** S ← α S (I − β k kᵀ) + β v kᵀ, with β = 2σ(·) ∈ (0, 2), α = σ(·) initialised near 1, and k L2-normalised.
+* **Installation (L4):**
+  - q / k / v are initialised from block ℓ_m's own attention projections;
+  - W_o starts at 0 with a 500-step fade-in, as §136's growth;
+  - the new parameters get their own Adam group with a 300-step warm-up. The pretrained function is unchanged at step 0.
+* **ℓ_m = 6** unless §146 reads MID-STACK SIGNAL, in which case ℓ_m = the best layer (Literature: the probe locates where to put B1).
+* **Segments:** [EOT, a_i, b_j, column flag] per digit pair in output-column order, then the flush [EOT, " ="].
+  - Each segment is a fresh pass. Attention sees only the segment; **the memory's state (all 12 heads) is carried to the next segment and is the only cross-segment
+    channel** (C1 by design).
+* **Emission:** at a column's last pair, the LM head at the segment's last position emits p_k (streamed, least-significant first; C4 as reworded, as §140). Carry
+  resolution happens in the readout (Literature).
+* §140's recipe otherwise: column curriculum, 24k, bs 64, restart slots via the 2k flag, RTX 3090, checkpoints.
+
+**Rules (fixed now).**
+* **PASS:** ≥ 3/4 slots with test_acc ≥ 0.99 on the 1,000 items and **SERIAL**.
+  - SERIAL: the donor's **whole memory state** swapped in at hand-off after pair 4 / 8 / 12. The later digits must follow the recipient's pairs with the donor's
+    accumulator (row level, exact).
+  - DROP at proof: slot 1 below 0.95.
+* **Contraction is not part of PASS, stated now.** An exact integrator has eigenvalue 1 on its additive subspace by design, so ρ ≤ 0.28 cannot apply. Stability (C6) is read
+  on 4×8 (33 steps) instead.
+* **IMPROVES (descriptive):** columns 3–7 all ≥ 0.9 on the proof (§140's FSQ-8: 0.10–0.50).
+* **Readings:**
+  - **PASS:** a linear-recurrent memory as the sole cross-step channel makes a pretrained LM multiply exactly. C1 by design and by SERIAL; C4 as reworded.
+  - **IMPROVES without PASS:** the additive substrate fixes the accumulator, but the readout's carry resolution is short at this budget.
+  - **DROP:** a linear memory does not fix in-pass digit products or readout at this budget.
+* **Descriptive:**
+  - accuracy by column and by accumulator magnitude; ext_4x8;
+  - per-head-type ablation (additive heads zeroed, delta heads zeroed);
+  - the per-column readout of the additive state: R² of the column sum from φ(q_col)ᵀ S;
+  - ρ by head type.
+
+**Placement.**
+* **Cost:** proof (slot 1) about $0.4; slots 2–4 on a proof ≥ 0.95 (approved by the credit rule).
+* **Implementation (the experiments session):** a `DeltaMem` branch in boxes (pure PyTorch, sequential over the short segments) and a `--family mult_pair --carrier
+  deltamem` path in multpair.
+* **Gates:**
+  - function preservation at step 0 (max |Δ logits| = 0);
+  - gradflow under CUDA bf16 into q / k / v / W_o / α / β after the fade-in starts;
+  - exact ground truth;
+  - memory at the longest chain;
+  - smoke_plain;
+  - Audit's diff review.
+* Dirs `s147_delta_4x4_s{seed}`. Scorer: `theory/score_s147.py`, committed with this registration.
+
+## 148. LOOP-RETRO: recurrent depth retrofitted into GPT-2 for direct-answer multiplication (the program's depth bet, B3; pre-registered 2026-10-07 16:49 EDT, after Literature's checks 87cd2af5 / 75f51298, before any implementation or run; the user's "major new architecture changes" (via Audit))
+
+**Why.**
+* §137's column-major steps failed in-pass. Depth adds serial compute per token without any cross-step latent.
+* **Prior** (75f51298): the retrofit is not new (2608.11233, McLeish 2511.07384, Relaxed Recursive 2410.20672, MoR 2507.10524, Huginn 2502.05171; Saunshi 2502.17416).
+  - GPT-2 small with no CoT on 4×4: 0.29 (ICoT-SI's table, long training). Our §98 harness: 0.003.
+  - ICoT-SI reaches 1.00 with no loops, so the C3 bar is high. **B3's distinctive claims are C2 (loops beyond training help) and C5 (stop at convergence).**
+  - A removal ↔ loop coupled schedule is new: a second stage.
+
+**Design.**
+* **Task:** direct-answer 4×4, "a * b =" → the product's 8 digits (bench format, least-significant first), no CoT. Bench train split; the 1,000 test items.
+* **Architecture:** GPT-2 small as prelude (blocks 0–3), loop (blocks 4–7, weight-tied, run r times) and coda (blocks 8–11).
+  - **Input injection:** each iteration's input is h_r + P(prelude output), with P a zero-initialised linear map.
+  - **Damped update:** h_{r+1} = h_r + η (Loop(h_r + P(e)) − h_r), with η = 0.25 for r > 1 ("Right direction, wrong step" 2609.16665).
+  - At r = 1 and η = 1 it is plain GPT-2, so it is installed function-preservingly.
+  - **The r curriculum:** r = 1 to 2k, then r ~ U{1 … 4} per batch to 24k.
+  - **Deep supervision (TRM):** CE on the answer after each loop group, at the final r plus one uniform earlier r (114-1's unbiased two-sample form).
+* **Arms (proof s1 each):** LOOP-4 (above) and PLAIN (r = 1 always, the same data and budget: the direct-answer baseline).
+
+**Rules (fixed now).**
+* **PASS(LOOP-4):** ≥ 3/4 seeds with test_acc ≥ 0.99 at r = 4.
+* **IMPROVES (descriptive):** LOOP-4 ≥ PLAIN + 0.2 on the proof.
+* **C2 (descriptive, then a rule at the full stage):** accuracy at test r = 8 and 16 ≥ at r = 4 (more loops help beyond training).
+* **Per-loop monotone progress** (Literature: all inputs are visible every loop, §114's L1 risk): answer accuracy and CE after each iteration, r = 1 … 16.
+* **C5 (descriptive):** halting when ‖h_{r+1} − h_r‖ / ‖h_r‖ < 10⁻³; accuracy and mean r used.
+* **Readings:**
+  - **IMPROVES:** looped depth buys implicit computation at this budget. Stage 2 (CoT removal coupled to added loops) follows as a new registration.
+  - **No improvement:** depth alone does not buy direct multiplication at this budget. B3 stops.
+* **Descriptive:** C1 as loop-state swaps (the donor's h after iteration r swapped into the recipient's loop: does the answer follow the donor?); ρ of the loop map.
+
+**Placement.**
+* **Cost:** proofs about $0.5 (LOOP-4) + about $0.25 (PLAIN).
+* **Implementation (the experiments session):** a `--family mult_direct` adapter with a looped GPT-2 wrapper (prelude / loop / coda, P, η, the r curriculum, deep supervision).
+* **Gates:** r = 1 equivalence with GPT-2 (max |Δ logits| = 0), gradflow, memory at r = 4, smoke_plain, Audit's diff review.
+* Dirs `s148_{loop4,plain}_4x4_s{seed}`. Scorer: `theory/score_s148.py`, committed with this registration.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
