@@ -36,3 +36,4 @@
 66.244.106.221  # gen-b94 2026-10-06: stuck 'loading' after 'Pull complete' 17+ min
 87.205.21.33  # gen-b94 retry 1 failed to start
 79.116.20.245  # gen-b95 2026-10-07: stuck 'loading' 17+ min (Audit 00:48)
+82.178.70.50  # gen-b103 2026-10-07: rebooted mid-run (s136_cstaged_s5_s1 at 19.5k, job killed) - unreliable
