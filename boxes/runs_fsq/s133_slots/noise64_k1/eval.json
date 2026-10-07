@@ -1,0 +1,38 @@
+{
+ "arm": "noise64",
+ "slot": 1,
+ "accepted_seed": 201,
+ "attempts": [
+  {
+   "seed": 1,
+   "dir": "boxes/runs_fsq/s133_noise64_s1",
+   "status": "plateau",
+   "rc": 0,
+   "sec": 127
+  },
+  {
+   "seed": 101,
+   "dir": "boxes/runs_fsq/s133_noise64_s101",
+   "status": "plateau",
+   "rc": 0,
+   "sec": 125
+  },
+  {
+   "seed": 201,
+   "dir": "boxes/runs_fsq/s133_noise64_s201",
+   "status": "accepted",
+   "rc": 0,
+   "sec": 4821
+  }
+ ],
+ "n_restarts": 2,
+ "error": null,
+ "arm_args": [
+  "--d_q",
+  "64",
+  "--no_round",
+  "--dither",
+  "0.25"
+ ],
+ "extra_args": []
+}

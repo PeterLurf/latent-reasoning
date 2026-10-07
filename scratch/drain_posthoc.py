@@ -54,6 +54,13 @@ def main():
         with open(os.path.join(ROOT, "logs", "probe_posthoc_%s.log" % name), "w") as lg:
             subprocess.call([sys.executable, "-u", "-m", mod, "--from_args", os.path.join(d, "args.json"), "--probe_only", "--device", dev, "--out", d],
                             cwd=ROOT, stdout=lg, stderr=subprocess.STDOUT)
+    if name.startswith(("s133_", "s134_", "s135_")) and not os.path.exists(os.path.join(d, "eval_contraction_fp32.json")):
+        # Theory 133-5: PASS's rho reads only the post-hoc fp32 contraction - every accepted §133 / §134 / §135 run, on the host, before
+        # any keep / skip decision (kept models used to skip it)
+        mod = "boxes.fsq120_posthoc" if os.path.exists(os.path.join(ROOT, "boxes", "fsq120_posthoc.py")) else "boxes.fsq120"
+        with open(os.path.join(ROOT, "logs", "posthoc_contraction_%s.log" % name), "w") as lg:
+            subprocess.call([sys.executable, "-u", "-m", mod, "--from_args", os.path.join(d, "args.json"), "--contraction_only", "--fp32", "--device", dev, "--out", d],
+                            cwd=ROOT, stdout=lg, stderr=subprocess.STDOUT)
     if name.startswith(("s130chk_", "s131x_")):                             # Theory 57d6b89e: FAILED runs also get prefix accuracy + fp32 contraction
         try:
             la = json.load(open(ep)).get("long_acc")
