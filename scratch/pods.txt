@@ -1117,3 +1117,13 @@ PRICE EXCEPTION 2026-10-06 04:58 gen-b41 offer 53010473 RTX 3090 595.71 $0.267: 
 54715983 vast offer 53293154 created 2026-10-07 16:58: label gen-b139, queue scratch/gen_q_b139.txt (logged at create by vdeploy_toy.sh)
 54716392 vast offer 53293145 created 2026-10-07 17:00: label gen-b138, queue scratch/gen_q_b138.txt (logged at create by vdeploy_toy.sh)
 54716392 vast | gen_b138 DESTROYED 2026-10-07 17:21 stuck 'loading' 24 min after create (92.97.193.95, b139's machine), no job ran; IP excluded; fill_s143p retries
+54720189 vast offer 41812721 created 2026-10-07 17:24: label gen-b140, queue scratch/gen_q_b140.txt (logged at create by vdeploy_toy.sh)
+54721484 vast offer 48757313 created 2026-10-07 17:34: label gen-b138, queue scratch/gen_q_b138.txt (logged at create by vdeploy_toy.sh)
+54724865 vast offer 44280029 created 2026-10-07 18:03: label gen-b141, queue scratch/gen_q_b141.txt (logged at create by vdeploy_toy.sh)
+54720189 vast | gen_b140 DESTROYED_VERIFIED 2026-10-07 18:30 after verified per-run fetch (boxes/runs_fsq/s148_plain_4x4_s1 boxes/runs_fsq/s148_loop4_4x4_s1)
+54713763 vast | gen_b137 DESTROYED_VERIFIED 2026-10-07 19:00 after verified per-run fetch (boxes/runs_fsq/s142_a_4x4_s1)
+54732047 vast offer 53259027 created 2026-10-07 19:01: label gen-b145, queue scratch/gen_q_b145.txt (logged at create by vdeploy_toy.sh)
+54732119 vast offer 53259027 created 2026-10-07 19:02: label gen-b142, queue scratch/gen_q_b142.txt (logged at create by vdeploy_toy.sh)
+54631045 vast | gen_b131 DESTROYED_VERIFIED 2026-10-07 19:10 after verified per-run fetch (boxes/runs_fsq/s141_r4s16_4x4_s1 boxes/runs_fsq/s141_slots/r4s16_4x4_k1)
+54736223 vast offer 54716748 created 2026-10-07 19:35: label gen-b142, queue scratch/gen_q_b142.txt (logged at create by vdeploy_toy.sh)
+54732047 vast | gen_b145 (§150 DIGIT s1) runs multpair 8efc841e (= b430b068): slot logits under bf16 autocast with the 11-row DIGIT gather; b144 (§150 FULL s1) runs the fp32 slot head (2bc2adad) - the s1 proofs differ in slot-head precision as well as vocabulary (Audit 19:40); seeds 2-4 use the fp32 head for both arms
