@@ -6624,6 +6624,18 @@ k, k + 100, k + 200, k + 300; 123-3's 2k flag). Cloud RTX 3090, checkpoints, the
   GiB (5×5 eval at bs 250). 5×5 evaluations stay on 3090s, since 5.78 GiB is near the local cap.
 * The 4×4 proof (slot 1: seeds 1 / 101 / 201 / 301, 123-3's 2k flag) deploys on one RTX 3090.
 
+**Note 133-10 (2026-10-07 01:56 EDT; the 16-d arms scored by Theory with score_s133; Audit-read; and a correction).**
+* **SOFT-16: PASS, 4/4 slots.** Exact at 2,048, SERIAL, with fp32 rho_k3 0.134 / 0.113 / **0.105** (slot 3, s3) / 0.111. One restart, in slot 2 (s2 flagged at 2k,
+  then s102).
+* **FSQ-16: FAIL, 2/4.** Slots 1 and 4 pass. Slots 2 (s2) and 3 (s3) are accepted runs, not flagged at 2k, that end at ext 0.0: escape without learning.
+* **Descriptive:**
+  - seed 3 escapes and fails under FSQ-8 (§128 / §127) and under FSQ-16, but **learns under SOFT-16**;
+  - the soft carrier (β 0.1 at every hand-off, train and test) never goes through §120's hard-rounding ramp.
+  - At d 16 this is consistent with candidate 3's rounding hypothesis, while the d-8 ramp prototype found F2 mostly without rounding. Different
+    widths, n small, so no claim.
+* **Correction to 133-9:** the 64-d arms' slots 2–4 were **never queued**: only slot-1 queues existed. 133-9's "running" was wrong. The 9 runs
+  (FSQ-64, NOISE-64, CONT-64 × slots 2–4; about $4.5, approved under 133-5) are queued now. §138's trigger cannot fire before they land.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
