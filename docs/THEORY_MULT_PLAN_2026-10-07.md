@@ -1,4 +1,33 @@
-# Multiplication on the task-agnostic carrier: design draft (2026-10-07; design only, no registration or spend until the gates read)
+# Multiplication on the task-agnostic carrier: design draft (2026-10-07; v2 after Literature c5687f0c; design only, no registration or spend until the gates read)
+
+## v2: two orderings, column-major first (Literature `docs/LIT_MULT_PLAN_2026-10-07.md`, Audit)
+* **COLUMN (primary; new):** op k = output column k (k = 1 … 2n).
+  - The segment sees a's and b's digits in context, plus a position token k.
+  - **The carried state is the carry only:** Σ_{i+j=k} a_i b_j + carry is at most about 81n + carry, so the carry stays ≤ 2 digits (about 6 bits) at
+    any length.
+  - The model **emits product digit k at step k**: the answer decoder reads code_k.
+  - **It fits FSQ-8** (24 bits), so **no width gate**. It is the only ordering whose state stays bounded, so it can be tested on 4×8 (C2).
+  - Neural GPU 1511.08228 and position coupling 2410.15787 are the precedents.
+  - **C4 qualifier (disclosed, as for 110b-1):** the per-step targets are final-answer digits delivered per step. There are no intermediate-state
+    labels, but the supervision is temporally split.
+  - **Recipe:** §128's 8-d recipe with its restart slots (proven).
+  - **COPY is not used here:** its targets (whole products) are not the carried quantity (a carry), and 8-digit products exceed 24 bits.
+* **MULTIPLIER (secondary; v1 below):** op j = b_j, carried S_j, pure FINAL, so the stricter C4 claim.
+  - It needs a wide carrier (G1).
+  - It is the capacity stress arm, and the arm for distillation (§98's TC-M teachers write S_j, the same decomposition).
+* **Shortcut probe (both orderings; Literature / Audit):** the probe R² of the true state (the carry, or S_j) against the b-prefix identity.
+  - Literature's signature for the shortcut is "4×2 exact, 4×3 fails" under the curriculum, which is stronger under pure FINAL.
+* **Gates (v2):**
+  - COLUMN needs none of G1 / G2: Audit's review, the scorer, and the adapter (multi-token context, streamed digit decoding, donor ground
+    truth: an injected carry code).
+  - MULTIPLIER still needs G1 (+ G2 for its COPY arm).
+* **ETA (v2):**
+  - COLUMN 4×4 proof about 3–6 h after the user's go (the adapter is the long pole); 4×4 four seeds the same day; 5×5 and 4×8 (descriptive C2) the
+    next morning.
+  - MULTIPLIER as in v1.
+  - About $1–2 per size for COLUMN (L = 2n segments of about 12 tokens, about 30–60 min per run).
+
+## v1 (2026-10-07 01:30): multiplier-major
 
 The user asked "when can we run multiplication". Their standing rule: multiplication returns only through the task-agnostic harness
 (fsq120, §128's recipe), not §98's task-specific one. §128 excluded it because the state does not fit an 8-d FSQ code.
