@@ -202,11 +202,13 @@ def donor(m, A, Bd, dev, amp, bs, rng, positions=(2, 4, 6), n=2000):
 
 
 @torch.no_grad()
-def contraction(m, A, Bd, dev, amp, T0=2, n=500, seed=12301):
+def contraction(m, A, Bd, dev, amp, T0=2, n=500, seed=12301, unit="column"):
     """fsq120.contraction's formulas on column chains: perturb z_b after column T0 by eps * std_d * u and follow the K = L - T0
     remaining hand-offs; rho = the geometric mean of the per-hand-off median distance ratios over k = 1 .. min(8, K)."""
     rng = np.random.default_rng(seed); idx = rng.permutation(len(A))[:n]; A, Bd = A[idx], Bd[idx]; N = len(A); Lc = A.shape[1] + Bd.shape[1]
-    items = chain_items(Lc, m.R); L = len(items); T0 = T0 * m.R; K = L - T0; W = min(8, K)        # §141: hand-offs are steps (T0 in columns)
+    items = chain_items(Lc, m.R); emit = emit_mask(Lc, m.R); L = len(items); p = T0 * m.R - 1     # perturb at the last repeat of column T0 (0-based step p)
+    meas = [t for t in range(p + 1, L) if unit == "step" or emit[t]]        # note 141-2: "column" = the following columns' last repeats (the rule);
+    K = len(meas); W = min(8, K)                                            #   "step" = every later step (descriptive); identical at R = 1
     m.ctx = torch.tensor(ctx_tokens(A, Bd), device=dev)
     def step(prev, t, add=None):                                            # t = 0-based step
         with amp_ctx(amp):
@@ -215,17 +217,21 @@ def contraction(m, A, Bd, dev, amp, T0=2, n=500, seed=12301):
     def dec(e):
         with amp_ctx(amp):
             return m.fam.decode(m.answer_greedy(e, 1).cpu().numpy())
-    prev = m.start(N, dev); zs = []
-    for t in range(T0 - 1):
+    prev = m.start(N, dev); zs = []; zc = {}; cdec = {}
+    for t in range(p):
         z, e = step(prev, t); zs.append(z); prev = e[:, None]
-    pre_T0 = prev; zT0, eT0 = step(prev, T0 - 1); zs.append(zT0); clean = [zT0]; cdec = []; c = eT0[:, None]
-    for k in range(K):
-        z, e = step(c, T0 + k); zs.append(z); clean.append(z); cdec.append(dec(e)); c = e[:, None]
+    pre_T0 = prev; zT0, eT0 = step(prev, p); zs.append(zT0); c = eT0[:, None]
+    for t in range(p + 1, L):
+        z, e = step(c, t); zs.append(z); c = e[:, None]
+        if t in meas:
+            zc[t] = z; cdec[t] = dec(e)
     std_d = torch.cat(zs).std(0); U = torch.tensor(rng.standard_normal((N, zT0.shape[-1])), dtype=torch.float32, device=dev); R = {}
     for eps in F.CONTRACT_EPS:
-        zp, ep = step(pre_T0, T0 - 1, add=eps * std_d * U); dist = [(zp - zT0).norm(dim=-1)]; agree = []; c = ep[:, None]
-        for k in range(K):
-            z, e = step(c, T0 + k); dist.append((z - clean[k + 1]).norm(dim=-1)); agree.append(float((dec(e) == cdec[k]).mean())); c = e[:, None]
+        zp, ep = step(pre_T0, p, add=eps * std_d * U); dist = [(zp - zT0).norm(dim=-1)]; agree = []; c = ep[:, None]
+        for t in range(p + 1, L):
+            z, e = step(c, t); c = e[:, None]
+            if t in meas:
+                dist.append((z - zc[t]).norm(dim=-1)); agree.append(float((dec(e) == cdec[t]).mean()))
         D = torch.stack(dist).cpu().numpy(); ratio = D[1:] / np.maximum(D[:-1], 1e-6); rho_k = np.median(ratio, axis=1)
         rk_nz = [float(np.median(ratio[k][D[k] > 0])) for k in range(W) if (D[k] > 0).any()]
         R[str(eps)] = {"rho_k": rho_k.round(4).tolist(), "rho_geo": float(np.exp(np.log(np.maximum(rho_k[:W], 1e-6)).mean())), "agree_k": [round(v, 4) for v in agree],
@@ -233,7 +239,7 @@ def contraction(m, A, Bd, dev, amp, T0=2, n=500, seed=12301):
                        "rho_nonzero": float(np.exp(np.log(np.maximum(rk_nz, 1e-6)).mean())) if rk_nz else None}
     basin = max([e_ for e_ in F.CONTRACT_EPS if R[str(e_)]["agree_k"][W - 1] >= 0.99], default=0.0)
     return {"rho": R["0.1"]["rho_geo"], "rho_nonzero": R["0.1"]["rho_nonzero"], "basin": basin, "exact_recovery_share": R["0.1"]["exact_recovery_share"],
-            "detail": {"T0": T0, "K": K, "window": W, "n": N, "L": L, "std_d": std_d.cpu().numpy().round(4).tolist(), "eps": R}}
+            "detail": {"unit": unit, "T0": T0, "T0_step": p + 1, "K": K, "window": W, "n": N, "L": L, "R": m.R, "std_d": std_d.cpu().numpy().round(4).tolist(), "eps": R}}
 
 
 def ridge_r2(Xf, yf, Xs, ys, lam=1e-3):
@@ -316,9 +322,11 @@ def main():
     if a.contraction_only or a.prefix_only:
         m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval(); m.p_hard = 1.0
         if a.contraction_only:
-            ampc = None if a.fp32 else amp; ct = contraction(m, teA, teB, dev, ampc, T0=a.contract_T0, n=a.contract_n)
-            ct.update({"eval_dtype": str(ampc), "device": dname(), "driver": driver_version()})
-            json.dump(ct, open(os.path.join(a.out, "eval_contraction_fp32.json" if a.fp32 else "eval_contraction.json"), "w", newline="\n"), indent=1)
+            ampc = None if a.fp32 else amp; base = "eval_contraction_fp32" if a.fp32 else "eval_contraction"
+            for unit in (("step", "column") if a.repeats > 1 else ("column",)):   # note 141-2: the column form = the scored file; the step form "_step"
+                ct = contraction(m, teA, teB, dev, ampc, T0=a.contract_T0, n=a.contract_n, unit=unit)
+                ct.update({"eval_dtype": str(ampc), "device": dname(), "driver": driver_version()})
+                json.dump(ct, open(os.path.join(a.out, base + ("_step" if unit == "step" else "") + ".json"), "w", newline="\n"), indent=1)
             print("CONTRACTION", json.dumps({k: ct[k] for k in ("rho", "rho_nonzero", "basin", "exact_recovery_share")}), flush=True)
         else:
             P, _, _ = columns(teA, teB); C = rollout(m, teA, teB, dev, amp, a.eval_bs) == P
@@ -404,7 +412,9 @@ def main():
         xA, xB = gen_operands(np.random.default_rng(13704), a.ext_n, 4), gen_operands(np.random.default_rng(13705), a.ext_n, 8); xA, xB, rem = dedup(xA, xB, teA, teB)
         Px, _, _ = columns(xA, xB); res["ext_4x8"] = {**acc_report(rollout(m, xA, xB, dev, amp, a.eval_bs), Px), "dedup_removed": rem, "seeds": [13704, 13705]}
     res["donor"] = donor(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(13702), n=a.donor_n)
-    ct = contraction(m, teA, teB, dev, amp, T0=a.contract_T0, n=a.contract_n)
+    if a.repeats > 1:                                                       # note 141-2: the per-step form, descriptive
+        res["contraction_step"] = contraction(m, teA, teB, dev, amp, T0=a.contract_T0, n=a.contract_n, unit="step")
+    ct = contraction(m, teA, teB, dev, amp, T0=a.contract_T0, n=a.contract_n)   # the per-column form (the rule; = the §137 form at R = 1)
     res.update({"rho": ct["rho"], "rho_nonzero": ct["rho_nonzero"], "basin": ct["basin"], "exact_recovery_share": ct["exact_recovery_share"], "contraction": ct["detail"]})
     res["s137_probe"] = s137_probe(m, teA, teB, dev, amp, a.eval_bs)
     if a.repeats > 1:                                                       # §141 (note 141-1): per-repeat accumulation / depth reading
