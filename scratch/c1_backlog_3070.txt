@@ -1,10 +1,9 @@
 # local 3070 backlog: the fp32 contraction filler (same lines as c1_backlog_fp32.txt: shared locks), then docs/LOCAL_BACKLOG.md 3070 entries
 # §134 verdict blocker (Theory 2026-10-06 22:1x): s134_copy_s5_s2 fp32 contraction (model.pt local)
 2.3 boxes/runs_fsq/s134_copy_s5_s2/eval_contraction_fp32.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s134_copy_s5_s2/args.json --contraction_only --fp32 --device {DEV} --out boxes/runs_fsq/s134_copy_s5_s2
-# §115 final eval, retry (Theory 2026-10-06): the 19:32 attempt OOMed with only 942 MiB free - the previous job's memory not yet released / a co-tenant; this run waits until the 3070 (nvidia-smi 2) holds < 600 MiB, then runs alone; --bs 100, test_n 500 as s2 / s3
-5.5 boxes/runs_s5/g105_mask4_s1/eval_s115.json sleep 15; for i in $(seq 1 60); do u=$(nvidia-smi --id=2 --query-gpu=memory.used --format=csv,noheader,nounits | tr -d ' \r'); [ "$u" -lt 600 ] && break; sleep 10; done; python -u -m boxes.snap115 --run boxes/runs_s5/g105_mask4_s1 --model g97 --test_n 500 --bs 100 --device {DEV}
+# §115 final eval, retry (Theory 2026-10-06): the 19:32 attempt OOMed with only 942 MiB free - the previous job's memory not yet released / a co-tenant; this run waits until the 3070 (nvidia-smi 2) holds < 600 MiB, then runs alone; --bs 100, test_n 500 as s2 / s3 | 21:38 retry OOMed at the 6 GiB cap (KV cache at bs 100) -> bs 40
+5.5 boxes/runs_s5/g105_mask4_s1/eval_s115.json sleep 15; for i in $(seq 1 60); do u=$(nvidia-smi --id=2 --query-gpu=memory.used --format=csv,noheader,nounits | tr -d ' \r'); [ "$u" -lt 600 ] && break; sleep 10; done; python -u -m boxes.snap115 --run boxes/runs_s5/g105_mask4_s1 --model g97 --test_n 500 --bs 40 --device {DEV}
 # Theory: the last registered §115 piece - g105_mask4_s1 at test_n 500 (as s2 / s3, g97 layout, part B), --bs 100 (bs 250 OOMed in the 6 GiB cap; memory only); ~15 min
-5.5 boxes/runs_s5/g105_mask4_s1/eval_s115.json python -u -m boxes.snap115 --run boxes/runs_s5/g105_mask4_s1 --model g97 --test_n 500 --bs 100 --device {DEV}
 # LOCAL_BACKLOG 3070 #4 (Theory 2026-10-06, priority over the replay pairs): §115 completion - snap115 eval only; peak = estimate, protected by the hard cap (now applied in s5.load_gpt2 for every model)
 5.0 boxes/runs_s5/s108_mk4_s2/eval_s115.json python -u -m boxes.snap115 --run boxes/runs_s5/s108_mk4_s2 --device {DEV}
 5.0 boxes/runs_s5/s108_mk4_s4/eval_s115.json python -u -m boxes.snap115 --run boxes/runs_s5/s108_mk4_s4 --device {DEV}
@@ -18,7 +17,6 @@
 3.0 D:/drain_tmp/smoke133v2_noise64/eval.json python -u -m boxes.fsq120 --family s5 --arm final --seed 1 --steps 60 --sched_scale 0.003 --bs 8 --micro 2 --micro_from 32 --no_cert --ckpt_every 30 --d_q 64 --no_round --dither 0.25 --test_n 8 --test_len 32 --ext_n 4 --donor_n 8 --margin_n 8 --eval_bs 8 --device {DEV} --out D:/drain_tmp/smoke133v2_noise64
 3.0 D:/drain_tmp/smoke133v2_pin64/eval.json python -u -m boxes.fsq120 --family s5 --arm final --seed 1 --steps 60 --sched_scale 0.003 --bs 8 --micro 2 --micro_from 32 --no_cert --ckpt_every 30 --d_q 64 --no_round --carrier_ln --test_n 8 --test_len 32 --ext_n 4 --donor_n 8 --margin_n 8 --eval_bs 8 --device {DEV} --out D:/drain_tmp/smoke133v2_pin64
 3.0 D:/drain_tmp/smoke134_copy/eval.json python -u -m boxes.fsq120 --family s5 --arm final --seed 1 --steps 80 --sched_scale 0.03 --bs 8 --copy_frac 0.25 --micro 2 --micro_from 32 --no_cert --ckpt_every 40 --log_every 20 --test_n 8 --test_len 32 --ext_n 4 --donor_n 8 --margin_n 8 --eval_bs 8 --device {DEV} --out D:/drain_tmp/smoke134_copy
-5.0 boxes/runs_s5/g105_mask4_s1/eval_s115.json python -u -m boxes.snap115 --run boxes/runs_s5/g105_mask4_s1 --model g97 --device {DEV}
 # §133 gradflow under CUDA bf16 (Ampere = the 3090 class), before any §133 run
 2.0 theory/results/gradflow_s133_cuda.json python -u scratch/gradflow_check.py --paths s133 --device {DEV} --out theory/results/gradflow_s133_cuda.json
 # §133 GPU smokes (non-slot dirs in D:/drain_tmp): train 60 steps on a compressed schedule (to L_max 32) + the full eval path at small sizes, bs 8
