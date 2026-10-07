@@ -228,7 +228,8 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 138 | FULL WIDTH (the user's trigger): §133's harness at d 768, no COPY; FULL-FSQ / FULL-NOISE / FULL-CONT (vs RAW-H) / FULL-HINGE; fails-to-improve → revisit; S5×4 as the benefit test | registered | **open** |
 | 139 | DISTILL-2 (user's go): a CoT teacher's state (probe or its text) as a warm-start fading to 0 by 4k, on multiplier-major multiplication; A = SOFT-16 + COPY (FINAL), B = A + DISTILL-2, C = constant weight | **stopped at proof** (139-1(c) copy gate; A′ / B s1 test_acc 0.0, B learns only step 1 at 0.59) | closed |
 | 140 | DIGPAIR (§137's fallback; runs only on §137 4×4 DROP / FAIL): one digit pair per segment, carried column accumulator (FSQ-8), streamed digits; design-forced C1 | **4×4 DROP at proof** (0.002; columns 1–2 exact, first errors at the 3- and 4-pair columns; accumulator R² h 0.92 vs code 0.61) | closed |
-| 141 | After §137's DROP: latent repeats per column (r4 + repeat index) × carrier (FSQ-8 / SOFT-16); r1×SOFT-16 gated on a nonlinear code probe; readings crossed with §140 | registered | **open** |
+| 141 | After §137's DROP: latent repeats per column (r4 + repeat index) × carrier (FSQ-8 / SOFT-16); r1×SOFT-16 gated on a nonlinear code probe; readings crossed with §140 | **r1s16 and r4f8 DROP at proof** (test_acc 0.0; repeats change nothing: columns as §137, the sum's R² ≤ 0.28 after any repeat); r4s16 pending | **open** (r4s16) |
+| 142 | MULT-READ (the user's go): a per-step reader of the running sum (the teacher's S_j text) on NOISE-64, multiplier-major 4×4, 48k; then ICoT-style earliest-first removal to final-answer only (B-EARLY; B-LATE and CTRL descriptive); with the multiplication post-mortem | registered | **open** |
 
 ## Live sections
 
@@ -7223,6 +7224,117 @@ centroid distance) are logged in the same space. At init these are 0.13 / 2.09; 
   gets past the first hand-off.
   - This matches §137 / §140 / §141-r1s16: every design so far fails once a step must carry or accumulate a multi-digit number.
   - The user's DISTILL-2 question has no positive reading on this task. **§139 is closed at the proof stage.**
+
+**Note 141-5 (2026-10-07 14:56 EDT; interim; scored by Theory with score_s141). r4f8 is dropped at proof: s1 test_acc 0.000 (train 0.000).**
+* **Per column:** 1.0 / 0.371 / 0.137 / 0.099 / 0.073 / 0.104 / 0.100 / 0.813, against §137's r1 FSQ-8 at 1.0 / 0.326 / 0.124 / 0.103 / 0.077 / 0.104 / 0.105 / 0.953.
+  Four latent repeats per column change nothing where a column holds 3–4 products.
+* **The per-digit loss follows §137's:** 0.45 at 2k, 0.93 at 3k (L 4), about 1.25 from 9k to 24k.
+* **Per-repeat probe (141-1; descriptive for a DROP):** after repeats 1–4, the column's partial-product sum is readable from the code at R² 0.13 / 0.20 / 0.28 / 0.21, the
+  carry at 0.22 / 0.23 / 0.27 / 0.21, with ‖Δcode‖ 4.9 / 2.0 / 1.5 / 3.0. The repeats move the code and lift the sum slightly through repeat 3, then lose it at repeat 4.
+  Nothing approaches a readable sum.
+* **SERIAL** is not met (row-level donor 0.000–0.001). 4×8: 0.0.
+* **Reading (as registered: r4 DROP with §140 DROP):** multiplication is not reached by this harness at this budget. Extra latent steps without new input do not buy the
+  per-column compute. r4s16 (b131, about 19:00) completes §141. §142's post-mortem table shows it as pending.
+
+## 142. MULT-READ: a per-step reader of the running sum on a wide continuous carrier, then ICoT-style removal to final-answer only (pre-registered 2026-10-07 14:56 EDT, after Literature's checks bb1f4eeb / 602541ab and Audit's review, before any implementation or run; the user's "yes go ahead" (via Audit); registered with the multiplication post-mortem once §141's r4f8 cell read, r4s16 pending (Audit's ruling))
+
+**Why: the multiplication post-mortem (§98, §100, §137, §139, §140, §141).**
+
+| § / arm | Design | Carrier | Per-step S targets | 4×4 test_acc | Where it fails |
+|---|---|---|---|---|---|
+| 98 GEN-M | multiplier-major, k = 4 in-context slots | 768-d slots | text fork that also sees the context | 0.163 | slot 3 decode 0.80–0.92 |
+| 98 GEN-M-MASK | the same; the fork reads the slot only | 768-d slots | from the slot alone | 0.034 | slot 3 decode 0.22–0.25 |
+| 100 GEN, k = 2 | text re-embedded every 2 ops | 768-d slots | text fork | **1.000** | none (a hybrid: text checkpoints) |
+| 137 | column-major, carried carry | FSQ-8 | none | 0.000 | columns 2–7 near chance; carry R² h 0.69, code 0.24 |
+| 141 r1s16 | the same | SOFT-16 | none | 0.000 | column 2 0.663; columns 3–7 at chance |
+| 141 r4f8 | 4 latent repeats per column | FSQ-8 | none | 0.000 | columns as §137 (0.37 / 0.14 / 0.10 / 0.07 …); the sum's R² ≤ 0.28 after any repeat (141-5) |
+| 141 r4s16 | the same | SOFT-16 | none | pending (about 19:00) | an addendum when it lands |
+| 140 | one digit pair per step, carried accumulator | FSQ-8 | none | 0.002 | first error at column 3 (685 / 1,000); sums ≥ 100 absent even from h |
+| 139 A′ | multiplier-major, final answer at L 4 | SOFT-16 + COPY | none | 0.000 | nothing but COPY learned |
+| 139 B | the same + the teacher's S_j, faded by 4k | SOFT-16 + COPY | a linear readout, 0–4k | 0.000 | S_1 0.586; the readout CE stayed 1.0–1.2 nats per digit while on |
+
+* **The common failure:** every latent design fails at the first step that must build or hold a multi-digit running quantity in one vector. Per-step supervision has
+  only worked with text checkpoints (§100, k = 2).
+* **The teacher does not hold S_j in a vector either:** TC-M's S_j is linearly decodable from its own hidden state at only 0.174 exact (139-2). Text CoT spreads each
+  sum over one pass per digit; a latent carrier must compute and compress it in one segment pass.
+* **What §142 changes, against the nearest arms:**
+  - **GEN-M-MASK** (the closest prior arm, 0.034): a Markov, bounded, dithered 64-d code between separate segment passes, instead of in-context slots; a length
+    curriculum; twice the budget; S_j as the only target.
+  - **§139 B:** the reader is the shared answer decoder (nonlinear), not a linear readout; it stays on for the whole run instead of fading by 4k; NOISE-64 instead
+    of SOFT-16; no COPY.
+  - **Already in the curriculum:** shorter problems supervise S_L at hand-off L in other rows (139-3's prefix labels). The reader makes that dense: every hand-off
+    of every row.
+* **Prior** (bb1f4eeb / 602541ab, `docs/LIT_MULT_READ_REMOVAL_2026-10-07.md`): the running-sum auxiliary loss (2510.00184), here decoded from a Markov code; removal
+  as in ICoT-SI 2405.14838 (earliest-first, removal smoothing, an optimiser reset) and Coconut. New as scoped.
+* **Expectation, stated now:** given GEN-M-MASK and §139 B, a DROP at proof is the likelier outcome. **If A drops at proof, multiplication on the task-agnostic
+  carrier is parked** (no further fix arms). The project's multiplication result then stays §100's hybrid (1.000 with text checkpoints every 2 ops).
+
+**Task.** fsq120 `--family mult_row --task 4x4` (boxes/multrow.py): segment j = [EOT, carried code, a's digits, b_j, position j]; S_j = a × (b_1 … b_j).
+* The bench 4×4 train split (commuted test pairs removed); the 1,000 published test items.
+* Curriculum: L ~ U(1, L_max), with L_max 1 / 2 / 3 / 4 at 0 / 2k / 5k / 9k (§139 used 0 / 1k / 2k / 3k).
+
+**Carrier.** NOISE-64 (`--d_q 64 --no_round --dither 0.25`: continuous, dither U(±0.25) at training hand-offs after 2k, clean at test; §133 stage 1 PASS 4/4).
+No COPY (139-5: 8-digit copy learns slowly). No restarts.
+
+**The reader.**
+* At every hand-off j < L, the shared answer decoder decodes S_j from code_j alone, in the answer format (8 digits, least-significant first). Nothing decoded is
+  fed back.
+* **Targets:** the TC-M teacher's (`m98_tc_4x4_s1`) own greedy S_j, precomputed once for the train split and cached (label_source "teacher_generated"; format
+  valid 1.000 and equal to gold on 4,096 train problems, 139-2). C4 as reworded. A row with invalid teacher text gets no reader term at that hand-off.
+* **Loss:** CE_final + the mean over hand-offs j < L of CE_j. Every term is over the same 8 answer-format tokens, so no S_j dominates (Literature).
+
+**Arms.**
+* **A (READ):** the reader for the whole run, **48k steps** (about 3.8 epochs: twice §98's budget, still far below ICoT-SI's; Audit (2)).
+  - **Removal gate:** once L_max is 4, greedy final-answer exact match on a fixed 512-item train subset at L 4 is checked every 1k steps. The first check ≥ 0.95
+    saves `gate.pt` and `s142.gate_step`.
+* **B-EARLY (the primary removal arm; ICoT's order):** forked from A's `gate.pt` (same seed), 20k steps.
+  - The reader targets go **S_1 at +0, S_2 at +4k, S_3 at +8k**; final answer only from +8k to +20k.
+  - Each removal resets AdamW and re-warms the LR over 200 steps (1e-4, cosine over the fork). 10% of rows preview the next removal (ICoT-SI's smoothing).
+  - **Every fork row is a 4×4 problem** (`--fixed_L 4`, no prefix problems). Otherwise the curriculum's shorter problems would still supervise a removed S_j.
+    After the last removal the only target is the 4×4 product, as in ICoT-SI's final stage.
+* **B-LATE (descriptive; Audit's original order):** the same fork, removing S_3, then S_2, then S_1.
+* **CTRL (descriptive, s1 only, after A s1's proof):** A without the reader (final answer only), with the same carrier, curriculum and budget. It shows whether the
+  reader, rather than the carrier or the budget, made A learn.
+* A seed whose A run never opens the gate gets no B runs ("not reached").
+
+**Rules (fixed now; seeds 1–4).**
+* **PASS(arm):** ≥ 3/4 seeds with test_acc ≥ 0.99 on the 1,000 items, **SERIAL** and **contractive** (133-1's first-three form, rho_k3 ≤ 0.28, fp32 on the host).
+  - **SERIAL:** inject a donor's code after segment 2. Donor ≥ 0.90 and recipient − chance < 0.10, against donor S_2 + a_rec × (b_rec,3 b_rec,4) × 100 (exact).
+  - B arms are read on the fork's final (final-answer-only) model. A "not reached" seed counts as not passing.
+  - FAIL: ≥ 2 decided seeds not passing. **DROP at proof: A s1 test_acc < 0.95 stops the section** (no B, CTRL or further seeds).
+* **Readings:**
+  - **A PASS:** a per-step reader of the running sum makes multiplication learnable through a Markov latent code (C4 as reworded).
+    - **C1:** b_1 … b_(j−1) are not visible later, so the code must carry the prefix. SERIAL shows it carries the running sum, not the b-prefix shortcut.
+  - **A DROP or FAIL:** "not acquired within budget" (about 3.8 epochs against ICoT-SI's ~200), not impossibility. Multiplication on the carrier is then parked.
+  - **B-EARLY PASS:** exact multiplication survives ICoT-style removal to final-answer only. **Not strict C4** (trained through CoT). It is comparable to ICoT-SI's
+    protocol, with a latent carrier and C1 checked by SERIAL.
+  - **B-EARLY FAIL with A PASS:** removing the per-step targets loses the skill; retention says which S_j goes first.
+  - **B-LATE against B-EARLY** (descriptive): whether the order matters.
+  - **Exact without SERIAL:** in-pass or shortcut, not a carried S_j (137-1 (2)).
+* **Descriptive:**
+  - SERIAL before (the gate model) and after removal;
+  - under the donor swap, the **b-prefix-consistent** rate (the named shortcut: the code carries the donor's b-prefix and the step recomputes with the recipient's
+    a), and the operand-consistent rate;
+  - retention of every removed S_j (reader accuracy per hand-off at each stage);
+  - ridge probes of S_j and the b-prefix on code_j;
+  - 4×8 (positions 5–8 unseen).
+
+**Placement.**
+* **Proof:** A s1 on one cloud 3090 with checkpoints, about $1 (48k steps at about 0.4 s; the teacher precompute about 10 min).
+* **After a proof ≥ 0.95:** A s2–s4, B-EARLY s1–s4, B-LATE s1 and CTRL s1, about $6–7 more, with Audit's approval against the credit. That exceeds the approved
+  $3–5 because the proof runs twice as long (Audit (2)).
+* 5×5 only after a 4×4 PASS, with a new approval.
+* **Implementation (the experiments session):** multrow gains:
+  - `--no_round --dither` (NOISE-64), `--reader`, the teacher-target cache, `--lmax_steps`;
+  - the gate (`gate.pt`, `s142.gate_step`);
+  - the fork (`--fork_from --fork_steps --removal early|late --removal_every 4000 --rewarm 200`);
+  - stage evals (`s142.fork_start`, `s142.stages`) and the donor's b-prefix / operand rates.
+* **Gates:**
+  - gradflow under CUDA bf16 (every reader term reaches W_down and the trunk through the code; a removed target gets exactly 0 gradient);
+  - memory at L 4 with the reader;
+  - smoke_plain;
+  - Audit's diff review.
+* Dirs `s142_{a,bearly,blate,ctrl}_4x4_s{seed}`. Scorer: `theory/score_s142.py`, committed with this registration.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
