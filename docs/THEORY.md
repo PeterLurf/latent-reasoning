@@ -7175,6 +7175,13 @@ centroid distance) are logged in the same space. At init these are 0.13 / 2.09; 
   - digit pair (proto140): 0.29–0.58, where §140's cloud proof later rose to 0.87 once the 3+-pair columns entered.
   - Repeats show no early advantage. §141's cloud r4 proofs decide.
 
+**Note 134-8 (2026-10-07 11:07 EDT; the 134-6 follow-up read by Theory from the raw files; Audit-checked). Both extra MOD + COPY seeds close, so s1's failure is seed-specific.**
+* s134_copy_mod_s2 (driver 570.181): fp32 CERT holds, **236 reachable**, Moore 5, 0 violations, uncapped; long_acc 1.0, ext 1.0, copy_acc 1.0.
+* s134_copy_mod_s3 (595.71.05): holds, **238 reachable**, Moore 5, 0 violations, uncapped; 1.0 / 1.0 / 1.0.
+* **Reading (as pre-stated in 134-6 / 134-7, "both close"):** s1's loss of closure is seed-specific. COPY closes MOD in 2/3 seeds against plain's 4/4, so the evidence that COPY
+  causes open transients is **weak** (one seed).
+  - **§134's registered guard verdict stands as decided** (not adopted as the default). A later default decision could revisit it with more seeds.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
