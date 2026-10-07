@@ -521,7 +521,8 @@ def run_test(m, fam, s0, X, dev, amp, bs, every=True, grid=None, drift=None):
     """Hard chains; decode at every position (every=True) or at reads only (flip-flop). Returns decoded states (N, L) and
     the codes (N, L, 8) int8."""
     N, L = X.shape; pred = np.full((N, L), -1); ntok = NST if fam.name == "s5" else 1
-    codes = np.zeros((N, L, 1 if m.raw_h else D_Q), np.float32 if (m.no_round or m.raw_h or m.grow_noise) else np.int8)   # §126: 768-d carriers not stored
+    W_ = 1 if m.raw_h else (min(D_Q, 64) if m.grow_d0 is not None else D_Q)   # §143: a 768-wide grown code keeps its first 64 dims (GROW-NOISE reads only d0)
+    codes = np.zeros((N, L, W_), np.float32 if (m.no_round or m.raw_h or m.grow_noise) else np.int8)   # §126: 768-d carriers not stored
     for i in range(0, N, bs):
         sl = slice(i, i + bs); B = len(X[sl]); prev = m.start(B, dev, s0[sl] if fam.name == "s5" else None)
         for t in range(L):
@@ -530,7 +531,7 @@ def run_test(m, fam, s0, X, dev, amp, bs, every=True, grid=None, drift=None):
                 if every or (X[sl, t] == RD).any():
                     pred[sl, t] = fam.decode(m.answer_greedy(e, ntok, qs).cpu().numpy())
             if not m.raw_h:
-                codes[sl, t] = q.float().cpu().numpy()
+                codes[sl, t] = q[..., :W_].float().cpu().numpy()
             prev = e[:, None]
             if grid is not None and not m.raw_h:                            # §123 grid_share
                 zf = zb.float(); grid[0] += int(((zf - torch.round(zf)).abs() <= 0.1).sum()); grid[1] += zf.numel()
@@ -717,6 +718,67 @@ def lr_at(base, gr, step, steps, warm=300):
     """§136: a grown block's group ("warm_from": its switch step) adds a linear warm-up over `warm` steps."""
     w_ = 1.0 if gr.get("warm_from") is None else min(1.0, max(0, step - gr["warm_from"]) / warm)
     return base * gr.get("mult", 1.0) * w_ * min(1, step / 100) * 0.5 * (1 + math.cos(math.pi * step / steps))
+
+
+def grow_groups(params, step, lr_scale=None):
+    """AdamW groups for a widening's new parameters (grow() returns the W_down rows' params, then the new W_up columns). §136 (lr_scale None):
+    one group, unchanged. §143 switch 2: W_down rows at the base lr, the new W_up columns at lr x lr_scale (64/768, muP-style); both warm up."""
+    if lr_scale is None:
+        return [{"params": params, "mult": 1.0, "warm_from": step}]
+    return [{"params": params[:-1], "mult": 1.0, "warm_from": step, "name": "grow2_down"},
+            {"params": params[-1:], "mult": lr_scale, "warm_from": step, "name": "grow2_up"}]
+
+
+def group_steps(opt):
+    """§143 (per-group effective step size, at log_every): per AdamW group its lr and the RMS of the bias-corrected Adam update times lr."""
+    out = []
+    for i, gr in enumerate(opt.param_groups):
+        b1, b2 = gr["betas"]; num = 0.0; cnt = 0
+        for p_ in gr["params"]:
+            st = opt.state.get(p_) or {}
+            if "exp_avg" not in st:
+                continue
+            t = float(st["step"]); u = (st["exp_avg"] / (1 - b1 ** t)) / ((st["exp_avg_sq"] / (1 - b2 ** t)).sqrt() + gr["eps"])
+            num += float((u.float() ** 2).sum()); cnt += u.numel()
+        out.append({"group": gr.get("name", "base" if i == 0 else "grow%d" % i), "lr": gr["lr"], "step_rms": (gr["lr"] * math.sqrt(num / cnt)) if cnt else None})
+    return out
+
+
+@torch.no_grad()
+def s143_pre_eval(m, fam, dev, a, ct):
+    """§143: the state right before switch 2, fp32 (eval mode, hard): acc at 512 (the eval's own S5=512 chains, test_n items), z-space rho_k3
+    (133-1's first-3 form on the pre-switch fp32 contraction ct), §138's directional rho and Jacobian top, the carried norm ||e|| (row_norm)."""
+    m.eval(); Xte, Yte = s5.load_csv(os.path.join(a.data_dir, "S5=512.csv"), limit=a.test_n); s5.check_labels(Xte, Yte)
+    pred, _ = run_test(m, fam, np.zeros(len(Xte), np.int64), Xte[:, :512], dev, None, a.eval_bs); acc = float((pred == Yte[:, :512]).all(1).mean())
+    e = ct["detail"]["eps"]["0.1"]; use = [e["rho_k"][k] for k in range(min(3, len(e["rho_k"]))) if e["dist_med_k"][k] > 1e-2 and e["rho_k"][k] > 0]
+    rk3 = float(np.exp(np.mean(np.log(use)))) if use else (e["rho_k"][0] if e["rho_k"] else None)
+    with torch.enable_grad():
+        d = s138_desc(m, fam, dev, None)
+    return {"acc_512": acc, "rho_k3": rk3, "rho_dir_onestep_median": d["rho_dir_onestep_median"], "rho_jacobian_power_median": d["rho_jacobian_power_median"],
+            "carried_norm": carried_stats(m, fam, dev, None)["row_norm"], "eff_rank": d["eff_rank"], "n_512": int(len(Xte)), "dtype": "fp32", "checkpoint": "none (in-process)"}
+
+
+def _first3(rk, dk):
+    use = [rk[k] for k in range(min(3, len(rk), len(dk))) if dk[k] > 1e-2 and rk[k] > 0]
+    return float(np.exp(np.mean(np.log(use)))) if use else (rk[0] if rk else None)
+
+
+def s143_end(m, fam, dev, amp, a, g136):
+    """§143 (descriptive, fp32): the 704-dim block's variance share and R^2_state (s136_dim_use from dim 64), ||W_up_new|| and its share of
+    ||e|| on §138's probe batch, z-space rho by block (FSQ-d0 / the 56 / the 704) and the 64-block e-space rho (133-1's first-3 form)."""
+    ct = contraction(m, fam, dev, None, n=a.contract_n); e01 = ct["detail"]["eps"]["0.1"]; du = s136_dim_use(m, fam, dev, amp, 64)
+    w2 = m.up_g[1] if m.n_grow >= 2 else None; share = None
+    if w2 is not None:
+        was = m.training; m.eval(); _, _, _, _, Q = _s138_probe(m, fam, dev, None); m.train(was); Qf = Q.reshape(-1, Q.shape[-1]).float()
+        with torch.no_grad():
+            en = getattr(m, "grow_alpha_1") * F.linear(Qf[..., 64:], w2.float()); ef = m._up(Qf).float()
+        share = float((en.norm(dim=-1) / ef.norm(dim=-1).clamp_min(1e-9)).mean())
+    ev2 = next((e_ for e_ in g136["events"] if e_.get("grow2")), None)
+    return {"width_final": m.width(), "switch2_step": ev2["step"] if ev2 else None, "block704_var_share": du.get("new_dim_var_share"),
+            "block704_r2_state": du.get("new_dim_r2_state"), "eff_rank": du.get("eff_rank"), "w_up_new_norm": float(w2.norm()) if w2 is not None else None,
+            "w_up_new_out_share": share, "rho_by_block": {nm_: _first3(v_["rho_k"], v_["dist_med_k"]) for nm_, v_ in (e01.get("rho_k_block") or {}).items()},
+            "rho_block64_e": _first3(e01["rho_k_e64"], e01["dist_med_k_e64"]) if "rho_k_e64" in e01 else None,
+            "rho_e_k3_inrun_fp32": _first3(e01["rho_k_e"], e01["dist_med_k_e"]) if "rho_k_e" in e01 else None, "rho_z_k3_inrun_fp32": _first3(e01["rho_k"], e01["dist_med_k"])}
 
 
 def s136_fire(L, t, sc, thr=2.5):
@@ -1132,16 +1194,32 @@ def contraction(m, fam, dev, amp, n=500, T0=4, K=16, seed=12301):
     for t in range(T0 - 1):
         z, e = step(prev, t); zs.append(z); prev = e[:, None]
     pre_T0 = prev; zT0, eT0 = step(prev, T0 - 1); zs.append(zT0); clean = [zT0]; cdec = []; c = eT0[:, None]
+    gx = m.grow_d0 is not None                                              # §143: e-space / block distances for grown carriers
+    def e64(e):                                                             #   W_up of the first 64 dims only (the 64-block's e-space share)
+        q_ = e.qs_.clone(); q_[..., 64:] = 0
+        with ac():
+            return m._up(q_).float()
+    cleanE = [eT0.float()] if gx else None; cleanE64 = [e64(eT0)] if gx else None
     for k in range(K):
         z, e = step(c, T0 + k); zs.append(z); clean.append(z); cdec.append(dec(e)); c = e[:, None]
+        if gx:
+            cleanE.append(e.float()); cleanE64.append(e64(e))
     std_d = torch.cat(zs).std(0)                                            # per-coordinate std of clean carried z_b
     U = torch.tensor(rng.standard_normal((n, zT0.shape[-1])), dtype=torch.float32, device=dev); R = {}   # 8 (FSQ) or 768 (§126 RAW-H)
     for eps in CONTRACT_EPS:
         delta = eps * std_d * U; zp, ep = step(pre_T0, T0 - 1, add=delta); dist = [(zp - zT0).norm(dim=-1)]; agree = []; c = ep[:, None]
+        if gx:                                                              # §143: ||delta e||, the 64-block's ||delta e||, z distances per block
+            Wd = zT0.shape[-1]; blk = [("fsq%d" % m.grow_d0, 0, m.grow_d0), ("b%d" % (min(64, Wd) - m.grow_d0), m.grow_d0, min(64, Wd))] + ([("b%d" % (Wd - 64), 64, Wd)] if Wd > 64 else [])
+            distE = [(ep.float() - cleanE[0]).norm(dim=-1)]; distE64 = [(e64(ep) - cleanE64[0]).norm(dim=-1)]
+            distB = {nm_: [(zp[..., a_:b_] - zT0[..., a_:b_]).norm(dim=-1)] for nm_, a_, b_ in blk}
         distn = [((zp - zT0) / std_d.clamp_min(1e-6)).norm(dim=-1)]                        # note 123-2: std-normalised coordinates
         for k in range(K):
             z, e = step(c, T0 + k); dist.append((z - clean[k + 1]).norm(dim=-1)); agree.append(float((dec(e) == cdec[k]).mean())); c = e[:, None]
             distn.append(((z - clean[k + 1]) / std_d.clamp_min(1e-6)).norm(dim=-1))
+            if gx:
+                distE.append((e.float() - cleanE[k + 1]).norm(dim=-1)); distE64.append((e64(e) - cleanE64[k + 1]).norm(dim=-1))
+                for nm_, a_, b_ in blk:
+                    distB[nm_].append((z[..., a_:b_] - clean[k + 1][..., a_:b_]).norm(dim=-1))
         D = torch.stack(dist).cpu().numpy(); ratio = D[1:] / np.maximum(D[:-1], 1e-6); rho_k = np.median(ratio, axis=1)
         Dn = torch.stack(distn).cpu().numpy(); rho_kn = np.median(Dn[1:] / np.maximum(Dn[:-1], 1e-6), axis=1)
         R[str(eps)] = {"rho_k": rho_k.round(4).tolist(), "rho_geo_1_8": float(np.exp(np.log(np.maximum(rho_k[:8], 1e-6)).mean())),
@@ -1152,6 +1230,11 @@ def contraction(m, fam, dev, amp, n=500, T0=4, K=16, seed=12301):
         rk_nz = [float(np.median(ratio[k][D[k] > 0])) for k in range(8) if (D[k] > 0).any()]
         R[str(eps)]["rho_k_nonzero"] = [round(v, 4) for v in rk_nz]
         R[str(eps)]["rho_nonzero"] = float(np.exp(np.log(np.maximum(rk_nz, 1e-6)).mean())) if rk_nz else None
+        if gx:                                                              # §143: rho_k_e / dist_med_k_e (the scored space), the 64-block e-space, z per block
+            def rk_(Ls_):
+                D_ = torch.stack(Ls_).cpu().numpy(); return np.median(D_[1:] / np.maximum(D_[:-1], 1e-6), axis=1).round(4).tolist(), np.median(D_, axis=1).round(4).tolist()
+            (R[str(eps)]["rho_k_e"], R[str(eps)]["dist_med_k_e"]) = rk_(distE); (R[str(eps)]["rho_k_e64"], R[str(eps)]["dist_med_k_e64"]) = rk_(distE64)
+            R[str(eps)]["rho_k_block"] = {nm_: dict(zip(("rho_k", "dist_med_k"), rk_(v_))) for nm_, v_ in distB.items()}
     basin = max([e_ for e_ in CONTRACT_EPS if R[str(e_)]["agree_k"][7] >= 0.99], default=0.0)
     return {"rho": R["0.1"]["rho_geo_1_8"], "basin": basin, "exact_recovery_share": R["0.1"]["exact_recovery_share"],
             "rho_nonzero": R["0.1"]["rho_nonzero"], "rho_norm": R["0.1"]["rho_norm_geo_1_8"], "detail": {"T0": T0, "K": K, "n": n, "std_d": std_d.cpu().numpy().round(4).tolist(), "eps": R}}
@@ -1260,6 +1343,9 @@ def main():
     ap.add_argument("--grow_trigger", default=None, help="§136: a loss threshold (THRESHOLD, e.g. 2.5) or 'plateau' (PLATEAU)")
     ap.add_argument("--grow_staged", action="store_true", help="§136 STAGED: D0 -> 2 D0 at the trigger, then x2 every >= 1,000 steps at loss <= 2.5, up to D1")
     ap.add_argument("--grow_noise", type=float, default=0.0, help="§136 GROW-NOISE: grown dims continuous + training dither U(+-this)")
+    ap.add_argument("--grow2", type=int, default=0, help="§143 FULL-GROW: a second widening 64 -> this (768) after switch 1")
+    ap.add_argument("--grow2_min_step", type=int, default=6000); ap.add_argument("--grow2_lr_scale", type=float, default=1.0, help="§143: lr x this on the new W_up columns only (64/768)")
+    ap.add_argument("--grow_force_smoke", action="store_true", help="smoke / memory check only: both widenings fire on step alone (no loss condition)")
     ap.add_argument("--nested", action="store_true", help="§136 NESTED: each training chain zeroes code dims beyond a prefix width from {4, 8, 16, 32, 64}")
     ap.add_argument("--hinge", action="store_true", help="§138 FULL-HINGE: from 2k, the local contraction hinge max(0, rho-hat - 0.3) on 1 in 4 hand-off rows")
     ap.add_argument("--hinge_eps_frac", type=float, default=0.1, help="§138 (note 138-3): eps = this x the median random-pair distance of hand-off codes (z_b space, 2k probe batch, label-free)")
@@ -1304,6 +1390,7 @@ def main():
         assert not (a.no_round or a.raw_h or a.anneal or a.std or a.std2 or a.skip_dec or a.var_res or a.soft_beta or a.carrier_ln or a.lr_new != 1.0
                     or a.resume_2k or a.save_at_flag or a.redraw_head or a.nested or a.tsd), "§136: --grow on the plain FSQ carrier (+ §134 copy rows) only"
     assert a.grow or not (a.grow_staged or a.grow_noise or a.grow_trigger), "§136: --grow_staged / --grow_noise / --grow_trigger need --grow"
+    assert not a.grow2 or (a.grow and a.grow_noise and not a.grow_staged and not a.nested), "§143: --grow2 on the COPY+GROW-NOISE path (--grow D0:64 --grow_noise)"
     assert not a.nested or (a.d_q == 64 and not (a.no_round or a.soft_beta or a.carrier_ln)), "§136 NESTED: --d_q 64 on the plain FSQ carrier"
     assert not a.hinge or (a.no_round and not (a.grow or a.nested or a.raw_h or a.anneal or a.std or a.std2 or a.skip_dec or a.tsd)), "§138 HINGE: on the CONT carrier (--no_round) only"
     memcap and memcap.apply(dev)                                                       # local hard cap (LATENT_MEM_CAP_GB; no-op on the cloud)
@@ -1459,7 +1546,8 @@ def main():
         if "s136" in rck:                                                   # §136: rebuild the checkpoint's widenings (+ their AdamW groups) first
             g136 = rck["s136"]["g136"]; nrng.bit_generator.state = rck["s136"]["nrng"]
             for ev_ in g136["events"]:
-                opt.add_param_group({"params": m.grow(ev_["to"] - ev_["from"]), "mult": 1.0, "warm_from": ev_["step"]})
+                for g_ in grow_groups(m.grow(ev_["to"] - ev_["from"]), ev_["step"], ev_.get("lr_scale") if ev_.get("grow2") else None):
+                    opt.add_param_group(g_)
             if a.grow:
                 grow_json()
         m.load_state_dict(rck["model"]); opt.load_state_dict(rck["opt"]); drawn = rck["drawn"]   # step-0 work above, which a fresh run did before)
@@ -1558,8 +1646,10 @@ def main():
             carried["2k"] = carried_stats(m, fam, dev, amp); m.train()
         if step % a.log_every == 0 or step == a.steps:
             rec = {"step": step, "loss": float(np.mean(hist)), "L_max": lmax_at(step / sc), "p_hard": m.p_hard, "noise": m.noise, "sec": round(time.time() - t0)}; hist = []; last_loss = rec["loss"]
-            if dev.startswith("cuda") and (a.d_q >= 768 or a.hinge):         # §138: peak memory per window (the 3090 memory check reads it)
+            if dev.startswith("cuda") and (a.d_q >= 768 or a.hinge or a.grow2):   # §138 / §143: peak memory per window (the 3090 memory check reads it)
                 rec["mem_gib"] = round(torch.cuda.max_memory_allocated(dev) / 2 ** 30, 3)
+            if a.grow2:                                                     # §143: per-group lr and effective Adam step (no RNG)
+                rec["group_steps"] = group_steps(opt)
             if a.hinge and m.hinge_on:
                 rr_ = np.concatenate(hinge_rho_hist) if hinge_rho_hist else np.zeros(0)
                 rec.update({"hinge_loss": float(np.mean(hinge_loss_hist)) if hinge_loss_hist else None, "hinge_rho": float(np.median(rr_)) if len(rr_) else None,
@@ -1583,10 +1673,13 @@ def main():
                 g136["thr"] = step if (th_ and g136["thr"] is None) else g136["thr"]; g136["plat"] = step if (pl_ and g136["plat"] is None) else g136["plat"]
                 w0_ = m.width(); to_ = None
                 if w0_ < G1 and not g136["events"]:
-                    if (g136["plat"] if a.grow_trigger == "plateau" else g136["thr"]) == step:
+                    if (g136["plat"] if a.grow_trigger == "plateau" else g136["thr"]) == step or (a.grow_force_smoke and step >= 2000 * sc):
                         to_ = min(G1, 2 * w0_) if a.grow_staged else G1
                 elif w0_ < G1 and a.grow_staged and step - g136["events"][-1]["step"] >= 1000 * sc and rec["loss"] <= thv:   # thv = 2.5 as registered (cstaged)
                     to_ = min(G1, 2 * w0_)
+                elif (a.grow2 and w0_ == G1 and g136["events"] and step >= a.grow2_min_step * sc and step - g136["events"][-1]["step"] >= 1000 * sc
+                      and (rec["loss"] <= thv or a.grow_force_smoke)):              # §143 switch 2: 64 -> 768
+                    to_ = a.grow2
                 if to_:                                                     # pre-switch fp32 contraction on the host (rho before), then widen
                     rs_ = torch.get_rng_state(); crs_ = torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else None; m.eval()
                     with torch.no_grad():
@@ -1594,9 +1687,16 @@ def main():
                     m.train(); torch.set_rng_state(rs_)
                     if crs_ is not None:
                         torch.cuda.set_rng_state(crs_, device=dev); torch.cuda.empty_cache()   # the contraction's blocks back (fragmentation, 6 GiB-cap smoke)
-                    opt.add_param_group({"params": m.grow(to_ - w0_), "mult": 1.0, "warm_from": step})
+                    ev2_ = {}
+                    if a.grow2 and to_ == a.grow2:                          # §143: the state right before switch 2, fp32, in-process (no checkpoint)
+                        rs_ = torch.get_rng_state(); crs_ = torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else None
+                        ev2_ = {"pre_eval": s143_pre_eval(m, fam, dev, a, ct_), "grow2": True, "lr_scale": a.grow2_lr_scale}; m.train(); torch.set_rng_state(rs_)
+                        if crs_ is not None:
+                            torch.cuda.set_rng_state(crs_, device=dev); torch.cuda.empty_cache()
+                    for g_ in grow_groups(m.grow(to_ - w0_), step, ev2_.get("lr_scale")):
+                        opt.add_param_group(g_)
                     pre_ = {k_: ct_[k_] for k_ in ("rho", "rho_nonzero", "rho_norm", "basin", "exact_recovery_share")}
-                    g136["events"].append({"step": step, "from": w0_, "to": to_, "loss": rec["loss"], "pre_contraction_fp32": pre_}); grow_json()
+                    g136["events"].append({"step": step, "from": w0_, "to": to_, "loss": rec["loss"], "pre_contraction_fp32": pre_, **ev2_}); grow_json()
                     log.write(json.dumps({"step": step, "grow": {"from": w0_, "to": to_}, "pre_contraction_fp32": pre_}) + "\n"); log.flush()
                     print("§136 GROW", w0_, "->", to_, "at", step, pre_, flush=True)
         if m.skip and step % int(1000 * sc) == 0:                           # note 127-3: skip-map norms every 1k (descriptive)
@@ -1742,9 +1842,9 @@ def main():
         res["skip_off"] = {"long_acc": float(Co.all(1).mean()), "acc_by_length": {str(t): float(Co[:, :t].all(1).mean()) for t in (16, 64, 512) if t <= Co.shape[1]},
                            "donor": donor(m, fam, dev, amp, n=a.donor_n)}
         m.skip_w.data.copy_(w_keep)
-    if a.d_q >= 768 or a.hinge:                                             # §138 descriptive block (fp32 tanh / contraction per Literature (3e))
+    if a.d_q >= 768 or a.hinge or a.grow2:                                  # §138 descriptive block (fp32 tanh / contraction per Literature (3e); §143 fp32)
         res["s138"] = {"hinge": a.hinge, "hinge_eps_frac": a.hinge_eps_frac if a.hinge else None, "hinge_ref": h138["info"], "tanh_fp32": a.tanh_fp32,
-                       **s138_desc(m, fam, dev, None if a.tanh_fp32 else amp)}
+                       **s138_desc(m, fam, dev, None if (a.tanh_fp32 or a.grow2) else amp)}
     if a.grow or a.nested:                                                  # §136 end: widening record, trigger steps, dimension use
         g_ = {"grow": a.grow, "grow_trigger": a.grow_trigger, "grow_staged": a.grow_staged, "grow_noise": a.grow_noise, "nested": a.nested,
               "width_final": m.width(), "d0": G0 if a.grow else 8}
@@ -1756,6 +1856,8 @@ def main():
             p8, _ = run_test(m, fam, np.zeros(len(Xte), np.int64), Xte, dev, amp, a.eval_bs); m.nest_mask = None
             g_["acc_w8"] = float((p8 == Yte).all(1).mean())
         res["s136"] = g_
+    if a.grow2 and not a.eval_only:                                         # §143 end block (fp32): new-block use, W_up_new, rho by block, 64-block e-space
+        res["s143"] = s143_end(m, fam, dev, amp, a, g136); carried["end"] = carried_stats(m, fam, dev, None); res["carried_norm"] = carried
     res["eval_sec"] = round(time.time() - t1)
     if a.copy_frac and not a.eval_only:                                     # §134 mechanism at the end
         res["s134"] = {"copy_frac": a.copy_frac, "n_copy_rows": int(round(a.copy_frac * a.bs)), "copy_acc": copy_acc134(m, fam, dev, amp),
