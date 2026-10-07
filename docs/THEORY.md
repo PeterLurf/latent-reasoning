@@ -6464,6 +6464,13 @@ the same files; the user flagged "distillation loss very bad"). Stage A fails in
   - Any revised design is a new registration, put to the user via Audit first, not a quick fix. The candidate directions are listed in the
     synthesis.
 
+**Note 135-10 (2026-10-06 23:51 EDT; field naming for 135-9, after Audit's reproduction).** 135-9's "codes per state" is eval.json's **`codes_per_state`**: distinct codes
+per state over the 2,000 × 512 test chains. It reads BASE 6,870 / 3,049 / 3,568 and TSD 1,995 / 2,557 / 1,957, against plain s1 29.2 and COPY s1 14.0.
+* Audit quoted the other field, **`code_growth_ext["2048"].per_state_mean`** (500 chains of 2,048): BASE 6,901 / 3,289 / 4,041 and TSD 1,754 / 2,458 /
+  2,058, against plain 29.5 and COPY 16.5.
+* Both fields give the same reading: the §135 codes carry 60–470 times more codes per state than exact runs. The prose range "2,000–6,900" in
+  135-9 should read 1,957–6,870 (`codes_per_state`), or 1,754–6,901 (`code_growth_ext`).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
