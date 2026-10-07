@@ -224,6 +224,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 134 | COPY-ANCHOR: label-free state-reading auxiliary (final-answer text autoencoded through the carrier) on §128's S5 recipe, no restarts; PASS 4/4 exact (plain 1/4) | **PASS on S5: 4/4 exact at 2,048 + SERIAL + ρ 0.14–0.22, no restarts** (plain 1/4); guard stage next | **open** (guard) |
 | 135 | TEACHER-STATE DISTILLATION: a CoT model's hidden states (vs pretrained GPT-2 on the same text) as per-hand-off InfoNCE targets on §128's S5 carrier | **FAIL both arms (0/4)**: worse than plain; the aux pulls context into the code (135-9) | closed (stage B not run) |
 | 136 | GROW (the user's idea): narrow → wide function-preserving latent growth at a loss threshold / plateau; GROW-P, COPY+GROW / STAGED / GROW-NOISE, GROW-4, NESTED-64 on S5 (S5×4 decides) | registered | **open** |
+| 137 | Multiplication on fsq120, column-major: carried carry (FSQ-8), streamed product digits (C4 qualifier), restart slots; 4×4 → 5×5 → 4×8 | registered | **open** |
 
 ## Live sections
 
@@ -6526,6 +6527,72 @@ per state over the 2,000 × 512 test chains. It reads BASE 6,870 / 3,049 / 3,568
 * **FSQ-16:** slot 1 passes (0.996, ρ 0.167), slot 4 passes (s4: 1.000, ρ 0.176), and slot 3 fails (s3 unflagged at 2k, ext 0.0). **Slot 2 (running)
   decides PASS or FAIL.**
 * **64-d arms** (FSQ-64, NOISE-64, CONT-64): only slot 1 is decided (all pass). Slots 2–4 are running.
+
+## 137. Multiplication on the task-agnostic carrier, column by column: a carried carry, streamed product digits (pre-registered 2026-10-07 01:34 EDT, after Literature's check c5687f0c and before any implementation or run; the user's "start multiplication" (via Audit), plan `docs/THEORY_MULT_PLAN_2026-10-07.md` v2)
+
+**Why.**
+* The user's rule: multiplication returns only through the task-agnostic harness (fsq120, §128's recipe), not §98's task-specific one.
+* §98's latent arm hit the k = 4 hand-off wall (GEN-M 0.163 / 0.005 at 4×4 / 5×5). Text CoT is 1.0, and ICoT-SI's released checkpoints reach
+  0.998 / 0.996 on our harness.
+* **Ordering, after Literature (`docs/LIT_MULT_PLAN_2026-10-07.md`):** output-column-major (Neural GPU 1511.08228; position coupling 2410.15787).
+  - **The carried state is the carry only:** it is bounded (≤ 2 digits, about 6 bits, plus the emitted digit) at any length, so it **fits FSQ-8**.
+    The multiplier-major alternative carries S_j (26.6 / 33.2 bits) and stays in the plan as the capacity stress arm.
+  - It is the only ordering whose state does not grow with length, so it can be tested on 4×8 (C2).
+* **New as scoped:** no published latent result does final-answer-content-only multiplication through a carried recurrent code (Literature).
+
+**Task and data.** The bench files (digits least-significant first): train on `bench/data/mult_train/{4x4,5x5}_train.txt`, using only (a, b, product).
+The CoT text is **never used**. Test on the **1,000 published items** (`bench/data/mult_{4x4,5x5}_test.txt`), the same items as §98's comparators.
+
+**The family (one adapter in fsq120; `--family mult_col --task 4x4|5x5`).**
+* **Column k = 1 … 2n:** segment k = [EOT, carried code, a's digit tokens, b's digit tokens, a column-index token k].
+  - The operands are in context every segment, as in §132's in-context tables.
+* **The code after segment k** is decoded by the answer decoder into **product digit p_k** (one token).
+* The **start** is a fixed code (as for FF / CYC / MOD / RDFA), so the carry is 0.
+* **The prediction** is the 2n emitted digits. The test is exact match on all of them (the bench scorer).
+* **C4 qualifier (disclosed, as 110b-1):** the per-step targets are **final-answer digits delivered per step**, aligned to the column index.
+  - There are no carry labels and no intermediate state of the bench CoT.
+  - Strict final-only supervision would make the code hold the whole product, which is the multiplier-major capacity arm.
+* **Curriculum** (§120's idea over columns): chains of L columns with L ~ U(1, L_max), whose targets are the product's low L digits. L_max is
+  2 / 4 / 8 at 0 / 2k / 5k for 4×4, and 2 / 4 / 8 / 10 at 0 / 2k / 5k / 9k for 5×5.
+
+**Recipe.** §128's (FSQ d 8 / L 8, p_hard 2000 → 4000, 24k steps, bs 64, AdamW lr 1e-4, the 127-3 guard), with **restart-on-plateau slots** (seeds
+k, k + 100, k + 200, k + 300; 123-3's 2k flag). Cloud RTX 3090, checkpoints, the host memory check, versions recorded.
+* **No COPY:** its targets (whole products) are not the carried quantity, and 8-digit products exceed 24 bits.
+* **Before any run:** gradflow under CUDA bf16 (the digit CE at column k ≥ 2 reaches W_down / W_up through the carried code) and smoke_plain.
+
+**Rules (fixed now; per size).**
+* **M-PASS:** at least 3/4 slots whose accepted run has **test_acc ≥ 0.99** on the 1,000 items, is **SERIAL** and is **contractive** (ρ ≤ 0.28,
+  127-12's clause).
+  - **SERIAL:** inject the code of a donor problem after column k (k = 2 / 4 / 6) into a recipient chain. The following emitted digits must follow
+    **the recipient's columns with the donor's carry** (donor ≥ 0.90), not the recipient's own carry (recipient − chance < 0.10). Chance is the
+    rate at which the two carries give the same digits; the ground truth is computable exactly.
+* **FAIL:** at least 2 decided slots not passing.
+* **DROP at proof:** slot 1's accepted run below 0.95 stops that size (no further seeds).
+* **Order:** 4×4 proof → 4×4 slots 2–4 → 5×5 (four slots) only after 4×4 PASS → 4×8 (descriptive; below).
+
+**Descriptive.**
+* **M-SOTA:** the median test_acc against ICoT-SI (0.998 / 0.996), TC-M (1.0) and GEN-M (0.163 / 0.005) on the same items. Our distinguishing
+  claim is C1 (SERIAL).
+* **acc_by_column:** where errors start.
+* **Shortcut probe** (Literature / Audit): R² of the **true carry** read from code_k, against R² of the **context-only column sum mod 10** (what a
+  model could compute without the carried code). A model that ignores the code fails exactly when a carry matters, and SERIAL shows it.
+* **4×8 (C2):** the 4×4 models evaluated on 1,000 generated 4×8 items (8-digit b, 12 columns). Column indices above 8 are unseen in training, and
+  that limitation is stated.
+
+**Readings.**
+* **4×4 (and 5×5) PASS:** a pretrained LM's task-agnostic latent carrier does multi-digit multiplication exactly, from final-answer digits, with a
+  causally used carry: where §98's latent arm hit its wall.
+* **DROP or FAIL:** the per-column step (up to n products plus a carry, in one segment) is too hard at this budget. The registered fallback is
+  digit-pair ops (n² easier steps, the same carry), as a separate registration.
+* **4×8 exact:** length generalisation with a bounded state (C2 on a natural task).
+
+**Placement.**
+* 4×4: up to 4 slots × at most 4 attempts, about $0.2–0.4 per run (2n segments of about 12 tokens).
+* 5×5: the same. About $2–4 in all (approved by the user / Audit).
+* Implementation: the experiments session (the family adapter: multi-token context, streamed digit decoding, the donor ground truth, the
+  shortcut probe, the 4×8 generator). Dirs `s137_col_{4x4,5x5}_s{seed}`.
+* Scorer: `theory/score_s137.py`, committed before any run.
+* The full-width plan (`docs/THEORY_FULLWIDTH_PLAN_2026-10-07.md`) becomes §138 when it triggers.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

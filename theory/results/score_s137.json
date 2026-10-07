@@ -1,0 +1,66 @@
+{
+ "4x4": {
+  "slots": {
+   "1": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "2": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "3": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "4": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   }
+  },
+  "verdict": "not run",
+  "median_test_acc": null,
+  "bars": {
+   "icot_si": 0.998,
+   "gen_m": 0.163,
+   "tc_m": 1.0
+  },
+  "m_sota": null
+ },
+ "5x5": {
+  "slots": {
+   "1": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "2": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "3": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   },
+   "4": {
+    "attempts": [],
+    "status": "open",
+    "accepted": null
+   }
+  },
+  "verdict": "not run",
+  "median_test_acc": null,
+  "bars": {
+   "icot_si": 0.996,
+   "gen_m": 0.005,
+   "tc_m": 1.0
+  },
+  "m_sota": null
+ }
+}

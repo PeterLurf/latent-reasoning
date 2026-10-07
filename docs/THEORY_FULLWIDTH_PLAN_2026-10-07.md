@@ -5,7 +5,7 @@ The user: "if throughout the night 64 wide latents pass, try full width latents.
 ## Trigger
 * A §133 64-d arm (FSQ-64, NOISE-64 or CONT-64) reads stage-1 PASS (≥ 3/4 slots exact at 2,048, SERIAL, ρ ≤ 0.28).
 * Status at drafting: all three have passed slot 1; slots 2–4 are running.
-* Then this plan is registered as §137, after Literature's check, with the scorer committed before any run and Audit's review and budget.
+* Then this plan is registered as §138, after Literature's check, with the scorer committed before any run and Audit's review and budget.
 
 ## What is different from §126 RAW-H (768-d continuous: entered 4/4, drifted; 0.85 at 512, 0.73 at 2,048)
 1. **A learned, bounded code**, z_b = tanh(W_down(LN(h)) + shift) · HALF − OFF at width 768, then W_up. RAW-H carried the raw, unbounded last
