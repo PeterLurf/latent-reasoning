@@ -236,6 +236,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 146 | MID-PROBE ($0): layer-wise probes (0–12) of the accumulator on s140 / s137; MID-STACK SIGNAL = R² ≥ 0.5 at 100–200 in some layer ≤ 9 (top 0.05) → register a mid-stack hand-off | **NO SIGNAL** (best layer 4: 0.217 at 100–200; layers 1–12 flat; the top reproduces 140-3): the accumulator ≥ 100 is computed nowhere; B2 ranks last | closed |
 | 147 | DELTA-STATE (program B1): a linear-recurrent memory (6 additive + 6 gated-delta heads) as GPT-2's only cross-segment channel, on §140's digit-pair 4×4; PASS = exact + SERIAL | registered | **open** |
 | 148 | LOOP-RETRO (program B3): prelude / weight-tied loop (blocks 4–7, damped) / coda retrofit for direct-answer 4×4; LOOP-4 vs PLAIN; C2 at r = 8 / 16 | registered | **open** |
+| 149 | SOTA-PROBE (eval only): donor SERIAL (equation substitution), ablation and ρ on released GPT-2 Coconut / SIM-CoT / CODI, at release | registered | **open** |
 
 ## Live sections
 
@@ -7810,6 +7811,55 @@ matters.**
   - Lowering the bias to +3 (α 0.953) would force about 96 % forgetting over a chain and cripple the delta heads' memory.
 * **Decision (the experiments session's option (i)):** the gradflow gate applies to W_o (both groups) and β. α is exempt.
 * **Descriptive:** α per head at the end and at each checkpoint (`s147.alpha_by_head`), so whether decay was learned is visible.
+
+## 149. SOTA-PROBE: our donor SERIAL, ablation and contraction on released GPT-2 latent reasoners, at release (eval only; pre-registered 2026-10-07 17:54 EDT, after Literature's notes 478cac66 / 029e8e4a and Audit's GO, before any run; the user's request for SOTA shortcomings (via Literature and Audit))
+
+**Why.** No published latent method is scored by donor patching or contraction. 2607.09698 reads Coconut as an expanding system and CODI as a stable attractor
+(Lyapunov). §149 brings our C1 / C6 measurements to the released models.
+* Training is not involved; the user's GSM8K pause covers our training (Audit).
+* "At release" is one point in training (2607.06648: responsiveness can fall while accuracy rises).
+
+**Models and data** (029e8e4a, `docs/LIT_S149_SOTA_PROBE_FACTS_2026-10-07.md`; our GSM8K_REPRO harness loads all four):
+* **coconut:** `connordilgren/gpt2-gsm8k-coconut` ckpt 33, 6 thoughts (raw last hidden fed back).
+* **simcot_coconut:** `internlm/SIM_COT-GPT2-Coconut` ckpt 28, 10 thoughts.
+* **simcot_codi:** `internlm/SIM_COT-GPT2-CODI`, 6 latents via prj.
+* **codi:** `zen-E/CODI-gpt2`, 6 latents via prj.
+* **Test:** `bench/data/gsm8k_aug/test.txt` (1,319 items; equation chains `<<expr=val>>`).
+
+**Rules and readings (fixed now; per model).**
+* **SANITY GATE:** test accuracy within ±2 points of our bench harness (33.1 / 44.8 / 39.4 / 42.5). A model failing it is not read.
+* **Alignment, thought ↔ equation step t (t ≤ 3):**
+  - coconut: pair (2t − 1, 2t) (a training-history prior);
+  - simcot_coconut: pair t (documented in code);
+  - simcot_codi: latent t − 1 (code);
+  - codi: probe-defined (the latent whose ridge probe best reads step t's value), so its SERIAL is **descriptive**.
+* **SERIAL(t):**
+  - **Pairs:** the **same equation template** (operators and dependency graph). The recipient is correct unpatched, step t is referenced downstream, the donor's step-t value
+    differs, and the substituted answer differs from the recipient's own. The excluded share is reported. All-template pairs are descriptive.
+  - **The swap:** the aligned thought(s) from the donor's run go into the recipient's run.
+  - **Expected:** the recipient's equation chain re-evaluated with step t := the donor's value (an exact substitution; Literature flag (a)).
+  - **SERIAL(t):** donor-consistent ≥ 0.90 and recipient-consistent < 0.10, read only with n ≥ 30 pairs.
+  - **BYPASS(t):** recipient-consistent ≥ 0.5: the step is recomputed from the visible question (L1).
+* **C1 at release:**
+  - CAUSAL = SERIAL at every read step;
+  - BYPASSED = BYPASS at any step;
+  - PARTIAL otherwise.
+* **Ablation:** zero and mean replacement per aligned thought, and all thoughts removed; accuracy by step count (2, 3, 4+).
+* **RHO:**
+  - thought t perturbed by ε = 0.1 × its norm (raw-hidden models in the fed-back space, CODI-style after prj); the deviation ratios of later thoughts; the first-three
+    geometric mean;
+  - EXPANDING > 1, CONTRACTIVE ≤ 0.28 (our bound, carried over), MARGINAL otherwise;
+  - the Jacobian top (power iteration) is descriptive.
+  - 2607.09698's prediction is tested descriptively: Coconut EXPANDING, CODI CONTRACTIVE.
+* **Our comparators are qualitative** (different tasks): the S5 carriers are SERIAL with fp32 ρ 0.07–0.26 (§128 / §133). GSM8K's steps form a DAG with the question visible
+  (L1), so BYPASS is the expected failure mode, and the test is whether released latents carry step values causally at all.
+
+**Placement.**
+* Eval only, on a local GPU (short) or a brief cloud eval, under $0.5.
+* **Implementation (the experiments session):** the patch hooks per model format (raw-hidden or prj), the template matcher and substitution evaluator over the `<<…>>`
+  chains, and the perturbation / power-iteration hooks.
+* **Gates:** the sanity gate reproduced first, and unit tests of the substitution evaluator on hand-checked chains.
+* Dirs `s149_{coconut,simcot_coconut,simcot_codi,codi}`. Scorer: `theory/score_s149.py`, committed with this registration.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
