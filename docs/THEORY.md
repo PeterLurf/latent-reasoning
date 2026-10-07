@@ -7164,6 +7164,17 @@ checkpoints, the host check).
 e_j = W_up(code)). ε = 0.1 × the median distance between 20k random pairs of z_b on the probe batch at 2k, as implemented. The ratios (ε / within-state spread, ε / nearest-
 centroid distance) are logged in the same space. At init these are 0.13 / 2.09; that is uninformative, since the states are not yet separated.
 
+**Note 140-3 (2026-10-07 09:51 EDT; descriptive; `s140_pair_4x4_s1/eval_probe_acc.json` and the local 5k prototypes). Where the digit-pair accumulator breaks.**
+* **By accumulator magnitude:** R² code / h is **0.49 / 0.87 below 100**, then **−4.1 / 0.05 for 100–200**, and negative above 200.
+  - Accumulator values of 100 or more are **not represented even in h**. The failure is learning to represent the larger sums, which occur in the 3–4-pair columns, not
+    only the 8-d code dropping what h has.
+* **By step within the column:** code 0.51 / 0.51 / 0.69 / 0.73, h 0.96 / 0.84 / 0.81 / 0.75 (1st–4th pair). The flush step is 0.95 / 0.98.
+* **Local 4×4 prototypes to 5k** (seeds 501 / 502 on the 4060 / 3070; descriptive), per-digit loss at c_max 4 (3k–5k):
+  - column r1 (proto137): 0.83–0.98;
+  - **column r4 with repeats (proto141): 0.79–0.90, about the same as r1;**
+  - digit pair (proto140): 0.29–0.58, where §140's cloud proof later rose to 0.87 once the 3+-pair columns entered.
+  - Repeats show no early advantage. §141's cloud r4 proofs decide.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
