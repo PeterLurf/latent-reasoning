@@ -271,6 +271,23 @@ with the same code and settings across families.
   - Literature's check comes first (it is new as scoped only if the per-hand-off hidden-state target through a discrete carrier
     is). Registration after that, with Audit's budget.
 
+## Candidates 5–6 (Audit's overnight steward, 2026-10-07 01:45; registration after Literature's check, each proved on one host first)
+* **5. STRICT-C4 BY RL ON THE CODES** (gate: §137 4×4 PASS).
+  - The FSQ code is already a discrete action (d × 8 levels), so a per-dimension categorical over the levels gives an exact log-likelihood.
+  - REINFORCE / GRPO with **reward = the exact product only** (no streamed digits), a baseline and a KL to the supervised policy, starting from a §137
+    4×4 column model and training on 5×5.
+  - **Falsifiable:** RL reaches ≥ 0.9 on 5×5 with SERIAL intact, where zero-shot transfer and RL from scratch stay < 0.2.
+  - It would be the first strict-C4 result. Precedents: SLPO 2607.19691, Abstract-CoT 2604.22709. About $2–3.
+* **6. A LOCAL CONTRACTION HINGE for wide / continuous carriers** (gate: §138 triggers; folded in as one arm there).
+  - Perturb e_j by δ (‖δ‖ = ε), push both through one segment, and penalise max(0, ρ̂ − 0.3), with ρ̂ = ‖Δcode_{j+1}‖ / ‖δ‖.
+  - **This is not the global penalty rejected for §133** (Literature 7dbdb426: a global Lipschitz bound below 1 forces a single fixed point and
+    merges states).
+    - The hinge is local: ε is small against the separation between state codes, and S5's exact learners already contract locally (ρ 0.13–0.22)
+      while permuting states.
+    - **Literature is asked to recheck.**
+  - Target: RAW-H-style drift at 768-d (ρ 0.5–0.8). It does not address SOFT-64's failure, a constant per-step error with ρ in band.
+  - **Falsifiable:** the hinge arm holds ext_2048 ≥ 0.99 with fp32 ρ ≤ 0.28 where its unpenalised twin drifts.
+
 ## Not proposed
 * More entry levers of §127's kind (escape without learning).
 * A global contraction penalty (it fights S5's isometric carry; Literature 7dbdb426).
