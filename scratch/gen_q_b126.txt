@@ -1,5 +1,5 @@
 # THEORY §139 DISTILL-2 (683318e2; notes 139-1 / 139-2, CE mode) 1-host proof (note 139-3: + arm A' s1, fixed L 4): arm a s1 (SOFT-16 + copy rows, copy gate at 4k) + arm b s1 (+ teacher CE readout, weight 1 to 3k -> 0 at 4k); boxes.multrow; RTX 3090
 # P=3
-boxes/runs_fsq/s139_a_4x4_s1 boxes.multrow --family mult_row --task 4x4 --seed 1 --copy_frac 0.1 --copy_gate_4k --ckpt_every 2000
-boxes/runs_fsq/s139_b_4x4_s1 boxes.multrow --family mult_row --task 4x4 --seed 1 --copy_frac 0.1 --distill --distill_teacher boxes/runs_mult/m98_tc_4x4_s1 --distill_full 3000 --distill_end 4000 --ckpt_every 2000
-boxes/runs_fsq/s139_ap_4x4_s1 boxes.multrow --family mult_row --task 4x4 --seed 1 --copy_frac 0.1 --fixed_L 4 --ckpt_every 2000
+boxes/runs_fsq/s139_a_4x4_s1 boxes.multrow --family mult_row --task 4x4 --seed 1 --copy_frac 0.1 --copy_gate_4k --ckpt_every 2000 --cotenant_runs 3
+boxes/runs_fsq/s139_b_4x4_s1 boxes.multrow --family mult_row --task 4x4 --seed 1 --copy_frac 0.1 --distill --distill_teacher boxes/runs_mult/m98_tc_4x4_s1 --distill_full 3000 --distill_end 4000 --ckpt_every 2000 --cotenant_runs 3
+boxes/runs_fsq/s139_ap_4x4_s1 boxes.multrow --family mult_row --task 4x4 --seed 1 --copy_frac 0.1 --fixed_L 4 --ckpt_every 2000 --cotenant_runs 3
