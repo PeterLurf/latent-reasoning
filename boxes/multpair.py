@@ -13,7 +13,13 @@ eval.json: test_acc (all 2n digits exact on the 1,000 bench items), acc_by_colum
 pos12: the code after pair t from a donor; the recipient's later digits with the donor's accumulator, exact; digit-level donor /
 recipient / chance per position + row level), s140_probe {r2_acc_code, r2_acc_h (h before W_down), r2_colsum_context} at full length,
 ext_4x8 (4x4 models; 32 pairs + flush; no unseen tokens (note 140-1)), n_codes, rho (bf16; scored = on-host --contraction_only --fp32).
-    python -m boxes.multpair --family mult_pair --task 4x4 --seed 1 --stop_plateau --ckpt_every 2000 --out boxes/runs_fsq/s140_pair_4x4_s1"""
+    python -m boxes.multpair --family mult_pair --task 4x4 --seed 1 --stop_plateau --ckpt_every 2000 --out boxes/runs_fsq/s140_pair_4x4_s1
+THEORY §145 MULTI-SLOT (b1d7741c): --slots K --carry_slots C --d_q 64 --no_round --dither 0.25 (§140 otherwise). Segment = [EOT, carried slot_1 ..
+slot_C, a_i, b_j, column flag, w_1 .. w_K] (flush: [EOT, slots, " =", w_1 .. w_K]); w_k = learned write embeddings initialised from the distinct
+unused tokens " W" " X" " Y" " Z"; write position k's last hidden -> its own LN_k / W_down_k -> NOISE-64 (continuous; dither U(+-0.25) at
+training hand-offs after 2k) -> its own W_up_k = slot_k. Slot 1 uses the base LN / W_down / W_up. Only slots 1..C are carried (CARRY1: C = 1,
+slots 2..4 written and dropped). The start is C zero codes; the answer decoder reads [EOT, carried slots]. Donor / contraction on the carried
+codes (all C slots; contraction on their concatenation); s145_probe, s145.{acc_by_magnitude, slot_cosine, slot_swap, slot_ablation}."""
 import os
 os.environ["BOXES_NB"] = "5"
 import argparse  # noqa: E402
@@ -24,6 +30,8 @@ import time  # noqa: E402
 
 import numpy as np  # noqa: E402
 import torch  # noqa: E402
+import torch.nn as nn  # noqa: E402
+import torch.nn.functional as Fn  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
@@ -38,6 +46,8 @@ from boxes.fsq120 import EOT, FSQ120, driver_version, env_info, lr_at, make_opt 
 from boxes.multcol import DTOK, columns, dedup, gen_operands, load_bench, ridge_r2  # noqa: E402
 
 EQTOK, NEWTOK, SAMETOK = bc.tok(" =")[0], bc.tok(" ;")[0], bc.tok(" ,")[0]   # flush / new-column / same-column flags (note 140-1)
+WTOK = [bc.tok(w)[0] for w in (" W", " X", " Y", " Z")]                    # §145 write-embedding initialisers (single, unused tokens)
+assert all(len(bc.tok(w)) == 1 for w in (" W", " X", " Y", " Z")) and not set(WTOK) & (set(DTOK) | {EQTOK, NEWTOK, SAMETOK})
 assert all(len(bc.tok(w)) == 1 for w in (" =", " ;", " ,")) and len({EQTOK, NEWTOK, SAMETOK}) == 3 and not {EQTOK, NEWTOK, SAMETOK} & set(DTOK)
 CMAX = {"4x4": ((2000, 1), (5000, 2), (9000, 4), (None, 8)), "5x5": ((2000, 1), (5000, 2), (9000, 4), (12000, 8), (None, 10))}   # 5x5: note 140-2
 
@@ -216,6 +226,184 @@ def s140_probe(m, A, Bd, dev, amp, bs, n=1024, seed=14001):
     return {"r2_acc_code": pool(Q, acc), "r2_acc_h": pool(H, acc), "r2_colsum_context": pool(Q, S), "n": int(len(A)), "steps": int(T)}
 
 
+class MultSlot(MultPair):
+    """§145: K write positions per segment, K slots (own LN / W_down / W_up each; slot 1 = the base maps), NOISE-64, C slots carried."""
+    def __init__(self, g, fam, K, C, carry_from="first"):
+        super().__init__(g, fam); self.K, self.C = K, C; self.cidx = list(range(K - C, K)) if carry_from == "last" else list(range(C))   # note 145-1: CARRY1 carries w_K's slot
+        dev = g.w("wte.weight").device   # GPT-2 is already on the device (the new maps move with .to)
+        self.w = nn.Parameter(g.embed(torch.tensor(WTOK[:K], device=dev)).detach().float().clone())
+        self.lns = nn.ModuleList([nn.LayerNorm(768) for _ in range(K - 1)]); self.downs = nn.ModuleList([nn.Linear(768, F.D_Q) for _ in range(K - 1)])
+        self.ups = nn.ModuleList([nn.Linear(F.D_Q, 768) for _ in range(K - 1)]); self.ablate = None
+
+    def maps(self, k):
+        return (self.ln, self.down, self.up) if k == 0 else (self.lns[k - 1], self.downs[k - 1], self.ups[k - 1])
+
+    def start(self, B, dev, states=None):
+        z0 = torch.zeros(B, F.D_Q, device=dev)
+        return torch.stack([self.maps(k)[2](z0) for k in self.cidx], 1)
+
+    def write(self, prev, t, noise=None):
+        """One segment -> (Z (B, K, d) codes, E (B, K, 768) slot embeddings). noise: (B, K, d) added to z_b (contraction)."""
+        g = self.g; B = prev.shape[0]; dev = prev.device; eot = g.embed(torch.full((B, 1), EOT, device=dev)); i, j = (int(v) for v in self.pairs[t])
+        if i < 0:
+            tail = torch.full((B, 1), EQTOK, device=dev)
+        else:
+            tail = torch.cat([self.adig[:, i:i + 1], self.bdig[:, j:j + 1], torch.full((B, 1), NEWTOK if self.newcol[t] else SAMETOK, device=dev)], 1)
+        x = torch.cat([eot, prev.to(eot.dtype), g.embed(tail), self.w[None].expand(B, -1, -1).to(eot.dtype)], 1); h, _ = g(x, None); Hw = h[:, -self.K:]
+        if self.keep_h:
+            self.last_h = Hw.float()
+        Z, E = [], []
+        for k in range(self.K):
+            ln, dn, up = self.maps(k); zb = torch.tanh(dn(ln(Hw[:, k].float())) + F.SHIFT) * F.HALF - F.OFF
+            if self.training and self.noise > 0:
+                zb = zb + (torch.rand_like(zb) * 2 - 1) * self.noise
+            if noise is not None:
+                zb = zb + noise[:, k]
+            if self.ablate is not None and self.ablate == k:
+                zb = torch.zeros_like(zb)
+            Z.append(zb); E.append(up(zb))
+        return torch.stack(Z, 1), torch.stack(E, 1)
+
+    def embed_slots(self, Z, idx=None):
+        idx = idx if idx is not None else list(range(Z.shape[1])); return torch.stack([self.maps(k)[2](Z[:, i]) for i, k in enumerate(idx)], 1)
+
+    def logits(self, Ec):
+        g = self.g; eot = g.embed(torch.full((Ec.shape[0], 1), EOT, device=Ec.device)); h, _ = g(torch.cat([eot, Ec.to(eot.dtype)], 1), None)
+        return g.logits(h[:, -1]).float()
+
+    def chain(self, start_emb, items, labels=None, trace_mask=None, record=False, override=None):
+        B, L = items.shape; prev = start_emb; losses = []
+        for t in range(L):
+            Z, E = self.write(prev, int(items[0, t])); Ec = E[:, self.cidx]
+            if labels is not None and trace_mask is not None and bool(trace_mask[:, t].any()):
+                rows = torch.nonzero(trace_mask[:, t]).squeeze(1); ans = torch.tensor(self.fam.answer_tokens(labels[rows.cpu().numpy(), t]), device=items.device)
+                losses.append(Fn.cross_entropy(self.logits(Ec[rows]), ans[:, 0]))
+            prev = Ec
+        return (torch.stack(losses).mean() if losses else None), prev, None, None
+
+
+@torch.no_grad()
+def rollout_slots(m, A, Bd, dev, amp, bs, override=None, record=False, swap=None):
+    """§145 hard chains (all n^2 + 1 steps); decode at emission steps. override: (t, Zc (N, C, d)) replaces every carried code after step t;
+    swap: (t, k, Zk (N, d)) replaces only slot k after step t. Returns digits [, codes (N, T, K, d)]."""
+    N = len(A); pairs, col, emit = schedule(A.shape[1], Bd.shape[1]); T = len(pairs); out = np.full((N, A.shape[1] + Bd.shape[1]), -1)
+    codes = np.zeros((N, T, m.K, F.D_Q), np.float32) if record else None
+    for s_ in range(0, N, bs):
+        sl = slice(s_, s_ + bs); B = len(A[sl]); set_ops(m, A[sl], Bd[sl], dev); prev = m.start(B, dev)
+        for t in range(T):
+            with amp_ctx(amp):
+                Z, E = m.write(prev, t)
+                if override is not None and override[0] == t + 1:
+                    Zc = torch.tensor(override[1][sl], device=dev, dtype=Z.dtype); Z = Z.clone(); E = E.clone(); Z[:, m.cidx] = Zc; E[:, m.cidx] = m.embed_slots(Zc, m.cidx).to(E.dtype)
+                if swap is not None and swap[0] == t + 1:
+                    Z = Z.clone(); Z[:, swap[1]] = torch.tensor(swap[2][sl], device=dev, dtype=Z.dtype); E = E.clone(); E[:, swap[1]] = m.maps(swap[1])[2](Z[:, swap[1]]).to(E.dtype)
+                Ec = E[:, m.cidx]
+                if emit[t]:
+                    out[sl, col[t]] = m.fam.decode(m.logits(Ec).argmax(-1).cpu().numpy()[:, None])
+            if record:
+                codes[sl, t] = Z.float().cpu().numpy()
+            prev = Ec
+    return (out, codes) if record else out
+
+
+def later_gt(Ar, Br, acc0, p, pairs, col, emit, Pr):
+    """The recipient's digits after step p, continued from accumulator acc0 (exact; as donor())."""
+    gt = Pr.copy(); a = acc0.copy()
+    for t in range(p, len(pairs)):
+        i, j = pairs[t]
+        if col[t] != col[t - 1]:
+            a = a // 10
+        if i >= 0:
+            a = a + Ar[:, i] * Br[:, j]
+        if emit[t]:
+            gt[:, col[t]] = a % 10
+    return gt, np.array(sorted({int(col[t]) for t in range(p, len(pairs)) if emit[t]}))
+
+
+def consist(got, gt, Pr, sl):
+    return {"donor_consistent": float((got[:, sl] == gt[:, sl]).mean()), "recipient_consistent": float((got[:, sl] == Pr[:, sl]).mean()),
+            "chance_overlap": float((gt[:, sl] == Pr[:, sl]).mean()), "later_digits": int(len(sl)),
+            "row_level": {"donor_consistent": float((got[:, sl] == gt[:, sl]).all(1).mean()), "recipient_consistent": float((got[:, sl] == Pr[:, sl]).all(1).mean()),
+                          "chance_overlap": float((gt[:, sl] == Pr[:, sl]).all(1).mean())}}
+
+
+def donor_slots(m, A, Bd, dev, amp, bs, rng, positions=(4, 8, 12), n=2000, swap_pos=8):
+    """§145: every carried slot of a donor injected after pair p (row-level read); and per-slot swaps at swap_pos (only slot k from the donor)."""
+    N = min(n, len(A)); ir, idn = rng.permutation(len(A))[:N], rng.permutation(len(A))[:N]; Ar, Br, Ad, Bdn = A[ir], Bd[ir], A[idn], Bd[idn]
+    pairs, col, emit = schedule(A.shape[1], Bd.shape[1]); Pr, _, _ = columns(Ar, Br); accd, _, _, _, _, _ = accumulators(Ad, Bdn)
+    _, dcodes = rollout_slots(m, Ad, Bdn, dev, amp, bs, record=True); res = {}; sw = {}
+    for p in positions:
+        if p >= len(pairs):
+            continue
+        got = rollout_slots(m, Ar, Br, dev, amp, bs, override=(p, dcodes[:, p - 1][:, m.cidx])); gt, sl = later_gt(Ar, Br, accd[:, p - 1], p, pairs, col, emit, Pr)
+        res["pos%d" % p] = {**consist(got, gt, Pr, sl), "n": N}
+    if swap_pos < len(pairs):
+        gt, sl = later_gt(Ar, Br, accd[:, swap_pos - 1], swap_pos, pairs, col, emit, Pr)
+        for k in m.cidx:
+            got = rollout_slots(m, Ar, Br, dev, amp, bs, swap=(swap_pos, k, dcodes[:, swap_pos - 1, k])); sw["slot%d" % (k + 1)] = {**consist(got, gt, Pr, sl), "pos": swap_pos}
+    return res, sw
+
+
+@torch.no_grad()
+def contraction_slots(m, A, Bd, dev, amp, T0=2, n=500, seed=12301):
+    """§145: multpair's contraction on the concatenated carried codes (C x d): perturb every carried z_b after step T0, follow the rest."""
+    rng = np.random.default_rng(seed); idx = rng.permutation(len(A))[:n]; A, Bd = A[idx], Bd[idx]; N = len(A); pairs, _, _ = schedule(A.shape[1], Bd.shape[1])
+    L = len(pairs); K = L - T0; W = min(8, K); set_ops(m, A, Bd, dev); C = m.C
+    def step(prev, t, add=None):
+        with amp_ctx(amp):
+            nz = None
+            if add is not None:
+                nz = torch.zeros(N, m.K, F.D_Q, device=dev); nz[:, m.cidx] = add.view(N, C, -1)
+            Z, E = m.write(prev, t, noise=nz)
+        return Z[:, m.cidx].reshape(N, -1).float(), E[:, m.cidx]
+    def dec(Ec):
+        with amp_ctx(amp):
+            return m.fam.decode(m.logits(Ec).argmax(-1).cpu().numpy()[:, None])
+    prev = m.start(N, dev); zs = []
+    for t in range(T0 - 1):
+        z, e = step(prev, t); zs.append(z); prev = e
+    pre = prev; zT0, eT0 = step(prev, T0 - 1); zs.append(zT0); clean = [zT0]; cdec = []; c = eT0
+    for k in range(K):
+        z, e = step(c, T0 + k); zs.append(z); clean.append(z); cdec.append(dec(e)); c = e
+    std_d = torch.cat(zs).std(0); U = torch.tensor(rng.standard_normal((N, zT0.shape[-1])), dtype=torch.float32, device=dev); R = {}
+    for eps in F.CONTRACT_EPS:
+        zp, ep = step(pre, T0 - 1, add=eps * std_d * U); dist = [(zp - zT0).norm(dim=-1)]; agree = []; c = ep
+        for k in range(K):
+            z, e = step(c, T0 + k); dist.append((z - clean[k + 1]).norm(dim=-1)); agree.append(float((dec(e) == cdec[k]).mean())); c = e
+        D = torch.stack(dist).cpu().numpy(); ratio = D[1:] / np.maximum(D[:-1], 1e-6); rho_k = np.median(ratio, axis=1)
+        R[str(eps)] = {"rho_k": rho_k.round(4).tolist(), "rho_geo": float(np.exp(np.log(np.maximum(rho_k[:W], 1e-6)).mean())), "agree_k": [round(v, 4) for v in agree],
+                       "dist_med_k": np.median(D, axis=1).round(4).tolist()}
+    basin = max([e_ for e_ in F.CONTRACT_EPS if R[str(e_)]["agree_k"][W - 1] >= 0.99], default=0.0)
+    return {"rho": R["0.1"]["rho_geo"], "basin": basin, "detail": {"T0": T0, "K": K, "window": W, "n": N, "L": L, "carried_dims": int(zT0.shape[-1]), "eps": R}}
+
+
+def s145_extras(m, teA, teB, dev, amp, bs, pred, codes, n=1024, seed=14501):
+    """§145 descriptive: per-slot x per-digit R^2 (the accumulator's units / tens / hundreds from each slot's code, ridge, fit on half the problems)
+    and the accumulator's R^2 from all K slots; accuracy of each emitted digit by the accumulator's magnitude (< 100 / 100-199 / >= 200); the
+    pairwise cosine of the K slots' codes; slot ablation (one slot's code zeroed at every step)."""
+    acc, dig, _, pairs, col, emit = accumulators(teA, teB); P, _, _ = columns(teA, teB); out = {}
+    ok = np.stack([pred[:, col[t]] == dig[:, t] for t in range(len(pairs)) if emit[t]], 1); av = np.stack([acc[:, t] for t in range(len(pairs)) if emit[t]], 1)
+    out["acc_by_magnitude"] = {nm_: (float(ok[msk].mean()) if msk.any() else None) for nm_, msk in (("lt100", av < 100), ("100_199", (av >= 100) & (av < 200)), ("ge200", av >= 200))}
+    out["magnitude_counts"] = {"lt100": int((av < 100).sum()), "100_199": int(((av >= 100) & (av < 200)).sum()), "ge200": int((av >= 200).sum())}
+    Zc = codes.reshape(-1, m.K, codes.shape[-1]); cs = []
+    for k in range(m.K):
+        for l in range(k + 1, m.K):
+            a_, b_ = Zc[:, k], Zc[:, l]; cs.append(float(((a_ * b_).sum(1) / (np.linalg.norm(a_, axis=1) * np.linalg.norm(b_, axis=1) + 1e-9)).mean()))
+    out["slot_cosine"] = {"pairwise_mean": float(np.mean(cs)) if cs else None, "pairs": cs}
+    abl = {}
+    for k in m.cidx:
+        m.ablate = k; pk = rollout_slots(m, teA, teB, dev, amp, bs); m.ablate = None; r_ = acc_report(pk, P)
+        abl["slot%d" % (k + 1)] = {"test_acc": r_["test_acc"], "per_column": r_["acc_by_column"]["per_column"]}
+    out["slot_ablation"] = abl
+    rng = np.random.default_rng(seed); idx = rng.permutation(len(teA))[:n]; A, Bd = teA[idx], teB[idx]; ac, _, _, _, _, _ = accumulators(A, Bd)
+    _, Q = rollout_slots(m, A, Bd, dev, amp, bs, record=True); h = len(A) // 2; T = ac.shape[1]
+    def pool(X, y):
+        return ridge_r2(X[:h].reshape(h * T, -1), y[:h].reshape(-1).astype(float), X[h:].reshape((len(A) - h) * T, -1), y[h:].reshape(-1).astype(float))
+    pr = {"slot%d" % (k + 1): {nm_: pool(Q[:, :, k], (ac // 10 ** e_) % 10) for e_, nm_ in ((0, "units"), (1, "tens"), (2, "hundreds"))} for k in range(m.K)}
+    return out, {"per_slot_digit_r2": pr, "r2_acc_all_slots": pool(Q.reshape(len(A), T, -1), ac), "r2_acc_carried_slots": pool(Q[:, :, m.cidx].reshape(len(A), T, -1), ac), "carried": [k + 1 for k in m.cidx],
+                 "n": int(len(A)), "steps": int(T)}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--family", default="mult_pair", choices=["mult_pair"]); ap.add_argument("--task", default="4x4", choices=["4x4", "5x5"])
@@ -228,6 +416,9 @@ def main():
     ap.add_argument("--resume", default=None); ap.add_argument("--stop_after", type=int, default=0); ap.add_argument("--train_n", type=int, default=0, help="smoke only")
     ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--from_args", default=None); ap.add_argument("--contraction_only", action="store_true")
     ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
+    ap.add_argument("--slots", type=int, default=0, help="§145: K write positions / slots (0 = §140's single code)"); ap.add_argument("--carry_slots", type=int, default=0)
+    ap.add_argument("--carry_from", default="first", choices=["first", "last"], help="§145 note 145-1: carry the slots read at the LAST write positions (CARRY1: w_K)")
+    ap.add_argument("--no_round", action="store_true", help="§145 NOISE-64 carrier"); ap.add_argument("--dither", type=float, default=0.0)
     a = ap.parse_args()
     if a.from_args:
         keep = {k: getattr(a, k) for k in ("contraction_only", "fp32", "device", "out", "from_args")}
@@ -236,6 +427,7 @@ def main():
                 setattr(a, k, v)
         for k, v in keep.items():
             setattr(a, k, v)
+    assert not a.slots or (a.no_round and 1 <= a.carry_slots <= a.slots <= 4), "§145: --slots K (<= 4) needs --no_round and 1 <= --carry_slots <= K"
     dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); sc = a.sched_scale; n = int(a.task[0])
     if a.d_q != F.D_Q or a.levels != F.LEV:
         F.D_Q, F.LEV = a.d_q, a.levels; F.HALF = (F.LEV - 1) / 2; F.SHIFT = math.atanh(F.OFF / F.HALF)
@@ -243,11 +435,15 @@ def main():
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     os.makedirs(a.out, exist_ok=True); fam = PairFam(); dname = lambda: torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"  # noqa: E731
     teA, teB = load_bench(os.path.join(ROOT, "bench", "data", "mult_%s_test.txt" % a.task)); teA, teB = teA[:a.test_n], teB[:a.test_n]
+    def mk():
+        m_ = (MultSlot(s5.load_gpt2(dev), fam, a.slots, a.carry_slots, a.carry_from) if a.slots else MultPair(s5.load_gpt2(dev), fam)).to(dev); m_.no_round = a.no_round
+        return m_
+    RO = rollout_slots if a.slots else rollout
     if a.contraction_only:
-        m = MultPair(s5.load_gpt2(dev), fam).to(dev); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval(); m.p_hard = 1.0
-        ampc = None if a.fp32 else amp; ct = contraction(m, teA, teB, dev, ampc, T0=a.contract_T0, n=a.contract_n); ct.update({"eval_dtype": str(ampc), "device": dname(), "driver": driver_version()})
+        m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval(); m.p_hard = 1.0
+        ampc = None if a.fp32 else amp; ct = (contraction_slots if a.slots else contraction)(m, teA, teB, dev, ampc, T0=a.contract_T0, n=a.contract_n); ct.update({"eval_dtype": str(ampc), "device": dname(), "driver": driver_version()})
         json.dump(ct, open(os.path.join(a.out, "eval_contraction_fp32.json" if a.fp32 else "eval_contraction.json"), "w", newline="\n"), indent=1)
-        print("CONTRACTION", json.dumps({k: ct[k] for k in ("rho", "rho_nonzero", "basin")}), flush=True); return
+        print("CONTRACTION", json.dumps({k: ct.get(k) for k in ("rho", "rho_nonzero", "basin")}), flush=True); return
     cmax(1, a.task)                                                         # refuses an unregistered task schedule before any work
     if a.train_n:
         from boxes.multcol import load_bench_head
@@ -259,7 +455,7 @@ def main():
             "train_driver": driver_version(), **env_info()}
     json.dump({**info, "resumed_at": time.strftime("%Y-%m-%d %H:%M:%S")} if a.resume else info,
               open(os.path.join(a.out, ("args_resume_%d.json" % int(time.time())) if a.resume else "args.json"), "w", newline="\n"), indent=1)
-    m = MultPair(s5.load_gpt2(dev), fam).to(dev); opt = make_opt(m, a.lr); m.train(); pairs, col, emit = schedule(n, n)
+    m = mk(); opt = make_opt(m, a.lr); m.train(); pairs, col, emit = schedule(n, n)
     log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time(); hist = []; L127 = {}; n_nonfinite = 0; step0 = 1
     if a.resume:
         ck = torch.load(a.resume, map_location=dev, weights_only=False); m.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"])
@@ -278,13 +474,14 @@ def main():
         m.p_hard = 1.0; X, lab, tm, T = batch(2 * n, a.bs)
         with amp_ctx(amp):
             loss, _, _, _ = m.chain(m.start(a.bs, dev), X, lab, tm)
-        loss.backward(); m.eval(); rollout(m, gen_operands(rng, a.eval_bs, n), gen_operands(rng, a.eval_bs, 2 * n), dev, amp, a.eval_bs, record=True)
+        loss.backward(); m.eval(); RO(m, gen_operands(rng, a.eval_bs, n), gen_operands(rng, a.eval_bs, 2 * n), dev, amp, a.eval_bs, record=True)
         pk = torch.cuda.max_memory_allocated(dev) / 2 ** 30 if dev.startswith("cuda") else None
-        json.dump({"peak_gib": pk, "bs": a.bs, "eval_bs": a.eval_bs, "task": a.task}, open(os.path.join(a.out, "mem_check.json"), "w", newline="\n"), indent=1); print("MEM", pk); return
+        json.dump({"peak_gib": pk, "bs": a.bs, "eval_bs": a.eval_bs, "task": a.task, "slots": a.slots, "longest_eval_chain": "4x8 (33 steps)"}, open(os.path.join(a.out, "mem_check.json"), "w", newline="\n"), indent=1); print("MEM", pk); return
     for step in range(step0, a.steps + 1):
         for gr in opt.param_groups:
             gr["lr"] = lr_at(a.lr, gr, step, a.steps)
         m.p_hard = 0.0 if step <= a.p_hard_start * sc else min(1.0, (step - a.p_hard_start * sc) / ((a.p_hard_end - a.p_hard_start) * sc)); m.train()
+        m.noise = (a.dither if step > 2000 * sc else 0.0) if a.no_round else 0.0   # §145 NOISE-64: dither after 2k (no draws otherwise)
         c = int(rng.integers(1, cmax(step / sc, a.task) + 1)); X, lab, tm, T = batch(c, a.bs); opt.zero_grad()
         with amp_ctx(amp):
             loss, _, _, _ = m.chain(m.start(a.bs, dev), X, lab, tm)          # CE at the emission steps (mean over them)
@@ -316,22 +513,28 @@ def main():
     train_sec = round(time.time() - t0); torch.save(m.state_dict(), os.path.join(a.out, "model.pt")); m.eval(); m.p_hard = 1.0; t1 = time.time()
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
-    Pte, _, _ = columns(teA, teB); pred, codes, _ = rollout(m, teA, teB, dev, amp, a.eval_bs, record=True); res = acc_report(pred, Pte)
+    m.noise = 0.0; Pte, _, _ = columns(teA, teB); pred, codes = RO(m, teA, teB, dev, amp, a.eval_bs, record=True)[:2]; res = acc_report(pred, Pte)
     ti = np.random.default_rng(14000).integers(0, len(trA), 1000); Ptr, _, _ = columns(trA[ti], trB[ti])
-    res.update({"family": a.family, "task": a.task, "seed": a.seed, "long_acc": res["test_acc"], "train_acc": float((rollout(m, trA[ti], trB[ti], dev, amp, a.eval_bs) == Ptr).all(1).mean()),
+    res.update({"family": a.family, "task": a.task, "seed": a.seed, "long_acc": res["test_acc"], "train_acc": float((RO(m, trA[ti], trB[ti], dev, amp, a.eval_bs) == Ptr).all(1).mean()),
                 "train_sec": train_sec, "final_loss": L127[max(L127)] if L127 else None, "n_nonfinite": n_nonfinite, "train_removed_test_overlap": n_rem, "eval_dtype": str(amp),
                 "gpu": dname(), "train_gpu": info["train_gpu"], "train_driver": info["train_driver"]})
     if a.task == "4x4" and a.ext_n:
         xA, xB = gen_operands(np.random.default_rng(14004), a.ext_n, 4), gen_operands(np.random.default_rng(14005), a.ext_n, 8); xA, xB, rem = dedup(xA, xB, teA, teB)
-        Px, _, _ = columns(xA, xB); res["ext_4x8"] = {**acc_report(rollout(m, xA, xB, dev, amp, a.eval_bs), Px), "dedup_removed": rem, "seeds": [14004, 14005]}
-    res["donor"] = donor(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(14002), n=a.donor_n)
-    ct = contraction(m, teA, teB, dev, amp, T0=a.contract_T0, n=a.contract_n); res.update({"rho": ct["rho"], "rho_nonzero": ct["rho_nonzero"], "basin": ct["basin"], "contraction": ct["detail"]})
-    res["s140_probe"] = s140_probe(m, teA, teB, dev, amp, a.eval_bs); res["n_codes"] = int(len(np.unique(codes.reshape(-1, codes.shape[-1]), axis=0))); res["eval_sec"] = round(time.time() - t1)
+        Px, _, _ = columns(xA, xB); res["ext_4x8"] = {**acc_report(RO(m, xA, xB, dev, amp, a.eval_bs), Px), "dedup_removed": rem, "seeds": [14004, 14005]}
+    if a.slots:                                                             # §145
+        res["donor"], sw_ = donor_slots(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(14002), n=a.donor_n)
+        ct = contraction_slots(m, teA, teB, dev, amp, T0=a.contract_T0, n=a.contract_n); res.update({"rho": ct["rho"], "basin": ct["basin"], "contraction": ct["detail"]})
+        ex_, pr_ = s145_extras(m, teA, teB, dev, amp, a.eval_bs, pred, codes); res["s145"] = {**ex_, "slot_swap": sw_, "slots": a.slots, "carry_slots": a.carry_slots}
+        res["s145_probe"] = pr_; res["n_codes"] = None; res["eval_sec"] = round(time.time() - t1)
+    else:
+        res["donor"] = donor(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(14002), n=a.donor_n)
+        ct = contraction(m, teA, teB, dev, amp, T0=a.contract_T0, n=a.contract_n); res.update({"rho": ct["rho"], "rho_nonzero": ct["rho_nonzero"], "basin": ct["basin"], "contraction": ct["detail"]})
+        res["s140_probe"] = s140_probe(m, teA, teB, dev, amp, a.eval_bs); res["n_codes"] = int(len(np.unique(codes.reshape(-1, codes.shape[-1]), axis=0))); res["eval_sec"] = round(time.time() - t1)
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     for ck_ in ("ckpt_last.pt", "ckpt_prev.pt"):
         if os.path.exists(os.path.join(a.out, ck_)):
             os.remove(os.path.join(a.out, ck_))
-    print("EVAL", json.dumps({k: res[k] for k in ("test_acc", "train_acc", "rho", "n_codes")}), flush=True); print("DONE", a.out, flush=True)
+    print("EVAL", json.dumps({k: res.get(k) for k in ("test_acc", "train_acc", "rho", "n_codes")}), flush=True); print("DONE", a.out, flush=True)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,3 @@
+# THEORY §145 MULTI-SLOT (b1d7741c + note 145-1) PROOF slot 1, arm SLOT4 via scratch.restart145 -> boxes.multpair (--slots 4 --carry_slots 4 --carry_from first --d_q 64 --no_round --dither 0.25; §140 otherwise: restart slots, --stop_plateau, ckpt 2000); RTX 3090 (~$0.5)
+# P=1
+boxes/runs_fsq/s145_slots/slot4_4x4_k1 scratch.restart145 --arm slot4 --task 4x4 --slot 1

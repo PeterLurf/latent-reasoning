@@ -1,0 +1,9 @@
+{"step": 1, "loss": 7.934425354003906, "c_max": 1, "p_hard": 0.0, "sec": 2}
+{"step": 2, "loss": 9.016559600830078, "c_max": 1, "p_hard": 0.0, "sec": 4}
+{"step": 2, "flag_123_3": true, "loss_100": 7.934425354003906, "loss_1k": 7.934425354003906, "loss_2k": 9.016559600830078, "stop_plateau": false}
+{"step": 3, "loss": 8.318519592285156, "c_max": 2, "p_hard": 0.5, "sec": 6}
+{"step": 3, "ckpt": "ckpt_last.pt"}
+{"step": 3, "resumed": "D:/drain_tmp/smoke145/slot4_ck3.pt"}
+{"step": 4, "loss": 7.7613019943237305, "c_max": 2, "p_hard": 1.0, "sec": 9}
+{"step": 5, "loss": 7.839632511138916, "c_max": 2, "p_hard": 1.0, "sec": 11}
+{"step": 6, "loss": 8.089957237243652, "c_max": 4, "p_hard": 1.0, "sec": 17}
