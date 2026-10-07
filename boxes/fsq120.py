@@ -206,6 +206,14 @@ class FSQ120(nn.Module):
         self.skip = False; self.std2 = False; self.var_on = False; self._var = []; self.last_qs = None   # §127 (enable_* register)
         self.det_train = False                                              # §127 checks: training semantics without RNG draws
         self.grow_d0 = None; self.n_grow = 0; self.grow_noise = 0.0; self.nest_mask = None   # §136 (grow() / --grow_noise / --nested)
+        self.hinge_on = False; self.hinge_eps = None; self.hinge_dir = None; self.hinge_rows = 0.25; self._hinge = []   # §138 local contraction hinge
+        self.hinge_margin = 0.3                                             # §138: max(0, rho-hat - 0.3) (the gradflow check sets 0)
+        self.tanh_fp32 = False                                              # §138: the tanh before rounding in fp32 (Literature (3e))
+
+    def zb_of(self, h):
+        """The pre-quantisation code z_b of a segment output (no noise, no rounding; §138's hinge measures rho-hat on it)."""
+        z = self.down(self.ln(h.float()))
+        return torch.tanh((z.float() if self.tanh_fp32 else z) + SHIFT) * HALF - OFF
 
     def width(self):
         """§136: the current code width (d0 + every grown block)."""
@@ -367,7 +375,7 @@ class FSQ120(nn.Module):
         hl = self.ln(h.float()); z = self.down(hl)
         if self.grow_d0 is not None:                                        # §136: the grown W_down rows (the first d0 dims unchanged)
             z = torch.cat([z] + [d_(hl) for d_ in self.down_g], -1)
-        zb = torch.tanh(z + SHIFT) * HALF - OFF
+        zb = torch.tanh((z.float() if self.tanh_fp32 else z) + SHIFT) * HALF - OFF   # §138: tanh_fp32 (default off: unchanged numerics)
         if self.training and self.noise > 0:                                # §123 dither (continuous) / pre-rounding dither (FSQ)
             zb = zb + (torch.rand_like(zb) * 2 - 1) * self.noise
         if noise is not None:
@@ -469,6 +477,16 @@ class FSQ120(nn.Module):
             e = self.embed_code(qs)
             if self.tsd_on and self.training:                               # §135: e_j = W_up(code_j), kept with its graph
                 self._tsd_e.append(e)
+            if self.hinge_on and self.training and not self.det_train and t < L - 1 and labels is not None:   # §138 local contraction hinge
+                nr = max(1, int(round(B * self.hinge_rows))); rows = torch.randperm(B, device=items.device)[:nr]
+                zr = zb[rows].float(); rnd = torch.randn_like(zr); rnd = rnd / rnd.norm(dim=-1, keepdim=True).clamp_min(1e-12)
+                cdir = self.hinge_dir[torch.as_tensor(labels[rows.cpu().numpy(), t], device=items.device)]
+                half = (torch.arange(nr, device=items.device) % 2 == 0)[:, None]   # half random, half toward the nearest other state centroid
+                delta = self.hinge_eps * torch.where(half, rnd, cdir)
+                e_p = self.embed_code((zr + delta).to(zb.dtype))
+                z_c = self.zb_of(self.segment(e[rows][:, None], items[rows, t + 1])); z_p = self.zb_of(self.segment(e_p[:, None], items[rows, t + 1]))
+                rho = (z_p.float() - z_c.float()).norm(dim=-1) / delta.norm(dim=-1).clamp_min(1e-12)
+                self._hinge.append((torch.relu(rho - self.hinge_margin).mean(), rho.detach()))
             if record:
                 codes.append(q.detach()); embs.append(e.detach())
             if labels is not None and (t == L - 1 or (trace_mask is not None and trace_mask[:, t].any())):
@@ -888,6 +906,69 @@ def s136_dim_use(m, fam, dev, amp, d0):
     return out
 
 
+def _s138_probe(m, fam, dev, amp, seed=13801, n=1024, L=8):
+    """§138's fixed probe batch: eval-mode chains; per hand-off z_b (fp32), the hard code q and the true state."""
+    s0, x, lab = make_batch(fam, np.random.default_rng(seed), n, L); hs = _probe_chain(m, fam, dev, amp, s0 if fam.name == "s5" else None, x)
+    Z = torch.stack([z.float() for z, _, _ in hs], 1); Q = torch.stack([q.float() for _, q, _ in hs], 1)
+    return s0, x, lab, Z, Q
+
+
+@torch.no_grad()
+def s138_hinge_ref(m, fam, dev, amp, frac):
+    """§138 hinge reference, measured once at 2k: state centroids of the pre-quantisation z_b (the space the hinge perturbs) on a fixed probe
+    batch; eps = frac x the median over states of each centroid's distance to its nearest other centroid; per state the unit direction
+    toward that nearest other centroid."""
+    was = m.training; m.eval(); _, _, lab, Z, _ = _s138_probe(m, fam, dev, amp); m.train(was)
+    Zf = Z.reshape(-1, Z.shape[-1]); lf = torch.tensor(lab.reshape(-1), device=Zf.device); S = int(fam.n_states)
+    cnt = torch.zeros(S, device=Zf.device).index_add_(0, lf, torch.ones_like(lf, dtype=torch.float32))
+    cen = torch.zeros(S, Zf.shape[-1], device=Zf.device).index_add_(0, lf, Zf) / cnt.clamp_min(1)[:, None]
+    seen = cnt > 0; D = torch.cdist(cen, cen); D[~seen] = float("inf"); D[:, ~seen] = float("inf"); D.fill_diagonal_(float("inf"))
+    nn_d, nn_i = D.min(1); med = float(nn_d[seen].median()); dirs = cen[nn_i] - cen; dirs = dirs / dirs.norm(dim=-1, keepdim=True).clamp_min(1e-12)
+    dirs[~seen] = 0.0
+    return {"eps": frac * med, "dir": dirs, "info": {"hinge_eps": frac * med, "median_nn_centroid_dist": med, "states_seen": int(seen.sum()), "space": "z_b (pre-quantisation)"}}
+
+
+@torch.no_grad()
+def s138_code_div(m, fam, dev, amp):
+    """§138 FULL-FSQ: distinct hard codes and dims used (> 1 distinct level) on the fixed probe batch."""
+    was = m.training; m.eval(); _, _, _, _, Q = _s138_probe(m, fam, dev, amp); m.train(was); Qf = Q.reshape(-1, Q.shape[-1]).cpu().numpy().astype(np.int8)
+    return {"distinct_codes": int(len(np.unique(Qf, axis=0))), "dims_used": int(sum(len(np.unique(Qf[:, i])) > 1 for i in range(Qf.shape[1]))), "n": int(len(Qf))}
+
+
+def s138_desc(m, fam, dev, amp, n_jac=64, iters=10):
+    """§138 descriptive block (eval, fixed probe batch): effective rank of z_b; within-state spread / median between-centroid distance; the
+    variance share beyond dim 64; one-step rho along the state-separating direction and along a random one (||dz_{t+1}|| / ||delta||,
+    delta = 0.1 x the median nearest-centroid distance, hand-off 4 -> 5); power-iteration spectral norm of the hand-off Jacobian
+    d z_{t+1} / d z_t (fp32, rounding off, n_jac rows); dims used + distinct codes (rounded arms)."""
+    was = m.training; m.eval(); s0, x, lab, Z, Q = _s138_probe(m, fam, dev, amp)
+    Zf = Z.reshape(-1, Z.shape[-1]); lf = lab.reshape(-1); Zn = Zf.cpu().numpy(); var = Zn.var(0); out = {}
+    ev = np.clip(np.linalg.eigvalsh(np.cov(Zn.T)), 0, None); p = ev[ev > 0] / max(ev.sum(), 1e-12); out["eff_rank"] = float(np.exp(-(p * np.log(p)).sum()))
+    out["var_share_beyond_64"] = float(var[64:].sum() / max(var.sum(), 1e-12)) if len(var) > 64 else None
+    ref = s138_hinge_ref(m, fam, dev, amp, 1.0); med = ref["info"]["median_nn_centroid_dist"]; S = int(fam.n_states)
+    cen = torch.zeros(S, Zf.shape[-1], device=Zf.device).index_add_(0, torch.tensor(lf, device=Zf.device), Zf)
+    cnt = np.bincount(lf, minlength=S); cen = cen / torch.tensor(np.maximum(cnt, 1), device=Zf.device, dtype=torch.float32)[:, None]
+    out["spread_over_between"] = float((Zf - cen[torch.tensor(lf, device=Zf.device)]).norm(dim=-1).mean() / max(med, 1e-12)); out["median_nn_centroid_dist"] = med
+    t = 3; X = torch.tensor(x, device=dev)                                   # hand-off 4 (0-based t 3) -> 5
+    def nxt(z_, rows):                                                      # the hand-off map z_t -> z_{t+1} (rounding off, fp32)
+        return m.zb_of(m.segment(m.embed_code(z_)[:, None], X[rows, t + 1]))
+    rows = torch.arange(min(n_jac, len(x)), device=dev); z0 = Z[rows, t].detach(); st = torch.tensor(lab[rows.cpu().numpy(), t], device=dev); d0 = 0.1 * med
+    with torch.no_grad():
+        base = nxt(z0, rows); rnd = torch.randn_like(z0); rnd = rnd / rnd.norm(dim=-1, keepdim=True)
+        rho_dir = ((nxt(z0 + d0 * ref["dir"][st], rows) - base).norm(dim=-1) / d0); rho_rnd = ((nxt(z0 + d0 * rnd, rows) - base).norm(dim=-1) / d0)
+    out["rho_dir_onestep_median"] = float(rho_dir.median()); out["rho_rand_onestep_median"] = float(rho_rnd.median())
+    v = torch.randn_like(z0); v = v / v.norm(dim=-1, keepdim=True); sig = None; fd = 1e-3 * float(z0.norm(dim=-1).median().clamp_min(1e-3))
+    for _ in range(iters):                                                  # power iteration on J^T J per row (rows independent); SDPA has no
+        with torch.no_grad():                                               #   double backward, so J v by central differences (fp32) and J^T u by one vjp
+            jv = (nxt(z0 + fd * v, rows).float() - nxt(z0 - fd * v, rows).float()) / (2 * fd)
+        zz = z0.clone().requires_grad_(True); yy = nxt(zz, rows).float(); jtjv, = torch.autograd.grad(yy, zz, grad_outputs=jv)
+        sig = jv.norm(dim=-1); v = jtjv / jtjv.norm(dim=-1, keepdim=True).clamp_min(1e-12)
+    out["rho_jacobian_power_median"] = float(sig.median()); out["rho_jacobian_power_rows"] = int(len(rows))
+    if not m.no_round:
+        Qf = Q.reshape(-1, Q.shape[-1]).cpu().numpy().astype(np.int8)
+        out.update({"dims_used": int(sum(len(np.unique(Qf[:, i])) > 1 for i in range(Qf.shape[1]))), "distinct_codes": int(len(np.unique(Qf, axis=0)))})
+    m.train(was); return out
+
+
 def opprobe(m, fam, dev, amp, n=4096, L=8, seed=12703, positions=(2, 4, 8), chunk=1024):
     """Theory 2026-10-06 (Literature's op-history test, descriptive): R^2 of z_b at chain positions 2 / 4 / 8 on the last 1 / 2 / 3
     items read (op history) beside the state and the start state; per-group means fit on half the chains, scored on the other half
@@ -1174,6 +1255,10 @@ def main():
     ap.add_argument("--grow_staged", action="store_true", help="§136 STAGED: D0 -> 2 D0 at the trigger, then x2 every >= 1,000 steps at loss <= 2.5, up to D1")
     ap.add_argument("--grow_noise", type=float, default=0.0, help="§136 GROW-NOISE: grown dims continuous + training dither U(+-this)")
     ap.add_argument("--nested", action="store_true", help="§136 NESTED: each training chain zeroes code dims beyond a prefix width from {4, 8, 16, 32, 64}")
+    ap.add_argument("--hinge", action="store_true", help="§138 FULL-HINGE: from 2k, the local contraction hinge max(0, rho-hat - 0.3) on 1 in 4 hand-off rows")
+    ap.add_argument("--hinge_eps_frac", type=float, default=0.15, help="§138: eps = this x the median nearest-other-centroid distance (z_b space, 2k probe batch)")
+    ap.add_argument("--hinge_rows", type=float, default=0.25, help="§138: share of each batch's rows hinged at every hand-off")
+    ap.add_argument("--tanh_fp32", action="store_true", help="§138: the tanh before rounding in fp32 (Literature (3e))")
     ap.add_argument("--prefix_only", action="store_true", help="post-hoc (Theory 57d6b89e): cumulative accuracy at prefixes 1 / 2 / 4 / 8 of the eval's own test chains (8-step rollout; causal, so = the eval's first 8 positions) -> <out>/eval_prefix.json")
     ap.add_argument("--probe_only", action="store_true", help="post-hoc (descriptive): probe127 on <out>/model.pt at p_hard 1 -> <out>/eval_probe_posthoc.json")
     ap.add_argument("--check_marker", default=None, help="§128 note 128-1: with --stop_plateau, the first attempt to mkdir this path when its flag fires keeps training")
@@ -1214,13 +1299,14 @@ def main():
                     or a.resume_2k or a.save_at_flag or a.redraw_head or a.nested or a.tsd), "§136: --grow on the plain FSQ carrier (+ §134 copy rows) only"
     assert a.grow or not (a.grow_staged or a.grow_noise or a.grow_trigger), "§136: --grow_staged / --grow_noise / --grow_trigger need --grow"
     assert not a.nested or (a.d_q == 64 and not (a.no_round or a.soft_beta or a.carrier_ln)), "§136 NESTED: --d_q 64 on the plain FSQ carrier"
+    assert not a.hinge or (a.no_round and not (a.grow or a.nested or a.raw_h or a.anneal or a.std or a.std2 or a.skip_dec or a.tsd)), "§138 HINGE: on the CONT carrier (--no_round) only"
     memcap and memcap.apply(dev)                                                       # local hard cap (LATENT_MEM_CAP_GB; no-op on the cloud)
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     fam = Family(a.family); os.makedirs(a.out, exist_ok=True)
     assert not (a.dither and not a.no_round) and not (a.fsq_dither and a.no_round), "§123: --dither needs --no_round; --fsq_dither is FSQ"
     def mk(apply_grow=True):
         m_ = FSQ120(s5.load_gpt2(dev), fam).to(dev); m_.no_round = a.no_round; m_.raw_h = a.raw_h; m_.soft_beta = a.soft_beta; m_.carrier_ln = a.carrier_ln
-        m_.grow_noise = a.grow_noise
+        m_.grow_noise = a.grow_noise; m_.tanh_fp32 = a.tanh_fp32; m_.hinge_rows = a.hinge_rows
         gj = os.path.join(a.out, "grow.json")
         if a.grow and apply_grow and os.path.exists(gj):                    # §136 post-hoc / eval_only: the run's widenings (weights from model.pt)
             for ev_ in json.load(open(gj))["events"]:
@@ -1341,6 +1427,7 @@ def main():
     reest = False; dist_hist = []; var_hist = []; L127 = {}; n_nonfinite = 0
     n_copy = int(round(a.copy_frac * a.bs)) if a.copy_frac else 0; crng = np.random.default_rng(a.seed + 13400); copy_hist = []; tot_hist = []   # §134
     tsd_g = tsd_mu = None; tsd_hist = []; tsd_top1 = []; tsd_share = []; tsd_share_all = []; tsd_share_cos = []; tsd_share_cos_all = []   # §135
+    hinge_loss_hist = []; hinge_rho_hist = []; h138 = {"eps": None, "dir": None, "info": None}                       # §138
     g136 = {"events": [], "thr": None, "plat": None}; nrng = np.random.default_rng(a.seed + 13600)   # §136 widenings / trigger steps; NESTED widths
     NEST_W = (4, 8, 16, 32, 64)
 
@@ -1361,6 +1448,8 @@ def main():
         log.write(json.dumps({"step": 0, "zb_std_in": zb_std_in(m, dev)}) + "\n"); log.flush()
     step0 = 1
     if rck is not None:                                                     # user 2026-10-06: same-clock resume (RNG restored last, after the
+        if rck.get("s138", {}).get("eps") is not None:                       # §138: the hinge's fixed eps / directions (measured at 2k)
+            h138 = rck["s138"]; m.hinge_eps = h138["eps"]; m.hinge_dir = h138["dir"].to(dev); m.hinge_on = True
         if "s136" in rck:                                                   # §136: rebuild the checkpoint's widenings (+ their AdamW groups) first
             g136 = rck["s136"]["g136"]; nrng.bit_generator.state = rck["s136"]["nrng"]
             for ev_ in g136["events"]:
@@ -1429,6 +1518,9 @@ def main():
             else:
                 loss_all = loss
             m._tsd_e = []
+            if m._hinge:                                                    # §138: the hinge term (weight 1), its rho-hat tallied
+                hl_ = torch.stack([x_ for x_, _ in m._hinge]).mean(); loss_all = loss_all + hl_; hinge_loss_hist.append(float(hl_.detach()))
+                hinge_rho_hist.append(torch.cat([r_ for _, r_ in m._hinge]).cpu().numpy()); m._hinge = []
             (loss_all / nmb).backward(); tot += loss.item() / nmb            # the logged "loss" stays the main chain's alone
         m.nest_mask = None
         if n_copy:                                                          # §134 COPY-ANCHOR: another problem's final answer -> copy writer -> CE
@@ -1460,6 +1552,12 @@ def main():
             carried["2k"] = carried_stats(m, fam, dev, amp); m.train()
         if step % a.log_every == 0 or step == a.steps:
             rec = {"step": step, "loss": float(np.mean(hist)), "L_max": lmax_at(step / sc), "p_hard": m.p_hard, "noise": m.noise, "sec": round(time.time() - t0)}; hist = []; last_loss = rec["loss"]
+            if dev.startswith("cuda") and (a.d_q >= 768 or a.hinge):         # §138: peak memory per window (the 3090 memory check reads it)
+                rec["mem_gib"] = round(torch.cuda.max_memory_allocated(dev) / 2 ** 30, 3)
+            if a.hinge and m.hinge_on:
+                rr_ = np.concatenate(hinge_rho_hist) if hinge_rho_hist else np.zeros(0)
+                rec.update({"hinge_loss": float(np.mean(hinge_loss_hist)) if hinge_loss_hist else None, "hinge_rho": float(np.median(rr_)) if len(rr_) else None,
+                            "hinge_active_share": float((rr_ > 0.3).mean()) if len(rr_) else None}); hinge_loss_hist = []; hinge_rho_hist = []
             if m.anneal:
                 rec.update({"lam": m.lam, "distill": float(np.mean(dist_hist)) if dist_hist else None}); dist_hist = []
             if a.var_res:
@@ -1504,6 +1602,11 @@ def main():
         if n_copy and step == int(2000 * sc):                               # §134 mechanism probes at 2k (the end ones go to eval.json)
             log.write(json.dumps({"step": step, "s134": {"dialect": dialect134(m, fam, dev, amp), "copy_donor": copy_donor134(m, fam, dev, amp),
                                                         "ophist": opprobe(m, fam, dev, amp)}}) + "\n"); log.flush(); m.train()
+        if a.hinge and step == int(2000 * sc) and not m.hinge_on:           # §138: eps measured once at 2k on a fixed probe batch, then fixed
+            h138 = s138_hinge_ref(m, fam, dev, amp, a.hinge_eps_frac); m.hinge_eps, m.hinge_dir, m.hinge_on = h138["eps"], h138["dir"], True; m.train()
+            log.write(json.dumps({"step": step, "hinge_on": True, **h138["info"]}) + "\n"); log.flush()
+        if a.d_q >= 768 and not a.no_round and step in (1, int(2000 * sc)):  # §138 FULL-FSQ: initial code diversity at step 0 (after 1 update) / 2k
+            log.write(json.dumps({"step": step, "code_diversity": s138_code_div(m, fam, dev, amp)}) + "\n"); log.flush(); m.train()
         if p127 and step == int(2000 * sc):                                 # note 127-1: probe at 2k (before any stop)
             log.write(json.dumps({"step": step, "probe": probe127(m, fam, dev, amp)}) + "\n"); log.flush(); m.train()
         if a.stop_plateau and step == int(2000 * sc) and L127:              # 123-3's flag (log steps nearest 100 / 1k / 2k)
@@ -1542,7 +1645,8 @@ def main():
                         "dist_hist": dist_hist, "var_hist": var_hist, "reest": reest, "elapsed": time.time() - t0,
                         "crng": crng.bit_generator.state, "copy_hist": copy_hist, "tot_hist": tot_hist,
                         "tsd": {"hist": tsd_hist, "top1": tsd_top1, "share": tsd_share, "share_all": tsd_share_all, "share_cos": tsd_share_cos,
-                                "share_cos_all": tsd_share_cos_all}, "s136": {"g136": g136, "nrng": nrng.bit_generator.state}}, cp + ".tmp")   # Audit: a resumed §135 student keeps whole-run tallies
+                                "share_cos_all": tsd_share_cos_all}, "s136": {"g136": g136, "nrng": nrng.bit_generator.state},
+                        "s138": {"eps": h138["eps"], "dir": None if h138["dir"] is None else h138["dir"].cpu(), "info": h138["info"]}}, cp + ".tmp")   # Audit: a resumed §135 student keeps whole-run tallies
             if os.path.exists(cp):                                          # Theory note 135-6: the previous save is kept too, so a fault
                 os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))         #   after a save (b78 VRAM) still leaves a clean state to resume from
             os.replace(cp + ".tmp", cp); log.write(json.dumps({"step": step, "ckpt": "ckpt_last.pt"}) + "\n"); log.flush()
@@ -1632,6 +1736,9 @@ def main():
         res["skip_off"] = {"long_acc": float(Co.all(1).mean()), "acc_by_length": {str(t): float(Co[:, :t].all(1).mean()) for t in (16, 64, 512) if t <= Co.shape[1]},
                            "donor": donor(m, fam, dev, amp, n=a.donor_n)}
         m.skip_w.data.copy_(w_keep)
+    if a.d_q >= 768 or a.hinge:                                             # §138 descriptive block (fp32 tanh / contraction per Literature (3e))
+        res["s138"] = {"hinge": a.hinge, "hinge_eps_frac": a.hinge_eps_frac if a.hinge else None, "hinge_ref": h138["info"], "tanh_fp32": a.tanh_fp32,
+                       **s138_desc(m, fam, dev, None if a.tanh_fp32 else amp)}
     if a.grow or a.nested:                                                  # §136 end: widening record, trigger steps, dimension use
         g_ = {"grow": a.grow, "grow_trigger": a.grow_trigger, "grow_staged": a.grow_staged, "grow_noise": a.grow_noise, "nested": a.nested,
               "width_final": m.width(), "d0": G0 if a.grow else 8}
