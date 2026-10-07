@@ -227,7 +227,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 137 | Multiplication on fsq120, column-major: carried carry (FSQ-8), streamed product digits (C4 qualifier), restart slots; 4×4 → 5×5 → 4×8 | **4×4 DROP at proof** (test_acc 0.0; middle columns at chance; carry in h R² 0.69, in the code 0.24) → §140 | closed |
 | 138 | FULL WIDTH (the user's trigger): §133's harness at d 768, no COPY; FULL-FSQ / FULL-NOISE / FULL-CONT (vs RAW-H) / FULL-HINGE; fails-to-improve → revisit; S5×4 as the benefit test | registered | **open** |
 | 139 | DISTILL-2 (user's go): a CoT teacher's state (probe or its text) as a warm-start fading to 0 by 4k, on multiplier-major multiplication; A = SOFT-16 + COPY (FINAL), B = A + DISTILL-2, C = constant weight | registered | **open** |
-| 140 | DIGPAIR (§137's fallback; runs only on §137 4×4 DROP / FAIL): one digit pair per segment, carried column accumulator (FSQ-8), streamed digits; design-forced C1 | registered (conditional) | **open** |
+| 140 | DIGPAIR (§137's fallback; runs only on §137 4×4 DROP / FAIL): one digit pair per segment, carried column accumulator (FSQ-8), streamed digits; design-forced C1 | **4×4 DROP at proof** (0.002; columns 1–2 exact, first errors at the 3- and 4-pair columns; accumulator R² h 0.92 vs code 0.61) | closed |
 | 141 | After §137's DROP: latent repeats per column (r4 + repeat index) × carrier (FSQ-8 / SOFT-16); r1×SOFT-16 gated on a nonlinear code probe; readings crossed with §140 | registered | **open** |
 
 ## Live sections
@@ -6928,6 +6928,21 @@ trigger fired on seed 1, the plain learner on this card class.
 **Note 137-3 (2026-10-07 05:21 EDT; a wording fix to §137's result, after Audit's reproduction).** The context-only column-sum probe per column is 0.78 / 0.15 / 0.01 / −0.03 / … The result's
 "not at all from column 2 on (≤ 0.15)" should read: **0.15 at column 2, and about 0 from column 3 on.** The reading is unchanged.
 
+**§140 result (2026-10-07 08:38 EDT; the 4×4 proof, s140_pair_4x4_s1, RTX 3090 / 595.91.07, unflagged at 2k; scored by Theory with score_s140). DROP at proof: test_acc 0.002
+(train 0.001). 4×4 stops; §140 is closed.**
+* **Per column:** 1.0 / **1.0** / 0.315 / 0.132 / 0.104 / 0.24 / 0.50 / 0.936. Per step given a correct prefix: 1.0 / 1.0 / 0.32 / 0.18 / 0.13 / 0.43 / 0.67 / 1.0.
+  - **The first error is at column 3 in 685 / 1000 chains, and at column 4 in 259.**
+  - The loss was **≈ 0 while only columns 1–2 were trained** (1k–2k), then rose as columns 3+ entered the curriculum: 0.35 at 5k, 0.54 at 9k, 0.87 at 24k.
+* **Probe:** the column accumulator is readable from **h at R² 0.92**, from the **code at 0.61**. The context-only column sum is ≈ 0 (as designed: only one pair is
+  visible).
+* **SERIAL:** not met (donor about recipient, against chance 0.46–0.67). ext_4x8 is 0.0.
+* **Reading (as registered: DROP or FAIL means "even one-digit steps with a carried accumulator are not learned at this budget"):**
+  - one product per step fixes column 2 (§137 had 0.326);
+  - **columns that accumulate 3–4 products fail**, the first errors fall at column 3, and the accumulator is only partly held by the code (0.61 against h's 0.92).
+  - So the barrier is not only the per-segment in-pass load. **Carrying a multi-step accumulator** (sums up to about 300) **through the 8-d code across 3–4 steps**
+    is not learned here.
+  - Descriptive, n = 1. With §137 / §141-r1s16, the result is now "columns of ≥ 3 products fail in every design so far". §141's r4 cells are the last open test.
+
 ## 141. After §137's DROP: latent repeats per column, and a wider carrier (pre-registered 2026-10-07 05:41 EDT, after Literature's check 6bf78643 and before any implementation or run; Audit's steward ideas; the user's "revisit methods if fail to improve")
 
 **Why.**
@@ -7107,6 +7122,12 @@ checkpoints, the host check).
 * **Reading (descriptive, consistent with 141-3's stacked failures):** the wider code roughly doubles column 2 (2 digit products) but leaves columns 3–7 (3–4 products)
   at about chance. Width helps where the in-pass load is small, not where it is large.
 * The decisive cells are r4f8 and r4s16 (repeats), still running. The 2×2's width-only cell reads DROP.
+
+**Note 139-4 (2026-10-07 08:38 EDT; the 1-host proof on b126; 139-1 (c)'s stop rule).** Audit's raw read: **A s1 stopped at 4k by the copy gate** (copy_acc 0.0, copy_loss 8.5). By 139-1 (c)
+**the stage stops before seeds 2–4**, and this is the report.
+* In the same proof, A′ s1 finished 24k with copy_acc 1.0 but a final loss of 10.94 (it looks failed), and B s1 was at 22.9k with a loss of 6.50.
+* COPY learns in A′ and B but not in A, so A's log is to be checked for divergence or nonfinite steps before reading anything into it.
+* The three proof runs are scored when their files land (descriptive; no seeds 2–4).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
