@@ -1,0 +1,3 @@
+# THEORY §136 NESTED-64 (one run, seed 1; descriptive): d 64 from step 0, prefix widths {4, 8, 16, 32, 64} per training chain; RTX 3090; boxes.fsq120
+# P=1
+boxes/runs_fsq/s136_nested_s5_s1 boxes.fsq120 --family s5 --arm final --seed 1 --micro 2 --micro_from 32 --no_cert --probe127 --ckpt_every 2000 --d_q 64 --nested

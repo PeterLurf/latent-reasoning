@@ -1,0 +1,3 @@
+# THEORY §136 GROW stage 1 (bccf643b; Audit-approved $8 + $2.5): arm cnoise seed 2 - §128 S5 recipe, no restarts / no plateau stop, --ckpt_every 2000; switch asserts + smokes PASS (gradflow_s136_cuda.json); RTX 3090; boxes.fsq120
+# P=1
+boxes/runs_fsq/s136_cnoise_s5_s2 boxes.fsq120 --family s5 --arm final --seed 2 --micro 2 --micro_from 32 --no_cert --probe127 --ckpt_every 2000 --d_q 8 --grow 8:64 --grow_trigger 2.5 --grow_noise 0.25 --copy_frac 0.1
