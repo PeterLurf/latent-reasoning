@@ -1,0 +1,3 @@
+# THEORY §155 DELTA-R arm shiftr slot 3 (Theory 07:10: SHIFT-R s1 1.000 exact -> slots complete; scored a2f53616) via scratch.restart155 --arm shiftr; on-host gate155 + mem_check; ship EXTRA_120=scratch/gate155.py; RTX 3090 (~$1)
+# P=1
+boxes/runs_fsq/s155_slots/shiftr_4x4_k3 scratch.restart155 --arm shiftr --task 4x4 --slot 3
