@@ -8416,6 +8416,19 @@ estimates.
   - **Caveat, stated now:** §152 is handed b_j at each pass (the designer's segmentation). Its extrapolation tests the unseen position tokens j > 4, not item-agnostic
     generalisation, which is §153's question.
 
+**Note 152-4 (2026-10-08 00:33 EDT, before any §152 result; the user's research pass via Audit). A prediction from 2510.00184, stated now.**
+* **The paper:** Bai, Pres, Deng et al. (2510.00184) reverse-engineer ICoT's multiplier. An attention DAG caches pairwise partial products.
+  - Standard fine-tuning falls into a local optimum that lacks the long-range dependencies middle-digit carries need. That is our middle-column wall (§137–§148, PLAIN
+    included).
+  - An auxiliary loss predicting the running sum through a linear probe removes it.
+* **§152's reader** decodes the teacher's running sum S_j from the memory: a decoder version of that inductive bias.
+* **Predictions:**
+  - **A enters** (A s1 ≥ 0.95).
+  - **CTRL** (final only) is partial and below A. 2510.00184 predicts the local optimum, but §147's additive memory makes the running sum native (columns 3–7 at 0.92–0.99).
+  - **If A drops:** 2510.00184's mechanism does not transfer to a memory-carried running sum at this budget, and note 152-1's layout readings apply.
+* **C4:** 2510.00184's targets are computed running sums, hand-built and outside the current C4 wording. §152's come from the CoT text, which is allowed. Whether a computed
+  running-sum probe loss is acceptable is the user's call (asked by Audit).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
