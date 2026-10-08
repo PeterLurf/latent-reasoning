@@ -1,0 +1,63 @@
+{
+ "device": "cpu",
+ "amp": "None",
+ "g1_max_abs_dlogits_vs_plain": 0.0,
+ "g1_pass": true,
+ "g2_grad": {
+  "s_add": 0.006568108219653368,
+  "s_del": 0.00759091367945075,
+  "ln.weight": 0.06663988530635834,
+  "ln.bias": 0.16333700716495514,
+  "qkv.weight": 0.5589860081672668,
+  "qkv.bias": 0.08868248760700226,
+  "gate.weight": 0.03477352485060692,
+  "gate.bias": 0.003984935116022825,
+  "wo.weight": 1.459359884262085,
+  "wo.bias": 0.12990714609622955,
+  "ln_w.weight": 0.0461290180683136,
+  "ln_w.bias": 0.15741084516048431
+ },
+ "g2_zero": [],
+ "g2_S_grad_norm": [
+  0.020082244649529457,
+  0.021189169958233833,
+  0.023123037070035934,
+  0.02943229489028454
+ ],
+ "g2_pass": true,
+ "g3_batch_labels_comp": true,
+ "g3_test_labels_comp": true,
+ "g3_pass": true,
+ "g4_probes": {
+  "state_probe": {
+   "2": 1.0,
+   "4": 1.0
+  },
+  "op_probe_2": {
+   "0": 0.0,
+   "1": 0.01
+  }
+ },
+ "g4_state_edit": {
+  "propagation_share": 1.0,
+  "random_edit_share": 0.0,
+  "null_value": 0.0,
+  "unedited_correct": 1.0,
+  "n": 300,
+  "n_drawn": 300,
+  "n_probe_correct": 300,
+  "p": 4,
+  "chain_len": 8,
+  "edit_norm_median": 1.4158406853675842,
+  "state_norm_median": 1.0
+ },
+ "g4_pass": true,
+ "g5_prefix_len": 25,
+ "g5_loss": 3.3747262954711914,
+ "g5_greedy": [
+  -1,
+  -1
+ ],
+ "g5_pass": true,
+ "all_pass": true
+}
