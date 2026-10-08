@@ -26,7 +26,7 @@ import codi_probe as cp  # noqa: E402
 
 MODELS = {"coconut": ("coconut", "prosqa/ckpt_ext/hf/dw_gsm/coconut_checkpoint_33", 6), "simcot_coconut": ("coconut", "prosqa/ckpt_ext/hf/simcot_coconut/checkpoint_28", 10),
           "simcot_codi": ("codi", "simcot_codi", 6), "codi": ("codi", "codi", 6)}
-NUM = re.compile(r"\d+\.?\d*")
+NUM = re.compile(r"\d+\.\d*|\.\d+|\d+")                                  # also ".25" / "25." (a leading-dot operand broke substitution)
 
 
 # ---------------------------------------------------------------- equation chains
@@ -83,7 +83,7 @@ def substitute(chain, t, v_new):
         e2 += expr[last:]
         try:
             vals.append(safe_eval(e2))
-        except ZeroDivisionError:
+        except (ZeroDivisionError, SyntaxError, TypeError, ValueError):
             return None
     return vals[-1]
 
@@ -115,6 +115,7 @@ def unit_tests():
     c = parse_chain("<<3*4=12>> <<12/2=6>> <<12-6=6>>"); assert template(c) == ("Q*Q", "S0/Q", "S0-S1") and substitute(c, 1, 20.0) == 10.0
     c = parse_chain("<<3*1=3>> <<3+5=8>>"); assert ambiguous_ref(c, 1, {3.0, 5.0}) and not ambiguous_ref(c, 1, {1.0, 5.0})
     assert parse_chain("<<2+2=5>>") is None
+    c = parse_chain("<<4*.25=1>> <<1+3=4>>"); assert template(c) == ("Q*Q", "S0+Q") and substitute(c, 1, 2.0) == 5.0
     return "ok"
 
 
@@ -224,7 +225,8 @@ def ridge_r2(Xf, yf, Xs, ys, lam=1e-2):
 def main():
     name = sys.argv[1]; dev = sys.argv[2] if len(sys.argv) > 2 else "cuda:0"; nlim = int(sys.argv[3]) if len(sys.argv) > 3 else 0
     kind, ckpt, K = MODELS[name]; out_d = os.path.join(ROOT, "boxes", "runs_fsq", "s149_%s" % name); os.makedirs(out_d, exist_ok=True); t0 = time.time()
-    res = {"model": name, "ckpt": ckpt, "K": K, "unit_tests": unit_tests(), "device": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"}
+    import hashlib
+    res = {"model": name, "ckpt": ckpt, "K": K, "unit_tests": unit_tests(), "probe_sha256": hashlib.sha256(open(os.path.abspath(__file__), "rb").read()).hexdigest()[:16], "device": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"}
     aug = cp.gsm8k(10_000); lines = open(os.path.join(ROOT, "bench", "data", "gsm8k_aug", "test.txt"), encoding="utf-8").read().splitlines()
     assert len(aug) == len(lines) == 1319
     N = nlim or len(aug); qs = np.array([q for q, _, _ in aug[:N]], dtype=object); gold = np.array([a for _, a, _ in aug[:N]])

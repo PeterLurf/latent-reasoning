@@ -1,3 +1,6 @@
+# 2026-10-07 s149 SOTA-PROBE full evals (Audit-approved; $0, eval only, fp32 GPT-2 small) - first
+3.0 boxes/runs_fsq/s149_simcot_codi/eval.json python -u scratch/s149_probe.py simcot_codi {DEV}
+3.0 boxes/runs_fsq/s149_codi/eval.json python -u scratch/s149_probe.py codi {DEV}
 # local 2070 backlog (Turing, fp32): docs/LOCAL_BACKLOG.md 2070 entries #2 / #3, then the shared fp32 contraction filler
 # §136 post-hoc (gap found 08:3x: drain_posthoc lacked s136_): fp32 contraction + prefix on the local §136 models (grown width rebuilt from grow.json); fp32-native 2070, FIRST
 3.0 boxes/runs_fsq/s136_cgrow_s5_s1/eval_contraction_fp32.json python -u -m boxes.fsq120 --from_args boxes/runs_fsq/s136_cgrow_s5_s1/args.json --contraction_only --fp32 --device {DEV} --out boxes/runs_fsq/s136_cgrow_s5_s1
