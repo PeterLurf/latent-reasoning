@@ -540,6 +540,20 @@ def what_state(m, teA, teB, trA, trB, dev, amp, bs, n_fit=8000, skip_pairs=(4, 7
     return out
 
 
+def compute_pair(m, na, nb):
+    """boxes.core.Meter per item (§98 / §152 convention; full-vocabulary LM-head rows): every pair segment [EOT, a_i, b_j, flag] (4 tokens) and the
+    flush [EOT, " ="] (2) is a fresh 12-block pass (context 0); a logit row at each emission step. DeltaMem branch: 2 x branch params per token, plus
+    per head and token the read (2 DH^2) and the writes (additive 2 DH^2, delta 8 DH^2: S k, the rank-1 update, decay); §155 R (pass-start reads)
+    and §147 (read after write) cost the same under this count."""
+    pairs, col, emit = schedule(na, nb); mt = bc.Meter(m.g); tok = 0; rows = 0
+    for t in range(len(pairs)):
+        T_ = 2 if pairs[t][0] < 0 else 4; r_ = 1 if emit[t] else 0; mt.step(T_, 0, r_); tok += T_; rows += r_
+    nb_ = sum(p_.numel() for n_, p_ in m.mem.named_parameters() if not n_.startswith("s_")); D2 = DM.DH ** 2
+    fb = 2 * nb_ * tok + (DM.H_ADD + DM.H_DEL) * 2 * D2 * tok + (DM.H_ADD * 2 + DM.H_DEL * 8) * D2 * tok; d = mt.as_dict()
+    return {"flops": d["flops"] + fb, "flops_trunk": d["flops"], "flops_branch": float(fb), "sequential_passes": d["seq_passes"], "lm_head_rows": rows,
+            "tokens_processed": tok, "convention": "§98 (boxes.core.Meter, full vocabulary); every pair segment a fresh pass"}
+
+
 def donor_delta(m, A, Bd, dev, amp, bs, rng, positions=(4, 8, 12), n=1000):
     """§147 SERIAL: the donor's whole memory state swapped in after pair p; the recipient's later digits with the donor's accumulator (row level)."""
     N = min(n, len(A)); ir, idn = rng.permutation(len(A))[:N], rng.permutation(len(A))[:N]; Ar, Br, Ad, Bdn = A[ir], Bd[ir], A[idn], Bd[idn]
@@ -1466,6 +1480,7 @@ def main():
         Px, _, _ = columns(xA, xB); res["ext_4x8"] = {**acc_report(RO(m, xA, xB, dev, amp, a.eval_bs), Px), "dedup_removed": rem, "seeds": [14004, 14005]}
     if a.carrier == "deltamem":                                             # §147 (no contraction term: an integrator by design)
         res["donor"] = donor_delta(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(14002), n=min(a.donor_n, 1000))
+        res["compute"] = compute_pair(m, teA.shape[1], teB.shape[1])        # Theory (C3): Meter flops / sequential passes
         res["s147"] = {**s147_extras(m, teA, teB, dev, amp, a.eval_bs, pred), "mem_layer": a.mem_layer, "mem_add_heads": a.mem_add_heads, "mem_delta_heads": a.mem_delta_heads}
         i147 = json.load(open(os.path.join(a.out, "s147_init.json"))) if os.path.exists(os.path.join(a.out, "s147_init.json")) else {}
         res["s147"]["read_norm_ratio_by_handoff"] = {"step0": i147.get("read_norm_ratio_by_handoff_step0"), "end": read_ratio_by_handoff(m, teA, teB, dev, amp)[0]}
