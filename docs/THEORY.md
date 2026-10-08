@@ -8238,6 +8238,18 @@ SERIAL and contractive. Slots 2–4 run (the credit rule).**
 * **The L = 1 check so far** (PARTIAL: one digit learned in F8 s601 and N64 s601, F8 s602 at chance): even one carried 2-digit addition is only partly learned.
 * §144's result follows once F8's NOFLAG, N64's registered follow-ups (144-1 / 144-2, for a dropped arm) and the last L = 1 run land.
 
+**§151 result (2026-10-08 02:16 EDT; slots 1–2 at 48k, RTX 3090 / 595.71; slots 3–4 pending, descriptive; scored by Theory with score_s151). DROP at proof: slot 1 test_acc
+0.837 < 0.95. Slot 2 is 0.889.**
+* **Doubling the budget helps but does not reach exactness.** §147 s1 was 0.743 at 24k. At 48k:
+  - slot 1: 0.837, per column 1.0 / 1.0 / 0.999 / 0.96 / 0.937 / 0.95 / 0.99 / 0.986;
+  - slot 2: 0.889, per column 1.0 / 1.0 / 1.0 / 0.983 / 0.962 / 0.971 / 0.992 / 0.975.
+  - IMPROVES holds (columns 3–7 ≥ 0.9). The loss is still falling at 48k (slot 2: 0.072 / 0.037 / 0.015 at 24k / 32k / 48k).
+* **Not SERIAL.** Row-level donor 0.08 / 0.08 / 0.17 (slot 1) and 0.53 / 0.50 / 0.68 (slot 2) at pairs 4 / 8 / 12. Recipient ≤ 0.016.
+* **No length generalisation.** ext_4x8 is 0.000 / 0.001. Column 5 is again 0.0 at 4×8 (966 of 1,000 first errors there), so §154's pair-count schedule signature persists at
+  48k.
+* **Reading (registered, in note 147-4's wording):** an input-driven linear memory improves with budget but does not make multiplication exact at 48k. Carry resolution
+  at read time, or storage precision (note 152-5), falls short.
+
 ## 152. DELTA-READ: the linear-recurrent memory with a CoT-derived reader of the running sum, then ICoT-style removal; against text CoT at matched compute (pre-registered 2026-10-07 23:01 EDT, after Literature's check 03059976 and Audit's draft, before any implementation or run; the user's "sure" (23:00, via Audit) and the user's operative standard: the latent model uses latent space more effectively than text)
 
 **Why.**
