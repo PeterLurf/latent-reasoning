@@ -1536,8 +1536,9 @@ def main():
             if a.mem_write and wwin:                                        # §160: per window; spike vs the preceding 1k's median, scored after write_mix_start
                 md_ = float(np.median(wlast)) if wlast else 0.0
                 w_rec = {"step": step, "mean": float(np.mean(wwin)), "max": float(np.max(wwin)), "median_prev_1k": md_,
-                         "spike_100x": bool(step > a.write_mix_start * sc and np.max(wwin) > 100 * md_ > 0), "spike_100x_raw": bool(np.max(wwin) > 100 * md_ > 0)}
-                rec.update({"gamma": float(m.mem.gamma), "write_grad_norm": w_rec["mean"], "write_grad_spike_100x": w_rec["spike_100x"]}); wg_hist.append(w_rec)
+                         "spike_100x": bool(step > a.write_mix_start * sc and np.max(wwin) > 100 * md_ > 0), "spike_100x_raw": bool(np.max(wwin) > 100 * md_ > 0),
+                         "spike_100x_floor": bool(step > a.write_mix_start * sc and np.max(wwin) > 100 * md_ > 0 and np.max(wwin) > 1.0)}   # note 160-1 (33ec47e5): the scored trigger
+                rec.update({"gamma": float(m.mem.gamma), "write_grad_norm": w_rec["mean"], "write_grad_spike_100x": w_rec["spike_100x"], "write_grad_spike_100x_floor": w_rec["spike_100x_floor"]}); wg_hist.append(w_rec)
                 wlast.extend(wwin); del wlast[:-int(1000 * sc) or None]; wwin = []
                 if a.fork_from:
                     rec.update({"removed": list(removed), "lr": opt.param_groups[0]["lr"]})
@@ -1597,7 +1598,8 @@ def main():
         if a.mem_write:                                                     # §160
             res["s160"] = {**s160_probes(m, teA, teB, trA, trB, dev, amp, a.eval_bs, n_fit=a.probe_n_fit), "mem_write": a.mem_write,
                            "write_mix": [a.write_mix_start, a.write_mix_end], "gamma_final": float(m.mem.gamma), "write_grad_norm": wg_hist,
-                           "write_grad_spikes": [x_ for x_ in wg_hist if x_.get("spike_100x")]}
+                           "write_grad_spikes": [x_ for x_ in wg_hist if x_.get("spike_100x")],
+                           "write_grad_spikes_floor": [x_ for x_ in wg_hist if x_.get("spike_100x_floor")]}
         if a.pass_input:                                                    # §153: the pass-skip SERIAL test (note 153-1) and 4x5 at K = 5
             res["skip"] = skip_eval(m, teA, teB, dev, amp, a.eval_bs); res["ext_4x5"] = ext_4x5(m, dev, amp, a.eval_bs, n=a.ext_n)
         ip_ = os.path.join(a.out, "s152_init.json"); i152 = json.load(open(ip_)) if os.path.exists(ip_) else {}
