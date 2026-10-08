@@ -5,7 +5,7 @@ EXACT-ID(run): 4x4 bench >= 0.99 and 5x5 bench >= 0.99. Slot 1 EXACT-ID opens s2
 BOUNDED(run): EXACT-ID and ext_6x6 >= 0.90 but ext_8x8 < 0.90. Arm: GEN-2D if >= 2 / 3 seeds GEN-2D; BOUNDED if >= 2 / 3 at least BOUNDED; else NOT GENERAL.
 Descriptive: SERIAL on 5x5 (row level, pairs 6 / 12 / 18), state-carried (5x5 in-progress colsum_cls units >= 0.9), 7x7 / 10x10 / 4x8 / 8x4, decay profiles,
 C3 at 5x5 vs TC-M 5x5 (1.000; 2.33e10; 87) beside ICoT-SI 5x5 (0.996; 5.76e9; 15), compute at 8x8; fallback trigger = note 162-2's outcome rule.
-Dirs boxes/runs_fsq/s163_mix2d_s{seed}.
+Dirs boxes/runs_fsq/s163_mix2d_4x4_s{seed} (restart155 slots: seed + 0 / 100 / 200 / 300).
     python theory/score_s163.py
 """
 import json
@@ -15,6 +15,7 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import score_s155 as S155  # noqa: E402
+import score_s161 as S161  # noqa: E402
 
 R = os.path.join(ROOT, "boxes", "runs_fsq")
 TCM5 = {"acc": 1.0, "flops": 23314827264.0, "passes": 87}; ICOT5 = {"acc": 0.996, "flops": 5764879872.0, "passes": 15}   # §98 / §159
@@ -47,12 +48,35 @@ def trigger(d, r):
     return {"loss_jumps": sorted(jumps), "n_nonfinite": nf, "fires": bool(jumps or nf), "grad_floor_spikes_descriptive": len(sp)}
 
 
+OFFS = (0, 100, 200, 300)
+
+
+def smoke48(d):
+    a = load(d, "args.json")
+    return bool(a) and (int(a.get("steps", 48000)) != 48000 or float(a.get("sched_scale", 1.0)) != 1.0 or str(a.get("device", "")).startswith("cpu")
+                        or bool(a.get("mem_check")) or bool(a.get("train_n")))
+
+
 def run(s):
-    d = "s163_mix2d_s%d" % s; r = load(d); a = load(d, "args.json") or {}
-    if r is None:
-        return {"status": "running" if a else "open"}
-    if a.get("mem_check") or a.get("train_n"):
-        return {"status": "smoke"}
+    """Slot s: restart155's dirs s163_mix2d_4x4_s{s + 0/100/200/300}; a 2k-plateaued attempt moves to the next seed (score_s158's form)."""
+    att = []
+    for o in OFFS:
+        d = "s163_mix2d_4x4_s%d" % (s + o)
+        if smoke48(d):
+            continue
+        pl = S155.plateau(d); r = load(d); a = load(d, "args.json") or {}
+        if pl is None and r is None:
+            return {"status": "running (phase 1)" if a else "open", "attempts": att}
+        att.append({"seed": s + o, "plateau": pl})
+        if pl is True:
+            continue
+        if r is None:
+            return {"status": "running", "attempts": att}
+        return dict(score_run(d, r, a), seed=s + o, attempts=att)
+    return {"status": "exhausted" if len(att) == len(OFFS) else "open", "attempts": att}
+
+
+def score_run(d, r, a):
     bad = {k: a.get(k) for k, v in BASE.items() if a.get(k) != v}
     if bad:
         ERRORS.append((d, bad)); return {"status": "error", "error": bad}
@@ -81,12 +105,12 @@ def run(s):
 
 
 def main():
-    g = S155.load("s161_mix_4x4_s2"); ga = S155.load("s161_mix_4x4_s2", "args.json") or {}
-    if g is None:
-        cond = "pending (§161 MIX s2 not read)"
+    g = S161.slot("mix", 2)["accepted"]                                       # §161 MIX slot 2's accepted run (restarts included)
+    if not g:
+        cond = "pending (§161 MIX slot 2 not accepted / not read)"
     else:
-        ok = (g.get("test_acc") or 0) >= 0.99 and ((g.get("ext_4x8") or {}).get("test_acc") or 0) >= 0.9
-        cond = ("RUN" if ok else "NOT RUN") + " (§161 MIX s2: 4x4 %s, ext_4x8 %s)" % (g.get("test_acc"), (g.get("ext_4x8") or {}).get("test_acc"))
+        ok = (g.get("test_acc") or 0) >= 0.99 and (g.get("ext_4x8") or 0) >= 0.9
+        cond = ("RUN" if ok else "NOT RUN") + " (§161 MIX slot 2, seed %s: 4x4 %s, ext_4x8 %s)" % (g.get("seed"), g.get("test_acc"), g.get("ext_4x8"))
     print("CONDITION:", cond); res = {"condition": cond}
     runs = {s: run(s) for s in (1, 2, 3)}; res["runs"] = runs
     s1 = runs[1]
