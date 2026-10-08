@@ -111,8 +111,14 @@ def run(seed):
                    "carried_norm": cn_end, "eff_rank": s138.get("eff_rank"), "spread_over_between": s138.get("spread_over_between"),
                    "new_block_var_share": (r.get("s143") or {}).get("block704_var_share"), "new_block_r2_state": (r.get("s143") or {}).get("block704_r2_state"),
                    "w_up_new_norm": (r.get("s143") or {}).get("w_up_new_norm"), "rho_by_block": (r.get("s143") or {}).get("rho_by_block"),
-                   "rho_block64_e": (r.get("s143") or {}).get("rho_block64_e")},
+                   "rho_block64_e": (r.get("s143") or {}).get("rho_block64_e"),
+                   "w_up_new_out_share": (r.get("s143") or {}).get("w_up_new_out_share")},
            "paired_max_loss_diff_vs_s136_cnoise": paired_identity(d, seed, t2), "gpu": r.get("train_gpu", r.get("gpu")), "driver": r.get("train_driver")}
+    ab = (r.get("s143") or {}).get("ablate704")                              # note 143-2: zero the new block's W_up output at test
+    if ab:
+        ab_ext = (ab.get("ext_2048") or {}).get("cumulative") if isinstance(ab.get("ext_2048"), dict) else ab.get("ext_2048")
+        out["ablate704"] = {"ext_2048": ab_ext, "serial": serial(ab.get("donor")),
+                            "width": "UNUSED (works through the 64 original dims)" if ((ab_ext or 0) >= 0.99 and serial(ab.get("donor"))) else "USED"}
     out["exact"] = (out["ext_2048"] or 0) >= 0.99
     full = t2 is not None and out["width_final"] == 768
     out["pass"] = None if out["rho"] is None else bool(full and out["exact"] and out["serial"] and out["rho"] <= 0.28)
@@ -148,7 +154,7 @@ def main():
         else:
             v = "incomplete (%d / 4 decided)" % len(dec)
     for s, x in runs.items():
-        print("s%d" % s, x and {k: x.get(k) for k in ("ext_2048", "serial", "rho", "rho_z_k3", "pass", "second_switch", "switch_spikes", "reading",
+        print("s%d" % s, x and {k: x.get(k) for k in ("ext_2048", "serial", "rho", "rho_z_k3", "pass", "second_switch", "switch_spikes", "reading", "ablate704",
                                                      "paired_max_loss_diff_vs_s136_cnoise", "error")})
         if x and "error" not in x:
             print("    pre-switch-2", x["pre_switch2"], "| end", x["end"])

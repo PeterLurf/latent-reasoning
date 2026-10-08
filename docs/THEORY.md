@@ -230,7 +230,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 140 | DIGPAIR (§137's fallback; runs only on §137 4×4 DROP / FAIL): one digit pair per segment, carried column accumulator (FSQ-8), streamed digits; design-forced C1 | **4×4 DROP at proof** (0.002; columns 1–2 exact, first errors at the 3- and 4-pair columns; accumulator R² h 0.92 vs code 0.61) | closed |
 | 141 | After §137's DROP: latent repeats per column (r4 + repeat index) × carrier (FSQ-8 / SOFT-16); r1×SOFT-16 gated on a nonlinear code probe; readings crossed with §140 | **all three cells DROP at proof** (r1s16 / r4f8 / r4s16 test 0.0; repeats change nothing, the column sum's R² ≤ 0.35 after any repeat; soft rounding slightly better) | closed |
 | 142 | MULT-READ (the user's go): a per-step reader of the running sum (the teacher's S_j text) on NOISE-64, multiplier-major 4×4, 48k; then ICoT-style earliest-first removal to final-answer only (B-EARLY; B-LATE and CTRL descriptive); with the multiplication post-mortem | **DROP at proof** (A s1 0.002; S₁ 1.0, S₂ 0.35, S₃ 0.05; the gate never opened): not acquired within budget; the bounded-carrier multiplication line is parked | closed |
-| 143 | FULL-GROW (§138's one revised method): §136 COPY+GROW-NOISE to 64, then 64 → 768 at ≥ 6k with μP lr on the new columns; e-space ρ; paired per seed with s136_cnoise; if it fails, full width stops | **s1 proof passes** (exact at 2,048 + SERIAL + e-space ρ 0.062; Jacobian 0.20; the new 704 dims carry the state, R² 0.85); slots 2–4 running | **open** |
+| 143 | FULL-GROW (§138's one revised method): §136 COPY+GROW-NOISE to 64, then 64 → 768 at ≥ 6k with μP lr on the new columns; e-space ρ; paired per seed with s136_cnoise; if it fails, full width stops | **s1 proof passes** (exact at 2,048 + SERIAL + e-space ρ 0.062; Jacobian 0.20; the new 704 dims encode the state in z, R² 0.85, but give only about 4 % of e (143-2)); slots 2–4 running | **open** |
 | 144 | RUNNING-SUM (the user's "fix the multiplication"; diagnostic): sum mod 10⁴ with 2-digit items on fsq120, FSQ-8 / NOISE-64; can the carrier carry a growing number? (conditional magnitude ladder) | registered | **open** |
 | 145 | MULTI-SLOT: K = 4 carried NOISE-64 slots (one write position each) on §140's digit-pair multiplication; CARRY1 control (same writes, 1 carried) if SLOT4 IMPROVES | **DROP at proof** (0.000; column 2 worse than §140, 0.31; one active slot, no digit specialisation): CARRY1 not run | closed |
 | 146 | MID-PROBE ($0): layer-wise probes (0–12) of the accumulator on s140 / s137; MID-STACK SIGNAL = R² ≥ 0.5 at 100–200 in some layer ≤ 9 (top 0.05) → register a mid-stack hand-off | **NO SIGNAL** (best layer 4: 0.217 at 100–200; layers 1–12 flat; the top reproduces 140-3): the accumulator ≥ 100 is computed nowhere; B2 ranks last | closed |
@@ -8072,6 +8072,19 @@ SERIAL and contractive. Slots 2–4 run (the credit rule).**
   - The run was not exact before switch 2 (accuracy at 512 0.0 at 6k, loss 0.57). It became exact by 16k–20k, after the widening.
   - **Unpaired:** the losses differ from s136_cnoise_s5_s1's (max difference 1.59), so the comparison is unpaired, as pre-stated. The reading uses s1's own state.
 * Slots 2–4 decide PASS (≥ 3/4).
+
+**Note 143-2 (2026-10-07 21:22 EDT, before slots 2–4 read; Audit's reproduction of 143-1). A qualification, and the 704-block ablation.**
+* **The qualification:** the new 704 columns contribute only **about 4 % of the carried embedding** e = W_up z (`s143.w_up_new_out_share` 0.043, ‖W_up_new‖ 0.28 under the μP
+  lr).
+  - The new block encodes the state in z (variance share 0.51, R² 0.85), but what the next segment receives is about 96 % the original 64 dimensions' contribution.
+  - So 143-1's "the new width is used" reads **"encoded in z, but about 4 % of e"**. "Stable at 768" stands.
+* **The 704-block ablation (descriptive, fixed now; slots 2–4, and s1 if its model is kept):** zero the new block's W_up output at test (e = W_up_old · z_old), then measure
+  ext_2048 and SERIAL.
+  - **WIDTH UNUSED:** ext_2048 stays ≥ 0.99 and SERIAL holds. The 768-d carrier is present and stable but works through its 64 original dimensions, which is a different
+    claim from §136's 64-d result.
+  - **WIDTH USED:** ext_2048 falls below 0.99 or SERIAL fails.
+  - eval.json field: `s143.ablate704` = {ext_2048, donor}.
+* §143's registered PASS rule is unchanged. This only qualifies what a PASS means.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
