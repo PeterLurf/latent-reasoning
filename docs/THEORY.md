@@ -8330,6 +8330,31 @@ SERIAL and contractive. Slots 2–4 run (the credit rule).**
 * **(3) An in-pass partial-product probe** (descriptive; `s152.pp_probe`): ridge / 10-way linear probes of P_j = a × b_j's digits from h at the segment's positions (held-out
   half), per segment. A DROP can then be located at the product step rather than at accumulation.
 
+**§152 result (2026-10-08 01:51 EDT; A s1 and CTRL s1, RTX 3090 / 595.71, 48k; scored by Theory with score_s152). DROP at proof: A s1 test_acc 0.331 < 0.95. CTRL s1 is 0.012.**
+* **By chain length (rows of b, j = 1–4):** A 1.0 / 1.0 / 0.999 / **0.331**; CTRL 1.0 / 1.0 / 0.27 / 0.012. A's reader decodes S_1..S_4 at 1.0 / 1.0 / 0.999 / 0.331.
+* **A was still learning row 4.**
+  - Train-exact at L 4 (the gate) rose from 0.14 at 41k to 0.36 at 48k; the gate (0.95) never opened, so B-EARLY is not run.
+  - Loss 0.164 at 24k, 0.075 at 32k, 0.043 at 48k.
+* **Note 152-1's locating probe:**
+  - Every per-position product a_i · b_j forms in-pass at ≥ 0.98 in both arms (`pp_probe.aibj_at_ai`).
+  - The additive state holds the carry-save column sums (A: R² 0.90–0.99 by column) and the b-prefix (R² ≈ 1.0).
+  - Both head types are needed. The additive gain fell to about 4·10⁻⁴ against state norms in the thousands.
+* **SERIAL:** not at this accuracy. Row-level donor 0.208 at the end (0.018 / 0.09 at 24k / 36k), recipient 0.0, b-prefix 0.002.
+* **Compute:** 7.10·10⁹ FLOPs (0.46× TC-M), 12 sequential passes (0.21×). With accuracy far below TC-M's 1.000, there is **no LATENT BEATS TEXT**.
+* **Extrapolation (note 152-3):** A is 1.0 / 1.0 / 0.999 / 0.315 at j = 1–4 and 0.0 at j = 5–8. TC-M and ICoT-SI are 1.0 / 0.916 at j = 4, 0.017 / 0.041 at j = 5 and
+  0.0 at j = 6–8 (`theory/results/ext_baselines_s152.json`). Nothing separates the methods on length.
+* **Reading.**
+  - **The registered rule:** DROP at proof, not acquired within budget. §152 stops, and §153's gate (A s1 ≥ 0.95) stays closed.
+  - **Note 152-1 (1)'s mechanical reading for both arms below 0.95, "the layout's in-pass a × b_j is the block", is contradicted by 152-1 (3)'s own locating probe.** The
+    products form (≥ 0.98), and A is exact through three rows. The failure sits at the fourth row: read-time carry resolution of the full 8-digit product, which A was still
+    learning at 48k.
+  - **Note 152-4's prediction (A ≥ 0.95) fails at this budget.** The reader's effect goes the predicted way and is large: A far above CTRL at L = 3 (0.999 against 0.27)
+    and L = 4 (0.331 against 0.012). But it is not sufficient within 48k.
+  - **Under 147-4's mechanism this is expected:** the memory accumulates the carry-save sums correctly, and only the nonlinear carry resolution at read time remains. The
+    reader trains that resolution at every j, and the 4-row resolution comes last.
+* **Conditional follow-up, pre-registered now:** if §155 R or SHIFT-R passes, §152 A / CTRL and §153 VISIBLE / PURE re-run on DeltaMem-R (`--mem_write top`), with the same
+  rules.
+
 ## 153. THINK-PASS: item-agnostic latent passes over the DeltaMem (program B5; §152's recipe without the designer's per-pass input; pre-registered 2026-10-07 23:40 EDT, after Literature's check b7b2d52c and Audit's draft review, before any implementation or run)
 
 **Why.**
