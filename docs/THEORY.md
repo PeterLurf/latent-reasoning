@@ -8958,6 +8958,10 @@ ext_4x8 0.000 < 0.5. ROTARY was deferred to §155's architecture (154-2), so §1
   (**0.788× TC-M**, 2.47× ICoT-SI) and **17 sequential passes** (0.298× TC-M, 1.3× ICoT-SI).
 * **R9 s1 (the block-9 write fallback, run by the trigger):** test_acc **0.999**, every column ≥ 0.999. Not SERIAL (row donor 0.07 / 0.08 / 0.13), ext_4x8 0.0, propagation 0.0;
   rho_loop 0.30; 27 flagged spikes. **The write layer does not change the picture:** both top and block 9 are exact, not SERIAL and not length-general.
+* **R s3:** test_acc **0.997** (every column ≥ 0.998). Not SERIAL (row donor 0.09 / 0.11 / 0.23), ext_4x8 0.0, propagation 0.0.
+  - **The R arm's verdict is decided FAIL** by the registered PASS rule (≥ 3/4 exact and SERIAL): 2 slots decided, both exact (1.000 / 0.997), neither SERIAL.
+  - Exactness replicates; serial use does not.
+  - §159 / §160's condition is R **s2** specifically (pending).
 * **R-γ0 s1** (γ held at 0: block-6 writes with pass-start reads; 155-1 (3)): test_acc **0.587**, per column 1.0 / 1.0 / 0.975 / 0.883 / 0.881 / 0.864 / 0.93 / 0.928.
   ext_4x8 0.0; row donor 0.13 / 0.14 / 0.25; rho_loop 0 (no recurrence, as designed); propagation 0.32 against random 0.33, the input-only null.
   - **155-1 (3)'s readings:**
