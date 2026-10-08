@@ -180,7 +180,8 @@ text token (S5: the first state token; FF / CYC / MOD / RDFA: the answer token) 
 
 ## Done
 
-* **§150 soft-only DIGIT (21:13 item 1): FAILS**, 3 of 4 (6k–8k mean loss 1.09 / 1.57 / 1.11, ≥ 0.3; s504 running). The loss rises when c_max reaches 2 at 2k, without
+* **§150 soft-only DIGIT (21:13 item 1): FAILS**, 4 of 4 (6k–8k mean loss 1.09 / 1.57 / 1.11 / 1.10, ≥ 0.3). **Soft-only FULL (overnight item 1): FAILS**,
+  S505 / S506 at 1.114 / 1.119. The loss rises when c_max reaches 2 at 2k, without
   annealing or hardening. DIGIT s1's collapse was the curriculum, not the hardening (as 150-3).
 * **§144 L = 1 check (21:50): PARTIAL.** Loss at 5k: s601 F8 2.44 / N64 2.48 (about ln 10: one of two digits); s602 F8 4.89 / N64 4.98 (chance).
 * **DeltaMem 5×5 proto s501 (3070, 12k; 8e29e417 item 2):** per column 1.0 / 1.0 / 0.915 / 0.725 / **0.494** / 0.178 / 0.109 / 0.089 / 0.07 / 0.178. Column 5 is below 0.5, so it
