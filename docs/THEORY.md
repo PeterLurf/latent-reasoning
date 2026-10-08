@@ -8621,6 +8621,27 @@ restated.**
 * **VISIBLE is unaffected** (it sees the problem and the step each pass, so its writes can form that row's products, as §152's do). It stays gated on §152 A s1, with 147-4's
   wording.
 
+**§154 result (2026-10-08 04:30 EDT; SHIFT s1, 24k, RTX 3090; scored by Theory with score_s154 and its post-hoc file). SHIFT is stopped at proof: 4×4 test_acc 0.653 < 0.95 and
+ext_4x8 0.000 < 0.5. ROTARY was deferred to §155's architecture (154-2), so §154 closes.**
+* **4×4, per column:** 1.0 / 1.0 / 0.996 / 0.932 / 0.895 / 0.912 / 0.908 / 0.947. That is below §147's 0.743 overall.
+* **4×8:** column 5 is again exactly 0.000 (1.0 / 1.0 / 0.991 / 0.942 / 0.0 / 0.0 / 0.048 …), and ext_4x16 is 0.0.
+* **Not SERIAL:** row-level donor 0.04 / 0.08 / 0.19.
+* **The carry *is* carried, against 154-2's predicted outcome.**
+  - Accuracy with carry-in 0 against ≠ 0 is about the same (columns 4–8 at 0.89–0.95 with a nonzero carry).
+  - The carry-in is linearly present in the delta read at every column's first pair (R² 0.93–0.996 at 4×4, 0.93–0.998 at 4×8).
+  - The delta heads' input-driven recursion carries it **without** a flag-driven decay: α is 0.97–0.999 on new-column and same-column segments alike.
+* **The reset does not make the memory length-general.** Even with only the current column in the additive store, column 5 fails exactly at 4×8. The emission stays
+  schedule-dependent, plausibly through a count kept in the delta heads (Audit's pre-stated case).
+* **C7:** state edits along the probe directions do not move the model.
+  - Additive edit: shifted_share 0.0–0.03, against the unedited 0.94.
+  - Delta carry edit: carry_shift_share 0.0–0.04.
+  - By Literature (c) this reads **"not linearly editable"**, not "not carried": the model's own read directions are not the ridge probe's.
+* **Reading:** the registered failure readings apply.
+  - A memory with a hand-wired per-column reset neither improves 4×4 nor generalises in length.
+  - The carry passes through the delta recursion, but the emission keeps a learned 4×4 schedule.
+  - Length generalisation needs more than locality of the additive store. §155 (computed writes) is the remaining test of the route.
+* **The §155 null (SHIFT's propagation_share)** is not in this post-hoc file. It needs the SHIFT model on the host (being checked).
+
 ## 155. DELTA-R: a write-after-read memory, so the state can hold computed results (note 147-4's fix; the user's research pass; pre-registered 2026-10-08 01:19 EDT, after Literature's check c55a1f15 and Audit's draft review, before any implementation or run)
 
 **Why.**
