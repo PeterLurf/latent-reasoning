@@ -2603,5 +2603,15 @@
   "gate": true,
   "verdict": "LENGTH-GENERAL"
  },
+ "mix9": {
+  "test_acc": 0.989,
+  "ext_4x8": 0.896,
+  "serial": true,
+  "ext_other": {
+   "ext_4x6": 0.968,
+   "ext_4x7": 0.935,
+   "ext_4x16": 0.02
+  }
+ },
  "reading": "MIX passes: varying shapes alone remove the count schedule"
 }
