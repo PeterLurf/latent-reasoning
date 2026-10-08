@@ -19,6 +19,13 @@ BASE = dict(S152.BASE, seg_order="b_first", mem_write="top", write_mix_start=200
 ERRORS = []
 
 
+def trigger(r, blk):
+    """155-1 fallback trigger with 160-1's floor (descriptive readout; the block-9-write variant is due if it fires): write-row spikes > 100x the
+    preceding-1k median AND > 1.0 after write_mix_start (the module's write_grad_spikes_floor list), or any non-finite step."""
+    sp = ((r.get(blk) or {}).get("write_grad_spikes_floor")) or []; nf = int(r.get("n_nonfinite") or 0)
+    return {"floor_spikes": len(sp), "n_nonfinite": nf, "fires": bool(sp or nf)}
+
+
 def load(d, f="eval.json"):
     p = os.path.join(R, d, f)
     return json.load(open(p)) if os.path.exists(p) else None
@@ -37,7 +44,7 @@ def cell(arm, seed):
     c = r.get("compute") or {}; s = r.get("s152") or {}
     return {"status": "done", "test_acc": r.get("test_acc"), "acc_by_length": r.get("acc_by_length"), "serial": S152.serial(r.get("donor")),
             "flops": c.get("flops"), "passes": c.get("sequential_passes"), "pass": None, "gate_step": s.get("gate_step"), "gpu": r.get("train_gpu"),
-            "compute": {"flops": c.get("flops"), "passes": c.get("sequential_passes")}}
+            "compute": {"flops": c.get("flops"), "passes": c.get("sequential_passes")}, "fallback_trigger": trigger(r, "s160")}
 
 
 def main():
@@ -52,7 +59,7 @@ def main():
         v = S152.verdict("a", runs) if arm == "ar" else ("descriptive: test_acc %s" % ((runs[1] or {}).get("test_acc")) if runs[1] else "pending")
         hl = S152.headline(runs) if v == "PASS" else None
         res[arm] = {"runs": runs, "verdict": v, "headline": hl}
-        print(arm, v, {k: x and {kk: x.get(kk) for kk in ("status", "test_acc", "acc_by_length", "serial", "flops", "passes", "error")} for k, x in runs.items()})
+        print(arm, v, {k: x and {kk: x.get(kk) for kk in ("status", "test_acc", "acc_by_length", "serial", "flops", "passes", "fallback_trigger", "error")} for k, x in runs.items()})
     a1 = (res["ar"]["runs"][1] or {}); c1 = (res["ctrlr"]["runs"][1] or {})
     rd = []
     if a1.get("status") == "done":

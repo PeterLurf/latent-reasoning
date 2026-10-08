@@ -19,6 +19,13 @@ load = S155.load
 ERRORS = []
 
 
+def trigger(r, blk):
+    """155-1 fallback trigger with 160-1's floor (descriptive readout; the block-9-write variant is due if it fires): write-row spikes > 100x the
+    preceding-1k median AND > 1.0 after write_mix_start (the module's write_grad_spikes_floor list), or any non-finite step."""
+    sp = ((r.get(blk) or {}).get("write_grad_spikes_floor")) or []; nf = int(r.get("n_nonfinite") or 0)
+    return {"floor_spikes": len(sp), "n_nonfinite": nf, "fires": bool(sp or nf)}
+
+
 def slot(arm, k):
     for o in OFFS:
         d = "s161_%s_4x4_s%d" % (arm, k + o); r = load(d); a = load(d, "args.json") or {}
@@ -36,7 +43,7 @@ def slot(arm, k):
         acc = {"seed": k + o, "test_acc": r.get("test_acc"), "ext_4x8": (r.get("ext_4x8") or {}).get("test_acc"),
                "ext_4x8_per_column": ((r.get("ext_4x8") or {}).get("acc_by_column") or {}).get("per_column"),
                "per_column": (r.get("acc_by_column") or {}).get("per_column"), "serial": S155.S154.serial(r.get("donor")),
-               "ext_other": {kk: (r.get(kk) or {}).get("test_acc") for kk in ("ext_4x6", "ext_4x7")}, "what_state": ws, "gpu": r.get("train_gpu")}
+               "ext_other": {kk: (r.get(kk) or {}).get("test_acc") for kk in ("ext_4x6", "ext_4x7")}, "what_state": ws, "gpu": r.get("train_gpu"), "fallback_trigger": trigger(r, "s155")}
         acc["length_general"] = bool((acc["ext_4x8"] or 0) >= 0.9 and (acc["test_acc"] or 0) >= 0.99)
         return {"status": "accepted", "accepted": acc}
     return {"status": "open", "accepted": None}
@@ -50,7 +57,7 @@ def main():
         v = "LENGTH-GENERAL" if n >= 2 else ("NOT LENGTH-GENERAL" if len(acc) - n >= 2 else "pending (%d / 3 seeds)" % len(acc))
         gate = None if v.startswith("pending") else (v == "LENGTH-GENERAL")
         res[arm] = {"slots": sl, "gate": gate, "verdict": v}
-        print(arm, "|", v, "|", [a and {kk: a.get(kk) for kk in ("seed", "test_acc", "ext_4x8", "serial")} for a in acc])
+        print(arm, "|", v, "|", [a and {kk: a.get(kk) for kk in ("seed", "test_acc", "ext_4x8", "serial", "fallback_trigger")} for a in acc])
     m, mi = res["mix"]["gate"], res["mixidx"]["gate"]
     if m is None or mi is None:
         rd = "pending"

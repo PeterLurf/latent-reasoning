@@ -21,6 +21,13 @@ CAVEAT = "SOTA-level accuracy; serial use not shown (note 155-4)"
 load = S155.load
 
 
+def trigger(r, blk):
+    """155-1 fallback trigger with 160-1's floor (descriptive readout; the block-9-write variant is due if it fires): write-row spikes > 100x the
+    preceding-1k median AND > 1.0 after write_mix_start (the module's write_grad_spikes_floor list), or any non-finite step."""
+    sp = ((r.get(blk) or {}).get("write_grad_spikes_floor")) or []; nf = int(r.get("n_nonfinite") or 0)
+    return {"floor_spikes": len(sp), "n_nonfinite": nf, "fires": bool(sp or nf)}
+
+
 def slot(k):
     for o in OFFS:
         d = "s159_r_5x5_s%d" % (k + o); r = load(d); a = load(d, "args.json") or {}
@@ -36,7 +43,8 @@ def slot(k):
         c = r.get("compute") or {}
         return {"status": "accepted", "accepted": {"seed": k + o, "test_acc": r.get("test_acc"), "per_column": (r.get("acc_by_column") or {}).get("per_column"),
                                                    "serial": S155.S154.serial(r.get("donor")), "flops": c.get("flops"), "passes": c.get("sequential_passes"),
-                                                   "ext_5x8": (r.get("ext_5x8") or {}).get("test_acc"), "gpu": r.get("train_gpu")}}
+                                                   "ext_5x8": (r.get("ext_5x8") or {}).get("test_acc"), "gpu": r.get("train_gpu"),
+                                                   "fallback_trigger": trigger(r, "s155")}}
     return {"status": "open", "accepted": None}
 
 
