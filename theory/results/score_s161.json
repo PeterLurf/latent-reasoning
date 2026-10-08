@@ -1,0 +1,467 @@
+{
+ "mix": {
+  "slots": {
+   "1": {
+    "status": "accepted",
+    "accepted": {
+     "seed": 1,
+     "test_acc": 0.996,
+     "ext_4x8": 0.964,
+     "ext_4x8_per_column": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.999,
+      0.997,
+      0.989,
+      0.985,
+      0.996,
+      0.992,
+      0.995,
+      0.998
+     ],
+     "per_column": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.998,
+      0.998,
+      1.0
+     ],
+     "serial": true,
+     "ext_other": {
+      "ext_4x6": 0.994,
+      "ext_4x7": 0.976
+     },
+     "what_state": {
+      "pass_skip": {
+       "pair4": {
+        "a_i": 1,
+        "b_j": 3,
+        "column": 3,
+        "row_skip_consistent": 0.010962241169305725,
+        "full_product": 0.015834348355663823,
+        "n": 821,
+        "n_excluded_zero_product": 179,
+        "skip_keeps_reset": false
+       },
+       "pair7": {
+        "a_i": 1,
+        "b_j": 4,
+        "column": 4,
+        "row_skip_consistent": 0.001098901098901099,
+        "full_product": 0.015384615384615385,
+        "n": 910,
+        "n_excluded_zero_product": 90,
+        "skip_keeps_reset": false
+       }
+      },
+      "donor_operands": {
+       "pos4": {
+        "operands_consistent": 0.0,
+        "recipient_consistent": 0.019,
+        "donor_full_consistent": 0.0,
+        "seen_a": [
+         1,
+         2
+        ],
+        "seen_b": [
+         1,
+         2,
+         3
+        ],
+        "n": 1000
+       },
+       "pos8": {
+        "operands_consistent": 0.0,
+        "recipient_consistent": 0.012,
+        "donor_full_consistent": 0.0,
+        "seen_a": [
+         1,
+         2,
+         3
+        ],
+        "seen_b": [
+         1,
+         2,
+         3,
+         4
+        ],
+        "n": 1000
+       },
+       "pos12": {
+        "operands_consistent": 0.0,
+        "recipient_consistent": 0.009,
+        "donor_full_consistent": 0.0,
+        "seen_a": [
+         1,
+         2,
+         3,
+         4
+        ],
+        "seen_b": [
+         1,
+         2,
+         3,
+         4
+        ],
+        "n": 1000
+       }
+      },
+      "operand_probe": {
+       "after_pair4": {
+        "a": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "2": {
+          "acc": 1.0,
+          "lambda": 1e-07
+         }
+        },
+        "b": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-07
+         },
+         "2": {
+          "acc": 1.0,
+          "lambda": 1e-07
+         },
+         "3": {
+          "acc": 1.0,
+          "lambda": 1e-07
+         }
+        },
+        "colsum": {
+         "1": {
+          "exact": 0.948,
+          "lambda": 1e-07
+         },
+         "2": {
+          "exact": 0.843,
+          "lambda": 1e-06
+         },
+         "3": {
+          "exact": 0.956,
+          "lambda": 1e-06
+         }
+        },
+        "colsum_cls": {
+         "1": {
+          "units": {
+           "acc": 1.0,
+           "lambda": 1e-08,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.946,
+           "lambda": 1e-09,
+           "classes": 9
+          }
+         },
+         "2": {
+          "units": {
+           "acc": 1.0,
+           "lambda": 1e-08,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.972,
+           "lambda": 1e-07,
+           "classes": 18
+          }
+         },
+         "3": {
+          "units": {
+           "acc": 0.995,
+           "lambda": 1e-07,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.998,
+           "lambda": 1e-07,
+           "classes": 10
+          }
+         }
+        },
+        "n_fit": 8000,
+        "n_score": 1000
+       },
+       "after_pair8": {
+        "a": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "2": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "3": {
+          "acc": 1.0,
+          "lambda": 1e-07
+         }
+        },
+        "b": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "2": {
+          "acc": 0.999,
+          "lambda": 1e-07
+         },
+         "3": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "4": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         }
+        },
+        "colsum": {
+         "1": {
+          "exact": 0.235,
+          "lambda": 1e-07
+         },
+         "2": {
+          "exact": 0.193,
+          "lambda": 1e-07
+         },
+         "3": {
+          "exact": 0.293,
+          "lambda": 1e-06
+         },
+         "4": {
+          "exact": 0.65,
+          "lambda": 1e-06
+         }
+        },
+        "colsum_cls": {
+         "1": {
+          "units": {
+           "acc": 1.0,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 1.0,
+           "lambda": 1e-08,
+           "classes": 9
+          }
+         },
+         "2": {
+          "units": {
+           "acc": 1.0,
+           "lambda": 1e-07,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.809,
+           "lambda": 1e-06,
+           "classes": 18
+          }
+         },
+         "3": {
+          "units": {
+           "acc": 1.0,
+           "lambda": 1e-07,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.689,
+           "lambda": 1e-06,
+           "classes": 26
+          }
+         },
+         "4": {
+          "units": {
+           "acc": 0.999,
+           "lambda": 1e-09,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.528,
+           "lambda": 9.999999999999999e-06,
+           "classes": 19
+          }
+         }
+        },
+        "n_fit": 8000,
+        "n_score": 1000
+       },
+       "after_pair12": {
+        "a": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "2": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "3": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "4": {
+          "acc": 0.999,
+          "lambda": 1e-07
+         }
+        },
+        "b": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-06
+         },
+         "2": {
+          "acc": 0.988,
+          "lambda": 1e-07
+         },
+         "3": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "4": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         }
+        },
+        "colsum": {
+         "1": {
+          "exact": 0.14,
+          "lambda": 1e-07
+         },
+         "2": {
+          "exact": 0.073,
+          "lambda": 1e-06
+         },
+         "3": {
+          "exact": 0.088,
+          "lambda": 1e-06
+         },
+         "4": {
+          "exact": 0.224,
+          "lambda": 1e-06
+         },
+         "5": {
+          "exact": 0.489,
+          "lambda": 9.999999999999999e-06
+         }
+        },
+        "colsum_cls": {
+         "1": {
+          "units": {
+           "acc": 1.0,
+           "lambda": 1e-09,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 1.0,
+           "lambda": 1e-07,
+           "classes": 9
+          }
+         },
+         "2": {
+          "units": {
+           "acc": 0.954,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.664,
+           "lambda": 1e-06,
+           "classes": 18
+          }
+         },
+         "3": {
+          "units": {
+           "acc": 0.935,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.448,
+           "lambda": 1e-06,
+           "classes": 26
+          }
+         },
+         "4": {
+          "units": {
+           "acc": 0.999,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.498,
+           "lambda": 9.999999999999999e-06,
+           "classes": 30
+          }
+         },
+         "5": {
+          "units": {
+           "acc": 0.975,
+           "lambda": 1e-08,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.501,
+           "lambda": 9.999999999999999e-06,
+           "classes": 19
+          }
+         }
+        },
+        "n_fit": 8000,
+        "n_score": 1000
+       }
+      },
+      "n_fit_train": 8000,
+      "def": "note 155-4 (descriptive; Audit pre-registered): what the memory state holds.\n    (1) pass_skip: pair #t's pass not run (the memory passes through unchanged; later passes keep their inputs and flags; under --add_reset the\n        column-boundary reset STILL applies - Theory: a harness operation, not the pair's computation), t = 4 / 7 (columns 3 / 4's first pairs); rows with a_i b_j != 0; row level:\n        row_skip_consistent = (answer == product - a_i b_j 10^(i+j)), full_product = (answer == product).\n    (2) donor operands_consistent: the donor's whole state swapped in after pair P (P = 4 / 8 / 12; donor_delta's sampling); hybrid operands = the\n        donor's digit at each a_i / b_j position appearing in pairs 1..P, else the recipient's; row-level share answer == hybrid product.\n    (3) operand_probe: from the flattened S after pairs 4 / 8 / 12, near-OLS (dual, lambda by 3-fold CV over 1e-9..1e-6, standardised) one-hot regressions -> argmax of each seen a_i / b_j\n        digit and rounded-exact regressions of each partial column sum (products in pairs 1..P only); fit on n_fit train items, scored on the test items."
+     },
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "fallback_trigger": {
+      "floor_spikes": 37,
+      "n_nonfinite": 0,
+      "fires": true
+     },
+     "length_general": true
+    }
+   },
+   "2": {
+    "status": "open",
+    "accepted": null
+   },
+   "3": {
+    "status": "open",
+    "accepted": null
+   }
+  },
+  "gate": null,
+  "verdict": "pending (1 / 3 seeds)"
+ },
+ "mixidx": {
+  "slots": {
+   "1": {
+    "status": "open",
+    "accepted": null
+   },
+   "2": {
+    "status": "open",
+    "accepted": null
+   },
+   "3": {
+    "status": "open",
+    "accepted": null
+   }
+  },
+  "gate": null,
+  "verdict": "pending (0 / 3 seeds)"
+ },
+ "reading": "pending"
+}

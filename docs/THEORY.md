@@ -9359,6 +9359,26 @@ accumulator.**
 * **Gates:** the label / schedule check for n ≠ 4; bit-identity with R's batches when both flags are off; smoke_plain; Audit's diff review.
 * Dirs `s161_{mix,mixidx}_4x4_s{seed}`. Scorer: `theory/score_s161.py`, committed with this registration.
 
+**§161 SHAPE-MIX, MIX s1 (interim, 2026-10-08 10:49 EDT; 24k, RTX 3090; scored by Theory with score_s161): exact, length-general and SERIAL, on one seed.**
+* **4×4: test_acc 0.996** (every column ≥ 0.998); train 0.995; final loss 0.0006.
+* **Length** (training used n ≤ 5):
+  - ext_4x6 **0.994**, ext_4x7 **0.976**, ext_4x8 **0.964**. Every 4×8 column is ≥ 0.985, and column 5 is 0.999 where every earlier design read 0.000.
+  - ext_4x16 is 0.121, decaying gradually (columns 9–16: 0.97 → 0.51).
+  - LENGTH-GENERAL(run) holds. The arm needs 2 of 3 seeds.
+* **SERIAL:** row donor 0.995 / 0.986 / 0.982 at pairs 4 / 8 / 12, with the recipient at chance.
+  - Training chains are operand-consistent, so the swapped hybrid is out of distribution. **Unlike §158, this SERIAL is not implied by accuracy.**
+* **The state holds the running column sum.** In 155-4's like-for-like probe (colsum_cls), the in-progress column's units digit decodes at **0.99 / 1.0 / 0.97** after pairs 4 / 8 / 12. R reads 0.48 / 0.29 / 0.46.
+  - Completed columns' units: 0.94–1.0.
+  - Carries are partial late in the chain (0.45–0.69). Operands are still decodable (1.0).
+* **Not linearly editable:** carry-edit propagation 0.0025, equal to random and to the null.
+* **Compute** (R's chain): 1.22·10¹⁰ FLOPs and 17 passes at 4×4, i.e. **0.79× TC-M FLOPs and 0.30× its passes** (2.47× ICoT-SI).
+* **155-1's fallback trigger fired, with 160-1's floor.**
+  - 37 spikes from 14.6k to 22.8k (max 1.9–11), while the loss converged.
+  - By 155-1 the MIX arm's block-9 fallback is due. It is descriptive, and the spend is Audit's call.
+* **Reading so far (one seed):** varying the multiplier length in training removes the 4×4 count schedule, and with it the buffer-only solution.
+  - The memory carries the in-progress column sum, the swap follows the donor, and 4×8 is solved.
+  - This is the C2 route that 158-2 named. s2 and s3 decide LENGTH-GENERAL. MIX+IDX is pending.
+
 **Note 161-1 (2026-10-08 08:40 EDT, before any §161 run; Experiments' implementation, disclosed). How SHAPE-MIX is drawn.**
 * **n is drawn per batch, not per chain,** because a batch shares one step schedule.
   - Shapes still vary uniformly across steps.
