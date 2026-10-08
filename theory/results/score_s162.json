@@ -1,0 +1,28 @@
+{
+ "boundary": {
+  "status": "pending (0 / 2 DIRECT seeds)",
+  "L_star": null,
+  "curves": {},
+  "notes": []
+ },
+ "plan": null,
+ "long": {
+  "dir_arm": "long",
+  "l_max": 32,
+  "runs": {
+   "1": {
+    "status": "open"
+   },
+   "2": {
+    "status": "open"
+   },
+   "3": {
+    "status": "open"
+   }
+  },
+  "kind": null,
+  "why": "pending (0 / 2 seeds)"
+ },
+ "reading": "pending",
+ "capacity": []
+}
