@@ -48,7 +48,7 @@ def bad_args(d, arm, seed):
     k = "fork_steps" if arm == "bearly" else "steps"
     if int(a.get(k, 0) or 0) != n or float(a.get("sched_scale", 1.0)) != 1.0 or str(a.get("device", "")).startswith("cpu") or a.get("mem_check") or a.get("train_n"):
         SKIPPED.append(d); return "smoke"
-    exp = dict(BASE, reader=(arm != "ctrl"))
+    exp = dict(BASE, reader=(arm != "ctrl"), seg_order="b_first")                # note 152-1 (2): [EOT, b_j, j, a's digits]
     if arm == "bearly":
         exp.update({"removal": arm[1:], "removal_every": 4000, "rewarm": 200, "fork_from": "boxes/runs_fsq/s152_a_4x4_s%d/gate.pt" % seed})
     bad = {k_: a.get(k_) for k_, v in exp.items() if a.get(k_) != v}
@@ -85,6 +85,7 @@ def run(arm, seed):
            "donor": {k: dn.get(k) for k in ("donor_consistent", "recipient_consistent", "chance_overlap", "bprefix_consistent", "operands_consistent")},
            "serial_shares": {"carry_save": dn.get("donor_consistent"), "bprefix": dn.get("bprefix_consistent"), "recompute": dn.get("recipient_consistent")},   # Literature (4)
            "add_state_norm_by_segment": s.get("add_state_norm_by_segment"), "bprefix_probe_after_removal": s.get("bprefix_probe"),
+           "pp_probe": s.get("pp_probe"),                                                                                       # note 152-1 (3)
            "probe_r2": s.get("probe_r2"), "ext_4x8_low8": r.get("ext_4x8_low8"), "gpu": r.get("train_gpu", r.get("gpu")), "driver": r.get("train_driver")}
     if arm == "a":
         out.update({"gate_step": s.get("gate_step"), "gate_train_exact": s.get("gate_train_exact"),
