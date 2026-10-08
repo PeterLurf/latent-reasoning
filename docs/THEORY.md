@@ -9610,6 +9610,26 @@ this note is pushed.**
   - long64 is not needed (L* ≠ 32).
 * SHORT s1 / s2 launch now (`s162_short_s{1,2}`, deltas5 `--arm delta --l_max 8`).
 
+**Note 162-4 (2026-10-08 16:39 EDT; after reading LONG s1's log, disclosed). 162-2's outcome trigger needs an absolute floor.**
+* On LONG s1, a converged and exact run, it fired on 25 logged steps.
+  - Almost all were near-zero losses rising 1e-6 → 1e-5.
+  - There was one transient blip (0.032 at 8.3k, back to 0 by 8.8k).
+* **Fixed now:** a loss jump must also reach ≥ 0.05 (score_s162 / score_s163). With the floor, LONG s1's trigger is quiet.
+* **Scope:**
+  - For §162 this is post hoc, and it affects only whether a descriptive block-9 variant runs, never a reading.
+  - For §163 it is pre-data: no §163 run exists.
+
+**§162 LONG s1 (interim, 2026-10-08 16:39 EDT; l_max 32, 24k, RTX 3090; scored by Theory with score_s162 after note 162-3): exact, with MIXED kind.**
+* **EXACT:** final-state accuracy ≥ 0.99 at every training length up to 32. Past the single-pass boundary (L* = 16), so the memory solves S5 where one pass fails.
+* **Kind at p* = 16: MIXED.**
+  - State probe 0.876, just under 0.90.
+  - The older-half op-history probe is **0.149**, so the memory does not buffer the inputs.
+  - The state edit does not propagate (0.0, with random 0.0 and the null 0.0; n 867).
+  - The state is not a buffer, but it is not linearly readable at 0.90 or linearly editable either. This is the "not linearly editable" pattern of §161.
+* **Extrapolation:** long_acc at 512 is 0.0, and acc_2048 is 0.0. No length generalisation past 32 (16× training).
+* SERIAL holds as a sanity check. 10 gradient-floor spikes (descriptive).
+* **Waiting on:** LONG s2 (b192) and SHORT s1 / s2 (b208 / b209). The arm reading needs both seeds.
+
 ## 163. SHAPE-MIX-2D: both operand lengths mixed, for length and value-range generalisation over both operands (C2) (Audit's research pass after §161 MIX s1; pre-registered 2026-10-08 10:59 EDT, after Literature's check 73fbfb1a (`docs/LIT_MULT_LG_NOSCRATCH_2026-10-08.md`) and Audit's review, before any implementation or run; runs only if §161 MIX s2 replicates)
 
 **Why.**

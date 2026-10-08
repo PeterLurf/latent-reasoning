@@ -50,7 +50,7 @@ def trigger(d, r):
                 pts[x["step"]] = (float(x["loss"]), x.get("L_max"))
     for st, (lo, lm) in pts.items():
         prev = pts.get(st - 1000)
-        if st > 2000 and prev and prev[1] == lm and prev[0] > 0 and lo > 2 * prev[0]:
+        if st > 2000 and prev and prev[1] == lm and prev[0] > 0 and lo >= 0.05 and lo > 2 * prev[0]:   # note 162-4: absolute floor (the rule fired on 1e-6 -> 1e-5 losses)
             jumps.append(st)
     return {"loss_jumps": sorted(jumps), "n_nonfinite": nf, "fires": bool(jumps or nf), "grad_floor_spikes_descriptive": len(sp), "log_points": len(pts)}
 
