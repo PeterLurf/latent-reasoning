@@ -74,3 +74,37 @@ the right next tool.
 - **It's the right replacement for probe-direction edits.**
 - **The most important control here is the k sweep.** At large k it collapses into the whole-state swap, which passes by
   construction.
+
+## Addendum (2026-10-08): Theory's three questions for the §167 draft
+1. **The closest interchange applications to a recurrent or memory *state*, and typical numbers:**
+   - **Recurrent states:** Csordás 2408.10920 (GRU hidden states; trained *scaling* interventions, because small GRUs use magnitude
+     codes). Mamba state patching 2404.03646 (no DAS).
+   - **None on linear-attention / delta memories.**
+   - **Carries specifically: the separator paper 2610.06605** (LIT_SEPARATOR_CARRY). It patches the carry-in at a residual-stream slot
+     between **column-sum-matched** example pairs, and transfers the source carry in **up to 84%** of cases (one middle column, best
+     model, after block 4). It's position patching, not a learned subspace, but **the matched-pair design is the one to copy**.
+   - **Arithmetic mediation in LMs:** Stolfo et al. 2305.15054 (activation patching).
+   - **Typical IIAs:** DAS reports 100% on small trained models with a correct causal model (2303.02536). Boundless DAS on Alpaca-7B
+     reports high, robust IIA for two boolean variables (2305.08809). Random-model IIA is near chance with *linear* maps, but reaches
+     100% with non-linear ones (2507.08802).
+   - **Subspace sizes:** small and swept. No paper gives a rule.
+2. **Controls for the dormant-pathway illusion.** Theory already plans random-subspace, shuffled-target, and natural-variance share.
+   The natural-variance share is Makelov's own diagnostic: a dormant subspace carries little natural variance. **Add:**
+   - (a) **Held-out pairs:** fit R on one item set and score IIA on disjoint items (DAS standard; Wu's reply 2401.12631 argues it
+     mitigates most illusions).
+   - (b) **An untrained / random-init DeltaMem baseline** under the same linear DAS (2507.08802's floor).
+   - (c) **Necessity:** mean-ablating the found subspace in *unpatched* runs must hurt the answer. A dormant pathway wouldn't.
+   - (d) **Read-side alignment:** the subspace's projection onto the downstream read (the row space of the φ(q)ᵀ-weighted read and the
+     head output projection). Makelov's illusion lives in the read's null space.
+   - (e) **Matched-pair design for the multiplication carry (from 2610.06605):** pair items with equal column sums but different
+     carries, so a transfer can only come from the carry variable.
+3. **Guidance on k:** no published rule. The convention is to sweep and report IIA vs k (Boundless DAS learns the boundary instead).
+   **Anchors for D ≈ 49k:**
+   - **The information bound:** a variable with V values needs at most V − 1 linear dimensions, and often far fewer (a circular code
+     uses 2 per period). Carry-in ≤ about 45 values; a column sum ≤ about 450; S5 = 120 states.
+   - So k = 16 / 64 is generous for a carry and adequate for S5. **Add k ∈ {1, 2, 4, 8}** so the IIA curve shows where it saturates.
+     A carry that needs ≤ 4 dimensions is much stronger evidence than one that only appears at 64.
+   - k = 64 is 0.13% of D, far from the whole-state limit, which is good. Still report IIA at a large k (say 2,048) as the
+     upper-reference "near whole-state" value.
+   - **Per-head restriction:** run DAS inside single heads (additive vs delta). That localises the variable and keeps each rotation
+     small (d_k × d_v ≈ 4k).
