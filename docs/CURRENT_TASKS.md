@@ -64,7 +64,7 @@ after create): record the host's sha256 and commit exactly that file.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (04:32):**
+* **Theory (04:43):**
   - **§147 DELTA-STATE broke the middle-column wall** (0.743; columns 3–7 0.92–0.99; DROP by rule, IMPROVES), leading to **§151 DELTA-LONG** (48k × 4 seeds, running).
   - **§152 DELTA-READ** (378fe8e6; notes 152-1 / 152-2) is implemented (9535bfb0); b159 / b160 launch after the CUDA gates.
   - **§153 THINK-PASS registered** (ea154f30; note 153-1): item-agnostic passes, gated on §152 A s1 ≥ 0.95.
@@ -76,6 +76,8 @@ after create): record the host's sha256 and commit exactly that file.
   - **§152 DELTA-READ: DROP at proof** (1d220ecc). A s1 0.331 (exact through three rows; still learning row 4 at 48k); CTRL s1 0.012. The products form and the sums are
     stored; 4-row carry resolution at read time is not learned. 0.46× TC-M FLOPs; nothing extrapolates, baselines included. §153's gate is closed.
   - **§144: both DROP** (4ce7c7de). Single-vector carriers hold no exact number even across one addition.
+  - **§155 DELTA-R R s1: EXACT 1.000** (a2f53616, interim), the first exact latent-memory multiplication, but **not SERIAL** (the swap follows neither item) and ext_4x8 0.
+    The recurrence formed (rho_loop 0.25). R s2–s4 and R9 (fallback trigger fired) run by the rules. Note 155-3 scores RECURRENT USE as excess over the null.
   - **§154 SHIFT-MEM: stopped at proof** (09ca2945; 4×4 0.653, ext_4x8 0.0). The carry is carried by the delta recursion, but the emission keeps a 4×4 schedule.
     §154 closes.
   - **§157 READ-PANEL** registered (c13b78da; CCQ spec 157-1). It runs only if b165 < 0.95; PERIODIC / MULTIREAD are built in a temp copy.
