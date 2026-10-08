@@ -20,7 +20,7 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 Messages go through SendMessage. The names "Theory" and "Audit" currently need an identity confirm, pending the user,
 so send to the pipe addresses their messages come from.
 
-## Running now (19:50 2026-10-07; credit ~$153 after the user's top-up; cap 16 hosts / < $4/h; Audit: proofs + their completions approved)
+## Running now (21:58 2026-10-07; credit ~$153 after the user's top-up; cap 16 hosts / < $4/h; Audit: proofs + their completions approved)
 
 **User rules:** full runs on Vast 3090s (>= 16 GB, --ckpt_every); local cards short memory-capped jobs only, never idle. Before any commit touching
 boxes/fsq120.py / table132.py / core.py run `python scratch/smoke_plain.py`. Never edit a module while a deploy is in flight (the tar happens minutes
@@ -39,14 +39,19 @@ after create): record the host's sha256 and commit exactly that file.
 | b145 | §150 VOCAB-SLOT DIGIT slot 1 (multpair 8efc841: slot head under bf16 autocast) |
 | b144 | §150 VOCAB-SLOT FULL slot 1 (restart150 --memcheck picks --micro; fp32 slot head) - deploying |
 | b131 | §141 r4s16 slot 1 (finishing) |
+| b146-b148 | §144 F8 follow-ups (m2 / m3 / noflag) |
+| b149 / b150 / b151 | §143 FULL-GROW completions s2 / s3 / s4 (note 143-1 s1 PASS); b149 on 550.144.03 (no 595.71 offer); fill_f143c filling b150 / b151 |
 
 * Drains: drain_posthoc runs the on-host fp32 contraction for s144_ / s145_ / s150_ too; keep patterns cover s142-s150.
 * Disk cleanup 19:10-19:40 (user): 277 cold models -> E:/latent_archive (manifest docs/archive/MODEL_ARCHIVE_MANIFEST_2026-10-07.tsv).
-* Next for Experiments: §149 SOTA-PROBE (eval-only, local card).
+* §143 note 143-2: drain_posthoc runs `fsq120 --ablate704_only` on-host for s143_ (eval_ablate704.json + eval.json s143.ablate704); s1's model.pt was not kept (no ablation for s1).
+* §149 SOTA-PROBE: all four evals done and committed (sanity 42.46 / 33.13 / 39.35 / 44.81 vs gate 42.5 / 33.1 / 39.4 / 44.8); probe now memcapped (d4bc6e19).
 
 ### Local (v2 workers c4060 / c3070 / c2070 <- scratch/c1_backlog_<card>.txt; log logs/c1_local.log; stop: scratch/<tag>.stop)
 
-* 4060 / 3070: §133 / §141 filler protos (+ queued gate jobs first); 2070: replay_x 543-560 (fp32).
+* 4060: Theory 862fe2f4 §150 soft-only DIGIT S501 / S502 (micro 2), then §144 sum4 8k no-stop S513-516.
+* 2070: §150 soft-only DIGIT S503 / S504 (fp32, micro 4).
+* 3070: §144 harness guard first (01929b61: sum4 mod 100 --lmax_fixed 1, S601 / 602 x F8 / N64), then sum4 8k no-stop S511-512.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
