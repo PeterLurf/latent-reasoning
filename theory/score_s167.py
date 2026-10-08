@@ -6,7 +6,7 @@ R (k in {16, 64}); intervention S_rec <- S_rec + R R^T (S_don - S_rec); IIA = ex
 Controls (fixed now; the subspace-patching illusion, 2311.17030): RANDOM-SUBSPACE (an unfitted random k-subspace) IIA <= 0.2 and SHUFFLED-TARGETS (DAS fit
 to a mismatched donor's counterfactuals, held-out IIA against those targets) <= 0.2.
 DECOMPOSABLE(model, t): fitted IIA >= 0.8 at some k <= 64 AND IIA - unchanged_target_share >= 0.5 (Audit: the null rate) AND both controls <= 0.2 AND
-necessity_drop >= 0.3 (Literature: mean-ablating the fitted subspace in unpatched runs lowers accuracy). k in {1, 2, 4, 8, 16, 64} (+ 2048 reference). NOT-DECOMPOSABLE: fitted IIA < 0.5 at k = 64 with the controls valid.
+necessity_drop >= 0.3 (Literature: mean-ablating the fitted subspace in unpatched runs lowers accuracy) AND random-model IIA <= 0.2 at k 16 / 64 (note 167-1). k in {1, 2, 4, 8, 16, 64} (+ 2048 reference). NOT-DECOMPOSABLE: fitted IIA < 0.5 at k = 64 with the controls valid.
 ILLUSION-RISK: shuffled-target IIA > 0.2 (the method fits arbitrary targets here; no reading). MULT arm: >= 2 / 3 MIX models DECOMPOSABLE at the same t.
 Output per model: <run>/eval_das.json {"family", "points": {t: {"k": {k: {"iia", "iia_train", "n"}}, "unchanged_target_share", "random_subspace": {k: iia}, "shuffled_targets": {k: iia},
 "subspace_var_share": {k: share}}}}.
@@ -34,7 +34,8 @@ def point_kind(pt):
     rnd_ok = all((v or 0) <= 0.2 for v in rnd.values()) and bool(rnd)
     un = pt.get("unchanged_target_share")
     nd = (pt.get("necessity_drop") or {}).get(str(best[0])) if best[0] is not None else None
-    if best[1] >= 0.8 and un is not None and best[1] - un >= 0.5 and rnd_ok and shf and nd is not None and nd >= 0.3:
+    rm = pt.get("random_model") or {}; rm_ok = bool(rm) and all((v or 0) <= 0.2 for v in rm.values())   # note 167-1: random-init model baseline required
+    if best[1] >= 0.8 and un is not None and best[1] - un >= 0.5 and rnd_ok and shf and nd is not None and nd >= 0.3 and rm_ok:
         return "DECOMPOSABLE", best
     i64 = (ks.get("64") or {}).get("iia")
     if i64 is not None and i64 < 0.5 and rnd_ok and shf:
