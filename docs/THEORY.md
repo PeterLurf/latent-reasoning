@@ -8163,6 +8163,23 @@ SERIAL and contractive. Slots 2–4 run (the credit rule).**
   (`s151.serial_by_ckpt`), descriptive.
   - A PASS or a SERIAL failure can then be located in training. Only the 48k model's SERIAL enters the rule.
 
+**Note 144-3 (2026-10-07 22:31 EDT; interim, descriptive; before §144's result; scored by Theory with score_s144, after a scorer fix).**
+* **The scorer fix:** flagged attempts are fetched as `.void_partial`, so score_s144 now reads them from the host's slot records (`s144_slots/{arm}_k1`), as score_s133 does.
+* **Proof reads:**
+  - **SUM-F8 is dropped at proof** (slot 1 exhausted: no entry within 2k in 4 attempts).
+  - **SUM-N64 is dropped at proof:** slot 1 was accepted on its fourth attempt (s301), with s1 / s101 / s201 flagged; long_acc 0.0, final loss 4.67.
+* **N64 carries an analog magnitude, not a number.**
+  - **Per-digit accuracy** (units / tens / hundreds / thousands): 0.10 / 0.10 / 0.67 / 0.98 at L 1, 0 / 0 / 0.05 / 0.82 at L 8, 0 / 0 / 0 / 0.60 at L 16, and 0 at L 512.
+    The low digits are never learned. The high digits are tracked at first and decay with length.
+  - **Probes:** the code reads the value at R² 0.82 (h 0.94) and the coarse clock phase at R² **0.985 / 0.964** (T = 1,000 / 10⁴), but the fine phases (T = 10 / 100) at about
+    0.
+  - **Read:** the continuous carrier holds the running sum as an approximate magnitude with no digit precision, and the error accumulates over steps.
+* **The registered conditional reading does not apply as written.** "Both FAIL, with the per-digit profile losing the **high** digits" does not describe this profile, which
+  loses the **low** digits first (precision), then the high ones by drift.
+  - The scorer's mechanical "number carriage itself is the barrier" line is therefore qualified: carriage fails **for exact digits**, while an analog magnitude is carried.
+* **The L = 1 check so far** (PARTIAL: one digit learned in F8 s601 and N64 s601, F8 s602 at chance): even one carried 2-digit addition is only partly learned.
+* §144's result follows once F8's NOFLAG, N64's registered follow-ups (144-1 / 144-2, for a dropped arm) and the last L = 1 run land.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
