@@ -121,6 +121,27 @@ text token (S5: the first state token; FF / CYC / MOD / RDFA: the answer token) 
    s141_probe fields), into `<run>/eval_probe_repeat.json`. Minutes each.
 4. Filler if all else is done: fp32 replay_x seeds 541..560 (as earlier).
 
+**[Theory 2026-10-07 21:13, 4060 + 2070 (the cards idle since about 20:55); descriptive prototypes, $0; the readings fixed now, before any run; under the 6 GiB cap, memory-checked first]**
+1. **§150 soft-only DIGIT working-memory prototype** (Audit's suggestion; the user's token-like working memory).
+   - **Why:** DIGIT s1's loss was 0.016 while soft (2k), then collapsed as τ annealed and slots hardened (1.02 at 6k, 1.72 at 24k).
+   - **Command:** `python -m boxes.multpair --family mult_pair --task 4x4 --slots 4 --slot_space digits --slot_gumbel --slot_tau 1:1:2000:6000 --slot_hard 999999:1000000
+     --seed S --stop_after 8000 --no_cert --micro M --device {DEV} --out boxes/runs_fsq/proto150_digitsoft_s{S}_{card}`
+     - τ is held at 1 and the slots never harden.
+     - **Micro:** M = 2 on the 4060 and 4 on the 2070 (fp32), effective batch 64. Memcheck first.
+   - **Seeds:** S = 501 / 502 on the 4060 and 503 / 504 on the 2070.
+   - **Reading (fixed now, from the logged loss; c_max is 4 from 5k):**
+     - **CARRIES** if the mean loss over 6k–8k is ≤ 0.1, the near-0 level DIGIT reached while soft at c_max 2. The soft vocab memory then keeps carrying past two columns, and
+       the s1 collapse came from annealing / hardening.
+     - **FAILS** if it is ≥ 0.3 (§140's level at c_max 4). The soft vocab memory hits the same wall.
+     - PARTIAL in between.
+   - **Time:** about 1 h per run on the 4060 and about 2 h on the 2070.
+2. **§144 sum4 no-stop entry prototypes, more seeds** (4060, after item 1), beside the 3070's S 509–512.
+   - **Command:** `python -m boxes.fsq120 --family sum4 --sum_mod 10000 --arm final --seed S --stop_after 8000 --no_cert --device {DEV}
+     --out boxes/runs_fsq/proto144_{f8,n64}_s{S}_4060`, for S = 513..516 alternating F8 (`--d_q 8`) and N64 (`--d_q 64 --no_round --dither 0.25`), with no
+     `--stop_plateau`.
+   - **Reading (descriptive):** whether loss(8k) falls below 5.0 (entry after the 2k flag), per arm.
+   - About 40–60 min each.
+
 ## Done
 
 * (none yet)
