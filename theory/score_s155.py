@@ -77,6 +77,11 @@ def propagation(s):
     return pooled.get("propagation_share"), pooled.get("random_edit_share"), pooled.get("null_value")
 
 
+def coupling(s):
+    """note 155-2: the share of rows where a non-target column changes under the carry edit (pooled)."""
+    return (((s or {}).get("propagation") or {}).get("pooled") or {}).get("coupling_share")
+
+
 def slot(arm, k):
     att = []
     for o in OFFS:
@@ -98,7 +103,7 @@ def slot(arm, k):
             ps, rs, nv = propagation(s)
             a = {"seed": k + o, "test_acc": r.get("test_acc"), "serial": S154.serial(r.get("donor")), "per_column": (r.get("acc_by_column") or {}).get("per_column"),
                  "ext_4x8": (r.get("ext_4x8") or {}).get("test_acc"), "ext_4x16": (r.get("ext_4x16") or {}).get("test_acc"),
-                 "propagation_share": ps, "random_edit_share": rs, "null_value": nv, "recurrence": s.get("recurrence"),
+                 "propagation_share": ps, "random_edit_share": rs, "null_value": nv, "coupling_share": coupling(s), "recurrence": s.get("recurrence"),
                  "mem_norm_by_pass": s.get("mem_norm_by_pass"), "write_norm_ratio": s.get("write_norm_ratio"), "n_nonfinite": r.get("n_nonfinite"),
                  "c7_state_edit": s4.get("c7_state_edit"), "carry_probe_by_column": s4.get("carry_probe_by_column"), "acc_by_column_carry": s4.get("acc_by_column_carry"),
                  "alpha_by_head": s7.get("alpha_by_head"), "gpu": r.get("train_gpu", r.get("gpu")), "driver": r.get("train_driver")}
@@ -145,6 +150,9 @@ def main():
     if sv["pass"] == "PASS" and sv["length_general"] == "LENGTH-GENERAL" and sv["recurrent_use"] == "RECURRENT USE":
         rd.append("SHIFT-R: a pretrained LM's memory carries computed intermediates step by step, as a local recurrent process that generalises in length "
                   "(C1 in the north-star sense, with C2 and C7 edits)")
+    cps = [x["coupling_share"] for x in (v_["accepted"] for v_ in res["shiftr"]["slots"].values()) if x and x.get("coupling_share") is not None]
+    if sv["recurrent_use"] == "RECURRENT USE" and cps and sorted(cps)[len(cps) // 2] >= 0.2:            # note 155-2
+        rd.append("SHIFT-R propagates, but NON-SPECIFICALLY (median coupling_share %.2f >= 0.2; note 155-2)" % sorted(cps)[len(cps) // 2])
     elif sv["recurrent_use"] == "RECURRENT USE":
         rd.append("SHIFT-R RECURRENT USE: state edits propagate through recomputed carries (pass %s, length %s)" % (sv["pass"], sv["length_general"]))
     elif sv["recurrent_use"] == "NO RECURRENT USE":
