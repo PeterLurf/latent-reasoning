@@ -44,7 +44,13 @@ def slot(k):
                 bad["other"] = (a_.get("add_reset"), a_.get("add_rotary"))
             if bad:
                 ERRORS.append((d, bad)); return {"attempts": att, "status": "error", "accepted": None}
-            s = dict(r.get("s155") or {}); s.update(load(d, "eval_s155_posthoc.json") or {}); s8 = r.get("s158") or {}
+            s = dict(r.get("s155") or {}); s.update(load(d, "eval_s155_posthoc.json") or {}); s8 = dict(r.get("s158") or {})
+            ph8 = ((load(d, "eval_s158_posthoc.json") or {}).get("s158") or {})   # the free-item propagation (post-hoc on the host)
+            if ph8.get("by_item_type"):
+                bit = dict(s8.get("by_item_type") or {})
+                for kk, vv in ph8["by_item_type"].items():
+                    bit[kk] = dict(bit.get(kk) or {}, **vv)
+                s8["by_item_type"] = bit
             ws = load(d, "eval_what_state.json")
             ps, rs, nv = S155.propagation(s)
             a = {"seed": k + o, "test_acc": r.get("test_acc"), "serial": S155.S154.serial(r.get("donor")), "per_column": (r.get("acc_by_column") or {}).get("per_column"),
