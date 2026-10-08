@@ -1,0 +1,19 @@
+{
+ "condition": "RUN (\u00a7161 MIX slot 2, seed 2: 4x4 0.997, ext_4x8 0.917)",
+ "runs": {
+  "1": {
+   "status": "open",
+   "attempts": []
+  },
+  "2": {
+   "status": "open",
+   "attempts": []
+  },
+  "3": {
+   "status": "open",
+   "attempts": []
+  }
+ },
+ "verdict": "pending (0 / 3 seeds)",
+ "reading": "pending (0 / 3 seeds)"
+}

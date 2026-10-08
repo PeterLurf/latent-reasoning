@@ -434,9 +434,436 @@
     }
    },
    "2": {
-    "status": "open",
-    "accepted": null,
-    "attempts": []
+    "status": "accepted",
+    "accepted": {
+     "seed": 2,
+     "test_acc": 0.997,
+     "ext_4x8": 0.917,
+     "ext_4x8_per_column": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.998,
+      0.991,
+      0.985,
+      0.987,
+      0.977,
+      0.97,
+      0.976,
+      0.982
+     ],
+     "per_column": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.999,
+      0.998,
+      1.0,
+      1.0
+     ],
+     "serial": true,
+     "ext_other": {
+      "ext_4x6": 0.987,
+      "ext_4x7": 0.962
+     },
+     "what_state": {
+      "pass_skip": {
+       "pair4": {
+        "a_i": 1,
+        "b_j": 3,
+        "column": 3,
+        "row_skip_consistent": 0.010962241169305725,
+        "full_product": 0.015834348355663823,
+        "n": 821,
+        "n_excluded_zero_product": 179,
+        "skip_keeps_reset": false
+       },
+       "pair7": {
+        "a_i": 1,
+        "b_j": 4,
+        "column": 4,
+        "row_skip_consistent": 0.0,
+        "full_product": 0.017582417582417582,
+        "n": 910,
+        "n_excluded_zero_product": 90,
+        "skip_keeps_reset": false
+       }
+      },
+      "donor_operands": {
+       "pos4": {
+        "operands_consistent": 0.0,
+        "recipient_consistent": 0.019,
+        "donor_full_consistent": 0.0,
+        "seen_a": [
+         1,
+         2
+        ],
+        "seen_b": [
+         1,
+         2,
+         3
+        ],
+        "n": 1000
+       },
+       "pos8": {
+        "operands_consistent": 0.0,
+        "recipient_consistent": 0.013,
+        "donor_full_consistent": 0.0,
+        "seen_a": [
+         1,
+         2,
+         3
+        ],
+        "seen_b": [
+         1,
+         2,
+         3,
+         4
+        ],
+        "n": 1000
+       },
+       "pos12": {
+        "operands_consistent": 0.0,
+        "recipient_consistent": 0.009,
+        "donor_full_consistent": 0.0,
+        "seen_a": [
+         1,
+         2,
+         3,
+         4
+        ],
+        "seen_b": [
+         1,
+         2,
+         3,
+         4
+        ],
+        "n": 1000
+       }
+      },
+      "operand_probe": {
+       "after_pair4": {
+        "a": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-08
+         },
+         "2": {
+          "acc": 0.999,
+          "lambda": 1e-08
+         }
+        },
+        "b": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-08
+         },
+         "2": {
+          "acc": 0.968,
+          "lambda": 1e-08
+         },
+         "3": {
+          "acc": 0.999,
+          "lambda": 1e-08
+         }
+        },
+        "colsum": {
+         "1": {
+          "exact": 0.96,
+          "lambda": 1e-06
+         },
+         "2": {
+          "exact": 0.941,
+          "lambda": 1e-06
+         },
+         "3": {
+          "exact": 0.988,
+          "lambda": 1e-06
+         }
+        },
+        "colsum_cls": {
+         "1": {
+          "units": {
+           "acc": 1.0,
+           "lambda": 1e-08,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 1.0,
+           "lambda": 1e-08,
+           "classes": 9
+          }
+         },
+         "2": {
+          "units": {
+           "acc": 1.0,
+           "lambda": 1e-08,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.982,
+           "lambda": 1e-07,
+           "classes": 18
+          }
+         },
+         "3": {
+          "units": {
+           "acc": 0.999,
+           "lambda": 1e-07,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.999,
+           "lambda": 1e-07,
+           "classes": 10
+          }
+         }
+        },
+        "n_fit": 8000,
+        "n_score": 1000
+       },
+       "after_pair8": {
+        "a": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "2": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "3": {
+          "acc": 0.996,
+          "lambda": 1e-07
+         }
+        },
+        "b": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "2": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "3": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "4": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         }
+        },
+        "colsum": {
+         "1": {
+          "exact": 0.686,
+          "lambda": 1e-07
+         },
+         "2": {
+          "exact": 0.311,
+          "lambda": 1e-06
+         },
+         "3": {
+          "exact": 0.401,
+          "lambda": 1e-06
+         },
+         "4": {
+          "exact": 0.823,
+          "lambda": 1e-06
+         }
+        },
+        "colsum_cls": {
+         "1": {
+          "units": {
+           "acc": 1.0,
+           "lambda": 1e-09,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 1.0,
+           "lambda": 1e-09,
+           "classes": 9
+          }
+         },
+         "2": {
+          "units": {
+           "acc": 0.999,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.851,
+           "lambda": 1e-06,
+           "classes": 18
+          }
+         },
+         "3": {
+          "units": {
+           "acc": 0.994,
+           "lambda": 1e-07,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.781,
+           "lambda": 1e-06,
+           "classes": 26
+          }
+         },
+         "4": {
+          "units": {
+           "acc": 0.987,
+           "lambda": 1e-09,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.526,
+           "lambda": 9.999999999999999e-06,
+           "classes": 19
+          }
+         }
+        },
+        "n_fit": 8000,
+        "n_score": 1000
+       },
+       "after_pair12": {
+        "a": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "2": {
+          "acc": 1.0,
+          "lambda": 9.999999999999999e-06
+         },
+         "3": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "4": {
+          "acc": 0.977,
+          "lambda": 1e-07
+         }
+        },
+        "b": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "2": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "3": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "4": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         }
+        },
+        "colsum": {
+         "1": {
+          "exact": 0.506,
+          "lambda": 1e-07
+         },
+         "2": {
+          "exact": 0.13,
+          "lambda": 1e-07
+         },
+         "3": {
+          "exact": 0.122,
+          "lambda": 1e-06
+         },
+         "4": {
+          "exact": 0.272,
+          "lambda": 1e-06
+         },
+         "5": {
+          "exact": 0.714,
+          "lambda": 9.999999999999999e-06
+         }
+        },
+        "colsum_cls": {
+         "1": {
+          "units": {
+           "acc": 1.0,
+           "lambda": 1e-09,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 1.0,
+           "lambda": 1e-09,
+           "classes": 9
+          }
+         },
+         "2": {
+          "units": {
+           "acc": 0.993,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.75,
+           "lambda": 1e-06,
+           "classes": 18
+          }
+         },
+         "3": {
+          "units": {
+           "acc": 0.898,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.543,
+           "lambda": 1e-06,
+           "classes": 26
+          }
+         },
+         "4": {
+          "units": {
+           "acc": 0.974,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.697,
+           "lambda": 1e-06,
+           "classes": 30
+          }
+         },
+         "5": {
+          "units": {
+           "acc": 0.971,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.51,
+           "lambda": 9.999999999999999e-06,
+           "classes": 19
+          }
+         }
+        },
+        "n_fit": 8000,
+        "n_score": 1000
+       }
+      },
+      "n_fit_train": 8000,
+      "def": "note 155-4 (descriptive; Audit pre-registered): what the memory state holds.\n    (1) pass_skip: pair #t's pass not run (the memory passes through unchanged; later passes keep their inputs and flags; under --add_reset the\n        column-boundary reset STILL applies - Theory: a harness operation, not the pair's computation), t = 4 / 7 (columns 3 / 4's first pairs); rows with a_i b_j != 0; row level:\n        row_skip_consistent = (answer == product - a_i b_j 10^(i+j)), full_product = (answer == product).\n    (2) donor operands_consistent: the donor's whole state swapped in after pair P (P = 4 / 8 / 12; donor_delta's sampling); hybrid operands = the\n        donor's digit at each a_i / b_j position appearing in pairs 1..P, else the recipient's; row-level share answer == hybrid product.\n    (3) operand_probe: from the flattened S after pairs 4 / 8 / 12, near-OLS (dual, lambda by 3-fold CV over 1e-9..1e-6, standardised) one-hot regressions -> argmax of each seen a_i / b_j\n        digit and rounded-exact regressions of each partial column sum (products in pairs 1..P only); fit on n_fit train items, scored on the test items."
+     },
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "fallback_trigger": {
+      "floor_spikes": 1,
+      "n_nonfinite": 0,
+      "fires": true
+     },
+     "length_general": true
+    }
    },
    "3": {
     "status": "accepted",
