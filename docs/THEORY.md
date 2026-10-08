@@ -244,7 +244,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 154 | SHIFT-MEM (C2): a per-column reset (SHIFT) or relative keys (ROTARY) on DeltaMem | **stopped at proof** (SHIFT s1 0.653; ext_4x8 0.0; the 4×4 count schedule) | closed |
 | 155 | DELTA-R: a write-after-read DeltaMem (top writes); R / SHIFT-R, RECURRENT USE as C1 | **both arms FAIL** (exact in every seed, 0.997–1.000; never SERIAL; no recurrent use; ext ≤ 0.006; 0.79× TC-M FLOPs) | closed |
 | 156 | SEP-SLOT: per-digit separators, direct answer (a) and A-SEP (b) | **no effect** (0.002–0.004; A-SEP 0.060) | closed |
-| 157 | READ-PANEL: PERIODIC / MULTIREAD / CCQ reads on §152 A | MULTIREAD 0.009, CCQ 0.064 (gates closed); PERIODIC pending | **open** |
+| 157 | READ-PANEL: PERIODIC / MULTIREAD / CCQ reads on §152 A | **all three gates closed** (0.035 / 0.009 / 0.064): not the read; PERIODIC blocked by the blend (off-column 0.88) | closed |
 | 158 | FREE-PAIRS: hybrid pair sequences on R (data-level interchange) | slot 1 0.982, SERIAL, no C1 credit (158-2's prediction) | **open** |
 | 159 | R-5×5: R at 5×5 (the SOTA leg, C3) | registered | **open** |
 | 160 | R-ROWS: R on §152's rows, A-R / CTRL-R (C3) | registered | **open** |
@@ -9054,6 +9054,19 @@ The run is a post-hoc on every accepted §155 model (and §154 SHIFT / §151 for
   - Read exposure (block-6 read, `read.acc.exact`): 0.78 / 0.48 / 0.37 / 0.28 / 0.14 / 0.33 / 0.51 / 1.0 by column.
   - 7.10·10⁹ FLOPs and 12 passes, as §152 A.
 * Both closed arms fall below §152 A at 48k (0.331), near b165 at 96k (0.079). The panel's reading waits for PERIODIC (b174).
+
+**§157 READ-PANEL result (2026-10-08 09:35 EDT; scored by Theory with score_s157; 48k, RTX 3090): all three gates are closed, so by the registered reading it is not the read.**
+* **PERIODIC s1: 0.035.**
+  - By length 1.0 / 1.0 / 0.463 / 0.035. Teacher-forced: columns 1–4 ≥ 0.996, column 5 0.103, column 6 0.358, columns 7–8 ≥ 0.999.
+  - **The scalar read is not integer-valued.** |s − round(s)| has median 0.25 and a share below 0.25 of 0.48–0.51 in every column, which is the uniform value.
+    The STE-rounded writes' pre-rounding error averages 0.23.
+  - **157-2's blend reading fires:** the off-column weight is 0.88 over the product columns 1–7 (157-3). The positive-weighted blend blocks it, not read geometry.
+  - Read exposure 0.41 / 0.36 / 0.15 / 0.09 / 0.08 / 0.21 / 0.34 / 1.0. 7.11·10⁹ FLOPs, 12 passes. The scalar edit (C1 / C7) was not computed.
+* **The panel:** PERIODIC 0.035, MULTIREAD 0.009, CCQ 0.064.
+  - All three fall below §152 A's 0.331 at 48k, near b165's 0.079 at 96k.
+  - Each fails at the carry-heavy middle: column 5 (columns 3–5 for MULTIREAD).
+* **Reading (registered): none reaches 0.95, so it is not the read. §155's recurrence is the remaining route.** R is exact on digit pairs (§155), and R on rows is §160.
+* §157 closes. The conditional MULTI-READ-COPY / PAUSE-R arms do not run.
 
 **Note 157-3 (2026-10-08 08:20 EDT, before the 48k PERIODIC cell (b174) lands; Theory's scorer audit). How 157-2's PERIODIC blend reading is computed.**
 * multrow writes `s157.offcol_weight` as a per-column dict plus a `mean`. The scorer had compared the whole field with 0.1 as a number, so the reading could never fire.
