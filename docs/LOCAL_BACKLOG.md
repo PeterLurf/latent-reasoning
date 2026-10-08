@@ -192,6 +192,11 @@ text token (S5: the first state token; FF / CYC / MOD / RDFA: the answer token) 
   / 0.009).
   - **PERIODIC s1 (3070, 8k):** 0.0 (1.0 / 0.22 / 0.03 / 0.0), finite, loss 0.30. The read scalar is not integer-valued: |s − round(s)| has median 0.25 and share < 0.25
     of 0.50 in every column, which is the uniform value. The off-column weight is 0.89–0.97, so the read is a blend at 8k.
+* **§158 FREE-PAIRS preview (4060, 8k, descriptive; 06:30 item 1):** consistent test 0.0, with columns 1.0 / 1.0 / 0.68 / 0.09 …; free chains 0.0; no non-finite steps;
+  loss 0.26.
+  - The state buffers raw digits rather than sums: raw 0.88 against accumulator 0.12 pooled (after pairs 4 / 8 / 12: raw 1.0 / 0.92 / 0.82 against 0.28 / 0.07 / 0.05;
+    n_fit 3,000).
+  - Propagation 0.09 against null 0.08. It is still learning column 3 at 8k, so it says nothing about b173 (24k, 3090).
 * **§150 soft-only DIGIT (21:13 item 1): FAILS**, 4 of 4 (6k–8k mean loss 1.09 / 1.57 / 1.11 / 1.10, ≥ 0.3). **Soft-only FULL (overnight item 1): FAILS**,
   S505 / S506 at 1.114 / 1.119. The loss rises when c_max reaches 2 at 2k, without
   annealing or hardening. DIGIT s1's collapse was the curriculum, not the hardening (as 150-3).
