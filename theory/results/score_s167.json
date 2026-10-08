@@ -1,0 +1,25 @@
+{
+ "mult": {
+  "s161_mix_4x4_s1": {
+   "status": "pending"
+  },
+  "s161_mix_4x4_s2": {
+   "status": "pending"
+  },
+  "s161_mix_4x4_s3": {
+   "status": "pending"
+  }
+ },
+ "s5": {
+  "s162_short_s1": {
+   "status": "pending"
+  },
+  "s162_short_s2": {
+   "status": "pending"
+  },
+  "s162_long_s2": {
+   "status": "pending"
+  }
+ },
+ "reading_mult": "pending (MULT 0 / 3 models)"
+}
