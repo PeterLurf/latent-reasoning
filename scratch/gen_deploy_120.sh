@@ -19,12 +19,16 @@ auto_ship() {   # Audit 2026-10-07 10:49 (s138 shipped without scratch/restart13
       for b in $(grep -o -E "boxes[./][a-z0-9_]+" "$f" | sed "s|[./]|/|; s|$|.py|" | sort -u); do [ -f "$b" ] && a="$a $b"; done
     done
   done; echo $a | xargs -n 1 | sort -u | xargs; }
-one() { o=$1; n=$2
+one() { o=$1; n=$2; np_=$(wc -l < scratch/pods.txt)
   out=$(EXTRA_FILES="${SHIP_GPT2:+prosqa/ckpt/gpt2_pretrained.bin} boxes/gen97.py boxes/mk108.py boxes/fsq120.py $(auto_ship scratch/gen_q_b$n.txt) ${EXTRA_120:-}" bash scratch/vdeploy_toy.sh $o gen-b$n scratch/gen_q_b$n.txt gen_b$n scratch/gen_vast_job.sh 2>&1)
   echo "$(date +%T) gen host b$n offer $o: $(echo "$out" | grep -E 'INSTANCE|NVIDIA|STARTED|BAD HOST|FAILED' | tr '\n' ' ')" >> logs/gen_deploy.log
   echo "$out" | grep -qE 'INSTANCE|FAILED|BAD HOST|STARTED' || echo "$(date +%T) DEPLOY_SILENT_FAIL offer $o: $(echo "$out" | tail -n 3 | tr '\n' ' ')" >> logs/gen_deploy.log   # Audit: a silent vdeploy exit is logged, never blank
   if echo "$out" | grep -q STARTED; then read -r _ id hh pp <<<"$(echo "$out" | grep '^INSTANCE')"
     nohup bash scratch/auto_drain_gen7.sh "$hh $pp gen_b$n $id gen" > logs/auto_drain_gen_b$n.out 2>&1 &
-  else id=$(echo "$out" | grep '^INSTANCE' | awk '{print $2}'); [ -n "$id" ] && bash scratch/vdestroy.sh $id >> logs/gen_deploy.log 2>&1; fi; }
+  else id=$(echo "$out" | grep '^INSTANCE' | awk '{print $2}')
+    for x_ in $(tail -n +$((np_ + 1)) scratch/pods.txt | grep " label gen-b$n, " | awk '{print $1}'); do   # Audit (b157 leaks): every instance THIS attempt created
+      case " $id " in *" $x_ "*) ;; *) id="$id $x_"; echo "$(date +%T) gen host b$n offer $o: no INSTANCE line; destroying created $x_ (pods.txt)" >> logs/gen_deploy.log;; esac
+    done
+    for x_ in $id; do bash scratch/vdestroy.sh $x_ >> logs/gen_deploy.log 2>&1; done; fi; }
 for x in "$@"; do set -- $x; one $1 $2 & sleep 3; done; wait
 echo "$(date +%T) gen B DEPLOY_DONE" >> logs/gen_deploy.log
