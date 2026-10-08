@@ -1293,7 +1293,7 @@ def main():
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args()
     if a.from_args:
-        keep = {k: getattr(a, k) for k in ("contraction_only", "fp32", "device", "out", "from_args")}
+        keep = {k: getattr(a, k) for k in ("contraction_only", "fp32", "device", "out", "from_args", "s160_probe_only", "probe_n_fit")}   # §160 post-hoc: the CLI flag and probe size win over args.json
         for k, v in json.load(open(a.from_args)).items():
             if hasattr(a, k):
                 setattr(a, k, v)
