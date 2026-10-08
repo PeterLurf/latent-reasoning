@@ -49,7 +49,7 @@ def block(g, i, h):
     if _SLOT["pos"] is not None:                                            # §156 slot_patch (off by default)
         if _SLOT["cap"] is not None:
             _SLOT["cap"].append(h[:, _SLOT["pos"]].detach().clone())
-        elif _SLOT["rep"] is not None:
+        elif _SLOT["rep"] is not None and _SLOT["i"] == _SLOT["layer"]:      # Audit: a single-block patch (block input `layer`)
             h = h.clone(); h[:, _SLOT["pos"]] = _SLOT["rep"][_SLOT["i"]].to(h.dtype)
         _SLOT["i"] += 1
     B, T, D = h.shape; hd = D // g.H; pre = f"h.{i}."
@@ -107,7 +107,7 @@ class LoopGPT(nn.Module):
 
 # ================================================================ THEORY §156 SEP-SLOT (37ac38d1): separator slots in the answer
 SEP = {"tok": None, "mode": None}                                           # set in main: --sep_token's id, --answer_sep
-_SLOT = {"pos": None, "cap": None, "rep": None, "i": 0}                    # §156 slot_patch: capture / replace h[:, pos] at every block input
+_SLOT = {"pos": None, "cap": None, "rep": None, "i": 0, "layer": None}     # §156 slot_patch: capture h[:, pos] at every block input; replace at one
 
 
 def layout(P, Y):
@@ -145,6 +145,13 @@ def carries(A, B):
     return ci, cs
 
 
+def _patch_shares(got, cs_r, ci_d, own, dd):
+    """§156 slot_patch shares for one layer: donor_carry (recipient column sum + donor carry), own (recipient digit), donor_digit (donor's own)."""
+    tgt = (cs_r + ci_d) % 10
+    return {"donor_carry_share": float((got == tgt).mean()), "own_digit_share": float((got == own).mean()), "donor_digit_share": float((got == dd).mean()),
+            "chance_overlap": {"carry_vs_own": float((tgt == own).mean()), "donor_digit_vs_own": float((dd == own).mean()), "carry_vs_donor_digit": float((tgt == dd).mean())}}
+
+
 @torch.no_grad()
 def s156_eval(m, A, B, dev, amp, bs, r, slot_col=4, seed=15601):
     """§156 descriptive: seq_len; ring_probe (per slot k: held-out ridge R^2 of cos / sin(2 pi carry_k / C), C = max carry + 1, from the final
@@ -167,26 +174,33 @@ def s156_eval(m, A, B, dev, amp, bs, r, slot_col=4, seed=15601):
         th = 2 * np.pi * ci[:, k] / C
         ring[str(k + 1)] = {"cos_r2": ridge_r2(H[:h, k], np.cos(th[:h]), H[h:, k], np.cos(th[h:])) if np.cos(th).std() > 0 else None,
                             "sin_r2": ridge_r2(H[:h, k], np.sin(th[:h]), H[h:, k], np.sin(th[h:])) if np.sin(th).std() > 0 else None}
-    ring["C"] = C; ring["def"] = "per slot (answer digit k, 1-based): held-out ridge R^2 of cos / sin(2 pi carry_in_k / C) from the final residual at the slot"
+    ring["C"] = C; ring["def"] = ("per slot (answer digit k, 1-based): held-out ridge R^2 of cos / sin(2 pi carry_in_k / C) from the final residual at the slot"
+                                   + ("; PAUSE: the slot for digit k > 1 is the previous digit's token position (not a separator), not like-for-like with interleave"
+                                      if SEP["mode"] == "pause" else ""))
     k = slot_col - 1; p = pos[k]; rng = np.random.default_rng(seed); ir = rng.permutation(n)[:min(500, n)]; idn = rng.permutation(n)[:len(ir)]
     for _ in range(100):
         bad = np.nonzero(ci[idn, k] == ci[ir, k])[0]
         if not len(bad):
             break
         idn[bad] = rng.integers(0, n, len(bad))
-    keep = ci[idn, k] != ci[ir, k]; ir, idn = ir[keep], idn[keep]; got = np.zeros(len(ir), np.int64); lut = {t: i_ for i_, t in enumerate(DTOK)}
+    keep = ci[idn, k] != ci[ir, k]; ir, idn = ir[keep], idn[keep]; nl = len(PRE) + len(LOOP) * r + len(CODA); got = np.zeros((nl, len(ir)), np.int64)
+    lut = {t: i_ for i_, t in enumerate(DTOK)}
     for s_ in range(0, len(ir), bs):
         a_, d_ = ir[s_:s_ + bs], idn[s_:s_ + bs]
-        _SLOT.update({"pos": p, "cap": [], "rep": None, "i": 0})
+        _SLOT.update({"pos": p, "cap": [], "rep": None, "i": 0, "layer": None})
         with amp_ctx(amp):
             m.run(torch.tensor(x[d_], device=dev), r, want={r})
-        cap = _SLOT["cap"]; _SLOT.update({"cap": None, "rep": cap, "i": 0})
-        with amp_ctx(amp):
-            out, _, _ = m.run(torch.tensor(x[a_], device=dev), r, want={r})
-        _SLOT.update({"pos": None, "rep": None, "i": 0}); got[s_:s_ + bs] = [lut.get(int(t), -1) for t in out[r][:, p].float().argmax(-1).tolist()]
-    tgt = (cs[ir, k] + ci[idn, k]) % 10; own = G[ir, k]
-    patch = {"column": slot_col, "n": int(len(ir)), "donor_carry_share": float((got == tgt).mean()), "own_digit_share": float((got == own).mean()),
-             "chance_overlap": float((tgt == own).mean()), "def": "slot residual at every block input from a donor with a different carry-in (teacher-forced prefix)"}
+        cap = _SLOT["cap"]
+        for lay in range(nl):                                               # Audit: one block input per pass, swept 0 .. nl - 1
+            _SLOT.update({"cap": None, "rep": cap, "i": 0, "layer": lay})
+            with amp_ctx(amp):
+                out, _, _ = m.run(torch.tensor(x[a_], device=dev), r, want={r})
+            got[lay, s_:s_ + bs] = [lut.get(int(t), -1) for t in out[r][:, p].float().argmax(-1).tolist()]
+        _SLOT.update({"pos": None, "rep": None, "i": 0, "layer": None})
+    by_layer = {str(lay): _patch_shares(got[lay], cs[ir, k], ci[idn, k], G[ir, k], G[idn, k]) for lay in range(nl)}
+    patch = {"column": slot_col, "n": int(len(ir)), "by_layer": by_layer, "layers": "block inputs 0 .. %d (prelude, loop x r, coda)" % (nl - 1),
+             "def": "the slot residual replaced at ONE block input (per layer) by a donor's with a different carry-in (teacher-forced prefix); "
+                    "shares: donor_carry = (recipient column sum + donor carry) mod 10, own = recipient digit, donor_digit = the donor's own digit"}
     return {"seq_len": int(x.shape[1] + 1), "ring_probe": ring, "slot_patch": patch, "answer_sep": SEP["mode"], "sep_token_id": SEP["tok"], "slot_positions": pos}
 
 

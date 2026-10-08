@@ -476,7 +476,7 @@ def colsum_exact(m, teA, teB, dev, amp, bs):
 
 
 # ================================================================ THEORY §156 SEP-SLOT arm (b): separator slots in §152's reader decode
-_RSLOT = {"pos": None, "cap": None, "rep": None, "i": 0}                   # slot_patch: capture / replace h[:, pos] at every block input (reader pass)
+_RSLOT = {"pos": None, "cap": None, "rep": None, "i": 0, "layer": None}    # slot_patch: capture h[:, pos] at every block input; replace at one (reader pass)
 
 
 def row_carries(A, B):
@@ -489,6 +489,13 @@ def row_carries(A, B):
     for k in range(1, NDIG):
         ci[:, k] = (cs[:, k - 1] + ci[:, k - 1]) // 10
     return ci, cs
+
+
+def _patch_shares(got, cs_r, ci_d, own, dd):
+    """§156 slot_patch shares for one layer: donor_carry (recipient column sum + donor carry), own (recipient digit), donor_digit (donor's own)."""
+    tgt = (cs_r + ci_d) % 10
+    return {"donor_carry_share": float((got == tgt).mean()), "own_digit_share": float((got == own).mean()), "donor_digit_share": float((got == dd).mean()),
+            "chance_overlap": {"carry_vs_own": float((tgt == own).mean()), "donor_digit_vs_own": float((dd == own).mean()), "carry_vs_donor_digit": float((tgt == dd).mean())}}
 
 
 @torch.no_grad()
@@ -524,21 +531,24 @@ def s156_row_eval(m, teA, teB, dev, amp, bs, slot_col=4, seed=15601):
         if not len(bad):
             break
         idn[bad] = rng.integers(0, n, len(bad))
-    keep = ci[idn, k] != ci[ir, k]; ir, idn = ir[keep], idn[keep]; got = np.zeros(len(ir), np.int64); lut = {t: i_ for i_, t in enumerate(DTOK)}
+    keep = ci[idn, k] != ci[ir, k]; ir, idn = ir[keep], idn[keep]; nl = m.g.L; got = np.zeros((nl, len(ir)), np.int64); lut = {t: i_ for i_, t in enumerate(DTOK)}
     for s_ in range(0, len(ir), bs):
         a_, d_ = ir[s_:s_ + bs], idn[s_:s_ + bs]
-        _RSLOT.update({"pos": p_, "cap": [], "rep": None, "i": 0})
+        _RSLOT.update({"pos": p_, "cap": [], "rep": None, "i": 0, "layer": None})
         with amp_ctx(amp):
             reader_resid(torch.tensor(St[d_], device=dev), torch.tensor(ans[d_], device=dev))
-        cap = _RSLOT["cap"]; _RSLOT.update({"cap": None, "rep": cap, "i": 0})
-        with amp_ctx(amp):
-            hh = reader_resid(torch.tensor(St[a_], device=dev), torch.tensor(ans[a_], device=dev))
-        _RSLOT.update({"pos": None, "rep": None, "i": 0})
-        D_ = hh.shape[-1]; lg = m.g.logits(Fn.layer_norm(hh[:, p_], (D_,), m.g.w("ln_f.weight"), m.g.w("ln_f.bias"))).float()
-        got[s_:s_ + bs] = [lut.get(int(t), -1) for t in lg.argmax(-1).tolist()]
-    tgt = (cs[ir, k] + ci[idn, k]) % 10; own = digits8(S4)[ir, k]
-    patch = {"column": slot_col, "n": int(len(ir)), "donor_carry_share": float((got == tgt).mean()), "own_digit_share": float((got == own).mean()),
-             "chance_overlap": float((tgt == own).mean()), "def": "the reader pass's slot residual at every block input from a donor with a different carry-in (teacher-forced)"}
+        cap = _RSLOT["cap"]
+        for lay in range(nl):                                               # Audit: one block input per pass, swept 0 .. 11
+            _RSLOT.update({"cap": None, "rep": cap, "i": 0, "layer": lay})
+            with amp_ctx(amp):
+                hh = reader_resid(torch.tensor(St[a_], device=dev), torch.tensor(ans[a_], device=dev))
+            D_ = hh.shape[-1]; lg = m.g.logits(Fn.layer_norm(hh[:, p_], (D_,), m.g.w("ln_f.weight"), m.g.w("ln_f.bias"))).float()
+            got[lay, s_:s_ + bs] = [lut.get(int(t), -1) for t in lg.argmax(-1).tolist()]
+        _RSLOT.update({"pos": None, "rep": None, "i": 0, "layer": None})
+    D8 = digits8(S4); by_layer = {str(lay): _patch_shares(got[lay], cs[ir, k], ci[idn, k], D8[ir, k], D8[idn, k]) for lay in range(nl)}
+    patch = {"column": slot_col, "n": int(len(ir)), "by_layer": by_layer, "layers": "reader-pass block inputs 0 .. 11 (after segment 4)",
+             "def": "the reader pass's slot residual replaced at ONE block input (per layer) by a donor's with a different carry-in (teacher-forced); "
+                    "shares: donor_carry = (recipient column sum + donor carry) mod 10, own = recipient digit, donor_digit = the donor's own digit"}
     seg_t = MultRowDelta.SEG_T * 4; rd_t = 2 + 2 * NDIG
     return {"seq_len": int(seg_t + rd_t), "seq_len_def": "4 segments x 7 + the reader pass [EOT, ' ='] + 8 x ('|', digit)", "ring_probe": ring, "slot_patch": patch,
             "answer_sep": m.sep_mode, "sep_token_id": m.sep, "slot_positions_reader": pos}
@@ -551,7 +561,7 @@ def _RSLOT_hook(i):
 def _patched_block(g, i, hh, hd):
     if _RSLOT["cap"] is not None:
         _RSLOT["cap"].append(hh[:, _RSLOT["pos"]].detach().clone())
-    elif _RSLOT["rep"] is not None:
+    elif _RSLOT["rep"] is not None and _RSLOT["i"] == _RSLOT["layer"]:    # Audit: a single-block patch
         hh = hh.clone(); hh[:, _RSLOT["pos"]] = _RSLOT["rep"][_RSLOT["i"]].to(hh.dtype)
     _RSLOT["i"] += 1
     return DM._block(g, i, hh, hd)
