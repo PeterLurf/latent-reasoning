@@ -29,6 +29,9 @@ from boxes.multcol import load_bench, load_bench_head  # noqa: E402
 N_FIT = 4000
 LAMS = (1e-4, 1e-3, 1e-2, 1e-1, 1.0, 10.0)
 LAYERS = ["read", "L6in", "L7", "L8", "L9", "L10", "L11", "L12"]
+OUT = "read_exact_s152.json"
+if "--ols" in sys.argv:                                                      # Audit's check: lambda at the grid floor in 136 / 240 probes; near-OLS (n 4,000 > d 768)
+    sys.argv.remove("--ols"); LAMS = (1e-10, 1e-8, 1e-6); LAYERS = ["read", "L6in"]; OUT = "read_exact_s152_ols.json"
 
 
 def targets(A, B):
@@ -67,7 +70,7 @@ def captures(m, A, B, bs=100):
             a = Fn.layer_norm(h, (D,), g.w(pre + "ln_2.weight"), g.w(pre + "ln_2.bias"))
             mm = Fn.gelu(a @ g.w(pre + "mlp.c_fc.weight") + g.w(pre + "mlp.c_fc.bias"), approximate="tanh")
             h = h + mm @ g.w(pre + "mlp.c_proj.weight") + g.w(pre + "mlp.c_proj.bias")
-            if i >= mem.layer:
+            if i >= mem.layer and ("L%d" % (i + 1)) in out:
                 out["L%d" % (i + 1)][sl] = h[:, 1:9].float().numpy()
         lg = g.logits(Fn.layer_norm(h, (D,), g.w("ln_f.weight"), g.w("ln_f.bias"))[:, 1:9]).float()
         pred[sl] = np.vectorize(lambda t_: lut.get(int(t_), -1))(lg.argmax(-1).numpy())
@@ -120,7 +123,7 @@ def main():
         print(d, "digit acc (teacher-forced)", out["digit_acc_teacher_forced"], flush=True)
         res[d] = out; del Ctr, Cte, m
     res["sec"] = round(time.time() - t0)
-    json.dump(res, open(os.path.join(ROOT, "theory", "results", "read_exact_s152.json"), "w", newline=chr(10)), indent=1)
+    json.dump(res, open(os.path.join(ROOT, "theory", "results", OUT), "w", newline=chr(10)), indent=1)
 
 
 if __name__ == "__main__":
