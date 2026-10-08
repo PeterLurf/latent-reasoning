@@ -297,6 +297,7 @@ def main():
     ap.add_argument("--cotenant_runs", type=int, default=1); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     ap.add_argument("--answer_sep", default=None, choices=[None, "interleave", "pause"], help="§156 SEP-SLOT: forced separators in the answer")
     ap.add_argument("--sep_token", default="|")
+    ap.add_argument("--eval_only", action="store_true", help="re-evaluate <out>/model.pt (no training; args -> args_eval.json; log appended)")
     a = ap.parse_args(); a.r_max = 4 if a.arm == "loop4" else 1; a.loop = "4-7"; a.deep_sup = True
     if a.answer_sep:                                                        # §156: '|' must be one token (91) and never merge with ' d'
         st_ = bc.tok(a.sep_token); assert len(st_) == 1, "--sep_token must be one GPT-2 token"; SEP.update({"tok": st_[0], "mode": a.answer_sep})
@@ -320,11 +321,11 @@ def main():
     info = {**vars(a), "train_items": int(len(trA)), "train_items_raw": int(n_raw), "train_removed_test_overlap": n_rem, "prompt": "a(LSB) ' *' b(LSB) ' ='",
             "answer": "8 digits LSB first", "train_gpu": dname(), "train_driver": driver_version(), **env_info()}
     json.dump({**info, "resumed_at": time.strftime("%Y-%m-%d %H:%M:%S")} if a.resume else info,
-              open(os.path.join(a.out, ("args_resume_%d.json" % int(time.time())) if a.resume else "args.json"), "w", newline="\n"), indent=1)
+              open(os.path.join(a.out, ("args_resume_%d.json" % int(time.time())) if a.resume else ("args_eval.json" if a.eval_only else "args.json")), "w", newline="\n"), indent=1)
     m = LoopGPT(s5.load_gpt2(dev), a.eta); m.train(); pid = {id(p_) for p_ in m.P.parameters()}
     opt = torch.optim.AdamW([{"params": [p_ for p_ in m.parameters() if id(p_) not in pid], "mult": 1.0},
                              {"params": list(m.P.parameters()), "mult": 1.0, "warm_from": 0, "name": "P"}], lr=a.lr, weight_decay=0.01)
-    log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time(); hist = []; n_nonfinite = 0; step0 = 1; rs_hist = []
+    log = open(os.path.join(a.out, "log.jsonl"), "a" if (a.resume or a.eval_only) else "w", newline="\n"); t0 = time.time(); hist = []; n_nonfinite = 0; step0 = 1; rs_hist = []
     if a.resume:
         ck = torch.load(a.resume, map_location=dev, weights_only=False); m.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"])
         rng.bit_generator.state = ck["np_rng"]; torch.set_rng_state(ck["torch_rng"].cpu()); n_nonfinite = ck["n_nonfinite"]
@@ -343,6 +344,9 @@ def main():
         greedy(m, teA[:a.eval_bs], teB[:a.eval_bs], dev, amp, a.eval_bs, a.r_eval_max)
         pk = torch.cuda.max_memory_allocated(dev) / 2 ** 30 if dev.startswith("cuda") else None
         json.dump({"peak_gib": pk, "bs": a.bs, "r_train": a.r_max, "r_eval": a.r_eval_max}, open(os.path.join(a.out, "mem_check.json"), "w", newline="\n"), indent=1); print("MEM", pk); return
+    if a.eval_only:                                                         # re-evaluation of a trained model (e.g. an eval that OOMed)
+        m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); step0 = a.steps + 1
+        log.write(json.dumps({"eval_only": True, "eval_bs": a.eval_bs, "at": time.strftime("%Y-%m-%d %H:%M:%S")}) + "\n"); log.flush()
     for step in range(step0, a.steps + 1):
         for gr in opt.param_groups:
             gr["lr"] = lr_at(a.lr, gr, step, a.steps, warm=max(1, int(300 * sc)))
@@ -365,7 +369,10 @@ def main():
             os.replace(cp + ".tmp", cp); log.write(json.dumps({"step": step, "ckpt": "ckpt_last.pt"}) + "\n"); log.flush()
         if a.stop_after and step >= a.stop_after:
             log.close(); print("STOP_AFTER", step, flush=True); return
-    train_sec = round(time.time() - t0); torch.save(m.state_dict(), os.path.join(a.out, "model.pt")); m.eval(); t1 = time.time()
+    train_sec = round(time.time() - t0)
+    if not a.eval_only:
+        torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
+    m.eval(); t1 = time.time()
     G = answer_digits(teA, teB); accr = {}
     for r in range(1, a.r_eval_max + 1):
         accr[str(r)] = float((greedy(m, teA, teB, dev, amp, a.eval_bs, r) == G).all(1).mean())
