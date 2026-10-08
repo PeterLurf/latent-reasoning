@@ -9428,6 +9428,11 @@ accumulator.**
   - TC-M and ICoT-SI were trained on 4×4 only. At 4×5 TC-M reads 0.003 and ICoT-SI 0.0, and both read 0.0 at 4×8 (`theory/results/ext_baselines_s152.json`).
   - A shape-mixed text-CoT baseline and a shape-mixed direct-answer baseline (both trained on 4 × n, n 2..5, tested at 4×8) are needed before saying the latent
     route extrapolates where text CoT does not.
+* **MIX s2 (2026-10-08 12:08 EDT): 4×4 0.997; ext_4x6 0.987, ext_4x7 0.962, ext_4x8 0.917; ext_4x16 0.003.**
+  - SERIAL 0.986 / 0.976 / 0.969. In-progress units 0.999 / 0.987 / 0.971. Propagation equals the null. 1 floor spike.
+  - **§161 MIX is 3 / 3:** exact (0.996 / 0.997 / 0.996), length-general (ext_4x8 0.964 / 0.917 / 0.912), SERIAL, and state-carried in every seed. This meets
+    Literature's ≥ 3-seed bar.
+  - It also meets §163's condition (slot 2: 0.997 / 0.917), so §163 runs.
 
 ## 162. DELTA-S5: the write-after-read memory on S5, against a measured single-pass boundary (note 158-2's TC⁰ / NC¹ contrast cell) (Audit 08:45; pre-registered 2026-10-08 09:01 EDT, after Literature's check 6b771087 (`docs/LIT_TC0_SERIAL_2026-10-08.md`: the contrast is unpublished) and Audit's draft review (two rounds), before any implementation or run)
 
