@@ -8176,6 +8176,8 @@ SERIAL and contractive. Slots 2–4 run (the credit rule).**
 * **Soft-only DIGIT protos** (τ fixed at 1, never hardened): **FAILS** in all three finished runs (6k–8k mean loss 1.09 / 1.57 / 1.11; s504 running). The failure is there
   while soft.
 * **Hard = soft = 0.000** at test, so C6 gets no reading.
+* **Soft-only protos, complete:** DIGIT 4 of 4 FAIL (6k–8k mean loss 1.09 / 1.57 / 1.11 / 1.10) and FULL 2 of 2 FAIL (1.114 / 1.119). The single-vector token slot fails
+  at the soft level for both vocabularies, independent of hardening (the backlog's fixed reading).
 * **Reading (registered, "Both DROP"):** token-shaped slots do not fix in-pass computation at this budget (Literature's prediction).
   - Descriptively, the failure comes earlier than the middle columns. The token channel does not carry even one carry digit (column 2 at chance, below §140's FSQ-8 code),
     soft or hard.
