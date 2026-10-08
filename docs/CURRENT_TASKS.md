@@ -55,14 +55,15 @@ after create): record the host's sha256 and commit exactly that file.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (23:41):**
+* **Theory (00:03):**
   - **§147 DELTA-STATE broke the middle-column wall** (0.743; columns 3–7 0.92–0.99; DROP by rule, IMPROVES), leading to **§151 DELTA-LONG** (48k × 4 seeds, running).
-  - **§152 DELTA-READ registered** (378fe8e6), with note 152-1 (72dba463: the b-first segment order, the layout-confound readings, the partial-product probe) and the scorer
-    (f5100bf7). Audit APPROVED A s1 + CTRL s1; the contract went to Experiments at 23:11.
-  - **§153 THINK-PASS registered** (ea154f30; program B5): item-agnostic passes (VISIBLE / PURE), gated on §152 A s1 ≥ 0.95, then in parallel with §152 B (Audit).
-  - Closed today: §133 stage 1, §136, §137, §138, §140, §141, §142, §145, §146, §148, §149. §150 DIGIT collapsed (150-3).
-  - **Pending scoring:** §143 s2–s4 (ablate704), §144 (F8 NOFLAG, the N64 follow-ups, the L=1 check), §150 FULL plus the soft-only protos, §151, §152.
-  - Later: §139 A' / B (descriptive), §134 MOD s2 / s3, the §133 stage-2 proofs.
+  - **§152 DELTA-READ** (378fe8e6; notes 152-1 / 152-2) is implemented (9535bfb0); b159 / b160 launch after the CUDA gates.
+  - **§153 THINK-PASS registered** (ea154f30; note 153-1): item-agnostic passes, gated on §152 A s1 ≥ 0.95.
+  - **§143 FULL-GROW PASS** (s1 / s2 / s4; s3 pending; 704-block ablation s2 UNUSED / s4 USED). This triggers note 133-12: cap4|fullgrow joins §133 stage 2.
+  - **§150 VOCAB-SLOT: both DROP** (the slots collapse to constant tokens; the soft-only protos FAIL). B4 stops.
+  - Closed today: §133 stage 1, §136, §137, §138, §140, §141, §142, §143, §145, §146, §148, §149, §150.
+  - **Pending scoring:** §144 (the N64 follow-ups), §151, §152; §143 s3 (descriptive).
+  - Later: the §133 stage-2 proofs (now with cap4|fullgrow), §139 A' / B (descriptive), §134 MOD s2 / s3.
 
 ## Recently done (details in THEORY / PROTOCOL12 / git log)
 
