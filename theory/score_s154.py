@@ -93,11 +93,13 @@ def slot(arm, k):
                 return {"attempts": att, "status": "running", "accepted": None}
             if not args_ok(d, arm):
                 return {"attempts": att, "status": "error", "accepted": None}
-            s = r.get("s154") or {}; s7 = r.get("s147") or {}
+            s = dict(r.get("s154") or {}); s.update(load(d, "eval_s154_posthoc.json") or {}); s7 = r.get("s147") or {}   # notes 154-1 / 154-2: post-hoc on host
             a = {"seed": k + o, "test_acc": r.get("test_acc"), "serial": serial(r.get("donor")), "per_column": (r.get("acc_by_column") or {}).get("per_column"),
                  "ext_4x8": (r.get("ext_4x8") or {}).get("test_acc"), "ext_4x8_per_column": ((r.get("ext_4x8") or {}).get("acc_by_column") or {}).get("per_column"),
                  "ext_4x16": (r.get("ext_4x16") or {}).get("test_acc"), "colsum_r2_by_segment": s.get("colsum_r2_by_segment"),
                  "carry_probe_by_column": s.get("carry_probe_by_column"), "c7_edit": s.get("c7_edit"), "alpha_by_head": s7.get("alpha_by_head"),
+                 "c7_state_edit": s.get("c7_state_edit"), "acc_by_column_carry": s.get("acc_by_column_carry"), "alpha_by_flag": s.get("alpha_by_flag"),
+                 "propagation": s.get("propagation"),                                                        # §155's null comparator (scored there)
                  "head_ablation": s7.get("head_ablation"), "gpu": r.get("train_gpu", r.get("gpu")), "driver": r.get("train_driver")}
             a["exact"] = (a["test_acc"] or 0) >= 0.99
             a["pass"] = bool(a["exact"] and a["serial"])                   # §147: no contraction term (integrator by design)
@@ -138,7 +140,8 @@ def main():
                                       for k, s in sl.items()})
         if s1:
             print("   proof per column 4x4", s1["per_column"], "| 4x8", s1["ext_4x8_per_column"], "| ext_4x16", s1["ext_4x16"], "| IMPROVES:", improves(s1))
-            print("   carry probe by column", s1["carry_probe_by_column"], "| C7 edit", s1["c7_edit"])
+            print("   carry probe by column", s1["carry_probe_by_column"], "| C7 read edit (descriptive)", s1["c7_edit"])
+            print("   C7 STATE edit (the test, note 154-2)", s1["c7_state_edit"], "| acc by carry-in", s1["acc_by_column_carry"], "| alpha by flag", s1["alpha_by_flag"])
     rd = []
     sh, ro = res["shift"], res["rotary"]
     if sh["length"] == "LENGTH-GENERAL":
