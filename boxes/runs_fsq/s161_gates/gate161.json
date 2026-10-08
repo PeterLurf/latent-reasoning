@@ -1,0 +1,101 @@
+{
+ "module": "boxes.multpair",
+ "g1a": {
+  "2": {
+   "n_emit": 6,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "3": {
+   "n_emit": 7,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "4": {
+   "n_emit": 8,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "5": {
+   "n_emit": 9,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "6": {
+   "n_emit": 10,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "7": {
+   "n_emit": 11,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "8": {
+   "n_emit": 12,
+   "emit_ok": true,
+   "digits_exact": true
+  }
+ },
+ "g1a_pass": true,
+ "g1b": {
+  "batches": 30,
+  "n_seen": [
+   2,
+   3,
+   4,
+   5
+  ],
+  "bad": [],
+  "full_chains": 3
+ },
+ "g1b_pass": true,
+ "g2": {
+  "batches": [
+   12,
+   12
+  ],
+  "losses": [
+   [
+    4.6359543800354,
+    4.139087677001953,
+    3.5965418815612793,
+    3.2779669761657715,
+    3.1619627475738525,
+    2.9820284843444824,
+    3.139617919921875,
+    2.834958553314209,
+    2.8788886070251465,
+    2.560601234436035,
+    2.5123016834259033,
+    2.406599760055542
+   ],
+   [
+    4.6359543800354,
+    4.139087677001953,
+    3.5965418815612793,
+    3.2779669761657715,
+    3.1619627475738525,
+    2.9820284843444824,
+    3.139617919921875,
+    2.834958553314209,
+    2.8788886070251465,
+    2.560601234436035,
+    2.5123016834259033,
+    2.406599760055542
+   ]
+  ],
+  "ref": "boxes._multpair_head_tmp"
+ },
+ "g2_pass": true,
+ "g3": {
+  "batches": 20,
+  "bad": [],
+  "r_min": 0,
+  "r_max": 12,
+  "eval_flush_token_4x8": 406,
+  "expected": 406
+ },
+ "g3_pass": true,
+ "all_pass": true
+}

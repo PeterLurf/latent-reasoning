@@ -49,6 +49,8 @@ import boxes.deltamem as DM  # noqa: E402
 EQTOK, NEWTOK, SAMETOK = bc.tok(" =")[0], bc.tok(" ;")[0], bc.tok(" ,")[0]   # flush / new-column / same-column flags (note 140-1)
 WTOK = [bc.tok(w)[0] for w in (" W", " X", " Y", " Z")]                    # §145 write-embedding initialisers (single, unused tokens)
 BLANK = bc.tok(" _")[0]                                                     # §150 DIGIT arm's blank slot token (" _", single, unused here)
+CIDX = [bc.tok(" " + chr(65 + i))[0] for i in range(21)]                    # §161 column-index tokens " A".." U" = values 1..21 (single tokens)
+assert all(len(bc.tok(" " + chr(65 + i))) == 1 for i in range(21)) and len(set(CIDX)) == 21 and not set(CIDX) & (set(DTOK) | {EQTOK, NEWTOK, SAMETOK, BLANK} | set(WTOK))
 assert all(len(bc.tok(w)) == 1 for w in (" W", " X", " Y", " Z")) and not set(WTOK) & (set(DTOK) | {EQTOK, NEWTOK, SAMETOK})
 assert all(len(bc.tok(w)) == 1 for w in (" =", " ;", " ,")) and len({EQTOK, NEWTOK, SAMETOK}) == 3 and not {EQTOK, NEWTOK, SAMETOK} & set(DTOK)
 CMAX = {"4x4": ((2000, 1), (5000, 2), (9000, 4), (None, 8)), "5x5": ((2000, 1), (5000, 2), (9000, 4), (12000, 8), (None, 10))}   # 5x5: note 140-2
@@ -424,6 +426,11 @@ class MultDelta(MultPair):
             tail = torch.cat([self.pa[:, t:t + 1], self.pb[:, t:t + 1], torch.full((B, 1), NEWTOK if self.newcol[t] else SAMETOK, device=dev)], 1)
         else:
             tail = torch.cat([self.adig[:, i:i + 1], self.bdig[:, j:j + 1], torch.full((B, 1), NEWTOK if self.newcol[t] else SAMETOK, device=dev)], 1)
+        if getattr(self, "cidx_off", None) is not None:                     # §161 MIX+IDX: token(c + r); c = i + j - 1 (1-based), the flush = last column + 1
+            c_ = (self.adig.shape[1] + self.bdig.shape[1]) if i < 0 else i + j + 1
+            r_ = self.cidx_r if (self.training and getattr(self, "cidx_r", None) is not None and len(self.cidx_r) == B) else torch.zeros(B, dtype=torch.long, device=dev)
+            v_ = c_ + r_; assert int(v_.max()) <= len(CIDX), "§161: column index %d > %d tokens" % (int(v_.max()), len(CIDX))
+            tail = torch.cat([tail, torch.tensor(CIDX, device=dev)[v_ - 1][:, None]], 1)
         return torch.cat([torch.full((B, 1), EOT, device=dev), tail], 1)
 
     def step(self, S, t, rec=None):
@@ -556,7 +563,7 @@ def compute_pair(m, na, nb):
     and §147 (read after write) cost the same under this count."""
     pairs, col, emit = schedule(na, nb); mt = bc.Meter(m.g); tok = 0; rows = 0
     for t in range(len(pairs)):
-        T_ = 2 if pairs[t][0] < 0 else 4; r_ = 1 if emit[t] else 0; mt.step(T_, 0, r_); tok += T_; rows += r_
+        T_ = (2 if pairs[t][0] < 0 else 4) + (1 if getattr(m, "cidx_off", None) is not None else 0); r_ = 1 if emit[t] else 0; mt.step(T_, 0, r_); tok += T_; rows += r_
     nb_ = sum(p_.numel() for n_, p_ in m.mem.named_parameters() if not n_.startswith("s_")); D2 = DM.DH ** 2
     fb = 2 * nb_ * tok + (DM.H_ADD + DM.H_DEL) * 2 * D2 * tok + (DM.H_ADD * 2 + DM.H_DEL * 8) * D2 * tok; d = mt.as_dict()
     return {"flops": d["flops"] + fb, "flops_trunk": d["flops"], "flops_branch": float(fb), "sequential_passes": d["seq_passes"], "lm_head_rows": rows,
@@ -1271,6 +1278,8 @@ def main():
     ap.add_argument("--carry_from", default="first", choices=["first", "last"], help="§145 note 145-1: carry the slots read at the LAST write positions (CARRY1: w_K)")
     ap.add_argument("--no_round", action="store_true", help="§145 NOISE-64 carrier"); ap.add_argument("--dither", type=float, default=0.0)
     ap.add_argument("--keep_ckpt_steps", default="", help="§151: comma list of steps; model-only copies there, the row-level donor on each at the end (s151.serial_by_ckpt), then deleted")
+    ap.add_argument("--shape_mix", default="", help="§161: training chains 4 x n, n drawn per batch from this list (e.g. 2,3,4,5); off by default")
+    ap.add_argument("--col_index_offset", type=int, default=None, help="§161 MIX+IDX: column-index token c + r per segment, r ~ U{0..R} per training chain")
     ap.add_argument("--probe_n_fit", type=int, default=8000, help="note 155-4 / §158 probes: train fit items (smokes only change it)")
     ap.add_argument("--free_pairs", type=float, default=0.0, help="§158 FREE-PAIRS: the share of training chains with independent per-pair digits")
     ap.add_argument("--mem_write", default=None, choices=[None, "top", "block9"], help="§155 DELTA-R: write k / v / alpha / beta from the top residual (mixed in by gamma)")
@@ -1304,6 +1313,9 @@ def main():
     a.slot_wte_detached = bool(a.slot_space)                                # note 150-1: the whole slot path (logits + mixture) uses wte.detach()
     assert not a.slot_space or (a.slots == 4 and a.slot_gumbel and not a.no_round), "§150: --slots 4 --slot_space vocab|digits --slot_gumbel (no NOISE carrier)"
     dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); sc = a.sched_scale; n = int(a.task[0])
+    SHM = [int(x) for x in a.shape_mix.split(",") if x.strip()]             # §161
+    assert not (SHM or a.col_index_offset is not None) or (a.task == "4x4" and a.carrier == "deltamem" and not a.free_pairs), "§161: 4x4 DeltaMem chains only"
+    a.col_index_tokens = [" " + chr(65 + i) for i in range(21)] if a.col_index_offset is not None else None
     if a.d_q != F.D_Q or a.levels != F.LEV:
         F.D_Q, F.LEV = a.d_q, a.levels; F.HALF = (F.LEV - 1) / 2; F.SHIFT = math.atanh(F.OFF / F.HALF)
     memcap and memcap.apply(dev)
@@ -1313,7 +1325,7 @@ def main():
     assert a.carrier == "code" or (not a.slots and a.mem_add_heads == DM.H_ADD and a.mem_delta_heads == DM.H_DEL), "§147: --carrier deltamem (6 + 6 heads), no slots"
     def mk():
         if a.carrier == "deltamem":
-            md_ = MultDelta(s5.load_gpt2(dev), fam, a.mem_layer, a.mem_write).to(dev); md_.add_reset = a.add_reset; return md_
+            md_ = MultDelta(s5.load_gpt2(dev), fam, a.mem_layer, a.mem_write).to(dev); md_.add_reset = a.add_reset; md_.cidx_off = a.col_index_offset; md_.cidx_r = None; return md_
         if a.slot_space:
             m_ = MultVocab(s5.load_gpt2(dev), fam, a.slots, a.slot_space).to(dev); m_.tau_final = float(a.slot_tau.split(":")[1]); return m_
         m_ = (MultSlot(s5.load_gpt2(dev), fam, a.slots, a.carry_slots, a.carry_from) if a.slots else MultPair(s5.load_gpt2(dev), fam)).to(dev); m_.no_round = a.no_round
@@ -1376,21 +1388,31 @@ def main():
             torch.cuda.set_rng_state(ck["cuda_rng"].cpu(), device=dev)
         step0 = ck["step"] + 1; t0 = time.time() - ck["elapsed"]; log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
         alpha_hist = ck.get("alpha_hist", [])
-    def batch(c, bs_):
+    def batch(c, bs_, nb_force=None):
         """A chain over the pairs of the first c columns (+ the flush when c = 2n); labels / trace mask at the emission steps.
         §158 --free_pairs P > 0: each row is, with probability P, a free chain (every pair's digits drawn independently; label = the digits of
         sum_t a^(t) b^(t) 10^(i_t + j_t)); P = 0 draws nothing extra (bit-identical batches)."""
-        ii = rng.integers(0, len(trA), bs_); A, Bd = trA[ii], trB[ii]; _, dig, _, _, _, _ = accumulators(A, Bd)
-        T = int(np.searchsorted(col, c - 1, side="right")) if c < 2 * n else len(pairs)     # steps whose column < c
+        ii = rng.integers(0, len(trA), bs_); A, Bd = trA[ii], trB[ii]; batch.R = None
+        if SHM:                                                             # §161: one n per batch (a batch shares its step schedule); b ~ fresh n-digit operands
+            nb_ = int(nb_force or SHM[int(rng.integers(0, len(SHM)))])
+            if nb_ != n:
+                Bd = gen_operands(rng, bs_, nb_)
+            _, dig, _, _, _, _ = accumulators(A, Bd); pairs_, col_, emit_ = schedule(n, nb_); ce_ = n + nb_ if c >= 2 * n else min(c, n + nb_)   # c = 2n: the full 4 x n chain
+            T = int(np.searchsorted(col_, ce_ - 1, side="right")) if ce_ < n + nb_ else len(pairs_)
+        else:
+            _, dig, _, _, _, _ = accumulators(A, Bd); emit_ = emit
+            T = int(np.searchsorted(col, c - 1, side="right")) if c < 2 * n else len(pairs)     # steps whose column < c
+        if a.col_index_offset is not None:                                  # §161 MIX+IDX: r per chain
+            batch.R = rng.integers(0, a.col_index_offset + 1, bs_); m.cidx_r = torch.tensor(batch.R, device=dev)
         set_ops(m, A, Bd, dev); X = torch.tensor(np.tile(np.arange(T), (bs_, 1)), device=dev); batch.PD = None
         if a.free_pairs > 0:                                                # §158
             fr = rng.random(bs_) < a.free_pairs; PA, PB = steps_of(A, Bd); FA, FB = free_steps(rng, bs_, n, n); PA[fr] = FA[fr]; PB[fr] = FB[fr]
             _, dig, _, _, _ = acc_steps(PA, PB, n, n); m.pa = torch.tensor(np.array(DTOK)[PA], device=dev); m.pb = torch.tensor(np.array(DTOK)[PB], device=dev)
             batch.PD = (PA, PB); batch.n_free = int(fr.sum())
-        tm = torch.tensor(np.tile(emit[:T], (bs_, 1)), device=dev); lab = np.where(dig[:, :T] >= 0, dig[:, :T], 0); batch.AB = (A, Bd)
+        tm = torch.tensor(np.tile(emit_[:T], (bs_, 1)), device=dev); lab = np.where(dig[:, :T] >= 0, dig[:, :T], 0); batch.AB = (A, Bd)
         return X, lab, tm, T
     if a.mem_check:                                                         # --micro: one chunk of bs / micro rows (what training holds at once)
-        m.p_hard = 1.0; X, lab, tm, T = batch(2 * n, a.bs // a.micro)
+        m.p_hard = 1.0; X, lab, tm, T = batch(2 * n, a.bs // a.micro, nb_force=max(SHM) if SHM else None)
         with amp_ctx(amp):
             loss, _, _, _ = m.chain(m.start(a.bs // a.micro, dev), X, lab, tm)
         loss.backward(); m.eval(); RO(m, gen_operands(rng, a.eval_bs, n), gen_operands(rng, a.eval_bs, 2 * n), dev, amp, a.eval_bs, record=not a.carrier == "deltamem")
@@ -1417,6 +1439,8 @@ def main():
             A_, B_ = batch.AB; ch = a.bs // a.micro; tot = 0.0
             for k_ in range(a.micro):
                 sl_ = slice(k_ * ch, (k_ + 1) * ch); set_ops(m, A_[sl_], B_[sl_], dev)
+                if batch.R is not None:                                     # §161: the chunk's r
+                    m.cidx_r = torch.tensor(batch.R[sl_], device=dev)
                 if batch.PD is not None:                                    # §158: the chunk's per-step digits
                     m.pa = torch.tensor(np.array(DTOK)[batch.PD[0][sl_]], device=dev); m.pb = torch.tensor(np.array(DTOK)[batch.PD[1][sl_]], device=dev)
                 with amp_ctx(amp):
@@ -1439,9 +1463,10 @@ def main():
                 md_ = float(np.median(wlast)) if wlast else 0.0             # note 155-1: the PRECEDING 1k steps' median (current window excluded)
                 w_rec = {"step": step, "mean": float(np.mean(wwin)), "max": float(np.max(wwin)), "median_prev_1k": md_,
                          "spike_100x": bool(step > a.write_mix_start * sc and np.max(wwin) > 100 * md_ > 0),   # scored only once the loop can form
-                         "spike_100x_raw": bool(np.max(wwin) > 100 * md_ > 0)}
+                         "spike_100x_raw": bool(np.max(wwin) > 100 * md_ > 0),
+                         "spike_100x_floor": bool(step > a.write_mix_start * sc and np.max(wwin) > 100 * md_ > 0 and np.max(wwin) > 1.0)}   # note 160-1 / 159-1 (33ec47e5): the scored trigger
                 wlast.extend(wwin); del wlast[:-int(1000 * sc) or None]
-                rec.update({"gamma": float(m.mem.gamma), "write_grad_norm": w_rec["mean"], "write_grad_spike_100x": w_rec["spike_100x"]}); wg_hist.append(w_rec); wwin = []
+                rec.update({"gamma": float(m.mem.gamma), "write_grad_norm": w_rec["mean"], "write_grad_spike_100x": w_rec["spike_100x"], "write_grad_spike_100x_floor": w_rec["spike_100x_floor"]}); wg_hist.append(w_rec); wwin = []
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True); L127[step] = rec["loss"]
         if a.mem_write and step % max(1, int(1000 * sc)) == 0:             # §155: recurrence + write_norm_ratio per 1k on a fixed batch
             m.mem.wstat = []; rr_ = {"step": step, "gamma": float(m.mem.gamma), **s155_recurrence(m, teA, teB, dev, amp)}
@@ -1487,6 +1512,13 @@ def main():
     if a.task == "4x4" and a.ext_n:
         xA, xB = gen_operands(np.random.default_rng(14004), a.ext_n, 4), gen_operands(np.random.default_rng(14005), a.ext_n, 8); xA, xB, rem = dedup(xA, xB, teA, teB)
         Px, _, _ = columns(xA, xB); res["ext_4x8"] = {**acc_report(RO(m, xA, xB, dev, amp, a.eval_bs), Px), "dedup_removed": rem, "seeds": [14004, 14005]}
+    if SHM and a.ext_n:                                                     # §161: ext 4x6 / 4x7 (r = 0)
+        for nb_, s1_, s2_ in ((6, 14016, 14017), (7, 14018, 14019)):
+            xA, xB = gen_operands(np.random.default_rng(s1_), a.ext_n, n), gen_operands(np.random.default_rng(s2_), a.ext_n, nb_); Px, _, _ = columns(xA, xB)
+            res["ext_4x%d" % nb_] = {**acc_report(RO(m, xA, xB, dev, amp, a.eval_bs), Px), "seeds": [s1_, s2_]}
+    if a.task == "5x5" and a.ext_n:                                         # §159 (C2, descriptive): 5x8 on 5x5 models (40 pairs + flush)
+        xA, xB = gen_operands(np.random.default_rng(14014), a.ext_n, 5), gen_operands(np.random.default_rng(14015), a.ext_n, 8); xA, xB, rem = dedup(xA, xB, teA, teB)
+        Px, _, _ = columns(xA, xB); res["ext_5x8"] = {**acc_report(RO(m, xA, xB, dev, amp, a.eval_bs), Px), "dedup_removed": rem, "seeds": [14014, 14015]}
     if a.carrier == "deltamem":                                             # §147 (no contraction term: an integrator by design)
         res["donor"] = donor_delta(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(14002), n=min(a.donor_n, 1000))
         res["compute"] = compute_pair(m, teA.shape[1], teB.shape[1])        # Theory (C3): Meter flops / sequential passes
@@ -1515,7 +1547,8 @@ def main():
             res["s155"] = {"propagation": res["s154"]["propagation"], "recurrence": rec_hist + [{"step": "end", **s155_recurrence(m, teA, teB, dev, amp)}],
                            "mem_norm_by_pass": mn_, "write_norm_ratio": [x_ for x_ in rec_hist if "write_norm_ratio" in x_ and x_.get("gamma", 1) < 1],
                            "write_grad_norm": wg_hist, "n_nonfinite": n_nonfinite, "mem_write": a.mem_write, "write_mix": [a.write_mix_start, a.write_mix_end],
-                           "gamma_final": float(m.mem.gamma), "write_grad_spikes": [x_ for x_ in wg_hist if x_.get("spike_100x")]}
+                           "gamma_final": float(m.mem.gamma), "write_grad_spikes": [x_ for x_ in wg_hist if x_.get("spike_100x")],
+                           "write_grad_spikes_floor": [x_ for x_ in wg_hist if x_.get("spike_100x_floor")]}
         res["n_codes"] = None; res["eval_sec"] = round(time.time() - t1)
     elif a.slot_space:                                                      # §150 (contraction = the on-host fp32 file, perturbing h(w_k))
         res["donor"] = donor_vocab(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(14002), n=a.donor_n)
