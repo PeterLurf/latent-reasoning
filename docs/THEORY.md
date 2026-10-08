@@ -9495,6 +9495,20 @@ accumulator.**
   - **p* < 4 reads TOO SHORT** (descriptive): SHORT is informative only when L* ≥ 16.
 * The scorer checks the edit's reported `p` / `chain_len` against (p*, l_max) and errors on a mismatch. SERIAL stays on length-min(8, l_max) chains (a sanity check).
 
+**Note 162-2 (2026-10-08 10:53 EDT, before any §162 run; Audit). §162's fallback trigger is outcome-based.**
+* **Why:** 155-1's gradient-spike trigger misfires in both directions, even with 160-1's floor.
+  - It fired 37× on §161 MIX s1, a converging run (final loss 0.0006, exact).
+  - It fired 12× on §155 R s1, also converging.
+  - It fired on §160 CTRL-R, which was genuinely unstable (loss 0.14–0.24, never settling).
+  - A gradient spike is not the outcome the fallback protects against.
+* **For §162 (fixed now): the block-9 fallback is due for an arm only if its slot 1 shows either of two things.**
+  - Any non-finite step.
+  - A logged window-mean training loss above 2× the logged loss 1,000 steps earlier, after write_mix_start (2k) and within one curriculum stage (the same `L_max`
+    at both steps). A curriculum step raises the loss by design.
+* The gradient-spike count (160-1's floor) is reported, descriptive only. score_s162 computes the trigger from log.jsonl (synthetic-checked).
+* deltas5 currently has only `--mem_write top`. If the trigger fires, the fallback needs a block-9 option first.
+* §159–§161 keep their registered (gradient) trigger, because their data exist or are in flight.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
