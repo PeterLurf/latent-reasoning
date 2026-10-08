@@ -8962,6 +8962,13 @@ ext_4x8 0.000 < 0.5. ROTARY was deferred to §155's architecture (154-2), so §1
   - **The R arm's verdict is decided FAIL** by the registered PASS rule (≥ 3/4 exact and SERIAL): 2 slots decided, both exact (1.000 / 0.997), neither SERIAL.
   - Exactness replicates; serial use does not.
   - §159 / §160's condition is R **s2** specifically (pending).
+* **R s2:** test_acc **0.998**. Not SERIAL (row donor 0.22 / 0.20 / 0.33), ext 0.0, propagation ≈ 0 (0.003 = null). **This meets §159's and §160's condition: both run.**
+* **SHIFT-R s1** (write-after-read + per-column reset): test_acc **1.000**, every column 1.0.
+  - Not SERIAL (row donor 0.04 / 0.03 / 0.05); ext_4x8 0.006; rho_loop 0.33.
+  - **Carry-edit propagation 0.0 against null 0.0 and random 0.0**, so this slot fails RECURRENT USE (155-3: propagation − null ≥ 0.5). The registered absolute form fails too.
+  - **The write-after-read memory is exact with the reset as well.** The computed carry evidently crosses the column boundary, but the probe-direction carry edit does not
+    move it (not linearly editable).
+  - Slots 2–4 complete by the rules.
 * **R-γ0 s1** (γ held at 0: block-6 writes with pass-start reads; 155-1 (3)): test_acc **0.587**, per column 1.0 / 1.0 / 0.975 / 0.883 / 0.881 / 0.864 / 0.93 / 0.928.
   ext_4x8 0.0; row donor 0.13 / 0.14 / 0.25; rho_loop 0 (no recurrence, as designed); propagation 0.32 against random 0.33, the input-only null.
   - **155-1 (3)'s readings:**
