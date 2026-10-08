@@ -1,0 +1,3 @@
+# THEORY §162 DELTA-S5 (9f7d4793) DELTA-S5 LONG (l_max 32; §155 R's DeltaMem-R, write_mix 2000 / 6000, 160-1 floor) seed 1 via boxes.deltas5 (24k, bs 64, --auto_micro: memcheck at L = l_max, micro doubles until <= 21 GiB); RTX 3090
+# P=1
+boxes/runs_fsq/s162_long_s1 boxes.deltas5 --arm delta --l_max 32 --seed 1 --auto_micro

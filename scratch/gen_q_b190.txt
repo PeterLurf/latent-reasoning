@@ -1,0 +1,3 @@
+# THEORY §162 DELTA-S5 (9f7d4793) DIRECT (single-pass baseline: [start text, items, ' ='] -> state text; L_max to 64) seed 2 via boxes.deltas5 (24k, bs 64, --auto_micro: memcheck at L = l_max, micro doubles until <= 21 GiB); RTX 3090
+# P=1
+boxes/runs_fsq/s162_direct_s2 boxes.deltas5 --arm direct --seed 2 --auto_micro
