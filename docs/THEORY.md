@@ -9024,6 +9024,22 @@ The run is a post-hoc on every accepted §155 model (and §154 SHIFT / §151 for
   - Audit's diff review.
 * Dirs `s158_free_4x4_s{seed}`. Scorer: `theory/score_s158.py`, committed with this registration.
 
+**Note 158-1 (2026-10-08 04:58 EDT, before any §158 run; Literature d74a4db8, Audit). An overclaim removed, and the C1 claim made partial-intervention.**
+* **Row SERIAL under §158 is a sanity check, not C1 evidence.** With the memory as the only channel, a whole-state swap is behaviourally the hybrid input.
+  - Once FREE-PAIRS trains on hybrids, SERIAL becomes an in-distribution accuracy test. It passes for any exact sufficient-statistic state, including one that stores the
+    raw pairs (≤ 16 digit pairs fit).
+  - IIT's own data-augmentation baseline is exactly this. It gave perfect behaviour but very low interchange-intervention accuracy.
+* **The PASS reading becomes:** "the swap gap was data-induced (the operand-consistency shortcut)". "PASS → the memory carries the serial computation" is withdrawn.
+* **§158's C1 claim, fixed now: partial interventions.**
+  - **(a) The rank-1 carry-edit propagation in 155-3's form:** propagation − null ≥ 0.5 and random − null < 0.1, in ≥ 3/4 accepted runs.
+  - **(b) Accumulator against raw pairs, from S after pairs 4 / 8 / 12:** held-out OLS exact-match of the partial column sums, against the decode accuracy of the raw seen
+    digit pairs. The accumulator must decode at **≥ 0.9 exact and at least as well as the raw digits** (dominate).
+  - **(c) Pass-skip** ("product minus that pair's term"): descriptive.
+  - **C1 credit requires (a) and (b).**
+* **Consistent and free items are reported separately** throughout: accuracy, SERIAL, the edits and the probes.
+* **A later option, not registered:** IIT proper, an interchange loss on the memory that swaps only the subspace aligned to a column's accumulator. Its alignment target is a
+  chosen causal variable (closer to hand-built; a C4 judgement). If (a) / (b) fail with SERIAL passing, that is the IIT signature and the case for it.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
