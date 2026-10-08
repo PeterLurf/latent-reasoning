@@ -6,7 +6,7 @@
   (3) gradient flow (fade 0.5, zero-init maps perturbed, gamma 0.5): every DeltaMem parameter (incl. LN_w) from the final CE alone; the gradient
       on S_1 (3 hand-offs before the final read) and S_2 nonzero; and S_1's gradient differs between gamma 0.5 and gamma 0 (the read -> write path)
   (4) the reader writes nothing back: states into each segment and the final logits bitwise identical with the reader passes on / off
-    python scratch/gate160.py [device] [write_mode]   -> boxes/runs_fsq/s160_gates/gate160_<mode>.json (exit 1 on a failed gate)"""
+    python scratch/gate160.py [device] [write_mode] [out_dir]   -> <out_dir, default boxes/runs_fsq/s160_gates>/gate160_<mode>.json (exit 1 on a failed gate)"""
 import importlib
 import json
 import math
@@ -40,15 +40,23 @@ def main():
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None; out["amp"] = str(amp)
     rng = np.random.default_rng(0); B = 8; A, Bd = gen_operands(rng, B, 4), gen_operands(rng, B, 4); g = s5.load_gpt2(dev)
     # (0) §152's path in the patched module vs the reference copy
-    REF = importlib.import_module(os.environ.get("MULTROW_REF", "boxes._multrow_head_tmp")); res = []
+    try:                                                                    # on a host (no reference copy shipped) g0 is skipped and recorded
+        REF = importlib.import_module(os.environ.get("MULTROW_REF", "boxes._multrow_head_tmp"))
+    except ImportError:
+        REF = None
+    res = []
     torch.use_deterministic_algorithms(True, warn_only=True)               # the wte embedding backward is nondeterministic otherwise (REF vs REF differs)
-    for M_ in (MR, REF):
+    for M_ in ((MR, REF) if REF is not None else ()):
         torch.manual_seed(0); m = M_.MultRowDelta(g, M_.RowFam(), 6).to(dev); m.train(); perturb(m); X, lab, rtok, rmask = batch(M_, m, A, Bd, dev); m.zero_grad(set_to_none=True)
         with M_.amp_ctx(amp):
             fin, rd, _ = m.chain_read(m.start(B, dev), X, lab, rtok, rmask)
         (fin + rd).backward(); res.append((float(fin.detach()), float(rd.detach()), {n_: p_.grad.clone() for n_, p_ in m.named_parameters() if p_.grad is not None})); m.zero_grad(set_to_none=True)
-    torch.use_deterministic_algorithms(False); out["g0_losses"] = [res[0][:2], res[1][:2]]; out["g0_grad_names_equal"] = sorted(res[0][2]) == sorted(res[1][2])
-    out["g0_pass"] = res[0][:2] == res[1][:2] and out["g0_grad_names_equal"] and all(torch.equal(res[0][2][k], res[1][2][k]) for k in res[0][2]); ok &= out["g0_pass"]
+    torch.use_deterministic_algorithms(False)
+    if REF is None:
+        out["g0_pass"] = None; out["g0_skipped"] = "no reference module (on-host run; g0 is a CPU check against HEAD)"
+    else:
+        out["g0_losses"] = [res[0][:2], res[1][:2]]; out["g0_grad_names_equal"] = sorted(res[0][2]) == sorted(res[1][2])
+        out["g0_pass"] = res[0][:2] == res[1][:2] and out["g0_grad_names_equal"] and all(torch.equal(res[0][2][k], res[1][2][k]) for k in res[0][2]); ok &= out["g0_pass"]
     # (1) step 0 under R
     torch.manual_seed(0); m = MR.MultRowDelta(g, MR.RowFam(), 6).to(dev); m.mem = DM.DeltaMem(g, 6, mode).to(dev); m.train(); MR.set_ops(m, A, Bd, dev)
     m.mem.fade.fill_(0.0)
@@ -102,7 +110,7 @@ def main():
         st_on, lg_on, unchanged = run(True); st_off, lg_off, _ = run(False)
     out["g4_states_bitwise_equal"] = all(bool(torch.equal(a_, b_)) for a_, b_ in zip(st_on, st_off)); out["g4_final_logits_bitwise_equal"] = bool(torch.equal(lg_on, lg_off))
     out["g4_pass"] = out["g4_states_bitwise_equal"] and out["g4_final_logits_bitwise_equal"] and unchanged; ok &= out["g4_pass"]
-    out["all_pass"] = bool(ok); d = os.path.join(ROOT, "boxes", "runs_fsq", "s160_gates"); os.makedirs(d, exist_ok=True)
+    out["all_pass"] = bool(ok); d = sys.argv[3] if len(sys.argv) > 3 else os.path.join(ROOT, "boxes", "runs_fsq", "s160_gates"); os.makedirs(d, exist_ok=True)
     json.dump(out, open(os.path.join(d, "gate160_%s.json" % mode), "w", newline="\n"), indent=1)
     print("GATE160", json.dumps({k: v for k, v in out.items() if not k.endswith("_grad")}), flush=True); sys.exit(0 if ok else 1)
 
