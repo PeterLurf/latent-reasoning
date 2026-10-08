@@ -347,6 +347,34 @@ def seq_eval_digits(g, D, dev, amp, bs, arm, meter=None):
     return dig, ok
 
 
+
+@torch.no_grad()
+def seq_eval_anchored(g, D, dev, amp, bs, arm, extra=50):
+    """§164 (Audit): greedy decode with budget L_text + extra; anchored = the na + nb digits right after the FIRST " ####" in the decode;
+    position_locked = the old read (the last answer-length tokens of the first L_text, " ####" required at that offset); cot_len = tokens before
+    the first " ####" (the true schedule: sum of the step texts; nc: 0)."""
+    N = len(D["A"]); n = D["n"]; La = D["ans"].shape[1]; nd = La - len(HASH); Lcot = sum(D["steps"][j].shape[1] for j in range(n)) if arm == "tc" else 0
+    L_text = La + Lcot; budget = L_text + extra; lut = {int(t): i for i, t in enumerate(DIGIT_IDS)}; H = list(HASH)
+    anc = np.full((N, nd), -1); pos = np.full((N, nd), -1); cot = np.full(N, -1)
+    for s_ in range(0, N, bs):
+        idx = np.arange(s_, min(N, s_ + bs))
+        with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+            last, past = seq_forward(g, torch.tensor(question(D, idx), device=dev), 0, None)
+            dec = seq_greedy(g, last, past, budget).cpu().numpy()
+        for r_, row in zip(idx, dec):
+            hit = next((i for i in range(len(row) - 1) if row[i] == H[0] and row[i + 1] == H[1]), None)
+            if hit is not None:
+                cot[r_] = hit; d_ = [lut.get(int(t), -1) for t in row[hit + 2:hit + 2 + nd]]; anc[r_, :len(d_)] = d_
+            at = row[L_text - La:L_text]
+            if list(at[:len(H)]) == H:
+                pos[r_] = [lut.get(int(t), -1) for t in at[len(H):]]
+    P = D["prod"]
+    def rep(dg):
+        C = dg == P; return {"test_acc": float(C.all(1).mean()), "acc_by_column": {"per_column": [round(float(v), 4) for v in C.mean(0)]}}
+    return {"anchored": rep(anc), "position_locked": rep(pos), "cot_len_true": int(Lcot), "cot_len_mismatch_share": float((cot != Lcot).mean()),
+            "no_hash_share": float((cot < 0).mean()), "cot_len_median": float(np.median(cot[cot >= 0])) if (cot >= 0).any() else None, "budget": int(budget), "n": int(N)}
+
+
 def acc_report_digits(dig, P):
     C = dig == P; return {"test_acc": float(C.all(1).mean()), "acc_by_column": {"per_column": [round(float(v), 4) for v in C.mean(0)]}, "n": int(len(P))}
 
@@ -401,6 +429,23 @@ def train(a):
     if SHM:                                                                 # the full 4x4 bench test (both orders) is never drawn
         Dfull = load(os.path.join(ROOT, "bench", "data", "mult_4x4_test.txt"))
         EXCL = {(x.tobytes(), y.tobytes()) for x, y in zip(Dfull["A"], Dfull["B"])} | {(y.tobytes(), x.tobytes()) for x, y in zip(Dfull["A"], Dfull["B"])}
+    if a.eval_anchored:                                                     # §164 (Audit): the anchored re-eval of a finished tc / nc run
+        from boxes.multcol import gen_operands
+        g = s5.load_gpt2(dev); g.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); g.eval(); t1 = time.time()
+        R = {"4x4": seq_eval_anchored(g, Dte, dev, amp, a.eval_bs, a.arm, a.anchor_extra)}; seeds = {}
+        for nb_, s1_, s2_ in ((6, 14016, 14017), (7, 14018, 14019), (8, 14004, 14005), (16, 14006, 14007)):
+            Dx = gen_items(gen_operands(np.random.default_rng(s1_), a.ext_n, 4), gen_operands(np.random.default_rng(s2_), a.ext_n, nb_)); seeds["4x%d" % nb_] = [s1_, s2_]
+            R["4x%d" % nb_] = seq_eval_anchored(g, Dx, dev, amp, a.eval_bs, a.arm, a.anchor_extra)
+        out = {"arm": a.arm, "seed": a.seed, "acc_test": R["4x4"]["anchored"]["test_acc"], "acc_by_column_4x4": R["4x4"]["anchored"]["acc_by_column"],
+               **{"ext_" + k: {**R[k]["anchored"], "seeds": seeds[k], "n": R[k]["n"]} for k in seeds},
+               "cot_len_mismatch_share": {k: v["cot_len_mismatch_share"] for k, v in R.items()}, "no_hash_share": {k: v["no_hash_share"] for k, v in R.items()},
+               "cot_len_true": {k: v["cot_len_true"] for k, v in R.items()}, "cot_len_median": {k: v["cot_len_median"] for k, v in R.items()},
+               "position_locked": {k: v["position_locked"] for k, v in R.items()}, "budget_extra": a.anchor_extra, "budget": {k: v["budget"] for k, v in R.items()},
+               "anchor_def": "greedy decode, budget = the schedule's token count + extra; answer = the na + nb digit tokens after the model's FIRST ' ####' (no ' ####' = wrong)",
+               "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "eval_dtype": str(amp), "eval_sec": round(time.time() - t1)}
+        json.dump(out, open(os.path.join(a.out, "eval_s164_anchor.json"), "w", newline="\n"), indent=1)
+        print("ANCHORED", json.dumps({"acc_test": out["acc_test"], **{k: out["ext_" + k]["test_acc"] for k in seeds}, "mismatch": out["cot_len_mismatch_share"]}), flush=True)
+        return
     if a.eval_only:                                                         # re-run a finished run's eval (§98 genm 5x5 s3: eval OOM'd beside 2 others)
         g = s5.load_gpt2(dev); m = MultGen(g, a.arm).to(dev) if a.arm in ("genm", "mask") else g
         m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev))
@@ -529,6 +574,8 @@ def main():
     ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--eval_bs", type=int, default=250)
     ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt of a finished run only (log.jsonl and args.json untouched)")
     ap.add_argument("--ext_n", type=int, default=1000, help="§164 ext items per shape (smokes only change it)")
+    ap.add_argument("--eval_anchored", action="store_true", help="§164 (Audit): <out>/model.pt -> eval_s164_anchor.json (answer after the first ' ####'; note 164-1)")
+    ap.add_argument("--anchor_extra", type=int, default=50, help="§164 anchored decode budget = L_text + this")
     ap.add_argument("--shape_mix", default="", help="§164: tc / nc training on 4 x n chains, n drawn per batch from this list (e.g. 2,3,4,5)")
     ap.add_argument("--k", type=int, default=4, help="§100: ops per chunk (snap every k; training chunks aligned)")
     ap.add_argument("--micro", type=int, default=0, help="micro-batches per update (0: 1 for genm/mask, 2 for coco/tc/nc: 3 stage-0 jobs OOM a 24 GB card)")
