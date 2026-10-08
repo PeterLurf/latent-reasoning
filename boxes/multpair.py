@@ -740,7 +740,7 @@ def c7_state_edit(m, A, Bd, dev, amp, bs, deltas=(-2, -1, 1, 2), cols=(2, 3, 4, 
                                        "unedited_share": float(np.mean([v["unedited_share"] for v in bya.values()])),
                                        "carry_follow_share": float(np.mean([v["carry_follow_share"] for v in bya.values()])), "n": int(N * len(bya)), "by_column": bya}
         out["delta"]["%+d" % dl] = {"carry_shift_share": float(np.mean([v["carry_shift_share"] for v in byd.values()])), "by_next_column": byd}
-    pr = {"by_k": {}}; tot = {"prop": 0, "rand": 0, "null": 0, "n": 0}
+    pr = {"by_k": {}}; tot = {"prop": 0, "rand": 0, "null": 0, "n": 0, "coup": 0, "coup_r": 0}
     for k in prop_cols:                                                     # §155 / §154 propagation: carry edit at column k+1's first pair -> column k+2
         if k + 1 >= C.shape[1]:
             continue
@@ -751,10 +751,15 @@ def c7_state_edit(m, A, Bd, dev, amp, bs, deltas=(-2, -1, 1, 2), cols=(2, 3, 4, 
                 byd["%+d" % dl] = {"n": 0}; continue
             g_ = run((int(first[k]), del_edit(dl, k))); torch.manual_seed(15502 + k * 10 + dl); gr_ = run((int(first[k]), del_edit(dl, k, rand_dir=True)))
             ps, rs, nv = (g_[chg, k + 1] == tgt[chg]), (gr_[chg, k + 1] == tgt[chg]), (base[chg, k + 1] == tgt[chg])
-            byd["%+d" % dl] = {"propagation_share": float(ps.mean()), "random_edit_share": float(rs.mean()), "null_value": float(nv.mean()), "n": int(chg.sum())}
+            oc = [c_ for c_ in range(C.shape[1]) if c_ not in (k, k + 1)]  # note 155-2: any non-target column (not k+1 / k+2, 1-based) changes its digit
+            cp_ = (g_[chg][:, oc] != base[chg][:, oc]).any(1); cr_ = (gr_[chg][:, oc] != base[chg][:, oc]).any(1)
+            byd["%+d" % dl] = {"propagation_share": float(ps.mean()), "random_edit_share": float(rs.mean()), "null_value": float(nv.mean()), "n": int(chg.sum()),
+                               "coupling_share": float(cp_.mean()), "random_coupling_share": float(cr_.mean())}
             tot["prop"] += int(ps.sum()); tot["rand"] += int(rs.sum()); tot["null"] += int(nv.sum()); tot["n"] += int(chg.sum())
+            tot["coup"] += int(cp_.sum()); tot["coup_r"] += int(cr_.sum())
         pr["by_k"][str(k)] = byd
-    pr["pooled"] = {"propagation_share": tot["prop"] / max(tot["n"], 1), "random_edit_share": tot["rand"] / max(tot["n"], 1), "null_value": tot["null"] / max(tot["n"], 1), "n": tot["n"]}
+    pr["pooled"] = {"propagation_share": tot["prop"] / max(tot["n"], 1), "random_edit_share": tot["rand"] / max(tot["n"], 1), "null_value": tot["null"] / max(tot["n"], 1), "n": tot["n"],
+                    "coupling_share": tot["coup"] / max(tot["n"], 1), "random_coupling_share": tot["coup_r"] / max(tot["n"], 1)}
     pr["def"] = ("delta-head carry edit at column k+1's first pair (k = 2..5, delta +-1, minimum-norm rank 1 moving column k+1's carry-in probe by delta); "
                  "column k+2's digit vs (c^_{k+2} - r_{k+1} + floor((c^_{k+1} + delta)/10)) mod 10 on rows where the edit changes r_{k+1}; "
                  "random_edit: an equal-norm random rank-1 edit; null_value: the unedited digit already equals the edited-chain value")
@@ -1092,7 +1097,9 @@ def main():
         c7 = {"c7_state_edit": c7_state_edit(m, teA, teB, dev, amp, a.eval_bs), "acc_by_column_carry": acc_by_column_carry(m, teA, teB, dev, amp, a.eval_bs),
               "alpha_by_flag": alpha_by_flag(m, teA, teB, dev, amp), "eval_dtype": str(amp), "device": dname(), "driver": driver_version(), "add_reset": a.add_reset,
               "note": "§154 post-hoc (Theory 8596a342 / Audit): the shipped eval predates these fields; descriptive"}
-        json.dump(c7, open(os.path.join(a.out, "eval_s154_posthoc.json"), "w", newline="\n"), indent=1)
+        if a.mem_write:                                                     # §155 (note 155-2): the post-hoc propagation incl. coupling_share
+            c7["s155"] = {"propagation": c7["c7_state_edit"]["propagation"]}
+        json.dump(c7, open(os.path.join(a.out, "eval_s155_posthoc.json" if a.mem_write else "eval_s154_posthoc.json"), "w", newline="\n"), indent=1)
         print("S154POST", json.dumps({k: c7["c7_state_edit"][k] for k in ("additive", "delta")})[:400], flush=True); return
     if a.contraction_only:
         m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval(); m.p_hard = 1.0
