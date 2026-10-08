@@ -1,0 +1,33 @@
+{
+ "start_probe": {
+  "4": {
+   "acc": 1.0,
+   "lambda": 1e-09
+  },
+  "8": {
+   "acc": 1.0,
+   "lambda": 1e-09
+  }
+ },
+ "first_item_probe": {
+  "4": {
+   "random": 0.9995,
+   "identity": 1.0
+  },
+  "8": {
+   "random": 0.893,
+   "identity": 0.9985
+  }
+ },
+ "P": [
+  4,
+  8
+ ],
+ "n_fit": 8000,
+ "n_score": 2000,
+ "model": "s162_short_s2",
+ "l_max": 8,
+ "probe_def": "near-OLS 120-way (deltas5._fit_cls; s162 op_probe settings), training-distribution chains (uniform items; random start or identity start)",
+ "sec": 3288,
+ "device": "cpu"
+}
