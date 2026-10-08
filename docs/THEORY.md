@@ -8795,6 +8795,14 @@ restated.**
   - **§152's failure is localised.** A fails one column (6) and CTRL two (5 and 6): the columns with the largest carry-ins. The reader fixed column 5.
   - "Read-time carry resolution" narrows to **"carry resolution at columns 5–6, still being learned at 48k"** (A's gate was rising at the end). The 96k run (b165) tests the
     budget.
+* **Correction (2026-10-08 03:52 EDT; Audit's λ check):** "does not carry the accumulator as a linearly readable integer at any layer" overstates.
+  - λ was at the grid floor. At near-OLS (λ = 10⁻¹⁰ chosen; n 4,000 > d 768), the read output's exact-match for ĉ_k is:
+    - A: 0.57 / 0.49 / 0.38 / 0.28 / 0.23 / 0.28 / 0.45 at columns 1–7;
+    - CTRL: 0.67 / 0.50 / 0.37 / 0.14 / 0.09 / 0.22 / 0.48 (`read_exact_s152_ols.json`).
+  - **Restated:** the single 768-d read vector exposes ĉ_k exactly for at most 57 % of items, while those columns' digits are ≥ 0.998. The flattened 24.6k-d state holds the
+    sums at 0.72–1.0 (fit8000).
+  - **So the read, not the store, is the bottleneck.** Numbers are not exposed in one vector, which fits L2. The digit code at the read is non-integer, and integer-closeness
+    of the read stays invalid as a diagnostic.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
