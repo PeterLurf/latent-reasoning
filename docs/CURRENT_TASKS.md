@@ -55,6 +55,7 @@ after create; auto_ship is transitive: a multrow queue ships multpair too): reco
     state-carried running sum, and not linearly editable. s2 (§163's condition), MIX+IDX and MIX9 are pending.
     - **§164 MIX-BASELINES** (bbd53874): TC-MIX / DIRECT-MIX on the same mix, needed before any "beyond text" claim.
     - **§163 SHAPE-MIX-2D** (0045d6a1) waits on MIX s2.
+    - **§165 FIXED-CHUNK** (60e55135; the user's "is it task-agnostic?"): the same memory on fixed text chunks plus think passes. It runs after MIX s2 and §164.
   - **Waiting on the user (via Audit):** `docs/THEORY_C1_FORCING_2026-10-08.md` (42de5d5f + addendum 8500894d; note 158-2, Literature 6b771087 / fd630b87).
     - The finding: C1 is forced only by depth beyond one pass, or by input beyond the buffer's capacity.
     - The proposals: multiplication becomes the C3 / C6 / C2 testbed; the C1 + C3 headline moves to a task that exceeds one pass.
