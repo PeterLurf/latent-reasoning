@@ -22,7 +22,8 @@ import time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ARMS = {"r": ["--mem_write", "top"], "shiftr": ["--mem_write", "top", "--add_reset", "column"],                   # §155 (e9ee8a6c)
-        "r9": ["--mem_write", "block9"], "shiftr9": ["--mem_write", "block9", "--add_reset", "column"]}
+        "r9": ["--mem_write", "block9"], "shiftr9": ["--mem_write", "block9", "--add_reset", "column"],
+        "rg0": ["--mem_write", "top", "--write_mix_start", "1000000000", "--write_mix_end", "1000000000"]}   # note 155-1 (3): gamma held at 0
 
 
 def qlog_line(msg):
