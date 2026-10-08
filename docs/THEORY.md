@@ -9489,6 +9489,13 @@ shapes alone remove the count schedule".**
   - C2 against text needs §164's matched baselines.
   - Generality over both operands is §163.
   - Task-agnostic segmentation is §165.
+* **Permitted wording (Literature 73fbfb1a, reconfirmed after 3 / 3):**
+  - "Direct-answer length generalisation over the multiplier with a 4-digit fixed operand (trained n ≤ 5 → 4×8), in pretrained GPT-2 whose only cross-pass
+    channel is a latent recurrent memory; no scratchpad, CoT, priming or position tokens."
+  - Published direct-answer comparators fix the other operand at ≤ 2 digits (position coupling N × 2, 40 → 90; Fan, binary) or need priming (Jelassi
+    5 × 3 → 35 × 3).
+  - **Caveats kept beside it:** the extrapolation ratio is 1.6× (position coupling's is 2.25×), the training curriculum mixes lengths, and the harness feeds
+    the long-multiplication pair schedule (§165 tests a task-agnostic one).
 
 ## 162. DELTA-S5: the write-after-read memory on S5, against a measured single-pass boundary (note 158-2's TC⁰ / NC¹ contrast cell) (Audit 08:45; pre-registered 2026-10-08 09:01 EDT, after Literature's check 6b771087 (`docs/LIT_TC0_SERIAL_2026-10-08.md`: the contrast is unpublished) and Audit's draft review (two rounds), before any implementation or run)
 
