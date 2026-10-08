@@ -9279,6 +9279,7 @@ accumulator.**
     skipped, saving $1.5. §159's verdict is unaffected.
 * **C3 framing (Audit):** LATENT BEATS TEXT holds against TC-M only. Against ICoT-SI it is 3.24× the FLOPs at equal or better accuracy (1.000 against 0.996).
   The user-facing claim is "beats explicit CoT; matches implicit-CoT accuracy at more compute".
+* **Slot 2:** 1.000 (every column 1.0), not SERIAL, ext_5x8 0.001. 2 / 2 exact so far; s3 / s4 are pending.
 
 ## 160. R-ROWS: the write-after-read memory on §152's row segmentation (Audit 07:00, the C3 leg; pre-registered 2026-10-08 06:56 EDT, before any implementation or run; runs only if §155 R s2 is exact)
 
