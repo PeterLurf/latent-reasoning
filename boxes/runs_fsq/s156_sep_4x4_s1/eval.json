@@ -1,0 +1,335 @@
+{
+ "family": "mult_direct",
+ "task": "4x4",
+ "arm": "plain",
+ "seed": 1,
+ "test_acc": 0.002,
+ "long_acc": 0.002,
+ "acc_by_column": {
+  "per_column": [
+   1.0,
+   1.0,
+   0.298,
+   0.119,
+   0.073,
+   0.107,
+   0.648,
+   0.96
+  ],
+  "cumulative": [
+   1.0,
+   1.0,
+   0.298,
+   0.049,
+   0.009,
+   0.002,
+   0.002,
+   0.002
+  ]
+ },
+ "train_sec": 0,
+ "n_nonfinite": 0,
+ "train_removed_test_overlap": 17,
+ "eval_dtype": "torch.bfloat16",
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "train_gpu": "NVIDIA GeForce RTX 3090",
+ "train_driver": "595.84",
+ "s148": {
+  "acc_by_r": {
+   "1": 0.002,
+   "2": 0.001,
+   "3": 0.002,
+   "4": 0.0,
+   "5": 0.0,
+   "6": 0.0,
+   "7": 0.0,
+   "8": 0.0,
+   "9": 0.0,
+   "10": 0.0,
+   "11": 0.0,
+   "12": 0.0,
+   "13": 0.0,
+   "14": 0.0,
+   "15": 0.0,
+   "16": 0.0
+  },
+  "ce_by_r": {
+   "1": 1.1177746047973633,
+   "2": 1.1150596771240235,
+   "3": 1.1331009902954101,
+   "4": 1.188811981201172,
+   "5": 1.2510630340576172,
+   "6": 1.3087236099243165,
+   "7": 1.3718226928710937,
+   "8": 1.4426111450195314,
+   "9": 1.5192893524169921,
+   "10": 1.598398239135742,
+   "11": 1.680786361694336,
+   "12": 1.762650863647461,
+   "13": 1.8437329711914063,
+   "14": 1.9187101135253906,
+   "15": 2.0000372619628908,
+   "16": 2.077650665283203
+  },
+  "halt": {
+   "acc": 0.0,
+   "mean_r": 16.0,
+   "threshold": 0.001,
+   "r_cap": 16
+  },
+  "loop_swap": {
+   "after_iteration": 2,
+   "r": 2,
+   "n": 500,
+   "donor_consistent": 0.0,
+   "recipient_consistent": 0.0,
+   "chance_overlap": 0.0,
+   "donor_self_acc": 0.0
+  },
+  "rho_loop": {
+   "r0": 2,
+   "K": 8,
+   "n": 300,
+   "eps": {
+    "0.01": {
+     "rho_k": [
+      0.9804999828338623,
+      0.9858999848365784,
+      0.9930999875068665,
+      0.9986000061035156,
+      0.9994999766349792,
+      1.000100016593933,
+      1.0,
+      1.0011999607086182
+     ],
+     "dist_med_k": [
+      4.6880202293396,
+      4.553380012512207,
+      4.448299884796143,
+      4.305009841918945,
+      4.259479999542236,
+      4.225299835205078,
+      4.141960144042969,
+      4.145830154418945,
+      4.126420021057129
+     ],
+     "rho_k3": 0.9864939451217651
+    },
+    "0.1": {
+     "rho_k": [
+      0.9585000276565552,
+      0.9635999798774719,
+      0.9690999984741211,
+      0.9745000004768372,
+      0.9811000227928162,
+      0.9843000173568726,
+      0.9868000149726868,
+      0.9922999739646912
+     ],
+     "dist_med_k": [
+      46.880001068115234,
+      45.272178649902344,
+      43.66796875,
+      42.78656005859375,
+      41.163570404052734,
+      40.07809066772461,
+      39.83816146850586,
+      40.00299835205078,
+      38.95792007446289
+     ],
+     "rho_k3": 0.9637448191642761
+    }
+   }
+  },
+  "r_max": 1,
+  "eta": 0.25,
+  "loop": "4-7",
+  "deep_sup": true
+ },
+ "compute": {
+  "tokens_processed": 25,
+  "flops": 4882338816.0,
+  "seq_passes": 8,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "sequential_passes": 8,
+  "loop_iterations": 1
+ },
+ "s156": {
+  "seq_len": 26,
+  "ring_probe": {
+   "2": {
+    "cos_r2": 0.1947168241559557,
+    "sin_r2": 0.421693711503102
+   },
+   "3": {
+    "cos_r2": -4.857840418542113,
+    "sin_r2": -4.5164684641922825
+   },
+   "4": {
+    "cos_r2": -2.000111395241591,
+    "sin_r2": -6.928862664707302
+   },
+   "5": {
+    "cos_r2": -12.150862786445023,
+    "sin_r2": -19.01553297873257
+   },
+   "6": {
+    "cos_r2": -52.40232428685381,
+    "sin_r2": -70.83744707371788
+   },
+   "7": {
+    "cos_r2": 0.9185072590631018,
+    "sin_r2": 0.6429531666291456
+   },
+   "8": {
+    "cos_r2": 0.9917889334780224,
+    "sin_r2": 0.9954886677916012
+   },
+   "C": 27,
+   "def": "per slot (answer digit k, 1-based): held-out ridge R^2 of cos / sin(2 pi carry_in_k / C) from the final residual at the slot"
+  },
+  "slot_patch": {
+   "column": 4,
+   "n": 500,
+   "by_layer": {
+    "0": {
+     "donor_carry_share": 0.106,
+     "own_digit_share": 0.14,
+     "donor_digit_share": 0.098,
+     "chance_overlap": {
+      "carry_vs_own": 0.032,
+      "donor_digit_vs_own": 0.098,
+      "carry_vs_donor_digit": 0.116
+     }
+    },
+    "1": {
+     "donor_carry_share": 0.1,
+     "own_digit_share": 0.13,
+     "donor_digit_share": 0.094,
+     "chance_overlap": {
+      "carry_vs_own": 0.032,
+      "donor_digit_vs_own": 0.098,
+      "carry_vs_donor_digit": 0.116
+     }
+    },
+    "2": {
+     "donor_carry_share": 0.102,
+     "own_digit_share": 0.124,
+     "donor_digit_share": 0.102,
+     "chance_overlap": {
+      "carry_vs_own": 0.032,
+      "donor_digit_vs_own": 0.098,
+      "carry_vs_donor_digit": 0.116
+     }
+    },
+    "3": {
+     "donor_carry_share": 0.104,
+     "own_digit_share": 0.124,
+     "donor_digit_share": 0.102,
+     "chance_overlap": {
+      "carry_vs_own": 0.032,
+      "donor_digit_vs_own": 0.098,
+      "carry_vs_donor_digit": 0.116
+     }
+    },
+    "4": {
+     "donor_carry_share": 0.098,
+     "own_digit_share": 0.128,
+     "donor_digit_share": 0.096,
+     "chance_overlap": {
+      "carry_vs_own": 0.032,
+      "donor_digit_vs_own": 0.098,
+      "carry_vs_donor_digit": 0.116
+     }
+    },
+    "5": {
+     "donor_carry_share": 0.102,
+     "own_digit_share": 0.116,
+     "donor_digit_share": 0.102,
+     "chance_overlap": {
+      "carry_vs_own": 0.032,
+      "donor_digit_vs_own": 0.098,
+      "carry_vs_donor_digit": 0.116
+     }
+    },
+    "6": {
+     "donor_carry_share": 0.1,
+     "own_digit_share": 0.116,
+     "donor_digit_share": 0.102,
+     "chance_overlap": {
+      "carry_vs_own": 0.032,
+      "donor_digit_vs_own": 0.098,
+      "carry_vs_donor_digit": 0.116
+     }
+    },
+    "7": {
+     "donor_carry_share": 0.108,
+     "own_digit_share": 0.106,
+     "donor_digit_share": 0.098,
+     "chance_overlap": {
+      "carry_vs_own": 0.032,
+      "donor_digit_vs_own": 0.098,
+      "carry_vs_donor_digit": 0.116
+     }
+    },
+    "8": {
+     "donor_carry_share": 0.116,
+     "own_digit_share": 0.112,
+     "donor_digit_share": 0.098,
+     "chance_overlap": {
+      "carry_vs_own": 0.032,
+      "donor_digit_vs_own": 0.098,
+      "carry_vs_donor_digit": 0.116
+     }
+    },
+    "9": {
+     "donor_carry_share": 0.098,
+     "own_digit_share": 0.104,
+     "donor_digit_share": 0.108,
+     "chance_overlap": {
+      "carry_vs_own": 0.032,
+      "donor_digit_vs_own": 0.098,
+      "carry_vs_donor_digit": 0.116
+     }
+    },
+    "10": {
+     "donor_carry_share": 0.108,
+     "own_digit_share": 0.106,
+     "donor_digit_share": 0.114,
+     "chance_overlap": {
+      "carry_vs_own": 0.032,
+      "donor_digit_vs_own": 0.098,
+      "carry_vs_donor_digit": 0.116
+     }
+    },
+    "11": {
+     "donor_carry_share": 0.104,
+     "own_digit_share": 0.116,
+     "donor_digit_share": 0.112,
+     "chance_overlap": {
+      "carry_vs_own": 0.032,
+      "donor_digit_vs_own": 0.098,
+      "carry_vs_donor_digit": 0.116
+     }
+    }
+   },
+   "layers": "block inputs 0 .. 11 (prelude, loop x r, coda)",
+   "def": "the slot residual replaced at ONE block input (per layer) by a donor's with a different carry-in (teacher-forced prefix); shares: donor_carry = (recipient column sum + donor carry) mod 10, own = recipient digit, donor_digit = the donor's own digit"
+  },
+  "answer_sep": "interleave",
+  "sep_token_id": 91,
+  "slot_positions": [
+   10,
+   12,
+   14,
+   16,
+   18,
+   20,
+   22,
+   24
+  ]
+ },
+ "eval_sec": 73
+}
