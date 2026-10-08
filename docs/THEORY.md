@@ -239,6 +239,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 149 | SOTA-PROBE (eval only): donor SERIAL (equation substitution), ablation and ρ on released GPT-2 Coconut / SIM-CoT / CODI, at release | **no model SERIAL**: SIM-CoT+Coconut PARTIAL (a third of swaps follow the donor), SIM-CoT+CODI BYPASSED (recomputed from the question); ρ marginal everywhere (0.37–0.50); the Lyapunov contrast not reproduced | closed |
 | 150 | VOCAB-SLOT (program B4; the user's token-like working memory): 4 Gumbel-ST slots on GPT-2's vocabulary (FULL) or digits + blank (DIGIT, an abacus) as the only cross-segment channel, on §140's digit-pair 4×4 | registered | **open** |
 | 151 | DELTA-LONG: §147's linear-recurrent memory at 48k, seeds 1–4 in parallel (after §147's IMPROVES: columns 3–7 0.92–0.99, loss still falling) | registered | **open** |
+| 152 | DELTA-READ (the user's go, 23:00): DeltaMem as the only carrier on multiplier-major 4×4 + a reader of the teacher's S_j, then earliest-first removal; headline vs TC-M / ICoT-SI at matched compute (FLOPs, passes) with SERIAL | registered | **open** |
 
 ## Live sections
 
@@ -8179,6 +8180,87 @@ SERIAL and contractive. Slots 2–4 run (the credit rule).**
   - The scorer's mechanical "number carriage itself is the barrier" line is therefore qualified: carriage fails **for exact digits**, while an analog magnitude is carried.
 * **The L = 1 check so far** (PARTIAL: one digit learned in F8 s601 and N64 s601, F8 s602 at chance): even one carried 2-digit addition is only partly learned.
 * §144's result follows once F8's NOFLAG, N64's registered follow-ups (144-1 / 144-2, for a dropped arm) and the last L = 1 run land.
+
+## 152. DELTA-READ: the linear-recurrent memory with a CoT-derived reader of the running sum, then ICoT-style removal; against text CoT at matched compute (pre-registered 2026-10-07 23:01 EDT, after Literature's check 03059976 and Audit's draft, before any implementation or run; the user's "sure" (23:00, via Audit) and the user's operative standard: the latent model uses latent space more effectively than text)
+
+**Why.**
+* §147 broke the middle-column wall with a linear additive memory as the only cross-step channel: columns 3–7 at 0.92–0.99, accumulators ≥ 100 at 0.93, exactness 0.743
+  at 24k. §151 tests more budget.
+* **§152 adds what made text CoT work: per-step targets taken from the CoT,** then removes them as ICoT-SI does.
+* **The user's standard (23:00):**
+  - strict C4 is not required, so CoT-derived per-step supervision and CoT-then-removal are allowed;
+  - **the headline is C3 + C1:** at least text-CoT accuracy at less compute, with SERIAL.
+* **Multiplier-major ordering** (§142's), because its per-step state S_j is in the CoT text, as the teacher's own S_j (139-2, the §142 cache).
+  - It is also the cheap order: 4 segment passes plus an 8-digit decode, about 12 sequential passes, against TC-M's 57.
+* **Prior** (03059976, `docs/LIT_S152_DELTA_READ_2026-10-07.md`):
+  - no linear-memory carrier for multi-digit arithmetic is known; state tracking covers parity, counting and permutations;
+  - the additive state is linear attention's Σ v kᵀ (fast weights 2102.11174, 2212.07677), applied to digit products under column keys;
+  - reader precedents: RMT / ARMT read-only queries, LM2, 2510.00184's running-sum auxiliary, and SIM-CoT (a text reader);
+  - new as scoped.
+
+**Design.**
+* **The carrier:** §147's DeltaMem exactly (6 additive no-decay heads plus 6 gated-delta heads after block 6; log-parametrised group gains; α exempt; W_o fade-in; notes 147-1 to
+  147-3), as the **only** cross-segment channel.
+  - Segment j = [EOT, a's digits, b_j, position j], with no carried code token. Attention stays within the segment.
+  - The additive heads can hold S_j in carry-save form (a_i · b_j written under column keys), so no in-pass multi-digit addition is needed.
+* **Reading the memory:** a side-branch pass [EOT, " ="] reads the memory through the DeltaMem branch and writes nothing back. It emits 8 digits, least-significant first,
+  through the LM head.
+  - The final answer is decoded this way after the last segment.
+* **Training:** §142's recipe (the bench 4×4 train split, commuted test pairs removed; L ~ U(1, L_max) with L_max 1 / 2 / 3 / 4 at 0 / 2k / 5k / 9k), 48k steps (cosine over
+  48k), bs 64.
+* **Arms (seeds 1–4; A s1 and CTRL s1 first, in parallel with §151):**
+  - **A (READ):** at every hand-off j < L, the side-branch reader decodes **S_j** (the teacher's text, cached; label_source "teacher_generated"). Loss = CE_final + the mean
+    over hand-offs of CE_j (each over 8 tokens).
+    - **Gate:** once L_max is 4, greedy final exact on 512 train items at L 4, checked every 1k. The first value ≥ 0.95 saves `gate.pt`.
+  - **B-EARLY (ICoT's order):** forked from A's gate.pt (same seed), 20k steps, **fixed_L 4**.
+    - S_1's reader target is removed at +0, S_2 at +4k, S_3 at +8k; final answer only from +8k to +20k.
+    - **At each removal the LR re-warms over 200 steps, and AdamW is NOT reset.** This is deliberate (Literature (2)): the inputs do not change at removal, only the loss, so
+      ICoT-SI's reason for a reset is absent, and a reset would disturb the settled gate / gain moments. The loss jump is logged.
+    - 10 % of rows preview the next removal. Removed S_j stay decoded unweighted (retention).
+  - **CTRL:** A without the reader (FINAL only), the same carrier and budget, s1. It is §147's design transposed to multiplier-major.
+  - A seed whose A run never opens the gate gets no B run.
+
+**Rules (fixed now).**
+* **PASS(arm):** ≥ 3/4 seeds with test_acc ≥ 0.99 on the 1,000 items and **SERIAL**.
+  - **SERIAL:** the whole memory state swapped from a donor after segment 2. Donors are chosen with **a_donor ≠ a_rec and a different b-prefix** (Literature (4)).
+    - Each answer is classified as **(i) carry-save** = donor S_2 + a_rec × (b_rec,3 b_rec,4) × 100, **(ii) b-prefix** = a_rec × (b_donor,1 b_donor,2 b_rec,3 b_rec,4), or
+      **(iii) recomputation** = the recipient's own product. All three shares are reported (row level).
+    - SERIAL = (i) ≥ 0.90 and (iii) − chance < 0.10.
+  - No contraction term: the additive part is an integrator by design.
+  - DROP at proof: A s1 below 0.95.
+  - B is read on its final, final-answer-only model.
+* **The headline (C3 + C1, the user's standard; fixed now).** On the same 1,000 4×4 items, Meter FLOPs per item and sequential passes, against **TC-M** (1.000; 1.55·10¹⁰
+  FLOPs; 57 passes) and **ICoT-SI** (0.998; 4.93·10⁹; 13 passes):
+  - **LATENT BEATS TEXT** for a passing arm whose median test_acc ≥ TC-M − 0.01, with **fewer FLOPs and fewer sequential passes than TC-M**, and SERIAL.
+  - **The wording, fixed now (Literature (3)):** "matches text CoT at about 0.6× FLOPs and about 0.2× sequential passes, with SERIAL. ICoT-SI is cheaper still at 4×4,
+    but has no causally testable carrier."
+    - A C3 win over ICoT-SI needs a regime where ICoT-SI degrades (5×5+ at a matched budget).
+    - Training compute is reported separately (48k × 64 against ICoT-SI's up to 200 epochs × 808k).
+* **Readings:**
+  - **B-EARLY PASS with LATENT BEATS TEXT:** a pretrained LM multiplies exactly through a latent memory that carries the computation (SERIAL), from final answers after
+    CoT-guided training, at less compute than writing the CoT. This is the user's headline.
+  - **A PASS, B FAIL:** the reader is needed at inference-free training time, and removal loses the skill. Retention (the removed S_j's decode accuracy) says which step goes
+    first.
+  - **CTRL PASS:** the multiplier-major DeltaMem needs no reader.
+  - **A DROP:** not acquired within budget.
+  - **Exact without SERIAL:** in-pass or shortcut (the b-prefix: a is visible every step). The donor's b-prefix-consistent rate names it.
+* **Descriptive:**
+  - SERIAL by checkpoint (row level, 24k / 36k / 48k; and at each B stage);
+  - the (i) / (ii) / (iii) shares at every checkpoint;
+  - a held-out b-prefix probe on the memory after removal;
+  - the additive state's norm per segment (Literature (2); needed before any length or 5×5 claim);
+  - per-head-type ablation; the additive state's column-sum readout;
+  - ext_4x8_low8; α by head.
+
+**Placement.**
+* **Proof:** A s1 plus CTRL s1, about $1.5 each, in parallel with §151 (the user's call: credit about $146).
+* **Then:** B-EARLY on gated seeds (about $0.6 each) and A s2–s4 (about $1.5 each), by the credit rule. About $9 in all.
+* 5×5 after a 4×4 PASS, with the same headline against TC-M 5×5 (2.33·10¹⁰; 87) and ICoT-SI (0.996; 5.76·10⁹; 15).
+* **Implementation (the experiments session):** multrow `--carrier deltamem` (§147's branch in the multiplier-major segment), the side-branch reader / decoder pass that
+  writes nothing back, §142's reader / gate / fork machinery, the memory-state donor swap, and the Meter on inference.
+* **Gates:** step-0 function preservation, gradflow (CUDA bf16) into every DeltaMem parameter from the reader and the final CE, a check that the reader writes nothing back,
+  memory at L 4, smoke_plain, and Audit's diff review.
+* Dirs `s152_{a,bearly,ctrl}_4x4_s{seed}`. Scorer: `theory/score_s152.py`, committed with this registration.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
