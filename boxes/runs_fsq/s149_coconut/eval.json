@@ -1,0 +1,295 @@
+{
+ "model": "coconut",
+ "ckpt": "prosqa/ckpt_ext/hf/dw_gsm/coconut_checkpoint_33",
+ "K": 6,
+ "unit_tests": "ok",
+ "probe_sha256": "85c1b96b8f62976c",
+ "device": "NVIDIA GeForce RTX 4060",
+ "chains": {
+  "n": 1319,
+  "valid_final_eq_answer": 1207
+ },
+ "test_acc": 0.33131159969673996,
+ "by_steps": {
+  "2": 0.5658263305322129,
+  "3": 0.3956043956043956,
+  "4+": 0.1203883495145631
+ },
+ "n": 1319,
+ "alignment": {
+  "kind": "thought pair (2t-1, 2t)",
+  "chosen": {
+   "1": [
+    0,
+    1
+   ],
+   "2": [
+    2,
+    3
+   ],
+   "3": [
+    4,
+    5
+   ]
+  }
+ },
+ "ablation": {
+  "1": {
+   "zero": {
+    "acc": 0.14935557240333586,
+    "by_steps": {
+     "2": 0.2857142857142857,
+     "3": 0.12362637362637363,
+     "4+": 0.06407766990291262
+    }
+   },
+   "mean": {
+    "acc": 0.15921152388172857,
+    "by_steps": {
+     "2": 0.3165266106442577,
+     "3": 0.12637362637362637,
+     "4+": 0.06019417475728155
+    }
+   }
+  },
+  "2": {
+   "zero": {
+    "acc": 0.17361637604245642,
+    "by_steps": {
+     "2": 0.3949579831932773,
+     "3": 0.10714285714285714,
+     "4+": 0.06019417475728155
+    }
+   },
+   "mean": {
+    "acc": 0.2403335860500379,
+    "by_steps": {
+     "2": 0.44537815126050423,
+     "3": 0.23626373626373626,
+     "4+": 0.0912621359223301
+    }
+   }
+  },
+  "3": {
+   "zero": {
+    "acc": 0.2168309325246399,
+    "by_steps": {
+     "2": 0.484593837535014,
+     "3": 0.1510989010989011,
+     "4+": 0.06019417475728155
+    }
+   },
+   "mean": {
+    "acc": 0.21455648218347234,
+    "by_steps": {
+     "2": 0.49019607843137253,
+     "3": 0.12362637362637363,
+     "4+": 0.06601941747572816
+    }
+   }
+  },
+  "all": {
+   "zero": {
+    "acc": 0.03184230477634572,
+    "by_steps": {
+     "2": 0.047619047619047616,
+     "3": 0.03296703296703297,
+     "4+": 0.017475728155339806
+    }
+   },
+   "mean": {
+    "acc": 0.08339651250947688,
+    "by_steps": {
+     "2": 0.13725490196078433,
+     "3": 0.07142857142857142,
+     "4+": 0.04660194174757282
+    }
+   }
+  }
+ },
+ "donor": {
+  "1": {
+   "same_template": {
+    "n": 251,
+    "donor_consistent": 0.29880478087649404,
+    "recipient_consistent": 0.10358565737051793,
+    "chance_overlap": 0.0,
+    "excluded_share": 0.3085399449035813,
+    "recipients_eligible": 363,
+    "candidates_seen": 257,
+    "thoughts_swapped": [
+     0,
+     1
+    ],
+    "funnel": {
+     "valid_chain": 1207,
+     "correct_unpatched": 404,
+     "has_step_after_t": 394,
+     "step_t_referenced_downstream": 384,
+     "dropped_ambiguous_reference": 21,
+     "recipients": 363,
+     "no_donor_in_pool": 111,
+     "donor_excluded_same_step_value": 6,
+     "donor_excluded_same_or_invalid_answer": 0,
+     "pairs": 251
+    }
+   },
+   "all": {
+    "n": 300,
+    "donor_consistent": 0.11333333333333333,
+    "recipient_consistent": 0.11666666666666667,
+    "chance_overlap": 0.0,
+    "excluded_share": 0.17355371900826444,
+    "recipients_eligible": 363,
+    "candidates_seen": 385,
+    "thoughts_swapped": [
+     0,
+     1
+    ],
+    "funnel": {
+     "valid_chain": 1207,
+     "correct_unpatched": 404,
+     "has_step_after_t": 394,
+     "step_t_referenced_downstream": 384,
+     "dropped_ambiguous_reference": 21,
+     "recipients": 363,
+     "no_donor_in_pool": 0,
+     "donor_excluded_same_step_value": 3,
+     "donor_excluded_same_or_invalid_answer": 20,
+     "pairs": 300
+    }
+   }
+  },
+  "2": {
+   "same_template": {
+    "n": 85,
+    "donor_consistent": 0.0,
+    "recipient_consistent": 0.5882352941176471,
+    "chance_overlap": 0.0,
+    "excluded_share": 0.5526315789473684,
+    "recipients_eligible": 190,
+    "candidates_seen": 85,
+    "thoughts_swapped": [
+     2,
+     3
+    ],
+    "funnel": {
+     "valid_chain": 1207,
+     "correct_unpatched": 404,
+     "has_step_after_t": 204,
+     "step_t_referenced_downstream": 204,
+     "dropped_ambiguous_reference": 14,
+     "recipients": 190,
+     "no_donor_in_pool": 105,
+     "donor_excluded_same_step_value": 0,
+     "donor_excluded_same_or_invalid_answer": 0,
+     "pairs": 85
+    }
+   },
+   "all": {
+    "n": 190,
+    "donor_consistent": 0.005263157894736842,
+    "recipient_consistent": 0.34210526315789475,
+    "chance_overlap": 0.0,
+    "excluded_share": 0.0,
+    "recipients_eligible": 190,
+    "candidates_seen": 191,
+    "thoughts_swapped": [
+     2,
+     3
+    ],
+    "funnel": {
+     "valid_chain": 1207,
+     "correct_unpatched": 404,
+     "has_step_after_t": 204,
+     "step_t_referenced_downstream": 204,
+     "dropped_ambiguous_reference": 14,
+     "recipients": 190,
+     "no_donor_in_pool": 0,
+     "donor_excluded_same_step_value": 1,
+     "donor_excluded_same_or_invalid_answer": 0,
+     "pairs": 190
+    }
+   }
+  },
+  "3": {
+   "same_template": {
+    "n": 14,
+    "donor_consistent": 0.0,
+    "recipient_consistent": 0.0,
+    "chance_overlap": 0.0,
+    "excluded_share": 0.7586206896551724,
+    "recipients_eligible": 58,
+    "candidates_seen": 15,
+    "thoughts_swapped": [
+     4,
+     5
+    ],
+    "funnel": {
+     "valid_chain": 1207,
+     "correct_unpatched": 404,
+     "has_step_after_t": 61,
+     "step_t_referenced_downstream": 61,
+     "dropped_ambiguous_reference": 3,
+     "recipients": 58,
+     "no_donor_in_pool": 44,
+     "donor_excluded_same_step_value": 1,
+     "donor_excluded_same_or_invalid_answer": 0,
+     "pairs": 14
+    }
+   },
+   "all": {
+    "n": 58,
+    "donor_consistent": 0.0,
+    "recipient_consistent": 0.10344827586206896,
+    "chance_overlap": 0.0,
+    "excluded_share": 0.0,
+    "recipients_eligible": 58,
+    "candidates_seen": 58,
+    "thoughts_swapped": [
+     4,
+     5
+    ],
+    "funnel": {
+     "valid_chain": 1207,
+     "correct_unpatched": 404,
+     "has_step_after_t": 61,
+     "step_t_referenced_downstream": 61,
+     "dropped_ambiguous_reference": 3,
+     "recipients": 58,
+     "no_donor_in_pool": 0,
+     "donor_excluded_same_step_value": 0,
+     "donor_excluded_same_or_invalid_answer": 0,
+     "pairs": 58
+    }
+   }
+  }
+ },
+ "contraction": {
+  "rho_k": [
+   0.2117999941110611,
+   0.5490000247955322,
+   0.8698999881744385,
+   0.7993000149726868,
+   0.8482000231742859
+  ],
+  "dist_med_k": [
+   3.9630300998687744,
+   0.8517000079154968,
+   0.49816998839378357,
+   0.42809998989105225,
+   0.3444400131702423,
+   0.3112199902534485
+  ],
+  "jacobian_top_eig": 0.2447293996810913,
+  "jacobian_method": "power iteration on J by central differences: the top |EIGENVALUE| of thought_0 -> thought_1 (fed space), not the spectral norm (Audit)",
+  "n": 300,
+  "eps": "0.1 x ||thought_0||, random direction",
+  "space": "fed-back raw hidden"
+ },
+ "sec": 343,
+ "torch_peak_gib": {
+  "allocated": 0.753,
+  "reserved": 0.846
+ }
+}

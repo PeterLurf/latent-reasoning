@@ -1,0 +1,360 @@
+{
+ "model": "codi",
+ "ckpt": "codi",
+ "K": 6,
+ "unit_tests": "ok",
+ "probe_sha256": "85c1b96b8f62976c",
+ "device": "NVIDIA GeForce RTX 2070",
+ "chains": {
+  "n": 1319,
+  "valid_final_eq_answer": 1207
+ },
+ "test_acc": 0.4245640636846095,
+ "by_steps": {
+  "2": 0.6582633053221288,
+  "3": 0.489010989010989,
+  "4+": 0.22524271844660193
+ },
+ "n": 1319,
+ "alignment": {
+  "kind": "probe-defined (ridge R^2 of step t's signed log value from each latent)",
+  "r2_grid": {
+   "1": [
+    0.37272350115015873,
+    0.2849164119605093,
+    0.35573838091321197,
+    0.22421763875097278,
+    0.15943038831542222,
+    0.18576634978708728
+   ],
+   "2": [
+    0.38681715971891206,
+    0.24576347091272865,
+    0.3520309902346359,
+    0.31452556357215555,
+    0.3749003919776671,
+    0.33676954970464235
+   ],
+   "3": [
+    0.10112904113613219,
+    0.16162015181801026,
+    0.245406043184638,
+    0.34612188423573564,
+    0.26616142238896734,
+    0.34423423865046954
+   ]
+  },
+  "chosen": {
+   "1": 0,
+   "2": 0,
+   "3": 3
+  }
+ },
+ "ablation": {
+  "1": {
+   "zero": {
+    "acc": 0.4116755117513268,
+    "by_steps": {
+     "2": 0.6414565826330533,
+     "3": 0.4697802197802198,
+     "4+": 0.21359223300970873
+    }
+   },
+   "mean": {
+    "acc": 0.2934040940106141,
+    "by_steps": {
+     "2": 0.6106442577030813,
+     "3": 0.2087912087912088,
+     "4+": 0.12427184466019417
+    }
+   }
+  },
+  "2": {
+   "zero": {
+    "acc": 0.35329795299469297,
+    "by_steps": {
+     "2": 0.6106442577030813,
+     "3": 0.4230769230769231,
+     "4+": 0.1203883495145631
+    }
+   },
+   "mean": {
+    "acc": 0.400303260045489,
+    "by_steps": {
+     "2": 0.6218487394957983,
+     "3": 0.46703296703296704,
+     "4+": 0.1941747572815534
+    }
+   }
+  },
+  "3": {
+   "zero": {
+    "acc": 0.3502653525398029,
+    "by_steps": {
+     "2": 0.6022408963585434,
+     "3": 0.38186813186813184,
+     "4+": 0.14757281553398058
+    }
+   },
+   "mean": {
+    "acc": 0.37680060652009095,
+    "by_steps": {
+     "2": 0.6498599439775911,
+     "3": 0.4368131868131868,
+     "4+": 0.13980582524271845
+    }
+   }
+  },
+  "4": {
+   "zero": {
+    "acc": 0.3161485974222896,
+    "by_steps": {
+     "2": 0.5826330532212886,
+     "3": 0.3324175824175824,
+     "4+": 0.1145631067961165
+    }
+   },
+   "mean": {
+    "acc": 0.32752084912812734,
+    "by_steps": {
+     "2": 0.4957983193277311,
+     "3": 0.3873626373626374,
+     "4+": 0.16116504854368932
+    }
+   }
+  },
+  "5": {
+   "zero": {
+    "acc": 0.3078089461713419,
+    "by_steps": {
+     "2": 0.5574229691876751,
+     "3": 0.32967032967032966,
+     "4+": 0.11067961165048544
+    }
+   },
+   "mean": {
+    "acc": 0.3601213040181956,
+    "by_steps": {
+     "2": 0.6190476190476191,
+     "3": 0.40384615384615385,
+     "4+": 0.14563106796116504
+    }
+   }
+  },
+  "6": {
+   "zero": {
+    "acc": 0.42077331311599697,
+    "by_steps": {
+     "2": 0.6442577030812325,
+     "3": 0.49175824175824173,
+     "4+": 0.21941747572815534
+    }
+   },
+   "mean": {
+    "acc": 0.4184988627748294,
+    "by_steps": {
+     "2": 0.6442577030812325,
+     "3": 0.48626373626373626,
+     "4+": 0.21941747572815534
+    }
+   }
+  },
+  "all": {
+   "zero": {
+    "acc": 0.221379833206975,
+    "by_steps": {
+     "2": 0.3137254901960784,
+     "3": 0.24175824175824176,
+     "4+": 0.13980582524271845
+    }
+   },
+   "mean": {
+    "acc": 0.10538286580742987,
+    "by_steps": {
+     "2": 0.15966386554621848,
+     "3": 0.08241758241758242,
+     "4+": 0.08737864077669903
+    }
+   }
+  }
+ },
+ "donor": {
+  "1": {
+   "same_template": {
+    "n": 300,
+    "donor_consistent": 0.16666666666666666,
+    "recipient_consistent": 0.5466666666666666,
+    "chance_overlap": 0.0,
+    "excluded_share": 0.3603411513859275,
+    "recipients_eligible": 469,
+    "candidates_seen": 309,
+    "thoughts_swapped": [
+     0
+    ],
+    "funnel": {
+     "valid_chain": 1207,
+     "correct_unpatched": 529,
+     "has_step_after_t": 517,
+     "step_t_referenced_downstream": 503,
+     "dropped_ambiguous_reference": 34,
+     "recipients": 469,
+     "no_donor_in_pool": 165,
+     "donor_excluded_same_step_value": 5,
+     "donor_excluded_same_or_invalid_answer": 0,
+     "pairs": 300
+    }
+   },
+   "all": {
+    "n": 300,
+    "donor_consistent": 0.10333333333333333,
+    "recipient_consistent": 0.4866666666666667,
+    "chance_overlap": 0.0,
+    "excluded_share": 0.3603411513859275,
+    "recipients_eligible": 469,
+    "candidates_seen": 493,
+    "thoughts_swapped": [
+     0
+    ],
+    "funnel": {
+     "valid_chain": 1207,
+     "correct_unpatched": 529,
+     "has_step_after_t": 517,
+     "step_t_referenced_downstream": 503,
+     "dropped_ambiguous_reference": 34,
+     "recipients": 469,
+     "no_donor_in_pool": 0,
+     "donor_excluded_same_step_value": 5,
+     "donor_excluded_same_or_invalid_answer": 20,
+     "pairs": 300
+    }
+   }
+  },
+  "2": {
+   "same_template": {
+    "n": 106,
+    "donor_consistent": 0.009433962264150943,
+    "recipient_consistent": 0.16037735849056603,
+    "chance_overlap": 0.0,
+    "excluded_share": 0.5923076923076923,
+    "recipients_eligible": 260,
+    "candidates_seen": 106,
+    "thoughts_swapped": [
+     0
+    ],
+    "funnel": {
+     "valid_chain": 1207,
+     "correct_unpatched": 529,
+     "has_step_after_t": 290,
+     "step_t_referenced_downstream": 287,
+     "dropped_ambiguous_reference": 27,
+     "recipients": 260,
+     "no_donor_in_pool": 154,
+     "donor_excluded_same_step_value": 0,
+     "donor_excluded_same_or_invalid_answer": 0,
+     "pairs": 106
+    }
+   },
+   "all": {
+    "n": 260,
+    "donor_consistent": 0.007692307692307693,
+    "recipient_consistent": 0.21153846153846154,
+    "chance_overlap": 0.0,
+    "excluded_share": 0.0,
+    "recipients_eligible": 260,
+    "candidates_seen": 265,
+    "thoughts_swapped": [
+     0
+    ],
+    "funnel": {
+     "valid_chain": 1207,
+     "correct_unpatched": 529,
+     "has_step_after_t": 290,
+     "step_t_referenced_downstream": 287,
+     "dropped_ambiguous_reference": 27,
+     "recipients": 260,
+     "no_donor_in_pool": 0,
+     "donor_excluded_same_step_value": 5,
+     "donor_excluded_same_or_invalid_answer": 0,
+     "pairs": 260
+    }
+   }
+  },
+  "3": {
+   "same_template": {
+    "n": 18,
+    "donor_consistent": 0.0,
+    "recipient_consistent": 0.8888888888888888,
+    "chance_overlap": 0.0,
+    "excluded_share": 0.8217821782178218,
+    "recipients_eligible": 101,
+    "candidates_seen": 20,
+    "thoughts_swapped": [
+     3
+    ],
+    "funnel": {
+     "valid_chain": 1207,
+     "correct_unpatched": 529,
+     "has_step_after_t": 114,
+     "step_t_referenced_downstream": 113,
+     "dropped_ambiguous_reference": 12,
+     "recipients": 101,
+     "no_donor_in_pool": 83,
+     "donor_excluded_same_step_value": 2,
+     "donor_excluded_same_or_invalid_answer": 0,
+     "pairs": 18
+    }
+   },
+   "all": {
+    "n": 100,
+    "donor_consistent": 0.01,
+    "recipient_consistent": 0.5,
+    "chance_overlap": 0.0,
+    "excluded_share": 0.00990099009900991,
+    "recipients_eligible": 101,
+    "candidates_seen": 123,
+    "thoughts_swapped": [
+     3
+    ],
+    "funnel": {
+     "valid_chain": 1207,
+     "correct_unpatched": 529,
+     "has_step_after_t": 114,
+     "step_t_referenced_downstream": 113,
+     "dropped_ambiguous_reference": 12,
+     "recipients": 101,
+     "no_donor_in_pool": 0,
+     "donor_excluded_same_step_value": 3,
+     "donor_excluded_same_or_invalid_answer": 20,
+     "pairs": 100
+    }
+   }
+  }
+ },
+ "contraction": {
+  "rho_k": [
+   0.15289999544620514,
+   0.5371999740600586,
+   0.6017000079154968,
+   1.353700041770935,
+   0.48159998655319214
+  ],
+  "dist_med_k": [
+   7.505430221557617,
+   1.1796300411224365,
+   0.5795699954032898,
+   0.37595999240875244,
+   0.6402000188827515,
+   0.27344998717308044
+  ],
+  "jacobian_top_eig": 0.1798587441444397,
+  "jacobian_method": "power iteration on J by central differences: the top |EIGENVALUE| of thought_0 -> thought_1 (fed space), not the spectral norm (Audit)",
+  "n": 300,
+  "eps": "0.1 x ||thought_0||, random direction",
+  "space": "after prj (fed latent)"
+ },
+ "sec": 350,
+ "torch_peak_gib": {
+  "allocated": 1.653,
+  "reserved": 2.246
+ }
+}
