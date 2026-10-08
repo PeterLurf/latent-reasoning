@@ -51,6 +51,8 @@ paradigms. Don't get stuck in the minuscule improvements loop. Take the lessons 
    - **The bet:** fixed-width token chunks of the raw input stream (no item boundaries), with the carrier between chunks.
    - **First test, after B1 / B4 read:** S5 and the running sum written as plain token streams.
    - Most SOTA latent methods use task scaffolds; only Huginn / Ouro and the soft-token methods are task-agnostic.
+   - **Registered as §153 THINK-PASS (ea154f30, 23:41):** §152's recipe with item-agnostic passes (VISIBLE: the whole problem + a step token each pass; PURE: the problem
+     in pass 0 only), gated on §152 A s1.
 
 ## The operative standard (the user, 23:00, via Audit; NORTH_STAR C4 updated)
 * **Strict C4 is no longer required.** CoT-derived per-step supervision and CoT-then-removal training are allowed.
