@@ -37,7 +37,7 @@ def cell(arm, seed):
         return None
     if int(a.get("steps", 0) or 0) != 48000 or a.get("mem_check") or a.get("train_n"):
         return {"status": "smoke"}
-    exp = dict(BASE, reader=(arm == "ar"))
+    exp = dict(BASE, reader=arm.startswith("ar"), **({"mem_write": "block9"} if arm.endswith("9") else {}))   # ar9 / ctrlr9: the 155-1 block-9 fallback (160-1)
     bad = {k: a.get(k) for k, v in exp.items() if a.get(k) != v}
     if bad:
         ERRORS.append((d, bad)); return {"status": "error", "error": bad}
@@ -60,6 +60,11 @@ def main():
         hl = S152.headline(runs) if v == "PASS" else None
         res[arm] = {"runs": runs, "verdict": v, "headline": hl}
         print(arm, v, {k: x and {kk: x.get(kk) for kk in ("status", "test_acc", "acc_by_length", "serial", "flops", "passes", "fallback_trigger", "error")} for k, x in runs.items()})
+    for fb in ("ar9", "ctrlr9"):                                             # 155-1's fallback cells (inherited, 160-1): descriptive slot-1 readout
+        x = cell(fb, 1)
+        res[fb] = {"runs": {1: x}}
+        if x:
+            print(fb, "(fallback, block-9 writes)", {kk: x.get(kk) for kk in ("status", "test_acc", "acc_by_length", "serial", "fallback_trigger", "error")})
     a1 = (res["ar"]["runs"][1] or {}); c1 = (res["ctrlr"]["runs"][1] or {})
     rd = []
     if a1.get("status") == "done":
