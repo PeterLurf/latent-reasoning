@@ -42,3 +42,4 @@
 97.88.82.118 # 2026-10-07 b115 stuck 'loading/stopped' 20 min (image pull; b129 runs on this host's other slot)
 154.64.230.67 # 2026-10-07 b137 BAD HOST (cuInit failed) at 16:29; b126's slow-link machine
 92.97.193.95 # 2026-10-07 b138 stuck 'loading/stopped' 24 min (second slot; b139 runs on this host)
+107.159.8.60 # 2026-10-08 01:20 b161 stuck loading (cur_state stopped)
