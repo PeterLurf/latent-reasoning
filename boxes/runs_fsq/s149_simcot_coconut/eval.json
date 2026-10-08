@@ -1,0 +1,335 @@
+{
+ "model": "simcot_coconut",
+ "ckpt": "prosqa/ckpt_ext/hf/simcot_coconut/checkpoint_28",
+ "K": 10,
+ "unit_tests": "ok",
+ "probe_sha256": "612fee03f61cbac5",
+ "device": "NVIDIA GeForce RTX 4060",
+ "chains": {
+  "n": 1319,
+  "valid_final_eq_answer": 1207
+ },
+ "test_acc": 0.44806671721000757,
+ "by_steps": {
+  "2": 0.6218487394957983,
+  "3": 0.5027472527472527,
+  "4+": 0.2970873786407767
+ },
+ "n": 1319,
+ "alignment": {
+  "kind": "thought pair (2t-1, 2t)",
+  "chosen": {
+   "1": [
+    0,
+    1
+   ],
+   "2": [
+    2,
+    3
+   ],
+   "3": [
+    4,
+    5
+   ]
+  }
+ },
+ "ablation": {
+  "1": {
+   "zero": {
+    "acc": 0.2971948445792267,
+    "by_steps": {
+     "2": 0.45938375350140054,
+     "3": 0.31868131868131866,
+     "4+": 0.16116504854368932
+    }
+   },
+   "mean": {
+    "acc": 0.177407126611069,
+    "by_steps": {
+     "2": 0.3333333333333333,
+     "3": 0.17857142857142858,
+     "4+": 0.07766990291262135
+    }
+   }
+  },
+  "2": {
+   "zero": {
+    "acc": 0.3017437452615618,
+    "by_steps": {
+     "2": 0.5182072829131653,
+     "3": 0.3076923076923077,
+     "4+": 0.1378640776699029
+    }
+   },
+   "mean": {
+    "acc": 0.27369219105382864,
+    "by_steps": {
+     "2": 0.5210084033613446,
+     "3": 0.2774725274725275,
+     "4+": 0.09902912621359224
+    }
+   }
+  },
+  "3": {
+   "zero": {
+    "acc": 0.3502653525398029,
+    "by_steps": {
+     "2": 0.5994397759103641,
+     "3": 0.4010989010989011,
+     "4+": 0.13398058252427184
+    }
+   },
+   "mean": {
+    "acc": 0.3570887035633055,
+    "by_steps": {
+     "2": 0.6190476190476191,
+     "3": 0.3983516483516483,
+     "4+": 0.1378640776699029
+    }
+   }
+  },
+  "4": {
+   "zero": {
+    "acc": 0.400303260045489,
+    "by_steps": {
+     "2": 0.6078431372549019,
+     "3": 0.47527472527472525,
+     "4+": 0.20388349514563106
+    }
+   },
+   "mean": {
+    "acc": 0.41470811220621684,
+    "by_steps": {
+     "2": 0.6246498599439776,
+     "3": 0.489010989010989,
+     "4+": 0.2174757281553398
+    }
+   }
+  },
+  "5": {
+   "zero": {
+    "acc": 0.4291129643669447,
+    "by_steps": {
+     "2": 0.6134453781512605,
+     "3": 0.49175824175824173,
+     "4+": 0.2621359223300971
+    }
+   },
+   "mean": {
+    "acc": 0.43214556482183475,
+    "by_steps": {
+     "2": 0.6218487394957983,
+     "3": 0.49175824175824173,
+     "4+": 0.2621359223300971
+    }
+   }
+  },
+  "all": {
+   "zero": {
+    "acc": 0.034874905231235785,
+    "by_steps": {
+     "2": 0.047619047619047616,
+     "3": 0.03296703296703297,
+     "4+": 0.03300970873786408
+    }
+   },
+   "mean": {
+    "acc": 0.07960576194086429,
+    "by_steps": {
+     "2": 0.14565826330532214,
+     "3": 0.07142857142857142,
+     "4+": 0.04660194174757282
+    }
+   }
+  }
+ },
+ "donor": {
+  "1": {
+   "same_template": {
+    "n": 299,
+    "donor_consistent": 0.34782608695652173,
+    "recipient_consistent": 0.06688963210702341,
+    "chance_overlap": 0.0,
+    "excluded_share": 0.3847736625514403,
+    "recipients_eligible": 486,
+    "candidates_seen": 306,
+    "thoughts_swapped": [
+     0,
+     1
+    ],
+    "funnel": {
+     "valid_chain": 1207,
+     "correct_unpatched": 552,
+     "has_step_after_t": 540,
+     "step_t_referenced_downstream": 523,
+     "dropped_ambiguous_reference": 37,
+     "recipients": 486,
+     "no_donor_in_pool": 186,
+     "donor_excluded_same_step_value": 7,
+     "donor_excluded_same_or_invalid_answer": 0,
+     "pairs": 299
+    }
+   },
+   "all": {
+    "n": 300,
+    "donor_consistent": 0.12666666666666668,
+    "recipient_consistent": 0.14666666666666667,
+    "chance_overlap": 0.0,
+    "excluded_share": 0.3827160493827161,
+    "recipients_eligible": 486,
+    "candidates_seen": 573,
+    "thoughts_swapped": [
+     0,
+     1
+    ],
+    "funnel": {
+     "valid_chain": 1207,
+     "correct_unpatched": 552,
+     "has_step_after_t": 540,
+     "step_t_referenced_downstream": 523,
+     "dropped_ambiguous_reference": 37,
+     "recipients": 486,
+     "no_donor_in_pool": 0,
+     "donor_excluded_same_step_value": 12,
+     "donor_excluded_same_or_invalid_answer": 79,
+     "pairs": 300
+    }
+   }
+  },
+  "2": {
+   "same_template": {
+    "n": 114,
+    "donor_consistent": 0.3508771929824561,
+    "recipient_consistent": 0.08771929824561403,
+    "chance_overlap": 0.0,
+    "excluded_share": 0.6148648648648649,
+    "recipients_eligible": 296,
+    "candidates_seen": 115,
+    "thoughts_swapped": [
+     2,
+     3
+    ],
+    "funnel": {
+     "valid_chain": 1207,
+     "correct_unpatched": 552,
+     "has_step_after_t": 330,
+     "step_t_referenced_downstream": 326,
+     "dropped_ambiguous_reference": 30,
+     "recipients": 296,
+     "no_donor_in_pool": 182,
+     "donor_excluded_same_step_value": 1,
+     "donor_excluded_same_or_invalid_answer": 0,
+     "pairs": 114
+    }
+   },
+   "all": {
+    "n": 293,
+    "donor_consistent": 0.06484641638225255,
+    "recipient_consistent": 0.17406143344709898,
+    "chance_overlap": 0.0,
+    "excluded_share": 0.010135135135135087,
+    "recipients_eligible": 296,
+    "candidates_seen": 358,
+    "thoughts_swapped": [
+     2,
+     3
+    ],
+    "funnel": {
+     "valid_chain": 1207,
+     "correct_unpatched": 552,
+     "has_step_after_t": 330,
+     "step_t_referenced_downstream": 326,
+     "dropped_ambiguous_reference": 30,
+     "recipients": 296,
+     "no_donor_in_pool": 0,
+     "donor_excluded_same_step_value": 6,
+     "donor_excluded_same_or_invalid_answer": 59,
+     "pairs": 293
+    }
+   }
+  },
+  "3": {
+   "same_template": {
+    "n": 26,
+    "donor_consistent": 0.23076923076923078,
+    "recipient_consistent": 0.038461538461538464,
+    "chance_overlap": 0.0,
+    "excluded_share": 0.8115942028985508,
+    "recipients_eligible": 138,
+    "candidates_seen": 26,
+    "thoughts_swapped": [
+     4,
+     5
+    ],
+    "funnel": {
+     "valid_chain": 1207,
+     "correct_unpatched": 552,
+     "has_step_after_t": 150,
+     "step_t_referenced_downstream": 146,
+     "dropped_ambiguous_reference": 8,
+     "recipients": 138,
+     "no_donor_in_pool": 112,
+     "donor_excluded_same_step_value": 0,
+     "donor_excluded_same_or_invalid_answer": 0,
+     "pairs": 26
+    }
+   },
+   "all": {
+    "n": 135,
+    "donor_consistent": 0.037037037037037035,
+    "recipient_consistent": 0.16296296296296298,
+    "chance_overlap": 0.0,
+    "excluded_share": 0.021739130434782594,
+    "recipients_eligible": 138,
+    "candidates_seen": 196,
+    "thoughts_swapped": [
+     4,
+     5
+    ],
+    "funnel": {
+     "valid_chain": 1207,
+     "correct_unpatched": 552,
+     "has_step_after_t": 150,
+     "step_t_referenced_downstream": 146,
+     "dropped_ambiguous_reference": 8,
+     "recipients": 138,
+     "no_donor_in_pool": 0,
+     "donor_excluded_same_step_value": 6,
+     "donor_excluded_same_or_invalid_answer": 55,
+     "pairs": 135
+    }
+   }
+  }
+ },
+ "contraction": {
+  "rho_k": [
+   0.14229999482631683,
+   0.6966000199317932,
+   0.5819000005722046,
+   1.1232000589370728,
+   1.0494999885559082,
+   0.7781999707221985,
+   1.433899998664856,
+   0.6277999877929688,
+   1.6640000343322754
+  ],
+  "dist_med_k": [
+   3.0081899166107178,
+   0.4447599947452545,
+   0.32295000553131104,
+   0.16944999992847443,
+   0.21527999639511108,
+   0.24116000533103943,
+   0.1892700046300888,
+   0.25453999638557434,
+   0.17369000613689423,
+   0.27967000007629395
+  ],
+  "jacobian_top_eig": 0.21380415558815002,
+  "jacobian_method": "power iteration on J by central differences: the top |EIGENVALUE| of thought_0 -> thought_1 (fed space), not the spectral norm (Audit)",
+  "n": 300,
+  "eps": "0.1 x ||thought_0||, random direction",
+  "space": "fed-back raw hidden"
+ },
+ "sec": 803
+}

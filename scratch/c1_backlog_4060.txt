@@ -1,6 +1,6 @@
 # 2026-10-07 s149 SOTA-PROBE full evals (Audit-approved; $0, eval only, fp32 GPT-2 small) - first
-3.0 boxes/runs_fsq/s149_simcot_coconut/eval.json python -u scratch/s149_probe.py simcot_coconut {DEV}
-3.0 boxes/runs_fsq/s149_coconut/eval.json python -u scratch/s149_probe.py coconut {DEV}
+2.5 boxes/runs_fsq/s149_simcot_coconut/eval.json python -u scratch/s149_probe.py simcot_coconut {DEV}
+2.5 boxes/runs_fsq/s149_coconut/eval.json python -u scratch/s149_probe.py coconut {DEV}
 # 2026-10-07 s148 memory: loop4 at bs 64, train r = 4 (+ deep-sup r 3) + greedy eval to r = 16 - first
 3.0 D:/drain_tmp/mem148/mem_check.json python -u -m boxes.loop148 --arm loop4 --seed 1 --mem_check --device {DEV} --out D:/drain_tmp/mem148
 # 2026-10-07 s142 teacher-target cache (note 142-1): TC-M greedy S_1..S_4 on the deduped 808k train split, bf16, bs 512 - first
