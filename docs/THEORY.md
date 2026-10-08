@@ -10080,6 +10080,14 @@ run, RTX 3090 (or a local card if memory-checked).
   - A point missing the baseline is not DECOMPOSABLE (score_s167).
 * **Unchanged:** the necessity ablation (≥ 0.3) is already in the rule; R stays linear (Stiefel, low-rank); only small-k evidence counts; k = 2,048 is a reference.
 
+**Note 166-2 (2026-10-08 19:55 EDT, before any §166 run (only `s166_gates` exists); Audit 836c09ab). A third, descriptive coverage cell on §163's model.**
+* §163 MIX2D s1's 8×8 decay is the same chain-length signature as 4×16 and S5 at 512. It is flat by product count and falls by position.
+* **Added (descriptive; no rule or reading changes):**
+  - `s166_mix2d_fitted_s1` and `s166_mix2d_zero_s1`, post-trained from `s163_mix2d_4x4_s1`'s model.
+  - §166's settings: 1,000 steps, lr 2·10⁻⁵, init_p 0.5, FITTED (note 166-1) against PLAIN, on §163's 2-D mix.
+  - The read: 4×4 / 5×5 (kept), 6×6 / 7×7 / 8×8 / 10×10, and the 8×8 per-column profile.
+* score_s166 reports the cell under `mix2d_descriptive`.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

@@ -16,5 +16,9 @@
    "plain_s2": "open",
    "plain_s3": "open"
   }
+ },
+ "mix2d_descriptive": {
+  "fitted": "open",
+  "zero": "open"
  }
 }

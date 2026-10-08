@@ -7,7 +7,7 @@ post-train (the control for "more steps"). 1,000 steps, AdamW lr 2e-5 constant a
 COVERAGE-HELPS(S5): SP long_acc_512 >= 0.90 AND PLAIN long_acc_512 < 0.50, with SP final accuracy >= 0.99 at every length <= 32; else 'covered range only' if SP >= 0.90 at 48 / 64.
 Covered states come from the current model (state_source current); SP skips segment 0 for passed chains (Audit).
 COVERAGE-HELPS(MULT): NOISE mean ext_4x16 (3 models) >= 0.50 AND PLAIN mean < 0.30, with NOISE mean 4x4 >= 0.99 and mean ext_4x8 >= 0.90.
-Dirs boxes/runs_fsq/s166_s5_{sp,plain}_s2 and s166_mult_{fitted,plain}_s{1,2,3}.
+Dirs boxes/runs_fsq/s166_s5_{sp,plain}_s2 and s166_mult_{fitted,plain}_s{1,2,3}; descriptive s166_mix2d_{fitted,zero}_s1 (note 166-2).
     python theory/score_s166.py
 """
 import json
@@ -70,6 +70,10 @@ def main():
     else:
         res["mult"] = {"reading": "pending", "status": {**{"fitted_s%d" % s: v["status"] for s, v in nz.items()}, **{"plain_s%d" % s: v["status"] for s, v in pn.items()}}}
     print("MULT:", res["mult"])
+    m2 = {mode: cell("s166_mix2d_%s_s1" % mode, mode, "s163_mix2d_4x4_s1") for mode in ("fitted", "zero")}   # note 166-2: descriptive §163 cell
+    res["mix2d_descriptive"] = {mode: ({k: ((v.get(k) or {}).get("test_acc") if k != "test_acc" else v.get("test_acc")) for k in ("test_acc", "test_5x5", "ext_6x6", "ext_7x7", "ext_8x8", "ext_10x10")}
+                                       if v["status"] == "done" else v["status"]) for mode, v in m2.items()}
+    print("MIX2D (descriptive):", res["mix2d_descriptive"])
     if ERRORS:
         print("ERRORS:", ERRORS)
     json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s166.json"), "w", newline=chr(10)), indent=1, default=float)
