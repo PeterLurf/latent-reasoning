@@ -1,0 +1,3 @@
+# THEORY §165 FIXED-CHUNK (60e55135) arm k8 slot 1: boxes.fixedchunk --chunk_k 4 --think_k 8 (§155 R's DeltaMem-R; fixed chunks of the bench problem text, 8 think passes, read-only decoder; FINAL; §161's 4 x n mix; 48k; --auto_micro: memcheck at 4x5 training + 4x16 eval at K' = 4K); RTX 3090; launch after §161 MIX s2 and §164 read
+# P=1
+boxes/runs_fsq/s165_k8_4x4_s1 boxes.fixedchunk --chunk_k 4 --think_k 8 --seed 1 --auto_micro
