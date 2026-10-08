@@ -110,7 +110,8 @@ def slot(arm, k):
             a["exact"] = (a["test_acc"] or 0) >= 0.99
             a["pass"] = bool(a["exact"] and a["serial"])
             a["length_general"] = (a["ext_4x8"] or 0) >= 0.9
-            a["recurrent_use"] = bool(ps is not None and rs is not None and ps >= 0.8 and rs < 0.3)
+            a["recurrent_use_registered"] = bool(ps is not None and rs is not None and ps >= 0.8 and rs < 0.3)      # the registered absolute form (reported)
+            a["recurrent_use"] = bool(ps is not None and rs is not None and nv is not None and ps - nv >= 0.5 and rs - nv < 0.1)   # note 155-3: excess over the null
             return {"attempts": att, "status": "accepted", "accepted": a}
     if len(att) == len(OFFS) and all(x["plateau"] for x in att):
         return {"attempts": att, "status": "exhausted", "accepted": None}

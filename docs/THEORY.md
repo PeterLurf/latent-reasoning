@@ -8912,6 +8912,37 @@ ext_4x8 0.000 < 0.5. ROTARY was deferred to §155's architecture (154-2), so §1
   - λ by head;
   - the off-column weight share.
 
+**Note 155-3 (2026-10-08 04:42 EDT; Audit's proposal; before any SHIFT-R result). RECURRENT USE is scored as excess over the null.**
+* **The flaw:** the registered clause "random-edit null below 0.3" is absolute.
+  - With base errors on carry-boundary rows, the unedited null_value is already about 0.31 (§154 SHIFT: propagation 0.325, random 0.317, null 0.312).
+  - A model with similar errors would then fail the random clause even with perfect propagation, and a 0.8 propagation overstates the effect when the null is about 0.3.
+* **Amended rule:** **RECURRENT USE = propagation_share − null_value ≥ 0.5 and random_edit_share − null_value < 0.1, in ≥ 3/4 accepted SHIFT-R runs.**
+  - The registered absolute form is reported beside it.
+  - Also descriptive: propagation on the rows whose base digit is correct, where null = 0 by construction.
+* **Disclosure of what had been read:** §154 SHIFT's null, and §155 **R** s1's eval, whose descriptive propagation is 0.0 / random 0.0 / null 0.0 pooled (n 397).
+  - RECURRENT USE is registered for **SHIFT-R** only, and no SHIFT-R data exists yet. The amendment is therefore not informed by the tested arm.
+
+**§155 R s1 (interim, 2026-10-08 04:42 EDT; slot 1 of 4, 24k, RTX 3090; scored by Theory with score_s155): exact but not SERIAL.**
+* **4×4:** test_acc **1.000**, train_acc 1.0, every column 1.0, final loss 0.00018, no non-finite steps. It is the first exact multiplication through a latent memory in the program.
+* **Not SERIAL.**
+  - Row-level donor 0.085 / 0.062 / 0.144 at pairs 4 / 8 / 12; recipient 0.029 / 0.020 / 0.013.
+  - At digit level the donor match (0.72 / 0.68 / 0.65) is at chance (0.67 / 0.57 / 0.46).
+  - After a whole-memory swap the answer follows neither item. R's state is not a compositional "accumulated sums so far".
+* **Not length-general:** ext_4x8 0.000 (column 5 0.082), ext_4x16 0.0.
+* **No edit propagation** (descriptive for R): propagation 0.0, random 0.0, null 0.0; coupling 0.0.
+* **The recurrence formed.**
+  - rho_loop (155-1) is 0 at γ = 0, then 0.22–0.26 from γ = 1 (6k) to the end.
+  - The read adds R² 0.055–0.072 of write variance beyond the input.
+* **The fallback trigger fired.** There were 12 write-row gradient spikes above 100× the preceding-1k median between 16.9k and 23.9k (max 0.3–4.9 against medians of
+  0.002–0.05), while the loss fell to 0.0002.
+  - **By 155-1's rule, R9 (block-9 writes) runs.**
+  - Disclosed: the trigger is sensitive to a median that decays late in training.
+* **For now:**
+  - R vs R-γ0 (the write source against the read lag) waits for b164.
+  - PASS needs ≥ 3/4 slots exact and SERIAL, and this slot is not SERIAL.
+  - **What a non-SERIAL exact state means is open.** It could store operand-specific information (the L1 pattern in recurrent form) or hold sums in a form that does not
+    compose across items. The next descriptive check is the pass-skip test (§153's form).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
