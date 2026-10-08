@@ -70,7 +70,31 @@
  },
  "ar9": {
   "runs": {
-   "1": null
+   "1": {
+    "status": "done",
+    "test_acc": 0.045,
+    "acc_by_length": {
+     "1": 1.0,
+     "2": 1.0,
+     "3": 0.64,
+     "4": 0.045
+    },
+    "serial": false,
+    "flops": 7103733624.0,
+    "passes": 12,
+    "pass": null,
+    "gate_step": null,
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "compute": {
+     "flops": 7103733624.0,
+     "passes": 12
+    },
+    "fallback_trigger": {
+     "floor_spikes": 34,
+     "n_nonfinite": 0,
+     "fires": true
+    }
+   }
   }
  },
  "ctrlr9": {
