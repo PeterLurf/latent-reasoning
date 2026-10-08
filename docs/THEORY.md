@@ -9629,6 +9629,12 @@ this note is pushed.**
 * **Extrapolation:** long_acc at 512 is 0.0, and acc_2048 is 0.0. No length generalisation past 32 (16× training).
 * SERIAL holds as a sanity check. 10 gradient-floor spikes (descriptive).
 * **Waiting on:** LONG s2 (b192) and SHORT s1 / s2 (b208 / b209). The arm reading needs both seeds.
+* **Framing (Audit 0a63618e), fixed before s2 / SHORT land:**
+  - MIXED stays the registered word. It is set by the linear state probe (0.926 / 0.897 / 0.884 / 0.876 / 0.858 at p 2 / 4 / 8 / 16 / 32) falling just under 0.90.
+  - With the op-history probe at 0.149 and exactness at L 32, where DIRECT is at 0.01, the honest description is "carries a non-linearly-coded state, not a
+    buffer". This is the §155 / §161 pattern.
+  - **The 158-2 test to lead the arm result:** SHORT's older-half op probe against LONG's 0.149.
+  - **C6:** 0.0 at 512 after training to 32 means the state is not length-stable past training. This is flagged beside C2.
 
 ## 163. SHAPE-MIX-2D: both operand lengths mixed, for length and value-range generalisation over both operands (C2) (Audit's research pass after §161 MIX s1; pre-registered 2026-10-08 10:59 EDT, after Literature's check 73fbfb1a (`docs/LIT_MULT_LG_NOSCRATCH_2026-10-08.md`) and Audit's review, before any implementation or run; runs only if §161 MIX s2 replicates)
 
