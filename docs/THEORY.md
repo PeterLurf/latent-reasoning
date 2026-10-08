@@ -9262,6 +9262,16 @@ accumulator.**
 * **Gates:** the 5×5 memcheck on the largest shape; §155's gates; Audit's diff review only if code changes.
 * Dirs `s159_r_5x5_s{seed}`. Scorer: `theory/score_s159.py`, committed with this registration.
 
+**§159 R-5×5 slot 1 (interim, 2026-10-08 14:42 EDT; 48k, RTX 3090; scored by Theory with score_s159): exact at 5×5, so the gate opens and s2–s4 run by the rule.**
+* **test_acc 1.000** on the 5×5 bench, every column 1.0. ICoT-SI's released checkpoint reads 0.996 (paper 0.95); TC-M reads 1.000. Final loss 2·10⁻⁵.
+* **Compute:** 1.87·10¹⁰ FLOPs and 26 passes.
+  - Against TC-M 5×5: **0.80× FLOPs and 0.30× passes**, so LATENT BEATS TEXT holds on slot 1.
+  - Against ICoT-SI: 3.24× FLOPs, and 26 passes against 15.
+* **The caveat stands (registered):** not SERIAL (row donor 0.07–0.13), ext_5x8 0.001 (column 6 at 0.057, the count-schedule signature), propagation 0.0. This
+  is R's fixed-shape buffer picture. Shape mixing (§161 / §163) is what makes it SERIAL.
+* **155-1's trigger fired with 160-1's floor** (42 spikes) on a converged run. By the inherited rule the block-9 fallback is due. Audit decides the spend, since
+  the gradient trigger misfires (note 162-2).
+
 ## 160. R-ROWS: the write-after-read memory on §152's row segmentation (Audit 07:00, the C3 leg; pre-registered 2026-10-08 06:56 EDT, before any implementation or run; runs only if §155 R s2 is exact)
 
 **Why.**
