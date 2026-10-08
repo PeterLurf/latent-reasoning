@@ -88,6 +88,13 @@ def main():
                     with open(os.path.join(ROOT, "logs", "posthoc_%s_%s.log" % (outf.split(".")[0], name)), "w") as lg:
                         subprocess.call([sys.executable, "-u", "-m", mod, "--from_args", os.path.join(d, "args.json")] + flag + ["--device", dev, "--out", d],
                                         cwd=ROOT, stdout=lg, stderr=subprocess.STDOUT)
+    if name.startswith("s154_") and not os.path.exists(os.path.join(d, "eval_s154_posthoc.json")):   # §154 C7 state edits (descriptive), on-host
+        with open(os.path.join(ROOT, "logs", "posthoc_c7_state_%s.log" % name), "w") as lg:
+            try:
+                subprocess.call([sys.executable, "-u", "-m", "boxes.multpair", "--from_args", os.path.join(d, "args.json"), "--c7_state_only", "--device", dev, "--out", d],
+                                cwd=ROOT, stdout=lg, stderr=subprocess.STDOUT, timeout=600)
+            except subprocess.TimeoutExpired:
+                lg.write("C7STATE TIMEOUT (600 s)\n")
     if name.startswith("s143_") and not os.path.exists(os.path.join(d, "eval_ablate704.json")):   # note 143-2 (ef7364f7): 704-block ablation on-host
         mod = "boxes.fsq120_posthoc" if os.path.exists(os.path.join(ROOT, "boxes", "fsq120_posthoc.py")) else "boxes.fsq120"
         with open(os.path.join(ROOT, "logs", "posthoc_ablate704_%s.log" % name), "w") as lg:
