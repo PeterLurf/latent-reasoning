@@ -7606,6 +7606,10 @@ on S5×4, with the PLATEAU trigger.**
 * **Against 147-4:** fsq120's carrier is computed by the whole network from the previous code, so it is genuinely recurrent. This is a failure of a recurrent
   single-vector state, not of an input-only buffer.
 * N64 run with no stop (note 144-1) is pending (descriptive).
+* **Correction (2026-10-08 01:53 EDT, Audit's reproduction of s144_n64_s301):** two wording errors; the verdict is unchanged.
+  - "The three low digits at chance from L = 1" is wrong. The hundreds digit is 0.666 / 0.463 / 0.218 at L = 1 / 2 / 4, matching its code R² 0.83. **N64 keeps the top
+    two digits as a coarse magnitude**, not only the top one.
+  - "7.16 ≈ ln 1000" is 0.25 nats above chance (6.908; F8 m3 sits at 6.908).
 
 ## 145. MULTI-SLOT: carry K = 4 latent vectors per hand-off, one write position each (§140's digit-pair multiplication; pre-registered 2026-10-07 15:40 EDT, after Literature's check d8ccceb5 and Audit's draft, before any implementation or run; the user's "we gotta figure out how to fix the multiplication" (via Audit))
 
@@ -8679,6 +8683,17 @@ restated.**
 * **Gates:** step-0 function preservation; gradflow showing nonzero ∂loss / ∂(write parameters) **through at least two hand-offs** (BPTT flows, not a one-step gradient;
   CUDA bf16); smoke_plain; memory; Audit's diff review.
 * Dirs `s155_{r,shiftr}_4x4_s{seed}`. Scorer: `theory/score_s155.py`, committed with this registration.
+
+**Note 152-5 (2026-10-08 01:53 EDT; Audit's request; descriptive, outside §152's registered verdict). One 96k run of A s1, and the exact-storage test.**
+* **The run:** `s152_a96k_4x4_s1`, §152 A's arguments with `--steps 96000` (cosine over 96k), run beside §155.
+  - **§152's registered verdict stays DROP whatever it shows.**
+  - **B-EARLY opens only if the 96k run reaches test_acc ≥ 0.95 and its gate opens** (forked from its gate.pt; §152 B's rules).
+* **Exact storage (Audit):** R² 0.90–0.97 on integer column sums up to about 300 is not exact storage. So "stored, resolved at read time" is not yet separated from "stored
+  imprecisely".
+  - For A s1 and CTRL s1 at 48k (local models; CPU) and for the 96k run, report the **rounded exact-match accuracy of the held-out column-sum readout, per column**
+    (`colsum_exact_by_column`): linear ridge and kernel ridge on the additive state, fit on half, scored on the other half.
+  - **Reading, fixed now:** if exact-match is well below 1 (< 0.9) at columns 4–7, 147-4's "read-time carry resolution" weakens to **"storage precision or read-time
+    resolution"**. §155 is then read against that.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
