@@ -48,6 +48,7 @@ except ImportError:
 from boxes import s5  # noqa: E402
 from boxes import core as bc  # noqa: E402
 import boxes.fsq120 as F  # noqa: E402
+import boxes.deltamem as DM  # noqa: E402
 from boxes.fsq120 import EOT, FSQ120, driver_version, env_info, lr_at, make_opt  # noqa: E402
 from boxes.multcol import DTOK, COLTOK, dedup, load_bench, to_int, ridge_r2  # noqa: E402
 
@@ -136,6 +137,9 @@ def set_ops(m, A, B, dev):
 def rollout(m, A, B, dev, amp, bs, L=None, override=None, record=False):
     """Hard chains over L multiplier digits; the answer decoded after every segment (acc_by_length). override: (p, codes) replaces the code
     after segment p (1-based). Returns dec (N, L) [, codes (N, L, d), e (N, L, 768)]."""
+    if isinstance(m, MultRowDelta):                                         # §152: the reader decodes S_j after each segment
+        dec = rollout_drow(m, A, B, dev, amp, bs, L=L, override=override)[0]
+        return (dec, None, None) if record else dec
     N = len(A); L = L or B.shape[1]; dec = np.full((N, L), -1, np.int64); codes = np.zeros((N, L, F.D_Q), np.float32) if record else None
     E = np.zeros((N, L, 768), np.float32) if record else None
     for i in range(0, N, bs):
@@ -213,6 +217,247 @@ def contraction(m, A, B, dev, amp, T0=1, n=500, seed=12301):
             "detail": {"T0": T0, "K": K, "window": W, "n": N, "std_d": std_d.cpu().numpy().round(4).tolist(), "eps": R}}
 
 
+# ================================================================ THEORY §152 DELTA-READ (378fe8e6 + note 152-1): --carrier deltamem
+EQTOK = bc.tok(" =")[0]
+
+
+def mem_read(mem, x, S):
+    """§152 reader pass: DeltaMem's read on a FIXED state - no write (k / v / alpha / beta unused), S untouched; the same read gains exp(s),
+    ablation, fade and W_o as DeltaMem.forward. fp32 with autocast off (as the branch)."""
+    with torch.autocast("cuda", enabled=False):
+        B, T, D = x.shape; a = mem.ln(x.float()); q = mem.qkv(a)[..., :D].view(B, T, DM.H_ADD + DM.H_DEL, DM.DH)
+        Sa, Sd = S[:, :DM.H_ADD].float(), S[:, DM.H_ADD:].float()
+        oa = torch.exp(mem.s_add) * torch.einsum("bthk,bhkv->bthv", Fn.elu(q[:, :, :DM.H_ADD]) + 1, Sa)
+        od = torch.exp(mem.s_del) * torch.einsum("bhvk,bthk->bthv", Sd, Fn.normalize(q[:, :, DM.H_ADD:], dim=-1))
+        if mem.ablate == "add":
+            oa = torch.zeros_like(oa)
+        if mem.ablate == "delta":
+            od = torch.zeros_like(od)
+        return x + (mem.fade * mem.wo(torch.cat([oa, od], 2).reshape(B, T, D))).to(x.dtype)
+
+
+def fwd_mem(g, x, mem, S, read_only=False, cap=None):
+    """boxes.deltamem.gpt_forward_mem, op for op (checked bitwise in scratch/gate152.py), plus: read_only (the reader pass: mem_read, S returned
+    as given) and cap (a list: the residual entering the branch, i.e. after mem.layer blocks, (B, T, 768))."""
+    B, T, D = x.shape; hd = D // g.H; h = x + g.w("wpe.weight")[:T][None]
+    for i in range(g.L):
+        if i == mem.layer:
+            if cap is not None:
+                cap.append(h.detach())
+            if read_only:
+                h = mem_read(mem, h, S)
+            else:
+                h, S = mem(h, S)
+        pre = f"h.{i}."
+        a = Fn.layer_norm(h, (D,), g.w(pre + "ln_1.weight"), g.w(pre + "ln_1.bias"))
+        q, k, v = (a @ g.w(pre + "attn.c_attn.weight") + g.w(pre + "attn.c_attn.bias")).split(D, -1)
+        q, k, v = (t.view(B, T, g.H, hd).transpose(1, 2) for t in (q, k, v))
+        o = Fn.scaled_dot_product_attention(q, k, v, is_causal=True)
+        h = h + o.transpose(1, 2).reshape(B, T, D) @ g.w(pre + "attn.c_proj.weight") + g.w(pre + "attn.c_proj.bias")
+        a = Fn.layer_norm(h, (D,), g.w(pre + "ln_2.weight"), g.w(pre + "ln_2.bias"))
+        mm = Fn.gelu(a @ g.w(pre + "mlp.c_fc.weight") + g.w(pre + "mlp.c_fc.bias"), approximate="tanh")
+        h = h + mm @ g.w(pre + "mlp.c_proj.weight") + g.w(pre + "mlp.c_proj.bias")
+    return Fn.layer_norm(h, (D,), g.w("ln_f.weight"), g.w("ln_f.bias")), S
+
+
+class MultRowDelta(MultRow):
+    """§152 DELTA-READ: no carried code token. Segment j (note 152-1 (2), seg_order b_first) = [EOT, b_j, COLTOK[j], a's 4 digits LSB first], a
+    fresh GPT-2 pass (attention inside the segment), the DeltaMem state (B, 12, 64, 64) the only cross-segment channel (writes at block 6).
+    Reader / decoder pass = [EOT, " ="] + 8 answer digits LSB first (teacher-forced in training, greedy at test) through GPT-2's own LM head
+    (full-vocabulary CE); the memory is READ-ONLY there (mem_read: no writes; the state handed on is untouched)."""
+    SEG_T = 7
+
+    def __init__(self, g, fam, layer=6):
+        super().__init__(g, fam); self.mem = DM.DeltaMem(g, layer)
+
+    def start(self, B, dev, states=None):
+        return self.mem.zero_state(B, dev)
+
+    def seg_ids(self, t, B, dev):
+        return torch.cat([torch.full((B, 1), EOT, device=dev), self.btok[:, t:t + 1], torch.full((B, 1), COLTOK[t + 1], device=dev), self.actx], 1)
+
+    def write(self, S, t, cap=None):
+        _, S = fwd_mem(self.g, self.g.embed(self.seg_ids(t, S.shape[0], S.device)), self.mem, S, cap=cap); return S
+
+    def read_logits(self, S, ans=None):
+        """[EOT, " ="] (+ the first 7 answer tokens, teacher-forced) -> full-vocabulary logits at positions 1.. (B, T - 1, V)."""
+        B = S.shape[0]; ids = torch.tensor([[EOT, EQTOK]], device=S.device).expand(B, 2)
+        if ans is not None:
+            ids = torch.cat([ids, ans[:, :NDIG - 1]], 1)
+        out, _ = fwd_mem(self.g, self.g.embed(ids), self.mem, S, read_only=True)
+        return self.g.logits(out[:, 1:]).float()
+
+    def read_ce(self, S, ans):
+        lg = self.read_logits(S, ans); return Fn.cross_entropy(lg.reshape(-1, lg.shape[-1]), ans.reshape(-1))
+
+    @torch.no_grad()
+    def read_greedy(self, S):
+        B = S.shape[0]; ids = torch.tensor([[EOT, EQTOK]], device=S.device).expand(B, 2); outs = []
+        for _ in range(NDIG):
+            out, _ = fwd_mem(self.g, self.g.embed(ids), self.mem, S, read_only=True); nt = self.g.logits(out[:, -1]).float().argmax(-1)
+            outs.append(nt); ids = torch.cat([ids, nt[:, None]], 1)
+        return torch.stack(outs, 1)
+
+    def chain_read(self, start_emb, items, labels, rtok, rmask):
+        """CE_final (gold S_L, after the last segment) and, with rmask, the reader CE_j at every hand-off j < L (teacher S_j, rows of rmask[:, j-1]);
+        the reader passes leave the state untouched. Returns (CE_final, mean CE_j or None, number of reader hand-offs)."""
+        B, L = items.shape; S = start_emb; rd = []
+        for t in range(L):
+            S = self.write(S, int(items[0, t]))
+            if t < L - 1 and rmask is not None and bool(rmask[:, t].any()):
+                rows = torch.nonzero(rmask[:, t]).squeeze(1); rd.append(self.read_ce(S[rows], rtok[rows, t]))
+        fin = self.read_ce(S, torch.tensor(self.fam.answer_tokens(labels[:, L - 1]), device=items.device))
+        return fin, (torch.stack(rd).mean() if rd else None), len(rd)
+
+
+@torch.no_grad()
+def rollout_drow(m, A, B, dev, amp, bs, L=None, override=None, keep=(), norms=False, caps=False, decode=True):
+    """§152 chains over L segments; after each the reader greedily decodes S_j (read-only). override (p, states): the whole state after segment p
+    replaced (1-based). keep: segments whose states are returned (N, 12, 64, 64) fp32; norms: (N, L, 2) Frobenius norms (additive, delta);
+    caps: the residual entering the branch per segment (N, L, 7, 768). Returns dec (N, L), kept, norms, caps."""
+    N = len(A); L = L or B.shape[1]; dec = np.full((N, L), -1, np.int64); kept = {p_: np.zeros((N, DM.H_ADD + DM.H_DEL, DM.DH, DM.DH), np.float32) for p_ in keep}
+    nrm = np.zeros((N, L, 2), np.float32) if norms else None; C = np.zeros((N, L, MultRowDelta.SEG_T, 768), np.float32) if caps else None
+    for i in range(0, N, bs):
+        sl = slice(i, i + bs); Bn = len(A[sl]); set_ops(m, A[sl], B[sl], dev); S = m.start(Bn, dev)
+        for t in range(L):
+            cp = [] if caps else None
+            with amp_ctx(amp):
+                S = m.write(S, t, cap=cp)
+                if override is not None and override[0] == t + 1:
+                    S = torch.tensor(override[1][sl], device=dev, dtype=S.dtype)
+                if decode:
+                    dec[sl, t] = m.fam.decode(m.read_greedy(S).cpu().numpy())
+            if t + 1 in kept:
+                kept[t + 1][sl] = S.float().cpu().numpy()
+            if norms:
+                nrm[sl, t, 0] = S[:, :DM.H_ADD].float().flatten(1).norm(dim=1).cpu().numpy(); nrm[sl, t, 1] = S[:, DM.H_ADD:].float().flatten(1).norm(dim=1).cpu().numpy()
+            if caps:
+                C[sl, t] = cp[0].float().cpu().numpy()
+    return dec, kept, nrm, C
+
+
+def donor_drow(m, A, B, dev, amp, bs, rng, n=1000):
+    """§152 SERIAL (row level): the donor's whole memory state swapped in after segment 2; donors drawn so that a_donor != a_rec and the b-prefix
+    (b_1, b_2) differs. donor_consistent = donor S_2 + a_rec x (b_rec,3 b_rec,4) x 100; bprefix_consistent = a_rec x (b_d1 b_d2 b_r3 b_r4);
+    operands_consistent = a_donor x (b_d1 b_d2 b_r3 b_r4); recipient_consistent = the recipient's own product; chance_overlap = donor-expected
+    = own product."""
+    N = min(n, len(A)); ir = rng.permutation(len(A))[:N]; idn = rng.permutation(len(A))[:N]; ai = to_int(A); bp = to_int(B[:, :2])
+    for _ in range(100):
+        bad = np.nonzero((ai[idn] == ai[ir]) | (bp[idn] == bp[ir]))[0]
+        if not len(bad):
+            break
+        idn[bad] = rng.integers(0, len(A), len(bad))
+    Ar, Br, Ad, Bd = A[ir], B[ir], A[idn], B[idn]
+    _, kept, _, _ = rollout_drow(m, Ad, Bd, dev, amp, bs, L=2, keep=(2,), decode=False); got = rollout_drow(m, Ar, Br, dev, amp, bs, override=(2, kept[2]))[0][:, -1]
+    exp = sj_values(Ad, Bd)[:, 1] + to_int(Ar) * to_int(Br[:, 2:4]) * 100; own = sj_values(Ar, Br)[:, -1]; bmix = to_int(np.concatenate([Bd[:, :2], Br[:, 2:4]], 1))
+    return {"pos2": {"donor_consistent": float((got == exp).mean()), "recipient_consistent": float((got == own).mean()), "chance_overlap": float((exp == own).mean()),
+                     "bprefix_consistent": float((got == to_int(Ar) * bmix).mean()), "operands_consistent": float((got == to_int(Ad) * bmix).mean()), "n": N,
+                     "donor_rule": "a_donor != a_rec and (b_1, b_2) differ; whole state after segment 2"}}
+
+
+def opt_drow(m, lr):
+    """§147's grouping: GPT-2 (+ the unused FSQ120 heads) in one AdamW group, DeltaMem in its own (300-step warm-up from step 0)."""
+    mp = {id(p_) for p_ in m.mem.parameters()}
+    return torch.optim.AdamW([{"params": [p_ for p_ in m.parameters() if id(p_) not in mp], "mult": 1.0},
+                              {"params": list(m.mem.parameters()), "mult": 1.0, "warm_from": 0, "name": "deltamem"}], lr=lr, weight_decay=0.01)
+
+
+@torch.no_grad()
+def read_ratio_drow(m, A, B, dev, amp, n=256):
+    """note 147-2 on §152 segments: per hand-off the median of ||g_del read_del|| / ||g_add read_add|| at each segment's last token (probe batch)."""
+    was = m.training; m.eval(); m.mem.norms = []; rollout_drow(m, A[:n], B[:n], dev, amp, n, decode=False); nr = m.mem.norms; m.mem.norms = None; m.train(was)
+    r = [(d_ / a_.clamp_min(1e-12)).float().cpu().numpy() for d_, a_ in nr]
+    return [float(np.median(x)) for x in r], float(np.median(np.concatenate(r)))
+
+
+@torch.no_grad()
+def alpha_drow(m, A, B, dev, amp, n=256):
+    """note 147-3 record: per delta head the mean alpha over a fixed probe batch (every segment token), and sigmoid(gate bias)."""
+    was = m.training; m.eval(); m.mem.alpha_rec = []; rollout_drow(m, A[:n], B[:n], dev, amp, n, decode=False); r = torch.stack(m.mem.alpha_rec).mean(0); m.mem.alpha_rec = None; m.train(was)
+    return {"mean_alpha": [round(float(v), 6) for v in r], "sigmoid_bias": [round(float(v), 6) for v in torch.sigmoid(m.mem.gate.bias[:DM.H_DEL].detach())]}
+
+
+def kridge_r2(Xf, yf, Xs, ys, lams=(1e-4, 1e-3, 1e-2, 1e-1, 1.0)):
+    """Ridge on standardised features in dual (kernel) form, for d >> n (flattened memory states): K = Z Z^T / d; lambda (x n) by 3-fold CV on
+    the fit half; held-out R^2 on the score half. Equals primal ridge with penalty lambda n d."""
+    mu, sd = Xf.mean(0), Xf.std(0) + 1e-6; Zf = ((Xf - mu) / sd).astype(np.float32); Zs = ((Xs - mu) / sd).astype(np.float32); d = Zf.shape[1]
+    def fit_pred(Za, ya, Zb, lam):
+        K = (Za @ Za.T).astype(np.float64) / d; ym = ya.mean(); al = np.linalg.solve(K + lam * len(Za) * np.eye(len(Za)), ya - ym)
+        return (Zb @ Za.T).astype(np.float64) / d @ al + ym
+    def r2(y_, p_):
+        return float(1 - ((y_ - p_) ** 2).sum() / max(((y_ - y_.mean()) ** 2).sum(), 1e-12))
+    fold = np.arange(len(Zf)) % 3
+    best = max(lams, key=lambda l_: np.mean([r2(yf[fold == k], fit_pred(Zf[fold != k], yf[fold != k], Zf[fold == k], l_)) for k in range(3)]))
+    return r2(ys, fit_pred(Zf, yf, Zs, best)), best
+
+
+def compute_drow(m, L=4):
+    """§98 convention (boxes.core.Meter: KV cache, each position processed once; full-vocabulary LM head rows), per item: L segments of 7
+    tokens (full 12-block passes, although blocks 6-11 of a segment are never read), then the reader: [EOT, " ="] (1 logit row) + 7 more
+    single-token passes (8 digits). DeltaMem branch: 2 x branch params per processed token, plus per head and token 4 DH^2 (additive write +
+    read) / 10 DH^2 (delta: S k, the rank-1 update, decay, read) in segments and 2 DH^2 (read only) in reader tokens."""
+    mt = bc.Meter(m.g); rows = 0
+    for _ in range(L):
+        mt.step(MultRowDelta.SEG_T, 0, 0)
+    mt.step(2, 0, 1); rows += 1
+    for k in range(NDIG - 1):
+        mt.step(1, 2 + k, 1); rows += 1
+    nb = sum(p_.numel() for n_, p_ in m.mem.named_parameters() if not n_.startswith("s_")); seg_tok = MultRowDelta.SEG_T * L; rd_tok = 2 + NDIG - 1; D2 = DM.DH * DM.DH
+    fb = 2 * nb * (seg_tok + rd_tok) + (DM.H_ADD * 4 + DM.H_DEL * 10) * D2 * seg_tok + (DM.H_ADD + DM.H_DEL) * 2 * D2 * rd_tok
+    d = mt.as_dict()
+    return {"flops": d["flops"] + fb, "flops_trunk": d["flops"], "flops_branch": float(fb), "sequential_passes": d["seq_passes"], "lm_head_rows": rows,
+            "tokens_processed": d["tokens_processed"], "convention": "§98 (boxes.core.Meter: KV cache, full vocabulary); segments counted as full 12-block passes"}
+
+
+def s152_eval(m, teA, teB, dev, amp, bs, a, dec):
+    """§152 descriptive block (eval mode, no draws): pp_probe, add_state_norm_by_segment, bprefix_probe (+ probe_r2), colsum_readout,
+    head_ablation, alpha_by_head; sj_decode_acc (the reader after each segment = acc_by_length, A only)."""
+    from boxes.fsq120 import _ridge_cls_acc
+    from boxes.multcol import gen_operands
+    S = sj_values(teA, teB); N = len(teA); h = N // 2; out = {}
+    out["sj_decode_acc"] = {str(j + 1): float((dec[:, j] == S[:, j]).mean()) for j in range(4)} if a.reader else None
+    _, kept, nrm, C = rollout_drow(m, teA, teB, dev, amp, bs, keep=(1, 2, 3, 4), norms=True, caps=True, decode=False)
+    pp = {"P_j_last_pos": {}, "aibj_at_ai": {}, "def": "per segment j: 10-way ridge classifiers per digit on the residual entering the branch (after 6 blocks), fit / score halves"}
+    ai = to_int(teA)
+    for j in range(4):
+        P = ai * teB[:, j]; X = C[:, j, -1]
+        pp["P_j_last_pos"][str(j + 1)] = [float(_ridge_cls_acc(X[:h], (P[:h] // 10 ** k) % 10, X[h:], (P[h:] // 10 ** k) % 10)) for k in range(5)]
+        pp["aibj_at_ai"][str(j + 1)] = {}
+        for i in range(4):
+            v = teA[:, i] * teB[:, j]; X = C[:, j, 3 + i]
+            pp["aibj_at_ai"][str(j + 1)][str(i + 1)] = [float(_ridge_cls_acc(X[:h], (v[:h] // 10 ** k) % 10, X[h:], (v[h:] // 10 ** k) % 10)) for k in range(2)]
+    out["pp_probe"] = pp
+    xA = gen_operands(np.random.default_rng(14004), min(a.ext_n, 1000), 4); xB = gen_operands(np.random.default_rng(14005), min(a.ext_n, 1000), 8)
+    _, _, nx, _ = rollout_drow(m, xA, xB, dev, amp, bs, L=8, norms=True, decode=False)
+    out["add_state_norm_by_segment"] = {"additive": {str(j + 1): float(np.median((nrm if j < 4 else nx)[:, j, 0])) for j in range(8)},
+                                        "delta": {str(j + 1): float(np.median((nrm if j < 4 else nx)[:, j, 1])) for j in range(8)},
+                                        "def": "median Frobenius norm of each head type's state after segment j (1-4: test chains, 5-8: 4x8 ext chains)"}
+    bpre = np.stack([to_int(teB[:, :j]) for j in range(1, 5)], 1); bp = {"bprefix": {}, "sj": {}, "lambda": {}}
+    for j in range(4):
+        X = kept[j + 1].reshape(N, -1)
+        r_b, l_b = kridge_r2(X[:h], np.log10(1 + bpre[:h, j]), X[h:], np.log10(1 + bpre[h:, j])); r_s, l_s = kridge_r2(X[:h], np.log10(1 + S[:h, j]), X[h:], np.log10(1 + S[h:, j]))
+        bp["bprefix"][str(j + 1)] = r_b; bp["sj"][str(j + 1)] = r_s; bp["lambda"][str(j + 1)] = [l_b, l_s]
+    bp["def"] = "held-out kernel-ridge R^2 (kridge_r2) of log10(1 + b-prefix) / log10(1 + S_j) from the flattened memory state after segment j"
+    out["bprefix_probe"] = bp; out["probe_r2"] = {"sj": bp["sj"], "bprefix": bp["bprefix"], "source": "memory state (bprefix_probe)"}
+    cs = np.zeros((N, 4, 7), np.float64)                                    # carry-save column sums after segment j: sum_{i + j' = k, j' < j} a_i b_j'
+    for j in range(4):
+        for i in range(4):
+            cs[:, j:, i + j] += (teA[:, i] * teB[:, j])[:, None]
+    XA = np.stack([kept[j + 1][:, :DM.H_ADD].reshape(N, -1) for j in range(4)], 1); col = {}
+    for k in range(7):
+        y = cs[:, :, k]
+        if y.std() > 0:
+            col[str(k + 1)] = kridge_r2(XA[:h].reshape(h * 4, -1), y[:h].reshape(-1), XA[h:].reshape((N - h) * 4, -1), y[h:].reshape(-1))[0]
+    out["colsum_readout"] = {"r2_by_column": col, "def": "held-out kernel-ridge R^2 of carry-save column sum k (no carries) from the additive state, pooled over segments 1-4"}
+    del kept, C, XA
+    abl = {}
+    for ht in ("add", "delta"):
+        m.mem.ablate = ht; dk = rollout_drow(m, teA, teB, dev, amp, bs)[0]; m.mem.ablate = None
+        abl[ht + "_zeroed"] = {"test_acc": float((dk[:, -1] == S[:, -1]).mean()), "acc_by_length": {str(j + 1): float((dk[:, j] == S[:, j]).mean()) for j in range(4)}}
+    out["head_ablation"] = abl
+    return out
+
+
 class Teacher:
     """TC-M teacher on the fly (§139): greedy CoT for a batch, hidden at `layer` at the last token of each S_j text, decoded S_j digits."""
     SJ_END = {1: 5, 2: 19, 3: 36, 4: 56}                                    # end (exclusive) of S_j's digits in the 56 generated tokens
@@ -272,6 +517,10 @@ def main():
     ap.add_argument("--fork_from", default=None, help="§142 B: start from this gate.pt"); ap.add_argument("--fork_steps", type=int, default=0)
     ap.add_argument("--removal", default=None, choices=[None, "early", "late"]); ap.add_argument("--removal_every", type=int, default=4000)
     ap.add_argument("--rewarm", type=int, default=200); ap.add_argument("--preview_frac", type=float, default=0.1); ap.add_argument("--ext_n", type=int, default=1000)
+    ap.add_argument("--carrier", default="code", choices=["code", "deltamem"], help="§152: deltamem = §147's DeltaMem as the only cross-segment channel (no code token)")
+    ap.add_argument("--mem_layer", type=int, default=6); ap.add_argument("--mem_add_heads", type=int, default=6); ap.add_argument("--mem_delta_heads", type=int, default=6)
+    ap.add_argument("--keep_ckpt_steps", default="", help="§152: model-only copies at these steps -> s152.serial_by_ckpt (donor pos2), then deleted")
+    ap.add_argument("--no_opt_reset", action="store_true", help="§152 B: keep AdamW's moments at each removal (LR re-warm only)")
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args()
     if a.from_args:
@@ -285,6 +534,11 @@ def main():
     assert not (a.dither and not a.no_round), "--dither needs --no_round"
     assert not a.fork_from or (a.reader and a.removal and a.fixed_L == 4 and a.fork_steps > 0), "§142 B: --fork_from needs --reader --removal --fixed_L 4 --fork_steps"
     assert not (a.reader and (a.distill or a.copy_frac)), "§142: the reader runs without §139's distill / copy rows"
+    if a.carrier == "deltamem":                                             # §152 (378fe8e6 / note 152-1)
+        assert not (a.no_round or a.dither or a.copy_frac or a.distill), "§152: DeltaMem is the only channel (--copy_frac 0; no --no_round / --dither / --distill)"
+        assert (a.mem_add_heads, a.mem_delta_heads) == (DM.H_ADD, DM.H_DEL), "§152: 6 + 6 heads (boxes/deltamem.py)"
+        a.mem_group_gain = True; a.seg_order = "b_first"
+    assert not a.no_opt_reset or a.fork_from, "--no_opt_reset: §152 B forks only"
     if a.fork_from:
         a.steps = a.fork_steps                                              # the fork's own schedule (scorer reads fork_steps)
     th = tuple(int(x) for x in a.lmax_steps.split(",")) if a.lmax_steps else None; assert th is None or len(th) == 3, "--lmax_steps: 3 steps"
@@ -297,7 +551,7 @@ def main():
     os.makedirs(a.out, exist_ok=True); fam = RowFam(); dname = lambda: torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"  # noqa: E731
     teA, teB = load_bench(os.path.join(ROOT, "bench", "data", "mult_4x4_test.txt")); teA, teB = teA[:a.test_n], teB[:a.test_n]
     def mk():
-        m_ = MultRow(s5.load_gpt2(dev), fam).to(dev); m_.soft_beta = a.soft_beta; m_.no_round = a.no_round
+        m_ = (MultRowDelta(s5.load_gpt2(dev), fam, a.mem_layer) if a.carrier == "deltamem" else MultRow(s5.load_gpt2(dev), fam)).to(dev); m_.soft_beta = a.soft_beta; m_.no_round = a.no_round
         if a.distill:
             m_.readout = nn.Linear(768, NDIG * 10).to(dev)
         return m_
@@ -339,12 +593,17 @@ def main():
             "train_gpu": dname(), "train_driver": driver_version(), **env_info()}
     json.dump({**info, "resumed_at": time.strftime("%Y-%m-%d %H:%M:%S")} if a.resume else info,
               open(os.path.join(a.out, ("args_resume_%d.json" % int(time.time())) if a.resume else "args.json"), "w", newline="\n"), indent=1)
-    m = mk(); opt = make_opt(m, a.lr); m.train()
-    gate_step = gate_exact = None; fork_start = None; stages = []; stage_start = 1; order = None
+    m = mk(); opt = opt_drow(m, a.lr) if a.carrier == "deltamem" else make_opt(m, a.lr); m.train()
+    gate_step = gate_exact = None; fork_start = None; stages = []; stage_start = 1; order = None; alpha_hist = []; fin_hist = {}
+    keep_steps = {int(x) for x in a.keep_ckpt_steps.split(",") if x.strip()}
     if a.fork_from:                                                         # §142 B: the A run's gate model, same seed
         gk = torch.load(a.fork_from if os.path.isabs(a.fork_from) else os.path.join(ROOT, a.fork_from), map_location=dev, weights_only=False)
         m.load_state_dict(gk["model"]); s142["fork_gate_step"] = gk.get("step"); s142["fork_gate_train_exact"] = gk.get("gate_train_exact")
         order = (1, 2, 3) if a.removal == "early" else (3, 2, 1)
+    if a.carrier == "deltamem" and not (a.resume or a.mem_check or a.fork_from):   # note 147-2: g_add = the median read-norm ratio at step 0
+        rr0, med0 = read_ratio_drow(m, teA, teB, dev, amp); m.mem.s_add.data.fill_(math.log(med0)); rr1, med1 = read_ratio_drow(m, teA, teB, dev, amp)
+        init152 = {"g_add_init": med0, "g_del_init": 1.0, "ratio_by_handoff_before_gain": rr0, "read_norm_ratio_by_handoff_step0": rr1, "pooled_median_after_gain": med1}
+        json.dump(init152, open(os.path.join(a.out, "s152_init.json"), "w", newline="\n"), indent=1); print("S152_INIT", json.dumps(init152), flush=True)
     log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time(); hist = []; chist = []; dhist = []; L127 = {}; n_nonfinite = 0; step0 = 1
     Ls = []; crng = np.random.default_rng(a.seed + 13400); first_exact = None; n_copy = int(round(a.copy_frac * a.bs)) if a.copy_frac else 0
     if a.resume:
@@ -352,6 +611,7 @@ def main():
         rng.bit_generator.state = ck["np_rng"]; crng.bit_generator.state = ck["crng"]; torch.set_rng_state(ck["torch_rng"].cpu()); L127 = ck["L127"]; n_nonfinite = ck["n_nonfinite"]
         first_exact = ck.get("first_exact"); gate_step = ck.get("gate_step"); gate_exact = ck.get("gate_exact")   # §142 state
         fork_start = ck.get("fork_start"); stages = ck.get("stages") or []; stage_start = ck.get("stage_start", 1)
+        alpha_hist = ck.get("alpha_hist") or []; fin_hist = ck.get("fin_hist") or {}                     # §152
         if dev.startswith("cuda") and ck.get("cuda_rng") is not None:
             torch.cuda.set_rng_state(ck["cuda_rng"].cpu(), device=dev)
         step0 = ck["step"] + 1; t0 = time.time() - ck["elapsed"]; log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
@@ -373,6 +633,10 @@ def main():
             with amp_ctx(amp):
                 fin, rd, nrd = m.chain_read(m.start(len(A), dev), X, lab, rtok, torch.tensor(rmask, device=dev) if L > 1 else None)
             return fin, rd
+        if a.carrier == "deltamem":                                         # §152 CTRL: FINAL only, through the reader pass
+            with amp_ctx(amp):
+                fin, _, _ = m.chain_read(m.start(len(A), dev), X, lab, None, None)
+            return fin, None
         m.tsd_on = w > 0; m._tsd_e = []
         with amp_ctx(amp):
             loss, _, _, _ = m.chain(m.start(len(A), dev), X, lab)            # FINAL only: CE on S_L after the last segment
@@ -391,12 +655,14 @@ def main():
         loss, aux = train_step(1, 4, trA[ii], trB[ii], 1.0 if a.distill else 0.0, ii=ii, rmask=np.ones((a.bs, 3), bool) if a.reader else None)
         (loss + (aux if aux is not None else 0)).backward(); m.eval(); rollout(m, teA[:a.eval_bs], teB[:a.eval_bs], dev, amp, a.eval_bs, record=True)
         pk = torch.cuda.max_memory_allocated(dev) / 2 ** 30 if dev.startswith("cuda") else None
-        json.dump({"peak_gib": pk, "bs": a.bs, "eval_bs": a.eval_bs, "distill": a.distill, "reader": a.reader, "L": 4}, open(os.path.join(a.out, "mem_check.json"), "w", newline="\n"), indent=1)
+        json.dump({"peak_gib": pk, "bs": a.bs, "eval_bs": a.eval_bs, "distill": a.distill, "reader": a.reader, "L": 4, "carrier": a.carrier}, open(os.path.join(a.out, "mem_check.json"), "w", newline="\n"), indent=1)
         print("MEM", pk); return
     def stage_eval():                                                       # §142 B: fork_start / stage records
         was = m.training; m.eval(); nz = m.noise; m.noise = 0.0; d_ = rollout(m, teA, teB, dev, amp, a.eval_bs); S_ = sj_values(teA, teB)
         r_ = {"test_acc": float((d_[:, -1] == S_[:, -1]).mean()), "acc_by_length": {str(L_ + 1): float((d_[:, L_] == S_[:, L_]).mean()) for L_ in range(4)},
-              "donor": donor_step2(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(13902), n=a.donor_n)}
+              "donor": (donor_drow if a.carrier == "deltamem" else donor_step2)(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(13902), n=a.donor_n)}
+        if a.carrier == "deltamem":                                         # §152 B: removed S_j stay decoded (retention), no loss term
+            r_["sj_decode_acc"] = {str(j + 1): r_["acc_by_length"][str(j + 1)] for j in range(3)}
         m.noise = nz; m.train(was); return r_
     gi = np.random.default_rng(14201).permutation(len(trA))[:a.gate_n]       # §142 gate: a fixed 512-item TRAIN subset at L 4
     re_ = int(a.removal_every * sc)
@@ -407,13 +673,17 @@ def main():
         if a.fork_from:                                                     # §142 B: stage k removes order[:k + 1]; fresh AdamW + re-warm-up at each removal
             stg = min(2, (step - 1) // re_); removed = order[:stg + 1]
             if step > 1 and (step - 1) % re_ == 0 and (step - 1) // re_ <= 2 and step != stage_start:
-                opt = make_opt(m, a.lr); stage_start = step
+                if not a.no_opt_reset:                                      # §152 B (--no_opt_reset): AdamW's moments kept, LR re-warm only
+                    opt = opt_drow(m, a.lr) if a.carrier == "deltamem" else make_opt(m, a.lr)
+                stage_start = step
             for gr in opt.param_groups:
                 gr["lr"] = a.lr * 0.5 * (1 + math.cos(math.pi * step / a.steps)) * min(1.0, (step - stage_start + 1) / (a.rewarm * sc))
         else:
             for gr in opt.param_groups:
                 gr["lr"] = lr_at(a.lr, gr, step, a.steps)
         m.p_hard = 0.0 if step <= a.p_hard_start * sc else min(1.0, (step - a.p_hard_start * sc) / ((a.p_hard_end - a.p_hard_start) * sc)); m.train()
+        if a.carrier == "deltamem" and not a.fork_from:
+            m.mem.fade.fill_(min(1.0, step / max(1, int(500 * sc))))         # §147: W_o fade-in over 500 steps (a fork starts from gate.pt's fade 1)
         m.noise = (a.dither if (a.fork_from or step > 2000 * sc) else 0.0) if a.no_round else 0.0   # §142 NOISE: dither after 2k (the fork is past 2k)
         L = a.fixed_L if a.fixed_L else int(rng.integers(1, lmax(step / sc, th) + 1)); Ls.append(L); ii = rng.integers(0, len(trA), a.bs - n_copy); w = w_at(step)
         rmask = None
@@ -435,6 +705,8 @@ def main():
             log.write(json.dumps({"step": step, "nonfinite": 1, "first": bad}) + "\n"); log.flush(); n_nonfinite += 1; opt.zero_grad()
         else:
             opt.step(); hist.append(tot); chist.append(ctot)
+            if a.fork_from and a.carrier == "deltamem":
+                fin_hist[step] = tot                                        # §152 B: final CE either side of each removal
             if aux is not None:
                 dhist.append(float(aux.item()))
         if step % a.log_every == 0 or step == a.steps:
@@ -446,6 +718,8 @@ def main():
                 rec.update({"distill_w": w, "distill_loss": float(np.mean(dhist)) if dhist else None})
             if a.reader:                                                    # §142: the reader term (mean over hand-offs); "loss" stays CE_final
                 rec.update({"reader_loss": float(np.mean(dhist)) if dhist else None, "noise": m.noise})
+            if a.carrier == "deltamem":                                     # note 147-2: the read gains per window
+                rec.update({"g_add": float(torch.exp(m.mem.s_add)), "g_del": float(torch.exp(m.mem.s_del)), "fade": float(m.mem.fade)})
                 if a.fork_from:
                     rec.update({"removed": list(removed), "lr": opt.param_groups[0]["lr"]})
             if n_copy and (step % 500 == 0 or step == a.steps):
@@ -469,19 +743,64 @@ def main():
             if first_exact is None and qa >= 0.99:
                 first_exact = step
         if a.ckpt_every and step % a.ckpt_every == 0 and step < a.steps:
+            if a.carrier == "deltamem":                                     # note 147-3: alpha per head at each checkpoint
+                ah_ = {"step": step, **alpha_drow(m, teA, teB, dev, amp)}; alpha_hist.append(ah_); log.write(json.dumps({"step": step, "alpha_by_head": ah_}) + "\n"); log.flush()
             cp = os.path.join(a.out, "ckpt_last.pt")
             torch.save({"model": m.state_dict(), "opt": opt.state_dict(), "torch_rng": torch.get_rng_state(), "cuda_rng": torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else None,
                         "np_rng": rng.bit_generator.state, "crng": crng.bit_generator.state, "step": step, "L127": L127, "n_nonfinite": n_nonfinite,
                         "first_exact": first_exact, "elapsed": time.time() - t0, "gate_step": gate_step, "gate_exact": gate_exact,
-                        "fork_start": fork_start, "stages": stages, "stage_start": stage_start}, cp + ".tmp")
+                        "fork_start": fork_start, "stages": stages, "stage_start": stage_start, "alpha_hist": alpha_hist, "fin_hist": fin_hist}, cp + ".tmp")
             if os.path.exists(cp):
                 os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))
             os.replace(cp + ".tmp", cp); log.write(json.dumps({"step": step, "ckpt": "ckpt_last.pt"}) + "\n"); log.flush()
+        if step in keep_steps:                                              # §152: model-only copy for the end-of-run serial_by_ckpt
+            torch.save(m.state_dict(), os.path.join(a.out, "ckpt_s%d_model.pt" % step)); log.write(json.dumps({"step": step, "ckpt_keep": "ckpt_s%d_model.pt" % step}) + "\n"); log.flush()
         if a.stop_after and step >= a.stop_after:
             log.close(); print("STOP_AFTER", step, flush=True); return
     train_sec = round(time.time() - t0); torch.save(m.state_dict(), os.path.join(a.out, "model.pt")); m.eval(); m.p_hard = 1.0; t1 = time.time()
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
+    if a.carrier == "deltamem":                                             # §152 eval (no contraction: an integrator by design)
+        S = sj_values(teA, teB); dec = rollout(m, teA, teB, dev, amp, a.eval_bs); ti = np.random.default_rng(13900).integers(0, len(trA), 1000)
+        res = {"family": a.family, "task": a.task, "seed": a.seed, "carrier": a.carrier, "test_acc": float((dec[:, -1] == S[:, -1]).mean()),
+               "acc_by_length": {str(L + 1): float((dec[:, L] == S[:, L]).mean()) for L in range(4)},
+               "train_acc": float((rollout(m, trA[ti], trB[ti], dev, amp, a.eval_bs)[:, -1] == sj_values(trA[ti], trB[ti])[:, -1]).mean()), "train_sec": train_sec,
+               "final_loss": L127[max(L127)] if L127 else None, "n_nonfinite": n_nonfinite, "train_removed_test_overlap": n_rem, "eval_dtype": str(amp), "gpu": dname(),
+               "train_gpu": info["train_gpu"], "train_driver": info["train_driver"]}
+        res["long_acc"] = res["test_acc"]; res["donor"] = donor_drow(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(13902), n=a.donor_n)
+        res["ext_4x8_low8"] = ext_4x8_low8(m, dev, amp, a.eval_bs, n=a.ext_n); res["compute"] = compute_drow(m)
+        ip_ = os.path.join(a.out, "s152_init.json"); i152 = json.load(open(ip_)) if os.path.exists(ip_) else {}
+        s152 = {k: s142.get(k) for k in ("teacher_invalid_share", "teacher_vs_gold_mismatch_share", "cache_split_sha", "cache_teacher_sha")}
+        s152.update({k: v for k, v in s142.items() if k.startswith("fork_gate")})
+        s152.update({"gate_step": gate_step, "gate_train_exact": gate_exact, "label_source": a.label_source, "reader": a.reader, "seg_order": a.seg_order,
+                     "removal": a.removal, "no_opt_reset": a.no_opt_reset, "lmax_steps": a.lmax_steps, "g_add_init": i152.get("g_add_init"),
+                     "g_add": float(torch.exp(m.mem.s_add)), "g_del": float(torch.exp(m.mem.s_del)), "gain_param": "exp(s)",
+                     "read_norm_ratio_by_handoff": {"step0": i152.get("read_norm_ratio_by_handoff_step0"), "end": read_ratio_drow(m, teA, teB, dev, amp)[0]},
+                     "alpha_by_head": {"end": alpha_drow(m, teA, teB, dev, amp), "checkpoints": alpha_hist}})
+        s152.update(s152_eval(m, teA, teB, dev, amp, a.eval_bs, a, dec))
+        if a.fork_from:
+            stages.append({"step": a.steps, "removed": list(order), **stage_eval()})
+            for k_, st_ in enumerate(stages):                               # CE either side of the removal that st_'s last-removed S_j came from
+                r0 = k_ * re_ + 1; bf = [fin_hist[t_] for t_ in range(r0 - 50, r0) if t_ in fin_hist]; af = [fin_hist[t_] for t_ in range(r0, r0 + 50) if t_ in fin_hist]
+                st_.update({"removal_step": r0, "final_ce_before": float(np.mean(bf)) if bf else None, "final_ce_after": float(np.mean(af)) if af else None})
+            s152.update({"fork_start": fork_start, "stages": stages})
+        kept_ = []
+        if keep_steps:                                                      # §152: donor pos2 on the kept copies (24k / 36k) and the final model
+            sb_ = {}
+            for st_ in sorted(keep_steps):
+                cp_ = os.path.join(a.out, "ckpt_s%d_model.pt" % st_)
+                if os.path.exists(cp_):
+                    m.load_state_dict(torch.load(cp_, map_location=dev)); m.eval(); kept_.append(os.path.basename(cp_))
+                    sb_[str(st_)] = donor_drow(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(13902), n=a.donor_n)["pos2"]
+                else:
+                    sb_[str(st_)] = None
+            sb_[str(a.steps)] = res["donor"]["pos2"]; s152["serial_by_ckpt"] = sb_
+        res["s152"] = s152; res["eval_sec"] = round(time.time() - t1)
+        json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
+        for ck_ in ["ckpt_last.pt", "ckpt_prev.pt"] + kept_:               # retention: the kept copies served serial_by_ckpt only
+            if os.path.exists(os.path.join(a.out, ck_)):
+                os.remove(os.path.join(a.out, ck_))
+        print("EVAL", json.dumps({k: res[k] for k in ("test_acc", "acc_by_length")}), flush=True); print("DONE", a.out, flush=True); return
     S = sj_values(teA, teB); dec, codes, E = rollout(m, teA, teB, dev, amp, a.eval_bs, record=True)
     ti = np.random.default_rng(13900).integers(0, len(trA), 1000)
     res = {"family": a.family, "task": a.task, "seed": a.seed, "test_acc": float((dec[:, -1] == S[:, -1]).mean()), "acc_by_length": {str(L + 1): float((dec[:, L] == S[:, L]).mean()) for L in range(4)},
