@@ -8397,6 +8397,12 @@ estimates.
 * Experiments' implementation smoke meters 7.10·10⁹ FLOPs (0.46× TC-M) and 12 sequential passes (0.21×). The DeltaMem branch is counted.
 * The result quotes the ratios from each run's own `compute` block in that wording's place. The rule (fewer FLOPs and fewer passes than TC-M) is unchanged.
 
+**Note 153-2 (2026-10-08 00:06 EDT, before any §153 run; from Experiments' implementation). Two definitions made explicit.**
+* **ext_4x5.test_acc is S_5 mod 10⁸ exact.** The reader emits 8 digits, and a 4 × 5 product can have 9, so this is the same convention as ext_4x8_low8.
+  - Reported beside it: the exact rate on items with S_5 < 10⁸, and their share.
+  - Prediction (ii) and stage 2's C2 bar (≥ 0.9) read this field.
+* **Tokens:** the times token is " ×" (one GPT-2 token, 13958) and PURE's register token is " _". Both are recorded in args.json (`times_token`, `register_token`).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
