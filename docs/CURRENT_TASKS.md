@@ -20,47 +20,33 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 Messages go through SendMessage. The names "Theory" and "Audit" currently need an identity confirm, pending the user,
 so send to the pipe addresses their messages come from.
 
-## Running now (03:30 2026-10-08; credit ~$153 after the user's top-up; cap 16 hosts / < $4/h; Audit: proofs + their completions approved)
+## Running now (08:25 2026-10-08; credit $128.18; fleet 5 hosts $1.07/h; cap 16 hosts / < $4/h)
 
 **User rules:** full runs on Vast 3090s (>= 16 GB, --ckpt_every); local cards short memory-capped jobs only, never idle. Before any commit touching
 boxes/fsq120.py / table132.py / core.py run `python scratch/smoke_plain.py`. Never edit a module while a deploy is in flight (the tar happens minutes
-after create): record the host's sha256 and commit exactly that file.
+after create; auto_ship is transitive: a multrow queue ships multpair too): record the host's sha256 and commit exactly that file.
 
-### Vast (fill_generic + vdeploy cap gate; auto_ship sends queue modules / file args / bench files, imports to a fixed point; host import gate)
+### Vast (fill_generic one at a time; auto_drain_gen7 per host; drain_posthoc runs what_state / C7 / free-prop on-host)
 
 | Tag | Work |
 |---|---|
-| b137 | §142 MULT-READ A s1 (48k) - fsq120 7150979 / multrow 435638c |
-| b138 | §143 FULL-GROW s1 (memgate PASS 7.9 GiB at L 32 width 768; 595.71, unpaired vs cnoise s1's 595.80) |
-| b139 | §145 MULTI-SLOT SLOT4 slot 1 (multpair c4457fc) |
-| b140 | §148 LOOP-RETRO loop4 + plain s1 (P=2) |
-| b141 | §147 DELTA-STATE slot 1 (exp(s) read gains, alpha_by_head; multpair c1ae4ec, deltamem e5a8d4e) |
-| b142 / b143 | §144 RUNNING-SUM F8 / N64 slot 1 (restart144 --memcheck); b142 retrying after a no-start host |
-| b145 | §150 VOCAB-SLOT DIGIT slot 1 (multpair 8efc841: slot head under bf16 autocast) |
-| b144 | §150 VOCAB-SLOT FULL slot 1 (restart150 --memcheck picks --micro; fp32 slot head) - deploying |
-| b131 | §141 r4s16 slot 1 (finishing) |
-| b146-b148 | §144 F8 follow-ups (m2 / m3 / noflag) |
-| b149 / b150 / b151 | §143 FULL-GROW completions s2 / s3 / s4 (note 143-1 s1 PASS); b149 on 550.144.03 (no 595.71 offer); fill_f143c filling b150 / b151 |
-| b152-b155 | §151 DELTA-LONG s1-s4 (restart151: 48k, keep 24k / 36k -> s151.serial_by_ckpt; model.pt kept) |
-| b156-b158 | §144 N64 follow-ups m2 / m3 / noflag (note 144-3) |
-| b159 / b160 | §152 DELTA-READ A s1 / CTRL s1: DONE + drained (01:51 / 01:17) |
-| b161 | §154 SHIFT s1 (redeployed 02:42 after 2 dead hosts; multpair 0ba4477e: C7 / propagation inline) |
-| b162-b164 | §155 DELTA-R R s1 (running) / SHIFT-R s1 / rg0 s1 (restart155: on-host gate155 + mem_check; fill s155s156) |
-| b165 | §152 a96k s1 (note 152-5: 96k, 48k copy kept, colsum_exact_by_column) |
-| b166-b168 | §156 SEP-SLOT: loop148 plain sep + pause s1 / s2 (P=2), multrow asep s1 (fill s155s156) |
+| b173 | §158 FREE-PAIRS s1 (restart158) |
+| b174 | §157 PERIODIC s1 (MULTIREAD 0.009 / CCQ 0.064 closed) |
+| b177-b179 | §155 SHIFT-R s2-s4 (restart155 --arm shiftr; s1 1.000 exact) - started 07:41 / 07:51 / 08:24 |
+| b180 / b181 | §160 R-ROWS A-R s1 / CTRL-R s1 via scratch/restart160 (on-host gate160 bf16 + memcheck, then 48k); code 5996a2c5 (Audit-approved a283c617 + spike floor + post-hoc keep fix); fill_s160 deploying 08:25 |
 
-* Drains: drain_posthoc runs the on-host fp32 contraction for s144_ / s145_ / s150_ too; keep patterns cover s142-s150.
-* Disk cleanup 19:10-19:40 (user): 277 cold models -> E:/latent_archive (manifest docs/archive/MODEL_ARCHIVE_MANIFEST_2026-10-07.tsv).
-* Deploy fixes 2026-10-07: vdeploy clears a recycled ip:port's stale host key once (679d81fb); gen_deploy destroys every instance a failed attempt created (8fda0ad3).
-* Next for Experiments: §153 VISIBLE on §152 A s1 >= 0.95 (PURE / REPEAT on hold, note 153-3); S5xk for §133 stage 2 (low); §157 pending Theory's probe. Deploy fixes tonight: vdeploy ${KR:-} (679d81fb), gen_deploy pods.txt backstop (8fda0ad3), STUCK_LOADING fast-fail (99eacdfc); one filler at a time.
-* §143 note 143-2: drain_posthoc runs `fsq120 --ablate704_only` on-host for s143_ (eval_ablate704.json + eval.json s143.ablate704); s1's model.pt was not kept (no ablation for s1).
-* §149 SOTA-PROBE: all four evals done and committed (sanity 42.46 / 33.13 / 39.35 / 44.81 vs gate 42.5 / 33.1 / 39.4 / 44.8); probe now memcapped (d4bc6e19).
+* §155 R arm complete: s1-s4 1.000 / 0.998 / 0.997 / 0.999, 0/4 SERIAL; models local (R s2's fetched after the b170 reboot).
+* §160 null: `--s160_probe_only` on §152 A s1's model, local CPU at Idle priority (logs/posthoc_s160_null_s152_a_4x4_s1.log -> eval_s160_posthoc.json).
+* Next: §159 R-5x5 (patch ready: multpair ext_5x8 + spike_100x_floor, restart155 --prefix s159, drain_posthoc s159_, keep patterns s155/158/159/160)
+  and §161 SHAPE-MIX (patch161 + scratch/gate161.py: all pass on the staged copy boxes/_multpair161_tmp.py). Both apply to multpair once b180 / b181
+  have STARTED, then Audit's diff review; §159 one host until slot 1 reads; §161 six hosts (s161_{mix,mixidx}_4x4_s1-3).
 
 ### Local (v2 workers c4060 / c3070 / c2070 <- scratch/c1_backlog_<card>.txt; log logs/c1_local.log; stop: scratch/<tag>.stop)
 
-* 4060: Theory 862fe2f4 §150 soft-only DIGIT S501 / S502 (micro 2), then §144 sum4 8k no-stop S513-516.
-* 2070: §150 soft-only DIGIT S503 / S504 (fp32, micro 4).
-* 3070: DeltaMem 5x5 proto S501 to 12k (8e29e417), then idle-fill; 4060: sum4 S515-516 then 5x5 proto S502; 2070: §150 FULL soft S505 / 506 (8e29e417).
+* 4060: proto158_free_s1_4060 resume from ckpt 6000 -> eval (--eval_bs 50 --probe_n_fit 3000; two earlier evals OOMed).
+* 3070: proto157_periodic_s1_3070 (memcheck-gated, 8k; proto157_ccq done).
+* 2070: proto160_ar_s1_2070 (§160 A-R preview, fp32, 8k, memcheck-gated, --probe_n_fit 3000).
+* The 8k-fit probes (what_state / s158 / s160) need ~1.5 GiB per feature matrix: on 8 GB cards use --probe_n_fit 3000.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
