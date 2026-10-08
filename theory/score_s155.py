@@ -100,6 +100,9 @@ def slot(arm, k):
             if not args_ok(d, arm):
                 return {"attempts": att, "status": "error", "accepted": None}
             s = dict(r.get("s155") or {}); s.update(load(d, "eval_s155_posthoc.json") or {}); s4 = dict(r.get("s154") or {}); s7 = r.get("s147") or {}
+            ws_ = load(d, "eval_what_state.json")                            # note 155-4 (separate post-hoc file, key "what_state")
+            if ws_ and ws_.get("what_state"):
+                s["what_state"] = ws_["what_state"]
             ps, rs, nv = propagation(s)
             a = {"seed": k + o, "test_acc": r.get("test_acc"), "serial": S154.serial(r.get("donor")), "per_column": (r.get("acc_by_column") or {}).get("per_column"),
                  "ext_4x8": (r.get("ext_4x8") or {}).get("test_acc"), "ext_4x16": (r.get("ext_4x16") or {}).get("test_acc"),
