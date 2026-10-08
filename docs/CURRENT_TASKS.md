@@ -60,7 +60,7 @@ after create): record the host's sha256 and commit exactly that file.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (01:52):**
+* **Theory (02:31):**
   - **§147 DELTA-STATE broke the middle-column wall** (0.743; columns 3–7 0.92–0.99; DROP by rule, IMPROVES), leading to **§151 DELTA-LONG** (48k × 4 seeds, running).
   - **§152 DELTA-READ** (378fe8e6; notes 152-1 / 152-2) is implemented (9535bfb0); b159 / b160 launch after the CUDA gates.
   - **§153 THINK-PASS registered** (ea154f30; note 153-1): item-agnostic passes, gated on §152 A s1 ≥ 0.95.
@@ -72,9 +72,15 @@ after create): record the host's sha256 and commit exactly that file.
   - **§152 DELTA-READ: DROP at proof** (1d220ecc). A s1 0.331 (exact through three rows; still learning row 4 at 48k); CTRL s1 0.012. The products form and the sums are
     stored; 4-row carry resolution at read time is not learned. 0.46× TC-M FLOPs; nothing extrapolates, baselines included. §153's gate is closed.
   - **§144: both DROP** (4ce7c7de). Single-vector carriers hold no exact number even across one addition.
+  - **§151 DELTA-LONG: DROP at proof** (bc42d26c). Slot 1 0.837, slot 2 0.889 at 48k (§147: 0.743 at 24k). IMPROVES; not SERIAL; ext_4x8 0 (the column-5
+    schedule).
+  - **Exact-storage (152-5):** the registered probe reads ≤ 0.19 exact, so the reading becomes "precision OR resolution". The λ-extended probe is limited
+    (0.12–0.55). An 8k-item fit and a model-internal read probe (Audit) are running on CPU.
+  - **Launched (02:30):** b165 s152_a96k (note 152-5); §155 R / SHIFT-R / R-γ0 (b162–b164, deploying); b161 §154 SHIFT s1 (setup). **§156 SEP-SLOT** registered
+    (37ac38d1), to be built after the deploys.
   - **§150 VOCAB-SLOT: both DROP** (the slots collapse to constant tokens; the soft-only protos FAIL). B4 stops.
   - Closed today: §133 stage 1, §136–§138, §140–§146, §148–§150, §152.
-  - **Pending scoring:** §151 (48k × 4), §154 SHIFT s1, §155 (being built); §144 N64 NOFLAG (descriptive).
+  - **Pending scoring:** §154 SHIFT s1, §155 (3 arms), s152_a96k, §156; §151 slots 3–4 (descriptive).
   - Later: the §133 stage-2 proofs (now with cap4|fullgrow), §139 A' / B (descriptive), §134 MOD s2 / s3.
 
 ## Recently done (details in THEORY / PROTOCOL12 / git log)
