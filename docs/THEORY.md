@@ -238,6 +238,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 148 | LOOP-RETRO (program B3): prelude / weight-tied loop (blocks 4–7, damped) / coda retrofit for direct-answer 4×4; LOOP-4 vs PLAIN; C2 at r = 8 / 16 | **no improvement** (LOOP-4 0.002 = PLAIN 0.002; loops unused, acc flat in r): B3 stops at this budget; the direct baseline fails at the same middle columns as every latent design | closed |
 | 149 | SOTA-PROBE (eval only): donor SERIAL (equation substitution), ablation and ρ on released GPT-2 Coconut / SIM-CoT / CODI, at release | **no model SERIAL**: SIM-CoT+Coconut PARTIAL (a third of swaps follow the donor), SIM-CoT+CODI BYPASSED (recomputed from the question); ρ marginal everywhere (0.37–0.50); the Lyapunov contrast not reproduced | closed |
 | 150 | VOCAB-SLOT (program B4; the user's token-like working memory): 4 Gumbel-ST slots on GPT-2's vocabulary (FULL) or digits + blank (DIGIT, an abacus) as the only cross-segment channel, on §140's digit-pair 4×4 | registered | **open** |
+| 151 | DELTA-LONG: §147's linear-recurrent memory at 48k, seeds 1–4 in parallel (after §147's IMPROVES: columns 3–7 0.92–0.99, loss still falling) | registered | **open** |
 
 ## Live sections
 
@@ -8121,6 +8122,38 @@ SERIAL and contractive. Slots 2–4 run (the credit rule).**
   - The soft memory fails as soon as column 2 enters, at about §140's level.
   - Their registered reading (the 6k–8k mean, ≤ 0.1 CARRIES, ≥ 0.3 FAILS) stands as fixed. These numbers point to FAILS, pending 6k–8k.
   - The block's other premise, "c_max is 4 from 5k", is right.
+
+## 151. DELTA-LONG: §147's linear-recurrent memory with twice the budget, four seeds (pre-registered 2026-10-07 22:11 EDT, after §147's IMPROVES and before any run; the user's "we gotta figure out how to fix the multiplication")
+
+**Why.**
+* §147 s1 broke the middle-column wall: columns 3–7 at 0.92–0.99, where every other design sits at about 0.1, and accumulators ≥ 100 at 0.93.
+* It dropped at proof by rule (0.743), with **the loss still falling at 24k** (0.06 → 0.052).
+* §151 asks whether the same design reaches exactness with twice the budget, and how reliable it is across seeds (C6).
+* The design is unchanged from §147, so Literature's checks (75f51298, 87cd2af5) apply.
+
+**Design: §147 exactly** (notes 147-1 / 147-2 / 147-3: 6 additive + 6 gated-delta heads after block 6, log-parametrised group gains, α exempt, W_o fade-in), except:
+* **48k steps** (the cosine over 48k), fresh runs.
+* **Seeds 1–4 in parallel** (no proof-first stage: §147 s1 is the proof that it moves), RTX 3090 class.
+
+**Rules (fixed now; §147's).**
+* **PASS:** ≥ 3/4 seeds with test_acc ≥ 0.99 on the 1,000 items and **SERIAL** (row level, the whole memory state swapped after pair 4 / 8 / 12: donor ≥ 0.90, recipient − chance < 0.10).
+* No contraction term (an integrator by design). FAIL: ≥ 2 seeds not passing.
+* **IMPROVES** (descriptive): columns 3–7 all ≥ 0.9.
+* **Readings:**
+  - **PASS:** a linear-recurrent memory as the sole cross-step channel makes a pretrained LM multiply 4×4 exactly (C1 by design and by SERIAL; C4 as reworded: streamed final
+    digits). It is the first exact latent multiplication on this carrier line.
+  - **IMPROVES without PASS:** budget-limited or readout-limited. The per-column errors say where.
+  - **Neither:** §147 s1 was a lucky seed. The seed rate says how often.
+* **Descriptive:**
+  - §147's measures: per-head-type ablation, colsum readout by column, accuracy by magnitude, α by head, the read-norm ratio;
+  - **ext_4x8** (§147 s1 failed at column 5, the first four-product column);
+  - learning curves against §147 s1 at 24k.
+* **5×5 only after a 4×4 PASS**, as a new note.
+
+**Placement.**
+* 4 runs × about 7.5 h on a 3090, about $1.5 each, about $6 in all (the credit rule; Audit approves).
+* Implementation: the §147 code as is, `--steps 48000`.
+* Dirs `s151_delta_4x4_s{1..4}`. Scorer: `theory/score_s151.py` (§147's scorer with 48k and the new dirs), committed with this registration.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
