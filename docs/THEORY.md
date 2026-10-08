@@ -9031,6 +9031,17 @@ The run is a post-hoc on every accepted §155 model (and §154 SHIFT / §151 for
   - 7.10·10⁹ FLOPs and 12 passes, as §152 A.
 * Both closed arms fall below §152 A at 48k (0.331), near b165 at 96k (0.079). The panel's reading waits for PERIODIC (b174).
 
+**Note 157-3 (2026-10-08 08:20 EDT, before the 48k PERIODIC cell (b174) lands; Theory's scorer audit). How 157-2's PERIODIC blend reading is computed.**
+* multrow writes `s157.offcol_weight` as a per-column dict plus a `mean`. The scorer had compared the whole field with 0.1 as a number, so the reading could never fire.
+* **Fixed now:** the value tested against 0.1 is the **mean over the product columns 1–7**.
+  - Column 8, the final carry, has no in-column writes and is 1.0 by construction. Including it would push any read above 0.1. For example, a read at 0.05 per column has a
+    mean of 0.17 with column 8 and 0.05 without it.
+  - Per-column values are reported beside it.
+* **What had been read:** the descriptive 8k PERIODIC preview on the 3070, at 0.89–0.97 on columns 1–7. That is far above 0.1 under either aggregate, so the choice is not
+  informed by where a value falls.
+* **Same audit, §158:** score_s158 now reads 158-1 (b) from `acc_vs_raw.pooled`, the layout multpair writes (ad185b64). The top-level read made `c1_credit` always False. No
+  §158 eval existed.
+
 ## 158. FREE-PAIRS: train on hybrid pair sequences, so the memory has to accumulate (Audit's research pass 05:00; interchange training at the data level; pre-registered 2026-10-08 04:57 EDT, after Audit's draft review and before any implementation or run; Literature's precedent check is pending and will be recorded in a dated note)
 
 **Why.**
