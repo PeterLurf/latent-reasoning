@@ -234,7 +234,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 144 | RUNNING-SUM (the user's "fix the multiplication"; diagnostic): sum mod 10⁴ with 2-digit items on fsq120, FSQ-8 / NOISE-64; can the carrier carry a growing number? (conditional magnitude ladder) | registered | **open** |
 | 145 | MULTI-SLOT: K = 4 carried NOISE-64 slots (one write position each) on §140's digit-pair multiplication; CARRY1 control (same writes, 1 carried) if SLOT4 IMPROVES | **DROP at proof** (0.000; column 2 worse than §140, 0.31; one active slot, no digit specialisation): CARRY1 not run | closed |
 | 146 | MID-PROBE ($0): layer-wise probes (0–12) of the accumulator on s140 / s137; MID-STACK SIGNAL = R² ≥ 0.5 at 100–200 in some layer ≤ 9 (top 0.05) → register a mid-stack hand-off | **NO SIGNAL** (best layer 4: 0.217 at 100–200; layers 1–12 flat; the top reproduces 140-3): the accumulator ≥ 100 is computed nowhere; B2 ranks last | closed |
-| 147 | DELTA-STATE (program B1): a linear-recurrent memory (6 additive + 6 gated-delta heads) as GPT-2's only cross-segment channel, on §140's digit-pair 4×4; PASS = exact + SERIAL | registered | **open** |
+| 147 | DELTA-STATE (program B1): a linear-recurrent memory (6 additive + 6 gated-delta heads) as GPT-2's only cross-segment channel, on §140's digit-pair 4×4; PASS = exact + SERIAL | **DROP at proof but IMPROVES** (test 0.743; columns 3–7 0.92–0.99 where every other design sits at about 0.1; accumulators ≥ 100 at 0.93; both head types needed; loss still falling): the first design past the middle-column wall → §151 | closed (→ §151) |
 | 148 | LOOP-RETRO (program B3): prelude / weight-tied loop (blocks 4–7, damped) / coda retrofit for direct-answer 4×4; LOOP-4 vs PLAIN; C2 at r = 8 / 16 | **no improvement** (LOOP-4 0.002 = PLAIN 0.002; loops unused, acc flat in r): B3 stops at this budget; the direct baseline fails at the same middle columns as every latent design | closed |
 | 149 | SOTA-PROBE (eval only): donor SERIAL (equation substitution), ablation and ρ on released GPT-2 Coconut / SIM-CoT / CODI, at release | **no model SERIAL**: SIM-CoT+Coconut PARTIAL (a third of swaps follow the donor), SIM-CoT+CODI BYPASSED (recomputed from the question); ρ marginal everywhere (0.37–0.50); the Lyapunov contrast not reproduced | closed |
 | 150 | VOCAB-SLOT (program B4; the user's token-like working memory): 4 Gumbel-ST slots on GPT-2's vocabulary (FULL) or digits + blank (DIGIT, an abacus) as the only cross-segment channel, on §140's digit-pair 4×4 | registered | **open** |
@@ -7764,6 +7764,28 @@ matters.**
   - smoke_plain;
   - Audit's diff review.
 * Dirs `s147_delta_4x4_s{seed}`. Scorer: `theory/score_s147.py`, committed with this registration.
+
+**§147 result (2026-10-07 22:10 EDT; the s1 proof, 24k, RTX 3090 / 595.71.05; scored by Theory with score_s147). DROP at proof by the registered rule (test_acc 0.743 < 0.95), but IMPROVES:
+the first design to break the middle-column wall.**
+* **Per column:** 1.0 / 1.0 / **0.994 / 0.948 / 0.916 / 0.931 / 0.937** / 0.983.
+  - Every other multiplication design sits at 0.08–0.41 in columns 3–6: §140, §141, §145, §148, and the direct baseline.
+  - By accumulator magnitude: < 100 0.97, 100–199 **0.93**, ≥ 200 0.93. §140 had 0.10–0.14 at ≥ 100, absent even from h (140-3).
+* **The mechanism, as designed:**
+  - **The additive state holds the column sums:** readout R² by column 1.00 / 0.91 / 0.87 / 0.87 / 0.85 / 0.81 / 0.91, and 0.48 for the flush carry. Interference grows only
+    mildly with the column index (note 147-1 (2)).
+  - **Both head types are needed:** zeroing the additive heads (columns 2–7 ≤ 0.25) or the delta heads (≤ 0.16) collapses it. The group gains (147-2) let the delta heads train.
+  - α moved from 0.993 in some heads (one to 0.919).
+  - The additive ρ_k is 1.0 exactly: an integrator, as stated.
+* **SERIAL is not met at this accuracy** (row level, at positions 4 / 8 / 12):
+  - donor-consistent 0.17 / 0.21 / 0.40;
+  - recipient-consistent ≤ 0.011, at chance (0.01–0.02).
+  - The memory is the channel (the recipient's answer never survives the swap), but a swapped state transfers only in part, as expected at 0.74 exactness.
+* **The loss was still falling at 24k:** ≈ 0 at c_max 1, 0.46 at 3k, 0.026 at 5k, 0.14 at 9k, 0.22 at 12k, 0.06 at 20k, 0.052 at 24k.
+* **4×8 (descriptive):** columns 1–4 at 1.0 / 1.0 / 0.99 / 0.94, then column 5 at **0.0**, where a column first holds four products, and later columns near chance. Length
+  generalisation fails at the first out-of-range column structure.
+* **Reading (as registered): IMPROVES without PASS.** The additive linear memory fixes the accumulator that every single-vector carrier failed to represent (L2). Exactness
+  falls short at this budget, with the loss still falling.
+  - **The registered rule stops §147.** A longer-budget follow-up is a separate registration (§151).
 
 ## 148. LOOP-RETRO: recurrent depth retrofitted into GPT-2 for direct-answer multiplication (the program's depth bet, B3; pre-registered 2026-10-07 16:49 EDT, after Literature's checks 87cd2af5 / 75f51298, before any implementation or run; the user's "major new architecture changes" (via Audit))
 
