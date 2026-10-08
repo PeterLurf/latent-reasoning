@@ -69,8 +69,7 @@ def main():
         rd = "several pass (%s): the read was the block; cheapest by FLOPs: %s (%s)" % (passed, ch, {a: (fl[a] and round(fl[a] / S152.TCM["flops"], 2)) for a in passed})
     else:
         rd = "none >= 0.95: not the read; §155's recurrence is the remaining route"
-    c1 = (res.get("ccq") or {}).get("runs", {}).get(1) or {}; p1 = (res.get("periodic") or {}).get("runs", {}).get(1) or {}   # note 157-2
-    l0 = ((c1.get("read_exposure") or {}) if False else (load("s157_ccq_4x4_s1") or {}).get("s157", {}).get("read_time_lambda0") or {})
+    l0 = (((load("s157_ccq_4x4_s1") or {}).get("s157") or {}).get("read_time_lambda0") or {})                 # note 157-2
     if gate.get("ccq") and (l0.get("test_acc") or 0) >= 0.95:
         rd += "; CCQ: the read-time lambda = 0 ablation also >= 0.95 (%s): credit the l2-normalised features, not the contraction" % l0.get("test_acc")
     ow = ((load("s157_periodic_4x4_s1") or {}).get("s157") or {}).get("offcol_weight")
