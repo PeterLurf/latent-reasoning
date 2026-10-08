@@ -51,10 +51,10 @@ after create; auto_ship is transitive: a multrow queue ships multpair too): reco
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
 * **Theory (10:50):**
-  - **§161 MIX is LENGTH-GENERAL** (94979ffe; 2 of 3: ext_4x8 0.964 / 0.912 from n ≤ 5; 4×4 0.996 / 0.996). It is SERIAL with out-of-distribution hybrids and a
-    state-carried running sum, and not linearly editable. s2 (§163's condition), MIX+IDX and MIX9 are pending.
+  - **§161 MIX is 3 / 3** (4f774362): exact (0.996 / 0.997 / 0.996), length-general (ext_4x8 0.964 / 0.917 / 0.912 from n ≤ 5), and SERIAL with a state-carried
+    running sum in every seed; not linearly editable. MIX+IDX and MIX9 are pending.
     - **§164 MIX-BASELINES** (bbd53874): TC-MIX / DIRECT-MIX on the same mix, needed before any "beyond text" claim.
-    - **§163 SHAPE-MIX-2D** (0045d6a1) waits on MIX s2.
+    - **§163 SHAPE-MIX-2D** (0045d6a1): its condition is met; slot 1 is launching.
     - **§165 FIXED-CHUNK** (60e55135; the user's "is it task-agnostic?"): the same memory on fixed text chunks plus think passes. It runs after MIX s2 and §164.
   - **Waiting on the user (via Audit):** `docs/THEORY_C1_FORCING_2026-10-08.md` (42de5d5f + addendum 8500894d; note 158-2, Literature 6b771087 / fd630b87).
     - The finding: C1 is forced only by depth beyond one pass, or by input beyond the buffer's capacity.
