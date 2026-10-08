@@ -35,9 +35,24 @@ def serial(dn):
     return bool(dn) and all(v["donor_consistent"] >= 0.90 and v["recipient_consistent"] - v.get("chance_overlap", 0.0) < 0.10 for v in dn.values())
 
 
-def trigger(r):
-    sp = ((r.get("s155") or {}).get("write_grad_spikes_floor")) or []; nf = int(r.get("n_nonfinite") or 0)
-    return {"floor_spikes": len(sp), "n_nonfinite": nf, "fires": bool(sp or nf)}
+def trigger(d, r):
+    """Note 162-2 (Audit): outcome-based fallback trigger - any non-finite step, or a logged window-mean loss > 2x the logged loss 1k steps earlier, after
+    write_mix_start (2k) and within one curriculum stage (same L_max). The 155-1 gradient-spike count (160-1 floor) is reported, descriptive only."""
+    sp = ((r.get("s155") or {}).get("write_grad_spikes_floor")) or []; nf = int(r.get("n_nonfinite") or 0); jumps = []
+    p = os.path.join(R, d, "log.jsonl"); pts = {}
+    if os.path.exists(p):
+        for ln in open(p, encoding="utf-8"):
+            try:
+                x = json.loads(ln)
+            except ValueError:
+                continue
+            if isinstance(x.get("step"), int) and isinstance(x.get("loss"), (int, float)):
+                pts[x["step"]] = (float(x["loss"]), x.get("L_max"))
+    for st, (lo, lm) in pts.items():
+        prev = pts.get(st - 1000)
+        if st > 2000 and prev and prev[1] == lm and prev[0] > 0 and lo > 2 * prev[0]:
+            jumps.append(st)
+    return {"loss_jumps": sorted(jumps), "n_nonfinite": nf, "fires": bool(jumps or nf), "grad_floor_spikes_descriptive": len(sp), "log_points": len(pts)}
 
 
 def boundary():
@@ -100,7 +115,7 @@ def run(arm, s, lmax):
             "state_probe_p": sp, "op_probe_old_mean": old_m, "probe_p": p, "probe_n": x.get("probe_n_score"),
             "edit": {"propagation_share": ps, "random_edit_share": rs, "null_value": nv, "n": e.get("n")}, "propagates": prop, "kind": kind,
             "serial_sanity": serial(r.get("donor")), "key_cos": x.get("key_cos"),
-            "rho_loop": ((((r.get("s155") or {}).get("recurrence") or [{}])[-1]) or {}).get("rho_loop"), "fallback_trigger": trigger(r), "gpu": r.get("train_gpu")}
+            "rho_loop": ((((r.get("s155") or {}).get("recurrence") or [{}])[-1]) or {}).get("rho_loop"), "fallback_trigger": trigger(d, r), "gpu": r.get("train_gpu")}
 
 
 def arm_kind(runs):
