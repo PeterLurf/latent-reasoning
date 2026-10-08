@@ -118,6 +118,7 @@ class MultPair(FSQ120):
 
 
 def set_ops(m, A, Bd, dev):
+    m.pa = m.pb = None                                                      # §158: per-step digits off unless a free batch sets them
     m.adig = torch.tensor(np.array(DTOK)[A], device=dev); m.bdig = torch.tensor(np.array(DTOK)[Bd], device=dev); m.pairs, col, _ = schedule(A.shape[1], Bd.shape[1])
     m.newcol = np.r_[True, col[1:] != col[:-1]]
 
@@ -419,6 +420,8 @@ class MultDelta(MultPair):
         i, j = (int(v) for v in self.pairs[t])
         if i < 0:
             tail = torch.full((B, 1), EQTOK, device=dev)
+        elif getattr(self, "pa", None) is not None:                         # §158: per-step digits (free chains)
+            tail = torch.cat([self.pa[:, t:t + 1], self.pb[:, t:t + 1], torch.full((B, 1), NEWTOK if self.newcol[t] else SAMETOK, device=dev)], 1)
         else:
             tail = torch.cat([self.adig[:, i:i + 1], self.bdig[:, j:j + 1], torch.full((B, 1), NEWTOK if self.newcol[t] else SAMETOK, device=dev)], 1)
         return torch.cat([torch.full((B, 1), EOT, device=dev), tail], 1)
@@ -440,7 +443,7 @@ class MultDelta(MultPair):
 
 
 @torch.no_grad()
-def rollout_delta(m, A, Bd, dev, amp, bs, override=None, record=False, keep_pos=(), reads=False, perturb=None):
+def rollout_delta(m, A, Bd, dev, amp, bs, override=None, record=False, keep_pos=(), reads=False, perturb=None, skip=()):
     """§147 chains over all n^2 + 1 steps, decode at emission steps. override: (t, S_donor (N, 12, 64, 64)) replaces the whole state after step t
     (1-based); keep_pos: steps whose state is returned; reads: the additive heads' read at each segment's last token (N, T, 384)."""
     N = len(A); pairs, col, emit = schedule(A.shape[1], Bd.shape[1]); T = len(pairs); out = np.full((N, A.shape[1] + Bd.shape[1]), -1)
@@ -448,6 +451,10 @@ def rollout_delta(m, A, Bd, dev, amp, bs, override=None, record=False, keep_pos=
     for s_ in range(0, N, bs):
         sl = slice(s_, s_ + bs); B = len(A[sl]); set_ops(m, A[sl], Bd[sl], dev); S = m.start(B, dev)
         for t in range(T):
+            if t + 1 in skip:                                               # note 155-4: pair t's pass not run (memory unchanged) ...
+                if getattr(m, "add_reset", None) == "column" and t > 0 and m.newcol[t]:   # ... but a column boundary's reset still applies (Theory)
+                    S = torch.cat([torch.zeros_like(S[:, :DM.H_ADD]), S[:, DM.H_ADD:]], 1)
+                continue
             rec = [] if reads else None
             with amp_ctx(amp):
                 lg, S = m.step(S, t, rec)
@@ -460,6 +467,74 @@ def rollout_delta(m, A, Bd, dev, amp, bs, override=None, record=False, keep_pos=
             if reads:
                 R[sl, t] = rec[0].float().cpu().numpy()
     return out, kept, R
+
+
+def _dual_fit_pred(Xf, Yf, Xs, dev, lams=(1e-9, 1e-8, 1e-7, 1e-6), cls=False):
+    """near-OLS for d >> n (note 155-4, Theory): standardised features (fit-set statistics), dual ridge K = Z Z^T / d, lambda (x n) by 3-fold CV on
+    the fit set over `lams` (score: accuracy of the argmax for one-hot targets when cls, else R^2), then refit on all; fp32 features on `dev`,
+    K / solves in fp64. Returns (predictions on Xs, lambda)."""
+    Zf = torch.tensor(Xf, device=dev, dtype=torch.float32); mu, sd = Zf.mean(0), Zf.std(0) + 1e-6; Zf = (Zf - mu) / sd; d = Zf.shape[1]; n = len(Zf)
+    K = (Zf @ Zf.T).double() / d; Y = torch.tensor(Yf, device=dev, dtype=torch.float64); Y = Y[:, None] if Y.dim() == 1 else Y
+    fold = torch.arange(n, device=dev) % 3
+    def fit(idx, lam):
+        ym = Y[idx].mean(0); return torch.linalg.solve(K[idx][:, idx] + lam * len(idx) * torch.eye(len(idx), device=dev, dtype=torch.float64), Y[idx] - ym), ym
+    def score(yt, yp):
+        if cls:
+            return float((yp.argmax(1) == yt.argmax(1)).double().mean())
+        return float(1 - ((yt - yp) ** 2).sum() / ((yt - yt.mean(0)) ** 2).sum().clamp_min(1e-12))
+    def cv(lam):
+        sc = []
+        for k in range(3):
+            tr = torch.nonzero(fold != k).squeeze(1); va = torch.nonzero(fold == k).squeeze(1); al, ym = fit(tr, lam); sc.append(score(Y[va], K[va][:, tr] @ al + ym))
+        return float(np.mean(sc))
+    best = max(lams, key=cv); al, ym = fit(torch.arange(n, device=dev), best); out = []
+    for i in range(0, len(Xs), 500):
+        Zs = (torch.tensor(Xs[i:i + 500], device=dev, dtype=torch.float32) - mu) / sd; out.append(((Zs @ Zf.T).double() / d @ al + ym).cpu().numpy())
+    p_ = np.concatenate(out); return (p_ if cls or Y.shape[1] > 1 else p_[:, 0]), best
+
+
+@torch.no_grad()
+def what_state(m, teA, teB, trA, trB, dev, amp, bs, n_fit=8000, skip_pairs=(4, 7), points=(4, 8, 12), seed=14002):
+    """note 155-4 (descriptive; Audit pre-registered): what the memory state holds.
+    (1) pass_skip: pair #t's pass not run (the memory passes through unchanged; later passes keep their inputs and flags; under --add_reset the
+        column-boundary reset STILL applies - Theory: a harness operation, not the pair's computation), t = 4 / 7 (columns 3 / 4's first pairs); rows with a_i b_j != 0; row level:
+        row_skip_consistent = (answer == product - a_i b_j 10^(i+j)), full_product = (answer == product).
+    (2) donor operands_consistent: the donor's whole state swapped in after pair P (P = 4 / 8 / 12; donor_delta's sampling); hybrid operands = the
+        donor's digit at each a_i / b_j position appearing in pairs 1..P, else the recipient's; row-level share answer == hybrid product.
+    (3) operand_probe: from the flattened S after pairs 4 / 8 / 12, near-OLS (dual, lambda by 3-fold CV over 1e-9..1e-6, standardised) one-hot regressions -> argmax of each seen a_i / b_j
+        digit and rounded-exact regressions of each partial column sum (products in pairs 1..P only); fit on n_fit train items, scored on the test items."""
+    from boxes.multcol import to_int                                         # (multpair does not import it at module level)
+    pairs, col, emit = schedule(teA.shape[1], teB.shape[1]); T = len(pairs); pw = 10 ** np.arange(teA.shape[1] + teB.shape[1], dtype=np.int64)
+    def ans_int(got):
+        return np.where((got >= 0).all(1), (got * pw[None, :got.shape[1]]).sum(1), -1)
+    out = {"pass_skip": {}}; prod = to_int(teA) * to_int(teB)
+    for t in skip_pairs:
+        i, j = (int(v) for v in pairs[t - 1]); keep = (teA[:, i] * teB[:, j]) != 0; Ak, Bk = teA[keep], teB[keep]
+        got = ans_int(rollout_delta(m, Ak, Bk, dev, amp, bs, skip=(t,))[0]); pk = prod[keep]; rs = pk - Ak[:, i].astype(np.int64) * Bk[:, j] * 10 ** (i + j)
+        out["pass_skip"]["pair%d" % t] = {"a_i": i + 1, "b_j": j + 1, "column": i + j + 1, "row_skip_consistent": float((got == rs).mean()), "full_product": float((got == pk).mean()),
+                                          "n": int(keep.sum()), "n_excluded_zero_product": int((~keep).sum()), "skip_keeps_reset": getattr(m, "add_reset", None) == "column"}
+    rng = np.random.default_rng(seed); N = min(1000, len(teA)); ir, idn = rng.permutation(len(teA))[:N], rng.permutation(len(teA))[:N]
+    Ar, Br, Ad, Bdn = teA[ir], teB[ir], teA[idn], teB[idn]; _, kept, _ = rollout_delta(m, Ad, Bdn, dev, amp, bs, keep_pos=[p_ for p_ in points if p_ < T]); dn = {}
+    for P in kept:
+        got = ans_int(rollout_delta(m, Ar, Br, dev, amp, bs, override=(P, kept[P]))[0]); seenA = {int(pairs[t_][0]) for t_ in range(P)}; seenB = {int(pairs[t_][1]) for t_ in range(P)}
+        hA = np.stack([Ad[:, i] if i in seenA else Ar[:, i] for i in range(teA.shape[1])], 1); hB = np.stack([Bdn[:, j] if j in seenB else Br[:, j] for j in range(teB.shape[1])], 1)
+        dn["pos%d" % P] = {"operands_consistent": float((got == to_int(hA) * to_int(hB)).mean()), "recipient_consistent": float((got == to_int(Ar) * to_int(Br)).mean()),
+                           "donor_full_consistent": float((got == to_int(Ad) * to_int(Bdn)).mean()), "seen_a": sorted(i + 1 for i in seenA), "seen_b": sorted(j + 1 for j in seenB), "n": int(N)}
+    out["donor_operands"] = dn
+    trA, trB = trA[:n_fit], trB[:n_fit]; _, Ktr, _ = rollout_delta(m, trA, trB, dev, amp, bs, keep_pos=list(points)); _, Kte, _ = rollout_delta(m, teA, teB, dev, amp, bs, keep_pos=list(points)); op = {}
+    for P in points:
+        Xf = Ktr[P].reshape(len(trA), -1); Xs = Kte[P].reshape(len(teA), -1); seenA = sorted({int(pairs[t_][0]) for t_ in range(P)}); seenB = sorted({int(pairs[t_][1]) for t_ in range(P)}); r_ = {"a": {}, "b": {}, "colsum": {}}
+        for nm, D_tr, D_te, idx in (("a", trA, teA, seenA), ("b", trB, teB, seenB)):
+            for i in idx:
+                pr_, lam_ = _dual_fit_pred(Xf, np.eye(10)[D_tr[:, i]], Xs, dev, cls=True); r_[nm][str(i + 1)] = {"acc": float((pr_.argmax(1) == D_te[:, i]).mean()), "lambda": lam_}
+        csf = np.zeros((len(trA), 7)); cst = np.zeros((len(teA), 7))
+        for t_ in range(P):
+            i, j = (int(v) for v in pairs[t_]); csf[:, i + j] += trA[:, i] * trB[:, j]; cst[:, i + j] += teA[:, i] * teB[:, j]
+        for c in sorted({int(pairs[t_][0]) + int(pairs[t_][1]) for t_ in range(P)}):
+            pr_, lam_ = _dual_fit_pred(Xf, csf[:, c], Xs, dev); r_["colsum"][str(c + 1)] = {"exact": float((np.rint(pr_) == cst[:, c]).mean()), "lambda": lam_}
+        r_["n_fit"] = int(len(trA)); r_["n_score"] = int(len(teA)); op["after_pair%d" % P] = r_
+    out["operand_probe"] = op; out["n_fit_train"] = int(len(trA)); out["def"] = what_state.__doc__
+    return out
 
 
 def donor_delta(m, A, Bd, dev, amp, bs, rng, positions=(4, 8, 12), n=1000):
@@ -873,6 +948,114 @@ def s155_recurrence(m, A, Bd, dev, amp, n=128, rows=4000, seed=15501):
     m.train(was); return out
 
 
+# ================================================================ THEORY §158 FREE-PAIRS (c94ee2bf + note 158-1)
+def free_steps(rng, n, na, nb):
+    """n free chains: every pair's digits drawn independently (the same (i, j) schedule and flags). -> PA, PB (n, T) digits per step (the flush 0)."""
+    pairs, _, _ = schedule(na, nb); T = len(pairs); PA = rng.integers(0, 10, (n, T)); PB = rng.integers(0, 10, (n, T)); fl = np.array([p_[0] < 0 for p_ in pairs])
+    PA[:, fl] = 0; PB[:, fl] = 0
+    return PA, PB
+
+
+def steps_of(A, Bd):
+    """consistent chains as per-step digits (a_i, b_j of each pair)."""
+    pairs, _, _ = schedule(A.shape[1], Bd.shape[1]); ia = np.array([max(int(p_[0]), 0) for p_ in pairs]); jb = np.array([max(int(p_[1]), 0) for p_ in pairs])
+    fl = np.array([p_[0] < 0 for p_ in pairs]); PA = A[:, ia].copy(); PB = Bd[:, jb].copy(); PA[:, fl] = 0; PB[:, fl] = 0
+    return PA, PB
+
+
+def acc_steps(PA, PB, na, nb):
+    """§158 labels from per-step digits, as accumulators(): acc after each step (new column: carry = acc // 10, then + this pair's product), the
+    emitted digit at emission steps, and the per-step product. = the digits of sum_t a^(t) b^(t) 10^(i_t + j_t), LSB first."""
+    pairs, col, emit = schedule(na, nb); N, T = PA.shape; acc = np.zeros((N, T), np.int64); dig = np.full((N, T), -1, np.int64); a = np.zeros(N, np.int64)
+    for t in range(T):
+        if t > 0 and col[t] != col[t - 1]:
+            a = a // 10
+        if pairs[t][0] >= 0:
+            a = a + PA[:, t].astype(np.int64) * PB[:, t]
+        acc[:, t] = a
+        if emit[t]:
+            dig[:, t] = a % 10
+    return acc, dig, pairs, col, emit
+
+
+def label_check(PA, PB, na, nb):
+    """§158 gate: the emitted digits equal the digits of sum_t a^(t) b^(t) 10^(i_t + j_t) (exact)."""
+    _, dig, pairs, col, emit = acc_steps(PA, PB, na, nb); v = np.zeros(len(PA), np.int64)
+    for t, (i, j) in enumerate(pairs):
+        if i >= 0:
+            v = v + PA[:, t].astype(np.int64) * PB[:, t] * 10 ** (int(i) + int(j))
+    want = np.stack([(v // 10 ** k) % 10 for k in range(na + nb)], 1); got = np.stack([dig[:, t] for t in range(len(pairs)) if emit[t]], 1)
+    return bool((got == want).all())
+
+
+@torch.no_grad()
+def rollout_free(m, PA, PB, na, nb, dev, amp, bs, override=None, keep_pos=()):
+    """rollout_delta over per-step digits (free or consistent chains): (N, na + nb) emitted digits, kept states."""
+    N = len(PA); pairs, col, emit = schedule(na, nb); T = len(pairs); out = np.full((N, na + nb), -1); kept = {p_: np.zeros((N, 12, DM.DH, DM.DH), np.float32) for p_ in keep_pos}
+    Az, Bz = np.zeros((1, na), np.int64), np.zeros((1, nb), np.int64)
+    for s_ in range(0, N, bs):
+        sl = slice(s_, s_ + bs); Bn = len(PA[sl]); set_ops(m, np.repeat(Az, Bn, 0), np.repeat(Bz, Bn, 0), dev)
+        m.pa = torch.tensor(np.array(DTOK)[PA[sl]], device=dev); m.pb = torch.tensor(np.array(DTOK)[PB[sl]], device=dev); S = m.start(Bn, dev)
+        for t in range(T):
+            with amp_ctx(amp):
+                lg, S = m.step(S, t)
+            if override is not None and override[0] == t + 1:
+                S = torch.tensor(override[1][sl], device=dev, dtype=S.dtype)
+            if emit[t]:
+                out[sl, col[t]] = m.fam.decode(lg.argmax(-1).cpu().numpy()[:, None])
+            if t + 1 in kept:
+                kept[t + 1][sl] = S.float().cpu().numpy()
+        m.pa = m.pb = None
+    return out, kept
+
+
+def s158_extras(m, teA, teB, dev, amp, bs, n_free=1000, n_fit=8000, seed=15801, points=(4, 8, 12)):
+    """§158 descriptive: free_pairs_test_acc (1,000 held-out free chains, row level); by_item_type {consistent, free}: acc, row-level donor
+    (the donor's whole state after pair p = 4 / 8 / 12; expected = the recipient's later digits carried from the donor's accumulator), and the
+    propagation edit (c7_state_edit's, on the free chains via per-step digits); acc_vs_raw from S after pairs 4 / 8 / 12 (near-OLS, dual, CV lambda,
+    n_fit free chains -> the held-out free chains): acc_exact (rounded partial column sums) and raw_digit_acc (10-way, the seen a^(t) / b^(t)),
+    per point and pooled."""
+    na, nb = teA.shape[1], teB.shape[1]; rng = np.random.default_rng(seed); FA, FB = free_steps(rng, n_free, na, nb); facc, fdig, pairs, col, emit = acc_steps(FA, FB, na, nb)
+    et = np.nonzero(emit)[0]; Ff = np.stack([fdig[:, t] for t in et], 1); got = rollout_free(m, FA, FB, na, nb, dev, amp, bs)[0]; out = {"free_pairs_test_acc": float((got == Ff).all(1).mean())}
+    CA, CB = steps_of(teA, teB); cacc, cdig, _, _, _ = acc_steps(CA, CB, na, nb); Cf = np.stack([cdig[:, t] for t in et], 1); cg = rollout_free(m, CA, CB, na, nb, dev, amp, bs)[0]
+    bt = {}
+    for nm, PA_, PB_, acc_, Dg in (("consistent", CA, CB, cacc, Cf), ("free", FA, FB, facc, Ff)):
+        g_ = cg if nm == "consistent" else got; r_ = {"acc": float((g_ == Dg).all(1).mean()), "n": int(len(PA_))}; drng = np.random.default_rng(seed + 1); N = min(1000, len(PA_))
+        ir, idn = drng.permutation(len(PA_))[:N], drng.permutation(len(PA_))[:N]; _, kept = rollout_free(m, PA_[idn], PB_[idn], na, nb, dev, amp, bs, keep_pos=[p_ for p_ in points if p_ < len(pairs)])
+        dn = {}
+        for P in kept:
+            gp = rollout_free(m, PA_[ir], PB_[ir], na, nb, dev, amp, bs, override=(P, kept[P]))[0]
+            a0 = acc_[idn, P - 1].copy(); exp_ = Dg[ir].copy(); a = a0; started = False
+            for t in range(P, len(pairs)):                                    # the recipient's later pairs, carried from the donor's accumulator
+                if col[t] != col[t - 1]:
+                    a = a // 10
+                if pairs[t][0] >= 0:
+                    a = a + PA_[ir, t].astype(np.int64) * PB_[ir, t]
+                if emit[t]:
+                    exp_[:, col[t]] = a % 10
+            later = sorted({int(col[t]) for t in range(P, len(pairs)) if emit[t]})
+            dn["pos%d" % P] = {"row_level": {"donor_consistent": float((gp[:, later] == exp_[:, later]).all(1).mean()), "recipient_consistent": float((gp[:, later] == Dg[ir][:, later]).all(1).mean()),
+                                             "chance_overlap": float((exp_[:, later] == Dg[ir][:, later]).all(1).mean())}, "n": int(N)}
+        r_["donor"] = dn; bt[nm] = r_
+    out["by_item_type"] = bt
+    frng = np.random.default_rng(seed + 2); TA, TB = free_steps(frng, n_fit, na, nb); _, Ktr = rollout_free(m, TA, TB, na, nb, dev, amp, bs, keep_pos=list(points))
+    _, Kte = rollout_free(m, FA, FB, na, nb, dev, amp, bs, keep_pos=list(points)); avr = {}; ex_all, rw_all = [], []
+    for P in points:
+        Xf = Ktr[P].reshape(n_fit, -1); Xs = Kte[P].reshape(n_free, -1); csf = np.zeros((n_fit, na + nb)); cst = np.zeros((n_free, na + nb)); r_ = {"acc_exact": {}, "raw_digit_acc": {}}
+        for t in range(P):
+            i, j = (int(v) for v in pairs[t]); csf[:, i + j] += TA[:, t] * TB[:, t]; cst[:, i + j] += FA[:, t] * FB[:, t]
+        for c in sorted({int(pairs[t][0]) + int(pairs[t][1]) for t in range(P)}):
+            pr_, lam_ = _dual_fit_pred(Xf, csf[:, c], Xs, dev); e_ = float((np.rint(pr_) == cst[:, c]).mean()); r_["acc_exact"][str(c + 1)] = {"exact": e_, "lambda": lam_}; ex_all.append(e_)
+        for t in range(P):
+            for nm, Dtr, Dte in (("a", TA, FA), ("b", TB, FB)):
+                pr_, lam_ = _dual_fit_pred(Xf, np.eye(10)[Dtr[:, t]], Xs, dev, cls=True); e_ = float((pr_.argmax(1) == Dte[:, t]).mean()); r_["raw_digit_acc"]["%s_pair%d" % (nm, t + 1)] = {"acc": e_, "lambda": lam_}; rw_all.append(e_)
+        r_["acc_exact_mean"] = float(np.mean([v["exact"] for v in r_["acc_exact"].values()])); r_["raw_digit_acc_mean"] = float(np.mean([v["acc"] for v in r_["raw_digit_acc"].values()]))
+        avr["after_pair%d" % P] = r_
+    avr["pooled"] = {"acc_exact": float(np.mean(ex_all)), "raw_digit_acc": float(np.mean(rw_all)), "n_fit": int(n_fit), "n_score": int(n_free)}
+    out["acc_vs_raw"] = avr; out["label_check_free"] = label_check(FA, FB, na, nb); out["def"] = s158_extras.__doc__
+    return out
+
+
 def s154_extras(m, teA, teB, dev, amp, bs, ext_n, shift):
     """§154 descriptive block: colsum_r2_by_segment (4x4), carry_probe_by_column {4x4, 4x8}, c7_edit (SHIFT)."""
     acc, _, _, pairs, col, emit = accumulators(teA, teB); R = reads_by_step(m, teA, teB, dev, amp, bs)[:, :, :DM.H_ADD * DM.DH]; h = len(teA) // 2; out = {}
@@ -1040,12 +1223,15 @@ def main():
     ap.add_argument("--log_every", type=int, default=100); ap.add_argument("--stop_plateau", action="store_true"); ap.add_argument("--ckpt_every", type=int, default=0)
     ap.add_argument("--resume", default=None); ap.add_argument("--stop_after", type=int, default=0); ap.add_argument("--train_n", type=int, default=0, help="smoke only")
     ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--from_args", default=None); ap.add_argument("--contraction_only", action="store_true")
+    ap.add_argument("--what_state_only", action="store_true", help="note 155-4 post-hoc (descriptive): what_state on <out>/model.pt -> eval_what_state.json")
     ap.add_argument("--c7_state_only", action="store_true", help="§154 post-hoc (descriptive): C7 state edits on <out>/model.pt -> eval_c7_state.json")
     ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     ap.add_argument("--slots", type=int, default=0, help="§145: K write positions / slots (0 = §140's single code)"); ap.add_argument("--carry_slots", type=int, default=0)
     ap.add_argument("--carry_from", default="first", choices=["first", "last"], help="§145 note 145-1: carry the slots read at the LAST write positions (CARRY1: w_K)")
     ap.add_argument("--no_round", action="store_true", help="§145 NOISE-64 carrier"); ap.add_argument("--dither", type=float, default=0.0)
     ap.add_argument("--keep_ckpt_steps", default="", help="§151: comma list of steps; model-only copies there, the row-level donor on each at the end (s151.serial_by_ckpt), then deleted")
+    ap.add_argument("--probe_n_fit", type=int, default=8000, help="note 155-4 / §158 probes: train fit items (smokes only change it)")
+    ap.add_argument("--free_pairs", type=float, default=0.0, help="§158 FREE-PAIRS: the share of training chains with independent per-pair digits")
     ap.add_argument("--mem_write", default=None, choices=[None, "top", "block9"], help="§155 DELTA-R: write k / v / alpha / beta from the top residual (mixed in by gamma)")
     ap.add_argument("--write_mix_start", type=int, default=2000); ap.add_argument("--write_mix_end", type=int, default=6000)
     ap.add_argument("--add_reset", default=None, choices=[None, "column"], help="§154 SHIFT: zero the additive heads' state before each new column / the flush")
@@ -1058,7 +1244,7 @@ def main():
     ap.add_argument("--mem_layer", type=int, default=6); ap.add_argument("--mem_add_heads", type=int, default=6); ap.add_argument("--mem_delta_heads", type=int, default=6)
     a = ap.parse_args()
     if a.from_args:
-        keep = {k: getattr(a, k) for k in ("contraction_only", "fp32", "device", "out", "from_args", "c7_state_only")}
+        keep = {k: getattr(a, k) for k in ("contraction_only", "fp32", "device", "out", "from_args", "c7_state_only", "what_state_only")}
         for k, v in json.load(open(a.from_args)).items():
             if hasattr(a, k):
                 setattr(a, k, v)
@@ -1067,6 +1253,7 @@ def main():
     assert not a.slots or a.slot_space or (a.no_round and 1 <= a.carry_slots <= a.slots <= 4), "§145: --slots K (<= 4) needs --no_round and 1 <= --carry_slots <= K"
     assert a.bs % a.micro == 0, "--micro must divide --bs"
     a.mem_group_gain = a.carrier == "deltamem"
+    assert not a.free_pairs or (a.carrier == "deltamem" and 0 < a.free_pairs < 1), "§158: --free_pairs in (0, 1) with --carrier deltamem"
     assert not (a.add_reset or a.add_rotary or a.mem_write) or a.carrier == "deltamem", "§154 / §155: --add_reset / --add_rotary / --mem_write need --carrier deltamem"
     if not a.mem_write:
         a.write_mix_start = a.write_mix_end = None
@@ -1113,6 +1300,12 @@ def main():
     else:
         trA, trB = load_bench(os.path.join(ROOT, "bench", "data", "mult_train", "%s_train.txt" % a.task))
     n_raw = len(trA); trA, trB, n_rem = dedup(trA, trB, teA, teB)
+    if a.what_state_only:                                                   # note 155-4 post-hoc (on-host via drain_posthoc, or a local GPU)
+        m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval()
+        ws = {"what_state": what_state(m, teA, teB, trA, trB, dev, amp, a.eval_bs, n_fit=a.probe_n_fit), "model": os.path.basename(a.out.rstrip("/")), "add_reset": a.add_reset,
+              "mem_write": a.mem_write, "eval_dtype": str(amp), "device": dname(), "driver": driver_version()}
+        json.dump(ws, open(os.path.join(a.out, "eval_what_state.json"), "w", newline="\n"), indent=1)
+        print("WHATSTATE", json.dumps({k: ws["what_state"][k] for k in ("pass_skip", "donor_operands")})[:500], flush=True); return
     info = {**vars(a), "train_items": int(len(trA)), "train_items_raw": int(n_raw), "train_removed_test_overlap": n_rem, "flush_token": " =", "pair_flags": "column_start", "flag_tokens": {"new_column": " ;", "same_column": " ,", "flush": " ="}, "train_gpu": dname(),
             "train_driver": driver_version(), **env_info()}
     json.dump({**info, "resumed_at": time.strftime("%Y-%m-%d %H:%M:%S")} if a.resume else info,
@@ -1137,10 +1330,16 @@ def main():
         step0 = ck["step"] + 1; t0 = time.time() - ck["elapsed"]; log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
         alpha_hist = ck.get("alpha_hist", [])
     def batch(c, bs_):
-        """A chain over the pairs of the first c columns (+ the flush when c = 2n); labels / trace mask at the emission steps."""
+        """A chain over the pairs of the first c columns (+ the flush when c = 2n); labels / trace mask at the emission steps.
+        §158 --free_pairs P > 0: each row is, with probability P, a free chain (every pair's digits drawn independently; label = the digits of
+        sum_t a^(t) b^(t) 10^(i_t + j_t)); P = 0 draws nothing extra (bit-identical batches)."""
         ii = rng.integers(0, len(trA), bs_); A, Bd = trA[ii], trB[ii]; _, dig, _, _, _, _ = accumulators(A, Bd)
         T = int(np.searchsorted(col, c - 1, side="right")) if c < 2 * n else len(pairs)     # steps whose column < c
-        set_ops(m, A, Bd, dev); X = torch.tensor(np.tile(np.arange(T), (bs_, 1)), device=dev)
+        set_ops(m, A, Bd, dev); X = torch.tensor(np.tile(np.arange(T), (bs_, 1)), device=dev); batch.PD = None
+        if a.free_pairs > 0:                                                # §158
+            fr = rng.random(bs_) < a.free_pairs; PA, PB = steps_of(A, Bd); FA, FB = free_steps(rng, bs_, n, n); PA[fr] = FA[fr]; PB[fr] = FB[fr]
+            _, dig, _, _, _ = acc_steps(PA, PB, n, n); m.pa = torch.tensor(np.array(DTOK)[PA], device=dev); m.pb = torch.tensor(np.array(DTOK)[PB], device=dev)
+            batch.PD = (PA, PB); batch.n_free = int(fr.sum())
         tm = torch.tensor(np.tile(emit[:T], (bs_, 1)), device=dev); lab = np.where(dig[:, :T] >= 0, dig[:, :T], 0); batch.AB = (A, Bd)
         return X, lab, tm, T
     if a.mem_check:                                                         # --micro: one chunk of bs / micro rows (what training holds at once)
@@ -1171,6 +1370,8 @@ def main():
             A_, B_ = batch.AB; ch = a.bs // a.micro; tot = 0.0
             for k_ in range(a.micro):
                 sl_ = slice(k_ * ch, (k_ + 1) * ch); set_ops(m, A_[sl_], B_[sl_], dev)
+                if batch.PD is not None:                                    # §158: the chunk's per-step digits
+                    m.pa = torch.tensor(np.array(DTOK)[batch.PD[0][sl_]], device=dev); m.pb = torch.tensor(np.array(DTOK)[batch.PD[1][sl_]], device=dev)
                 with amp_ctx(amp):
                     lk, _, _, _ = m.chain(m.start(ch, dev), X[sl_], lab[sl_], tm[sl_])
                 (lk / a.micro).backward(); tot += float(lk.item()) / a.micro
@@ -1254,6 +1455,8 @@ def main():
             c7_ = c7_state_edit(m, teA, teB, dev, amp, a.eval_bs)
             res["s154"].update({"c7_state_edit": c7_, "acc_by_column_carry": acc_by_column_carry(m, teA, teB, dev, amp, a.eval_bs),
                                 "alpha_by_flag": alpha_by_flag(m, teA, teB, dev, amp), "propagation": c7_["propagation"]})
+        if a.free_pairs:                                                    # §158 block (beside §155's)
+            res["s158"] = {**s158_extras(m, teA, teB, dev, amp, a.eval_bs, n_fit=a.probe_n_fit, n_free=min(1000, max(len(teA), 20))), "free_pairs": a.free_pairs, "gpu": dname()}
         if a.mem_write:                                                     # §155 block
             with torch.no_grad():
                 n_ = min(256, len(teA)); set_ops(m, teA[:n_], teB[:n_], dev); S_ = m.start(n_, dev); mn_ = {"additive": [], "delta": []}

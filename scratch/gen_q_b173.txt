@@ -1,0 +1,3 @@
+# THEORY §158 FREE-PAIRS (c94ee2bf + note 158-1; Audit OK) slot 1 via scratch.restart158 --arm free -> boxes.multpair --carrier deltamem --mem_write top --free_pairs 0.5 (§155 R's recipe); on-host gate155 + mem_check; ship EXTRA_120=scratch/gate155.py; RTX 3090 (~$0.8); what_state post-hoc via the drain
+# P=1
+boxes/runs_fsq/s158_slots/free_4x4_k1 scratch.restart158 --arm free --task 4x4 --slot 1
