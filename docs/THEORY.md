@@ -9065,6 +9065,40 @@ accumulator.**
   - **"The first exact multiplication through a latent memory" therefore reads as an exact operand buffer with read-time computation, not as serial latent computation.**
   - **C1 is not met by R.** §158 (FREE-PAIRS, with its partial-intervention C1 test) is the registered next test.
 
+## 159. R-5×5: §155 R's write-after-read memory at 5×5, the SOTA leg (C3) (Audit 05:45; pre-registered 2026-10-08 05:43 EDT, before any implementation or run; runs only if §155 R s2 is exact)
+
+**Why.**
+* §155 R s1 is exact at 4×4: 1.000 against ICoT-SI's 0.998 and TC-M's 1.000. It is the first latent method here at SOTA accuracy.
+* C3 asks for at least text-CoT accuracy at less compute.
+* 5×5 is the next published point: TC-M 1.000 at 2.33·10¹⁰ FLOPs / 87 passes; ICoT-SI 0.996 at 5.76·10⁹ / 15 (§98).
+* **The caveat, stated now (note 155-4):** R's state is an exact operand buffer with read-time computation, not serial latent computation. C1 is not met. Every C3 statement
+  carries **"SOTA-level accuracy; serial use not shown"**.
+
+**Condition (fixed now).** It runs only if §155 R **s2** reads test_acc ≥ 0.99 (R s1 is not a fluke). One host until slot 1 reads (Audit).
+
+**Design: §155 R's recipe exactly on multpair `--task 5x5`.**
+* 25 pairs + flush; c_max 1 / 2 / 4 / 8 / 10 at 0 / 2k / 5k / 9k / 12k (note 140-2).
+* **48k**, because 5×5 is harder; Audit's prediction band is 24k–48k.
+* Bench 5×5 test (1,000 items); restart slots with 147-1's misfire rule; RTX 3090.
+* The memory check runs on the largest shape first (26 segments plus the longest ext chain).
+
+**Rules (fixed now; slot 1 as the gate, then s2–s4).**
+* **EXACT:** test_acc ≥ 0.99. **LATENT BEATS TEXT (C3):** median test_acc ≥ TC-M − 0.01 with fewer Meter FLOPs and fewer sequential passes than TC-M 5×5. It is reported
+  beside ICoT-SI and carries the caveat.
+* **Prediction (Audit):** ≥ 0.99.
+* **Descriptive:**
+  - per-column accuracy;
+  - SERIAL (row level);
+  - note 155-4's what_state;
+  - ext 5×8 (C2, no prediction);
+  - FLOPs / passes against both bars.
+
+**Placement.**
+* About $1.5 for slot 1 (26 passes per chain at about 1.5× 4×4's step time, 48k). Slots 2–4 by the rule.
+* **Implementation (Experiments):** §155's `--mem_write top` path on `--task 5x5` (multpair already supports 5×5), plus the 5×8 ext and the Meter.
+* **Gates:** the 5×5 memcheck on the largest shape; §155's gates; Audit's diff review only if code changes.
+* Dirs `s159_r_5x5_s{seed}`. Scorer: `theory/score_s159.py`, committed with this registration.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
