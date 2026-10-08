@@ -67,6 +67,7 @@ after create; auto_ship is transitive: a multrow queue ships multpair too): reco
     - §160 A-R / CTRL-R (b180 / b181);
     - §161 SHAPE-MIX, 3 + 3 runs;
     - §162 DIRECT, then LONG / SHORT.
+    - §163 SHAPE-MIX-2D (0045d6a1): both lengths mixed; runs only if §161 MIX s2 replicates.
   - **Scorer audit (08:10–08:40):** read-path fixes in score_s158 / s157 before data (ad185b64, 16f0af42; note 157-3); a fallback-trigger readout in s159–s161 (df955868).
   - **Where multiplication stands:**
     - §155 R is exact on 4×4 in every seed (0.997–1.000), at 0.79× TC-M FLOPs.
