@@ -64,39 +64,20 @@ after create): record the host's sha256 and commit exactly that file.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (07:08):**
-  - **§147 DELTA-STATE broke the middle-column wall** (0.743; columns 3–7 0.92–0.99; DROP by rule, IMPROVES), leading to **§151 DELTA-LONG** (48k × 4 seeds, running).
-  - **§152 DELTA-READ** (378fe8e6; notes 152-1 / 152-2) is implemented (9535bfb0); b159 / b160 launch after the CUDA gates.
-  - **§153 THINK-PASS registered** (ea154f30; note 153-1): item-agnostic passes, gated on §152 A s1 ≥ 0.95.
-  - **§143 FULL-GROW PASS 4 / 4** (704-block ablation: width UNUSED in s2 / s3, USED in s4). This triggers note 133-12: cap4|fullgrow joins §133 stage 2.
-  - **§154 SHIFT-MEM registered** (ed7857cc; the user's research pass): SHIFT (per-column reset) / ROTARY (relative keys) for C2; SHIFT s1 launching.
-  - **Note 147-4 (8596a342): DeltaMem's writes are input-only** (from block-6 entry). The memory is a linear buffer with read-time computation; §147's claim is restated
-    and the §151–§154 readings reworded. **§155 DELTA-R registered** (e9ee8a6c): write-after-read (writes from the top residual), arms R / SHIFT-R, with RECURRENT USE
-    (a state edit propagates) as the C1 test. §153 PURE / REPEAT move to it.
-  - **§152 DELTA-READ: DROP at proof** (1d220ecc). A s1 0.331 (exact through three rows; still learning row 4 at 48k); CTRL s1 0.012. The products form and the sums are
-    stored; 4-row carry resolution at read time is not learned. 0.46× TC-M FLOPs; nothing extrapolates, baselines included. §153's gate is closed.
-  - **§144: both DROP** (4ce7c7de). Single-vector carriers hold no exact number even across one addition.
-  - **§155 DELTA-R:** exact in every arm and seed so far: R 1.000 / 0.998 / 0.997, R9 0.999, SHIFT-R 1.000. R-γ0 is 0.587, so the write source is what helps. Compute is
-    0.79× TC-M FLOPs / 0.30× passes (measured).
-    - None SERIAL, none length-general, no carry-edit propagation. The R arm is FAIL by the PASS rule. R's state stores the computed digits plus the operands (155-4).
-    - **§159 (5×5) and §160 (rows) launch** (R s2 0.998). SHIFT-R s2–s4 run by the rules.
-  - **Note 155-4 result** (dadd6ed0): R's exact state is an exact operand buffer (every digit decodable at 1.0) with read-time computation, not a compositional
-    accumulator. Swap / skip break it; C1 is not met by R. **b165 (96k): 0.079**, so §157 READ-PANEL launches. **§159 R-5×5** registered (4b3f7ba0), conditional on R s2.
-  - **§158 FREE-PAIRS registered** (c94ee2bf; 158-1 99eceebb): train on hybrid pair sequences. SERIAL is a sanity check; C1 needs carry-edit propagation and the accumulator
-    dominating raw pairs. Slot 1 is launching. **Note 155-4** (what_state: pass-skip / operands / probe) is queued on the local GPUs.
-  - **§154 SHIFT-MEM: stopped at proof** (09ca2945; 4×4 0.653, ext_4x8 0.0). The carry is carried by the delta recursion, but the emission keeps a 4×4 schedule.
-    §154 closes.
-  - **§157 READ-PANEL** registered (c13b78da; CCQ spec 157-1). It runs only if b165 < 0.95; PERIODIC / MULTIREAD are built in a temp copy.
-  - **§151 DELTA-LONG: DROP at proof** (bc42d26c). Slot 1 0.837, slot 2 0.889 at 48k (§147: 0.743 at 24k). IMPROVES; not SERIAL; ext_4x8 0 (the column-5
-    schedule).
-  - **Exact-storage (152-5):** the registered probe reads ≤ 0.19 exact, so the reading becomes "precision OR resolution". The λ-extended probe is limited
-    (0.12–0.55). An 8k-item fit and a model-internal read probe (Audit) are running on CPU.
-  - **Launched (02:30):** b165 s152_a96k (note 152-5); §155 R / SHIFT-R / R-γ0 (b162–b164, deploying); b161 §154 SHIFT s1 (setup). **§156 SEP-SLOT** registered
-    (37ac38d1), to be built after the deploys.
-  - **§150 VOCAB-SLOT: both DROP** (the slots collapse to constant tokens; the soft-only protos FAIL). B4 stops.
-  - Closed today: §133 stage 1, §136–§138, §140–§146, §148–§150, §152.
-  - **Pending scoring:** §155 (R / SHIFT-R / R-γ0), s152_a96k (b165, which gates §157), §156; §151 slot 4 (descriptive).
-  - Later: the §133 stage-2 proofs (now with cap4|fullgrow), §139 A' / B (descriptive), §134 MOD s2 / s3.
+* **Theory (08:11):**
+  - **Scored as they land:**
+    - §155 SHIFT-R s2–s4 (RECURRENT USE, 155-3);
+    - §157 PERIODIC s1 (b174), the panel's last arm; MULTIREAD 0.009 and CCQ 0.064 are closed (a4c1f04b);
+    - §158 FREE-PAIRS slot 1 (158-1 C1 credit);
+    - §159 R-5×5;
+    - §160 A-R / CTRL-R (b180 / b181);
+    - §161 SHAPE-MIX, 3 + 3 runs (registered 56aa9af0; contract sent to Experiments 08:00).
+  - **Where multiplication stands:**
+    - Write-after-read (§155 R) is exact on 4×4 in every seed (0.997–1.000), at 0.79× TC-M FLOPs and 2.47× ICoT-SI.
+    - It is not SERIAL, not length-general and not linearly editable. Its state is an exact buffer of operands and emitted digits (155-4).
+    - Input-only memories plateau (§151 0.84–0.89; §152 rows 0.33). C2 fails at column 5 everywhere, which §161 targets.
+  - **Closed today:** §133 stage 1, §136–§138, §140–§146, §148–§152, §154, §156; the §155 R arm FAILs.
+  - **Later:** the §133 stage-2 proofs (with cap4|fullgrow), §139 A' / B (descriptive), §134 MOD s2 / s3.
 
 ## Recently done (details in THEORY / PROTOCOL12 / git log)
 
