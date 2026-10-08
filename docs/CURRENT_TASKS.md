@@ -55,11 +55,11 @@ after create): record the host's sha256 and commit exactly that file.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (19:07):** today's closures:
-  - §141 (all cells DROP); §142 (DROP at proof; the bounded-carrier multiplication line parked); §148 (no improvement; B3 stops; the direct baseline hits the same
-    middle-column wall as every latent design); §146 (NO SIGNAL; B2 parked).
-  - **Open:** §143 FULL-GROW, §144 RUNNING-SUM, §145 MULTI-SLOT, §147 DELTA-STATE (B1), §150 VOCAB-SLOT (B4), §149 SOTA-PROBE (eval); §133 stage-2 proofs after these.
-  - **Next:** a consolidated multiplication post-mortem for the user once §144 / §145 / §147 / §150 read.
+* **Theory (22:13):** today's multiplication reads:
+  - **§147 DELTA-STATE broke the middle-column wall** (0.743; columns 3–7 0.92–0.99; DROP by rule, IMPROVES), leading to **§151 DELTA-LONG** (48k × 4 seeds, approved).
+  - §142 / §145 / §148 DROP; §150 DIGIT collapsed (150-3 correction); §149 SOTA-PROBE scored (no SERIAL model).
+  - **§143 FULL-GROW s1 passes** (143-1 / 143-2: about 4% of e from the new dims; the ablation decides in s2–s4).
+  - **Pending:** §143 s2–s4, §144 (the L=1 harness check first; F8 entry is a seed lottery), §150 FULL, §151.
 * **§136** GROW: 16 local runs with eval.json; grow4 s1-s4 running; then score_s136 (fp32 contractions in hand).
 * **§139** A' / B proof (descriptive). **§141** r4f8 / r4s16 (r1s16 DROP, note 141-4). **§134** MOD s2 / s3.
 * **§138** after its proofs. Closed today: §137 DROP, §140 DROP, §133 stage 1 PASS (FSQ-64 / NOISE-64 / CONT-64 / SOFT-16).

@@ -98,6 +98,7 @@ def slot(arm, k):
             a = {"seed": k + o, "test_acc": r.get("test_acc"), "serial": serial(r.get("donor")), "per_column": (r.get("acc_by_column") or {}).get("per_column"),
                  "ext_4x8": r.get("ext_4x8"), "acc_by_magnitude": s7.get("acc_by_magnitude"), "head_ablation": s7.get("head_ablation"),
                  "colsum_readout_r2": s7.get("colsum_readout_r2"), "colsum_readout_r2_by_column": s7.get("colsum_readout_r2_by_column"),
+                 "serial_by_ckpt": (r.get("s151") or {}).get("serial_by_ckpt"),                     # note 151-1 (descriptive)
                  "read_norm_ratio_by_handoff": s7.get("read_norm_ratio_by_handoff"),   # note 147-2 (Audit): {"step0": [...], "end": [...]} "rho_by_head_type": s7.get("rho_by_head_type"),
                  "gpu": r.get("train_gpu", r.get("gpu")), "driver": r.get("train_driver")}
             a["exact"] = (a["test_acc"] or 0) >= 0.99
