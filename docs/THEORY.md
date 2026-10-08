@@ -7605,7 +7605,8 @@ on S5×4, with the PLATEAU trigger.**
   - Every single-vector design inherits this (L2). §145's slots and §147's matrix memory are the responses.
 * **Against 147-4:** fsq120's carrier is computed by the whole network from the previous code, so it is genuinely recurrent. This is a failure of a recurrent
   single-vector state, not of an input-only buffer.
-* N64 run with no stop (note 144-1) is pending (descriptive).
+* **N64 run with no stop** (note 144-1): it does not enter within 24k. s1's loss is 9.42 and every digit is at chance. The slot-1 run that did enter (s301) carried the top two
+  digits, so N64's entry, like F8's, depends on the seed.
 * **Correction (2026-10-08 01:53 EDT, Audit's reproduction of s144_n64_s301):** two wording errors; the verdict is unchanged.
   - "The three low digits at chance from L = 1" is wrong. The hundreds digit is 0.666 / 0.463 / 0.218 at L = 1 / 2 / 4, matching its code R² 0.83. **N64 keeps the top
     two digits as a coarse magnitude**, not only the top one.
