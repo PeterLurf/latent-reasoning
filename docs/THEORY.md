@@ -10049,6 +10049,13 @@ run, RTX 3090 (or a local card if memory-checked).
   - Audit's review.
 * Scorer: `theory/score_s167.py`, committed with this registration.
 
+**Note 167-1 (2026-10-08 18:54 EDT, before any §167 run (no eval_das.json exists); Audit, Sutter 2507.08802 via Literature 578c64ad). The random-init model baseline is required, not descriptive.**
+* Even linear DAS can reach high IIA on untrained models when the subspace is large.
+* **Fixed now:** DECOMPOSABLE also requires **RANDOM-MODEL IIA ≤ 0.2 at k 16 and 64**.
+  - RANDOM-MODEL is the same DAS fit on an untrained DeltaMem-R: the same architecture, random memory weights (W_o, qkv), and the GPT-2 trunk.
+  - A point missing the baseline is not DECOMPOSABLE (score_s167).
+* **Unchanged:** the necessity ablation (≥ 0.3) is already in the rule; R stays linear (Stiefel, low-rank); only small-k evidence counts; k = 2,048 is a reference.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
