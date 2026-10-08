@@ -143,18 +143,20 @@ def draw(rng, bs, ns, excl):
 
 def compute_fc(m, na, nb, k, K):
     """boxes.core.Meter per item (§98 convention, full-vocabulary rows): every chunk pass [EOT, k tokens] and think pass [EOT, " ."] fresh
-    (context 0, no rows); the decoder = one pass of 1 + (na + nb - 1) tokens with na + nb LM-head rows (the KV-cached greedy's cost); plus the
+    (context 0, no rows); the decoder = na + nb KV-cached greedy passes, one token and one LM-head row each (Audit: counted like TC-M generated tokens); plus the
     DeltaMem-R branch (2 x branch params per token, the read and the writes per head and token, as multpair.compute_pair)."""
     mt = bc.Meter(m.g); nc = -(-(na + nb + 2) // k); tok = 0
     for _ in range(nc):
         mt.step(k + 1, 0, 0); tok += k + 1
     for _ in range(K):
         mt.step(2, 0, 0); tok += 2
-    Ld = na + nb; mt.step(Ld, 0, Ld); tok_r = Ld
+    Ld = na + nb; tok_r = Ld
+    for t in range(Ld):                                                     # Audit (3539b83e): the greedy decoder is na + nb sequential passes (KV-cached)
+        mt.step(1, t, 1)
     nb_ = sum(p_.numel() for n_, p_ in m.mem.named_parameters() if not n_.startswith("s_")); D2 = DM.DH ** 2
     fb = 2 * nb_ * (tok + tok_r) + (DM.H_ADD + DM.H_DEL) * 2 * D2 * (tok + tok_r) + (DM.H_ADD * 2 + DM.H_DEL * 8) * D2 * tok; d = mt.as_dict()
     return {"flops": d["flops"] + fb, "flops_trunk": d["flops"], "flops_branch": float(fb), "sequential_passes": d["seq_passes"], "lm_head_rows": Ld,
-            "tokens_processed": tok + tok_r, "chunks": nc, "think_passes": K, "convention": "§98 (boxes.core.Meter); every chunk / think pass fresh; decoder = one pass"}
+            "tokens_processed": tok + tok_r, "chunks": nc, "think_passes": K, "convention": "§98 (boxes.core.Meter); every chunk / think pass fresh; decoder = na + nb KV-cached passes"}
 
 
 def main():
