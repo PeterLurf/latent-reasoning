@@ -8640,7 +8640,8 @@ ext_4x8 0.000 < 0.5. ROTARY was deferred to §155's architecture (154-2), so §1
   - A memory with a hand-wired per-column reset neither improves 4×4 nor generalises in length.
   - The carry passes through the delta recursion, but the emission keeps a learned 4×4 schedule.
   - Length generalisation needs more than locality of the additive store. §155 (computed writes) is the remaining test of the route.
-* **The §155 null (SHIFT's propagation_share)** is not in this post-hoc file. It needs the SHIFT model on the host (being checked).
+* **The §155 null** (computed inline, `s154.propagation.pooled`, n 397): propagation_share **0.325**, random_edit_share 0.317, expected null value 0.312;
+  coupling_share 0.018 (post-hoc). As predicted, propagation sits at the unedited-next rate under input-only writes. (Corrected: the field is nested, not missing.)
 
 ## 155. DELTA-R: a write-after-read memory, so the state can hold computed results (note 147-4's fix; the user's research pass; pre-registered 2026-10-08 01:19 EDT, after Literature's check c55a1f15 and Audit's draft review, before any implementation or run)
 
