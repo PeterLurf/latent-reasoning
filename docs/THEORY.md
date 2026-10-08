@@ -9047,6 +9047,24 @@ The run is a post-hoc on every accepted §155 model (and §154 SHIFT / §151 for
 * **Reading:** budget alone does not fix column 6. The longer schedule ended worse, which fits seed / schedule sensitivity at the last row.
 * **This meets §157's condition** (test_acc < 0.95), so the READ-PANEL runs.
 
+**Note 155-4 result (2026-10-08 05:41 EDT; descriptive; `eval_what_state.json` for §155 R s1, §154 SHIFT s1 and §151 s2 / s3). R's exact state is not a compositional
+accumulator.**
+* **The swap's operands_consistent is 0.000** at pairs 4 / 8 / 12 in every model; the donor's full product is also 0.000, and the recipient ≤ 0.03. So the "recompute from
+  stored operands (L1)" reading (≥ 0.8) does not apply.
+* **Pass-skip** (skipping the first pair of column 3 or 4): row_skip_consistent ≤ 0.023 and full_product ≤ 0.044 in every model, so the "additive sums" reading (≥ 0.8) does
+  not apply either.
+  - Caveat: a skipped pair shifts the count-based emission schedule, the mechanism that breaks 4×8 at column 5 (§151 / §154 / §155). So pass-skip is confounded even for
+    §151's additive input-only memory.
+* **By the fixed readings this is "neither", a non-additive code (descriptive).**
+* **The operand probe sharpens it** (held-out OLS, 8k fit):
+  - R's state holds **every seen operand digit exactly**: a and b at 0.999–1.0 after pairs 4, 8 and 12.
+  - Its partial column sums decode well after pair 4 (0.84–0.98) but poorly after pairs 8 / 12 (0.25–0.62 / 0.11–0.60).
+  - §151's input-only state loses digits by pair 12 (0.24–0.6). SHIFT keeps them (1.0).
+* **Reading:** R's exactness comes with a state that keeps the operands exactly while the accumulator is not linearly present late in the chain. Its emission combines stored and
+  current inputs non-compositionally, so a swap breaks it.
+  - **"The first exact multiplication through a latent memory" therefore reads as an exact operand buffer with read-time computation, not as serial latent computation.**
+  - **C1 is not met by R.** §158 (FREE-PAIRS, with its partial-intervention C1 test) is the registered next test.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
