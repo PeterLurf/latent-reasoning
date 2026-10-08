@@ -247,7 +247,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 157 | READ-PANEL: PERIODIC / MULTIREAD / CCQ reads on §152 A | **all three gates closed** (0.035 / 0.009 / 0.064): no read change fixes the 4-row carry; PERIODIC blocked by the blend (off-column 0.88); read interference untested (CCQ never engaged) | closed |
 | 158 | FREE-PAIRS: hybrid pair sequences on R (data-level interchange) | slot 1 0.982, SERIAL, no C1 credit (158-2's prediction) | **open** |
 | 159 | R-5×5: R at 5×5 (the SOTA leg, C3) | registered | **open** |
-| 160 | R-ROWS: R on §152's rows, A-R / CTRL-R (C3) | registered | **open** |
+| 160 | R-ROWS: R on §152's rows, A-R / CTRL-R (C3) | **gate closed** (A-R s1 0.056, CTRL-R 0.055; column 5 ~0.09); block-9 fallbacks descriptive | closed |
 | 161 | SHAPE-MIX (C2): 4 × n training (n 2..5), ± a column index with random offsets | registered | **open** |
 | 162 | DELTA-S5: DeltaMem-R on S5 against a measured single-pass boundary (158-2's contrast cell) | registered | **open** |
 
@@ -9315,6 +9315,17 @@ accumulator.**
   - **By 155-1 (inherited through 160-1), CTRL-R's block-9 fallback is due:** `s160_ctrlr9_4x4_s1` (`--mem_write block9`, otherwise CTRL-R's args).
   - It is descriptive, like CTRL-R, and score_s160 reads it.
 * A-R s1 (b180) is pending; it decides §160's gate.
+
+**§160 A-R s1 (2026-10-08 11:14 EDT; 48k, RTX 3090; scored by Theory with score_s160): 0.056, so the gate is closed and s2–s4 do not run.**
+* **A-R s1 (reader): test_acc 0.056.**
+  - Rows 1.0 / 1.0 / 0.757 / 0.056. Columns 1–4 1.0, column 5 0.089, column 6 0.541, columns 7–8 0.92 / 0.99.
+  - Not SERIAL (pos-2 donor 0.04). 7.10·10⁹ FLOPs, 12 passes (0.46× TC-M).
+* **Registered reading (A-R < 0.95): rows overload a pass even with stored results.**
+  - A-R matches CTRL-R (0.055), so the reader adds nothing.
+  - On rows, write-after-read does worse than §152's input-only A (0.331 at 48k).
+* **Every rows design now fails at column 5 at about 0.06–0.10:** A-R, CTRL-R, the §157 panel, A-SEP, and b165 at 96k. §152 A s1 is the exception (column 6 at 0.338).
+* **The 155-1 trigger fired** (51 floor spikes). A-R9 (b194) and CTRL-R9 (b193) run by the rule, descriptive.
+* **§160 closes** on the A-R gate. The C3 position stays with the digit-pair chain (R / MIX: 0.79× TC-M FLOPs, 0.30× its passes).
 
 ## 161. SHAPE-MIX: breaking the 4×4 count schedule for length generalisation (C2) (Audit 07:50; pre-registered 2026-10-08 07:55 EDT, after Literature's check 0b532db5 and Audit's draft, before any implementation or run)
 
