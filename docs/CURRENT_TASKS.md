@@ -50,24 +50,27 @@ after create; auto_ship is transitive: a multrow queue ships multpair too): reco
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (08:39):**
-  - **Waiting on the user (via Audit):** `docs/THEORY_C1_FORCING_2026-10-08.md` (42de5d5f; note 158-2, Literature 6b771087 / fd630b87).
-    - The finding: C1 is forced only by depth beyond one pass, or by input beyond the buffer's capacity. Fixed-size multiplication is TC⁰ and admits buffer + read-time
-      compute.
-    - The proposals: multiplication becomes the C3 / C6 / C2 testbed; the C1 + C3 headline moves to a task that exceeds one pass (deep arithmetic expressions mod p
-      recommended). Nothing is registered.
+* **Theory (09:04):**
+  - **Waiting on the user (via Audit):** `docs/THEORY_C1_FORCING_2026-10-08.md` (42de5d5f + addendum 8500894d; note 158-2, Literature 6b771087 / fd630b87).
+    - The finding: C1 is forced only by depth beyond one pass, or by input beyond the buffer's capacity.
+    - The proposals: multiplication becomes the C3 / C6 / C2 testbed; the C1 + C3 headline moves to a task that exceeds one pass.
+  - **§162 DELTA-S5 registered** (9f7d4793): DeltaMem-R on S5 against a measured single-pass boundary (DIRECT).
+    - **Blinding:** score DIRECT first, with boundary() only, and commit the boundary note **before** reading any `s162_long*` / `s162_short*` output. Do not run
+      score_s162.py in full before then.
+  - **§158 FREE-PAIRS slot 1** (46939c14): 0.982, SERIAL, no C1 credit, as 158-2 predicted. Slots 2–4 run by the rules.
   - **Scored as they land:**
-    - §155 SHIFT-R s2–s4 (b177–b179; RECURRENT USE, 155-3);
-    - §157 PERIODIC s1 (b174), the panel's last arm (MULTIREAD 0.009 and CCQ 0.064 are closed);
-    - §158 FREE-PAIRS slot 1 (b173; 158-1 C1 credit; 158-2 predicts no credit);
+    - §155 SHIFT-R s2–s4 (b177–b179);
+    - §157 PERIODIC s1 (b174), the panel's last arm;
+    - §158 slots 2–4;
     - §159 R-5×5;
     - §160 A-R / CTRL-R (b180 / b181);
-    - §161 SHAPE-MIX, 3 + 3 runs (56aa9af0).
-  - **Scorer audit (08:10–08:40):** read-path fixes in score_s158 / s157 before data (ad185b64, 16f0af42; note 157-3), and a fallback-trigger readout in s159–s161 (df955868).
+    - §161 SHAPE-MIX, 3 + 3 runs;
+    - §162 DIRECT, then LONG / SHORT.
+  - **Scorer audit (08:10–08:40):** read-path fixes in score_s158 / s157 before data (ad185b64, 16f0af42; note 157-3); a fallback-trigger readout in s159–s161 (df955868).
   - **Where multiplication stands:**
-    - Write-after-read (§155 R) is exact on 4×4 in every seed (0.997–1.000), at 0.79× TC-M FLOPs (2.47× ICoT-SI).
-    - It is not SERIAL, not length-general and not linearly editable: an exact buffer of operands and emitted digits (155-4).
-    - C2 fails at column 5 everywhere; §161 targets it.
+    - §155 R is exact on 4×4 in every seed (0.997–1.000), at 0.79× TC-M FLOPs.
+    - It is not SERIAL, not length-general and not linearly editable: an exact buffer (155-4).
+    - FREE-PAIRS makes it SERIAL, still without C1 credit.
   - **Closed today:** §133 stage 1, §136–§138, §140–§146, §148–§152, §154, §156; the §155 R arm FAILs.
   - **Later:** the §133 stage-2 proofs (with cap4|fullgrow), §139 A' / B (descriptive), §134 MOD s2 / s3.
 
