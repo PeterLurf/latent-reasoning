@@ -8155,6 +8155,14 @@ SERIAL and contractive. Slots 2–4 run (the credit rule).**
 * Implementation: the §147 code as is, `--steps 48000`.
 * Dirs `s151_delta_4x4_s{1..4}`. Scorer: `theory/score_s151.py` (§147's scorer with 48k and the new dirs), committed with this registration.
 
+**Note 151-1 (2026-10-07 22:13 EDT, before any §151 run; Audit's formal review, approved). What "48k" changes, and SERIAL by checkpoint.**
+* **(1) The schedule:** the learning rate warms up over 100 steps and follows the cosine over **48k** (fsq120's lr_at over `steps`). The column curriculum's boundaries are
+  **unchanged** (c_max 1 / 2 / 4 / 8 at 0 / 2k / 5k / 9k).
+  - So §151 spends **39k steps at c_max 8** (§147: 15k), at a higher mid-run learning rate. §151 against §147 is read as "a 48k schedule", not "steps only".
+* **(2) SERIAL by checkpoint** (Literature 2607.06648: faithfulness can move during training): the row-level donor protocol at **24k / 36k / 48k**
+  (`s151.serial_by_ckpt`), descriptive.
+  - A PASS or a SERIAL failure can then be located in training. Only the 48k model's SERIAL enters the rule.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
