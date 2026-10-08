@@ -426,6 +426,42 @@ def compute_drow(m, L=4):
             "tokens_processed": d["tokens_processed"], "convention": "§98 (boxes.core.Meter: KV cache, full vocabulary); segments counted as full 12-block passes"}
 
 
+def kridge_fit_pred(Xf, yf, Xs, lams=(1e-4, 1e-3, 1e-2, 1e-1, 1.0)):
+    """kridge_r2's estimator returning (predictions on Xs, lambda) (note 152-5; as theory/probe_s152_colsum_exact.py)."""
+    mu, sd = Xf.mean(0), Xf.std(0) + 1e-6; Zf = ((Xf - mu) / sd).astype(np.float32); Zs = ((Xs - mu) / sd).astype(np.float32); d = Zf.shape[1]
+    def fit_pred(Za, ya, Zb, lam):
+        K = (Za @ Za.T).astype(np.float64) / d; ym = ya.mean(); al = np.linalg.solve(K + lam * len(Za) * np.eye(len(Za)), ya - ym)
+        return (Zb @ Za.T).astype(np.float64) / d @ al + ym
+    def r2(y_, p_):
+        return float(1 - ((y_ - p_) ** 2).sum() / max(((y_ - y_.mean()) ** 2).sum(), 1e-12))
+    fold = np.arange(len(Zf)) % 3
+    best = max(lams, key=lambda l_: np.mean([r2(yf[fold == k], fit_pred(Zf[fold != k], yf[fold != k], Zf[fold == k], l_)) for k in range(3)]))
+    return fit_pred(Zf, yf, Zs, best), best
+
+
+def colsum_exact(m, teA, teB, dev, amp, bs):
+    """note 152-5 (descriptive): is the carry-save column sum stored EXACTLY? colsum_readout's states (additive heads after segments 1-4), targets
+    (carry-save column sums k = 1..7, no carries) and halves; the same kernel ridge refit to return predictions. Per column: final = round(pred) == y
+    after segment 4; live = pooled over the (segment, column) cells holding >= 1 product; R^2; max |residual| (final)."""
+    N = len(teA); h = N // 2; _, kept, _, _ = rollout_drow(m, teA, teB, dev, amp, bs, keep=(1, 2, 3, 4), decode=False)
+    cs = np.zeros((N, 4, 7), np.float64)
+    for j in range(4):
+        for i in range(4):
+            cs[:, j:, i + j] += (teA[:, i] * teB[:, j])[:, None]
+    XA = np.stack([kept[j + 1][:, :DM.H_ADD].reshape(N, -1) for j in range(4)], 1); del kept
+    out = {"final_exact_by_column": {}, "live_exact_by_column": {}, "r2_by_column": {}, "max_abs_resid_final": {}, "lambda": {}}
+    for k in range(7):
+        y = cs[:, :, k]
+        if y.std() == 0:
+            continue
+        pred, lam = kridge_fit_pred(XA[:h].reshape(h * 4, -1), y[:h].reshape(-1), XA[h:].reshape((N - h) * 4, -1)); P = pred.reshape(N - h, 4); Y = y[h:]
+        live = np.array([[j >= k - 3 and k <= j + 3 for j in range(4)]] * (N - h))
+        out["final_exact_by_column"][str(k + 1)] = float((np.rint(P[:, 3]) == Y[:, 3]).mean()); out["live_exact_by_column"][str(k + 1)] = float((np.rint(P[live]) == Y[live]).mean())
+        out["r2_by_column"][str(k + 1)] = float(1 - ((Y - P) ** 2).sum() / max(((Y - Y.mean()) ** 2).sum(), 1e-12))
+        out["max_abs_resid_final"][str(k + 1)] = float(np.abs(P[:, 3] - Y[:, 3]).max()); out["lambda"][str(k + 1)] = lam
+    return out
+
+
 def s152_eval(m, teA, teB, dev, amp, bs, a, dec):
     """§152 descriptive block (eval mode, no draws): pp_probe, add_state_norm_by_segment, bprefix_probe (+ probe_r2), colsum_readout,
     head_ablation, alpha_by_head; sj_decode_acc (the reader after each segment = acc_by_length, A only)."""
@@ -687,6 +723,7 @@ def main():
     ap.add_argument("--carrier", default="code", choices=["code", "deltamem"], help="§152: deltamem = §147's DeltaMem as the only cross-segment channel (no code token)")
     ap.add_argument("--mem_layer", type=int, default=6); ap.add_argument("--mem_add_heads", type=int, default=6); ap.add_argument("--mem_delta_heads", type=int, default=6)
     ap.add_argument("--keep_ckpt_steps", default="", help="§152: model-only copies at these steps -> s152.serial_by_ckpt (donor pos2), then deleted")
+    ap.add_argument("--keep_ckpt_retain", action="store_true", help="note 152-5: keep the --keep_ckpt_steps copies after the eval (default: deleted)")
     ap.add_argument("--no_opt_reset", action="store_true", help="§152 B: keep AdamW's moments at each removal (LR re-warm only)")
     ap.add_argument("--pass_input", default=None, choices=[None, "visible", "pure", "repeat"], help="§153 THINK-PASS pass inputs (with --carrier deltamem)")
     ap.add_argument("--think_token", default="", help="§153 repeat: the one fixed think token's text (a single GPT-2 token)")
@@ -955,6 +992,8 @@ def main():
                      "read_norm_ratio_by_handoff": {"step0": i152.get("read_norm_ratio_by_handoff_step0"), "end": read_ratio_drow(m, teA, teB, dev, amp)[0]},
                      "alpha_by_head": {"end": alpha_drow(m, teA, teB, dev, amp), "checkpoints": alpha_hist}})
         s152.update(s153_eval(m, teA, teB, dev, amp, a.eval_bs, a, dec) if a.pass_input else s152_eval(m, teA, teB, dev, amp, a.eval_bs, a, dec))
+        if not a.pass_input:                                                # note 152-5 (descriptive): exact column-sum storage, final model
+            s152["colsum_exact_by_column"] = {str(a.steps): colsum_exact(m, teA, teB, dev, amp, a.eval_bs)}
         if a.pass_input:
             s152.update({"pass_input": a.pass_input, "think_token": a.think_token or None})
         if a.fork_from:
@@ -971,12 +1010,14 @@ def main():
                 if os.path.exists(cp_):
                     m.load_state_dict(torch.load(cp_, map_location=dev)); m.eval(); kept_.append(os.path.basename(cp_))
                     sb_[str(st_)] = donor_drow(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(13902), n=a.donor_n)["pos2"]
+                    if not a.pass_input:                                    # note 152-5: the same readout on each kept copy
+                        s152["colsum_exact_by_column"][str(st_)] = colsum_exact(m, teA, teB, dev, amp, a.eval_bs)
                 else:
                     sb_[str(st_)] = None
             sb_[str(a.steps)] = res["donor"]["pos2"]; s152["serial_by_ckpt"] = sb_
         res["s153" if a.pass_input else "s152"] = s152; res["eval_sec"] = round(time.time() - t1)
         json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
-        for ck_ in ["ckpt_last.pt", "ckpt_prev.pt"] + kept_:               # retention: the kept copies served serial_by_ckpt only
+        for ck_ in ["ckpt_last.pt", "ckpt_prev.pt"] + ([] if a.keep_ckpt_retain else kept_):   # retention: kept copies deleted unless --keep_ckpt_retain
             if os.path.exists(os.path.join(a.out, ck_)):
                 os.remove(os.path.join(a.out, ck_))
         print("EVAL", json.dumps({k: res[k] for k in ("test_acc", "acc_by_length")}), flush=True); print("DONE", a.out, flush=True); return

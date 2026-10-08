@@ -1,0 +1,3 @@
+# THEORY §155 DELTA-R note 155-1 (3) descriptive arm rg0 s1: gamma held at 0 (--mem_write top --write_mix_start 1e9 --write_mix_end 1e9): block-6 writes with pass-start reads (isolates the read lag); restart155 (on-host gate155 + mem_check), ship EXTRA_120=scratch/gate155.py; RTX 3090 (~$0.8)
+# P=1
+boxes/runs_fsq/s155_slots/rg0_4x4_k1 scratch.restart155 --arm rg0 --task 4x4 --slot 1

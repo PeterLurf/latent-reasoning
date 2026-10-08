@@ -740,7 +740,7 @@ def c7_state_edit(m, A, Bd, dev, amp, bs, deltas=(-2, -1, 1, 2), cols=(2, 3, 4, 
                                        "unedited_share": float(np.mean([v["unedited_share"] for v in bya.values()])),
                                        "carry_follow_share": float(np.mean([v["carry_follow_share"] for v in bya.values()])), "n": int(N * len(bya)), "by_column": bya}
         out["delta"]["%+d" % dl] = {"carry_shift_share": float(np.mean([v["carry_shift_share"] for v in byd.values()])), "by_next_column": byd}
-    pr = {"by_k": {}}; tot = {"prop": 0, "rand": 0, "null": 0, "n": 0}; grng = torch.Generator(device="cpu").manual_seed(15502)
+    pr = {"by_k": {}}; tot = {"prop": 0, "rand": 0, "null": 0, "n": 0}
     for k in prop_cols:                                                     # §155 / §154 propagation: carry edit at column k+1's first pair -> column k+2
         if k + 1 >= C.shape[1]:
             continue
@@ -791,9 +791,14 @@ def ci_or_flush(acc, ci, et, k):
     return (acc[:, et[k]] if k >= ci.shape[1] else ci[:, k]).astype(float)
 
 
-def write_params(m):
-    """§155: the write path's parameters (LN_w, qkv's k / v rows via the whole qkv, the gate) for the per-window write-gradient norm."""
-    return [m.mem.ln_w.weight, m.mem.ln_w.bias, m.mem.qkv.weight, m.mem.qkv.bias, m.mem.gate.weight, m.mem.gate.bias]
+def write_grad_norm(m):
+    """§155 (note 155-1 / Audit): the write rows' gradient norm before clipping: LN_w, qkv's k / v rows ([768:]) and the gate (the read's q rows excluded)."""
+    D = 768; g_ = []
+    for p_, sl in ((m.mem.ln_w.weight, None), (m.mem.ln_w.bias, None), (m.mem.qkv.weight, slice(D, 3 * D)), (m.mem.qkv.bias, slice(D, 3 * D)),
+                   (m.mem.gate.weight, None), (m.mem.gate.bias, None)):
+        if p_.grad is not None:
+            g_.append((p_.grad[sl] if sl is not None else p_.grad).float().norm())
+    return float(torch.stack(g_).norm()) if g_ else 0.0
 
 
 @torch.no_grad()
@@ -824,9 +829,11 @@ def s155_recurrence(m, A, Bd, dev, amp, n=128, rows=4000, seed=15501):
     was = m.training; m.eval(); caps = r_caps(m, A, Bd, dev, amp, n); a6 = np.concatenate([c[0] for c in caps]); rd = np.concatenate([c[1] for c in caps]); u = np.concatenate([c[2] for c in caps])
     rng = np.random.default_rng(seed); ix = rng.permutation(len(u))[:rows]; h = len(ix) // 2; f_, s_ = ix[:h], ix[h:]
     out = {"write_var_from_read_r2": _multi_r2(rd[f_], u[f_], rd[s_], u[s_]), "write_var_from_input_r2": _multi_r2(a6[f_], u[f_], a6[s_], u[s_])}
+    ar = np.concatenate([a6, rd], 1); out["write_var_from_input_read_r2"] = _multi_r2(ar[f_], u[f_], ar[s_], u[s_])   # Audit (3): incremental
+    out["write_var_incremental_read_r2"] = out["write_var_from_input_read_r2"] - out["write_var_from_input_r2"]
     try:
         from torch.func import jvp
-        nj = min(32, caps[0][3].shape[0]); rh = []; set_ops(m, A[:nj], Bd[:nj], dev)
+        nj = min(32, caps[0][3].shape[0]); rh = []; rl = []; set_ops(m, A[:nj], Bd[:nj], dev)
         for t in range(1, len(caps), 2):
             S0 = caps[t - 1][3][:nj].float(); v = torch.randn_like(S0); v = v / v.flatten(1).norm(dim=1)[:, None, None, None]
             if getattr(m, "add_reset", None) == "column" and m.newcol[t]:
@@ -842,9 +849,18 @@ def s155_recurrence(m, A, Bd, dev, amp, n=128, rows=4000, seed=15501):
                 eps_ = 1e-3 * float(S0.flatten(1).norm(dim=1).median().clamp_min(1.0)); f_ = lambda S_: DM.gpt_forward_mem_r(m.g, x, m.mem, S_)[1]  # noqa: E731
                 Jv = (f_(S0 + eps_ * v) - f_(S0 - eps_ * v)) / (2 * eps_); meth = "central difference (eps 1e-3 x median ||S||), fp32"
             rh.append(Jv.detach().flatten(1).norm(dim=1).cpu().numpy())
-        out["rho_jvp"] = float(np.median(np.concatenate(rh))); out["rho_method"] = meth
+            fd_ = m.mem.fade.clone(); m.mem.fade.fill_(0.0)                 # note 155-1 (2): rho_loop = ||Jv - Jv|fade 0|| (the read -> write part)
+            try:
+                from torch.nn.attention import SDPBackend, sdpa_kernel
+                with sdpa_kernel(SDPBackend.MATH):
+                    _, Jv0 = jvp(lambda S_: DM.gpt_forward_mem_r(m.g, x, m.mem, S_)[1], (S0,), (v,))
+            except Exception:                                               # noqa: BLE001
+                eps_ = 1e-3 * float(S0.flatten(1).norm(dim=1).median().clamp_min(1.0)); f_ = lambda S_: DM.gpt_forward_mem_r(m.g, x, m.mem, S_)[1]  # noqa: E731
+                Jv0 = (f_(S0 + eps_ * v) - f_(S0 - eps_ * v)) / (2 * eps_)
+            m.mem.fade.copy_(fd_); rl.append((Jv - Jv0).detach().flatten(1).norm(dim=1).cpu().numpy())
+        out["rho_jvp"] = float(np.median(np.concatenate(rh))); out["rho_loop"] = float(np.median(np.concatenate(rl))); out["rho_method"] = meth
     except Exception as e:                                                  # noqa: BLE001
-        out["rho_jvp"] = None; out["rho_method"] = "jvp failed: %s" % str(e)[:120]
+        out["rho_jvp"] = None; out["rho_loop"] = None; out["rho_method"] = "jvp failed: %s" % str(e)[:120]
     m.train(was); return out
 
 
@@ -1149,8 +1165,7 @@ def main():
                 (lk / a.micro).backward(); tot += float(lk.item()) / a.micro
             loss = torch.tensor(tot)
         if a.mem_write:                                                     # §155: the write path's gradient norm (before clipping)
-            wgs_ = [p_.grad.float().norm() for p_ in write_params(m) if p_.grad is not None]; wg_ = float(torch.stack(wgs_).norm()) if wgs_ else 0.0; wwin.append(wg_); wlast.append(wg_)
-            del wlast[:-int(1000 * sc) or None]
+            wwin.append(write_grad_norm(m))
         gn = torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0)
         if not (math.isfinite(tot) and bool(torch.isfinite(gn))):
             bad = "loss" if not math.isfinite(tot) else next((n_ for n_, p_ in m.named_parameters() if p_.grad is not None and not bool(torch.isfinite(p_.grad).all())), "grad_norm")
@@ -1162,8 +1177,11 @@ def main():
             if a.carrier == "deltamem":                                     # note 147-2 (Audit): the read gains per window
                 rec.update({"g_add": float(torch.exp(m.mem.s_add)), "g_del": float(torch.exp(m.mem.s_del)), "fade": float(m.mem.fade)})
             if a.mem_write and wwin:                                        # §155: write-gradient norm per window; spike vs the last 1k steps' median
-                md_ = float(np.median(wlast)); w_rec = {"step": step, "mean": float(np.mean(wwin)), "max": float(np.max(wwin)), "median_1k": md_,
-                                                        "spike_100x": bool(np.max(wwin) > 100 * md_ > 0)}
+                md_ = float(np.median(wlast)) if wlast else 0.0             # note 155-1: the PRECEDING 1k steps' median (current window excluded)
+                w_rec = {"step": step, "mean": float(np.mean(wwin)), "max": float(np.max(wwin)), "median_prev_1k": md_,
+                         "spike_100x": bool(step > a.write_mix_start * sc and np.max(wwin) > 100 * md_ > 0),   # scored only once the loop can form
+                         "spike_100x_raw": bool(np.max(wwin) > 100 * md_ > 0)}
+                wlast.extend(wwin); del wlast[:-int(1000 * sc) or None]
                 rec.update({"gamma": float(m.mem.gamma), "write_grad_norm": w_rec["mean"], "write_grad_spike_100x": w_rec["spike_100x"]}); wg_hist.append(w_rec); wwin = []
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True); L127[step] = rec["loss"]
         if a.mem_write and step % max(1, int(1000 * sc)) == 0:             # §155: recurrence + write_norm_ratio per 1k on a fixed batch
