@@ -9441,6 +9441,10 @@ accumulator.**
   - **§161 MIX is 3 / 3:** exact (0.996 / 0.997 / 0.996), length-general (ext_4x8 0.964 / 0.917 / 0.912), SERIAL, and state-carried in every seed. This meets
     Literature's ≥ 3-seed bar.
   - It also meets §163's condition (slot 2: 0.997 / 0.917), so §163 runs.
+* **MIX+IDX, interim (2026-10-08 13:31 EDT; landed during the 13:20 power cut): 1 of 2 seeds length-general, so s2 decides.**
+  - **s1:** 4×4 **0.989** (below 0.99), ext_4x8 0.850 (4×6 0.970, 4×7 0.928). SERIAL 0.95. In-progress units 0.96–0.99.
+  - **s3:** 4×4 0.991, ext_4x8 **0.967** (4×6 0.988, 4×7 0.984). SERIAL 0.98–0.99. In-progress units 0.99–1.0. 35 floor spikes.
+  - Both have propagation equal to the null. The index token adds nothing clear over MIX alone (0.964 / 0.917 / 0.912).
 
 ## 162. DELTA-S5: the write-after-read memory on S5, against a measured single-pass boundary (note 158-2's TC⁰ / NC¹ contrast cell) (Audit 08:45; pre-registered 2026-10-08 09:01 EDT, after Literature's check 6b771087 (`docs/LIT_TC0_SERIAL_2026-10-08.md`: the contrast is unpublished) and Audit's draft review (two rounds), before any implementation or run)
 
