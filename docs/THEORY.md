@@ -9645,6 +9645,23 @@ this note is pushed.**
     buffer". This is the §155 / §161 pattern.
   - **The 158-2 test to lead the arm result:** SHORT's older-half op probe against LONG's 0.149.
   - **C6:** 0.0 at 512 after training to 32 means the state is not length-stable past training. This is flagged beside C2.
+**§162 SHORT s2 (interim, 2026-10-08 18:33 EDT; l_max 8, 24k, RTX 3090; scored by Theory with score_s162): exact to 8, BUFFER-LIKE at p* = 4.**
+* Final-state accuracy is 1.0 at every length ≤ 8.
+* At p* = 4 the older-half op probe reads **0.987** (lags 2 / 3: 0.974 / 1.0; lags 0 / 1: 0.49 / 0.04). The state probe is 0.887, and the edit does not propagate
+  (0.0; n 886).
+* 0.0 at 512 and at 2,048, as CAPACITY predicts for a buffer-like run.
+* **Descriptive, recorded before LONG s2 / SHORT s1 land: at an EQUAL probe point the two arms look alike.**
+  - **p = 4:** both hold all four items (LONG s1 0.95–1.0).
+  - **p = 8:** both keep the most recent one or two items and the first item, and lose the middle.
+    - LONG s1 lags 0..7: 1.0 / 1.0 / 0.35 / 0.20 / 0.23 / 0.25 / 0.35 / 0.87.
+    - SHORT s2 lags 0..7: 0.74 / 1.0 / 0.85 / 0.40 / 0.27 / 0.27 / 0.47 / 0.89.
+    - Older-half means: 0.42 against 0.48.
+  - **p = 16 (LONG only):** the middle is at chance (about 0.08).
+  - **So the registered p*-based contrast (SHORT 0.987 at p* = 4 against LONG 0.149 at p* = 16) is largely a horizon effect.**
+  - **SHORT at its own training length (8) has already lost its middle items, yet it is exact.** So even below the single-pass boundary the memory carries a
+    computed state rather than a full buffer. That is against 158-2's prediction for SHORT.
+  - **Caveat:** a 120-way linear probe on a 49k-dimensional state from 8k fits may miss non-linearly coded items. "Not decodable" is "not linearly decodable".
+* The registered arm readings still decide when LONG s2 and SHORT s1 land. This paragraph is the like-for-like context beside them.
 
 ## 163. SHAPE-MIX-2D: both operand lengths mixed, for length and value-range generalisation over both operands (C2) (Audit's research pass after §161 MIX s1; pre-registered 2026-10-08 10:59 EDT, after Literature's check 73fbfb1a (`docs/LIT_MULT_LG_NOSCRATCH_2026-10-08.md`) and Audit's review, before any implementation or run; runs only if §161 MIX s2 replicates)
 
