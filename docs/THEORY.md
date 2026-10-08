@@ -8499,6 +8499,16 @@ restart slots with 147-1's misfire rule; the memory is the only cross-segment ch
 * **Gates:** step-0 function preservation; gradflow into every DeltaMem parameter; smoke_plain; Audit's diff review.
 * Dirs `s154_{shift,rotary}_4x4_s{seed}`. Scorer: `theory/score_s154.py`, committed with this registration.
 
+**Note 154-1 (2026-10-08 00:57 EDT, before any §154 run; descriptive only). The C7 edit test made precise.**
+* **One edited column per rollout.** For each column k = 2..7 and δ ∈ {−2, −1, +1, +2}, the edit is applied only at column k's emission step, on the score half.
+  - Editing every emission step at once would change the downstream carries and leave "(ĉ_k + δ) mod 10" undefined after the first edited column.
+* **The probe's target is the accumulator** ĉ_k (column sum plus carry-in), not the emitted digit. So u = w / ‖w‖² moves the decoded accumulator by exactly δ.
+* **Reported per (k, δ) and pooled:**
+  - `shifted_share`: column k's digit = (ĉ_k + δ) mod 10;
+  - `unedited_share`: the same rows unedited, digit = ĉ_k mod 10;
+  - **`carry_follow_share`** (new): column k + 1's digit = (ĉ_{k+1} − ⌊ĉ_k/10⌋ + ⌊(ĉ_k + δ)/10⌋) mod 10, i.e. the next column uses the edited carry.
+* No PASS or LENGTH-GENERAL rule changes.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
