@@ -187,6 +187,8 @@ text token (S5: the first state token; FF / CYC / MOD / RDFA: the answer token) 
 
 ## Done
 
+* **§160 A-R preview (2070, 8k, fp32, descriptive):** test 0.0 (by rows 1.0 / 0.998 / 0.12 / 0.0); columns 0.99 / 0.69 / 0.17 / …; finite, loss 0.17; 0 floor spikes;
+  7.10e9 FLOPs, 12 passes. At 8k it is still on row 3, so it says nothing about b180 (48k, 3090).
 * **§157 previews (8k, descriptive; 06:30 item 2):** CCQ s1 (3070) test 0.0 (by length 1.0 / 0.26 / 0.03 / 0.0), no non-finite steps, final loss 0.34; λ ≤ 0.008 on 8 of
   12 heads. MULTIREAD s1 (2070, fp32) 0.0 (1.0 / 0.13 / 0.01 / 0.0), loss 0.49. Both are still on row 2 at 8k, so they say nothing about the read (the registered 48k cells: 0.064
   / 0.009).
