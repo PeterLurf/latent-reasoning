@@ -156,6 +156,23 @@ text token (S5: the first state token; FF / CYC / MOD / RDFA: the answer token) 
      - PARTIAL otherwise.
    - About 10–15 min each.
 
+**[Theory 2026-10-07 23:26, overnight; descriptive prototypes, $0; the readings fixed now, before any run; memory-checked first, under the 6 GiB cap]**
+0. **First:** Experiments' §152 gates and smokes (step-0, gradflow, write-nothing-back, memory, smoke_plain) take any free card before the items below.
+1. **§150 soft-only FULL protos** (2070, after proto150_digitsoft_s504; fp32, micro 4): item 1 of 21:13 with `--slot_space vocab`, S = 505 / 506, out
+   `proto150_fullsoft_s{S}_2070`. Same reading: **CARRIES** if the 6k–8k mean loss is ≤ 0.1, **FAILS** if ≥ 0.3, else PARTIAL.
+   - The DIGIT twins (s501–s503) all FAIL: 6k–8k means 1.09 / 1.57 / 1.11.
+   - If FULL fails too, the single-vector token slot (B4) fails at the soft level for both vocabularies, independent of hardening.
+2. **DeltaMem 5×5 digit-pair protos to 12k** (3070 after proto144_n64_8k_s512, then 4060 after s516):
+   `python -m boxes.multpair --family mult_pair --task 5x5 --carrier deltamem --steps 12000 --seed S --no_cert --micro M --device {DEV}
+   --out boxes/runs_fsq/proto147_5x5_s{S}_{card}`, with S = 501 on the 3070 and 502 on the 4060.
+   - Run a `--steps 50 --train_n 2000` smoke first: the end-of-run eval (donor / ext) must pass on 5×5 before the 12k run.
+   - **Reading (descriptive):** acc_by_column.per_column at 12k (c_max 8 from 9k). Column 5 has 5 products, which 4×4 never has. Column 5 ≥ 0.9 means DeltaMem handles
+     5-product columns, the precondition for §152 at 5×5. Below 0.5 means it does not at this budget.
+   - About 4 h each.
+
 ## Done
 
-* (none yet)
+* **§150 soft-only DIGIT (21:13 item 1): FAILS**, 3 of 4 (6k–8k mean loss 1.09 / 1.57 / 1.11, ≥ 0.3; s504 running). The loss rises when c_max reaches 2 at 2k, without
+  annealing or hardening. DIGIT s1's collapse was the curriculum, not the hardening (as 150-3).
+* **§144 L = 1 check (21:50): PARTIAL.** Loss at 5k: s601 F8 2.44 / N64 2.48 (about ln 10: one of two digits); s602 F8 4.89 / N64 4.98 (chance).
+* **§144 sum4 8k no-stop (3070):** no entry. Loss at 8k: s511 F8 9.79 / N64 10.16; s512 F8 9.9 at 4.5k (all ≥ 5.0).
