@@ -23,7 +23,8 @@ import time
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ARMS = {"r": ["--mem_write", "top"], "shiftr": ["--mem_write", "top", "--add_reset", "column"],                   # §155 (e9ee8a6c)
         "r9": ["--mem_write", "block9"], "shiftr9": ["--mem_write", "block9", "--add_reset", "column"],
-        "rg0": ["--mem_write", "top", "--write_mix_start", "1000000000", "--write_mix_end", "1000000000"]}   # note 155-1 (3): gamma held at 0
+        "rg0": ["--mem_write", "top", "--write_mix_start", "1000000000", "--write_mix_end", "1000000000"],   # note 155-1 (3): gamma held at 0
+        "mix": ["--mem_write", "top", "--shape_mix", "2,3,4,5"], "mixidx": ["--mem_write", "top", "--shape_mix", "2,3,4,5", "--col_index_offset", "12"]}   # §161 (56aa9af0)
 
 
 def qlog_line(msg):
@@ -52,6 +53,7 @@ def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--task", required=True, choices=["4x4", "5x5"]); ap.add_argument("--slot", type=int, required=True)
     ap.add_argument("--arm", required=True, choices=sorted(ARMS)); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     ap.add_argument("--runs_root", default=os.path.join("boxes", "runs_fsq"), help="smokes: a scratch dir, never the real run names (Audit)")
+    ap.add_argument("--prefix", default="s155", help="run-name prefix: s155 (§155) | s159 (§159 R-5x5, the same recipe)")
     a, extra = ap.parse_known_args(); os.chdir(ROOT); os.makedirs(a.out, exist_ok=True)
     gj = os.path.join(a.out, "gate155_%s.json" % a.arm)
     if not os.path.exists(gj):                                              # §155 gates on this host's GPU (bf16) + memory at L 17 + flush
@@ -67,7 +69,7 @@ def main():
         sys.exit(3)
     attempts = []; accepted = None; err = None
     for seed in [a.slot + 100 * i for i in range(4)]:
-        out = os.path.join(a.runs_root, "s155_%s_%s_s%d" % (a.arm, a.task, seed)).replace(os.sep, "/"); st = status(out)
+        out = os.path.join(a.runs_root, "%s_%s_%s_s%d" % (a.prefix, a.arm, a.task, seed)).replace(os.sep, "/"); st = status(out)
         if st:                                                              # already decided (restart-safe)
             attempts.append({"seed": seed, "dir": out, "status": st})
             if st == "accepted":
@@ -75,7 +77,7 @@ def main():
             continue
         cmd = [sys.executable, "-u", "-m", "boxes.multpair", "--family", "mult_pair", "--task", a.task, "--seed", str(seed), "--stop_plateau", "--ckpt_every", "2000", "--carrier", "deltamem"] + ARMS[a.arm] + extra + \
               ["--device", a.device, "--out", out]
-        lg = open(os.path.join("logs" if a.runs_root == os.path.join("boxes", "runs_fsq") else a.runs_root, "gen_s155_%s_%s_s%d.log" % (a.arm, a.task, seed)), "w"); t0 = time.time()
+        lg = open(os.path.join("logs" if a.runs_root == os.path.join("boxes", "runs_fsq") else a.runs_root, "gen_%s_%s_%s_s%d.log" % (a.prefix, a.arm, a.task, seed)), "w"); t0 = time.time()
         rc = subprocess.call(cmd, stdout=lg, stderr=subprocess.STDOUT); st = status(out)
         qlog_line("evaluated %s rc %d%s" % (out, rc, "" if st == "accepted" else " no-eval"))
         attempts.append({"seed": seed, "dir": out, "status": st or "error", "rc": rc, "sec": round(time.time() - t0)})
