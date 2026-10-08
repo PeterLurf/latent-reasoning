@@ -1,0 +1,3 @@
+# THEORY §155 DELTA-R (155-1 fallback fired in R s1: 12 write-row spikes > 100x the preceding-1k median at 16.9k-23.9k) arm r9 slot 1 via scratch.restart155 -> --mem_write block9; on-host gate155 (block9) + mem_check; ship EXTRA_120=scratch/gate155.py; RTX 3090 (~$0.8)
+# P=1
+boxes/runs_fsq/s155_slots/r9_4x4_k1 scratch.restart155 --arm r9 --task 4x4 --slot 1

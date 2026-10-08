@@ -1,0 +1,3 @@
+# THEORY §155 DELTA-R arm r slot 3 (R s1 >= 0.95: completions; scored a2f53616) via scratch.restart155 --arm r; on-host gate155 + mem_check; ship EXTRA_120=scratch/gate155.py; RTX 3090 (~$0.8)
+# P=1
+boxes/runs_fsq/s155_slots/r_4x4_k3 scratch.restart155 --arm r --task 4x4 --slot 3
