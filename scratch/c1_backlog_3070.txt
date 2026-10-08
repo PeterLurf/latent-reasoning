@@ -373,3 +373,5 @@
 # 2026-10-08 05:48 note 155-4 correction (287aa8e5): what_state re-run with operand_probe.colsum_cls (R s1 first; comparators s151 / SHIFT)
 5.0 boxes/runs_fsq/s155_r_4x4_s1/what_state_v2.done python -u -m boxes.multpair --from_args boxes/runs_fsq/s155_r_4x4_s1/args.json --what_state_only --device {DEV} --out boxes/runs_fsq/s155_r_4x4_s1 && echo ok > boxes/runs_fsq/s155_r_4x4_s1/what_state_v2.done
 5.0 boxes/runs_fsq/s151_delta_4x4_s1/what_state_v2.done python -u -m boxes.multpair --from_args boxes/runs_fsq/s151_delta_4x4_s1/args.json --what_state_only --device {DEV} --out boxes/runs_fsq/s151_delta_4x4_s1 && echo ok > boxes/runs_fsq/s151_delta_4x4_s1/what_state_v2.done
+# 2026-10-08 06:30 shared line (same text = same lock): whichever card is free first runs s147's what_state v2
+5.0 boxes/runs_fsq/s147_delta_4x4_s1/what_state_v2.done python -u -m boxes.multpair --from_args boxes/runs_fsq/s147_delta_4x4_s1/args.json --what_state_only --device {DEV} --out boxes/runs_fsq/s147_delta_4x4_s1 && echo ok > boxes/runs_fsq/s147_delta_4x4_s1/what_state_v2.done
