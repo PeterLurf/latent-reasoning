@@ -138,10 +138,16 @@ def headline(runs):
 
 def main():
     res = {"arms": {}, "bars": {"tc_m": TCM, "icot_si": ICOT}}
-    a1 = run("a", 1)
+    a1 = run("a", 1); c1r = run("ctrl", 1)
+    c1_drop = bool(c1r and c1r.get("status") == "done" and (c1r.get("test_acc") or 0) < 0.95)     # note 152-1 (1): CTRL "drops" = below the proof bar
     if a1 and a1.get("status") == "done" and (a1.get("test_acc") or 0) < 0.95:
         res["verdict"] = "DROP at proof (a s1 test_acc %s < 0.95): not acquired within budget" % a1.get("test_acc")
-        res["arms"]["a"] = {"runs": {1: a1}}
+        if c1_drop:
+            res["verdict"] += ("; CTRL s1 %s also < 0.95: the multiplier-major layout's in-pass a x b_j is the block, not 'DeltaMem + reader fails' "
+                               "(note 152-1 (1)); pp_probe locates it" % c1r.get("test_acc"))
+        elif c1r and c1r.get("status") == "done":
+            res["verdict"] += "; CTRL s1 %s >= 0.95 (descriptive: the reader's targets impede)" % c1r.get("test_acc")
+        res["arms"]["a"] = {"runs": {1: a1}}; res["arms"]["ctrl"] = {"runs": {1: c1r}}
         print("PROOF:", res["verdict"]); print("a s1", {k: a1.get(k) for k in ("test_acc", "acc_by_length", "serial", "gate_step", "donor", "compute")})
     else:
         for arm in ARMS:
@@ -169,6 +175,8 @@ def main():
         c1 = (res["arms"]["ctrl"]["runs"].get(1) or {}).get("test_acc")
         if c1 is not None:
             claim += "; CTRL (no reader) %.3f" % c1
+            if c1_drop and (a1 or {}).get("status") == "done":
+                claim += " < 0.95 while A s1 >= 0.95: the CoT reader is what makes multiplier-major learnable (note 152-1 (1))"
         res["verdict"] = claim; print("READING:", claim)
     if SKIPPED:
         print("SKIPPED (smoke):", SKIPPED)
