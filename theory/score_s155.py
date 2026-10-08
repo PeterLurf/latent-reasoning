@@ -20,7 +20,8 @@ import score_s154 as S154  # noqa: E402  (§154's slot machinery pattern; SHIFT 
 R = os.path.join(ROOT, "boxes", "runs_fsq")
 OFFS = (0, 100, 200, 300)
 ARMS = {"r": {"mem_write": "top"}, "shiftr": {"mem_write": "top", "add_reset": "column"},
-        "r9": {"mem_write": "block9"}, "shiftr9": {"mem_write": "block9", "add_reset": "column"}}
+        "r9": {"mem_write": "block9"}, "shiftr9": {"mem_write": "block9", "add_reset": "column"},
+        "rg0": {"mem_write": "top", "write_mix_start": 1000000000, "write_mix_end": 1000000000}}   # note 155-1 (3): gamma held at 0 (block-6 writes, pass-start reads)
 MIGRATE = {"write_mix_start": 2000, "write_mix_end": 6000}                 # gamma 0 until 2k, linear to 1 at 6k
 SKIPPED, ERRORS, MISFIRES = [], [], []
 
@@ -43,7 +44,8 @@ def smoke(d):
 
 def args_ok(d, arm):
     a = load(d, "args.json") or {}
-    exp = dict({"family": "mult_pair", "task": "4x4", "carrier": "deltamem", "mem_add_heads": 6, "mem_delta_heads": 6, "mem_group_gain": True}, **ARMS[arm], **MIGRATE)
+    exp = dict({"family": "mult_pair", "task": "4x4", "carrier": "deltamem", "mem_add_heads": 6, "mem_delta_heads": 6, "mem_group_gain": True}, **MIGRATE)
+    exp.update(ARMS[arm])                                                    # the arm's own keys override (rg0 holds gamma at 0)
     bad = {k: a.get(k) for k, v in exp.items() if a.get(k) != v}
     if "add_reset" not in ARMS[arm] and a.get("add_reset"):
         bad["add_reset"] = a.get("add_reset")
@@ -147,9 +149,11 @@ def main():
         rd.append("SHIFT-R RECURRENT USE: state edits propagate through recomputed carries (pass %s, length %s)" % (sv["pass"], sv["length_general"]))
     elif sv["recurrent_use"] == "NO RECURRENT USE":
         rd.append("SHIFT-R: no propagation (a failed linear edit reads 'not linearly editable', not 'not carried'; Literature (c))")
-    rv = res["r"]["verdicts"]; r1 = res["r"]["slots"][1]["accepted"]
-    if r1 and (r1["test_acc"] or 0) > 0.743:
-        rd.append("R at 4x4 %s > §147 0.743: storing computed results helps even without the reset" % r1["test_acc"])
+    r1 = res["r"]["slots"][1]["accepted"]; g1 = res["rg0"]["slots"][1]["accepted"]               # note 155-1 (3): R vs §147 read only through R-gamma0
+    if r1 and g1:
+        rd.append("R %s vs R-gamma0 %s: %s" % (r1["test_acc"], g1["test_acc"], "the write source helps" if (r1["test_acc"] or 0) > (g1["test_acc"] or 0) else
+                                                "no gain from the write source"))
+        rd.append("R-gamma0 %s vs §147 0.743: %s" % (g1["test_acc"], "the read lag costs" if (g1["test_acc"] or 0) < 0.743 else "no read-lag cost"))
     res["reading"] = "; ".join(rd) if rd else "pending"; print("READING:", res["reading"])
     if MISFIRES:
         print("2k-flag misfires (not stops):", MISFIRES); res["misfires"] = MISFIRES
