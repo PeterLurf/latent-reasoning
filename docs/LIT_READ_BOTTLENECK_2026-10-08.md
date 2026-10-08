@@ -67,3 +67,34 @@ Literature session, for Audit (the panel lead) and Theory.
 - CCQ (read dilution) and MULTI-READ (read bandwidth) test distinct hypotheses, and both are applicable to DeltaMem.
 - A bandwidth ablation at a fixed state, with a pause-position control, would be new.
 - Log key cosine similarity and per-item recall vs memory load (2609.33093's axis).
+
+## Addendum (2026-10-08): CCQ's exact equations (2606.01294v2 HTML: Sec. 3.2–3.3, App. D, E, G, J), quoted for §157's CCQ arm
+- **Backbone read (Eq. 6):** S_t = Σ_{j≤t} v_j k_jᵀ, o_t = S_t q_t.
+- **Statistics (Eq. 7–8):**
+  - μ_t = (1/t) Σ_{j≤t} k_j;
+  - C̄_t = (1/t) Σ_{j≤t} k_j k_jᵀ (the running second moment);
+  - **Σ_t ≜ C̄_t − μ_t μ_tᵀ = Cov_{≤t}[k]: centred (μ subtracted), normalised by the count t, undecayed even on decayed backbones.**
+  - Cost: one extra d_k × d_k matrix and one d_k-vector per head (state about +50%; fp32 implementation).
+- **The cleaned query and gate (Eq. 9):**
+  - q_t^clean = (I − λ_t Σ_t) q_t = q_t − λ_t Σ_t q_t;
+  - λ_t = σ(W_λ q_t + b_λ), with λ_t ∈ (0, 1);
+  - equivalently, one gradient step on R_t(q) = ½ qᵀ Σ_t q.
+- **Read (Eq. 10):** o_t = S_t q_t^clean = S_t q_t − λ_t S_t Σ_t q_t. S_t and the write rule are unchanged.
+- **Score form (Eq. 11):** s_tj = k_jᵀ q_t − λ_t k_jᵀ Σ_t q_t.
+- **The gate** (App. D, E):
+  - W_λ is a single linear layer **on the pre-split query** (the full query projection before splitting into heads), producing **one
+    scalar gate per head** (per token).
+  - **Weights init 0; bias init so that σ(b) ≈ 0.01** (b ≈ −4.6).
+  - The learned bias reaches σ ≈ 0.35–0.45; per-token λ ≈ 0.29 on text and 0.40 at retrieval queries.
+- **Required normalisation** (App. D, G): **queries and keys are ℓ2-normalised per head** in the CCQ variants.
+  - With unit keys ‖C̄_t‖ ≤ 1 and ‖Σ_t‖ ≤ 1, so the operator's spectrum lies in [1 − λ, 1] (it never amplifies or annihilates a
+    direction).
+  - **Using the raw sum C_t, or λ without the sigmoid, caused training instabilities** (their early ablations).
+- **Where it's applied:** at every read position, identically on GLA and Gated DeltaNet heads. No per-head temperature. The only extra
+  parameters are W_λ and b_λ. Their setup: d_k 256, d_v 512, bf16 training.
+- **Inference-time ablation:** disabling CCQ on the trained GDN checkpoint changes retrieval by ≤ 2.2 points. So much of the gain may
+  come from training *with* CCQ, not from the read itself.
+- **For DeltaMem's additive elu+1 heads:**
+  - apply CCQ to **ℓ2-normalised φ(k) and φ(q)**: the bound needs unit-norm keys, and elu+1 features aren't unit-norm;
+  - keep Σ count-normalised and centred;
+  - this transfer is untested in the paper.
