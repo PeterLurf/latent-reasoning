@@ -251,7 +251,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 161 | SHAPE-MIX (C2): 4 × n training (n 2..5), ± a column index with random offsets | **LENGTH-GENERAL** (MIX 3/3, ext_4x8 0.91–0.96; MIX+IDX 2/3); SERIAL with a state-carried running sum; index not needed | closed |
 | 162 | DELTA-S5: DeltaMem-R on S5 against a measured single-pass boundary (158-2's contrast cell) | registered | **open** |
 | 163 | SHAPE-MIX-2D: both operand lengths mixed (m, n 2..5), 6×6–8×8 generalisation | registered (condition met) | **open** |
-| 164 | MIX-BASELINES: TC-MIX / DIRECT-MIX on §161's mix (like-for-like C2 baselines) | **LATENT BEYOND TEXT ON LENGTH** (TC-MIX anchored ext 0.0 at 4×6+; its CoT stops short); DIRECT-MIX pending | **open** |
+| 164 | MIX-BASELINES: TC-MIX / DIRECT-MIX on §161's mix (like-for-like C2 baselines) | **LATENT BEYOND TEXT ON LENGTH** (TC-MIX anchored ext 0.0 at 4×6+; its CoT stops short); DIRECT-MIX 4×4 ≤ 0.004 (the single pass fails) | closed |
 | 165 | FIXED-CHUNK: the same memory on fixed text chunks plus think passes (task-agnostic segmentation) | registered | **open** |
 
 ## Live sections
@@ -9747,7 +9747,10 @@ this note is pushed.**
 * **The registered reading:** §161 MIX is LENGTH-GENERAL (3 / 3, ext_4x8 0.91–0.96), and TC-MIX's mean ext_4x8 is 0.000 < 0.90.
   - **On the same training data, the latent memory extrapolates the multiplier length where text CoT does not.**
 * **C3 at 4×8:** TC-MIX's full scratchpad costs 153 passes and 4.03·10¹⁰ FLOPs; the latent chain costs 33 passes.
-* **DIRECT-MIX** (the single-pass baseline, descriptive) awaits its anchored re-eval.
+* **DIRECT-MIX** (the single-pass baseline, descriptive; anchored): 4×4 **0.001 / 0.004**, and every extension 0.0.
+  - The single pass does not learn even 4×4 from this data (as §148's 0.002), and fails at 4×8.
+  - The C1 precondition (note 158-2 / THEORY_C1_FORCING: "a measured single-pass baseline fails") is met for §161's 4×4 and 4×8.
+* **§164 closes.**
 
 ## 165. FIXED-CHUNK: the same memory on the problem text in fixed chunks, with think passes, to test whether it finds its own schedule (task-agnostic segmentation) (the user's question "is the architecture task agnostic?", via Audit's research pass; pre-registered 2026-10-08 12:00 EDT, after Literature's check 9878803c (`docs/LIT_FIXED_CHUNK_2026-10-08.md`) and Audit's review (two rounds), before any implementation or run; launched after §161 MIX s2 and §164 read)
 

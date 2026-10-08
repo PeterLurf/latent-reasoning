@@ -107,7 +107,35 @@
  "directmix": {
   "runs": {
    "1": {
-    "status": "awaiting anchored re-eval",
+    "status": "done",
+    "test_4x4": 0.001,
+    "ext": {
+     "ext_4x6": 0.0,
+     "ext_4x7": 0.0,
+     "ext_4x8": 0.0,
+     "ext_4x16": 0.0
+    },
+    "ext_4x8_per_column": [
+     0.997,
+     0.979,
+     0.325,
+     0.135,
+     0.093,
+     0.096,
+     0.106,
+     0.094,
+     0.132,
+     0.1,
+     0.084,
+     0.746
+    ],
+    "cot_len_mismatch_share": {
+     "4x4": 0.0,
+     "4x6": 0.0,
+     "4x7": 0.0,
+     "4x8": 0.0,
+     "4x16": 0.0
+    },
     "position_locked": {
      "test_4x4": 0.002,
      "ext": {
@@ -116,10 +144,47 @@
       "ext_4x8": 0.0,
       "ext_4x16": 0.0
      }
-    }
+    },
+    "compute_4x4": {
+     "flops": 4011079680.0,
+     "passes": 11
+    },
+    "compute_4x8": {
+     "flops": 5687685120.0,
+     "passes": 15
+    },
+    "gpu": "NVIDIA GeForce RTX 3090"
    },
    "2": {
-    "status": "awaiting anchored re-eval",
+    "status": "done",
+    "test_4x4": 0.004,
+    "ext": {
+     "ext_4x6": 0.0,
+     "ext_4x7": 0.0,
+     "ext_4x8": 0.0,
+     "ext_4x16": 0.0
+    },
+    "ext_4x8_per_column": [
+     1.0,
+     0.945,
+     0.268,
+     0.079,
+     0.104,
+     0.11,
+     0.09,
+     0.099,
+     0.126,
+     0.103,
+     0.09,
+     0.822
+    ],
+    "cot_len_mismatch_share": {
+     "4x4": 0.0,
+     "4x6": 0.0,
+     "4x7": 0.0,
+     "4x8": 0.0,
+     "4x16": 0.001
+    },
     "position_locked": {
      "test_4x4": 0.001,
      "ext": {
@@ -128,13 +193,22 @@
       "ext_4x8": 0.0,
       "ext_4x16": 0.0
      }
-    }
+    },
+    "compute_4x4": {
+     "flops": 4011079680.0,
+     "passes": 11
+    },
+    "compute_4x8": {
+     "flops": 5687685120.0,
+     "passes": 15
+    },
+    "gpu": "NVIDIA GeForce RTX 3090"
    }
   },
-  "mean_test_4x4": null,
-  "mean_ext_4x8": null,
-  "n_done": 0
+  "mean_test_4x4": 0.0025,
+  "mean_ext_4x8": 0.0,
+  "n_done": 2
  },
- "single_pass": null,
+ "single_pass": "the single pass fails at 4x8 on the same data (mean 0.000)",
  "reading": "LATENT BEYOND TEXT ON LENGTH: MIX length-general (3 / 3) where TC-MIX's mean ext_4x8 is 0.000 < 0.90"
 }
