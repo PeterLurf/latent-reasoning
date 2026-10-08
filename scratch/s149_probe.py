@@ -133,8 +133,8 @@ class CodiRun:
             sl = slice(i, i + bs); ch = qs[sl]; B = len(ch); tok.padding_side = "left"
             enc = {k: v.to(dev) for k, v in tok(list(ch), return_tensors="pt", padding=True).items()}
             ids = torch.cat([enc["input_ids"], torch.full((B, 1), bot, device=dev)], 1); mask = torch.cat([enc["attention_mask"], torch.ones(B, 1, dtype=torch.long, device=dev)], 1)
-            pos = (mask.cumsum(1) - 1).clamp(min=0); out = m(input_ids=ids, attention_mask=mask, position_ids=pos, use_cache=True, output_hidden_states=True)
-            pkv = out.past_key_values; h = prj(out.hidden_states[-1][:, -1:, :]); lat_mask = mask.clone(); nextpos = pos[:, -1:] + 1
+            pos = (mask.cumsum(1) - 1).clamp(min=0); out = m.transformer(input_ids=ids, attention_mask=mask, position_ids=pos, use_cache=True)
+            pkv = out.past_key_values; h = prj(out.last_hidden_state[:, -1:, :]); lat_mask = mask.clone(); nextpos = pos[:, -1:] + 1   # memory: no prompt logits
             for j in range(K):
                 if override is not None and j in override:
                     h = torch.tensor(override[j][sl], device=dev, dtype=h.dtype)[:, None]
@@ -163,6 +163,28 @@ class CodiRun:
         return preds, T
 
 
+@torch.no_grad()
+def coco_hidden(m, x):
+    """gpt2c.GPT2C.forward (extra=None, attn_q=None) without the logits: final hidden after ln_f, op for op (Audit 20:29: memory)."""
+    import torch.nn.functional as F_
+    sd, B, T, D = m.sd, x.shape[0], x.shape[1], x.shape[2]
+    h = x + m.wpe[:T][None]
+    mask = torch.full((T, T), float("-inf"), device=x.device).triu(1)[None]
+    hd = D // m.H
+    for i in range(m.L):
+        p = f"h.{i}."
+        a = F_.layer_norm(h, (D,), sd[p + "ln_1.weight"], sd[p + "ln_1.bias"])
+        qkv = a @ sd[p + "attn.c_attn.weight"] + sd[p + "attn.c_attn.bias"]
+        q, k, v = qkv.split(D, -1)
+        q, k, v = (t.view(B, T, m.H, hd).transpose(1, 2) for t in (q, k, v))
+        pr = ((q @ k.transpose(-1, -2)) / math.sqrt(hd) + mask[:, None]).softmax(-1)
+        o = (pr @ v).transpose(1, 2).reshape(B, T, D)
+        h = h + o @ sd[p + "attn.c_proj.weight"] + sd[p + "attn.c_proj.bias"]
+        a = F_.layer_norm(h, (D,), sd[p + "ln_2.weight"], sd[p + "ln_2.bias"])
+        h = h + F_.gelu(a @ sd[p + "mlp.c_fc.weight"] + sd[p + "mlp.c_fc.bias"], approximate="tanh") @ sd[p + "mlp.c_proj.weight"] + sd[p + "mlp.c_proj.bias"]
+    return F_.layer_norm(h, (D,), sd["ln_f.weight"], sd["ln_f.bias"])
+
+
 class CocoRun:
     def __init__(self, ckpt, K, dev):
         import tiktoken
@@ -182,7 +204,7 @@ class CocoRun:
             for s_ in range(0, len(idx_all), bmax):
                 idx = idx_all[s_:s_ + bmax]; B = len(idx); x = m.embed(torch.tensor([toks[i] for i in idx], device=dev))
                 for j in range(K):
-                    h, _, _ = m.forward(x); th = h[:, -1:, :]
+                    h = coco_hidden(m, x); th = h[:, -1:, :]
                     if override is not None and j in override:
                         th = torch.tensor(override[j][idx], device=dev, dtype=th.dtype)[:, None]
                     if perturb is not None and j in perturb:
@@ -192,7 +214,7 @@ class CocoRun:
                     continue
                 x = torch.cat([x, m.embed(torch.full((B, 1), END, device=dev))], 1); gen = [[] for _ in range(B)]; done = np.zeros(B, bool)
                 for _ in range(max_new):
-                    _, lg, _ = m.forward(x); nt = lg[:, -1].argmax(-1)
+                    nt = (coco_hidden(m, x)[:, -1] @ m.wte.T).argmax(-1)
                     for b in range(B):
                         if not done[b]:
                             if int(nt[b]) == EOS:
@@ -224,6 +246,8 @@ def ridge_r2(Xf, yf, Xs, ys, lam=1e-2):
 
 def main():
     name = sys.argv[1]; dev = sys.argv[2] if len(sys.argv) > 2 else "cuda:0"; nlim = int(sys.argv[3]) if len(sys.argv) > 3 else 0
+    from boxes import memcap
+    memcap.apply(dev)                                                       # Audit 20:29: hard cap (no-op when LATENT_MEM_CAP_GB is unset)
     kind, ckpt, K = MODELS[name]; out_d = os.path.join(ROOT, "boxes", "runs_fsq", "s149_%s" % name); os.makedirs(out_d, exist_ok=True); t0 = time.time()
     import hashlib
     res = {"model": name, "ckpt": ckpt, "K": K, "unit_tests": unit_tests(), "probe_sha256": hashlib.sha256(open(os.path.abspath(__file__), "rb").read()).hexdigest()[:16], "device": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"}
@@ -312,6 +336,8 @@ def main():
                           "jacobian_method": "power iteration on J by central differences: the top |EIGENVALUE| of thought_0 -> thought_1 (fed space), not the spectral norm (Audit)", "n": int(len(ci)),
                           "eps": "0.1 x ||thought_0||, random direction", "space": "fed-back raw hidden" if kind == "coconut" else "after prj (fed latent)"}
     res["sec"] = round(time.time() - t0)
+    if dev.startswith("cuda"):
+        res["torch_peak_gib"] = {"allocated": round(torch.cuda.max_memory_allocated(dev) / 2 ** 30, 3), "reserved": round(torch.cuda.max_memory_reserved(dev) / 2 ** 30, 3)}
     json.dump(res, open(os.path.join(out_d, "eval.json"), "w", newline="\n"), indent=1, default=float)
     print("DONE", name, json.dumps({"test_acc": res["test_acc"], "donor_t1": donor.get("1", {}).get("same_template")}), flush=True)
 
