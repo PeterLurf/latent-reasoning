@@ -428,7 +428,11 @@ class MultDelta(MultPair):
             tail = torch.cat([self.adig[:, i:i + 1], self.bdig[:, j:j + 1], torch.full((B, 1), NEWTOK if self.newcol[t] else SAMETOK, device=dev)], 1)
         if getattr(self, "cidx_off", None) is not None:                     # §161 MIX+IDX: token(c + r); c = i + j - 1 (1-based), the flush = last column + 1
             c_ = (self.adig.shape[1] + self.bdig.shape[1]) if i < 0 else i + j + 1
-            r_ = self.cidx_r if (self.training and getattr(self, "cidx_r", None) is not None and len(self.cidx_r) == B) else torch.zeros(B, dtype=torch.long, device=dev)
+            if self.training:                                               # Audit (45c4b1c5): a training chain must carry its own per-row r (no silent r = 0)
+                assert getattr(self, "cidx_r", None) is not None and len(self.cidx_r) == B, "§161: training chain without its per-row r (B %d)" % B
+                r_ = self.cidx_r
+            else:                                                           # eval mode (every probe / rollout): r = 0
+                r_ = torch.zeros(B, dtype=torch.long, device=dev)
             v_ = c_ + r_; assert int(v_.max()) <= len(CIDX), "§161: column index %d > %d tokens" % (int(v_.max()), len(CIDX))
             tail = torch.cat([tail, torch.tensor(CIDX, device=dev)[v_ - 1][:, None]], 1)
         return torch.cat([torch.full((B, 1), EOT, device=dev), tail], 1)
