@@ -8831,6 +8831,16 @@ ext_4x8 0.000 < 0.5. ROTARY was deferred to §155's architecture (154-2), so §1
   - **So the read, not the store, is the bottleneck.** Numbers are not exposed in one vector, which fits L2. The digit code at the read is non-integer, and integer-closeness
     of the read stays invalid as a diagnostic.
 
+**§156 result, part (a) (2026-10-08 06:16 EDT; SEP and PAUSE, seeds 1–2, RTX 3090, 24k; scored by Theory with score_s156). "At this budget the wall is not about position count."**
+* **Test exact:** SEP 0.002 / 0.004, PAUSE 0.002 / 0.002, against §148 PLAIN's 0.002. Both arms read < 0.5 in both seeds, and SEP − PAUSE is ≤ 0.002, so the gap reading
+  does not apply.
+* **Per column:** SEP 1.0 / 1.0 / 0.30 / 0.12 / 0.08 / 0.11 / 0.65 / 0.96, the same as PLAIN and PAUSE. The middle columns do not move.
+* **No ring code at the slots:** the cos / sin carry probe gives R² 0.19–0.56 at column 2 and below zero at columns 3–4.
+* **Compute:** 4.88·10⁹ FLOPs and 8 sequential passes per item, the direct-answer cost.
+* **Reading:** in a pretrained GPT-2 direct-answer model at 24k, a per-digit separator slot does not make carry resolution learnable. 2610.06605's from-scratch effect does not
+  transfer here.
+* **Part (b), A-SEP on §152's reader,** is pending.
+
 ## 157. READ-PANEL: geometry, bandwidth and interference of the memory read, as one panel (Audit's research passes 03:00 / 04:00; pre-registered 2026-10-08 03:57 EDT, after Literature's checks 534a02f1 / 5fc2cb76 and Audit's draft review, before any implementation or run; run only if b165 still fails)
 
 **Why.**
