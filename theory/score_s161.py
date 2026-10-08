@@ -58,6 +58,14 @@ def main():
         gate = None if v.startswith("pending") else (v == "LENGTH-GENERAL")
         res[arm] = {"slots": sl, "gate": gate, "verdict": v}
         print(arm, "|", v, "|", [a and {kk: a.get(kk) for kk in ("seed", "test_acc", "ext_4x8", "serial", "fallback_trigger")} for a in acc])
+    for fb, ex in (("mix9", {"mem_write": "block9"}), ("mixidx9", {"mem_write": "block9", "col_index_offset": 12})):   # 155-1 block-9 fallbacks (descriptive)
+        d = "s161_%s_4x4_s1" % fb; r = load(d); a = load(d, "args.json") or {}
+        if r is None:
+            continue
+        exp = dict(BASE, **ex); bad = {kk: a.get(kk) for kk, v in exp.items() if a.get(kk) != v}
+        x = {"error": bad} if bad else {"test_acc": r.get("test_acc"), "ext_4x8": (r.get("ext_4x8") or {}).get("test_acc"), "serial": S155.S154.serial(r.get("donor")),
+                                         "ext_other": {kk: (r.get(kk) or {}).get("test_acc") for kk in ("ext_4x6", "ext_4x7", "ext_4x16")}}
+        res[fb] = x; print(fb, "(fallback, block-9 writes, descriptive)", x)
     m, mi = res["mix"]["gate"], res["mixidx"]["gate"]
     if m is None or mi is None:
         rd = "pending"
