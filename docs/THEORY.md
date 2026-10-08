@@ -8778,6 +8778,24 @@ restated.**
   - **R-γ0 < §147:** the read lag costs.
   - "R ≥ §147" is read only through that pair.
 
+**Note 152-5 result (2026-10-08 03:33 EDT; descriptive; A s1 and CTRL s1 at 48k, CPU; `theory/results/colsum_exact_s152*.json`, `read_exact_s152.json`).**
+* **The registered test** (s152's probe, 2,000 pooled rows): exact ≤ 0.19 per column for A and CTRL. By the fixed reading, 147-4 weakens to **"storage precision OR read-time
+  resolution"**.
+* **That test was limited by its power, not the store.** With λ at its grid floor and 8,000 train items (final state, λ ≤ 1e-7), A's linear readout of the column sums is exact
+  1.0 / 0.985 / 0.944 / 0.857 / 0.723 / 0.805 / 0.866 (R² ≥ 0.9997). The state holds the sums almost exactly.
+* **What the model reads (Audit's model-internal probe).** The reader is teacher-forced, with a ridge on the 768-d captures, fit on 4,000 train items and scored on test.
+  - The read output's linear readout of the accumulator ĉ_k is exact only 0.11–0.35 (A) / 0.05–0.34 (CTRL) at columns 1–7 (R² ≥ 0.95). It falls further through
+    blocks 6–11.
+  - Yet the **teacher-forced digit accuracy** is:
+    - A: 1.0 / 1.0 / 1.0 / 1.0 / 0.999 / **0.338** / 0.998 / 1.0;
+    - CTRL: 1.0 / 1.0 / 1.0 / 0.999 / **0.094** / **0.197** / 1.0 / 1.0.
+* **Reading.**
+  - The model does not carry the accumulator as a linearly readable integer at any layer, yet emits most digits exactly. It computes digits from a non-integer code.
+    **Linear integer-closeness of the read is therefore not a valid diagnostic for this model.**
+  - **§152's failure is localised.** A fails one column (6) and CTRL two (5 and 6): the columns with the largest carry-ins. The reader fixed column 5.
+  - "Read-time carry resolution" narrows to **"carry resolution at columns 5–6, still being learned at 48k"** (A's gate was rising at the end). The 96k run (b165) tests the
+    budget.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
