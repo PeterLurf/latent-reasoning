@@ -2,10 +2,28 @@
  "tcmix": {
   "runs": {
    "1": {
-    "status": "open"
+    "status": "awaiting anchored re-eval",
+    "position_locked": {
+     "test_4x4": 1.0,
+     "ext": {
+      "ext_4x6": 0.0,
+      "ext_4x7": 0.0,
+      "ext_4x8": 0.0,
+      "ext_4x16": 0.0
+     }
+    }
    },
    "2": {
-    "status": "open"
+    "status": "awaiting anchored re-eval",
+    "position_locked": {
+     "test_4x4": 1.0,
+     "ext": {
+      "ext_4x6": 0.0,
+      "ext_4x7": 0.0,
+      "ext_4x8": 0.0,
+      "ext_4x16": 0.0
+     }
+    }
    }
   },
   "mean_test_4x4": null,
@@ -15,10 +33,28 @@
  "directmix": {
   "runs": {
    "1": {
-    "status": "open"
+    "status": "awaiting anchored re-eval",
+    "position_locked": {
+     "test_4x4": 0.002,
+     "ext": {
+      "ext_4x6": 0.0,
+      "ext_4x7": 0.0,
+      "ext_4x8": 0.0,
+      "ext_4x16": 0.0
+     }
+    }
    },
    "2": {
-    "status": "open"
+    "status": "awaiting anchored re-eval",
+    "position_locked": {
+     "test_4x4": 0.001,
+     "ext": {
+      "ext_4x6": 0.0,
+      "ext_4x7": 0.0,
+      "ext_4x8": 0.0,
+      "ext_4x16": 0.0
+     }
+    }
    }
   },
   "mean_test_4x4": null,

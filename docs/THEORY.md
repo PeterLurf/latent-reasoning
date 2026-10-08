@@ -9805,6 +9805,23 @@ shapes alone remove the count schedule".**
   ("§161's curriculum"), not a rule change.
 * Build: 3539b83e; gate165 all pass; queues b200–b203 (slot 1 of k16 / k8 / k0 / k16c1).
 
+**Note 164-1 (2026-10-08 15:48 EDT, before any §164 scoring; Audit). The anchored read governs §164's evaluation.**
+* **The flaw (Audit):** mult98's evaluation decodes greedily for a fixed length (the true schedule's token count) and reads the answer from the last 4 + n tokens. "####"
+  must sit exactly there.
+  - A text-CoT model trained on ≤ 5 partial products may write a different number or length of steps at 4×6+. The answer then sits elsewhere, and a correct answer
+    scores 0.
+  - So the position-locked ext measures "CoT length matches the true schedule" and correctness together. It is not a fair C2 comparison.
+* **Fixed now:**
+  - Re-evaluate every §164 model (model.pt kept) with a decode budget of the schedule length + 50 tokens.
+  - Read the 4 + n answer digits after the model's **own first "####"** (`eval_s164_anchor.json`: `acc_test`, `ext_4x6` / `4x7` / `4x8` / `4x16` as acc_report,
+    `cot_len_mismatch_share` by shape).
+  - DIRECT-MIX is re-read the same way, for symmetry.
+  - **The registered C2 reading uses the anchored values.** The position-locked eval.json values are descriptive. A cell without the anchored file is "awaiting
+    anchored re-eval" (score_s164).
+* **What had been seen:** Audit relayed TC-MIX's position-locked values: 4×4 1.0 / 1.0, every ext 0.0, and 4×6 column 1 at 0.42 / 0.47.
+  - Theory had not run score_s164.
+  - The anchored read can only raise TC-MIX, which works against the latent claim. It is a validity fix, not a favourable choice.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
