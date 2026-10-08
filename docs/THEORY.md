@@ -8392,6 +8392,11 @@ SERIAL and contractive. Slots 2–4 run (the credit rule).**
   - Both pass: full width costs nothing at capacity.
 * score_s133 gains the cell.
 
+**Note 152-2 (2026-10-08 00:03 EDT, before any §152 run). The headline's ratios come from the run.** The fixed wording's "about 0.6× FLOPs / about 0.2× sequential passes" were design
+estimates.
+* Experiments' implementation smoke meters 7.10·10⁹ FLOPs (0.46× TC-M) and 12 sequential passes (0.21×). The DeltaMem branch is counted.
+* The result quotes the ratios from each run's own `compute` block in that wording's place. The rule (fewer FLOPs and fewer passes than TC-M) is unchanged.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
