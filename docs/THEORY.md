@@ -7589,6 +7589,24 @@ on S5×4, with the PLATEAU trigger.**
 * **Gates:** exact ground truth against integer arithmetic, gradflow, memory at L 32, smoke_plain, Audit's diff review.
 * Dirs `s144_{f8,n64}_s{seed}`. Scorer: `theory/score_s144.py`, committed with this registration.
 
+**§144 result (2026-10-08 01:44 EDT; RTX 3090; scored by Theory with score_s144). Both arms DROP at proof. F8 never enters; N64 enters but carries no exact digit.**
+* **F8:** slot 1 is exhausted (no entry by the 2k flag in 4 attempts). Run with no stop to 24k (note 144-1), it keeps one code, with loss 9.40, about chance.
+* **N64 slot 1** (sum mod 10⁴, random start): long_acc 0.000 at 512.
+  - The thousands digit is 0.98 at L = 1 and falls to 0.10 at L = 64. The three low digits are at chance from L = 1.
+  - It copies the start's top digit as a coarse magnitude (code R² 0.83 / 0.82 for digits 2 / 3, about 0 for digits 0 / 1). It never holds the low digits.
+* **The ladder:** F8 and N64 at mod 100 and mod 1000 all have long_acc 0.0, with final losses at chance (N64: 4.61 ≈ ln 100; 7.16 ≈ ln 1000) and every real digit at chance.
+  A smaller modulus does not help.
+* **The L = 1 harness check:** PARTIAL.
+  - s601 learns one of the two digits of (start + x) mod 100 by 5k in both arms (loss 2.44 / 2.48, ≈ ln 10). s602 learns neither.
+  - So even one exact addition into the code is slow at this budget.
+* **Reading (registered):** number carriage itself is the barrier.
+  - A single-vector carrier, FSQ-8 or NOISE-64, does not hold an exact multi-digit number across even one addition at this budget. At most it carries the start's top
+    digit as a magnitude.
+  - Every single-vector design inherits this (L2). §145's slots and §147's matrix memory are the responses.
+* **Against 147-4:** fsq120's carrier is computed by the whole network from the previous code, so it is genuinely recurrent. This is a failure of a recurrent
+  single-vector state, not of an input-only buffer.
+* N64 run with no stop (note 144-1) is pending (descriptive).
+
 ## 145. MULTI-SLOT: carry K = 4 latent vectors per hand-off, one write position each (§140's digit-pair multiplication; pre-registered 2026-10-07 15:40 EDT, after Literature's check d8ccceb5 and Audit's draft, before any implementation or run; the user's "we gotta figure out how to fix the multiplication" (via Audit))
 
 **Why.**
