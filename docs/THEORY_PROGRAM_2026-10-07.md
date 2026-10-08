@@ -52,11 +52,18 @@ paradigms. Don't get stuck in the minuscule improvements loop. Take the lessons 
    - **First test, after B1 / B4 read:** S5 and the running sum written as plain token streams.
    - Most SOTA latent methods use task scaffolds; only Huginn / Ouro and the soft-token methods are task-agnostic.
 
+## The operative standard (the user, 23:00, via Audit; NORTH_STAR C4 updated)
+* **Strict C4 is no longer required.** CoT-derived per-step supervision and CoT-then-removal training are allowed.
+* **The headline is C3 + C1:** the latent model uses latent space **more effectively than text thinking**.
+  - That means ≥ text-CoT accuracy at fewer steps or less compute (FLOPs / forward passes / tokens, metered on the same items), with SERIAL evidence that the latents carry
+    the computation.
+* **From §152 on:** every registration reports accuracy and compute against TC-M and ICoT-SI on the same items.
+
 ## Paradigms applied across the bets
 * **Function-preserving installation** (zero-init outputs, fade-in, μP-scaled learning rates; §136 / §143) for every new module.
 * **Shortcut-free task design first (L1).** Multiplier-major only with SERIAL and the b-prefix rate.
 * **Deep supervision** across loops or steps (TRM).
-* **Strict C4 later:** RL on discrete latents (synthesis candidate 5; ATF), only after a supervised carrier works.
+* **Strict C4 (RL on discrete latents, synthesis candidate 5; ATF):** optional now (the user, 23:00), not a requirement.
 
 ## Deprioritised (the user's "minuscule improvements loop")
 * Further variants of the bounded single-vector carrier for arithmetic, after §142 / §144 / §145 read. Width, rounding, readers, repeats, anchors and growth have each been
