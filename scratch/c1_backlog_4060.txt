@@ -318,4 +318,6 @@
 # 2026-10-08 04:05 THEORY LOCAL_BACKLOG 743516f2 item (1) moved here (3070 busy with the §154 proto; 4060 idle): §156 (a) local previews, loop148 plain, 8k, seed 1: interleave / pause / no flag
 4.0 boxes/runs_fsq/proto156_sep_s1_4060/eval.json python -u -m boxes.loop148 --task 4x4 --arm plain --seed 1 --steps 8000 --answer_sep interleave --device {DEV} --out boxes/runs_fsq/proto156_sep_s1_4060
 4.0 boxes/runs_fsq/proto156_pause_s1_4060/eval.json python -u -m boxes.loop148 --task 4x4 --arm plain --seed 1 --steps 8000 --answer_sep pause --device {DEV} --out boxes/runs_fsq/proto156_pause_s1_4060
-4.0 boxes/runs_fsq/proto156_plain_s1_4060/eval.json python -u -m boxes.loop148 --task 4x4 --arm plain --seed 1 --steps 8000 --device {DEV} --out boxes/runs_fsq/proto156_plain_s1_4060
+# FAILED 2026-10-08 05:13 (superseded): 4.0 boxes/runs_fsq/proto156_plain_s1_4060/eval.json python -u -m boxes.loop148 --task 4x4 --arm plain --seed 1 --steps 8000 --device {DEV} --out boxes/runs_fsq/proto156_plain_s1_4060
+# 2026-10-08 05:13 §156 plain preview re-run with --eval_bs 100 (the eval at 250 OOMed under the 6 GiB cap)
+5.5 boxes/runs_fsq/proto156_plain_s1_4060/eval.json python -u -m boxes.loop148 --task 4x4 --arm plain --seed 1 --steps 8000 --eval_bs 100 --device {DEV} --out boxes/runs_fsq/proto156_plain_s1_4060
