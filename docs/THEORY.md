@@ -8695,6 +8695,60 @@ restated.**
   - **Reading, fixed now:** if exact-match is well below 1 (< 0.9) at columns 4–7, 147-4's "read-time carry resolution" weakens to **"storage precision or read-time
     resolution"**. §155 is then read against that.
 
+## 156. SEP-SLOT: a prediction slot per answer digit for carry resolution (the user's research pass via Audit; pre-registered 2026-10-08 02:01 EDT, after Literature's check d27dae0b and Audit's draft, before any implementation or run)
+
+**Why.**
+* Two of our failures are carry resolution while digits are emitted:
+  - §148's plain GPT-2 direct answer: 0.002, per column 1.0 / 1.0 / 0.41 / 0.13 / 0.08 / 0.10 / 0.66 / 0.96;
+  - §152's reader at the fourth row: A s1 0.331.
+* In our formats each answer digit is one BPE token (" 8"). The position that emits a digit is also where its carry must be resolved, and there is no separate slot.
+* **Prior** (d27dae0b, `docs/LIT_SEPARATOR_CARRY_2026-10-08.md`; 2610.06605):
+  - In small transformers trained from scratch on 4×4 with no CoT, a separator token before each answer digit lifts exact match from 1 % to 89 %.
+  - The separator position holds the carry-in as a ring (angle) code, and patching the slot transfers the carry. That is up to 84 %, for one middle column of their best
+    model; the other columns assemble the carry at the neighbouring slot first.
+  - From pretrained GPT-2, a smaller gain is expected.
+* **Pure formatting, so C4 is unaffected.** The slots are extra computation positions, counted in FLOPs.
+
+**Design.**
+* **The separator:** "|" (GPT-2 id 91), a forced input placed before each answer digit: | d₁ | d₂ … | d₈.
+  - **LSB first, as §148** ("the product's 8 digits LSB first"); §152's reader is also LSB first.
+  - Separators are **forced in eval exactly as in training, identically in all arms.** They get no loss and are never generated, so accuracy counts only digit positions.
+  - The digit after each separator is predicted at the separator's position.
+* **(a) On §148's PLAIN direct-answer 4×4** (loop148 `--loops 1`; the same recipe, LR, 24k budget and GPU class as §148, with the GPU recorded per cell). **Two seeds per
+  arm (Audit), s1 / s2:**
+  - **SEP:** separators interleaved;
+  - **PAUSE:** the same 8 "|" tokens placed before the answer, not interleaved. This is the compute-matched control (Literature (2)): a slot per digit against
+    more positions.
+  - The comparator is §148 PLAIN (0.002, RTX 3090). If an arm runs on another GPU class, PLAIN is rerun on that class (`s156_plain_4x4_s1`) and serves as the comparator.
+* **(b) On §152 A's reader decode:** **A-SEP**, 48k, otherwise §152 A's recipe. The comparator is §152 A s1 (0.331).
+
+**Rules (fixed now; descriptive verdicts; two seeds per arm in (a), one gate seed in (b)).**
+* **(a)** An arm reads **≥ 0.5 only if both seeds' test exact is ≥ 0.5**, and reads **< 0.5 only if both seeds are below**. Mixed seeds read "seed-dependent (no
+  verdict)".
+  - **SEP ≥ 0.5, PAUSE < 0.5:** a per-digit slot, not more positions, makes in-pass carry resolution learnable in a pretrained LM. The middle-column wall was partly a
+    missing-slot artefact.
+  - **SEP and PAUSE both ≥ 0.5:** extra positions, not their placement.
+  - **Both < 0.5, but SEP − PAUSE ≥ 0.2 in both seed pairs (Audit):** placement helps but is not sufficient at this budget. Descriptive; no follow-up is implied.
+  - **SEP < 0.5 otherwise:** at this budget, the wall is not about position count.
+* **(b)** **A-SEP ≥ 0.95:** slots close §152's 4-row resolution. A-SEP s2–s4 and its B-EARLY then follow under §152's rules as a new arm.
+* **Diagnostics:**
+  - per-column accuracy (do the middle columns, the paper's last learned, move?);
+  - a held-out ring-angle carry probe (cos / sin of 2π · carry / C) at each separator slot;
+  - **slot patching** as a readout-level C1 check: one middle column's slot residual swapped from a donor with a different carry-in, scored as the share whose emitted digit
+    follows the donor's carry;
+  - FLOPs and sequential passes with the extra positions (Meter).
+
+**Placement.**
+* SEP s1 / s2 + PAUSE s1 / s2 (about $0.15 each, 39 min on a 3090) and A-SEP s1 (about $0.4, the gate for (b)), beside §155.
+* **Implementation (Experiments):** loop148 and multrow get `--answer_sep interleave|pause --sep_token "|"`.
+* **Gates:**
+  - a smoke assertion that the tokenised sequence is exactly [… "|", " d", "|", " d", …], with "|" = 91 and no merge of " d|" in any context;
+  - an assertion that PAUSE's total sequence length equals SEP's;
+  - gradflow_check on the new format path;
+  - smoke_plain on both harnesses without the flag (unchanged);
+  - Audit's diff review.
+* Dirs `s156_{sep,pause}_4x4_s{1,2}` and `s156_asep_4x4_s1` (plus `s156_plain_4x4_s1` only if the GPU class differs). Scorer: `theory/score_s156.py`, committed with this registration.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
