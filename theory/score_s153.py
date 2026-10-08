@@ -1,8 +1,8 @@
 """THEORY §153 scoring (rules fixed in §153; written before any §153 implementation or run; Theory is the only scorer).
 THINK-PASS (program B5): §152's recipe (DeltaMem as the ONLY cross-pass channel, the read-only reader / decoder pass, the teacher's S_j targets, earliest-first
 removal without an AdamW reset) with item-agnostic passes (multrow --carrier deltamem --pass_input visible|pure|repeat):
-  visible  pass j = [EOT, a's digits, " x", b's digits, step token j]: the whole problem every pass; the model picks b_j itself
-  pure     pass 0 = [EOT, a's digits, " x", b's digits] (writes only); passes j = [EOT, step token j, 4 register tokens]: the memory holds operands + accumulator
+  visible  pass j = [EOT, a's digits, " ×", b's digits, step token j]: the whole problem every pass; the model picks b_j itself
+  pure     pass 0 = [EOT, a's digits, " ×", b's digits] (writes only); passes j = [EOT, step token j, 4 register tokens " _"]: the memory holds operands + accumulator
   repeat   stage 2 (only if PURE passes at 4x4): pure with ONE repeated think token (no step index), so the memory keeps its own pointer
 Arms per input (dirs boxes/runs_fsq/s153_{input}_{arm}_4x4_s{seed}): a (reader; gate 0.95), bearly (fork of a's gate.pt; removal early, no_opt_reset), ctrl (final only, s1).
 PASS(input, arm): >= 3/4 seeds with test_acc >= 0.99 and SERIAL.
@@ -12,6 +12,7 @@ PASS(input, arm): >= 3/4 seeds with test_acc >= 0.99 and SERIAL.
   over items with b_j != 0 (note 153-1; the step-j pass not run, later passes keep their own step tokens).
 DROP at proof: a s1 < 0.95 (per input). Placement gate: §152 a s1 >= 0.95. HEADLINE as §152 (LATENT BEATS TEXT vs TC-M; ICoT-SI beside it).
 Predictions (§153, stated before any run): (i) VISIBLE's recompute share > §152 A's; (ii) PURE's ext_4x5 (K = 5, untrained step key) fails (< 0.5).
+ext_4x5.test_acc = S_5 mod 1e8 exact (note 153-2: the reader emits 8 digits); times token " ×" (13958), register token " _" (args times_token / register_token).
 Stage 2 (REPEAT): C2 = ext_4x5 test_acc >= 0.9 at K = 5 in every passing seed; no-op stability: 4x4 test_acc at K' = 6 and 8 stays >= 0.99.
     python theory/score_s153.py
 """
