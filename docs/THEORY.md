@@ -9144,6 +9144,46 @@ accumulator.**
 * **Gates:** the 5×5 memcheck on the largest shape; §155's gates; Audit's diff review only if code changes.
 * Dirs `s159_r_5x5_s{seed}`. Scorer: `theory/score_s159.py`, committed with this registration.
 
+## 160. R-ROWS: the write-after-read memory on §152's row segmentation (Audit 07:00, the C3 leg; pre-registered 2026-10-08 06:56 EDT, before any implementation or run; runs only if §155 R s2 is exact)
+
+**Why.**
+* §152 A (input-only rows) failed at the 4-row carry resolution: 0.331, column 6.
+* 147-4 / 152-5 / 155-4 say why: an input-only memory cannot store computed results, and DeltaMem-R does (the completed columns' digits, held exactly).
+* §152's result pre-registered a re-run on DeltaMem-R conditional on §155 *passing*. R is exact but not SERIAL, so this registration conditions on **R's exactness** instead, for C3.
+* **Compute, from §152's measurement:** a row chain is 4 segment passes of 7 tokens plus the 8-digit reader decode, so 12 sequential passes and about 7.1·10⁹ FLOPs.
+  - Against TC-M that is **0.46× FLOPs and 0.21× passes**. Against ICoT-SI it is **1.44× FLOPs and 0.92× passes**.
+  - So the C3 bar it can meet is TC-M's. Beating ICoT-SI on FLOPs is not expected, and that is stated now.
+  - It is about 0.58× R's FLOPs (digit-pair: 17 passes, 1.22·10¹⁰).
+
+**Condition (fixed now).** It runs only if §155 R s2 reads test_acc ≥ 0.99.
+
+**Design: §152 A's recipe exactly** (multrow, b-first segments, the teacher S_j reader, 48k, the gate), with DeltaMem-R: `--mem_write top`, the γ migration 2k → 6k, and
+155-1's fallback rule.
+* **A-R:** the reader arm.
+* **CTRL-R:** no reader (§152 CTRL was 0.012). It shows whether the reader is still needed once results can be stored.
+* Seeds as §152; RTX 3090.
+
+**Rules (fixed now).**
+* **PASS(arm):** §152's rule (≥ 3/4 ≥ 0.99 + SERIAL).
+* **EXACT(A-R s1):** ≥ 0.99, the gate for s2–s4.
+* **The headline:** §152's LATENT BEATS TEXT against TC-M, with ICoT-SI beside it, with measured ratios.
+* **Readings:**
+  - **A-R ≥ 0.99:** write-after-read fixes §152's row-4 carry, i.e. stored computed results are used at read time.
+  - **CTRL-R ≥ 0.99 too:** the reader is no longer needed.
+  - **A-R < 0.95:** rows overload a pass even with stored results.
+* **C1 (descriptive; paired with the result):**
+  - the swap (§152's three shares);
+  - a rank-1 state edit after segment 2 that moves the held-out probe of S_2's column-k units digit by δ (k = 2..4, δ ±1), scored on whether the final answer follows the edited
+    S_2 through rows 3–4;
+  - nulls: an equal-norm random edit, and §152 A (input-only) scored the same way;
+  - note 155-4's digit / carry classifiers.
+
+**Placement.**
+* A-R s1 + CTRL-R s1, about $1.5 each (48k, a 3090), beside §158 / §159.
+* **Implementation (Experiments):** DeltaMem-R's write source wired into MultRowDelta (multrow), default off; §152's path unchanged.
+* **Gates:** step-0, gradflow through ≥ 2 hand-offs, the reader writes nothing back, smoke_plain, Audit's diff review.
+* Dirs `s160_{ar,ctrlr}_4x4_s{seed}`. Scorer: `theory/score_s160.py`, committed with this registration.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
