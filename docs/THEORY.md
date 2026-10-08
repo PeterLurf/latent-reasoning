@@ -9596,6 +9596,20 @@ shapes alone remove the count schedule".**
 * deltas5 currently has only `--mem_write top`. If the trigger fires, the fallback needs a block-9 option first.
 * §159–§161 keep their registered (gradient) trigger, because their data exist or are in flight.
 
+**Note 162-3 (2026-10-08 16:20 EDT): the single-pass boundary, fixed from DIRECT alone. No s162_long / s162_short output has been read; LONG s1 / s2 (b191 / b192) are blinded until
+this note is pushed.**
+* **DIRECT** (GPT-2 with the whole chain in one context; §120's S5 data to L 64; RTX 3090): final-state accuracy at L = 1 / 2 / 4 / 8 / 16 / 32 / 64.
+  - s1: 1.0 / 1.0 / 1.0 / 0.9995 / **0.887** / 0.007 / 0.007.
+  - s2: 1.0 / 1.0 / 1.0 / 1.0 / 0.934 / **0.010** / 0.0045.
+* **Per-seed boundaries:** L*_1 = 16, L*_2 = 32. **L* = 16**, the lower.
+  - **"Boundary uncertain"** (the seeds differ; s1 is 0.887 at 16, just under 0.90).
+  - Both collapse sharply by 32 (≤ 0.01), so the single pass fails between 16 and 32 on this data.
+* **The plan this fixes (§162 and 162-1):**
+  - **SHORT: l_max = 8.** p* = 4 on chains of 8, below the boundary and informative (p* ≥ 4).
+  - **LONG: l_max = 32** (b191 / b192, already running). p* = 16 on chains of 32, above the boundary for both seeds.
+  - long64 is not needed (L* ≠ 32).
+* SHORT s1 / s2 launch now (`s162_short_s{1,2}`, deltas5 `--arm delta --l_max 8`).
+
 ## 163. SHAPE-MIX-2D: both operand lengths mixed, for length and value-range generalisation over both operands (C2) (Audit's research pass after §161 MIX s1; pre-registered 2026-10-08 10:59 EDT, after Literature's check 73fbfb1a (`docs/LIT_MULT_LG_NOSCRATCH_2026-10-08.md`) and Audit's review, before any implementation or run; runs only if §161 MIX s2 replicates)
 
 **Why.**
