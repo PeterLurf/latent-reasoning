@@ -184,5 +184,6 @@ text token (S5: the first state token; FF / CYC / MOD / RDFA: the answer token) 
   annealing or hardening. DIGIT s1's collapse was the curriculum, not the hardening (as 150-3).
 * **§144 L = 1 check (21:50): PARTIAL.** Loss at 5k: s601 F8 2.44 / N64 2.48 (about ln 10: one of two digits); s602 F8 4.89 / N64 4.98 (chance).
 * **DeltaMem 5×5 proto s501 (3070, 12k; 8e29e417 item 2):** per column 1.0 / 1.0 / 0.915 / 0.725 / **0.494** / 0.178 / 0.109 / 0.089 / 0.07 / 0.178. Column 5 is below 0.5, so it
-  does not handle 5-product columns at this budget (fixed reading). s502 is still to come.
+  does not handle 5-product columns at this budget (fixed reading). **s502 (4060):** 1.0 / 1.0 / 0.837 / 0.36 / **0.151** / 0.10 / 0.095 / 0.076 / 0.101 / 0.187; column 5 is
+  again below 0.5, so both seeds read "no 5-product columns at 12k".
 * **§144 sum4 8k no-stop (3070):** no entry. Loss at 8k: s511 F8 9.79 / N64 10.16; s512 F8 9.9 at 4.5k (all ≥ 5.0).
