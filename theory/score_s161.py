@@ -1,5 +1,5 @@
 """THEORY §161 scoring (rules fixed in §161; written before any §161 implementation or run; Theory is the only scorer).
-SHAPE-MIX: §155 R's recipe (DeltaMem-R, top writes, gamma 2k -> 6k, 24k) trained on 4 x n, n ~ U{2..5}; arm mixidx adds a column-index token c + r (r ~ U{0..8} per
+SHAPE-MIX: §155 R's recipe (DeltaMem-R, top writes, gamma 2k -> 6k, 24k) trained on 4 x n, n ~ U{2..5}; arm mixidx adds a column-index token c + r (r ~ U{0..12} per
 training chain, 0 at test). 3 seeds per arm (s1-s3) unconditionally; LENGTH-GENERAL(arm): >= 2 / 3 seeds with ext_4x8 >= 0.9 and 4x4 test_acc >= 0.99. Offsets r ~ U{0..12}.
 Dirs boxes/runs_fsq/s161_{mix,mixidx}_4x4_s{seed}.
     python theory/score_s161.py
