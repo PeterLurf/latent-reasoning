@@ -701,6 +701,7 @@ def main():
     ap.add_argument("--slots", type=int, default=0, help="§145: K write positions / slots (0 = §140's single code)"); ap.add_argument("--carry_slots", type=int, default=0)
     ap.add_argument("--carry_from", default="first", choices=["first", "last"], help="§145 note 145-1: carry the slots read at the LAST write positions (CARRY1: w_K)")
     ap.add_argument("--no_round", action="store_true", help="§145 NOISE-64 carrier"); ap.add_argument("--dither", type=float, default=0.0)
+    ap.add_argument("--keep_ckpt_steps", default="", help="§151: comma list of steps; model-only copies there, the row-level donor on each at the end (s151.serial_by_ckpt), then deleted")
     ap.add_argument("--carrier", default="code", choices=["code", "deltamem"], help="§147: deltamem = the linear-recurrent memory, no carried code")
     ap.add_argument("--slot_space", default=None, choices=[None, "vocab", "digits"], help="§150 VOCAB-SLOT: slots are GPT-2 vocabulary tokens")
     ap.add_argument("--micro", type=int, default=1, help="gradient accumulation chunks (memory only; bs must divide)")
@@ -785,6 +786,7 @@ def main():
         loss.backward(); m.eval(); RO(m, gen_operands(rng, a.eval_bs, n), gen_operands(rng, a.eval_bs, 2 * n), dev, amp, a.eval_bs, record=not a.carrier == "deltamem")
         pk = torch.cuda.max_memory_allocated(dev) / 2 ** 30 if dev.startswith("cuda") else None
         json.dump({"peak_gib": pk, "bs": a.bs, "micro": a.micro, "chunk": a.bs // a.micro, "eval_bs": a.eval_bs, "task": a.task, "slots": a.slots, "slot_space": a.slot_space, "longest_eval_chain": "4x8 (33 steps)"}, open(os.path.join(a.out, "mem_check.json"), "w", newline="\n"), indent=1); print("MEM", pk); return
+    keep_steps = {int(x) for x in a.keep_ckpt_steps.split(",") if x.strip()}
     for step in range(step0, a.steps + 1):
         for gr in opt.param_groups:
             gr["lr"] = lr_at(a.lr, gr, step, a.steps)
@@ -838,6 +840,8 @@ def main():
             if os.path.exists(cp):
                 os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))
             os.replace(cp + ".tmp", cp); log.write(json.dumps({"step": step, "ckpt": "ckpt_last.pt"}) + "\n"); log.flush()
+        if step in keep_steps:                                              # §151: model-only copy for the end-of-run serial_by_ckpt
+            torch.save(m.state_dict(), os.path.join(a.out, "ckpt_s%d_model.pt" % step)); log.write(json.dumps({"step": step, "ckpt_keep": "ckpt_s%d_model.pt" % step}) + "\n"); log.flush()
         if a.stop_after and step >= a.stop_after:
             log.close(); print("STOP_AFTER", step, flush=True); return
     train_sec = round(time.time() - t0); torch.save(m.state_dict(), os.path.join(a.out, "model.pt")); m.eval(); m.p_hard = 1.0; t1 = time.time()
@@ -878,7 +882,21 @@ def main():
         res["donor"] = donor(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(14002), n=a.donor_n)
         ct = contraction(m, teA, teB, dev, amp, T0=a.contract_T0, n=a.contract_n); res.update({"rho": ct["rho"], "rho_nonzero": ct["rho_nonzero"], "basin": ct["basin"], "contraction": ct["detail"]})
         res["s140_probe"] = s140_probe(m, teA, teB, dev, amp, a.eval_bs); res["n_codes"] = int(len(np.unique(codes.reshape(-1, codes.shape[-1]), axis=0))); res["eval_sec"] = round(time.time() - t1)
+    kept_ = []
+    if keep_steps and a.carrier == "deltamem":                              # §151 (note 151-1): the row-level donor (pairs 4 / 8 / 12) at 24k / 36k + final
+        sb_ = {}
+        for st_ in sorted(keep_steps):
+            cp_ = os.path.join(a.out, "ckpt_s%d_model.pt" % st_)
+            if os.path.exists(cp_):
+                m.load_state_dict(torch.load(cp_, map_location=dev)); m.eval(); kept_.append(cp_)
+                sb_[str(st_)] = donor_delta(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(14002), n=min(a.donor_n, 1000))
+            else:
+                sb_[str(st_)] = None
+        sb_["final"] = res["donor"]
+        res["s151"] = {"serial_by_ckpt": sb_, "keep_ckpt_steps": sorted(keep_steps), "donor_def": "donor_delta, rng 14002, n min(donor_n, 1000), as the final donor"}
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
+    for cp_ in kept_:                                                       # retention: the copies served serial_by_ckpt only
+        os.remove(cp_)
     for ck_ in ("ckpt_last.pt", "ckpt_prev.pt"):
         if os.path.exists(os.path.join(a.out, ck_)):
             os.remove(os.path.join(a.out, ck_))

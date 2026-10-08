@@ -1,0 +1,3 @@
+# THEORY §151 DELTA-LONG (note 151-1; Audit-approved, 4 seeds in parallel) slot 3 via scratch.restart151 -> boxes.multpair --carrier deltamem (§147's command exactly) --steps 48000 --keep_ckpt_steps 24000,36000 (s151.serial_by_ckpt; copies deleted after the eval), ckpt 2000; RTX 3090 (~$1.5); model.pt kept (model_keep_patterns s151_)
+# P=1
+boxes/runs_fsq/s151_slots/delta_4x4_k3 scratch.restart151 --task 4x4 --slot 3
