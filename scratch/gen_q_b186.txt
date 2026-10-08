@@ -1,0 +1,3 @@
+# THEORY §161 SHAPE-MIX (56aa9af0) arm mixidx slot 1: §155 R's recipe (restart155 --arm mixidx: --mem_write top + --shape_mix 2,3,4,5 + --col_index_offset 12, 24k, 147-1 misfire slots) -> s161_mixidx_4x4_s{seed}; on-host gate155 + mem_check (largest shape 4x5); ship EXTRA_120=scratch/gate155.py; RTX 3090 (~$1)
+# P=1
+boxes/runs_fsq/s161_slots/mixidx_4x4_k1 scratch.restart155 --arm mixidx --task 4x4 --slot 1 --prefix s161

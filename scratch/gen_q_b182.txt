@@ -1,0 +1,3 @@
+# THEORY §159 R-5x5 (registration + notes 159-1 / 160-1; condition met: §155 R s2 0.998) slot 1 via scratch.restart155 --arm r --task 5x5 --prefix s159 --steps 48000 (§155 R's recipe exactly on 5x5; 147-1 misfire slots 1 / 101 / 201 / 301); on-host gate155 + mem_check; ship EXTRA_120=scratch/gate155.py; RTX 3090 (~$1.5); one host until slot 1 reads
+# P=1
+boxes/runs_fsq/s159_slots/r_5x5_k1 scratch.restart155 --arm r --task 5x5 --slot 1 --prefix s159 --steps 48000
