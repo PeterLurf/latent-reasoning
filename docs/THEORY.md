@@ -9509,7 +9509,7 @@ accumulator.**
 * deltas5 currently has only `--mem_write top`. If the trigger fires, the fallback needs a block-9 option first.
 * §159–§161 keep their registered (gradient) trigger, because their data exist or are in flight.
 
-## 163. SHAPE-MIX-2D: both operand lengths mixed, for length and value-range generalisation over both operands (C2) (Audit's research pass 11:05; pre-registered 2026-10-08 10:59 EDT, after Literature's check 73fbfb1a (`docs/LIT_MULT_LG_NOSCRATCH_2026-10-08.md`) and Audit's review, before any implementation or run; runs only if §161 MIX s2 replicates)
+## 163. SHAPE-MIX-2D: both operand lengths mixed, for length and value-range generalisation over both operands (C2) (Audit's research pass after §161 MIX s1; pre-registered 2026-10-08 10:59 EDT, after Literature's check 73fbfb1a (`docs/LIT_MULT_LG_NOSCRATCH_2026-10-08.md`) and Audit's review, before any implementation or run; runs only if §161 MIX s2 replicates)
 
 **Why.**
 * **§161 MIX s1:** varying the multiplier length (4 × n, n 2..5) made R's memory carry the running column sum.
