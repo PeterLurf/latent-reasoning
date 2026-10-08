@@ -24,7 +24,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ARMS = {"r": ["--mem_write", "top"], "shiftr": ["--mem_write", "top", "--add_reset", "column"],                   # §155 (e9ee8a6c)
         "r9": ["--mem_write", "block9"], "shiftr9": ["--mem_write", "block9", "--add_reset", "column"],
         "rg0": ["--mem_write", "top", "--write_mix_start", "1000000000", "--write_mix_end", "1000000000"],   # note 155-1 (3): gamma held at 0
-        "mix": ["--mem_write", "top", "--shape_mix", "2,3,4,5"], "mixidx": ["--mem_write", "top", "--shape_mix", "2,3,4,5", "--col_index_offset", "12"]}   # §161 (56aa9af0)
+        "mix": ["--mem_write", "top", "--shape_mix", "2,3,4,5"], "mixidx": ["--mem_write", "top", "--shape_mix", "2,3,4,5", "--col_index_offset", "12"],   # §161 (56aa9af0)
+        "mix9": ["--mem_write", "block9", "--shape_mix", "2,3,4,5"]}        # §161 MIX block-9 fallback (155-1 / 160-1 floor fired on MIX s1)
 
 
 def qlog_line(msg):
