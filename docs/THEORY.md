@@ -8262,6 +8262,21 @@ SERIAL and contractive. Slots 2–4 run (the credit rule).**
   memory at L 4, smoke_plain, and Audit's diff review.
 * Dirs `s152_{a,bearly,ctrl}_4x4_s{seed}`. Scorer: `theory/score_s152.py`, committed with this registration.
 
+**Note 152-1 (2026-10-07 23:03 EDT, before any §152 run; Audit's formal review, approved). The layout confound, one change to the segment order, and a partial-product probe.**
+* **(1) The confound, stated now.** §152 changes two things against §147's success: the reader, and the layout (digit-pair → multiplier-major).
+  - Multiplier-major asks every segment for the 4 × 1 product a × b_j, the in-pass load §137 / §142 / §148 failed on.
+  - **Readings, fixed now:**
+    - **A and CTRL both DROP:** the multiplier-major layout's in-pass a × b_j is the block, not "DeltaMem + reader fails".
+    - **CTRL DROPS, A PASSES:** the CoT reader is what makes multiplier-major learnable.
+* **(2) The segment order changes to [EOT, b_j, position j, a's digits (least-significant first)]** (§142's was [a's digits, b_j, j]).
+  - Under causal attention, each a_i position then sees b_j and j.
+  - Each position can write its own one-digit product a_i · b_j under the column key i + j − 1, in carry-save form with no in-pass multi-digit carry. That is the same
+    per-product load as digit-pair, where §147 succeeded.
+  - It narrows the confound in (1) without removing it: the model still has to learn four parallel writes per segment.
+  - It applies to all three arms.
+* **(3) An in-pass partial-product probe** (descriptive; `s152.pp_probe`): ridge / 10-way linear probes of P_j = a × b_j's digits from h at the segment's positions (held-out
+  half), per segment. A DROP can then be located at the product step rather than at accumulation.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
