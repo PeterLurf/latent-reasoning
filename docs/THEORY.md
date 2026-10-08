@@ -237,9 +237,19 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 147 | DELTA-STATE (program B1): a linear-recurrent memory (6 additive + 6 gated-delta heads) as GPT-2's only cross-segment channel, on §140's digit-pair 4×4; PASS = exact + SERIAL | **DROP at proof but IMPROVES** (test 0.743; columns 3–7 0.92–0.99 where every other design sits at about 0.1; accumulators ≥ 100 at 0.93; both head types needed; loss still falling): the first design past the middle-column wall → §151 | closed (→ §151) |
 | 148 | LOOP-RETRO (program B3): prelude / weight-tied loop (blocks 4–7, damped) / coda retrofit for direct-answer 4×4; LOOP-4 vs PLAIN; C2 at r = 8 / 16 | **no improvement** (LOOP-4 0.002 = PLAIN 0.002; loops unused, acc flat in r): B3 stops at this budget; the direct baseline fails at the same middle columns as every latent design | closed |
 | 149 | SOTA-PROBE (eval only): donor SERIAL (equation substitution), ablation and ρ on released GPT-2 Coconut / SIM-CoT / CODI, at release | **no model SERIAL**: SIM-CoT+Coconut PARTIAL (a third of swaps follow the donor), SIM-CoT+CODI BYPASSED (recomputed from the question); ρ marginal everywhere (0.37–0.50); the Lyapunov contrast not reproduced | closed |
-| 150 | VOCAB-SLOT (program B4; the user's token-like working memory): 4 Gumbel-ST slots on GPT-2's vocabulary (FULL) or digits + blank (DIGIT, an abacus) as the only cross-segment channel, on §140's digit-pair 4×4 | registered | **open** |
-| 151 | DELTA-LONG: §147's linear-recurrent memory at 48k, seeds 1–4 in parallel (after §147's IMPROVES: columns 3–7 0.92–0.99, loss still falling) | registered | **open** |
-| 152 | DELTA-READ (the user's go, 23:00): DeltaMem as the only carrier on multiplier-major 4×4 + a reader of the teacher's S_j, then earliest-first removal; headline vs TC-M / ICoT-SI at matched compute (FLOPs, passes) with SERIAL | registered | **open** |
+| 150 | VOCAB-SLOT (program B4; the user's token-like working memory): 4 Gumbel-ST slots on GPT-2's vocabulary (FULL) or digits + blank (DIGIT, an abacus) as the only cross-segment channel, on §140's digit-pair 4×4 | **both DROP** (the slots collapse to constant tokens; the soft-only protos fail) | closed |
+| 151 | DELTA-LONG: §147's linear-recurrent memory at 48k, seeds 1–4 in parallel (after §147's IMPROVES: columns 3–7 0.92–0.99, loss still falling) | **DROP at proof** (s1 0.837 / s2 0.889 at 48k; not SERIAL; ext_4x8 0) | closed |
+| 152 | DELTA-READ (the user's go, 23:00): DeltaMem as the only carrier on multiplier-major 4×4 + a reader of the teacher's S_j, then earliest-first removal; headline vs TC-M / ICoT-SI at matched compute (FLOPs, passes) with SERIAL | **DROP at proof** (A s1 0.331; CTRL 0.012; 0.46× TC-M FLOPs) | closed |
+| 153 | THINK-PASS: item-agnostic passes, gated on §152 A s1 ≥ 0.95 | gate closed (§152 A 0.331); PURE / REPEAT moved to §155 | closed |
+| 154 | SHIFT-MEM (C2): a per-column reset (SHIFT) or relative keys (ROTARY) on DeltaMem | **stopped at proof** (SHIFT s1 0.653; ext_4x8 0.0; the 4×4 count schedule) | closed |
+| 155 | DELTA-R: a write-after-read DeltaMem (top writes); R / SHIFT-R, RECURRENT USE as C1 | **both arms FAIL** (exact in every seed, 0.997–1.000; never SERIAL; no recurrent use; ext ≤ 0.006; 0.79× TC-M FLOPs) | closed |
+| 156 | SEP-SLOT: per-digit separators, direct answer (a) and A-SEP (b) | **no effect** (0.002–0.004; A-SEP 0.060) | closed |
+| 157 | READ-PANEL: PERIODIC / MULTIREAD / CCQ reads on §152 A | MULTIREAD 0.009, CCQ 0.064 (gates closed); PERIODIC pending | **open** |
+| 158 | FREE-PAIRS: hybrid pair sequences on R (data-level interchange) | slot 1 0.982, SERIAL, no C1 credit (158-2's prediction) | **open** |
+| 159 | R-5×5: R at 5×5 (the SOTA leg, C3) | registered | **open** |
+| 160 | R-ROWS: R on §152's rows, A-R / CTRL-R (C3) | registered | **open** |
+| 161 | SHAPE-MIX (C2): 4 × n training (n 2..5), ± a column index with random offsets | registered | **open** |
+| 162 | DELTA-S5: DeltaMem-R on S5 against a measured single-pass boundary (158-2's contrast cell) | registered | **open** |
 
 ## Live sections
 
@@ -8988,6 +8998,20 @@ ext_4x8 0.000 < 0.5. ROTARY was deferred to §155's architecture (154-2), so §1
   - Per 155-4's probe, what the top-written memory adds is the computed emitted digits (held exactly). The in-progress accumulator is still not held.
 * **The spike rule's flaw (Audit):** it fired on a decaying median with no instability. A future rule needs an absolute floor as well (for example max > 100× the median
   **and** > 1.0). R9 still runs as registered.
+
+**§155 DELTA-R result (2026-10-08 09:12 EDT; scored by Theory with score_s155; RTX 3090, 24k): both registered arms FAIL by the PASS rule. They are exact in every seed,
+never SERIAL, not length-general, and show no recurrent use.**
+* **R:** 4 / 4 exact (1.000 / 0.998 / 0.997 / 0.999), 0 / 4 SERIAL (row donor ≤ 0.33). ext_4x8 ≤ 0.006. Carry-edit propagation equals the null.
+* **SHIFT-R is decided after slot 2:** two slots fail SERIAL and RECURRENT USE.
+  - s1 / s2: 1.000 / 1.000, row donor ≤ 0.08, ext_4x8 0.006 / 0.004.
+  - Propagation 0.0 against a null of 0.0 (155-3), coupling 0.0.
+  - s3 / s4 (b178 / b179) are descriptive.
+* **Descriptive arms:** R9 s1 0.999 (block-9 writes change nothing); R-γ0 s1 0.587 (the write source helps).
+* **What §155 shows, with 155-4 and 158-2:**
+  - Write-after-read makes DeltaMem exact on 4×4 in every seed (C6), at 0.79× TC-M FLOPs (C3 against text CoT, not against ICoT-SI).
+  - Its state is an exact digit buffer (operands and emitted digits), not a carried accumulator. SHIFT-R s2 repeats R's probe picture: completed columns' units
+    0.95–1.0, the in-progress column 0.38, carries 0.24–0.45 beyond column 1.
+  - So it is not SERIAL, not linearly editable and not length-general. Per 158-2 this is the expected optimum for a TC⁰ task with an input-holding memory.
 
 **Note 155-4 (2026-10-08 04:45 EDT, before §155 slots 2–4 and SHIFT-R land; Audit). What an exact but non-SERIAL state holds: three descriptive discriminators, readings fixed now.**
 The run is a post-hoc on every accepted §155 model (and §154 SHIFT / §151 for comparison), descriptive.
