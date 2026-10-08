@@ -48,8 +48,9 @@ fetch() {   # fetch <name> <remote tar arguments>: sha-verified, 3 tries, extrac
   [ $ok = 1 ] || return 1
   tar --no-same-owner -xzf /d/drain_tmp/f_${H}_$n.tgz -C . --transform "s|^logs/|logs/vast_${H}_${P}/|" && rm -f /d/drain_tmp/f_${H}_$n.tgz   # extracted and sha-verified: drop the local copy (C: filled up 2026-10-03)
 }
-for j in $runs $keep; do n=$(echo $j | tr '/' '_')
-  fetch $n --exclude=$j/model.pt $j logs/gen_$(basename $j).log || { echo "FETCH_INCOMPLETE $ID ($j small files)"; exit 1; }
+for j in $runs $keep; do n=$(echo $j | tr '/' '_'); ck=""   # Audit 2026-10-08: a FINISHED run's ckpt_* (~3 GB) is not fetched (retention deletes it on arrival)
+  case " $runs " in *" $j "*) ck="--exclude=$j/ckpt_*.pt";; esac
+  fetch $n --exclude=$j/model.pt $ck $j logs/gen_$(basename $j).log || { echo "FETCH_INCOMPLETE $ID ($j small files)"; exit 1; }
 done
 fetch logs logs || { echo "FETCH_INCOMPLETE $ID (logs)"; exit 1; }
 for j in $runs $keep; do case "$skipset" in *" $j "*) continue;; esac
