@@ -8277,6 +8277,68 @@ SERIAL and contractive. Slots 2–4 run (the credit rule).**
 * **(3) An in-pass partial-product probe** (descriptive; `s152.pp_probe`): ridge / 10-way linear probes of P_j = a × b_j's digits from h at the segment's positions (held-out
   half), per segment. A DROP can then be located at the product step rather than at accumulation.
 
+## 153. THINK-PASS: item-agnostic latent passes over the DeltaMem (program B5; §152's recipe without the designer's per-pass input; pre-registered 2026-10-07 23:40 EDT, after Literature's check b7b2d52c and Audit's draft review, before any implementation or run)
+
+**Why.**
+* Every harness so far hands each pass a designer-chosen input (a digit pair, a row b_j). A general latent reasoner reads the problem and decides what each pass computes.
+* **B5 is due** ("after B1 / B4 read"): B1 (DeltaMem) IMPROVES at §147; B4 (token slots) fails (§150 DIGIT, the soft-only protos).
+* §153 keeps everything from §152 and changes only **what each pass sees**: DeltaMem as the only cross-pass channel, the read-only reader, teacher S_j targets,
+  earliest-first removal, SERIAL, the compute headline.
+* **Prior** (b7b2d52c, `docs/LIT_S153_THINK_PASS_2026-10-07.md`): new as scoped.
+  - The pieces are known. ARMT / Infini-attention carry memory across *input* segments, Huginn / looped models carry the residual with input re-injected, and SIM-CoT
+    decodes steps without removal. Retrofit 2608.11233 runs step-per-loop supervision then outcome-only annealing on a residual state (our A → B arc).
+  - **No latent passes with a matrix memory as the only cross-pass channel, per-pass step decoding, then removal.**
+  - VISIBLE's "selects its own step input" is covered by input-injection looped models. It is framed as **item-agnostic passes**, not a new capability.
+
+**Design: 4×4, the teacher's multiplier-major S_j; K = L passes (L ~ U(1, L_max) as §152, b's first L digits in the problem), then §152's read-only reader / decoder pass.**
+* **VISIBLE:** pass j = [EOT, a's digits, " ×", b's digits, step token j]. The whole problem every pass; the model picks b_j itself.
+* **PURE:** pass 0 = [EOT, a's digits, " ×", b's digits] (writes only); passes j = [EOT, step token j, 4 register positions].
+  - The problem is never visible again. The memory must hold the operands (multi-query associative recall; 8 keys, within the range of Zoology 2312.04927 / Based
+    2402.18668) and the accumulator.
+  - C1 holds by design, and L1 cannot apply.
+* **Per input:** A (reader on S_j; gate at 0.95), then B-EARLY (removal, no AdamW reset) on gated seeds; CTRL (final only) s1. Everything else is §152's (48k, the
+  curriculum, the teacher cache, bs 64).
+
+**Rules (fixed now).**
+* **PASS(input, arm):** ≥ 3/4 seeds with test_acc ≥ 0.99 and SERIAL. DROP at proof: A s1 < 0.95.
+  - **VISIBLE's SERIAL is §152's swap:** the whole memory from a donor after pass 2, donors with a_donor ≠ a_rec and a different b-prefix. Carry-save ≥ 0.90 and
+    recompute − chance < 0.10.
+  - **PURE's SERIAL is a pass-skip test** (C1's step-specific blocking). In PURE the memory also holds the operands, so a whole-memory swap moves the problem with it:
+    every memory-carried solution gives the donor's own product, and the swap cannot discriminate.
+    - Pass 2 and pass 3 are each skipped, with the memory passed through unchanged.
+    - **Row-skip-consistent** = S_4 minus that row's a × b_j × 10^(j−1), the serial result. **Full product** = recomputation from carried operands.
+    - SERIAL = row-skip-consistent ≥ 0.90 and full product − chance < 0.10 at both skips (chance = rows with b_j = 0). The swap is reported descriptively.
+* **Headline:** LATENT BEATS TEXT against TC-M (fewer FLOPs and passes, accuracy ≥ TC-M − 0.01, SERIAL), with ICoT-SI beside it.
+* **Predictions, stated now (Literature):**
+  - **(i)** VISIBLE's recompute share is higher than §152 A's (L1: the recipient's operands stay visible).
+  - **(ii)** PURE's ext_4x5 (K = 5) fails (< 0.5) at the untrained step key j = 5 (the clock-out-of-range concern, Prop. 9 / §35). A failure there reads as the step-token
+    design, not the memory.
+* **Readings:**
+  - **VISIBLE PASS:** item-agnostic passes carry the computation.
+  - **PURE PASS:** the memory alone holds problem and state across passes (the strongest C1 form).
+  - **PURE fails, VISIBLE passes:** operand recall is the block. The pass-1 and per-pass recall probes say where.
+  - **Both fail and §152 passes:** the designer's per-pass input was doing the work.
+* **Descriptive:**
+  - VISIBLE: attention mass on b_j's position per pass (does pass j select digit j?); the pass-skip shares.
+  - PURE (Audit): **operand recall at pass 1**, held-out linear probes of a's and b's 8 digits from (a) the memory state after pass 0 and (b) the branch's reads at pass 1. A
+    recall failure is then separated from a later overwrite.
+  - PURE (Literature): **b_j recall at every pass** (delta-head overwrite) and **per-head roles** (operand / accumulator, by ablation; additive crosstalk).
+  - Memory norm per pass (Literature (d)).
+  - C2 / C6: 4×5 with K = 5, and no-op passes K′ = 6 / 8 on 4×4, with the memory change per extra pass logged (an attractor test).
+  - C7: the reader's per-pass text, paired with the donor split (decodable is not used; Literature).
+
+**Stage 2, pre-registered now (conditional; Audit): REPEAT, if PURE passes at 4×4 (A or B-EARLY).**
+* PURE with **one repeated think token** in place of the step token, so the memory keeps its own pointer. Same arms, rules and SERIAL (pass-skip).
+* **C2 (fixed now):** ext_4x5 test_acc ≥ 0.9 at K = 5 in every passing seed. **No-op stability:** 4×4 test_acc ≥ 0.99 at K′ = 6 and 8.
+* Literature's alternative, if REPEAT fails to enter: relative step tokens ("the next row") in place of absolute indices.
+
+**Placement.**
+* **Gate:** §152 A s1 ≥ 0.95 (the shared recipe works). Then A s1 + CTRL s1 per input, about $1.5 each, **in parallel with §152's B-EARLY and A s2–s4** (Audit: the arms
+  answer different questions; credit about $144). Further seeds by the credit rule.
+* **Implementation (Experiments):** a pass-content flag on §152's code (`--pass_input visible|pure|repeat`, `--think_token` for REPEAT), the pass-skip evaluation
+  (`skip.pass2` / `skip.pass3`: row_skip_consistent, full_product, chance_overlap), `ext_4x5` and the probes. Gates as §152.
+* Dirs `s153_{visible,pure,repeat}_{a,bearly,ctrl}_4x4_s{seed}`. Scorer: `theory/score_s153.py`, committed with this registration.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
