@@ -1,0 +1,152 @@
+{
+ "module": "boxes._multpair163_tmp",
+ "g1a": {
+  "2x2": {
+   "n_emit": 4,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "2x3": {
+   "n_emit": 5,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "2x4": {
+   "n_emit": 6,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "2x5": {
+   "n_emit": 7,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "3x2": {
+   "n_emit": 5,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "3x3": {
+   "n_emit": 6,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "3x4": {
+   "n_emit": 7,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "3x5": {
+   "n_emit": 8,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "4x2": {
+   "n_emit": 6,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "4x3": {
+   "n_emit": 7,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "4x4": {
+   "n_emit": 8,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "4x5": {
+   "n_emit": 9,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "5x2": {
+   "n_emit": 7,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "5x3": {
+   "n_emit": 8,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "5x4": {
+   "n_emit": 9,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "5x5": {
+   "n_emit": 10,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "8x4": {
+   "n_emit": 12,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "4x8": {
+   "n_emit": 12,
+   "emit_ok": true,
+   "digits_exact": true
+  },
+  "10x10": {
+   "n_emit": 20,
+   "emit_ok": true,
+   "digits_exact": true
+  }
+ },
+ "g1a_pass": true,
+ "g1b": {
+  "batches": 40,
+  "shapes_seen": [
+   "2x2",
+   "2x3",
+   "2x4",
+   "2x5",
+   "3x3",
+   "3x4",
+   "3x5",
+   "4x2",
+   "4x3",
+   "4x4",
+   "4x5",
+   "5x2",
+   "5x3",
+   "5x4",
+   "5x5"
+  ],
+  "bad": [],
+  "excluded_hits": 0,
+  "full_chains": 9
+ },
+ "g1b_pass": true,
+ "g2": {
+  "excluded_hits_after_redraw": 0,
+  "n_excl": 4000,
+  "excl_has_4x4_and_5x5": true
+ },
+ "g2_pass": true,
+ "g3": {
+  "batches": [
+   12,
+   12
+  ],
+  "ref": "boxes.multpair"
+ },
+ "g3_pass": true,
+ "g4": {
+  "peak_gib": null,
+  "bs": 4,
+  "micro": 1,
+  "chunk": 4,
+  "eval_bs": 2,
+  "task": "4x4",
+  "slots": 0,
+  "slot_space": null,
+  "longest_eval_chain": "4x8 (33 steps)"
+ },
+ "g4_pass": true,
+ "all_pass": true
+}

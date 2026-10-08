@@ -542,7 +542,7 @@ def what_state(m, teA, teB, trA, trB, dev, amp, bs, n_fit=8000, skip_pairs=(4, 7
         for nm, D_tr, D_te, idx in (("a", trA, teA, seenA), ("b", trB, teB, seenB)):
             for i in idx:
                 pr_, lam_ = _dual_fit_pred(Xf, np.eye(10)[D_tr[:, i]], Xs, dev, cls=True); r_[nm][str(i + 1)] = {"acc": float((pr_.argmax(1) == D_te[:, i]).mean()), "lambda": lam_}
-        csf = np.zeros((len(trA), 7)); cst = np.zeros((len(teA), 7))
+        csf = np.zeros((len(trA), trA.shape[1] + trB.shape[1] - 1)); cst = np.zeros((len(teA), teA.shape[1] + teB.shape[1] - 1))   # §163: any shape
         for t_ in range(P):
             i, j = (int(v) for v in pairs[t_]); csf[:, i + j] += trA[:, i] * trB[:, j]; cst[:, i + j] += teA[:, i] * teB[:, j]
         for c in sorted({int(pairs[t_][0]) + int(pairs[t_][1]) for t_ in range(P)}):
@@ -557,6 +557,46 @@ def what_state(m, teA, teB, trA, trB, dev, amp, bs, n_fit=8000, skip_pairs=(4, 7
             r_["colsum_cls"][str(c + 1)] = rc
         r_["n_fit"] = int(len(trA)); r_["n_score"] = int(len(teA)); op["after_pair%d" % P] = r_
     out["operand_probe"] = op; out["n_fit_train"] = int(len(trA)); out["def"] = what_state.__doc__
+    return out
+
+
+def gen2d(rng, k, ma, mb, excl):
+    """§163: k uniform (ma, mb) operand pairs (gen_operands: nonzero leading digits); rows equal to an excluded (a, b) pair (the 4x4 / 5x5 bench
+    test items, both orders) are redrawn."""
+    A, B = gen_operands(rng, k, ma), gen_operands(rng, k, mb)
+    if excl and (ma, mb) in ((4, 4), (5, 5)):
+        for _ in range(100):
+            bad = np.array([(a_.tobytes(), b_.tobytes()) in excl for a_, b_ in zip(A, B)])
+            if not bad.any():
+                break
+            A[bad], B[bad] = gen_operands(rng, int(bad.sum()), ma), gen_operands(rng, int(bad.sum()), mb)
+    return A, B
+
+
+def colsums(A, Bd):
+    """products-only column sums (N, ma + mb) (the last column, the flush, is 0) and the number of products per column (ma + mb,)."""
+    N, ma = A.shape; mb = Bd.shape[1]; cs = np.zeros((N, ma + mb), np.int64); cnt = np.zeros(ma + mb, np.int64)
+    for i in range(ma):
+        for j in range(mb):
+            cs[:, i + j] += A[:, i].astype(np.int64) * Bd[:, j]; cnt[i + j] += 1
+    return cs, cnt
+
+
+def value_range(preds, p99):
+    """§163 descriptive: per shape {p99_trained, by_product_count {c: {acc, n}} (digit accuracy pooled over the columns with c products),
+    by_colsum {within, beyond} (digit accuracy of product columns with column sum <= / > p99_trained), by_item_max {within, beyond} (item exact,
+    by the item's largest column sum)}."""
+    out = {}
+    for nm, (A, Bd, pred) in preds.items():
+        P, _, _ = columns(A, Bd); C = pred == P; cs, cnt = colsums(A, Bd); L = P.shape[1]; pc = {}
+        for c in sorted(set(int(x) for x in cnt[:L - 1])):
+            ks = [k for k in range(L - 1) if cnt[k] == c]; pc[str(c)] = {"acc": float(C[:, ks].mean()), "n": int(C[:, ks].size)}
+        w = cs[:, :L - 1] <= p99; im = cs[:, :L - 1].max(1) <= p99; ex = C.all(1)
+        out[nm] = {"p99_trained": float(p99), "by_product_count": pc,
+                   "by_colsum": {"within": {"acc": float(C[:, :L - 1][w].mean()) if w.any() else None, "n": int(w.sum())},
+                                 "beyond": {"acc": float(C[:, :L - 1][~w].mean()) if (~w).any() else None, "n": int((~w).sum())}},
+                   "by_item_max": {"within": {"acc": float(ex[im].mean()) if im.any() else None, "n": int(im.sum())},
+                                   "beyond": {"acc": float(ex[~im].mean()) if (~im).any() else None, "n": int((~im).sum())}}}
     return out
 
 
@@ -1282,6 +1322,8 @@ def main():
     ap.add_argument("--carry_from", default="first", choices=["first", "last"], help="§145 note 145-1: carry the slots read at the LAST write positions (CARRY1: w_K)")
     ap.add_argument("--no_round", action="store_true", help="§145 NOISE-64 carrier"); ap.add_argument("--dither", type=float, default=0.0)
     ap.add_argument("--keep_ckpt_steps", default="", help="§151: comma list of steps; model-only copies there, the row-level donor on each at the end (s151.serial_by_ckpt), then deleted")
+    ap.add_argument("--shape_mix_2d", default="", help="§163: m and n each drawn per batch from this list (e.g. 2,3,4,5); off by default")
+    ap.add_argument("--bench5", default=os.path.join("bench", "data", "mult_5x5_test.txt"), help="§163: the 5x5 bench test (test_5x5 + the exclusion)")
     ap.add_argument("--shape_mix", default="", help="§161: training chains 4 x n, n drawn per batch from this list (e.g. 2,3,4,5); off by default")
     ap.add_argument("--col_index_offset", type=int, default=None, help="§161 MIX+IDX: column-index token c + r per segment, r ~ U{0..R} per training chain")
     ap.add_argument("--probe_n_fit", type=int, default=8000, help="note 155-4 / §158 probes: train fit items (smokes only change it)")
@@ -1320,12 +1362,19 @@ def main():
     SHM = [int(x) for x in a.shape_mix.split(",") if x.strip()]             # §161
     assert not (SHM or a.col_index_offset is not None) or (a.task == "4x4" and a.carrier == "deltamem" and not a.free_pairs), "§161: 4x4 DeltaMem chains only"
     a.col_index_tokens = [" " + chr(65 + i) for i in range(21)] if a.col_index_offset is not None else None
+    SH2 = [int(x) for x in a.shape_mix_2d.split(",") if x.strip()]          # §163
+    assert not SH2 or (a.task == "4x4" and a.carrier == "deltamem" and not a.free_pairs and not SHM and a.col_index_offset is None), "§163: 4x4 DeltaMem chains only, alone"
     if a.d_q != F.D_Q or a.levels != F.LEV:
         F.D_Q, F.LEV = a.d_q, a.levels; F.HALF = (F.LEV - 1) / 2; F.SHIFT = math.atanh(F.OFF / F.HALF)
     memcap and memcap.apply(dev)
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     os.makedirs(a.out, exist_ok=True); fam = PairFam(); dname = lambda: torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"  # noqa: E731
-    teA, teB = load_bench(os.path.join(ROOT, "bench", "data", "mult_%s_test.txt" % a.task)); teA, teB = teA[:a.test_n], teB[:a.test_n]
+    teA, teB = load_bench(os.path.join(ROOT, "bench", "data", "mult_%s_test.txt" % a.task)); EXCL = set()
+    if SH2:                                                                 # §163: the full 4x4 / 5x5 bench test items (both orders) are never drawn in training
+        te5A, te5B = load_bench(a.bench5 if os.path.isabs(a.bench5) else os.path.join(ROOT, a.bench5))
+        for A_, B_ in ((teA, teB), (te5A, te5B)):
+            EXCL |= {(x_.tobytes(), y_.tobytes()) for x_, y_ in zip(A_, B_)} | {(y_.tobytes(), x_.tobytes()) for x_, y_ in zip(A_, B_)}
+    teA, teB = teA[:a.test_n], teB[:a.test_n]
     assert a.carrier == "code" or (not a.slots and a.mem_add_heads == DM.H_ADD and a.mem_delta_heads == DM.H_DEL), "§147: --carrier deltamem (6 + 6 heads), no slots"
     def mk():
         if a.carrier == "deltamem":
@@ -1392,12 +1441,16 @@ def main():
             torch.cuda.set_rng_state(ck["cuda_rng"].cpu(), device=dev)
         step0 = ck["step"] + 1; t0 = time.time() - ck["elapsed"]; log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
         alpha_hist = ck.get("alpha_hist", [])
-    def batch(c, bs_, nb_force=None):
+    def batch(c, bs_, nb_force=None, mb_force=None):
         """A chain over the pairs of the first c columns (+ the flush when c = 2n); labels / trace mask at the emission steps.
         §158 --free_pairs P > 0: each row is, with probability P, a free chain (every pair's digits drawn independently; label = the digits of
         sum_t a^(t) b^(t) 10^(i_t + j_t)); P = 0 draws nothing extra (bit-identical batches)."""
         ii = rng.integers(0, len(trA), bs_); A, Bd = trA[ii], trB[ii]; batch.R = None
-        if SHM:                                                             # §161: one n per batch (a batch shares its step schedule); b ~ fresh n-digit operands
+        if SH2:                                                             # §163: (m, n) per batch, uniform operands, bench test items excluded
+            ma_ = int(mb_force or SH2[int(rng.integers(0, len(SH2)))]); nb_ = int(nb_force or SH2[int(rng.integers(0, len(SH2)))]); A, Bd = gen2d(rng, bs_, ma_, nb_, EXCL)
+            _, dig, _, _, _, _ = accumulators(A, Bd); pairs_, col_, emit_ = schedule(ma_, nb_); ce_ = ma_ + nb_ if c >= 2 * n else min(c, ma_ + nb_)   # c = 2n: the full chain
+            T = int(np.searchsorted(col_, ce_ - 1, side="right")) if ce_ < ma_ + nb_ else len(pairs_)
+        elif SHM:                                                           # §161: one n per batch (a batch shares its step schedule); b ~ fresh n-digit operands
             nb_ = int(nb_force or SHM[int(rng.integers(0, len(SHM)))])
             if nb_ != n:
                 Bd = gen_operands(rng, bs_, nb_)
@@ -1416,10 +1469,10 @@ def main():
         tm = torch.tensor(np.tile(emit_[:T], (bs_, 1)), device=dev); lab = np.where(dig[:, :T] >= 0, dig[:, :T], 0); batch.AB = (A, Bd)
         return X, lab, tm, T
     if a.mem_check:                                                         # --micro: one chunk of bs / micro rows (what training holds at once)
-        m.p_hard = 1.0; X, lab, tm, T = batch(2 * n, a.bs // a.micro, nb_force=max(SHM) if SHM else None)
+        m.p_hard = 1.0; X, lab, tm, T = batch(2 * n, a.bs // a.micro, nb_force=max(SHM) if SHM else (max(SH2) if SH2 else None), mb_force=max(SH2) if SH2 else None)
         with amp_ctx(amp):
             loss, _, _, _ = m.chain(m.start(a.bs // a.micro, dev), X, lab, tm)
-        loss.backward(); m.eval(); RO(m, gen_operands(rng, a.eval_bs, n), gen_operands(rng, a.eval_bs, 2 * n), dev, amp, a.eval_bs, record=not a.carrier == "deltamem")
+        loss.backward(); m.eval(); RO(m, gen_operands(rng, a.eval_bs, 2 * n if SH2 else n), gen_operands(rng, a.eval_bs, 2 * n), dev, amp, a.eval_bs, record=not a.carrier == "deltamem")   # §163: 8x8 (65 steps)
         pk = torch.cuda.max_memory_allocated(dev) / 2 ** 30 if dev.startswith("cuda") else None
         json.dump({"peak_gib": pk, "bs": a.bs, "micro": a.micro, "chunk": a.bs // a.micro, "eval_bs": a.eval_bs, "task": a.task, "slots": a.slots, "slot_space": a.slot_space, "longest_eval_chain": "4x8 (33 steps)"}, open(os.path.join(a.out, "mem_check.json"), "w", newline="\n"), indent=1); print("MEM", pk); return
     keep_steps = {int(x) for x in a.keep_ckpt_steps.split(",") if x.strip()}
@@ -1516,6 +1569,17 @@ def main():
     if a.task == "4x4" and a.ext_n:
         xA, xB = gen_operands(np.random.default_rng(14004), a.ext_n, 4), gen_operands(np.random.default_rng(14005), a.ext_n, 8); xA, xB, rem = dedup(xA, xB, teA, teB)
         Px, _, _ = columns(xA, xB); res["ext_4x8"] = {**acc_report(RO(m, xA, xB, dev, amp, a.eval_bs), Px), "dedup_removed": rem, "seeds": [14004, 14005]}
+    if SH2:                                                                 # §163: the 5x5 bench + ext 6x6 / 7x7 / 8x8 / 10x10 / 8x4 (1,000 each)
+        P5, _, _ = columns(te5A, te5B); res["test_5x5"] = acc_report(RO(m, te5A, te5B, dev, amp, a.eval_bs), P5); vr_ = {}
+        for (ma_, mb_), s1_, s2_ in (((6, 6), 14030, 14031), ((7, 7), 14032, 14033), ((8, 8), 14034, 14035), ((10, 10), 14036, 14037), ((8, 4), 14038, 14039)):
+            xA, xB = gen_operands(np.random.default_rng(s1_), a.ext_n, ma_), gen_operands(np.random.default_rng(s2_), a.ext_n, mb_); Px, _, _ = columns(xA, xB); px_ = RO(m, xA, xB, dev, amp, a.eval_bs)
+            res["ext_%dx%d" % (ma_, mb_)] = {**acc_report(px_, Px), "seeds": [s1_, s2_]}
+            if ma_ == mb_ and ma_ <= 8:
+                vr_["%dx%d" % (ma_, mb_)] = (xA, xB, px_)
+        gr_ = np.random.default_rng(16302); cs_ = []
+        for _ in range(400):                                                # the training generator's draws (64 x 400 items)
+            A_, B_ = gen2d(gr_, 64, SH2[int(gr_.integers(0, len(SH2)))], SH2[int(gr_.integers(0, len(SH2)))], EXCL); c_, _ = colsums(A_, B_); cs_.append(c_[:, :-1].ravel())
+        res.setdefault("s163", {})["value_range"] = value_range(vr_, float(np.percentile(np.concatenate(cs_), 99)))
     if SHM and a.ext_n:                                                     # §161: ext 4x6 / 4x7 (r = 0)
         for nb_, s1_, s2_ in ((6, 14016, 14017), (7, 14018, 14019)):
             xA, xB = gen_operands(np.random.default_rng(s1_), a.ext_n, n), gen_operands(np.random.default_rng(s2_), a.ext_n, nb_); Px, _, _ = columns(xA, xB)
@@ -1526,6 +1590,11 @@ def main():
     if a.carrier == "deltamem":                                             # §147 (no contraction term: an integrator by design)
         res["donor"] = donor_delta(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(14002), n=min(a.donor_n, 1000))
         res["compute"] = compute_pair(m, teA.shape[1], teB.shape[1])        # Theory (C3): Meter flops / sequential passes
+        if SH2:                                                             # §163: the 5x5 donor (pairs 6 / 12 / 18), what_state at 5x5, compute at 5x5 / 8x8
+            tr5A, tr5B = gen2d(np.random.default_rng(16301), a.probe_n_fit, 5, 5, EXCL)
+            res.setdefault("s163", {}).update({"donor_5x5": donor_delta(m, te5A, te5B, dev, amp, a.eval_bs, np.random.default_rng(14002), positions=(6, 12, 18), n=min(a.donor_n, 1000)),
+                                               "what_state_5x5": what_state(m, te5A, te5B, tr5A, tr5B, dev, amp, a.eval_bs, n_fit=a.probe_n_fit, points=(6, 12, 18)),
+                                               "compute_5x5": compute_pair(m, 5, 5), "compute_8x8": compute_pair(m, 8, 8), "shape_mix_2d": a.shape_mix_2d})
         res["s147"] = {**s147_extras(m, teA, teB, dev, amp, a.eval_bs, pred), "mem_layer": a.mem_layer, "mem_add_heads": a.mem_add_heads, "mem_delta_heads": a.mem_delta_heads}
         i147 = json.load(open(os.path.join(a.out, "s147_init.json"))) if os.path.exists(os.path.join(a.out, "s147_init.json")) else {}
         res["s147"]["read_norm_ratio_by_handoff"] = {"step0": i147.get("read_norm_ratio_by_handoff_step0"), "end": read_ratio_by_handoff(m, teA, teB, dev, amp)[0]}
@@ -1574,7 +1643,11 @@ def main():
         for st_ in sorted(keep_steps):
             cp_ = os.path.join(a.out, "ckpt_s%d_model.pt" % st_)
             if os.path.exists(cp_):
-                m.load_state_dict(torch.load(cp_, map_location=dev)); m.eval(); kept_.append(cp_)
+                m.load_state_dict(torch.load(cp_, map_location=dev)); m.eval()
+                if SH2:                                                     # §163: each kept checkpoint's 4x4 test (24000 -> test_4x4_at_24k; the file is kept)
+                    res.setdefault("s163", {})["test_4x4_at_%s" % ("%dk" % (st_ // 1000) if st_ % 1000 == 0 else "s%d" % st_)] = acc_report(RO(m, teA, teB, dev, amp, a.eval_bs), Pte)["test_acc"]
+                else:
+                    kept_.append(cp_)
                 sb_[str(st_)] = donor_delta(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(14002), n=min(a.donor_n, 1000))
             else:
                 sb_[str(st_)] = None
