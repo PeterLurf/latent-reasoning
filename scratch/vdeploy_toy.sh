@@ -45,6 +45,9 @@ for i in $(seq 1 60); do
   j=$(bash "$V" show instance $ID --raw 2>/dev/null)
   H=$(echo "$j" | python -c "import json,sys;d=json.load(sys.stdin);print(d.get('public_ipaddr','').strip())" 2>/dev/null)
   P=$(echo "$j" | python -c "import json,sys;d=json.load(sys.stdin);print(d['ports']['22/tcp'][0]['HostPort'])" 2>/dev/null)
+  CS=$(echo "$j" | python -c "import json,sys;d=json.load(sys.stdin);print(d.get('cur_state') or '')" 2>/dev/null)   # 2026-10-08: hosts stuck 'loading' with cur_state stopped
+  if [ "$CS" = "stopped" ]; then NST=$(( ${NST:-0} + 1 )); else NST=0; fi
+  [ "${NST:-0}" -ge 18 ] && { echo "STUCK_LOADING cur_state stopped for 6 min"; echo "INSTANCE $ID ${H:-none} ${P:-none}"; echo "BAD HOST"; exit 2; }   # INSTANCE -> gen_deploy destroys it
   [ -n "$H" ] && [ -n "$P" ] && [ -z "${KR:-}" ] && { ssh-keygen -R "[$H]:$P" > /dev/null 2>&1; KR=1; }   # 2026-10-07 (b156): a recycled ip:port kept an old key; cleared ONCE per new instance (Audit: not per retry)
   [ -n "$H" ] && [ -n "$P" ] && timeout 30 ssh -o StrictHostKeyChecking=accept-new -o ConnectTimeout=15 -i ~/.ssh/runpod_ed25519 -p $P root@$H true 2>/dev/null && break
   sleep 20
