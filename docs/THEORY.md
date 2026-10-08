@@ -9064,6 +9064,17 @@ accumulator.**
   current inputs non-compositionally, so a swap breaks it.
   - **"The first exact multiplication through a latent memory" therefore reads as an exact operand buffer with read-time computation, not as serial latent computation.**
   - **C1 is not met by R.** §158 (FREE-PAIRS, with its partial-intervention C1 test) is the registered next test.
+* **Correction (2026-10-08 05:45 EDT; Audit's reproduction): two overreaches withdrawn.**
+  - **The swap and skip tests are uninformative here, not a "neither" reading.**
+    - Each a_i is re-presented in up to 4 pairs, so after a swap the recipient's later passes bring its own a_i values, which conflict with the donor's stored ones. The
+      hybrid-operand target is ill-defined for a buffer that overwrites on re-presentation.
+    - Pass-skip is confounded by the count schedule.
+  - **The probe comparison is not like-for-like.** Digits are 10-way classified, while the sums are a linear regression rounded to integers. A sum held in a non-linear (modular,
+    clock-like) code would pass the first and fail the second, which is 152-5's lesson.
+    - **Added (descriptive):** 10-way classifiers of each partial column sum's units digit and of its carry (ĉ_k mod 10 and ⌊ĉ_k / 10⌋ as classes) after pairs 4 / 8 / 12, on the
+      same λ grid. Only if these also fail is "the sums are not held" supported.
+  - **Framing until then:** "R holds every seen operand digit exactly; linear integer read-outs of the partial sums are poor late in the chain; the swap / skip tests are
+    uninformative here (re-presented operands, the count schedule). C1 is not shown for R."
 
 ## 159. R-5×5: §155 R's write-after-read memory at 5×5, the SOTA leg (C3) (Audit 05:45; pre-registered 2026-10-08 05:43 EDT, before any implementation or run; runs only if §155 R s2 is exact)
 
