@@ -9292,6 +9292,14 @@ accumulator.**
 * **Gates:** the label / schedule check for n ≠ 4; bit-identity with R's batches when both flags are off; smoke_plain; Audit's diff review.
 * Dirs `s161_{mix,mixidx}_4x4_s{seed}`. Scorer: `theory/score_s161.py`, committed with this registration.
 
+**Note 161-1 (2026-10-08 08:40 EDT, before any §161 run; Experiments' implementation, disclosed). How SHAPE-MIX is drawn.**
+* **n is drawn per batch, not per chain,** because a batch shares one step schedule.
+  - Shapes still vary uniformly across steps.
+  - No path connects chains (per-token LayerNorm), so this changes the per-step gradient mixture, not what a chain sees.
+* **The offset r is per chain,** as registered: one r ∈ {0..12} per row, varying within a batch, and r = 0 in eval. gate161 g3 checks it on captured batches.
+* **Curriculum:** at the full stage every 4×n chain runs complete, with the flush. Below it, min(c, 4 + n) columns.
+* **Index tokens:** CIDX[c + r − 1] = " A" … " U" (21 single GPT-2 tokens, args `col_index_tokens`).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
