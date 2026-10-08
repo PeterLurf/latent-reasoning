@@ -1,0 +1,58 @@
+{
+ "condition": "RUN (R s2 0.998 >= 0.99)",
+ "ar": {
+  "runs": {
+   "1": null,
+   "2": null,
+   "3": null,
+   "4": null
+  },
+  "verdict": "incomplete (0 / 4 decided)",
+  "headline": null
+ },
+ "ctrlr": {
+  "runs": {
+   "1": {
+    "status": "done",
+    "test_acc": 0.055,
+    "acc_by_length": {
+     "1": 1.0,
+     "2": 1.0,
+     "3": 0.666,
+     "4": 0.055
+    },
+    "serial": false,
+    "flops": 7103733624.0,
+    "passes": 12,
+    "pass": false,
+    "gate_step": null,
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "compute": {
+     "flops": 7103733624.0,
+     "passes": 12
+    },
+    "fallback_trigger": {
+     "floor_spikes": 16,
+     "n_nonfinite": 0,
+     "fires": true
+    }
+   },
+   "2": null,
+   "3": null,
+   "4": null
+  },
+  "verdict": "descriptive: test_acc 0.055",
+  "headline": null
+ },
+ "ar9": {
+  "runs": {
+   "1": null
+  }
+ },
+ "ctrlr9": {
+  "runs": {
+   "1": null
+  }
+ },
+ "reading": "pending"
+}

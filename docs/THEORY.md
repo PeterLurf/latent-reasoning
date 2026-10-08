@@ -9305,6 +9305,17 @@ accumulator.**
 * §159 and §160 inherit 155-1's write-row fallback trigger. In §155 R it fired 12 times on a decayed median (0.002–0.05) while the loss fell, so R9 ran for no reason.
 * **For §159 and §160, a spike is: max > 100× the preceding-1k median AND max > 1.0.** Non-finite steps and slot exhaustion are unchanged.
 
+**§160 R-ROWS (interim, 2026-10-08 10:08 EDT; 48k, RTX 3090; scored by Theory with score_s160): CTRL-R s1 reads 0.055, and its fallback trigger fired.**
+* **CTRL-R s1 (no reader): test_acc 0.055**, against §152 CTRL's 0.012.
+  - Rows 1.0 / 1.0 / 0.666 / 0.055. Columns 1–4 1.0, column 5 0.082, column 6 0.445, columns 7–8 0.87 / 0.99.
+  - Not SERIAL (pos-2 donor 0.03). The S_2 edit moves nothing (follow 0.0, random 0.0). 7.10·10⁹ FLOPs, 12 passes.
+* **155-1's fallback trigger fired, with 160-1's floor.**
+  - 16 write-row spikes from 23.9k: max 1.6–23, against medians of 0.013–0.23.
+  - The loss rose with the γ ramp (0.013 at 2k, 0.31 at 6k) and never settled (0.14–0.24 through 36k; 0.117 final).
+  - **By 155-1 (inherited through 160-1), CTRL-R's block-9 fallback is due:** `s160_ctrlr9_4x4_s1` (`--mem_write block9`, otherwise CTRL-R's args).
+  - It is descriptive, like CTRL-R, and score_s160 reads it.
+* A-R s1 (b180) is pending; it decides §160's gate.
+
 ## 161. SHAPE-MIX: breaking the 4×4 count schedule for length generalisation (C2) (Audit 07:50; pre-registered 2026-10-08 07:55 EDT, after Literature's check 0b532db5 and Audit's draft, before any implementation or run)
 
 **Why.**
