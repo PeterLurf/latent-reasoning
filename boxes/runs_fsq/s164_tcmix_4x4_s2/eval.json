@@ -1,0 +1,138 @@
+{
+ "arm": "tc",
+ "task": "4x4",
+ "seed": 2,
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "train_sec": 3223,
+ "eval_dtype": "torch.bfloat16",
+ "test_items": 1000,
+ "training": {
+  "epochs": 1.900990099009901,
+  "flops": 7.1236267278336e+16,
+  "flops_convention": "Meter forward FLOPs per trained problem (full-vocab LM head) x 3 (fwd+bwd) x steps x bs"
+ },
+ "acc_test": 1.0,
+ "compute": {
+  "tokens_processed": 65,
+  "flops": 15459259392.0,
+  "seq_passes": 57,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "lm_head_rows": 56,
+  "sequential_passes": 57
+ },
+ "ext_4x6": {
+  "test_acc": 0.0,
+  "acc_by_column": {
+   "per_column": [
+    0.47,
+    0.446,
+    0.297,
+    0.126,
+    0.099,
+    0.107,
+    0.099,
+    0.104,
+    0.081,
+    0.36
+   ]
+  },
+  "n": 1000,
+  "seeds": [
+   14016,
+   14017
+  ]
+ },
+ "ext_4x7": {
+  "test_acc": 0.0,
+  "acc_by_column": {
+   "per_column": [
+    0.18,
+    0.133,
+    0.115,
+    0.091,
+    0.112,
+    0.104,
+    0.07,
+    0.066,
+    0.055,
+    0.073,
+    0.115
+   ]
+  },
+  "n": 1000,
+  "seeds": [
+   14018,
+   14019
+  ]
+ },
+ "ext_4x8": {
+  "test_acc": 0.0,
+  "acc_by_column": {
+   "per_column": [
+    0.135,
+    0.117,
+    0.084,
+    0.087,
+    0.09,
+    0.069,
+    0.085,
+    0.086,
+    0.085,
+    0.108,
+    0.097,
+    0.106
+   ]
+  },
+  "n": 1000,
+  "seeds": [
+   14004,
+   14005
+  ]
+ },
+ "compute_4x8": {
+  "tokens_processed": 165,
+  "flops": 40306934784.0,
+  "seq_passes": 153,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0,
+  "lm_head_rows": 152,
+  "sequential_passes": 153
+ },
+ "ext_4x16": {
+  "test_acc": 0.0,
+  "acc_by_column": {
+   "per_column": [
+    0.141,
+    0.128,
+    0.084,
+    0.073,
+    0.098,
+    0.09,
+    0.076,
+    0.086,
+    0.093,
+    0.079,
+    0.067,
+    0.077,
+    0.084,
+    0.082,
+    0.077,
+    0.089,
+    0.083,
+    0.076,
+    0.084,
+    0.126
+   ]
+  },
+  "n": 1000,
+  "seeds": [
+   14006,
+   14007
+  ]
+ },
+ "shape_mix": "2,3,4,5",
+ "eval_sec": 92
+}
