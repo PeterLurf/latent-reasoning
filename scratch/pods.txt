@@ -1265,3 +1265,9 @@ PRICE EXCEPTION 2026-10-06 04:58 gen-b41 offer 53010473 RTX 3090 595.71 $0.267: 
 54907639 vast offer 54107527 created 2026-10-08 16:28: label gen-b209, queue scratch/gen_q_b209.txt (logged at create by vdeploy_toy.sh)
 54876477 vast | gen_b189 DESTROYED_MANUAL 2026-10-08 16:38 after a manual fetch of boxes/runs_fsq/s162_direct_s1 (eval/args/log/mem_check; model not kept: s162 not in keep patterns); drain stalled on a hung sshd
 54885266 vast | gen_b191 DESTROYED_MANUAL 2026-10-08 16:38 after a manual fetch of boxes/runs_fsq/s162_long_s1 (all non-.pt files); drain stalled on a hung sshd
+54910143 vast offer 47118064 created 2026-10-08 16:48: label gen-b209, queue scratch/gen_q_b209.txt (logged at create by vdeploy_toy.sh)
+54910706 vast offer 20726985 created 2026-10-08 16:53: label gen-b200, queue scratch/gen_q_b200.txt (logged at create by vdeploy_toy.sh)
+54875058 vast | gen_b194 DESTROYED_VERIFIED 2026-10-08 16:53 after verified per-run fetch (boxes/runs_fsq/s160_ar9_4x4_s1)
+54911211 vast offer 49607481 created 2026-10-08 16:58: label gen-b201, queue scratch/gen_q_b201.txt (logged at create by vdeploy_toy.sh)
+54910706 vast | gen_b200 DESTROYED 2026-10-08 17:00: §165 K16 failed at start (bench/data/mult_4x4_test.txt not shipped: fixedchunk lines carry no --task); redeploy after the --bench fix
+54911211 vast | gen_b201 DESTROYED 2026-10-08 17:00: §165 K8, same missing bench file; redeploy after the fix

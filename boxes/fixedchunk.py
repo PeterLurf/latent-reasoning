@@ -169,12 +169,13 @@ def main():
     ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--test_n", type=int, default=1000); ap.add_argument("--ext_n", type=int, default=1000)
     ap.add_argument("--probe_n_fit", type=int, default=8000); ap.add_argument("--donor_n", type=int, default=1000)
     ap.add_argument("--auto_micro", action="store_true"); ap.add_argument("--mem_budget", type=float, default=21.0); ap.add_argument("--mem_check", action="store_true")
+    ap.add_argument("--bench", default=os.path.join("bench", "data", "mult_4x4_test.txt"), help="the 4x4 bench test (named in the queue line so auto_ship ships it)")
     ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--fp32", action="store_true")
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); a.arm = "fixedchunk"; os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale; k, K = a.chunk_k, a.think_k
     SHM = [int(x) for x in a.shape_mix.split(",") if x.strip()]; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
     amp = None if (a.fp32 or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
-    teA, teB = load_bench(os.path.join(ROOT, "bench", "data", "mult_4x4_test.txt"))
+    teA, teB = load_bench(a.bench if os.path.isabs(a.bench) else os.path.join(ROOT, a.bench))
     EXCL = {(x.tobytes(), y.tobytes()) for x, y in zip(teA, teB)} | {(y.tobytes(), x.tobytes()) for x, y in zip(teA, teB)}; teA, teB = teA[:a.test_n], teB[:a.test_n]
     m = FixedChunk(s5.load_gpt2(dev), 6, a.mem_write).to(dev)
 
