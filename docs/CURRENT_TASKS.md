@@ -64,7 +64,7 @@ after create; auto_ship is transitive: a multrow queue ships multpair too): reco
     - §155 SHIFT-R s3 / s4 (b178 / b179; descriptive, since the arm is decided);
     - §158 slots 2–4;
     - §159 R-5×5;
-    - §160 A-R / CTRL-R (b180 / b181);
+    - §160 block-9 fallbacks A-R9 / CTRL-R9 (b194 / b193; descriptive). §160 closed on A-R s1 0.056 (240f32fa);
     - §161 SHAPE-MIX, 3 + 3 runs;
     - §162 DIRECT, then LONG / SHORT.
     - §163 SHAPE-MIX-2D (0045d6a1): both lengths mixed; runs only if §161 MIX s2 replicates.
