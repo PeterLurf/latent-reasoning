@@ -8876,6 +8876,20 @@ restated.**
   under the edit, for the carry edit and the random-edit null.
 * **Reading caveat, fixed now:** RECURRENT USE reads as specific only if coupling_share < 0.2. Otherwise it reads "propagates but non-specifically".
 
+**Note 157-1 (2026-10-08 04:05 EDT, before any §157 run). The CCQ arm specified, from the paper's equations** (2606.01294v2, Eq. 6 / 9 / 10; Literature 5a30ba04).
+* **The read:** q_clean = (I − λ_t Σ_t) q_t and o_t = S_t q_clean. S and the write rule are unchanged.
+  - λ_t = σ(W_λ q_t + b_λ): one scalar per head per token, from the pre-split query; W_λ = 0 and b_λ = −4.6 (σ ≈ 0.01) at init.
+  - Σ_t is the centred, count-normalised, undecayed key covariance, (1/t) Σ k kᵀ − μ μᵀ, in fp32.
+  - It applies at every read position (the per-position block-6 read and the reader pass) on all 12 heads.
+* **The paper's requirement, and the disclosed adaptation:** q and k must be ℓ2-normalised per head, which bounds ‖Σ‖ ≤ 1.
+  - The delta heads already are.
+  - On the additive elu + 1 heads, φ(k) and φ(q) are ℓ2-normalised in the write and the read (Literature). That changes the additive read's normalisation as well, so the CCQ
+    arm tests **"normalised features + CCQ"** on those heads. The transfer is untested in the paper.
+* **Descriptive (added):**
+  - the CCQ-off-at-read ablation on the trained CCQ model (the paper: ≤ 2.2 points), separating a training effect from a read effect;
+  - λ by head;
+  - the off-column weight share.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
