@@ -304,6 +304,53 @@ def seq_greedy(g, last, past, L, meter=None):
     return torch.stack(out, 1)
 
 
+def gen_items(A, B):
+    """§164: the bench's implicit-CoT text for operand rows A (N, na), B (N, nb), digits LSB first: step 1 = P_1, step j > 1 = "+ P_j ( S_j )"
+    (the last step "+ P_n"), P_j = (j - 1) zeros + a x b_j over na + 1 digits, S_j = sum_{i<=j} a b_i 10^(i-1) over na + j digits; answer
+    " ####" + the na + nb product digits. Same dict as load()."""
+    N, na = A.shape; nb = B.shape[1]; a = to_int(A); S = [[] for _ in range(nb)]; P = []
+    for r in range(N):
+        acc = 0
+        for j in range(nb):
+            pj = a[r] * int(B[r, j]); acc += pj * 10 ** j; w = [0] * j + digits_lsb(pj, na + 1)
+            st = ([] if j == 0 else ["+"]) + [str(x) for x in w] + (["("] + [str(x) for x in digits_lsb(acc, na + j + 1)] + [")"] if 0 < j < nb - 1 else [])
+            S[j].append([TOK[t] for t in st])
+        P.append(digits_lsb(acc, na + nb))
+    P = np.array(P); ans = np.concatenate([np.tile(HASH, (N, 1)), DIGIT_IDS[P]], 1)
+    return {"A": np.asarray(A), "B": np.asarray(B), "steps": [np.array(x) for x in S], "ans": ans, "prod": P, "n": nb}
+
+
+def mix_draw(rng, bs, ns, excl):
+    """§164: one n per batch from ns; A 4-digit, B n-digit (multpair's gen_operands); 4x4 rows equal to a bench test item (either order) redrawn."""
+    from boxes.multcol import gen_operands
+    nb = int(ns[int(rng.integers(0, len(ns)))]); A, B = gen_operands(rng, bs, 4), gen_operands(rng, bs, nb)
+    if nb == 4 and excl:
+        for _ in range(100):
+            bad = np.array([(x.tobytes(), y.tobytes()) in excl for x, y in zip(A, B)])
+            if not bad.any():
+                break
+            A[bad], B[bad] = gen_operands(rng, int(bad.sum()), 4), gen_operands(rng, int(bad.sum()), 4)
+    return gen_items(A, B)
+
+
+@torch.no_grad()
+def seq_eval_digits(g, D, dev, amp, bs, arm, meter=None):
+    """as seq_eval, returning the decoded answer digits (N, np) (-1 where the token is not a digit) and the exact-answer flags."""
+    N = len(D["A"]); n = D["n"]; L_text = D["ans"].shape[1] + (sum(D["steps"][j].shape[1] for j in range(n)) if arm == "tc" else 0)
+    lut = {int(t): i for i, t in enumerate(DIGIT_IDS)}; dig = np.full(D["prod"].shape, -1); ok = np.zeros(N, bool)
+    for s_ in range(0, N, bs):
+        idx = np.arange(s_, min(N, s_ + bs))
+        with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+            last, past = seq_forward(g, torch.tensor(question(D, idx), device=dev), 0, None, meter=meter if s_ == 0 else None)
+            dec = seq_greedy(g, last, past, L_text, meter if s_ == 0 else None).cpu().numpy()
+        at = dec[:, -D["ans"].shape[1]:]; ok[idx] = answer_correct(at, D["prod"][idx]); dig[idx] = np.vectorize(lambda t: lut.get(int(t), -1))(at[:, len(HASH):])
+    return dig, ok
+
+
+def acc_report_digits(dig, P):
+    C = dig == P; return {"test_acc": float(C.all(1).mean()), "acc_by_column": {"per_column": [round(float(v), 4) for v in C.mean(0)]}, "n": int(len(P))}
+
+
 def seq_batch(D, rng, bs, dev, arm, stage):
     idx = rng.integers(0, len(D["A"]), bs); q = question(D, idx)
     if arm == "nc":
@@ -348,6 +395,12 @@ def train(a):
     Dtr = load(os.path.join(a.train_dir, f"{a.task}_train.txt"), limit=a.train_limit or None)
     Dte = load(os.path.join(ROOT, "bench", "data", f"mult_{a.task}_test.txt"), limit=a.test_n)
     assert Dtr["n"] == n and Dte["n"] == n
+    SHM = [int(x) for x in a.shape_mix.split(",") if x.strip()]             # §164
+    assert not SHM or (a.arm in ("tc", "nc") and a.task == "4x4"), "§164: --shape_mix for tc / nc on 4x4"
+    EXCL = set()
+    if SHM:                                                                 # the full 4x4 bench test (both orders) is never drawn
+        Dfull = load(os.path.join(ROOT, "bench", "data", "mult_4x4_test.txt"))
+        EXCL = {(x.tobytes(), y.tobytes()) for x, y in zip(Dfull["A"], Dfull["B"])} | {(y.tobytes(), x.tobytes()) for x, y in zip(Dfull["A"], Dfull["B"])}
     if a.eval_only:                                                         # re-run a finished run's eval (§98 genm 5x5 s3: eval OOM'd beside 2 others)
         g = s5.load_gpt2(dev); m = MultGen(g, a.arm).to(dev) if a.arm in ("genm", "mask") else g
         m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev))
@@ -370,6 +423,9 @@ def train(a):
             micro = a.micro or (1 if a.arm in ("genm", "mask") else 2)          # memory: micro-batches, same effective batch
             if a.arm in ("genm", "mask"):
                 prefix, start, ops, st, ans = gen_batch(Dtr, rng, a.bs, dev)
+            elif SHM:                                                       # §164: a 4 x n batch from the generator (n per batch)
+                Dm = mix_draw(rng, a.bs, SHM, EXCL); idx_ = np.arange(a.bs); q = torch.tensor(question(Dm, idx_), device=dev)
+                text = torch.tensor(Dm["ans"] if a.arm == "nc" else np.concatenate([Dm["steps"][j] for j in range(Dm["n"])] + [Dm["ans"]], 1), device=dev)
             else:
                 q, text = seq_batch(Dtr, rng, a.bs, dev, a.arm, stage)
             opt.zero_grad(); tot = 0.0; mb = a.bs // micro
@@ -449,6 +505,14 @@ def train(a):
     else:
         meter = MeterR(g); ok = seq_eval(g, Dte, dev, amp, a.eval_bs, a.arm, meter=meter)
         res["acc_test"] = float(ok.mean()); res["compute"] = meter.as_dict()
+        if SHM:                                                             # §164: §161's ext items (gen_operands with its seeds), 1,000 each (--ext_n)
+            from boxes.multcol import gen_operands
+            for nb_, s1_, s2_ in ((6, 14016, 14017), (7, 14018, 14019), (8, 14004, 14005), (16, 14006, 14007)):
+                Dx = gen_items(gen_operands(np.random.default_rng(s1_), a.ext_n, 4), gen_operands(np.random.default_rng(s2_), a.ext_n, nb_)); mx_ = MeterR(g) if nb_ == 8 else None
+                dg_, _ = seq_eval_digits(g, Dx, dev, amp, a.eval_bs, a.arm, meter=mx_); res["ext_4x%d" % nb_] = {**acc_report_digits(dg_, Dx["prod"]), "seeds": [s1_, s2_]}
+                if mx_ is not None:
+                    res["compute_4x8"] = mx_.as_dict()
+            res["shape_mix"] = a.shape_mix
         if a.arm == "coco":
             mu = coco_mean_thoughts(g, Dtr, dev, amp)
             res["removal"] = {ab: {"answer_acc": float(seq_eval(g, Dte, dev, amp, a.eval_bs, "coco", ablate=ab, mean_in=mu).mean())} for ab in ("zero", "mean")}
@@ -464,6 +528,8 @@ def main():
     ap.add_argument("--steps", type=int, default=24000); ap.add_argument("--bs", type=int, default=64)
     ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--eval_bs", type=int, default=250)
     ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt of a finished run only (log.jsonl and args.json untouched)")
+    ap.add_argument("--ext_n", type=int, default=1000, help="§164 ext items per shape (smokes only change it)")
+    ap.add_argument("--shape_mix", default="", help="§164: tc / nc training on 4 x n chains, n drawn per batch from this list (e.g. 2,3,4,5)")
     ap.add_argument("--k", type=int, default=4, help="§100: ops per chunk (snap every k; training chunks aligned)")
     ap.add_argument("--micro", type=int, default=0, help="micro-batches per update (0: 1 for genm/mask, 2 for coco/tc/nc: 3 stage-0 jobs OOM a 24 GB card)")
     ap.add_argument("--test_n", type=int, default=None, help="smoke only"); ap.add_argument("--train_limit", type=int, default=0, help="smoke only")
