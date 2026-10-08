@@ -1,0 +1,50 @@
+{
+ "multpair": "boxes._multpair166_tmp",
+ "deltas5": "boxes._deltas5_166_tmp",
+ "src_mp": "C:/Users/peter/AppData/Local/Temp/claude/D--/6af9c751-a423-5604-9170-0c177c13d67f/scratchpad/smoke161",
+ "src_d5": "C:/Users/peter/AppData/Local/Temp/claude/D--/6af9c751-a423-5604-9170-0c177c13d67f/scratchpad/sm162d",
+ "g1": {
+  "zero": [
+   2.7911555767059326
+  ],
+  "noise_p0": [
+   2.7911555767059326
+  ]
+ },
+ "g1_pass": true,
+ "g2": {
+  "max_rel_err": 2.5544846948832856e-07,
+  "noise_p1_first_loss": [
+   2.791154384613037
+  ]
+ },
+ "g2_pass": true,
+ "g2b": {
+  "fitted_p0": [
+   2.7911555767059326
+  ],
+  "fitted_p1": [
+   2.7909698486328125
+  ],
+  "mean_max_abs_err": 0.015544399619102478,
+  "std_max_rel_err": 0.021618306636810303
+ },
+ "g2b_pass": true,
+ "g3": {
+  "zero": [
+   5.147904872894287
+  ],
+  "pass_p0": [
+   5.147904872894287
+  ]
+ },
+ "g3_pass": true,
+ "g4": {
+  "n_pass": 8,
+  "g_matches_source_chain": true,
+  "loss_calls": 1,
+  "y_valid": true
+ },
+ "g4_pass": true,
+ "all_pass": true
+}
