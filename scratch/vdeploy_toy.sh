@@ -45,6 +45,7 @@ for i in $(seq 1 60); do
   j=$(bash "$V" show instance $ID --raw 2>/dev/null)
   H=$(echo "$j" | python -c "import json,sys;d=json.load(sys.stdin);print(d.get('public_ipaddr','').strip())" 2>/dev/null)
   P=$(echo "$j" | python -c "import json,sys;d=json.load(sys.stdin);print(d['ports']['22/tcp'][0]['HostPort'])" 2>/dev/null)
+  [ -n "$H" ] && [ -n "$P" ] && [ -z "$KR" ] && { ssh-keygen -R "[$H]:$P" > /dev/null 2>&1; KR=1; }   # 2026-10-07 (b156): a recycled ip:port kept an old key; cleared ONCE per new instance (Audit: not per retry)
   [ -n "$H" ] && [ -n "$P" ] && timeout 30 ssh -o StrictHostKeyChecking=accept-new -o ConnectTimeout=15 -i ~/.ssh/runpod_ed25519 -p $P root@$H true 2>/dev/null && break
   sleep 20
 done
