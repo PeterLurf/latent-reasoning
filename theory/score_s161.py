@@ -27,12 +27,19 @@ def trigger(r, blk):
 
 
 def slot(arm, k):
+    att = []                                                                 # restart-aware (score_s158's form): a 2k-plateaued attempt moves to the next seed
     for o in OFFS:
-        d = "s161_%s_4x4_s%d" % (arm, k + o); r = load(d); a = load(d, "args.json") or {}
-        if r is None:
-            return {"status": "running" if a else "open", "accepted": None}
-        if a.get("mem_check") or a.get("train_n") or int(a.get("steps", 0) or 0) != 24000:
+        d = "s161_%s_4x4_s%d" % (arm, k + o)
+        if S155.smoke(d):
             continue
+        pl = S155.plateau(d); r = load(d); a = load(d, "args.json") or {}
+        if pl is None and r is None:
+            return {"status": "running (phase 1)" if a else "open", "accepted": None, "attempts": att}
+        att.append({"seed": k + o, "plateau": pl})
+        if pl is True:
+            continue
+        if r is None:
+            return {"status": "running", "accepted": None, "attempts": att}
         exp = dict(BASE, **ARMS[arm])
         bad = {kk: a.get(kk) for kk, v in exp.items() if a.get(kk) != v}
         if arm == "mix" and a.get("col_index_offset"):
@@ -46,7 +53,9 @@ def slot(arm, k):
                "ext_other": {kk: (r.get(kk) or {}).get("test_acc") for kk in ("ext_4x6", "ext_4x7")}, "what_state": ws, "gpu": r.get("train_gpu"), "fallback_trigger": trigger(r, "s155")}
         acc["length_general"] = bool((acc["ext_4x8"] or 0) >= 0.9 and (acc["test_acc"] or 0) >= 0.99)
         return {"status": "accepted", "accepted": acc}
-    return {"status": "open", "accepted": None}
+    if len(att) == len(OFFS) and all(x["plateau"] for x in att):
+        return {"status": "exhausted", "accepted": None, "attempts": att}
+    return {"status": "open", "accepted": None, "attempts": att}
 
 
 def main():
