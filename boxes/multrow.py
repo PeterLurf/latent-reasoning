@@ -268,13 +268,21 @@ class MultRowDelta(MultRow):
     SEG_T = 7
 
     def __init__(self, g, fam, layer=6):
-        super().__init__(g, fam); self.mem = DM.DeltaMem(g, layer)
+        super().__init__(g, fam); self.mem = DM.DeltaMem(g, layer); self.pass_input = None; self.think_tok = None; self.Lp = None   # §153
 
     def start(self, B, dev, states=None):
         return self.mem.zero_state(B, dev)
 
     def seg_ids(self, t, B, dev):
-        return torch.cat([torch.full((B, 1), EOT, device=dev), self.btok[:, t:t + 1], torch.full((B, 1), COLTOK[t + 1], device=dev), self.actx], 1)
+        if self.pass_input is None:                                         # §152: [EOT, b_j, j, a]
+            return torch.cat([torch.full((B, 1), EOT, device=dev), self.btok[:, t:t + 1], torch.full((B, 1), COLTOK[t + 1], device=dev), self.actx], 1)
+        full = lambda v: torch.full((B, 1), v, device=dev)  # noqa: E731
+        prob = [full(EOT), self.actx, full(XTOK), self.btok[:, :(self.Lp or self.btok.shape[1])]]   # §153: [EOT, a, " x", b's first L digits]
+        if self.pass_input == "visible":                                    # the whole problem every pass + step token j
+            return torch.cat(prob + [full(COLTOK[t + 1])], 1)
+        if t < 0:                                                           # pure / repeat pass 0: the problem (writes only, no read-out)
+            return torch.cat(prob, 1)
+        return torch.cat([full(EOT), full(self.think_tok if self.pass_input == "repeat" else COLTOK[t + 1]), torch.full((B, 4), REGTOK, device=dev)], 1)
 
     def write(self, S, t, cap=None):
         _, S = fwd_mem(self.g, self.g.embed(self.seg_ids(t, S.shape[0], S.device)), self.mem, S, cap=cap); return S
@@ -301,7 +309,9 @@ class MultRowDelta(MultRow):
     def chain_read(self, start_emb, items, labels, rtok, rmask):
         """CE_final (gold S_L, after the last segment) and, with rmask, the reader CE_j at every hand-off j < L (teacher S_j, rows of rmask[:, j-1]);
         the reader passes leave the state untouched. Returns (CE_final, mean CE_j or None, number of reader hand-offs)."""
-        B, L = items.shape; S = start_emb; rd = []
+        B, L = items.shape; S = start_emb; rd = []; self.Lp = L
+        if self.pass_input in ("pure", "repeat"):                           # §153 pass 0
+            S = self.write(S, -1)
         for t in range(L):
             S = self.write(S, int(items[0, t]))
             if t < L - 1 and rmask is not None and bool(rmask[:, t].any()):
@@ -311,18 +321,23 @@ class MultRowDelta(MultRow):
 
 
 @torch.no_grad()
-def rollout_drow(m, A, B, dev, amp, bs, L=None, override=None, keep=(), norms=False, caps=False, decode=True):
+def rollout_drow(m, A, B, dev, amp, bs, L=None, override=None, keep=(), norms=False, caps=False, decode=True, skip=(), Lp=None):
     """§152 chains over L segments; after each the reader greedily decodes S_j (read-only). override (p, states): the whole state after segment p
     replaced (1-based). keep: segments whose states are returned (N, 12, 64, 64) fp32; norms: (N, L, 2) Frobenius norms (additive, delta);
-    caps: the residual entering the branch per segment (N, L, 7, 768). Returns dec (N, L), kept, norms, caps."""
+    caps: the residual entering the branch per segment (N, L, 7, 768). §153: skip (passes j not run: the memory passes through), Lp (b digits in the
+    problem; default min(L, b's length)); pure / repeat run pass 0 first. Returns dec (N, L), kept, norms, caps."""
     N = len(A); L = L or B.shape[1]; dec = np.full((N, L), -1, np.int64); kept = {p_: np.zeros((N, DM.H_ADD + DM.H_DEL, DM.DH, DM.DH), np.float32) for p_ in keep}
     nrm = np.zeros((N, L, 2), np.float32) if norms else None; C = np.zeros((N, L, MultRowDelta.SEG_T, 768), np.float32) if caps else None
     for i in range(0, N, bs):
-        sl = slice(i, i + bs); Bn = len(A[sl]); set_ops(m, A[sl], B[sl], dev); S = m.start(Bn, dev)
+        sl = slice(i, i + bs); Bn = len(A[sl]); set_ops(m, A[sl], B[sl], dev); S = m.start(Bn, dev); m.Lp = Lp or min(L, B.shape[1])
+        if m.pass_input in ("pure", "repeat"):
+            with amp_ctx(amp):
+                S = m.write(S, -1)
         for t in range(L):
             cp = [] if caps else None
             with amp_ctx(amp):
-                S = m.write(S, t, cap=cp)
+                if t + 1 not in skip:
+                    S = m.write(S, t, cap=cp)
                 if override is not None and override[0] == t + 1:
                     S = torch.tensor(override[1][sl], device=dev, dtype=S.dtype)
                 if decode:
@@ -348,7 +363,7 @@ def donor_drow(m, A, B, dev, amp, bs, rng, n=1000):
             break
         idn[bad] = rng.integers(0, len(A), len(bad))
     Ar, Br, Ad, Bd = A[ir], B[ir], A[idn], B[idn]
-    _, kept, _, _ = rollout_drow(m, Ad, Bd, dev, amp, bs, L=2, keep=(2,), decode=False); got = rollout_drow(m, Ar, Br, dev, amp, bs, override=(2, kept[2]))[0][:, -1]
+    _, kept, _, _ = rollout_drow(m, Ad, Bd, dev, amp, bs, L=2, keep=(2,), decode=False, Lp=Bd.shape[1]); got = rollout_drow(m, Ar, Br, dev, amp, bs, override=(2, kept[2]))[0][:, -1]
     exp = sj_values(Ad, Bd)[:, 1] + to_int(Ar) * to_int(Br[:, 2:4]) * 100; own = sj_values(Ar, Br)[:, -1]; bmix = to_int(np.concatenate([Bd[:, :2], Br[:, 2:4]], 1))
     return {"pos2": {"donor_consistent": float((got == exp).mean()), "recipient_consistent": float((got == own).mean()), "chance_overlap": float((exp == own).mean()),
                      "bprefix_consistent": float((got == to_int(Ar) * bmix).mean()), "operands_consistent": float((got == to_int(Ad) * bmix).mean()), "n": N,
@@ -397,12 +412,14 @@ def compute_drow(m, L=4):
     single-token passes (8 digits). DeltaMem branch: 2 x branch params per processed token, plus per head and token 4 DH^2 (additive write +
     read) / 10 DH^2 (delta: S k, the rank-1 update, decay, read) in segments and 2 DH^2 (read only) in reader tokens."""
     mt = bc.Meter(m.g); rows = 0
-    for _ in range(L):
-        mt.step(MultRowDelta.SEG_T, 0, 0)
+    pi = getattr(m, "pass_input", None)                                     # §153: pass lengths by input
+    segs = [MultRowDelta.SEG_T] * L if pi is None else ([7 + L] * L if pi == "visible" else [6 + L] + [6] * L)
+    for T_ in segs:
+        mt.step(T_, 0, 0)
     mt.step(2, 0, 1); rows += 1
     for k in range(NDIG - 1):
         mt.step(1, 2 + k, 1); rows += 1
-    nb = sum(p_.numel() for n_, p_ in m.mem.named_parameters() if not n_.startswith("s_")); seg_tok = MultRowDelta.SEG_T * L; rd_tok = 2 + NDIG - 1; D2 = DM.DH * DM.DH
+    nb = sum(p_.numel() for n_, p_ in m.mem.named_parameters() if not n_.startswith("s_")); seg_tok = sum(segs); rd_tok = 2 + NDIG - 1; D2 = DM.DH * DM.DH
     fb = 2 * nb * (seg_tok + rd_tok) + (DM.H_ADD * 4 + DM.H_DEL * 10) * D2 * seg_tok + (DM.H_ADD + DM.H_DEL) * 2 * D2 * rd_tok
     d = mt.as_dict()
     return {"flops": d["flops"] + fb, "flops_trunk": d["flops"], "flops_branch": float(fb), "sequential_passes": d["seq_passes"], "lm_head_rows": rows,
@@ -456,6 +473,156 @@ def s152_eval(m, teA, teB, dev, amp, bs, a, dec):
         abl[ht + "_zeroed"] = {"test_acc": float((dk[:, -1] == S[:, -1]).mean()), "acc_by_length": {str(j + 1): float((dk[:, j] == S[:, j]).mean()) for j in range(4)}}
     out["head_ablation"] = abl
     return out
+
+
+# ================================================================ THEORY §153 THINK-PASS (ea154f30 + note 153-1): --pass_input on §152's carrier
+XTOK, REGTOK = bc.tok(" \u00d7")[0], bc.tok(" _")[0]                     # " x" (times sign, one GPT-2 token); the register token (fixed, told apart by position)
+
+
+def pass_list(m, L):
+    """The write passes of an L-chain: pure / repeat add pass 0 (the problem, writes only, index -1) before the L step passes."""
+    return ([-1] if m.pass_input in ("pure", "repeat") else []) + list(range(L))
+
+
+@torch.no_grad()
+def pass_reads(m, A, B, dev, amp, bs, L=None, keep_mem0=False):
+    """The branch read [g_add read_add || g_del read_del] (W_o's input, every position) of each write pass, flattened: {pass: (N, T x 768)}
+    (pass "0" = pure pass 0, "j" = step pass j); keep_mem0: the flattened memory after pure pass 0 (N, 49152)."""
+    L = L or B.shape[1]; buf = []; hk = m.mem.wo.register_forward_hook(lambda mod_, inp_, out_: buf.append(inp_[0].detach().float()))
+    out = {}; M0 = []
+    try:
+        for i in range(0, len(A), bs):
+            sl = slice(i, i + bs); Bn = len(A[sl]); set_ops(m, A[sl], B[sl], dev); m.Lp = B.shape[1]; S = m.start(Bn, dev)
+            for t in pass_list(m, L):
+                buf.clear()
+                with amp_ctx(amp):
+                    S = m.write(S, t)
+                out.setdefault(str(t + 1), []).append(buf[0].flatten(1).cpu().numpy())
+                if t < 0 and keep_mem0:
+                    M0.append(S.float().flatten(1).cpu().numpy())
+    finally:
+        hk.remove()
+    return {k: np.concatenate(v) for k, v in out.items()}, (np.concatenate(M0) if M0 else None)
+
+
+def kridge_cls_acc(Xf, yf, Xs, ys, k=10, lams=(1e-4, 1e-3, 1e-2, 1e-1, 1.0)):
+    """10-way linear classifier per digit for d >> n: multi-output kernel ridge (K = Z Z^T / d) on one-hot targets, argmax; lambda (x n) by 3-fold
+    CV accuracy on the fit half; held-out accuracy on the score half (as fsq120._ridge_cls_acc, dual form)."""
+    mu, sd = Xf.mean(0), Xf.std(0) + 1e-6; Zf = ((Xf - mu) / sd).astype(np.float32); Zs = ((Xs - mu) / sd).astype(np.float32); d = Zf.shape[1]
+    def fit_pred(Za, ya, Zb, lam):
+        K = (Za @ Za.T).astype(np.float64) / d; Y = np.eye(k)[ya.astype(int)]; Ym = Y.mean(0)
+        return ((Zb @ Za.T).astype(np.float64) / d @ np.linalg.solve(K + lam * len(Za) * np.eye(len(Za)), Y - Ym) + Ym).argmax(1)
+    fold = np.arange(len(Zf)) % 3
+    best = max(lams, key=lambda l_: np.mean([(fit_pred(Zf[fold != j], yf[fold != j], Zf[fold == j], l_) == yf[fold == j]).mean() for j in range(3)]))
+    return float((fit_pred(Zf, yf, Zs, best) == ys).mean())
+
+
+def digit_recall(X, A, B, h):
+    """held-out recall of a's and b's digits (4 + 4, LSB first) from features X (fit / score halves)."""
+    return {"a": [kridge_cls_acc(X[:h], A[:h, i], X[h:], A[h:, i]) for i in range(A.shape[1])],
+            "b": [kridge_cls_acc(X[:h], B[:h, i], X[h:], B[h:, i]) for i in range(B.shape[1])]}
+
+
+@torch.no_grad()
+def attn_bj_share(m, A, B, dev, amp, n=256):
+    """§153 VISIBLE: per step pass j, the attention mass (mean over the 12 layers, 12 heads and the query positions after b_j) on b_j's position,
+    beside the mean mass on the other b positions; explicit softmax(q k^T / sqrt(hd) + causal) on the same residual stream as fwd_mem."""
+    g = m.g; A, B = A[:n], B[:n]; Lb = B.shape[1]; set_ops(m, A, B, dev); m.Lp = Lb; S = m.start(len(A), dev); res = {}
+    for t in range(Lb):
+        x = g.embed(m.seg_ids(t, len(A), dev)); Bn, T, D = x.shape; hd = D // g.H; h = x + g.w("wpe.weight")[:T][None]; shares = []
+        mask = torch.full((T, T), float("-inf"), device=dev).triu(1)
+        with amp_ctx(amp):
+            for i in range(g.L):
+                if i == m.mem.layer:
+                    h, S = m.mem(h, S)
+                pre = f"h.{i}."; a_ = Fn.layer_norm(h, (D,), g.w(pre + "ln_1.weight"), g.w(pre + "ln_1.bias"))
+                q, k, v = (a_ @ g.w(pre + "attn.c_attn.weight") + g.w(pre + "attn.c_attn.bias")).split(D, -1)
+                q, k, v = (t_.view(Bn, T, g.H, hd).transpose(1, 2) for t_ in (q, k, v))
+                pr = ((q.float() @ k.float().transpose(-1, -2)) / math.sqrt(hd) + mask).softmax(-1); shares.append(pr)
+                o = Fn.scaled_dot_product_attention(q, k, v, is_causal=True)
+                h = h + o.transpose(1, 2).reshape(Bn, T, D) @ g.w(pre + "attn.c_proj.weight") + g.w(pre + "attn.c_proj.bias")
+                a_ = Fn.layer_norm(h, (D,), g.w(pre + "ln_2.weight"), g.w(pre + "ln_2.bias"))
+                h = h + Fn.gelu(a_ @ g.w(pre + "mlp.c_fc.weight") + g.w(pre + "mlp.c_fc.bias"), approximate="tanh") @ g.w(pre + "mlp.c_proj.weight") + g.w(pre + "mlp.c_proj.bias")
+        P = torch.stack(shares)                                             # (layers, B, heads, T, T)
+        bpos = [6 + j for j in range(Lb)]; pj = bpos[t]; qs = list(range(pj + 1, T))
+        on = float(P[:, :, :, qs, pj].mean()); oth = float(np.mean([float(P[:, :, :, [q_ for q_ in qs], pk].mean()) for pk in bpos if pk != pj]))
+        res[str(t + 1)] = {"on_bj": on, "on_other_b_mean": oth, "by_layer_on_bj": [round(float(P[l_, :, :, qs, pj].mean()), 5) for l_ in range(P.shape[0])]}
+    res["def"] = "mean attention probability from pass j's positions after b_j onto b_j's position (all layers / heads), vs the other b positions"
+    return res
+
+
+def s153_eval(m, teA, teB, dev, amp, bs, a, dec):
+    """§153 descriptive block (eval mode, no draws): noop {K6, K8}; attn_bj_share (visible); operand_recall_pass1 + bj_recall_by_pass (pure /
+    repeat); head_roles; mem_norm_by_pass; sj_decode_acc (A); reader_text; head_ablation."""
+    from boxes.multcol import to_int as ti_
+    S = sj_values(teA, teB); N = len(teA); h = N // 2; out = {}
+    out["sj_decode_acc"] = {str(j + 1): float((dec[:, j] == S[:, j]).mean()) for j in range(4)} if a.reader else None
+    nz = {}
+    for K in (6, 8):                                                        # extra passes after the 4 (step tokens 5.., the problem unchanged)
+        dk = rollout_drow(m, teA, teB, dev, amp, bs, L=K, Lp=4)[0]; _, kp, _, _ = rollout_drow(m, teA[:256], teB[:256], dev, amp, bs, L=K, Lp=4, keep=tuple(range(4, K + 1)), decode=False)
+        ch = {str(k): float(np.median(np.linalg.norm((kp[k] - kp[k - 1]).reshape(len(kp[k]), -1), axis=1) / np.maximum(np.linalg.norm(kp[k - 1].reshape(len(kp[k]), -1), axis=1), 1e-12)))
+              for k in range(5, K + 1)}
+        nz["K%d" % K] = {"test_acc": float((dk[:, -1] == S[:, -1]).mean()), "mem_change_by_extra_pass": ch}
+    nz["def"] = "4x4 test items with K passes (the decode after the last); mem_change = median ||S_k - S_k-1|| / ||S_k-1|| per extra pass k (256 items)"
+    out["noop"] = nz
+    out["attn_bj_share"] = attn_bj_share(m, teA, teB, dev, amp) if a.pass_input == "visible" else None
+    rd, M0 = pass_reads(m, teA, teB, dev, amp, bs, keep_mem0=a.pass_input in ("pure", "repeat"))
+    if a.pass_input in ("pure", "repeat"):
+        out["operand_recall_pass1"] = {"memory_after_pass0": digit_recall(M0, teA, teB, h), "reads_pass1": digit_recall(rd["1"], teA, teB, h),
+                                       "def": "held-out 10-way kernel-ridge probes of a's / b's digits (LSB first): (a) flattened memory after pass 0, (b) branch reads at pass 1's positions"}
+        out["bj_recall_by_pass"] = {j: digit_recall(rd[j], teA, teB, h)["b"] for j in ("1", "2", "3", "4")}
+    else:
+        out["operand_recall_pass1"] = None; out["bj_recall_by_pass"] = None
+    del M0
+    roles = {}; abl = {}
+    for ht in ("add", "delta"):
+        m.mem.ablate = ht; dk = rollout_drow(m, teA, teB, dev, amp, bs)[0]; rk, _ = pass_reads(m, teA, teB, dev, amp, bs); m.mem.ablate = None
+        abl[ht + "_zeroed"] = {"test_acc": float((dk[:, -1] == S[:, -1]).mean()), "acc_by_length": {str(j + 1): float((dk[:, j] == S[:, j]).mean()) for j in range(4)}}
+        roles[ht + "_zeroed"] = {**abl[ht + "_zeroed"], "recall_reads_pass1": digit_recall(rk["1"], teA, teB, h)}
+    out["head_ablation"] = abl; out["head_roles"] = roles
+    _, kp, nrm, _ = rollout_drow(m, teA, teB, dev, amp, bs, norms=True, decode=False)
+    mn = {"additive": {str(j + 1): float(np.median(nrm[:, j, 0])) for j in range(4)}, "delta": {str(j + 1): float(np.median(nrm[:, j, 1])) for j in range(4)}}
+    if a.pass_input in ("pure", "repeat"):
+        n0 = min(256, len(teA)); set_ops(m, teA[:n0], teB[:n0], dev); m.Lp = 4
+        with torch.no_grad(), amp_ctx(amp):
+            S0 = m.write(m.start(n0, dev), -1)
+        mn["additive"]["0"] = float(S0[:, :DM.H_ADD].float().flatten(1).norm(dim=1).median()); mn["delta"]["0"] = float(S0[:, DM.H_ADD:].float().flatten(1).norm(dim=1).median())
+    mn["def"] = "median Frobenius norm of each head type's state after pass j (0 = pure pass 0, 256 items)"
+    out["mem_norm_by_pass"] = mn
+    rt = {}; set_ops(m, teA[:20], teB[:20], dev); m.Lp = 4
+    with torch.no_grad(), amp_ctx(amp):
+        Sx = m.start(20, dev)
+        for t in pass_list(m, 4):
+            Sx = m.write(Sx, t)
+            if t >= 0:
+                rt[str(t + 1)] = [bc.ENC.decode([int(v) for v in row]) for row in m.read_greedy(Sx).cpu().numpy()]
+    out["reader_text"] = {"by_pass": rt, "gold_S_j": {str(j + 1): [int(v) for v in S[:20, j]] for j in range(4)}}
+    return out
+
+
+def skip_eval(m, A, B, dev, amp, bs):
+    """note 153-1: the step-j pass (j = 2, 3) not run (the memory passes through unchanged; later passes keep their own step tokens), over L = 4
+    items with b_j != 0: row_skip_consistent = (pred == S_4 - a b_j 10^(j-1)), full_product = (pred == S_4)."""
+    from boxes.multcol import to_int as ti_
+    out = {}
+    for j in (2, 3):
+        keep = B[:, j - 1] != 0; Ak, Bk = A[keep], B[keep]; got = rollout_drow(m, Ak, Bk, dev, amp, bs, skip=(j,))[0][:, -1]
+        S4 = sj_values(Ak, Bk)[:, -1]; rs = S4 - ti_(Ak) * Bk[:, j - 1] * 10 ** (j - 1)
+        out["pass%d" % j] = {"row_skip_consistent": float((got == rs).mean()), "full_product": float((got == S4).mean()), "n": int(keep.sum()),
+                             "n_bj0_excluded": int((~keep).sum()), "excludes_bj0": True}
+    return out
+
+
+@torch.no_grad()
+def ext_4x5(m, dev, amp, bs, n=1000, seed=15304):
+    """§153: 4-digit a x 5-digit b, K = 5 passes (step token 5 unseen in training); the 8-digit reader: exact S_5 mod 1e8 (test_acc), and the
+    exact rate on the items with S_5 < 1e8."""
+    from boxes.multcol import gen_operands
+    rng = np.random.default_rng(seed); A = gen_operands(rng, n, 4); B = gen_operands(rng, n, 5); dec = rollout_drow(m, A, B, dev, amp, bs, L=5)[0]; S5 = sj_values(A, B)[:, 4]
+    lo = S5 < 10 ** NDIG
+    return {"test_acc": float((dec[:, 4] == S5 % 10 ** NDIG).mean()), "test_acc_items_lt_1e8": float((dec[lo, 4] == S5[lo]).mean()) if lo.any() else None,
+            "share_lt_1e8": float(lo.mean()), "acc_by_j_low8": {str(j + 1): float((dec[:, j] == sj_values(A, B)[:, j] % 10 ** NDIG).mean()) for j in range(5)},
+            "n": n, "metric": "S_5 mod 1e8 exact (the reader writes 8 digits)"}
 
 
 class Teacher:
@@ -521,6 +688,8 @@ def main():
     ap.add_argument("--mem_layer", type=int, default=6); ap.add_argument("--mem_add_heads", type=int, default=6); ap.add_argument("--mem_delta_heads", type=int, default=6)
     ap.add_argument("--keep_ckpt_steps", default="", help="§152: model-only copies at these steps -> s152.serial_by_ckpt (donor pos2), then deleted")
     ap.add_argument("--no_opt_reset", action="store_true", help="§152 B: keep AdamW's moments at each removal (LR re-warm only)")
+    ap.add_argument("--pass_input", default=None, choices=[None, "visible", "pure", "repeat"], help="§153 THINK-PASS pass inputs (with --carrier deltamem)")
+    ap.add_argument("--think_token", default="", help="§153 repeat: the one fixed think token's text (a single GPT-2 token)")
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args()
     if a.from_args:
@@ -537,7 +706,11 @@ def main():
     if a.carrier == "deltamem":                                             # §152 (378fe8e6 / note 152-1)
         assert not (a.no_round or a.dither or a.copy_frac or a.distill), "§152: DeltaMem is the only channel (--copy_frac 0; no --no_round / --dither / --distill)"
         assert (a.mem_add_heads, a.mem_delta_heads) == (DM.H_ADD, DM.H_DEL), "§152: 6 + 6 heads (boxes/deltamem.py)"
-        a.mem_group_gain = True; a.seg_order = "b_first"
+        a.mem_group_gain = True; a.seg_order = "b_first" if not a.pass_input else None
+    assert not a.pass_input or a.carrier == "deltamem", "§153: --pass_input needs --carrier deltamem"
+    assert a.pass_input != "repeat" or len(bc.tok(a.think_token)) == 1, "§153 repeat: --think_token must be one GPT-2 token"
+    if a.pass_input:                                                        # §153 records
+        a.times_token, a.register_token = " \u00d7", " _"
     assert not a.no_opt_reset or a.fork_from, "--no_opt_reset: §152 B forks only"
     if a.fork_from:
         a.steps = a.fork_steps                                              # the fork's own schedule (scorer reads fork_steps)
@@ -552,6 +725,8 @@ def main():
     teA, teB = load_bench(os.path.join(ROOT, "bench", "data", "mult_4x4_test.txt")); teA, teB = teA[:a.test_n], teB[:a.test_n]
     def mk():
         m_ = (MultRowDelta(s5.load_gpt2(dev), fam, a.mem_layer) if a.carrier == "deltamem" else MultRow(s5.load_gpt2(dev), fam)).to(dev); m_.soft_beta = a.soft_beta; m_.no_round = a.no_round
+        if a.pass_input:                                                    # §153
+            m_.pass_input = a.pass_input; m_.think_tok = bc.tok(a.think_token)[0] if a.pass_input == "repeat" else None
         if a.distill:
             m_.readout = nn.Linear(768, NDIG * 10).to(dev)
         return m_
@@ -769,6 +944,8 @@ def main():
                "train_gpu": info["train_gpu"], "train_driver": info["train_driver"]}
         res["long_acc"] = res["test_acc"]; res["donor"] = donor_drow(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(13902), n=a.donor_n)
         res["ext_4x8_low8"] = ext_4x8_low8(m, dev, amp, a.eval_bs, n=a.ext_n); res["compute"] = compute_drow(m)
+        if a.pass_input:                                                    # §153: the pass-skip SERIAL test (note 153-1) and 4x5 at K = 5
+            res["skip"] = skip_eval(m, teA, teB, dev, amp, a.eval_bs); res["ext_4x5"] = ext_4x5(m, dev, amp, a.eval_bs, n=a.ext_n)
         ip_ = os.path.join(a.out, "s152_init.json"); i152 = json.load(open(ip_)) if os.path.exists(ip_) else {}
         s152 = {k: s142.get(k) for k in ("teacher_invalid_share", "teacher_vs_gold_mismatch_share", "cache_split_sha", "cache_teacher_sha")}
         s152.update({k: v for k, v in s142.items() if k.startswith("fork_gate")})
@@ -777,7 +954,9 @@ def main():
                      "g_add": float(torch.exp(m.mem.s_add)), "g_del": float(torch.exp(m.mem.s_del)), "gain_param": "exp(s)",
                      "read_norm_ratio_by_handoff": {"step0": i152.get("read_norm_ratio_by_handoff_step0"), "end": read_ratio_drow(m, teA, teB, dev, amp)[0]},
                      "alpha_by_head": {"end": alpha_drow(m, teA, teB, dev, amp), "checkpoints": alpha_hist}})
-        s152.update(s152_eval(m, teA, teB, dev, amp, a.eval_bs, a, dec))
+        s152.update(s153_eval(m, teA, teB, dev, amp, a.eval_bs, a, dec) if a.pass_input else s152_eval(m, teA, teB, dev, amp, a.eval_bs, a, dec))
+        if a.pass_input:
+            s152.update({"pass_input": a.pass_input, "think_token": a.think_token or None})
         if a.fork_from:
             stages.append({"step": a.steps, "removed": list(order), **stage_eval()})
             for k_, st_ in enumerate(stages):                               # CE either side of the removal that st_'s last-removed S_j came from
@@ -795,7 +974,7 @@ def main():
                 else:
                     sb_[str(st_)] = None
             sb_[str(a.steps)] = res["donor"]["pos2"]; s152["serial_by_ckpt"] = sb_
-        res["s152"] = s152; res["eval_sec"] = round(time.time() - t1)
+        res["s153" if a.pass_input else "s152"] = s152; res["eval_sec"] = round(time.time() - t1)
         json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
         for ck_ in ["ckpt_last.pt", "ckpt_prev.pt"] + kept_:               # retention: the kept copies served serial_by_ckpt only
             if os.path.exists(os.path.join(a.out, ck_)):
