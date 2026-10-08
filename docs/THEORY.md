@@ -9075,6 +9075,13 @@ accumulator.**
       same λ grid. Only if these also fail is "the sums are not held" supported.
   - **Framing until then:** "R holds every seen operand digit exactly; linear integer read-outs of the partial sums are poor late in the chain; the swap / skip tests are
     uninformative here (re-presented operands, the count schedule). C1 is not shown for R."
+* **The like-for-like probe (2026-10-08 06:01 EDT; R s1, `what_state.operand_probe.*.colsum_cls`, 8k fit; 10-way units of ĉ_k and carry classes ⌊ĉ_k / 10⌋):**
+  - **The units digit of every completed column is held exactly.** After pair 12, columns 1–4 are at 1.0 / 0.984 / 0.959 / 0.994; after pair 8, columns 1–3 at 1.0. These are
+    the digits R emits.
+  - **The column in progress is not held:** units 0.476 (column 3 after pair 4), 0.291 (column 4 after pair 8), 0.463 (column 5 after pair 12).
+  - **Carries:** column 1's decodes at 1.0. The others are partial and decay along the chain (column 2: 0.79 → 0.59 → 0.49; column 3: 0.96 → 0.31 → 0.25).
+  - **Reading:** R's state is a **digit buffer**: the operands and the emitted digits, both exact. The running accumulator is not held in a linear or a 10-way-classifiable
+    code. The in-progress column is most plausibly computed at read time from the stored operands, an L1-style recompute for that column. C1 is not shown for R.
 
 ## 159. R-5×5: §155 R's write-after-read memory at 5×5, the SOTA leg (C3) (Audit 05:45; pre-registered 2026-10-08 05:43 EDT, before any implementation or run; runs only if §155 R s2 is exact)
 
