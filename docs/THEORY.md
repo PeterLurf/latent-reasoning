@@ -8086,6 +8086,20 @@ SERIAL and contractive. Slots 2–4 run (the credit rule).**
   - eval.json field: `s143.ablate704` = {ext_2048, donor}.
 * §143's registered PASS rule is unchanged. This only qualifies what a PASS means.
 
+**Note 150-3 (2026-10-07 21:54 EDT; a correction found by Audit, before §150's result). multpair's column curriculum (CMAX, 4×4) is c_max 1 / 2 / 4 / 8 at 0 / 2k / 5k / 9k.**
+* **Until 2k only column 1 is trained,** and column 1 is computable from the first pair, so it needs no carriage. Three statements are corrected:
+  - **§140's result:** "≈ 0 while only columns 1–2 were trained (1k–2k)" reads **"while only column 1 was trained (to 2k)"**. Column 2 enters at 2k.
+  - **§145's result:** "≈ 0 while only columns 1–2 train" reads **"while only column 1 trains"**.
+  - **§150 DIGIT s1** (my message to Audit, the user summary and the backlog block's premise): its 0.016 at 1–2k reflects column 1 only, **not** soft slots carrying column 2.
+    - The rise to 0.61 at 3k coincides with c_max 2 at 2k, not only with τ annealing.
+    - **"The annealing / hardening schedule collapsed the soft working memory" is withdrawn as the cause.** Collapse to constant tokens describes the end state only.
+* **The soft-only prototypes** (τ fixed at 1, no hardening) agree:
+  - proto150_digitsoft_s501_4060: 0.073 / 0.001 / 0.691 / 0.503 / 0.556 at 1k–5k;
+  - s503_2070: 0.0 / 0.0 / 0.534 / 0.622 at 1k–4k.
+  - The soft memory fails as soon as column 2 enters, at about §140's level.
+  - Their registered reading (the 6k–8k mean, ≤ 0.1 CARRIES, ≥ 0.3 FAILS) stands as fixed. These numbers point to FAILS, pending 6k–8k.
+  - The block's other premise, "c_max is 4 from 5k", is right.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
