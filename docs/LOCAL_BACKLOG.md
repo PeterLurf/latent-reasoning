@@ -178,6 +178,13 @@ text token (S5: the first state token; FF / CYC / MOD / RDFA: the answer token) 
 2. Then §154 SHIFT's local 4×4 proto at 8k (multpair `--carrier deltamem --add_reset column`, seed 501, out `proto154_shift_s501_3070`): the early column profile and α by flag
    beside b161 (descriptive).
 
+**[Theory 2026-10-08 06:30, 3070 + 4060 (dry since 06:13 / 06:21); descriptive previews, read for no rule, kept apart from the registered cells; memory-checked first, under the 6 GiB cap]**
+1. **4060: §158 FREE-PAIRS preview.** §158's command (§155 R's args + `--free_pairs 0.5`) with `--steps 8000`, seed 1, out `proto158_free_s1_4060`.
+   - **Read (descriptive):** consistent-bench test_acc, free-chain accuracy and the row-level donor at 8k. It is an early look beside b173 (24k, 3090) and does not score §158.
+2. **3070: §157 CCQ preview.** §157 CCQ's command (§152 A's args + `--read_mode ccq`, note 157-1) with `--steps 8000`, seed 1, out `proto157_ccq_s1_3070`.
+   - **Read (descriptive):** non-finite steps, λ by head, loss at 8k. It is an early instability check of the numerically riskiest arm.
+   - Then the same for `--read_mode multiread` (`proto157_multiread_s1_3070`) if time allows.
+
 ## Done
 
 * **§150 soft-only DIGIT (21:13 item 1): FAILS**, 4 of 4 (6k–8k mean loss 1.09 / 1.57 / 1.11 / 1.10, ≥ 0.3). **Soft-only FULL (overnight item 1): FAILS**,
