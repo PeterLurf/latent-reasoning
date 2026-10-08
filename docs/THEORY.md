@@ -8962,6 +8962,10 @@ The run is a post-hoc on every accepted §155 model (and §154 SHIFT / §151 for
   - **Neither:** a non-additive code, reported descriptively.
   - The operand-decode probe sharpens whichever reading applies.
 * "The first exact multiplication through a latent memory" is held from the user-facing framing until this reads.
+* **Clarifications (Experiments' questions, before any what_state output):**
+  - In reset arms (SHIFT, SHIFT-R), a skipped column-start pair **keeps its boundary's reset**. The reset is the harness's, not the pair's computation (`skip_keeps_reset`).
+  - The operand probe uses 8,000 train fit items, a 3-fold CV λ grid {1e-9 … 1e-6}, standardised, with one-hot argmax for digits.
+  - Output: `eval_what_state.json`.
 
 **Note 157-2 (2026-10-08 04:48 EDT, before any §157 run; Audit's code review 978a2399). Three readings sharpened.**
 * **CCQ = normalisation + contraction** (157-1). If CCQ passes and its **read-time λ = 0** ablation also reaches test_acc ≥ 0.95, the **ℓ2-normalised features** get the
