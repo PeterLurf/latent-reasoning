@@ -88,6 +88,14 @@ def main():
                     with open(os.path.join(ROOT, "logs", "posthoc_%s_%s.log" % (outf.split(".")[0], name)), "w") as lg:
                         subprocess.call([sys.executable, "-u", "-m", mod, "--from_args", os.path.join(d, "args.json")] + flag + ["--device", dev, "--out", d],
                                         cwd=ROOT, stdout=lg, stderr=subprocess.STDOUT)
+    if name.startswith("s155_") and not os.path.exists(os.path.join(d, "eval_what_state.json")):   # note 155-4 (descriptive): what the state holds
+        mod_ = "boxes.multpair_posthoc" if os.path.exists(os.path.join(ROOT, "boxes", "multpair_posthoc.py")) else "boxes.multpair"
+        with open(os.path.join(ROOT, "logs", "posthoc_what_state_%s.log" % name), "w") as lg:
+            try:
+                subprocess.call([sys.executable, "-u", "-m", mod_, "--from_args", os.path.join(d, "args.json"), "--what_state_only", "--device", dev, "--out", d],
+                                cwd=ROOT, stdout=lg, stderr=subprocess.STDOUT, timeout=1500)
+            except subprocess.TimeoutExpired:
+                lg.write("WHATSTATE TIMEOUT (1500 s)\n")
     pf_ = "eval_s155_posthoc.json" if name.startswith("s155_") else "eval_s154_posthoc.json"   # note 155-2: §155 too (propagation incl. coupling_share)
     if name.startswith(("s154_", "s155_")) and not os.path.exists(os.path.join(d, pf_)):   # §154 / §155 C7 state edits + propagation (descriptive), on-host
         mod_ = "boxes.multpair_posthoc" if os.path.exists(os.path.join(ROOT, "boxes", "multpair_posthoc.py")) else "boxes.multpair"   # the current code, shipped by the drain
