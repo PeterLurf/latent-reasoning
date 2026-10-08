@@ -60,15 +60,20 @@ after create): record the host's sha256 and commit exactly that file.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (00:43):**
+* **Theory (01:21):**
   - **§147 DELTA-STATE broke the middle-column wall** (0.743; columns 3–7 0.92–0.99; DROP by rule, IMPROVES), leading to **§151 DELTA-LONG** (48k × 4 seeds, running).
   - **§152 DELTA-READ** (378fe8e6; notes 152-1 / 152-2) is implemented (9535bfb0); b159 / b160 launch after the CUDA gates.
   - **§153 THINK-PASS registered** (ea154f30; note 153-1): item-agnostic passes, gated on §152 A s1 ≥ 0.95.
   - **§143 FULL-GROW PASS 4 / 4** (704-block ablation: width UNUSED in s2 / s3, USED in s4). This triggers note 133-12: cap4|fullgrow joins §133 stage 2.
   - **§154 SHIFT-MEM registered** (ed7857cc; the user's research pass): SHIFT (per-column reset) / ROTARY (relative keys) for C2; SHIFT s1 launching.
+  - **Note 147-4 (8596a342): DeltaMem's writes are input-only** (from block-6 entry). The memory is a linear buffer with read-time computation; §147's claim is restated
+    and the §151–§154 readings reworded. **§155 DELTA-R registered** (e9ee8a6c): write-after-read (writes from the top residual), arms R / SHIFT-R, with RECURRENT USE
+    (a state edit propagates) as the C1 test. §153 PURE / REPEAT move to it.
+  - **§152 CTRL s1: 0.012** (L1 / L2 1.0, L3 0.27, L4 0.012; 0.46× TC-M FLOPs). The carry-save sums are stored (R² ≥ 0.87), and carry resolution at read time fails. A s1
+    is due.
   - **§150 VOCAB-SLOT: both DROP** (the slots collapse to constant tokens; the soft-only protos FAIL). B4 stops.
   - Closed today: §133 stage 1, §136, §137, §138, §140, §141, §142, §143, §145, §146, §148, §149, §150.
-  - **Pending scoring:** §144 (the N64 follow-ups), §151, §152, §154.
+  - **Pending scoring:** §144 (the N64 follow-ups), §151, §152 A s1, §154, §155.
   - Later: the §133 stage-2 proofs (now with cap4|fullgrow), §139 A' / B (descriptive), §134 MOD s2 / s3.
 
 ## Recently done (details in THEORY / PROTOCOL12 / git log)
