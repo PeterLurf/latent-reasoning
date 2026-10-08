@@ -221,9 +221,262 @@ def contraction(m, A, B, dev, amp, T0=1, n=500, seed=12301):
 EQTOK = bc.tok(" =")[0]
 
 
+# ================================================================ THEORY §157 READ-PANEL (c13b78da): read-side changes on §152's DeltaMem
+PER_P = (10.0, 100.0, 1000.0); NSC = 2                                      # PERIODIC: frozen periods; scalar value channels per additive head
+
+
+class PeriodicMem(DM.DeltaMem):
+    """§157 PERIODIC: DeltaMem + per additive head 2 scalar value channels (W_s: LN_6(x) -> 2 values, rounded with a straight-through
+    estimator, written as phi(k) w_r^T into 2 extra state columns: state (B, 12, 64, 66)); the scalar read s = phi(q)^T S_s ->
+    [s, cos(2 pi s / P), sin(2 pi s / P)], P in {10, 100, 1000} (84 features) -> a zero-init Linear(84, 768) added beside W_o under the same fade.
+    fp32, autocast off (as the branch). round_err: list -> |w - round(w)| per write."""
+    periodic = True
+
+    def __init__(self, g, layer=6):
+        super().__init__(g, layer); dev = g.w("wte.weight").device
+        self.ws = nn.Linear(768, DM.H_ADD * NSC).to(dev)
+        with torch.no_grad():
+            self.ws.weight.normal_(0, 0.02); self.ws.bias.zero_()
+        self.pm = nn.Linear(DM.H_ADD * NSC * (1 + 2 * len(PER_P)), 768).to(dev)
+        with torch.no_grad():
+            self.pm.weight.zero_(); self.pm.bias.zero_()
+        self.round_err = None
+
+    def zero_state(self, B, dev):
+        return torch.zeros(B, DM.H_ADD + DM.H_DEL, DM.DH, DM.DH + NSC, device=dev)
+
+    @staticmethod
+    def feats(sv):
+        f = [sv] + [torch.cos(2 * math.pi * sv / P_) for P_ in PER_P] + [torch.sin(2 * math.pi * sv / P_) for P_ in PER_P]
+        return torch.stack(f, -1).flatten(-3)
+
+    def _forward(self, x, S, rec=None):
+        B, T, D = x.shape; HA, HD, DH = DM.H_ADD, DM.H_DEL, DM.DH; a = self.ln(x.float()); q, k, v = self.qkv(a).split(D, -1)
+        q, k, v = (t.view(B, T, HA + HD, DH) for t in (q, k, v)); g_ = self.gate(a); al = torch.sigmoid(g_[..., :HD]); be = 2 * torch.sigmoid(g_[..., HD:])
+        w = self.ws(a).view(B, T, HA, NSC); wr = w + (torch.round(w) - w).detach()
+        if self.round_err is not None:
+            self.round_err.append((w - torch.round(w)).abs().detach().flatten().cpu())
+        if self.alpha_rec is not None:
+            self.alpha_rec.append(al.mean(dim=(0, 1)).detach())
+        Sa, Ss, Sd = S[:, :HA, :, :DH].float(), S[:, :HA, :, DH:].float(), S[:, HA:, :, :DH].float(); outs = []; pfs = []
+        for t in range(T):
+            pk, pq = Fn.elu(k[:, t, :HA]) + 1, Fn.elu(q[:, t, :HA]) + 1
+            Sa = Sa + pk[..., :, None] * v[:, t, :HA][..., None, :]; Ss = Ss + pk[..., :, None] * wr[:, t][..., None, :]
+            oa = torch.einsum("bhk,bhkv->bhv", pq, Sa); sv = torch.einsum("bhk,bhkc->bhc", pq, Ss)
+            kd = Fn.normalize(k[:, t, HA:], dim=-1); qd = Fn.normalize(q[:, t, HA:], dim=-1); vd = v[:, t, HA:]; b_ = be[:, t][..., None, None]
+            Skk = torch.einsum("bhvk,bhk->bhv", Sd, kd); Sd = al[:, t][..., None, None] * (Sd - b_ * Skk[..., :, None] * kd[..., None, :]) + b_ * vd[..., :, None] * kd[..., None, :]
+            od = torch.einsum("bhvk,bhk->bhv", Sd, qd); oa = torch.exp(self.s_add) * oa; od = torch.exp(self.s_del) * od
+            if self.norms is not None and t == T - 1:
+                self.norms.append((od.flatten(1).norm(dim=1).detach(), oa.flatten(1).norm(dim=1).detach()))
+            if self.ablate == "add":
+                oa = torch.zeros_like(oa); sv = torch.zeros_like(sv)
+            if self.ablate == "delta":
+                od = torch.zeros_like(od)
+            outs.append(torch.cat([oa, od], 1).reshape(B, D)); pfs.append(self.feats(sv).reshape(B, -1))
+            if rec is not None and t == T - 1:
+                rec.append(oa.reshape(B, -1).detach())
+        o = torch.stack(outs, 1); pf = torch.stack(pfs, 1)
+        Sn = torch.cat([torch.cat([Sa, Ss], -1), torch.cat([Sd, torch.zeros_like(Sd[..., :NSC])], -1)], 1)
+        return x + (self.fade * (self.wo(o) + self.pm(pf))).to(x.dtype), Sn
+
+    def read_fixed_p(self, x, S):
+        """the reader pass's read on a fixed state (mem_read's role), with the periodic scalar read."""
+        with torch.autocast("cuda", enabled=False):
+            B, T, D = x.shape; HA, DH = DM.H_ADD, DM.DH; a = self.ln(x.float()); q = self.qkv(a)[..., :D].view(B, T, HA + DM.H_DEL, DH); pq = Fn.elu(q[:, :, :HA]) + 1
+            oa = torch.exp(self.s_add) * torch.einsum("bthk,bhkv->bthv", pq, S[:, :HA, :, :DH].float()); sv = torch.einsum("bthk,bhkc->bthc", pq, S[:, :HA, :, DH:].float())
+            od = torch.exp(self.s_del) * torch.einsum("bhvk,bthk->bthv", S[:, HA:, :, :DH].float(), Fn.normalize(q[:, :, HA:], dim=-1))
+            if self.ablate == "add":
+                oa = torch.zeros_like(oa); sv = torch.zeros_like(sv)
+            if self.ablate == "delta":
+                od = torch.zeros_like(od)
+            return x + (self.fade * (self.wo(torch.cat([oa, od], 2).reshape(B, T, D)) + self.pm(self.feats(sv)))).to(x.dtype)
+
+
+class MultiRead(nn.Module):
+    """§157 MULTIREAD: R = 4 learned queries per head (12 heads) with learned slot IDs read the pass-start state at the start of every pass
+    (segments and the reader); their 4 read vectors ([g_add read_add || g_del read_del], W_o-projected, then a zero-init Z) + slot ID are
+    prepended as 4 positions (no wpe) that every layer attends to; the original positions see them with attention bias log(fade) (fade
+    0 -> 1 over 500 steps; at fade 0 the read tokens are omitted: bitwise GPT-2). Read tokens attend among themselves only."""
+    R = 4
+
+    def __init__(self, dev):
+        super().__init__()
+        self.Q = nn.Parameter(torch.randn(DM.H_ADD + DM.H_DEL, self.R, DM.DH, device=dev) * 0.02)
+        self.slot = nn.Parameter(torch.randn(self.R, 768, device=dev) * 0.02); self.Z = nn.Linear(768, 768).to(dev)
+        with torch.no_grad():
+            self.Z.weight.zero_(); self.Z.bias.zero_()
+        self.register_buffer("fade", torch.zeros((), device=dev))
+
+    def reads(self, mem, S):
+        with torch.autocast("cuda", enabled=False):
+            HA, DH = DM.H_ADD, DM.DH
+            ra = torch.exp(mem.s_add) * torch.einsum("hrk,bhkv->bhrv", Fn.elu(self.Q[:HA]) + 1, S[:, :HA, :, :DH].float())
+            rd = torch.exp(mem.s_del) * torch.einsum("bhvk,hrk->bhrv", S[:, HA:, :, :DH].float(), Fn.normalize(self.Q[HA:], dim=-1))
+            return torch.cat([ra, rd], 1).permute(0, 2, 1, 3).reshape(S.shape[0], self.R, -1)   # (B, R, 768): heads concatenated as W_o's input
+
+    def tokens(self, mem, S):
+        with torch.autocast("cuda", enabled=False):
+            return self.slot[None] + self.Z(mem.wo(self.reads(mem, S)))
+
+
+
+class CCQMem(DM.DeltaMem):
+    """§157 CCQ (note 157-1; 2606.01294v2 Eq. 6 / 9 / 10): READ o_t = S_t q_clean, q_clean = q_t - lambda_t Sigma_t q_t, lambda_t =
+    sigmoid(W_l q_t + b_l) from the PRE-SPLIT query (768 -> one scalar per head; W_l = 0, b_l = -4.6 at init); Sigma_t = C_t - mu_t mu_t^T per head
+    (fp32, undecayed, count-normalised, centred) over the chain's writes so far (the same writes as S). q and k l2-normalised per head; on the
+    additive heads phi(k) and phi(q) are l2-normalised in BOTH the write and the read (disclosed adaptation). Every read position (segments and
+    the reader pass), all 12 heads. Packed state (B, 12, 64, 130): [..., :64] S, [..., 64:128] C (k x k), [..., 128] mu, [:, 0, 0, 129] the
+    write count. ccq_off: lambda forced to 0 at read (the read-time ablation). lam_rec: list -> mean lambda per head per pass."""
+    ccq = True
+
+    def __init__(self, g, layer=6):
+        super().__init__(g, layer); dev = g.w("wte.weight").device
+        self.wl = nn.Linear(768, DM.H_ADD + DM.H_DEL).to(dev)
+        with torch.no_grad():
+            self.wl.weight.zero_(); self.wl.bias.fill_(-4.6)
+        self.ccq_off = False; self.lam_rec = None
+
+    def zero_state(self, B, dev):
+        return torch.zeros(B, DM.H_ADD + DM.H_DEL, DM.DH, 2 * DM.DH + 2, device=dev)
+
+    def _feat(self, qk):
+        """l2-normalised features: phi = elu + 1 on the additive heads, raw on the delta heads, then l2 per head."""
+        HA = DM.H_ADD
+        return torch.cat([Fn.normalize(Fn.elu(qk[..., :HA, :]) + 1, dim=-1), Fn.normalize(qk[..., HA:, :], dim=-1)], -2)
+
+    def _lam(self, qfull):
+        lam = torch.sigmoid(self.wl(qfull))
+        if self.lam_rec is not None:
+            self.lam_rec.append(lam.flatten(0, -2).mean(0).detach())
+        return torch.zeros_like(lam) if self.ccq_off else lam
+
+    def _read(self, Qn, lam, Sa, Sd, C, mu):
+        """Qn (B, 12, 64) normalised queries; lam (B, 12); -> oa (B, 6, 64), od (B, 6, 64) with q_clean."""
+        Sig = C - mu[..., :, None] * mu[..., None, :]; qc = Qn - lam[..., None] * torch.einsum("bhij,bhj->bhi", Sig, Qn); HA = DM.H_ADD
+        return torch.einsum("bhk,bhkv->bhv", qc[:, :HA], Sa), torch.einsum("bhvk,bhk->bhv", Sd, qc[:, HA:])
+
+    def _forward(self, x, S, rec=None):
+        B, T, D = x.shape; HA, HD, DH = DM.H_ADD, DM.H_DEL, DM.DH; a = self.ln(x.float()); qf, k, v = self.qkv(a).split(D, -1); lam = self._lam(qf)
+        q, k, v = (t.view(B, T, HA + HD, DH) for t in (qf, k, v)); Qn, Kn = self._feat(q), self._feat(k)
+        g_ = self.gate(a); al = torch.sigmoid(g_[..., :HD]); be = 2 * torch.sigmoid(g_[..., HD:])
+        if self.alpha_rec is not None:
+            self.alpha_rec.append(al.mean(dim=(0, 1)).detach())
+        Sa, Sd = S[:, :HA, :, :DH].float(), S[:, HA:, :, :DH].float(); C = S[:, :, :, DH:2 * DH].float(); mu = S[:, :, :, 2 * DH].float(); cnt = S[:, 0, 0, 2 * DH + 1].float(); outs = []
+        for t in range(T):
+            pk = Kn[:, t, :HA]; Sa = Sa + pk[..., :, None] * v[:, t, :HA][..., None, :]
+            kd = Kn[:, t, HA:]; vd = v[:, t, HA:]; b_ = be[:, t][..., None, None]; Skk = torch.einsum("bhvk,bhk->bhv", Sd, kd)
+            Sd = al[:, t][..., None, None] * (Sd - b_ * Skk[..., :, None] * kd[..., None, :]) + b_ * vd[..., :, None] * kd[..., None, :]
+            cnt = cnt + 1; c_ = cnt[:, None, None]; Kt = Kn[:, t]; mu = mu + (Kt - mu) / c_                 # count-normalised, undecayed, centred
+            C = C + (Kt[..., :, None] * Kt[..., None, :] - C) / c_[..., None]
+            oa, od = self._read(Qn[:, t], lam[:, t], Sa, Sd, C, mu); oa = torch.exp(self.s_add) * oa; od = torch.exp(self.s_del) * od
+            if self.norms is not None and t == T - 1:
+                self.norms.append((od.flatten(1).norm(dim=1).detach(), oa.flatten(1).norm(dim=1).detach()))
+            if self.ablate == "add":
+                oa = torch.zeros_like(oa)
+            if self.ablate == "delta":
+                od = torch.zeros_like(od)
+            outs.append(torch.cat([oa, od], 1).reshape(B, D))
+            if rec is not None and t == T - 1:
+                rec.append(oa.reshape(B, -1).detach())
+        o = torch.stack(outs, 1); cn = torch.zeros_like(mu)[..., None]; cn[:, 0, 0, 0] = cnt
+        Sn = torch.cat([torch.cat([Sa, Sd], 1), C, mu[..., None], cn], -1)
+        return x + (self.fade * self.wo(o)).to(x.dtype), Sn
+
+    def read_fixed_c(self, x, S):
+        """the reader pass's read on a fixed (pass-start) state and its key statistics."""
+        with torch.autocast("cuda", enabled=False):
+            B, T, D = x.shape; HA, DH = DM.H_ADD, DM.DH; a = self.ln(x.float()); qf = self.qkv(a)[..., :D]; lam = self._lam(qf)
+            Qn = self._feat(qf.view(B, T, HA + DM.H_DEL, DH)); Sa, Sd = S[:, :HA, :, :DH].float(), S[:, HA:, :, :DH].float(); C = S[:, :, :, DH:2 * DH].float(); mu = S[:, :, :, 2 * DH].float()
+            Sig = C - mu[..., :, None] * mu[..., None, :]; qc = Qn - lam[..., None] * torch.einsum("bhij,bthj->bthi", Sig, Qn)
+            oa = torch.exp(self.s_add) * torch.einsum("bthk,bhkv->bthv", qc[:, :, :HA], Sa); od = torch.exp(self.s_del) * torch.einsum("bhvk,bthk->bthv", Sd, qc[:, :, HA:])
+            if self.ablate == "add":
+                oa = torch.zeros_like(oa)
+            if self.ablate == "delta":
+                od = torch.zeros_like(od)
+            return x + (self.fade * self.wo(torch.cat([oa, od], 2).reshape(B, T, D))).to(x.dtype)
+
+
+@torch.no_grad()
+def ccq_extras(m, teA, teB, dev, amp, bs, n=256):
+    """§157 CCQ descriptive: ccq_lambda_by_head (mean lambda over every read of a probe batch: segments + the final reader pass), offcol_weight
+    (additive heads, exact linear-attention weights: at the reader position predicting digit k (teacher-forced, after segment 4), the share of
+    |q_clean . phi_n(k_j)| on write tokens j outside column k-1 (a_i in segment s belongs to column i + s; EOT / b_j / step tokens count as
+    outside)), and the read-time ablation (lambda forced to 0 at read: test_acc, acc_by_length)."""
+    n = min(n, len(teA)); A, B = teA[:n], teB[:n]; HA, DH = DM.H_ADD, DM.DH; xs = []
+    hk = m.mem.register_forward_pre_hook(lambda mod_, inp_: xs.append(inp_[0].detach().float())); m.mem.lam_rec = []
+    try:
+        _, kept, _, _ = rollout_drow(m, A, B, dev, amp, n, keep=(4,), decode=False)
+    finally:
+        hk.remove()
+    S4 = torch.tensor(kept[4], device=dev); S4v = sj_values(A, B)[:, -1]; ans = torch.tensor(np.array(DTOK)[digits8(S4v)], device=dev)
+    cp = []
+    with amp_ctx(amp):
+        fwd_mem(m.g, m.g.embed(m.reader_ids(n, dev, ans)), m.mem, S4, read_only=True, cap=cp)
+    lam_all = torch.stack(m.mem.lam_rec).mean(0); m.mem.lam_rec = None
+    a = m.mem.ln(cp[0].float()); qf = m.mem.qkv(a)[..., :768]; lam = torch.sigmoid(m.mem.wl(qf)); Qn = m.mem._feat(qf.view(n, -1, HA + DM.H_DEL, DH))
+    C = S4[:, :, :, DH:2 * DH].float(); mu = S4[:, :, :, 2 * DH].float(); Sig = C - mu[..., :, None] * mu[..., None, :]
+    qc = (Qn - lam[..., None] * torch.einsum("bhij,bthj->bthi", Sig, Qn))[:, :, :HA]                    # (n, T, 6, 64)
+    K = torch.cat([m.mem._feat(m.mem.qkv(m.mem.ln(x_))[..., 768:1536].view(n, -1, HA + DM.H_DEL, DH))[:, :, :HA] for x_ in xs[:4]], 1)   # (n, 28, 6, 64)
+    col = np.full(K.shape[1], -1)
+    for s_ in range(4):
+        for i in range(4):
+            col[s_ * MultRowDelta.SEG_T + 3 + i] = i + s_
+    W = torch.einsum("bthd,bjhd->bthj", qc, K).abs().cpu().numpy(); pos = (list(range(2, 2 + 2 * NDIG, 2)) if getattr(m, "sep", None) is not None else list(range(1, 1 + NDIG)))
+    off = {}
+    for k in range(NDIG):
+        w_ = W[:, pos[k]]; oc = col != k; off[str(k + 1)] = float((w_[..., oc].sum(-1) / np.maximum(w_.sum(-1), 1e-12)).mean())
+    off["mean"] = float(np.mean([v for v in off.values()]))
+    m.mem.ccq_off = True; dk = rollout_drow(m, teA, teB, dev, amp, bs)[0]; m.mem.ccq_off = False; S_ = sj_values(teA, teB)
+    return {"ccq_lambda_by_head": [round(float(v), 6) for v in lam_all], "offcol_weight": off,
+            "read_time_lambda0": {"test_acc": float((dk[:, -1] == S_[:, -1]).mean()), "acc_by_length": {str(j + 1): float((dk[:, j] == S_[:, j]).mean()) for j in range(4)}},
+            "offcol_def": "additive heads, |q_clean . phi_n(k_j)| share on write tokens outside the digit's column (reader position, after segment 4, teacher-forced)"}
+
+
+def _mblock(g, i, h, hd, mask):
+    """a GPT-2 block with an explicit additive attention mask (§157 MULTIREAD)."""
+    B, T, D = h.shape; pre = f"h.{i}."
+    a = Fn.layer_norm(h, (D,), g.w(pre + "ln_1.weight"), g.w(pre + "ln_1.bias"))
+    q, k, v = (a @ g.w(pre + "attn.c_attn.weight") + g.w(pre + "attn.c_attn.bias")).split(D, -1)
+    q, k, v = (t.view(B, T, g.H, hd).transpose(1, 2) for t in (q, k, v))
+    o = Fn.scaled_dot_product_attention(q, k, v, attn_mask=mask.to(q.dtype))
+    h = h + o.transpose(1, 2).reshape(B, T, D) @ g.w(pre + "attn.c_proj.weight") + g.w(pre + "attn.c_proj.bias")
+    a = Fn.layer_norm(h, (D,), g.w(pre + "ln_2.weight"), g.w(pre + "ln_2.bias"))
+    mm = Fn.gelu(a @ g.w(pre + "mlp.c_fc.weight") + g.w(pre + "mlp.c_fc.bias"), approximate="tanh")
+    return h + mm @ g.w(pre + "mlp.c_proj.weight") + g.w(pre + "mlp.c_proj.bias")
+
+
+def _fwd_mem_mr(g, x, mem, S, read_only=False, cap=None, mrcap=None):
+    """fwd_mem with MULTIREAD's 4 prepended read tokens (computed from the pass-start S). mrcap: dict <- 'tok0' (B, R, 768) the read tokens'
+    layer-0 vectors, 'tokL7' their residual after block 6."""
+    B, T, D = x.shape; hd = D // g.H; R = mem.mr.R; rt = mem.mr.tokens(mem, S).to(x.dtype)
+    if mrcap is not None:
+        mrcap["tok0"] = rt.detach()
+    h = torch.cat([rt, x + g.w("wpe.weight")[:T][None]], 1); L = R + T
+    mask = torch.full((L, L), float("-inf"), device=x.device); mask[:R, :R] = 0.0; mask[R:, :R] = torch.log(mem.mr.fade.float())
+    mask[R:, R:] = torch.full((T, T), float("-inf"), device=x.device).triu(1)
+    for i in range(g.L):
+        if i == mem.layer:
+            ho = h[:, R:]
+            if cap is not None:
+                cap.append(ho.detach())
+            if read_only:
+                ho = mem_read(mem, ho, S)
+            else:
+                ho, S = mem(ho, S)
+            h = torch.cat([h[:, :R], ho], 1)
+        h = _mblock(g, i, h, hd, mask)
+        if mrcap is not None and i == 6:
+            mrcap["tokL7"] = h[:, :R].detach()
+    return Fn.layer_norm(h[:, R:], (D,), g.w("ln_f.weight"), g.w("ln_f.bias")), S
+
+
 def mem_read(mem, x, S):
     """§152 reader pass: DeltaMem's read on a FIXED state - no write (k / v / alpha / beta unused), S untouched; the same read gains exp(s),
     ablation, fade and W_o as DeltaMem.forward. fp32 with autocast off (as the branch)."""
+    if getattr(mem, "periodic", False):                                     # §157 PERIODIC: the scalar channels too
+        return mem.read_fixed_p(x, S)
+    if getattr(mem, "ccq", False):                                          # §157 CCQ: the contracted query
+        return mem.read_fixed_c(x, S)
     with torch.autocast("cuda", enabled=False):
         B, T, D = x.shape; a = mem.ln(x.float()); q = mem.qkv(a)[..., :D].view(B, T, DM.H_ADD + DM.H_DEL, DM.DH)
         Sa, Sd = S[:, :DM.H_ADD].float(), S[:, DM.H_ADD:].float()
@@ -239,6 +492,8 @@ def mem_read(mem, x, S):
 def fwd_mem(g, x, mem, S, read_only=False, cap=None):
     """boxes.deltamem.gpt_forward_mem, op for op (checked bitwise in scratch/gate152.py), plus: read_only (the reader pass: mem_read, S returned
     as given) and cap (a list: the residual entering the branch, i.e. after mem.layer blocks, (B, T, 768))."""
+    if getattr(mem, "mr", None) is not None and float(mem.mr.fade) > 0:     # §157 MULTIREAD (fade 0: the read tokens are omitted)
+        return _fwd_mem_mr(g, x, mem, S, read_only, cap)
     B, T, D = x.shape; hd = D // g.H; h = x + g.w("wpe.weight")[:T][None]
     for i in range(g.L):
         if i == mem.layer:
@@ -338,7 +593,7 @@ def rollout_drow(m, A, B, dev, amp, bs, L=None, override=None, keep=(), norms=Fa
     replaced (1-based). keep: segments whose states are returned (N, 12, 64, 64) fp32; norms: (N, L, 2) Frobenius norms (additive, delta);
     caps: the residual entering the branch per segment (N, L, 7, 768). §153: skip (passes j not run: the memory passes through), Lp (b digits in the
     problem; default min(L, b's length)); pure / repeat run pass 0 first. Returns dec (N, L), kept, norms, caps."""
-    N = len(A); L = L or B.shape[1]; dec = np.full((N, L), -1, np.int64); kept = {p_: np.zeros((N, DM.H_ADD + DM.H_DEL, DM.DH, DM.DH), np.float32) for p_ in keep}
+    N = len(A); L = L or B.shape[1]; dec = np.full((N, L), -1, np.int64); kept = {p_: None for p_ in keep}   # §157: allocated from the state's own shape
     nrm = np.zeros((N, L, 2), np.float32) if norms else None; C = np.zeros((N, L, MultRowDelta.SEG_T, 768), np.float32) if caps else None
     for i in range(0, N, bs):
         sl = slice(i, i + bs); Bn = len(A[sl]); set_ops(m, A[sl], B[sl], dev); S = m.start(Bn, dev); m.Lp = Lp or min(L, B.shape[1])
@@ -355,6 +610,8 @@ def rollout_drow(m, A, B, dev, amp, bs, L=None, override=None, keep=(), norms=Fa
                 if decode:
                     dec[sl, t] = m.fam.decode(m.read_greedy(S).cpu().numpy())
             if t + 1 in kept:
+                if kept[t + 1] is None:
+                    kept[t + 1] = np.zeros((N,) + tuple(S.shape[1:]), np.float32)
                 kept[t + 1][sl] = S.float().cpu().numpy()
             if norms:
                 nrm[sl, t, 0] = S[:, :DM.H_ADD].float().flatten(1).norm(dim=1).cpu().numpy(); nrm[sl, t, 1] = S[:, DM.H_ADD:].float().flatten(1).norm(dim=1).cpu().numpy()
@@ -426,10 +683,11 @@ def compute_drow(m, L=4):
     mt = bc.Meter(m.g); rows = 0
     pi = getattr(m, "pass_input", None)                                     # §153: pass lengths by input
     segs = [MultRowDelta.SEG_T] * L if pi is None else ([7 + L] * L if pi == "visible" else [6 + L] + [6] * L)
+    RT = MultiRead.R if getattr(m.mem, "mr", None) is not None else 0      # §157 MULTIREAD: the read tokens are processed in every pass
     for T_ in segs:
-        mt.step(T_, 0, 0)
+        mt.step(T_ + RT, 0, 0)
     sp_ = getattr(m, "sep", None) is not None; st_ = 2 if sp_ else 1; c0 = 3 if sp_ else 2   # §156 interleave: forced separators counted
-    mt.step(c0, 0, 1); rows += 1
+    mt.step(c0 + RT, 0, 1); rows += 1
     for k in range(NDIG - 1):
         mt.step(st_, c0 + st_ * k, 1); rows += 1
     nb = sum(p_.numel() for n_, p_ in m.mem.named_parameters() if not n_.startswith("s_")); seg_tok = sum(segs); rd_tok = (2 + 2 * NDIG - 1) if getattr(m, "sep", None) is not None else (2 + NDIG - 1); D2 = DM.DH * DM.DH
@@ -565,6 +823,84 @@ def _patched_block(g, i, hh, hd):
         hh = hh.clone(); hh[:, _RSLOT["pos"]] = _RSLOT["rep"][_RSLOT["i"]].to(hh.dtype)
     _RSLOT["i"] += 1
     return DM._block(g, i, hh, hd)
+
+
+@torch.no_grad()
+def s157_eval(m, teA, teB, trA, trB, dev, amp, bs, a, n_fit=4000):
+    """§157 descriptive: digit_acc_teacher_forced (per column of S_4), read_exposure (near-OLS ridge, lambda <= 1e-8, of the accumulator c^_k =
+    column sum + carry-in from the reader pass's block-6 read at the position predicting digit k; MULTIREAD also from the read tokens' layer-0
+    vectors and their residual after block 6; fit on n_fit train items, scored on the test items: exact = round(pred) == c^_k, per column),
+    key_cos (mean |cos| between an item's write keys, per head), write_round_err (PERIODIC), offcol_weight (CCQ: None until built)."""
+    from boxes.multcol import load_bench_head  # noqa: F401
+    def acc_t(A, B):
+        cs = np.zeros((len(A), NDIG), np.int64)
+        for j in range(4):
+            for i in range(4):
+                cs[:, i + j] += A[:, i] * B[:, j]
+        ac = np.zeros_like(cs); c_ = np.zeros(len(A), np.int64)
+        for k in range(NDIG):
+            ac[:, k] = cs[:, k] + c_; c_ = ac[:, k] // 10
+        return ac
+    def caps(A, B):
+        N = len(A); S4 = sj_values(A, B)[:, -1]; ans = np.array(DTOK)[digits8(S4)]; rd = np.zeros((N, NDIG, 768), np.float32); pr = np.zeros((N, NDIG), np.int64)
+        mr = getattr(m.mem, "mr", None) is not None; t0 = np.zeros((N, MultiRead.R * 768), np.float32) if mr else None; t7 = np.zeros_like(t0) if mr else None
+        _, kept, _, _ = rollout_drow(m, A, B, dev, amp, bs, keep=(4,), decode=False); lut = {t: i_ for i_, t in enumerate(DTOK)}
+        for s_ in range(0, N, bs):
+            sl = slice(s_, s_ + bs); S = torch.tensor(kept[4][sl], device=dev); an = torch.tensor(ans[sl], device=dev); ids = m.reader_ids(len(an), dev, an)
+            x = m.g.embed(ids); cp = []; mc = {} if mr else None
+            hook = []; hk = None
+            def pre_hook(mod_, inp_):
+                hook.append(inp_[0].detach())
+            with amp_ctx(amp):
+                if mr and float(m.mem.mr.fade) > 0:
+                    out, _ = _fwd_mem_mr(m.g, x, m.mem, S, read_only=True, cap=cp, mrcap=mc)
+                else:
+                    out, _ = fwd_mem(m.g, x, m.mem, S, read_only=True, cap=cp)
+                h6 = cp[0]; rdv = mem_read(m.mem, h6, S) - h6                                  # the read's contribution at every position
+            pos = slice(2, None, 2) if getattr(m, "sep", None) is not None else slice(1, 1 + NDIG)
+            rd[sl] = rdv[:, pos].float().cpu().numpy(); pr[sl] = np.vectorize(lambda t_: lut.get(int(t_), -1))(m.g.logits(out[:, pos]).float().argmax(-1).cpu().numpy())
+            if mr and mc:
+                t0[sl] = mc["tok0"].flatten(1).float().cpu().numpy(); t7[sl] = mc["tokL7"].flatten(1).float().cpu().numpy()
+        return rd, pr, t0, t7
+    def ols(Xf, yf, Xs, lams=(1e-10, 1e-8)):
+        mu, sd = Xf.mean(0), Xf.std(0) + 1e-6; Zf = (Xf - mu) / sd; Zs = (Xs - mu) / sd; d = Zf.shape[1]; fold = np.arange(len(Zf)) % 3
+        def fit(Za, ya, lam):
+            ym = ya.mean(); return np.linalg.solve(Za.T @ Za + lam * len(Za) * np.eye(d), Za.T @ (ya - ym)), ym
+        def r2(y_, p_):
+            return 1 - ((y_ - p_) ** 2).sum() / max(((y_ - y_.mean()) ** 2).sum(), 1e-12)
+        best = max(lams, key=lambda l_: np.mean([r2(yf[fold == k], Zf[fold == k] @ fit(Zf[fold != k], yf[fold != k], l_)[0] + fit(Zf[fold != k], yf[fold != k], l_)[1]) for k in range(3)]))
+        W, ym = fit(Zf, yf, best); return Zs @ W + ym
+    ac_te = acc_t(teA, teB); trA, trB = trA[:n_fit], trB[:n_fit]; ac_tr = acc_t(trA, trB)
+    Rtr, _, T0tr, T7tr = caps(trA, trB); Rte, Pte, T0te, T7te = caps(teA, teB); out = {"read_mode": a.read_mode}
+    out["digit_acc_teacher_forced"] = {str(k + 1): float((Pte[:, k] == ac_te[:, k] % 10).mean()) for k in range(NDIG)}
+    rx = {"block6_read": {}}
+    for k in range(NDIG):
+        if ac_tr[:, k].std() > 0:
+            rx["block6_read"][str(k + 1)] = float((np.rint(ols(Rtr[:, k].astype(np.float64), ac_tr[:, k].astype(np.float64), Rte[:, k].astype(np.float64))) == ac_te[:, k]).mean())
+    if T0tr is not None:
+        for nm, Xtr, Xte in (("read_tokens_layer0", T0tr, T0te), ("read_tokens_after_block6", T7tr, T7te)):
+            rx[nm] = {str(k + 1): float((np.rint(ols(Xtr.astype(np.float64), ac_tr[:, k].astype(np.float64), Xte.astype(np.float64))) == ac_te[:, k]).mean())
+                      for k in range(NDIG) if ac_tr[:, k].std() > 0}
+    rx["def"] = "exact = round(pred) == c^_k (column sum + carry-in), near-OLS ridge (lambda <= 1e-8, standardised), fit %d train items, scored on the test items" % len(trA)
+    out["read_exposure"] = rx
+    kc = []                                                                 # key_cos: the write keys entering each segment's branch
+    hkc = m.mem.register_forward_pre_hook(lambda mod_, inp_: kc.append(inp_[0].detach().float()))
+    try:
+        rollout_drow(m, teA[:128], teB[:128], dev, amp, 128, decode=False)
+    finally:
+        hkc.remove()
+    K = torch.cat([m.mem.qkv(m.mem.ln(x_))[..., 768:1536] for x_ in kc], 1).view(len(kc[0]), -1, DM.H_ADD + DM.H_DEL, DM.DH)   # (B, 4 x 7, 12, 64)
+    Kn = Fn.normalize(K, dim=-1); cs_ = torch.einsum("bthd,bshd->bhts", Kn, Kn).abs(); n_ = cs_.shape[-1]; off = ~torch.eye(n_, dtype=torch.bool, device=cs_.device)
+    out["key_cos"] = [round(float(cs_[:, h_][:, off].mean()), 5) for h_ in range(cs_.shape[1])]
+    if getattr(m.mem, "periodic", False):
+        m.mem.round_err = []; rollout_drow(m, teA[:256], teB[:256], dev, amp, 256, decode=False); e_ = torch.cat(m.mem.round_err).numpy(); m.mem.round_err = None
+        out["write_round_err"] = {"mean": float(e_.mean()), "median": float(np.median(e_)), "p90": float(np.quantile(e_, 0.9)), "max": float(e_.max()), "n": int(e_.size)}
+    else:
+        out["write_round_err"] = None
+    out["offcol_weight"] = None
+    if getattr(m.mem, "ccq", False):                                        # note 157-1
+        out.update(ccq_extras(m, teA, teB, dev, amp, bs))
+    return out
 
 
 def s152_eval(m, teA, teB, dev, amp, bs, a, dec):
@@ -828,6 +1164,7 @@ def main():
     ap.add_argument("--carrier", default="code", choices=["code", "deltamem"], help="§152: deltamem = §147's DeltaMem as the only cross-segment channel (no code token)")
     ap.add_argument("--mem_layer", type=int, default=6); ap.add_argument("--mem_add_heads", type=int, default=6); ap.add_argument("--mem_delta_heads", type=int, default=6)
     ap.add_argument("--keep_ckpt_steps", default="", help="§152: model-only copies at these steps -> s152.serial_by_ckpt (donor pos2), then deleted")
+    ap.add_argument("--read_mode", default=None, choices=[None, "periodic", "multiread", "ccq"], help="§157 READ-PANEL (with --carrier deltamem)")
     ap.add_argument("--answer_sep", default=None, choices=[None, "interleave"], help="§156 (b): forced '|' before each digit of the reader decode")
     ap.add_argument("--sep_token", default="|")
     ap.add_argument("--keep_ckpt_retain", action="store_true", help="note 152-5: keep the --keep_ckpt_steps copies after the eval (default: deleted)")
@@ -856,6 +1193,9 @@ def main():
     if a.pass_input:                                                        # §153 records
         a.times_token, a.register_token = " \u00d7", " _"
     assert not a.no_opt_reset or a.fork_from, "--no_opt_reset: §152 B forks only"
+    assert not a.read_mode or (a.carrier == "deltamem" and not a.pass_input), "§157: --read_mode on §152's DeltaMem"
+    if a.read_mode == "ccq":                                                # note 157-1: the paper's equations (2606.01294v2 Eq. 6 / 9 / 10)
+        a.ccq_lambda_init_bias = -4.6; a.ccq_feature_norm = "l2 per head (additive: phi = elu + 1, then l2, in write and read)"
     if a.answer_sep:                                                        # §156 (b): one token, no merge with ' d' on re-encoding
         assert a.carrier == "deltamem" and not a.pass_input, "§156 (b): --answer_sep on §152's reader"
         st_ = bc.tok(a.sep_token); assert len(st_) == 1, "--sep_token must be one GPT-2 token"; smp = []
@@ -880,6 +1220,12 @@ def main():
         m_ = (MultRowDelta(s5.load_gpt2(dev), fam, a.mem_layer) if a.carrier == "deltamem" else MultRow(s5.load_gpt2(dev), fam)).to(dev); m_.soft_beta = a.soft_beta; m_.no_round = a.no_round
         if a.answer_sep:                                                    # §156 (b)
             m_.sep = bc.tok(a.sep_token)[0]; m_.sep_mode = a.answer_sep
+        if a.read_mode == "periodic":                                       # §157
+            m_.mem = PeriodicMem(m_.g, a.mem_layer).to(dev)
+        if a.read_mode == "multiread":
+            m_.mem.mr = MultiRead(dev)
+        if a.read_mode == "ccq":
+            m_.mem = CCQMem(m_.g, a.mem_layer).to(dev)
         if a.pass_input:                                                    # §153
             m_.pass_input = a.pass_input; m_.think_tok = bc.tok(a.think_token)[0] if a.pass_input == "repeat" else None
         if a.distill:
@@ -1014,6 +1360,8 @@ def main():
         m.p_hard = 0.0 if step <= a.p_hard_start * sc else min(1.0, (step - a.p_hard_start * sc) / ((a.p_hard_end - a.p_hard_start) * sc)); m.train()
         if a.carrier == "deltamem" and not a.fork_from:
             m.mem.fade.fill_(min(1.0, step / max(1, int(500 * sc))))         # §147: W_o fade-in over 500 steps (a fork starts from gate.pt's fade 1)
+            if getattr(m.mem, "mr", None) is not None:                      # §157 MULTIREAD: the read tokens' attention faded in over 500 steps
+                m.mem.mr.fade.fill_(min(1.0, step / max(1, int(500 * sc))))
         m.noise = (a.dither if (a.fork_from or step > 2000 * sc) else 0.0) if a.no_round else 0.0   # §142 NOISE: dither after 2k (the fork is past 2k)
         L = a.fixed_L if a.fixed_L else int(rng.integers(1, lmax(step / sc, th) + 1)); Ls.append(L); ii = rng.integers(0, len(trA), a.bs - n_copy); w = w_at(step)
         rmask = None
@@ -1103,6 +1451,8 @@ def main():
         res["acc_by_column"] = {"per_column": [round(float(v), 4) for v in Cd.mean(0)], "cumulative": [round(float(Cd[:, :k + 1].all(1).mean()), 4) for k in range(NDIG)]}
         if a.answer_sep:
             res["s156"] = s156_row_eval(m, teA, teB, dev, amp, a.eval_bs)
+        if a.read_mode:                                                     # §157
+            res["s157"] = s157_eval(m, teA, teB, trA, trB, dev, amp, a.eval_bs, a)
         if a.pass_input:                                                    # §153: the pass-skip SERIAL test (note 153-1) and 4x5 at K = 5
             res["skip"] = skip_eval(m, teA, teB, dev, amp, a.eval_bs); res["ext_4x5"] = ext_4x5(m, dev, amp, a.eval_bs, n=a.ext_n)
         ip_ = os.path.join(a.out, "s152_init.json"); i152 = json.load(open(ip_)) if os.path.exists(ip_) else {}
