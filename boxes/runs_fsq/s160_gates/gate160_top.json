@@ -1,0 +1,56 @@
+{
+ "device": "cpu",
+ "write_mode": "top",
+ "module": "boxes.multrow",
+ "amp": "None",
+ "g0_losses": [
+  [
+   18.469755172729492,
+   17.57855987548828
+  ],
+  [
+   18.469755172729492,
+   17.57855987548828
+  ]
+ ],
+ "g0_grad_names_equal": true,
+ "g0_pass": true,
+ "g1_max_abs_dlogits_vs_plain": 0.0,
+ "g1_pass": true,
+ "g_add_init": 0.0003449273353908211,
+ "g2_max_abs_dstate": [
+  0.0,
+  0.0,
+  0.0,
+  0.0
+ ],
+ "g2_max_abs_dlogits": 0.0,
+ "g2_pass": true,
+ "g3_final_grad": {
+  "s_add": 0.03321985900402069,
+  "s_del": 0.014078382402658463,
+  "ln.weight": 0.03932065889239311,
+  "ln.bias": 0.08763135224580765,
+  "qkv.weight": 0.33140698075294495,
+  "qkv.bias": 0.05382467433810234,
+  "gate.weight": 0.011686642654240131,
+  "gate.bias": 0.0015021689468994737,
+  "wo.weight": 0.8799472451210022,
+  "wo.bias": 0.0968332290649414,
+  "ln_w.weight": 0.04106602817773819,
+  "ln_w.bias": 0.08620467782020569
+ },
+ "g3_zero": [],
+ "g3_S_grad_norm": [
+  0.009449154138565063,
+  0.010004563257098198,
+  0.010903329588472843,
+  0.014180678874254227
+ ],
+ "g3_S1_grad_diff_gamma": 0.006803328171372414,
+ "g3_pass": true,
+ "g4_states_bitwise_equal": true,
+ "g4_final_logits_bitwise_equal": true,
+ "g4_pass": true,
+ "all_pass": true
+}
