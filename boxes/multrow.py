@@ -287,12 +287,24 @@ class MultRowDelta(MultRow):
     def write(self, S, t, cap=None):
         _, S = fwd_mem(self.g, self.g.embed(self.seg_ids(t, S.shape[0], S.device)), self.mem, S, cap=cap); return S
 
-    def read_logits(self, S, ans=None):
-        """[EOT, " ="] (+ the first 7 answer tokens, teacher-forced) -> full-vocabulary logits at positions 1.. (B, T - 1, V)."""
-        B = S.shape[0]; ids = torch.tensor([[EOT, EQTOK]], device=S.device).expand(B, 2)
+    def reader_ids(self, B, dev, ans=None):
+        """The reader pass's input: [EOT, " ="] (+ the teacher-forced answer); §156 interleave: [EOT, " =", |, d1, |, .., d7, |] (separators forced)."""
+        ids = torch.tensor([[EOT, EQTOK]], device=dev).expand(B, 2)
+        if getattr(self, "sep", None) is None:
+            return ids if ans is None else torch.cat([ids, ans[:, :NDIG - 1]], 1)
+        sep = torch.full((B, 1), self.sep, device=dev, dtype=ids.dtype); parts = [ids, sep]
         if ans is not None:
-            ids = torch.cat([ids, ans[:, :NDIG - 1]], 1)
+            for k in range(NDIG - 1):
+                parts += [ans[:, k:k + 1], sep]
+        return torch.cat(parts, 1)
+
+    def read_logits(self, S, ans=None):
+        """[EOT, " ="] (+ the first 7 answer tokens, teacher-forced) -> full-vocabulary logits at positions 1.. (B, T - 1, V); §156 interleave:
+        the logits at the 8 separators (each digit predicted at the '|' before it; no loss on separators)."""
+        B = S.shape[0]; ids = self.reader_ids(B, S.device, ans)
         out, _ = fwd_mem(self.g, self.g.embed(ids), self.mem, S, read_only=True)
+        if getattr(self, "sep", None) is not None:
+            return self.g.logits(out[:, 2::2]).float()
         return self.g.logits(out[:, 1:]).float()
 
     def read_ce(self, S, ans):
@@ -300,10 +312,10 @@ class MultRowDelta(MultRow):
 
     @torch.no_grad()
     def read_greedy(self, S):
-        B = S.shape[0]; ids = torch.tensor([[EOT, EQTOK]], device=S.device).expand(B, 2); outs = []
-        for _ in range(NDIG):
+        B = S.shape[0]; ids = self.reader_ids(B, S.device); outs = []; sp = getattr(self, "sep", None)
+        for k in range(NDIG):
             out, _ = fwd_mem(self.g, self.g.embed(ids), self.mem, S, read_only=True); nt = self.g.logits(out[:, -1]).float().argmax(-1)
-            outs.append(nt); ids = torch.cat([ids, nt[:, None]], 1)
+            outs.append(nt); ids = torch.cat([ids, nt[:, None]] + ([torch.full((B, 1), sp, device=S.device, dtype=ids.dtype)] if sp is not None and k < NDIG - 1 else []), 1)
         return torch.stack(outs, 1)
 
     def chain_read(self, start_emb, items, labels, rtok, rmask):
@@ -416,10 +428,11 @@ def compute_drow(m, L=4):
     segs = [MultRowDelta.SEG_T] * L if pi is None else ([7 + L] * L if pi == "visible" else [6 + L] + [6] * L)
     for T_ in segs:
         mt.step(T_, 0, 0)
-    mt.step(2, 0, 1); rows += 1
+    sp_ = getattr(m, "sep", None) is not None; st_ = 2 if sp_ else 1; c0 = 3 if sp_ else 2   # §156 interleave: forced separators counted
+    mt.step(c0, 0, 1); rows += 1
     for k in range(NDIG - 1):
-        mt.step(1, 2 + k, 1); rows += 1
-    nb = sum(p_.numel() for n_, p_ in m.mem.named_parameters() if not n_.startswith("s_")); seg_tok = sum(segs); rd_tok = 2 + NDIG - 1; D2 = DM.DH * DM.DH
+        mt.step(st_, c0 + st_ * k, 1); rows += 1
+    nb = sum(p_.numel() for n_, p_ in m.mem.named_parameters() if not n_.startswith("s_")); seg_tok = sum(segs); rd_tok = (2 + 2 * NDIG - 1) if getattr(m, "sep", None) is not None else (2 + NDIG - 1); D2 = DM.DH * DM.DH
     fb = 2 * nb * (seg_tok + rd_tok) + (DM.H_ADD * 4 + DM.H_DEL * 10) * D2 * seg_tok + (DM.H_ADD + DM.H_DEL) * 2 * D2 * rd_tok
     d = mt.as_dict()
     return {"flops": d["flops"] + fb, "flops_trunk": d["flops"], "flops_branch": float(fb), "sequential_passes": d["seq_passes"], "lm_head_rows": rows,
@@ -460,6 +473,88 @@ def colsum_exact(m, teA, teB, dev, amp, bs):
         out["r2_by_column"][str(k + 1)] = float(1 - ((Y - P) ** 2).sum() / max(((Y - Y.mean()) ** 2).sum(), 1e-12))
         out["max_abs_resid_final"][str(k + 1)] = float(np.abs(P[:, 3] - Y[:, 3]).max()); out["lambda"][str(k + 1)] = lam
     return out
+
+
+# ================================================================ THEORY §156 SEP-SLOT arm (b): separator slots in §152's reader decode
+_RSLOT = {"pos": None, "cap": None, "rep": None, "i": 0}                   # slot_patch: capture / replace h[:, pos] at every block input (reader pass)
+
+
+def row_carries(A, B):
+    """carry into each digit k of S_4 = a x b (LSB first) and the products-only column sums."""
+    n = len(A); cs = np.zeros((n, NDIG), np.int64)
+    for i in range(A.shape[1]):
+        for j in range(B.shape[1]):
+            cs[:, i + j] += A[:, i] * B[:, j]
+    ci = np.zeros((n, NDIG), np.int64)
+    for k in range(1, NDIG):
+        ci[:, k] = (cs[:, k - 1] + ci[:, k - 1]) // 10
+    return ci, cs
+
+
+@torch.no_grad()
+def s156_row_eval(m, teA, teB, dev, amp, bs, slot_col=4, seed=15601):
+    """§156 (b) descriptive on the final decode after segment 4 (teacher-forced reader pass): seq_len; ring_probe (per slot k: held-out ridge R^2
+    of cos / sin(2 pi carry_k / C) from the reader's final residual at the slot, pre-ln_f); slot_patch (column slot_col: the slot residual at every
+    block input of the reader pass from a donor with a different carry-in: (recipient column sum + donor carry) mod 10 vs the recipient's digit)."""
+    from boxes.multcol import ridge_r2
+    n = len(teA); h = n // 2; S4 = sj_values(teA, teB)[:, -1]; ans = np.array(DTOK)[digits8(S4)]; ci, cs = row_carries(teA, teB); C = int(ci.max()) + 1
+    _, kept, _, _ = rollout_drow(m, teA, teB, dev, amp, bs, keep=(4,), decode=False); St = kept[4]; H = np.zeros((n, NDIG, 768), np.float32)
+    pos = [2 + 2 * k for k in range(NDIG)]
+    def reader_resid(S, a_ids):                                             # the reader pass's final residual (pre-ln_f) at every position
+        g = m.g; ids = m.reader_ids(S.shape[0], S.device, a_ids); x = g.embed(ids); B_, T_, D_ = x.shape; hd = D_ // g.H; hh = x + g.w("wpe.weight")[:T_][None]
+        for i in range(g.L):
+            if i == m.mem.layer:
+                hh = mem_read(m.mem, hh, S)
+            hh = DM._block(g, i, hh, hd) if not _RSLOT_hook(i) else _patched_block(g, i, hh, hd)
+        return hh
+    for s_ in range(0, n, bs):
+        sl = slice(s_, s_ + bs)
+        with amp_ctx(amp):
+            hh = reader_resid(torch.tensor(St[sl], device=dev), torch.tensor(ans[sl], device=dev))
+        H[sl] = hh[:, pos].float().cpu().numpy()
+    ring = {}
+    for k in range(1, NDIG):
+        th = 2 * np.pi * ci[:, k] / C
+        ring[str(k + 1)] = {"cos_r2": ridge_r2(H[:h, k], np.cos(th[:h]), H[h:, k], np.cos(th[h:])) if np.cos(th).std() > 0 else None,
+                            "sin_r2": ridge_r2(H[:h, k], np.sin(th[:h]), H[h:, k], np.sin(th[h:])) if np.sin(th).std() > 0 else None}
+    ring["C"] = C; ring["def"] = "per slot (digit k of S_4): held-out ridge R^2 of cos / sin(2 pi carry_in_k / C), the reader's final residual at the slot (after segment 4)"
+    k = slot_col - 1; p_ = pos[k]; rng = np.random.default_rng(seed); ir = rng.permutation(n)[:min(500, n)]; idn = rng.permutation(n)[:len(ir)]
+    for _ in range(100):
+        bad = np.nonzero(ci[idn, k] == ci[ir, k])[0]
+        if not len(bad):
+            break
+        idn[bad] = rng.integers(0, n, len(bad))
+    keep = ci[idn, k] != ci[ir, k]; ir, idn = ir[keep], idn[keep]; got = np.zeros(len(ir), np.int64); lut = {t: i_ for i_, t in enumerate(DTOK)}
+    for s_ in range(0, len(ir), bs):
+        a_, d_ = ir[s_:s_ + bs], idn[s_:s_ + bs]
+        _RSLOT.update({"pos": p_, "cap": [], "rep": None, "i": 0})
+        with amp_ctx(amp):
+            reader_resid(torch.tensor(St[d_], device=dev), torch.tensor(ans[d_], device=dev))
+        cap = _RSLOT["cap"]; _RSLOT.update({"cap": None, "rep": cap, "i": 0})
+        with amp_ctx(amp):
+            hh = reader_resid(torch.tensor(St[a_], device=dev), torch.tensor(ans[a_], device=dev))
+        _RSLOT.update({"pos": None, "rep": None, "i": 0})
+        D_ = hh.shape[-1]; lg = m.g.logits(Fn.layer_norm(hh[:, p_], (D_,), m.g.w("ln_f.weight"), m.g.w("ln_f.bias"))).float()
+        got[s_:s_ + bs] = [lut.get(int(t), -1) for t in lg.argmax(-1).tolist()]
+    tgt = (cs[ir, k] + ci[idn, k]) % 10; own = digits8(S4)[ir, k]
+    patch = {"column": slot_col, "n": int(len(ir)), "donor_carry_share": float((got == tgt).mean()), "own_digit_share": float((got == own).mean()),
+             "chance_overlap": float((tgt == own).mean()), "def": "the reader pass's slot residual at every block input from a donor with a different carry-in (teacher-forced)"}
+    seg_t = MultRowDelta.SEG_T * 4; rd_t = 2 + 2 * NDIG
+    return {"seq_len": int(seg_t + rd_t), "seq_len_def": "4 segments x 7 + the reader pass [EOT, ' ='] + 8 x ('|', digit)", "ring_probe": ring, "slot_patch": patch,
+            "answer_sep": m.sep_mode, "sep_token_id": m.sep, "slot_positions_reader": pos}
+
+
+def _RSLOT_hook(i):
+    return _RSLOT["pos"] is not None
+
+
+def _patched_block(g, i, hh, hd):
+    if _RSLOT["cap"] is not None:
+        _RSLOT["cap"].append(hh[:, _RSLOT["pos"]].detach().clone())
+    elif _RSLOT["rep"] is not None:
+        hh = hh.clone(); hh[:, _RSLOT["pos"]] = _RSLOT["rep"][_RSLOT["i"]].to(hh.dtype)
+    _RSLOT["i"] += 1
+    return DM._block(g, i, hh, hd)
 
 
 def s152_eval(m, teA, teB, dev, amp, bs, a, dec):
@@ -723,6 +818,8 @@ def main():
     ap.add_argument("--carrier", default="code", choices=["code", "deltamem"], help="§152: deltamem = §147's DeltaMem as the only cross-segment channel (no code token)")
     ap.add_argument("--mem_layer", type=int, default=6); ap.add_argument("--mem_add_heads", type=int, default=6); ap.add_argument("--mem_delta_heads", type=int, default=6)
     ap.add_argument("--keep_ckpt_steps", default="", help="§152: model-only copies at these steps -> s152.serial_by_ckpt (donor pos2), then deleted")
+    ap.add_argument("--answer_sep", default=None, choices=[None, "interleave"], help="§156 (b): forced '|' before each digit of the reader decode")
+    ap.add_argument("--sep_token", default="|")
     ap.add_argument("--keep_ckpt_retain", action="store_true", help="note 152-5: keep the --keep_ckpt_steps copies after the eval (default: deleted)")
     ap.add_argument("--no_opt_reset", action="store_true", help="§152 B: keep AdamW's moments at each removal (LR re-warm only)")
     ap.add_argument("--pass_input", default=None, choices=[None, "visible", "pure", "repeat"], help="§153 THINK-PASS pass inputs (with --carrier deltamem)")
@@ -749,6 +846,15 @@ def main():
     if a.pass_input:                                                        # §153 records
         a.times_token, a.register_token = " \u00d7", " _"
     assert not a.no_opt_reset or a.fork_from, "--no_opt_reset: §152 B forks only"
+    if a.answer_sep:                                                        # §156 (b): one token, no merge with ' d' on re-encoding
+        assert a.carrier == "deltamem" and not a.pass_input, "§156 (b): --answer_sep on §152's reader"
+        st_ = bc.tok(a.sep_token); assert len(st_) == 1, "--sep_token must be one GPT-2 token"; smp = []
+        for d_ in range(10):
+            smp += [st_[0], DTOK[d_]]
+        assert bc.ENC.encode(bc.ENC.decode(bc.tok(" =") + smp)) == bc.tok(" =") + smp, "§156: separator / digit tokens merge on re-encoding"
+        a.sep_token_id = st_[0]
+    else:
+        a.sep_token = None
     if a.fork_from:
         a.steps = a.fork_steps                                              # the fork's own schedule (scorer reads fork_steps)
     th = tuple(int(x) for x in a.lmax_steps.split(",")) if a.lmax_steps else None; assert th is None or len(th) == 3, "--lmax_steps: 3 steps"
@@ -762,6 +868,8 @@ def main():
     teA, teB = load_bench(os.path.join(ROOT, "bench", "data", "mult_4x4_test.txt")); teA, teB = teA[:a.test_n], teB[:a.test_n]
     def mk():
         m_ = (MultRowDelta(s5.load_gpt2(dev), fam, a.mem_layer) if a.carrier == "deltamem" else MultRow(s5.load_gpt2(dev), fam)).to(dev); m_.soft_beta = a.soft_beta; m_.no_round = a.no_round
+        if a.answer_sep:                                                    # §156 (b)
+            m_.sep = bc.tok(a.sep_token)[0]; m_.sep_mode = a.answer_sep
         if a.pass_input:                                                    # §153
             m_.pass_input = a.pass_input; m_.think_tok = bc.tok(a.think_token)[0] if a.pass_input == "repeat" else None
         if a.distill:
@@ -981,6 +1089,10 @@ def main():
                "train_gpu": info["train_gpu"], "train_driver": info["train_driver"]}
         res["long_acc"] = res["test_acc"]; res["donor"] = donor_drow(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(13902), n=a.donor_n)
         res["ext_4x8_low8"] = ext_4x8_low8(m, dev, amp, a.eval_bs, n=a.ext_n); res["compute"] = compute_drow(m)
+        Cd = digits8(dec[:, -1].clip(0)) == digits8(S[:, -1]); Cd[dec[:, -1] < 0] = False                      # §156: per digit column of S_4
+        res["acc_by_column"] = {"per_column": [round(float(v), 4) for v in Cd.mean(0)], "cumulative": [round(float(Cd[:, :k + 1].all(1).mean()), 4) for k in range(NDIG)]}
+        if a.answer_sep:
+            res["s156"] = s156_row_eval(m, teA, teB, dev, amp, a.eval_bs)
         if a.pass_input:                                                    # §153: the pass-skip SERIAL test (note 153-1) and 4x5 at K = 5
             res["skip"] = skip_eval(m, teA, teB, dev, amp, a.eval_bs); res["ext_4x5"] = ext_4x5(m, dev, amp, a.eval_bs, n=a.ext_n)
         ip_ = os.path.join(a.out, "s152_init.json"); i152 = json.load(open(ip_)) if os.path.exists(ip_) else {}

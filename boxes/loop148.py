@@ -33,7 +33,7 @@ from boxes import core as bc  # noqa: E402
 from boxes.fsq120 import driver_version, env_info, lr_at  # noqa: E402
 from boxes.multcol import DTOK, dedup, load_bench, to_int  # noqa: E402
 
-MUL, EQ = bc.tok(" *")[0], bc.tok(" =")[0]; NANS = 8; PRE, LOOP, CODA = range(0, 4), range(4, 8), range(8, 12)
+MUL, EQ = bc.tok(" *")[0], bc.tok(" =")[0]; NANS = 8; PRE, LOOP, CODA = range(0, 4), range(4, 8), range(8, 12); PROMPT_LEN = 10
 
 
 def prompt_tokens(A, B):
@@ -46,6 +46,12 @@ def answer_digits(A, B):
 
 def block(g, i, h):
     """core.GPT.forward's block i (causal self-attention over the whole sequence; no past)."""
+    if _SLOT["pos"] is not None:                                            # §156 slot_patch (off by default)
+        if _SLOT["cap"] is not None:
+            _SLOT["cap"].append(h[:, _SLOT["pos"]].detach().clone())
+        elif _SLOT["rep"] is not None:
+            h = h.clone(); h[:, _SLOT["pos"]] = _SLOT["rep"][_SLOT["i"]].to(h.dtype)
+        _SLOT["i"] += 1
     B, T, D = h.shape; hd = D // g.H; pre = f"h.{i}."
     a = F.layer_norm(h, (D,), g.w(pre + "ln_1.weight"), g.w(pre + "ln_1.bias"))
     q, k, v = (a @ g.w(pre + "attn.c_attn.weight") + g.w(pre + "attn.c_attn.bias")).split(D, -1)
@@ -99,6 +105,104 @@ class LoopGPT(nn.Module):
         return out, kept, hs
 
 
+# ================================================================ THEORY §156 SEP-SLOT (37ac38d1): separator slots in the answer
+SEP = {"tok": None, "mode": None}                                           # set in main: --sep_token's id, --answer_sep
+_SLOT = {"pos": None, "cap": None, "rep": None, "i": 0}                    # §156 slot_patch: capture / replace h[:, pos] at every block input
+
+
+def layout(P, Y):
+    """Teacher-forced input and the 8 prediction positions. None: [P, d1..d7], d_k at P_len - 1 + (k - 1). interleave: [P, |, d1, |, .., d7, |],
+    d_k at the '|' before it. pause: [P, | x 8, d1..d7], d_1 at the 8th '|'. (interleave and pause: the same length P_len + 15.) pos is a slice."""
+    n, L = P.shape; S_ = SEP["tok"]
+    if SEP["mode"] == "interleave":
+        x = np.c_[P, np.stack([np.full(n, S_) if j % 2 == 0 else Y[:, j // 2] for j in range(2 * NANS - 1)], 1)]; pos = slice(L, L + 2 * NANS, 2)
+    elif SEP["mode"] == "pause":
+        x = np.c_[P, np.full((n, NANS), S_), Y[:, :-1]]; pos = slice(L + NANS - 1, L + 2 * NANS - 1)
+    else:
+        x = np.c_[P, Y[:, :-1]]; pos = slice(L - 1, L - 1 + NANS)                  # a slice: the same reduction order as before (bit-identical)
+    return x, pos
+
+
+def first_ids(P):
+    """The greedy decode's first input (the prompt plus the forced separators before d1)."""
+    n = len(P)
+    if SEP["mode"] == "interleave":
+        return np.c_[P, np.full(n, SEP["tok"])]
+    if SEP["mode"] == "pause":
+        return np.c_[P, np.full((n, NANS), SEP["tok"])]
+    return P
+
+
+def carries(A, B):
+    """carry into each answer digit k (LSB first; 0 for k = 0) and the products-only column sums cs_k."""
+    n = len(A); cs = np.zeros((n, NANS), np.int64)
+    for i in range(A.shape[1]):
+        for j in range(B.shape[1]):
+            cs[:, i + j] += A[:, i] * B[:, j]
+    ci = np.zeros((n, NANS), np.int64)
+    for k in range(1, NANS):
+        ci[:, k] = (cs[:, k - 1] + ci[:, k - 1]) // 10
+    return ci, cs
+
+
+@torch.no_grad()
+def s156_eval(m, A, B, dev, amp, bs, r, slot_col=4, seed=15601):
+    """§156 descriptive: seq_len; ring_probe (per slot k: held-out ridge R^2 of cos / sin(2 pi carry_k / C), C = max carry + 1, from the final
+    residual (pre-ln_f) at the position predicting d_k, teacher-forced); slot_patch (column slot_col: the residual at its slot position at every
+    block input replaced by a donor's with a different carry-in: share emitting (recipient's column sum + donor's carry) mod 10 vs the recipient's
+    own digit)."""
+    from boxes.multcol import ridge_r2
+    Pp = prompt_tokens(A, B); G = answer_digits(A, B); Y = np.array(DTOK)[G]; x, pos = layout(Pp, Y); pos = list(range(x.shape[1]))[pos]; ci, cs = carries(A, B); C = int(ci.max()) + 1; n = len(A); h = n // 2
+    H = np.zeros((n, NANS, 768), np.float32)
+    for s_ in range(0, n, bs):
+        sl = slice(s_, s_ + bs); xx = torch.tensor(x[sl], device=dev)
+        with amp_ctx(amp):
+            _, _, hs = m.run(xx, r, want=set())
+            hh = hs[-1]
+            for i in CODA:
+                hh = block(m.g, i, hh)
+        H[sl] = hh[:, pos].float().cpu().numpy()
+    ring = {}
+    for k in range(1, NANS):
+        th = 2 * np.pi * ci[:, k] / C
+        ring[str(k + 1)] = {"cos_r2": ridge_r2(H[:h, k], np.cos(th[:h]), H[h:, k], np.cos(th[h:])) if np.cos(th).std() > 0 else None,
+                            "sin_r2": ridge_r2(H[:h, k], np.sin(th[:h]), H[h:, k], np.sin(th[h:])) if np.sin(th).std() > 0 else None}
+    ring["C"] = C; ring["def"] = "per slot (answer digit k, 1-based): held-out ridge R^2 of cos / sin(2 pi carry_in_k / C) from the final residual at the slot"
+    k = slot_col - 1; p = pos[k]; rng = np.random.default_rng(seed); ir = rng.permutation(n)[:min(500, n)]; idn = rng.permutation(n)[:len(ir)]
+    for _ in range(100):
+        bad = np.nonzero(ci[idn, k] == ci[ir, k])[0]
+        if not len(bad):
+            break
+        idn[bad] = rng.integers(0, n, len(bad))
+    keep = ci[idn, k] != ci[ir, k]; ir, idn = ir[keep], idn[keep]; got = np.zeros(len(ir), np.int64); lut = {t: i_ for i_, t in enumerate(DTOK)}
+    for s_ in range(0, len(ir), bs):
+        a_, d_ = ir[s_:s_ + bs], idn[s_:s_ + bs]
+        _SLOT.update({"pos": p, "cap": [], "rep": None, "i": 0})
+        with amp_ctx(amp):
+            m.run(torch.tensor(x[d_], device=dev), r, want={r})
+        cap = _SLOT["cap"]; _SLOT.update({"cap": None, "rep": cap, "i": 0})
+        with amp_ctx(amp):
+            out, _, _ = m.run(torch.tensor(x[a_], device=dev), r, want={r})
+        _SLOT.update({"pos": None, "rep": None, "i": 0}); got[s_:s_ + bs] = [lut.get(int(t), -1) for t in out[r][:, p].float().argmax(-1).tolist()]
+    tgt = (cs[ir, k] + ci[idn, k]) % 10; own = G[ir, k]
+    patch = {"column": slot_col, "n": int(len(ir)), "donor_carry_share": float((got == tgt).mean()), "own_digit_share": float((got == own).mean()),
+             "chance_overlap": float((tgt == own).mean()), "def": "slot residual at every block input from a donor with a different carry-in (teacher-forced prefix)"}
+    return {"seq_len": int(x.shape[1] + 1), "ring_probe": ring, "slot_patch": patch, "answer_sep": SEP["mode"], "sep_token_id": SEP["tok"], "slot_positions": pos}
+
+
+def compute_item(m, r):
+    """boxes.core.Meter per item (KV-cache convention; full vocabulary), forced separators counted as processed tokens: the first pass is the
+    prompt (+ forced separators before d1), then 7 passes of [d_k (+ the next separator)]; loop iterations r (plain: 1) on blocks 4-7 add their FLOPs."""
+    mt = bc.Meter(m.g); L0 = PROMPT_LEN + (1 if SEP["mode"] == "interleave" else NANS if SEP["mode"] == "pause" else 0); step = 2 if SEP["mode"] == "interleave" else 1
+    mt.step(L0, 0, 1); ctx = L0
+    for _ in range(NANS - 1):
+        mt.step(step, ctx, 1); ctx += step
+    d = mt.as_dict(); d["sequential_passes"] = d["seq_passes"]; d["loop_iterations"] = r
+    if r > 1:
+        d["flops"] = d["flops"] * (1 + (r - 1) * len(LOOP) / m.g.L)
+    return d
+
+
 def amp_ctx(amp):
     return torch.autocast("cuda", dtype=amp, enabled=amp is not None)
 
@@ -108,11 +212,11 @@ def greedy(m, A, B, dev, amp, bs, r, swap_h=None, keep=None, halt=False):
     """Greedy 8-digit answers at r iterations (fresh full pass per token). swap_h: per token pass k, (N, T_k, D) donor h after iteration 2;
     keep: return h after that iteration per pass; halt: iterate up to 16 per pass, each row stopping at the first r with ||h_r - h_{r-1}|| /
     ||h_{r-1}|| < 1e-3 at the last position. Returns digits (N, 8) [, kept list] [, mean r used]."""
-    N = len(A); P = prompt_tokens(A, B); dig = np.full((N, NANS), -1); lut = {t: i for i, t in enumerate(DTOK)}; kept = [[] for _ in range(NANS)]; rused = []
+    N = len(A); P = first_ids(prompt_tokens(A, B)); dig = np.full((N, NANS), -1); lut = {t: i for i, t in enumerate(DTOK)}; kept = [[] for _ in range(NANS)]; rused = []
     for s_ in range(0, N, bs):
         sl = slice(s_, s_ + bs); ids = torch.tensor(P[sl], device=dev); toks = []
         for k in range(NANS):
-            x = torch.cat([ids] + toks, 1) if toks else ids
+            x = torch.cat([ids] + toks, 1) if toks else ids                 # §156: separators are forced inputs, never generated
             with amp_ctx(amp):
                 if halt:
                     _, _, hs = m.run(x, 16, want=set()); last = torch.stack([hh[:, -1].float() for hh in hs], 0)   # (16, B, D)
@@ -126,6 +230,8 @@ def greedy(m, A, B, dev, amp, bs, r, swap_h=None, keep=None, halt=False):
                     if keep is not None:
                         kept[k].append(kh.float().cpu().numpy())
             nt = lg.float().argmax(-1); toks.append(nt[:, None]); dig[sl, k] = [lut.get(int(t), -1) for t in nt.tolist()]
+            if SEP["mode"] == "interleave" and k < NANS - 1:
+                toks.append(torch.full((nt.shape[0], 1), SEP["tok"], device=dev))
     res = [dig]
     if keep is not None:
         res.append([np.concatenate(kk) for kk in kept])
@@ -137,13 +243,13 @@ def greedy(m, A, B, dev, amp, bs, r, swap_h=None, keep=None, halt=False):
 @torch.no_grad()
 def ce_at(m, A, B, dev, amp, bs, rs):
     """Teacher-forced answer CE (mean over the 8 tokens) at each r in rs, on (A, B)."""
-    P = prompt_tokens(A, B); Y = np.array(DTOK)[answer_digits(A, B)]; tot = {r: 0.0 for r in rs}; n = 0
+    P = prompt_tokens(A, B); Y = np.array(DTOK)[answer_digits(A, B)]; tot = {r: 0.0 for r in rs}; n = 0; X, pos = layout(P, Y)
     for s_ in range(0, len(A), bs):
-        sl = slice(s_, s_ + bs); x = torch.tensor(np.c_[P[sl], Y[sl, :-1]], device=dev); y = torch.tensor(Y[sl], device=dev)
+        sl = slice(s_, s_ + bs); x = torch.tensor(X[sl], device=dev); y = torch.tensor(Y[sl], device=dev)
         with amp_ctx(amp):
             out, _, _ = m.run(x, max(rs), want=set(rs))
         for r in rs:
-            lg = out[r][:, P.shape[1] - 1:].float(); tot[r] += float(F.cross_entropy(lg.reshape(-1, lg.shape[-1]), y.reshape(-1), reduction="sum")) / NANS
+            lg = out[r][:, pos].float(); tot[r] += float(F.cross_entropy(lg.reshape(-1, lg.shape[-1]), y.reshape(-1), reduction="sum")) / NANS
         n += len(A[sl])
     return {str(r): tot[r] / n for r in rs}
 
@@ -175,7 +281,18 @@ def main():
     ap.add_argument("--ckpt_every", type=int, default=0); ap.add_argument("--resume", default=None); ap.add_argument("--stop_after", type=int, default=0)
     ap.add_argument("--train_n", type=int, default=0, help="smoke only"); ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--r_eval_max", type=int, default=16)
     ap.add_argument("--cotenant_runs", type=int, default=1); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
+    ap.add_argument("--answer_sep", default=None, choices=[None, "interleave", "pause"], help="§156 SEP-SLOT: forced separators in the answer")
+    ap.add_argument("--sep_token", default="|")
     a = ap.parse_args(); a.r_max = 4 if a.arm == "loop4" else 1; a.loop = "4-7"; a.deep_sup = True
+    if a.answer_sep:                                                        # §156: '|' must be one token (91) and never merge with ' d'
+        st_ = bc.tok(a.sep_token); assert len(st_) == 1, "--sep_token must be one GPT-2 token"; SEP.update({"tok": st_[0], "mode": a.answer_sep})
+        smp = []
+        for d_ in range(10):
+            smp += [st_[0], DTOK[d_]]
+        assert bc.ENC.encode(bc.ENC.decode(bc.tok(" =") + smp)) == bc.tok(" =") + smp, "§156: separator / digit tokens merge on re-encoding"
+        a.sep_token_id = st_[0]
+    else:
+        a.sep_token = None
     dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); sc = a.sched_scale; memcap and memcap.apply(dev)
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None
     os.makedirs(a.out, exist_ok=True); dname = lambda: torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"  # noqa: E731
@@ -201,11 +318,11 @@ def main():
             torch.cuda.set_rng_state(ck["cuda_rng"].cpu(), device=dev)
         step0 = ck["step"] + 1; t0 = time.time() - ck["elapsed"]; log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
     def loss_at(ii, r, r2):
-        A, B = trA[ii], trB[ii]; P = prompt_tokens(A, B); Y = np.array(DTOK)[answer_digits(A, B)]
-        x = torch.tensor(np.c_[P, Y[:, :-1]], device=dev); y = torch.tensor(Y, device=dev); rs = {r} | ({r2} if r2 else set())
+        A, B = trA[ii], trB[ii]; P = prompt_tokens(A, B); Y = np.array(DTOK)[answer_digits(A, B)]; X, pos = layout(P, Y)   # §156: no loss on separators
+        x = torch.tensor(X, device=dev); y = torch.tensor(Y, device=dev); rs = {r} | ({r2} if r2 else set())
         with amp_ctx(amp):
             out, _, _ = m.run(x, r, want=rs)
-        ce = {rr: F.cross_entropy(out[rr][:, P.shape[1] - 1:].float().reshape(-1, out[rr].shape[-1]), y.reshape(-1)) for rr in rs}
+        ce = {rr: F.cross_entropy(out[rr][:, pos].float().reshape(-1, out[rr].shape[-1]), y.reshape(-1)) for rr in rs}
         return ce[r] if not r2 else 0.5 * (ce[r] + ce[r2])
     if a.mem_check:
         ii = rng.integers(0, len(trA), a.bs); loss = loss_at(ii, a.r_max, a.r_max - 1 if a.r_max > 1 else None); loss.backward(); m.eval()
@@ -253,6 +370,9 @@ def main():
                                  "recipient_consistent": float((got == Gr).all(1).mean()), "chance_overlap": float((Gd == Gr).all(1).mean()),
                                  "donor_self_acc": float((dd == Gd).all(1).mean())},
                    "rho_loop": rho_loop(m, teA, teB, dev, amp), "r_max": a.r_max, "eta": a.eta, "loop": a.loop, "deep_sup": a.deep_sup}
+    res["compute"] = compute_item(m, a.r_max)
+    if a.answer_sep:                                                        # §156 descriptive block
+        res["s156"] = s156_eval(m, teA, teB, dev, amp, a.eval_bs, a.r_max)
     res["eval_sec"] = round(time.time() - t1)
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     for ck_ in ("ckpt_last.pt", "ckpt_prev.pt"):

@@ -1,0 +1,4 @@
+# THEORY §156 SEP-SLOT (37ac38d1; Audit's five conditions) arm (a), seed 1: boxes.loop148 --arm plain (§148 PLAIN's recipe, 24k) with --answer_sep interleave | pause --sep_token '|' (id 91), on one RTX 3090 (P=2, --cotenant_runs 2 as §148), ckpt 2000 (~$0.5)
+# P=2
+boxes/runs_fsq/s156_sep_4x4_s1 boxes.loop148 --task 4x4 --arm plain --seed 1 --ckpt_every 2000 --cotenant_runs 2 --answer_sep interleave
+boxes/runs_fsq/s156_pause_4x4_s1 boxes.loop148 --task 4x4 --arm plain --seed 1 --ckpt_every 2000 --cotenant_runs 2 --answer_sep pause
