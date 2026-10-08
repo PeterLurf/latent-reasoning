@@ -9271,6 +9271,10 @@ accumulator.**
   is R's fixed-shape buffer picture. Shape mixing (§161 / §163) is what makes it SERIAL.
 * **155-1's trigger fired with 160-1's floor** (42 spikes) on a converged run. By the inherited rule the block-9 fallback is due. Audit decides the spend, since
   the gradient trigger misfires (note 162-2).
+  - **Not run (Audit's call, 54d25147):** the 155-1 trigger fired on a converged run, the false-positive mode 162-2 fixed going forward. The descriptive R9 is
+    skipped, saving $1.5. §159's verdict is unaffected.
+* **C3 framing (Audit):** LATENT BEATS TEXT holds against TC-M only. Against ICoT-SI it is 3.24× the FLOPs at equal or better accuracy (1.000 against 0.996).
+  The user-facing claim is "beats explicit CoT; matches implicit-CoT accuracy at more compute".
 
 ## 160. R-ROWS: the write-after-read memory on §152's row segmentation (Audit 07:00, the C3 leg; pre-registered 2026-10-08 06:56 EDT, before any implementation or run; runs only if §155 R s2 is exact)
 
