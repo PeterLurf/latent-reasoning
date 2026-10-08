@@ -9580,6 +9580,19 @@ accumulator.**
   - Audit's diff review.
 * Dirs `s163_mix2d_s{seed}`. Scorer: `theory/score_s163.py`, committed with this registration.
 
+**Note 163-1 (2026-10-08 11:06 EDT, before any §163 run; Experiments' implementation, disclosed).**
+* **Shapes and operands:**
+  - (m, n) are drawn per batch from {2..5} each.
+  - Operands come from gen_operands (nonzero leading digit, uniform otherwise) for every shape, 4×4 included: the bench train split is not used.
+  - Rows that hit the full 4×4 or 5×5 bench test files, in either order, are redrawn.
+* **Curriculum:** as 161-1. At the full stage every chain runs complete with the flush; below it, min(c, m + n) columns.
+* **Extensions:** seeds 14030–14039, 1,000 items each. ext_4x8 keeps 14004 / 14005.
+* **The 5×5 state probe:** 155-4's what_state after pairs 6 / 12 / 18, fit on 8,000 generator draws of 5×5 (rng 16301). colsum_cls is widened to m + n − 1 columns.
+* **Value range:**
+  - p99_trained = the 99th percentile of products-only column sums over 400 × 64 training-generator draws (rng 16302).
+  - by_product_count: digit accuracy over the columns with c products. by_colsum: per-product-column digit accuracy, within or beyond p99. by_item_max: item exact.
+* **Dirs:** restart155's `s163_mix2d_4x4_s{seed}`, with restart seeds +100 / +200 / +300. score_s163 is restart-aware (b873523a).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
