@@ -20,33 +20,26 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 Messages go through SendMessage. The names "Theory" and "Audit" currently need an identity confirm, pending the user,
 so send to the pipe addresses their messages come from.
 
-## Running now (08:25 2026-10-08; credit $128.18; fleet 5 hosts $1.07/h; cap 16 hosts / < $4/h)
+## Running now (12:20 2026-10-08; credit ~$120; cap 16 hosts / < $4/h)
 
-**User rules:** full runs on Vast 3090s (>= 16 GB, --ckpt_every); local cards short memory-capped jobs only, never idle. Before any commit touching
-boxes/fsq120.py / table132.py / core.py run `python scratch/smoke_plain.py`. Never edit a module while a deploy is in flight (the tar happens minutes
-after create; auto_ship is transitive: a multrow queue ships multpair too): record the host's sha256 and commit exactly that file.
+**User rules:** full runs on Vast 3090s (>= 16 GB, checkpointed); local cards short memory-capped jobs only, never idle. smoke_plain before commits
+touching fsq120 / table132 / core. Never edit a module while a deploy is in flight (tar minutes after create; auto_ship is transitive: multrow /
+restart160 ship multpair). One fill_generic at a time.
 
-### Vast (fill_generic one at a time; auto_drain_gen7 per host; drain_posthoc runs what_state / C7 / free-prop on-host)
+### Vast
+* fill_s162to163 (12:15, HEAD 1781cd53): b189 / b190 §162 DIRECT s1 / s2 (deltas5, --eval_bs 100) -> b191 / b192 §162 LONG s1 / s2 (l_max 32) ->
+  b195 §161 MIX9 fallback -> b196 / b197 §164 TC-MIX s1 / s2 -> b198 §164 DIRECT-MIX s1 + s2 (P=2) -> b204 §163 SHAPE-MIX-2D slot 1.
+* Up: b182 §159 R-5x5 slot 1; b186-b188 §161 MIXIDX slots / MIX; b193 §160 CTRL-R9; b194 §160 A-R9 (started 12:11 after 4 STUCK_LOADING offers).
+* Draining: b178 (SHIFT-R k3), b184 (§161; sshd unreachable).
+* Waiting: §165 FIXED-CHUNK b200-b203 (k16 / k8 / k0 / k16c1 slot 1; Audit-approved 3539b83e + 1781cd53) after §164 reads.
+* Code today: multrow §160 (R-ROWS + s160 probes, restart160/gate160), multpair §159 / §161 / §163 (ext_5x8, shape_mix + col_index, shape_mix_2d),
+  deltas5 (§162), mult98 §164 (gen_items = the bench CoT), fixedchunk (§165); gates gate160-165 in scratch/.
 
-| Tag | Work |
-|---|---|
-| b173 | §158 FREE-PAIRS s1 (restart158) |
-| b174 | §157 PERIODIC s1 (MULTIREAD 0.009 / CCQ 0.064 closed) |
-| b177-b179 | §155 SHIFT-R s2-s4 (restart155 --arm shiftr; s1 1.000 exact) - started 07:41 / 07:51 / 08:24 |
-| b180 / b181 | §160 R-ROWS A-R s1 / CTRL-R s1 via scratch/restart160 (on-host gate160 bf16 + memcheck, then 48k); code 5996a2c5 (Audit-approved a283c617 + spike floor + post-hoc keep fix); fill_s160 deploying 08:25 |
-
-* §155 R arm complete: s1-s4 1.000 / 0.998 / 0.997 / 0.999, 0/4 SERIAL; models local (R s2's fetched after the b170 reboot).
-* §160 null: `--s160_probe_only` on §152 A s1's model, local CPU at Idle priority (logs/posthoc_s160_null_s152_a_4x4_s1.log -> eval_s160_posthoc.json).
-* Next: §159 R-5x5 (patch ready: multpair ext_5x8 + spike_100x_floor, restart155 --prefix s159, drain_posthoc s159_, keep patterns s155/158/159/160)
-  and §161 SHAPE-MIX (patch161 + scratch/gate161.py: all pass on the staged copy boxes/_multpair161_tmp.py). Both apply to multpair once b180 / b181
-  have STARTED, then Audit's diff review; §159 one host until slot 1 reads; §161 six hosts (s161_{mix,mixidx}_4x4_s1-3).
-
-### Local (v2 workers c4060 / c3070 / c2070 <- scratch/c1_backlog_<card>.txt; log logs/c1_local.log; stop: scratch/<tag>.stop)
-
-* 4060: proto158_free_s1_4060 resume from ckpt 6000 -> eval (--eval_bs 50 --probe_n_fit 3000; two earlier evals OOMed).
-* 3070: proto157_periodic_s1_3070 (memcheck-gated, 8k; proto157_ccq done).
-* 2070: proto160_ar_s1_2070 (§160 A-R preview, fp32, 8k, memcheck-gated, --probe_n_fit 3000).
-* The 8k-fit probes (what_state / s158 / s160) need ~1.5 GiB per feature matrix: on 8 GB cards use --probe_n_fit 3000.
+### Local (v2 workers c4060 / c3070 / c2070 <- scratch/c1_backlog_<card>.txt; log logs/c1_local.log; halt file scratch/<tag>.halt stops a worker)
+* 4060: proto163_mix2d (staged §163 copy). 3070: proto164_directmix. 2070: proto165_k16 (memcheck first).
+* §160 null (--s160_probe_only on §152 A s1, CPU Idle, pid 12256; eval_s160_posthoc.json when done).
+* Lessons: 8k-fit probes OOM 8 GB cards (use --probe_n_fit 3000); KV-decode evals need small eval_bs; never eval a sed range of a deploy script
+  (it ran gen_deploy's loop 2026-10-08 09:19, no instance created).
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
