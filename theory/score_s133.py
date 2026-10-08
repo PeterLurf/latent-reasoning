@@ -81,9 +81,11 @@ def rho_k3(cf, eps="0.1"):
 EXPECT = {"cont64": {"d_q": 64, "no_round": True}, "fsq16": {"d_q": 16}, "fsq64": {"d_q": 64}, "soft16": {"d_q": 16, "soft_beta": 0.1},
           "soft64": {"d_q": 64, "soft_beta": 0.1}, "noise64": {"d_q": 64, "no_round": True, "dither": 0.25},
           "pin64": {"d_q": 64, "no_round": True, "carrier_ln": True}, "fsq8": {"d_q": 8, "levels": 8}, "fsq8L16": {"d_q": 8, "levels": 16},
-          "cgrownoise": {"d_q": 8, "grow": "8:64", "grow_trigger": "plateau", "grow_noise": 0.25, "copy_frac": 0.1}}   # 133-11 / 136-2
-NORESTART = {"cgrownoise"}                                                  # §136's COPY arms: no restarts, the seed-k run is the slot
-CAP_ARMS = ("fsq8", "fsq8L16", "noise64", "cgrownoise")                     # 133-11's lean stage-2 cells
+          "cgrownoise": {"d_q": 8, "grow": "8:64", "grow_trigger": "plateau", "grow_noise": 0.25, "copy_frac": 0.1},   # 133-11 / 136-2
+          "fullgrow": {"d_q": 8, "levels": 8, "grow": "8:64", "grow_trigger": "plateau", "grow_noise": 0.25, "copy_frac": 0.1, "grow2": 768,
+                       "grow2_lr_scale": 0.0833, "grow2_min_step": 6000}}   # 133-12: §143's recipe with 136-2's PLATEAU trigger
+NORESTART = {"cgrownoise", "fullgrow"}                                                  # §136's COPY arms: no restarts, the seed-k run is the slot
+CAP_ARMS = ("fsq8", "fsq8L16", "noise64", "cgrownoise", "fullgrow")                     # 133-11's lean stage-2 cells
 ERRORS = []
 
 
@@ -186,7 +188,7 @@ def main():
         sl, v = arm_verdict(arm); res["stage1"][arm] = {"slots": sl, "verdict": v}
         print("S1", arm, v, {k: (s["status"], s["accepted"] and (s["accepted"]["ext_2048"], s["accepted"]["serial"], s["accepted"]["rho"])) for k, s in sl.items()})
     for task in ("cap2", "cap4"):                                            # S5x2 (in-capacity control), S5x4 (capacity probe)
-        for arm in ARMS + ("fsq8", "fsq8L16", "cgrownoise"):
+        for arm in ARMS + ("fsq8", "fsq8L16", "cgrownoise", "fullgrow"):
             sl, v = cap_verdict(arm, task)
             if v != "not run":
                 res["stage2"]["%s|%s" % (task, arm)] = {"slots": sl, "verdict": v}; print("S2", task, arm, v)
@@ -196,7 +198,7 @@ def main():
     def entered(key):
         sl = (st2.get(key) or {}).get("slots") or {}
         return bool(sl) and not any(x["status"] == "exhausted" for x in sl.values()) and any(x["accepted"] for x in sl.values())
-    wide_cap = [a for a in ARMS + ("cgrownoise",) if v("cap4|%s" % a) == "CAP-PASS"]
+    wide_cap = [a for a in ARMS + ("cgrownoise", "fullgrow") if v("cap4|%s" % a) == "CAP-PASS"]
     def p1(key):                                                             # 133-11: proof-level (slot 1) long_acc, descriptive
         x = ((st2.get(key) or {}).get("slots") or {}).get(1) or {}
         return (x.get("accepted") or {}).get("long_acc")
@@ -208,7 +210,7 @@ def main():
     def decided(key):                                                        # 133-11: an incomplete cell is not yet a failure
         x = v(key)
         return x is not None and not x.startswith("incomplete") and x != "not run"
-    pending_wide = any((v(k) or "").startswith("incomplete") for k in ["cap4|%s" % a for a in ARMS + ("cgrownoise", "fsq8L16")])
+    pending_wide = any((v(k) or "").startswith("incomplete") for k in ["cap4|%s" % a for a in ARMS + ("cgrownoise", "fsq8L16", "fullgrow")])
     if not (decided("cap2|fsq8") and decided("cap4|fsq8")):
         cap = "incomplete"
     elif v("cap2|fsq8") != "CAP-PASS":
@@ -224,6 +226,11 @@ def main():
     else:
         cap = "no capacity limit shown (FSQ-8 %s on S5x4)" % v("cap4|fsq8")
     res["capacity_reading"] = cap; print("CAPACITY READING (133-2):", cap)
+    if decided("cap4|fullgrow") and decided("cap4|cgrownoise"):                # 133-12: full width against the 64-d growth arm at capacity
+        fw, g64 = v("cap4|fullgrow") == "CAP-PASS", v("cap4|cgrownoise") == "CAP-PASS"
+        res["fullwidth_reading"] = ("768 supplies capacity (FULL-GROW passes where cgrownoise fails)" if fw and not g64 else
+                                    "full width costs nothing at capacity (both pass)" if fw and g64 else "no full-width benefit shown")
+        print("FULL-WIDTH READING (133-12):", res["fullwidth_reading"])
     if SKIPPED:
         print("SKIPPED (smoke):", SKIPPED)
     if ERRORS:

@@ -7515,6 +7515,22 @@ on S5×4, with the PLATEAU trigger.**
   - **Against NOISE-64** (fixed width from step 0): if both pass, growth costs nothing; if GROW passes where NOISE-64 fails, a narrow-first entry helps at capacity.
   - **CAP-FAIL:** no benefit shown.
 
+**§143 result (2026-10-08 00:01 EDT; s1, s2 and s4, RTX 3090 / 595.71; s3 pending; scored by Theory with score_s143). PASS: all three decided seeds pass, so the ≥ 3/4 rule is met.**
+* **Every passing seed:** ext_2048 1.0, SERIAL, e-space ρ 0.062 / 0.043 / 0.057 (≤ 0.28), and **AVOIDS** FULL-CONT's expansion.
+  - At the end the Jacobian top is 0.20 / 0.15 / 0.21.
+  - ‖e‖ grows 1.17× / 1.16× / 1.12× across switch 2 (the bar is 2×).
+* **Switch spikes:** switch 1 +2.37 / +1.51 / +1.42 (§136: +1.4 to +2.1); switch 2 +0.67 / +0.58 / +0.61. All recovered.
+* **Pairing:** s2 and s4 match s136_cnoise exactly up to switch 2 (max loss difference 0.0). s1 is unpaired (1.59; driver).
+* **Note 143-2's 704-block ablation:**
+  - s2 **WIDTH UNUSED** (ext_2048 1.0 and SERIAL with the new block zeroed);
+  - s4 **WIDTH USED** (0.926, SERIAL);
+  - s1 cannot be tested (its model was not kept); s3 is pending.
+  - The new block's share of e is 4–7 % (`s143.w_up_new_out_share` 0.043 in s1, 0.069 in s4).
+* **Reading (registered):** a pretrained LM's latent carrier reaches the residual width (768) exact, SERIAL and contractive by staged growth.
+  - That is "stable at 768", not a benefit.
+  - Whether the new dimensions are needed differs by seed (one of the two testable seeds).
+  - It joins the S5×4 proposal as the full-width arm (note 133-12).
+
 ## 144. RUNNING-SUM: can the task-agnostic carrier carry a growing multi-digit number? (a diagnostic for multiplication; pre-registered 2026-10-07 15:40 EDT, after Literature's check d8ccceb5 and Audit's draft, before any implementation or run; the user's "do another research run, we gotta figure out how to fix the multiplication" (via Audit))
 
 **Why.**
@@ -8124,6 +8140,23 @@ SERIAL and contractive. Slots 2–4 run (the credit rule).**
   - Their registered reading (the 6k–8k mean, ≤ 0.1 CARRIES, ≥ 0.3 FAILS) stands as fixed. These numbers point to FAILS, pending 6k–8k.
   - The block's other premise, "c_max is 4 from 5k", is right.
 
+**§150 result (2026-10-08 00:01 EDT; FULL and DIGIT proof slots, RTX 3090; scored by Theory with score_s150). Both DROP at proof: test_acc 0.000, hard and soft at test.**
+* **Per column (FULL / DIGIT):** column 1 is 0.889 / 0.901; it is computable in-pass with no carry. Columns 2–8 are at chance (0.08–0.25). §140's FSQ-8 code had columns 1–2
+  at 1.0.
+* **The slots collapse to constant tokens.**
+  - FULL: all four slots hold " secretary" on about 16,000 of 17,000 hand-offs (entropy ≤ 0.002).
+  - DIGIT: slots 1 / 2 hold "2" / "6" on 14,122 / 16,012 (entropy ≤ 0.022).
+  - DIGIT's slots spell the accumulator on 1.2 % of steps.
+* **Loss (FULL / DIGIT):** 0.08 / 0.02 at 1k (column 1 only), 0.64 / 0.61 at 3k (column 2 enters at 2k), 1.05 / 1.02 at 6k, 1.71 / 1.72 at 24k.
+* **Soft-only DIGIT protos** (τ fixed at 1, never hardened): **FAILS** in all three finished runs (6k–8k mean loss 1.09 / 1.57 / 1.11; s504 running). The failure is there
+  while soft.
+* **Hard = soft = 0.000** at test, so C6 gets no reading.
+* **Reading (registered, "Both DROP"):** token-shaped slots do not fix in-pass computation at this budget (Literature's prediction).
+  - Descriptively, the failure comes earlier than the middle columns. The token channel does not carry even one carry digit (column 2 at chance, below §140's FSQ-8 code),
+    soft or hard.
+* **The program:** B4 stops at this design (the single-vector deprioritisation). The user's token-like working memory moves to B1's matrix memory, with a reader that decodes
+  it into digit tokens (§152 / §153).
+
 ## 151. DELTA-LONG: §147's linear-recurrent memory with twice the budget, four seeds (pre-registered 2026-10-07 22:11 EDT, after §147's IMPROVES and before any run; the user's "we gotta figure out how to fix the multiplication")
 
 **Why.**
@@ -8346,6 +8379,18 @@ SERIAL and contractive. Slots 2–4 run (the credit rule).**
     replaces "− chance".
 * **(2) What a skip is.** The step-j pass is not run at all, and the memory goes unchanged to pass j + 1, which keeps its own step token j + 1. Later passes are not
   renumbered.
+
+**Note 133-12 (2026-10-08 00:01 EDT; after §143's PASS, before any stage-2 run). FULL-GROW joins §133 stage 2 as the S5×4 full-width cell (§143: "FULL-GROW joins only if §143 passes
+(a dated note then)").**
+* **Cell cap4|fullgrow:** §143's recipe on `--family s5x4`, with **note 136-2's PLATEAU trigger** for switch 1.
+  - §143's loss threshold (2.5) may never fire where the narrow code stalls; note 136-2 chose PLATEAU for the same reason.
+  - Switch 2 to 768 is as §143: at step ≥ 6,000 and ≥ 1,000 steps after switch 1, with lr × 64/768 on the new columns.
+  - COPY rows and no restarts (as cgrownoise). Dirs `s133cap4_fullgrow_s{seed}`.
+* **Rules unchanged:** CAP-PASS = long_acc ≥ 0.99 at 512 in ≥ 3/4 slots; the proof rule. The cell counts among the wide arms in 133-2's capacity reading.
+* **Reading added (fixed now), against cgrownoise (the 64-d growth arm):**
+  - FULL-GROW passes where cgrownoise fails: the 768 width supplies capacity (a benefit of full width, the question §143 left open).
+  - Both pass: full width costs nothing at capacity.
+* score_s133 gains the cell.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
