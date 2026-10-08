@@ -8509,6 +8509,56 @@ restart slots with 147-1's misfire rule; the memory is the only cross-segment ch
   - **`carry_follow_share`** (new): column k + 1's digit = (ĉ_{k+1} − ⌊ĉ_k/10⌋ + ⌊(ĉ_k + δ)/10⌋) mod 10, i.e. the next column uses the edited carry.
 * No PASS or LENGTH-GENERAL rule changes.
 
+**Note 147-4 (2026-10-08 01:10 EDT, before any §151 / §152 / §154 result; Experiments' structural observation, Audit's request). DeltaMem's writes are input-only, so its claims are
+restated.**
+* **The fact.** DeltaMem's keys, values and gates come from LN(x) at block-6 *entry*. x there is blocks 0–5 over the current segment's own tokens (attention inside the
+  segment). The branch's read enters after that point and feeds only blocks 6–11 at the same position. Each segment is a fresh pass.
+  - So the state after every step is **a fixed function of the input tokens alone**: an additive sum and an order-dependent delta recursion of input-derived features.
+  - No read, no computed result and no carry is ever written back. All nonlinear use of the memory happens at read time.
+* **§147 restated.**
+  - *"The latent carries the running computation"* is withdrawn. What §147 shows: **a linear memory of input-derived pair features breaks the middle-column wall, with
+    read-time carry resolution.**
+  - Each pass forms its pair's product in-pass, the memory sums those products across passes (carry-save), and blocks 6–11 resolve column sums and carries when they read.
+  - The whole-memory swap shows the answer follows the donor's *stored* sums. That is necessarily true of such a buffer, so it is not evidence of serial use of computed
+    intermediates.
+  - **C1 in its north-star sense (hop-by-hop use of computed intermediates) cannot be met by this design.** The SERIAL numbers stand as measured, under the narrower name
+    "the stored sums are used".
+* **The registered §151–§154 readings, reworded now (rules unchanged):**
+  - §151 PASS reads *"exact multiplication through an input-driven linear memory with read-time carry resolution"*, not "C1 by design".
+  - §152's headline reads *"matches text CoT at less compute through an input-driven carry-save memory (the passes' products accumulate; the reader resolves the carries)"*.
+    The C3 compute comparison stands as measured. "A latent memory that carries the computation" is withdrawn.
+  - §153 VISIBLE reads the same way. PURE and REPEAT move (note 153-3).
+  - §154: see note 154-2.
+* **The fix**, a write-after-read memory where the state is genuinely recurrent, S_{t+1} = f(S_t, input_t), is registered separately (§155).
+
+**Note 154-2 (2026-10-08 01:10 EDT, before any §154 result). SHIFT under input-only writes (147-4), and the C7 test.**
+* **The registered carry path cannot be implemented.** "Replace the delta heads' carry with ⌊sum / 10⌋" fails because ⌊sum / 10⌋ exists only after the read, and nothing
+  after the read is written.
+  - Under the reset, the carry can come only from the delta heads' input-driven recursion. For example, stored products under a flag-driven decay α(" ;") → 0.1, a decimal
+    shift on stored inputs.
+  - That is possible in principle, but α stayed near-frozen in §147 (147-3).
+* **SHIFT s1 runs as built** (the reset is unchanged). Its readings are amended:
+  - **PASS or LENGTH-GENERAL:** the delta heads' input-driven recursion carries the carry across a per-column reset.
+  - **Failure on carry-dependent digits (the predicted outcome):** input-only writes cannot carry a computed carry across a reset, and §155 is the fix.
+  - **Descriptive (added):** per-column accuracy split by carry-in = 0 against ≠ 0 (the signature); α on new-column against same-column segments.
+* **C7 (Audit):**
+  - **The C7 test is the state edit.** At column k's emission step, before the read and before that step's writes, perturb the additive state along the direction whose read
+    moves ĉ_k by δ (δ ∈ {−2, −1, +1, +2}). Score `c7_state_edit.shifted_share`: the emitted digit = (ĉ_k + δ) mod 10.
+  - **Pre-stated:** under SHIFT the next column's carry does *not* follow. The reset zeroes the edited store, and nothing computed is written.
+    `c7_state_edit.carry_follow_share` is expected at the unedited rate. The propagating test belongs to §155.
+  - **The read edit is descriptive only.** It is local to the emission position, and `carry_follow` is read only under the state edit.
+  - A delta-head carry edit (δ·u′ along the carry probe, after column k's last pair) is also descriptive.
+* ROTARY is deferred to §155's architecture: its offset −1 read would give the previous column's stored products, not its carry-in.
+
+**Note 153-3 (2026-10-08 01:10 EDT, before any §153 run). PURE and REPEAT cannot work with input-only writes (147-4).**
+* PURE's pass j sees [EOT, step j, " _" × 4], identical across items. Its writes are therefore item-independent, and passes 1..K store nothing about the operands held in
+  memory.
+  - The decode would have to compute the whole product from pass 0's memory in one go. That is the direct-answer wall (§148: 0.002), so PURE would fail by construction and
+    uninformatively. REPEAT likewise.
+* **PURE and REPEAT move to §155's write-after-read memory.** They are additionally gated on §155's proof, with the rules and readings unchanged.
+* **VISIBLE is unaffected** (it sees the problem and the step each pass, so its writes can form that row's products, as §152's do). It stays gated on §152 A s1, with 147-4's
+  wording.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
