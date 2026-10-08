@@ -9768,6 +9768,9 @@ this note is pushed.**
   - That is 0.80× TC-M (LATENT BEATS TEXT) and 3.24× ICoT-SI. 8×8 costs 4.65·10¹⁰ FLOPs and 65 passes.
 * **The trigger fired (note 162-2 with 162-4's floor):** one window blip at 14.5k (0.061, against 0.016–0.025 around it), recovered within 200 steps; final loss
   1·10⁻⁴. By the rule the block-9 fallback is due. It is descriptive, and the spend is Audit's call; it is the same transient class as §159's.
+  - **Not run (Audit's call, 836c09ab):** one transient window, recovered in 200 steps, on a converged run.
+* **Reporting rule (Audit):** the product-count bins mix early and late columns that share a count, so "flat by count" and "falling by position" are always
+  reported together.
 
 ## 164. MIX-BASELINES: like-for-like text-CoT and direct-answer baselines on §161's shape mix (Audit's requirement before any "beyond text" claim; pre-registered 2026-10-08 11:26 EDT, after Audit's review and before any implementation or run; priors from Literature's 0b532db5 / 73fbfb1a)
 
