@@ -9333,6 +9333,8 @@ accumulator.**
     same profile.
   - **On rows, write-after-read stores no more of the column sums than input-only writes do.** On digit pairs it differs: R holds completed columns' units
     exactly, and MIX holds the in-progress sum.
+* **CTRL-R9 s1 (the block-9 fallback; descriptive):** 0.085 (rows 1.0 / 1.0 / 0.725 / 0.085; column 5 0.11); 7 floor spikes; final loss 0.104.
+  - Block-9 writes change nothing on rows: the column-5 failure stays.
 
 ## 161. SHAPE-MIX: breaking the 4×4 count schedule for length generalisation (C2) (Audit 07:50; pre-registered 2026-10-08 07:55 EDT, after Literature's check 0b532db5 and Audit's draft, before any implementation or run)
 
