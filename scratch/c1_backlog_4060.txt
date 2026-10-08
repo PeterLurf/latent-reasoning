@@ -1,3 +1,8 @@
+# 2026-10-08 00:44 THEORY §153 THINK-PASS pre-launch CUDA bf16 gates (Audit-approved 74029ed1; launch gated on §152 A s1 >= 0.95): gate152 visible / pure + memchecks (L 4, bs 64, reader)
+3.0 boxes/runs_fsq/s152_gates/gate153_visible.json python -u scratch/gate152.py {DEV} visible
+3.0 boxes/runs_fsq/s152_gates/gate153_pure.json python -u scratch/gate152.py {DEV} pure
+4.5 D:/drain_tmp/mem153_visible/mem_check.json python -u -m boxes.multrow --family mult_row --task 4x4 --seed 1 --carrier deltamem --pass_input visible --copy_frac 0 --reader --teacher_cache boxes/runs_fsq/s142_teacher_cache/teacher_sj_4x4_train.npz --lmax_steps 2000,5000,9000 --mem_check --device {DEV} --out D:/drain_tmp/mem153_visible
+4.5 D:/drain_tmp/mem153_pure/mem_check.json python -u -m boxes.multrow --family mult_row --task 4x4 --seed 1 --carrier deltamem --pass_input pure --copy_frac 0 --reader --teacher_cache boxes/runs_fsq/s142_teacher_cache/teacher_sj_4x4_train.npz --lmax_steps 2000,5000,9000 --mem_check --device {DEV} --out D:/drain_tmp/mem153_pure
 # 2026-10-07 s149 SOTA-PROBE full evals (Audit-approved; $0, eval only, fp32 GPT-2 small) - first
 2.5 boxes/runs_fsq/s149_simcot_coconut/eval.json python -u scratch/s149_probe.py simcot_coconut {DEV}
 2.5 boxes/runs_fsq/s149_coconut/eval.json python -u scratch/s149_probe.py coconut {DEV}

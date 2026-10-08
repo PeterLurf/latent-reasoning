@@ -4,7 +4,9 @@
   (2) gradient flow under CUDA bf16 (fade 0.5, W_o perturbed, g_add calibrated as in training): nonzero grad into every DeltaMem parameter from
       the reader CE alone and from the final CE alone (alpha exempt, note 147-3: reported, not gated)
   (3) the reader writes nothing back: states into every segment j + 1 and the final logits bitwise identical with the reader passes on / off
-    python scratch/gate152.py cuda:1      -> boxes/runs_fsq/s152_gates/gate152.json (exit 1 on a failed gate)"""
+    python scratch/gate152.py cuda:1      -> boxes/runs_fsq/s152_gates/gate152.json (exit 1 on a failed gate)
+§153 (ea154f30): python scratch/gate152.py cuda:1 visible|pure  -> boxes/runs_fsq/s152_gates/gate153_<input>.json (the same three gates; pure's
+step-0 check on pass 0, its chains run pass 0 first)"""
 import json
 import math
 import os
@@ -21,14 +23,15 @@ from boxes.multcol import DTOK, gen_operands  # noqa: E402
 
 
 def main():
-    dev = sys.argv[1] if len(sys.argv) > 1 else "cuda:0"; out = {"device": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"}
+    dev = sys.argv[1] if len(sys.argv) > 1 else "cuda:0"; inp = sys.argv[2] if len(sys.argv) > 2 else None; out = {"pass_input": inp,"device": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"}
     amp = torch.bfloat16 if dev.startswith("cuda") and torch.cuda.get_device_capability(dev)[0] >= 8 else None; out["amp"] = str(amp)
     torch.manual_seed(0); rng = np.random.default_rng(0); B = 8; A, Bd = gen_operands(rng, B, 4), gen_operands(rng, B, 4)
     m = MR.MultRowDelta(s5.load_gpt2(dev), MR.RowFam(), 6).to(dev); m.train(); MR.set_ops(m, A, Bd, dev); g = m.g; ok = True
+    m.pass_input = inp; m.Lp = 4; t0_ = -1 if inp in ("pure", "repeat") else 0
     # (1) step 0: fade 0
     m.mem.fade.fill_(0.0)
     with torch.no_grad(), MR.amp_ctx(amp):
-        x = g.embed(m.seg_ids(0, B, dev)); S0 = m.start(B, dev)
+        x = g.embed(m.seg_ids(t0_, B, dev)); S0 = m.start(B, dev)
         h1, S1 = MR.fwd_mem(g, x, m.mem, S0); h2, S2 = DM.gpt_forward_mem(g, x, m.mem, S0)
         lay = m.mem.layer; m.mem.layer = 99; h0, _ = MR.fwd_mem(g, x, m.mem, S0); m.mem.layer = lay                # plain GPT-2: no branch
         hc, _ = g(x, None)                                                                                         # core.GPT.forward (info)
@@ -58,7 +61,9 @@ def main():
     m.eval()
     with torch.no_grad(), MR.amp_ctx(amp):
         def run(with_reader):
-            MR.set_ops(m, A, Bd, dev); S = m.start(B, dev); st = []; same = True
+            MR.set_ops(m, A, Bd, dev); m.Lp = 4; S = m.start(B, dev); st = []; same = True
+            if inp in ("pure", "repeat"):
+                S = m.write(S, -1)
             for t in range(4):
                 S = m.write(S, t); st.append(S.clone())
                 if with_reader:
@@ -69,7 +74,7 @@ def main():
     out["g3_state_object_unchanged_by_reader"] = unchanged
     out["g3_pass"] = out["g3_states_bitwise_equal"] and out["g3_final_logits_bitwise_equal"] and unchanged; ok &= out["g3_pass"]
     out["all_pass"] = bool(ok); d = os.path.join(ROOT, "boxes", "runs_fsq", "s152_gates"); os.makedirs(d, exist_ok=True)
-    json.dump(out, open(os.path.join(d, "gate152.json"), "w", newline="\n"), indent=1); print("GATE152", json.dumps(out), flush=True)
+    json.dump(out, open(os.path.join(d, "gate153_%s.json" % inp if inp else "gate152.json"), "w", newline="\n"), indent=1); print("GATE152", json.dumps(out), flush=True)
     sys.exit(0 if ok else 1)
 
 
