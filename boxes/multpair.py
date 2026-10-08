@@ -424,6 +424,8 @@ class MultDelta(MultPair):
         return torch.cat([torch.full((B, 1), EOT, device=dev), tail], 1)
 
     def step(self, S, t, rec=None):
+        if getattr(self, "add_reset", None) == "column" and t > 0 and self.newcol[t]:   # §154 SHIFT: additive state zeroed before a new column / the flush
+            S = torch.cat([torch.zeros_like(S[:, :DM.H_ADD]), S[:, DM.H_ADD:]], 1)
         B = S.shape[0]; out, S = DM.gpt_forward_mem(self.g, self.g.embed(self.tokens(t, B, S.device)), self.mem, S, rec)
         return self.g.logits(out[:, -1]).float(), S
 
@@ -540,6 +542,97 @@ def s147_extras(m, teA, teB, dev, amp, bs, pred):
     out["colsum_readout_r2_by_column"] = byc
     out["colsum_readout_def"] = "ridge R^2 of the true column accumulator from the additive heads' read phi(q)^T S (384 d) at each segment's last token"
     out["rho_by_head_type"] = rho_delta(m, teA, teB, dev, amp)
+    return out
+
+
+# ================================================================ THEORY §154 SHIFT-MEM (ed7857cc): column-addressed additive memory
+@torch.no_grad()
+def reads_by_step(m, A, Bd, dev, amp, bs):
+    """The branch read [g_add read_add || g_del read_del] (W_o's input) at each segment's last token: (N, T, 768) fp32."""
+    N = len(A); pairs, _, _ = schedule(A.shape[1], Bd.shape[1]); T = len(pairs); R = np.zeros((N, T, 2 * DM.H_ADD * DM.DH), np.float32); buf = []
+    hk = m.mem.wo.register_forward_hook(lambda mod_, inp_, out_: buf.append(inp_[0][:, -1].detach().float()))
+    try:
+        for s_ in range(0, N, bs):
+            sl = slice(s_, s_ + bs); B = len(A[sl]); set_ops(m, A[sl], Bd[sl], dev); S = m.start(B, dev)
+            for t in range(T):
+                buf.clear()
+                with amp_ctx(amp):
+                    _, S = m.step(S, t)
+                R[sl, t] = buf[0].cpu().numpy()
+    finally:
+        hk.remove()
+    return R
+
+
+def carry_in(A, Bd):
+    """(N, n_cols) carry into each column k (0 for k = 0): floor(c_{k-1} / 10), c_k = the column's products + its carry-in."""
+    acc, _, _, pairs, col, emit = accumulators(A, Bd); nc = A.shape[1] + Bd.shape[1] - 1; ci = np.zeros((len(A), nc), np.int64)
+    last = {int(col[t]): t for t in range(len(pairs)) if pairs[t][0] >= 0}
+    for k in range(1, nc):
+        ci[:, k] = acc[:, last[k - 1]] // 10
+    return ci
+
+
+def carry_probe(m, A, Bd, dev, amp, bs):
+    """held-out ridge R^2 of each column's carry-in from the delta heads' read (384-d) at the column's first pair (k >= 1)."""
+    R = reads_by_step(m, A, Bd, dev, amp, bs)[:, :, DM.H_ADD * DM.DH:]; pairs, col, _ = schedule(A.shape[1], Bd.shape[1]); ci = carry_in(A, Bd); h = len(A) // 2
+    first = {}
+    for t in range(len(pairs)):
+        if pairs[t][0] >= 0 and int(col[t]) not in first:
+            first[int(col[t])] = t
+    out = []
+    for k in range(1, A.shape[1] + Bd.shape[1] - 1):
+        y = ci[:, k].astype(float); X = R[:, first[k]]
+        out.append(ridge_r2(X[:h], y[:h], X[h:], y[h:]) if y[:h].std() > 0 and y[h:].std() > 0 else None)
+    return out
+
+
+@torch.no_grad()
+def c7_edit(m, A, Bd, dev, amp, bs, deltas=(-2, -1, 1, 2), lam=1e-3):
+    """§154 C7 (SHIFT): a raw-space ridge probe w of the column sum c_k from the additive read at the emission steps (fit half); on the score half,
+    at every emission step add delta * u (u = w / ||w||^2: the probe's prediction moves by exactly delta) to the additive read before W_o.
+    shifted_share = emitted digit == (c_k + delta) mod 10; unedited_share = == c_k mod 10 (pooled over emission steps)."""
+    acc, dig, _, pairs, col, emit = accumulators(A, Bd); R = reads_by_step(m, A, Bd, dev, amp, bs)[:, :, :DM.H_ADD * DM.DH]; h = len(A) // 2; et = np.nonzero(emit)[0]
+    X = R[:h][:, et].reshape(-1, R.shape[-1]).astype(np.float64); y = acc[:h][:, et].reshape(-1).astype(np.float64); mu, ym = X.mean(0), y.mean()
+    w = np.linalg.solve((X - mu).T @ (X - mu) + lam * len(X) * np.eye(X.shape[1]), (X - mu).T @ (y - ym)); Xs = R[h:][:, et].reshape(-1, R.shape[-1])
+    r2 = float(1 - (((Xs - mu) @ w + ym - acc[h:][:, et].reshape(-1)) ** 2).sum() / max(((acc[h:][:, et] - acc[h:][:, et].mean()) ** 2).sum(), 1e-12))
+    u = torch.tensor(w / (w @ w), dtype=torch.float32, device=dev); Ar, Br = A[h:], Bd[h:]; N = len(Ar); out = {"probe_r2_score_half": r2}
+    ed = {"on": False, "delta": 0.0}
+    def pre(mod_, inp_):
+        if not ed["on"]:
+            return None
+        x = inp_[0].clone(); x[:, -1, :DM.H_ADD * DM.DH] += ed["delta"] * u.to(x.dtype); return (x,)
+    hk = m.mem.wo.register_forward_pre_hook(pre); T = len(pairs)
+    try:
+        for dl in deltas:
+            got = np.full((N, T), -1, np.int64); ed["delta"] = float(dl)
+            for s_ in range(0, N, bs):
+                sl = slice(s_, s_ + bs); B = len(Ar[sl]); set_ops(m, Ar[sl], Br[sl], dev); S = m.start(B, dev)
+                for t in range(T):
+                    ed["on"] = bool(emit[t])
+                    with amp_ctx(amp):
+                        lg, S = m.step(S, t)
+                    ed["on"] = False
+                    if emit[t]:
+                        got[sl, t] = m.fam.decode(lg.argmax(-1).cpu().numpy()[:, None])
+            g_ = got[:, et]; c_ = acc[h:][:, et]
+            out["%+d" % dl] = {"shifted_share": float((g_ == (c_ + dl) % 10).mean()), "unedited_share": float((g_ == c_ % 10).mean()), "n": int(g_.size)}
+    finally:
+        hk.remove()
+    out["def"] = "raw-space ridge of c_k on the additive read at emission steps (fit half); edit = delta w / ||w||^2 at every emission step (score half), pooled"
+    return out
+
+
+def s154_extras(m, teA, teB, dev, amp, bs, ext_n, shift):
+    """§154 descriptive block: colsum_r2_by_segment (4x4), carry_probe_by_column {4x4, 4x8}, c7_edit (SHIFT)."""
+    acc, _, _, pairs, col, emit = accumulators(teA, teB); R = reads_by_step(m, teA, teB, dev, amp, bs)[:, :, :DM.H_ADD * DM.DH]; h = len(teA) // 2; out = {}
+    out["colsum_r2_by_segment"] = [ridge_r2(R[:h, t], acc[:h, t].astype(float), R[h:, t], acc[h:, t].astype(float)) if acc[:h, t].std() > 0 and acc[h:, t].std() > 0 else None
+                                   for t in range(len(pairs))]
+    out["colsum_def"] = "held-out ridge R^2 of the current column's running sum (incl. carry-in) from the additive read (384-d) at each segment's last token"
+    xA, xB = gen_operands(np.random.default_rng(14004), ext_n, 4), gen_operands(np.random.default_rng(14005), ext_n, 8)
+    out["carry_probe_by_column"] = {"4x4": carry_probe(m, teA, teB, dev, amp, bs), "4x8": carry_probe(m, xA, xB, dev, amp, bs),
+                                    "def": "held-out ridge R^2 of column k's carry-in floor(c_{k-1}/10) from the delta read (384-d) at column k's first pair, k = 1.."}
+    out["c7_edit"] = c7_edit(m, teA, teB, dev, amp, bs) if shift else None
     return out
 
 
@@ -702,6 +795,9 @@ def main():
     ap.add_argument("--carry_from", default="first", choices=["first", "last"], help="§145 note 145-1: carry the slots read at the LAST write positions (CARRY1: w_K)")
     ap.add_argument("--no_round", action="store_true", help="§145 NOISE-64 carrier"); ap.add_argument("--dither", type=float, default=0.0)
     ap.add_argument("--keep_ckpt_steps", default="", help="§151: comma list of steps; model-only copies there, the row-level donor on each at the end (s151.serial_by_ckpt), then deleted")
+    ap.add_argument("--add_reset", default=None, choices=[None, "column"], help="§154 SHIFT: zero the additive heads' state before each new column / the flush")
+    ap.add_argument("--add_rotary", default=None, choices=[None, "column"], help="§154 ROTARY (not built yet)"); ap.add_argument("--rotary_read_offsets", default=None)
+    ap.add_argument("--rotary_base", type=float, default=100.0)
     ap.add_argument("--carrier", default="code", choices=["code", "deltamem"], help="§147: deltamem = the linear-recurrent memory, no carried code")
     ap.add_argument("--slot_space", default=None, choices=[None, "vocab", "digits"], help="§150 VOCAB-SLOT: slots are GPT-2 vocabulary tokens")
     ap.add_argument("--micro", type=int, default=1, help="gradient accumulation chunks (memory only; bs must divide)")
@@ -717,7 +813,11 @@ def main():
             setattr(a, k, v)
     assert not a.slots or a.slot_space or (a.no_round and 1 <= a.carry_slots <= a.slots <= 4), "§145: --slots K (<= 4) needs --no_round and 1 <= --carry_slots <= K"
     assert a.bs % a.micro == 0, "--micro must divide --bs"
-    a.mem_group_gain = a.carrier == "deltamem"                               # note 147-2 (the scorer checks it)
+    a.mem_group_gain = a.carrier == "deltamem"
+    assert not (a.add_reset or a.add_rotary) or a.carrier == "deltamem", "§154: --add_reset / --add_rotary need --carrier deltamem"
+    assert not a.add_rotary, "§154 ROTARY is not built yet"
+    if not a.add_rotary:
+        a.rotary_base = None                               # note 147-2 (the scorer checks it)
     a.slot_wte_detached = bool(a.slot_space)                                # note 150-1: the whole slot path (logits + mixture) uses wte.detach()
     assert not a.slot_space or (a.slots == 4 and a.slot_gumbel and not a.no_round), "§150: --slots 4 --slot_space vocab|digits --slot_gumbel (no NOISE carrier)"
     dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); sc = a.sched_scale; n = int(a.task[0])
@@ -730,7 +830,7 @@ def main():
     assert a.carrier == "code" or (not a.slots and a.mem_add_heads == DM.H_ADD and a.mem_delta_heads == DM.H_DEL), "§147: --carrier deltamem (6 + 6 heads), no slots"
     def mk():
         if a.carrier == "deltamem":
-            return MultDelta(s5.load_gpt2(dev), fam, a.mem_layer).to(dev)
+            md_ = MultDelta(s5.load_gpt2(dev), fam, a.mem_layer).to(dev); md_.add_reset = a.add_reset; return md_
         if a.slot_space:
             m_ = MultVocab(s5.load_gpt2(dev), fam, a.slots, a.slot_space).to(dev); m_.tau_final = float(a.slot_tau.split(":")[1]); return m_
         m_ = (MultSlot(s5.load_gpt2(dev), fam, a.slots, a.carry_slots, a.carry_from) if a.slots else MultPair(s5.load_gpt2(dev), fam)).to(dev); m_.no_round = a.no_round
@@ -867,6 +967,10 @@ def main():
         res["s147"]["read_norm_ratio_by_handoff"] = {"step0": i147.get("read_norm_ratio_by_handoff_step0"), "end": read_ratio_by_handoff(m, teA, teB, dev, amp)[0]}
         res["s147"]["alpha_by_head"] = {"end": alpha_by_head(m, teA, teB, dev, amp), "checkpoints": alpha_hist}
         res["s147"].update({"g_add_init": i147.get("g_add_init"), "g_add": float(torch.exp(m.mem.s_add)), "g_del": float(torch.exp(m.mem.s_del)), "mem_group_gain": True, "gain_param": "exp(s)"})
+        if a.add_reset or a.add_rotary:                                     # §154: ext_4x16 (eval only) + the s154 block
+            yA, yB = gen_operands(np.random.default_rng(14006), a.ext_n, 4), gen_operands(np.random.default_rng(14007), a.ext_n, 16); Py, _, _ = columns(yA, yB)
+            res["ext_4x16"] = {**acc_report(RO(m, yA, yB, dev, amp, a.eval_bs), Py), "seeds": [14006, 14007], "n": int(a.ext_n)}
+            res["s154"] = {**s154_extras(m, teA, teB, dev, amp, a.eval_bs, a.ext_n, a.add_reset == "column"), "add_reset": a.add_reset, "add_rotary": a.add_rotary}
         res["n_codes"] = None; res["eval_sec"] = round(time.time() - t1)
     elif a.slot_space:                                                      # §150 (contraction = the on-host fp32 file, perturbing h(w_k))
         res["donor"] = donor_vocab(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(14002), n=a.donor_n)
