@@ -8954,6 +8954,8 @@ ext_4x8 0.000 < 0.5. ROTARY was deferred to §155's architecture (154-2), so §1
   - PASS needs ≥ 3/4 slots exact and SERIAL, and this slot is not SERIAL.
   - **What a non-SERIAL exact state means is open.** It could store operand-specific information (the L1 pattern in recurrent form) or hold sums in a form that does not
     compose across items. The next descriptive check is the pass-skip test (§153's form).
+* **Compute (measured; `theory/compute_s155.py` → `theory/results/compute_s155.json`, §98 / §152's Meter convention):** R s1 uses 1.219·10¹⁰ FLOPs per item
+  (**0.788× TC-M**, 2.47× ICoT-SI) and **17 sequential passes** (0.298× TC-M, 1.3× ICoT-SI).
 * **R9 s1 (the block-9 write fallback, run by the trigger):** test_acc **0.999**, every column ≥ 0.999. Not SERIAL (row donor 0.07 / 0.08 / 0.13), ext_4x8 0.0, propagation 0.0;
   rho_loop 0.30; 27 flagged spikes. **The write layer does not change the picture:** both top and block 9 are exact, not SERIAL and not length-general.
 * **R-γ0 s1** (γ held at 0: block-6 writes with pass-start reads; 155-1 (3)): test_acc **0.587**, per column 1.0 / 1.0 / 0.975 / 0.883 / 0.881 / 0.864 / 0.93 / 0.928.

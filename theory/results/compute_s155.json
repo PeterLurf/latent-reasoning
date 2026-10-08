@@ -1,0 +1,17 @@
+{
+ "s155_r_4x4_s1": {
+  "task": "4x4",
+  "flops": 12187123248.0,
+  "flops_trunk": 11850958848.0,
+  "flops_branch": 336164400.0,
+  "sequential_passes": 17,
+  "lm_head_rows": 8,
+  "tokens_processed": 66,
+  "branch_params": 2374668,
+  "flops_vs_tcm": 0.7883381046252904,
+  "passes_vs_tcm": 0.2982456140350877,
+  "flops_vs_icotsi": 2.4738987037819418,
+  "passes_vs_icotsi": 1.3076923076923077,
+  "convention": "\u00a798 / \u00a7152: boxes.core.Meter, each segment a fresh full pass, full-vocabulary LM-head rows; branch 2 x params per token + head-token ops"
+ }
+}
