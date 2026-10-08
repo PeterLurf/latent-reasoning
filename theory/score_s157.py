@@ -40,7 +40,7 @@ def cell(arm, seed):
         ERRORS.append((d, bad)); return {"status": "error", "error": bad}
     s = r.get("s157") or {}
     return {"status": "done", "test_acc": r.get("test_acc"), "acc_by_length": r.get("acc_by_length"), "serial": S152.serial(r.get("donor")),
-            "digit_acc_tf": s.get("digit_acc_teacher_forced"), "read_exposure": s.get("read_exposure"), "write_round_err": s.get("write_round_err"),
+            "digit_acc_tf": s.get("digit_acc_teacher_forced"), "read_exposure": s.get("read_exposure"), "write_round_err": s.get("write_round_err"), "read_round_err": s.get("read_round_err"),
             "offcol_weight": s.get("offcol_weight"), "c7_scalar_edit": s.get("c7_scalar_edit"), "compute": r.get("compute"), "gpu": r.get("train_gpu")}
 
 
@@ -73,6 +73,9 @@ def main():
     if gate.get("ccq") and (l0.get("test_acc") or 0) >= 0.95:
         rd += "; CCQ: the read-time lambda = 0 ablation also >= 0.95 (%s): credit the l2-normalised features, not the contraction" % l0.get("test_acc")
     ow = ((load("s157_periodic_4x4_s1") or {}).get("s157") or {}).get("offcol_weight")
+    if isinstance(ow, dict):     # multrow writes {column: share, "mean"}; 157-2's value = the mean over the product columns (the last column, the final carry, has no
+        cs = sorted(int(k) for k in ow if k != "mean")          # in-column writes and is 1.0 by construction); fixed 2026-10-08 before the 48k PERIODIC cell landed
+        ow = sum(float(ow[str(c)]) for c in cs[:-1]) / max(1, len(cs) - 1) if len(cs) > 1 else None
     if gate.get("periodic") is False and isinstance(ow, (int, float)) and ow >= 0.1:
         rd += "; PERIODIC fails with offcol_weight %.2f >= 0.1: the blend blocks it, not read geometry" % ow
     if gate.get("multiread"):
