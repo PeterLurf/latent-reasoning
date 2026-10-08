@@ -625,13 +625,15 @@ def s147_extras(m, teA, teB, dev, amp, bs, pred):
 
 # ================================================================ THEORY §154 SHIFT-MEM (ed7857cc): column-addressed additive memory
 @torch.no_grad()
-def reads_by_step(m, A, Bd, dev, amp, bs):
+def reads_by_step(m, A, Bd, dev, amp, bs, pd=None):
     """The branch read [g_add read_add || g_del read_del] (W_o's input) at each segment's last token: (N, T, 768) fp32."""
     N = len(A); pairs, _, _ = schedule(A.shape[1], Bd.shape[1]); T = len(pairs); R = np.zeros((N, T, 2 * DM.H_ADD * DM.DH), np.float32); buf = []
     hk = m.mem.wo.register_forward_hook(lambda mod_, inp_, out_: buf.append(inp_[0][:, -1].detach().float()))
     try:
         for s_ in range(0, N, bs):
             sl = slice(s_, s_ + bs); B = len(A[sl]); set_ops(m, A[sl], Bd[sl], dev); S = m.start(B, dev)
+            if pd is not None:                                              # §158: per-step digits (free chains)
+                m.pa = torch.tensor(np.array(DTOK)[pd[0][sl]], device=dev); m.pb = torch.tensor(np.array(DTOK)[pd[1][sl]], device=dev)
             for t in range(T):
                 buf.clear()
                 with amp_ctx(amp):
@@ -737,7 +739,7 @@ def _branch_in(m, S, t):
 
 
 @torch.no_grad()
-def c7_state_edit(m, A, Bd, dev, amp, bs, deltas=(-2, -1, 1, 2), cols=(2, 3, 4, 5, 6, 7), prop_cols=(2, 3, 4, 5)):
+def c7_state_edit(m, A, Bd, dev, amp, bs, deltas=(-2, -1, 1, 2), cols=(2, 3, 4, 5, 6, 7), prop_cols=(2, 3, 4, 5), pd=None, only_prop=False):
     """§154 C7 STATE edits (descriptive; Audit / Theory). S is a function of the input tokens only (no read -> write path), so an edit reaches
     later columns only through the perturbed state itself.
     (a) additive: entering column k's emission step (after that step's SHIFT reset when it starts a column), Delta S_add per head h =
@@ -748,8 +750,15 @@ def c7_state_edit(m, A, Bd, dev, amp, bs, deltas=(-2, -1, 1, 2), cols=(2, 3, 4, 
         segment's delta transforms A_t = alpha_t (I - beta_t k_t k_t^T) applied to the first-pair token's normalised q), r = delta w_c / ||w_c||^2
         for the raw ridge of column k+1's carry-in on the delta read at its first pair: that read moves by exactly delta r. Reports column
         k+1's carry_shift_share (digit == (c^_{k+1} + delta) mod 10), unedited_share and the probe's held-out R^2. k = 7: k+1 is the flush."""
-    acc, dig, _, pairs, col, emit = accumulators(A, Bd); T = len(pairs); h = len(A) // 2; et = np.nonzero(emit)[0]; ci = carry_in(A, Bd)
-    R = reads_by_step(m, A, Bd, dev, amp, bs); RA, RD = R[:, :, :DM.H_ADD * DM.DH], R[:, :, DM.H_ADD * DM.DH:]
+    if pd is None:
+        acc, dig, _, pairs, col, emit = accumulators(A, Bd); ci = carry_in(A, Bd)
+    else:                                                                   # §158 free chains: the drawn pairs' own column sums and true carries
+        acc, dig, pairs, col, emit = acc_steps(pd[0], pd[1], A.shape[1], Bd.shape[1]); nc = A.shape[1] + Bd.shape[1] - 1; ci = np.zeros((len(A), nc), np.int64)
+        last = {int(col[t]): t for t in range(len(pairs)) if pairs[t][0] >= 0}
+        for k_ in range(1, nc):
+            ci[:, k_] = acc[:, last[k_ - 1]] // 10
+    T = len(pairs); h = len(A) // 2; et = np.nonzero(emit)[0]
+    R = reads_by_step(m, A, Bd, dev, amp, bs, pd=pd); RA, RD = R[:, :, :DM.H_ADD * DM.DH], R[:, :, DM.H_ADD * DM.DH:]
     first = {}
     for t in range(T):
         if int(col[t]) not in first:
@@ -765,6 +774,8 @@ def c7_state_edit(m, A, Bd, dev, amp, bs, deltas=(-2, -1, 1, 2), cols=(2, 3, 4, 
         got = np.full((N, T), -1, np.int64)
         for s_ in range(0, N, bs):
             sl = slice(s_, s_ + bs); Bn = len(Ar[sl]); set_ops(m, Ar[sl], Br[sl], dev); S = m.start(Bn, dev)
+            if pd is not None:                                              # §158: the score half's per-step digits
+                m.pa = torch.tensor(np.array(DTOK)[pd[0][h:][sl]], device=dev); m.pb = torch.tensor(np.array(DTOK)[pd[1][h:][sl]], device=dev)
             for t in range(T):
                 rst = getattr(m, "add_reset", None)
                 if edit is not None and edit[0] == t:
@@ -803,7 +814,7 @@ def c7_state_edit(m, A, Bd, dev, amp, bs, deltas=(-2, -1, 1, 2), cols=(2, 3, 4, 
             return torch.cat([S[:, :HA], S[:, HA:] + dS.to(S.dtype)], 1)
         return f
     base = run(None); out = {"additive": {}, "delta": {}, "carry_probe_r2_score_half": r2c, "descriptive": True}
-    for dl in deltas:
+    for dl in (() if only_prop else deltas):
         bya, byd = {}, {}
         for k in cols:
             ck, cn = C[:, k - 1], C[:, k]
@@ -1040,6 +1051,9 @@ def s158_extras(m, teA, teB, dev, amp, bs, n_free=1000, n_fit=8000, seed=15801, 
             dn["pos%d" % P] = {"row_level": {"donor_consistent": float((gp[:, later] == exp_[:, later]).all(1).mean()), "recipient_consistent": float((gp[:, later] == Dg[ir][:, later]).all(1).mean()),
                                              "chance_overlap": float((exp_[:, later] == Dg[ir][:, later]).all(1).mean())}, "n": int(N)}
         r_["donor"] = dn; bt[nm] = r_
+        if nm == "free":                                                    # note 158-1: the propagation edit on the free chains (descriptive)
+            Az, Bz = np.zeros((len(PA_), na), np.int64), np.zeros((len(PA_), nb), np.int64)
+            r_["propagation"] = c7_state_edit(m, Az, Bz, dev, amp, bs, pd=(PA_, PB_), only_prop=True)["propagation"]
     out["by_item_type"] = bt
     frng = np.random.default_rng(seed + 2); TA, TB = free_steps(frng, n_fit, na, nb); _, Ktr = rollout_free(m, TA, TB, na, nb, dev, amp, bs, keep_pos=list(points))
     _, Kte = rollout_free(m, FA, FB, na, nb, dev, amp, bs, keep_pos=list(points)); avr = {}; ex_all, rw_all = [], []
@@ -1226,6 +1240,7 @@ def main():
     ap.add_argument("--log_every", type=int, default=100); ap.add_argument("--stop_plateau", action="store_true"); ap.add_argument("--ckpt_every", type=int, default=0)
     ap.add_argument("--resume", default=None); ap.add_argument("--stop_after", type=int, default=0); ap.add_argument("--train_n", type=int, default=0, help="smoke only")
     ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--from_args", default=None); ap.add_argument("--contraction_only", action="store_true")
+    ap.add_argument("--s158_free_prop_only", action="store_true", help="§158 post-hoc: free-item propagation on <out>/model.pt -> eval_s158_posthoc.json")
     ap.add_argument("--what_state_only", action="store_true", help="note 155-4 post-hoc (descriptive): what_state on <out>/model.pt -> eval_what_state.json")
     ap.add_argument("--c7_state_only", action="store_true", help="§154 post-hoc (descriptive): C7 state edits on <out>/model.pt -> eval_c7_state.json")
     ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
@@ -1247,7 +1262,7 @@ def main():
     ap.add_argument("--mem_layer", type=int, default=6); ap.add_argument("--mem_add_heads", type=int, default=6); ap.add_argument("--mem_delta_heads", type=int, default=6)
     a = ap.parse_args()
     if a.from_args:
-        keep = {k: getattr(a, k) for k in ("contraction_only", "fp32", "device", "out", "from_args", "c7_state_only", "what_state_only")}
+        keep = {k: getattr(a, k) for k in ("contraction_only", "fp32", "device", "out", "from_args", "c7_state_only", "what_state_only", "s158_free_prop_only")}
         for k, v in json.load(open(a.from_args)).items():
             if hasattr(a, k):
                 setattr(a, k, v)
@@ -1282,6 +1297,12 @@ def main():
         return m_
     RO = (lambda *x, **k: rollout_delta(*x, **{kk: vv for kk, vv in k.items() if kk != "record"})[0]) if a.carrier == "deltamem" else (
         (lambda *x, **k: rollout_vocab(*x, **{kk: vv for kk, vv in k.items() if kk != "record"})[0]) if a.slot_space else (rollout_slots if a.slots else rollout))
+    if a.s158_free_prop_only:                                               # §158 post-hoc (note 158-1): the free-item propagation
+        m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval()
+        FA, FB = free_steps(np.random.default_rng(15801), 1000, n, n); Az, Bz = np.zeros((1000, n), np.int64), np.zeros((1000, n), np.int64)
+        pr_ = c7_state_edit(m, Az, Bz, dev, amp, a.eval_bs, pd=(FA, FB), only_prop=True)["propagation"]
+        o_ = {"s158": {"by_item_type": {"free": {"propagation": pr_, "n_chains": 1000, "seed": 15801}}}, "eval_dtype": str(amp), "device": dname(), "driver": driver_version()}
+        json.dump(o_, open(os.path.join(a.out, "eval_s158_posthoc.json"), "w", newline="\n"), indent=1); print("S158POST", json.dumps(pr_["pooled"]), flush=True); return
     if a.c7_state_only:                                                     # §154 post-hoc (on-host via drain_posthoc)
         m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval(); m.mem.fade.fill_(1.0)
         c7 = {"c7_state_edit": c7_state_edit(m, teA, teB, dev, amp, a.eval_bs), "acc_by_column_carry": acc_by_column_carry(m, teA, teB, dev, amp, a.eval_bs),
