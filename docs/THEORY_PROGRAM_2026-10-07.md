@@ -74,3 +74,20 @@ paradigms. Don't get stuck in the minuscule improvements loop. Take the lessons 
 ## Order and budget
 * §146 ($0, now).
 * §147 and §148 proofs (about $1.2) after Audit's review, in parallel with §142–§145.
+
+## Research pass (2026-10-08 00:43 EDT; the user's "do another research pass", 00:30 via Audit; Literature c369c459)
+* **The diagnosis now has a mechanism.** 2510.00184 shows standard fine-tuning misses the long-range dependencies of middle-column sums, and a running-sum target fixes it.
+  - §147's additive memory supplied that bias structurally.
+  - §152's reader supplies it from the CoT. Note 152-4 predicts A enters.
+* **New, §154 SHIFT-MEM** (ed7857cc): length generalisation (C2) for the memory.
+  - §147 learned a 4×4 pair-count schedule: column 5 is exactly 0.000 at 4×8.
+  - Literature's two untested routes are both registered: a one-slot shift register (a hand-wired, disclosed per-column reset; stage 2 makes it learnable) and relative
+    rotary keys.
+  - A SHIFT pass at 4×4 would also say cross-column interference was §147's ceiling.
+  - It carries the program's first C7 causal edit test.
+* **Order:** §151 / §152 read (morning). §154 SHIFT s1 runs now. §153 (item-agnostic passes) is gated on §152.
+* **After that:** once multiplication is exact and length-general under item-agnostic passes, the recipe moves to a language reasoning benchmark. The recipe: text CoT, then
+  K memory passes with per-pass step decoding, then removal. ProsQA / ProntoQA come first (small tasks first, the user's rule), GSM8K-Aug later.
+* **Parked:** GDN-2 (2605.22791), the learnable form of the 6 + 6 split, is used only if the split proves the bottleneck. LDRU (2605.26035) covers regular languages
+  (addition yes, multiplication no).
+
