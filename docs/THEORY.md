@@ -9359,6 +9359,14 @@ accumulator.**
 * **Gates:** the label / schedule check for n ≠ 4; bit-identity with R's batches when both flags are off; smoke_plain; Audit's diff review.
 * Dirs `s161_{mix,mixidx}_4x4_s{seed}`. Scorer: `theory/score_s161.py`, committed with this registration.
 
+**Note 161-1 (2026-10-08 08:40 EDT, before any §161 run; Experiments' implementation, disclosed). How SHAPE-MIX is drawn.**
+* **n is drawn per batch, not per chain,** because a batch shares one step schedule.
+  - Shapes still vary uniformly across steps.
+  - No path connects chains (per-token LayerNorm), so this changes the per-step gradient mixture, not what a chain sees.
+* **The offset r is per chain,** as registered: one r ∈ {0..12} per row, varying within a batch, and r = 0 in eval. gate161 g3 checks it on captured batches.
+* **Curriculum:** at the full stage every 4×n chain runs complete, with the flush. Below it, min(c, 4 + n) columns.
+* **Index tokens:** CIDX[c + r − 1] = " A" … " U" (21 single GPT-2 tokens, args `col_index_tokens`).
+
 **§161 SHAPE-MIX, MIX s1 (interim, 2026-10-08 10:49 EDT; 24k, RTX 3090; scored by Theory with score_s161): exact, length-general and SERIAL, on one seed.**
 * **4×4: test_acc 0.996** (every column ≥ 0.998); train 0.995; final loss 0.0006.
 * **Length** (training used n ≤ 5):
@@ -9378,14 +9386,6 @@ accumulator.**
 * **Reading so far (one seed):** varying the multiplier length in training removes the 4×4 count schedule, and with it the buffer-only solution.
   - The memory carries the in-progress column sum, the swap follows the donor, and 4×8 is solved.
   - This is the C2 route that 158-2 named. s2 and s3 decide LENGTH-GENERAL. MIX+IDX is pending.
-
-**Note 161-1 (2026-10-08 08:40 EDT, before any §161 run; Experiments' implementation, disclosed). How SHAPE-MIX is drawn.**
-* **n is drawn per batch, not per chain,** because a batch shares one step schedule.
-  - Shapes still vary uniformly across steps.
-  - No path connects chains (per-token LayerNorm), so this changes the per-step gradient mixture, not what a chain sees.
-* **The offset r is per chain,** as registered: one r ∈ {0..12} per row, varying within a batch, and r = 0 in eval. gate161 g3 checks it on captured batches.
-* **Curriculum:** at the full stage every 4×n chain runs complete, with the flush. Below it, min(c, 4 + n) columns.
-* **Index tokens:** CIDX[c + r − 1] = " A" … " U" (21 single GPT-2 tokens, args `col_index_tokens`).
 
 ## 162. DELTA-S5: the write-after-read memory on S5, against a measured single-pass boundary (note 158-2's TC⁰ / NC¹ contrast cell) (Audit 08:45; pre-registered 2026-10-08 09:01 EDT, after Literature's check 6b771087 (`docs/LIT_TC0_SERIAL_2026-10-08.md`: the contrast is unpublished) and Audit's draft review (two rounds), before any implementation or run)
 
