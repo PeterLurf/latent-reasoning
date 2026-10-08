@@ -174,8 +174,8 @@ def main():
             ps = ws.get("pass_skip") or {}; oc = ws.get("operands_consistent") or {}
             rsc = [v.get("row_skip_consistent") for v in ps.values() if isinstance(v, dict) and v.get("row_skip_consistent") is not None]
             ocs = [v for v in (oc.values() if isinstance(oc, dict) else []) if isinstance(v, (int, float))]
-            lab = ("recompute from stored operands (L1): exact as a buffer, not a computation; C1 not met" if ocs and min(ocs) >= 0.8 else
-                   "additive sums" if rsc and min(rsc) >= 0.8 else "a non-additive code (descriptive)" if (rsc or ocs) else "pending")
+            lab = ("swap / skip uninformative here (155-4 correction: re-presented operands, the count schedule); "   # note 155-4 correction (287aa8e5)
+                   "read the like-for-like probe (colsum_cls) for the state's content") if (rsc or ws.get("donor_operands")) else "pending"
             print("WHAT STATE (155-4)", arm, "s%d" % k, {"pass_skip": ps, "operands_consistent": oc}, "->", lab)
             rd.append("%s s%d state: %s" % (arm, k, lab))
     res["reading"] = "; ".join(rd) if rd else "pending"; print("READING:", res["reading"])

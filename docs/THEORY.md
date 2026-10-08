@@ -8944,6 +8944,8 @@ ext_4x8 0.000 < 0.5. ROTARY was deferred to §155's architecture (154-2), so §1
   - PASS needs ≥ 3/4 slots exact and SERIAL, and this slot is not SERIAL.
   - **What a non-SERIAL exact state means is open.** It could store operand-specific information (the L1 pattern in recurrent form) or hold sums in a form that does not
     compose across items. The next descriptive check is the pass-skip test (§153's form).
+* **R9 s1 (the block-9 write fallback, run by the trigger):** test_acc **0.999**, every column ≥ 0.999. Not SERIAL (row donor 0.07 / 0.08 / 0.13), ext_4x8 0.0, propagation 0.0;
+  rho_loop 0.30; 27 flagged spikes. **The write layer does not change the picture:** both top and block 9 are exact, not SERIAL and not length-general.
 * **The spike rule's flaw (Audit):** it fired on a decaying median with no instability. A future rule needs an absolute floor as well (for example max > 100× the median
   **and** > 1.0). R9 still runs as registered.
 
