@@ -248,7 +248,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 158 | FREE-PAIRS: hybrid pair sequences on R (data-level interchange) | slot 1 0.982, SERIAL, no C1 credit (158-2's prediction) | **open** |
 | 159 | R-5×5: R at 5×5 (the SOTA leg, C3) | registered | **open** |
 | 160 | R-ROWS: R on §152's rows, A-R / CTRL-R (C3) | **gate closed** (A-R s1 0.056, CTRL-R 0.055; column 5 ~0.09); block-9 fallbacks descriptive | closed |
-| 161 | SHAPE-MIX (C2): 4 × n training (n 2..5), ± a column index with random offsets | registered | **open** |
+| 161 | SHAPE-MIX (C2): 4 × n training (n 2..5), ± a column index with random offsets | **LENGTH-GENERAL** (MIX 3/3, ext_4x8 0.91–0.96; MIX+IDX 2/3); SERIAL with a state-carried running sum; index not needed | closed |
 | 162 | DELTA-S5: DeltaMem-R on S5 against a measured single-pass boundary (158-2's contrast cell) | registered | **open** |
 
 ## Live sections
@@ -9445,6 +9445,28 @@ accumulator.**
   - **s1:** 4×4 **0.989** (below 0.99), ext_4x8 0.850 (4×6 0.970, 4×7 0.928). SERIAL 0.95. In-progress units 0.96–0.99.
   - **s3:** 4×4 0.991, ext_4x8 **0.967** (4×6 0.988, 4×7 0.984). SERIAL 0.98–0.99. In-progress units 0.99–1.0. 35 floor spikes.
   - Both have propagation equal to the null. The index token adds nothing clear over MIX alone (0.964 / 0.917 / 0.912).
+**§161 SHAPE-MIX result (2026-10-08 13:33 EDT; scored by Theory with score_s161; 24k, RTX 3090): both arms are LENGTH-GENERAL. The registered reading is "MIX passes: varying
+shapes alone remove the count schedule".**
+* **MIX: 3 / 3.**
+  - 4×4 0.996 / 0.997 / 0.996.
+  - ext_4x8 0.964 / 0.917 / 0.912; ext_4x6 0.982–0.994; ext_4x7 0.952–0.976.
+* **MIX+IDX: 2 / 3.**
+  - s2 (just landed): 0.997; ext_4x6 0.994, ext_4x7 0.979, ext_4x8 0.946; SERIAL 0.98–0.99; in-progress units 0.99–1.0.
+  - s3: 0.991 / 0.967. s1 fails, at 0.989 / 0.850.
+  - The column-index token is not needed.
+* **In all 6 seeds:**
+  - SERIAL with out-of-distribution hybrids (row donor ≥ 0.95, recipient at chance);
+  - the in-progress column sum held (units ≥ 0.96);
+  - not linearly editable (propagation equals the null);
+  - ext_4x16 ≤ 0.20, decaying gradually along the chain.
+* **What §161 shows:**
+  - Training the write-after-read memory on varying multiplier lengths removes the fixed-shape count schedule (154-2) and the buffer-only solution (158-3).
+  - The result is exact 4×4 multiplication that generalises to 4×8 (1.6× the trained length), with a SERIAL state that carries the running sum, at 0.79× TC-M
+    FLOPs and 0.30× its passes.
+* **Still open:**
+  - C2 against text needs §164's matched baselines.
+  - Generality over both operands is §163.
+  - Task-agnostic segmentation is §165.
 
 ## 162. DELTA-S5: the write-after-read memory on S5, against a measured single-pass boundary (note 158-2's TC⁰ / NC¹ contrast cell) (Audit 08:45; pre-registered 2026-10-08 09:01 EDT, after Literature's check 6b771087 (`docs/LIT_TC0_SERIAL_2026-10-08.md`: the contrast is unpublished) and Audit's draft review (two rounds), before any implementation or run)
 
