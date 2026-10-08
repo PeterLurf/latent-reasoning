@@ -1,6 +1,6 @@
 """THEORY §161 scoring (rules fixed in §161; written before any §161 implementation or run; Theory is the only scorer).
 SHAPE-MIX: §155 R's recipe (DeltaMem-R, top writes, gamma 2k -> 6k, 24k) trained on 4 x n, n ~ U{2..5}; arm mixidx adds a column-index token c + r (r ~ U{0..8} per
-training chain, 0 at test). LENGTH-GENERAL(arm): slot 1 ext_4x8 >= 0.9 and 4x4 test_acc >= 0.99 (the gate), then >= 3/4 (§155's rule).
+training chain, 0 at test). 3 seeds per arm (s1-s3) unconditionally; LENGTH-GENERAL(arm): >= 2 / 3 seeds with ext_4x8 >= 0.9 and 4x4 test_acc >= 0.99. Offsets r ~ U{0..12}.
 Dirs boxes/runs_fsq/s161_{mix,mixidx}_4x4_s{seed}.
     python theory/score_s161.py
 """
@@ -14,7 +14,7 @@ import score_s155 as S155  # noqa: E402
 
 OFFS = (0, 100, 200, 300)
 BASE = {"family": "mult_pair", "task": "4x4", "carrier": "deltamem", "mem_write": "top", "write_mix_start": 2000, "write_mix_end": 6000, "shape_mix": "2,3,4,5"}
-ARMS = {"mix": {}, "mixidx": {"col_index_offset": 8}}
+ARMS = {"mix": {}, "mixidx": {"col_index_offset": 12}}
 load = S155.load
 ERRORS = []
 
@@ -45,14 +45,12 @@ def slot(arm, k):
 def main():
     res = {}
     for arm in ARMS:
-        sl = {k: slot(arm, k) for k in (1, 2, 3, 4)}; acc = [v["accepted"] for v in sl.values() if v["accepted"]]
-        s1 = sl[1]["accepted"]
-        gate = None if not s1 else s1["length_general"]
+        sl = {k: slot(arm, k) for k in (1, 2, 3)}; acc = [v["accepted"] for v in sl.values() if v["accepted"]]   # 3 seeds, unconditional (Literature)
         n = sum(1 for a in acc if a["length_general"])
-        v = ("gate closed (s1 ext_4x8 %s, 4x4 %s)" % (s1["ext_4x8"], s1["test_acc"]) if gate is False else
-             "LENGTH-GENERAL" if n >= 3 else ("NOT LENGTH-GENERAL" if len(acc) - n >= 2 else "pending / incomplete"))
+        v = "LENGTH-GENERAL" if n >= 2 else ("NOT LENGTH-GENERAL" if len(acc) - n >= 2 else "pending (%d / 3 seeds)" % len(acc))
+        gate = None if v.startswith("pending") else (v == "LENGTH-GENERAL")
         res[arm] = {"slots": sl, "gate": gate, "verdict": v}
-        print(arm, "|", v, "|", s1 and {kk: s1.get(kk) for kk in ("test_acc", "ext_4x8", "ext_4x8_per_column", "serial")})
+        print(arm, "|", v, "|", [a and {kk: a.get(kk) for kk in ("seed", "test_acc", "ext_4x8", "serial")} for a in acc])
     m, mi = res["mix"]["gate"], res["mixidx"]["gate"]
     if m is None or mi is None:
         rd = "pending"

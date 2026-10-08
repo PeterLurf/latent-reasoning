@@ -9208,6 +9208,49 @@ accumulator.**
 * §159 and §160 inherit 155-1's write-row fallback trigger. In §155 R it fired 12 times on a decayed median (0.002–0.05) while the loss fell, so R9 ran for no reason.
 * **For §159 and §160, a spike is: max > 100× the preceding-1k median AND max > 1.0.** Non-finite steps and slot exhaustion are unchanged.
 
+## 161. SHAPE-MIX: breaking the 4×4 count schedule for length generalisation (C2) (Audit 07:50; pre-registered 2026-10-08 07:55 EDT, after Literature's check 0b532db5 and Audit's draft, before any implementation or run)
+
+**Why.**
+* **C2 is the untouched blocker.** Every multiplication design scores 0 on ext_4x8, with column 5 at exactly 0.000 (§147 / §151 / §154 / §155 R and SHIFT-R).
+* **The diagnosis (154-2):** emission follows a learned 4×4 pair-count schedule.
+  - 4×4 columns hold 1 / 2 / 3 / 4 / 3 / 2 / 1 products; 4×8 columns hold 1 / 2 / 3 / 4 / 4 / 4 / 4 / 4 / 3 / 2 / 1.
+  - The new-column flag alone does not override the memorised count (§154 SHIFT).
+* **The change is data and input format only** (C4-clean), on the exact write-after-read model.
+* **Prior** (0b532db5, `docs/LIT_C2_MULT_SCHEDULE_2026-10-08.md`): Abacus random offsets (2405.17399), multi-level position coupling (2410.15787), Turing programs
+  (2407.03310).
+  - Length generalisation is seed-fragile (2402.09371).
+  - Jelassi priming (10–50 long items) is the strongest alternative, but it would make 4×8 non-held-out.
+
+**Design: §155 R's recipe exactly** (DeltaMem-R, top writes, the γ migration, 24k, RTX 3090, 160-1's spike floor) with two arms:
+* **MIX:** each training chain is 4×n with n ~ U{2, 3, 4, 5}, under the same (i, j) column-major schedule and flags. No fixed per-column count schedule fits.
+* **MIX+IDX:** MIX plus one column-index token appended to every pair segment. The token is c + r, with c = i + j − 1 and **r ~ U{0..12}** (Literature: k ≈ 12, not much larger) drawn per chain in training and r = 0
+  at test.
+  - It is drawn from a dedicated set of single GPT-2 tokens, distinct from the digit tokens, covering 1..21.
+  - So 4×8's column ids (1..12) are seen in training (Abacus).
+
+**Rules (fixed now).**
+* **Three seeds per arm (s1–s3), run unconditionally** (Literature: length generalisation is seed-fragile).
+  - **LENGTH-GENERAL(arm):** ≥ 2 of 3 seeds with ext_4x8 test_acc ≥ 0.9 **and** 4×4 test_acc ≥ 0.99, at the same 24k budget as R.
+* **Predictions (Audit, Literature):**
+  - **MIX** fixes column 5 at 4×8 (≥ 0.5) but leaves columns 6–11 untrained, so ext_4x8 stays below 0.9 unless the per-column operation becomes column-relative.
+  - **MIX+IDX** can reach ≥ 0.9 if the per-column operation is relative, with 4×4 ≥ 0.99.
+* **Readings:**
+  - **MIX+IDX passes and MIX does not:** the schedule needed an explicit, offset-trained position signal.
+  - **MIX passes:** varying shapes alone remove the count schedule.
+  - **Both fail:** the length barrier is not addressing. It is the memory's capacity or the delta recursion over 11 columns.
+* **Descriptive:**
+  - per-column accuracy at 4×4 / 4×8;
+  - 4×6 / 4×7;
+  - the row donor (C1);
+  - note 155-4's what_state (does a varying schedule break the per-chain pattern recognition behind the digit buffer?).
+
+**Placement.**
+* 3 + 3 runs, about $0.8 each (about $5; 24k, 3090s), beside §158 / §159 / §160.
+* **Implementation (Experiments):** multpair `--shape_mix 2,3,4,5` (the batch generator draws n per chain; the label is 4 + n digits LSB first) and `--col_index_offset 12` (the
+  index token, r per chain, 0 at test).
+* **Gates:** the label / schedule check for n ≠ 4; bit-identity with R's batches when both flags are off; smoke_plain; Audit's diff review.
+* Dirs `s161_{mix,mixidx}_4x4_s{seed}`. Scorer: `theory/score_s161.py`, committed with this registration.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
