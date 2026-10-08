@@ -8339,6 +8339,14 @@ SERIAL and contractive. Slots 2–4 run (the credit rule).**
   (`skip.pass2` / `skip.pass3`: row_skip_consistent, full_product, chance_overlap), `ext_4x5` and the probes. Gates as §152.
 * Dirs `s153_{visible,pure,repeat}_{a,bearly,ctrl}_4x4_s{seed}`. Scorer: `theory/score_s153.py`, committed with this registration.
 
+**Note 153-1 (2026-10-07 23:42 EDT, before any §153 run; Audit approved the pass-skip rule, with two clarifications).**
+* **(1) The denominator.** Items with b_j = 0 are excluded from both shares, since their row-skip and full-product values coincide; their count is reported
+  (`n_bj0_excluded`).
+  - SERIAL (PURE / REPEAT) is therefore **row_skip_consistent ≥ 0.90 and full_product < 0.10, over items with b_j ≠ 0**, at both skips. There is no chance term; this
+    replaces "− chance".
+* **(2) What a skip is.** The step-j pass is not run at all, and the memory goes unchanged to pass j + 1, which keeps its own step token j + 1. Later passes are not
+  renumbered.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

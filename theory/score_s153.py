@@ -8,7 +8,8 @@ Arms per input (dirs boxes/runs_fsq/s153_{input}_{arm}_4x4_s{seed}): a (reader; 
 PASS(input, arm): >= 3/4 seeds with test_acc >= 0.99 and SERIAL.
   visible: §152's swap (the whole memory from a donor after pass 2; donors a_donor != a_rec, different b-prefix): carry-save >= 0.90, recompute - chance < 0.10.
   pure / repeat: the memory also holds the operands, so a whole-memory swap moves the problem and cannot discriminate; SERIAL = the pass-skip test (C1's step-specific
-  blocking): pass 2 and pass 3 each skipped (memory passed through unchanged): row-skip-consistent (S_4 minus that row's a x b_j) >= 0.90, full product - chance < 0.10.
+  blocking): pass 2 and pass 3 each skipped (memory passed through unchanged): row-skip-consistent (S_4 minus that row's a x b_j) >= 0.90 and full product < 0.10,
+  over items with b_j != 0 (note 153-1; the step-j pass not run, later passes keep their own step tokens).
 DROP at proof: a s1 < 0.95 (per input). Placement gate: §152 a s1 >= 0.95. HEADLINE as §152 (LATENT BEATS TEXT vs TC-M; ICoT-SI beside it).
 Predictions (§153, stated before any run): (i) VISIBLE's recompute share > §152 A's; (ii) PURE's ext_4x5 (K = 5, untrained step key) fails (< 0.5).
 Stage 2 (REPEAT): C2 = ext_4x5 test_acc >= 0.9 at K = 5 in every passing seed; no-op stability: 4x4 test_acc at K' = 6 and 8 stays >= 0.99.
@@ -35,12 +36,15 @@ def serial_swap(r):
     return S152.serial({"pos2": ((r.get("donor") or {}).get("pos2"))} if (r.get("donor") or {}).get("pos2") else None)
 
 
-def serial_skip(r):
-    """pure / repeat: pass 2 and pass 3 each skipped; row-skip-consistent >= 0.90 and full product - chance < 0.10 at both."""
+def serial_skip(r, d=None):
+    """pure / repeat (note 153-1): pass 2 and pass 3 each skipped (the step-j pass not run; later passes keep their own step tokens); over items with b_j != 0
+    (excludes_bj0 true; n_bj0_excluded reported): row_skip_consistent >= 0.90 and full_product < 0.10 at both skips."""
     sk = r.get("skip") or {}
     if not all(k in sk for k in ("pass2", "pass3")):
         return False
-    return all(sk[k]["row_skip_consistent"] >= 0.90 and sk[k]["full_product"] - sk[k].get("chance_overlap", 0.0) < 0.10 for k in ("pass2", "pass3"))
+    if not all(sk[k].get("excludes_bj0") is True for k in ("pass2", "pass3")):
+        ERRORS.append((d, "skip fields not computed over b_j != 0 (note 153-1)")); return False
+    return all(sk[k]["row_skip_consistent"] >= 0.90 and sk[k]["full_product"] < 0.10 for k in ("pass2", "pass3"))
 
 
 def bad_args(d, inp, arm, seed):
@@ -84,7 +88,7 @@ def run(inp, arm, seed):
     if b:
         return {"status": "error" if b != "smoke" else "smoke", "error": b}
     s = r.get("s153") or {}; dn = (r.get("donor") or {}).get("pos2") or {}
-    ser = serial_swap(r) if inp == "visible" else serial_skip(r)
+    ser = serial_swap(r) if inp == "visible" else serial_skip(r, d)
     out = {"status": "done", "test_acc": r.get("test_acc"), "serial": ser, "serial_rule": "swap" if inp == "visible" else "pass-skip",
            "acc_by_length": r.get("acc_by_length"), "train_acc": r.get("train_acc"), "n_nonfinite": r.get("n_nonfinite"),
            "serial_shares": {"carry_save": dn.get("donor_consistent"), "bprefix": dn.get("bprefix_consistent"), "recompute": dn.get("recipient_consistent"),
