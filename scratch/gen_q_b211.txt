@@ -1,0 +1,4 @@
+# THEORY §165 FIXED-CHUNK slot 1, two cells co-tenant on one RTX 3090 (P=2; Audit 17:54: b200 failed on 2 offers in 50 min; fixedchunk is launch-bound, memcheck ~2-5 GiB): --auto_micro --mem_budget 10 per process (two fit 24 GB); --bench ships the 4x4 test
+# P=2
+boxes/runs_fsq/s165_k0_4x4_s1 boxes.fixedchunk --chunk_k 4 --think_k 0 --seed 1 --auto_micro --mem_budget 10 --bench bench/data/mult_4x4_test.txt
+boxes/runs_fsq/s165_k16c1_4x4_s1 boxes.fixedchunk --chunk_k 1 --think_k 16 --seed 1 --auto_micro --mem_budget 10 --bench bench/data/mult_4x4_test.txt

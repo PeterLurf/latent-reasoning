@@ -45,3 +45,5 @@
 107.159.8.60 # 2026-10-08 01:20 b161 stuck loading (cur_state stopped)
 103.127.133.109 # 2026-10-08 02:35 b161 sshd hung (reset + proxy banner timeout)
 71.218.106.223 # 2026-10-08 03:25 b163 stuck loading (cur_state stopped)
+142.180.224.148
+213.224.31.105
