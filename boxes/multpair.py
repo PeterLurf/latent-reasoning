@@ -524,7 +524,8 @@ def what_state(m, teA, teB, trA, trB, dev, amp, bs, n_fit=8000, skip_pairs=(4, 7
         dn["pos%d" % P] = {"operands_consistent": float((got == to_int(hA) * to_int(hB)).mean()), "recipient_consistent": float((got == to_int(Ar) * to_int(Br)).mean()),
                            "donor_full_consistent": float((got == to_int(Ad) * to_int(Bdn)).mean()), "seen_a": sorted(i + 1 for i in seenA), "seen_b": sorted(j + 1 for j in seenB), "n": int(N)}
     out["donor_operands"] = dn
-    trA, trB = trA[:n_fit], trB[:n_fit]; _, Ktr, _ = rollout_delta(m, trA, trB, dev, amp, bs, keep_pos=list(points)); _, Kte, _ = rollout_delta(m, teA, teB, dev, amp, bs, keep_pos=list(points)); op = {}
+    trA, trB = trA[:n_fit], trB[:n_fit]; acc_tr = accumulators(trA, trB)[0]; acc_te = accumulators(teA, teB)[0]
+    _, Ktr, _ = rollout_delta(m, trA, trB, dev, amp, bs, keep_pos=list(points)); _, Kte, _ = rollout_delta(m, teA, teB, dev, amp, bs, keep_pos=list(points)); op = {}
     for P in points:
         Xf = Ktr[P].reshape(len(trA), -1); Xs = Kte[P].reshape(len(teA), -1); seenA = sorted({int(pairs[t_][0]) for t_ in range(P)}); seenB = sorted({int(pairs[t_][1]) for t_ in range(P)}); r_ = {"a": {}, "b": {}, "colsum": {}}
         for nm, D_tr, D_te, idx in (("a", trA, teA, seenA), ("b", trB, teB, seenB)):
@@ -535,6 +536,14 @@ def what_state(m, teA, teB, trA, trB, dev, amp, bs, n_fit=8000, skip_pairs=(4, 7
             i, j = (int(v) for v in pairs[t_]); csf[:, i + j] += trA[:, i] * trB[:, j]; cst[:, i + j] += teA[:, i] * teB[:, j]
         for c in sorted({int(pairs[t_][0]) + int(pairs[t_][1]) for t_ in range(P)}):
             pr_, lam_ = _dual_fit_pred(Xf, csf[:, c], Xs, dev); r_["colsum"][str(c + 1)] = {"exact": float((np.rint(pr_) == cst[:, c]).mean()), "lambda": lam_}
+        r_["colsum_cls"] = {}                                               # note 155-4 correction (287aa8e5): like-for-like 10-way classifiers
+        for c in sorted({int(pairs[t_][0]) + int(pairs[t_][1]) for t_ in range(P)}):
+            tl = max(t_ for t_ in range(P) if int(pairs[t_][0]) + int(pairs[t_][1]) == c)   # c^_k after column c's last pair so far (carry-in + its products)
+            yf, ys = acc_tr[:, tl], acc_te[:, tl]; rc = {}
+            for nm_, ff_, ft_ in (("units", yf % 10, ys % 10), ("carry", yf // 10, ys // 10)):
+                kk = int(max(ff_.max(), ft_.max())) + 1; pr_, lam_ = _dual_fit_pred(Xf, np.eye(kk)[ff_], Xs, dev, cls=True)
+                rc[nm_] = {"acc": float((pr_.argmax(1) == ft_).mean()), "lambda": lam_, "classes": kk}
+            r_["colsum_cls"][str(c + 1)] = rc
         r_["n_fit"] = int(len(trA)); r_["n_score"] = int(len(teA)); op["after_pair%d" % P] = r_
     out["operand_probe"] = op; out["n_fit_train"] = int(len(trA)); out["def"] = what_state.__doc__
     return out

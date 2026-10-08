@@ -321,3 +321,6 @@
 # FAILED 2026-10-08 05:13 (superseded): 4.0 boxes/runs_fsq/proto156_plain_s1_4060/eval.json python -u -m boxes.loop148 --task 4x4 --arm plain --seed 1 --steps 8000 --device {DEV} --out boxes/runs_fsq/proto156_plain_s1_4060
 # 2026-10-08 05:13 §156 plain preview re-run with --eval_bs 100 (the eval at 250 OOMed under the 6 GiB cap)
 5.5 boxes/runs_fsq/proto156_plain_s1_4060/eval.json python -u -m boxes.loop148 --task 4x4 --arm plain --seed 1 --steps 8000 --eval_bs 100 --device {DEV} --out boxes/runs_fsq/proto156_plain_s1_4060
+# 2026-10-08 05:48 note 155-4 correction (287aa8e5): what_state re-run with operand_probe.colsum_cls (R s1 first; comparators s151 / SHIFT)
+5.0 boxes/runs_fsq/s154_shift_4x4_s1/what_state_v2.done python -u -m boxes.multpair --from_args boxes/runs_fsq/s154_shift_4x4_s1/args.json --what_state_only --device {DEV} --out boxes/runs_fsq/s154_shift_4x4_s1 && echo ok > boxes/runs_fsq/s154_shift_4x4_s1/what_state_v2.done
+5.0 boxes/runs_fsq/s151_delta_4x4_s2/what_state_v2.done python -u -m boxes.multpair --from_args boxes/runs_fsq/s151_delta_4x4_s2/args.json --what_state_only --device {DEV} --out boxes/runs_fsq/s151_delta_4x4_s2 && echo ok > boxes/runs_fsq/s151_delta_4x4_s2/what_state_v2.done

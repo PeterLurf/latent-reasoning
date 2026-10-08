@@ -348,3 +348,5 @@
 5.0 boxes/runs_fsq/s151_delta_4x4_s3/eval_what_state.json python -u -m boxes.multpair --from_args boxes/runs_fsq/s151_delta_4x4_s3/args.json --what_state_only --device {DEV} --out boxes/runs_fsq/s151_delta_4x4_s3
 # 2026-10-08 05:45 note 155-4 what_state: s151 s1 again (Theory)
 5.0 boxes/runs_fsq/s151_delta_4x4_s1/eval_what_state.json python -u -m boxes.multpair --from_args boxes/runs_fsq/s151_delta_4x4_s1/args.json --what_state_only --device {DEV} --out boxes/runs_fsq/s151_delta_4x4_s1
+# 2026-10-08 05:48 note 155-4 correction (287aa8e5): what_state re-run with operand_probe.colsum_cls (R s1 first; comparators s151 / SHIFT)
+5.0 boxes/runs_fsq/s151_delta_4x4_s3/what_state_v2.done python -u -m boxes.multpair --from_args boxes/runs_fsq/s151_delta_4x4_s3/args.json --what_state_only --device {DEV} --out boxes/runs_fsq/s151_delta_4x4_s3 && echo ok > boxes/runs_fsq/s151_delta_4x4_s3/what_state_v2.done
