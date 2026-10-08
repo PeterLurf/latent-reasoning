@@ -8403,6 +8403,19 @@ estimates.
   - Prediction (ii) and stage 2's C2 bar (≥ 0.9) read this field.
 * **Tokens:** the times token is " ×" (one GPT-2 token, 13958) and PURE's register token is " _". Both are recorded in args.json (`times_token`, `register_token`).
 
+**Note 152-3 (2026-10-08 00:14 EDT, before any §152 result; descriptive). The baselines' extrapolation on ext_4x8_low8's own items.**
+* §152 reports ext_4x8_low8: 4-digit a × 8-digit b, with the low 8 digits of S_j exact at every j, where j = 5..8 lie past training. Text CoT and implicit CoT have not been
+  measured on the same items.
+* `theory/eval_ext_baselines.py` covers both, on the prefix problems a × (b_1..b_j), j = 4..8, from the same generator and seed. It scores the low 8 digits exact (and the
+  full product), on CPU at Idle priority.
+  - **TC-M:** free greedy CoT; the answer is taken after "####" and truncated to 4 + j digits.
+  - **ICoT-SI:** the released checkpoint, in icotsi98's format.
+* **Smoke (20 items):** both baselines are exact at j = 4 and at 0 at j = 5. Both ignore b_5: ICoT-SI returns its j = 4 answer, and TC-M writes four partial products.
+* **Reading (descriptive):** §152 extrapolating where both baselines stay at 0 would separate the methods on C2 and C3. The latent passes take more steps for longer inputs; a
+  fixed text recipe and a single implicit pass do not.
+  - **Caveat, stated now:** §152 is handed b_j at each pass (the designer's segmentation). Its extrapolation tests the unseen position tokens j > 4, not item-agnostic
+    generalisation, which is §153's question.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
