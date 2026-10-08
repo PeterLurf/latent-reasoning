@@ -64,7 +64,7 @@ after create): record the host's sha256 and commit exactly that file.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (05:44):**
+* **Theory (07:08):**
   - **§147 DELTA-STATE broke the middle-column wall** (0.743; columns 3–7 0.92–0.99; DROP by rule, IMPROVES), leading to **§151 DELTA-LONG** (48k × 4 seeds, running).
   - **§152 DELTA-READ** (378fe8e6; notes 152-1 / 152-2) is implemented (9535bfb0); b159 / b160 launch after the CUDA gates.
   - **§153 THINK-PASS registered** (ea154f30; note 153-1): item-agnostic passes, gated on §152 A s1 ≥ 0.95.
@@ -76,8 +76,10 @@ after create): record the host's sha256 and commit exactly that file.
   - **§152 DELTA-READ: DROP at proof** (1d220ecc). A s1 0.331 (exact through three rows; still learning row 4 at 48k); CTRL s1 0.012. The products form and the sums are
     stored; 4-row carry resolution at read time is not learned. 0.46× TC-M FLOPs; nothing extrapolates, baselines included. §153's gate is closed.
   - **§144: both DROP** (4ce7c7de). Single-vector carriers hold no exact number even across one addition.
-  - **§155 DELTA-R R s1: EXACT 1.000** (a2f53616, interim), the first exact latent-memory multiplication, but **not SERIAL** (the swap follows neither item) and ext_4x8 0.
-    The recurrence formed (rho_loop 0.25). R s2–s4 and R9 (fallback trigger fired) run by the rules. Note 155-3 scores RECURRENT USE as excess over the null.
+  - **§155 DELTA-R:** exact in every arm and seed so far: R 1.000 / 0.998 / 0.997, R9 0.999, SHIFT-R 1.000. R-γ0 is 0.587, so the write source is what helps. Compute is
+    0.79× TC-M FLOPs / 0.30× passes (measured).
+    - None SERIAL, none length-general, no carry-edit propagation. The R arm is FAIL by the PASS rule. R's state stores the computed digits plus the operands (155-4).
+    - **§159 (5×5) and §160 (rows) launch** (R s2 0.998). SHIFT-R s2–s4 run by the rules.
   - **Note 155-4 result** (dadd6ed0): R's exact state is an exact operand buffer (every digit decodable at 1.0) with read-time computation, not a compositional
     accumulator. Swap / skip break it; C1 is not met by R. **b165 (96k): 0.079**, so §157 READ-PANEL launches. **§159 R-5×5** registered (4b3f7ba0), conditional on R s2.
   - **§158 FREE-PAIRS registered** (c94ee2bf; 158-1 99eceebb): train on hybrid pair sequences. SERIAL is a sanity check; C1 needs carry-edit propagation and the accumulator
