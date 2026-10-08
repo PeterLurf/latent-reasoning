@@ -250,6 +250,9 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 160 | R-ROWS: R on §152's rows, A-R / CTRL-R (C3) | **gate closed** (A-R s1 0.056, CTRL-R 0.055; column 5 ~0.09); block-9 fallbacks descriptive | closed |
 | 161 | SHAPE-MIX (C2): 4 × n training (n 2..5), ± a column index with random offsets | **LENGTH-GENERAL** (MIX 3/3, ext_4x8 0.91–0.96; MIX+IDX 2/3); SERIAL with a state-carried running sum; index not needed | closed |
 | 162 | DELTA-S5: DeltaMem-R on S5 against a measured single-pass boundary (158-2's contrast cell) | registered | **open** |
+| 163 | SHAPE-MIX-2D: both operand lengths mixed (m, n 2..5), 6×6–8×8 generalisation | registered (condition met) | **open** |
+| 164 | MIX-BASELINES: TC-MIX / DIRECT-MIX on §161's mix (like-for-like C2 baselines) | **LATENT BEYOND TEXT ON LENGTH** (TC-MIX anchored ext 0.0 at 4×6+; its CoT stops short); DIRECT-MIX pending | **open** |
+| 165 | FIXED-CHUNK: the same memory on fixed text chunks plus think passes (task-agnostic segmentation) | registered | **open** |
 
 ## Live sections
 
