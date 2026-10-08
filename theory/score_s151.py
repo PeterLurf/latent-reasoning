@@ -99,7 +99,8 @@ def slot(arm, k):
                  "ext_4x8": r.get("ext_4x8"), "acc_by_magnitude": s7.get("acc_by_magnitude"), "head_ablation": s7.get("head_ablation"),
                  "colsum_readout_r2": s7.get("colsum_readout_r2"), "colsum_readout_r2_by_column": s7.get("colsum_readout_r2_by_column"),
                  "serial_by_ckpt": (r.get("s151") or {}).get("serial_by_ckpt"),                     # note 151-1 (descriptive)
-                 "read_norm_ratio_by_handoff": s7.get("read_norm_ratio_by_handoff"),   # note 147-2 (Audit): {"step0": [...], "end": [...]} "rho_by_head_type": s7.get("rho_by_head_type"),
+                 "read_norm_ratio_by_handoff": s7.get("read_norm_ratio_by_handoff"),   # note 147-2 (Audit): {"step0": [...], "end": [...]}
+                 "rho_by_head_type": s7.get("rho_by_head_type"),
                  "gpu": r.get("train_gpu", r.get("gpu")), "driver": r.get("train_driver")}
             a["exact"] = (a["test_acc"] or 0) >= 0.99
             a["pass"] = bool(a["exact"] and a["serial"])                   # §147: no contraction term (integrator by design)

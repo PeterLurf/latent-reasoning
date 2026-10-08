@@ -7530,6 +7530,8 @@ on S5×4, with the PLATEAU trigger.**
   - That is "stable at 768", not a benefit.
   - Whether the new dimensions are needed differs by seed (one of the two testable seeds).
   - It joins the S5×4 proposal as the full-width arm (note 133-12).
+* **s3 (00:41): PASS** (ext_2048 0.998, SERIAL, ρ 0.049); 704-block ablation **UNUSED** (0.994). §143 is **4 / 4**. Width is USED in 1 of the 3 testable
+  seeds (s4).
 
 ## 144. RUNNING-SUM: can the task-agnostic carrier carry a growing multi-digit number? (a diagnostic for multiplication; pre-registered 2026-10-07 15:40 EDT, after Literature's check d8ccceb5 and Audit's draft, before any implementation or run; the user's "do another research run, we gotta figure out how to fix the multiplication" (via Audit))
 
@@ -8428,6 +8430,74 @@ estimates.
   - **If A drops:** 2510.00184's mechanism does not transfer to a memory-carried running sum at this budget, and note 152-1's layout readings apply.
 * **C4:** 2510.00184's targets are computed running sums, hand-built and outside the current C4 wording. §152's come from the CoT text, which is allowed. Whether a computed
   running-sum probe loss is acceptable is the user's call (asked by Audit).
+
+## 154. SHIFT-MEM: local state and relative keys for the DeltaMem's length generalisation (C2) (the user's research pass, 2026-10-08 00:30 via Audit; pre-registered 2026-10-08 00:41 EDT, after Literature's check c369c459 and Audit's draft review, before any implementation or run)
+
+**Why.**
+* **§147's memory does not extrapolate.** ext_4x8 is 0.0. Columns 1–4 are fine (1.0 / 1.0 / 0.989 / 0.941), but **column 5 is exactly 0.000** and 931 of 1,000
+  first errors fall there.
+  - Exactly 0 is not chance (0.1): it is a learned 4×4 schedule.
+  - With no column index in the input, the model must track where it is from the pair count. Pair #14 starts column 6 in 4×4 and is still column 5 in 4×8.
+* In 4×n the accumulator is **bounded**: a column holds at most 4 products (≤ 4·81 + carry). So 4×8 needs no new magnitudes, only addressing (Literature: "4×n →
+  4×(n+k) along the multiplier").
+* **Prior** (c369c459, `docs/LIT_ARITH_MEMORY_LG_2026-10-08.md`):
+  - Absolute column keys learned for columns 0..7 give no key for column 8+.
+  - The only recurrent length-generalising arithmetic (Neural GPU 1511.08228, Grid LSTM) uses **local / relative state**. Position coupling 2405.20671 and Abacus
+    2405.17399 are attention-only.
+  - The two routes Literature names, **(a) relative / rotary keys** and **(b) a shift-register memory**, are both **untested for memory carriers: new if tried**.
+
+**Design: §147's digit-pair 4×4 DeltaMem exactly** (multpair `--carrier deltamem`; 6 additive + 6 gated-delta heads after block 6; log gains; fade-in; 24k; bs 64;
+restart slots with 147-1's misfire rule; the memory is the only cross-segment channel). Two arms change only how the additive store is addressed:
+* **SHIFT (route b, a one-slot shift register):** at every new-column segment (flag " ;") and at the flush, the harness **zeroes the additive heads' state** before the
+  segment runs. The gated-delta heads are untouched.
+  - The additive store then holds only the current column. That column's sum is the read at every pair.
+  - The carry crosses the column boundary only through the delta heads (a bounded value, replaced each pass).
+  - Every pass is then the same local computation:
+    - add this pair's product;
+    - at the column's first pair, add the carry read from the delta heads;
+    - replace the delta heads' carry with ⌊sum / 10⌋;
+    - emit the sum mod 10 (read at the column's last pair).
+  - No column count is needed.
+  - **Scaffold disclosure (Audit):** the reset is hand-wired. The harness applies it at the known column boundary, which is already an input token (" ;"). So a SHIFT
+    pass reads **"a memory with a task-structured reset"**, not a learned one. The learnable successor is stage 2 below.
+* **ROTARY (route a, relative keys):** the additive heads' feature vectors are rotated by the pair's column index c, RoPE-style (2104.09864):
+  - k̃ = R(θ·c) φ(k) and q̃ = R(θ·(c + δ_h)) φ(q), with δ_h = 0 for three additive heads (read the current column) and −1 for three (read the previous column, for the carry).
+  - Read weights then depend only on the column offset, so column k + 1 is read by the same operation as column k. Nothing is reset.
+
+**Rules (fixed now).**
+* **PASS(arm)** (§147's rule): ≥ 3/4 slots with test_acc ≥ 0.99 at 4×4 and SERIAL (row-level donor after pairs 4 / 8 / 12, as §151).
+* **LENGTH-GENERAL(arm)** (C2): ≥ 3/4 accepted runs with **ext_4x8 test_acc ≥ 0.9** (all 12 digits exact on 4×8; §147 gets 0.0).
+* **Proof:** slot 1 per arm. An arm stops if slot 1 has 4×4 test_acc < 0.95 **and** ext_4x8 < 0.5. Otherwise slots 2–4 complete.
+* **IMPROVES** (descriptive): 4×4 columns 3–7 all ≥ 0.95.
+* **Readings:**
+  - **SHIFT LENGTH-GENERAL:** a memory carrier generalises in length when its active state is local. That is the Neural GPU principle in a pretrained LM's memory (new).
+  - **ROTARY LENGTH-GENERAL:** relative keys suffice, with no reset.
+  - **Neither:** the per-column computation or the emission does not transfer. The 4×8 per-column profile and the carry probe locate it.
+  - **SHIFT PASS at 4×4 where §147 dropped (0.743):** cross-column interference in the additive store was §147's ceiling.
+  - **SHIFT passes 4×4 but fails ext_4x8 (Audit):** the reset is not sufficient for addressing; the carry hand-off through the delta heads is still count-based. The
+    carry probe by column locates it.
+* **Descriptive:**
+  - per-column accuracy at 4×4 / 4×8, and ext_4x16 (columns to 20);
+  - R² of the column sum from the additive read, per segment;
+  - **the carry probe by column:** held-out R² of each column's carry-in from the delta heads at the column's first pair, at 4×4 and at 4×8;
+  - α by head.
+  - **A C7 edit test (SHIFT):** at a column's last pair, add δ·u to the additive read, for δ ∈ {−2, −1, +1, +2} (small, reported by δ; Audit). Here u = w / ‖w‖² for the held-out ridge probe w of the
+    column sum, so the decoded sum moves by exactly δ. Report the share of rows whose emitted digit becomes (s + δ) mod 10, against the unedited rate. Decoded, edited and
+    causally obeyed, it is the program's first C7-style test.
+
+**Stage 2, pre-registered now (conditional on SHIFT LENGTH-GENERAL; Audit): LEARNED-RESET.**
+* SHIFT with the hand-wired reset replaced by a **learnable erase gate on the additive store**, in GDN-2's form (2605.22791). It is computed from each segment's residual,
+  so the flag token can drive it, and initialised to reset on new-column segments.
+* **Same rules.** A pass reads "the reset is kept when learnable". A further task-agnostic variant, initialised closed (as §147), would test whether the reset is
+  discovered.
+
+**Placement.**
+* **SHIFT s1 first** (about $0.8, a 3090 at 24k). ROTARY s1 when implemented (it needs more code). Slots 2–4 by the rule.
+* The fixed 24k budget compares directly with §147 (0.743, ext 0.0), so the runs do not wait on §151.
+* **Implementation (Experiments):** multpair `--add_reset column` (SHIFT) and `--add_rotary column --rotary_read_offsets 0,0,0,-1,-1,-1` (ROTARY), ext_4x16, the
+  probes and the edit test.
+* **Gates:** step-0 function preservation; gradflow into every DeltaMem parameter; smoke_plain; Audit's diff review.
+* Dirs `s154_{shift,rotary}_4x4_s{seed}`. Scorer: `theory/score_s154.py`, committed with this registration.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
