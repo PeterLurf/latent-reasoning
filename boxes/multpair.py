@@ -850,15 +850,19 @@ def s155_recurrence(m, A, Bd, dev, amp, n=128, rows=4000, seed=15501):
                 Jv = (f_(S0 + eps_ * v) - f_(S0 - eps_ * v)) / (2 * eps_); meth = "central difference (eps 1e-3 x median ||S||), fp32"
             rh.append(Jv.detach().flatten(1).norm(dim=1).cpu().numpy())
             fd_ = m.mem.fade.clone(); m.mem.fade.fill_(0.0)                 # note 155-1 (2): rho_loop = ||Jv - Jv|fade 0|| (the read -> write part)
-            try:
-                from torch.nn.attention import SDPBackend, sdpa_kernel
-                with sdpa_kernel(SDPBackend.MATH):
-                    _, Jv0 = jvp(lambda S_: DM.gpt_forward_mem_r(m.g, x, m.mem, S_)[1], (S0,), (v,))
-            except Exception:                                               # noqa: BLE001
-                eps_ = 1e-3 * float(S0.flatten(1).norm(dim=1).median().clamp_min(1.0)); f_ = lambda S_: DM.gpt_forward_mem_r(m.g, x, m.mem, S_)[1]  # noqa: E731
-                Jv0 = (f_(S0 + eps_ * v) - f_(S0 - eps_ * v)) / (2 * eps_)
-            m.mem.fade.copy_(fd_); rl.append((Jv - Jv0).detach().flatten(1).norm(dim=1).cpu().numpy())
-        out["rho_jvp"] = float(np.median(np.concatenate(rh))); out["rho_loop"] = float(np.median(np.concatenate(rl))); out["rho_method"] = meth
+            try:                                                            # Audit: fade is always restored (an end-of-run failure would zero later reads)
+                try:
+                    from torch.nn.attention import SDPBackend, sdpa_kernel
+                    with sdpa_kernel(SDPBackend.MATH):
+                        _, Jv0 = jvp(lambda S_: DM.gpt_forward_mem_r(m.g, x, m.mem, S_)[1], (S0,), (v,))
+                    meth0 = "torch.func.jvp (SDPA math backend), fp32"
+                except Exception:                                           # noqa: BLE001
+                    eps_ = 1e-3 * float(S0.flatten(1).norm(dim=1).median().clamp_min(1.0)); f_ = lambda S_: DM.gpt_forward_mem_r(m.g, x, m.mem, S_)[1]  # noqa: E731
+                    Jv0 = (f_(S0 + eps_ * v) - f_(S0 - eps_ * v)) / (2 * eps_); meth0 = "central difference (eps 1e-3 x median ||S||), fp32"
+            finally:
+                m.mem.fade.copy_(fd_)
+            rl.append((Jv - Jv0).detach().flatten(1).norm(dim=1).cpu().numpy())
+        out["rho_jvp"] = float(np.median(np.concatenate(rh))); out["rho_loop"] = float(np.median(np.concatenate(rl))); out["rho_method"] = meth; out["rho_loop_method_fade0"] = meth0
     except Exception as e:                                                  # noqa: BLE001
         out["rho_jvp"] = None; out["rho_loop"] = None; out["rho_method"] = "jvp failed: %s" % str(e)[:120]
     m.train(was); return out
