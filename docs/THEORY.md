@@ -9040,6 +9040,13 @@ The run is a post-hoc on every accepted §155 model (and §154 SHIFT / §151 for
 * **A later option, not registered:** IIT proper, an interchange loss on the memory that swaps only the subspace aligned to a column's accumulator. Its alignment target is a
   chosen causal variable (closer to hand-built; a C4 judgement). If (a) / (b) fail with SERIAL passing, that is the IIT signature and the case for it.
 
+**Note 152-5: the 96k run (2026-10-08 05:38 EDT; descriptive; b165 `s152_a96k_4x4_s1`, RTX 3090).**
+* **test_acc 0.079**, acc_by_length 1.0 / 1.0 / 0.953 / 0.079. That is worse than the 48k run's 0.331 (1.0 / 1.0 / 0.999 / 0.331). Final loss 0.0999 (48k: 0.043).
+* **The gate never opened, so B-EARLY is not run.** Not SERIAL (pos 2 donor 0.022).
+* The registered-probe column-sum exact-match (2k pooled rows) is 0.04–0.14 at both 48k and 96k, the same picture as A s1.
+* **Reading:** budget alone does not fix column 6. The longer schedule ended worse, which fits seed / schedule sensitivity at the last row.
+* **This meets §157's condition** (test_acc < 0.95), so the READ-PANEL runs.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
