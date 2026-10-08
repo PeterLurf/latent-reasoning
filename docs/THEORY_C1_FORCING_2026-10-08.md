@@ -51,3 +51,18 @@ data is the baseline. Then K′ = 0 / 1 far below K (C1's operational test) is m
   - state-like and SERIAL at lengths beyond both the buffer and one pass's depth;
   - buffer-like (op history decodable, swap uninformative) at short lengths, where log-depth shortcuts exist (Liu 2210.10749).
 * **Placement:** an S5 adapter on multpair's DeltaMem (Experiments), short against long training lengths, about $2–3. It is independent of the choice under 2.
+
+## Addendum 2 (2026-10-08 10:52 EDT): §161 MIX s1 changes the recommendation (one seed; Audit-reproduced 3e45e18f)
+* **MIX s1** trains the write-after-read memory on 4 × n chains with n ∈ {2..5}.
+  - It is **exact on 4×4 (0.996), length-general (ext_4x8 0.964, beyond the trained n ≤ 5) and SERIAL with out-of-distribution hybrids** (row donor 0.98–0.995).
+  - The memory holds the running column sum (in-progress units ≈ 1.0, against R's ≈ 0.4).
+  - It costs 0.79× TC-M FLOPs and 0.30× its passes at 4×4. It is not linearly editable.
+* **So option 3 (the C2 route on multiplication) has delivered early, on one seed.** Varying the shape in training is enough to make serial accumulation the learned
+  solution on a TC⁰ task (note 158-3).
+* **Updated recommendation:**
+  1. **If §161 s2 / s3 replicate,** multiplication with SHAPE-MIX is the headline candidate for C1 (SERIAL) + C2 + C3: within 0.01 of text CoT's accuracy at lower compute.
+     Next steps on that line: §159-style 5×5 with shape mix, and a C3 head-to-head at matched shapes.
+  2. **The inherently serial task (2(a)) becomes a second track,** not a replacement.
+  3. **The rule from this note stays:** C1 is claimed against a measured single-pass baseline.
+     - On 4×8 that baseline exists: TC-M and the direct-answer models do not extrapolate (§152).
+     - The DIRECT-style single-pass 4×8 number for this harness should be measured before a C1 claim (descriptive).
