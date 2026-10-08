@@ -8250,6 +8250,8 @@ SERIAL and contractive. Slots 2–4 run (the credit rule).**
   48k.
 * **Reading (registered, in note 147-4's wording):** an input-driven linear memory improves with budget but does not make multiplication exact at 48k. Carry resolution
   at read time, or storage precision (note 152-5), falls short.
+* **Slot 3 (descriptive):** 0.856, per column 0.955–1.0, ext_4x8 0.0, row-level donor ≤ 0.60. Three seeds read 0.837 / 0.889 / 0.856, so the input-only memory settles
+  near 0.85 at 48k with low seed variance.
 
 ## 152. DELTA-READ: the linear-recurrent memory with a CoT-derived reader of the running sum, then ICoT-style removal; against text CoT at matched compute (pre-registered 2026-10-07 23:01 EDT, after Literature's check 03059976 and Audit's draft, before any implementation or run; the user's "sure" (23:00, via Audit) and the user's operative standard: the latent model uses latent space more effectively than text)
 
