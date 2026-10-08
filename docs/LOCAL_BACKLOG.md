@@ -190,6 +190,8 @@ text token (S5: the first state token; FF / CYC / MOD / RDFA: the answer token) 
 * **§157 previews (8k, descriptive; 06:30 item 2):** CCQ s1 (3070) test 0.0 (by length 1.0 / 0.26 / 0.03 / 0.0), no non-finite steps, final loss 0.34; λ ≤ 0.008 on 8 of
   12 heads. MULTIREAD s1 (2070, fp32) 0.0 (1.0 / 0.13 / 0.01 / 0.0), loss 0.49. Both are still on row 2 at 8k, so they say nothing about the read (the registered 48k cells: 0.064
   / 0.009).
+  - **PERIODIC s1 (3070, 8k):** 0.0 (1.0 / 0.22 / 0.03 / 0.0), finite, loss 0.30. The read scalar is not integer-valued: |s − round(s)| has median 0.25 and share < 0.25
+    of 0.50 in every column, which is the uniform value. The off-column weight is 0.89–0.97, so the read is a blend at 8k.
 * **§150 soft-only DIGIT (21:13 item 1): FAILS**, 4 of 4 (6k–8k mean loss 1.09 / 1.57 / 1.11 / 1.10, ≥ 0.3). **Soft-only FULL (overnight item 1): FAILS**,
   S505 / S506 at 1.114 / 1.119. The loss rises when c_max reaches 2 at 2k, without
   annealing or hardening. DIGIT s1's collapse was the curriculum, not the hardening (as 150-3).

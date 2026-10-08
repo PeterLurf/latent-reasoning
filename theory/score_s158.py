@@ -60,10 +60,12 @@ def slot(k):
                  "recurrent_use_155_3": bool(ps is not None and rs is not None and nv is not None and ps - nv >= 0.5 and rs - nv < 0.1),
                  "what_state": (ws or {}).get("what_state"), "acc_vs_raw": s8.get("acc_vs_raw"), "by_item_type": s8.get("by_item_type"),
                  "gpu": r.get("train_gpu", r.get("gpu"))}
-            av = a["acc_vs_raw"] or {}                                       # note 158-1 (b): {"acc_exact": x, "raw_digit_acc": y} pooled over pairs 4 / 8 / 12
+            av = (a["acc_vs_raw"] or {}).get("pooled") or {}                 # note 158-1 (b): multpair s158_extras' acc_vs_raw.pooled {"acc_exact", "raw_digit_acc"} (pairs 4 / 8 / 12)
             a["accumulator_dominates"] = bool(av.get("acc_exact") is not None and av.get("raw_digit_acc") is not None and av["acc_exact"] >= 0.9
                                               and av["acc_exact"] >= av["raw_digit_acc"])
             a["c1_credit"] = bool(a["recurrent_use_155_3"] and a["accumulator_dominates"])                         # note 158-1: (a) and (b)
+            pf = S155.propagation({"propagation": ((a["by_item_type"] or {}).get("free") or {}).get("propagation")})
+            a["propagation_free"] = {"propagation_share": pf[0], "random_edit_share": pf[1], "null_value": pf[2]}   # descriptive (158-1: free items reported separately)
             a["exact"] = (a["test_acc"] or 0) >= 0.99
             a["pass"] = bool(a["exact"] and a["serial"])
             return {"attempts": att, "status": "accepted", "accepted": a}
@@ -82,7 +84,7 @@ def main():
     for k, x in sl.items():
         a = x["accepted"]
         print("slot", k, x["status"], a and {kk: a.get(kk) for kk in ("seed", "test_acc", "serial", "donor_row", "free_pairs_test_acc", "ext_4x8", "propagation_share",
-                                                                    "null_value", "recurrent_use_155_3")})
+                                                                    "null_value", "recurrent_use_155_3", "propagation_free", "accumulator_dominates", "c1_credit")})
     s1 = sl[1]["accepted"]
     nc1 = sum(1 for a in acc if a.get("c1_credit"))
     if v == "PASS":                                                          # note 158-1: SERIAL here is a sanity check, not C1 evidence
