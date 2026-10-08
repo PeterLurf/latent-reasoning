@@ -9662,6 +9662,85 @@ accumulator.**
   - Audit's diff review.
 * Dirs `s164_{tcmix,directmix}_4x4_s{1,2}`. Scorer: `theory/score_s164.py`, committed with this registration.
 
+## 165. FIXED-CHUNK: the same memory on the problem text in fixed chunks, with think passes, to test whether it finds its own schedule (task-agnostic segmentation) (the user's question "is the architecture task agnostic?", via Audit's research pass; pre-registered 2026-10-08 12:00 EDT, after Literature's check 9878803c (`docs/LIT_FIXED_CHUNK_2026-10-08.md`) and Audit's review (two rounds), before any implementation or run; launched after §161 MIX s2 and §164 read)
+
+**Why.**
+* **DeltaMem-R is task-agnostic, but multpair's harness is not.**
+  - The harness feeds long multiplication's own schedule: one (a_i, b_j) pair per pass in column order, new-column flags, and emissions at column ends.
+  - So §161 shows that the memory carries a serial computation when given the algorithm's schedule, not that the model finds the schedule.
+* **A general pretrained LM needs generic segmentation.**
+* **Prior (Literature 9878803c):**
+  - RMT / ARMT length-generalise on retrieval, not on multi-step arithmetic.
+  - Chunked recurrence (RLT 2610.07591) drops swap-S5 from 100 % to 20 % at 4-token feedback, so chunk size is a variable.
+  - ACT (1603.08983) is the RNN ponder-step precedent.
+  - No segment-recurrent model has shown multi-digit arithmetic length generalisation.
+
+**Design: §155 R's memory and recipe** (DeltaMem-R, top writes, γ 2k → 6k, pass-start reads, W_o fade-in), with a task-agnostic harness:
+* **Input: the standard reversed-digit format,** the bench's own problem text (space-separated digit tokens, LSB first, " a_1 … a_4 * b_1 … b_n =": what TC-M /
+  ICoT-SI read). There is no pair schedule and there are no flags.
+  - Reversed digits are a known algorithmic aid, and the write-up says so (Audit).
+  - The text is cut into **fixed chunks of k = 4 tokens**, one fresh pass each ([EOT, chunk]). Boundaries fall at multiples of k, with no alignment to '*' or '='.
+  - The last chunk is padded to k with the constant filler token " .".
+* **Then K think passes**, each the constant segment [EOT, " ."], with no input.
+* **Then a read-only answer decoder:** [EOT] followed by the 4 + n product digits, greedy, LSB first, as deltas5's decoder.
+* **Training:** FINAL only (the answer digits). §161's data: 4 × n, n ~ U{2..5} per batch, gen_operands minus the 4×4 bench test items.
+  - Curriculum: §161's, applied to the number of supervised low answer digits, min(c, 4 + n), with c 1 / 2 / 4 / 8 at 0 / 2k / 5k / 9k.
+  - 48k steps, RTX 3090.
+* **Arms (chunk 4):**
+  - **K16** and **K8**;
+  - **K0**: no think passes. This is the **no-think** baseline. It is not a single pass: the input loads over 3–4 recurrent passes (Audit).
+  - **The measured single-pass baseline on the same data is §164 DIRECT-MIX:** a direct answer with the whole problem in one context, on the same 4 × n mix.
+  - **K16c1**: chunk size k = 1, slot 1 only, descriptive (Literature (1)).
+* **Seeds:** slot 1 per arm. EXACT at slot 1 opens s2 / s3 for K16 and K8.
+
+**Measures.**
+* **Accuracy:**
+  - 4×4 bench `test_acc` at K′ = K;
+  - ext_4x6 / 4x7 / 4x8 / 4x16 with §161's seeds, at K′ = K.
+* **K′ sweep (`s165.acc_by_kprime`):**
+  - 4×4 accuracy at K′ ∈ {0, 1, K/2, K, 2K, 4K};
+  - ext_4x8 at K′ ∈ {K, 2K, 4K} (`s165.ext_4x8_by_kprime`).
+* **Step-specific blocking (`s165.skip_pass`):** 4×4 accuracy when think pass t's write is skipped (the memory passes through unchanged), t ∈ {1, K/4, K/2, 3K/4, K}.
+* **Digit emergence (`s165.digit_emergence`):** each answer digit decoded (10-way, 155-4's probe settings) from the memory after the input and after think passes
+  K/4, K/2, 3K/4 and K.
+  - The map shows whether, and in what order, the memory computes the digits.
+* **Donor rule, fixed now (Literature (4)):** a whole-memory swap after loading, or between think passes at K/2, is behaviourally the donor's own chain. No input
+  follows the swap, so SERIAL is implied by accuracy here (158-1's logic). It is reported as a sanity check only.
+* **Compute:** `compute` (4×4) and `s165.compute_4x8`, against TC-M (57 passes) and ICoT-SI (13).
+  - Passes = ⌈len / k⌉ + K + the decoder's 4 + n digits: 3 + 16 + 8 = 27 for K16 at 4×4. That is more than ICoT-SI's 13, which is stated.
+
+**Rules (fixed now; `theory/score_s165.py`).**
+* **EXACT(run):** 4×4 ≥ 0.99 at K′ = K. **LENGTH-GENERAL(arm):** ≥ 2 of 3 seeds EXACT with ext_4x8 ≥ 0.90.
+* **THINK-NECESSARY(run), the north star's removal test for C1:** 4×4 accuracy at K′ = 0 and at K′ = 1 each ≤ 0.5× the accuracy at K.
+  - **It is credited only with step-specific skip damage:** some think pass t whose skipped write drops accuracy by ≥ 0.2, and some t with a drop ≤ 0.05.
+  - At K′ = 0 the decoder sees a memory it never saw in training, so removal alone could be distribution shift (Audit).
+* **The C1 claim also needs** §164 DIRECT-MIX mean 4×4 < 0.95 (the single pass fails) and K0 slot 1 < 0.95 (loading alone fails).
+* **MORE-THINKING (C2 past the trained K; a descriptive reading):** ext_4x8 at 2K ≥ ext_4x8 at K + 0.05. Literature expects a plateau.
+* **Readings:**
+  - **K0 exact:** the plain-text problem fits a single pass on this data, and the think passes are not needed (no C1 claim).
+  - **A K arm is LENGTH-GENERAL and THINK-NECESSARY, with DIRECT-MIX and K0 failing:** the memory learns its own schedule from the standard reversed-digit text,
+    under task-agnostic segmentation (C1 by removal with step-specific damage, C2 on length, C4 from final answers).
+  - **DIRECT-MIX ≥ 0.95:** the single pass already solves the problem on this data, so there is no C1 claim.
+  - **A K arm is exact but not length-general:** task-agnostic exactness, while length needs the harness's schedule.
+  - **Neither K arm is exact:** the harness's schedule is doing work, and the claim stays "structured-input latent computation".
+* **Predictions:**
+  - Audit: K16 4×4 ≥ 0.99, ext_4x8 ≥ 0.9, accuracy rising with K.
+  - Theory: K16 exact on 4×4 with K0 failing. Length is uncertain, because the fixed chunks hide the column structure that §161's per-column operation used.
+
+**Placement.**
+* After §161 MIX s2 and §164 read.
+* Slot 1 of K16 / K8 / K0 / K16c1, about $2.5 (48k, 3090s). s2 / s3 of passing arms, about $2.8.
+* **Implementation (Experiments):** a fixed-chunk family reusing deltas5's segment and read-only-decoder plumbing with multpair's data and memory; the eval fields
+  above.
+* **Gates:**
+  - step-0 function preservation;
+  - gradflow through ≥ 2 think passes;
+  - the decoder writes nothing;
+  - the chunking is exactly k tokens with no task-specific boundaries;
+  - smoke_plain;
+  - Audit's diff review.
+* Dirs `s165_{k16,k8,k0,k16c1}_4x4_s{seed}`. Scorer: `theory/score_s165.py`, committed with this registration.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
