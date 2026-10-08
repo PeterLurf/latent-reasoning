@@ -8805,6 +8805,75 @@ restated.**
   - **So the read, not the store, is the bottleneck.** Numbers are not exposed in one vector, which fits L2. The digit code at the read is non-integer, and integer-closeness
     of the read stays invalid as a diagnostic.
 
+## 157. READ-PANEL: geometry, bandwidth and interference of the memory read, as one panel (Audit's research passes 03:00 / 04:00; pre-registered 2026-10-08 03:57 EDT, after Literature's checks 534a02f1 / 5fc2cb76 and Audit's draft review, before any implementation or run; run only if b165 still fails)
+
+**Why.**
+* Note 152-5's result: §152's memory holds the carry-save sums almost exactly (24.6k-d state: exact 0.72–1.0).
+  - The single 768-d read vector exposes ĉ_k exactly for ≤ 57 % of items (`read.acc.exact`, OLS).
+  - The failure is localised at the carry-heavy columns: A fails column 6 (teacher-forced 0.338), and CTRL fails columns 5 and 6.
+* **The read, not the store, is the bottleneck.** The read could fail through its geometry (number-shaped or not), its bandwidth (one vector) or interference (the query
+  pulls a blend).
+* One panel, registered together with the same rules, instead of a chain of read fixes (a problem → fix loop).
+* **Prior** (534a02f1; 5fc2cb76, `docs/LIT_READ_BOTTLENECK_2026-10-08.md`):
+  - CCQ (2606.01294) addresses read **dilution** and MULTI-READ read **bandwidth**: separate hypotheses. 152-5's is a bandwidth claim, so MULTI-READ is its direct test.
+  - Ablating R at a fixed state has no precedent.
+  - Capacity (Welch bound) should not bind at our key counts.
+
+**Condition (fixed now).** §157 runs only if `s152_a96k_4x4_s1` (b165, note 152-5) reads test_acc < 0.95. If the 96k run passes, budget alone fixed column 6 and §157 is not run.
+
+**Design: §152 A's recipe exactly** (multiplier-major, b-first, the teacher S_j reader, 48k, bs 64, the gate). Each arm changes only the read:
+* **PERIODIC (geometry):**
+  - Each additive head gets 2 dedicated scalar value channels.
+  - Each write is the STE-rounded integer of its pre-rounding value; |w − round(w)| is logged.
+  - The scalar read s passes through a fixed featuriser [s, cos(2πs/P), sin(2πs/P)] for P ∈ {10, 100, 1000} (frozen periods, Literature 534a02f1), in fp32 outside autocast.
+  - A zero-initialised linear map feeds it into the residual beside W_o, so the arm is function-preserving at step 0.
+* **MULTI-READ (bandwidth):**
+  - R = 4 **distinct** learned queries per head, each with a learned slot ID, read S at the start of every pass (segments and the reader).
+  - The 4 read vectors (each 12 heads × 64 → W_o → 768) enter as **4 extra read-token positions at the start of the pass** (RMT-style), which every layer attends to.
+  - The existing per-position read is kept, so the arm adds bandwidth. The read tokens' output map is zero-initialised (function-preserving).
+* **CCQ (interference / dilution; 2606.01294, verified 5fc2cb76):** the query is contracted along the memory's high-variance key directions before reading. The read step only.
+  - It keeps one running key covariance per head (one extra d × d state).
+  - On the additive elu + 1 heads, it uses the φ(k) covariance normalised by the write count. That transfer is untested; the paper covers GLA / GDN only.
+
+**Rules (fixed now).**
+* **Gate per arm:** s1. **≥ 0.95** opens s2–s4 under §152's PASS rule (≥ 3/4 ≥ 0.99 + SERIAL).
+* **The comparator (Audit)** is §152 A at 48k (0.331; column 6 0.338). b165 (96k) is the budget control and is read beside the panel, not against it.
+* **Readings:**
+  - **PERIODIC alone ≥ 0.95:** read geometry was the block.
+  - **MULTI-READ alone ≥ 0.95:** read bandwidth was the block.
+  - **CCQ alone ≥ 0.95:** read interference was the block.
+  - **More than one ≥ 0.95:** the read was the block. The **cheapest passing arm by Meter FLOPs** is named, with each arm's FLOPs and passes against TC-M (§152 A:
+    0.46×). A pass at 1.3× TC-M reads differently from one at 0.5×.
+  - **None:** it is not the read. §155's recurrence is the remaining route.
+* **Descriptive:**
+  - teacher-forced digit accuracy by column (does column 6 move?);
+  - the read-exposure probe (`read.acc.exact`, OLS, train-fit) on each arm's read (for MULTI-READ, its read tokens);
+  - PERIODIC: |w − round(w)| and the angle → digit map;
+  - CCQ: the contracted query's interference (off-column weight share);
+  - key cosine similarity by head (the capacity check, Literature (5));
+  - FLOPs and passes (Meter, read tokens counted).
+* **Conditional next arms, pre-registered now (Audit, Literature), run if MULTI-READ passes:**
+  - **MULTI-READ-COPY:** R = 4 read-token positions, all carrying copies of a single query's read.
+  - **PAUSE-R:** R = 4 positions with no read.
+  - **Readings:**
+    - MULTI-READ > COPY: bandwidth.
+    - COPY ≈ MULTI-READ > PAUSE-R: read content at the positions.
+    - All three pass: positions alone (§156-style slots).
+* **C1 / C7 (PERIODIC, Audit):** a scalar edit of +1 at column k's stored sum. Score the share whose digit k and, through the carry, digit k + 1 follow, against an
+  equal-norm random edit (as §155's propagation_share). Under input-only writes this propagation is read-time only, and is reported as such.
+
+**Placement.**
+* After b165 reads (about 05:30), if it fails: PERIODIC s1, MULTI-READ s1 and CCQ s1 in parallel, about $0.8–1.5 each.
+* **Implementation (Experiments):** multrow `--read_mode periodic|multiread|ccq` (default unchanged); deltamem helper options, default off.
+* **Gates:** step-0 function preservation per arm; gradflow into the new read parameters; §152's path unchanged without the flag; smoke_plain; Audit's diff review.
+* Dirs `s157_{periodic,multiread,ccq}_4x4_s{seed}`. Scorer: `theory/score_s157.py`, committed with this registration.
+
+**Note 155-2 (2026-10-08 03:57 EDT, before any §155 result; Literature 5fc2cb76, 2609.33093). The propagation test's specificity.**
+* In associative memories interference grows with load and write overlap, and stored facts are causally coupled.
+* §155's rank-1 carry edit may therefore move columns other than k + 1 / k + 2. **coupling_share** is reported: the share of rows where any non-target column's digit changes
+  under the edit, for the carry edit and the random-edit null.
+* **Reading caveat, fixed now:** RECURRENT USE reads as specific only if coupling_share < 0.2. Otherwise it reads "propagates but non-specifically".
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
