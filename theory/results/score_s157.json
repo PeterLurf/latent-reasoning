@@ -2,13 +2,109 @@
  "condition": "RUN (b165 test_acc 0.079 < 0.95)",
  "periodic": {
   "runs": {
-   "1": null,
+   "1": {
+    "status": "done",
+    "test_acc": 0.035,
+    "acc_by_length": {
+     "1": 1.0,
+     "2": 1.0,
+     "3": 0.463,
+     "4": 0.035
+    },
+    "serial": false,
+    "digit_acc_tf": {
+     "1": 1.0,
+     "2": 1.0,
+     "3": 1.0,
+     "4": 0.996,
+     "5": 0.103,
+     "6": 0.358,
+     "7": 0.999,
+     "8": 1.0
+    },
+    "read_exposure": {
+     "block6_read": {
+      "1": 0.414,
+      "2": 0.361,
+      "3": 0.149,
+      "4": 0.094,
+      "5": 0.077,
+      "6": 0.209,
+      "7": 0.343,
+      "8": 1.0
+     },
+     "def": "exact = round(pred) == c^_k (column sum + carry-in), near-OLS ridge (lambda <= 1e-8, standardised), fit 4000 train items, scored on the test items"
+    },
+    "write_round_err": {
+     "mean": 0.2275215983390808,
+     "median": 0.2170315980911255,
+     "p90": 0.44640859961509705,
+     "max": 0.4999890625476837,
+     "n": 86016
+    },
+    "read_round_err": {
+     "1": {
+      "median": 0.2523012161254883,
+      "share_lt_0.25": 0.49609375
+     },
+     "2": {
+      "median": 0.2539260983467102,
+      "share_lt_0.25": 0.4889322916666667
+     },
+     "3": {
+      "median": 0.25825023651123047,
+      "share_lt_0.25": 0.4833984375
+     },
+     "4": {
+      "median": 0.2521076202392578,
+      "share_lt_0.25": 0.4947916666666667
+     },
+     "5": {
+      "median": 0.24885845184326172,
+      "share_lt_0.25": 0.5045572916666666
+     },
+     "6": {
+      "median": 0.24414050579071045,
+      "share_lt_0.25": 0.509765625
+     },
+     "7": {
+      "median": 0.24497461318969727,
+      "share_lt_0.25": 0.509765625
+     },
+     "8": {
+      "median": 0.23908033967018127,
+      "share_lt_0.25": 0.5224609375
+     }
+    },
+    "offcol_weight": {
+     "1": 0.8326985239982605,
+     "2": 0.856069028377533,
+     "3": 0.8494941592216492,
+     "4": 0.7763133645057678,
+     "5": 0.91910320520401,
+     "6": 0.9500687718391418,
+     "7": 0.9765626788139343,
+     "8": 1.0,
+     "mean": 0.8950387164950371
+    },
+    "c7_scalar_edit": null,
+    "compute": {
+     "flops": 7109133552.0,
+     "flops_trunk": 6917489664.0,
+     "flops_branch": 191643888.0,
+     "sequential_passes": 12,
+     "lm_head_rows": 8,
+     "tokens_processed": 37,
+     "convention": "\u00a798 (boxes.core.Meter: KV cache, full vocabulary); segments counted as full 12-block passes"
+    },
+    "gpu": "NVIDIA GeForce RTX 3090"
+   },
    "2": null,
    "3": null,
    "4": null
   },
-  "gate_open": null,
-  "verdict": "pending"
+  "gate_open": false,
+  "verdict": "gate closed (s1 0.035 < 0.95)"
  },
  "multiread": {
   "runs": {
@@ -154,5 +250,5 @@
   "gate_open": false,
   "verdict": "gate closed (s1 0.064 < 0.95)"
  },
- "reading": "pending"
+ "reading": "none >= 0.95: not the read; \u00a7155's recurrence is the remaining route; PERIODIC fails with offcol_weight 0.88 >= 0.1: the blend blocks it, not read geometry"
 }
