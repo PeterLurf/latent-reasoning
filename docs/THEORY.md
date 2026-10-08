@@ -236,7 +236,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 146 | MID-PROBE ($0): layer-wise probes (0–12) of the accumulator on s140 / s137; MID-STACK SIGNAL = R² ≥ 0.5 at 100–200 in some layer ≤ 9 (top 0.05) → register a mid-stack hand-off | **NO SIGNAL** (best layer 4: 0.217 at 100–200; layers 1–12 flat; the top reproduces 140-3): the accumulator ≥ 100 is computed nowhere; B2 ranks last | closed |
 | 147 | DELTA-STATE (program B1): a linear-recurrent memory (6 additive + 6 gated-delta heads) as GPT-2's only cross-segment channel, on §140's digit-pair 4×4; PASS = exact + SERIAL | registered | **open** |
 | 148 | LOOP-RETRO (program B3): prelude / weight-tied loop (blocks 4–7, damped) / coda retrofit for direct-answer 4×4; LOOP-4 vs PLAIN; C2 at r = 8 / 16 | **no improvement** (LOOP-4 0.002 = PLAIN 0.002; loops unused, acc flat in r): B3 stops at this budget; the direct baseline fails at the same middle columns as every latent design | closed |
-| 149 | SOTA-PROBE (eval only): donor SERIAL (equation substitution), ablation and ρ on released GPT-2 Coconut / SIM-CoT / CODI, at release | registered | **open** |
+| 149 | SOTA-PROBE (eval only): donor SERIAL (equation substitution), ablation and ρ on released GPT-2 Coconut / SIM-CoT / CODI, at release | **no model SERIAL**: SIM-CoT+Coconut PARTIAL (a third of swaps follow the donor), SIM-CoT+CODI BYPASSED (recomputed from the question); ρ marginal everywhere (0.37–0.50); the Lyapunov contrast not reproduced | closed |
 | 150 | VOCAB-SLOT (program B4; the user's token-like working memory): 4 Gumbel-ST slots on GPT-2's vocabulary (FULL) or digits + blank (DIGIT, an abacus) as the only cross-segment channel, on §140's digit-pair 4×4 | registered | **open** |
 
 ## Live sections
@@ -7913,6 +7913,29 @@ budget (147-1 (3)).**
   - **BYPASSED:** at least 2 BYPASS cells.
   - PARTIAL otherwise.
   - coconut (a training-history alignment), codi (probe-defined) and every ablation cell are descriptive. No single cell can decide a verdict by chance.
+
+**§149 result (2026-10-07 20:43 EDT; four full evals, n = 1,319 each; probe 612fee03, and 85c1b96b for coconut / codi, memory path only; local 4060 / 2070; scored by Theory with
+score_s149). All four pass the sanity gate. No released GPT-2 latent reasoner carries its step values serially at release.**
+
+| Model | Acc (gate) | Swap at t = 1: donor / recipient (n) | t = 2 | t = 3 | C1 at release | ρ (first-3) / Jacobian top eig | Zeroing thought 1 / all |
+|---|---|---|---|---|---|---|---|
+| simcot_coconut | 0.448 (44.8) | 0.35 / 0.07 (299) PARTIAL | 0.35 / 0.09 (114) PARTIAL | n 26 UNDERPOWERED | **PARTIAL** | 0.39 / 0.21 | 0.30 / — |
+| simcot_codi | 0.393 (39.4) | 0.11 / 0.55 (284) BYPASS | 0.07 / 0.74 (107) BYPASS | n 20 UNDERPOWERED | **BYPASSED** | 0.50 / 0.37 | 0.39 / 0.25 |
+| coconut (descriptive) | 0.331 (33.1) | 0.30 / 0.10 (251) PARTIAL | 0.00 / 0.59 (85) BYPASS | n 14 | — | 0.47 / 0.24 | 0.15 / 0.03 |
+| codi (descriptive) | 0.425 (42.5) | 0.17 / 0.55 (300) BYPASS | 0.01 / 0.16 (106) PARTIAL | n 18 | — | 0.37 / 0.18 | 0.41 / 0.22 |
+
+* **C1 at release (note 149-1's verdict cells):**
+  - **SIM-CoT+Coconut is PARTIAL.** About a third of same-template swaps move the answer to the donor's step value exactly, and the recipient's own answer rarely survives
+    (0.07–0.09). The thoughts carry step values in part.
+  - **SIM-CoT+CODI is BYPASSED.** The recipient's answer survives the swap in 55–74 % of pairs: the step is recomputed from the visible question (L1).
+* **No cell reaches SERIAL** (best donor-consistent 0.35). Step 3 is underpowered for every model (14–26 same-template pairs).
+* **Ablation:** Coconut depends most on its thoughts (zeroing pair 1: 0.33 → 0.15; all: 0.03). The CODI family hardly moves under single-latent ablation (all zero: 0.22–0.25).
+* **ρ:**
+  - Every model reads MARGINAL by our finite-perturbation ρ (0.37–0.50: above our 0.28 bound, below 1), with later hand-off ratios near or above 1.
+  - **2607.09698's contrast (Coconut expanding, CODI contracting) is not reproduced** at this resolution. CODI is slightly more contractive (0.37 against 0.47).
+  - The Jacobian's top eigenvalue is 0.18–0.37. It is not the spectral norm, so it can understate expansion.
+* **Our comparators, qualitatively** (different tasks): the S5 carriers are SERIAL by design, with fp32 ρ 0.07–0.26 (§128 / §133). SOTA latents on GSM8K are partially
+  causal at best, and BYPASS (L1) is their common failure.
 
 ## 150. VOCAB-SLOT: a working memory of K token-shaped slots between passes (program B4; the user's "working memory… that mimics discretised tokens in thought"; pre-registered 2026-10-07 18:05 EDT, after Literature's check c583bb23 and Audit's draft, before any implementation or run)
 
