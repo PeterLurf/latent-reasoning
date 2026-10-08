@@ -9204,6 +9204,10 @@ accumulator.**
 * **Gates:** step-0, gradflow through ≥ 2 hand-offs, the reader writes nothing back, smoke_plain, Audit's diff review.
 * Dirs `s160_{ar,ctrlr}_4x4_s{seed}`. Scorer: `theory/score_s160.py`, committed with this registration.
 
+**Note 160-1 / 159-1 (2026-10-08 07:45 EDT, before any §159 or §160 run; Audit). The inherited spike fallback gains an absolute floor.**
+* §159 and §160 inherit 155-1's write-row fallback trigger. In §155 R it fired 12 times on a decayed median (0.002–0.05) while the loss fell, so R9 ran for no reason.
+* **For §159 and §160, a spike is: max > 100× the preceding-1k median AND max > 1.0.** Non-finite steps and slot exhaustion are unchanged.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
