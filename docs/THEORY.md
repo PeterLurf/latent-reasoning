@@ -8942,6 +8942,26 @@ ext_4x8 0.000 < 0.5. ROTARY was deferred to §155's architecture (154-2), so §1
   - PASS needs ≥ 3/4 slots exact and SERIAL, and this slot is not SERIAL.
   - **What a non-SERIAL exact state means is open.** It could store operand-specific information (the L1 pattern in recurrent form) or hold sums in a form that does not
     compose across items. The next descriptive check is the pass-skip test (§153's form).
+* **The spike rule's flaw (Audit):** it fired on a decaying median with no instability. A future rule needs an absolute floor as well (for example max > 100× the median
+  **and** > 1.0). R9 still runs as registered.
+
+**Note 155-4 (2026-10-08 04:45 EDT, before §155 slots 2–4 and SHIFT-R land; Audit). What an exact but non-SERIAL state holds: three descriptive discriminators, readings fixed now.**
+The run is a post-hoc on every accepted §155 model (and §154 SHIFT / §151 for comparison), descriptive.
+* **(1) Pass-skip.** Skip one pair's pass, passing the memory through unchanged and keeping later passes as they are. Use the first pair of column 3 or of column 4, never a
+  column's last pair.
+  - **row_skip_consistent:** the answer = the product − a_i · b_j · 10^(i+j−2), i.e. additive sums. **full_product:** the answer is unchanged, i.e. recomputed.
+  - Scored over rows with a_i · b_j ≠ 0, with n reported.
+* **(2) operands_consistent in the swap** (multrow §152's field, ported to multpair).
+  - The swapped answer is compared with the product of **hybrid operands**: the donor's digits for the a_i / b_j positions seen in the prefix pairs, the recipient's for the
+    rest.
+* **(3) An operand-decode probe from S.** Held-out OLS 10-way classifiers of each seen a_i and b_j digit from the flattened state after pairs 4 / 8 / 12, against the partial
+  column sums at the same points (rounded exact).
+* **Readings (fixed now):**
+  - **operands_consistent ≥ 0.8:** recomputation from stored operands (L1 in recurrent form). The memory is exact as a buffer, not as a computation, and C1 is not met.
+  - **Pass-skip row_skip_consistent ≥ 0.8:** additive sums.
+  - **Neither:** a non-additive code, reported descriptively.
+  - The operand-decode probe sharpens whichever reading applies.
+* "The first exact multiplication through a latent memory" is held from the user-facing framing until this reads.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
