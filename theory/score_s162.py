@@ -47,6 +47,8 @@ def boundary():
         r = load("s162_direct_s%d" % s); a = load("s162_direct_s%d" % s, "args.json") or {}
         if r is None or a.get("mem_check") or a.get("train_n") or int(a.get("steps", 0) or 0) != 24000:
             continue
+        if a.get("arm") != "direct" or a.get("carrier") != "direct" or int(a.get("l_max") or 0) != 64:     # deltas5: DIRECT forces l_max 64
+            ERRORS.append(("s162_direct_s%d" % s, {"arm": a.get("arm"), "carrier": a.get("carrier"), "l_max": a.get("l_max")})); continue
         n_done += 1; ab = r.get("acc_by_length") or {}; curves[s] = ab
         if (ab.get("1") or 0) < 0.90:
             notes.append("direct s%d did not train (L = 1: %s)" % (s, ab.get("1"))); continue
