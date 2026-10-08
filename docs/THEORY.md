@@ -9019,6 +9019,18 @@ The run is a post-hoc on every accepted §155 model (and §154 SHIFT / §151 for
   - read_round_err and PERIODIC's offcol_weight are reported.
 * **MULTIREAD's queries are static learned parameters** (Perceiver-style latents), not input-dependent. A pass reads "static extra read bandwidth".
 
+**§157 READ-PANEL (interim, 2026-10-08 08:05 EDT; scored by Theory with score_s157; 48k, RTX 3090): the MULTIREAD and CCQ gates are closed, PERIODIC is pending.**
+* **MULTIREAD s1: 0.009** (Audit-reproduced), against the comparator §152 A s1 0.331.
+  - By length 1.0 / 0.981 / 0.144 / 0.009; teacher-forced columns 3–5 0.38 / 0.13 / 0.09. 1.06·10¹⁰ FLOPs.
+  - Static extra read bandwidth does not help.
+* **CCQ s1: 0.064.** By length 1.0 / 1.0 / 0.782 / 0.064.
+  - Teacher-forced: columns 1–4 1.0, column 5 0.083, column 6 0.745, columns 7–8 1.0. The failure moves from A's column 6 to column 5.
+  - **The contraction is barely used:** λ ≤ 0.003 on 10 of 12 heads (0.21 and 0.13 on the other two), and the read-time λ = 0 ablation gives the same 0.064.
+  - The read is a blend: the off-column weight share is 0.77–0.95 over columns 1–7 (column 8 has no products of its own).
+  - Read exposure (block-6 read, `read.acc.exact`): 0.78 / 0.48 / 0.37 / 0.28 / 0.14 / 0.33 / 0.51 / 1.0 by column.
+  - 7.10·10⁹ FLOPs and 12 passes, as §152 A.
+* Both closed arms fall below §152 A at 48k (0.331), near b165 at 96k (0.079). The panel's reading waits for PERIODIC (b174).
+
 ## 158. FREE-PAIRS: train on hybrid pair sequences, so the memory has to accumulate (Audit's research pass 05:00; interchange training at the data level; pre-registered 2026-10-08 04:57 EDT, after Audit's draft review and before any implementation or run; Literature's precedent check is pending and will be recorded in a dated note)
 
 **Why.**

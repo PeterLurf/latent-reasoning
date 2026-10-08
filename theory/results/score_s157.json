@@ -1,0 +1,156 @@
+{
+ "condition": "RUN (b165 test_acc 0.079 < 0.95)",
+ "periodic": {
+  "runs": {
+   "1": null,
+   "2": null,
+   "3": null,
+   "4": null
+  },
+  "gate_open": null,
+  "verdict": "pending"
+ },
+ "multiread": {
+  "runs": {
+   "1": {
+    "status": "done",
+    "test_acc": 0.009,
+    "acc_by_length": {
+     "1": 1.0,
+     "2": 0.981,
+     "3": 0.144,
+     "4": 0.009
+    },
+    "serial": false,
+    "digit_acc_tf": {
+     "1": 1.0,
+     "2": 1.0,
+     "3": 0.379,
+     "4": 0.131,
+     "5": 0.092,
+     "6": 0.987,
+     "7": 1.0,
+     "8": 1.0
+    },
+    "read_exposure": {
+     "block6_read": {
+      "1": 0.061,
+      "2": 0.04,
+      "3": 0.04,
+      "4": 0.049,
+      "5": 0.06,
+      "6": 0.093,
+      "7": 0.138,
+      "8": 0.931
+     },
+     "read_tokens_layer0": {
+      "1": 0.106,
+      "2": 0.064,
+      "3": 0.06,
+      "4": 0.038,
+      "5": 0.083,
+      "6": 0.179,
+      "7": 0.181,
+      "8": 0.786
+     },
+     "read_tokens_after_block6": {
+      "1": 0.03,
+      "2": 0.015,
+      "3": 0.026,
+      "4": 0.027,
+      "5": 0.044,
+      "6": 0.148,
+      "7": 0.292,
+      "8": 0.806
+     },
+     "def": "exact = round(pred) == c^_k (column sum + carry-in), near-OLS ridge (lambda <= 1e-8, standardised), fit 4000 train items, scored on the test items"
+    },
+    "write_round_err": null,
+    "offcol_weight": null,
+    "c7_scalar_edit": null,
+    "compute": {
+     "flops": 10556285304.0,
+     "flops_trunk": 10325996544.0,
+     "flops_branch": 230288760.0,
+     "sequential_passes": 12,
+     "lm_head_rows": 8,
+     "tokens_processed": 57,
+     "convention": "\u00a798 (boxes.core.Meter: KV cache, full vocabulary); segments counted as full 12-block passes"
+    },
+    "gpu": "NVIDIA GeForce RTX 3090"
+   },
+   "2": null,
+   "3": null,
+   "4": null
+  },
+  "gate_open": false,
+  "verdict": "gate closed (s1 0.009 < 0.95)"
+ },
+ "ccq": {
+  "runs": {
+   "1": {
+    "status": "done",
+    "test_acc": 0.064,
+    "acc_by_length": {
+     "1": 1.0,
+     "2": 1.0,
+     "3": 0.782,
+     "4": 0.064
+    },
+    "serial": false,
+    "digit_acc_tf": {
+     "1": 1.0,
+     "2": 1.0,
+     "3": 1.0,
+     "4": 1.0,
+     "5": 0.083,
+     "6": 0.745,
+     "7": 1.0,
+     "8": 1.0
+    },
+    "read_exposure": {
+     "block6_read": {
+      "1": 0.779,
+      "2": 0.482,
+      "3": 0.365,
+      "4": 0.282,
+      "5": 0.138,
+      "6": 0.328,
+      "7": 0.51,
+      "8": 0.999
+     },
+     "def": "exact = round(pred) == c^_k (column sum + carry-in), near-OLS ridge (lambda <= 1e-8, standardised), fit 4000 train items, scored on the test items"
+    },
+    "write_round_err": null,
+    "offcol_weight": {
+     "1": 0.8805885314941406,
+     "2": 0.7986370921134949,
+     "3": 0.7797574996948242,
+     "4": 0.7675070762634277,
+     "5": 0.8667429089546204,
+     "6": 0.9040657877922058,
+     "7": 0.9502971768379211,
+     "8": 1.0,
+     "mean": 0.8684495091438293
+    },
+    "c7_scalar_edit": null,
+    "compute": {
+     "flops": 7104302832.0,
+     "flops_trunk": 6917489664.0,
+     "flops_branch": 186813168.0,
+     "sequential_passes": 12,
+     "lm_head_rows": 8,
+     "tokens_processed": 37,
+     "convention": "\u00a798 (boxes.core.Meter: KV cache, full vocabulary); segments counted as full 12-block passes"
+    },
+    "gpu": "NVIDIA GeForce RTX 3090"
+   },
+   "2": null,
+   "3": null,
+   "4": null
+  },
+  "gate_open": false,
+  "verdict": "gate closed (s1 0.064 < 0.95)"
+ },
+ "reading": "pending"
+}
