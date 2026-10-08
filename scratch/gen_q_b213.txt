@@ -1,0 +1,3 @@
+# THEORY §163 SHAPE-MIX-2D (0045d6a1 + implementation note; condition met: §161 MIX s2 0.997 / ext_4x8 0.917) slot 3: restart155 --arm mix2d (R's args + --shape_mix_2d 2,3,4,5), --steps 48000, --keep_ckpt_steps 24000 (kept: test_4x4_at_24k), --bench5 shipped; on-host gate155 + mem_check (the 5x5 training shape + the 8x8 eval chain); ship EXTRA_120=scratch/gate155.py; RTX 3090 (~$1.5); slot 1 EXACT-ID (Theory 19:1x): s2 / s3 open
+# P=1
+boxes/runs_fsq/s163_slots/mix2d_4x4_k3 scratch.restart155 --arm mix2d --task 4x4 --slot 3 --prefix s163 --steps 48000 --keep_ckpt_steps 24000 --bench5 bench/data/mult_5x5_test.txt
