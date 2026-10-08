@@ -8961,6 +8961,8 @@ ext_4x8 0.000 < 0.5. ROTARY was deferred to §155's architecture (154-2), so §1
   - **155-1 (3)'s readings:**
     - **R 1.000 against R-γ0 0.587: the write source helps.** Writing after the read takes the memory from 0.59 to exact at 24k, with the read lag held fixed.
     - **R-γ0 0.587 against §147 0.743: the read lag costs** (pass-start reads against §147's within-pass reads).
+    - **Qualifier (Audit):** "the read lag costs" only **suggests**, on one seed each. A 0.16 gap is within this program's same-recipe swings (§151 0.837 / 0.889; §152 A 0.331
+      at 48k against 0.079 at 96k). "The write source helps" is well supported: R 1.000 and R9 0.999 against 0.587.
   - Per 155-4's probe, what the top-written memory adds is the computed emitted digits (held exactly). The in-progress accumulator is still not held.
 * **The spike rule's flaw (Audit):** it fired on a decaying median with no instability. A future rule needs an absolute floor as well (for example max > 100× the median
   **and** > 1.0). R9 still runs as registered.
