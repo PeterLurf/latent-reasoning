@@ -180,6 +180,17 @@ def write_grad_norm(m):
     return float(torch.stack(g_).norm()) if g_ else 0.0
 
 
+
+@torch.no_grad()
+def pass_states(m, rng, k, dev, amp, Lmax=32):
+    """§166 pass: k random training chains (random start, one length Lp ~ U(1..Lmax)) run through the CURRENT model; returns (their final
+    memories (k, 12, DH, DH) fp32, final states g (k,), s0, X) - the passed chains then skip segment 0 and are scored against g o items."""
+    Lp = int(rng.integers(1, Lmax + 1)); s0, X, Y = make_batch(Family("s5"), rng, k, Lp)
+    with amp_ctx(amp):
+        S = m.run(s0, X, dev)
+    return S.float(), Y[:, -1], s0, X
+
+
 # ------------------------------------------------------------------------------------------------------------------ descriptive blocks
 def _multi_r2(Xf, Yf, Xs, Ys, lam=1e-2):
     mu, sd = Xf.mean(0), Xf.std(0) + 1e-6; Zf = np.c_[(Xf - mu) / sd, np.ones(len(Xf))]; Zs = np.c_[(Xs - mu) / sd, np.ones(len(Xs))]
@@ -349,8 +360,24 @@ def main():
     ap.add_argument("--edit_n", type=int, default=1000); ap.add_argument("--donor_n", type=int, default=1000); ap.add_argument("--rec_every", type=int, default=4000)
     ap.add_argument("--auto_micro", action="store_true"); ap.add_argument("--mem_budget", type=float, default=21.0); ap.add_argument("--mem_check", action="store_true")
     ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--data_dir", default=os.path.join(ROOT, "bench", "data", "s5"))
+    ap.add_argument("--post_train_from", default=None, help="§166: post-train <src run> (dir under boxes/runs_fsq or a path): its args + model.pt")
+    ap.add_argument("--pt_steps", type=int, default=1000); ap.add_argument("--pt_lr", type=float, default=2e-5)
+    ap.add_argument("--init_mode", default="zero", choices=["zero", "pass"]); ap.add_argument("--init_p", type=float, default=0.5)
+    ap.add_argument("--state_source", default="current", choices=["current"])
     ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
-    a = ap.parse_args(); a.carrier = "deltamem" if a.arm == "delta" else "direct"; os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale
+    a = ap.parse_args()
+    if a.post_train_from:                                                   # §166: the source run's args, this run's own out / device / pt_* / eval sizes
+        src_ = a.post_train_from if os.path.isdir(a.post_train_from) else os.path.join(ROOT, "boxes", "runs_fsq", a.post_train_from)
+        keep_ = {k: getattr(a, k) for k in ("out", "device", "post_train_from", "pt_steps", "pt_lr", "init_mode", "init_p", "state_source", "eval_bs", "test_n", "ext_n",
+                                            "long_len", "probe_n_fit", "probe_n_score", "edit_n", "donor_n", "fp32", "mem_check", "sched_scale", "micro")}
+        for k, v in json.load(open(os.path.join(src_, "args.json"))).items():
+            if hasattr(a, k):
+                setattr(a, k, v)
+        for k, v in keep_.items():
+            setattr(a, k, v)
+        assert a.arm == "delta", "§166: deltas5 post-training is for the delta arm"
+        a.pt_src_dir = src_; a.post_train_from = os.path.basename(os.path.normpath(a.post_train_from)); a.steps = a.pt_steps; a.resume = None; a.ckpt_every = 0; a.auto_micro = False
+    a.carrier = "deltamem" if a.arm == "delta" else "direct"; os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale
     if a.arm == "direct":
         a.l_max = 64; a.mem_write = a.write_mix_start = a.write_mix_end = None
     torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); fam = Family("s5")
@@ -358,10 +385,18 @@ def main():
     g = s5.load_gpt2(dev); m = (Direct(g) if a.arm == "direct" else DeltaS5(g, a.mem_layer, a.mem_write)).to(dev)
     D_ = a.arm == "delta"
 
-    def train_loss(s0, X, y):
+    PRNG = np.random.default_rng(16800 + a.seed)                            # §166: the pass mask / source chains' own rng (paired batches with PLAIN)
+
+    def train_loss(s0, X, y, pm=None):
         if not D_:
             return m.loss(s0, X, y, dev)
-        return m.loss(m.run(s0, X, dev), y, dev)
+        if pm is None or not pm.any():
+            return m.loss(m.run(s0, X, dev), y, dev)
+        Sg, g, _, _ = pass_states(m, PRNG, int(pm.sum()), dev, amp); yp = comp_chain(g, X[pm])[:, -1]   # §166 pass: no segment 0; target g o items (own rng: paired batches)
+        lp = m.loss(m.run(None, X[pm], dev, S=Sg.to(dev)), yp, dev); np_ = int(pm.sum())
+        if np_ == len(X):
+            return lp
+        return (lp * np_ + m.loss(m.run(s0[~pm], X[~pm], dev), y[~pm], dev) * (len(X) - np_)) / len(X)
 
     def mem_check(micro):
         torch.cuda.reset_peak_memory_stats(dev); r_ = np.random.default_rng(0); s0, X, Y = make_batch(fam, r_, a.bs // micro, a.l_max); m.train()
@@ -390,21 +425,26 @@ def main():
         if dev.startswith("cuda") and ck.get("cuda_rng") is not None:
             torch.cuda.set_rng_state(ck["cuda_rng"].cpu(), device=dev)
         log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
+    elif D_ and a.post_train_from:                                          # §166: the source's trained weights (no g_add re-calibration)
+        m.load_state_dict(torch.load(os.path.join(a.pt_src_dir, "model.pt"), map_location=dev))
     elif D_:                                                                # note 147-2: g_add = the median read-norm ratio at step 0 (fade 1 for the measurement)
         m.mem.fade.fill_(1.0); r0 = read_ratio(m, dev, amp); m.mem.s_add.data.fill_(math.log(max(r0, 1e-12))); m.mem.fade.fill_(0.0)
         json.dump({"g_add_init": r0}, open(os.path.join(a.out, "s162_init.json"), "w", newline="\n"))
     for step in range(step0, a.steps + 1):
         for gr in opt.param_groups:
-            gr["lr"] = lr_at(a.lr, gr, step, a.steps)
+            gr["lr"] = (a.pt_lr * min(1.0, step / 50)) if a.post_train_from else lr_at(a.lr, gr, step, a.steps)   # §166: constant after 50 warm-up steps
         m.train()
-        if D_:
+        if D_ and a.post_train_from:                                        # §166: the trained model's final schedule values
+            m.mem.fade.fill_(1.0); m.mem.gamma.fill_(1.0)
+        elif D_:
             m.mem.fade.fill_(min(1.0, step / max(1, int(500 * sc))))
             m.mem.gamma.fill_(0.0 if step <= a.write_mix_start * sc else min(1.0, (step - a.write_mix_start * sc) / max(1.0, (a.write_mix_end - a.write_mix_start) * sc)))
-        L = int(rng.integers(1, lmax_sched(step / sc, a.l_max) + 1)); s0, X, Y = make_batch(fam, rng, a.bs, L); opt.zero_grad(); tot = 0.0; ch = a.bs // a.micro
+        L = int(rng.integers(1, lmax_sched(1e12 if a.post_train_from else step / sc, a.l_max) + 1)); s0, X, Y = make_batch(fam, rng, a.bs, L); opt.zero_grad(); tot = 0.0; ch = a.bs // a.micro
+        PM = (PRNG.random(a.bs) < a.init_p) if (a.post_train_from and a.init_mode == "pass" and a.init_p > 0) else None   # §166 pass rows (own rng, Audit)
         for k_ in range(a.micro):
             sl = slice(k_ * ch, (k_ + 1) * ch)
             with amp_ctx(amp):
-                lk = train_loss(s0[sl], X[sl], Y[sl, -1])
+                lk = train_loss(s0[sl], X[sl], Y[sl, -1], None if PM is None else PM[sl])
             (lk / a.micro).backward(); tot += float(lk.item()) / a.micro
         if D_:
             wwin.append(write_grad_norm(m))
@@ -446,6 +486,7 @@ def main():
         res["final_acc_by_length"] = {str(t): float(C[:, t - 1].mean()) for t in range(1, a.l_max + 1)}
         res["acc_by_length_cumulative"] = {str(t): float(C[:, :t].all(1).mean()) for t in (1, 2, 4, 8, 16, 32, 64, 128, 256, 512) if t <= Lt}
         res["long_acc"] = float(C.all(1).mean()); res["long_len"] = int(Lt); res["test_n"] = int(len(Xte))
+        res["acc_by_length_ext"] = {str(t): float(C[:, t - 1].mean()) for t in (48, 64) if t <= Lt}   # §166: final-state accuracy beyond the trained 32
         if a.ext_n:
             Xx, Yx = s5.load_csv(os.path.join(a.data_dir, "S5=2048.csv"), limit=a.ext_n); s5.check_labels(Xx, Yx)
             px, _ = rollout(m, np.zeros(len(Xx), np.int64), Xx, dev, amp, a.eval_bs); res["acc_2048"] = float((px == Yx).all(1).mean()); res["acc_2048_n"] = int(len(Xx))
@@ -468,6 +509,9 @@ def main():
                        "write_grad_spikes": [x_ for x_ in wg_hist if x_.get("spike_100x")], "write_grad_spikes_floor": [x_ for x_ in wg_hist if x_.get("spike_100x_floor")],
                        "mem_write": a.mem_write, "write_mix": [a.write_mix_start, a.write_mix_end], "gamma_final": float(m.mem.gamma),
                        "g_add": float(torch.exp(m.mem.s_add)), "g_del": float(torch.exp(m.mem.s_del))}
+    if a.post_train_from:                                                   # §166
+        res["s166"] = {"post_train_from": a.post_train_from, "pt_steps": a.pt_steps, "pt_lr": a.pt_lr, "init_mode": a.init_mode, "init_p": a.init_p, "state_source": a.state_source,
+                       "pass_def": "init_p of chains start from the current model's final memory of a random-start chain of one length U(1..32) per batch; segment 0 skipped; target g o items"}
     res["eval_sec"] = round(time.time() - t1)
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     print("EVAL", json.dumps({k: res[k] for k in ("acc_by_length", "final_acc_by_length", "long_acc") if k in res})[:600], flush=True); print("DONE", a.out, flush=True)

@@ -600,6 +600,32 @@ def value_range(preds, p99):
     return out
 
 
+
+@torch.no_grad()
+def mid_head_norms(m, A, Bd, dev, amp, bs):
+    """§166: median per-head Frobenius norm (12,) of the memory at mid-chain (after pair T // 2) over the given chains."""
+    T = len(schedule(A.shape[1], Bd.shape[1])[0]); _, kept, _ = rollout_delta(m, A, Bd, dev, amp, bs, keep_pos=[T // 2]); S = torch.tensor(kept[T // 2])
+    return S.flatten(2).norm(dim=2).median(0).values                       # (12,)
+
+
+@torch.no_grad()
+def mid_elem_stats(m, A, Bd, dev, amp, bs):
+    """§166 note 166-1 (fitted): the element-wise mean and std (12, DH, DH) of the memory at mid-chain (after pair T // 2) over the given chains."""
+    T = len(schedule(A.shape[1], Bd.shape[1])[0]); _, kept, _ = rollout_delta(m, A, Bd, dev, amp, bs, keep_pos=[T // 2]); S = torch.tensor(kept[T // 2]).float()
+    return S.mean(0), S.std(0)
+
+
+def fitted_states(k, mean, std, dev, gen):
+    """§166 note 166-1: k memories drawn element-wise from N(mean, std^2) (the current model's mid-chain statistics)."""
+    return (mean[None] + std[None] * torch.randn((k,) + tuple(mean.shape), generator=gen)).to(dev)
+
+
+def noise_states(k, norms, dev, gen):
+    """§166: k Gaussian memories (k, 12, DH, DH), each head rescaled to the target Frobenius norm."""
+    R = torch.randn((k, len(norms), DM.DH, DM.DH), generator=gen); R = R / R.flatten(2).norm(dim=2)[:, :, None, None] * norms[None, :, None, None]
+    return R.to(dev)
+
+
 def compute_pair(m, na, nb):
     """boxes.core.Meter per item (§98 / §152 convention; full-vocabulary LM-head rows): every pair segment [EOT, a_i, b_j, flag] (4 tokens) and the
     flush [EOT, " ="] (2) is a fresh 12-block pass (context 0); a logit row at each emission step. DeltaMem branch: 2 x branch params per token, plus
@@ -1322,6 +1348,10 @@ def main():
     ap.add_argument("--carry_from", default="first", choices=["first", "last"], help="§145 note 145-1: carry the slots read at the LAST write positions (CARRY1: w_K)")
     ap.add_argument("--no_round", action="store_true", help="§145 NOISE-64 carrier"); ap.add_argument("--dither", type=float, default=0.0)
     ap.add_argument("--keep_ckpt_steps", default="", help="§151: comma list of steps; model-only copies there, the row-level donor on each at the end (s151.serial_by_ckpt), then deleted")
+    ap.add_argument("--post_train_from", default=None, help="§166: post-train <src run> (dir name under boxes/runs_fsq or a path): its args + model.pt")
+    ap.add_argument("--pt_steps", type=int, default=1000); ap.add_argument("--pt_lr", type=float, default=2e-5)
+    ap.add_argument("--init_mode", default="zero", choices=["zero", "noise", "fitted"]); ap.add_argument("--init_p", type=float, default=0.5)
+    ap.add_argument("--state_source", default="current", choices=["current"])
     ap.add_argument("--shape_mix_2d", default="", help="§163: m and n each drawn per batch from this list (e.g. 2,3,4,5); off by default")
     ap.add_argument("--bench5", default=os.path.join("bench", "data", "mult_5x5_test.txt"), help="§163: the 5x5 bench test (test_5x5 + the exclusion)")
     ap.add_argument("--shape_mix", default="", help="§161: training chains 4 x n, n drawn per batch from this list (e.g. 2,3,4,5); off by default")
@@ -1359,6 +1389,15 @@ def main():
     a.slot_wte_detached = bool(a.slot_space)                                # note 150-1: the whole slot path (logits + mixture) uses wte.detach()
     assert not a.slot_space or (a.slots == 4 and a.slot_gumbel and not a.no_round), "§150: --slots 4 --slot_space vocab|digits --slot_gumbel (no NOISE carrier)"
     dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); sc = a.sched_scale; n = int(a.task[0])
+    if a.post_train_from:                                                   # §166: the source run's args (training data / curriculum / model), this run's own out / device / pt_*
+        src_ = a.post_train_from if os.path.isdir(a.post_train_from) else os.path.join(ROOT, "boxes", "runs_fsq", a.post_train_from)
+        keep_ = {k: getattr(a, k) for k in ("out", "device", "post_train_from", "pt_steps", "pt_lr", "init_mode", "init_p", "state_source", "eval_bs", "fp32", "mem_check", "train_n", "test_n", "ext_n", "donor_n", "probe_n_fit", "sched_scale", "micro")}
+        for k, v in json.load(open(os.path.join(src_, "args.json"))).items():
+            if hasattr(a, k):
+                setattr(a, k, v)
+        for k, v in keep_.items():
+            setattr(a, k, v)
+        a.pt_src_dir = src_; a.post_train_from = os.path.basename(os.path.normpath(a.post_train_from)); a.steps = a.pt_steps; a.keep_ckpt_steps = ""; a.stop_plateau = False; a.resume = None; a.ckpt_every = 0
     SHM = [int(x) for x in a.shape_mix.split(",") if x.strip()]             # §161
     assert not (SHM or a.col_index_offset is not None) or (a.task == "4x4" and a.carrier == "deltamem" and not a.free_pairs), "§161: 4x4 DeltaMem chains only"
     a.col_index_tokens = [" " + chr(65 + i) for i in range(21)] if a.col_index_offset is not None else None
@@ -1423,7 +1462,10 @@ def main():
     json.dump({**info, "resumed_at": time.strftime("%Y-%m-%d %H:%M:%S")} if a.resume else info,
               open(os.path.join(a.out, ("args_resume_%d.json" % int(time.time())) if a.resume else "args.json"), "w", newline="\n"), indent=1)
     m = mk(); m.train(); pairs, col, emit = schedule(n, n); wte0 = m.g.w("wte.weight").detach().float().clone()
-    if a.carrier == "deltamem" and not a.resume and not a.mem_check:        # note 147-2: g_add = median ||read_del|| / ||read_add|| at step 0
+    if a.post_train_from:                                                   # §166: the source's trained weights
+        m.load_state_dict(torch.load(os.path.join(a.pt_src_dir, "model.pt"), map_location=dev)); m.train()
+    PTN = {"norms": None, "gen": torch.Generator().manual_seed(16600 + a.seed), "mask": None, "hist": [], "rng": np.random.default_rng(16800 + a.seed)}   # §166 (own mask rng: paired batches, Audit)
+    if a.carrier == "deltamem" and not a.resume and not a.mem_check and not a.post_train_from:   # note 147-2: g_add = median ||read_del|| / ||read_add|| at step 0
         rr0, med0 = read_ratio_by_handoff(m, teA, teB, dev, amp); m.mem.s_add.data.fill_(math.log(med0)); rr1, med1 = read_ratio_by_handoff(m, teA, teB, dev, amp)
         init147 = {"g_add_init": med0, "g_del_init": 1.0, "ratio_by_handoff_before_gain": rr0, "read_norm_ratio_by_handoff_step0": rr1, "pooled_median_after_gain": med1}
         json.dump(init147, open(os.path.join(a.out, "s147_init.json"), "w", newline="\n"), indent=1); print("S147_INIT", json.dumps(init147), flush=True)
@@ -1478,19 +1520,39 @@ def main():
     keep_steps = {int(x) for x in a.keep_ckpt_steps.split(",") if x.strip()}
     for step in range(step0, a.steps + 1):
         for gr in opt.param_groups:
-            gr["lr"] = lr_at(a.lr, gr, step, a.steps)
-        m.p_hard = 0.0 if step <= a.p_hard_start * sc else min(1.0, (step - a.p_hard_start * sc) / ((a.p_hard_end - a.p_hard_start) * sc)); m.train()
+            gr["lr"] = (a.pt_lr * min(1.0, step / 50)) if a.post_train_from else lr_at(a.lr, gr, step, a.steps)   # §166: constant after 50 warm-up steps
+        m.p_hard = 1.0 if a.post_train_from else (0.0 if step <= a.p_hard_start * sc else min(1.0, (step - a.p_hard_start * sc) / ((a.p_hard_end - a.p_hard_start) * sc))); m.train()
         m.noise = (a.dither if step > 2000 * sc else 0.0) if a.no_round else 0.0   # §145 NOISE-64: dither after 2k (no draws otherwise)
         if a.carrier == "deltamem":
-            m.mem.fade.fill_(min(1.0, step / max(1, int(500 * sc))))         # §147: W_o fade-in over 500 steps
+            m.mem.fade.fill_(1.0 if a.post_train_from else min(1.0, step / max(1, int(500 * sc))))   # §147: W_o fade-in over 500 steps (§166: trained, 1)
             if a.mem_write:                                                 # §155: gamma 0 until write_mix_start, linear to 1 at write_mix_end
-                m.mem.gamma.fill_(0.0 if step <= a.write_mix_start * sc else min(1.0, (step - a.write_mix_start * sc) / max(1.0, (a.write_mix_end - a.write_mix_start) * sc)))
+                m.mem.gamma.fill_(1.0 if a.post_train_from else (0.0 if step <= a.write_mix_start * sc else min(1.0, (step - a.write_mix_start * sc) / max(1.0, (a.write_mix_end - a.write_mix_start) * sc))))
         if a.slot_space:                                                    # §150: Gumbel tau and the straight-through fraction
             m.tau = sched_tau(step, a.slot_tau, sc); m.p_hard_slot = sched_hard(step, a.slot_hard, sc)
-        c = int(rng.integers(1, cmax(step / sc, a.task) + 1)); X, lab, tm, T = batch(c, a.bs); opt.zero_grad()
+        PTN["mask"] = None
+        if a.post_train_from and a.init_mode in ("noise", "fitted") and a.init_p > 0 and (PTN["norms"] is None or (step - 1) % 100 == 0):   # §166 (before batch(): the probe resets the ops)
+            ir_ = np.random.default_rng(16700 + step).integers(0, len(trA), 64); m.eval()
+            if a.init_mode == "noise":
+                PTN["norms"] = mid_head_norms(m, trA[ir_], trB[ir_], dev, amp, 64); PTN["hist"].append({"step": step, "mid_head_norms": [round(float(x_), 5) for x_ in PTN["norms"]]})
+            else:                                                           # note 166-1: fitted = element-wise mean / std of real mid-chain memories
+                PTN["norms"] = mid_elem_stats(m, trA[ir_], trB[ir_], dev, amp, 64)
+                PTN["hist"].append({"step": step, "mean_abs_mean_by_head": [round(float(x_), 6) for x_ in PTN["norms"][0].abs().flatten(1).mean(1)],
+                                    "mean_std_by_head": [round(float(x_), 6) for x_ in PTN["norms"][1].flatten(1).mean(1)]})
+            m.train()
+        c = int(rng.integers(1, cmax(1e12 if a.post_train_from else step / sc, a.task) + 1)); X, lab, tm, T = batch(c, a.bs); opt.zero_grad()
+        if a.post_train_from and a.init_mode in ("noise", "fitted") and a.init_p > 0:   # §166: init_p of the chains start from a noise / fitted memory
+            PTN["mask"] = torch.tensor(PTN["rng"].random(a.bs) < a.init_p)
+        def start_(B, sl=None):
+            S_ = m.start(B, dev)
+            if PTN["mask"] is not None:
+                mk_ = PTN["mask"] if sl is None else PTN["mask"][sl]
+                if bool(mk_.any()):
+                    k_ = int(mk_.sum())
+                    S_[mk_.to(S_.device)] = (noise_states(k_, PTN["norms"], dev, PTN["gen"]) if a.init_mode == "noise" else fitted_states(k_, PTN["norms"][0], PTN["norms"][1], dev, PTN["gen"])).to(S_.dtype)
+            return S_
         if a.micro == 1:
             with amp_ctx(amp):
-                loss, _, _, _ = m.chain(m.start(a.bs, dev), X, lab, tm)      # CE at the emission steps (mean over them)
+                loss, _, _, _ = m.chain(start_(a.bs), X, lab, tm)          # CE at the emission steps (mean over them)
             loss.backward(); tot = float(loss.item())
         else:                                                               # Audit (§150 FULL): gradient accumulation, memory only
             A_, B_ = batch.AB; ch = a.bs // a.micro; tot = 0.0
@@ -1501,7 +1563,7 @@ def main():
                 if batch.PD is not None:                                    # §158: the chunk's per-step digits
                     m.pa = torch.tensor(np.array(DTOK)[batch.PD[0][sl_]], device=dev); m.pb = torch.tensor(np.array(DTOK)[batch.PD[1][sl_]], device=dev)
                 with amp_ctx(amp):
-                    lk, _, _, _ = m.chain(m.start(ch, dev), X[sl_], lab[sl_], tm[sl_])
+                    lk, _, _, _ = m.chain(start_(ch, sl_), X[sl_], lab[sl_], tm[sl_])
                 (lk / a.micro).backward(); tot += float(lk.item()) / a.micro
             loss = torch.tensor(tot)
         if a.mem_write:                                                     # §155: the write path's gradient norm (before clipping)
@@ -1653,6 +1715,9 @@ def main():
                 sb_[str(st_)] = None
         sb_["final"] = res["donor"]
         res["s151"] = {"serial_by_ckpt": sb_, "keep_ckpt_steps": sorted(keep_steps), "donor_def": "donor_delta, rng 14002, n min(donor_n, 1000), as the final donor"}
+    if a.post_train_from:                                                   # §166
+        res["s166"] = {"post_train_from": a.post_train_from, "pt_steps": a.pt_steps, "pt_lr": a.pt_lr, "init_mode": a.init_mode, "init_p": a.init_p,
+                       "state_source": a.state_source, "init_stats_hist": PTN["hist"]}
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     for cp_ in kept_:                                                       # retention: the copies served serial_by_ckpt only
         os.remove(cp_)
