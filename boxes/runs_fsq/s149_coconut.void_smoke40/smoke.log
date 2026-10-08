@@ -1,0 +1,19 @@
+SANITY coconut 0.325 54s
+ABLATION done 505s
+Traceback (most recent call last):
+  File "D:\Latent\scratch\s149_probe.py", line 297, in <module>
+    donor[str(t)] = cell
+    ^^
+  File "D:\Latent\scratch\s149_probe.py", line 264, in main
+    rng = np.random.default_rng(14901); donor = {}
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Latent\scratch\s149_probe.py", line 85, in substitute
+    vals.append(safe_eval(e2))
+                ~~~~~~~~~^^^^
+  File "D:\Latent\scratch\s149_probe.py", line 51, in safe_eval
+    return float(eval(expr, {"__builtins__": {}}, {}))
+                 ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 1
+    4.0*.25.0
+           ^^
+SyntaxError: invalid syntax

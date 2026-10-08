@@ -1,0 +1,4 @@
+SANITY simcot_codi 0.325 26s
+ABLATION done 183s
+DONOR done 188s
+DONE simcot_codi {"test_acc": 0.325, "donor_t1": {"n": 0, "recipients_eligible": 10}}
