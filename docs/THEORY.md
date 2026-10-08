@@ -9719,6 +9719,19 @@ shapes alone remove the count schedule".**
   - Audit's diff review.
 * Dirs `s164_{tcmix,directmix}_4x4_s{1,2}`. Scorer: `theory/score_s164.py`, committed with this registration.
 
+**§164 MIX-BASELINES result (2026-10-08 16:17 EDT; anchored read, note 164-1; 24k, RTX 3090; scored by Theory with score_s164): LATENT BEYOND TEXT ON LENGTH, by the registered rule.**
+* **TC-MIX** (text CoT on §161's 4 × n mix):
+  - 4×4 **1.0 / 1.0**, but ext_4x6 / 4x7 / 4x8 / 4x16 **0.0** in both seeds, anchored.
+  - The anchoring fixed the read (4×6 column 1: position-locked 0.39 → anchored 1.0). The model's own answers still fail past column 3–4.
+    - s1 at 4×6: 1.0 / 1.0 / 0.996 / 0.691 / 0.188 …
+    - s2 at 4×8: 0.998 / 0.998 / 0.453 / 0.184 …
+  - **The CoT length mismatches the true schedule on 100 % of extended items** (no "####" in ≤ 1.2 %). The model writes a short scratchpad and stops: a median
+    of 52 tokens at 4×8, against the true 138.
+* **The registered reading:** §161 MIX is LENGTH-GENERAL (3 / 3, ext_4x8 0.91–0.96), and TC-MIX's mean ext_4x8 is 0.000 < 0.90.
+  - **On the same training data, the latent memory extrapolates the multiplier length where text CoT does not.**
+* **C3 at 4×8:** TC-MIX's full scratchpad costs 153 passes and 4.03·10¹⁰ FLOPs; the latent chain costs 33 passes.
+* **DIRECT-MIX** (the single-pass baseline, descriptive) awaits its anchored re-eval.
+
 ## 165. FIXED-CHUNK: the same memory on the problem text in fixed chunks, with think passes, to test whether it finds its own schedule (task-agnostic segmentation) (the user's question "is the architecture task agnostic?", via Audit's research pass; pre-registered 2026-10-08 12:00 EDT, after Literature's check 9878803c (`docs/LIT_FIXED_CHUNK_2026-10-08.md`) and Audit's review (two rounds), before any implementation or run; launched after §161 MIX s2 and §164 read)
 
 **Why.**
