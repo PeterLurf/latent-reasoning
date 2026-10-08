@@ -9005,7 +9005,8 @@ never SERIAL, not length-general, and show no recurrent use.**
 * **SHIFT-R is decided after slot 2:** two slots fail SERIAL and RECURRENT USE.
   - s1 / s2: 1.000 / 1.000, row donor ≤ 0.08, ext_4x8 0.006 / 0.004.
   - Propagation 0.0 against a null of 0.0 (155-3), coupling 0.0.
-  - s3 / s4 (b178 / b179) are descriptive.
+  - s3 / s4 (b178 / b179) are descriptive. Both landed at 1.000, not SERIAL (row donor ≤ 0.10), ext_4x8 0.006 / 0.0, propagation 0.0 = null.
+    **SHIFT-R is 4 / 4 exact and 0 / 4 SERIAL.**
 * **Descriptive arms:** R9 s1 0.999 (block-9 writes change nothing); R-γ0 s1 0.587 (the write source helps).
 * **What §155 shows, with 155-4 and 158-2:**
   - Write-after-read makes DeltaMem exact on 4×4 in every seed (C6), at 0.79× TC-M FLOPs (C3 against text CoT, not against ICoT-SI).

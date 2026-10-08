@@ -9737,14 +9737,3258 @@
     }
    },
    "3": {
-    "attempts": [],
-    "status": "open",
-    "accepted": null
+    "attempts": [
+     {
+      "seed": 3,
+      "plateau": false
+     }
+    ],
+    "status": "accepted",
+    "accepted": {
+     "seed": 3,
+     "test_acc": 1.0,
+     "serial": false,
+     "per_column": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ],
+     "ext_4x8": 0.006,
+     "ext_4x16": 0.0,
+     "propagation_share": 0.0,
+     "random_edit_share": 0.0,
+     "null_value": 0.0,
+     "coupling_share": 0.0,
+     "recurrence": [
+      {
+       "step": 1000,
+       "gamma": 0.0,
+       "write_var_from_read_r2": 0.8764300933914154,
+       "write_var_from_input_r2": 0.9990363795030912,
+       "write_var_from_input_read_r2": 0.9990671894549593,
+       "write_var_incremental_read_r2": 3.080995186810487e-05,
+       "rho_jvp": 0.9669395685195923,
+       "rho_loop": 0.0,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2534420432341464
+      },
+      {
+       "step": 2000,
+       "gamma": 0.0,
+       "write_var_from_read_r2": 0.8681424484900849,
+       "write_var_from_input_r2": 0.9990187219182824,
+       "write_var_from_input_read_r2": 0.9990470379302235,
+       "write_var_incremental_read_r2": 2.831601194108746e-05,
+       "rho_jvp": 0.9667540788650513,
+       "rho_loop": 0.0,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2488494532638739
+      },
+      {
+       "step": 3000,
+       "gamma": 0.25,
+       "write_var_from_read_r2": 0.4067013843623306,
+       "write_var_from_input_r2": 0.9686101529877312,
+       "write_var_from_input_read_r2": 0.9821311192121439,
+       "write_var_incremental_read_r2": 0.013520966224412678,
+       "rho_jvp": 0.9791889786720276,
+       "rho_loop": 0.0709993839263916,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.291526889246067
+      },
+      {
+       "step": 4000,
+       "gamma": 0.5,
+       "write_var_from_read_r2": 0.3378816621368894,
+       "write_var_from_input_r2": 0.8833710060600641,
+       "write_var_from_input_read_r2": 0.9255252607618109,
+       "write_var_incremental_read_r2": 0.04215425470174672,
+       "rho_jvp": 0.9830605983734131,
+       "rho_loop": 0.12593677639961243,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2007746572802978
+      },
+      {
+       "step": 5000,
+       "gamma": 0.75,
+       "write_var_from_read_r2": 0.3071826779770196,
+       "write_var_from_input_r2": 0.7868082560036649,
+       "write_var_from_input_read_r2": 0.8588046080659222,
+       "write_var_incremental_read_r2": 0.0719963520622573,
+       "rho_jvp": 0.9885991215705872,
+       "rho_loop": 0.179710254073143,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.1483462157174267
+      },
+      {
+       "step": 6000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.36593587177332465,
+       "write_var_from_input_r2": 0.6443882793351006,
+       "write_var_from_input_read_r2": 0.7472189293583591,
+       "write_var_incremental_read_r2": 0.10283065002325853,
+       "rho_jvp": 1.0002195835113525,
+       "rho_loop": 0.2598550617694855,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.1216686564998488
+      },
+      {
+       "step": 7000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.3477523770679566,
+       "write_var_from_input_r2": 0.6560134562269513,
+       "write_var_from_input_read_r2": 0.7457044939397901,
+       "write_var_incremental_read_r2": 0.08969103771283882,
+       "rho_jvp": 0.9958864450454712,
+       "rho_loop": 0.24957792460918427,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.1340450901347519
+      },
+      {
+       "step": 8000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.3437316606790778,
+       "write_var_from_input_r2": 0.6393377828776527,
+       "write_var_from_input_read_r2": 0.7334864026559527,
+       "write_var_incremental_read_r2": 0.09414861977829991,
+       "rho_jvp": 0.9888770580291748,
+       "rho_loop": 0.25198793411254883,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.1389528835108962
+      },
+      {
+       "step": 9000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.3407071486886175,
+       "write_var_from_input_r2": 0.6468472665674994,
+       "write_var_from_input_read_r2": 0.7392790730052936,
+       "write_var_incremental_read_r2": 0.09243180643779425,
+       "rho_jvp": 0.9902849197387695,
+       "rho_loop": 0.26367688179016113,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.164312977421615
+      },
+      {
+       "step": 10000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.429848057102467,
+       "write_var_from_input_r2": 0.5893923805632664,
+       "write_var_from_input_read_r2": 0.7218088114883483,
+       "write_var_incremental_read_r2": 0.13241643092508193,
+       "rho_jvp": 1.0020183324813843,
+       "rho_loop": 0.3204185366630554,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.215170208778648
+      },
+      {
+       "step": 11000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.4330186632519969,
+       "write_var_from_input_r2": 0.5639952250365738,
+       "write_var_from_input_read_r2": 0.69181353673553,
+       "write_var_incremental_read_r2": 0.1278183116989562,
+       "rho_jvp": 1.000920295715332,
+       "rho_loop": 0.3497341275215149,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2367119694611486
+      },
+      {
+       "step": 12000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.43380365998517123,
+       "write_var_from_input_r2": 0.5610286915585723,
+       "write_var_from_input_read_r2": 0.6833545560153416,
+       "write_var_incremental_read_r2": 0.1223258644567693,
+       "rho_jvp": 0.993959367275238,
+       "rho_loop": 0.33240023255348206,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2507479895126905
+      },
+      {
+       "step": 13000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.42992815411559504,
+       "write_var_from_input_r2": 0.5558083860907304,
+       "write_var_from_input_read_r2": 0.6738838259442843,
+       "write_var_incremental_read_r2": 0.11807543985355395,
+       "rho_jvp": 0.993836522102356,
+       "rho_loop": 0.35016191005706787,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.261210978394284
+      },
+      {
+       "step": 14000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.4312388483845523,
+       "write_var_from_input_r2": 0.5583204299423226,
+       "write_var_from_input_read_r2": 0.6714856921602461,
+       "write_var_incremental_read_r2": 0.11316526221792356,
+       "rho_jvp": 0.9959827065467834,
+       "rho_loop": 0.3477637767791748,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2653917654600322
+      },
+      {
+       "step": 15000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.4324827840832043,
+       "write_var_from_input_r2": 0.5564867719806383,
+       "write_var_from_input_read_r2": 0.6666339507140584,
+       "write_var_incremental_read_r2": 0.11014717873342006,
+       "rho_jvp": 0.9923425912857056,
+       "rho_loop": 0.3503822088241577,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2705376177069392
+      },
+      {
+       "step": 16000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.42986406882600847,
+       "write_var_from_input_r2": 0.5484955008295029,
+       "write_var_from_input_read_r2": 0.6574116531142069,
+       "write_var_incremental_read_r2": 0.10891615228470397,
+       "rho_jvp": 0.9913380146026611,
+       "rho_loop": 0.3373083472251892,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2704305454151046
+      },
+      {
+       "step": 17000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.4324705193698334,
+       "write_var_from_input_r2": 0.5492010844317221,
+       "write_var_from_input_read_r2": 0.6567684393037938,
+       "write_var_incremental_read_r2": 0.1075673548720717,
+       "rho_jvp": 0.99245285987854,
+       "rho_loop": 0.35370466113090515,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.27085462802656
+      },
+      {
+       "step": 18000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.4304268463665356,
+       "write_var_from_input_r2": 0.5483444511738564,
+       "write_var_from_input_read_r2": 0.6523766319772463,
+       "write_var_incremental_read_r2": 0.10403218080338983,
+       "rho_jvp": 0.9982222318649292,
+       "rho_loop": 0.3614582121372223,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2692519539578282
+      },
+      {
+       "step": 19000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.43144036112319883,
+       "write_var_from_input_r2": 0.5461432793389744,
+       "write_var_from_input_read_r2": 0.6529403226383393,
+       "write_var_incremental_read_r2": 0.1067970432993649,
+       "rho_jvp": 0.985931396484375,
+       "rho_loop": 0.3291894197463989,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2739630982836214
+      },
+      {
+       "step": 20000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.4303271611974818,
+       "write_var_from_input_r2": 0.5463660670725002,
+       "write_var_from_input_read_r2": 0.6499638235985599,
+       "write_var_incremental_read_r2": 0.10359775652605963,
+       "rho_jvp": 0.9874801635742188,
+       "rho_loop": 0.3449089527130127,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2718727534816003
+      },
+      {
+       "step": 21000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.42870954481453827,
+       "write_var_from_input_r2": 0.5438543157816449,
+       "write_var_from_input_read_r2": 0.6466137948008895,
+       "write_var_incremental_read_r2": 0.10275947901924465,
+       "rho_jvp": 0.9996600151062012,
+       "rho_loop": 0.3648776113986969,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2715311470570525
+      },
+      {
+       "step": 22000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.4271370435140467,
+       "write_var_from_input_r2": 0.5417036577871449,
+       "write_var_from_input_read_r2": 0.644237252226946,
+       "write_var_incremental_read_r2": 0.10253359443980103,
+       "rho_jvp": 0.992693305015564,
+       "rho_loop": 0.3595714569091797,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2725707703892202
+      },
+      {
+       "step": 23000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.4265681284469379,
+       "write_var_from_input_r2": 0.5404548024606011,
+       "write_var_from_input_read_r2": 0.6432747376444131,
+       "write_var_incremental_read_r2": 0.10281993518381205,
+       "rho_jvp": 0.9919308423995972,
+       "rho_loop": 0.3753975033760071,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2725378577565298
+      },
+      {
+       "step": 24000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.4268756487921961,
+       "write_var_from_input_r2": 0.5405275140658543,
+       "write_var_from_input_read_r2": 0.6434003221976878,
+       "write_var_incremental_read_r2": 0.10287280813183353,
+       "rho_jvp": 0.9899630546569824,
+       "rho_loop": 0.3573373556137085,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2720050030210628
+      },
+      {
+       "step": "end",
+       "write_var_from_read_r2": 0.4268756487921961,
+       "write_var_from_input_r2": 0.5405275140658543,
+       "write_var_from_input_read_r2": 0.6434003221976878,
+       "write_var_incremental_read_r2": 0.10287280813183353,
+       "rho_jvp": 0.9860948920249939,
+       "rho_loop": 0.3358297049999237,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32"
+      }
+     ],
+     "mem_norm_by_pass": {
+      "additive": [
+       1301.3253173828125,
+       1424.1517333984375,
+       2077.88427734375,
+       1392.3040771484375,
+       2069.259521484375,
+       2865.726806640625,
+       1314.820068359375,
+       2127.195068359375,
+       2992.5478515625,
+       3866.50390625,
+       1559.570556640625,
+       2595.74072265625,
+       3572.3876953125,
+       1625.7193603515625,
+       2660.431396484375,
+       1568.0208740234375,
+       930.6884155273438
+      ],
+      "delta": [
+       54.67782211303711,
+       61.321868896484375,
+       70.84904479980469,
+       70.81468200683594,
+       78.54816436767578,
+       82.87394714355469,
+       83.29613494873047,
+       88.36453247070312,
+       91.57450103759766,
+       95.25727081298828,
+       95.14701080322266,
+       96.60401916503906,
+       99.75690460205078,
+       98.16091918945312,
+       100.2637939453125,
+       99.43583679199219,
+       101.10255432128906
+      ]
+     },
+     "write_norm_ratio": [
+      {
+       "step": 1000,
+       "gamma": 0.0,
+       "write_var_from_read_r2": 0.8764300933914154,
+       "write_var_from_input_r2": 0.9990363795030912,
+       "write_var_from_input_read_r2": 0.9990671894549593,
+       "write_var_incremental_read_r2": 3.080995186810487e-05,
+       "rho_jvp": 0.9669395685195923,
+       "rho_loop": 0.0,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2534420432341464
+      },
+      {
+       "step": 2000,
+       "gamma": 0.0,
+       "write_var_from_read_r2": 0.8681424484900849,
+       "write_var_from_input_r2": 0.9990187219182824,
+       "write_var_from_input_read_r2": 0.9990470379302235,
+       "write_var_incremental_read_r2": 2.831601194108746e-05,
+       "rho_jvp": 0.9667540788650513,
+       "rho_loop": 0.0,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2488494532638739
+      },
+      {
+       "step": 3000,
+       "gamma": 0.25,
+       "write_var_from_read_r2": 0.4067013843623306,
+       "write_var_from_input_r2": 0.9686101529877312,
+       "write_var_from_input_read_r2": 0.9821311192121439,
+       "write_var_incremental_read_r2": 0.013520966224412678,
+       "rho_jvp": 0.9791889786720276,
+       "rho_loop": 0.0709993839263916,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.291526889246067
+      },
+      {
+       "step": 4000,
+       "gamma": 0.5,
+       "write_var_from_read_r2": 0.3378816621368894,
+       "write_var_from_input_r2": 0.8833710060600641,
+       "write_var_from_input_read_r2": 0.9255252607618109,
+       "write_var_incremental_read_r2": 0.04215425470174672,
+       "rho_jvp": 0.9830605983734131,
+       "rho_loop": 0.12593677639961243,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2007746572802978
+      },
+      {
+       "step": 5000,
+       "gamma": 0.75,
+       "write_var_from_read_r2": 0.3071826779770196,
+       "write_var_from_input_r2": 0.7868082560036649,
+       "write_var_from_input_read_r2": 0.8588046080659222,
+       "write_var_incremental_read_r2": 0.0719963520622573,
+       "rho_jvp": 0.9885991215705872,
+       "rho_loop": 0.179710254073143,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.1483462157174267
+      }
+     ],
+     "n_nonfinite": 0,
+     "c7_state_edit": {
+      "additive": {
+       "-2": {
+        "shifted_share": 0.0,
+        "unedited_share": 1.0,
+        "carry_follow_share": 0.8066666666666666,
+        "n": 3000,
+        "by_column": {
+         "2": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.808,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "3": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.814,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "4": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.808,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "5": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.804,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "6": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.79,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "7": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.816,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         }
+        }
+       },
+       "-1": {
+        "shifted_share": 0.0,
+        "unedited_share": 1.0,
+        "carry_follow_share": 0.899,
+        "n": 3000,
+        "by_column": {
+         "2": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.894,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "3": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.904,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "4": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.894,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "5": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.888,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "6": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.9,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "7": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.914,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         }
+        }
+       },
+       "+1": {
+        "shifted_share": 0.0,
+        "unedited_share": 1.0,
+        "carry_follow_share": 0.9066666666666666,
+        "n": 3000,
+        "by_column": {
+         "2": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.922,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "3": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.908,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "4": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.896,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "5": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.906,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "6": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.91,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "7": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.898,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         }
+        }
+       },
+       "+2": {
+        "shifted_share": 0.0,
+        "unedited_share": 1.0,
+        "carry_follow_share": 0.8186666666666667,
+        "n": 3000,
+        "by_column": {
+         "2": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.824,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "3": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.81,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "4": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.832,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "5": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.81,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "6": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.822,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "7": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.814,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         }
+        }
+       }
+      },
+      "delta": {
+       "-2": {
+        "carry_shift_share": 0.0,
+        "by_next_column": {
+         "3": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "4": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "5": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "6": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "7": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "8": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         }
+        }
+       },
+       "-1": {
+        "carry_shift_share": 0.0,
+        "by_next_column": {
+         "3": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "4": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "5": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "6": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "7": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "8": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         }
+        }
+       },
+       "+1": {
+        "carry_shift_share": 0.0,
+        "by_next_column": {
+         "3": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "4": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "5": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "6": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "7": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "8": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         }
+        }
+       },
+       "+2": {
+        "carry_shift_share": 0.0,
+        "by_next_column": {
+         "3": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "4": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "5": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "6": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "7": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "8": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         }
+        }
+       }
+      },
+      "carry_probe_r2_score_half": {
+       "3": 0.9826379583701027,
+       "4": 0.9649956316660042,
+       "5": 0.9681058842269902,
+       "6": 0.9853639059914515,
+       "7": 0.9949153924939703,
+       "8": 0.9969754902439019
+      },
+      "descriptive": true,
+      "propagation": {
+       "by_k": {
+        "2": {
+         "-1": {
+          "propagation_share": 0.0,
+          "random_edit_share": 0.0,
+          "null_value": 0.0,
+          "n": 48,
+          "coupling_share": 0.0,
+          "random_coupling_share": 0.0
+         },
+         "+1": {
+          "propagation_share": 0.0,
+          "random_edit_share": 0.0,
+          "null_value": 0.0,
+          "n": 46,
+          "coupling_share": 0.0,
+          "random_coupling_share": 0.0
+         }
+        },
+        "3": {
+         "-1": {
+          "propagation_share": 0.0,
+          "random_edit_share": 0.0,
+          "null_value": 0.0,
+          "n": 53,
+          "coupling_share": 0.0,
+          "random_coupling_share": 0.0
+         },
+         "+1": {
+          "propagation_share": 0.0,
+          "random_edit_share": 0.0,
+          "null_value": 0.0,
+          "n": 52,
+          "coupling_share": 0.0,
+          "random_coupling_share": 0.0
+         }
+        },
+        "4": {
+         "-1": {
+          "propagation_share": 0.0,
+          "random_edit_share": 0.0,
+          "null_value": 0.0,
+          "n": 56,
+          "coupling_share": 0.0,
+          "random_coupling_share": 0.0
+         },
+         "+1": {
+          "propagation_share": 0.0,
+          "random_edit_share": 0.0,
+          "null_value": 0.0,
+          "n": 47,
+          "coupling_share": 0.0,
+          "random_coupling_share": 0.0
+         }
+        },
+        "5": {
+         "-1": {
+          "propagation_share": 0.0,
+          "random_edit_share": 0.0,
+          "null_value": 0.0,
+          "n": 50,
+          "coupling_share": 0.0,
+          "random_coupling_share": 0.0
+         },
+         "+1": {
+          "propagation_share": 0.0,
+          "random_edit_share": 0.0,
+          "null_value": 0.0,
+          "n": 45,
+          "coupling_share": 0.0,
+          "random_coupling_share": 0.0
+         }
+        }
+       },
+       "pooled": {
+        "propagation_share": 0.0,
+        "random_edit_share": 0.0,
+        "null_value": 0.0,
+        "n": 397,
+        "coupling_share": 0.0,
+        "random_coupling_share": 0.0
+       },
+       "def": "delta-head carry edit at column k+1's first pair (k = 2..5, delta +-1, minimum-norm rank 1 moving column k+1's carry-in probe by delta); column k+2's digit vs (c^_{k+2} - r_{k+1} + floor((c^_{k+1} + delta)/10)) mod 10 on rows where the edit changes r_{k+1}; random_edit: an equal-norm random rank-1 edit; null_value: the unedited digit already equals the edited-chain value"
+      },
+      "def": "\u00a7154 C7 STATE edits (descriptive; Audit / Theory). S is a function of the input tokens only (no read -> write path), so an edit reaches\n    later columns only through the perturbed state itself.\n    (a) additive: entering column k's emission step (after that step's SHIFT reset when it starts a column), Delta S_add per head h =\n        phi(q_T,h) (delta u_h / g_add)^T / ||phi(q_T,h)||^2 (minimum-norm rank 1), u = w_add / ||w_add||^2 for the raw ridge of the accumulator\n        c^_k on the additive read at emission steps: the read at the emission token moves by exactly delta u. Reports column k's\n        shifted_share / unedited_share and column k+1's digit (next_unchanged_share; under SHIFT the additive store is zeroed before k+1).\n    (b) delta: after column k's last pair, Delta S_del per head = (r_h / g_del) z_h^T / ||z_h||^2 with z = A_0 ... A_{T-1} q_d (the\n        segment's delta transforms A_t = alpha_t (I - beta_t k_t k_t^T) applied to the first-pair token's normalised q), r = delta w_c / ||w_c||^2\n        for the raw ridge of column k+1's carry-in on the delta read at its first pair: that read moves by exactly delta r. Reports column\n        k+1's carry_shift_share (digit == (c^_{k+1} + delta) mod 10), unedited_share and the probe's held-out R^2. k = 7: k+1 is the flush."
+     },
+     "carry_probe_by_column": {
+      "4x4": [
+       0.999684295134346,
+       0.9818134572062117,
+       0.9657711842150395,
+       0.970944409001542,
+       0.9868819464296046,
+       0.9955262139822478
+      ],
+      "4x8": [
+       0.9996572921387346,
+       0.9802618016132268,
+       0.9671208681183174,
+       0.9644263473336119,
+       0.9684258678743327,
+       0.9758136593226765,
+       0.9764827166258319,
+       0.97367337358082,
+       0.978797516906914,
+       0.9925013173746224
+      ],
+      "def": "held-out ridge R^2 of column k's carry-in floor(c_{k-1}/10) from the delta read (384-d) at column k's first pair, k = 1.."
+     },
+     "acc_by_column_carry": {
+      "1": {
+       "carry0": 1.0,
+       "carry_nonzero": null,
+       "n_carry0": 1000,
+       "n_carry_nonzero": 0
+      },
+      "2": {
+       "carry0": 1.0,
+       "carry_nonzero": 1.0,
+       "n_carry0": 441,
+       "n_carry_nonzero": 559
+      },
+      "3": {
+       "carry0": 1.0,
+       "carry_nonzero": 1.0,
+       "n_carry0": 123,
+       "n_carry_nonzero": 877
+      },
+      "4": {
+       "carry0": 1.0,
+       "carry_nonzero": 1.0,
+       "n_carry0": 26,
+       "n_carry_nonzero": 974
+      },
+      "5": {
+       "carry0": 1.0,
+       "carry_nonzero": 1.0,
+       "n_carry0": 1,
+       "n_carry_nonzero": 999
+      },
+      "6": {
+       "carry0": 1.0,
+       "carry_nonzero": 1.0,
+       "n_carry0": 12,
+       "n_carry_nonzero": 988
+      },
+      "7": {
+       "carry0": 1.0,
+       "carry_nonzero": 1.0,
+       "n_carry0": 47,
+       "n_carry_nonzero": 953
+      },
+      "8": {
+       "carry0": 1.0,
+       "carry_nonzero": 1.0,
+       "n_carry0": 164,
+       "n_carry_nonzero": 836
+      }
+     },
+     "alpha_by_head": {
+      "end": {
+       "mean_alpha": [
+        0.994449,
+        0.943879,
+        0.978674,
+        0.986394,
+        0.986075,
+        0.949744
+       ],
+       "sigmoid_bias": [
+        0.993247,
+        0.993032,
+        0.993005,
+        0.993195,
+        0.993192,
+        0.99292
+       ]
+      },
+      "checkpoints": [
+       {
+        "step": 2000,
+        "mean_alpha": [
+         0.993307,
+         0.993307,
+         0.993307,
+         0.993307,
+         0.993307,
+         0.993307
+        ],
+        "sigmoid_bias": [
+         0.993307,
+         0.993307,
+         0.993307,
+         0.993307,
+         0.993307,
+         0.993307
+        ]
+       },
+       {
+        "step": 4000,
+        "mean_alpha": [
+         0.996122,
+         0.995974,
+         0.995511,
+         0.996418,
+         0.996348,
+         0.995166
+        ],
+        "sigmoid_bias": [
+         0.993425,
+         0.993419,
+         0.993389,
+         0.993464,
+         0.993443,
+         0.993368
+        ]
+       },
+       {
+        "step": 6000,
+        "mean_alpha": [
+         0.996235,
+         0.994408,
+         0.994668,
+         0.996189,
+         0.996989,
+         0.989556
+        ],
+        "sigmoid_bias": [
+         0.993412,
+         0.993391,
+         0.993337,
+         0.993443,
+         0.993465,
+         0.993242
+        ]
+       },
+       {
+        "step": 8000,
+        "mean_alpha": [
+         0.99387,
+         0.980498,
+         0.990081,
+         0.994265,
+         0.996296,
+         0.980342
+        ],
+        "sigmoid_bias": [
+         0.99333,
+         0.993247,
+         0.993218,
+         0.993367,
+         0.993404,
+         0.99314
+        ]
+       },
+       {
+        "step": 10000,
+        "mean_alpha": [
+         0.995873,
+         0.966992,
+         0.987257,
+         0.992996,
+         0.995563,
+         0.972282
+        ],
+        "sigmoid_bias": [
+         0.993348,
+         0.99316,
+         0.993146,
+         0.993324,
+         0.993361,
+         0.993067
+        ]
+       },
+       {
+        "step": 12000,
+        "mean_alpha": [
+         0.99526,
+         0.949219,
+         0.981736,
+         0.988915,
+         0.990433,
+         0.956281
+        ],
+        "sigmoid_bias": [
+         0.993314,
+         0.993105,
+         0.993082,
+         0.99327,
+         0.993281,
+         0.992999
+        ]
+       },
+       {
+        "step": 14000,
+        "mean_alpha": [
+         0.995,
+         0.946722,
+         0.980504,
+         0.98793,
+         0.988513,
+         0.953816
+        ],
+        "sigmoid_bias": [
+         0.993288,
+         0.993075,
+         0.993051,
+         0.993239,
+         0.993242,
+         0.992968
+        ]
+       },
+       {
+        "step": 16000,
+        "mean_alpha": [
+         0.994704,
+         0.945557,
+         0.979589,
+         0.987168,
+         0.986951,
+         0.951547
+        ],
+        "sigmoid_bias": [
+         0.993269,
+         0.993055,
+         0.993029,
+         0.993218,
+         0.993216,
+         0.992945
+        ]
+       },
+       {
+        "step": 18000,
+        "mean_alpha": [
+         0.994537,
+         0.943249,
+         0.978911,
+         0.986564,
+         0.986308,
+         0.949636
+        ],
+        "sigmoid_bias": [
+         0.993257,
+         0.993042,
+         0.993016,
+         0.993205,
+         0.993202,
+         0.992931
+        ]
+       },
+       {
+        "step": 20000,
+        "mean_alpha": [
+         0.994485,
+         0.943531,
+         0.978755,
+         0.986389,
+         0.986049,
+         0.94964
+        ],
+        "sigmoid_bias": [
+         0.993251,
+         0.993036,
+         0.993009,
+         0.993199,
+         0.993196,
+         0.992924
+        ]
+       },
+       {
+        "step": 22000,
+        "mean_alpha": [
+         0.994451,
+         0.94392,
+         0.978704,
+         0.986413,
+         0.986108,
+         0.949803
+        ],
+        "sigmoid_bias": [
+         0.993247,
+         0.993032,
+         0.993005,
+         0.993195,
+         0.993192,
+         0.99292
+        ]
+       }
+      ]
+     },
+     "what_state": {
+      "pass_skip": {
+       "pair4": {
+        "a_i": 1,
+        "b_j": 3,
+        "column": 3,
+        "row_skip_consistent": 0.05115712545676005,
+        "full_product": 0.04628501827040195,
+        "n": 821,
+        "n_excluded_zero_product": 179,
+        "skip_keeps_reset": true
+       },
+       "pair7": {
+        "a_i": 1,
+        "b_j": 4,
+        "column": 4,
+        "row_skip_consistent": 0.01868131868131868,
+        "full_product": 0.03076923076923077,
+        "n": 910,
+        "n_excluded_zero_product": 90,
+        "skip_keeps_reset": true
+       }
+      },
+      "donor_operands": {
+       "pos4": {
+        "operands_consistent": 0.0,
+        "recipient_consistent": 0.03,
+        "donor_full_consistent": 0.0,
+        "seen_a": [
+         1,
+         2
+        ],
+        "seen_b": [
+         1,
+         2,
+         3
+        ],
+        "n": 1000
+       },
+       "pos8": {
+        "operands_consistent": 0.0,
+        "recipient_consistent": 0.018,
+        "donor_full_consistent": 0.0,
+        "seen_a": [
+         1,
+         2,
+         3
+        ],
+        "seen_b": [
+         1,
+         2,
+         3,
+         4
+        ],
+        "n": 1000
+       },
+       "pos12": {
+        "operands_consistent": 0.0,
+        "recipient_consistent": 0.011,
+        "donor_full_consistent": 0.0,
+        "seen_a": [
+         1,
+         2,
+         3,
+         4
+        ],
+        "seen_b": [
+         1,
+         2,
+         3,
+         4
+        ],
+        "n": 1000
+       }
+      },
+      "operand_probe": {
+       "after_pair4": {
+        "a": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "2": {
+          "acc": 1.0,
+          "lambda": 1e-07
+         }
+        },
+        "b": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-07
+         },
+         "2": {
+          "acc": 1.0,
+          "lambda": 1e-07
+         },
+         "3": {
+          "acc": 1.0,
+          "lambda": 1e-07
+         }
+        },
+        "colsum": {
+         "1": {
+          "exact": 0.965,
+          "lambda": 1e-07
+         },
+         "2": {
+          "exact": 0.868,
+          "lambda": 1e-06
+         },
+         "3": {
+          "exact": 1.0,
+          "lambda": 1e-06
+         }
+        },
+        "colsum_cls": {
+         "1": {
+          "units": {
+           "acc": 1.0,
+           "lambda": 1e-07,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 1.0,
+           "lambda": 1e-07,
+           "classes": 9
+          }
+         },
+         "2": {
+          "units": {
+           "acc": 1.0,
+           "lambda": 1e-07,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.777,
+           "lambda": 1e-07,
+           "classes": 18
+          }
+         },
+         "3": {
+          "units": {
+           "acc": 0.462,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.953,
+           "lambda": 1e-06,
+           "classes": 10
+          }
+         }
+        },
+        "n_fit": 8000,
+        "n_score": 1000
+       },
+       "after_pair8": {
+        "a": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "2": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "3": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         }
+        },
+        "b": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "2": {
+          "acc": 1.0,
+          "lambda": 1e-07
+         },
+         "3": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "4": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         }
+        },
+        "colsum": {
+         "1": {
+          "exact": 0.332,
+          "lambda": 1e-07
+         },
+         "2": {
+          "exact": 0.297,
+          "lambda": 1e-07
+         },
+         "3": {
+          "exact": 0.444,
+          "lambda": 1e-06
+         },
+         "4": {
+          "exact": 0.865,
+          "lambda": 1e-06
+         }
+        },
+        "colsum_cls": {
+         "1": {
+          "units": {
+           "acc": 1.0,
+           "lambda": 1e-09,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 1.0,
+           "lambda": 1e-09,
+           "classes": 9
+          }
+         },
+         "2": {
+          "units": {
+           "acc": 0.999,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.563,
+           "lambda": 1e-06,
+           "classes": 18
+          }
+         },
+         "3": {
+          "units": {
+           "acc": 1.0,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.305,
+           "lambda": 9.999999999999999e-06,
+           "classes": 26
+          }
+         },
+         "4": {
+          "units": {
+           "acc": 0.291,
+           "lambda": 9.999999999999999e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.528,
+           "lambda": 1e-06,
+           "classes": 19
+          }
+         }
+        },
+        "n_fit": 8000,
+        "n_score": 1000
+       },
+       "after_pair12": {
+        "a": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "2": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "3": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "4": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         }
+        },
+        "b": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-06
+         },
+         "2": {
+          "acc": 1.0,
+          "lambda": 1e-08
+         },
+         "3": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "4": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         }
+        },
+        "colsum": {
+         "1": {
+          "exact": 0.218,
+          "lambda": 1e-07
+         },
+         "2": {
+          "exact": 0.128,
+          "lambda": 1e-07
+         },
+         "3": {
+          "exact": 0.165,
+          "lambda": 1e-06
+         },
+         "4": {
+          "exact": 0.342,
+          "lambda": 1e-06
+         },
+         "5": {
+          "exact": 0.834,
+          "lambda": 1e-06
+         }
+        },
+        "colsum_cls": {
+         "1": {
+          "units": {
+           "acc": 1.0,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.999,
+           "lambda": 1e-07,
+           "classes": 9
+          }
+         },
+         "2": {
+          "units": {
+           "acc": 0.969,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.455,
+           "lambda": 9.999999999999999e-06,
+           "classes": 18
+          }
+         },
+         "3": {
+          "units": {
+           "acc": 0.948,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.262,
+           "lambda": 9.999999999999999e-06,
+           "classes": 26
+          }
+         },
+         "4": {
+          "units": {
+           "acc": 0.997,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.287,
+           "lambda": 9.999999999999999e-05,
+           "classes": 30
+          }
+         },
+         "5": {
+          "units": {
+           "acc": 0.411,
+           "lambda": 9.999999999999999e-05,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.431,
+           "lambda": 9.999999999999999e-06,
+           "classes": 19
+          }
+         }
+        },
+        "n_fit": 8000,
+        "n_score": 1000
+       }
+      },
+      "n_fit_train": 8000,
+      "def": "note 155-4 (descriptive; Audit pre-registered): what the memory state holds.\n    (1) pass_skip: pair #t's pass not run (the memory passes through unchanged; later passes keep their inputs and flags; under --add_reset the\n        column-boundary reset STILL applies - Theory: a harness operation, not the pair's computation), t = 4 / 7 (columns 3 / 4's first pairs); rows with a_i b_j != 0; row level:\n        row_skip_consistent = (answer == product - a_i b_j 10^(i+j)), full_product = (answer == product).\n    (2) donor operands_consistent: the donor's whole state swapped in after pair P (P = 4 / 8 / 12; donor_delta's sampling); hybrid operands = the\n        donor's digit at each a_i / b_j position appearing in pairs 1..P, else the recipient's; row-level share answer == hybrid product.\n    (3) operand_probe: from the flattened S after pairs 4 / 8 / 12, near-OLS (dual, lambda by 3-fold CV over 1e-9..1e-6, standardised) one-hot regressions -> argmax of each seen a_i / b_j\n        digit and rounded-exact regressions of each partial column sum (products in pairs 1..P only); fit on n_fit train items, scored on the test items."
+     },
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "driver": "595.71.05",
+     "exact": true,
+     "pass": false,
+     "length_general": false,
+     "recurrent_use_registered": false,
+     "recurrent_use": false
+    }
    },
    "4": {
-    "attempts": [],
-    "status": "open",
-    "accepted": null
+    "attempts": [
+     {
+      "seed": 4,
+      "plateau": false
+     }
+    ],
+    "status": "accepted",
+    "accepted": {
+     "seed": 4,
+     "test_acc": 1.0,
+     "serial": false,
+     "per_column": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ],
+     "ext_4x8": 0.0,
+     "ext_4x16": 0.0,
+     "propagation_share": 0.0,
+     "random_edit_share": 0.0,
+     "null_value": 0.0,
+     "coupling_share": 0.0,
+     "recurrence": [
+      {
+       "step": 1000,
+       "gamma": 0.0,
+       "write_var_from_read_r2": 0.8668693592246474,
+       "write_var_from_input_r2": 0.9991245474652152,
+       "write_var_from_input_read_r2": 0.9991525248367477,
+       "write_var_incremental_read_r2": 2.7977371532483808e-05,
+       "rho_jvp": 0.9673864841461182,
+       "rho_loop": 0.0,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.1854663215850487
+      },
+      {
+       "step": 2000,
+       "gamma": 0.0,
+       "write_var_from_read_r2": 0.8652145468086891,
+       "write_var_from_input_r2": 0.9991114343490424,
+       "write_var_from_input_read_r2": 0.9991395063237027,
+       "write_var_incremental_read_r2": 2.8071974660370813e-05,
+       "rho_jvp": 0.9674105644226074,
+       "rho_loop": 0.0,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.1701713210702895
+      },
+      {
+       "step": 3000,
+       "gamma": 0.25,
+       "write_var_from_read_r2": 0.42734715198699136,
+       "write_var_from_input_r2": 0.9658246403260317,
+       "write_var_from_input_read_r2": 0.9806446858939176,
+       "write_var_incremental_read_r2": 0.014820045567885964,
+       "rho_jvp": 0.9779934883117676,
+       "rho_loop": 0.07177304476499557,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.3543905113475203
+      },
+      {
+       "step": 4000,
+       "gamma": 0.5,
+       "write_var_from_read_r2": 0.36459851288033873,
+       "write_var_from_input_r2": 0.896005902934825,
+       "write_var_from_input_read_r2": 0.9329822731651681,
+       "write_var_incremental_read_r2": 0.03697637023034317,
+       "rho_jvp": 0.9824732542037964,
+       "rho_loop": 0.11934123188257217,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2204848928253709
+      },
+      {
+       "step": 5000,
+       "gamma": 0.75,
+       "write_var_from_read_r2": 0.32795922485954265,
+       "write_var_from_input_r2": 0.7975953159205305,
+       "write_var_from_input_read_r2": 0.8688722657412764,
+       "write_var_incremental_read_r2": 0.07127694982074595,
+       "rho_jvp": 0.9866299629211426,
+       "rho_loop": 0.15359878540039062,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2105697372614226
+      },
+      {
+       "step": 6000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.3846094790652961,
+       "write_var_from_input_r2": 0.7280456881295503,
+       "write_var_from_input_read_r2": 0.800943406347206,
+       "write_var_incremental_read_r2": 0.07289771821765567,
+       "rho_jvp": 0.9902457594871521,
+       "rho_loop": 0.20851637423038483,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.1148838802573697
+      },
+      {
+       "step": 7000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.36973881650239726,
+       "write_var_from_input_r2": 0.7116250355256197,
+       "write_var_from_input_read_r2": 0.7783808205687233,
+       "write_var_incremental_read_r2": 0.06675578504310353,
+       "rho_jvp": 0.9832006692886353,
+       "rho_loop": 0.2282751500606537,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.1513818134109133
+      },
+      {
+       "step": 8000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.3594366108492747,
+       "write_var_from_input_r2": 0.711343913585468,
+       "write_var_from_input_read_r2": 0.7758968232113795,
+       "write_var_incremental_read_r2": 0.06455290962591154,
+       "rho_jvp": 0.9779704213142395,
+       "rho_loop": 0.22613747417926788,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.1858902466338586
+      },
+      {
+       "step": 9000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.35704338067049934,
+       "write_var_from_input_r2": 0.7113246789389829,
+       "write_var_from_input_read_r2": 0.775318153061586,
+       "write_var_incremental_read_r2": 0.06399347412260314,
+       "rho_jvp": 0.9695577621459961,
+       "rho_loop": 0.22564968466758728,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.193921034643009
+      },
+      {
+       "step": 10000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.43503672549015904,
+       "write_var_from_input_r2": 0.6313317943701477,
+       "write_var_from_input_read_r2": 0.7488808675101747,
+       "write_var_incremental_read_r2": 0.11754907314002694,
+       "rho_jvp": 0.9877703189849854,
+       "rho_loop": 0.30499812960624695,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2221846806942813
+      },
+      {
+       "step": 11000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.41092816358003514,
+       "write_var_from_input_r2": 0.5894650183356811,
+       "write_var_from_input_read_r2": 0.6987502477649835,
+       "write_var_incremental_read_r2": 0.10928522942930241,
+       "rho_jvp": 0.9923112392425537,
+       "rho_loop": 0.34633445739746094,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2710052081902852
+      },
+      {
+       "step": 12000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.4131316181309064,
+       "write_var_from_input_r2": 0.5902797760022903,
+       "write_var_from_input_read_r2": 0.6905275250709431,
+       "write_var_incremental_read_r2": 0.10024774906865275,
+       "rho_jvp": 0.9819252490997314,
+       "rho_loop": 0.3339592218399048,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2961819818672684
+      },
+      {
+       "step": 13000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.40752134413672514,
+       "write_var_from_input_r2": 0.5834429667596459,
+       "write_var_from_input_read_r2": 0.6783063904968989,
+       "write_var_incremental_read_r2": 0.09486342373725298,
+       "rho_jvp": 0.981182336807251,
+       "rho_loop": 0.3443998098373413,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2814986462115285
+      },
+      {
+       "step": 14000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.4119378477019665,
+       "write_var_from_input_r2": 0.5767357797458199,
+       "write_var_from_input_read_r2": 0.6718384311750227,
+       "write_var_incremental_read_r2": 0.09510265142920282,
+       "rho_jvp": 0.9765638709068298,
+       "rho_loop": 0.3290332853794098,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2907119932769828
+      },
+      {
+       "step": 15000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.41450578838415075,
+       "write_var_from_input_r2": 0.5746628121245065,
+       "write_var_from_input_read_r2": 0.6683950918777442,
+       "write_var_incremental_read_r2": 0.09373227975323761,
+       "rho_jvp": 0.9826822280883789,
+       "rho_loop": 0.36094042658805847,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.3025177893920463
+      },
+      {
+       "step": 16000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.4155054068747782,
+       "write_var_from_input_r2": 0.5792055683041104,
+       "write_var_from_input_read_r2": 0.667821004198599,
+       "write_var_incremental_read_r2": 0.08861543589448861,
+       "rho_jvp": 0.97849041223526,
+       "rho_loop": 0.34086447954177856,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.3304948171394413
+      },
+      {
+       "step": 17000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.41700547612662364,
+       "write_var_from_input_r2": 0.5798579351271156,
+       "write_var_from_input_read_r2": 0.6667769239899974,
+       "write_var_incremental_read_r2": 0.08691898886288185,
+       "rho_jvp": 0.9750615358352661,
+       "rho_loop": 0.3475378751754761,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.348510511608762
+      },
+      {
+       "step": 18000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.41380991409359213,
+       "write_var_from_input_r2": 0.5766432498748431,
+       "write_var_from_input_read_r2": 0.6603472122722214,
+       "write_var_incremental_read_r2": 0.08370396239737832,
+       "rho_jvp": 0.9730821847915649,
+       "rho_loop": 0.327021062374115,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.342460486848208
+      },
+      {
+       "step": 19000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.41410058446365405,
+       "write_var_from_input_r2": 0.5741749277020334,
+       "write_var_from_input_read_r2": 0.6585562424806259,
+       "write_var_incremental_read_r2": 0.08438131477859256,
+       "rho_jvp": 0.9776079654693604,
+       "rho_loop": 0.34286046028137207,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.344553242592963
+      },
+      {
+       "step": 20000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.41441310135143605,
+       "write_var_from_input_r2": 0.5755974172120089,
+       "write_var_from_input_read_r2": 0.6570355275948283,
+       "write_var_incremental_read_r2": 0.08143811038281945,
+       "rho_jvp": 0.9777975678443909,
+       "rho_loop": 0.33900243043899536,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.3529121727583275
+      },
+      {
+       "step": 21000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.4128914438191379,
+       "write_var_from_input_r2": 0.5736359659750287,
+       "write_var_from_input_read_r2": 0.6550598352433088,
+       "write_var_incremental_read_r2": 0.08142386926828005,
+       "rho_jvp": 0.9771559238433838,
+       "rho_loop": 0.35093188285827637,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.3518488533706572
+      },
+      {
+       "step": 22000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.41197245683441297,
+       "write_var_from_input_r2": 0.57214920791237,
+       "write_var_from_input_read_r2": 0.6534248301560776,
+       "write_var_incremental_read_r2": 0.08127562224370755,
+       "rho_jvp": 0.970909595489502,
+       "rho_loop": 0.3376716077327728,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.3519233752590722
+      },
+      {
+       "step": 23000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.41131916922043665,
+       "write_var_from_input_r2": 0.5718547392779064,
+       "write_var_from_input_read_r2": 0.6528480380337803,
+       "write_var_incremental_read_r2": 0.08099329875587391,
+       "rho_jvp": 0.9767352342605591,
+       "rho_loop": 0.3509741425514221,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.3512686028407657
+      },
+      {
+       "step": 24000,
+       "gamma": 1.0,
+       "write_var_from_read_r2": 0.4113228431478505,
+       "write_var_from_input_r2": 0.5719231278089469,
+       "write_var_from_input_read_r2": 0.6527740343941124,
+       "write_var_incremental_read_r2": 0.08085090658516547,
+       "rho_jvp": 0.9719228744506836,
+       "rho_loop": 0.3331244885921478,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.3513733583030287
+      },
+      {
+       "step": "end",
+       "write_var_from_read_r2": 0.4113228431478505,
+       "write_var_from_input_r2": 0.5719231278089469,
+       "write_var_from_input_read_r2": 0.6527740343941124,
+       "write_var_incremental_read_r2": 0.08085090658516547,
+       "rho_jvp": 0.9695669412612915,
+       "rho_loop": 0.33769381046295166,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32"
+      }
+     ],
+     "mem_norm_by_pass": {
+      "additive": [
+       1236.8809814453125,
+       1285.5205078125,
+       1955.6314697265625,
+       1266.2054443359375,
+       1921.2784423828125,
+       2619.560302734375,
+       1248.097900390625,
+       1886.81787109375,
+       2595.022705078125,
+       3333.77587890625,
+       1381.8226318359375,
+       2225.799072265625,
+       3072.56591796875,
+       1427.3060302734375,
+       2253.1376953125,
+       1419.7467041015625,
+       936.0496826171875
+      ],
+      "delta": [
+       46.64300537109375,
+       55.29488754272461,
+       66.53489685058594,
+       67.98322296142578,
+       75.52864074707031,
+       80.18035125732422,
+       80.29251098632812,
+       86.17835998535156,
+       89.16339111328125,
+       92.04562377929688,
+       93.87531280517578,
+       94.39344024658203,
+       96.69696807861328,
+       96.82442474365234,
+       97.36644744873047,
+       97.08009338378906,
+       97.15747833251953
+      ]
+     },
+     "write_norm_ratio": [
+      {
+       "step": 1000,
+       "gamma": 0.0,
+       "write_var_from_read_r2": 0.8668693592246474,
+       "write_var_from_input_r2": 0.9991245474652152,
+       "write_var_from_input_read_r2": 0.9991525248367477,
+       "write_var_incremental_read_r2": 2.7977371532483808e-05,
+       "rho_jvp": 0.9673864841461182,
+       "rho_loop": 0.0,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.1854663215850487
+      },
+      {
+       "step": 2000,
+       "gamma": 0.0,
+       "write_var_from_read_r2": 0.8652145468086891,
+       "write_var_from_input_r2": 0.9991114343490424,
+       "write_var_from_input_read_r2": 0.9991395063237027,
+       "write_var_incremental_read_r2": 2.8071974660370813e-05,
+       "rho_jvp": 0.9674105644226074,
+       "rho_loop": 0.0,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.1701713210702895
+      },
+      {
+       "step": 3000,
+       "gamma": 0.25,
+       "write_var_from_read_r2": 0.42734715198699136,
+       "write_var_from_input_r2": 0.9658246403260317,
+       "write_var_from_input_read_r2": 0.9806446858939176,
+       "write_var_incremental_read_r2": 0.014820045567885964,
+       "rho_jvp": 0.9779934883117676,
+       "rho_loop": 0.07177304476499557,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.3543905113475203
+      },
+      {
+       "step": 4000,
+       "gamma": 0.5,
+       "write_var_from_read_r2": 0.36459851288033873,
+       "write_var_from_input_r2": 0.896005902934825,
+       "write_var_from_input_read_r2": 0.9329822731651681,
+       "write_var_incremental_read_r2": 0.03697637023034317,
+       "rho_jvp": 0.9824732542037964,
+       "rho_loop": 0.11934123188257217,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2204848928253709
+      },
+      {
+       "step": 5000,
+       "gamma": 0.75,
+       "write_var_from_read_r2": 0.32795922485954265,
+       "write_var_from_input_r2": 0.7975953159205305,
+       "write_var_from_input_read_r2": 0.8688722657412764,
+       "write_var_incremental_read_r2": 0.07127694982074595,
+       "rho_jvp": 0.9866299629211426,
+       "rho_loop": 0.15359878540039062,
+       "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+       "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+       "write_norm_ratio": 1.2105697372614226
+      }
+     ],
+     "n_nonfinite": 0,
+     "c7_state_edit": {
+      "additive": {
+       "-2": {
+        "shifted_share": 0.0,
+        "unedited_share": 1.0,
+        "carry_follow_share": 0.8066666666666666,
+        "n": 3000,
+        "by_column": {
+         "2": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.808,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "3": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.814,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "4": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.808,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "5": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.804,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "6": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.79,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "7": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.816,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         }
+        }
+       },
+       "-1": {
+        "shifted_share": 0.0,
+        "unedited_share": 1.0,
+        "carry_follow_share": 0.899,
+        "n": 3000,
+        "by_column": {
+         "2": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.894,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "3": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.904,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "4": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.894,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "5": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.888,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "6": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.9,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "7": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.914,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         }
+        }
+       },
+       "+1": {
+        "shifted_share": 0.0,
+        "unedited_share": 1.0,
+        "carry_follow_share": 0.9066666666666666,
+        "n": 3000,
+        "by_column": {
+         "2": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.922,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "3": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.908,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "4": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.896,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "5": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.906,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "6": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.91,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "7": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.898,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         }
+        }
+       },
+       "+2": {
+        "shifted_share": 0.0,
+        "unedited_share": 1.0,
+        "carry_follow_share": 0.8186666666666667,
+        "n": 3000,
+        "by_column": {
+         "2": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.824,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "3": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.81,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "4": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.832,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "5": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.81,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "6": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.822,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         },
+         "7": {
+          "shifted_share": 0.0,
+          "unedited_share": 1.0,
+          "carry_follow_share": 0.814,
+          "next_unchanged_share": 1.0,
+          "n": 500
+         }
+        }
+       }
+      },
+      "delta": {
+       "-2": {
+        "carry_shift_share": 0.0,
+        "by_next_column": {
+         "3": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "4": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "5": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "6": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "7": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "8": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         }
+        }
+       },
+       "-1": {
+        "carry_shift_share": 0.0,
+        "by_next_column": {
+         "3": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "4": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "5": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "6": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "7": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "8": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         }
+        }
+       },
+       "+1": {
+        "carry_shift_share": 0.0,
+        "by_next_column": {
+         "3": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "4": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "5": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "6": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "7": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "8": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         }
+        }
+       },
+       "+2": {
+        "carry_shift_share": 0.0,
+        "by_next_column": {
+         "3": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "4": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "5": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "6": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "7": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         },
+         "8": {
+          "carry_shift_share": 0.0,
+          "unedited_share": 1.0,
+          "prev_unchanged_share": 1.0,
+          "n": 500
+         }
+        }
+       }
+      },
+      "carry_probe_r2_score_half": {
+       "3": 0.9870664755002019,
+       "4": 0.9795889918837762,
+       "5": 0.9730526260910787,
+       "6": 0.9801370279238037,
+       "7": 0.9923049794135682,
+       "8": 0.9967958605051487
+      },
+      "descriptive": true,
+      "propagation": {
+       "by_k": {
+        "2": {
+         "-1": {
+          "propagation_share": 0.0,
+          "random_edit_share": 0.0,
+          "null_value": 0.0,
+          "n": 48,
+          "coupling_share": 0.0,
+          "random_coupling_share": 0.0
+         },
+         "+1": {
+          "propagation_share": 0.0,
+          "random_edit_share": 0.0,
+          "null_value": 0.0,
+          "n": 46,
+          "coupling_share": 0.0,
+          "random_coupling_share": 0.0
+         }
+        },
+        "3": {
+         "-1": {
+          "propagation_share": 0.0,
+          "random_edit_share": 0.0,
+          "null_value": 0.0,
+          "n": 53,
+          "coupling_share": 0.0,
+          "random_coupling_share": 0.0
+         },
+         "+1": {
+          "propagation_share": 0.0,
+          "random_edit_share": 0.0,
+          "null_value": 0.0,
+          "n": 52,
+          "coupling_share": 0.0,
+          "random_coupling_share": 0.0
+         }
+        },
+        "4": {
+         "-1": {
+          "propagation_share": 0.0,
+          "random_edit_share": 0.0,
+          "null_value": 0.0,
+          "n": 56,
+          "coupling_share": 0.0,
+          "random_coupling_share": 0.0
+         },
+         "+1": {
+          "propagation_share": 0.0,
+          "random_edit_share": 0.0,
+          "null_value": 0.0,
+          "n": 47,
+          "coupling_share": 0.0,
+          "random_coupling_share": 0.0
+         }
+        },
+        "5": {
+         "-1": {
+          "propagation_share": 0.0,
+          "random_edit_share": 0.0,
+          "null_value": 0.0,
+          "n": 50,
+          "coupling_share": 0.0,
+          "random_coupling_share": 0.0
+         },
+         "+1": {
+          "propagation_share": 0.0,
+          "random_edit_share": 0.0,
+          "null_value": 0.0,
+          "n": 45,
+          "coupling_share": 0.0,
+          "random_coupling_share": 0.0
+         }
+        }
+       },
+       "pooled": {
+        "propagation_share": 0.0,
+        "random_edit_share": 0.0,
+        "null_value": 0.0,
+        "n": 397,
+        "coupling_share": 0.0,
+        "random_coupling_share": 0.0
+       },
+       "def": "delta-head carry edit at column k+1's first pair (k = 2..5, delta +-1, minimum-norm rank 1 moving column k+1's carry-in probe by delta); column k+2's digit vs (c^_{k+2} - r_{k+1} + floor((c^_{k+1} + delta)/10)) mod 10 on rows where the edit changes r_{k+1}; random_edit: an equal-norm random rank-1 edit; null_value: the unedited digit already equals the edited-chain value"
+      },
+      "def": "\u00a7154 C7 STATE edits (descriptive; Audit / Theory). S is a function of the input tokens only (no read -> write path), so an edit reaches\n    later columns only through the perturbed state itself.\n    (a) additive: entering column k's emission step (after that step's SHIFT reset when it starts a column), Delta S_add per head h =\n        phi(q_T,h) (delta u_h / g_add)^T / ||phi(q_T,h)||^2 (minimum-norm rank 1), u = w_add / ||w_add||^2 for the raw ridge of the accumulator\n        c^_k on the additive read at emission steps: the read at the emission token moves by exactly delta u. Reports column k's\n        shifted_share / unedited_share and column k+1's digit (next_unchanged_share; under SHIFT the additive store is zeroed before k+1).\n    (b) delta: after column k's last pair, Delta S_del per head = (r_h / g_del) z_h^T / ||z_h||^2 with z = A_0 ... A_{T-1} q_d (the\n        segment's delta transforms A_t = alpha_t (I - beta_t k_t k_t^T) applied to the first-pair token's normalised q), r = delta w_c / ||w_c||^2\n        for the raw ridge of column k+1's carry-in on the delta read at its first pair: that read moves by exactly delta r. Reports column\n        k+1's carry_shift_share (digit == (c^_{k+1} + delta) mod 10), unedited_share and the probe's held-out R^2. k = 7: k+1 is the flush."
+     },
+     "carry_probe_by_column": {
+      "4x4": [
+       0.9993227314147286,
+       0.9853530434615934,
+       0.9780126456328035,
+       0.9738159476314406,
+       0.9817817424987978,
+       0.9934771553949278
+      ],
+      "4x8": [
+       0.9994385325112841,
+       0.9856179505360698,
+       0.9761455453080886,
+       0.972238082741043,
+       0.9656864470100578,
+       0.9740637046315975,
+       0.9703062104178226,
+       0.9688163976564189,
+       0.9809815066301673,
+       0.990621812187283
+      ],
+      "def": "held-out ridge R^2 of column k's carry-in floor(c_{k-1}/10) from the delta read (384-d) at column k's first pair, k = 1.."
+     },
+     "acc_by_column_carry": {
+      "1": {
+       "carry0": 1.0,
+       "carry_nonzero": null,
+       "n_carry0": 1000,
+       "n_carry_nonzero": 0
+      },
+      "2": {
+       "carry0": 1.0,
+       "carry_nonzero": 1.0,
+       "n_carry0": 441,
+       "n_carry_nonzero": 559
+      },
+      "3": {
+       "carry0": 1.0,
+       "carry_nonzero": 1.0,
+       "n_carry0": 123,
+       "n_carry_nonzero": 877
+      },
+      "4": {
+       "carry0": 1.0,
+       "carry_nonzero": 1.0,
+       "n_carry0": 26,
+       "n_carry_nonzero": 974
+      },
+      "5": {
+       "carry0": 1.0,
+       "carry_nonzero": 1.0,
+       "n_carry0": 1,
+       "n_carry_nonzero": 999
+      },
+      "6": {
+       "carry0": 1.0,
+       "carry_nonzero": 1.0,
+       "n_carry0": 12,
+       "n_carry_nonzero": 988
+      },
+      "7": {
+       "carry0": 1.0,
+       "carry_nonzero": 1.0,
+       "n_carry0": 47,
+       "n_carry_nonzero": 953
+      },
+      "8": {
+       "carry0": 1.0,
+       "carry_nonzero": 1.0,
+       "n_carry0": 164,
+       "n_carry_nonzero": 836
+      }
+     },
+     "alpha_by_head": {
+      "end": {
+       "mean_alpha": [
+        0.921993,
+        0.907612,
+        0.985412,
+        0.992143,
+        0.997356,
+        0.991384
+       ],
+       "sigmoid_bias": [
+        0.992933,
+        0.992889,
+        0.993082,
+        0.993247,
+        0.993333,
+        0.993137
+       ]
+      },
+      "checkpoints": [
+       {
+        "step": 2000,
+        "mean_alpha": [
+         0.993307,
+         0.993307,
+         0.993307,
+         0.993307,
+         0.993307,
+         0.993307
+        ],
+        "sigmoid_bias": [
+         0.993307,
+         0.993307,
+         0.993307,
+         0.993307,
+         0.993307,
+         0.993307
+        ]
+       },
+       {
+        "step": 4000,
+        "mean_alpha": [
+         0.995122,
+         0.995658,
+         0.995751,
+         0.996915,
+         0.996215,
+         0.995147
+        ],
+        "sigmoid_bias": [
+         0.993364,
+         0.993388,
+         0.9934,
+         0.993489,
+         0.993425,
+         0.993365
+        ]
+       },
+       {
+        "step": 6000,
+        "mean_alpha": [
+         0.992717,
+         0.990777,
+         0.99464,
+         0.997466,
+         0.996458,
+         0.993955
+        ],
+        "sigmoid_bias": [
+         0.993293,
+         0.993277,
+         0.993348,
+         0.993523,
+         0.993433,
+         0.993312
+        ]
+       },
+       {
+        "step": 8000,
+        "mean_alpha": [
+         0.969817,
+         0.964802,
+         0.991423,
+         0.997211,
+         0.995635,
+         0.993442
+        ],
+        "sigmoid_bias": [
+         0.993133,
+         0.993084,
+         0.993244,
+         0.993483,
+         0.993375,
+         0.99326
+        ]
+       },
+       {
+        "step": 10000,
+        "mean_alpha": [
+         0.952891,
+         0.949143,
+         0.992538,
+         0.997624,
+         0.997977,
+         0.995811
+        ],
+        "sigmoid_bias": [
+         0.993062,
+         0.993027,
+         0.993225,
+         0.993455,
+         0.99344,
+         0.993289
+        ]
+       },
+       {
+        "step": 12000,
+        "mean_alpha": [
+         0.937971,
+         0.924637,
+         0.989105,
+         0.995747,
+         0.997705,
+         0.994951
+        ],
+        "sigmoid_bias": [
+         0.99301,
+         0.992966,
+         0.993164,
+         0.99336,
+         0.993406,
+         0.993243
+        ]
+       },
+       {
+        "step": 14000,
+        "mean_alpha": [
+         0.929664,
+         0.917955,
+         0.987379,
+         0.994122,
+         0.997563,
+         0.993592
+        ],
+        "sigmoid_bias": [
+         0.992977,
+         0.992935,
+         0.993129,
+         0.993306,
+         0.993378,
+         0.993198
+        ]
+       },
+       {
+        "step": 16000,
+        "mean_alpha": [
+         0.927223,
+         0.914313,
+         0.986516,
+         0.993028,
+         0.997465,
+         0.992256
+        ],
+        "sigmoid_bias": [
+         0.992956,
+         0.992914,
+         0.993107,
+         0.993275,
+         0.993357,
+         0.993165
+        ]
+       },
+       {
+        "step": 18000,
+        "mean_alpha": [
+         0.923141,
+         0.908668,
+         0.985762,
+         0.992471,
+         0.997412,
+         0.99173
+        ],
+        "sigmoid_bias": [
+         0.992943,
+         0.992899,
+         0.993093,
+         0.993259,
+         0.993343,
+         0.993149
+        ]
+       },
+       {
+        "step": 20000,
+        "mean_alpha": [
+         0.92221,
+         0.908044,
+         0.985579,
+         0.992267,
+         0.997374,
+         0.991502
+        ],
+        "sigmoid_bias": [
+         0.992937,
+         0.992893,
+         0.993086,
+         0.993252,
+         0.993337,
+         0.993141
+        ]
+       },
+       {
+        "step": 22000,
+        "mean_alpha": [
+         0.921831,
+         0.907334,
+         0.985406,
+         0.992133,
+         0.997364,
+         0.991397
+        ],
+        "sigmoid_bias": [
+         0.992933,
+         0.992889,
+         0.993082,
+         0.993247,
+         0.993333,
+         0.993137
+        ]
+       }
+      ]
+     },
+     "what_state": {
+      "pass_skip": {
+       "pair4": {
+        "a_i": 1,
+        "b_j": 3,
+        "column": 3,
+        "row_skip_consistent": 0.047503045066991476,
+        "full_product": 0.05481120584652863,
+        "n": 821,
+        "n_excluded_zero_product": 179,
+        "skip_keeps_reset": true
+       },
+       "pair7": {
+        "a_i": 1,
+        "b_j": 4,
+        "column": 4,
+        "row_skip_consistent": 0.012087912087912088,
+        "full_product": 0.03626373626373627,
+        "n": 910,
+        "n_excluded_zero_product": 90,
+        "skip_keeps_reset": true
+       }
+      },
+      "donor_operands": {
+       "pos4": {
+        "operands_consistent": 0.0,
+        "recipient_consistent": 0.046,
+        "donor_full_consistent": 0.0,
+        "seen_a": [
+         1,
+         2
+        ],
+        "seen_b": [
+         1,
+         2,
+         3
+        ],
+        "n": 1000
+       },
+       "pos8": {
+        "operands_consistent": 0.0,
+        "recipient_consistent": 0.014,
+        "donor_full_consistent": 0.0,
+        "seen_a": [
+         1,
+         2,
+         3
+        ],
+        "seen_b": [
+         1,
+         2,
+         3,
+         4
+        ],
+        "n": 1000
+       },
+       "pos12": {
+        "operands_consistent": 0.0,
+        "recipient_consistent": 0.015,
+        "donor_full_consistent": 0.0,
+        "seen_a": [
+         1,
+         2,
+         3,
+         4
+        ],
+        "seen_b": [
+         1,
+         2,
+         3,
+         4
+        ],
+        "n": 1000
+       }
+      },
+      "operand_probe": {
+       "after_pair4": {
+        "a": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "2": {
+          "acc": 1.0,
+          "lambda": 1e-07
+         }
+        },
+        "b": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-07
+         },
+         "2": {
+          "acc": 1.0,
+          "lambda": 1e-07
+         },
+         "3": {
+          "acc": 1.0,
+          "lambda": 1e-07
+         }
+        },
+        "colsum": {
+         "1": {
+          "exact": 0.964,
+          "lambda": 1e-07
+         },
+         "2": {
+          "exact": 0.836,
+          "lambda": 1e-06
+         },
+         "3": {
+          "exact": 1.0,
+          "lambda": 1e-06
+         }
+        },
+        "colsum_cls": {
+         "1": {
+          "units": {
+           "acc": 1.0,
+           "lambda": 1e-07,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 1.0,
+           "lambda": 1e-07,
+           "classes": 9
+          }
+         },
+         "2": {
+          "units": {
+           "acc": 1.0,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.781,
+           "lambda": 1e-07,
+           "classes": 18
+          }
+         },
+         "3": {
+          "units": {
+           "acc": 0.428,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.952,
+           "lambda": 1e-07,
+           "classes": 10
+          }
+         }
+        },
+        "n_fit": 8000,
+        "n_score": 1000
+       },
+       "after_pair8": {
+        "a": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "2": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "3": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         }
+        },
+        "b": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "2": {
+          "acc": 0.998,
+          "lambda": 1e-09
+         },
+         "3": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "4": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         }
+        },
+        "colsum": {
+         "1": {
+          "exact": 0.28,
+          "lambda": 1e-07
+         },
+         "2": {
+          "exact": 0.243,
+          "lambda": 1e-07
+         },
+         "3": {
+          "exact": 0.401,
+          "lambda": 1e-06
+         },
+         "4": {
+          "exact": 0.841,
+          "lambda": 1e-06
+         }
+        },
+        "colsum_cls": {
+         "1": {
+          "units": {
+           "acc": 1.0,
+           "lambda": 1e-09,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.999,
+           "lambda": 1e-09,
+           "classes": 9
+          }
+         },
+         "2": {
+          "units": {
+           "acc": 1.0,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.562,
+           "lambda": 1e-06,
+           "classes": 18
+          }
+         },
+         "3": {
+          "units": {
+           "acc": 0.998,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.324,
+           "lambda": 9.999999999999999e-06,
+           "classes": 26
+          }
+         },
+         "4": {
+          "units": {
+           "acc": 0.267,
+           "lambda": 9.999999999999999e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.474,
+           "lambda": 9.999999999999999e-06,
+           "classes": 19
+          }
+         }
+        },
+        "n_fit": 8000,
+        "n_score": 1000
+       },
+       "after_pair12": {
+        "a": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "2": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "3": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "4": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         }
+        },
+        "b": {
+         "1": {
+          "acc": 1.0,
+          "lambda": 1e-06
+         },
+         "2": {
+          "acc": 0.999,
+          "lambda": 1e-07
+         },
+         "3": {
+          "acc": 1.0,
+          "lambda": 1e-09
+         },
+         "4": {
+          "acc": 1.0,
+          "lambda": 1e-07
+         }
+        },
+        "colsum": {
+         "1": {
+          "exact": 0.155,
+          "lambda": 1e-07
+         },
+         "2": {
+          "exact": 0.089,
+          "lambda": 1e-07
+         },
+         "3": {
+          "exact": 0.141,
+          "lambda": 1e-06
+         },
+         "4": {
+          "exact": 0.302,
+          "lambda": 1e-06
+         },
+         "5": {
+          "exact": 0.815,
+          "lambda": 1e-06
+         }
+        },
+        "colsum_cls": {
+         "1": {
+          "units": {
+           "acc": 1.0,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.997,
+           "lambda": 1e-07,
+           "classes": 9
+          }
+         },
+         "2": {
+          "units": {
+           "acc": 0.943,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.453,
+           "lambda": 9.999999999999999e-06,
+           "classes": 18
+          }
+         },
+         "3": {
+          "units": {
+           "acc": 0.955,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.245,
+           "lambda": 9.999999999999999e-05,
+           "classes": 26
+          }
+         },
+         "4": {
+          "units": {
+           "acc": 0.992,
+           "lambda": 1e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.254,
+           "lambda": 9.999999999999999e-05,
+           "classes": 30
+          }
+         },
+         "5": {
+          "units": {
+           "acc": 0.387,
+           "lambda": 9.999999999999999e-06,
+           "classes": 10
+          },
+          "carry": {
+           "acc": 0.426,
+           "lambda": 9.999999999999999e-06,
+           "classes": 19
+          }
+         }
+        },
+        "n_fit": 8000,
+        "n_score": 1000
+       }
+      },
+      "n_fit_train": 8000,
+      "def": "note 155-4 (descriptive; Audit pre-registered): what the memory state holds.\n    (1) pass_skip: pair #t's pass not run (the memory passes through unchanged; later passes keep their inputs and flags; under --add_reset the\n        column-boundary reset STILL applies - Theory: a harness operation, not the pair's computation), t = 4 / 7 (columns 3 / 4's first pairs); rows with a_i b_j != 0; row level:\n        row_skip_consistent = (answer == product - a_i b_j 10^(i+j)), full_product = (answer == product).\n    (2) donor operands_consistent: the donor's whole state swapped in after pair P (P = 4 / 8 / 12; donor_delta's sampling); hybrid operands = the\n        donor's digit at each a_i / b_j position appearing in pairs 1..P, else the recipient's; row-level share answer == hybrid product.\n    (3) operand_probe: from the flattened S after pairs 4 / 8 / 12, near-OLS (dual, lambda by 3-fold CV over 1e-9..1e-6, standardised) one-hot regressions -> argmax of each seen a_i / b_j\n        digit and rounded-exact regressions of each partial column sum (products in pairs 1..P only); fit on n_fit train items, scored on the test items."
+     },
+     "gpu": "NVIDIA GeForce RTX 3090",
+     "driver": "595.71.05",
+     "exact": true,
+     "pass": false,
+     "length_general": false,
+     "recurrent_use_registered": false,
+     "recurrent_use": false
+    }
    }
   },
   "verdicts": {
@@ -13320,5 +16564,5 @@
    0.3123425692695214
   ]
  ],
- "reading": "SHIFT-R: no propagation (a failed linear edit reads 'not linearly editable', not 'not carried'; Literature (c)); R 1.0 vs R-gamma0 0.587: the write source helps; R-gamma0 0.587 vs \u00a7147 0.743: the read lag costs; r s1 state: swap / skip uninformative here (155-4 correction: re-presented operands, the count schedule); read the like-for-like probe (colsum_cls) for the state's content; r s2 state: swap / skip uninformative here (155-4 correction: re-presented operands, the count schedule); read the like-for-like probe (colsum_cls) for the state's content; r s3 state: swap / skip uninformative here (155-4 correction: re-presented operands, the count schedule); read the like-for-like probe (colsum_cls) for the state's content; r s4 state: swap / skip uninformative here (155-4 correction: re-presented operands, the count schedule); read the like-for-like probe (colsum_cls) for the state's content; shiftr s1 state: swap / skip uninformative here (155-4 correction: re-presented operands, the count schedule); read the like-for-like probe (colsum_cls) for the state's content; shiftr s2 state: swap / skip uninformative here (155-4 correction: re-presented operands, the count schedule); read the like-for-like probe (colsum_cls) for the state's content; rg0 s1 state: swap / skip uninformative here (155-4 correction: re-presented operands, the count schedule); read the like-for-like probe (colsum_cls) for the state's content"
+ "reading": "SHIFT-R: no propagation (a failed linear edit reads 'not linearly editable', not 'not carried'; Literature (c)); R 1.0 vs R-gamma0 0.587: the write source helps; R-gamma0 0.587 vs \u00a7147 0.743: the read lag costs; r s1 state: swap / skip uninformative here (155-4 correction: re-presented operands, the count schedule); read the like-for-like probe (colsum_cls) for the state's content; r s2 state: swap / skip uninformative here (155-4 correction: re-presented operands, the count schedule); read the like-for-like probe (colsum_cls) for the state's content; r s3 state: swap / skip uninformative here (155-4 correction: re-presented operands, the count schedule); read the like-for-like probe (colsum_cls) for the state's content; r s4 state: swap / skip uninformative here (155-4 correction: re-presented operands, the count schedule); read the like-for-like probe (colsum_cls) for the state's content; shiftr s1 state: swap / skip uninformative here (155-4 correction: re-presented operands, the count schedule); read the like-for-like probe (colsum_cls) for the state's content; shiftr s2 state: swap / skip uninformative here (155-4 correction: re-presented operands, the count schedule); read the like-for-like probe (colsum_cls) for the state's content; shiftr s3 state: swap / skip uninformative here (155-4 correction: re-presented operands, the count schedule); read the like-for-like probe (colsum_cls) for the state's content; shiftr s4 state: swap / skip uninformative here (155-4 correction: re-presented operands, the count schedule); read the like-for-like probe (colsum_cls) for the state's content; rg0 s1 state: swap / skip uninformative here (155-4 correction: re-presented operands, the count schedule); read the like-for-like probe (colsum_cls) for the state's content"
 }
