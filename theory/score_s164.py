@@ -5,6 +5,8 @@ answer, mult98 --arm nc).
 LATENT BEYOND TEXT ON LENGTH = §161 MIX LENGTH-GENERAL (score_s161) AND TC-MIX's mean ext_4x8 (s1, s2) < 0.90. TC-MIX mean ext_4x8 >= 0.90 -> "the shape
 mix, not latency, gives length; the latent claim is limited to C3". DIRECT-MIX (descriptive): the measured single-pass baseline on the same data.
 C3 at 4x8: each arm's FLOPs / passes at 4x8 beside MIX's (compute_pair at 4x8).
+Note 164-1 (Audit, before any §164 scoring): the ANCHORED read governs - eval_s164_anchor.json (decode budget = schedule length + 50, the answer read from
+the model's own first "####"); a cell without it is "awaiting anchored re-eval"; the position-locked eval.json values are descriptive only.
 Dirs boxes/runs_fsq/s164_{tcmix,directmix}_4x4_s{1,2}.
     python theory/score_s164.py
 """
@@ -38,8 +40,12 @@ def run(arm, s):
     if bad:
         ERRORS.append((d, bad)); return {"status": "error", "error": bad}
     c4, c8 = r.get("compute") or {}, r.get("compute_4x8") or {}
-    return {"status": "done", "test_4x4": r.get("acc_test", r.get("test_acc")), "ext": {k: (r.get(k) or {}).get("test_acc") for k in EXT},
-            "ext_4x8_per_column": ((r.get("ext_4x8") or {}).get("acc_by_column") or {}).get("per_column"),
+    an = load(d, "eval_s164_anchor.json")                                      # note 164-1: the anchored read governs
+    if an is None:
+        return {"status": "awaiting anchored re-eval", "position_locked": {"test_4x4": r.get("acc_test"), "ext": {k: (r.get(k) or {}).get("test_acc") for k in EXT}}}
+    return {"status": "done", "test_4x4": an.get("acc_test"), "ext": {k: (an.get(k) or {}).get("test_acc") for k in EXT},
+            "ext_4x8_per_column": ((an.get("ext_4x8") or {}).get("acc_by_column") or {}).get("per_column"), "cot_len_mismatch_share": an.get("cot_len_mismatch_share"),
+            "position_locked": {"test_4x4": r.get("acc_test"), "ext": {k: (r.get(k) or {}).get("test_acc") for k in EXT}},
             "compute_4x4": {"flops": c4.get("flops"), "passes": c4.get("sequential_passes")}, "compute_4x8": {"flops": c8.get("flops"), "passes": c8.get("sequential_passes")},
             "gpu": r.get("train_gpu", r.get("gpu"))}
 
