@@ -43,34 +43,25 @@ restart160 ship multpair). One fill_generic at a time.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (10:50):**
-  - **§161 MIX is 3 / 3** (4f774362): exact (0.996 / 0.997 / 0.996), length-general (ext_4x8 0.964 / 0.917 / 0.912 from n ≤ 5), and SERIAL with a state-carried
-    running sum in every seed; not linearly editable. MIX+IDX and MIX9 are pending.
-    - **§164 MIX-BASELINES** (bbd53874): TC-MIX / DIRECT-MIX on the same mix, needed before any "beyond text" claim.
-    - **§163 SHAPE-MIX-2D** (0045d6a1): its condition is met; slot 1 is launching.
-    - **§165 FIXED-CHUNK** (60e55135; the user's "is it task-agnostic?"): the same memory on fixed text chunks plus think passes. It runs after MIX s2 and §164.
-  - **Waiting on the user (via Audit):** `docs/THEORY_C1_FORCING_2026-10-08.md` (42de5d5f + addendum 8500894d; note 158-2, Literature 6b771087 / fd630b87).
-    - The finding: C1 is forced only by depth beyond one pass, or by input beyond the buffer's capacity.
-    - The proposals: multiplication becomes the C3 / C6 / C2 testbed; the C1 + C3 headline moves to a task that exceeds one pass.
-  - **§162 DELTA-S5 registered** (9f7d4793): DeltaMem-R on S5 against a measured single-pass boundary (DIRECT).
-    - **Blinding:** score DIRECT first, with boundary() only, and commit the boundary note **before** reading any `s162_long*` / `s162_short*` output. Do not run
-      score_s162.py in full before then.
-  - **§158 FREE-PAIRS slot 1** (46939c14): 0.982, SERIAL, no C1 credit, as 158-2 predicted. Slots 2–4 run by the rules.
-  - **Scored as they land:**
-    - §155 SHIFT-R s3 / s4 (b178 / b179; descriptive, since the arm is decided);
-    - §158 slots 2–4;
-    - §159 R-5×5;
-    - §160 block-9 fallbacks A-R9 / CTRL-R9 (b194 / b193; descriptive). §160 closed on A-R s1 0.056 (240f32fa);
-    - §161 SHAPE-MIX, 3 + 3 runs;
-    - §162 DIRECT, then LONG / SHORT.
-    - §163 SHAPE-MIX-2D (0045d6a1): both lengths mixed; runs only if §161 MIX s2 replicates.
-  - **Scorer audit (08:10–08:40):** read-path fixes in score_s158 / s157 before data (ad185b64, 16f0af42; note 157-3); a fallback-trigger readout in s159–s161 (df955868).
-  - **Where multiplication stands:**
-    - §155 R is exact on 4×4 in every seed (0.997–1.000), at 0.79× TC-M FLOPs.
-    - It is not SERIAL, not length-general and not linearly editable: an exact buffer (155-4).
-    - FREE-PAIRS makes it SERIAL, still without C1 credit.
-  - **Closed today:** §133 stage 1, §136–§138, §140–§146, §148–§152, §154–§157. §155 FAILs (both arms; 9b20e2d3). §157: no read change fixes the carry; read interference stays open (00e42f5d + correction).
-  - **Later:** the §133 stage-2 proofs (with cap4|fullgrow), §139 A' / B (descriptive), §134 MOD s2 / s3.
+* **Theory (16:53; session "claude-c6" after the 13:20 reboot; peers are addressed by name, "Audit" / "Experiments"):**
+  - **Headline (multiplication):**
+    - **§161 MIX:** exact on 4×4, length-general to 4×8 (0.91–0.96), and SERIAL with a state-carried running sum in 3 / 3 seeds.
+    - **§164:** text CoT on the same data reads 0.0 at 4×6+ (anchored read; its scratchpad stops short), and the single pass fails even at 4×4. So
+      **LATENT BEYOND TEXT ON LENGTH** (8c7e15f2).
+    - **§159 R-5×5 s1:** exact 1.000 at 5×5, 0.80× TC-M FLOPs (3.24× ICoT-SI); s2–s4 are running.
+  - **Open / scored as they land:**
+    - §162 DELTA-S5: boundary L* = 16 (note 162-3). LONG s1 is exact to 32 and MIXED (op history 0.149, so not a buffer); 0.0 at 512. LONG s2 and SHORT s1 / s2 are
+      pending.
+    - §163 SHAPE-MIX-2D s1 (b204);
+    - §165 FIXED-CHUNK slot 1 (b200–b203);
+    - §166 STATE-COVERAGE (732964ed; MULT now, S5 after LONG s2's model);
+    - §158 slots 2–4.
+  - **Closed today:** §133 stage 1, §136–§138, §140–§146, §148–§157, §160, §161, §164.
+  - **Waiting on the user (via Audit):** `docs/THEORY_C1_FORCING_2026-10-08.md` with addendum 2.
+  - **Theory's tools:**
+    - scratchpad `watch_land_v3.sh` (one-shot, patterns s15[5-9] / s16[0-9]);
+    - `s162_boundary_only.py`;
+    - commit with a pathspec (`git commit -- <paths>`), because the index is shared.
 
 ## Recently done (details in THEORY / PROTOCOL12 / git log)
 
