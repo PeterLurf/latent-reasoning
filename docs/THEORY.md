@@ -8749,6 +8749,22 @@ restated.**
   - Audit's diff review.
 * Dirs `s156_{sep,pause}_4x4_s{1,2}` and `s156_asep_4x4_s1` (plus `s156_plain_4x4_s1` only if the GPU class differs). Scorer: `theory/score_s156.py`, committed with this registration.
 
+**Note 155-1 (2026-10-08 02:04 EDT, before any §155 run; Audit's diff review e3fed0e6). Three clarifications of §155's rules.**
+* **(1) The fallback trigger, registered meaning.**
+  - "Write-gradient blow-up" = the gradient norm over the **write rows only** (LN_w, the k / v rows of the write projections, the gate) above 100× **its median over the
+    preceding 1k steps**.
+  - It is scored **only after write_mix_start (2k)**. Before then the W_o fade-in and γ's start move write gradients from about 0, which is not instability.
+  - Non-finite steps and slot exhaustion are unchanged.
+* **(2) Recurrence strength uses rho_loop.**
+  - ρ = ‖∂S_{t+1}/∂S_t‖ is about 1 by construction (the additive carry-through; α ≈ 0.993), so it cannot separate "formed" from "not formed".
+  - **rho_loop = ‖J v − J v|_{fade = 0}‖** on a fixed random direction v isolates the read → network → write path, and the registered reading uses it.
+  - **"Recurrence never formed"** = rho_loop ≈ 0 with write_var_from_read_r2 ≈ write_var_from_input_r2. ρ is reported beside it.
+* **(3) R against §147 changes two things:** the write source, and the read lag (R reads only the pass-start state; §147's read at token t sees that pass's earlier writes).
+  - **A descriptive arm R-γ0 is added:** γ held at 0, so writes come from block 6 as in §147 while reads use the pass-start state. About $0.8; dir `s155_rg0_4x4_s1`.
+  - **R > R-γ0:** the write source helps.
+  - **R-γ0 < §147:** the read lag costs.
+  - "R ≥ §147" is read only through that pair.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
