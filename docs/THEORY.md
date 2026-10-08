@@ -244,7 +244,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 154 | SHIFT-MEM (C2): a per-column reset (SHIFT) or relative keys (ROTARY) on DeltaMem | **stopped at proof** (SHIFT s1 0.653; ext_4x8 0.0; the 4×4 count schedule) | closed |
 | 155 | DELTA-R: a write-after-read DeltaMem (top writes); R / SHIFT-R, RECURRENT USE as C1 | **both arms FAIL** (exact in every seed, 0.997–1.000; never SERIAL; no recurrent use; ext ≤ 0.006; 0.79× TC-M FLOPs) | closed |
 | 156 | SEP-SLOT: per-digit separators, direct answer (a) and A-SEP (b) | **no effect** (0.002–0.004; A-SEP 0.060) | closed |
-| 157 | READ-PANEL: PERIODIC / MULTIREAD / CCQ reads on §152 A | **all three gates closed** (0.035 / 0.009 / 0.064): not the read; PERIODIC blocked by the blend (off-column 0.88) | closed |
+| 157 | READ-PANEL: PERIODIC / MULTIREAD / CCQ reads on §152 A | **all three gates closed** (0.035 / 0.009 / 0.064): no read change fixes the 4-row carry; PERIODIC blocked by the blend (off-column 0.88); read interference untested (CCQ never engaged) | closed |
 | 158 | FREE-PAIRS: hybrid pair sequences on R (data-level interchange) | slot 1 0.982, SERIAL, no C1 credit (158-2's prediction) | **open** |
 | 159 | R-5×5: R at 5×5 (the SOTA leg, C3) | registered | **open** |
 | 160 | R-ROWS: R on §152's rows, A-R / CTRL-R (C3) | registered | **open** |
@@ -9067,6 +9067,11 @@ The run is a post-hoc on every accepted §155 model (and §154 SHIFT / §151 for
   - Each fails at the carry-heavy middle: column 5 (columns 3–5 for MULTIREAD).
 * **Reading (registered): none reaches 0.95, so it is not the read. §155's recurrence is the remaining route.** R is exact on digit pairs (§155), and R on rows is §160.
 * §157 closes. The conditional MULTI-READ-COPY / PAUSE-R arms do not run.
+* **Correction (2026-10-08 09:36 EDT; Audit's reproduction 15b906b4): the registered reading overstates what the panel shows.**
+  - PERIODIC's own registered blend reading fired (0.88 ≥ 0.1), so its failure is attributed to read addressing / interference, not cleared of it.
+  - CCQ, the one anti-interference arm, never engaged (λ ≤ 0.003 on 10 of 12 heads), so interference was not really tested.
+  - **What §157 shows:** none of PERIODIC, MULTIREAD or CCQ fixes the 4-row carry. PERIODIC is blocked by the blend. **Read interference remains open.**
+  - Later notes must not cite §157 as excluding the read.
 
 **Note 157-3 (2026-10-08 08:20 EDT, before the 48k PERIODIC cell (b174) lands; Theory's scorer audit). How 157-2's PERIODIC blend reading is computed.**
 * multrow writes `s157.offcol_weight` as a per-column dict plus a `mean`. The scorer had compared the whole field with 0.1 as a number, so the reading could never fire.
