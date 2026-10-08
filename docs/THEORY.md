@@ -9153,6 +9153,24 @@ accumulator.**
   - So **R's memory stores computed results**: the digits it emitted, which input-only writes make structurally impossible (147-4).
   - Whether those stored results are used later is **not shown**. Later columns need the carries, and the carries are partial in every model (R 0.25–0.45 for columns 2–5).
 
+**Note 158-2 (2026-10-08 08:29 EDT, before b173's §158 slot 1 lands; Theory). A complexity prediction for §158, and what it implies for C1 on multiplication.**
+* **4×4 fits in one pass.**
+  - ICoT-SI's GPT-2 small reaches 1.00 at 4×4 and 0.99 at 9×9 with no CoT (2405.14838 Table 2, `docs/LIT_BENCH_VERIFY_2026-10-01.md`).
+  - Integer multiplication is in TC⁰ (iterated addition), the class that bounds log-precision transformers (2207.00729, verified).
+  - So a memory that can hold the inputs always admits a **non-serial solution: buffer the inputs and compute at read time.**
+  - R / R9 / SHIFT-R do this (155-4: operands exact, accumulator not held). The §158 8k preview also buffers raw digits: raw 0.88 against accumulator 0.12.
+* **FREE-PAIRS removes operand reuse, not the buffer.** 16 raw pairs fit, and Σ_t a^(t) b^(t) 10^(i+j−2) from them is the same one-pass computation.
+* **Prediction (fixed now):**
+  - An exact §158 slot gets **no C1 credit by 158-1 (b)**: its partial-sum decode does not dominate the raw digits.
+  - SERIAL may pass, since hybrids are in distribution (the IIT signature).
+  - A C1 credit would refute this note.
+* **Implication (to Audit, for the program; not a registration):**
+  - At a fixed size, no memory that holds the inputs forces serial use on multiplication.
+  - Serial use is forced where read-time recompute fails:
+    - **inherently serial tasks:** S5, where the carriers are SERIAL; graph search (the shortcut-free ProsQA);
+    - **lengths beyond training:** C2, §161.
+  - Multiplication stays the C3 / C6 / C2 testbed.
+
 ## 159. R-5×5: §155 R's write-after-read memory at 5×5, the SOTA leg (C3) (Audit 05:45; pre-registered 2026-10-08 05:43 EDT, before any implementation or run; runs only if §155 R s2 is exact)
 
 **Why.**
