@@ -131,7 +131,56 @@
   "l_max": 8,
   "runs": {
    "1": {
-    "status": "open"
+    "status": "done",
+    "exact": true,
+    "final_acc_by_length": {
+     "1": 1.0,
+     "2": 1.0,
+     "3": 1.0,
+     "4": 1.0,
+     "5": 1.0,
+     "6": 1.0,
+     "7": 1.0,
+     "8": 1.0
+    },
+    "long_acc_512": 0.0,
+    "acc_2048": 0.0,
+    "state_probe_p": 0.8515,
+    "op_probe_old_mean": 0.94925,
+    "probe_p": 4,
+    "probe_n": 2000,
+    "edit": {
+     "propagation_share": 0.0,
+     "random_edit_share": 0.0,
+     "null_value": 0.0,
+     "n": 850
+    },
+    "propagates": false,
+    "kind": "BUFFER-LIKE",
+    "serial_sanity": true,
+    "key_cos": [
+     0.55065,
+     0.43273,
+     0.50199,
+     0.49246,
+     0.51123,
+     0.47394,
+     0.22613,
+     0.51437,
+     0.46045,
+     0.36563,
+     0.37457,
+     0.54281
+    ],
+    "rho_loop": 0.05515424162149429,
+    "fallback_trigger": {
+     "loss_jumps": [],
+     "n_nonfinite": 0,
+     "fires": false,
+     "grad_floor_spikes_descriptive": 5,
+     "log_points": 240
+    },
+    "gpu": "NVIDIA GeForce RTX 3090"
    },
    "2": {
     "status": "done",
@@ -189,11 +238,19 @@
     "status": "open"
    }
   },
-  "kind": null,
-  "why": "pending (1 / 2 seeds)"
+  "kind": "BUFFER-LIKE",
+  "why": "s1 / s2 agree"
  },
  "reading": "pending (boundary uncertain: the lower L* is used)",
  "capacity": [
+  {
+   "run": "short_s1",
+   "kind": "BUFFER-LIKE",
+   "long_acc_512": 0.0,
+   "acc_2048": 0.0,
+   "cap_depth_512_as_predicted": true,
+   "cap_2048": "as predicted"
+  },
   {
    "run": "short_s2",
    "kind": "BUFFER-LIKE",
