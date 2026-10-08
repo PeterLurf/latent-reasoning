@@ -9412,6 +9412,22 @@ accumulator.**
 * **What changes:** "C1 cannot be forced on fixed-size multiplication" becomes "not with fixed-shape training". Varying the shape is a data-only lever that works on one seed so far.
 * **Claim wording until s2 / s3 replicate (Audit):** "SERIAL + state-carried sum; not linearly editable" (carry-edit propagation equals the null), as with fsq120's S5 carriers.
 
+**§161 SHAPE-MIX: the MIX arm is LENGTH-GENERAL (2026-10-08 11:22 EDT; 2 of 3 seeds, by the registered rule; scored by Theory with score_s161; 24k, RTX 3090).**
+* **MIX s3: 4×4 0.996.** ext_4x6 0.982, ext_4x7 0.952, ext_4x8 **0.912** (every column ≥ 0.963); ext_4x16 0.199.
+  - SERIAL: row donor 0.977 / 0.973 / 0.972, recipient at chance.
+  - In-progress column units 0.967 / 0.994 / 0.981.
+  - Propagation 0.0025, equal to the null. 2 floor spikes.
+* **With s1** (0.996; ext_4x8 0.964): both accepted seeds are exact and length-general on the multiplier.
+  - Both are SERIAL with out-of-distribution hybrids. Both carry the running column sum (in-progress units ≥ 0.967). Neither is linearly editable.
+  - **The registered reading applies: "MIX passes: varying shapes alone remove the count schedule."**
+  - s2 (§163's condition) and MIX+IDX are pending. The panel's full reading waits for MIX+IDX.
+* **Claim wording (Audit, note 158-3):** "exact, length-general to 4×8 from n ≤ 5, SERIAL with a state-carried running sum; not linearly editable". This holds on 2 seeds.
+  - 4×4 sits within 0.01 of TC-M (0.996 against 1.000) at 0.79× its FLOPs and 0.30× its passes.
+* **Caveat on comparing with text: the baselines are not like-for-like for C2.**
+  - TC-M and ICoT-SI were trained on 4×4 only. At 4×5 TC-M reads 0.003 and ICoT-SI 0.0, and both read 0.0 at 4×8 (`theory/results/ext_baselines_s152.json`).
+  - A shape-mixed text-CoT baseline and a shape-mixed direct-answer baseline (both trained on 4 × n, n 2..5, tested at 4×8) are needed before saying the latent
+    route extrapolates where text CoT does not.
+
 ## 162. DELTA-S5: the write-after-read memory on S5, against a measured single-pass boundary (note 158-2's TC⁰ / NC¹ contrast cell) (Audit 08:45; pre-registered 2026-10-08 09:01 EDT, after Literature's check 6b771087 (`docs/LIT_TC0_SERIAL_2026-10-08.md`: the contrast is unpublished) and Audit's draft review (two rounds), before any implementation or run)
 
 **Why.**
