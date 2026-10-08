@@ -41,3 +41,13 @@ data is the baseline. Then K′ = 0 / 1 far below K (C1's operational test) is m
 3. **Long multiplication by capacity** (4×n, n well beyond training): the C2 route, after §161 reads.
 
 **Theory's recommendation:** 1 + 2(a), with 3 riding on §161.
+
+## Addendum (2026-10-08 08:41 EDT): the cheapest direct test of the finding
+* **The missing cell** (Literature: no published contrast of TC⁰ against NC¹ tasks on one memory).
+  - Narrow carriers learn S5 serially (§133 / §134 / §143) and fail to learn multiplication (§137 / §140).
+  - DeltaMem-R learns 4×4 multiplication as a buffer (§155).
+  - **DeltaMem-R on S5** would complete the 2 × 2.
+* **Prediction:**
+  - state-like and SERIAL at lengths beyond both the buffer and one pass's depth;
+  - buffer-like (op history decodable, swap uninformative) at short lengths, where log-depth shortcuts exist (Liu 2210.10749).
+* **Placement:** an S5 adapter on multpair's DeltaMem (Experiments), short against long training lengths, about $2–3. It is independent of the choice under 2.
