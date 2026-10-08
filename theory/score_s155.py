@@ -106,7 +106,7 @@ def slot(arm, k):
                  "propagation_share": ps, "random_edit_share": rs, "null_value": nv, "coupling_share": coupling(s), "recurrence": s.get("recurrence"),
                  "mem_norm_by_pass": s.get("mem_norm_by_pass"), "write_norm_ratio": s.get("write_norm_ratio"), "n_nonfinite": r.get("n_nonfinite"),
                  "c7_state_edit": s4.get("c7_state_edit"), "carry_probe_by_column": s4.get("carry_probe_by_column"), "acc_by_column_carry": s4.get("acc_by_column_carry"),
-                 "alpha_by_head": s7.get("alpha_by_head"), "gpu": r.get("train_gpu", r.get("gpu")), "driver": r.get("train_driver")}
+                 "alpha_by_head": s7.get("alpha_by_head"), "what_state": s.get("what_state"), "gpu": r.get("train_gpu", r.get("gpu")), "driver": r.get("train_driver")}
             a["exact"] = (a["test_acc"] or 0) >= 0.99
             a["pass"] = bool(a["exact"] and a["serial"])
             a["length_general"] = (a["ext_4x8"] or 0) >= 0.9
@@ -163,6 +163,18 @@ def main():
         rd.append("R %s vs R-gamma0 %s: %s" % (r1["test_acc"], g1["test_acc"], "the write source helps" if (r1["test_acc"] or 0) > (g1["test_acc"] or 0) else
                                                 "no gain from the write source"))
         rd.append("R-gamma0 %s vs §147 0.743: %s" % (g1["test_acc"], "the read lag costs" if (g1["test_acc"] or 0) < 0.743 else "no read-lag cost"))
+    for arm in ("r", "shiftr", "rg0"):                                      # note 155-4 (descriptive): what an exact non-SERIAL state holds
+        for k, sl in res[arm]["slots"].items():
+            a = sl["accepted"]; ws = (a or {}).get("what_state")
+            if not ws:
+                continue
+            ps = ws.get("pass_skip") or {}; oc = ws.get("operands_consistent") or {}
+            rsc = [v.get("row_skip_consistent") for v in ps.values() if isinstance(v, dict) and v.get("row_skip_consistent") is not None]
+            ocs = [v for v in (oc.values() if isinstance(oc, dict) else []) if isinstance(v, (int, float))]
+            lab = ("recompute from stored operands (L1): exact as a buffer, not a computation; C1 not met" if ocs and min(ocs) >= 0.8 else
+                   "additive sums" if rsc and min(rsc) >= 0.8 else "a non-additive code (descriptive)" if (rsc or ocs) else "pending")
+            print("WHAT STATE (155-4)", arm, "s%d" % k, {"pass_skip": ps, "operands_consistent": oc}, "->", lab)
+            rd.append("%s s%d state: %s" % (arm, k, lab))
     res["reading"] = "; ".join(rd) if rd else "pending"; print("READING:", res["reading"])
     if MISFIRES:
         print("2k-flag misfires (not stops):", MISFIRES); res["misfires"] = MISFIRES
