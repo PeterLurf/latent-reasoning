@@ -66,6 +66,7 @@
      "def": "exact = round(pred) == c^_k (column sum + carry-in), near-OLS ridge (lambda <= 1e-8, standardised), fit 4000 train items, scored on the test items"
     },
     "write_round_err": null,
+    "read_round_err": null,
     "offcol_weight": null,
     "c7_scalar_edit": null,
     "compute": {
@@ -122,6 +123,7 @@
      "def": "exact = round(pred) == c^_k (column sum + carry-in), near-OLS ridge (lambda <= 1e-8, standardised), fit 4000 train items, scored on the test items"
     },
     "write_round_err": null,
+    "read_round_err": null,
     "offcol_weight": {
      "1": 0.8805885314941406,
      "2": 0.7986370921134949,
