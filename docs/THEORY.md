@@ -8977,6 +8977,53 @@ The run is a post-hoc on every accepted §155 model (and §154 SHIFT / §151 for
   - read_round_err and PERIODIC's offcol_weight are reported.
 * **MULTIREAD's queries are static learned parameters** (Perceiver-style latents), not input-dependent. A pass reads "static extra read bandwidth".
 
+## 158. FREE-PAIRS: train on hybrid pair sequences, so the memory has to accumulate (Audit's research pass 05:00; interchange training at the data level; pre-registered 2026-10-08 04:57 EDT, after Audit's draft review and before any implementation or run; Literature's precedent check is pending and will be recorded in a dated note)
+
+**Why.**
+* §155 R s1 is exact (1.000) but not SERIAL: after a swap the answer follows neither item.
+* For a memory that is the only cross-pass channel, a swap after pair t is **behaviourally identical to the hybrid input**: the donor's pairs 1..t, then the recipient's pairs
+  t + 1...
+* Every training chain is operand-consistent (a_i repeats across 4 pairs). That consistency is what an operand-store-and-recompute shortcut (L1) needs, and nothing in the data
+  penalises it.
+* **The change is to the data only.** Hybrid sequences become ordinary training inputs. The only solution correct on both halves accumulates column sums, which is the serial
+  computation SERIAL tests.
+* **C4-clean:** the label is the input's own final answer, with no intermediate states.
+* **Prior:** interchange intervention training (IIT, 2112.00826) trains on counterfactual inputs so that interventions behave. Here no swap operation or alignment is needed,
+  because the hybrid is just another input. Literature's precedent check is pending.
+
+**Design: §155 R's recipe exactly** (DeltaMem-R, top writes, the γ migration 2k → 6k, §147's digit-pair 4×4, 24k, bs 64, restart slots with 147-1's misfire rule), plus
+`--free_pairs 0.5`. It runs **on the same GPU class as R (RTX 3090), with the same seed numbering and the GPU recorded per cell (Audit)**.
+* With probability 0.5 a training chain is a **free-pairs chain**: every pair's digits (a^(t), b^(t)) are drawn independently, with the same (i, j) schedule and flags.
+* **The label** is the digits of Σ_t a^(t) · b^(t) · 10^(i_t + j_t − 2), emitted LSB first exactly like the product. The maximum equals 9999 × 9999 < 10⁸, so 8 digits
+  suffice.
+* The other half are ordinary consistent problems. The test set is the bench 4×4 test (consistent). Free-pairs accuracy is reported on 1,000 held-out free-pairs chains.
+
+**Rules (fixed now; §155's).**
+* **PASS:** ≥ 3/4 slots with test_acc ≥ 0.99 (consistent test) and SERIAL (row-level swap after pairs 4 / 8 / 12: donor ≥ 0.90, recipient − chance < 0.10).
+  - **SERIAL is scored on consistent test items**, with the existing row-level donor metric: those are the swaps that matter. Free-chain accuracy is descriptive.
+* **Predictions (Audit):** test_acc ≥ 0.99; row-level donor ≥ 0.9; note 155-4's pass-skip row_skip_consistent ≥ 0.8.
+* **Readings:**
+  - **PASS:** R's swap gap was data-induced, an operand-consistency shortcut. Trained on hybrids, the memory carries the serial computation: C1 on this harness, by data
+    design.
+  - **Exact but not SERIAL:** the gap is not data-induced, so the next question is **the state code, per 155-4's result**.
+  - **test_acc < 0.95:** free pairs are a harder task (no operand reuse), so budget.
+* **Descriptive:**
+  - note 155-4's what_state;
+  - RECURRENT USE (155-3's form; SHIFT-R's rule applied descriptively);
+  - ext_4x8 (C2; no prediction);
+  - free-pairs test accuracy.
+
+**Placement.**
+* Slot 1 (about $0.8, a 3090); slots 2–4 by the rules.
+* A row-level version on §152 A (independent rows) is a later option.
+* **Implementation (Experiments):** multpair `--free_pairs P` in the batch generator only (the label from the drawn pairs), plus the free-pairs held-out eval.
+* **Gates:**
+  - an exact-label check (the label equals the column sums of the drawn pairs);
+  - with P = 0 bit-identical to §155 R's batches (same seed);
+  - smoke_plain;
+  - Audit's diff review.
+* Dirs `s158_free_4x4_s{seed}`. Scorer: `theory/score_s158.py`, committed with this registration.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
