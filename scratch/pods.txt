@@ -1271,3 +1271,11 @@ PRICE EXCEPTION 2026-10-06 04:58 gen-b41 offer 53010473 RTX 3090 595.71 $0.267: 
 54911211 vast offer 49607481 created 2026-10-08 16:58: label gen-b201, queue scratch/gen_q_b201.txt (logged at create by vdeploy_toy.sh)
 54910706 vast | gen_b200 DESTROYED 2026-10-08 17:00: §165 K16 failed at start (bench/data/mult_4x4_test.txt not shipped: fixedchunk lines carry no --task); redeploy after the --bench fix
 54911211 vast | gen_b201 DESTROYED 2026-10-08 17:00: §165 K8, same missing bench file; redeploy after the fix
+54911943 vast offer 49607481 created 2026-10-08 17:04: label gen-b200, queue scratch/gen_q_b200.txt (logged at create by vdeploy_toy.sh)
+54914044 vast offer 20726985 created 2026-10-08 17:23: label gen-b200, queue scratch/gen_q_b200.txt (logged at create by vdeploy_toy.sh)
+54894145 vast | gen_b205 DESTROYED_VERIFIED 2026-10-08 17:46 after verified per-run fetch (boxes/runs_fsq/s159_r_5x5_s2 boxes/runs_fsq/s159_slots/r_5x5_k2)
+54919037 vast offer 31183843 created 2026-10-08 18:03: label gen-b210, queue scratch/gen_q_b210.txt (logged at create by vdeploy_toy.sh)
+54919784 vast offer 54192332 created 2026-10-08 18:09: label gen-b211, queue scratch/gen_q_b211.txt (logged at create by vdeploy_toy.sh)
+54922606 vast offer 54716748 created 2026-10-08 18:29: label gen-b211, queue scratch/gen_q_b211.txt (logged at create by vdeploy_toy.sh)
+54910143 vast | gen_b209 DESTROYED_VERIFIED 2026-10-08 18:38 after verified per-run fetch (boxes/runs_fsq/s162_short_s2)
+54907038 vast | gen_b208 DESTROYED_VERIFIED 2026-10-08 19:07 after a manual fetch of boxes/runs_fsq/s162_short_s1 (model.pt md5 945da49c... matches the host; all non-ckpt files); the gen7 drain's scp had stalled twice
