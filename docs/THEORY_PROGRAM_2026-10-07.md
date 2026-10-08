@@ -19,6 +19,8 @@ paradigms. Don't get stuck in the minuscule improvements loop. Take the lessons 
    - One gated DeltaNet layer (delta rule; β ∈ (0, 2), so eigenvalues can go negative) is inserted mid-stack in GPT-2 as a residual branch, with a zero-initialised output
      (L4).
    - Each segment is a fresh pass. Attention sees only the segment, and the DeltaNet's matrix state is carried between segments: C1 by design (L6).
+     - **Corrected (note 147-4, 2026-10-08):** the writes come from block-6 entry, so the state is a fixed function of the inputs. The memory is the only channel, but it
+       stores no computed result. C1 in the hop-by-hop sense needs write-after-read (§155).
    - **Why it targets L2 and L3:** a running sum is a linear update, so per-column sums can sit as key-indexed values and accumulate (carry-save) with no squashing.
      Erase-then-write with negative eigenvalues tracks finite state.
    - **Literature's flag:** a delta write *replaces* a key's value, so sums need an **additive, no-decay path** (6 additive + 6 delta heads). Carry resolution moves to
