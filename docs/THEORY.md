@@ -9747,6 +9747,13 @@ accumulator.**
   - Audit's diff review.
 * Dirs `s165_{k16,k8,k0,k16c1}_4x4_s{seed}`. Scorer: `theory/score_s165.py`, committed with this registration.
 
+**Note 165-1 (2026-10-08 12:11 EDT, before any §165 run; Experiments' implementation, OK'd by Theory). The curriculum's full stage.**
+* §165 says to use "§161's curriculum, applied to the number of supervised low answer digits, min(c, 4 + n), with c 1 / 2 / 4 / 8".
+* Taken literally, with c capped at 8, a 4×5 chain's 9th answer digit would never be trained.
+* **Implemented, following 161-1's convention:** at the full stage (c ≥ 8) all 4 + n answer digits are supervised; below it, min(c, 4 + n). This is the registered intent
+  ("§161's curriculum"), not a rule change.
+* Build: 3539b83e; gate165 all pass; queues b200–b203 (slot 1 of k16 / k8 / k0 / k16c1).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
