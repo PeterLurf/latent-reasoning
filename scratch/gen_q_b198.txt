@@ -1,3 +1,4 @@
-# THEORY §164 MIX-BASELINES (bbd53874; Audit-approved) DIRECT-MIX seed 1: mult98 --arm nc (§98's recipe: GPT-2 small, 24k, bs 64, AdamW 1e-4, warmup 100 + cosine) + --shape_mix 2,3,4,5 (4 x n, n per batch; gen_operands, 4x4 bench test excluded both orders; the bench's implicit-CoT text generated); eval acc_test + ext_4x6 / 4x7 / 4x8 / 4x16 (§161's items) + compute / compute_4x8; RTX 3090
-# P=1
+# THEORY §164 MIX-BASELINES (bbd53874; Audit-approved 152987eb) DIRECT-MIX seeds 1 + 2 co-tenant on one RTX 3090 (P=2; Audit 11:49: nc is launch-bound and small - both cells keep the GPU class): mult98 --arm nc --shape_mix 2,3,4,5, 24k; eval acc_test + ext_4x6 / 4x7 / 4x8 / 4x16 + compute / compute_4x8
+# P=2
 boxes/runs_fsq/s164_directmix_4x4_s1 boxes.mult98 train --arm nc --task 4x4 --seed 1 --shape_mix 2,3,4,5
+boxes/runs_fsq/s164_directmix_4x4_s2 boxes.mult98 train --arm nc --task 4x4 --seed 2 --shape_mix 2,3,4,5
