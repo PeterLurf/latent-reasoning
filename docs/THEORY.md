@@ -9314,6 +9314,88 @@ accumulator.**
 * **Curriculum:** at the full stage every 4×n chain runs complete, with the flush. Below it, min(c, 4 + n) columns.
 * **Index tokens:** CIDX[c + r − 1] = " A" … " U" (21 single GPT-2 tokens, args `col_index_tokens`).
 
+## 162. DELTA-S5: the write-after-read memory on S5, against a measured single-pass boundary (note 158-2's TC⁰ / NC¹ contrast cell) (Audit 08:45; pre-registered 2026-10-08 09:01 EDT, after Literature's check 6b771087 (`docs/LIT_TC0_SERIAL_2026-10-08.md`: the contrast is unpublished) and Audit's draft review (two rounds), before any implementation or run)
+
+**Why.**
+* **Note 158-2:** an input-holding memory computes serially only where the task exceeds one pass (depth) or the buffer (capacity).
+  - On 4×4 multiplication (TC⁰) DeltaMem-R is an exact buffer: 155-4, and §158 s1 is SERIAL with no C1 credit.
+* **The missing cell:** the same memory on S5 (NC¹-complete).
+  - Narrow fsq120 carriers are state machines there (CERT), but they cannot buffer.
+  - No memory that can buffer has been tested on S5.
+* **On S5 a whole-memory swap is behaviourally the hybrid input, and hybrids are in distribution,** so SERIAL is implied by accuracy (158-1's logic, as on fsq120).
+  - The C1 discriminators are therefore the probes, a state edit and extrapolation (Audit).
+
+**Design.** RTX 3090 only, with the GPU recorded per cell. Seeds 1 and 2 per arm.
+* **DIRECT (the single-pass baseline):** GPT-2 small with the whole chain in one context: [start-state text, the items' tokens, " ="] → the 6-token state text.
+  - §120's S5 items, answers and data: lengths U(1..L_max), random start in training, identity at test.
+  - §120's recipe (24k, bs 64, AdamW 1e-4, warmup 100 + cosine), with L_max 2 / 4 / 8 / 16 / 32 / 64 at 0 / 2k / 5k / 9k / 14k / 18k.
+* **DELTA-S5:** §155 R's memory exactly (DeltaMem-R: 6 additive + 6 gated-delta heads after block 6, top writes, γ 0 → 1 over 2k–6k, pass-start reads; 160-1's
+  floor) as GPT-2's only cross-segment channel.
+  - Segment 0 = [EOT, start-state text]; segment t = [EOT, item t] (fresh cache); the answer decoder = a final [EOT] segment → the state text.
+  - FINAL only, with §120's S5 data, curriculum (to `l_max`) and recipe.
+  - **SHORT:** l_max = L* / 2. It is read descriptively only if l_max < 4: at p < 4 a buffer and a state are nearly the same object (Audit).
+  - **LONG:** l_max = 32 if L* ≤ 16, and 64 if L* = 32 (dirs `s162_long64_*`). If L* = 64 or DIRECT passes everywhere, LONG = 32 and is read for capacity only.
+
+**The boundary (fixed now).**
+* **Each DIRECT seed's boundary L*_s** is the smallest L ∈ {2, 4, 8, 16, 32, 64} at which its final-state accuracy (2,000 test prefixes, identity start) is below 0.90.
+* **L* is the lower of the two.** If they differ, the reading is labelled "boundary uncertain" (Audit). Both full accuracy-by-length curves are reported.
+* A DIRECT seed below 0.90 at L = 1 did not train and is dropped (noted). If neither trains, there is no boundary, and LONG is read for capacity only.
+* **L* is fixed in a dated note from DIRECT alone, before any DELTA-S5 output is read.**
+* LONG (l_max 32) may launch with DIRECT. SHORT, and long64 if L* = 32, launch after the note. If L* = 2, SHORT is not run.
+
+**Measures** (DELTA-S5). ℓ = min(8, l_max).
+* **Exactness:**
+  - `final_acc_by_length`: final-state accuracy at each training length (2,000 test prefixes);
+  - `long_acc`: cumulative all-positions accuracy at 512, as §128;
+  - `acc_2048`: descriptive, 500 chains.
+* **Probes (`s162.state_probe`, `s162.op_probe`, with `s162.probe_n_score`):** both are 120-way, because items are uniform over the 120 elements, so chance is 1/120. They come from the flattened memory after item p ∈ {2, 4, 8, 16, 32} ≤ l_max, held-out near-OLS 120-way classifiers with 155-4's
+  settings (8,000 training-distribution fit chains, 3-fold CV λ ∈ {1e-9..1e-6}, standardised, one-hot argmax), scored on 2,000 chains.
+  - **state_probe(p):** the current state g_p.
+  - **op_probe(p, j):** the item x_{p−j}, at every lag j = 0..p−1.
+* **State edit (`s162.state_edit`, 155-3's form):** on length-ℓ chains, after item p = ℓ / 2.
+  - The edit is the minimum-norm change of the flattened memory along the state probe's (w_{g'} − w_{g_p}) that makes g' = g_p ∘ τ (τ a random transposition) its argmax
+    with g_p's original margin. The chain then continues.
+  - propagation_share: the final answer is g' ∘ x_{p+1..ℓ}.
+  - random_edit_share: the same, for an equal-norm random edit.
+  - null_value: the unedited answer equals that target.
+  - n ≥ 500.
+* **SERIAL (sanity check; §128's thresholds):** a whole-memory donor swap on length-ℓ chains at up to three evenly spaced items (2 / 4 / 6 when ℓ = 8): donor ≥ 0.90
+  and recipient − chance < 0.10.
+* **Also:** key cosine by head (`s162.key_cos`, as §157); rho_loop (155-1); the fallback trigger; train_gpu; n for every cell.
+
+**Rules (fixed now; `theory/score_s162.py`).**
+* **EXACT(arm):** final-state accuracy ≥ 0.99 at every training length, in each seed.
+* **STATE-LIKE(run):** two conditions, both at p = min(16, l_max).
+  - (a) The edit propagates: propagation − null ≥ 0.5 and random − null < 0.1.
+  - (b) state_probe ≥ 0.90, and ≥ the mean op_probe over the older half of the history (lags j ≥ p / 2).
+* **BUFFER-LIKE(run):** no propagation, and that older-half op_probe ≥ 0.90. **MIXED** otherwise.
+* **Arm kind:** if s1 and s2 agree, that kind. If they disagree, **s3 runs** (about $1) before reading, and the 2-of-3 majority decides. Otherwise "seed-dependent".
+* **Readings (EXACT arms):**
+  - **LONG state-like, SHORT buffer-like:** 158-2 supported. The same memory computes serially only where the task exceeds a pass.
+  - **Both state-like:** the task class decides, not the length. 158-2's depth condition is not needed on S5.
+  - **Both buffer-like:** 158-2 is refuted for this memory. Buffer + read-time compute handles S5 beyond the single-pass boundary.
+  - **LONG not exact:** the cell is uninformative on depth.
+* **CAPACITY / DEPTH at 512** (long_acc, per exact run): predicted ≥ 0.90 for STATE-LIKE runs and < 0.50 for BUFFER-LIKE runs. 512 items fit the 12 × 64 key budget, so a
+  buffer failing there may fail on depth rather than capacity (Audit).
+* **CAPACITY at 2,048** (acc_2048, cumulative, 500 chains; past the key budget), the cleaner capacity point.
+  - Predicted below 0.50 for BUFFER-LIKE runs. A BUFFER-LIKE run at 0.90 or above means the buffer is not capacity-limited at 2,048.
+  - A STATE-LIKE run below 0.90 there reads as drift (C6), not capacity.
+* **Theory's predictions:** L* between 4 and 16. LONG STATE-LIKE; SHORT BUFFER-LIKE or not exact. Capacity confirmed.
+
+**Placement.**
+* DIRECT s1–s2 and LONG s1–s2 now; SHORT s1–s2 after the boundary note. About $3–4 (another ~$3 if long64 runs).
+* **Implementation (Experiments):**
+  - a DIRECT trainer;
+  - a DeltaMem-R S5 family: fsq120's S5 items, answers and data with multpair's memory; the eval fields above.
+* **Gates:**
+  - step-0 function preservation;
+  - gradflow through ≥ 2 hand-offs;
+  - a label check (answers = the COMP chain);
+  - the probes and the edit on a synthetic memory that encodes g_p exactly (the edit must propagate);
+  - smoke_plain;
+  - Audit's diff review.
+* Dirs `s162_{direct,short,long,long64}_s{1,2,3}` (s3 only on a split). Scorer: `theory/score_s162.py`, committed with this registration.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
