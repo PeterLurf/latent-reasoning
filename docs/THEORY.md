@@ -9663,6 +9663,11 @@ this note is pushed.**
     computed state rather than a full buffer. That is against 158-2's prediction for SHORT.
   - **Caveat:** a 120-way linear probe on a 49k-dimensional state from 8k fits may miss non-linearly coded items. "Not decodable" is "not linearly decodable".
 * The registered arm readings still decide when LONG s2 and SHORT s1 land. This paragraph is the like-for-like context beside them.
+* **SHORT s1:** exact to 8, BUFFER-LIKE (older half at p* 4: 0.949; state 0.85; edit 0.0, n 850; 0.0 at 512 / 2,048). **So the SHORT arm is BUFFER-LIKE** (s1 / s2
+  agree).
+  - At p = 8 SHORT s1 reads 1.0 / 1.0 / 0.33 / 0.23 / 0.23 / 0.24 / 0.35 / 0.85, essentially identical to LONG s1 (1.0 / 1.0 / 0.35 / 0.20 / 0.23 / 0.25 / 0.35 /
+    0.87). The equal-depth caveat holds.
+  - The arm reading waits for LONG s2.
 
 ## 163. SHAPE-MIX-2D: both operand lengths mixed, for length and value-range generalisation over both operands (C2) (Audit's research pass after §161 MIX s1; pre-registered 2026-10-08 10:59 EDT, after Literature's check 73fbfb1a (`docs/LIT_MULT_LG_NOSCRATCH_2026-10-08.md`) and Audit's review, before any implementation or run; runs only if §161 MIX s2 replicates)
 
