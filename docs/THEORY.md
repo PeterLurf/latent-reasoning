@@ -8839,7 +8839,11 @@ ext_4x8 0.000 < 0.5. ROTARY was deferred to §155's architecture (154-2), so §1
 * **Compute:** 4.88·10⁹ FLOPs and 8 sequential passes per item, the direct-answer cost.
 * **Reading:** in a pretrained GPT-2 direct-answer model at 24k, a per-digit separator slot does not make carry resolution learnable. 2610.06605's from-scratch effect does not
   transfer here.
-* **Part (b), A-SEP on §152's reader,** is pending.
+* **Part (b), A-SEP s1** (§152 A + separators on the reader decode, 48k): test_acc **0.060** against §152 A s1's 0.331.
+  - By chain length: 1.0 / 1.0 / 0.811 / 0.06. Per column: 1.0 / 1.0 / 1.0 / 1.0 / **0.087** / 0.559 / 0.929 / 0.994 (A failed at column 6, A-SEP at column 5).
+  - 8.51·10⁹ FLOPs, 12 passes.
+  - **Reading (registered): slots do not close §152's 4-row resolution at 48k.** On this seed they made it worse.
+* **§156 closes.** Separator slots help neither the direct answer nor the input-only memory's reader at these budgets.
 
 ## 157. READ-PANEL: geometry, bandwidth and interference of the memory read, as one panel (Audit's research passes 03:00 / 04:00; pre-registered 2026-10-08 03:57 EDT, after Literature's checks 534a02f1 / 5fc2cb76 and Audit's draft review, before any implementation or run; run only if b165 still fails)
 
