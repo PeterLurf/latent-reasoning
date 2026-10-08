@@ -588,38 +588,54 @@ def carry_probe(m, A, Bd, dev, amp, bs):
 
 
 @torch.no_grad()
-def c7_edit(m, A, Bd, dev, amp, bs, deltas=(-2, -1, 1, 2), lam=1e-3):
-    """§154 C7 (SHIFT): a raw-space ridge probe w of the column sum c_k from the additive read at the emission steps (fit half); on the score half,
-    at every emission step add delta * u (u = w / ||w||^2: the probe's prediction moves by exactly delta) to the additive read before W_o.
-    shifted_share = emitted digit == (c_k + delta) mod 10; unedited_share = == c_k mod 10 (pooled over emission steps)."""
+def c7_edit(m, A, Bd, dev, amp, bs, deltas=(-2, -1, 1, 2), cols=(2, 3, 4, 5, 6, 7), lam=1e-3):
+    """§154 C7 (SHIFT; Theory's layout): a raw-space ridge probe w of the ACCUMULATOR c^_k (column sum + carry-in, = acc at the column's last pair)
+    from the additive read at the emission steps (fit half). On the score half, ONE column k per rollout: delta * u (u = w / ||w||^2, the probe's
+    decoded accumulator moves by exactly delta) added to the additive read before W_o at column k's emission step only. Per (k, delta):
+    shifted_share = column k's digit == (c^_k + delta) mod 10; unedited_share = the same rows with no edit, digit == c^_k mod 10;
+    carry_follow_share = column k+1's digit == (c^_{k+1} - floor(c^_k / 10) + floor((c^_k + delta) / 10)) mod 10 (k = 7: the flush digit);
+    unedited_next_share = column k+1's digit == c^_{k+1} mod 10 with the edit (reference). Columns 1-based. Note: the edit changes the read
+    output only; the memory state is written from the residual entering block 6, so no state downstream of the edit can change."""
     acc, dig, _, pairs, col, emit = accumulators(A, Bd); R = reads_by_step(m, A, Bd, dev, amp, bs)[:, :, :DM.H_ADD * DM.DH]; h = len(A) // 2; et = np.nonzero(emit)[0]
     X = R[:h][:, et].reshape(-1, R.shape[-1]).astype(np.float64); y = acc[:h][:, et].reshape(-1).astype(np.float64); mu, ym = X.mean(0), y.mean()
     w = np.linalg.solve((X - mu).T @ (X - mu) + lam * len(X) * np.eye(X.shape[1]), (X - mu).T @ (y - ym)); Xs = R[h:][:, et].reshape(-1, R.shape[-1])
     r2 = float(1 - (((Xs - mu) @ w + ym - acc[h:][:, et].reshape(-1)) ** 2).sum() / max(((acc[h:][:, et] - acc[h:][:, et].mean()) ** 2).sum(), 1e-12))
-    u = torch.tensor(w / (w @ w), dtype=torch.float32, device=dev); Ar, Br = A[h:], Bd[h:]; N = len(Ar); out = {"probe_r2_score_half": r2}
-    ed = {"on": False, "delta": 0.0}
+    u = torch.tensor(w / (w @ w), dtype=torch.float32, device=dev); Ar, Br = A[h:], Bd[h:]; N = len(Ar); T = len(pairs); C = acc[h:][:, et]   # (N, n_emit) c^ per emission
+    ed = {"t": -1, "delta": 0.0}
     def pre(mod_, inp_):
-        if not ed["on"]:
+        if ed["t"] < 0:
             return None
         x = inp_[0].clone(); x[:, -1, :DM.H_ADD * DM.DH] += ed["delta"] * u.to(x.dtype); return (x,)
-    hk = m.mem.wo.register_forward_pre_hook(pre); T = len(pairs)
+    def run(t_edit, dl):
+        got = np.full((N, T), -1, np.int64)
+        for s_ in range(0, N, bs):
+            sl = slice(s_, s_ + bs); B = len(Ar[sl]); set_ops(m, Ar[sl], Br[sl], dev); S = m.start(B, dev)
+            for t in range(T):
+                ed["t"] = t if t == t_edit else -1; ed["delta"] = float(dl)
+                with amp_ctx(amp):
+                    lg, S = m.step(S, t)
+                ed["t"] = -1
+                if emit[t]:
+                    got[sl, t] = m.fam.decode(lg.argmax(-1).cpu().numpy()[:, None])
+        return got[:, et]
+    hk = m.mem.wo.register_forward_pre_hook(pre); out = {"probe_r2_score_half": r2, "probe_target": "accumulator c^_k = column sum + carry-in (acc at the emission step)"}
     try:
+        base = run(-1, 0.0)
         for dl in deltas:
-            got = np.full((N, T), -1, np.int64); ed["delta"] = float(dl)
-            for s_ in range(0, N, bs):
-                sl = slice(s_, s_ + bs); B = len(Ar[sl]); set_ops(m, Ar[sl], Br[sl], dev); S = m.start(B, dev)
-                for t in range(T):
-                    ed["on"] = bool(emit[t])
-                    with amp_ctx(amp):
-                        lg, S = m.step(S, t)
-                    ed["on"] = False
-                    if emit[t]:
-                        got[sl, t] = m.fam.decode(lg.argmax(-1).cpu().numpy()[:, None])
-            g_ = got[:, et]; c_ = acc[h:][:, et]
-            out["%+d" % dl] = {"shifted_share": float((g_ == (c_ + dl) % 10).mean()), "unedited_share": float((g_ == c_ % 10).mean()), "n": int(g_.size)}
+            byc = {}; tot = {"shifted": 0, "unedited": 0, "follow": 0, "next_unedited": 0, "n": 0}
+            for k in cols:
+                g_ = run(int(et[k - 1]), dl); ck, cn = C[:, k - 1], C[:, k]
+                sh = g_[:, k - 1] == (ck + dl) % 10; ue = base[:, k - 1] == ck % 10
+                fo = g_[:, k] == (cn - ck // 10 + (ck + dl) // 10) % 10; nu = g_[:, k] == cn % 10
+                byc[str(k)] = {"shifted_share": float(sh.mean()), "unedited_share": float(ue.mean()), "carry_follow_share": float(fo.mean()),
+                               "unedited_next_share": float(nu.mean()), "carry_changes_share": float(((ck + dl) // 10 != ck // 10).mean()), "n": int(N)}
+                tot["shifted"] += int(sh.sum()); tot["unedited"] += int(ue.sum()); tot["follow"] += int(fo.sum()); tot["next_unedited"] += int(nu.sum()); tot["n"] += int(N)
+            out["%+d" % dl] = {"shifted_share": tot["shifted"] / tot["n"], "unedited_share": tot["unedited"] / tot["n"], "carry_follow_share": tot["follow"] / tot["n"],
+                               "unedited_next_share": tot["next_unedited"] / tot["n"], "n": tot["n"], "by_column": byc}
     finally:
         hk.remove()
-    out["def"] = "raw-space ridge of c_k on the additive read at emission steps (fit half); edit = delta w / ||w||^2 at every emission step (score half), pooled"
+    out["def"] = ("one column k (1-based, 2-7) edited per rollout at its emission step (score half): delta * w / ||w||^2 on the additive read before W_o; "
+                  "w = raw-space ridge of c^_k on the additive read at emission steps (fit half)")
     return out
 
 
