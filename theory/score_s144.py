@@ -97,6 +97,10 @@ def slot(arm, k):
             break
         pl = plateau(d); r = load(d)
         if pl is None and r is None:
+            sf = load("s144_slots/%s_k%d" % (arm, k))                         # flagged attempts are fetched as .void_partial: read the host's slot
+            got = [x for x in (sf or {}).get("attempts", []) if x.get("seed") == k + o and x.get("status") == "plateau"]   # record (disclosed)
+            if got:
+                att.append({"seed": k + o, "plateau": True, "source": "slot file (raw log fetched as .void_partial)"}); continue
             break
         if pl is None:
             return {"attempts": att, "status": "running (phase 1)", "accepted": None}
