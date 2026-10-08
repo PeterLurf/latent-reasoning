@@ -52,7 +52,12 @@ def slot(k):
                  "donor_row": {kk: (v.get("row_level") or {}).get("donor_consistent") for kk, v in (r.get("donor") or {}).items()},
                  "propagation_share": ps, "random_edit_share": rs, "null_value": nv,
                  "recurrent_use_155_3": bool(ps is not None and rs is not None and nv is not None and ps - nv >= 0.5 and rs - nv < 0.1),
-                 "what_state": (ws or {}).get("what_state"), "gpu": r.get("train_gpu", r.get("gpu"))}
+                 "what_state": (ws or {}).get("what_state"), "acc_vs_raw": s8.get("acc_vs_raw"), "by_item_type": s8.get("by_item_type"),
+                 "gpu": r.get("train_gpu", r.get("gpu"))}
+            av = a["acc_vs_raw"] or {}                                       # note 158-1 (b): {"acc_exact": x, "raw_digit_acc": y} pooled over pairs 4 / 8 / 12
+            a["accumulator_dominates"] = bool(av.get("acc_exact") is not None and av.get("raw_digit_acc") is not None and av["acc_exact"] >= 0.9
+                                              and av["acc_exact"] >= av["raw_digit_acc"])
+            a["c1_credit"] = bool(a["recurrent_use_155_3"] and a["accumulator_dominates"])                         # note 158-1: (a) and (b)
             a["exact"] = (a["test_acc"] or 0) >= 0.99
             a["pass"] = bool(a["exact"] and a["serial"])
             return {"attempts": att, "status": "accepted", "accepted": a}
@@ -73,8 +78,11 @@ def main():
         print("slot", k, x["status"], a and {kk: a.get(kk) for kk in ("seed", "test_acc", "serial", "donor_row", "free_pairs_test_acc", "ext_4x8", "propagation_share",
                                                                     "null_value", "recurrent_use_155_3")})
     s1 = sl[1]["accepted"]
-    if v == "PASS":
-        rd = "PASS: R's swap gap was data-induced (an operand-consistency shortcut); trained on hybrids, the memory carries the serial computation (C1 on this harness, by data design)"
+    nc1 = sum(1 for a in acc if a.get("c1_credit"))
+    if v == "PASS":                                                          # note 158-1: SERIAL here is a sanity check, not C1 evidence
+        rd = "PASS: the swap gap was data-induced (the operand-consistency shortcut)"
+        rd += ("; C1 credit (carry-edit propagation + accumulator dominates) in %d / %d accepted runs%s" %
+               (nc1, len(acc), " -> C1 on this harness" if nc1 >= 3 else " -> no C1 credit (the IIT signature if SERIAL passes without it)"))
     elif s1 and s1["exact"] and not s1["serial"]:
         rd = "exact but not SERIAL: the swap gap is not data-induced -> the state code, per 155-4's result"
     elif s1 and (s1["test_acc"] or 0) < 0.95:
