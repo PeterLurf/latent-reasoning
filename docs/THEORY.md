@@ -9387,6 +9387,20 @@ accumulator.**
   - The memory carries the in-progress column sum, the swap follows the donor, and 4×8 is solved.
   - This is the C2 route that 158-2 named. s2 and s3 decide LENGTH-GENERAL. MIX+IDX is pending.
 
+**Note 158-3 (2026-10-08 10:52 EDT; Theory, after Audit's reproduction 3e45e18f). 158-2's "expected optimum" is scoped to fixed-shape training.**
+* **158-2 claimed:** on fixed-size 4×4, an input-holding memory admits buffer + read-time recompute, and "exact but not serial" is the expected optimum.
+* **§161 MIX s1 trains on varying multiplier lengths (n 2..5) and changes the optimum.**
+  - The memory carries the running column sum: in-progress units ≈ 1.0, against R's ≈ 0.4.
+  - The swap follows the donor with out-of-distribution hybrids (SERIAL 0.98–0.995).
+  - 4×8 is solved (0.964).
+* **Reading:**
+  - With a fixed shape, a per-shape count schedule plus buffer + recompute is cheapest.
+  - Once column counts vary, that schedule cannot be memorised, so the per-column operation has to be column-relative. Accumulating the running sum is that operation.
+  - So shape variation in training, not only test lengths beyond training, is enough to make serial accumulation the learned solution on a TC⁰ task. Buffering is still admitted (operands decode at 1.0) but no longer sufficient.
+* **What stays from 158-2:** the fixed-shape prediction (§158 s1: SERIAL with in-distribution hybrids, no C1 credit) and the circuit-complexity premise.
+* **What changes:** "C1 cannot be forced on fixed-size multiplication" becomes "not with fixed-shape training". Varying the shape is a data-only lever that works on one seed so far.
+* **Claim wording until s2 / s3 replicate (Audit):** "SERIAL + state-carried sum; not linearly editable" (carry-edit propagation equals the null), as with fsq120's S5 carriers.
+
 ## 162. DELTA-S5: the write-after-read memory on S5, against a measured single-pass boundary (note 158-2's TC⁰ / NC¹ contrast cell) (Audit 08:45; pre-registered 2026-10-08 09:01 EDT, after Literature's check 6b771087 (`docs/LIT_TC0_SERIAL_2026-10-08.md`: the contrast is unpublished) and Audit's draft review (two rounds), before any implementation or run)
 
 **Why.**
