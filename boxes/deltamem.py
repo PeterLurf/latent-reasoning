@@ -19,7 +19,7 @@ H_ADD, H_DEL, DH = 6, 6, 64
 
 
 class DeltaMem(nn.Module):
-    def __init__(self, g, layer=6):
+    def __init__(self, g, layer=6, write=None):
         super().__init__()
         self.layer = layer; pre = "h.%d." % layer; dev = g.w("wte.weight").device
         self.ln = nn.LayerNorm(768).to(dev)
@@ -38,6 +38,12 @@ class DeltaMem(nn.Module):
         self.s_add = nn.Parameter(torch.zeros((), device=dev)); self.s_del = nn.Parameter(torch.zeros((), device=dev))   # note 147-2: gains g = exp(s) (Audit: log-param.)
         self.alpha_rec = None                                               # note 147-3: list -> per segment, mean alpha per delta head
         self.norms = None                                                   # list -> per segment (last token): (||g_del read_del||, ||g_add read_add||) per row
+        self.write_mode = write                                             # §155 DELTA-R: None (§147) | "top" | "block9"
+        if write is not None:                                               # LN_w on the write source (init: block 11's ln_1); gamma mixes the write input
+            self.ln_w = nn.LayerNorm(768).to(dev)
+            with torch.no_grad():
+                self.ln_w.weight.copy_(g.w("h.11.ln_1.weight").float()); self.ln_w.bias.copy_(g.w("h.11.ln_1.bias").float())
+            self.register_buffer("gamma", torch.zeros((), device=dev)); self.wstat = None   # wstat: list -> per pass (||LN_w(h_w)||, ||LN_6(h_6)||) medians
 
     def zero_state(self, B, dev):
         return torch.zeros(B, H_ADD + H_DEL, DH, DH, device=dev)
@@ -76,8 +82,78 @@ class DeltaMem(nn.Module):
         return x + (self.fade * self.wo(o)).to(x.dtype), torch.cat([Sa, Sd], 1)
 
 
+def read_fixed(mem, x, S, rec=None):
+    """§155: the read on the pass-start state S at every token (no write); the same gains / ablation / fade / W_o as DeltaMem.forward.
+    rec / mem.norms record the last token's reads (as forward)."""
+    with torch.autocast("cuda", enabled=False):
+        B, T, D = x.shape; a = mem.ln(x.float()); q = mem.qkv(a)[..., :D].view(B, T, H_ADD + H_DEL, DH)
+        oa = torch.exp(mem.s_add) * torch.einsum("bthk,bhkv->bthv", F.elu(q[:, :, :H_ADD]) + 1, S[:, :H_ADD].float())
+        od = torch.exp(mem.s_del) * torch.einsum("bhvk,bthk->bthv", S[:, H_ADD:].float(), F.normalize(q[:, :, H_ADD:], dim=-1))
+        if mem.norms is not None:
+            mem.norms.append((od[:, -1].flatten(1).norm(dim=1).detach(), oa[:, -1].flatten(1).norm(dim=1).detach()))
+        if mem.ablate == "add":
+            oa = torch.zeros_like(oa)
+        if mem.ablate == "delta":
+            od = torch.zeros_like(od)
+        if rec is not None:
+            rec.append(oa[:, -1].reshape(B, -1).detach())
+        return x + (mem.fade * mem.wo(torch.cat([oa, od], 2).reshape(B, T, D))).to(x.dtype)
+
+
+def write_seq(mem, h6, hw, S):
+    """§155: S_{t+1} from the pass's writes, sequential over tokens as DeltaMem.forward, with k / v / alpha / beta from
+    u = (1 - gamma) LN_6(h_6) + gamma LN_w(h_w) (one shared set of write projections: qkv's k / v rows and the gate)."""
+    with torch.autocast("cuda", enabled=False):
+        B, T, D = h6.shape; a6 = mem.ln(h6.float()); aw = mem.ln_w(hw.float()); gm = mem.gamma
+        if mem.wstat is not None:
+            mem.wstat.append((float(aw.norm(dim=-1).median()), float(a6.norm(dim=-1).median())))
+        u = (1 - gm) * a6 + gm * aw; _, k, v = mem.qkv(u).split(D, -1); k, v = (t_.view(B, T, H_ADD + H_DEL, DH) for t_ in (k, v))
+        g_ = mem.gate(u); al = torch.sigmoid(g_[..., :H_DEL]); be = 2 * torch.sigmoid(g_[..., H_DEL:])
+        if mem.alpha_rec is not None:
+            mem.alpha_rec.append(al.mean(dim=(0, 1)).detach())
+        Sa, Sd = S[:, :H_ADD].float(), S[:, H_ADD:].float()
+        for t in range(T):
+            Sa = Sa + (F.elu(k[:, t, :H_ADD]) + 1)[..., :, None] * v[:, t, :H_ADD][..., None, :]
+            kd = F.normalize(k[:, t, H_ADD:], dim=-1); vd = v[:, t, H_ADD:]; b_ = be[:, t][..., None, None]
+            Skk = torch.einsum("bhvk,bhk->bhv", Sd, kd)
+            Sd = al[:, t][..., None, None] * (Sd - b_ * Skk[..., :, None] * kd[..., None, :]) + b_ * vd[..., :, None] * kd[..., None, :]
+        return torch.cat([Sa, Sd], 1)
+
+
+def _block(g, i, h, hd):
+    B, T, D = h.shape; pre = f"h.{i}."
+    a = F.layer_norm(h, (D,), g.w(pre + "ln_1.weight"), g.w(pre + "ln_1.bias"))
+    q, k, v = (a @ g.w(pre + "attn.c_attn.weight") + g.w(pre + "attn.c_attn.bias")).split(D, -1)
+    q, k, v = (t.view(B, T, g.H, hd).transpose(1, 2) for t in (q, k, v))
+    o = F.scaled_dot_product_attention(q, k, v, is_causal=True)
+    h = h + o.transpose(1, 2).reshape(B, T, D) @ g.w(pre + "attn.c_proj.weight") + g.w(pre + "attn.c_proj.bias")
+    a = F.layer_norm(h, (D,), g.w(pre + "ln_2.weight"), g.w(pre + "ln_2.bias"))
+    m = F.gelu(a @ g.w(pre + "mlp.c_fc.weight") + g.w(pre + "mlp.c_fc.bias"), approximate="tanh")
+    return h + m @ g.w(pre + "mlp.c_proj.weight") + g.w(pre + "mlp.c_proj.bias")
+
+
+def gpt_forward_mem_r(g, x, mem, S, rec=None, cap=None):
+    """§155 DELTA-R pass: the read (pass-start S) entering block mem.layer, the 12 blocks, then the writes from
+    u = (1 - gamma) LN_6(h_6) + gamma LN_w(h_w) (h_w = the residual after block 11, pre-ln_f, or block 9's output). cap: dict for probes."""
+    B, T, D = x.shape; hd = D // g.H; h = x + g.w("wpe.weight")[:T][None]; h6 = hw = None
+    for i in range(g.L):
+        if i == mem.layer:
+            h6 = h; h = read_fixed(mem, h, S, rec)
+            if cap is not None:
+                cap["h6"] = h6.detach(); cap["read"] = (h - h6).detach()
+        if mem.write_mode == "block9" and i == 10:
+            hw = h
+        h = _block(g, i, h, hd)
+    hw = h if mem.write_mode == "top" else hw
+    if cap is not None:
+        cap["hw"] = hw.detach()
+    return F.layer_norm(h, (D,), g.w("ln_f.weight"), g.w("ln_f.bias")), write_seq(mem, h6, hw, S)
+
+
 def gpt_forward_mem(g, x, mem, S, rec=None):
     """core.GPT.forward (no past / inject / capture) with the memory branch entering block mem.layer. x (B, T, D) input embeddings."""
+    if getattr(mem, "write_mode", None) is not None:                         # §155 DELTA-R
+        return gpt_forward_mem_r(g, x, mem, S, rec)
     B, T, D = x.shape; hd = D // g.H; h = x + g.w("wpe.weight")[:T][None]
     for i in range(g.L):
         if i == mem.layer:

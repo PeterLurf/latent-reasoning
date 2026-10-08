@@ -409,8 +409,8 @@ def s145_extras(m, teA, teB, dev, amp, bs, pred, codes, n=1024, seed=14501):
 class MultDelta(MultPair):
     """§147 DELTA-STATE: no carried code token; segment = [EOT, a_i, b_j, column flag] / [EOT, " ="], a fresh GPT-2 pass each, the DeltaMem state
     (B, 12, 64, 64) the only cross-segment channel; emission = GPT-2's LM head at the segment's last position (full-vocabulary CE)."""
-    def __init__(self, g, fam, layer=6):
-        super().__init__(g, fam); self.mem = DM.DeltaMem(g, layer)
+    def __init__(self, g, fam, layer=6, write=None):
+        super().__init__(g, fam); self.mem = DM.DeltaMem(g, layer, write)
 
     def start(self, B, dev, states=None):
         return self.mem.zero_state(B, dev)
@@ -647,7 +647,9 @@ def _raw_ridge(X, y, lam=1e-3):
 
 @torch.no_grad()
 def _branch_in(m, S, t):
-    """The residual entering the branch for step t's segment (independent of S: every write comes from block-6 entry)."""
+    """The residual entering the branch for step t's segment (independent of S: blocks 0-5 see the segment's tokens only)."""
+    if getattr(m.mem, "write_mode", None) is not None:                     # §155: the read is a function, not the module's forward
+        cap = {}; DM.gpt_forward_mem_r(m.g, m.g.embed(m.tokens(t, S.shape[0], S.device)), m.mem, S, cap=cap); return cap["h6"].float()
     cap = []; hk = m.mem.register_forward_pre_hook(lambda mod_, inp_: cap.append(inp_[0].detach().float()))
     try:
         m.step(S, t)
@@ -657,7 +659,7 @@ def _branch_in(m, S, t):
 
 
 @torch.no_grad()
-def c7_state_edit(m, A, Bd, dev, amp, bs, deltas=(-2, -1, 1, 2), cols=(2, 3, 4, 5, 6, 7)):
+def c7_state_edit(m, A, Bd, dev, amp, bs, deltas=(-2, -1, 1, 2), cols=(2, 3, 4, 5, 6, 7), prop_cols=(2, 3, 4, 5)):
     """§154 C7 STATE edits (descriptive; Audit / Theory). S is a function of the input tokens only (no read -> write path), so an edit reaches
     later columns only through the perturbed state itself.
     (a) additive: entering column k's emission step (after that step's SHIFT reset when it starts a column), Delta S_add per head h =
@@ -704,14 +706,20 @@ def c7_state_edit(m, A, Bd, dev, amp, bs, deltas=(-2, -1, 1, 2), cols=(2, 3, 4, 
             dS = ph[..., :, None] * r[None, :, None, :] / (ph ** 2).sum(-1)[..., None, None]
             return torch.cat([S[:, :HA] + dS.to(S.dtype), S[:, HA:]], 1)
         return f
-    def del_edit(dl, k):
+    def del_edit(dl, k, rand_dir=None):
         def f(S, t):
             x = _branch_in(m, S, t); a_ = m.mem.ln(x); q, kk, _ = m.mem.qkv(a_).split(768, -1); B_, T_ = x.shape[:2]
             q = q.view(B_, T_, HA + DM.H_DEL, DM.DH)[:, :, HA:]; kk = Fn.normalize(kk.view(B_, T_, HA + DM.H_DEL, DM.DH)[:, :, HA:], dim=-1)
             g_ = m.mem.gate(a_); al = torch.sigmoid(g_[..., :DM.H_DEL]); be = 2 * torch.sigmoid(g_[..., DM.H_DEL:])
             z = Fn.normalize(q[:, -1], dim=-1)                              # (B, H, DH): z = A_0 ... A_{T-1} q_d
-            for tt in range(T_ - 1, -1, -1):
-                kd = kk[:, tt]; z = al[:, tt][..., None] * (z - be[:, tt][..., None] * kd * (kd * z).sum(-1, keepdim=True))
+            if getattr(m.mem, "write_mode", None) is None:                  # §155 (R): the read sees the pass-start state, z = q_d
+                for tt in range(T_ - 1, -1, -1):
+                    kd = kk[:, tt]; z = al[:, tt][..., None] * (z - be[:, tt][..., None] * kd * (kd * z).sum(-1, keepdim=True))
+            if rand_dir is not None:                                        # propagation's random control: same Frobenius norm, random rank-1
+                zr = torch.randn_like(z); rr = torch.randn(z.shape[0], DM.H_DEL, DM.DH, device=z.device)
+                dS = (dl * wc[k] / gd).view(DM.H_DEL, DM.DH)[None, :, :, None] * z[..., None, :] / (z ** 2).sum(-1).clamp_min(1e-12)[..., None, None]
+                nrm = dS.flatten(1).norm(dim=1); dR = rr[..., :, None] * zr[..., None, :]; dR = dR * (nrm / dR.flatten(1).norm(dim=1).clamp_min(1e-12))[:, None, None, None]
+                return torch.cat([S[:, :HA], S[:, HA:] + dR.to(S.dtype)], 1)
             r = (dl * wc[k] / gd).view(DM.H_DEL, DM.DH)
             dS = r[None, :, :, None] * z[..., None, :] / (z ** 2).sum(-1).clamp_min(1e-12)[..., None, None]   # S_del is (v x k): dS z = r
             return torch.cat([S[:, :HA], S[:, HA:] + dS.to(S.dtype)], 1)
@@ -732,6 +740,25 @@ def c7_state_edit(m, A, Bd, dev, amp, bs, deltas=(-2, -1, 1, 2), cols=(2, 3, 4, 
                                        "unedited_share": float(np.mean([v["unedited_share"] for v in bya.values()])),
                                        "carry_follow_share": float(np.mean([v["carry_follow_share"] for v in bya.values()])), "n": int(N * len(bya)), "by_column": bya}
         out["delta"]["%+d" % dl] = {"carry_shift_share": float(np.mean([v["carry_shift_share"] for v in byd.values()])), "by_next_column": byd}
+    pr = {"by_k": {}}; tot = {"prop": 0, "rand": 0, "null": 0, "n": 0}; grng = torch.Generator(device="cpu").manual_seed(15502)
+    for k in prop_cols:                                                     # §155 / §154 propagation: carry edit at column k+1's first pair -> column k+2
+        if k + 1 >= C.shape[1]:
+            continue
+        c1, c2 = C[:, k], C[:, k + 1]; byd = {}
+        for dl in (-1, 1):
+            chg = (c1 + dl) // 10 != c1 // 10; tgt = (c2 - c1 // 10 + (c1 + dl) // 10) % 10
+            if not chg.any():
+                byd["%+d" % dl] = {"n": 0}; continue
+            g_ = run((int(first[k]), del_edit(dl, k))); torch.manual_seed(15502 + k * 10 + dl); gr_ = run((int(first[k]), del_edit(dl, k, rand_dir=True)))
+            ps, rs, nv = (g_[chg, k + 1] == tgt[chg]), (gr_[chg, k + 1] == tgt[chg]), (base[chg, k + 1] == tgt[chg])
+            byd["%+d" % dl] = {"propagation_share": float(ps.mean()), "random_edit_share": float(rs.mean()), "null_value": float(nv.mean()), "n": int(chg.sum())}
+            tot["prop"] += int(ps.sum()); tot["rand"] += int(rs.sum()); tot["null"] += int(nv.sum()); tot["n"] += int(chg.sum())
+        pr["by_k"][str(k)] = byd
+    pr["pooled"] = {"propagation_share": tot["prop"] / max(tot["n"], 1), "random_edit_share": tot["rand"] / max(tot["n"], 1), "null_value": tot["null"] / max(tot["n"], 1), "n": tot["n"]}
+    pr["def"] = ("delta-head carry edit at column k+1's first pair (k = 2..5, delta +-1, minimum-norm rank 1 moving column k+1's carry-in probe by delta); "
+                 "column k+2's digit vs (c^_{k+2} - r_{k+1} + floor((c^_{k+1} + delta)/10)) mod 10 on rows where the edit changes r_{k+1}; "
+                 "random_edit: an equal-norm random rank-1 edit; null_value: the unedited digit already equals the edited-chain value")
+    out["propagation"] = pr
     out["def"] = c7_state_edit.__doc__
     return out
 
@@ -762,6 +789,63 @@ def alpha_by_flag(m, A, Bd, dev, amp, n=256):
 def ci_or_flush(acc, ci, et, k):
     """carry into 0-based column k; for the flush column (k = n_cols) the final carry = c^ at the flush."""
     return (acc[:, et[k]] if k >= ci.shape[1] else ci[:, k]).astype(float)
+
+
+def write_params(m):
+    """§155: the write path's parameters (LN_w, qkv's k / v rows via the whole qkv, the gate) for the per-window write-gradient norm."""
+    return [m.mem.ln_w.weight, m.mem.ln_w.bias, m.mem.qkv.weight, m.mem.qkv.bias, m.mem.gate.weight, m.mem.gate.bias]
+
+
+@torch.no_grad()
+def r_caps(m, A, Bd, dev, amp, n=128):
+    """§155: per step (h6, read contribution, write input u) on a fixed batch, R mode (SHIFT reset applied as in step)."""
+    A, Bd = A[:n], Bd[:n]; set_ops(m, A, Bd, dev); pairs, _, _ = schedule(A.shape[1], Bd.shape[1]); S = m.start(len(A), dev); out = []
+    for t in range(len(pairs)):
+        if getattr(m, "add_reset", None) == "column" and t > 0 and m.newcol[t]:
+            S = torch.cat([torch.zeros_like(S[:, :DM.H_ADD]), S[:, DM.H_ADD:]], 1)
+        cap = {}
+        with amp_ctx(amp):
+            _, S = DM.gpt_forward_mem_r(m.g, m.g.embed(m.tokens(t, len(A), dev)), m.mem, S, cap=cap)
+        a6 = m.mem.ln(cap["h6"].float()); u = (1 - m.mem.gamma) * a6 + m.mem.gamma * m.mem.ln_w(cap["hw"].float())
+        out.append((a6.flatten(0, 1).cpu().numpy(), cap["read"].float().flatten(0, 1).cpu().numpy(), u.flatten(0, 1).cpu().numpy(), S.clone()))
+    return out
+
+
+def _multi_r2(Xf, Yf, Xs, Ys, lam=1e-2):
+    mu, sd = Xf.mean(0), Xf.std(0) + 1e-6; Zf = np.c_[(Xf - mu) / sd, np.ones(len(Xf))]; Zs = np.c_[(Xs - mu) / sd, np.ones(len(Xs))]
+    W = np.linalg.solve(Zf.T @ Zf + lam * len(Zf) * np.eye(Zf.shape[1]), Zf.T @ Yf); r = Ys - Zs @ W
+    return float(1 - (r ** 2).sum() / max(((Ys - Ys.mean(0)) ** 2).sum(), 1e-12))
+
+
+def s155_recurrence(m, A, Bd, dev, amp, n=128, rows=4000, seed=15501):
+    """§155 per window (fixed batch): write_var_from_read_r2 / write_var_from_input_r2 (held-out ridge, pooled-variance R^2 of the write input u
+    from the read contribution / from LN_6(h_6), over positions of all steps, `rows` sampled) and rho_jvp (median ||J v|| over rows and steps,
+    J = dS_{t+1} / dS_t, v a random unit direction per row; torch.func.jvp, fp32, autocast off)."""
+    was = m.training; m.eval(); caps = r_caps(m, A, Bd, dev, amp, n); a6 = np.concatenate([c[0] for c in caps]); rd = np.concatenate([c[1] for c in caps]); u = np.concatenate([c[2] for c in caps])
+    rng = np.random.default_rng(seed); ix = rng.permutation(len(u))[:rows]; h = len(ix) // 2; f_, s_ = ix[:h], ix[h:]
+    out = {"write_var_from_read_r2": _multi_r2(rd[f_], u[f_], rd[s_], u[s_]), "write_var_from_input_r2": _multi_r2(a6[f_], u[f_], a6[s_], u[s_])}
+    try:
+        from torch.func import jvp
+        nj = min(32, caps[0][3].shape[0]); rh = []; set_ops(m, A[:nj], Bd[:nj], dev)
+        for t in range(1, len(caps), 2):
+            S0 = caps[t - 1][3][:nj].float(); v = torch.randn_like(S0); v = v / v.flatten(1).norm(dim=1)[:, None, None, None]
+            if getattr(m, "add_reset", None) == "column" and m.newcol[t]:
+                S0 = torch.cat([torch.zeros_like(S0[:, :DM.H_ADD]), S0[:, DM.H_ADD:]], 1); v = torch.cat([torch.zeros_like(v[:, :DM.H_ADD]), v[:, DM.H_ADD:]], 1)
+                v = v / v.flatten(1).norm(dim=1).clamp_min(1e-12)[:, None, None, None]
+            x = m.g.embed(m.tokens(t, nj, dev))
+            try:                                                            # SDPA's fused kernels lack forward AD: the math backend (same function)
+                from torch.nn.attention import SDPBackend, sdpa_kernel
+                with sdpa_kernel(SDPBackend.MATH):
+                    _, Jv = jvp(lambda S_: DM.gpt_forward_mem_r(m.g, x, m.mem, S_)[1], (S0,), (v,))
+                meth = "torch.func.jvp (SDPA math backend), fp32"
+            except Exception:                                               # noqa: BLE001
+                eps_ = 1e-3 * float(S0.flatten(1).norm(dim=1).median().clamp_min(1.0)); f_ = lambda S_: DM.gpt_forward_mem_r(m.g, x, m.mem, S_)[1]  # noqa: E731
+                Jv = (f_(S0 + eps_ * v) - f_(S0 - eps_ * v)) / (2 * eps_); meth = "central difference (eps 1e-3 x median ||S||), fp32"
+            rh.append(Jv.detach().flatten(1).norm(dim=1).cpu().numpy())
+        out["rho_jvp"] = float(np.median(np.concatenate(rh))); out["rho_method"] = meth
+    except Exception as e:                                                  # noqa: BLE001
+        out["rho_jvp"] = None; out["rho_method"] = "jvp failed: %s" % str(e)[:120]
+    m.train(was); return out
 
 
 def s154_extras(m, teA, teB, dev, amp, bs, ext_n, shift):
@@ -937,6 +1021,8 @@ def main():
     ap.add_argument("--carry_from", default="first", choices=["first", "last"], help="§145 note 145-1: carry the slots read at the LAST write positions (CARRY1: w_K)")
     ap.add_argument("--no_round", action="store_true", help="§145 NOISE-64 carrier"); ap.add_argument("--dither", type=float, default=0.0)
     ap.add_argument("--keep_ckpt_steps", default="", help="§151: comma list of steps; model-only copies there, the row-level donor on each at the end (s151.serial_by_ckpt), then deleted")
+    ap.add_argument("--mem_write", default=None, choices=[None, "top", "block9"], help="§155 DELTA-R: write k / v / alpha / beta from the top residual (mixed in by gamma)")
+    ap.add_argument("--write_mix_start", type=int, default=2000); ap.add_argument("--write_mix_end", type=int, default=6000)
     ap.add_argument("--add_reset", default=None, choices=[None, "column"], help="§154 SHIFT: zero the additive heads' state before each new column / the flush")
     ap.add_argument("--add_rotary", default=None, choices=[None, "column"], help="§154 ROTARY (not built yet)"); ap.add_argument("--rotary_read_offsets", default=None)
     ap.add_argument("--rotary_base", type=float, default=100.0)
@@ -956,7 +1042,9 @@ def main():
     assert not a.slots or a.slot_space or (a.no_round and 1 <= a.carry_slots <= a.slots <= 4), "§145: --slots K (<= 4) needs --no_round and 1 <= --carry_slots <= K"
     assert a.bs % a.micro == 0, "--micro must divide --bs"
     a.mem_group_gain = a.carrier == "deltamem"
-    assert not (a.add_reset or a.add_rotary) or a.carrier == "deltamem", "§154: --add_reset / --add_rotary need --carrier deltamem"
+    assert not (a.add_reset or a.add_rotary or a.mem_write) or a.carrier == "deltamem", "§154 / §155: --add_reset / --add_rotary / --mem_write need --carrier deltamem"
+    if not a.mem_write:
+        a.write_mix_start = a.write_mix_end = None
     assert not a.add_rotary, "§154 ROTARY is not built yet"
     if not a.add_rotary:
         a.rotary_base = None                               # note 147-2 (the scorer checks it)
@@ -972,7 +1060,7 @@ def main():
     assert a.carrier == "code" or (not a.slots and a.mem_add_heads == DM.H_ADD and a.mem_delta_heads == DM.H_DEL), "§147: --carrier deltamem (6 + 6 heads), no slots"
     def mk():
         if a.carrier == "deltamem":
-            md_ = MultDelta(s5.load_gpt2(dev), fam, a.mem_layer).to(dev); md_.add_reset = a.add_reset; return md_
+            md_ = MultDelta(s5.load_gpt2(dev), fam, a.mem_layer, a.mem_write).to(dev); md_.add_reset = a.add_reset; return md_
         if a.slot_space:
             m_ = MultVocab(s5.load_gpt2(dev), fam, a.slots, a.slot_space).to(dev); m_.tau_final = float(a.slot_tau.split(":")[1]); return m_
         m_ = (MultSlot(s5.load_gpt2(dev), fam, a.slots, a.carry_slots, a.carry_from) if a.slots else MultPair(s5.load_gpt2(dev), fam)).to(dev); m_.no_round = a.no_round
@@ -1013,10 +1101,10 @@ def main():
                                  {"params": list(m.mem.parameters()), "mult": 1.0, "warm_from": 0, "name": "deltamem"}], lr=a.lr, weight_decay=0.01)
     else:
         opt = make_opt(m, a.lr)
-    log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time(); hist = []; L127 = {}; n_nonfinite = 0; step0 = 1; alpha_hist = []
+    log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time(); hist = []; L127 = {}; n_nonfinite = 0; step0 = 1; alpha_hist = []; rec_hist = []; wg_hist = []; wwin = []; wlast = []   # §155
     if a.resume:
         ck = torch.load(a.resume, map_location=dev, weights_only=False); m.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"])
-        rng.bit_generator.state = ck["np_rng"]; torch.set_rng_state(ck["torch_rng"].cpu()); L127 = ck["L127"]; n_nonfinite = ck["n_nonfinite"]
+        rng.bit_generator.state = ck["np_rng"]; torch.set_rng_state(ck["torch_rng"].cpu()); L127 = ck["L127"]; n_nonfinite = ck["n_nonfinite"]; rec_hist = ck.get("rec_hist") or []; wg_hist = ck.get("wg_hist") or []
         if dev.startswith("cuda") and ck.get("cuda_rng") is not None:
             torch.cuda.set_rng_state(ck["cuda_rng"].cpu(), device=dev)
         step0 = ck["step"] + 1; t0 = time.time() - ck["elapsed"]; log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
@@ -1043,6 +1131,8 @@ def main():
         m.noise = (a.dither if step > 2000 * sc else 0.0) if a.no_round else 0.0   # §145 NOISE-64: dither after 2k (no draws otherwise)
         if a.carrier == "deltamem":
             m.mem.fade.fill_(min(1.0, step / max(1, int(500 * sc))))         # §147: W_o fade-in over 500 steps
+            if a.mem_write:                                                 # §155: gamma 0 until write_mix_start, linear to 1 at write_mix_end
+                m.mem.gamma.fill_(0.0 if step <= a.write_mix_start * sc else min(1.0, (step - a.write_mix_start * sc) / max(1.0, (a.write_mix_end - a.write_mix_start) * sc)))
         if a.slot_space:                                                    # §150: Gumbel tau and the straight-through fraction
             m.tau = sched_tau(step, a.slot_tau, sc); m.p_hard_slot = sched_hard(step, a.slot_hard, sc)
         c = int(rng.integers(1, cmax(step / sc, a.task) + 1)); X, lab, tm, T = batch(c, a.bs); opt.zero_grad()
@@ -1058,6 +1148,9 @@ def main():
                     lk, _, _, _ = m.chain(m.start(ch, dev), X[sl_], lab[sl_], tm[sl_])
                 (lk / a.micro).backward(); tot += float(lk.item()) / a.micro
             loss = torch.tensor(tot)
+        if a.mem_write:                                                     # §155: the write path's gradient norm (before clipping)
+            wgs_ = [p_.grad.float().norm() for p_ in write_params(m) if p_.grad is not None]; wg_ = float(torch.stack(wgs_).norm()) if wgs_ else 0.0; wwin.append(wg_); wlast.append(wg_)
+            del wlast[:-int(1000 * sc) or None]
         gn = torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0)
         if not (math.isfinite(tot) and bool(torch.isfinite(gn))):
             bad = "loss" if not math.isfinite(tot) else next((n_ for n_, p_ in m.named_parameters() if p_.grad is not None and not bool(torch.isfinite(p_.grad).all())), "grad_norm")
@@ -1068,7 +1161,15 @@ def main():
             rec = {"step": step, "loss": float(np.mean(hist)) if hist else None, "c_max": cmax(step / sc, a.task), "p_hard": m.p_hard, "sec": round(time.time() - t0)}; hist = []
             if a.carrier == "deltamem":                                     # note 147-2 (Audit): the read gains per window
                 rec.update({"g_add": float(torch.exp(m.mem.s_add)), "g_del": float(torch.exp(m.mem.s_del)), "fade": float(m.mem.fade)})
+            if a.mem_write and wwin:                                        # §155: write-gradient norm per window; spike vs the last 1k steps' median
+                md_ = float(np.median(wlast)); w_rec = {"step": step, "mean": float(np.mean(wwin)), "max": float(np.max(wwin)), "median_1k": md_,
+                                                        "spike_100x": bool(np.max(wwin) > 100 * md_ > 0)}
+                rec.update({"gamma": float(m.mem.gamma), "write_grad_norm": w_rec["mean"], "write_grad_spike_100x": w_rec["spike_100x"]}); wg_hist.append(w_rec); wwin = []
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True); L127[step] = rec["loss"]
+        if a.mem_write and step % max(1, int(1000 * sc)) == 0:             # §155: recurrence + write_norm_ratio per 1k on a fixed batch
+            m.mem.wstat = []; rr_ = {"step": step, "gamma": float(m.mem.gamma), **s155_recurrence(m, teA, teB, dev, amp)}
+            rr_["write_norm_ratio"] = float(np.median([w_ / max(b_, 1e-12) for w_, b_ in m.mem.wstat])) if m.mem.wstat else None; m.mem.wstat = None
+            rec_hist.append(rr_); log.write(json.dumps({"step": step, "s155_recurrence": rr_}) + "\n"); log.flush(); m.train()
         if step == int(2000 * sc) and L127:                                 # 123-3's flag logged for every attempt; stops only with --stop_plateau
             gl = lambda t_: L127[min(L127, key=lambda s_: abs(s_ - t_ * sc))]  # noqa: E731
             fl = bool(gl(2000) >= 0.9 * gl(1000) and gl(2000) >= 0.25 * gl(100))
@@ -1085,7 +1186,7 @@ def main():
                 ah_ = {"step": step, **alpha_by_head(m, teA, teB, dev, amp)}; alpha_hist.append(ah_); log.write(json.dumps({"step": step, "alpha_by_head": ah_}) + chr(10)); log.flush()
             cp = os.path.join(a.out, "ckpt_last.pt")
             torch.save({"model": m.state_dict(), "opt": opt.state_dict(), "torch_rng": torch.get_rng_state(), "cuda_rng": torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else None,
-                        "np_rng": rng.bit_generator.state, "step": step, "L127": L127, "n_nonfinite": n_nonfinite, "elapsed": time.time() - t0, "alpha_hist": alpha_hist}, cp + ".tmp")
+                        "np_rng": rng.bit_generator.state, "step": step, "L127": L127, "n_nonfinite": n_nonfinite, "elapsed": time.time() - t0, "alpha_hist": alpha_hist, "rec_hist": rec_hist, "wg_hist": wg_hist}, cp + ".tmp")
             if os.path.exists(cp):
                 os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))
             os.replace(cp + ".tmp", cp); log.write(json.dumps({"step": step, "ckpt": "ckpt_last.pt"}) + "\n"); log.flush()
@@ -1116,10 +1217,25 @@ def main():
         res["s147"]["read_norm_ratio_by_handoff"] = {"step0": i147.get("read_norm_ratio_by_handoff_step0"), "end": read_ratio_by_handoff(m, teA, teB, dev, amp)[0]}
         res["s147"]["alpha_by_head"] = {"end": alpha_by_head(m, teA, teB, dev, amp), "checkpoints": alpha_hist}
         res["s147"].update({"g_add_init": i147.get("g_add_init"), "g_add": float(torch.exp(m.mem.s_add)), "g_del": float(torch.exp(m.mem.s_del)), "mem_group_gain": True, "gain_param": "exp(s)"})
-        if a.add_reset or a.add_rotary:                                     # §154: ext_4x16 (eval only) + the s154 block
+        if a.add_reset or a.add_rotary or a.mem_write:                      # §154 / §155: ext_4x16 (eval only) + the s154 block
             yA, yB = gen_operands(np.random.default_rng(14006), a.ext_n, 4), gen_operands(np.random.default_rng(14007), a.ext_n, 16); Py, _, _ = columns(yA, yB)
             res["ext_4x16"] = {**acc_report(RO(m, yA, yB, dev, amp, a.eval_bs), Py), "seeds": [14006, 14007], "n": int(a.ext_n)}
             res["s154"] = {**s154_extras(m, teA, teB, dev, amp, a.eval_bs, a.ext_n, a.add_reset == "column"), "add_reset": a.add_reset, "add_rotary": a.add_rotary}
+        if a.mem_write or a.add_reset:                                      # §154 / §155: the C7 state edits + propagation, inline (post-hoc for b161)
+            c7_ = c7_state_edit(m, teA, teB, dev, amp, a.eval_bs)
+            res["s154"].update({"c7_state_edit": c7_, "acc_by_column_carry": acc_by_column_carry(m, teA, teB, dev, amp, a.eval_bs),
+                                "alpha_by_flag": alpha_by_flag(m, teA, teB, dev, amp), "propagation": c7_["propagation"]})
+        if a.mem_write:                                                     # §155 block
+            with torch.no_grad():
+                n_ = min(256, len(teA)); set_ops(m, teA[:n_], teB[:n_], dev); S_ = m.start(n_, dev); mn_ = {"additive": [], "delta": []}
+                for t_ in range(len(schedule(teA.shape[1], teB.shape[1])[0])):
+                    with amp_ctx(amp):
+                        _, S_ = m.step(S_, t_)
+                    mn_["additive"].append(float(S_[:, :DM.H_ADD].float().flatten(1).norm(dim=1).median())); mn_["delta"].append(float(S_[:, DM.H_ADD:].float().flatten(1).norm(dim=1).median()))
+            res["s155"] = {"propagation": res["s154"]["propagation"], "recurrence": rec_hist + [{"step": "end", **s155_recurrence(m, teA, teB, dev, amp)}],
+                           "mem_norm_by_pass": mn_, "write_norm_ratio": [x_ for x_ in rec_hist if "write_norm_ratio" in x_ and x_.get("gamma", 1) < 1],
+                           "write_grad_norm": wg_hist, "n_nonfinite": n_nonfinite, "mem_write": a.mem_write, "write_mix": [a.write_mix_start, a.write_mix_end],
+                           "gamma_final": float(m.mem.gamma), "write_grad_spikes": [x_ for x_ in wg_hist if x_.get("spike_100x")]}
         res["n_codes"] = None; res["eval_sec"] = round(time.time() - t1)
     elif a.slot_space:                                                      # §150 (contraction = the on-host fp32 file, perturbing h(w_k))
         res["donor"] = donor_vocab(m, teA, teB, dev, amp, a.eval_bs, np.random.default_rng(14002), n=a.donor_n)
