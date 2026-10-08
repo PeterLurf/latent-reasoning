@@ -253,6 +253,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 163 | SHAPE-MIX-2D: both operand lengths mixed (m, n 2..5), 6×6–8×8 generalisation | registered (condition met) | **open** |
 | 164 | MIX-BASELINES: TC-MIX / DIRECT-MIX on §161's mix (like-for-like C2 baselines) | **LATENT BEYOND TEXT ON LENGTH** (TC-MIX anchored ext 0.0 at 4×6+; its CoT stops short); DIRECT-MIX 4×4 ≤ 0.004 (the single pass fails) | closed |
 | 165 | FIXED-CHUNK: the same memory on fixed text chunks plus think passes (task-agnostic segmentation) | registered | **open** |
+| 166 | STATE-COVERAGE: 1k-step post-training from passed / noise states vs a PLAIN post-train (2507.02782), on §162 LONG and §161 MIX | registered | **open** |
 
 ## Live sections
 
@@ -9881,6 +9882,63 @@ this note is pushed.**
 * **What had been seen:** Audit relayed TC-MIX's position-locked values: 4×4 1.0 / 1.0, every ext 0.0, and 4×6 column 1 at 0.42 / 0.47.
   - Theory had not run score_s164.
   - The anchored read can only raise TC-MIX, which works against the latent claim. It is a validity fix, not a favourable choice.
+
+## 166. STATE-COVERAGE: short post-training with wider initial-state coverage, against the length collapse past training (C6 / C2) (Audit's research pass 16:45; pre-registered 2026-10-08 16:53 EDT, after Theory's check of 2507.02782 (Literature offline since the reboot; title, authors and abstract verified via the arXiv API) and Audit's review, before any implementation or run)
+
+**Why.**
+* **The newest results share one blocker: exact inside the trained length, collapse beyond it.**
+  - §162 LONG s1 is 1.0 to 32 but 0.0 at 512 / 2,048.
+  - §161 MIX is 0.91–0.96 at 4×8 but ≤ 0.20 at 4×16.
+* **Prior:** Buitrago Ruiz & Gu 2507.02782 (verified), the "unexplored states hypothesis".
+  - Recurrent / linear-attention models fail past their training length because training visits only a subset of the attainable states.
+  - About 500 post-training steps starting from Gaussian-noise states, or from another sequence's final state, give 2k → 128k.
+  - Our zero-initialised memory has only seen states reachable within 32 S5 items or 4×5 chains.
+  - The abstract covers SSMs and linear attention. Whether delta / additive memories were tested is unchecked (abstract-level).
+* This is a C6 / length lever, not a C1 fix. It reopens no C1 loop.
+
+**Design:** post-training of existing models, 1,000 steps, AdamW lr 2·10⁻⁵ constant after 50 warmup steps, bs 64, same data and curriculum stage as the end of the source
+run, RTX 3090 (or a local card if memory-checked).
+* **In every arm, half the chains (`init_p` 0.5) start from the covered state and half from zero**, the test condition.
+* **The covered states come from the CURRENT post-trained model**, without gradients and regenerated each batch, as the paper's state passing (Audit). For NOISE, the
+  per-head norm target is recomputed from the current model every 100 steps. Recorded in args as `state_source: current`.
+* **S5, from §162 LONG s2's model (l_max 32):**
+  - **SP (state passing):** the memory starts from the final memory of another random training chain (random start, length U(1..32)), whose final state is g.
+    - **Segment 0 is skipped for these chains,** so the passed state alone carries g. The zero-start half keeps segment 0.
+    - The target is g composed with the chain's items.
+  - **PLAIN:** the same 1,000 steps from zero states. This is the control for "more steps".
+* **MULT, from §161 MIX s1 / s2 / s3's models:**
+  - **NOISE:** a Gaussian memory init, with per-head Frobenius norm matched to the trained memory's median mid-chain norm (256 training chains).
+  - **PLAIN:** as above.
+  - State passing is not semantically clean for multiplication, so MULT uses noise only.
+
+**Rules (fixed now; `theory/score_s166.py`).**
+* **COVERAGE-HELPS(S5):** SP long_acc at 512 ≥ 0.90 **and** PLAIN < 0.50, with SP's final-state accuracy ≥ 0.99 at every length ≤ 32.
+* **COVERAGE-HELPS(MULT):** NOISE mean ext_4x16 over the 3 models ≥ 0.50 **and** PLAIN's mean < 0.30, with NOISE's mean 4×4 ≥ 0.99 and mean ext_4x8 ≥ 0.90.
+* **What SP covers (Audit):** chains continued from a passed state carry effective histories of up to about 64 items, with the gradient truncated at the hand-off. So
+  "SP helps" means coverage of longer-history states, the hypothesis itself.
+* **Readings:**
+  - **Helps:** unexplored states explain the length collapse, and coverage is the lever (C6 / C2).
+  - **SP final-state accuracy ≥ 0.90 at 48 / 64 but long_acc 512 < 0.90:** "covered range only", not general stability.
+  - **Not shown:** the drift is not coverage. Read the state-norm growth instead (descriptive).
+* **Predictions (Audit):** SP 512 ≥ 0.9 and 2,048 ≥ 0.5; NOISE 4×16 ≥ 0.5.
+* **Descriptive:**
+  - acc_2048 and final-state accuracy at L 48 / 64 (`acc_by_length_ext`) for S5; ext_4x6 / 4x7 for MULT;
+  - `mem_norm_by_pass` along 512-item / 4×16 chains for the source, PLAIN and the covered model;
+  - SERIAL and the in-progress / state probes after post-training (does coverage change the state code?).
+
+**Placement.**
+* About $1: 2 + 6 short post-trains.
+* S5 waits for LONG s2's model (b192; Audit asked Experiments to keep it). MULT can run now (MIX models kept).
+* **Implementation (Experiments):** a `--post_train_from <dir> --pt_steps --pt_lr --init_mode {zero,pass,noise} --init_p` path in deltas5 and multpair.
+  - Recorded in args: post_train_from, pt_steps, pt_lr, init_mode, init_p, state_source.
+  - The full eval runs after post-training.
+* **Gates:**
+  - with init_p 0, the first post-train batch is bit-identical to plain training;
+  - the label check: a passed chain's target is g ∘ its items, with g the passing chain's final state;
+  - the noise norms are matched;
+  - smoke_plain;
+  - Audit's diff review.
+* Dirs `s166_s5_{sp,plain}_s2`, `s166_mult_{noise,plain}_s{1,2,3}`. Scorer: `theory/score_s166.py`, committed with this registration.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

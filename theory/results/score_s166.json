@@ -1,0 +1,20 @@
+{
+ "s5": {
+  "reading": "pending",
+  "status": [
+   "open",
+   "open"
+  ]
+ },
+ "mult": {
+  "reading": "pending",
+  "status": {
+   "noise_s1": "open",
+   "noise_s2": "open",
+   "noise_s3": "open",
+   "plain_s1": "open",
+   "plain_s2": "open",
+   "plain_s3": "open"
+  }
+ }
+}
