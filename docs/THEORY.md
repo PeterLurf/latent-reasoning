@@ -9327,6 +9327,12 @@ accumulator.**
 * **Every rows design now fails at column 5 at about 0.06–0.10:** A-R, CTRL-R, the §157 panel, A-SEP, and b165 at 96k. §152 A s1 is the exception (column 6 at 0.338).
 * **The 155-1 trigger fired** (51 floor spikes). A-R9 (b194) and CTRL-R9 (b193) run by the rule, descriptive.
 * **§160 closes** on the A-R gate. The C3 position stays with the digit-pair chain (R / MIX: 0.79× TC-M FLOPs, 0.30× its passes).
+* **§160's registered C1 nulls (2026-10-08 12:20 EDT; descriptive; 5f973756, the input-only §152 A s1 scored with A-R's battery):**
+  - **The S_2 edit:** follow 0.0, equal to random (0.0), against an unedited share of 0.338. The same as A-R / CTRL-R (follow 0.0).
+  - **colsum_cls units after segment 4:** §152 A 1.0 / 0.29 / 0.10 / 0.11 / 0.12 / 0.11 / 0.26, A-R 1.0 / 0.31 / 0.12 / 0.10 / 0.12 / 0.09 / 0.32, and CTRL-R the
+    same profile.
+  - **On rows, write-after-read stores no more of the column sums than input-only writes do.** On digit pairs it differs: R holds completed columns' units
+    exactly, and MIX holds the in-progress sum.
 
 ## 161. SHAPE-MIX: breaking the 4×4 count schedule for length generalisation (C2) (Audit 07:50; pre-registered 2026-10-08 07:55 EDT, after Literature's check 0b532db5 and Audit's draft, before any implementation or run)
 
