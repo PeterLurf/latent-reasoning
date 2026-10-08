@@ -2,11 +2,12 @@
 STATE-COVERAGE: short post-training of existing models with wider initial-state coverage (Buitrago Ruiz & Gu 2507.02782), against a same-length plain
 post-train (the control for "more steps"). 1,000 steps, AdamW lr 2e-5 constant after 50 warmup, bs 64; half the chains start from the covered state.
   S5 (§162 LONG s2's model, l_max 32): SP = state passing (memory from another random chain's final memory, start text = its final state) vs PLAIN.
-  MULT (§161 MIX s1 / s2 / s3's models): NOISE = Gaussian memory init (per-head norm matched to the trained mid-chain state) vs PLAIN.
+  MULT (§161 MIX s1 / s2 / s3's models): FITTED = element-wise Gaussian memory init with the per-head element-wise mean / std of real mid-chain memories
+  (note 166-1; the paper's IID noise is its weakest) vs PLAIN.
 COVERAGE-HELPS(S5): SP long_acc_512 >= 0.90 AND PLAIN long_acc_512 < 0.50, with SP final accuracy >= 0.99 at every length <= 32; else 'covered range only' if SP >= 0.90 at 48 / 64.
 Covered states come from the current model (state_source current); SP skips segment 0 for passed chains (Audit).
 COVERAGE-HELPS(MULT): NOISE mean ext_4x16 (3 models) >= 0.50 AND PLAIN mean < 0.30, with NOISE mean 4x4 >= 0.99 and mean ext_4x8 >= 0.90.
-Dirs boxes/runs_fsq/s166_s5_{sp,plain}_s2 and s166_mult_{noise,plain}_s{1,2,3}.
+Dirs boxes/runs_fsq/s166_s5_{sp,plain}_s2 and s166_mult_{fitted,plain}_s{1,2,3}.
     python theory/score_s166.py
 """
 import json
@@ -55,7 +56,7 @@ def main():
     else:
         res["s5"] = {"reading": "pending", "status": (sp["status"], pl["status"])}
     print("S5:", res["s5"])
-    nz = {s: cell("s166_mult_noise_s%d" % s, "noise", "s161_mix_4x4_s%d" % s) for s in (1, 2, 3)}
+    nz = {s: cell("s166_mult_fitted_s%d" % s, "fitted", "s161_mix_4x4_s%d" % s) for s in (1, 2, 3)}   # note 166-1: FITTED noise
     pn = {s: cell("s166_mult_plain_s%d" % s, "zero", "s161_mix_4x4_s%d" % s) for s in (1, 2, 3)}
     if all(v["status"] == "done" for v in list(nz.values()) + list(pn.values())):
         g = lambda v, k: ((v.get(k) or {}).get("test_acc") if k != "test_acc" else v.get("test_acc"))  # noqa: E731
@@ -63,10 +64,11 @@ def main():
         n44, n48 = mean([g(v, "test_acc") for v in nz.values()]), mean([g(v, "ext_4x8") for v in nz.values()])
         kept = bool((n44 or 0) >= 0.99 and (n48 or 0) >= 0.90)
         helps = bool(kept and (n16 or 0) >= 0.50 and (p16 if p16 is not None else 1) < 0.30)
-        rm = "COVERAGE-HELPS (MULT)" if helps else ("4x4 / 4x8 not kept" if not kept else "not shown (drift is not coverage: read mem_norm_by_pass)")
+        rm = ("COVERAGE-HELPS (MULT)" if helps else ("4x4 / 4x8 not kept" if not kept else
+              "not shown with fitted noise (note 166-1: not a refutation of coverage for MULT; read per-column 4x16 + mem_norm_by_pass)"))
         res["mult"] = {"noise_mean_4x16": n16, "plain_mean_4x16": p16, "noise_mean_4x4": n44, "noise_mean_4x8": n48, "kept": kept, "reading": rm}
     else:
-        res["mult"] = {"reading": "pending", "status": {**{"noise_s%d" % s: v["status"] for s, v in nz.items()}, **{"plain_s%d" % s: v["status"] for s, v in pn.items()}}}
+        res["mult"] = {"reading": "pending", "status": {**{"fitted_s%d" % s: v["status"] for s, v in nz.items()}, **{"plain_s%d" % s: v["status"] for s, v in pn.items()}}}
     print("MULT:", res["mult"])
     if ERRORS:
         print("ERRORS:", ERRORS)

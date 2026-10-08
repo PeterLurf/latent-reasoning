@@ -9,9 +9,9 @@
  "mult": {
   "reading": "pending",
   "status": {
-   "noise_s1": "open",
-   "noise_s2": "open",
-   "noise_s3": "open",
+   "fitted_s1": "open",
+   "fitted_s2": "open",
+   "fitted_s3": "open",
    "plain_s1": "open",
    "plain_s2": "open",
    "plain_s3": "open"
