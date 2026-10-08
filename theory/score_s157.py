@@ -69,6 +69,15 @@ def main():
         rd = "several pass (%s): the read was the block; cheapest by FLOPs: %s (%s)" % (passed, ch, {a: (fl[a] and round(fl[a] / S152.TCM["flops"], 2)) for a in passed})
     else:
         rd = "none >= 0.95: not the read; §155's recurrence is the remaining route"
+    c1 = (res.get("ccq") or {}).get("runs", {}).get(1) or {}; p1 = (res.get("periodic") or {}).get("runs", {}).get(1) or {}   # note 157-2
+    l0 = ((c1.get("read_exposure") or {}) if False else (load("s157_ccq_4x4_s1") or {}).get("s157", {}).get("read_time_lambda0") or {})
+    if gate.get("ccq") and (l0.get("test_acc") or 0) >= 0.95:
+        rd += "; CCQ: the read-time lambda = 0 ablation also >= 0.95 (%s): credit the l2-normalised features, not the contraction" % l0.get("test_acc")
+    ow = ((load("s157_periodic_4x4_s1") or {}).get("s157") or {}).get("offcol_weight")
+    if gate.get("periodic") is False and isinstance(ow, (int, float)) and ow >= 0.1:
+        rd += "; PERIODIC fails with offcol_weight %.2f >= 0.1: the blend blocks it, not read geometry" % ow
+    if gate.get("multiread"):
+        rd += " (MULTIREAD's queries are static learned parameters: static extra read bandwidth)"
     res["reading"] = rd; print("READING:", rd, "| comparator §152 A s1 at 48k: 0.331 (column 6 0.338); budget control b165:", g and g.get("test_acc"))
     if (res.get("multiread") or {}).get("gate_open"):
         print("CONDITIONAL NEXT ARM: MULTI-READ-COPY (R = 4 positions with copies of one query's read): bandwidth vs positions")

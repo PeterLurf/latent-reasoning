@@ -8963,6 +8963,14 @@ The run is a post-hoc on every accepted §155 model (and §154 SHIFT / §151 for
   - The operand-decode probe sharpens whichever reading applies.
 * "The first exact multiplication through a latent memory" is held from the user-facing framing until this reads.
 
+**Note 157-2 (2026-10-08 04:48 EDT, before any §157 run; Audit's code review 978a2399). Three readings sharpened.**
+* **CCQ = normalisation + contraction** (157-1). If CCQ passes and its **read-time λ = 0** ablation also reaches test_acc ≥ 0.95, the **ℓ2-normalised features** get the
+  credit, not the contraction. Both are reported.
+* **PERIODIC reads a positive-weighted blend** (φ = elu + 1 > 0), so integer exactness needs off-column weight ≈ 0.
+  - If PERIODIC fails with **offcol_weight ≥ 0.1**, the **blend** blocks it, not read geometry.
+  - read_round_err and PERIODIC's offcol_weight are reported.
+* **MULTIREAD's queries are static learned parameters** (Perceiver-style latents), not input-dependent. A pass reads "static extra read bandwidth".
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
