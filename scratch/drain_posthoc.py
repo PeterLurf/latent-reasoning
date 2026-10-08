@@ -88,6 +88,14 @@ def main():
                     with open(os.path.join(ROOT, "logs", "posthoc_%s_%s.log" % (outf.split(".")[0], name)), "w") as lg:
                         subprocess.call([sys.executable, "-u", "-m", mod, "--from_args", os.path.join(d, "args.json")] + flag + ["--device", dev, "--out", d],
                                         cwd=ROOT, stdout=lg, stderr=subprocess.STDOUT)
+    if name.startswith("s143_") and not os.path.exists(os.path.join(d, "eval_ablate704.json")):   # note 143-2 (ef7364f7): 704-block ablation on-host
+        mod = "boxes.fsq120_posthoc" if os.path.exists(os.path.join(ROOT, "boxes", "fsq120_posthoc.py")) else "boxes.fsq120"
+        with open(os.path.join(ROOT, "logs", "posthoc_ablate704_%s.log" % name), "w") as lg:
+            try:                                                            # own limit: the drain's ssh allows 900 s for this whole script
+                subprocess.call([sys.executable, "-u", "-m", mod, "--from_args", os.path.join(d, "args.json"), "--ablate704_only", "--device", dev, "--out", d],
+                                cwd=ROOT, stdout=lg, stderr=subprocess.STDOUT, timeout=480)
+            except subprocess.TimeoutExpired:
+                lg.write("ABLATE704 TIMEOUT (480 s)\n")
     for pat in patterns():
         if pat in d:
             print("KEEP pattern %s" % pat); return

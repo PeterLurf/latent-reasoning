@@ -1435,6 +1435,8 @@ def main():
     ap.add_argument("--hinge_rows", type=float, default=0.25, help="§138: share of each batch's rows hinged at every hand-off")
     ap.add_argument("--tanh_fp32", action="store_true", help="§138: the tanh before rounding in fp32 (Literature (3e))")
     ap.add_argument("--prefix_only", action="store_true", help="post-hoc (Theory 57d6b89e): cumulative accuracy at prefixes 1 / 2 / 4 / 8 of the eval's own test chains (8-step rollout; causal, so = the eval's first 8 positions) -> <out>/eval_prefix.json")
+    ap.add_argument("--lmax_fixed", type=int, default=0, help="§144 harness guard (Theory 01929b61): every training chain has this length instead of U(1, L_max) (0 = off)")
+    ap.add_argument("--ablate704_only", action="store_true", help="note 143-2 (ef7364f7): §143 704-block ablation at test (grow_alpha_1 = 0: e = W_up_old . z_old) -> ext_2048 + donor -> <out>/eval_ablate704.json and eval.json s143.ablate704")
     ap.add_argument("--probe_only", action="store_true", help="post-hoc (descriptive): probe127 on <out>/model.pt at p_hard 1 -> <out>/eval_probe_posthoc.json")
     ap.add_argument("--check_marker", default=None, help="§128 note 128-1: with --stop_plateau, the first attempt to mkdir this path when its flag fires keeps training")
     ap.add_argument("--stop_plateau", action="store_true", help="§127: stop at 2k when 123-3's flag fires (log kept, no eval.json)")
@@ -1450,7 +1452,7 @@ def main():
     if a.from_args:                                                         # Audit 2026-10-06: post-hoc runs reproduce the run's configuration exactly
         MODE = {"out", "device", "from_args", "contraction_only", "fp32", "cert_only", "cert_time", "growth_only", "mcheck_only", "eval_only",
                 "resume_2k", "save_at_flag", "redraw_head", "clock_only", "check_marker", "stop_plateau", "data_dir", "ext_n", "eval_bs", "contract_n",
-                "ckpt_every", "resume", "stop_after", "probe_only", "prefix_only"}
+                "ckpt_every", "resume", "stop_after", "probe_only", "prefix_only", "ablate704_only"}
         src = json.load(open(a.from_args)); unknown = []
         for k_, v_ in src.items():
             if k_ in MODE:
@@ -1539,6 +1541,22 @@ def main():
         C = pred == Yte; pf = {"acc_by_prefix": {str(t): float(C[:, :t].all(1).mean()) for t in (1, 2, 4, 8)}, "acc_at_pos": {str(t + 1): float(C[:, t].mean()) for t in range(P8)},
               "n": int(len(Xte)), "eval_dtype": str(amp), "device": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "driver": driver_version()}
         json.dump(pf, open(os.path.join(a.out, "eval_prefix.json"), "w", newline="\n"), indent=1); print("PREFIX", json.dumps(pf), flush=True); return
+    if a.ablate704_only:                                                    # note 143-2 (ef7364f7): is the 768 width functionally used?
+        m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.eval()
+        assert fam.name == "s5" and m.n_grow >= 2, "--ablate704_only: §143 s5 runs with the second widening"
+        el = 2048 if a.test_len >= 512 else a.test_len                      # as the main eval's ext_2048
+        Xx, Yx = s5.load_csv(os.path.join(a.data_dir, "S5=2048.csv"), limit=a.ext_n); s5.check_labels(Xx, Yx); Xx, Yx = Xx[:, :el], Yx[:, :el]; z0 = np.zeros(len(Xx), np.int64)
+        pc, _ = run_test(m, fam, z0[:100], Xx[:100], dev, amp, a.eval_bs)        # reload check: unablated, first 100 ext chains (eval.json has all n)
+        al_ = float(getattr(m, "grow_alpha_1")); getattr(m, "grow_alpha_1").fill_(0.0)   # _up: the 704 block's W_up output x 0 -> e from the 64 old dims only
+        px, _ = run_test(m, fam, z0, Xx, dev, amp, a.eval_bs)
+        ab = {"ext_2048": {"n": len(Xx), "len": int(Xx.shape[1]), "cumulative": float((px == Yx).all(1).mean())}, "donor": donor(m, fam, dev, amp, n=a.donor_n),
+              "unablated_ext_2048_check_n100": float((pc == Yx[:100]).all(1).mean()), "grow_alpha_1_trained": al_, "ablated": "up_g[1] output (dims 64..%d) x 0" % m.width(),
+              "eval_dtype": str(amp), "device": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "driver": driver_version(), "posthoc": True}
+        json.dump(ab, open(os.path.join(a.out, "eval_ablate704.json"), "w", newline="\n"), indent=1)
+        ep_ = os.path.join(a.out, "eval.json")
+        if os.path.exists(ep_):
+            r_ = json.load(open(ep_)); r_.setdefault("s143", {})["ablate704"] = ab; json.dump(r_, open(ep_, "w", newline="\n"), indent=1)
+        print("ABLATE704", json.dumps({"ext_2048": ab["ext_2048"], "donor": ab["donor"], "check": ab["unablated_ext_2048_check_n100"]}), flush=True); return
     if a.probe_only:                                                        # docs/LOCAL_BACKLOG.md (descriptive): §127's probe on a trained model.pt
         m = mk(); m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); m.p_hard = 1.0
         pr = probe127(m, fam, dev, amp); pr["ophist"] = opprobe(m, fam, dev, amp); pr.update({"eval_dtype": str(amp), "device": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
@@ -1574,7 +1592,7 @@ def main():
         os.remove(os.path.join(a.out, "grow.json"))                         # a fresh run in a reused dir: no stale widening record
     if a.eval_only:                                                         # replay the training draws (rng only) for coverage_drawn
         for step in range(1, a.steps + 1):
-            L = int(rng.integers(1, lmax_at(step / sc) + 1)); s0, x, lab = make_batch(fam, rng, a.bs, L)
+            L = int(rng.integers(1, lmax_at(step / sc) + 1)); L = a.lmax_fixed or L; s0, x, lab = make_batch(fam, rng, a.bs, L)
             if L <= 2:
                 drawn[s0, x[:, 0]] = True
                 if L == 2:
@@ -1667,7 +1685,7 @@ def main():
         m.noise = (a.dither if step > 2000 * sc else 0.0) if a.no_round else (a.fsq_dither if step > 4000 * sc else 0.0)
         var_w = (a.var_w * (1.0 if step <= 2000 * sc else max(0.0, 1 - (step - 2000 * sc) / (4000 * sc)))) if a.var_res else 0.0
         m.var_on = var_w > 0; m._var = []
-        L = int(rng.integers(1, lmax_at(step / sc) + 1)); s0, x, lab = make_batch(fam, rng, a.bs - n_copy, L)   # §134: copy rows take n_copy of bs
+        L = int(rng.integers(1, lmax_at(step / sc) + 1)); L = a.lmax_fixed or L; s0, x, lab = make_batch(fam, rng, a.bs - n_copy, L)   # §134: copy rows take n_copy of bs; §144 harness guard: --lmax_fixed (draw kept: same RNG stream)
         if L <= 2:                                                          # note 120-1: transitions labelled by short problems
             drawn[s0, x[:, 0]] = True
             if L == 2:
