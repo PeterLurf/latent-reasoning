@@ -254,6 +254,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 164 | MIX-BASELINES: TC-MIX / DIRECT-MIX on §161's mix (like-for-like C2 baselines) | **LATENT BEYOND TEXT ON LENGTH** (TC-MIX anchored ext 0.0 at 4×6+; its CoT stops short); DIRECT-MIX 4×4 ≤ 0.004 (the single pass fails) | closed |
 | 165 | FIXED-CHUNK: the same memory on fixed text chunks plus think passes (task-agnostic segmentation) | registered | **open** |
 | 166 | STATE-COVERAGE: 1k-step post-training from passed / noise states vs a PLAIN post-train (2507.02782), on §162 LONG and §161 MIX | registered | **open** |
+| 167 | DAS-EDIT: learned-subspace interchange (DAS) on MIX / S5 memories, with illusion controls (C1 edit, C7) | registered | **open** |
 
 ## Live sections
 
@@ -9980,6 +9981,73 @@ run, RTX 3090 (or a local card if memory-checked).
     Per-column 4×16 accuracy and `mem_norm_by_pass` separate the two.
   - **S5 SP replicates the paper's best intervention and stays the clean test.**
 * **The prior's scope:** the paper tested Mamba-1 / 2, GLA and RWKV-v6. No delta-rule or additive no-decay memory was tested, so this memory class is untested.
+
+## 167. DAS-EDIT: a learned-subspace interchange test of whether the carried state is causally decomposable (C1's edit half, C7) (Audit's research pass 18:45; pre-registered 2026-10-08 18:53 EDT, after Literature's check 739834f9 / 578c64ad (`docs/LIT_DAS_EDIT_2026-10-08.md`) and Audit's review; post hoc on existing models, no LM training; before any §167 run)
+
+**Why.**
+* **The rank-1 probe-direction edit is 0.0 in every DeltaMem run** (§155 / §158 / §159 / §161 / §162), while the state is carried:
+  - §161 MIX: in-progress units ≥ 0.97, and whole-state SERIAL with out-of-distribution hybrids;
+  - §162: the S5 state probe reads 0.88.
+* **A failed linear edit reads "not linearly editable", not "not carried"** (Literature (c); onion representations 2408.10920, verified).
+* **DAS (Geiger et al. 2303.02536, verified)** learns an orthonormal rotation in which swapping a causal variable between donor and recipient yields the counterfactual
+  output. Interchange-intervention accuracy (IIA) is the score.
+* **The illusion risk (Makelov et al. 2311.17030, verified):** a learned subspace can produce counterfactual behaviour through a dormant pathway. So the controls are
+  fixed now.
+
+**Design** (CPU or a local GPU; models kept):
+* **MULT:** §161 MIX s1 / s2 / s3.
+  - The variable is the in-progress column accumulator (multpair's a_t: partial column sum plus carry-in) after pair t ∈ {4, 8, 12}.
+  - The counterfactual is the recipient's later digits computed from the donor's a_t and the recipient's later pairs, i.e. donor_delta's expected digits.
+  - Pairs: generator items with a_t differing.
+* **S5:** §162 SHORT s1 / s2 and LONG s2. The variable is the current state g after item p* = l_max / 2. The counterfactual is g_donor ∘ the recipient's later items.
+  The whole-state swap passes by construction (the Markov property), so the k-curve, not the k = 2,048 ceiling, is the S5 result.
+* **A second MULT variable (descriptive; Literature):** the carry-in alone, on column-sum-MATCHED pairs (equal partial column sum, different carry-in), the design of
+  2610.06605.
+* **Localisation (descriptive):** DAS restricted to the additive heads and to the delta heads (about 24k dimensions each), and Csordás-style scaling interventions on
+  the additive heads (2408.10920: magnitude codes). A DAS null does not rule out a magnitude code.
+* **DAS:**
+  - an orthonormal map R ∈ ℝ^{D×k} (torch's orthogonal parametrisation; kept linear, since non-linear maps fit random models, 2507.08802) on the flattened memory S
+    (all heads), with k ∈ {1, 2, 4, 8, 16, 64}, plus k = 2,048 as a near-whole-state reference;
+  - the intervention is S_rec ← S_rec + R Rᵀ (S_don − S_rec), after which the recipient continues;
+  - the loss is CE of the answer digits against the counterfactual;
+  - fit on 4,000 pairs drawn from one item set (Adam lr 1e-3, ≤ 2,000 steps, early stop on 500 validation pairs). **Held-out pairs come from a DISJOINT item set**
+    (Wu 2401.12631);
+  - **IIA = exact counterfactual answer on 1,000 held-out pairs.** Train IIA (`iia_train`) is reported beside it, so an overfit subspace (about 3.1M free parameters at
+    k = 64 against 4k pairs) is visible.
+* **Controls (fixed now):**
+  - **RANDOM-SUBSPACE:** an unfitted random orthonormal k-subspace.
+  - **SHUFFLED-TARGETS:** DAS fitted to a mismatched donor's counterfactuals, with held-out IIA scored against those shuffled targets. If DAS can fit arbitrary targets
+    here, the method is too powerful.
+  - **subspace_var_share:** the share of the natural states' variance inside the fitted subspace, Makelov's dormant-pathway diagnostic (reported).
+  - **NECESSITY (Literature, required):** mean-ablate the fitted subspace in UNPATCHED runs. The accuracy drop (`necessity_drop`) must be ≥ 0.3.
+  - **RANDOM-MODEL (descriptive):** the same linear DAS on a random-init DeltaMem.
+  - **Read-side alignment (descriptive):** the fitted subspace's projection onto the downstream read's row space. The illusion lives in the null space.
+
+**Rules (fixed now; `theory/score_s167.py`).**
+* **DECOMPOSABLE(model, t):** fitted IIA ≥ 0.8 at some k ≤ 64, **and** IIA − unchanged_target_share ≥ 0.5, **and** RANDOM-SUBSPACE IIA ≤ 0.2, **and** SHUFFLED-TARGETS IIA
+  ≤ 0.2, **and** necessity_drop ≥ 0.3 at that k.
+  - **unchanged_target_share** (Audit) is the share of held-out pairs whose counterfactual answer equals the recipient's own. A model that ignores the intervention
+    scores exactly this.
+* **NOT-DECOMPOSABLE:** fitted IIA < 0.5 at k = 64, with both controls valid.
+* **ILLUSION-RISK:** SHUFFLED-TARGETS IIA > 0.2. No reading at that point.
+* **The MULT arm:** ≥ 2 of 3 MIX models DECOMPOSABLE at the same t. S5 is per model, descriptive.
+* **Readings:**
+  - **Decomposable:** the value is causally carried in a compact subspace, so the C1 / C7 edit exists beyond the probe direction. The null rank-1 edit reads "not linearly
+    editable along the probe".
+  - **Not decomposable:** only whole-state SERIAL holds; the state is not causally decomposable at this granularity.
+  - **A low subspace_var_share with high IIA** is flagged as a possible dormant pathway.
+
+**Placement.**
+* About $0: CPU or a local card, minutes per model.
+* **Implementation (Experiments):** a DAS harness on multpair / deltas5's donor and continuation plumbing (c7_state_edit / donor_delta).
+  - Output `<run>/eval_das.json`: {"family", "points": {t: {"k": {k: {"iia", "iia_train", "n"}}, "unchanged_target_share", "random_subspace": {k: iia},
+    "shuffled_targets": {k: iia}, "subspace_var_share": {k: share}, "necessity_drop": {k: drop}, "random_model": {k: iia}, "read_alignment": {k: share}}},
+    "carry_matched": {...}, "per_head_type": {...}, "scaling": {...}}.
+* **Gates:**
+  - the counterfactual generator agrees with donor_delta's expected digits on whole-state swaps;
+  - a sanity case: with R spanning all of S (k = D), IIA equals the whole-state SERIAL donor share;
+  - Audit's review.
+* Scorer: `theory/score_s167.py`, committed with this registration.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
