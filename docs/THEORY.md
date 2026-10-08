@@ -9102,6 +9102,11 @@ accumulator.**
   - **Carries:** column 1's decodes at 1.0. The others are partial and decay along the chain (column 2: 0.79 → 0.59 → 0.49; column 3: 0.96 → 0.31 → 0.25).
   - **Reading:** R's state is a **digit buffer**: the operands and the emitted digits, both exact. The running accumulator is not held in a linear or a 10-way-classifiable
     code. The in-progress column is most plausibly computed at read time from the stored operands, an L1-style recompute for that column. C1 is not shown for R.
+* **Across designs (2026-10-08 06:51 EDT; colsum_cls after pair 12):**
+  - The input-only memories do **not** hold the completed columns' units digits: §147 s1 (24k) 0.36 / 0.28 / 0.11 / 0.10; §151 s2 (48k) 0.23 / 0.30 / 0.11 / 0.10.
+  - R holds them **exactly** (1.0 / 0.98 / 0.96 / 0.99).
+  - So **R's memory stores computed results**: the digits it emitted, which input-only writes make structurally impossible (147-4).
+  - Whether those stored results are used later is **not shown**. Later columns need the carries, and the carries are partial in every model (R 0.25–0.45 for columns 2–5).
 
 ## 159. R-5×5: §155 R's write-after-read memory at 5×5, the SOTA leg (C3) (Audit 05:45; pre-registered 2026-10-08 05:43 EDT, before any implementation or run; runs only if §155 R s2 is exact)
 
