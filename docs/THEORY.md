@@ -8559,6 +8559,84 @@ restated.**
 * **VISIBLE is unaffected** (it sees the problem and the step each pass, so its writes can form that row's products, as §152's do). It stays gated on §152 A s1, with 147-4's
   wording.
 
+## 155. DELTA-R: a write-after-read memory, so the state can hold computed results (note 147-4's fix; the user's research pass; pre-registered 2026-10-08 01:19 EDT, after Literature's check c55a1f15 and Audit's draft review, before any implementation or run)
+
+**Why.**
+* Note 147-4: DeltaMem writes from block-6 *entry*, so its state is a fixed function of the input tokens.
+  - No pass can store what it computed. Serial use of computed intermediates (C1), state edits that propagate (C7) and passes that compute on memory-held operands
+    (§153 PURE) are impossible by construction.
+* **The fix:** compute the writes (k, v, α, β) from the residual *after* the read has been processed, at the top of the stack. Then S_{t+1} = f(S_t, input_t) is
+  genuinely recurrent: whatever pass t computes from S_t can be written.
+* **Prior** (c55a1f15, `docs/LIT_S155_DELTA_R_2026-10-08.md`):
+  - The principle is known: write-from-the-top recurrence in RMT, Memformer 2010.06891, T²MLR (the same topology with a vector state) and the Feedback Transformer.
+  - ARMT and Infini-attention are recurrent only because they keep a memory at every layer. 147-4 is the single-memory-layer degenerate case.
+  - **A matrix additive + gated-delta memory read mid-stack, written from the top, as a pretrained LM's only cross-pass channel and tested by state edits, is new as scoped.**
+
+**Design: DeltaMem-R.**
+* **Read as now:** q from LN(x) at block-6 entry reads the pass-start state S_t, and x ← x + fade·W_o·read.
+* **Writes:** k, v, α, β from u = (1 − γ)·LN_6(h_6) + γ·LN_w(h_top) at every token of the pass. h_6 is the residual entering block 6, as now, and h_top the residual
+  after block 11 (pre-ln_f). The writes are applied sequentially as now, giving S_{t+1}. Reads within a pass see only S_t.
+  - **γ, the function-preserving migration (Literature):** γ = 0 until 2k, then linear to 1 at 6k.
+    - At γ = 0 the writes are exactly §147's, so training starts from §147's working input-only solution, not an empty memory (otherwise it is a re-entry problem).
+    - Recurrence then enters gradually.
+  - **Bounded writes:** LN_w normalises h_top, so v is bounded for bounded weights. The delta heads' k is L2-normalised as now. This guards the read → top → write loop in the
+    no-decay additive heads.
+* **Initialisation:** LN_w comes from block 11's ln_1. The write projections are §147's (block 6's c_attn slices), shared across the mix. The gates are as §147
+  (α ≈ 0.993, β = 1). W_o = 0 with the 500-step fade-in, so the pretrained function is unchanged at step 0.
+  - Literature's small-β initialisation is replaced by the migration: the loop only forms as γ grows, by which time β has trained.
+  - Full BPTT with multpair's global gradient clipping at 1.0. Truncated BPTT is only a fallback (it costs accuracy, 2604.21106).
+* **Everything else is §147's digit-pair 4×4 recipe:** 6 additive + 6 gated-delta heads, 147-2 gains, 24k, bs 64, restart slots with 147-1's misfire rule.
+* **Arms:**
+  - **R:** DeltaMem-R, no reset.
+  - **SHIFT-R:** R plus §154's per-column reset of the additive store. The network can now compute ⌊ĉ_k / 10⌋ from its read and write it into the delta heads, which is
+    §154's intended design.
+  - **Fallback, fixed now (Audit): writes from block 9's output.** It runs for an arm only if that arm's top-write slot 1 shows non-finite steps, a gradient blow-up (the
+    write-gradient norm above 100× its 1k-step median), or no entry by the 2k flag (exhausted).
+    - Top-residual features are tuned for the unembedding, and BPTT through 6 blocks × 17 passes is deep, so the fallback is fixed now, not chosen after the fact.
+* **Recurrence forms only as W_o and γ grow.** At step 0 (W_o = 0, γ = 0) the state is input-only.
+
+**Rules (fixed now).**
+* **PASS** (§147's rule): ≥ 3/4 slots with test_acc ≥ 0.99 at 4×4 and SERIAL (row-level swap after pairs 4 / 8 / 12).
+* **LENGTH-GENERAL** (§154's rule): ≥ 3/4 accepted runs with ext_4x8 ≥ 0.9.
+* **RECURRENT USE** (SHIFT-R; the C1 test this design makes possible).
+  - **The edit:** at column k + 1's first pair (k = 2..5, δ = ±1), make a rank-1 edit of the delta heads' state. It is the minimum-norm edit that moves the held-out carry
+    probe (column k + 1's carry-in, read at that pair's query) by δ.
+  - **What is scored:** **propagation_share** is the share of rows where column k + 2's digit follows the edited chain, i.e. (ĉ_{k+2} − r_{k+1} + ⌊(ĉ_{k+1} + δ) / 10⌋)
+    mod 10. It is counted only on rows where the edit changes column k + 2's carry.
+  - **Under input-only writes this cannot happen.** In §154 SHIFT, column k + 2's carry is never recomputed from the edited state, so SHIFT is the null comparator and is
+    scored the same way.
+    - **Its expected null value (Audit):** propagation_share = the unedited-next rate, i.e. the share of those rows whose unedited column k + 2 digit already equals the
+      edited-chain value. §154 is scored against exactly that.
+  - **The carry direction** is fitted on held-out items. **Nulls (Literature):**
+    - a random rank-1 edit of equal norm, scored the same way;
+    - §154 SHIFT (no recurrence).
+  - **RECURRENT USE = propagation_share ≥ 0.8 in ≥ 3/4 accepted SHIFT-R runs, with the random-edit null below 0.3.**
+* **Readings:**
+  - **SHIFT-R PASS + LENGTH-GENERAL + RECURRENT USE:** a pretrained LM's memory carries computed intermediates step by step, as a local recurrent process that
+    generalises in length. That is C1 in the north-star sense, with C2 and C7 edits.
+  - **R ≥ §147 at 4×4:** storing computed results helps even without the reset.
+  - **SHIFT-R fails where SHIFT also fails:** the reset is the obstacle, not the write path.
+  - **A failed linear edit** reads "not linearly editable", not "not carried" (Literature (c); onion representations, 2408.10920).
+  - **Instability** (non-finite losses, or loss blow-ups after the fade-in): the deep recurrence through blocks 6–11 needs stabilising. That is a registered caution, not a fix
+    loop.
+* **Descriptive:**
+  - **recurrence strength per 1k window (Audit):**
+    - the share of the write's variance explained by the read: R² of the write features from the read, against from the input alone;
+    - ρ = ‖∂S_{t+1}/∂S_t‖ by a JVP on a fixed batch. That ratio is meaningful only now; earlier DeltaMem ρ was input-driven.
+    - A failure then reads as "recurrence never formed" or "formed but did not help".
+  - per pass: memory norm and the write-norm ratio (top / block 6, while γ < 1);
+  - per-column accuracy (by carry-in 0 / ≠ 0); the carry probe by column; colsum R²; §154's state-edit C7 test (the emitted digit and the next column's
+  carry); α by head; gradient norm through the recurrence by segment.
+
+**Placement.**
+* R s1 + SHIFT-R s1, about $0.8–1 each (24k, a 3090). Slots 2–4 by the rules.
+* §153 PURE / REPEAT run on DeltaMem-R after R's proof (note 153-3).
+* **Implementation (Experiments):** deltamem.py gets a write source option (default unchanged, so §147 / §151 / §152 / §154 are unaffected): `read(h6, S)` at block 6
+  and `write(h_top, S)` after block 11. Then multpair `--mem_write top` and the edits.
+* **Gates:** step-0 function preservation; gradflow showing nonzero ∂loss / ∂(write parameters) **through at least two hand-offs** (BPTT flows, not a one-step gradient;
+  CUDA bf16); smoke_plain; memory; Audit's diff review.
+* Dirs `s155_{r,shiftr}_4x4_s{seed}`. Scorer: `theory/score_s155.py`, committed with this registration.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
