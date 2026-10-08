@@ -9509,6 +9509,77 @@ accumulator.**
 * deltas5 currently has only `--mem_write top`. If the trigger fires, the fallback needs a block-9 option first.
 * §159–§161 keep their registered (gradient) trigger, because their data exist or are in flight.
 
+## 163. SHAPE-MIX-2D: both operand lengths mixed, for length and value-range generalisation over both operands (C2) (Audit's research pass 11:05; pre-registered 2026-10-08 10:59 EDT, after Literature's check 73fbfb1a (`docs/LIT_MULT_LG_NOSCRATCH_2026-10-08.md`) and Audit's review, before any implementation or run; runs only if §161 MIX s2 replicates)
+
+**Why.**
+* **§161 MIX s1:** varying the multiplier length (4 × n, n 2..5) made R's memory carry the running column sum.
+  - It is exact (0.996), length-general on the multiplier (ext_4x8 0.964) and SERIAL with out-of-distribution hybrids (note 158-3).
+* **The literature's frontier (Literature 73fbfb1a):**
+  - No-scratchpad multiplication length generalisation is published only with the other operand at ≤ 2 digits (position coupling N × 2; Fan, binary) or with priming
+    (Jelassi).
+  - Generalising over both operands needs a scratchpad (Cho 2410.15787). Abacus multiplication is in-distribution only.
+* **SHAPE-MIX-2D asks** whether mixing both lengths extends §161 to both operands.
+  - That adds a second extrapolation: **the number of terms per column**. Columns hold ≤ 5 products in training and 6–8 at 8×8.
+  - Column-sum magnitude extrapolates less than the term count does. A product averages about 20, so an 8-product column averages about 162, and training (≤ 5 products)
+    already covers sums up to about 300 routinely (Audit).
+
+**Condition (fixed now).** §163 runs only if §161 MIX s2 reads 4×4 test_acc ≥ 0.99 and ext_4x8 ≥ 0.90.
+
+**Design: §155 R's recipe exactly** (DeltaMem-R, top writes, γ 2k → 6k, multpair's column-major digit-pair schedule with flags and flush), with one change:
+* **Training chains are a × b, with both m and n ~ U{2, 3, 4, 5}**, drawn per batch (161-1), giving 16 shapes.
+  - Operands are generated uniformly per shape, excluding the 4×4 and 5×5 bench test items (commuted pairs included). The label is the m + n product digits, LSB first.
+* **48k steps** (the 2-D mix spreads the budget), RTX 3090. Seeds 1–3.
+* **Fallback:** note 162-2's outcome rule. The block-9 variant runs for an arm only if slot 1 shows non-finite steps, or a window loss above 2× the loss 1k steps earlier
+  within one curriculum stage (after 2k). Gradient spikes are descriptive.
+
+**Measures.**
+* **Bench tests:** 4×4 (`test_acc`) and 5×5 (`test_5x5`), 1,000 items each.
+* **Generated extensions** (1,000 each, deduped; acc_report with per-column): `ext_6x6`, `ext_7x7`, `ext_8x8`, `ext_10x10` (descriptive), `ext_4x8`, `ext_8x4`.
+* **SERIAL on 5×5 (`s163.donor_5x5`):** row level, a whole-memory swap after pairs 6 / 12 / 18. The 4×4 donor is kept as now.
+* **The state on 5×5 (`s163.what_state_5x5`):** 155-4's operand probe with colsum_cls, after pairs 6 / 12 / 18.
+* **Compute:** `s163.compute_5x5` and `s163.compute_8x8`, in compute_s155's convention.
+* **Value range (`s163.value_range`; Literature, binned per Audit; descriptive), at 6×6 / 7×7 / 8×8, with n per bin:**
+  - **Primary:** per-column accuracy grouped by the column's product count (≤ 5 trained; 6–8 beyond).
+  - Per column: accuracy for columns whose sum lies within the trained 99th-percentile column sum (`p99_trained`, from the training generator's draws) against beyond it.
+  - Per item: exact accuracy for items whose maximum column sum is ≤ p99_trained against above it.
+* **Budget control (Audit):** the 24k checkpoint's 4×4 bench accuracy (`s163.test_4x4_at_24k`), against §161 MIX's 24k. Each of the 16 shapes gets 1/16 of the batches,
+  against 1/4 under MIX, so a 4×4 dip reads as budget, not interference.
+
+**Rules (fixed now; `theory/score_s163.py`).**
+* **EXACT-ID(run):** 4×4 ≥ 0.99 and 5×5 ≥ 0.99. Slot 1's EXACT-ID is the gate for s2 / s3.
+* **GEN-2D(run):** EXACT-ID and ext_8x8 ≥ 0.90.
+* **BOUNDED(run):** EXACT-ID and ext_6x6 ≥ 0.90, but ext_8x8 < 0.90.
+* **Arm:** GEN-2D if ≥ 2 of 3 seeds are GEN-2D; BOUNDED if ≥ 2 of 3 are at least BOUNDED; otherwise NOT GENERAL.
+* **Split (Literature):** one operand beyond 5 (4×8 / 8×4: length only, value range within training) is reported apart from both beyond 5 (6×6 / 7×7 / 8×8: length and
+  value range).
+* **C3 at 5×5 (as §159):** LATENT BEATS TEXT = 5×5 ≥ TC-M − 0.01, with fewer FLOPs and passes than TC-M 5×5 (1.000; 2.33·10¹⁰; 87), reported beside ICoT-SI 5×5 (0.996;
+  5.76·10⁹; 15). 8×8's compute is reported: passes grow as m·n.
+* **Descriptive C1:** SERIAL on 5×5 (row donor ≥ 0.90, recipient − chance < 0.10) and STATE-CARRIED (in-progress units ≥ 0.9 at every probe point).
+* **Predictions:**
+  - Audit: 5×5 ≥ 0.99, 6×6 ≥ 0.9, SERIAL ≥ 0.9 on 5×5, in-progress units ≥ 0.9.
+  - Theory: BOUNDED. 4×8 / 8×4 and 6×6 pass, and 8×8 falls below 0.9.
+    - The failures should sit in columns with more than 5 products (an untrained term count) and in late passes. 8×8 runs 65 passes, against 26 trained at 5×5.
+    - §161's 4×16 decay supports the second: columns 9–16 hold 4 products yet fall from 0.97 to 0.51 along the chain.
+* **Readings:**
+  - **GEN-2D:** latent-memory multiplication generalises over both operands without a scratchpad. That is C2 at the literature frontier, and C3 against ICoT-SI's
+    per-size models.
+  - **BOUNDED:** bounded 2-D generalisation. The decay profile and the value-range split are the result.
+  - **The gate closes:** 2-D mixing breaks in-distribution exactness at 48k (budget or capacity).
+
+**Placement.**
+* Slot 1, about $1.5 (48k, a 3090), after the condition reads. s2 / s3, about $3, if the gate opens.
+* **Memory:** memcheck the 5×5 training shape and the 8×8 eval shape (65 steps) on the 3090 before slot 1.
+* **Implementation (Experiments):**
+  - multpair `--shape_mix_2d 2,3,4,5` (both lengths per batch);
+  - the 5×5 bench test and the extensions above;
+  - `s163.{donor_5x5, what_state_5x5, compute_5x5, compute_8x8, value_range, test_4x4_at_24k}` (keep the 24k checkpoint for that eval).
+* **Gates:**
+  - labels / schedule for m ≠ n;
+  - bit-identity with R's batches with the flag off;
+  - smoke_plain;
+  - Audit's diff review.
+* Dirs `s163_mix2d_s{seed}`. Scorer: `theory/score_s163.py`, committed with this registration.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
