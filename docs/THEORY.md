@@ -8956,6 +8956,12 @@ ext_4x8 0.000 < 0.5. ROTARY was deferred to §155's architecture (154-2), so §1
     compose across items. The next descriptive check is the pass-skip test (§153's form).
 * **R9 s1 (the block-9 write fallback, run by the trigger):** test_acc **0.999**, every column ≥ 0.999. Not SERIAL (row donor 0.07 / 0.08 / 0.13), ext_4x8 0.0, propagation 0.0;
   rho_loop 0.30; 27 flagged spikes. **The write layer does not change the picture:** both top and block 9 are exact, not SERIAL and not length-general.
+* **R-γ0 s1** (γ held at 0: block-6 writes with pass-start reads; 155-1 (3)): test_acc **0.587**, per column 1.0 / 1.0 / 0.975 / 0.883 / 0.881 / 0.864 / 0.93 / 0.928.
+  ext_4x8 0.0; row donor 0.13 / 0.14 / 0.25; rho_loop 0 (no recurrence, as designed); propagation 0.32 against random 0.33, the input-only null.
+  - **155-1 (3)'s readings:**
+    - **R 1.000 against R-γ0 0.587: the write source helps.** Writing after the read takes the memory from 0.59 to exact at 24k, with the read lag held fixed.
+    - **R-γ0 0.587 against §147 0.743: the read lag costs** (pass-start reads against §147's within-pass reads).
+  - Per 155-4's probe, what the top-written memory adds is the computed emitted digits (held exactly). The in-progress accumulator is still not held.
 * **The spike rule's flaw (Audit):** it fired on a decaying median with no instability. A future rule needs an absolute floor as well (for example max > 100× the median
   **and** > 1.0). R9 still runs as registered.
 
