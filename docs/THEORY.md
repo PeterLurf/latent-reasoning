@@ -9449,6 +9449,18 @@ accumulator.**
   - Audit's diff review.
 * Dirs `s162_{direct,short,long,long64}_s{1,2,3}` (s3 only on a split). Scorer: `theory/score_s162.py`, committed with this registration.
 
+**Note 162-1 (2026-10-08 10:30 EDT, before any §162 output (only `s162_gates` exists); Audit). One measurement point for the edit and the probes.**
+* **The inconsistency (Audit):**
+  - The measures put the state edit at p = ℓ / 2 with ℓ = min(8, l_max), which is 4 for LONG.
+  - The rules read both STATE-LIKE conditions at p = min(16, l_max), which is 16 for LONG.
+  - p = 4 likely sits below L*, where 158-2 says a buffer suffices, so the contrast would be read at the wrong depth.
+* **Fixed now: the rules govern, at one point.** Both conditions are read at **p* = l_max / 2**: (a) the edit, on chains of length l_max (in distribution), and (b) the probes.
+  - **LONG:** p* = 16 on chains of 32, as the rules read for LONG.
+  - **long64:** p* = 32 on chains of 64. So p* ≥ L* whenever L* ≤ 32, Audit's optional condition.
+  - **SHORT:** p* = L* / 4 on chains of L* / 2, below the boundary as intended. The rules' min(16, l_max) would have put the edit at the chain end, with no continuation.
+  - **p* < 4 reads TOO SHORT** (descriptive): SHORT is informative only when L* ≥ 16.
+* The scorer checks the edit's reported `p` / `chain_len` against (p*, l_max) and errors on a mismatch. SERIAL stays on length-min(8, l_max) chains (a sanity check).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

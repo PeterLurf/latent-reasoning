@@ -4,7 +4,8 @@ curriculum / recipe), against a measured single-pass boundary: DIRECT = GPT-2 wi
 Boundary: each DIRECT seed's own L*_s = the smallest L in {2, 4, 8, 16, 32, 64} with final-state accuracy < 0.90; L* = the lower of s1 / s2 ("boundary
 uncertain" if they differ; a seed below 0.90 at L = 1 did not train and is dropped). Fixed in a dated note before any DELTA-S5 output is read.
 SHORT trains to l_max = L* / 2 (read descriptively if l_max < 4; not run if L* = 2); LONG to 32 (L* <= 16) or 64 (L* = 32, dirs s162_long64_*).
-Probes are 120-way (items uniform over the 120 elements; chance 1/120). At p = min(16, l_max) (p >= 4):
+Probes are 120-way (items uniform over the 120 elements; chance 1/120). Note 162-1: the probes AND the edit at p* = l_max / 2, the edit on chains of length
+l_max (LONG 16 / 32, long64 32 / 64, SHORT L*/4 / L*/2); p* < 4 -> TOO SHORT (descriptive):
   STATE-LIKE(run): the state edit propagates (propagation - null >= 0.5, random - null < 0.1; 155-3's form) AND state_probe >= 0.90 and >= the mean
   op-history probe over the older half (lags j >= p / 2).  BUFFER-LIKE(run): no propagation AND that older-half op probe >= 0.90.  Else MIXED.
 Arm kind: both seeds agree -> that kind; they disagree -> s3 runs and the 2-of-3 majority decides, else "seed-dependent".
@@ -79,9 +80,11 @@ def run(arm, s, lmax):
         ERRORS.append((d, bad)); return {"status": "error", "error": bad}
     x = r.get("s162") or {}; fl = r.get("final_acc_by_length") or {}
     exact = all((fl.get(str(L)) or 0) >= 0.99 for L in (1, 2, 4, 8, 16, 32, 64) if L <= lmax)
-    p = min(16, lmax); sp = (x.get("state_probe") or {}).get(str(p)); opp = (x.get("op_probe") or {}).get(str(p)) or {}
+    p = lmax // 2; sp = (x.get("state_probe") or {}).get(str(p)); opp = (x.get("op_probe") or {}).get(str(p)) or {}   # note 162-1: p* = l_max / 2
     old = [float(v) for j, v in opp.items() if int(j) >= p / 2]; old_m = sum(old) / len(old) if old else None
     e = x.get("state_edit") or {}; ps, rs, nv = e.get("propagation_share"), e.get("random_edit_share"), e.get("null_value")
+    if e and (e.get("p") != p or e.get("chain_len") != lmax):                 # note 162-1: the edit must sit at p* on chains of length l_max
+        ERRORS.append((d, {"state_edit_p": e.get("p"), "chain_len": e.get("chain_len"), "expected": (p, lmax)})); return {"status": "error", "error": "state_edit p / chain_len"}
     prop = bool(ps is not None and rs is not None and nv is not None and ps - nv >= 0.5 and rs - nv < 0.1)
     if p < 4:
         kind = "TOO SHORT"                                                   # Audit: buffer and state are nearly the same object at p < 4
