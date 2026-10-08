@@ -9940,6 +9940,22 @@ run, RTX 3090 (or a local card if memory-checked).
   - Audit's diff review.
 * Dirs `s166_s5_{sp,plain}_s2`, `s166_mult_{noise,plain}_s{1,2,3}`. Scorer: `theory/score_s166.py`, committed with this registration.
 
+**Note 166-1 (2026-10-08 17:29 EDT, before any §166 run (only `s166_gates` exists); Literature 86090066 (`docs/LIT_S166_STATE_COVERAGE_2026-10-08.md`, full read), Audit). MULT's init becomes FITTED noise; readings sharpened.**
+* **The paper's own ranking:**
+  - state passing is best and works in about 100 steps;
+  - fitted noise (per-layer / per-head mean and variance of real final states) is next;
+  - IID Gaussian noise is weakest. It fails at 780M / 1.3B and is σ-sensitive.
+  - DeltaMem's additive states are sums of φ(k)vᵀ with φ = elu + 1 > 0: structured and non-zero-mean. Zero-mean IID noise covers the wrong region.
+* **Fixed now:** MULT's arm is **FITTED**. The memory initialises from an element-wise Gaussian with the per-head element-wise mean and standard deviation of real mid-chain
+  memories of the current model (64 training chains, recomputed every 100 steps).
+  - `init_mode fitted`; dirs `s166_mult_fitted_s{1,2,3}`.
+  - The rules are unchanged, with FITTED in place of NOISE.
+* **Readings added (pre-stated):**
+  - A MULT null does **not** refute coverage. 4×16 also needs column and value-range extrapolation (16-column chains, longer carry chains) that coverage cannot create.
+    Per-column 4×16 accuracy and `mem_norm_by_pass` separate the two.
+  - **S5 SP replicates the paper's best intervention and stays the clean test.**
+* **The prior's scope:** the paper tested Mamba-1 / 2, GLA and RWKV-v6. No delta-rule or additive no-decay memory was tested, so this memory class is untested.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
