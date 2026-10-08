@@ -293,7 +293,7 @@ class PeriodicMem(DM.DeltaMem):
 
 
 class MultiRead(nn.Module):
-    """§157 MULTIREAD: R = 4 learned queries per head (12 heads) with learned slot IDs read the pass-start state at the start of every pass
+    """§157 MULTIREAD: R = 4 STATIC learned queries per head (12 heads; Perceiver-style, not input-dependent) with learned slot IDs read the pass-start state at the start of every pass
     (segments and the reader); their 4 read vectors ([g_add read_add || g_del read_del], W_o-projected, then a zero-init Z) + slot ID are
     prepended as 4 positions (no wpe) that every layer attends to; the original positions see them with attention bias log(fade) (fade
     0 -> 1 over 500 steps; at fade 0 the read tokens are omitted: bitwise GPT-2). Read tokens attend among themselves only."""
@@ -394,6 +394,38 @@ class CCQMem(DM.DeltaMem):
             if self.ablate == "delta":
                 od = torch.zeros_like(od)
             return x + (self.fade * self.wo(torch.cat([oa, od], 2).reshape(B, T, D))).to(x.dtype)
+
+
+@torch.no_grad()
+def periodic_extras(m, teA, teB, dev, amp, n=256):
+    """§157 PERIODIC read-side diagnostics (Audit): at the reader position predicting digit k (teacher-forced, after segment 4):
+    read_round_err = |sv - round(sv)| of the scalar read sv = phi(q)^T S_s (median and share < 0.25, pooled over heads and channels) per column;
+    offcol_weight = the share of sum_j phi(q) . phi(k_j) (additive heads; phi = elu + 1 > 0, so every write enters every read) on write tokens
+    outside the digit's column (a_i in segment s belongs to column i + s; EOT / b_j / step tokens count as outside)."""
+    n = min(n, len(teA)); A, B = teA[:n], teB[:n]; HA, DH = DM.H_ADD, DM.DH; xs = []
+    hk = m.mem.register_forward_pre_hook(lambda mod_, inp_: xs.append(inp_[0].detach().float()))
+    try:
+        _, kept, _, _ = rollout_drow(m, A, B, dev, amp, n, keep=(4,), decode=False)
+    finally:
+        hk.remove()
+    S4 = torch.tensor(kept[4], device=dev); S4v = sj_values(A, B)[:, -1]; ans = torch.tensor(np.array(DTOK)[digits8(S4v)], device=dev); cp = []
+    with amp_ctx(amp):
+        fwd_mem(m.g, m.g.embed(m.reader_ids(n, dev, ans)), m.mem, S4, read_only=True, cap=cp)
+    a = m.mem.ln(cp[0].float()); q = m.mem.qkv(a)[..., :768].view(n, -1, HA + DM.H_DEL, DH)[:, :, :HA]; pq = Fn.elu(q) + 1
+    sv = torch.einsum("bthk,bhkc->bthc", pq, S4[:, :HA, :, DH:].float())                                 # (n, T, 6, 2)
+    K = torch.cat([Fn.elu(m.mem.qkv(m.mem.ln(x_))[..., 768:1536].view(n, -1, HA + DM.H_DEL, DH)[:, :, :HA]) + 1 for x_ in xs[:4]], 1)   # (n, 28, 6, 64)
+    col = np.full(K.shape[1], -1)
+    for s_ in range(4):
+        for i in range(4):
+            col[s_ * MultRowDelta.SEG_T + 3 + i] = i + s_
+    W = torch.einsum("bthd,bjhd->bthj", pq, K).cpu().numpy(); pos = (list(range(2, 2 + 2 * NDIG, 2)) if getattr(m, "sep", None) is not None else list(range(1, 1 + NDIG)))
+    rre, off = {}, {}
+    for k in range(NDIG):
+        e_ = (sv[:, pos[k]] - torch.round(sv[:, pos[k]])).abs().flatten().cpu().numpy(); rre[str(k + 1)] = {"median": float(np.median(e_)), "share_lt_0.25": float((e_ < 0.25).mean())}
+        w_ = W[:, pos[k]]; oc = col != k; off[str(k + 1)] = float((w_[..., oc].sum(-1) / np.maximum(w_.sum(-1), 1e-12)).mean())
+    off["mean"] = float(np.mean([v for v in off.values()]))
+    return {"read_round_err": rre, "offcol_weight": off,
+            "offcol_def": "additive heads, phi(q) . phi(k_j) share on write tokens outside the digit's column (reader position, after segment 4, teacher-forced)"}
 
 
 @torch.no_grad()
@@ -900,6 +932,10 @@ def s157_eval(m, teA, teB, trA, trB, dev, amp, bs, a, n_fit=4000):
     out["offcol_weight"] = None
     if getattr(m.mem, "ccq", False):                                        # note 157-1
         out.update(ccq_extras(m, teA, teB, dev, amp, bs))
+    if getattr(m.mem, "periodic", False):                                   # Audit (978a2399 review): read-side diagnostics
+        out.update(periodic_extras(m, teA, teB, dev, amp))
+    if getattr(m.mem, "mr", None) is not None:
+        out["multiread_queries"] = "static learned queries (Perceiver-style), not input-dependent; 4 per head, each with a learned slot ID"
     return out
 
 
