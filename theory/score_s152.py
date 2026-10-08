@@ -50,7 +50,8 @@ def bad_args(d, arm, seed):
         SKIPPED.append(d); return "smoke"
     exp = dict(BASE, reader=(arm != "ctrl"), seg_order="b_first")                # note 152-1 (2): [EOT, b_j, j, a's digits]
     if arm == "bearly":
-        exp.update({"removal": arm[1:], "removal_every": 4000, "rewarm": 200, "fork_from": "boxes/runs_fsq/s152_a_4x4_s%d/gate.pt" % seed})
+        exp.update({"removal": arm[1:], "removal_every": 4000, "rewarm": 200, "fork_from": "boxes/runs_fsq/s152_a_4x4_s%d/gate.pt" % seed,
+                    "no_opt_reset": True})                                  # §152: AdamW is NOT reset at removal (Literature (2)); LR re-warm only
     bad = {k_: a.get(k_) for k_, v in exp.items() if a.get(k_) != v}
     if a.get("no_round") or a.get("dither") or float(a.get("copy_frac") or 0) != 0:      # §152: DeltaMem is the carrier (no code token)
         bad["code_carrier_flags"] = (a.get("no_round"), a.get("dither"), a.get("copy_frac"))
@@ -86,6 +87,8 @@ def run(arm, seed):
            "serial_shares": {"carry_save": dn.get("donor_consistent"), "bprefix": dn.get("bprefix_consistent"), "recompute": dn.get("recipient_consistent")},   # Literature (4)
            "add_state_norm_by_segment": s.get("add_state_norm_by_segment"), "bprefix_probe_after_removal": s.get("bprefix_probe"),
            "pp_probe": s.get("pp_probe"),                                                                                       # note 152-1 (3)
+           "sj_decode_acc": s.get("sj_decode_acc"), "head_ablation": s.get("head_ablation"), "alpha_by_head": s.get("alpha_by_head"),
+           "colsum_readout": s.get("colsum_readout"),                                                                           # §152 descriptive
            "probe_r2": s.get("probe_r2"), "ext_4x8_low8": r.get("ext_4x8_low8"), "gpu": r.get("train_gpu", r.get("gpu")), "driver": r.get("train_driver")}
     if arm == "a":
         out.update({"gate_step": s.get("gate_step"), "gate_train_exact": s.get("gate_train_exact"),
@@ -94,7 +97,8 @@ def run(arm, seed):
         fs = s.get("fork_start") or {}
         out["serial_before"] = serial(fs.get("donor")); out["test_acc_before"] = fs.get("test_acc")
         out["retention"] = [{"step": st.get("step"), "removed": st.get("removed"), "acc_by_length": st.get("acc_by_length"),
-                             "test_acc": st.get("test_acc"), "serial": serial(st.get("donor"))} for st in (s.get("stages") or [])]
+                             "test_acc": st.get("test_acc"), "serial": serial(st.get("donor")), "sj_decode_acc": st.get("sj_decode_acc"),
+                             "final_ce_before_after": (st.get("final_ce_before"), st.get("final_ce_after"))} for st in (s.get("stages") or [])]
     c = r.get("compute") or {}
     out["compute"] = {"flops": c.get("flops"), "passes": c.get("sequential_passes")}
     out["serial_by_ckpt"] = s.get("serial_by_ckpt")
