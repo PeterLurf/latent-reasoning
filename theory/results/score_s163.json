@@ -2,8 +2,234 @@
  "condition": "RUN (\u00a7161 MIX slot 2, seed 2: 4x4 0.997, ext_4x8 0.917)",
  "runs": {
   "1": {
-   "status": "open",
-   "attempts": []
+   "status": "done",
+   "test_4x4": 0.997,
+   "test_5x5": 0.996,
+   "exact_id": true,
+   "kind": "BOUNDED",
+   "ext": {
+    "6x6": 0.979,
+    "7x7": 0.826,
+    "8x8": 0.447,
+    "10x10": 0.012,
+    "4x8": 0.989,
+    "8x4": 0.988
+   },
+   "ext_8x8_per_column": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.997,
+    0.981,
+    0.912,
+    0.867,
+    0.847,
+    0.848,
+    0.801,
+    0.746,
+    0.773,
+    0.915,
+    0.904
+   ],
+   "serial_5x5": true,
+   "serial_4x4": true,
+   "inprogress_units_5x5": {
+    "after_pair6": 1.0,
+    "after_pair12": 0.997,
+    "after_pair18": 0.994
+   },
+   "state_carried_5x5": true,
+   "compute_5x5": {
+    "flops": 18652224912.0,
+    "passes": 26,
+    "vs_tcm": 0.8000155738147183,
+    "vs_icot": 3.2354923825201958
+   },
+   "compute_8x8": {
+    "flops": 46461812784.0,
+    "passes": 65
+   },
+   "latent_beats_text_5x5": true,
+   "value_range": {
+    "6x6": {
+     "p99_trained": 149.0,
+     "by_product_count": {
+      "1": {
+       "acc": 0.999,
+       "n": 2000
+      },
+      "2": {
+       "acc": 0.9985,
+       "n": 2000
+      },
+      "3": {
+       "acc": 0.9975,
+       "n": 2000
+      },
+      "4": {
+       "acc": 0.996,
+       "n": 2000
+      },
+      "5": {
+       "acc": 0.998,
+       "n": 2000
+      },
+      "6": {
+       "acc": 0.999,
+       "n": 1000
+      }
+     },
+     "by_colsum": {
+      "within": {
+       "acc": 0.9985327203364961,
+       "n": 10223
+      },
+      "beyond": {
+       "acc": 0.9897039897039897,
+       "n": 777
+      }
+     },
+     "by_item_max": {
+      "within": {
+       "acc": 0.9984301412872841,
+       "n": 637
+      },
+      "beyond": {
+       "acc": 0.9449035812672176,
+       "n": 363
+      }
+     }
+    },
+    "7x7": {
+     "p99_trained": 149.0,
+     "by_product_count": {
+      "1": {
+       "acc": 0.9905,
+       "n": 2000
+      },
+      "2": {
+       "acc": 0.976,
+       "n": 2000
+      },
+      "3": {
+       "acc": 0.978,
+       "n": 2000
+      },
+      "4": {
+       "acc": 0.974,
+       "n": 2000
+      },
+      "5": {
+       "acc": 0.969,
+       "n": 2000
+      },
+      "6": {
+       "acc": 0.977,
+       "n": 2000
+      },
+      "7": {
+       "acc": 0.973,
+       "n": 1000
+      }
+     },
+     "by_colsum": {
+      "within": {
+       "acc": 0.9843369300382875,
+       "n": 11492
+      },
+      "beyond": {
+       "acc": 0.9217506631299734,
+       "n": 1508
+      }
+     },
+     "by_item_max": {
+      "within": {
+       "acc": 0.9697624190064795,
+       "n": 463
+      },
+      "beyond": {
+       "acc": 0.702048417132216,
+       "n": 537
+      }
+     }
+    },
+    "8x8": {
+     "p99_trained": 149.0,
+     "by_product_count": {
+      "1": {
+       "acc": 0.9575,
+       "n": 2000
+      },
+      "2": {
+       "acc": 0.8865,
+       "n": 2000
+      },
+      "3": {
+       "acc": 0.873,
+       "n": 2000
+      },
+      "4": {
+       "acc": 0.9005,
+       "n": 2000
+      },
+      "5": {
+       "acc": 0.924,
+       "n": 2000
+      },
+      "6": {
+       "acc": 0.922,
+       "n": 2000
+      },
+      "7": {
+       "acc": 0.924,
+       "n": 2000
+      },
+      "8": {
+       "acc": 0.912,
+       "n": 1000
+      }
+     },
+     "by_colsum": {
+      "within": {
+       "acc": 0.9273436256565335,
+       "n": 12566
+      },
+      "beyond": {
+       "acc": 0.8356614626129828,
+       "n": 2434
+      }
+     },
+     "by_item_max": {
+      "within": {
+       "acc": 0.7648902821316614,
+       "n": 319
+      },
+      "beyond": {
+       "acc": 0.29809104258443464,
+       "n": 681
+      }
+     }
+    }
+   },
+   "test_4x4_at_24k": 0.973,
+   "fallback_trigger": {
+    "loss_jumps": [
+     14500
+    ],
+    "n_nonfinite": 0,
+    "fires": true,
+    "grad_floor_spikes_descriptive": 149
+   },
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "seed": 1,
+   "attempts": [
+    {
+     "seed": 1,
+     "plateau": false
+    }
+   ]
   },
   "2": {
    "status": "open",
@@ -14,6 +240,6 @@
    "attempts": []
   }
  },
- "verdict": "pending (0 / 3 seeds)",
- "reading": "pending (0 / 3 seeds)"
+ "verdict": "pending (1 / 3 seeds)",
+ "reading": "pending (1 / 3 seeds)"
 }

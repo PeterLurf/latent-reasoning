@@ -9753,6 +9753,22 @@ this note is pushed.**
   - by_product_count: digit accuracy over the columns with c products. by_colsum: per-product-column digit accuracy, within or beyond p99. by_item_max: item exact.
 * **Dirs:** restart155's `s163_mix2d_4x4_s{seed}`, with restart seeds +100 / +200 / +300. score_s163 is restart-aware (b873523a).
 
+**§163 SHAPE-MIX-2D slot 1 (interim, 2026-10-08 19:52 EDT; 48k, RTX 3090; scored by Theory with score_s163): BOUNDED; EXACT-ID holds, so the gate opens and s2 / s3 run.**
+* **In distribution:** 4×4 **0.997**, 5×5 **0.996** (ICoT-SI's 5×5: 0.996).
+  - The 24k checkpoint's 4×4 is 0.973 against MIX's 0.996: with 16 shapes the budget is spread, and 48k recovers it.
+* **One operand beyond 5:** 4×8 **0.989**, 8×4 **0.988**.
+* **Both beyond 5:** 6×6 **0.979**, 7×7 0.826, 8×8 0.447, 10×10 0.012.
+* **Value range: Theory's mechanism prediction was wrong.**
+  - At 8×8, per-column accuracy by product count is flat: 0.96 / 0.89 / 0.87 / 0.90 / 0.92 / 0.92 / 0.92 / 0.91 for 1–8 products. Columns with 6–8 products (beyond
+    the trained 5) do as well as trained counts.
+  - The decay runs **along the chain** instead: columns 8–14 fall from 0.91 to 0.75 over 65 passes, against 26 trained. That is the 4×16 pattern: chain length and
+    passes, not term count.
+  - 6×6 is flat at about 0.997 by count.
+* **5×5:** SERIAL (row donor, pairs 6 / 12 / 18); in-progress units 1.0 / 0.997 / 0.994, state-carried; 1.87·10¹⁰ FLOPs and 26 passes.
+  - That is 0.80× TC-M (LATENT BEATS TEXT) and 3.24× ICoT-SI. 8×8 costs 4.65·10¹⁰ FLOPs and 65 passes.
+* **The trigger fired (note 162-2 with 162-4's floor):** one window blip at 14.5k (0.061, against 0.016–0.025 around it), recovered within 200 steps; final loss
+  1·10⁻⁴. By the rule the block-9 fallback is due. It is descriptive, and the spend is Audit's call; it is the same transient class as §159's.
+
 ## 164. MIX-BASELINES: like-for-like text-CoT and direct-answer baselines on §161's shape mix (Audit's requirement before any "beyond text" claim; pre-registered 2026-10-08 11:26 EDT, after Audit's review and before any implementation or run; priors from Literature's 0b532db5 / 73fbfb1a)
 
 **Why.**
