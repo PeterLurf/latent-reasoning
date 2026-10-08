@@ -88,6 +88,14 @@ def main():
                     with open(os.path.join(ROOT, "logs", "posthoc_%s_%s.log" % (outf.split(".")[0], name)), "w") as lg:
                         subprocess.call([sys.executable, "-u", "-m", mod, "--from_args", os.path.join(d, "args.json")] + flag + ["--device", dev, "--out", d],
                                         cwd=ROOT, stdout=lg, stderr=subprocess.STDOUT)
+    if name.startswith("s158_") and not os.path.exists(os.path.join(d, "eval_s158_posthoc.json")):   # note 158-1: free-item propagation (descriptive)
+        mod_ = "boxes.multpair_posthoc" if os.path.exists(os.path.join(ROOT, "boxes", "multpair_posthoc.py")) else "boxes.multpair"
+        with open(os.path.join(ROOT, "logs", "posthoc_s158_free_%s.log" % name), "w") as lg:
+            try:
+                subprocess.call([sys.executable, "-u", "-m", mod_, "--from_args", os.path.join(d, "args.json"), "--s158_free_prop_only", "--device", dev, "--out", d],
+                                cwd=ROOT, stdout=lg, stderr=subprocess.STDOUT, timeout=900)
+            except subprocess.TimeoutExpired:
+                lg.write("S158POST TIMEOUT (900 s)" + chr(10))
     if name.startswith(("s155_", "s158_")) and not os.path.exists(os.path.join(d, "eval_what_state.json")):   # note 155-4 (descriptive): what the state holds
         mod_ = "boxes.multpair_posthoc" if os.path.exists(os.path.join(ROOT, "boxes", "multpair_posthoc.py")) else "boxes.multpair"
         with open(os.path.join(ROOT, "logs", "posthoc_what_state_%s.log" % name), "w") as lg:
