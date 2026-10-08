@@ -487,7 +487,10 @@ def _dual_fit_pred(Xf, Yf, Xs, dev, lams=(1e-9, 1e-8, 1e-7, 1e-6), cls=False):
         for k in range(3):
             tr = torch.nonzero(fold != k).squeeze(1); va = torch.nonzero(fold == k).squeeze(1); al, ym = fit(tr, lam); sc.append(score(Y[va], K[va][:, tr] @ al + ym))
         return float(np.mean(sc))
-    best = max(lams, key=cv); al, ym = fit(torch.arange(n, device=dev), best); out = []
+    best = max(lams, key=cv)
+    if best in (min(lams), max(lams)):                                      # Audit (152-5's lesson): at the grid edge -> widen two decades that side
+        ext = [best * 10 ** k for k in ((-1, -2) if best == min(lams) else (1, 2))]; best = max([best] + ext, key=cv)
+    al, ym = fit(torch.arange(n, device=dev), best); out = []
     for i in range(0, len(Xs), 500):
         Zs = (torch.tensor(Xs[i:i + 500], device=dev, dtype=torch.float32) - mu) / sd; out.append(((Zs @ Zf.T).double() / d @ al + ym).cpu().numpy())
     p_ = np.concatenate(out); return (p_ if cls or Y.shape[1] > 1 else p_[:, 0]), best
