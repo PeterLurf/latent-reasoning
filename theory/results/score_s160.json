@@ -75,7 +75,31 @@
  },
  "ctrlr9": {
   "runs": {
-   "1": null
+   "1": {
+    "status": "done",
+    "test_acc": 0.085,
+    "acc_by_length": {
+     "1": 1.0,
+     "2": 1.0,
+     "3": 0.725,
+     "4": 0.085
+    },
+    "serial": false,
+    "flops": 7103733624.0,
+    "passes": 12,
+    "pass": null,
+    "gate_step": null,
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "compute": {
+     "flops": 7103733624.0,
+     "passes": 12
+    },
+    "fallback_trigger": {
+     "floor_spikes": 7,
+     "n_nonfinite": 0,
+     "fires": true
+    }
+   }
   }
  },
  "reading": "A-R s1 0.056: rows overload a pass even with stored results; compute 7.1e+09 FLOPs (0.46x TC-M, 1.44x ICoT-SI), 12 passes"
