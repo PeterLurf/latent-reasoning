@@ -70,7 +70,7 @@ after create; auto_ship is transitive: a multrow queue ships multpair too): reco
     - §155 R is exact on 4×4 in every seed (0.997–1.000), at 0.79× TC-M FLOPs.
     - It is not SERIAL, not length-general and not linearly editable: an exact buffer (155-4).
     - FREE-PAIRS makes it SERIAL, still without C1 credit.
-  - **Closed today:** §133 stage 1, §136–§138, §140–§146, §148–§152, §154–§157. §155 FAILs (both arms; 9b20e2d3). §157 is "not the read" (00e42f5d).
+  - **Closed today:** §133 stage 1, §136–§138, §140–§146, §148–§152, §154–§157. §155 FAILs (both arms; 9b20e2d3). §157: no read change fixes the carry; read interference stays open (00e42f5d + correction).
   - **Later:** the §133 stage-2 proofs (with cap4|fullgrow), §139 A' / B (descriptive), §134 MOD s2 / s3.
 
 ## Recently done (details in THEORY / PROTOCOL12 / git log)
