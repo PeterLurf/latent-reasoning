@@ -348,6 +348,10 @@
 3.0 boxes/runs_fsq/s155_gates/gate155_top_shift.json python -u scratch/gate155.py {DEV} top shift
 3.0 boxes/runs_fsq/s155_gates/gate155_top.json python -u scratch/gate155.py {DEV} top noshift
 3.0 boxes/runs_fsq/s156_gates/gate156_cuda.json python -u scratch/gate156.py {DEV} && cp boxes/runs_fsq/s156_gates/gate156.json boxes/runs_fsq/s156_gates/gate156_cuda.json
+# 2026-10-08 03:25 THEORY LOCAL_BACKLOG 743516f2 item (1) (descriptive; Audit re-checked 72754a29): §156 (a) local previews, loop148 plain, 8k, seed 1: interleave / pause / no flag
+4.0 boxes/runs_fsq/proto156_sep_s1_3070/eval.json python -u -m boxes.loop148 --task 4x4 --arm plain --seed 1 --steps 8000 --answer_sep interleave --device {DEV} --out boxes/runs_fsq/proto156_sep_s1_3070
+4.0 boxes/runs_fsq/proto156_pause_s1_3070/eval.json python -u -m boxes.loop148 --task 4x4 --arm plain --seed 1 --steps 8000 --answer_sep pause --device {DEV} --out boxes/runs_fsq/proto156_pause_s1_3070
+4.0 boxes/runs_fsq/proto156_plain_s1_3070/eval.json python -u -m boxes.loop148 --task 4x4 --arm plain --seed 1 --steps 8000 --device {DEV} --out boxes/runs_fsq/proto156_plain_s1_3070
 # 2026-10-08 03:11 THEORY LOCAL_BACKLOG 743516f2 item (2) (descriptive): §154 SHIFT 4x4 local proto, seed 501, --steps 8000 (full eval at 8k: column profile, alpha_by_flag, C7 inline), micro 2; memcheck first
 4.5 D:/drain_tmp/mem154_shift_3070_m2/mem_check.json python -u -m boxes.multpair --family mult_pair --task 4x4 --carrier deltamem --add_reset column --seed 501 --mem_check --bs 64 --micro 2 --device {DEV} --out D:/drain_tmp/mem154_shift_3070_m2
 5.0 boxes/runs_fsq/proto154_shift_s501_3070/eval.json python -c "import json,sys; sys.exit(0 if json.load(open('D:/drain_tmp/mem154_shift_3070_m2/mem_check.json'))['peak_gib'] <= 5.5 else 1)" && python -u -m boxes.multpair --family mult_pair --task 4x4 --carrier deltamem --add_reset column --seed 501 --steps 8000 --micro 2 --device {DEV} --out boxes/runs_fsq/proto154_shift_s501_3070
