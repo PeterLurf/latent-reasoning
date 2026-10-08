@@ -9620,6 +9620,48 @@ accumulator.**
   - by_product_count: digit accuracy over the columns with c products. by_colsum: per-product-column digit accuracy, within or beyond p99. by_item_max: item exact.
 * **Dirs:** restart155's `s163_mix2d_4x4_s{seed}`, with restart seeds +100 / +200 / +300. score_s163 is restart-aware (b873523a).
 
+## 164. MIX-BASELINES: like-for-like text-CoT and direct-answer baselines on §161's shape mix (Audit's requirement before any "beyond text" claim; pre-registered 2026-10-08 11:26 EDT, after Audit's review and before any implementation or run; priors from Literature's 0b532db5 / 73fbfb1a)
+
+**Why.**
+* §161 MIX is LENGTH-GENERAL: trained on 4 × n with n ≤ 5, it reads ext_4x8 0.964 / 0.912, and it is SERIAL with a state-carried running sum.
+* **The only 4×8 baselines were trained on 4×4 alone.** At 4×5 TC-M reads 0.003 and ICoT-SI 0.0; both read 0.0 at 4×8 (`theory/results/ext_baselines_s152.json`).
+* A claim that the latent route extrapolates where text does not needs the same training mix for text CoT.
+* Note 158-2's rule needs a measured single-pass baseline on the same data.
+
+**Design** (mult98's recipe: pretrained GPT-2 small, 24k, bs 64, AdamW 1e-4, warmup 100 + cosine; RTX 3090; seeds 1–2 per arm):
+* **The same data as §161 MIX:**
+  - 4 × n chains with n ~ U{2, 3, 4, 5} drawn per batch;
+  - operands from multpair's gen_operands, excluding the 4×4 bench test items (commuted pairs included);
+  - **TC-MIX:** text in the implicit-CoT format (" P_1 + P_2 ( S_2 ) + … + P_n #### product", digits LSB first), as TC-M;
+  - **DIRECT-MIX:** the question then " #### product", as NC-M.
+* **TC-MIX = mult98 `--arm tc`**, greedy-decoding the CoT and answer at the format's known token count for the item's shape. **DIRECT-MIX = mult98 `--arm nc`.**
+* **Tests:** the 4×4 bench (`acc_test`), plus §161's ext items with the same generator seeds: ext_4x6 (14016 / 14017), ext_4x7 (14018 / 14019), ext_4x8 (14004 / 14005) and
+  ext_4x16 (14006 / 14007), 1,000 each. Each reports acc_report's test_acc and per-column answer-digit accuracy.
+* **Compute:** `compute` (4×4) and `compute_4x8`, in the Meter convention (§98), beside MIX's (33 passes at 4×8).
+
+**Rules (fixed now; `theory/score_s164.py`).**
+* **LATENT BEYOND TEXT ON LENGTH:** §161 MIX is LENGTH-GENERAL (score_s161, 2 of 3) **and** TC-MIX's mean ext_4x8 over s1–s2 is below 0.90.
+* **If TC-MIX's mean ext_4x8 is ≥ 0.90:** the shape mix, not latency, gives length, and the latent claim is limited to C3 (compute).
+* **DIRECT-MIX (descriptive)** is the measured single-pass baseline on the same data. A mean ext_4x8 below 0.90 means 4×8 exceeds what a single pass learns from this data.
+* **C3 at 4×8 (descriptive):** each arm's FLOPs and passes at 4×8 beside MIX's. The ratio changes with length.
+* **Predictions (Theory):**
+  - TC-MIX: mean ext_4x8 < 0.90. A learned CoT format with absolute positions does not extend to 8 partial products without position coupling (Cho; Literature
+    73fbfb1a). 4×4 should be ≥ 0.99.
+  - DIRECT-MIX: fails at 4×8, and probably at 4×4 too (§148: 0.002 at 24k).
+
+**Placement.**
+* 4 runs, about $1–2 (24k, 3090s), beside §161 / §163.
+* **Implementation (Experiments):**
+  - mult98 `--shape_mix 2,3,4,5` for the tc / nc arms: a 4×n generator in the implicit-CoT format; operands from gen_operands, minus the 4×4 bench test items;
+  - the ext evals with §161's seeds;
+  - compute_4x8.
+* **Gates:**
+  - the generator's CoT strings are bit-identical to the bench files' on 4×4 bench train items;
+  - exact labels for n ≠ 4;
+  - smoke_plain;
+  - Audit's diff review.
+* Dirs `s164_{tcmix,directmix}_4x4_s{1,2}`. Scorer: `theory/score_s164.py`, committed with this registration.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
