@@ -1,0 +1,3 @@
+# THEORY §160 R-ROWS A-R block-9 fallback (155-1 rule with the 160-1 floor fired on A-R s1: floor spikes at 25.7k-35.2k, read live from b180's log at 37k; Theory 86446333): A-R's exact args (b180) with --mem_write block9, 48k, via scratch.restart160; ship EXTRA_120=scratch/gate160.py; RTX 3090 (~$1.5)
+# P=1
+boxes/runs_fsq/s160_ar9_4x4_s1 scratch.restart160 --family mult_row --task 4x4 --seed 1 --carrier deltamem --copy_frac 0 --reader --teacher_cache boxes/runs_fsq/s142_teacher_cache/teacher_sj_4x4_train.npz --lmax_steps 2000,5000,9000 --steps 48000 --ckpt_every 2000 --keep_ckpt_steps 24000,36000 --mem_write block9
