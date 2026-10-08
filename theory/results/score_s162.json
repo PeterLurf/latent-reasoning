@@ -1,14 +1,134 @@
 {
  "boundary": {
-  "status": "pending (0 / 2 DIRECT seeds)",
-  "L_star": null,
-  "curves": {},
+  "status": "fixed",
+  "L_star": 16,
+  "per_seed": {
+   "1": 16,
+   "2": 32
+  },
+  "boundary_uncertain": true,
+  "curves": {
+   "1": {
+    "1": 1.0,
+    "2": 1.0,
+    "4": 1.0,
+    "8": 0.9995,
+    "16": 0.887,
+    "32": 0.007,
+    "64": 0.007,
+    "128": 0.0075
+   },
+   "2": {
+    "1": 1.0,
+    "2": 1.0,
+    "4": 1.0,
+    "8": 1.0,
+    "16": 0.9335,
+    "32": 0.01,
+    "64": 0.0045,
+    "128": 0.008
+   }
+  },
   "notes": []
  },
- "plan": null,
+ "plan": {
+  "short_lmax": 8,
+  "long_lmax": 32,
+  "depth_reached": true
+ },
  "long": {
   "dir_arm": "long",
   "l_max": 32,
+  "runs": {
+   "1": {
+    "status": "done",
+    "exact": true,
+    "final_acc_by_length": {
+     "1": 1.0,
+     "2": 1.0,
+     "3": 1.0,
+     "4": 1.0,
+     "5": 1.0,
+     "6": 1.0,
+     "7": 1.0,
+     "8": 1.0,
+     "9": 1.0,
+     "10": 1.0,
+     "11": 1.0,
+     "12": 1.0,
+     "13": 1.0,
+     "14": 1.0,
+     "15": 1.0,
+     "16": 1.0,
+     "17": 1.0,
+     "18": 1.0,
+     "19": 1.0,
+     "20": 1.0,
+     "21": 1.0,
+     "22": 1.0,
+     "23": 1.0,
+     "24": 1.0,
+     "25": 1.0,
+     "26": 1.0,
+     "27": 1.0,
+     "28": 1.0,
+     "29": 1.0,
+     "30": 1.0,
+     "31": 1.0,
+     "32": 1.0
+    },
+    "long_acc_512": 0.0,
+    "acc_2048": 0.0,
+    "state_probe_p": 0.876,
+    "op_probe_old_mean": 0.14925,
+    "probe_p": 16,
+    "probe_n": 2000,
+    "edit": {
+     "propagation_share": 0.0,
+     "random_edit_share": 0.0,
+     "null_value": 0.0,
+     "n": 867
+    },
+    "propagates": false,
+    "kind": "MIXED",
+    "serial_sanity": true,
+    "key_cos": [
+     0.55903,
+     0.46174,
+     0.51815,
+     0.49154,
+     0.49502,
+     0.49933,
+     0.21496,
+     0.50974,
+     0.45481,
+     0.38267,
+     0.35947,
+     0.54166
+    ],
+    "rho_loop": 0.041973695158958435,
+    "fallback_trigger": {
+     "loss_jumps": [],
+     "n_nonfinite": 0,
+     "fires": false,
+     "grad_floor_spikes_descriptive": 10,
+     "log_points": 240
+    },
+    "gpu": "NVIDIA GeForce RTX 3090"
+   },
+   "2": {
+    "status": "open"
+   },
+   "3": {
+    "status": "open"
+   }
+  },
+  "kind": null,
+  "why": "pending (1 / 2 seeds)"
+ },
+ "short": {
+  "dir_arm": "short",
+  "l_max": 8,
   "runs": {
    "1": {
     "status": "open"
@@ -23,6 +143,6 @@
   "kind": null,
   "why": "pending (0 / 2 seeds)"
  },
- "reading": "pending",
+ "reading": "pending (boundary uncertain: the lower L* is used)",
  "capacity": []
 }
