@@ -1,0 +1,3 @@
+# THEORY §154 SHIFT-MEM (ed7857cc; Audit-approved registration) SHIFT slot 1 via scratch.restart154 --arm shift -> boxes.multpair --carrier deltamem --add_reset column (§147's recipe: 24k, --stop_plateau + 147-1 misfire rule, slots 1 / 101 / 201 / 301, ckpt 2000); eval adds ext_4x16 + s154 (colsum_r2_by_segment, carry_probe_by_column, c7_edit); RTX 3090 (~$0.8)
+# P=1
+boxes/runs_fsq/s154_slots/shift_4x4_k1 scratch.restart154 --arm shift --task 4x4 --slot 1
