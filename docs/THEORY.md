@@ -9171,6 +9171,20 @@ accumulator.**
     - **lengths beyond training:** C2, §161.
   - Multiplication stays the C3 / C6 / C2 testbed.
 
+**§158 FREE-PAIRS slot 1 (interim, 2026-10-08 08:50 EDT; 24k, RTX 3090; scored by Theory with score_s158): SERIAL and near-exact, with no C1 credit, as 158-2 predicted.**
+* **Accuracy:** consistent test_acc **0.982**, just below the 0.99 bar (columns 1.0 / 1.0 / 1.0 / 1.0 / 0.999 / 0.987 / 0.99 / 0.999). Free chains **0.995**.
+* **SERIAL.** The row donor is 0.988 / 0.982 / 0.988 at pairs 4 / 8 / 12, with the recipient at chance; on free items 0.995 / 0.991 / 0.988.
+  - Training on hybrids closed R's swap gap (R ≤ 0.33), so **the gap was data-induced**.
+  - Per 158-1 this is a sanity check, not C1.
+* **No C1 credit (158-1):**
+  - **(a)** Carry-edit propagation is 0.015, equal to random (0.015) and the null (0.015). On free items: 0.003, equal to the null.
+  - **(b)** The accumulator decodes at 0.43 pooled exact, against 0.86 for the raw digits.
+    - After pair 4 the sums lead (0.89–0.97 against 0.87).
+    - After pairs 8 / 12 the raw digits dominate: 0.95 / 0.79 against 0.15–0.68 / 0.05–0.61.
+* **Other measures:** ext_4x8 0.0; rho_loop 0.29; the fallback trigger is quiet (0 floor spikes, 0 non-finite steps).
+* **Against 158-2:** consistent, SERIAL without C1 credit. Strictly the prediction covers exact slots, and s1 is 0.982.
+* **Next:** slots 2–4 run by the rules. PASS needs ≥ 3/4 exact and SERIAL. With slot 1 short, C1 credit now needs (a) and (b) in all three remaining slots.
+
 ## 159. R-5×5: §155 R's write-after-read memory at 5×5, the SOTA leg (C3) (Audit 05:45; pre-registered 2026-10-08 05:43 EDT, before any implementation or run; runs only if §155 R s2 is exact)
 
 **Why.**
