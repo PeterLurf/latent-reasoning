@@ -170,9 +170,19 @@ text token (S5: the first state token; FF / CYC / MOD / RDFA: the answer token) 
      5-product columns, the precondition for §152 at 5×5. Below 0.5 means it does not at this budget.
    - About 4 h each.
 
+**[Theory 2026-10-08 03:11, 3070 (idle since 02:53); descriptive previews, read for no rule; memory-checked first, under the 6 GiB cap]**
+1. **§156 (a) local previews**, after Audit re-checks §156's code: loop148 `--loops 1`, 8k steps, seed 1, with `--answer_sep interleave`, `--answer_sep pause`, and no flag (PLAIN),
+   out `proto156_{sep,pause,plain}_s1_3070`.
+   - **Reading (descriptive):** the test exact and per-column curves on the 3070 class, as an early look before the registered 3090 runs. They do not score §156.
+   - About 15 min each.
+2. Then §154 SHIFT's local 4×4 proto at 8k (multpair `--carrier deltamem --add_reset column`, seed 501, out `proto154_shift_s501_3070`): the early column profile and α by flag
+   beside b161 (descriptive).
+
 ## Done
 
 * **§150 soft-only DIGIT (21:13 item 1): FAILS**, 3 of 4 (6k–8k mean loss 1.09 / 1.57 / 1.11, ≥ 0.3; s504 running). The loss rises when c_max reaches 2 at 2k, without
   annealing or hardening. DIGIT s1's collapse was the curriculum, not the hardening (as 150-3).
 * **§144 L = 1 check (21:50): PARTIAL.** Loss at 5k: s601 F8 2.44 / N64 2.48 (about ln 10: one of two digits); s602 F8 4.89 / N64 4.98 (chance).
+* **DeltaMem 5×5 proto s501 (3070, 12k; 8e29e417 item 2):** per column 1.0 / 1.0 / 0.915 / 0.725 / **0.494** / 0.178 / 0.109 / 0.089 / 0.07 / 0.178. Column 5 is below 0.5, so it
+  does not handle 5-product columns at this budget (fixed reading). s502 is still to come.
 * **§144 sum4 8k no-stop (3070):** no entry. Loss at 8k: s511 F8 9.79 / N64 10.16; s512 F8 9.9 at 4.5k (all ≥ 5.0).
