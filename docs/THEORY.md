@@ -8962,6 +8962,10 @@ ext_4x8 0.000 < 0.5. ROTARY was deferred to §155's architecture (154-2), so §1
   - **The R arm's verdict is decided FAIL** by the registered PASS rule (≥ 3/4 exact and SERIAL): 2 slots decided, both exact (1.000 / 0.997), neither SERIAL.
   - Exactness replicates; serial use does not.
   - §159 / §160's condition is R **s2** specifically (pending).
+* **R s4:** test_acc **0.999**. Not SERIAL (row donor 0.09 / 0.09 / 0.17), ext 0.0, propagation 0.0.
+  - **The R arm is complete:** 4 of 4 seeds exact (1.000 / 0.998 / 0.997 / 0.999), 0 of 4 SERIAL, so the verdict is **FAIL by the PASS rule**. NOT LENGTH-GENERAL; no
+    RECURRENT USE (descriptive for R).
+  - **Exactness is seed-robust** (C6: low seed variance in accuracy).
 * **R s2:** test_acc **0.998**. Not SERIAL (row donor 0.22 / 0.20 / 0.33), ext 0.0, propagation ≈ 0 (0.003 = null). **This meets §159's and §160's condition: both run.**
 * **SHIFT-R s1** (write-after-read + per-column reset): test_acc **1.000**, every column 1.0.
   - Not SERIAL (row donor 0.04 / 0.03 / 0.05); ext_4x8 0.006; rho_loop 0.33.
