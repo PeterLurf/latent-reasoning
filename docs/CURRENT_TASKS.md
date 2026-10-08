@@ -50,7 +50,7 @@ after create; auto_ship is transitive: a multrow queue ships multpair too): reco
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (09:04):**
+* **Theory (09:35):**
   - **Waiting on the user (via Audit):** `docs/THEORY_C1_FORCING_2026-10-08.md` (42de5d5f + addendum 8500894d; note 158-2, Literature 6b771087 / fd630b87).
     - The finding: C1 is forced only by depth beyond one pass, or by input beyond the buffer's capacity.
     - The proposals: multiplication becomes the C3 / C6 / C2 testbed; the C1 + C3 headline moves to a task that exceeds one pass.
@@ -59,8 +59,7 @@ after create; auto_ship is transitive: a multrow queue ships multpair too): reco
       score_s162.py in full before then.
   - **§158 FREE-PAIRS slot 1** (46939c14): 0.982, SERIAL, no C1 credit, as 158-2 predicted. Slots 2–4 run by the rules.
   - **Scored as they land:**
-    - §155 SHIFT-R s2–s4 (b177–b179);
-    - §157 PERIODIC s1 (b174), the panel's last arm;
+    - §155 SHIFT-R s3 / s4 (b178 / b179; descriptive, since the arm is decided);
     - §158 slots 2–4;
     - §159 R-5×5;
     - §160 A-R / CTRL-R (b180 / b181);
@@ -71,7 +70,7 @@ after create; auto_ship is transitive: a multrow queue ships multpair too): reco
     - §155 R is exact on 4×4 in every seed (0.997–1.000), at 0.79× TC-M FLOPs.
     - It is not SERIAL, not length-general and not linearly editable: an exact buffer (155-4).
     - FREE-PAIRS makes it SERIAL, still without C1 credit.
-  - **Closed today:** §133 stage 1, §136–§138, §140–§146, §148–§152, §154, §156; the §155 R arm FAILs.
+  - **Closed today:** §133 stage 1, §136–§138, §140–§146, §148–§152, §154–§157. §155 FAILs (both arms; 9b20e2d3). §157 is "not the read" (00e42f5d).
   - **Later:** the §133 stage-2 proofs (with cap4|fullgrow), §139 A' / B (descriptive), §134 MOD s2 / s3.
 
 ## Recently done (details in THEORY / PROTOCOL12 / git log)
