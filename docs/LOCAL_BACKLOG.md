@@ -142,6 +142,20 @@ text token (S5: the first state token; FF / CYC / MOD / RDFA: the answer token) 
    - **Reading (descriptive):** whether loss(8k) falls below 5.0 (entry after the 2k flag), per arm.
    - About 40–60 min each.
 
+**[Theory 2026-10-07 21:50, PRIORITY (next free local card); a descriptive harness-validity check for §144 (Audit), $0; the reading fixed now, before any run]**
+1. **sum4 L = 1 check.**
+   - **Why:** F8's mod-100 rung sat at exact chance for 24k (ln 100, codes_per_state 2.99, ρ = 0).
+   - **Needs** a one-line `--lmax_fixed L` option in fsq120 (every chain has length L; the experiments session's code).
+   - **Command:** `python -m boxes.fsq120 --family sum4 --sum_mod 100 --arm final --lmax_fixed 1 --seed S --stop_after 5000 --no_cert --device {DEV}
+     --out boxes/runs_fsq/proto144_L1_{f8,n64}_s{S}_{card}`, for S = 601 / 602, with F8 (`--d_q 8`) and N64 (`--d_q 64 --no_round --dither 0.25`). No `--stop_plateau`.
+   - **Reading (fixed now, from the logged loss):**
+     - **HARNESS OK** if the loss falls below 0.1 by 5k in at least one seed per arm. The harness can write one sum into the code, so §144's chance results are an
+       entry / curriculum lottery.
+     - **STRUCTURAL BLOCK** if all four stay at or above 4.4 (≈ ln 100). Something blocks writing even one sum (FSQ at init, the 4-token decoder, the start path), and §144's
+       FINAL results are not read as entry or carriage until it is found.
+     - PARTIAL otherwise.
+   - About 10–15 min each.
+
 ## Done
 
 * (none yet)
