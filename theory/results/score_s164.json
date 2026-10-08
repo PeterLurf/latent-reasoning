@@ -1,0 +1,30 @@
+{
+ "tcmix": {
+  "runs": {
+   "1": {
+    "status": "open"
+   },
+   "2": {
+    "status": "open"
+   }
+  },
+  "mean_test_4x4": null,
+  "mean_ext_4x8": null,
+  "n_done": 0
+ },
+ "directmix": {
+  "runs": {
+   "1": {
+    "status": "open"
+   },
+   "2": {
+    "status": "open"
+   }
+  },
+  "mean_test_4x4": null,
+  "mean_ext_4x8": null,
+  "n_done": 0
+ },
+ "single_pass": null,
+ "reading": "pending (TC-MIX 0 / 2 seeds)"
+}
