@@ -9463,6 +9463,9 @@ shapes alone remove the count schedule".**
   - Training the write-after-read memory on varying multiplier lengths removes the fixed-shape count schedule (154-2) and the buffer-only solution (158-3).
   - The result is exact 4×4 multiplication that generalises to 4×8 (1.6× the trained length), with a SERIAL state that carries the running sum, at 0.79× TC-M
     FLOPs and 0.30× its passes.
+* **MIX9 s1 (the block-9 fallback; descriptive):** 4×4 0.989; ext_4x6 / 4x7 / 4x8 = 0.968 / 0.935 / **0.896**; ext_4x16 0.02.
+  - SERIAL (row donor 0.95–0.98). In-progress units 0.84 / 0.94 / 0.80.
+  - Block-9 writes keep the picture, slightly weaker than top writes (MIX s1: 0.996 / 0.964, units 0.97–1.0).
 * **Still open:**
   - C2 against text needs §164's matched baselines.
   - Generality over both operands is §163.
