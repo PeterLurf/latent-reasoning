@@ -11,7 +11,7 @@
     eval.json: final_acc_by_length {"1".."l_max"}, long_acc (cumulative all positions at 512, identity start, as §128), acc_2048 (cumulative,
     500 chains of S5=2048.csv), donor {posA: {donor_consistent, recipient_consistent, chance_overlap}} (whole-memory swap on length-l chains,
     l = min(8, l_max), at up to three evenly spaced items), s155 (recurrence incl. rho_loop, write_grad_norm, write_grad_spikes(_floor), n_nonfinite),
-    s162 {state_probe {p: acc}, op_probe {p: {j: acc}}, probe_n_fit, probe_n_score, state_edit {...}, key_cos (per head)}.
+    s162 {state_probe {p: acc}, op_probe {p: {j: acc}}, probe_n_fit, probe_n_score, state_edit {...} at p = min(16, l_max) on chains of length 2p, key_cos (per head)}.
 Both: §120's recipe (24k, bs 64, AdamW 1e-4 wd 0.01, warmup 100 + cosine, clip 1.0), ckpt_last / ckpt_prev every --ckpt_every, --resume.
 --auto_micro: before training, a memory check at L = l_max (bs / micro rows); micro doubles until the peak is <= --mem_budget GiB.
     python -m boxes.deltas5 --arm delta --l_max 32 --seed 1 --out boxes/runs_fsq/s162_long_s1
@@ -345,6 +345,7 @@ def main():
     ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", default=None); ap.add_argument("--log_every", type=int, default=100)
     ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--test_n", type=int, default=2000); ap.add_argument("--ext_n", type=int, default=500)
     ap.add_argument("--long_len", type=int, default=512); ap.add_argument("--probe_n_fit", type=int, default=8000); ap.add_argument("--probe_n_score", type=int, default=2000)
+    ap.add_argument("--edit_p", type=int, default=0, help="state_edit position p (chains of length 2p); default min(16, l_max): §162's rule (Audit 1d78c303)")
     ap.add_argument("--edit_n", type=int, default=1000); ap.add_argument("--donor_n", type=int, default=1000); ap.add_argument("--rec_every", type=int, default=4000)
     ap.add_argument("--auto_micro", action="store_true"); ap.add_argument("--mem_budget", type=float, default=21.0); ap.add_argument("--mem_check", action="store_true")
     ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--data_dir", default=os.path.join(ROOT, "bench", "data", "s5"))
@@ -460,7 +461,8 @@ def main():
                     S_ = m.run(None, Xr[i:i + a.eval_bs], dev, S=S_); out_.append(m.greedy(S_))
             return np.concatenate(out_)
         P = [p for p in (2, 4, 8, 16, 32) if p <= a.l_max]
-        res["s162"] = {**probes(run_fn, P, dev, a.probe_n_fit, a.probe_n_score), "state_edit": state_edit(run_fn, cont_fn, ell, dev, n=a.edit_n, n_fit=a.probe_n_fit),
+        pe = a.edit_p or min(16, a.l_max)                                   # §162 rule: STATE-LIKE (a) / (b) at p = min(16, l_max), edit chains of length 2p
+        res["s162"] = {**probes(run_fn, P, dev, a.probe_n_fit, a.probe_n_score), "state_edit": state_edit(run_fn, cont_fn, 2 * pe, dev, n=a.edit_n, n_fit=a.probe_n_fit),
                        "key_cos": key_cos(m, dev, amp)}
         res["s155"] = {"recurrence": rec_hist + [{"step": "end", **s155_recurrence(m, dev, amp)}], "write_grad_norm": wg_hist, "n_nonfinite": n_nonfinite,
                        "write_grad_spikes": [x_ for x_ in wg_hist if x_.get("spike_100x")], "write_grad_spikes_floor": [x_ for x_ in wg_hist if x_.get("spike_100x_floor")],
