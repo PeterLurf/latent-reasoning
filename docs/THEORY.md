@@ -256,7 +256,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 166 | STATE-COVERAGE: 1k-step post-training from passed / noise states vs a PLAIN post-train (2507.02782), on §162 LONG and §161 MIX | **not shown**: S5 SP = PLAIN (48 0.9995 / 64 0.988 vs 0.991 / 512 0.0 both; validity gate passes); MULT uninformative (166-3) | closed |
 | 167 | DAS-EDIT: learned-subspace interchange (DAS) on MIX / S5 memories, with illusion controls (C1 edit, C7) | registered | **open** |
 | 168 | DEEP-ProsQA (the user's go): a measured single-pass boundary on deep (3–14) shortcut-free ProsQA, then an INJECT latent arm | registered (step 1 running) | **open** |
-| 169 | INJECT (the user's "task agnosticness"): the full problem re-presented every think pass, the memory the only cross-pass state; K16 / K8 / K0 on §161's mix | registered | **open** |
+| 169 | INJECT (the user's "task agnosticness"): the full problem re-presented every think pass, the memory the only cross-pass state; K16 / K8 / K0 on §161's mix | **neither K arm exact** (K0 0.003, K8 0.001, K16 0.002; flat in K′, memory unused): input re-presentation alone does not suffice at 48k | closed |
 | 170 | NESTED (the user's go): Feng's mod-11 bracketed expressions; a measured DIRECT boundary over n, then INJECT K8 / K0 (K16 gated) against Feng's text CoT; C1 = DEEP + THINK-NECESSARY + SERIAL-NEST, C3 at text CoT's accuracy for less compute | registered | **open** |
 | 171 | READ-SLOTS (task-agnostic architecture): the input encoded once; each think pass 8 learned slots read it and write DeltaMem-R; K8 on §161's mix; head to head with INJECT (CHEAPER-EQUAL); read map / entropy (C7) | **slot 1 not EXACT** (4×4 0.003, flat in K′; memory unused; pass-invariant reads, 60% on EOT); BLIND 0.0; interpretation awaits §169 K8 | gate closed |
 | 172 | PCCoT-PROBE (eval only): §149's battery on whynlp/pccot-gpt2 (GSM8K 49.48 at release); LATENTS-USED, ITERATIONS-USED (T' = 0 = pause), Jacobi RHO, descriptive SERIAL | **LATENTS-USED, ITERATIONS-USED** (0.49 release; zeroed 0.17; T'=0 0.13; more iterations hurt); RHO MARGINAL 0.88; step state distributed across the block, not recomputed (whole-block swap: recipient 0.03–0.08, hybrid 0.22–0.27 → PARTIAL; 172-1) | closed |
@@ -10497,6 +10497,14 @@ subspace.**
   - No t ≥ 2, c ≥ 2 reaches 0.5.
 * **§173 (answer2):** 67% of 4×4 items are unsettled at the 2K cap. There is no C5 reading (fixed-K accuracy 0.001).
 * §169 K8's think passes neither turn the delta state more than an untrained network's do nor carry per-step column content.
+
+**§169 result (2026-10-09 17:37 EDT; slot 1 complete: s169_{k0,k8,k16}_4x4_s1, RTX 3090, 48k; score_s169). Neither K arm is exact: input re-presentation alone does not suffice at 48k.**
+* **K16:** 4×4 0.002; every extension 0.0. Flat at every K′ (0.000–0.003 for K′ 0–64), and every skipped write gives 0.002.
+* **K8:** 0.001 (the earlier interim). **K0:** 0.003.
+* **The scorer's think_necessary is "True" for K16, and that is vacuous.** Under note 170-4's removal-only form, 0.0 ≤ 0.5 × 0.002 holds trivially at near-zero accuracy. It is not a claim, and the gate is closed.
+* **§169 closes.** The identical-input INJECT harness leaves the memory unused on §161's mix (§169 K8's 173-1 readout).
+  - The levers tried since: §176 RK / PROG (no rescue).
+  - Running: §177 (a) / (d) / (f), §175 and §178.
 
 ## 170. NESTED: Feng's modular expressions past one pass, with a measured DIRECT boundary, the INJECT latent arm and Feng's text CoT (the user's "keep working on … the nested arithmetic" via Audit; the C1-forcing note's option 2(a); roadmap steps: task-agnostic input (INJECT on a second task), length stability, a fair CoT baseline; pre-registered 2026-10-09 01:49 EDT, after Literature's check fd630b87 (`docs/LIT_TC0_SERIAL_2026-10-08.md` addendum) and Audit's review, before any implementation or run)
 
