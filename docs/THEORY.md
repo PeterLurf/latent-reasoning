@@ -249,7 +249,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 159 | R-5×5: R at 5×5 (the SOTA leg, C3) | registered | **open** |
 | 160 | R-ROWS: R on §152's rows, A-R / CTRL-R (C3) | **gate closed** (A-R s1 0.056, CTRL-R 0.055; column 5 ~0.09); block-9 fallbacks descriptive | closed |
 | 161 | SHAPE-MIX (C2): 4 × n training (n 2..5), ± a column index with random offsets | **LENGTH-GENERAL** (MIX 3/3, ext_4x8 0.91–0.96; MIX+IDX 2/3); SERIAL with a state-carried running sum; index not needed | closed |
-| 162 | DELTA-S5: DeltaMem-R on S5 against a measured single-pass boundary (158-2's contrast cell) | registered | **open** |
+| 162 | DELTA-S5: DeltaMem-R on S5 against a measured single-pass boundary (158-2's contrast cell) | **mixed** (LONG MIXED, SHORT BUFFER-LIKE; at equal depth the arms are indistinguishable, so 158-2's depth contrast is not supported); both exact in range, 0.0 at 512 | closed |
 | 163 | SHAPE-MIX-2D: both operand lengths mixed (m, n 2..5), 6×6–8×8 generalisation | registered (condition met) | **open** |
 | 164 | MIX-BASELINES: TC-MIX / DIRECT-MIX on §161's mix (like-for-like C2 baselines) | **LATENT BEYOND TEXT ON LENGTH** (TC-MIX anchored ext 0.0 at 4×6+; its CoT stops short); DIRECT-MIX 4×4 ≤ 0.004 (the single pass fails) | closed |
 | 165 | FIXED-CHUNK: the same memory on fixed text chunks plus think passes (task-agnostic segmentation) | registered | **open** |
@@ -9670,6 +9670,32 @@ this note is pushed.**
   - At p = 8 SHORT s1 reads 1.0 / 1.0 / 0.33 / 0.23 / 0.23 / 0.24 / 0.35 / 0.85, essentially identical to LONG s1 (1.0 / 1.0 / 0.35 / 0.20 / 0.23 / 0.25 / 0.35 /
     0.87). The equal-depth caveat holds.
   - The arm reading waits for LONG s2.
+
+**§162 DELTA-S5 result (2026-10-08 20:17 EDT; scored by Theory with score_s162; RTX 3090): registered reading "mixed: LONG MIXED, SHORT BUFFER-LIKE" (boundary uncertain). At
+equal depth, the two arms are indistinguishable.**
+* **Both arms are exact in their training range,** with LONG past the single-pass boundary:
+  - LONG s1 / s2: 1.0 at every length ≤ 32, where DIRECT is at 0.007–0.01 at 32;
+  - SHORT s1 / s2: 1.0 at every length ≤ 8.
+* **The equal-depth table** (Audit's headline descriptive). Older-half op probe at p = 4 / 8 / 16, and the state probe at p = 4 / 8:
+
+  | run | op older half p4 | p8 | p16 | state p4 | state p8 |
+  |---|---|---|---|---|---|
+  | SHORT s1 | 0.949 | 0.417 | — | 0.85 | 0.84 |
+  | SHORT s2 | 0.987 | 0.476 | — | 0.89 | 0.88 |
+  | LONG s1 | 0.975 | 0.425 | 0.149 | 0.90 | 0.88 |
+  | LONG s2 | 0.970 | 0.410 | 0.159 | 0.91 | 0.88 |
+
+  - Both arms keep the first and the most recent items and lose the middle, the same profile at the same depth.
+  - The registered BUFFER-LIKE / MIXED split comes from where p* = l_max / 2 sits (4 against 16), not from a different mechanism.
+* **Against 158-2's depth prediction: not supported as a mechanism contrast.**
+  - SHORT, below the boundary, is not a full buffer at its own length: middle items are at 0.23–0.40 at p = 8, yet it is exact.
+  - LONG is not linearly editable. The state probe is 0.88–0.91 (s2 at p 16: 0.909), but the edit propagates 0.0 in all four runs.
+  - **Both arms carry a computed, non-linearly-coded state with primacy and recency, not an input buffer.**
+* **Capacity / depth (C6):** 0.0 at 512 and at 2,048 in all four runs. No arm is length-stable past training. §166's state-coverage test targets exactly this.
+* **SERIAL** (the sanity check) holds in all four. **The triggers** (162-4's floor) are quiet.
+* **Post-hoc (descriptive, 162 posthoc):** SHORT s2's start state decodes at 1.0 at p 4 / 8, and the first item at 0.89–1.0, so the earliest writes persist. SHORT s1
+  and LONG s2 are pending.
+* **§162 closes** on its registered arms. The post-hoc and §166 / §167 (state coverage, DAS) continue on its models.
 
 ## 163. SHAPE-MIX-2D: both operand lengths mixed, for length and value-range generalisation over both operands (C2) (Audit's research pass after §161 MIX s1; pre-registered 2026-10-08 10:59 EDT, after Literature's check 73fbfb1a (`docs/LIT_MULT_LG_NOSCRATCH_2026-10-08.md`) and Audit's review, before any implementation or run; runs only if §161 MIX s2 replicates)
 
