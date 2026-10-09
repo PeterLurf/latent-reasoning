@@ -8,6 +8,8 @@
 # 2026-10-09 09:5x MOVED TO CLOUD (k = 2048 OOMs under the 6 GiB cap; b226 / b227): 5.0 boxes/runs_fsq/s162_short_s2/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s162_short_s2 --fit_micro 2
 # 2026-10-09 09:4x Experiments: descriptive §173 halt + §177 direction on §171 BLIND (fillers while the cards are idle)
 # 2026-10-09 10:0x Experiments: note 173-1 package (cosines + step_probe_delta + cos_at_init) re-run on §171 K8 (supersedes the cosines-only file)
+# 2026-10-09 10:2x Experiments (Audit 10:14: >= 1 h standing work): DESCRIPTIVE 8k-step local previews of gated arms (not the registered launches; Theory may stop them)
+5.0 boxes/runs_fsq/proto176_rk_s1_4060/eval.json python -u -m boxes.inject169 --think_k 8 --rand_k 7,0.5,32 --fast_add --seed 1 --steps 8000 --ckpt_every 2000 --auto_micro --mem_budget 5.0 --eval_bs 50 --ext_n 500 --probe_n_fit 3000 --device {DEV} --out boxes/runs_fsq/proto176_rk_s1_4060
 4.0 boxes/runs_fsq/s171_k8_4x4_s1/eval_s177_dir.v2.done python -u -m boxes.halt173 --run boxes/runs_fsq/s171_k8_4x4_s1 --dir177 --bs 125 --device {DEV} && echo ok > boxes/runs_fsq/s171_k8_4x4_s1/eval_s177_dir.v2.done
 3.0 boxes/runs_fsq/s171_k8blind_4x4_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s171_k8blind_4x4_s1 --bs 100 --device {DEV}
 3.0 boxes/runs_fsq/s171_k8blind_4x4_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s171_k8blind_4x4_s1 --dir177 --bs 100 --device {DEV}
