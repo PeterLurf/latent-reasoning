@@ -49,7 +49,7 @@ def header(d, base):
         return None, {"status": "running" if a else "open"}
     if a.get("mem_check") or a.get("train_n") or str(a.get("device", "")).startswith("cpu"):
         return None, {"status": "smoke"}
-    bad = {k: a.get(k) for k, v in base.items() if a.get(k) != v}
+    bad = {k: a.get(k) for k, v in base.items() if str(a.get(k)) != str(v)}   # type-tolerant: newer code writes think_k as a string
     if bad:
         ERRORS.append((d, bad)); return None, {"status": "error", "error": bad}
     return r, {"status": "done", "gpu": r.get("train_gpu")}

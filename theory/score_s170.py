@@ -36,7 +36,7 @@ def load(d, f="eval.json"):
 
 
 def check(d, a, want):
-    bad = {k: a.get(k) for k, v in want.items() if a.get(k) != v}
+    bad = {k: a.get(k) for k, v in want.items() if str(a.get(k)) != str(v)}   # type-tolerant (think_k may be a string)
     if bad:
         ERRORS.append((d, bad))
     return bad

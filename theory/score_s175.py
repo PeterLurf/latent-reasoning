@@ -32,7 +32,7 @@ def run(s, ns_):
         return {"status": "running" if a else "open"}
     if a.get("mem_check") or a.get("train_n") or str(a.get("device", "")).startswith("cpu"):
         return {"status": "smoke"}
-    bad = {k: a.get(k) for k, v in BASE.items() if a.get(k) != v}
+    bad = {k: a.get(k) for k, v in BASE.items() if str(a.get(k)) != str(v)}   # type-tolerant: newer code writes think_k as a string
     if bad:
         ERRORS.append((d, bad)); return {"status": "error", "error": bad}
     ab = r.get("acc_by_n") or {}; x = r.get("s170") or {}; CH = S170.CH
