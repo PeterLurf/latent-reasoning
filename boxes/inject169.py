@@ -232,6 +232,15 @@ def main():
     if ipts:
         fA, fB = draw(np.random.default_rng(16903), a.probe_n_fit, [4], EXCL); _, Kf = predict(m, fA, fB, K, dev, amp, bs, keep=set(ipts)); _, Ks = predict(m, teA, teB, K, dev, amp, bs, keep=set(ipts))
         s["inprog_by_pass"] = {str(t): colsum_cls(Kf[t], fA, fB, Ks[t], teA, teB, dev) for t in ipts}; s["probe_n_fit"] = int(a.probe_n_fit)
+    if K:                                                                   # Audit (descriptive): the memory's norms per pass up to 4K (the additive heads grow ~K x)
+        mn = {}
+        with torch.no_grad():
+            nA, nB = teA[:256], teB[:256]; S = m.mem.zero_state(len(nA), dev); ids = m.ids(torch.tensor(think_text(nA, nB), device=dev))
+            for t in range(1, 4 * K + 1):
+                with amp_ctx(amp):
+                    S = m.write(S, ids)
+                mn[str(t)] = {"additive": float(S[:, :DM.H_ADD].float().flatten(1).norm(dim=1).median()), "delta": float(S[:, DM.H_ADD:].float().flatten(1).norm(dim=1).median())}
+        s["mem_norm_by_pass"] = mn
     res["s169"] = s; res["eval_sec"] = round(time.time() - t1)
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     for ck_ in ("ckpt_last.pt", "ckpt_prev.pt"):
