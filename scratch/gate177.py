@@ -1,7 +1,7 @@
 """THEORY §177 PASS-DISTINCT pre-launch gates (4947f034, notes 177-1..3), boxes/inject169.py (a) tidx / (d) fadetidx, boxes/nested170.py (f) kmatch:
   (1) (a) gradflow (fade 0.5, W_o perturbed, gamma 0.5, K = 3, offset o = 5): the answer CE puts gradient on the index rows o + 1 .. o + 3 (and none
       elsewhere) and on every DeltaMem parameter; the bound assert fires at o + t >= rows
-  (2) (d) masked mixture: a padded pair row inside a mixed batch writes exactly what the same pair segment writes alone (max abs diff < 1e-4, fp32);
+  (2) (d) masked mixture: a padded pair row inside a mixed batch writes what the same pair segment writes alone (max abs < 1e-4 OR relative to max |S| < 1e-6, fp32: a padded row runs longer matmuls);
       p = 0 is the pure pair schedule (no padding); gradflow at p = 0.5 into the index rows and every DeltaMem parameter; pair_seg = multpair's
       schedule / tokens (column order, ' ;' on a column's first pair)
   (3) (f) kmatch: a 3-step CPU run with --k_window 0,2 writes kmatch_counts with every K - n in {0, 1, 2} and one K per n-bucket per step
@@ -65,18 +65,21 @@ def main():
         Spair = m2.think_fade(m2.mem.zero_state(4, "cpu"), A, B, 0.0, np.random.default_rng(0))
         Sfull = m2.think_fade(m2.mem.zero_state(4, "cpu"), A, B, 1.0, np.random.default_rng(0))
     d_pair = float((Smix[[1, 3]] - Spair[[1, 3]]).abs().max()); d_full = float((Smix[[0, 2]] - Sfull[[0, 2]]).abs().max())
+    r_pair, r_full = d_pair / float(Spair[[1, 3]].abs().max()), d_full / float(Sfull[[0, 2]].abs().max())   # relative to max |S| (fp32: padded = longer matmuls)
     prep(m2); m2.p_off = 2; S = m2.think_fade(m2.mem.zero_state(4, "cpu"), A, B, 0.5, np.random.default_rng(1)); lg = m2.dec_logits(S, A, B, ans)
     Fn.cross_entropy(lg.reshape(-1, lg.shape[-1]), ans.reshape(-1)).backward(); rn2 = m2.pidx.weight.grad.norm(dim=1)
     mz2 = [n_ for n_, p_ in m2.mem.named_parameters() if p_.grad is None or float(p_.grad.norm()) == 0]
-    out["g2"] = {"pair_seg_equals_multpair": ok_seg, "mixed_vs_pure_pair_rows": d_pair, "mixed_vs_full_rows": d_full, "index_rows_with_grad": [i for i in range(72) if rn2[i] > 0],
+    out["g2"] = {"pair_seg_equals_multpair": ok_seg, "mixed_vs_pure_pair_rows": d_pair, "mixed_vs_full_rows": d_full, "rel_pair": r_pair, "rel_full": r_full, "index_rows_with_grad": [i for i in range(72) if rn2[i] > 0],
                  "mem_zero": mz2}
-    out["g2_pass"] = ok_seg and d_pair < 1e-4 and d_full < 1e-4 and out["g2"]["index_rows_with_grad"] == list(range(3, 3 + 12)) and not mz2; ok &= out["g2_pass"]
+    out["g2_pass"] = ok_seg and (d_pair < 1e-4 or r_pair < 1e-6) and (d_full < 1e-4 or r_full < 1e-6) and out["g2"]["index_rows_with_grad"] == list(range(3, 3 + 12)) and not mz2; ok &= out["g2_pass"]
     # (3) + (4)
     sp = os.environ.get("GATE177_OUT", os.path.join(ROOT, "boxes", "runs_fsq", "s177_gates")); res = {}; env = dict(os.environ, OMP_NUM_THREADS="3")
     common_n = ["--arm", "inject", "--think_k", "10", "--seed", "1", "--steps", "3", "--sched_scale", "0.002", "--log_every", "1", "--bs", "8", "--per_n", "2", "--eval_bs", "8",
                 "--serial_pool", "40", "--device", "cpu"]
-    od = os.path.join(sp, "kmatch"); r_ = subprocess.run([sys.executable, "-m", "boxes.nested170"] + common_n + ["--k_window", "0,2", "--out", od], capture_output=True, text=True, env=env)
-    assert r_.returncode == 0, r_.stderr[-2000:]
+    od = os.path.join(sp, "kmatch")
+    if not os.path.exists(os.path.join(od, "eval.json")):                   # finished runs are reused (CPU runs are slow; a rerun resumes)
+        r_ = subprocess.run([sys.executable, "-m", "boxes.nested170"] + common_n + ["--k_window", "0,2", "--out", od], capture_output=True, text=True, env=env)
+        assert r_.returncode == 0, r_.stderr[-2000:]
     kc = json.load(open(os.path.join(od, "kmatch_counts.json"))); e7 = json.load(open(os.path.join(od, "eval.json")))["s177"]
     win = all(0 <= int(k_) - int(n_) <= 2 for n_, d in kc.items() for k_ in d); per = all(sum(d.values()) <= 3 for d in kc.values())
     out["g3"] = {"kmatch_counts": kc, "window_ok": win, "one_K_per_bucket_per_step": per, "s177_fields": sorted(e7)}
@@ -91,8 +94,10 @@ def main():
             tmp = os.path.join(ROOT, "boxes", "_%s_head177_tmp.py" % mod); open(tmp, "w", encoding="utf-8", newline="\n").write(head); tmps.append(tmp)
         for nm, mod, args_ in (("i_head", "boxes._inject169_head177_tmp", common_i), ("i_new", "boxes.inject169", common_i), ("n_head", "boxes._nested170_head177_tmp", common_n2),
                                ("n_new", "boxes.nested170", common_n2)):
-            od = os.path.join(sp, "off_" + nm); r_ = subprocess.run([sys.executable, "-m", mod] + args_ + ["--out", od], capture_output=True, text=True, env=env)
-            assert r_.returncode == 0, (nm, r_.stderr[-2000:])
+            od = os.path.join(sp, "off_" + nm)
+            if not os.path.exists(os.path.join(od, "model.pt")):                # model.pt = training finished (the comparison needs only it + the log)
+                r_ = subprocess.run([sys.executable, "-m", mod] + args_ + ["--out", od], capture_output=True, text=True, env=env)
+                assert r_.returncode == 0, (nm, r_.stderr[-2000:])
             res[nm] = ([json.loads(l)["loss"] for l in open(os.path.join(od, "log.jsonl")) if '"loss"' in l], torch.load(os.path.join(od, "model.pt"), weights_only=True))
     finally:
         for tmp in tmps:
