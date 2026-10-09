@@ -255,6 +255,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 165 | FIXED-CHUNK: the same memory on fixed text chunks plus think passes (task-agnostic segmentation) | registered | **open** |
 | 166 | STATE-COVERAGE: 1k-step post-training from passed / noise states vs a PLAIN post-train (2507.02782), on §162 LONG and §161 MIX | registered | **open** |
 | 167 | DAS-EDIT: learned-subspace interchange (DAS) on MIX / S5 memories, with illusion controls (C1 edit, C7) | registered | **open** |
+| 168 | DEEP-ProsQA (the user's go): a measured single-pass boundary on deep (3–14) shortcut-free ProsQA, then an INJECT latent arm | registered (step 1 running) | **open** |
 
 ## Live sections
 
@@ -10218,6 +10219,51 @@ subspace.**
 * **necessity_random ≥ 0.9 → "off-manifold ablation":** necessity is uninformative at that point, not failed. A point passing everything else reads **SUFFICIENT
   (necessity uninformative)**, not DECOMPOSABLE.
 * This only makes a positive harder (score_s167, synthetic-checked).
+
+## 168. DEEP-ProsQA: graph search past one pass, with a measured single-pass boundary (C1 + C3 on a task that exceeds a pass; the C1-forcing note's option 2(b)) (the user's go via Audit, "approve go ahead on prosqa deep"; pre-registered 2026-10-09 01:35 EDT, after Literature's check dfaf9ed6 (`docs/LIT_DEEP_PROSQA_2026-10-08.md`) and Audit's lead, before any implementation or run)
+
+**Why.**
+* **Standard ProsQA is solved in one pass**, so it cannot test C1:
+  - Coconut at K = 0 reads 97.6 and at K = 6 reads 97.4; a pause-with-curriculum control reads 96.6 against Coconut's 97.0;
+  - fine-tuned GPT-2 Coconut's no-latent drop is 0.0 (2604.06374).
+* **Deep data already exists:** prosqa/make_deep.py → p8data.
+  - Answer depth is 3–10 in training (12,000 items) and 3–14 at test (4,057 items; 11–14 deeper than any training item).
+  - There is a shortcut-free NA version (§57 / §59) and an input-length control (`p8_ctl`).
+* **Prior on this data (PROTOCOL8 P8-0a):** no-CoT GPT-2 reads 0.63 at depth 3 and is near chance (0.47–0.55) from depth 5. A single-pass regime may not exist at all.
+  - On p8_na every GPT-2 latent arm was at chance, and text CoT reached 0.767.
+* **Transformers can learn parallel reachability** (Saparov 2412.04703), so the boundary is measured, not assumed (§162's method).
+
+**Step 1: the single-pass boundary (runs now).**
+* **DIRECT:** GPT-2 small, pretrained, with the graph and question in one context → the answer (Coconut's no-CoT format: question + "\n", then "### " + answer).
+  - Our recipe: 24k steps, bs 64, AdamW 1e-4, warmup 100 + cosine; RTX 3090.
+  - On standard p8 (`p8_train` → `p8_test`) and NA (`p8_na_train` → `p8_na_test`), seeds 1–2 each.
+* **Measure:** candidate accuracy (the higher-likelihood option, chance 0.5) by answer depth 3..14 on the test file (`acc_by_depth`), plus the control set (`acc_ctl`).
+* **The boundary (fixed now; `theory/score_s168.py`):**
+  - per seed, D*_s = the smallest depth with accuracy < 0.90;
+  - D* = the lower of the two seeds, "boundary uncertain" if they differ;
+  - **D* = 3 reads "no single-pass regime".** The NA boundary governs; standard is descriptive.
+  - It is fixed in a dated note from DIRECT alone, before any latent output is read.
+
+**Step 2: the latent arm (registered now in outline; its harness is §169 INJECT, and its training range is fixed in the boundary note).**
+* **The model:** DeltaMem-R with the full graph + question re-presented in every think pass (INJECT), K think passes, then the read-only answer decoder. FINAL only.
+  - Training depths: if D* > 3, the depth mix 3..D*, tested to 2·D*. **If there is no single-pass regime, the full train mix 3–10, tested 3–14.**
+* **Rules (fixed now, on NA):**
+  - **DEEP-LATENT(arm):** ≥ 2 / 2 seeds with accuracy ≥ 0.90 at every depth from max(D*, 3) to 10 (beyond the single pass, within training), **and** THINK-NECESSARY (§165's
+    form: K′ = 0 / 1 each ≤ 0.5× the accuracy at K, with step-specific skip damage).
+  - **DEPTH-GENERAL (C2):** mean accuracy at depths 11–14 ≥ 0.80.
+  - **BEYOND TEXT (C3 / C2):** a text BFS-CoT model (Coconut's CoT format) trained on the same data reads < 0.80 mean at 11–14 while the latent arm reads ≥ 0.80.
+* **Controls (Literature):**
+  - the no-latent eval (K′ = 0);
+  - a pause-with-curriculum arm (the same K passes with no memory write-back: a constant memory);
+  - `p8_ctl` (input length against depth);
+  - responsiveness across checkpoints (2607.06648).
+
+**Placement.**
+* **Step 1:** 4 DIRECT runs, about $1.5 (3090s).
+  - **Implementation (Experiments):** a direct ProsQA trainer (GPT-2, Coconut's no-CoT format) with candidate-accuracy eval by depth; prosqa/eval_p8.py's `--mode nocot` scorer may be reused.
+  - eval.json: `acc_by_depth {"3".."14"}`, `acc_ctl`. args: arm "direct", data "std" / "na", steps 24000.
+  - Dirs `s168_direct_{std,na}_s{1,2}`. Scorer: `theory/score_s168.py`, committed with this registration.
+* **Step 2:** after the boundary note and §169's registration.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

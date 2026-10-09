@@ -1,0 +1,28 @@
+{
+ "na": {
+  "seeds": {
+   "1": {
+    "status": "open"
+   },
+   "2": {
+    "status": "open"
+   }
+  },
+  "boundary": {
+   "status": "pending (0 / 2 seeds)"
+  }
+ },
+ "std": {
+  "seeds": {
+   "1": {
+    "status": "open"
+   },
+   "2": {
+    "status": "open"
+   }
+  },
+  "boundary": {
+   "status": "pending (0 / 2 seeds)"
+  }
+ }
+}
