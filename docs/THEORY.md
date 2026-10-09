@@ -257,6 +257,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 167 | DAS-EDIT: learned-subspace interchange (DAS) on MIX / S5 memories, with illusion controls (C1 edit, C7) | registered | **open** |
 | 168 | DEEP-ProsQA (the user's go): a measured single-pass boundary on deep (3–14) shortcut-free ProsQA, then an INJECT latent arm | registered (step 1 running) | **open** |
 | 169 | INJECT (the user's "task agnosticness"): the full problem re-presented every think pass, the memory the only cross-pass state; K16 / K8 / K0 on §161's mix | registered | **open** |
+| 170 | NESTED (the user's go): Feng's mod-11 bracketed expressions; a measured DIRECT boundary over n, then INJECT K8 / K0 (K16 gated) against Feng's text CoT; C1 = DEEP + THINK-NECESSARY + SERIAL-NEST, C3 at text CoT's accuracy for less compute | registered | **open** |
 
 ## Live sections
 
@@ -10277,6 +10278,19 @@ subspace.**
   - 24k × bs 64 is about 6.9e8 tokens per DIRECT run, so the 4 runs cost about $5–6, not $1.5. The recipe is unchanged.
   - Step 2's INJECT at K16 costs about 17× per item. Its budget is set in the step 2 note, with a projection to Audit.
 
+**Note 168-2 (2026-10-09 01:49 EDT; before any step 2 implementation or run, with no step 1 output read; Audit's three points after Literature's correction 84322b5a). Prior work, novelty, a comparable cell, a donor rule and a K8-first gate.**
+* **Prior work.** A depth-extended, shortcut-controlled ProsQA already exists: ProsQA-Ext (Cheng & Zhang 2609.35643).
+  - It trains on 3–6 hops and tests out of distribution on 7–12, with the shortcut at ≈ 50%.
+  - On from-scratch 4-layer GPTNeoX models, latent variants beat CoT and pause out of distribution, and latent-state transplants redirect the answer.
+  - No code was found. It is cited as the depth baseline.
+* **Novelty, reframed.** The novelty is not the benchmark. It is a pretrained GPT-2 with DeltaMem-R / INJECT as the only cross-pass state, tested
+  against a measured single-pass boundary with K-removal and donor C1 tests and a text-CoT C3 baseline.
+* **A ProsQA-Ext-comparable cell (descriptive).** One K-arm run trained on NA depths 3–6 and tested on 3–14, read at 7–12, so our numbers line up with their split
+  without their generator. It is included in step 2's cost projection to Audit.
+* **A donor rule.** 2609.35643's transplants are the from-scratch prior for our SERIAL test.
+  - Step 2 adds a donor rule in §161's out-of-distribution hybrid form (as §170's SERIAL-NEST), registered in the step 2 note before any step 2 run.
+* **K8 first (Audit).** Step 2's slot 1 is K8 + K0. K16 runs only if K8 slot 1 is THINK-NECESSARY by 168-1.
+
 ## 169. INJECT: the memory with the full problem re-presented in every think pass, a task-agnostic harness (the user's "work on task agnosticness" via Audit's research pass; pre-registered 2026-10-09 01:37 EDT, after Literature's check 6b019d1e (`docs/LIT_INJECT_2026-10-09.md`) and Audit's review, before any implementation or run)
 
 **Why.**
@@ -10337,6 +10351,103 @@ subspace.**
   - Audit's diff review;
   - memcheck at 4×5 training and the 4×16 eval at 4K.
 * Dirs `s169_{k16,k8,k0}_4x4_s{seed}`. Scorer: `theory/score_s169.py`, committed with this registration.
+
+## 170. NESTED: Feng's modular expressions past one pass, with a measured DIRECT boundary, the INJECT latent arm and Feng's text CoT (the user's "keep working on … the nested arithmetic" via Audit; the C1-forcing note's option 2(a); roadmap steps: task-agnostic input (INJECT on a second task), length stability, a fair CoT baseline; pre-registered 2026-10-09 01:49 EDT, after Literature's check fd630b87 (`docs/LIT_TC0_SERIAL_2026-10-08.md` addendum) and Audit's review, before any implementation or run)
+
+**Why.**
+* **Bracketed expression evaluation mod p is NC¹-complete** (Feng 2305.15408; Buss), with a published small-scale gap: text CoT is near-perfect, and direct fails and degrades with length.
+  - It is serial maths whose depth scales past one pass.
+  - The brackets matter: a flat left-associative chain is a solvable monoid (TC⁰), so it would lose the seriality (Literature's flag 2).
+* **Under INJECT (§169) the expression is re-shown every think pass.** The memory never needs to buffer the input or a stack, so Literature's flag 1 (stack capacity) does not bind.
+  - What must cross the passes is computed sub-expression values: C1's content.
+
+**Task: Feng's Arithmetic(n, 11), Alg. 1.**
+* **Tokens:** " 0" … " 10", " +", " -", " *", " /" (÷ = the modular inverse), " (", " )", " =" (and §169's " .").
+  - **Gate (Audit):** each is one GPT-2 token and round-trips exactly, alone and inside an expression.
+  - Checked by Theory at registration: all 19 are single tokens (" 10" = 838, " (" = 357, " )" = 1267), and " ( 3 + 10 ) * ( 4 / 7 ) - 2 =" decodes to itself.
+  - If an implementation's tokenizer splits one, a single-token alias is used and recorded in args.
+* **Generation:**
+  - Sample the answer t ~ U(Z₁₁).
+  - Repeat n times: pick a uniform random number position, an operator uniformly, and (t₁, t₂) uniformly among pairs with o(t₁, t₂) equal to that number (t₂ ≠ 0 for " /").
+    Replace the number by "t₁ o t₂", with brackets added exactly when precedence and left associativity require them.
+  - n = the number of operators.
+  - **Gate:** an independent Z₁₁ evaluator re-derives t for every item in a 100k sample.
+* **Train:** generated on the fly, n ~ U{1..8} per item from step 0 (§161's mixed-shape lesson; no curriculum), excluding every test string.
+* **Test:** 1,000 items per n ∈ 1..16 (fixed seed). Chance = 1/11.
+* The bracket (stack) depth of every test item is recorded (`acc_by_depth`, descriptive).
+
+**Arms.** GPT-2 small (pretrained); 48k steps, bs 64, AdamW 1e-4, warmup 100 + cosine; RTX 3090 only, with the GPU recorded per cell.
+* **DIRECT (the single-pass baseline):** [EOT, expression, " ="] → the answer token. Seeds 1 and 2.
+* **INJECT K8 / K16 / K0:** §169's harness exactly, with the expression as the problem text.
+  - Think pass = [EOT, expression, " ."], with a fresh cache, a pass-start read and a write after the read.
+  - Decoder = [EOT, expression, " ="] → the answer. It reads the memory and writes nothing. K0 is the same-harness single pass.
+  - Uses §155 R's memory and recipe (top writes, γ 2k → 6k). FINAL only.
+* **TEXT-COT (Feng's format):** [EOT, expression, " ="] then "e₁ = e₂ = … = t", EOT.
+  - Each step reduces the leftmost handle: the leftmost operation that is evaluable under precedence and brackets. A bracket left around a single number is dropped in the same step.
+  - Loss on all generated tokens. Seeds 1 and 2.
+  - **Read anchored (164-1):** greedy decoding with a budget of the true CoT length + 50 tokens. The answer is the text after the last " =" before EOT if it is a single number; anything else scores as wrong.
+
+**The boundary (fixed now; `theory/score_s170.py`).**
+* **Per DIRECT seed,** n*_s = the smallest n ∈ 1..16 with accuracy < 0.90.
+  - n* = the lower of the two seeds, labelled "boundary uncertain" if they differ.
+  - A seed below 0.90 at n = 1 did not train and is dropped (noted).
+* **n* is fixed in a dated note from DIRECT alone, before any INJECT or TEXT-COT output is read.**
+  - The training range (1..8) is fixed now, so every arm may launch with DIRECT (blinded until the note).
+* **If n* ≥ 7, or DIRECT passes through n = 8,** the range has fewer than 2 sizes beyond one pass. There is then no C1 claim from it, and a dated note sets a deeper range.
+
+**Rules (INJECT; pooled = test items at n* ≤ n ≤ 8).**
+* **DEEP(run):** accuracy ≥ 0.90 at every n from n* to 8, at K′ = K. EXACT at slot 1 opens s2 / s3 for that K. **DEEP(arm):** ≥ 2 / 3 seeds.
+* **THINK-NECESSARY(run), C1 (168-1's above-chance form, chance 1/11):**
+  - (acc(K′) − 1/11) ≤ 0.5 × (acc(K) − 1/11), for K′ = 0 and K′ = 1, on the pooled set;
+  - credited only with step-specific skip damage: some pass's skipped write drops pooled accuracy by ≥ 0.2, and some by ≤ 0.05.
+* **SERIAL-NEST(run)** (the user's "with SERIAL"; §161's out-of-distribution hybrid form):
+  - **Items:** 500 test items at n = 8 whose root operation has a bare-number operand a, and whose innermost handle h is not the root.
+  - **Donor:** the item with h's operands changed (value v → v′ ≠ v) and a → a′ ≠ a.
+  - **Hybrid answer:** the recipient's expression with h → v′ and a kept. Items are kept only if the hybrid answer differs from both the recipient's and the donor's.
+  - **Swap:** the whole memory after donor pass t replaces the recipient's. Passes t+1..K and the decoder see the recipient's text.
+    t ∈ {1, 2, K/4, K/2, 3K/4} (deduplicated), always a think pass before the decoder (t < K).
+  - **Recorded:** the shares answering hybrid / donor / recipient, and the null (a random same-n donor's hybrid share).
+    The donor share is a whole-answer transplant and is reported beside the hybrid share (Audit).
+  - **SERIAL-NEST = max over t of (hybrid share − null) ≥ 0.5.** It is reported with the t it came from, so a pass-1-only effect is visible.
+* **C1 claim (arm):** DEEP and THINK-NECESSARY in ≥ 2 / 3 seeds and SERIAL-NEST in ≥ 2 / 3, with K0 slot 1's pooled accuracy < 0.90.
+  - DIRECT's boundary already establishes that the single pass fails at n ≥ n*.
+* **DEPTH-GENERAL (C2):** mean accuracy at n 9–12 ≥ 0.80 at K′ = K, in ≥ 2 / 3 seeds. 13–16 is descriptive.
+  - **MORE-THINKING (descriptive):** the mean at 9–12 at K′ = 2K ≥ the mean at K + 0.05.
+* **BEYOND TEXT (C3 / C2):** TEXT-COT's mean (2 seeds) at n 9–12 < 0.80 while the arm is DEPTH-GENERAL.
+* **AT-LEAST-TEXT-COT (C3, the user's standard):** at each n ≤ 8, the arm's seed-mean accuracy ≥ TEXT-COT's seed-mean − 0.01, at lower FLOPs per item.
+  - Latent FLOPs: K + 1 passes over the expression, plus the answer token.
+  - CoT FLOPs: the prompt plus each generated token, with a KV cache.
+  - Reported as the n range where it holds.
+
+**Readings.**
+* **C1 + SERIAL + AT-LEAST-TEXT-COT:** task-agnostic latent computation on an NC¹ task, beyond a measured single pass, at text CoT's accuracy for less compute.
+* **DEEP without THINK-NECESSARY:** the passes are not needed. The harness found a single-pass solution that DIRECT did not, and that is reported.
+* **Neither K arm DEEP:** INJECT alone does not reach past one pass on nested expressions at 48k.
+* **Theory's prediction:**
+  - n* ≈ 2–3 (§164's DIRECT-MIX reads 0.001 at 4×4);
+  - K8 DEEP and THINK-NECESSARY is likely but not certain;
+  - DEPTH-GENERAL uncertain;
+  - TEXT-COT exact within training and failing past it (as §164).
+
+**Placement.**
+* Items are ≤ ~50 tokens at n = 16.
+* **Slot 1:** DIRECT s1 / s2, K8 s1, K0 s1 and TEXT-COT s1 / s2.
+  - K16 s1 runs only if K8 slot 1 is THINK-NECESSARY (read after the boundary note), as for §168 (Audit).
+  - Passing K arms' s2 / s3 follow.
+* **Cost (Audit):** ProsQA's first estimate was about 4× low.
+  - Before slot 1 deploys, Experiments memchecks and times 200 steps of K8 and K16 on a 3090, and sends Audit tokens / hours / $ per arm.
+  - Above $10 in total, Audit puts it to the user. Theory's prior is about $5 for slot 1 and ≤ about $10 overall.
+* **Implementation (Experiments):**
+  - a `nested` task in §169's inject path, plus direct and text-CoT trainers (mult98-style);
+  - args: task "nested", arm ("direct" / "inject" / "textcot"), think_k, n_max_train 8, steps 48000 (+ mem_write "top", write_mix_start / end 2000 / 6000 for inject);
+  - eval.json: `acc_by_n {"1".."16"}` (K′ = K; anchored for TEXT-COT), `acc_by_depth`, `compute_by_n`, and for TEXT-COT `cot_tokens_by_n`;
+  - INJECT's `s170`: {acc_by_n_kprime {K′: {n: acc}} for K′ ∈ {0, 1, K/2, K, 2K}; skip_pass {t: {n: acc}}; serial {t: {hybrid, donor, recipient}}; serial_null; n_serial_items}.
+* **Gates:**
+  - the generator self-check (evaluator = t on 100k items; one token per symbol; test strings excluded);
+  - step-0 function preservation; gradflow through ≥ 2 think passes; the decoder writes nothing;
+  - smoke_plain; Audit's diff review;
+  - memcheck at n = 16 with K′ = 2K.
+* Dirs `s170_{direct,k8,k16,k0,cot}_s{seed}`. Scorer: `theory/score_s170.py`, committed with this registration.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
