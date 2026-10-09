@@ -1,7 +1,7 @@
 """THEORY §177 scoring (rules fixed in §177; written before any §177 implementation or run; Theory is the only scorer). Cloud cells are gated on the trigger
 (§169 K8 and §170 K8 both fail); local proto177_* previews are read by no rule.
 Arms: (a) tidx = PASS-INDEX on §169's INJECT (mult mix, K 8); (d) fadetidx = SCHEDULE-FADE + PASS-INDEX (K = 4n; INJECT's decoder throughout; SCAFFOLD gate:
-  4x4 at p = 0 (12k) >= 0.90, else uninformative - note 177-2); rules §169's at the arm's rule K:
+  s177.acc_scaffold_12k (4x4 at p = 0, 12k) >= 0.90, else uninformative; missing -> pending - notes 177-2 / 177-3); rules §169's at the arm's rule K:
   EXACT 4x4 >= 0.99; LENGTH-GENERAL(arm) >= 2 / 3 EXACT with ext_4x8 >= 0.90; THINK-NECESSARY K' 0 / 1 each <= 0.5 x acc(K) with step-specific skip damage;
   C1 also needs §164 DIRECT-MIX < 0.95.
 (f) kmatch = STEP-MATCHED K on §170 nested (K = n + U{0..2}); rules at K' = n + 1: HIT = DEEP (>= 0.90 at every n 3..8) + THINK-NECESSARY (168-1 form,
@@ -80,7 +80,7 @@ def mult_run(arm, s):
     rem = bool(t and a0 is not None and a1 is not None and a0 <= 0.5 * t and a1 <= 0.5 * t)
     sk = [t - v for v in (x.get("skip_pass") or {}).values() if isinstance(v, (int, float))] if t is not None else []
     out.update({"test_4x4": t, "ext_4x8": e, "exact": bool((t or 0) >= 0.99), "length_general": bool((t or 0) >= 0.99 and (e or 0) >= 0.90),
-                "think_necessary": bool(rem and sk and max(sk) >= 0.2 and min(sk) <= 0.05), "acc_by_p": x.get("acc_by_p"),
+                "think_necessary": bool(rem and sk and max(sk) >= 0.2 and min(sk) <= 0.05), "acc_by_p": x.get("acc_by_p"), "acc_scaffold_12k": x.get("acc_scaffold_12k"),
                 "more_thinking": None if e8.get("2K") is None or e is None else bool(e8["2K"] >= e + 0.05)})
     out.update(mechanism(d, "mult")); return out
 
@@ -122,8 +122,12 @@ def main():
         runs = {s: mult_run(arm, s) for s in (1, 2, 3)}; done = [v for v in runs.values() if v["status"] == "done"]; res[arm] = {"runs": runs}
         if runs[1]["status"] != "done":
             lines.append("%s: pending (s1 %s)" % (arm, runs[1]["status"])); continue
-        if arm == "fadetidx" and (runs[1].get("acc_by_p") or {}).get("0") is not None and runs[1]["acc_by_p"]["0"] < 0.90:   # note 177-2: SCAFFOLD gate
-            lines.append("%s: uninformative: the scaffold did not train (4x4 at p = 0, 12k: %s)" % (arm, runs[1]["acc_by_p"]["0"])); continue
+        if arm == "fadetidx":                                               # notes 177-2 / 177-3: SCAFFOLD gate on s177.acc_scaffold_12k
+            sc = runs[1].get("acc_scaffold_12k")
+            if sc is None:
+                lines.append("%s: pending (scaffold field acc_scaffold_12k missing)" % arm); continue
+            if sc < 0.90:
+                lines.append("%s: uninformative: the scaffold did not train (4x4 at p = 0, 12k: %s)" % (arm, sc)); continue
         if not runs[1]["exact"]:
             lines.append("%s: slot 1 not EXACT (%s); MOVES-MECHANISM %s" % (arm, runs[1]["test_4x4"], runs[1].get("moves_mechanism"))); continue
         n_lg = sum(1 for v in done if v["length_general"]); n_tn = sum(1 for v in done if v["think_necessary"])
