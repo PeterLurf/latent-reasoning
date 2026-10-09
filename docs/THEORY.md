@@ -10357,6 +10357,8 @@ subspace.**
   - memcheck at 4×5 training and the 4×16 eval at 4K.
 * Dirs `s169_{k16,k8,k0}_4x4_s{seed}`. Scorer: `theory/score_s169.py`, committed with this registration.
 
+**§169 interim (2026-10-09 03:17 EDT; s169_k0_4x4_s1, RTX 3090, 48k; score_s169).** K0, the same-harness single pass, **fails: 4×4 test_acc 0.003, and ext_4x6 / 4x7 / 4x8 / 4x16 all 0.0.** This meets the reading's "K0 failing" condition. K16 and K8 are pending.
+
 ## 170. NESTED: Feng's modular expressions past one pass, with a measured DIRECT boundary, the INJECT latent arm and Feng's text CoT (the user's "keep working on … the nested arithmetic" via Audit; the C1-forcing note's option 2(a); roadmap steps: task-agnostic input (INJECT on a second task), length stability, a fair CoT baseline; pre-registered 2026-10-09 01:49 EDT, after Literature's check fd630b87 (`docs/LIT_TC0_SERIAL_2026-10-08.md` addendum) and Audit's review, before any implementation or run)
 
 **Why.**
