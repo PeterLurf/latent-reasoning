@@ -41,25 +41,25 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (16:53; session "claude-c6" after the 13:20 reboot; peers are addressed by name, "Audit" / "Experiments"):**
-  - **Headline (multiplication):**
-    - **§161 MIX:** exact on 4×4, length-general to 4×8 (0.91–0.96), and SERIAL with a state-carried running sum in 3 / 3 seeds.
-    - **§164:** text CoT on the same data reads 0.0 at 4×6+ (anchored read; its scratchpad stops short), and the single pass fails even at 4×4. So
-      **LATENT BEYOND TEXT ON LENGTH** (8c7e15f2).
-    - **§159 R-5×5 s1:** exact 1.000 at 5×5, 0.80× TC-M FLOPs (3.24× ICoT-SI); s2–s4 are running.
-  - **Open / scored as they land:**
-    - §162 DELTA-S5: boundary L* = 16 (note 162-3). LONG s1 is exact to 32 and MIXED (op history 0.149, so not a buffer); 0.0 at 512. LONG s2 and SHORT s1 / s2 are
-      pending.
-    - §163 SHAPE-MIX-2D s1 (b204);
-    - §165 FIXED-CHUNK slot 1 (b200–b203);
-    - §166 STATE-COVERAGE (732964ed; MULT now, S5 after LONG s2's model);
+* **Theory (01:37; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
+  - **The user (via Audit, 2026-10-09 ~01:30):** "do another research pass. work on task agnosticness. approve go ahead on prosqa deep".
+  - **Registered tonight:**
+    - **§168 DEEP-ProsQA** (a5d7ff5e): step 1 = DIRECT boundary on p8 std / NA (runs now); the latent arm uses §169's harness after the boundary note.
+    - **§169 INJECT** (5fffefd1): the full problem re-presented every think pass, the memory the only cross-pass state; K16 / K8 / K0 on §161's mix.
+  - **Multiplication headline:**
+    - §161 MIX is exact, length-general to 4×8 and SERIAL (3 / 3).
+    - §164: LATENT BEYOND TEXT ON LENGTH (text CoT 0.0 at 4×6+).
+    - §159: 5×5 exact 4 / 4, at 0.80× TC-M.
+    - §163: 2-D BOUNDED (6×6 ≈ 0.97, 8×8 ≤ 0.45).
+  - **Closed today:** §155–§157, §159–§164 (§162: arms indistinguishable at equal depth; 158-2's depth contrast not supported).
+  - **Open:**
+    - §165 FIXED-CHUNK (K0 / K16c1 0.0; K16 / K8 pending);
+    - §166 S5 (lr 5e-6, 300 steps, PLAIN gate; MULT closed, note 166-3);
+    - §167 DAS (167-3 FIT-FAILURE guard, 167-4 necessity over random; refits pending);
     - §158 slots 2–4.
-  - **Closed today:** §133 stage 1, §136–§138, §140–§146, §148–§157, §160, §161, §164.
-  - **Waiting on the user (via Audit):** `docs/THEORY_C1_FORCING_2026-10-08.md` with addendum 2.
   - **Theory's tools:**
-    - scratchpad `watch_land_v3.sh` (one-shot, patterns s15[5-9] / s16[0-9]);
-    - `s162_boundary_only.py`;
-    - commit with a pathspec (`git commit -- <paths>`), because the index is shared.
+    - scratchpad `watch_land_v4.sh` (s15[5-9] / s16[0-9]; eval / what_state / posthoc / anchor / das);
+    - commit with a pathspec.
 
 ## Recently done (details in THEORY / PROTOCOL12 / git log)
 
