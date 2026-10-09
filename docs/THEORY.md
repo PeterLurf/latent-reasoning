@@ -10807,6 +10807,13 @@ subspace.**
 * **Calibration:** the same cosines are given for the arm's model at initialisation (the pretrained trunk with fresh memory parameters and γ forced to 1), so 0.9 can be judged against an untrained network's own pass-to-pass drift.
 * **Descriptive only.** It enters no section's rules. It applies to §169 / §170 K8 and K16, §175, §176 and §177's arms as they land.
 
+**Note 173-1 clarification (2026-10-09 09:41 EDT; before any output). PER-STEP-CONTENT's multiplication target under INJECT.**
+* INJECT has no pair schedule, so "the column in progress after pass t" is undefined.
+* **For multiplication arms:** probe the pass-t delta state for the units digit of each column c's full sum, giving a grid acc[t][c] (c = 1..4 + n, at the training size 4×4).
+  - PER-STEP-CONTENT holds if acc[t][c] ≥ 0.5 for some t ≥ 2 and some c ≥ 2. Column 1's digit, a₁b₁ mod 10, needs no accumulation.
+  - The grid's diagonal (which column becomes decodable when) is reported descriptively.
+* Nested is unchanged (v_t).
+
 ## 174. MULTI-TASK: one INJECT model on long multiplication and nested expressions together, with no task flag (the user's "is the architecture task agnostic?" in its strongest form; roadmap step 1, task-agnostic input; pre-registered 2026-10-09 02:03 EDT, after Literature's check d122ba5c (`docs/LIT_S171_S174_2026-10-09.md`: new as the combination) and Audit's review, before any implementation or run; launches only after §169 K8 and §170 K8 slot 1 gate)
 
 **Why.**
