@@ -259,7 +259,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 169 | INJECT (the user's "task agnosticness"): the full problem re-presented every think pass, the memory the only cross-pass state; K16 / K8 / K0 on §161's mix | registered | **open** |
 | 170 | NESTED (the user's go): Feng's mod-11 bracketed expressions; a measured DIRECT boundary over n, then INJECT K8 / K0 (K16 gated) against Feng's text CoT; C1 = DEEP + THINK-NECESSARY + SERIAL-NEST, C3 at text CoT's accuracy for less compute | registered | **open** |
 | 171 | READ-SLOTS (task-agnostic architecture): the input encoded once; each think pass 8 learned slots read it and write DeltaMem-R; K8 on §161's mix; head to head with INJECT (CHEAPER-EQUAL); read map / entropy (C7) | **slot 1 not EXACT** (4×4 0.003, flat in K′; memory unused; pass-invariant reads, 60% on EOT); BLIND 0.0; interpretation awaits §169 K8 | gate closed |
-| 172 | PCCoT-PROBE (eval only): §149's battery on whynlp/pccot-gpt2 (GSM8K 49.48 at release); LATENTS-USED, ITERATIONS-USED (T' = 0 = pause), Jacobi RHO, descriptive SERIAL | **LATENTS-USED, ITERATIONS-USED** (0.49 release; zeroed 0.17; T'=0 0.13; more iterations hurt); RHO MARGINAL 0.88; one-latent swap BYPASS but alignment weak (R² ≤ 0.12) | closed |
+| 172 | PCCoT-PROBE (eval only): §149's battery on whynlp/pccot-gpt2 (GSM8K 49.48 at release); LATENTS-USED, ITERATIONS-USED (T' = 0 = pause), Jacobi RHO, descriptive SERIAL | **LATENTS-USED, ITERATIONS-USED** (0.49 release; zeroed 0.17; T'=0 0.13; more iterations hurt); RHO MARGINAL 0.88; step state distributed across the block, not recomputed (whole-block swap: recipient 0.03–0.08, hybrid 0.22–0.27 → PARTIAL; 172-1) | closed |
 | 173 | CONV-HALT (eval only; C5, halting): decode when the answer settles (unchanged across 2 consecutive passes, cap 2K) on the think-pass arms (§165 / §169 / §170 / §171); HALT-EQUAL + ADAPTIVE | registered | **open** |
 | 174 | MULTI-TASK (the user's task agnosticness, strongest form): one INJECT K8 model on mult + nested with no task flag; MATCH vs single-task K8 (BUDGET vs INTERFERENCE via 24k evals), THINK-NECESSARY per task, cross-task swap | registered (gated on §169 / §170 K8 slot 1) | **open** |
 | 175 | STEP-AUX (Audit's lead after SIM-CoT): §170 INJECT K8 + a shared-trunk read-only aux decoder emitting Feng's CoT step t from M_t (λ 1 fading to 0 by 48k); AUX-HELPS / HURTS-DEPTH vs FINAL-only, READOUT, STEP-RECOVER | registered (gated on §170 K8 slot 1) | **open** |
@@ -10762,6 +10762,23 @@ subspace.**
   - **Whole-block recipient-consistent ≥ 0.5:** the answer is recomputed from the visible question, which reads BYPASS at the block level, as CODI's.
   - **Hybrid rising with m:** step t's value sits in a few latents that the ridge probe ranks poorly.
 * It does not reopen §172's rules.
+
+**§172 addendum (2026-10-09 10:05 EDT; note 172-1, descriptive; eval_s172_swap.json, release accuracy rerun 0.4905). PCCoT's step state is distributed across the latent block and is not recomputed from the question. §172's one-latent BYPASS was a localisation null.**
+* **Recipient-consistent share by number of latents swapped** (top-m by step R²; t = 1 / 2, n 300 / 120):
+  - m = 1: 0.98 / 0.98;
+  - m = 4: 0.86 / 0.91;
+  - m = 8: 0.73 / 0.76;
+  - **the whole block (24): 0.08 / 0.03.**
+* **Whole-block swap from a same-template donor:**
+  - hybrid (the recipient's chain with step t := the donor's value) 0.27 / 0.22;
+  - donor-full 0.10 / 0.18.
+* **The null** (the whole block from a different-template donor): recipient 0.12, donor-full 0.01.
+* **Readings (172-1):**
+  - not block-level BYPASS (recipient-consistent ≪ 0.5);
+  - not a carried full solution (donor-full < 0.5, though above the null);
+  - hybrid rises with m, almost entirely at the whole block.
+  - In §149's terms at the block level it is **PARTIAL** (hybrid 0.22–0.27; SIM-CoT+Coconut's aligned-pair swap read 0.35), not BYPASSED as the CODI family.
+* **This revises §172's SERIAL line.** The step values are carried in a distributed way across PCCoT's latents and are causally used, but only about a quarter of block swaps move the answer exactly as substituting the step would.
 
 ## 173. CONV-HALT: convergence-halted think passes as an eval-only readout on the think-pass models (C5; roadmap step 3, halting; Audit's point and Literature's scout 589e6eb5 §3; pre-registered 2026-10-09 01:57 EDT, after Audit's review (the answer-settling rule is Audit's), before any §165 K16 / K8, §169, §170 or §171 output is read)
 
