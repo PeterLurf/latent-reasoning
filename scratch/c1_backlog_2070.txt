@@ -2,6 +2,11 @@
 # 2026-10-09 09:4x Experiments: §177 direction BASELINE on the working pair-segment models (Theory priority 1; 17 segments, read at the flush ' =' query)
 # 2026-10-09 10:1x Experiments: note 172-1 PCCoT multi-latent / whole-block swaps (Theory; eval only, ~1 h)
 # 2026-10-09 10:2x Experiments (Audit 10:14: >= 1 h standing work): DESCRIPTIVE 8k-step local previews of gated arms (not the registered launches; Theory may stop them)
+# 2026-10-09 14:1x Experiments: §165 K8 / K16 post hoc (§173 halt + note 173-1 package; M_0 = the post-input state, noted in the file) - shared lines
+4.0 boxes/runs_fsq/s165_k8_4x4_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s165_k8_4x4_s1 --bs 100 --device {DEV}
+4.0 boxes/runs_fsq/s165_k8_4x4_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s165_k8_4x4_s1 --dir177 --bs 125 --device {DEV}
+4.0 boxes/runs_fsq/s165_k16_4x4_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s165_k16_4x4_s1 --bs 100 --device {DEV}
+4.0 boxes/runs_fsq/s165_k16_4x4_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s165_k16_4x4_s1 --dir177 --bs 125 --device {DEV}
 5.0 boxes/runs_fsq/proto175_auxk8_s1_2070/eval.json python -u -m boxes.nested170 --arm inject --think_k 8 --aux_step 1.0 --aux_fade 6000,8000 --fast_add --seed 1 --steps 8000 --ckpt_every 2000 --auto_micro --mem_budget 5.0 --eval_bs 50 --per_n 300 --device {DEV} --out boxes/runs_fsq/proto175_auxk8_s1_2070
 3.0 boxes/runs_fsq/s172_pccot/eval_s172_swap.json python -u scratch/s172_swap.py {DEV}
 3.0 boxes/runs_fsq/s161_mix_4x4_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s161_mix_4x4_s1 --dir177 --bs 125 --device {DEV}
