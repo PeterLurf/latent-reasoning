@@ -1,5 +1,7 @@
 # 2026-10-07 23:36 THEORY §152 DELTA-READ pre-launch gates (378fe8e6 / note 152-1) FIRST: (1)-(3) scratch/gate152.py under CUDA bf16; (4) memory at L 4, bs 64 incl. the reader passes (multrow --mem_check)
 # 2026-10-09 02:50 Experiments: §172 PCCoT-PROBE full battery (eval only; reproduce check first, Audit) - ahead of the §167 refits
+# 2026-10-09 07:3x Experiments: §170 TEXT-COT s2 eval-only (b223 trained 48k, OOMed at eval; model.pt fetched md5 a514227c) - Audit
+3.0 boxes/runs_fsq/s170_cot_s2/eval.json python -u -m boxes.nested170 --arm textcot --seed 2 --eval_only --cot_eval_bs 32 --device {DEV} --out boxes/runs_fsq/s170_cot_s2
 3.0 boxes/runs_fsq/s172_pccot/eval.json python -u scratch/s172_probe.py {DEV}
 3.0 boxes/runs_fsq/s152_gates/gate152.json python -u scratch/gate152.py {DEV}
 4.5 D:/drain_tmp/mem152_a/mem_check.json python -u -m boxes.multrow --family mult_row --task 4x4 --seed 1 --carrier deltamem --copy_frac 0 --reader --teacher_cache boxes/runs_fsq/s142_teacher_cache/teacher_sj_4x4_train.npz --lmax_steps 2000,5000,9000 --mem_check --device {DEV} --out D:/drain_tmp/mem152_a
