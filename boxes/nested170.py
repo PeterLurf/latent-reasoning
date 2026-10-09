@@ -177,6 +177,44 @@ def cot_ids(root):
     return out + [EOT]
 
 
+# ---- §175 STEP-AUX (Theory 8965745e): a read-only step decoder after each think pass ----
+STEP_ID, COLON_ID = ENC.encode(" Step"), ENC.encode(" :")
+assert len(STEP_ID) == 1 and len(COLON_ID) == 1
+STEP_ID, COLON_ID = STEP_ID[0], COLON_ID[0]
+
+
+def pass_tok(t):
+    tk = ENC.encode(" %d" % t); assert len(tk) == 1; return tk[0]
+
+
+def _render_pos(nd, tgt, parent=None, right=False):
+    """render() plus the symbol index of node tgt in it (None if tgt is not in this subtree)."""
+    if nd.op is None:
+        return [" %d" % nd.v], (0 if nd is tgt else None)
+    ls, lp = _render_pos(nd.l, tgt, nd.op, False); rs, rp = _render_pos(nd.r, tgt, nd.op, True)
+    sy = ls + [" " + nd.op] + rs; po = lp if lp is not None else (len(ls) + 1 + rp if rp is not None else None)
+    if parent is not None and (PREC[nd.op] < PREC[parent] or (right and PREC[nd.op] == PREC[parent])):
+        sy = [" ("] + sy + [" )"]; po = None if po is None else po + 1
+    return sy, po
+
+
+def aux_steps(root):
+    """§175: per reduction t = 1..n, (e_{t+1} as symbols = cot_steps(root)[t], the index of the newly reduced value in it)."""
+    nd = _copy(root); out = []
+    while nd.op is not None:
+        path = _leftmost_ready(nd); tgt = nd
+        for p_ in path:
+            tgt = getattr(tgt, p_)
+        tgt.v = apply(tgt.op, tgt.l.v, tgt.r.v); tgt.op = tgt.l = tgt.r = None; out.append(_render_pos(nd, tgt))
+    return out
+
+
+def aux_of(it):
+    if "aux" not in it:
+        it["aux"] = aux_steps(it["root"])
+    return it["aux"]
+
+
 class InjectN(torch.nn.Module):
     """§169's inject harness on a variable-length text: think = [EOT, expr, " ."] (right-padded, padded writes masked); decoder = [EOT, expr, " ="] -> the
     answer token (read-only)."""
@@ -203,6 +241,27 @@ class InjectN(torch.nn.Module):
         seqs = [[EOT] + ids(it["syms"]) + [TID[" ="]] for it in items]; ids_, _ = pad(seqs); x = torch.tensor(ids_, device=dev)
         h = fwd_read(self.g, self.g.embed(x), self.mem, S); pos = torch.tensor([len(q) - 1 for q in seqs], device=dev)
         return self.g.logits(h[torch.arange(len(seqs), device=dev), pos]).float()   # (B, V) at " ="
+
+    def aux_logits(self, S, items, t, dev):
+        """§175: the SAME trunk, read-only (fwd_read: the read on S, no write), over [EOT, " Step", " t", " :"] + e_{t+1} (teacher-forced). It sees no
+        problem text and is never fed back. -> (logits (b, L, V) predicting e_{t+1} then EOT, targets (b, L), -100 = padding)."""
+        from boxes.deltas5 import fwd_read
+        pre = [EOT, STEP_ID, pass_tok(t), COLON_ID]; seqs, tg = [], []
+        for it in items:
+            tgt = ids(aux_of(it)[t - 1][0]) + [EOT]; seqs.append(pre + tgt[:-1]); tg.append(tgt)
+        x_, _ = pad(seqs); y_, _ = pad(tg, -100); x = torch.tensor(x_, device=dev); y = torch.tensor(y_, device=dev)
+        assert x.shape[1] == len(pre) + y.shape[1] - 1
+        h = fwd_read(self.g, self.g.embed(x), self.mem, S)
+        return self.g.logits(h[:, len(pre) - 1:]).float(), y
+
+    @torch.no_grad()
+    def aux_greedy(self, S, t, L):
+        """§175 eval: greedy L tokens after [EOT, " Step", " t", " :"] reading S -> (b, L) token ids."""
+        from boxes.deltas5 import fwd_read
+        x = torch.tensor([[EOT, STEP_ID, pass_tok(t), COLON_ID]] * S.shape[0], device=S.device)
+        for _ in range(L):
+            nt = self.g.logits(fwd_read(self.g, self.g.embed(x), self.mem, S)[:, -1]).float().argmax(-1); x = torch.cat([x, nt[:, None]], 1)
+        return x[:, 4:].cpu().numpy()
 
 
 def ans_token_acc(lg, items):
@@ -292,7 +351,7 @@ def main():
     ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", default=None); ap.add_argument("--log_every", type=int, default=100)
     ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--per_n", type=int, default=1000); ap.add_argument("--serial_pool", type=int, default=2200); ap.add_argument("--auto_micro", action="store_true")
     ap.add_argument("--mem_budget", type=float, default=21.0); ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--time_steps", type=int, default=0, help="cost check: train this many steps, report s/step, exit")
-    ap.add_argument("--eval_at", type=int, default=0, help="also evaluate acc_by_n at this step -> eval_<k>k.json"); ap.add_argument("--fast_add", action="store_true", help="deltamem.FAST_ADD: the additive heads' pass writes as one sum (Audit 2026-10-09; scratch/gate_fastadd.py)"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
+    ap.add_argument("--eval_at", type=int, default=0, help="also evaluate acc_by_n at this step -> eval_<k>k.json"); ap.add_argument("--aux_step", type=float, default=0.0, help="§175: lambda of the read-only step decoder CE (0 = off: the §170 path)"); ap.add_argument("--aux_fade", default="36000,48000", help="§175: lambda constant to the first step, then linear to 0 at the second"); ap.add_argument("--fast_add", action="store_true", help="deltamem.FAST_ADD: the additive heads' pass writes as one sum (Audit 2026-10-09; scratch/gate_fastadd.py)"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); a.task = "nested"; import boxes.deltamem as DM_; DM_.FAST_ADD = bool(a.fast_add); os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale; K = a.think_k if a.arm == "inject" else 0
     if a.arm != "inject":
         a.mem_write = a.write_mix_start = a.write_mix_end = None; a.think_k = 0
@@ -325,9 +384,26 @@ def main():
                 h, _ = g(g.embed(x), None)
             lg = g.logits(h[:, :-1]).float(); return Fn.cross_entropy(lg.reshape(-1, lg.shape[-1]), y[:, 1:].reshape(-1), ignore_index=-100)
         x, msk = m.think_inputs(items, dev)
+        if not lam_now[0]:                                                  # §170 (and §175 at lambda 0): unchanged
+            with ac():
+                S = m.think(m.mem.zero_state(len(items), dev), x, msk, K, ckpt=a.ckpt_passes); lg = m.dec_logits(S, items, dev)
+            return Fn.cross_entropy(lg, torch.tensor(NUM_IDS[[it["t"] for it in items]], device=dev))
+        from torch.utils.checkpoint import checkpoint
+        per = [[] for _ in items]                                           # §175: the aux CE (token mean) of each item's passes 1..#steps
         with ac():
-            S = m.think(m.mem.zero_state(len(items), dev), x, msk, K, ckpt=a.ckpt_passes); lg = m.dec_logits(S, items, dev)
-        return Fn.cross_entropy(lg, torch.tensor(NUM_IDS[[it["t"] for it in items]], device=dev))
+            S = m.mem.zero_state(len(items), dev)
+            for t in range(1, K + 1):
+                S = checkpoint(m.write, S, x, msk, use_reentrant=False) if (a.ckpt_passes and torch.is_grad_enabled()) else m.write(S, x, msk)
+                idx = [i for i, it in enumerate(items) if len(aux_of(it)) >= t]
+                if idx:
+                    lg_a, y_a = m.aux_logits(S[idx], [items[i] for i in idx], t, dev)
+                    ce = Fn.cross_entropy(lg_a.transpose(1, 2), y_a, ignore_index=-100, reduction="none").sum(1) / (y_a != -100).sum(1)
+                    for r_, i in enumerate(idx):
+                        per[i].append(ce[r_])
+            lg = m.dec_logits(S, items, dev)
+        la = Fn.cross_entropy(lg, torch.tensor(NUM_IDS[[it["t"] for it in items]], device=dev))
+        aux = torch.stack([torch.stack(p_).mean() for p_ in per if p_]).mean(); aux_hist.append((float(la), float(aux)))
+        return la + lam_now[0] * aux
 
     def mem_check(micro):
         torch.cuda.reset_peak_memory_stats(dev); r_ = np.random.default_rng(0); its = [it for it in train_items(r_, 4 * a.bs, a.n_max_train, set()) if True]
@@ -403,6 +479,45 @@ def main():
                         ans[j] = int(np.where(NUM_IDS == tail[0])[0][0])
         return ans, ntok
 
+    f0_, f1_ = [float(x_) for x_ in a.aux_fade.split(",")]; lam_now = [0.0]; aux_hist = []
+
+    def lam_at(step):
+        """§175: lambda = aux_step to f0, then linear to 0 at f1 (sched_scale-scaled)."""
+        if not a.aux_step:
+            return 0.0
+        return a.aux_step if step <= f0_ * sc else a.aux_step * max(0.0, (f1_ * sc - step) / max(1.0, (f1_ - f0_) * sc))
+
+    @torch.no_grad()
+    def aux_eval(items, Kp, tmax):
+        """§175: after each think pass t <= min(n, tmax): greedy exact match of e_{t+1} + EOT; teacher-forced argmax at the newly reduced value vs the copied tokens."""
+        ex, role = {}, {}
+        for i in range(0, len(items), a.eval_bs):
+            ch = items[i:i + a.eval_bs]; x, msk = m.think_inputs(ch, dev)
+            with ac():
+                S = m.mem.zero_state(len(ch), dev)
+                for t in range(1, Kp + 1):
+                    S = m.write(S, x, msk)
+                    if t > tmax:
+                        continue
+                    idx = [j for j, it in enumerate(ch) if len(aux_of(it)) >= t]
+                    if not idx:
+                        continue
+                    sub = [ch[j] for j in idx]; lg_a, y_a = m.aux_logits(S[idx], sub, t, dev); pr = lg_a.argmax(-1).cpu().numpy(); yy = y_a.cpu().numpy()
+                    gen = m.aux_greedy(S[idx], t, int((yy != -100).sum(1).max()))
+                    for r_, it in enumerate(sub):
+                        sy, hi = aux_of(it)[t - 1]; L_ = len(sy); tgt = ids(sy) + [EOT]; ok_ = pr[r_, :L_] == yy[r_, :L_]
+                        rr = role.setdefault(t, {"handle": [], "copy": []}); rr["handle"].append(bool(ok_[hi])); rr["copy"].extend(bool(ok_[k_]) for k_ in range(L_) if k_ != hi)
+                        ex.setdefault(t, []).append(bool(list(gen[r_, :len(tgt)]) == tgt))
+        return ({str(t): float(np.mean(v)) for t, v in sorted(ex.items())},
+                {str(t): {k_: (float(np.mean(v)) if v else None) for k_, v in d.items()} for t, d in sorted(role.items())}, {str(t): len(v) for t, v in sorted(ex.items())})
+
+    def s175_fields():
+        pool = [it for it in TE if it["n"] <= 8]; te8 = [pool[i] for i in np.random.default_rng(17022).permutation(len(pool))[:1000]]
+        pe = [it for it in TE if 9 <= it["n"] <= 12]; te12 = [pe[i] for i in np.random.default_rng(17023).permutation(len(pe))[:1000]]
+        acc8, role8, n8 = aux_eval(te8, K, K); acc12, _, n12 = aux_eval(te12, 16, 16); sr, sri = step_recover(m, EXCL, TE, K, dev, ac, a.eval_bs)
+        return {"aux_acc_by_pass": acc8, "aux_acc_by_pass_ext": acc12, "aux_acc_by_role": role8, "step_recover": sr, "step_recover_info": sri,
+                "n_by_pass": n8, "n_by_pass_ext": n12, "ext_kprime": 16, "items": {"n_le_8": {"n": len(te8), "seed": 17022}, "n_9_12": {"n": len(te12), "seed": 17023}}}
+
     def evaluate_n(items, Kp=None):
         if a.arm == "direct":
             return direct_answers(items)
@@ -410,6 +525,7 @@ def main():
             return cot_answers(items)[0]
         return inject_answers(items, K if Kp is None else Kp)
 
+    lam_now[0] = a.aux_step                                                 # §175: memory-check with the aux on (the largest graph)
     if a.mem_check or (a.auto_micro and dev.startswith("cuda") and not a.resume):
         mc = []
         while True:
@@ -445,6 +561,7 @@ def main():
         if m is not None:
             m.mem.fade.fill_(min(1.0, step / max(1, int(500 * sc))))
             m.mem.gamma.fill_(0.0 if step <= a.write_mix_start * sc else min(1.0, (step - a.write_mix_start * sc) / max(1.0, (a.write_mix_end - a.write_mix_start) * sc)))
+        lam_now[0] = lam_at(step)
         its = train_items(rng, a.bs, a.n_max_train, EXCL); opt.zero_grad(); tot = 0.0; ch = a.bs // a.micro
         for k_ in range(a.micro):
             lk = loss_items(its[k_ * ch:(k_ + 1) * ch]); (lk / a.micro).backward(); tot += float(lk.item()) / a.micro
@@ -458,9 +575,15 @@ def main():
             opt.step(); hist.append(tot)
         if a.eval_at and step == a.eval_at:                                 # Theory 7caa3a82 (§174's matched budget): acc_by_n at this step, no checkpoint kept
             params.eval(); Ne = np.array([it["n"] for it in TE]); Ce = evaluate_n(TE) == np.array([it["t"] for it in TE])
-            json.dump({"step": step, "acc_by_n": {str(n): float(Ce[Ne == n].mean()) for n in range(1, 17)}}, open(os.path.join(a.out, "eval_%dk.json" % (step // 1000)), "w", newline="\n"), indent=1)
+            e_ = {"step": step, "acc_by_n": {str(n): float(Ce[Ne == n].mean()) for n in range(1, 17)}}
+            if a.aux_step and K:
+                e_["s175"] = s175_fields(); e_["aux_lambda"] = lam_now[0]
+            json.dump(e_, open(os.path.join(a.out, "eval_%dk.json" % (step // 1000)), "w", newline="\n"), indent=1)
         if step % a.log_every == 0 or step == a.steps:
             rec = {"step": step, "loss": float(np.mean(hist)) if hist else None, "sec": round(time.time() - t0)}; hist = []
+            if a.aux_step:
+                rec.update({"aux_lambda": lam_now[0], "answer_ce": float(np.mean([x_[0] for x_ in aux_hist])) if aux_hist else None,
+                            "aux_ce": float(np.mean([x_[1] for x_ in aux_hist])) if aux_hist else None}); aux_hist.clear()
             if m is not None and wwin:
                 md_ = float(np.median(wlast)) if wlast else 0.0; mx_ = float(np.max(wwin)); late = step > a.write_mix_start * sc
                 w_rec = {"step": step, "mean": float(np.mean(wwin)), "max": mx_, "median_prev_1k": md_, "spike_100x_floor": bool(late and mx_ > 100 * md_ > 0 and mx_ > 1.0)}
@@ -525,6 +648,8 @@ def main():
         if K:                                                               # note 170-2 (descriptive)
             s["step_recover"], s["step_recover_info"] = step_recover(m, EXCL, TE, K, dev, ac, a.eval_bs)
         res["s170"] = s
+        if a.aux_step and K:                                                # §175 (the aux is dropped at test; every §170 field comes from the main decoder)
+            res["s175"] = s175_fields()
     res["eval_sec"] = round(time.time() - t1); json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     for ck_ in ("ckpt_last.pt", "ckpt_prev.pt"):
         if os.path.exists(os.path.join(a.out, ck_)):

@@ -1,0 +1,72 @@
+{
+ "g1": {
+  "rk_mean": 7.9291,
+  "rk_min": 1,
+  "rk_max": 32,
+  "rk_share_at_cap": 0.0014,
+  "prog_k1_rel_share_range": [
+   0.9783000000000001,
+   1.026
+  ],
+  "prog_k2_rel_share_range": [
+   0.9424,
+   1.0416
+  ]
+ },
+ "g1_pass": true,
+ "g2_corr_K_n": {
+  "rk": 0.0019193589813190292,
+  "prog": 0.0004705512496983182
+ },
+ "g2_pass": true,
+ "g3": {
+  "rk_0_5": {
+   "pass_grad": [
+    0.012627017684280872,
+    0.013587282970547676,
+    0.014716655015945435,
+    0.016561022028326988,
+    0.02242714911699295
+   ],
+   "pass_requires_grad": [
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "mem_zero": []
+  },
+  "prog_3_2": {
+   "pass_grad": [
+    0.0,
+    0.0,
+    0.0,
+    0.016561022028326988,
+    0.02242714911699295
+   ],
+   "pass_requires_grad": [
+    false,
+    false,
+    false,
+    true,
+    true
+   ],
+   "mem_zero": []
+  }
+ },
+ "g3_pass": true,
+ "g4": {
+  "losses_head": [
+   2.818964958190918,
+   2.645653486251831,
+   3.019561767578125
+  ],
+  "bitwise_equal": {
+   "new": true,
+   "new_fast": true
+  }
+ },
+ "g4_pass": true,
+ "all_pass": true
+}
