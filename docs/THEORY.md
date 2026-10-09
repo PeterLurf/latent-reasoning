@@ -10246,6 +10246,13 @@ subspace.**
   (necessity uninformative)**, not DECOMPOSABLE.
 * This only makes a positive harder (score_s167, synthetic-checked).
 
+**§167 interim (2026-10-09 09:17 EDT; s161_mix_4x4_s2/eval_das.json, the 167-3 refit; score_s167). MIX s2 at t = 4 meets every DECOMPOSABLE condition except the missing random-init-model baseline (note 167-1), so it reads INTERMEDIATE for now.**
+* **Fitted IIA (held out):** 0.919 / 0.911 / 0.917 at k = 4 / 8 / 16 (train 0.98–0.99). It is 0.03–0.04 at k 1–2. The large-k fits degrade: 0.655 at k = 64, 0.354 at k = 2048.
+* **Controls:** random subspace 0.0; shuffled targets 0.003 / 0.002; unchanged-target share 0.0.
+* **Necessity:** 0.98 at k = 4, against a random same-k subspace of 0.001. The excess is 0.98, well above 0.3.
+* **If 167-1's random-model baseline reads ≤ 0.2,** the in-progress column accumulator after pair 4 is causally carried in a 4-dimensional subspace of the 49,152-d memory.
+* **Pending:** points t = 8 / 12, the random-model baseline, and MIX s1 / s3.
+
 ## 168. DEEP-ProsQA: graph search past one pass, with a measured single-pass boundary (C1 + C3 on a task that exceeds a pass; the C1-forcing note's option 2(b)) (the user's go via Audit, "approve go ahead on prosqa deep"; pre-registered 2026-10-09 01:35 EDT, after Literature's check dfaf9ed6 (`docs/LIT_DEEP_PROSQA_2026-10-08.md`) and Audit's lead, before any implementation or run)
 
 **Why.**
