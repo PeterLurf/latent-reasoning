@@ -1,0 +1,3 @@
+# THEORY §170 NESTED slot 1: INJECT K8 s1 on one RTX 3090 (Audit approved; --fast_add per Audit's FAST_ADD (6cbdfd9f, numerically equivalent); --eval_at 24000 for §174; note 170-2 step_recover in the eval)
+# P=1
+boxes/runs_fsq/s170_k8_s1 boxes.nested170 --arm inject --think_k 8 --seed 1 --auto_micro --fast_add --eval_at 24000

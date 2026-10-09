@@ -209,6 +209,81 @@ def ans_token_acc(lg, items):
     return (lg[:, NUM_IDS].argmax(-1).cpu().numpy() == np.array([it["t"] for it in items])), lg.argmax(-1).cpu().numpy()
 
 
+
+def reductions(root):
+    """the values of Feng's CoT reductions in cot_steps' (leftmost-handle) order: v_1 .. v_n."""
+    nd = _copy(root); vals = []
+    while nd.op is not None:
+        path = _leftmost_ready(nd); tgt = nd
+        for p_ in path:
+            tgt = getattr(tgt, p_)
+        tgt.v = apply(tgt.op, tgt.l.v, tgt.r.v); tgt.op = tgt.l = tgt.r = None; vals.append(tgt.v)
+    return vals
+
+
+def _mem_read(mem, x, S):
+    """read_fixed's reads at one position per row (as boxes/halt173.read_vec): x (b, D) residual entering the read, S -> (b, 768) [g_add read_add || g_del read_del]."""
+    import torch.nn.functional as F_
+    from boxes.deltamem import H_ADD, H_DEL, DH
+    with torch.autocast("cuda", enabled=False):
+        b, D = x.shape; q = mem.qkv(mem.ln(x.float()))[..., :D].view(b, H_ADD + H_DEL, DH)
+        oa = torch.exp(mem.s_add) * torch.einsum("bhk,bhkv->bhv", F_.elu(q[:, :H_ADD]) + 1, S[:, :H_ADD].float())
+        od = torch.exp(mem.s_del) * torch.einsum("bhvk,bhk->bhv", S[:, H_ADD:].float(), F_.normalize(q[:, H_ADD:], dim=-1))
+        return torch.cat([oa, od], 1).flatten(1)
+
+
+@torch.no_grad()
+def dec_reads(m, items, T, dev, ac, bs):
+    """note 170-2: after think pass t = 1..T, the decoder's memory read r_t at its " =" position (the read entering block mem.layer; the residual there does
+    not depend on the memory) -> (T, N, 768)."""
+    g = m.g; out = []
+    for i in range(0, len(items), bs):
+        ch = items[i:i + bs]; seqs = [[EOT] + ids(it["syms"]) + [TID[" ="]] for it in ch]; ids_, _ = pad(seqs); x = torch.tensor(ids_, device=dev)
+        pos = torch.tensor([len(q) - 1 for q in seqs], device=dev); xt, msk = m.think_inputs(ch, dev); rs = []
+        with ac():
+            h = g.embed(x) + g.w("wpe.weight")[:x.shape[1]][None]
+            for j in range(m.mem.layer):
+                h = m.DM._block(g, j, h, h.shape[-1] // g.H)
+            h6 = h[torch.arange(len(ch), device=dev), pos]; S = m.mem.zero_state(len(ch), dev)
+            for _ in range(T):
+                S = m.write(S, xt, msk); rs.append(_mem_read(m.mem, h6, S))
+        out.append(torch.stack(rs).float().cpu().numpy())
+    return np.concatenate(out, 1)
+
+
+def logreg_acc(Xf, yf, Xs, ys, dev, wd=1e-3, iters=200):
+    """multinomial logistic probe (standardised features, L2 wd, LBFGS) fit on (Xf, yf) -> accuracy on (Xs, ys)."""
+    import torch.nn.functional as F_
+    mu, sd = Xf.mean(0), Xf.std(0) + 1e-6
+    Xf_ = torch.tensor((Xf - mu) / sd, device=dev, dtype=torch.float32); Xs_ = torch.tensor((Xs - mu) / sd, device=dev, dtype=torch.float32)
+    yf_ = torch.tensor(yf, device=dev, dtype=torch.long); ys_ = torch.tensor(ys, device=dev, dtype=torch.long)
+    with torch.enable_grad(), torch.autocast("cuda", enabled=False):
+        W = torch.zeros(Xf.shape[1], P, device=dev, requires_grad=True); b = torch.zeros(P, device=dev, requires_grad=True)
+        opt = torch.optim.LBFGS([W, b], lr=1.0, max_iter=iters, line_search_fn="strong_wolfe")
+
+        def clos():
+            opt.zero_grad(); l_ = F_.cross_entropy(Xf_ @ W + b, yf_) + wd * (W ** 2).sum(); l_.backward(); return l_
+        opt.step(clos)
+    return float(((Xs_ @ W + b).argmax(1) == ys_).float().mean())
+
+
+def step_recover(m, excl, TE, T, dev, ac, bs, n_fit=4000, n_test=1000):
+    """note 170-2 (descriptive): per pass t, a multinomial logistic probe from r_t to v_t (the t-th leftmost reduction's value, Z11); fit on n_fit
+    training-distribution items (seed 17021), tested on n_test test items at n <= 8 (seed 17022); items with fewer than t reductions are dropped at t."""
+    tr = train_items(np.random.default_rng(17021), n_fit, 8, excl); pool = [it for it in TE if it["n"] <= 8]
+    te = [pool[i] for i in np.random.default_rng(17022).permutation(len(pool))[:n_test]]
+    Rf, Rs = dec_reads(m, tr, T, dev, ac, bs), dec_reads(m, te, T, dev, ac, bs); vf = [reductions(it["root"]) for it in tr]; vs = [reductions(it["root"]) for it in te]
+    acc, nn, maj = {}, {}, {}
+    for t in range(1, T + 1):
+        fi = [i for i, v in enumerate(vf) if len(v) >= t]; si = [i for i, v in enumerate(vs) if len(v) >= t]
+        if len(fi) < 100 or len(si) < 20:
+            continue
+        yf = np.array([vf[i][t - 1] for i in fi]); ys = np.array([vs[i][t - 1] for i in si])
+        acc[str(t)] = logreg_acc(Rf[t - 1, fi], yf, Rs[t - 1, si], ys, dev); nn[str(t)] = {"fit": len(fi), "test": len(si)}
+        maj[str(t)] = float((ys == np.bincount(yf, minlength=P).argmax()).mean())
+    return acc, {"n": nn, "majority_baseline": maj, "probe": "multinomial logistic on standardised r_t (768-d), L2 1e-3, LBFGS 200", "seeds": [17021, 17022]}
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--arm", required=True, choices=["direct", "inject", "textcot"]); ap.add_argument("--think_k", type=int, default=0)
     ap.add_argument("--steps", type=int, default=48000); ap.add_argument("--bs", type=int, default=64); ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--seed", type=int, default=1)
@@ -447,6 +522,8 @@ def main():
             perm = np.random.default_rng(17201).permutation(len(rec_)); tnull = sorted(s["serial"])[0] if s["serial"] else None
             if tnull is not None:
                 Sn = inject_states([rec_[i] for i in perm], int(tnull)); gotn = inject_answers(rec_, K, override=(int(tnull), Sn)); s["serial_null"] = {"t": int(tnull), "hybrid": float((gotn == th).mean())}
+        if K:                                                               # note 170-2 (descriptive)
+            s["step_recover"], s["step_recover_info"] = step_recover(m, EXCL, TE, K, dev, ac, a.eval_bs)
         res["s170"] = s
     res["eval_sec"] = round(time.time() - t1); json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     for ck_ in ("ckpt_last.pt", "ckpt_prev.pt"):
