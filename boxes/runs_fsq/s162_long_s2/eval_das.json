@@ -1,0 +1,172 @@
+{
+ "family": "s5",
+ "fit_micro": 1,
+ "rm_ks": [
+  4,
+  8,
+  16,
+  64
+ ],
+ "run": "s162_long_s2",
+ "points": {
+  "16": {
+   "k": {
+    "49152": {
+     "iia": 1.0,
+     "iia_train": null,
+     "n": 990,
+     "steps": 0,
+     "def": "k = D: the whole-state swap"
+    },
+    "1": {
+     "iia": 0.0030303030303030303,
+     "iia_train": 0.002,
+     "n": 990,
+     "steps": 600,
+     "val_best": 0.00202020202020202
+    },
+    "2": {
+     "iia": 0.00202020202020202,
+     "iia_train": 0.002,
+     "n": 990,
+     "steps": 700,
+     "val_best": 0.010101010101010102
+    },
+    "4": {
+     "iia": 0.00202020202020202,
+     "iia_train": 0.006,
+     "n": 990,
+     "steps": 700,
+     "val_best": 0.006060606060606061
+    },
+    "8": {
+     "iia": 0.00808080808080808,
+     "iia_train": 0.016,
+     "n": 990,
+     "steps": 700,
+     "val_best": 0.01818181818181818
+    },
+    "16": {
+     "iia": 0.4686868686868687,
+     "iia_train": 0.616,
+     "n": 990,
+     "steps": 3200,
+     "val_best": 0.4888888888888889
+    },
+    "64": {
+     "iia": 0.9848484848484849,
+     "iia_train": 0.996,
+     "n": 990,
+     "steps": 2100,
+     "val_best": 0.98989898989899
+    },
+    "2048": {
+     "iia": 0.9959595959595959,
+     "iia_train": 0.998,
+     "n": 990,
+     "steps": 700,
+     "val_best": 1.0
+    }
+   },
+   "n_pairs": {
+    "train": 3973,
+    "val": 495,
+    "test": 990
+   },
+   "unchanged_target_share": 0.0,
+   "own_accuracy_unpatched": 1.0,
+   "random_subspace": {
+    "1": 0.0,
+    "2": 0.0,
+    "4": 0.0,
+    "8": 0.0,
+    "16": 0.0,
+    "64": 0.0,
+    "2048": 0.0
+   },
+   "subspace_var_share": {
+    "1": 0.053976558639102404,
+    "2": 0.09979568667296186,
+    "4": 0.14595242420911994,
+    "8": 0.17458124272445683,
+    "16": 0.15419710525902616,
+    "64": 0.7789126815194287,
+    "2048": 0.9447647116436354
+   },
+   "necessity_drop": {
+    "1": 0.07878787878787874,
+    "2": 0.17373737373737375,
+    "4": 0.19393939393939397,
+    "8": 0.3222222222222222,
+    "16": 0.7202020202020202,
+    "64": 0.9707070707070707,
+    "2048": 0.9525252525252526
+   },
+   "read_alignment": {
+    "1": 0.7749975081533194,
+    "2": 0.7675045169889927,
+    "4": 0.7277256697416306,
+    "8": 0.7341498639434576,
+    "16": 0.6820084415376186,
+    "64": 0.5665570255368948,
+    "2048": 0.33670524507761
+   },
+   "necessity_random": {
+    "1": 0.0,
+    "2": 0.0,
+    "4": 0.0,
+    "8": 0.0,
+    "16": 0.0,
+    "64": 0.0,
+    "2048": 0.0
+   },
+   "fit": {
+    "init": "pca (top-k of S_don - S_rec over the fit pairs)",
+    "lrs": [
+     0.001,
+     0.003
+    ],
+    "steps_max": 5000,
+    "lr_best": {
+     "1": 0.001,
+     "2": 0.001,
+     "4": 0.001,
+     "8": 0.003,
+     "16": 0.003,
+     "64": 0.001,
+     "2048": 0.001
+    }
+   },
+   "shuffled_targets": {
+    "16": 0.00404040404040404,
+    "64": 0.012121212121212121
+   },
+   "random_model": {
+    "4": 0.0,
+    "8": 0.0,
+    "16": 0.0,
+    "64": 0.0
+   }
+  }
+ },
+ "ks": [
+  1,
+  2,
+  4,
+  8,
+  16,
+  64,
+  2048
+ ],
+ "ctrl_ks": [
+  16,
+  64
+ ],
+ "D": 49152,
+ "gates": {},
+ "iia_def": "row level: every counterfactual digit (MULT: the later digits; S5: the final state) decoded exactly",
+ "extras": null,
+ "extras_note": "carry_matched / per_head_type / scaling (descriptive): not yet run",
+ "random_model_def": "untrained DeltaMem-R: W_o ~ N(0, 0.02^2) (the default W_o = 0 would make the memory inert), fade 1, gamma 1; qkv / gate / LN at their default init, i.e. qkv from block 6's c_attn and LN_w from block 11's ln_1 (pretrained-derived): an untrained MEMORY, not untrained features (Audit); the pretrained GPT-2 trunk",
+ "sec": 26882
+}
