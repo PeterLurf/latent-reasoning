@@ -10495,6 +10495,10 @@ subspace.**
 * **Consequences (§170's rules):** n* < 7, so the 1..8 training range holds 6 sizes past the single pass (n 3..8) and no deeper range is needed. The pooled set for DEEP / THINK-NECESSARY is n 3..8. DEEP needs ≥ 0.90 at every n in 3..8, where DIRECT reads 0.14–0.75. §174 and §175 read n* = 3 through score_s170.
 * `score_s170.N_STAR_FIXED = 3` is set in this commit. INJECT and TEXT-COT are read only after it.
 
+**§170 interim (2026-10-09 07:42 EDT; s170_k0_s1, RTX 3090, 48k; score_s170 after note 170-3).** K0, the same-harness single pass, **fails like DIRECT: pooled accuracy (n 3..8) 0.302.**
+* By n: 0.929 / 0.970 / 0.669 / 0.421 / 0.250 / 0.183 / 0.137 / 0.154 at n = 1..8; mean 0.129 at n 9–12.
+* This meets the C1 claim's "K0 slot 1 pooled < 0.90" condition. K8 s1 and TEXT-COT s1 / s2 are pending.
+
 ## 171. READ-SLOTS: think passes in which a few learned slots read the once-encoded input and write the memory (a Perceiver / RIN-style task-agnostic read; the user's "creating new methodologies and architectures for task agnostic" via Audit; roadmap steps: task-agnostic input, and scale (long inputs); pre-registered 2026-10-09 01:54 EDT, after Literature's scout 589e6eb5 (`docs/LIT_TASK_AGNOSTIC_SCOUT_2026-10-09.md`, rank 1) and Audit's review, before any implementation or run)
 
 **Why.**
