@@ -1,0 +1,89 @@
+{
+ "acc_release": 0.49052312357846856,
+ "sanity_gate": true,
+ "acc_by_T": {
+  "0": 0.13419257012888552,
+  "1": 0.21304018195602728,
+  "2": 0.3593631539044731,
+  "3": 0.49052312357846856,
+  "4": 0.45109931766489764,
+  "6": 0.41470811220621684,
+  "8": 0.4230477634571645
+ },
+ "acc_latents_zeroed": 0.16982562547384383,
+ "acc_c0": 0.1728582259287339,
+ "latents_used": true,
+ "iterations_used": true,
+ "jacobi_gm_3_8": 0.8764688331235017,
+ "rho": "MARGINAL",
+ "rho_perturb_by_iter": {
+  "2": 0.49949657917022705,
+  "3": 1.0517085790634155,
+  "4": 1.0619301795959473,
+  "5": 0.9832336902618408,
+  "6": 0.9448246955871582,
+  "7": 0.9266337752342224,
+  "8": 0.9379891157150269,
+  "9": 0.9120872616767883
+ },
+ "serial_descriptive": {
+  "1": {
+   "n": 300,
+   "latent": 1,
+   "funnel": {
+    "valid_chain": 1207,
+    "correct_unpatched": 601,
+    "has_step_after_t": 588,
+    "step_t_referenced_downstream": 573,
+    "dropped_ambiguous_reference": 36,
+    "recipients": 537,
+    "no_donor_in_pool": 217,
+    "donor_excluded_same_step_value": 3,
+    "donor_excluded_same_or_invalid_answer": 0,
+    "pairs": 300
+   },
+   "donor": 0.0033333333333333335,
+   "recipient": 0.98,
+   "cell": "BYPASS"
+  },
+  "2": {
+   "n": 120,
+   "latent": 21,
+   "funnel": {
+    "valid_chain": 1207,
+    "correct_unpatched": 601,
+    "has_step_after_t": 350,
+    "step_t_referenced_downstream": 346,
+    "dropped_ambiguous_reference": 33,
+    "recipients": 313,
+    "no_donor_in_pool": 193,
+    "donor_excluded_same_step_value": 1,
+    "donor_excluded_same_or_invalid_answer": 0,
+    "pairs": 120
+   },
+   "donor": 0.0,
+   "recipient": 0.9833333333333333,
+   "cell": "BYPASS"
+  },
+  "3": {
+   "n": 25,
+   "latent": 20,
+   "funnel": {
+    "valid_chain": 1207,
+    "correct_unpatched": 601,
+    "has_step_after_t": 155,
+    "step_t_referenced_downstream": 151,
+    "dropped_ambiguous_reference": 6,
+    "recipients": 145,
+    "no_donor_in_pool": 120,
+    "donor_excluded_same_step_value": 0,
+    "donor_excluded_same_or_invalid_answer": 0,
+    "pairs": 25
+   },
+   "donor": 0.0,
+   "recipient": 1.0,
+   "cell": "UNDERPOWERED"
+  }
+ },
+ "reading": "PCCoT computes in its latents and across its Jacobi iterations (zeroed 0.170, T'=0 0.134 vs 0.491); RHO MARGINAL (gm 0.876); BYPASS at steps ['1', '2']"
+}
