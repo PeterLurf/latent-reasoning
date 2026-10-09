@@ -20,19 +20,22 @@ FAST_ADD = False                                                            # Au
 
 
 class DeltaMem(nn.Module):
-    def __init__(self, g, layer=6, write=None):
+    def __init__(self, g, layer=6, write=None, h_add=H_ADD, h_del=H_DEL):
+        """§178: the width D comes from the trunk (768 for GPT-2) and the head counts are arguments (6 + 6 by default; (h_add + h_del) x DH = D)."""
         super().__init__()
-        self.layer = layer; pre = "h.%d." % layer; dev = g.w("wte.weight").device
-        self.ln = nn.LayerNorm(768).to(dev)
+        self.layer = layer; pre = "h.%d." % layer; dev = g.w("wte.weight").device; D = g.w("wte.weight").shape[1]
+        assert (h_add + h_del) * DH == D, "DeltaMem: (h_add + h_del) x %d must equal the width %d" % (DH, D)
+        self.D, self.h_add, self.h_del = D, h_add, h_del
+        self.ln = nn.LayerNorm(D).to(dev)
         with torch.no_grad():
             self.ln.weight.copy_(g.w(pre + "ln_1.weight").float()); self.ln.bias.copy_(g.w(pre + "ln_1.bias").float())
-        self.qkv = nn.Linear(768, 3 * 768).to(dev)
+        self.qkv = nn.Linear(D, 3 * D).to(dev)
         with torch.no_grad():                                               # core.py stores Conv1D-style (in, out) weights
             self.qkv.weight.copy_(g.w(pre + "attn.c_attn.weight").float().T); self.qkv.bias.copy_(g.w(pre + "attn.c_attn.bias").float())
-        self.gate = nn.Linear(768, 2 * H_DEL).to(dev)                       # per delta head: alpha logit, beta logit
+        self.gate = nn.Linear(D, 2 * h_del).to(dev)                         # per delta head: alpha logit, beta logit
         with torch.no_grad():
-            self.gate.weight.zero_(); self.gate.bias[:H_DEL].fill_(5.0); self.gate.bias[H_DEL:].zero_()   # alpha ~ 0.993, beta = 1
-        self.wo = nn.Linear(768, 768).to(dev)
+            self.gate.weight.zero_(); self.gate.bias[:h_del].fill_(5.0); self.gate.bias[h_del:].zero_()   # alpha ~ 0.993, beta = 1
+        self.wo = nn.Linear(D, D).to(dev)
         with torch.no_grad():
             self.wo.weight.zero_(); self.wo.bias.zero_()
         self.register_buffer("fade", torch.zeros((), device=dev)); self.ablate = None   # "add" | "delta": that head type's read zeroed
@@ -41,13 +44,13 @@ class DeltaMem(nn.Module):
         self.norms = None                                                   # list -> per segment (last token): (||g_del read_del||, ||g_add read_add||) per row
         self.write_mode = write                                             # §155 DELTA-R: None (§147) | "top" | "block9"
         if write is not None:                                               # LN_w on the write source (init: block 11's ln_1); gamma mixes the write input
-            self.ln_w = nn.LayerNorm(768).to(dev)
+            self.ln_w = nn.LayerNorm(D).to(dev); lw = "h.%d.ln_1." % (g.L - 1)  # the last block's ln_1 (block 11 for GPT-2)
             with torch.no_grad():
-                self.ln_w.weight.copy_(g.w("h.11.ln_1.weight").float()); self.ln_w.bias.copy_(g.w("h.11.ln_1.bias").float())
+                self.ln_w.weight.copy_(g.w(lw + "weight").float()); self.ln_w.bias.copy_(g.w(lw + "bias").float())
             self.register_buffer("gamma", torch.zeros((), device=dev)); self.wstat = None   # wstat: list -> per pass (||LN_w(h_w)||, ||LN_6(h_6)||) medians
 
     def zero_state(self, B, dev):
-        return torch.zeros(B, H_ADD + H_DEL, DH, DH, device=dev)
+        return torch.zeros(B, self.h_add + self.h_del, DH, DH, device=dev)
 
     def forward(self, x, S, rec=None):
         """x (B, T, 768) residual stream after l_m blocks; S (B, 12, DH, DH) carried state. Sequential over T. Returns (x + branch, S_new).
@@ -56,6 +59,7 @@ class DeltaMem(nn.Module):
             return self._forward(x, S, rec)
 
     def _forward(self, x, S, rec=None):
+        H_ADD, H_DEL = self.h_add, self.h_del                               # §178: this memory's head counts (6 / 6 by default)
         B, T, D = x.shape; a = self.ln(x.float()); q, k, v = self.qkv(a).split(D, -1)
         q, k, v = (t.view(B, T, H_ADD + H_DEL, DH) for t in (q, k, v)); g_ = self.gate(a); al = torch.sigmoid(g_[..., :H_DEL]); be = 2 * torch.sigmoid(g_[..., H_DEL:])
         Sa, Sd = S[:, :H_ADD].float(), S[:, H_ADD:].float(); outs = []
@@ -86,6 +90,7 @@ class DeltaMem(nn.Module):
 def read_fixed(mem, x, S, rec=None):
     """§155: the read on the pass-start state S at every token (no write); the same gains / ablation / fade / W_o as DeltaMem.forward.
     rec / mem.norms record the last token's reads (as forward)."""
+    H_ADD, H_DEL = mem.h_add, mem.h_del                                     # §178: this memory's head counts (6 / 6 by default)
     with torch.autocast("cuda", enabled=False):
         B, T, D = x.shape; a = mem.ln(x.float()); q = mem.qkv(a)[..., :D].view(B, T, H_ADD + H_DEL, DH)
         oa = torch.exp(mem.s_add) * torch.einsum("bthk,bhkv->bthv", F.elu(q[:, :, :H_ADD]) + 1, S[:, :H_ADD].float())
@@ -104,6 +109,7 @@ def read_fixed(mem, x, S, rec=None):
 def write_seq(mem, h6, hw, S, mask=None):
     """§155: S_{t+1} from the pass's writes, sequential over tokens as DeltaMem.forward, with k / v / alpha / beta from
     u = (1 - gamma) LN_6(h_6) + gamma LN_w(h_w) (one shared set of write projections: qkv's k / v rows and the gate)."""
+    H_ADD, H_DEL = mem.h_add, mem.h_del                                     # §178: this memory's head counts (6 / 6 by default)
     with torch.autocast("cuda", enabled=False):
         B, T, D = h6.shape; a6 = mem.ln(h6.float()); aw = mem.ln_w(hw.float()); gm = mem.gamma
         if mem.wstat is not None:

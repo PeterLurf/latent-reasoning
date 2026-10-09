@@ -172,7 +172,7 @@ def read_ratio(m, dev, amp, n=256, L=8, seed=16201):
 
 
 def write_grad_norm(m):
-    D = 768; g_ = []
+    D = getattr(m.mem, "D", 768); g_ = []                                   # §178: the memory's width
     for p_, sl in ((m.mem.ln_w.weight, None), (m.mem.ln_w.bias, None), (m.mem.qkv.weight, slice(D, 3 * D)), (m.mem.qkv.bias, slice(D, 3 * D)),
                    (m.mem.gate.weight, None), (m.mem.gate.bias, None)):
         if p_.grad is not None:
