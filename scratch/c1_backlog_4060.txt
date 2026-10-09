@@ -11,6 +11,11 @@
 # 2026-10-09 10:2x Experiments (Audit 10:14: >= 1 h standing work): DESCRIPTIVE 8k-step local previews of gated arms (not the registered launches; Theory may stop them)
 # 2026-10-09 11:4x Experiments: §169 K8 s1 post hoc (Theory): §176 reference (eval_s176_ref.json), §173 halt, note 173-1 package
 # 2026-10-09 13:0x Experiments: §170 K8 s1 post hoc (Theory: every think-pass cell): §173 halt + note 173-1 package
+# 2026-10-09 14:1x Experiments: §165 K8 / K16 post hoc (§173 halt + note 173-1 package; M_0 = the post-input state, noted in the file) - shared lines
+4.0 boxes/runs_fsq/s165_k8_4x4_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s165_k8_4x4_s1 --bs 100 --device {DEV}
+4.0 boxes/runs_fsq/s165_k8_4x4_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s165_k8_4x4_s1 --dir177 --bs 125 --device {DEV}
+4.0 boxes/runs_fsq/s165_k16_4x4_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s165_k16_4x4_s1 --bs 100 --device {DEV}
+4.0 boxes/runs_fsq/s165_k16_4x4_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s165_k16_4x4_s1 --dir177 --bs 125 --device {DEV}
 4.0 boxes/runs_fsq/s170_k8_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s170_k8_s1 --bs 100 --device {DEV}
 4.0 boxes/runs_fsq/s170_k8_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s170_k8_s1 --dir177 --bs 125 --device {DEV}
 # 2026-10-09 13:0x Experiments: §177 (f) kmatch DESCRIPTIVE 8k preview (masked form, note 177-5; read by no rule; 4060 bf16)
