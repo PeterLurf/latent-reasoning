@@ -208,6 +208,14 @@ def think_kk(m, S, A, B, kk, ckpt=False):
     return m.think(S, A, B, kk[1], ckpt=ckpt, t0=kk[0])                      # global pass numbers (§177 (a)'s index)
 
 
+def rel_src(f):
+    """a source path for eval.json: repo-relative when possible (another drive on Windows -> the absolute path)."""
+    try:
+        return os.path.relpath(f, ROOT).replace(os.sep, "/")
+    except ValueError:
+        return os.path.abspath(f).replace(os.sep, "/")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--think_k", required=True, help="an int, or '4n' (§177 (d): K = 4n pair-schedule passes, the rule K)"); ap.add_argument("--shape_mix", default="2,3,4,5"); ap.add_argument("--steps", type=int, default=48000)
@@ -330,7 +338,7 @@ def main():
                     if st_ <= ck["step"] and os.path.exists(f_) and nm_ not in fade_ev:
                         e_ = json.load(open(f_))
                         if e_.get("step") == st_:
-                            fade_ev[nm_] = dict(e_, source=os.path.relpath(f_, ROOT).replace(os.sep, "/"))   # Theory: the gate run's number, its source noted
+                            fade_ev[nm_] = dict(e_, source=rel_src(f_))                   # Theory: the gate run's number, its source noted
         log.write(json.dumps({"step": ck["step"], "resumed": a.resume, "resumed_from": a.resumed_from}) + "\n"); log.flush()
     elif K > 0:                                                             # note 147-2: g_add = median ||read_del|| / ||read_add|| at the think hand-offs
         r_ = np.random.default_rng(16901); A0, B0 = gen_operands(r_, 128, 4), gen_operands(r_, 128, 4); m.mem.norms = []
@@ -375,7 +383,7 @@ def main():
             if RK or PG:
                 rec["k_train_mean"] = float(np.mean(kwin)) if kwin else None; kwin.clear()
             hist = []; log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
-        if a.ckpt_every and step % a.ckpt_every == 0 and step < a.steps:
+        if a.ckpt_every and (step % a.ckpt_every == 0 or step == a.stop_at) and step < a.steps:   # --stop_at: ckpt_last is the stop step (Audit)
             cp = os.path.join(a.out, "ckpt_last.pt")
             if os.path.exists(cp):
                 os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))
@@ -426,6 +434,8 @@ def main():
                                       "vec_norm_by_pass": {str(t): float(m.pass_vec(t).detach().float().norm()) for t in (1, 2, 4, 8, 16, 32, 64)}}}
         if FADE:                                                            # note 177-3: acc_scaffold_12k (p 0, pair inputs, K = 4n); acc_by_p at the steps p reaches
             pe = p_at(a.stop_at or a.steps)
+            res["s177"].update({"acc_scaffold_12k_by_column": (fade_ev.get("scaffold") or {}).get("acc_by_column"),
+                                "acc_scaffold_12k_source": (fade_ev.get("scaffold") or {}).get("source", "this run"), "resumed_from": a.resumed_from or None})
             res["s177"].update({"acc_scaffold_12k": (fade_ev.get("scaffold") or {}).get("acc"), "acc_by_p": {k_: v_["acc"] for k_, v_ in fade_ev.items() if k_ != "scaffold"},
                                 "fade_evals": fade_ev, "rule_k_by_size": {"4x4": 16, "4x6": 24, "4x7": 28, "4x8": 32, "4x16": 64},
                                 "acc_at_end_p": {"p": pe, "acc": float((predict_fade(m, teA, teB, pe, dev, amp, bs) == Pte).all(1).mean())}})
