@@ -575,6 +575,9 @@ def main():
                 pk = mem_check(a.micro)
             except torch.OutOfMemoryError:
                 pk = float("inf")
+            if pk != float("inf"):                                       # + AdamW's two fp32 states per parameter (not allocated by the check; ~1 GiB for GPT-2)
+                pk += 2 * sum(p_.numel() * 4 for p_ in (m if m is not None else g).parameters() if p_.requires_grad) / 2 ** 30
+            torch.cuda.empty_cache()                                    # no fragmentation carried into the next attempt / training
             if pk == float("inf"):                                       # after the except clause, so the failed graph is released
                 (m or g).zero_grad(set_to_none=True); torch.cuda.empty_cache()
             mc.append({"micro": a.micro, "peak_gib": pk}); print("MEM", a.micro, pk, flush=True)

@@ -14,7 +14,8 @@
 4.0 boxes/runs_fsq/s170_k8_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s170_k8_s1 --bs 100 --device {DEV}
 4.0 boxes/runs_fsq/s170_k8_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s170_k8_s1 --dir177 --bs 125 --device {DEV}
 # 2026-10-09 13:0x Experiments: §177 (f) kmatch DESCRIPTIVE 8k preview (masked form, note 177-5; read by no rule; 4060 bf16)
-5.0 boxes/runs_fsq/proto177_kmatch_s1_4060/eval.json python -u -m boxes.nested170 --arm inject --think_k 10 --k_window 0,2 --fast_add --seed 1 --steps 8000 --ckpt_every 1000 --auto_micro --mem_budget 5.0 --eval_bs 50 --per_n 300 --device {DEV} --out boxes/runs_fsq/proto177_kmatch_s1_4060
+# 2026-10-09 13:3x OOMed twice at step 1 (memcheck missed AdamW state; .void / .void2, aborted unread) -> renamed run below: 5.0 boxes/runs_fsq/proto177_kmatch_s1_4060/eval.json python -u -m boxes.nested170 --arm inject --think_k 10 --k_window 0,2 --fast_add --seed 1 --steps 8000 --ckpt_every 1000 --auto_micro --mem_budget 5.0 --eval_bs 50 --per_n 300 --device {DEV} --out boxes/runs_fsq/proto177_kmatch_s1_4060
+5.0 boxes/runs_fsq/proto177_kmatch_s1b_4060/eval.json python -u -m boxes.nested170 --arm inject --think_k 10 --k_window 0,2 --fast_add --seed 1 --steps 8000 --ckpt_every 1000 --auto_micro --mem_budget 5.0 --eval_bs 50 --per_n 300 --device {DEV} --out boxes/runs_fsq/proto177_kmatch_s1b_4060
 4.0 boxes/runs_fsq/s169_k8_4x4_s1/eval_s176_ref.json python -u scratch/s176_ref.py boxes/runs_fsq/s169_k8_4x4_s1 {DEV}
 4.0 boxes/runs_fsq/s169_k8_4x4_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s169_k8_4x4_s1 --bs 100 --device {DEV}
 4.0 boxes/runs_fsq/s169_k8_4x4_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s169_k8_4x4_s1 --dir177 --bs 125 --device {DEV}
