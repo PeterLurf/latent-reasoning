@@ -153,8 +153,12 @@ def halts(cor, ans, chg, T):
     return {r: (h, c_, cor[h, np.arange(b)]) for r, (h, c_) in out.items()}
 
 
-def load_model(run, dev):
+def load_model(run, dev, init=False):
+    """init (note 173-1): the arm's model at initialisation - the pretrained trunk and fresh memory parameters built under the run's seed (as the run's
+    own torch.manual_seed before construction), no checkpoint loaded, gamma forced to 1 so the writes use the top-layer source."""
     a = json.load(open(os.path.join(run, "args.json"))); g = s5.load_gpt2(dev)
+    if init:
+        torch.manual_seed(int(a.get("seed", 1)))
     if "chunk_k" in a:
         from boxes.fixedchunk import FixedChunk
         kind, m = "fixedchunk", FixedChunk(g, 6, a.get("mem_write", "top"))
@@ -167,7 +171,13 @@ def load_model(run, dev):
     else:
         from boxes.inject169 import Inject
         assert a.get("arm") == "inject"; kind, m = "inject", Inject(g, 6, a.get("mem_write", "top"))
-    m = m.to(dev); m.load_state_dict(torch.load(os.path.join(run, "model.pt"), map_location=dev, weights_only=False)); m.eval()
+    m = m.to(dev)
+    if init:
+        with torch.no_grad():
+            m.mem.gamma.fill_(1.0); m.mem.fade.fill_(1.0)
+    else:
+        m.load_state_dict(torch.load(os.path.join(run, "model.pt"), map_location=dev, weights_only=False))
+    m.eval()
     return kind, m, a
 
 
@@ -202,15 +212,19 @@ def dir_fields(kind, m, a, dev, amp, n_items=500, bs=250, bench=os.path.join("be
     """§177 direction diagnostic (Theory, descriptive): on n_items 4x4 bench items, per pass t = 1..2K the mean over items of cos(x_t, x_{t-1}) for
     x = r (the decoder's memory read at its first query, as read_0.01), Sd (the flattened delta-head state) and Sa (the flattened additive state).
     M_0 is the zero state (§169 / §171) or the post-input state (§165); a cosine against a zero vector is skipped (counted in n_by_t)."""
-    assert kind != "nested", "the §177 diagnostic is registered on the 4x4 multiplication models"
-    K = int(a["think_k"]); T = 2 * K; ad = MultAdapter(kind, m, a, dev); teA, teB = load_bench(bench if os.path.isabs(bench) else os.path.join(ROOT, bench))
-    A, B = teA[:n_items], teB[:n_items]; acc = {k_: {t: [] for t in range(1, T + 1)} for k_ in ("read", "delta", "add")}
+    K = int(a["think_k"]); T = 2 * K; acc = {k_: {t: [] for t in range(1, T + 1)} for k_ in ("read", "delta", "add")}
+    if kind == "nested":                                                    # note 173-1: nested at its training size, n pooled 3..8
+        from boxes.nested170 import test_set
+        ad = NestAdapter(m, dev); pool = [it for it in test_set(a.get("per_n", 1000)) if 3 <= it["n"] <= 8]
+        its = [pool[i] for i in np.random.default_rng(17730).permutation(len(pool))[:n_items]]; chunks = [its[i:i + bs] for i in range(0, len(its), bs)]
+    else:
+        ad = MultAdapter(kind, m, a, dev); teA, teB = load_bench(bench if os.path.isabs(bench) else os.path.join(ROOT, bench))
+        A, B = teA[:n_items], teB[:n_items]; chunks = [(A[i:i + bs], B[i:i + bs]) for i in range(0, len(A), bs)]
 
     def cos(x, y):
         nx, ny = x.norm(dim=1), y.norm(dim=1); ok = (nx > 0) & (ny > 0)
         return ((x * y).sum(1)[ok] / (nx[ok] * ny[ok])).cpu().numpy()
-    for i in range(0, len(A), bs):
-        ch = (A[i:i + bs], B[i:i + bs])
+    for ch in chunks:
         with ReadTap() as tap, amp_ctx(amp):
             S, c = ad.init(ch); prev = None
             for t in range(T + 1):
@@ -227,8 +241,55 @@ def dir_fields(kind, m, a, dev, amp, n_items=500, bs=250, bench=os.path.join("be
     for k_, nm in (("read", "read_cos"), ("delta", "delta_cos"), ("add", "add_cos")):
         out[nm] = {str(t): (float(np.concatenate(v).mean()) if sum(len(x_) for x_ in v) else None) for t, v in acc[k_].items()}
         out[nm.replace("_cos", "_n_by_t")] = {str(t): int(sum(len(x_) for x_ in v)) for t, v in acc[k_].items()}
-    out["n_items"] = int(len(A)); out["cap"] = T
+    out["n_items"] = int(sum(len(c[0]) if kind != "nested" else len(c) for c in chunks)); out["cap"] = T
+    out["items"] = "nested: test_set n pooled 3..8, seed 17730" if kind == "nested" else "the 4x4 bench test"
+    out["m0"] = ("the POST-INPUT state (the input chunks written): t = 1 compares think pass 1 with it - not comparable naively with a zero M_0 (Theory)"
+                 if kind == "fixedchunk" else "the zero state (t = 1 undefined)")
     return out
+
+
+@torch.no_grad()
+def step_probe_delta(kind, m, a, dev, amp, bs=250, n_fit=4000, n_test=1000, bench=os.path.join("bench", "data", "mult_4x4_test.txt")):
+    """note 173-1 (descriptive): multinomial logistic probes (nested170.logreg_acc, as 170-2) from the pass-t DELTA state (flattened 6 x 64 x 64), t = 1..K.
+    nested: target v_t (the t-th leftmost reduction's value), fit on n_fit train_items (n <= 8, test-excluded, seed 17731), test n_test test items at n <= 8
+    (seed 17022) -> {t: acc}. mult: target the units digit of column c's full sum (= product digit c, LSB first), c = 1..8 at 4x4, fit on n_fit generator
+    4x4 items (bench-excluded, seed 17731), test the bench's first n_test -> {t: {c: acc}}. The passes are recomputed up to each t (one t's states in memory)."""
+    from boxes.nested170 import logreg_acc
+    K = int(a["think_k"])
+    if kind == "nested":
+        from boxes.nested170 import test_set, train_items, reductions
+        ad = NestAdapter(m, dev); TE = test_set(a.get("per_n", 1000)); excl = {tuple(it["syms"]) for it in TE}
+        fit = train_items(np.random.default_rng(17731), n_fit, 8, excl); pool = [it for it in TE if it["n"] <= 8]
+        tst = [pool[i] for i in np.random.default_rng(17022).permutation(len(pool))[:n_test]]
+        vf, vs = [reductions(it["root"]) for it in fit], [reductions(it["root"]) for it in tst]
+        bf = [fit[i:i + bs] for i in range(0, len(fit), bs)]; bt = [tst[i:i + bs] for i in range(0, len(tst), bs)]
+    else:
+        ad = MultAdapter(kind, m, a, dev); teA, teB = load_bench(bench if os.path.isabs(bench) else os.path.join(ROOT, bench))
+        ex = {(x.tobytes(), y.tobytes()) for x, y in zip(teA, teB)}; r_ = np.random.default_rng(17731); fA, fB = gen_operands(r_, 3 * n_fit, 4), gen_operands(r_, 3 * n_fit, 4)
+        keep = np.array([(x.tobytes(), y.tobytes()) not in ex for x, y in zip(fA, fB)]); fA, fB = fA[keep][:n_fit], fB[keep][:n_fit]; tA, tB = teA[:n_test], teB[:n_test]
+        Yf, Ys = product_digits(fA, fB), product_digits(tA, tB)
+        bf = [(fA[i:i + bs], fB[i:i + bs]) for i in range(0, len(fA), bs)]; bt = [(tA[i:i + bs], tB[i:i + bs]) for i in range(0, len(tA), bs)]
+
+    def states(batches, t):
+        out = []
+        for ch in batches:
+            with amp_ctx(amp):
+                S, c = ad.init(ch)
+                for _ in range(t):
+                    S = ad.step(S, c)
+            out.append(S[:, DM.H_ADD:].float().flatten(1).cpu().numpy())
+        return np.concatenate(out)
+    res = {}
+    for t in range(1, K + 1):
+        Xf, Xs = states(bf, t), states(bt, t)
+        if kind == "nested":
+            fi = [i for i, v in enumerate(vf) if len(v) >= t]; si = [i for i, v in enumerate(vs) if len(v) >= t]
+            if len(fi) >= 100 and len(si) >= 20:
+                res[str(t)] = logreg_acc(Xf[fi], np.array([vf[i][t - 1] for i in fi]), Xs[si], np.array([vs[i][t - 1] for i in si]), dev)
+        else:
+            res[str(t)] = {str(c + 1): logreg_acc(Xf, Yf[:, c], Xs, Ys[:, c], dev) for c in range(Yf.shape[1])}
+        print("step_probe_delta t", t, flush=True)
+    return res
 
 
 @torch.no_grad()
@@ -283,6 +344,11 @@ def main():
     kind, m, a = load_model(o.run, dev); K = int(a["think_k"]); T = 2 * K; assert K >= 1
     if o.dir177:                                                            # §177 (Theory): the direction diagnostic -> eval_s177_dir.json
         r_ = dir_fields(kind, m, a, dev, amp, min(o.n, 500), o.bs, o.bench)
+        r_["step_probe_delta"] = step_probe_delta(kind, m, a, dev, amp, o.bs, bench=o.bench)   # note 173-1 (descriptive)
+        del m; torch.cuda.empty_cache() if dev.startswith("cuda") else None
+        _, m0, _ = load_model(o.run, dev, init=True); c0 = dir_fields(kind, m0, a, dev, amp, min(o.n, 500), o.bs, o.bench)
+        r_["cos_at_init"] = {"read": c0["read_cos"], "delta": c0["delta_cos"], "add": c0["add_cos"],
+                             "def": "the arm's model at initialisation: pretrained trunk, fresh memory parameters under the run's seed, gamma 1 (note 173-1)"}
         r_.update({"run": o.run.replace(os.sep, "/"), "kind": kind, "think_k": K, "eval_dtype": str(amp), "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
                    "sec": round(time.time() - t0), "def": "per pass t: mean over items of cos(x_t, x_{t-1}); r = the decoder's memory read at its first query (as read_0.01), "
                    "delta / add = the flattened delta-head / additive-head state (boxes/halt173.dir_fields)"})
