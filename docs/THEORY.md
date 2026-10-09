@@ -10780,6 +10780,8 @@ subspace.**
   - In §149's terms at the block level it is **PARTIAL** (hybrid 0.22–0.27; SIM-CoT+Coconut's aligned-pair swap read 0.35), not BYPASSED as the CODI family.
 * **This revises §172's SERIAL line.** The step values are carried in a distributed way across PCCoT's latents and are causally used, but only about a quarter of block swaps move the answer exactly as substituting the step would.
 
+**§172 addendum, a further clause (2026-10-09 10:06 EDT; Audit).** In whole-block swaps, recipient + hybrid + donor-full covers only 0.45 / 0.43 (t = 1 / 2), so 55–58% of swapped items end in none of the three answers. That is evidence for a distributed, template-coupled state, not a clean step register.
+
 ## 173. CONV-HALT: convergence-halted think passes as an eval-only readout on the think-pass models (C5; roadmap step 3, halting; Audit's point and Literature's scout 589e6eb5 §3; pre-registered 2026-10-09 01:57 EDT, after Audit's review (the answer-settling rule is Audit's), before any §165 K16 / K8, §169, §170 or §171 output is read)
 
 **Why.**
