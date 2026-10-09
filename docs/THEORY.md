@@ -253,7 +253,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 163 | SHAPE-MIX-2D: both operand lengths mixed (m, n 2..5), 6×6–8×8 generalisation | **BOUNDED 3/3** (5×5 0.995–0.998; 6×6 0.96–0.98; 8×8 0.19–0.45; 4×8 / 8×4 ≈ 0.98–0.99); 5×5 SERIAL | closed |
 | 164 | MIX-BASELINES: TC-MIX / DIRECT-MIX on §161's mix (like-for-like C2 baselines) | **LATENT BEYOND TEXT ON LENGTH** (TC-MIX anchored ext 0.0 at 4×6+; its CoT stops short); DIRECT-MIX 4×4 ≤ 0.004 (the single pass fails) | closed |
 | 165 | FIXED-CHUNK: the same memory on fixed text chunks plus think passes (task-agnostic segmentation) | registered | **open** |
-| 166 | STATE-COVERAGE: 1k-step post-training from passed / noise states vs a PLAIN post-train (2507.02782), on §162 LONG and §161 MIX | registered | **open** |
+| 166 | STATE-COVERAGE: 1k-step post-training from passed / noise states vs a PLAIN post-train (2507.02782), on §162 LONG and §161 MIX | **not shown**: S5 SP = PLAIN (48 0.9995 / 64 0.988 vs 0.991 / 512 0.0 both; validity gate passes); MULT uninformative (166-3) | closed |
 | 167 | DAS-EDIT: learned-subspace interchange (DAS) on MIX / S5 memories, with illusion controls (C1 edit, C7) | registered | **open** |
 | 168 | DEEP-ProsQA (the user's go): a measured single-pass boundary on deep (3–14) shortcut-free ProsQA, then an INJECT latent arm | registered (step 1 running) | **open** |
 | 169 | INJECT (the user's "task agnosticness"): the full problem re-presented every think pass, the memory the only cross-pass state; K16 / K8 / K0 on §161's mix | registered | **open** |
@@ -10189,6 +10189,19 @@ run, RTX 3090 (or a local card if memory-checked).
   11 passes, 4.6·10⁹ FLOPs. "Loading alone fails" holds, as the C1 claim needs.
 * **K16c1 (chunk size 1, Literature's check):** 4×4 0.0, with 0.0 at every K′ (0 … 64).
 * The reading waits for K16 / K8. If neither is exact, the registered reading is "the harness's schedule is doing work".
+
+**§166 S5 result (2026-10-09 04:41 EDT; s166_s5_{sp,plain}_s2 from §162 LONG s2, 300 steps at lr 5e-6 (note 166-3), RTX 3070; score_s166). COVERAGE-HELPS is not shown. State passing changes nothing against a plain post-train.**
+* **The validity gate passes:** both arms keep final accuracy 1.0 at every L ≤ 32.
+* **SP equals PLAIN:**
+  - L 48: 0.9995 vs 0.9995;
+  - L 64: 0.988 vs 0.991;
+  - L 512 (long_acc): 0.0 vs 0.0; acc_2048 0.0 vs 0.0.
+* **The scorer's label is "covered range only" (SP ≥ 0.90 at 48 / 64).** PLAIN reaches the same, so that reach belongs to the base model or the post-train itself, not to coverage.
+  - Wider initial-state coverage, at this dose, does not move the collapse past 64 on S5.
+* **§166 closes.**
+  - MULT was uninformative (note 166-3).
+  - The descriptive mix2d cells (note 166-2) are reported if they run.
+  - Coverage remains untested only at a stronger dose. That is not registered.
 
 **§167 DAS-EDIT, the first model (interim, 2026-10-09 01:22 EDT; s161_mix_4x4_s3): NOT-DECOMPOSABLE at t 4 / 8 / 12 by the rule, with a fit-failure caveat.**
 * **The gate holds:** k = D gives IIA 0.978 / 0.968 / 0.970, the whole-state swap.

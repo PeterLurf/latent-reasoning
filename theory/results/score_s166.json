@@ -1,10 +1,23 @@
 {
  "s5": {
-  "reading": "pending",
-  "status": [
-   "open",
-   "open"
-  ]
+  "sp": {
+   "long_acc": 0.0,
+   "acc_2048": 0.0,
+   "acc_by_length_ext": {
+    "48": 0.9995,
+    "64": 0.988
+   }
+  },
+  "plain": {
+   "long_acc": 0.0,
+   "acc_2048": 0.0,
+   "acc_by_length_ext": {
+    "48": 0.9995,
+    "64": 0.991
+   }
+  },
+  "kept": true,
+  "reading": "covered range only (SP >= 0.90 at 48 / 64, not at 512)"
  },
  "mult_closed": "note 166-3: MULT closed as uninformative - the post-train recipe degrades converged models (PLAIN s3 0.964 vs PT0 0.998 at 4x4) and fitted starts on the non-forgetting additive store are harmful (FITTED s3 0.844); s1 / s2 not run",
  "mult": {
