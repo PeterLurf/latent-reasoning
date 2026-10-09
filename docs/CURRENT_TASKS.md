@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-09 17:21 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-09 17:17 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -26,14 +26,14 @@ so send to the pipe addresses their messages come from.
 touching fsq120 / table132 / core. Never edit a module while a deploy is in flight (auto_ship is transitive: fixedchunk / multrow ship multpair,
 deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `vast destroy` aborts at its y/N prompt).
 
-### Vast (8 hosts, ~$1.6/h; 17:20 2026-10-09)
+### Vast (8 hosts, ~$1.6/h; 17:17 2026-10-09)
 * Live: b218 §169 K16; b228 / b229 §167 refits; b233 §177 (a) tidx; b234 (rq) host; b235 §175 aux K8; b236 §177 (f) kmatch; b237 / b238 §168 G1 / G2.
 * b240 = note 177-6's (d) scaffold run proto177_fadetidx12k_s1 (the cell's schedule, --stop_at 12000; ckpt_last KEPT, inject169 5fc0cc33). Filler
   fill_s177d12 (logs/fill_s177d12.out): 3 hosts STUCK_LOADING 16:17-16:59 (destroyed, verified), 4th (55095496) loading. Gate: full 4x4 at p 0 >= 0.5
   -> the (d) cell s177_fadetidx_s1 RESUMES from b240's ckpt_last (--resume ... --resumed_from proto177_fadetidx12k_s1@12000, 3090, HOSTPROBE).
 * §178 (from scratch): timing b239 landed (d4c4ec6d; DIRECT 0.016 / K0 0.022 / K8 0.390 s/step -> 96k 0.4 / 0.6 / 10.4 h; timing.json "est_hours_48k" is
   over 96k steps). Audit OK'd ~$2.5 (<= $4.5): b241 K8 + 173-1 package, b242 DIRECT then K0 - deploy after b240's filler exits (one filler at a time).
-* Pending harness: vdeploy_toy.sh STUCK_LOADING test -> stopped AND not loading AND no pull progress in status_msg (Audit 17:20; edit only with no filler running,
+* Pending harness: vdeploy_toy.sh STUCK_LOADING test -> stopped AND not loading AND no pull progress in status_msg (Audit ~17:16; edit only with no filler running,
   set -u harness test); inject169 resume fix (relpath across drives) + forced ckpt at --stop_at, after b240 ships, then Audit's resume-equality smoke.
 * Landed today: §169 K0 / K8 (FAIL); §170 DIRECT s1 / s2, K0 s1, cot s1 / s2 (eval-only, OOM fix), K8 s1; §171 K8 / BLIND; §165 K8 / K16; §168 std s1 / s2; §172 (closed).
 * Harness today: FAST_ADD (-15 %); HOSTPROBE (works: b234 rejected at 1.21 s/step); eval-only paths in nested170 / inject169; memchecks count AdamW state;
