@@ -258,6 +258,8 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 168 | DEEP-ProsQA (the user's go): a measured single-pass boundary on deep (3–14) shortcut-free ProsQA, then an INJECT latent arm | registered (step 1 running) | **open** |
 | 169 | INJECT (the user's "task agnosticness"): the full problem re-presented every think pass, the memory the only cross-pass state; K16 / K8 / K0 on §161's mix | registered | **open** |
 | 170 | NESTED (the user's go): Feng's mod-11 bracketed expressions; a measured DIRECT boundary over n, then INJECT K8 / K0 (K16 gated) against Feng's text CoT; C1 = DEEP + THINK-NECESSARY + SERIAL-NEST, C3 at text CoT's accuracy for less compute | registered | **open** |
+| 171 | READ-SLOTS (task-agnostic architecture): the input encoded once; each think pass 8 learned slots read it and write DeltaMem-R; K8 on §161's mix; head to head with INJECT (CHEAPER-EQUAL); read map / entropy (C7) | registered | **open** |
+| 172 | PCCoT-PROBE (eval only): §149's battery on whynlp/pccot-gpt2 (GSM8K 49.48 at release); LATENTS-USED, ITERATIONS-USED (T' = 0 = pause), Jacobi RHO, descriptive SERIAL | registered | **open** |
 
 ## Live sections
 
@@ -10448,6 +10450,112 @@ subspace.**
   - smoke_plain; Audit's diff review;
   - memcheck at n = 16 with K′ = 2K.
 * Dirs `s170_{direct,k8,k16,k0,cot}_s{seed}`. Scorer: `theory/score_s170.py`, committed with this registration.
+
+## 171. READ-SLOTS: think passes in which a few learned slots read the once-encoded input and write the memory (a Perceiver / RIN-style task-agnostic read; the user's "creating new methodologies and architectures for task agnostic" via Audit; roadmap steps: task-agnostic input, and scale (long inputs); pre-registered 2026-10-09 01:54 EDT, after Literature's scout 589e6eb5 (`docs/LIT_TASK_AGNOSTIC_SCOUT_2026-10-09.md`, rank 1) and Audit's review, before any implementation or run)
+
+**Why.**
+* **INJECT (§169) re-runs GPT-2 over the full text in every think pass.** That costs (K + 1)× the input.
+  - On deep ProsQA (about 450 tokens) that is about 17× per item at K16 (note 168-1). It would be prohibitive on GSM8K-length text.
+* **Perceiver (2103.03206) and RIN (2212.11972):** a small latent array repeatedly cross-attends to the raw input and computes on the latents.
+  - The model, not the designer, picks what each step reads. Per-pass compute scales with the number of slots, not the input.
+* **On our stack:**
+  - **Encode once.** The plain text is encoded once (its KV cache fixed, computed before any memory write, so it holds no computed state).
+  - **Each think pass,** M learned slot tokens attend to that cache in every layer, read the memory at pass start, and write it.
+  - The memory stays the only cross-pass state, and the slot-to-input attention is an inspectable read map (C7: "what did pass t read?").
+* **What it tests against INJECT:** whether a narrow, model-directed read (M positions per pass) carries the same serial computation as INJECT's full re-read, at a fraction of the FLOPs on long inputs.
+
+**Design: §155 R's memory and recipe** (DeltaMem-R, top writes, γ 2k → 6k, pass-start reads, W_o fade-in) as the only cross-pass state.
+* **The input** [EOT, the problem text (the bench's reversed-digit " a_1 … a_4 * b_1 … b_n")] is encoded once by GPT-2 with no memory read. Its per-layer KV is kept for the item.
+  - **The encoding is trained, not frozen.** It is GPT-2 itself, and gradients from every slot pass and the decoder flow into it (Audit).
+* **Think pass t:** M = 8 learned slot embeddings (new parameters, initialised as wte(" .") + N(0, 0.02²) noise), at the positions after the input.
+  - Each layer attends to the input's KV and causally to the slots themselves, with a fresh slot cache per pass.
+  - The slots read the memory (pass-start state), then write it from the slot positions (§155's top writes).
+  - Slot KV is discarded after each pass.
+* **The decoder:** [" ="] appended after the input's KV → the 4 + n answer digits (teacher-forced in training, greedy at test). It reads the memory, writes nothing, and attends to no slot position.
+  - **K0 is DIRECT by construction:** the input plus " =" with an empty memory.
+* **Training:** FINAL only, on §161's 4 × n mix (n ~ U{2..5} per batch; gen_operands minus the 4×4 bench test items), with 165-1's curriculum, 48k, RTX 3090.
+* **Arm:** K8 slot 1. EXACT at slot 1 opens s2 / s3.
+  - There is no separate K0 run. §164 DIRECT-MIX (4×4 0.001 / 0.004) is this harness's K0 (the same data and single pass), and §169's K0 is reported beside it.
+
+**Rules (fixed now; `theory/score_s171.py`).**
+* **EXACT(run):** 4×4 ≥ 0.99 at K′ = K. **LENGTH-GENERAL(arm):** ≥ 2 / 3 seeds EXACT with ext_4x8 ≥ 0.90.
+* **THINK-NECESSARY(run), C1:**
+  - 4×4 accuracy at K′ = 0 and K′ = 1 each ≤ 0.5× the accuracy at K (chance ≈ 0, so §169's form holds);
+  - credited only with step-specific skip damage (some pass's skipped write drops accuracy by ≥ 0.2, and some by ≤ 0.05).
+  - The C1 claim also needs §164 DIRECT-MIX's mean 4×4 < 0.95.
+* **CHEAPER-EQUAL vs INJECT (head to head, on the same data):** READ-SLOTS K8 seed-mean ≥ §169 K8's seed-mean − 0.01 on both 4×4 and ext_4x8, at fewer FLOPs per item.
+  - Read only when both arms have ≥ 2 seeds. Otherwise descriptive.
+* **MORE-THINKING (descriptive):** ext_4x8 at K′ = 2K ≥ ext_4x8 at K + 0.05.
+* **Descriptive (C7):**
+  - **the read map:** per pass t, the slots' attention mass (mean over heads, layers 7–12) on each operand digit, on 200 4×4 and 200 4×8 test items (`s171.read_map`);
+  - **read entropy:** the entropy of the slots' attention over input positions, per pass (`s171.read_entropy`). Diffuse reads against digit-focused reads tell whether
+    the slots learned a schedule (Audit).
+  - **read order:** the Spearman ρ between the pass index and the answer column whose operand digits (b_j with a_i, i + j = column) receive the pass's peak mass (`s171.read_order_rho`);
+  - accuracy against K′; skip_pass; compute at 4×4 and 4×8.
+* **Readings:**
+  - **EXACT, LENGTH-GENERAL and THINK-NECESSARY:** a model-directed read carries serial computation across passes. If also CHEAPER-EQUAL, it is the scalable task-agnostic harness, and it becomes the candidate harness for §168 step 2 and §170, by dated notes.
+  - **EXACT but not THINK-NECESSARY:** the slots solve it within one pass.
+  - **Not EXACT where INJECT is:** M narrow reads per pass are too little. A wider M is the obvious next arm (not registered here).
+* **Theory's prediction:**
+  - EXACT likely (§161's memory with a full re-read of short digit strings);
+  - LENGTH-GENERAL uncertain;
+  - the read map ordered by column if the computation is serial.
+
+**Placement.**
+* K8 slot 1 on one 3090: about 15 + 8 × 8 + 8 ≈ 90 tokens per item, about $0.6. s2 / s3 about $1.2.
+* **Implementation (Experiments):** an `--arm readslots` path beside §169's inject path, reusing its memory / decoder plumbing.
+  - eval.json: test_acc, ext_4x6 / 4x7 / 4x8 / 4x16, compute;
+  - `s171`: {acc_by_kprime, ext_4x8_by_kprime, skip_pass, read_map, read_entropy, read_order_rho, compute_4x8};
+  - args: arm "readslots", think_k 8, n_slots 8, shape_mix "2,3,4,5", steps 48000, mem_write "top", write_mix_start / end 2000 / 6000.
+* **Gates:**
+  - step-0 function preservation (K = 8 equals DIRECT at γ = 0);
+  - gradflow into the slot embeddings, through ≥ 2 think passes, and from the slot passes into the input encoding (nonzero, since it is trained);
+  - the decoder attends to no slot position, and slot KV is discarded between passes (an assert on cache contents);
+  - the input encoding performs no memory read;
+  - smoke_plain; Audit's diff review; memcheck at 4×5 training and the 4×16 eval at 2K.
+* Dirs `s171_k8_4x4_s{seed}`. Scorer: `theory/score_s171.py`, committed with this registration.
+
+## 172. PCCoT-PROBE: §149's battery on the GPT-2-small GSM8K latent state of the art (Jacobi-parallel latents), at release (eval only; Audit's 02:00 research lead; roadmap step 7, a C1-qualified GSM8K target; pre-registered 2026-10-09 01:54 EDT, after Literature's facts 2e5fe84a (`docs/LIT_PCCOT_PROBE_2026-10-09.md`) and Audit's review, before any run)
+
+**Why.**
+* **PCCoT** (2506.18582; whynlp/pccot-gpt2) reports 49.48 ± 0.31 on GSM8K-Aug with GPT-2 small: the highest GPT-2 latent number, above the CoT figure it quotes (44.1, taken from CODI; ours is 41.8).
+  - Its 24 latents are updated in parallel for T = 3 Jacobi iterations. T = 0 is pause tokens; T ≥ c is continuous CoT.
+* **No causal analysis of PCCoT exists** (Literature, full-text check).
+* **§149 found no released GPT-2 latent reasoner SERIAL** (SIM-CoT+Coconut PARTIAL, SIM-CoT+CODI BYPASSED).
+  - Whether the best one uses its latents and its iterations is the C1 question for the roadmap's GSM8K step.
+* **Training is not involved** (the user's GSM8K pause covers our training; §149's precedent).
+
+**Model and data.**
+* whynlp/pccot-gpt2: a LoRA adapter on GPT-2 (r 128), c = 24 latents, T = 3, answer prompt "The answer is:".
+  - Loaded through the repo's `models` module (github.com/whyNLP/PCCoT, MIT), greedy decoding.
+* **Test:** `bench/data/gsm8k_aug/test.txt` (1,319 items) through our GSM8K_REPRO harness.
+
+**Rules (fixed now; `theory/score_s172.py`).**
+* **SANITY GATE:** release accuracy within ±2 points of 49.48. A model failing it is not read, and its number is reported.
+* **LATENTS-USED:** accuracy with every latent zeroed after the iterations (the answer pass reads zeros) ≤ 0.5× the release accuracy.
+  - The c = 0 (no-latent) accuracy is reported beside it. This is the bypass check, out of distribution as in GSM8K_REPRO's caveat.
+* **ITERATIONS-USED:** accuracy at T′ = 0 (pause-equivalent) ≤ release − 0.05.
+  - Accuracy at T′ ∈ {0, 1, 2, 3, 4, 6, 8} is the descriptive curve. Their own ablation predicts instability beyond 6.
+* **RHO (C6):**
+  - **The Jacobi map's step ratio:** r_T = ‖z_{T+1} − z_T‖ / ‖z_T − z_{T−1}‖ over the latent block (mean over items), for T = 1..8.
+    EXPANDING if the geometric mean over T = 3..8 is > 1; CONTRACTIVE if it is ≤ 0.28 (our bound, as §149); MARGINAL otherwise.
+  - §149's finite-perturbation ρ (latent block perturbed by ε = 0.1 × its norm at iteration 1, the deviation ratio at each later iteration) is reported beside it.
+* **SERIAL (descriptive; no latent ↔ step alignment by construction):**
+  - Per equation step t ≤ 3, the latent whose ridge probe best reads step t's value is the aligned latent (probe-defined, as §149's codi).
+  - §149's same-template donor swap of that latent, after the final iteration.
+  - Reported as donor-consistent / recipient-consistent with n. BYPASS(t) = recipient-consistent ≥ 0.5. Cells with n < 30 read UNDERPOWERED (149-1).
+* **Readings:**
+  - **LATENTS-USED and ITERATIONS-USED:** the state of the art computes in its latents and across its iterations. SERIAL decides how far: §149's terms, descriptive here.
+  - **ITERATIONS-USED fails:** the gain is pause-like width, not iteration. It is a parallel-compute method with no serial latent use.
+  - **BYPASS at the read steps:** as CODI, the steps are recomputed from the visible question.
+  - **Either way:** the roadmap's GSM8K step gets a C1-qualified target (accuracy and latent use), not just an accuracy one.
+
+**Placement.**
+* Eval only: local card (short) or a brief cloud eval, under $0.5.
+* **Implementation (Experiments):** §149's probe code with a PCCoT loader, a T′ override, latent zeroing, Jacobi-step logging (latent block per iteration) and the ridge alignment.
+  - eval.json: acc_release, acc_by_T {"0".."8"}, acc_latents_zeroed, acc_c0, jacobi_ratio_by_T, rho_perturb_by_iter, serial {t: {donor, recipient, n, latent}}.
+* **Gates:** the sanity gate first; T′ = 3 reproduces the release accuracy exactly.
+* Dir `s172_pccot`. Scorer: `theory/score_s172.py`, committed with this registration.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
