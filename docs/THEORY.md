@@ -10710,6 +10710,14 @@ subspace.**
   - Dirs: the host runs' own (eval.json `halt`), or `eval_s173_halt.json` for post-hoc runs.
 * Scorer: `theory/score_s173.py`, committed with this registration.
 
+**§173 on §171 K8 (2026-10-09 09:05 EDT; descriptive, since the model does not work: fixed-K 4×4 0.004; eval_s173_halt.json; score_s173).** No C5 reading is possible: ADAPTIVE is not read below 0.90, and HALT-EQUAL fails on mean h 13.9 > K. What the halting measures show about the failed model:
+* **The answer does not settle:** under answer2, 73% of 4×4 items are still changing at the 2K cap (mean h 13.9). The decoder's output moves across passes, but is never right.
+* **The memory keeps changing:**
+  - read_0.01 (the decoder's read) and full_0.01 never fall below 1% per pass (100% capped at 16);
+  - delta_0.01 settles late (mean h 14.4–15.1, about half capped).
+* **So "pass-invariant memory reads" is not established.** The read map (the slots' attention over input positions) is pass-invariant, but the memory and the answer are not.
+  - The 1% relative-change test cannot separate the additive state's scale growth (about 1/t per pass) from a change of direction, so the mechanism stays open.
+
 ## 174. MULTI-TASK: one INJECT model on long multiplication and nested expressions together, with no task flag (the user's "is the architecture task agnostic?" in its strongest form; roadmap step 1, task-agnostic input; pre-registered 2026-10-09 02:03 EDT, after Literature's check d122ba5c (`docs/LIT_S171_S174_2026-10-09.md`: new as the combination) and Audit's review, before any implementation or run; launches only after §169 K8 and §170 K8 slot 1 gate)
 
 **Why.**
