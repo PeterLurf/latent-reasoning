@@ -10688,6 +10688,11 @@ subspace.**
 * **Caveat:** each MIX segment brings a new digit pair, so part of its turning is input-driven. The comparison shows what distinct per-pass states look like in a working serial memory, not that identical-input passes could reach them.
 * §177's arms report the same cosines.
 
+**§171 addendum 3b (2026-10-09 09:40 EDT; descriptive).** The direction baseline replicates across all four working serial models (eval_s177_dir.json):
+* consecutive-segment delta cosine medians of 0.48 / 0.56 / 0.46 (MIX s1 / s2 / s3) and 0.48 (§155 R; 4×4 1.0);
+* read medians of 0.72 / 0.72 / 0.68 / 0.80.
+* Against them, the failed think passes sit at ≥ 0.96 from pass 2. The same caveat applies (MIX / R segments bring new input).
+
 ## 172. PCCoT-PROBE: §149's battery on the GPT-2-small GSM8K latent state of the art (Jacobi-parallel latents), at release (eval only; Audit's 02:00 research lead; roadmap step 7, a C1-qualified GSM8K target; pre-registered 2026-10-09 01:54 EDT, after Literature's facts 2e5fe84a (`docs/LIT_PCCOT_PROBE_2026-10-09.md`) and Audit's review, before any run)
 
 **Why.**
