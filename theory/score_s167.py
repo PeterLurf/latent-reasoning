@@ -31,7 +31,7 @@ def point_kind(pt):
     ks = pt.get("k") or {}; rnd = pt.get("random_subspace") or {}; shf = pt.get("shuffled_targets") or {}
     if any((v or 0) > 0.2 for v in shf.values()):
         return "ILLUSION-RISK", None
-    best = max(((int(k), (v or {}).get("iia") or 0) for k, v in ks.items() if int(k) <= 64), default=(None, 0))
+    best = max(((int(k), (v or {}).get("iia") or 0) for k, v in ks.items() if int(k) <= 64), key=lambda x: (x[1], -x[0]), default=(None, 0))   # best IIA (ties -> smaller k); was a tuple max that picked the largest k
     rnd_ok = all((v or 0) <= 0.2 for v in rnd.values()) and bool(rnd)
     un = pt.get("unchanged_target_share")
     nd_raw = (pt.get("necessity_drop") or {}).get(str(best[0])) if best[0] is not None else None
