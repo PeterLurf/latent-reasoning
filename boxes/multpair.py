@@ -1575,7 +1575,7 @@ def main():
         else:
             opt.step(); hist.append(tot)
         if step % a.log_every == 0 or step == a.steps:
-            rec = {"step": step, "loss": float(np.mean(hist)) if hist else None, "c_max": cmax(step / sc, a.task), "p_hard": m.p_hard, "sec": round(time.time() - t0)}; hist = []
+            rec = {"step": step, "loss": float(np.mean(hist)) if hist else None, "c_max": cmax(1e12 if a.post_train_from else step / sc, a.task), "p_hard": m.p_hard, "sec": round(time.time() - t0)}; hist = []
             if a.carrier == "deltamem":                                     # note 147-2 (Audit): the read gains per window
                 rec.update({"g_add": float(torch.exp(m.mem.s_add)), "g_del": float(torch.exp(m.mem.s_del)), "fade": float(m.mem.fade)})
             if a.mem_write and wwin:                                        # §155: write-gradient norm per window; spike vs the last 1k steps' median
