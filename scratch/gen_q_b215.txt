@@ -1,0 +1,3 @@
+# THEORY §168 DEEP-ProsQA step 1 DIRECT (a5d7ff5e; user go via Audit): GPT-2 small, graph + question in one context -> '### ' + answer (Coconut no-CoT, P8-0a), data std seed 2, 24k, bs 64 (--auto_micro at the longest train item), AdamW 1e-4, warm-up 100 + cosine; ship EXTRA_120=the p8data json files; RTX 3090
+# P=1
+boxes/runs_fsq/s168_direct_std_s2 boxes.prosqa168 --data std --seed 2 --auto_micro
