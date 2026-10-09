@@ -1,0 +1,5 @@
+# THEORY §177 (f) kmatch slot 1 (Audit OK 2026-10-09 14:5x; masked single batch, note 177-5; same-host re-time on rq234: 0.700 vs K8 0.608 s/step): nested170 INJECT, K = n + U{0..2} per n-bucket, think_k 10 (memcheck K_max), fast_add, 48k; then the 173-1 package
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s177_kmatch_s1 boxes.nested170 --arm inject --think_k 10 --k_window 0,2 --fast_add --seed 1 --auto_micro --ckpt_every 1000
+boxes/runs_fsq/s177_kmatch_s1_pkg boxes.halt173 --run boxes/runs_fsq/s177_kmatch_s1 --dir177 --bs 125
