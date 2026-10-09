@@ -252,7 +252,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 162 | DELTA-S5: DeltaMem-R on S5 against a measured single-pass boundary (158-2's contrast cell) | **mixed** (LONG MIXED, SHORT BUFFER-LIKE; at equal depth the arms are indistinguishable, so 158-2's depth contrast is not supported); both exact in range, 0.0 at 512 | closed |
 | 163 | SHAPE-MIX-2D: both operand lengths mixed (m, n 2..5), 6×6–8×8 generalisation | **BOUNDED 3/3** (5×5 0.995–0.998; 6×6 0.96–0.98; 8×8 0.19–0.45; 4×8 / 8×4 ≈ 0.98–0.99); 5×5 SERIAL | closed |
 | 164 | MIX-BASELINES: TC-MIX / DIRECT-MIX on §161's mix (like-for-like C2 baselines) | **LATENT BEYOND TEXT ON LENGTH** (TC-MIX anchored ext 0.0 at 4×6+; its CoT stops short); DIRECT-MIX 4×4 ≤ 0.004 (the single pass fails) | closed |
-| 165 | FIXED-CHUNK: the same memory on fixed text chunks plus think passes (task-agnostic segmentation) | registered | **open** |
+| 165 | FIXED-CHUNK: the same memory on fixed text chunks plus think passes (task-agnostic segmentation) | **neither K arm exact on plain text** (K0 / K8 / K16 / K16c1 all 0.0; memory unused): the claim stays structured-input | closed |
 | 166 | STATE-COVERAGE: 1k-step post-training from passed / noise states vs a PLAIN post-train (2507.02782), on §162 LONG and §161 MIX | **not shown**: S5 SP = PLAIN (48 0.9995 / 64 0.988 vs 0.991 / 512 0.0 both; validity gate passes); MULT uninformative (166-3) | closed |
 | 167 | DAS-EDIT: learned-subspace interchange (DAS) on MIX / S5 memories, with illusion controls (C1 edit, C7) | registered | **open** |
 | 168 | DEEP-ProsQA (the user's go): a measured single-pass boundary on deep (3–14) shortcut-free ProsQA, then an INJECT latent arm | registered (step 1 running) | **open** |
@@ -10010,6 +10010,13 @@ equal depth, the two arms are indistinguishable.**
 * The 8k local previews (K16 on the 2070, K16c1 on the 4060) also read 0.0. They are descriptive only.
 * **Gate values (descriptive):** g_add ≈ 5e-4 and g_del ≈ 1.09, as in K0 / K16c1. The working §155 R and §161 MIX models have the same g_add (≈ 2.7e-4), so the additive gate's collapse is
   normal for DeltaMem-R and is not this failure's cause.
+
+**§165 result (2026-10-09 11:34 EDT; slot 1 complete: s165_{k0,k8,k16,k16c1}_4x4_s1, RTX 3090, 48k; score_s165). Neither K arm is exact on plain text: the harness's schedule is doing work, and the claim stays "structured-input latent computation".**
+* **K16 and K8:** 0.0 at 4×4 and every extension, flat at every K′ (0–64) and every skipped write.
+* **K0:** 0.0. **K16c1 (descriptive):** 0.0.
+* The 8k local previews (K16, K16c1) agree (0.0, descriptive).
+* **The memory goes unused,** as in the identical-input think passes of §169 / §171. g_add ≈ 5e-4, as in the working models.
+* **§165 closes.** The fixes for think passes are §176 (training-schedule arms, launched) and §177 (pass-distinguishing arms, gated).
 
 ## 166. STATE-COVERAGE: short post-training with wider initial-state coverage, against the length collapse past training (C6 / C2) (Audit's research pass 16:45; pre-registered 2026-10-08 16:53 EDT, after Theory's check of 2507.02782 (Literature offline since the reboot; title, authors and abstract verified via the arXiv API) and Audit's review, before any implementation or run)
 
