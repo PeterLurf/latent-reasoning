@@ -124,6 +124,8 @@ def main():
             lines.append("%s: pending (s1 %s)" % (arm, runs[1]["status"])); continue
         if arm == "fadetidx":                                               # notes 177-2 / 177-3: SCAFFOLD gate on s177.acc_scaffold_12k
             sc = runs[1].get("acc_scaffold_12k")
+            if isinstance(sc, dict):                                        # defensive: accept {acc, source}
+                sc = sc.get("acc")
             if sc is None:
                 lines.append("%s: pending (scaffold field acc_scaffold_12k missing)" % arm); continue
             if sc < 0.90:
