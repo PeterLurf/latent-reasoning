@@ -20,21 +20,24 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 Messages go through SendMessage. The names "Theory" and "Audit" currently need an identity confirm, pending the user,
 so send to the pipe addresses their messages come from.
 
-## Running now (02:33 2026-10-09; credit ~$100; cap 16 hosts / < $4/h)
+## Running now (03:22 2026-10-09; credit ~$98; cap 16 hosts / < $4/h)
 
 **User rules:** full runs on Vast 3090s (>= 16 GB, checkpointed); local cards short memory-capped jobs only, never idle. smoke_plain before commits
 touching fsq120 / table132 / core. Never edit a module while a deploy is in flight (auto_ship is transitive: fixedchunk / multrow ship multpair,
 deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `vast destroy` aborts at its y/N prompt).
 
-### Vast (6 hosts, ~$1.2/h)
-* b210 §165 K16 + K8 (P=2); b214 §168 DIRECT; b218 §169 K16 + K8 (K8 has `--eval_at 24000` -> eval_24k.json for §174); b219 §169 K0;
-  b220 §170 timing (4 arms x 200 steps; K8 1.64 s/step = ~22 h / 48k); fill_s171 deploying b221 §171 K8 + BLIND (P=2; Audit-approved 02:30).
-* Next: §170 slot 1 queues after b220 timing goes to Audit (K8 line gets `--eval_at 24000`); b215-b217 §168 after the D* note.
-* Model keep patterns now include s165_ / s166_ / s168_-s171_ / s174_ (§173 is post hoc on model.pt).
+### Vast (~8 hosts, ~$1.8/h)
+* b210 §165 K16 + K8; b214 §168 DIRECT; b218 §169 K16 + K8 (K8 `--eval_at 24000`); b219 §169 K0; b221 §171 K8 + BLIND;
+  b222 §170 direct s1 + cot s1 + k0 s1; b223 §170 direct s2 + cot s2; b224 §170 K8 s1 (`--fast_add --eval_at 24000`, note 170-2 step_recover).
+* §170 timing (b220): DIRECT 0.09 / TEXT-COT 0.27 / K8 1.64 / K16 5.83 s/step on a 3090. K16 (~$18) needs the user (Audit) and K8 THINK-NECESSARY first.
+* deltamem.FAST_ADD (6cbdfd9f, Audit-accepted): opt-in `--fast_add` for NEW cells only (numerically equivalent, not bitwise). Report b224's sec/step vs 1.644.
+* Next: §175 STEP-AUX (Theory 8965745e) after the §170 K8 read + n* note (build `--aux_step` / `--aux_fade` in nested170; time before deploy);
+  §173 halt173.py post hoc on each think-pass model as it lands (§165 b210 first); b215-b217 §168 after the D* note.
+* Model keep patterns include s165_ / s166_ / s168_-s171_ / s174_.
 
 ### Local (v2 workers c4060 / c3070 / c2070 <- scratch/c1_backlog_<card>.txt; halt file scratch/<tag>.halt stops a worker)
-* 4060: proto165_k16c1 preview; 3070: §166 S5 eval-only re-runs; 2070: §167 167-3 DAS refits (shared lines with 4060 / 3070 via locks).
-* Built, not yet run: boxes/halt173.py (§173 post hoc -> eval_s173_halt.json; smokes running), §172 PCCoT-PROBE not built.
+* 3070: §172 PCCoT-PROBE full battery (scratch/s172_probe.py; report acc_release to Audit before any C1 numbers); 4060: proto165_k16c1;
+  2070: §167 167-3 DAS refits (shared lines). §166 S5 SP s2 eval-only done (ae4b2ae9).
 * Reboot recovery: memory note latent-reboot-recovery.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
