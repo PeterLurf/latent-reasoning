@@ -11070,6 +11070,16 @@ how many think passes run in training.
 * Arm and GPU class are confounded (the fsq120 basin lesson), so the GPU is recorded per dir. The registered cloud cells are the readings.
 * Any §175 / §176 rule change after a preview has been read is dated "post-preview" and may only tighten.
 
+**Note 176-3 (2026-10-09 11:14 EDT; before any §176 output, previews included, is read; after §169 K8 slot 1 failed). §176's readings when the fixed-K reference fails.**
+* §176's readings assumed fixed K8 is EXACT. It is not (§169 K8 slot 1: 4×4 0.001, memory unused).
+* **Revised readings for this case (no rule thresholds change):**
+  - **An RK / PROG arm EXACT at K′ = 8 reads "RESCUE":** the training method makes INJECT's identical-input think passes trainable. That bears directly on §177's question. Its C2-BEYOND / NO-OVERTHINKING are then read as registered.
+    - C2-RECIPE's comparator (fixed K8's C2-BEYOND in < 2 seeds) holds trivially, and is reported as such.
+  - **An arm not EXACT reads "does not rescue INJECT (fixed K8 also fails)",** replacing "the training method costs in-distribution accuracy".
+* §176's cloud slot 1 was gated on §169 K8 being read, and it now has been. Launching it is a spend decision for Audit (about $2–3 per arm). Its cells are candidate fixes beside §177's arms.
+* The fixed-K post-hoc curve (eval_s176_ref.json) still runs on §169 K8's models (descriptive).
+* score_s176 is updated.
+
 ## 177. PASS-DISTINCT: making identical-input think passes trainable, one registration with arms (pre-registered 2026-10-09 10:18 EDT, after Literature's checks 90486a9b (SCHEDULE-FADE) and 483195dc (arms f / g) and Audit's review, before any implementation or run; **cloud launches gated on the trigger: §169 K8 and §170 K8 both fail**; local 8k-step previews run now and are read by no rule)
 
 **Why.**
