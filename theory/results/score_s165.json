@@ -18,7 +18,116 @@
  "k8": {
   "runs": {
    "1": {
-    "status": "open"
+    "status": "done",
+    "test_4x4": 0.0,
+    "exact": false,
+    "ext_4x8": 0.0,
+    "length_general": false,
+    "ext": {
+     "ext_4x6": 0.0,
+     "ext_4x7": 0.0,
+     "ext_4x8": 0.0,
+     "ext_4x16": 0.0
+    },
+    "acc_by_kprime": {
+     "0": 0.0,
+     "1": 0.0,
+     "4": 0.0,
+     "8": 0.0,
+     "16": 0.0,
+     "32": 0.0
+    },
+    "ext_4x8_by_kprime": {
+     "8": 0.0,
+     "16": 0.0,
+     "32": 0.0
+    },
+    "think_necessary": false,
+    "removal_drop": false,
+    "skip_step_specific": false,
+    "more_thinking": false,
+    "digit_emergence": {
+     "after_input": {
+      "1": 0.967,
+      "2": 0.378,
+      "3": 0.125,
+      "4": 0.107,
+      "5": 0.087,
+      "6": 0.091,
+      "7": 0.118,
+      "8": 0.708
+     },
+     "after_pass_1": {
+      "1": 0.981,
+      "2": 0.386,
+      "3": 0.125,
+      "4": 0.096,
+      "5": 0.095,
+      "6": 0.095,
+      "7": 0.126,
+      "8": 0.705
+     },
+     "after_pass_2": {
+      "1": 0.978,
+      "2": 0.387,
+      "3": 0.127,
+      "4": 0.093,
+      "5": 0.09,
+      "6": 0.093,
+      "7": 0.125,
+      "8": 0.694
+     },
+     "after_pass_4": {
+      "1": 0.665,
+      "2": 0.392,
+      "3": 0.129,
+      "4": 0.124,
+      "5": 0.094,
+      "6": 0.096,
+      "7": 0.124,
+      "8": 0.695
+     },
+     "after_pass_6": {
+      "1": 0.993,
+      "2": 0.384,
+      "3": 0.13,
+      "4": 0.091,
+      "5": 0.1,
+      "6": 0.098,
+      "7": 0.127,
+      "8": 0.693
+     },
+     "after_pass_8": {
+      "1": 0.811,
+      "2": 0.391,
+      "3": 0.133,
+      "4": 0.111,
+      "5": 0.087,
+      "6": 0.095,
+      "7": 0.126,
+      "8": 0.69
+     }
+    },
+    "skip_pass": {
+     "1": 0.0,
+     "2": 0.0,
+     "4": 0.0,
+     "6": 0.0,
+     "8": 0.0
+    },
+    "compute": {
+     "flops": 7452473256.0,
+     "flops_trunk": 7255796736.0,
+     "flops_branch": 196676520.0,
+     "sequential_passes": 19,
+     "lm_head_rows": 8,
+     "tokens_processed": 39,
+     "chunks": 3,
+     "think_passes": 8,
+     "convention": "\u00a798 (boxes.core.Meter); every chunk / think pass fresh; decoder = na + nb KV-cached passes"
+    },
+    "compute_4x8": null,
+    "gpu": "NVIDIA GeForce RTX 3090"
    },
    "2": {
     "status": "open"
@@ -27,8 +136,8 @@
     "status": "open"
    }
   },
-  "gate": null,
-  "verdict": "pending (0 / 3 seeds)",
+  "gate": false,
+  "verdict": "gate closed (s1 0.0 < 0.99)",
   "think_necessary_all": false
  },
  "k0": {

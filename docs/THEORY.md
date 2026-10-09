@@ -10005,6 +10005,11 @@ equal depth, the two arms are indistinguishable.**
   - Theory had not run score_s164.
   - The anchored read can only raise TC-MIX, which works against the latent claim. It is a validity fix, not a favourable choice.
 
+**§165 interim (2026-10-09 09:00 EDT; s165_k8_4x4_s1, RTX 3090, 48k; score_s165).** K8 slot 1 is **0.0 at 4×4 and every extension, flat at every K′ (0–32) and every skipped write. The gate is closed.** K16 is pending (b210).
+* The 8k local previews (K16 on the 2070, K16c1 on the 4060) also read 0.0. They are descriptive only.
+* **Gate values (descriptive):** g_add ≈ 5e-4 and g_del ≈ 1.09, as in K0 / K16c1. The working §155 R and §161 MIX models have the same g_add (≈ 2.7e-4), so the additive gate's collapse is
+  normal for DeltaMem-R and is not this failure's cause.
+
 ## 166. STATE-COVERAGE: short post-training with wider initial-state coverage, against the length collapse past training (C6 / C2) (Audit's research pass 16:45; pre-registered 2026-10-08 16:53 EDT, after Theory's check of 2507.02782 (Literature offline since the reboot; title, authors and abstract verified via the arXiv API) and Audit's review, before any implementation or run)
 
 **Why.**
