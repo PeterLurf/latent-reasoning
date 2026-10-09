@@ -1330,3 +1330,6 @@ PRICE EXCEPTION 2026-10-06 04:58 gen-b41 offer 53010473 RTX 3090 595.71 $0.267: 
 55068280 vast offer 52272580 created 2026-10-09 14:02: label gen-b234, queue scratch/gen_q_b234.txt (logged at create by vdeploy_toy.sh)
 55071751 vast offer 45557884 created 2026-10-09 14:24: label gen-b234, queue scratch/gen_q_b234.txt (logged at create by vdeploy_toy.sh)
 2026-10-09 14:38:04 destroyed 55012106 gen-b216 (manual: §168 NA s1 model md5-fetched 652aab0c; eval OOMed -> local eval-only; drain was waiting on a never-written eval.json)
+55012106 vast | gen_b216 DESTROYED_VERIFIED 2026-10-09 14:39 after verified per-run fetch (); FAILED (no eval.json, logs fetched): boxes/runs_fsq/s168_direct_na_s1
+55046668 vast | gen_b231 DESTROYED_VERIFIED 2026-10-09 14:42 after verified per-run fetch (boxes/runs_fsq/s176_prog_s1); FAILED (no eval.json, logs fetched): boxes/runs_fsq/s176_prog_s1_pkg
+2026-10-09 14:47:11 destroyed 55012583 gen-b217 (manual: §168 NA s2 model md5-fetched ef708d7c49fb3de74eeaeb44b8b289db)
