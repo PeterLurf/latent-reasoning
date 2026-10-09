@@ -10253,6 +10253,14 @@ subspace.**
 * **If 167-1's random-model baseline reads ≤ 0.2,** the in-progress column accumulator after pair 4 is causally carried in a 4-dimensional subspace of the 49,152-d memory.
 * **Pending:** points t = 8 / 12, the random-model baseline, and MIX s1 / s3.
 
+**Note 167-5 (2026-10-09 09:19 EDT; after MIX s2's refit was read (disclosed), before the s1 / s3 refits and every random-model baseline; Audit). How a positive is read; the random-model baseline at small k.**
+* **The 167-3 convergence guard applies to negative readings only, as written:** a point reads NOT-DECOMPOSABLE only if its fit converged, else FIT-FAILURE.
+  - It does not block a positive. A large-k fit that fails to converge (MIX s2 t = 4: train IIA 0.879 at k = 64, 0.712 at k = 2048) does not undo a held-out small-k IIA of 0.92 with null controls.
+* **A positive is read as registered:** the best held-out IIA over k ≤ 64, with necessity checked at that k.
+  - The smallest k meeting the IIA thresholds (IIA ≥ 0.8 and IIA − unchanged share ≥ 0.5) is reported beside it (`k_min_qualifying`) as the compactness reading.
+  - At MIX s2 t = 4 both are k = 4.
+* **167-1's random-model baseline** is taken at k = 4 / 8 / 16 / 64, since the positive sits at small k (Audit). All must be ≤ 0.2. This only tightens the rule.
+
 ## 168. DEEP-ProsQA: graph search past one pass, with a measured single-pass boundary (C1 + C3 on a task that exceeds a pass; the C1-forcing note's option 2(b)) (the user's go via Audit, "approve go ahead on prosqa deep"; pre-registered 2026-10-09 01:35 EDT, after Literature's check dfaf9ed6 (`docs/LIT_DEEP_PROSQA_2026-10-08.md`) and Audit's lead, before any implementation or run)
 
 **Why.**
