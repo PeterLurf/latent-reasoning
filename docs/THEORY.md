@@ -254,7 +254,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 164 | MIX-BASELINES: TC-MIX / DIRECT-MIX on §161's mix (like-for-like C2 baselines) | **LATENT BEYOND TEXT ON LENGTH** (TC-MIX anchored ext 0.0 at 4×6+; its CoT stops short); DIRECT-MIX 4×4 ≤ 0.004 (the single pass fails) | closed |
 | 165 | FIXED-CHUNK: the same memory on fixed text chunks plus think passes (task-agnostic segmentation) | **neither K arm exact on plain text** (K0 / K8 / K16 / K16c1 all 0.0; memory unused): the claim stays structured-input | closed |
 | 166 | STATE-COVERAGE: 1k-step post-training from passed / noise states vs a PLAIN post-train (2507.02782), on §162 LONG and §161 MIX | **not shown**: S5 SP = PLAIN (48 0.9995 / 64 0.988 vs 0.991 / 512 0.0 both; validity gate passes); MULT uninformative (166-3) | closed |
-| 167 | DAS-EDIT: learned-subspace interchange (DAS) on MIX / S5 memories, with illusion controls (C1 edit, C7) | registered | **open** |
+| 167 | DAS-EDIT: learned-subspace interchange (DAS) on MIX / S5 memories, with illusion controls (C1 edit, C7) | **S5 3 / 3 DECOMPOSABLE** (state in <= 64-d subspace); **MULT not DECOMPOSABLE** (s2 t4 only; t12 NOT-DEC 2/3; t4 / t8 undetermined by FIT-FAILURE) | closed |
 | 168 | DEEP-ProsQA (the user's go): a measured single-pass boundary on deep (3–14) shortcut-free ProsQA, then an INJECT latent arm | registered (step 1 running) | **open** |
 | 169 | INJECT (the user's "task agnosticness"): the full problem re-presented every think pass, the memory the only cross-pass state; K16 / K8 / K0 on §161's mix | **neither K arm exact** (K0 0.003, K8 0.001, K16 0.002; flat in K′, memory unused): input re-presentation alone does not suffice at 48k | closed |
 | 170 | NESTED (the user's go): Feng's mod-11 bracketed expressions; a measured DIRECT boundary over n, then INJECT K8 / K0 (K16 gated) against Feng's text CoT; C1 = DEEP + THINK-NECESSARY + SERIAL-NEST, C3 at text CoT's accuracy for less compute | registered | **open** |
@@ -10312,6 +10312,21 @@ subspace.**
 * Train IIA is monotone (converged).
 * **Compactness varies by seed** (16 against 64). The transition sits between k = 8 and 64 in every model, and the S5 state is about 7 bits.
 * §167's MULT arm (MIX s1–s3, t = 4 / 8 / 12) is pending, after the cloud refits' bench-file fix.
+
+**§167 MULT (2026-10-09 17:53 EDT; complete cloud refits of s161_mix_4x4_s1 / s2 / s3: t = 4 / 8 / 12, random-model baseline at k 4 / 8 / 16 / 64; score_s167). The MULT arm is not DECOMPOSABLE: no t has ≥ 2 / 3 models. Converged fits say NOT-DECOMPOSABLE at t = 12, and t = 4 / 8 are undetermined (mostly FIT-FAILURE).**
+
+| model | t = 4 | t = 8 | t = 12 |
+|---|---|---|---|
+| s1 | FIT-FAILURE (best 0.06) | NOT-DECOMPOSABLE (≤ 0.03) | NOT-DECOMPOSABLE (≤ 0.02) |
+| s2 | **DECOMPOSABLE**, k = 4, IIA 0.927 | FIT-FAILURE (0.59 at k 16) | FIT-FAILURE (0.59 at k 8) |
+| s3 | FIT-FAILURE (0.50 at k 8) | FIT-FAILURE (≤ 0.04) | NOT-DECOMPOSABLE (≤ 0.03) |
+
+* **Controls are null everywhere:** random subspace ≤ 0.002 at k ≤ 64; shuffled ≤ 0.004; unchanged 0.0; random-init model 0.0 at k 4–64.
+* **Necessity is high at every k** (0.92–0.99, random about 0), so the in-progress state is necessary throughout. It is not fittable into a compact subspace in most models.
+* **s2's t = 4 positive replicates across GPU class** (the 2070 partial read 0.919 at k = 4, the cloud 3090 0.927), and its random-model baseline now passes. It is a single-model positive.
+* **The large-k fits fail to converge in most models** (train IIA at k = 64 is 0.00–0.02 where k = 4–16 reach 0.1–0.9). FIT-FAILURE is uninformative (167-3), so t = 4 / 8 remain open.
+* **Scorer reporting fix, disclosed (post-data; only weakens the claim):** the arm reading now separates NOT-DECOMPOSABLE from FIT-FAILURE per t, instead of "MULT not decomposable" over all t.
+* **Against S5** (3 / 3 DECOMPOSABLE at ≤ 64): S5's state is compact and causally swappable, while MIX's in-progress multiplication state mostly is not, at k ≤ 64.
 
 ## 168. DEEP-ProsQA: graph search past one pass, with a measured single-pass boundary (C1 + C3 on a task that exceeds a pass; the C1-forcing note's option 2(b)) (the user's go via Audit, "approve go ahead on prosqa deep"; pre-registered 2026-10-09 01:35 EDT, after Literature's check dfaf9ed6 (`docs/LIT_DEEP_PROSQA_2026-10-08.md`) and Audit's lead, before any implementation or run)
 
