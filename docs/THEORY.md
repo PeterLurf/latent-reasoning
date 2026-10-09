@@ -10277,6 +10277,19 @@ subspace.**
   - Each covers the full points (MIX t = 4 / 8 / 12; S5 at l_max / 2) and the random-model baseline at k 4 / 8 / 16 / 64 (167-5).
 * **The cloud files govern §167's readings.** The 09:17 interim's t = 4 numbers (2070) are descriptive and are reported beside the 3090 rerun's t = 4. Same seeds, different GPU class.
 
+**§167 S5 interim (2026-10-09 10:39 EDT; s162_short_s1/eval_das.json, the complete cloud refit with the random-model baseline at k 4 / 8 / 16 / 64; score_s167; S5 is per model, descriptive). SHORT s1 at p* is DECOMPOSABLE: the S5 group state sits causally in an about-16-dimensional subspace of the 49,152-d memory.**
+* **The k-curve (the S5 result):** held-out IIA 0.001 / 0.003 / 0.017 / 0.113 / **0.916 / 0.995** at k = 1 / 2 / 4 / 8 / **16 / 64**.
+  - Train IIA is monotone (0.002 → 0.999), so the fit converged.
+  - k_min_qualifying is 16. The best is k = 64.
+* **Controls all null:**
+  - random subspace 0.0 at every k;
+  - shuffled targets ≤ 0.006;
+  - unchanged-target share 0.0;
+  - **random-init model 0.0 at k 4 / 8 / 16 / 64** (167-1 / 167-5).
+* **Necessity:** 0.89 at k = 16 and 0.97 at k = 64, against a random same-k subspace of 0.0.
+* **For scale:** S5 has 120 states (about 7 bits), and the transition sits between k = 8 and 16.
+* **Pending:** SHORT s2, LONG s2 and the MIX refits (cloud, after the bench-file fix).
+
 ## 168. DEEP-ProsQA: graph search past one pass, with a measured single-pass boundary (C1 + C3 on a task that exceeds a pass; the C1-forcing note's option 2(b)) (the user's go via Audit, "approve go ahead on prosqa deep"; pre-registered 2026-10-09 01:35 EDT, after Literature's check dfaf9ed6 (`docs/LIT_DEEP_PROSQA_2026-10-08.md`) and Audit's lead, before any implementation or run)
 
 **Why.**
