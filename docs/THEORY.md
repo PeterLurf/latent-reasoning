@@ -11453,6 +11453,11 @@ how many think passes run in training.
   - 12k is past the curriculum's full stage (9k) and matches 177-2's own scaffold-gate point (acc_scaffold_12k ≥ 0.90, which is unchanged).
 * The preview stays read by no rule. This is a spend decision, and it tightens nothing and loosens no rule.
 
+**Note 177-6, an update (2026-10-09 16:02 EDT; operational).** A resume from the preview's 8k point was impossible: no optimizer checkpoint survives, and its cosine schedule had ended at 8k. So the gate is read from **proto177_fadetidx12k_s1** instead.
+* It is a fresh run on the (d) cell's own schedule (`--steps 48000 --fade 12000,36000`, seed 1), stopped at 12k (`--stop_at 12000`). That is exactly the cell's first 12k, at p = 0 throughout.
+* At 12k it records full 4×4 exact match at p = 0 and the per-column accuracies. That is 177-6's gate number (≥ 0.5 launches the cell).
+* **Its full 12k checkpoint, optimizer included, is kept.** If the gate passes, the (d) cell resumes from it to 48k instead of repeating the first 12k. The cell is then this run's continuation, and that is recorded in its args.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
