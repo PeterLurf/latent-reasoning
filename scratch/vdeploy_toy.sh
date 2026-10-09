@@ -41,13 +41,19 @@ ID=$(bash "$V" create instance $O --image pytorch/pytorch:2.5.1-cuda12.4-cudnn9-
 sleep 3; rmdir $CAPLOCK 2>/dev/null                                      # the new instance is listed before the next deploy counts
 [ -n "$ID" ] || { echo "CREATE FAILED"; exit 1; }
 echo "$ID vast offer $O created $(date '+%Y-%m-%d %H:%M'): label $LBL, queue $Q (logged at create by vdeploy_toy.sh)" >> scratch/pods.txt
+# STUCK_POLL_BEGIN (Audit 2026-10-09 ~17:16: b240 lost 3 hosts that read cur_state stopped mid image pull) - a poll counts toward STUCK_LOADING only if
+# cur_state is stopped AND actual_status is not loading AND status_msg shows no image-pull progress; the 60-poll (20-min) loop stays the hard cap.
+stuck_poll() { [ "$1" = "stopped" ] && [ "$2" != "loading" ] && ! echo "$3" | grep -qiE "pull|download|extract|waiting"; }
+# STUCK_POLL_END
 for i in $(seq 1 60); do
   j=$(bash "$V" show instance $ID --raw 2>/dev/null)
   H=$(echo "$j" | python -c "import json,sys;d=json.load(sys.stdin);print(d.get('public_ipaddr','').strip())" 2>/dev/null)
   P=$(echo "$j" | python -c "import json,sys;d=json.load(sys.stdin);print(d['ports']['22/tcp'][0]['HostPort'])" 2>/dev/null)
   CS=$(echo "$j" | python -c "import json,sys;d=json.load(sys.stdin);print(d.get('cur_state') or '')" 2>/dev/null)   # 2026-10-08: hosts stuck 'loading' with cur_state stopped
-  if [ "$CS" = "stopped" ]; then NST=$(( ${NST:-0} + 1 )); else NST=0; fi
-  [ "${NST:-0}" -ge 18 ] && { echo "STUCK_LOADING cur_state stopped for 6 min"; echo "INSTANCE $ID ${H:-none} ${P:-none}"; echo "BAD HOST"; exit 2; }   # INSTANCE -> gen_deploy destroys it
+  AS=$(echo "$j" | python -c "import json,sys;d=json.load(sys.stdin);print(d.get('actual_status') or '')" 2>/dev/null)
+  SM=$(echo "$j" | python -c "import json,sys;d=json.load(sys.stdin);print(' '.join((d.get('status_msg') or '').split()))" 2>/dev/null)
+  if stuck_poll "$CS" "$AS" "$SM"; then NST=$(( ${NST:-0} + 1 )); else NST=0; fi
+  [ "${NST:-0}" -ge 18 ] && { echo "STUCK_LOADING cur_state stopped, not loading, no pull progress for 6 min"; echo "INSTANCE $ID ${H:-none} ${P:-none}"; echo "BAD HOST"; exit 2; }   # INSTANCE -> gen_deploy destroys it
   [ -n "$H" ] && [ -n "$P" ] && [ -z "${KR:-}" ] && { ssh-keygen -R "[$H]:$P" > /dev/null 2>&1; KR=1; }   # 2026-10-07 (b156): a recycled ip:port kept an old key; cleared ONCE per new instance (Audit: not per retry)
   [ -n "$H" ] && [ -n "$P" ] && timeout 30 ssh -o StrictHostKeyChecking=accept-new -o ConnectTimeout=15 -i ~/.ssh/runpod_ed25519 -p $P root@$H true 2>/dev/null && break
   sleep 20
