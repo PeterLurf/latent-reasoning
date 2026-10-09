@@ -11519,6 +11519,10 @@ how many think passes run in training.
   - MOVES-MECHANISM is negative.
 * A pass-distinguishing signal was available and was not used. (d) (fade + index; awaiting its 12k scaffold gate) and (f) (step-matched K) are pending.
 
+**§177 (a), a wording correction (2026-10-09 18:18 EDT; Audit).** The near-constant vec_norm_by_pass is **not** evidence that the index was ignored. ‖g ⊙ s̃(t)‖ is about constant by construction (s̃(t) is unit-norm, rescaled), and passes differ in direction, not norm.
+* The evidence for "available but ignored" is the small gain (the per-pass vector is about 2% of the embedding scale), with accuracy flat in K′ and in skip.
+* Pending as a descriptive check: cos(g ⊙ s̃(1), g ⊙ s̃(t)) for t = 2, 4, 8, computed from the model.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
