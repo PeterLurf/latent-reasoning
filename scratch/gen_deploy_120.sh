@@ -11,6 +11,7 @@ auto_ship() {   # Audit 2026-10-07 10:49 (s138 shipped without scratch/restart13
     case "$f" in scratch/*|boxes/*) for b in $(grep -o -E "boxes[./][a-z0-9_]+" "$f" | sed "s|[./]|/|; s|$|.py|" | sort -u); do [ -f "$b" ] && a="$a $b"; done;; esac
   done
   for f in $(grep -v "^#" "$q" | tr " " "\n" | grep -E "^(boxes|bench|scratch)/" | sort -u); do [ -f "$f" ] && a="$a $f"; done   # file arguments (s142 cache, gate.pt)
+  grep -q "^# HOSTPROBE" "$q" && a="$a boxes/nested170.py"                # the on-host speed probe (gen_vast_job.sh) runs §170 INJECT K8
   for t in $(grep -v "^#" "$q" | grep -o -E -- "--task [0-9]x[0-9]" | awk '{print $2}' | sort -u); do   # multiplication bench files
     for f in bench/data/mult_${t}_test.txt bench/data/mult_train/${t}_train.txt; do [ -f "$f" ] && a="$a $f"; done
   done
