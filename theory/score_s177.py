@@ -105,7 +105,7 @@ def nest_run(arm, s, direct_pooled):
     dc = mech.get("delta_cos_2_4") or [None]
     fail = bool(pk is not None and direct_pooled is not None and pk <= direct_pooled + 0.05 and all(v is not None and v >= 0.96 for v in dc))
     out.update({"pooled_3_8": pk, "deep": deep, "think_necessary": tn, "hit": hit,
-                "hit_label": None if not hit else ("HIT (passes distinct)" if mech.get("distinct_passes") else "HIT (passes not distinct)"), "beyond": bool(m912 is not None and m912 >= 0.80), "mean_9_12": m912,
+                "hit_label": None if not hit else {True: "HIT (passes distinct)", False: "HIT (passes not distinct)"}.get(mech.get("distinct_passes"), "HIT (passes unknown)"), "beyond": bool(m912 is not None and m912 >= 0.80), "mean_9_12": m912,
                 "fail": fail, "under_trained": under, "compute_by_n": r.get("compute_by_n")}); out.update(mech)
     return out
 
