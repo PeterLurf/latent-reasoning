@@ -1,0 +1,4 @@
+# THEORY note 177-6: the (d) scaffold at 12k, p = 0 (the 8k preview's ckpts were deleted after its eval and its 8k cosine had ended, so no true resume): a fresh run on the CELL's schedule (--steps 48000 --fade 12000,36000) stopped at 12k = the (d) cell's first 12k exactly; DESCRIPTIVE; gate: full 4x4 at p = 0 >= 0.5 (+ per-column)
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/proto177_fadetidx12k_s1 boxes.inject169 --think_k 4n --fade 12000,36000 --pass_index sin_gain --fast_add --seed 1 --stop_at 12000 --ckpt_every 1000 --auto_micro --bench bench/data/mult_4x4_test.txt
