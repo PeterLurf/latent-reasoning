@@ -223,6 +223,7 @@ def main():
     ap.add_argument("--fade", default="", help="§177 (d): 'start,end' steps of the pair -> full-text ramp p 0 -> 1 (requires --think_k 4n)")
     ap.add_argument("--pass_index", default="", help="§177 (note 177-4): 'sin_gain' = g * the rescaled sinusoid of the absolute pass on the think token ('' = off)")
     ap.add_argument("--bptt_last", default="all", help="§176 RK: 'all' or n (backprop through the last n passes); auto_micro falls back to 8 if K = cap does not fit")
+    ap.add_argument("--stop_at", type=int, default=0, help="train to this step under the --steps schedule, then evaluate (note 177-6: the (d) cell's first 12k)")
     ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt with this run's flags (no training; args_eval.json; model.pt / args.json / log kept)")
     ap.add_argument("--bench", default=os.path.join("bench", "data", "mult_4x4_test.txt")); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); a.arm = "inject"; os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale; FADE = a.think_k == "4n"; K = 16 if FADE else int(a.think_k); DM.FAST_ADD = bool(a.fast_add)
@@ -322,7 +323,7 @@ def main():
             m.think(m.mem.zero_state(128, dev), A0, B0, min(K, 4))
         nr = m.mem.norms[1:]; m.mem.norms = None; r0 = float(torch.stack([d_ / a_.clamp_min(1e-12) for d_, a_ in nr]).median()) if nr else 1.0
         m.mem.s_add.data.fill_(math.log(max(r0, 1e-12))); json.dump({"g_add_init": r0}, open(os.path.join(a.out, "s169_init.json"), "w", newline="\n"))
-    for step in range(step0, a.steps + 1):
+    for step in range(step0, (a.stop_at or a.steps) + 1):                     # --stop_at: the same schedule, stopped early
         for gr in opt.param_groups:
             gr["lr"] = lr_at(a.lr, gr, step, a.steps)
         m.train(); m.mem.fade.fill_(min(1.0, step / max(1, int(500 * sc))))
@@ -341,8 +342,8 @@ def main():
         else:
             opt.step(); hist.append(tot)
         if FADE and step in EVF:                                            # §177 (d): 4x4 at the fade fraction reached (scaffold = p 0 at the fade start)
-            m.eval(); m.p_off = 0; pq = p_at(step); acc_ = float((predict_fade(m, teA, teB, pq, dev, amp, a.eval_bs) == product_digits(teA, teB)).all(1).mean())
-            fade_ev[EVF[step]] = {"step": step, "p": pq, "acc": acc_}; json.dump(fade_ev[EVF[step]], open(os.path.join(a.out, "eval_%dk.json" % (step // 1000)), "w", newline="\n"), indent=1)
+            m.eval(); m.p_off = 0; pq = p_at(step); pr_ = predict_fade(m, teA, teB, pq, dev, amp, a.eval_bs); rep_ = acc_report(pr_, product_digits(teA, teB)); acc_ = rep_["test_acc"]
+            fade_ev[EVF[step]] = {"step": step, "p": pq, "acc": acc_, "acc_by_column": rep_["acc_by_column"]["per_column"]}; json.dump(fade_ev[EVF[step]], open(os.path.join(a.out, "eval_%dk.json" % (step // 1000)), "w", newline="\n"), indent=1)
             print("FADE EVAL", EVF[step], fade_ev[EVF[step]], flush=True); m.train()
         if a.eval_at and step == a.eval_at:                                 # Theory 7caa3a82 (§174's matched budget): accuracy at this step, no checkpoint kept
             m.eval(); m.p_off = 0; P_ = product_digits(teA, teB); xa, xb = gen_operands(np.random.default_rng(14004), a.ext_n, 4), gen_operands(np.random.default_rng(14005), a.ext_n, 8)
@@ -409,7 +410,7 @@ def main():
                        "pass_index": {"gain_norm": float(m.pgain.detach().float().norm()), "scale": float(m.pscale),
                                       "vec_norm_by_pass": {str(t): float(m.pass_vec(t).detach().float().norm()) for t in (1, 2, 4, 8, 16, 32, 64)}}}
         if FADE:                                                            # note 177-3: acc_scaffold_12k (p 0, pair inputs, K = 4n); acc_by_p at the steps p reaches
-            pe = p_at(a.steps)
+            pe = p_at(a.stop_at or a.steps)
             res["s177"].update({"acc_scaffold_12k": (fade_ev.get("scaffold") or {}).get("acc"), "acc_by_p": {k_: v_["acc"] for k_, v_ in fade_ev.items() if k_ != "scaffold"},
                                 "fade_evals": fade_ev, "rule_k_by_size": {"4x4": 16, "4x6": 24, "4x7": 28, "4x8": 32, "4x16": 64},
                                 "acc_at_end_p": {"p": pe, "acc": float((predict_fade(m, teA, teB, pe, dev, amp, bs) == Pte).all(1).mean())}})
