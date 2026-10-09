@@ -197,13 +197,53 @@ def halt_fields(kind, m, a, dev, amp, n_items=1000, bs=250, bench=os.path.join("
     return halt, fixed, by_t, nn
 
 
+@torch.no_grad()
+def dir_fields(kind, m, a, dev, amp, n_items=500, bs=250, bench=os.path.join("bench", "data", "mult_4x4_test.txt")):
+    """§177 direction diagnostic (Theory, descriptive): on n_items 4x4 bench items, per pass t = 1..2K the mean over items of cos(x_t, x_{t-1}) for
+    x = r (the decoder's memory read at its first query, as read_0.01), Sd (the flattened delta-head state) and Sa (the flattened additive state).
+    M_0 is the zero state (§169 / §171) or the post-input state (§165); a cosine against a zero vector is skipped (counted in n_by_t)."""
+    assert kind != "nested", "the §177 diagnostic is registered on the 4x4 multiplication models"
+    K = int(a["think_k"]); T = 2 * K; ad = MultAdapter(kind, m, a, dev); teA, teB = load_bench(bench if os.path.isabs(bench) else os.path.join(ROOT, bench))
+    A, B = teA[:n_items], teB[:n_items]; acc = {k_: {t: [] for t in range(1, T + 1)} for k_ in ("read", "delta", "add")}
+
+    def cos(x, y):
+        nx, ny = x.norm(dim=1), y.norm(dim=1); ok = (nx > 0) & (ny > 0)
+        return ((x * y).sum(1)[ok] / (nx[ok] * ny[ok])).cpu().numpy()
+    for i in range(0, len(A), bs):
+        ch = (A[i:i + bs], B[i:i + bs])
+        with ReadTap() as tap, amp_ctx(amp):
+            S, c = ad.init(ch); prev = None
+            for t in range(T + 1):
+                if t:
+                    S = ad.step(S, c)
+                tap.arm(); _, rpos = ad.decode(S, c); tap.on = False
+                x = tap.x[:, -1] if rpos is None else tap.x[torch.arange(tap.x.shape[0], device=dev), torch.tensor(rpos, device=dev)]
+                cur = {"read": read_vec(m.mem, x, S).float(), "delta": S[:, DM.H_ADD:].float().flatten(1), "add": S[:, :DM.H_ADD].float().flatten(1)}
+                if prev is not None:
+                    for k_ in cur:
+                        acc[k_][t].append(cos(cur[k_], prev[k_]))
+                prev = cur
+    out = {}
+    for k_, nm in (("read", "read_cos"), ("delta", "delta_cos"), ("add", "add_cos")):
+        out[nm] = {str(t): (float(np.concatenate(v).mean()) if sum(len(x_) for x_ in v) else None) for t, v in acc[k_].items()}
+        out[nm.replace("_cos", "_n_by_t")] = {str(t): int(sum(len(x_) for x_ in v)) for t, v in acc[k_].items()}
+    out["n_items"] = int(len(A)); out["cap"] = T
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--n", type=int, default=1000); ap.add_argument("--bs", type=int, default=250)
     ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", default=None)
-    ap.add_argument("--bench", default=os.path.join("bench", "data", "mult_4x4_test.txt"))
+    ap.add_argument("--bench", default=os.path.join("bench", "data", "mult_4x4_test.txt")); ap.add_argument("--dir177", action="store_true", help="§177 direction diagnostic only")
     o = ap.parse_args(); dev = o.device; t0 = time.time()
     amp = None if (o.fp32 or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
     kind, m, a = load_model(o.run, dev); K = int(a["think_k"]); T = 2 * K; assert K >= 1
+    if o.dir177:                                                            # §177 (Theory): the direction diagnostic -> eval_s177_dir.json
+        r_ = dir_fields(kind, m, a, dev, amp, min(o.n, 500), o.bs, o.bench)
+        r_.update({"run": o.run.replace(os.sep, "/"), "kind": kind, "think_k": K, "eval_dtype": str(amp), "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
+                   "sec": round(time.time() - t0), "def": "per pass t: mean over items of cos(x_t, x_{t-1}); r = the decoder's memory read at its first query (as read_0.01), "
+                   "delta / add = the flattened delta-head / additive-head state (boxes/halt173.dir_fields)"})
+        json.dump(r_, open(o.out or os.path.join(o.run, "eval_s177_dir.json"), "w", newline="\n"), indent=1); print("DONE dir177", o.run, flush=True); return
     halt, fixed, by_t, nn = halt_fields(kind, m, a, dev, amp, o.n, o.bs, o.bench)
     res = {"run": o.run.replace(os.sep, "/"), "kind": kind, "think_k": K, "cap": T, "eps": EPS, "halt": halt, "halt_fixed_k": fixed, "acc_by_t": by_t, "n": nn,
            "eval_dtype": str(amp), "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0),

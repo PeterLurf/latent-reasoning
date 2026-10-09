@@ -383,5 +383,5 @@
 5.0 boxes/runs_fsq/proto165_k16_s1_2070/eval.json python -c "import json,sys; sys.exit(0 if json.load(open('D:/drain_tmp/mem165_2070/mem_check.json'))['peak_gib'] <= 5.0 else 1)" && python -u -m boxes.fixedchunk --chunk_k 4 --think_k 16 --seed 1 --micro 4 --eval_bs 50 --steps 8000 --ckpt_every 2000 --probe_n_fit 3000 --ext_n 300 --device {DEV} --out boxes/runs_fsq/proto165_k16_s1_2070 --resume boxes/runs_fsq/proto165_k16_s1_2070/ckpt_last.pt
 # 2026-10-09 02:20:07 Experiments: 2070 idle -> shares the §167 167-3 refits with the 4060/3070 (identical lines = shared locks)
 # 2026-10-09 05:3x OOM on the 2070 (fp32; rc 1 at 04:51, log logs/c1_bl_c2070_boxes_runs_fsq_s162_long_s2_eval_das.json.log) -> 4060 / 3070 only: 5.0 boxes/runs_fsq/s162_long_s2/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s162_long_s2
-5.0 boxes/runs_fsq/s161_mix_4x4_s2/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s161_mix_4x4_s2
-5.0 boxes/runs_fsq/s162_short_s2/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s162_short_s2
+# 2026-10-09 09:5x MOVED TO CLOUD (k = 2048 OOMs under the 6 GiB cap; b226 / b227): 5.0 boxes/runs_fsq/s161_mix_4x4_s2/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s161_mix_4x4_s2
+# 2026-10-09 09:5x MOVED TO CLOUD (k = 2048 OOMs under the 6 GiB cap; b226 / b227): 5.0 boxes/runs_fsq/s162_short_s2/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s162_short_s2
