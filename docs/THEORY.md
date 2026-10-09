@@ -10747,6 +10747,22 @@ subspace.**
 * **Against §149:** like CODI (BYPASSED), PCCoT shows no localised, swappable step state. Unlike the CODI family, it depends strongly on its latent iterations (0.13 → 0.49).
 * **For the roadmap's GSM8K step:** a C1-qualified target needs what PCCoT lacks: a localised, causally swappable intermediate state, and accuracy that does not fall with extra iterations (C2).
 
+**Note 172-1 (2026-10-09 09:58 EDT; a descriptive extension of the closed §172, defined before it runs; eval only). Distributed or absent: multi-latent and whole-block swaps.**
+* **Why:** §172's one-latent swap left the recipient's answer at 0.98–1.0, but the ridge alignment was weak (R² ≤ 0.12). "Step values not localised" and "step values absent (recomputed from the question)" are not separated.
+* **The swaps:** on §149's same-template pairs (§172's funnel) at t = 1 and t = 2, after the final Jacobi iteration, swap the donor's
+  - top-m latents by step-t ridge R² (m ∈ {1, 4, 8}), and
+  - all 24 latents (the whole block).
+* **Recorded per (t, m), with n:**
+  - recipient-consistent (the recipient's own answer);
+  - hybrid (the recipient's chain with step t := the donor's value);
+  - donor-full (the donor's own answer).
+  - A random-pair whole-block swap (a different template) is the null for donor-full.
+* **Readings (descriptive):**
+  - **Whole-block donor-full ≥ 0.5** (above the null): the latent block carries the solution, distributed. §172's one-latent null was a localisation null.
+  - **Whole-block recipient-consistent ≥ 0.5:** the answer is recomputed from the visible question, which reads BYPASS at the block level, as CODI's.
+  - **Hybrid rising with m:** step t's value sits in a few latents that the ridge probe ranks poorly.
+* It does not reopen §172's rules.
+
 ## 173. CONV-HALT: convergence-halted think passes as an eval-only readout on the think-pass models (C5; roadmap step 3, halting; Audit's point and Literature's scout 589e6eb5 §3; pre-registered 2026-10-09 01:57 EDT, after Audit's review (the answer-settling rule is Audit's), before any §165 K16 / K8, §169, §170 or §171 output is read)
 
 **Why.**
