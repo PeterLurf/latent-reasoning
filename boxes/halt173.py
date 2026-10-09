@@ -231,12 +231,55 @@ def dir_fields(kind, m, a, dev, amp, n_items=500, bs=250, bench=os.path.join("be
     return out
 
 
+@torch.no_grad()
+def dir_pair_fields(run, dev, amp, n_items=500, bs=125, bench=os.path.join("bench", "data", "mult_4x4_test.txt")):
+    """§177 direction baseline on the WORKING pair-segment models (Theory: boxes.multpair --carrier deltamem, e.g. §161 MIX / §155 R): each of the
+    n^2 + 1 = 17 segments (16 pairs in column order, then the flush) is one pass; per segment t = 1..17 the mean over n_items 4x4 bench items of
+    cos(x_t, x_{t-1}) for x = r (the memory read of M_t at the flush segment's " =" query: the residual entering the read there does not depend on
+    the memory, so one fixed query per item, as read_0.01's first-query read), Sd and Sa (flattened delta / additive state). Built as das167.MultFam."""
+    import boxes.multpair as MP
+    from boxes.multcol import load_bench as lb_
+    a = json.load(open(os.path.join(run, "args.json"))); assert a.get("family") == "mult_pair" and a.get("carrier") == "deltamem", "a pair-segment DeltaMem run"
+    m = MP.MultDelta(s5.load_gpt2(dev), MP.PairFam(), a.get("mem_layer", 6), a.get("mem_write")).to(dev); m.add_reset = a.get("add_reset"); m.cidx_off = None; m.cidx_r = None
+    m.load_state_dict(torch.load(os.path.join(run, "model.pt"), map_location=dev)); m.eval()
+    teA, teB = lb_(bench if os.path.isabs(bench) else os.path.join(ROOT, bench)); A, B = teA[:n_items], teB[:n_items]; pairs, col, emit = MP.schedule(4, 4); T = len(pairs)
+    acc = {k_: {t: [] for t in range(1, T + 1)} for k_ in ("read", "delta", "add")}
+
+    def cos(x, y):
+        nx, ny = x.norm(dim=1), y.norm(dim=1); ok = (nx > 0) & (ny > 0)
+        return ((x * y).sum(1)[ok] / (nx[ok] * ny[ok])).cpu().numpy()
+    for i in range(0, len(A), bs):
+        sl = slice(i, i + bs); MP.set_ops(m, A[sl], B[sl], dev); S = m.start(len(A[sl]), dev)
+        with ReadTap() as tap, amp_ctx(amp):
+            tap.arm(); m.step(S, T - 1); tap.on = False; xq = tap.x[:, -1]   # the flush segment's " =" query (memory-independent)
+            prev = None
+            for t in range(T):
+                _, S = m.step(S, t)
+                cur = {"read": read_vec(m.mem, xq, S).float(), "delta": S[:, DM.H_ADD:].float().flatten(1), "add": S[:, :DM.H_ADD].float().flatten(1)}
+                if prev is not None:
+                    for k_ in cur:
+                        acc[k_][t + 1].append(cos(cur[k_], prev[k_]))
+                prev = cur
+    out = {}
+    for k_, nm in (("read", "read_cos"), ("delta", "delta_cos"), ("add", "add_cos")):
+        out[nm] = {str(t): (float(np.concatenate(v).mean()) if sum(len(x_) for x_ in v) else None) for t, v in acc[k_].items()}
+        out[nm.replace("_cos", "_n_by_t")] = {str(t): int(sum(len(x_) for x_ in v)) for t, v in acc[k_].items()}
+    out.update({"n_items": int(len(A)), "segments": T, "segment_def": "t = 1..16 the pairs in column order, t = 17 the flush; x_0 = the start state (zero)"})
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--n", type=int, default=1000); ap.add_argument("--bs", type=int, default=250)
     ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", default=None)
     ap.add_argument("--bench", default=os.path.join("bench", "data", "mult_4x4_test.txt")); ap.add_argument("--dir177", action="store_true", help="§177 direction diagnostic only")
     o = ap.parse_args(); dev = o.device; t0 = time.time()
     amp = None if (o.fp32 or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
+    a_ = json.load(open(os.path.join(o.run, "args.json")))
+    if o.dir177 and a_.get("family") == "mult_pair":                        # §177 baseline on the working pair-segment models (Theory)
+        r_ = dir_pair_fields(o.run, dev, amp, min(o.n, 500), min(o.bs, 125), o.bench)
+        r_.update({"run": o.run.replace(os.sep, "/"), "kind": "multpair", "eval_dtype": str(amp), "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
+                   "sec": round(time.time() - t0)})
+        json.dump(r_, open(o.out or os.path.join(o.run, "eval_s177_dir.json"), "w", newline="\n"), indent=1); print("DONE dir177 pair", o.run, flush=True); return
     kind, m, a = load_model(o.run, dev); K = int(a["think_k"]); T = 2 * K; assert K >= 1
     if o.dir177:                                                            # §177 (Theory): the direction diagnostic -> eval_s177_dir.json
         r_ = dir_fields(kind, m, a, dev, amp, min(o.n, 500), o.bs, o.bench)
