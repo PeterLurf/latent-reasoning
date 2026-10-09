@@ -1,0 +1,12 @@
+{
+ "checks": [
+  {
+   "micro": 1,
+   "peak_gib": 5.594797134399414
+  }
+ ],
+ "micro": 1,
+ "peak_gib": 5.594797134399414,
+ "train_shape": "4x5",
+ "eval_shape": "4x16 at K' = 32"
+}
