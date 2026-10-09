@@ -78,8 +78,12 @@ def main():
         ts = set.intersection(*[set(v["points"]) for v in done]) if done else set()
         dec = sorted(t for t in ts if sum(1 for v in done if v["points"][t]["kind"] == "DECOMPOSABLE") >= 2)
         ill = sorted(t for t in ts if any(v["points"][t]["kind"] == "ILLUSION-RISK" for v in done))
+        per_t = {t: {kd: sum(1 for v in done if v["points"][t]["kind"].startswith(kd)) for kd in ("DECOMPOSABLE", "NOT-DECOMPOSABLE", "FIT-FAILURE", "INTERMEDIATE")} for t in sorted(ts, key=int)}
+        nd = sorted((t for t in ts if per_t[t]["NOT-DECOMPOSABLE"] >= 2), key=int)
+        und = sorted((t for t in ts if t not in dec and t not in nd), key=int)   # note 167-3: FIT-FAILURE is uninformative, so these t are undetermined
         rd = ("DECOMPOSABLE (MULT, >= 2 / 3 models) at pairs %s: the in-progress sum is causally carried in a compact subspace; the C1 / C7 edit exists beyond the "
-              "probe direction" % dec) if dec else "MULT not decomposable at k <= 64 (whole-state SERIAL only)"
+              "probe direction" % dec) if dec else ("MULT: DECOMPOSABLE not shown (needs >= 2 / 3 at one t); NOT-DECOMPOSABLE (>= 2 / 3 converged fits) at t %s; "
+                                                    "undetermined (FIT-FAILURE uninformative, 167-3) at t %s; per t %s" % (nd, und, per_t))
         if ill:
             rd += "; ILLUSION-RISK at %s (no reading there)" % ill
     res["reading_mult"] = rd
