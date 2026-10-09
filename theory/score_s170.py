@@ -21,7 +21,7 @@ import os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 R = os.path.join(ROOT, "boxes", "runs_fsq")
-N_STAR_FIXED = None  # set by the dated boundary note's commit (from DIRECT alone); None = blinded, DIRECT only
+N_STAR_FIXED = 3  # note 170-3 (from DIRECT alone: s1 3, s2 3); was None = blinded, DIRECT only
 CH = 1.0 / 11
 NS = list(range(1, 17))
 KARMS = {"k8": 8, "k16": 16, "k0": 0}

@@ -10487,6 +10487,14 @@ subspace.**
   - Trained on 4,000 training-distribution items and tested on 1,000 test items at n ≤ 8, per pass t ≤ n.
 * It is descriptive and does not enter §170's rules. §170's blinding applies to it.
 
+**Note 170-3 (2026-10-09 07:36 EDT; the n* boundary, fixed from DIRECT alone before any INJECT or TEXT-COT output is read; score_s170 in blinded mode). n* = 3: the single pass solves 1–2 operators and fails from 3, reading 0.14–0.16 by n 7–8 (chance 0.09).**
+* **DIRECT accuracy by n (1,000 test items per n; chance 1/11):**
+  - s1: 0.998 / 0.981 / **0.635** / 0.430 / 0.254 / 0.181 / 0.144 / 0.154 at n = 1..8; 0.105–0.140 at n 9–16
+  - s2: 0.991 / 0.987 / **0.750** / 0.533 / 0.349 / 0.232 / 0.153 / 0.164 at n = 1..8; 0.102–0.140 at n 9–16
+* **Per seed, n*_s** (the smallest n with accuracy < 0.90): s1 3, s2 3. **n* = 3** (the seeds agree, so it is not uncertain).
+* **Consequences (§170's rules):** n* < 7, so the 1..8 training range holds 6 sizes past the single pass (n 3..8) and no deeper range is needed. The pooled set for DEEP / THINK-NECESSARY is n 3..8. DEEP needs ≥ 0.90 at every n in 3..8, where DIRECT reads 0.14–0.75. §174 and §175 read n* = 3 through score_s170.
+* `score_s170.N_STAR_FIXED = 3` is set in this commit. INJECT and TEXT-COT are read only after it.
+
 ## 171. READ-SLOTS: think passes in which a few learned slots read the once-encoded input and write the memory (a Perceiver / RIN-style task-agnostic read; the user's "creating new methodologies and architectures for task agnostic" via Audit; roadmap steps: task-agnostic input, and scale (long inputs); pre-registered 2026-10-09 01:54 EDT, after Literature's scout 589e6eb5 (`docs/LIT_TASK_AGNOSTIC_SCOUT_2026-10-09.md`, rank 1) and Audit's review, before any implementation or run)
 
 **Why.**
