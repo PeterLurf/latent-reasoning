@@ -6,6 +6,9 @@
 # 2026-10-09 09:2x Experiments (Audit): §167 refits on §162 S5 OOMed at fit batch 64 under the 6 GiB cap -> gradient accumulation (--fit_micro; effective batch 64 kept)
 # 2026-10-09 09:5x MOVED TO CLOUD (k = 2048 OOMs under the 6 GiB cap; b226 / b227): 5.0 boxes/runs_fsq/s162_long_s2/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s162_long_s2 --fit_micro 4
 # 2026-10-09 09:5x MOVED TO CLOUD (k = 2048 OOMs under the 6 GiB cap; b226 / b227): 5.0 boxes/runs_fsq/s162_short_s2/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s162_short_s2 --fit_micro 2
+# 2026-10-09 09:4x Experiments: descriptive §173 halt + §177 direction on §171 BLIND (fillers while the cards are idle)
+3.0 boxes/runs_fsq/s171_k8blind_4x4_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s171_k8blind_4x4_s1 --bs 100 --device {DEV}
+3.0 boxes/runs_fsq/s171_k8blind_4x4_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s171_k8blind_4x4_s1 --dir177 --bs 100 --device {DEV}
 4.0 boxes/runs_fsq/s171_k8_4x4_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s171_k8_4x4_s1 --bs 100 --device {DEV}
 3.0 boxes/runs_fsq/s170_cot_s1/eval.json python -u -m boxes.nested170 --arm textcot --seed 1 --eval_only --cot_eval_bs 32 --device {DEV} --out boxes/runs_fsq/s170_cot_s1
 3.0 boxes/runs_fsq/s170_cot_s2/eval.json python -u -m boxes.nested170 --arm textcot --seed 2 --eval_only --cot_eval_bs 32 --device {DEV} --out boxes/runs_fsq/s170_cot_s2
