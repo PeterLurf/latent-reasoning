@@ -30,8 +30,12 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
 * b210 §165 K16 + K8; b214 §168 DIRECT; b218 §169 K16 + K8 (K8 `--eval_at 24000`); b219 §169 K0; b221 §171 K8 + BLIND;
   b222 §170 direct s1 + cot s1 + k0 s1; b223 §170 direct s2 + cot s2; b224 §170 K8 s1 (`--fast_add --eval_at 24000`, note 170-2 step_recover).
 * §170 timing (b220): DIRECT 0.09 / TEXT-COT 0.27 / K8 1.64 / K16 5.83 s/step on a 3090. K16 (~$18) needs the user (Audit) and K8 THINK-NECESSARY first.
-* deltamem.FAST_ADD (6cbdfd9f, Audit-accepted): opt-in `--fast_add` for NEW cells only (numerically equivalent, not bitwise). Report b224's sec/step vs 1.644.
-* Next: §175 STEP-AUX (Theory 8965745e) after the §170 K8 read + n* note (build `--aux_step` / `--aux_fade` in nested170; time before deploy);
+* deltamem.FAST_ADD (6cbdfd9f): opt-in `--fast_add` for NEW cells (numerically equivalent). Same-host A/B (b225): -17 % K8 / -14 % K16; hosts differ ~2x.
+* HOST PROBE (dd5d88dc, Audit): put `# HOSTPROBE` on every long think-pass queue (169/170 K8 K16, 171 s2/s3, 175, 176, 168 step 2); slow hosts -> rc 9 ->
+  requeue_watch (restarted 05:28; it was not running) requeues + excludes the IP. K16 ~ $8 (34 h) with the probe; goes to the user via Audit.
+* Built, gated, Audit-approved, waiting for Theory's go: §175 STEP-AUX (nested170 --aux_step 1.0 --aux_fade 36000,48000 --eval_at 36000; dir s175_auxk8_s1);
+  §176 RAND-K (inject169 --rand_k 7,0.5,32 / --prog 8,8, --fast_add, think_k 8; dirs s176_rk_s1 / s176_prog_s1); scratch/s176_ref.py on each §169 K8 model.
+* Next: §175 / §176 on Theory's go (time them first);
   §173 halt173.py post hoc on each think-pass model as it lands (§165 b210 first); b215-b217 §168 after the D* note.
 * Model keep patterns include s165_ / s166_ / s168_-s171_ / s174_.
 
