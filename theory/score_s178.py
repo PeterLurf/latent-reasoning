@@ -74,6 +74,11 @@ def main():
         rd = "pending (K0-scratch s1 %s; K8-scratch done %d)" % (k0.get("status"), len(done))
     else:
         nu = sum(1 for v in done if v["uses_passes"]); nh = sum(1 for v in done if v["harness_blocks"])
+        if k0p < CH + 0.1 and all((v.get("pooled") or 0) < CH + 0.1 for v in done):   # note 178-1
+            res["reading"] = rd = "UNINFORMATIVE: the scratch model does not learn nested at 96k (K0 %.3f, K8 %s pooled, chance %.3f)" % (
+                k0p, [round(v["pooled"], 3) for v in done], CH)
+            print("READING:", rd); json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s178.json"), "w", newline=chr(10)), indent=1, default=float)
+            return
         tag = "slot 1, descriptive" if len(done) < 2 else "%d / %d seeds" % (len(done), len(done))
         if nu == len(done) and pre_gap < 0.15:
             rd = "PRETRAINING-OR-CAPACITY (%s): from scratch the passes are used (gap %s); pretrained §170 K8's gap is %.3f" % (tag, [round(v["gap_over_k0"], 3) for v in done], pre_gap)

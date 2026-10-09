@@ -80,7 +80,7 @@ def mult_run(arm, s):
     rem = bool(t and a0 is not None and a1 is not None and a0 <= 0.5 * t and a1 <= 0.5 * t)
     sk = [t - v for v in (x.get("skip_pass") or {}).values() if isinstance(v, (int, float))] if t is not None else []
     out.update({"test_4x4": t, "ext_4x8": e, "exact": bool((t or 0) >= 0.99), "length_general": bool((t or 0) >= 0.99 and (e or 0) >= 0.90),
-                "think_necessary": bool(rem and sk and max(sk) >= 0.2 and min(sk) <= 0.05), "acc_by_p": x.get("acc_by_p"), "acc_scaffold_12k": x.get("acc_scaffold_12k"),
+                "think_necessary": (None if (t or 0) < 0.1 else bool(rem and sk and max(sk) >= 0.2 and min(sk) <= 0.05)), "acc_by_p": x.get("acc_by_p"),   # 170-5 "acc_scaffold_12k": x.get("acc_scaffold_12k"),
                 "more_thinking": None if e8.get("2K") is None or e is None else bool(e8["2K"] >= e + 0.05)})
     out.update(mechanism(d, "mult")); return out
 
@@ -96,6 +96,8 @@ def nest_run(arm, s, direct_pooled):
     sk = [S170.pooled(v, 3) for v in (x.get("skip_pass") or {}).values() if isinstance(v, dict)]
     drops = [pk - v for v in sk if v is not None] if pk is not None else []
     tn = rem   # note 170-4: (f) / (g) have index-free identical-input passes, so THINK-NECESSARY is removal only
+    if pk is None or pk - CH < 0.1:                                       # note 170-5: a display guard near chance (cannot change a verdict: HIT needs DEEP)
+        tn = None
     deep = all((S170.acc(ab, n) or 0) >= 0.90 for n in range(3, 9))
     mech = mechanism(d, "nest")
     hit = bool(deep and tn)   # note 177-1: DISTINCT-PASSES qualifies a HIT, it is not a conjunct
