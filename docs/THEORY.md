@@ -10261,6 +10261,16 @@ subspace.**
   - At MIX s2 t = 4 both are k = 4.
 * **167-1's random-model baseline** is taken at k = 4 / 8 / 16 / 64, since the positive sits at small k (Audit). All must be ≤ 0.2. This only tightens the rule.
 
+**Note 167-6 (2026-10-09 09:19 EDT; a scorer bug, disclosed; found while adding 167-5's readout, before any random-model baseline). score_s167's best k was a tuple maximum.**
+* `best = max((k, iia), …)` compared k first, so it always picked the largest fitted k ≤ 64. The rule's IIA and necessity checks were then made at k = 64, not at the best IIA.
+  - The registered text reads "fitted IIA ≥ 0.8 at some k ≤ 64".
+  - At MIX s2 t = 4 the bug gave best (64, 0.655) instead of (4, 0.919), so the positive could never have read DECOMPOSABLE.
+* **Fixed:** best = the highest held-out IIA over k ≤ 64 (ties to the smaller k), which is the registered intent. Synthetic check on s2's point:
+  - INTERMEDIATE as is;
+  - DECOMPOSABLE with a passing random-model baseline;
+  - INTERMEDIATE if that baseline fails at k = 4.
+* **Earlier readings are unaffected.** MIX s3's old fit was read FIT-FAILURE through the NOT-DECOMPOSABLE branch, which uses k = 64's IIA, not best. The interim quotes were read from the raw files.
+
 ## 168. DEEP-ProsQA: graph search past one pass, with a measured single-pass boundary (C1 + C3 on a task that exceeds a pass; the C1-forcing note's option 2(b)) (the user's go via Audit, "approve go ahead on prosqa deep"; pre-registered 2026-10-09 01:35 EDT, after Literature's check dfaf9ed6 (`docs/LIT_DEEP_PROSQA_2026-10-08.md`) and Audit's lead, before any implementation or run)
 
 **Why.**
