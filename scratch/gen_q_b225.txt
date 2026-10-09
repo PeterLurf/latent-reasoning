@@ -1,0 +1,6 @@
+# Audit 2026-10-09: same-host A/B of deltamem.FAST_ADD on §170 INJECT (loop vs --fast_add), K8 and K16, 200 steps each, solo, one RTX 3090 (~$0.15); for the K16 projection
+# P=1
+boxes/runs_fsq/s170_timeab_k8_loop boxes.nested170 --arm inject --think_k 8 --time_steps 200 --auto_micro
+boxes/runs_fsq/s170_timeab_k8_fast boxes.nested170 --arm inject --think_k 8 --time_steps 200 --auto_micro --fast_add
+boxes/runs_fsq/s170_timeab_k16_loop boxes.nested170 --arm inject --think_k 16 --time_steps 200 --auto_micro
+boxes/runs_fsq/s170_timeab_k16_fast boxes.nested170 --arm inject --think_k 16 --time_steps 200 --auto_micro --fast_add

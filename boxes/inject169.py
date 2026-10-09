@@ -120,6 +120,26 @@ def colsum_cls(Kf, Af, Bf, Ks, As, Bs, dev):
     return out
 
 
+def sample_k(rng_k, RK, PG, bptt_last, K):
+    """§176: this batch's think passes -> ((passes without grad, passes with grad), {histogram key: drawn value}); fixed K -> ((0, K), {}).
+    RK = [rbar, sigma, cap]: K = 1 + Poisson(e^tau), tau ~ N(log rbar - sigma^2 / 2, sigma), K <= cap (bptt_last 'all' or n: the last n with grad).
+    PG = [k1max, k2max]: k1 ~ U{0..k1max} without grad, k2 ~ U{1..k2max} with grad. rng_k is its own stream (independent of the operand draws)."""
+    if RK:
+        tau = rng_k.normal(math.log(RK[0]) - RK[1] ** 2 / 2, RK[1]); k = min(1 + int(rng_k.poisson(math.exp(tau))), int(RK[2]))
+        return ((0, k) if bptt_last == "all" else (max(0, k - int(bptt_last)), min(k, int(bptt_last)))), {"K": k}
+    if PG:
+        k1, k2 = int(rng_k.integers(0, PG[0] + 1)), int(rng_k.integers(1, PG[1] + 1)); return (k1, k2), {"k1": k1, "k2": k2}
+    return (0, K), {}
+
+
+def think_kk(m, S, A, B, kk, ckpt=False):
+    """kk[0] think passes without gradient (§176: PROG's k1; RK beyond bptt_last), then kk[1] with gradient. (0, K) is §169's m.think exactly."""
+    if kk[0]:
+        with torch.no_grad():
+            S = m.think(S, A, B, kk[0])
+    return m.think(S, A, B, kk[1], ckpt=ckpt)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--think_k", type=int, required=True); ap.add_argument("--shape_mix", default="2,3,4,5"); ap.add_argument("--steps", type=int, default=48000)
@@ -130,6 +150,9 @@ def main():
     ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--test_n", type=int, default=1000); ap.add_argument("--ext_n", type=int, default=1000)
     ap.add_argument("--probe_n_fit", type=int, default=8000); ap.add_argument("--auto_micro", action="store_true"); ap.add_argument("--eval_at", type=int, default=0, help="also evaluate test_acc / ext_4x8 at this step -> eval_<k>k.json"); ap.add_argument("--fast_add", action="store_true", help="deltamem.FAST_ADD: the additive heads' pass writes as one sum (Audit 2026-10-09; scratch/gate_fastadd.py)"); ap.add_argument("--mem_budget", type=float, default=21.0)
     ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--fp32", action="store_true")
+    ap.add_argument("--rand_k", default="", help="§176 RK: 'rbar,sigma,cap' -> per batch K = 1 + Poisson(e^tau), tau ~ N(log rbar - sigma^2 / 2, sigma), K <= cap")
+    ap.add_argument("--prog", default="", help="§176 PROG: 'k1max,k2max' -> per batch k1 ~ U{0..k1max} passes without grad, then k2 ~ U{1..k2max} with grad")
+    ap.add_argument("--bptt_last", default="all", help="§176 RK: 'all' or n (backprop through the last n passes); auto_micro falls back to 8 if K = cap does not fit")
     ap.add_argument("--bench", default=os.path.join("bench", "data", "mult_4x4_test.txt")); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); a.arm = "inject"; os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale; K = a.think_k; DM.FAST_ADD = bool(a.fast_add)
     SHM = [int(x) for x in a.shape_mix.split(",") if x.strip()]; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
@@ -137,27 +160,44 @@ def main():
     teA, teB = load_bench(a.bench if os.path.isabs(a.bench) else os.path.join(ROOT, a.bench))
     EXCL = {(x.tobytes(), y.tobytes()) for x, y in zip(teA, teB)} | {(y.tobytes(), x.tobytes()) for x, y in zip(teA, teB)}; teA, teB = teA[:a.test_n], teB[:a.test_n]
     m = Inject(s5.load_gpt2(dev), 6, a.mem_write).to(dev)
+    RK = [float(x_) for x_ in a.rand_k.split(",")] if a.rand_k else None; PG = [int(x_) for x_ in a.prog.split(",")] if a.prog else None
+    assert not (RK and PG); rng_k = np.random.default_rng(17600 + a.seed); k_hist = {}; kwin = []   # §176: K draws on their own stream (independent of n)
+    KEVAL = max(64, 4 * K) if (RK or PG) else 4 * K
 
-    def train_loss(A, B, c):
-        S = m.think(m.mem.zero_state(len(A), dev), A, B, K, ckpt=a.ckpt_passes); P = product_digits(A, B); ans = torch.tensor(DT[P], device=dev)
+    def draw_k():
+        kk, rec_ = sample_k(rng_k, RK, PG, a.bptt_last, K)
+        for nm_, v_ in rec_.items():
+            h_ = k_hist.setdefault(nm_, {}); h_[str(v_)] = h_.get(str(v_), 0) + 1
+        if rec_:
+            kwin.append(kk[0] + kk[1])
+        return kk
+
+    def train_loss(A, B, c, kk=None):
+        S = think_kk(m, m.mem.zero_state(len(A), dev), A, B, kk or (0, K), a.ckpt_passes); P = product_digits(A, B); ans = torch.tensor(DT[P], device=dev)
         lg = m.dec_logits(S, A, B, ans); ce = P.shape[1] if c >= 8 else min(c, P.shape[1])
         return Fn.cross_entropy(lg[:, :ce].reshape(-1, lg.shape[-1]), ans[:, :ce].reshape(-1))
 
     def mem_check(micro):
         torch.cuda.reset_peak_memory_stats(dev); r_ = np.random.default_rng(0); A, B = gen_operands(r_, a.bs // micro, 4), gen_operands(r_, a.bs // micro, max(SHM)); m.train()
+        kw = (0, K) if not (RK or PG) else ((0, int(RK[2])) if (RK and a.bptt_last == "all") else ((int(RK[2]) - int(a.bptt_last), int(a.bptt_last)) if RK else (PG[0], PG[1])))
         with amp_ctx(amp):
-            l_ = train_loss(A, B, 8)
+            l_ = train_loss(A, B, 8, kw)                                    # §176: the worst-case pass count
         l_.backward(); m.zero_grad(set_to_none=True); m.eval()
-        predict(m, gen_operands(r_, a.eval_bs, 4), gen_operands(r_, a.eval_bs, 16), 4 * K, dev, amp, a.eval_bs); m.train()
+        predict(m, gen_operands(r_, a.eval_bs, 4), gen_operands(r_, a.eval_bs, 16), KEVAL, dev, amp, a.eval_bs); m.train()
         return torch.cuda.max_memory_allocated(dev) / 2 ** 30
     if a.mem_check or (a.auto_micro and dev.startswith("cuda") and not a.resume):
         mc = []
         while True:
             pk = mem_check(a.micro); mc.append({"micro": a.micro, "peak_gib": pk}); print("MEM", a.micro, pk, flush=True)
-            if pk <= a.mem_budget or a.micro >= a.bs or a.mem_check:
+            if pk <= a.mem_budget or a.mem_check:
+                break
+            if a.micro >= a.bs:
+                if RK and a.bptt_last == "all":                             # §176: full backprop to K = cap does not fit -> the last 8 passes
+                    a.bptt_last = "8"; a.micro = 1; mc.append({"bptt_last": "8"}); continue
                 break
             a.micro *= 2
-        json.dump({"checks": mc, "micro": a.micro, "peak_gib": mc[-1]["peak_gib"], "train_shape": "4x%d" % max(SHM), "eval_shape": "4x16 at K' = %d" % (4 * K)},
+        json.dump({"checks": mc, "micro": a.micro, "peak_gib": mc[-1]["peak_gib"], "train_shape": "4x%d" % max(SHM), "eval_shape": "4x16 at K' = %d" % KEVAL,
+                   "train_passes": "fixed K" if not (RK or PG) else ("RK cap %d, bptt_last %s" % (int(RK[2]), a.bptt_last) if RK else "PROG %d no-grad + %d grad" % (PG[0], PG[1]))},
                   open(os.path.join(a.out, "mem_check.json"), "w", newline="\n"), indent=1)
         if a.mem_check:
             return
@@ -184,11 +224,11 @@ def main():
             gr["lr"] = lr_at(a.lr, gr, step, a.steps)
         m.train(); m.mem.fade.fill_(min(1.0, step / max(1, int(500 * sc))))
         m.mem.gamma.fill_(0.0 if step <= a.write_mix_start * sc else min(1.0, (step - a.write_mix_start * sc) / max(1.0, (a.write_mix_end - a.write_mix_start) * sc)))
-        c = int(rng.integers(1, cmax(step / sc) + 1)); A, B = draw(rng, a.bs, SHM, EXCL); opt.zero_grad(); tot = 0.0; ch = a.bs // a.micro
+        c = int(rng.integers(1, cmax(step / sc) + 1)); A, B = draw(rng, a.bs, SHM, EXCL); opt.zero_grad(); tot = 0.0; ch = a.bs // a.micro; kk = draw_k()
         for k_ in range(a.micro):
             sl = slice(k_ * ch, (k_ + 1) * ch)
             with amp_ctx(amp):
-                lk = train_loss(A[sl], B[sl], c)
+                lk = train_loss(A[sl], B[sl], c, kk)
             (lk / a.micro).backward(); tot += float(lk.item()) / a.micro
         wwin.append(write_grad_norm(m)); gn = torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0)
         if not (math.isfinite(tot) and bool(torch.isfinite(gn))):
@@ -207,6 +247,8 @@ def main():
             wlast.extend(wwin); del wlast[:-int(1000 * sc) or None]; wwin = []; wg_hist.append(w_rec)
             rec = {"step": step, "loss": float(np.mean(hist)) if hist else None, "c_max": cmax(step / sc), "sec": round(time.time() - t0), "g_add": float(torch.exp(m.mem.s_add)),
                    "g_del": float(torch.exp(m.mem.s_del)), "fade": float(m.mem.fade), "gamma": float(m.mem.gamma), "write_grad_norm": w_rec["mean"], "write_grad_spike_100x_floor": w_rec["spike_100x_floor"]}
+            if RK or PG:
+                rec["k_train_mean"] = float(np.mean(kwin)) if kwin else None; kwin.clear()
             hist = []; log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
         if a.ckpt_every and step % a.ckpt_every == 0 and step < a.steps:
             cp = os.path.join(a.out, "ckpt_last.pt")
@@ -224,12 +266,13 @@ def main():
         xA, xB = gen_operands(np.random.default_rng(s1_), a.ext_n, 4), gen_operands(np.random.default_rng(s2_), a.ext_n, nb_); xs[nb_] = (xA, xB)
         res["ext_4x%d" % nb_] = {**acc_report(predict(m, xA, xB, K, dev, amp, bs)[0], product_digits(xA, xB)), "seeds": [s1_, s2_]}
     res["compute"] = compute_inj(m, 4, 4, K); res["compute_4x8"] = compute_inj(m, 4, 8, K)
-    kps = sorted({0, 1, K // 2, K, 2 * K, 4 * K}); s = {"acc_by_kprime": {}, "ext_4x8_by_kprime": {}, "acc_by_size_kprime": {}, "skip_pass": {}, "write_grad_norm": wg_hist,
+    kps = sorted({0, 1, K // 2, K, 2 * K, 4 * K}) if not (RK or PG) else [0, 1, 2, 4, 8, 12, 16, 24, 32, 48, 64]; s = {"acc_by_kprime": {}, "ext_4x8_by_kprime": {}, "acc_by_size_kprime": {}, "skip_pass": {}, "write_grad_norm": wg_hist,
                                                          "write_grad_spikes_floor": [x_ for x_ in wg_hist if x_["spike_100x_floor"]], "n_nonfinite": n_nonfinite,
                                                          "gamma_final": float(m.mem.gamma), "g_add": float(torch.exp(m.mem.s_add)), "g_del": float(torch.exp(m.mem.s_del))}
     for nb_ in (4, 6, 8, 16):
         Pn = product_digits(*xs[nb_]); s["acc_by_size_kprime"]["4x%d" % nb_] = {str(kp): float((predict(m, *xs[nb_], kp, dev, amp, bs)[0] == Pn).all(1).mean()) for kp in kps}
-    s["acc_by_kprime"] = dict(s["acc_by_size_kprime"]["4x4"]); s["ext_4x8_by_kprime"] = {str(kp): s["acc_by_size_kprime"]["4x8"][str(kp)] for kp in sorted({K, 2 * K, 4 * K})}
+    s["acc_by_kprime"] = dict(s["acc_by_size_kprime"]["4x4"])
+    s["ext_4x8_by_kprime"] = {str(kp): s["acc_by_size_kprime"]["4x8"][str(kp)] for kp in (sorted({K, 2 * K, 4 * K}) if not (RK or PG) else kps)}
     pts = sorted({t for t in (1, K // 4, K // 2, 3 * K // 4, K) if t >= 1}) if K else []
     for t in pts:
         s["skip_pass"][str(t)] = float((predict(m, teA, teB, K, dev, amp, bs, skip=(t,))[0] == Pte).all(1).mean())
@@ -246,7 +289,19 @@ def main():
                     S = m.write(S, ids)
                 mn[str(t)] = {"additive": float(S[:, :DM.H_ADD].float().flatten(1).norm(dim=1).median()), "delta": float(S[:, DM.H_ADD:].float().flatten(1).norm(dim=1).median())}
         s["mem_norm_by_pass"] = mn
-    res["s169"] = s; res["eval_sec"] = round(time.time() - t1)
+    res["s169"] = s
+    if RK or PG:                                                            # §176: the norms to 64, the sampled-K histogram, §173's halt
+        mn = {}
+        with torch.no_grad():
+            nA, nB = teA[:256], teB[:256]; S = m.mem.zero_state(len(nA), dev); ids = m.ids(torch.tensor(think_text(nA, nB), device=dev))
+            for t in range(1, KEVAL + 1):
+                with amp_ctx(amp):
+                    S = m.write(S, ids)
+                mn[str(t)] = {"additive": float(S[:, :DM.H_ADD].float().flatten(1).norm(dim=1).median()), "delta": float(S[:, DM.H_ADD:].float().flatten(1).norm(dim=1).median())}
+        res["s176"] = {"mem_norm_by_pass": mn, "k_hist": k_hist, "bptt_last": a.bptt_last, "kprimes": kps}
+        from boxes.halt173 import halt_fields
+        res["halt"], res["halt_fixed_k"], res["halt_acc_by_t"], res["halt_n"] = halt_fields("inject", m, {"think_k": K}, dev, amp, a.ext_n, bs, a.bench)
+    res["eval_sec"] = round(time.time() - t1)
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     for ck_ in ("ckpt_last.pt", "ckpt_prev.pt"):
         if os.path.exists(os.path.join(a.out, ck_)):

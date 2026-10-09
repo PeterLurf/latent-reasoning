@@ -1,0 +1,49 @@
+{
+ "g0_bad": 0,
+ "g0_pass": true,
+ "g1": {
+  "ln_w.weight": 0.1987607628107071,
+  "ln_w.bias": 0.7094951868057251,
+  "qkv.weight[k,v]": 3.5405068397521973,
+  "qkv.bias[k,v]": 0.44837743043899536,
+  "gate.weight": 0.055974796414375305,
+  "gate.bias": 0.00529265683144331,
+  "trunk_h0_c_attn": 5.686187744140625,
+  "S_after_pass1": 0.027842525392770767
+ },
+ "g1_pass": true,
+ "g2": {
+  "S_unchanged": true,
+  "teacher_forced_input_exact": true,
+  "greedy_prefix_exact": true
+ },
+ "g2_pass": true,
+ "g3": {
+  "losses_head": [
+   3.3147149085998535,
+   3.417670249938965,
+   2.6499781608581543
+  ],
+  "bitwise_equal": {
+   "aux0": false,
+   "noflag": false
+  }
+ },
+ "g3_pass": false,
+ "all_pass": false,
+ "g3_addendum": {
+  "date": "2026-10-09 05:0x EDT",
+  "finding": "HEAD's nested170 is not bitwise reproducible run to run on CPU: two HEAD runs (identical command) differ only in g.p.wte_weight, max abs 3.6e-12 (embedding-gradient accumulation order). The second HEAD run equals both new-code lambda-0 runs (--aux_step 0 and no flag) BITWISE in every tensor, and all three runs' logged losses are identical.",
+  "head_vs_head2_differing": [
+   [
+    "g.p.wte_weight",
+    3.637978807091713e-12
+   ]
+  ],
+  "head2_vs_aux0_differing": [],
+  "aux0_vs_noflag_differing": [],
+  "reading": "lambda = 0 is bitwise nested170 (the same code path); g3_pass as written compared against a single HEAD run and failed on CPU run-to-run noise",
+  "g3_pass_amended": true
+ },
+ "all_pass_amended": true
+}

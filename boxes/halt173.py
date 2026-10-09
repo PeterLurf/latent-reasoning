@@ -171,22 +171,19 @@ def load_model(run, dev):
     return kind, m, a
 
 
-def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--n", type=int, default=1000); ap.add_argument("--bs", type=int, default=250)
-    ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", default=None)
-    ap.add_argument("--bench", default=os.path.join("bench", "data", "mult_4x4_test.txt"))
-    o = ap.parse_args(); dev = o.device; t0 = time.time()
-    amp = None if (o.fp32 or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
-    kind, m, a = load_model(o.run, dev); K = int(a["think_k"]); T = 2 * K; assert K >= 1
+def halt_fields(kind, m, a, dev, amp, n_items=1000, bs=250, bench=os.path.join("bench", "data", "mult_4x4_test.txt")):
+    """§173 on a loaded model (m.eval()): -> (halt {rule: {size: {acc, mean_h, frac_capped}}}, halt_fixed_k {size: acc}, acc_by_t {size: [...]}, n {size}).
+    a: the run's args (dict); K = a["think_k"], cap 2K. Also called from a run's own eval (inject169 §176)."""
+    K = int(a["think_k"]); T = 2 * K; t0 = time.time()
     if kind == "nested":
         from boxes.nested170 import test_set
-        ad = NestAdapter(m, dev); TE = test_set(a.get("per_n", 1000)); sets = {str(n): [it for it in TE if it["n"] == n][:o.n] for n in NEST}
-        chunks = {s: [v[i:i + o.bs] for i in range(0, len(v), o.bs)] for s, v in sets.items()}
+        ad = NestAdapter(m, dev); TE = test_set(a.get("per_n", 1000)); sets = {str(n): [it for it in TE if it["n"] == n][:n_items] for n in NEST}
+        chunks = {s: [v[i:i + bs] for i in range(0, len(v), bs)] for s, v in sets.items()}
     else:
-        ad = MultAdapter(kind, m, a, dev); teA, teB = load_bench(o.bench if os.path.isabs(o.bench) else os.path.join(ROOT, o.bench)); sets = {"4x4": (teA[:o.n], teB[:o.n])}
+        ad = MultAdapter(kind, m, a, dev); teA, teB = load_bench(bench if os.path.isabs(bench) else os.path.join(ROOT, bench)); sets = {"4x4": (teA[:n_items], teB[:n_items])}
         for nb_, s1_, s2_ in EXT:
-            sets["4x%d" % nb_] = (gen_operands(np.random.default_rng(s1_), o.n, 4), gen_operands(np.random.default_rng(s2_), o.n, nb_))
-        chunks = {s: [(A[i:i + o.bs], B[i:i + o.bs]) for i in range(0, len(A), o.bs)] for s, (A, B) in sets.items()}
+            sets["4x%d" % nb_] = (gen_operands(np.random.default_rng(s1_), n_items, 4), gen_operands(np.random.default_rng(s2_), n_items, nb_))
+        chunks = {s: [(A[i:i + bs], B[i:i + bs]) for i in range(0, len(A), bs)] for s, (A, B) in sets.items()}
     halt, fixed, by_t, nn = {}, {}, {}, {}
     for s, chs in chunks.items():
         cs, hs = [], []
@@ -196,7 +193,18 @@ def main():
         for r in hs[0]:
             h = np.concatenate([x[r][0] for x in hs]); cap = np.concatenate([x[r][1] for x in hs]); ok = np.concatenate([x[r][2] for x in hs])
             halt.setdefault(r, {})[s] = {"acc": float(ok.mean()), "mean_h": float(h.mean()), "frac_capped": float(cap.mean())}
-        print(s, "done", round(time.time() - t0), flush=True)
+        print("halt", s, "done", round(time.time() - t0), flush=True)
+    return halt, fixed, by_t, nn
+
+
+def main():
+    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--n", type=int, default=1000); ap.add_argument("--bs", type=int, default=250)
+    ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", default=None)
+    ap.add_argument("--bench", default=os.path.join("bench", "data", "mult_4x4_test.txt"))
+    o = ap.parse_args(); dev = o.device; t0 = time.time()
+    amp = None if (o.fp32 or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
+    kind, m, a = load_model(o.run, dev); K = int(a["think_k"]); T = 2 * K; assert K >= 1
+    halt, fixed, by_t, nn = halt_fields(kind, m, a, dev, amp, o.n, o.bs, o.bench)
     res = {"run": o.run.replace(os.sep, "/"), "kind": kind, "think_k": K, "cap": T, "eps": EPS, "halt": halt, "halt_fixed_k": fixed, "acc_by_t": by_t, "n": nn,
            "eval_dtype": str(amp), "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0),
            "rules": "answer2: first t >= 2 with a(t) = a(t-1) = a(t-2), cap 2K; *_0.01: first t >= 1 with relative change < 0.01, cap 2K (see boxes/halt173.py)"}
