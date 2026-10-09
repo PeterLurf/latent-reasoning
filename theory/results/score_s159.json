@@ -60,8 +60,33 @@
    }
   },
   "3": {
-   "status": "open",
-   "accepted": null
+   "status": "accepted",
+   "accepted": {
+    "seed": 3,
+    "test_acc": 1.0,
+    "per_column": [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "serial": false,
+    "flops": 18652224912.0,
+    "passes": 26,
+    "ext_5x8": 0.006,
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "fallback_trigger": {
+     "floor_spikes": 28,
+     "n_nonfinite": 0,
+     "fires": true
+    }
+   }
   },
   "4": {
    "status": "accepted",
@@ -95,7 +120,7 @@
  },
  "headline": {
   "median_test_acc": 1.0,
-  "exact_slots": 3,
+  "exact_slots": 4,
   "flops_vs_tcm": 0.8000155738147183,
   "flops_vs_icotsi": 3.2354923825201958,
   "passes": 26,

@@ -246,7 +246,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 156 | SEP-SLOT: per-digit separators, direct answer (a) and A-SEP (b) | **no effect** (0.002–0.004; A-SEP 0.060) | closed |
 | 157 | READ-PANEL: PERIODIC / MULTIREAD / CCQ reads on §152 A | **all three gates closed** (0.035 / 0.009 / 0.064): no read change fixes the 4-row carry; PERIODIC blocked by the blend (off-column 0.88); read interference untested (CCQ never engaged) | closed |
 | 158 | FREE-PAIRS: hybrid pair sequences on R (data-level interchange) | slot 1 0.982, SERIAL, no C1 credit (158-2's prediction) | **open** |
-| 159 | R-5×5: R at 5×5 (the SOTA leg, C3) | registered | **open** |
+| 159 | R-5×5: R at 5×5 (the SOTA leg, C3) | **4/4 EXACT** (1.000); LATENT BEATS TEXT vs TC-M (0.80× FLOPs, 0.30× passes); 3.24× ICoT-SI FLOPs; not SERIAL | closed |
 | 160 | R-ROWS: R on §152's rows, A-R / CTRL-R (C3) | **gate closed** (A-R s1 0.056, CTRL-R 0.055; column 5 ~0.09); block-9 fallbacks descriptive | closed |
 | 161 | SHAPE-MIX (C2): 4 × n training (n 2..5), ± a column index with random offsets | **LENGTH-GENERAL** (MIX 3/3, ext_4x8 0.91–0.96; MIX+IDX 2/3); SERIAL with a state-carried running sum; index not needed | closed |
 | 162 | DELTA-S5: DeltaMem-R on S5 against a measured single-pass boundary (158-2's contrast cell) | **mixed** (LONG MIXED, SHORT BUFFER-LIKE; at equal depth the arms are indistinguishable, so 158-2's depth contrast is not supported); both exact in range, 0.0 at 512 | closed |
@@ -9283,6 +9283,12 @@ accumulator.**
 * **Slot 2:** 1.000 (every column 1.0), not SERIAL, ext_5x8 0.001. 2 / 2 exact so far; s3 / s4 are pending.
 * **Slot 4:** 1.000 (every column 1.0), not SERIAL, ext_5x8 0.001. **3 / 3 exact** (median 1.000), with LATENT BEATS TEXT on the median (0.80× TC-M FLOPs,
   0.30× passes). Slot 3 is pending.
+**§159 R-5×5 result (2026-10-08 20:41 EDT): 4 / 4 seeds EXACT at 5×5 (1.000 / 1.000 / 1.000 / 1.000, every column 1.0); LATENT BEATS TEXT against TC-M on the median.**
+* **Compute:** 1.87·10¹⁰ FLOPs and 26 passes, i.e. 0.80× TC-M's FLOPs and 0.30× its passes.
+* **Against ICoT-SI** (0.996): equal or better accuracy at 3.24× the FLOPs (26 passes against 15).
+* **The registered caveat stands:** not SERIAL (row donor ≤ 0.13), and ext_5x8 ≤ 0.006 (the fixed-shape count schedule).
+* **User-facing (Audit):** "beats explicit CoT; matches implicit-CoT accuracy at more compute; exact at 5×5 in every seed (C6)".
+* §159 closes.
 
 ## 160. R-ROWS: the write-after-read memory on §152's row segmentation (Audit 07:00, the C3 leg; pre-registered 2026-10-08 06:56 EDT, before any implementation or run; runs only if §155 R s2 is exact)
 
