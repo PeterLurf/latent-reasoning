@@ -29,6 +29,7 @@ import boxes.deltamem as DM  # noqa: E402
 
 D = (DM.H_ADD + DM.H_DEL) * DM.DH * DM.DH
 SH = (DM.H_ADD + DM.H_DEL, DM.DH, DM.DH)
+FIT_MICRO = 1                                                               # --fit_micro: chunks per fit batch (gradient accumulation; 1 = the original single pass)
 
 
 def amp_ctx(amp):
@@ -220,10 +221,13 @@ def fit(F, Xs, Sr_all, Sd_all, tr, va, t, k, coords=None, steps=2000, bs=64, lr=
     torch.manual_seed(seed + k); rot = Rot(k, F.dev, coords, init=init); opt = torch.optim.Adam(rot.parameters(), lr=lr); X1, X2 = Xs; rng = np.random.default_rng(seed + k)
     best, best_state, bad, st = -1.0, None, 0, 0
     for st in range(1, steps + 1):
-        b = rng.integers(0, len(tr[0]), bs); r_, d_ = tr[0][b], tr[1][b]
-        Sr = torch.tensor(Sr_all[r_], device=F.dev); Sd = torch.tensor(Sd_all[d_], device=F.dev)
-        out, cols = F.cont_logits(X1[r_], X2[r_], rot.patch(Sr, Sd), t); loss = F.loss(out, cols, tr[2][b])
-        opt.zero_grad(); loss.backward(); opt.step()
+        b = rng.integers(0, len(tr[0]), bs); opt.zero_grad()
+        for b_ in (np.array_split(b, FIT_MICRO) if FIT_MICRO > 1 else [b]):  # 2026-10-09: gradient accumulation keeps the registered batch 64 on 8 GB cards (S5 LONG OOM)
+            r_, d_ = tr[0][b_], tr[1][b_]
+            Sr = torch.tensor(Sr_all[r_], device=F.dev); Sd = torch.tensor(Sd_all[d_], device=F.dev)
+            out, cols = F.cont_logits(X1[r_], X2[r_], rot.patch(Sr, Sd), t); loss = F.loss(out, cols, tr[2][b_])
+            (loss * (len(b_) / len(b)) if FIT_MICRO > 1 else loss).backward()
+        opt.step()
         if st % every == 0 or st == steps:
             v = evaluate(F, Xs, Sr_all, Sd_all, va[0], va[1], va[2], t, rot)
             if v > best + 1e-4:
@@ -266,14 +270,14 @@ def main():
     ap.add_argument("--ks", default="1,2,4,8,16,64,2048"); ap.add_argument("--ctrl_ks", default="16,64"); ap.add_argument("--steps", type=int, default=5000)
     ap.add_argument("--n_train", type=int, default=4000); ap.add_argument("--n_val", type=int, default=500); ap.add_argument("--n_test", type=int, default=1000)
     ap.add_argument("--extras", action="store_true", help="carry_matched / per_head_type / scaling (descriptive)"); ap.add_argument("--fp32", action="store_true")
-    ap.add_argument("--out", default=None)
-    a = ap.parse_args(); dev = a.device; t0 = time.time(); ks = [int(x) for x in a.ks.split(",")]; cks = [int(x) for x in a.ctrl_ks.split(",")]
+    ap.add_argument("--out", default=None); ap.add_argument("--fit_micro", type=int, default=1, help="split each 64-pair fit batch into this many chunks (8 GB cards)")
+    a = ap.parse_args(); global FIT_MICRO; FIT_MICRO = max(1, a.fit_micro); dev = a.device; t0 = time.time(); ks = [int(x) for x in a.ks.split(",")]; cks = [int(x) for x in a.ctrl_ks.split(",")]
     amp = None if (a.fp32 or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
     fam_name = "s5" if json.load(open(os.path.join(a.run, "args.json"))).get("family") == "s5" else "mult"; FC = S5Fam if fam_name == "s5" else MultFam
     out_ = a.out or os.path.join(a.run, "eval_das.json")
     if os.path.exists(out_) and not os.path.exists(out_.replace("eval_das.json", "eval_das_v1.json")):   # note 167-3: the first fit kept as v1
         os.replace(out_, out_.replace("eval_das.json", "eval_das_v1.json"))
-    F = FC(a.run, dev, amp); res = {"family": fam_name, "run": os.path.basename(a.run.rstrip("/")), "points": {}, "ks": ks, "ctrl_ks": cks, "D": D, "gates": {},
+    F = FC(a.run, dev, amp); res = {"family": fam_name, "fit_micro": FIT_MICRO, "run": os.path.basename(a.run.rstrip("/")), "points": {}, "ks": ks, "ctrl_ks": cks, "D": D, "gates": {},
                                     "iia_def": "row level: every counterfactual digit (MULT: the later digits; S5: the final state) decoded exactly"}
     gen = torch.Generator().manual_seed(16740)
     for t in F.points():
