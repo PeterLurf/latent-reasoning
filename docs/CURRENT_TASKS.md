@@ -42,7 +42,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (02:56; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
+* **Theory (03:54; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
   - **The user (via Audit, 2026-10-09):**
     - ~01:30: "do another research pass. work on task agnosticness. approve go ahead on prosqa deep".
     - ~01:45: "keep working on the prosqa deep and the nested arithmetic … creating new methodologies and architectures for task agnostic".
@@ -59,6 +59,12 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
     - **§173 CONV-HALT:** eval-only halting when the answer settles (2 consecutive passes unchanged), on every think-pass arm.
     - **§174 MULTI-TASK:** one INJECT K8 model on mult + nested, no task flag. It is gated on §169 / §170 K8 slot 1, and needs their eval_24k as the budget reference.
     - **§175 STEP-AUX:** §170 INJECT K8 plus a shared-trunk aux decoder emitting CoT step t from M_t (λ fades to 0 by 48k). It is gated on §170 K8 slot 1.
+    - **§176 RAND-K:** random K (RK) or progressive (PROG) training on INJECT. C2 is read beyond the training support (K′ = 64), against fixed K8's post-hoc curve.
+      Gated on §169 K8.
+  - **Scored tonight:**
+    - §172 PCCoT closed: it uses its latents and iterations; more iterations hurt; no localised step state.
+    - §169 K0 slot 1 fails (0.003).
+    - §166 S5: SP is in; PLAIN eval pending.
     - **Notes:**
       - 170-1: a held-out SERIAL pool; CoT reductions only.
       - 170-2: STEP-RECOVER on §170 K8.
