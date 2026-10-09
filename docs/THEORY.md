@@ -11523,6 +11523,11 @@ how many think passes run in training.
 * The evidence for "available but ignored" is the small gain (the per-pass vector is about 2% of the embedding scale), with accuracy flat in K′ and in skip.
 * Pending as a descriptive check: cos(g ⊙ s̃(1), g ⊙ s̃(t)) for t = 2, 4, 8, computed from the model.
 
+**§177 (a), the index-direction check (2026-10-09 18:50 EDT; descriptive; eval_s177_index_dir.json). The pass index was available and was ignored.**
+* **The learned pass vectors stay distinct in direction:** cos(pass 1, pass t) is 0.976 / 0.856 / 0.799 / 0.726 / 0.550 for t = 2 / 4 / 8 / 16 / 64, against the raw sinusoid's 0.973 / 0.828 / 0.734 / 0.646 / 0.488.
+* **The gain keeps them tiny:** |g| has mean 0.013 and maximum 0.059, with norm 0.47. The vectors are about 0.07 against an embedding scale of 3.96.
+* The model had a usable per-pass identity and learned to make it negligible. That fits the "no per-pass learning signal" reading (Goyal) rather than "passes indistinguishable".
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
