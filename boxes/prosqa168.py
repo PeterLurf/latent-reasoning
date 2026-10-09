@@ -68,9 +68,12 @@ def candidate_margins(g, D, dev, amp, bs=16):
         x = torch.tensor(ids, device=dev)
         with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
             h, _ = g(g.embed(x), None)
-        lp = g.logits(h).float().log_softmax(-1); sc = []
-        for r, (a, b) in enumerate(spans):
-            tok = x[r, a:b]; sc.append(float(lp[r, a - 1:b - 1].gather(-1, tok[:, None]).sum()))
+        rows = torch.cat([torch.full((b - a,), r, dtype=torch.long) for r, (a, b) in enumerate(spans)]).to(dev)   # Audit 2026-10-09 (b216 NA OOM): the LM head
+        pos = torch.cat([torch.arange(a - 1, b - 1) for a, b in spans]).to(dev)                                      # + log-softmax only at the answer positions,
+        tok = torch.cat([x[r, a:b] for r, (a, b) in enumerate(spans)])                                                # not the full [B, L, 50257] fp32 tensor
+        lp = g.logits(h[rows, pos]).float().log_softmax(-1).gather(-1, tok[:, None])[:, 0]; sc = []; o_ = 0
+        for a, b in spans:
+            sc.append(float(lp[o_:o_ + b - a].sum())); o_ += b - a
         out.extend(sc[k] - sc[k + 1] for k in range(0, len(sc), 2))
     return np.array(out)
 
@@ -83,6 +86,7 @@ def main():
     ap.add_argument("--log_every", type=int, default=100); ap.add_argument("--eval_bs", type=int, default=16); ap.add_argument("--train_n", type=int, default=0, help="smokes only")
     ap.add_argument("--test_n", type=int, default=0, help="smokes only"); ap.add_argument("--data_root", default=os.path.join("prosqa", "p8data"))
     ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
+    ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt (no training; args_eval.json; model.pt / args.json / log kept)")
     a = ap.parse_args(); a.arm = "direct"; os.makedirs(a.out, exist_ok=True); dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
     amp = None if (a.fp32 or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
     root = a.data_root if os.path.isabs(a.data_root) else os.path.join(ROOT, a.data_root); ftr, fte = FILES[a.data]
@@ -96,7 +100,7 @@ def main():
     def mem_check(micro):
         torch.cuda.reset_peak_memory_stats(dev); ids, lab = train_batch(Dtr, [longest] * (a.bs // micro), dev); g.train(); loss_fn(g, ids, lab, amp).backward(); g.zero_grad(set_to_none=True)
         return torch.cuda.max_memory_allocated(dev) / 2 ** 30 + 3 * sum(p_.numel() * 4 for p_ in g.parameters()) / 2 ** 30   # + grads and AdamW's two moments (fp32; b214 OOMed at step 1 without)
-    if a.mem_check or (a.auto_micro and dev.startswith("cuda") and not a.resume):
+    if a.mem_check or (a.auto_micro and dev.startswith("cuda") and not a.resume and not a.eval_only):
         mc = []
         while True:
             pk = mem_check(a.micro); mc.append({"micro": a.micro, "peak_gib": pk}); print("MEM", a.micro, pk, flush=True)
@@ -109,10 +113,17 @@ def main():
         assert mc[-1]["peak_gib"] <= a.mem_budget
     info = {**vars(a), "train_items": len(Dtr), "test_items": len(Dte), "format": "Coconut no-CoT: question + '\\n' -> '### ' + answer + EOS (CE on the target only)",
             "train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version(), **env_info()}
-    json.dump(info, open(os.path.join(a.out, ("args_resume_%d.json" % int(time.time())) if a.resume else "args.json"), "w", newline="\n"), indent=1)
+    if a.eval_only:                                                         # the training run's GPU stays in train_*; this one is eval_gpu
+        a0_ = json.load(open(os.path.join(a.out, "args.json"))); info["eval_gpu"], info["eval_driver"] = info["train_gpu"], info["train_driver"]
+        info["train_gpu"], info["train_driver"] = a0_.get("train_gpu"), a0_.get("train_driver")
+    json.dump(info, open(os.path.join(a.out, "args_eval.json" if a.eval_only else (("args_resume_%d.json" % int(time.time())) if a.resume else "args.json")), "w", newline="\n"), indent=1)
     opt = torch.optim.AdamW(g.parameters(), lr=a.lr, weight_decay=0.01); step0 = 1; hist = []; n_nonfinite = 0
-    log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time()
-    if a.resume:
+    log = open(os.path.join(a.out, "log.jsonl"), "a" if (a.resume or a.eval_only) else "w", newline="\n"); t0 = time.time()
+    if a.eval_only:
+        g.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev, weights_only=False)); step0 = a.steps + 1
+        lg_ = [json.loads(l_) for l_ in open(os.path.join(a.out, "log.jsonl"))]; n_nonfinite = sum(1 for r_ in lg_ if r_.get("nonfinite"))
+        sec_ = [r_["sec"] for r_ in lg_ if "sec" in r_]; t0 = time.time() - (sec_[-1] if sec_ else 0)
+    elif a.resume:
         ck = torch.load(a.resume, map_location=dev, weights_only=False); g.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"]); rng.bit_generator.state = ck["np_rng"]
         step0 = ck["step"] + 1; t0 = time.time() - ck["elapsed"]; n_nonfinite = ck["n_nonfinite"]; log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
     for step in range(step0, a.steps + 1):
@@ -134,9 +145,15 @@ def main():
             if os.path.exists(cp):
                 os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))
             torch.save({"model": g.state_dict(), "opt": opt.state_dict(), "np_rng": rng.bit_generator.state, "step": step, "elapsed": time.time() - t0, "n_nonfinite": n_nonfinite}, cp)
-    train_sec = round(time.time() - t0); torch.save(g.state_dict(), os.path.join(a.out, "model.pt")); g.eval(); t1 = time.time()
+    train_sec = round(time.time() - t0)
+    if not a.eval_only:
+        torch.save(g.state_dict(), os.path.join(a.out, "model.pt"))
+    del opt
+    if dev.startswith("cuda"):
+        torch.cuda.empty_cache()
+    g.eval(); t1 = time.time()
     M = candidate_margins(g, Dte, dev, amp, a.eval_bs); dep = np.array([x[3] for x in Dte]); Mc = candidate_margins(g, Dctl, dev, amp, a.eval_bs)
-    res = {"arm": "direct", "data": a.data, "seed": a.seed, "steps": a.steps, "acc": float((M > 0).mean()), "n": int(len(M)),
+    res = {"eval_only": bool(a.eval_only), "arm": "direct", "data": a.data, "seed": a.seed, "steps": a.steps, "acc": float((M > 0).mean()), "n": int(len(M)),
            "acc_by_depth": {str(d): float((M[dep == d] > 0).mean()) for d in range(3, 15) if (dep == d).any()},
            "n_by_depth": {str(d): int((dep == d).sum()) for d in range(3, 15) if (dep == d).any()},
            "margin_median_by_depth": {str(d): float(np.median(M[dep == d])) for d in range(3, 15) if (dep == d).any()},
