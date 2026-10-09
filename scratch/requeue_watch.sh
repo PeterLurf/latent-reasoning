@@ -11,7 +11,10 @@ log() { echo "$(date '+%F %T') requeue_watch $*" >> logs/gen_deploy.log; echo "$
 log "start"
 while [ ! -f scratch/requeue_watch.stop ]; do
   for f in $(find logs -path 'logs/vast_*' -name 'queue_gen_b*.out' -newer logs/.requeue_watch_start 2>/dev/null); do
-    grep -q -E "(HOSTCHECK_FAIL|DATA_MISSING|DATA_SHA_MISMATCH|PIP_FAILED|GPT2_SHA_MISMATCH|MODULE_MISSING [a-z0-9_.]+) rc 9" "$f" || continue   # MODULE_MISSING: 2026-10-07 (§138)
+    grep -q -E "(HOSTCHECK_FAIL|DATA_MISSING|DATA_SHA_MISMATCH|PIP_FAILED|GPT2_SHA_MISMATCH|HOSTPROBE_SLOW|MODULE_MISSING [a-z0-9_.]+) rc 9" "$f" || continue   # MODULE_MISSING: 2026-10-07 (§138)
+    if grep -q "HOSTPROBE_SLOW rc 9" "$f"; then                             # 2026-10-09 (Audit): a slow host is excluded so the requeue lands elsewhere
+      ip_=$(echo "$f" | sed -E 's|.*logs/vast_([0-9.]+)_[0-9]+/.*|\1|'); grep -q "^$ip_ " scratch/vast_exclude_ips.txt 2>/dev/null || echo "$ip_ # HOSTPROBE_SLOW $(grep -o 'HOSTPROBE_SLOW rc 9 ([^)]*)' "$f" | head -1) $(date '+%F %T')" >> scratch/vast_exclude_ips.txt
+    fi
     grep -q " start boxes" "$f" && continue                                 # something trained: not a setup-only failure
     n=$(basename "$f" .out | sed 's/queue_gen_b//'); key="$f"
     case "$done_list" in *" $key "*) continue;; esac

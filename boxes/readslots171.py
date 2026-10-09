@@ -242,7 +242,7 @@ def main():
         if a.mem_check:
             return
         assert mc[-1]["peak_gib"] <= a.mem_budget
-    info = {**vars(a), "train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version(), **env_info(),
+    info = {**vars(a), "train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version(), **env_info(), "hostprobe_sps": os.environ.get("HOSTPROBE_SPS"),
             "encode_input": "[EOT, a * b] once, no memory read (trained)", "think_input": "%d learned slots after the input KV; fresh slot cache per pass" % a.n_slots,
             "decoder_input": "[EOT, ' ='] + answer digits, no input KV (read-only)" if a.blind_decoder else "[' ='] + answer digits after the input KV (read-only)"}
     json.dump(info, open(os.path.join(a.out, ("args_resume_%d.json" % int(time.time())) if a.resume else "args.json"), "w", newline="\n"), indent=1)

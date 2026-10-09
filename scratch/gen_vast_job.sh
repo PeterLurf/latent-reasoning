@@ -53,6 +53,14 @@ if [ -f scratch/hostcheck.py ]; then                                    # Theory
   python -u scratch/hostcheck.py --gib $gib > logs/hostcheck.log 2>&1; tail -1 logs/hostcheck.log >> $log
   tail -1 logs/hostcheck.log | grep -q "HOSTCHECK PASS" || { echo "$(date +%T) HOSTCHECK_FAIL rc 9" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }
 fi
+if grep -q "^# HOSTPROBE" "$q"; then                                    # Audit 2026-10-09: DeltaMem's launch-bound write loop runs ~2x slower on some 3090 hosts;
+  # the standard probe = §170 INJECT K8 --fast_add, 200 steps (b225's reference 0.657 s/step); slower than the limit (default 1.3x = 0.854) -> rc 9, requeued
+  python -u -m boxes.nested170 --arm inject --think_k 8 --time_steps 200 --auto_micro --fast_add --device $dev --out boxes/runs_fsq/_hostprobe > logs/hostprobe.log 2>&1
+  sps=$(python -c "import json; print(round(json.load(open('boxes/runs_fsq/_hostprobe/timing.json'))['sec_per_step'], 4))" 2>/dev/null || echo 99)
+  lim=$(grep -o "^# HOSTPROBE [0-9.]*" "$q" | head -1 | awk '{print $3}'); lim=${lim:-0.854}
+  echo "$(date +%T) HOSTPROBE $sps s/step (limit $lim; b225 reference 0.657)" >> $log; export HOSTPROBE_SPS=$sps
+  python -c "import sys; sys.exit(0 if float(sys.argv[1]) <= float(sys.argv[2]) else 1)" "$sps" "$lim" || { echo "$(date +%T) HOSTPROBE_SLOW rc 9 ($sps > $lim s/step)" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }
+fi
 grep -v '^#' "$q" | grep -v '^$' | while read -r out mod rest; do n=$(basename $out)
   echo "echo \"\$(date +%T) start $out\" >> $log; python -u -m $mod $rest --device $dev --out $out > logs/gen_$n.log 2>&1; rc=\$?; [ -s $out/eval.json ] || rc=\"\$rc no-eval\"; echo \"\$(date +%T) evaluated $out rc \$rc\" >> $log"
 done > /tmp/gen_cmds.txt

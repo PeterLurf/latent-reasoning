@@ -538,7 +538,7 @@ def main():
         if a.mem_check:
             return
         assert mc[-1]["peak_gib"] <= a.mem_budget
-    info = {**vars(a), "train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version(), **env_info(),
+    info = {**vars(a), "train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version(), **env_info(), "hostprobe_sps": os.environ.get("HOSTPROBE_SPS"),
             "format": {"direct": "[EOT, expr, ' ='] -> the answer token", "inject": "think [EOT, expr, ' .'] (padded writes masked); decoder [EOT, expr, ' ='] -> answer (read-only)",
                        "textcot": "[EOT, expr, ' ='] then ' e2 = e3 = ... = t' EOT (Feng; loss on all generated tokens)"}[a.arm]}
     if a.aux_step:                                                          # §175 (Audit): state the aux decoder's weight sharing in the run's args

@@ -202,7 +202,7 @@ def main():
         if a.mem_check:
             return
         assert mc[-1]["peak_gib"] <= a.mem_budget
-    info = {**vars(a), "train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version(), **env_info(),
+    info = {**vars(a), "train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version(), **env_info(), "hostprobe_sps": os.environ.get("HOSTPROBE_SPS"),
             "think_input": "[EOT, a * b, ' .'] (the full problem text, every pass)", "decoder_input": "[EOT, a * b, ' ='] + answer digits (read-only)"}
     json.dump(info, open(os.path.join(a.out, ("args_resume_%d.json" % int(time.time())) if a.resume else "args.json"), "w", newline="\n"), indent=1)
     opt = make_opt(m, a.lr); step0 = 1; n_nonfinite = 0; wg_hist = []; wwin = []; wlast = []; hist = []
