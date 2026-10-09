@@ -541,6 +541,9 @@ def main():
     info = {**vars(a), "train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version(), **env_info(),
             "format": {"direct": "[EOT, expr, ' ='] -> the answer token", "inject": "think [EOT, expr, ' .'] (padded writes masked); decoder [EOT, expr, ' ='] -> answer (read-only)",
                        "textcot": "[EOT, expr, ' ='] then ' e2 = e3 = ... = t' EOT (Feng; loss on all generated tokens)"}[a.arm]}
+    if a.aux_step:                                                          # §175 (Audit): state the aux decoder's weight sharing in the run's args
+        info["aux_decoder"] = ("the SAME GPT-2 trunk and LM head as the main decoder (shared weights, no new parameters), read-only on M_t via fwd_read: "
+                               "[EOT, ' Step', ' t', ' :'] + e_{t+1} + EOT (teacher-forced); no problem text, no write, never fed back; dropped at test")
     json.dump(info, open(os.path.join(a.out, ("args_resume_%d.json" % int(time.time())) if a.resume else "args.json"), "w", newline="\n"), indent=1)
     params = m if m is not None else g; opt = make_opt(params, a.lr); step0 = 1; n_nonfinite = 0; hist = []; wg_hist = []; wwin = []; wlast = []
     log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time()
