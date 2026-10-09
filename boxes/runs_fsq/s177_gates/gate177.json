@@ -1,0 +1,90 @@
+{
+ "g1": {
+  "index_rows_with_grad": [
+   6,
+   7,
+   8
+  ],
+  "mem_zero": [],
+  "bound_assert": true
+ },
+ "g1_pass": true,
+ "g2": {
+  "pair_seg_equals_multpair": true,
+  "mixed_vs_pure_pair_rows": 0.0001220703125,
+  "mixed_vs_full_rows": 0.0,
+  "rel_pair": 2.969039376958963e-07,
+  "rel_full": 0.0,
+  "index_rows_with_grad": [
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14
+  ],
+  "mem_zero": []
+ },
+ "g2_pass": true,
+ "g3": {
+  "kmatch_counts": {
+   "1": {
+    "2": 1,
+    "1": 1,
+    "3": 1
+   },
+   "4": {
+    "6": 1
+   },
+   "6": {
+    "6": 1,
+    "7": 1
+   },
+   "7": {
+    "8": 3
+   },
+   "2": {
+    "4": 1,
+    "2": 1
+   },
+   "5": {
+    "6": 1
+   },
+   "8": {
+    "10": 2
+   },
+   "3": {
+    "5": 1
+   }
+  },
+  "window_ok": true,
+  "one_K_per_bucket_per_step": true,
+  "s177_fields": [
+   "acc_by_n_kprime",
+   "k_window",
+   "kmatch_counts",
+   "rule_kprime",
+   "skip_pass",
+   "train_loss_tail"
+  ]
+ },
+ "g3_pass": true,
+ "g4": {
+  "i_new": {
+   "losses_equal": true,
+   "max_weight_diff": 0.0
+  },
+  "n_new": {
+   "losses_equal": true,
+   "max_weight_diff": 0.0
+  }
+ },
+ "g4_pass": true,
+ "all_pass": true
+}
