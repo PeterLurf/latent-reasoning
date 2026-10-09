@@ -50,6 +50,7 @@ def main():
         print("FAIL fsq120 main() end-to-end (rc %d); see %s.log" % (rc, out)); ok = False
     else:
         print("ok fsq120 main() end-to-end: eval.json written", flush=True)
+        shutil.rmtree(out, ignore_errors=True); os.remove(out + ".log")    # Audit 2026-10-09: 567 kept dirs (model.pt each) filled C: (72 GB); a failure keeps both
     print("SMOKE_PLAIN", "PASS" if ok else "FAIL", "(%.0f s)" % (time.time() - t0), flush=True)
     sys.exit(0 if ok else 1)
 
