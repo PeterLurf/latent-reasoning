@@ -26,7 +26,9 @@ from boxes import s5  # noqa: E402
 from boxes.fsq120 import driver_version, env_info, lr_at  # noqa: E402
 
 ENC = tiktoken.get_encoding("gpt2"); EOS = 50256
-FILES = {"std": ("p8_train.json", "p8_test.json"), "na": ("p8_na_train.json", "p8_na_test.json")}
+FILES = {"std": ("p8_train.json", "p8_test.json"), "na": ("p8_na_train.json", "p8_na_test.json"),
+         "prosqa_std": ("prosqa_train.json", "prosqa_test.json")}                 # note 168-3 G1: standard ProsQA (prosqa/data)
+VALID = {"std": "p8_valid.json", "na": None, "prosqa_std": "prosqa_valid.json"}   # note 168-3: the validation file per data set (None = not recorded)
 
 
 def items(path):
@@ -79,22 +81,26 @@ def candidate_margins(g, D, dev, amp, bs=16):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--data", required=True, choices=["std", "na"]); ap.add_argument("--seed", type=int, default=1)
+    ap = argparse.ArgumentParser(); ap.add_argument("--data", required=True, choices=["std", "na", "prosqa_std"]); ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--steps", type=int, default=24000); ap.add_argument("--bs", type=int, default=64); ap.add_argument("--lr", type=float, default=1e-4)
     ap.add_argument("--micro", type=int, default=1); ap.add_argument("--auto_micro", action="store_true"); ap.add_argument("--mem_budget", type=float, default=21.0)
     ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", default=None)
     ap.add_argument("--log_every", type=int, default=100); ap.add_argument("--eval_bs", type=int, default=16); ap.add_argument("--train_n", type=int, default=0, help="smokes only")
     ap.add_argument("--test_n", type=int, default=0, help="smokes only"); ap.add_argument("--data_root", default=os.path.join("prosqa", "p8data"))
     ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
+    ap.add_argument("--eval_at", default="", help="note 168-3: comma-separated steps -> acc_by_step {step: {valid, test, acc_by_depth}} (no checkpoint kept)")
     ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt (no training; args_eval.json; model.pt / args.json / log kept)")
     a = ap.parse_args(); a.arm = "direct"; os.makedirs(a.out, exist_ok=True); dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
     amp = None if (a.fp32 or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
     root = a.data_root if os.path.isabs(a.data_root) else os.path.join(ROOT, a.data_root); ftr, fte = FILES[a.data]
-    Dtr = items(os.path.join(root, ftr)); Dte = items(os.path.join(root, fte)); Dctl = items(os.path.join(root, "p8_ctl.json"))
+    droot = os.path.join(ROOT, "prosqa", "data") if a.data == "prosqa_std" else root     # G1's files live in prosqa/data; the control stays p8_ctl.json
+    Dtr = items(os.path.join(droot, ftr)); Dte = items(os.path.join(droot, fte)); Dctl = items(os.path.join(root, "p8_ctl.json"))
+    Dva = items(os.path.join(droot, VALID[a.data])) if VALID[a.data] else None; EVAT = sorted({int(x) for x in a.eval_at.split(",") if x.strip()}); acc_by_step = {}
     if a.train_n:
         Dtr = Dtr[:a.train_n]
     if a.test_n:
         Dte, Dctl = Dte[:a.test_n], Dctl[:a.test_n]
+        Dva = Dva[:a.test_n] if Dva is not None else None
     g = s5.load_gpt2(dev); longest = int(np.argmax([len(x[0]) + len(x[1]) for x in Dtr]))
 
     def mem_check(micro):
@@ -137,6 +143,13 @@ def main():
             n_nonfinite += 1; opt.zero_grad(); log.write(json.dumps({"step": step, "nonfinite": 1}) + "\n"); log.flush()
         else:
             opt.step(); hist.append(tot)
+        if step in EVAT:                                                    # note 168-3: test (and by depth) + validation candidate accuracy at this step
+            g.eval(); Mt = candidate_margins(g, Dte, dev, amp, a.eval_bs); dpt = np.array([x[3] for x in Dte]); e_ = {"test": float((Mt > 0).mean())}
+            e_["acc_by_depth"] = {str(d): float((Mt[dpt == d] > 0).mean()) for d in range(3, 15) if (dpt == d).any()}
+            if Dva is not None:
+                e_["valid"] = float((candidate_margins(g, Dva, dev, amp, a.eval_bs) > 0).mean())
+            acc_by_step[str(step)] = e_; print("EVAL_AT", step, e_["test"], e_.get("valid"), flush=True); g.train()
+            json.dump({"acc_by_step": acc_by_step}, open(os.path.join(a.out, "eval_at.json"), "w", newline="\n"), indent=1)
         if step % a.log_every == 0 or step == a.steps:
             rec = {"step": step, "loss": float(np.mean(hist)) if hist else None, "sec": round(time.time() - t0)}; hist = []
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
@@ -157,6 +170,7 @@ def main():
            "acc_by_depth": {str(d): float((M[dep == d] > 0).mean()) for d in range(3, 15) if (dep == d).any()},
            "n_by_depth": {str(d): int((dep == d).sum()) for d in range(3, 15) if (dep == d).any()},
            "margin_median_by_depth": {str(d): float(np.median(M[dep == d])) for d in range(3, 15) if (dep == d).any()},
+           "acc_by_step": acc_by_step, "valid_file": VALID[a.data], "n_valid": len(Dva) if Dva is not None else None,
            "acc_ctl": float((Mc > 0).mean()), "n_ctl": int(len(Mc)), "ctl_file": "p8_ctl.json (the std control, for both arms)",
            "train_sec": train_sec, "eval_sec": round(time.time() - t1), "n_nonfinite": n_nonfinite, "micro": a.micro, "eval_dtype": str(amp),
            "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_gpu": info["train_gpu"], "train_driver": info["train_driver"],
