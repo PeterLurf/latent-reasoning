@@ -10290,6 +10290,8 @@ subspace.**
 * **For scale:** S5 has 120 states (about 7 bits), and the transition sits between k = 8 and 16.
 * **Pending:** SHORT s2, LONG s2 and the MIX refits (cloud, after the bench-file fix).
 
+**§167 S5 interim, a further clause (2026-10-09 10:40 EDT; Audit; verified in the raw file).** The causal S5 subspace is compact and low-variance: subspace_var_share is 0.056 at k = 16, against 0.699 at k = 64 and 0.873 at k = 2048. It is not simply the top-variance directions. The state-carrying directions take about 5% of the memory's variance, which bears on C7: the state is readable and editable along a few non-dominant directions.
+
 ## 168. DEEP-ProsQA: graph search past one pass, with a measured single-pass boundary (C1 + C3 on a task that exceeds a pass; the C1-forcing note's option 2(b)) (the user's go via Audit, "approve go ahead on prosqa deep"; pre-registered 2026-10-09 01:35 EDT, after Literature's check dfaf9ed6 (`docs/LIT_DEEP_PROSQA_2026-10-08.md`) and Audit's lead, before any implementation or run)
 
 **Why.**
