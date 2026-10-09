@@ -15,6 +15,8 @@
 # 2026-10-09 13:0x Experiments: §170 K8 s1 post hoc (Theory: every think-pass cell): §173 halt + note 173-1 package
 # 2026-10-09 13:2x Experiments: proto176_prog eval-only (its training finished; eval crashed on stale-import skew, Audit) then proto176_rk re-run on current code (Theory; descriptive)
 # 2026-10-09 14:1x Experiments: §165 K8 / K16 post hoc (§173 halt + note 173-1 package; M_0 = the post-input state, noted in the file) - shared lines
+# 2026-10-09 14:3x Experiments: §168 NA s1 eval-only (b216's eval OOMed; fix 652aab0c) - first free card, not as a co-tenant (Audit)
+4.0 boxes/runs_fsq/s168_direct_na_s1/eval.json python -u -m boxes.prosqa168 --data na --seed 1 --steps 24000 --micro 4 --eval_bs 8 --eval_only --device {DEV} --out boxes/runs_fsq/s168_direct_na_s1
 4.0 boxes/runs_fsq/s165_k8_4x4_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s165_k8_4x4_s1 --bs 100 --device {DEV}
 4.0 boxes/runs_fsq/s165_k8_4x4_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s165_k8_4x4_s1 --dir177 --bs 125 --device {DEV}
 4.0 boxes/runs_fsq/s165_k16_4x4_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s165_k16_4x4_s1 --bs 100 --device {DEV}
