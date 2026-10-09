@@ -1,0 +1,1593 @@
+{
+ "test_acc": 0.964,
+ "acc_by_column": {
+  "per_column": [
+   1.0,
+   1.0,
+   1.0,
+   0.997,
+   0.99,
+   0.984,
+   0.988,
+   0.998
+  ],
+  "cumulative": [
+   1.0,
+   1.0,
+   1.0,
+   0.997,
+   0.987,
+   0.973,
+   0.966,
+   0.964
+  ]
+ },
+ "digit_acc": 0.994625,
+ "n": 1000,
+ "per_step_given_correct_prefix": [
+  1.0,
+  1.0,
+  1.0,
+  0.997,
+  0.99,
+  0.9858,
+  0.9928,
+  0.9979
+ ],
+ "first_error_position": {
+  "none": 964,
+  "1": 0,
+  "2": 0,
+  "3": 0,
+  "4": 3,
+  "5": 10,
+  "6": 14,
+  "7": 7,
+  "8": 2
+ },
+ "family": "mult_pair",
+ "task": "4x4",
+ "seed": 3,
+ "long_acc": 0.964,
+ "train_acc": 0.961,
+ "train_sec": 1763,
+ "final_loss": 0.009867167636282375,
+ "n_nonfinite": 0,
+ "train_removed_test_overlap": 17,
+ "eval_dtype": "None",
+ "gpu": "NVIDIA GeForce RTX 2070",
+ "train_gpu": "NVIDIA GeForce RTX 2070",
+ "train_driver": "591.86",
+ "ext_4x8": {
+  "test_acc": 0.834,
+  "acc_by_column": {
+   "per_column": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.99,
+    0.977,
+    0.961,
+    0.949,
+    0.957,
+    0.966,
+    0.978,
+    0.994
+   ],
+   "cumulative": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.99,
+    0.969,
+    0.935,
+    0.894,
+    0.869,
+    0.847,
+    0.838,
+    0.834
+   ]
+  },
+  "digit_acc": 0.981,
+  "n": 1000,
+  "per_step_given_correct_prefix": [
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   0.99,
+   0.9788,
+   0.9649,
+   0.9561,
+   0.972,
+   0.9747,
+   0.9894,
+   0.9952
+  ],
+  "first_error_position": {
+   "none": 834,
+   "1": 0,
+   "2": 0,
+   "3": 0,
+   "4": 0,
+   "5": 10,
+   "6": 21,
+   "7": 34,
+   "8": 41,
+   "9": 25,
+   "10": 22,
+   "11": 9,
+   "12": 4
+  },
+  "dedup_removed": 0,
+  "seeds": [
+   14004,
+   14005
+  ]
+ },
+ "ext_4x6": {
+  "test_acc": 0.937,
+  "acc_by_column": {
+   "per_column": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.995,
+    0.975,
+    0.98,
+    0.98,
+    0.99,
+    0.999
+   ],
+   "cumulative": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.995,
+    0.971,
+    0.955,
+    0.944,
+    0.938,
+    0.937
+   ]
+  },
+  "digit_acc": 0.9919,
+  "n": 1000,
+  "per_step_given_correct_prefix": [
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   0.995,
+   0.9759,
+   0.9835,
+   0.9885,
+   0.9936,
+   0.9989
+  ],
+  "first_error_position": {
+   "none": 937,
+   "1": 0,
+   "2": 0,
+   "3": 0,
+   "4": 0,
+   "5": 5,
+   "6": 24,
+   "7": 16,
+   "8": 11,
+   "9": 6,
+   "10": 1
+  },
+  "seeds": [
+   14016,
+   14017
+  ]
+ },
+ "ext_4x7": {
+  "test_acc": 0.889,
+  "acc_by_column": {
+   "per_column": [
+    1.0,
+    1.0,
+    1.0,
+    0.995,
+    0.989,
+    0.972,
+    0.967,
+    0.977,
+    0.979,
+    0.985,
+    0.995
+   ],
+   "cumulative": [
+    1.0,
+    1.0,
+    1.0,
+    0.995,
+    0.984,
+    0.957,
+    0.929,
+    0.914,
+    0.9,
+    0.892,
+    0.889
+   ]
+  },
+  "digit_acc": 0.9871818181818182,
+  "n": 1000,
+  "per_step_given_correct_prefix": [
+   1.0,
+   1.0,
+   1.0,
+   0.995,
+   0.9889,
+   0.9726,
+   0.9707,
+   0.9839,
+   0.9847,
+   0.9911,
+   0.9966
+  ],
+  "first_error_position": {
+   "none": 889,
+   "1": 0,
+   "2": 0,
+   "3": 0,
+   "4": 5,
+   "5": 11,
+   "6": 27,
+   "7": 28,
+   "8": 15,
+   "9": 14,
+   "10": 8,
+   "11": 3
+  },
+  "seeds": [
+   14018,
+   14019
+  ]
+ },
+ "donor": {
+  "pos4": {
+   "donor_consistent": 0.978,
+   "recipient_consistent": 0.6586666666666666,
+   "chance_overlap": 0.6726666666666666,
+   "later_digits": 6,
+   "row_level": {
+    "donor_consistent": 0.893,
+    "recipient_consistent": 0.019,
+    "chance_overlap": 0.019
+   },
+   "n": 1000
+  },
+  "pos8": {
+   "donor_consistent": 0.9776,
+   "recipient_consistent": 0.5652,
+   "chance_overlap": 0.5684,
+   "later_digits": 5,
+   "row_level": {
+    "donor_consistent": 0.905,
+    "recipient_consistent": 0.013,
+    "chance_overlap": 0.012
+   },
+   "n": 1000
+  },
+  "pos12": {
+   "donor_consistent": 0.9735,
+   "recipient_consistent": 0.4575,
+   "chance_overlap": 0.46075,
+   "later_digits": 4,
+   "row_level": {
+    "donor_consistent": 0.918,
+    "recipient_consistent": 0.009,
+    "chance_overlap": 0.009
+   },
+   "n": 1000
+  }
+ },
+ "compute": {
+  "flops": 12187123248.0,
+  "flops_trunk": 11850958848.0,
+  "flops_branch": 336164400.0,
+  "sequential_passes": 17,
+  "lm_head_rows": 8,
+  "tokens_processed": 66,
+  "convention": "\u00a798 (boxes.core.Meter, full vocabulary); every pair segment a fresh pass"
+ },
+ "s147": {
+  "acc_by_magnitude": {
+   "lt100": 0.9964907355418304,
+   "100_199": 0.9791183294663574,
+   "ge200": 1.0
+  },
+  "head_ablation": {
+   "add_zeroed": {
+    "test_acc": 0.001,
+    "per_column": [
+     1.0,
+     0.547,
+     0.098,
+     0.03,
+     0.045,
+     0.031,
+     0.052,
+     0.392
+    ]
+   },
+   "delta_zeroed": {
+    "test_acc": 0.0,
+    "per_column": [
+     1.0,
+     0.075,
+     0.101,
+     0.104,
+     0.1,
+     0.09,
+     0.251,
+     0.218
+    ]
+   }
+  },
+  "colsum_readout_r2": 0.8042937625270283,
+  "colsum_readout_r2_by_column": {
+   "1": -0.0022798107539301338,
+   "2": 0.8553438972479939,
+   "3": 0.8772015147685958,
+   "4": 0.883539239402028,
+   "5": 0.8273420508516642,
+   "6": 0.8271352105369647,
+   "7": 0.8521798845382148,
+   "8": 0.8970113474136617
+  },
+  "colsum_readout_def": "ridge R^2 of the true column accumulator from the additive heads' read phi(q)^T S (384 d) at each segment's last token",
+  "rho_by_head_type": {
+   "T0": 2,
+   "n": 300,
+   "eps": {
+    "0.01": {
+     "additive": {
+      "rho_k": [
+       1.0002000331878662,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0
+      ],
+      "dist_med_k": [
+       33.04869079589844,
+       33.04945373535156,
+       33.05062484741211,
+       33.0535888671875,
+       33.0521240234375,
+       33.0517578125,
+       33.05168151855469,
+       33.05165100097656,
+       33.05252456665039,
+       33.0526123046875,
+       33.053672790527344,
+       33.05458068847656,
+       33.05488586425781,
+       33.05487060546875,
+       33.05472946166992
+      ],
+      "rho_k3": 1.0000652074813843
+     },
+     "delta": {
+      "rho_k": [
+       0.7287999987602234,
+       0.8084999918937683,
+       0.8938999772071838,
+       0.9207000136375427,
+       0.895799994468689,
+       0.9264000058174133,
+       0.945900022983551,
+       0.9509000182151794,
+       0.9359999895095825,
+       0.939300000667572,
+       0.9613000154495239,
+       0.9549000263214111,
+       0.9535999894142151,
+       0.9631999731063843
+      ],
+      "dist_med_k": [
+       0.665274977684021,
+       0.48802700638771057,
+       0.38822901248931885,
+       0.3453570008277893,
+       0.31844401359558105,
+       0.28456100821495056,
+       0.26257699728012085,
+       0.24620899558067322,
+       0.23403500020503998,
+       0.21813100576400757,
+       0.2043209969997406,
+       0.19631099700927734,
+       0.18779799342155457,
+       0.17894600331783295,
+       0.17263199388980865
+      ],
+      "rho_k3": 0.8075700402259827
+     }
+    },
+    "0.1": {
+     "additive": {
+      "rho_k": [
+       1.0002000331878662,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0
+      ],
+      "dist_med_k": [
+       330.4869384765625,
+       330.49462890625,
+       330.5060119628906,
+       330.5357666015625,
+       330.5212097167969,
+       330.5174865722656,
+       330.5167236328125,
+       330.5164794921875,
+       330.525390625,
+       330.5263671875,
+       330.53692626953125,
+       330.5458984375,
+       330.5491027832031,
+       330.5488586425781,
+       330.54742431640625
+      ],
+      "rho_k3": 1.0000652074813843
+     },
+     "delta": {
+      "rho_k": [
+       0.7287999987602234,
+       0.8084999918937683,
+       0.8938000202178955,
+       0.9207000136375427,
+       0.895799994468689,
+       0.9264000058174133,
+       0.945900022983551,
+       0.9509000182151794,
+       0.9359999895095825,
+       0.939300000667572,
+       0.9613000154495239,
+       0.9549000263214111,
+       0.9535999894142151,
+       0.9631999731063843
+      ],
+      "dist_med_k": [
+       6.652750015258789,
+       4.880866050720215,
+       3.8828110694885254,
+       3.4540910720825195,
+       3.1845879554748535,
+       2.8457210063934326,
+       2.625859022140503,
+       2.4622089862823486,
+       2.340524911880493,
+       2.1814138889312744,
+       2.043272018432617,
+       1.9631370306015015,
+       1.8781180381774902,
+       1.7894699573516846,
+       1.7265369892120361
+      ],
+      "rho_k3": 0.8075570464134216
+     }
+    }
+   }
+  },
+  "mem_layer": 6,
+  "mem_add_heads": 6,
+  "mem_delta_heads": 6,
+  "read_norm_ratio_by_handoff": {
+   "step0": null,
+   "end": [
+    0.0,
+    6.155851364135742,
+    6.733710765838623,
+    2.439854621887207,
+    3.9686450958251953,
+    3.5273423194885254,
+    1.392126441001892,
+    2.789278984069824,
+    2.6412622928619385,
+    2.4019110202789307,
+    1.0076348781585693,
+    2.199497699737549,
+    2.0239338874816895,
+    0.8798109292984009,
+    1.802093744277954,
+    0.8524410128593445,
+    1.4796266555786133
+   ]
+  },
+  "alpha_by_head": {
+   "end": {
+    "mean_alpha": [
+     0.943444,
+     0.778143,
+     0.82173,
+     0.992441,
+     0.96401,
+     0.808764
+    ],
+    "sigmoid_bias": [
+     0.99292,
+     0.992653,
+     0.992679,
+     0.993183,
+     0.993009,
+     0.992682
+    ]
+   },
+   "checkpoints": []
+  },
+  "g_add_init": null,
+  "g_add": 0.0002720864722505212,
+  "g_del": 1.0751674175262451,
+  "mem_group_gain": true,
+  "gain_param": "exp(s)"
+ },
+ "ext_4x16": {
+  "test_acc": 0.107,
+  "acc_by_column": {
+   "per_column": [
+    1.0,
+    1.0,
+    1.0,
+    0.996,
+    0.992,
+    0.982,
+    0.965,
+    0.945,
+    0.938,
+    0.932,
+    0.924,
+    0.905,
+    0.875,
+    0.822,
+    0.784,
+    0.718,
+    0.501,
+    0.546,
+    0.627,
+    0.897
+   ],
+   "cumulative": [
+    1.0,
+    1.0,
+    1.0,
+    0.996,
+    0.988,
+    0.974,
+    0.943,
+    0.899,
+    0.856,
+    0.808,
+    0.764,
+    0.714,
+    0.643,
+    0.571,
+    0.487,
+    0.403,
+    0.237,
+    0.16,
+    0.114,
+    0.107
+   ]
+  },
+  "digit_acc": 0.86745,
+  "n": 1000,
+  "per_step_given_correct_prefix": [
+   1.0,
+   1.0,
+   1.0,
+   0.996,
+   0.992,
+   0.9858,
+   0.9682,
+   0.9533,
+   0.9522,
+   0.9439,
+   0.9455,
+   0.9346,
+   0.9006,
+   0.888,
+   0.8529,
+   0.8275,
+   0.5881,
+   0.6751,
+   0.7125,
+   0.9386
+  ],
+  "first_error_position": {
+   "none": 107,
+   "1": 0,
+   "2": 0,
+   "3": 0,
+   "4": 4,
+   "5": 8,
+   "6": 14,
+   "7": 31,
+   "8": 44,
+   "9": 43,
+   "10": 48,
+   "11": 44,
+   "12": 50,
+   "13": 71,
+   "14": 72,
+   "15": 84,
+   "16": 84,
+   "17": 166,
+   "18": 77,
+   "19": 46,
+   "20": 7
+  },
+  "seeds": [
+   14006,
+   14007
+  ]
+ },
+ "s154": {
+  "colsum_r2_by_segment": [
+   -0.0022798107539301338,
+   0.9100839728235512,
+   0.8877493481939718,
+   0.8168454122927127,
+   0.8805619303324304,
+   0.9011926219901621,
+   0.8376595872676997,
+   0.8631797763815536,
+   0.906969328070777,
+   0.9288739121287959,
+   0.8220485429295317,
+   0.8517268963445142,
+   0.9199887567958488,
+   0.8516012749551358,
+   0.8432491395564526,
+   0.8521798845382148,
+   0.8970113474136617
+  ],
+  "colsum_def": "held-out ridge R^2 of the current column's running sum (incl. carry-in) from the additive read (384-d) at each segment's last token",
+  "carry_probe_by_column": {
+   "4x4": [
+    0.9994781198105449,
+    0.9919639638591995,
+    0.9833539730534104,
+    0.9823870715554319,
+    0.9840198638594011,
+    0.9888964145982934
+   ],
+   "4x8": [
+    0.9996320342917183,
+    0.9922052289905109,
+    0.9873707076620278,
+    0.9839190502068929,
+    0.9794467212112052,
+    0.9793695845559217,
+    0.9824671240575226,
+    0.9786519433073825,
+    0.9851749640155744,
+    0.9887914808582522
+   ],
+   "def": "held-out ridge R^2 of column k's carry-in floor(c_{k-1}/10) from the delta read (384-d) at column k's first pair, k = 1.."
+  },
+  "c7_edit": null,
+  "add_reset": null,
+  "add_rotary": null,
+  "c7_state_edit": {
+   "additive": {
+    "-2": {
+     "shifted_share": 0.0003333333333333333,
+     "unedited_share": 0.9950000000000001,
+     "carry_follow_share": 0.8016666666666667,
+     "n": 3000,
+     "by_column": {
+      "2": {
+       "shifted_share": 0.0,
+       "unedited_share": 1.0,
+       "carry_follow_share": 0.808,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      },
+      "3": {
+       "shifted_share": 0.0,
+       "unedited_share": 1.0,
+       "carry_follow_share": 0.814,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      },
+      "4": {
+       "shifted_share": 0.0,
+       "unedited_share": 1.0,
+       "carry_follow_share": 0.802,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      },
+      "5": {
+       "shifted_share": 0.002,
+       "unedited_share": 0.992,
+       "carry_follow_share": 0.792,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      },
+      "6": {
+       "shifted_share": 0.0,
+       "unedited_share": 0.988,
+       "carry_follow_share": 0.78,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      },
+      "7": {
+       "shifted_share": 0.0,
+       "unedited_share": 0.99,
+       "carry_follow_share": 0.814,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      }
+     }
+    },
+    "-1": {
+     "shifted_share": 0.0026666666666666666,
+     "unedited_share": 0.9950000000000001,
+     "carry_follow_share": 0.894,
+     "n": 3000,
+     "by_column": {
+      "2": {
+       "shifted_share": 0.0,
+       "unedited_share": 1.0,
+       "carry_follow_share": 0.894,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      },
+      "3": {
+       "shifted_share": 0.0,
+       "unedited_share": 1.0,
+       "carry_follow_share": 0.904,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      },
+      "4": {
+       "shifted_share": 0.0,
+       "unedited_share": 1.0,
+       "carry_follow_share": 0.888,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      },
+      "5": {
+       "shifted_share": 0.006,
+       "unedited_share": 0.992,
+       "carry_follow_share": 0.876,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      },
+      "6": {
+       "shifted_share": 0.01,
+       "unedited_share": 0.988,
+       "carry_follow_share": 0.89,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      },
+      "7": {
+       "shifted_share": 0.0,
+       "unedited_share": 0.99,
+       "carry_follow_share": 0.912,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      }
+     }
+    },
+    "+1": {
+     "shifted_share": 0.002,
+     "unedited_share": 0.9950000000000001,
+     "carry_follow_share": 0.9020000000000001,
+     "n": 3000,
+     "by_column": {
+      "2": {
+       "shifted_share": 0.0,
+       "unedited_share": 1.0,
+       "carry_follow_share": 0.922,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      },
+      "3": {
+       "shifted_share": 0.0,
+       "unedited_share": 1.0,
+       "carry_follow_share": 0.908,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      },
+      "4": {
+       "shifted_share": 0.0,
+       "unedited_share": 1.0,
+       "carry_follow_share": 0.888,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      },
+      "5": {
+       "shifted_share": 0.0,
+       "unedited_share": 0.992,
+       "carry_follow_share": 0.894,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      },
+      "6": {
+       "shifted_share": 0.002,
+       "unedited_share": 0.988,
+       "carry_follow_share": 0.9,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      },
+      "7": {
+       "shifted_share": 0.01,
+       "unedited_share": 0.99,
+       "carry_follow_share": 0.9,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      }
+     }
+    },
+    "+2": {
+     "shifted_share": 0.0,
+     "unedited_share": 0.9950000000000001,
+     "carry_follow_share": 0.8143333333333334,
+     "n": 3000,
+     "by_column": {
+      "2": {
+       "shifted_share": 0.0,
+       "unedited_share": 1.0,
+       "carry_follow_share": 0.824,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      },
+      "3": {
+       "shifted_share": 0.0,
+       "unedited_share": 1.0,
+       "carry_follow_share": 0.81,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      },
+      "4": {
+       "shifted_share": 0.0,
+       "unedited_share": 1.0,
+       "carry_follow_share": 0.826,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      },
+      "5": {
+       "shifted_share": 0.0,
+       "unedited_share": 0.992,
+       "carry_follow_share": 0.798,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      },
+      "6": {
+       "shifted_share": 0.0,
+       "unedited_share": 0.988,
+       "carry_follow_share": 0.812,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      },
+      "7": {
+       "shifted_share": 0.0,
+       "unedited_share": 0.99,
+       "carry_follow_share": 0.816,
+       "next_unchanged_share": 1.0,
+       "n": 500
+      }
+     }
+    }
+   },
+   "delta": {
+    "-2": {
+     "carry_shift_share": 0.0003333333333333333,
+     "by_next_column": {
+      "3": {
+       "carry_shift_share": 0.0,
+       "unedited_share": 1.0,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      },
+      "4": {
+       "carry_shift_share": 0.0,
+       "unedited_share": 1.0,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      },
+      "5": {
+       "carry_shift_share": 0.002,
+       "unedited_share": 0.992,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      },
+      "6": {
+       "carry_shift_share": 0.0,
+       "unedited_share": 0.988,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      },
+      "7": {
+       "carry_shift_share": 0.0,
+       "unedited_share": 0.99,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      },
+      "8": {
+       "carry_shift_share": 0.0,
+       "unedited_share": 0.998,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      }
+     }
+    },
+    "-1": {
+     "carry_shift_share": 0.0030000000000000005,
+     "by_next_column": {
+      "3": {
+       "carry_shift_share": 0.0,
+       "unedited_share": 1.0,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      },
+      "4": {
+       "carry_shift_share": 0.0,
+       "unedited_share": 1.0,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      },
+      "5": {
+       "carry_shift_share": 0.006,
+       "unedited_share": 0.992,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      },
+      "6": {
+       "carry_shift_share": 0.012,
+       "unedited_share": 0.988,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      },
+      "7": {
+       "carry_shift_share": 0.0,
+       "unedited_share": 0.99,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      },
+      "8": {
+       "carry_shift_share": 0.0,
+       "unedited_share": 0.998,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      }
+     }
+    },
+    "+1": {
+     "carry_shift_share": 0.0023333333333333335,
+     "by_next_column": {
+      "3": {
+       "carry_shift_share": 0.0,
+       "unedited_share": 1.0,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      },
+      "4": {
+       "carry_shift_share": 0.0,
+       "unedited_share": 1.0,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      },
+      "5": {
+       "carry_shift_share": 0.0,
+       "unedited_share": 0.992,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      },
+      "6": {
+       "carry_shift_share": 0.002,
+       "unedited_share": 0.988,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      },
+      "7": {
+       "carry_shift_share": 0.01,
+       "unedited_share": 0.99,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      },
+      "8": {
+       "carry_shift_share": 0.002,
+       "unedited_share": 0.998,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      }
+     }
+    },
+    "+2": {
+     "carry_shift_share": 0.0,
+     "by_next_column": {
+      "3": {
+       "carry_shift_share": 0.0,
+       "unedited_share": 1.0,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      },
+      "4": {
+       "carry_shift_share": 0.0,
+       "unedited_share": 1.0,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      },
+      "5": {
+       "carry_shift_share": 0.0,
+       "unedited_share": 0.992,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      },
+      "6": {
+       "carry_shift_share": 0.0,
+       "unedited_share": 0.988,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      },
+      "7": {
+       "carry_shift_share": 0.0,
+       "unedited_share": 0.99,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      },
+      "8": {
+       "carry_shift_share": 0.0,
+       "unedited_share": 0.998,
+       "prev_unchanged_share": 1.0,
+       "n": 500
+      }
+     }
+    }
+   },
+   "carry_probe_r2_score_half": {
+    "3": 0.992919967769808,
+    "4": 0.9859183948067795,
+    "5": 0.9840914222040996,
+    "6": 0.984566944228736,
+    "7": 0.9894165566134802,
+    "8": 0.9956265464696898
+   },
+   "descriptive": true,
+   "propagation": {
+    "by_k": {
+     "2": {
+      "-1": {
+       "propagation_share": 0.0,
+       "random_edit_share": 0.0,
+       "null_value": 0.0,
+       "n": 48,
+       "coupling_share": 0.0,
+       "random_coupling_share": 0.0
+      },
+      "+1": {
+       "propagation_share": 0.0,
+       "random_edit_share": 0.0,
+       "null_value": 0.0,
+       "n": 46,
+       "coupling_share": 0.0,
+       "random_coupling_share": 0.0
+      }
+     },
+     "3": {
+      "-1": {
+       "propagation_share": 0.0,
+       "random_edit_share": 0.0,
+       "null_value": 0.0,
+       "n": 53,
+       "coupling_share": 0.0,
+       "random_coupling_share": 0.0
+      },
+      "+1": {
+       "propagation_share": 0.0,
+       "random_edit_share": 0.0,
+       "null_value": 0.0,
+       "n": 52,
+       "coupling_share": 0.0,
+       "random_coupling_share": 0.0
+      }
+     },
+     "4": {
+      "-1": {
+       "propagation_share": 0.0,
+       "random_edit_share": 0.0,
+       "null_value": 0.0,
+       "n": 56,
+       "coupling_share": 0.0,
+       "random_coupling_share": 0.0
+      },
+      "+1": {
+       "propagation_share": 0.0,
+       "random_edit_share": 0.0,
+       "null_value": 0.0,
+       "n": 47,
+       "coupling_share": 0.0,
+       "random_coupling_share": 0.0
+      }
+     },
+     "5": {
+      "-1": {
+       "propagation_share": 0.0,
+       "random_edit_share": 0.0,
+       "null_value": 0.0,
+       "n": 50,
+       "coupling_share": 0.0,
+       "random_coupling_share": 0.0
+      },
+      "+1": {
+       "propagation_share": 0.0,
+       "random_edit_share": 0.0,
+       "null_value": 0.0,
+       "n": 45,
+       "coupling_share": 0.0,
+       "random_coupling_share": 0.0
+      }
+     }
+    },
+    "pooled": {
+     "propagation_share": 0.0,
+     "random_edit_share": 0.0,
+     "null_value": 0.0,
+     "n": 397,
+     "coupling_share": 0.0,
+     "random_coupling_share": 0.0
+    },
+    "def": "delta-head carry edit at column k+1's first pair (k = 2..5, delta +-1, minimum-norm rank 1 moving column k+1's carry-in probe by delta); column k+2's digit vs (c^_{k+2} - r_{k+1} + floor((c^_{k+1} + delta)/10)) mod 10 on rows where the edit changes r_{k+1}; random_edit: an equal-norm random rank-1 edit; null_value: the unedited digit already equals the edited-chain value"
+   },
+   "def": "\u00a7154 C7 STATE edits (descriptive; Audit / Theory). S is a function of the input tokens only (no read -> write path), so an edit reaches\nlater columns only through the perturbed state itself.\n(a) additive: entering column k's emission step (after that step's SHIFT reset when it starts a column), Delta S_add per head h =\n    phi(q_T,h) (delta u_h / g_add)^T / ||phi(q_T,h)||^2 (minimum-norm rank 1), u = w_add / ||w_add||^2 for the raw ridge of the accumulator\n    c^_k on the additive read at emission steps: the read at the emission token moves by exactly delta u. Reports column k's\n    shifted_share / unedited_share and column k+1's digit (next_unchanged_share; under SHIFT the additive store is zeroed before k+1).\n(b) delta: after column k's last pair, Delta S_del per head = (r_h / g_del) z_h^T / ||z_h||^2 with z = A_0 ... A_{T-1} q_d (the\n    segment's delta transforms A_t = alpha_t (I - beta_t k_t k_t^T) applied to the first-pair token's normalised q), r = delta w_c / ||w_c||^2\n    for the raw ridge of column k+1's carry-in on the delta read at its first pair: that read moves by exactly delta r. Reports column\n    k+1's carry_shift_share (digit == (c^_{k+1} + delta) mod 10), unedited_share and the probe's held-out R^2. k = 7: k+1 is the flush."
+  },
+  "acc_by_column_carry": {
+   "1": {
+    "carry0": 1.0,
+    "carry_nonzero": null,
+    "n_carry0": 1000,
+    "n_carry_nonzero": 0
+   },
+   "2": {
+    "carry0": 1.0,
+    "carry_nonzero": 1.0,
+    "n_carry0": 441,
+    "n_carry_nonzero": 559
+   },
+   "3": {
+    "carry0": 1.0,
+    "carry_nonzero": 1.0,
+    "n_carry0": 123,
+    "n_carry_nonzero": 877
+   },
+   "4": {
+    "carry0": 1.0,
+    "carry_nonzero": 0.9969199178644764,
+    "n_carry0": 26,
+    "n_carry_nonzero": 974
+   },
+   "5": {
+    "carry0": 1.0,
+    "carry_nonzero": 0.98998998998999,
+    "n_carry0": 1,
+    "n_carry_nonzero": 999
+   },
+   "6": {
+    "carry0": 1.0,
+    "carry_nonzero": 0.9838056680161943,
+    "n_carry0": 12,
+    "n_carry_nonzero": 988
+   },
+   "7": {
+    "carry0": 1.0,
+    "carry_nonzero": 0.9874081846799581,
+    "n_carry0": 47,
+    "n_carry_nonzero": 953
+   },
+   "8": {
+    "carry0": 1.0,
+    "carry_nonzero": 0.9976076555023924,
+    "n_carry0": 164,
+    "n_carry_nonzero": 836
+   }
+  },
+  "alpha_by_flag": {
+   "new_column": [
+    0.923827,
+    0.751835,
+    0.796843,
+    0.992418,
+    0.96468,
+    0.776482
+   ],
+   "same_column": [
+    0.95536,
+    0.780664,
+    0.827947,
+    0.992489,
+    0.961461,
+    0.817518
+   ],
+   "flush": [
+    0.973525,
+    0.939613,
+    0.93999,
+    0.992162,
+    0.982261,
+    0.955955
+   ]
+  },
+  "propagation": {
+   "by_k": {
+    "2": {
+     "-1": {
+      "propagation_share": 0.0,
+      "random_edit_share": 0.0,
+      "null_value": 0.0,
+      "n": 48,
+      "coupling_share": 0.0,
+      "random_coupling_share": 0.0
+     },
+     "+1": {
+      "propagation_share": 0.0,
+      "random_edit_share": 0.0,
+      "null_value": 0.0,
+      "n": 46,
+      "coupling_share": 0.0,
+      "random_coupling_share": 0.0
+     }
+    },
+    "3": {
+     "-1": {
+      "propagation_share": 0.0,
+      "random_edit_share": 0.0,
+      "null_value": 0.0,
+      "n": 53,
+      "coupling_share": 0.0,
+      "random_coupling_share": 0.0
+     },
+     "+1": {
+      "propagation_share": 0.0,
+      "random_edit_share": 0.0,
+      "null_value": 0.0,
+      "n": 52,
+      "coupling_share": 0.0,
+      "random_coupling_share": 0.0
+     }
+    },
+    "4": {
+     "-1": {
+      "propagation_share": 0.0,
+      "random_edit_share": 0.0,
+      "null_value": 0.0,
+      "n": 56,
+      "coupling_share": 0.0,
+      "random_coupling_share": 0.0
+     },
+     "+1": {
+      "propagation_share": 0.0,
+      "random_edit_share": 0.0,
+      "null_value": 0.0,
+      "n": 47,
+      "coupling_share": 0.0,
+      "random_coupling_share": 0.0
+     }
+    },
+    "5": {
+     "-1": {
+      "propagation_share": 0.0,
+      "random_edit_share": 0.0,
+      "null_value": 0.0,
+      "n": 50,
+      "coupling_share": 0.0,
+      "random_coupling_share": 0.0
+     },
+     "+1": {
+      "propagation_share": 0.0,
+      "random_edit_share": 0.0,
+      "null_value": 0.0,
+      "n": 45,
+      "coupling_share": 0.0,
+      "random_coupling_share": 0.0
+     }
+    }
+   },
+   "pooled": {
+    "propagation_share": 0.0,
+    "random_edit_share": 0.0,
+    "null_value": 0.0,
+    "n": 397,
+    "coupling_share": 0.0,
+    "random_coupling_share": 0.0
+   },
+   "def": "delta-head carry edit at column k+1's first pair (k = 2..5, delta +-1, minimum-norm rank 1 moving column k+1's carry-in probe by delta); column k+2's digit vs (c^_{k+2} - r_{k+1} + floor((c^_{k+1} + delta)/10)) mod 10 on rows where the edit changes r_{k+1}; random_edit: an equal-norm random rank-1 edit; null_value: the unedited digit already equals the edited-chain value"
+  }
+ },
+ "s155": {
+  "propagation": {
+   "by_k": {
+    "2": {
+     "-1": {
+      "propagation_share": 0.0,
+      "random_edit_share": 0.0,
+      "null_value": 0.0,
+      "n": 48,
+      "coupling_share": 0.0,
+      "random_coupling_share": 0.0
+     },
+     "+1": {
+      "propagation_share": 0.0,
+      "random_edit_share": 0.0,
+      "null_value": 0.0,
+      "n": 46,
+      "coupling_share": 0.0,
+      "random_coupling_share": 0.0
+     }
+    },
+    "3": {
+     "-1": {
+      "propagation_share": 0.0,
+      "random_edit_share": 0.0,
+      "null_value": 0.0,
+      "n": 53,
+      "coupling_share": 0.0,
+      "random_coupling_share": 0.0
+     },
+     "+1": {
+      "propagation_share": 0.0,
+      "random_edit_share": 0.0,
+      "null_value": 0.0,
+      "n": 52,
+      "coupling_share": 0.0,
+      "random_coupling_share": 0.0
+     }
+    },
+    "4": {
+     "-1": {
+      "propagation_share": 0.0,
+      "random_edit_share": 0.0,
+      "null_value": 0.0,
+      "n": 56,
+      "coupling_share": 0.0,
+      "random_coupling_share": 0.0
+     },
+     "+1": {
+      "propagation_share": 0.0,
+      "random_edit_share": 0.0,
+      "null_value": 0.0,
+      "n": 47,
+      "coupling_share": 0.0,
+      "random_coupling_share": 0.0
+     }
+    },
+    "5": {
+     "-1": {
+      "propagation_share": 0.0,
+      "random_edit_share": 0.0,
+      "null_value": 0.0,
+      "n": 50,
+      "coupling_share": 0.0,
+      "random_coupling_share": 0.0
+     },
+     "+1": {
+      "propagation_share": 0.0,
+      "random_edit_share": 0.0,
+      "null_value": 0.0,
+      "n": 45,
+      "coupling_share": 0.0,
+      "random_coupling_share": 0.0
+     }
+    }
+   },
+   "pooled": {
+    "propagation_share": 0.0,
+    "random_edit_share": 0.0,
+    "null_value": 0.0,
+    "n": 397,
+    "coupling_share": 0.0,
+    "random_coupling_share": 0.0
+   },
+   "def": "delta-head carry edit at column k+1's first pair (k = 2..5, delta +-1, minimum-norm rank 1 moving column k+1's carry-in probe by delta); column k+2's digit vs (c^_{k+2} - r_{k+1} + floor((c^_{k+1} + delta)/10)) mod 10 on rows where the edit changes r_{k+1}; random_edit: an equal-norm random rank-1 edit; null_value: the unedited digit already equals the edited-chain value"
+  },
+  "recurrence": [
+   {
+    "step": 1000,
+    "gamma": 1.0,
+    "write_var_from_read_r2": 0.4032604324383827,
+    "write_var_from_input_r2": 0.6162188593572027,
+    "write_var_from_input_read_r2": 0.6758949896124478,
+    "write_var_incremental_read_r2": 0.0596761302552451,
+    "rho_jvp": 0.89637690782547,
+    "rho_loop": 0.27095818519592285,
+    "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+    "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32",
+    "write_norm_ratio": 1.3580289489075241
+   },
+   {
+    "step": "end",
+    "write_var_from_read_r2": 0.4032604324383827,
+    "write_var_from_input_r2": 0.6162188593572027,
+    "write_var_from_input_read_r2": 0.6758949896124478,
+    "write_var_incremental_read_r2": 0.0596761302552451,
+    "rho_jvp": 0.8963929414749146,
+    "rho_loop": 0.2653123140335083,
+    "rho_method": "torch.func.jvp (SDPA math backend), fp32",
+    "rho_loop_method_fade0": "torch.func.jvp (SDPA math backend), fp32"
+   }
+  ],
+  "mem_norm_by_pass": {
+   "additive": [
+    1168.4422607421875,
+    2173.392578125,
+    3086.890625,
+    3802.731201171875,
+    4540.17724609375,
+    5284.2314453125,
+    5741.6591796875,
+    6208.11962890625,
+    6900.34375,
+    7526.21728515625,
+    7883.248046875,
+    8237.6943359375,
+    8867.1416015625,
+    9276.9443359375,
+    9734.2998046875,
+    10288.4140625,
+    10458.6279296875
+   ],
+   "delta": [
+    59.747894287109375,
+    64.66036224365234,
+    71.47660064697266,
+    73.62528228759766,
+    77.57621765136719,
+    80.1156005859375,
+    79.86971282958984,
+    81.59491729736328,
+    84.19002532958984,
+    86.71097564697266,
+    85.12530517578125,
+    84.73634338378906,
+    87.72079467773438,
+    84.70664978027344,
+    86.19374084472656,
+    83.45862579345703,
+    77.58602142333984
+   ]
+  },
+  "write_norm_ratio": [],
+  "write_grad_norm": [
+   {
+    "step": 100,
+    "mean": 0.6956524784196517,
+    "max": 22.330360412597656,
+    "median_prev_1k": 0.0,
+    "spike_100x": false,
+    "spike_100x_raw": false,
+    "spike_100x_floor": false
+   },
+   {
+    "step": 200,
+    "mean": 0.888753723075788,
+    "max": 8.017034530639648,
+    "median_prev_1k": 0.038614061661064625,
+    "spike_100x": false,
+    "spike_100x_raw": true,
+    "spike_100x_floor": false
+   },
+   {
+    "step": 300,
+    "mean": 0.7122111761852284,
+    "max": 6.704184055328369,
+    "median_prev_1k": 0.15245109051465988,
+    "spike_100x": false,
+    "spike_100x_raw": false,
+    "spike_100x_floor": false
+   },
+   {
+    "step": 400,
+    "mean": 0.4782637863614218,
+    "max": 3.106259346008301,
+    "median_prev_1k": 0.15919805318117142,
+    "spike_100x": false,
+    "spike_100x_raw": false,
+    "spike_100x_floor": false
+   },
+   {
+    "step": 500,
+    "mean": 0.5118146673405135,
+    "max": 3.5995020866394043,
+    "median_prev_1k": 0.1619964987039566,
+    "spike_100x": false,
+    "spike_100x_raw": false,
+    "spike_100x_floor": false
+   },
+   {
+    "step": 600,
+    "mean": 0.5970622969683609,
+    "max": 4.688746452331543,
+    "median_prev_1k": 0.18305115401744843,
+    "spike_100x": false,
+    "spike_100x_raw": false,
+    "spike_100x_floor": false
+   },
+   {
+    "step": 700,
+    "mean": 0.5261420131521299,
+    "max": 7.863682270050049,
+    "median_prev_1k": 0.18855247646570206,
+    "spike_100x": false,
+    "spike_100x_raw": false,
+    "spike_100x_floor": false
+   },
+   {
+    "step": 800,
+    "mean": 0.34890639392076994,
+    "max": 2.8950228691101074,
+    "median_prev_1k": 0.17645186185836792,
+    "spike_100x": false,
+    "spike_100x_raw": false,
+    "spike_100x_floor": false
+   },
+   {
+    "step": 900,
+    "mean": 0.6359752232878236,
+    "max": 6.553123474121094,
+    "median_prev_1k": 0.16296876966953278,
+    "spike_100x": false,
+    "spike_100x_raw": false,
+    "spike_100x_floor": false
+   },
+   {
+    "step": 1000,
+    "mean": 0.6283909978743759,
+    "max": 7.864457607269287,
+    "median_prev_1k": 0.17162632942199707,
+    "spike_100x": false,
+    "spike_100x_raw": false,
+    "spike_100x_floor": false
+   }
+  ],
+  "n_nonfinite": 0,
+  "mem_write": "top",
+  "write_mix": [
+   2000,
+   6000
+  ],
+  "gamma_final": 1.0,
+  "write_grad_spikes": [],
+  "write_grad_spikes_floor": []
+ },
+ "n_codes": null,
+ "eval_sec": 325,
+ "s166": {
+  "post_train_from": "s161_mix_4x4_s3",
+  "pt_steps": 1000,
+  "pt_lr": 2e-05,
+  "init_mode": "zero",
+  "init_p": 0.5,
+  "state_source": "current",
+  "init_stats_hist": []
+ }
+}
