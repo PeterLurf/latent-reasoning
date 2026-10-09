@@ -11512,6 +11512,13 @@ how many think passes run in training.
   - HARNESS-BLOCKS requires the passes to fail where the model otherwise learns the task.
 * score_s178 is updated. The other readings are unchanged (checked on real-file fixtures).
 
+**§177 interim (2026-10-09 18:15 EDT; s177_tidx_s1, RTX 3090, 48k, fast_add; score_s177). (a) PASS-INDEX slot 1 is not EXACT and does not rescue INJECT: 4×4 0.001, every extension 0.0, flat at K′ 0 / 1 / 8 / 16 (≤ 0.002), every skipped write 0.001.**
+* **The index went essentially unused.** The learned gain's norm is 0.47, so the per-pass vector's norm is about 0.07 against the embedding scale of 3.96 (about 2%). It is nearly constant across t (0.068 at pass 1, 0.071 at pass 16).
+* **173-1:** delta cosine 0.878 / 0.974 / 0.993 at passes 2 / 3 / 4, against 0.947 / 0.983 / 0.993 at initialisation. Only pass 2 moves, the same pattern as §169 K8 and §176 RK / PROG.
+  - The probe is static across t (column 2 0.46–0.48; columns 3–7 at chance).
+  - MOVES-MECHANISM is negative.
+* A pass-distinguishing signal was available and was not used. (d) (fade + index; awaiting its 12k scaffold gate) and (f) (step-matched K) are pending.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
