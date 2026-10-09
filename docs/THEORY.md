@@ -11182,6 +11182,19 @@ how many think passes run in training.
 * **(f) and (g): HIT = DEEP + THINK-NECESSARY,** reported as "HIT (passes distinct)" or "HIT (passes not distinct)" by DISTINCT-PASSES.
 * FAIL keeps its ≥ 0.96 cosine conjunct unchanged. score_s177 is updated.
 
+**Note 177-2 (2026-10-09 10:25 EDT; pre-data; Experiments' build question). (d)'s answer path is INJECT's decoder throughout, and a scaffold gate is added.**
+* **The issue.** §161 MIX emits answer digits inside its pair passes, at each column's last pair, and its flush emits the final carry. INJECT's think passes only write, and a read-only decoder emits every digit at the end.
+  "Starts exactly as §161 MIX" in (d) therefore cannot hold for both the input and the answer path.
+* **(d) uses one answer path, INJECT's decoder, throughout.**
+  - Pass t's input is pair t's segment [EOT, a_i, b_j, column flag] with probability 1 − p, or the full text [EOT, a * b, " ."] with probability p. The index is added in both cases.
+  - K = 4n passes write only. The answer comes from INJECT's decoder after pass K.
+  - "As §161" refers to the per-pass input schedule only. The fade then changes one thing: the input.
+* **The p = 0 stage is a new configuration,** pair inputs with an end decoder, and is not known to be exact. So:
+  - **SCAFFOLD gate:** 4×4 accuracy at 12k (p = 0, before the fade starts; `s177.acc_by_p["0"]`) must be ≥ 0.90.
+  - Below that, (d) reads **"uninformative: the scaffold did not train"**, and none of its rules are read.
+  - The fade can only carry a learned per-pass job if one was learned while the schedule was visible.
+* **(f)'s per-bucket counts** are known only after training. They go to `<run>/kmatch_counts.json` {n: {K: micro-batches}}, copied to `s177.kmatch_counts`. args.json records k_window "0,2" and the bucketing rule.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
