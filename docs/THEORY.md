@@ -11263,6 +11263,17 @@ how many think passes run in training.
 
 **Note 177-4, the index scale (2026-10-09 11:38 EDT; pre-data; Audit).** s(t) is rescaled to the mean L2 norm of GPT-2's wte rows (computed once at init), instead of the raw sinusoid's norm of about √384 ≈ 19.6. That keeps the zero-initialised gain g's effective learning rate at the token-embedding scale. Step 0 is still §169 exactly.
 
+**Note 177-5 (2026-10-09 12:25 EDT; pre-data; Experiments' timing, b232). (f) may run as one masked batch; compute counts each item's own passes.**
+* **Cost:** the n-bucketed form runs at 2.73 s / step against §170 K8's 0.656 on the same 3090, so about 36 h and $8.5 per seed.
+* **The bucketing has no registration purpose beyond holding K constant within a batch.** An equivalent single-batch form is allowed:
+  - every item runs K_max passes in one batch;
+  - each item's memory writes are masked after its own bucket's K, so the decoder reads the memory exactly as it stood after K passes;
+  - K is still drawn per n-bucket per step from n + U{0, 1, 2}.
+  - Items are independent within a batch (no batch-norm; per-token LayerNorm), so states and gradients are the same.
+* **Gate:** on a small mixed-n batch, the masked form's loss and per-parameter gradients match the bucketed form's (bf16 tolerance, or bitwise in fp32), and the per-item final memories match.
+* **Compute disclosure:** compute_by_n counts each item's own K passes, not K_max. The masked passes are an implementation artefact, not the method's compute.
+* No rule changes.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
