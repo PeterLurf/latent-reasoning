@@ -264,6 +264,31 @@ class InjectN(torch.nn.Module):
         return x[:, 4:].cpu().numpy()
 
 
+def kmatch_loss(m, items, kitem, dev, ac, masked=True):
+    """§177 (f) (notes 177-4 / 177-5): the answer CE (mean over items) with item i thinking kitem[i] passes -> (loss, final S in item order).
+    masked (the training form): ONE batch for K_max passes; after pass t each item's state is the new one only while t <= its K (a state-level select,
+    Audit: the gated-delta decay / gamma / fade could move S on a pass with no token writes), so S is frozen at its own K and the gradient flows through
+    the active branch only. bucketed (the reference): items grouped by K, each group run separately (§177 as first built)."""
+    tgt = torch.tensor(NUM_IDS[[it["t"] for it in items]], device=dev)
+    if masked:
+        x, msk = m.think_inputs(items, dev); kv = torch.tensor(np.asarray(kitem), device=dev)
+        with ac():
+            S = m.mem.zero_state(len(items), dev)
+            for t in range(1, int(max(kitem)) + 1):
+                S = torch.where((kv >= t)[:, None, None, None], m.write(S, x, msk), S)
+            lg = m.dec_logits(S, items, dev)
+        return Fn.cross_entropy(lg, tgt), S
+    tot, Sall = 0.0, [None] * len(items)
+    for k_ in sorted(set(int(k) for k in kitem)):
+        ix = [i for i, k in enumerate(kitem) if int(k) == k_]; sub = [items[i] for i in ix]; x, msk = m.think_inputs(sub, dev)
+        with ac():
+            S = m.think(m.mem.zero_state(len(sub), dev), x, msk, k_); lg = m.dec_logits(S, sub, dev)
+        tot = tot + Fn.cross_entropy(lg, tgt[ix]) * (len(sub) / len(items))
+        for r_, i in enumerate(ix):
+            Sall[i] = S[r_]
+    return tot, torch.stack(Sall)
+
+
 def ans_token_acc(lg, items):
     return (lg[:, NUM_IDS].argmax(-1).cpu().numpy() == np.array([it["t"] for it in items])), lg.argmax(-1).cpu().numpy()
 
@@ -351,7 +376,7 @@ def main():
     ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", default=None); ap.add_argument("--log_every", type=int, default=100)
     ap.add_argument("--cot_eval_bs", type=int, default=64, help="TEXT-COT generation batch (KV cache; b223 OOMed at 250 on n = 16 chains)"); ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt (no training; writes args_eval.json; model.pt / args.json / log untouched)"); ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--per_n", type=int, default=1000); ap.add_argument("--serial_pool", type=int, default=2200); ap.add_argument("--auto_micro", action="store_true")
     ap.add_argument("--mem_budget", type=float, default=21.0); ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--time_steps", type=int, default=0, help="cost check: train this many steps, report s/step, exit")
-    ap.add_argument("--eval_at", type=int, default=0, help="also evaluate acc_by_n at this step -> eval_<k>k.json"); ap.add_argument("--aux_step", type=float, default=0.0, help="§175: lambda of the read-only step decoder CE (0 = off: the §170 path)"); ap.add_argument("--aux_fade", default="36000,48000", help="§175: lambda constant to the first step, then linear to 0 at the second"); ap.add_argument("--k_window", default="", help="§177 (f): 'lo,hi' -> each n-bucketed micro-batch runs K = n + U{lo..hi} think passes (inject)"); ap.add_argument("--fast_add", action="store_true", help="deltamem.FAST_ADD: the additive heads' pass writes as one sum (Audit 2026-10-09; scratch/gate_fastadd.py)"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
+    ap.add_argument("--eval_at", type=int, default=0, help="also evaluate acc_by_n at this step -> eval_<k>k.json"); ap.add_argument("--aux_step", type=float, default=0.0, help="§175: lambda of the read-only step decoder CE (0 = off: the §170 path)"); ap.add_argument("--aux_fade", default="36000,48000", help="§175: lambda constant to the first step, then linear to 0 at the second"); ap.add_argument("--kmatch_impl", default="masked", choices=["masked", "bucketed"], help="§177 (f): note 177-5's masked single batch, or the per-K groups"); ap.add_argument("--k_window", default="", help="§177 (f): 'lo,hi' -> each n-bucketed micro-batch runs K = n + U{lo..hi} think passes (inject)"); ap.add_argument("--fast_add", action="store_true", help="deltamem.FAST_ADD: the additive heads' pass writes as one sum (Audit 2026-10-09; scratch/gate_fastadd.py)"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); a.task = "nested"; import boxes.deltamem as DM_; DM_.FAST_ADD = bool(a.fast_add); os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale; K = a.think_k if a.arm == "inject" else 0
     if a.arm != "inject":
         a.mem_write = a.write_mix_start = a.write_mix_end = None; a.think_k = 0
@@ -601,11 +626,14 @@ def main():
         its = train_items(rng, a.bs, a.n_max_train, EXCL); opt.zero_grad(); tot = 0.0; ch = a.bs // a.micro
         if KW:                                                              # §177 (f): the same items / n marginal as §170, bucketed by n, one K per bucket
             assert not lam_now[0], "§177 (f) is not combined with §175's aux"
-            for n_ in sorted({it["n"] for it in its}):
-                bk = [it for it in its if it["n"] == n_]; Kb = n_ + int(rng_kw.integers(KW[0], KW[1] + 1))
+            kb_ = {}
+            for n_ in sorted({it["n"] for it in its}):                     # one K per n-bucket per step, drawn in the same order / stream as first built
+                bk = [it for it in its if it["n"] == n_]; Kb = n_ + int(rng_kw.integers(KW[0], KW[1] + 1)); kb_[n_] = Kb
                 assert all(it["n"] == n_ for it in bk) and KW[0] <= Kb - n_ <= KW[1]; kcount.setdefault(str(n_), {}); kcount[str(n_)][str(Kb)] = kcount[str(n_)].get(str(Kb), 0) + 1
-                for c_ in range(0, len(bk), ch):
-                    sub = bk[c_:c_ + ch]; lk = loss_items(sub, Kb); (lk * len(sub) / a.bs).backward(); tot += float(lk.item()) * len(sub) / a.bs
+            kit = [kb_[it["n"]] for it in its]                              # note 177-5: the masked single batch (bucketed = --kmatch_impl bucketed)
+            for c_ in range(0, len(its), ch):
+                sub, ks = its[c_:c_ + ch], kit[c_:c_ + ch]; lk, _ = kmatch_loss(m, sub, ks, dev, ac, masked=a.kmatch_impl == "masked")
+                (lk * len(sub) / a.bs).backward(); tot += float(lk.item()) * len(sub) / a.bs
         else:
           for k_ in range(a.micro):
             lk = loss_items(its[k_ * ch:(k_ + 1) * ch]); (lk / a.micro).backward(); tot += float(lk.item()) / a.micro
