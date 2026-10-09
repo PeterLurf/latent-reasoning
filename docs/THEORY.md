@@ -10378,6 +10378,26 @@ subspace.**
 * **The standard-data boundary is D* = 3 for both seeds: "no single-pass regime"** (descriptive; the proximity shortcut, §57).
 * **The NA boundary governs** and is pending (na s1 / s2).
 
+**Note 168-3 (2026-10-09 14:49 EDT; before D* is read, with NA s1's eval not yet landed; Audit). A sanity gate on the DIRECT recipe before the boundary, and a hold on step 2.**
+* **Why.** Every DIRECT run reaches training loss 0 by about 12k (the 24k recipe is about 128 epochs) and sits near chance (0.50–0.62 at depth 3). Known baselines are higher:
+  - GPT-2 No-CoT on standard ProsQA: 76.7 (Coconut 2412.06769, Table 1);
+  - P8-0a on this p8 data: 0.63 at depth 3;
+  - a curriculum-trained GPT-2 answers standard ProsQA in one pass: 2604.06374 (with latents removed), 0.976 (P8 addendum Q).
+  - A memorising recipe can put held-out accuracy at chance for reasons unrelated to single-pass depth limits.
+* **G1 (does the trainer reproduce a known number?):** §168's DIRECT trainer and recipe on standard ProsQA (prosqa_train 17,886 → prosqa_test 500), evaluated at 2k / 4k / 6k / 12k / 24k (`--eval_at`).
+  - The checkpoint with the best prosqa_valid (300) accuracy must read 0.75 ± 0.05 on test.
+  - **Below 0.70: the trainer is off and D* is not readable.** A dated note then fixes the trainer.
+* **G2 (diagnostic):** p8 std, seed 3, with the same eval_at points. Report depth-3 accuracy at the checkpoint with the best p8_valid (100) accuracy, against P8-0a's 0.63.
+* **How D* is read after the gate:**
+  - **G1 passes and accuracy does not decay** (24k within 0.05 of the validation-best checkpoint on G1 and G2): the registered DIRECT runs stand, and D* is read from them.
+  - **G1 passes but accuracy peaks early and decays by more than 0.05:** the registered recipe over-fits.
+    - NA s1 / s2 are re-run with the same eval_at points and a 1,000-item validation split held out of p8_na_train (seed 16810).
+    - D* is read at each seed's validation-best checkpoint (validation-selected, never test-selected).
+* **Step 2 is held** (Audit agreed). It launches only after a think-pass design succeeds on §170's nested task (§175, a §176 RESCUE or a §177 HIT).
+  - That design's harness is fixed for step 2 in a dated note before any step-2 run, with a user-level projection (step 2 exceeds $10).
+  - INJECT's identical-input passes failed on multiplication (§169) and only matched DIRECT on nested (§170).
+* **Cost:** G1 about $1 and G2 about $1.5 (3090s), plus about $3 for the NA re-runs if the decay branch applies.
+
 ## 169. INJECT: the memory with the full problem re-presented in every think pass, a task-agnostic harness (the user's "work on task agnosticness" via Audit's research pass; pre-registered 2026-10-09 01:37 EDT, after Literature's check 6b019d1e (`docs/LIT_INJECT_2026-10-09.md`) and Audit's review, before any implementation or run)
 
 **Why.**
