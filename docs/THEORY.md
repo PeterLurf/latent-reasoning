@@ -262,6 +262,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 172 | PCCoT-PROBE (eval only): §149's battery on whynlp/pccot-gpt2 (GSM8K 49.48 at release); LATENTS-USED, ITERATIONS-USED (T' = 0 = pause), Jacobi RHO, descriptive SERIAL | registered | **open** |
 | 173 | CONV-HALT (eval only; C5, halting): decode when the answer settles (unchanged across 2 consecutive passes, cap 2K) on the think-pass arms (§165 / §169 / §170 / §171); HALT-EQUAL + ADAPTIVE | registered | **open** |
 | 174 | MULTI-TASK (the user's task agnosticness, strongest form): one INJECT K8 model on mult + nested with no task flag; MATCH vs single-task K8 (BUDGET vs INTERFERENCE via 24k evals), THINK-NECESSARY per task, cross-task swap | registered (gated on §169 / §170 K8 slot 1) | **open** |
+| 175 | STEP-AUX (Audit's lead after SIM-CoT): §170 INJECT K8 + a shared-trunk read-only aux decoder emitting Feng's CoT step t from M_t (λ 1 fading to 0 by 48k); AUX-HELPS / HURTS-DEPTH vs FINAL-only, READOUT, STEP-RECOVER | registered (gated on §170 K8 slot 1) | **open** |
 
 ## Live sections
 
@@ -10463,6 +10464,13 @@ subspace.**
   For n = 1: "1 + 7 =" → " 8" EOT.
   - The anchored read takes the text after the last " =" (the prompt's own " =" when the generation is a single number). This is §170's intent, made explicit.
 
+**Note 170-2 (2026-10-09 02:55 EDT; before any §170 run beyond CPU smokes and cost timing; for §175's comparison, Audit). STEP-RECOVER on INJECT K8 (descriptive).**
+* §170 K8 (and K16 if run) also logs `s170.step_recover {t: acc}`.
+  - This is §175's ULP-style probe: a multinomial logistic probe from the decoder's memory read r_t (768-d, at its first query position) to v_t, the value of the t-th
+    leftmost reduction (chance 1/11).
+  - Trained on 4,000 training-distribution items and tested on 1,000 test items at n ≤ 8, per pass t ≤ n.
+* It is descriptive and does not enter §170's rules. §170's blinding applies to it.
+
 ## 171. READ-SLOTS: think passes in which a few learned slots read the once-encoded input and write the memory (a Perceiver / RIN-style task-agnostic read; the user's "creating new methodologies and architectures for task agnostic" via Audit; roadmap steps: task-agnostic input, and scale (long inputs); pre-registered 2026-10-09 01:54 EDT, after Literature's scout 589e6eb5 (`docs/LIT_TASK_AGNOSTIC_SCOUT_2026-10-09.md`, rank 1) and Audit's review, before any implementation or run)
 
 **Why.**
@@ -10695,6 +10703,71 @@ subspace.**
   - args: arm "inject", task "mix", think_k 8, steps 48000, mem_write "top", write_mix_start / end 2000 / 6000.
 * **Gates:** both generators' self-checks; a 50 / 50 batch-composition assert; the §169 gates.
 * Dirs `s174_mt_k8_s{seed}`. Scorer: `theory/score_s174.py`, committed with this registration.
+
+## 175. STEP-AUX: a per-pass schedule learned from text CoT through a read-only auxiliary decoder, on §170's nested expressions (Audit's 02:45 lead, after SIM-CoT 2509.20317; roadmap steps 1 and 6, task-agnostic input and a CoT-distillation recipe; pre-registered 2026-10-09 02:55 EDT, after Literature's check f52e1512 (`docs/LIT_STEP_AUX_2026-10-09.md`) and Audit's review, before any implementation or run; launches only after §170 K8 slot 1 is read)
+
+**Why.**
+* **INJECT trained FINAL-only must find its own schedule.** Text CoT supplies one at scale: GSM8K-Aug has per-step equations, and Feng's CoT has per-step reductions.
+* **SIM-CoT** (2509.20317) aligns each latent with its CoT step through an auxiliary decoder that is used in training and dropped at inference. It reports gains for Coconut on GPT-2 GSM8K and latent collapse without step supervision.
+  - It is our §92 / §97 side-decoder idea (read, never fed back) in the latent-token setting.
+* **On INJECT:** after think pass t, a read-only aux decoder is trained to emit CoT step t from the memory.
+  - The model gets no hand-built schedule: which computation happens in pass t comes from text CoT. C4 is allowed (CoT-teacher targets; the user's 2026-10-07 standard).
+  - The aux decoder is a per-pass readout, so C7 comes for free.
+  - The same recipe applies unchanged to DEEP-ProsQA (BFS frontier step t) and GSM8K (equation t).
+
+**Design.** §170's INJECT K8 exactly: harness, data (n ~ U{1..8}), 48k, bs 64, RTX 3090. One change follows.
+* **The aux decoder:** after think pass t, a fresh GPT-2 pass of [EOT, " Step", " t", " :"] (t as its number token) reads M_t.
+  - It sees no problem text, so it cannot recompute the step from the input. SIM-CoT's aux decoder likewise sees only the latent plus a "Step k" prompt (Literature).
+  - **Weights are shared (fixed now; Audit).** The aux decoder is the same GPT-2 trunk run as a read-only pass, like the answer decoder, with no new parameters.
+    So the aux loss trains the trunk features that the think passes use as well as what is written into M: step supervision shapes the computation directly.
+    SIM-CoT's separate-copy setup is not run.
+  - It writes nothing and is never fed back.
+  - It emits Feng's CoT step t as text: e_{t+1}, the expression after t leftmost-handle reductions (note 170-1's format; the last step is the answer), then EOT.
+* **Loss** = the final-answer CE + λ · the mean aux CE over passes 1..#steps.
+  - **λ = 1.0** (SIM-CoT's code value; Audit's lead proposed 0.5).
+  - **λ fades linearly to 0 over steps 36k–48k**, so the last 12k steps train on the answer alone before C2 is read. Per-step binding learns the training-length schedule:
+    a step-supervised retrofit reached only about 1.5× depth (Literature).
+  - **Passes beyond an item's step count** have no aux target. In training n ≤ 8 = K, so there is no tail beyond K to pool (SIM-CoT pools tail steps into the
+    last latent; not needed here).
+  - The aux decoder is dropped at test. All §170 measures are taken on the main decoder.
+
+**Rules (fixed now; `theory/score_s175.py`; pooled = n* ≤ n ≤ 8; reference = §170 K8's seed means).**
+* **Within training (§170's rules, unchanged):** DEEP, THINK-NECESSARY (168-1's form, chance 1/11) and SERIAL-NEST, per run.
+* **Aux accuracy by token role (descriptive; Audit):** Feng's step target is the whole partly reduced expression, so it asks M_t to encode a full expression although the
+  input is re-shown.
+  - Exact-match accuracy is reported separately on the newly reduced handle's value token and on the copied tokens (`s175.aux_acc_by_role {t: {handle, copy}}`).
+  - It shows whether M holds the handle's value or a copy of the expression.
+* **STEP-RECOVER (descriptive; a ULP-style probe after 2606.20075):** a multinomial logistic probe from the decoder's memory read r_t (768-d, at its first query
+  position, as §173) to v_t, the value of the t-th leftmost reduction (chance 1/11).
+  - Trained on 4,000 training-distribution items and tested on 1,000 test items at n ≤ 8, per pass t ≤ n.
+  - The same probe runs on §170 K8 FINAL-only (note 170-2), so whether supervision changed what is recoverable is a direct comparison.
+* **MORE-THINKING contrast (descriptive; Literature):** mean accuracy at n 9–12 at K′ = 2K, with aux against without (§170 K8's acc_by_n_kprime["16"]).
+* **AUX-HELPS-DEPTH(arm):** mean accuracy at n 9–12 ≥ the FINAL-only reference + 0.10, in ≥ 2 / 3 seeds. **AUX-HURTS-DEPTH(arm):** ≤ the reference − 0.10, in ≥ 2 / 3 seeds.
+* **READOUT (C7):** per-pass aux exact-match accuracy (step t's text) ≥ 0.90 at every pass t ≤ #steps, pooled over test items at n ≤ 8.
+  - Reported per pass past the trained depth (n 9–12 at K′ = 16, passes 9–12).
+* **Pre-registered risk (the TC-MIX failure mode):** passes beyond the trained step count are unsupervised, so the text schedule's length limit may leak into the latent one.
+  - Reported as aux accuracy and main accuracy at n 9–12.
+* **Readings:**
+  - **AUX-HELPS-DEPTH with DEEP + THINK-NECESSARY:** a schedule learned from text CoT carries past training depth. This is the scalable recipe.
+  - **Neither helps nor hurts:** STEP-AUX adds readability (C7) only.
+  - **AUX-HURTS-DEPTH:** the text schedule over-constrains (as TC-MIX's did).
+  - **FINAL-only already depth-general (§170):** STEP-AUX is read for C7 and compute only.
+
+**Placement.**
+* AUX-K8 slot 1 on one 3090, about §170 K8's cost plus about 70% per item for the aux passes (K short passes of a ≤ 4-token prompt and a step text of up to about 25
+  tokens), with no extra parameters. Audit's estimate is about $7 in all. Experiments' timing sets the projection. s2 / s3 if slot 1 is DEEP.
+* **Implementation (Experiments):** `--aux_step lambda` in nested170's inject path.
+  - The aux targets come from the CoT generator already built for TEXT-COT.
+  - eval.json: §170's fields + `s175`: {aux_acc_by_pass {t: acc} (n ≤ 8), aux_acc_by_pass_ext {t: acc} (n 9–12, K′ = 16), aux_acc_by_role {t: {handle, copy}},
+    step_recover {t: acc}}.
+    These are measured at the end of training, after the fade, and also at 36k (`eval_36k.json`, the same fields, no checkpoint kept).
+  - args: §170's inject args plus aux_step 1.0, aux_fade "36000,48000".
+* **Gates:**
+  - gradflow (Audit): the aux loss reaches DeltaMem's write parameters through M_t, and the shared trunk (nonzero each);
+  - the aux decoder writes nothing and sees no problem text (asserts);
+  - the main decoder's path is unchanged at λ = 0 (bitwise vs nested170); the fade schedule is logged per step;
+  - smoke_plain; Audit's diff review.
+* Dir `s175_auxk8_s{seed}`. Scorer: `theory/score_s175.py`, committed with this registration.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
