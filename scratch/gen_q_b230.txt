@@ -1,0 +1,5 @@
+# THEORY §176 RAND-K slot 1 RK (GO 2026-10-09 after §169 K8 FAIL, e1e61af0; Audit-approved ~$5): inject169 --rand_k 7,0.5,32 (note 176-1), think_k 8 (eval K), fast_add, §169's data / recipe, 48k; then note 173-1's package (halt173 --dir177)
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s176_rk_s1 boxes.inject169 --think_k 8 --rand_k 7,0.5,32 --fast_add --seed 1 --auto_micro --bench bench/data/mult_4x4_test.txt
+boxes/runs_fsq/s176_rk_s1_pkg boxes.halt173 --run boxes/runs_fsq/s176_rk_s1 --dir177 --bs 125

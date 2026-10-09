@@ -157,9 +157,9 @@ def test_set(per_n=1000, n_max=16, seed=17100):
 def train_items(rng, bs, n_max, excl):
     out = []
     while len(out) < bs:
-        r, t = generate(rng, int(rng.integers(1, n_max + 1))); s = render(r)
+        n_ = int(rng.integers(1, n_max + 1)); r, t = generate(rng, n_); s = render(r)   # (the same draws as before; n_ kept for §177 (f)'s buckets)
         if tuple(s) not in excl:
-            out.append({"syms": s, "t": t, "root": r})
+            out.append({"syms": s, "t": t, "root": r, "n": n_})
     return out
 
 
@@ -351,7 +351,7 @@ def main():
     ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", default=None); ap.add_argument("--log_every", type=int, default=100)
     ap.add_argument("--cot_eval_bs", type=int, default=64, help="TEXT-COT generation batch (KV cache; b223 OOMed at 250 on n = 16 chains)"); ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt (no training; writes args_eval.json; model.pt / args.json / log untouched)"); ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--per_n", type=int, default=1000); ap.add_argument("--serial_pool", type=int, default=2200); ap.add_argument("--auto_micro", action="store_true")
     ap.add_argument("--mem_budget", type=float, default=21.0); ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--time_steps", type=int, default=0, help="cost check: train this many steps, report s/step, exit")
-    ap.add_argument("--eval_at", type=int, default=0, help="also evaluate acc_by_n at this step -> eval_<k>k.json"); ap.add_argument("--aux_step", type=float, default=0.0, help="§175: lambda of the read-only step decoder CE (0 = off: the §170 path)"); ap.add_argument("--aux_fade", default="36000,48000", help="§175: lambda constant to the first step, then linear to 0 at the second"); ap.add_argument("--fast_add", action="store_true", help="deltamem.FAST_ADD: the additive heads' pass writes as one sum (Audit 2026-10-09; scratch/gate_fastadd.py)"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
+    ap.add_argument("--eval_at", type=int, default=0, help="also evaluate acc_by_n at this step -> eval_<k>k.json"); ap.add_argument("--aux_step", type=float, default=0.0, help="§175: lambda of the read-only step decoder CE (0 = off: the §170 path)"); ap.add_argument("--aux_fade", default="36000,48000", help="§175: lambda constant to the first step, then linear to 0 at the second"); ap.add_argument("--k_window", default="", help="§177 (f): 'lo,hi' -> each n-bucketed micro-batch runs K = n + U{lo..hi} think passes (inject)"); ap.add_argument("--fast_add", action="store_true", help="deltamem.FAST_ADD: the additive heads' pass writes as one sum (Audit 2026-10-09; scratch/gate_fastadd.py)"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); a.task = "nested"; import boxes.deltamem as DM_; DM_.FAST_ADD = bool(a.fast_add); os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale; K = a.think_k if a.arm == "inject" else 0
     if a.arm != "inject":
         a.mem_write = a.write_mix_start = a.write_mix_end = None; a.think_k = 0
@@ -368,7 +368,7 @@ def main():
     EXCL |= {tuple(it["syms"]) for it in SPOOL}
     m = InjectN(g, 6, a.mem_write).to(dev) if a.arm == "inject" else None
 
-    def loss_items(items):
+    def loss_items(items, Kb=None):
         if a.arm == "direct":
             seqs = [[EOT] + ids(it["syms"]) + [TID[" ="]] for it in items]; ids_, _ = pad(seqs); x = torch.tensor(ids_, device=dev)
             with ac():
@@ -386,7 +386,7 @@ def main():
         x, msk = m.think_inputs(items, dev)
         if not lam_now[0]:                                                  # §170 (and §175 at lambda 0): unchanged
             with ac():
-                S = m.think(m.mem.zero_state(len(items), dev), x, msk, K, ckpt=a.ckpt_passes); lg = m.dec_logits(S, items, dev)
+                S = m.think(m.mem.zero_state(len(items), dev), x, msk, K if Kb is None else Kb, ckpt=a.ckpt_passes); lg = m.dec_logits(S, items, dev)
             return Fn.cross_entropy(lg, torch.tensor(NUM_IDS[[it["t"] for it in items]], device=dev))
         from torch.utils.checkpoint import checkpoint
         per = [[] for _ in items]                                           # §175: the aux CE (token mean) of each item's passes 1..#steps
@@ -482,6 +482,9 @@ def main():
         return ans, ntok
 
     f0_, f1_ = [float(x_) for x_ in a.aux_fade.split(",")]; lam_now = [0.0]; aux_hist = []
+    KW = [int(x_) for x_ in a.k_window.split(",")] if a.k_window else None; rng_kw = np.random.default_rng(17900 + a.seed); kcount = {}; loss_log = []
+    if KW:
+        assert a.arm == "inject" and K >= a.n_max_train + KW[1], "§177 (f): --think_k must cover the largest bucket's K (memcheck / calibration)"
 
     def lam_at(step):
         """§175: lambda = aux_step to f0, then linear to 0 at f1 (sched_scale-scaled)."""
@@ -519,6 +522,13 @@ def main():
         acc8, role8, n8 = aux_eval(te8, K, K); acc12, _, n12 = aux_eval(te12, 16, 16); sr, sri = step_recover(m, EXCL, TE, K, dev, ac, a.eval_bs)
         return {"aux_acc_by_pass": acc8, "aux_acc_by_pass_ext": acc12, "aux_acc_by_role": role8, "step_recover": sr, "step_recover_info": sri,
                 "n_by_pass": n8, "n_by_pass_ext": n12, "ext_kprime": 16, "items": {"n_le_8": {"n": len(te8), "seed": 17022}, "n_9_12": {"n": len(te12), "seed": 17023}}}
+
+    def kn_answers(items, kfun, skip=()):
+        """§177 (f): inject answers with a per-n K' = kfun(n) (items grouped by n, order kept)."""
+        out = np.full(len(items), -1)
+        for n_ in sorted({it["n"] for it in items}):
+            ix = [i for i, it in enumerate(items) if it["n"] == n_]; out[ix] = inject_answers([items[i] for i in ix], kfun(n_), skip=tuple(t for t in skip if t <= kfun(n_)))
+        return out
 
     def evaluate_n(items, Kp=None):
         if a.arm == "direct":
@@ -589,7 +599,15 @@ def main():
             m.mem.gamma.fill_(0.0 if step <= a.write_mix_start * sc else min(1.0, (step - a.write_mix_start * sc) / max(1.0, (a.write_mix_end - a.write_mix_start) * sc)))
         lam_now[0] = lam_at(step)
         its = train_items(rng, a.bs, a.n_max_train, EXCL); opt.zero_grad(); tot = 0.0; ch = a.bs // a.micro
-        for k_ in range(a.micro):
+        if KW:                                                              # §177 (f): the same items / n marginal as §170, bucketed by n, one K per bucket
+            assert not lam_now[0], "§177 (f) is not combined with §175's aux"
+            for n_ in sorted({it["n"] for it in its}):
+                bk = [it for it in its if it["n"] == n_]; Kb = n_ + int(rng_kw.integers(KW[0], KW[1] + 1))
+                assert all(it["n"] == n_ for it in bk) and KW[0] <= Kb - n_ <= KW[1]; kcount.setdefault(str(n_), {}); kcount[str(n_)][str(Kb)] = kcount[str(n_)].get(str(Kb), 0) + 1
+                for c_ in range(0, len(bk), ch):
+                    sub = bk[c_:c_ + ch]; lk = loss_items(sub, Kb); (lk * len(sub) / a.bs).backward(); tot += float(lk.item()) * len(sub) / a.bs
+        else:
+          for k_ in range(a.micro):
             lk = loss_items(its[k_ * ch:(k_ + 1) * ch]); (lk / a.micro).backward(); tot += float(lk.item()) / a.micro
         if m is not None:
             from boxes.deltas5 import write_grad_norm
@@ -606,7 +624,7 @@ def main():
                 e_["s175"] = s175_fields(); e_["aux_lambda"] = lam_now[0]
             json.dump(e_, open(os.path.join(a.out, "eval_%dk.json" % (step // 1000)), "w", newline="\n"), indent=1)
         if step % a.log_every == 0 or step == a.steps:
-            rec = {"step": step, "loss": float(np.mean(hist)) if hist else None, "sec": round(time.time() - t0)}; hist = []
+            rec = {"step": step, "loss": float(np.mean(hist)) if hist else None, "sec": round(time.time() - t0)}; hist = []; loss_log.append(rec["loss"])
             if a.aux_step:
                 rec.update({"aux_lambda": lam_now[0], "answer_ce": float(np.mean([x_[0] for x_ in aux_hist])) if aux_hist else None,
                             "aux_ce": float(np.mean([x_[1] for x_ in aux_hist])) if aux_hist else None}); aux_hist.clear()
@@ -637,6 +655,8 @@ def main():
     N = np.array([it["n"] for it in TE]); Dp = np.array([it["depth"] for it in TE]); T_ = np.array([it["t"] for it in TE])
     if a.arm == "textcot":
         A_, NT = cot_answers(TE)
+    elif KW:                                                                # §177 (f): the main eval at K' = n + 1 per item
+        A_ = kn_answers(TE, lambda n_: n_ + 1); NT = None
     else:
         A_ = evaluate_n(TE); NT = None
     C = A_ == T_
@@ -653,7 +673,7 @@ def main():
         if a.arm == "direct":
             M_.step(int(round(L_)), 0, 1)
         elif a.arm == "inject":
-            for _ in range(K):
+            for _ in range(n + 1 if KW else K):                             # §177 (f): K' = n + 1 per item
                 M_.step(int(round(L_)), 0, 0)
             M_.step(int(round(L_)), 0, 1)
         else:
@@ -680,6 +700,17 @@ def main():
         if K:                                                               # note 170-2 (descriptive)
             s["step_recover"], s["step_recover_info"] = step_recover(m, EXCL, TE, K, dev, ac, a.eval_bs)
         res["s170"] = s
+        if KW:                                                              # §177 (f) fields
+            kfs = {"0": lambda n_: 0, "1": lambda n_: 1, "n": lambda n_: n_, "n+1": lambda n_: n_ + 1, "n+2": lambda n_: n_ + 2, "n+4": lambda n_: n_ + 4}
+            s7 = {"acc_by_n_kprime": {}, "skip_pass": {}, "kmatch_counts": kcount, "k_window": a.k_window, "rule_kprime": "n+1"}
+            for kk_, f_ in kfs.items():
+                Ak = A_ if kk_ == "n+1" else kn_answers(TE, f_); s7["acc_by_n_kprime"][kk_] = {str(n): float((Ak == T_)[N == n].mean()) for n in range(1, 17)}
+            for t in range(1, a.n_max_train + 2):                           # skip pass t at K' = n + 1, for the n with t <= n + 1
+                its_ = [it for it in TE if it["n"] + 1 >= t]; Ak = kn_answers(its_, lambda n_: n_ + 1, skip=(t,)); Nk = np.array([it["n"] for it in its_])
+                s7["skip_pass"][str(t)] = {str(n): float((Ak == np.array([it["t"] for it in its_]))[Nk == n].mean()) for n in sorted(set(Nk.tolist()))}
+            ll = [v for v in loss_log if v is not None]; tl = ll[-max(2, len(ll) // 10):]; h_ = len(tl) // 2
+            s7["train_loss_tail"] = {"first_half": float(np.mean(tl[:h_])) if h_ else None, "second_half": float(np.mean(tl[h_:])) if tl else None, "n_logged": len(tl)}
+            res["s177"] = s7; json.dump(kcount, open(os.path.join(a.out, "kmatch_counts.json"), "w", newline="\n"), indent=1)
         if a.aux_step and K:                                                # §175 (the aux is dropped at test; every §170 field comes from the main decoder)
             res["s175"] = s175_fields()
     res["eval_sec"] = round(time.time() - t1); json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)

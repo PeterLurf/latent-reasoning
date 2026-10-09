@@ -1,0 +1,5 @@
+# THEORY §176 RAND-K slot 1 PROG (GO 2026-10-09; Audit-approved): inject169 --prog 8,8, think_k 8 (eval K), fast_add, §169's data / recipe, 48k; then note 173-1's package (halt173 --dir177)
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s176_prog_s1 boxes.inject169 --think_k 8 --prog 8,8 --fast_add --seed 1 --auto_micro --bench bench/data/mult_4x4_test.txt
+boxes/runs_fsq/s176_prog_s1_pkg boxes.halt173 --run boxes/runs_fsq/s176_prog_s1 --dir177 --bs 125
