@@ -16,6 +16,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 H_ADD, H_DEL, DH = 6, 6, 64
+FAST_ADD = False                                                            # Audit 2026-10-09: R-mode additive writes as one sum over the pass (opt-in per run)
 
 
 class DeltaMem(nn.Module):
@@ -112,8 +113,13 @@ def write_seq(mem, h6, hw, S, mask=None):
         if mem.alpha_rec is not None:
             mem.alpha_rec.append(al.mean(dim=(0, 1)).detach())
         Sa, Sd = S[:, :H_ADD].float(), S[:, H_ADD:].float()
+        if FAST_ADD:                                                        # reads see only the pass-start S, so the additive writes commute: one einsum
+            pk = F.elu(k[:, :, :H_ADD]) + 1                                 # (fp32 summation order differs from the loop; gate: scratch/gate_fastadd.py)
+            if mask is not None:
+                pk = pk * mask[:, :, None, None].to(pk.dtype)               # padding tokens contribute nothing
+            Sa_fast = Sa + torch.einsum("bthk,bthv->bhkv", pk, v[:, :, :H_ADD])
         for t in range(T):
-            Sa_ = Sa + (F.elu(k[:, t, :H_ADD]) + 1)[..., :, None] * v[:, t, :H_ADD][..., None, :]
+            Sa_ = Sa if FAST_ADD else Sa + (F.elu(k[:, t, :H_ADD]) + 1)[..., :, None] * v[:, t, :H_ADD][..., None, :]
             kd = F.normalize(k[:, t, H_ADD:], dim=-1); vd = v[:, t, H_ADD:]; b_ = be[:, t][..., None, None]
             Skk = torch.einsum("bhvk,bhk->bhv", Sd, kd)
             Sd_ = al[:, t][..., None, None] * (Sd - b_ * Skk[..., :, None] * kd[..., None, :]) + b_ * vd[..., :, None] * kd[..., None, :]
@@ -121,6 +127,8 @@ def write_seq(mem, h6, hw, S, mask=None):
                 Sa, Sd = Sa_, Sd_
             else:                                                           # §170: padding tokens (mask False) leave the state unchanged
                 m_ = mask[:, t][:, None, None, None]; Sa = torch.where(m_, Sa_, Sa); Sd = torch.where(m_, Sd_, Sd)
+        if FAST_ADD:
+            Sa = Sa_fast
         return torch.cat([Sa, Sd], 1)
 
 
