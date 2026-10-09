@@ -217,8 +217,8 @@ def main():
     ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", default=None); ap.add_argument("--log_every", type=int, default=100)
     ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--per_n", type=int, default=1000); ap.add_argument("--serial_pool", type=int, default=2200); ap.add_argument("--auto_micro", action="store_true")
     ap.add_argument("--mem_budget", type=float, default=21.0); ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--time_steps", type=int, default=0, help="cost check: train this many steps, report s/step, exit")
-    ap.add_argument("--eval_at", type=int, default=0, help="also evaluate acc_by_n at this step -> eval_<k>k.json"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
-    a = ap.parse_args(); a.task = "nested"; os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale; K = a.think_k if a.arm == "inject" else 0
+    ap.add_argument("--eval_at", type=int, default=0, help="also evaluate acc_by_n at this step -> eval_<k>k.json"); ap.add_argument("--fast_add", action="store_true", help="deltamem.FAST_ADD: the additive heads' pass writes as one sum (Audit 2026-10-09; scratch/gate_fastadd.py)"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
+    a = ap.parse_args(); a.task = "nested"; import boxes.deltamem as DM_; DM_.FAST_ADD = bool(a.fast_add); os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale; K = a.think_k if a.arm == "inject" else 0
     if a.arm != "inject":
         a.mem_write = a.write_mix_start = a.write_mix_end = None; a.think_k = 0
     from boxes import s5
