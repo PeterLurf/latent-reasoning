@@ -79,6 +79,8 @@ def sd(runs, k):
 def main():
     res = {}
     ref = {s: ref_run(s) for s in (1, 2, 3)}; rdone = [v for v in ref.values() if v.get("status") == "done"]
+    r1 = S169.run("k8", 1); ref_exact = None if r1.get("status") != "done" else bool(r1.get("exact"))   # note 176-3: is the fixed-K reference itself EXACT?
+    res["fixed_k8_s1_exact"] = ref_exact
     ref_c2 = sum(1 for v in rdone if v.get("c2_beyond")); ref_ready = bool(rdone) and all(v.get("has_posthoc") for v in rdone)
     res["fixed_k8"] = {"runs": ref, "c2_beyond": "%d / %d" % (ref_c2, len(rdone)), "posthoc_ready": ref_ready, "sd_ext_4x8": {k: sd(rdone, k) for k in (16, 32, 64)}}
     lines = []
@@ -86,7 +88,11 @@ def main():
         runs = {s: run(arm, s) for s in (1, 2, 3)}; done = [v for v in runs.values() if v["status"] == "done"]; s1 = runs[1]
         n_ok = sum(1 for v in done if v["c2_beyond"] and v["no_overthinking"]); n_more = sum(1 for v in done if v["more_thinking"])
         res[arm] = {"runs": runs, "c2_and_noov": n_ok, "more_thinking": n_more, "sd_ext_4x8": {k: sd(done, k) for k in (16, 32, 64)}}
-        if s1["status"] != "done" or not ref_ready:
+        if s1["status"] == "done" and ref_exact is False:                   # note 176-3: the fixed-K reference fails
+            if not s1["exact"]:
+                lines.append("%s: does not rescue INJECT (fixed K8 also fails; slot 1 %s at K' = 8)" % (arm, s1["test_4x4_k8"])); continue
+            res[arm]["rescue"] = True
+        if s1["status"] != "done" or (not ref_ready and ref_exact is not False):
             t = "%s: pending (s1 %s; fixed-K8 post-hoc curve ready %s)" % (arm, s1["status"], ref_ready)
         elif not s1["exact"]:
             t = "%s: slot 1 not EXACT at K' = 8 (%s): the training method costs in-distribution accuracy" % (arm, s1["test_4x4_k8"])
@@ -98,6 +104,8 @@ def main():
             t = "%s: C2-BEYOND %d / %d but fixed K8 too (%d / %d): the sampling is not needed for C2 here" % (arm, n_ok, len(done), ref_c2, len(rdone))
         else:
             t = "%s: not C2 (C2-BEYOND + NO-OVERTHINKING %d / %d; MORE-THINKING at 16, informative, %d)" % (arm, n_ok, len(done), n_more)
+        if res[arm].get("rescue"):
+            t = "%s: RESCUE (EXACT at K' = 8 where fixed K8 fails); " % arm + t.split(": ", 1)[1]
         lines.append(t)
         print(arm, {s: {k: v.get(k) for k in ("status", "test_4x4_k8", "more_thinking", "no_overthinking", "c2_beyond")} for s, v in runs.items() if v["status"] != "open"})
     res["reading"] = lines
