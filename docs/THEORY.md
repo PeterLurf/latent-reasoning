@@ -10266,6 +10266,17 @@ subspace.**
   - Dirs `s168_direct_{std,na}_s{1,2}`. Scorer: `theory/score_s168.py`, committed with this registration.
 * **Step 2:** after the boundary note and §169's registration.
 
+**Note 168-1 (2026-10-09 01:42 EDT; before any step 2 implementation or run, with no step 1 output read; Audit-reviewed). THINK-NECESSARY is measured above chance; the pause control is K0.**
+* **Above chance.** Candidate accuracy has chance 0.5. As written, a K′ = 0 model at chance (0.5) always exceeds 0.5× the accuracy at K (e.g. 0.475 at 0.95), so the rule could never be met.
+  - **THINK-NECESSARY(run)** for §168 is therefore (acc(K′) − 0.5) ≤ 0.5 × (acc(K) − 0.5), for K′ = 0 and K′ = 1.
+  - Accuracy is pooled over the NA test at depths max(D*, 3)..10 (the DEEP-LATENT range).
+  - The skip-damage clause is unchanged: some think pass's skipped write drops the pooled accuracy by ≥ 0.2, and some by ≤ 0.05.
+  - This makes the rule satisfiable and changes nothing else.
+* **The pause control is K0.** Under INJECT the decoder's only link to the think passes is the memory. Literature's pause-with-curriculum control (the same K passes with no write-back, a constant memory) is therefore K0 by construction, and K0 is the arm that runs.
+* **Step 1's cost.** ProsQA items are about 450 tokens (p8_na_train p50 438, p90 533, max 666 GPT-2 tokens).
+  - 24k × bs 64 is about 6.9e8 tokens per DIRECT run, so the 4 runs cost about $5–6, not $1.5. The recipe is unchanged.
+  - Step 2's INJECT at K16 costs about 17× per item. Its budget is set in the step 2 note, with a projection to Audit.
+
 ## 169. INJECT: the memory with the full problem re-presented in every think pass, a task-agnostic harness (the user's "work on task agnosticness" via Audit's research pass; pre-registered 2026-10-09 01:37 EDT, after Literature's check 6b019d1e (`docs/LIT_INJECT_2026-10-09.md`) and Audit's review, before any implementation or run)
 
 **Why.**
