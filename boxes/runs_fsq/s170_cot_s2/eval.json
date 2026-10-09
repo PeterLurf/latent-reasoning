@@ -1,0 +1,140 @@
+{
+ "task": "nested",
+ "eval_only": true,
+ "arm": "textcot",
+ "think_k": 0,
+ "seed": 2,
+ "acc_by_n": {
+  "1": 1.0,
+  "2": 1.0,
+  "3": 1.0,
+  "4": 1.0,
+  "5": 1.0,
+  "6": 1.0,
+  "7": 1.0,
+  "8": 1.0,
+  "9": 0.999,
+  "10": 0.833,
+  "11": 0.275,
+  "12": 0.118,
+  "13": 0.104,
+  "14": 0.08,
+  "15": 0.051,
+  "16": 0.055
+ },
+ "acc_by_depth": {
+  "0": 1.0,
+  "1": 0.9743119266055046,
+  "2": 0.7245167853509664,
+  "3": 0.3841331082710393,
+  "4": 0.21336934503713706,
+  "5": 0.13897280966767372,
+  "6": 0.11363636363636363,
+  "7": 0.0
+ },
+ "n_by_depth": {
+  "0": 1808,
+  "1": 3270,
+  "2": 4915,
+  "3": 4147,
+  "4": 1481,
+  "5": 331,
+  "6": 44,
+  "7": 4
+ },
+ "train_sec": 15252,
+ "n_nonfinite": 0,
+ "micro": 1,
+ "eval_dtype": "torch.bfloat16",
+ "gpu": "NVIDIA GeForce RTX 3070",
+ "train_gpu": "NVIDIA GeForce RTX 3090",
+ "train_driver": "575.64.03",
+ "per_n": 1000,
+ "cot_tokens_by_n": {
+  "1": 2.0,
+  "2": 6.0,
+  "3": 13.22,
+  "4": 23.37,
+  "5": 36.852,
+  "6": 53.07,
+  "7": 73.058,
+  "8": 95.284,
+  "9": 120.669,
+  "10": 147.717,
+  "11": 171.158,
+  "12": 195.146,
+  "13": 224.713,
+  "14": 268.063,
+  "15": 325.048,
+  "16": 366.679
+ },
+ "compute_by_n": {
+  "1": {
+   "flops_trunk": 1175835648.0,
+   "sequential_passes": 2
+  },
+  "2": {
+   "flops_trunk": 2677979136.0,
+   "sequential_passes": 6
+  },
+  "3": {
+   "flops_trunk": 4926282240.0,
+   "sequential_passes": 13
+  },
+  "4": {
+   "flops_trunk": 7924062720.0,
+   "sequential_passes": 23
+  },
+  "5": {
+   "flops_trunk": 11924894208.0,
+   "sequential_passes": 37
+  },
+  "6": {
+   "flops_trunk": 16436264448.0,
+   "sequential_passes": 53
+  },
+  "7": {
+   "flops_trunk": 21963956736.0,
+   "sequential_passes": 73
+  },
+  "8": {
+   "flops_trunk": 28014574080.0,
+   "sequential_passes": 95
+  },
+  "9": {
+   "flops_trunk": 35099208192.0,
+   "sequential_passes": 121
+  },
+  "10": {
+   "flops_trunk": 42468750336.0,
+   "sequential_passes": 148
+  },
+  "11": {
+   "flops_trunk": 48851645952.0,
+   "sequential_passes": 171
+  },
+  "12": {
+   "flops_trunk": 55515320832.0,
+   "sequential_passes": 195
+  },
+  "13": {
+   "flops_trunk": 63747770880.0,
+   "sequential_passes": 225
+  },
+  "14": {
+   "flops_trunk": 75381519360.0,
+   "sequential_passes": 268
+  },
+  "15": {
+   "flops_trunk": 90743683584.0,
+   "sequential_passes": 325
+  },
+  "16": {
+   "flops_trunk": 102294501888.0,
+   "sequential_passes": 367
+  }
+ },
+ "compute_note": "boxes.core.Meter per item at the mean length of each n (trunk; the DeltaMem branch adds < 5% at these lengths)",
+ "eval_sec": 1420,
+ "eval_gpu_note": "eval-only on NVIDIA GeForce RTX 3070 (args_eval.json); train_gpu / train_driver corrected from args.json (Theory 2026-10-09)"
+}
