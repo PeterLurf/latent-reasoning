@@ -11195,6 +11195,14 @@ how many think passes run in training.
   - The fade can only carry a learned per-pass job if one was learned while the schedule was visible.
 * **(f)'s per-bucket counts** are known only after training. They go to `<run>/kmatch_counts.json` {n: {K: micro-batches}}, copied to `s177.kmatch_counts`. args.json records k_window "0,2" and the bucketing rule.
 
+**Note 177-3 (2026-10-09 10:26 EDT; pre-data; Audit). (d)'s preview is the pure scaffold; an operational launch gate; the scaffold field.**
+* **The proto177_fadetidx preview is not fade-scaled.** Its 8k steps end before the 12k fade start, so it runs at p = 0 throughout, which is the pure scaffold. It answers the one new question (can pair inputs with an end decoder learn 4×4?) cheaply.
+* **An operational launch gate,** a spend decision and not a rule reading (previews stay read by no rule):
+  - If the preview's 4×4 accuracy at p = 0 after 8k steps is below 0.5, (d)'s cloud cell is not launched.
+  - It launches only after the scaffold is fixed and re-registered, which saves an about-$2.5 "uninformative" cell.
+* **The SCAFFOLD gate's field** is `s177.acc_scaffold_12k`: 4×4 accuracy at step 12k, at p = 0, with pair inputs, at the rule K = 4n. It replaces 177-2's `acc_by_p["0"]`.
+  - If it is missing, score_s177 reads (d) as "pending (scaffold field missing)" and reads none of its rules. It is never a silent None-read.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
