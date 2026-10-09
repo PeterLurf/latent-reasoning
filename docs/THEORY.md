@@ -10929,6 +10929,13 @@ subspace.**
   - The grid's diagonal (which column becomes decodable when) is reported descriptively.
 * Nested is unchanged (v_t).
 
+**§173 on §170 K8 s1 (2026-10-09 12:52 EDT; eval_s173_halt.json; score_s173; K8 s2 / s3 will not run since its gate is closed, so this is the run's own reading). Neither HALT-EQUAL nor ADAPTIVE holds: answer settling stops too early.**
+* **answer2:** mean h is 2.8 / 4.2 / 4.7 / 4.5 / 4.5 / 4.6 / 4.6 at n = 2 / 4 / 6 / 8 / 10 / 12 / 16. It rises with n up to the model's competence edge, then plateaus. It is not monotone (4.74 → 4.51 from n = 6 to 8).
+* **Accuracy at h against fixed K = 8:** 0.79 vs 0.95 (n = 2), 0.30 vs 0.52 (n = 4). Pooled over the training range: 0.19 vs 0.29.
+  - The answer holds for two passes and then still improves, so HALT-EQUAL fails.
+* **delta_0.01** never settles (capped at 16 everywhere): the delta state keeps moving more than 1% per pass.
+* **C5 is not shown.** The plateau of h at about 4.5 marks where the passes stop helping: the K′ curve's competence edge, n ≈ 3–4.
+
 ## 174. MULTI-TASK: one INJECT model on long multiplication and nested expressions together, with no task flag (the user's "is the architecture task agnostic?" in its strongest form; roadmap step 1, task-agnostic input; pre-registered 2026-10-09 02:03 EDT, after Literature's check d122ba5c (`docs/LIT_S171_S174_2026-10-09.md`: new as the combination) and Audit's review, before any implementation or run; launches only after §169 K8 and §170 K8 slot 1 gate)
 
 **Why.**
