@@ -58,3 +58,9 @@ Literature session, for Audit (the lead) and Theory.
    harness; the CoT reference is our 41.8) before any probe.
 4. **Shortcut / bypass check:** with the question visible to all latents (as for CODI), run the no-latent (c = 0) and pause-equivalent
    (T = 0) evaluations on the trained model (out of distribution, as GSM8K_REPRO's caveat).
+
+## Addendum (2026-10-09): the bench row, and the same-items check
+- **PCCoT's dataset whynlp/gsm8k-aug** (HF datasets-server): train 385,620 / validation 500 / **test 1,319**. The first test items match
+  ours (Janet's ducks, robe), in the equation-step format. So same_items = true for our GSM8K bench (as for CODI / Coconut).
+- **Added to bench/literature.json:** "PCCoT (parallel continuous CoT, Jacobi; c = 24 latents, T = 3), GPT-2 Small", acc 0.4948,
+  source 2506.18582 Table 1 (3-run mean ± 0.31; CoT row copied from CODI). Verified by this note.

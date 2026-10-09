@@ -283,6 +283,14 @@
    "source": "2604.04902 Table 1 (Dilgren & Wiegreffe; public MIT checkpoints connordilgren/gpt2-gsm8k-*)",
    "same_items": true,
    "verified": "8e7dfd4"
+  },
+  {
+   "task": "gsm8k",
+   "system": "PCCoT (parallel continuous CoT, Jacobi; c = 24 latents, T = 3), GPT-2 Small",
+   "acc": 0.4948,
+   "source": "2506.18582 Table 1 (mean of 3 runs, +/- 0.31; GSM8K-Aug; its CoT row 44.1 is copied from CODI; released whynlp/pccot-gpt2)",
+   "same_items": true,
+   "verified": "2e5fe84a"
   }
  ],
  "_verify_note": "Verified 2026-10-01 by Literature (docs/LIT_BENCH_VERIFY_2026-10-01.md, commit 55cd5e7): values from the papers' tables; same_items checked (ProsQA byte-identical to the Coconut repo; GSM8K-Aug test = openai test, 1,319/1,319 questions and answers; multiplication = iCoT repo test_bigbench files)."
