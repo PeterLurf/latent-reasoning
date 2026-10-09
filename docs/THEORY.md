@@ -9805,6 +9805,16 @@ equal depth, the two arms are indistinguishable.**
   - **Not run (Audit's call, 836c09ab):** one transient window, recovered in 200 steps, on a converged run.
 * **Reporting rule (Audit):** the product-count bins mix early and late columns that share a count, so "flat by count" and "falling by position" are always
   reported together.
+* **Slot 3 (2026-10-08 22:45 EDT): BOUNDED.**
+  - 4×4 1.0, 5×5 0.998. 6×6 0.967, 7×7 0.784, 8×8 0.427, 10×10 0.033. 4×8 / 8×4 0.98 / 0.984.
+  - 5×5 is SERIAL and state-carried. The 24k 4×4 is 0.956.
+  - **With s1 and s3 both BOUNDED, GEN-2D is no longer reachable. The arm is BOUNDED by the rule** (s2 descriptive).
+  - **The mechanism read from s1 does NOT replicate.**
+    - In s3, 8×8 by product count is 0.98 / 0.97 / 0.97 / 0.96 for 1–4 products against 0.89 / 0.83 / 0.85 / 0.82 for 5–8.
+    - Its worst columns are the high-count middle ones (column 10: 0.67), and the late low-count columns recover (0.92–0.97).
+    - s1 was flat by count, with its minimum late in the chain.
+    - So whether the 8×8 failure follows term count or chain position is **seed-dependent**. Slot 1's "chain length, not term count" is withdrawn as a general
+      statement.
 
 ## 164. MIX-BASELINES: like-for-like text-CoT and direct-answer baselines on §161's shape mix (Audit's requirement before any "beyond text" claim; pre-registered 2026-10-08 11:26 EDT, after Audit's review and before any implementation or run; priors from Literature's 0b532db5 / 73fbfb1a)
 
