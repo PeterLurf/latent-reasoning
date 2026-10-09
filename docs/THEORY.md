@@ -258,7 +258,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 168 | DEEP-ProsQA (the user's go): a measured single-pass boundary on deep (3–14) shortcut-free ProsQA, then an INJECT latent arm | registered (step 1 running) | **open** |
 | 169 | INJECT (the user's "task agnosticness"): the full problem re-presented every think pass, the memory the only cross-pass state; K16 / K8 / K0 on §161's mix | registered | **open** |
 | 170 | NESTED (the user's go): Feng's mod-11 bracketed expressions; a measured DIRECT boundary over n, then INJECT K8 / K0 (K16 gated) against Feng's text CoT; C1 = DEEP + THINK-NECESSARY + SERIAL-NEST, C3 at text CoT's accuracy for less compute | registered | **open** |
-| 171 | READ-SLOTS (task-agnostic architecture): the input encoded once; each think pass 8 learned slots read it and write DeltaMem-R; K8 on §161's mix; head to head with INJECT (CHEAPER-EQUAL); read map / entropy (C7) | registered | **open** |
+| 171 | READ-SLOTS (task-agnostic architecture): the input encoded once; each think pass 8 learned slots read it and write DeltaMem-R; K8 on §161's mix; head to head with INJECT (CHEAPER-EQUAL); read map / entropy (C7) | **slot 1 not EXACT** (4×4 0.003, flat in K′; memory unused; pass-invariant reads, 60% on EOT); BLIND 0.0; interpretation awaits §169 K8 | gate closed |
 | 172 | PCCoT-PROBE (eval only): §149's battery on whynlp/pccot-gpt2 (GSM8K 49.48 at release); LATENTS-USED, ITERATIONS-USED (T' = 0 = pause), Jacobi RHO, descriptive SERIAL | **LATENTS-USED, ITERATIONS-USED** (0.49 release; zeroed 0.17; T'=0 0.13; more iterations hurt); RHO MARGINAL 0.88; one-latent swap BYPASS but alignment weak (R² ≤ 0.12) | closed |
 | 173 | CONV-HALT (eval only; C5, halting): decode when the answer settles (unchanged across 2 consecutive passes, cap 2K) on the think-pass arms (§165 / §169 / §170 / §171); HALT-EQUAL + ADAPTIVE | registered | **open** |
 | 174 | MULTI-TASK (the user's task agnosticness, strongest form): one INJECT K8 model on mult + nested with no task flag; MATCH vs single-task K8 (BUDGET vs INTERFERENCE via 24k evals), THINK-NECESSARY per task, cross-task swap | registered (gated on §169 / §170 K8 slot 1) | **open** |
@@ -10588,6 +10588,21 @@ subspace.**
   and `m.dec_logits`, with no detach.
   - The only no_grad regions are the read-map capture and the slot initialisation (wte(" .") + noise, " ." = fixedchunk's PAD).
 * So the answer loss trains the input encoding, as §171 states. 171-2's description and its "effect" paragraph do not apply.
+
+**§171 slot 1 (2026-10-09 08:29 EDT; s171_k8_4x4_s1 and s171_k8blind_4x4_s1, RTX 3090, 48k; score_s171). READ-SLOTS K8 is not EXACT, so the gate is closed. The slots learned no schedule, and the memory goes unused.**
+* **K8:** 4×4 test_acc 0.003; ext_4x6 / 4x7 / 4x8 / 4x16 all 0.0.
+  - Accuracy against K′ is flat (0.001–0.003 at K′ 0–32), and every skipped write leaves 0.003.
+  - This matches DIRECT-MIX (0.001 / 0.004), K0 by construction.
+* **Descriptive (C7):**
+  - The read map is pass-invariant: the slots put about 60% of their mass on EOT (an attention sink), about 10% on the slots, and little on the digits.
+  - The peak column is 2 at every pass, and read entropy is 0.46 at every pass.
+  - The additive gate g_add is 2.3e-4, while the additive norm grows about 1,340 per pass.
+  - Loss reaches about 0.69 per digit at the full curriculum stage (c ≥ 8, from 9.1k on).
+* **BLIND (descriptive):** 0.0 everywhere. Its read map is 79% EOT.
+* **Interpretation is pending §169 K8, the same data with INJECT.**
+  - If INJECT K8 is exact, §171's reading is "M narrow reads per pass are too little" (a wider M is the obvious arm, not registered).
+  - If not, the K8 memory recipe fails on this mix in both harnesses.
+* CHEAPER-EQUAL is not read (only one seed, and not exact).
 
 ## 172. PCCoT-PROBE: §149's battery on the GPT-2-small GSM8K latent state of the art (Jacobi-parallel latents), at release (eval only; Audit's 02:00 research lead; roadmap step 7, a C1-qualified GSM8K target; pre-registered 2026-10-09 01:54 EDT, after Literature's facts 2e5fe84a (`docs/LIT_PCCOT_PROBE_2026-10-09.md`) and Audit's review, before any run)
 
