@@ -1,0 +1,4 @@
+# THEORY §171 READ-SLOTS (registration 2026-10-09 01:54, note 171-1) slot 1: K8 + BLIND K8 co-tenant on one RTX 3090 (P=2, --mem_budget 10 per process): boxes.readslots171 (input encoded once; 8 learned slots per think pass write DeltaMem-R; read-only decoder), §161's mix, 48k
+# P=2
+boxes/runs_fsq/s171_k8_4x4_s1 boxes.readslots171 --think_k 8 --seed 1 --auto_micro --mem_budget 10 --bench bench/data/mult_4x4_test.txt
+boxes/runs_fsq/s171_k8blind_4x4_s1 boxes.readslots171 --think_k 8 --blind_decoder --seed 1 --auto_micro --mem_budget 10 --bench bench/data/mult_4x4_test.txt
