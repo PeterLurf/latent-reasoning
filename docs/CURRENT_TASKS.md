@@ -42,6 +42,9 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
 * Model keep patterns include s165_ / s166_ / s168_-s171_ / s174_.
 
 ### Local (v2 workers c4060 / c3070 / c2070 <- scratch/c1_backlog_<card>.txt; halt file scratch/<tag>.halt stops a worker)
+* 2026-10-09 10:25 (Audit): proto175_auxk8_s1_2070, proto176_rk_s1_4060, proto176_prog_s1_3070 (and the later proto177_{tidx, fadetidx, kmatch}_s1) are DESCRIPTIVE
+  8k local previews read by NO rule (Theory notes 175-1 / 176-2); any §175 / §176 / §177 rule change after a preview read may only tighten. Each dir's args.json
+  records train_gpu: cross-arm preview differences are card-confounded (2070 fp32 / 3070 / 4060 bf16). Queue order per card: §175 / §176 preview, then §177's.
 * 3070: §172 PCCoT-PROBE full battery (scratch/s172_probe.py; report acc_release to Audit before any C1 numbers); 4060: proto165_k16c1;
   2070: §167 167-3 DAS refits (shared lines). §166 S5 SP s2 eval-only done (ae4b2ae9).
 * Reboot recovery: memory note latent-reboot-recovery.
