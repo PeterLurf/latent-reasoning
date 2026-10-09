@@ -1,0 +1,38 @@
+{
+ "device": "cpu",
+ "g1": {
+  "4": {
+   "iia_kD": 0.9791666666666666,
+   "serial_rollout_override": 0.9791666666666666,
+   "gt_equal_later_gt": true,
+   "n": 48
+  },
+  "8": {
+   "iia_kD": 0.9791666666666666,
+   "serial_rollout_override": 0.9791666666666666,
+   "gt_equal_later_gt": true,
+   "n": 48
+  },
+  "12": {
+   "iia_kD": 1.0,
+   "serial_rollout_override": 1.0,
+   "gt_equal_later_gt": true,
+   "n": 48
+  }
+ },
+ "g1_pass": true,
+ "g3": {
+  "loss_first5": 9.025608444213868,
+  "loss_last5": 4.323624181747436,
+  "orth_err": 1.1920928955078125e-06
+ },
+ "g3_pass": true,
+ "g2": {
+  "iia_kD": 1.0,
+  "serial_rollout_override": 1.0,
+  "n": 48,
+  "p": 4
+ },
+ "g2_pass": true,
+ "all_pass": true
+}
