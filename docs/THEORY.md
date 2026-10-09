@@ -10677,6 +10677,17 @@ subspace.**
   - It is the measurement §177's arms report (a pass index or a visible schedule should keep consecutive reads distinct).
   - §165 K8's diagnostic is pending.
 
+**§171 addendum 3 (2026-10-09 09:39 EDT; descriptive; eval_s177_dir.json on the working §161 MIX s1, 4×4 0.996, and on §171 BLIND). Against a working serial memory, the failed think passes barely move.**
+* **Mean consecutive-pass cosine, working MIX s1** (pair segments 2–17, 500 items):
+  - delta state 0.22–0.65 (median about 0.48);
+  - the decoder's read 0.37–0.84;
+  - additive state 0.86 → 0.998 (a running sum).
+* **The failed §171 K8:** delta 0.977 → 0.9999, read 0.966 → 0.9996, additive ≈ 1.0 from pass 2.
+* **BLIND:** delta 0.958 → 0.9999, read 0.979 → 0.9999. Under answer2, 60% of 4×4 items are unsettled at the cap.
+* **So a working serial memory turns its delta state substantially at every segment, and the failed think passes do not.**
+* **Caveat:** each MIX segment brings a new digit pair, so part of its turning is input-driven. The comparison shows what distinct per-pass states look like in a working serial memory, not that identical-input passes could reach them.
+* §177's arms report the same cosines.
+
 ## 172. PCCoT-PROBE: §149's battery on the GPT-2-small GSM8K latent state of the art (Jacobi-parallel latents), at release (eval only; Audit's 02:00 research lead; roadmap step 7, a C1-qualified GSM8K target; pre-registered 2026-10-09 01:54 EDT, after Literature's facts 2e5fe84a (`docs/LIT_PCCOT_PROBE_2026-10-09.md`) and Audit's review, before any run)
 
 **Why.**
