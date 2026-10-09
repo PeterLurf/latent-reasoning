@@ -20,26 +20,24 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 Messages go through SendMessage. The names "Theory" and "Audit" currently need an identity confirm, pending the user,
 so send to the pipe addresses their messages come from.
 
-## Running now (12:20 2026-10-08; credit ~$120; cap 16 hosts / < $4/h)
+## Running now (20:10 2026-10-08; credit ~$113; cap 16 hosts / < $4/h)
 
 **User rules:** full runs on Vast 3090s (>= 16 GB, checkpointed); local cards short memory-capped jobs only, never idle. smoke_plain before commits
-touching fsq120 / table132 / core. Never edit a module while a deploy is in flight (tar minutes after create; auto_ship is transitive: multrow /
-restart160 ship multpair). One fill_generic at a time.
+touching fsq120 / table132 / core. Never edit a module while a deploy is in flight (auto_ship is transitive: fixedchunk / multrow ship multpair,
+deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `vast destroy` aborts at its y/N prompt).
 
 ### Vast
-* fill_s162to163 (12:15, HEAD 1781cd53): b189 / b190 §162 DIRECT s1 / s2 (deltas5, --eval_bs 100) -> b191 / b192 §162 LONG s1 / s2 (l_max 32) ->
-  b195 §161 MIX9 fallback -> b196 / b197 §164 TC-MIX s1 / s2 -> b198 §164 DIRECT-MIX s1 + s2 (P=2) -> b204 §163 SHAPE-MIX-2D slot 1.
-* Up: b182 §159 R-5x5 slot 1; b186-b188 §161 MIXIDX slots / MIX; b193 §160 CTRL-R9; b194 §160 A-R9 (started 12:11 after 4 STUCK_LOADING offers).
-* Draining: b178 (SHIFT-R k3), b184 (§161; sshd unreachable).
-* Waiting: §165 FIXED-CHUNK b200-b203 (k16 / k8 / k0 / k16c1 slot 1; Audit-approved 3539b83e + 1781cd53) after §164 reads.
-* Code today: multrow §160 (R-ROWS + s160 probes, restart160/gate160), multpair §159 / §161 / §163 (ext_5x8, shape_mix + col_index, shape_mix_2d),
-  deltas5 (§162), mult98 §164 (gen_items = the bench CoT), fixedchunk (§165); gates gate160-165 in scratch/.
+* Up: b192 §162 LONG s2; b204 §163 slot 1 (draining; model.pt for the §166 mix2d cell); b206 / b207 §159 s3 / s4; b210 §165 K16 + K8 (P=2);
+  b211 §165 K0 + K16c1 (P=2); fill_s163k23 deploying b212 / b213 (§163 slots 2 / 3).
+* Done today: §155 R / SHIFT-R complete; §157 closed; §159 slot 1 exact (s2 in); §160 A-R / CTRL-R + block-9 fallbacks; §161 MIX / IDX / MIX9;
+  §162 DIRECT s1 / s2, LONG s1, SHORT s1 / s2 (models kept from 05751e36 on; DIRECT s1 / LONG s1 models lost); §163 s1 exact; §164 closed (anchored re-eval).
+* Drains: drain_gen_partial skips ckpt_last / ckpt_prev of finished runs; manual fetch (tar over ssh, md5) when an scp stalls on a hung sshd.
 
-### Local (v2 workers c4060 / c3070 / c2070 <- scratch/c1_backlog_<card>.txt; log logs/c1_local.log; halt file scratch/<tag>.halt stops a worker)
-* 4060: proto163_mix2d (staged §163 copy). 3070: proto164_directmix. 2070: proto165_k16 (memcheck first).
-* §160 null (--s160_probe_only on §152 A s1, CPU Idle, pid 12256; eval_s160_posthoc.json when done).
-* Lessons: 8k-fit probes OOM 8 GB cards (use --probe_n_fit 3000); KV-decode evals need small eval_bs; never eval a sed range of a deploy script
-  (it ran gen_deploy's loop 2026-10-08 09:19, no instance created).
+### Local (v2 workers c4060 / c3070 / c2070 <- scratch/c1_backlog_<card>.txt; halt file scratch/<tag>.halt stops a worker)
+* Queues: §165 previews (K0 / K8 / K16 / K16c1) -> §166 MULT cells (s1 4060, s2 3070, s3 2070; fitted + plain) -> §167 DAS (MIX s1-s3, SHORT s1 / s2).
+* Pending: §166 mix2d cells (note 166-2) once s163_mix2d_4x4_s1/model.pt lands; §166 S5 cells + §167 / §162 post-hoc on LONG s2 once b192 lands.
+* CPU: scratch/s162_posthoc.py (SHORT s2 done, SHORT s1 running, Idle priority).
+* Reboot recovery: memory note latent-reboot-recovery (13:20 power cut: watchers / filler / workers restarted).
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
