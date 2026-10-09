@@ -128,7 +128,7 @@ def main():
     ap.add_argument("--mem_write", default="top", choices=["top", "block9"]); ap.add_argument("--write_mix_start", type=int, default=2000); ap.add_argument("--write_mix_end", type=int, default=6000)
     ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", default=None); ap.add_argument("--log_every", type=int, default=100)
     ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--test_n", type=int, default=1000); ap.add_argument("--ext_n", type=int, default=1000)
-    ap.add_argument("--probe_n_fit", type=int, default=8000); ap.add_argument("--auto_micro", action="store_true"); ap.add_argument("--mem_budget", type=float, default=21.0)
+    ap.add_argument("--probe_n_fit", type=int, default=8000); ap.add_argument("--auto_micro", action="store_true"); ap.add_argument("--eval_at", type=int, default=0, help="also evaluate test_acc / ext_4x8 at this step -> eval_<k>k.json"); ap.add_argument("--mem_budget", type=float, default=21.0)
     ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--fp32", action="store_true")
     ap.add_argument("--bench", default=os.path.join("bench", "data", "mult_4x4_test.txt")); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); a.arm = "inject"; os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale; K = a.think_k
@@ -195,6 +195,11 @@ def main():
             log.write(json.dumps({"step": step, "nonfinite": 1}) + "\n"); log.flush(); n_nonfinite += 1; opt.zero_grad()
         else:
             opt.step(); hist.append(tot)
+        if a.eval_at and step == a.eval_at:                                 # Theory 7caa3a82 (§174's matched budget): accuracy at this step, no checkpoint kept
+            m.eval(); P_ = product_digits(teA, teB); xa, xb = gen_operands(np.random.default_rng(14004), a.ext_n, 4), gen_operands(np.random.default_rng(14005), a.ext_n, 8)
+            e24 = {"step": step, "test_acc": float((predict(m, teA, teB, K, dev, amp, a.eval_bs)[0] == P_).all(1).mean()),
+                   "ext_4x8": {"test_acc": float((predict(m, xa, xb, K, dev, amp, a.eval_bs)[0] == product_digits(xa, xb)).all(1).mean()), "seeds": [14004, 14005]}}
+            json.dump(e24, open(os.path.join(a.out, "eval_%dk.json" % (step // 1000)), "w", newline="\n"), indent=1); m.train()
         if step % a.log_every == 0 or step == a.steps:
             md_ = float(np.median(wlast)) if wlast else 0.0; mx_ = float(np.max(wwin)); late = step > a.write_mix_start * sc
             w_rec = {"step": step, "mean": float(np.mean(wwin)), "max": mx_, "median_prev_1k": md_, "spike_100x": bool(late and mx_ > 100 * md_ > 0),
