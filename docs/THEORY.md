@@ -10510,6 +10510,13 @@ subspace.**
 * CoT length grows about quadratically: 95 tokens at n = 8, 195 at 12, 367 at 16.
 * BEYOND TEXT needs TEXT-COT s1. AT-LEAST-TEXT-COT needs the latent arm at ≥ 0.99 for n ≤ 8.
 
+**§170 interim (2026-10-09 09:16 EDT; s170_cot_s1, trained on a 3090, evaluated on a 3070; score_s170). TEXT-COT s1 matches s2: exact within training and extending about 2 sizes.**
+* By n: 1.0 at n = 1..8; then 0.995 / 0.707 / 0.234 / 0.123 at n = 9 / 10 / 11 / 12; 0.04–0.10 at n 13–16.
+* **TEXT-COT's two-seed mean at n 9–12 is 0.535** (0.515 / 0.556), below 0.80. A latent arm that is DEPTH-GENERAL (≥ 0.80) would therefore read BEYOND TEXT.
+* **A scorer field-path fix, disclosed (no rule change):** `compute_by_n[n]` is a dict {flops_trunk, sequential_passes}, and AT-LEAST-TEXT-COT now reads flops_trunk.
+  - Every arm records it under the same trunk convention (Meter; the DeltaMem branch adds < 5%).
+  - The synthetic check had used bare numbers, so the crash appeared only on the first two-seed CoT read.
+
 ## 171. READ-SLOTS: think passes in which a few learned slots read the once-encoded input and write the memory (a Perceiver / RIN-style task-agnostic read; the user's "creating new methodologies and architectures for task agnostic" via Audit; roadmap steps: task-agnostic input, and scale (long inputs); pre-registered 2026-10-09 01:54 EDT, after Literature's scout 589e6eb5 (`docs/LIT_TASK_AGNOSTIC_SCOUT_2026-10-09.md`, rank 1) and Audit's review, before any implementation or run)
 
 **Why.**

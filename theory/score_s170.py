@@ -52,6 +52,12 @@ def mean(xs):
     return sum(xs) / len(xs) if xs else None
 
 
+def flops_n(v, n):
+    """compute_by_n[n] is {flops_trunk, sequential_passes} (boxes.core.Meter, trunk; the same convention for every arm)."""
+    c = (v.get("compute_by_n") or {}).get(str(n))
+    return c.get("flops_trunk") if isinstance(c, dict) else c
+
+
 def pooled(ab, lo, hi=8):
     vs = [acc(ab, n) for n in range(lo, hi + 1)]
     return None if any(v is None for v in vs) else sum(vs) / len(vs)
@@ -148,7 +154,7 @@ def main():
         cots = {s: cot_seed(s) for s in (1, 2)}; cd = [v for v in cots.values() if v["status"] == "done"]
         cot_mean = {n: mean([acc(v["acc_by_n"], n) for v in cd]) for n in NS} if len(cd) == 2 else None
         cot_912 = mean([v["mean_9_12"] for v in cd]) if len(cd) == 2 else None
-        cot_comp = {n: mean([(v.get("compute_by_n") or {}).get(str(n)) for v in cd]) for n in range(1, 9)} if len(cd) == 2 else None
+        cot_comp = {n: mean([flops_n(v, n) for v in cd]) for n in range(1, 9)} if len(cd) == 2 else None
         res["cot"] = {"seeds": cots, "mean_9_12": cot_912}
         print("TEXT-COT |", {s: (v["status"], v.get("mean_9_12")) for s, v in cots.items()})
         for arm in KARMS:
@@ -162,7 +168,7 @@ def main():
                            "depth_general": cnt("depth_general"), "slot1_deep": s1.get("deep")})
                 if len(done) >= 2:
                     am = {n: mean([acc(v["acc_by_n"], n) for v in done]) for n in range(1, 9)}
-                    acomp = {n: mean([(v.get("compute_by_n") or {}).get(str(n)) for v in done]) for n in range(1, 9)}
+                    acomp = {n: mean([flops_n(v, n) for v in done]) for n in range(1, 9)}
                     if cot_mean:
                         rd["at_least_text_cot_n"] = [n for n in range(1, 9) if am[n] is not None and cot_mean[n] is not None and am[n] >= cot_mean[n] - 0.01
                                                      and acomp.get(n) is not None and cot_comp.get(n) is not None and acomp[n] < cot_comp[n]]
