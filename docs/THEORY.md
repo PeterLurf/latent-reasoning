@@ -11176,6 +11176,12 @@ how many think passes run in training.
 * **Gates:** gradflow per loss term (in particular (d)'s fade schedule and (a)'s index embedding); the o + K ≤ 72 assert; K-window and bucket asserts for (f);
   smoke_plain; Audit's diff review; memcheck of the largest shape (f: n = 8 at K = 10 with the eval at K′ = 12; (a) / (d): their rule K with the K′ sweep).
 
+**Note 177-1 (2026-10-09 10:20 EDT; pre-data: nothing of §177 has run; Audit). DISTINCT-PASSES is a qualifier on HIT, not a conjunct.**
+* The 0.9 cut is uncalibrated: the arm-at-initialisation cosines (note 173-1) are pending, and the cut was proposed as a descriptive yardstick.
+* A run that is DEEP and THINK-NECESSARY (K′ = 0 / 1 at most half, with step-specific skip damage) has already shown causal use of its passes. A conjunct would turn a run whose states change smoothly (say cos 0.92) into a false negative.
+* **(f) and (g): HIT = DEEP + THINK-NECESSARY,** reported as "HIT (passes distinct)" or "HIT (passes not distinct)" by DISTINCT-PASSES.
+* FAIL keeps its ≥ 0.96 cosine conjunct unchanged. score_s177 is updated.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

@@ -4,10 +4,11 @@ Arms: (a) tidx = PASS-INDEX on §169's INJECT (mult mix, K 8); (d) fadetidx = SC
   EXACT 4x4 >= 0.99; LENGTH-GENERAL(arm) >= 2 / 3 EXACT with ext_4x8 >= 0.90; THINK-NECESSARY K' 0 / 1 each <= 0.5 x acc(K) with step-specific skip damage;
   C1 also needs §164 DIRECT-MIX < 0.95.
 (f) kmatch = STEP-MATCHED K on §170 nested (K = n + U{0..2}); rules at K' = n + 1: HIT = DEEP (>= 0.90 at every n 3..8) + THINK-NECESSARY (168-1 form,
-  chance 1/11, K' 0 / 1 vs n + 1, step-specific skip damage) + DISTINCT-PASSES (note 173-1); BEYOND = mean n 9-12 >= 0.80; FAIL = pooled 3..8 <= DIRECT
+  chance 1/11, K' 0 / 1 vs n + 1, step-specific skip damage), labelled by DISTINCT-PASSES (note 177-1: a qualifier, not a conjunct); BEYOND = mean n 9-12
+  >= 0.80; FAIL = pooled 3..8 <= DIRECT
   pooled + 0.05 with delta cos >= 0.96 at passes 2-4 ("open (under-trained)" if train_loss_tail.second_half < 0.98 x first_half); two FAIL seeds close
   fixed / oracle-count K only.
-(g) curpois = CURRICULUM + POISSON K (gated on an (f) HIT): HIT at K' = 10 (DEEP + THINK-NECESSARY vs 10 + DISTINCT-PASSES); BEYOND mean n 9-12 at K' = 16.
+(g) curpois = CURRICULUM + POISSON K (gated on an (f) HIT): HIT at K' = 10 (DEEP + THINK-NECESSARY vs 10; DISTINCT-PASSES labels it); BEYOND at K' = 16.
 MOVES-MECHANISM (note 173-1, descriptive) from eval_s177_dir.json: delta cos < 0.9 at passes 2, 3, 4 AND a step probe >= 0.5 (mult: some t >= 2, c >= 2;
 nested: some t >= 2).
 Dirs boxes/runs_fsq/s177_{tidx,fadetidx,kmatch,curpois}_s{seed}.
@@ -96,14 +97,15 @@ def nest_run(arm, s, direct_pooled):
     tn = bool(rem and drops and max(drops) >= 0.2 and min(drops) <= 0.05)
     deep = all((S170.acc(ab, n) or 0) >= 0.90 for n in range(3, 9))
     mech = mechanism(d, "nest")
-    hit = bool(deep and tn and mech.get("distinct_passes"))
+    hit = bool(deep and tn)   # note 177-1: DISTINCT-PASSES qualifies a HIT, it is not a conjunct
     abb = kp.get(kb) or (ab if kb == kh else {})
     m912 = mean([S170.acc(abb, n) for n in range(9, 13)])
     tail = x.get("train_loss_tail") or {}
     under = None if not tail else bool(tail.get("second_half") is not None and tail.get("first_half") and tail["second_half"] < 0.98 * tail["first_half"])
     dc = mech.get("delta_cos_2_4") or [None]
     fail = bool(pk is not None and direct_pooled is not None and pk <= direct_pooled + 0.05 and all(v is not None and v >= 0.96 for v in dc))
-    out.update({"pooled_3_8": pk, "deep": deep, "think_necessary": tn, "hit": hit, "beyond": bool(m912 is not None and m912 >= 0.80), "mean_9_12": m912,
+    out.update({"pooled_3_8": pk, "deep": deep, "think_necessary": tn, "hit": hit,
+                "hit_label": None if not hit else ("HIT (passes distinct)" if mech.get("distinct_passes") else "HIT (passes not distinct)"), "beyond": bool(m912 is not None and m912 >= 0.80), "mean_9_12": m912,
                 "fail": fail, "under_trained": under, "compute_by_n": r.get("compute_by_n")}); out.update(mech)
     return out
 
