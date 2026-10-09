@@ -250,7 +250,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 160 | R-ROWS: R on §152's rows, A-R / CTRL-R (C3) | **gate closed** (A-R s1 0.056, CTRL-R 0.055; column 5 ~0.09); block-9 fallbacks descriptive | closed |
 | 161 | SHAPE-MIX (C2): 4 × n training (n 2..5), ± a column index with random offsets | **LENGTH-GENERAL** (MIX 3/3, ext_4x8 0.91–0.96; MIX+IDX 2/3); SERIAL with a state-carried running sum; index not needed | closed |
 | 162 | DELTA-S5: DeltaMem-R on S5 against a measured single-pass boundary (158-2's contrast cell) | **mixed** (LONG MIXED, SHORT BUFFER-LIKE; at equal depth the arms are indistinguishable, so 158-2's depth contrast is not supported); both exact in range, 0.0 at 512 | closed |
-| 163 | SHAPE-MIX-2D: both operand lengths mixed (m, n 2..5), 6×6–8×8 generalisation | registered (condition met) | **open** |
+| 163 | SHAPE-MIX-2D: both operand lengths mixed (m, n 2..5), 6×6–8×8 generalisation | **BOUNDED 3/3** (5×5 0.995–0.998; 6×6 0.96–0.98; 8×8 0.19–0.45; 4×8 / 8×4 ≈ 0.98–0.99); 5×5 SERIAL | closed |
 | 164 | MIX-BASELINES: TC-MIX / DIRECT-MIX on §161's mix (like-for-like C2 baselines) | **LATENT BEYOND TEXT ON LENGTH** (TC-MIX anchored ext 0.0 at 4×6+; its CoT stops short); DIRECT-MIX 4×4 ≤ 0.004 (the single pass fails) | closed |
 | 165 | FIXED-CHUNK: the same memory on fixed text chunks plus think passes (task-agnostic segmentation) | registered | **open** |
 | 166 | STATE-COVERAGE: 1k-step post-training from passed / noise states vs a PLAIN post-train (2507.02782), on §162 LONG and §161 MIX | registered | **open** |
@@ -9815,6 +9815,25 @@ equal depth, the two arms are indistinguishable.**
     - s1 was flat by count, with its minimum late in the chain.
     - So whether the 8×8 failure follows term count or chain position is **seed-dependent**. Slot 1's "chain length, not term count" is withdrawn as a general
       statement.
+**§163 SHAPE-MIX-2D result (2026-10-08 23:26 EDT; scored by Theory with score_s163; 48k, RTX 3090): BOUNDED, 3 / 3 seeds.**
+* **In distribution, exact in every seed:** 4×4 0.997 / 1.0 / 1.0; 5×5 **0.996 / 0.995 / 0.998** (ICoT-SI's 5×5: 0.996).
+* **One operand beyond 5:** 4×8 0.989 / 0.987 / 0.98; 8×4 0.988 / 0.982 / 0.984.
+* **Both beyond 5:**
+  - 6×6 0.979 / 0.963 / 0.967;
+  - 7×7 0.83 / 0.70 / 0.78;
+  - 8×8 0.45 / 0.19 / 0.43;
+  - 10×10 ≤ 0.03.
+* **5×5:**
+  - SERIAL in all three.
+  - The in-progress sum is held in s1 / s3 (≥ 0.99). s2 is at 0.77 after pair 6 and 0.98 later, so it misses STATE-CARRIED (descriptive).
+  - LATENT BEATS TEXT against TC-M at 0.80× FLOPs, and 3.24× ICoT-SI.
+* **The 8×8 failure, across seeds:**
+  - In **s2 and s3** it concentrates in the high-count middle columns (6–8 products 0.75–0.85, against 0.93–0.98 for 1–4), and the late low-count columns recover.
+  - **s1** is flat by count, with a late minimum.
+  - **So Theory's original term-count prediction holds in 2 of 3 seeds.** The "chain length" reading from s1 alone was premature, and is recorded as such.
+* **Reading (registered):** bounded 2-D generalisation. The latent memory generalises over both operands to 6×6 (1.2× the trained width), without a scratchpad. It
+  does not reach 8×8. One operand beyond training is near-exact.
+* §163 closes.
 
 ## 164. MIX-BASELINES: like-for-like text-CoT and direct-answer baselines on §161's shape mix (Audit's requirement before any "beyond text" claim; pre-registered 2026-10-08 11:26 EDT, after Audit's review and before any implementation or run; priors from Literature's 0b532db5 / 73fbfb1a)
 
