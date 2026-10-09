@@ -48,7 +48,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (09:35; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
+* **Theory (10:19; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
   - **The user (via Audit, 2026-10-09):**
     - ~01:30: "do another research pass. work on task agnosticness. approve go ahead on prosqa deep".
     - ~01:45: "keep working on the prosqa deep and the nested arithmetic … creating new methodologies and architectures for task agnostic".
@@ -68,13 +68,19 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
     - **§176 RAND-K:** random K (RK) or progressive (PROG) training on INJECT. C2 is read beyond the training support (K′ = 64), against fixed K8's post-hoc curve.
       Gated on §169 K8.
   - **Scored tonight / this morning:**
-    - **Closed:** §172 PCCoT (latents and iterations used; more iterations hurt); §166 (S5 SP = PLAIN).
+    - **Closed:**
+      - §172 PCCoT: latents and iterations used; more iterations hurt; 172-1: step state distributed across the block, PARTIAL, not BYPASSED.
+      - §166: S5 SP = PLAIN.
     - **§169:** K0 fails (0.003).
     - **§170:** n* = 3 (170-3); K0 fails (0.302); TEXT-COT exact at n 1–8, two-seed mean 0.535 at 9–12.
     - **Think-pass failures (memory unused):** §171 K8 / BLIND (gate closed; loss = single pass; direction settles by about 4 passes) and §165 K8.
     - **§168:** DIRECT std s1 at chance (it memorises). NA pending.
     - **§167:** the MIX s2 t = 4 partial (2070) read INTERMEDIATE, pending the random-model baseline. All six refits rerun on cloud (167-5 / 167-6; scorer best-k bug fixed).
-    - **Pending:** §169 K8 / K16, §170 K8 (trigger for the drafted §177 PASS-DISTINCT: (a) index, (d) fade + index, about $5), §165 K16, §168 NA.
+    - **§177 PASS-DISTINCT registered** (4947f034): (a) index, (d) fade + index, (f) step-matched K, (g) gated on (f).
+      - Cloud runs wait for the trigger (§169 K8 and §170 K8 both fail).
+      - Local proto177 previews queue after the proto175 / proto176 previews. All previews are read by no rule.
+    - **Pending:** §169 K8 / K16, §170 K8, §165 K16, §168 NA, the §167 cloud refits (b226–b228, bench-file fix).
+    - **Note 173-1:** MOVES-MECHANISM = delta cos < 0.9 at passes 2–4, plus a per-step probe ≥ 0.5 (descriptive). The working-model baseline cosines are 0.46–0.56.
     - §176 RK uses rand_k "7,0.5,32" (176-1).
     - **Notes:**
       - 170-1: a held-out SERIAL pool; CoT reductions only.
