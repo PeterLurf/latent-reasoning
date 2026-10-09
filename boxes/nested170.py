@@ -349,7 +349,7 @@ def main():
     ap.add_argument("--n_max_train", type=int, default=8); ap.add_argument("--micro", type=int, default=1); ap.add_argument("--ckpt_passes", action="store_true")
     ap.add_argument("--mem_write", default="top", choices=["top"]); ap.add_argument("--write_mix_start", type=int, default=2000); ap.add_argument("--write_mix_end", type=int, default=6000)
     ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", default=None); ap.add_argument("--log_every", type=int, default=100)
-    ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--per_n", type=int, default=1000); ap.add_argument("--serial_pool", type=int, default=2200); ap.add_argument("--auto_micro", action="store_true")
+    ap.add_argument("--cot_eval_bs", type=int, default=64, help="TEXT-COT generation batch (KV cache; b223 OOMed at 250 on n = 16 chains)"); ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt (no training; writes args_eval.json; model.pt / args.json / log untouched)"); ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--per_n", type=int, default=1000); ap.add_argument("--serial_pool", type=int, default=2200); ap.add_argument("--auto_micro", action="store_true")
     ap.add_argument("--mem_budget", type=float, default=21.0); ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--time_steps", type=int, default=0, help="cost check: train this many steps, report s/step, exit")
     ap.add_argument("--eval_at", type=int, default=0, help="also evaluate acc_by_n at this step -> eval_<k>k.json"); ap.add_argument("--aux_step", type=float, default=0.0, help="§175: lambda of the read-only step decoder CE (0 = off: the §170 path)"); ap.add_argument("--aux_fade", default="36000,48000", help="§175: lambda constant to the first step, then linear to 0 at the second"); ap.add_argument("--fast_add", action="store_true", help="deltamem.FAST_ADD: the additive heads' pass writes as one sum (Audit 2026-10-09; scratch/gate_fastadd.py)"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); a.task = "nested"; import boxes.deltamem as DM_; DM_.FAST_ADD = bool(a.fast_add); os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale; K = a.think_k if a.arm == "inject" else 0
@@ -457,8 +457,8 @@ def main():
         for i, it in enumerate(items):
             by_len.setdefault(len(it["syms"]), []).append(i)
         for L, idx in by_len.items():
-            for s in range(0, len(idx), a.eval_bs):
-                ii = idx[s:s + a.eval_bs]; x = torch.tensor([[EOT] + ids(items[j]["syms"]) + [TID[" ="]] for j in ii], device=dev)
+            for s in range(0, len(idx), a.cot_eval_bs):
+                ii = idx[s:s + a.cot_eval_bs]; x = torch.tensor([[EOT] + ids(items[j]["syms"]) + [TID[" ="]] for j in ii], device=dev)
                 budget = max(len(cot_ids(items[j]["root"])) for j in ii) + 50
                 with ac():
                     h, past = g(g.embed(x), None)
@@ -469,7 +469,9 @@ def main():
                         break
                     with ac():
                         h, past = g(g.embed(nt[:, None]), past)
-                G = torch.stack(gen, 1).cpu().numpy()
+                G = torch.stack(gen, 1).cpu().numpy(); del h, past, gen
+                if dev.startswith("cuda"):
+                    torch.cuda.empty_cache()
                 for r, j in enumerate(ii):
                     row = list(G[r]); e = row.index(EOT) if EOT in row else len(row); body = row[:e]; ntok[j] = e + (1 if EOT in row else 0)
                     if EOT not in row:
@@ -526,13 +528,21 @@ def main():
         return inject_answers(items, K if Kp is None else Kp)
 
     lam_now[0] = a.aux_step                                                 # §175: memory-check with the aux on (the largest graph)
-    if a.mem_check or (a.auto_micro and dev.startswith("cuda") and not a.resume):
+    if a.mem_check or (a.auto_micro and dev.startswith("cuda") and not a.resume and not a.eval_only):
         mc = []
         while True:
             pk = mem_check(a.micro); mc.append({"micro": a.micro, "peak_gib": pk}); print("MEM", a.micro, pk, flush=True)
             if pk <= a.mem_budget or a.micro >= a.bs or a.mem_check:
                 break
             a.micro *= 2
+        if a.arm == "textcot" and dev.startswith("cuda"):                   # Audit 2026-10-09 (b223 OOM): the worst CoT eval batch = the longest n = 16 chain x cot_eval_bs
+            worst = max([it for it in TE if it["n"] == 16], key=lambda it: len(cot_ids(it["root"])))
+            while True:
+                torch.cuda.empty_cache(); torch.cuda.reset_peak_memory_stats(dev); cot_answers([worst] * a.cot_eval_bs); pk_ = torch.cuda.max_memory_allocated(dev) / 2 ** 30
+                mc.append({"cot_eval_bs": a.cot_eval_bs, "peak_gib": pk_, "chain_tokens": len(cot_ids(worst["root"]))}); print("MEM cot", a.cot_eval_bs, pk_, flush=True)
+                if pk_ <= a.mem_budget or a.cot_eval_bs <= 4:
+                    break
+                a.cot_eval_bs //= 2
         json.dump({"checks": mc, "micro": a.micro, "peak_gib": mc[-1]["peak_gib"], "train": "the longest of 4 bs draws at n <= %d" % a.n_max_train, "eval": "n = 16 at K' = 2K"},
                   open(os.path.join(a.out, "mem_check.json"), "w", newline="\n"), indent=1)
         if a.mem_check:
@@ -544,9 +554,9 @@ def main():
     if a.aux_step:                                                          # §175 (Audit): state the aux decoder's weight sharing in the run's args
         info["aux_decoder"] = ("the SAME GPT-2 trunk and LM head as the main decoder (shared weights, no new parameters), read-only on M_t via fwd_read: "
                                "[EOT, ' Step', ' t', ' :'] + e_{t+1} + EOT (teacher-forced); no problem text, no write, never fed back; dropped at test")
-    json.dump(info, open(os.path.join(a.out, ("args_resume_%d.json" % int(time.time())) if a.resume else "args.json"), "w", newline="\n"), indent=1)
+    json.dump(info, open(os.path.join(a.out, "args_eval.json" if a.eval_only else (("args_resume_%d.json" % int(time.time())) if a.resume else "args.json")), "w", newline="\n"), indent=1)
     params = m if m is not None else g; opt = make_opt(params, a.lr); step0 = 1; n_nonfinite = 0; hist = []; wg_hist = []; wwin = []; wlast = []
-    log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time()
+    log = open(os.path.join(a.out, "log.jsonl"), "a" if (a.resume or a.eval_only) else "w", newline="\n"); t0 = time.time()
     if a.resume:
         ck = torch.load(a.resume, map_location=dev, weights_only=False); params.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"]); rng.bit_generator.state = ck["np_rng"]
         step0 = ck["step"] + 1; n_nonfinite = ck["n_nonfinite"]; wg_hist = ck.get("wg_hist", []); t0 = time.time() - ck["elapsed"]; log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
@@ -557,6 +567,10 @@ def main():
         nr = m.mem.norms[1:]; m.mem.norms = None; r0 = float(torch.stack([d_ / a_.clamp_min(1e-12) for d_, a_ in nr]).median()) if nr else 1.0
         m.mem.s_add.data.fill_(math.log(max(r0, 1e-12))); json.dump({"g_add_init": r0}, open(os.path.join(a.out, "s170_init.json"), "w", newline="\n"))
     last = a.steps if not a.time_steps else min(a.steps, step0 + a.time_steps - 1); tt0 = time.time()
+    if a.eval_only:                                                         # no training: the saved model, the training log's time / non-finite count
+        params.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev, weights_only=True)); last = step0 - 1
+        lg_ = [json.loads(l_) for l_ in open(os.path.join(a.out, "log.jsonl"))]; n_nonfinite = sum(1 for r_ in lg_ if r_.get("nonfinite"))
+        sec_ = [r_["sec"] for r_ in lg_ if "sec" in r_]; t0 = time.time() - (sec_[-1] if sec_ else 0); wg_hist = [r_ for r_ in lg_ if "write_grad_norm" in r_]
     for step in range(step0, last + 1):
         for gr in opt.param_groups:
             gr["lr"] = lr_at(a.lr, gr, step, a.steps)
@@ -604,14 +618,20 @@ def main():
                                                                        "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "micro": a.micro},
                                                                       open(os.path.join(a.out, "timing.json"), "w", newline="\n"), indent=1); print("TIMING", sps, flush=True)
         json.dump(json.load(open(os.path.join(a.out, "timing.json"))), open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1); return   # so the drain fetches it
-    train_sec = round(time.time() - t0); torch.save(params.state_dict(), os.path.join(a.out, "model.pt")); params.eval(); t1 = time.time()
+    train_sec = round(time.time() - t0)
+    if not a.eval_only:
+        torch.save(params.state_dict(), os.path.join(a.out, "model.pt"))
+    opt.zero_grad(set_to_none=True); opt.state.clear()                      # Audit 2026-10-09: free the optimizer state and grads before the eval (b223 OOM)
+    if dev.startswith("cuda"):
+        torch.cuda.empty_cache()
+    params.eval(); t1 = time.time()
     N = np.array([it["n"] for it in TE]); Dp = np.array([it["depth"] for it in TE]); T_ = np.array([it["t"] for it in TE])
     if a.arm == "textcot":
         A_, NT = cot_answers(TE)
     else:
         A_ = evaluate_n(TE); NT = None
     C = A_ == T_
-    res = {"task": "nested", "arm": a.arm, "think_k": K, "seed": a.seed, "acc_by_n": {str(n): float(C[N == n].mean()) for n in range(1, 17)},
+    res = {"task": "nested", "eval_only": bool(a.eval_only), "arm": a.arm, "think_k": K, "seed": a.seed, "acc_by_n": {str(n): float(C[N == n].mean()) for n in range(1, 17)},
            "acc_by_depth": {str(d): float(C[Dp == d].mean()) for d in sorted(set(Dp.tolist()))}, "n_by_depth": {str(d): int((Dp == d).sum()) for d in sorted(set(Dp.tolist()))},
            "train_sec": train_sec, "n_nonfinite": n_nonfinite, "micro": a.micro, "eval_dtype": str(amp), "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
            "train_gpu": info["train_gpu"], "train_driver": info["train_driver"], "per_n": a.per_n}
