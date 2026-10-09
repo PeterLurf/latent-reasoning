@@ -2,7 +2,206 @@
  "k16": {
   "runs": {
    "1": {
-    "status": "open"
+    "status": "done",
+    "test_4x4": 0.002,
+    "exact": false,
+    "ext_4x8": 0.0,
+    "length_general": false,
+    "ext": {
+     "ext_4x6": 0.0,
+     "ext_4x7": 0.0,
+     "ext_4x8": 0.0,
+     "ext_4x16": 0.0
+    },
+    "acc_by_kprime": {
+     "0": 0.0,
+     "1": 0.0,
+     "8": 0.003,
+     "16": 0.002,
+     "32": 0.001,
+     "64": 0.0
+    },
+    "ext_4x8_by_kprime": {
+     "16": 0.0,
+     "32": 0.0,
+     "64": 0.0
+    },
+    "think_necessary": true,
+    "removal_drop": true,
+    "skip_step_specific": false,
+    "more_thinking": false,
+    "graded": [
+     0.003,
+     0.002
+    ],
+    "acc_by_size_kprime": {
+     "4x4": {
+      "0": 0.0,
+      "1": 0.0,
+      "8": 0.003,
+      "16": 0.002,
+      "32": 0.001,
+      "64": 0.0
+     },
+     "4x6": {
+      "0": 0.0,
+      "1": 0.0,
+      "8": 0.0,
+      "16": 0.0,
+      "32": 0.0,
+      "64": 0.0
+     },
+     "4x8": {
+      "0": 0.0,
+      "1": 0.0,
+      "8": 0.0,
+      "16": 0.0,
+      "32": 0.0,
+      "64": 0.0
+     },
+     "4x16": {
+      "0": 0.0,
+      "1": 0.0,
+      "8": 0.0,
+      "16": 0.0,
+      "32": 0.0,
+      "64": 0.0
+     }
+    },
+    "inprog_by_pass": {
+     "4": {
+      "1": {
+       "units": 1.0,
+       "carry": 1.0
+      },
+      "2": {
+       "units": 0.609,
+       "carry": 0.636
+      },
+      "3": {
+       "units": 0.136,
+       "carry": 0.199
+      },
+      "4": {
+       "units": 0.122,
+       "carry": 0.173
+      },
+      "5": {
+       "units": 0.114,
+       "carry": 0.147
+      },
+      "6": {
+       "units": 0.095,
+       "carry": 0.228
+      },
+      "7": {
+       "units": 0.127,
+       "carry": 0.387
+      }
+     },
+     "8": {
+      "1": {
+       "units": 1.0,
+       "carry": 1.0
+      },
+      "2": {
+       "units": 0.587,
+       "carry": 0.619
+      },
+      "3": {
+       "units": 0.135,
+       "carry": 0.196
+      },
+      "4": {
+       "units": 0.11,
+       "carry": 0.167
+      },
+      "5": {
+       "units": 0.107,
+       "carry": 0.133
+      },
+      "6": {
+       "units": 0.084,
+       "carry": 0.227
+      },
+      "7": {
+       "units": 0.131,
+       "carry": 0.387
+      }
+     },
+     "12": {
+      "1": {
+       "units": 1.0,
+       "carry": 1.0
+      },
+      "2": {
+       "units": 0.575,
+       "carry": 0.612
+      },
+      "3": {
+       "units": 0.132,
+       "carry": 0.196
+      },
+      "4": {
+       "units": 0.121,
+       "carry": 0.11
+      },
+      "5": {
+       "units": 0.105,
+       "carry": 0.13
+      },
+      "6": {
+       "units": 0.077,
+       "carry": 0.23
+      },
+      "7": {
+       "units": 0.125,
+       "carry": 0.395
+      }
+     },
+     "16": {
+      "1": {
+       "units": 1.0,
+       "carry": 1.0
+      },
+      "2": {
+       "units": 0.567,
+       "carry": 0.604
+      },
+      "3": {
+       "units": 0.133,
+       "carry": 0.191
+      },
+      "4": {
+       "units": 0.127,
+       "carry": 0.173
+      },
+      "5": {
+       "units": 0.103,
+       "carry": 0.132
+      },
+      "6": {
+       "units": 0.082,
+       "carry": 0.22
+      },
+      "7": {
+       "units": 0.124,
+       "carry": 0.399
+      }
+     }
+    },
+    "compute": {
+     "flops": 34648214064.0,
+     "flops_trunk": 33664518144.0,
+     "flops_branch": 983695920.0,
+     "sequential_passes": 24,
+     "lm_head_rows": 8,
+     "tokens_processed": 194,
+     "think_passes": 16,
+     "convention": "\u00a798 (boxes.core.Meter); think passes fresh; decoder prefix + (na + nb - 1) KV-cached passes"
+    },
+    "compute_4x8": null,
+    "gpu": "NVIDIA GeForce RTX 3090"
    },
    "2": {
     "status": "open"
@@ -11,9 +210,9 @@
     "status": "open"
    }
   },
-  "gate": null,
-  "verdict": "pending (0 / 3 seeds)",
-  "think_necessary_all": false
+  "gate": false,
+  "verdict": "gate closed (s1 0.002 < 0.99)",
+  "think_necessary_all": true
  },
  "k8": {
   "runs": {
@@ -46,6 +245,10 @@
     "removal_drop": false,
     "skip_step_specific": false,
     "more_thinking": false,
+    "graded": [
+     0.001,
+     0.001
+    ],
     "acc_by_size_kprime": {
      "4x4": {
       "0": 0.002,
@@ -251,6 +454,7 @@
     "removal_drop": false,
     "skip_step_specific": false,
     "more_thinking": null,
+    "graded": null,
     "acc_by_size_kprime": {
      "4x4": {
       "0": 0.003,
@@ -295,5 +499,5 @@
   "think_necessary_all": false
  },
  "direct_mix_mean_4x4": 0.0025,
- "reading": "pending"
+ "reading": "neither K arm is exact: input re-presentation alone does not suffice at 48k"
 }
