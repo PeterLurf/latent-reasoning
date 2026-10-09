@@ -254,7 +254,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 164 | MIX-BASELINES: TC-MIX / DIRECT-MIX on §161's mix (like-for-like C2 baselines) | **LATENT BEYOND TEXT ON LENGTH** (TC-MIX anchored ext 0.0 at 4×6+; its CoT stops short); DIRECT-MIX 4×4 ≤ 0.004 (the single pass fails) | closed |
 | 165 | FIXED-CHUNK: the same memory on fixed text chunks plus think passes (task-agnostic segmentation) | **neither K arm exact on plain text** (K0 / K8 / K16 / K16c1 all 0.0; memory unused): the claim stays structured-input | closed |
 | 166 | STATE-COVERAGE: 1k-step post-training from passed / noise states vs a PLAIN post-train (2507.02782), on §162 LONG and §161 MIX | **not shown**: S5 SP = PLAIN (48 0.9995 / 64 0.988 vs 0.991 / 512 0.0 both; validity gate passes); MULT uninformative (166-3) | closed |
-| 167 | DAS-EDIT: learned-subspace interchange (DAS) on MIX / S5 memories, with illusion controls (C1 edit, C7) | **S5 3 / 3 DECOMPOSABLE** (state in <= 64-d subspace); **MULT not DECOMPOSABLE** (s2 t4 only; t12 NOT-DEC 2/3; t4 / t8 undetermined by FIT-FAILURE) | closed |
+| 167 | DAS-EDIT: learned-subspace interchange (DAS) on MIX / S5 memories, with illusion controls (C1 edit, C7) | **S5 3 / 3 DECOMPOSABLE** (state in <= 64-d subspace); **MULT not DECOMPOSABLE** (s2 t4 only; t12 NOT-DEC 2/3 by rule but the k=64 MIX fit collapses, so not separable from fit failure; t4 / t8 undetermined) | closed |
 | 168 | DEEP-ProsQA (the user's go): a measured single-pass boundary on deep (3–14) shortcut-free ProsQA, then an INJECT latent arm | registered (step 1 running) | **open** |
 | 169 | INJECT (the user's "task agnosticness"): the full problem re-presented every think pass, the memory the only cross-pass state; K16 / K8 / K0 on §161's mix | **neither K arm exact** (K0 0.003, K8 0.001, K16 0.002; flat in K′, memory unused): input re-presentation alone does not suffice at 48k | closed |
 | 170 | NESTED (the user's go): Feng's mod-11 bracketed expressions; a measured DIRECT boundary over n, then INJECT K8 / K0 (K16 gated) against Feng's text CoT; C1 = DEEP + THINK-NECESSARY + SERIAL-NEST, C3 at text CoT's accuracy for less compute | registered | **open** |
@@ -10327,6 +10327,13 @@ subspace.**
 * **The large-k fits fail to converge in most models** (train IIA at k = 64 is 0.00–0.02 where k = 4–16 reach 0.1–0.9). FIT-FAILURE is uninformative (167-3), so t = 4 / 8 remain open.
 * **Scorer reporting fix, disclosed (post-data; only weakens the claim):** the arm reading now separates NOT-DECOMPOSABLE from FIT-FAILURE per t, instead of "MULT not decomposable" over all t.
 * **Against S5** (3 / 3 DECOMPOSABLE at ≤ 64): S5's state is compact and causally swappable, while MIX's in-progress multiplication state mostly is not, at k ≤ 64.
+
+**§167 MULT, a closing caveat (2026-10-09 18:00 EDT; Audit; post-data, only weakens).** The NOT-DECOMPOSABLE reads at t = 12 (s1, s3) rest on a k = 64 fit that collapses on MIX.
+* **Train IIA at k = 64 is 0.000–0.020 at every MIX point except s2 t = 4 (0.935),** including where smaller k fit well: s2 t = 8 is 0.88 at k 16 and 0.01 at k 64; s2 t = 12 is 0.83 at k 8 and 0.013; s3 t = 4 is 0.74 at k 8 and 0.005.
+  - The S5 models' k = 64 fits are fine (0.99+).
+* **167-3's convergence guard misses this.** It fires only when a larger k falls more than 0.05 below a smaller k, and at s1 / s3 t = 12 every k sits at 0.01–0.03, so the collapse reads as "converged".
+* **The amended reading:** t = 12 is NOT-DECOMPOSABLE by rule (2 / 3), but the negative cannot be distinguished from a fit failure. MULT is not shown DECOMPOSABLE (one model, s2, at t = 4).
+* **To make the MIX negatives readable later,** the fix is the fitter at large k (lr, initialisation and steps for k = 64), not the rule.
 
 ## 168. DEEP-ProsQA: graph search past one pass, with a measured single-pass boundary (C1 + C3 on a task that exceeds a pass; the C1-forcing note's option 2(b)) (the user's go via Audit, "approve go ahead on prosqa deep"; pre-registered 2026-10-09 01:35 EDT, after Literature's check dfaf9ed6 (`docs/LIT_DEEP_PROSQA_2026-10-08.md`) and Audit's lead, before any implementation or run)
 
