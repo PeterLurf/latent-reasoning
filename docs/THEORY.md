@@ -263,7 +263,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 173 | CONV-HALT (eval only; C5, halting): decode when the answer settles (unchanged across 2 consecutive passes, cap 2K) on the think-pass arms (§165 / §169 / §170 / §171); HALT-EQUAL + ADAPTIVE | registered | **open** |
 | 174 | MULTI-TASK (the user's task agnosticness, strongest form): one INJECT K8 model on mult + nested with no task flag; MATCH vs single-task K8 (BUDGET vs INTERFERENCE via 24k evals), THINK-NECESSARY per task, cross-task swap | registered (gated on §169 / §170 K8 slot 1) | **open** |
 | 175 | STEP-AUX (Audit's lead after SIM-CoT): §170 INJECT K8 + a shared-trunk read-only aux decoder emitting Feng's CoT step t from M_t (λ 1 fading to 0 by 48k); AUX-HELPS / HURTS-DEPTH vs FINAL-only, READOUT, STEP-RECOVER | registered (gated on §170 K8 slot 1) | **open** |
-| 176 | RAND-K (Audit's lead after §172; Huginn / Bansal): INJECT trained with a random think-pass count (RK) or progressive no-grad prefixes (PROG); C2-BEYOND at K' = 64 beyond training support + NO-OVERTHINKING vs fixed K8's same curve | registered (gated on §169 K8 slot 1) | **open** |
+| 176 | RAND-K (Audit's lead after §172; Huginn / Bansal): INJECT trained with a random think-pass count (RK) or progressive no-grad prefixes (PROG); C2-BEYOND at K' = 64 beyond training support + NO-OVERTHINKING vs fixed K8's same curve | **neither RK nor PROG rescues INJECT** (0.0 at every K′ and skip; RK mean K 7.96) | closed |
 | 177 | PASS-DISTINCT: arms to make identical-input think passes trainable - (a) pass index, (d) schedule fade + index (mult), (f) step-matched K, (g) curriculum + Poisson K (nested, gated on f); MOVES-MECHANISM (173-1) per arm | registered (cloud gated on §169 + §170 K8 failing; local previews descriptive) | **open** |
 
 ## Live sections
@@ -11179,6 +11179,16 @@ how many think passes run in training.
 * The local 8k preview (proto176_prog_s1_3070, descriptive) also read 0.0.
 * RK is pending (b230).
 * **A scorer fix, disclosed (no rule change):** newer runs write think_k as a string ("8"), so score_s169 / s170 / s175 / s176 / s177 now compare arguments as strings. PROG had first read "error" for that reason. Already-read cells are unchanged.
+
+**§176 result for slot 1 (2026-10-09 15:04 EDT; s176_rk_s1 and s176_prog_s1, RTX 3090, 48k, fast_add, full backprop; score_s176 under note 176-3). Neither training schedule rescues INJECT.**
+* **RK:** 0.0 at 4×4 and every extension, at every K′ (0–64) and every skipped write.
+  - The realised training K had mean 7.96 over 48,000 batches, with a maximum of 32 (note 176-1's mean of about 8, as registered).
+  - **173-1 (descriptive):** delta cosine 0.890 / 0.982 / 0.996 at passes 2 / 3 / 4, against 0.947 / 0.983 / 0.993 at initialisation. Like PROG, only pass 2 moved off initialisation.
+* **PROG:** 0.0 everywhere (the earlier interim).
+* **The reading (176-3):** "does not rescue INJECT (fixed K8 also fails)" for both arms.
+  - Randomising the pass count (Huginn's lever) and training continuation from any state (Bansal's) both leave §169's failure intact: the memory goes unused on §161's mix.
+  - No C2 reading is possible.
+* s2 / s3 are not opened (slot 1 is not EXACT). **§176 closes.** The remaining think-pass levers are §177's (a) / (d) / (f) and §175 STEP-AUX.
 
 ## 177. PASS-DISTINCT: making identical-input think passes trainable, one registration with arms (pre-registered 2026-10-09 10:18 EDT, after Literature's checks 90486a9b (SCHEDULE-FADE) and 483195dc (arms f / g) and Audit's review, before any implementation or run; **cloud launches gated on the trigger: §169 K8 and §170 K8 both fail**; local 8k-step previews run now and are read by no rule)
 
