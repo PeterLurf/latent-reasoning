@@ -10452,6 +10452,16 @@ subspace.**
   - memcheck at n = 16 with K′ = 2K.
 * Dirs `s170_{direct,k8,k16,k0,cot}_s{seed}`. Scorer: `theory/score_s170.py`, committed with this registration.
 
+**Note 170-1 (2026-10-09 02:00 EDT; before any §170 run beyond CPU smokes; Experiments' build questions, answered by Theory). The SERIAL pool and the CoT target.**
+* **The SERIAL pool.** SERIAL-NEST's filter keeps about 23% of n = 8 items (70 of 300 in gate170): root with a bare operand, an innermost handle not the root, and the hybrid
+  differing from both answers. So the 1,000 test items would give about 230.
+  - SERIAL-NEST uses a dedicated n = 8 pool instead (seed 17300, excluded from training like the test set), of about 2,200 items, keeping about 500 after the filter.
+  - n_serial_items is reported. The rule is unchanged.
+  - A v or a change that creates a division by zero further up is redrawn (≤ 10 tries; Experiments' fix).
+* **The TEXT-COT target is the reductions only.** After [EOT, expr, " ="] the model writes " e₂ = e₃ = … = t" then EOT. e₁ is the input itself, already in the prompt.
+  For n = 1: "1 + 7 =" → " 8" EOT.
+  - The anchored read takes the text after the last " =" (the prompt's own " =" when the generation is a single number). This is §170's intent, made explicit.
+
 ## 171. READ-SLOTS: think passes in which a few learned slots read the once-encoded input and write the memory (a Perceiver / RIN-style task-agnostic read; the user's "creating new methodologies and architectures for task agnostic" via Audit; roadmap steps: task-agnostic input, and scale (long inputs); pre-registered 2026-10-09 01:54 EDT, after Literature's scout 589e6eb5 (`docs/LIT_TASK_AGNOSTIC_SCOUT_2026-10-09.md`, rank 1) and Audit's review, before any implementation or run)
 
 **Why.**
