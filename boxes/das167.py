@@ -270,14 +270,14 @@ def main():
     ap.add_argument("--ks", default="1,2,4,8,16,64,2048"); ap.add_argument("--ctrl_ks", default="16,64"); ap.add_argument("--steps", type=int, default=5000)
     ap.add_argument("--n_train", type=int, default=4000); ap.add_argument("--n_val", type=int, default=500); ap.add_argument("--n_test", type=int, default=1000)
     ap.add_argument("--extras", action="store_true", help="carry_matched / per_head_type / scaling (descriptive)"); ap.add_argument("--fp32", action="store_true")
-    ap.add_argument("--out", default=None); ap.add_argument("--fit_micro", type=int, default=1, help="split each 64-pair fit batch into this many chunks (8 GB cards)")
-    a = ap.parse_args(); global FIT_MICRO; FIT_MICRO = max(1, a.fit_micro); dev = a.device; t0 = time.time(); ks = [int(x) for x in a.ks.split(",")]; cks = [int(x) for x in a.ctrl_ks.split(",")]
+    ap.add_argument("--out", default=None); ap.add_argument("--fit_micro", type=int, default=1, help="split each 64-pair fit batch into this many chunks (8 GB cards)"); ap.add_argument("--rm_ks", default="4,8,16,64", help="note 167-5: the random-model baseline's k")
+    a = ap.parse_args(); global FIT_MICRO; FIT_MICRO = max(1, a.fit_micro); a.out = os.path.join(a.out, "eval_das.json") if (a.out and os.path.isdir(a.out)) else a.out; dev = a.device; t0 = time.time(); ks = [int(x) for x in a.ks.split(",")]; cks = [int(x) for x in a.ctrl_ks.split(",")]; rks = [int(x) for x in a.rm_ks.split(",")]
     amp = None if (a.fp32 or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
     fam_name = "s5" if json.load(open(os.path.join(a.run, "args.json"))).get("family") == "s5" else "mult"; FC = S5Fam if fam_name == "s5" else MultFam
     out_ = a.out or os.path.join(a.run, "eval_das.json")
     if os.path.exists(out_) and not os.path.exists(out_.replace("eval_das.json", "eval_das_v1.json")):   # note 167-3: the first fit kept as v1
         os.replace(out_, out_.replace("eval_das.json", "eval_das_v1.json"))
-    F = FC(a.run, dev, amp); res = {"family": fam_name, "fit_micro": FIT_MICRO, "run": os.path.basename(a.run.rstrip("/")), "points": {}, "ks": ks, "ctrl_ks": cks, "D": D, "gates": {},
+    F = FC(a.run, dev, amp); res = {"family": fam_name, "fit_micro": FIT_MICRO, "rm_ks": rks, "run": os.path.basename(a.run.rstrip("/")), "points": {}, "ks": ks, "ctrl_ks": cks, "D": D, "gates": {},
                                     "iia_def": "row level: every counterfactual digit (MULT: the later digits; S5: the final state) decoded exactly"}
     gen = torch.Generator().manual_seed(16740)
     for t in F.points():
@@ -317,7 +317,7 @@ def main():
         A1, A2 = Fr.sets["A"]; B1, B2 = Fr.sets["B"]; rng = np.random.default_rng(16750 + t); SA = Fr.states(A1, A2, t); SB = Fr.states(B1, B2, t)
         tr = Fr.make_pairs(A1[:4000], A2[:4000], t, rng, a.n_train)[:3]; va_ir, va_idn, va_gt, _, _ = Fr.make_pairs(A1[4000:], A2[4000:], t, rng, a.n_val)
         va = (va_ir + 4000, va_idn + 4000, va_gt); te_ir, te_idn, te_gt, _, _ = Fr.make_pairs(B1, B2, t, rng, a.n_test); res["points"][str(t)]["random_model"] = {}
-        for k in cks:
+        for k in rks:                                                       # note 167-5: k = 4 / 8 / 16 / 64
             rot, _, _, _ = fit_sweep(Fr, (A1, A2), SA, SA, tr, va, t, k, V=pca_basis(SA, SA, tr, dev, k), steps=a.steps); res["points"][str(t)]["random_model"][str(k)] = evaluate(Fr, (B1, B2), SB, SB, te_ir, te_idn, te_gt, t, rot)
     res["extras"] = None; res["extras_note"] = "carry_matched / per_head_type / scaling (descriptive): not yet run"
     res["random_model_def"] = ("untrained DeltaMem-R: W_o ~ N(0, 0.02^2) (the default W_o = 0 would make the memory inert), fade 1, gamma 1; qkv / gate / LN at their "
