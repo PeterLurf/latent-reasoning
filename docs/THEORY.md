@@ -10210,6 +10210,15 @@ run, RTX 3090 (or a local card if memory-checked).
 * **(3) Necessity:** check how the mean-ablation mean is computed (the drop is 0.94–0.997 even at k = 1), and add a random-subspace necessity control at the same k.
 * **Recorded (Audit):** k = 8 already reaches 0.57 held-out / 0.74 train at t 4 under the failing optimiser. A converged fit may cross 0.8.
 
+**Note 167-4 (2026-10-09 01:26 EDT, before any refit reads (only the old s3 fit, now FIT-FAILURE, exists); Audit-approved). Necessity is credited as the excess over a random
+subspace.**
+* **DECOMPOSABLE's necessity term is now necessity_drop − necessity_random ≥ 0.3,** where necessity_random is the same mean-ablation on an unfitted random subspace
+  of the same k. Both raw drops are reported.
+  - **Why:** the old fit's raw drop was ≥ 0.94 even at k 1. If a random direction does the same, the ablation is off-manifold and not specific to R.
+* **necessity_random ≥ 0.9 → "off-manifold ablation":** necessity is uninformative at that point, not failed. A point passing everything else reads **SUFFICIENT
+  (necessity uninformative)**, not DECOMPOSABLE.
+* This only makes a positive harder (score_s167, synthetic-checked).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
