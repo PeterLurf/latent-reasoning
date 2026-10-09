@@ -1,0 +1,5 @@
+# THEORY §177 (a) tidx slot 1 (GO 2026-10-09: trigger fired; Audit-approved): inject169 K8 + note 177-4's pass index (sin_gain), fast_add, §169's data / recipe, 48k; then the 173-1 package
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s177_tidx_s1 boxes.inject169 --think_k 8 --pass_index sin_gain --fast_add --seed 1 --auto_micro --ckpt_every 1000 --bench bench/data/mult_4x4_test.txt
+boxes/runs_fsq/s177_tidx_s1_pkg boxes.halt173 --run boxes/runs_fsq/s177_tidx_s1 --dir177 --bs 125

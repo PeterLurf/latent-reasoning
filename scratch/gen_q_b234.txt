@@ -1,0 +1,6 @@
+# §177 (f) masked kmatch re-time (note 177-5; same host: K8 fast_add reference + kmatch, 200 steps each), then the (d) 8k scaffold PREVIEW (Audit: cloud, GPU-class matched; DESCRIPTIVE, read by no rule; note 177-3's launch gate: 4x4 at p = 0 >= 0.5)
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s177_timing2_k8 boxes.nested170 --arm inject --think_k 8 --time_steps 200 --auto_micro --fast_add
+boxes/runs_fsq/s177_timing2_kmatch boxes.nested170 --arm inject --think_k 10 --k_window 0,2 --time_steps 200 --auto_micro --fast_add
+boxes/runs_fsq/proto177_fadetidx_s1 boxes.inject169 --think_k 4n --fade 12000,36000 --pass_index sin_gain --fast_add --seed 1 --steps 8000 --ckpt_every 1000 --auto_micro --bench bench/data/mult_4x4_test.txt
