@@ -6,15 +6,16 @@
    "open"
   ]
  },
+ "mult_closed": "note 166-3: MULT closed as uninformative - the post-train recipe degrades converged models (PLAIN s3 0.964 vs PT0 0.998 at 4x4) and fitted starts on the non-forgetting additive store are harmful (FITTED s3 0.844); s1 / s2 not run",
  "mult": {
   "reading": "pending",
   "status": {
    "fitted_s1": "open",
    "fitted_s2": "open",
-   "fitted_s3": "open",
+   "fitted_s3": "done",
    "plain_s1": "open",
    "plain_s2": "open",
-   "plain_s3": "open"
+   "plain_s3": "done"
   }
  },
  "mix2d_descriptive": {

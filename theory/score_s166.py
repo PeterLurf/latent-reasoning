@@ -16,6 +16,7 @@ import os
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 R = os.path.join(ROOT, "boxes", "runs_fsq")
 PT = {"pt_steps": 1000, "pt_lr": 2e-5, "init_p": 0.5, "state_source": "current"}
+PT_S5 = {"pt_steps": 300, "pt_lr": 5e-6, "init_p": 0.5, "state_source": "current"}   # note 166-3 (pre-data for S5)
 ERRORS = []
 
 
@@ -24,11 +25,11 @@ def load(d, f="eval.json"):
     return json.load(open(p)) if os.path.exists(p) else None
 
 
-def cell(d, mode, src):
+def cell(d, mode, src, pt=None):
     r = load(d); a = load(d, "args.json") or {}
     if r is None:
         return {"status": "running" if a else "open"}
-    exp = dict(PT, init_mode=mode, post_train_from=src)
+    exp = dict(pt or PT, init_mode=mode, post_train_from=src)
     if mode == "zero":                                                       # PLAIN: init_p / state_source have no effect
         exp.pop("init_p"); exp.pop("state_source")
     bad = {k: a.get(k) for k, v in exp.items() if a.get(k) != v}
@@ -44,13 +45,14 @@ def mean(xs):
 
 def main():
     res = {}
-    sp, pl = cell("s166_s5_sp_s2", "pass", "s162_long_s2"), cell("s166_s5_plain_s2", "zero", "s162_long_s2")
+    sp, pl = cell("s166_s5_sp_s2", "pass", "s162_long_s2", PT_S5), cell("s166_s5_plain_s2", "zero", "s162_long_s2", PT_S5)
     if sp["status"] == "done" and pl["status"] == "done":
-        fl = sp.get("final_acc_by_length") or {}
+        fl = sp.get("final_acc_by_length") or {}; fp = pl.get("final_acc_by_length") or {}
         kept = bool(fl) and all((fl.get(str(L)) or 0) >= 0.99 for L in (1, 2, 4, 8, 16, 32))
+        valid = bool(fp) and all((fp.get(str(L)) or 0) >= 0.99 for L in (1, 2, 4, 8, 16, 32))   # note 166-3: the validity gate on PLAIN
         helps = bool(kept and (sp.get("long_acc") or 0) >= 0.90 and (pl.get("long_acc") or 0) < 0.50)
         ext = sp.get("acc_by_length_ext") or {}; cov = bool((ext.get("48") or 0) >= 0.90 and (ext.get("64") or 0) >= 0.90)
-        rs5 = ("COVERAGE-HELPS (S5)" if helps else ("in-distribution not kept" if not kept else
+        rs5 = ("uninformative (166-3 validity gate: PLAIN lost in-distribution accuracy)" if not valid else "COVERAGE-HELPS (S5)" if helps else ("in-distribution not kept" if not kept else
                ("covered range only (SP >= 0.90 at 48 / 64, not at 512)" if cov else "not shown (drift is not coverage: read mem_norm_by_pass)")))
         res["s5"] = {"sp": {k: sp.get(k) for k in ("long_acc", "acc_2048", "acc_by_length_ext")}, "plain": {k: pl.get(k) for k in ("long_acc", "acc_2048", "acc_by_length_ext")}, "kept": kept, "reading": rs5}
     else:
@@ -58,6 +60,8 @@ def main():
     print("S5:", res["s5"])
     nz = {s: cell("s166_mult_fitted_s%d" % s, "fitted", "s161_mix_4x4_s%d" % s) for s in (1, 2, 3)}   # note 166-1: FITTED noise
     pn = {s: cell("s166_mult_plain_s%d" % s, "zero", "s161_mix_4x4_s%d" % s) for s in (1, 2, 3)}
+    res["mult_closed"] = ("note 166-3: MULT closed as uninformative - the post-train recipe degrades converged models (PLAIN s3 0.964 vs PT0 0.998 at 4x4) and "
+                          "fitted starts on the non-forgetting additive store are harmful (FITTED s3 0.844); s1 / s2 not run")
     if all(v["status"] == "done" for v in list(nz.values()) + list(pn.values())):
         g = lambda v, k: ((v.get(k) or {}).get("test_acc") if k != "test_acc" else v.get("test_acc"))  # noqa: E731
         n16, p16 = mean([g(v, "ext_4x16") for v in nz.values()]), mean([g(v, "ext_4x16") for v in pn.values()])

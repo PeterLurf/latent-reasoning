@@ -10129,6 +10129,23 @@ run, RTX 3090 (or a local card if memory-checked).
   - It is **an untrained memory, not untrained features** (Audit's caveat), and is read as such.
 * **carry_matched / per_head_type / scaling are not built yet.** They are descriptive, and are reported as null until built.
 
+**Note 166-3 (2026-10-08 21:42 EDT; Audit-approved; MULT read, S5 pre-data). MULT closes as uninformative; S5's recipe is gentler and gated.**
+* **What MULT s3 shows** (2070, fp32; Audit-reproduced). At 4×4 / 4×8 / 4×16:
+  - **PT0** (the source evaluated unchanged, pt_steps 0): 0.998 / 0.914 / 0.200, the same as on its 3090. The card and the precision are cleared.
+  - **PLAIN** (1,000 steps, lr 2·10⁻⁵): 0.964 / 0.834 / 0.107. Its step-100 loss is 0.012, against the source's end of about 0.002.
+  - **FITTED:** 0.844 / 0.592 / 0.070. Its step-100 loss is 3.59.
+* **Two descriptive findings:**
+  - **The post-train recipe itself degrades a converged DeltaMem model.** A constant 2·10⁻⁵ with a fresh optimiser, after a cosine schedule that ended near 0, costs
+    about 0.03 at 4×4 and 0.08 at 4×8.
+  - **Fitted starts on the non-forgetting additive store are actively harmful** (−0.15 at 4×4). The fitted additive means are about 19–26 per element. With no decay,
+    the pre-loaded sum never washes out. This is a mechanism difference from the decaying SSMs of 2507.02782.
+* **MULT closes as uninformative.** "Kept" (4×4 ≥ 0.99) cannot be met when even PLAIN loses accuracy. s1 / s2 and the mix2d cells (note 166-2) are not run.
+* **S5, fixed now (no S5 cell has run):**
+  - pt_lr **5·10⁻⁶** and pt_steps **300**, both arms equal (Audit; the paper's state passing used about 100–500 steps).
+  - **A validity gate:** PLAIN's final-state accuracy must stay ≥ 0.99 at every length ≤ 32, else the S5 cell is uninformative.
+  - The rules and readings are otherwise unchanged. SP stays the paper's best intervention.
+* score_s166 is updated (PT_S5; the gate; mult_closed).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
