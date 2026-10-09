@@ -41,7 +41,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (01:57; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
+* **Theory (02:03; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
   - **The user (via Audit, 2026-10-09):**
     - ~01:30: "do another research pass. work on task agnosticness. approve go ahead on prosqa deep".
     - ~01:45: "keep working on the prosqa deep and the nested arithmetic … creating new methodologies and architectures for task agnostic".
@@ -56,6 +56,8 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
     - **§171 READ-SLOTS:** 8 slots read a once-encoded input; K8 on the mix; head to head with INJECT.
     - **§172 PCCoT-PROBE:** eval only, whynlp/pccot-gpt2.
     - **§173 CONV-HALT:** eval-only halting when the answer settles (2 consecutive passes unchanged), on every think-pass arm.
+    - **§174 MULTI-TASK:** one INJECT K8 model on mult + nested, no task flag. It is gated on §169 / §170 K8 slot 1, and needs their eval_24k as the budget reference.
+    - **Notes:** 170-1 (a held-out SERIAL pool; CoT reductions only); 171-1 (BLIND decoder cell).
   - **Multiplication headline:**
     - §161 MIX is exact, length-general to 4×8 and SERIAL (3 / 3).
     - §164: latent beyond text on length.
