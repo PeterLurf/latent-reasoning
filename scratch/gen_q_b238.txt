@@ -1,0 +1,3 @@
+# THEORY note 168-3 G2 (008ab404): prosqa168 DIRECT recipe on p8 std, seed 3, 24k; eval_at 2k / 4k / 6k / 12k / 24k (acc_by_depth + p8_valid)
+# P=1
+boxes/runs_fsq/s168_g2_p8std_s3 boxes.prosqa168 --data std --seed 3 --micro 4 --auto_micro --eval_at 2000,4000,6000,12000,24000
