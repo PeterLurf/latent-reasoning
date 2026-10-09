@@ -26,28 +26,22 @@ so send to the pipe addresses their messages come from.
 touching fsq120 / table132 / core. Never edit a module while a deploy is in flight (auto_ship is transitive: fixedchunk / multrow ship multpair,
 deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `vast destroy` aborts at its y/N prompt).
 
-### Vast (~10 hosts, ~$2.1/h; 07:50)
-* b210 §165 K16 + K8; b214-b217 §168 DIRECT (std s1 / s2, NA s1 / s2); b218 §169 K16 + K8 (K8 `--eval_at 24000`); b221 §171 K8 + BLIND;
-  b222 §170 cot s1 (last arm; expect an eval OOM -> fetch model.pt, local `--eval_only`); b224 §170 K8 s1. b223 drained (cot s2 eval-only queued locally).
-* Landed: §169 K0; §170 DIRECT s1 / s2, K0 s1 (n* = 3, note 170-3: §170 unblinded).
-* C: filled to 0 GB at ~07:00 (46 GB of smoke .pt in the scratchpad; cleaned): watch C: free space.
-* §170 timing (b220): DIRECT 0.09 / TEXT-COT 0.27 / K8 1.64 / K16 5.83 s/step on a 3090. K16 (~$18) needs the user (Audit) and K8 THINK-NECESSARY first.
-* deltamem.FAST_ADD (6cbdfd9f): opt-in `--fast_add` for NEW cells (numerically equivalent). Same-host A/B (b225): -17 % K8 / -14 % K16; hosts differ ~2x.
-* HOST PROBE (dd5d88dc, Audit): put `# HOSTPROBE` on every long think-pass queue (169/170 K8 K16, 171 s2/s3, 175, 176, 168 step 2); slow hosts -> rc 9 ->
-  requeue_watch (restarted 05:28; it was not running) requeues + excludes the IP. K16 ~ $8 (34 h) with the probe; goes to the user via Audit.
-* Built, gated, Audit-approved, waiting for Theory's go: §175 STEP-AUX (nested170 --aux_step 1.0 --aux_fade 36000,48000 --eval_at 36000; dir s175_auxk8_s1);
-  §176 RAND-K (inject169 --rand_k 7,0.5,32 / --prog 8,8, --fast_add, think_k 8; dirs s176_rk_s1 / s176_prog_s1); scratch/s176_ref.py on each §169 K8 model.
-* Next: §175 / §176 on Theory's go (time them first);
-  §173 halt173.py post hoc on each think-pass model as it lands (§165 b210 first); b215-b217 §168 after the D* note.
-* Model keep patterns include s165_ / s166_ / s168_-s171_ / s174_.
+### Vast (9 hosts, ~$1.9/h; 14:15)
+* b218 §169 K16 (37k; K8 landed: FAIL); b216 / b217 §168 DIRECT NA s1 / s2; b228 §167 SHORT s2 + LONG s2 refits; b229 §167 MIX s1-s3 refits (bench file shipped);
+  b230 §176 RK (38.6k) / b231 PROG (47.5k) + 173-1 package lines; b233 §177 (a) tidx (11.3k); b235 §175 aux K8 (3.1k).
+* rq234 (re-queue of b234 after HOSTPROBE_SLOW, IP excluded): §177 (f) masked kmatch re-time + the (d) 8k scaffold preview (177-3 gate for the (d) cell);
+  filler retrying past bad offers. Then: the (d) cell if the preview's acc_at_end_p >= 0.5; the (f) cell after the re-time + Audit projection.
+* Landed today: §169 K0 / K8 (FAIL); §170 DIRECT s1 / s2, K0 s1, cot s1 / s2 (eval-only, OOM fix), K8 s1; §171 K8 / BLIND; §165 K8 / K16; §168 std s1 / s2; §172 (closed).
+* Harness today: FAST_ADD (-15 %); HOSTPROBE (works: b234 rejected at 1.21 s/step); eval-only paths in nested170 / inject169; memchecks count AdamW state;
+  das167 --fit_micro / --rm_ks; halt173 = §173 halt + the 173-1 package (--dir177, pair-segment runs too).
 
 ### Local (v2 workers c4060 / c3070 / c2070 <- scratch/c1_backlog_<card>.txt; halt file scratch/<tag>.halt stops a worker)
+* 4060: proto177_kmatch_s1b (masked, 7.5 s/step, ~17 h); 3070: proto176_rk_s1_3070 (re-run on current code); 2070: proto175_auxk8 (fp32).
+* Queued post hoc: §165 K8 / K16 halt + 173-1; §169 K8 s176_ref + halt + 173-1; §170 K8 halt + 173-1.
+* Voided today (aborted unread): proto176_rk_s1_4060, proto177_kmatch_s1_4060 (.void / .void2).
 * 2026-10-09 10:25 (Audit): proto175_auxk8_s1_2070, proto176_rk_s1_4060, proto176_prog_s1_3070 (and the later proto177_{tidx, fadetidx, kmatch}_s1) are DESCRIPTIVE
   8k local previews read by NO rule (Theory notes 175-1 / 176-2); any §175 / §176 / §177 rule change after a preview read may only tighten. Each dir's args.json
   records train_gpu: cross-arm preview differences are card-confounded (2070 fp32 / 3070 / 4060 bf16). Queue order per card: §175 / §176 preview, then §177's.
-* 3070: §172 PCCoT-PROBE full battery (scratch/s172_probe.py; report acc_release to Audit before any C1 numbers); 4060: proto165_k16c1;
-  2070: §167 167-3 DAS refits (shared lines). §166 S5 SP s2 eval-only done (ae4b2ae9).
-* Reboot recovery: memory note latent-reboot-recovery.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
