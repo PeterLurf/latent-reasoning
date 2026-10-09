@@ -62,3 +62,30 @@ Literature session, for Audit (the lead) and Theory.
    learned).
 4. **Controls from the literature:** a no-latent evaluation (2604.06374), a pause-with-curriculum arm (Coconut Table 1), and
    checkpoints along training (2607.06648).
+
+## CORRECTION (2026-10-09): a depth-extended, shortcut-controlled ProsQA *does* exist
+- **The two earlier claims above are wrong:** "no published depth-extended ProsQA" (§1) and "shortcut-free ProsQA appears to be only ours" (§4).
+  I missed this because it was posted 2026-09-28 and wasn't in my earlier searches.
+- **The paper:** **Cheng & Zhang, arXiv 2609.35643**, "Not All Thinking is Created Equal: Latent Reasoning Discovers a Recurrent Search
+  Algorithm for Depth Generalization". Verified via the arXiv abstract page and HTML.
+- **ProsQA-Ext:**
+  - DAG questions as in ProsQA, but **generation is controlled so that no superficial features predict the answer** (a shortcut
+    scores about 50%, i.e. chance);
+  - **trained on H ∈ {3, …, 6} hops, OOD test on H ∈ {7, …, 12}**.
+- **Models:** five variants of one **GPTNeoX backbone trained from scratch** (4 layers, hidden 256, FFN 768): vanilla, CoT, Pause-token,
+  and two latent models optimised end to end without traces (one of them a "Bottleneck-latent").
+- **Findings:**
+  - Vanilla, CoT and Pause solve the in-distribution problems but **rely on local graph features and generalise poorly to longer hops**.
+    **The latent variants generalise better**, with dynamics consistent with forward reachability propagation.
+  - **State transplants:** transplanting the latent state at step t after a connectivity swap at depth d **redirects the answer**. That's
+    a donor-style causal test.
+  - A **sparse recurrent search circuit:** an attention head retrieves relations, the MLP plus the residual update reachability across
+    steps, and heads do candidate matching. The pruned circuit keeps about 91% output consistency, and generalises across 7–12 hops.
+  - OOD accuracy is also reported at K = 5 / 6 / 7 thinking positions (trained K = 6).
+- **No code link found in the HTML.** Ask the authors or reimplement from the description.
+- **For DEEP-ProsQA:**
+  - (a) use or replicate ProsQA-Ext's generator (3–6 → 7–12 hops, shortcut-controlled) instead of building from scratch, and cite it as
+    the depth-generalisation baseline;
+  - (b) our distinctive part becomes the **pretrained GPT-2 + DeltaMem carrier** (theirs is a small from-scratch model) and our donor /
+    K-removal C1 tests;
+  - (c) their result (latent > CoT / pause on OOD hops, from scratch) is the prior our DEEP arm would extend to a pretrained LM.
