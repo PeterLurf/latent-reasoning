@@ -10196,6 +10196,20 @@ run, RTX 3090 (or a local card if memory-checked).
     issue to check.
 * A convergence guard is proposed to Audit before s1 / s2 read.
 
+**Note 167-3 (2026-10-09 01:24 EDT; after MIX s3's eval_das.json was read (disclosed); Audit-approved). A convergence guard, a better fit, and a necessity check.**
+* **Why:** on MIX s3 the fits did not converge at large k.
+  - Train IIA at t 4 by k 1–2,048: 0.03 / 0.03 / 0.11 / 0.74 / 0.25 / 0.10 / 0.01, non-monotone.
+  - Subspaces are nested, so a converged fit cannot get worse with k.
+* **(1) The guard (post-data, disclosed; it only adds an uninformative outcome and cannot create a positive):** a point that would read NOT-DECOMPOSABLE reads
+  **FIT-FAILURE** if its train IIA is non-monotone in k: some fitted k more than 0.05 below a smaller k's (score_s167). All three of MIX s3's points read FIT-FAILURE.
+  - At t 12, k 2,048 trains to 0.005 against k 2's 0.052, while the unfitted k = D reaches 0.97.
+* **(2) The fit:**
+  - R is initialised from the top-k principal directions of (S_don − S_rec) over the fit pairs;
+  - lr sweep {1e-3, 3e-3}, ≤ 5,000 steps.
+  - s3 is re-fitted with this. s1 / s2 and the S5 models use it.
+* **(3) Necessity:** check how the mean-ablation mean is computed (the drop is 0.94–0.997 even at k = 1), and add a random-subspace necessity control at the same k.
+* **Recorded (Audit):** k = 8 already reaches 0.57 held-out / 0.74 train at t 4 under the failing optimiser. A converged fit may cross 0.8.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
