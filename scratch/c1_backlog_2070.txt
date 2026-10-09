@@ -1,5 +1,7 @@
 # 2026-10-07 s149 SOTA-PROBE full evals (Audit-approved; $0, eval only, fp32 GPT-2 small) - first
 # 2026-10-09 09:4x Experiments: §177 direction BASELINE on the working pair-segment models (Theory priority 1; 17 segments, read at the flush ' =' query)
+# 2026-10-09 10:1x Experiments: note 172-1 PCCoT multi-latent / whole-block swaps (Theory; eval only, ~1 h)
+3.0 boxes/runs_fsq/s172_pccot/eval_s172_swap.json python -u scratch/s172_swap.py {DEV}
 3.0 boxes/runs_fsq/s161_mix_4x4_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s161_mix_4x4_s1 --dir177 --bs 125 --device {DEV}
 3.0 boxes/runs_fsq/s161_mix_4x4_s2/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s161_mix_4x4_s2 --dir177 --bs 125 --device {DEV}
 3.0 boxes/runs_fsq/s161_mix_4x4_s3/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s161_mix_4x4_s3 --dir177 --bs 125 --device {DEV}

@@ -9,6 +9,8 @@
 # 2026-10-09 10:0x Experiments: §177 direction diagnostic (Theory, descriptive) on §171 K8 s1; §165 K8 follows when its model lands
 # 2026-10-09 09:4x Experiments: §177 direction BASELINE on the working pair-segment models (Theory priority 1; 17 segments, read at the flush ' =' query)
 # 2026-10-09 10:0x Experiments: note 173-1 package (cosines + step_probe_delta + cos_at_init) re-run on §171 K8 (supersedes the cosines-only file)
+# 2026-10-09 10:1x Experiments: note 172-1 PCCoT multi-latent / whole-block swaps (Theory; eval only, ~1 h)
+3.0 boxes/runs_fsq/s172_pccot/eval_s172_swap.json python -u scratch/s172_swap.py {DEV}
 4.0 boxes/runs_fsq/s171_k8_4x4_s1/eval_s177_dir.v2.done python -u -m boxes.halt173 --run boxes/runs_fsq/s171_k8_4x4_s1 --dir177 --bs 125 --device {DEV} && echo ok > boxes/runs_fsq/s171_k8_4x4_s1/eval_s177_dir.v2.done
 3.0 boxes/runs_fsq/s161_mix_4x4_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s161_mix_4x4_s1 --dir177 --bs 125 --device {DEV}
 3.0 boxes/runs_fsq/s161_mix_4x4_s2/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s161_mix_4x4_s2 --dir177 --bs 125 --device {DEV}
