@@ -131,7 +131,96 @@
  "k0": {
   "runs": {
    "1": {
-    "status": "open"
+    "status": "done",
+    "acc_by_n": {
+     "1": 0.929,
+     "2": 0.97,
+     "3": 0.669,
+     "4": 0.421,
+     "5": 0.25,
+     "6": 0.183,
+     "7": 0.137,
+     "8": 0.154,
+     "9": 0.145,
+     "10": 0.136,
+     "11": 0.116,
+     "12": 0.119,
+     "13": 0.129,
+     "14": 0.116,
+     "15": 0.124,
+     "16": 0.102
+    },
+    "pooled": 0.30233333333333334,
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "compute_by_n": {
+     "1": {
+      "flops_trunk": 928307712.0,
+      "sequential_passes": 1
+     },
+     "2": {
+      "flops_trunk": 1439417856.0,
+      "sequential_passes": 1
+     },
+     "3": {
+      "flops_trunk": 1950859776.0,
+      "sequential_passes": 1
+     },
+     "4": {
+      "flops_trunk": 2462633472.0,
+      "sequential_passes": 1
+     },
+     "5": {
+      "flops_trunk": 2974738944.0,
+      "sequential_passes": 1
+     },
+     "6": {
+      "flops_trunk": 3487176192.0,
+      "sequential_passes": 1
+     },
+     "7": {
+      "flops_trunk": 3999945216.0,
+      "sequential_passes": 1
+     },
+     "8": {
+      "flops_trunk": 4513046016.0,
+      "sequential_passes": 1
+     },
+     "9": {
+      "flops_trunk": 5026478592.0,
+      "sequential_passes": 1
+     },
+     "10": {
+      "flops_trunk": 5540242944.0,
+      "sequential_passes": 1
+     },
+     "11": {
+      "flops_trunk": 6054339072.0,
+      "sequential_passes": 1
+     },
+     "12": {
+      "flops_trunk": 6568766976.0,
+      "sequential_passes": 1
+     },
+     "13": {
+      "flops_trunk": 7083526656.0,
+      "sequential_passes": 1
+     },
+     "14": {
+      "flops_trunk": 7598618112.0,
+      "sequential_passes": 1
+     },
+     "15": {
+      "flops_trunk": 8114041344.0,
+      "sequential_passes": 1
+     },
+     "16": {
+      "flops_trunk": 8629796352.0,
+      "sequential_passes": 1
+     }
+    },
+    "deep": false,
+    "mean_9_12": 0.129,
+    "depth_general": false
    },
    "2": {
     "status": "open"
@@ -140,8 +229,8 @@
     "status": "open"
    }
   },
-  "k0_pooled": null,
-  "k0_fails": null
+  "k0_pooled": 0.30233333333333334,
+  "k0_fails": true
  },
  "reading": [
   "k8: pending (0 / 3 seeds)",
