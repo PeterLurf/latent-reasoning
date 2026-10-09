@@ -10,7 +10,7 @@
    "status": "done",
    "points": {
     "4": {
-     "kind": "NOT-DECOMPOSABLE",
+     "kind": "FIT-FAILURE",
      "best": [
       64,
       0.029743589743589743
@@ -73,7 +73,7 @@
      }
     },
     "8": {
-     "kind": "NOT-DECOMPOSABLE",
+     "kind": "FIT-FAILURE",
      "best": [
       64,
       0
@@ -136,7 +136,7 @@
      }
     },
     "12": {
-     "kind": "NOT-DECOMPOSABLE",
+     "kind": "FIT-FAILURE",
      "best": [
       64,
       0

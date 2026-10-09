@@ -7,7 +7,8 @@ Controls (fixed now; the subspace-patching illusion, 2311.17030): RANDOM-SUBSPAC
 to a mismatched donor's counterfactuals, held-out IIA against those targets) <= 0.2.
 DECOMPOSABLE(model, t): fitted IIA >= 0.8 at some k <= 64 AND IIA - unchanged_target_share >= 0.5 (Audit: the null rate) AND both controls <= 0.2 AND
 necessity_drop >= 0.3 (Literature: mean-ablating the fitted subspace in unpatched runs lowers accuracy) AND random-model IIA <= 0.2 at k 16 / 64 (note 167-1). k in {1, 2, 4, 8, 16, 64} (+ 2048 reference). NOT-DECOMPOSABLE: fitted IIA < 0.5 at k = 64 with the controls valid.
-ILLUSION-RISK: shuffled-target IIA > 0.2 (the method fits arbitrary targets here; no reading). MULT arm: >= 2 / 3 MIX models DECOMPOSABLE at the same t.
+ILLUSION-RISK: shuffled-target IIA > 0.2 (the method fits arbitrary targets here; no reading). FIT-FAILURE (note 167-3): a would-be NOT-DECOMPOSABLE point
+whose train IIA is non-monotone in k (some fitted k more than 0.05 below a smaller k's: the fit did not converge) - uninformative. MULT arm: >= 2 / 3 MIX models DECOMPOSABLE at the same t.
 Output per model: <run>/eval_das.json {"family", "points": {t: {"k": {k: {"iia", "iia_train", "n"}}, "unchanged_target_share", "random_subspace": {k: iia}, "shuffled_targets": {k: iia},
 "subspace_var_share": {k: share}}}}.
     python theory/score_s167.py
@@ -38,8 +39,10 @@ def point_kind(pt):
     if best[1] >= 0.8 and un is not None and best[1] - un >= 0.5 and rnd_ok and shf and nd is not None and nd >= 0.3 and rm_ok:
         return "DECOMPOSABLE", best
     i64 = (ks.get("64") or {}).get("iia")
+    tr = sorted((int(k), v.get("iia_train")) for k, v in ks.items() if isinstance(v, dict) and v.get("iia_train") is not None)   # fitted k only (k = D has none)
+    converged = bool(tr) and all(tr[j][1] >= max(x[1] for x in tr[:j]) - 0.05 for j in range(1, len(tr)))   # note 167-3: nested subspaces -> monotone in k
     if i64 is not None and i64 < 0.5 and rnd_ok and shf:
-        return "NOT-DECOMPOSABLE", best
+        return ("NOT-DECOMPOSABLE" if converged else "FIT-FAILURE"), best
     return "INTERMEDIATE", best
 
 
