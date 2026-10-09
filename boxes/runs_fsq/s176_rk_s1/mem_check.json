@@ -1,0 +1,13 @@
+{
+ "checks": [
+  {
+   "micro": 1,
+   "peak_gib": 17.600446701049805
+  }
+ ],
+ "micro": 1,
+ "peak_gib": 17.600446701049805,
+ "train_shape": "4x5",
+ "eval_shape": "4x16 at K' = 64",
+ "train_passes": "RK cap 32, bptt_last all"
+}
