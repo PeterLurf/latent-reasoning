@@ -1,0 +1,5 @@
+# THEORY §178 FROM-SCRATCH timing (b2b4634f): random-init GPT-2 6,384,6 + DeltaMem 3 + 3 after block 3, lr 5e-4 warmup 1000; 200 steps each of DIRECT / K0 / K8 on one RTX 3090
+# P=1
+boxes/runs_fsq/s178_timing_direct boxes.nested170 --arm direct --scratch 6,384,6 --lr 0.0005 --warmup 1000 --steps 96000 --time_steps 200 --auto_micro
+boxes/runs_fsq/s178_timing_k0 boxes.nested170 --arm inject --think_k 0 --scratch 6,384,6 --lr 0.0005 --warmup 1000 --steps 96000 --time_steps 200 --auto_micro --fast_add
+boxes/runs_fsq/s178_timing_k8 boxes.nested170 --arm inject --think_k 8 --scratch 6,384,6 --lr 0.0005 --warmup 1000 --steps 96000 --time_steps 200 --auto_micro --fast_add
