@@ -95,7 +95,7 @@ def main():
 
     def mem_check(micro):
         torch.cuda.reset_peak_memory_stats(dev); ids, lab = train_batch(Dtr, [longest] * (a.bs // micro), dev); g.train(); loss_fn(g, ids, lab, amp).backward(); g.zero_grad(set_to_none=True)
-        return torch.cuda.max_memory_allocated(dev) / 2 ** 30
+        return torch.cuda.max_memory_allocated(dev) / 2 ** 30 + 3 * sum(p_.numel() * 4 for p_ in g.parameters()) / 2 ** 30   # + grads and AdamW's two moments (fp32; b214 OOMed at step 1 without)
     if a.mem_check or (a.auto_micro and dev.startswith("cuda") and not a.resume):
         mc = []
         while True:
