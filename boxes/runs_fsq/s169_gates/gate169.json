@@ -1,0 +1,24 @@
+{
+ "device": "cpu",
+ "g1_max_abs_dlogits_vs_plain": 0.0,
+ "g1_pass": true,
+ "g2_zero": [],
+ "g2_S_grad": [
+  0.012990985065698624,
+  0.014589871279895306,
+  0.01963372528553009
+ ],
+ "g2_pass": true,
+ "g3_state_unchanged": true,
+ "g3_decodes_agree": true,
+ "g3_pass": true,
+ "g4": {
+  "passes": 5,
+  "all_identical": true,
+  "think_ends_pad": true,
+  "dec_prefix_ends_eq": true,
+  "k0_writes": 0
+ },
+ "g4_pass": true,
+ "all_pass": true
+}
