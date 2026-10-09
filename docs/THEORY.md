@@ -11261,6 +11261,8 @@ how many think passes run in training.
 * **(f)'s cost:** bucketing by n turns each 64-item step into about 8 small forwards. --time_steps on a 3090 comes before launch, and the about-$2.5 projection is updated if s / step is materially above §170 K8's.
 * **Order:** the (a) / (d) previews start only after this note and the code change. The (f) preview may start after the loss-tail fix.
 
+**Note 177-4, the index scale (2026-10-09 11:38 EDT; pre-data; Audit).** s(t) is rescaled to the mean L2 norm of GPT-2's wte rows (computed once at init), instead of the raw sinusoid's norm of about √384 ≈ 19.6. That keeps the zero-initialised gain g's effective learning rate at the token-embedding scale. Step 0 is still §169 exactly.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
