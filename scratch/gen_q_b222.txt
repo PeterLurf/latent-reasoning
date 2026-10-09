@@ -1,0 +1,5 @@
+# THEORY §170 NESTED slot 1 (Audit approved 02:4x, ~$8 total): DIRECT s1 + TEXT-COT s1 + INJECT K0 s1 co-tenant on one RTX 3090 (P=3; peaks 2.8 / 13.0 / ~3 GiB)
+# P=3
+boxes/runs_fsq/s170_direct_s1 boxes.nested170 --arm direct --seed 1 --auto_micro
+boxes/runs_fsq/s170_cot_s1 boxes.nested170 --arm textcot --seed 1 --auto_micro
+boxes/runs_fsq/s170_k0_s1 boxes.nested170 --arm inject --think_k 0 --seed 1 --auto_micro
