@@ -46,7 +46,9 @@ def run(s, ns_):
     gaps = {t: v.get("hybrid") - nul for t, v in ser.items() if isinstance(v, dict) and v.get("hybrid") is not None and nul is not None and 1 <= int(t) < K}
     ax = (r.get("s175") or {}).get("aux_acc_by_pass") or {}
     return {"status": "done", "pooled": pk, "deep": all((S170.acc(ab, n) or 0) >= 0.90 for n in range(ns_, 9)),
-            "think_necessary": rem, "skip_degenerate_check": bool(drops) and (max(drops) - min(drops) < 1e-9),   # note 170-4: removal only (autonomous passes)
+            "think_necessary": (None if pk is None or pk - CH < 0.1 else rem),   # note 170-4: removal only; note 170-5: None ("n/a") near chance
+            "think_necessary_label": "n/a (acc(K) - chance < 0.1)" if pk is None or pk - CH < 0.1 else str(rem),
+            "skip_degenerate_check": bool(drops) and (max(drops) - min(drops) < 1e-9),
             "serial_nest": bool(gaps and max(gaps.values()) >= 0.5),
             "mean_9_12": S170.mean([S170.acc(ab, n) for n in range(9, 13)]), "aux_acc_by_pass": ax,
             "mean_9_12_at_2K": S170.mean([S170.acc(S170.kseries(x, 2 * K), n) for n in range(9, 13)]),

@@ -11479,6 +11479,17 @@ how many think passes run in training.
 * At 12k it records full 4×4 exact match at p = 0 and the per-column accuracies. That is 177-6's gate number (≥ 0.5 launches the cell).
 * **Its full 12k checkpoint, optimizer included, is kept.** If the gate passes, the (d) cell resumes from it to 48k instead of repeating the first 12k. The cell is then this run's continuation, and that is recorded in its args.
 
+**Note 170-5 (2026-10-09 17:39 EDT; pre-data for the unread arms; Audit). A display guard on THINK-NECESSARY near chance.**
+* Under 170-4's removal-only form, a model at near-zero accuracy passes removal trivially. §169 K16 (0.002) read think_necessary True.
+* For unread cells in §175 and §177, think_necessary is recorded as None, labelled "n/a (acc(K) − chance < 0.1)", whenever accuracy at K is within 0.1 of chance.
+* It cannot change a verdict: removal only enters together with DEEP / EXACT. But a "True" on a dead model is the kind of field that gets quoted out of context.
+* Closed cells (§169, §170 K8, §176) are unchanged. Their near-chance "True" values are recorded as vacuous.
+
+**Note 178-1 (2026-10-09 17:39 EDT; pre-data). §178 reads UNINFORMATIVE when the scratch model does not learn.**
+* If K0-scratch and every K8-scratch run sit below 1/11 + 0.1 pooled (n 3..8), the reading is **"UNINFORMATIVE: the scratch model does not learn nested at 96k"**, not HARNESS-BLOCKS.
+  - HARNESS-BLOCKS requires the passes to fail where the model otherwise learns the task.
+* score_s178 is updated. The other readings are unchanged (checked on real-file fixtures).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
