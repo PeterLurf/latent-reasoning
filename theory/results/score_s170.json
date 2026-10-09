@@ -85,7 +85,110 @@
     "status": "open"
    },
    "2": {
-    "status": "running"
+    "status": "done",
+    "acc_by_n": {
+     "1": 1.0,
+     "2": 1.0,
+     "3": 1.0,
+     "4": 1.0,
+     "5": 1.0,
+     "6": 1.0,
+     "7": 1.0,
+     "8": 1.0,
+     "9": 0.999,
+     "10": 0.833,
+     "11": 0.275,
+     "12": 0.118,
+     "13": 0.104,
+     "14": 0.08,
+     "15": 0.051,
+     "16": 0.055
+    },
+    "mean_9_12": 0.55625,
+    "compute_by_n": {
+     "1": {
+      "flops_trunk": 1175835648.0,
+      "sequential_passes": 2
+     },
+     "2": {
+      "flops_trunk": 2677979136.0,
+      "sequential_passes": 6
+     },
+     "3": {
+      "flops_trunk": 4926282240.0,
+      "sequential_passes": 13
+     },
+     "4": {
+      "flops_trunk": 7924062720.0,
+      "sequential_passes": 23
+     },
+     "5": {
+      "flops_trunk": 11924894208.0,
+      "sequential_passes": 37
+     },
+     "6": {
+      "flops_trunk": 16436264448.0,
+      "sequential_passes": 53
+     },
+     "7": {
+      "flops_trunk": 21963956736.0,
+      "sequential_passes": 73
+     },
+     "8": {
+      "flops_trunk": 28014574080.0,
+      "sequential_passes": 95
+     },
+     "9": {
+      "flops_trunk": 35099208192.0,
+      "sequential_passes": 121
+     },
+     "10": {
+      "flops_trunk": 42468750336.0,
+      "sequential_passes": 148
+     },
+     "11": {
+      "flops_trunk": 48851645952.0,
+      "sequential_passes": 171
+     },
+     "12": {
+      "flops_trunk": 55515320832.0,
+      "sequential_passes": 195
+     },
+     "13": {
+      "flops_trunk": 63747770880.0,
+      "sequential_passes": 225
+     },
+     "14": {
+      "flops_trunk": 75381519360.0,
+      "sequential_passes": 268
+     },
+     "15": {
+      "flops_trunk": 90743683584.0,
+      "sequential_passes": 325
+     },
+     "16": {
+      "flops_trunk": 102294501888.0,
+      "sequential_passes": 367
+     }
+    },
+    "cot_tokens_by_n": {
+     "1": 2.0,
+     "2": 6.0,
+     "3": 13.22,
+     "4": 23.37,
+     "5": 36.852,
+     "6": 53.07,
+     "7": 73.058,
+     "8": 95.284,
+     "9": 120.669,
+     "10": 147.717,
+     "11": 171.158,
+     "12": 195.146,
+     "13": 224.713,
+     "14": 268.063,
+     "15": 325.048,
+     "16": 366.679
+    }
    }
   },
   "mean_9_12": null
