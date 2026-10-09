@@ -1,0 +1,6 @@
+# THEORY §170 NESTED cost timing (Audit's ask before slot 1): 200 steps each of INJECT K8, K16, DIRECT and TEXT-COT, one after another (solo, no co-tenant) on one RTX 3090; --time_steps writes timing.json + eval.json (sec_per_step, est_hours_48k)
+# P=1
+boxes/runs_fsq/s170_timing_k8 boxes.nested170 --arm inject --think_k 8 --time_steps 200 --auto_micro
+boxes/runs_fsq/s170_timing_k16 boxes.nested170 --arm inject --think_k 16 --time_steps 200 --auto_micro
+boxes/runs_fsq/s170_timing_direct boxes.nested170 --arm direct --time_steps 200 --auto_micro
+boxes/runs_fsq/s170_timing_cot boxes.nested170 --arm textcot --time_steps 200 --auto_micro
