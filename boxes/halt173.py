@@ -35,6 +35,11 @@ NEST = (2, 4, 6, 8, 10, 12, 16)
 EPS = 0.01
 
 
+def rule_k(a):
+    """the run's think K: an int, or §177 (d)'s '4n' -> 16 (its rule K at the 4x4 training size)."""
+    return 16 if str(a["think_k"]) == "4n" else int(a["think_k"])
+
+
 class ReadTap:
     """records the residual entering the read (block mem.layer) on the FIRST read_fixed call after arm(); the decoder's first forward call."""
     def __init__(self):
@@ -81,7 +86,10 @@ class MultAdapter:
         return m.mem.zero_state(len(A), self.dev), {"A": A, "B": B, "kv": m.encode(A, B, self.dev)}
 
     def step(self, S, c):
-        return self.m.slot_pass(S, c["kv"]) if self.kind == "readslots" else self.m.write(S, c["ids"])
+        c["t"] = c.get("t", 0) + 1                                          # the global pass number (§177 (a)'s index)
+        if self.kind == "readslots":
+            return self.m.slot_pass(S, c["kv"])
+        return self.m.write(S, c["ids"], c["t"]) if self.kind == "inject" else self.m.write(S, c["ids"])
 
     def decode(self, S, c):
         L = c["A"].shape[1] + c["B"].shape[1]
@@ -171,6 +179,8 @@ def load_model(run, dev, init=False):
     else:
         from boxes.inject169 import Inject
         assert a.get("arm") == "inject"; kind, m = "inject", Inject(g, 6, a.get("mem_write", "top"))
+        if a.get("pass_index"):                                             # §177 (a): the index table (rows from args; trained values from model.pt)
+            m.pidx = torch.nn.Embedding(int(a["pass_index"]), 768); torch.nn.init.zeros_(m.pidx.weight)
     m = m.to(dev)
     if init:
         with torch.no_grad():
@@ -184,7 +194,7 @@ def load_model(run, dev, init=False):
 def halt_fields(kind, m, a, dev, amp, n_items=1000, bs=250, bench=os.path.join("bench", "data", "mult_4x4_test.txt")):
     """§173 on a loaded model (m.eval()): -> (halt {rule: {size: {acc, mean_h, frac_capped}}}, halt_fixed_k {size: acc}, acc_by_t {size: [...]}, n {size}).
     a: the run's args (dict); K = a["think_k"], cap 2K. Also called from a run's own eval (inject169 §176)."""
-    K = int(a["think_k"]); T = 2 * K; t0 = time.time()
+    K = rule_k(a); T = 2 * K; t0 = time.time()
     if kind == "nested":
         from boxes.nested170 import test_set
         ad = NestAdapter(m, dev); TE = test_set(a.get("per_n", 1000)); sets = {str(n): [it for it in TE if it["n"] == n][:n_items] for n in NEST}
@@ -212,7 +222,7 @@ def dir_fields(kind, m, a, dev, amp, n_items=500, bs=250, bench=os.path.join("be
     """§177 direction diagnostic (Theory, descriptive): on n_items 4x4 bench items, per pass t = 1..2K the mean over items of cos(x_t, x_{t-1}) for
     x = r (the decoder's memory read at its first query, as read_0.01), Sd (the flattened delta-head state) and Sa (the flattened additive state).
     M_0 is the zero state (§169 / §171) or the post-input state (§165); a cosine against a zero vector is skipped (counted in n_by_t)."""
-    K = int(a["think_k"]); T = 2 * K; acc = {k_: {t: [] for t in range(1, T + 1)} for k_ in ("read", "delta", "add")}
+    K = rule_k(a); T = 2 * K; acc = {k_: {t: [] for t in range(1, T + 1)} for k_ in ("read", "delta", "add")}
     if kind == "nested":                                                    # note 173-1: nested at its training size, n pooled 3..8
         from boxes.nested170 import test_set
         ad = NestAdapter(m, dev); pool = [it for it in test_set(a.get("per_n", 1000)) if 3 <= it["n"] <= 8]
@@ -255,7 +265,7 @@ def step_probe_delta(kind, m, a, dev, amp, bs=250, n_fit=4000, n_test=1000, benc
     (seed 17022) -> {t: acc}. mult: target the units digit of column c's full sum (= product digit c, LSB first), c = 1..8 at 4x4, fit on n_fit generator
     4x4 items (bench-excluded, seed 17731), test the bench's first n_test -> {t: {c: acc}}. The passes are recomputed up to each t (one t's states in memory)."""
     from boxes.nested170 import logreg_acc
-    K = int(a["think_k"])
+    K = rule_k(a)
     if kind == "nested":
         from boxes.nested170 import test_set, train_items, reductions
         ad = NestAdapter(m, dev); TE = test_set(a.get("per_n", 1000)); excl = {tuple(it["syms"]) for it in TE}
@@ -333,7 +343,7 @@ def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--n", type=int, default=1000); ap.add_argument("--bs", type=int, default=250)
     ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", default=None)
     ap.add_argument("--bench", default=os.path.join("bench", "data", "mult_4x4_test.txt")); ap.add_argument("--dir177", action="store_true", help="§177 direction diagnostic only")
-    o = ap.parse_args(); dev = o.device; t0 = time.time()
+    o = ap.parse_args(); dev = o.device; t0 = time.time(); o.out = o.out if (o.out and o.out.endswith(".json")) else None   # gen_vast_job appends --out <dir>: anything but a .json path -> the default file in --run
     amp = None if (o.fp32 or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
     a_ = json.load(open(os.path.join(o.run, "args.json")))
     if o.dir177 and a_.get("family") == "mult_pair":                        # §177 baseline on the working pair-segment models (Theory)
@@ -341,7 +351,7 @@ def main():
         r_.update({"run": o.run.replace(os.sep, "/"), "kind": "multpair", "eval_dtype": str(amp), "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
                    "sec": round(time.time() - t0)})
         json.dump(r_, open(o.out or os.path.join(o.run, "eval_s177_dir.json"), "w", newline="\n"), indent=1); print("DONE dir177 pair", o.run, flush=True); return
-    kind, m, a = load_model(o.run, dev); K = int(a["think_k"]); T = 2 * K; assert K >= 1
+    kind, m, a = load_model(o.run, dev); K = rule_k(a); T = 2 * K; assert K >= 1
     if o.dir177:                                                            # §177 (Theory): the direction diagnostic -> eval_s177_dir.json
         r_ = dir_fields(kind, m, a, dev, amp, min(o.n, 500), o.bs, o.bench)
         r_["step_probe_delta"] = step_probe_delta(kind, m, a, dev, amp, o.bs, bench=o.bench)   # note 173-1 (descriptive)

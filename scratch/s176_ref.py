@@ -31,7 +31,10 @@ def main():
     a = json.load(open(os.path.join(run, "args.json"))); assert a.get("arm") == "inject" and int(a["think_k"]) == 8, "a §169 K8 run"
     DM.FAST_ADD = bool(a.get("fast_add"))
     amp = None if (a.get("fp32") or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
-    m = I.Inject(s5.load_gpt2(dev), 6, a.get("mem_write", "top")).to(dev); m.load_state_dict(torch.load(os.path.join(run, "model.pt"), map_location=dev, weights_only=False)); m.eval()
+    m = I.Inject(s5.load_gpt2(dev), 6, a.get("mem_write", "top")).to(dev)
+    if a.get("pass_index"):
+        m.pidx = torch.nn.Embedding(int(a["pass_index"]), 768).to(dev)
+    m.load_state_dict(torch.load(os.path.join(run, "model.pt"), map_location=dev, weights_only=False)); m.eval()
     bench = a.get("bench") or os.path.join("bench", "data", "mult_4x4_test.txt"); teA, teB = load_bench(bench if os.path.isabs(bench) else os.path.join(ROOT, bench))
     teA, teB = teA[:a.get("test_n", 1000)], teB[:a.get("test_n", 1000)]; n = a.get("ext_n", 1000); bs = a.get("eval_bs", 250)
     xA, xB = gen_operands(np.random.default_rng(14004), n, 4), gen_operands(np.random.default_rng(14005), n, 8); P4, P8 = product_digits(teA, teB), product_digits(xA, xB)
@@ -44,7 +47,7 @@ def main():
         nA, nB = teA[:256], teB[:256]; S = m.mem.zero_state(len(nA), dev); ids = m.ids(torch.tensor(I.think_text(nA, nB), device=dev))
         for t in range(1, 65):
             with amp_ctx(amp):
-                S = m.write(S, ids)
+                S = m.write(S, ids, t)
             mn[str(t)] = {"additive": float(S[:, :DM.H_ADD].float().flatten(1).norm(dim=1).median()), "delta": float(S[:, DM.H_ADD:].float().flatten(1).norm(dim=1).median())}
     res.update({"mem_norm_by_pass": mn, "eval_dtype": str(amp), "fast_add": DM.FAST_ADD, "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
                 "sec": round(time.time() - t0)})
