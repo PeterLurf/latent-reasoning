@@ -10499,6 +10499,12 @@ subspace.**
 * By n: 0.929 / 0.970 / 0.669 / 0.421 / 0.250 / 0.183 / 0.137 / 0.154 at n = 1..8; mean 0.129 at n 9–12.
 * This meets the C1 claim's "K0 slot 1 pooled < 0.90" condition. K8 s1 and TEXT-COT s1 / s2 are pending.
 
+**§170 interim (2026-10-09 08:40 EDT; s170_cot_s2, trained on an RTX 3090 (args.json), evaluated on a 3070 (args_eval.json; eval.json's train_gpu field shows the eval GPU); score_s170).** TEXT-COT s2 is **exact within training and extends about 2 sizes past it.**
+* By n: 1.0 at n = 1..8; then 0.999 / 0.833 / 0.275 / 0.118 at n = 9 / 10 / 11 / 12; 0.05–0.10 at n 13–16.
+* Mean at n 9–12 = 0.556.
+* CoT length grows about quadratically: 95 tokens at n = 8, 195 at 12, 367 at 16.
+* BEYOND TEXT needs TEXT-COT s1. AT-LEAST-TEXT-COT needs the latent arm at ≥ 0.99 for n ≤ 8.
+
 ## 171. READ-SLOTS: think passes in which a few learned slots read the once-encoded input and write the memory (a Perceiver / RIN-style task-agnostic read; the user's "creating new methodologies and architectures for task agnostic" via Audit; roadmap steps: task-agnostic input, and scale (long inputs); pre-registered 2026-10-09 01:54 EDT, after Literature's scout 589e6eb5 (`docs/LIT_TASK_AGNOSTIC_SCOUT_2026-10-09.md`, rank 1) and Audit's review, before any implementation or run)
 
 **Why.**
