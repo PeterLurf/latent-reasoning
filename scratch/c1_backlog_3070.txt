@@ -12,6 +12,9 @@
 # 2026-10-09 10:1x Experiments: note 172-1 PCCoT multi-latent / whole-block swaps (Theory; eval only, ~1 h)
 # 2026-10-09 10:2x Experiments (Audit 10:14: >= 1 h standing work): DESCRIPTIVE 8k-step local previews of gated arms (not the registered launches; Theory may stop them)
 # 2026-10-09 11:4x Experiments: §169 K8 s1 post hoc (Theory): §176 reference (eval_s176_ref.json), §173 halt, note 173-1 package
+# 2026-10-09 13:0x Experiments: §170 K8 s1 post hoc (Theory: every think-pass cell): §173 halt + note 173-1 package
+4.0 boxes/runs_fsq/s170_k8_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s170_k8_s1 --bs 100 --device {DEV}
+4.0 boxes/runs_fsq/s170_k8_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s170_k8_s1 --dir177 --bs 125 --device {DEV}
 4.0 boxes/runs_fsq/s169_k8_4x4_s1/eval_s176_ref.json python -u scratch/s176_ref.py boxes/runs_fsq/s169_k8_4x4_s1 {DEV}
 4.0 boxes/runs_fsq/s169_k8_4x4_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s169_k8_4x4_s1 --bs 100 --device {DEV}
 4.0 boxes/runs_fsq/s169_k8_4x4_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s169_k8_4x4_s1 --dir177 --bs 125 --device {DEV}
