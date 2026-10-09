@@ -27,7 +27,7 @@ import score_s170 as S170  # noqa: E402
 
 R = os.path.join(ROOT, "boxes", "runs_fsq")
 CH = 1.0 / 11
-MULT_ARMS = {"tidx": dict(S169.BASE, think_k=8, pass_index=72), "fadetidx": dict(S169.BASE, think_k="4n", pass_index=72, fade="12000,36000")}
+MULT_ARMS = {"tidx": dict(S169.BASE, think_k=8, pass_index="sin_gain"), "fadetidx": dict(S169.BASE, think_k="4n", pass_index="sin_gain", fade="12000,36000")}   # note 177-4
 NEST_ARMS = {"kmatch": dict(S170.IBASE, k_window="0,2"), "curpois": dict(S170.IBASE, k_poisson="6,2,10", curriculum=0.95)}
 NEST_RULE_K = {"kmatch": ("n+1", "n+1"), "curpois": ("10", "16")}   # (HIT K', BEYOND K')
 ERRORS = []
