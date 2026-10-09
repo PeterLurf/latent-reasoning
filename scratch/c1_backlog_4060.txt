@@ -3,6 +3,9 @@
 # 2026-10-09 07:3x Experiments: §170 TEXT-COT s2 eval-only (b223 trained 48k, OOMed at eval; model.pt fetched md5 a514227c) - Audit
 # 2026-10-09 08:5x Experiments: §170 TEXT-COT s1 eval-only (b222 trained 48k, OOMed at eval; model.pt md5 0729234c)
 # 2026-10-09 09:0x Experiments: §173 CONV-HALT post hoc on §171 K8 s1 (model.pt md5 94febd1c)
+# 2026-10-09 09:2x Experiments (Audit): §167 refits on §162 S5 OOMed at fit batch 64 under the 6 GiB cap -> gradient accumulation (--fit_micro; effective batch 64 kept)
+5.0 boxes/runs_fsq/s162_long_s2/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s162_long_s2 --fit_micro 4
+5.0 boxes/runs_fsq/s162_short_s2/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s162_short_s2 --fit_micro 2
 4.0 boxes/runs_fsq/s171_k8_4x4_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s171_k8_4x4_s1 --bs 100 --device {DEV}
 3.0 boxes/runs_fsq/s170_cot_s1/eval.json python -u -m boxes.nested170 --arm textcot --seed 1 --eval_only --cot_eval_bs 32 --device {DEV} --out boxes/runs_fsq/s170_cot_s1
 3.0 boxes/runs_fsq/s170_cot_s2/eval.json python -u -m boxes.nested170 --arm textcot --seed 2 --eval_only --cot_eval_bs 32 --device {DEV} --out boxes/runs_fsq/s170_cot_s2
