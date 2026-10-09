@@ -1,6 +1,6 @@
 """THEORY §176 scoring (rules fixed in §176; written before any §176 implementation or run; Theory is the only scorer).
 RAND-K: §169's INJECT on §161's 4 x n mix (48k, RTX 3090, fast_add), two training-method arms:
-  RK   = per batch K = 1 + Poisson(e^tau), tau ~ N(log 8 - 1/8, 1/2), cap 32, independent of n; full backprop where memory allows (bptt_last recorded);
+  RK   = per batch K = 1 + Poisson(e^tau), tau ~ N(log 7 - 1/8, 1/2) (note 176-1: mean K ~ 8), cap 32, independent of n; full backprop where memory allows;
   PROG = per batch k1 ~ U{0..8} no-grad passes then k2 ~ U{1..8} grad passes (Bansal 2202.05826), answer decoded after k1 + k2.
 Evaluated at K' in {0, 1, 2, 4, 8, 12, 16, 24, 32, 48, 64}; fixed-K reference = §169 K8 (its eval.json + post-hoc eval_s176_ref.json at 24 / 32 / 48 / 64).
 EXACT(run): 4x4 >= 0.99 at K' = 8. THINK-NECESSARY(run): §169's form at K = 8.
@@ -22,7 +22,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import score_s169 as S169  # noqa: E402
 
 R = os.path.join(ROOT, "boxes", "runs_fsq")
-ARMS = {"rk": {"rand_k": "8,0.5,32"}, "prog": {"prog": "8,8"}}
+ARMS = {"rk": {"rand_k": "7,0.5,32"}, "prog": {"prog": "8,8"}}   # note 176-1: RK mean K ~ 8
 ERRORS = []
 
 

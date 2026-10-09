@@ -10841,6 +10841,14 @@ how many think passes run in training.
   - smoke_plain; Audit's diff review; memcheck at K = 32 with gradients (training) and at K′ = 64 without (eval).
 * Dirs `s176_rk_s{seed}` and `s176_prog_s{seed}`. Scorer: `theory/score_s176.py`, committed with this registration.
 
+**Note 176-1 (2026-10-09 04:17 EDT; before any §176 run, gate176 only; Audit). RK's mean is set to 8 passes; the independence gate is scored at 100k draws.**
+* **RK's mean.** As registered, K = 1 + Poisson(e^τ) with τ ~ N(log 8 − ⅛, ½) has mean ≈ 9 (gate176: 8.85). That is about 11% more passes than the fixed-K8 reference.
+  - **RK now uses τ ~ N(log 7 − ⅛, ½), so the mean K ≈ 8: equal compute with fixed K8.** The cap stays 32. args: rand_k "7,0.5,32".
+  - The histogram gate becomes mean 8 ± 0.5.
+  - PROG is unchanged (k₁ ~ U{0..8} without gradient, k₂ ~ U{1..8} with gradient: mean 8.5 passes, 4.5 of them with gradient). It is reported with that ratio.
+* **The corr(K, n) gate** is scored at 100k draws (Audit's ruling): the 0.02 bound at 10k was about 2 SE, and independence holds by construction.
+* No rule changes.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
