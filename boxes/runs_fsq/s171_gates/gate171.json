@@ -1,0 +1,62 @@
+{
+ "device": "cpu",
+ "g1": {
+  "k8_eq_k0": true,
+  "max_abs_vs_plain": 0.0001373291015625,
+  "blind_k8_eq_k0": true,
+  "blind_max_abs_vs_plain": 0.0,
+  "argmax_eq_plain": true
+ },
+ "g1_pass": true,
+ "g2": {
+  "mem_zero": [],
+  "slots": 0.025293122977018356,
+  "S_grad": [
+   0.007898940704762936,
+   0.008367684669792652,
+   0.009924723766744137
+  ],
+  "enc_from_slots": {
+   "kv0_k": 0.0023851690348237753,
+   "kv11_v": 0.0041544814594089985,
+   "h0_c_attn_w": 0.7914705276489258
+  },
+  "enc_from_decoder_k0": 0.021104438230395317
+ },
+ "g2_pass": true,
+ "g3": {
+  "input_kv_unchanged_len_P0": true,
+  "dec_invariant_to_slots": true,
+  "slots_change_S": true,
+  "S_unchanged_by_decoder": true
+ },
+ "g3_pass": true,
+ "g4_pass": true,
+ "g5": {
+  "prob_sum_err": [
+   3.5762786865234375e-07,
+   3.5762786865234375e-07,
+   3.5762786865234375e-07
+  ],
+  "map_sum_err": [
+   2.7008354663848877e-08,
+   2.6542693376541138e-08,
+   9.313225746154785e-09
+  ],
+  "entropy": {
+   "1": 0.9277846813201904,
+   "2": 0.7799591422080994,
+   "3": 0.6689655184745789
+  },
+  "rho": null,
+  "peak": [
+   1,
+   1,
+   1
+  ],
+  "compute_4x4": 14972014272.0,
+  "compute_blind_4x4": 15144356568.0
+ },
+ "g5_pass": true,
+ "all_pass": true
+}
