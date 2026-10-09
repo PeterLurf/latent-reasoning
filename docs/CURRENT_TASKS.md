@@ -20,24 +20,22 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 Messages go through SendMessage. The names "Theory" and "Audit" currently need an identity confirm, pending the user,
 so send to the pipe addresses their messages come from.
 
-## Running now (20:10 2026-10-08; credit ~$113; cap 16 hosts / < $4/h)
+## Running now (02:33 2026-10-09; credit ~$100; cap 16 hosts / < $4/h)
 
 **User rules:** full runs on Vast 3090s (>= 16 GB, checkpointed); local cards short memory-capped jobs only, never idle. smoke_plain before commits
 touching fsq120 / table132 / core. Never edit a module while a deploy is in flight (auto_ship is transitive: fixedchunk / multrow ship multpair,
 deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `vast destroy` aborts at its y/N prompt).
 
-### Vast
-* Up: b192 §162 LONG s2; b204 §163 slot 1 (draining; model.pt for the §166 mix2d cell); b206 / b207 §159 s3 / s4; b210 §165 K16 + K8 (P=2);
-  b211 §165 K0 + K16c1 (P=2); fill_s163k23 deploying b212 / b213 (§163 slots 2 / 3).
-* Done today: §155 R / SHIFT-R complete; §157 closed; §159 slot 1 exact (s2 in); §160 A-R / CTRL-R + block-9 fallbacks; §161 MIX / IDX / MIX9;
-  §162 DIRECT s1 / s2, LONG s1, SHORT s1 / s2 (models kept from 05751e36 on; DIRECT s1 / LONG s1 models lost); §163 s1 exact; §164 closed (anchored re-eval).
-* Drains: drain_gen_partial skips ckpt_last / ckpt_prev of finished runs; manual fetch (tar over ssh, md5) when an scp stalls on a hung sshd.
+### Vast (6 hosts, ~$1.2/h)
+* b210 §165 K16 + K8 (P=2); b214 §168 DIRECT; b218 §169 K16 + K8 (K8 has `--eval_at 24000` -> eval_24k.json for §174); b219 §169 K0;
+  b220 §170 timing (4 arms x 200 steps; K8 1.64 s/step = ~22 h / 48k); fill_s171 deploying b221 §171 K8 + BLIND (P=2; Audit-approved 02:30).
+* Next: §170 slot 1 queues after b220 timing goes to Audit (K8 line gets `--eval_at 24000`); b215-b217 §168 after the D* note.
+* Model keep patterns now include s165_ / s166_ / s168_-s171_ / s174_ (§173 is post hoc on model.pt).
 
 ### Local (v2 workers c4060 / c3070 / c2070 <- scratch/c1_backlog_<card>.txt; halt file scratch/<tag>.halt stops a worker)
-* Queues: §165 previews (K0 / K8 / K16 / K16c1) -> §166 MULT cells (s1 4060, s2 3070, s3 2070; fitted + plain) -> §167 DAS (MIX s1-s3, SHORT s1 / s2).
-* Pending: §166 mix2d cells (note 166-2) once s163_mix2d_4x4_s1/model.pt lands; §166 S5 cells + §167 / §162 post-hoc on LONG s2 once b192 lands.
-* CPU: scratch/s162_posthoc.py (SHORT s2 done, SHORT s1 running, Idle priority).
-* Reboot recovery: memory note latent-reboot-recovery (13:20 power cut: watchers / filler / workers restarted).
+* 4060: proto165_k16c1 preview; 3070: §166 S5 eval-only re-runs; 2070: §167 167-3 DAS refits (shared lines with 4060 / 3070 via locks).
+* Built, not yet run: boxes/halt173.py (§173 post hoc -> eval_s173_halt.json; smokes running), §172 PCCoT-PROBE not built.
+* Reboot recovery: memory note latent-reboot-recovery.
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
