@@ -13,10 +13,12 @@
 # 2026-10-09 13:0x Experiments: §170 K8 s1 post hoc (Theory: every think-pass cell): §173 halt + note 173-1 package
 4.0 boxes/runs_fsq/s170_k8_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s170_k8_s1 --bs 100 --device {DEV}
 4.0 boxes/runs_fsq/s170_k8_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s170_k8_s1 --dir177 --bs 125 --device {DEV}
+# 2026-10-09 13:0x Experiments: §177 (f) kmatch DESCRIPTIVE 8k preview (masked form, note 177-5; read by no rule; 4060 bf16)
+5.0 boxes/runs_fsq/proto177_kmatch_s1_4060/eval.json python -u -m boxes.nested170 --arm inject --think_k 10 --k_window 0,2 --fast_add --seed 1 --steps 8000 --ckpt_every 1000 --auto_micro --mem_budget 5.0 --eval_bs 50 --per_n 300 --device {DEV} --out boxes/runs_fsq/proto177_kmatch_s1_4060
 4.0 boxes/runs_fsq/s169_k8_4x4_s1/eval_s176_ref.json python -u scratch/s176_ref.py boxes/runs_fsq/s169_k8_4x4_s1 {DEV}
 4.0 boxes/runs_fsq/s169_k8_4x4_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s169_k8_4x4_s1 --bs 100 --device {DEV}
 4.0 boxes/runs_fsq/s169_k8_4x4_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s169_k8_4x4_s1 --dir177 --bs 125 --device {DEV}
-5.0 boxes/runs_fsq/proto176_rk_s1_4060/eval.json python -u -m boxes.inject169 --think_k 8 --rand_k 7,0.5,32 --fast_add --seed 1 --steps 8000 --ckpt_every 2000 --auto_micro --mem_budget 5.0 --eval_bs 50 --ext_n 500 --probe_n_fit 3000 --device {DEV} --out boxes/runs_fsq/proto176_rk_s1_4060
+# 2026-10-09 12:58 STOPPED at ~1.7k (Audit: pre-e6297183 code + lazy halt173 import would crash its eval; descriptive; §176 RK runs on b230): 5.0 boxes/runs_fsq/proto176_rk_s1_4060/eval.json python -u -m boxes.inject169 --think_k 8 --rand_k 7,0.5,32 --fast_add --seed 1 --steps 8000 --ckpt_every 2000 --auto_micro --mem_budget 5.0 --eval_bs 50 --ext_n 500 --probe_n_fit 3000 --device {DEV} --out boxes/runs_fsq/proto176_rk_s1_4060
 4.0 boxes/runs_fsq/s171_k8_4x4_s1/eval_s177_dir.v2.done python -u -m boxes.halt173 --run boxes/runs_fsq/s171_k8_4x4_s1 --dir177 --bs 125 --device {DEV} && echo ok > boxes/runs_fsq/s171_k8_4x4_s1/eval_s177_dir.v2.done
 3.0 boxes/runs_fsq/s171_k8blind_4x4_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s171_k8blind_4x4_s1 --bs 100 --device {DEV}
 3.0 boxes/runs_fsq/s171_k8blind_4x4_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s171_k8blind_4x4_s1 --dir177 --bs 100 --device {DEV}
