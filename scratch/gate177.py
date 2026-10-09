@@ -1,6 +1,7 @@
 """THEORY §177 PASS-DISTINCT pre-launch gates (4947f034, notes 177-1..3), boxes/inject169.py (a) tidx / (d) fadetidx, boxes/nested170.py (f) kmatch:
-  (1) (a) gradflow (fade 0.5, W_o perturbed, gamma 0.5, K = 3, offset o = 5): the answer CE puts gradient on the index rows o + 1 .. o + 3 (and none
-      elsewhere) and on every DeltaMem parameter; the bound assert fires at o + t >= rows
+  (1) (a) note 177-4's index e_t = g * s~(t): gradflow (fade 0.5, W_o perturbed, gamma 0.5, K = 3) into g and every DeltaMem parameter; at g = 0 (init)
+      the decoder logits after K = 3 passes equal §169's (no index) bitwise; s~(t) differs across t = 1..64 (max |cos| between distinct t < 0.99);
+      the scale mean_r ||wte_r|| and ||s~(t)|| are logged
   (2) (d) masked mixture: a padded pair row inside a mixed batch writes what the same pair segment writes alone (max abs < 1e-4 OR relative to max |S| < 1e-6, fp32: a padded row runs longer matmuls);
       p = 0 is the pure pair schedule (no padding); gradflow at p = 0.5 into the index rows and every DeltaMem parameter; pair_seg = multpair's
       schedule / tokens (column order, ' ;' on a column's first pair)
@@ -36,19 +37,25 @@ def main():
     torch.set_num_threads(3); out = {}; ok = True; torch.manual_seed(0); g = s5.load_gpt2("cpu")
     A, B = gen_operands(np.random.default_rng(3), 4, 4), gen_operands(np.random.default_rng(4), 4, 3); ans = torch.tensor(DT[product_digits(A, B)])
     # (1)
-    m = I.Inject(g, 6, "top"); m.pidx = torch.nn.Embedding(72, 768); torch.nn.init.zeros_(m.pidx.weight); prep(m); m.p_off = 5
-    S = m.think(m.mem.zero_state(4, "cpu"), A, B, 3); lg = m.dec_logits(S, A, B, ans); Fn.cross_entropy(lg.reshape(-1, lg.shape[-1]), ans.reshape(-1)).backward()
-    rn = m.pidx.weight.grad.norm(dim=1); used = [i for i in range(72) if rn[i] > 0]
-    mz = [n_ for n_, p_ in m.mem.named_parameters() if p_.grad is None or float(p_.grad.norm()) == 0]
-    try:
-        m.p_off = 70; m.write(m.mem.zero_state(4, "cpu"), m.ids(torch.tensor(I.think_text(A, B))), 2); bound = False
-    except AssertionError:
-        bound = True
-    out["g1"] = {"index_rows_with_grad": used, "mem_zero": mz, "bound_assert": bound}; out["g1_pass"] = used == [6, 7, 8] and not mz and bound; ok &= out["g1_pass"]
-    # (2)
-    m2 = I.Inject(g, 6, "top"); m2.pidx = torch.nn.Embedding(72, 768); prep(m2)
+    m0 = I.Inject(g, 6, "top"); prep(m0); m0.eval(); m = I.Inject(g, 6, "top"); m.mem = m0.mem; m.enable_pass_index(); m.eval()
     with torch.no_grad():
-        m2.pidx.weight.normal_(0, 0.02)
+        l0 = m0.dec_logits(m0.think(m0.mem.zero_state(4, "cpu"), A, B, 3), A, B, ans); l1 = m.dec_logits(m.think(m.mem.zero_state(4, "cpu"), A, B, 3), A, B, ans)
+    with torch.no_grad():
+        m.pgain.fill_(1.0); Vs = torch.stack([m.pass_vec(t) for t in range(1, 65)]); m.pgain.zero_()
+    Cn = torch.nn.functional.normalize(Vs, dim=1) @ torch.nn.functional.normalize(Vs, dim=1).T; maxcos = float((Cn - torch.eye(64)).abs().max())
+    m.train(); m.zero_grad(set_to_none=True)
+    with torch.no_grad():
+        m.pgain.normal_(0, 0.01)                                            # a nonzero g so the gradient path through s~(t) is exercised
+    S = m.think(m.mem.zero_state(4, "cpu"), A, B, 3); lg = m.dec_logits(S, A, B, ans); Fn.cross_entropy(lg.reshape(-1, lg.shape[-1]), ans.reshape(-1)).backward()
+    gg = float(m.pgain.grad.norm()) if m.pgain.grad is not None else 0.0
+    mz = [n_ for n_, p_ in m.mem.named_parameters() if p_.grad is None or float(p_.grad.norm()) == 0]
+    out["g1"] = {"step0_logits_equal_s169": bool(torch.equal(l0, l1)), "gain_grad_norm": gg, "mem_zero": mz, "max_abs_cos_between_passes_1_64": maxcos,
+                 "scale_mean_wte_norm": float(m.pscale), "s_norm_t1_t64": [float(Vs[0].norm()), float(Vs[-1].norm())]}
+    out["g1_pass"] = out["g1"]["step0_logits_equal_s169"] and gg > 0 and not mz and maxcos < 0.99; ok &= out["g1_pass"]
+    # (2)
+    m2 = I.Inject(g, 6, "top"); m2.enable_pass_index(); prep(m2)
+    with torch.no_grad():
+        m2.pgain.normal_(0, 0.05)
     ok_seg = True; MP_m = type("X", (), {})()
     for na, nb in ((4, 3), (4, 5)):
         A_, B_ = gen_operands(np.random.default_rng(5), 3, na), gen_operands(np.random.default_rng(6), 3, nb); pairs, col, _ = MP.schedule(na, nb)
@@ -66,12 +73,12 @@ def main():
         Sfull = m2.think_fade(m2.mem.zero_state(4, "cpu"), A, B, 1.0, np.random.default_rng(0))
     d_pair = float((Smix[[1, 3]] - Spair[[1, 3]]).abs().max()); d_full = float((Smix[[0, 2]] - Sfull[[0, 2]]).abs().max())
     r_pair, r_full = d_pair / float(Spair[[1, 3]].abs().max()), d_full / float(Sfull[[0, 2]].abs().max())   # relative to max |S| (fp32: padded = longer matmuls)
-    prep(m2); m2.p_off = 2; S = m2.think_fade(m2.mem.zero_state(4, "cpu"), A, B, 0.5, np.random.default_rng(1)); lg = m2.dec_logits(S, A, B, ans)
-    Fn.cross_entropy(lg.reshape(-1, lg.shape[-1]), ans.reshape(-1)).backward(); rn2 = m2.pidx.weight.grad.norm(dim=1)
+    prep(m2); S = m2.think_fade(m2.mem.zero_state(4, "cpu"), A, B, 0.5, np.random.default_rng(1)); lg = m2.dec_logits(S, A, B, ans)
+    Fn.cross_entropy(lg.reshape(-1, lg.shape[-1]), ans.reshape(-1)).backward(); gg2 = float(m2.pgain.grad.norm()) if m2.pgain.grad is not None else 0.0
     mz2 = [n_ for n_, p_ in m2.mem.named_parameters() if p_.grad is None or float(p_.grad.norm()) == 0]
-    out["g2"] = {"pair_seg_equals_multpair": ok_seg, "mixed_vs_pure_pair_rows": d_pair, "mixed_vs_full_rows": d_full, "rel_pair": r_pair, "rel_full": r_full, "index_rows_with_grad": [i for i in range(72) if rn2[i] > 0],
+    out["g2"] = {"pair_seg_equals_multpair": ok_seg, "mixed_vs_pure_pair_rows": d_pair, "mixed_vs_full_rows": d_full, "rel_pair": r_pair, "rel_full": r_full, "gain_grad_norm": gg2,
                  "mem_zero": mz2}
-    out["g2_pass"] = ok_seg and (d_pair < 1e-4 or r_pair < 1e-6) and (d_full < 1e-4 or r_full < 1e-6) and out["g2"]["index_rows_with_grad"] == list(range(3, 3 + 12)) and not mz2; ok &= out["g2_pass"]
+    out["g2_pass"] = ok_seg and (d_pair < 1e-4 or r_pair < 1e-6) and (d_full < 1e-4 or r_full < 1e-6) and gg2 > 0 and not mz2; ok &= out["g2_pass"]
     # (3) + (4)
     sp = os.environ.get("GATE177_OUT", os.path.join(ROOT, "boxes", "runs_fsq", "s177_gates")); res = {}; env = dict(os.environ, OMP_NUM_THREADS="3")
     common_n = ["--arm", "inject", "--think_k", "10", "--seed", "1", "--steps", "3", "--sched_scale", "0.002", "--log_every", "1", "--bs", "8", "--per_n", "2", "--eval_bs", "8",

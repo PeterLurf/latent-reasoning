@@ -180,7 +180,7 @@ def load_model(run, dev, init=False):
         from boxes.inject169 import Inject
         assert a.get("arm") == "inject"; kind, m = "inject", Inject(g, 6, a.get("mem_write", "top"))
         if a.get("pass_index"):                                             # §177 (a): the index table (rows from args; trained values from model.pt)
-            m.pidx = torch.nn.Embedding(int(a["pass_index"]), 768); torch.nn.init.zeros_(m.pidx.weight)
+            m.enable_pass_index()
     m = m.to(dev)
     if init:
         with torch.no_grad():
