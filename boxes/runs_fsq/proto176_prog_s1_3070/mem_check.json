@@ -1,0 +1,17 @@
+{
+ "checks": [
+  {
+   "micro": 1,
+   "peak_gib": 5.605566024780273
+  },
+  {
+   "micro": 2,
+   "peak_gib": 3.2753043174743652
+  }
+ ],
+ "micro": 2,
+ "peak_gib": 3.2753043174743652,
+ "train_shape": "4x5",
+ "eval_shape": "4x16 at K' = 64",
+ "train_passes": "PROG 8 no-grad + 8 grad"
+}
