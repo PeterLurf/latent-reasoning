@@ -33,7 +33,7 @@ def main():
     amp = None if (a.get("fp32") or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
     m = I.Inject(s5.load_gpt2(dev), 6, a.get("mem_write", "top")).to(dev)
     if a.get("pass_index"):
-        m.pidx = torch.nn.Embedding(int(a["pass_index"]), 768).to(dev)
+        m.enable_pass_index()
     m.load_state_dict(torch.load(os.path.join(run, "model.pt"), map_location=dev, weights_only=False)); m.eval()
     bench = a.get("bench") or os.path.join("bench", "data", "mult_4x4_test.txt"); teA, teB = load_bench(bench if os.path.isabs(bench) else os.path.join(ROOT, bench))
     teA, teB = teA[:a.get("test_n", 1000)], teB[:a.get("test_n", 1000)]; n = a.get("ext_n", 1000); bs = a.get("eval_bs", 250)

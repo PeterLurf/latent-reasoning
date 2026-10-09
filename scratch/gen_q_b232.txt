@@ -1,0 +1,4 @@
+# THEORY §177 (f) kmatch cost (note 177-4 / Audit): same-host timing on one RTX 3090, 200 steps each: §170 INJECT K8 --fast_add (reference) and kmatch (--k_window 0,2, n-bucketed)
+# P=1
+boxes/runs_fsq/s177_timing_k8 boxes.nested170 --arm inject --think_k 8 --time_steps 200 --auto_micro --fast_add
+boxes/runs_fsq/s177_timing_kmatch boxes.nested170 --arm inject --think_k 10 --k_window 0,2 --time_steps 200 --auto_micro --fast_add

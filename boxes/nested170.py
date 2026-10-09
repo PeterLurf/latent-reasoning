@@ -708,7 +708,12 @@ def main():
             for t in range(1, a.n_max_train + 2):                           # skip pass t at K' = n + 1, for the n with t <= n + 1
                 its_ = [it for it in TE if it["n"] + 1 >= t]; Ak = kn_answers(its_, lambda n_: n_ + 1, skip=(t,)); Nk = np.array([it["n"] for it in its_])
                 s7["skip_pass"][str(t)] = {str(n): float((Ak == np.array([it["t"] for it in its_]))[Nk == n].mean()) for n in sorted(set(Nk.tolist()))}
-            ll = [v for v in loss_log if v is not None]; tl = ll[-max(2, len(ll) // 10):]; h_ = len(tl) // 2
+            ll = []                                                         # note 177-4: the whole log.jsonl history (survives --resume), not the in-memory list
+            for l_ in open(os.path.join(a.out, "log.jsonl")):
+                r_ = json.loads(l_)
+                if r_.get("loss") is not None and "step" in r_:
+                    ll.append(r_["loss"])
+            tl = ll[-max(2, len(ll) // 10):]; h_ = len(tl) // 2
             s7["train_loss_tail"] = {"first_half": float(np.mean(tl[:h_])) if h_ else None, "second_half": float(np.mean(tl[h_:])) if tl else None, "n_logged": len(tl)}
             res["s177"] = s7; json.dump(kcount, open(os.path.join(a.out, "kmatch_counts.json"), "w", newline="\n"), indent=1)
         if a.aux_step and K:                                                # §175 (the aux is dropped at test; every §170 field comes from the main decoder)

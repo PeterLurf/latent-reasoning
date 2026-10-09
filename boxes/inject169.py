@@ -57,24 +57,34 @@ def dec_prefix(A, B):
 
 
 class Inject(FixedChunk):
-    # §177 (a): self.pidx = nn.Embedding(rows, 768), zero-initialised, set by main (a registered submodule; absent = §169). No class-level default:
+    # §177 (a) / (d), note 177-4: e_t = g * s~(t) on the think token; g = self.pgain (a zero-initialised 768-vector, registered by enable_pass_index;
+    # absent = §169), s~(t) = the standard sinusoidal encoding of the absolute pass t rescaled to the mean ||wte row|| (self.pscale). No class-level default:
     # a class attribute would shadow the submodule (nn.Module.__getattr__ is only consulted after normal lookup fails; gate177 caught it).
-    p_off = 0                                                               # §177 (a): this batch's offset o (0 at test)
+    p_off = 0                                                               # unused since note 177-4 (no offset); kept so old call sites stay valid
+
+    def enable_pass_index(self):
+        """note 177-4: register g (zeros, so step 0 is §169 bitwise) and the scale mean_r ||wte_r|| (computed once, from the pretrained wte)."""
+        dev = self.g.w("wte.weight").device; self.pgain = torch.nn.Parameter(torch.zeros(768, device=dev))
+        self.register_buffer("pscale", self.g.w("wte.weight").detach().float().norm(dim=1).mean().reshape(()))
+
+    def pass_vec(self, t):
+        """s~(t) * g: the sinusoidal encoding of the absolute pass t (d = 768, base 10000), rescaled to norm pscale, times the gain."""
+        i = torch.arange(0, 768, 2, device=self.pgain.device, dtype=torch.float32); ang = t / torch.pow(10000.0, i / 768)
+        s_ = torch.stack([torch.sin(ang), torch.cos(ang)], 1).reshape(768); return self.pgain * (s_ / s_.norm() * self.pscale)
 
     def write(self, S, ids, t=None):
-        """one think pass; §177 (a): pass t (1-based, global) adds pidx[o + t] to the think token's input (the last position, " .")."""
-        if getattr(self, "pidx", None) is None:
+        """one think pass; §177 (note 177-4): pass t (1-based, absolute) adds g * s~(t) to the think token's input (the last position, " .")."""
+        if getattr(self, "pgain", None) is None:
             return super().write(S, ids)
-        r_ = self.p_off + t; assert t is not None and 0 <= r_ < self.pidx.num_embeddings, "§177 (a): o + t must stay inside the index table"
-        x = self.g.embed(ids); x = torch.cat([x[:, :-1], (x[:, -1] + self.pidx.weight[r_].to(x.dtype))[:, None]], 1)
+        assert t is not None and t >= 1, "§177: the absolute pass number"
+        x = self.g.embed(ids); x = torch.cat([x[:, :-1], (x[:, -1] + self.pass_vec(t).to(x.dtype))[:, None]], 1)
         return DM.gpt_forward_mem(self.g, x, self.mem, S)[1]
 
     def write_mixed(self, S, ids, last, mask, t):
         """§177 (d): right-padded per-item inputs (ids incl. EOT), the index added at each row's last real position `last` (B,), padded writes masked."""
         x = self.g.embed(ids)
-        if getattr(self, "pidx", None) is not None:
-            r_ = self.p_off + t; assert 0 <= r_ < self.pidx.num_embeddings
-            oh = Fn.one_hot(last, x.shape[1]).to(x.dtype); x = x + oh[:, :, None] * self.pidx.weight[r_].to(x.dtype)[None, None, :]
+        if getattr(self, "pgain", None) is not None:
+            oh = Fn.one_hot(last, x.shape[1]).to(x.dtype); x = x + oh[:, :, None] * self.pass_vec(t).to(x.dtype)[None, None, :]
         return DM.gpt_forward_mem(self.g, x, self.mem, S, mask=mask)[1]
 
     def think_fade(self, S, A, B, p, rng_f, t0=0):
@@ -211,7 +221,7 @@ def main():
     ap.add_argument("--rand_k", default="", help="§176 RK: 'rbar,sigma,cap' -> per batch K = 1 + Poisson(e^tau), tau ~ N(log rbar - sigma^2 / 2, sigma), K <= cap")
     ap.add_argument("--prog", default="", help="§176 PROG: 'k1max,k2max' -> per batch k1 ~ U{0..k1max} passes without grad, then k2 ~ U{1..k2max} with grad")
     ap.add_argument("--fade", default="", help="§177 (d): 'start,end' steps of the pair -> full-text ramp p 0 -> 1 (requires --think_k 4n)")
-    ap.add_argument("--pass_index", type=int, default=0, help="§177 (a): rows of a learned pass-index table (0 = off); training offset o ~ U{0..64 - K}")
+    ap.add_argument("--pass_index", default="", help="§177 (note 177-4): 'sin_gain' = g * the rescaled sinusoid of the absolute pass on the think token ('' = off)")
     ap.add_argument("--bptt_last", default="all", help="§176 RK: 'all' or n (backprop through the last n passes); auto_micro falls back to 8 if K = cap does not fit")
     ap.add_argument("--bench", default=os.path.join("bench", "data", "mult_4x4_test.txt")); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); a.arm = "inject"; os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale; FADE = a.think_k == "4n"; K = 16 if FADE else int(a.think_k); DM.FAST_ADD = bool(a.fast_add)
@@ -221,9 +231,8 @@ def main():
     teA, teB = load_bench(a.bench if os.path.isabs(a.bench) else os.path.join(ROOT, a.bench))
     EXCL = {(x.tobytes(), y.tobytes()) for x, y in zip(teA, teB)} | {(y.tobytes(), x.tobytes()) for x, y in zip(teA, teB)}; teA, teB = teA[:a.test_n], teB[:a.test_n]
     m = Inject(s5.load_gpt2(dev), 6, a.mem_write).to(dev)
-    if a.pass_index:                                                        # §177 (a): zero-initialised, so step 0 is §169 exactly
-        m.pidx = torch.nn.Embedding(a.pass_index, 768).to(dev); torch.nn.init.zeros_(m.pidx.weight)
-    rng_o = np.random.default_rng(17700 + a.seed)                           # §177 (a): the offset stream (unused without --pass_index)
+    if a.pass_index:                                                        # note 177-4: g = 0 at init, so step 0 is §169 exactly
+        assert a.pass_index == "sin_gain"; m.enable_pass_index()
     RK = [float(x_) for x_ in a.rand_k.split(",")] if a.rand_k else None; PG = [int(x_) for x_ in a.prog.split(",")] if a.prog else None
     assert not (RK and PG); rng_k = np.random.default_rng(17600 + a.seed); k_hist = {}; kwin = []   # §176: K draws on their own stream (independent of n)
     KEVAL = max(64, 4 * K) if (RK or PG) else 4 * K
@@ -310,8 +319,6 @@ def main():
         c = int(rng.integers(1, cmax(step / sc) + 1)); A, B = draw(rng, a.bs, SHM, EXCL); opt.zero_grad(); tot = 0.0; ch = a.bs // a.micro; kk = draw_k()
         if FADE:
             p_now[0] = p_at(step); kk = (0, A.shape[1] * B.shape[1])         # §177 (d): K = 4n this batch
-        if a.pass_index:                                                    # o uses this batch's actual pass count; gate: o + K <= 64 < rows (Audit)
-            m.p_off = int(rng_o.integers(0, 64 - (kk[0] + kk[1]) + 1)); assert m.p_off + kk[0] + kk[1] <= 64 < a.pass_index
         for k_ in range(a.micro):
             sl = slice(k_ * ch, (k_ + 1) * ch)
             with amp_ctx(amp):
@@ -385,7 +392,8 @@ def main():
         K8_ = 32 if FADE else K; sz8 = s["acc_by_size_kprime"]["4x8"]
         res["s177"] = {"acc_by_kprime": {"0": s["acc_by_kprime"]["0"], "1": s["acc_by_kprime"]["1"], "K": s["acc_by_kprime"][str(K)], "2K": s["acc_by_kprime"][str(2 * K)]},
                        "ext_4x8_by_kprime": {"K": sz8[str(K8_)], "2K": sz8[str(2 * K8_)]}, "skip_pass": s["skip_pass"], "rule_k": "4n" if FADE else K,
-                       "pass_index_norm_by_row": [round(float(v), 5) for v in m.pidx.weight.detach().float().norm(dim=1).cpu().tolist()]}
+                       "pass_index": {"gain_norm": float(m.pgain.detach().float().norm()), "scale": float(m.pscale),
+                                      "vec_norm_by_pass": {str(t): float(m.pass_vec(t).detach().float().norm()) for t in (1, 2, 4, 8, 16, 32, 64)}}}
         if FADE:                                                            # note 177-3: acc_scaffold_12k (p 0, pair inputs, K = 4n); acc_by_p at the steps p reaches
             pe = p_at(a.steps)
             res["s177"].update({"acc_scaffold_12k": (fade_ev.get("scaffold") or {}).get("acc"), "acc_by_p": {k_: v_["acc"] for k_, v_ in fade_ev.items() if k_ != "scaffold"},
