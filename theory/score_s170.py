@@ -115,6 +115,8 @@ def inject_run(arm, s, ns_):
     drops = [pk - v for v in sk.values() if v is not None] if pk is not None else []
     step_specific = bool(drops and max(drops) >= 0.2 and min(drops) <= 0.05)
     ser = x.get("serial") or {}; nul = x.get("serial_null")
+    if isinstance(nul, dict):                                               # the run writes {t, hybrid}: the random-donor hybrid share
+        nul = nul.get("hybrid")
     gaps = {t: v.get("hybrid") - nul for t, v in ser.items() if isinstance(v, dict) and v.get("hybrid") is not None and nul is not None and 1 <= int(t) < K}
     t_best = max(gaps, key=gaps.get) if gaps else None
     donor_share = {t: v.get("donor") for t, v in ser.items() if isinstance(v, dict)}

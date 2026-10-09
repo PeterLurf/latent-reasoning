@@ -41,6 +41,8 @@ def run(s, ns_):
     sk = [S170.pooled(v, ns_) for v in (x.get("skip_pass") or {}).values() if isinstance(v, dict)]
     drops = [pk - v for v in sk if v is not None] if pk is not None else []
     ser = x.get("serial") or {}; nul = x.get("serial_null")
+    if isinstance(nul, dict):                                               # the run writes {t, hybrid}
+        nul = nul.get("hybrid")
     gaps = {t: v.get("hybrid") - nul for t, v in ser.items() if isinstance(v, dict) and v.get("hybrid") is not None and nul is not None and 1 <= int(t) < K}
     ax = (r.get("s175") or {}).get("aux_acc_by_pass") or {}
     return {"status": "done", "pooled": pk, "deep": all((S170.acc(ab, n) or 0) >= 0.90 for n in range(ns_, 9)),
