@@ -10796,6 +10796,17 @@ subspace.**
 * **So "pass-invariant memory reads" is not established.** The read map (the slots' attention over input positions) is pass-invariant, but the memory and the answer are not.
   - The 1% relative-change test cannot separate the additive state's scale growth (about 1/t per pass) from a change of direction, so the mechanism stays open.
 
+**Note 173-1 (2026-10-09 09:41 EDT; fixed before any §169 / §170 K8 or §177 direction output is read; Audit's three conditions). "Moves the mechanism": a descriptive criterion for think-pass arms.**
+* **The yardstick (§171 addenda 3 / 3b).** The working serial models' consecutive-segment delta cosines have medians of 0.46–0.56 (all ≤ 0.66). The failed think passes sit at ≥ 0.958.
+* **DISTINCT-PASSES(run):** the mean consecutive-pass cosine of the flattened delta-head state is < 0.9 at each of passes 2, 3 and 4 (eval_s177_dir.json, 500 items at the arm's training-distribution size).
+* **PER-STEP-CONTENT(run):** a linear probe from the pass-t delta state recovers the step-t intermediate at ≥ 0.5 accuracy for some t ≥ 2. The probe is fit on 4,000 training-distribution items and tested on 1,000 test items.
+  - nested (§170 / §175): v_t, the t-th leftmost reduction's value (chance 1/11; note 170-2's targets, here from the delta state);
+  - multiplication: the in-progress column sum's units digit after pass t (§155's colsum_cls target; chance 0.1).
+* **MOVES-MECHANISM(run) = DISTINCT-PASSES and PER-STEP-CONTENT.** Cosine alone is not enough: under identical input an arm can turn its state trivially (a per-pass embedding, random-K noise) with no computation.
+  - It is reported together with the run's accuracy gain over K′ = 0.
+* **Calibration:** the same cosines are given for the arm's model at initialisation (the pretrained trunk with fresh memory parameters and γ forced to 1), so 0.9 can be judged against an untrained network's own pass-to-pass drift.
+* **Descriptive only.** It enters no section's rules. It applies to §169 / §170 K8 and K16, §175, §176 and §177's arms as they land.
+
 ## 174. MULTI-TASK: one INJECT model on long multiplication and nested expressions together, with no task flag (the user's "is the architecture task agnostic?" in its strongest form; roadmap step 1, task-agnostic input; pre-registered 2026-10-09 02:03 EDT, after Literature's check d122ba5c (`docs/LIT_S171_S174_2026-10-09.md`: new as the combination) and Audit's review, before any implementation or run; launches only after §169 K8 and §170 K8 slot 1 gate)
 
 **Why.**
