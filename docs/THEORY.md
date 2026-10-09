@@ -10538,6 +10538,15 @@ subspace.**
   - It is reported beside the main arm and does not enter §171's rules.
   - Dir `s171_k8blind_4x4_s1`; args as §171 plus blind_decoder true.
 
+**Note 171-2 (2026-10-09 02:31 EDT; before any §171 output is read; Audit's code review of readslots171). The decoder reads a detached input KV.**
+* **As implemented:** in K ≥ 1 arms the decoder attends to a detached copy of the input KV, so the answer loss does not train the input encoding directly. The encoding
+  is trained only through the slot passes. This supersedes §171's "gradients from every slot pass and the decoder flow into it". The encoding is still trained, not frozen.
+* **Effect:** the decoder cannot shape the input encoding for a direct read, so the answer must come through the memory. This strengthens the memory's necessity.
+  - THINK-NECESSARY (K′ = 0 / 1 and skip damage on the same K8 model) is unaffected.
+  - §164 DIRECT-MIX (trained end to end) remains the single-pass reference. A K8-vs-DIRECT contrast is therefore across encoding-training regimes, and is read as such.
+  - The BLIND cell (no input KV at the decoder) is unaffected.
+* Kept as built: no code change, and no rule changes.
+
 ## 172. PCCoT-PROBE: §149's battery on the GPT-2-small GSM8K latent state of the art (Jacobi-parallel latents), at release (eval only; Audit's 02:00 research lead; roadmap step 7, a C1-qualified GSM8K target; pre-registered 2026-10-09 01:54 EDT, after Literature's facts 2e5fe84a (`docs/LIT_PCCOT_PROBE_2026-10-09.md`) and Audit's review, before any run)
 
 **Why.**
