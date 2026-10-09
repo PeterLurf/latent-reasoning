@@ -10547,6 +10547,12 @@ subspace.**
   - The BLIND cell (no input KV at the decoder) is unaffected.
 * Kept as built: no code change, and no rule changes.
 
+**Note 171-3 (2026-10-09 02:32 EDT; before any §171 output is read). Note 171-2 is withdrawn: the decoder's input KV is live, as registered.**
+* Audit withdrew the review point behind 171-2, and Theory checked the code. In boxes/readslots171.py `train_loss`, one `kv = m.encode(...)` feeds both `m.think`
+  and `m.dec_logits`, with no detach.
+  - The only no_grad regions are the read-map capture and the slot initialisation (wte(" .") + noise, " ." = fixedchunk's PAD).
+* So the answer loss trains the input encoding, as §171 states. 171-2's description and its "effect" paragraph do not apply.
+
 ## 172. PCCoT-PROBE: §149's battery on the GPT-2-small GSM8K latent state of the art (Jacobi-parallel latents), at release (eval only; Audit's 02:00 research lead; roadmap step 7, a C1-qualified GSM8K target; pre-registered 2026-10-09 01:54 EDT, after Literature's facts 2e5fe84a (`docs/LIT_PCCOT_PROBE_2026-10-09.md`) and Audit's review, before any run)
 
 **Why.**
