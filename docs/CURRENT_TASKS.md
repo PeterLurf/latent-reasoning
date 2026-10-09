@@ -48,7 +48,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (07:45; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
+* **Theory (09:35; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
   - **The user (via Audit, 2026-10-09):**
     - ~01:30: "do another research pass. work on task agnosticness. approve go ahead on prosqa deep".
     - ~01:45: "keep working on the prosqa deep and the nested arithmetic … creating new methodologies and architectures for task agnostic".
@@ -67,14 +67,15 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
     - **§175 STEP-AUX:** §170 INJECT K8 plus a shared-trunk aux decoder emitting CoT step t from M_t (λ fades to 0 by 48k). It is gated on §170 K8 slot 1.
     - **§176 RAND-K:** random K (RK) or progressive (PROG) training on INJECT. C2 is read beyond the training support (K′ = 64), against fixed K8's post-hoc curve.
       Gated on §169 K8.
-  - **Scored tonight:**
-    - §172 PCCoT closed: it uses its latents and iterations; more iterations hurt; no localised step state.
-    - §166 closed: S5 SP = PLAIN (coverage not shown).
-    - §169 K0 slot 1 fails (0.003).
-    - **§170 n* = 3** (note 170-3, from DIRECT; score_s170.N_STAR_FIXED = 3, unblinded).
-    - §170 K0 s1 fails (pooled n 3..8 = 0.302).
-    - Pending: §170 K8 s1 (~6 h) and CoT s1 / s2 (local eval-only); §169 K8 / K16; §171; §165 K16 / K8; §168 DIRECT.
-    - §176 RK uses rand_k "7,0.5,32" (note 176-1).
+  - **Scored tonight / this morning:**
+    - **Closed:** §172 PCCoT (latents and iterations used; more iterations hurt); §166 (S5 SP = PLAIN).
+    - **§169:** K0 fails (0.003).
+    - **§170:** n* = 3 (170-3); K0 fails (0.302); TEXT-COT exact at n 1–8, two-seed mean 0.535 at 9–12.
+    - **Think-pass failures (memory unused):** §171 K8 / BLIND (gate closed; loss = single pass; direction settles by about 4 passes) and §165 K8.
+    - **§168:** DIRECT std s1 at chance (it memorises). NA pending.
+    - **§167:** the MIX s2 t = 4 partial (2070) read INTERMEDIATE, pending the random-model baseline. All six refits rerun on cloud (167-5 / 167-6; scorer best-k bug fixed).
+    - **Pending:** §169 K8 / K16, §170 K8 (trigger for the drafted §177 PASS-DISTINCT: (a) index, (d) fade + index, about $5), §165 K16, §168 NA.
+    - §176 RK uses rand_k "7,0.5,32" (176-1).
     - **Notes:**
       - 170-1: a held-out SERIAL pool; CoT reductions only.
       - 170-2: STEP-RECOVER on §170 K8.
@@ -91,7 +92,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
     - §167 refits;
     - §158 slots 2–4.
   - **Theory's tools:**
-    - scratchpad `watch_land_v7.sh` (s15[5-9] / s16x / s17x; eval / what_state / posthoc / anchor / das / halt; skips *_tim*);
+    - scratchpad `watch_land_v9.sh` (s15[5-9] / s16x / s17x; eval / what_state / posthoc / anchor / das / halt / eval_s17*_*; skips *_tim* and *partial*);
     - commit with a pathspec;
     - fix n* (§170) and D* (§168) in dated notes from DIRECT alone.
 
