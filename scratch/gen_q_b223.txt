@@ -1,0 +1,4 @@
+# THEORY §170 NESTED slot 1: DIRECT s2 + TEXT-COT s2 co-tenant on one RTX 3090 (P=2)
+# P=2
+boxes/runs_fsq/s170_direct_s2 boxes.nested170 --arm direct --seed 2 --auto_micro
+boxes/runs_fsq/s170_cot_s2 boxes.nested170 --arm textcot --seed 2 --auto_micro
