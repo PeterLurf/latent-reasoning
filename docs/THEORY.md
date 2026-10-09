@@ -10090,6 +10090,13 @@ run, RTX 3090 (or a local card if memory-checked).
   - The read: 4×4 / 5×5 (kept), 6×6 / 7×7 / 8×8 / 10×10, and the 8×8 per-column profile.
 * score_s166 reports the cell under `mix2d_descriptive`.
 
+**Note 167-2 (2026-10-08 20:02 EDT, before any §167 output; Experiments' build 174c9399 + 75f7dc04, Audit-approved). As implemented.**
+* **Gates passed:** k = D gives IIA equal to the whole-state swap's donor consistency (MULT t 4 / 8 / 12: 0.979 / 0.979 / 1.0 on a 48-pair check; S5 1.0), and the
+  counterfactuals equal the generator's later ground truth.
+* **RANDOM-MODEL as built:** the memory's W_o is randomised (the default 0 is inert); qkv / LN are pretrained-derived at init.
+  - It is **an untrained memory, not untrained features** (Audit's caveat), and is read as such.
+* **carry_matched / per_head_type / scaling are not built yet.** They are descriptive, and are reported as null until built.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
