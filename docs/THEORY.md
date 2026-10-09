@@ -256,6 +256,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 166 | STATE-COVERAGE: 1k-step post-training from passed / noise states vs a PLAIN post-train (2507.02782), on §162 LONG and §161 MIX | registered | **open** |
 | 167 | DAS-EDIT: learned-subspace interchange (DAS) on MIX / S5 memories, with illusion controls (C1 edit, C7) | registered | **open** |
 | 168 | DEEP-ProsQA (the user's go): a measured single-pass boundary on deep (3–14) shortcut-free ProsQA, then an INJECT latent arm | registered (step 1 running) | **open** |
+| 169 | INJECT (the user's "task agnosticness"): the full problem re-presented every think pass, the memory the only cross-pass state; K16 / K8 / K0 on §161's mix | registered | **open** |
 
 ## Live sections
 
@@ -10264,6 +10265,67 @@ subspace.**
   - eval.json: `acc_by_depth {"3".."14"}`, `acc_ctl`. args: arm "direct", data "std" / "na", steps 24000.
   - Dirs `s168_direct_{std,na}_s{1,2}`. Scorer: `theory/score_s168.py`, committed with this registration.
 * **Step 2:** after the boundary note and §169's registration.
+
+## 169. INJECT: the memory with the full problem re-presented in every think pass, a task-agnostic harness (the user's "work on task agnosticness" via Audit's research pass; pre-registered 2026-10-09 01:37 EDT, after Literature's check 6b019d1e (`docs/LIT_INJECT_2026-10-09.md`) and Audit's review, before any implementation or run)
+
+**Why.**
+* **§161's harness feeds long multiplication's own schedule,** so it shows serial computation given the algorithm, not task-agnostically.
+* **§165 (fixed chunks, then think passes on a filler)** shows the problem once. Its K0 and K16c1 are 0.0 so far, and the think passes cannot re-consult the operands.
+* **Looped transformers length-generalise on arithmetic with input injection,** re-adding the input every iteration:
+  - Fan 2409.15647: the no-injection ablation is worse;
+  - Huginn 2502.05171;
+  - fast-slow 2604.01577.
+  - A pretrained LM with a memory-only cross-pass state and full-text re-presentation is new (Literature).
+* **Audit's design point:** with the input re-shown every pass, the memory never needs to buffer operands, so 155-4's input-buffer shortcut is removed by construction.
+  - Each pass can compute only what one pass can (DIRECT-MIX reads 0.001 at 4×4).
+  - So if K passes are exact while K0 fails, **what crosses the passes must be computed partial results**: C1's content.
+
+**Design: §155 R's memory and recipe** (DeltaMem-R, top writes, γ 2k → 6k, pass-start reads, W_o fade-in) as the only cross-pass state.
+* **Think pass t** = [EOT, the full problem text (the bench's reversed-digit format: " a_1 … a_4 * b_1 … b_n"), " ."], with a fresh cache; it reads the memory, then writes.
+  - No schedule, no chunking, no flags.
+* **The decoder** = [EOT, the problem text, " ="] → the 4 + n answer digits (teacher-forced in training, greedy at test). It reads the memory and writes nothing.
+  - **K0 (no think passes) is therefore the same-harness single pass.**
+* **Training:** FINAL only, on §161's 4 × n mix (n ~ U{2..5} per batch; gen_operands minus the 4×4 bench test items), with 165-1's curriculum, 48k, RTX 3090.
+* **Arms:** K16, K8 and K0. Slot 1 each; EXACT at slot 1 opens s2 / s3 for K16 / K8.
+
+**Rules (fixed now; `theory/score_s169.py`).**
+* **EXACT(run):** 4×4 ≥ 0.99 at K′ = K. **LENGTH-GENERAL(arm):** ≥ 2 of 3 seeds EXACT with ext_4x8 ≥ 0.90.
+* **THINK-NECESSARY(run), C1:**
+  - 4×4 accuracy at K′ = 0 and K′ = 1 each ≤ 0.5× the accuracy at K;
+  - credited only with step-specific skip damage (some think pass t's skipped write drops accuracy by ≥ 0.2, and some by ≤ 0.05).
+  - **The C1 claim also needs** K0 slot 1 < 0.95 (the same-harness single pass) and §164 DIRECT-MIX mean 4×4 < 0.95.
+* **MORE-THINKING (C2 past the trained K; a descriptive reading):** ext_4x8 at K′ = 2K ≥ ext_4x8 at K + 0.05.
+* **Readings:**
+  - **A K arm LENGTH-GENERAL and THINK-NECESSARY, with K0 and DIRECT-MIX failing:** task-agnostic latent computation. The memory carries computed partial results
+    across passes, with no schedule, chunking or flags.
+  - **Exact but not length-general:** task-agnostic exactness only.
+  - **Neither K arm exact:** input re-presentation alone does not suffice at 48k.
+  - **K0 exact:** a single pass with an empty memory solves it, so there is no C1 claim.
+* **Descriptive:**
+  - **accuracy against K′ by problem size** (4×4 / 4×6 / 4×8 / 4×16 at K′ ∈ {0, 1, K/2, K, 2K, 4K}; Fan ties loops to size) (`s169.acc_by_size_kprime`);
+  - **in-progress column units decoded from the memory after think passes** K/4, K/2, 3K/4 and K (155-4's colsum_cls; `s169.inprog_by_pass`): which columns are
+    computed when. Operand probes are uninformative here, since the operands are always in context.
+  - skip_pass;
+  - compute against TC-M / ICoT-SI at 4×4 and 4×8 (passes = K + the decoder's 4 + n).
+* **Theory's prediction:** K16 exact on 4×4 and K0 failing; length uncertain.
+* **Use in §168:** INJECT is the planned harness for DEEP-ProsQA's latent arm (graph + question re-presented every think pass), fixed after §168's boundary note.
+
+**Placement.**
+* Slot 1 of K16 / K8 / K0, about $2.5 (48k, 3090s). s2 / s3 of passing arms, about $3.
+* **Implementation (Experiments):** an `--arm inject` path in boxes/fixedchunk.py (or a sibling), reusing its decoder / memory plumbing, with the full problem text per
+  think pass.
+  - eval.json: test_acc, ext_4x6 / 4x7 / 4x8 / 4x16 (§161's seeds), compute;
+  - s169: {acc_by_kprime, ext_4x8_by_kprime, acc_by_size_kprime, skip_pass, inprog_by_pass, compute_4x8}.
+  - args: arm "inject", think_k, shape_mix "2,3,4,5", steps 48000, mem_write "top", write_mix_start / end.
+* **Gates:**
+  - step-0 function preservation;
+  - gradflow through ≥ 2 think passes;
+  - the decoder writes nothing;
+  - every think pass sees the identical full problem text;
+  - smoke_plain;
+  - Audit's diff review;
+  - memcheck at 4×5 training and the 4×16 eval at 4K.
+* Dirs `s169_{k16,k8,k0}_4x4_s{seed}`. Scorer: `theory/score_s169.py`, committed with this registration.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
