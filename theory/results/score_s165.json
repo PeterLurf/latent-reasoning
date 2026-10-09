@@ -2,7 +2,116 @@
  "k16": {
   "runs": {
    "1": {
-    "status": "open"
+    "status": "done",
+    "test_4x4": 0.0,
+    "exact": false,
+    "ext_4x8": 0.0,
+    "length_general": false,
+    "ext": {
+     "ext_4x6": 0.0,
+     "ext_4x7": 0.0,
+     "ext_4x8": 0.0,
+     "ext_4x16": 0.0
+    },
+    "acc_by_kprime": {
+     "0": 0.0,
+     "1": 0.0,
+     "8": 0.0,
+     "16": 0.0,
+     "32": 0.0,
+     "64": 0.0
+    },
+    "ext_4x8_by_kprime": {
+     "16": 0.0,
+     "32": 0.0,
+     "64": 0.0
+    },
+    "think_necessary": false,
+    "removal_drop": false,
+    "skip_step_specific": false,
+    "more_thinking": false,
+    "digit_emergence": {
+     "after_input": {
+      "1": 1.0,
+      "2": 0.409,
+      "3": 0.143,
+      "4": 0.117,
+      "5": 0.094,
+      "6": 0.112,
+      "7": 0.128,
+      "8": 0.609
+     },
+     "after_pass_1": {
+      "1": 0.842,
+      "2": 0.399,
+      "3": 0.144,
+      "4": 0.097,
+      "5": 0.102,
+      "6": 0.103,
+      "7": 0.12,
+      "8": 0.648
+     },
+     "after_pass_4": {
+      "1": 0.999,
+      "2": 0.404,
+      "3": 0.15,
+      "4": 0.102,
+      "5": 0.102,
+      "6": 0.096,
+      "7": 0.122,
+      "8": 0.656
+     },
+     "after_pass_8": {
+      "1": 1.0,
+      "2": 0.406,
+      "3": 0.148,
+      "4": 0.089,
+      "5": 0.094,
+      "6": 0.114,
+      "7": 0.125,
+      "8": 0.655
+     },
+     "after_pass_12": {
+      "1": 1.0,
+      "2": 0.403,
+      "3": 0.154,
+      "4": 0.109,
+      "5": 0.092,
+      "6": 0.096,
+      "7": 0.121,
+      "8": 0.658
+     },
+     "after_pass_16": {
+      "1": 1.0,
+      "2": 0.403,
+      "3": 0.153,
+      "4": 0.091,
+      "5": 0.106,
+      "6": 0.108,
+      "7": 0.124,
+      "8": 0.657
+     }
+    },
+    "skip_pass": {
+     "1": 0.0,
+     "4": 0.0,
+     "8": 0.0,
+     "12": 0.0,
+     "16": 0.0
+    },
+    "compute": {
+     "flops": 10256644392.0,
+     "flops_trunk": 9978473472.0,
+     "flops_branch": 278170920.0,
+     "sequential_passes": 27,
+     "lm_head_rows": 8,
+     "tokens_processed": 55,
+     "chunks": 3,
+     "think_passes": 16,
+     "convention": "\u00a798 (boxes.core.Meter); every chunk / think pass fresh; decoder = na + nb KV-cached passes"
+    },
+    "compute_4x8": null,
+    "gpu": "NVIDIA GeForce RTX 3090"
    },
    "2": {
     "status": "open"
@@ -11,8 +120,8 @@
     "status": "open"
    }
   },
-  "gate": null,
-  "verdict": "pending (0 / 3 seeds)",
+  "gate": false,
+  "verdict": "gate closed (s1 0.0 < 0.99)",
   "think_necessary_all": false
  },
  "k8": {
@@ -329,5 +438,5 @@
   "think_necessary_all": false
  },
  "direct_mix_mean_4x4": 0.0025,
- "reading": "pending"
+ "reading": "neither K arm is exact on plain text: the harness's schedule is doing work; the claim stays 'structured-input latent computation'"
 }
