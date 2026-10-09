@@ -10615,6 +10615,15 @@ subspace.**
   - If not, the K8 memory recipe fails on this mix in both harnesses.
 * CHEAPER-EQUAL is not read (only one seed, and not exact).
 
+**§171 addendum (2026-10-09 09:06 EDT; descriptive; Audit's simpler reading). The passes add nothing in training either.**
+* K8's final training loss is 0.650, the mean of the last 20 logs over supervised answer digits. It matches single-pass models on the same data:
+  - §169 K0: 0.654;
+  - §164 DIRECT-MIX s1 / s2: 0.710 / 0.629 (its own loss convention).
+  - BLIND: 1.077.
+* With accuracy also equal to K0 / DIRECT, the K8 model never learned to use its passes. The memory still changes across passes (§173's halt readout), but not productively.
+* This is consistent with Goyal (2310.02226): extra passes added at fine-tune time get no learning signal for what to do.
+* **No mechanism is claimed.** The candidate mechanism (pass-invariant memory reads) is not supported (§173 on §171).
+
 ## 172. PCCoT-PROBE: §149's battery on the GPT-2-small GSM8K latent state of the art (Jacobi-parallel latents), at release (eval only; Audit's 02:00 research lead; roadmap step 7, a C1-qualified GSM8K target; pre-registered 2026-10-09 01:54 EDT, after Literature's facts 2e5fe84a (`docs/LIT_PCCOT_PROBE_2026-10-09.md`) and Audit's review, before any run)
 
 **Why.**
