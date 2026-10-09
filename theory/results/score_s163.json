@@ -232,8 +232,232 @@
    ]
   },
   "2": {
-   "status": "open",
-   "attempts": []
+   "status": "done",
+   "test_4x4": 1.0,
+   "test_5x5": 0.995,
+   "exact_id": true,
+   "kind": "BOUNDED",
+   "ext": {
+    "6x6": 0.963,
+    "7x7": 0.698,
+    "8x8": 0.187,
+    "10x10": 0.0,
+    "4x8": 0.987,
+    "8x4": 0.982
+   },
+   "ext_8x8_per_column": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.998,
+    0.968,
+    0.8,
+    0.543,
+    0.5,
+    0.717,
+    0.859,
+    0.871,
+    0.882,
+    0.921,
+    0.986
+   ],
+   "serial_5x5": true,
+   "serial_4x4": true,
+   "inprogress_units_5x5": {
+    "after_pair6": 0.766,
+    "after_pair12": 0.983,
+    "after_pair18": 0.984
+   },
+   "state_carried_5x5": false,
+   "compute_5x5": {
+    "flops": 18652224912.0,
+    "passes": 26,
+    "vs_tcm": 0.8000155738147183,
+    "vs_icot": 3.2354923825201958
+   },
+   "compute_8x8": {
+    "flops": 46461812784.0,
+    "passes": 65
+   },
+   "latent_beats_text_5x5": true,
+   "value_range": {
+    "6x6": {
+     "p99_trained": 149.0,
+     "by_product_count": {
+      "1": {
+       "acc": 1.0,
+       "n": 2000
+      },
+      "2": {
+       "acc": 0.9985,
+       "n": 2000
+      },
+      "3": {
+       "acc": 0.9965,
+       "n": 2000
+      },
+      "4": {
+       "acc": 0.9935,
+       "n": 2000
+      },
+      "5": {
+       "acc": 0.991,
+       "n": 2000
+      },
+      "6": {
+       "acc": 0.998,
+       "n": 1000
+      }
+     },
+     "by_colsum": {
+      "within": {
+       "acc": 0.9975545338941603,
+       "n": 10223
+      },
+      "beyond": {
+       "acc": 0.9768339768339769,
+       "n": 777
+      }
+     },
+     "by_item_max": {
+      "within": {
+       "acc": 0.989010989010989,
+       "n": 637
+      },
+      "beyond": {
+       "acc": 0.9173553719008265,
+       "n": 363
+      }
+     }
+    },
+    "7x7": {
+     "p99_trained": 149.0,
+     "by_product_count": {
+      "1": {
+       "acc": 0.9935,
+       "n": 2000
+      },
+      "2": {
+       "acc": 0.9905,
+       "n": 2000
+      },
+      "3": {
+       "acc": 0.9855,
+       "n": 2000
+      },
+      "4": {
+       "acc": 0.9775,
+       "n": 2000
+      },
+      "5": {
+       "acc": 0.928,
+       "n": 2000
+      },
+      "6": {
+       "acc": 0.9195,
+       "n": 2000
+      },
+      "7": {
+       "acc": 0.96,
+       "n": 1000
+      }
+     },
+     "by_colsum": {
+      "within": {
+       "acc": 0.9779846849982596,
+       "n": 11492
+      },
+      "beyond": {
+       "acc": 0.8687002652519894,
+       "n": 1508
+      }
+     },
+     "by_item_max": {
+      "within": {
+       "acc": 0.8704103671706264,
+       "n": 463
+      },
+      "beyond": {
+       "acc": 0.5493482309124768,
+       "n": 537
+      }
+     }
+    },
+    "8x8": {
+     "p99_trained": 149.0,
+     "by_product_count": {
+      "1": {
+       "acc": 0.9605,
+       "n": 2000
+      },
+      "2": {
+       "acc": 0.941,
+       "n": 2000
+      },
+      "3": {
+       "acc": 0.9355,
+       "n": 2000
+      },
+      "4": {
+       "acc": 0.9295,
+       "n": 2000
+      },
+      "5": {
+       "acc": 0.8585,
+       "n": 2000
+      },
+      "6": {
+       "acc": 0.749,
+       "n": 2000
+      },
+      "7": {
+       "acc": 0.7555,
+       "n": 2000
+      },
+      "8": {
+       "acc": 0.8,
+       "n": 1000
+      }
+     },
+     "by_colsum": {
+      "within": {
+       "acc": 0.9053795957345218,
+       "n": 12566
+      },
+      "beyond": {
+       "acc": 0.6910435497124076,
+       "n": 2434
+      }
+     },
+     "by_item_max": {
+      "within": {
+       "acc": 0.4106583072100313,
+       "n": 319
+      },
+      "beyond": {
+       "acc": 0.08223201174743025,
+       "n": 681
+      }
+     }
+    }
+   },
+   "test_4x4_at_24k": 0.98,
+   "fallback_trigger": {
+    "loss_jumps": [],
+    "n_nonfinite": 0,
+    "fires": false,
+    "grad_floor_spikes_descriptive": 174
+   },
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "seed": 2,
+   "attempts": [
+    {
+     "seed": 2,
+     "plateau": false
+    }
+   ]
   },
   "3": {
    "status": "done",
@@ -469,6 +693,6 @@
    ]
   }
  },
- "verdict": "pending (2 / 3 seeds)",
- "reading": "pending (2 / 3 seeds)"
+ "verdict": "BOUNDED",
+ "reading": "bounded 2-D generalisation (6x6 holds, 8x8 does not); the decay profile is the result"
 }
