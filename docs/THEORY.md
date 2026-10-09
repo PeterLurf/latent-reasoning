@@ -11153,6 +11153,13 @@ how many think passes run in training.
 * The fixed-K post-hoc curve (eval_s176_ref.json) still runs on §169 K8's models (descriptive).
 * score_s176 is updated.
 
+**§176 interim (2026-10-09 14:34 EDT; s176_prog_s1, RTX 3090, 48k, fast_add, full backprop; score_s176 under note 176-3). PROG does not rescue INJECT: 0.0 at 4×4 and every extension, at every K′ (0–64) and every skipped write.**
+* k₁ / k₂ were sampled uniformly as registered (k_hist).
+* **173-1 (descriptive):** delta cosine 0.866 / 0.976 / 0.995 at passes 2 / 3 / 4, against 0.947 / 0.983 / 0.993 at initialisation. Pass 2 moved off initialisation; passes 3–4 did not.
+* The local 8k preview (proto176_prog_s1_3070, descriptive) also read 0.0.
+* RK is pending (b230).
+* **A scorer fix, disclosed (no rule change):** newer runs write think_k as a string ("8"), so score_s169 / s170 / s175 / s176 / s177 now compare arguments as strings. PROG had first read "error" for that reason. Already-read cells are unchanged.
+
 ## 177. PASS-DISTINCT: making identical-input think passes trainable, one registration with arms (pre-registered 2026-10-09 10:18 EDT, after Literature's checks 90486a9b (SCHEDULE-FADE) and 483195dc (arms f / g) and Audit's review, before any implementation or run; **cloud launches gated on the trigger: §169 K8 and §170 K8 both fail**; local 8k-step previews run now and are read by no rule)
 
 **Why.**

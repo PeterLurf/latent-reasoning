@@ -48,7 +48,7 @@ def run(arm, s):
     if a.get("mem_check") or a.get("train_n") or str(a.get("device", "")).startswith("cpu"):
         return {"status": "smoke"}
     base = dict(S169.BASE, think_k=8, **ARMS[arm])
-    bad = {k: a.get(k) for k, v in base.items() if a.get(k) != v}
+    bad = {k: a.get(k) for k, v in base.items() if str(a.get(k)) != str(v)}   # type-tolerant: newer code writes think_k as a string
     if bad:
         ERRORS.append((d, bad)); return {"status": "error", "error": bad}
     x = r.get("s169") or {}; bk = x.get("acc_by_kprime") or {}; e8 = x.get("ext_4x8_by_kprime") or {}
