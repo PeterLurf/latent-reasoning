@@ -52,11 +52,18 @@ def point_kind(pt):
     return "INTERMEDIATE", best
 
 
+def k_min_q(pt):
+    """note 167-5 (descriptive): the smallest fitted k <= 64 with held-out IIA >= 0.8 and IIA - unchanged share >= 0.5 (compactness)."""
+    un = pt.get("unchanged_target_share")
+    qs = sorted(int(k) for k, v in (pt.get("k") or {}).items() if int(k) <= 64 and (v or {}).get("iia") is not None and v["iia"] >= 0.8 and un is not None and v["iia"] - un >= 0.5)
+    return qs[0] if qs else None
+
+
 def model(d):
     r = load(d)
     if r is None:
         return {"status": "pending"}
-    return {"status": "done", "points": {t: dict(zip(("kind", "best"), point_kind(pt)), iia={k: (v or {}).get("iia") for k, v in (pt.get("k") or {}).items()}, iia_train={k: (v or {}).get("iia_train") for k, v in (pt.get("k") or {}).items()},
+    return {"status": "done", "points": {t: dict(zip(("kind", "best"), point_kind(pt)), k_min_qualifying=k_min_q(pt), iia={k: (v or {}).get("iia") for k, v in (pt.get("k") or {}).items()}, iia_train={k: (v or {}).get("iia_train") for k, v in (pt.get("k") or {}).items()},
                                               unchanged=pt.get("unchanged_target_share"), necessity=pt.get("necessity_drop"), necessity_random=pt.get("necessity_random"), random_model=pt.get("random_model"),
                                               random=pt.get("random_subspace"), shuffled=pt.get("shuffled_targets"), var_share=pt.get("subspace_var_share"))
                                          for t, pt in (r.get("points") or {}).items()}}
