@@ -11245,6 +11245,22 @@ how many think passes run in training.
 * **The SCAFFOLD gate's field** is `s177.acc_scaffold_12k`: 4×4 accuracy at step 12k, at p = 0, with pair inputs, at the rule K = 4n. It replaces 177-2's `acc_by_p["0"]`.
   - If it is missing, score_s177 reads (d) as "pending (scaffold field missing)" and reads none of its rules. It is never a silent None-read.
 
+**Note 177-4 (2026-10-09 11:36 EDT; pre-data: before any (a) / (d) preview or cell; Audit's diff review of e6297183). The pass index is absolute; (f)'s loss tail is resume-safe; (f) is timed.**
+* **The registered randomised offset removed the pass identity that (a) exists to give.**
+  - In training pass t read row o + t with o ~ U{0..64 − K} per batch, so a given row is pass 1 in one batch and pass 8 in another.
+  - Each pass sees only its own row, so the offset relative to pass 1 could reach it only through the memory, the channel that goes unused.
+    In Abacus and §161's IDX, positions attended together share the offset, which makes relative position computable. Here they do not.
+  - The trained index therefore carried no step information. At test (o = 0) the lowest rows were also the least trained.
+* **Fixed: an absolute pass index, after Universal Transformers.** Pass t's think token gets e_t = g ⊙ s(t), where:
+  - s(t) is the fixed 768-d sinusoidal encoding of the absolute pass t (no offset);
+  - g is a learned per-dimension gain initialised at zero, so step 0 is §169 exactly.
+  - s(t) is defined for every t, so C2 at K′ > K is defined. Passes beyond the trained K are out of distribution, which is reported as such.
+  - (d) uses the same index. Its rule K = 4n trains t ≤ about 20 (4×5). ext_4x8 at K = 32 then reads s(t) for t ≈ 21–32, beyond training, and is stated so.
+  - The o + K ≤ 72 gate and the 72-row table are withdrawn. args: pass_index "sin_gain".
+* **(f)'s train_loss_tail** is computed from log.jsonl at eval, not from the in-memory loss log, because the in-memory log restarts empty on --resume and cloud cells are resumable. log.jsonl is appended across resumes and holds the whole history.
+* **(f)'s cost:** bucketing by n turns each 64-item step into about 8 small forwards. --time_steps on a 3090 comes before launch, and the about-$2.5 projection is updated if s / step is materially above §170 K8's.
+* **Order:** the (a) / (d) previews start only after this note and the code change. The (f) preview may start after the loss-tail fix.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
