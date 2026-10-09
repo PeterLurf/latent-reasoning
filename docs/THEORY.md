@@ -261,6 +261,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 171 | READ-SLOTS (task-agnostic architecture): the input encoded once; each think pass 8 learned slots read it and write DeltaMem-R; K8 on §161's mix; head to head with INJECT (CHEAPER-EQUAL); read map / entropy (C7) | registered | **open** |
 | 172 | PCCoT-PROBE (eval only): §149's battery on whynlp/pccot-gpt2 (GSM8K 49.48 at release); LATENTS-USED, ITERATIONS-USED (T' = 0 = pause), Jacobi RHO, descriptive SERIAL | registered | **open** |
 | 173 | CONV-HALT (eval only; C5, halting): decode when the answer settles (unchanged across 2 consecutive passes, cap 2K) on the think-pass arms (§165 / §169 / §170 / §171); HALT-EQUAL + ADAPTIVE | registered | **open** |
+| 174 | MULTI-TASK (the user's task agnosticness, strongest form): one INJECT K8 model on mult + nested with no task flag; MATCH vs single-task K8 (BUDGET vs INTERFERENCE via 24k evals), THINK-NECESSARY per task, cross-task swap | registered (gated on §169 / §170 K8 slot 1) | **open** |
 
 ## Live sections
 
@@ -10526,6 +10527,17 @@ subspace.**
   - smoke_plain; Audit's diff review; memcheck at 4×5 training and the 4×16 eval at 2K.
 * Dirs `s171_k8_4x4_s{seed}`. Scorer: `theory/score_s171.py`, committed with this registration.
 
+**Note 171-1 (2026-10-09 02:03 EDT; before any §171 implementation or run; Literature's check d122ba5c (new as scoped) and Audit). The decoder sees the input by design; a BLIND cell.**
+* **Literature's flag** ("the decoder must not see the input") **is answered by the design.**
+  - The decoder seeing the input is what makes K0 = DIRECT, and DIRECT on the same data is measured and fails (§164 DIRECT-MIX 0.001 / 0.004).
+  - C1 rests on that, on K-removal and on step-specific skip damage. Whatever the decoder can do with the input alone is already measured, so the memory has to carry the computed
+    partial results (the same logic as INJECT).
+* **Slot initialisation** is already from a real token embedding (wte(" .") + noise), as Literature advises over random queries.
+* **BLIND (a descriptive cell, slot 1, about $0.6; Audit's option):** the same K8 model, except the decoder sees only [EOT, " ="] and the memory, with no input KV.
+  - **EXACT-BLIND (4×4 ≥ 0.99)** means the memory carries the whole answer: a stronger C1 / C7 statement.
+  - It is reported beside the main arm and does not enter §171's rules.
+  - Dir `s171_k8blind_4x4_s1`; args as §171 plus blind_decoder true.
+
 ## 172. PCCoT-PROBE: §149's battery on the GPT-2-small GSM8K latent state of the art (Jacobi-parallel latents), at release (eval only; Audit's 02:00 research lead; roadmap step 7, a C1-qualified GSM8K target; pre-registered 2026-10-09 01:54 EDT, after Literature's facts 2e5fe84a (`docs/LIT_PCCOT_PROBE_2026-10-09.md`) and Audit's review, before any run)
 
 **Why.**
@@ -10608,6 +10620,66 @@ subspace.**
   `halt_fixed_k {size: acc}` (the same items at fixed K).
   - Dirs: the host runs' own (eval.json `halt`), or `eval_s173_halt.json` for post-hoc runs.
 * Scorer: `theory/score_s173.py`, committed with this registration.
+
+## 174. MULTI-TASK: one INJECT model on long multiplication and nested expressions together, with no task flag (the user's "is the architecture task agnostic?" in its strongest form; roadmap step 1, task-agnostic input; pre-registered 2026-10-09 02:03 EDT, after Literature's check d122ba5c (`docs/LIT_S171_S174_2026-10-09.md`: new as the combination) and Audit's review, before any implementation or run; launches only after §169 K8 and §170 K8 slot 1 gate)
+
+**Why.**
+* §169 and §170 each train one model per task, so they show a task-agnostic harness, not a task-agnostic model.
+* **The stronger claim:** one set of weights, one harness, and the same K think passes serve two structurally different serial tasks. The text alone identifies the task.
+  - The tasks: TC⁰ multiplication with column carries, and NC¹ nested evaluation with a stack-shaped dependency.
+* **What it adds:**
+  - whether the memory's use is shared or partitioned by task (a cross-task swap);
+  - whether serial use survives the mix (THINK-NECESSARY per task).
+
+**Design.** §169's INJECT harness exactly (think pass [EOT, problem text, " ."]; decoder [EOT, problem text, " ="]; §155 R's memory and recipe), K8, FINAL only.
+* **Data:** each batch is half §161's 4 × n mix and half §170's nested items. No task token.
+  - Each half follows its single-task recipe exactly, so MATCH compares like with like (Literature's curriculum flag):
+    - multiplication: n ~ U{2..5}, with 165-1's curriculum on its answer digits;
+    - nested: n ~ U{1..8}, no curriculum.
+* 48k steps, bs 64 (so each task sees half its single-task data), RTX 3090.
+* **Arm:** MT-K8 slot 1. Passing slot 1 opens s2 / s3.
+
+**Rules (fixed now; `theory/score_s174.py`).**
+* **MATCH(run):** both of the following.
+  - Multiplication: 4×4 accuracy ≥ §169 K8's seed-mean − 0.02, and ext_4x8 ≥ its seed-mean − 0.05.
+  - Nested: accuracy at every n from n* to 8 ≥ §170 K8's seed-mean at that n − 0.02 (n* from §170's note).
+* **THINK-NECESSARY(run), per task:** §169's form on 4×4, and 168-1's above-chance form (chance 1/11) on the nested pooled range, each with step-specific skip damage.
+* **TASK-AGNOSTIC(arm):** MATCH and THINK-NECESSARY on both tasks in ≥ 2 / 3 seeds.
+* **Gate:** read only if §169 K8 and §170 K8 are each DEEP / EXACT at slot 1 (the single-task references exist). Otherwise not launched.
+* **Descriptive:**
+  - **cross-task swap:** the memory after pass t of a nested item replaces a multiplication item's memory (and vice versa), t ∈ {2, 4, 6}. Reported as the recipient's accuracy against an in-task random-donor swap.
+    - **The length-matched null (Audit):** an in-task swap from a random same-task donor whose token length matches the cross-task donor's (± 2 tokens). It separates a
+      task-partitioned memory from a length mismatch.
+    - Near the in-task swaps means a shared, content-addressed use.
+    - Below the length-matched null means a task-partitioned or format-specific use.
+  - **task-decodability:** a linear probe of task identity from the memory after pass 1;
+  - accuracy against K′ per task (the curves are expected to differ; Huginn); §173's halting per task;
+  - **the per-task gradient cosine:** the cosine between the two tasks' loss gradients over all trained parameters, on one batch per task every 2k steps (`s174.grad_cos`).
+* **Prior** (Literature d122ba5c): Universal Transformers trained jointly on all 20 bAbI tasks with per-task ponder analysis; Huginn's task-dependent saturation;
+  and the CLRS generalist (one processor, 30 algorithms, per-algorithm encoders) matching single-task "so long as" each is learnable alone. A pretrained LM with a
+  memory-only cross-pass state, no task flag and per-task K curves is new, and the cross-task swap has no precedent.
+* **How a drop is read (fixed now):**
+  - **Budget control (Audit).** At 48k with a 50 / 50 mix, each task sees about half its single-task examples. So §169 K8 and §170 K8 also evaluate at step 24k
+    (`eval_24k.json`: the same accuracy fields; no checkpoint kept). That is the matched-examples reference.
+  - **A MATCH miss reads BUDGET** if the run is within the same margins of the single-task 24k seed-means on the task that missed. It reads **INTERFERENCE** if it falls below them.
+  - **NEAR-MATCH (descriptive):** a miss of ≤ 0.05 at 4×4 / pooled.
+  - PCGrad-style remedies (2001.06782) are a later arm, not this one.
+* **Readings:**
+  - **TASK-AGNOSTIC:** one model with one harness serves two serial tasks with no flag and no loss against single-task models.
+  - **MATCH fails on one task:** INTERFERENCE (below the matched-examples reference; the task that loses is the finding) or BUDGET (at it).
+  - **THINK-NECESSARY on one task only:** the mix lets one task fall back to a single pass.
+* **Theory's prediction:** MATCH within 0.02 on multiplication is likely (it is easier per step); nested is uncertain at half the data.
+
+**Placement.**
+* MT-K8 slot 1, about $1 (3090). s2 / s3 about $2.
+* **Implementation (Experiments):** a `--task mix` option in the inject path, interleaving the two generators per batch (half each).
+  - eval.json carries both tasks' fields: §169's `test_acc`, `ext_*`, `s169` block, and §170's `acc_by_n`, `s170` block.
+  - It adds `s174`: {cross_swap {t: {mult_recipient, nest_recipient}}, in_task_swap {t: {mult, nest}}, in_task_lenmatched_swap {t: {mult, nest}}, task_probe_acc,
+    grad_cos {step: cos}}.
+  - §169 K8 and §170 K8 runs also write `eval_24k.json` (their own accuracy fields at step 24k).
+  - args: arm "inject", task "mix", think_k 8, steps 48000, mem_write "top", write_mix_start / end 2000 / 6000.
+* **Gates:** both generators' self-checks; a 50 / 50 batch-composition assert; the §169 gates.
+* Dirs `s174_mt_k8_s{seed}`. Scorer: `theory/score_s174.py`, committed with this registration.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
