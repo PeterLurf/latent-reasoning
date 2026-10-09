@@ -4,8 +4,10 @@
 # 2026-10-09 08:5x Experiments: §170 TEXT-COT s1 eval-only (b222 trained 48k, OOMed at eval; model.pt md5 0729234c)
 # 2026-10-09 09:0x Experiments: §173 CONV-HALT post hoc on §171 K8 s1 (model.pt md5 94febd1c)
 # 2026-10-09 09:2x Experiments (Audit): §167 refits on §162 S5 OOMed at fit batch 64 under the 6 GiB cap -> gradient accumulation (--fit_micro; effective batch 64 kept)
-5.0 boxes/runs_fsq/s162_long_s2/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s162_long_s2 --fit_micro 4
-5.0 boxes/runs_fsq/s162_short_s2/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s162_short_s2 --fit_micro 2
+# 2026-10-09 09:5x MOVED TO CLOUD (k = 2048 OOMs under the 6 GiB cap; b226 / b227): 5.0 boxes/runs_fsq/s162_long_s2/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s162_long_s2 --fit_micro 4
+# 2026-10-09 09:5x MOVED TO CLOUD (k = 2048 OOMs under the 6 GiB cap; b226 / b227): 5.0 boxes/runs_fsq/s162_short_s2/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s162_short_s2 --fit_micro 2
+# 2026-10-09 10:0x Experiments: §177 direction diagnostic (Theory, descriptive) on §171 K8 s1; §165 K8 follows when its model lands
+3.0 boxes/runs_fsq/s171_k8_4x4_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s171_k8_4x4_s1 --dir177 --bs 100 --device {DEV}
 4.0 boxes/runs_fsq/s171_k8_4x4_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s171_k8_4x4_s1 --bs 100 --device {DEV}
 3.0 boxes/runs_fsq/s170_cot_s1/eval.json python -u -m boxes.nested170 --arm textcot --seed 1 --eval_only --cot_eval_bs 32 --device {DEV} --out boxes/runs_fsq/s170_cot_s1
 3.0 boxes/runs_fsq/s170_cot_s2/eval.json python -u -m boxes.nested170 --arm textcot --seed 2 --eval_only --cot_eval_bs 32 --device {DEV} --out boxes/runs_fsq/s170_cot_s2
@@ -428,6 +430,6 @@
 # 2026-10-09 01:48:53 Audit 01:3x (overnight): §166 S5 eval-only re-runs (the cloud data_dir fix, deltas5 --eval_only), then §167 refits (note 167-3: PCA init + lr sweep; MIX s3 first)
 5.0 boxes/runs_fsq/s166_s5_sp_s2/eval.json python -u -m boxes.deltas5 --arm delta --eval_only --eval_bs 50 --probe_n_fit 3000 --device {DEV} --out boxes/runs_fsq/s166_s5_sp_s2
 5.0 boxes/runs_fsq/s166_s5_plain_s2/eval.json python -u -m boxes.deltas5 --arm delta --eval_only --eval_bs 50 --probe_n_fit 3000 --device {DEV} --out boxes/runs_fsq/s166_s5_plain_s2
-5.0 boxes/runs_fsq/s161_mix_4x4_s3/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s161_mix_4x4_s3
-5.0 boxes/runs_fsq/s161_mix_4x4_s2/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s161_mix_4x4_s2
-5.0 boxes/runs_fsq/s162_short_s2/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s162_short_s2
+# 2026-10-09 09:5x MOVED TO CLOUD (k = 2048 OOMs under the 6 GiB cap; b226 / b227): 5.0 boxes/runs_fsq/s161_mix_4x4_s3/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s161_mix_4x4_s3
+# 2026-10-09 09:5x MOVED TO CLOUD (k = 2048 OOMs under the 6 GiB cap; b226 / b227): 5.0 boxes/runs_fsq/s161_mix_4x4_s2/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s161_mix_4x4_s2
+# 2026-10-09 09:5x MOVED TO CLOUD (k = 2048 OOMs under the 6 GiB cap; b226 / b227): 5.0 boxes/runs_fsq/s162_short_s2/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s162_short_s2
