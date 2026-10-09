@@ -1,7 +1,7 @@
 """THEORY §167 DAS-EDIT (c08fbbd0 + note 167-1; scorer theory/score_s167.py): distributed alignment search on the DeltaMem-R memory of kept models.
 An orthonormal R in R^{D x k} (torch orthogonal parametrisation; D = 12 x 64 x 64 = the flattened memory, all heads) patches the recipient's memory at the
 variable's point, S_rec <- S_rec + R R^T (S_don - S_rec), then the frozen model continues the recipient. Loss: CE on the answer digits vs the counterfactual.
-Fit on 4,000 pairs from item set A (Adam lr 1e-3, <= 2,000 steps, batch 64, early stop on 500 validation pairs), IIA on 1,000 pairs from a DISJOINT set B.
+Fit on 4,000 pairs from item set A (note 167-3: PCA init, Adam lr {1e-3, 3e-3}, <= 5,000 steps, batch 64, early stop on 500 validation pairs), IIA on 1,000 pairs from a DISJOINT set B.
     MULT (multpair models, e.g. s161_mix_4x4_s1): the accumulator a_t after pair t in {4, 8, 12}; counterfactual = the recipient's later digits continued
          from the donor's a_t (multpair.later_gt, as donor_delta); pairs with a_t differing. A = generator 4x4 items minus the bench test; B = the bench test.
     S5 (deltas5 delta models, e.g. s162_short_s1): g after item p = l_max / 2 on chains of length l_max; counterfactual = g_don o the recipient's later
@@ -38,9 +38,9 @@ def amp_ctx(amp):
 class Rot(nn.Module):
     """an orthonormal D x k basis R = QR(W).Q of a free D x k parameter W (a differentiable orthogonal parametrisation; torch's Householder one is
     too slow at D = 49,152, k = 2,048); coords: optional index subset (per-head-type DAS)."""
-    def __init__(self, k, dev, coords=None):
+    def __init__(self, k, dev, coords=None, init=None):
         super().__init__(); self.coords = coords; d = D if coords is None else len(coords)
-        self.W = nn.Parameter(torch.randn(d, k, device=dev) / d ** 0.5)
+        self.W = nn.Parameter(init.clone().to(dev) if init is not None else torch.randn(d, k, device=dev) / d ** 0.5)
 
     def R(self):
         return torch.linalg.qr(self.W).Q                                    # (d, k), orthonormal columns
@@ -198,9 +198,26 @@ def evaluate(F, Xs, Sr_all, Sd_all, ir, idn, gt, t, rot, bs=125, ablate=None):
     return float(np.concatenate(ok).mean())
 
 
-def fit(F, Xs, Sr_all, Sd_all, tr, va, t, k, coords=None, steps=2000, bs=64, lr=1e-3, seed=16730, every=100, patience=3):
+def pca_basis(Sr_all, Sd_all, tr, dev, kmax, n=4000):
+    """note 167-3: the top-kmax principal directions (D, kmax) of S_don - S_rec over (up to n of) the fit pairs (randomised SVD, uncentred)."""
+    idx = np.arange(min(n, len(tr[0]))); M = torch.tensor(Sd_all[tr[1][idx]] - Sr_all[tr[0][idx]], device=dev)
+    _, _, V = torch.svd_lowrank(M, q=min(kmax + 16, len(idx)), niter=4); del M
+    return V[:, :kmax].contiguous()
+
+
+def fit_sweep(F, Xs, Sr_all, Sd_all, tr, va, t, k, V=None, lrs=(1e-3, 3e-3), steps=5000, seed=16730):
+    """note 167-3: PCA-initialised (V given) fits at each lr, the best by validation IIA; returns (rot, steps, val_best, lr_best)."""
+    best = None
+    for lr in lrs:
+        r_, st, vb = fit(F, Xs, Sr_all, Sd_all, tr, va, t, k, steps=steps, lr=lr, seed=seed, init=None if V is None else V[:, :k])
+        if best is None or vb > best[2]:
+            best = (r_, st, vb, lr)
+    return best
+
+
+def fit(F, Xs, Sr_all, Sd_all, tr, va, t, k, coords=None, steps=2000, bs=64, lr=1e-3, seed=16730, every=100, patience=3, init=None):
     """tr / va = (ir, idn, gt). Adam on R; early stop on validation IIA (checked every `every` steps)."""
-    torch.manual_seed(seed + k); rot = Rot(k, F.dev, coords); opt = torch.optim.Adam(rot.parameters(), lr=lr); X1, X2 = Xs; rng = np.random.default_rng(seed + k)
+    torch.manual_seed(seed + k); rot = Rot(k, F.dev, coords, init=init); opt = torch.optim.Adam(rot.parameters(), lr=lr); X1, X2 = Xs; rng = np.random.default_rng(seed + k)
     best, best_state, bad, st = -1.0, None, 0, 0
     for st in range(1, steps + 1):
         b = rng.integers(0, len(tr[0]), bs); r_, d_ = tr[0][b], tr[1][b]
@@ -246,13 +263,16 @@ def read_alignment(F, Xs, Sr_all, ir, t, rot, n=256):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--device", default="cuda:0")
-    ap.add_argument("--ks", default="1,2,4,8,16,64,2048"); ap.add_argument("--ctrl_ks", default="16,64"); ap.add_argument("--steps", type=int, default=2000)
+    ap.add_argument("--ks", default="1,2,4,8,16,64,2048"); ap.add_argument("--ctrl_ks", default="16,64"); ap.add_argument("--steps", type=int, default=5000)
     ap.add_argument("--n_train", type=int, default=4000); ap.add_argument("--n_val", type=int, default=500); ap.add_argument("--n_test", type=int, default=1000)
     ap.add_argument("--extras", action="store_true", help="carry_matched / per_head_type / scaling (descriptive)"); ap.add_argument("--fp32", action="store_true")
     ap.add_argument("--out", default=None)
     a = ap.parse_args(); dev = a.device; t0 = time.time(); ks = [int(x) for x in a.ks.split(",")]; cks = [int(x) for x in a.ctrl_ks.split(",")]
     amp = None if (a.fp32 or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
     fam_name = "s5" if json.load(open(os.path.join(a.run, "args.json"))).get("family") == "s5" else "mult"; FC = S5Fam if fam_name == "s5" else MultFam
+    out_ = a.out or os.path.join(a.run, "eval_das.json")
+    if os.path.exists(out_) and not os.path.exists(out_.replace("eval_das.json", "eval_das_v1.json")):   # note 167-3: the first fit kept as v1
+        os.replace(out_, out_.replace("eval_das.json", "eval_das_v1.json"))
     F = FC(a.run, dev, amp); res = {"family": fam_name, "run": os.path.basename(a.run.rstrip("/")), "points": {}, "ks": ks, "ctrl_ks": cks, "D": D, "gates": {},
                                     "iia_def": "row level: every counterfactual digit (MULT: the later digits; S5: the final state) decoded exactly"}
     gen = torch.Generator().manual_seed(16740)
@@ -269,20 +289,23 @@ def main():
         Xc = torch.tensor(SA[:2000] - SA[:2000].mean(0), device=dev); tot_var = float((Xc ** 2).sum()); mu = torch.tensor(SA.mean(0), device=dev)
         own_ok = evaluate(F, XB, SB, SB, te[0], te[0], te_own, t, None)
         pt["own_accuracy_unpatched"] = own_ok; pt["random_subspace"] = {}; pt["subspace_var_share"] = {}; pt["necessity_drop"] = {}; pt["read_alignment"] = {}
+        pt["necessity_random"] = {}; pt["fit"] = {"init": "pca (top-k of S_don - S_rec over the fit pairs)", "lrs": [1e-3, 3e-3], "steps_max": a.steps, "lr_best": {}}
+        V = pca_basis(SA, SA, tr, dev, max(ks))
         for k in ks:
-            rot, st, vbest = fit(F, XA, SA, SA, tr, va, t, k, steps=a.steps)
+            rot, st, vbest, lrb = fit_sweep(F, XA, SA, SA, tr, va, t, k, V=V, steps=a.steps); pt["fit"]["lr_best"][str(k)] = lrb
             iia = evaluate(F, XB, SB, SB, te[0], te[1], te[2], t, rot); sub = np.arange(min(1000, len(tr[0])))
             iia_tr = evaluate(F, XA, SA, SA, tr[0][sub], tr[1][sub], tr[2][sub], t, rot)
             pt["k"][str(k)] = {"iia": iia, "iia_train": iia_tr, "n": int(len(te[0])), "steps": int(st), "val_best": vbest}
             R = rot.R().detach(); pt["subspace_var_share"][str(k)] = float(((Xc @ R) ** 2).sum()) / tot_var
             pt["necessity_drop"][str(k)] = own_ok - evaluate(F, XB, SB, SB, te[0], te[0], te_own, t, None, ablate=(R, mu))
-            pt["random_subspace"][str(k)] = evaluate(F, XB, SB, SB, te[0], te[1], te[2], t, random_rot(k, dev, gen))
+            rr_ = random_rot(k, dev, gen); pt["random_subspace"][str(k)] = evaluate(F, XB, SB, SB, te[0], te[1], te[2], t, rr_)
+            pt["necessity_random"][str(k)] = own_ok - evaluate(F, XB, SB, SB, te[0], te[0], te_own, t, None, ablate=(rr_.R(), mu))   # note 167-3
             pt["read_alignment"][str(k)] = read_alignment(F, XB, SB, te[0], t, rot)
             print(t, k, pt["k"][str(k)], flush=True)
         pt["shuffled_targets"] = {}
         for k in cks:                                                       # R fitted to a mismatched donor's counterfactuals
             sh = np.random.default_rng(16760 + k).permutation(len(tr[0])); trs = (tr[0], tr[1][sh], tr[2]); tes = np.random.default_rng(16761 + k).permutation(len(te[0]))
-            rot, _, _ = fit(F, XA, SA, SA, trs, va, t, k, steps=a.steps, seed=16770); pt["shuffled_targets"][str(k)] = evaluate(F, XB, SB, SB, te[0], te[1][tes], te[2], t, rot)
+            rot, _, _, _ = fit_sweep(F, XA, SA, SA, trs, va, t, k, V=pca_basis(SA, SA, trs, dev, k), steps=a.steps, seed=16770); pt["shuffled_targets"][str(k)] = evaluate(F, XB, SB, SB, te[0], te[1][tes], te[2], t, rot)
         res["points"][str(t)] = pt; json.dump(res, open(a.out or os.path.join(a.run, "eval_das.json"), "w", newline="\n"), indent=1)
     # random_model (note 167-1, required): the same DAS on an untrained DeltaMem-R at the control k's
     del F; torch.cuda.empty_cache() if dev.startswith("cuda") else None; Fr = FC(a.run, dev, amp, random_model=True)
@@ -291,7 +314,7 @@ def main():
         tr = Fr.make_pairs(A1[:4000], A2[:4000], t, rng, a.n_train)[:3]; va_ir, va_idn, va_gt, _, _ = Fr.make_pairs(A1[4000:], A2[4000:], t, rng, a.n_val)
         va = (va_ir + 4000, va_idn + 4000, va_gt); te_ir, te_idn, te_gt, _, _ = Fr.make_pairs(B1, B2, t, rng, a.n_test); res["points"][str(t)]["random_model"] = {}
         for k in cks:
-            rot, _, _ = fit(Fr, (A1, A2), SA, SA, tr, va, t, k, steps=a.steps); res["points"][str(t)]["random_model"][str(k)] = evaluate(Fr, (B1, B2), SB, SB, te_ir, te_idn, te_gt, t, rot)
+            rot, _, _, _ = fit_sweep(Fr, (A1, A2), SA, SA, tr, va, t, k, V=pca_basis(SA, SA, tr, dev, k), steps=a.steps); res["points"][str(t)]["random_model"][str(k)] = evaluate(Fr, (B1, B2), SB, SB, te_ir, te_idn, te_gt, t, rot)
     res["extras"] = None; res["extras_note"] = "carry_matched / per_head_type / scaling (descriptive): not yet run"
     res["random_model_def"] = ("untrained DeltaMem-R: W_o ~ N(0, 0.02^2) (the default W_o = 0 would make the memory inert), fade 1, gamma 1; qkv / gate / LN at their "
                                "default init, i.e. qkv from block 6's c_attn and LN_w from block 11's ln_1 (pretrained-derived): an untrained MEMORY, not untrained "

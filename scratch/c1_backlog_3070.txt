@@ -411,6 +411,12 @@
 5.0 boxes/runs_fsq/s166_s5_sp_s2/eval.json python -c "import json,sys; sys.exit(0 if json.load(open('D:/drain_tmp/mem166_s5_3070/mem_check.json'))['peak_gib'] <= 5.0 else 1)" && python -u -m boxes.deltas5 --arm delta --post_train_from s162_long_s2 --pt_steps 300 --pt_lr 5e-6 --init_p 0.5 --state_source current --micro 8 --eval_bs 50 --probe_n_fit 3000 --init_mode pass --device {DEV} --out boxes/runs_fsq/s166_s5_sp_s2
 5.0 boxes/runs_fsq/s166_s5_plain_s2/eval.json python -c "import json,sys; sys.exit(0 if json.load(open('D:/drain_tmp/mem166_s5_3070/mem_check.json'))['peak_gib'] <= 5.0 else 1)" && python -u -m boxes.deltas5 --arm delta --post_train_from s162_long_s2 --pt_steps 300 --pt_lr 5e-6 --init_p 0.5 --state_source current --micro 8 --eval_bs 50 --probe_n_fit 3000 --init_mode zero --device {DEV} --out boxes/runs_fsq/s166_s5_plain_s2
 # 2026-10-08 20:01:42 THEORY §167 DAS-EDIT (c08fbbd0 + 167-1; Audit-approved 174c9399): DAS on s161_mix_4x4_s2's memory (local, after the §166 cells)
-5.0 boxes/runs_fsq/s161_mix_4x4_s2/eval_das.json python -u -m boxes.das167 --run boxes/runs_fsq/s161_mix_4x4_s2 --device {DEV}
+# SUPERSEDED (note 167-3: PCA init + lr sweep; re-queued below) 5.0 boxes/runs_fsq/s161_mix_4x4_s2/eval_das.json python -u -m boxes.das167 --run boxes/runs_fsq/s161_mix_4x4_s2 --device {DEV}
 # 2026-10-08 20:01:43 THEORY §167 DAS-EDIT (c08fbbd0 + 167-1; Audit-approved 174c9399): DAS on s162_short_s2's memory (local, after the §166 cells)
-5.0 boxes/runs_fsq/s162_short_s2/eval_das.json python -u -m boxes.das167 --run boxes/runs_fsq/s162_short_s2 --device {DEV}
+# SUPERSEDED (note 167-3: PCA init + lr sweep; re-queued below) 5.0 boxes/runs_fsq/s162_short_s2/eval_das.json python -u -m boxes.das167 --run boxes/runs_fsq/s162_short_s2 --device {DEV}
+# 2026-10-09 01:48:53 Audit 01:3x (overnight): §166 S5 eval-only re-runs (the cloud data_dir fix, deltas5 --eval_only), then §167 refits (note 167-3: PCA init + lr sweep; MIX s3 first)
+5.0 boxes/runs_fsq/s166_s5_sp_s2/eval.json python -u -m boxes.deltas5 --arm delta --eval_only --eval_bs 50 --probe_n_fit 3000 --device {DEV} --out boxes/runs_fsq/s166_s5_sp_s2
+5.0 boxes/runs_fsq/s166_s5_plain_s2/eval.json python -u -m boxes.deltas5 --arm delta --eval_only --eval_bs 50 --probe_n_fit 3000 --device {DEV} --out boxes/runs_fsq/s166_s5_plain_s2
+5.0 boxes/runs_fsq/s161_mix_4x4_s3/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s161_mix_4x4_s3
+5.0 boxes/runs_fsq/s161_mix_4x4_s2/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s161_mix_4x4_s2
+5.0 boxes/runs_fsq/s162_short_s2/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s162_short_s2

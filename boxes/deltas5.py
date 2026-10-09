@@ -364,12 +364,21 @@ def main():
     ap.add_argument("--pt_steps", type=int, default=1000); ap.add_argument("--pt_lr", type=float, default=2e-5)
     ap.add_argument("--init_mode", default="zero", choices=["zero", "pass"]); ap.add_argument("--init_p", type=float, default=0.5)
     ap.add_argument("--state_source", default="current", choices=["current"])
+    ap.add_argument("--eval_only", action="store_true", help="re-evaluate <out>/model.pt with the run's own args.json (no training; args -> args_eval.json; log appended)")
     ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args()
-    if a.post_train_from:                                                   # §166: the source run's args, this run's own out / device / pt_* / eval sizes
+    if a.eval_only:                                                         # the run's own args (Audit 2026-10-09: §166 S5 evals failed on a cloud data_dir)
+        keep_ = {k: getattr(a, k) for k in ("out", "device", "eval_only", "eval_bs", "test_n", "ext_n", "long_len", "probe_n_fit", "probe_n_score", "edit_n", "donor_n", "fp32", "data_dir")}
+        for k, v in json.load(open(os.path.join(a.out, "args.json"))).items():
+            if hasattr(a, k):
+                setattr(a, k, v)
+        for k, v in keep_.items():
+            setattr(a, k, v)
+        a.resume = None; a.auto_micro = False; a.mem_check = False
+    if a.post_train_from and not a.eval_only:                               # §166: the source run's args, this run's own out / device / pt_* / eval sizes
         src_ = a.post_train_from if os.path.isdir(a.post_train_from) else os.path.join(ROOT, "boxes", "runs_fsq", a.post_train_from)
         keep_ = {k: getattr(a, k) for k in ("out", "device", "post_train_from", "pt_steps", "pt_lr", "init_mode", "init_p", "state_source", "eval_bs", "test_n", "ext_n",
-                                            "long_len", "probe_n_fit", "probe_n_score", "edit_n", "donor_n", "fp32", "mem_check", "sched_scale", "micro")}
+                                            "long_len", "probe_n_fit", "probe_n_score", "edit_n", "donor_n", "fp32", "mem_check", "sched_scale", "micro", "data_dir")}   # data_dir: local (Audit)
         for k, v in json.load(open(os.path.join(src_, "args.json"))).items():
             if hasattr(a, k):
                 setattr(a, k, v)
@@ -416,15 +425,18 @@ def main():
         assert mc[-1]["peak_gib"] <= a.mem_budget, "memory: %.1f GiB at micro %d" % (mc[-1]["peak_gib"], a.micro)
     info = {**vars(a), "train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version(), **env_info(),
             "segments": "direct: [start text, items' 6-token texts, ' ='] -> state text" if not D_ else "[EOT, start text], [EOT, item text] per item, decoder [EOT] read-only -> state text"}
-    json.dump(info, open(os.path.join(a.out, ("args_resume_%d.json" % int(time.time())) if a.resume else "args.json"), "w", newline="\n"), indent=1)
+    json.dump(info, open(os.path.join(a.out, ("args_resume_%d.json" % int(time.time())) if a.resume else ("args_eval.json" if a.eval_only else "args.json")), "w", newline="\n"), indent=1)
     opt = make_opt(m, a.lr); step0 = 1; n_nonfinite = 0; wg_hist = []; wwin = []; wlast = []; rec_hist = []; hist = []
-    log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time()
+    log = open(os.path.join(a.out, "log.jsonl"), "a" if (a.resume or a.eval_only) else "w", newline="\n"); t0 = time.time()
     if a.resume:
         ck = torch.load(a.resume, map_location=dev, weights_only=False); m.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"]); rng.bit_generator.state = ck["np_rng"]
         torch.set_rng_state(ck["torch_rng"].cpu()); step0 = ck["step"] + 1; n_nonfinite = ck["n_nonfinite"]; wg_hist = ck["wg_hist"]; rec_hist = ck["rec_hist"]; t0 = time.time() - ck["elapsed"]
         if dev.startswith("cuda") and ck.get("cuda_rng") is not None:
             torch.cuda.set_rng_state(ck["cuda_rng"].cpu(), device=dev)
         log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
+    elif a.eval_only:                                                       # the trained model; no training steps
+        m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev)); step0 = a.steps + 1
+        log.write(json.dumps({"eval_only": True, "at": time.strftime("%Y-%m-%d %H:%M:%S")}) + "\n"); log.flush()
     elif D_ and a.post_train_from:                                          # §166: the source's trained weights (no g_add re-calibration)
         m.load_state_dict(torch.load(os.path.join(a.pt_src_dir, "model.pt"), map_location=dev))
     elif D_:                                                                # note 147-2: g_add = the median read-norm ratio at step 0 (fade 1 for the measurement)
@@ -454,7 +466,7 @@ def main():
         else:
             opt.step(); hist.append(tot)
         if step % a.log_every == 0 or step == a.steps:
-            rec = {"step": step, "loss": float(np.mean(hist)) if hist else None, "L_max": lmax_sched(step / sc, a.l_max), "sec": round(time.time() - t0)}; hist = []
+            rec = {"step": step, "loss": float(np.mean(hist)) if hist else None, "L_max": lmax_sched(1e12 if a.post_train_from else step / sc, a.l_max), "sec": round(time.time() - t0)}; hist = []
             if D_ and wwin:                                                 # note 155-1 / 160-1: spike vs the preceding 1k steps' median (+ the 1.0 floor)
                 md_ = float(np.median(wlast)) if wlast else 0.0; mx_ = float(np.max(wwin)); late = step > a.write_mix_start * sc
                 w_rec = {"step": step, "mean": float(np.mean(wwin)), "max": mx_, "median_prev_1k": md_, "spike_100x": bool(late and mx_ > 100 * md_ > 0),
@@ -472,7 +484,10 @@ def main():
             torch.save({"model": m.state_dict(), "opt": opt.state_dict(), "np_rng": rng.bit_generator.state, "torch_rng": torch.get_rng_state(),
                         "cuda_rng": torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else None, "step": step, "n_nonfinite": n_nonfinite,
                         "wg_hist": wg_hist, "rec_hist": rec_hist, "elapsed": time.time() - t0}, cp)
-    train_sec = round(time.time() - t0); torch.save(m.state_dict(), os.path.join(a.out, "model.pt")); m.eval(); t1 = time.time()
+    train_sec = round(time.time() - t0)
+    if not a.eval_only:
+        torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
+    m.eval(); t1 = time.time()
     res = {"arm": a.arm, "family": "s5", "seed": a.seed, "l_max": a.l_max, "train_sec": train_sec, "n_nonfinite": n_nonfinite, "eval_dtype": str(amp), "micro": a.micro,
            "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_gpu": info["train_gpu"], "train_driver": info["train_driver"]}
     Xte, Yte = s5.load_csv(os.path.join(a.data_dir, "S5=512.csv"), limit=a.test_n); s5.check_labels(Xte, Yte); z = np.zeros(len(Xte), np.int64)
