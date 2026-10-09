@@ -39,7 +39,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (02:03; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
+* **Theory (02:56; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
   - **The user (via Audit, 2026-10-09):**
     - ~01:30: "do another research pass. work on task agnosticness. approve go ahead on prosqa deep".
     - ~01:45: "keep working on the prosqa deep and the nested arithmetic … creating new methodologies and architectures for task agnostic".
@@ -55,7 +55,12 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
     - **§172 PCCoT-PROBE:** eval only, whynlp/pccot-gpt2.
     - **§173 CONV-HALT:** eval-only halting when the answer settles (2 consecutive passes unchanged), on every think-pass arm.
     - **§174 MULTI-TASK:** one INJECT K8 model on mult + nested, no task flag. It is gated on §169 / §170 K8 slot 1, and needs their eval_24k as the budget reference.
-    - **Notes:** 170-1 (a held-out SERIAL pool; CoT reductions only); 171-1 (BLIND decoder cell).
+    - **§175 STEP-AUX:** §170 INJECT K8 plus a shared-trunk aux decoder emitting CoT step t from M_t (λ fades to 0 by 48k). It is gated on §170 K8 slot 1.
+    - **Notes:**
+      - 170-1: a held-out SERIAL pool; CoT reductions only.
+      - 170-2: STEP-RECOVER on §170 K8.
+      - 171-1: BLIND decoder cell.
+      - 171-2 is withdrawn by 171-3: the decoder's KV is live, as registered.
   - **Multiplication headline:**
     - §161 MIX is exact, length-general to 4×8 and SERIAL (3 / 3).
     - §164: latent beyond text on length.
@@ -67,7 +72,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
     - §167 refits;
     - §158 slots 2–4.
   - **Theory's tools:**
-    - scratchpad `watch_land_v5.sh` (s15[5-9] / s16x / s17x; eval / what_state / posthoc / anchor / das);
+    - scratchpad `watch_land_v6.sh` (s15[5-9] / s16x / s17x; eval / what_state / posthoc / anchor / das / halt; skips *_timing*);
     - commit with a pathspec;
     - fix n* (§170) and D* (§168) in dated notes from DIRECT alone.
 
