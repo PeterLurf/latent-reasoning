@@ -263,6 +263,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 173 | CONV-HALT (eval only; C5, halting): decode when the answer settles (unchanged across 2 consecutive passes, cap 2K) on the think-pass arms (§165 / §169 / §170 / §171); HALT-EQUAL + ADAPTIVE | registered | **open** |
 | 174 | MULTI-TASK (the user's task agnosticness, strongest form): one INJECT K8 model on mult + nested with no task flag; MATCH vs single-task K8 (BUDGET vs INTERFERENCE via 24k evals), THINK-NECESSARY per task, cross-task swap | registered (gated on §169 / §170 K8 slot 1) | **open** |
 | 175 | STEP-AUX (Audit's lead after SIM-CoT): §170 INJECT K8 + a shared-trunk read-only aux decoder emitting Feng's CoT step t from M_t (λ 1 fading to 0 by 48k); AUX-HELPS / HURTS-DEPTH vs FINAL-only, READOUT, STEP-RECOVER | registered (gated on §170 K8 slot 1) | **open** |
+| 176 | RAND-K (Audit's lead after §172; Huginn / Bansal): INJECT trained with a random think-pass count (RK) or progressive no-grad prefixes (PROG); C2-BEYOND at K' = 64 beyond training support + NO-OVERTHINKING vs fixed K8's same curve | registered (gated on §169 K8 slot 1) | **open** |
 
 ## Live sections
 
@@ -10782,6 +10783,63 @@ subspace.**
   - the main decoder's path is unchanged at λ = 0 (bitwise vs nested170); the fade schedule is logged per step;
   - smoke_plain; Audit's diff review.
 * Dir `s175_auxk8_s{seed}`. Scorer: `theory/score_s175.py`, committed with this registration.
+
+## 176. RAND-K: a randomised think-pass count in training, for more thinking past training (C2) (Audit's 03:45 lead, prompted by §172; Huginn 2502.05171; roadmap steps 3 and 4, halting and stability; pre-registered 2026-10-09 03:53 EDT, after Literature's check e051d5c1 (`docs/LIT_RAND_K_2026-10-09.md`) and Audit's review, before any implementation or run; launches only after §169 K8 slot 1 is read)
+
+**Why.**
+* **§172:** the GPT-2 GSM8K state of the art computes in its iterations, but gets worse past its trained count (0.491 at T = 3; 0.415–0.451 at 4–8).
+* **Every design here trains a fixed pass count,** and C2 (more thinking helps beyond training) is unmet everywhere. Fixed-K training is the likely common cause.
+* **Huginn** samples the recurrence count per sequence from a log-normal Poisson and backpropagates through only the last k iterations. Its accuracy then rises with test-time iterations.
+  - It is a training-method change: task-agnostic, and aimed at C2 and C5 together. It is also the natural precondition for §173's answer-settling halt.
+
+**Design.** §169's INJECT harness, data (§161's 4 × n mix, n 2..5, 165-1's curriculum), memory and recipe, 48k, bs 64, RTX 3090, with `--fast_add`. Two arms change only
+how many think passes run in training.
+* **RK (Huginn's sampling):** per batch, K = 1 + Poisson(e^τ) with τ ~ N(log 8 − ⅛, ½) (Huginn's form with r̄ = 8; Literature), capped at 32.
+  - **Full backprop through all K passes** where memory allows (truncation lowers φ: Literature; iso-depth 2604.21106). Memcheck at K = 32 with fast_add.
+    Only if it does not fit, gradients go through the last 8 passes, and args record which (`bptt_last`).
+  - **K is sampled independently of the operand length n** (each batch's n and K are separate draws). A length–loop correlation causes OOD variance (Kuo 2606.29983).
+  - The memory starts at zero. Huginn's random initial state is §166's lever and is not used here.
+* **PROG (Bansal 2202.05826's progressive training):** per batch, k₁ ~ U{0..8} passes run without gradient, then k₂ ~ U{1..8} passes with gradient from that state.
+  The answer is decoded after k₁ + k₂. The model learns to improve whatever state it is handed, not one pass count's schedule.
+* `mem_norm_by_pass` is logged. Sampling K up to 32 (RK) or 16 (PROG) also exposes training to larger additive-head norms (Audit's §173 point).
+* **Arms:** RK and PROG slot 1. EXACT at K′ = 8 opens s2 / s3 for that arm.
+
+**Rules (fixed now; `theory/score_s176.py`; the reference is §169 K8, fixed-K, same data and budget).**
+* **EXACT(run):** 4×4 ≥ 0.99 at K′ = 8. **THINK-NECESSARY(run):** §169's form at K = 8.
+* **MORE-THINKING(run), informative:** ext_4x8 at K′ = 16 ≥ ext_4x8 at K′ = 8 + 0.05, and 4×4 at K′ = 16 ≥ 4×4 at K′ = 8 − 0.01 (§169's 2K form).
+  - For RK and PROG, K′ = 16 lies inside the trained range, so a win there shows longer computation is used. It is not C2 (Audit).
+* **NO-OVERTHINKING(run)** (§172's failure; Literature): 4×4 and ext_4x8 at K′ = 24 and K′ = 32 each ≥ their value at K′ = 8 − 0.01. Flat or rising past r̄.
+* **C2-BEYOND(run)** (beyond every arm's training support; Audit): ext_4x8 at K′ = 64 ≥ ext_4x8 at K′ = 32 − 0.01, and ≥ ext_4x8 at K′ = 8 + 0.05.
+  - The memory at K′ = 64 is eval-only (no gradient). Its norms are logged to 64.
+* **C2-RECIPE(arm):** C2-BEYOND and NO-OVERTHINKING in ≥ 2 / 3 of the arm's seeds, while fixed K8's C2-BEYOND (the same formula on its post-hoc K′ curve) holds in
+  < 2 of its seeds.
+  - If fixed K8 also meets C2-BEYOND, the sampling is not needed for C2 here, and that is the reading.
+* **Fixed-K reference curve:** §169 K8's models are evaluated post hoc at K′ ∈ {24, 32, 48, 64} (`eval_s176_ref.json`: ext_4x8_by_kprime, acc_by_kprime, mem_norm_by_pass),
+  so all arms are read on one K′ = 8 / 16 / 32 / 64 curve.
+* **Descriptive:**
+  - accuracy against K′ ∈ {0, 1, 2, 4, 8, 12, 16, 24, 32, 48, 64} by size (4×4 / 4×6 / 4×8 / 4×16): the size-dependent gain, Fan-style;
+  - the across-seed SD of ext_4x8 at K′ = 16 / 32 / 64, for each arm against fixed K8 (Kuo's main effect is lower OOD variance);
+  - §173's answer-settling h by size (C5);
+  - mem_norm_by_pass to 4K.
+* **Readings:**
+  - **C2-RECIPE (RK and / or PROG):** that training method is the recipe for more thinking past training.
+  - **No arm meets C2-BEYOND:** the memory saturates beyond its trained support. The norm or state is the limit, and §166-style coverage is the remaining lever.
+  - **RAND-K not EXACT at K′ = 8 where fixed K8 is:** the randomisation costs in-distribution accuracy (reported as such).
+
+**Placement.**
+* RK and PROG slot 1 on 3090s, about $2–3 each with fast_add (RK's mean is 9 passes, full backprop, tail to 32; PROG's mean is 9). s2 / s3 about $5 per passing arm.
+  Experiments' timing sets the projection to Audit.
+* **Implementation (Experiments):** `--rand_k "8,0.5,32"` (RK) and `--prog "8,8"` (PROG) in inject169.
+  - eval.json: §169's fields with `s169.acc_by_kprime` / `ext_4x8_by_kprime` / `acc_by_size_kprime` at K′ ∈ {0, 1, 2, 4, 8, 12, 16, 24, 32, 48, 64}, §173's `halt`, and `s176.mem_norm_by_pass` (to 64), `s176.k_hist` (the sampled K histogram).
+  - §169 K8 models s1–s3: post-hoc `eval_s176_ref.json` as above (eval only).
+  - args: §169's inject args with think_k 8 (the evaluation K), fast_add, bptt_last ("all" or 8), and rand_k "8,0.5,32" (RK) or prog "8,8" (PROG).
+* **Gates:**
+  - the sampled-K histograms match their distributions (RK mean 1 + 8 = 9 ± 0.5 over 10k draws, cap respected; PROG k₁ / k₂ uniform);
+  - K is drawn independently of n: |corr(K, n)| < 0.02 over 10k batch draws (Audit);
+  - gradflow: RK is nonzero through every pass; PROG is zero through the k₁ passes and nonzero through the k₂;
+  - with the sampling off, the run matches inject169 (to fast_add's tolerance);
+  - smoke_plain; Audit's diff review; memcheck at K = 32 with gradients (training) and at K′ = 64 without (eval).
+* Dirs `s176_rk_s{seed}` and `s176_prog_s{seed}`. Scorer: `theory/score_s176.py`, committed with this registration.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
