@@ -10447,6 +10447,19 @@ subspace.**
   - §174's gate (§169 K8 EXACT) is closed, so §174 is not launched.
   - §176's fixed-K reference is not EXACT (note 176-3).
 
+**§169 K8, note 173-1's readout (2026-10-09 12:51 EDT; descriptive; eval_s177_dir.json and eval_s173_halt.json on the failed s169_k8_4x4_s1). MOVES-MECHANISM is negative, and the pass dynamics barely moved from initialisation.**
+* **DISTINCT-PASSES fails:** delta cosine 0.895 / 0.981 / 0.992 at passes 2 / 3 / 4 (cut: < 0.9 at all three).
+  - At initialisation (pretrained trunk, fresh memory, γ = 1): 0.947 / 0.984 / 0.993.
+  - The read cosine is 0.81 / 0.97 / 0.99 trained, against 1.0 at initialisation.
+* **PER-STEP-CONTENT fails:** the probe grid is nearly the same at every pass t = 1..8.
+  - column 1 1.0 (a₁b₁ mod 10, no accumulation needed);
+  - column 2 0.32 → 0.41;
+  - columns 3–7 at chance (0.09–0.12);
+  - column 8 about 0.32.
+  - No t ≥ 2, c ≥ 2 reaches 0.5.
+* **§173 (answer2):** 67% of 4×4 items are unsettled at the 2K cap. There is no C5 reading (fixed-K accuracy 0.001).
+* §169 K8's think passes neither turn the delta state more than an untrained network's do nor carry per-step column content.
+
 ## 170. NESTED: Feng's modular expressions past one pass, with a measured DIRECT boundary, the INJECT latent arm and Feng's text CoT (the user's "keep working on … the nested arithmetic" via Audit; the C1-forcing note's option 2(a); roadmap steps: task-agnostic input (INJECT on a second task), length stability, a fair CoT baseline; pre-registered 2026-10-09 01:49 EDT, after Literature's check fd630b87 (`docs/LIT_TC0_SERIAL_2026-10-08.md` addendum) and Audit's review, before any implementation or run)
 
 **Why.**
