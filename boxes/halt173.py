@@ -65,9 +65,10 @@ class ReadTap:
 def read_vec(mem, x, S):
     """read_fixed's reads at one position per row: x (b, D) residual, S (b, 12, DH, DH) -> (b, 12 * DH) [g_add read_add || g_del read_del]."""
     with torch.autocast("cuda", enabled=False):
-        b, D = x.shape; q = mem.qkv(mem.ln(x.float()))[..., :D].view(b, DM.H_ADD + DM.H_DEL, DM.DH)
-        oa = torch.exp(mem.s_add) * torch.einsum("bhk,bhkv->bhv", Fn.elu(q[:, :DM.H_ADD]) + 1, S[:, :DM.H_ADD].float())
-        od = torch.exp(mem.s_del) * torch.einsum("bhvk,bhk->bhv", S[:, DM.H_ADD:].float(), Fn.normalize(q[:, DM.H_ADD:], dim=-1))
+        ha, hd = getattr(mem, "h_add", DM.H_ADD), getattr(mem, "h_del", DM.H_DEL)   # §178: the memory's own head counts
+        b, D = x.shape; q = mem.qkv(mem.ln(x.float()))[..., :D].view(b, ha + hd, DM.DH)
+        oa = torch.exp(mem.s_add) * torch.einsum("bhk,bhkv->bhv", Fn.elu(q[:, :ha]) + 1, S[:, :ha].float())
+        od = torch.exp(mem.s_del) * torch.einsum("bhvk,bhk->bhv", S[:, ha:].float(), Fn.normalize(q[:, ha:], dim=-1))
         return torch.cat([oa, od], 1).flatten(1)
 
 
@@ -137,7 +138,7 @@ def trace(ad, batch, T, dev, amp):
             r = read_vec(ad.m.mem, x, S); Sf = S.float()
             if t:
                 chg["read"].append(((r - rprev).norm(dim=1) / r.norm(dim=1).clamp_min(1e-12)).cpu().numpy())
-                dd = Sf[:, DM.H_ADD:].flatten(1); dp = Sprev[:, DM.H_ADD:].flatten(1)
+                ha_ = getattr(ad.m.mem, "h_add", DM.H_ADD); dd = Sf[:, ha_:].flatten(1); dp = Sprev[:, ha_:].flatten(1)
                 chg["delta"].append(((dd - dp).norm(dim=1) / dd.norm(dim=1).clamp_min(1e-12)).cpu().numpy())
                 chg["full"].append(((Sf - Sprev).flatten(1).norm(dim=1) / Sf.flatten(1).norm(dim=1).clamp_min(1e-12)).cpu().numpy())
             rprev, Sprev = r, Sf; ans.append(a_)
@@ -164,7 +165,12 @@ def halts(cor, ans, chg, T):
 def load_model(run, dev, init=False):
     """init (note 173-1): the arm's model at initialisation - the pretrained trunk and fresh memory parameters built under the run's seed (as the run's
     own torch.manual_seed before construction), no checkpoint loaded, gamma forced to 1 so the writes use the top-layer source."""
-    a = json.load(open(os.path.join(run, "args.json"))); g = s5.load_gpt2(dev)
+    a = json.load(open(os.path.join(run, "args.json")))
+    if "n_max_train" in a:                                                  # nested (§170 / §175 / §177 f / §178): the run's own trunk + memory geometry
+        from boxes.nested170 import make_trunk
+        g = make_trunk(a, dev)
+    else:
+        g = s5.load_gpt2(dev)
     if init:
         torch.manual_seed(int(a.get("seed", 1)))
     if "chunk_k" in a:
@@ -175,7 +181,8 @@ def load_model(run, dev, init=False):
         kind, m = "readslots", ReadSlots(g, a["n_slots"], 6, "top", bool(a.get("blind_decoder")))
     elif "n_max_train" in a:
         from boxes.nested170 import InjectN
-        assert a.get("arm") == "inject"; kind, m = "nested", InjectN(g, 6, "top")
+        from boxes.nested170 import mem_geometry
+        assert a.get("arm") == "inject"; ml_, ha_, hd_ = mem_geometry(a); kind, m = "nested", InjectN(g, ml_, "top", ha_, hd_)
     else:
         from boxes.inject169 import Inject
         assert a.get("arm") == "inject"; kind, m = "inject", Inject(g, 6, a.get("mem_write", "top"))
@@ -242,7 +249,7 @@ def dir_fields(kind, m, a, dev, amp, n_items=500, bs=250, bench=os.path.join("be
                     S = ad.step(S, c)
                 tap.arm(); _, rpos = ad.decode(S, c); tap.on = False
                 x = tap.x[:, -1] if rpos is None else tap.x[torch.arange(tap.x.shape[0], device=dev), torch.tensor(rpos, device=dev)]
-                cur = {"read": read_vec(m.mem, x, S).float(), "delta": S[:, DM.H_ADD:].float().flatten(1), "add": S[:, :DM.H_ADD].float().flatten(1)}
+                cur = {"read": read_vec(m.mem, x, S).float(), "delta": S[:, getattr(m.mem, "h_add", DM.H_ADD):].float().flatten(1), "add": S[:, :getattr(m.mem, "h_add", DM.H_ADD)].float().flatten(1)}
                 if prev is not None:
                     for k_ in cur:
                         acc[k_][t].append(cos(cur[k_], prev[k_]))
@@ -287,7 +294,7 @@ def step_probe_delta(kind, m, a, dev, amp, bs=250, n_fit=4000, n_test=1000, benc
                 S, c = ad.init(ch)
                 for _ in range(t):
                     S = ad.step(S, c)
-            out.append(S[:, DM.H_ADD:].float().flatten(1).cpu().numpy())
+            out.append(S[:, getattr(ad.m.mem, "h_add", DM.H_ADD):].float().flatten(1).cpu().numpy())
         return np.concatenate(out)
     res = {}
     for t in range(1, K + 1):
@@ -326,7 +333,7 @@ def dir_pair_fields(run, dev, amp, n_items=500, bs=125, bench=os.path.join("benc
             prev = None
             for t in range(T):
                 _, S = m.step(S, t)
-                cur = {"read": read_vec(m.mem, xq, S).float(), "delta": S[:, DM.H_ADD:].float().flatten(1), "add": S[:, :DM.H_ADD].float().flatten(1)}
+                cur = {"read": read_vec(m.mem, xq, S).float(), "delta": S[:, getattr(m.mem, "h_add", DM.H_ADD):].float().flatten(1), "add": S[:, :getattr(m.mem, "h_add", DM.H_ADD)].float().flatten(1)}
                 if prev is not None:
                     for k_ in cur:
                         acc[k_][t + 1].append(cos(cur[k_], prev[k_]))

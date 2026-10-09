@@ -218,8 +218,8 @@ def aux_of(it):
 class InjectN(torch.nn.Module):
     """§169's inject harness on a variable-length text: think = [EOT, expr, " ."] (right-padded, padded writes masked); decoder = [EOT, expr, " ="] -> the
     answer token (read-only)."""
-    def __init__(self, g, layer=6, write="top"):
-        super().__init__(); import boxes.deltamem as DM; self.DM = DM; self.g = g; self.mem = DM.DeltaMem(g, layer, write)
+    def __init__(self, g, layer=6, write="top", h_add=6, h_del=6):
+        super().__init__(); import boxes.deltamem as DM; self.DM = DM; self.g = g; self.mem = DM.DeltaMem(g, layer, write, h_add, h_del)
 
     def think_inputs(self, items, dev):
         ids_, m_ = pad([[EOT] + ids(it["syms"]) + [TID[" ."]] for it in items]); return torch.tensor(ids_, device=dev), torch.tensor(m_, device=dev)
@@ -294,6 +294,30 @@ def ans_token_acc(lg, items):
 
 
 
+def make_trunk(a, dev):
+    """the GPT-2 trunk: pretrained GPT-2 small (§170), or for --scratch 'L,D,H' (§178) a RANDOM-INIT GPT-2 architecture (core.random_gpt2_sd under the
+    run's seed; GPT-2 tokenizer / vocab / 1024 positions). The local memory cap is applied either way. a: the run's args (dict)."""
+    from boxes import s5
+    if not a.get("scratch"):
+        return s5.load_gpt2(dev)
+    from boxes import core as bc
+    try:
+        from boxes import memcap
+        memcap.apply(dev)
+    except ImportError:
+        pass
+    L, D, H = (int(x) for x in a["scratch"].split(",")); gen = torch.Generator().manual_seed(17800 + int(a.get("seed", 1)))
+    return bc.GPT2KV(bc.random_gpt2_sd(L, D, H, gen), H).to(dev)
+
+
+def mem_geometry(a):
+    """(memory layer, additive heads, delta heads): §170 = (6, 6, 6); §178 scratch 'L,D,H' = (L // 2, D / 128, D / 128) (DH 64)."""
+    if not a.get("scratch"):
+        return 6, 6, 6
+    L, D, _ = (int(x) for x in a["scratch"].split(",")); assert D % 128 == 0
+    return L // 2, D // 128, D // 128
+
+
 def reductions(root):
     """the values of Feng's CoT reductions in cot_steps' (leftmost-handle) order: v_1 .. v_n."""
     nd = _copy(root); vals = []
@@ -308,7 +332,8 @@ def reductions(root):
 def _mem_read(mem, x, S):
     """read_fixed's reads at one position per row (as boxes/halt173.read_vec): x (b, D) residual entering the read, S -> (b, 768) [g_add read_add || g_del read_del]."""
     import torch.nn.functional as F_
-    from boxes.deltamem import H_ADD, H_DEL, DH
+    from boxes.deltamem import DH
+    H_ADD, H_DEL = mem.h_add, mem.h_del                                     # §178: the memory's own head counts
     with torch.autocast("cuda", enabled=False):
         b, D = x.shape; q = mem.qkv(mem.ln(x.float()))[..., :D].view(b, H_ADD + H_DEL, DH)
         oa = torch.exp(mem.s_add) * torch.einsum("bhk,bhkv->bhv", F_.elu(q[:, :H_ADD]) + 1, S[:, :H_ADD].float())
@@ -376,7 +401,7 @@ def main():
     ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", default=None); ap.add_argument("--log_every", type=int, default=100)
     ap.add_argument("--cot_eval_bs", type=int, default=64, help="TEXT-COT generation batch (KV cache; b223 OOMed at 250 on n = 16 chains)"); ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt (no training; writes args_eval.json; model.pt / args.json / log untouched)"); ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--per_n", type=int, default=1000); ap.add_argument("--serial_pool", type=int, default=2200); ap.add_argument("--auto_micro", action="store_true")
     ap.add_argument("--mem_budget", type=float, default=21.0); ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--time_steps", type=int, default=0, help="cost check: train this many steps, report s/step, exit")
-    ap.add_argument("--eval_at", type=int, default=0, help="also evaluate acc_by_n at this step -> eval_<k>k.json"); ap.add_argument("--aux_step", type=float, default=0.0, help="§175: lambda of the read-only step decoder CE (0 = off: the §170 path)"); ap.add_argument("--aux_fade", default="36000,48000", help="§175: lambda constant to the first step, then linear to 0 at the second"); ap.add_argument("--kmatch_impl", default="masked", choices=["masked", "bucketed"], help="§177 (f): note 177-5's masked single batch, or the per-K groups"); ap.add_argument("--k_window", default="", help="§177 (f): 'lo,hi' -> each n-bucketed micro-batch runs K = n + U{lo..hi} think passes (inject)"); ap.add_argument("--fast_add", action="store_true", help="deltamem.FAST_ADD: the additive heads' pass writes as one sum (Audit 2026-10-09; scratch/gate_fastadd.py)"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
+    ap.add_argument("--eval_at", type=int, default=0, help="also evaluate acc_by_n at this step -> eval_<k>k.json"); ap.add_argument("--aux_step", type=float, default=0.0, help="§175: lambda of the read-only step decoder CE (0 = off: the §170 path)"); ap.add_argument("--aux_fade", default="36000,48000", help="§175: lambda constant to the first step, then linear to 0 at the second"); ap.add_argument("--kmatch_impl", default="masked", choices=["masked", "bucketed"], help="§177 (f): note 177-5's masked single batch, or the per-K groups"); ap.add_argument("--scratch", default="", help="§178: 'L,D,H' -> a RANDOM-INIT GPT-2 trunk (no pretrained weights), memory after block L // 2 with D / 128 + D / 128 heads"); ap.add_argument("--warmup", type=int, default=100, help="LR warm-up steps (§178: 1000)"); ap.add_argument("--k_window", default="", help="§177 (f): 'lo,hi' -> each n-bucketed micro-batch runs K = n + U{lo..hi} think passes (inject)"); ap.add_argument("--fast_add", action="store_true", help="deltamem.FAST_ADD: the additive heads' pass writes as one sum (Audit 2026-10-09; scratch/gate_fastadd.py)"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); a.task = "nested"; import boxes.deltamem as DM_; DM_.FAST_ADD = bool(a.fast_add); os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale; K = a.think_k if a.arm == "inject" else 0
     if a.arm != "inject":
         a.mem_write = a.write_mix_start = a.write_mix_end = None; a.think_k = 0
@@ -386,12 +411,12 @@ def main():
     torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
     amp = None if (a.fp32 or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
     ac = lambda: torch.autocast("cuda", dtype=amp, enabled=amp is not None)  # noqa: E731
-    TE = test_set(a.per_n); EXCL = {tuple(it["syms"]) for it in TE}; g = s5.load_gpt2(dev)
+    TE = test_set(a.per_n); EXCL = {tuple(it["syms"]) for it in TE}; g = make_trunk(vars(a), dev); ML, HA, HD = mem_geometry(vars(a))
     r_sp = np.random.default_rng(17300); SPOOL = []                         # note 170-1: the dedicated n = 8 SERIAL pool (excluded from training)
     for _ in range(a.serial_pool):
         r__, t__ = generate(r_sp, 8); s__ = render(r__); SPOOL.append({"n": 8, "syms": s__, "t": t__, "depth": depth(s__), "root": r__})
     EXCL |= {tuple(it["syms"]) for it in SPOOL}
-    m = InjectN(g, 6, a.mem_write).to(dev) if a.arm == "inject" else None
+    m = InjectN(g, ML, a.mem_write, HA, HD).to(dev) if a.arm == "inject" else None
 
     def loss_items(items, Kb=None):
         if a.arm == "direct":
@@ -625,7 +650,7 @@ def main():
         sec_ = [r_["sec"] for r_ in lg_ if "sec" in r_]; t0 = time.time() - (sec_[-1] if sec_ else 0); wg_hist = [r_ for r_ in lg_ if "write_grad_norm" in r_]
     for step in range(step0, last + 1):
         for gr in opt.param_groups:
-            gr["lr"] = lr_at(a.lr, gr, step, a.steps)
+            gr["lr"] = lr_at(a.lr, gr, step, a.steps) if a.warmup == 100 else lr_at(a.lr, gr, step, a.steps) / min(1, step / 100) * min(1, step / a.warmup)   # §178: --warmup
         params.train()
         if m is not None:
             m.mem.fade.fill_(min(1.0, step / max(1, int(500 * sc))))

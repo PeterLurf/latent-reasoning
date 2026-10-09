@@ -1,0 +1,72 @@
+{
+ "g1": {
+  "pretrained_load_called": false,
+  "wte_corr_with_gpt2": -5.4945889132795855e-05,
+  "L": 6,
+  "D": 384,
+  "H": 6
+ },
+ "g1_pass": true,
+ "g2": {
+  "layer": 3,
+  "h_add": 3,
+  "h_del": 3,
+  "D": 384,
+  "state_shape": [
+   2,
+   6,
+   64,
+   64
+  ],
+  "ln_w_from_last_block": true
+ },
+ "g2_pass": true,
+ "g3": {
+  "mem_zero": [],
+  "trunk_grads": {
+   "h.0.attn.c_attn.weight": 11.217141151428223,
+   "h.5.mlp.c_fc.weight": 1.7004767656326294,
+   "wte.weight": 14.348329544067383
+  },
+  "S_grad": [
+   0.007238489110022783,
+   0.00506548723205924,
+   0.004676079843193293
+  ]
+ },
+ "g3_pass": true,
+ "g4_pass": true,
+ "g5": {
+  "write": true,
+  "write_mask": true,
+  "read": true,
+  "gpt2_D_H": [
+   768,
+   12
+  ],
+  "mem_D_heads": [
+   768,
+   6,
+   6
+  ]
+ },
+ "g5_pass": true,
+ "g6": {
+  "inject": {
+   "rc": 0,
+   "err": "",
+   "acc_by_n_keys": 16,
+   "scratch": "6,384,6",
+   "warmup": 1000
+  },
+  "direct": {
+   "rc": 0,
+   "err": "",
+   "acc_by_n_keys": 16,
+   "scratch": "6,384,6",
+   "warmup": 1000
+  }
+ },
+ "g6_pass": true,
+ "all_pass": true
+}

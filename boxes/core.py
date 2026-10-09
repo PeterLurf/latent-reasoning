@@ -90,10 +90,26 @@ def tok(s):
 
 
 # ---------------------------------------------------------------- model (GPT-2 small, KV cache, trainable)
+def random_gpt2_sd(L, D, H, gen, vocab=50257, ctx=1024):
+    """§178 FROM-SCRATCH: a GPT-2-architecture state dict at the standard GPT-2 init (HF GPT2PreTrainedModel._init_weights): Linear / Conv1D and the
+    embeddings ~ N(0, 0.02), the residual projections (attn.c_proj, mlp.c_proj) ~ N(0, 0.02 / sqrt(2 L)), biases 0, LayerNorm 1 / 0. Conv1D (in, out)."""
+    n = lambda *sh, std=0.02: torch.randn(*sh, generator=gen) * std  # noqa: E731
+    sd = {"wte.weight": n(vocab, D), "wpe.weight": n(ctx, D), "ln_f.weight": torch.ones(D), "ln_f.bias": torch.zeros(D)}; rs = 0.02 / math.sqrt(2 * L)
+    for i in range(L):
+        p_ = "h.%d." % i
+        sd.update({p_ + "ln_1.weight": torch.ones(D), p_ + "ln_1.bias": torch.zeros(D), p_ + "ln_2.weight": torch.ones(D), p_ + "ln_2.bias": torch.zeros(D),
+                   p_ + "attn.c_attn.weight": n(D, 3 * D), p_ + "attn.c_attn.bias": torch.zeros(3 * D),
+                   p_ + "attn.c_proj.weight": n(D, D, std=rs), p_ + "attn.c_proj.bias": torch.zeros(D),
+                   p_ + "mlp.c_fc.weight": n(D, 4 * D), p_ + "mlp.c_fc.bias": torch.zeros(4 * D),
+                   p_ + "mlp.c_proj.weight": n(4 * D, D, std=rs), p_ + "mlp.c_proj.bias": torch.zeros(D)})
+    assert D % H == 0
+    return sd
+
+
 class GPT2KV(nn.Module):
-    def __init__(self, sd):
-        super().__init__()
-        self.L = sum(1 for k in sd if k.startswith("h.") and k.endswith(".ln_1.weight")); self.H = 12; self.D = 768
+    def __init__(self, sd, H=12):
+        super().__init__()                                                  # §178: D from wte; H an argument (GPT-2: 768 / 12)
+        self.L = sum(1 for k in sd if k.startswith("h.") and k.endswith(".ln_1.weight")); self.H = H; self.D = int(sd["wte.weight"].shape[1])
         self.p = nn.ParameterDict({k.replace(".", "_"): nn.Parameter(v.float().clone()) for k, v in sd.items()
                                    if not k.endswith(".attn.bias") and not k.endswith(".attn.masked_bias")})
         self.n_nonemb = sum(v.numel() for k, v in self.p.items() if k.startswith("h_") or k.startswith("ln_f"))
