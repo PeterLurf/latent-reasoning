@@ -331,6 +331,7 @@ Published:
 | Text CoT, GPT-2 (Dilgren & Wiegreffe replication; HF gpt2-gsm8k-cot ckpt 25) | 41.6 | 2604.04902 Table 1 (Dilgren & Wiegreffe; public MIT checkpoints connordilgren/gpt2-gsm8k-*) | yes |
 | Coconut, GPT-2 (Dilgren & Wiegreffe replication; HF gpt2-gsm8k-coconut ckpt 33) | 33.1 | 2604.04902 Table 1 (Dilgren & Wiegreffe; public MIT checkpoints connordilgren/gpt2-gsm8k-*) | yes |
 | CODI, GPT-2 (Dilgren & Wiegreffe replication) | 42.2 | 2604.04902 Table 1 (Dilgren & Wiegreffe; public MIT checkpoints connordilgren/gpt2-gsm8k-*) | yes |
+| PCCoT (parallel continuous CoT, Jacobi; c = 24 latents, T = 3), GPT-2 Small | 49.5 | 2506.18582 Table 1 (mean of 3 runs, +/- 0.31; GSM8K-Aug; its CoT row 44.1 is copied from CODI; released whynlp/pccot-gpt2) | yes |
 
 ## mult4x4
 
