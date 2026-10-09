@@ -299,7 +299,149 @@
  "k8": {
   "runs": {
    "1": {
-    "status": "open"
+    "status": "done",
+    "acc_by_n": {
+     "1": 0.985,
+     "2": 0.951,
+     "3": 0.763,
+     "4": 0.518,
+     "5": 0.313,
+     "6": 0.206,
+     "7": 0.162,
+     "8": 0.146,
+     "9": 0.142,
+     "10": 0.113,
+     "11": 0.118,
+     "12": 0.118,
+     "13": 0.113,
+     "14": 0.13,
+     "15": 0.097,
+     "16": 0.117
+    },
+    "pooled": 0.35133333333333333,
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "compute_by_n": {
+     "1": {
+      "flops_trunk": 7737211392.0,
+      "sequential_passes": 9
+     },
+     "2": {
+      "flops_trunk": 12337202688.0,
+      "sequential_passes": 9
+     },
+     "3": {
+      "flops_trunk": 16940179968.0,
+      "sequential_passes": 9
+     },
+     "4": {
+      "flops_trunk": 21546143232.0,
+      "sequential_passes": 9
+     },
+     "5": {
+      "flops_trunk": 26155092480.0,
+      "sequential_passes": 9
+     },
+     "6": {
+      "flops_trunk": 30767027712.0,
+      "sequential_passes": 9
+     },
+     "7": {
+      "flops_trunk": 35381948928.0,
+      "sequential_passes": 9
+     },
+     "8": {
+      "flops_trunk": 39999856128.0,
+      "sequential_passes": 9
+     },
+     "9": {
+      "flops_trunk": 44620749312.0,
+      "sequential_passes": 9
+     },
+     "10": {
+      "flops_trunk": 49244628480.0,
+      "sequential_passes": 9
+     },
+     "11": {
+      "flops_trunk": 53871493632.0,
+      "sequential_passes": 9
+     },
+     "12": {
+      "flops_trunk": 58501344768.0,
+      "sequential_passes": 9
+     },
+     "13": {
+      "flops_trunk": 63134181888.0,
+      "sequential_passes": 9
+     },
+     "14": {
+      "flops_trunk": 67770004992.0,
+      "sequential_passes": 9
+     },
+     "15": {
+      "flops_trunk": 72408814080.0,
+      "sequential_passes": 9
+     },
+     "16": {
+      "flops_trunk": 77050609152.0,
+      "sequential_passes": 9
+     }
+    },
+    "deep": false,
+    "mean_9_12": 0.12275,
+    "depth_general": false,
+    "pooled_k0": 0.14533333333333334,
+    "pooled_k1": 0.1698333333333333,
+    "removal": true,
+    "skip_pooled": {
+     "1": 0.33349999999999996,
+     "2": 0.33349999999999996,
+     "4": 0.33349999999999996,
+     "6": 0.33349999999999996,
+     "8": 0.33349999999999996
+    },
+    "skip_step_specific": false,
+    "think_necessary": false,
+    "serial": {
+     "1": {
+      "hybrid": 0.09873949579831932,
+      "donor": 0.06932773109243698,
+      "recipient": 0.09453781512605042
+     },
+     "2": {
+      "hybrid": 0.10714285714285714,
+      "donor": 0.08403361344537816,
+      "recipient": 0.0819327731092437
+     },
+     "4": {
+      "hybrid": 0.10084033613445378,
+      "donor": 0.09033613445378151,
+      "recipient": 0.08403361344537816
+     },
+     "6": {
+      "hybrid": 0.09873949579831932,
+      "donor": 0.09243697478991597,
+      "recipient": 0.09453781512605042
+     }
+    },
+    "serial_null": 0.10294117647058823,
+    "serial_gap_by_t": {
+     "1": -0.0042016806722689065,
+     "2": 0.0042016806722689065,
+     "4": -0.0021008403361344463,
+     "6": -0.0042016806722689065
+    },
+    "serial_nest": false,
+    "serial_best_t": "2",
+    "serial_best_gap": 0.0042016806722689065,
+    "serial_donor_share": {
+     "1": 0.06932773109243698,
+     "2": 0.08403361344537816,
+     "4": 0.09033613445378151,
+     "6": 0.09243697478991597
+    },
+    "n_serial_items": 476,
+    "mean_9_12_at_2K": 0.12,
+    "more_thinking": false
    },
    "2": {
     "status": "open"
@@ -308,12 +450,12 @@
     "status": "open"
    }
   },
-  "n_done": 0,
+  "n_done": 1,
   "deep": 0,
   "think_necessary": 0,
   "serial_nest": 0,
   "depth_general": 0,
-  "slot1_deep": null
+  "slot1_deep": false
  },
  "k16": {
   "runs": {
@@ -439,7 +581,7 @@
   "k0_fails": true
  },
  "reading": [
-  "k8: pending (0 / 3 seeds)",
+  "k8: slot 1 not DEEP (gate closed)",
   "k16: pending (0 / 3 seeds)"
  ]
 }

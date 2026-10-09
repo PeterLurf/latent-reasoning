@@ -10586,6 +10586,23 @@ subspace.**
   - Every arm records it under the same trunk convention (Meter; the DeltaMem branch adds < 5%).
   - The synthetic check had used bare numbers, so the crash appeared only on the first two-seed CoT read.
 
+**§170 interim (2026-10-09 12:29 EDT; s170_k8_s1, RTX 3090, 48k, fast_add; score_s170). K8 slot 1 is not DEEP, so the gate is closed. Unlike §165 / §169 / §171, its passes are used, but only up to about single-pass accuracy, and more thinking hurts.**
+* **Accuracy by n at K′ = 8:** 0.985 / 0.951 / **0.763** / 0.518 / 0.313 / 0.206 / 0.162 / 0.146 at n = 1..8 (pooled 3..8: 0.351); mean 0.123 at n 9–12.
+  - DIRECT reads 0.64 / 0.75 at n = 3 and 0.43 / 0.53 at n = 4.
+* **The K′ curve rises then falls:**
+  - n = 2: 0.45 / 0.62 / 0.88 / **0.95** / 0.73 at K′ = 0 / 1 / 4 / 8 / 16;
+  - n = 3: 0.22 / 0.30 / 0.52 / **0.76** / 0.37.
+  - Removal holds (pooled K′ 0 / 1: 0.145 / 0.170, against 0.351).
+  - **Overthinking:** K′ = 16 falls well below K′ = 8.
+* **SERIAL-NEST fails:** hybrid 0.10 at every t, against a null of 0.103 (n 476).
+* **STEP-RECOVER:** v₁ 0.42; v₂.. at chance (0.10–0.14).
+* **skip_pass is the same for every t** (pooled 0.304, identical at every n). See note 170-4.
+* **Consequences:**
+  - §177's trigger has fired (§169 K8 and §170 K8 both fail). §170's failure mode differs, though: its passes are used.
+  - §175's gate (§170 K8 slot 1 read) is met.
+  - K16 is not opened under the registered rule.
+* **Scorer fixes, disclosed (no rule change):** `serial_null` is written as {t, hybrid}, and score_s170 / score_s175 now read its hybrid share.
+
 ## 171. READ-SLOTS: think passes in which a few learned slots read the once-encoded input and write the memory (a Perceiver / RIN-style task-agnostic read; the user's "creating new methodologies and architectures for task agnostic" via Audit; roadmap steps: task-agnostic input, and scale (long inputs); pre-registered 2026-10-09 01:54 EDT, after Literature's scout 589e6eb5 (`docs/LIT_TASK_AGNOSTIC_SCOUT_2026-10-09.md`, rank 1) and Audit's review, before any implementation or run)
 
 **Why.**
