@@ -1,0 +1,244 @@
+{
+ "arm": "delta",
+ "family": "s5",
+ "seed": 2,
+ "l_max": 32,
+ "train_sec": 1,
+ "n_nonfinite": 0,
+ "eval_dtype": "torch.bfloat16",
+ "micro": 8,
+ "gpu": "NVIDIA GeForce RTX 3070",
+ "train_gpu": "NVIDIA GeForce RTX 3070",
+ "train_driver": "591.86",
+ "final_acc_by_length": {
+  "1": 1.0,
+  "2": 1.0,
+  "3": 1.0,
+  "4": 1.0,
+  "5": 1.0,
+  "6": 1.0,
+  "7": 1.0,
+  "8": 1.0,
+  "9": 1.0,
+  "10": 1.0,
+  "11": 1.0,
+  "12": 1.0,
+  "13": 1.0,
+  "14": 1.0,
+  "15": 1.0,
+  "16": 1.0,
+  "17": 1.0,
+  "18": 1.0,
+  "19": 1.0,
+  "20": 1.0,
+  "21": 1.0,
+  "22": 1.0,
+  "23": 1.0,
+  "24": 1.0,
+  "25": 1.0,
+  "26": 1.0,
+  "27": 1.0,
+  "28": 1.0,
+  "29": 1.0,
+  "30": 1.0,
+  "31": 1.0,
+  "32": 1.0
+ },
+ "acc_by_length_cumulative": {
+  "1": 1.0,
+  "2": 1.0,
+  "4": 1.0,
+  "8": 1.0,
+  "16": 1.0,
+  "32": 1.0,
+  "64": 0.9685,
+  "128": 0.0115,
+  "256": 0.0,
+  "512": 0.0
+ },
+ "long_acc": 0.0,
+ "long_len": 512,
+ "test_n": 2000,
+ "acc_by_length_ext": {
+  "48": 0.9995,
+  "64": 0.988
+ },
+ "acc_2048": 0.0,
+ "acc_2048_n": 500,
+ "donor": {
+  "pos2": {
+   "donor_consistent": 1.0,
+   "recipient_consistent": 0.013,
+   "chance_overlap": 0.013,
+   "n": 1000
+  },
+  "pos4": {
+   "donor_consistent": 1.0,
+   "recipient_consistent": 0.013,
+   "chance_overlap": 0.013,
+   "n": 1000
+  },
+  "pos6": {
+   "donor_consistent": 1.0,
+   "recipient_consistent": 0.016,
+   "chance_overlap": 0.016,
+   "n": 1000
+  }
+ },
+ "s162": {
+  "state_probe": {
+   "2": 0.656,
+   "4": 0.611,
+   "8": 0.6295,
+   "16": 0.6085,
+   "32": 0.5715
+  },
+  "op_probe": {
+   "2": {
+    "0": 1.0,
+    "1": 1.0
+   },
+   "4": {
+    "0": 1.0,
+    "1": 0.9995,
+    "2": 0.6785,
+    "3": 0.9195
+   },
+   "8": {
+    "0": 1.0,
+    "1": 0.995,
+    "2": 0.2325,
+    "3": 0.1465,
+    "4": 0.1715,
+    "5": 0.157,
+    "6": 0.2095,
+    "7": 0.4185
+   },
+   "16": {
+    "0": 1.0,
+    "1": 0.982,
+    "2": 0.1305,
+    "3": 0.051,
+    "4": 0.0605,
+    "5": 0.047,
+    "6": 0.0455,
+    "7": 0.036,
+    "8": 0.051,
+    "9": 0.0555,
+    "10": 0.047,
+    "11": 0.04,
+    "12": 0.0525,
+    "13": 0.0545,
+    "14": 0.076,
+    "15": 0.169
+   },
+   "32": {
+    "0": 1.0,
+    "1": 0.9815,
+    "2": 0.0945,
+    "3": 0.0335,
+    "4": 0.0255,
+    "5": 0.024,
+    "6": 0.023,
+    "7": 0.023,
+    "8": 0.031,
+    "9": 0.0265,
+    "10": 0.022,
+    "11": 0.0185,
+    "12": 0.014,
+    "13": 0.0205,
+    "14": 0.014,
+    "15": 0.021,
+    "16": 0.024,
+    "17": 0.014,
+    "18": 0.023,
+    "19": 0.023,
+    "20": 0.025,
+    "21": 0.022,
+    "22": 0.0155,
+    "23": 0.0245,
+    "24": 0.0205,
+    "25": 0.021,
+    "26": 0.027,
+    "27": 0.029,
+    "28": 0.0225,
+    "29": 0.021,
+    "30": 0.0275,
+    "31": 0.0775
+   }
+  },
+  "state_probe_lambda": {
+   "2": 9.999999999999999e-05,
+   "4": 9.999999999999999e-05,
+   "8": 9.999999999999999e-05,
+   "16": 9.999999999999999e-05,
+   "32": 9.999999999999999e-05
+  },
+  "probe_n_fit": 3000,
+  "probe_n_score": 2000,
+  "probe_def": "near-OLS 120-way (155-4): standardised dual ridge, 3-fold CV lambda 1e-9..1e-6 (edge-widened), one-hot argmax; random-start fit / score chains",
+  "state_edit": {
+   "propagation_share": 0.0,
+   "random_edit_share": 0.0,
+   "null_value": 0.0,
+   "unedited_correct": 1.0,
+   "n": 590,
+   "n_drawn": 1000,
+   "n_probe_correct": 590,
+   "p": 16,
+   "chain_len": 32,
+   "edit_norm_median": 0.06680386140942575,
+   "state_norm_median": 6311.81103515625
+  },
+  "key_cos": [
+   0.67162,
+   0.58925,
+   0.62459,
+   0.61732,
+   0.48518,
+   0.70269,
+   0.29055,
+   0.62125,
+   0.65786,
+   0.58415,
+   0.5013,
+   0.72485
+  ]
+ },
+ "s155": {
+  "recurrence": [
+   {
+    "step": "end",
+    "write_var_from_read_r2": 0.4778622143256037,
+    "write_var_from_input_r2": 0.9773885969250276,
+    "write_var_from_input_read_r2": 0.9979468044645533,
+    "write_var_incremental_read_r2": 0.020558207539525752,
+    "rho_jvp": 0.772253155708313,
+    "rho_loop": 0.05060534179210663,
+    "rho_method": "torch.func.jvp (SDPA math backend), fp32"
+   }
+  ],
+  "write_grad_norm": [],
+  "n_nonfinite": 0,
+  "write_grad_spikes": [],
+  "write_grad_spikes_floor": [],
+  "mem_write": "top",
+  "write_mix": [
+   2000,
+   6000
+  ],
+  "gamma_final": 1.0,
+  "g_add": 0.0002862975816242397,
+  "g_del": 1.0715384483337402
+ },
+ "s166": {
+  "post_train_from": "s162_long_s2",
+  "pt_steps": 300,
+  "pt_lr": 5e-06,
+  "init_mode": "pass",
+  "init_p": 0.5,
+  "state_source": "current",
+  "pass_def": "init_p of chains start from the current model's final memory of a random-start chain of one length U(1..32) per batch; segment 0 skipped; target g o items"
+ },
+ "eval_sec": 5059
+}

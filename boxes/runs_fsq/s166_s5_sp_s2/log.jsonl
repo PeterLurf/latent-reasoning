@@ -1,0 +1,4 @@
+{"step": 100, "loss": 1.3080781276741393e-05, "L_max": 2, "sec": 2217, "g_add": 0.00028625171398743987, "g_del": 1.0714563131332397, "fade": 1.0, "gamma": 1.0, "write_grad_norm": 0.0013327842285983137, "write_grad_spike_100x_floor": false}
+{"step": 200, "loss": 6.049739401297327e-05, "L_max": 2, "sec": 4165, "g_add": 0.00028627165011130273, "g_del": 1.0714454650878906, "fade": 1.0, "gamma": 1.0, "write_grad_norm": 0.005538273891773855, "write_grad_spike_100x_floor": false}
+{"step": 300, "loss": 5.908926497601108e-05, "L_max": 2, "sec": 6131, "g_add": 0.0002862975816242397, "g_del": 1.0715384483337402, "fade": 1.0, "gamma": 1.0, "write_grad_norm": 0.0053768858154558076, "write_grad_spike_100x_floor": false}
+{"eval_only": true, "at": "2026-10-09 01:50:08"}
