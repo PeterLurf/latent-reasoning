@@ -264,6 +264,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 174 | MULTI-TASK (the user's task agnosticness, strongest form): one INJECT K8 model on mult + nested with no task flag; MATCH vs single-task K8 (BUDGET vs INTERFERENCE via 24k evals), THINK-NECESSARY per task, cross-task swap | registered (gated on §169 / §170 K8 slot 1) | **open** |
 | 175 | STEP-AUX (Audit's lead after SIM-CoT): §170 INJECT K8 + a shared-trunk read-only aux decoder emitting Feng's CoT step t from M_t (λ 1 fading to 0 by 48k); AUX-HELPS / HURTS-DEPTH vs FINAL-only, READOUT, STEP-RECOVER | registered (gated on §170 K8 slot 1) | **open** |
 | 176 | RAND-K (Audit's lead after §172; Huginn / Bansal): INJECT trained with a random think-pass count (RK) or progressive no-grad prefixes (PROG); C2-BEYOND at K' = 64 beyond training support + NO-OVERTHINKING vs fixed K8's same curve | registered (gated on §169 K8 slot 1) | **open** |
+| 177 | PASS-DISTINCT: arms to make identical-input think passes trainable - (a) pass index, (d) schedule fade + index (mult), (f) step-matched K, (g) curriculum + Poisson K (nested, gated on f); MOVES-MECHANISM (173-1) per arm | registered (cloud gated on §169 + §170 K8 failing; local previews descriptive) | **open** |
 
 ## Live sections
 
@@ -11038,6 +11039,142 @@ how many think passes run in training.
   - PROG is unchanged (k₁ ~ U{0..8} without gradient, k₂ ~ U{1..8} with gradient: mean 8.5 passes, 4.5 of them with gradient). It is reported with that ratio.
 * **The corr(K, n) gate** is scored at 100k draws (Audit's ruling): the 0.02 bound at 10k was about 2 SE, and independence holds by construction.
 * No rule changes.
+
+**Note 176-2 / 175-1 (2026-10-09 10:18 EDT; before any preview output is read; Audit). Local 8k-step previews of §175 and §176 are descriptive.**
+* proto176_rk (4060), proto176_prog (3070) and proto175_auxk8 (2070, fp32) are read by no rule.
+* Arm and GPU class are confounded (the fsq120 basin lesson), so the GPU is recorded per dir. The registered cloud cells are the readings.
+* Any §175 / §176 rule change after a preview has been read is dated "post-preview" and may only tighten.
+
+## 177. PASS-DISTINCT: making identical-input think passes trainable, one registration with arms (pre-registered 2026-10-09 10:18 EDT, after Literature's checks 90486a9b (SCHEDULE-FADE) and 483195dc (arms f / g) and Audit's review, before any implementation or run; **cloud launches gated on the trigger: §169 K8 and §170 K8 both fail**; local 8k-step previews run now and are read by no rule)
+
+**Why.**
+* **Every think-pass design whose passes see identical input has failed with its memory unused.**
+  - §165 K8 / K0 / K16c1 and its previews read 0.0.
+  - §171 K8 / BLIND read 0.003 / 0.0.
+  - Their K′ and skip curves are flat, and their final training loss equals a single pass's (§171: 0.650 against §169 K0's 0.654).
+* **§161 MIX, whose passes bring new input, works.**
+* **What the failed passes do (descriptive, §171 addenda 2–3b).**
+  - The consecutive-pass cosine of the delta state is 0.977 → 0.9999, against 0.46–0.56 (medians) in the four working serial models.
+  - The additive state only grows in scale.
+  - The answer moves with that scale but is never right (§173).
+  - The arm-at-initialisation calibration (note 173-1) is pending.
+* **No mechanism is claimed.**
+  - The g_add collapse is shared by the working models.
+  - "Pass-invariant reads" holds in direction only, against a baseline whose passes bring new input.
+  - Audit's reading: extra passes added at fine-tune time get no learning signal for what pass t should do (Goyal 2310.02226; fine-tune-only pauses are lukewarm).
+* **The arms each supply a pass-distinguishing or step-tying signal:**
+  - (a) an index;
+  - (d) a visible schedule that fades;
+  - (f) a pass count matched to the step count, as Fan's successful loops do;
+  - (g) a curriculum with random K.
+* Each is read for accuracy and for note 173-1's MOVES-MECHANISM.
+
+**Arms** (§169's INJECT on §161's mix, K8, 48k, RTX 3090, fast_add; each arm changes one thing):
+* **(c) MASKED-WRITES is dropped (Audit, 09:05).** Its rationale (the additive re-add driving g_add → 0) is shared by the working models, and it does not target the pass-invariance candidate.
+* **(a) PASS-INDEX:** a learned timestep embedding is added to the think token's input in pass t (Universal Transformers), so each pass is distinguishable before
+  reading the memory.
+  - **Randomised offset (Abacus-style, as §161's IDX; Audit):** the table has 72 rows, initialised at zero. In training, pass t uses row o + t with o ~ U{0..64 − K}
+    per batch. Indices up to K′ = 64 are therefore trained, and C2 at K′ > K is not blocked by unseen rows. At test o = 0.
+  - o uses each batch's actual pass count (for (d), K = 4n plus any start segment, up to about 21 at 4×5). **Gate: o + K ≤ 72** on every batch (Audit).
+* **(b) M₀** (a learned or random initial memory, as Huginn's s₀) is not run: it is the weakest-motivated of the candidates.
+* **(d) SCHEDULE-FADE + PASS-INDEX** (Audit's 08:45 lead; ICoT-SI's mechanism, 2405.14838, applied to the input schedule; with (a)'s index, after Literature and Audit):
+  training starts exactly as §161 MIX, with one digit pair per pass (which works and is exact), plus (a)'s index.
+  - At the fade's end each pass must select its own operand from identical text, exactly what §171 failed at. The index is what tells pass t it is the t-th step
+    once the schedule is gone, so fade alone is not run (it plausibly reproduces §171).
+  - **(d) against (a)** shows whether the fade adds anything beyond the index.
+  - **A stochastic per-pass mixture (Literature):** each pass sees the full problem text instead of its pair with probability p, ramped linearly from 0 at 12k to 1
+    at 36k. 36k–48k is pure INJECT format. The continuous ramp smooths removal: there are no 25% steps.
+  - **The pass count is the open issue.** §161's count is one pass per digit pair (4n for 4×n). Fading the input leaves that count, so the faded model runs
+    K = 4n INJECT passes. The count is still a function of input size (the only schedule information left).
+    - The rule reads at K = 4n. Fixed K′ ∈ {8, 16, 24} and §173's answer-settling h are descriptive, as the route to removing the count.
+    - **Honest scope (Audit):** K = 4n is computable from the input length. The only schedule information left is how many passes, not what each pass does.
+      Removing the size-dependent count is a separate step (halting), not this arm's job. If (d) passes, the immediate follow-up is (d) with §176-style random K, to see
+      whether the count can float.
+  - **Prior** (Audit): pause tokens help only when pretrained with (Goyal 2310.02226). Fine-tune-time identical passes give the model no signal for what pass t should do;
+    the visible schedule supplies it while the memory learns its per-pass job.
+  - **Mechanism checks:** g_add and pass-to-pass read variation as p rises; accuracy at p = 0.25 / 0.5 / 0.75 / 1 (drops and recovers, or dies).
+  - **Prior:** no input-scaffold fade precedent; the nearest is scheduled sampling, 1506.03099 (Literature 90486a9b). Goyal 2310.02226: fine-tune-only pauses are lukewarm and
+    hurt GSM8K.
+* **(f) STEP-MATCHED K, on §170's nested task** (Audit's 10:00 lead; Fan 2409.15647 §3: input injection, answer-only CE, per-example K = T(n), mixed lengths,
+  identical input per step, length 20 → 40+). §170's INJECT exactly, except K is matched to the step count per item, for n 1..8 mixed, answer only.
+  - **K ~ U{n, n + 1, n + 2} per micro-batch,** a window around T(n) = n (Literature 483195dc). Deterministic K = n is OOD-unstable (Kuo).
+  - Micro-batches are bucketed by n. Mean K ≈ 5.5.
+  - Seed variance is reported.
+  - The memory must still hold pending partial results (the stack-depth flag), although the expression is re-shown each pass.
+  - With one fixed K8, nothing ties a pass to a step: a 2-step item and an 8-step item get the same 8 passes.
+  - **Rules:**
+    - **HIT(run):** §170's DEEP (≥ 0.90 at every n in 3..8, at K′ = n + 1) and THINK-NECESSARY (168-1's form: K′ = 0 / 1 against K′ = n + 1) and DISTINCT-PASSES
+      (note 173-1).
+    - **BEYOND(run):** at K′ = n + 1, the mean at n 9–12 is ≥ 0.80 (TEXT-COT 0.535).
+    - **FAIL(run):** pooled n 3..8 ≤ DIRECT's pooled + 0.05, with delta cosines ≥ 0.96 at passes 2–4.
+    - **Two FAIL seeds close fixed / oracle-count K only.** The identical-input failure is then not a count mismatch.
+      - The curriculum and long-training ingredient (Kohli's grok) stays untested, and the closure does not cover it.
+      - A FAIL run whose training loss is still falling at the end reads "open (under-trained)", not closed (Audit).
+    - **DISTINCT-PASSES item set:** passes 2–4 exist only for K ≥ 4, so the cosine is computed on n ≥ 3 items at K′ = n + 1 (K ≥ 4). Passes 2–3 at n ≤ 2 are descriptive.
+  - **Matched data (Audit):** n is sampled per bucket with the same marginal over n 1..8 as §170's DIRECT / K8, and the same total items. So "≤ DIRECT pooled + 0.05" compares
+    like with like. Per-bucket step counts are recorded in args.
+  - **Compute disclosure:** mean K ≈ 5.5, below K8's 8. Passes and FLOPs per n are reported beside K8's, so a HIT cannot be read as "cheaper and better" without the depth-leak
+    caveat attached.
+  - **Disclosure (LIT_F1S_CHECK 2026-10-01 §2; our THEORY §22.2's Prop. 4(b), with Kuo 2606.29983 supplying K = T(n)):** a step-matched K leaks the depth (a count
+    shortcut).
+    - The rules read at K′ = n + 1, the window's centre. K′ = n, n + 2 and n + 4 are reported (answer stability, and §173's answer2).
+    - **The depth is already visible in the nested text** (count the operators), so K = T(n) adds no new information (Literature, Audit). The disclosure stands, but it does
+      not block a C1 reading.
+    - Any C5 claim uses §173's halting, not the oracle K.
+  - §61's F1-S (P = d on a GPT-2 label channel; 1 / 3 seeds) is the only earlier oracle-count try. It was not on DeltaMem / INJECT think passes.
+  - Two seeds, about $5.
+* **(g) CURRICULUM + POISSON K, oracle-free** (Audit's lead B; Kohli 2604.07822).
+  - A threshold depth curriculum on n (n + 1 is admitted only after ≥ 0.95 held-out at n), with K ~ clip(Poisson(6), 2, 10) per batch (§176's sampler).
+    - The cap is 10, (f)'s maximum K (n = 8 trains at K up to 10), so the deepest bucket is not under-provisioned relative to (f). That asymmetry would bias
+      "(f) hits, (g) fails" toward the count explanation (Audit). Kohli clips at 8.
+    - λ = 6 is our choice: Kohli's λ was not found (Literature).
+  - Kohli's systematic generalisation came only after a three-stage grok (memorise → ID → OOD), so (g) budgets long training: a cap, fixed if it runs, with the loss curve
+    reported.
+  - It is free of the depth leak.
+  - **Gated on (f) HIT, with its own projection:** if (f) hits and (g) fails, the count does the work (a C5 finding). If (f) fails, (g) is not run.
+    Kohli's grok timescale means a short budget would read as a false null.
+  - About $3–4.
+  - **A cheap check first:** §170 K8's train-loss curve at 24k (eval_24k). If it is still falling with no memorise plateau, extending K8 comes before redesign.
+* **Reference:** §169 K8 (the failed baseline). One slot each, about $2.5 per arm.
+  - An (a) or (d) arm EXACT at slot 1 opens its s2 / s3 and its use on §170.
+  - (f)'s second seed follows its slot 1.
+
+**Rules for (a) and (d) (§169's, unchanged; `theory/score_s177.py`):** at the arm's rule K (8 for (a); 4n for (d)):
+* **EXACT:** 4×4 ≥ 0.99.
+* **LENGTH-GENERAL(arm):** ≥ 2 / 3 seeds EXACT with ext_4x8 ≥ 0.90.
+* **THINK-NECESSARY:** K′ = 0 and K′ = 1 each ≤ 0.5× the accuracy at K, with step-specific skip damage.
+* **MORE-THINKING:** descriptive.
+* **C1 (arm)** also needs §164 DIRECT-MIX < 0.95 (0.001 / 0.004).
+* **(d) against (a):** read when both have slot 1.
+* **Mechanism measures, per arm (Audit):** the cosine of consecutive decoder reads and of consecutive delta states, per pass; the additive norm by pass; the read map's
+  variation across passes (C7); the final training loss against §169 K0's 0.654 (do the passes add anything in training?).
+* **No mechanism is claimed in advance.** §173 on §171 did not support pass-invariant reads. Audit's reading is that fine-tune-time passes get no learning signal
+  (Goyal), which makes (d) the principled arm and (a) the test of whether an index alone is enough of a signal.
+
+**Fields** (`s177` block in eval.json):
+* **(a) and (d):** acc_by_kprime {"0", "1", "K", "2K"} ("K" = the rule K), ext_4x8_by_kprime {"K", "2K"}, skip_pass {t: acc}, plus test_acc and ext_* at the rule K.
+  - For (d) also: acc_by_p {"0.25", "0.5", "0.75", "1"} (4×4 accuracy at those fade fractions) and rule_k_by_size.
+* **(f) and (g):**
+  - acc_by_n at the rule K′ (n + 1 for (f); 10 for (g));
+  - acc_by_n_kprime {"0", "1", "n", "n+1", "n+2", "n+4"} for (f), and {"0", "1", "10", "16"} for (g), each {n: acc};
+  - train_loss_tail {first_half, second_half}: the mean loss over the last 10% of logged steps, split into halves;
+  - compute_by_n.
+* **All arms:** note 173-1's eval_s177_dir.json.
+* **(g)'s rules:**
+  - HIT: DEEP at K′ = 10, THINK-NECESSARY (K′ = 0 / 1 against 10) and DISTINCT-PASSES.
+  - BEYOND: mean n 9–12 ≥ 0.80 at K′ = 16.
+* **The under-trained test (f's FAIL):** train_loss_tail second_half < first_half × 0.98, i.e. still falling.
+
+**Local previews (descriptive only; Audit's conditions).**
+* `proto177_{tidx,fadetidx,kmatch}_s1`: 8k steps, one arm per local card, memory-checked at each arm's largest shape. Checkpoints every ≤ 1k steps; logs kept.
+* **Read by no rule.** If the trigger never fires, they stay descriptive and no C1 result is claimed from them.
+* **Arm and GPU class are confounded** (one arm per card; the fsq120 basin lesson). The GPU is recorded per dir, and cross-arm preview differences are labelled card-confounded.
+  An interesting arm is read in its cloud cell.
+* **Any §177 rule change after a preview has been read is dated "post-preview" and may only tighten.**
+
+**Placement:** cloud cells pending the trigger. Slot 1 is (a), (d) and (f), about $7.5 within Audit's ≈ $10 approval. (g) follows only on an (f) HIT (about $3–4, a projection to Audit). (d) needs per-pass input switching between pair tokens and the full text (multpair / inject169 have both formats). Dirs `s177_{tidx,fadetidx,kmatch,curpois}_s{seed}`. Scorer `theory/score_s177.py`, committed with this registration.
+* **Gates:** gradflow per loss term (in particular (d)'s fade schedule and (a)'s index embedding); the o + K ≤ 72 assert; K-window and bucket asserts for (f);
+  smoke_plain; Audit's diff review; memcheck of the largest shape (f: n = 8 at K = 10 with the eval at K′ = 12; (a) / (d): their rule K with the K′ sweep).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
