@@ -260,6 +260,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 170 | NESTED (the user's go): Feng's mod-11 bracketed expressions; a measured DIRECT boundary over n, then INJECT K8 / K0 (K16 gated) against Feng's text CoT; C1 = DEEP + THINK-NECESSARY + SERIAL-NEST, C3 at text CoT's accuracy for less compute | registered | **open** |
 | 171 | READ-SLOTS (task-agnostic architecture): the input encoded once; each think pass 8 learned slots read it and write DeltaMem-R; K8 on §161's mix; head to head with INJECT (CHEAPER-EQUAL); read map / entropy (C7) | registered | **open** |
 | 172 | PCCoT-PROBE (eval only): §149's battery on whynlp/pccot-gpt2 (GSM8K 49.48 at release); LATENTS-USED, ITERATIONS-USED (T' = 0 = pause), Jacobi RHO, descriptive SERIAL | registered | **open** |
+| 173 | CONV-HALT (eval only; C5, halting): decode when the answer settles (unchanged across 2 consecutive passes, cap 2K) on the think-pass arms (§165 / §169 / §170 / §171); HALT-EQUAL + ADAPTIVE | registered | **open** |
 
 ## Live sections
 
@@ -10556,6 +10557,47 @@ subspace.**
   - eval.json: acc_release, acc_by_T {"0".."8"}, acc_latents_zeroed, acc_c0, jacobi_ratio_by_T, rho_perturb_by_iter, serial {t: {donor, recipient, n, latent}}.
 * **Gates:** the sanity gate first; T′ = 3 reproduces the release accuracy exactly.
 * Dir `s172_pccot`. Scorer: `theory/score_s172.py`, committed with this registration.
+
+## 173. CONV-HALT: convergence-halted think passes as an eval-only readout on the think-pass models (C5; roadmap step 3, halting; Audit's point and Literature's scout 589e6eb5 §3; pre-registered 2026-10-09 01:57 EDT, after Audit's review (the answer-settling rule is Audit's), before any §165 K16 / K8, §169, §170 or §171 output is read)
+
+**Why.**
+* **Halting is the roadmap's third step.** Learned halting has a known failure: ACT and PonderNet collapse to one loop on a looped LM (RecurTrace 2609.03379, MathQA).
+  - The safer published forms either supervise halting with an oracle (RecurTrace) or stop at convergence (AdaAnchor 2603.15051: 48–60% fewer steps, no loss).
+* **Our think-pass models already have the signal.** The decoder can read the memory after any pass, so the answer's settling is available at eval with no new training.
+* So C5 is first read off as a decode-time rule. A learned halting head is not registered here.
+  - **Pre-registered risk for any later learned head:** collapse to one loop. Such a head must be oracle-supervised (does one more pass lower the loss?), not cost-penalised.
+
+**The rule (eval only).**
+* **Answer settling (Audit).** a(t) is the decoder's greedy answer read from M_t (a(0) = the K′ = 0 answer). The halting pass is
+  h(x) = the first t ≥ 2 with a(t) = a(t − 1) = a(t − 2) (unchanged across 2 consecutive passes), capped at 2K. The answer is a(h).
+  - It uses forward passes only: no labels, no new parameters.
+* **Why not the memory's norm change:** the additive heads accumulate without decay, so ‖M_t‖ grows roughly linearly. The full-state relative change
+  ‖M_t − M_{t−1}‖ / ‖M_t‖ then falls like 1/t whether or not the computation has converged (Audit). It would read "halts later" through norm growth alone.
+* **Descriptive (ε = 0.01 each, same cap):**
+  - (a) the change in the decoder's read r_t (the decoder's read of M_t at its own first query position), ‖r_t − r_{t−1}‖ / ‖r_t‖;
+  - (b) the change in the delta heads' state only (bounded, gated);
+  - (c) the full-state change.
+* **Models:** every think-pass arm with K ≥ 8 as it lands:
+  - §165 K16 / K8 (post hoc on model.pt);
+  - §169 K16 / K8;
+  - §170 K8 / K16;
+  - §171 K8.
+  - Sizes: 4×4 / 4×6 / 4×8 / 4×16 for the multiplication models; n ∈ {2, 4, 6, 8, 10, 12, 16} for §170.
+
+**Rules (per run; `theory/score_s173.py`).**
+* **HALT-EQUAL:** at the training-distribution size (4×4; §170 pooled n* ≤ n ≤ 8), accuracy at h ≥ accuracy at fixed K − 0.01, with mean h < K.
+* **ADAPTIVE:** mean h rises with size. Mean h at the largest tested size ≥ mean h at the smallest + 1 pass, and the size-means are non-decreasing.
+  - Read only on runs whose fixed-K accuracy at the smallest size is ≥ 0.90 (a run that cannot solve the task has no meaningful halting).
+* **Reading C5(arm):** HALT-EQUAL and ADAPTIVE in ≥ 2 / 3 seeds means the compute adapts to difficulty at no accuracy cost, with no learned halting head.
+  - Accuracy at h against fixed K at the extension sizes is reported beside it: C2 (the 2K cap lets h exceed K).
+
+**Placement.**
+* Eval only; it adds about one decode per pass per item to each eval.
+* **Implementation (Experiments):** in the eval of every think-pass arm (and post hoc on §165's K16 / K8 model.pt), a field
+  `halt {rule: {size: {acc, mean_h, frac_capped}}}` with rule keys "answer2" (the rule), "read_0.01", "delta_0.01" and "full_0.01", plus
+  `halt_fixed_k {size: acc}` (the same items at fixed K).
+  - Dirs: the host runs' own (eval.json `halt`), or `eval_s173_halt.json` for post-hoc runs.
+* Scorer: `theory/score_s173.py`, committed with this registration.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
