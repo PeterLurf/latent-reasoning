@@ -34,7 +34,54 @@
  "k0": {
   "runs": {
    "1": {
-    "status": "open"
+    "status": "done",
+    "test_4x4": 0.0,
+    "exact": false,
+    "ext_4x8": 0.0,
+    "length_general": false,
+    "ext": {
+     "ext_4x6": 0.0,
+     "ext_4x7": 0.0,
+     "ext_4x8": 0.0,
+     "ext_4x16": 0.0
+    },
+    "acc_by_kprime": {
+     "0": 0.0,
+     "1": 0.0
+    },
+    "ext_4x8_by_kprime": {
+     "0": 0.0
+    },
+    "think_necessary": false,
+    "removal_drop": false,
+    "skip_step_specific": false,
+    "more_thinking": null,
+    "digit_emergence": {
+     "after_input": {
+      "1": 0.381,
+      "2": 0.399,
+      "3": 0.137,
+      "4": 0.121,
+      "5": 0.11,
+      "6": 0.093,
+      "7": 0.13,
+      "8": 0.694
+     }
+    },
+    "skip_pass": {},
+    "compute": {
+     "flops": 4648302120.0,
+     "flops_trunk": 4533120000.0,
+     "flops_branch": 115182120.0,
+     "sequential_passes": 11,
+     "lm_head_rows": 8,
+     "tokens_processed": 23,
+     "chunks": 3,
+     "think_passes": 0,
+     "convention": "\u00a798 (boxes.core.Meter); every chunk / think pass fresh; decoder = na + nb KV-cached passes"
+    },
+    "compute_4x8": null,
+    "gpu": "NVIDIA GeForce RTX 3090"
    },
    "2": {
     "status": "open"
@@ -43,14 +90,123 @@
     "status": "open"
    }
   },
-  "gate": null,
-  "verdict": "pending",
+  "gate": false,
+  "verdict": "single pass fails (0.0)",
   "think_necessary_all": false
  },
  "k16c1": {
   "runs": {
    "1": {
-    "status": "open"
+    "status": "done",
+    "test_4x4": 0.0,
+    "exact": false,
+    "ext_4x8": 0.0,
+    "length_general": false,
+    "ext": {
+     "ext_4x6": 0.0,
+     "ext_4x7": 0.0,
+     "ext_4x8": 0.0,
+     "ext_4x16": 0.0
+    },
+    "acc_by_kprime": {
+     "0": 0.0,
+     "1": 0.0,
+     "8": 0.0,
+     "16": 0.0,
+     "32": 0.0,
+     "64": 0.0
+    },
+    "ext_4x8_by_kprime": {
+     "16": 0.0,
+     "32": 0.0,
+     "64": 0.0
+    },
+    "think_necessary": false,
+    "removal_drop": false,
+    "skip_step_specific": false,
+    "more_thinking": false,
+    "digit_emergence": {
+     "after_input": {
+      "1": 1.0,
+      "2": 0.429,
+      "3": 0.126,
+      "4": 0.106,
+      "5": 0.114,
+      "6": 0.085,
+      "7": 0.113,
+      "8": 0.473
+     },
+     "after_pass_1": {
+      "1": 1.0,
+      "2": 0.439,
+      "3": 0.141,
+      "4": 0.102,
+      "5": 0.116,
+      "6": 0.087,
+      "7": 0.102,
+      "8": 0.48
+     },
+     "after_pass_4": {
+      "1": 1.0,
+      "2": 0.439,
+      "3": 0.143,
+      "4": 0.099,
+      "5": 0.109,
+      "6": 0.09,
+      "7": 0.105,
+      "8": 0.476
+     },
+     "after_pass_8": {
+      "1": 1.0,
+      "2": 0.448,
+      "3": 0.149,
+      "4": 0.094,
+      "5": 0.112,
+      "6": 0.095,
+      "7": 0.117,
+      "8": 0.475
+     },
+     "after_pass_12": {
+      "1": 1.0,
+      "2": 0.464,
+      "3": 0.153,
+      "4": 0.101,
+      "5": 0.112,
+      "6": 0.106,
+      "7": 0.113,
+      "8": 0.48
+     },
+     "after_pass_16": {
+      "1": 1.0,
+      "2": 0.467,
+      "3": 0.157,
+      "4": 0.094,
+      "5": 0.11,
+      "6": 0.104,
+      "7": 0.117,
+      "8": 0.488
+     }
+    },
+    "skip_pass": {
+     "1": 0.0,
+     "4": 0.0,
+     "8": 0.0,
+     "12": 0.0,
+     "16": 0.0
+    },
+    "compute": {
+     "flops": 11132118432.0,
+     "flops_trunk": 10828480512.0,
+     "flops_branch": 303637920.0,
+     "sequential_passes": 34,
+     "lm_head_rows": 8,
+     "tokens_processed": 60,
+     "chunks": 10,
+     "think_passes": 16,
+     "convention": "\u00a798 (boxes.core.Meter); every chunk / think pass fresh; decoder = na + nb KV-cached passes"
+    },
+    "compute_4x8": null,
+    "gpu": "NVIDIA GeForce RTX 3090"
    },
    "2": {
     "status": "open"
@@ -59,10 +215,10 @@
     "status": "open"
    }
   },
-  "gate": null,
-  "verdict": "pending",
+  "gate": false,
+  "verdict": "chunk 1: 4x4 0.0, ext_4x8 0.0 (descriptive)",
   "think_necessary_all": false
  },
- "direct_mix_mean_4x4": null,
+ "direct_mix_mean_4x4": 0.0025,
  "reading": "pending"
 }
