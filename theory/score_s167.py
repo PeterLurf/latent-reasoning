@@ -6,7 +6,7 @@ R (k in {16, 64}); intervention S_rec <- S_rec + R R^T (S_don - S_rec); IIA = ex
 Controls (fixed now; the subspace-patching illusion, 2311.17030): RANDOM-SUBSPACE (an unfitted random k-subspace) IIA <= 0.2 and SHUFFLED-TARGETS (DAS fit
 to a mismatched donor's counterfactuals, held-out IIA against those targets) <= 0.2.
 DECOMPOSABLE(model, t): fitted IIA >= 0.8 at some k <= 64 AND IIA - unchanged_target_share >= 0.5 (Audit: the null rate) AND both controls <= 0.2 AND
-necessity_drop >= 0.3 (Literature: mean-ablating the fitted subspace in unpatched runs lowers accuracy) AND random-model IIA <= 0.2 at k 16 / 64 (note 167-1). k in {1, 2, 4, 8, 16, 64} (+ 2048 reference). NOT-DECOMPOSABLE: fitted IIA < 0.5 at k = 64 with the controls valid.
+necessity_drop - necessity_random (same k) >= 0.3 (note 167-4; necessity_random >= 0.9 -> off-manifold ablation, necessity uninformative) AND random-model IIA <= 0.2 at k 16 / 64 (note 167-1). k in {1, 2, 4, 8, 16, 64} (+ 2048 reference). NOT-DECOMPOSABLE: fitted IIA < 0.5 at k = 64 with the controls valid.
 ILLUSION-RISK: shuffled-target IIA > 0.2 (the method fits arbitrary targets here; no reading). FIT-FAILURE (note 167-3): a would-be NOT-DECOMPOSABLE point
 whose train IIA is non-monotone in k (some fitted k more than 0.05 below a smaller k's: the fit did not converge) - uninformative. MULT arm: >= 2 / 3 MIX models DECOMPOSABLE at the same t.
 Output per model: <run>/eval_das.json {"family", "points": {t: {"k": {k: {"iia", "iia_train", "n"}}, "unchanged_target_share", "random_subspace": {k: iia}, "shuffled_targets": {k: iia},
@@ -34,9 +34,15 @@ def point_kind(pt):
     best = max(((int(k), (v or {}).get("iia") or 0) for k, v in ks.items() if int(k) <= 64), default=(None, 0))
     rnd_ok = all((v or 0) <= 0.2 for v in rnd.values()) and bool(rnd)
     un = pt.get("unchanged_target_share")
-    nd = (pt.get("necessity_drop") or {}).get(str(best[0])) if best[0] is not None else None
+    nd_raw = (pt.get("necessity_drop") or {}).get(str(best[0])) if best[0] is not None else None
+    nr = (pt.get("necessity_random") or {}).get(str(best[0])) if best[0] is not None else None
+    nd = (nd_raw - nr) if (nd_raw is not None and nr is not None) else None   # note 167-4: necessity credited as the excess over a random same-k subspace
+    off_manifold = nr is not None and nr >= 0.9                              # note 167-4: the mean-replacement breaks the model regardless of R
     rm = pt.get("random_model") or {}; rm_ok = bool(rm) and all((v or 0) <= 0.2 for v in rm.values())   # note 167-1: random-init model baseline required
-    if best[1] >= 0.8 and un is not None and best[1] - un >= 0.5 and rnd_ok and shf and nd is not None and nd >= 0.3 and rm_ok:
+    suff = best[1] >= 0.8 and un is not None and best[1] - un >= 0.5 and rnd_ok and shf and rm_ok
+    if suff and off_manifold:
+        return "SUFFICIENT (necessity uninformative: off-manifold ablation)", best
+    if suff and nd is not None and nd >= 0.3:
         return "DECOMPOSABLE", best
     i64 = (ks.get("64") or {}).get("iia")
     tr = sorted((int(k), v.get("iia_train")) for k, v in ks.items() if isinstance(v, dict) and v.get("iia_train") is not None)   # fitted k only (k = D has none)
@@ -51,7 +57,7 @@ def model(d):
     if r is None:
         return {"status": "pending"}
     return {"status": "done", "points": {t: dict(zip(("kind", "best"), point_kind(pt)), iia={k: (v or {}).get("iia") for k, v in (pt.get("k") or {}).items()}, iia_train={k: (v or {}).get("iia_train") for k, v in (pt.get("k") or {}).items()},
-                                              unchanged=pt.get("unchanged_target_share"), necessity=pt.get("necessity_drop"), random_model=pt.get("random_model"),
+                                              unchanged=pt.get("unchanged_target_share"), necessity=pt.get("necessity_drop"), necessity_random=pt.get("necessity_random"), random_model=pt.get("random_model"),
                                               random=pt.get("random_subspace"), shuffled=pt.get("shuffled_targets"), var_share=pt.get("subspace_var_share"))
                                          for t, pt in (r.get("points") or {}).items()}}
 
