@@ -8,7 +8,8 @@ THINK-NECESSARY(run) (C1): 4x4 accuracy at K' = 0 and K' = 1 each <= 0.5 x accur
 and some t drop <= 0.05); the C1 claim also needs §164 DIRECT-MIX mean 4x4 < 0.95.
 CHEAPER-EQUAL vs INJECT (§169 K8, same data): seed-mean 4x4 and ext_4x8 each >= §169 K8's seed-mean - 0.01 at fewer FLOPs per item (compute.flops at 4x4,
 compute_4x8.flops at 4x8); read only with >= 2 seeds in both arms. MORE-THINKING (descriptive): ext_4x8 at 2K >= at K + 0.05.
-Dirs boxes/runs_fsq/s171_k8_4x4_s{seed}.
+BLIND (note 171-1, descriptive): the decoder sees only [EOT, " ="] + memory; EXACT-BLIND (4x4 >= 0.99) = the memory carries the whole answer.
+Dirs boxes/runs_fsq/s171_k8_4x4_s{seed}; s171_k8blind_4x4_s1.
     python theory/score_s171.py
 """
 import json
@@ -42,13 +43,13 @@ def mean(xs):
     return sum(xs) / len(xs) if xs else None
 
 
-def run(s):
-    d = "s171_k8_4x4_s%d" % s; r = load(d); a = load(d, "args.json") or {}
+def run(s, d=None, base=None):
+    d = d or "s171_k8_4x4_s%d" % s; base = base or BASE; r = load(d); a = load(d, "args.json") or {}
     if r is None:
         return {"status": "running" if a else "open"}
     if a.get("mem_check") or a.get("train_n") or str(a.get("device", "")).startswith("cpu"):
         return {"status": "smoke"}
-    bad = {k: a.get(k) for k, v in BASE.items() if a.get(k) != v}
+    bad = {k: a.get(k) for k, v in base.items() if a.get(k) != v}
     if bad:
         ERRORS.append((d, bad)); return {"status": "error", "error": bad}
     x = r.get("s171") or {}; bk = x.get("acc_by_kprime") or {}; e8 = x.get("ext_4x8_by_kprime") or {}
@@ -95,6 +96,9 @@ def main():
         ce = {"readslots": rs, "inject_k8": ij, "cheaper_equal": None if not ok else bool(rs["t"] >= ij["t"] - 0.01 and rs["e"] >= ij["e"] - 0.01
                                                                                           and rs["f4"] < ij["f4"] and rs["f8"] < ij["f8"])}
     res["head_to_head"] = ce
+    bl = run(1, "s171_k8blind_4x4_s1", dict(BASE, blind_decoder=True)); res["blind"] = bl
+    if bl.get("status") == "done":
+        print("BLIND (descriptive) | 4x4 %s, ext_4x8 %s, EXACT-BLIND %s" % (bl["test_4x4"], bl["ext_4x8"], bl["exact"]))
     if gate is None or v.startswith("pending"):
         rd = "pending"
     elif gate is False:
