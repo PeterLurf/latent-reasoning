@@ -10430,6 +10430,16 @@ subspace.**
 
 **§169 interim (2026-10-09 03:17 EDT; s169_k0_4x4_s1, RTX 3090, 48k; score_s169).** K0, the same-harness single pass, **fails: 4×4 test_acc 0.003, and ext_4x6 / 4x7 / 4x8 / 4x16 all 0.0.** This meets the reading's "K0 failing" condition. K16 and K8 are pending.
 
+**§169 interim (2026-10-09 11:14 EDT; s169_k8_4x4_s1, RTX 3090, 48k; score_s169). K8 slot 1 is not EXACT, so the gate is closed. The memory goes unused, as in §165 / §171.**
+* 4×4 test_acc 0.001; ext_4x6 / 4x7 / 4x8 / 4x16 all 0.0.
+* Accuracy against K′ is flat: 0.002 / 0.0 / 0.001 / 0.001 / 0.003 / 0.003 at K′ = 0 / 1 / 4 / 8 / 16 / 32. Every skipped write leaves 0.002.
+* g_add is 2.9e-4 and g_del 1.08, as in the working and failing models alike.
+* K16 is pending.
+* **Consequences:**
+  - §177's trigger is half met (§170 K8 pending).
+  - §174's gate (§169 K8 EXACT) is closed, so §174 is not launched.
+  - §176's fixed-K reference is not EXACT (note 176-3).
+
 ## 170. NESTED: Feng's modular expressions past one pass, with a measured DIRECT boundary, the INJECT latent arm and Feng's text CoT (the user's "keep working on … the nested arithmetic" via Audit; the C1-forcing note's option 2(a); roadmap steps: task-agnostic input (INJECT on a second task), length stability, a fair CoT baseline; pre-registered 2026-10-09 01:49 EDT, after Literature's check fd630b87 (`docs/LIT_TC0_SERIAL_2026-10-08.md` addendum) and Audit's review, before any implementation or run)
 
 **Why.**
