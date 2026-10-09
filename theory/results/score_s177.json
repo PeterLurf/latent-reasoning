@@ -1,0 +1,135 @@
+{
+ "direct_mix_mean_4x4": 0.0025,
+ "direct_pooled_3_8": 0.33158333333333334,
+ "tidx": {
+  "runs": {
+   "1": {
+    "status": "done",
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "test_4x4": 0.001,
+    "ext_4x8": 0.0,
+    "exact": false,
+    "length_general": false,
+    "think_necessary": null,
+    "acc_by_p": null,
+    "more_thinking": false,
+    "distinct_passes": false,
+    "per_step_content": false,
+    "delta_cos_2_4": [
+     0.8784257173538208,
+     0.97403484582901,
+     0.9932753443717957
+    ],
+    "moves_mechanism": false,
+    "cos_at_init": {
+     "read": {
+      "1": null,
+      "2": 1.0,
+      "3": 1.0,
+      "4": 1.0,
+      "5": 1.0,
+      "6": 1.0,
+      "7": 1.0,
+      "8": 1.0,
+      "9": 1.0,
+      "10": 1.0,
+      "11": 1.0,
+      "12": 1.0,
+      "13": 1.0,
+      "14": 1.0,
+      "15": 1.0,
+      "16": 1.0
+     },
+     "delta": {
+      "1": null,
+      "2": 0.9470314383506775,
+      "3": 0.9834770560264587,
+      "4": 0.9926077127456665,
+      "5": 0.9962708950042725,
+      "6": 0.9978788495063782,
+      "7": 0.9986642003059387,
+      "8": 0.9990919232368469,
+      "9": 0.9993488192558289,
+      "10": 0.9995157718658447,
+      "11": 0.9996309280395508,
+      "12": 0.9997140765190125,
+      "13": 0.9997758865356445,
+      "14": 0.9998227953910828,
+      "15": 0.9998591542243958,
+      "16": 0.9998874068260193
+     },
+     "add": {
+      "1": null,
+      "2": 1.0,
+      "3": 1.0,
+      "4": 1.0,
+      "5": 1.0,
+      "6": 1.0,
+      "7": 1.0,
+      "8": 1.0,
+      "9": 1.0,
+      "10": 1.0,
+      "11": 1.0,
+      "12": 1.0,
+      "13": 1.0,
+      "14": 1.0,
+      "15": 1.0,
+      "16": 1.0
+     },
+     "def": "the arm's model at initialisation: pretrained trunk, fresh memory parameters under the run's seed, gamma 1 (note 173-1)"
+    }
+   },
+   "2": {
+    "status": "open"
+   },
+   "3": {
+    "status": "open"
+   }
+  }
+ },
+ "fadetidx": {
+  "runs": {
+   "1": {
+    "status": "open"
+   },
+   "2": {
+    "status": "open"
+   },
+   "3": {
+    "status": "open"
+   }
+  }
+ },
+ "kmatch": {
+  "runs": {
+   "1": {
+    "status": "open"
+   },
+   "2": {
+    "status": "open"
+   },
+   "3": {
+    "status": "open"
+   }
+  }
+ },
+ "curpois": {
+  "runs": {
+   "1": {
+    "status": "open"
+   },
+   "2": {
+    "status": "open"
+   },
+   "3": {
+    "status": "open"
+   }
+  }
+ },
+ "reading": [
+  "tidx: slot 1 not EXACT (0.001); MOVES-MECHANISM False",
+  "fadetidx: pending (s1 open)",
+  "kmatch: pending",
+  "curpois: pending"
+ ]
+}
