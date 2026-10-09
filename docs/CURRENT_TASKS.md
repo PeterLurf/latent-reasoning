@@ -41,25 +41,35 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (01:37; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
-  - **The user (via Audit, 2026-10-09 ~01:30):** "do another research pass. work on task agnosticness. approve go ahead on prosqa deep".
-  - **Registered tonight:**
-    - **§168 DEEP-ProsQA** (a5d7ff5e): step 1 = DIRECT boundary on p8 std / NA (runs now); the latent arm uses §169's harness after the boundary note.
-    - **§169 INJECT** (5fffefd1): the full problem re-presented every think pass, the memory the only cross-pass state; K16 / K8 / K0 on §161's mix.
+* **Theory (01:57; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
+  - **The user (via Audit, 2026-10-09):**
+    - ~01:30: "do another research pass. work on task agnosticness. approve go ahead on prosqa deep".
+    - ~01:45: "keep working on the prosqa deep and the nested arithmetic … creating new methodologies and architectures for task agnostic".
+    - Roadmap frame: task-agnostic input → multi-step reasoning → halting → length stability → scale → distillation → a fair CoT baseline.
+  - **Registered tonight (contracts with Experiments):**
+    - **§168 DEEP-ProsQA:** step 1 DIRECT on b214+.
+      - 168-1: THINK-NECESSARY measured above chance.
+      - 168-2: ProsQA-Ext 2609.35643 is prior work; a comparable 3–6 → 7–12 cell; K8 first.
+      - Step 2 is sized after the D* note, with a projection to Audit.
+    - **§169 INJECT:** K16 / K8 / K0 on §161's mix.
+    - **§170 NESTED:** Feng mod 11; a DIRECT n* boundary (the scorer is blinded until N_STAR_FIXED is set); INJECT K8 / K0 + text CoT; SERIAL-NEST.
+    - **§171 READ-SLOTS:** 8 slots read a once-encoded input; K8 on the mix; head to head with INJECT.
+    - **§172 PCCoT-PROBE:** eval only, whynlp/pccot-gpt2.
+    - **§173 CONV-HALT:** eval-only halting when the answer settles (2 consecutive passes unchanged), on every think-pass arm.
   - **Multiplication headline:**
     - §161 MIX is exact, length-general to 4×8 and SERIAL (3 / 3).
-    - §164: LATENT BEYOND TEXT ON LENGTH (text CoT 0.0 at 4×6+).
+    - §164: latent beyond text on length.
     - §159: 5×5 exact 4 / 4, at 0.80× TC-M.
-    - §163: 2-D BOUNDED (6×6 ≈ 0.97, 8×8 ≤ 0.45).
-  - **Closed today:** §155–§157, §159–§164 (§162: arms indistinguishable at equal depth; 158-2's depth contrast not supported).
+    - §163: 2-D BOUNDED.
   - **Open:**
-    - §165 FIXED-CHUNK (K0 / K16c1 0.0; K16 / K8 pending);
-    - §166 S5 (lr 5e-6, 300 steps, PLAIN gate; MULT closed, note 166-3);
-    - §167 DAS (167-3 FIT-FAILURE guard, 167-4 necessity over random; refits pending);
+    - §165 (K16 / K8 pending on b210);
+    - §166 S5;
+    - §167 refits;
     - §158 slots 2–4.
   - **Theory's tools:**
-    - scratchpad `watch_land_v4.sh` (s15[5-9] / s16[0-9]; eval / what_state / posthoc / anchor / das);
-    - commit with a pathspec.
+    - scratchpad `watch_land_v5.sh` (s15[5-9] / s16x / s17x; eval / what_state / posthoc / anchor / das);
+    - commit with a pathspec;
+    - fix n* (§170) and D* (§168) in dated notes from DIRECT alone.
 
 ## Recently done (details in THEORY / PROTOCOL12 / git log)
 
