@@ -432,8 +432,13 @@ def main():
 
     def mem_check(micro):
         torch.cuda.reset_peak_memory_stats(dev); r_ = np.random.default_rng(0); its = [it for it in train_items(r_, 4 * a.bs, a.n_max_train, set()) if True]
-        its = sorted(its, key=lambda it: -len(it["syms"]))[:a.bs // micro]; l_ = loss_items(its); l_.backward(); (m or g).zero_grad(set_to_none=True)
-        evaluate_n(sorted([it for it in TE if it["n"] == 16], key=lambda it: -len(it["syms"]))[:a.eval_bs], 2 * K)   # the n = 16 eval at K' = 2K
+        its = sorted(its, key=lambda it: -len(it["syms"]))[:a.bs // micro]
+        if KW:                                                              # §177 (f) (Audit): the path that trains - the masked kmatch loss, every item at K_max
+            l_, _ = kmatch_loss(m, its, [a.n_max_train + KW[1]] * len(its), dev, ac, masked=a.kmatch_impl == "masked")
+        else:
+            l_ = loss_items(its)
+        l_.backward(); (m or g).zero_grad(set_to_none=True)
+        evaluate_n(sorted([it for it in TE if it["n"] == 16], key=lambda it: -len(it["syms"]))[:a.eval_bs], max(2 * K, 20 if KW else 0))   # n = 16 at K' = 2K ((f): >= n + 4)
         return torch.cuda.max_memory_allocated(dev) / 2 ** 30
 
     @torch.no_grad()
