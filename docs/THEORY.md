@@ -10271,6 +10271,11 @@ subspace.**
   - INTERMEDIATE if that baseline fails at k = 4.
 * **Earlier readings are unaffected.** MIX s3's old fit was read FIT-FAILURE through the NOT-DECOMPOSABLE branch, which uses k = 64's IIA, not best. The interim quotes were read from the raw files.
 
+**§167 correction (2026-10-09 09:34 EDT; Experiments). The MIX s2 file read at 09:17 was a partial.** The 2070 job had finished t = 4 and was running t = 8 (the random-model block runs last). It was then stopped, and the t = 4 partial is kept as `eval_das_2070_partial.json`.
+* **Every 167-3 refit reruns on cloud 3090s:** MIX s1 / s2 / s3, SHORT s1 / s2 and LONG s2. The local refits died of OOM at k = 2048 under the 6 GiB cap.
+  - Each covers the full points (MIX t = 4 / 8 / 12; S5 at l_max / 2) and the random-model baseline at k 4 / 8 / 16 / 64 (167-5).
+* **The cloud files govern §167's readings.** The 09:17 interim's t = 4 numbers (2070) are descriptive and are reported beside the 3090 rerun's t = 4. Same seeds, different GPU class.
+
 ## 168. DEEP-ProsQA: graph search past one pass, with a measured single-pass boundary (C1 + C3 on a task that exceeds a pass; the C1-forcing note's option 2(b)) (the user's go via Audit, "approve go ahead on prosqa deep"; pre-registered 2026-10-09 01:35 EDT, after Literature's check dfaf9ed6 (`docs/LIT_DEEP_PROSQA_2026-10-08.md`) and Audit's lead, before any implementation or run)
 
 **Why.**
