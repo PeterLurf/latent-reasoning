@@ -7,6 +7,11 @@
 # 2026-10-09 09:5x MOVED TO CLOUD (k = 2048 OOMs under the 6 GiB cap; b226 / b227): 5.0 boxes/runs_fsq/s162_long_s2/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s162_long_s2 --fit_micro 4
 # 2026-10-09 09:5x MOVED TO CLOUD (k = 2048 OOMs under the 6 GiB cap; b226 / b227): 5.0 boxes/runs_fsq/s162_short_s2/eval_das.json python -u -m boxes.das167 --device {DEV} --run boxes/runs_fsq/s162_short_s2 --fit_micro 2
 # 2026-10-09 10:0x Experiments: §177 direction diagnostic (Theory, descriptive) on §171 K8 s1; §165 K8 follows when its model lands
+# 2026-10-09 09:4x Experiments: §177 direction BASELINE on the working pair-segment models (Theory priority 1; 17 segments, read at the flush ' =' query)
+3.0 boxes/runs_fsq/s161_mix_4x4_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s161_mix_4x4_s1 --dir177 --bs 125 --device {DEV}
+3.0 boxes/runs_fsq/s161_mix_4x4_s2/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s161_mix_4x4_s2 --dir177 --bs 125 --device {DEV}
+3.0 boxes/runs_fsq/s161_mix_4x4_s3/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s161_mix_4x4_s3 --dir177 --bs 125 --device {DEV}
+3.0 boxes/runs_fsq/s155_r_4x4_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s155_r_4x4_s1 --dir177 --bs 125 --device {DEV}
 3.0 boxes/runs_fsq/s171_k8_4x4_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s171_k8_4x4_s1 --dir177 --bs 100 --device {DEV}
 4.0 boxes/runs_fsq/s171_k8_4x4_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s171_k8_4x4_s1 --bs 100 --device {DEV}
 3.0 boxes/runs_fsq/s170_cot_s1/eval.json python -u -m boxes.nested170 --arm textcot --seed 1 --eval_only --cot_eval_bs 32 --device {DEV} --out boxes/runs_fsq/s170_cot_s1
