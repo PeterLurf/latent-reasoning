@@ -10633,6 +10633,14 @@ subspace.**
 * **Descriptive, a C2 negative for INJECT on nested:** §170 K8's pooled accuracy (n 3..8) at K′ = 16 is 0.203, against 0.351 at K′ = 8. More passes than trained hurt (overthinking, as PCCoT). §176's RK is the registered lever.
 * score_s169 (K16), score_s175, score_s176 and score_s177 ((f) / (g)) are updated.
 
+**§170 K8, note 173-1's readout (2026-10-09 12:55 EDT; descriptive; eval_s177_dir.json, 500 items at n 3..8). MOVES-MECHANISM is negative. Training moved the pass dynamics off initialisation (unlike §169), but not to distinct per-step states.**
+* **Delta cosine at passes 2 / 3 / 4:** 0.895 / 0.957 / 0.975, against 0.957 / 0.989 / 0.996 at initialisation.
+  - It is lower than initialisation at every pass (§169 K8 sat at its initialisation value), but above the 0.9 cut at passes 3–4, so DISTINCT-PASSES fails.
+  - The additive state turns slightly (0.97 / 0.98 / 0.99, against 1.0 at initialisation).
+* **The step probe (v_t from the pass-t delta state):** 0.55 at t = 1, 0.19 at t = 2, chance (0.10–0.13) from t = 3. PER-STEP-CONTENT fails (no t ≥ 2 reaches 0.5).
+  - The first reduction is held. Later reductions are not recoverable as values, although extra passes do raise accuracy up to K′ = 8.
+* This agrees with STEP-RECOVER from the read (v₁ 0.42, the rest at chance). The passes help, but not by carrying the reduction values as linearly decodable per-step state.
+
 ## 171. READ-SLOTS: think passes in which a few learned slots read the once-encoded input and write the memory (a Perceiver / RIN-style task-agnostic read; the user's "creating new methodologies and architectures for task agnostic" via Audit; roadmap steps: task-agnostic input, and scale (long inputs); pre-registered 2026-10-09 01:54 EDT, after Literature's scout 589e6eb5 (`docs/LIT_TASK_AGNOSTIC_SCOUT_2026-10-09.md`, rank 1) and Audit's review, before any implementation or run)
 
 **Why.**
