@@ -293,7 +293,9 @@ def main():
         for k in cks:
             rot, _, _ = fit(Fr, (A1, A2), SA, SA, tr, va, t, k, steps=a.steps); res["points"][str(t)]["random_model"][str(k)] = evaluate(Fr, (B1, B2), SB, SB, te_ir, te_idn, te_gt, t, rot)
     res["extras"] = None; res["extras_note"] = "carry_matched / per_head_type / scaling (descriptive): not yet run"
-    res["random_model_def"] = "untrained DeltaMem-R (default init; W_o ~ N(0, 0.02^2), fade 1, gamma 1), the pretrained GPT-2 trunk"
+    res["random_model_def"] = ("untrained DeltaMem-R: W_o ~ N(0, 0.02^2) (the default W_o = 0 would make the memory inert), fade 1, gamma 1; qkv / gate / LN at their "
+                               "default init, i.e. qkv from block 6's c_attn and LN_w from block 11's ln_1 (pretrained-derived): an untrained MEMORY, not untrained "
+                               "features (Audit); the pretrained GPT-2 trunk")
     res["sec"] = round(time.time() - t0); json.dump(res, open(a.out or os.path.join(a.run, "eval_das.json"), "w", newline="\n"), indent=1); print("DAS DONE", res["sec"], flush=True)
 
 
