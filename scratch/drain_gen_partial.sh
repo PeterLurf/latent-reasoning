@@ -50,6 +50,7 @@ fetch() {   # fetch <name> <remote tar arguments>: sha-verified, 3 tries, extrac
 }
 for j in $runs $keep; do n=$(echo $j | tr '/' '_'); ck=""   # Audit 2026-10-08: a FINISHED run's ckpt_* (~3 GB) is not fetched (retention deletes it on arrival)
   case " $runs " in *" $j "*) ck="--exclude=$j/ckpt_last.pt --exclude=$j/ckpt_prev.pt";; esac   # resume ckpts only: kept copies (ckpt_s<step>_model.pt) still come
+  grep -qxF "$j" scratch/keep_ckpt.txt 2>/dev/null && ck="--exclude=$j/ckpt_prev.pt"   # note 177-6 (2026-10-09): a run listed in scratch/keep_ckpt.txt keeps ckpt_last (a continuation point)
   fetch $n --exclude=$j/model.pt $ck $j logs/gen_$(basename $j).log || { echo "FETCH_INCOMPLETE $ID ($j small files)"; exit 1; }
 done
 fetch logs logs || { echo "FETCH_INCOMPLETE $ID (logs)"; exit 1; }
