@@ -10662,6 +10662,16 @@ subspace.**
 * This is consistent with Goyal (2310.02226): extra passes added at fine-tune time get no learning signal for what to do.
 * **No mechanism is claimed.** The candidate mechanism (pass-invariant memory reads) is not supported (§173 on §171).
 
+**§171 addendum 2 (2026-10-09 09:34 EDT; descriptive; eval_s177_dir.json, 500 4×4 items, passes to 16). In direction, the failed K8's memory settles within about 4 passes. What keeps changing is the additive state's scale.**
+* **Mean cosine between consecutive passes** (pass 2 / 3 / 4 / from 7):
+  - additive state: 0.9999 / 1.0 / 1.0 / 1.0. Pure scale growth.
+  - delta state: 0.977 / 0.993 / 0.997 / ≥ 0.9995.
+  - the decoder's read: 0.966 / 0.987 / 0.993 / ≥ 0.998.
+* **This resolves §173's ambiguity:** the never-below-1% relative change is the additive scale (about 1/t), not new directions. Answers that keep moving with t move with that scale.
+* **Scope:** this describes the failed model only. There is no working identical-input think-pass model to compare against, so no causal claim is made.
+  - It is the measurement §177's arms report (a pass index or a visible schedule should keep consecutive reads distinct).
+  - §165 K8's diagnostic is pending.
+
 ## 172. PCCoT-PROBE: §149's battery on the GPT-2-small GSM8K latent state of the art (Jacobi-parallel latents), at release (eval only; Audit's 02:00 research lead; roadmap step 7, a C1-qualified GSM8K target; pre-registered 2026-10-09 01:54 EDT, after Literature's facts 2e5fe84a (`docs/LIT_PCCOT_PROBE_2026-10-09.md`) and Audit's review, before any run)
 
 **Why.**
