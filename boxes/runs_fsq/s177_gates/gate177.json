@@ -1,34 +1,23 @@
 {
  "g1": {
-  "index_rows_with_grad": [
-   6,
-   7,
-   8
-  ],
+  "step0_logits_equal_s169": true,
+  "gain_grad_norm": 0.0019245573785156012,
   "mem_zero": [],
-  "bound_assert": true
+  "max_abs_cos_between_passes_1_64": 0.9733602404594421,
+  "scale_mean_wte_norm": 3.9585366249084473,
+  "s_norm_t1_t64": [
+   3.958535671234131,
+   3.9585366249084473
+  ]
  },
  "g1_pass": true,
  "g2": {
   "pair_seg_equals_multpair": true,
   "mixed_vs_pure_pair_rows": 0.0001220703125,
   "mixed_vs_full_rows": 0.0,
-  "rel_pair": 2.969039376958963e-07,
+  "rel_pair": 2.917845293800031e-07,
   "rel_full": 0.0,
-  "index_rows_with_grad": [
-   3,
-   4,
-   5,
-   6,
-   7,
-   8,
-   9,
-   10,
-   11,
-   12,
-   13,
-   14
-  ],
+  "gain_grad_norm": 0.00420725904405117,
   "mem_zero": []
  },
  "g2_pass": true,
