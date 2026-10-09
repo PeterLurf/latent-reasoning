@@ -233,7 +233,13 @@ def main():
     if a.mem_check or (a.auto_micro and dev.startswith("cuda") and not a.resume):
         mc = []
         while True:
-            pk = mem_check(a.micro); mc.append({"micro": a.micro, "peak_gib": pk}); print("MEM", a.micro, pk, flush=True)
+            try:                                                            # 2026-10-09: an OOM inside the check (a hard memory cap) = over budget -> larger micro
+                pk = mem_check(a.micro)
+            except torch.OutOfMemoryError:
+                pk = float("inf")
+            if pk == float("inf"):                                       # after the except clause, so the failed graph is released
+                m.zero_grad(set_to_none=True); torch.cuda.empty_cache()
+            mc.append({"micro": a.micro, "peak_gib": pk}); print("MEM", a.micro, pk, flush=True)
             if pk <= a.mem_budget or a.micro >= a.bs or a.mem_check:
                 break
             a.micro *= 2
