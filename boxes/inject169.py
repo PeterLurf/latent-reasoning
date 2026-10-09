@@ -223,6 +223,7 @@ def main():
     ap.add_argument("--fade", default="", help="§177 (d): 'start,end' steps of the pair -> full-text ramp p 0 -> 1 (requires --think_k 4n)")
     ap.add_argument("--pass_index", default="", help="§177 (note 177-4): 'sin_gain' = g * the rescaled sinusoid of the absolute pass on the think token ('' = off)")
     ap.add_argument("--bptt_last", default="all", help="§176 RK: 'all' or n (backprop through the last n passes); auto_micro falls back to 8 if K = cap does not fit")
+    ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt with this run's flags (no training; args_eval.json; model.pt / args.json / log kept)")
     ap.add_argument("--bench", default=os.path.join("bench", "data", "mult_4x4_test.txt")); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); a.arm = "inject"; os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale; FADE = a.think_k == "4n"; K = 16 if FADE else int(a.think_k); DM.FAST_ADD = bool(a.fast_add)
     assert FADE == bool(a.fade), "§177 (d): --think_k 4n goes with --fade"
@@ -271,7 +272,7 @@ def main():
         l_.backward(); m.zero_grad(set_to_none=True); m.eval()
         predict(m, gen_operands(r_, a.eval_bs, 4), gen_operands(r_, a.eval_bs, 16), KEVAL, dev, amp, a.eval_bs); m.train()
         return torch.cuda.max_memory_allocated(dev) / 2 ** 30
-    if a.mem_check or (a.auto_micro and dev.startswith("cuda") and not a.resume):
+    if a.mem_check or (a.auto_micro and dev.startswith("cuda") and not a.resume and not a.eval_only):
         mc = []
         while True:
             try:                                                            # 2026-10-09: an OOM inside the check (a hard memory cap) = over budget -> larger micro
@@ -296,10 +297,17 @@ def main():
         assert mc[-1]["peak_gib"] <= a.mem_budget
     info = {**vars(a), "train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version(), **env_info(), "hostprobe_sps": os.environ.get("HOSTPROBE_SPS"),
             "think_input": "[EOT, a * b, ' .'] (the full problem text, every pass)", "decoder_input": "[EOT, a * b, ' ='] + answer digits (read-only)"}
-    json.dump(info, open(os.path.join(a.out, ("args_resume_%d.json" % int(time.time())) if a.resume else "args.json"), "w", newline="\n"), indent=1)
+    if a.eval_only:                                                         # the training run's GPU / driver stay in train_*; this GPU is eval_gpu
+        a0_ = json.load(open(os.path.join(a.out, "args.json"))); info["eval_gpu"], info["eval_driver"] = info["train_gpu"], info["train_driver"]
+        info["train_gpu"], info["train_driver"] = a0_.get("train_gpu"), a0_.get("train_driver")
+    json.dump(info, open(os.path.join(a.out, "args_eval.json" if a.eval_only else (("args_resume_%d.json" % int(time.time())) if a.resume else "args.json")), "w", newline="\n"), indent=1)
     opt = make_opt(m, a.lr); step0 = 1; n_nonfinite = 0; wg_hist = []; wwin = []; wlast = []; hist = []
-    log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time()
-    if a.resume:
+    log = open(os.path.join(a.out, "log.jsonl"), "a" if (a.resume or a.eval_only) else "w", newline="\n"); t0 = time.time()
+    if a.eval_only:                                                         # evaluate the saved model: no training, the training log's time / non-finite count
+        m.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev, weights_only=False)); step0 = a.steps + 1
+        lg_ = [json.loads(l_) for l_ in open(os.path.join(a.out, "log.jsonl"))]; n_nonfinite = sum(1 for r_ in lg_ if r_.get("nonfinite"))
+        sec_ = [r_["sec"] for r_ in lg_ if "sec" in r_]; t0 = time.time() - (sec_[-1] if sec_ else 0)
+    elif a.resume:
         ck = torch.load(a.resume, map_location=dev, weights_only=False); m.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"]); rng.bit_generator.state = ck["np_rng"]
         torch.set_rng_state(ck["torch_rng"].cpu()); step0 = ck["step"] + 1; n_nonfinite = ck["n_nonfinite"]; wg_hist = ck["wg_hist"]; t0 = time.time() - ck["elapsed"]
         if dev.startswith("cuda") and ck.get("cuda_rng") is not None:
@@ -355,9 +363,12 @@ def main():
             torch.save({"model": m.state_dict(), "opt": opt.state_dict(), "np_rng": rng.bit_generator.state, "torch_rng": torch.get_rng_state(),
                         "cuda_rng": torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else None, "step": step, "n_nonfinite": n_nonfinite, "wg_hist": wg_hist,
                         "elapsed": time.time() - t0}, cp)
-    train_sec = round(time.time() - t0); torch.save(m.state_dict(), os.path.join(a.out, "model.pt")); m.eval(); m.p_off = 0; t1 = time.time(); bs = a.eval_bs
+    train_sec = round(time.time() - t0)
+    if not a.eval_only:
+        torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
+    m.eval(); m.p_off = 0; t1 = time.time(); bs = a.eval_bs
     Pte = product_digits(teA, teB); pred, _ = predict(m, teA, teB, K, dev, amp, bs); res = acc_report(pred, Pte)
-    res.update({"arm": "inject", "think_k": K, "seed": a.seed, "train_sec": train_sec, "n_nonfinite": n_nonfinite, "eval_dtype": str(amp), "micro": a.micro,
+    res.update({"eval_only": bool(a.eval_only), "arm": "inject", "think_k": K, "seed": a.seed, "train_sec": train_sec, "n_nonfinite": n_nonfinite, "eval_dtype": str(amp), "micro": a.micro,
                 "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_gpu": info["train_gpu"], "train_driver": info["train_driver"]})
     xs = {4: (teA, teB)}
     for nb_, s1_, s2_ in ((6, 14016, 14017), (7, 14018, 14019), (8, 14004, 14005), (16, 14006, 14007)):
