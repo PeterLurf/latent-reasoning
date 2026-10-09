@@ -47,7 +47,9 @@ def run(arm, s):
     more = None if K == 0 or e8.get(str(K)) is None or e8.get(str(2 * K)) is None else bool(e8[str(2 * K)] >= e8[str(K)] + 0.05)
     return {"status": "done", "test_4x4": t, "exact": bool((t or 0) >= 0.99), "ext_4x8": e, "length_general": bool((t or 0) >= 0.99 and (e or 0) >= 0.90),
             "ext": {k: (r.get(k) or {}).get("test_acc") for k in ("ext_4x6", "ext_4x7", "ext_4x8", "ext_4x16")}, "acc_by_kprime": bk, "ext_4x8_by_kprime": e8,
-            "think_necessary": bool(rem and step_specific), "removal_drop": rem, "skip_step_specific": step_specific, "more_thinking": more,
+            "think_necessary": bool(rem if arm == "k16" else (rem and step_specific)),   # note 170-4: K16 (autonomous passes) is removal only
+            "removal_drop": rem, "skip_step_specific": step_specific, "more_thinking": more,
+            "graded": None if K == 0 else (bk.get(str(K // 2)), bk.get(str(K))),
             "acc_by_size_kprime": x.get("acc_by_size_kprime"), "inprog_by_pass": x.get("inprog_by_pass"), "compute": r.get("compute"), "compute_4x8": x.get("compute_4x8"),
             "gpu": r.get("train_gpu")}
 
