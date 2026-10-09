@@ -18,7 +18,202 @@
  "k8": {
   "runs": {
    "1": {
-    "status": "open"
+    "status": "done",
+    "test_4x4": 0.001,
+    "exact": false,
+    "ext_4x8": 0.0,
+    "length_general": false,
+    "ext": {
+     "ext_4x6": 0.0,
+     "ext_4x7": 0.0,
+     "ext_4x8": 0.0,
+     "ext_4x16": 0.0
+    },
+    "acc_by_kprime": {
+     "0": 0.002,
+     "1": 0.0,
+     "4": 0.001,
+     "8": 0.001,
+     "16": 0.003,
+     "32": 0.003
+    },
+    "ext_4x8_by_kprime": {
+     "8": 0.0,
+     "16": 0.0,
+     "32": 0.0
+    },
+    "think_necessary": false,
+    "removal_drop": false,
+    "skip_step_specific": false,
+    "more_thinking": false,
+    "acc_by_size_kprime": {
+     "4x4": {
+      "0": 0.002,
+      "1": 0.0,
+      "4": 0.001,
+      "8": 0.001,
+      "16": 0.003,
+      "32": 0.003
+     },
+     "4x6": {
+      "0": 0.0,
+      "1": 0.0,
+      "4": 0.0,
+      "8": 0.0,
+      "16": 0.0,
+      "32": 0.0
+     },
+     "4x8": {
+      "0": 0.0,
+      "1": 0.0,
+      "4": 0.0,
+      "8": 0.0,
+      "16": 0.0,
+      "32": 0.0
+     },
+     "4x16": {
+      "0": 0.0,
+      "1": 0.0,
+      "4": 0.0,
+      "8": 0.0,
+      "16": 0.0,
+      "32": 0.0
+     }
+    },
+    "inprog_by_pass": {
+     "2": {
+      "1": {
+       "units": 1.0,
+       "carry": 1.0
+      },
+      "2": {
+       "units": 0.514,
+       "carry": 0.532
+      },
+      "3": {
+       "units": 0.136,
+       "carry": 0.185
+      },
+      "4": {
+       "units": 0.099,
+       "carry": 0.143
+      },
+      "5": {
+       "units": 0.095,
+       "carry": 0.145
+      },
+      "6": {
+       "units": 0.086,
+       "carry": 0.19
+      },
+      "7": {
+       "units": 0.091,
+       "carry": 0.36
+      }
+     },
+     "4": {
+      "1": {
+       "units": 1.0,
+       "carry": 1.0
+      },
+      "2": {
+       "units": 0.541,
+       "carry": 0.566
+      },
+      "3": {
+       "units": 0.141,
+       "carry": 0.192
+      },
+      "4": {
+       "units": 0.104,
+       "carry": 0.147
+      },
+      "5": {
+       "units": 0.089,
+       "carry": 0.13
+      },
+      "6": {
+       "units": 0.102,
+       "carry": 0.185
+      },
+      "7": {
+       "units": 0.113,
+       "carry": 0.35
+      }
+     },
+     "6": {
+      "1": {
+       "units": 1.0,
+       "carry": 1.0
+      },
+      "2": {
+       "units": 0.551,
+       "carry": 0.549
+      },
+      "3": {
+       "units": 0.139,
+       "carry": 0.204
+      },
+      "4": {
+       "units": 0.109,
+       "carry": 0.143
+      },
+      "5": {
+       "units": 0.088,
+       "carry": 0.131
+      },
+      "6": {
+       "units": 0.097,
+       "carry": 0.189
+      },
+      "7": {
+       "units": 0.119,
+       "carry": 0.351
+      }
+     },
+     "8": {
+      "1": {
+       "units": 1.0,
+       "carry": 1.0
+      },
+      "2": {
+       "units": 0.55,
+       "carry": 0.562
+      },
+      "3": {
+       "units": 0.138,
+       "carry": 0.201
+      },
+      "4": {
+       "units": 0.112,
+       "carry": 0.148
+      },
+      "5": {
+       "units": 0.095,
+       "carry": 0.128
+      },
+      "6": {
+       "units": 0.102,
+       "carry": 0.19
+      },
+      "7": {
+       "units": 0.105,
+       "carry": 0.367
+      }
+     }
+    },
+    "compute": {
+     "flops": 19210674672.0,
+     "flops_trunk": 18675197952.0,
+     "flops_branch": 535476720.0,
+     "sequential_passes": 16,
+     "lm_head_rows": 8,
+     "tokens_processed": 106,
+     "think_passes": 8,
+     "convention": "\u00a798 (boxes.core.Meter); think passes fresh; decoder prefix + (na + nb - 1) KV-cached passes"
+    },
+    "compute_4x8": null,
+    "gpu": "NVIDIA GeForce RTX 3090"
    },
    "2": {
     "status": "open"
@@ -27,8 +222,8 @@
     "status": "open"
    }
   },
-  "gate": null,
-  "verdict": "pending (0 / 3 seeds)",
+  "gate": false,
+  "verdict": "gate closed (s1 0.001 < 0.99)",
   "think_necessary_all": false
  },
  "k0": {
