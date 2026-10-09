@@ -11445,6 +11445,14 @@ how many think passes run in training.
   - Audit's diff review.
 * Dirs `s178_{direct,k0,k8}_s{seed}`; the conditional matched pair `s178_m12_{k0,k8}_s{seed}`. Scorer: `theory/score_s178.py`, committed with this registration.
 
+**Note 177-6 (2026-10-09 16:01 EDT; post-preview, disclosed: proto177_fadetidx_s1's 8k numbers have been read; it changes an operational spend gate only, no rule). 177-3's 8k launch gate could not pass by construction, and it moves to 12k.**
+* **The flaw (Experiments).** §169's recipe uses 165-1's curriculum: the lowest c answer digits carry the loss, with c = 1 / 2 / 4 / 8 from 0 / 2k / 5k / 9k.
+  - At 8k, digits 5–8 of a 4×4 product have never been trained, so 177-3's full-row exact-match gate ("≥ 0.5 at 8k") is unpassable.
+  - The preview's 0.0 (last loss 0.64 at c_max 4) says nothing about the scaffold.
+* **Fixed (operational):** the preview resumes from its 8k checkpoint to 12k (p = 0 throughout, unscaled). (d)'s cloud cell launches only if the preview's full 4×4 accuracy at p = 0 at 12k is ≥ 0.5.
+  - 12k is past the curriculum's full stage (9k) and matches 177-2's own scaffold-gate point (acc_scaffold_12k ≥ 0.90, which is unchanged).
+* The preview stays read by no rule. This is a spend decision, and it tightens nothing and loosens no rule.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
