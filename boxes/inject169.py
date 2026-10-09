@@ -223,6 +223,7 @@ def main():
     ap.add_argument("--fade", default="", help="§177 (d): 'start,end' steps of the pair -> full-text ramp p 0 -> 1 (requires --think_k 4n)")
     ap.add_argument("--pass_index", default="", help="§177 (note 177-4): 'sin_gain' = g * the rescaled sinusoid of the absolute pass on the think token ('' = off)")
     ap.add_argument("--bptt_last", default="all", help="§176 RK: 'all' or n (backprop through the last n passes); auto_micro falls back to 8 if K = cap does not fit")
+    ap.add_argument("--resumed_from", default="", help="a label recorded in args (note 177-6: 'proto177_fadetidx12k_s1@12000')")
     ap.add_argument("--stop_at", type=int, default=0, help="train to this step under the --steps schedule, then evaluate (note 177-6: the (d) cell's first 12k)")
     ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt with this run's flags (no training; args_eval.json; model.pt / args.json / log kept)")
     ap.add_argument("--bench", default=os.path.join("bench", "data", "mult_4x4_test.txt")); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
@@ -305,6 +306,8 @@ def main():
         a0_ = json.load(open(os.path.join(a.out, "args.json"))); info["eval_gpu"], info["eval_driver"] = info["train_gpu"], info["train_driver"]
         info["train_gpu"], info["train_driver"] = a0_.get("train_gpu"), a0_.get("train_driver")
     json.dump(info, open(os.path.join(a.out, "args_eval.json" if a.eval_only else (("args_resume_%d.json" % int(time.time())) if a.resume else "args.json")), "w", newline="\n"), indent=1)
+    if a.resume and not a.eval_only and not os.path.exists(os.path.join(a.out, "args.json")):   # a resume into a fresh dir (note 177-6) also gets args.json
+        json.dump(info, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
     opt = make_opt(m, a.lr); step0 = 1; n_nonfinite = 0; wg_hist = []; wwin = []; wlast = []; hist = []
     log = open(os.path.join(a.out, "log.jsonl"), "a" if (a.resume or a.eval_only) else "w", newline="\n"); t0 = time.time()
     if a.eval_only:                                                         # evaluate the saved model: no training, the training log's time / non-finite count
@@ -316,7 +319,19 @@ def main():
         torch.set_rng_state(ck["torch_rng"].cpu()); step0 = ck["step"] + 1; n_nonfinite = ck["n_nonfinite"]; wg_hist = ck["wg_hist"]; t0 = time.time() - ck["elapsed"]
         if dev.startswith("cuda") and ck.get("cuda_rng") is not None:
             torch.cuda.set_rng_state(ck["cuda_rng"].cpu(), device=dev)
-        log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
+        if ck.get("rng_k") is not None:                                     # §176's K stream / §177 (d)'s fade stream continue exactly
+            rng_k.bit_generator.state = ck["rng_k"]
+        if FADE and ck.get("rng_f") is not None:
+            rng_f.bit_generator.state = ck["rng_f"]
+        if FADE:                                                            # note 177-6: the fade evals already taken (run dir, then the ckpt's dir)
+            for st_, nm_ in EVF.items():
+                for dd_ in (a.out, os.path.dirname(os.path.abspath(a.resume))):
+                    f_ = os.path.join(dd_, "eval_%dk.json" % (st_ // 1000))
+                    if st_ <= ck["step"] and os.path.exists(f_) and nm_ not in fade_ev:
+                        e_ = json.load(open(f_))
+                        if e_.get("step") == st_:
+                            fade_ev[nm_] = dict(e_, source=os.path.relpath(f_, ROOT).replace(os.sep, "/"))   # Theory: the gate run's number, its source noted
+        log.write(json.dumps({"step": ck["step"], "resumed": a.resume, "resumed_from": a.resumed_from}) + "\n"); log.flush()
     elif K > 0:                                                             # note 147-2: g_add = median ||read_del|| / ||read_add|| at the think hand-offs
         r_ = np.random.default_rng(16901); A0, B0 = gen_operands(r_, 128, 4), gen_operands(r_, 128, 4); m.mem.norms = []
         with torch.no_grad(), amp_ctx(amp):
@@ -366,7 +381,7 @@ def main():
                 os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))
             torch.save({"model": m.state_dict(), "opt": opt.state_dict(), "np_rng": rng.bit_generator.state, "torch_rng": torch.get_rng_state(),
                         "cuda_rng": torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else None, "step": step, "n_nonfinite": n_nonfinite, "wg_hist": wg_hist,
-                        "elapsed": time.time() - t0}, cp)
+                        "elapsed": time.time() - t0, "rng_k": rng_k.bit_generator.state, "rng_f": rng_f.bit_generator.state if FADE else None}, cp)
     train_sec = round(time.time() - t0)
     if not a.eval_only:
         torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
@@ -427,7 +442,7 @@ def main():
         res["halt"], res["halt_fixed_k"], res["halt_acc_by_t"], res["halt_n"] = halt_fields("inject", m, {"think_k": K}, dev, amp, a.ext_n, bs, a.bench)
     res["eval_sec"] = round(time.time() - t1)
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
-    for ck_ in ("ckpt_last.pt", "ckpt_prev.pt"):
+    for ck_ in (("ckpt_prev.pt",) if a.stop_at else ("ckpt_last.pt", "ckpt_prev.pt")):   # --stop_at keeps ckpt_last (the continuation point; note 177-6)
         if os.path.exists(os.path.join(a.out, ck_)):
             os.remove(os.path.join(a.out, ck_))
     print("EVAL", json.dumps({"test_acc": res["test_acc"], "acc_by_kprime": s["acc_by_kprime"]}), flush=True); print("DONE", a.out, flush=True)
