@@ -10603,6 +10603,23 @@ subspace.**
   - K16 is not opened under the registered rule.
 * **Scorer fixes, disclosed (no rule change):** `serial_null` is written as {t, hybrid}, and score_s170 / score_s175 now read its hybrid share.
 
+**Note 170-4 (2026-10-09 12:32 EDT; after §170 K8 slot 1 was read (disclosed); it applies only to cells not yet read; Audit's scope). The skip clause is degenerate in index-free identical-input harnesses.**
+* **The finding.** §170 K8's skip_pass is identical for every t, per n, to three decimals (pooled 0.304).
+  - With identical input each pass and no pass index, the pass map is autonomous: M_{t+1} = F(M_t).
+  - Skipping the write at any t leaves F^{K−1}(M₀), which is exactly K − 1 passes, whichever t is skipped.
+  - So THINK-NECESSARY's "step-specific skip damage" clause cannot be met in such arms. A per-pass role cannot be tested by skipping when every pass applies the same map.
+* **Scope (Audit):** the degenerate case is the **index-free identical-input arms: §169 K16, §175, §176 RK / PROG, and §177 (f) / (g).**
+  - It does not hold for §177 (a) / (d): the pass index makes F_t pass-dependent, and (d)'s pair inputs differ per pass before the fade. Their skip clause stays as registered.
+* **For the degenerate arms, THINK-NECESSARY = removal only,** as registered: K′ = 0 and K′ = 1 each at most half the accuracy at K, above chance where 168-1 applies. No new threshold is added.
+  - Descriptive: GRADED (accuracy at K′ = K/2 against K), and the skip ≡ K − 1 check.
+  - §173 / note 173-1's PER-STEP-CONTENT probe is the descriptive substitute for per-pass roles.
+  - Removal already carries "the passes are used".
+* **Already read and unchanged:**
+  - §170 K8 slot 1: not DEEP. **§170 K16 stays closed under its registered rule** (no launch gate re-opened after a read).
+  - §169 K8 and §171: not EXACT.
+* **Descriptive, a C2 negative for INJECT on nested:** §170 K8's pooled accuracy (n 3..8) at K′ = 16 is 0.203, against 0.351 at K′ = 8. More passes than trained hurt (overthinking, as PCCoT). §176's RK is the registered lever.
+* score_s169 (K16), score_s175, score_s176 and score_s177 ((f) / (g)) are updated.
+
 ## 171. READ-SLOTS: think passes in which a few learned slots read the once-encoded input and write the memory (a Perceiver / RIN-style task-agnostic read; the user's "creating new methodologies and architectures for task agnostic" via Audit; roadmap steps: task-agnostic input, and scale (long inputs); pre-registered 2026-10-09 01:54 EDT, after Literature's scout 589e6eb5 (`docs/LIT_TASK_AGNOSTIC_SCOUT_2026-10-09.md`, rank 1) and Audit's review, before any implementation or run)
 
 **Why.**

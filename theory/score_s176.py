@@ -56,7 +56,8 @@ def run(arm, s):
     rem = bool(t and a0 is not None and a1 is not None and a0 <= 0.5 * t and a1 <= 0.5 * t)
     sk = [t - v for v in (x.get("skip_pass") or {}).values() if isinstance(v, (int, float))] if t is not None else []
     more, noov, c2 = curve_rules(bk, e8)
-    return {"status": "done", "test_4x4_k8": t, "exact": bool((t or 0) >= 0.99), "think_necessary": bool(rem and sk and max(sk) >= 0.2 and min(sk) <= 0.05),
+    return {"status": "done", "test_4x4_k8": t, "exact": bool((t or 0) >= 0.99), "think_necessary": rem,   # note 170-4: removal only (autonomous passes)
+            "graded": (bk.get("4"), bk.get("8")),
             "more_thinking": more, "no_overthinking": noov, "c2_beyond": c2, "ext_4x8_by_kprime": e8, "acc_by_kprime": bk, "bptt_last": a.get("bptt_last"),
             "acc_by_size_kprime": x.get("acc_by_size_kprime"), "k_hist": (r.get("s176") or {}).get("k_hist"), "gpu": r.get("train_gpu")}
 

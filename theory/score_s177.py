@@ -95,7 +95,7 @@ def nest_run(arm, s, direct_pooled):
     rem = bool(pk is not None and p0 is not None and p1 is not None and (p0 - CH) <= 0.5 * (pk - CH) and (p1 - CH) <= 0.5 * (pk - CH))
     sk = [S170.pooled(v, 3) for v in (x.get("skip_pass") or {}).values() if isinstance(v, dict)]
     drops = [pk - v for v in sk if v is not None] if pk is not None else []
-    tn = bool(rem and drops and max(drops) >= 0.2 and min(drops) <= 0.05)
+    tn = rem   # note 170-4: (f) / (g) have index-free identical-input passes, so THINK-NECESSARY is removal only
     deep = all((S170.acc(ab, n) or 0) >= 0.90 for n in range(3, 9))
     mech = mechanism(d, "nest")
     hit = bool(deep and tn)   # note 177-1: DISTINCT-PASSES qualifies a HIT, it is not a conjunct
