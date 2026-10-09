@@ -1,0 +1,52 @@
+{
+ "k16": {
+  "runs": {
+   "1": {
+    "status": "open"
+   },
+   "2": {
+    "status": "open"
+   },
+   "3": {
+    "status": "open"
+   }
+  },
+  "gate": null,
+  "verdict": "pending (0 / 3 seeds)",
+  "think_necessary_all": false
+ },
+ "k8": {
+  "runs": {
+   "1": {
+    "status": "open"
+   },
+   "2": {
+    "status": "open"
+   },
+   "3": {
+    "status": "open"
+   }
+  },
+  "gate": null,
+  "verdict": "pending (0 / 3 seeds)",
+  "think_necessary_all": false
+ },
+ "k0": {
+  "runs": {
+   "1": {
+    "status": "open"
+   },
+   "2": {
+    "status": "open"
+   },
+   "3": {
+    "status": "open"
+   }
+  },
+  "gate": null,
+  "verdict": "pending",
+  "think_necessary_all": false
+ },
+ "direct_mix_mean_4x4": 0.0025,
+ "reading": "pending"
+}
