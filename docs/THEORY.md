@@ -10300,6 +10300,19 @@ subspace.**
 
 **§167 S5 interim, a further clause (2026-10-09 10:40 EDT; Audit; verified in the raw file).** The causal S5 subspace is compact and low-variance: subspace_var_share is 0.056 at k = 16, against 0.699 at k = 64 and 0.873 at k = 2048. It is not simply the top-variance directions. The state-carrying directions take about 5% of the memory's variance, which bears on C7: the state is readable and editable along a few non-dominant directions.
 
+**§167 S5, complete (2026-10-09 17:33 EDT; complete cloud refits with the k 4 / 8 / 16 / 64 random-model baseline; score_s167; S5 is per model, descriptive). All three S5 models are DECOMPOSABLE: the group state is causally carried in a subspace of at most 64 dimensions of the 49,152-d memory.**
+
+| model (point) | IIA k 8 / 16 / 64 | k_min_qualifying | necessity at k 64 (random) | var share at k 16 / 64 |
+|---|---|---|---|---|
+| SHORT s1 (p* 4) | 0.11 / **0.92** / 0.995 | **16** | 0.97 (0.0) | 0.06 / 0.70 |
+| SHORT s2 (p* 4) | 0.01 / 0.59 / **0.988** | 64 | 0.97 (0.0) | 0.26 / 0.80 |
+| LONG s2 (p* 16) | 0.01 / 0.47 / **0.985** | 64 | 0.97 (0.0) | 0.15 / 0.78 |
+
+* **Every control is null** in all three: random subspace 0.0, shuffled ≤ 0.012, unchanged 0.0, random-init model 0.0 at k 4 / 8 / 16 / 64.
+* Train IIA is monotone (converged).
+* **Compactness varies by seed** (16 against 64). The transition sits between k = 8 and 64 in every model, and the S5 state is about 7 bits.
+* §167's MULT arm (MIX s1–s3, t = 4 / 8 / 12) is pending, after the cloud refits' bench-file fix.
+
 ## 168. DEEP-ProsQA: graph search past one pass, with a measured single-pass boundary (C1 + C3 on a task that exceeds a pass; the C1-forcing note's option 2(b)) (the user's go via Audit, "approve go ahead on prosqa deep"; pre-registered 2026-10-09 01:35 EDT, after Literature's check dfaf9ed6 (`docs/LIT_DEEP_PROSQA_2026-10-08.md`) and Audit's lead, before any implementation or run)
 
 **Why.**
