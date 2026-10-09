@@ -259,7 +259,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 169 | INJECT (the user's "task agnosticness"): the full problem re-presented every think pass, the memory the only cross-pass state; K16 / K8 / K0 on §161's mix | registered | **open** |
 | 170 | NESTED (the user's go): Feng's mod-11 bracketed expressions; a measured DIRECT boundary over n, then INJECT K8 / K0 (K16 gated) against Feng's text CoT; C1 = DEEP + THINK-NECESSARY + SERIAL-NEST, C3 at text CoT's accuracy for less compute | registered | **open** |
 | 171 | READ-SLOTS (task-agnostic architecture): the input encoded once; each think pass 8 learned slots read it and write DeltaMem-R; K8 on §161's mix; head to head with INJECT (CHEAPER-EQUAL); read map / entropy (C7) | registered | **open** |
-| 172 | PCCoT-PROBE (eval only): §149's battery on whynlp/pccot-gpt2 (GSM8K 49.48 at release); LATENTS-USED, ITERATIONS-USED (T' = 0 = pause), Jacobi RHO, descriptive SERIAL | registered | **open** |
+| 172 | PCCoT-PROBE (eval only): §149's battery on whynlp/pccot-gpt2 (GSM8K 49.48 at release); LATENTS-USED, ITERATIONS-USED (T' = 0 = pause), Jacobi RHO, descriptive SERIAL | **LATENTS-USED, ITERATIONS-USED** (0.49 release; zeroed 0.17; T'=0 0.13; more iterations hurt); RHO MARGINAL 0.88; one-latent swap BYPASS but alignment weak (R² ≤ 0.12) | closed |
 | 173 | CONV-HALT (eval only; C5, halting): decode when the answer settles (unchanged across 2 consecutive passes, cap 2K) on the think-pass arms (§165 / §169 / §170 / §171); HALT-EQUAL + ADAPTIVE | registered | **open** |
 | 174 | MULTI-TASK (the user's task agnosticness, strongest form): one INJECT K8 model on mult + nested with no task flag; MATCH vs single-task K8 (BUDGET vs INTERFERENCE via 24k evals), THINK-NECESSARY per task, cross-task swap | registered (gated on §169 / §170 K8 slot 1) | **open** |
 | 175 | STEP-AUX (Audit's lead after SIM-CoT): §170 INJECT K8 + a shared-trunk read-only aux decoder emitting Feng's CoT step t from M_t (λ 1 fading to 0 by 48k); AUX-HELPS / HURTS-DEPTH vs FINAL-only, READOUT, STEP-RECOVER | registered (gated on §170 K8 slot 1) | **open** |
@@ -10604,6 +10604,18 @@ subspace.**
   - eval.json: acc_release, acc_by_T {"0".."8"}, acc_latents_zeroed, acc_c0, jacobi_ratio_by_T, rho_perturb_by_iter, serial {t: {donor, recipient, n, latent}}.
 * **Gates:** the sanity gate first; T′ = 3 reproduces the release accuracy exactly.
 * Dir `s172_pccot`. Scorer: `theory/score_s172.py`, committed with this registration.
+
+**§172 result (2026-10-09 03:21 EDT; s172_pccot, n = 1,319, RTX 3070, eval only; score_s172). The GPT-2 GSM8K latent state of the art uses its latents and its Jacobi iterations, but step values are not localised in any single latent.**
+* **SANITY GATE passes:** acc_release 0.4905 against the reported 49.48 ± 2. T′ = 3 reproduces release exactly.
+* **LATENTS-USED:** all latents zeroed 0.170, ≤ 0.5 × 0.4905. The c = 0 (no-latent) accuracy is 0.173.
+* **ITERATIONS-USED:** T′ = 0 (pause-equivalent) 0.134, against 0.491 at release.
+  - acc_by_T: 0.134 / 0.213 / 0.359 / **0.491** / 0.451 / 0.415 / 0.423 at T′ = 0 / 1 / 2 / 3 / 4 / 6 / 8.
+  - **More iterations than trained hurt** (−0.04 to −0.08). There is no C2-style extra thinking.
+* **RHO MARGINAL:** the Jacobi step ratio's geometric mean over T = 3–8 is 0.876. §149's ε-perturbation ratio is about 1.0 at iterations 3–4, then 0.91–0.98.
+* **SERIAL (descriptive):** swapping the probe-aligned latent leaves the recipient's answer 0.98 / 0.98 / 1.0 of the time (t = 1 / 2 / 3; n 300 / 120 / 25), which reads BYPASS at t = 1–2.
+  - **Caveat:** the ridge alignment is weak (best R² 0.12 / 0.04 / 0.05). No single latent carries a step's value, so a one-latent swap is weak evidence. The step values are distributed or absent, not shown to be recomputed.
+* **Against §149:** like CODI (BYPASSED), PCCoT shows no localised, swappable step state. Unlike the CODI family, it depends strongly on its latent iterations (0.13 → 0.49).
+* **For the roadmap's GSM8K step:** a C1-qualified target needs what PCCoT lacks: a localised, causally swappable intermediate state, and accuracy that does not fall with extra iterations (C2).
 
 ## 173. CONV-HALT: convergence-halted think passes as an eval-only readout on the think-pass models (C5; roadmap step 3, halting; Audit's point and Literature's scout 589e6eb5 §3; pre-registered 2026-10-09 01:57 EDT, after Audit's review (the answer-settling rule is Audit's), before any §165 K16 / K8, §169, §170 or §171 output is read)
 
