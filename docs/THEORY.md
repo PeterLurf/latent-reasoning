@@ -10175,6 +10175,27 @@ run, RTX 3090 (or a local card if memory-checked).
   - The rules and readings are otherwise unchanged. SP stays the paper's best intervention.
 * score_s166 is updated (PT_S5; the gate; mult_closed).
 
+**§165 FIXED-CHUNK slot 1 (interim, 2026-10-09 01:22 EDT; 48k, RTX 3090): K0 and K16c1 are both 0.0. K16 / K8 (chunk 4; b210) are pending.**
+* **K0 (no think passes; the no-think baseline):** 4×4 0.0. Only the lowest digit and the top two are learned: columns 1.0 / 0.44 / 0.16 / … / 0.43 / 0.93. Ext 0.0.
+  11 passes, 4.6·10⁹ FLOPs. "Loading alone fails" holds, as the C1 claim needs.
+* **K16c1 (chunk size 1, Literature's check):** 4×4 0.0, with 0.0 at every K′ (0 … 64).
+* The reading waits for K16 / K8. If neither is exact, the registered reading is "the harness's schedule is doing work".
+
+**§167 DAS-EDIT, the first model (interim, 2026-10-09 01:22 EDT; s161_mix_4x4_s3): NOT-DECOMPOSABLE at t 4 / 8 / 12 by the rule, with a fit-failure caveat.**
+* **The gate holds:** k = D gives IIA 0.978 / 0.968 / 0.970, the whole-state swap.
+* **Fitted IIA (held out) at k 1 / 2 / 4 / 8 / 16 / 64 / 2048:**
+  - t 4: 0.03 / 0.04 / 0.06 / **0.57** / 0.12 / 0.03 / 0.00;
+  - t 8: 0.04 / 0.05 / 0.03 / **0.40** / 0.08 / 0.00 / 0.00;
+  - t 12: ≤ 0.05.
+* **All the controls are at about 0:** unchanged 0.0, random subspace ≤ 0.008, shuffled ≤ 0.004, random model 0.0.
+* **The caveat (Theory):** the fits do not converge at large k.
+  - Train IIA at k 64 is 0.10 / 0.00 / 0.00, and at k 2,048 it is ≤ 0.01.
+  - A larger subspace contains every smaller one, so a converged fit cannot get worse with k. The non-monotone k-curve (k 8 best) is an optimisation failure.
+  - **So "NOT-DECOMPOSABLE" is confounded with "DAS failed to fit" for k ≥ 16.**
+  - The necessity drop is 0.94–0.997 even at k 1: mean-ablating any fitted direction destroys the answer. That is extreme sensitivity, or an implementation
+    issue to check.
+* A convergence guard is proposed to Audit before s1 / s2 read.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
