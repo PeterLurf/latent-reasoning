@@ -10374,6 +10374,10 @@ subspace.**
 * This would not change the boundary. Even P8-0a's lighter recipe read 0.63 at depth 3, below 0.90, so the standard-data D* is 3 under either recipe.
 * The NA boundary governs and is pending (na s1 / s2).
 
+**§168 step 1 interim (2026-10-09 13:51 EDT; s168_direct_std_s2; score_s168; standard data, descriptive).** DIRECT std s2 reads 0.62 at depth 3 (P8-0a: 0.63), 0.54 at depth 4, and chance (0.46–0.52) from depth 5. acc_ctl is 0.57, and training loss is 0 by about 12k (memorised).
+* **The standard-data boundary is D* = 3 for both seeds: "no single-pass regime"** (descriptive; the proximity shortcut, §57).
+* **The NA boundary governs** and is pending (na s1 / s2).
+
 ## 169. INJECT: the memory with the full problem re-presented in every think pass, a task-agnostic harness (the user's "work on task agnosticness" via Audit's research pass; pre-registered 2026-10-09 01:37 EDT, after Literature's check 6b019d1e (`docs/LIT_INJECT_2026-10-09.md`) and Audit's review, before any implementation or run)
 
 **Why.**
