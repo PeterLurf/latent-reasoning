@@ -10315,6 +10315,12 @@ subspace.**
   - Step 2 adds a donor rule in §161's out-of-distribution hybrid form (as §170's SERIAL-NEST), registered in the step 2 note before any step 2 run.
 * **K8 first (Audit).** Step 2's slot 1 is K8 + K0. K16 runs only if K8 slot 1 is THINK-NECESSARY by 168-1.
 
+**§168 step 1 interim (2026-10-09 09:16 EDT; s168_direct_std_s1, RTX 3090, 24k; score_s168; standard data, descriptive).** DIRECT on standard p8 is **at chance at every depth.**
+* Candidate accuracy is 0.54 / 0.54 / 0.50 / 0.53 / 0.49 / 0.51 / 0.51 / 0.46 at depths 3–10, and 0.45–0.65 at 11–14 (n 34 at depth 14). acc_ctl is 0.55.
+* **Training loss reaches 0.0 by about 12k:** the 24k recipe (about 128 epochs of 12k items) memorises the training set without generalising.
+* This would not change the boundary. Even P8-0a's lighter recipe read 0.63 at depth 3, below 0.90, so the standard-data D* is 3 under either recipe.
+* The NA boundary governs and is pending (na s1 / s2).
+
 ## 169. INJECT: the memory with the full problem re-presented in every think pass, a task-agnostic harness (the user's "work on task agnosticness" via Audit's research pass; pre-registered 2026-10-09 01:37 EDT, after Literature's check 6b019d1e (`docs/LIT_INJECT_2026-10-09.md`) and Audit's review, before any implementation or run)
 
 **Why.**
