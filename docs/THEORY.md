@@ -265,6 +265,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 175 | STEP-AUX (Audit's lead after SIM-CoT): §170 INJECT K8 + a shared-trunk read-only aux decoder emitting Feng's CoT step t from M_t (λ 1 fading to 0 by 48k); AUX-HELPS / HURTS-DEPTH vs FINAL-only, READOUT, STEP-RECOVER | registered (gated on §170 K8 slot 1) | **open** |
 | 176 | RAND-K (Audit's lead after §172; Huginn / Bansal): INJECT trained with a random think-pass count (RK) or progressive no-grad prefixes (PROG); C2-BEYOND at K' = 64 beyond training support + NO-OVERTHINKING vs fixed K8's same curve | **neither RK nor PROG rescues INJECT** (0.0 at every K′ and skip; RK mean K 7.96) | closed |
 | 177 | PASS-DISTINCT: arms to make identical-input think passes trainable - (a) pass index, (d) schedule fade + index (mult), (f) step-matched K, (g) curriculum + Poisson K (nested, gated on f); MOVES-MECHANISM (173-1) per arm | registered (cloud gated on §169 + §170 K8 failing; local previews descriptive) | **open** |
+| 178 | FROM-SCRATCH (diagnostic): §170's INJECT on a random-init 6-layer GPT-2; USES-PASSES -> PRETRAINING-OR-CAPACITY (a conditional matched 12-layer pair decides) vs HARNESS-BLOCKS; read beside §175 (pretrained, forced) | registered | **open** |
 
 ## Live sections
 
@@ -11376,6 +11377,73 @@ how many think passes run in training.
 * **Gate:** on a small mixed-n batch, the masked form's loss and per-parameter gradients match the bucketed form's (bf16 tolerance, or bitwise in fp32), and the per-item final memories match.
 * **Compute disclosure:** compute_by_n counts each item's own K passes, not K_max. The masked passes are an implementation artefact, not the method's compute.
 * No rule changes.
+
+## 178. FROM-SCRATCH: does pretraining block think-pass use? §170's INJECT on a randomly initialised small GPT-2 (Audit's 15:45 research lead after §176 closed; a diagnostic, not a fix; pre-registered 2026-10-09 15:53 EDT, after Literature's check 7b3db7d7 (`docs/LIT_PRETRAINED_VS_SCRATCH_2026-10-09.md`) and Audit's review, before any implementation or run)
+
+**Why.**
+* Every identical-input loop that works in the literature is trained from scratch: Fan 2409.15647, Kohli 2604.07822, Huginn 2502.05171, TRM 2510.04871. Every one of ours starts from pretrained GPT-2. No section has varied this.
+* **2604.06374 (Table 2a / 2b):** fine-tuned pretrained GPT-2 answers ProsQA in one forward pass and copies through its latents (removing them costs ≤ 1 pt). The same architecture from scratch uses its latents (91–96 against 14–53). Their stated cause: pretraining biases late layers to commit to a token.
+* **Ours:** §169 / §171 / §176's think passes go unused, and §170 K8 uses its passes only up to about single-pass accuracy (pooled 0.351 against K0's 0.302).
+* **What this tests:** which of two causes to work on. Either pretraining (or capacity) blocks the passes, which points to a retrofit, or the harness itself does.
+* **Counter-evidence (Literature):** pretrained loops can be used when training forces them.
+  - McLeish 2511.07384: pretrained init beats random for retrofitted recurrence, with random depth from the start.
+  - 2608.11233: per-loop step supervision.
+  - McLeish also finds pretrained initialisation beats random per FLOP at scale. **A scratch win here is a diagnosis, not a route:** it does not mean "go from scratch".
+  - **The paired contrast (Audit): §175 STEP-AUX,** the pretrained, forced-use arm on the same nested task (per-pass step supervision; running).
+    - Scratch uses passes and §175 does not → pretraining resists even forcing.
+    - Both use them → forcing suffices, and pretraining is not the barrier as such.
+    - §175 uses them and scratch does not → capacity or harness.
+  - §176's RK (forced random depth) failed on the multiplication mix. A pretrained RK on nested (about $2.5) is a follow-up option if §178 slot 1 is informative. It is not registered
+    here.
+
+**Design.** §170's task, data (n ~ U{1..8}; test n 1..16), INJECT harness and memory recipe, with **a randomly initialised small GPT-2** in place of the pretrained trunk.
+* **Model:** 6 layers, d 384, 6 heads, the GPT-2 tokenizer, standard GPT-2 initialisation.
+* **Memory:** DeltaMem-R with 3 additive + 3 gated-delta heads of dimension 64, after block 3 (§155's position scaled to the shallower trunk), top writes, γ 2k → 6k.
+* **Recipe** (from-scratch adapted): AdamW lr 5e-4, wd 0.01, warmup 1,000 + cosine, bs 64, 96k steps, with an eval at 48k (`eval_48k.json`). RTX 3090.
+* **Arms:** DIRECT-scratch, K0-scratch and K8-scratch, s1 each. s2 for any arm whose reading is USES-PASSES or HARNESS-BLOCKS.
+
+**Rules (fixed now; `theory/score_s178.py`; pooled = n 3..8, as §170's n* = 3; chance 1/11; read at 96k).**
+* **USES-PASSES(run):** all four of the following.
+  - K8-scratch pooled ≥ K0-scratch s1 pooled + 0.15.
+  - **Chance floor (Audit):** K8-scratch pooled ≥ 1/11 + 0.15 (= 0.241), so a 0.10 → 0.25 move is labelled as such. Accuracy per n is reported, so a gain confined to n = 3 is
+    visible.
+  - Removal in 168-1's above-chance form: (acc(K′) − 1/11) ≤ 0.5 × (acc(K8) − 1/11) for K′ = 0 and K′ = 1, pooled.
+  - 173-1's delta cosine at each of passes 2, 3 and 4 at least 0.1 below the arm's own cosine at initialisation. **That initialisation is the random trunk's** (fresh memory,
+    γ = 1), not GPT-2's.
+* **The readings (arm, ≥ 2 / 2 seeds once s2 runs; slot 1 is read descriptively):**
+  - **PRETRAINING-OR-CAPACITY (Audit):** USES-PASSES from scratch, while pretrained §170 K8's gap over K0 is under 0.15 (it is 0.049).
+    - The 6-layer, d 384 trunk can do much less in one pass than 12-layer GPT-2, so it may use passes because it must.
+    - **The conditional matched pair** (registered now, launched only if this reading fires): K0 and K8 with **GPT-2's exact config (12 layers, d 768, 12 heads) at random init**,
+      §170's memory placement (6 + 6 heads after block 6), the same recipe, 96k steps. About $4 per arm, about $8, with a projection to Audit.
+    - Only that pair attributes the effect to pretraining: **PRETRAINING-BLOCKS** = the matched pair USES-PASSES; **CAPACITY** = the matched pair does not.
+      2604.06374's Table 2b (12-layer from scratch still uses latents) makes pretraining the likelier cause, but it is measured.
+  - **HARNESS-BLOCKS:** K8-scratch pooled < K0-scratch pooled + 0.05, and removal fails. The failure is not about pretraining.
+  - Otherwise the result is **mixed**, reported descriptively.
+* **Descriptive:**
+  - the absolute level (DIRECT-scratch's n*-scratch; from-scratch nested arithmetic without CoT may be weak overall: Feng);
+  - accuracy against K′ ∈ {0, 1, 4, 8, 16};
+  - STEP-RECOVER and 173-1's per-step probe;
+  - §173's halting;
+  - 48k against 96k.
+
+**Placement.**
+* **Three cloud cells on 3090s,** under the user's rule (full training runs on cloud, local cards for short tests).
+  - The DeltaMem loop is launch-bound, so a 20M model is not proportionally faster. About 0.2–0.3 s / step makes 96k about 5–8 h, about $1.2–2 per cell and about $4–6 in all.
+  - **--time_steps on a 3090 before launch,** with the projection restated to Audit.
+  - The conditional matched pair costs about $8 more.
+* Local 8k previews are allowed, descriptive, and read by no rule.
+* **Implementation (Experiments):** a `--scratch "6,384,6"` option in nested170 that builds a random-init GPT-2 config and a DeltaMem-R scaled to it.
+  - eval.json: §170's fields plus s178 {cos via the 173-1 package, d_model, n_layer}.
+  - args: task "nested", arm, think_k, scratch "6,384,6", steps 96000, lr 0.0005.
+* **Gates:**
+  - the model is random-init (no pretrained weights loaded; assert);
+  - gradflow through ≥ 2 passes;
+  - the decoder writes nothing;
+  - memory-layer placement asserts;
+  - smoke_plain on the scratch path;
+  - memcheck;
+  - Audit's diff review.
+* Dirs `s178_{direct,k0,k8}_s{seed}`; the conditional matched pair `s178_m12_{k0,k8}_s{seed}`. Scorer: `theory/score_s178.py`, committed with this registration.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
