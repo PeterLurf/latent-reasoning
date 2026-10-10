@@ -12052,6 +12052,11 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - gradflow;
   - Audit's diff review.
 
+**Note 183-1 (2026-10-10 09:55 EDT; pre-data for the cloud cell; operational, descriptive previews only; Audit). A third preview pair: the 4060 runs BLIND and then SEEING, at seed 2.**
+* Flags are the same as the 3070 / 2070 pairs: `--steps 8000 --sched_scale 0.1667`, so the whole 48k schedule is compressed (c = 8 by step 1,500, the cosine over 8k).
+* This adds a third card class and a second seed to the preview contrast.
+* The previews stay descriptive and are read by no rule. A blind-over-seeing gap that appears on every card is reported as a robustness note beside the cloud cell's reading, not as part of it.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
