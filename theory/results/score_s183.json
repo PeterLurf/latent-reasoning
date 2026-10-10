@@ -1,0 +1,64 @@
+{
+ "control": "s181_interleave_k1_s1",
+ "control_mid_3_7": 0.1654,
+ "runs": {
+  "1": {
+   "status": "done",
+   "acc_4x4": 0.0,
+   "acc_by_column": [
+    1.0,
+    0.435,
+    0.165,
+    0.115,
+    0.081,
+    0.104,
+    0.445,
+    0.91
+   ],
+   "acc_by_kprime": {
+    "0": 0.0,
+    "1": 0.0,
+    "2": 0.0,
+    "4": 0.0
+   },
+   "ext_4x8": {
+    "acc": 0.0,
+    "acc_by_column": [
+     1.0,
+     0.449,
+     0.186,
+     0.099,
+     0.118,
+     0.085,
+     0.111,
+     0.103,
+     0.099,
+     0.1,
+     0.084,
+     0.217
+    ]
+   },
+   "under_trained": false,
+   "mid_3_7": 0.182,
+   "control_mid_3_7": 0.1654,
+   "drops": {
+    "3": 0.06300000000000001,
+    "4": 0.0010000000000000009,
+    "5": -0.0030000000000000027,
+    "6": -0.0030000000000000027,
+    "7": 0.361,
+    "8": 0.747
+   },
+   "median_drop": 0.03200000000000001,
+   "rule": "FAIL",
+   "hit": false,
+   "synthesis": "NOT SUPPORTED",
+   "reading": "FAIL; synthesis NOT SUPPORTED (cols 3-7 0.182 vs control 0.165; median drop 0.032; k'0 0.000; 4x4 0.000)"
+  },
+  "2": {
+   "status": "open"
+  }
+ },
+ "reading": "FAIL; synthesis NOT SUPPORTED (cols 3-7 0.182 vs control 0.165; median drop 0.032; k'0 0.000; 4x4 0.000)",
+ "errors": []
+}
