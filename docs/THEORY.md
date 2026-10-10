@@ -12289,6 +12289,23 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - Audit's diff review.
 * It launches after NORM-CAP-GLOBAL reads and §182 NOFADE has landed (the comparator). A global inference-time cap that works is the zero-training fix, and ADD-NORM is its trained, principled form.
 
+**NORM-CAP-GLOBAL on §175 (2026-10-10 13:03 EDT; descriptive; s175_auxk8_s1/eval_normcap.json, RTX 3070, 6,000 test items, 1,000 per n at n 3..8). One global cap on the additive norm, applied at every pass, recovers almost all of the oracle clamp's gain: a zero-training stability (C6) fix, at a small cost within K.**
+* **Pooled accuracy** (unclamped / per-item clamp at t = 8 / global cap 1× (C = 12,588) / cap 1.5×):
+  - t = 8: 0.786 / 0.786 / 0.778 / 0.785;
+  - t = 12: 0.622 / 0.745 / 0.739 / 0.675;
+  - t = 16: 0.414 / 0.705 / 0.696 / 0.586.
+* **The cost within K at t = 8** (cap 1×, against unclamped): n 3..8 = 1.000 / 0.965 / 0.880 / 0.735 / 0.636 / 0.455, against 1.000 / 0.966 / 0.882 / 0.741 / 0.644 / 0.484. That is −0.008 pooled, mostly n = 8 (−0.029).
+* **At t = 16 by n** (cap 1× / unclamped): 0.993 / 0.946 / 0.806 / 0.640 / 0.495 / 0.296 against 0.807 / 0.591 / 0.399 / 0.293 / 0.199 / 0.194.
+* **The share capped** under cap 1× is 0.53 at t = 8, 0.96 at t = 12 and 1.0 at t = 16. The 1.5× cap is too loose (0.586 at t = 16).
+* **Caveat:** C was taken from test items (eval_memnorm.json, the median at t = 8 over 256 test items). A deployable rule takes C from training items at the trained K. That is what the descriptive cap reads in §185 and §168 step 2 use (note 185-1).
+
+**Note 185-1 (2026-10-10 13:03 EDT; pre-data for §185 and §168 step 2: no cell of either has run; descriptive only, no rule change). An inference-time NORM-CAP arm, with C taken from training items.**
+* After NORM-CAP-GLOBAL (above), every §185 cell, its comparator s182_nofade_s1, and §168 step 2's STEP-AUX cell also report accuracy with the additive norm capped at every pass.
+* **The cap:** C = the median additive norm at the trained K (8; 10 for §168 step 2), over 1,000 *training* items, computed after training and recorded in eval.json (`normcap.C`, `normcap.C_source`).
+  - The K′ curve is reported with and without the cap.
+* It answers whether the trained fix (§185's DEN / RMS) beats the zero-training cap, and whether the cap carries to ProsQA.
+* No rule reads it. §185's FIX and §168's DEPTH-GENERAL stay on the uncapped model.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
