@@ -54,7 +54,7 @@
  "acc_ctl": 0.5069182389937107,
  "n_ctl": 795,
  "ctl_file": "p8_ctl.json (the std control, for both arms)",
- "train_sec": 0,
+ "train_sec": 24369,
  "eval_sec": 29,
  "n_nonfinite": 0,
  "micro": 4,
@@ -62,5 +62,6 @@
  "gpu": "NVIDIA GeForce RTX 3090",
  "train_gpu": "NVIDIA GeForce RTX 3090",
  "train_driver": "595.84",
- "acc_def": "candidate accuracy: log p('### ' + correct answer) > log p(the negative's), given question + '\\n' (as prosqa/eval_p8.py --mode nocot)"
+ "acc_def": "candidate accuracy: log p('### ' + correct answer) > log p(the negative's), given question + '\\n' (as prosqa/eval_p8.py --mode nocot)",
+ "train_fields_source": "train_sec / n_nonfinite recomputed from the training log.jsonl (2026-10-10 00:15): the b245 cloud eval-only host had no training log, so its eval wrote 0 / 0; accuracy fields untouched"
 }
