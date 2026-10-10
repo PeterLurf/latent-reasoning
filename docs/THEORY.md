@@ -12363,6 +12363,20 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * Launch after §182 / §184 land. It does not block them.
 * Gates: the §183 code path with interleave 4 (a smoke plus gradflow) and Audit's diff review. The code is unchanged otherwise.
 
+**Note 168-8 (2026-10-10 15:14 EDT; pre-data for §168 step 2; an implementation ruling, no rule change). `--cache_lower` is accepted for the STEP-AUX cell; comparisons never mix the setting.**
+* **What it does:** under INJECT every pass sees the identical [EOT, question], and the memory enters at block 6 (deltamem / deltas5.fwd_read). So blocks 0–5 run once per step, and every pass reuses their output. That is about 45% less compute at K = 10.
+* **Gate** (gate_cache_lower.json):
+  - the forward pass, final state, loss and margins are bitwise equal to the uncached path at K = 1 and K = 10;
+  - the fp32 parameter gradients differ by up to 1.66e-6 relative at K = 10.
+* **My first test was mis-designed.** A reorder-only noise floor (2.23e-7) cannot see this. Caching backpropagates the summed adjoint through blocks 0–5 once, instead of once per pass, so rounding differs at every layer of the backward pass, not only at the final addition.
+* **The direct test:** in float64 the two paths agree to 6.9e-15 relative (losses identical). So caching is the same computation, and the fp32 gap is rounding.
+* **Accepted:** fp64 agreement ≤ 1e-12 and a bitwise fp32 forward.
+* **The consequence:**
+  - A cached run follows a slightly different rounding trajectory from an uncached one. With one seed, such differences can flip basins (the dedupe and GPU-class lessons).
+  - So `--cache_lower` is never mixed between a cell and its comparator.
+  - §168 step 2's STEP-AUX uses it; its baselines CURR-DIRECT / TEXT-COT have no INJECT passes.
+  - §184 and §185 do not use it, since their comparator s182_nofade_s1 did not.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
