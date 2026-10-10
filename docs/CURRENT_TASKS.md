@@ -50,7 +50,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (23:55 2026-10-09; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
+* **Theory (02:20 2026-10-10; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
   - **The user (via Audit, 2026-10-09):**
     - ~01:30: "do another research pass. work on task agnosticness. approve go ahead on prosqa deep".
     - ~01:45: "keep working on the prosqa deep and the nested arithmetic … creating new methodologies and architectures for task agnostic".
@@ -90,10 +90,11 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
     - **Running:**
       - §175 STEP-AUX (b235);
       - §177 (f) kmatch (b236);
-      - §179 READOUT: blind b243, seeing twin b244, p = 0 to 24k, ~4.5 h from 22:15;
-    - **Drafted, unregistered:** §180 DEC-DROP (scratchpad sec180_draft.md + score_s180.py, synthetic-checked; Audit OK; Literature 5c0d5bc9).
-      - Registers only if §179 reads SHORTCUT. Arms: decoder-prefix digit masking in training only (tok50 / tok75 / op75), ≈ $2.4.
-      - RESCUE = full ≥ 0.5, twin < 0.1, zero-mem ≤ 0.5 × full.
+    - **§179 READOUT: CAPACITY** (d0fe00ec). Blind 0.0 at 12k / 24k; columns 1–2 exact from memory alone; c3 0.351. The decoder's view is not the problem.
+      - §180 DEC-DROP was never registered and is dropped. The seeing twin b244's 24k is descriptive (lands ~03:15).
+      - s178b may now run with §178's readout; Audit decides.
+    - **§181 INTERLEAVE registered** (ba4cf16e). k think passes before every answer token, the memory carried across tokens; k1 / k2 on §161's mix, 48k.
+      - The contract is with Experiments: --interleave k, gates 1–7, --time_steps projection to Audit (rough $2–3 / $3–5), then the 3070 k1 8k preview.
     - **Leading hypotheses for the think-pass failures:**
       - no per-pass learning signal (Goyal);
       - the end decoder's view of the problem starves the memory (§179 tests this);
