@@ -50,7 +50,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (02:20 2026-10-10; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
+* **Theory (03:00 2026-10-10; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
   - **The user (via Audit, 2026-10-09):**
     - ~01:30: "do another research pass. work on task agnosticness. approve go ahead on prosqa deep".
     - ~01:45: "keep working on the prosqa deep and the nested arithmetic … creating new methodologies and architectures for task agnostic".
@@ -93,8 +93,9 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
       - s178b registered (note 178-3, 2ee99c13; exclusion for n ≥ 2 only). Contract with Experiments: CPU sanity, then --time_steps, launching after §181's timing.
     - **§175 STEP-AUX slot 1 closes, not DEEP** (15485a0f). Pooled 0.787 vs FINAL-only 0.351, with one reduction per pass (K′ = 4 solves n ≤ 4; K′ = 0 at chance).
       - Limits: per-step errors compound, and nothing past the trained K (K′ = 16 hurts; n 9–12 at 0.20).
-      - Next lead (with Audit / Literature): STEP-AUX-HOLD (hold targets on passes beyond n, sampled K). A post-hoc §173 halt on s175 has been requested.
-    - **§177 (f) slot 1:** not HIT / not FAIL (pooled 0.506; passes not distinct). Its registered s2 is held pending Audit's spend view.
+      - **§182 STEP-AUX-HOLD registered** (566616ef). NOFADE / WINDOW / HOLD; DEEP at K′ 8, STABLE = K′ 16 vs 8 (K′ 24 beside it).
+        - The contract is with Experiments (rough $8–10). Order: §181, then §182, then s178b. A post-hoc §173 halt on s175 is queued on the 3070.
+    - **§177 (f) slot 1:** not HIT / not FAIL (pooled 0.506; passes not distinct). s2 not run (note 177-7).
     - **§181 INTERLEAVE registered** (ba4cf16e). k think passes before every answer token, the memory carried across tokens; k1 / k2 on §161's mix, 48k.
       - The contract is with Experiments: --interleave k, gates 1–7, --time_steps projection to Audit (rough $2–3 / $3–5), then the 3070 k1 8k preview.
     - **Leading hypotheses for the think-pass failures:**
