@@ -1,0 +1,8 @@
+# known-fast 3090 hosts (HOSTPROBE <= 0.66 s/step on 2026-10-09/10; Audit): offers on these IPs (prefix match) are tried first
+89.221.67.
+85.30.169.224
+77.29.35.113
+58.8.187.198
+107.205.138.127
+168.226.218.98
+46.10.215.81
