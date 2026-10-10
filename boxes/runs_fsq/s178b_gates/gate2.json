@@ -1,0 +1,9 @@
+{
+ "gate": "note 178-3 gate 2: --excl_min_n default 1 = \u00a7170 exclusion, bitwise",
+ "run": "nested170 --arm direct --scratch 6,384,6 3 CPU steps 1 thread vs HEAD 205f1fb4 copy",
+ "log_losses_equal": true,
+ "eval_fields_differing": [],
+ "n_fields": 75,
+ "default_set_equals_all_test_syms": true,
+ "pass": true
+}
