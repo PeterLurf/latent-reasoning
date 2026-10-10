@@ -54,8 +54,39 @@
   }
  },
  "seeing_twin": {
-  "status": "open",
-  "by_step": {}
+  "status": "done",
+  "by_step": {
+   "12000": {
+    "acc": 0.0,
+    "by_column": [
+     1.0,
+     0.999,
+     0.297,
+     0.101,
+     0.093,
+     0.097,
+     0.123,
+     0.601
+    ],
+    "len_err": 0.057,
+    "digit_err": 0.943
+   },
+   "24000": {
+    "acc": 0.001,
+    "by_column": [
+     1.0,
+     1.0,
+     0.359,
+     0.125,
+     0.098,
+     0.088,
+     0.7,
+     0.971
+    ],
+    "len_err": 0.005005005005005005,
+    "digit_err": 0.994994994994995
+   }
+  }
  },
  "reading": "CAPACITY (A): the blind scaffold also fails at 24k (0.000; column 3 0.351) - an end readout cannot carry the product here"
 }

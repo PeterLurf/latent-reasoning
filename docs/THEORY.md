@@ -11878,6 +11878,16 @@ how many think passes run in training.
   - Audit's diff review.
 * Order (Audit): §181 first, then §182, then s178b.
 
+**§179, the seeing twin's 24k (2026-10-10 03:08 EDT; s179_seescaffold_s1, b244, RTX 3090, landed 653ebae3; descriptive, as registered; the CAPACITY reading is unchanged).**
+* **Full 4×4 at p = 0:** 0.001 at 24k (n_fail 999), against BLIND's 0.0.
+* **Per column at 24k:** 1.0 / 1.0 / 0.359 / 0.125 / 0.098 / 0.088 / 0.700 / 0.971, against BLIND's 1.0 / 1.0 / 0.351 / 0.142 / 0.106 / 0.105 / 0.261 / 0.84.
+  - Seeing the problem lifts only the top columns 7–8, whose values follow from the operands' magnitude in the prompt.
+  - Columns 3–6 are the same with and without the view (c3 0.359 against 0.351).
+* **173-1, descriptive:**
+  - The seeing twin's delta state moves less than BLIND's: 0.919 / 0.993 / 0.999 at passes 2–4, against BLIND's 0.76 / 0.90 / 0.94.
+  - Its linear probe at pass 16 reads column 1 at 0.93, column 2 at 0.26, columns 3–7 at 0.09–0.12 and column 8 at 0.51.
+  - The view changes the memory's dynamics, not what the memory carries for the middle columns.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
