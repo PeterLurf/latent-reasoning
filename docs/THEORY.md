@@ -11979,6 +11979,21 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - **For §182 HOLD (descriptive caveat):** with K up to 12, prompts ≥ 9 always carry the hold (done) target. That trains a new "Step ≥ 9 → done" shortcut, so HOLD's AUX-DONE at n 9–12 must be read with that confound.
   - A done-probe that holds across n needs the pass token removed from the aux prompt, or a halt head on M_t.
 
+**§181 interim, k1 (2026-10-10 07:51 EDT; s181_interleave_k1_s1, b248, RTX 3090, 48k, landed d72491f5; score_s181). FAIL: 4×4 reads 0.0, and the passes have no causal role. Not under-trained (train_loss_tail 0.771 → 0.759, ratio 0.985). The pair reading waits for k2.**
+* **Per column (4×4):** 1.0 / 1.0 / 0.413 / 0.125 / 0.089 / 0.101 / 0.099 / 0.693. This is the profile of §148 PLAIN, §156 SEP and §179.
+  - ext_4x8 reads 0.0 (columns 3–11 near chance, 12 at 0.46). 4×6 / 4×7 / 4×16 read 0.0.
+* **Passes per token at test (k′ 0 / 1 / 2 / 4):** 0.0 / 0.0 / 0.002 / 0.0.
+* **Skip test:** skipping token j's pass changes column j by 0.015 / −0.014 / 0.001 / −0.003 / −0.001 / 0.001 at j = 3..8 (median about 0). The interleaved passes do nothing causally.
+* **Descriptive:**
+  - The across-token delta cosine (173-1's statistic) is 0.937.
+  - The additive gain g_add is 0.0004, while the additive state's norm grows linearly across tokens (1,456 → 19,880 by token 12; AGCLR's no-decay concern).
+  - The delta norm saturates near 115.
+  - Compute: 16 sequential passes and 4.1·10¹⁰ FLOPs per 4×4 item.
+* **Reading (interim).**
+  - Per-token timing, with every pass seeing new input, does not make the memory carry the columns.
+  - The decoder sees the prompt and its own digits, and solves only what a single pass can (columns 1–2, and the top column from magnitude).
+  - Unlike §175, nothing forces content into the memory: §175's aux decoder reads the memory with no view of the problem.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
