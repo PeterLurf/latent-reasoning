@@ -17,6 +17,7 @@ import torch.nn.functional as F
 
 H_ADD, H_DEL, DH = 6, 6, 64
 FAST_ADD = False                                                            # Audit 2026-10-09: R-mode additive writes as one sum over the pass (opt-in per run)
+CHUNK_DELTA = 0                                                             # 2026-10-10: R-mode delta writes in chunks of this many tokens (WY form; 0 = the token loop; needs FAST_ADD)
 
 
 class DeltaMem(nn.Module):
@@ -167,6 +168,10 @@ def write_seq(mem, h6, hw, S, mask=None):
             Sa_fast = Sa + torch.einsum("bthk,bthv->bhkv", pk, v[:, :, :H_ADD])
             if den:                                                         # §185: z <- z + sum_t phi(k_t) (masked), the same masked sum as S_add
                 z_fast = z + pk.sum(1)
+        if CHUNK_DELTA:                                                     # the delta heads' final state in chunks (exact in exact arithmetic; gate: scratch/gate_chunk_delta.py)
+            assert FAST_ADD, "CHUNK_DELTA replaces only the delta loop: it needs FAST_ADD for the additive heads"
+            Sd = delta_chunk(Sd, F.normalize(k[:, :, H_ADD:], dim=-1), v[:, :, H_ADD:], al, be, mask, CHUNK_DELTA)
+            T = 0                                                           # skip the token loop
         for t in range(T):
             Sa_ = Sa if FAST_ADD else Sa + (F.elu(k[:, t, :H_ADD]) + 1)[..., :, None] * v[:, t, :H_ADD][..., None, :]
             z_ = z if (FAST_ADD or not den) else z + (F.elu(k[:, t, :H_ADD]) + 1)
@@ -186,6 +191,31 @@ def write_seq(mem, h6, hw, S, mask=None):
             if den:
                 z = z_fast
         return pack_state(mem, Sa, Sd, z)
+
+
+def delta_chunk(Sd, kd, vd, al, be, mask, C):
+    """The final state of the token loop Sd <- al_t (Sd - be_t (Sd k_t) k_t^T) + be_t v_t k_t^T (Sd: B, H, v, k) over t = 0..T-1, in chunks of C tokens
+    (the WY / UT form of DeltaNet / Gated DeltaNet, arXiv 2406.06484 / 2412.06464). With e_t = v_t - al_t Sd_{t-1} k_t, Sd_t = al_t Sd_{t-1} + be_t e_t k_t^T, so
+    inside a chunk with start state S0 and G_t = prod_{s<=t} al_s:  e_t + sum_{s<t} (G_t / G_s) be_s (k_t . k_s) e_s = v_t - G_t S0 k_t  (a unit lower-
+    triangular solve), then S_C = G_C S0 + sum_s (G_C / G_s) be_s e_s k_s^T. G is kept in log space; ratios are formed only for s <= t (<= 1).
+    Padding (mask False) = al 1, be 0: the state passes unchanged, as the loop's torch.where. kd (B, T, H, k) L2-normalised, vd (B, T, H, v), al / be (B, T, H)."""
+    B, T, H, _ = kd.shape
+    if mask is not None:
+        m_ = mask[:, :, None]; al = torch.where(m_, al, torch.ones_like(al)); be = torch.where(m_, be, torch.zeros_like(be))
+    n = -(-T // C); P = n * C - T
+    if P:                                                                   # tail padding: al 1, be 0, k = v = 0 (no change)
+        kd, vd = (F.pad(t_, (0, 0, 0, 0, 0, P)) for t_ in (kd, vd)); al = F.pad(al, (0, 0, 0, P), value=1.0); be = F.pad(be, (0, 0, 0, P))
+    K_, V_ = (t_.permute(0, 2, 1, 3).reshape(B, H, n, C, -1) for t_ in (kd, vd))
+    lg = torch.log(al).permute(0, 2, 1).reshape(B, H, n, C).cumsum(-1); bt = be.permute(0, 2, 1).reshape(B, H, n, C)
+    low = torch.ones(C, C, dtype=torch.bool, device=kd.device).tril(-1); eye = torch.eye(C, dtype=kd.dtype, device=kd.device)
+    for i in range(n):
+        Kc, Vc, lc, bc = K_[:, :, i], V_[:, :, i], lg[:, :, i], bt[:, :, i]
+        dec = torch.exp((lc[..., :, None] - lc[..., None, :]).masked_fill(~low, float("-inf")))   # G_t / G_s for s < t, else 0
+        A = dec * (Kc @ Kc.transpose(-1, -2)) * bc[..., None, :]
+        rhs = Vc - torch.exp(lc)[..., None] * torch.einsum("bhvk,bhtk->bhtv", Sd, Kc)
+        E = torch.linalg.solve_triangular(eye + A, rhs, upper=False, unitriangular=True)
+        Sd = torch.exp(lc[..., -1])[..., None, None] * Sd + torch.einsum("bhtv,bht,bhtk->bhvk", E, bc * torch.exp(lc[..., -1:] - lc), Kc)
+    return Sd
 
 
 def _block(g, i, h, hd):
