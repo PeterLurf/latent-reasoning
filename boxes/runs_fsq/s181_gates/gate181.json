@@ -1,0 +1,189 @@
+{
+ "g1": {
+  "fade_index": {
+   "log_losses_equal": true,
+   "eval_fields_differing": [],
+   "n_fields": 309
+  },
+  "k2": {
+   "log_losses_equal": true,
+   "eval_fields_differing": [],
+   "n_fields": 129
+  },
+  "smoke_plain": [
+   "SMOKE_PLAIN PASS (76 s)"
+  ]
+ },
+ "g1_pass": true,
+ "g2": {
+  "k1_train": {
+   "n_passes": 7,
+   "expected": 7,
+   "state_chain_unbroken": true,
+   "token1_from_zero": true,
+   "pass_index_1_to_kL": true
+  },
+  "k1_greedy": {
+   "n_passes": 7,
+   "expected": 7,
+   "state_chain_unbroken": true,
+   "token1_from_zero": true,
+   "pass_index_1_to_kL": true
+  },
+  "k2_train": {
+   "n_passes": 14,
+   "expected": 14,
+   "state_chain_unbroken": true,
+   "token1_from_zero": true,
+   "pass_index_1_to_kL": true
+  },
+  "k2_greedy": {
+   "n_passes": 14,
+   "expected": 14,
+   "state_chain_unbroken": true,
+   "token1_from_zero": true,
+   "pass_index_1_to_kL": true
+  }
+ },
+ "g2_pass": true,
+ "g3": {
+  "k1_train": {
+   "pass_ctx_gold": true,
+   "read_ctx_equals_pass_ctx": true
+  },
+  "k1_greedy": {
+   "pass_ctx_own_tokens": true,
+   "differs_from_gold_somewhere": true
+  },
+  "k2_train": {
+   "pass_ctx_gold": true,
+   "read_ctx_equals_pass_ctx": true
+  },
+  "k2_greedy": {
+   "pass_ctx_own_tokens": true,
+   "differs_from_gold_somewhere": true
+  }
+ },
+ "g3_pass": true,
+ "g4": {
+  "1": {
+   "S_j_grad": 0.030897796154022217,
+   "S_prev_grad": null,
+   "write_param_grads": {
+    "mem.qkv.weight": 70.37979125976562,
+    "mem.gate.weight": 0.003980605397373438,
+    "mem.wo.weight": 193.19557189941406
+   },
+   "pgain_grad": 0.09998529404401779
+  },
+  "2": {
+   "S_j_grad": 0.014973824843764305,
+   "S_prev_grad": 0.022478200495243073,
+   "write_param_grads": {
+    "mem.qkv.weight": 79.6764907836914,
+    "mem.gate.weight": 0.0034700524993240833,
+    "mem.wo.weight": 262.52569580078125
+   },
+   "pgain_grad": 0.10523458570241928
+  },
+  "3": {
+   "S_j_grad": 0.01036354061216116,
+   "S_prev_grad": 0.011947317980229855,
+   "write_param_grads": {
+    "mem.qkv.weight": 91.3462142944336,
+    "mem.gate.weight": 0.005486453417688608,
+    "mem.wo.weight": 332.2179870605469
+   },
+   "pgain_grad": 0.10559940338134766
+  },
+  "4": {
+   "S_j_grad": 0.0073947180062532425,
+   "S_prev_grad": 0.007921884767711163,
+   "write_param_grads": {
+    "mem.qkv.weight": 89.63632202148438,
+    "mem.gate.weight": 0.004030490294098854,
+    "mem.wo.weight": 358.9907531738281
+   },
+   "pgain_grad": 0.09671110659837723
+  },
+  "5": {
+   "S_j_grad": 0.005219066049903631,
+   "S_prev_grad": 0.005482318811118603,
+   "write_param_grads": {
+    "mem.qkv.weight": 98.49017333984375,
+    "mem.gate.weight": 0.006488926243036985,
+    "mem.wo.weight": 376.6405029296875
+   },
+   "pgain_grad": 0.11701042950153351
+  },
+  "6": {
+   "S_j_grad": 0.003752908669412136,
+   "S_prev_grad": 0.003823397448286414,
+   "write_param_grads": {
+    "mem.qkv.weight": 80.16686248779297,
+    "mem.gate.weight": 0.0040138778276741505,
+    "mem.wo.weight": 323.8055114746094
+   },
+   "pgain_grad": 0.09421590715646744
+  }
+ },
+ "g4_pass": true,
+ "g5": {
+  "k1": {
+   "rc": 0,
+   "err": "",
+   "missing": [],
+   "k": 1,
+   "kprimes": [
+    "0",
+    "1",
+    "2",
+    "4"
+   ],
+   "skip_rows": 8,
+   "norm_tokens": 12,
+   "delta_cos": {
+    "within_token": null,
+    "across_tokens": 0.9448245934077671
+   },
+   "compute_passes_4x4": 8,
+   "args_interleave": 1
+  },
+  "k2": {
+   "rc": 0,
+   "err": "",
+   "missing": [],
+   "k": 2,
+   "kprimes": [
+    "0",
+    "1",
+    "2",
+    "4"
+   ],
+   "skip_rows": 8,
+   "norm_tokens": 12,
+   "delta_cos": {
+    "within_token": 0.9849550724029541,
+    "across_tokens": 0.9756663697106498
+   },
+   "compute_passes_4x4": 16,
+   "args_interleave": 2
+  },
+  "time_steps": {
+   "rc": 0,
+   "timing": {
+    "arm": "inject",
+    "think_k": "0",
+    "interleave": 1,
+    "steps_timed": 3,
+    "sec_per_step": 1.2459681034088135,
+    "steps": 6,
+    "est_hours_steps": 0.002076613505681356,
+    "gpu": "cpu",
+    "micro": 1
+   }
+  }
+ },
+ "g5_pass": true,
+ "all_pass": true
+}
