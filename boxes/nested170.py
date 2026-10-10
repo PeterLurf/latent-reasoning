@@ -689,7 +689,7 @@ def main():
         info["aux_decoder"] = ("the SAME GPT-2 trunk and LM head as the main decoder (shared weights, no new parameters), read-only on M_t via fwd_read: "
                                "[EOT, ' Step', ' t', ' :'] + e_{t+1} + EOT (teacher-forced); no problem text, no write, never fed back; dropped at test")
     json.dump(info, open(os.path.join(a.out, "args_eval.json" if a.eval_only else (("args_resume_%d.json" % int(time.time())) if a.resume else "args.json")), "w", newline="\n"), indent=1)
-    params = m if m is not None else g; opt = make_opt(params, a.lr); step0 = 1; n_nonfinite = 0; hist = []; wg_hist = []; wwin = []; wlast = []; gn_hist = []; gadd_hist = []
+    params = m if m is not None else g; opt = make_opt(params, a.lr); step0 = 1; n_nonfinite = 0; hist = []; wg_hist = []; wwin = []; wlast = []; gn_hist = []; gadd_hist = []; zmin_hist = []
     log = open(os.path.join(a.out, "log.jsonl"), "a" if (a.resume or a.eval_only) else "w", newline="\n"); t0 = time.time()
     if a.resume:
         ck = torch.load(a.resume, map_location=dev, weights_only=False); params.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"]); rng.bit_generator.state = ck["np_rng"]
@@ -715,6 +715,8 @@ def main():
             m.mem.fade.fill_(min(1.0, step / max(1, int(500 * sc))))
             m.mem.gamma.fill_(0.0 if step <= a.write_mix_start * sc else min(1.0, (step - a.write_mix_start * sc) / max(1.0, (a.write_mix_end - a.write_mix_start) * sc)))
         lam_now[0] = lam_at(step)
+        if a.add_norm == "den" and m is not None and step == step0 and step <= 500:   # Audit: arm the phi(q)^T z recorder from the first step
+            m.mem.zmin_rec = []
         its = train_items(rng, a.bs, a.n_max_train, EXCL); opt.zero_grad(); tot = 0.0; ch = a.bs // a.micro
         if KW:                                                              # §177 (f): the same items / n marginal as §170, bucketed by n, one K per bucket
             assert not lam_now[0] or a.kmatch_impl == "masked", "§182: the aux rides on the masked kmatch batch"
@@ -739,6 +741,10 @@ def main():
         gn = torch.nn.utils.clip_grad_norm_(params.parameters(), 1.0)
         if a.aux_reweight or a.add_norm:                                    # §184 / §185: the pre-clip grad norm per step (clip fires above 1.0)
             gn_hist.append(float(gn))
+        if a.add_norm == "den" and m is not None and step <= 500:           # Audit: min phi(q)^T z over this step's reads, steps 1..500
+            if m.mem.zmin_rec:
+                zmin_hist.append((step, min(m.mem.zmin_rec)))
+            m.mem.zmin_rec = [] if step < 500 else None
         if a.add_norm and m is not None:                                    # §185: the additive path's grad norm (the additive heads' q / k / v rows + the rms gain)
             gq = m.mem.qkv.weight.grad
             if gq is not None:
@@ -885,6 +891,9 @@ def main():
                 m.mem.norms = None
             res["s185"] = {"add_norm": a.add_norm, "clip_rate": float((gh_ > 1.0).mean()), "grad_norm_preclip": {"median": float(np.median(gh_)), "p90": float(np.percentile(gh_, 90))},
                            "grad_add": {k_: {"median": float(np.median(v_)), "p99": float(np.percentile(v_, 99))} for k_, v_ in sorted(gb.items(), key=lambda kv: int(kv[0]))},
+                           "den_min_first500": ({"min": min(v_ for _, v_ in zmin_hist), "by_100": {str(b_): min(v_ for s_, v_ in zmin_hist if (s_ - 1) // 100 == b_ // 100 - 1)
+                                                for b_ in range(100, 501, 100) if any((s_ - 1) // 100 == b_ // 100 - 1 for s_, _ in zmin_hist)}, "n_steps": len(zmin_hist)}
+                                                if zmin_hist else None),
                            "read_norm_by_pass": rn, "read_norm_def": "median ||g_add * additive read|| at each think pass's last token (mem.norms), 256 test items n 3..8",
                            "grad_add_def": "per step the norm of the additive heads' q / k / v rows of qkv.weight.grad (+ the rms gain), median / p99 per 1k steps"}
         if a.aux_reweight:                                                  # §184 fields
