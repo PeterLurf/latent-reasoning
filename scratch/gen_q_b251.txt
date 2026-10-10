@@ -1,0 +1,5 @@
+# THEORY §182 STEP-AUX-HOLD (566616ef + notes 182-1 / 182-3) cell s182_nofade_s1 (Audit: launch NOFADE now; WINDOW / HOLD held for the user): s175's recipe, INJECT K8 + the shared-trunk aux 1.0 with --aux_fade 48000,48000 (lambda 1 throughout), fast_add, 48k, seed 1; eval K' {0,1,4,8,12,16,24,32} + n / n+2, s182.path_indep; then the 173-1 package. Timing rq250: 0.887 s/step -> ~11.8 h
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s182_nofade_s1 boxes.nested170 --arm inject --think_k 8 --aux_step 1.0 --aux_fade 48000,48000 --fast_add --seed 1 --steps 48000 --kprimes 0,1,4,8,12,16,24,32 --path_indep --ckpt_every 1000 --auto_micro
+boxes/runs_fsq/s182_nofade_s1_pkg boxes.halt173 --run boxes/runs_fsq/s182_nofade_s1 --dir177 --bs 125

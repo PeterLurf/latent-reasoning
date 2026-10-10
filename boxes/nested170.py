@@ -807,6 +807,9 @@ def main():
         s = {"acc_by_n_kprime": {}, "skip_pass": {}, "serial": {}, "write_grad_norm": wg_hist, "write_grad_spikes_floor": [x_ for x_ in wg_hist if x_["spike_100x_floor"]], "n_nonfinite": n_nonfinite}
         for kp in sorted({int(x_) for x_ in a.kprimes.split(",")} | {K} if a.kprimes else {0, 1, K // 2, K, 2 * K}):   # §182: --kprimes
             Ak = A_ if kp == K else inject_answers(TE, kp); s["acc_by_n_kprime"][str(kp)] = {str(n): float((Ak == T_)[N == n].mean()) for n in range(1, 17)}
+        if a.kprimes:                                                       # note 182-3 (§182 cells): n-relative K' = n and n + 2 (per-n readout, as (f)'s kn_answers)
+            for kk_, f_ in (("n", lambda n_: n_), ("n+2", lambda n_: n_ + 2)):
+                Ak = kn_answers(TE, f_); s["acc_by_n_kprime"][kk_] = {str(n): float((Ak == T_)[N == n].mean()) for n in range(1, 17)}
         for t in sorted({t for t in (1, K // 4, K // 2, 3 * K // 4, K) if t >= 1}):
             Ak = inject_answers(TE, K, skip=(t,)); s["skip_pass"][str(t)] = {str(n): float((Ak == T_)[N == n].mean()) for n in range(1, 17)}
         rec_, don_, hyb_ = serial_items(SPOOL, np.random.default_rng(17200)); s["n_serial_items"] = len(rec_); s["serial_pool"] = {"n": len(SPOOL), "seed": 17300}
