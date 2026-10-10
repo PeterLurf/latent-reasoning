@@ -1,0 +1,4 @@
+# THEORY §181 INTERLEAVE (ba4cf16e) cell s181_interleave_k2_s1: inject169 205f1fb4 --interleave 2 (§169 recipe on §161's mix, pass_index sin_gain, fast_add, 48k, seed 1); timing b247 at the full curriculum (0.396 s/step on a fast 3090) -> <= 5.3 h + eval
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s181_interleave_k2_s1 boxes.inject169 --think_k 0 --interleave 2 --pass_index sin_gain --fast_add --seed 1 --steps 48000 --ckpt_every 1000 --auto_micro --bench bench/data/mult_4x4_test.txt
