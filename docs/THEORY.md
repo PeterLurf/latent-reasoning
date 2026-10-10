@@ -255,7 +255,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 165 | FIXED-CHUNK: the same memory on fixed text chunks plus think passes (task-agnostic segmentation) | **neither K arm exact on plain text** (K0 / K8 / K16 / K16c1 all 0.0; memory unused): the claim stays structured-input | closed |
 | 166 | STATE-COVERAGE: 1k-step post-training from passed / noise states vs a PLAIN post-train (2507.02782), on §162 LONG and §161 MIX | **not shown**: S5 SP = PLAIN (48 0.9995 / 64 0.988 vs 0.991 / 512 0.0 both; validity gate passes); MULT uninformative (166-3) | closed |
 | 167 | DAS-EDIT: learned-subspace interchange (DAS) on MIX / S5 memories, with illusion controls (C1 edit, C7) | **S5 3 / 3 DECOMPOSABLE** (state in <= 64-d subspace); **MULT not DECOMPOSABLE** (s2 t4 only; t12 NOT-DEC 2/3 by rule but the k=64 MIX fit collapses, so not separable from fit failure; t4 / t8 undetermined) | closed |
-| 168 | DEEP-ProsQA (the user's go): a measured single-pass boundary on deep (3–14) shortcut-free ProsQA, then an INJECT latent arm | registered (step 1 running) | **open** |
+| 168 | DEEP-ProsQA (the user's go): a measured single-pass boundary on deep (3–14) shortcut-free ProsQA, then an INJECT latent arm | step 1 done: gate STAND (168-3); D* = 3 on NA, no single-pass regime (168-5); step 2 held (168-3 / 168-4) | **open** |
 | 169 | INJECT (the user's "task agnosticness"): the full problem re-presented every think pass, the memory the only cross-pass state; K16 / K8 / K0 on §161's mix | **neither K arm exact** (K0 0.003, K8 0.001, K16 0.002; flat in K′, memory unused): input re-presentation alone does not suffice at 48k | closed |
 | 170 | NESTED (the user's go): Feng's mod-11 bracketed expressions; a measured DIRECT boundary over n, then INJECT K8 / K0 (K16 gated) against Feng's text CoT; C1 = DEEP + THINK-NECESSARY + SERIAL-NEST, C3 at text CoT's accuracy for less compute | registered | **open** |
 | 171 | READ-SLOTS (task-agnostic architecture): the input encoded once; each think pass 8 learned slots read it and write DeltaMem-R; K8 on §161's mix; head to head with INJECT (CHEAPER-EQUAL); read map / entropy (C7) | **slot 1 not EXACT** (4×4 0.003, flat in K′; memory unused; pass-invariant reads, 60% on EOT); BLIND 0.0; interpretation awaits §169 K8 | gate closed |
@@ -10451,6 +10451,24 @@ subspace.**
   - **The window's lower edge is max(D*, D*_curr).** That baseline may lift it above 3.
   - These runs are registered with step 2's note, with their own projection.
 * Step 2 stays held (168-3) until a think-pass design succeeds on nested arithmetic.
+
+**Note 168-5 (2026-10-09 23:57 EDT; the D* boundary from DIRECT alone, after the 168-3 gate STANDs and before any latent ProsQA run exists; score_s168). D* = 3 on NA for both seeds: "no single-pass regime".**
+* **DIRECT candidate accuracy by depth (chance 0.5):**
+  - NA s1 (1ed65432; b245 eval-only): 0.538 / 0.476 / 0.504 / 0.549 / 0.508 / 0.473 / 0.496 / 0.478 at depths 3–10; 0.501 / 0.521 / 0.458 / 0.353 at 11–14 (n 34 at 14). acc_ctl 0.507.
+  - NA s2: 0.563 / 0.490 / 0.487 / 0.523 / 0.511 / 0.482 / 0.499 / 0.502 at depths 3–10; 0.44–0.52 at 11–14. acc_ctl 0.545.
+  - Standard data (descriptive): s1 0.54 / s2 0.62 at depth 3, chance beyond; D* = 3 for both.
+  - All four DIRECT runs reach training loss 0.0 by 24k (log.jsonl), so they memorise.
+* **The NA boundary governs: D*_s1 = 3, D*_s2 = 3, so D* = 3**, read as "no single-pass regime" by §168's rule.
+  - This is not a fall-off with depth: plain DIRECT is at chance at every p8 depth, including depth 3.
+  - The 168-3 gate shows the trainer is sound (0.766 on standard ProsQA), so the cause is the data.
+* **Step 2's training range (§168's rule):** the full train mix 3–10, tested 3–14. DEEP-LATENT is read at depths max(D*, 3) = 3 to 10.
+  - Under 168-4 the window's lower edge becomes max(D*, D*_curr) once the curriculum-trained DIRECT runs on p8 NA have read. Those runs are registered with step 2's note.
+  - A plain single pass is at chance here while Coconut's curriculum single pass reads 95.5 on standard ProsQA, so 168-4's baseline is the binding comparison for any step-2 claim.
+* **Step 2's harness and launch (no rule change).**
+  - §168 registered INJECT. Since then INJECT's identical-input think passes have failed on multiplication (§169 K8: memory unused) and only matched the single pass on nested expressions (§170 K8).
+  - On ProsQA inputs of about 450 tokens, INJECT K8 / K16 costs about 9–17× DIRECT per item.
+  - **Step 2 therefore launches only after a think-pass design succeeds on §170's nested task** (§175 STEP-AUX, a §177 (f) HIT, or a fix on §179's line such as §180 if registered; §176 closed without a rescue). That design's harness is then fixed for step 2 in a dated note, before any step-2 run, with a user-level projection.
+  - Until then, step 2 is held.
 
 ## 169. INJECT: the memory with the full problem re-presented in every think pass, a task-agnostic harness (the user's "work on task agnosticness" via Audit's research pass; pre-registered 2026-10-09 01:37 EDT, after Literature's check 6b019d1e (`docs/LIT_INJECT_2026-10-09.md`) and Audit's review, before any implementation or run)
 
