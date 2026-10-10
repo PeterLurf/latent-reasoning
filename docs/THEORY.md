@@ -270,6 +270,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 180 | (unused: the DEC-DROP draft, conditional on a §179 SHORTCUT, was never registered) | — | — |
 | 181 | INTERLEAVE: k think passes before every answer token, the memory carried across tokens (MIX's timing without its schedule); arms k1 / k2 on §161's mix | registered | **open** |
 | 182 | STEP-AUX-HOLD: §175 with the aux to the end (NOFADE), + a sampled step-matched K (WINDOW), + hold targets on passes past n (HOLD); DEEP at K′ 8, STABLE (C6) K′ 16 vs 8 | registered | **open** |
+| 183 | INTERLEAVE-BLIND: §181 k1 with a blind per-token decoder ([EOT, ' =', ans_<j] + memory); tests 'per-pass signal through a view-free reader' (MIX / §175 vs every failure) | registered | **open** |
 
 ## Live sections
 
@@ -12002,6 +12003,54 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * A foreign starting memory halves accuracy and changes about 70% of answers.
 * The 2070 copy reproduces §175's acc_by_n (n 4–8: 0.966 / 0.882 / 0.741 / 0.644 / 0.484 against 0.967 / 0.882 / 0.741 / 0.641 / 0.490), so the card class does not move the reference.
 * By Anil 2211.09961, path independence predicts generalisation beyond training. §182's cells are read against 0.292 / 0.764.
+
+## 183. INTERLEAVE-BLIND: per-token signals through a view-free reader, on multiplication (Audit's lead after §181 k1; Audit-reviewed; pre-registered 2026-10-10 08:15 EDT, before any implementation or run, and before §181 k2 reads: k2's result cannot change these rules)
+
+**Why.**
+* **The working designs share two things.** §161 MIX and §175 STEP-AUX both give each pass its own training signal, through a reader with no view of the whole problem:
+  - MIX's passes see only their pair segment;
+  - §175's aux decoder reads M_t with no problem text.
+* **Every failure lacks one of the two:**
+  - §179 BLIND has a view-free reader but one end signal (CAPACITY);
+  - §181 k1 has a signal per token, but through a decoder that sees the prompt (FAIL; skip drops about 0);
+  - INJECT and the §177 arms have neither.
+  - This is VLAE's prediction (1611.02731) applied per pass: a reader that sees the input leaves the latent unused.
+* **The cheapest direct test:** §181 k1 with the per-token decoder made blind.
+  - The passes still see the whole problem (task-agnostic), and the targets are just the answer digits: no hand-built per-pass targets, no C4 cost.
+  - The memory needs only the running carry per token, so §179's capacity limit does not apply.
+
+**Design.** §181 k1 exactly (s181_interleave_k1_s1's recipe: INJECT on §161's mix, DeltaMem-R, fast_add, pass_index sin_gain, 48k, seed 1, RTX 3090, `--interleave 1`). **One change: the per-token decoder is blind.**
+* Token j's pass is unchanged: [EOT, a, " *", b, " =", ans_<j], with the memory carried.
+* The decoder reads that memory over **[EOT, " =", ans_<j]**, with no problem token: §179's blind prefix extended by the answer's own earlier digits. Flag `--blind_decoder` on the interleave path.
+* Teacher-forced in training, greedy at test, and the harness-fixed width na + nb, as §181.
+* Dir `s183_ilblind_k1_s1`.
+
+**Rules (fixed now; `theory/score_s183.py`).**
+* **§181's rules, unchanged** (4×4 exact at 48k):
+  - **HIT** = 4×4 ≥ 0.9, AND per-token THINK-NECESSARY (median drop_j over columns 3–8 ≥ 0.3, with no drop_j < −0.05), AND k′ = 0 ≤ 0.1;
+  - **FAIL** = 4×4 < 0.5 ("open (under-trained)" if train_loss_tail's second half < 0.98 × its first);
+  - otherwise **PARTIAL**.
+  - **Under a blind decoder the k′ = 0 conjunct is uninformative (Audit).** Zero memory and no problem text can only guess, so it holds trivially. THINK-NECESSARY rests on the per-token skip drops alone, and a HIT is not read as passing two independent necessity tests.
+* **The synthesis reading,** against §181 k1, the seeing control. Its columns 3–7 mean is 0.165, read from `s181.acc_by_column` (column 8 is predictable from magnitude):
+  - **SUPPORTED:** HIT.
+  - **PARTLY SUPPORTED:** not HIT, but the columns 3–7 mean is ≥ k1's + 0.2 and the median skip drop over columns 3–8 is ≥ 0.1. The memory now carries column content causally.
+  - **NOT SUPPORTED:** columns 3–7 mean within k1's + 0.05 and median skip drop < 0.05. A view-free per-token reader alone does not make the memory carry the carry.
+  - Anything else is reported as mixed.
+  - NOT SUPPORTED is not read on an under-trained run: it reads open (under-trained).
+* **Descriptive:**
+  - per column, ext_4x8 (12 tokens; C2) and k′ ∈ {0, 1, 2, 4};
+  - the full skip matrix (the carry chain), memory norm by token, and the delta cosine (173-1);
+  - beside §181 k1 / k2 and §179 BLIND.
+* **One seed.** A HIT opens s2, and SUPPORTED then needs 2 / 2.
+
+**Placement.** One cell on a 3090, about $1–1.5 (§181 k1's 10.3k s of training plus eval).
+* **Local previews (descriptive, read by no rule; also the code smoke):** 8k steps with `--sched_scale` compressing the full 48k schedule, so 165-1's curriculum reaches c = 8. Each local card runs a BLIND and a SEEING (§181 k1) preview on the identical compressed schedule, in mirrored order. GPU class is never mixed within a contrast.
+* --time_steps first, with the projection to Audit.
+* **Gates:**
+  - flags-off (no --blind_decoder) bitwise equal to §181's interleave path;
+  - an assert that the decoder prefix holds no problem token;
+  - gradflow;
+  - Audit's diff review.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
