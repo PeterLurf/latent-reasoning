@@ -269,6 +269,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 179 | READOUT (diagnostic): §177 (d)'s scaffold with a BLIND end decoder, p = 0 to 24k; SHORTCUT (the decoder's view of the problem starves the memory) vs CAPACITY (end readout cannot carry the product) | **CAPACITY** (blind 0.0 at 12k / 24k, column 3 0.351; columns 1–2 exact from memory alone); the seeing twin's 24k is descriptive | closed |
 | 180 | (unused: the DEC-DROP draft, conditional on a §179 SHORTCUT, was never registered) | — | — |
 | 181 | INTERLEAVE: k think passes before every answer token, the memory carried across tokens (MIX's timing without its schedule); arms k1 / k2 on §161's mix | registered | **open** |
+| 182 | STEP-AUX-HOLD: §175 with the aux to the end (NOFADE), + a sampled step-matched K (WINDOW), + hold targets on passes past n (HOLD); DEEP at K′ 8, STABLE (C6) K′ 16 vs 8 | registered | **open** |
 
 ## Live sections
 
@@ -11814,6 +11815,68 @@ how many think passes run in training.
   - A second seed cannot turn slot 1's profile into a HIT. It would cost about $2.5 that the §175 line uses better.
 * **What changes:** (f) stays "not HIT, not FAIL" at slot 1, with no ≥ 2-seed reading. (g) stays unrun (gated on an (f) HIT).
 * This loosens no rule and claims nothing beyond slot 1.
+
+## 182. STEP-AUX-HOLD: is §175's per-step decay the fade, and what makes extra passes stable, a sampled pass count or hold targets? (Audit's three-cell split; Literature's prior check c2586e92, `docs/LIT_STEP_AUX_HOLD_2026-10-10.md`; pre-registered 2026-10-10 02:59 EDT, before any implementation or run)
+
+**Why.**
+* **§175 STEP-AUX** made identical-input passes do one reduction each (K′ = 4 solves n ≤ 4; K′ = 0 is at chance; pooled 0.787 against FINAL-only's 0.351). It is not DEEP, for two reasons.
+  - **(i) Per-step accuracy decays:** handle accuracy (`aux_acc_by_role.handle`) runs 0.997 → 0.466 from t = 1 to t = 8. But §175's aux weight faded to 0 over 36k–48k, so the last 12k trained no step at all.
+  - **(ii) Extra passes hurt:** pooled n 3..8 is 0.414 at K′ = 16 against 0.787 at K′ = 8. Passes beyond the trained count were never supervised.
+* **Three cells, one lever each (Audit).**
+  - **NOFADE** isolates (i): it is §175 exactly, with the aux weight held at 1 to the end.
+  - **WINDOW** adds a sampled, step-matched pass count to NOFADE: each item runs K = n + U{1..4} passes.
+    - Without aux, §177 (f)'s window alone already flattened its K′ curve inside the window: `s177.acc_by_n_kprime` pooled 0.506 / 0.502 / 0.496 at K′ = n + 1 / n + 2 / n + 4.
+    - But at a fixed K′ = 20, twice its maximum, it fell to 0.415 (`s170.acc_by_n_kprime["20"]`; 0.506 at K′ = 10).
+  - **HOLD** adds the hold target to WINDOW: every pass t > n gets a **hold** target.
+  - So WINDOW − NOFADE is the window lever, and HOLD − WINDOW is the hold target itself.
+* **The hold target** is the identical string of step n's target, e_{n+1} (the final value): idempotence, not a new format (Literature (a)).
+* **Prior (c2586e92):** an explicit aux "hold the final value" step target was not found.
+  - The closest are TRM 2510.04871 and HRM 2506.21734's deep supervision, where every outer step targets the same final answer, so steps after a correct answer are trained to stay put.
+  - Anil et al. 2211.09961: path independence (the same steady state from any start) predicts harder-instance generalisation.
+  - Fan 2409.15647's looped models converge after solving without being trained to.
+  - ACT / PonderNet carry no stability loss.
+* **Pre-stated (Audit; Literature (d)):** HOLD targets stability across extra passes (C6), not depth beyond training.
+  - Steps at n 9–12 have no targets, so n 9–12 is descriptive and is not read as C2.
+
+**Design.** §175's recipe exactly: §170's INJECT K8 on Feng's mod-11 nesting (n ~ U{1..8}), the shared-trunk read-only aux decoder ([EOT, " Step", " t", " :"] + e_{t+1}, teacher-forced, dropped at test), aux_step 1.0, fast_add, 48k, seed 1, RTX 3090.
+* **NOFADE:** one change, `--aux_fade 48000,48000` (λ = 1 throughout). Fixed K = 8. Dir `s182_nofade_s1`.
+* **WINDOW:** NOFADE plus `--k_window 1,4`: K = n + U{1..4} per item, with §177 (f)'s masked single batch (177-5). The main decoder reads after the item's K-th pass, and --think_k is the maximum, 12. Passes t > n get no aux target, as in §175. Dir `s182_window_s1`.
+* **HOLD:** WINDOW plus `--aux_hold`. For passes n < t ≤ K, the aux target is e_{n+1} (step n's target string). Passes t ≤ n keep §175's targets. Dir `s182_hold_s1`.
+  - Bansal-style progressive passes (Literature (b)) are not added: one lever per cell.
+* **Eval (all cells):** acc_by_n at K′ ∈ {0, 1, 4, 8, 12, 16, 24, 32} (`s170.acc_by_n_kprime`), §175's aux fields, the 173-1 package, and **PATH-INDEP** (below).
+
+**Rules (fixed now; `theory/score_s182.py`; pooled = n 3..8 (n* = 3); chance 1/11; read at 48k).**
+* **DEEP(cell):** accuracy ≥ 0.90 at every n 3..8 at **K′ = 8** (all cells, so the comparison with §175 is direct).
+* **THINK-NECESSARY(cell):** 170-4's removal-only form against K′ = 8, (acc(K′) − 1/11) ≤ 0.5 × (acc(8) − 1/11) for K′ = 0 and 1, pooled. 170-5's near-chance guard applies.
+* **STABLE(cell), the C6 rule:** pooled at K′ = 16 ≥ pooled at K′ = 8 − 0.02.
+  - K′ = 16 is twice NOFADE's trained K but only 1.33× WINDOW / HOLD's maximum of 12. So **K′ = 24 (2× their maximum) and K′ = 32 are reported beside it** (Audit), and a stability claim for WINDOW / HOLD is stated together with its K′ = 24 value.
+* **Readings:**
+  - **NOFADE DEEP:** §175's decay was the fade. Per-step accuracy needs the signal to the end.
+  - **NOFADE not DEEP:** the decay is intrinsic to per-step error at this budget (the next lever is per-step accuracy, not stability).
+  - **NOFADE STABLE:** training to the end with the aux suffices for stability.
+  - **WINDOW STABLE and NOFADE not:** the sampled step-matched pass count gives stability.
+  - **HOLD STABLE and WINDOW not:** the hold target itself gives stability (C6), as predicted.
+  - **WINDOW and HOLD both STABLE:** the window suffices, and hold adds nothing to stability.
+  - **HOLD not STABLE:** hold targets do not fix overthinking here.
+  - WINDOW − NOFADE and HOLD − WINDOW at K′ = 8 are reported (does each lever cost or help within training?).
+* **Seeds:** slot 1 per cell. A cell that is DEEP or STABLE opens s2 (`s182_{cell}_s2`); its claim then needs 2 / 2 seeds.
+* **Descriptive:**
+  - the K′ curve (0 to 32) per n;
+  - aux_acc_by_pass and aux_acc_by_role.handle per t (including hold passes for HOLD);
+  - n 9–12 at K′ ∈ {8, 16, 32} (not C2; predicted unchanged);
+  - the 173-1 package;
+  - §173's answer-settling halt;
+  - **PATH-INDEP (Anil 2211.09961; Literature (c)):** on 500 test items at n 3..8, run K′ = 16 from M_0 = 0 and from M_0 = another item's memory after 8 passes (a fixed derangement, seed 18201). Report answer agreement and the final delta-state cosine.
+
+**Placement.** Three cloud cells on 3090s. NOFADE costs about §175's per step. WINDOW and HOLD run a mean K of n + 2.5, and HOLD adds the hold aux passes.
+* --time_steps on a 3090 for all three comes before launch, with the projection restated to Audit (rough: about $8–10 in all; Audit reports tonight's total to the user).
+* **Gates:**
+  - flags-off (no --aux_hold, default fade) bitwise equal to §175's path;
+  - HOLD's hold targets are exactly e_{n+1} for t > n (assert on a fixture);
+  - gradflow, with nonzero aux gradient at a hold pass;
+  - a memory check at n = 8, K = 12, with the aux;
+  - Audit's diff review.
+* Order (Audit): §181 first, then §182, then s178b.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
