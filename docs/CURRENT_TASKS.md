@@ -101,6 +101,12 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
       - Local 8k compressed previews: blind and seeing on each of the 3070 and 2070. The cloud cell follows --time_steps.
     - **§182:** NOFADE (b251) running. WINDOW (b253) and HOLD (b254) are deploying: user-approved via Audit (182-5), about 26 / 28 h.
       - §175 descriptives done: AUX-DONE (exact t = n, but counter-like at n = 8 per T-SHIFT) and PATH-INDEP (answer_agree 0.292).
+    - **Training-schedule / architecture proposals (the user asked, 2026-10-10).** Ranked by the user's priorities with Audit, prior-checked by Literature (09f395a8):
+      - #1 AUX-REWEIGHT **registered as §184** (c342e51c; ~$3). Pass 8 got 1/22 of pass 1's aux signal.
+      - #4 forget gate: only if the s175 memory-norm read (eval_memnorm.json, requested) shows additive growth.
+      - #5 aux-first: an arm inside the ProsQA cell.
+      - #2 path-independence (Anil's recipe): if §182 HOLD's answer_agree < 0.5.
+      - #3 halt head: when a C5 claim is wanted.
     - **§168 step 2 registered: STEP-AUX-ProsQA** (note 168-7, 410d7cbc; the user's 'smaller language task first').
       - §175's per-hop aux on p8 NA, with K = 10; CURR-DIRECT and TEXT-COT bars.
       - p8 depth = unbranched serial lookups (168-6).
