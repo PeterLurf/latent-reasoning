@@ -255,7 +255,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 165 | FIXED-CHUNK: the same memory on fixed text chunks plus think passes (task-agnostic segmentation) | **neither K arm exact on plain text** (K0 / K8 / K16 / K16c1 all 0.0; memory unused): the claim stays structured-input | closed |
 | 166 | STATE-COVERAGE: 1k-step post-training from passed / noise states vs a PLAIN post-train (2507.02782), on §162 LONG and §161 MIX | **not shown**: S5 SP = PLAIN (48 0.9995 / 64 0.988 vs 0.991 / 512 0.0 both; validity gate passes); MULT uninformative (166-3) | closed |
 | 167 | DAS-EDIT: learned-subspace interchange (DAS) on MIX / S5 memories, with illusion controls (C1 edit, C7) | **S5 3 / 3 DECOMPOSABLE** (state in <= 64-d subspace); **MULT not DECOMPOSABLE** (s2 t4 only; t12 NOT-DEC 2/3 by rule but the k=64 MIX fit collapses, so not separable from fit failure; t4 / t8 undetermined) | closed |
-| 168 | DEEP-ProsQA (the user's go): a measured single-pass boundary on deep (3–14) shortcut-free ProsQA, then an INJECT latent arm | step 1 done: gate STAND (168-3); D* = 3 on NA, no single-pass regime (168-5); step 2 held (168-3 / 168-4) | **open** |
+| 168 | DEEP-ProsQA (the user's go): a measured single-pass boundary on deep (3–14) shortcut-free ProsQA, then an INJECT latent arm | step 1 done: gate STAND (168-3); D* = 3 on NA, no single-pass regime (168-5); p8 depth = serial lookups (168-6); **step 2 registered: STEP-AUX-ProsQA** (168-7; K10, per-hop aux; CURR-DIRECT + TEXT-COT bars; the user decides slot 1's ~$13–17) | **open** |
 | 169 | INJECT (the user's "task agnosticness"): the full problem re-presented every think pass, the memory the only cross-pass state; K16 / K8 / K0 on §161's mix | **neither K arm exact** (K0 0.003, K8 0.001, K16 0.002; flat in K′, memory unused): input re-presentation alone does not suffice at 48k | closed |
 | 170 | NESTED (the user's go): Feng's mod-11 bracketed expressions; a measured DIRECT boundary over n, then INJECT K8 / K0 (K16 gated) against Feng's text CoT; C1 = DEEP + THINK-NECESSARY + SERIAL-NEST, C3 at text CoT's accuracy for less compute | registered | **open** |
 | 171 | READ-SLOTS (task-agnostic architecture): the input encoded once; each think pass 8 learned slots read it and write DeltaMem-R; K8 on §161's mix; head to head with INJECT (CHEAPER-EQUAL); read map / entropy (C7) | **slot 1 not EXACT** (4×4 0.003, flat in K′; memory unused; pass-invariant reads, 60% on EOT); BLIND 0.0; interpretation awaits §169 K8 | gate closed |
@@ -12085,6 +12085,74 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - D* = 3 (168-5) says a plain single pass cannot do even the 3–4-hop base plus any chain.
   - A latent result on p8 depth shows serial lookups (a C1 serial claim). It does not show deeper branching search.
   - Per-hop targets past the base are valid supervision, since they lie on the answer path.
+
+**Note 168-7 (2026-10-10 11:42 EDT; before any step-2 implementation or run; the user's direction via Audit, 2026-10-10: "we can run tests on a smaller language modeling task"; Literature's checks f1969162 / d5e624e0; Audit's review, with amendments (i)–(iv) OK'd). Step 2 is STEP-AUX-ProsQA: §175's recipe on p8 NA. It replaces the registered FINAL-only INJECT arm, and step 2's hold (168-3 / 168-5) is released.**
+
+**Why.**
+* §175 is our only think-pass recipe whose passes do work: one reduction per pass, with K′ = 0 at chance on nested arithmetic.
+* FINAL-only INJECT (the arm registered in step 2's outline) left its passes unused or shallow everywhere: §169 / §170.
+* p8 NA is a natural-language reasoning task where a plain single pass is at chance from depth 3 (D* = 3, 168-5), so any gain belongs to the passes.
+* ProsQA's CoT is the gold path (`steps`: the root fact, then one "Every X is a Y" per hop), so per-pass targets are text-CoT supervision, allowed by C4.
+* The user's "beat SOTA on a smaller task first" makes this the cleanest candidate before GSM8K.
+* **Scope (168-6):** p8's depth beyond the 3–4-hop base is unbranched, answer-relevant chain lookups. A result here is about serial hop-following, not deeper branching search. A ProsQA-Ext-style generator (2609.35643) is a later, harder second set.
+* **Per-hop aux on ProsQA is new** (d5e624e0: SIM-CoT, CoLaR, LOTUS, CODI and ProsQA-Ext have no per-hop latent targets on ProsQA).
+
+**Design (the STEP-AUX arm).**
+* GPT-2 small, with §170's DeltaMem-R (6 + 6 heads after block 6, top writes, the γ ramp) and fast_add.
+* **K = 10 INJECT passes,** each on [EOT, question] (all facts, the question, about 440 tokens; re-shown every pass).
+  - **K = 10, not 168-2's K8:** one hop per pass needs K ≥ the maximum training path length of 10. 168-2's "K8 first" was a cost gate.
+* **The aux:** after pass t, the read-only aux decoder (§175's: shared trunk, reads M_t with no question text) emits `steps[t]` for t ≤ len(steps), at λ = 1.
+  - **The fade is fixed by §182 NOFADE, mechanically, in a dated note before any step-2 run.**
+  - No fade (`--aux_fade 12000,12000`), unless NOFADE's pooled n 3..8 at K′ = 8 reads more than 0.05 below §175's 0.787. In that case, §175's fade scaled to 12k (`9000,12000`).
+* **The answer:** §168's candidate accuracy, log p("### " + correct) > log p(the negative's), read by the main decoder over [EOT, question, "\n"] plus the memory after K passes.
+* Train depths 3–10 (§168's rule for no single-pass regime), test 3–14. 12k steps (the projection is fixed by --time_steps), seed 1.
+
+**Baselines (registered here, run before or beside step 2).**
+* **CURR-DIRECT (168-4):** Coconut's stage curriculum with zero thoughts ("w/o thought"), on p8 NA, at matched steps. It gives D*_curr, and the C1 window's lower edge becomes max(D*, D*_curr). Seed 1, plus s2 if s1's D*_curr > 3.
+* **TEXT-COT (the BEYOND TEXT rule's text model):** GPT-2 trained on question → `steps` → "### answer" (Coconut's CoT format) on p8 NA at matched steps, scored with the same candidate accuracy.
+* **Bars on p8_na (our bench; no peer-reviewed pretrained deep-ProsQA number exists, d5e624e0):** text CoT 73.9–76.2, Coconut 53.1–56.3. F1-S reads 100, but it is our written-state scaffold, not latent.
+  - Standard-depth references: Coconut Table 1 (CoT 77.5, No-CoT 76.7, "w/o thought" 95.5, "pause as thought" 96.6, Coconut 97.0, iCoT 98.2).
+  - ProsQA-Ext's by-depth numbers are figure-only, from from-scratch models: a qualitative reference only.
+
+**Rules: §168's registered ones, unchanged, on NA.**
+* **DEEP-LATENT:** ≥ 2 / 2 seeds with accuracy ≥ 0.90 at every depth from max(D*, D*_curr, 3) to 10, **and** THINK-NECESSARY.
+  - THINK-NECESSARY is 168-1's above-chance form: K′ = 0 / 1 each ≤ 0.5× the gain at K over chance 0.5.
+  - The skip clause is degenerate for identical-input passes (170-4), so the test is removal only.
+* **DEPTH-GENERAL (C2):** mean accuracy at depths 11–14 ≥ 0.80, read at **K′ = 16**. That is the pre-set test budget, covering every test depth; one hop per pass needs K′ > 10 there (Audit).
+  - K′ = 10 / 12 / 14 are descriptive.
+* **BEYOND TEXT:** TEXT-COT < 0.80 at 11–14 while STEP-AUX's DEPTH-GENERAL holds.
+* **Seeds:** s2 opens only if s1 is DEEP-LATENT at its window.
+* **No window:** if D*_curr > 10, DEEP-LATENT is not readable, and only DEPTH-GENERAL / BEYOND TEXT are read.
+* **Scorer:** `theory/score_s168s2.py`, synthetic-checked on fixtures built with the real s168_direct_na_s1 / s2 files for D*.
+
+**Amendments to §168's step-2 outline and 168-2 (pre-data; Audit OK'd all four):**
+* **(i) K10 replaces 168-2's K8-first,** for the reason above.
+* **(ii) The trained K0 arm is replaced by the K′ = 0 eval of the STEP-AUX model plus DIRECT's measured chance (168-5).** A trained K0 here is DIRECT plus an unused memory, and DIRECT already reads chance at every depth. This saves one cell.
+* **(iii) 168-2's donor rule:** ProsQA items do not share a graph, so §161's hybrid form has no clean analogue. Proposed instead (descriptive):
+  - PATH-INDEP (Anil; as §182);
+  - STEP-RECOVER (a linear probe from M_t to hop t's node).
+  - The aux decoder's per-hop exact match is the C7 readout.
+* **(iv) The ProsQA-Ext-comparable cell** (train 3–6, read 7–12) is deferred to after slot 1, for cost.
+
+**Descriptive:**
+* accuracy by depth at K′ ∈ {0, 1, 2, 4, 6, 8, 10, 12, 16} (the staircase);
+* per-hop aux exact match;
+* AUX-DONE (182-2), with the pass-token caveat;
+* p8_ctl;
+* the 173-1 package;
+* compute: 10 passes over about 440 tokens, against TEXT-COT's generated path.
+
+**Fields and dirs.**
+* `s168s2_{stepaux,currdirect,textcot}_s{seed}`, with args `arm` stepaux / currdirect / textcot, `data` na, `steps` 12000, and `think_k` 10 / `aux_step` 1.0 / `aux_fade` for stepaux.
+* STEP-AUX's eval.json carries `s168s2.acc_by_depth_kprime {K′: {depth: acc}}` for K′ in the descriptive list.
+
+**Placement and cost (rough; --time_steps fixes them).** DIRECT took 1.06 s / step on a 3090. Ten INJECT passes over the same input run about 10× that.
+* **STEP-AUX s1 at 12k:** about 35 h, about $9–12.
+* **CURR-DIRECT s1:** about $2.
+* **TEXT-COT s1:** about $2–3.
+* **Slot 1 in total:** about $13–17, **so the user decides** (via Audit, with the measured --time_steps figure).
+* GSM8K-short follows after this.
+* An s2 for DEEP-LATENT would add about $10.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
