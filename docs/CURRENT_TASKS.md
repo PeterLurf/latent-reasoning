@@ -51,7 +51,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (12:32; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
+* **Theory (20:03; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
   - **The user (via Audit, 2026-10-09):**
     - ~01:30: "do another research pass. work on task agnosticness. approve go ahead on prosqa deep".
     - ~01:45: "keep working on the prosqa deep and the nested arithmetic … creating new methodologies and architectures for task agnostic".
@@ -70,22 +70,25 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
     - **§175 STEP-AUX:** §170 INJECT K8 plus a shared-trunk aux decoder emitting CoT step t from M_t (λ fades to 0 by 48k). It is gated on §170 K8 slot 1.
     - **§176 RAND-K:** random K (RK) or progressive (PROG) training on INJECT. C2 is read beyond the training support (K′ = 64), against fixed K8's post-hoc curve.
       Gated on §169 K8.
-  - **Scored tonight / today:**
+  - **Scored today (2026-10-09, evening):**
     - **Closed:**
-      - §172 PCCoT: block-level PARTIAL; more iterations hurt.
-      - §166: coverage not shown.
-      - §165: neither K arm exact.
-    - **Think-pass failures:**
-      - §169 K8 (0.001, memory unused), §171 K8 / BLIND, §165: all flat.
-      - §170 K8: not DEEP (n = 3 0.763 ≈ DIRECT). Its passes are used, but it overthinks at K′ = 16.
-      - Note 170-4: the skip clause is degenerate in autonomous arms, so THINK-NECESSARY = removal there.
-    - **§170:** n* = 3; K0 / CoT done. TEXT-COT 9–12 two-seed mean 0.535.
-    - **§167:** S5 SHORT s1 DECOMPOSABLE (about 16-d, low variance). The MIX / SHORT s2 / LONG s2 cloud refits are pending.
-    - **Launched / launching (Audit-approved, about $19.5 total):**
-      - §176 RK + PROG slot 1 (b230 / b231);
-      - §177 (a) tidx + (d) fadetidx slot 1, with (d) gated on the preview scaffold; (f) after the masked re-time;
-      - §175 STEP-AUX slot 1.
-    - **Pending:** §169 K16, §168 NA DIRECT, the §167 refits, the proto175 / 176 / 177 previews (descriptive).
+      - §165 / §169: neither K arm exact; memory unused.
+      - §166.
+      - §167: S5 3 / 3 DECOMPOSABLE (≤ 64-d); MULT not shown DECOMPOSABLE (s2 t4 only; the k = 64 fit collapses on MIX).
+      - §172.
+      - §176: neither RK nor PROG rescues.
+    - **§170:** n* = 3; K0 fails. K8 not DEEP: it uses its passes but only to about DIRECT, and overthinks. TEXT-COT 9–12 mean 0.535.
+    - **§171:** gate closed.
+    - **§177:**
+      - (a) index: no rescue (available but ignored).
+      - (d) scaffold gate failed, so (d) is not launched.
+      - (f) step-matched K running (b236).
+    - **§168:** std D* = 3 (both seeds memorise). The 168-3 sanity gate (G1 / G2: b237 / b238) runs before NA D* is read. Step 2 held.
+    - **Running:** §175 STEP-AUX (b235), §178 FROM-SCRATCH (b241 / b242), §179 READOUT (the blind-decoder scaffold; just registered).
+    - **Leading hypotheses for the think-pass failures:**
+      - no per-pass learning signal (Goyal);
+      - the end decoder's view of the problem starves the memory (§179 tests this);
+      - pretraining or capacity (§178 tests this).
     - **Notes:**
       - 170-1: a held-out SERIAL pool; CoT reductions only.
       - 170-2: STEP-RECOVER on §170 K8.
@@ -102,7 +105,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
     - §167 refits;
     - §158 slots 2–4.
   - **Theory's tools:**
-    - scratchpad `watch_land_v9.sh` (s15[5-9] / s16x / s17x; eval / what_state / posthoc / anchor / das / halt / eval_s17*_*; skips *_tim* and *partial*);
+    - scratchpad `watch_land_v10.sh` (path + mtime; s15[5-9] / s16x / s17x; eval / what_state / posthoc / anchor / das / halt / eval_s17*_*; skips *_tim* and *partial*);
     - commit with a pathspec;
     - fix n* (§170) and D* (§168) in dated notes from DIRECT alone.
 
