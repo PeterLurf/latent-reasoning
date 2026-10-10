@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-10 04:35 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-10 04:26 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -26,7 +26,7 @@ so send to the pipe addresses their messages come from.
 touching fsq120 / table132 / core. Never edit a module while a deploy is in flight (auto_ship is transitive: fixedchunk / multrow ship multpair,
 deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `vast destroy` aborts at its y/N prompt).
 
-### Vast (deploying; 04:35 2026-10-10)
+### Vast (deploying; 04:26 2026-10-10)
 * §181 INTERLEAVE (ba4cf16e; inject169 205f1fb4 = sha 63e7d0bc; Audit OK ~$2-4): b248 s181_interleave_k1_s1 and b249 s181_interleave_k2_s1, HOSTPROBE 3090s,
   deploying via fill_s181. Projection source: b247's FULL-curriculum re-time (--sched_scale 0.0001, c = 8 from step 1): k1 0.254 / k2 0.396 s/step on a
   fast host -> <= 3.4 / 5.3 h (+ ~0.5 h eval each). b246's 0.075 / 0.119 timed c = 1 (one token per step) - not the cost. No halt173 package (think_k 0:
