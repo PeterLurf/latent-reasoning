@@ -103,7 +103,160 @@
  "kmatch": {
   "runs": {
    "1": {
-    "status": "open"
+    "status": "done",
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "pooled_3_8": 0.506,
+    "deep": false,
+    "think_necessary": true,
+    "hit": false,
+    "hit_label": null,
+    "beyond": false,
+    "mean_9_12": 0.1505,
+    "fail": false,
+    "under_trained": false,
+    "compute_by_n": {
+     "1": {
+      "flops_trunk": 2630533632.0,
+      "sequential_passes": 3
+     },
+     "2": {
+      "flops_trunk": 5526087168.0,
+      "sequential_passes": 4
+     },
+     "3": {
+      "flops_trunk": 9445519872.0,
+      "sequential_passes": 5
+     },
+     "4": {
+      "flops_trunk": 14389827072.0,
+      "sequential_passes": 6
+     },
+     "5": {
+      "flops_trunk": 20360004096.0,
+      "sequential_passes": 7
+     },
+     "6": {
+      "flops_trunk": 27357046272.0,
+      "sequential_passes": 8
+     },
+     "7": {
+      "flops_trunk": 35381948928.0,
+      "sequential_passes": 9
+     },
+     "8": {
+      "flops_trunk": 44435707392.0,
+      "sequential_passes": 10
+     },
+     "9": {
+      "flops_trunk": 54519316992.0,
+      "sequential_passes": 11
+     },
+     "10": {
+      "flops_trunk": 65633773056.0,
+      "sequential_passes": 12
+     },
+     "11": {
+      "flops_trunk": 77780070912.0,
+      "sequential_passes": 13
+     },
+     "12": {
+      "flops_trunk": 90959205888.0,
+      "sequential_passes": 14
+     },
+     "13": {
+      "flops_trunk": 105172173312.0,
+      "sequential_passes": 15
+     },
+     "14": {
+      "flops_trunk": 120419968512.0,
+      "sequential_passes": 16
+     },
+     "15": {
+      "flops_trunk": 136703586816.0,
+      "sequential_passes": 17
+     },
+     "16": {
+      "flops_trunk": 154024023552.0,
+      "sequential_passes": 18
+     }
+    },
+    "distinct_passes": false,
+    "per_step_content": false,
+    "delta_cos_2_4": [
+     0.8628937005996704,
+     0.9401546716690063,
+     0.9701858758926392
+    ],
+    "moves_mechanism": false,
+    "cos_at_init": {
+     "read": {
+      "1": null,
+      "2": 1.0,
+      "3": 1.0,
+      "4": 1.0,
+      "5": 1.0,
+      "6": 1.0,
+      "7": 1.0,
+      "8": 1.0,
+      "9": 1.0,
+      "10": 1.0,
+      "11": 1.0,
+      "12": 1.0,
+      "13": 1.0,
+      "14": 1.0,
+      "15": 1.0,
+      "16": 1.0,
+      "17": 1.0,
+      "18": 1.0,
+      "19": 1.0,
+      "20": 1.0
+     },
+     "delta": {
+      "1": null,
+      "2": 0.9565503001213074,
+      "3": 0.9891747236251831,
+      "4": 0.9955272078514099,
+      "5": 0.9977550506591797,
+      "6": 0.9987252950668335,
+      "7": 0.9992137551307678,
+      "8": 0.9994868040084839,
+      "9": 0.999651312828064,
+      "10": 0.9997560977935791,
+      "11": 0.9998255372047424,
+      "12": 0.9998730421066284,
+      "13": 0.9999063014984131,
+      "14": 0.9999300241470337,
+      "15": 0.9999472498893738,
+      "16": 0.9999599456787109,
+      "17": 0.9999693036079407,
+      "18": 0.9999763369560242,
+      "19": 0.9999815821647644,
+      "20": 0.9999855756759644
+     },
+     "add": {
+      "1": null,
+      "2": 1.0,
+      "3": 1.0,
+      "4": 1.0,
+      "5": 1.0,
+      "6": 1.0,
+      "7": 1.0,
+      "8": 1.0,
+      "9": 1.0,
+      "10": 1.0,
+      "11": 1.0,
+      "12": 1.0,
+      "13": 1.0,
+      "14": 1.0,
+      "15": 1.0,
+      "16": 1.0,
+      "17": 1.0,
+      "18": 1.0,
+      "19": 1.0,
+      "20": 1.0
+     },
+     "def": "the arm's model at initialisation: pretrained trunk, fresh memory parameters under the run's seed, gamma 1 (note 173-1)"
+    }
    },
    "2": {
     "status": "open"
@@ -129,7 +282,7 @@
  "reading": [
   "tidx: slot 1 not EXACT (0.001); MOVES-MECHANISM False",
   "fadetidx: pending (s1 open)",
-  "kmatch: pending",
+  "kmatch: HIT 0, BEYOND 0, FAIL 0 of 1",
   "curpois: pending"
  ]
 }
