@@ -185,7 +185,7 @@ def load_model(run, dev, init=False):
         assert a.get("arm") == "inject"; ml_, ha_, hd_ = mem_geometry(a); kind, m = "nested", InjectN(g, ml_, "top", ha_, hd_)
     else:
         from boxes.inject169 import Inject
-        assert a.get("arm") == "inject"; kind, m = "inject", Inject(g, 6, a.get("mem_write", "top"))
+        assert a.get("arm") == "inject"; kind, m = "inject", Inject(g, 6, a.get("mem_write", "top")); m.blind = bool(a.get("blind_decoder"))   # §179
         if a.get("pass_index"):                                             # §177 (a): the index table (rows from args; trained values from model.pt)
             m.enable_pass_index()
     m = m.to(dev)

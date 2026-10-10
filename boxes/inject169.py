@@ -112,14 +112,21 @@ class Inject(FixedChunk):
                 S = override[1]
         return S
 
+    def dec_pre(self, A, B):
+        """the decoder's prefix after EOT: the problem text + " =" (dec_prefix), or for §179's BLIND decoder (self.blind) " =" alone - no problem token."""
+        if getattr(self, "blind", False):
+            pre = np.full((len(A), 1), EQ); assert pre.shape[1] == 1 and (pre == EQ).all(), "§179: the blind decoder sees no problem token"
+            return pre
+        return dec_prefix(A, B)
+
     def dec_logits(self, S, A, B, ans):
         """teacher-forced: [EOT, prefix, ans[:-1]] -> logits predicting the answer digits (positions from " =" on)."""
-        pre = torch.tensor(dec_prefix(A, B), device=S.device); x = self.ids(torch.cat([pre, ans[:, :-1]], 1)); P = pre.shape[1] + 1
+        pre = torch.tensor(self.dec_pre(A, B), device=S.device); x = self.ids(torch.cat([pre, ans[:, :-1]], 1)); P = pre.shape[1] + 1
         h = fwd_read(self.g, self.g.embed(x), self.mem, S); return self.g.logits(h[:, P - 1:]).float()
 
     @torch.no_grad()
     def greedy_ans(self, S, A, B, L):
-        x = self.ids(torch.tensor(dec_prefix(A, B), device=S.device)); lut = {int(t): i for i, t in enumerate(DTOK)}; out = []
+        x = self.ids(torch.tensor(self.dec_pre(A, B), device=S.device)); lut = {int(t): i for i, t in enumerate(DTOK)}; out = []
         for _ in range(L):
             nt = self.g.logits(fwd_read(self.g, self.g.embed(x), self.mem, S)[:, -1]).float().argmax(-1); out.append(nt); x = torch.cat([x, nt[:, None]], 1)
         return np.vectorize(lambda t: lut.get(int(t), -1))(torch.stack(out, 1).cpu().numpy())
@@ -152,15 +159,24 @@ def predict_fade(m, A, B, p, dev, amp, bs, seed=17890):
     return out
 
 
+def len_digit_err(pred, true):
+    """§179 (Audit): exact-match failures split by the top digit's position. Answers are LSB-first digit rows of the harness-fixed width na + nb (the
+    decoder never infers how many digits to emit); significant length = index of the highest nonzero digit + 1. A failure is a "length" error if the
+    predicted significant length differs from the true one or a position holds a non-digit token (-1), else a digit error. Shares of the failures."""
+    sig = lambda x: np.where((x > 0).any(1), x.shape[1] - np.argmax((x > 0)[:, ::-1], 1), 0)   # noqa: E731
+    fail = ~(pred == true).all(1); lenbad = (pred < 0).any(1) | (sig(pred) != sig(true)); nf = int(fail.sum())
+    return {"len_err": float((fail & lenbad).sum() / nf) if nf else None, "digit_err": float((fail & ~lenbad).sum() / nf) if nf else None, "n_fail": nf}
+
+
 def compute_inj(m, na, nb, K):
     """Meter per item (§98 convention): K think passes of 1 + na + nb + 2 tokens (fresh, no rows); the decoder's prefix pass (1 + na + nb + 2 tokens,
     1 row) then na + nb - 1 KV-cached single-token passes (1 row each); plus the DeltaMem-R branch (as fixedchunk.compute_fc)."""
-    mt = bc.Meter(m.g); Tt = 1 + na + nb + 2; tok = 0
+    mt = bc.Meter(m.g); Tt = 1 + na + nb + 2; tok = 0; Td = 2 if getattr(m, "blind", False) else Tt   # §179: the blind prefix is [EOT, " ="]
     for _ in range(K):
         mt.step(Tt, 0, 0); tok += Tt
-    mt.step(Tt, 0, 1); tok_r = Tt
+    mt.step(Td, 0, 1); tok_r = Td
     for j in range(na + nb - 1):
-        mt.step(1, Tt + j, 1); tok_r += 1
+        mt.step(1, Td + j, 1); tok_r += 1
     nb_ = sum(p_.numel() for n_, p_ in m.mem.named_parameters() if not n_.startswith("s_")); D2 = DM.DH ** 2
     fb = 2 * nb_ * (tok + tok_r) + (DM.H_ADD + DM.H_DEL) * 2 * D2 * (tok + tok_r) + (DM.H_ADD * 2 + DM.H_DEL * 8) * D2 * tok; d = mt.as_dict()
     return {"flops": d["flops"] + fb, "flops_trunk": d["flops"], "flops_branch": float(fb), "sequential_passes": d["seq_passes"], "lm_head_rows": na + nb,
@@ -231,6 +247,8 @@ def main():
     ap.add_argument("--fade", default="", help="§177 (d): 'start,end' steps of the pair -> full-text ramp p 0 -> 1 (requires --think_k 4n)")
     ap.add_argument("--pass_index", default="", help="§177 (note 177-4): 'sin_gain' = g * the rescaled sinusoid of the absolute pass on the think token ('' = off)")
     ap.add_argument("--bptt_last", default="all", help="§176 RK: 'all' or n (backprop through the last n passes); auto_micro falls back to 8 if K = cap does not fit")
+    ap.add_argument("--blind_decoder", action="store_true", help="§179: the end decoder is [EOT, ' ='] + memory, no problem text (as readslots171 BLIND)")
+    ap.add_argument("--p0_evals", default="", help="§179: comma-separated steps -> full 4x4 at p = 0 (pair schedule) + per column + len / digit error -> s179.acc_p0_by_step")
     ap.add_argument("--resumed_from", default="", help="a label recorded in args (note 177-6: 'proto177_fadetidx12k_s1@12000')")
     ap.add_argument("--stop_at", type=int, default=0, help="train to this step under the --steps schedule, then evaluate (note 177-6: the (d) cell's first 12k)")
     ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt with this run's flags (no training; args_eval.json; model.pt / args.json / log kept)")
@@ -241,7 +259,9 @@ def main():
     amp = None if (a.fp32 or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
     teA, teB = load_bench(a.bench if os.path.isabs(a.bench) else os.path.join(ROOT, a.bench))
     EXCL = {(x.tobytes(), y.tobytes()) for x, y in zip(teA, teB)} | {(y.tobytes(), x.tobytes()) for x, y in zip(teA, teB)}; teA, teB = teA[:a.test_n], teB[:a.test_n]
-    m = Inject(s5.load_gpt2(dev), 6, a.mem_write).to(dev)
+    m = Inject(s5.load_gpt2(dev), 6, a.mem_write).to(dev); m.blind = bool(a.blind_decoder)          # §179 (False: the problem-seeing decoder, unchanged)
+    P0EV = {int(round(int(x_) * sc)): x_.strip() for x_ in a.p0_evals.split(",") if x_.strip()}; s179_ev = {}   # §179: scaled step -> the registered step label
+    assert not P0EV or a.think_k == "4n", "§179: p = 0 evals belong to the fade / scaffold path"
     if a.pass_index:                                                        # note 177-4: g = 0 at init, so step 0 is §169 exactly
         assert a.pass_index == "sin_gain"; m.enable_pass_index()
     RK = [float(x_) for x_ in a.rand_k.split(",")] if a.rand_k else None; PG = [int(x_) for x_ in a.prog.split(",")] if a.prog else None
@@ -309,7 +329,8 @@ def main():
             return
         assert mc[-1]["peak_gib"] <= a.mem_budget
     info = {**vars(a), "train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version(), **env_info(), "hostprobe_sps": os.environ.get("HOSTPROBE_SPS"),
-            "think_input": "[EOT, a * b, ' .'] (the full problem text, every pass)", "decoder_input": "[EOT, a * b, ' ='] + answer digits (read-only)"}
+            "think_input": "[EOT, a * b, ' .'] (the full problem text, every pass)",
+            "decoder_input": "[EOT, ' ='] + answer digits, no problem text (read-only; §179 BLIND)" if a.blind_decoder else "[EOT, a * b, ' ='] + answer digits (read-only)"}
     if a.eval_only:                                                         # the training run's GPU / driver stay in train_*; this GPU is eval_gpu
         a0_ = json.load(open(os.path.join(a.out, "args.json"))); info["eval_gpu"], info["eval_driver"] = info["train_gpu"], info["train_driver"]
         info["train_gpu"], info["train_driver"] = a0_.get("train_gpu"), a0_.get("train_driver")
@@ -339,6 +360,10 @@ def main():
                         e_ = json.load(open(f_))
                         if e_.get("step") == st_:
                             fade_ev[nm_] = dict(e_, source=rel_src(f_))                   # Theory: the gate run's number, its source noted
+        for st_, lb_ in P0EV.items():                                       # §179: p = 0 evals already taken
+            f_ = os.path.join(a.out, "eval_p0_%dk.json" % (st_ // 1000))
+            if st_ <= ck["step"] and os.path.exists(f_):
+                s179_ev[lb_] = json.load(open(f_))
         log.write(json.dumps({"step": ck["step"], "resumed": a.resume, "resumed_from": a.resumed_from}) + "\n"); log.flush()
     elif K > 0:                                                             # note 147-2: g_add = median ||read_del|| / ||read_add|| at the think hand-offs
         r_ = np.random.default_rng(16901); A0, B0 = gen_operands(r_, 128, 4), gen_operands(r_, 128, 4); m.mem.norms = []
@@ -368,6 +393,11 @@ def main():
             m.eval(); m.p_off = 0; pq = p_at(step); pr_ = predict_fade(m, teA, teB, pq, dev, amp, a.eval_bs); rep_ = acc_report(pr_, product_digits(teA, teB)); acc_ = rep_["test_acc"]
             fade_ev[EVF[step]] = {"step": step, "p": pq, "acc": acc_, "acc_by_column": rep_["acc_by_column"]["per_column"]}; json.dump(fade_ev[EVF[step]], open(os.path.join(a.out, "eval_%dk.json" % (step // 1000)), "w", newline="\n"), indent=1)
             print("FADE EVAL", EVF[step], fade_ev[EVF[step]], flush=True); m.train()
+        if step in P0EV:                                                    # §179: full 4x4 at p = 0 (the pair schedule) + per column + len / digit error
+            m.eval(); P_ = product_digits(teA, teB); pr_ = predict_fade(m, teA, teB, 0.0, dev, amp, a.eval_bs); rep_ = acc_report(pr_, P_)
+            s179_ev[P0EV[step]] = {"step": step, "acc": rep_["test_acc"], "acc_by_column": rep_["acc_by_column"]["per_column"], **len_digit_err(pr_, P_)}
+            json.dump(s179_ev[P0EV[step]], open(os.path.join(a.out, "eval_p0_%dk.json" % (step // 1000)), "w", newline="\n"), indent=1)
+            print("P0 EVAL", P0EV[step], s179_ev[P0EV[step]], flush=True); m.train()
         if a.eval_at and step == a.eval_at:                                 # Theory 7caa3a82 (§174's matched budget): accuracy at this step, no checkpoint kept
             m.eval(); m.p_off = 0; P_ = product_digits(teA, teB); xa, xb = gen_operands(np.random.default_rng(14004), a.ext_n, 4), gen_operands(np.random.default_rng(14005), a.ext_n, 8)
             e24 = {"step": step, "test_acc": float((predict(m, teA, teB, K, dev, amp, a.eval_bs)[0] == P_).all(1).mean()),
@@ -439,6 +469,10 @@ def main():
             res["s177"].update({"acc_scaffold_12k": (fade_ev.get("scaffold") or {}).get("acc"), "acc_by_p": {k_: v_["acc"] for k_, v_ in fade_ev.items() if k_ != "scaffold"},
                                 "fade_evals": fade_ev, "rule_k_by_size": {"4x4": 16, "4x6": 24, "4x7": 28, "4x8": 32, "4x16": 64},
                                 "acc_at_end_p": {"p": pe, "acc": float((predict_fade(m, teA, teB, pe, dev, amp, bs) == Pte).all(1).mean())}})
+    res["blind_decoder"] = bool(a.blind_decoder)
+    if P0EV:                                                                # §179 READOUT
+        res["s179"] = {"acc_p0_by_step": s179_ev, "blind_decoder": bool(a.blind_decoder), "stop_at": a.stop_at, "fade": a.fade,
+                       "len_err_def": "the harness fixes the emitted width (na + nb digits), so len_err is NOT length inference: the share of exact-match failures whose most significant nonzero digit lands in the wrong place (or a non-digit token); digit_err = the rest (right top position, a wrong digit) (Audit / note 179-2)"}
     if RK or PG:                                                            # §176: the norms to 64, the sampled-K histogram, §173's halt
         mn = {}
         with torch.no_grad():

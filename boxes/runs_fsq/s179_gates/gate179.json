@@ -1,0 +1,149 @@
+{
+ "g1": {
+  "blind": {
+   "prefix_len": 1,
+   "prefix_is_eq": true,
+   "logits_equal_across_problems": true,
+   "greedy_equal": true
+  },
+  "seeing": {
+   "prefix_len": 9,
+   "prefix_is_eq": false,
+   "logits_equal_across_problems": false,
+   "greedy_equal": false
+  }
+ },
+ "g1_pass": true,
+ "g2": {
+  "wo_zero": true,
+  "fade": 0.0,
+  "logits_equal_random_vs_zero_memory": true
+ },
+ "g2_pass": true,
+ "g3": {
+  "passes": 8,
+  "mem_zero_grad": [],
+  "pgain_grad": 0.42620351910591125,
+  "trunk_grads": {
+   "h.0.attn.c_attn.weight": 12.812505722045898,
+   "h.11.mlp.c_fc.weight": 5.463305950164795
+  },
+  "S_grad_by_pass": [
+   0.11338317394256592,
+   0.044928375631570816,
+   0.02967003732919693,
+   0.023555651307106018,
+   0.020552203059196472,
+   0.018973488360643387,
+   0.018204480409622192,
+   0.017921889200806618
+  ]
+ },
+ "g3_pass": true,
+ "g4": {
+  "fade_index": {
+   "rc_new": 0,
+   "rc_old": 0,
+   "log_losses_equal": true,
+   "eval_fields_differing": [],
+   "n_fields": 309
+  },
+  "k2": {
+   "rc_new": 0,
+   "rc_old": 0,
+   "log_losses_equal": true,
+   "eval_fields_differing": [],
+   "n_fields": 129
+  }
+ },
+ "g4_pass": true,
+ "g5": {
+  "blind": {
+   "rc": 0,
+   "err": "",
+   "steps": [
+    "12000",
+    "24000"
+   ],
+   "blind": true,
+   "fields": [
+    "acc",
+    "acc_by_column",
+    "digit_err",
+    "len_err",
+    "n_fail",
+    "step"
+   ],
+   "example": {
+    "step": 48,
+    "acc": 0.0,
+    "acc_by_column": [
+     0.125,
+     0.125,
+     0.25,
+     0.0,
+     0.0,
+     0.25,
+     0.125,
+     0.125
+    ],
+    "len_err": 0.25,
+    "digit_err": 0.75,
+    "n_fail": 8
+   },
+   "halt173_load": {
+    "kind": "inject",
+    "blind": true,
+    "prefix": [
+     [
+      796
+     ],
+     [
+      796
+     ]
+    ],
+    "greedy_shape": [
+     2,
+     8
+    ]
+   },
+   "halt173_dir177_rc": 0
+  },
+  "seeing": {
+   "rc": 0,
+   "err": "",
+   "steps": [
+    "12000",
+    "24000"
+   ],
+   "blind": false,
+   "fields": [
+    "acc",
+    "acc_by_column",
+    "digit_err",
+    "len_err",
+    "n_fail",
+    "step"
+   ],
+   "example": {
+    "step": 48,
+    "acc": 0.0,
+    "acc_by_column": [
+     0.625,
+     0.25,
+     0.125,
+     0.25,
+     0.0,
+     0.125,
+     0.0,
+     0.0
+    ],
+    "len_err": 0.375,
+    "digit_err": 0.625,
+    "n_fail": 8
+   }
+  }
+ },
+ "g5_pass": true,
+ "all_pass": true
+}
