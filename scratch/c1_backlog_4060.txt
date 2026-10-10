@@ -408,3 +408,6 @@
 # 2026-10-09 18:42 Experiments: §169 K16 model landed (b218 drain) -> halt173 + the 173-1 package (no s176_ref: K8-only); bs halved for K = 16
 4.0 boxes/runs_fsq/s169_k16_4x4_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s169_k16_4x4_s1 --bs 50 --device {DEV}
 4.0 boxes/runs_fsq/s169_k16_4x4_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s169_k16_4x4_s1 --dir177 --bs 60 --device {DEV}
+# 2026-10-10 09:55 THEORY §183 note 183-1: 4060 preview pair, SEED 2, blind then seeing (compressed 8k schedule; descriptive)
+5.0 boxes/runs_fsq/proto183_ilblind_k1_s2_4060/eval.json python -u -m boxes.inject169 --think_k 0 --interleave 1 --pass_index sin_gain --fast_add --seed 2 --steps 8000 --sched_scale 0.1667 --ckpt_every 1000 --auto_micro --mem_budget 5.0 --eval_bs 50 --ext_n 500 --device {DEV} --blind_decoder --out boxes/runs_fsq/proto183_ilblind_k1_s2_4060
+5.0 boxes/runs_fsq/proto183_ilseeing_k1_s2_4060/eval.json python -u -m boxes.inject169 --think_k 0 --interleave 1 --pass_index sin_gain --fast_add --seed 2 --steps 8000 --sched_scale 0.1667 --ckpt_every 1000 --auto_micro --mem_budget 5.0 --eval_bs 50 --ext_n 500 --device {DEV} --out boxes/runs_fsq/proto183_ilseeing_k1_s2_4060
