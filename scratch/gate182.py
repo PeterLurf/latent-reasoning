@@ -146,13 +146,14 @@ def main():
         if rc:
             g5[nm] = {"rc": rc, "err": err[-600:]}; dump(); continue
         e_ = json.load(open(os.path.join(d_, "eval.json"))); a_ = json.load(open(os.path.join(d_, "args.json"))); s75 = e_.get("s175", {})
-        g5[nm] = {"rc": 0, "kprimes": sorted(e_.get("s170", {}).get("acc_by_n_kprime", {}), key=int), "s175_keys": sorted(s75)[:14],
+        g5[nm] = {"rc": 0, "kprimes": sorted((k_ for k_ in e_.get("s170", {}).get("acc_by_n_kprime", {}) if k_.isdigit()), key=int),
+                  "kprimes_rel": sorted(k_ for k_ in e_.get("s170", {}).get("acc_by_n_kprime", {}) if not k_.isdigit()), "s175_keys": sorted(s75)[:14],
                   "hold_fields": {k: s75.get(k) for k in ("aux_acc_hold_by_offset", "aux_acc_hold")}, "path_indep": e_.get("s182", {}).get("path_indep"),
                   "args": {k: a_.get(k) for k in ("think_k", "aux_fade", "k_window", "kmatch_impl", "aux_hold", "kprimes", "path_indep")}}
         clean(d_); dump()
     OUT["g5"] = g5
     want = [str(x) for x in (0, 1, 4, 8, 12, 16, 24, 32)]
-    OUT["g5_pass"] = all(v.get("rc") == 0 and v["kprimes"] == want and v["path_indep"] and v["path_indep"]["n_items"] > 0 and "aux_acc_by_pass" in v["s175_keys"] for v in g5.values()) \
+    OUT["g5_pass"] = all(v.get("rc") == 0 and v["kprimes"] == want and v["kprimes_rel"] == ["n", "n+2"] and v["path_indep"] and v["path_indep"]["n_items"] > 0 and "aux_acc_by_pass" in v["s175_keys"] for v in g5.values()) \
         and len(g5) == 3 and g5["hold"]["hold_fields"]["aux_acc_hold"] is not None and g5["window"]["hold_fields"]["aux_acc_hold"] is None \
         and g5["nofade"]["args"]["k_window"] == "" and g5["hold"]["args"]["aux_hold"] is True and g5["window"]["args"]["aux_hold"] is False
     ok &= OUT["g5_pass"]; OUT["all_pass"] = bool(ok); dump(); print("GATE182", json.dumps(OUT)[:3000], flush=True); sys.exit(0 if ok else 1)
