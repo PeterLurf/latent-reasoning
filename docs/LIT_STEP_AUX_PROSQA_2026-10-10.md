@@ -62,3 +62,36 @@ Literature session, for Audit (the user's "smaller language task before GSM8K") 
   - ProsQA-Ext is the external, from-scratch reference with a cleaner long-path generator. **Consider adding a ProsQA-Ext-style generator** (Alg. 1) as a
     second test set, because p8's deep hops may not change the answer.
   - ProntoQA is saturated. CLUTRR is an untested option with no latent baseline.
+
+## CORRECTION (2026-10-10; Audit read `make_long.extend`, confirmed against the code)
+- **The p8 chain hops are answer-relevant.** My "answer-irrelevant" flag above is wrong.
+  - In `prosqa/make_long.py:24–62` the options become the **ends** of two m-long chains (ci[-1], di[-1]) hung off t and n.
+  - `steps` = the original path + the m chain links to the answer end.
+  - Linking an option to its base takes **m sequential pointer-chasing hops**, so per-hop targets on those links are meaningful.
+- **The narrower, true caveat:** p8's added hops are **unbranched** (each new node has one parent and one child), unlike ProsQA-Ext's branching distractors.
+  So the extra depth tests sequential hop-following without search.
+
+## Addendum (2026-10-10): Theory's four pins for note 168-6
+1. **ProsQA-Ext's accuracy by depth: not available as numbers.**
+   - Fig. 1C / 1D (ID 3–6 / OOD 7–12) is a vector plot in the PDF, with no data table, and it's missing from the HTML render. The text gives only
+     the qualitative ordering (section (b) above).
+   - **Model:** from-scratch GPTNeoX, 4 layers, d 256, 4 heads, FFN 768.
+   - **Pretrained-model results: none.**
+2. **Coconut Table 1 (2412.06769v4), the ProsQA column, exact row labels:**
+   - **CoT 77.5 ± 1.9**; **No-CoT 76.7 ± 1.0**; **iCoT 98.2 ± 0.3**; **Pause Token 75.9 ± 0.7**;
+   - **Coconut (Ours) 97.0 ± 0.3**;
+   - the variants "**- w/o curriculum** 76.1 ± 0.2", "**- w/o thought** 95.5 ± 1.1" and "**- pause as thought** 96.6 ± 0.8".
+   - Theory's 76.7 / 95.5 / 96.6 / 97.0 are No-CoT / w/o thought / pause as thought / Coconut. CoT is 77.5.
+3. **Published pretrained latent or CoT results on deep ProsQA (> 6 hops):**
+   - **Peer-reviewed: none found.**
+   - The only external number is the HF card bmarti44/coconut-curriculum-checkpoints: Coconut GPT-2, 66.0 at 7 hops and 67.5 at 8; a different generator,
+     not peer-reviewed.
+   - Standard-depth pretrained GPT-2 ProsQA: Coconut 97.0, iCoT 98.2 (Coconut Table 1); Dilgren 2604.04902 (GPT-2 ProsQA Coconut / CODI replications);
+     AGCLR 2606.07720 (96.0).
+   - **So the "SOTA bar" for deep ProsQA is our own bench:** p8_na CoT 73.9–76.2 and Coconut 53.1–56.3. Our F1-S reaches 100.
+4. **Per-hop supervision of latent passes on ProsQA:**
+   - SIM-CoT, CoLaR and LOTUS: **no ProsQA / ProntoQA experiments** (full-text check).
+   - Coconut's stage curriculum (one CoT step replaced per stage, c = 1 on ProsQA) is step-*aligned* but not an aux decoder.
+   - Dilgren trains CODI on ProsQA (answer-token distillation, no per-hop targets).
+   - ProsQA-Ext's latents are trained end to end with **no** intermediate targets.
+   - **Per-hop aux decoding on ProsQA: not found, so new.**
