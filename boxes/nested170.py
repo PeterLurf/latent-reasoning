@@ -218,8 +218,8 @@ def aux_of(it):
 class InjectN(torch.nn.Module):
     """§169's inject harness on a variable-length text: think = [EOT, expr, " ."] (right-padded, padded writes masked); decoder = [EOT, expr, " ="] -> the
     answer token (read-only)."""
-    def __init__(self, g, layer=6, write="top", h_add=6, h_del=6):
-        super().__init__(); import boxes.deltamem as DM; self.DM = DM; self.g = g; self.mem = DM.DeltaMem(g, layer, write, h_add, h_del)
+    def __init__(self, g, layer=6, write="top", h_add=6, h_del=6, add_norm=None):
+        super().__init__(); import boxes.deltamem as DM; self.DM = DM; self.g = g; self.mem = DM.DeltaMem(g, layer, write, h_add, h_del, add_norm)
 
     def think_inputs(self, items, dev):
         ids_, m_ = pad([[EOT] + ids(it["syms"]) + [TID[" ."]] for it in items]); return torch.tensor(ids_, device=dev), torch.tensor(m_, device=dev)
@@ -366,8 +366,9 @@ def _mem_read(mem, x, S):
     H_ADD, H_DEL = mem.h_add, mem.h_del                                     # §178: the memory's own head counts
     with torch.autocast("cuda", enabled=False):
         b, D = x.shape; q = mem.qkv(mem.ln(x.float()))[..., :D].view(b, H_ADD + H_DEL, DH)
-        oa = torch.exp(mem.s_add) * torch.einsum("bhk,bhkv->bhv", F_.elu(q[:, :H_ADD]) + 1, S[:, :H_ADD].float())
-        od = torch.exp(mem.s_del) * torch.einsum("bhvk,bhk->bhv", S[:, H_ADD:].float(), F_.normalize(q[:, H_ADD:], dim=-1))
+        from boxes.deltamem import add_read, state_z                      # §185: the additive read as the run's own (den / rms); delta slice explicit
+        oa = torch.exp(mem.s_add) * add_read(mem, F_.elu(q[:, :H_ADD]) + 1, S[:, :H_ADD].float(), state_z(mem, S))
+        od = torch.exp(mem.s_del) * torch.einsum("bhvk,bhk->bhv", S[:, H_ADD:H_ADD + H_DEL].float(), F_.normalize(q[:, H_ADD:], dim=-1))
         return torch.cat([oa, od], 1).flatten(1)
 
 
@@ -431,7 +432,7 @@ def main():
     ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", default=None); ap.add_argument("--log_every", type=int, default=100)
     ap.add_argument("--cot_eval_bs", type=int, default=64, help="TEXT-COT generation batch (KV cache; b223 OOMed at 250 on n = 16 chains)"); ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt (no training; writes args_eval.json; model.pt / args.json / log untouched)"); ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--per_n", type=int, default=1000); ap.add_argument("--serial_pool", type=int, default=2200); ap.add_argument("--auto_micro", action="store_true")
     ap.add_argument("--mem_budget", type=float, default=21.0); ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--time_steps", type=int, default=0, help="cost check: train this many steps, report s/step, exit")
-    ap.add_argument("--eval_at", type=int, default=0, help="also evaluate acc_by_n at this step -> eval_<k>k.json"); ap.add_argument("--aux_step", type=float, default=0.0, help="§175: lambda of the read-only step decoder CE (0 = off: the §170 path)"); ap.add_argument("--aux_fade", default="36000,48000", help="§175: lambda constant to the first step, then linear to 0 at the second"); ap.add_argument("--kmatch_impl", default="masked", choices=["masked", "bucketed"], help="§177 (f): note 177-5's masked single batch, or the per-K groups"); ap.add_argument("--aux_reweight", action="store_true", help="§184: the aux CE of pass t <= n weighted by AUX_W[t-1] (equal expected weight per pass position)"); ap.add_argument("--aux_hold", action="store_true", help="§182 HOLD: aux target e_{n+1} on passes n < t <= K (with --k_window and --aux_step)"); ap.add_argument("--kprimes", default="", help="§182: the K' set for s170.acc_by_n_kprime ('' = {0, 1, K/2, K, 2K})"); ap.add_argument("--path_indep", action="store_true", help="§182: s182.path_indep (K' = 16 from M_0 = 0 vs another item's 8-pass memory)"); ap.add_argument("--excl_min_n", type=int, default=1, help="note 178-3 (s178b): exclude test items from training only for n >= this (1 = §170's protocol)"); ap.add_argument("--scratch", default="", help="§178: 'L,D,H' -> a RANDOM-INIT GPT-2 trunk (no pretrained weights), memory after block L // 2 with D / 128 + D / 128 heads"); ap.add_argument("--warmup", type=int, default=100, help="LR warm-up steps (§178: 1000)"); ap.add_argument("--k_window", default="", help="§177 (f): 'lo,hi' -> each n-bucketed micro-batch runs K = n + U{lo..hi} think passes (inject)"); ap.add_argument("--fast_add", action="store_true", help="deltamem.FAST_ADD: the additive heads' pass writes as one sum (Audit 2026-10-09; scratch/gate_fastadd.py)"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
+    ap.add_argument("--eval_at", type=int, default=0, help="also evaluate acc_by_n at this step -> eval_<k>k.json"); ap.add_argument("--aux_step", type=float, default=0.0, help="§175: lambda of the read-only step decoder CE (0 = off: the §170 path)"); ap.add_argument("--aux_fade", default="36000,48000", help="§175: lambda constant to the first step, then linear to 0 at the second"); ap.add_argument("--kmatch_impl", default="masked", choices=["masked", "bucketed"], help="§177 (f): note 177-5's masked single batch, or the per-K groups"); ap.add_argument("--add_norm", default="", choices=["", "den", "rms"], help="§185 ADD-NORM: the additive reads normalised by phi(q)^T z (den) or per-head RMS (rms); '' = off"); ap.add_argument("--aux_reweight", action="store_true", help="§184: the aux CE of pass t <= n weighted by AUX_W[t-1] (equal expected weight per pass position)"); ap.add_argument("--aux_hold", action="store_true", help="§182 HOLD: aux target e_{n+1} on passes n < t <= K (with --k_window and --aux_step)"); ap.add_argument("--kprimes", default="", help="§182: the K' set for s170.acc_by_n_kprime ('' = {0, 1, K/2, K, 2K})"); ap.add_argument("--path_indep", action="store_true", help="§182: s182.path_indep (K' = 16 from M_0 = 0 vs another item's 8-pass memory)"); ap.add_argument("--excl_min_n", type=int, default=1, help="note 178-3 (s178b): exclude test items from training only for n >= this (1 = §170's protocol)"); ap.add_argument("--scratch", default="", help="§178: 'L,D,H' -> a RANDOM-INIT GPT-2 trunk (no pretrained weights), memory after block L // 2 with D / 128 + D / 128 heads"); ap.add_argument("--warmup", type=int, default=100, help="LR warm-up steps (§178: 1000)"); ap.add_argument("--k_window", default="", help="§177 (f): 'lo,hi' -> each n-bucketed micro-batch runs K = n + U{lo..hi} think passes (inject)"); ap.add_argument("--fast_add", action="store_true", help="deltamem.FAST_ADD: the additive heads' pass writes as one sum (Audit 2026-10-09; scratch/gate_fastadd.py)"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); a.task = "nested"; import boxes.deltamem as DM_; DM_.FAST_ADD = bool(a.fast_add); os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale; K = a.think_k if a.arm == "inject" else 0
     if a.arm != "inject":
         a.mem_write = a.write_mix_start = a.write_mix_end = None; a.think_k = 0
@@ -448,7 +449,7 @@ def main():
     EXCL |= {tuple(it["syms"]) for it in SPOOL}
     r_ex = np.random.default_rng(17899)                                     # note 178-3: the share of training draws surviving the exclusion, per n (own stream)
     a.excl_survive_by_n = {str(n_): round(float(np.mean([tuple(render(generate(r_ex, n_)[0])) not in EXCL for _ in range(2000)])), 4) for n_ in range(1, a.n_max_train + 1)}
-    m = InjectN(g, ML, a.mem_write, HA, HD).to(dev) if a.arm == "inject" else None
+    m = InjectN(g, ML, a.mem_write, HA, HD, a.add_norm or None).to(dev) if a.arm == "inject" else None
 
     def loss_items(items, Kb=None):
         if a.arm == "direct":
@@ -688,7 +689,7 @@ def main():
         info["aux_decoder"] = ("the SAME GPT-2 trunk and LM head as the main decoder (shared weights, no new parameters), read-only on M_t via fwd_read: "
                                "[EOT, ' Step', ' t', ' :'] + e_{t+1} + EOT (teacher-forced); no problem text, no write, never fed back; dropped at test")
     json.dump(info, open(os.path.join(a.out, "args_eval.json" if a.eval_only else (("args_resume_%d.json" % int(time.time())) if a.resume else "args.json")), "w", newline="\n"), indent=1)
-    params = m if m is not None else g; opt = make_opt(params, a.lr); step0 = 1; n_nonfinite = 0; hist = []; wg_hist = []; wwin = []; wlast = []; gn_hist = []
+    params = m if m is not None else g; opt = make_opt(params, a.lr); step0 = 1; n_nonfinite = 0; hist = []; wg_hist = []; wwin = []; wlast = []; gn_hist = []; gadd_hist = []
     log = open(os.path.join(a.out, "log.jsonl"), "a" if (a.resume or a.eval_only) else "w", newline="\n"); t0 = time.time()
     if a.resume:
         ck = torch.load(a.resume, map_location=dev, weights_only=False); params.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"]); rng.bit_generator.state = ck["np_rng"]
@@ -736,8 +737,15 @@ def main():
             from boxes.deltas5 import write_grad_norm
             wwin.append(write_grad_norm(m))
         gn = torch.nn.utils.clip_grad_norm_(params.parameters(), 1.0)
-        if a.aux_reweight:                                                  # §184: the pre-clip grad norm per step (clip fires above 1.0)
+        if a.aux_reweight or a.add_norm:                                    # §184 / §185: the pre-clip grad norm per step (clip fires above 1.0)
             gn_hist.append(float(gn))
+        if a.add_norm and m is not None:                                    # §185: the additive path's grad norm (the additive heads' q / k / v rows + the rms gain)
+            gq = m.mem.qkv.weight.grad
+            if gq is not None:
+                ra = [r for blk in range(3) for r in range(blk * m.mem.D, blk * m.mem.D + m.mem.h_add * m.DM.DH)]; ga = gq[ra].float().pow(2).sum()
+                if getattr(m.mem, "add_gain", None) is not None and m.mem.add_gain.grad is not None:
+                    ga = ga + m.mem.add_gain.grad.float().pow(2).sum()
+                gadd_hist.append((step, float(ga.sqrt())))
         if not (math.isfinite(tot) and bool(torch.isfinite(gn))):
             n_nonfinite += 1; opt.zero_grad(); log.write(json.dumps({"step": step, "nonfinite": 1}) + "\n"); log.flush()
         else:
@@ -859,12 +867,26 @@ def main():
                             for _ in range(16):
                                 S = m.write(S, x, msk)
                             lg = m.dec_logits(S, ch, dev)
-                        Ao.append(lg[:, NUM_IDS].argmax(-1).cpu().numpy()); Fo.append(S[:, m.mem.h_add:].float().flatten(1).cpu())
+                        Ao.append(lg[:, NUM_IDS].argmax(-1).cpu().numpy()); Fo.append(S[:, m.mem.h_add:m.mem.h_add + m.mem.h_del].float().flatten(1).cpu())
             A0, A1 = np.concatenate(A0), np.concatenate(A1); F0, F1 = torch.cat(F0), torch.cat(F1); tt_ = np.array([it["t"] for it in its_])
             res["s182"] = {"path_indep": {"answer_agree": float((A0 == A1).mean()), "delta_cos_final": float(Fn.cosine_similarity(F0, F1, dim=1).mean()),
                                           "n_items": len(its_), "acc_from_zero": float((A0 == tt_).mean()), "acc_from_donor": float((A1 == tt_).mean()), "kprime": 16,
                                           "donor_passes": 8, "items": "test n 3..8, rng 18201 permutation[:500]", "derangement": "np.roll(sample order, 1)",
-                                          "delta_cos_def": "mean over items of cos of the final delta-head states S[:, h_add:]"}, "aux_hold": bool(a.aux_hold), "k_window": a.k_window}
+                                          "delta_cos_def": "mean over items of cos of the final delta-head states S[:, h_add:h_add + h_del]"}, "aux_hold": bool(a.aux_hold), "k_window": a.k_window}
+        if a.add_norm and m is not None:                                    # §185 fields
+            gh_ = np.array(gn_hist) if gn_hist else np.array([np.nan]); gb = {}
+            for st_, v_ in gadd_hist:
+                gb.setdefault(str((st_ - 1) // 1000 * 1000 + 1000), []).append(v_)
+            rn = {}; its_ = [it for it in TE if 3 <= it["n"] <= 8][:256]; x_, mk_ = m.think_inputs(its_, dev)
+            with torch.no_grad(), ac():
+                S_ = m.mem.zero_state(len(its_), dev); m.mem.norms = []
+                for t_ in range(1, 17):
+                    S_ = m.write(S_, x_, mk_); rn[str(t_)] = float(m.mem.norms[-1][1].median()) if m.mem.norms else None
+                m.mem.norms = None
+            res["s185"] = {"add_norm": a.add_norm, "clip_rate": float((gh_ > 1.0).mean()), "grad_norm_preclip": {"median": float(np.median(gh_)), "p90": float(np.percentile(gh_, 90))},
+                           "grad_add": {k_: {"median": float(np.median(v_)), "p99": float(np.percentile(v_, 99))} for k_, v_ in sorted(gb.items(), key=lambda kv: int(kv[0]))},
+                           "read_norm_by_pass": rn, "read_norm_def": "median ||g_add * additive read|| at each think pass's last token (mem.norms), 256 test items n 3..8",
+                           "grad_add_def": "per step the norm of the additive heads' q / k / v rows of qkv.weight.grad (+ the rms gain), median / p99 per 1k steps"}
         if a.aux_reweight:                                                  # §184 fields
             gh_ = np.array(gn_hist) if gn_hist else np.array([np.nan])
             res["s184"] = {"aux_reweight": True, "weights": list(AUX_W), "clip_rate": float((gh_ > 1.0).mean()), "grad_norm_preclip": {"median": float(np.median(gh_)),

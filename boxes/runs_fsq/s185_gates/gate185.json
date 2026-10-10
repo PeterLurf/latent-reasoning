@@ -1,0 +1,441 @@
+{
+ "g1": {
+  "deltamem": {
+   "fast0": {
+    "write": true,
+    "write_mask": true,
+    "read": true
+   },
+   "fast1": {
+    "write": true,
+    "write_mask": true,
+    "read": true
+   }
+  },
+  "nested170": {
+   "log_losses_equal": true,
+   "eval_fields_differing": [],
+   "n_fields": 255
+  },
+  "inject169_il1": {
+   "log_losses_equal": true,
+   "eval_fields_differing": [],
+   "n_fields": 116
+  },
+  "smoke_plain": [
+   "SMOKE_PLAIN PASS (91 s)"
+  ]
+ },
+ "g1_pass": true,
+ "g2": {
+  "fast0": {
+   "shape": [
+    3,
+    13,
+    64,
+    64
+   ],
+   "z_maxdiff": 0.0,
+   "z_scale": 26.612457275390625
+  },
+  "fast1": {
+   "shape": [
+    3,
+    13,
+    64,
+    64
+   ],
+   "z_maxdiff": 0.0,
+   "z_scale": 26.612457275390625
+  }
+ },
+ "g2_pass": true,
+ "g3": {
+  "max_ratio": 0.40855729579925537
+ },
+ "g3_pass": true,
+ "g4": {
+  "gain": [
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "rms_min": 0.9999998807907104,
+  "rms_max": 1.0000001192092896
+ },
+ "g4_pass": true,
+ "g5": {
+  "den": {
+   "mem_zero_grad": [],
+   "has_add_gain": false
+  },
+  "rms": {
+   "mem_zero_grad": [],
+   "has_add_gain": true
+  }
+ },
+ "g5_pass": true,
+ "g6": {
+  "shape1": 13,
+  "zblock_pad_rows_max_after_train_and_eval": 0.0,
+  "delta_read_equal_full_vs_cut": true
+ },
+ "g6_pass": true,
+ "g7": {
+  "n_hits": 45,
+  "hits": [
+   {
+    "file": "deltamem.py",
+    "line": 70,
+    "status": "patched / explicit end or q-k-v heads (checked)",
+    "text": "Sa, Sd = S[:, :H_ADD].float(), S[:, H_ADD:H_ADD + H_DEL].float(); outs = []; den = self.add_norm == \"den\""
+   },
+   {
+    "file": "deltamem.py",
+    "line": 71,
+    "status": "patched / explicit end or q-k-v heads (checked)",
+    "text": "z = S[:, H_ADD + H_DEL, :H_ADD].float() if den else None           # \u00a7185 den: z = sum phi(k) (B, H_ADD, DH)"
+   },
+   {
+    "file": "deltamem.py",
+    "line": 131,
+    "status": "patched / explicit end or q-k-v heads (checked)",
+    "text": "od = torch.exp(mem.s_del) * torch.einsum(\"bhvk,bthk->bthv\", S[:, H_ADD:H_ADD + H_DEL].float(), F.normalize(q[:, :, H_ADD"
+   },
+   {
+    "file": "deltamem.py",
+    "line": 155,
+    "status": "patched / explicit end or q-k-v heads (checked)",
+    "text": "Sa, Sd = S[:, :H_ADD].float(), S[:, H_ADD:H_ADD + H_DEL].float(); den = getattr(mem, \"add_norm\", None) == \"den\"; z = sta"
+   },
+   {
+    "file": "deltas5.py",
+    "line": 157,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "kept[t + 1][sl] = S.float().flatten(1).cpu().numpy()"
+   },
+   {
+    "file": "deltas5.py",
+    "line": 223,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "S0 = Ss[t][:nj].float(); v = torch.randn_like(S0); v = v / v.flatten(1).norm(dim=1)[:, None, None, None]; x = m.g.embed("
+   },
+   {
+    "file": "fixedchunk.py",
+    "line": 116,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "kept.setdefault(\"input\", []).append(S.float().flatten(1).cpu().numpy())"
+   },
+   {
+    "file": "fixedchunk.py",
+    "line": 124,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "kept.setdefault(t, []).append(S.float().flatten(1).cpu().numpy())"
+   },
+   {
+    "file": "halt173.py",
+    "line": 71,
+    "status": "patched / explicit end or q-k-v heads (checked)",
+    "text": "od = torch.exp(mem.s_del) * torch.einsum(\"bhvk,bhk->bhv\", S[:, ha:ha + hd].float(), Fn.normalize(q[:, ha:], dim=-1))"
+   },
+   {
+    "file": "halt173.py",
+    "line": 141,
+    "status": "patched / explicit end or q-k-v heads (checked)",
+    "text": "ha_ = getattr(ad.m.mem, \"h_add\", DM.H_ADD); hd_ = getattr(ad.m.mem, \"h_del\", DM.H_DEL); dd = Sf[:, ha_:ha_ + hd_].flatte"
+   },
+   {
+    "file": "halt173.py",
+    "line": 143,
+    "status": "patched / explicit end or q-k-v heads (checked)",
+    "text": "F1, F0 = Sf[:, :ha_ + hd_].flatten(1), Sprev[:, :ha_ + hd_].flatten(1)   # \u00a7185: the 12 memory heads only (den's z block"
+   },
+   {
+    "file": "halt173.py",
+    "line": 253,
+    "status": "patched / explicit end or q-k-v heads (checked)",
+    "text": "cur = {\"read\": read_vec(m.mem, x, S).float(), \"delta\": S[:, getattr(m.mem, \"h_add\", DM.H_ADD):getattr(m.mem, \"h_add\", DM"
+   },
+   {
+    "file": "halt173.py",
+    "line": 298,
+    "status": "patched / explicit end or q-k-v heads (checked)",
+    "text": "out.append(S[:, getattr(ad.m.mem, \"h_add\", DM.H_ADD):getattr(ad.m.mem, \"h_add\", DM.H_ADD) + getattr(ad.m.mem, \"h_del\", D"
+   },
+   {
+    "file": "halt173.py",
+    "line": 337,
+    "status": "patched / explicit end or q-k-v heads (checked)",
+    "text": "cur = {\"read\": read_vec(m.mem, xq, S).float(), \"delta\": S[:, getattr(m.mem, \"h_add\", DM.H_ADD):getattr(m.mem, \"h_add\", D"
+   },
+   {
+    "file": "halt173.py",
+    "line": 405,
+    "status": "patched / explicit end or q-k-v heads (checked)",
+    "text": "nrm.append(S[:, :ha].float().flatten(1).norm(dim=1).cpu().numpy())"
+   },
+   {
+    "file": "halt173.py",
+    "line": 416,
+    "status": "patched / explicit end or q-k-v heads (checked)",
+    "text": "S = m.write(S, x, msk); cur = S[:, :ha].float().flatten(1).norm(dim=1)"
+   },
+   {
+    "file": "halt173.py",
+    "line": 418,
+    "status": "patched / explicit end or q-k-v heads (checked)",
+    "text": "S = torch.cat([S[:, :ha] * f[:, None, None, None], S[:, ha:]], 1)"
+   },
+   {
+    "file": "inject169.py",
+    "line": 189,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "norms.setdefault(j, []).append(torch.stack([S[:, :DM.H_ADD].float().flatten(1).norm(dim=1), S[:, DM.H_ADD:].float().flat"
+   },
+   {
+    "file": "inject169.py",
+    "line": 222,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "kept.setdefault(t, []).append(S.float().flatten(1).cpu().numpy())"
+   },
+   {
+    "file": "inject169.py",
+    "line": 544,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "sd = [(tok_, st_[:, DM.H_ADD:].flatten(1)) for tok_, st_ in tr]; pc = []   # 173-1's statistic (halt173.dir_fields): the"
+   },
+   {
+    "file": "inject169.py",
+    "line": 552,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "\"def\": \"173-1 / halt173.dir_fields: per pass p the MEAN over items of cos(Sd_p, Sd_p-1), Sd = the flattened delta-head s"
+   },
+   {
+    "file": "inject169.py",
+    "line": 600,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "mn[str(t)] = {\"additive\": float(S[:, :DM.H_ADD].float().flatten(1).norm(dim=1).median()), \"delta\": float(S[:, DM.H_ADD:]"
+   },
+   {
+    "file": "inject169.py",
+    "line": 627,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "mn[str(t)] = {\"additive\": float(S[:, :DM.H_ADD].float().flatten(1).norm(dim=1).median()), \"delta\": float(S[:, DM.H_ADD:]"
+   },
+   {
+    "file": "multpair.py",
+    "line": 442,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "S = torch.cat([torch.zeros_like(S[:, :DM.H_ADD]), S[:, DM.H_ADD:]], 1)"
+   },
+   {
+    "file": "multpair.py",
+    "line": 467,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "S = torch.cat([torch.zeros_like(S[:, :DM.H_ADD]), S[:, DM.H_ADD:]], 1)"
+   },
+   {
+    "file": "multpair.py",
+    "line": 608,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "return S.flatten(2).norm(dim=2).median(0).values                       # (12,)"
+   },
+   {
+    "file": "multpair.py",
+    "line": 674,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "da.append((S[:, :DM.H_ADD] - clean[t - 1][:, :DM.H_ADD]).flatten(1).norm(dim=1)); dd.append((S[:, DM.H_ADD:] - clean[t -"
+   },
+   {
+    "file": "multpair.py",
+    "line": 910,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "nrm = dS.flatten(1).norm(dim=1); dR = rr[..., :, None] * zr[..., None, :]; dR = dR * (nrm / dR.flatten(1).norm(dim=1).cl"
+   },
+   {
+    "file": "multpair.py",
+    "line": 1004,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "S = torch.cat([torch.zeros_like(S[:, :DM.H_ADD]), S[:, DM.H_ADD:]], 1)"
+   },
+   {
+    "file": "multpair.py",
+    "line": 1032,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "S0 = caps[t - 1][3][:nj].float(); v = torch.randn_like(S0); v = v / v.flatten(1).norm(dim=1)[:, None, None, None]"
+   },
+   {
+    "file": "multpair.py",
+    "line": 1034,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "S0 = torch.cat([torch.zeros_like(S0[:, :DM.H_ADD]), S0[:, DM.H_ADD:]], 1); v = torch.cat([torch.zeros_like(v[:, :DM.H_AD"
+   },
+   {
+    "file": "multpair.py",
+    "line": 1043,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "eps_ = 1e-3 * float(S0.flatten(1).norm(dim=1).median().clamp_min(1.0)); f_ = lambda S_: DM.gpt_forward_mem_r(m.g, x, m.m"
+   },
+   {
+    "file": "multpair.py",
+    "line": 1054,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "eps_ = 1e-3 * float(S0.flatten(1).norm(dim=1).median().clamp_min(1.0)); f_ = lambda S_: DM.gpt_forward_mem_r(m.g, x, m.m"
+   },
+   {
+    "file": "multpair.py",
+    "line": 1681,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "mn_[\"additive\"].append(float(S_[:, :DM.H_ADD].float().flatten(1).norm(dim=1).median())); mn_[\"delta\"].append(float(S_[:,"
+   },
+   {
+    "file": "multrow.py",
+    "line": 514,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "Sa, Sd = S[:, :DM.H_ADD].float(), S[:, DM.H_ADD:].float()"
+   },
+   {
+    "file": "multrow.py",
+    "line": 516,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "od = torch.exp(mem.s_del) * torch.einsum(\"bhvk,bthk->bthv\", Sd, Fn.normalize(q[:, :, DM.H_ADD:], dim=-1))"
+   },
+   {
+    "file": "multrow.py",
+    "line": 654,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "nrm[sl, t, 0] = S[:, :DM.H_ADD].float().flatten(1).norm(dim=1).cpu().numpy(); nrm[sl, t, 1] = S[:, DM.H_ADD:].float().fl"
+   },
+   {
+    "file": "multrow.py",
+    "line": 1094,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "M0.append(S.float().flatten(1).cpu().numpy())"
+   },
+   {
+    "file": "multrow.py",
+    "line": 1181,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "mn[\"additive\"][\"0\"] = float(S0[:, :DM.H_ADD].float().flatten(1).norm(dim=1).median()); mn[\"delta\"][\"0\"] = float(S0[:, DM"
+   },
+   {
+    "file": "nested170.py",
+    "line": 371,
+    "status": "patched / explicit end or q-k-v heads (checked)",
+    "text": "od = torch.exp(mem.s_del) * torch.einsum(\"bhvk,bhk->bhv\", S[:, H_ADD:H_ADD + H_DEL].float(), F_.normalize(q[:, H_ADD:], "
+   },
+   {
+    "file": "nested170.py",
+    "line": 870,
+    "status": "patched / explicit end or q-k-v heads (checked)",
+    "text": "Ao.append(lg[:, NUM_IDS].argmax(-1).cpu().numpy()); Fo.append(S[:, m.mem.h_add:m.mem.h_add + m.mem.h_del].float().flatte"
+   },
+   {
+    "file": "nested170.py",
+    "line": 875,
+    "status": "patched / explicit end or q-k-v heads (checked)",
+    "text": "\"delta_cos_def\": \"mean over items of cos of the final delta-head states S[:, h_add:h_add + h_del]\"}, \"aux_hold\": bool(a."
+   },
+   {
+    "file": "prosqa168s2.py",
+    "line": 335,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "u = St_[t][:, DM.H_ADD:].reshape(len(ex), -1); v = St_[t - 1][:, DM.H_ADD:].reshape(len(ex), -1) if t > 1 else np.zeros_"
+   },
+   {
+    "file": "prosqa168s2.py",
+    "line": 383,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "Xf = Str[t][fi][:, DM.H_ADD:].reshape(len(fi), -1); Xt = St[t][ti][:, DM.H_ADD:].reshape(len(ti), -1)"
+   },
+   {
+    "file": "readslots171.py",
+    "line": 341,
+    "status": "not needed: module never builds an add_norm='den' memory",
+    "text": "mn[str(t)] = {\"additive\": float(S[:, :DM.H_ADD].float().flatten(1).norm(dim=1).median()), \"delta\": float(S[:, DM.H_ADD:]"
+   }
+  ],
+  "den_modules": [
+   "deltamem.py",
+   "halt173.py",
+   "nested170.py"
+  ],
+  "unpatched_in_den_modules": [],
+  "note": "recomputed after fixing nested170's delta_cos_def DESCRIPTION string (the only first-run hit; code unchanged)"
+ },
+ "g7_pass": true,
+ "g8": {
+  "den": {
+   "rc": 0,
+   "args_add_norm": "den",
+   "s185_keys": [
+    "add_norm",
+    "clip_rate",
+    "grad_add",
+    "grad_add_def",
+    "grad_norm_preclip",
+    "read_norm_by_pass",
+    "read_norm_def"
+   ],
+   "read_norm_by_pass": {
+    "1": 0.0,
+    "2": 5.072271823883057,
+    "3": 5.072286605834961,
+    "4": 5.072293758392334,
+    "5": 5.072296619415283,
+    "6": 5.072299003601074,
+    "7": 5.072299957275391,
+    "8": 5.072299957275391,
+    "9": 5.072300910949707,
+    "10": 5.072300910949707,
+    "11": 5.072301387786865,
+    "12": 5.072301387786865,
+    "13": 5.072301387786865,
+    "14": 5.072301387786865,
+    "15": 5.072301387786865,
+    "16": 5.072301387786865
+   }
+  },
+  "rms": {
+   "rc": 0,
+   "args_add_norm": "rms",
+   "s185_keys": [
+    "add_norm",
+    "clip_rate",
+    "grad_add",
+    "grad_add_def",
+    "grad_norm_preclip",
+    "read_norm_by_pass",
+    "read_norm_def"
+   ],
+   "read_norm_by_pass": {
+    "1": 0.0,
+    "2": 5.693498611450195,
+    "3": 5.693498611450195,
+    "4": 5.693498611450195,
+    "5": 5.693498611450195,
+    "6": 5.693498611450195,
+    "7": 5.693498611450195,
+    "8": 5.693498611450195,
+    "9": 5.693498611450195,
+    "10": 5.693498611450195,
+    "11": 5.693498611450195,
+    "12": 5.693498611450195,
+    "13": 5.693498611450195,
+    "14": 5.693498611450195,
+    "15": 5.693498611450195,
+    "16": 5.693498611450195
+   }
+  },
+  "normcap": {
+   "rc": 0,
+   "err": "",
+   "C": 2530.575927734375
+  }
+ },
+ "g8_pass": true,
+ "all_pass": true
+}

@@ -20,9 +20,12 @@ FAST_ADD = False                                                            # Au
 
 
 class DeltaMem(nn.Module):
-    def __init__(self, g, layer=6, write=None, h_add=H_ADD, h_del=H_DEL):
-        """§178: the width D comes from the trunk (768 for GPT-2) and the head counts are arguments (6 + 6 by default; (h_add + h_del) x DH = D)."""
+    def __init__(self, g, layer=6, write=None, h_add=H_ADD, h_del=H_DEL, add_norm=None):
+        """§178: the width D comes from the trunk (768 for GPT-2) and the head counts are arguments (6 + 6 by default; (h_add + h_del) x DH = D).
+        §185 (2a1aac15) add_norm: None (unchanged) | "den" (additive reads / (phi(q)^T z), z = sum phi(k) carried as one extra state block) |
+        "rms" (additive reads RMS-normalised per head, learned per-head gain init 1)."""
         super().__init__()
+        assert add_norm in (None, "den", "rms"); self.add_norm = add_norm
         self.layer = layer; pre = "h.%d." % layer; dev = g.w("wte.weight").device; D = g.w("wte.weight").shape[1]
         assert (h_add + h_del) * DH == D, "DeltaMem: (h_add + h_del) x %d must equal the width %d" % (DH, D)
         self.D, self.h_add, self.h_del = D, h_add, h_del
@@ -40,6 +43,8 @@ class DeltaMem(nn.Module):
             self.wo.weight.zero_(); self.wo.bias.zero_()
         self.register_buffer("fade", torch.zeros((), device=dev)); self.ablate = None   # "add" | "delta": that head type's read zeroed
         self.s_add = nn.Parameter(torch.zeros((), device=dev)); self.s_del = nn.Parameter(torch.zeros((), device=dev))   # note 147-2: gains g = exp(s) (Audit: log-param.)
+        if add_norm == "rms":                                               # §185 rms: TransNormer's NormAttention gain, registered only under rms
+            self.add_gain = nn.Parameter(torch.ones(h_add, device=dev))
         self.alpha_rec = None                                               # note 147-3: list -> per segment, mean alpha per delta head
         self.norms = None                                                   # list -> per segment (last token): (||g_del read_del||, ||g_add read_add||) per row
         self.write_mode = write                                             # §155 DELTA-R: None (§147) | "top" | "block9"
@@ -50,7 +55,7 @@ class DeltaMem(nn.Module):
             self.register_buffer("gamma", torch.zeros((), device=dev)); self.wstat = None   # wstat: list -> per pass (||LN_w(h_w)||, ||LN_6(h_6)||) medians
 
     def zero_state(self, B, dev):
-        return torch.zeros(B, self.h_add + self.h_del, DH, DH, device=dev)
+        return torch.zeros(B, self.h_add + self.h_del + (1 if getattr(self, "add_norm", None) == "den" else 0), DH, DH, device=dev)   # §185 den: + z block
 
     def forward(self, x, S, rec=None):
         """x (B, T, 768) residual stream after l_m blocks; S (B, 12, DH, DH) carried state. Sequential over T. Returns (x + branch, S_new).
@@ -62,13 +67,16 @@ class DeltaMem(nn.Module):
         H_ADD, H_DEL = self.h_add, self.h_del                               # §178: this memory's head counts (6 / 6 by default)
         B, T, D = x.shape; a = self.ln(x.float()); q, k, v = self.qkv(a).split(D, -1)
         q, k, v = (t.view(B, T, H_ADD + H_DEL, DH) for t in (q, k, v)); g_ = self.gate(a); al = torch.sigmoid(g_[..., :H_DEL]); be = 2 * torch.sigmoid(g_[..., H_DEL:])
-        Sa, Sd = S[:, :H_ADD].float(), S[:, H_ADD:].float(); outs = []
+        Sa, Sd = S[:, :H_ADD].float(), S[:, H_ADD:H_ADD + H_DEL].float(); outs = []; den = self.add_norm == "den"
+        z = S[:, H_ADD + H_DEL, :H_ADD].float() if den else None           # §185 den: z = sum phi(k) (B, H_ADD, DH)
         if self.alpha_rec is not None:
             self.alpha_rec.append(al.mean(dim=(0, 1)).detach())
         for t in range(T):
             pk, pq = F.elu(k[:, t, :H_ADD]) + 1, F.elu(q[:, t, :H_ADD]) + 1     # additive: S <- S + phi(k) v^T; read phi(q)^T S
             Sa = Sa + pk[..., :, None] * v[:, t, :H_ADD][..., None, :]
-            oa = torch.einsum("bhk,bhkv->bhv", pq, Sa)
+            if den:
+                z = z + pk
+            oa = add_read(self, pq, Sa, z)
             kd = F.normalize(k[:, t, H_ADD:], dim=-1); qd = F.normalize(q[:, t, H_ADD:], dim=-1); vd = v[:, t, H_ADD:]
             b_ = be[:, t][..., None, None]; Skk = torch.einsum("bhvk,bhk->bhv", Sd, kd)   # S (v x k): S (I - b k k^T) = S - b (S k) k^T
             Sd = al[:, t][..., None, None] * (Sd - b_ * Skk[..., :, None] * kd[..., None, :]) + b_ * vd[..., :, None] * kd[..., None, :]
@@ -84,7 +92,33 @@ class DeltaMem(nn.Module):
             if rec is not None and t == T - 1:
                 rec.append(oa.reshape(B, -1).detach())
         o = torch.stack(outs, 1)
-        return x + (self.fade * self.wo(o)).to(x.dtype), torch.cat([Sa, Sd], 1)
+        return x + (self.fade * self.wo(o)).to(x.dtype), pack_state(self, Sa, Sd, z)
+
+
+def state_z(mem, S):
+    """§185 den: z (B, H_ADD, DH) from the state's extra block (rows 0..H_ADD-1 of block H_ADD + H_DEL); None otherwise."""
+    if getattr(mem, "add_norm", None) != "den":
+        return None
+    return S[:, mem.h_add + mem.h_del, :mem.h_add].float()
+
+
+def pack_state(mem, Sa, Sd, z=None):
+    """(Sa, Sd) -> the carried state; §185 den appends the z block (z in rows 0..H_ADD-1, rows H_ADD..DH-1 exactly 0)."""
+    if getattr(mem, "add_norm", None) != "den":
+        return torch.cat([Sa, Sd], 1)
+    zb = torch.cat([z, torch.zeros(z.shape[0], DH - z.shape[1], DH, device=z.device, dtype=z.dtype)], 1)[:, None]
+    return torch.cat([Sa, Sd, zb], 1)
+
+
+def add_read(mem, pq, Sa, z=None):
+    """the additive heads' read phi(q)^T S_add (pq (B, T, H, DH) or (B, H, DH)), before the gain exp(s_add). §185: den divides by phi(q)^T z
+    (+ 1e-6) per head; rms normalises each head's read to unit RMS over DH and multiplies a learned per-head gain (init 1). None: unchanged."""
+    tok = pq.dim() == 4; oa = torch.einsum("bthk,bhkv->bthv" if tok else "bhk,bhkv->bhv", pq, Sa); md = getattr(mem, "add_norm", None)
+    if md == "den":
+        oa = oa / (torch.einsum("bthk,bhk->bth" if tok else "bhk,bhk->bh", pq, z)[..., None] + 1e-6)
+    elif md == "rms":
+        oa = oa * torch.rsqrt(oa.pow(2).mean(-1, keepdim=True) + 1e-6) * mem.add_gain[:, None]
+    return oa
 
 
 def read_fixed(mem, x, S, rec=None):
@@ -93,8 +127,8 @@ def read_fixed(mem, x, S, rec=None):
     H_ADD, H_DEL = mem.h_add, mem.h_del                                     # §178: this memory's head counts (6 / 6 by default)
     with torch.autocast("cuda", enabled=False):
         B, T, D = x.shape; a = mem.ln(x.float()); q = mem.qkv(a)[..., :D].view(B, T, H_ADD + H_DEL, DH)
-        oa = torch.exp(mem.s_add) * torch.einsum("bthk,bhkv->bthv", F.elu(q[:, :, :H_ADD]) + 1, S[:, :H_ADD].float())
-        od = torch.exp(mem.s_del) * torch.einsum("bhvk,bthk->bthv", S[:, H_ADD:].float(), F.normalize(q[:, :, H_ADD:], dim=-1))
+        oa = torch.exp(mem.s_add) * add_read(mem, F.elu(q[:, :, :H_ADD]) + 1, S[:, :H_ADD].float(), state_z(mem, S))
+        od = torch.exp(mem.s_del) * torch.einsum("bhvk,bthk->bthv", S[:, H_ADD:H_ADD + H_DEL].float(), F.normalize(q[:, :, H_ADD:], dim=-1))
         if mem.norms is not None:
             mem.norms.append((od[:, -1].flatten(1).norm(dim=1).detach(), oa[:, -1].flatten(1).norm(dim=1).detach()))
         if mem.ablate == "add":
@@ -118,24 +152,35 @@ def write_seq(mem, h6, hw, S, mask=None):
         g_ = mem.gate(u); al = torch.sigmoid(g_[..., :H_DEL]); be = 2 * torch.sigmoid(g_[..., H_DEL:])
         if mem.alpha_rec is not None:
             mem.alpha_rec.append(al.mean(dim=(0, 1)).detach())
-        Sa, Sd = S[:, :H_ADD].float(), S[:, H_ADD:].float()
+        Sa, Sd = S[:, :H_ADD].float(), S[:, H_ADD:H_ADD + H_DEL].float(); den = getattr(mem, "add_norm", None) == "den"; z = state_z(mem, S)
+        if den:
+            assert S.shape[1] == H_ADD + H_DEL + 1, "§185 den: the state carries one z block"
         if FAST_ADD:                                                        # reads see only the pass-start S, so the additive writes commute: one einsum
             pk = F.elu(k[:, :, :H_ADD]) + 1                                 # (fp32 summation order differs from the loop; gate: scratch/gate_fastadd.py)
             if mask is not None:
                 pk = pk * mask[:, :, None, None].to(pk.dtype)               # padding tokens contribute nothing
             Sa_fast = Sa + torch.einsum("bthk,bthv->bhkv", pk, v[:, :, :H_ADD])
+            if den:                                                         # §185: z <- z + sum_t phi(k_t) (masked), the same masked sum as S_add
+                z_fast = z + pk.sum(1)
         for t in range(T):
             Sa_ = Sa if FAST_ADD else Sa + (F.elu(k[:, t, :H_ADD]) + 1)[..., :, None] * v[:, t, :H_ADD][..., None, :]
+            z_ = z if (FAST_ADD or not den) else z + (F.elu(k[:, t, :H_ADD]) + 1)
             kd = F.normalize(k[:, t, H_ADD:], dim=-1); vd = v[:, t, H_ADD:]; b_ = be[:, t][..., None, None]
             Skk = torch.einsum("bhvk,bhk->bhv", Sd, kd)
             Sd_ = al[:, t][..., None, None] * (Sd - b_ * Skk[..., :, None] * kd[..., None, :]) + b_ * vd[..., :, None] * kd[..., None, :]
             if mask is None:
                 Sa, Sd = Sa_, Sd_
+                if den:
+                    z = z_
             else:                                                           # §170: padding tokens (mask False) leave the state unchanged
                 m_ = mask[:, t][:, None, None, None]; Sa = torch.where(m_, Sa_, Sa); Sd = torch.where(m_, Sd_, Sd)
+                if den and not FAST_ADD:
+                    z = torch.where(mask[:, t][:, None, None], z_, z)
         if FAST_ADD:
             Sa = Sa_fast
-        return torch.cat([Sa, Sd], 1)
+            if den:
+                z = z_fast
+        return pack_state(mem, Sa, Sd, z)
 
 
 def _block(g, i, h, hd):
