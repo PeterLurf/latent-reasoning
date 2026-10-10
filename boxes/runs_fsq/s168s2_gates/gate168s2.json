@@ -1,0 +1,91 @@
+{
+ "g1": {
+  "t1": true,
+  "t2": true,
+  "t3": true,
+  "refused_past_depth": true
+ },
+ "g1_pass": true,
+ "g2": {
+  "aux_logits_equal_across_questions": true,
+  "main_decoder_differs": true
+ },
+ "g2_pass": true,
+ "g3": {
+  "aux_t1": {
+   "mem_zero_grad": [],
+   "S_t_grad": 0.0016198288649320602
+  },
+  "aux_t2": {
+   "mem_zero_grad": [],
+   "S_t_grad": 0.0005791157600469887
+  },
+  "aux_t3": {
+   "mem_zero_grad": [],
+   "S_t_grad": 0.00028546323301270604
+  },
+  "answer": {
+   "S_K_grad": 0.0003460565931163728,
+   "S_1_grad": 0.000981550314463675,
+   "wo_grad": 189.8770294189453
+  }
+ },
+ "g3_pass": true,
+ "g4": {
+  "stage_samples": {
+   "1": 0,
+   "1000": 0,
+   "1001": 1,
+   "10000": 9,
+   "10001": 10,
+   "11000": 10,
+   "11001": 10,
+   "12000": 10
+  },
+  "smokes": {
+   "stepaux": {
+    "rc": 0,
+    "err": "",
+    "fields": [
+     "acc_by_depth_kprime",
+     "aux_acc_by_pass_ext",
+     "aux_done",
+     "aux_exact_by_hop",
+     "aux_n_by_hop",
+     "delta_cos",
+     "delta_cos_at_init",
+     "n_by_pass_ext",
+     "path_indep",
+     "step_recover",
+     "step_recover_def"
+    ]
+   },
+   "currdirect": {
+    "rc": 0,
+    "err": "",
+    "fields": [
+     "acc",
+     "acc_by_depth",
+     "acc_ctl",
+     "acc_def",
+     "arm",
+     "data"
+    ]
+   },
+   "textcot": {
+    "rc": 0,
+    "err": "",
+    "fields": [
+     "acc",
+     "acc_by_depth",
+     "acc_ctl",
+     "acc_def",
+     "arm",
+     "data"
+    ]
+   }
+  }
+ },
+ "g4_pass": true,
+ "all_pass": true
+}
