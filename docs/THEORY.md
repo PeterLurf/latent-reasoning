@@ -10435,6 +10435,15 @@ subspace.**
   - INJECT's identical-input passes failed on multiplication (§169) and only matched DIRECT on nested (§170).
 * **Cost:** G1 about $1 and G2 about $1.5 (3090s), plus about $3 for the NA re-runs if the decay branch applies.
 
+**§168, note 168-3's sanity gate (2026-10-09 22:49 EDT; s168_g1_prosqa_s1 and s168_g2_p8std_s3, RTX 3090; score_s168). STAND: the trainer reproduces the published baseline, and the registered DIRECT runs stand for D*.**
+* **G1 (standard ProsQA, No-CoT):** test 0.766 at the validation-best step (2k; validation 0.79, tied with 24k, earlier step taken), against Coconut's GPT-2 No-CoT of 76.7. It is flat from 2k to 24k (0.738–0.766), so there is no decay.
+  - By depth at 24k: 0.77 / 0.75 / 0.78 / 0.83 at depths 3–6. acc_ctl is 0.78.
+* **G2 (p8 standard, seed 3):** test 0.50–0.52 at every eval step; validation 0.35–0.44 (n 100).
+  - Depth 3 at the validation-best step (2k) is 0.599, against P8-0a's 0.63. No decay.
+* **Reading.** The same recipe that reproduces 0.766 on standard ProsQA is at chance on the deep p8 data from depth 3.
+  - The p8 difficulty is the data (larger, distractor-heavy graphs), not the trainer.
+  - D* is read from the registered NA DIRECT runs. NA s1's eval is running, so the boundary note follows it.
+
 ## 169. INJECT: the memory with the full problem re-presented in every think pass, a task-agnostic harness (the user's "work on task agnosticness" via Audit's research pass; pre-registered 2026-10-09 01:37 EDT, after Literature's check 6b019d1e (`docs/LIT_INJECT_2026-10-09.md`) and Audit's review, before any implementation or run)
 
 **Why.**
