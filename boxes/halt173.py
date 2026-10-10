@@ -346,10 +346,46 @@ def dir_pair_fields(run, dev, amp, n_items=500, bs=125, bench=os.path.join("benc
     return out
 
 
+@torch.no_grad()
+def auxdone_fields(m, a, dev, amp, n_items=1000, bs=100, cap=16, ns=(2, 4, 6, 8, 10, 12)):
+    """note 182-2 AUX-DONE (Theory, descriptive; nested runs with §175's aux decoder): per n, n_items test items, think passes t = 1..cap from M_0 = 0.
+    After each pass: the main decoder's answer, and §175's aux decoder greedy from [EOT, " Step", " t", " :"] reading M_t. The item halts at the first t
+    whose aux output is ONE number token (a mod-11 value) followed by EOT (2 greedy tokens decide it); cap 16 (no halt -> 16, capped)."""
+    from contextlib import nullcontext
+    from boxes.nested170 import test_set, NUM_IDS, EOT as NEOT
+    ctx = (lambda: torch.autocast("cuda", dtype=amp)) if amp is not None else nullcontext
+    lut = {int(tk): v for v, tk in enumerate(NUM_IDS)}; TE = test_set(a.get("per_n", 1000)); out = {}
+    for n in ns:
+        its = [it for it in TE if it["n"] == n][:n_items]; tgt = np.array([it["t"] for it in its]); H, MA, AX, MAIN = [], [], [], []
+        for i in range(0, len(its), bs):
+            ch = its[i:i + bs]; x, msk = m.think_inputs(ch, dev); main_t, num_t, done_t = [], [], []
+            with ctx():
+                S = m.mem.zero_state(len(ch), dev)
+                for t in range(1, cap + 1):
+                    S = m.write(S, x, msk); lg = m.dec_logits(S, ch, dev); main_t.append(lg[:, NUM_IDS].argmax(-1).cpu().numpy())
+                    g2 = m.aux_greedy(S, t, 2); num_t.append(np.array([lut.get(int(r[0]), -1) for r in g2])); done_t.append(np.array([(int(r[0]) in lut) and int(r[1]) == NEOT for r in g2]))
+            main_t, num_t, done_t = np.stack(main_t), np.stack(num_t), np.stack(done_t)            # (cap, b)
+            hit = done_t.any(0); h = np.where(hit, done_t.argmax(0) + 1, cap); col = np.arange(len(ch))
+            H.append(h); MA.append(main_t[h - 1, col]); AX.append(np.where(hit, num_t[h - 1, col], -1)); MAIN.append(hit)
+        h, ma, ax, hit = np.concatenate(H), np.concatenate(MA), np.concatenate(AX), np.concatenate(MAIN)
+        out[str(n)] = {"n_items": int(len(h)), "acc_at_halt": float((ma == tgt).mean()), "mean_halt": float(h.mean()), "median_halt": float(np.median(h)),
+                       "mean_halt_minus_n": float((h - n).mean()), "frac_capped": float((~hit).mean()),
+                       "aux_num_acc": float((ax[hit] == tgt[hit]).mean()) if hit.any() else None, "agree": float((ax[hit] == ma[hit]).mean()) if hit.any() else None,
+                       "aux_done_by_t": [round(float((hit & (h <= t)).mean()), 4) for t in range(1, cap + 1)]}
+        d_ = h - n; bk = {"early": d_ < 0, "at_n": d_ == 0, "n+1": d_ == 1, "n+2": d_ == 2, "later": d_ > 2}   # Theory / Audit: halt - n buckets (capped items included)
+        out[str(n)]["halt_minus_n"] = {"share": {k_: float(v_.mean()) for k_, v_ in bk.items()},
+                                       "counts": {str(k_): int(c_) for k_, c_ in zip(*np.unique(d_, return_counts=True))}}
+        out[str(n)]["acc_at_halt_by_bucket"] = {k_: (float((ma[v_] == tgt[v_]).mean()) if v_.any() else None) for k_, v_ in
+                                                {"early": d_ < 0, "at_n": d_ == 0, "n+1": d_ == 1, "later": d_ > 1}.items()}
+        print("auxdone n", n, out[str(n)]["acc_at_halt"], out[str(n)]["mean_halt"], flush=True)
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--n", type=int, default=1000); ap.add_argument("--bs", type=int, default=250)
     ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", default=None)
     ap.add_argument("--bench", default=os.path.join("bench", "data", "mult_4x4_test.txt")); ap.add_argument("--dir177", action="store_true", help="§177 direction diagnostic only")
+    ap.add_argument("--auxdone", action="store_true", help="note 182-2 AUX-DONE halting (nested + §175 aux) only -> eval_s182_auxdone.json")
     o = ap.parse_args(); dev = o.device; t0 = time.time(); o.out = o.out if (o.out and o.out.endswith(".json")) else None   # gen_vast_job appends --out <dir>: anything but a .json path -> the default file in --run
     amp = None if (o.fp32 or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
     a_ = json.load(open(os.path.join(o.run, "args.json")))
@@ -359,6 +395,15 @@ def main():
                    "sec": round(time.time() - t0)})
         json.dump(r_, open(o.out or os.path.join(o.run, "eval_s177_dir.json"), "w", newline="\n"), indent=1); print("DONE dir177 pair", o.run, flush=True); return
     kind, m, a = load_model(o.run, dev); K = rule_k(a); T = 2 * K; assert K >= 1
+    if o.auxdone:                                                           # note 182-2 (Theory): AUX-DONE halting -> eval_s182_auxdone.json
+        assert kind == "nested" and a.get("aux_step"), "AUX-DONE needs a nested run trained with §175's aux decoder"
+        r_ = {"by_n": auxdone_fields(m, a, dev, amp, o.n, o.bs)}; ref_ = os.path.join(o.run, "eval_s173_halt.json")
+        if os.path.exists(ref_):
+            h_ = json.load(open(ref_)); r_["ref_eval_s173_halt"] = {"halt_fixed_k": h_.get("halt_fixed_k"), "answer2": (h_.get("halt") or {}).get("answer2"), "think_k": h_.get("think_k")}
+        r_.update({"run": o.run.replace(os.sep, "/"), "kind": kind, "cap": 16, "eval_dtype": str(amp), "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
+                   "sec": round(time.time() - t0), "rule": "halt at the first pass t (1..16) whose aux greedy output is one number token then EOT (2 greedy tokens); "
+                   "acc_at_halt = main decoder at the halt pass; aux_num_acc / agree over halted items; aux_done_by_t = cumulative share halted (note 182-2)"})
+        json.dump(r_, open(o.out or os.path.join(o.run, "eval_s182_auxdone.json"), "w", newline="\n"), indent=1); print("DONE auxdone", o.run, flush=True); return
     if o.dir177:                                                            # §177 (Theory): the direction diagnostic -> eval_s177_dir.json
         r_ = dir_fields(kind, m, a, dev, amp, min(o.n, 500), o.bs, o.bench)
         r_["step_probe_delta"] = step_probe_delta(kind, m, a, dev, amp, o.bs, bench=o.bench)   # note 173-1 (descriptive)
