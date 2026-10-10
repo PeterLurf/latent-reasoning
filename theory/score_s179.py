@@ -1,7 +1,7 @@
 """THEORY §179 scoring (rules fixed in §179; written before any §179 implementation or run; Theory is the only scorer).
 READOUT: §177 (d)'s scaffold (pair inputs per pass, K = 4n, the index, p = 0 held to 24k; b240's recipe to 12k) with a BLIND end decoder ([EOT, " ="] + memory);
 reference = proto177_fadetidx12k_s1 (the decoder sees the problem; 0.0 at 12k). Read on full 4x4 exact at p = 0 at 12k and 24k (s179.acc_p0_by_step).
-SHORTCUT (B) = BLIND >= 0.5 at 12k or 24k while the seeing scaffold reads 0.0 at 12k; CAPACITY (A) = BLIND < 0.1 AT 24K with column 3 <= 0.4 at 24k
+SHORTCUT (B) = BLIND >= 0.5 while the seeing twin (s179_seescaffold_s1, identical schedule; b240 as the 12k fallback) < 0.1 at the same step (note 179-1); CAPACITY (A) = BLIND < 0.1 AT 24K with column 3 <= 0.4 at 24k
 (the slow-learner guard); else PARTIAL. SHORTCUT opens s2. Length vs digit errors reported.
 Dirs boxes/runs_fsq/s179_blindscaffold_s{seed}.
     python theory/score_s179.py
@@ -53,6 +53,9 @@ def main():
         runs[s_] = {"status": "done", "by_step": v}
     res["runs"] = runs
     ref = (res["reference_sees_problem"] or {}).get("acc"); s1 = runs[1]
+    tw = load("s179_seescaffold_s1"); tb = blind("s179_seescaffold_s1") or {}                 # note 179-1: the seeing twin on the identical schedule
+    see = {k: v.get("acc") for k, v in tb.items() if v.get("acc") is not None}
+    res["seeing_twin"] = {"status": "done" if tw else "open", "by_step": tb}
     if s1.get("status") != "done":
         rd = "pending (s1 %s)" % s1.get("status")
     else:
@@ -60,8 +63,11 @@ def main():
         c3_24 = ((bs.get("24000") or {}).get("by_column") or [None] * 3)[2]
         if a12 is None or a24 is None:
             rd = "pending (fields missing: 12k %s, 24k %s)" % (a12, a24)
-        elif max(a12, a24) >= 0.5 and ref is not None and ref < 0.1:
-            rd = "SHORTCUT (B): the blind scaffold reaches %.3f / %.3f (12k / 24k) where the seeing scaffold reads %s at 12k - the decoder's view of the problem starves the memory" % (a12, a24, ref)
+        elif any(b_ is not None and b_ >= 0.5 and sv_ is not None and sv_ < 0.1 for b_, sv_ in ((a12, see.get("12000", ref)), (a24, see.get("24000")))):   # note 179-1: matched steps
+            rd = ("SHORTCUT (B): blind %.3f / %.3f vs seeing %s / %s at 12k / 24k (same schedule) - the decoder's view of the problem starves the memory"
+                  % (a12, a24, see.get("12000", ref), see.get("24000")))
+        elif max(a12, a24) >= 0.5:
+            rd = "blind %.3f / %.3f, but the seeing twin also climbs (%s / %s): not SHORTCUT, the gap closes with training" % (a12, a24, see.get("12000", ref), see.get("24000"))
         elif a24 < 0.1 and c3_24 is not None and c3_24 <= 0.4:
             rd = "CAPACITY (A): the blind scaffold also fails at 24k (%.3f; column 3 %.3f) - an end readout cannot carry the product here" % (a24, c3_24)
         else:
