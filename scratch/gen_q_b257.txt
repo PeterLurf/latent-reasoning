@@ -1,0 +1,4 @@
+# THEORY §186 INTERLEAVE-BLIND-K4 (95e5dfbf) cell s186_ilblind_k4_s1: s183_ilblind_k1_s1's exact args with --interleave 4 (blind decoder, 48k, seed 1; inject169 33c4a40e: IL K' {0, 1, 2, 4, 8}); Audit OK ~$2-3; memory check = --auto_micro at 4x5 (4 x 9 passes)
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s186_ilblind_k4_s1 boxes.inject169 --think_k 0 --interleave 4 --blind_decoder --pass_index sin_gain --fast_add --seed 1 --steps 48000 --ckpt_every 1000 --auto_micro --bench bench/data/mult_4x4_test.txt
