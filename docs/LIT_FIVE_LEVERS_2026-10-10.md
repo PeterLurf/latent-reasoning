@@ -1,0 +1,27 @@
+# Five architecture / schedule levers for §175's per-pass-aux latent loop: priors and novelty (to help the user pick) (2026-10-10)
+
+Literature session, for Theory and the user (via Audit).
+- **IDs:** verified via arXiv abstract pages.
+- **Anil's interventions:** from its HTML (App. B) (2026-10-10).
+- Builds on LIT_STEP_AUX, LIT_STEP_AUX_HOLD, LIT_RAND_K, LIT_STEP_AUX_GSM8K and LIT_DEC_DROP.
+
+| # | Lever | Closest prior (verified) | What's new for us | Evidence strength |
+|---|---|---|---|---|
+| 1 | **Depth-balanced sampling** (later steps under-supervised under uniform depth) | **Distribution design matters:** Saparov 2412.04703 (the right balanced distribution is what lets transformers learn search); Lee 2307.03381 (balanced digits / carries); Jelassi 2306.15400 (a 1% share of long examples = priming); **Kohli 2604.07822** (a 95% threshold curriculum per hop depth); CLRS hints 2205.15659 (every step supervised) | **Per-step-position reweighting or sampling inside a step-supervised latent loop: not found.** Curricula reweight *problems*, not *step positions* | strong that distribution matters; none for step-position weights specifically |
+| 2 | **Path-independence training** (random or other-item initial memory; progressive passes from detached mid-chain states) | **Anil 2211.09961 promotes path independence three ways:** (i) **mixed initialisation**: each sample starts from zero or standard-normal with probability 0.5; (ii) **randomised depth**: uniform over 3–63 or 32–64 iterations; (iii) an **alignment penalty**: fixed points from k = 3 random inits pushed to agree (mean pairwise dot product). Promoting PI improved harder-instance generalisation; penalising it hurt. Also **Bansal 2202.05826** progressive training (no-grad k₁ passes, then grad k₂; "repeatable indefinitely"); Huginn random s₀; 2507.02782 state passing | applying it to a **fast-weight memory** loop in a pretrained LM (states are matrices; "random init" should be fitted, not IID: LIT_S166) | **strong** (Anil's causal interventions; Bansal) |
+| 3 | **A learned halt head trained on 1{step ≥ n}** | **NPI 1511.06279:** the recurrent core outputs an **end-of-program probability trained from execution traces**, i.e. a supervised "done" target from step supervision (the closest). **RecurTrace 2609.03379:** a halting head **supervised by an oracle** (does more depth still cut the loss?); beats fixed depth and CALM. **HRM 2506.21734:** Q-learned halting. **ACT 1603.08983 / PonderNet 2107.05407: collapse to one loop** in RecurTrace's controlled test. Kuo 2606.29983 RL-halting | a supervised step-count halt on a latent *memory* loop. Known in NPI (programs) and RecurTrace (an oracle signal) | good for supervised halting; **warning against unsupervised ACT / PonderNet** |
+| 4 | **A forget / decay gate on the additive fast-weight memory** | **AGCLR 2606.07720:** GPT-2 Coconut + a persistent memory with write / read / **forget** gates; **the forget gate gives the largest ablation drop**. **Gated DeltaNet 2412.06464**, **RetNet 2307.08621** (fixed exponential decay), GLA, GDN-2 2605.22791 (channel-wise erase vs write). Grazzi 2411.12537: eigenvalues within [−1, 1] → bounded state. Our own: additive heads' norm grows with passes (LIT_S153 / S155 flags) | decay on *DeltaMem's additive heads* specifically. Trade-off: decay corrupts exact sums (LIT_BIG_BETS: keep accumulation keys near α ≈ 1) | strong for retrieval / LM quality (AGCLR, GDN); for *loop stability* it's indirect (a bounded spectrum ⇒ no norm blow-up) |
+| 5 | **Aux-first warm-up** (train the step aux before the answer loss) | **RiM 2605.30343:** stage 1 predicts explicit steps after each memory block, then **stage 2 drops step supervision** and refines the answer: aux-first, then answer. **The recurrence retrofit 2608.11233:** step-per-loop supervision first, then **outcome-only annealing**. **Coconut 2412.06769:** stage 0 = full CoT SFT before latents replace steps (language-first). **SIM-CoT** continues from a trained Coconut (aux added *after*). **CODI** trains teacher and student jointly from the start (not aux-first). **He 1901.05534:** aggressive inference-network updates early (the lag argument) | the *ordering* is known (RiM, retrofit); applying it to a memory loop is new in setting only | good (RiM; retrofit 2608.11233 shows persistence after annealing) |
+
+## Quick ranking for the user's pick (priority C1 > C6 > C2)
+1. **Path-independence training (2):** the strongest causal evidence (Anil's mixed init / randomised depth / alignment penalty) and directly aimed at C6 / C2.
+   Cheap. Use **mixed initialisation (zero vs fitted-noise memory, p = 0.5) + randomised K**, and log Anil's asymptotic alignment.
+2. **Aux-first warm-up (5):** well precedented (RiM, the retrofit). It addresses the no-read basin (He's lag). Low risk.
+3. **Supervised halt head (3):** NPI / RecurTrace-style supervised "done" from steps. Avoid ACT / PonderNet. It helps C5 and test-time K selection.
+4. **Decay gate (4):** AGCLR's strongest component, but it conflicts with exact accumulation. Test as a *gated* (learned, init ≈ 1) decay on the additive
+   heads, not a fixed decay.
+5. **Depth-balanced sampling (1):** a sensible fix if per-depth losses show late steps under-trained. There's no direct prior for step-position weighting, so
+   treat it as a tuning choice rather than a headline method.
+
+**Combinations:** (2) and (5) are orthogonal, and Audit's one-lever-per-cell rule means separate cells. (3) is additive at eval time (halting reads the
+same state).
