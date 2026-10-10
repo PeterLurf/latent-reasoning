@@ -1,0 +1,5 @@
+# THEORY §179 READOUT (259c40cd + note 179-1): s179_blindscaffold_s1 = b240's scaffold run (inject169 fade path, pair inputs, K = 4n, sin_gain index, seed 1, 48k schedule) with the BLIND end decoder [EOT, ' =']; p = 0 held to 24k (--fade 24000,48000 --stop_at 24000); p = 0 evals at 12k / 24k (s179.acc_p0_by_step); then the 173-1 package. ~4.5 h (b240: 0.67 s/step)
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s179_blindscaffold_s1 boxes.inject169 --think_k 4n --fade 24000,48000 --pass_index sin_gain --fast_add --blind_decoder --p0_evals 12000,24000 --seed 1 --steps 48000 --stop_at 24000 --ckpt_every 1000 --auto_micro --bench bench/data/mult_4x4_test.txt
+boxes/runs_fsq/s179_blindscaffold_s1_pkg boxes.halt173 --run boxes/runs_fsq/s179_blindscaffold_s1 --dir177 --bs 125
