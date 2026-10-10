@@ -1183,5 +1183,13 @@
  },
  "g2_pass_excl_s_add": true,
  "all_pass_strict": false,
- "note": "g2 strict fails only on mem.s_add (1.39e-12 vs 1e-12) - inside its fp64 floor (g2_floor); for Theory's ruling"
+ "note": "g2 strict fails only on mem.s_add (1.39e-12 vs 1e-12) - inside its fp64 floor (g2_floor); for Theory's ruling",
+ "ruling_theory": {
+  "accepted": true,
+  "criterion": "g2: every grad <= 1e-12 except mem.s_add, which must be <= 2 x its C=1 fp64 floor (2 x 1.77e-12 = 3.5e-12); observed 1.39e-12",
+  "date": "2026-10-10",
+  "pending": "gate 3 trajectory (b259: 200 steps loop vs chunk, bs 32, micro 2) + Audit diff review; adoption note by Theory after it",
+  "comparator_rule": "only stepaux in the \u00a7168s2 comparison set uses the memory -> adopts it whole; \u00a7184/\u00a7185/\u00a7186 stay on the loop"
+ },
+ "g2_pass_by_ruling": true
 }
