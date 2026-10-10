@@ -11901,6 +11901,15 @@ how many think passes run in training.
   - Making a scratch trunk learn the composition at all would need a curriculum: a different experiment, and not on the current path (§182; the GSM8K draft).
 * **§178 closes:** slot 1 UNINFORMATIVE (178-2), and s178b not launched (here). The conditional matched pair is not run.
 
+**Note 182-1 (2026-10-10 04:50 EDT; pre-data: no §182 cell has run; Audit's diff review). The hold aux is an additional term, and the real-step aux weighting is §175's in every cell.**
+* **The issue:** averaging each item's aux over its real steps and hold passes together cuts a real step's weight from 1/n to 1/K_i (n = 3, K = 7: 3/7 of the aux). HOLD − WINDOW would then bundle the hold target with a weaker per-step signal.
+* **Fixed:**
+  - The real-step aux is §175's in all three cells: per item, the mean CE over passes t = 1..n.
+  - HOLD adds a separate term: hold_aux = per item, the mean CE over that item's hold passes t = n + 1..K_i, averaged over items.
+  - HOLD's loss is answer CE + λ · (aux + hold_aux), at the same λ.
+  - A gate asserts that HOLD's real-step aux equals WINDOW's on a fixed batch.
+* No rule changes. HOLD − WINDOW now isolates the hold target.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
