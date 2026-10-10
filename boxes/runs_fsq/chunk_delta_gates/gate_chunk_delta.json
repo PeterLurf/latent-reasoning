@@ -1191,5 +1191,12 @@
   "pending": "gate 3 trajectory (b259: 200 steps loop vs chunk, bs 32, micro 2) + Audit diff review; adoption note by Theory after it",
   "comparator_rule": "only stepaux in the \u00a7168s2 comparison set uses the memory -> adopts it whole; \u00a7184/\u00a7185/\u00a7186 stay on the loop"
  },
- "g2_pass_by_ruling": true
+ "g2_pass_by_ruling": true,
+ "g5_criterion": {
+  "set": "Theory 2026-10-10, pre-data (b259 deploying, no trajectory output read)",
+  "d_chunk": "max over the 20 logged points |loss(traj_chunk) - loss(traj_loop)|",
+  "d_reorder": "same between traj_loop (micro 2) and traj_loop_m4 (micro 4)",
+  "pass": "d_chunk <= max(2 x d_reorder, 0.02) and no NaN/inf in any run",
+  "scorer": "scratch/gate_chunk_traj.py"
+ }
 }
