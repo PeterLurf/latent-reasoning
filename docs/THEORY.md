@@ -268,6 +268,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 178 | FROM-SCRATCH (diagnostic): §170's INJECT on a random-init 6-layer GPT-2; USES-PASSES -> PRETRAINING-OR-CAPACITY (a conditional matched 12-layer pair decides) vs HARNESS-BLOCKS; read beside §175 (pretrained, forced) | slot 1 **UNINFORMATIVE** (protocol: §170's test exclusion removes the n = 1 table for a scratch model; 178-2); K8 aborted unread; s178b (n >= 2 exclusion) parked until §179 | **open** |
 | 179 | READOUT (diagnostic): §177 (d)'s scaffold with a BLIND end decoder, p = 0 to 24k; SHORTCUT (the decoder's view of the problem starves the memory) vs CAPACITY (end readout cannot carry the product) | **CAPACITY** (blind 0.0 at 12k / 24k, column 3 0.351; columns 1–2 exact from memory alone); the seeing twin's 24k is descriptive | closed |
 | 180 | (unused: the DEC-DROP draft, conditional on a §179 SHORTCUT, was never registered) | — | — |
+| 181 | INTERLEAVE: k think passes before every answer token, the memory carried across tokens (MIX's timing without its schedule); arms k1 / k2 on §161's mix | registered | **open** |
 
 ## Live sections
 
@@ -11677,6 +11678,70 @@ how many think passes run in training.
   - The conditional DEC-DROP draft (Audit's lead, circulated as "§180", conditional on SHORTCUT) is not registered and is dropped. §180 stays unused.
   - s178b may proceed with §178's registered readout, since the SHORTCUT clause does not apply. That decision goes with Audit.
   - The timing contrast with MIX leads to §181 INTERLEAVE: think passes before every answer token, with the memory carried across tokens.
+
+## 181. INTERLEAVE: think passes before every answer token, with the memory carried across tokens (§179 read CAPACITY; Audit's draft review and final OK; Literature's prior check f4e1e423, `docs/LIT_INTERLEAVE_2026-10-10.md`; pre-registered 2026-10-10 02:19 EDT, before any implementation or run)
+
+**Why.**
+* **§179 (CAPACITY):** a BLIND end decoder gets columns 1–2 from the memory alone, so writing and reading work. What fails is carrying columns 3+ to a single end readout, with or without the decoder's view.
+  - Columns 3–6 near chance is the profile of every pretrained no-memory or end-decoder design: §148 PLAIN, §156 SEP / PAUSE, §177 (d), §179.
+* **§161 MIX works with the same memory.** It emits each column inside the passes, right after the column's last pair, so its memory holds only a running carry. Its pair schedule is task-specific.
+* **INTERLEAVE keeps MIX's timing without the task schedule.** Before answer token j, the model runs k think passes on the current context [EOT, problem, " =", ans_<j]. The memory is never reset between tokens.
+  - It is a per-token-recurrent LM with a state carried across tokens. Nothing in the harness knows the task.
+* **It is not identical-input (Audit).** The input grows by one answer token per step: passes before different tokens see different inputs, and only the k passes within a token repeat. That is the key difference from §169 / §176 / §177, and it is why the design is task-agnostic without a schedule (the model's own outputs are the per-step input).
+* **Prior (f4e1e423): new as scoped.**
+  - Huginn 2502.05171 carries latent state across tokens only as an untrained inference trick.
+  - Quiet-STaR 2403.09629 discards its per-token text thoughts.
+  - The closest are RLT 2610.07591 (per-token recurrence merging the previous token's state; from scratch; addition fails past 8 digits) and fast-slow 2604.01577 (a never-reset latent).
+  - The arithmetic precedent, 2610.06605 (a separator position before each answer digit; 4×4 from 1% to 89% from scratch), does not transfer to pretrained GPT-2 here: §156 SEP read 0.002 / 0.004.
+* **Scope.** Multi-token answers whose later tokens need carried intermediate results. Single-token answers (§170 nested mod 11, ProsQA) reduce to INJECT and are not tested here.
+* **Not gated on §175.** §175 tests a different fix (per-pass aux targets) on a different task (single-token nested).
+
+**Design.** §169's INJECT recipe on §161's mix (4×n, n ∈ 2..5; answer digits LSB first, the harness-fixed width na + nb): DeltaMem-R, top writes, fast_add, the digit curriculum, 48k, seed 1, RTX 3090. **One change: the passes are interleaved with the answer.**
+* **For answer token j = 1..L:**
+  1. k write passes on [EOT, a, " *", b, " =", ans_<j], with the memory carried from token j − 1's last pass (zero state before token 1);
+  2. the decoder reads that memory over [EOT, a, " *", b, " =", ans_<j] (it sees the prompt, Audit) and predicts ans_j.
+* Teacher-forced in training (gold ans_<j for both the passes and the decoder); greedy at test (its own ans_<j).
+* **The pass index** (sin_gain, 177-4) runs over all k·L passes, so the k passes within a token are distinguishable (Literature (a)).
+* **Arms:**
+  - **k1:** every pass sees distinct input; 8 passes at 4×4, half the scaffold's 16.
+  - **k2:** 16 passes at 4×4, matching the scaffold's K = 4n and §169 K16. Its within-token passes repeat their input.
+
+**Rules (fixed now, per arm; `theory/score_s181.py`; full 4×4 exact match at test, 48k).**
+* **HIT:** 4×4 ≥ 0.9, **and** THINK-NECESSARY per token.
+  - **Skip test:** for each column j ≥ 3 of 4×4, skip only token j's k passes (all other passes kept) and read drop_j = column j's accuracy (full) − column j's accuracy (skip j).
+  - The median drop_j over j = 3..8 must be ≥ 0.3 (Audit), and no drop_j may fall below −0.05.
+  - **And** k′ = 0 at every token reads ≤ 0.1.
+* **FAIL:** 4×4 < 0.5. It reads "open (under-trained)" if the training loss is still falling (train_loss_tail: second half < 0.98 × first half, as §177).
+* Otherwise **PARTIAL**, with per-column accuracy.
+* **Reading the pair (Audit):**
+  - both HIT: the extra within-token pass is only compute;
+  - k1 HIT only: the repeated pass hurts;
+  - k2 HIT only: one pass per token is too shallow;
+  - neither HIT: the failure is not input repetition.
+* **Descriptive:**
+  - ext_4x8 (12 tokens; C2);
+  - **the carry-chain skip matrix** (skip token j's passes, then accuracy at every column; Audit). Diagonal plus tail is the serial signature (C1). Column j may partly survive if the running sum was carried from tokens < j;
+  - k′ ∈ {0, 1, 2, 4} passes per token at test;
+  - the memory norm after each answer token, to 4×8's 12 (Literature (b));
+  - the consecutive-pass delta cosine within and across tokens (173-1's statistic);
+  - per-column profiles beside §156 SEP / PAUSE and §179.
+* **Compute (Audit; Literature (d)):** k·L passes plus L decoder reads per item, against the scaffold's 4n and §169 K16. FLOPs per item from the meter; C3 against TC-M / ICoT-SI.
+
+**Fields:** `s181 = {k, acc_4x4, acc_by_column, ext_4x8: {acc, acc_by_column}, acc_by_kprime: {"0", "1", "2", "4"}, skip_matrix: {"1".."8": [per-column acc, 4×4]}, mem_norm_by_token, delta_cos, train_loss_tail: {first_half, second_half, n_logged}, compute}`. train_loss_tail is the last 10% of logged steps, split in halves, as nested170.
+
+**Placement.** Two cells, k1 and k2, on 3090s. Dirs `s181_interleave_k{1,2}_s1`.
+* **Cost (Audit):** each step runs k·L sequential write passes plus L decoder passes (L = 9 at 4×5), against §170 K8's 8 + 1 at about 0.6 s / step.
+  - The rough projection is about $2–3 for k1 and $3–5 for k2.
+  - **--time_steps on a 3090 comes before launch,** and the projection is restated to Audit. Under $10 for the pair is within Audit's line; above $10 it goes to the user.
+  - The 3070 preview's s / step is not the cloud projection.
+* **Gates:**
+  - flags-off (no interleave) bitwise equal to INJECT's path;
+  - an assert that token j's first pass starts from token j − 1's last state;
+  - teacher-forced inputs are gold, and greedy inputs are the model's own;
+  - gradflow: nonzero gradient on the write path from every token's loss;
+  - a memory check at the largest training shape (4×5: 9 tokens × k);
+  - Audit's diff review.
+* **A local 8k k1 preview on the 3070** (descriptive, read by no rule) doubles as the code smoke before the cloud cells.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
