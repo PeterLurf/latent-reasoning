@@ -12195,6 +12195,18 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - Audit's diff review.
 * It can run beside §182, since its comparator is the NOFADE cell itself, whatever NOFADE reads.
 
+**Memory norms on §175 (2026-10-10 12:00 EDT; descriptive, the gate for proposal #4 (a forget gate); s175_auxk8_s1/eval_memnorm.json; CPU, 256 test items at n 3..8). The additive state grows linearly without bound, and accuracy peaks at the trained K = 8.**
+* **Median ‖S_add‖** grows by about +1.8–2.1k per pass at every pass: 3.5k at t = 2, 12.6k at t = 8, 28.4k at t = 16.
+* **Median ‖S_delta‖** saturates near 96 by t = 5, then drifts to 92.
+* **Pooled accuracy (n 3..8)** reads 0.137 / 0.398 / 0.637 / 0.809 at t = 2 / 4 / 6 / 8, then 0.773 / 0.625 / 0.504 / 0.391 at t = 10 / 12 / 14 / 16.
+* **Reading.**
+  - With add_cos at 0.999, the additive heads add nearly the same vector every pass, so their magnitude works as a pass counter.
+  - Past t = 8 that counter leaves its trained range, which would explain the fall. But passes past K are also unsupervised, and the growth rate is the same before 8, where accuracy rises.
+  - So the correlation alone does not make the magnitude causal.
+  - **Next, a 5-minute eval (NORM-CLAMP):** at t > 8, rescale S_add to its t = 8 norm before reading.
+    - If accuracy at t = 16 stays near 0.8, the magnitude drift is causal, and a bounded accumulator (#4) is motivated.
+    - If not, the fall belongs to the unsupervised passes (§182 HOLD's question), and #4 is not registered.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
