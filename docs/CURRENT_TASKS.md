@@ -103,7 +103,9 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
       - §175 descriptives done: AUX-DONE (exact t = n, but counter-like at n = 8 per T-SHIFT) and PATH-INDEP (answer_agree 0.292).
     - **Training-schedule / architecture proposals (the user asked, 2026-10-10).** Ranked by the user's priorities with Audit, prior-checked by Literature (09f395a8):
       - #1 AUX-REWEIGHT **registered as §184** (c342e51c; ~$3). Pass 8 got 1/22 of pass 1's aux signal.
-      - #4 forget gate: only if the s175 memory-norm read (eval_memnorm.json, requested) shows additive growth.
+      - #4 becomes **§185 ADD-NORM** (2a1aac15; ~$6). The additive read had no normaliser.
+        - NORM-CLAMP: about 80% of §175's overthinking is that read's growth.
+        - Arms DEN and RMS. Launch after NORM-CAP-GLOBAL (6k items, 3070) and NOFADE.
       - #5 aux-first: an arm inside the ProsQA cell.
       - #2 path-independence (Anil's recipe): if §182 HOLD's answer_agree < 0.5.
       - #3 halt head: when a C5 claim is wanted.
