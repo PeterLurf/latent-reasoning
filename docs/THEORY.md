@@ -272,6 +272,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 182 | STEP-AUX-HOLD: §175 with the aux to the end (NOFADE), + a sampled step-matched K (WINDOW), + hold targets on passes past n (HOLD); DEEP at K′ 8, STABLE (C6) K′ 16 vs 8 | registered | **open** |
 | 183 | INTERLEAVE-BLIND: §181 k1 with a blind per-token decoder ([EOT, ' =', ans_<j] + memory); tests 'per-pass signal through a view-free reader' (MIX / §175 vs every failure) | registered | **open** |
 | 184 | AUX-REWEIGHT: §182 NOFADE + per-pass aux weights w_t = Ē / E_t (pass 8 got 1/22 of pass 1's signal), equal signal per pass position; HELPS / HURTS / NO EFFECT vs NOFADE | registered | **open** |
+| 185 | ADD-NORM: §182 NOFADE with the additive read normalised: DEN (φ(q)ᵀS / φ(q)ᵀz) or RMS (TransNormer's NormAttention); STABLE + NO-COST vs NOFADE (NORM-CLAMP: the unnormalised read's growth causes ~80% of overthinking) | registered | **open** |
 
 ## Live sections
 
@@ -12225,6 +12226,68 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * The pooled findings stand: about 80% recovered, and a flat residual near 0.08.
 * The per-n figures (for example n = 4: 0.96 against 0.63) are directional only.
 * NORM-CAP-GLOBAL uses ≥ 1,000 items per n.
+
+## 185. ADD-NORM: a normalised additive read, so the memory's read does not grow with the number of passes (the user's request for architecture improvements, proposal 4 in its principled form; Audit's 12:45 research pass; pre-registered 2026-10-10 12:52 EDT, after Literature's check dbdfe89a (`docs/LIT_ADD_NORM_2026-10-10.md`) and Audit's review, before any implementation or run)
+
+**Why.**
+* **NORM-CLAMP on §175 (6665d0a1; descriptive, 256 items):** rescaling the additive state to its t = 8 norm past the trained K recovers about 80% of the overthinking fall. Pooled accuracy at t = 16 is 0.727 clamped against 0.391 unclamped (0.809 at t = 8).
+  - The additive norm grows linearly, about +2k per pass, and works as a pass counter (123e98ee).
+* **The cause, in the code** (boxes/deltamem.py):
+  - each token writes S_add ← S_add + φ(k)vᵀ (l. 70 / 128; no decay);
+  - the read is exp(s_add) · φ(q)ᵀ S_add (l. 96), with **no normaliser**.
+  - So the read's scale is the number of writes.
+* **The standard form** (linear attention, Katharopoulos 2006.16236) divides by φ(q)ᵀ z, with z = Σ φ(k).
+  - The read is then a weighted mean of the written values, invariant to how many writes happened.
+  - S_add's exact sums are kept, since only the read is normalised. So the objection to decay (that it corrupts exact sums; Literature 09f395a8) does not apply.
+* **Two normalisations (Literature dbdfe89a).** TransNormer 2210.10340 shows the φ(q)ᵀz denominator can make gradients unbounded, and replaces it with an RMSNorm on the read (NormAttention). Both are tested as alternative arms of the same lever.
+* **Not STARS (2605.26733; Jacobian spectral-radius regularisation + random loop sampling).** For an additive accumulator ∂S_add,t+1 / ∂S_add,t = I, so the spectral radius is 1 whatever is done. The growth enters through the writes, not the recurrence. STARS acts on the delta / trunk path, where the drift is not.
+
+**Design.** §182 NOFADE exactly (§175's recipe, aux weight 1 to 48k, fixed K = 8, seed 1, RTX 3090). **Two arms, one change each.**
+
+**DEN (`--add_norm den`):**
+* Each item keeps a running key sum z ∈ ℝ^{H_ADD × DH}, the sum of φ(k) over all its writes, beside S_add, starting at 0.
+* Every additive read becomes exp(s_add) · (φ(q)ᵀ S_add) / (φ(q)ᵀ z + ε), with ε = 1e-6. This covers the main decoder, the aux decoder and the in-pass reads.
+* The S_add write, the delta heads, the gains and the rest are unchanged. Dir `s185_den_s1`.
+
+**RMS (`--add_norm rms`):**
+* Every additive read becomes exp(s_add) · RMSNorm_h(φ(q)ᵀ S_add): a per-head RMS normalisation of the read with a learned gain (init 1), as TransNormer's NormAttention.
+* There is no z, and S_add is unchanged. Dir `s185_rms_s1`.
+
+**Both arms log** the additive-path gradient norm (median and p99 per 1k steps; `s185.grad_add`) and the clip rate (`s185.clip_rate`, as §184), beside NOFADE's write_grad_norm, for the denominator's gradient risk.
+* z is not exposed as a separate read unless a cell shows the counter cost (Audit).
+
+**Rules (fixed now; `theory/score_s185.py`; per arm; pooled = n 3..8; the comparator is s182_nofade_s1, read from its eval.json).**
+* **STABLE:** pooled at K′ = 16 ≥ pooled at K′ = 8 − 0.02 (§182's definition).
+* **NO-COST:** pooled at K′ = 8 ≥ NOFADE's pooled at K′ = 8 − 0.03.
+* **Readings:**
+  - **FIX:** STABLE and NO-COST, while NOFADE itself is not STABLE. The normalised read removes the overthinking at no within-K cost.
+  - **COUNTER-LOSS:** STABLE, but K′ = 8 is more than 0.03 below NOFADE. The model used the read's magnitude as a pass counter (T-SHIFT's edge), so the fix removes stability's cause and the counter together.
+  - **NO-FIX:** not STABLE. Normalising the read alone does not stabilise the trained loop (the delta path or the unsupervised passes).
+  - **NOT ATTRIBUTABLE:** NOFADE is itself STABLE. Then stability needs no read fix in this recipe, and ADD-NORM is read for NO-COST only.
+* **Descriptive:**
+  - the K′ curve to 32;
+  - the additive read's norm by pass (against NOFADE's);
+  - AUX-DONE (182-2) and T-SHIFT (whether the counter survives);
+  - the 173-1 package;
+  - PATH-INDEP;
+  - DEEP / THINK-NECESSARY as §182.
+* **Descriptive (Literature (2)):** whether the normalised read still carries what the sum did: within-K accuracy is NO-COST's test, and the step probe (173-1) is compared with NOFADE's.
+* **Reading the pair (Audit):**
+  - **DEN STABLE and RMS not:** a mean-read fixes it.
+  - **RMS STABLE and DEN not:** if DEN's additive-path p99 gradient norm is also ≥ 10× RMS's, TransNormer's warning is reproduced (descriptive).
+  - **Both STABLE:** either works.
+  - **Neither:** the magnitude is not trainable away, and C6 rests on HOLD / NORM-CAP.
+* **One seed per arm.** A FIX opens that arm's s2. If both arms FIX, the cheaper / more stable one goes into later recipes, by its gradient log.
+
+**Placement.** Two cells at NOFADE's cost, about 11.8 h each, about $6. It is within Audit's line.
+* Gates:
+  - flags-off bitwise equal to NOFADE's path;
+  - z equals Σ φ(k) recomputed from the writes (assert);
+  - the DEN read's norm stays ≤ max ‖v‖ × (1 + 1e-3) on a fixture;
+  - the RMS read has unit RMS per head before its gain (assert);
+  - gradflow;
+  - Audit's diff review.
+* It launches after NORM-CAP-GLOBAL reads and §182 NOFADE has landed (the comparator). A global inference-time cap that works is the zero-training fix, and ADD-NORM is its trained, principled form.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
