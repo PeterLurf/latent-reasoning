@@ -293,9 +293,11 @@ def kmatch_loss(m, items, kitem, dev, ac, masked=True):
 
 def kmatch_aux_loss(m, items, kitem, dev, ac, hold=False):
     """§182 WINDOW / HOLD: note 177-5's masked single batch (item i thinks kitem[i] passes; S frozen after its K) + §175's aux CE (token mean per pass,
-    mean over each item's aux passes, then over items). Aux passes: t <= n (§175); HOLD adds n < t <= K_i with target e_{n+1}. -> (answer CE, aux, S)."""
+    mean over each item's REAL steps t <= n, then over items: §175's weighting, identical in every cell). HOLD (Audit 8e20d709 review): the hold passes
+    n < t <= K_i (target e_{n+1}) form a SEPARATE term hold_aux = mean over items of the mean over their hold passes (0 without hold), so the real-step
+    weight is not diluted. -> (answer CE, aux, hold_aux, S); the caller adds lambda * (aux + hold_aux)."""
     tgt = torch.tensor(NUM_IDS[[it["t"] for it in items]], device=dev); x, msk = m.think_inputs(items, dev); kv = torch.tensor(np.asarray(kitem), device=dev)
-    per = [[] for _ in items]
+    per = [[] for _ in items]; perh = [[] for _ in items]
     with ac():
         S = m.mem.zero_state(len(items), dev)
         for t in range(1, int(max(kitem)) + 1):
@@ -305,9 +307,11 @@ def kmatch_aux_loss(m, items, kitem, dev, ac, hold=False):
                 lg_a, y_a = m.aux_logits(S[idx], [items[i] for i in idx], t, dev, hold=hold)
                 ce = Fn.cross_entropy(lg_a.transpose(1, 2), y_a, ignore_index=-100, reduction="none").sum(1) / (y_a != -100).sum(1)
                 for r_, i in enumerate(idx):
-                    per[i].append(ce[r_])
+                    (per if t <= len(aux_of(items[i])) else perh)[i].append(ce[r_])
         lg = m.dec_logits(S, items, dev)
-    return Fn.cross_entropy(lg, tgt), torch.stack([torch.stack(p_).mean() for p_ in per if p_]).mean(), S
+    aux = torch.stack([torch.stack(p_).mean() for p_ in per if p_]).mean()
+    hold_aux = torch.stack([torch.stack(p_).mean() for p_ in perh if p_]).mean() if any(perh) else aux.new_zeros(())
+    return Fn.cross_entropy(lg, tgt), aux, hold_aux, S
 
 
 def ans_token_acc(lg, items):
@@ -483,7 +487,7 @@ def main():
         its = sorted(its, key=lambda it: -len(it["syms"]))[:a.bs // micro]
         if KW:                                                              # §177 (f) (Audit): the path that trains - the masked kmatch loss, every item at K_max
             if lam_now[0]:                                                  # §182: the aux on the masked kmatch path (every item at K_max)
-                la_, ax_, _ = kmatch_aux_loss(m, its, [a.n_max_train + KW[1]] * len(its), dev, ac, a.aux_hold); l_ = la_ + lam_now[0] * ax_
+                la_, ax_, hx_, _ = kmatch_aux_loss(m, its, [a.n_max_train + KW[1]] * len(its), dev, ac, a.aux_hold); l_ = la_ + lam_now[0] * (ax_ + hx_)
             else:
                 l_, _ = kmatch_loss(m, its, [a.n_max_train + KW[1]] * len(its), dev, ac, masked=a.kmatch_impl == "masked")
         else:
@@ -714,7 +718,7 @@ def main():
             for c_ in range(0, len(its), ch):
                 sub, ks = its[c_:c_ + ch], kit[c_:c_ + ch]
                 if lam_now[0]:                                              # §182 WINDOW / HOLD
-                    la_, ax_, _ = kmatch_aux_loss(m, sub, ks, dev, ac, a.aux_hold); aux_hist.append((float(la_), float(ax_))); lk = la_ + lam_now[0] * ax_
+                    la_, ax_, hx_, _ = kmatch_aux_loss(m, sub, ks, dev, ac, a.aux_hold); aux_hist.append((float(la_), float(ax_), float(hx_))); lk = la_ + lam_now[0] * (ax_ + hx_)
                 else:
                     lk, _ = kmatch_loss(m, sub, ks, dev, ac, masked=a.kmatch_impl == "masked")
                 (lk * len(sub) / a.bs).backward(); tot += float(lk.item()) * len(sub) / a.bs
@@ -739,7 +743,10 @@ def main():
             rec = {"step": step, "loss": float(np.mean(hist)) if hist else None, "sec": round(time.time() - t0)}; hist = []; loss_log.append(rec["loss"])
             if a.aux_step:
                 rec.update({"aux_lambda": lam_now[0], "answer_ce": float(np.mean([x_[0] for x_ in aux_hist])) if aux_hist else None,
-                            "aux_ce": float(np.mean([x_[1] for x_ in aux_hist])) if aux_hist else None}); aux_hist.clear()
+                            "aux_ce": float(np.mean([x_[1] for x_ in aux_hist])) if aux_hist else None})
+                if a.aux_hold:                                              # §182 HOLD: the separate hold term
+                    rec["hold_aux_ce"] = float(np.mean([x_[2] for x_ in aux_hist])) if aux_hist else None
+                aux_hist.clear()
             if m is not None and wwin:
                 md_ = float(np.median(wlast)) if wlast else 0.0; mx_ = float(np.max(wwin)); late = step > a.write_mix_start * sc
                 w_rec = {"step": step, "mean": float(np.mean(wwin)), "max": mx_, "median_prev_1k": md_, "spike_100x_floor": bool(late and mx_ > 100 * md_ > 0 and mx_ > 1.0)}
