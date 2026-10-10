@@ -11925,6 +11925,17 @@ how many think passes run in training.
   - all beside fixed K = 8 and answer2.
 * It reads M_t only, through §175's read-only aux decoder, and changes no rule. A halting claim (C5) from it would need its own registration.
 
+**AUX-DONE on §175 (2026-10-10 07:29 EDT; note 182-2, descriptive; s175_auxk8_s1/eval_s182_auxdone.json, RTX 3070, bf16, 1,000 items per n). The aux decoder's "done" fires at exactly pass n for every item at n = 2..8, and almost never fires beyond the trained depth. It is not yet shown to be a completion detector.**
+* **Halt at exactly t = n:** share 1.0 at n = 2 / 4 / 6 / 8, none capped.
+  - The main decoder's accuracy at the halt is 0.970 / 0.837 / 0.690 / 0.488. That equals §175's own accuracy at K′ = n (`halt_fixed_k` / `acc_by_t`), and is below fixed K = 8 at n ≤ 6 (1.000 / 0.966 / 0.741), because accuracy keeps rising for a few passes after n.
+  - answer2 reads 0.993 / 0.843 / 0.398 / 0.184.
+* **n = 10 / 12:** 86% / 97% of items are capped at 16, and the rest halt early. Accuracy at the halt is 0.148 / 0.128.
+* **Caveat (the code, read before this note):** the aux prompt is [EOT, " Step", pass_tok(t), " :"], so it is told the pass index t.
+  - Emitting a bare number exactly at t = n needs only that M_t encode n (the problem's size, visible in the input) to compare with t.
+  - It does not by itself show that the memory detects finished reduction. Beyond n = 8 the t tokens past 8 never had a target, which fits a counter.
+  - A cheap check separates the two: hold the memory after t passes fixed and present the aux prompt with t − 1 or t + 1. A completion detector follows the memory; a counter follows the prompt. It has been requested as a descriptive (T-SHIFT).
+* As a halting rule, AUX-DONE is a learned "K = n": no oracle at test, but no better than fixed K within training, and broken beyond it.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
