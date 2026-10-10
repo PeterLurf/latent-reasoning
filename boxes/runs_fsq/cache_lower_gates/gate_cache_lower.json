@@ -45,5 +45,20 @@
   "refused_other_input": true
  },
  "g3_pass": true,
- "all_pass": false
+ "all_pass": false,
+ "g4": {
+  "floor_fwd_vs_rev_max_rel": 2.229003115417072e-07,
+  "n_lower_params": 74,
+  "observed_cached_vs_uncached_K10": 1.6606715007583261e-06,
+  "bound": 1e-06,
+  "def": "the 10 uncached passes' lower-block gradient contributions summed forward vs reversed (fp32); Theory: accept iff observed <= max(1e-6, 2 x floor)"
+ },
+ "g4_pass": false,
+ "g2_pass_by_ruling": false,
+ "g5_fp64": {
+  "max_rel_grad_diff_K10": 6.91434719876589e-15,
+  "worst_param": "g.p.wpe_weight",
+  "n_params": 160,
+  "def": "the K10 fixture in float64 (deltamem's .float() casts mapped to double in the test process only): cached vs uncached gradients"
+ }
 }
