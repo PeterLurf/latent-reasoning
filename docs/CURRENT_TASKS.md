@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-09 20:03 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-09 22:23 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -26,15 +26,16 @@ so send to the pipe addresses their messages come from.
 touching fsq120 / table132 / core. Never edit a module while a deploy is in flight (auto_ship is transitive: fixedchunk / multrow ship multpair,
 deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `vast destroy` aborts at its y/N prompt).
 
-### Vast (6 hosts; 20:03 2026-10-09)
-* Live: b235 §175 aux K8; b236 §177 (f) kmatch; b237 / b238 §168 G1 / G2; b241 §178 K8 + 173-1 package (~10.4 h from 18:41, 107.205.138.127:33163);
-  b242 §178 DIRECT then K0 (~1 h from 18:46, 194.26.196.174:18012). m12 conditional pair only on Theory's word.
-* Drained + destroyed today evening: b218 (§169 K16 FAIL 0.002), b228 / b229 (§167 refits), b233 (§177 (a) tidx; index-direction post hoc 9ed15783),
-  b240 (note 177-6 scaffold gate: full 4x4 at p 0 at 12k = 0.0 -> FAIL, (d) cell NOT launched, ckpt deleted; db9aba29), rq234 (78370075).
-* Next: §179 READOUT (Theory 259c40cd, ~$0.8): s179_blindscaffold_s1 = b240's run + --blind_decoder in inject169's fade path, p 0 held to 24k
-  (--fade 24000,48000 --stop_at 24000) + s179 fields + 173-1 package; gates (no problem tokens in the decoder, step-0, gradflow, flags-off bitwise, Audit).
-* Harness: vdeploy STUCK_LOADING = stopped AND no pull progress (8ae7fc62); smoke_plain cleans up (897532f1); drain keeps ckpt_last for runs in
-  scratch/keep_ckpt.txt (689a34b5; list now empty); inject169 resume verified bitwise (1 thread, 28c31cc3).
+### Vast (6 hosts, ~$1.0/h; 22:23 2026-10-09)
+* Live: b235 §175 aux K8; b236 §177 (f) kmatch; b237 / b238 §168 G1 / G2;
+  b243 §179 s179_blindscaffold_s1 (STARTED 22:12, 89.221.67.136:17397, HOSTPROBE 0.649) and b244 s179_seescaffold_s1 (STARTED 22:21,
+  46.107.144.5:28451), both from b1e93088: --fade 24000,48000 --stop_at 24000 --p0_evals 12000,24000 (+ --blind_decoder on b243), then 173-1 package;
+  ~4.5 h each; eval_p0_12k at ~2.2 h -> report 12k / 24k to Theory (rules: score_s179; note 179-2 len_err = top-digit placement).
+* §178 closed for slot 1 (note 178-2: §170's test exclusion removes ~88% of n = 1, so scratch never sees the table; sanity d965952b): DIRECT / K0
+  landed at chance (41351972); K8 (b241) STOPPED at 23.3k, aborted unread (s178_k8_s1.void, 0d72c67e). s178b (n >= 2 exclusion only) parked until §179.
+* Note 177-6 (d) gate FAILED (12k full 4x4 at p 0 = 0.0; db9aba29): no (d) cell; ckpt deleted.
+* Harness today: vdeploy STUCK_LOADING (8ae7fc62); smoke_plain cleanup (897532f1); drain keep_ckpt.txt (689a34b5, list empty); inject169 resume bitwise
+  (28c31cc3); §179 blind decoder / p0 evals (b1e93088, gate179 all pass).
 * Landed today: §169 K0 / K8 (FAIL); §170 DIRECT s1 / s2, K0 s1, cot s1 / s2 (eval-only, OOM fix), K8 s1; §171 K8 / BLIND; §165 K8 / K16; §168 std s1 / s2; §172 (closed).
 * Harness today: FAST_ADD (-15 %); HOSTPROBE (works: b234 rejected at 1.21 s/step); eval-only paths in nested170 / inject169; memchecks count AdamW state;
   das167 --fit_micro / --rm_ks; halt173 = §173 halt + the 173-1 package (--dir177, pair-segment runs too).
