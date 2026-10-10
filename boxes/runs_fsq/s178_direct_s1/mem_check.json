@@ -1,0 +1,12 @@
+{
+ "checks": [
+  {
+   "micro": 1,
+   "peak_gib": 1.0842456817626953
+  }
+ ],
+ "micro": 1,
+ "peak_gib": 1.0842456817626953,
+ "train": "the longest of 4 bs draws at n <= 8",
+ "eval": "n = 16 at K' = 2K"
+}
