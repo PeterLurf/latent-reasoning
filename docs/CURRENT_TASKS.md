@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-09 20:10 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-09 20:03 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -26,7 +26,7 @@ so send to the pipe addresses their messages come from.
 touching fsq120 / table132 / core. Never edit a module while a deploy is in flight (auto_ship is transitive: fixedchunk / multrow ship multpair,
 deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `vast destroy` aborts at its y/N prompt).
 
-### Vast (6 hosts; 20:10 2026-10-09)
+### Vast (6 hosts; 20:03 2026-10-09)
 * Live: b235 §175 aux K8; b236 §177 (f) kmatch; b237 / b238 §168 G1 / G2; b241 §178 K8 + 173-1 package (~10.4 h from 18:41, 107.205.138.127:33163);
   b242 §178 DIRECT then K0 (~1 h from 18:46, 194.26.196.174:18012). m12 conditional pair only on Theory's word.
 * Drained + destroyed today evening: b218 (§169 K16 FAIL 0.002), b228 / b229 (§167 refits), b233 (§177 (a) tidx; index-direction post hoc 9ed15783),
