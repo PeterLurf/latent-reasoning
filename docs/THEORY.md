@@ -11620,6 +11620,8 @@ how many think passes run in training.
 * **A protocol-fixed rerun is parked (s178b):** test items excluded from training only for n ≥ 2, so n = 1 is table learning and generalisation is read at n ≥ 2. §178's arms and rules are otherwise unchanged.
   - It waits for §179, since a SHORTCUT reading would require s178b to use §179's winning (blind) readout to separate pretraining from harness cleanly.
 
+**§178 slot 1, a disclosure (2026-10-09 21:50 EDT).** Experiments' extraction check for s178_k8_s1.void printed its last log line (loss 2.35 at about 23.3k of 96k) before the run was marked unread. Nothing else was read, and no reading depends on it: slot 1 is UNINFORMATIVE for 178-2's protocol cause, and 2.35 is the ln 11 plateau.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
