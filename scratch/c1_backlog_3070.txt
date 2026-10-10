@@ -472,3 +472,5 @@
 4.0 boxes/runs_fsq/s175_auxk8_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s175_auxk8_s1 --bs 100 --device {DEV}
 # 2026-10-10 07:18 Theory note 182-2 (descriptive): AUX-DONE halting on s175_auxk8_s1 (n 2..12, 1000 items, passes 1..16; + halt - n buckets, Audit)
 4.0 boxes/runs_fsq/s175_auxk8_s1/eval_s182_auxdone.json python -u -m boxes.halt173 --run boxes/runs_fsq/s175_auxk8_s1 --auxdone --n 1000 --bs 100 --device {DEV}
+# 2026-10-10 07:30 Theory note 182-2 follow-up (descriptive, low priority): T-SHIFT on s175_auxk8_s1 (aux done vs real / prompt pass, n 4 / 6 / 8)
+4.0 boxes/runs_fsq/s175_auxk8_s1/eval_s182_tshift.json python -u -m boxes.halt173 --run boxes/runs_fsq/s175_auxk8_s1 --tshift --n 1000 --bs 100 --device {DEV}
