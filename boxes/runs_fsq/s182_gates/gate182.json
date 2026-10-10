@@ -1,0 +1,241 @@
+{
+ "g1": {
+  "s175_aux": {
+   "log_losses_equal": true,
+   "eval_fields_differing": [],
+   "n_fields": 223
+  },
+  "s177f_kwin": {
+   "log_losses_equal": true,
+   "eval_fields_differing": [],
+   "n_fields": 490
+  },
+  "s170_k2": {
+   "log_losses_equal": true,
+   "eval_fields_differing": [],
+   "n_fields": 184
+  }
+ },
+ "g1_pass": true,
+ "g2": {
+  "t3": true,
+  "t4": true,
+  "t2_hold_equals_plain": true,
+  "refused_without_hold": true
+ },
+ "g2_pass": true,
+ "g3": {
+  "hold_pass": 4,
+  "n": 2,
+  "mem_zero_grad": [],
+  "S_grad_by_pass": [
+   0.08593831211328506,
+   0.030406799167394638,
+   0.021246805787086487,
+   0.01979687809944153
+  ]
+ },
+ "g3_pass": true,
+ "g4": {
+  "aux_passes": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ],
+  "items_per_pass": [
+   3,
+   3,
+   3,
+   3,
+   3,
+   3,
+   3,
+   3,
+   3,
+   3,
+   3,
+   3
+  ],
+  "loss": [
+   14.984519958496094,
+   16.94368553161621
+  ],
+  "grad_wo": 524.239013671875
+ },
+ "g4_pass": true,
+ "g5": {
+  "nofade": {
+   "rc": 0,
+   "kprimes": [
+    "0",
+    "1",
+    "4",
+    "8",
+    "12",
+    "16",
+    "24",
+    "32"
+   ],
+   "s175_keys": [
+    "aux_acc_by_pass",
+    "aux_acc_by_pass_ext",
+    "aux_acc_by_role",
+    "ext_kprime",
+    "items",
+    "n_by_pass",
+    "n_by_pass_ext",
+    "step_recover",
+    "step_recover_info"
+   ],
+   "hold_fields": {
+    "aux_acc_hold_by_offset": null,
+    "aux_acc_hold": null
+   },
+   "path_indep": {
+    "answer_agree": 1.0,
+    "delta_cos_final": 0.9936797618865967,
+    "n_items": 12,
+    "acc_from_zero": 0.08333333333333333,
+    "acc_from_donor": 0.08333333333333333,
+    "kprime": 16,
+    "donor_passes": 8,
+    "items": "test n 3..8, rng 18201 permutation[:500]",
+    "derangement": "np.roll(sample order, 1)",
+    "delta_cos_def": "mean over items of cos of the final delta-head states S[:, h_add:]"
+   },
+   "args": {
+    "think_k": 8,
+    "aux_fade": "48000,48000",
+    "k_window": "",
+    "kmatch_impl": "masked",
+    "aux_hold": false,
+    "kprimes": "0,1,4,8,12,16,24,32",
+    "path_indep": true
+   }
+  },
+  "window": {
+   "rc": 0,
+   "kprimes": [
+    "0",
+    "1",
+    "4",
+    "8",
+    "12",
+    "16",
+    "24",
+    "32"
+   ],
+   "s175_keys": [
+    "aux_acc_by_pass",
+    "aux_acc_by_pass_ext",
+    "aux_acc_by_role",
+    "ext_kprime",
+    "items",
+    "n_by_pass",
+    "n_by_pass_ext",
+    "step_recover",
+    "step_recover_info"
+   ],
+   "hold_fields": {
+    "aux_acc_hold_by_offset": null,
+    "aux_acc_hold": null
+   },
+   "path_indep": {
+    "answer_agree": 1.0,
+    "delta_cos_final": 0.9936800003051758,
+    "n_items": 12,
+    "acc_from_zero": 0.08333333333333333,
+    "acc_from_donor": 0.08333333333333333,
+    "kprime": 16,
+    "donor_passes": 8,
+    "items": "test n 3..8, rng 18201 permutation[:500]",
+    "derangement": "np.roll(sample order, 1)",
+    "delta_cos_def": "mean over items of cos of the final delta-head states S[:, h_add:]"
+   },
+   "args": {
+    "think_k": 12,
+    "aux_fade": "48000,48000",
+    "k_window": "1,4",
+    "kmatch_impl": "masked",
+    "aux_hold": false,
+    "kprimes": "0,1,4,8,12,16,24,32",
+    "path_indep": true
+   }
+  },
+  "hold": {
+   "rc": 0,
+   "kprimes": [
+    "0",
+    "1",
+    "4",
+    "8",
+    "12",
+    "16",
+    "24",
+    "32"
+   ],
+   "s175_keys": [
+    "aux_acc_by_pass",
+    "aux_acc_by_pass_ext",
+    "aux_acc_by_role",
+    "aux_acc_hold",
+    "aux_acc_hold_by_offset",
+    "ext_kprime",
+    "items",
+    "n_by_pass",
+    "n_by_pass_ext",
+    "n_hold_by_offset",
+    "step_recover",
+    "step_recover_info"
+   ],
+   "hold_fields": {
+    "aux_acc_hold_by_offset": {
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0,
+     "8": 0.0,
+     "9": 0.0,
+     "10": 0.0,
+     "11": 0.0
+    },
+    "aux_acc_hold": 0.0
+   },
+   "path_indep": {
+    "answer_agree": 1.0,
+    "delta_cos_final": 0.9936790466308594,
+    "n_items": 12,
+    "acc_from_zero": 0.08333333333333333,
+    "acc_from_donor": 0.08333333333333333,
+    "kprime": 16,
+    "donor_passes": 8,
+    "items": "test n 3..8, rng 18201 permutation[:500]",
+    "derangement": "np.roll(sample order, 1)",
+    "delta_cos_def": "mean over items of cos of the final delta-head states S[:, h_add:]"
+   },
+   "args": {
+    "think_k": 12,
+    "aux_fade": "48000,48000",
+    "k_window": "1,4",
+    "kmatch_impl": "masked",
+    "aux_hold": true,
+    "kprimes": "0,1,4,8,12,16,24,32",
+    "path_indep": true
+   }
+  }
+ },
+ "g5_pass": true,
+ "all_pass": true
+}

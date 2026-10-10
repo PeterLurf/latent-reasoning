@@ -242,13 +242,15 @@ class InjectN(torch.nn.Module):
         h = fwd_read(self.g, self.g.embed(x), self.mem, S); pos = torch.tensor([len(q) - 1 for q in seqs], device=dev)
         return self.g.logits(h[torch.arange(len(seqs), device=dev), pos]).float()   # (B, V) at " ="
 
-    def aux_logits(self, S, items, t, dev):
+    def aux_logits(self, S, items, t, dev, hold=False):
         """§175: the SAME trunk, read-only (fwd_read: the read on S, no write), over [EOT, " Step", " t", " :"] + e_{t+1} (teacher-forced). It sees no
-        problem text and is never fed back. -> (logits (b, L, V) predicting e_{t+1} then EOT, targets (b, L), -100 = padding)."""
+        problem text and is never fed back. -> (logits (b, L, V) predicting e_{t+1} then EOT, targets (b, L), -100 = padding).
+        §182 HOLD (hold=True): for a pass t > n the target is e_{n+1} (step n's target string, the final value)."""
         from boxes.deltas5 import fwd_read
         pre = [EOT, STEP_ID, pass_tok(t), COLON_ID]; seqs, tg = [], []
         for it in items:
-            tgt = ids(aux_of(it)[t - 1][0]) + [EOT]; seqs.append(pre + tgt[:-1]); tg.append(tgt)
+            n_ = len(aux_of(it)); assert t <= n_ or hold, "§175: no aux target past the last reduction"
+            tgt = ids(aux_of(it)[min(t, n_) - 1][0]) + [EOT]; seqs.append(pre + tgt[:-1]); tg.append(tgt)
         x_, _ = pad(seqs); y_, _ = pad(tg, -100); x = torch.tensor(x_, device=dev); y = torch.tensor(y_, device=dev)
         assert x.shape[1] == len(pre) + y.shape[1] - 1
         h = fwd_read(self.g, self.g.embed(x), self.mem, S)
@@ -287,6 +289,25 @@ def kmatch_loss(m, items, kitem, dev, ac, masked=True):
         for r_, i in enumerate(ix):
             Sall[i] = S[r_]
     return tot, torch.stack(Sall)
+
+
+def kmatch_aux_loss(m, items, kitem, dev, ac, hold=False):
+    """§182 WINDOW / HOLD: note 177-5's masked single batch (item i thinks kitem[i] passes; S frozen after its K) + §175's aux CE (token mean per pass,
+    mean over each item's aux passes, then over items). Aux passes: t <= n (§175); HOLD adds n < t <= K_i with target e_{n+1}. -> (answer CE, aux, S)."""
+    tgt = torch.tensor(NUM_IDS[[it["t"] for it in items]], device=dev); x, msk = m.think_inputs(items, dev); kv = torch.tensor(np.asarray(kitem), device=dev)
+    per = [[] for _ in items]
+    with ac():
+        S = m.mem.zero_state(len(items), dev)
+        for t in range(1, int(max(kitem)) + 1):
+            S = torch.where((kv >= t)[:, None, None, None], m.write(S, x, msk), S)
+            idx = [i for i, it in enumerate(items) if t <= len(aux_of(it)) or (hold and t <= int(kitem[i]))]
+            if idx:
+                lg_a, y_a = m.aux_logits(S[idx], [items[i] for i in idx], t, dev, hold=hold)
+                ce = Fn.cross_entropy(lg_a.transpose(1, 2), y_a, ignore_index=-100, reduction="none").sum(1) / (y_a != -100).sum(1)
+                for r_, i in enumerate(idx):
+                    per[i].append(ce[r_])
+        lg = m.dec_logits(S, items, dev)
+    return Fn.cross_entropy(lg, tgt), torch.stack([torch.stack(p_).mean() for p_ in per if p_]).mean(), S
 
 
 def ans_token_acc(lg, items):
@@ -376,7 +397,7 @@ def logreg_acc(Xf, yf, Xs, ys, dev, wd=1e-3, iters=200):
     return float(((Xs_ @ W + b).argmax(1) == ys_).float().mean())
 
 
-def step_recover(m, excl, TE, T, dev, ac, bs, n_fit=4000, n_test=1000):
+def step_recover(m, excl, TE, T, dev, ac, bs, n_fit=int(os.environ.get("NESTED170_PROBE_N_FIT", 4000)), n_test=1000):   # env: gate-size probe fits only
     """note 170-2 (descriptive): per pass t, a multinomial logistic probe from r_t to v_t (the t-th leftmost reduction's value, Z11); fit on n_fit
     training-distribution items (seed 17021), tested on n_test test items at n <= 8 (seed 17022); items with fewer than t reductions are dropped at t."""
     tr = train_items(np.random.default_rng(17021), n_fit, 8, excl); pool = [it for it in TE if it["n"] <= 8]
@@ -401,7 +422,7 @@ def main():
     ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", default=None); ap.add_argument("--log_every", type=int, default=100)
     ap.add_argument("--cot_eval_bs", type=int, default=64, help="TEXT-COT generation batch (KV cache; b223 OOMed at 250 on n = 16 chains)"); ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt (no training; writes args_eval.json; model.pt / args.json / log untouched)"); ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--per_n", type=int, default=1000); ap.add_argument("--serial_pool", type=int, default=2200); ap.add_argument("--auto_micro", action="store_true")
     ap.add_argument("--mem_budget", type=float, default=21.0); ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--time_steps", type=int, default=0, help="cost check: train this many steps, report s/step, exit")
-    ap.add_argument("--eval_at", type=int, default=0, help="also evaluate acc_by_n at this step -> eval_<k>k.json"); ap.add_argument("--aux_step", type=float, default=0.0, help="§175: lambda of the read-only step decoder CE (0 = off: the §170 path)"); ap.add_argument("--aux_fade", default="36000,48000", help="§175: lambda constant to the first step, then linear to 0 at the second"); ap.add_argument("--kmatch_impl", default="masked", choices=["masked", "bucketed"], help="§177 (f): note 177-5's masked single batch, or the per-K groups"); ap.add_argument("--excl_min_n", type=int, default=1, help="note 178-3 (s178b): exclude test items from training only for n >= this (1 = §170's protocol)"); ap.add_argument("--scratch", default="", help="§178: 'L,D,H' -> a RANDOM-INIT GPT-2 trunk (no pretrained weights), memory after block L // 2 with D / 128 + D / 128 heads"); ap.add_argument("--warmup", type=int, default=100, help="LR warm-up steps (§178: 1000)"); ap.add_argument("--k_window", default="", help="§177 (f): 'lo,hi' -> each n-bucketed micro-batch runs K = n + U{lo..hi} think passes (inject)"); ap.add_argument("--fast_add", action="store_true", help="deltamem.FAST_ADD: the additive heads' pass writes as one sum (Audit 2026-10-09; scratch/gate_fastadd.py)"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
+    ap.add_argument("--eval_at", type=int, default=0, help="also evaluate acc_by_n at this step -> eval_<k>k.json"); ap.add_argument("--aux_step", type=float, default=0.0, help="§175: lambda of the read-only step decoder CE (0 = off: the §170 path)"); ap.add_argument("--aux_fade", default="36000,48000", help="§175: lambda constant to the first step, then linear to 0 at the second"); ap.add_argument("--kmatch_impl", default="masked", choices=["masked", "bucketed"], help="§177 (f): note 177-5's masked single batch, or the per-K groups"); ap.add_argument("--aux_hold", action="store_true", help="§182 HOLD: aux target e_{n+1} on passes n < t <= K (with --k_window and --aux_step)"); ap.add_argument("--kprimes", default="", help="§182: the K' set for s170.acc_by_n_kprime ('' = {0, 1, K/2, K, 2K})"); ap.add_argument("--path_indep", action="store_true", help="§182: s182.path_indep (K' = 16 from M_0 = 0 vs another item's 8-pass memory)"); ap.add_argument("--excl_min_n", type=int, default=1, help="note 178-3 (s178b): exclude test items from training only for n >= this (1 = §170's protocol)"); ap.add_argument("--scratch", default="", help="§178: 'L,D,H' -> a RANDOM-INIT GPT-2 trunk (no pretrained weights), memory after block L // 2 with D / 128 + D / 128 heads"); ap.add_argument("--warmup", type=int, default=100, help="LR warm-up steps (§178: 1000)"); ap.add_argument("--k_window", default="", help="§177 (f): 'lo,hi' -> each n-bucketed micro-batch runs K = n + U{lo..hi} think passes (inject)"); ap.add_argument("--fast_add", action="store_true", help="deltamem.FAST_ADD: the additive heads' pass writes as one sum (Audit 2026-10-09; scratch/gate_fastadd.py)"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); a.task = "nested"; import boxes.deltamem as DM_; DM_.FAST_ADD = bool(a.fast_add); os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale; K = a.think_k if a.arm == "inject" else 0
     if a.arm != "inject":
         a.mem_write = a.write_mix_start = a.write_mix_end = None; a.think_k = 0
@@ -461,7 +482,10 @@ def main():
         torch.cuda.reset_peak_memory_stats(dev); r_ = np.random.default_rng(0); its = [it for it in train_items(r_, 4 * a.bs, a.n_max_train, set()) if True]
         its = sorted(its, key=lambda it: -len(it["syms"]))[:a.bs // micro]
         if KW:                                                              # §177 (f) (Audit): the path that trains - the masked kmatch loss, every item at K_max
-            l_, _ = kmatch_loss(m, its, [a.n_max_train + KW[1]] * len(its), dev, ac, masked=a.kmatch_impl == "masked")
+            if lam_now[0]:                                                  # §182: the aux on the masked kmatch path (every item at K_max)
+                la_, ax_, _ = kmatch_aux_loss(m, its, [a.n_max_train + KW[1]] * len(its), dev, ac, a.aux_hold); l_ = la_ + lam_now[0] * ax_
+            else:
+                l_, _ = kmatch_loss(m, its, [a.n_max_train + KW[1]] * len(its), dev, ac, masked=a.kmatch_impl == "masked")
         else:
             l_ = loss_items(its)
         l_.backward(); (m or g).zero_grad(set_to_none=True)
@@ -550,6 +574,24 @@ def main():
         return a.aux_step if step <= f0_ * sc else a.aux_step * max(0.0, (f1_ * sc - step) / max(1.0, (f1_ - f0_) * sc))
 
     @torch.no_grad()
+    def aux_hold_eval(items, Kp):
+        """§182 HOLD: after each pass n < t <= Kp, greedy exact match of e_{n+1} + EOT (step n's target) -> ({t - n: acc}, overall, {t - n: count})."""
+        ex = {}
+        for i in range(0, len(items), a.eval_bs):
+            ch = items[i:i + a.eval_bs]; x, msk = m.think_inputs(ch, dev)
+            with ac():
+                S = m.mem.zero_state(len(ch), dev)
+                for t in range(1, Kp + 1):
+                    S = m.write(S, x, msk); idx = [j for j, it in enumerate(ch) if len(aux_of(it)) < t]
+                    if not idx:
+                        continue
+                    sub = [ch[j] for j in idx]; tg_ = [ids(aux_of(it)[-1][0]) + [EOT] for it in sub]; gen = m.aux_greedy(S[idx], t, max(len(q) for q in tg_))
+                    for r_, it in enumerate(sub):
+                        ex.setdefault(t - len(aux_of(it)), []).append(bool(list(gen[r_, :len(tg_[r_])]) == tg_[r_]))
+        allv = [v for vs in ex.values() for v in vs]
+        return {str(k_): float(np.mean(v)) for k_, v in sorted(ex.items())}, (float(np.mean(allv)) if allv else None), {str(k_): len(v) for k_, v in sorted(ex.items())}
+
+    @torch.no_grad()
     def aux_eval(items, Kp, tmax):
         """§175: after each think pass t <= min(n, tmax): greedy exact match of e_{t+1} + EOT; teacher-forced argmax at the newly reduced value vs the copied tokens."""
         ex, role = {}, {}
@@ -577,8 +619,11 @@ def main():
         pool = [it for it in TE if it["n"] <= 8]; te8 = [pool[i] for i in np.random.default_rng(17022).permutation(len(pool))[:1000]]
         pe = [it for it in TE if 9 <= it["n"] <= 12]; te12 = [pe[i] for i in np.random.default_rng(17023).permutation(len(pe))[:1000]]
         acc8, role8, n8 = aux_eval(te8, K, K); acc12, _, n12 = aux_eval(te12, 16, 16); sr, sri = step_recover(m, EXCL, TE, K, dev, ac, a.eval_bs)
-        return {"aux_acc_by_pass": acc8, "aux_acc_by_pass_ext": acc12, "aux_acc_by_role": role8, "step_recover": sr, "step_recover_info": sri,
-                "n_by_pass": n8, "n_by_pass_ext": n12, "ext_kprime": 16, "items": {"n_le_8": {"n": len(te8), "seed": 17022}, "n_9_12": {"n": len(te12), "seed": 17023}}}
+        out = {"aux_acc_by_pass": acc8, "aux_acc_by_pass_ext": acc12, "aux_acc_by_role": role8, "step_recover": sr, "step_recover_info": sri,
+               "n_by_pass": n8, "n_by_pass_ext": n12, "ext_kprime": 16, "items": {"n_le_8": {"n": len(te8), "seed": 17022}, "n_9_12": {"n": len(te12), "seed": 17023}}}
+        if a.aux_hold:                                                      # §182 HOLD: the hold passes n < t <= K on the same n <= 8 items
+            hb, ha, hn = aux_hold_eval(te8, K); out.update({"aux_acc_hold_by_offset": hb, "aux_acc_hold": ha, "n_hold_by_offset": hn})
+        return out
 
     def kn_answers(items, kfun, skip=()):
         """§177 (f): inject answers with a per-n K' = kfun(n) (items grouped by n, order kept)."""
@@ -660,14 +705,18 @@ def main():
         lam_now[0] = lam_at(step)
         its = train_items(rng, a.bs, a.n_max_train, EXCL); opt.zero_grad(); tot = 0.0; ch = a.bs // a.micro
         if KW:                                                              # §177 (f): the same items / n marginal as §170, bucketed by n, one K per bucket
-            assert not lam_now[0], "§177 (f) is not combined with §175's aux"
+            assert not lam_now[0] or a.kmatch_impl == "masked", "§182: the aux rides on the masked kmatch batch"
             kb_ = {}
             for n_ in sorted({it["n"] for it in its}):                     # one K per n-bucket per step, drawn in the same order / stream as first built
                 bk = [it for it in its if it["n"] == n_]; Kb = n_ + int(rng_kw.integers(KW[0], KW[1] + 1)); kb_[n_] = Kb
                 assert all(it["n"] == n_ for it in bk) and KW[0] <= Kb - n_ <= KW[1]; kcount.setdefault(str(n_), {}); kcount[str(n_)][str(Kb)] = kcount[str(n_)].get(str(Kb), 0) + 1
             kit = [kb_[it["n"]] for it in its]                              # note 177-5: the masked single batch (bucketed = --kmatch_impl bucketed)
             for c_ in range(0, len(its), ch):
-                sub, ks = its[c_:c_ + ch], kit[c_:c_ + ch]; lk, _ = kmatch_loss(m, sub, ks, dev, ac, masked=a.kmatch_impl == "masked")
+                sub, ks = its[c_:c_ + ch], kit[c_:c_ + ch]
+                if lam_now[0]:                                              # §182 WINDOW / HOLD
+                    la_, ax_, _ = kmatch_aux_loss(m, sub, ks, dev, ac, a.aux_hold); aux_hist.append((float(la_), float(ax_))); lk = la_ + lam_now[0] * ax_
+                else:
+                    lk, _ = kmatch_loss(m, sub, ks, dev, ac, masked=a.kmatch_impl == "masked")
                 (lk * len(sub) / a.bs).backward(); tot += float(lk.item()) * len(sub) / a.bs
         else:
           for k_ in range(a.micro):
@@ -747,7 +796,7 @@ def main():
     res["compute_by_n"] = cb; res["compute_note"] = "boxes.core.Meter per item at the mean length of each n (trunk; the DeltaMem branch adds < 5% at these lengths)"
     if a.arm == "inject":
         s = {"acc_by_n_kprime": {}, "skip_pass": {}, "serial": {}, "write_grad_norm": wg_hist, "write_grad_spikes_floor": [x_ for x_ in wg_hist if x_["spike_100x_floor"]], "n_nonfinite": n_nonfinite}
-        for kp in sorted({0, 1, K // 2, K, 2 * K}):
+        for kp in sorted({int(x_) for x_ in a.kprimes.split(",")} | {K} if a.kprimes else {0, 1, K // 2, K, 2 * K}):   # §182: --kprimes
             Ak = A_ if kp == K else inject_answers(TE, kp); s["acc_by_n_kprime"][str(kp)] = {str(n): float((Ak == T_)[N == n].mean()) for n in range(1, 17)}
         for t in sorted({t for t in (1, K // 4, K // 2, 3 * K // 4, K) if t >= 1}):
             Ak = inject_answers(TE, K, skip=(t,)); s["skip_pass"][str(t)] = {str(n): float((Ak == T_)[N == n].mean()) for n in range(1, 17)}
@@ -779,6 +828,24 @@ def main():
             tl = ll[-max(2, len(ll) // 10):]; h_ = len(tl) // 2
             s7["train_loss_tail"] = {"first_half": float(np.mean(tl[:h_])) if h_ else None, "second_half": float(np.mean(tl[h_:])) if tl else None, "n_logged": len(tl)}
             res["s177"] = s7; json.dump(kcount, open(os.path.join(a.out, "kmatch_counts.json"), "w", newline="\n"), indent=1)
+        if a.path_indep and a.arm == "inject":                              # §182 s182.path_indep: K' = 16 from M_0 = 0 vs from another item's 8-pass memory
+            pool = [it for it in TE if 3 <= it["n"] <= 8]; its_ = [pool[i] for i in np.random.default_rng(18201).permutation(len(pool))[:500]]
+            der = np.roll(np.arange(len(its_)), 1); S8 = inject_states(its_, 8)[der]; A0, A1, F0, F1 = [], [], [], []   # a fixed derangement (no fixed point)
+            with torch.no_grad():
+                for i in range(0, len(its_), a.eval_bs):
+                    ch = its_[i:i + a.eval_bs]; x, msk = m.think_inputs(ch, dev)
+                    for S0, Ao, Fo in ((None, A0, F0), (S8[i:i + a.eval_bs], A1, F1)):
+                        with ac():
+                            Sz = m.mem.zero_state(len(ch), dev); S = Sz if S0 is None else torch.tensor(S0, device=dev, dtype=Sz.dtype)
+                            for _ in range(16):
+                                S = m.write(S, x, msk)
+                            lg = m.dec_logits(S, ch, dev)
+                        Ao.append(lg[:, NUM_IDS].argmax(-1).cpu().numpy()); Fo.append(S[:, m.mem.h_add:].float().flatten(1).cpu())
+            A0, A1 = np.concatenate(A0), np.concatenate(A1); F0, F1 = torch.cat(F0), torch.cat(F1); tt_ = np.array([it["t"] for it in its_])
+            res["s182"] = {"path_indep": {"answer_agree": float((A0 == A1).mean()), "delta_cos_final": float(Fn.cosine_similarity(F0, F1, dim=1).mean()),
+                                          "n_items": len(its_), "acc_from_zero": float((A0 == tt_).mean()), "acc_from_donor": float((A1 == tt_).mean()), "kprime": 16,
+                                          "donor_passes": 8, "items": "test n 3..8, rng 18201 permutation[:500]", "derangement": "np.roll(sample order, 1)",
+                                          "delta_cos_def": "mean over items of cos of the final delta-head states S[:, h_add:]"}, "aux_hold": bool(a.aux_hold), "k_window": a.k_window}
         if a.aux_step and K:                                                # §175 (the aux is dropped at test; every §170 field comes from the main decoder)
             res["s175"] = s175_fields()
     res["eval_sec"] = round(time.time() - t1); json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
