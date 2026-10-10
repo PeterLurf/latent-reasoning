@@ -10,7 +10,7 @@ Three arms (--arm):
   textcot    : GPT-2 on question\\n + steps (each + "\\n") + "### " + answer + EOS (Coconut's CoT format); eval = greedy CoT then candidate scoring (eval_p8 cot).
 Candidate accuracy (all arms): log p("### " + correct answer) > log p(the negative's) after the arm's prefix (+ memory for stepaux); chance 0.5.
 eval.json: acc, acc_by_depth, n_by_depth, acc_ctl (p8_ctl.json); stepaux adds s168s2 {acc_by_depth_kprime, aux_exact_by_hop, delta_cos (+ at init),
-aux_done, path_indep, step_recover}.
+aux_done, path_indep, step_recover, normcap (note 185-1: K' curve with S_add capped at C from train items)}. --resume <ckpt> continues a run.
     python -m boxes.prosqa168s2 --arm stepaux --think_k 10 --aux_step 1.0 --aux_fade 12000,12000 --out boxes/runs_fsq/s168s2_stepaux_s1"""
 import os
 os.environ["BOXES_NB"] = "5"
@@ -163,6 +163,8 @@ def main():
     ap.add_argument("--ckpt_every", type=int, default=1000); ap.add_argument("--log_every", type=int, default=100); ap.add_argument("--eval_bs", type=int, default=16)
     ap.add_argument("--train_n", type=int, default=0, help="smokes"); ap.add_argument("--test_n", type=int, default=0, help="smokes"); ap.add_argument("--extras_n", type=int, default=500)
     ap.add_argument("--probe_n_fit", type=int, default=4000); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes")
+    ap.add_argument("--resume", default=None, help="a ckpt_last.pt / kept ckpt of this run (model, opt, np_rng, step, elapsed)")
+    ap.add_argument("--no_normcap", action="store_true", help="stepaux: skip note 185-1's inference-only NORM-CAP eval (smokes)")
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); os.makedirs(a.out, exist_ok=True); dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); DM.FAST_ADD = bool(a.fast_add)
     sc = a.sched_scale; SA = a.arm == "stepaux"; K = a.think_k if SA else 0; f0_, f1_ = [float(v) for v in a.aux_fade.split(",")]
@@ -233,17 +235,20 @@ def main():
             return
     info = {**vars(a), "task": "prosqa_na", "train_items": len(Dtr), "test_items": len(Dte), "train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
             "train_driver": driver_version(), **env_info(), "stage_len": L_STAGE if a.arm == "currdirect" else None}
-    json.dump(info, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
-    if SA:                                                                  # note 147-2: g_add calibration at step 0
+    json.dump(info, open(os.path.join(a.out, ("args_resume_%d.json" % int(time.time())) if a.resume else "args.json"), "w", newline="\n"), indent=1)
+    if SA and not a.resume:                                                 # note 147-2: g_add calibration at step 0 (a resume loads the calibrated s_add)
         its = [Dtr[i] for i in np.random.default_rng(16801).permutation(len(Dtr))[:32]]; x, msk = m.think_inputs(its, dev); m.mem.norms = []
         with torch.no_grad(), ac():
             m.think(m.mem.zero_state(len(its), dev), x, msk, min(K, 4))
         nr = m.mem.norms[1:]; m.mem.norms = None; r0 = float(torch.stack([d_ / a_.clamp_min(1e-12) for d_, a_ in nr]).median()) if nr else 1.0
         m.mem.s_add.data.fill_(math.log(max(r0, 1e-12))); json.dump({"g_add_init": r0}, open(os.path.join(a.out, "s168s2_init.json"), "w", newline="\n"))
     opt = torch.optim.AdamW(params.parameters(), lr=a.lr, weight_decay=0.01); hist = []; n_nonfinite = 0; wg = []
-    log = open(os.path.join(a.out, "log.jsonl"), "w", newline="\n"); t0 = time.time()
+    log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time(); step0 = 1
+    if a.resume:
+        ck = torch.load(a.resume, map_location=dev, weights_only=False); params.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"]); rng.bit_generator.state = ck["np_rng"]
+        step0 = ck["step"] + 1; n_nonfinite = ck.get("n_nonfinite", 0); t0 = time.time() - ck["elapsed"]; log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
     last_ = a.steps if not a.time_steps else min(a.steps, a.time_steps); tt0 = time.time()
-    for step in range(1, last_ + 1):
+    for step in range(step0, last_ + 1):
         for gr in opt.param_groups:
             gr["lr"] = lr_at(a.lr, gr, step, a.steps)
         params.train()
@@ -273,7 +278,7 @@ def main():
             cp = os.path.join(a.out, "ckpt_last.pt")
             if os.path.exists(cp):
                 os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))
-            torch.save({"model": params.state_dict(), "opt": opt.state_dict(), "np_rng": rng.bit_generator.state, "step": step, "elapsed": time.time() - t0}, cp)
+            torch.save({"model": params.state_dict(), "opt": opt.state_dict(), "np_rng": rng.bit_generator.state, "step": step, "elapsed": time.time() - t0, "n_nonfinite": n_nonfinite}, cp)
     if a.time_steps:
         sps = (time.time() - tt0) / max(1, last_); tj = {"arm": a.arm, "think_k": K, "steps_timed": last_, "sec_per_step": sps, "steps": a.steps,
                                                         "est_hours_steps": sps * a.steps / 3600, "micro": a.micro, "gpu": info["train_gpu"]}
@@ -286,13 +291,25 @@ def main():
     params.eval(); t1 = time.time(); bs = a.eval_bs; dep = np.array([it["depth"] for it in Dte])
     by_depth = lambda M_, d_: {str(d): float((M_[d_ == d] > 0).mean()) for d in range(3, 15) if (d_ == d).any()}   # noqa: E731
 
-    def sa_margins(D, Kp, M0=None):
+    def cap_add(S, C):
+        """note 185-1: the additive heads' state rescaled to norm C when its per-item norm exceeds C (direction kept; delta heads untouched)."""
+        ha = m.mem.h_add; cur = S[:, :ha].float().flatten(1).norm(dim=1)
+        f = torch.where(cur > C, C / cur.clamp_min(1e-12), torch.ones_like(cur)).to(S.dtype)
+        return torch.cat([S[:, :ha] * f[:, None, None, None], S[:, ha:]], 1)
+
+    def sa_margins(D, Kp, M0=None, C=None):
         out = []
         for i in range(0, len(D), bs):
             ch = D[i:i + bs]; x, msk = m.think_inputs(ch, dev)
             with torch.no_grad(), ac():
                 S = m.mem.zero_state(len(ch), dev) if M0 is None else torch.tensor(M0[i:i + bs], device=dev, dtype=m.mem.zero_state(1, dev).dtype)
-                S = m.think(S, x, msk, Kp, cache=a.cache_lower); out.append(m.margins(S, ch, dev))
+                if C is None:
+                    S = m.think(S, x, msk, Kp, cache=a.cache_lower)
+                else:                                                       # NORM-CAP: the cap after every write
+                    hl = m.lower(x) if (a.cache_lower and Kp) else None
+                    for _ in range(Kp):
+                        S = cap_add(m.write(S, x, msk, hl), C)
+                out.append(m.margins(S, ch, dev))
         return np.concatenate(out)
 
     def states(D, T):
@@ -397,6 +414,17 @@ def main():
                 VOC = {nm: c_ for c_, nm in enumerate(sorted({it["node"][t - 1] for it in tr + ex if t <= it["depth"]}))}
                 sr[str(t)] = logreg_acc(Xf, np.array([VOC[tr[i]["node"][t - 1]] for i in fi]), Xt, np.array([VOC[ex[i]["node"][t - 1]] for i in ti]), dev)
         s["step_recover"] = sr; s["step_recover_def"] = "classes = concept NAMES (shared vocabulary); multinomial logreg (nested170.logreg_acc) from the flattened delta-head state after pass t to hop t's node id; fit on probe_n_fit train items"
+        if not a.no_normcap:                                                # note 185-1 (descriptive, no rule reads it): inference-only NORM-CAP, C from TRAIN items
+            trc = [Dtr[i] for i in np.random.default_rng(18502).permutation(len(Dtr))[:1000]]; nrm = []
+            for i in range(0, len(trc), bs):
+                ch = trc[i:i + bs]; x, msk = m.think_inputs(ch, dev)
+                with torch.no_grad(), ac():
+                    S = m.think(m.mem.zero_state(len(ch), dev), x, msk, K, cache=a.cache_lower)
+                nrm.append(S[:, :m.mem.h_add].float().flatten(1).norm(dim=1).cpu().numpy())
+            C = float(np.median(np.concatenate(nrm)))
+            s["normcap"] = {"C": C, "C_source": "median ||S_add|| after K = %d passes over %d train items (rng 18502 permutation[:1000])" % (K, len(trc)),
+                            "acc_by_depth_kprime": {str(kp): by_depth(sa_margins(Dte, kp, C=C), dep) for kp in KPRIMES},
+                            "def": "inference-only: after every write, S_add rescaled to norm C when ||S_add|| > C (per item, direction kept; delta untouched) - note 185-1; uncapped = s168s2.acc_by_depth_kprime"}
         res["s168s2"] = s
     res["eval_sec"] = round(time.time() - t1); json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     for ck_ in ("ckpt_last.pt", "ckpt_prev.pt"):
