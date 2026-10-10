@@ -12071,6 +12071,21 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 
 **Note 182-5 (2026-10-10 11:32 EDT; operational; completes 182-4's staging).** The user approved §182's WINDOW and HOLD cells (about $12–14) in Audit's session, about 11:20 on 2026-10-10, as relayed by Audit. Both launch as registered (566616ef, with notes 182-1 / 182-3). No rule changes.
 
+**Note 168-6 (2026-10-10 11:40 EDT; read from prosqa/make_deep.py → make_long.extend, after Literature's flag f1969162 and Audit's question; no rule change). What p8's "depth" measures: a branching base plus m unbranched, answer-relevant chain hops.**
+* **The construction.** extend(x, m) adds m fresh concepts on each side: the original target t → c₁ → … → c_m and the original negative n → d₁ → … → d_m. Each new node has one parent and one child.
+  - The asked options become the chain ends, "Is root a c_m or d_m?".
+  - The gold `steps` is the original 3–4-hop path followed by t → c₁ → … → c_m.
+* **The chain hops are answer-relevant.** The answer needs both the base decision (does the root reach t or n) and the chain that links that base to a named option. The names are fresh random concepts, so nothing links base to option except the m chain statements.
+  - "Only the base decides the answer" is true of which base the root reaches.
+  - It is not true of which option it names.
+* **But the chain hops are unbranched.** Past the base, each step is a single lookup: pointer chasing, with no distractor branches along the chain.
+  - So p8's depth = a 3–4-hop branching search, plus m serial lookups.
+  - ProsQA-Ext 2609.35643's depth is H hops of search on two vertex-disjoint paths with off-path nodes.
+* **For §168:**
+  - D* = 3 (168-5) says a plain single pass cannot do even the 3–4-hop base plus any chain.
+  - A latent result on p8 depth shows serial lookups (a C1 serial claim). It does not show deeper branching search.
+  - Per-hop targets past the base are valid supervision, since they lie on the answer path.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
