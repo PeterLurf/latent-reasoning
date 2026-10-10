@@ -149,6 +149,35 @@ def generate_cot(g, ids, max_new, dev, amp):
     return seq
 
 
+@torch.no_grad()
+def generate_cot_batched(g, pres, max_new, dev, amp, bs):
+    """generate_cot for many prompts (Audit 2026-10-10: batch 1 without a KV cache was ~3 h): prompts are grouped by length (no padding, so every
+    row sees the positions and causal context generate_cot gives it), KV-cached greedy decoding; each row is cut at its first ANS / EOS -> the same
+    sequences as generate_cot (gate: scratch/gate_cot_batched.py)."""
+    out = [None] * len(pres); by_len = {}
+    for i, p in enumerate(pres):
+        by_len.setdefault(len(p), []).append(i)
+    for L_, idx in sorted(by_len.items()):
+        for s in range(0, len(idx), bs):
+            ii = idx[s:s + bs]; x = torch.tensor([pres[i] for i in ii], device=dev); gen = []; done = torch.zeros(len(ii), dtype=torch.bool, device=dev)
+            with torch.autocast("cuda", dtype=amp, enabled=amp is not None):
+                h, past = g(g.embed(x), None)
+                for _ in range(max_new):
+                    t = g.logits(h[:, -1]).float().argmax(-1); gen.append(t); done |= (t == ANS) | (t == EOS)
+                    if bool(done.all()) or len(gen) == max_new:
+                        break
+                    h, past = g(g.embed(t[:, None]), past)
+            G = torch.stack(gen, 1).cpu().numpy()
+            for r, i in enumerate(ii):
+                row = []
+                for v in G[r]:
+                    if int(v) in (ANS, EOS):
+                        break
+                    row.append(int(v))
+                out[i] = list(pres[i]) + row
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--arm", required=True, choices=["stepaux", "currdirect", "textcot"]); ap.add_argument("--data", default="na", choices=["na"])
@@ -159,7 +188,7 @@ def main():
     ap.add_argument("--seed", type=int, default=1); ap.add_argument("--micro", type=int, default=1); ap.add_argument("--auto_micro", action="store_true")
     ap.add_argument("--mem_budget", type=float, default=21.0); ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--time_steps", type=int, default=0)
     ap.add_argument("--write_mix_start", type=int, default=2000); ap.add_argument("--write_mix_end", type=int, default=6000); ap.add_argument("--fast_add", action="store_true")
-    ap.add_argument("--stages", type=int, default=10, help="currdirect: stage k = 0..stages drops the first k steps; then k = stages again (12 stages of steps / 12)"); ap.add_argument("--max_new", type=int, default=220)
+    ap.add_argument("--stages", type=int, default=10, help="currdirect: stage k = 0..stages drops the first k steps; then k = stages again (12 stages of steps / 12)"); ap.add_argument("--max_new", type=int, default=220); ap.add_argument("--cot_eval_bs", type=int, default=64, help="textcot eval: KV-cached greedy CoT batch over same-length prompts (1 = generate_cot per item)")
     ap.add_argument("--ckpt_every", type=int, default=1000); ap.add_argument("--log_every", type=int, default=100); ap.add_argument("--eval_bs", type=int, default=16)
     ap.add_argument("--train_n", type=int, default=0, help="smokes"); ap.add_argument("--test_n", type=int, default=0, help="smokes"); ap.add_argument("--extras_n", type=int, default=500)
     ap.add_argument("--probe_n_fit", type=int, default=4000); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes")
@@ -333,9 +362,10 @@ def main():
         cot_len = []
 
         def cot_items(D):
+            Q = generate_cot_batched(g, [it["pre"] for it in D], a.max_new, dev, amp, a.cot_eval_bs) if a.cot_eval_bs > 1 else [generate_cot(g, it["pre"], a.max_new, dev, amp) for it in D]
             out = []
-            for it in D:
-                q = generate_cot(g, it["pre"], a.max_new, dev, amp); cot_len.append(len(q) - len(it["pre"])); out.append((q, it["a1"], it["a2"], it["depth"]))
+            for q, it in zip(Q, D):
+                cot_len.append(len(q) - len(it["pre"])); out.append((q, it["a1"], it["a2"], it["depth"]))
             return out
         M = candidate_margins(g, cot_items(Dte), dev, amp, bs); Mc = candidate_margins(g, cot_items(Dctl), dev, amp, bs)
     res = {"arm": a.arm, "data": "na", "seed": a.seed, "steps": a.steps, "think_k": K, "acc": float((M > 0).mean()), "n": int(len(M)), "acc_by_depth": by_depth(M, dep),
