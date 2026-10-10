@@ -1,0 +1,4 @@
+# THEORY §183 INTERLEAVE-BLIND (d5c160a7) cell s183_ilblind_k1_s1: §181 k1's exact args + --blind_decoder (inject169 07839b2c; 48k, seed 1, 3090); projection bound from b247's §181 k1 full-curriculum timing (0.254 s/step; the blind read is shorter) -> <= 3.4 h + eval
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s183_ilblind_k1_s1 boxes.inject169 --think_k 0 --interleave 1 --blind_decoder --pass_index sin_gain --fast_add --seed 1 --steps 48000 --ckpt_every 1000 --auto_micro --bench bench/data/mult_4x4_test.txt
