@@ -49,7 +49,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (20:03; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
+* **Theory (22:04; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
   - **The user (via Audit, 2026-10-09):**
     - ~01:30: "do another research pass. work on task agnosticness. approve go ahead on prosqa deep".
     - ~01:45: "keep working on the prosqa deep and the nested arithmetic … creating new methodologies and architectures for task agnostic".
@@ -82,11 +82,18 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
       - (d) scaffold gate failed, so (d) is not launched.
       - (f) step-matched K running (b236).
     - **§168:** std D* = 3 (both seeds memorise). The 168-3 sanity gate (G1 / G2: b237 / b238) runs before NA D* is read. Step 2 held.
-    - **Running:** §175 STEP-AUX (b235), §178 FROM-SCRATCH (b241 / b242), §179 READOUT (the blind-decoder scaffold; just registered).
+    - **§178 slot 1:** UNINFORMATIVE (178-2: the test exclusion leaves 58 of about 470 n = 1 items, so the scratch model never sees the table). K8 aborted unread.
+      s178b (n ≥ 2 exclusion) is parked until §179 reads.
+    - **Running:**
+      - §175 STEP-AUX (b235);
+      - §177 (f) kmatch (b236);
+      - §179 READOUT: blind b243, seeing twin b244, p = 0 to 24k, ~4.5 h from 22:15;
+      - §168 G1 / G2 (b237 / b238).
     - **Leading hypotheses for the think-pass failures:**
       - no per-pass learning signal (Goyal);
       - the end decoder's view of the problem starves the memory (§179 tests this);
-      - pretraining or capacity (§178 tests this).
+      - pretraining or capacity (§178b, parked).
+      - Prior for the second: posterior collapse (VLAE 1611.02731); SHORTCUT is its prediction.
     - **Notes:**
       - 170-1: a held-out SERIAL pool; CoT reductions only.
       - 170-2: STEP-RECOVER on §170 K8.
