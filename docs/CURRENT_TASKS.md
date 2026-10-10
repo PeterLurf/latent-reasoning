@@ -50,7 +50,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (03:00 2026-10-10; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
+* **Theory (08:16 2026-10-10; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
   - **The user (via Audit, 2026-10-09):**
     - ~01:30: "do another research pass. work on task agnosticness. approve go ahead on prosqa deep".
     - ~01:45: "keep working on the prosqa deep and the nested arithmetic … creating new methodologies and architectures for task agnostic".
@@ -96,6 +96,11 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
       - **§182 STEP-AUX-HOLD registered** (566616ef). NOFADE / WINDOW / HOLD; DEEP at K′ 8, STABLE = K′ 16 vs 8 (K′ 24 beside it).
         - The contract is with Experiments (rough $8–10). Order: §181 (running), then §182. A post-hoc §173 halt on s175 is queued on the 3070.
     - **§177 (f) slot 1:** not HIT / not FAIL (pooled 0.506; passes not distinct). s2 not run (note 177-7).
+    - **§181 k1: FAIL** (652176bc). The single-pass column profile; skip drops about 0. k2 (b249) is running.
+    - **§183 INTERLEAVE-BLIND registered** (d5c160a7). §181 k1 with a blind per-token decoder; it tests 'per-pass signal through a view-free reader'.
+      - Local 8k compressed previews: blind and seeing on each of the 3070 and 2070. The cloud cell follows --time_steps.
+    - **§182:** NOFADE (b251) is deploying. WINDOW and HOLD wait for the user's approval (note 182-4).
+      - §175 descriptives done: AUX-DONE (exact t = n, but counter-like at n = 8 per T-SHIFT) and PATH-INDEP (answer_agree 0.292).
     - **Drafted, not registered: STEP-AUX-GSM8K** (Audit's 04:05 lead; scratchpad sec18x_gsm8k_draft.md; Literature b908b475).
       - §175's recipe on GSM8K-Aug (K = 6, per-pass equation aux), plus an in-pipeline TEXT-COT baseline cell.
       - C3 against PCCoT 49.48 (SOTA claim: above by 2.8 in 2 / 2 seeds) and against our TEXT-COT.
