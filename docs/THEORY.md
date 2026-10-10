@@ -11994,6 +11994,15 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - The decoder sees the prompt and its own digits, and solves only what a single pass can (columns 1–2, and the top column from magnitude).
   - Unlike §175, nothing forces content into the memory: §175's aux decoder reads the memory with no view of the problem.
 
+**PATH-INDEP on §175 (2026-10-10 08:01 EDT; descriptive, the reference for §182's s182.path_indep; s175_auxk8_s1/eval_s182_pathindep.json, RTX 2070, fp32). §175 is strongly path-dependent.**
+* 500 test items at n 3..8, K′ = 16. Each item runs from M_0 = 0 and from M_0 = another item's memory after 8 passes (np.roll derangement).
+  - answer_agree 0.292;
+  - delta_cos_final 0.764;
+  - acc_from_zero 0.426 against acc_from_donor 0.214.
+* A foreign starting memory halves accuracy and changes about 70% of answers.
+* The 2070 copy reproduces §175's acc_by_n (n 4–8: 0.966 / 0.882 / 0.741 / 0.644 / 0.484 against 0.967 / 0.882 / 0.741 / 0.641 / 0.490), so the card class does not move the reference.
+* By Anil 2211.09961, path independence predicts generalisation beyond training. §182's cells are read against 0.292 / 0.764.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
