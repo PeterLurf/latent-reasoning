@@ -11936,6 +11936,12 @@ how many think passes run in training.
   - A cheap check separates the two: hold the memory after t passes fixed and present the aux prompt with t − 1 or t + 1. A completion detector follows the memory; a counter follows the prompt. It has been requested as a descriptive (T-SHIFT).
 * As a halting rule, AUX-DONE is a learned "K = n": no oracle at test, but no better than fixed K within training, and broken beyond it.
 
+**Note 182-3 (2026-10-10 07:30 EDT; pre-data: no §182 cell has run; Audit; descriptive only). Report accuracy at K′ = n and n + 2 per n, beside fixed K′ = 8.**
+* **Prior from §175 (AUX-DONE, descriptive):** accuracy at t = n is below fixed K = 8 at n ≤ 6 (n = 4: 0.837 against 0.966; n = 6: 0.690 against 0.741). So passes after n still correct answers in §175, before K′ = 16 overthinks.
+* **HOLD's hold target could go either way:** it could lock that late gain in, or freeze an uncorrected value at t = n.
+* **Every §182 cell therefore also reports** `s170.acc_by_n_kprime` at the n-relative K′ = "n" and "n+2" (the kmatch harness's per-item K′ keys), beside fixed K′ = 8, per n 3..8.
+* No rule changes.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
