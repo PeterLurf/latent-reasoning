@@ -84,14 +84,13 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
       - (f) step-matched K running (b236).
     - **§168:** std D* = 3 (both seeds memorise). The 168-3 gate STANDs: G1 reproduces 0.766, while G2 p8 is at chance from depth 3, so the cause is the data (869bdd25).
       - 168-4: step 2 must beat a curriculum-trained DIRECT; D*_curr is measured on p8 NA first.
-      - The NA D* note waits on NA s1's CPU eval. Step 2 held.
+      - 168-5: D* = 3 on NA (chance at every depth, both seeds; 6a24ed5e). Step 2 held.
     - **§178 slot 1:** UNINFORMATIVE (178-2: the test exclusion leaves 58 of about 470 n = 1 items, so the scratch model never sees the table). K8 aborted unread.
       s178b (n ≥ 2 exclusion) is parked until §179 reads.
     - **Running:**
       - §175 STEP-AUX (b235);
       - §177 (f) kmatch (b236);
       - §179 READOUT: blind b243, seeing twin b244, p = 0 to 24k, ~4.5 h from 22:15;
-      - §168 NA s1 eval (CPU).
     - **Drafted, unregistered:** §180 DEC-DROP (scratchpad sec180_draft.md + score_s180.py, synthetic-checked; Audit OK; Literature 5c0d5bc9).
       - Registers only if §179 reads SHORTCUT. Arms: decoder-prefix digit masking in training only (tok50 / tok75 / op75), ≈ $2.4.
       - RESCUE = full ≥ 0.5, twin < 0.1, zero-mem ≤ 0.5 × full.
