@@ -1,0 +1,2 @@
+{"step": 100, "loss": 4.7323259520530705, "sec": 196, "aux_lambda": 1.0, "answer_ce": 2.515433968305588, "aux_ce": 2.2168919855356215, "gamma": 1.0, "fade": 0.20000000298023224, "write_grad_norm": 0.039784016243829684, "write_grad_spike_100x_floor": false}
+{"step": 200, "loss": 4.042078295946121, "sec": 392, "aux_lambda": 1.0, "answer_ce": 2.3827285850048066, "aux_ce": 1.6593497264385224, "gamma": 1.0, "fade": 0.4000000059604645, "write_grad_norm": 0.5557856453955173, "write_grad_spike_100x_floor": true}
