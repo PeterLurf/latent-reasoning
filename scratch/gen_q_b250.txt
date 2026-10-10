@@ -1,0 +1,6 @@
+# THEORY §182 STEP-AUX-HOLD (566616ef) timing gate: --time_steps 200 for NOFADE / WINDOW / HOLD on one RTX 3090 (nested170 8e20d709; s175's recipe, aux 1.0 throughout, fast_add, 48k; --auto_micro = the memory check at n = 8 with the aux, K_max 12 for WINDOW / HOLD) -> timing.json; projection to Audit before the cells (nested170 has no answer-digit curriculum: 200 steps are representative)
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s182_timing_nofade boxes.nested170 --arm inject --aux_step 1.0 --fast_add --seed 1 --steps 48000 --kprimes 0,1,4,8,12,16,24,32 --path_indep --time_steps 200 --auto_micro --think_k 8 --aux_fade 48000,48000
+boxes/runs_fsq/s182_timing_window boxes.nested170 --arm inject --aux_step 1.0 --fast_add --seed 1 --steps 48000 --kprimes 0,1,4,8,12,16,24,32 --path_indep --time_steps 200 --auto_micro --think_k 12 --aux_fade 48000,48000 --k_window 1,4 --kmatch_impl masked
+boxes/runs_fsq/s182_timing_hold boxes.nested170 --arm inject --aux_step 1.0 --fast_add --seed 1 --steps 48000 --kprimes 0,1,4,8,12,16,24,32 --path_indep --time_steps 200 --auto_micro --think_k 12 --aux_fade 48000,48000 --k_window 1,4 --kmatch_impl masked --aux_hold
