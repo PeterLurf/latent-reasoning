@@ -11586,6 +11586,14 @@ how many think passes run in training.
   - In the latent-CoT setting: 2604.06374 (copy-through) and §149's BYPASS.
   - The standard fix is to weaken the decoder's direct view, which is the BLIND arm. **SHORTCUT is VLAE's prediction.**
 
+**Note 179-2 (2026-10-09 20:07 EDT; pre-data; Experiments' build). The answer-length clause, made precise.**
+* Answers are fixed-width rows of na + nb digits, least significant first, and greedy decoding emits exactly na + nb tokens: the harness fixes that budget per item. The BLIND decoder therefore does not infer the token count.
+  - It infers only the significant length: the index of the highest non-zero digit + 1, which is 7 or 8 for a 4×4 product.
+  - That corrects §179's "must infer the answer length from memory alone".
+* **len_err** is the share of exact-match failures whose predicted significant length differs from the truth, or that contain a non-digit token. **digit_err** is the rest (right significant length, wrong digit). n_fail is reported.
+  - The definition is recorded in `s179.len_err_def`.
+* **Placement:** two 3090 hosts in parallel (b243 BLIND, b244 SEEING), about $1.8 in all. b240's memcheck peak of 12.5 GiB rules out P = 2.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
