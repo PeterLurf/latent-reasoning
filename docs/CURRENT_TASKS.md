@@ -88,11 +88,13 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
     - **§178 slot 1:** UNINFORMATIVE (178-2: the test exclusion leaves 58 of about 470 n = 1 items, so the scratch model never sees the table). K8 aborted unread.
       s178b (n ≥ 2 exclusion) is parked until §179 reads.
     - **Running:**
-      - §175 STEP-AUX (b235);
-      - §177 (f) kmatch (b236);
     - **§179 READOUT: CAPACITY** (d0fe00ec). Blind 0.0 at 12k / 24k; columns 1–2 exact from memory alone; c3 0.351. The decoder's view is not the problem.
       - §180 DEC-DROP was never registered and is dropped. The seeing twin b244's 24k is descriptive (lands ~03:15).
       - s178b registered (note 178-3, 2ee99c13; exclusion for n ≥ 2 only). Contract with Experiments: CPU sanity, then --time_steps, launching after §181's timing.
+    - **§175 STEP-AUX slot 1 closes, not DEEP** (15485a0f). Pooled 0.787 vs FINAL-only 0.351, with one reduction per pass (K′ = 4 solves n ≤ 4; K′ = 0 at chance).
+      - Limits: per-step errors compound, and nothing past the trained K (K′ = 16 hurts; n 9–12 at 0.20).
+      - Next lead (with Audit / Literature): STEP-AUX-HOLD (hold targets on passes beyond n, sampled K). A post-hoc §173 halt on s175 has been requested.
+    - **§177 (f) slot 1:** not HIT / not FAIL (pooled 0.506; passes not distinct). Its registered s2 is held pending Audit's spend view.
     - **§181 INTERLEAVE registered** (ba4cf16e). k think passes before every answer token, the memory carried across tokens; k1 / k2 on §161's mix, 48k.
       - The contract is with Experiments: --interleave k, gates 1–7, --time_steps projection to Audit (rough $2–3 / $3–5), then the 3070 k1 8k preview.
     - **Leading hypotheses for the think-pass failures:**
