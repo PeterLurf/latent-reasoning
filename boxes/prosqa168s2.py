@@ -146,6 +146,7 @@ def generate_cot(g, ids, max_new, dev, amp):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--arm", required=True, choices=["stepaux", "currdirect", "textcot"]); ap.add_argument("--data", default="na", choices=["na"])
+    ap.add_argument("--ckpt_passes", action="store_true", help="stepaux: torch.utils.checkpoint around each think pass (memory; Audit 2026-10-10)")
     ap.add_argument("--think_k", type=int, default=10); ap.add_argument("--aux_step", type=float, default=1.0); ap.add_argument("--aux_fade", default="12000,12000")
     ap.add_argument("--steps", type=int, default=12000); ap.add_argument("--bs", type=int, default=64); ap.add_argument("--lr", type=float, default=1e-4)
     ap.add_argument("--seed", type=int, default=1); ap.add_argument("--micro", type=int, default=1); ap.add_argument("--auto_micro", action="store_true")
@@ -180,7 +181,12 @@ def main():
             with ac():
                 S = m.mem.zero_state(len(its), dev)
                 for t in range(1, K + 1):
-                    S = m.write(S, x, msk); idx = [i for i, it in enumerate(its) if t <= it["depth"]]
+                    if a.ckpt_passes and torch.is_grad_enabled():           # Audit: per-pass activation checkpointing (the K x 721-token activations)
+                        from torch.utils.checkpoint import checkpoint
+                        S = checkpoint(m.write, S, x, msk, use_reentrant=False)
+                    else:
+                        S = m.write(S, x, msk)
+                    idx = [i for i, it in enumerate(its) if t <= it["depth"]]
                     if lam_ and idx:
                         lg_a, y_a = m.aux_logits(S[idx], [its[i] for i in idx], t, dev)
                         ce = Fn.cross_entropy(lg_a.transpose(1, 2), y_a, ignore_index=-100, reduction="none").sum(1) / (y_a != -100).sum(1)
