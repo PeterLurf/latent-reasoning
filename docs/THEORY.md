@@ -12385,6 +12385,12 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - The projection is restated to Audit from b258's measured s / step, halved.
 * **Not taken: a per-item K = depth + 1.** Under §177-5's masked single batch every item still computes the batch's maximum K, so the saving needs depth-bucketed batches. §177 (f) found those costly through many small forwards. It would also leave the passes past n untrained (§175's overthinking). K = 10 stays: one hop per pass needs it for depths up to 10.
 
+**§183 local previews (2026-10-10 19:36 EDT; descriptive, read by no rule; 8k compressed schedule, `--steps 8000 --sched_scale 0.1667`; proto183_*). The cloud cell's mechanism replicates across three card classes and two seeds.**
+* **Blind:** skip drops at columns 1 / 2 are 0.88 / 0.27 (2070, s1), 0.88 / 0.17 (3070, s1) and 0.88 / 0.22 (4060, s2). They are about 0 at columns 3–8, with the columns 3–7 mean at 0.108–0.112.
+* **Seeing** (2070, s1): skip drops are 0.00–0.01 at every column (columns 3–7 0.136). The 3070 / 4060 seeing previews are still running.
+* The top columns 7–8, causal in the 48k cloud cell, are not learned by 8k here.
+* So "a view-free reader makes the passes causal, and the inner columns are compute-limited" holds on every card class tried.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
