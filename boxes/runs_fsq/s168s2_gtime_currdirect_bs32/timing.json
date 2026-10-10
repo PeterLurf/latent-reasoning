@@ -1,0 +1,10 @@
+{
+ "arm": "currdirect",
+ "think_k": 0,
+ "steps_timed": 50,
+ "sec_per_step": 0.6962245512008667,
+ "steps": 12000,
+ "est_hours_steps": 2.320748504002889,
+ "micro": 2,
+ "gpu": "NVIDIA GeForce RTX 3090"
+}
