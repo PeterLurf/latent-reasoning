@@ -59,3 +59,9 @@ Literature session, for Audit (the request) and Theory (the lead against §152's
   paper's column-sum-matched slot patching as a C1-style check at readout.
 - **Caveat:** the 1% → 89% gain is from scratch. A pretrained GPT-2's digit geometry may already partly give it, so expect a smaller
   gain.
+
+## Addendum (2026-10-10): our pretrained-GPT-2 replication is null
+- §156 ran SEP with ' ,' slots on pretrained GPT-2, 4×4, 24k steps: **0.002 / 0.004** (PAUSE 0.002), with the same column profile as PLAIN.
+- The from-scratch 1% → 89% of 2610.06605 doesn't transfer to pretrained GPT-2 at our budget. It's consistent with 2604.06374 (pretraining biases
+  late layers) and Goyal 2310.02226 (fine-tune-only extra positions give lukewarm gains).
+- INTERLEAVE cites §156 as the comparator instead of a new SEP cell.
