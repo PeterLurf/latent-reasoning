@@ -464,3 +464,5 @@
 # 2026-10-09 18:42 Experiments: §169 K16 model landed (b218 drain) -> halt173 + the 173-1 package (no s176_ref: K8-only); bs halved for K = 16
 4.0 boxes/runs_fsq/s169_k16_4x4_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s169_k16_4x4_s1 --bs 50 --device {DEV}
 4.0 boxes/runs_fsq/s169_k16_4x4_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/s169_k16_4x4_s1 --dir177 --bs 60 --device {DEV}
+# 2026-10-10 02:15 Experiments (3070 idle; Audit 02:14): the 173-1 package on note 177-6's scaffold gate model (b240, pair-segment fade run at 12k, p 0) - descriptive, beside §179's BLIND / SEEING packages
+4.0 boxes/runs_fsq/proto177_fadetidx12k_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/proto177_fadetidx12k_s1 --dir177 --bs 60 --device {DEV}
