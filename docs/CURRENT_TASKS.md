@@ -96,6 +96,10 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
       - **§182 STEP-AUX-HOLD registered** (566616ef). NOFADE / WINDOW / HOLD; DEEP at K′ 8, STABLE = K′ 16 vs 8 (K′ 24 beside it).
         - The contract is with Experiments (rough $8–10). Order: §181, then §182, then s178b. A post-hoc §173 halt on s175 is queued on the 3070.
     - **§177 (f) slot 1:** not HIT / not FAIL (pooled 0.506; passes not distinct). s2 not run (note 177-7).
+    - **Drafted, not registered: STEP-AUX-GSM8K** (Audit's 04:05 lead; scratchpad sec18x_gsm8k_draft.md; Literature b908b475).
+      - §175's recipe on GSM8K-Aug (K = 6, per-pass equation aux), plus an in-pipeline TEXT-COT baseline cell.
+      - C3 against PCCoT 49.48 (SOTA claim: above by 2.8 in 2 / 2 seeds) and against our TEXT-COT.
+      - Registers after §182 NOFADE. **The launch needs the user's explicit approval** (the small-tasks-first directive); Audit carries the projection.
     - **§181 INTERLEAVE registered** (ba4cf16e). k think passes before every answer token, the memory carried across tokens; k1 / k2 on §161's mix, 48k.
       - The contract is with Experiments: --interleave k, gates 1–7, --time_steps projection to Audit (rough $2–3 / $3–5), then the 3070 k1 8k preview.
     - **Leading hypotheses for the think-pass failures:**
