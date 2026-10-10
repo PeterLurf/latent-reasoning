@@ -132,6 +132,71 @@ class Inject(FixedChunk):
         return np.vectorize(lambda t: lut.get(int(t), -1))(torch.stack(out, 1).cpu().numpy())
 
 
+def il_token(m, S, ctx, t0, k):
+    """§181 INTERLEAVE: k write passes on ctx = [EOT, a, " *", b, " =", ans_<j] (ids) starting from S = token j - 1's last state (zeros before token 1);
+    pass index t0 + 1 .. t0 + k (global over all k * L passes)."""
+    for i in range(1, k + 1):
+        S = m.write(S, ctx, t0 + i)
+    return S
+
+
+def il_read(m, S, ctx):
+    """§181: the decoder reads S over the same ctx (no write) -> logits for ans_j at the last position."""
+    return m.g.logits(fwd_read(m.g, m.g.embed(ctx), m.mem, S)[:, -1]).float()
+
+
+def il_loss(m, A, B, ans, k, ce):
+    """§181 training (teacher-forced: gold ans_<j in the passes and the decoder): mean CE over answer tokens 1..ce (165-1's curriculum; tokens past
+    ce carry no loss and nothing flows back from them, so they are not run)."""
+    pre = torch.tensor(dec_prefix(A, B), device=ans.device); S = m.mem.zero_state(len(A), ans.device); last = S; ls = []
+    for j in range(1, ce + 1):
+        assert S is last, "§181: token j's first pass starts from token j - 1's last state"
+        ctx = m.ids(torch.cat([pre, ans[:, :j - 1]], 1)); S = il_token(m, S, ctx, (j - 1) * k, k); last = S
+        ls.append(Fn.cross_entropy(il_read(m, S, ctx), ans[:, j - 1]))
+    return torch.stack(ls).mean()
+
+
+@torch.no_grad()
+def predict_il(m, A, B, k, dev, amp, bs, kp=None, skip_tok=(), norms=None, trace=None):
+    """§181 greedy: token j's kp (default k) passes on [EOT, prefix, the model's own ans_<j] from token j - 1's last state, then the read; skip_tok =
+    tokens whose passes are skipped (the state passes through). Pass index t0 = (j - 1) * kp. norms: {j: [(add, del) per item]} after token j's
+    passes; trace: list of per-pass states (first batch only; §181 delta_cos)."""
+    kp = k if kp is None else kp; N = len(A); L = A.shape[1] + B.shape[1]; out = np.full((N, L), -1); lut = {int(t): i for i, t in enumerate(DTOK)}
+    for i in range(0, N, bs):
+        sl = slice(i, i + bs); n_ = len(A[sl])
+        with amp_ctx(amp):
+            pre = torch.tensor(dec_prefix(A[sl], B[sl]), device=dev); S = m.mem.zero_state(n_, dev); toks = pre[:, :0]
+            if trace is not None and i == 0:
+                trace.append((0, S.float().clone()))
+            for j in range(1, L + 1):
+                ctx = m.ids(torch.cat([pre, toks], 1))
+                if j not in skip_tok:
+                    for q in range(1, kp + 1):
+                        S = m.write(S, ctx, (j - 1) * kp + q)
+                        if trace is not None and i == 0:
+                            trace.append((j, S.float().clone()))
+                if norms is not None:
+                    norms.setdefault(j, []).append(torch.stack([S[:, :DM.H_ADD].float().flatten(1).norm(dim=1), S[:, DM.H_ADD:].float().flatten(1).norm(dim=1)], 1).cpu().numpy())
+                nt = il_read(m, S, ctx).argmax(-1); toks = torch.cat([toks, nt[:, None]], 1)
+        out[sl] = np.vectorize(lambda t: lut.get(int(t), -1))(toks.cpu().numpy())
+    return out
+
+
+def compute_il(m, na, nb, k):
+    """§181 Meter per item (§98 convention): for each answer token j = 1..L, k fresh passes of 1 + na + nb + 2 + (j - 1) tokens and one read pass of
+    the same tokens (1 logit row); + the DeltaMem-R branch (as compute_inj)."""
+    mt = bc.Meter(m.g); L = na + nb; tok = 0; tok_r = 0
+    for j in range(1, L + 1):
+        T = 1 + na + nb + 2 + (j - 1)
+        for _ in range(k):
+            mt.step(T, 0, 0); tok += T
+        mt.step(T, 0, 1); tok_r += T
+    nb_ = sum(p_.numel() for n_, p_ in m.mem.named_parameters() if not n_.startswith("s_")); D2 = DM.DH ** 2
+    fb = 2 * nb_ * (tok + tok_r) + (DM.H_ADD + DM.H_DEL) * 2 * D2 * (tok + tok_r) + (DM.H_ADD * 2 + DM.H_DEL * 8) * D2 * tok; d = mt.as_dict()
+    return {"flops": d["flops"] + fb, "flops_trunk": d["flops"], "flops_branch": float(fb), "sequential_passes": d["seq_passes"], "lm_head_rows": L,
+            "tokens_processed": tok + tok_r, "think_passes": k * L, "decoder_reads": L, "convention": "§98 (boxes.core.Meter); per token k fresh write passes + 1 fresh read pass (no KV cache)"}
+
+
 @torch.no_grad()
 def predict(m, A, B, K, dev, amp, bs, skip=(), keep=None):
     N = len(A); L = A.shape[1] + B.shape[1]; out = np.full((N, L), -1); kept = {}
@@ -247,6 +312,8 @@ def main():
     ap.add_argument("--fade", default="", help="§177 (d): 'start,end' steps of the pair -> full-text ramp p 0 -> 1 (requires --think_k 4n)")
     ap.add_argument("--pass_index", default="", help="§177 (note 177-4): 'sin_gain' = g * the rescaled sinusoid of the absolute pass on the think token ('' = off)")
     ap.add_argument("--bptt_last", default="all", help="§176 RK: 'all' or n (backprop through the last n passes); auto_micro falls back to 8 if K = cap does not fit")
+    ap.add_argument("--interleave", type=int, default=0, help="§181 INTERLEAVE: k write passes before EVERY answer token (memory carried across tokens); 0 = off (--think_k 0)")
+    ap.add_argument("--time_steps", type=int, default=0, help="cost check: train this many steps, report s / step -> timing.json (+ eval.json), exit")
     ap.add_argument("--blind_decoder", action="store_true", help="§179: the end decoder is [EOT, ' ='] + memory, no problem text (as readslots171 BLIND)")
     ap.add_argument("--p0_evals", default="", help="§179: comma-separated steps -> full 4x4 at p = 0 (pair schedule) + per column + len / digit error -> s179.acc_p0_by_step")
     ap.add_argument("--resumed_from", default="", help="a label recorded in args (note 177-6: 'proto177_fadetidx12k_s1@12000')")
@@ -255,6 +322,7 @@ def main():
     ap.add_argument("--bench", default=os.path.join("bench", "data", "mult_4x4_test.txt")); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); a.arm = "inject"; os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale; FADE = a.think_k == "4n"; K = 16 if FADE else int(a.think_k); DM.FAST_ADD = bool(a.fast_add)
     assert FADE == bool(a.fade), "§177 (d): --think_k 4n goes with --fade"
+    IL = int(a.interleave); assert not IL or (K == 0 and not FADE and not a.rand_k and not a.prog and not a.blind_decoder), "§181: --interleave k with --think_k 0 only"
     SHM = [int(x) for x in a.shape_mix.split(",") if x.strip()]; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
     amp = None if (a.fp32 or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
     teA, teB = load_bench(a.bench if os.path.isabs(a.bench) else os.path.join(ROOT, a.bench))
@@ -281,6 +349,8 @@ def main():
         return kk
 
     def train_loss(A, B, c, kk=None):
+        if IL:                                                              # §181: interleaved passes, teacher-forced
+            P = product_digits(A, B); ans = torch.tensor(DT[P], device=dev); return il_loss(m, A, B, ans, IL, P.shape[1] if c >= 8 else min(c, P.shape[1]))
         if FADE:
             S = m.think_fade(m.mem.zero_state(len(A), dev), A, B, p_now[0], rng_f)
         else:
@@ -300,7 +370,10 @@ def main():
         if FADE:
             p_now[0] = p_keep
         l_.backward(); m.zero_grad(set_to_none=True); m.eval()
-        predict(m, gen_operands(r_, a.eval_bs, 4), gen_operands(r_, a.eval_bs, 16), KEVAL, dev, amp, a.eval_bs); m.train()
+        if IL:                                                              # §181: the 4x16 greedy eval (20 tokens x k passes)
+            predict_il(m, gen_operands(r_, a.eval_bs, 4), gen_operands(r_, a.eval_bs, 16), IL, dev, amp, a.eval_bs); m.train()
+        else:
+            predict(m, gen_operands(r_, a.eval_bs, 4), gen_operands(r_, a.eval_bs, 16), KEVAL, dev, amp, a.eval_bs); m.train()
         return torch.cuda.max_memory_allocated(dev) / 2 ** 30
     if a.mem_check or (a.auto_micro and dev.startswith("cuda") and not a.resume and not a.eval_only):
         mc = []
@@ -365,13 +438,22 @@ def main():
             if st_ <= ck["step"] and os.path.exists(f_):
                 s179_ev[lb_] = json.load(open(f_))
         log.write(json.dumps({"step": ck["step"], "resumed": a.resume, "resumed_from": a.resumed_from}) + "\n"); log.flush()
+    elif IL:                                                                # §181: note 147-2's g_add calibration on the interleaved passes (4x4, tokens 1..4)
+        r_ = np.random.default_rng(16901); A0, B0 = gen_operands(r_, 128, 4), gen_operands(r_, 128, 4); m.mem.norms = []; a0_ = torch.tensor(DT[product_digits(A0, B0)], device=dev)
+        with torch.no_grad(), amp_ctx(amp):
+            pre0 = torch.tensor(dec_prefix(A0, B0), device=dev); S0 = m.mem.zero_state(128, dev)
+            for j in range(1, 5):
+                S0 = il_token(m, S0, m.ids(torch.cat([pre0, a0_[:, :j - 1]], 1)), (j - 1) * IL, IL)
+        nr = m.mem.norms[1:]; m.mem.norms = None; r0 = float(torch.stack([d_ / a_.clamp_min(1e-12) for d_, a_ in nr]).median()) if nr else 1.0
+        m.mem.s_add.data.fill_(math.log(max(r0, 1e-12))); json.dump({"g_add_init": r0, "calibration": "§181 interleaved passes, 4x4 tokens 1..4"}, open(os.path.join(a.out, "s169_init.json"), "w", newline="\n"))
     elif K > 0:                                                             # note 147-2: g_add = median ||read_del|| / ||read_add|| at the think hand-offs
         r_ = np.random.default_rng(16901); A0, B0 = gen_operands(r_, 128, 4), gen_operands(r_, 128, 4); m.mem.norms = []
         with torch.no_grad(), amp_ctx(amp):
             m.think(m.mem.zero_state(128, dev), A0, B0, min(K, 4))
         nr = m.mem.norms[1:]; m.mem.norms = None; r0 = float(torch.stack([d_ / a_.clamp_min(1e-12) for d_, a_ in nr]).median()) if nr else 1.0
         m.mem.s_add.data.fill_(math.log(max(r0, 1e-12))); json.dump({"g_add_init": r0}, open(os.path.join(a.out, "s169_init.json"), "w", newline="\n"))
-    for step in range(step0, (a.stop_at or a.steps) + 1):                     # --stop_at: the same schedule, stopped early
+    last_ = (a.stop_at or a.steps) if not a.time_steps else min(a.stop_at or a.steps, step0 + a.time_steps - 1); tt0 = time.time()
+    for step in range(step0, last_ + 1):                                    # --stop_at: the same schedule, stopped early; --time_steps: a cost check
         for gr in opt.param_groups:
             gr["lr"] = lr_at(a.lr, gr, step, a.steps)
         m.train(); m.mem.fade.fill_(min(1.0, step / max(1, int(500 * sc))))
@@ -420,10 +502,60 @@ def main():
             torch.save({"model": m.state_dict(), "opt": opt.state_dict(), "np_rng": rng.bit_generator.state, "torch_rng": torch.get_rng_state(),
                         "cuda_rng": torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else None, "step": step, "n_nonfinite": n_nonfinite, "wg_hist": wg_hist,
                         "elapsed": time.time() - t0, "rng_k": rng_k.bit_generator.state, "rng_f": rng_f.bit_generator.state if FADE else None}, cp)
+    if a.time_steps:                                                        # Audit's cost check (est_hours over --steps)
+        sps = (time.time() - tt0) / max(1, last_ - step0 + 1)
+        tj = {"arm": "inject", "think_k": a.think_k, "interleave": IL, "steps_timed": last_ - step0 + 1, "sec_per_step": sps, "steps": a.steps, "est_hours_steps": sps * a.steps / 3600,
+              "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "micro": a.micro}
+        for f_ in ("timing.json", "eval.json"):                             # eval.json so the drain fetches it
+            json.dump(tj, open(os.path.join(a.out, f_), "w", newline="\n"), indent=1)
+        print("TIMING", sps, flush=True); return
     train_sec = round(time.time() - t0)
     if not a.eval_only:
         torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
     m.eval(); m.p_off = 0; t1 = time.time(); bs = a.eval_bs
+    if IL:                                                                  # §181 INTERLEAVE fields (score_s181)
+        opt.zero_grad(set_to_none=True); opt.state.clear(); Pte = product_digits(teA, teB); res = acc_report(predict_il(m, teA, teB, IL, dev, amp, bs), Pte)
+        res.update({"eval_only": bool(a.eval_only), "arm": "inject", "think_k": 0, "interleave": IL, "seed": a.seed, "train_sec": train_sec, "n_nonfinite": n_nonfinite,
+                    "eval_dtype": str(amp), "micro": a.micro, "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_gpu": info["train_gpu"],
+                    "train_driver": info["train_driver"]})
+        xs = {}
+        for nb_, s1_, s2_ in ((6, 14016, 14017), (7, 14018, 14019), (8, 14004, 14005), (16, 14006, 14007)):
+            xA, xB = gen_operands(np.random.default_rng(s1_), a.ext_n, 4), gen_operands(np.random.default_rng(s2_), a.ext_n, nb_); xs[nb_] = (xA, xB)
+            res["ext_4x%d" % nb_] = {**acc_report(predict_il(m, xA, xB, IL, dev, amp, bs), product_digits(xA, xB)), "seeds": [s1_, s2_]}
+        s = {"k": IL, "acc_4x4": res["test_acc"], "acc_by_column": res["acc_by_column"]["per_column"],
+             "ext_4x8": {"acc": res["ext_4x8"]["test_acc"], "acc_by_column": res["ext_4x8"]["acc_by_column"]["per_column"]}}
+        s["acc_by_kprime"] = {str(kp_): float((predict_il(m, teA, teB, IL, dev, amp, bs, kp=kp_) == Pte).all(1).mean()) for kp_ in (0, 1, 2, 4)}
+        s["skip_matrix"] = {str(j_): [round(float(v_), 4) for v_ in (predict_il(m, teA, teB, IL, dev, amp, bs, skip_tok=(j_,)) == Pte).mean(0)] for j_ in range(1, 9)}
+        nrm = {}; xA, xB = xs[8]; predict_il(m, xA[:256], xB[:256], IL, dev, amp, bs, norms=nrm)
+        s["mem_norm_by_token"] = {str(j_): {"additive": float(np.median(np.concatenate(v_)[:, 0])), "delta": float(np.median(np.concatenate(v_)[:, 1]))} for j_, v_ in sorted(nrm.items())}
+        tr = []; predict_il(m, teA[:256], teB[:256], IL, dev, amp, 256, trace=tr)
+        sd = [(tok_, st_[:, DM.H_ADD:].flatten(1)) for tok_, st_ in tr]; pc = []   # 173-1's statistic (halt173.dir_fields): the delta-head STATE, M_0 = the zero state
+        for q in range(1, len(sd)):
+            u_, v_ = sd[q][1], sd[q - 1][1]; ok_ = (u_.norm(dim=1) > 0) & (v_.norm(dim=1) > 0)
+            pc.append({"pass": q, "tokens": [sd[q - 1][0], sd[q][0]], "cos": float(Fn.cosine_similarity(u_[ok_], v_[ok_], dim=1).mean()) if ok_.any() else None,
+                       "n_zero_norm": int((~ok_).sum())})
+        w_ = [r_["cos"] for r_ in pc if r_["tokens"][0] == r_["tokens"][1] and r_["cos"] is not None]
+        x_ = [r_["cos"] for r_ in pc if r_["tokens"][0] != r_["tokens"][1] and r_["tokens"][0] > 0 and r_["cos"] is not None]
+        s["delta_cos"] = {"within_token": float(np.mean(w_)) if w_ else None, "across_tokens": float(np.mean(x_)) if x_ else None, "by_pair": pc, "n_items": 256,
+                          "def": "173-1 / halt173.dir_fields: per pass p the MEAN over items of cos(Sd_p, Sd_p-1), Sd = the flattened delta-head state S[:, H_ADD:], "
+                                 "consecutive states (M_0 = zero; zero-norm pairs skipped, counted); within = p and p - 1 in one token, across = token j's first pass vs "
+                                 "token j - 1's last (j >= 2); greedy 4x4 run"}
+        dl = [(tr[q][0], (tr[q][1] - tr[q - 1][1]).flatten(1)) for q in range(1, len(tr))]   # the increment cosine (descriptive extra)
+        pi_ = [{"tokens": [dl[q - 1][0], dl[q][0]], "cos": float(Fn.cosine_similarity(dl[q - 1][1], dl[q][1], dim=1).median())} for q in range(1, len(dl))]
+        s["delta_inc_cos"] = {"within_token": (lambda v: float(np.mean(v)) if v else None)([r_["cos"] for r_ in pi_ if r_["tokens"][0] == r_["tokens"][1]]),
+                              "across_tokens": (lambda v: float(np.mean(v)) if v else None)([r_["cos"] for r_ in pi_ if r_["tokens"][0] != r_["tokens"][1]]), "by_pair": pi_,
+                              "def": "median over items of cos(dS_p, dS_p+1), dS_p = the full state after pass p - before it"}
+        s["kprime_index_def"] = "at k' passes per token the pass index is t = (j - 1) * k' + q (the passes performed, consecutively); skip_matrix keeps t = (j - 1) * k + q"
+        ll = [json.loads(l_).get("loss") for l_ in open(os.path.join(a.out, "log.jsonl"))]; ll = [x__ for x__ in ll if x__ is not None]
+        tl = ll[-max(2, len(ll) // 10):]; h_ = len(tl) // 2
+        s["train_loss_tail"] = {"first_half": float(np.mean(tl[:h_])) if h_ else None, "second_half": float(np.mean(tl[h_:])) if tl else None, "n_logged": len(tl)}
+        s["compute"] = {"4x4": compute_il(m, 4, 4, IL), "4x8": compute_il(m, 4, 8, IL)}; res["compute"] = s["compute"]["4x4"]
+        s["g_add"] = float(torch.exp(m.mem.s_add)); s["g_del"] = float(torch.exp(m.mem.s_del)); s["write_grad_norm"] = wg_hist; res["s181"] = s
+        res["eval_sec"] = round(time.time() - t1); json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
+        for ck_ in ("ckpt_last.pt", "ckpt_prev.pt"):
+            if os.path.exists(os.path.join(a.out, ck_)):
+                os.remove(os.path.join(a.out, ck_))
+        print("EVAL", json.dumps({"test_acc": res["test_acc"], "acc_by_kprime": s["acc_by_kprime"]}), flush=True); print("DONE", a.out, flush=True); return
     Pte = product_digits(teA, teB); pred, _ = predict(m, teA, teB, K, dev, amp, bs); res = acc_report(pred, Pte)
     res.update({"eval_only": bool(a.eval_only), "arm": "inject", "think_k": K, "seed": a.seed, "train_sec": train_sec, "n_nonfinite": n_nonfinite, "eval_dtype": str(amp), "micro": a.micro,
                 "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_gpu": info["train_gpu"], "train_driver": info["train_driver"]})
