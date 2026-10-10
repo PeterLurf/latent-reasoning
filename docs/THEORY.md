@@ -264,7 +264,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 174 | MULTI-TASK (the user's task agnosticness, strongest form): one INJECT K8 model on mult + nested with no task flag; MATCH vs single-task K8 (BUDGET vs INTERFERENCE via 24k evals), THINK-NECESSARY per task, cross-task swap | registered (gated on §169 / §170 K8 slot 1) | **open** |
 | 175 | STEP-AUX (Audit's lead after SIM-CoT): §170 INJECT K8 + a shared-trunk read-only aux decoder emitting Feng's CoT step t from M_t (λ 1 fading to 0 by 48k); AUX-HELPS / HURTS-DEPTH vs FINAL-only, READOUT, STEP-RECOVER | slot 1 **not DEEP** (pooled 0.787 vs FINAL-only 0.351; THINK-NECESSARY; one reduction per pass: K′ = 4 solves n ≤ 4, K′ = 0 at chance; READOUT no; 9–12 0.20) | closed |
 | 176 | RAND-K (Audit's lead after §172; Huginn / Bansal): INJECT trained with a random think-pass count (RK) or progressive no-grad prefixes (PROG); C2-BEYOND at K' = 64 beyond training support + NO-OVERTHINKING vs fixed K8's same curve | **neither RK nor PROG rescues INJECT** (0.0 at every K′ and skip; RK mean K 7.96) | closed |
-| 177 | PASS-DISTINCT: arms to make identical-input think passes trainable - (a) pass index, (d) schedule fade + index (mult), (f) step-matched K, (g) curriculum + Poisson K (nested, gated on f); MOVES-MECHANISM (173-1) per arm | (a) no rescue; (d) gate failed; (f) slot 1 not HIT / not FAIL (pooled 0.506; passes not distinct), s2 queued; (g) not run | **open** |
+| 177 | PASS-DISTINCT: arms to make identical-input think passes trainable - (a) pass index, (d) schedule fade + index (mult), (f) step-matched K, (g) curriculum + Poisson K (nested, gated on f); MOVES-MECHANISM (173-1) per arm | (a) no rescue; (d) gate failed; (f) slot 1 not HIT / not FAIL (pooled 0.506; passes not distinct), s2 not run (177-7); (g) not run | **open** |
 | 178 | FROM-SCRATCH (diagnostic): §170's INJECT on a random-init 6-layer GPT-2; USES-PASSES -> PRETRAINING-OR-CAPACITY (a conditional matched 12-layer pair decides) vs HARNESS-BLOCKS; read beside §175 (pretrained, forced) | slot 1 **UNINFORMATIVE** (protocol: §170's test exclusion removes the n = 1 table for a scratch model; 178-2); K8 aborted unread; **s178b registered** (178-3: test exclusion for n >= 2 only; §178's readout, since §179 read CAPACITY), launching after §181's timing | **open** |
 | 179 | READOUT (diagnostic): §177 (d)'s scaffold with a BLIND end decoder, p = 0 to 24k; SHORTCUT (the decoder's view of the problem starves the memory) vs CAPACITY (end readout cannot carry the product) | **CAPACITY** (blind 0.0 at 12k / 24k, column 3 0.351; columns 1–2 exact from memory alone); the seeing twin's 24k is descriptive | closed |
 | 180 | (unused: the DEC-DROP draft, conditional on a §179 SHORTCUT, was never registered) | — | — |
@@ -11800,6 +11800,20 @@ how many think passes run in training.
   - Matching the pass count to the step count helps (0.506 against 0.351), but the passes stay near-identical. §175's per-pass targets do more (0.787, distinct passes).
   - (g) is not run: it is gated on an (f) HIT.
   - (f)'s s2 follows by registration ("(f)'s second seed follows its slot 1"), queued behind §181 and s178b.
+
+**§175 slot 1, field names (2026-10-10 02:54 EDT; Audit; no change to any number or verdict).** The block quotes two per-pass aux series. Their eval.json fields:
+* "Per-pass aux exact match 0.98 / 0.98 / 0.98 / 0.94 / 0.85 / 0.74 / 0.61 / 0.47" is `s175.aux_acc_by_pass` (whole step text, exact).
+* "Handle value 0.997 / 0.994 / 0.987 / 0.951 at t = 1–4, falling to 0.47 at t = 8" is `s175.aux_acc_by_role[t].handle` (the newly reduced value token only; 0.466 at t = 8).
+
+**Note 177-7 (2026-10-10 02:54 EDT; post-data for (f) slot 1, disclosed; Audit; a spend decision, no rule change). (f)'s registered s2 is not run, and (f) is read at slot 1 only.**
+* §177 registered "(f)'s second seed follows its slot 1" unconditionally.
+* **Why skip it:**
+  - Slot 1 is far from DEEP: n = 8 reads 0.213, and every n from 4 on is below 0.72.
+  - Its passes are not distinct (delta cosine 0.86 / 0.94 / 0.97).
+  - §175's per-pass targets beat it by 0.28 pooled (0.787 against 0.506).
+  - A second seed cannot turn slot 1's profile into a HIT. It would cost about $2.5 that the §175 line uses better.
+* **What changes:** (f) stays "not HIT, not FAIL" at slot 1, with no ≥ 2-seed reading. (g) stays unrun (gated on an (f) HIT).
+* This loosens no rule and claims nothing beyond slot 1.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
