@@ -12377,6 +12377,14 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - §168 step 2's STEP-AUX uses it; its baselines CURR-DIRECT / TEXT-COT have no INJECT passes.
   - §184 and §185 do not use it, since their comparator s182_nofade_s1 did not.
 
+**Note 168-9 (2026-10-10 17:36 EDT; pre-data for §168 step 2: no cell has run; Audit; a budget change with no rule change). All three step-2 cells train at batch size 32 (from 64), at the same 12k steps.**
+* **Why:** the STEP-AUX re-time (b258, with `--ckpt_passes --cache_lower`) runs at more than 22 s / step. At bs 64 and 12k steps that is more than $17 for that cell alone, and about $20+ for slot 1.
+* **The change:** bs 32 for STEP-AUX, CURR-DIRECT and TEXT-COT alike, so the comparison stays matched.
+  - The steps, the LR schedule, K = 10, full backpropagation through the passes and the aux are unchanged.
+  - Each cell sees half the items (384k, 32 epochs of the 12k training set).
+  - The projection is restated to Audit from b258's measured s / step, halved.
+* **Not taken: a per-item K = depth + 1.** Under §177-5's masked single batch every item still computes the batch's maximum K, so the saving needs depth-bucketed batches. §177 (f) found those costly through many small forwards. It would also leave the passes past n untrained (§175's overthinking). K = 10 stays: one hop per pass needs it for depths up to 10.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
