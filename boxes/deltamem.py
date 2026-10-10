@@ -115,7 +115,12 @@ def add_read(mem, pq, Sa, z=None):
     (+ 1e-6) per head; rms normalises each head's read to unit RMS over DH and multiplies a learned per-head gain (init 1). None: unchanged."""
     tok = pq.dim() == 4; oa = torch.einsum("bthk,bhkv->bthv" if tok else "bhk,bhkv->bhv", pq, Sa); md = getattr(mem, "add_norm", None)
     if md == "den":
-        oa = oa / (torch.einsum("bthk,bhk->bth" if tok else "bhk,bhk->bh", pq, z)[..., None] + 1e-6)
+        dn_ = torch.einsum("bthk,bhk->bth" if tok else "bhk,bhk->bh", pq, z)
+        if getattr(mem, "zmin_rec", None) is not None:                      # Audit (§185 review): the smallest denominator phi(q)^T z (TransNormer's failure point),
+            nz = z.detach().abs().sum((-1, -2)) > 0                         # over items whose z is nonzero (pass 1 reads the zero state: read 0, not a failure)
+            if bool(nz.any()):
+                mem.zmin_rec.append(float(dn_.detach()[nz].min()))
+        oa = oa / (dn_[..., None] + 1e-6)
     elif md == "rms":
         oa = oa * torch.rsqrt(oa.pow(2).mean(-1, keepdim=True) + 1e-6) * mem.add_gain[:, None]
     return oa
