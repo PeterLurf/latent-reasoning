@@ -67,8 +67,8 @@ def read_vec(mem, x, S):
     with torch.autocast("cuda", enabled=False):
         ha, hd = getattr(mem, "h_add", DM.H_ADD), getattr(mem, "h_del", DM.H_DEL)   # §178: the memory's own head counts
         b, D = x.shape; q = mem.qkv(mem.ln(x.float()))[..., :D].view(b, ha + hd, DM.DH)
-        oa = torch.exp(mem.s_add) * torch.einsum("bhk,bhkv->bhv", Fn.elu(q[:, :ha]) + 1, S[:, :ha].float())
-        od = torch.exp(mem.s_del) * torch.einsum("bhvk,bhk->bhv", S[:, ha:].float(), Fn.normalize(q[:, ha:], dim=-1))
+        oa = torch.exp(mem.s_add) * DM.add_read(mem, Fn.elu(q[:, :ha]) + 1, S[:, :ha].float(), DM.state_z(mem, S))   # §185: the run's own additive read
+        od = torch.exp(mem.s_del) * torch.einsum("bhvk,bhk->bhv", S[:, ha:ha + hd].float(), Fn.normalize(q[:, ha:], dim=-1))
         return torch.cat([oa, od], 1).flatten(1)
 
 
@@ -138,9 +138,10 @@ def trace(ad, batch, T, dev, amp):
             r = read_vec(ad.m.mem, x, S); Sf = S.float()
             if t:
                 chg["read"].append(((r - rprev).norm(dim=1) / r.norm(dim=1).clamp_min(1e-12)).cpu().numpy())
-                ha_ = getattr(ad.m.mem, "h_add", DM.H_ADD); dd = Sf[:, ha_:].flatten(1); dp = Sprev[:, ha_:].flatten(1)
+                ha_ = getattr(ad.m.mem, "h_add", DM.H_ADD); hd_ = getattr(ad.m.mem, "h_del", DM.H_DEL); dd = Sf[:, ha_:ha_ + hd_].flatten(1); dp = Sprev[:, ha_:ha_ + hd_].flatten(1)
                 chg["delta"].append(((dd - dp).norm(dim=1) / dd.norm(dim=1).clamp_min(1e-12)).cpu().numpy())
-                chg["full"].append(((Sf - Sprev).flatten(1).norm(dim=1) / Sf.flatten(1).norm(dim=1).clamp_min(1e-12)).cpu().numpy())
+                F1, F0 = Sf[:, :ha_ + hd_].flatten(1), Sprev[:, :ha_ + hd_].flatten(1)   # §185: the 12 memory heads only (den's z block excluded)
+                chg["full"].append(((F1 - F0).norm(dim=1) / F1.norm(dim=1).clamp_min(1e-12)).cpu().numpy())
             rprev, Sprev = r, Sf; ans.append(a_)
             cor.append((a_ == truth).all(1) if a_.ndim == 2 else (a_ == truth))
     return np.stack(cor), ans, chg
@@ -182,7 +183,7 @@ def load_model(run, dev, init=False):
     elif "n_max_train" in a:
         from boxes.nested170 import InjectN
         from boxes.nested170 import mem_geometry
-        assert a.get("arm") == "inject"; ml_, ha_, hd_ = mem_geometry(a); kind, m = "nested", InjectN(g, ml_, "top", ha_, hd_)
+        assert a.get("arm") == "inject"; ml_, ha_, hd_ = mem_geometry(a); kind, m = "nested", InjectN(g, ml_, "top", ha_, hd_, a.get("add_norm") or None)
     else:
         from boxes.inject169 import Inject
         assert a.get("arm") == "inject"; kind, m = "inject", Inject(g, 6, a.get("mem_write", "top")); m.blind = bool(a.get("blind_decoder"))   # §179
@@ -249,7 +250,7 @@ def dir_fields(kind, m, a, dev, amp, n_items=500, bs=250, bench=os.path.join("be
                     S = ad.step(S, c)
                 tap.arm(); _, rpos = ad.decode(S, c); tap.on = False
                 x = tap.x[:, -1] if rpos is None else tap.x[torch.arange(tap.x.shape[0], device=dev), torch.tensor(rpos, device=dev)]
-                cur = {"read": read_vec(m.mem, x, S).float(), "delta": S[:, getattr(m.mem, "h_add", DM.H_ADD):].float().flatten(1), "add": S[:, :getattr(m.mem, "h_add", DM.H_ADD)].float().flatten(1)}
+                cur = {"read": read_vec(m.mem, x, S).float(), "delta": S[:, getattr(m.mem, "h_add", DM.H_ADD):getattr(m.mem, "h_add", DM.H_ADD) + getattr(m.mem, "h_del", DM.H_DEL)].float().flatten(1), "add": S[:, :getattr(m.mem, "h_add", DM.H_ADD)].float().flatten(1)}
                 if prev is not None:
                     for k_ in cur:
                         acc[k_][t].append(cos(cur[k_], prev[k_]))
@@ -294,7 +295,7 @@ def step_probe_delta(kind, m, a, dev, amp, bs=250, n_fit=4000, n_test=1000, benc
                 S, c = ad.init(ch)
                 for _ in range(t):
                     S = ad.step(S, c)
-            out.append(S[:, getattr(ad.m.mem, "h_add", DM.H_ADD):].float().flatten(1).cpu().numpy())
+            out.append(S[:, getattr(ad.m.mem, "h_add", DM.H_ADD):getattr(ad.m.mem, "h_add", DM.H_ADD) + getattr(ad.m.mem, "h_del", DM.H_DEL)].float().flatten(1).cpu().numpy())
         return np.concatenate(out)
     res = {}
     for t in range(1, K + 1):
@@ -333,7 +334,7 @@ def dir_pair_fields(run, dev, amp, n_items=500, bs=125, bench=os.path.join("benc
             prev = None
             for t in range(T):
                 _, S = m.step(S, t)
-                cur = {"read": read_vec(m.mem, xq, S).float(), "delta": S[:, getattr(m.mem, "h_add", DM.H_ADD):].float().flatten(1), "add": S[:, :getattr(m.mem, "h_add", DM.H_ADD)].float().flatten(1)}
+                cur = {"read": read_vec(m.mem, xq, S).float(), "delta": S[:, getattr(m.mem, "h_add", DM.H_ADD):getattr(m.mem, "h_add", DM.H_ADD) + getattr(m.mem, "h_del", DM.H_DEL)].float().flatten(1), "add": S[:, :getattr(m.mem, "h_add", DM.H_ADD)].float().flatten(1)}
                 if prev is not None:
                     for k_ in cur:
                         acc[k_][t + 1].append(cos(cur[k_], prev[k_]))
@@ -382,6 +383,49 @@ def auxdone_fields(m, a, dev, amp, n_items=1000, bs=100, cap=16, ns=(2, 4, 6, 8,
 
 
 @torch.no_grad()
+def normcap_fields(m, a, dev, amp, bs=100, run=None):
+    """note 185-1 (Theory, descriptive): inference-only NORM-CAP for a nested run. C = the median ||S_add|| after K passes over 1,000 TRAINING items
+    (nested170.train_items, rng 18501, test-excluded as the run: test_set + the SERIAL pool); then acc_by_n at each K' of the run's --kprimes set
+    (default {0, 1, K/2, K, 2K}) with S_add rescaled to norm C after every write when it exceeds C (direction kept; delta untouched). The uncapped
+    acc_by_n_kprime is copied from the run's eval.json."""
+    from contextlib import nullcontext
+    from boxes.nested170 import test_set, train_items, generate, render, NUM_IDS
+    ctx = (lambda: torch.autocast("cuda", dtype=amp)) if amp is not None else nullcontext
+    K = rule_k(a); ha = m.mem.h_add; TE = test_set(a.get("per_n", 1000)); EX = {tuple(it["syms"]) for it in TE if it["n"] >= int(a.get("excl_min_n", 1))}
+    r_sp = np.random.default_rng(17300)
+    for _ in range(int(a.get("serial_pool", 2200))):
+        r__, _t = generate(r_sp, 8); EX.add(tuple(render(r__)))
+    tr = train_items(np.random.default_rng(18501), 1000, int(a.get("n_max_train", 8)), EX); nrm = []
+    for i in range(0, len(tr), bs):
+        ch = tr[i:i + bs]; x, msk = m.think_inputs(ch, dev)
+        with ctx():
+            S = m.mem.zero_state(len(ch), dev)
+            for _ in range(K):
+                S = m.write(S, x, msk)
+        nrm.append(S[:, :ha].float().flatten(1).norm(dim=1).cpu().numpy())
+    C = float(np.median(np.concatenate(nrm)))
+    kps = sorted({int(v) for v in str(a.get("kprimes") or "").split(",") if v.strip()} | {K}) if a.get("kprimes") else sorted({0, 1, K // 2, K, 2 * K})
+    T_ = np.array([it["t"] for it in TE]); N_ = np.array([it["n"] for it in TE]); capped = {}
+    for kp in kps:
+        out = []
+        for i in range(0, len(TE), bs):
+            ch = TE[i:i + bs]; x, msk = m.think_inputs(ch, dev)
+            with ctx():
+                S = m.mem.zero_state(len(ch), dev)
+                for _ in range(kp):
+                    S = m.write(S, x, msk); cur = S[:, :ha].float().flatten(1).norm(dim=1)
+                    f = torch.where(cur > C, C / cur.clamp_min(1e-12), torch.ones_like(cur)).to(S.dtype)
+                    S = torch.cat([S[:, :ha] * f[:, None, None, None], S[:, ha:]], 1)
+                out.append(m.dec_logits(S, ch, dev)[:, NUM_IDS].argmax(-1).cpu().numpy())
+        A_ = np.concatenate(out); capped[str(kp)] = {str(n): float((A_ == T_)[N_ == n].mean()) for n in range(1, 17)}
+        print("normcap K'", kp, round(float((A_ == T_)[(N_ >= 3) & (N_ <= 8)].mean()), 4), flush=True)
+    unc = (json.load(open(os.path.join(run, "eval.json"))).get("s170") or {}).get("acc_by_n_kprime") if run and os.path.exists(os.path.join(run, "eval.json")) else None
+    return {"C": C, "C_source": "median ||S_add|| after K = %d passes over 1,000 train items (nested170.train_items rng 18501, test + SERIAL pool excluded)" % K,
+            "acc_by_n_kprime": capped, "acc_by_n_kprime_uncapped": unc, "kprimes": kps,
+            "def": "inference-only: after every write, S_add rescaled to norm C when ||S_add|| > C (per item, direction kept; delta untouched) - note 185-1"}
+
+
+@torch.no_grad()
 def tshift_fields(m, a, dev, amp, n_items=1000, bs=100, ns=(4, 6, 8)):
     """note 182-2 follow-up T-SHIFT (Theory, descriptive): is §175's aux "done" a pass COUNTER (the prompt's pass token) or does the memory carry
     COMPLETION? Per n, M_t after exactly t real passes for t in {n-1, n, n+1}; at each, the aux greedy (2 tokens) with the prompt's pass token set to
@@ -415,6 +459,7 @@ def main():
     ap.add_argument("--bench", default=os.path.join("bench", "data", "mult_4x4_test.txt")); ap.add_argument("--dir177", action="store_true", help="§177 direction diagnostic only")
     ap.add_argument("--auxdone", action="store_true", help="note 182-2 AUX-DONE halting (nested + §175 aux) only -> eval_s182_auxdone.json")
     ap.add_argument("--tshift", action="store_true", help="note 182-2 follow-up T-SHIFT (aux done vs real / prompt pass) only -> eval_s182_tshift.json")
+    ap.add_argument("--normcap", action="store_true", help="note 185-1 inference-only NORM-CAP (nested) only -> eval_s185_normcap.json")
     o = ap.parse_args(); dev = o.device; t0 = time.time(); o.out = o.out if (o.out and o.out.endswith(".json")) else None   # gen_vast_job appends --out <dir>: anything but a .json path -> the default file in --run
     amp = None if (o.fp32 or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
     a_ = json.load(open(os.path.join(o.run, "args.json")))
@@ -424,6 +469,11 @@ def main():
                    "sec": round(time.time() - t0)})
         json.dump(r_, open(o.out or os.path.join(o.run, "eval_s177_dir.json"), "w", newline="\n"), indent=1); print("DONE dir177 pair", o.run, flush=True); return
     kind, m, a = load_model(o.run, dev); K = rule_k(a); T = 2 * K; assert K >= 1
+    if o.normcap:                                                           # note 185-1 (Theory): inference-only NORM-CAP -> eval_s185_normcap.json
+        assert kind == "nested", "NORM-CAP (185-1) is for nested runs"
+        r_ = {"normcap": normcap_fields(m, a, dev, amp, o.bs, o.run), "run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
+              "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)}
+        json.dump(r_, open(o.out or os.path.join(o.run, "eval_s185_normcap.json"), "w", newline="\n"), indent=1); print("DONE normcap", o.run, flush=True); return
     if o.tshift:                                                            # note 182-2 follow-up (Theory): T-SHIFT -> eval_s182_tshift.json
         assert kind == "nested" and a.get("aux_step"), "T-SHIFT needs a nested run trained with §175's aux decoder"
         r_ = {"by_n": tshift_fields(m, a, dev, amp, o.n, o.bs), "run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),

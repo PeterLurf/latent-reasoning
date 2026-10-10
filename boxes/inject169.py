@@ -535,7 +535,8 @@ def main():
             res["ext_4x%d" % nb_] = {**acc_report(predict_il(m, xA, xB, IL, dev, amp, bs), product_digits(xA, xB)), "seeds": [s1_, s2_]}
         s = {"k": IL, "acc_4x4": res["test_acc"], "acc_by_column": res["acc_by_column"]["per_column"],
              "ext_4x8": {"acc": res["ext_4x8"]["test_acc"], "acc_by_column": res["ext_4x8"]["acc_by_column"]["per_column"]}}
-        s["acc_by_kprime"] = {str(kp_): float((predict_il(m, teA, teB, IL, dev, amp, bs, kp=kp_) == Pte).all(1).mean()) for kp_ in (0, 1, 2, 4)}
+        s["acc_by_kprime"] = {str(kp_): float((predict_il(m, teA, teB, IL, dev, amp, bs, kp=kp_) == Pte).all(1).mean())
+                              for kp_ in sorted({0, 1, 2, 4} | ({2 * IL} if IL >= 4 else set()))}   # §186 (95e5dfbf): k4 adds k' = 8; k1 / k2 unchanged
         s["skip_matrix"] = {str(j_): [round(float(v_), 4) for v_ in (predict_il(m, teA, teB, IL, dev, amp, bs, skip_tok=(j_,)) == Pte).mean(0)] for j_ in range(1, 9)}
         nrm = {}; xA, xB = xs[8]; predict_il(m, xA[:256], xB[:256], IL, dev, amp, bs, norms=nrm)
         s["mem_norm_by_token"] = {str(j_): {"additive": float(np.median(np.concatenate(v_)[:, 0])), "delta": float(np.median(np.concatenate(v_)[:, 1]))} for j_, v_ in sorted(nrm.items())}
