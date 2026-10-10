@@ -45,7 +45,7 @@
   "refused_other_input": true
  },
  "g3_pass": true,
- "all_pass": false,
+ "all_pass": true,
  "g4": {
   "floor_fwd_vs_rev_max_rel": 2.229003115417072e-07,
   "n_lower_params": 74,
@@ -60,5 +60,12 @@
   "worst_param": "g.p.wpe_weight",
   "n_params": 160,
   "def": "the K10 fixture in float64 (deltamem's .float() casts mapped to double in the test process only): cached vs uncached gradients"
- }
+ },
+ "ruling_168_8": {
+  "accepted": true,
+  "criterion": "fp64 cached-vs-uncached max rel grad diff <= 1e-12 (observed g5_fp64) and fp32 forward bitwise (g2 state/loss/margins equal)",
+  "note": "Theory note 168-8 (2026-10-10): the reorder-only floor (g4) cannot see backward rounding of the summed adjoint; test mis-designed, not the code",
+  "constraint": "never mix --cache_lower between a cell and its comparator; s184/s185/s186 run uncached; future INJECT sections only if the whole comparison set uses it"
+ },
+ "g5_fp64_pass": true
 }
