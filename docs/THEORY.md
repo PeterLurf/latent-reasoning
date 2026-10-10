@@ -12221,6 +12221,11 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - About 0.08 remains, flat from t = 13. That part belongs to the unsupervised extra passes (§182 HOLD's lever).
   - The clamp uses each item's own t = 8 norm, which is not deployable. A single global cap is tested next (eval-only), before any training cell for proposal #4.
 
+**NORM-CLAMP and memory norms on §175, sample size (2026-10-10 12:20 EDT; Audit).** Both reads use 256 items (rng 17501), so the pooled SE is about 0.03 and each per-n cell (about 40 items) about 0.07.
+* The pooled findings stand: about 80% recovered, and a flat residual near 0.08.
+* The per-n figures (for example n = 4: 0.96 against 0.63) are directional only.
+* NORM-CAP-GLOBAL uses ≥ 1,000 items per n.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
