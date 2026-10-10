@@ -1,0 +1,2 @@
+{"step": 100, "loss": 2.521487925052643, "sec": 62, "gamma": 0.0, "fade": 0.20000000298023224, "write_grad_norm": 0.0032483013309865783, "write_grad_spike_100x_floor": false}
+{"step": 200, "loss": 2.390452527999878, "sec": 122, "gamma": 0.0, "fade": 0.4000000059604645, "write_grad_norm": 0.0051910703512839974, "write_grad_spike_100x_floor": false}
