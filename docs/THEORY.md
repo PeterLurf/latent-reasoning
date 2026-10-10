@@ -262,9 +262,9 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 172 | PCCoT-PROBE (eval only): §149's battery on whynlp/pccot-gpt2 (GSM8K 49.48 at release); LATENTS-USED, ITERATIONS-USED (T' = 0 = pause), Jacobi RHO, descriptive SERIAL | **LATENTS-USED, ITERATIONS-USED** (0.49 release; zeroed 0.17; T'=0 0.13; more iterations hurt); RHO MARGINAL 0.88; step state distributed across the block, not recomputed (whole-block swap: recipient 0.03–0.08, hybrid 0.22–0.27 → PARTIAL; 172-1) | closed |
 | 173 | CONV-HALT (eval only; C5, halting): decode when the answer settles (unchanged across 2 consecutive passes, cap 2K) on the think-pass arms (§165 / §169 / §170 / §171); HALT-EQUAL + ADAPTIVE | registered | **open** |
 | 174 | MULTI-TASK (the user's task agnosticness, strongest form): one INJECT K8 model on mult + nested with no task flag; MATCH vs single-task K8 (BUDGET vs INTERFERENCE via 24k evals), THINK-NECESSARY per task, cross-task swap | registered (gated on §169 / §170 K8 slot 1) | **open** |
-| 175 | STEP-AUX (Audit's lead after SIM-CoT): §170 INJECT K8 + a shared-trunk read-only aux decoder emitting Feng's CoT step t from M_t (λ 1 fading to 0 by 48k); AUX-HELPS / HURTS-DEPTH vs FINAL-only, READOUT, STEP-RECOVER | registered (gated on §170 K8 slot 1) | **open** |
+| 175 | STEP-AUX (Audit's lead after SIM-CoT): §170 INJECT K8 + a shared-trunk read-only aux decoder emitting Feng's CoT step t from M_t (λ 1 fading to 0 by 48k); AUX-HELPS / HURTS-DEPTH vs FINAL-only, READOUT, STEP-RECOVER | slot 1 **not DEEP** (pooled 0.787 vs FINAL-only 0.351; THINK-NECESSARY; one reduction per pass: K′ = 4 solves n ≤ 4, K′ = 0 at chance; READOUT no; 9–12 0.20) | closed |
 | 176 | RAND-K (Audit's lead after §172; Huginn / Bansal): INJECT trained with a random think-pass count (RK) or progressive no-grad prefixes (PROG); C2-BEYOND at K' = 64 beyond training support + NO-OVERTHINKING vs fixed K8's same curve | **neither RK nor PROG rescues INJECT** (0.0 at every K′ and skip; RK mean K 7.96) | closed |
-| 177 | PASS-DISTINCT: arms to make identical-input think passes trainable - (a) pass index, (d) schedule fade + index (mult), (f) step-matched K, (g) curriculum + Poisson K (nested, gated on f); MOVES-MECHANISM (173-1) per arm | registered (cloud gated on §169 + §170 K8 failing; local previews descriptive) | **open** |
+| 177 | PASS-DISTINCT: arms to make identical-input think passes trainable - (a) pass index, (d) schedule fade + index (mult), (f) step-matched K, (g) curriculum + Poisson K (nested, gated on f); MOVES-MECHANISM (173-1) per arm | (a) no rescue; (d) gate failed; (f) slot 1 not HIT / not FAIL (pooled 0.506; passes not distinct), s2 queued; (g) not run | **open** |
 | 178 | FROM-SCRATCH (diagnostic): §170's INJECT on a random-init 6-layer GPT-2; USES-PASSES -> PRETRAINING-OR-CAPACITY (a conditional matched 12-layer pair decides) vs HARNESS-BLOCKS; read beside §175 (pretrained, forced) | slot 1 **UNINFORMATIVE** (protocol: §170's test exclusion removes the n = 1 table for a scratch model; 178-2); K8 aborted unread; **s178b registered** (178-3: test exclusion for n >= 2 only; §178's readout, since §179 read CAPACITY), launching after §181's timing | **open** |
 | 179 | READOUT (diagnostic): §177 (d)'s scaffold with a BLIND end decoder, p = 0 to 24k; SHORTCUT (the decoder's view of the problem starves the memory) vs CAPACITY (end readout cannot carry the product) | **CAPACITY** (blind 0.0 at 12k / 24k, column 3 0.351; columns 1–2 exact from memory alone); the seeing twin's 24k is descriptive | closed |
 | 180 | (unused: the DEC-DROP draft, conditional on a §179 SHORTCUT, was never registered) | — | — |
@@ -11763,6 +11763,43 @@ how many think passes run in training.
   - Then --time_steps on a 3090, with the projection restated to Audit (§178: about $4–6 for three cells).
   - The cells launch after §181's timing lands, so §181 gets the first cloud slots (Audit).
 * Dirs `s178b_{direct,k0,k8}_s1`.
+
+**§175 result, slot 1 (2026-10-10 02:52 EDT; s175_auxk8_s1, b235, RTX 3090, 48k, landed aba28378; score_s175). Not DEEP, so s2 / s3 are not opened and §175 closes under its rules. Descriptively it is the first think-pass design whose passes each do one reduction: accuracy at K′ passes is high almost exactly for n ≤ K′.**
+* **Registered verdicts:**
+  - **DEEP:** no. n 3..8 reads 1.0 / 0.967 / 0.882 / 0.741 / 0.641 / 0.490 (pooled 0.787).
+  - **THINK-NECESSARY** (170-4, removal-only): yes. K′ = 0 / 1 pooled 0.086 / 0.102 (chance 0.091).
+  - **SERIAL-NEST:** no. The maximum of hybrid − null is 0.254, at t = 6. The hybrid share rises with t: 0.05 / 0.11 / 0.21 / 0.32 at t = 1 / 2 / 4 / 6.
+  - **AUX-HELPS-DEPTH:** not shown. The n 9–12 mean is 0.201 against FINAL-only's 0.123 (+0.078, under +0.10), and the rule needs ≥ 2 / 3 seeds.
+  - **READOUT (C7):** no. Per-pass aux exact match is 0.98 / 0.98 / 0.98 / 0.94 / 0.85 / 0.74 / 0.61 / 0.47 at t = 1–8.
+* **Accuracy by n (1–8) at each K′ (descriptive):**
+  - K′ = 0: 0.20 at n = 1, chance from n = 2. Even n = 1 needs a pass.
+  - K′ = 1: 0.99 / 0.48, then chance.
+  - K′ = 4: 1.00 / 1.00 / 0.92 / 0.84 / 0.23, then chance.
+  - K′ = 8: 1.00 / 1.00 / 1.00 / 0.97 / 0.88 / 0.74 / 0.64 / 0.49.
+  - K′ = 16: 0.99 / 0.99 / 0.80 / 0.59 / 0.40 / 0.29 / 0.20 / 0.20. Passes past the trained K hurt (the pre-registered risk). n 9–12 at K′ = 16 reads 0.128.
+  - **Against §170 K8 FINAL-only** (pooled 0.351; K0 0.302; DIRECT s1 0.300): FINAL-only's K′ = 0 still reads 0.93 at n = 1, and its accuracy rises only gradually with K′.
+* **173-1 (descriptive):**
+  - DISTINCT-PASSES holds: delta cosine 0.82 / 0.83 / 0.87 at passes 2–4, against 0.96 / 0.99 / 1.00 at initialisation.
+  - PER-STEP-CONTENT is not met by its linear delta-state probe: v_t reads 0.98 / 0.49 / 0.36 at t = 1–3, against the 0.5 cut. So MOVES-MECHANISM is False, narrowly at t = 2.
+  - The trained aux decoder does read step t's handle value from M_t: 0.997 / 0.994 / 0.987 / 0.951 at t = 1–4. The content is there, but not linearly in the delta state.
+* **Reading.**
+  - Per-pass targets made identical-input passes trainable. The answer goes only through the passes, one reduction per pass: the serial C1 signature, within training.
+  - This supports the "no per-pass learning signal" hypothesis (Goyal 2310.02226).
+  - Two limits:
+    - accuracy falls with n as per-step errors compound (the aux handle accuracy drops from 0.997 at t = 1 to 0.47 at t = 8);
+    - nothing extends past the trained K (K′ = 16 hurts; n 9–12 near chance).
+  - Not DEEP, so 168-5's step-2 trigger ("a think-pass design succeeds on nested") is not met. STEP-AUX is the lead harness for the next nested design.
+
+**§177 (f) KMATCH, slot 1 (2026-10-10 02:52 EDT; s177_kmatch_s1, b236, RTX 3090, 48k, masked single batch (177-5), landed aba28378; score_s177). Not HIT (not DEEP), not BEYOND, not FAIL.**
+* At the rule K′ = n + 1: n 3..8 reads 0.873 / 0.715 / 0.530 / 0.399 / 0.306 / 0.213 (pooled 0.506, against §170 K8's 0.351). n 9–12 mean 0.151. THINK-NECESSARY holds (removal-only).
+* **Accuracy by n (1–8) at each K′ (descriptive):**
+  - K′ = 0: 1.00 / 0.70 / 0.35 / 0.23 / 0.16 / 0.13 / 0.12 / 0.11. The decoder still answers easy items directly, unlike §175.
+  - K′ = 10: 1.00 / 0.98 / 0.87 / 0.71 / 0.53 / 0.40 / 0.31 / 0.21.
+* **173-1:** delta cosine 0.86 / 0.94 / 0.97 at passes 2–4 (initialisation 0.96 / 0.99 / 1.00), so the passes are not distinct. The probe reads 0.55 / 0.29 at t = 1 / 2. MOVES-MECHANISM is False.
+* **Reading.**
+  - Matching the pass count to the step count helps (0.506 against 0.351), but the passes stay near-identical. §175's per-pass targets do more (0.787, distinct passes).
+  - (g) is not run: it is gated on an (f) HIT.
+  - (f)'s s2 follows by registration ("(f)'s second seed follows its slot 1"), queued behind §181 and s178b.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
