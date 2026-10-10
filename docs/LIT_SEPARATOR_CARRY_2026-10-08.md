@@ -61,7 +61,8 @@ Literature session, for Audit (the request) and Theory (the lead against §152's
   gain.
 
 ## Addendum (2026-10-10): our pretrained-GPT-2 replication is null
-- §156 ran SEP with ' ,' slots on pretrained GPT-2, 4×4, 24k steps: **0.002 / 0.004** (PAUSE 0.002), with the same column profile as PLAIN.
+- §156 ran SEP with '|' (GPT-2 id 91) slots interleaved before each answer digit (| d₁ | d₂ … | d₈) on pretrained GPT-2, 4×4, 24k steps:
+  **0.002 / 0.004**. PAUSE (the same 8 '|' tokens placed before the answer, not interleaved) read 0.002. Same column profile as PLAIN.
 - The from-scratch 1% → 89% of 2610.06605 doesn't transfer to pretrained GPT-2 at our budget. It's consistent with 2604.06374 (pretraining biases
   late layers) and Goyal 2310.02226 (fine-tune-only extra positions give lukewarm gains).
 - INTERLEAVE cites §156 as the comparator instead of a new SEP cell.
