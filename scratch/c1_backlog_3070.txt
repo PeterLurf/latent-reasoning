@@ -468,3 +468,5 @@
 4.0 boxes/runs_fsq/proto177_fadetidx12k_s1/eval_s177_dir.json python -u -m boxes.halt173 --run boxes/runs_fsq/proto177_fadetidx12k_s1 --dir177 --bs 60 --device {DEV}
 # 2026-10-10 02:48 THEORY §181 INTERLEAVE k1 8k local preview (descriptive, read by no rule; doubles as the code smoke; Audit OK; inject169 205f1fb4)
 5.0 boxes/runs_fsq/proto181_interleave_k1_s1_3070/eval.json python -u -m boxes.inject169 --think_k 0 --interleave 1 --pass_index sin_gain --fast_add --seed 1 --steps 8000 --ckpt_every 1000 --auto_micro --mem_budget 5.0 --eval_bs 50 --ext_n 500 --device {DEV} --out boxes/runs_fsq/proto181_interleave_k1_s1_3070
+# 2026-10-10 02:53 Theory (descriptive, low priority, after the §181 preview): §173 answer-settling halt on §175 s175_auxk8_s1 (model.pt from the b235 drain)
+4.0 boxes/runs_fsq/s175_auxk8_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s175_auxk8_s1 --bs 100 --device {DEV}
