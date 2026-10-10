@@ -32,7 +32,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
   - rq253 §182 s182_window_s1 (89.221.67.136, from 12:29, ~26 h) / b254 §182 s182_hold_s1 (77.29.35.113, from 12:48, ~28 h) - user-approved
   - rq255 §184 s184_reweight_s1 (from 13:32, ~11.8 h) - Audit OK
   - b257 §186 s186_ilblind_k4_s1 (58.136.231.3, from 14:16, ~9 h est.)
-  - b256 §168s2 TIMING (from 14:08, 3 arms) -> projection to Audit -> the user (cells NOT launched without approval)
+  - b256 §168s2 TIMING landed? stepaux was compute-bound (>26 s/step) -> b258 re-time (stepaux --ckpt_passes --cache_lower; deploying 15:07) -> projection to Audit -> the user (cells NOT launched without approval). --cache_lower ACCEPTED (Theory 168-8, fp64 6.9e-15; never mix with comparators; s184/185/186 uncached)
 * Staged (code committed, gated, Audit OK): §185 ADD-NORM den / rms (33c4a40e + a0967b78) - launch after NOFADE lands (queues to write from NOFADE's
   args + --add_norm den|rms; package lines: --dir177, --auxdone, --tshift, --normcap).
 * Landed today: §181 k1 / k2 (fail profile); §183 cell (skip collapses read columns; inner columns chance); §179 BLIND / SEEING; §175 post hocs
