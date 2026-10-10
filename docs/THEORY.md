@@ -11572,6 +11572,20 @@ how many think passes run in training.
 * **Gates:** the decoder sees no problem tokens (assert); step-0 function preservation; gradflow through ≥ 2 passes; flags-off bitwise equal to inject169; Audit's diff review.
 * Dir `s179_blindscaffold_s{seed}`. Scorer: `theory/score_s179.py`, committed with this registration.
 
+**Note 179-1 (2026-10-09 20:04 EDT; pre-data: no §179 cell has run; Audit). A seeing twin on the identical schedule, so SHORTCUT is read at matched steps.**
+* The seeing reference (b240) exists only at 12k. A BLIND success at 24k could otherwise just be "more training".
+* **Added: `s179_seescaffold_s1`.** It is the BLIND cell's exact schedule (`--fade 24000,48000 --stop_at 24000`, seed 1), with the decoder seeing the problem ([EOT, problem, " ="]) as INJECT's does. About $0.8. It may share the BLIND cell's host, sequentially or at P = 2 if memory allows.
+* **SHORTCUT (B) = BLIND ≥ 0.5 while seeing < 0.1 at the same step** (12k or 24k).
+  - At 12k the twin and b240 are identical up to that step, since the fade has not started. The twin's own 12k is read, and b240 is the fallback if the twin is missing.
+* **CAPACITY** is unchanged: BLIND < 0.1 at 24k, with column 3 ≤ 0.4.
+* score_s179 is updated.
+* **Prior (Literature, IDs verified): posterior collapse with powerful decoders.**
+  - Bowman et al. 1511.06349: a strong autoregressive decoder ignores the latent.
+  - VLAE, Chen et al. 1611.02731: whatever the decoder can model from its own inputs, the latent will not encode.
+  - He et al. 1901.05534: collapse arises early, when the decoder path learns faster than the latent path.
+  - In the latent-CoT setting: 2604.06374 (copy-through) and §149's BYPASS.
+  - The standard fix is to weaken the decoder's direct view, which is the BLIND arm. **SHORTCUT is VLAE's prediction.**
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
