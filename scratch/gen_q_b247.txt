@@ -1,0 +1,5 @@
+# THEORY §181 INTERLEAVE (ba4cf16e) timing gate RE-TIME at the FULL curriculum (b246 timed c = 1 only: 1 token / step): --time_steps 200 --sched_scale 0.0001 (step 1 = 10k scaled: c 8, fade / gamma on) for k1 then k2 on one RTX 3090 (inject169 205f1fb4; §169 recipe on §161's mix, pass_index sin_gain, fast_add, 48k; --auto_micro runs the 4x5 memory check: 9 tokens x k) -> timing.json; projection to Audit before the cells
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s181_timing_full_k1 boxes.inject169 --think_k 0 --interleave 1 --pass_index sin_gain --fast_add --seed 1 --steps 48000 --time_steps 200 --sched_scale 0.0001 --auto_micro --bench bench/data/mult_4x4_test.txt
+boxes/runs_fsq/s181_timing_full_k2 boxes.inject169 --think_k 0 --interleave 2 --pass_index sin_gain --fast_add --seed 1 --steps 48000 --time_steps 200 --sched_scale 0.0001 --auto_micro --bench bench/data/mult_4x4_test.txt
