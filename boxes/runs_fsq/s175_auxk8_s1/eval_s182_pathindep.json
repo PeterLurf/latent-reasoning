@@ -1,0 +1,19 @@
+{
+ "path_indep": {
+  "answer_agree": 0.292,
+  "delta_cos_final": 0.7642222046852112,
+  "n_items": 500,
+  "acc_from_zero": 0.426,
+  "acc_from_donor": 0.214,
+  "kprime": 16,
+  "donor_passes": 8,
+  "items": "test n 3..8, rng 18201 permutation[:500]",
+  "derangement": "np.roll(sample order, 1)",
+  "delta_cos_def": "mean over items of cos of the final delta-head states S[:, h_add:]"
+ },
+ "run": "boxes/runs_fsq/s175_auxk8_s1",
+ "eval_dir": "boxes/runs_fsq/s175_auxk8_s1_pathindep_2070",
+ "gpu": "NVIDIA GeForce RTX 2070",
+ "eval_dtype": "None",
+ "note": "\u00a7175 reference for \u00a7182's s182.path_indep (Theory, descriptive): nested170 --eval_only --path_indep on a copy of s175's model; card class differs from \u00a7182's 3090s"
+}
