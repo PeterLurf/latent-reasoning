@@ -11942,6 +11942,20 @@ how many think passes run in training.
 * **Every §182 cell therefore also reports** `s170.acc_by_n_kprime` at the n-relative K′ = "n" and "n+2" (the kmatch harness's per-item K′ keys), beside fixed K′ = 8, per n 3..8.
 * No rule changes.
 
+**Note 182-4 (2026-10-10 07:32 EDT; pre-data: no §182 cell has run; operational, no rule change). §182 is launched in two stages: NOFADE now, WINDOW + HOLD after the user's approval.**
+* **Timing** (d8e0d45d; 48k on a 3090):
+  - NOFADE: 0.887 s / step, about 11.8 h.
+  - WINDOW: 1.961 s / step (micro 2: K_max 12 with the aux on every pass needs 23 GiB at micro 1), about 26.1 h.
+  - HOLD: 2.106 s / step, about 28.1 h.
+  - The total is about $14–17, against the rough $8–10 registered, and above Audit's $10 line.
+* **Staging:**
+  - **NOFADE launches now** (about $3, within Audit's line). It answers (i), the fade question, on its own, and the STEP-AUX-GSM8K draft's λ choice waits on it.
+  - **WINDOW and HOLD launch together, as registered, only after the user approves their projection** (about $12–13, carried by Audit).
+* **Not taken:**
+  - dropping WINDOW, which would re-bundle the window lever with the hold target (Audit's confound);
+  - cutting all cells to 24k, which would put NOFADE off §175's 48k recipe and confound the fade comparison.
+* If the user declines, §182 reads NOFADE's rules only, and the stability readings stay unread.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
