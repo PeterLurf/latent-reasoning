@@ -6,6 +6,7 @@
   (4) the memory-check / training form: kmatch_aux_loss at n = 8 items, K = 12 (every item at K_max), hold on, backward runs, every aux pass counted
   (5) cell smokes (CPU, sched_scale 0.002): NOFADE / WINDOW / HOLD write eval.json with s170.acc_by_n_kprime over the --kprimes set, s175 (+ hold
       fields for HOLD), s182.path_indep, and args think_k / aux_fade / k_window / kmatch_impl / aux_hold as registered
+  (6) Audit: on one mixed-n batch, WINDOW's aux == HOLD's real-step aux (allclose 1e-6) and the answer CE equal; hold_aux = 0 for WINDOW, > 0 for HOLD
   The 3090 memory check at n = 8, K = 12 with the aux is the timing run's own --auto_micro (mem_check's kmatch_aux_loss branch).
     python scratch/gate182.py <pre-182 nested170 copy>   -> boxes/runs_fsq/s182_gates/gate182.json (written after every gate)"""
 import json
@@ -121,12 +122,19 @@ def main():
         calls.append((t, len(items))); return a0(self, S, items, t, dev, hold)
     N.InjectN.aux_logits = al
     try:
-        la, ax, Sf = N.kmatch_aux_loss(m, its8, [12] * 3, "cpu", lambda: torch.autocast("cpu", enabled=False), hold=True); (la + ax).backward()
+        la, ax, hx, Sf = N.kmatch_aux_loss(m, its8, [12] * 3, "cpu", lambda: torch.autocast("cpu", enabled=False), hold=True); (la + ax + hx).backward()
     finally:
         N.InjectN.aux_logits = a0
-    OUT["g4"] = {"aux_passes": [c[0] for c in calls], "items_per_pass": [c[1] for c in calls], "loss": [float(la), float(ax)],
+    OUT["g4"] = {"aux_passes": [c[0] for c in calls], "items_per_pass": [c[1] for c in calls], "loss": [float(la), float(ax), float(hx)],
                  "grad_wo": float(m.mem.wo.weight.grad.norm()) if m.mem.wo.weight.grad is not None else 0.0}
     OUT["g4_pass"] = OUT["g4"]["aux_passes"] == list(range(1, 13)) and OUT["g4"]["grad_wo"] > 0; ok &= OUT["g4_pass"]; dump()
+    # (6) Audit (8e20d709 review): HOLD keeps §175's real-step weighting - on one mixed-n batch, WINDOW's aux == HOLD's real-step aux; hold_aux separate
+    m.eval(); mix = items_n(2, 2, 7) + items_n(3, 2, 8) + items_n(5, 2, 9); kk = [6, 4, 7, 5, 9, 6]; acx = lambda: torch.autocast("cpu", enabled=False)   # noqa: E731
+    with torch.no_grad():
+        lw, aw, hw, _ = N.kmatch_aux_loss(m, mix, kk, "cpu", acx, hold=False); lh, ah, hh, _ = N.kmatch_aux_loss(m, mix, kk, "cpu", acx, hold=True)
+    OUT["g6"] = {"window": [float(lw), float(aw), float(hw)], "hold": [float(lh), float(ah), float(hh)], "aux_equal": bool(torch.allclose(aw, ah, rtol=1e-6, atol=1e-6)), "aux_absdiff": float((aw - ah).abs()),
+                 "answer_ce_equal": bool(torch.allclose(lw, lh, rtol=1e-6, atol=1e-6)), "note": "allclose 1e-6: HOLD's aux batches hold extra items (CPU matmul batch-size ulps)"}
+    OUT["g6_pass"] = OUT["g6"]["aux_equal"] and OUT["g6"]["answer_ce_equal"] and float(hw) == 0.0 and float(hh) > 0; ok &= OUT["g6_pass"]; dump()
     # (5)
     base = ["--arm", "inject", "--aux_step", "1.0", "--fast_add", "--kprimes", "0,1,4,8,12,16,24,32", "--path_indep"]
     cells = {"nofade": base + ["--think_k", "8", "--aux_fade", "48000,48000"],

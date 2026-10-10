@@ -67,11 +67,29 @@
   ],
   "loss": [
    14.984519958496094,
-   16.94368553161621
+   17.735597610473633,
+   15.35986042022705
   ],
-  "grad_wo": 524.239013671875
+  "grad_wo": 765.7355346679688
  },
  "g4_pass": true,
+ "g6": {
+  "window": [
+   16.596027374267578,
+   16.585800170898438,
+   0.0
+  ],
+  "hold": [
+   16.596027374267578,
+   16.585800170898438,
+   16.514358520507812
+  ],
+  "aux_equal": true,
+  "aux_absdiff": 0.0,
+  "answer_ce_equal": true,
+  "note": "allclose 1e-6: HOLD's aux batches hold extra items (CPU matmul batch-size ulps)"
+ },
+ "g6_pass": true,
  "g5": {
   "nofade": {
    "rc": 0,
@@ -215,7 +233,7 @@
    },
    "path_indep": {
     "answer_agree": 1.0,
-    "delta_cos_final": 0.9936790466308594,
+    "delta_cos_final": 0.9936788082122803,
     "n_items": 12,
     "acc_from_zero": 0.08333333333333333,
     "acc_from_donor": 0.08333333333333333,
