@@ -1,1 +1,0 @@
-boxes/runs_fsq/proto177_fadetidx12k_s1
