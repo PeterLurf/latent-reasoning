@@ -50,7 +50,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (11:42 2026-10-10; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
+* **Theory (13:10 2026-10-10; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
   - **The user (via Audit, 2026-10-09):**
     - ~01:30: "do another research pass. work on task agnosticness. approve go ahead on prosqa deep".
     - ~01:45: "keep working on the prosqa deep and the nested arithmetic … creating new methodologies and architectures for task agnostic".
@@ -97,8 +97,10 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
         - The contract is with Experiments (rough $8–10). Order: §181 (running), then §182. A post-hoc §173 halt on s175 is queued on the 3070.
     - **§177 (f) slot 1:** not HIT / not FAIL (pooled 0.506; passes not distinct). s2 not run (note 177-7).
     - **§181 closed: neither HIT** (90395c97). Both arms keep the single-pass profile, and skip drops are about 0.
-    - **§183 INTERLEAVE-BLIND registered** (d5c160a7). §181 k1 with a blind per-token decoder; it tests 'per-pass signal through a view-free reader'.
-      - Local 8k compressed previews: blind and seeing on each of the 3070 and 2070. The cloud cell follows --time_steps.
+    - **§183 closed: FAIL, NOT SUPPORTED** (201d4cea). The blind reader makes passes causal, but inner columns stay at chance: per-pass compute binds.
+    - **§186 INTERLEAVE-BLIND-K4 registered** (95e5dfbf; ~$2–3). The closing mult test: if it neither HITs nor reaches PARTLY, the mult interleave line closes.
+    - **NORM-CAP-GLOBAL:** a zero-training C6 fix (t16 0.696 vs 0.414; 76% of the fall, 97% of the oracle). C came from test items; 185-1 takes C from train items.
+      - Local previews (3 cards, blind / seeing) are descriptive and still landing.
     - **§182:** NOFADE (b251) running. WINDOW (b253) and HOLD (b254) are deploying: user-approved via Audit (182-5), about 26 / 28 h.
       - §175 descriptives done: AUX-DONE (exact t = n, but counter-like at n = 8 per T-SHIFT) and PATH-INDEP (answer_agree 0.292).
     - **Training-schedule / architecture proposals (the user asked, 2026-10-10).** Ranked by the user's priorities with Audit, prior-checked by Literature (09f395a8):
