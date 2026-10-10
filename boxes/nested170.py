@@ -698,7 +698,9 @@ def main():
     if a.eval_only:                                                         # no training: the saved model, the training log's time / non-finite count
         params.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev, weights_only=True)); last = step0 - 1
         lg_ = [json.loads(l_) for l_ in open(os.path.join(a.out, "log.jsonl"))]; n_nonfinite = sum(1 for r_ in lg_ if r_.get("nonfinite"))
-        sec_ = [r_["sec"] for r_ in lg_ if "sec" in r_]; t0 = time.time() - (sec_[-1] if sec_ else 0); wg_hist = [r_ for r_ in lg_ if "write_grad_norm" in r_]
+        sec_ = [r_["sec"] for r_ in lg_ if "sec" in r_]; t0 = time.time() - (sec_[-1] if sec_ else 0)
+        wg_hist = [{"step": r_["step"], "mean": r_["write_grad_norm"], "spike_100x_floor": bool(r_.get("write_grad_spike_100x_floor", False)), "from_log": True}
+                   for r_ in lg_ if "write_grad_norm" in r_]                 # 2026-10-10: log records -> the training wg_hist form (the eval reads spike_100x_floor)
     for step in range(step0, last + 1):
         for gr in opt.param_groups:
             gr["lr"] = lr_at(a.lr, gr, step, a.steps) if a.warmup == 100 else lr_at(a.lr, gr, step, a.steps) / min(1, step / 100) * min(1, step / a.warmup)   # §178: --warmup
