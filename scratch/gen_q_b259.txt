@@ -1,8 +1,9 @@
 # THEORY §168 step 2 CHUNK_DELTA re-time + trajectory gate (Theory 2026-10-10: gate 3 + re-time; Audit: --time_steps 50): stepaux with --chunk_delta 64 at bs 32 and bs 64 (--time_steps 50),
-# then gate 3 on this one RTX 3090: 200 steps loop vs chunk at bs 32, same seed, both at --micro 2 (16 items per chunk, as b258's bs-64 micro 4), log every 10 (loss curves within step-to-step noise, no non-finite). No cell launch without the user's approval.
+# then gate 3 on this one RTX 3090: 200 steps loop vs chunk at bs 32, same seed, both at --micro 2 (16 items per chunk, as b258's bs-64 micro 4), log every 10 (loss curves within step-to-step noise, no non-finite). No cell launch without the user's approval. Noise yardstick (Audit): s168s2_traj_loop_m4 = the loop at --micro 4 (an exact-arithmetic-equal reordering; same seed + card reproduces bitwise, so a loop-vs-loop pair at the same micro would read 0).
 # HOSTPROBE
 # P=1
 boxes/runs_fsq/s168s2_ctime_chunk_bs32 boxes.prosqa168s2 --arm stepaux --think_k 10 --aux_step 1.0 --aux_fade 12000,12000 --fast_add --chunk_delta 64 --ckpt_passes --cache_lower --seed 1 --steps 12000 --bs 32 --time_steps 50 --log_every 10 --auto_micro
 boxes/runs_fsq/s168s2_ctime_chunk_bs64 boxes.prosqa168s2 --arm stepaux --think_k 10 --aux_step 1.0 --aux_fade 12000,12000 --fast_add --chunk_delta 64 --ckpt_passes --cache_lower --seed 1 --steps 12000 --bs 64 --time_steps 50 --log_every 10 --auto_micro
 boxes/runs_fsq/s168s2_traj_chunk boxes.prosqa168s2 --arm stepaux --think_k 10 --aux_step 1.0 --aux_fade 12000,12000 --fast_add --chunk_delta 64 --ckpt_passes --cache_lower --seed 1 --steps 12000 --bs 32 --time_steps 200 --log_every 10 --micro 2
 boxes/runs_fsq/s168s2_traj_loop boxes.prosqa168s2 --arm stepaux --think_k 10 --aux_step 1.0 --aux_fade 12000,12000 --fast_add --ckpt_passes --cache_lower --seed 1 --steps 12000 --bs 32 --time_steps 200 --log_every 10 --micro 2
+boxes/runs_fsq/s168s2_traj_loop_m4 boxes.prosqa168s2 --arm stepaux --think_k 10 --aux_step 1.0 --aux_fade 12000,12000 --fast_add --ckpt_passes --cache_lower --seed 1 --steps 12000 --bs 32 --time_steps 200 --log_every 10 --micro 4
