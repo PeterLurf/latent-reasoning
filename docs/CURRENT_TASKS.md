@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-09 22:23 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-10 04:35 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -26,16 +26,16 @@ so send to the pipe addresses their messages come from.
 touching fsq120 / table132 / core. Never edit a module while a deploy is in flight (auto_ship is transitive: fixedchunk / multrow ship multpair,
 deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `vast destroy` aborts at its y/N prompt).
 
-### Vast (6 hosts, ~$1.0/h; 22:23 2026-10-09)
-* Live: b235 §175 aux K8; b236 §177 (f) kmatch; b237 / b238 §168 G1 / G2;
-  b243 §179 s179_blindscaffold_s1 (STARTED 22:12, 89.221.67.136:17397, HOSTPROBE 0.649) and b244 s179_seescaffold_s1 (STARTED 22:21,
-  46.107.144.5:28451), both from b1e93088: --fade 24000,48000 --stop_at 24000 --p0_evals 12000,24000 (+ --blind_decoder on b243), then 173-1 package;
-  ~4.5 h each; eval_p0_12k at ~2.2 h -> report 12k / 24k to Theory (rules: score_s179; note 179-2 len_err = top-digit placement).
-* §178 closed for slot 1 (note 178-2: §170's test exclusion removes ~88% of n = 1, so scratch never sees the table; sanity d965952b): DIRECT / K0
-  landed at chance (41351972); K8 (b241) STOPPED at 23.3k, aborted unread (s178_k8_s1.void, 0d72c67e). s178b (n >= 2 exclusion only) parked until §179.
-* Note 177-6 (d) gate FAILED (12k full 4x4 at p 0 = 0.0; db9aba29): no (d) cell; ckpt deleted.
-* Harness today: vdeploy STUCK_LOADING (8ae7fc62); smoke_plain cleanup (897532f1); drain keep_ckpt.txt (689a34b5, list empty); inject169 resume bitwise
-  (28c31cc3); §179 blind decoder / p0 evals (b1e93088, gate179 all pass).
+### Vast (deploying; 04:35 2026-10-10)
+* §181 INTERLEAVE (ba4cf16e; inject169 205f1fb4 = sha 63e7d0bc; Audit OK ~$2-4): b248 s181_interleave_k1_s1 and b249 s181_interleave_k2_s1, HOSTPROBE 3090s,
+  deploying via fill_s181. Projection source: b247's FULL-curriculum re-time (--sched_scale 0.0001, c = 8 from step 1): k1 0.254 / k2 0.396 s/step on a
+  fast host -> <= 3.4 / 5.3 h (+ ~0.5 h eval each). b246's 0.075 / 0.119 timed c = 1 (one token per step) - not the cost. No halt173 package (think_k 0:
+  s181.delta_cos is 173-1's statistic in-run). 3070: proto181_interleave_k1_s1_3070 (8k, unscaled -> ends at c = 4; code smoke / descriptive).
+* Landed overnight: §179 BLIND (019b36f6; Theory: CAPACITY) + SEEING (653ebae3); §175 (aba28378; closes, not DEEP) + §177 (f) (aba28378; s2 held);
+  §168 G1 0.766 / G2 0.502 / NA s1 eval 0.499 (816163ea / cada99c9 / 1ed65432 + e6b5c809); §178 slot 1 closed (178-2), K8 .void.
+* Next: §182 STEP-AUX-HOLD (566616ef; nested170 edits uncommitted, gate182 running: g2-g4 pass, g1 s177f pair re-run for a config fix) -> Audit review
+  -> time_steps for NOFADE / WINDOW / HOLD. Then s178b (note 178-3; --excl_min_n committed e1129efd; gate 1 CPU mix2 sanity running).
+* Harness overnight: inject169 --interleave / --time_steps; nested170 --excl_min_n; drain keep_ckpt.txt; vdeploy STUCK rule; Vast IP change seen (b237).
 * Landed today: §169 K0 / K8 (FAIL); §170 DIRECT s1 / s2, K0 s1, cot s1 / s2 (eval-only, OOM fix), K8 s1; §171 K8 / BLIND; §165 K8 / K16; §168 std s1 / s2; §172 (closed).
 * Harness today: FAST_ADD (-15 %); HOSTPROBE (works: b234 rejected at 1.21 s/step); eval-only paths in nested170 / inject169; memchecks count AdamW state;
   das167 --fit_micro / --rm_ks; halt173 = §173 halt + the 173-1 package (--dir177, pair-segment runs too).
