@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-10 04:26 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-10 09:12 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -26,16 +26,16 @@ so send to the pipe addresses their messages come from.
 touching fsq120 / table132 / core. Never edit a module while a deploy is in flight (auto_ship is transitive: fixedchunk / multrow ship multpair,
 deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `vast destroy` aborts at its y/N prompt).
 
-### Vast (deploying; 04:26 2026-10-10)
-* §181 INTERLEAVE (ba4cf16e; inject169 205f1fb4 = sha 63e7d0bc; Audit OK ~$2-4): b248 s181_interleave_k1_s1 and b249 s181_interleave_k2_s1, HOSTPROBE 3090s,
-  deploying via fill_s181. Projection source: b247's FULL-curriculum re-time (--sched_scale 0.0001, c = 8 from step 1): k1 0.254 / k2 0.396 s/step on a
-  fast host -> <= 3.4 / 5.3 h (+ ~0.5 h eval each). b246's 0.075 / 0.119 timed c = 1 (one token per step) - not the cost. No halt173 package (think_k 0:
-  s181.delta_cos is 173-1's statistic in-run). 3070: proto181_interleave_k1_s1_3070 (8k, unscaled -> ends at c = 4; code smoke / descriptive).
-* Landed overnight: §179 BLIND (019b36f6; Theory: CAPACITY) + SEEING (653ebae3); §175 (aba28378; closes, not DEEP) + §177 (f) (aba28378; s2 held);
-  §168 G1 0.766 / G2 0.502 / NA s1 eval 0.499 (816163ea / cada99c9 / 1ed65432 + e6b5c809); §178 slot 1 closed (178-2), K8 .void.
-* Next: §182 STEP-AUX-HOLD (566616ef; nested170 edits uncommitted, gate182 running: g2-g4 pass, g1 s177f pair re-run for a config fix) -> Audit review
-  -> time_steps for NOFADE / WINDOW / HOLD. Then s178b (note 178-3; --excl_min_n committed e1129efd; gate 1 CPU mix2 sanity running).
-* Harness overnight: inject169 --interleave / --time_steps; nested170 --excl_min_n; drain keep_ckpt.txt; vdeploy STUCK rule; Vast IP change seen (b237).
+### Vast (4 hosts; 09:12 2026-10-10)
+* Live: rq249 §181 s181_interleave_k2_s1 (77.29.35.113, from 05:08; k1 landed d72491f5: 4x4 0.0); b251 §182 s182_nofade_s1 (185.62.108.226, from 09:04;
+  ~11.8 h; gates the GSM8K draft; Audit OK; nested170 87f4021a); b252 §183 s183_ilblind_k1_s1 (89.221.67.137, from 09:11; <= 3.4 h; inject169 07839b2c).
+* §182 WINDOW / HOLD (~$12-14) HELD for the user's approval (Audit carries it; note 182-4). Queues: write from b251's line + --think_k 12 --k_window 1,4
+  --kmatch_impl masked (+ --aux_hold); timing d8e0d45d (1.96 / 2.11 s/step, micro 2).
+* Local: 3070 proto183_ilblind -> ilseeing; 2070 proto183_ilseeing -> ilblind (compressed 8k: --steps 8000 --sched_scale 0.1667); 4060 idle (nothing fits).
+* Landed overnight / morning: §179 (CAPACITY); §175 closes + AUX-DONE (exact pass-n halting at n <= 8) / T-SHIFT (completion at n 4-6, counter at 8) /
+  PATH-INDEP (agree 0.29); §177 (f) slot 1; §168 G1 / G2 / NA (D* inputs); §178 closed (178-2 / 178-4; s178b not launched); §181 k1 FAIL-profile.
+* Harness: fill_generic prefers scratch/vast_prefer_ips.txt (bfc82c7b); exclude list grew (slow / stuck / download-failed hosts); requeue_watch (one
+  instance, Oct 9) re-checked; nested170 eval_only wg_hist fix (8a7c191a); halt173 --auxdone / --tshift; inject169 --interleave / --blind_decoder.
 * Landed today: §169 K0 / K8 (FAIL); §170 DIRECT s1 / s2, K0 s1, cot s1 / s2 (eval-only, OOM fix), K8 s1; §171 K8 / BLIND; §165 K8 / K16; §168 std s1 / s2; §172 (closed).
 * Harness today: FAST_ADD (-15 %); HOSTPROBE (works: b234 rejected at 1.21 s/step); eval-only paths in nested170 / inject169; memchecks count AdamW state;
   das167 --fit_micro / --rm_ks; halt173 = §173 halt + the 173-1 package (--dir177, pair-segment runs too).
