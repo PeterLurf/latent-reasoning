@@ -268,7 +268,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 178 | FROM-SCRATCH (diagnostic): §170's INJECT on a random-init 6-layer GPT-2; USES-PASSES -> PRETRAINING-OR-CAPACITY (a conditional matched 12-layer pair decides) vs HARNESS-BLOCKS; read beside §175 (pretrained, forced) | slot 1 **UNINFORMATIVE** (protocol: §170's test exclusion removes the n = 1 table for a scratch model; 178-2); K8 aborted unread; s178b registered (178-3), **not launched**: its CPU gate failed (n = 1 at 0.13–0.16 flat; 178-4). §175 answers the pretrained side (passes are used when supervised) | closed |
 | 179 | READOUT (diagnostic): §177 (d)'s scaffold with a BLIND end decoder, p = 0 to 24k; SHORTCUT (the decoder's view of the problem starves the memory) vs CAPACITY (end readout cannot carry the product) | **CAPACITY** (blind 0.0 at 12k / 24k, column 3 0.351; columns 1–2 exact from memory alone); the seeing twin's 24k is descriptive | closed |
 | 180 | (unused: the DEC-DROP draft, conditional on a §179 SHORTCUT, was never registered) | — | — |
-| 181 | INTERLEAVE: k think passes before every answer token, the memory carried across tokens (MIX's timing without its schedule); arms k1 / k2 on §161's mix | registered | **open** |
+| 181 | INTERLEAVE: k think passes before every answer token, the memory carried across tokens (MIX's timing without its schedule); arms k1 / k2 on §161's mix | **neither HIT** (both FAIL, 4×4 ≤ 0.001; the single-pass column profile; skip drops about 0; not under-trained) | closed |
 | 182 | STEP-AUX-HOLD: §175 with the aux to the end (NOFADE), + a sampled step-matched K (WINDOW), + hold targets on passes past n (HOLD); DEEP at K′ 8, STABLE (C6) K′ 16 vs 8 | registered | **open** |
 | 183 | INTERLEAVE-BLIND: §181 k1 with a blind per-token decoder ([EOT, ' =', ans_<j] + memory); tests 'per-pass signal through a view-free reader' (MIX / §175 vs every failure) | registered | **open** |
 
@@ -12056,6 +12056,18 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * Flags are the same as the 3070 / 2070 pairs: `--steps 8000 --sched_scale 0.1667`, so the whole 48k schedule is compressed (c = 8 by step 1,500, the cosine over 8k).
 * This adds a third card class and a second seed to the preview contrast.
 * The previews stay descriptive and are read by no rule. A blind-over-seeing gap that appears on every card is reported as a robustness note beside the cloud cell's reading, not as part of it.
+
+**§181 result (2026-10-10 10:50 EDT; s181_interleave_k1_s1 (b248) and s181_interleave_k2_s1 (rq249), RTX 3090, 48k; k2 landed b3d0f83d; score_s181). Neither arm HITs, both FAIL, so the registered pair reading is "neither HIT: the failure is not input repetition". §181 closes.**
+* **k2 (16 passes at 4×4, 2 per token):**
+  - 4×4 reads 0.001. Per column: 1.0 / 1.0 / 0.338 / 0.128 / 0.079 / 0.102 / 0.493 / 0.879.
+  - ext_4x8 reads 0.0.
+  - k′ 0 / 1 / 2 / 4 read ≤ 0.003.
+  - Skip drops at j = 3..8 are −0.001 / 0.004 / −0.003 / −0.011 / −0.022 / 0.000.
+  - Not under-trained (train_loss_tail 0.700 → 0.694, ratio 0.991).
+  - Delta cosine is 0.980 within a token and 0.957 across tokens. g_add is 0.0002.
+* **k1** (the interim above): 4×4 reads 0.0, with skip drops about 0.
+* Both arms keep the single-pass column profile, exact at columns 1–2 and near chance at 3–6, and their passes have no causal role. k2's higher columns 7–8 (0.49 / 0.88 against k1's 0.10 / 0.69) are the magnitude-predictable top digits.
+* **Reading.** MIX's per-token timing, without its schedule and with a decoder that sees the prompt, does not make the memory carry the columns, at either pass count. §183 (the same design, with the per-token reader blind) tests the remaining ingredient: per-pass signals through a view-free reader.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
