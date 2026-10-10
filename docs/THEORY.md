@@ -265,7 +265,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 175 | STEP-AUX (Audit's lead after SIM-CoT): §170 INJECT K8 + a shared-trunk read-only aux decoder emitting Feng's CoT step t from M_t (λ 1 fading to 0 by 48k); AUX-HELPS / HURTS-DEPTH vs FINAL-only, READOUT, STEP-RECOVER | registered (gated on §170 K8 slot 1) | **open** |
 | 176 | RAND-K (Audit's lead after §172; Huginn / Bansal): INJECT trained with a random think-pass count (RK) or progressive no-grad prefixes (PROG); C2-BEYOND at K' = 64 beyond training support + NO-OVERTHINKING vs fixed K8's same curve | **neither RK nor PROG rescues INJECT** (0.0 at every K′ and skip; RK mean K 7.96) | closed |
 | 177 | PASS-DISTINCT: arms to make identical-input think passes trainable - (a) pass index, (d) schedule fade + index (mult), (f) step-matched K, (g) curriculum + Poisson K (nested, gated on f); MOVES-MECHANISM (173-1) per arm | registered (cloud gated on §169 + §170 K8 failing; local previews descriptive) | **open** |
-| 178 | FROM-SCRATCH (diagnostic): §170's INJECT on a random-init 6-layer GPT-2; USES-PASSES -> PRETRAINING-OR-CAPACITY (a conditional matched 12-layer pair decides) vs HARNESS-BLOCKS; read beside §175 (pretrained, forced) | registered | **open** |
+| 178 | FROM-SCRATCH (diagnostic): §170's INJECT on a random-init 6-layer GPT-2; USES-PASSES -> PRETRAINING-OR-CAPACITY (a conditional matched 12-layer pair decides) vs HARNESS-BLOCKS; read beside §175 (pretrained, forced) | slot 1 **UNINFORMATIVE** (protocol: §170's test exclusion removes the n = 1 table for a scratch model; 178-2); K8 aborted unread; s178b (n >= 2 exclusion) parked until §179 | **open** |
 | 179 | READOUT (diagnostic): §177 (d)'s scaffold with a BLIND end decoder, p = 0 to 24k; SHORTCUT (the decoder's view of the problem starves the memory) vs CAPACITY (end readout cannot carry the product) | registered | **open** |
 
 ## Live sections
@@ -11610,6 +11610,15 @@ how many think passes run in training.
   - Pretrained GPT-2 brings the table as a prior (DIRECT 0.99 at n = 1).
   - **§178 slot 1 is therefore uninformative about pretraining against harness, for a protocol reason.** That is not 178-1's "does not learn" in the intended sense.
 * **The pretrained §170 results are unaffected:** n ≥ 3 items are unique, and pretrained models know the table. Its n = 1 numbers are generalisation, not recall.
+
+**§178 slot 1 (2026-10-09 21:49 EDT; s178_direct_s1 and s178_k0_s1 read; s178_k8_s1 aborted unread, logs kept as *.void; score_s178). UNINFORMATIVE by the 178-1 guard, for a protocol cause (178-2), not a model result.**
+* DIRECT-scratch and K0-scratch pooled (n 3..8) read 0.114 / 0.109, against chance 0.091. Loss is flat at about ln 11 throughout 96k. Even n = 1 is at chance.
+* **The cause (178-2):** §170's test exclusion leaves about 58 of the roughly 470 n = 1 items trainable, so the scratch trunk never sees the base mod-11 table.
+  - Sanity checks show it learns the table when it is trainable.
+  - Pretrained GPT-2 brings the table as a prior.
+* K8-scratch was stopped (Audit): it faced the same missing table and could not answer the question.
+* **A protocol-fixed rerun is parked (s178b):** test items excluded from training only for n ≥ 2, so n = 1 is table learning and generalisation is read at n ≥ 2. §178's arms and rules are otherwise unchanged.
+  - It waits for §179, since a SHORTCUT reading would require s178b to use §179's winning (blind) readout to separate pretraining from harness cleanly.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
