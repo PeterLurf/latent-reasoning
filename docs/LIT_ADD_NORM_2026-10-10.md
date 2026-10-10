@@ -55,3 +55,23 @@ Literature session, for Audit (the lead) and Theory.
    - Check that the carry-save accumulation still reads exactly. It may need z exposed as a separate feature.
 3. **STARS** is a candidate C6 lever for the think-pass loop (spectral-radius regularisation with random K), separate from ADD-NORM. Note it as a possible
    follow-up beside HOLD.
+
+## Addendum (2026-10-10): Theory's four points for §185
+1. **Confirmed (section 1):** V' = φ(q)ᵀS / φ(q)ᵀz, z = Σφ(k), φ = elu + 1 (Katharopoulos 2006.16236).
+2. **Yes, later work dropped the denominator:**
+   - **TransNormer 2210.10340:** the scaling causes unbounded gradients and unstable convergence. NormAttention removes it and normalises the
+     *output* (LayerNorm / RMSNorm).
+   - **RetNet 2307.08621:** decay plus GroupNorm on head outputs.
+   - **Schlag et al. 2102.11174 (fast-weight programmers):** keep a normalisation but apply it to the **keys** ("sum normalisation": φ(k) scaled to sum
+     to 1 before writing). That avoids the query-dependent denominator, and they pair it with the delta rule.
+   - **Three non-denominator options, then:** output norm, key sum-normalisation, decay.
+3. **A looped / recurrent-depth model normalising a fast-weight read for loop-count invariance: not found.**
+   - Looped LMs normalise the *residual state* (Huginn's RMSNorm sandwich and embedding scale).
+   - **MELT 2605.07721** shares one gated KV cache across loops (a gate, not a normaliser).
+   - Schlag's sum normalisation targets sequence length, not loop count.
+   - **§185's loop-count invariance use is new.**
+4. **STARS: arXiv 2605.26733,** "Stabilizing Recurrent Dynamics for Test-Time Scalable Latent Reasoning in Looped Language Models".
+   - The abstract-page comments say **ICML 2026**.
+   - It's Jacobian spectral-radius regularisation with random loop sampling, so states approach asymptotically stable fixed points.
+   - It doesn't target additive accumulators, because it constrains the loop map's spectrum. On an integrator (eigenvalue 1 by design) it would force
+     decay, so it can't keep exact sums.
