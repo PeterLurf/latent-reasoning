@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-10 09:12 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-10 14:35 EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -26,16 +26,20 @@ so send to the pipe addresses their messages come from.
 touching fsq120 / table132 / core. Never edit a module while a deploy is in flight (auto_ship is transitive: fixedchunk / multrow ship multpair,
 deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `vast destroy` aborts at its y/N prompt).
 
-### Vast (4 hosts; 09:12 2026-10-10)
-* Live: rq249 §181 s181_interleave_k2_s1 (77.29.35.113, from 05:08; k1 landed d72491f5: 4x4 0.0); b251 §182 s182_nofade_s1 (185.62.108.226, from 09:04;
-  ~11.8 h; gates the GSM8K draft; Audit OK; nested170 87f4021a); b252 §183 s183_ilblind_k1_s1 (89.221.67.137, from 09:11; <= 3.4 h; inject169 07839b2c).
-* §182 WINDOW / HOLD (~$12-14) HELD for the user's approval (Audit carries it; note 182-4). Queues: write from b251's line + --think_k 12 --k_window 1,4
-  --kmatch_impl masked (+ --aux_hold); timing d8e0d45d (1.96 / 2.11 s/step, micro 2).
-* Local: 3070 proto183_ilblind -> ilseeing; 2070 proto183_ilseeing -> ilblind (compressed 8k: --steps 8000 --sched_scale 0.1667); 4060 idle (nothing fits).
-* Landed overnight / morning: §179 (CAPACITY); §175 closes + AUX-DONE (exact pass-n halting at n <= 8) / T-SHIFT (completion at n 4-6, counter at 8) /
-  PATH-INDEP (agree 0.29); §177 (f) slot 1; §168 G1 / G2 / NA (D* inputs); §178 closed (178-2 / 178-4; s178b not launched); §181 k1 FAIL-profile.
-* Harness: fill_generic prefers scratch/vast_prefer_ips.txt (bfc82c7b); exclude list grew (slow / stuck / download-failed hosts); requeue_watch (one
-  instance, Oct 9) re-checked; nested170 eval_only wg_hist fix (8a7c191a); halt173 --auxdone / --tshift; inject169 --interleave / --blind_decoder.
+### Vast (7 hosts, ~$1.4/h; 14:35 2026-10-10)
+* Live cells (check git status on each dir every turn; drain waiters cap at 2 h):
+  - b251 §182 s182_nofade_s1 (185.62.108.226, from 09:04, ~11.8 h; gates the GSM8K draft; then §185 launches + its post-hoc --normcap)
+  - rq253 §182 s182_window_s1 (89.221.67.136, from 12:29, ~26 h) / b254 §182 s182_hold_s1 (77.29.35.113, from 12:48, ~28 h) - user-approved
+  - rq255 §184 s184_reweight_s1 (from 13:32, ~11.8 h) - Audit OK
+  - b257 §186 s186_ilblind_k4_s1 (58.136.231.3, from 14:16, ~9 h est.)
+  - b256 §168s2 TIMING (from 14:08, 3 arms) -> projection to Audit -> the user (cells NOT launched without approval)
+* Staged (code committed, gated, Audit OK): §185 ADD-NORM den / rms (33c4a40e + a0967b78) - launch after NOFADE lands (queues to write from NOFADE's
+  args + --add_norm den|rms; package lines: --dir177, --auxdone, --tshift, --normcap).
+* Landed today: §181 k1 / k2 (fail profile); §183 cell (skip collapses read columns; inner columns chance); §179 BLIND / SEEING; §175 post hocs
+  (AUX-DONE, T-SHIFT, PATH-INDEP, memnorm, NORM-CLAMP, NORM-CAP-GLOBAL: cap 1x keeps 0.696 at K' 16 vs 0.414); §168 G1 / G2 / NA; §177 (f) slot 1.
+* Local: §183 previews (3070 blind -> seeing; 2070 seeing -> blind; 4060 seed-2 blind -> seeing), compressed 8k schedule.
+* Harness today: requeue_watch misses EXTRA_120 (rq256 crashed without the p8 data; fix = per-queue .extra sidecar, after tonight); fill_generic prefers
+  scratch/vast_prefer_ips.txt; deploy shas in logs/deploy_shas.log.
 * Landed today: §169 K0 / K8 (FAIL); §170 DIRECT s1 / s2, K0 s1, cot s1 / s2 (eval-only, OOM fix), K8 s1; §171 K8 / BLIND; §165 K8 / K16; §168 std s1 / s2; §172 (closed).
 * Harness today: FAST_ADD (-15 %); HOSTPROBE (works: b234 rejected at 1.21 s/step); eval-only paths in nested170 / inject169; memchecks count AdamW state;
   das167 --fit_micro / --rm_ks; halt173 = §173 halt + the 173-1 package (--dir177, pair-segment runs too).
