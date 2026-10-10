@@ -265,7 +265,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 175 | STEP-AUX (Audit's lead after SIM-CoT): §170 INJECT K8 + a shared-trunk read-only aux decoder emitting Feng's CoT step t from M_t (λ 1 fading to 0 by 48k); AUX-HELPS / HURTS-DEPTH vs FINAL-only, READOUT, STEP-RECOVER | registered (gated on §170 K8 slot 1) | **open** |
 | 176 | RAND-K (Audit's lead after §172; Huginn / Bansal): INJECT trained with a random think-pass count (RK) or progressive no-grad prefixes (PROG); C2-BEYOND at K' = 64 beyond training support + NO-OVERTHINKING vs fixed K8's same curve | **neither RK nor PROG rescues INJECT** (0.0 at every K′ and skip; RK mean K 7.96) | closed |
 | 177 | PASS-DISTINCT: arms to make identical-input think passes trainable - (a) pass index, (d) schedule fade + index (mult), (f) step-matched K, (g) curriculum + Poisson K (nested, gated on f); MOVES-MECHANISM (173-1) per arm | registered (cloud gated on §169 + §170 K8 failing; local previews descriptive) | **open** |
-| 178 | FROM-SCRATCH (diagnostic): §170's INJECT on a random-init 6-layer GPT-2; USES-PASSES -> PRETRAINING-OR-CAPACITY (a conditional matched 12-layer pair decides) vs HARNESS-BLOCKS; read beside §175 (pretrained, forced) | slot 1 **UNINFORMATIVE** (protocol: §170's test exclusion removes the n = 1 table for a scratch model; 178-2); K8 aborted unread; s178b (n >= 2 exclusion) parked until §179 | **open** |
+| 178 | FROM-SCRATCH (diagnostic): §170's INJECT on a random-init 6-layer GPT-2; USES-PASSES -> PRETRAINING-OR-CAPACITY (a conditional matched 12-layer pair decides) vs HARNESS-BLOCKS; read beside §175 (pretrained, forced) | slot 1 **UNINFORMATIVE** (protocol: §170's test exclusion removes the n = 1 table for a scratch model; 178-2); K8 aborted unread; **s178b registered** (178-3: test exclusion for n >= 2 only; §178's readout, since §179 read CAPACITY), launching after §181's timing | **open** |
 | 179 | READOUT (diagnostic): §177 (d)'s scaffold with a BLIND end decoder, p = 0 to 24k; SHORTCUT (the decoder's view of the problem starves the memory) vs CAPACITY (end readout cannot carry the product) | **CAPACITY** (blind 0.0 at 12k / 24k, column 3 0.351; columns 1–2 exact from memory alone); the seeing twin's 24k is descriptive | closed |
 | 180 | (unused: the DEC-DROP draft, conditional on a §179 SHORTCUT, was never registered) | — | — |
 | 181 | INTERLEAVE: k think passes before every answer token, the memory carried across tokens (MIX's timing without its schedule); arms k1 / k2 on §161's mix | registered | **open** |
@@ -11742,6 +11742,27 @@ how many think passes run in training.
   - a memory check at the largest training shape (4×5: 9 tokens × k);
   - Audit's diff review.
 * **A local 8k k1 preview on the 3070** (descriptive, read by no rule) doubles as the code smoke before the cloud cells.
+
+**Note 178-3 (2026-10-10 02:22 EDT; pre-data: no s178b cell has run; Audit, after §179 read CAPACITY). s178b: §178 rerun with the test exclusion applied only to n ≥ 2, so the scratch model can learn the base table.**
+* **Why.** Slot 1 was UNINFORMATIVE for a protocol cause (178-2): §170's exclusion leaves about 58 of the roughly 470 n = 1 items trainable, so a scratch trunk never sees the mod-11 table.
+  - The question still matters before any scale-up: does pretraining block think-pass use on nested arithmetic? There the answer is a single token, so §179's end-readout limit does not apply.
+* **The one change.** Test items are excluded from training only for n ≥ 2 (args `excl_min_n 2`; §170's protocol is `excl_min_n 1`). All n = 1 items are trainable, and §170 note 170-1's SERIAL pool stays excluded.
+  - n = 1 test accuracy becomes recall, not generalisation. It is reported and enters no rule: pooled is n 3..8, as before.
+  - The surviving training share per n is logged (expected: n = 1 100%, n = 2 about 97.5%, n ≥ 3 about 100%).
+* **The readout is §178's registered one:** INJECT's decoder sees the problem. §179 did not read SHORTCUT, so the parked clause ("use §179's winning readout") does not apply.
+* **Everything else is §178 unchanged:**
+  - the arms (DIRECT-scratch, K0-scratch, K8-scratch, s1; s2 for a USES-PASSES or HARNESS-BLOCKS arm);
+  - USES-PASSES and its four conjuncts;
+  - the readings (PRETRAINING-OR-CAPACITY, HARNESS-BLOCKS, mixed);
+  - the 178-1 UNINFORMATIVE guard;
+  - the conditional matched 12-layer pair (`s178b_m12_{k0,k8}_s1`, same exclusion).
+  - **The pretrained reference stays §170 K8's gap of 0.049.** For n ≥ 3 the two protocols coincide, and pretrained GPT-2 knows the table either way (178-2).
+* **Scorer:** `python theory/score_s178.py b`. It reads `s178b_*`, requires `excl_min_n 2` in args, and writes `score_s178b.json`. The slot-1 mode is byte-identical, and the new mode was checked on fixtures built from s178_k0_s1 / s178_direct_s1's real files.
+* **Launch (operational).**
+  - **A CPU sanity first** (178-2's script on the full n mix under the new exclusion, to 4k steps, ≤ 4 threads at Idle priority). n = 1 test accuracy must reach ≥ 0.3 (chance 0.091) and the training loss must fall below ln 11 − 0.2. If not, s178b is not launched and a dated note follows.
+  - Then --time_steps on a 3090, with the projection restated to Audit (§178: about $4–6 for three cells).
+  - The cells launch after §181's timing lands, so §181 gets the first cloud slots (Audit).
+* Dirs `s178b_{direct,k0,k8}_s1`.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

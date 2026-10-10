@@ -8,7 +8,9 @@ then the conditional matched pair (s178_m12_{k0,k8}: GPT-2's exact 12 / 768 / 12
 The init cosine is the random trunk's (fresh memory, gamma 1).
 HARNESS-BLOCKS = K8-scratch pooled < K0-scratch pooled + 0.05 with removal failing. Else mixed.
 Dirs boxes/runs_fsq/s178_{direct,k0,k8}_s{seed}.
-    python theory/score_s178.py
+Note 178-3 (s178b): the same arms / rules / guards with the test exclusion applied only to n >= 2 (args excl_min_n 2); dirs s178b_*; -> score_s178b.json.
+    python theory/score_s178.py        (slot 1, s178_*)
+    python theory/score_s178.py b      (s178b_*)
 """
 import json
 import os
@@ -20,7 +22,11 @@ import score_s170 as S170  # noqa: E402
 
 R = os.path.join(ROOT, "boxes", "runs_fsq")
 CH = 1.0 / 11
+B = len(sys.argv) > 1 and sys.argv[1] == "b"                              # note 178-3: s178b
+PREFIX, OUT = ("s178b", "score_s178b.json") if B else ("s178", "score_s178.json")
 BASE = {"task": "nested", "scratch": "6,384,6", "steps": 96000, "lr": 0.0005}
+if B:
+    BASE["excl_min_n"] = 2
 ARMS = {"direct": dict(BASE, arm="direct"), "k0": dict(BASE, arm="inject", think_k=0), "k8": dict(BASE, arm="inject", think_k=8),
         "m12_k0": dict(BASE, scratch="12,768,12", arm="inject", think_k=0), "m12_k8": dict(BASE, scratch="12,768,12", arm="inject", think_k=8)}
 ERRORS = []
@@ -32,7 +38,7 @@ def load(d, f="eval.json"):
 
 
 def cell(arm, s):
-    d = "s178_%s_s%d" % (arm, s); r = load(d); a = load(d, "args.json") or {}
+    d = "%s_%s_s%d" % (PREFIX, arm, s); r = load(d); a = load(d, "args.json") or {}
     if r is None:
         return {"status": "running" if a else "open"}
     bad = {k: a.get(k) for k, v in ARMS[arm].items() if str(a.get(k)) != str(v)}
@@ -77,7 +83,7 @@ def main():
         if k0p < CH + 0.1 and all((v.get("pooled") or 0) < CH + 0.1 for v in done):   # note 178-1
             res["reading"] = rd = "UNINFORMATIVE: the scratch model does not learn nested at 96k (K0 %.3f, K8 %s pooled, chance %.3f)" % (
                 k0p, [round(v["pooled"], 3) for v in done], CH)
-            print("READING:", rd); json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s178.json"), "w", newline=chr(10)), indent=1, default=float)
+            print("READING:", rd); json.dump(res, open(os.path.join(ROOT, "theory", "results", OUT), "w", newline=chr(10)), indent=1, default=float)
             return
         tag = "slot 1, descriptive" if len(done) < 2 else "%d / %d seeds" % (len(done), len(done))
         if nu == len(done) and pre_gap < 0.15:
@@ -101,7 +107,7 @@ def main():
                 print("   per n", a, s, {n: round(x, 3) for n, x in (v.get("acc_by_n") or {}).items() if int(n) <= 12})
     if ERRORS:
         print("ERRORS:", ERRORS)
-    json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s178.json"), "w", newline=chr(10)), indent=1, default=float)
+    json.dump(res, open(os.path.join(ROOT, "theory", "results", OUT), "w", newline=chr(10)), indent=1, default=float)
 
 
 if __name__ == "__main__":
