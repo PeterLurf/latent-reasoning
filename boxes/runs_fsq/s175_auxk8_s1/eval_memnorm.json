@@ -1,0 +1,90 @@
+{
+ "by_t": {
+  "1": {
+   "add_norm_median": 1990.22119140625,
+   "delta_norm_median": 53.87258529663086,
+   "acc_pooled": 0.08984375
+  },
+  "2": {
+   "add_norm_median": 3548.24365234375,
+   "delta_norm_median": 70.65079498291016,
+   "acc_pooled": 0.13671875
+  },
+  "3": {
+   "add_norm_median": 4927.6435546875,
+   "delta_norm_median": 84.04060363769531,
+   "acc_pooled": 0.28515625
+  },
+  "4": {
+   "add_norm_median": 6222.548828125,
+   "delta_norm_median": 92.608642578125,
+   "acc_pooled": 0.3984375
+  },
+  "5": {
+   "add_norm_median": 7623.826171875,
+   "delta_norm_median": 96.59040069580078,
+   "acc_pooled": 0.5234375
+  },
+  "6": {
+   "add_norm_median": 9134.1572265625,
+   "delta_norm_median": 95.81322479248047,
+   "acc_pooled": 0.63671875
+  },
+  "7": {
+   "add_norm_median": 10886.310546875,
+   "delta_norm_median": 96.15446472167969,
+   "acc_pooled": 0.75
+  },
+  "8": {
+   "add_norm_median": 12588.126953125,
+   "delta_norm_median": 96.96310424804688,
+   "acc_pooled": 0.80859375
+  },
+  "9": {
+   "add_norm_median": 14368.966796875,
+   "delta_norm_median": 96.75517272949219,
+   "acc_pooled": 0.78515625
+  },
+  "10": {
+   "add_norm_median": 16152.26171875,
+   "delta_norm_median": 96.50337219238281,
+   "acc_pooled": 0.7734375
+  },
+  "11": {
+   "add_norm_median": 18136.78125,
+   "delta_norm_median": 95.99739074707031,
+   "acc_pooled": 0.71875
+  },
+  "12": {
+   "add_norm_median": 20194.375,
+   "delta_norm_median": 95.64749145507812,
+   "acc_pooled": 0.625
+  },
+  "13": {
+   "add_norm_median": 22261.12890625,
+   "delta_norm_median": 94.77000427246094,
+   "acc_pooled": 0.54296875
+  },
+  "14": {
+   "add_norm_median": 24324.734375,
+   "delta_norm_median": 94.24825286865234,
+   "acc_pooled": 0.50390625
+  },
+  "15": {
+   "add_norm_median": 26317.9453125,
+   "delta_norm_median": 93.15673065185547,
+   "acc_pooled": 0.4453125
+  },
+  "16": {
+   "add_norm_median": 28360.26953125,
+   "delta_norm_median": 92.02970123291016,
+   "acc_pooled": 0.390625
+  }
+ },
+ "run": "boxes/runs_fsq/s175_auxk8_s1",
+ "n_items": 256,
+ "items": "nested170.test_set n 3..8, rng 17501 permutation[:256]",
+ "device": "cpu",
+ "sec": 483,
+ "note": "Theory proposal #4 gate (descriptive): additive magnitude growth vs the K' accuracy drift"
+}
