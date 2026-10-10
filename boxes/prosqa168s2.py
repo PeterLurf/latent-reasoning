@@ -75,12 +75,18 @@ class ProsMem(torch.nn.Module):
     def think_inputs(self, its, dev):
         ids_, m_ = pad([[EOT] + it["q"] for it in its]); return torch.tensor(ids_, device=dev), torch.tensor(m_, device=dev)
 
-    def write(self, S, x, mask):
-        return DM.gpt_forward_mem(self.g, self.g.embed(x), self.mem, S, mask=mask)[1]
+    def write(self, S, x, mask, h_low=None):
+        assert h_low is None or x is self._hl_src, "--cache_lower: every pass must see the identical input the lower blocks were cached on"
+        return DM.gpt_forward_mem(self.g, self.g.embed(x), self.mem, S, mask=mask, h_low=h_low)[1]
 
-    def think(self, S, x, mask, K):
+    def lower(self, x):
+        """--cache_lower: blocks 0..5 on [EOT, question] once (every pass has the identical input here: no pass index on this path)."""
+        self._hl_src = x; return DM.gpt_lower(self.g, self.g.embed(x), self.mem.layer)
+
+    def think(self, S, x, mask, K, cache=False):
+        hl = self.lower(x) if (cache and K) else None
         for _ in range(K):
-            S = self.write(S, x, mask)
+            S = self.write(S, x, mask, hl)
         return S
 
     def dec_loss(self, S, its, dev):
@@ -146,6 +152,7 @@ def generate_cot(g, ids, max_new, dev, amp):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--arm", required=True, choices=["stepaux", "currdirect", "textcot"]); ap.add_argument("--data", default="na", choices=["na"])
+    ap.add_argument("--cache_lower", action="store_true", help="stepaux: blocks 0..5 on the (identical) think input computed once per step and shared by the K passes (exact; Theory / Audit 2026-10-10)")
     ap.add_argument("--ckpt_passes", action="store_true", help="stepaux: torch.utils.checkpoint around each think pass (memory; Audit 2026-10-10)")
     ap.add_argument("--think_k", type=int, default=10); ap.add_argument("--aux_step", type=float, default=1.0); ap.add_argument("--aux_fade", default="12000,12000")
     ap.add_argument("--steps", type=int, default=12000); ap.add_argument("--bs", type=int, default=64); ap.add_argument("--lr", type=float, default=1e-4)
@@ -179,13 +186,13 @@ def main():
         if SA:
             x, msk = m.think_inputs(its, dev); per = [[] for _ in its]; lam_ = lam(step)
             with ac():
-                S = m.mem.zero_state(len(its), dev)
+                S = m.mem.zero_state(len(its), dev); hl = m.lower(x) if a.cache_lower else None   # --cache_lower: blocks 0..5 once per step
                 for t in range(1, K + 1):
                     if a.ckpt_passes and torch.is_grad_enabled():           # Audit: per-pass activation checkpointing (the K x 721-token activations)
                         from torch.utils.checkpoint import checkpoint
-                        S = checkpoint(m.write, S, x, msk, use_reentrant=False)
+                        S = checkpoint(m.write, S, x, msk, hl, use_reentrant=False)
                     else:
-                        S = m.write(S, x, msk)
+                        S = m.write(S, x, msk, hl)
                     idx = [i for i, it in enumerate(its) if t <= it["depth"]]
                     if lam_ and idx:
                         lg_a, y_a = m.aux_logits(S[idx], [its[i] for i in idx], t, dev)
@@ -285,7 +292,7 @@ def main():
             ch = D[i:i + bs]; x, msk = m.think_inputs(ch, dev)
             with torch.no_grad(), ac():
                 S = m.mem.zero_state(len(ch), dev) if M0 is None else torch.tensor(M0[i:i + bs], device=dev, dtype=m.mem.zero_state(1, dev).dtype)
-                S = m.think(S, x, msk, Kp); out.append(m.margins(S, ch, dev))
+                S = m.think(S, x, msk, Kp, cache=a.cache_lower); out.append(m.margins(S, ch, dev))
         return np.concatenate(out)
 
     def states(D, T):
