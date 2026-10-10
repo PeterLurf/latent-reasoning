@@ -1,0 +1,49 @@
+{
+ "g1": {
+  "mask_out_equal": true,
+  "mask_state_equal": true,
+  "nomask_out_equal": true,
+  "nomask_state_equal": true
+ },
+ "g1_pass": true,
+ "g2": {
+  "K1_ckpt0": {
+   "state_equal": true,
+   "loss_equal": true,
+   "margins_equal": true,
+   "grad_max_rel_diff": 1.470232469102939e-08,
+   "n_grad_params": 160,
+   "same_grad_param_set": true
+  },
+  "K1_ckpt1": {
+   "state_equal": true,
+   "loss_equal": true,
+   "margins_equal": true,
+   "grad_max_rel_diff": 7.351162345514695e-09,
+   "n_grad_params": 160,
+   "same_grad_param_set": true
+  },
+  "K10_ckpt0": {
+   "state_equal": true,
+   "loss_equal": true,
+   "margins_equal": true,
+   "grad_max_rel_diff": 1.6606715007583261e-06,
+   "n_grad_params": 160,
+   "same_grad_param_set": true
+  },
+  "K10_ckpt1": {
+   "state_equal": true,
+   "loss_equal": true,
+   "margins_equal": true,
+   "grad_max_rel_diff": 1.6606715007583261e-06,
+   "n_grad_params": 160,
+   "same_grad_param_set": true
+  }
+ },
+ "g2_pass": false,
+ "g3": {
+  "refused_other_input": true
+ },
+ "g3_pass": true,
+ "all_pass": false
+}

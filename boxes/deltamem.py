@@ -200,11 +200,21 @@ def _block(g, i, h, hd):
     return h + m @ g.w(pre + "mlp.c_proj.weight") + g.w(pre + "mlp.c_proj.bias")
 
 
-def gpt_forward_mem_r(g, x, mem, S, rec=None, cap=None, mask=None):
+def gpt_lower(g, x, layer):
+    """--cache_lower (Audit / Theory 2026-10-10): the residual entering block `layer` for input embeddings x (B, T, D) - blocks 0..layer-1, which
+    the memory never touches. Valid to share across think passes ONLY when every pass has the identical input (no pass index / think-token change)."""
+    B, T, D = x.shape; hd = D // g.H; h = x + g.w("wpe.weight")[:T][None]
+    for i in range(layer):
+        h = _block(g, i, h, hd)
+    return h
+
+
+def gpt_forward_mem_r(g, x, mem, S, rec=None, cap=None, mask=None, h_low=None):
     """§155 DELTA-R pass: the read (pass-start S) entering block mem.layer, the 12 blocks, then the writes from
-    u = (1 - gamma) LN_6(h_6) + gamma LN_w(h_w) (h_w = the residual after block 11, pre-ln_f, or block 9's output). cap: dict for probes."""
-    B, T, D = x.shape; hd = D // g.H; h = x + g.w("wpe.weight")[:T][None]; h6 = hw = None
-    for i in range(g.L):
+    u = (1 - gamma) LN_6(h_6) + gamma LN_w(h_w) (h_w = the residual after block 11, pre-ln_f, or block 9's output). cap: dict for probes.
+    h_low (--cache_lower): gpt_lower(g, x, mem.layer) computed once and shared by the passes -> blocks 0..layer-1 are skipped here (same values)."""
+    B, T, D = x.shape; hd = D // g.H; h = x + g.w("wpe.weight")[:T][None] if h_low is None else h_low; h6 = hw = None
+    for i in range(0 if h_low is None else mem.layer, g.L):
         if i == mem.layer:
             h6 = h; h = read_fixed(mem, h, S, rec)
             if cap is not None:
@@ -218,10 +228,12 @@ def gpt_forward_mem_r(g, x, mem, S, rec=None, cap=None, mask=None):
     return F.layer_norm(h, (D,), g.w("ln_f.weight"), g.w("ln_f.bias")), write_seq(mem, h6, hw, S, mask)
 
 
-def gpt_forward_mem(g, x, mem, S, rec=None, mask=None):
-    """core.GPT.forward (no past / inject / capture) with the memory branch entering block mem.layer. x (B, T, D) input embeddings."""
+def gpt_forward_mem(g, x, mem, S, rec=None, mask=None, h_low=None):
+    """core.GPT.forward (no past / inject / capture) with the memory branch entering block mem.layer. x (B, T, D) input embeddings.
+    h_low: --cache_lower's shared lower-block output (R write path only)."""
     if getattr(mem, "write_mode", None) is not None:                         # §155 DELTA-R
-        return gpt_forward_mem_r(g, x, mem, S, rec, mask=mask)
+        return gpt_forward_mem_r(g, x, mem, S, rec, mask=mask, h_low=h_low)
+    assert h_low is None, "--cache_lower needs the R write path (§155 DELTA-R)"
     assert mask is None, "a write mask needs the R write path (§155 DELTA-R)"
     B, T, D = x.shape; hd = D // g.H; h = x + g.w("wpe.weight")[:T][None]
     for i in range(g.L):
