@@ -273,6 +273,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 183 | INTERLEAVE-BLIND: §181 k1 with a blind per-token decoder ([EOT, ' =', ans_<j] + memory); tests 'per-pass signal through a view-free reader' (MIX / §175 vs every failure) | **FAIL; NOT SUPPORTED** (columns 3–7 0.182 vs 0.165). Descriptively the passes become causal (skip drops 0.88 / 0.31 / 0.36 / 0.75 at columns 1 / 2 / 7 / 8), but the inner columns stay at chance: per-pass compute binds | closed |
 | 184 | AUX-REWEIGHT: §182 NOFADE + per-pass aux weights w_t = Ē / E_t (pass 8 got 1/22 of pass 1's signal), equal signal per pass position; HELPS / HURTS / NO EFFECT vs NOFADE | registered | **open** |
 | 185 | ADD-NORM: §182 NOFADE with the additive read normalised: DEN (φ(q)ᵀS / φ(q)ᵀz) or RMS (TransNormer's NormAttention); STABLE + NO-COST vs NOFADE (NORM-CLAMP: the unnormalised read's growth causes ~80% of overthinking) | registered | **open** |
+| 186 | INTERLEAVE-BLIND-K4: §183 with 4 passes per token, the closing test of the mult interleave line; HIT / PARTLY vs §183, else the line closes (pre-registered stop) | registered | **open** |
 
 ## Live sections
 
@@ -12324,6 +12325,43 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - It does not make the inner columns computable. A column needs the sum of up to four partial products plus a carry, and one pass per token over the full problem cannot compute it. MIX spends one pass per partial product (16 at 4×4).
   - So on multiplication the binding limit is now per-pass compute, not the reader's view.
   - A blind interleave with more passes per token is the untested next point. It is not registered here.
+
+## 186. INTERLEAVE-BLIND-K4: the closing test of the multiplication interleave line (Audit's recommendation after §183; pre-registered 2026-10-10 13:09 EDT, after Audit's review, before any implementation or run; Literature's checks for §181 / §183 cover it, f4e1e423)
+
+**Why.**
+* **§183** (a blind per-token reader, 1 pass per token) made the passes causal for every column the model gets right: skip drops of 0.876 / 0.311 / 0.361 / 0.747 at columns 1 / 2 / 7 / 8, against about 0 for §181's seeing decoder.
+* But the inner columns stayed at chance. Each needs up to 4 partial products plus a carry, and §161 MIX spends about one pass per partial product.
+* **This cell combines everything the table says matters:**
+  - a view-free per-token reader;
+  - a schedule-free, task-agnostic harness;
+  - answer-only targets;
+  - enough compute per token (4 passes, enough for 4×4's widest column).
+* A HIT would be a C1 + C4 multiplication result with no hand schedule and no hand step targets.
+
+**Design.** §183 exactly (s183_ilblind_k1_s1's args: §181's interleave on §161's mix, the blind per-token decoder, 48k, seed 1, RTX 3090). **One change: `--interleave 4`.** That is 4 passes per answer token (32 at 4×4), with the pass index over all passes. Dir `s186_ilblind_k4_s1`.
+
+**Rules (fixed now; `theory/score_s186.py`; 4×4 exact at 48k).**
+* **§181's rules:**
+  - **HIT** = 4×4 ≥ 0.9 AND median drop_j (skip token j's passes; columns 3–8) ≥ 0.3 with none < −0.05;
+  - **FAIL** = 4×4 < 0.5 (open if under-trained);
+  - otherwise **PARTIAL**.
+  - Under a blind reader the k′ = 0 conjunct is trivially true and not read as evidence (§183).
+* **The compute reading, against §183 (blind k1: columns 3–7 mean read live from its eval.json, 0.182):**
+  - **PARTLY:** the columns 3–7 mean ≥ control + 0.2 AND the median drop over columns 3–8 ≥ 0.1. More passes per token let the memory compute inner columns.
+  - **NOT:** otherwise.
+* **The stop (pre-registered, Audit):** if this cell neither HITs nor reaches PARTLY, **the multiplication interleave line closes**, and effort stays on nested / ProsQA. A HIT opens s2. A PARTLY is reported, and any follow-up needs a new registration.
+* **Descriptive:**
+  - per column, against §181 k1 / k2 and §183;
+  - k′ ∈ {0, 1, 2, 4, 8};
+  - the skip matrix;
+  - ext_4x8;
+  - the delta cosine within and across tokens;
+  - the memory norm by token;
+  - compute (32 passes plus 8 reads per item).
+
+**Placement.** One cell on a 3090: about 2× §181 k2's 15.2k s, about 8–9 h, about $2–3. Within Audit's line.
+* Launch after §182 / §184 land. It does not block them.
+* Gates: the §183 code path with interleave 4 (a smoke plus gradflow) and Audit's diff review. The code is unchanged otherwise.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
