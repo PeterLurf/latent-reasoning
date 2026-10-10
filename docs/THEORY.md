@@ -265,7 +265,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 175 | STEP-AUX (Audit's lead after SIM-CoT): §170 INJECT K8 + a shared-trunk read-only aux decoder emitting Feng's CoT step t from M_t (λ 1 fading to 0 by 48k); AUX-HELPS / HURTS-DEPTH vs FINAL-only, READOUT, STEP-RECOVER | slot 1 **not DEEP** (pooled 0.787 vs FINAL-only 0.351; THINK-NECESSARY; one reduction per pass: K′ = 4 solves n ≤ 4, K′ = 0 at chance; READOUT no; 9–12 0.20) | closed |
 | 176 | RAND-K (Audit's lead after §172; Huginn / Bansal): INJECT trained with a random think-pass count (RK) or progressive no-grad prefixes (PROG); C2-BEYOND at K' = 64 beyond training support + NO-OVERTHINKING vs fixed K8's same curve | **neither RK nor PROG rescues INJECT** (0.0 at every K′ and skip; RK mean K 7.96) | closed |
 | 177 | PASS-DISTINCT: arms to make identical-input think passes trainable - (a) pass index, (d) schedule fade + index (mult), (f) step-matched K, (g) curriculum + Poisson K (nested, gated on f); MOVES-MECHANISM (173-1) per arm | (a) no rescue; (d) gate failed; (f) slot 1 not HIT / not FAIL (pooled 0.506; passes not distinct), s2 not run (177-7); (g) not run | **open** |
-| 178 | FROM-SCRATCH (diagnostic): §170's INJECT on a random-init 6-layer GPT-2; USES-PASSES -> PRETRAINING-OR-CAPACITY (a conditional matched 12-layer pair decides) vs HARNESS-BLOCKS; read beside §175 (pretrained, forced) | slot 1 **UNINFORMATIVE** (protocol: §170's test exclusion removes the n = 1 table for a scratch model; 178-2); K8 aborted unread; **s178b registered** (178-3: test exclusion for n >= 2 only; §178's readout, since §179 read CAPACITY), launching after §181's timing | **open** |
+| 178 | FROM-SCRATCH (diagnostic): §170's INJECT on a random-init 6-layer GPT-2; USES-PASSES -> PRETRAINING-OR-CAPACITY (a conditional matched 12-layer pair decides) vs HARNESS-BLOCKS; read beside §175 (pretrained, forced) | slot 1 **UNINFORMATIVE** (protocol: §170's test exclusion removes the n = 1 table for a scratch model; 178-2); K8 aborted unread; s178b registered (178-3), **not launched**: its CPU gate failed (n = 1 at 0.13–0.16 flat; 178-4). §175 answers the pretrained side (passes are used when supervised) | closed |
 | 179 | READOUT (diagnostic): §177 (d)'s scaffold with a BLIND end decoder, p = 0 to 24k; SHORTCUT (the decoder's view of the problem starves the memory) vs CAPACITY (end readout cannot carry the product) | **CAPACITY** (blind 0.0 at 12k / 24k, column 3 0.351; columns 1–2 exact from memory alone); the seeing twin's 24k is descriptive | closed |
 | 180 | (unused: the DEC-DROP draft, conditional on a §179 SHORTCUT, was never registered) | — | — |
 | 181 | INTERLEAVE: k think passes before every answer token, the memory carried across tokens (MIX's timing without its schedule); arms k1 / k2 on §161's mix | registered | **open** |
@@ -11887,6 +11887,19 @@ how many think passes run in training.
   - The seeing twin's delta state moves less than BLIND's: 0.919 / 0.993 / 0.999 at passes 2–4, against BLIND's 0.76 / 0.90 / 0.94.
   - Its linear probe at pass 16 reads column 1 at 0.93, column 2 at 0.26, columns 3–7 at 0.09–0.12 and column 8 at 0.51.
   - The view changes the memory's dynamics, not what the memory carries for the middle columns.
+
+**Note 178-4 (2026-10-10 04:47 EDT; 178-3's launch gate read, 84134c23; no s178b cell has run). Gate 1 fails, so s178b is not launched, and §178 closes without a reading.**
+* **Gate 1** (CPU, full n mix under `--excl_min_n 2`) needed n = 1 test accuracy ≥ 0.3 and loss < ln 11 − 0.2 = 2.198 by 4k steps.
+  - It stopped at the 2 h task limit after 3.5k steps, at Idle priority beside other gates. This is disclosed, and the run is not repeated.
+  - n = 1 test accuracy was 0.127 / 0.145 / 0.133 / 0.155 / 0.156 / 0.144 / 0.145 at 0.5k–3.5k, flat from 1k. Loss was 2.27–2.37. n = 2 read 0.10–0.13.
+  - It fails as far as it ran, and the curve gives no sign of reaching 0.3 by 4k.
+* **The cause, descriptively:** with n ~ U{1..8}, only one batch item in eight is the learnable table. The n ≥ 2 compositions are noise to a scratch trunk that has no table, and it does not bootstrap at this budget. With n = 1 alone the same trunk reached 0.71 by 2k (178-2).
+* **No recipe fix is registered, because §175 has since answered the question §178 was for.**
+  - §178 asked which side to work on: pretraining (a retrofit) or the harness. Its paired contrast was §175, the pretrained arm with forced use.
+  - §175's pretrained trunk uses its identical-input passes once each pass has a target: one reduction per pass, with K′ = 0 at chance (§175 slot 1).
+  - So pretraining does not block pass use under per-pass supervision.
+  - Making a scratch trunk learn the composition at all would need a curriculum: a different experiment, and not on the current path (§182; the GSM8K draft).
+* **§178 closes:** slot 1 UNINFORMATIVE (178-2), and s178b not launched (here). The conditional matched pair is not run.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
