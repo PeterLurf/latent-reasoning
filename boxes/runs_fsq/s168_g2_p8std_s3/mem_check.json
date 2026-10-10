@@ -1,0 +1,11 @@
+{
+ "checks": [
+  {
+   "micro": 4,
+   "peak_gib": 12.881182670593262
+  }
+ ],
+ "micro": 4,
+ "peak_gib": 12.881182670593262,
+ "longest_tokens": 717
+}
