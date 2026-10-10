@@ -474,3 +474,6 @@
 4.0 boxes/runs_fsq/s175_auxk8_s1/eval_s182_auxdone.json python -u -m boxes.halt173 --run boxes/runs_fsq/s175_auxk8_s1 --auxdone --n 1000 --bs 100 --device {DEV}
 # 2026-10-10 07:30 Theory note 182-2 follow-up (descriptive, low priority): T-SHIFT on s175_auxk8_s1 (aux done vs real / prompt pass, n 4 / 6 / 8)
 4.0 boxes/runs_fsq/s175_auxk8_s1/eval_s182_tshift.json python -u -m boxes.halt173 --run boxes/runs_fsq/s175_auxk8_s1 --tshift --n 1000 --bs 100 --device {DEV}
+# 2026-10-10 08:39 THEORY §183 (d5c160a7) local previews, 3070 order BLIND then SEEING (mirrored vs the 2070); compressed 8k schedule; descriptive
+5.0 boxes/runs_fsq/proto183_ilblind_k1_s1_3070/eval.json python -u -m boxes.inject169 --think_k 0 --interleave 1 --pass_index sin_gain --fast_add --seed 1 --steps 8000 --sched_scale 0.1667 --ckpt_every 1000 --auto_micro --mem_budget 5.0 --eval_bs 50 --ext_n 500 --device {DEV} --blind_decoder --out boxes/runs_fsq/proto183_ilblind_k1_s1_3070
+5.0 boxes/runs_fsq/proto183_ilseeing_k1_s1_3070/eval.json python -u -m boxes.inject169 --think_k 0 --interleave 1 --pass_index sin_gain --fast_add --seed 1 --steps 8000 --sched_scale 0.1667 --ckpt_every 1000 --auto_micro --mem_budget 5.0 --eval_bs 50 --ext_n 500 --device {DEV} --out boxes/runs_fsq/proto183_ilseeing_k1_s1_3070
