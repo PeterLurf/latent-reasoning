@@ -1,0 +1,108 @@
+{
+ "by_t": {
+  "1": {
+   "acc_clamped": 0.08984375,
+   "acc_unclamped": 0.08984375,
+   "add_norm_median_clamped": 1990.22119140625
+  },
+  "2": {
+   "acc_clamped": 0.13671875,
+   "acc_unclamped": 0.13671875,
+   "add_norm_median_clamped": 3548.24365234375
+  },
+  "3": {
+   "acc_clamped": 0.28515625,
+   "acc_unclamped": 0.28515625,
+   "add_norm_median_clamped": 4927.6435546875
+  },
+  "4": {
+   "acc_clamped": 0.3984375,
+   "acc_unclamped": 0.3984375,
+   "add_norm_median_clamped": 6222.548828125
+  },
+  "5": {
+   "acc_clamped": 0.5234375,
+   "acc_unclamped": 0.5234375,
+   "add_norm_median_clamped": 7623.826171875
+  },
+  "6": {
+   "acc_clamped": 0.63671875,
+   "acc_unclamped": 0.63671875,
+   "add_norm_median_clamped": 9134.1572265625
+  },
+  "7": {
+   "acc_clamped": 0.75,
+   "acc_unclamped": 0.75,
+   "add_norm_median_clamped": 10886.310546875
+  },
+  "8": {
+   "acc_clamped": 0.80859375,
+   "acc_unclamped": 0.80859375,
+   "add_norm_median_clamped": 12588.126953125
+  },
+  "9": {
+   "acc_clamped": 0.79296875,
+   "acc_unclamped": 0.78515625,
+   "add_norm_median_clamped": 12588.126953125
+  },
+  "10": {
+   "acc_clamped": 0.78515625,
+   "acc_unclamped": 0.7734375,
+   "add_norm_median_clamped": 12588.125
+  },
+  "11": {
+   "acc_clamped": 0.76953125,
+   "acc_unclamped": 0.71875,
+   "add_norm_median_clamped": 12588.1279296875
+  },
+  "12": {
+   "acc_clamped": 0.75,
+   "acc_unclamped": 0.625,
+   "add_norm_median_clamped": 12588.126953125
+  },
+  "13": {
+   "acc_clamped": 0.734375,
+   "acc_unclamped": 0.54296875,
+   "add_norm_median_clamped": 12588.125
+  },
+  "14": {
+   "acc_clamped": 0.72265625,
+   "acc_unclamped": 0.50390625,
+   "add_norm_median_clamped": 12588.125
+  },
+  "15": {
+   "acc_clamped": 0.72265625,
+   "acc_unclamped": 0.4453125,
+   "add_norm_median_clamped": 12588.125
+  },
+  "16": {
+   "acc_clamped": 0.7265625,
+   "acc_unclamped": 0.390625,
+   "add_norm_median_clamped": 12588.126953125
+  }
+ },
+ "acc_by_n_t16": {
+  "clamped": {
+   "3": 1.0,
+   "4": 0.9565217391304348,
+   "5": 0.8297872340425532,
+   "6": 0.6666666666666666,
+   "7": 0.5675675675675675,
+   "8": 0.2682926829268293
+  },
+  "unclamped": {
+   "3": 0.7906976744186046,
+   "4": 0.6304347826086957,
+   "5": 0.3617021276595745,
+   "6": 0.23809523809523808,
+   "7": 0.16216216216216217,
+   "8": 0.0975609756097561
+  }
+ },
+ "run": "boxes/runs_fsq/s175_auxk8_s1",
+ "n_items": 256,
+ "items": "as eval_memnorm.json (n 3..8, rng 17501 permutation[:256])",
+ "device": "cpu",
+ "sec": 1038,
+ "clamp": "t > 8: after each write, S[:, :h_add] rescaled per item to its own norm at t = 8 (direction kept); delta part untouched (Theory proposal #4 decider)"
+}
