@@ -1,0 +1,6 @@
+# THEORY §168 step 2 (note 168-7) timing: --time_steps 200 for stepaux / currdirect / textcot on one RTX 3090 (prosqa168s2 8a295f6d). stepaux's --auto_micro = the memory check at the longest question (666 tokens), K = 10, aux on; aux lambda 1 from step 1 (aux_fade 12000,12000); currdirect's stage 0 (full CoT) is its costliest stage -> an upper bound. Projection to Audit -> the user. NO cell launch without the user's approval.
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s168s2_timing_stepaux boxes.prosqa168s2 --arm stepaux --think_k 10 --aux_step 1.0 --aux_fade 12000,12000 --fast_add --seed 1 --steps 12000 --time_steps 200 --auto_micro
+boxes/runs_fsq/s168s2_timing_currdirect boxes.prosqa168s2 --arm currdirect --seed 1 --steps 12000 --time_steps 200 --auto_micro
+boxes/runs_fsq/s168s2_timing_textcot boxes.prosqa168s2 --arm textcot --seed 1 --steps 12000 --time_steps 200 --auto_micro
