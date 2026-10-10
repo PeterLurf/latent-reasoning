@@ -10444,6 +10444,14 @@ subspace.**
   - The p8 difficulty is the data (larger, distractor-heavy graphs), not the trainer.
   - D* is read from the registered NA DIRECT runs. NA s1's eval is running, so the boundary note follows it.
 
+**Note 168-4 (2026-10-09 22:50 EDT; before any step-2 registration or run; Audit). Step 2 must beat a curriculum-trained single pass, and D* is measured against it too.**
+* **Why.** On standard ProsQA, Coconut's curriculum-trained single pass reads 95.5 ("w/o thought") and 96.6 (pause-as-thought) in Coconut Table 1. Our addendum Q reads 0.976 at K′ = 0. Plain DIRECT (G1: 0.766) is therefore not the strongest single pass.
+* **Requirement for step 2.** Any latent "beyond the single pass" claim on p8 must beat a **curriculum-trained DIRECT**: Coconut's stage curriculum with zero thoughts, the "w/o thought" variant, at matched data and steps on p8 NA. Beating plain DIRECT alone is not enough.
+* **D* is measured against both.** Before step 2's C1 window is fixed, the curriculum-trained DIRECT runs on p8 NA (2 seeds) and gives D*_curr by §168's rule.
+  - **The window's lower edge is max(D*, D*_curr).** That baseline may lift it above 3.
+  - These runs are registered with step 2's note, with their own projection.
+* Step 2 stays held (168-3) until a think-pass design succeeds on nested arithmetic.
+
 ## 169. INJECT: the memory with the full problem re-presented in every think pass, a task-agnostic harness (the user's "work on task agnosticness" via Audit's research pass; pre-registered 2026-10-09 01:37 EDT, after Literature's check 6b019d1e (`docs/LIT_INJECT_2026-10-09.md`) and Audit's review, before any implementation or run)
 
 **Why.**
