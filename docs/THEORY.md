@@ -11594,6 +11594,10 @@ how many think passes run in training.
   - The definition is recorded in `s179.len_err_def`.
 * **Placement:** two 3090 hosts in parallel (b243 BLIND, b244 SEEING), about $1.8 in all. b240's memcheck peak of 12.5 GiB rules out P = 2.
 
+**Note 179-2, a rewording (2026-10-09 20:36 EDT; Audit; no rule change).** The harness passes the answer length L = na + nb to greedy decoding, so the BLIND decoder never infers the answer length. 179-2's "infers only the significant length" overstates it.
+* len_err measures misplaced most-significant digits (a 0 where the true top digit is non-zero, or the reverse) or non-digit tokens. It does not measure length inference.
+* digit_err is the remaining failures.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
