@@ -145,6 +145,16 @@ def il_read(m, S, ctx):
     return m.g.logits(fwd_read(m.g, m.g.embed(ctx), m.mem, S)[:, -1]).float()
 
 
+def il_dec_ctx(m, pre, toks):
+    """the per-token decoder's context: §181 = [EOT, a, " *", b, " =", ans_<j] (the passes' own ctx); §183 BLIND (m.blind) = [EOT, " =", ans_<j], no
+    problem token (asserted)."""
+    if getattr(m, "blind", False):
+        eq = torch.full((pre.shape[0], 1), EQ, device=pre.device, dtype=pre.dtype); c_ = m.ids(torch.cat([eq, toks], 1))
+        assert c_.shape[1] == 2 + toks.shape[1] and bool((c_[:, 1] == EQ).all()), "§183: the blind decoder sees no problem token"
+        return c_
+    return m.ids(torch.cat([pre, toks], 1))
+
+
 def il_loss(m, A, B, ans, k, ce):
     """§181 training (teacher-forced: gold ans_<j in the passes and the decoder): mean CE over answer tokens 1..ce (165-1's curriculum; tokens past
     ce carry no loss and nothing flows back from them, so they are not run)."""
@@ -152,7 +162,7 @@ def il_loss(m, A, B, ans, k, ce):
     for j in range(1, ce + 1):
         assert S is last, "§181: token j's first pass starts from token j - 1's last state"
         ctx = m.ids(torch.cat([pre, ans[:, :j - 1]], 1)); S = il_token(m, S, ctx, (j - 1) * k, k); last = S
-        ls.append(Fn.cross_entropy(il_read(m, S, ctx), ans[:, j - 1]))
+        ls.append(Fn.cross_entropy(il_read(m, S, il_dec_ctx(m, pre, ans[:, :j - 1])), ans[:, j - 1]))
     return torch.stack(ls).mean()
 
 
@@ -177,7 +187,7 @@ def predict_il(m, A, B, k, dev, amp, bs, kp=None, skip_tok=(), norms=None, trace
                             trace.append((j, S.float().clone()))
                 if norms is not None:
                     norms.setdefault(j, []).append(torch.stack([S[:, :DM.H_ADD].float().flatten(1).norm(dim=1), S[:, DM.H_ADD:].float().flatten(1).norm(dim=1)], 1).cpu().numpy())
-                nt = il_read(m, S, ctx).argmax(-1); toks = torch.cat([toks, nt[:, None]], 1)
+                nt = il_read(m, S, il_dec_ctx(m, pre, toks)).argmax(-1); toks = torch.cat([toks, nt[:, None]], 1)
         out[sl] = np.vectorize(lambda t: lut.get(int(t), -1))(toks.cpu().numpy())
     return out
 
@@ -190,7 +200,8 @@ def compute_il(m, na, nb, k):
         T = 1 + na + nb + 2 + (j - 1)
         for _ in range(k):
             mt.step(T, 0, 0); tok += T
-        mt.step(T, 0, 1); tok_r += T
+        Tr = 2 + (j - 1) if getattr(m, "blind", False) else T            # §183: the blind read is [EOT, " =", ans_<j]
+        mt.step(Tr, 0, 1); tok_r += Tr
     nb_ = sum(p_.numel() for n_, p_ in m.mem.named_parameters() if not n_.startswith("s_")); D2 = DM.DH ** 2
     fb = 2 * nb_ * (tok + tok_r) + (DM.H_ADD + DM.H_DEL) * 2 * D2 * (tok + tok_r) + (DM.H_ADD * 2 + DM.H_DEL * 8) * D2 * tok; d = mt.as_dict()
     return {"flops": d["flops"] + fb, "flops_trunk": d["flops"], "flops_branch": float(fb), "sequential_passes": d["seq_passes"], "lm_head_rows": L,
@@ -322,7 +333,7 @@ def main():
     ap.add_argument("--bench", default=os.path.join("bench", "data", "mult_4x4_test.txt")); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); a.arm = "inject"; os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale; FADE = a.think_k == "4n"; K = 16 if FADE else int(a.think_k); DM.FAST_ADD = bool(a.fast_add)
     assert FADE == bool(a.fade), "§177 (d): --think_k 4n goes with --fade"
-    IL = int(a.interleave); assert not IL or (K == 0 and not FADE and not a.rand_k and not a.prog and not a.blind_decoder), "§181: --interleave k with --think_k 0 only"
+    IL = int(a.interleave); assert not IL or (K == 0 and not FADE and not a.rand_k and not a.prog), "§181: --interleave k with --think_k 0 only (§183: + --blind_decoder)"
     SHM = [int(x) for x in a.shape_mix.split(",") if x.strip()]; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
     amp = None if (a.fp32 or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
     teA, teB = load_bench(a.bench if os.path.isabs(a.bench) else os.path.join(ROOT, a.bench))

@@ -1,0 +1,89 @@
+{
+ "g1": {
+  "log_losses_equal": true,
+  "eval_fields_differing": [],
+  "n_fields": 116,
+  "smoke_plain": [
+   "SMOKE_PLAIN PASS (65 s)"
+  ]
+ },
+ "g1_pass": true,
+ "g4": {
+  "rc": 0,
+  "missing": [],
+  "blind_decoder": true,
+  "interleave": 1,
+  "res_blind": null,
+  "decoder_input": "[EOT, ' ='] + answer digits, no problem text (read-only; \u00a7179 BLIND)"
+ },
+ "g4_pass": true,
+ "g2": {
+  "train_ctx_ok": true,
+  "greedy_ctx_no_problem": true,
+  "blind": {
+   "logits_equal_across_problems": true
+  },
+  "seeing": {
+   "logits_equal_across_problems": false
+  }
+ },
+ "g2_pass": true,
+ "g3": {
+  "1": {
+   "S_j": 0.0914892852306366,
+   "S_prev": null,
+   "write": {
+    "mem.qkv.weight": 91.86779022216797,
+    "mem.gate.weight": 0.010635990649461746,
+    "mem.wo.weight": 221.54774475097656
+   }
+  },
+  "2": {
+   "S_j": 0.02250804752111435,
+   "S_prev": 0.042896270751953125,
+   "write": {
+    "mem.qkv.weight": 55.836307525634766,
+    "mem.gate.weight": 0.0029291475657373667,
+    "mem.wo.weight": 167.5185546875
+   }
+  },
+  "3": {
+   "S_j": 0.015589003451168537,
+   "S_prev": 0.01918121799826622,
+   "write": {
+    "mem.qkv.weight": 65.81861114501953,
+    "mem.gate.weight": 0.00459844246506691,
+    "mem.wo.weight": 211.08998107910156
+   }
+  },
+  "4": {
+   "S_j": 0.01261318288743496,
+   "S_prev": 0.014193551614880562,
+   "write": {
+    "mem.qkv.weight": 80.33824157714844,
+    "mem.gate.weight": 0.0038645409513264894,
+    "mem.wo.weight": 268.036865234375
+   }
+  },
+  "5": {
+   "S_j": 0.00900354702025652,
+   "S_prev": 0.009635104797780514,
+   "write": {
+    "mem.qkv.weight": 77.05709838867188,
+    "mem.gate.weight": 0.003939144778996706,
+    "mem.wo.weight": 273.22247314453125
+   }
+  },
+  "6": {
+   "S_j": 0.007382278796285391,
+   "S_prev": 0.007675512228161097,
+   "write": {
+    "mem.qkv.weight": 75.07091522216797,
+    "mem.gate.weight": 0.0044306619092822075,
+    "mem.wo.weight": 288.6348876953125
+   }
+  }
+ },
+ "g3_pass": true,
+ "all_pass": true
+}
