@@ -1,0 +1,6 @@
+22:42:05 gpt2 bin from the HF hub: ok
+NVIDIA GeForce RTX 3090, 550.144.03
+22:42:09 modules import: boxes.halt173 boxes.nested170 
+HOSTCHECK PASS (5 s)
+22:44:22 HOSTPROBE 0.5905 s/step (limit 0.854; b225 reference 0.657)
+22:44:22 start boxes/runs_fsq/s178_k8_s1
