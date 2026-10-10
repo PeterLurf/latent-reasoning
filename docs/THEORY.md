@@ -12207,6 +12207,20 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
     - If accuracy at t = 16 stays near 0.8, the magnitude drift is causal, and a bounded accumulator (#4) is motivated.
     - If not, the fall belongs to the unsupervised passes (§182 HOLD's question), and #4 is not registered.
 
+**NORM-CLAMP on §175 (2026-10-10 12:19 EDT; descriptive; s175_auxk8_s1/eval_normclamp.json, CPU, the same 256 items as memnorm). The additive magnitude drift causes most of the overthinking: clamping it recovers about 80% of the fall from t = 8 to t = 16.**
+* **The clamp:** at every t > 8, S_add is rescaled per item to its own t = 8 norm, direction kept. The delta state is untouched.
+* **Pooled accuracy (n 3..8), clamped / unclamped:**
+  - t = 8: 0.809 / 0.809;
+  - t = 10: 0.785 / 0.773;
+  - t = 12: 0.750 / 0.625;
+  - t = 14: 0.723 / 0.504;
+  - t = 16: 0.727 / 0.391.
+* **At t = 16 by n (clamped / unclamped):** 1.00 / 0.79, 0.96 / 0.63, 0.83 / 0.36, 0.67 / 0.24, 0.57 / 0.16, 0.27 / 0.10 at n = 3–8.
+* **Reading.**
+  - The unbounded additive sum (a pass counter, 123e98ee) leaves its trained range past K and corrupts the read. That is the main cause of §175's overthinking.
+  - About 0.08 remains, flat from t = 13. That part belongs to the unsupervised extra passes (§182 HOLD's lever).
+  - The clamp uses each item's own t = 8 norm, which is not deployable. A single global cap is tested next (eval-only), before any training cell for proposal #4.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
