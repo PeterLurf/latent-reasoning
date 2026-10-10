@@ -12069,6 +12069,8 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * Both arms keep the single-pass column profile, exact at columns 1–2 and near chance at 3–6, and their passes have no causal role. k2's higher columns 7–8 (0.49 / 0.88 against k1's 0.10 / 0.69) are the magnitude-predictable top digits.
 * **Reading.** MIX's per-token timing, without its schedule and with a decoder that sees the prompt, does not make the memory carry the columns, at either pass count. §183 (the same design, with the per-token reader blind) tests the remaining ingredient: per-pass signals through a view-free reader.
 
+**Note 182-5 (2026-10-10 11:32 EDT; operational; completes 182-4's staging).** The user approved §182's WINDOW and HOLD cells (about $12–14) in Audit's session, about 11:20 on 2026-10-10, as relayed by Audit. Both launch as registered (566616ef, with notes 182-1 / 182-3). No rule changes.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
