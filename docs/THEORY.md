@@ -11956,6 +11956,29 @@ how many think passes run in training.
   - cutting all cells to 24k, which would put NOFADE off §175's 48k recipe and confound the fade comparison.
 * If the user declines, §182 reads NOFADE's rules only, and the stability readings stay unread.
 
+**T-SHIFT on §175 (2026-10-10 07:43 EDT; descriptive; s175_auxk8_s1/eval_s182_tshift.json, RTX 3070). "Done" is carried by the memory inside the trained depth, and keyed on the pass token at its edge (n = 8).**
+
+The grid holds the memory after `real` passes fixed and gives the aux prompt the pass token `prompt`. Each cell is the done share (a bare number then EOT), with done-and-correct in brackets.
+
+* **n = 4: the memory decides.**
+  - Real 3: 0 at prompts 2 / 3 / 4.
+  - Real 4: 0.993 / 1.0 / 1.0 at prompts 3 / 4 / 5 (correct 0.94–0.96). Done even when the prompt says step 3.
+  - Real 5: ≥ 0.99.
+* **n = 6: mostly the memory.**
+  - Real 5: 0 / 0 / 0.114 at prompts 4 / 5 / 6.
+  - Real 6: 0.778 / 1.0 / 1.0 at prompts 5 / 6 / 7.
+* **n = 8: the pass token decides.**
+  - Real 7 with prompt 8: done 0.978, but correct only 0.137. A false "done".
+  - Real 8: 0.039 / 1.0 / 0.001 at prompts 7 / 8 / 9.
+  - Real 9 with prompt 8: 1.0.
+  - The never-trained prompt tokens ≥ 9 almost never say done.
+* **Why the edge differs:** in training, " Step 8" occurs only on n = 8 items, where it is always the last step. So the token alone predicts "done" there. Earlier tokens are final for some items and not for others, so the decoder must read the memory.
+* **Consequences:**
+  - The memory does carry completion within the trained depth.
+  - AUX-DONE's 100% exact halt at n = 8 (and its failure beyond) is the token shortcut.
+  - **For §182 HOLD (descriptive caveat):** with K up to 12, prompts ≥ 9 always carry the hold (done) target. That trains a new "Step ≥ 9 → done" shortcut, so HOLD's AUX-DONE at n 9–12 must be read with that confound.
+  - A done-probe that holds across n needs the pass token removed from the aux prompt, or a halt head on M_t.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
