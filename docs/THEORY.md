@@ -266,6 +266,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 176 | RAND-K (Audit's lead after §172; Huginn / Bansal): INJECT trained with a random think-pass count (RK) or progressive no-grad prefixes (PROG); C2-BEYOND at K' = 64 beyond training support + NO-OVERTHINKING vs fixed K8's same curve | **neither RK nor PROG rescues INJECT** (0.0 at every K′ and skip; RK mean K 7.96) | closed |
 | 177 | PASS-DISTINCT: arms to make identical-input think passes trainable - (a) pass index, (d) schedule fade + index (mult), (f) step-matched K, (g) curriculum + Poisson K (nested, gated on f); MOVES-MECHANISM (173-1) per arm | registered (cloud gated on §169 + §170 K8 failing; local previews descriptive) | **open** |
 | 178 | FROM-SCRATCH (diagnostic): §170's INJECT on a random-init 6-layer GPT-2; USES-PASSES -> PRETRAINING-OR-CAPACITY (a conditional matched 12-layer pair decides) vs HARNESS-BLOCKS; read beside §175 (pretrained, forced) | registered | **open** |
+| 179 | READOUT (diagnostic): §177 (d)'s scaffold with a BLIND end decoder, p = 0 to 24k; SHORTCUT (the decoder's view of the problem starves the memory) vs CAPACITY (end readout cannot carry the product) | registered | **open** |
 
 ## Live sections
 
@@ -11536,6 +11537,40 @@ how many think passes run in training.
   - So an end decoder, which needs the memory to hold every computed column until the end, may itself be a binding constraint, separate from identical inputs. INJECT shares that end decoder.
   - A readout-design contrast (per-pass emission against an end decoder, on the same inputs) would test it. It is not registered here.
 * (d) needs a fixed scaffold and re-registration before any cell (177-3). The 12k checkpoint is no longer needed.
+
+## 179. READOUT: does the end decoder's view of the problem starve the memory? A blind-decoder scaffold (Audit's refinement of §177 (d)'s gate failure; a diagnostic; pre-registered 2026-10-09 20:03 EDT, after Audit's review, before any implementation or run; priors: L1, §149's BYPASS, 2604.06374's copy-through; Literature cc'd)
+
+**Why.**
+* **§177 (d)'s scaffold** gave each pass §161 MIX's pair inputs, but read the answer through INJECT's end decoder ([EOT, problem text, " ="] plus the memory) in place of MIX's per-column emission inside the passes. It reads 0.0 at 12k: columns 1–2 about 1.0, column 3 0.30, columns 4–7 chance.
+  - That is §169 K8's single-pass column profile, although its passes carried informative per-pair inputs. MIX is exact.
+* **Two ways the end decoder could bind:**
+  - **(A) Capacity / timing:** the memory must hold all 8 column results until the end.
+  - **(B) Shortcut (L1):** a decoder that sees the whole problem draws training into a direct single-pass read of the text, which gets columns 1–2 right, and the memory is starved.
+* Note 171-1 ("the decoder sees the input, so K0 = DIRECT") is sound for the C1 inference. It says nothing about learnability: the shortcut can dominate training even where it cannot reach high accuracy.
+* (B) would bear on every INJECT / READ-SLOTS / §175 result. §171 BLIND (identical-input slots) does not answer it. The scaffold's informative pair inputs are what make the contrast clean.
+
+**Design.** b240's scaffold run (§177 (d)'s recipe: `--steps 48000`, pair inputs per pass, K = 4n, the index, seed 1, RTX 3090). **One change: a BLIND end decoder,** [EOT, " ="] plus the memory, with no problem text (as §171 BLIND).
+* **p = 0 is held to 24k** (`--fade 24000,48000`, stopped at 24k). Up to 12k the schedule is b240's exactly, apart from the decoder, and the run is a pure scaffold at both read points.
+* **Slow-learner guard (Audit):** a blind decoder routes everything through memory and may learn more slowly. 165-1's curriculum has digits 5–8 in the loss only from 9k.
+* **Cell:** `s179_blindscaffold_s1`. The reference is b240's proto177_fadetidx12k_s1 (the decoder sees the problem; 0.0).
+
+**Rules (fixed now; `theory/score_s179.py`; full 4×4 exact match at p = 0, read at 12k and 24k).**
+* **SHORTCUT (B):** BLIND-scaffold ≥ 0.5 at 12k or at 24k, while the seeing scaffold reads 0.0 at 12k. The decoder's view of the problem starves the memory.
+* **CAPACITY (A):** BLIND-scaffold < 0.1 **at 24k**, with column 3 at most 0.4 at 24k. End readout cannot carry the product here.
+* Otherwise **PARTIAL**, with per-column accuracy reported at both points.
+  - A BLIND that lifts columns 3–4 well above the seeing scaffold's 0.30 / 0.10 without reaching full exact match is itself evidence for (B), reported as such.
+* **Answer length (Audit):** with the shape mix 2..5, the BLIND decoder must infer the answer length from memory alone (it sees only " ="). That is part of the test.
+  Exact-match failures are reported split into length errors and digit errors, so a length failure is not misread.
+* **A SHORTCUT result opens s2** (the same cell, seed 2) to confirm.
+* **Descriptive:**
+  - per-column accuracy;
+  - the 173-1 package;
+  - the 2 × 2 against §161 MIX (emission inside the passes, sees only the pair) and §175 (whose aux decoder reads the memory blind, per pass).
+
+**Placement.** About $0.8 on one 3090 (24k; b240 took 1.6 h to 12k). `--blind_decoder` exists in readslots171 and needs porting to inject169's fade path.
+* **Fields:** `s179.acc_p0_by_step` {"12000": {acc, acc_by_column, len_err, digit_err}, "24000": {…}}, plus the 173-1 package at 24k.
+* **Gates:** the decoder sees no problem tokens (assert); step-0 function preservation; gradflow through ≥ 2 passes; flags-off bitwise equal to inject169; Audit's diff review.
+* Dir `s179_blindscaffold_s{seed}`. Scorer: `theory/score_s179.py`, committed with this registration.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
