@@ -1,12 +1,68 @@
 {
  "sanity_gate_168_3": {
   "g1": {
-   "status": "open"
+   "status": "done",
+   "best_step": 2000,
+   "test_at_best": 0.766,
+   "valid_at_best": 0.79,
+   "depth3_at_best": 0.7574257425742574,
+   "test_final": 0.766,
+   "decay": false,
+   "acc_by_step": {
+    "2000": {
+     "test": 0.766,
+     "valid": 0.79
+    },
+    "4000": {
+     "test": 0.738,
+     "valid": 0.7866666666666666
+    },
+    "6000": {
+     "test": 0.748,
+     "valid": 0.78
+    },
+    "12000": {
+     "test": 0.756,
+     "valid": 0.7766666666666666
+    },
+    "24000": {
+     "test": 0.766,
+     "valid": 0.79
+    }
+   }
   },
   "g2": {
-   "status": "open"
+   "status": "done",
+   "best_step": 2000,
+   "test_at_best": 0.501602169090461,
+   "valid_at_best": 0.44,
+   "depth3_at_best": 0.599009900990099,
+   "test_final": 0.5020951441952182,
+   "decay": false,
+   "acc_by_step": {
+    "2000": {
+     "test": 0.501602169090461,
+     "valid": 0.44
+    },
+    "4000": {
+     "test": 0.5173773724426917,
+     "valid": 0.35
+    },
+    "6000": {
+     "test": 0.514666009366527,
+     "valid": 0.4
+    },
+    "12000": {
+     "test": 0.5001232437761893,
+     "valid": 0.37
+    },
+    "24000": {
+     "test": 0.5020951441952182,
+     "valid": 0.38
+    }
+   }
   },
-  "branch": "pending (G1 open, G2 open)"
+  "branch": "STAND: the registered DIRECT runs stand; D* is read from them"
  },
  "na": {
   "seeds": {
