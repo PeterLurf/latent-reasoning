@@ -11528,6 +11528,15 @@ how many think passes run in training.
 * **The gain keeps them tiny:** |g| has mean 0.013 and maximum 0.059, with norm 0.47. The vectors are about 0.07 against an embedding scale of 3.96.
 * The model had a usable per-pass identity and learned to make it negligible. That fits the "no per-pass learning signal" reading (Goyal) rather than "passes indistinguishable".
 
+**§177 (d), the scaffold gate (2026-10-09 20:00 EDT; proto177_fadetidx12k_s1, the cell's own schedule stopped at 12k, RTX 3090; note 177-6, operational). The gate fails, so (d)'s cloud cell is not launched: "the scaffold did not train".**
+* **Full 4×4 exact match at p = 0 at 12k is 0.0** (needs ≥ 0.5).
+  - Per column: 1.0 / 0.999 / 0.30 / 0.10 / 0.09 / 0.10 / 0.12 / 0.60 for columns 1–8. The top column is partly predictable from operand size.
+* **Descriptive, a hypothesis and not a claim.** The scaffold has §161 MIX's per-pass pair inputs, but a single end decoder in place of MIX's per-column emission inside the passes.
+  - MIX is exact. The scaffold fails from column 3.
+  - So an end decoder, which needs the memory to hold every computed column until the end, may itself be a binding constraint, separate from identical inputs. INJECT shares that end decoder.
+  - A readout-design contrast (per-pass emission against an end decoder, on the same inputs) would test it. It is not registered here.
+* (d) needs a fixed scaffold and re-registration before any cell (177-3). The 12k checkpoint is no longer needed.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
