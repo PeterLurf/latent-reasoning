@@ -1,0 +1,62 @@
+{
+ "mode": "mix2",
+ "steps_planned": 4000,
+ "status": "stopped at the 2 h background-task limit after step 3500 (Idle priority beside the gates); log printed every 500 steps",
+ "gate": "note 178-3 gate 1: n = 1 test acc >= 0.3 AND loss < ln 11 - 0.2 = 2.198",
+ "lr": 0.0005,
+ "wd": 0.01,
+ "bs": 64,
+ "excl_min_n": 2,
+ "serial_pool": 2200,
+ "log": [
+  {
+   "step": 500,
+   "loss": 2.299906015396118,
+   "sec": 779,
+   "test_acc_n1": 0.127,
+   "test_acc_n2": 0.098
+  },
+  {
+   "step": 1000,
+   "loss": 2.367091655731201,
+   "sec": 1550,
+   "test_acc_n1": 0.145,
+   "test_acc_n2": 0.128
+  },
+  {
+   "step": 1500,
+   "loss": 2.3152472972869873,
+   "sec": 2423,
+   "test_acc_n1": 0.133,
+   "test_acc_n2": 0.134
+  },
+  {
+   "step": 2000,
+   "loss": 2.3396661281585693,
+   "sec": 3224,
+   "test_acc_n1": 0.155,
+   "test_acc_n2": 0.102
+  },
+  {
+   "step": 2500,
+   "loss": 2.368018388748169,
+   "sec": 4325,
+   "test_acc_n1": 0.156,
+   "test_acc_n2": 0.114
+  },
+  {
+   "step": 3000,
+   "loss": 2.265014171600342,
+   "sec": 5452,
+   "test_acc_n1": 0.144,
+   "test_acc_n2": 0.122
+  },
+  {
+   "step": 3500,
+   "loss": 2.3609001636505127,
+   "sec": 6441,
+   "test_acc_n1": 0.145,
+   "test_acc_n2": 0.11
+  }
+ ]
+}
