@@ -50,7 +50,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (08:16 2026-10-10; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
+* **Theory (11:42 2026-10-10; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
   - **The user (via Audit, 2026-10-09):**
     - ~01:30: "do another research pass. work on task agnosticness. approve go ahead on prosqa deep".
     - ~01:45: "keep working on the prosqa deep and the nested arithmetic … creating new methodologies and architectures for task agnostic".
@@ -101,6 +101,11 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
       - Local 8k compressed previews: blind and seeing on each of the 3070 and 2070. The cloud cell follows --time_steps.
     - **§182:** NOFADE (b251) running. WINDOW (b253) and HOLD (b254) are deploying: user-approved via Audit (182-5), about 26 / 28 h.
       - §175 descriptives done: AUX-DONE (exact t = n, but counter-like at n = 8 per T-SHIFT) and PATH-INDEP (answer_agree 0.292).
+    - **§168 step 2 registered: STEP-AUX-ProsQA** (note 168-7, 410d7cbc; the user's 'smaller language task first').
+      - §175's per-hop aux on p8 NA, with K = 10; CURR-DIRECT and TEXT-COT bars.
+      - p8 depth = unbranched serial lookups (168-6).
+      - Experiments: implement, gate, --time_steps only. **No launch until the user approves** slot 1 (~$13–17, via Audit).
+      - The fade is fixed by §182 NOFADE in a dated note. GSM8K-short follows this one.
     - **Drafted, not registered: STEP-AUX-GSM8K** (Audit's 04:05 lead; scratchpad sec18x_gsm8k_draft.md; Literature b908b475).
       - §175's recipe on GSM8K-Aug (K = 6, per-pass equation aux), plus an in-pipeline TEXT-COT baseline cell.
       - C3 against PCCoT 49.48 (SOTA claim: above by 2.8 in 2 / 2 seeds) and against our TEXT-COT.
