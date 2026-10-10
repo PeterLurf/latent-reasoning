@@ -11598,6 +11598,19 @@ how many think passes run in training.
 * len_err measures misplaced most-significant digits (a 0 where the true top digit is non-zero, or the reverse) or non-digit tokens. It does not measure length inference.
 * digit_err is the remaining failures.
 
+**Note 178-2 (2026-10-09 21:48 EDT; after §178 DIRECT / K0 s1 were read (disclosed); Experiments' sanity checks, boxes/runs_fsq/s178_sanity/*.json). Not a bug: the protocol's test exclusion removes the n = 1 base table, so slot 1 cannot answer §178's question.**
+* **The finding.** §170's protocol drops every test item from training. The n = 1 item space is small (a op b mod 11, about 470 items), and the n = 1 test set holds 415 of them.
+  - Only 11.6% of n = 1 training draws survive the exclusion, about 58 distinct items. For n = 2, 97.5% survive; for n ≥ 3, about 100%.
+* **Sanity results** (CPU; nested170's own trunk, loss and optimizer; lr 5e-4, wd 0.01):
+  - **Fixed batch** (64 items): loss 0.0017 and accuracy 1.0 by step 100. The training path works.
+  - **n = 1 with the exclusion:** the 58 trainable items are memorised (accuracy 1.0 from step 500). The unseen n = 1 items stay at 0.064–0.068 (chance 0.091): the table is not generalised from 58 items.
+  - **n = 1 with all items trainable:** the table is learned. Test accuracy is 0.22 / 0.24 / 0.46 / 0.71 at 0.5k / 1k / 1.5k / 2k, still rising.
+* **Reading.**
+  - The scratch trunk learns the base table when it sees it. Under §170's protocol it never does, and without the table the n ≥ 2 compositions give it nothing to bootstrap from: hence a flat ln 11 at every n.
+  - Pretrained GPT-2 brings the table as a prior (DIRECT 0.99 at n = 1).
+  - **§178 slot 1 is therefore uninformative about pretraining against harness, for a protocol reason.** That is not 178-1's "does not learn" in the intended sense.
+* **The pretrained §170 results are unaffected:** n ≥ 3 items are unique, and pretrained models know the table. Its n = 1 numbers are generalisation, not recall.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
