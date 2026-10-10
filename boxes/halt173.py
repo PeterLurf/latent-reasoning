@@ -381,11 +381,40 @@ def auxdone_fields(m, a, dev, amp, n_items=1000, bs=100, cap=16, ns=(2, 4, 6, 8,
     return out
 
 
+@torch.no_grad()
+def tshift_fields(m, a, dev, amp, n_items=1000, bs=100, ns=(4, 6, 8)):
+    """note 182-2 follow-up T-SHIFT (Theory, descriptive): is §175's aux "done" a pass COUNTER (the prompt's pass token) or does the memory carry
+    COMPLETION? Per n, M_t after exactly t real passes for t in {n-1, n, n+1}; at each, the aux greedy (2 tokens) with the prompt's pass token set to
+    t-1, t, t+1 (M_t fixed) -> the share of items whose output is "done" (one number token then EOT), and the share whose number is the answer."""
+    from contextlib import nullcontext
+    from boxes.nested170 import test_set, NUM_IDS, EOT as NEOT
+    ctx = (lambda: torch.autocast("cuda", dtype=amp)) if amp is not None else nullcontext
+    lut = {int(tk): v for v, tk in enumerate(NUM_IDS)}; TE = test_set(a.get("per_n", 1000)); out = {}
+    for n in ns:
+        its = [it for it in TE if it["n"] == n][:n_items]; cells = {}
+        for i in range(0, len(its), bs):
+            ch = its[i:i + bs]; tg = np.array([it["t"] for it in ch]); x, msk = m.think_inputs(ch, dev)
+            with ctx():
+                S = m.mem.zero_state(len(ch), dev)
+                for t in range(1, n + 2):
+                    S = m.write(S, x, msk)
+                    if t < n - 1:
+                        continue
+                    for p in (t - 1, t, t + 1):
+                        g2 = m.aux_greedy(S, p, 2); num = np.array([lut.get(int(r[0]), -1) for r in g2]); done = np.array([(int(r[0]) in lut) and int(r[1]) == NEOT for r in g2])
+                        c_ = cells.setdefault("real%d_prompt%d" % (t, p), {"done": [], "num_ok": []}); c_["done"].append(done); c_["num_ok"].append(done & (num == tg))
+        out[str(n)] = {k_: {"real_t": int(k_.split("_")[0][4:]), "prompt_t": int(k_.split("_")[1][6:]), "done": float(np.concatenate(v_["done"]).mean()),
+                            "done_and_correct": float(np.concatenate(v_["num_ok"]).mean())} for k_, v_ in sorted(cells.items())}
+        out[str(n)]["n_items"] = len(its); print("tshift n", n, {k_: round(v_["done"], 3) for k_, v_ in out[str(n)].items() if k_ != "n_items"}, flush=True)
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--n", type=int, default=1000); ap.add_argument("--bs", type=int, default=250)
     ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", default=None)
     ap.add_argument("--bench", default=os.path.join("bench", "data", "mult_4x4_test.txt")); ap.add_argument("--dir177", action="store_true", help="§177 direction diagnostic only")
     ap.add_argument("--auxdone", action="store_true", help="note 182-2 AUX-DONE halting (nested + §175 aux) only -> eval_s182_auxdone.json")
+    ap.add_argument("--tshift", action="store_true", help="note 182-2 follow-up T-SHIFT (aux done vs real / prompt pass) only -> eval_s182_tshift.json")
     o = ap.parse_args(); dev = o.device; t0 = time.time(); o.out = o.out if (o.out and o.out.endswith(".json")) else None   # gen_vast_job appends --out <dir>: anything but a .json path -> the default file in --run
     amp = None if (o.fp32 or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
     a_ = json.load(open(os.path.join(o.run, "args.json")))
@@ -395,6 +424,12 @@ def main():
                    "sec": round(time.time() - t0)})
         json.dump(r_, open(o.out or os.path.join(o.run, "eval_s177_dir.json"), "w", newline="\n"), indent=1); print("DONE dir177 pair", o.run, flush=True); return
     kind, m, a = load_model(o.run, dev); K = rule_k(a); T = 2 * K; assert K >= 1
+    if o.tshift:                                                            # note 182-2 follow-up (Theory): T-SHIFT -> eval_s182_tshift.json
+        assert kind == "nested" and a.get("aux_step"), "T-SHIFT needs a nested run trained with §175's aux decoder"
+        r_ = {"by_n": tshift_fields(m, a, dev, amp, o.n, o.bs), "run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
+              "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0),
+              "def": "cells real<t>_prompt<p>: M_t after exactly t real passes (t in n-1..n+1), aux greedy 2 tokens with pass token p (t-1..t+1); done = one number token then EOT; done_and_correct = done and the number is the answer"}
+        json.dump(r_, open(o.out or os.path.join(o.run, "eval_s182_tshift.json"), "w", newline="\n"), indent=1); print("DONE tshift", o.run, flush=True); return
     if o.auxdone:                                                           # note 182-2 (Theory): AUX-DONE halting -> eval_s182_auxdone.json
         assert kind == "nested" and a.get("aux_step"), "AUX-DONE needs a nested run trained with §175's aux decoder"
         r_ = {"by_n": auxdone_fields(m, a, dev, amp, o.n, o.bs)}; ref_ = os.path.join(o.run, "eval_s173_halt.json")
