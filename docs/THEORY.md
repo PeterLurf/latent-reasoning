@@ -270,7 +270,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 180 | (unused: the DEC-DROP draft, conditional on a §179 SHORTCUT, was never registered) | — | — |
 | 181 | INTERLEAVE: k think passes before every answer token, the memory carried across tokens (MIX's timing without its schedule); arms k1 / k2 on §161's mix | **neither HIT** (both FAIL, 4×4 ≤ 0.001; the single-pass column profile; skip drops about 0; not under-trained) | closed |
 | 182 | STEP-AUX-HOLD: §175 with the aux to the end (NOFADE), + a sampled step-matched K (WINDOW), + hold targets on passes past n (HOLD); DEEP at K′ 8, STABLE (C6) K′ 16 vs 8 | registered | **open** |
-| 183 | INTERLEAVE-BLIND: §181 k1 with a blind per-token decoder ([EOT, ' =', ans_<j] + memory); tests 'per-pass signal through a view-free reader' (MIX / §175 vs every failure) | registered | **open** |
+| 183 | INTERLEAVE-BLIND: §181 k1 with a blind per-token decoder ([EOT, ' =', ans_<j] + memory); tests 'per-pass signal through a view-free reader' (MIX / §175 vs every failure) | **FAIL; NOT SUPPORTED** (columns 3–7 0.182 vs 0.165). Descriptively the passes become causal (skip drops 0.88 / 0.31 / 0.36 / 0.75 at columns 1 / 2 / 7 / 8), but the inner columns stay at chance: per-pass compute binds | closed |
 | 184 | AUX-REWEIGHT: §182 NOFADE + per-pass aux weights w_t = Ē / E_t (pass 8 got 1/22 of pass 1's signal), equal signal per pass position; HELPS / HURTS / NO EFFECT vs NOFADE | registered | **open** |
 | 185 | ADD-NORM: §182 NOFADE with the additive read normalised: DEN (φ(q)ᵀS / φ(q)ᵀz) or RMS (TransNormer's NormAttention); STABLE + NO-COST vs NOFADE (NORM-CLAMP: the unnormalised read's growth causes ~80% of overthinking) | registered | **open** |
 
@@ -12305,6 +12305,25 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - The K′ curve is reported with and without the cap.
 * It answers whether the trained fix (§185's DEN / RMS) beats the zero-training cap, and whether the cap carries to ProsQA.
 * No rule reads it. §185's FIX and §168's DEPTH-GENERAL stay on the uncapped model.
+
+**§183 result (2026-10-10 13:07 EDT; s183_ilblind_k1_s1, b252, RTX 3090, 48k, landed 510fb53e; score_s183). FAIL, and the synthesis is NOT SUPPORTED by its registered measure. Descriptively, though, the blind reader does make the passes causal, for the columns one pass can compute. §183 closes.**
+* **4×4 reads 0.0.** Per column: 1.0 / 0.435 / 0.165 / 0.115 / 0.081 / 0.104 / 0.445 / 0.910.
+  - ext_4x8 reads 0.0. k′ 0 / 1 / 2 / 4 all read 0.0.
+  - Not under-trained (train_loss_tail 1.051 → 1.045).
+* **The registered measures:**
+  - the columns 3–7 mean is 0.182 against the seeing control's 0.165 (§181 k1);
+  - the median skip drop over columns 3–8 is 0.032 (minimum −0.003);
+  - so the synthesis is NOT SUPPORTED.
+* **Descriptive: the skip drops by column** are 0.876 / 0.311 / 0.063 / 0.001 / −0.003 / −0.003 / 0.361 / 0.747 at j = 1–8. §181 k1 (seeing) had about 0 at every column.
+  - With the decoder blind, each token's pass is necessary for every column the model gets right (1, 2, and the magnitude columns 7–8).
+  - The inner columns 3–6 are at chance with or without it.
+  - Column 2 falls from 1.0 (seeing) to 0.435.
+  - The delta cosine across tokens is 0.859, against §181 k1's 0.937. g_add is 0.0004.
+* **Reading.**
+  - A view-free per-token reader does force the memory to carry the answer, so half of the synthesis holds: the passes become causal.
+  - It does not make the inner columns computable. A column needs the sum of up to four partial products plus a carry, and one pass per token over the full problem cannot compute it. MIX spends one pass per partial product (16 at 4×4).
+  - So on multiplication the binding limit is now per-pass compute, not the reader's view.
+  - A blind interleave with more passes per token is the untested next point. It is not registered here.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
