@@ -11910,6 +11910,21 @@ how many think passes run in training.
   - A gate asserts that HOLD's real-step aux equals WINDOW's on a fixed batch.
 * No rule changes. HOLD − WINDOW now isolates the hold target.
 
+**Note 182-2 (2026-10-10 07:16 EDT; pre-data for §182: no §182 cell has run; descriptive only). AUX-DONE halting: halt when the aux decoder reads a fully reduced expression.**
+* **What prompts it:** §173's answer-settling halt does not rescue §175 (s175_auxk8_s1/eval_s173_halt.json; descriptive).
+  - answer2 reads 0.843 / 0.398 / 0.184 at n = 4 / 6 / 8, against fixed K = 8's 0.966 / 0.741 / 0.488. Its mean halting pass is 5.4 / 5.7 / 5.1.
+  - `acc_by_t` shows the main answer becomes right only at pass t ≈ n, and sits stable on a wrong value before that, so "settled" fires before the reduction is done.
+* **AUX-DONE (descriptive, every §182 cell, and post hoc on s175_auxk8_s1):**
+  - After each pass t = 1..16, the aux decoder decodes greedily, as in §175's aux eval (≤ 32 tokens).
+  - The item halts at the first t where that output is a single number followed by EOT: the expression is fully reduced. The cap is 16.
+* **Reported per n ∈ {2, 4, 6, 8, 10, 12}:**
+  - the main decoder's accuracy at the halt pass;
+  - the mean halting pass and its gap to n;
+  - the capped share;
+  - the aux number's own accuracy, and its agreement with the main answer at the halt pass;
+  - all beside fixed K = 8 and answer2.
+* It reads M_t only, through §175's read-only aux decoder, and changes no rule. A halting claim (C5) from it would need its own registration.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
