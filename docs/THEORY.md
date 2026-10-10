@@ -271,6 +271,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 181 | INTERLEAVE: k think passes before every answer token, the memory carried across tokens (MIX's timing without its schedule); arms k1 / k2 on §161's mix | **neither HIT** (both FAIL, 4×4 ≤ 0.001; the single-pass column profile; skip drops about 0; not under-trained) | closed |
 | 182 | STEP-AUX-HOLD: §175 with the aux to the end (NOFADE), + a sampled step-matched K (WINDOW), + hold targets on passes past n (HOLD); DEEP at K′ 8, STABLE (C6) K′ 16 vs 8 | registered | **open** |
 | 183 | INTERLEAVE-BLIND: §181 k1 with a blind per-token decoder ([EOT, ' =', ans_<j] + memory); tests 'per-pass signal through a view-free reader' (MIX / §175 vs every failure) | registered | **open** |
+| 184 | AUX-REWEIGHT: §182 NOFADE + per-pass aux weights w_t = Ē / E_t (pass 8 got 1/22 of pass 1's signal), equal signal per pass position; HELPS / HURTS / NO EFFECT vs NOFADE | registered | **open** |
 
 ## Live sections
 
@@ -12153,6 +12154,46 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **Slot 1 in total:** about $13–17, **so the user decides** (via Audit, with the measured --time_steps figure).
 * GSM8K-short follows after this.
 * An s2 for DEEP-LATENT would add about $10.
+
+## 184. AUX-REWEIGHT: equal training signal for every pass position (the user's request for training-schedule improvements, 2026-10-10; Audit's re-rank, proposal 1; pre-registered 2026-10-10 11:53 EDT, after Literature's check 09f395a8 (`docs/LIT_FIVE_LEVERS_2026-10-10.md`) and Audit's review, before any implementation or run)
+
+**Why.**
+* **§175's per-pass accuracy falls with pass position.** Handle accuracy (`aux_acc_by_role.handle`) reads 0.997 / 0.994 / 0.987 / 0.951 / 0.861 / 0.793 / 0.673 / 0.466 at t = 1–8, and that decay is why it is not DEEP.
+* **The supervision is skewed by construction.** With n ~ U{1..8}, pass t has a target only on items with n ≥ t. §175 then averages each item's aux over its own n steps.
+  - So pass t's expected aux weight is E_t = (1/8) Σ_{n=t}^{8} 1/n: 0.340 / 0.215 / 0.152 / 0.111 / 0.079 / 0.054 / 0.034 / 0.016.
+  - Pass 8 gets 1/22 of pass 1's signal.
+* **Prior (09f395a8):** that the training distribution decides what a model learns is well supported: Saparov 2412.04703 (a balanced distribution is needed to learn search), Lee 2307.03381 (balanced carries), Kohli 2604.07822's threshold curriculum, CLRS hints.
+  - Per-step-position reweighting inside a step-supervised latent loop was not found, so this is tuning.
+* **This is a hypothesis (Audit), not shown.** Late passes are also measured only on the deepest, hardest items, so difficulty and supervision are confounded in §175. This cell separates them by changing only the weighting.
+
+**Design.** §182 NOFADE exactly (§175's recipe with the aux weight at 1 to 48k, fixed K = 8, seed 1, RTX 3090). **One change:** each (item, pass t ≤ n) aux term is multiplied by w_t = Ē / E_t, where Ē = mean_t E_t.
+* w_t = 0.368 / 0.582 / 0.821 / 1.131 / 1.576 / 2.301 / 3.733 / 8.0. Every pass position then gets the same expected total aux weight, and the total aux scale (Σ_t E_t w_t) is unchanged.
+* The data (n ~ U{1..8}), steps, λ and answer loss are unchanged. Flag `--aux_reweight`. Dir `s184_reweight_s1`.
+
+**Rules (fixed now; `theory/score_s184.py`; pooled = n 3..8 at K′ = 8; the comparator is s182_nofade_s1, read from its eval.json).**
+* **DEEP and THINK-NECESSARY:** §182's definitions, unchanged.
+* **The lever reading** (Δ = REWEIGHT − NOFADE):
+  - **HELPS:** Δpooled ≥ +0.05, **and** the late-pass handle accuracy (mean over t = 6–8) rises by ≥ 0.10.
+  - **HURTS:** Δpooled ≤ −0.05.
+  - **NO EFFECT:** |Δpooled| < 0.03 **and** |Δ late handle| < 0.05. Supervision count is then not what limits late passes; it is difficulty or error compounding.
+  - Anything else is reported as mixed.
+* **Descriptive:**
+  - handle accuracy by pass, including the early passes (does down-weighting them cost anything?);
+  - the K′ curve;
+  - the 173-1 package;
+  - the late-pass decay against coverage.
+* **Gradient clipping (Audit):** w_8 = 8 lands on the 1/8 of items with n = 8, which raises per-batch aux gradient variance under the 1.0 clip.
+  - Both the clip rate (the share of steps clipped) and the median pre-clip grad norm are logged (`s184.clip_rate`, `s184.grad_norm_preclip`).
+  - A HURTS whose clip rate is ≥ 2× NOFADE's (or, if NOFADE did not log it, ≥ 0.5) is labelled "HURTS (clip-confounded)".
+* **One seed.** A HELPS that also reads DEEP opens s2.
+
+**Placement.** One cell, about NOFADE's cost (11.8 h at 0.887 s / step), about $3. It is within Audit's line.
+* Gates:
+  - flags-off bitwise equal to NOFADE's path;
+  - an assert that the weights equal the table and Σ_t E_t w_t = Σ_t E_t;
+  - gradflow;
+  - Audit's diff review.
+* It can run beside §182, since its comparator is the NOFADE cell itself, whatever NOFADE reads.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
