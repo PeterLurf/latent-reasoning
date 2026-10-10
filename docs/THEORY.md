@@ -266,7 +266,8 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 176 | RAND-K (Audit's lead after §172; Huginn / Bansal): INJECT trained with a random think-pass count (RK) or progressive no-grad prefixes (PROG); C2-BEYOND at K' = 64 beyond training support + NO-OVERTHINKING vs fixed K8's same curve | **neither RK nor PROG rescues INJECT** (0.0 at every K′ and skip; RK mean K 7.96) | closed |
 | 177 | PASS-DISTINCT: arms to make identical-input think passes trainable - (a) pass index, (d) schedule fade + index (mult), (f) step-matched K, (g) curriculum + Poisson K (nested, gated on f); MOVES-MECHANISM (173-1) per arm | registered (cloud gated on §169 + §170 K8 failing; local previews descriptive) | **open** |
 | 178 | FROM-SCRATCH (diagnostic): §170's INJECT on a random-init 6-layer GPT-2; USES-PASSES -> PRETRAINING-OR-CAPACITY (a conditional matched 12-layer pair decides) vs HARNESS-BLOCKS; read beside §175 (pretrained, forced) | slot 1 **UNINFORMATIVE** (protocol: §170's test exclusion removes the n = 1 table for a scratch model; 178-2); K8 aborted unread; s178b (n >= 2 exclusion) parked until §179 | **open** |
-| 179 | READOUT (diagnostic): §177 (d)'s scaffold with a BLIND end decoder, p = 0 to 24k; SHORTCUT (the decoder's view of the problem starves the memory) vs CAPACITY (end readout cannot carry the product) | registered | **open** |
+| 179 | READOUT (diagnostic): §177 (d)'s scaffold with a BLIND end decoder, p = 0 to 24k; SHORTCUT (the decoder's view of the problem starves the memory) vs CAPACITY (end readout cannot carry the product) | **CAPACITY** (blind 0.0 at 12k / 24k, column 3 0.351; columns 1–2 exact from memory alone); the seeing twin's 24k is descriptive | closed |
+| 180 | (unused: the DEC-DROP draft, conditional on a §179 SHORTCUT, was never registered) | — | — |
 
 ## Live sections
 
@@ -11656,6 +11657,26 @@ how many think passes run in training.
   - It waits for §179, since a SHORTCUT reading would require s178b to use §179's winning (blind) readout to separate pretraining from harness cleanly.
 
 **§178 slot 1, a disclosure (2026-10-09 21:50 EDT).** Experiments' extraction check for s178_k8_s1.void printed its last log line (loss 2.35 at about 23.3k of 96k) before the run was marked unread. Nothing else was read, and no reading depends on it: slot 1 is UNINFORMATIVE for 178-2's protocol cause, and 2.35 is the ln 11 plateau.
+
+**§179 result (2026-10-10 02:19 EDT; s179_blindscaffold_s1, b243, RTX 3090, landed 019b36f6; score_s179). CAPACITY (A): the blind scaffold also fails at 24k. Full 4×4 at p = 0 reads 0.0, with column 3 at 0.351.**
+* **BLIND, full 4×4 exact at p = 0:** 0.0 at 12k and 0.0 at 24k (n_fail 1000 / 1000 at both). len_err 0.164 / 0.017, so the failures are digit errors, not length.
+  - Per column at 12k: 1.0 / 0.997 / 0.274 / 0.114 / 0.108 / 0.103 / 0.105 / 0.251.
+  - Per column at 24k: 1.0 / 1.0 / 0.351 / 0.142 / 0.106 / 0.105 / 0.261 / 0.84.
+  - K′ 0 / 1 / K / 2K all read 0.0, and every skip_pass reads 0.0. ext_4x8 reads 0.0.
+* **The seeing twin** (s179_seescaffold_s1, b244) read 0.0 at 12k, reproducing b240's columns exactly (same seed, schedule and GPU class). Its 24k value is descriptive and follows when it lands. It cannot change the reading: SHORTCUT needs BLIND ≥ 0.5, and BLIND is < 0.5 at both steps.
+* **173-1 package (descriptive, 24k):**
+  - Delta-state consecutive-pass cosine is 0.76 / 0.90 / 0.94 at passes 2–4, rising to about 0.99 by pass 12. These pair-input passes move more than the identical-input failures (≥ 0.96), but the movement still settles.
+  - The step probe (a linear probe on the pass-t delta state, {pass: {column: acc}}) decodes column 1 at 0.62–0.70 at every pass 1–16, columns 2–7 at 0.08–0.15, and column 8 at 0.44–0.48.
+    - So no column from 2 on becomes linearly readable from the delta state at any pass, including the last. The decoder's exact column 2 is not a linear read of that state.
+* **Reading.**
+  - With no view of the problem, the end decoder still gets columns 1–2 exactly from the memory alone, so writing and reading work.
+  - What fails is carrying columns 3+ to a single end readout, even with informative per-pair inputs and no decoder shortcut.
+  - The decoder's view does not starve the memory here.
+  - Columns 3–6 near chance is the profile shared by §148 PLAIN, §156 SEP / PAUSE and §177 (d). §161 MIX, which emits each column inside the passes, is exact.
+* **Consequences.**
+  - The conditional DEC-DROP draft (Audit's lead, circulated as "§180", conditional on SHORTCUT) is not registered and is dropped. §180 stays unused.
+  - s178b may proceed with §178's registered readout, since the SHORTCUT clause does not apply. That decision goes with Audit.
+  - The timing contrast with MIX leads to §181 INTERLEAVE: think passes before every answer token, with the memory carried across tokens.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

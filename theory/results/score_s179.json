@@ -1,0 +1,61 @@
+{
+ "reference_sees_problem": {
+  "acc": 0.0,
+  "by_column": [
+   1.0,
+   0.999,
+   0.297,
+   0.101,
+   0.093,
+   0.097,
+   0.123,
+   0.601
+  ],
+  "gpu": "NVIDIA GeForce RTX 3090"
+ },
+ "runs": {
+  "1": {
+   "status": "done",
+   "by_step": {
+    "12000": {
+     "acc": 0.0,
+     "by_column": [
+      1.0,
+      0.997,
+      0.274,
+      0.114,
+      0.108,
+      0.103,
+      0.105,
+      0.251
+     ],
+     "len_err": 0.164,
+     "digit_err": 0.836
+    },
+    "24000": {
+     "acc": 0.0,
+     "by_column": [
+      1.0,
+      1.0,
+      0.351,
+      0.142,
+      0.106,
+      0.105,
+      0.261,
+      0.84
+     ],
+     "len_err": 0.017,
+     "digit_err": 0.983
+    }
+   }
+  },
+  "2": {
+   "status": "open"
+  }
+ },
+ "seeing_twin": {
+  "status": "open",
+  "by_step": {}
+ },
+ "reading": "CAPACITY (A): the blind scaffold also fails at 24k (0.000; column 3 0.351) - an end readout cannot carry the product here"
+}
