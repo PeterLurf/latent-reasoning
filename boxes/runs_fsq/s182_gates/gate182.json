@@ -103,6 +103,10 @@
     "24",
     "32"
    ],
+   "kprimes_rel": [
+    "n",
+    "n+2"
+   ],
    "s175_keys": [
     "aux_acc_by_pass",
     "aux_acc_by_pass_ext",
@@ -152,6 +156,10 @@
     "24",
     "32"
    ],
+   "kprimes_rel": [
+    "n",
+    "n+2"
+   ],
    "s175_keys": [
     "aux_acc_by_pass",
     "aux_acc_by_pass_ext",
@@ -200,6 +208,10 @@
     "16",
     "24",
     "32"
+   ],
+   "kprimes_rel": [
+    "n",
+    "n+2"
    ],
    "s175_keys": [
     "aux_acc_by_pass",
