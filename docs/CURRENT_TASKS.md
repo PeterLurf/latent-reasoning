@@ -50,7 +50,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (22:04; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
+* **Theory (23:55 2026-10-09; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
   - **The user (via Audit, 2026-10-09):**
     - ~01:30: "do another research pass. work on task agnosticness. approve go ahead on prosqa deep".
     - ~01:45: "keep working on the prosqa deep and the nested arithmetic … creating new methodologies and architectures for task agnostic".
@@ -82,14 +82,19 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
       - (a) index: no rescue (available but ignored).
       - (d) scaffold gate failed, so (d) is not launched.
       - (f) step-matched K running (b236).
-    - **§168:** std D* = 3 (both seeds memorise). The 168-3 sanity gate (G1 / G2: b237 / b238) runs before NA D* is read. Step 2 held.
+    - **§168:** std D* = 3 (both seeds memorise). The 168-3 gate STANDs: G1 reproduces 0.766, while G2 p8 is at chance from depth 3, so the cause is the data (869bdd25).
+      - 168-4: step 2 must beat a curriculum-trained DIRECT; D*_curr is measured on p8 NA first.
+      - The NA D* note waits on NA s1's CPU eval. Step 2 held.
     - **§178 slot 1:** UNINFORMATIVE (178-2: the test exclusion leaves 58 of about 470 n = 1 items, so the scratch model never sees the table). K8 aborted unread.
       s178b (n ≥ 2 exclusion) is parked until §179 reads.
     - **Running:**
       - §175 STEP-AUX (b235);
       - §177 (f) kmatch (b236);
       - §179 READOUT: blind b243, seeing twin b244, p = 0 to 24k, ~4.5 h from 22:15;
-      - §168 G1 / G2 (b237 / b238).
+      - §168 NA s1 eval (CPU).
+    - **Drafted, unregistered:** §180 DEC-DROP (scratchpad sec180_draft.md + score_s180.py, synthetic-checked; Audit OK; Literature 5c0d5bc9).
+      - Registers only if §179 reads SHORTCUT. Arms: decoder-prefix digit masking in training only (tok50 / tok75 / op75), ≈ $2.4.
+      - RESCUE = full ≥ 0.5, twin < 0.1, zero-mem ≤ 0.5 × full.
     - **Leading hypotheses for the think-pass failures:**
       - no per-pass learning signal (Goyal);
       - the end decoder's view of the problem starves the memory (§179 tests this);
@@ -111,7 +116,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
     - §167 refits;
     - §158 slots 2–4.
   - **Theory's tools:**
-    - scratchpad `watch_land_v10.sh` (path + mtime; s15[5-9] / s16x / s17x; eval / what_state / posthoc / anchor / das / halt / eval_s17*_*; skips *_tim* and *partial*);
+    - `watch_land_v10.sh` (path + mtime) hit its max timeout and is not restarted. Landings come from Experiments' reports plus one-off checks against seen_v3.txt;
     - commit with a pathspec;
     - fix n* (§170) and D* (§168) in dated notes from DIRECT alone.
 
