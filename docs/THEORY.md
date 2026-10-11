@@ -12945,6 +12945,15 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **It does not mean the passes don't matter.** Removal (K′ = 0 / 1 at chance), the K′ staircase and SERIAL-NEST (0.85 / 0.94) show they do.
 * C1's status, reproduced by Audit (bca002e0): met within the trained depth on nested arithmetic (§184, 2 / 2).
 
+**§185 interim: DEN (2026-10-11 18:53 EDT; s185_den_s1, b261, RTX 3090, 48k; score_s185). NO-FIX: not STABLE (K′ = 16 − K′ = 8 = −0.062), and NO-COST missed narrowly (0.755 against the 0.757 floor). Its trade-off matches the free inference-time cap. The pair reading waits for RMS.**
+* **Pooled n 3..8:** 0.419 / **0.755** / 0.721 / **0.693** / 0.670 / 0.664 at K′ = 4 / 8 / 12 / 16 / 24 / 32 (NOFADE: 0.787 → 0.418 at 16 → 0.206 at 32).
+  - n 3–8 at K′ = 8: 1.0 / 0.959 / 0.861 / 0.712 / 0.581 / 0.417. Not DEEP; THINK-NECESSARY holds.
+* **185-2 depth readout:** n 9–12 at K′ = n + 2 is 0.188, against NOFADE's 0.174 (+0.015), so no depth change, as 185-3 predicted.
+* **Descriptive:**
+  - The normalised read works as designed: the read norm is about 6.7–7.7 and flat from pass 2. den_min is ≥ 319. grad_add has median about 0.005 and p99 0.03–0.04, so there is no gradient blow-up, and TransNormer's warning is not reproduced here. clip_rate is 1.0.
+  - PATH-INDEP answer_agree is **0.748**, the highest yet (NOFADE 0.31, §184 0.11–0.12).
+  - **Against the zero-training cap on NOFADE** (0.774 / 0.691 / 0.648 at K′ = 8 / 16 / 32), DEN is 0.755 / 0.693 / 0.664. A trained mean-read gives about the same stability past K, at about the same cost within K.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
