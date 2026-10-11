@@ -355,7 +355,7 @@ def cap_add_state(m, S, C):
 
 
 @torch.no_grad()
-def deepaux_fields(m, a, dev, amp, bs=100, tmax=12, n_items=1000):
+def deepaux_fields(m, a, dev, amp, bs=100, tmax=12, n_items=1000, cap_c=None):
     """note 187-1 (Theory / Audit, descriptive): whole-string aux exact match on deep items is confounded by copy length out of distribution, so
     (a) the aux HANDLE-token accuracy (teacher-forced argmax at the newly reduced value, as s175.aux_acc_by_role.handle) per pass t = 1..tmax on the
         n 9..12 test items (s175's ext set: rng 17023, 1,000 items), each item at t <= its reductions;
@@ -363,7 +363,8 @@ def deepaux_fields(m, a, dev, amp, bs=100, tmax=12, n_items=1000):
         transfer = fit on 4,000 training-distribution items (n <= 8, rng 17021, test-excluded; t <= 8) -> test on the n 9..12 items;
         within_ext = fit on a random half of the n 9..12 items (rng 18701), test on the other half, t = 1..tmax;
     (c) check: (a)'s handle accuracy on s175's n <= 8 set (rng 17022, t <= K) - to compare with the run's eval.json aux_acc_by_role.handle.
-    The aux prompt is the model's own (no pass token under §187 --aux_nopass)."""
+    The aux prompt is the model's own (no pass token under §187 --aux_nopass). cap_c (Theory 2026-10-11): the 185-1 cap after every write in (a) / (c)
+    only (STEP-RECOVER stays uncapped: nested170.dec_reads)."""
     from contextlib import nullcontext
     from boxes.nested170 import test_set, train_items, aux_of, dec_reads, reductions, logreg_acc, P
     ctx = (lambda: torch.autocast("cuda", dtype=amp)) if amp is not None else nullcontext
@@ -378,7 +379,10 @@ def deepaux_fields(m, a, dev, amp, bs=100, tmax=12, n_items=1000):
             with ctx():
                 S = m.mem.zero_state(len(ch), dev)
                 for t in range(1, T + 1):
-                    S = m.write(S, x, msk); idx = [j for j, it in enumerate(ch) if len(aux_of(it)) >= t]
+                    S = m.write(S, x, msk)
+                    if cap_c is not None:
+                        S = cap_add_state(m, S, cap_c)
+                    idx = [j for j, it in enumerate(ch) if len(aux_of(it)) >= t]
                     if not idx:
                         continue
                     sub = [ch[j] for j in idx]; lg_a, y_a = m.aux_logits(S[idx], sub, t, dev); pr = lg_a.argmax(-1).cpu().numpy(); yy = y_a.cpu().numpy()
@@ -407,7 +411,7 @@ def deepaux_fields(m, a, dev, amp, bs=100, tmax=12, n_items=1000):
     out.update({"step_recover_ext_transfer": tr_acc, "step_recover_ext_within": wi_acc, "step_recover_ext_info": info, "tmax": tmax,
                 "items": {"n_9_12": {"n": len(te12), "seed": 17023}, "n_le_8": {"n": len(te8), "seed": 17022}, "probe_fit_seed": 17021, "within_split_seed": 18701},
                 "probe": "multinomial logistic on standardised r_t (the decoder read, 768-d; nested170.step_recover's representation), L2 1e-3, LBFGS 200",
-                "nopass": bool(getattr(m, "nopass", False))})
+                "nopass": bool(getattr(m, "nopass", False)), "cap_c": cap_c, "cap_scope": "handle_ext / handle_le8_check only" if cap_c is not None else None})
     return out
 
 
@@ -548,7 +552,8 @@ def main():
         json.dump(r_, open(o.out or os.path.join(o.run, "eval_s185_normcap.json"), "w", newline="\n"), indent=1); print("DONE normcap", o.run, flush=True); return
     if o.deepaux:                                                           # note 187-1 (Theory / Audit): deep-item aux handle + STEP-RECOVER -> eval_s187_deepaux.json
         assert kind == "nested" and a.get("aux_step"), "deepaux needs a nested run trained with §175's aux decoder"
-        r_ = {"deepaux": deepaux_fields(m, a, dev, amp, o.bs, n_items=o.n),"run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
+        cc_ = ((float(json.load(open(o.normcap_c))["normcap"]["C"]) if o.normcap_c.endswith(".json") else float(o.normcap_c)) * o.normcap_factor) if o.normcap_c else None
+        r_ = {"deepaux": deepaux_fields(m, a, dev, amp, o.bs, n_items=o.n, cap_c=cc_), "normcap_factor": o.normcap_factor if o.normcap_c else None,"run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
               "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)}
         json.dump(r_, open(o.out or os.path.join(o.run, "eval_s187_deepaux.json"), "w", newline="\n"), indent=1); print("DONE deepaux", o.run, flush=True); return
     if o.tshift:                                                            # note 182-2 follow-up (Theory): T-SHIFT -> eval_s182_tshift.json
