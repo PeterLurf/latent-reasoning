@@ -54,7 +54,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (20:38 2026-10-10; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
+* **Theory (18:31 2026-10-11; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
   - **The user (via Audit, 2026-10-09):**
     - ~01:30: "do another research pass. work on task agnosticness. approve go ahead on prosqa deep".
     - ~01:45: "keep working on the prosqa deep and the nested arithmetic … creating new methodologies and architectures for task agnostic".
@@ -114,7 +114,11 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
       - Fleet priority: stepaux, then the two baselines in sequence, then §185 den / rms. GSM8K stays unapproved.
       - §175 descriptives done: AUX-DONE (exact t = n, but counter-like at n = 8 per T-SHIFT) and PATH-INDEP (answer_agree 0.292).
     - **Training-schedule / architecture proposals (the user asked, 2026-10-10).** Ranked by the user's priorities with Audit, prior-checked by Literature (09f395a8):
-      - #1 AUX-REWEIGHT = §184. **Slot 1: HELPS + DEEP** (598b02b7). Pooled 0.974 vs 0.787; the first DEEP think-pass model on INJECT, one seed.
+      - #1 AUX-REWEIGHT = §184, **closed: HELPS; DEEP + THINK-NECESSARY + SERIAL-NEST at 2 / 2 seeds** (feabf664). §170's C1 conjunction is met on nested arithmetic.
+        - s2 pooled 0.9997. SERIAL-NEST 0.85 / 0.94.
+        - Big seed spread beyond training (n 9–12: 0.486 / 0.665). C2 / C6 are not claimed. 184-1's capped s2 read is on the 4060 about 23:00.
+        - Depth limit: 187-3 COUNT-OOD (size-keyed; s1 / NOFADE). 187-2 STRUCTURAL, so ADD-DECAY is dropped.
+          - Pending: 187-4 (SELF-DEPTH precondition), 187-5 (position offset), and the s2 re-runs.
         - s2 queued (~$3). NORM-CAP / AUX-DONE / T-SHIFT on it run locally.
         - **The reweighted ProsQA cell (168-12) is user-approved** (16:05 via Audit; 168-14). b267 launches at the next free slot, and 168-13 (a) will then be read.
         - **§187 AUX-NOPASS registered** (87b7e23d; ~$3, after §184 s2): does pass-token keying limit depth beyond n = 8?
