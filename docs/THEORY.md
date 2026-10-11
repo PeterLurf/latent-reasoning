@@ -12590,6 +12590,12 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - The inference-only NORM-CAP on NOFADE does about the same at less cost (0.774 → 0.691, −0.013 within K).
   - Whether the hold target or the sampled K does it is WINDOW's question.
 
+**§182 HOLD interim, two precisions (2026-10-11 07:46 EDT; Audit).**
+* **K′ = 8 is not HOLD's native K.** It trains up to K = n + 4, max 12. Its best within-range value is 0.710 at K′ = 12, still 0.077 below NOFADE's 0.787, so the within-K cost stands. The registered STABLE compares K′ = 16 with K′ = 8, and its verdict stands.
+* **Past 2× its maximum K, HOLD does not beat the inference-only cap:** 0.356 at K′ = 32, against NORM-CAP-on-NOFADE's 0.648.
+* n 9–12 at K′ = n + 2: 0.267 / 0.225 / 0.167 / 0.146, mean 0.201 (NOFADE 0.174; descriptive).
+* Neither DEEP nor STABLE, so no s2 opens.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
