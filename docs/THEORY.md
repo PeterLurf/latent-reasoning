@@ -12618,6 +12618,15 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - That is a hypothesis, not a finding. This is not a contradiction of their result.
 * **The external depth comparator for recursive arithmetic:** He 2512.02677's locate-and-replace loop (an explicit decomposition, close to TEXT-COT).
 
+**Note 168-13 (2026-10-11 07:52 EDT; pre-data: no §168 step-2 output has been read; Audit's suggestion; descriptive only, no rule change). Chen 2603.21676's graph-domain claim, pre-stated as a prediction for ProsQA (a graph-reachability task).**
+* Chen finds per-step supervision harms depth extrapolation on graph reachability (from scratch). ProsQA is a graph task, so §168 step 2 tests that claim in our setting.
+* **(a) The closest analogue, the same model with more or less late-hop supervision:** if 168-12 runs, STEP-AUX-REWEIGHT (stronger late hops) against STEP-AUX.
+  - Chen predicts **STEP-AUX-REWEIGHT's depth-11–14 mean at K′ = 16 ≤ STEP-AUX's**.
+  - Recorded as *consistent with Chen* if the reweighted arm is ≥ 0.05 lower, *against Chen* if it is ≥ 0.05 higher, and *neither* otherwise.
+* **(b) A looser comparison** (it is not Chen's: CURR-DIRECT has no latent passes, so this mixes passes with supervision): STEP-AUX's depth-11–14 mean at K′ = 16 against CURR-DIRECT's depth-11–14 mean.
+  - Chen's direction is STEP-AUX ≤ CURR-DIRECT. Recorded with the same ±0.05 bands.
+* Both are recorded whichever way they fall, and neither bears on §168's registered rules.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
