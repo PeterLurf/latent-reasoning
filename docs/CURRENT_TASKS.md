@@ -102,7 +102,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
     - **§177 (f) slot 1:** not HIT / not FAIL (pooled 0.506; passes not distinct). s2 not run (note 177-7).
     - **§181 closed: neither HIT** (90395c97). Both arms keep the single-pass profile, and skip drops are about 0.
     - **§183 closed: FAIL, NOT SUPPORTED** (201d4cea). The blind reader makes passes causal, but inner columns stay at chance: per-pass compute binds.
-    - **§186 INTERLEAVE-BLIND-K4 registered** (95e5dfbf; ~$2–3). The closing mult test: if it neither HITs nor reaches PARTLY, the mult interleave line closes.
+    - **§186: FAIL / NOT** (179f526a). **The mult interleave line is closed** (pre-registered stop); within-token identical-input passes sit idle (cos 0.993).
     - **NORM-CAP-GLOBAL:** a zero-training C6 fix (t16 0.696 vs 0.414; 76% of the fall, 97% of the oracle). C came from test items; 185-1 takes C from train items.
       - Local previews (3 cards, blind / seeing) are descriptive and still landing.
     - **§182 NOFADE: not DEEP, not STABLE** (384a00c2). The fade changes nothing; it shares one trajectory with §175 to step 36k. WINDOW (b253) / HOLD (b254) are running.
