@@ -9,8 +9,9 @@ import sys
 import numpy as np
 
 FACTORS = (0.5, 0.75, 1.0, 1.25, 1.5)
-run = sys.argv[1]; out = {"factors": list(FACTORS), "by_factor": {}}
-for f in FACTORS:
+EXTRA = (2.0, 3.0)                                                         # the wider sweep (2026-10-11, s184 monotone to 1.5x): merged when present
+run = sys.argv[1]; FS = list(FACTORS) + [f for f in EXTRA if os.path.exists(os.path.join(run, "eval_normcap_x%s.json" % f))]; out = {"factors": FS, "by_factor": {}}
+for f in FS:
     p = os.path.join(run, "eval_normcap_x%s.json" % f); assert os.path.exists(p), "missing " + p
     d = json.load(open(p)); nc = d["normcap"]; A = nc["acc_by_n_kprime"]
     out["by_factor"][str(f)] = {"C": nc["C"], "pooled_n3_8": {k: float(np.mean([A[k][str(n)] for n in range(3, 9)])) for k in ("8", "16", "32")},
