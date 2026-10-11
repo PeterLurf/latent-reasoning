@@ -12654,6 +12654,18 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **AUX-DONE on NOFADE under the cap:** the halt still lands at t = n for n ≤ 8 (accuracy 0.971 / 0.842 / 0.691 / 0.456; n = 8 is 0.03 below uncapped). For n 10 / 12, 80% / 96% still never halt.
 * **For §184's C1 case:** the two reads Audit set as preconditions (NORM-CAP and AUX-DONE) are in. s2 is still pending.
 
+**Notes 187-1 and 185-1, precisions (2026-10-11 08:09 EDT; no §187 output exists; §184's deepaux CPU smoke (120 items) has been seen, disclosed; descriptive only, no rule change).**
+* **(1) The cap does not make §184 STABLE by the registered bar.** Capped K′ = 16 minus K′ = 8 is 0.918 − 0.973 = −0.055, against the −0.02 bar (uncapped −0.046).
+  - The cap helps only from K′ = 24 (0.717 against 0.566; 0.566 against 0.345 at 32).
+  - The C6 wording for the cap is "extends graceful degradation past 2K", not "STABLE". NOFADE's capped K′ = 16 penalty is beyond the bar too.
+* **(2) Which comparison separates §187's hypotheses** (fixed now, before §187 data, after seeing §184's smoke):
+  - §184's deep-item handle accuracy (smoke) reads 0.99 / 0.98 at t = 1–2 and decays from t = 3 (0.89 / 0.77 / 0.63 / 0.62 / 0.61 / 0.56 at t = 3–8), with a further drop at t ≥ 9 (0.34 / 0.20 / 0.10 / 0.14).
+  - The decoder can read deep-item states. Most of the loss is per-step degradation on longer inputs, inside the seen pass tokens.
+  - **Read §187 against §184's full 1,000-item deepaux on two segments:**
+    - the **t = 3–8 mean**: per-step degradation, which the pass token should not touch;
+    - the **t ≥ 9 drop relative to t = 8**: the token edge.
+  - If §187 changes only the t ≥ 9 segment, the token limited the edge. If neither segment changes, the depth limit is per-step degradation (NOT-THE-LIMIT). Descriptive beside §187's DEPTH rule.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
