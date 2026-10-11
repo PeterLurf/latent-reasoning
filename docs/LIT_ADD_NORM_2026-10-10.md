@@ -121,3 +121,23 @@ Literature session, for Audit (the lead) and Theory.
     memory".
   - **Borrow SANE's capacity / stability lesson:** sweep the cap level, since too tight a cap can keep the state stable while destroying the answer.
     Report accuracy vs cap factor.
+
+## Addendum 4 (2026-10-11, Audit's conditional ADD-DECAY lead): RetNet and GLA verified; decay vs extrapolation of iterated reasoning
+- **RetNet, 2307.08621** (Yutao Sun, Li Dong, et al.):
+  - "retention" = linear attention with a **fixed exponential decay per head**;
+  - parallel / recurrent / chunkwise forms; **GroupNorm on head outputs**.
+  - **No length-extrapolation or reasoning-depth claim in the abstract.** Its claims are LM scaling and efficiency.
+- **GLA, 2312.06635** (Songlin Yang, Bailin Wang, et al.):
+  - gated linear attention with **data-dependent gates** (decay), plus FlashLinearAttention;
+  - "**especially effective at length generalization**, … trained on 2K to generalize to sequences longer than 20K without significant perplexity
+    degradations".
+  - **That's an LM-perplexity length claim, not iterated reasoning.**
+- **Prior work showing a decaying additive / linear-attention state improves *depth or length extrapolation of iterated reasoning*: not found.** What exists:
+  - **LM / length:** GLA (2K → 20K perplexity); Stuffed Mamba 2410.07145 (induced forgetting, i.e. scaling decay and insertion, improves length
+    generalisation of LM loss and passkey retrieval); SANE 2608.22354 (soft-capped decayed state: reasoning *survives* 100M-token prefixes, but that's
+    context length, not reasoning depth).
+  - **Recall:** AGCLR 2606.07720 (the forget gate is the largest ablation effect on GSM8K / HotpotQA / ProsQA at standard depth, not depth extrapolation).
+  - **State tracking:** Grazzi 2411.12537 (eigenvalue range, not decay, governs parity / modular counting).
+- **So ADD-DECAY's depth / think-pass test would be new.**
+- **The caveat stands:** for our additive heads, decay < 1 corrupts exact sums over many writes (LIT_BIG_BETS; LIT_FIVE_LEVERS #4). Use a learned gate
+  initialised ≈ 1 and report in-K accuracy as a no-cost check.
