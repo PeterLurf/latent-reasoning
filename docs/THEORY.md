@@ -12563,6 +12563,21 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - References: §184 at 0.486 (with the reweight) and TEXT-COT at 0.535.
 * No C2 claim rests on it.
 
+**NORM-CAP, the closest prior (2026-10-11 04:52 EDT; Literature 0993e625; framing only).** SANE 2608.22354 (Lin, Xu et al., 2026) is the closest prior to NORM-CAP.
+* **What SANE found:** RWKV-7, tracked to 100M tokens, shows a localised norm explosion past its training context.
+* **Its fix:** an element-wise soft cap, S̃ = τ_h · tanh(S / τ_h), with an adaptive per-head τ, at each chunk's terminal state.
+  - It is introduced into a pretrained RWKV-7-0.4B by SFT, so it is not training-free.
+  - At threshold factor α 3–5 it keeps short-context accuracy and reasoning past 24,000× the training length.
+  - At α ≥ 8 it is stable but loses the answer.
+* **Ours differs on five points:**
+  - inference-only, with no training;
+  - the cap value comes from training statistics;
+  - a norm cap, not element-wise;
+  - over the think-pass count, not context length;
+  - on a no-decay additive fast-weight memory.
+* **Novelty, stated narrowly:** an inference-time, training-statistic norm cap for latent think passes over a fast-weight memory. SANE and Stuffed Mamba 2410.07145 are its priors.
+* **Next, after SANE's capacity / stability trade-off:** a cap-level sweep (C × {0.5, 0.75, 1, 1.25, 1.5}, train-item C) on NOFADE and §184, reporting accuracy against the cap factor at K′ = 8 / 16 / 32.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
