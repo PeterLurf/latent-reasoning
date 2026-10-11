@@ -1,0 +1,27 @@
+MEMCAP 6.0 GiB on cuda:0 (fraction 0.750)
+auxdone n 2 0.973 2.0
+auxdone n 4 0.842 4.0
+auxdone n 6 0.694 6.0
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\Latent\boxes\halt173.py", line 525, in <module>
+    main()
+    ~~~~^^
+  File "D:\Latent\boxes\halt173.py", line 497, in main
+    r_ = {"by_n": auxdone_fields(m, a, dev, amp, o.n, o.bs, cap_c=cc_)}; ref_ = os.path.join(o.run, "eval_s173_halt.json")
+                  ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Latent\boxes\halt173.py", line 374, in auxdone_fields
+    S = m.write(S, x, msk)
+  File "D:\Latent\boxes\nested170.py", line 228, in write
+    return self.DM.gpt_forward_mem(self.g, self.g.embed(x), self.mem, S, mask=mask)[1]
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Latent\boxes\deltamem.py", line 265, in gpt_forward_mem
+    return gpt_forward_mem_r(g, x, mem, S, rec, mask=mask, h_low=h_low)
+  File "D:\Latent\boxes\deltamem.py", line 258, in gpt_forward_mem_r
+    return F.layer_norm(h, (D,), g.w("ln_f.weight"), g.w("ln_f.bias")), write_seq(mem, h6, hw, S, mask)
+                                                                        ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Latent\boxes\deltamem.py", line 180, in write_seq
+    Sd_ = al[:, t][..., None, None] * (Sd - b_ * Skk[..., :, None] * kd[..., None, :]) + b_ * vd[..., :, None] * kd[..., None, :]
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 12.00 MiB. GPU 0 has a total capacity of 8.00 GiB of which 934.00 MiB is free. Process 12296 has 17179869184.00 GiB memory in use. Including non-PyTorch memory, this process has 17179869184.00 GiB memory in use. 6.00 GiB allowed; Of the allocated memory 5.09 GiB is allocated by PyTorch, and 926.86 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
