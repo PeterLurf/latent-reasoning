@@ -12809,6 +12809,23 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - So the two models fail differently. NOFADE's deep-item failures follow nesting; §184's reweight reduced the nesting effect, but its failures now follow the operator count.
   - 187-3's count test (n = 11 / 12 rows, running) reads COUNT-OOD.
 
+**Note 187-4 (2026-10-11 16:00 EDT; before any measurement; Audit's research pass; a descriptive go / no-go for a conditional lead, no rule change). The SELF-DEPTH precondition: is §184's own pseudo-label filter precise enough on unseen depths?**
+* **The lead (conditional; drafted only if 187-3 reads COUNT-OOD for §184 and this precondition passes):** SELF-DEPTH, a self-labelled depth curriculum on §184's recipe.
+  - Round r = 1..4 pseudo-labels fresh n = 8 + r items with the model's own greedy aux chain, keeping only filtered items, mixed with n ≤ 8 ground truth.
+  - Priors: Lee 2502.01612's filtered self-training (10 → 100-digit addition); Richard 2024 (NeurIPS-W M3L) on marginal depth extrapolation of trained decoders.
+  - §103 (on S5) died on a pseudo-label precision cap of about 0.98, hence this check first.
+* **The filter (label-free), on an n = 9 item.** Run 16 passes greedily. The item is kept only if both hold:
+  - (a) the aux chain's final reduced value (the first bare-number step) equals the answer decoder's prediction at K′ = n + 2;
+  - (b) AUX-DONE halts at t = 9 (= n).
+* **The measurement** (s184_reweight_s1, all 1,000 n = 9 test items, and n = 10 as a descriptive extra):
+  - the keep rate;
+  - precision = P(the whole aux chain is correct at every step | kept);
+  - answer precision = P(answer correct | kept).
+* **Go / no-go (fixed now):**
+  - **GO** (draft SELF-DEPTH): chain precision ≥ 0.95 at keep ≥ 30% on n = 9;
+  - **DROP:** chain precision < 0.90;
+  - otherwise **marginal**, reported and not drafted.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
