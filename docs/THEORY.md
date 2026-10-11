@@ -12779,6 +12779,23 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - The 1.0× cap's harm to deep items (above) was over-capping, which 2× avoids.
   - So the decay is interference, capacity, or structure. 187-2's per-item test separates structure from length.
 
+**Note 187-3 (2026-10-11 13:51 EDT; before NOFADE's per-item rows are read; §184's rows have been seen, disclosed; Audit; descriptive). 187-2's comparison is stratified by n. A count test is added. The ADD-DECAY decision is held.**
+* **The computation, fixed now:**
+  - "Matched n … pooled over those (n, t) cells" is computed as the **mean of the 8 per-(n, t) cell gaps** (n ∈ {9, 10} × t ∈ {3, …, 6}), each cell being handle(nesting ≤ 2) − handle(nesting ≥ 4).
+  - A naive pool of all observations is confounded: the nesting-≥ 4 bin is 64% n = 10 against 47% for the nesting-≤ 2 bin, and n = 10 is worse at every nesting. That pooled gap reads 0.130 on §184.
+* **§184 by the stratified computation:** +0.110 (n 9: +0.066 / +0.113 / +0.145 / +0.210 at t = 3–6; n 10: +0.082 / +0.150 / +0.100 / +0.015).
+  - That is borderline STRUCTURAL. 187-2's reading still needs NOFADE to agree.
+* **Descriptive (Audit):** the operator count n dominates.
+  - At nesting 2, n = 9 holds handle ≥ 0.93 to t = 6 and crashes at its last step (t = 9, the unseen pass token).
+  - n = 10 decays from t = 4–5. The matched-nesting n 9 → 10 gap at t = 3–6 is about 0.155, for +1 operator and about +2 tokens.
+  - Two extra tokens are an implausible source of a 0.155 interference drop, which weakens ADD-DECAY's premise.
+* **The count test (pre-stated, before its data):** per-item rows extended to n = 11 and 12 (all test items) for §184 and NOFADE.
+  - **COUNT-OOD:** at matched nesting (≤ 2), handle at each t ∈ {3, …, 6} falls monotonically with n (9 > 10 > 11 > 12), and the first t where handle < 0.80 moves earlier as n grows.
+  - If so, the main depth limit is the reduction count exceeding training (n ≤ 8), not length interference or nesting.
+  - The lever is then the training distribution (for example a depth curriculum, or a few n = 9–10 items), and that would be C2-relevant.
+  - Otherwise the reading is mixed.
+* **ADD-DECAY is not drafted** until both NOFADE's rows and the count test are in.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
