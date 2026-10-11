@@ -12742,6 +12742,23 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **TEXT-COT's flat 0.74 is a plausible baseline, not an artefact.** It sits beside Coconut's own GPT-2 CoT on standard ProsQA (77.5; Coconut Table 1, verified d5e624e0).
   - Its flatness over depth (0.74 already at depth 3) suggests errors that do not compound per hop (for example in choosing the branch at the start). That is untested.
 
+**Note 187-2 (2026-10-11 10:51 EDT; descriptive; Audit's research pass). The deep-item per-step decay does not depend on the recipe. A pre-stated test separates length (interference) from nesting (structure).**
+* **(1) Deep-item handle accuracy per pass t = 1–8** (`eval_s187_deepaux.json`, n 9–12, 1,000 items):
+  - §184: 0.99 / 0.97 / 0.88 / 0.77 / 0.65 / 0.61 / 0.55 / 0.51;
+  - NOFADE: 0.99 / 0.97 / 0.92 / 0.84 / 0.71 / 0.59 / 0.47 / 0.34;
+  - HOLD: 0.98 / 0.98 / 0.93 / 0.86 / 0.73 / 0.64 / 0.55 / 0.49;
+  - §175: 0.99 / 0.97 / 0.91 / 0.82 / 0.69 / 0.55 / 0.43 / 0.33.
+  - In distribution, §184's reweight changed late passes completely (t = 8: 0.95 against NOFADE's 0.48). On deep items it changed nothing at t = 3–6, and helped only at t ≥ 7.
+  - So the deep decay is a property of the memory and the input, not of the supervision. That is consistent with the interference hypothesis (185-3).
+* **(2) The test, fixed now, before its data exists.** nested170's n is the operator count (token length about 3n + 1), while the tree's nesting depth varies independently (1–5 at n = 9; up to 5 occurs in training at n = 8).
+  - `--deepaux` is re-run on s184_reweight_s1 and s182_nofade_s1 with per-item rows (n, nesting depth, token length, handle per t).
+  - At matched n ∈ {9, 10} and t ∈ {3, …, 6}, the handle accuracy for nesting ≤ 2 is compared with nesting ≥ 4, pooled over those (n, t) cells, per model.
+  - **Readings:**
+    - **STRUCTURAL:** a gap ≥ 0.10 (deeper nesting fails more at matched length). The decay is stack-like (He 2512.02677), and ADD-DECAY is dropped.
+    - **INTERFERENCE-consistent:** a gap < 0.05. The decay follows length, not nesting, and ADD-DECAY stays the conditional follow-up.
+    - **Inconclusive:** otherwise, or if any compared bin has fewer than 50 items.
+  - A reading needs both models to agree. Descriptive only.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
