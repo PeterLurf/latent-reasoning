@@ -274,6 +274,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 184 | AUX-REWEIGHT: §182 NOFADE + per-pass aux weights w_t = Ē / E_t (pass 8 got 1/22 of pass 1's signal), equal signal per pass position; HELPS / HURTS / NO EFFECT vs NOFADE | slot 1 **HELPS + DEEP** (pooled 0.974 vs 0.787; n 8 = 0.935; late handle 0.97 vs 0.66; THINK-NECESSARY); s2 opened | **open** |
 | 185 | ADD-NORM: §182 NOFADE with the additive read normalised: DEN (φ(q)ᵀS / φ(q)ᵀz) or RMS (TransNormer's NormAttention); STABLE + NO-COST vs NOFADE (NORM-CLAMP: the unnormalised read's growth causes ~80% of overthinking) | registered | **open** |
 | 186 | INTERLEAVE-BLIND-K4: §183 with 4 passes per token, the closing test of the mult interleave line; HIT / PARTLY vs §183, else the line closes (pre-registered stop) | registered | **open** |
+| 187 | AUX-NOPASS: §184 with the aux prompt's pass token removed; does pass-token keying limit depth beyond training (C2)? DEPTH = n 9–12 at K′ = n + 2 vs §184 (0.486) and TEXT-COT (0.535) | registered | **open** |
 
 ## Live sections
 
@@ -12500,6 +12501,42 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
     - otherwise mixed.
 * **Cost:** about one STEP-AUX cell, about 23 h + eval, about $5–8. It needs the user's go: 168-11's approval covers slot 1 only.
 * **Scorer:** score_s168s2 is extended (the old readings are unchanged on the earlier fixtures; the new arm and lever were checked with HELPS / NO EFFECT / HURTS fixtures). The unweighted arm is refused if it carries aux_reweight.
+
+## 187. AUX-NOPASS: does keying the aux on the pass number limit depth beyond training? (Audit's 02:45 research pass; Theory's proposal 3, now a C2 test; pre-registered 2026-10-11 02:51 EDT, after Audit's review, before any implementation or run)
+
+**Why.**
+* **§184 (598b02b7)** is DEEP within training (n 3–8 ≥ 0.935 at K′ = 8). It falls off beyond it: n 9–12 reads 0.819 / 0.666 / 0.364 / 0.172 at K′ = n, and 0.822 / 0.638 / 0.320 / 0.165 at K′ = n + 2 (mean 0.486).
+  - More passes do not help (K′ = 12: mean 0.496). So the limit is the trained depth n ≤ 8, not the pass count.
+  - TEXT-COT shows the same shape (two-seed mean 0.535 at n 9–12).
+* **T-SHIFT (7fe1d4d0)** showed the aux decoder reads "which step" off the pass token at the training edge: a false "done" at "Step 8", and tokens ≥ 9 never seen.
+  - The memory may have learned to key its per-pass work on t, not on what remains to reduce. A pass-token key cannot extrapolate past the largest t trained.
+* **The test:** remove the pass token from the aux prompt. The per-pass target then has to be read from the memory's own content (how much is already reduced), which is the property that could extrapolate.
+* **With no pass token the aux prompt is identical across passes (Audit).** So the aux decoder can tell which reduction to emit only from the memory.
+  - That is the point of the test.
+  - It also makes AUX-DONE a pure memory read: no counter is possible.
+
+**Design.** §184 exactly (s184_reweight_s1's args: §175's recipe, aux to 48k with no fade, `--aux_reweight`, K = 8, seed 1, RTX 3090, uncached). **One change, `--aux_nopass`:** the aux decoder's prompt becomes [EOT, " Step", " :"], dropping pass_tok(t). Targets, weights and everything else are unchanged. Dir `s187_nopass_s1`.
+
+**Rules (fixed now; `theory/score_s187.py`; the comparator is s184_reweight_s1, read from its eval.json).**
+* **DEEP:** ≥ 0.90 at every n 3..8 at K′ = 8 (§182 / §184's definition). **THINK-NECESSARY:** 170-4 removal, K′ = 0 / 1.
+* **DEPTH** is the mean over n 9–12 at the per-item K′ = n + 2 (`s170.acc_by_n_kprime["n+2"]`). §184 reads 0.486.
+* **Readings:**
+  - **TOKEN-WAS-THE-LIMIT:** DEEP, and DEPTH ≥ §184's + 0.10 **and** ≥ 0.535 (TEXT-COT's two-seed mean). Pass-token keying limited depth, and the recipe going forward drops the token. Opens s2.
+  - **NOT-THE-LIMIT:** DEEP, and |DEPTH − §184's| < 0.05. Token keying is not what limits depth, which closes proposal 3's C2 case.
+  - **COSTLY:** not DEEP. The pass token was needed within training.
+  - Otherwise **mixed**.
+* **Descriptive:**
+  - AUX-DONE (182-2): with no pass token, does the halt land near n for n > 8, instead of capping?
+  - T-SHIFT is not applicable (there is no token to shift).
+  - The handle by pass, the K′ curve, NORM-CAP (185-1) and 173-1.
+  - §184 s2 beside it when it lands.
+
+**Placement.** One cell at §184's cost (about 12 h, about $3), within Audit's line. It runs after §184 s2 in the queue.
+* Gates:
+  - flags-off bitwise equal to §184's path;
+  - an assert that the aux prompt holds no pass token under --aux_nopass;
+  - gradflow;
+  - Audit's diff review.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
