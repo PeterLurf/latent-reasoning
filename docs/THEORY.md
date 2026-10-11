@@ -12734,6 +12734,14 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - Neither baseline reaches 0.90, so a STEP-AUX DEEP-LATENT reading would be above both the curriculum single pass and text CoT.
   - STEP-AUX (b263) lands about 23:00.
 
+**§168 step 2 baselines, context (2026-10-11 10:30 EDT; Audit; verified from log.jsonl).**
+* **Both baselines memorise their training set.**
+  - TEXT-COT's training loss is below 1e-3 from step 3,900 (final 1.4e-6).
+  - CURR-DIRECT's is below 1e-3 from step 10,900, in its final no-CoT stages (final 3e-4).
+  - So CURR-DIRECT at chance means it memorises training and does not transfer, not that it cannot fit. D*_curr = 3 should be read that way.
+* **TEXT-COT's flat 0.74 is a plausible baseline, not an artefact.** It sits beside Coconut's own GPT-2 CoT on standard ProsQA (77.5; Coconut Table 1, verified d5e624e0).
+  - Its flatness over depth (0.74 already at depth 3) suggests errors that do not compound per hop (for example in choosing the branch at the start). That is untested.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
