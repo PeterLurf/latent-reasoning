@@ -12954,6 +12954,20 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - PATH-INDEP answer_agree is **0.748**, the highest yet (NOFADE 0.31, §184 0.11–0.12).
   - **Against the zero-training cap on NOFADE** (0.774 / 0.691 / 0.648 at K′ = 8 / 16 / 32), DEN is 0.755 / 0.693 / 0.664. A trained mean-read gives about the same stability past K, at about the same cost within K.
 
+**Path independence against depth across runs (2026-10-11 18:54 EDT; Audit; descriptive). Here they are anti-correlated, the opposite of Anil 2211.09961's link, so "train for path independence" is not supported as a depth lever.**
+
+| Run | answer_agree (PATH-INDEP) | n 9–12 at K′ = n + 2 |
+|---|---|---|
+| §185 DEN | 0.748 | 0.188 |
+| §182 HOLD | 0.47 | 0.201 |
+| NOFADE | 0.31 | 0.174 |
+| §182 WINDOW | 0.14 | 0.465 |
+| §184 s1 | 0.11 | 0.486 |
+
+* The path-independent runs look path-independent because their reads are history-insensitive (bounded or normalised), not because they self-correct.
+* Audit's PATH-INDEP-training lead is demoted below 187-5, SELF-DEPTH and K-randomisation.
+* If drafted at all, its premise must be self-correction specifically (for example, recovery when the donor shares the target's first k steps), with that as its readout, not generic donor agreement.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
