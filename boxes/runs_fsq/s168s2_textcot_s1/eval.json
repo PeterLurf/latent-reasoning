@@ -1,0 +1,59 @@
+{
+ "arm": "textcot",
+ "data": "na",
+ "seed": 1,
+ "steps": 12000,
+ "think_k": 0,
+ "acc": 0.7350111028867505,
+ "n": 4053,
+ "acc_by_depth": {
+  "3": 0.7386934673366834,
+  "4": 0.7368421052631579,
+  "5": 0.7159904534606205,
+  "6": 0.7279236276849642,
+  "7": 0.7613365155131265,
+  "8": 0.6897374701670644,
+  "9": 0.7422434367541766,
+  "10": 0.7488038277511961,
+  "11": 0.707808564231738,
+  "12": 0.754601226993865,
+  "13": 0.7891566265060241,
+  "14": 0.8529411764705882
+ },
+ "n_by_depth": {
+  "3": 199,
+  "4": 418,
+  "5": 419,
+  "6": 419,
+  "7": 419,
+  "8": 419,
+  "9": 419,
+  "10": 418,
+  "11": 397,
+  "12": 326,
+  "13": 166,
+  "14": 34
+ },
+ "acc_ctl": 0.6641509433962264,
+ "n_ctl": 795,
+ "train_sec": 14362,
+ "n_nonfinite": 0,
+ "micro": 4,
+ "eval_dtype": "torch.bfloat16",
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "train_gpu": "NVIDIA GeForce RTX 3090",
+ "acc_def": "candidate accuracy: log p('### ' + correct) > log p(the negative's) after the arm's prefix (stepaux: + the memory after K passes)",
+ "mean_cot_tokens": 103.63758250825083,
+ "clip": {
+  "clip_rate": 0.004416666666666667,
+  "grad_norm_preclip": {
+   "median": 0.009099081624299288,
+   "p90": 0.20190947055816652,
+   "n_steps": 12000
+  },
+  "aux_reweight": false,
+  "weights": null,
+  "def": "clip_grad_norm_(..., 1.0)'s pre-clip total norm per step; clip fires when > 1.0"
+ },
+ "eval_sec": 851
+}
