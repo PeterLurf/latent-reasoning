@@ -12851,6 +12851,13 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - Hold targets add nothing and cost a lot.
   - WINDOW's K is tied to n, Kuo 2606.29983's size ↔ loop correlation, and yet its depth (0.465) is about §184's.
 
+**§182 WINDOW interim, wording cautions (2026-10-11 16:28 EDT; Audit; no change to the reading).**
+* **Trajectory:** WINDOW's logged loss differs from HOLD's and NOFADE's from step 1, so it is an independent run.
+* **(1) "Beyond training" for WINDOW starts at K′ = 24.** Its trained K goes up to n + 4 = 12, so K′ = 16 is only 1.33× that. The fair points are K′ = 24 (0.859, −0.041 against K′ = 8) and K′ = 32 (0.739). For comparison, §184 capped at f* = 2.0 reads 0.811 at K′ = 32.
+* **(2) The stability costs accuracy within K:** 0.900 against §184's 0.974.
+* **(3) PATH-INDEP answer_agree is 0.14,** the lowest yet. The answer depends on the starting memory even though accuracy is flat in K′. That goes beside any C6 claim.
+* s2 is about $5–6 (b253 took 97.8k s on a 3090), opened by rule.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
