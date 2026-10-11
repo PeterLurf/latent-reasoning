@@ -12826,6 +12826,13 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - **DROP:** chain precision < 0.90;
   - otherwise **marginal**, reported and not drafted.
 
+**Note 187-4, a stricter filter variant (2026-10-11 16:01 EDT; before any measurement; Literature 9027a2e7).** The aux chain and the answer decoder read the same memory, so their errors may be correlated, and their agreement can overstate correctness.
+* **Also measured:** a stricter filter that adds an independent agreement. The answer at K′ = n + 2 must equal the answer at K′ = n + 4, a different pass budget. When s184 s2 lands, s1 / s2 seed agreement is reported too.
+* **Both filters get the same keep / precision report.**
+* **GO uses the stricter filter** if the base filter's precision at keep is inflated: if base precision − strict precision ≥ 0.03, GO is judged on the strict filter.
+* SELF-DEPTH is new as scoped: Lee 2502.01612 self-trains token outputs, and nothing self-trains latent loop depth.
+  - If it is drafted: one operator per round, and gold label precision logged per round, scorer-only.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
