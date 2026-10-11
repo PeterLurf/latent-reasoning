@@ -427,6 +427,53 @@ def deepaux_fields(m, a, dev, amp, bs=100, tmax=12, n_items=1000, cap_c=None, it
 
 
 @torch.no_grad()
+def selfdepth_fields(m, a, dev, amp, bs=100, ns=(9, 10), T=16):
+    """note 187-4 (Theory, descriptive; pre-stated): self-verified depth on ALL test items at each n. Per item, T greedy passes from M_0 = 0:
+    after pass t the aux greedy chain (as s175's aux eval: [the model's aux prompt] then greedy, exact match of the true step e_{t+1} + EOT for t <= n);
+    halt t = the first t whose aux output is a bare number (one number token then EOT, AUX-DONE's rule; T if none); final value = that number;
+    the answer decoder's prediction at K' = n + 2. KEEP iff final value == answer prediction AND halt t == n.
+    -> per n: keep_rate, chain_precision = P(all n aux steps exact | kept), answer_precision = P(answer right | kept), and the same over all items."""
+    from contextlib import nullcontext
+    from boxes.nested170 import test_set, aux_of, ids, NUM_IDS, EOT as NEOT
+    ctx = (lambda: torch.autocast("cuda", dtype=amp)) if amp is not None else nullcontext
+    lut = {int(tk): v for v, tk in enumerate(NUM_IDS)}; TE = test_set(a.get("per_n", 1000)); out = {}
+    for n in ns:
+        its = [it for it in TE if it["n"] == n]; kp = n + 2; kp4 = n + 4; assert kp4 <= T
+        H, FV, AP, AP4, CH = [], [], [], [], []
+        for i in range(0, len(its), bs):
+            ch = its[i:i + bs]; b = len(ch); x, msk = m.think_inputs(ch, dev)
+            halt = np.full(b, T); fval = np.full(b, -1); chain_ok = np.ones(b, bool); ans = ans4 = None
+            with ctx():
+                S = m.mem.zero_state(b, dev)
+                for t in range(1, T + 1):
+                    S = m.write(S, x, msk)
+                    if t == kp:
+                        ans = m.dec_logits(S, ch, dev)[:, NUM_IDS].argmax(-1).cpu().numpy()
+                    if t == kp4:                                    # Theory 2026-10-11: the strict filter's second answer read
+                        ans4 = m.dec_logits(S, ch, dev)[:, NUM_IDS].argmax(-1).cpu().numpy()
+                    tg = [ids(aux_of(it)[t - 1][0]) + [NEOT] if t <= len(aux_of(it)) else None for it in ch]
+                    L = max([len(q) for q in tg if q is not None] + [2]); g = m.aux_greedy(S, t, L)
+                    for r in range(b):
+                        if tg[r] is not None and list(g[r, :len(tg[r])]) != tg[r]:
+                            chain_ok[r] = False
+                        if halt[r] == T and fval[r] == -1 and int(g[r, 0]) in lut and int(g[r, 1]) == NEOT:
+                            halt[r] = t; fval[r] = lut[int(g[r, 0])]
+            H.append(halt); FV.append(fval); AP.append(ans); AP4.append(ans4); CH.append(chain_ok)
+        h, fv, ap, ap4, chn = np.concatenate(H), np.concatenate(FV), np.concatenate(AP), np.concatenate(AP4), np.concatenate(CH); tgt = np.array([it["t"] for it in its])
+        keep = (fv == ap) & (h == n) & (fv >= 0); strict = keep & (ap == ap4)
+        out[str(n)] = {"n_items": int(len(its)), "kprime_answer": kp, "keep_rate": float(keep.mean()), "n_kept": int(keep.sum()),
+                       "chain_precision": float(chn[keep].mean()) if keep.any() else None, "answer_precision": float((ap == tgt)[keep].mean()) if keep.any() else None,
+                       "all_items": {"chain_exact": float(chn.mean()), "answer_acc": float((ap == tgt).mean()), "halt_at_n": float((h == n).mean()),
+                                     "final_eq_answer": float(((fv == ap) & (fv >= 0)).mean()), "no_halt": float((fv < 0).mean()),
+                                     "answer_acc_kprime_n4": float((ap4 == tgt).mean()), "answer_n2_eq_n4": float((ap == ap4).mean())},
+                       "strict": {"def": "keep AND answer at K' n+2 == answer at K' n+4", "keep_rate": float(strict.mean()), "n_kept": int(strict.sum()),
+                                  "chain_precision": float(chn[strict].mean()) if strict.any() else None, "answer_precision": float((ap == tgt)[strict].mean()) if strict.any() else None},
+                       "halt_hist": {str(k_): int(c_) for k_, c_ in zip(*np.unique(h, return_counts=True))}}
+        print("selfdepth n", n, {k: out[str(n)][k] for k in ("keep_rate", "chain_precision", "answer_precision")}, flush=True)
+    return out
+
+
+@torch.no_grad()
 def auxdone_fields(m, a, dev, amp, n_items=1000, bs=100, cap=16, ns=(2, 4, 6, 8, 10, 12), cap_c=None):
     """note 182-2 AUX-DONE (Theory, descriptive; nested runs with §175's aux decoder): per n, n_items test items, think passes t = 1..cap from M_0 = 0.
     After each pass: the main decoder's answer, and §175's aux decoder greedy from [EOT, " Step", " t", " :"] reading M_t. The item halts at the first t
@@ -546,6 +593,7 @@ def main():
     ap.add_argument("--items_n", default="9,10", help="--deepaux_items(_only): the n set (all test items at each n)")
     ap.add_argument("--items_tmax", type=int, default=0, help="--deepaux_items(_only): passes recorded (0 = 12)")
     ap.add_argument("--items_file", default="eval_s187_deepaux_items.json", help="--deepaux_items(_only): the rows file name in the run dir")
+    ap.add_argument("--selfdepth", action="store_true", help="note 187-4: self-verified depth filter (aux chain + AUX-DONE halt + answer at K' = n + 2) on ALL n 9 / 10 test items -> eval_s187_selfdepth_pre.json")
     ap.add_argument("--normcap", action="store_true", help="note 185-1 inference-only NORM-CAP (nested) only -> eval_s185_normcap.json")
     ap.add_argument("--normcap_c", default="", help="--normcap: C given instead of computed: a number ('inf' = the uncapped arm) or an eval_s185_normcap.json path (its normcap.C)")
     ap.add_argument("--normcap_factor", type=float, default=1.0, help="--normcap with --normcap_c: C x this factor (the cap-level sweep, Theory 2026-10-11)")
@@ -566,6 +614,12 @@ def main():
               "normcap_factor": o.normcap_factor if o.normcap_c else None, "normcap_c_source": o.normcap_c.replace(os.sep, "/") or None, "run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
               "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)}
         json.dump(r_, open(o.out or os.path.join(o.run, "eval_s185_normcap.json"), "w", newline="\n"), indent=1); print("DONE normcap", o.run, flush=True); return
+    if o.selfdepth:                                                         # note 187-4 (Theory): self-verified depth -> eval_s187_selfdepth_pre.json
+        assert kind == "nested" and a.get("aux_step"), "selfdepth needs a nested run trained with §175's aux decoder"
+        r_ = {"by_n": selfdepth_fields(m, a, dev, amp, o.bs), "run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp), "passes": 16,
+              "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0),
+              "def": "keep iff the aux chain's bare-number halt is at t = n AND its number equals the answer decoder at K' = n + 2; chain_precision = all n aux steps exact (greedy, + EOT) among kept; answer_precision = answer right among kept"}
+        json.dump(r_, open(o.out or os.path.join(o.run, "eval_s187_selfdepth_pre.json"), "w", newline="\n"), indent=1); print("DONE selfdepth", o.run, flush=True); return
     if o.deepaux:                                                           # note 187-1 (Theory / Audit): deep-item aux handle + STEP-RECOVER -> eval_s187_deepaux.json
         assert kind == "nested" and a.get("aux_step"), "deepaux needs a nested run trained with §175's aux decoder"
         cc_ = ((float(json.load(open(o.normcap_c))["normcap"]["C"]) if o.normcap_c.endswith(".json") else float(o.normcap_c)) * o.normcap_factor) if o.normcap_c else None
