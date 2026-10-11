@@ -12552,6 +12552,17 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - extra identical-input passes per token add nothing.
   - The nested / ProsQA line, with per-pass targets and §184's weighting, carries the work.
 
+**Note 185-2 (2026-10-11 04:51 EDT; pre-data: no §185 output has been read; Audit's lead; descriptive only, no rule change). A depth readout for §185, against NOFADE.**
+* **Why:** Labovich 2604.15259 argues that looped models need recall plus outer normalisation of the state to reach input-dependent fixed points that hold beyond training depth.
+  - INJECT already has recall: the question is re-fed on every pass. §185's DEN / RMS supply the normalisation.
+  - So 2604.15259 predicts §185 should also lift depth beyond the trained n ≤ 8, not only K′ stability.
+* **The readout (score_s185, descriptive):** each arm's n 9–12 mean at the per-item K′ = n + 2, against its comparator NOFADE's (0.174; NOFADE has no reweight).
+  - **LIFTS depth:** at least +0.05.
+  - **No depth change:** within ±0.02. The depth limit is then not the read magnitude, which sharpens §187's question (the pass token, or something else).
+  - **Mixed:** otherwise.
+  - References: §184 at 0.486 (with the reweight) and TEXT-COT at 0.535.
+* No C2 claim rests on it.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

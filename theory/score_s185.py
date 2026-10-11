@@ -39,7 +39,10 @@ def read(d, want):
     if None in (p8, p16, p0, p1):
         return {"status": "incomplete", "missing": [k for k, v in zip((8, 16, 0, 1), (p8, p16, p0, p1)) if v is None]}
     rem = (p0 - CH) <= 0.5 * (p8 - CH) + EPS and (p1 - CH) <= 0.5 * (p8 - CH) + EPS
+    kn2 = S170.kseries(x, "n+2")                                            # note 185-2 (descriptive): depth n 9-12 at per-item K' = n + 2
+    depth = S170.mean([S170.acc(kn2, n) for n in range(9, 13)]) if kn2 else None
     return {"status": "done", "pooled_k8": p8, "pooled_k16": p16, "pooled_k32": S170.pooled(S170.kseries(x, 32), NS), "stable": bool(p16 >= p8 - 0.02 - EPS),
+            "depth_9_12_n2": depth,
             "deep": all((S170.acc(S170.kseries(x, 8), n) or 0) >= 0.90 - EPS for n in range(NS, 9)), "think_necessary": None if p8 - CH < 0.1 else bool(rem),
             "gpu": r.get("train_gpu")}
 
@@ -60,6 +63,10 @@ def verdict(arm, comp):
             rd = "NO-FIX"
         rd += ": %s K'8 %.3f -> K'16 %.3f (K'32 %s) vs NOFADE %.3f -> %.3f; DEEP %s, THINK-NECESSARY %s" % (
             arm.upper(), r1["pooled_k8"], r1["pooled_k16"], None if r1["pooled_k32"] is None else round(r1["pooled_k32"], 3), comp["pooled_k8"], comp["pooled_k16"], r1["deep"], r1["think_necessary"])
+        dr, dc = r1.get("depth_9_12_n2"), comp.get("depth_9_12_n2")              # note 185-2: descriptive, no C2 claim
+        if dr is not None and dc is not None:
+            dl = "LIFTS depth" if dr - dc >= 0.05 - EPS else ("no depth change" if abs(dr - dc) <= 0.02 + EPS else "mixed depth")
+            rd += "; [185-2, descriptive] n 9-12 at K'=n+2: %.3f vs NOFADE %.3f (%+.3f) -> %s (refs: §184 0.486, TEXT-COT 0.535)" % (dr, dc, dr - dc, dl)
         if rd.startswith("FIX"):
             rd += "; s2 opens" if runs[2].get("status") != "done" else "; s2 STABLE %s" % runs[2].get("stable")
     return {"runs": runs, "reading": rd}
