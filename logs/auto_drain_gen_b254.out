@@ -1,0 +1,4 @@
+20:42:04 gen_b254 UNREACHABLE (3 polls; still polling)
+scratch/auto_drain_gen7.sh: line 23: fails: bad array subscript
+scratch/auto_drain_gen7.sh: line 23: fails[$t]: bad array subscript
+07:44:21 ALL_DRAINED
