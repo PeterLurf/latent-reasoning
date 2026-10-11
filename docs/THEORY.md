@@ -12688,6 +12688,14 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * A "LIFTS depth" reading would count against the interference hypothesis.
 * **Conditional follow-up, not registered here:** if 185-2 reads "no depth change" for both arms, ADD-DECAY (a learned per-head decay γ_h on the additive heads; RetNet / GLA-style, pending Literature's ID check) is drafted, with C2 and C6 readouts.
 
+**Deep items on §184, a correction (2026-10-11 09:46 EDT; Audit; descriptive).** STEP-RECOVER is quoted as the deep-minus-in-distribution gap, not as absolute values.
+* The linear probe of v_t from r_t is weak on in-distribution items too. §184's own `s175.step_recover` (n ≤ 8) reads 0.965 / 0.718 / 0.574 / 0.498 / 0.452 / 0.419 / 0.463 / 0.353 at t = 1–8, while the aux handle there is ≥ 0.95.
+  - So r_t is not a linearly clean carrier of v_t even where the model is right. The aux decoder reads it non-linearly, or from more than v_t.
+  - The record above (496bdb8d) read the deep values' low level as deep-specific. It is not.
+* **The deep-specific part is the gap** (within-deep minus in-distribution): −0.18 / −0.23 / −0.24 / −0.20 / −0.26 / −0.11 at t = 3–8.
+  - In-distribution test sizes shrink to 133 items at t = 8, so the t = 7–8 gaps are noisy.
+* **The primary deep-item segment for 187-1 / §187 stays the handle accuracy:** ≥ 0.95 in distribution, against 0.88 → 0.51 deep at t = 3–8.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
