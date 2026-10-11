@@ -1,0 +1,10 @@
+{
+ "arm": "stepaux",
+ "think_k": 10,
+ "steps_timed": 200,
+ "sec_per_step": 3.496253809928894,
+ "steps": 12000,
+ "est_hours_steps": 11.654179366429647,
+ "micro": 2,
+ "gpu": "NVIDIA GeForce RTX 3090"
+}

@@ -1,0 +1,5 @@
+{"gpu": "NVIDIA GeForce RTX 3090", "torch": "2.5.1+cu124"}
+{"test": "memory", "gib": 20.0, "gib_requested": 20.0, "passes": 3, "bad_blocks": []}
+{"test": "label_share", "n": 1024, "reps": 1000, "cpu_sum": 8768, "cpu_share": 0.008369990224828934, "bad_reps": 0, "first_bad": []}
+{"test": "matmul", "reps": 100, "cpu_sum": 66805.18910622202, "gpu_first": 66805.19487307686, "bad_reps": 0, "first_bad": []}
+HOSTCHECK PASS (5 s)
