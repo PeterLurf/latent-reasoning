@@ -1,0 +1,17 @@
+{
+ "checks": [
+  {
+   "micro": 1,
+   "peak_gib": Infinity
+  },
+  {
+   "micro": 2,
+   "peak_gib": 15.143558129668236
+  }
+ ],
+ "micro": 2,
+ "peak_gib": 15.143558129668236,
+ "train_shape": "4x5",
+ "eval_shape": "4x16 at K' = 0",
+ "train_passes": "fixed K"
+}
