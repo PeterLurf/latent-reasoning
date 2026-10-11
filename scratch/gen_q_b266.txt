@@ -1,0 +1,7 @@
+# THEORY §187 AUX-NOPASS (87b7e23d; scorer theory/score_s187.py) cell s187_nopass_s1: s184_reweight_s1's exact args + --aux_nopass (the aux prompt [EOT, " Step", " :"], no pass token, in training and every aux eval; gate187.json); ~$3 within Audit's line; queued after s184 s2; then halt173 dir177 / auxdone / normcap (T-SHIFT n/a)
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s187_nopass_s1 boxes.nested170 --arm inject --think_k 8 --aux_step 1.0 --aux_fade 48000,48000 --aux_reweight --aux_nopass --fast_add --seed 1 --steps 48000 --kprimes 0,1,4,8,12,16,24,32 --path_indep --ckpt_every 1000 --auto_micro
+boxes/runs_fsq/s187_nopass_s1_pkg boxes.halt173 --run boxes/runs_fsq/s187_nopass_s1 --dir177 --bs 125
+boxes/runs_fsq/s187_nopass_s1_auxdone boxes.halt173 --run boxes/runs_fsq/s187_nopass_s1 --auxdone --bs 125
+boxes/runs_fsq/s187_nopass_s1_normcap boxes.halt173 --run boxes/runs_fsq/s187_nopass_s1 --normcap --bs 125

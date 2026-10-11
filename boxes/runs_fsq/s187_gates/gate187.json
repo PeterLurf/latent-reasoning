@@ -1,0 +1,46 @@
+{
+ "g1": {
+  "log_losses_equal": true,
+  "eval_fields_differing": [],
+  "n_fields": 230
+ },
+ "g1_pass": true,
+ "g2": {
+  "nopass_prompt": [
+   50256,
+   5012,
+   1058
+  ],
+  "all_nopass_equal": true,
+  "no_pass_token": true,
+  "off_is_175": true
+ },
+ "g2_pass": true,
+ "g3": {
+  "args_aux_nopass": true,
+  "aux_ce": [
+   1.925516664981842,
+   1.9877640008926392,
+   1.9501276016235352
+  ],
+  "aux_ce_flags_off": [
+   2.118650794029236,
+   2.2387421131134033,
+   2.2399299144744873
+  ],
+  "write_grad_norm": [
+   0.0007649679319001734,
+   0.0030996957793831825,
+   0.0035075617488473654
+  ],
+  "s175_aux_acc_by_pass": {
+   "1": 0.0,
+   "2": 0.0
+  },
+  "auxdone_rc": 0,
+  "auxdone_err": "",
+  "tshift_refused": true
+ },
+ "g3_pass": true,
+ "all_pass": true
+}
