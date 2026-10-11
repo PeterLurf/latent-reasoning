@@ -116,7 +116,8 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
     - **Training-schedule / architecture proposals (the user asked, 2026-10-10).** Ranked by the user's priorities with Audit, prior-checked by Literature (09f395a8):
       - #1 AUX-REWEIGHT = §184. **Slot 1: HELPS + DEEP** (598b02b7). Pooled 0.974 vs 0.787; the first DEEP think-pass model on INJECT, one seed.
         - s2 queued (~$3). NORM-CAP / AUX-DONE / T-SHIFT on it run locally.
-        - A reweighted ProsQA cell (~$5–8) is proposed; it needs the user's go.
+        - A reweighted ProsQA cell is registered (168-12, ~$5–8); it needs the user's go.
+        - **§187 AUX-NOPASS registered** (87b7e23d; ~$3, after §184 s2): does pass-token keying limit depth beyond n = 8?
       - #4 becomes **§185 ADD-NORM** (2a1aac15; ~$6). The additive read had no normaliser.
         - NORM-CLAMP: about 80% of §175's overthinking is that read's growth.
         - Arms DEN and RMS. Launch after NORM-CAP-GLOBAL (6k items, 3070) and NOFADE.
