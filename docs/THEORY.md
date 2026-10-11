@@ -12427,6 +12427,15 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - **If g5 fails, nothing launches.** The loop costs about $46–69 for STEP-AUX alone, outside the approval, so the user is asked again.
 * The seed-2 cells (CURR-DIRECT s2 if D*_curr > 3; STEP-AUX s2 if s1 is DEEP-LATENT) are outside this approval and get their own projection.
 
+**NORM-CAP, prior work (2026-10-10 22:51 EDT; Literature 2847b768, Audit's lead; framing only, no number changes).** The overthinking mechanism is the think-pass analogue of a known recurrent-state length effect.
+* **Stuffed Mamba 2410.07145** (COLM 2025): Mamba-2's state mean and variance blow up past the training length.
+  - Its training-free fixes are RRI (state decay ×0.9999 and input-insertion scaling ×0.75) and a state-difference sliding window.
+  - It uses no norm cap.
+* **What is new here:**
+  - an inference-time norm cap on the additive state, with C set from training items at the trained pass count;
+  - its use on latent think passes over a fast-weight memory, where the "length" is the number of passes, not the context.
+* RRI's insertion scaling is the nearest analogue to §185's trained arms (DEN / RMS).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
