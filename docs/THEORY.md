@@ -12455,6 +12455,12 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - It is partial in a FINAL-only model, and minor in a step-matched-K model.
   - So the cap is a fix for the per-pass-aux recipe (the recipe going forward: §168 s2, GSM8K), not a general cure for overthinking.
 
+**Note 168-11, its launch condition met (2026-10-10 23:17 EDT; d7e9abea).** CHUNK_DELTA's trajectory gate g5 passed (200 steps, bs 32, seed 1, one 3090):
+* d_chunk = 0.00487 against d_reorder = 0.00285 (bound max(2 × d_reorder, 0.02) = 0.02). It also passes 2 × d_reorder alone (0.0057).
+* No NaN / inf in any of the three runs. At step 200 the losses are 0.7841 / 0.7854 / 0.7857 (chunk / loop / loop-m4).
+* CHUNK_DELTA is therefore adopted for STEP-AUX, at 8.1× the loop's speed on the same host.
+* **s168s2_stepaux_s1 launched as approved** (b263: `--chunk_delta --ckpt_passes --cache_lower --aux_fade 12000,12000`, K 10, bs 64, 12k steps). CURR-DIRECT and TEXT-COT follow on the next free slot, at bs 64.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
