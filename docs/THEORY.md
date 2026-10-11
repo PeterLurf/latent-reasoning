@@ -12407,6 +12407,19 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * 168-7's rule: no fade, unless §182 NOFADE's pooled n 3..8 at K′ = 8 reads more than 0.05 below §175's 0.787. NOFADE reads 0.786 (above), so the fade is not used.
 * The same applies to the STEP-AUX-GSM8K draft.
 
+**NORM-CAP on §182 NOFADE, with C from training items (2026-10-10 21:54 EDT; note 185-1, descriptive; s182_nofade_s1/eval_s185_normcap.json, RTX 3070). The deployable cap holds: the K′ = 16 accuracy matches the test-derived reading, and the cap holds out to K′ = 32.**
+* **C = 11,884:** the median ‖S_add‖ after K = 8 over 1,000 *training* items (rng 18501; test and SERIAL items excluded). §175's test-derived C was 12,588.
+* **Pooled n 3..8, capped / uncapped:**
+  - K′ = 8: 0.774 / 0.787 (−0.013 within K);
+  - K′ = 12: 0.738 / 0.625;
+  - K′ = 16: 0.691 / 0.418;
+  - K′ = 24: 0.656 / 0.265;
+  - K′ = 32: 0.648 / 0.206.
+* The cap does not bind at K′ ≤ 4, and capped equals uncapped there within eval-host noise.
+* **Reading.**
+  - An inference-time cap on the additive norm, set from training data at the trained K, turns a collapse past K (−0.58 by K′ = 32) into a mild slope (−0.13), at a cost of −0.013 within K.
+  - It is the zero-training C6 baseline that §185's trained fixes (DEN / RMS) are read against.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
