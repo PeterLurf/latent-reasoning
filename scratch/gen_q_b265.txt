@@ -1,0 +1,5 @@
+# THEORY §184 AUX-REWEIGHT (c342e51c) cell s184_reweight_s2 (s2 opened by 598b02b7: s1 HELPS + DEEP): s182_nofade_s1's exact args + --aux_reweight (w_t = E_bar / E_t on the aux CE of pass t <= n inside §175's per-item mean); Audit-approved ~$3; logs s184 clip_rate / grad_norm_preclip; then the 173-1 package
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s184_reweight_s2 boxes.nested170 --arm inject --think_k 8 --aux_step 1.0 --aux_fade 48000,48000 --aux_reweight --fast_add --seed 2 --steps 48000 --kprimes 0,1,4,8,12,16,24,32 --path_indep --ckpt_every 1000 --auto_micro
+boxes/runs_fsq/s184_reweight_s2_pkg boxes.halt173 --run boxes/runs_fsq/s184_reweight_s2 --dir177 --bs 125
