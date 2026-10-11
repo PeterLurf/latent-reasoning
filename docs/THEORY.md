@@ -12764,6 +12764,12 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - By the same proportions, nesting ≥ 4 is about 150 items and nesting ≤ 2 about 1,100, so both clear 50.
 * The contrast (≤ 2 against ≥ 4), the bands and the both-models rule are unchanged.
 
+**Note 184-1: f* fixed on s1 (2026-10-11 11:03 EDT; before any s2 eval is read). f* = 2.0×.** From s1's seven-factor sweep (eval_normcap_sweep.json; uncapped K′ = 8 is 0.9737):
+* **Eligible** (K′ = 16 − K′ = 8 ≥ −0.02, and capped K′ = 8 ≥ 0.9537): 1.25× (−0.018; K′ = 32 0.639), 1.5× (−0.006; 0.714), 2.0× (−0.006; 0.811).
+* **Not eligible:** 0.5× / 0.75× / 1.0× (−0.203 / −0.122 / −0.056) and 3.0× (−0.027).
+* **f\* = 2.0×**, the highest pooled K′ = 32 among the eligible.
+* **s2 is now read once:** capped at 2.0 × s2's own train-item C. STABLE-with-cap (s2) requires capped K′ = 16 − K′ = 8 ≥ −0.02 and capped K′ = 8 ≥ s2's uncapped K′ = 8 − 0.02.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
