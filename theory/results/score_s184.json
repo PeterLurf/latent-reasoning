@@ -39,12 +39,28 @@
    "think_necessary": true
   },
   "2": {
-   "status": "open"
+   "status": "done",
+   "pooled_k8": 0.9996666666666667,
+   "handle": {
+    "1": 0.997,
+    "2": 0.9988545246277205,
+    "3": 0.9973404255319149,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0
+   },
+   "late_handle": 1.0,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "clip_rate": 0.6223958333333334,
+   "deep": true,
+   "think_necessary": true
   }
  },
  "d_pooled": 0.18699999999999994,
  "d_late_handle": 0.3120185466531833,
  "lever": "HELPS",
- "reading": "HELPS: Dpooled +0.187 (0.974 vs 0.787), D late handle +0.312; REWEIGHT DEEP True, THINK-NECESSARY True; s2 opens",
+ "reading": "HELPS: Dpooled +0.187 (0.974 vs 0.787), D late handle +0.312; REWEIGHT DEEP True, THINK-NECESSARY True; s2 DEEP True",
  "errors": []
 }
