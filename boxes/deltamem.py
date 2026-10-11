@@ -18,6 +18,12 @@ import torch.nn.functional as F
 H_ADD, H_DEL, DH = 6, 6, 64
 FAST_ADD = False                                                            # Audit 2026-10-09: R-mode additive writes as one sum over the pass (opt-in per run)
 CHUNK_DELTA = 0                                                             # 2026-10-10: R-mode delta writes in chunks of this many tokens (WY form; 0 = the token loop; needs FAST_ADD)
+POS_OFFSET = 0                                                              # note 187-5 (eval only): every forward path adds wpe[POS_OFFSET : POS_OFFSET + T] (0 = wpe[:T], unchanged)
+
+
+def wpe_slice(g, T):
+    """the position embeddings a T-token forward adds: wpe[POS_OFFSET : POS_OFFSET + T] (note 187-5; POS_OFFSET 0 = the usual wpe[:T])."""
+    return g.w("wpe.weight")[POS_OFFSET:POS_OFFSET + T]
 
 
 class DeltaMem(nn.Module):
@@ -233,7 +239,7 @@ def _block(g, i, h, hd):
 def gpt_lower(g, x, layer):
     """--cache_lower (Audit / Theory 2026-10-10): the residual entering block `layer` for input embeddings x (B, T, D) - blocks 0..layer-1, which
     the memory never touches. Valid to share across think passes ONLY when every pass has the identical input (no pass index / think-token change)."""
-    B, T, D = x.shape; hd = D // g.H; h = x + g.w("wpe.weight")[:T][None]
+    B, T, D = x.shape; hd = D // g.H; h = x + wpe_slice(g, T)[None]
     for i in range(layer):
         h = _block(g, i, h, hd)
     return h
@@ -243,7 +249,7 @@ def gpt_forward_mem_r(g, x, mem, S, rec=None, cap=None, mask=None, h_low=None):
     """§155 DELTA-R pass: the read (pass-start S) entering block mem.layer, the 12 blocks, then the writes from
     u = (1 - gamma) LN_6(h_6) + gamma LN_w(h_w) (h_w = the residual after block 11, pre-ln_f, or block 9's output). cap: dict for probes.
     h_low (--cache_lower): gpt_lower(g, x, mem.layer) computed once and shared by the passes -> blocks 0..layer-1 are skipped here (same values)."""
-    B, T, D = x.shape; hd = D // g.H; h = x + g.w("wpe.weight")[:T][None] if h_low is None else h_low; h6 = hw = None
+    B, T, D = x.shape; hd = D // g.H; h = x + wpe_slice(g, T)[None] if h_low is None else h_low; h6 = hw = None
     for i in range(0 if h_low is None else mem.layer, g.L):
         if i == mem.layer:
             h6 = h; h = read_fixed(mem, h, S, rec)
@@ -265,7 +271,7 @@ def gpt_forward_mem(g, x, mem, S, rec=None, mask=None, h_low=None):
         return gpt_forward_mem_r(g, x, mem, S, rec, mask=mask, h_low=h_low)
     assert h_low is None, "--cache_lower needs the R write path (§155 DELTA-R)"
     assert mask is None, "a write mask needs the R write path (§155 DELTA-R)"
-    B, T, D = x.shape; hd = D // g.H; h = x + g.w("wpe.weight")[:T][None]
+    B, T, D = x.shape; hd = D // g.H; h = x + wpe_slice(g, T)[None]
     for i in range(g.L):
         if i == mem.layer:
             h, S = mem(h, S, rec)

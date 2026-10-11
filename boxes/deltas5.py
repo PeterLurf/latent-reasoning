@@ -90,7 +90,7 @@ class Direct(nn.Module):
 # ------------------------------------------------------------------------------------------------------------------ DELTA
 def fwd_read(g, x, mem, S):
     """the answer decoder pass: the read on S entering block mem.layer (read_fixed), no write; final hidden after ln_f."""
-    B, T, D = x.shape; hd = D // g.H; h = x + g.w("wpe.weight")[:T][None]
+    B, T, D = x.shape; hd = D // g.H; h = x + DM.wpe_slice(g, T)[None]
     for i in range(g.L):
         if i == mem.layer:
             h = DM.read_fixed(mem, h, S)
