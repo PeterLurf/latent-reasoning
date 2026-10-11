@@ -1,0 +1,4 @@
+# THEORY §168 step 2 slot 1 (note 168-7; 168-9 reverted -> bs 64; 168-10 aux_fade 12000,12000; 168-11 the user's approval, 9b01c8af, ~$7.5-11; CHUNK_DELTA per Theory's ruling after g5 PASS): s168s2_stepaux_s1 - K 10 think passes, §175 per-hop aux 1.0 throughout, --chunk_delta 64 --ckpt_passes --cache_lower (exact; gate_chunk_delta.json / gate_cache_lower.json), 12k steps, eval package in-run (K' sweep + 185-1 normcap, AUX-DONE, STEP-RECOVER, PATH-INDEP, ext). ~23 h + eval
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s168s2_stepaux_s1 boxes.prosqa168s2 --arm stepaux --think_k 10 --aux_step 1.0 --aux_fade 12000,12000 --fast_add --chunk_delta 64 --ckpt_passes --cache_lower --seed 1 --steps 12000 --bs 64 --auto_micro
