@@ -1,0 +1,65 @@
+{
+ "control": "s183_ilblind_k1_s1",
+ "control_mid_3_7": 0.182,
+ "runs": {
+  "1": {
+   "status": "done",
+   "acc_4x4": 0.0,
+   "acc_by_column": [
+    1.0,
+    0.489,
+    0.172,
+    0.1,
+    0.11,
+    0.082,
+    0.587,
+    0.922
+   ],
+   "acc_by_kprime": {
+    "0": 0.0,
+    "1": 0.0,
+    "2": 0.0,
+    "4": 0.0,
+    "8": 0.0
+   },
+   "ext_4x8": {
+    "acc": 0.0,
+    "acc_by_column": [
+     1.0,
+     0.487,
+     0.197,
+     0.125,
+     0.106,
+     0.114,
+     0.099,
+     0.106,
+     0.097,
+     0.089,
+     0.086,
+     0.276
+    ]
+   },
+   "under_trained": false,
+   "mid_3_7": 0.2102,
+   "control_mid_3_7": 0.182,
+   "drops": {
+    "3": 0.011999999999999983,
+    "4": -0.0049999999999999906,
+    "5": 0.008999999999999994,
+    "6": -0.0030000000000000027,
+    "7": 0.08799999999999997,
+    "8": 0.04300000000000004
+   },
+   "median_drop": 0.010499999999999989,
+   "rule": "FAIL",
+   "hit": false,
+   "synthesis": "NOT: the mult interleave line closes (\u00a7186 stop)",
+   "reading": "FAIL; compute reading NOT: the mult interleave line closes (\u00a7186 stop) (cols 3-7 0.210 vs control 0.182; median drop 0.010; k'0 0.000; 4x4 0.000)"
+  },
+  "2": {
+   "status": "open"
+  }
+ },
+ "reading": "FAIL; compute reading NOT: the mult interleave line closes (\u00a7186 stop) (cols 3-7 0.210 vs control 0.182; median drop 0.010; k'0 0.000; 4x4 0.000)",
+ "errors": []
+}
