@@ -12607,6 +12607,17 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - If §184's deep-item handle accuracy is already low at t = 1, the decoder cannot read deep-item states at all, whatever the pass token.
 * §187's rule (DEPTH, answer accuracy at K′ = n + 2) is unaffected.
 
+**Depth and per-pass supervision, a C2 line against the literature (2026-10-11 07:52 EDT; Audit's pass; Literature 1663fc86; descriptive).**
+* **Our data** (nested arithmetic, pretrained GPT-2 with a fast-weight memory; n 9–12 mean at K′ = 8, from `s170.acc_by_n_kprime`):
+  - §175 (the aux faded to final-only over the last 12k): 0.201;
+  - NOFADE (per-pass throughout; one shared trajectory with §175 to 36k): 0.183;
+  - §184 (per-pass, equally weighted): 0.486.
+  - Fading the per-pass aux to final-only did not help depth (+0.018). Strengthening the late-pass supervision is the only lever that has moved it (+0.30).
+* **Against Chen 2603.21676**, scoped as Literature words it: Chen finds per-step supervision harms extrapolation in from-scratch depth-recurrent models on graph reachability. On nested arithmetic, with a pretrained LM and a fast-weight memory, our per-pass step aux helped.
+  - The difference may reflect the domain, pretraining, or where the state lives (a memory read by a view-free decoder, against a re-applied residual block).
+  - That is a hypothesis, not a finding. This is not a contradiction of their result.
+* **The external depth comparator for recursive arithmetic:** He 2512.02677's locate-and-replace loop (an explicit decomposition, close to TEXT-COT).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
