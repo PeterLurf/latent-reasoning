@@ -75,3 +75,26 @@ Literature session, for Audit (the lead) and Theory.
    - It's Jacobian spectral-radius regularisation with random loop sampling, so states approach asymptotically stable fixed points.
    - It doesn't target additive accumulators, because it constrains the loop map's spectrum. On an integrator (eigenvalue 1 by design) it would force
      decay, so it can't keep exact sums.
+
+## Addendum 2 (2026-10-10, Audit's 22:45 lead): "Stuffed Mamba" 2410.07145 as the RNN-length analogue of NORM-CAP
+- **The paper:** Yingfa Chen, Xinrong Zhang, Shengding Hu, et al. (Tsinghua), "Stuffed Mamba: Oversized States Lead to the Inability to Forget",
+  **COLM 2025**. Verified via the arXiv abstract page and HTML.
+- **The phenomenon, a direct analogue of ours:**
+  - Mamba-2 **fails to learn to forget** when trained on contexts too short for its state size. Some heads keep the first token's cumulative retention
+    above 0.997 at 8K.
+  - **The state's mean and variance "exhibit a clear explosion when t is greater than the training length"** (their Fig. 5).
+  - Beyond the training length, interference from un-forgotten tokens degrades output.
+  - The minimum training length needed to learn forgetting scales linearly with state size.
+- **Their training-free mitigations (both are state-update interventions, Sec. 3.2.2 and after):**
+  1. **RRI (Reduced Memory Retention and Insertion):** scale the decay α_t by **0.9999** and the insertion B_t by **0.75**, chosen on 32K validation loss.
+  2. **Sliding window by state difference:** h_t^(r) = h_t − α_{t−r+1:t} h_{t−r}, i.e. keep only the last r tokens' contribution, without
+     reprocessing.
+  - **Neither is an inference-time norm cap or state normalisation.** RRI is the closest: it shrinks what is written, and so how large the state can grow.
+- **How to cite NORM-CAP:**
+  - "a think-pass (loop-count) analogue of the known state-explosion beyond training length in recurrent LMs (Stuffed Mamba 2410.07145; cf. the
+    unexplored-states account, 2507.02782)";
+  - mitigated here by **an inference-time cap on the additive state's norm, derived from training statistics**.
+  - **The phenomenon is known. The cap as the mitigation, and its application to latent think passes over a fast-weight memory, are not found in the
+    literature.** Don't present the state-growth finding itself as new.
+- **Mechanistic difference worth one line:** their states grow from *un-forgotten tokens* (sequence length). Ours grow from *repeated additive writes
+  across think passes* (loop count) with no decay at all. RRI's insertion scaling is the nearest analogue to ADD-NORM's divisor / RMS arms.
