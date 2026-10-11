@@ -12436,6 +12436,15 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - its use on latent think passes over a fast-weight memory, where the "length" is the number of passes, not the context.
 * RRI's insertion scaling is the nearest analogue to §185's trained arms (DEN / RMS).
 
+**NORM-CAP on §170 K8, FINAL-only INJECT with no per-pass targets (2026-10-10 22:56 EDT; 185-1, descriptive; s170_k8_s1/eval_s185_normcap.json, RTX 3070). The cap recovers under half of this model's overthinking.**
+* **C = 13,680:** the median ‖S_add‖ after K = 8 over 1,000 training items.
+* **Capped pooled n 3..8:** 0.144 / 0.169 / 0.236 / 0.345 / 0.290 / 0.266 / 0.259 / 0.257 at K′ = 0 / 1 / 4 / 8 / 12 / 16 / 24 / 32.
+* **Uncapped:** 0.351 at K′ = 8 and 0.203 at K′ = 16 (from its own eval, which has no 12 / 24 / 32; a completion is requested).
+* **Recovery at K′ = 16:** (0.266 − 0.203) / (0.351 − 0.203), about 43%, against about 76% for §175 / NOFADE. Capped accuracy plateaus near 0.26 out to K′ = 32.
+* **Reading.**
+  - In a model trained with no per-pass targets, the additive magnitude explains under half of the overthinking. The rest plausibly comes from the unsupervised passes themselves.
+  - With §175's per-pass aux, the same cap recovers about 76%. So the per-pass aux plus the cap is the effective combination, and §182 HOLD's question (training passes past n) bears on the remainder.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
