@@ -12578,6 +12578,18 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **Novelty, stated narrowly:** an inference-time, training-statistic norm cap for latent think passes over a fast-weight memory. SANE and Stuffed Mamba 2410.07145 are its priors.
 * **Next, after SANE's capacity / stability trade-off:** a cap-level sweep (C × {0.5, 0.75, 1, 1.25, 1.5}, train-item C) on NOFADE and §184, reporting accuracy against the cap factor at K′ = 8 / 16 / 32.
 
+**§182 interim: HOLD (2026-10-11 07:45 EDT; s182_hold_s1, b254, RTX 3090, 48k, landed f4234f6d; score_s182). Not DEEP, and not STABLE by the letter (K′ = 16 is 0.032 below K′ = 8, against the 0.02 band). Much flatter than NOFADE, but it costs accuracy within K. The pair reading (HOLD − WINDOW) waits for WINDOW.**
+* **Pooled n 3..8:** 0.093 / 0.100 / 0.398 / 0.708 / 0.710 / 0.675 / 0.517 / 0.355 at K′ = 0 / 1 / 4 / 8 / 12 / 16 / 24 / 32.
+  - K′ = n: 0.701; K′ = n + 2: 0.712.
+  - NOFADE: 0.787 at K′ = 8 and 0.418 at K′ = 16.
+* **By n at K′ = 8:** 1.0 / 0.929 / 0.815 / 0.656 / 0.515 / 0.335 (n 3–8), then 0.127 / 0.110 / 0.099 / 0.115 (n 9–12).
+  - The handle by pass (0.991 → 0.383 at t = 8) collapses as NOFADE's does. HOLD has no reweight.
+* **PATH-INDEP:** answer_agree 0.468 and delta_cos_final 0.898 (NOFADE: 0.31; §175: 0.292). Hold targets push toward a shared fixed point, as Anil 2211.09961 would predict.
+* **Reading (interim).**
+  - Hold targets with a sampled K flatten the extra-pass curve (−0.03 from K′ = 8 to 16, against NOFADE's −0.37), at a within-K cost of −0.08.
+  - The inference-only NORM-CAP on NOFADE does about the same at less cost (0.774 → 0.691, −0.013 within K).
+  - Whether the hold target or the sampled K does it is WINDOW's question.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
