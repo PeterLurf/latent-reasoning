@@ -54,7 +54,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
 
 ## Waiting to be scored (Theory scores; Experiments reports when a section's runs are all in)
 
-* **Theory (13:10 2026-10-10; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
+* **Theory (20:38 2026-10-10; session "claude-c6"; peers by name: "Audit" / "Experiments" / "Literature"):**
   - **The user (via Audit, 2026-10-09):**
     - ~01:30: "do another research pass. work on task agnosticness. approve go ahead on prosqa deep".
     - ~01:45: "keep working on the prosqa deep and the nested arithmetic … creating new methodologies and architectures for task agnostic".
@@ -105,7 +105,12 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
     - **§186 INTERLEAVE-BLIND-K4 registered** (95e5dfbf; ~$2–3). The closing mult test: if it neither HITs nor reaches PARTLY, the mult interleave line closes.
     - **NORM-CAP-GLOBAL:** a zero-training C6 fix (t16 0.696 vs 0.414; 76% of the fall, 97% of the oracle). C came from test items; 185-1 takes C from train items.
       - Local previews (3 cards, blind / seeing) are descriptive and still landing.
-    - **§182:** NOFADE (b251) running. WINDOW (b253) and HOLD (b254) are deploying: user-approved via Audit (182-5), about 26 / 28 h.
+    - **§182 NOFADE: not DEEP, not STABLE** (384a00c2). The fade changes nothing; it shares one trajectory with §175 to step 36k. WINDOW (b253) / HOLD (b254) are running.
+      - 168-10: §168 s2 and GSM8K use no fade.
+      - Running: §184 (b255) and §186 (b257).
+      - §185: den launches when b259 ends, rms at the next free slot (fleet ≤ 5). NOFADE post hocs are on the 4060.
+    - **§168 s2 projection:** with CHUNK_DELTA, stepaux runs at 6.96 s/step at bs 64. Slot 1 is about $7.5–11 at bs 64, about $4.5–6.5 at bs 32.
+      - It waits for the g5 trajectory gate (b259) and the user's approval. Theory will revert to bs 64 in a note once g5 passes.
       - §175 descriptives done: AUX-DONE (exact t = n, but counter-like at n = 8 per T-SHIFT) and PATH-INDEP (answer_agree 0.292).
     - **Training-schedule / architecture proposals (the user asked, 2026-10-10).** Ranked by the user's priorities with Audit, prior-checked by Literature (09f395a8):
       - #1 AUX-REWEIGHT **registered as §184** (c342e51c; ~$3). Pass 8 got 1/22 of pass 1's aux signal.
