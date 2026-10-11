@@ -392,7 +392,7 @@ def dec_reads(m, items, T, dev, ac, bs):
         ch = items[i:i + bs]; seqs = [[EOT] + ids(it["syms"]) + [TID[" ="]] for it in ch]; ids_, _ = pad(seqs); x = torch.tensor(ids_, device=dev)
         pos = torch.tensor([len(q) - 1 for q in seqs], device=dev); xt, msk = m.think_inputs(ch, dev); rs = []
         with ac():
-            h = g.embed(x) + g.w("wpe.weight")[:x.shape[1]][None]
+            h = g.embed(x) + m.DM.wpe_slice(g, x.shape[1])[None]
             for j in range(m.mem.layer):
                 h = m.DM._block(g, j, h, h.shape[-1] // g.H)
             h6 = h[torch.arange(len(ch), device=dev), pos]; S = m.mem.zero_state(len(ch), dev)
