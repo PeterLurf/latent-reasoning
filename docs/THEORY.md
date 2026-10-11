@@ -12770,6 +12770,15 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **f\* = 2.0×**, the highest pooled K′ = 32 among the eligible.
 * **s2 is now read once:** capped at 2.0 × s2's own train-item C. STABLE-with-cap (s2) requires capped K′ = 16 − K′ = 8 ≥ −0.02 and capped K′ = 8 ≥ s2's uncapped K′ = 8 − 0.02.
 
+**Deep items under the f* = 2.0× cap (2026-10-11 11:18 EDT; descriptive; s184_reweight_s1/eval_s187_deepaux_cap2.0.json, C = 25,426).** At the chosen cap, the deep-item per-step decay is unchanged.
+* **Handle accuracy per pass, n 9–12, capped:** 0.991 / 0.973 / 0.883 / 0.773 / 0.650 / 0.609 / 0.554 / 0.509 / 0.321 / 0.175 / 0.097 / 0.097 at t = 1–12.
+  - It is identical to uncapped through t = 7, and within ±0.03 at t = 8–12.
+  - n ≤ 8 is unchanged (0.993 → 0.955).
+* **Reading:**
+  - The deep-item decay is not additive-norm growth: the 2× cap barely binds within 12 passes.
+  - The 1.0× cap's harm to deep items (above) was over-capping, which 2× avoids.
+  - So the decay is interference, capacity, or structure. 187-2's per-item test separates structure from length.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
