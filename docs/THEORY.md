@@ -12712,6 +12712,12 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - Also reported: s2's capped K′ = 32, and its n 9–12 at K′ = 16, against uncapped.
 * **What it can support:** "§184 plus a train-statistic cap at a fixed factor is STABLE", evidenced by s2 alone (s1 passes by construction). It is a C6 descriptive claim. §184's HELPS / DEEP rules are untouched.
 
+**Note 184-1, a within-K cost guard (2026-10-11 09:57 EDT; pre-data: no s2 output has been read; Audit).**
+* **The loophole:** a cap can pass K′ = 16 − K′ = 8 ≥ −0.02 by lowering K′ = 8, which is how a tight cap can look STABLE.
+* **The guard:** STABLE-with-cap (s2) also requires s2's capped K′ = 8 ≥ s2's uncapped K′ = 8 − 0.02.
+  - It applies to the f* selection on s1 too: a factor qualifies only if its capped K′ = 8 is ≥ s1's uncapped 0.974 − 0.02.
+  - On s1, 1.25× and 1.5× pass it trivially (0.973 / 0.974), so it closes the loophole on s2 without changing f*.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
