@@ -12596,6 +12596,17 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * n 9–12 at K′ = n + 2: 0.267 / 0.225 / 0.167 / 0.146, mean 0.201 (NOFADE 0.174; descriptive).
 * Neither DEEP nor STABLE, so no s2 opens.
 
+**Note 187-1 (2026-10-11 07:51 EDT; pre-data: §187 has not run; Audit; descriptive only, no rule change). On deep items, the aux is read by handle-token accuracy, not whole-string exact match.**
+* **The confound:** §184's whole-string aux exact match on n 9–12 items (`s175.aux_acc_by_pass_ext`, K′ = 16) reads 0.09–0.17 at t = 1–7 and about 0 from t = 8, while answer accuracy at n = 9 is 0.822.
+  - A depth-9+ item's step string is longer than any training step string, so that measure is dominated by copy length out of distribution, not by what the memory holds.
+* **So §187's mechanistic aux reads on deep items use:**
+  - (a) handle-token accuracy (`aux_acc_by_role.handle`) per pass t on n 9–12 items at K′ = 16;
+  - (b) STEP-RECOVER, the linear probe of v_t, extended to n 9–12.
+  - Both are also run post hoc on §184 s1 as the reference.
+* **The prediction if the pass token limits depth:** for §184, handle accuracy on deep items is near in-distribution (≥ 0.9) at t ≤ 8 and drops at t ≥ 9. For §187 it holds past 8.
+  - If §184's deep-item handle accuracy is already low at t = 1, the decoder cannot read deep-item states at all, whatever the pass token.
+* §187's rule (DEPTH, answer accuracy at K′ = n + 2) is unaffected.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
