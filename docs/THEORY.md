@@ -12445,6 +12445,16 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - In a model trained with no per-pass targets, the additive magnitude explains under half of the overthinking. The rest plausibly comes from the unsupervised passes themselves.
   - With §175's per-pass aux, the same cap recovers about 76%. So the per-pass aux plus the cap is the effective combination, and §182 HOLD's question (training passes past n) bears on the remainder.
 
+**NORM-CAP generality across three nested models (2026-10-10 23:02 EDT; 185-1, descriptive; C from training items at each model's maximum trained pass count; 554b5eac).** The cap's help depends on the training recipe: large with per-pass targets, partial without them, little under a step-matched K.
+* **§175 STEP-AUX (train-item C 11,851):** capped 0.773 / 0.693 / 0.649 at K′ = 8 / 16 / 32, against uncapped 0.787 / 0.414 / –. This replicates its test-C read (0.696) and NOFADE's (0.691).
+* **§170 K8, FINAL-only (C 13,680):** 0.345 / 0.266 / 0.257 against uncapped 0.351 / 0.203 at K′ = 8 / 16. About 43% recovery, plateauing near 0.26 (the uncapped 12 / 24 / 32 completion is pending).
+* **§177 (f) KMATCH, trained at K = n + U{0..2} (C 16,081, at K = 10):** capped 0.497 / 0.436 / 0.381 / 0.355 at K′ = 8 / 16 / 24 / 32, against uncapped 0.505 at K′ = 10 and 0.413 at K′ = 20.
+  - The cap does not hold KMATCH flat. Its decline past the trained K is not mainly additive-norm growth.
+* **Reading.**
+  - The additive-magnitude mechanism is strongest where per-pass targets shape the pass dynamics (§175 / NOFADE, about 76%).
+  - It is partial in a FINAL-only model, and minor in a step-matched-K model.
+  - So the cap is a fix for the per-pass-aux recipe (the recipe going forward: §168 s2, GSM8K), not a general cure for overthinking.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
