@@ -469,7 +469,8 @@ def main():
     ap.add_argument("--auxdone", action="store_true", help="note 182-2 AUX-DONE halting (nested + §175 aux) only -> eval_s182_auxdone.json")
     ap.add_argument("--tshift", action="store_true", help="note 182-2 follow-up T-SHIFT (aux done vs real / prompt pass) only -> eval_s182_tshift.json")
     ap.add_argument("--normcap", action="store_true", help="note 185-1 inference-only NORM-CAP (nested) only -> eval_s185_normcap.json")
-    ap.add_argument("--normcap_c", default="", help="--normcap: C given instead of computed ('inf' = the uncapped arm)")
+    ap.add_argument("--normcap_c", default="", help="--normcap: C given instead of computed: a number ('inf' = the uncapped arm) or an eval_s185_normcap.json path (its normcap.C)")
+    ap.add_argument("--normcap_factor", type=float, default=1.0, help="--normcap with --normcap_c: C x this factor (the cap-level sweep, Theory 2026-10-11)")
     ap.add_argument("--kprimes", default="", help="--normcap: the K' set (default: the run's --kprimes, else {0, 1, K/2, K, 2K})")
     ap.add_argument("--cap_c", default="", help="--auxdone under the 185-1 cap: C as a number or an eval_s185_normcap.json path (its normcap.C) -> eval_s182_auxdone_capped.json")
     o = ap.parse_args(); dev = o.device; t0 = time.time(); o.out = o.out if (o.out and o.out.endswith(".json")) else None   # gen_vast_job appends --out <dir>: anything but a .json path -> the default file in --run
@@ -483,7 +484,8 @@ def main():
     kind, m, a = load_model(o.run, dev); K = rule_k(a); T = 2 * K; assert K >= 1
     if o.normcap:                                                           # note 185-1 (Theory): inference-only NORM-CAP -> eval_s185_normcap.json
         assert kind == "nested", "NORM-CAP (185-1) is for nested runs"
-        r_ = {"normcap": normcap_fields(m, a, dev, amp, o.bs, o.run, o.kprimes or None, float(o.normcap_c) if o.normcap_c else None), "run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
+        r_ = {"normcap": normcap_fields(m, a, dev, amp, o.bs, o.run, o.kprimes or None, ((float(json.load(open(o.normcap_c))["normcap"]["C"]) if o.normcap_c.endswith(".json") else float(o.normcap_c)) * o.normcap_factor) if o.normcap_c else None),
+              "normcap_factor": o.normcap_factor if o.normcap_c else None, "normcap_c_source": o.normcap_c.replace(os.sep, "/") or None, "run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
               "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)}
         json.dump(r_, open(o.out or os.path.join(o.run, "eval_s185_normcap.json"), "w", newline="\n"), indent=1); print("DONE normcap", o.run, flush=True); return
     if o.tshift:                                                            # note 182-2 follow-up (Theory): T-SHIFT -> eval_s182_tshift.json
