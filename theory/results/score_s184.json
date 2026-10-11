@@ -1,0 +1,50 @@
+{
+ "comparator": {
+  "status": "done",
+  "pooled_k8": 0.7866666666666666,
+  "handle": {
+   "1": 0.999,
+   "2": 0.9965635738831615,
+   "3": 0.988031914893617,
+   "4": 0.9506369426751592,
+   "5": 0.8742632612966601,
+   "6": 0.8062015503875969,
+   "7": 0.6809338521400778,
+   "8": 0.48120300751879697
+  },
+  "late_handle": 0.6561128033488238,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "clip_rate": null,
+  "deep": false,
+  "think_necessary": true
+ },
+ "runs": {
+  "1": {
+   "status": "done",
+   "pooled_k8": 0.9736666666666666,
+   "handle": {
+    "1": 0.993,
+    "2": 0.993127147766323,
+    "3": 0.9946808510638298,
+    "4": 0.9904458598726115,
+    "5": 0.9862475442043221,
+    "6": 0.9767441860465116,
+    "7": 0.9727626459143969,
+    "8": 0.9548872180451128
+   },
+   "late_handle": 0.9681313500020071,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "clip_rate": 0.9837291666666667,
+   "deep": true,
+   "think_necessary": true
+  },
+  "2": {
+   "status": "open"
+  }
+ },
+ "d_pooled": 0.18699999999999994,
+ "d_late_handle": 0.3120185466531833,
+ "lever": "HELPS",
+ "reading": "HELPS: Dpooled +0.187 (0.974 vs 0.787), D late handle +0.312; REWEIGHT DEEP True, THINK-NECESSARY True; s2 opens",
+ "errors": []
+}

@@ -271,7 +271,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 181 | INTERLEAVE: k think passes before every answer token, the memory carried across tokens (MIX's timing without its schedule); arms k1 / k2 on §161's mix | **neither HIT** (both FAIL, 4×4 ≤ 0.001; the single-pass column profile; skip drops about 0; not under-trained) | closed |
 | 182 | STEP-AUX-HOLD: §175 with the aux to the end (NOFADE), + a sampled step-matched K (WINDOW), + hold targets on passes past n (HOLD); DEEP at K′ 8, STABLE (C6) K′ 16 vs 8 | registered | **open** |
 | 183 | INTERLEAVE-BLIND: §181 k1 with a blind per-token decoder ([EOT, ' =', ans_<j] + memory); tests 'per-pass signal through a view-free reader' (MIX / §175 vs every failure) | **FAIL; NOT SUPPORTED** (columns 3–7 0.182 vs 0.165). Descriptively the passes become causal (skip drops 0.88 / 0.31 / 0.36 / 0.75 at columns 1 / 2 / 7 / 8), but the inner columns stay at chance: per-pass compute binds | closed |
-| 184 | AUX-REWEIGHT: §182 NOFADE + per-pass aux weights w_t = Ē / E_t (pass 8 got 1/22 of pass 1's signal), equal signal per pass position; HELPS / HURTS / NO EFFECT vs NOFADE | registered | **open** |
+| 184 | AUX-REWEIGHT: §182 NOFADE + per-pass aux weights w_t = Ē / E_t (pass 8 got 1/22 of pass 1's signal), equal signal per pass position; HELPS / HURTS / NO EFFECT vs NOFADE | slot 1 **HELPS + DEEP** (pooled 0.974 vs 0.787; n 8 = 0.935; late handle 0.97 vs 0.66; THINK-NECESSARY); s2 opened | **open** |
 | 185 | ADD-NORM: §182 NOFADE with the additive read normalised: DEN (φ(q)ᵀS / φ(q)ᵀz) or RMS (TransNormer's NormAttention); STABLE + NO-COST vs NOFADE (NORM-CLAMP: the unnormalised read's growth causes ~80% of overthinking) | registered | **open** |
 | 186 | INTERLEAVE-BLIND-K4: §183 with 4 passes per token, the closing test of the mult interleave line; HIT / PARTLY vs §183, else the line closes (pre-registered stop) | registered | **open** |
 
@@ -12460,6 +12460,25 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * No NaN / inf in any of the three runs. At step 200 the losses are 0.7841 / 0.7854 / 0.7857 (chunk / loop / loop-m4).
 * CHUNK_DELTA is therefore adopted for STEP-AUX, at 8.1× the loop's speed on the same host.
 * **s168s2_stepaux_s1 launched as approved** (b263: `--chunk_delta --ckpt_passes --cache_lower --aux_fade 12000,12000`, K 10, bs 64, 12k steps). CURR-DIRECT and TEXT-COT follow on the next free slot, at bs 64.
+
+**§184 result, slot 1 (2026-10-11 01:54 EDT; s184_reweight_s1, b255, RTX 3090, 48k, landed 345dae55; score_s184). HELPS and DEEP. Equal per-pass aux weight lifts §175's recipe from 0.787 to 0.974 pooled, and the late-pass collapse is gone. s2 opens as registered.**
+* **Pooled n 3..8 at K′ = 8:** 0.974, against NOFADE's 0.787 (Δ +0.187).
+  - n 3–8: 0.997 / 0.988 / 0.984 / 0.978 / 0.960 / 0.935, so **DEEP** (≥ 0.90 at every n).
+  - THINK-NECESSARY holds by a wide margin: K′ = 0 / 1 pooled 0.098 / 0.105.
+* **Handle accuracy t = 1–8** (`aux_acc_by_role.handle`): 0.993 / 0.993 / 0.995 / 0.990 / 0.986 / 0.977 / 0.973 / 0.955.
+  - The late mean (t = 6–8) is 0.968, against NOFADE's 0.656 (Δ +0.31).
+  - So the per-step decay in §175 and NOFADE was under-supervision of late passes, not intrinsic compounding.
+* **The K′ curve, pooled:** 0.098 / 0.105 / 0.557 / 0.974 / 0.971 / 0.929 / 0.566 / 0.345 at K′ = 0 / 1 / 4 / 8 / 12 / 16 / 24 / 32.
+  - Not STABLE by §182's definition (K′ = 16 is 0.929, below 0.954), but far flatter than NOFADE to 2K.
+  - n 9–12 at K′ = 8: 0.80 / 0.634 / 0.341 / 0.168 (mean 0.486, not BEYOND; descriptive).
+* **Descriptive:**
+  - The grad clip (1.0) fires on 98.4% of steps (pre-clip median 3.86, p90 16.3), so the effective step size is clip-bound. NOFADE did not log a clip rate, so whether the reweight raised it is unknown. That does not affect HELPS (184's clip clause governs HURTS only).
+  - PATH-INDEP answer_agree is 0.108 (NOFADE 0.31).
+* **Reading.**
+  - This is the first DEEP identical-input think-pass model on the INJECT harness, with no hand schedule and per-pass targets from text CoT, at one seed.
+  - A C1 claim waits for s2 (opened by the rule) plus the NORM-CAP and AUX-DONE reads on this model.
+  - **For the recipe:** §168 step 2 and STEP-AUX-GSM8K average the aux per item over a variable step count, so they have the same skew. ProsQA's pass 10 gets 1/23 of pass 1's weight.
+  - The running, user-approved ProsQA STEP-AUX cell is left as registered. A reweighted ProsQA cell is a separate proposal with its own projection.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
