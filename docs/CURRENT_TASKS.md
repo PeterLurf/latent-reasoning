@@ -110,7 +110,8 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
       - Running: §184 (b255) and §186 (b257).
       - §185: den launches when b259 ends, rms at the next free slot (fleet ≤ 5). NOFADE post hocs are on the 4060.
     - **§168 s2 projection:** with CHUNK_DELTA, stepaux runs at 6.96 s/step at bs 64. Slot 1 is about $7.5–11 at bs 64, about $4.5–6.5 at bs 32.
-      - It waits for the g5 trajectory gate (b259) and the user's approval. Theory will revert to bs 64 in a note once g5 passes.
+      - **The user approved slot 1 at bs 64** (168-11, 9b01c8af). It launches on g5 PASS (stepaux: chunk_delta, ckpt, cache_lower, no fade); g5 FAIL means nothing launches.
+      - Fleet priority: stepaux, then the two baselines in sequence, then §185 den / rms. GSM8K stays unapproved.
       - §175 descriptives done: AUX-DONE (exact t = n, but counter-like at n = 8 per T-SHIFT) and PATH-INDEP (answer_agree 0.292).
     - **Training-schedule / architecture proposals (the user asked, 2026-10-10).** Ranked by the user's priorities with Audit, prior-checked by Literature (09f395a8):
       - #1 AUX-REWEIGHT **registered as §184** (c342e51c; ~$3). Pass 8 got 1/22 of pass 1's aux signal.
