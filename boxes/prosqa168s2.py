@@ -37,6 +37,10 @@ from boxes.prosqa168 import ENC, EOS, candidate_margins  # noqa: E402
 EOT = EOS; ANS = ENC.encode("###")[0]; NL = ENC.encode("\n")
 STEP_ID, COLON_ID = ENC.encode(" Step")[0], ENC.encode(" :")[0]
 KPRIMES = (0, 1, 2, 4, 6, 8, 10, 12, 14, 16)
+HIST_168 = {3: 815, 4: 1628, 5: 1711, 6: 1777, 7: 1716, 8: 1675, 9: 1756, 10: 907}   # p8_na_train len(steps) histogram (note 168-12)
+AUX_W = (0.583, 0.583, 0.583, 0.671, 0.869, 1.156, 1.619, 2.42, 4.193, 13.214)      # note 168-12 STEP-AUX-REWEIGHT (bb1b10c6): w_t = E_bar / E_t, E_t = sum_{d>=t} c_d / d
+_E = [sum(c / d for d, c in HIST_168.items() if d >= t) for t in range(1, 11)]
+assert all(abs(w - sum(_E) / 10 / e) < 1e-3 for w, e in zip(AUX_W, _E)) and abs(sum(e * w for e, w in zip(_E, AUX_W)) - sum(_E)) < 1e-2 * sum(_E) / 10, "168-12: the weight table"
 
 
 def pass_tok(t):
@@ -193,6 +197,7 @@ def main():
     ap.add_argument("--train_n", type=int, default=0, help="smokes"); ap.add_argument("--test_n", type=int, default=0, help="smokes"); ap.add_argument("--extras_n", type=int, default=500)
     ap.add_argument("--probe_n_fit", type=int, default=4000); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes")
     ap.add_argument("--chunk_delta", type=int, default=0, help="stepaux: DM.CHUNK_DELTA - the delta heads' writes in chunks of this many tokens (WY form, exact in exact arithmetic; needs --fast_add; gate_chunk_delta.json)")
+    ap.add_argument("--aux_reweight", action="store_true", help="note 168-12 STEP-AUX-REWEIGHT: the aux CE of hop t weighted by AUX_W[t-1] inside the per-item mean (stepaux)")
     ap.add_argument("--resume", default=None, help="a ckpt_last.pt / kept ckpt of this run (model, opt, np_rng, step, elapsed)")
     ap.add_argument("--no_normcap", action="store_true", help="stepaux: skip note 185-1's inference-only NORM-CAP eval (smokes)")
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
@@ -230,7 +235,7 @@ def main():
                         lg_a, y_a = m.aux_logits(S[idx], [its[i] for i in idx], t, dev)
                         ce = Fn.cross_entropy(lg_a.transpose(1, 2), y_a, ignore_index=-100, reduction="none").sum(1) / (y_a != -100).sum(1)
                         for r_, i in enumerate(idx):
-                            per[i].append(ce[r_])
+                            per[i].append(ce[r_] * AUX_W[t - 1] if a.aux_reweight else ce[r_])   # 168-12: w_t inside the per-item mean
                 la = m.dec_loss(S, its, dev)
             if not lam_:
                 return la
@@ -272,11 +277,16 @@ def main():
             m.think(m.mem.zero_state(len(its), dev), x, msk, min(K, 4))
         nr = m.mem.norms[1:]; m.mem.norms = None; r0 = float(torch.stack([d_ / a_.clamp_min(1e-12) for d_, a_ in nr]).median()) if nr else 1.0
         m.mem.s_add.data.fill_(math.log(max(r0, 1e-12))); json.dump({"g_add_init": r0}, open(os.path.join(a.out, "s168s2_init.json"), "w", newline="\n"))
-    opt = torch.optim.AdamW(params.parameters(), lr=a.lr, weight_decay=0.01); hist = []; n_nonfinite = 0; wg = []
+    if a.aux_reweight:
+        assert SA, "--aux_reweight is a stepaux option"
+        if not a.train_n:
+            from collections import Counter
+            assert dict(Counter(it["depth"] for it in Dtr)) == HIST_168, "168-12: the train histogram the weights were derived from"
+    opt = torch.optim.AdamW(params.parameters(), lr=a.lr, weight_decay=0.01); hist = []; n_nonfinite = 0; wg = []; gn_hist = []
     log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time(); step0 = 1
     if a.resume:
         ck = torch.load(a.resume, map_location=dev, weights_only=False); params.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"]); rng.bit_generator.state = ck["np_rng"]
-        step0 = ck["step"] + 1; n_nonfinite = ck.get("n_nonfinite", 0); t0 = time.time() - ck["elapsed"]; log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
+        step0 = ck["step"] + 1; n_nonfinite = ck.get("n_nonfinite", 0); gn_hist = list(ck.get("gn_hist", [])); t0 = time.time() - ck["elapsed"]; log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
     last_ = a.steps if not a.time_steps else min(a.steps, a.time_steps); tt0 = time.time()
     for step in range(step0, last_ + 1):
         for gr in opt.param_groups:
@@ -290,7 +300,7 @@ def main():
             lk = loss_items([Dtr[i] for i in idx[k * ch:(k + 1) * ch]], step); (lk / a.micro).backward(); tot += float(lk.item()) / a.micro
         if SA:
             wg.append(write_grad_norm(m))
-        gn = torch.nn.utils.clip_grad_norm_(params.parameters(), 1.0)
+        gn = torch.nn.utils.clip_grad_norm_(params.parameters(), 1.0); gn_hist.append(float(gn))   # pre-clip total norm (168-12: clip rate)
         if not (math.isfinite(tot) and bool(torch.isfinite(gn))):
             n_nonfinite += 1; opt.zero_grad(); log.write(json.dumps({"step": step, "nonfinite": 1}) + "\n"); log.flush()
         else:
@@ -308,7 +318,7 @@ def main():
             cp = os.path.join(a.out, "ckpt_last.pt")
             if os.path.exists(cp):
                 os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))
-            torch.save({"model": params.state_dict(), "opt": opt.state_dict(), "np_rng": rng.bit_generator.state, "step": step, "elapsed": time.time() - t0, "n_nonfinite": n_nonfinite}, cp)
+            torch.save({"model": params.state_dict(), "opt": opt.state_dict(), "np_rng": rng.bit_generator.state, "step": step, "elapsed": time.time() - t0, "n_nonfinite": n_nonfinite, "gn_hist": gn_hist}, cp)
     if a.time_steps:
         sps = (time.time() - tt0) / max(1, last_); tj = {"arm": a.arm, "think_k": K, "steps_timed": last_, "sec_per_step": sps, "steps": a.steps,
                                                         "est_hours_steps": sps * a.steps / 3600, "micro": a.micro, "gpu": info["train_gpu"]}
@@ -457,6 +467,12 @@ def main():
                             "acc_by_depth_kprime": {str(kp): by_depth(sa_margins(Dte, kp, C=C), dep) for kp in KPRIMES},
                             "def": "inference-only: after every write, S_add rescaled to norm C when ||S_add|| > C (per item, direction kept; delta untouched) - note 185-1; uncapped = s168s2.acc_by_depth_kprime"}
         res["s168s2"] = s
+    g_ = np.array([v for v in gn_hist if math.isfinite(v)]) if gn_hist else np.zeros(0)   # 168-12: clip rate (every arm; s168s2.clip for stepaux)
+    res["clip"] = {"clip_rate": float((g_ > 1.0).mean()) if len(g_) else None, "grad_norm_preclip": {"median": float(np.median(g_)) if len(g_) else None,
+                   "p90": float(np.percentile(g_, 90)) if len(g_) else None, "n_steps": int(len(g_))}, "aux_reweight": bool(a.aux_reweight),
+                   "weights": list(AUX_W) if a.aux_reweight else None, "def": "clip_grad_norm_(..., 1.0)'s pre-clip total norm per step; clip fires when > 1.0"}
+    if SA:
+        res["s168s2"]["clip"] = res["clip"]
     res["eval_sec"] = round(time.time() - t1); json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     for ck_ in ("ckpt_last.pt", "ckpt_prev.pt"):
         if os.path.exists(os.path.join(a.out, ck_)):
