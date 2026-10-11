@@ -12833,6 +12833,10 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * SELF-DEPTH is new as scoped: Lee 2502.01612 self-trains token outputs, and nothing self-trains latent loop depth.
   - If it is drafted: one operator per round, and gold label precision logged per round, scorer-only.
 
+**Note 168-14 (2026-10-11 16:05 EDT; operational).** The user approved 168-12 (STEP-AUX-REWEIGHT on ProsQA, about $5–7) in Audit's session at 2026-10-11 16:05 EDT, relayed by Audit.
+* s168s2_stepauxrw_s1 (b267) launches as registered into the next free slot.
+* With it, 168-13 (a), the same-model analogue of Chen's graph claim, will be read.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
