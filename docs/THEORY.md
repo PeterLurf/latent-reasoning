@@ -12718,6 +12718,22 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - It applies to the f* selection on s1 too: a factor qualifies only if its capped K′ = 8 is ≥ s1's uncapped 0.974 − 0.02.
   - On s1, 1.25× and 1.5× pass it trivially (0.973 / 0.974), so it closes the loophole on s2 without changing f*.
 
+**§168 step 2 baselines (2026-10-11 10:29 EDT; s168s2_currdirect_s1 and s168s2_textcot_s1, rq264, RTX 3090, bs 64, 12k steps, landed 0c6ef791; score_s168s2). CURR-DIRECT is at chance at every depth, so D*_curr = 3 and the C1 window stays 3..10. TEXT-COT reads 0.735, flat over depth.**
+* **CURR-DIRECT** (Coconut's stage curriculum with zero thoughts; 168-4):
+  - candidate accuracy 0.508, acc_ctl 0.53;
+  - by depth 3–14: 0.49 / 0.54 / 0.56 / 0.53 / 0.48 / 0.49 / 0.50 / 0.49 / 0.51 / 0.46 / 0.58 / 0.41.
+  - **D*_curr = 3**, so the DEEP-LATENT window is max(D*, D*_curr, 3)..10 = 3..10.
+  - Its acc_ctl matches plain DIRECT's on the same p8 control set (0.507 / 0.545). The 0.766 gate figure was on standard ProsQA's test, a different set.
+* **TEXT-COT** (Coconut's CoT format):
+  - accuracy 0.735, acc_ctl 0.664;
+  - by depth 3–14: 0.74 / 0.74 / 0.72 / 0.73 / 0.76 / 0.69 / 0.74 / 0.75 / 0.71 / 0.75 / 0.79 / 0.85;
+  - mean CoT 104 tokens.
+  - Flat over depth, including out-of-distribution 11–14 (mean 0.776). That matches our earlier p8_na text-CoT bar (73.9–76.2).
+* **For the rules:**
+  - BEYOND TEXT needs TEXT-COT < 0.80 at 11–14 (it is 0.776) while STEP-AUX's DEPTH-GENERAL (≥ 0.80 at 11–14, K′ = 16) holds.
+  - Neither baseline reaches 0.90, so a STEP-AUX DEEP-LATENT reading would be above both the curriculum single pass and text CoT.
+  - STEP-AUX (b263) lands about 23:00.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
