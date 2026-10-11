@@ -12480,6 +12480,27 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - **For the recipe:** §168 step 2 and STEP-AUX-GSM8K average the aux per item over a variable step count, so they have the same skew. ProsQA's pass 10 gets 1/23 of pass 1's weight.
   - The running, user-approved ProsQA STEP-AUX cell is left as registered. A reweighted ProsQA cell is a separate proposal with its own projection.
 
+**Note 168-12 (2026-10-11 01:56 EDT; pre-data: no cell of it has run; Audit-reviewed; launch only with the user's approval). STEP-AUX-REWEIGHT on ProsQA: a second step-2 cell, §168 step 2's STEP-AUX with §184's equal per-pass aux weighting.**
+* **Why.** §184 (598b02b7) lifted §175's recipe from 0.787 to 0.974 pooled (DEEP, one seed) by giving every pass position equal expected aux weight.
+  - ProsQA's STEP-AUX has the same skew: it averages each item's aux over its own len(steps) of 3–10.
+  - The running cell s168s2_stepaux_s1 is approved and stays as registered. This adds a cell; it changes none.
+* **The weights, auditable.** E_t = Σ_{L ≥ t} P(L) / L, from the empirical p8 NA training histogram of len(steps): {3: 815, 4: 1,628, 5: 1,711, 6: 1,777, 7: 1,716, 8: 1,675, 9: 1,756, 10: 907} (11,985 items; depth = the 3–4-hop base + m ~ U{0..6}, so depth 10 is rarer).
+  - E_t = 0.172 / 0.172 / 0.172 / 0.149 / 0.115 / 0.087 / 0.062 / 0.041 / 0.024 / 0.008 for t = 1–10. Pass 10 gets 1/23 of pass 1's weight.
+  - **w_t = Ē / E_t = 0.583 / 0.583 / 0.583 / 0.671 / 0.869 / 1.156 / 1.619 / 2.42 / 4.193 / 13.214.** This is pinned by an assert in score_s168s2 and by the module's gate. Σ_t E_t w_t = Σ_t E_t.
+  - The per-item mean over the item's steps is kept, and w_t multiplies inside it (as §184).
+* **Design:** s168s2_stepaux_s1's exact args (`--chunk_delta --ckpt_passes --cache_lower --aux_fade 12000,12000`, K 10, bs 64, 12k steps, seed 1) plus `--aux_reweight`. Dir `s168s2_stepauxrw_s1`.
+  - The existing CURR-DIRECT and TEXT-COT cells serve both arms.
+  - The clip rate is logged (`s168s2.clip.clip_rate`), since w_10 = 13.2 is larger than §184's 8.0.
+* **Rules:**
+  - **§168's step-2 rules, unchanged, for this arm too:** DEEP-LATENT at window max(D*, D*_curr, 3)..10 (2 / 2 seeds; s2 opens if s1 is DEEP-LATENT), DEPTH-GENERAL at K′ = 16, and BEYOND TEXT.
+  - **The lever reading** (REWEIGHT − STEP-AUX, s1; pooled depths 3–10 at K′ = 10, and the late aux exact match `aux_exact_by_hop` mean over t = 8–10):
+    - HELPS: Δpooled ≥ +0.05 and Δlate ≥ +0.10;
+    - HURTS: Δpooled ≤ −0.05, labelled clip-confounded if the clip rate is ≥ 2× STEP-AUX's, or ≥ 0.5 if STEP-AUX did not log one;
+    - NO EFFECT: |Δpooled| < 0.03 and |Δlate| < 0.05;
+    - otherwise mixed.
+* **Cost:** about one STEP-AUX cell, about 23 h + eval, about $5–8. It needs the user's go: 168-11's approval covers slot 1 only.
+* **Scorer:** score_s168s2 is extended (the old readings are unchanged on the earlier fixtures; the new arm and lever were checked with HELPS / NO EFFECT / HURTS fixtures). The unweighted arm is refused if it carries aux_reweight.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
