@@ -12930,6 +12930,15 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - Depth beyond training is count-limited (187-3: COUNT-OOD).
   - The C2 / C6 claims are not made here.
 
+**§184, two seeds: what the seed spread means (2026-10-11 18:30 EDT; Audit).**
+* **The count limit's onset depends on the seed.** n 9–12 at K′ = n + 2:
+  - s2: 0.989 / 0.902 / 0.560 / 0.209, breaking at n = 11;
+  - s1: breaking at n = 10.
+  - 187-3's COUNT-OOD was measured on s1 only. The same seed-lottery pattern seen before (P7) now applies to depth.
+  - **So 187-3's rows and 187-5's position test are re-run on s2** before any training-distribution lever is chosen. A lever must help the weaker seed without hurting the stronger one.
+* **s2's n 9–12 mean (0.665) beats TEXT-COT's 0.535.** That is the first latent-over-text depth number on nested, but it is one of two seeds (s1: 0.486), so it is descriptive and seed-qualified.
+* **C6 for §184 rests on 184-1's capped held-out read on s2** (f* = 2.0). s2 already passes STABLE uncapped, so that read mainly tests the cap's within-K guard.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
