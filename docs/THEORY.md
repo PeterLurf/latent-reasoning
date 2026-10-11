@@ -12391,6 +12391,22 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * The top columns 7–8, causal in the 48k cloud cell, are not learned by 8k here.
 * So "a view-free reader makes the passes causal, and the inner columns are compute-limited" holds on every card class tried.
 
+**§182 interim: NOFADE (2026-10-10 20:37 EDT; s182_nofade_s1, b251, RTX 3090, 48k, landed 3a0253c7; score_s182). Not DEEP and not STABLE. Removing the fade changes nothing: §175's per-step decay is not the fade's.**
+* **Pooled n 3..8:** 0.786 at K′ = 8 (§175: 0.787). n 1–8: 1.0 / 1.0 / 1.0 / 0.967 / 0.885 / 0.743 / 0.637 / 0.488. THINK-NECESSARY holds.
+* **Handle accuracy t = 1–8** (`aux_acc_by_role.handle`): 0.999 / 0.997 / 0.988 / 0.951 / 0.874 / 0.806 / 0.681 / 0.481, against §175's … / 0.466.
+* **The K′ curve, pooled:** 0.086 / 0.100 / 0.391 / 0.786 / 0.625 / 0.418 / 0.265 / 0.206 at K′ = 0 / 1 / 4 / 8 / 12 / 16 / 24 / 32. STABLE fails (K′ = 16 is 0.37 below K′ = 8).
+  - n-relative (182-3): 0.716 at K′ = n and 0.766 at K′ = n + 2, so passes past n still correct answers.
+* **One shared trajectory, not two samples:** NOFADE's and §175's logged losses are identical at every logged step through 36,000 and first differ at 36,100, where §175's fade starts. Same seed and card class.
+  - So the comparison is exactly "fade against no fade over the last 12k steps" on one trajectory: valid as a test of that lever, but one sample.
+* **Reading:**
+  - "NOFADE not DEEP": the late-pass decay is not caused by the fade. Per-step error at this budget (or supervision count, §184's question) is what remains.
+  - The fade is also not what makes passes past K harmful. The additive read's growth is (NORM-CLAMP / NORM-CAP).
+* WINDOW / HOLD (b253 / b254) are still running. §184 and §185 now have their comparator.
+
+**Note 168-10 (2026-10-10 20:37 EDT; pre-data for §168 step 2; the mechanical λ ruling 168-7 required). No fade: STEP-AUX trains with `--aux_fade 12000,12000` (λ = 1 throughout).**
+* 168-7's rule: no fade, unless §182 NOFADE's pooled n 3..8 at K′ = 8 reads more than 0.05 below §175's 0.787. NOFADE reads 0.786 (above), so the fade is not used.
+* The same applies to the STEP-AUX-GSM8K draft.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
