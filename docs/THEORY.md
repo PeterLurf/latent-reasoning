@@ -12893,6 +12893,20 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
     - loop counts randomised independently of n (Kuo);
     - progressive passes (Bansal 2202.05826).
 
+**Note 187-5 (2026-10-11 18:21 EDT; before any data; Audit's deep research pass; descriptive, eval-only, no training). Is the size-keyed computation keyed on absolute position? A position-offset test.**
+* **Why:** every forward path adds absolute GPT-2 positions from 0 (nested170 l. 395; deltamem l. 236 / 246 / 268). The final token sits at about 3n + 1, so the total size is readable from absolute position. That is a candidate cue for 187-3's COUNT-OOD.
+* **The test** (s184_reweight_s1 and s182_nofade_s1; n 3–8 test items):
+  - Evaluate with positions shifted to wpe[off : off + T], off ∈ {0, 3, 6, 9}, applied identically in every forward pass (think passes, the main decoder and the aux decoder).
+  - Read answer accuracy at K′ = n + 2 and the aux handle by t.
+* **Readings (per model; both must agree):**
+  - **CONTROL-BROKEN:** n 3–5 pooled accuracy drops by more than 0.03 from off 0 to off 9. The offset itself is harmful, so the test is uninformative.
+  - **POSITION-KEYED:** the control holds, and n 7–8 pooled accuracy drops by ≥ 0.10 from off 0 to off 9, with the handle's < 0.80 onset moving earlier.
+  - **CONTENT-KEYED:** the control holds, and n 7–8 drops by < 0.03. The operator count, not position, is the cue.
+  - Otherwise **mixed**.
+* **The consequence (not registered):**
+  - POSITION-KEYED: the remedy candidate is randomised position offsets in training (Ruoss et al. 2305.16843, pending Literature's check), about $3, with no pseudo-labels.
+  - CONTENT-KEYED: the training-distribution family (SELF-DEPTH, K randomised independently of n, progressive passes).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
