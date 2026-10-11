@@ -12420,6 +12420,13 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - An inference-time cap on the additive norm, set from training data at the trained K, turns a collapse past K (−0.58 by K′ = 32) into a mild slope (−0.13), at a cost of −0.013 within K.
   - It is the zero-training C6 baseline that §185's trained fixes (DEN / RMS) are read against.
 
+**Note 168-11 (2026-10-10 22:51 EDT; pre-data: no step-2 cell has run). The user approved §168 step 2's slot 1 at batch size 64 (about $7.5–11), directly in Theory's session. CHUNK_DELTA is adopted for STEP-AUX if the trajectory gate passes, and 168-9's bs 32 is reverted.**
+* **The approval:** the user's reply "Approve" to the projection (STEP-AUX + CURR-DIRECT + TEXT-COT, seed 1, 12k steps; about $7.5–11 at bs 64, recommended, or about $4.5–6.5 at bs 32). It covers this slot only. The STEP-AUX-GSM8K draft stays unapproved.
+* **The launch condition:** CHUNK_DELTA's trajectory gate g5 (gate_chunk_delta.json; pre-set: d_chunk ≤ max(2 × d_reorder, 0.02), no NaN / inf) passes.
+  - STEP-AUX then trains with `--chunk_delta --ckpt_passes --cache_lower --aux_fade 12000,12000` (168-8 / 168-10). All three cells train at **bs 64**, reverting 168-9, whose bs 32 was only a cost lever.
+  - **If g5 fails, nothing launches.** The loop costs about $46–69 for STEP-AUX alone, outside the approval, so the user is asked again.
+* The seed-2 cells (CURR-DIRECT s2 if D*_curr > 3; STEP-AUX s2 if s1 is DEEP-LATENT) are outside this approval and get their own projection.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
