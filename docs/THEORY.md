@@ -12837,6 +12837,20 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * s168s2_stepauxrw_s1 (b267) launches as registered into the next free slot.
 * With it, 168-13 (a), the same-model analogue of Chen's graph claim, will be read.
 
+**§182 interim: WINDOW (2026-10-11 16:28 EDT; s182_window_s1, b253, RTX 3090, 48k, k_window 1,4 masked, no hold; score_s182). STABLE at slot 1 and not DEEP, so s2 opens by §182's rule (the claim needs 2 / 2).**
+* **Pooled n 3..8:** 0.102 / 0.108 / 0.480 / **0.900** / 0.902 / **0.899** / 0.859 / 0.739 at K′ = 0 / 1 / 4 / 8 / 12 / 16 / 24 / 32.
+  - K′ = 16 − K′ = 8 is −0.001, the flattest curve so far, holding 0.859 at K′ = 24. THINK-NECESSARY holds.
+* **By n at K′ = 8:** 1.0 / 0.974 / 0.951 / 0.885 / 0.837 / 0.753 (n 3–8), so not DEEP. n 9–12 at K′ = n + 2: 0.465 (§184: 0.486).
+* **Handle by pass t = 1–8:** 0.997 / 1.0 / 0.999 / 0.979 / 0.971 / 0.951 / 0.899 / 0.805, against NOFADE's collapse to 0.48 at t = 8.
+* **PATH-INDEP:** answer_agree 0.14.
+* **Against the other cells at K′ = 8 (s1, descriptive):**
+  - WINDOW − NOFADE: +0.113;
+  - HOLD − WINDOW: −0.192, and HOLD loses the window's stability. The hold target hurts on both counts.
+* **Reading (pending s2):**
+  - A sampled step-matched pass count (K = n + U{1..4}) both stabilises extra passes and lifts within-K accuracy over NOFADE.
+  - Hold targets add nothing and cost a lot.
+  - WINDOW's K is tied to n, Kuo 2606.29983's size ↔ loop correlation, and yet its depth (0.465) is about §184's.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
