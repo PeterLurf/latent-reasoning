@@ -12939,6 +12939,12 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **s2's n 9–12 mean (0.665) beats TEXT-COT's 0.535.** That is the first latent-over-text depth number on nested, but it is one of two seeds (s1: 0.486), so it is descriptive and seed-qualified.
 * **C6 for §184 rests on 184-1's capped held-out read on s2** (f* = 2.0). s2 already passes STABLE uncapped, so that read mainly tests the cap's within-K guard.
 
+**§184, the skip table (2026-10-11 18:31 EDT; Audit; no change to the reading).** §184's single-pass `skip_pass` rows are identical across t in both seeds (pooled drop 0.004 / 0.000).
+* This holds by construction under identical-input INJECT: skipping any one of K passes is the same as running K − 1 passes, so the step-specific skip clause is vacuous here.
+* That is why 170-4 makes THINK-NECESSARY removal-only.
+* **It does not mean the passes don't matter.** Removal (K′ = 0 / 1 at chance), the K′ staircase and SERIAL-NEST (0.85 / 0.94) show they do.
+* C1's status, reproduced by Audit (bca002e0): met within the trained depth on nested arithmetic (§184, 2 / 2).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
