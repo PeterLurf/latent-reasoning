@@ -420,7 +420,10 @@
 5.0 boxes/runs_fsq/s177_kmatch_s1/eval_s185_normcap.json python -u -m boxes.halt173 --normcap --kprimes 0,1,4,8,12,16,24,32 --bs 125 --device {DEV} --run boxes/runs_fsq/s177_kmatch_s1
 5.0 boxes/runs_fsq/proto185_rms_s1_4060/eval.json python -u -m boxes.nested170 --arm inject --think_k 8 --aux_step 1.0 --aux_fade 48000,48000 --fast_add --seed 1 --steps 8000 --sched_scale 0.1667 --kprimes 0,1,4,8,12,16,24,32 --path_indep --ckpt_every 1000 --auto_micro --mem_budget 5.0 --eval_bs 100 --device {DEV} --add_norm rms --out boxes/runs_fsq/proto185_rms_s1_4060
 # 2026-10-10 23:01 Theory: uncapped s170_k8_s1 at K' 12 / 24 / 32 (halt173 --normcap_c inf -> eval_s170_kprime_ext.json; eval.json untouched); capped AUX-DONE on NOFADE re-run (22:37 OOM: halt173 0c3f2e1e moved auxdone_fields' @torch.no_grad onto cap_add_state - fixed; failed log kept .void)
+# 2026-10-11 Audit: the s184 reads (185-1 normcap train-C, AUX-DONE, T-SHIFT) first on the first free card, before the s170 completion / capped NOFADE AUX-DONE
+5.0 boxes/runs_fsq/s184_reweight_s1/eval_s185_normcap.json python -u -m boxes.halt173 --run boxes/runs_fsq/s184_reweight_s1 --normcap --kprimes 0,1,4,8,12,16,24,32 --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s184_reweight_s1/eval_s182_auxdone.json python -u -m boxes.halt173 --run boxes/runs_fsq/s184_reweight_s1 --auxdone --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s184_reweight_s1/eval_s182_tshift.json python -u -m boxes.halt173 --run boxes/runs_fsq/s184_reweight_s1 --tshift --bs 125 --device {DEV}
 5.0 boxes/runs_fsq/s170_k8_s1/eval_s170_kprime_ext.json python -u -m boxes.halt173 --run boxes/runs_fsq/s170_k8_s1 --normcap --normcap_c inf --kprimes 12,24,32 --bs 125 --device {DEV} --out boxes/runs_fsq/s170_k8_s1/eval_s170_kprime_ext.json
 5.0 boxes/runs_fsq/s182_nofade_s1/eval_s182_auxdone_capped.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_nofade_s1 --auxdone --cap_c boxes/runs_fsq/s182_nofade_s1/eval_s185_normcap.json --n 1000 --bs 125 --device {DEV}
 # 2026-10-11 01:53 185-1 NORM-CAP (train-item C) on §184 s184_reweight_s1 (landed 345dae55; descriptive, Theory's standing normcap line)
-5.0 boxes/runs_fsq/s184_reweight_s1/eval_s185_normcap.json python -u -m boxes.halt173 --run boxes/runs_fsq/s184_reweight_s1 --normcap --kprimes 0,1,4,8,12,16,24,32 --bs 125 --device {DEV}
