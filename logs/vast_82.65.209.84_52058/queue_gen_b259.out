@@ -1,0 +1,16 @@
+22:13:15 gpt2 bin from the HF hub: ok
+NVIDIA GeForce RTX 3090, 595.91.07
+22:13:20 modules import: boxes.prosqa168s2 
+HOSTCHECK PASS (5 s)
+22:15:24 HOSTPROBE 0.5474 s/step (limit 0.854; b225 reference 0.657)
+22:15:24 start boxes/runs_fsq/s168s2_ctime_chunk_bs32
+22:18:33 evaluated boxes/runs_fsq/s168s2_ctime_chunk_bs32 rc 0
+22:18:33 start boxes/runs_fsq/s168s2_ctime_chunk_bs64
+22:24:36 evaluated boxes/runs_fsq/s168s2_ctime_chunk_bs64 rc 0
+22:24:36 start boxes/runs_fsq/s168s2_traj_chunk
+22:36:25 evaluated boxes/runs_fsq/s168s2_traj_chunk rc 0
+22:36:25 start boxes/runs_fsq/s168s2_traj_loop
+00:10:49 evaluated boxes/runs_fsq/s168s2_traj_loop rc 0
+00:10:49 start boxes/runs_fsq/s168s2_traj_loop_m4
+03:07:33 evaluated boxes/runs_fsq/s168s2_traj_loop_m4 rc 0
+03:07:33 QUEUE_DONE

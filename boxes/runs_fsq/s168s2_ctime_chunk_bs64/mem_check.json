@@ -1,0 +1,21 @@
+{
+ "checks": [
+  {
+   "micro": 1,
+   "peak_gib": Infinity
+  },
+  {
+   "micro": 2,
+   "peak_gib": Infinity
+  },
+  {
+   "micro": 4,
+   "peak_gib": 17.71037355810404
+  }
+ ],
+ "micro": 4,
+ "peak_gib": 17.71037355810404,
+ "longest_question_tokens": 721,
+ "K": 10,
+ "aux": true
+}
