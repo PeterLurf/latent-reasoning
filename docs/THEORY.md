@@ -273,7 +273,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 183 | INTERLEAVE-BLIND: §181 k1 with a blind per-token decoder ([EOT, ' =', ans_<j] + memory); tests 'per-pass signal through a view-free reader' (MIX / §175 vs every failure) | **FAIL; NOT SUPPORTED** (columns 3–7 0.182 vs 0.165). Descriptively the passes become causal (skip drops 0.88 / 0.31 / 0.36 / 0.75 at columns 1 / 2 / 7 / 8), but the inner columns stay at chance: per-pass compute binds | closed |
 | 184 | AUX-REWEIGHT: §182 NOFADE + per-pass aux weights w_t = Ē / E_t (pass 8 got 1/22 of pass 1's signal), equal signal per pass position; HELPS / HURTS / NO EFFECT vs NOFADE | slot 1 **HELPS + DEEP** (pooled 0.974 vs 0.787; n 8 = 0.935; late handle 0.97 vs 0.66; THINK-NECESSARY); s2 opened | **open** |
 | 185 | ADD-NORM: §182 NOFADE with the additive read normalised: DEN (φ(q)ᵀS / φ(q)ᵀz) or RMS (TransNormer's NormAttention); STABLE + NO-COST vs NOFADE (NORM-CLAMP: the unnormalised read's growth causes ~80% of overthinking) | registered | **open** |
-| 186 | INTERLEAVE-BLIND-K4: §183 with 4 passes per token, the closing test of the mult interleave line; HIT / PARTLY vs §183, else the line closes (pre-registered stop) | registered | **open** |
+| 186 | INTERLEAVE-BLIND-K4: §183 with 4 passes per token, the closing test of the mult interleave line; HIT / PARTLY vs §183, else the line closes (pre-registered stop) | **FAIL / NOT** (columns 3–7 0.210 vs 0.182; within-token passes idle, cos 0.993): **the mult interleave line closes** | closed |
 | 187 | AUX-NOPASS: §184 with the aux prompt's pass token removed; does pass-token keying limit depth beyond training (C2)? DEPTH = n 9–12 at K′ = n + 2 vs §184 (0.486) and TEXT-COT (0.535) | registered | **open** |
 
 ## Live sections
@@ -12537,6 +12537,20 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - an assert that the aux prompt holds no pass token under --aux_nopass;
   - gradflow;
   - Audit's diff review.
+
+**§186 result (2026-10-11 04:40 EDT; s186_ilblind_k4_s1, b257, RTX 3090, 48k, landed a5e0bc20; score_s186). FAIL and NOT. The pre-registered stop fires: the multiplication interleave line closes.**
+* **4×4 reads 0.0**, with k′ 0 / 1 / 2 / 4 / 8 all 0.0. Per column: 1.0 / 0.489 / 0.172 / 0.100 / 0.110 / 0.082 / 0.587 / 0.922. ext_4x8 reads 0.0.
+  - Not under-trained (train_loss_tail 0.966 → 0.961).
+* **The compute reading:** the columns 3–7 mean is 0.210, against §183's 0.182 (+0.028, well short of +0.2). The median skip drop over columns 3–8 is 0.010.
+  - Skip drops by column: 0.729 / 0.012 / 0.012 / −0.005 / 0.009 / −0.003 / 0.088 / 0.043. A skip removes all 4 of token j's passes.
+* **Why the extra compute went unused (descriptive):** the delta cosine is 0.993 within a token and 0.995 across tokens.
+  - The 4 passes inside a token see identical input and have no per-pass target, so they barely move the state. That is the original identical-input failure (§169 / §171 / §177) reappearing inside each token.
+  - More passes per token are not more computation unless each pass gets its own signal (§175 / §184).
+* **The line closes as pre-registered.** §181 / §183 / §186 together show:
+  - a problem-seeing reader bypasses the memory;
+  - a blind reader makes passes causal only for what one pass computes;
+  - extra identical-input passes per token add nothing.
+  - The nested / ProsQA line, with per-pass targets and §184's weighting, carries the work.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
