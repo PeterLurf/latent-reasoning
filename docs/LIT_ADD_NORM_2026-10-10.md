@@ -98,3 +98,26 @@ Literature session, for Audit (the lead) and Theory.
     literature.** Don't present the state-growth finding itself as new.
 - **Mechanistic difference worth one line:** their states grow from *un-forgotten tokens* (sequence length). Ours grow from *repeated additive writes
   across think passes* (loop count) with no decay at all. RRI's insertion scaling is the nearest analogue to ADD-NORM's divisor / RMS arms.
+
+## Addendum 3 (2026-10-11): SANE 2608.22354, the closest prior to NORM-CAP (a magnitude cap on a delta-rule state past the training length)
+- **The paper:** Qingwen Lin, Boyan Xu, et al., "SANE: State Anomaly Neutralization for Stable Extreme-Context Delta-Rule Models" (2026-08-23).
+  Verified via the arXiv abstract page and HTML.
+- **The diagnosis:** RWKV-7 (a delta-rule model), tracked to 100M tokens, shows **localised norm explosion on a relatively sparse substrate** beyond the
+  training context, not global saturation. Persistent decay keeps weak entries small, while uneven injections let a few channels accumulate extreme values.
+- **The fix:** an **element-wise tanh soft cap on the state, S̃ = τ_h · tanh(S / τ_h)**, with an adaptive per-head threshold τ_h, applied to each chunk's
+  terminal state (chunkwise transfer).
+  - **It's introduced into a pretrained RWKV-7-0.4B checkpoint through SFT**, not training-free: "a lightweight modification to chunkwise state transfer
+    rather than a zero-overhead … plug-and-play module".
+- **Results:**
+  - with threshold factor 3 ≤ α ≤ 5: no significant short-context loss on 11 benchmarks, and functional reasoning after a 100M-token prefix (more than
+    24,000× the 4,096 training length), where the baseline overflows;
+  - **with α ≥ 8: numerically stable but reasoning lost.** A **capacity / stability trade-off** in how hard the state is compressed.
+- **Relation to NORM-CAP:**
+  - the same mechanism class: cap the recurrent state's magnitude to stop growth past the training horizon;
+  - **the differences:**
+    - (i) SANE is element-wise tanh compression, trained in by SFT. Ours is a norm cap derived from training statistics at **inference only**;
+    - (ii) theirs targets *sequence length* in a decayed delta-rule state. Ours targets *think-pass count* in a no-decay additive fast-weight memory.
+  - **Cite SANE as the closest prior.** The novelty narrows to "a training-statistics norm cap at inference for latent think passes over a fast-weight
+    memory".
+  - **Borrow SANE's capacity / stability lesson:** sweep the cap level, since too tight a cap can keep the state stable while destroying the answer.
+    Report accuracy vs cap factor.
