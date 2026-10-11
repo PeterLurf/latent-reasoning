@@ -33,7 +33,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
   - rq255 §184 s184_reweight_s1 (from 13:32, ~11.8 h) - Audit OK
   - b257 §186 s186_ilblind_k4_s1 (58.136.231.3, from 14:16, ~9 h est.)
   - §168s2 slot 1 USER-APPROVED (168-11, bs 64, ~$7.5-11). CHUNK_DELTA g5 PASS (d7e9abea). b263 stepaux (chunk/ckpt/cache) deploying 23:2x; b264 currdirect+textcot at the next free slot, then §185 den (b261), then rms (b262). Fleet <= 5 (Theory).
-* §185 ADD-NORM queues written (27afb96b): gen_q_b261 den / b262 rms; launch den when b259 ends (Theory fleet cap 5 hosts; asked about 6), rms at the next free slot. §186 k4 local preview on the 2070 (from 19:39).
+* Fleet order after b264 (ProsQA baselines, deploying 01:52): §185 den (b261) at §186 b257 landing (~04:00), then s184_reweight_s2 (b265, s2 opened 598b02b7), then §185 rms (b262) as WINDOW / HOLD finish. Local: §185 den/rms 8k previews (3070/4060) then s184 normcap/auxdone/tshift, s170 K' ext, capped NOFADE AUX-DONE.
   args + --add_norm den|rms; package lines: --dir177, --auxdone, --tshift, --normcap).
 * Landed today: §181 k1 / k2 (fail profile); §183 cell (skip collapses read columns; inner columns chance); §179 BLIND / SEEING; §175 post hocs
   (AUX-DONE, T-SHIFT, PATH-INDEP, memnorm, NORM-CLAMP, NORM-CAP-GLOBAL: cap 1x keeps 0.696 at K' 16 vs 0.414); §168 G1 / G2 / NA; §177 (f) slot 1.
