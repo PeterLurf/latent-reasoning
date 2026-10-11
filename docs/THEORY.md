@@ -12759,6 +12759,11 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
     - **Inconclusive:** otherwise, or if any compared bin has fewer than 50 items.
   - A reading needs both models to agree. Descriptive only.
 
+**Note 187-2, a sample amendment (2026-10-11 10:51 EDT; pre-data: the per-item rows have not run; Audit).** On the mixed 1,000-item deep sample, nesting ≥ 4 at n ∈ {9, 10} has only 37 items (n 9: 15 + 1; n 10: 17 + 3 + 1), under the 50-item floor. So the test as specified would read inconclusive by construction.
+* **Amended:** the per-item rows run on all n = 9 and n = 10 items of test_set (1,000 each; 2,000 items).
+  - By the same proportions, nesting ≥ 4 is about 150 items and nesting ≤ 2 about 1,100, so both clear 50.
+* The contrast (≤ 2 against ≥ 4), the bands and the both-models rule are unchanged.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
