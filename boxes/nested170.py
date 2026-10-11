@@ -187,6 +187,9 @@ def pass_tok(t):
     tk = ENC.encode(" %d" % t); assert len(tk) == 1; return tk[0]
 
 
+PASS_TOKS = frozenset(pass_tok(t) for t in range(0, 65))      # §187: every pass-index token the aux prompt could carry
+
+
 def _render_pos(nd, tgt, parent=None, right=False):
     """render() plus the symbol index of node tgt in it (None if tgt is not in this subtree)."""
     if nd.op is None:
@@ -220,6 +223,14 @@ class InjectN(torch.nn.Module):
     answer token (read-only)."""
     def __init__(self, g, layer=6, write="top", h_add=6, h_del=6, add_norm=None):
         super().__init__(); import boxes.deltamem as DM; self.DM = DM; self.g = g; self.mem = DM.DeltaMem(g, layer, write, h_add, h_del, add_norm)
+        self.nopass = False                                                 # §187 AUX-NOPASS: the aux prompt without the pass token (set from args)
+
+    def aux_prompt(self, t):
+        """§175's aux prompt [EOT, " Step", " t", " :"]; §187 (--aux_nopass): [EOT, " Step", " :"] - no pass token."""
+        if self.nopass:
+            pre = [EOT, STEP_ID, COLON_ID]; assert not any(tk in PASS_TOKS for tk in pre), "§187: a pass token in the aux prompt"
+            return pre
+        return [EOT, STEP_ID, pass_tok(t), COLON_ID]
 
     def think_inputs(self, items, dev):
         ids_, m_ = pad([[EOT] + ids(it["syms"]) + [TID[" ."]] for it in items]); return torch.tensor(ids_, device=dev), torch.tensor(m_, device=dev)
@@ -247,7 +258,7 @@ class InjectN(torch.nn.Module):
         problem text and is never fed back. -> (logits (b, L, V) predicting e_{t+1} then EOT, targets (b, L), -100 = padding).
         §182 HOLD (hold=True): for a pass t > n the target is e_{n+1} (step n's target string, the final value)."""
         from boxes.deltas5 import fwd_read
-        pre = [EOT, STEP_ID, pass_tok(t), COLON_ID]; seqs, tg = [], []
+        pre = self.aux_prompt(t); seqs, tg = [], []
         for it in items:
             n_ = len(aux_of(it)); assert t <= n_ or hold, "§175: no aux target past the last reduction"
             tgt = ids(aux_of(it)[min(t, n_) - 1][0]) + [EOT]; seqs.append(pre + tgt[:-1]); tg.append(tgt)
@@ -260,10 +271,10 @@ class InjectN(torch.nn.Module):
     def aux_greedy(self, S, t, L):
         """§175 eval: greedy L tokens after [EOT, " Step", " t", " :"] reading S -> (b, L) token ids."""
         from boxes.deltas5 import fwd_read
-        x = torch.tensor([[EOT, STEP_ID, pass_tok(t), COLON_ID]] * S.shape[0], device=S.device)
+        pre = self.aux_prompt(t); x = torch.tensor([pre] * S.shape[0], device=S.device)
         for _ in range(L):
             nt = self.g.logits(fwd_read(self.g, self.g.embed(x), self.mem, S)[:, -1]).float().argmax(-1); x = torch.cat([x, nt[:, None]], 1)
-        return x[:, 4:].cpu().numpy()
+        return x[:, len(pre):].cpu().numpy()
 
 
 def kmatch_loss(m, items, kitem, dev, ac, masked=True):
@@ -432,7 +443,7 @@ def main():
     ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", default=None); ap.add_argument("--log_every", type=int, default=100)
     ap.add_argument("--cot_eval_bs", type=int, default=64, help="TEXT-COT generation batch (KV cache; b223 OOMed at 250 on n = 16 chains)"); ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt (no training; writes args_eval.json; model.pt / args.json / log untouched)"); ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--per_n", type=int, default=1000); ap.add_argument("--serial_pool", type=int, default=2200); ap.add_argument("--auto_micro", action="store_true")
     ap.add_argument("--mem_budget", type=float, default=21.0); ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--time_steps", type=int, default=0, help="cost check: train this many steps, report s/step, exit")
-    ap.add_argument("--eval_at", type=int, default=0, help="also evaluate acc_by_n at this step -> eval_<k>k.json"); ap.add_argument("--aux_step", type=float, default=0.0, help="§175: lambda of the read-only step decoder CE (0 = off: the §170 path)"); ap.add_argument("--aux_fade", default="36000,48000", help="§175: lambda constant to the first step, then linear to 0 at the second"); ap.add_argument("--kmatch_impl", default="masked", choices=["masked", "bucketed"], help="§177 (f): note 177-5's masked single batch, or the per-K groups"); ap.add_argument("--add_norm", default="", choices=["", "den", "rms"], help="§185 ADD-NORM: the additive reads normalised by phi(q)^T z (den) or per-head RMS (rms); '' = off"); ap.add_argument("--aux_reweight", action="store_true", help="§184: the aux CE of pass t <= n weighted by AUX_W[t-1] (equal expected weight per pass position)"); ap.add_argument("--aux_hold", action="store_true", help="§182 HOLD: aux target e_{n+1} on passes n < t <= K (with --k_window and --aux_step)"); ap.add_argument("--kprimes", default="", help="§182: the K' set for s170.acc_by_n_kprime ('' = {0, 1, K/2, K, 2K})"); ap.add_argument("--path_indep", action="store_true", help="§182: s182.path_indep (K' = 16 from M_0 = 0 vs another item's 8-pass memory)"); ap.add_argument("--excl_min_n", type=int, default=1, help="note 178-3 (s178b): exclude test items from training only for n >= this (1 = §170's protocol)"); ap.add_argument("--scratch", default="", help="§178: 'L,D,H' -> a RANDOM-INIT GPT-2 trunk (no pretrained weights), memory after block L // 2 with D / 128 + D / 128 heads"); ap.add_argument("--warmup", type=int, default=100, help="LR warm-up steps (§178: 1000)"); ap.add_argument("--k_window", default="", help="§177 (f): 'lo,hi' -> each n-bucketed micro-batch runs K = n + U{lo..hi} think passes (inject)"); ap.add_argument("--fast_add", action="store_true", help="deltamem.FAST_ADD: the additive heads' pass writes as one sum (Audit 2026-10-09; scratch/gate_fastadd.py)"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
+    ap.add_argument("--eval_at", type=int, default=0, help="also evaluate acc_by_n at this step -> eval_<k>k.json"); ap.add_argument("--aux_step", type=float, default=0.0, help="§175: lambda of the read-only step decoder CE (0 = off: the §170 path)"); ap.add_argument("--aux_fade", default="36000,48000", help="§175: lambda constant to the first step, then linear to 0 at the second"); ap.add_argument("--kmatch_impl", default="masked", choices=["masked", "bucketed"], help="§177 (f): note 177-5's masked single batch, or the per-K groups"); ap.add_argument("--add_norm", default="", choices=["", "den", "rms"], help="§185 ADD-NORM: the additive reads normalised by phi(q)^T z (den) or per-head RMS (rms); '' = off"); ap.add_argument("--aux_nopass", action="store_true", help="§187 AUX-NOPASS: the aux prompt [EOT, ' Step', ' :'] (no pass token) in training and every aux eval"); ap.add_argument("--aux_reweight", action="store_true", help="§184: the aux CE of pass t <= n weighted by AUX_W[t-1] (equal expected weight per pass position)"); ap.add_argument("--aux_hold", action="store_true", help="§182 HOLD: aux target e_{n+1} on passes n < t <= K (with --k_window and --aux_step)"); ap.add_argument("--kprimes", default="", help="§182: the K' set for s170.acc_by_n_kprime ('' = {0, 1, K/2, K, 2K})"); ap.add_argument("--path_indep", action="store_true", help="§182: s182.path_indep (K' = 16 from M_0 = 0 vs another item's 8-pass memory)"); ap.add_argument("--excl_min_n", type=int, default=1, help="note 178-3 (s178b): exclude test items from training only for n >= this (1 = §170's protocol)"); ap.add_argument("--scratch", default="", help="§178: 'L,D,H' -> a RANDOM-INIT GPT-2 trunk (no pretrained weights), memory after block L // 2 with D / 128 + D / 128 heads"); ap.add_argument("--warmup", type=int, default=100, help="LR warm-up steps (§178: 1000)"); ap.add_argument("--k_window", default="", help="§177 (f): 'lo,hi' -> each n-bucketed micro-batch runs K = n + U{lo..hi} think passes (inject)"); ap.add_argument("--fast_add", action="store_true", help="deltamem.FAST_ADD: the additive heads' pass writes as one sum (Audit 2026-10-09; scratch/gate_fastadd.py)"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); a.task = "nested"; import boxes.deltamem as DM_; DM_.FAST_ADD = bool(a.fast_add); os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale; K = a.think_k if a.arm == "inject" else 0
     if a.arm != "inject":
         a.mem_write = a.write_mix_start = a.write_mix_end = None; a.think_k = 0
@@ -450,6 +461,8 @@ def main():
     r_ex = np.random.default_rng(17899)                                     # note 178-3: the share of training draws surviving the exclusion, per n (own stream)
     a.excl_survive_by_n = {str(n_): round(float(np.mean([tuple(render(generate(r_ex, n_)[0])) not in EXCL for _ in range(2000)])), 4) for n_ in range(1, a.n_max_train + 1)}
     m = InjectN(g, ML, a.mem_write, HA, HD, a.add_norm or None).to(dev) if a.arm == "inject" else None
+    if m is not None:
+        m.nopass = bool(a.aux_nopass)                                       # §187
 
     def loss_items(items, Kb=None):
         if a.arm == "direct":

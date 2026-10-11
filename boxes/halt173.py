@@ -183,7 +183,7 @@ def load_model(run, dev, init=False):
     elif "n_max_train" in a:
         from boxes.nested170 import InjectN
         from boxes.nested170 import mem_geometry
-        assert a.get("arm") == "inject"; ml_, ha_, hd_ = mem_geometry(a); kind, m = "nested", InjectN(g, ml_, "top", ha_, hd_, a.get("add_norm") or None)
+        assert a.get("arm") == "inject"; ml_, ha_, hd_ = mem_geometry(a); kind, m = "nested", InjectN(g, ml_, "top", ha_, hd_, a.get("add_norm") or None); m.nopass = bool(a.get("aux_nopass"))   # §187
     else:
         from boxes.inject169 import Inject
         assert a.get("arm") == "inject"; kind, m = "inject", Inject(g, 6, a.get("mem_write", "top")); m.blind = bool(a.get("blind_decoder"))   # §179
@@ -487,7 +487,7 @@ def main():
               "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)}
         json.dump(r_, open(o.out or os.path.join(o.run, "eval_s185_normcap.json"), "w", newline="\n"), indent=1); print("DONE normcap", o.run, flush=True); return
     if o.tshift:                                                            # note 182-2 follow-up (Theory): T-SHIFT -> eval_s182_tshift.json
-        assert kind == "nested" and a.get("aux_step"), "T-SHIFT needs a nested run trained with §175's aux decoder"
+        assert kind == "nested" and a.get("aux_step") and not a.get("aux_nopass"), "T-SHIFT needs a nested run trained with §175's aux decoder (and a pass token: not §187)"
         r_ = {"by_n": tshift_fields(m, a, dev, amp, o.n, o.bs), "run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
               "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0),
               "def": "cells real<t>_prompt<p>: M_t after exactly t real passes (t in n-1..n+1), aux greedy 2 tokens with pass token p (t-1..t+1); done = one number token then EOT; done_and_correct = done and the number is the answer"}
