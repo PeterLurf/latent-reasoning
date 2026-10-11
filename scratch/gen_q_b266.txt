@@ -5,3 +5,4 @@ boxes/runs_fsq/s187_nopass_s1 boxes.nested170 --arm inject --think_k 8 --aux_ste
 boxes/runs_fsq/s187_nopass_s1_pkg boxes.halt173 --run boxes/runs_fsq/s187_nopass_s1 --dir177 --bs 125
 boxes/runs_fsq/s187_nopass_s1_auxdone boxes.halt173 --run boxes/runs_fsq/s187_nopass_s1 --auxdone --bs 125
 boxes/runs_fsq/s187_nopass_s1_normcap boxes.halt173 --run boxes/runs_fsq/s187_nopass_s1 --normcap --bs 125
+boxes/runs_fsq/s187_nopass_s1_deepaux boxes.halt173 --run boxes/runs_fsq/s187_nopass_s1 --deepaux --bs 125

@@ -424,6 +424,8 @@
 5.0 boxes/runs_fsq/s184_reweight_s1/eval_s185_normcap.json python -u -m boxes.halt173 --run boxes/runs_fsq/s184_reweight_s1 --normcap --kprimes 0,1,4,8,12,16,24,32 --bs 125 --device {DEV}
 5.0 boxes/runs_fsq/s184_reweight_s1/eval_s182_auxdone.json python -u -m boxes.halt173 --run boxes/runs_fsq/s184_reweight_s1 --auxdone --bs 125 --device {DEV}
 5.0 boxes/runs_fsq/s184_reweight_s1/eval_s182_tshift.json python -u -m boxes.halt173 --run boxes/runs_fsq/s184_reweight_s1 --tshift --bs 125 --device {DEV}
+# 2026-10-11 note 187-1 (Theory): deep-item aux handle + STEP-RECOVER on s184 (halt173 --deepaux), after the s184 reads, before the cap sweep
+5.0 boxes/runs_fsq/s184_reweight_s1/eval_s187_deepaux.json python -u -m boxes.halt173 --run boxes/runs_fsq/s184_reweight_s1 --deepaux --bs 125 --device {DEV}
 5.0 boxes/runs_fsq/s170_k8_s1/eval_s170_kprime_ext.json python -u -m boxes.halt173 --run boxes/runs_fsq/s170_k8_s1 --normcap --normcap_c inf --kprimes 12,24,32 --bs 125 --device {DEV} --out boxes/runs_fsq/s170_k8_s1/eval_s170_kprime_ext.json
 5.0 boxes/runs_fsq/s182_nofade_s1/eval_s182_auxdone_capped.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_nofade_s1 --auxdone --cap_c boxes/runs_fsq/s182_nofade_s1/eval_s185_normcap.json --n 1000 --bs 125 --device {DEV}
 # 2026-10-11 01:53 185-1 NORM-CAP (train-item C) on §184 s184_reweight_s1 (landed 345dae55; descriptive, Theory's standing normcap line)
