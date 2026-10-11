@@ -120,7 +120,8 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
         - **§187 AUX-NOPASS registered** (87b7e23d; ~$3, after §184 s2): does pass-token keying limit depth beyond n = 8?
         - **The depth limit is narrowing** (496bdb8d). §184's deep-item handle decays from pass 3, inside the seen tokens, and the NORM-CAP HURTS deep items (it's a within-depth C6 aid only).
           - Interference hypothesis: 185-3 pre-states that DEN / RMS give no depth change.
-          - If so, draft ADD-DECAY (a learned per-head decay on the additive heads; Literature a39bc499 verified RetNet / GLA; new for think-pass depth).
+          - **187-2 read STRUCTURAL (both models), so ADD-DECAY is dropped.**
+          - The count effect differs by model: §184 +0.158 for n 9 → 10, NOFADE +0.031. 187-3's count test (n 11 / 12 rows) is running on CPU.
       - #4 becomes **§185 ADD-NORM** (2a1aac15; ~$6). The additive read had no normaliser.
         - NORM-CLAMP: about 80% of §175's overthinking is that read's growth.
         - Arms DEN and RMS. Launch after NORM-CAP-GLOBAL (6k items, 3070) and NOFADE.
