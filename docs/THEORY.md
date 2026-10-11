@@ -12858,6 +12858,17 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **(3) PATH-INDEP answer_agree is 0.14,** the lowest yet. The answer depends on the starting memory even though accuracy is flat in K′. That goes beside any C6 claim.
 * s2 is about $5–6 (b253 took 97.8k s on a 3090), opened by rule.
 
+**Note 187-4, a component readout and a token-edge clause (2026-10-11 16:29 EDT; before the full run is read; a 24-item smoke was seen and disclosed: n = 9 keep 0.0 against 1.0 at n = 6; Audit).**
+* **Reported per filter component, for n = 9 and 10:**
+  - (i) answer agreement only (the aux bare number equals the answer at n + 2);
+  - (ii) halt only (AUX-DONE halts at t = n);
+  - (iii) K′ agreement only (the answer at n + 2 equals the answer at n + 4);
+  - the base filter (i ∧ ii), the strict filter (i ∧ ii ∧ iii), and halt_hist.
+* **The token-edge clause (fixed now):** if base keep is < 30% while (i ∧ iii) keep is ≥ 30%, and halt_hist shows n = 9 items halting at t = 8, the reading is **BLOCKED-BY-TOKEN-EDGE**, not DROP.
+  - The halt filter then fails through the pass-token shortcut (T-SHIFT's "Step 8" edge). The early halt also makes the aux chain malformed at the edge step, so dropping the halt condition would not give usable chain labels.
+  - SELF-DEPTH is then re-assessed on §187's no-pass-token model when it lands, with the same filter and thresholds. It is not drafted on §184.
+* GO / DROP otherwise stand as registered.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
