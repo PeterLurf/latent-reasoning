@@ -355,7 +355,7 @@ def cap_add_state(m, S, C):
 
 
 @torch.no_grad()
-def deepaux_fields(m, a, dev, amp, bs=100, tmax=12, n_items=1000, cap_c=None):
+def deepaux_fields(m, a, dev, amp, bs=100, tmax=12, n_items=1000, cap_c=None, items_out=False):
     """note 187-1 (Theory / Audit, descriptive): whole-string aux exact match on deep items is confounded by copy length out of distribution, so
     (a) the aux HANDLE-token accuracy (teacher-forced argmax at the newly reduced value, as s175.aux_acc_by_role.handle) per pass t = 1..tmax on the
         n 9..12 test items (s175's ext set: rng 17023, 1,000 items), each item at t <= its reductions;
@@ -372,7 +372,7 @@ def deepaux_fields(m, a, dev, amp, bs=100, tmax=12, n_items=1000, cap_c=None):
     pe = [it for it in TE if 9 <= it["n"] <= 12]; te12 = [pe[i] for i in np.random.default_rng(17023).permutation(len(pe))[:n_items]]
     pool = [it for it in TE if it["n"] <= 8]; te8 = [pool[i] for i in np.random.default_rng(17022).permutation(len(pool))[:n_items]]
 
-    def handle(items, T):
+    def handle(items, T, rows=None):
         role = {}
         for i in range(0, len(items), bs):
             ch = items[i:i + bs]; x, msk = m.think_inputs(ch, dev)
@@ -389,9 +389,16 @@ def deepaux_fields(m, a, dev, amp, bs=100, tmax=12, n_items=1000, cap_c=None):
                     for r_, it in enumerate(sub):
                         sy, hi = aux_of(it)[t - 1]; L_ = len(sy); ok_ = pr[r_, :L_] == yy[r_, :L_]
                         rr = role.setdefault(t, {"handle": [], "copy": []}); rr["handle"].append(bool(ok_[hi])); rr["copy"].extend(bool(ok_[k_]) for k_ in range(L_) if k_ != hi)
+                        if rows is not None:                                # note 187-2: per-item handle record
+                            rows[i + idx[r_]]["handle_by_t"][str(t)] = int(bool(ok_[hi]))
         return {str(t): {"handle": float(np.mean(d["handle"])), "copy": (float(np.mean(d["copy"])) if d["copy"] else None), "n": len(d["handle"])} for t, d in sorted(role.items())}
 
-    out = {"handle_ext": handle(te12, tmax)}; print("deepaux handle_ext", {t: round(v["handle"], 3) for t, v in out["handle_ext"].items()}, flush=True)
+    out = {"handle_ext": handle(te12, tmax)}
+    if items_out:                                                           # note 187-2 (amended): ALL n = 9 and n = 10 test items (1,000 each), a separate pass
+        it910 = [it for it in TE if it["n"] in (9, 10)]
+        rows = [{"n": it["n"], "nest_depth": it["depth"], "n_syms": len(it["syms"]), "think_tokens": int(m.think_inputs([it], "cpu")[1].sum()), "handle_by_t": {}} for it in it910]
+        handle(it910, tmax, rows); out["_items"] = rows
+    print("deepaux handle_ext", {t: round(v["handle"], 3) for t, v in out["handle_ext"].items()}, flush=True)
     out["handle_le8_check"] = handle(te8, K)
     tr = train_items(np.random.default_rng(17021), int(os.environ.get("NESTED170_PROBE_N_FIT", 4000)), 8, EX)
     Rf = dec_reads(m, tr, min(8, tmax), dev, ctx, bs); Re = dec_reads(m, te12, tmax, dev, ctx, bs)
@@ -530,6 +537,7 @@ def main():
     ap.add_argument("--auxdone", action="store_true", help="note 182-2 AUX-DONE halting (nested + §175 aux) only -> eval_s182_auxdone.json")
     ap.add_argument("--tshift", action="store_true", help="note 182-2 follow-up T-SHIFT (aux done vs real / prompt pass) only -> eval_s182_tshift.json")
     ap.add_argument("--deepaux", action="store_true", help="note 187-1: aux handle accuracy + STEP-RECOVER on n 9..12 (nested + §175 aux) only -> eval_s187_deepaux.json")
+    ap.add_argument("--deepaux_items", action="store_true", help="--deepaux: also per-item rows (n, nesting depth, token length, handle 0/1 per t) -> eval_s187_deepaux_items.json (note 187-2)")
     ap.add_argument("--normcap", action="store_true", help="note 185-1 inference-only NORM-CAP (nested) only -> eval_s185_normcap.json")
     ap.add_argument("--normcap_c", default="", help="--normcap: C given instead of computed: a number ('inf' = the uncapped arm) or an eval_s185_normcap.json path (its normcap.C)")
     ap.add_argument("--normcap_factor", type=float, default=1.0, help="--normcap with --normcap_c: C x this factor (the cap-level sweep, Theory 2026-10-11)")
@@ -553,7 +561,12 @@ def main():
     if o.deepaux:                                                           # note 187-1 (Theory / Audit): deep-item aux handle + STEP-RECOVER -> eval_s187_deepaux.json
         assert kind == "nested" and a.get("aux_step"), "deepaux needs a nested run trained with §175's aux decoder"
         cc_ = ((float(json.load(open(o.normcap_c))["normcap"]["C"]) if o.normcap_c.endswith(".json") else float(o.normcap_c)) * o.normcap_factor) if o.normcap_c else None
-        r_ = {"deepaux": deepaux_fields(m, a, dev, amp, o.bs, n_items=o.n, cap_c=cc_), "normcap_factor": o.normcap_factor if o.normcap_c else None,"run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
+        da_ = deepaux_fields(m, a, dev, amp, o.bs, n_items=o.n, cap_c=cc_, items_out=o.deepaux_items); items_ = da_.pop("_items", None)
+        if items_ is not None:                                              # note 187-2: the rows go to their own file; the summary is unchanged
+            json.dump({"run": o.run.replace(os.sep, "/"), "items": items_, "item_set": "ALL test_set items with n in (9, 10) (note 187-2 amended)", "cap_c": cc_,
+                       "def": "per item: n, nest_depth (max bracket nesting, nested170.depth), n_syms, think_tokens (incl. EOT and ' .'), handle_by_t[t] = 1 if the teacher-forced aux argmax at the reduced value is right after pass t (t <= its reductions)"},
+                      open(os.path.join(os.path.dirname(o.out) if o.out else o.run, "eval_s187_deepaux_items.json"), "w", newline="\n"))
+        r_ = {"deepaux": da_, "normcap_factor": o.normcap_factor if o.normcap_c else None,"run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
               "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)}
         json.dump(r_, open(o.out or os.path.join(o.run, "eval_s187_deepaux.json"), "w", newline="\n"), indent=1); print("DONE deepaux", o.run, flush=True); return
     if o.tshift:                                                            # note 182-2 follow-up (Theory): T-SHIFT -> eval_s182_tshift.json
