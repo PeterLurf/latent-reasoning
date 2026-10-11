@@ -355,6 +355,63 @@ def cap_add_state(m, S, C):
 
 
 @torch.no_grad()
+def deepaux_fields(m, a, dev, amp, bs=100, tmax=12, n_items=1000):
+    """note 187-1 (Theory / Audit, descriptive): whole-string aux exact match on deep items is confounded by copy length out of distribution, so
+    (a) the aux HANDLE-token accuracy (teacher-forced argmax at the newly reduced value, as s175.aux_acc_by_role.handle) per pass t = 1..tmax on the
+        n 9..12 test items (s175's ext set: rng 17023, 1,000 items), each item at t <= its reductions;
+    (b) STEP-RECOVER on those items (s175's probe: multinomial logistic from the decoder read r_t to v_t, nested170.step_recover's form):
+        transfer = fit on 4,000 training-distribution items (n <= 8, rng 17021, test-excluded; t <= 8) -> test on the n 9..12 items;
+        within_ext = fit on a random half of the n 9..12 items (rng 18701), test on the other half, t = 1..tmax;
+    (c) check: (a)'s handle accuracy on s175's n <= 8 set (rng 17022, t <= K) - to compare with the run's eval.json aux_acc_by_role.handle.
+    The aux prompt is the model's own (no pass token under §187 --aux_nopass)."""
+    from contextlib import nullcontext
+    from boxes.nested170 import test_set, train_items, aux_of, dec_reads, reductions, logreg_acc, P
+    ctx = (lambda: torch.autocast("cuda", dtype=amp)) if amp is not None else nullcontext
+    K = rule_k(a); TE = test_set(a.get("per_n", 1000)); EX = {tuple(it["syms"]) for it in TE if it["n"] >= int(a.get("excl_min_n", 1))}
+    pe = [it for it in TE if 9 <= it["n"] <= 12]; te12 = [pe[i] for i in np.random.default_rng(17023).permutation(len(pe))[:n_items]]
+    pool = [it for it in TE if it["n"] <= 8]; te8 = [pool[i] for i in np.random.default_rng(17022).permutation(len(pool))[:n_items]]
+
+    def handle(items, T):
+        role = {}
+        for i in range(0, len(items), bs):
+            ch = items[i:i + bs]; x, msk = m.think_inputs(ch, dev)
+            with ctx():
+                S = m.mem.zero_state(len(ch), dev)
+                for t in range(1, T + 1):
+                    S = m.write(S, x, msk); idx = [j for j, it in enumerate(ch) if len(aux_of(it)) >= t]
+                    if not idx:
+                        continue
+                    sub = [ch[j] for j in idx]; lg_a, y_a = m.aux_logits(S[idx], sub, t, dev); pr = lg_a.argmax(-1).cpu().numpy(); yy = y_a.cpu().numpy()
+                    for r_, it in enumerate(sub):
+                        sy, hi = aux_of(it)[t - 1]; L_ = len(sy); ok_ = pr[r_, :L_] == yy[r_, :L_]
+                        rr = role.setdefault(t, {"handle": [], "copy": []}); rr["handle"].append(bool(ok_[hi])); rr["copy"].extend(bool(ok_[k_]) for k_ in range(L_) if k_ != hi)
+        return {str(t): {"handle": float(np.mean(d["handle"])), "copy": (float(np.mean(d["copy"])) if d["copy"] else None), "n": len(d["handle"])} for t, d in sorted(role.items())}
+
+    out = {"handle_ext": handle(te12, tmax)}; print("deepaux handle_ext", {t: round(v["handle"], 3) for t, v in out["handle_ext"].items()}, flush=True)
+    out["handle_le8_check"] = handle(te8, K)
+    tr = train_items(np.random.default_rng(17021), int(os.environ.get("NESTED170_PROBE_N_FIT", 4000)), 8, EX)
+    Rf = dec_reads(m, tr, min(8, tmax), dev, ctx, bs); Re = dec_reads(m, te12, tmax, dev, ctx, bs)
+    vf = [reductions(it["root"]) for it in tr]; ve = [reductions(it["root"]) for it in te12]; tr_acc, wi_acc, info = {}, {}, {"transfer": {}, "within_ext": {}}
+    for t in range(1, min(8, tmax) + 1):
+        fi = [i for i, v in enumerate(vf) if len(v) >= t]; si = [i for i, v in enumerate(ve) if len(v) >= t]
+        if len(fi) >= 100 and len(si) >= 20:
+            tr_acc[str(t)] = logreg_acc(Rf[t - 1, fi], np.array([vf[i][t - 1] for i in fi]), Re[t - 1, si], np.array([ve[i][t - 1] for i in si]), dev)
+            info["transfer"][str(t)] = {"fit": len(fi), "test": len(si)}
+    half = np.random.default_rng(18701).permutation(len(te12)); A_, B_ = set(half[:len(te12) // 2].tolist()), set(half[len(te12) // 2:].tolist())
+    for t in range(1, tmax + 1):
+        fi = [i for i, v in enumerate(ve) if len(v) >= t and i in A_]; si = [i for i, v in enumerate(ve) if len(v) >= t and i in B_]
+        if len(fi) >= 50 and len(si) >= 20:
+            yf = np.array([ve[i][t - 1] for i in fi]); ys = np.array([ve[i][t - 1] for i in si])
+            wi_acc[str(t)] = logreg_acc(Re[t - 1, fi], yf, Re[t - 1, si], ys, dev)
+            info["within_ext"][str(t)] = {"fit": len(fi), "test": len(si), "majority": float((ys == np.bincount(yf, minlength=P).argmax()).mean())}
+    out.update({"step_recover_ext_transfer": tr_acc, "step_recover_ext_within": wi_acc, "step_recover_ext_info": info, "tmax": tmax,
+                "items": {"n_9_12": {"n": len(te12), "seed": 17023}, "n_le_8": {"n": len(te8), "seed": 17022}, "probe_fit_seed": 17021, "within_split_seed": 18701},
+                "probe": "multinomial logistic on standardised r_t (the decoder read, 768-d; nested170.step_recover's representation), L2 1e-3, LBFGS 200",
+                "nopass": bool(getattr(m, "nopass", False))})
+    return out
+
+
+@torch.no_grad()
 def auxdone_fields(m, a, dev, amp, n_items=1000, bs=100, cap=16, ns=(2, 4, 6, 8, 10, 12), cap_c=None):
     """note 182-2 AUX-DONE (Theory, descriptive; nested runs with §175's aux decoder): per n, n_items test items, think passes t = 1..cap from M_0 = 0.
     After each pass: the main decoder's answer, and §175's aux decoder greedy from [EOT, " Step", " t", " :"] reading M_t. The item halts at the first t
@@ -468,6 +525,7 @@ def main():
     ap.add_argument("--bench", default=os.path.join("bench", "data", "mult_4x4_test.txt")); ap.add_argument("--dir177", action="store_true", help="§177 direction diagnostic only")
     ap.add_argument("--auxdone", action="store_true", help="note 182-2 AUX-DONE halting (nested + §175 aux) only -> eval_s182_auxdone.json")
     ap.add_argument("--tshift", action="store_true", help="note 182-2 follow-up T-SHIFT (aux done vs real / prompt pass) only -> eval_s182_tshift.json")
+    ap.add_argument("--deepaux", action="store_true", help="note 187-1: aux handle accuracy + STEP-RECOVER on n 9..12 (nested + §175 aux) only -> eval_s187_deepaux.json")
     ap.add_argument("--normcap", action="store_true", help="note 185-1 inference-only NORM-CAP (nested) only -> eval_s185_normcap.json")
     ap.add_argument("--normcap_c", default="", help="--normcap: C given instead of computed: a number ('inf' = the uncapped arm) or an eval_s185_normcap.json path (its normcap.C)")
     ap.add_argument("--normcap_factor", type=float, default=1.0, help="--normcap with --normcap_c: C x this factor (the cap-level sweep, Theory 2026-10-11)")
@@ -488,6 +546,11 @@ def main():
               "normcap_factor": o.normcap_factor if o.normcap_c else None, "normcap_c_source": o.normcap_c.replace(os.sep, "/") or None, "run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
               "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)}
         json.dump(r_, open(o.out or os.path.join(o.run, "eval_s185_normcap.json"), "w", newline="\n"), indent=1); print("DONE normcap", o.run, flush=True); return
+    if o.deepaux:                                                           # note 187-1 (Theory / Audit): deep-item aux handle + STEP-RECOVER -> eval_s187_deepaux.json
+        assert kind == "nested" and a.get("aux_step"), "deepaux needs a nested run trained with §175's aux decoder"
+        r_ = {"deepaux": deepaux_fields(m, a, dev, amp, o.bs, n_items=o.n),"run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
+              "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)}
+        json.dump(r_, open(o.out or os.path.join(o.run, "eval_s187_deepaux.json"), "w", newline="\n"), indent=1); print("DONE deepaux", o.run, flush=True); return
     if o.tshift:                                                            # note 182-2 follow-up (Theory): T-SHIFT -> eval_s182_tshift.json
         assert kind == "nested" and a.get("aux_step") and not a.get("aux_nopass"), "T-SHIFT needs a nested run trained with §175's aux decoder (and a pass token: not §187)"
         r_ = {"by_n": tshift_fields(m, a, dev, amp, o.n, o.bs), "run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
