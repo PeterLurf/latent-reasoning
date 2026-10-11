@@ -483,3 +483,6 @@
 5.0 boxes/runs_fsq/s182_nofade_s1/eval_s185_normcap.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_nofade_s1 --normcap --bs 125 --device {DEV}
 5.0 boxes/runs_fsq/s182_nofade_s1/eval_s182_auxdone.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_nofade_s1 --auxdone --bs 125 --device {DEV}
 5.0 boxes/runs_fsq/s182_nofade_s1/eval_s182_tshift.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_nofade_s1 --tshift --bs 125 --device {DEV}
+# 2026-10-10 22:20 Theory (descriptive, eval-only, in this order): (1) 185-1 NORM-CAP on s170_k8_s1 (FINAL-only INJECT, no aux) at K' {0,1,4,8,12,16,24,32}; (2) AUX-DONE under the cap on s182_nofade_s1 (C from its eval_s185_normcap.json, 11,884)
+5.0 boxes/runs_fsq/s170_k8_s1/eval_s185_normcap.json python -u -m boxes.halt173 --run boxes/runs_fsq/s170_k8_s1 --normcap --kprimes 0,1,4,8,12,16,24,32 --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s182_nofade_s1/eval_s182_auxdone_capped.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_nofade_s1 --auxdone --cap_c boxes/runs_fsq/s182_nofade_s1/eval_s185_normcap.json --bs 125 --device {DEV}

@@ -348,10 +348,18 @@ def dir_pair_fields(run, dev, amp, n_items=500, bs=125, bench=os.path.join("benc
 
 
 @torch.no_grad()
-def auxdone_fields(m, a, dev, amp, n_items=1000, bs=100, cap=16, ns=(2, 4, 6, 8, 10, 12)):
+def cap_add_state(m, S, C):
+    """note 185-1: S_add rescaled to norm C when its per-item norm exceeds C (direction kept; delta heads and any z block untouched)."""
+    ha = m.mem.h_add; cur = S[:, :ha].float().flatten(1).norm(dim=1)
+    f = torch.where(cur > C, C / cur.clamp_min(1e-12), torch.ones_like(cur)).to(S.dtype)
+    return torch.cat([S[:, :ha] * f[:, None, None, None], S[:, ha:]], 1)
+
+
+def auxdone_fields(m, a, dev, amp, n_items=1000, bs=100, cap=16, ns=(2, 4, 6, 8, 10, 12), cap_c=None):
     """note 182-2 AUX-DONE (Theory, descriptive; nested runs with §175's aux decoder): per n, n_items test items, think passes t = 1..cap from M_0 = 0.
     After each pass: the main decoder's answer, and §175's aux decoder greedy from [EOT, " Step", " t", " :"] reading M_t. The item halts at the first t
-    whose aux output is ONE number token (a mod-11 value) followed by EOT (2 greedy tokens decide it); cap 16 (no halt -> 16, capped)."""
+    whose aux output is ONE number token (a mod-11 value) followed by EOT (2 greedy tokens decide it); cap 16 (no halt -> 16, capped).
+    cap_c (Theory / Audit 2026-10-10): the 185-1 NORM-CAP applied after every write (S_add rescaled to norm cap_c), else uncapped."""
     from contextlib import nullcontext
     from boxes.nested170 import test_set, NUM_IDS, EOT as NEOT
     ctx = (lambda: torch.autocast("cuda", dtype=amp)) if amp is not None else nullcontext
@@ -363,7 +371,10 @@ def auxdone_fields(m, a, dev, amp, n_items=1000, bs=100, cap=16, ns=(2, 4, 6, 8,
             with ctx():
                 S = m.mem.zero_state(len(ch), dev)
                 for t in range(1, cap + 1):
-                    S = m.write(S, x, msk); lg = m.dec_logits(S, ch, dev); main_t.append(lg[:, NUM_IDS].argmax(-1).cpu().numpy())
+                    S = m.write(S, x, msk)
+                    if cap_c is not None:
+                        S = cap_add_state(m, S, cap_c)
+                    lg = m.dec_logits(S, ch, dev); main_t.append(lg[:, NUM_IDS].argmax(-1).cpu().numpy())
                     g2 = m.aux_greedy(S, t, 2); num_t.append(np.array([lut.get(int(r[0]), -1) for r in g2])); done_t.append(np.array([(int(r[0]) in lut) and int(r[1]) == NEOT for r in g2]))
             main_t, num_t, done_t = np.stack(main_t), np.stack(num_t), np.stack(done_t)            # (cap, b)
             hit = done_t.any(0); h = np.where(hit, done_t.argmax(0) + 1, cap); col = np.arange(len(ch))
@@ -383,7 +394,7 @@ def auxdone_fields(m, a, dev, amp, n_items=1000, bs=100, cap=16, ns=(2, 4, 6, 8,
 
 
 @torch.no_grad()
-def normcap_fields(m, a, dev, amp, bs=100, run=None):
+def normcap_fields(m, a, dev, amp, bs=100, run=None, kprimes=None):
     """note 185-1 (Theory, descriptive): inference-only NORM-CAP for a nested run. C = the median ||S_add|| after K passes over 1,000 TRAINING items
     (nested170.train_items, rng 18501, test-excluded as the run: test_set + the SERIAL pool); then acc_by_n at each K' of the run's --kprimes set
     (default {0, 1, K/2, K, 2K}) with S_add rescaled to norm C after every write when it exceeds C (direction kept; delta untouched). The uncapped
@@ -404,7 +415,7 @@ def normcap_fields(m, a, dev, amp, bs=100, run=None):
                 S = m.write(S, x, msk)
         nrm.append(S[:, :ha].float().flatten(1).norm(dim=1).cpu().numpy())
     C = float(np.median(np.concatenate(nrm)))
-    kps = sorted({int(v) for v in str(a.get("kprimes") or "").split(",") if v.strip()} | {K}) if a.get("kprimes") else sorted({0, 1, K // 2, K, 2 * K})
+    kps = sorted({int(v) for v in str(kprimes or a.get("kprimes") or "").split(",") if v.strip()} | {K}) if (kprimes or a.get("kprimes")) else sorted({0, 1, K // 2, K, 2 * K})   # --kprimes overrides the run's set
     T_ = np.array([it["t"] for it in TE]); N_ = np.array([it["n"] for it in TE]); capped = {}
     for kp in kps:
         out = []
@@ -413,9 +424,7 @@ def normcap_fields(m, a, dev, amp, bs=100, run=None):
             with ctx():
                 S = m.mem.zero_state(len(ch), dev)
                 for _ in range(kp):
-                    S = m.write(S, x, msk); cur = S[:, :ha].float().flatten(1).norm(dim=1)
-                    f = torch.where(cur > C, C / cur.clamp_min(1e-12), torch.ones_like(cur)).to(S.dtype)
-                    S = torch.cat([S[:, :ha] * f[:, None, None, None], S[:, ha:]], 1)
+                    S = cap_add_state(m, m.write(S, x, msk), C)
                 out.append(m.dec_logits(S, ch, dev)[:, NUM_IDS].argmax(-1).cpu().numpy())
         A_ = np.concatenate(out); capped[str(kp)] = {str(n): float((A_ == T_)[N_ == n].mean()) for n in range(1, 17)}
         print("normcap K'", kp, round(float((A_ == T_)[(N_ >= 3) & (N_ <= 8)].mean()), 4), flush=True)
@@ -460,6 +469,8 @@ def main():
     ap.add_argument("--auxdone", action="store_true", help="note 182-2 AUX-DONE halting (nested + §175 aux) only -> eval_s182_auxdone.json")
     ap.add_argument("--tshift", action="store_true", help="note 182-2 follow-up T-SHIFT (aux done vs real / prompt pass) only -> eval_s182_tshift.json")
     ap.add_argument("--normcap", action="store_true", help="note 185-1 inference-only NORM-CAP (nested) only -> eval_s185_normcap.json")
+    ap.add_argument("--kprimes", default="", help="--normcap: the K' set (default: the run's --kprimes, else {0, 1, K/2, K, 2K})")
+    ap.add_argument("--cap_c", default="", help="--auxdone under the 185-1 cap: C as a number or an eval_s185_normcap.json path (its normcap.C) -> eval_s182_auxdone_capped.json")
     o = ap.parse_args(); dev = o.device; t0 = time.time(); o.out = o.out if (o.out and o.out.endswith(".json")) else None   # gen_vast_job appends --out <dir>: anything but a .json path -> the default file in --run
     amp = None if (o.fp32 or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
     a_ = json.load(open(os.path.join(o.run, "args.json")))
@@ -471,7 +482,7 @@ def main():
     kind, m, a = load_model(o.run, dev); K = rule_k(a); T = 2 * K; assert K >= 1
     if o.normcap:                                                           # note 185-1 (Theory): inference-only NORM-CAP -> eval_s185_normcap.json
         assert kind == "nested", "NORM-CAP (185-1) is for nested runs"
-        r_ = {"normcap": normcap_fields(m, a, dev, amp, o.bs, o.run), "run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
+        r_ = {"normcap": normcap_fields(m, a, dev, amp, o.bs, o.run, o.kprimes or None), "run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
               "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)}
         json.dump(r_, open(o.out or os.path.join(o.run, "eval_s185_normcap.json"), "w", newline="\n"), indent=1); print("DONE normcap", o.run, flush=True); return
     if o.tshift:                                                            # note 182-2 follow-up (Theory): T-SHIFT -> eval_s182_tshift.json
@@ -482,13 +493,16 @@ def main():
         json.dump(r_, open(o.out or os.path.join(o.run, "eval_s182_tshift.json"), "w", newline="\n"), indent=1); print("DONE tshift", o.run, flush=True); return
     if o.auxdone:                                                           # note 182-2 (Theory): AUX-DONE halting -> eval_s182_auxdone.json
         assert kind == "nested" and a.get("aux_step"), "AUX-DONE needs a nested run trained with §175's aux decoder"
-        r_ = {"by_n": auxdone_fields(m, a, dev, amp, o.n, o.bs)}; ref_ = os.path.join(o.run, "eval_s173_halt.json")
+        cc_ = (float(json.load(open(o.cap_c))["normcap"]["C"]) if o.cap_c.endswith(".json") else float(o.cap_c)) if o.cap_c else None
+        r_ = {"by_n": auxdone_fields(m, a, dev, amp, o.n, o.bs, cap_c=cc_)}; ref_ = os.path.join(o.run, "eval_s173_halt.json")
+        if cc_ is not None:
+            r_["cap_c"] = cc_; r_["cap_c_source"] = o.cap_c.replace(os.sep, "/"); r_["cap_def"] = "185-1 NORM-CAP after every write: S_add rescaled to norm cap_c when larger (delta untouched)"
         if os.path.exists(ref_):
             h_ = json.load(open(ref_)); r_["ref_eval_s173_halt"] = {"halt_fixed_k": h_.get("halt_fixed_k"), "answer2": (h_.get("halt") or {}).get("answer2"), "think_k": h_.get("think_k")}
         r_.update({"run": o.run.replace(os.sep, "/"), "kind": kind, "cap": 16, "eval_dtype": str(amp), "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
                    "sec": round(time.time() - t0), "rule": "halt at the first pass t (1..16) whose aux greedy output is one number token then EOT (2 greedy tokens); "
                    "acc_at_halt = main decoder at the halt pass; aux_num_acc / agree over halted items; aux_done_by_t = cumulative share halted (note 182-2)"})
-        json.dump(r_, open(o.out or os.path.join(o.run, "eval_s182_auxdone.json"), "w", newline="\n"), indent=1); print("DONE auxdone", o.run, flush=True); return
+        json.dump(r_, open(o.out or os.path.join(o.run, "eval_s182_auxdone_capped.json" if cc_ is not None else "eval_s182_auxdone.json"), "w", newline="\n"), indent=1); print("DONE auxdone", o.run, flush=True); return
     if o.dir177:                                                            # §177 (Theory): the direction diagnostic -> eval_s177_dir.json
         r_ = dir_fields(kind, m, a, dev, amp, min(o.n, 500), o.bs, o.bench)
         r_["step_probe_delta"] = step_probe_delta(kind, m, a, dev, amp, o.bs, bench=o.bench)   # note 173-1 (descriptive)
