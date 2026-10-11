@@ -28,12 +28,12 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
 
 ### Vast (7 hosts, ~$1.4/h; 14:27 2026-10-10)
 * Live cells (check git status on each dir every turn; drain waiters cap at 2 h):
-  - b251 §182 s182_nofade_s1 (185.62.108.226, from 09:04, ~11.8 h; gates the GSM8K draft; then §185 launches + its post-hoc --normcap)
+  - b251 §182 s182_nofade_s1 LANDED 20:35 (3a0253c7; Theory 384a00c2: not DEEP, not STABLE, pooled 0.786); post-hocs normcap / auxdone / tshift on the 4060 backlog
   - rq253 §182 s182_window_s1 (89.221.67.136, from 12:29, ~26 h) / b254 §182 s182_hold_s1 (77.29.35.113, from 12:48, ~28 h) - user-approved
   - rq255 §184 s184_reweight_s1 (from 13:32, ~11.8 h) - Audit OK
   - b257 §186 s186_ilblind_k4_s1 (58.136.231.3, from 14:16, ~9 h est.)
   - b256 §168s2 TIMING aborted (stepaux compute-bound >26 s/step, .void; host destroyed) -> b258 re-time (stepaux --ckpt_passes --cache_lower; 3 BAD HOSTs 15:19-15:59, retrying; all 3 arms re-timed) -> projection to Audit -> the user (cells NOT launched without approval). --cache_lower ACCEPTED (Theory 168-8, fp64 6.9e-15; never mix with comparators; s184/185/186 uncached) CHUNK_DELTA (be17799d): stepaux is launch-bound (>=45 s/step loop); CPU gates pass bar s_add at its fp64 floor; gen_q_b259 (chunk re-time + trajectory) staged, launch on Theory OK + Audit review. Timings: loop bs64 69 s/step (b258); chunk bs32 3.50 / bs64 6.96 s/step (b259) -> stepaux 12k = 11.7 h / 23.2 h; trajectory gate running on b259 (~4 h); GPT-2 arms timed on b258 ~00:10 UTC -> projection to Audit -> user. GPT-2 arms (b260): 1.36/0.70 s/step bs64/32. Projection sent 19:2x: bs64 ~$7.5-11, bs32 ~$4.5-6.5; awaiting g5 + user.
-* Staged (code committed, gated, Audit OK): §185 ADD-NORM den / rms (33c4a40e + a0967b78) - launch after NOFADE lands (queues to write from NOFADE's
+* §185 ADD-NORM queues written (27afb96b): gen_q_b261 den / b262 rms; launch den when b259 ends (Theory fleet cap 5 hosts; asked about 6), rms at the next free slot. §186 k4 local preview on the 2070 (from 19:39).
   args + --add_norm den|rms; package lines: --dir177, --auxdone, --tshift, --normcap).
 * Landed today: §181 k1 / k2 (fail profile); §183 cell (skip collapses read columns; inner columns chance); §179 BLIND / SEEING; §175 post hocs
   (AUX-DONE, T-SHIFT, PATH-INDEP, memnorm, NORM-CLAMP, NORM-CAP-GLOBAL: cap 1x keeps 0.696 at K' 16 vs 0.414); §168 G1 / G2 / NA; §177 (f) slot 1.
