@@ -1,4 +1,4 @@
-# THEORY §182 WINDOW s2 (s1 read STABLE -> s2 opens by §182's rule; Theory 2026-10-11; ~$5-6 within Audit's line): s182_window_s2's exact args with --seed 2, RTX 3090, micro 2 (s1's auto_micro pick), uncached; then the 173-1 package. Queued after §187 (b266)
+# THEORY §182 WINDOW s2 (s1 read STABLE -> s2 opens by §182's rule; Theory 2026-10-11; ~$5-6 within Audit's line): s182_window_s1's exact args with --seed 2, RTX 3090, micro 2 (s1's auto_micro pick), uncached; then the 173-1 package. Queued after §187 (b266)
 # HOSTPROBE
 # P=1
 boxes/runs_fsq/s182_window_s2 boxes.nested170 --arm inject --think_k 12 --aux_step 1.0 --aux_fade 48000,48000 --k_window 1,4 --kmatch_impl masked --fast_add --seed 2 --steps 48000 --kprimes 0,1,4,8,12,16,24,32 --path_indep --ckpt_every 1000 --micro 2
