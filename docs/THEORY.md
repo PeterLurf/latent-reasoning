@@ -12627,6 +12627,33 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - Chen's direction is STEP-AUX ≤ CURR-DIRECT. Recorded with the same ±0.05 bands.
 * Both are recorded whichever way they fall, and neither bears on §168's registered rules.
 
+**Local reads on §184 and NOFADE (2026-10-11 08:08 EDT; descriptive; eval_s185_normcap / eval_s182_auxdone / eval_s182_tshift / eval_normcap_sweep, local cards).**
+* **NORM-CAP on §184 (train-item C 12,713), pooled n 3..8, capped / uncapped:**
+  - K′ = 8: 0.973 / 0.974;
+  - K′ = 12: 0.966 / 0.971;
+  - K′ = 16: 0.918 / 0.929;
+  - K′ = 24: 0.717 / 0.566;
+  - K′ = 32: 0.566 / 0.345.
+  - The cap costs about 0.01 up to 2K and helps beyond it. §184 is flatter than NOFADE without a cap, so the cap matters later.
+* **AUX-DONE on §184:** at n ≤ 8, the halt lands at t = n for 100% of items (accuracy at the halt 1.0 / 0.988 / 0.976 / 0.934 at n = 2 / 4 / 6 / 8).
+  - **Beyond training it now partly works:** at n = 10, accuracy 0.607 with a mean halt of 10.28 and 28% capped. At n = 12, 0.157 with 64% capped.
+  - NOFADE at n 10 / 12 reads 0.134 / 0.131, with 87% / 97% capped.
+* **T-SHIFT on §184:** at n = 4 the memory carries "done" (done ≈ 1.0 whenever real ≥ n, whatever the prompt). n = 6 is mostly the memory. At n = 8 the pass token still decides at the training edge, as in NOFADE. That is §187's question.
+* **The cap-level sweep on NOFADE (train C 11,884):**
+
+  | Factor | K′ 8 | K′ 16 | K′ 32 | n 9–12 at K′ 16 |
+  |---|---|---|---|---|
+  | 0.5 | 0.653 | 0.606 | 0.574 | 0.099 |
+  | 0.75 | 0.732 | 0.670 | 0.630 | 0.101 |
+  | 1.0 | 0.775 | 0.692 | 0.647 | 0.118 |
+  | 1.25 | 0.785 | 0.679 | 0.636 | 0.136 |
+  | 1.5 | 0.785 | 0.618 | 0.594 | 0.149 |
+
+  - The trained-K median (1.0×) is near-optimal for K′ = 16 / 32. Tighter caps cost accuracy within K, and looser caps lose stability: SANE's U-shape.
+  - So the cap value is not a free knob. The training statistic picks a good one.
+* **AUX-DONE on NOFADE under the cap:** the halt still lands at t = n for n ≤ 8 (accuracy 0.971 / 0.842 / 0.691 / 0.456; n = 8 is 0.03 below uncapped). For n 10 / 12, 80% / 96% still never halt.
+* **For §184's C1 case:** the two reads Audit set as preconditions (NORM-CAP and AUX-DONE) are in. s2 is still pending.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
