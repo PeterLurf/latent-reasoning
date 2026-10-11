@@ -411,3 +411,7 @@
 # 2026-10-10 09:55 THEORY §183 note 183-1: 4060 preview pair, SEED 2, blind then seeing (compressed 8k schedule; descriptive)
 5.0 boxes/runs_fsq/proto183_ilblind_k1_s2_4060/eval.json python -u -m boxes.inject169 --think_k 0 --interleave 1 --pass_index sin_gain --fast_add --seed 2 --steps 8000 --sched_scale 0.1667 --ckpt_every 1000 --auto_micro --mem_budget 5.0 --eval_bs 50 --ext_n 500 --device {DEV} --blind_decoder --out boxes/runs_fsq/proto183_ilblind_k1_s2_4060
 5.0 boxes/runs_fsq/proto183_ilseeing_k1_s2_4060/eval.json python -u -m boxes.inject169 --think_k 0 --interleave 1 --pass_index sin_gain --fast_add --seed 2 --steps 8000 --sched_scale 0.1667 --ckpt_every 1000 --auto_micro --mem_budget 5.0 --eval_bs 50 --ext_n 500 --device {DEV} --out boxes/runs_fsq/proto183_ilseeing_k1_s2_4060
+# 2026-10-10 20:37 §182 NOFADE (s182_nofade_s1, landed 3a0253c7) post-hocs for §185's comparisons: note 185-1 NORM-CAP (C from 1,000 train items), AUX-DONE + T-SHIFT (182-2), as the §185 cells' packages run on their hosts
+5.0 boxes/runs_fsq/s182_nofade_s1/eval_s185_normcap.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_nofade_s1 --normcap --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s182_nofade_s1/eval_s182_auxdone.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_nofade_s1 --auxdone --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s182_nofade_s1/eval_s182_tshift.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_nofade_s1 --tshift --bs 125 --device {DEV}
