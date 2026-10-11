@@ -12696,6 +12696,22 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - In-distribution test sizes shrink to 133 items at t = 8, so the t = 7–8 gaps are noisy.
 * **The primary deep-item segment for 187-1 / §187 stays the handle accuracy:** ≥ 0.95 in distribution, against 0.88 → 0.51 deep at t = 3–8.
 
+**Note 184-1 (2026-10-11 09:57 EDT; pre-data for s184_reweight_s2's cap read: none of s2's output has been read; Audit; a confirmatory descriptive test, no change to §184's rules). The NORM-CAP factor is fixed on s1 and tested on held-out s2.**
+* **Why:** s1's cap-level sweep (eval_normcap_sweep.json; pooled n 3..8 at K′ = 8 / 16 / 32):
+  - 0.5×: 0.913 / 0.710 / 0.437;
+  - 0.75×: 0.965 / 0.843 / 0.488;
+  - 1.0×: 0.973 / 0.918 / 0.566;
+  - 1.25×: 0.973 / 0.955 / 0.639;
+  - 1.5×: 0.974 / 0.967 / 0.714.
+  - Unlike NOFADE's (optimum 1.0×), §184's optimum is looser and still rising at 1.5×. Choosing it from s1 and calling s1 STABLE would be tuning on test data, so s1 is the fitting seed only.
+* **The selection rule (fixed now):**
+  - s1's sweep is extended to 2.0× and 3.0× (descriptive, fitting).
+  - The chosen factor f* is the one with the highest pooled K′ = 32 among those with K′ = 16 − K′ = 8 ≥ −0.02 on s1, over {0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 3.0}.
+* **The held-out read:** s2 is capped with f* × its own train-item C (median ‖S_add‖ after K = 8 over 1,000 training items).
+  - **STABLE-with-cap (s2)** holds if s2's capped K′ = 16 − K′ = 8 ≥ −0.02.
+  - Also reported: s2's capped K′ = 32, and its n 9–12 at K′ = 16, against uncapped.
+* **What it can support:** "§184 plus a train-statistic cap at a fixed factor is STABLE", evidenced by s2 alone (s1 passes by construction). It is a C6 descriptive claim. §184's HELPS / DEEP rules are untouched.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
