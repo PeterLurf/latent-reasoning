@@ -461,6 +461,13 @@ def selfdepth_fields(m, a, dev, amp, bs=100, ns=(9, 10), T=16):
             H.append(halt); FV.append(fval); AP.append(ans); AP4.append(ans4); CH.append(chain_ok)
         h, fv, ap, ap4, chn = np.concatenate(H), np.concatenate(FV), np.concatenate(AP), np.concatenate(AP4), np.concatenate(CH); tgt = np.array([it["t"] for it in its])
         keep = (fv == ap) & (h == n) & (fv >= 0); strict = keep & (ap == ap4)
+        c_i, c_ii, c_iii = (fv == ap) & (fv >= 0), h == n, ap == ap4                # Theory 2026-10-11: each filter component separately
+
+        def stats(msk):
+            return {"keep_rate": float(msk.mean()), "n_kept": int(msk.sum()), "chain_precision": float(chn[msk].mean()) if msk.any() else None,
+                    "answer_precision": float((ap == tgt)[msk].mean()) if msk.any() else None}
+        comps = {"i_answer_agree": stats(c_i), "ii_halt_at_n": stats(c_ii), "iii_kprime_agree": stats(c_iii), "i_and_iii": stats(c_i & c_iii),
+                 "base_i_and_ii": stats(c_i & c_ii), "strict_i_ii_iii": stats(c_i & c_ii & c_iii)}
         out[str(n)] = {"n_items": int(len(its)), "kprime_answer": kp, "keep_rate": float(keep.mean()), "n_kept": int(keep.sum()),
                        "chain_precision": float(chn[keep].mean()) if keep.any() else None, "answer_precision": float((ap == tgt)[keep].mean()) if keep.any() else None,
                        "all_items": {"chain_exact": float(chn.mean()), "answer_acc": float((ap == tgt).mean()), "halt_at_n": float((h == n).mean()),
@@ -468,7 +475,8 @@ def selfdepth_fields(m, a, dev, amp, bs=100, ns=(9, 10), T=16):
                                      "answer_acc_kprime_n4": float((ap4 == tgt).mean()), "answer_n2_eq_n4": float((ap == ap4).mean())},
                        "strict": {"def": "keep AND answer at K' n+2 == answer at K' n+4", "keep_rate": float(strict.mean()), "n_kept": int(strict.sum()),
                                   "chain_precision": float(chn[strict].mean()) if strict.any() else None, "answer_precision": float((ap == tgt)[strict].mean()) if strict.any() else None},
-                       "halt_hist": {str(k_): int(c_) for k_, c_ in zip(*np.unique(h, return_counts=True))}}
+                       "halt_hist": {str(k_): int(c_) for k_, c_ in zip(*np.unique(h, return_counts=True))}, "components": comps,
+                       "components_def": "i: aux bare number == answer at K' n+2; ii: halt t == n; iii: answer n+2 == answer n+4"}
         print("selfdepth n", n, {k: out[str(n)][k] for k in ("keep_rate", "chain_precision", "answer_precision")}, flush=True)
     return out
 
