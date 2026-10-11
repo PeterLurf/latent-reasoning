@@ -1,0 +1,98 @@
+{
+ "g1": {
+  "table": [
+   0.583,
+   0.583,
+   0.583,
+   0.671,
+   0.869,
+   1.156,
+   1.619,
+   2.42,
+   4.193,
+   13.214
+  ],
+  "E": [
+   2057.362,
+   2057.362,
+   2057.362,
+   1785.696,
+   1378.696,
+   1036.496,
+   740.329,
+   495.186,
+   285.811,
+   90.7
+  ],
+  "hist_equal": true
+ },
+ "g1_pass": true,
+ "g2": {
+  "log_equal": true,
+  "model_equal": true,
+  "eval_equal": true
+ },
+ "g2_pass": true,
+ "g3": {
+  "aux_ce_off": [
+   6.083843231201172,
+   null,
+   null
+  ],
+  "aux_ce_rw": [
+   3.5468802452087402,
+   null,
+   null
+  ],
+  "aux_ce_differs_step1": true,
+  "n_params_differ_after_3": 159,
+  "n_params": 162,
+  "all_finite": true,
+  "examples": [
+   "g.p.h_0_attn_c_attn_bias",
+   "g.p.h_0_attn_c_attn_weight",
+   "g.p.h_0_attn_c_proj_bias",
+   "g.p.h_0_attn_c_proj_weight",
+   "g.p.h_0_ln_1_bias"
+  ]
+ },
+ "g3_pass": true,
+ "g4": {
+  "off": {
+   "clip_rate": 1.0,
+   "grad_norm_preclip": {
+    "median": 48.713348388671875,
+    "p90": 89.3736572265625,
+    "n_steps": 3
+   },
+   "aux_reweight": false,
+   "weights": null,
+   "def": "clip_grad_norm_(..., 1.0)'s pre-clip total norm per step; clip fires when > 1.0"
+  },
+  "rw": {
+   "clip_rate": 1.0,
+   "grad_norm_preclip": {
+    "median": 48.68891525268555,
+    "p90": 69.31494979858398,
+    "n_steps": 3
+   },
+   "aux_reweight": true,
+   "weights": [
+    0.583,
+    0.583,
+    0.583,
+    0.671,
+    0.869,
+    1.156,
+    1.619,
+    2.42,
+    4.193,
+    13.214
+   ],
+   "def": "clip_grad_norm_(..., 1.0)'s pre-clip total norm per step; clip fires when > 1.0"
+  },
+  "s168s2_clip_equal": true
+ },
+ "g4_pass": true,
+ "all_pass": true
+}
