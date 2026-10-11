@@ -271,7 +271,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 181 | INTERLEAVE: k think passes before every answer token, the memory carried across tokens (MIX's timing without its schedule); arms k1 / k2 on §161's mix | **neither HIT** (both FAIL, 4×4 ≤ 0.001; the single-pass column profile; skip drops about 0; not under-trained) | closed |
 | 182 | STEP-AUX-HOLD: §175 with the aux to the end (NOFADE), + a sampled step-matched K (WINDOW), + hold targets on passes past n (HOLD); DEEP at K′ 8, STABLE (C6) K′ 16 vs 8 | registered | **open** |
 | 183 | INTERLEAVE-BLIND: §181 k1 with a blind per-token decoder ([EOT, ' =', ans_<j] + memory); tests 'per-pass signal through a view-free reader' (MIX / §175 vs every failure) | **FAIL; NOT SUPPORTED** (columns 3–7 0.182 vs 0.165). Descriptively the passes become causal (skip drops 0.88 / 0.31 / 0.36 / 0.75 at columns 1 / 2 / 7 / 8), but the inner columns stay at chance: per-pass compute binds | closed |
-| 184 | AUX-REWEIGHT: §182 NOFADE + per-pass aux weights w_t = Ē / E_t (pass 8 got 1/22 of pass 1's signal), equal signal per pass position; HELPS / HURTS / NO EFFECT vs NOFADE | slot 1 **HELPS + DEEP** (pooled 0.974 vs 0.787; n 8 = 0.935; late handle 0.97 vs 0.66; THINK-NECESSARY); s2 opened | **open** |
+| 184 | AUX-REWEIGHT: §182 NOFADE + per-pass aux weights w_t = Ē / E_t (pass 8 got 1/22 of pass 1's signal), equal signal per pass position; HELPS / HURTS / NO EFFECT vs NOFADE | **HELPS; DEEP + THINK-NECESSARY + SERIAL-NEST at 2 / 2 seeds = §170's C1 conjunction met on nested** (s1 0.974 / s2 0.9997 pooled; SERIAL-NEST 0.85 / 0.94); depth beyond n 8 count-limited | closed |
 | 185 | ADD-NORM: §182 NOFADE with the additive read normalised: DEN (φ(q)ᵀS / φ(q)ᵀz) or RMS (TransNormer's NormAttention); STABLE + NO-COST vs NOFADE (NORM-CLAMP: the unnormalised read's growth causes ~80% of overthinking) | registered | **open** |
 | 186 | INTERLEAVE-BLIND-K4: §183 with 4 passes per token, the closing test of the mult interleave line; HIT / PARTLY vs §183, else the line closes (pre-registered stop) | **FAIL / NOT** (columns 3–7 0.210 vs 0.182; within-token passes idle, cos 0.993): **the mult interleave line closes** | closed |
 | 187 | AUX-NOPASS: §184 with the aux prompt's pass token removed; does pass-token keying limit depth beyond training (C2)? DEPTH = n 9–12 at K′ = n + 2 vs §184 (0.486) and TEXT-COT (0.535) | registered | **open** |
@@ -12906,6 +12906,29 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **The consequence (not registered):**
   - POSITION-KEYED: the remedy candidate is randomised position offsets in training (Ruoss et al. 2305.16843, pending Literature's check), about $3, with no pseudo-labels.
   - CONTENT-KEYED: the training-distribution family (SELF-DEPTH, K randomised independently of n, progressive passes).
+
+**§184 result, both seeds (2026-10-11 18:30 EDT; s184_reweight_s2, b265, RTX 3090, 48k, landed 9a9f3294; score_s184). HELPS (s1), and DEEP + THINK-NECESSARY at 2 / 2 seeds. With SERIAL-NEST at 2 / 2 as well, §184's model meets §170's registered C1 conjunction on nested arithmetic. §184 closes.**
+* **s2, pooled n 3..8:** 0.094 / 0.112 / 0.639 / **0.9997** / 0.9997 / **0.995** / 0.903 / 0.701 at K′ = 0 / 1 / 4 / 8 / 12 / 16 / 24 / 32.
+  - n 3–8 at K′ = 8: 1.0 / 1.0 / 1.0 / 1.0 / 0.999 / 0.999, so **DEEP**.
+  - THINK-NECESSARY holds (K′ = 0 / 1 at chance).
+  - Handle t = 1–8: 0.986 → 1.0.
+  - clip_rate 0.62 (s1 0.98).
+* **SERIAL-NEST** (§170's donor-transplant rule: max over t of hybrid share − null ≥ 0.5):
+  - s1: **0.849** (hybrid 0.601 / 0.800 / 0.905 / 0.857 at t = 1 / 2 / 4 / 6; null 0.057);
+  - s2: **0.943** (0.725 / 0.895 / 0.973 / 0.994; null 0.050).
+  - Transplanting a donor's memory mid-chain makes the recipient produce the hybrid answer, so the memory causally carries the intermediate result.
+* **C1 (§170's registered conjunction: DEEP + THINK-NECESSARY + SERIAL-NEST):** met at 2 / 2 seeds, by a pretrained GPT-2 with a DeltaMem-R memory.
+  - Its identical-input think passes (the full problem re-shown) are trained with per-pass aux targets from text CoT at equal per-position weight.
+  - It does one reduction per pass, beyond the single pass (DIRECT's n* = 3).
+  - Audit's preconditions are in: NORM-CAP (42987250) and AUX-DONE (exact t = n to 8).
+* **Descriptive, with the seed spread stated:**
+  - n 9–12 at K′ = n + 2: s1 0.486, s2 0.665 (TEXT-COT 0.535).
+  - Uncapped K′ = 16 against K′ = 8: s1 −0.046 (not STABLE), s2 −0.005 (STABLE by §182's band).
+  - So depth beyond training and stability past K vary strongly by seed. 184-1's capped STABLE read on s2 (f* = 2.0) is still to run.
+  - PATH-INDEP answer_agree: 0.108 / 0.124.
+* **Scope:** C1 is shown within the trained depth (n ≤ 8) on one synthetic task.
+  - Depth beyond training is count-limited (187-3: COUNT-OOD).
+  - The C2 / C6 claims are not made here.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
