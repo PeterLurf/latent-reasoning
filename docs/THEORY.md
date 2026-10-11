@@ -12869,6 +12869,30 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - SELF-DEPTH is then re-assessed on §187's no-pass-token model when it lands, with the same filter and thresholds. It is not drafted on §184.
 * GO / DROP otherwise stand as registered.
 
+**187-3 count test (2026-10-11 17:47 EDT; per-item rows on all n = 9–12 test items, 1,000 per n per model; 0d57be0d, f645aeba, 5ec050bc). COUNT-OOD for both models: the main depth limit is the reduction count exceeding training (n ≤ 8), and the computation is size-keyed.**
+* **Handle accuracy per pass at matched nesting ≤ 2** (items per n: 596 / 528 / 427 / 328):
+  - §184:
+    - n 9: 0.99 0.99 0.99 0.97 0.95 0.92 0.85 0.76 0.12;
+    - n 10: 0.99 0.99 0.97 0.90 0.73 0.60 0.51 0.54 0.40 0.12;
+    - n 11: 0.99 0.98 0.86 0.65 0.51 0.47 …;
+    - n 12: 0.98 0.94 0.72 0.53 0.42 0.40 ….
+  - NOFADE:
+    - n 9: 1.00 1.00 0.97 0.94 0.90 0.84 0.81 0.55 0.25;
+    - n 10: 1.00 0.99 0.97 0.94 0.85 0.78 0.61 …;
+    - n 11: 1.00 0.99 0.95 0.87 0.73 0.55 …;
+    - n 12: 0.99 0.98 0.88 0.73 0.53 0.41 ….
+* **The pre-stated criteria are both met for both models:**
+  - monotone in n at every t = 3–6;
+  - the first t with handle < 0.80 moves earlier as n grows: §184 8 → 5 → 4 → 3, NOFADE 8 → 6 → 5 → 4.
+* **Reading:**
+  - A larger item fails earlier in its own step sequence. Its third step already depends on its total size, not only on the remaining work.
+  - This is size-keyed rather than size-free computation: Zhou 2310.16028's RASP-L conjecture, and Kuo 2606.29983's size ↔ loop correlation in looped transformers (Literature's wording).
+  - Together with 187-2 (nesting also matters, STRUCTURAL), the depth limit is mainly count-OOD with a structural component. It is not memory interference (ADD-DECAY dropped) and not norm growth (the 2× cap leaves it unchanged).
+  - **The lever is the training distribution.** Candidates, none registered:
+    - SELF-DEPTH, a self-labelled depth curriculum (precondition 187-4 running);
+    - loop counts randomised independently of n (Kuo);
+    - progressive passes (Bansal 2202.05826).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
