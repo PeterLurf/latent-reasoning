@@ -12666,6 +12666,28 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
     - the **t ≥ 9 drop relative to t = 8**: the token edge.
   - If §187 changes only the t ≥ 9 segment, the token limited the edge. If neither segment changes, the depth limit is per-step degradation (NOT-THE-LIMIT). Descriptive beside §187's DEPTH rule.
 
+**Deep items on §184 (2026-10-11 08:52 EDT; descriptive; s184_reweight_s1/eval_s187_deepaux.json (1,000 items at n 9–12) and eval_s185_normcap.json). The memory reads deep items well at first and degrades from pass 3. The NORM-CAP hurts deep items. Together these narrow the depth limit.**
+* **Handle accuracy per pass on n 9–12** (`deepaux.handle_ext`): 0.991 / 0.973 / 0.883 / 0.773 / 0.650 / 0.609 / 0.554 / 0.507 at t = 1–8, then 0.315 / 0.192 / 0.124 / 0.084 at t = 9–12.
+  - The same passes on n ≤ 8 read 0.99 → 0.955.
+  - So the decay starts at t = 3, inside the pass tokens seen in training. The t ≥ 9 drop comes on top.
+* **STEP-RECOVER** (a linear probe of v_t from the decoder read r_t):
+  - fit within the deep set: 0.906 / 0.562 / 0.394 / 0.268 / 0.214 at t = 1–5, then 0.14–0.24;
+  - fit on train (transfer): 0.872 → 0.131 by t = 8, but its fitting set shrinks from 4,000 to 583 items with t, so the within series is the cleaner one.
+* **The cap hurts deep items.** n 9–12, capped / uncapped:
+  - K′ = 8: 0.824 / 0.800, **0.374 / 0.634**, 0.129 / 0.341, 0.132 / 0.168;
+  - K′ = 16: **0.420 / 0.739**, 0.247 / 0.475, 0.146 / 0.221, 0.149 / 0.144.
+  - So deep items need S_add above the training C. The extra norm carries content there.
+  - **The cap is a within-depth C6 aid, and a recipe default would trade depth for it.** §168 step 2's DEPTH-GENERAL is read uncapped by its rule; the capped curve stays descriptive (185-1).
+* **Hypothesis (Audit; not a finding):** the never-decaying additive heads accumulate every pass's writes. On longer inputs, retrieval at pass t reads through more accumulated crosstalk (§147's interference story, now on nested).
+  - Normalising the read (§185) would not remove it. A per-head decay on the additive heads might.
+  - The t = 3–8 segment of 187-1 tests the pass-token alternative.
+
+**Note 185-3 (2026-10-11 08:52 EDT; pre-data: no §185 output has been read; descriptive prediction only, no rule change). The interference hypothesis predicts DEN and RMS will not lift depth.**
+* After §184's deep-item reads (above): if the depth limit is crosstalk accumulated in the never-decaying additive state, normalising the read leaves it in place.
+* **So 185-2's depth readout is predicted to read "no depth change"** (DEN and RMS n 9–12 at K′ = n + 2 within ±0.02 of NOFADE's 0.174).
+* A "LIFTS depth" reading would count against the interference hypothesis.
+* **Conditional follow-up, not registered here:** if 185-2 reads "no depth change" for both arms, ADD-DECAY (a learned per-head decay γ_h on the additive heads; RetNet / GLA-style, pending Literature's ID check) is drafted, with C2 and C6 readouts.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
