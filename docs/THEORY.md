@@ -12796,6 +12796,19 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - Otherwise the reading is mixed.
 * **ADD-DECAY is not drafted** until both NOFADE's rows and the count test are in.
 
+**187-2 result (2026-10-11 15:37 EDT; per-item rows on all n = 9 / 10 test items, 2,000 per model; s184 f645aeba, NOFADE 5ec050bc; computed as fixed in 187-3). STRUCTURAL by both models, so ADD-DECAY is dropped, as pre-registered.**
+* **The stratified nesting gap** (mean of the 8 per-(n, t) cell gaps, n ∈ {9, 10} × t ∈ {3, …, 6}; handle at nesting ≤ 2 minus nesting ≥ 4):
+  - §184: **+0.110**, with cells +0.066 / +0.113 / +0.145 / +0.210 / +0.082 / +0.150 / +0.100 / +0.015;
+  - NOFADE: **+0.244**, with cells +0.181 / +0.260 / +0.247 / +0.225 / +0.114 / +0.248 / +0.317 / +0.362.
+  - Both are ≥ 0.10, so the reading is STRUCTURAL. Deeper nesting fails more at matched length, and the decay has a stack-like component (cf. He 2512.02677).
+  - The nesting-≥ 4 bins hold 63 / 111 items at n 9 / 10, so the 50-item floor is met.
+* **The consequence (pre-registered):** ADD-DECAY (a learned decay on the additive heads) is dropped.
+* **Descriptive, the operator-count effect at matched shallow nesting** (≤ 2; mean of handle(n = 9) − handle(n = 10) over t = 3–6):
+  - §184: +0.158 (n 9: 0.987 / 0.970 / 0.955 / 0.924; n 10: 0.973 / 0.898 / 0.731 / 0.600);
+  - NOFADE: +0.031.
+  - So the two models fail differently. NOFADE's deep-item failures follow nesting; §184's reweight reduced the nesting effect, but its failures now follow the operator count.
+  - 187-3's count test (n = 11 / 12 rows, running) reads COUNT-OOD.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
