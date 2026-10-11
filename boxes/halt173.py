@@ -347,7 +347,6 @@ def dir_pair_fields(run, dev, amp, n_items=500, bs=125, bench=os.path.join("benc
     return out
 
 
-@torch.no_grad()
 def cap_add_state(m, S, C):
     """note 185-1: S_add rescaled to norm C when its per-item norm exceeds C (direction kept; delta heads and any z block untouched)."""
     ha = m.mem.h_add; cur = S[:, :ha].float().flatten(1).norm(dim=1)
@@ -355,6 +354,7 @@ def cap_add_state(m, S, C):
     return torch.cat([S[:, :ha] * f[:, None, None, None], S[:, ha:]], 1)
 
 
+@torch.no_grad()
 def auxdone_fields(m, a, dev, amp, n_items=1000, bs=100, cap=16, ns=(2, 4, 6, 8, 10, 12), cap_c=None):
     """note 182-2 AUX-DONE (Theory, descriptive; nested runs with §175's aux decoder): per n, n_items test items, think passes t = 1..cap from M_0 = 0.
     After each pass: the main decoder's answer, and §175's aux decoder greedy from [EOT, " Step", " t", " :"] reading M_t. The item halts at the first t
@@ -394,11 +394,11 @@ def auxdone_fields(m, a, dev, amp, n_items=1000, bs=100, cap=16, ns=(2, 4, 6, 8,
 
 
 @torch.no_grad()
-def normcap_fields(m, a, dev, amp, bs=100, run=None, kprimes=None):
+def normcap_fields(m, a, dev, amp, bs=100, run=None, kprimes=None, c_override=None):
     """note 185-1 (Theory, descriptive): inference-only NORM-CAP for a nested run. C = the median ||S_add|| after K passes over 1,000 TRAINING items
     (nested170.train_items, rng 18501, test-excluded as the run: test_set + the SERIAL pool); then acc_by_n at each K' of the run's --kprimes set
     (default {0, 1, K/2, K, 2K}) with S_add rescaled to norm C after every write when it exceeds C (direction kept; delta untouched). The uncapped
-    acc_by_n_kprime is copied from the run's eval.json."""
+    acc_by_n_kprime is copied from the run's eval.json. c_override (--normcap_c): use this C instead (inf = the UNCAPPED arm at any K' set)."""
     from contextlib import nullcontext
     from boxes.nested170 import test_set, train_items, generate, render, NUM_IDS
     ctx = (lambda: torch.autocast("cuda", dtype=amp)) if amp is not None else nullcontext
@@ -406,7 +406,7 @@ def normcap_fields(m, a, dev, amp, bs=100, run=None, kprimes=None):
     r_sp = np.random.default_rng(17300)
     for _ in range(int(a.get("serial_pool", 2200))):
         r__, _t = generate(r_sp, 8); EX.add(tuple(render(r__)))
-    tr = train_items(np.random.default_rng(18501), 1000, int(a.get("n_max_train", 8)), EX); nrm = []
+    tr = train_items(np.random.default_rng(18501), 1000, int(a.get("n_max_train", 8)), EX) if c_override is None else []; nrm = []
     for i in range(0, len(tr), bs):
         ch = tr[i:i + bs]; x, msk = m.think_inputs(ch, dev)
         with ctx():
@@ -414,7 +414,7 @@ def normcap_fields(m, a, dev, amp, bs=100, run=None, kprimes=None):
             for _ in range(K):
                 S = m.write(S, x, msk)
         nrm.append(S[:, :ha].float().flatten(1).norm(dim=1).cpu().numpy())
-    C = float(np.median(np.concatenate(nrm)))
+    C = float(np.median(np.concatenate(nrm))) if c_override is None else float(c_override)
     kps = sorted({int(v) for v in str(kprimes or a.get("kprimes") or "").split(",") if v.strip()} | {K}) if (kprimes or a.get("kprimes")) else sorted({0, 1, K // 2, K, 2 * K})   # --kprimes overrides the run's set
     T_ = np.array([it["t"] for it in TE]); N_ = np.array([it["n"] for it in TE]); capped = {}
     for kp in kps:
@@ -429,7 +429,7 @@ def normcap_fields(m, a, dev, amp, bs=100, run=None, kprimes=None):
         A_ = np.concatenate(out); capped[str(kp)] = {str(n): float((A_ == T_)[N_ == n].mean()) for n in range(1, 17)}
         print("normcap K'", kp, round(float((A_ == T_)[(N_ >= 3) & (N_ <= 8)].mean()), 4), flush=True)
     unc = (json.load(open(os.path.join(run, "eval.json"))).get("s170") or {}).get("acc_by_n_kprime") if run and os.path.exists(os.path.join(run, "eval.json")) else None
-    return {"C": C, "C_source": "median ||S_add|| after K = %d passes over 1,000 train items (nested170.train_items rng 18501, test + SERIAL pool excluded)" % K,
+    return {"C": C, "C_source": ("median ||S_add|| after K = %d passes over 1,000 train items (nested170.train_items rng 18501, test + SERIAL pool excluded)" % K) if c_override is None else "--normcap_c %s (given)" % c_override,
             "acc_by_n_kprime": capped, "acc_by_n_kprime_uncapped": unc, "kprimes": kps,
             "def": "inference-only: after every write, S_add rescaled to norm C when ||S_add|| > C (per item, direction kept; delta untouched) - note 185-1"}
 
@@ -469,6 +469,7 @@ def main():
     ap.add_argument("--auxdone", action="store_true", help="note 182-2 AUX-DONE halting (nested + §175 aux) only -> eval_s182_auxdone.json")
     ap.add_argument("--tshift", action="store_true", help="note 182-2 follow-up T-SHIFT (aux done vs real / prompt pass) only -> eval_s182_tshift.json")
     ap.add_argument("--normcap", action="store_true", help="note 185-1 inference-only NORM-CAP (nested) only -> eval_s185_normcap.json")
+    ap.add_argument("--normcap_c", default="", help="--normcap: C given instead of computed ('inf' = the uncapped arm)")
     ap.add_argument("--kprimes", default="", help="--normcap: the K' set (default: the run's --kprimes, else {0, 1, K/2, K, 2K})")
     ap.add_argument("--cap_c", default="", help="--auxdone under the 185-1 cap: C as a number or an eval_s185_normcap.json path (its normcap.C) -> eval_s182_auxdone_capped.json")
     o = ap.parse_args(); dev = o.device; t0 = time.time(); o.out = o.out if (o.out and o.out.endswith(".json")) else None   # gen_vast_job appends --out <dir>: anything but a .json path -> the default file in --run
@@ -482,7 +483,7 @@ def main():
     kind, m, a = load_model(o.run, dev); K = rule_k(a); T = 2 * K; assert K >= 1
     if o.normcap:                                                           # note 185-1 (Theory): inference-only NORM-CAP -> eval_s185_normcap.json
         assert kind == "nested", "NORM-CAP (185-1) is for nested runs"
-        r_ = {"normcap": normcap_fields(m, a, dev, amp, o.bs, o.run, o.kprimes or None), "run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
+        r_ = {"normcap": normcap_fields(m, a, dev, amp, o.bs, o.run, o.kprimes or None, float(o.normcap_c) if o.normcap_c else None), "run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
               "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)}
         json.dump(r_, open(o.out or os.path.join(o.run, "eval_s185_normcap.json"), "w", newline="\n"), indent=1); print("DONE normcap", o.run, flush=True); return
     if o.tshift:                                                            # note 182-2 follow-up (Theory): T-SHIFT -> eval_s182_tshift.json
