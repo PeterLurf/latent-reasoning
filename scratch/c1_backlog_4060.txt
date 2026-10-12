@@ -455,3 +455,5 @@
 5.0 boxes/runs_fsq/s168s2_currdirect_s1/eval_trainitems.json python -u -m boxes.prosqa168s2 --arm currdirect --eval_only --eval_train_n 1000 --seed 1 --steps 12000 --bs 64 --device {DEV} --out boxes/runs_fsq/s168s2_currdirect_s1
 # 2026-10-12 09:27 4060: §187 NOPASS (b266 landed) local post-hocs, descriptive: halt, 187-3 rows n9-12, selfdepth_pre
 5.0 boxes/runs_fsq/s187_nopass_s1/eval_s187_deepaux_items_n9_12.json python -u -m boxes.halt173 --run boxes/runs_fsq/s187_nopass_s1 --deepaux --deepaux_items_only --items_n 9,10,11,12 --items_tmax 14 --items_file eval_s187_deepaux_items_n9_12.json --bs 125 --device {DEV}
+# 2026-10-12 11:51 4060: §189 RMS s2 (b270 landed) 187-3 rows n9-12 first (Theory: §189 SIZE-FREE-EARLY expectation)
+5.0 boxes/runs_fsq/s185_rms_s2/eval_s187_deepaux_items_n9_12.json python -u -m boxes.halt173 --run boxes/runs_fsq/s185_rms_s2 --deepaux --deepaux_items_only --items_n 9,10,11,12 --items_tmax 14 --items_file eval_s187_deepaux_items_n9_12.json --bs 125 --device {DEV}

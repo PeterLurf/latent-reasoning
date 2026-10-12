@@ -554,3 +554,6 @@
 5.0 boxes/runs_fsq/s187_nopass_s1/eval_s187_sizeprobe.json python -u -m boxes.halt173 --run boxes/runs_fsq/s187_nopass_s1 --sizeprobe --bs 125 --device {DEV}
 5.0 boxes/runs_fsq/s187_nopass_s1/eval_s187_posoffset_keep0.json python -u -m boxes.halt173 --run boxes/runs_fsq/s187_nopass_s1 --posoffset_keep0 --bs 125 --device {DEV}
 5.0 boxes/runs_fsq/s187_nopass_s1/eval_s187_readclamp_padfree.json python -u -m boxes.halt173 --run boxes/runs_fsq/s187_nopass_s1 --readclamp_padfree --bs 125 --device {DEV}
+# 2026-10-12 11:51 3070: §189 RMS s2 selfdepth_pre + sizeprobe (Theory)
+5.0 boxes/runs_fsq/s185_rms_s2/eval_s187_selfdepth_pre.json python -u -m boxes.halt173 --run boxes/runs_fsq/s185_rms_s2 --selfdepth --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s185_rms_s2/eval_s187_sizeprobe.json python -u -m boxes.halt173 --run boxes/runs_fsq/s185_rms_s2 --sizeprobe --bs 125 --device {DEV}
