@@ -13494,6 +13494,12 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - That bears on whether §190 (RMS × NOPASS) adds anything over §187.
 * The C6 stability descriptive (STABLE to 4× K) is likewise a single-seed fact.
 
+**§187, prior (2026-10-12 09:31 EDT; Literature 82da54cd, docs/LIT_S187_NOPASS_2026-10-12.md).** No direct ablation of index-free intermediate supervision exists, so the result is new.
+* It is consistent with Liang 2609.33144 (a learned progress cue degrades past training depth), Bansal 2202.05826 (index-free progressive passes) and Huginn 2502.05171 (no step index; recurrence saturates rather than collapsing).
+* Index-conditioned designs report no count extrapolation (UT timestep embeddings, depth-wise LoRA, SIM-CoT's "Step k" prompt).
+* **Chen 2603.21676 is not in conflict.** Its "per-step" loss demands the final answer at every step, which forces shortcuts. §175 / §184 supervise each step's own reachable intermediate.
+* So there are two distinct failure modes: premature final targets (Chen), and index-conditioned targets, i.e. counter-driven computation (§187, Liang).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
