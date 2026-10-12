@@ -275,6 +275,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 185 | ADD-NORM: §182 NOFADE with the additive read normalised: DEN (φ(q)ᵀS / φ(q)ᵀz) or RMS (TransNormer's NormAttention); STABLE + NO-COST vs NOFADE (NORM-CLAMP: the unnormalised read's growth causes ~80% of overthinking) | registered | **open** |
 | 186 | INTERLEAVE-BLIND-K4: §183 with 4 passes per token, the closing test of the mult interleave line; HIT / PARTLY vs §183, else the line closes (pre-registered stop) | **FAIL / NOT** (columns 3–7 0.210 vs 0.182; within-token passes idle, cos 0.993): **the mult interleave line closes** | closed |
 | 187 | AUX-NOPASS: §184 with the aux prompt's pass token removed; does pass-token keying limit depth beyond training (C2)? DEPTH = n 9–12 at K′ = n + 2 vs §184 (0.486) and TEXT-COT (0.535) | registered | **open** |
+| 188 | REWEIGHT × WINDOW: §182 WINDOW + §184's --aux_reweight in one cell; JOINT = DEEP + THINK-NECESSARY + STABLE (K′16); a C6 claim needs LONG-STABLE (K′24 ≥ K′8 − 0.05) at 2 / 2 | registered | **open** |
 
 ## Live sections
 
@@ -13007,6 +13008,46 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **score_s173_2.py** now asserts each run's own think_k (8 / 8 / 12) and cap = 2K.
   - Before this fix, a WINDOW file would have crashed the scorer.
   - Re-checked with a WINDOW-shaped fixture.
+
+## 188. REWEIGHT × WINDOW: can one recipe be DEEP (C1) and STABLE (C6)? (Theory's proposal; Audit reviewed and approved the cost, 2026-10-11; pre-registered 2026-10-11 20:59 EDT, after Audit's review and Literature's check, before any implementation or run)
+
+**Why.**
+* **§184 (AUX-REWEIGHT)** is DEEP + THINK-NECESSARY + SERIAL-NEST at 2 / 2 seeds. It is STABLE by §182's letter (pooled K′16 ≥ K′8 − 0.02) only at s2 (1.000 → 0.995). s1 reads 0.974 → 0.928, and K′24 is 0.566.
+* **§182 WINDOW** is STABLE at s1: 0.900 → 0.899, and 0.859 at K′24, its own 2× point. It is not DEEP (min n 3–8 at K′8 is 0.753); s2 is running (b268).
+* Each lever supplies what the other lacks: the reweight gives depth, the sampled step-matched K gives a flat K′ curve. The question is whether they compose.
+* **Not a depth-beyond-training lever.** WINDOW's K = n + U{1..4} is still size-keyed, and 187-3's COUNT-OOD reading says that is what limits n > 8. DEPTH is descriptive here.
+
+**Design.** WINDOW exactly (s182_window_s1's args: NOFADE recipe, `--k_window 1,4 --kmatch_impl masked`, think_k 12, micro 2, fast_add, seed 1, RTX 3090, uncached), **plus `--aux_reweight`**. Dir `s188_rwwin_s1`.
+* **Weights:** AUX_W unchanged (§184's w_t = Ē / E_t). The aux targets are passes t ≤ n only (no hold), and every window item runs K ≥ n + 1 passes, so E_t is NOFADE's.
+* **Code (Experiments):** today `kmatch_aux_loss` (the window path) ignores `--aux_reweight`. Change it to apply AUX_W[t − 1] to each real-step CE inside §175's per-item mean, as `loss_items` does. Reject `--aux_reweight` with `--aux_hold`.
+
+**Rules (fixed now; `theory/score_s188.py`; comparators s184_reweight_s1 and s182_window_s1, from their eval.json).**
+* **DEEP:** ≥ 0.90 at every n 3..8 at K′ = 8. **THINK-NECESSARY:** 170-4 removal (K′ 0 / 1). **STABLE:** pooled (n 3..8) K′16 ≥ K′8 − 0.02 (§182's letter).
+* **Readings:**
+  - **JOINT:** DEEP, THINK-NECESSARY and STABLE. One recipe meets C1 within depth and is flat to K′16. Opens s2.
+  - **DEEP-ONLY:** DEEP, not STABLE. The window's stability does not survive the reweight.
+  - **STABLE-ONLY:** STABLE, not DEEP. The window costs the reweight's depth.
+  - **NEITHER.**
+* **LONG-STABLE** (Audit: K′16 is only 1.33× a window model's maximum trained K, so its 2× point is K′24): pooled K′24 ≥ K′8 − 0.05. That is WINDOW s1 −0.041, §184 s1 −0.408, §184 s2 −0.097. K′32 is reported.
+* **The claim:** any §188 C6 wording (2 / 2) needs **JOINT and LONG-STABLE in both seeds.** JOINT's definition stays §182's letter, for comparability.
+* **Descriptive:**
+  - DEPTH (n 9–12 at K′ = n + 2) vs §184 s1 0.486 and WINDOW s1 0.465.
+  - Clip rate vs §184 s1 0.984 / s2 0.622. Near 1.0 would mean the reweight may be partly clipped away.
+  - 173-2's halt and NORM-CAP on the result.
+  - s1 is §184's weaker seed, so DEEP here is the harder test.
+  - Per-pass step readout to t = 24 (deepaux handle; Literature: drift shows per pass before the answer flips).
+* **Prior (Literature 9055c756):** the combination is new.
+  - Risk: per-step targets keyed on the pass index can hurt iteration extrapolation (Chen 2603.21676, scoped to graphs from scratch; Liang 2609.33144's progress cue; Bansal 2202.05826).
+  - §187 AUX-NOPASS tests that keying separately.
+  - A K-independent window (K not tied to n; Kuo 2606.29983) is a second lever. It is held for the COUNT-OOD section after 187-5, not bundled here.
+
+**Placement.** One cloud cell at WINDOW's cost (27.2 h on a 3090, about $4–7), within Audit's line.
+* It queues at the next free slot after b268 (WINDOW s2). If WINDOW s2 is not STABLE, Theory re-decides before launch.
+* **Gates:**
+  - (a) On a fixed batch, the window path's reweighted aux equals `loss_items`' reweighted aux (fp64, ≤ 1e-12). Passes t ≤ n are identical in both paths, since every item runs ≥ n + 1 passes.
+  - (b) Flags-off: the WINDOW path without `--aux_reweight` is bitwise equal to the current code.
+  - (c) gradflow; (d) mem check at micro 2; (e) Audit's diff review.
+  - (f) A run tripwire (Audit): log the mean w over the kept aux terms at step 1 on the window path, and assert it is not 1.0 under `--aux_reweight`.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
