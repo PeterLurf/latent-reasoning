@@ -13512,6 +13512,24 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - On ProsQA both arms are expected to memorise (168-16 / 168-17).
 * **(3) §188's "Risk" line** credited Chen with the risk that pass-index-keyed targets hurt extrapolation. That risk is Liang 2609.33144's (a progress cue), shown here by §187. Chen's failure mode is premature final targets.
 
+**Note 187-9 (2026-10-12 09:36 EDT; descriptive; s187_nopass_s1's 187-3 rows, 4060 bf16, 7ccab663; Audit's pre-check reproduced exactly). NOPASS removes the token edge but not size-keying. Its step readout is U-shaped, keyed on remaining work. RMS and NOPASS fix complementary failures.**
+* **Mean handle at t 3–6, nesting ≤ 2, n 9 / 10 / 11 / 12:** 0.901 / 0.705 / 0.561 / 0.440, onsets 10 (none) / 4 / 3 / 3.
+  - §184 s1: 0.958 / 0.800 / 0.623 / 0.517, onsets 8 / 5 / 4 / 3.
+  - RMS s1: 0.985 / 0.960 / 0.950 / 0.953, onsets 8 / 7 / 7 / 7.
+* **By pass:**
+  - n 9: … 0.83 / 0.88 / **0.98** at t 7–9;
+  - n 10: 0.99 / 0.96 / 0.84 / 0.72 / 0.66 / 0.60 / 0.58 / 0.55 / **0.87 / 0.88**;
+  - n 12: 0.99 / 0.80 / 0.48 / … / 0.24 at t 8, then 0.29 / 0.38 / 0.26 / 0.17.
+  - The final steps recover. There is no fixed-t onset and no collapse at t = 9.
+* **Reading:**
+  - (i) **187-6a's partial read leans to the token account:** without the token there is no fixed-t edge.
+  - (ii) Without the token, the readout keys on **remaining work**. It fails while the remaining work at pass t exceeds anything seen at that pass in training (n 12 at t 3 has 9 left; trained at most 5), and recovers once it falls back into range.
+  - That is the token × remaining-work account seen from the other side. The early steps are slightly more size-keyed than §184's.
+  - (iii) **The failures are complementary:**
+    - RMS removes the magnitude size cue (early steps size-free) but keeps a token edge at t ≈ 7;
+    - NOPASS removes the token edge (the depth gain at n 9–10) but keeps the remaining-work / size keying early.
+  - **§190 (RMS × NOPASS) composes them.** The prediction (pre-stated now, before §190's registration or any run): early steps size-free and no fixed-t edge, i.e. the first candidate for a flat n 9–12 handle curve.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
