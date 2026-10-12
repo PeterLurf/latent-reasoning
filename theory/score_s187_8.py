@@ -6,7 +6,8 @@ File <run>/eval_s187_readclamp.json (one process; both arms on the same items / 
 187-3's computation: mean handle over t 3..6 at nesting <= 2 per n; onset = first t with handle < 0.80 (T + 1 if none).
 CONTROL = |indist handle_mean| and |k8_pooled| changes each <= 0.03, else INCONCLUSIVE; BINDING = >= 5% of n 10-12 items clamped at t 3-6, else NOT-BINDING;
 NORM-CHANNEL = clamped n12 >= clamped n9 - 0.05 and clamped onsets n 10-12 within one pass; NOT-NORM = |clamped n12 - unclamped n12| < 0.05; else partial.
-A label needs both §184 seeds to agree.
+A label needs both §184 seeds to agree. 187-8a: a 'rescaled' arm (every read to the n <= 8 mean norm) is read only if the clamp is NOT-BINDING in both seeds;
+its own CONTROL applies (INCONCLUSIVE = uninformative).
     python theory/score_s187_8.py
 """
 import json
@@ -30,14 +31,17 @@ def table(rows):
     return out
 
 
-def model(d):
+def model(d, arm="clamped"):
     p = os.path.join(R, d, "eval_s187_readclamp.json")
     if not os.path.exists(p):
         return {"status": "open"}
-    x = json.load(open(p)); u, c = table(x["unclamped"]["items"]), table(x["clamped"]["items"])
-    iu, ic = x["unclamped"]["indist"], x["clamped"]["indist"]
+    x = json.load(open(p))
+    if arm not in x:
+        return {"status": "no %s arm" % arm}
+    u, c = table(x["unclamped"]["items"]), table(x[arm]["items"])
+    iu, ic = x["unclamped"]["indist"], x[arm]["indist"]
     ctrl = abs(ic["handle_mean"] - iu["handle_mean"]) <= 0.03 + EPS and abs(ic["k8_pooled"] - iu["k8_pooled"]) <= 0.03 + EPS
-    deep = [r for r in x["clamped"]["items"] if r["n"] >= 10]; bind = sum(bool(r.get("clamped_t3_6")) for r in deep) / max(1, len(deep))
+    deep = [r for r in x[arm]["items"] if r["n"] >= 10]; bind = 1.0 if arm == "rescaled" else sum(bool(r.get("clamped_t3_6")) for r in deep) / max(1, len(deep))   # 187-8a: rescale always binds
     ons = [c[n]["onset"] for n in (10, 11, 12)]
     if not ctrl:
         lab = "INCONCLUSIVE"
@@ -62,6 +66,10 @@ def main():
             "%s: t3-6 n9..12 unclamped %s -> clamped %s, onsets %s -> %s, binding %.2f, control %s" % (
                 d[-2:], [round(res[d]["unclamped"][n]["mean_t3_6"], 3) for n in (9, 10, 11, 12)], [round(res[d]["clamped"][n]["mean_t3_6"], 3) for n in (9, 10, 11, 12)],
                 [res[d]["unclamped"][n]["onset"] for n in (9, 10, 11, 12)], [res[d]["clamped"][n]["onset"] for n in (9, 10, 11, 12)], res[d]["binding_frac"], res[d]["control"]) for d in MODELS)
+    if all(res[d].get("label") == "NOT-BINDING" for d in MODELS):                # 187-8a: the RESCALE arm is read only then
+        rr = {d: model(d, "rescaled") for d in MODELS}; res["rescaled"] = rr
+        lr = [rr[d].get("label") for d in MODELS]
+        rd += " | RESCALE (187-8a): " + ((lr[0] if lr[0] == lr[1] else "seeds disagree (%s / %s)" % tuple(lr)) if all(rr[d]["status"] == "done" for d in MODELS) else "missing")
     res["reading"] = rd; print("READING:", rd)
     json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s187_8.json"), "w", newline=chr(10)), indent=1, default=str)
 

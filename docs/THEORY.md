@@ -13299,6 +13299,14 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - DEPTH (n 9–12 at K′ = n + 2) clamped vs unclamped.
 * **Output:** `<run>/eval_s187_readclamp.json`, on the 3070, about 10–20 min per model. Reader: `theory/score_s187_8.py`.
 
+**Amendment 187-8a (2026-10-12 01:16 EDT; before any measurement; Audit). A RESCALE arm, read only if the clamp is NOT-BINDING.**
+* **Why:** if deep items' read norms at t = 3–6 mostly sit inside the n ≤ 8 p99 (187-7's norm signal is graded), the clamp barely touches them, and a within-range norm code goes untested.
+* **The arm (same process, same items):** every token's per-head additive read is rescaled to the n ≤ 8 mean per-token norm at its (path, head, k). Direction is unchanged; the delta heads are untouched. This is RMS-like at inference.
+* **Read only if the clamp reads NOT-BINDING** (in both seeds).
+  - It has its own CONTROL: n 3–8 handle and K′8 answer each within 0.03 of unclamped. If that breaks, the arm is uninformative.
+  - Its labels are the clamp's (NORM-CHANNEL / NOT-NORM / partial).
+* **Reported in advance of the labels:** the share of n 10–12 reads above the p99 reference at each t. It shows which branch applies.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
