@@ -13530,6 +13530,23 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
     - NOPASS removes the token edge (the depth gain at n 9–10) but keeps the remaining-work / size keying early.
   - **§190 (RMS × NOPASS) composes them.** The prediction (pre-stated now, before §190's registration or any run): early steps size-free and no fixed-t edge, i.e. the first candidate for a flat n 9–12 handle curve.
 
+**187-4 on §187 s1 (2026-10-12 09:56 EDT; s187_nopass_s1/eval_s187_selfdepth_pre.json, RTX 2070 fp32; Audit's pre-check reproduced). BLOCKED-BY-TOKEN-EDGE by the letter. In substance §187 has no pass token, so the t = 8 halt shows a pass counter carried by the state itself.**
+* **Halts:**
+  - n 9: t 7 / 8 / 9 = 7 / **991** / 2 (halted-only mean 8.00, no-halt 0);
+  - n 10: 4 / **922** / 74 (8.07).
+* **Keep:** base keep 0.002 / 0.0. chain_precision is 0 by construction once done fires at t = 8.
+* **Reading:** the label's name misattributes the cause here.
+  - The likely carrier is the additive read's magnitude, which grows with passes and carries size / count in non-RMS models (187-7 / 187-8).
+  - RMS s1 (token present, magnitude removed) fired only at t = 8 or never (173-4).
+* **Descriptive (not a reading):** the answer-only filter (i ∧ iii) at n 9 keeps 0.986 at answer precision **0.984**, above 0.95. At n 10 it is 0.891 (keep 0.862).
+  - A one-round, answer-level self-labelled step at n = 9 clears the precision bar.
+  - 187-4's registered route requires chain precision.
+* **§190's prediction (pre-stated now, before its registration; Audit):** with both the token and the magnitude counter removed, AUX-DONE should track n. On n = 9 / 10:
+  - **DONE-TRACKS-N:** ≥ 50% of items halt, the halted-only mean at n 9 ≥ 8.5, and < 50% of all items halt at t = 8;
+  - **DONE-PINNED:** ≥ 50% of all items halt at t = 8 (a third counter exists);
+  - **DONE-SILENT:** < 50% of items halt (uninformative about tracking).
+  - The halted-only mean and no-halt share are reported for every model.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
