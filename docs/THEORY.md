@@ -13551,6 +13551,21 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * NOPASS keeps the magnitude channel, consistent with its size-keyed early steps (187-9) and its t = 8 "done" halt (the state counter).
 * §190 removes this channel as well as the token.
 
+**Note 187-10 (2026-10-12 11:30 EDT; descriptive; §187 s1's local post-hocs, c797fc5e). On NOPASS, rescaling the read to per-pass in-distribution norms makes the early steps size-free, but a fixed t = 7 onset reappears without any token. The fixed-t onset needs a pass counter, from either source. Halting is still PREMATURE.**
+* **READ-CLAMP / RESCALE on s187_nopass_s1** (pad-free references, 3070; t 3–6 handle at nesting ≤ 2, n 9–12, onsets):
+  - unclamped: 0.902 / 0.703 / 0.563 / 0.439 (10 / 4 / 3 / 3);
+  - clamp: 0.903 / 0.716 / 0.607 / 0.535 (10 / 4 / 3 / 3);
+  - **rescale: 0.937 / 0.907 / 0.924 / 0.904 (10 / 7 / 7 / 7).** In-distribution handle and K′8 change by ≤ 0.002; DEPTH 0.625 → 0.605.
+* **Reading:**
+  - The rescale targets each pass's own n ≤ 8 mean norm. It removes size from the magnitude but keeps the pass count in it.
+  - The result is RMS-like early steps (size-free) **with a fixed onset at t = 7, and no token.** Under RMS (constant norm, so no magnitude counter) the t ≈ 7 onset came with the token.
+  - So the fixed-t onset needs a pass counter, either the token or per-pass magnitude, crossed with remaining work.
+  - **§190 (RMS × NOPASS) is the only arm with neither counter.** That sharpens its pre-stated prediction (187-9): no fixed-t onset, i.e. FLAT.
+* **Halting on NOPASS (2070 fp32):**
+  - n 10: answer2 0.317 and MOVED2 0.404, against 0.855 at K′ = n + 2. PREMATURE.
+  - The answer jumps at t = 8 at n 10 (the edge, as for §184; RMS jumped at n − 1).
+  - C5 stays parked.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
