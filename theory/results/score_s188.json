@@ -1,0 +1,52 @@
+{
+ "comparators": {
+  "s184": {
+   "status": "done",
+   "pooled": {
+    "0": 0.09816666666666667,
+    "1": 0.10516666666666667,
+    "8": 0.9736666666666666,
+    "16": 0.9285,
+    "24": 0.566,
+    "32": 0.3451666666666667
+   },
+   "min_k8_3_8": 0.935,
+   "deep": true,
+   "think_necessary": true,
+   "stable": false,
+   "long_stable": false,
+   "depth_9_12_n2": 0.48625,
+   "clip_rate": 0.9837291666666667,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "window": {
+   "status": "done",
+   "pooled": {
+    "0": 0.1025,
+    "1": 0.10833333333333334,
+    "8": 0.9,
+    "16": 0.8993333333333333,
+    "24": 0.8591666666666667,
+    "32": 0.7388333333333333
+   },
+   "min_k8_3_8": 0.753,
+   "deep": false,
+   "think_necessary": true,
+   "stable": true,
+   "long_stable": true,
+   "depth_9_12_n2": 0.46549999999999997,
+   "clip_rate": null,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  }
+ },
+ "runs": {
+  "1": {
+   "status": "open"
+  },
+  "2": {
+   "status": "open"
+  }
+ },
+ "reading": "pending (s188 s1 open)",
+ "errors": []
+}
