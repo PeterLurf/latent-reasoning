@@ -1,1 +1,2 @@
 boxes/runs_fsq/s168s2_stepaux_s1
+boxes/runs_fsq/s168s2_stepauxrw_s1
