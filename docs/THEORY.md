@@ -13122,6 +13122,27 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 **Placement.** One cell at §185 RMS's cost (42.5k s on a 3090, about $2.5–3.5), in the free fleet slot (fleet 4 → 5). Post-hocs: dir177 / auxdone / tshift on host, and the 187-3 deepaux rows locally.
 * Compositions (RMS × reweight, RMS × WINDOW) wait for this reading and are not registered here.
 
+**Note 173-3 (2026-10-11 23:27 EDT; s184 s1's halt file read; s184 s2 and WINDOW s1 halt files do not exist yet; descriptive, eval-only). The answer-settling halt is PREMATURE on §184 s1. A MOVED2 rule is tested on held-out models.**
+* **s184 s1 (3070, 103 s): answer2 is PREMATURE.**
+  - n 10: 0.112 at the halt vs 0.641 at K′ = n + 2, mean halt 2.51.
+  - n 12: 0.115 vs 0.161, mean halt 2.62.
+  - At n = 8 it halts at 2.67 passes with 0.138 accuracy (fixed K: 0.935).
+  - The memory-change rules (read / delta / full, 0.01) never fire (mean halt = cap 16).
+* **The mechanism (acc_by_t):** before the computation completes, the decoder returns a stable default answer (accuracy ≈ 0.1 for t < n − 1), so "unchanged for 3 passes" fires on the default.
+  - The answer then jumps to correct at t ≈ n − 1 (n = 4 / 6 / 8: 0.97 / 0.95 / 0.91 at t = 3 / 5 / 7). For n = 10 the jump is at t = 8 (0.63), the training edge.
+  - So, as on §175, answer stability before completion is not a completion signal.
+* **The MOVED2 rule (fixed now):** h = the first t ≥ 2 with a(t) = a(t − 1) = a(t − 2) **and a(t) ≠ a(0)**, where a(0) is the empty-memory answer; cap 2K.
+  - The settled answer must have moved off the default. Items whose truth equals a(0) never fire and are capped (they are correct anyway); frac_capped is reported.
+* **Design vs held-out data:** s184 s1 is design data (MOVED2 came from its curve) and is reported only. **The reading is on held-out s184 s2**, with s182_window_s1 beside it.
+* **Readouts (173-2 / 173-2a's thresholds; n = 10 and 12 vs the same file's acc_by_t[n][n + 2]):**
+  - **SIZE-FREE HALT:** within 0.03 at both n and mean halt ≥ n − 1.
+  - **PREMATURE:** ≥ 0.05 below at either n.
+  - Otherwise mixed.
+* **Descriptive:**
+  - At n 2..8, MOVED2 accuracy vs fixed K = 8, and its mean halt (§173's HALT-EQUAL form: ≥ fixed − 0.01 with mean h < K).
+  - Mean halt by n.
+* **Code (Experiments):** add "moved2" to halt173's halts(). All three halt files are re-run (about 100 s each); the existing files are kept as `*.answer2only.json`.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
