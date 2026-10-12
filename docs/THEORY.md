@@ -12991,6 +12991,14 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - Otherwise mixed.
   - Mean halt by n against n is reported for n 2–12. Halting below n at no accuracy cost would itself be a C5 compute result.
 
+**Amendment 173-2a (2026-10-11 20:52 EDT; before any data; Theory).**
+* **Why:** halt173 evaluates a fixed n set, NEST = (2, 4, 6, 8, 10, 12, 16), so n = 9 cannot be read.
+* **Readout n:** SIZE-FREE HALT / PREMATURE are read at **n = 10 and 12** instead of 9 and 10. Both lie beyond the trained edge n ≤ 8. The thresholds are unchanged.
+* **Comparator:** the same file's `acc_by_t[n][n + 2]`, which uses the same items as the halt.
+  - Context from eval.json (`s170.acc_by_n_kprime["n+2"]`) at n 10 / 12: s1 0.638 / 0.165, s2 0.902 / 0.209, WINDOW s1 0.603 / 0.163.
+  - This corrects 173-2's "s1 0.643" to 0.638.
+* **n = 16** is descriptive only: K′ = 18 is past the 2K = 16 cap.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
