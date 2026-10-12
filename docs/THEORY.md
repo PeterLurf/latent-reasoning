@@ -276,7 +276,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 186 | INTERLEAVE-BLIND-K4: §183 with 4 passes per token, the closing test of the mult interleave line; HIT / PARTLY vs §183, else the line closes (pre-registered stop) | **FAIL / NOT** (columns 3–7 0.210 vs 0.182; within-token passes idle, cos 0.993): **the mult interleave line closes** | closed |
 | 187 | AUX-NOPASS: §184 with the aux prompt's pass token removed; does pass-token keying limit depth beyond training (C2)? DEPTH = n 9–12 at K′ = n + 2 vs §184 (0.486) and TEXT-COT (0.535) | registered | **s1 TOKEN-WAS-THE-LIMIT (depth 0.623 vs 0.486), DEEP; descriptively STABLE to 4× K (0.942 at K′32); s2 running** |
 | 188 | REWEIGHT × WINDOW: §182 WINDOW + §184's --aux_reweight in one cell; JOINT = DEEP + THINK-NECESSARY + STABLE (K′16); a C6 claim needs LONG-STABLE (K′24 ≥ K′8 − 0.05) at 2 / 2 | registered | **open** |
-| 189 | RMS-REP: §185 RMS at seed 2 (descriptive replication); SUBSTITUTE = DEEP + THINK-NECESSARY + depth n 9–12 ≥ §184 s2 − 0.05 / DEEP-ONLY / NOT REPLICATED | registered | **open** |
+| 189 | RMS-REP: §185 RMS at seed 2 (descriptive replication); SUBSTITUTE = DEEP + THINK-NECESSARY + depth n 9–12 ≥ §184 s2 − 0.05 / DEEP-ONLY / NOT REPLICATED | registered | **closed: SUBSTITUTE (s2 DEEP, depth 0.662 vs §184 s2 0.665; two-seed 0.625 vs 0.576)** |
 
 ## Live sections
 
@@ -13565,6 +13565,15 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - n 10: answer2 0.317 and MOVED2 0.404, against 0.855 at K′ = n + 2. PREMATURE.
   - The answer jumps at t = 8 at n 10 (the edge, as for §184; RMS jumped at n − 1).
   - C5 stays parked.
+
+**§189 result (2026-10-12 11:51 EDT; s185_rms_s2, b270, RTX 3090, 48k, 0 non-finite, 985d310c; score_s189). SUBSTITUTE: the RMS-normalised read alone matches §184's aux reweight on C1 and depth at 2 / 2 seeds.**
+* **s2:**
+  - n 3–8 at K′ 8 reads 1.0 / 1.0 / 1.0 / 1.0 / 0.997 / 0.996 (DEEP). THINK-NECESSARY holds. The handle is 1.0 at every t 1–8.
+  - **DEPTH** (n 9–12 at K′ = n + 2) **0.662** = 0.983 / 0.881 / 0.548 / 0.236, against same-seed §184 s2's 0.665 (bar 0.615).
+* **Two-seed depth:** RMS 0.625 vs §184 0.576. Seed pairs (RMS − §184): s1 +0.101, s2 −0.003.
+* **Descriptive (§182's letter):** pooled K′ 8 / 16 / 24 / 32 reads 0.9988 / 0.9875 / 0.871 / 0.709. s2 is **STABLE** (−0.011); s1 was not (−0.065).
+* **The SIZE-FREE-EARLY expectation (187-6, pre-stated)** is read from s2's 187-3 rows, landing now.
+* **Consequence:** §190 (RMS × NOPASS)'s precondition (RMS replicates) is met. It registers now.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
