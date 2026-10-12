@@ -13307,6 +13307,20 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - Its labels are the clamp's (NORM-CHANNEL / NOT-NORM / partial).
 * **Reported in advance of the labels:** the share of n 10–12 reads above the p99 reference at each t. It shows which branch applies.
 
+**187-5 result (2026-10-12 01:21 EDT; KEEP-SINK offsets per 187-5a; s184_reweight_s1 on CPU fp32, s182_nofade_s1 and s184_reweight_s2 on the 3070 bf16. Each model's offsets run on one device, and labels are within-model; theory/score_s187_5.py). CONTROL-BROKEN in both registered models, so the test is uninformative about position-keying, as pre-registered. 187-5 closes.**
+* **n 3–5 pooled answer at K′ = n + 2, off 0 → 3 → 6 → 9:**
+  - §184 s1: 0.989 → 0.696 → 0.302 → 0.179;
+  - NOFADE: 0.938 → 0.870 → 0.200 → 0.136;
+  - §184 s2 (descriptive): 1.0 → 0.972 → 0.594 → 0.227.
+  - Even the easy items collapse, so the offset itself is out of distribution.
+* **The handle** (the aux path is unshifted) falls to about 0.05–0.18 from t = 1 at off ≥ 3 in every model.
+  - The memory written under shifted question positions is unreadable to the aux decoder, so the writes are entangled with absolute positions.
+  - Oddly, §184 s2 at off 3 keeps its answer (0.93–0.98) while its early handle is at chance.
+* **What does answer the question:** 187-6.
+  - RMS receives exactly the same absolute positions as §184, yet its early steps are size-free.
+  - So absolute position alone is not what forces size-keying.
+  - **The randomised-position-offset remedy (Ruoss 2305.16843) is deprioritised.** The read's form (187-7 / 187-8) is the live line.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
