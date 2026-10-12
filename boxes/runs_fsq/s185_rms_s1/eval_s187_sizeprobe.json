@@ -1,0 +1,45 @@
+{
+ "by_t": {
+  "2": {
+   "full": 0.8799999952316284,
+   "norm": 0.10733333230018616,
+   "dir": 0.8799999952316284,
+   "full_adddel": 0.8726666569709778,
+   "norm_pre": 0.6106666326522827,
+   "rms_norm_rel_spread_max": 3.3293656542809913e-07,
+   "n_fit": 1500,
+   "n_test": 1500,
+   "norm_cv_mean": 1.114311544370139e-05
+  },
+  "4": {
+   "full": 0.8953333497047424,
+   "norm": 0.10599999874830246,
+   "dir": 0.8966666460037231,
+   "full_adddel": 0.8759999871253967,
+   "norm_pre": 0.5713333487510681,
+   "rms_norm_rel_spread_max": 3.3293656542809913e-07,
+   "n_fit": 1500,
+   "n_test": 1500,
+   "norm_cv_mean": 1.114232509280555e-05
+  },
+  "6": {
+   "full": 0.8939999938011169,
+   "norm": 0.09666666388511658,
+   "dir": 0.8933333158493042,
+   "full_adddel": 0.890666663646698,
+   "norm_pre": 0.5386666655540466,
+   "rms_norm_rel_spread_max": 3.74525967572481e-07,
+   "n_fit": 1500,
+   "n_test": 1500,
+   "norm_cv_mean": 1.114325914386427e-05
+  }
+ },
+ "chance": 0.1,
+ "per_n": 300,
+ "run": "boxes/runs_fsq/s185_rms_s1",
+ "kind": "nested",
+ "eval_dtype": "torch.bfloat16",
+ "gpu": "NVIDIA GeForce RTX 3070",
+ "sec": 75,
+ "def": "test n 3..12, nesting <= 2, first per_n per n, half fit / half test per n; read at the main decoder's ' =' after t passes from 0; logreg n_cls 10 (labels n-3) on full = g_add read_add (h_add heads), norm = per-head norms, dir = per-head unit vectors, full_adddel = add || delta; norm_cv_mean = mean over heads of the test-set coefficient of variation of the per-head norm"
+}
