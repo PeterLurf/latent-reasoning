@@ -1,0 +1,60 @@
+{
+ "s1": {
+  "cell": {
+   "status": "open"
+  },
+  "comp": {
+   "status": "done",
+   "pooled_k8": 0.9981666666666666,
+   "depth_9_12_n2": 0.587,
+   "by_n_n2": {
+    "3": 1.0,
+    "4": 1.0,
+    "5": 0.999,
+    "6": 1.0,
+    "7": 0.996,
+    "8": 0.991,
+    "9": 0.963,
+    "10": 0.751,
+    "11": 0.458,
+    "12": 0.176
+   },
+   "deep": true,
+   "think_necessary": true,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "indist_t7_8": 0.990404025628273,
+   "late": 0.6481861440128133,
+   "edge": 0.10504521135268836
+  }
+ },
+ "s2": {
+  "cell": {
+   "status": "open"
+  },
+  "comp": {
+   "status": "done",
+   "pooled_k8": 0.9988333333333334,
+   "depth_9_12_n2": 0.662,
+   "by_n_n2": {
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 0.997,
+    "8": 0.996,
+    "9": 0.983,
+    "10": 0.881,
+    "11": 0.548,
+    "12": 0.236
+   },
+   "deep": true,
+   "think_necessary": true,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "indist_t7_8": 1.0,
+   "late": null,
+   "edge": null
+  }
+ },
+ "reading": "pending (s1 cell open; comp done)",
+ "errors": []
+}
