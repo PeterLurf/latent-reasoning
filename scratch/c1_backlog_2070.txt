@@ -445,3 +445,5 @@
 # 2026-10-12 09:31 2070 (Theory: fp32 fine, within-file reads; moved from the 4060 so its 187-3 rows finish sooner): §187 s1 selfdepth_pre + halt (answer2 + moved2); 'gpu' field records the card
 5.0 boxes/runs_fsq/s187_nopass_s1/eval_s187_selfdepth_pre.json python -u -m boxes.halt173 --run boxes/runs_fsq/s187_nopass_s1 --selfdepth --bs 125 --device {DEV}
 5.0 boxes/runs_fsq/s187_nopass_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s187_nopass_s1  --bs 125 --device {DEV}
+# 2026-10-12 11:55 2070 (fp32; within-file read, as §187 s1): §189 RMS s2 halt (answer2 + moved2)
+5.0 boxes/runs_fsq/s185_rms_s2/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s185_rms_s2 --bs 125 --device {DEV}
