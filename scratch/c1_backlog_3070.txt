@@ -522,3 +522,6 @@
 5.0 boxes/runs_fsq/s185_rms_s1/eval_s187_sizeprobe.json python -u -m boxes.halt173 --run boxes/runs_fsq/s185_rms_s1 --sizeprobe --bs 125 --device {DEV}
 5.0 boxes/runs_fsq/s184_reweight_s1/eval_s187_sizeprobe.json python -u -m boxes.halt173 --run boxes/runs_fsq/s184_reweight_s1 --sizeprobe --bs 125 --device {DEV}
 5.0 boxes/runs_fsq/s184_reweight_s2/eval_s187_sizeprobe.json python -u -m boxes.halt173 --run boxes/runs_fsq/s184_reweight_s2 --sizeprobe --bs 125 --device {DEV}
+# 2026-10-12 01:13 3070 fillers (Audit's candidates, descriptive): 187-5a keep0 on s185_rms_s1; 187-3 rows n9-12 on s185_den_s1
+5.0 boxes/runs_fsq/s185_rms_s1/eval_s187_posoffset_keep0.json python -u -m boxes.halt173 --run boxes/runs_fsq/s185_rms_s1 --posoffset_keep0 --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s185_den_s1/eval_s187_deepaux_items_n9_12.json python -u -m boxes.halt173 --run boxes/runs_fsq/s185_den_s1 --deepaux --deepaux_items_only --items_n 9,10,11,12 --items_tmax 14 --items_file eval_s187_deepaux_items_n9_12.json --bs 125 --device {DEV}
