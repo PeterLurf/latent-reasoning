@@ -120,6 +120,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
         - Depth limit: 187-3 COUNT-OOD (size-keyed; s1 / NOFADE). 187-2 STRUCTURAL, so ADD-DECAY is dropped.
           - 187-4 BLOCKED-BY-TOKEN-EDGE (373c6d69). Pending: 187-5 and the s2 re-runs.
           - **187-5a (30186858; Audit):** KEEP-SINK offsets (wpe[0] kept, question positions shifted, aux prompt unshifted) → eval_s187_posoffset_keep0.json; reader `theory/score_s187_5.py`. The all-shift file is descriptive ALL-SHIFT only.
+          - **§185 closed (cbdba1ef): NO-FIX both arms.** Descriptive: RMS alone DEEP (min 0.994) + depth n 9–12 0.587 (§184 s1 0.486), one seed. **§189 RMS-REP (852206c8)**: seed 2, s185_rms_s2, free slot (~$3); SUBSTITUTE / DEEP-ONLY / NOT REPLICATED vs §184 s2; reader `theory/score_s189.py`.
           - **§188 REWEIGHT × WINDOW registered (5b2ebd2e; Audit cost-approved, ~$4–7):** WINDOW + --aux_reweight; JOINT (K′16), a C6 claim needs LONG-STABLE (K′24) at 2 / 2. Needs Experiments' kmatch_aux_loss change (the window path ignores --aux_reweight today). Launch after b268; hold if WINDOW s2 is not STABLE.
           - **173-2 / 173-2a (0ca69ee0, 22ca3a1f; Audit's lead):** §173 answer-settling halt on §184 s1 / s2 + WINDOW s1, at n 10 / 12 vs the same file's K′ = n + 2. SIZE-FREE HALT / PREMATURE. Queued 9f68e419 (3070 / 4060, ~23:00); reader `theory/score_s173_2.py`.
         - s2 queued (~$3). NORM-CAP / AUX-DONE / T-SHIFT on it run locally.
