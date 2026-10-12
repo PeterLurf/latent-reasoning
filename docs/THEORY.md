@@ -12979,6 +12979,18 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - n = 10: (i) 0.549 / 0.719; (iii) 0.864 / 0.669; **(i ∧ iii) 0.481 / 0.726**; all items 0.643.
 * **Descriptive caution for any later answer-only variant:** even the best answer-agreement filter is only 0.886 precise at n = 9 and 0.726 at n = 10. That is well under the 0.95 bar, and under the error level that sank §103's self-training.
 
+**Note 173-2 (2026-10-11 20:50 EDT; before any data; Audit; eval-only, descriptive beside §173's registered rules). §173 CONV-HALT on the first DEEP models, with two pre-stated readouts on deep items.**
+* **Why:** 187-4 showed §184's learned halt (AUX-DONE) is a pass counter that fires at t = 8 on 97.6% of n = 9 items, so it cannot generalise past the training edge.
+  - §173's answer-settling halt (answer2: halt when the answer is unchanged over 2 consecutive passes, cap 2K) reads no pass token, so it is the natural size-free candidate (cf. Fixed-Point Reasoners 2606.18206).
+  - On §175 it fired too early, because the pre-completion answer was stable.
+  - It is run on s184_reweight_s1 / s2 and s182_window_s1 (n 2–12), via halt173's existing §173 path.
+* **§173's own rules apply as registered.**
+* **The extra readouts (fixed now), on n = 9 and 10, against fixed K′ = n + 2 (s1 0.822 / 0.643; s2 0.989 / 0.902; WINDOW from its own eval):**
+  - **SIZE-FREE HALT:** accuracy at the halt within 0.03 of K′ = n + 2 at both n, with mean halt ≥ n − 1, in both §184 seeds.
+  - **PREMATURE:** accuracy at the halt ≥ 0.05 below K′ = n + 2 at either n. The answer settles early and wrong.
+  - Otherwise mixed.
+  - Mean halt by n against n is reported for n 2–12. Halting below n at no accuracy cost would itself be a C5 compute result.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
