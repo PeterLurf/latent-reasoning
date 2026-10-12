@@ -6,7 +6,7 @@ File <run>/eval_s187_readclamp.json (one process; both arms on the same items / 
 187-3's computation: mean handle over t 3..6 at nesting <= 2 per n; onset = first t with handle < 0.80 (T + 1 if none).
 CONTROL = |indist handle_mean| and |k8_pooled| changes each <= 0.03, else INCONCLUSIVE; BINDING = >= 5% of n 10-12 items clamped at t 3-6, else NOT-BINDING;
 NORM-CHANNEL = clamped n12 >= clamped n9 - 0.05 and clamped onsets n 10-12 within one pass; NOT-NORM = |clamped n12 - unclamped n12| < 0.05; else partial.
-A label needs both §184 seeds to agree. 187-8a: a 'rescaled' arm (every read to the n <= 8 mean norm) is read only if the clamp is NOT-BINDING in both seeds;
+A label needs both §184 seeds to agree. 187-8b: the label is read from eval_s187_readclamp_padfree.json; the original file is descriptive. 187-8a: a 'rescaled' arm (every read to the n <= 8 mean norm) is read only if the clamp is NOT-BINDING in both seeds;
 its own CONTROL applies (INCONCLUSIVE = uninformative).
     python theory/score_s187_8.py
 """
@@ -16,6 +16,7 @@ import os
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 R = os.path.join(ROOT, "boxes", "runs_fsq")
 MODELS = ("s184_reweight_s1", "s184_reweight_s2")
+FILE = "eval_s187_readclamp_padfree.json"                                    # 187-8b: the pad-free re-run decides; the original file is descriptive
 EPS = 1e-9
 
 
@@ -32,7 +33,7 @@ def table(rows):
 
 
 def model(d, arm="clamped"):
-    p = os.path.join(R, d, "eval_s187_readclamp.json")
+    p = os.path.join(R, d, FILE)
     if not os.path.exists(p):
         return {"status": "open"}
     x = json.load(open(p))
@@ -70,6 +71,11 @@ def main():
         rr = {d: model(d, "rescaled") for d in MODELS}; res["rescaled"] = rr
         lr = [rr[d].get("label") for d in MODELS]
         rd += " | RESCALE (187-8a): " + ((lr[0] if lr[0] == lr[1] else "seeds disagree (%s / %s)" % tuple(lr)) if all(rr[d]["status"] == "done" for d in MODELS) else "missing")
+    global FILE
+    f0, FILE = FILE, "eval_s187_readclamp.json"                           # 187-8b: the pad-deflated original, descriptive
+    orig = {d: model(d) for d in MODELS}; FILE = f0; res["pad_deflated_original"] = orig
+    if all(orig[d]["status"] == "done" for d in MODELS):
+        rd += " | pad-deflated original (descriptive): %s" % " / ".join(orig[d]["label"] for d in MODELS)
     res["reading"] = rd; print("READING:", rd)
     json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s187_8.json"), "w", newline=chr(10)), indent=1, default=str)
 

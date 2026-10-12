@@ -13345,6 +13345,18 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * Whether the answer decoder also keys size separately cannot be separated here.
 * Experiments' caveat stands for the clamp: the above-p99 shares on early think reads are partly "beyond any n ≤ 8 sequence length", not only "out of magnitude range".
 
+**Amendment 187-8b (2026-10-12 01:56 EDT; before the pad-free run; Audit / Experiments' refpad diagnostic). 187-8's references included padding tokens, so a pad-free re-run supersedes the provisional PARTIAL.**
+* **The defect:** the refpad diagnostic (s184 s1 / s2) shows that padding was 41–46% of the reference samples.
+  - Pad reads are low-norm, so p99_real exceeds p99_with_pad on every path and pass (by up to 16%), and the means by up to 24–34%.
+  - The registration specified per-token norms over training items. Pad tokens are not item tokens, so this was a deviation in the code.
+* **Consequences:**
+  - The registered clamp over-bound: it also trimmed real reads inside the true in-distribution p99.
+  - Its n 12 gains (+0.106 / +0.145) are therefore an upper bound.
+  - The rescale arm used a mean too low by up to 24–34%.
+* **Fixed now:** 187-8 is re-run with pad-free references (p99_real, mean_real) on the same items, both seeds, three arms in one process, to `<run>/eval_s187_readclamp_padfree.json`.
+  - **That run decides 187-8's label**, with the same readouts and guards (and the same 187-8a rule for the rescale arm).
+  - The original run is kept as a descriptive "pad-deflated reference" arm.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
