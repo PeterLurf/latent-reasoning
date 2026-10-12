@@ -528,3 +528,6 @@
 # 2026-10-12 01:24 note 187-8 / 8a READ-CLAMP (unclamped / clamped / rescaled arms), 3070 only
 5.0 boxes/runs_fsq/s184_reweight_s1/eval_s187_readclamp.json python -u -m boxes.halt173 --run boxes/runs_fsq/s184_reweight_s1 --readclamp --bs 125 --device {DEV}
 5.0 boxes/runs_fsq/s184_reweight_s2/eval_s187_readclamp.json python -u -m boxes.halt173 --run boxes/runs_fsq/s184_reweight_s2 --readclamp --bs 125 --device {DEV}
+# 2026-10-12 01:25 Audit: READ-CLAMP refs without padding (pad share, p99 / mean real vs with-pad) for s184 s1 / s2 -> eval_s187_readclamp_refpad.json
+5.0 boxes/runs_fsq/s184_reweight_s1/eval_s187_readclamp_refpad.json python -u scratch/readclamp_refpad.py boxes/runs_fsq/s184_reweight_s1 {DEV}
+5.0 boxes/runs_fsq/s184_reweight_s2/eval_s187_readclamp_refpad.json python -u scratch/readclamp_refpad.py boxes/runs_fsq/s184_reweight_s2 {DEV}
