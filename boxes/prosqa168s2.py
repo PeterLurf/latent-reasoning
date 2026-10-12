@@ -198,6 +198,7 @@ def main():
     ap.add_argument("--probe_n_fit", type=int, default=4000); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes")
     ap.add_argument("--chunk_delta", type=int, default=0, help="stepaux: DM.CHUNK_DELTA - the delta heads' writes in chunks of this many tokens (WY form, exact in exact arithmetic; needs --fast_add; gate_chunk_delta.json)")
     ap.add_argument("--aux_reweight", action="store_true", help="note 168-12 STEP-AUX-REWEIGHT: the aux CE of hop t weighted by AUX_W[t-1] inside the per-item mean (stepaux)")
+    ap.add_argument("--eval_train_n", type=int, default=0, help="note 168-16: with --eval_only, evaluate (acc / acc_by_depth / aux_exact_by_hop) on this many TRAINING items (rng 16816) -> eval_trainitems.json")
     ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt (no training; args_eval.json; model.pt / args.json / log.jsonl untouched)")
     ap.add_argument("--resume", default=None, help="a ckpt_last.pt / kept ckpt of this run (model, opt, np_rng, step, elapsed)")
     ap.add_argument("--no_normcap", action="store_true", help="stepaux: skip note 185-1's inference-only NORM-CAP eval (smokes)")
@@ -207,7 +208,10 @@ def main():
     amp = None if (a.fp32 or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
     ac = (lambda: torch.autocast("cuda", dtype=amp)) if amp is not None else (lambda: torch.autocast("cpu", enabled=False))
     pr = os.path.join(ROOT, "prosqa", "p8data"); Dtr = load(os.path.join(pr, "p8_na_train.json")); Dte = load(os.path.join(pr, "p8_na_test.json")); Dctl = load(os.path.join(pr, "p8_ctl.json"))
-    Dtr = Dtr[:a.train_n] if a.train_n else Dtr; Dte = Dte[:a.test_n] if a.test_n else Dte; Dctl = Dctl[:a.test_n] if a.test_n else Dctl
+    Dtr = Dtr[:a.train_n] if a.train_n else Dtr; Dte = Dte[:a.test_n] if a.test_n else Dte
+    if a.eval_train_n:                                                      # note 168-16: the eval path on the run's own training items (eval-path sanity check)
+        assert a.eval_only, "--eval_train_n needs --eval_only"; Dte = [Dtr[i] for i in np.random.default_rng(16816).permutation(len(Dtr))[:a.eval_train_n]]
+    EVAL_FN = "eval_trainitems.json" if a.eval_train_n else "eval.json"; Dctl = Dctl[:a.test_n] if a.test_n else Dctl
     g = s5.load_gpt2(dev); m = ProsMem(g).to(dev) if SA else None; params = m if SA else g
     longest = max(range(len(Dtr)), key=lambda i: len(Dtr[i]["q"]) + sum(len(s) for s in Dtr[i]["step_ids"]))
     L_STAGE = max(1, a.steps // (a.stages + 2))                             # Theory 168-7 point 3: 12 stages of 1000 at 12k
@@ -403,7 +407,7 @@ def main():
     def _partial(tag, s_=None):                                             # Audit 2026-10-11 (b263 lost its eval to a late crash): eval.json after each block
         if s_ is not None:
             res["s168s2"] = s_
-        res["eval_partial_through"] = tag; res["eval_partial"] = True; json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
+        res["eval_partial_through"] = tag; res["eval_partial"] = True; json.dump(res, open(os.path.join(a.out, EVAL_FN), "w", newline="\n"), indent=1)
     _partial("base")
     if SA:
         s = {"acc_by_depth_kprime": {str(kp): by_depth(sa_margins(Dte, kp), dep) for kp in KPRIMES}}; _partial("acc_by_depth_kprime", s)
@@ -420,6 +424,9 @@ def main():
                         for r_, j in enumerate(ix):
                             tgt = ch[j]["step_ids"][t - 1] + [EOT]; hop.setdefault(t, []).append(bool(list(gen[r_, :len(tgt)]) == tgt))
         s["aux_exact_by_hop"] = {str(t): float(np.mean(v)) for t, v in sorted(hop.items())}; s["aux_n_by_hop"] = {str(t): len(v) for t, v in sorted(hop.items())}; _partial("aux_exact_by_hop", s)
+        if a.eval_train_n:                                                  # 168-16: train items need only acc + K' sweep + aux hops; done
+            res.update({"eval_partial": False, "items": "TRAIN items (rng 16816 permutation[:%d]) of p8_na_train" % a.eval_train_n, "eval_sec": round(time.time() - t1)}); res.pop("eval_partial_through", None)
+            json.dump(res, open(os.path.join(a.out, EVAL_FN), "w", newline="\n"), indent=1); print("EVAL_TRAIN", res["acc"], s["aux_exact_by_hop"], flush=True); return
         St = states(ex, 2 * K)                                              # 173-1's statistic: mean over items of cos(Sd_t, Sd_t-1), Sd = the delta-head state
         def dcos(St_):
             o_ = {}
@@ -497,7 +504,7 @@ def main():
     if SA:
         res["s168s2"]["clip"] = res["clip"]
     res.pop("eval_partial_through", None); res["eval_partial"] = False       # the complete eval (Theory: score_s168s2 reads eval_partial true as running)
-    res["eval_sec"] = round(time.time() - t1); json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
+    res["eval_sec"] = round(time.time() - t1); json.dump(res, open(os.path.join(a.out, EVAL_FN), "w", newline="\n"), indent=1)
     for ck_ in ("ckpt_last.pt", "ckpt_prev.pt"):
         if os.path.exists(os.path.join(a.out, ck_)):
             os.remove(os.path.join(a.out, ck_))
