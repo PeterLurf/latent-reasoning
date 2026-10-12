@@ -29,7 +29,9 @@ def read_clamp(oa):
     append (path, k, per-row any-clamped) to hits. path / k (the state's pass count) are set by the eval loop before each call."""
     rc = READ_CLAMP; nrm = oa.norm(dim=-1); key = (rc["path"], rc["k"])
     if rc["mode"] == "collect":
-        rc["store"].setdefault(key, []).append(nrm.detach().reshape(-1, nrm.shape[-1]).cpu()); return oa
+        v = rc.get("valid")                                                 # 187-8b: a (B, T) real-token mask -> pad-free refs (None: every token)
+        assert not rc.get("require_valid") or (v is not None and tuple(v.shape) == tuple(nrm.shape[:2])), "187-8b: a pad-free ref read without its token mask"
+        rc["store"].setdefault(key, []).append((nrm.detach()[v.to(nrm.device)[:, :nrm.shape[1]]] if v is not None else nrm.detach().reshape(-1, nrm.shape[-1])).cpu()); return oa
     kk = (rc["path"], min(rc["k"], rc["kmax"][rc["path"]]))
     if rc["mode"] == "rescale":                                             # 187-8a: every token's head read rescaled to the n <= 8 mean norm (direction kept)
         return oa * (rc["ref_mean"][kk].to(oa.device) / nrm.clamp_min(1e-30))[..., None]
