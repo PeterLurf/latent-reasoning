@@ -1,127 +1,135 @@
 {
  "s184_reweight_s1": {
-  "status": "done",
-  "label": "partial",
-  "control": true,
-  "binding_frac": 1.0,
-  "unclamped": {
-   "9": {
-    "items": 596,
-    "mean_t3_6": 0.9597315436241611,
-    "onset": 8
-   },
-   "10": {
-    "items": 528,
-    "mean_t3_6": 0.8001893939393939,
-    "onset": 5
-   },
-   "11": {
-    "items": 427,
-    "mean_t3_6": 0.6229508196721312,
-    "onset": 4
-   },
-   "12": {
-    "items": 328,
-    "mean_t3_6": 0.5167682926829268,
-    "onset": 3
-   }
-  },
-  "clamped": {
-   "9": {
-    "items": 596,
-    "mean_t3_6": 0.9605704697986577,
-    "onset": 8
-   },
-   "10": {
-    "items": 528,
-    "mean_t3_6": 0.8210227272727273,
-    "onset": 5
-   },
-   "11": {
-    "items": 427,
-    "mean_t3_6": 0.6955503512880562,
-    "onset": 4
-   },
-   "12": {
-    "items": 328,
-    "mean_t3_6": 0.6234756097560975,
-    "onset": 4
-   }
-  },
-  "indist": {
-   "unclamped": {
-    "handle_mean": 0.9872727272727272,
-    "k8_pooled": 0.9734999999999999,
-    "def": "handle_mean = mean over n 3..8 and t <= n of the per-t handle accuracy; k8_pooled = mean over n 3..8 of the answer accuracy at K' = 8"
-   },
-   "clamped": {
-    "handle_mean": 0.9871818181818182,
-    "k8_pooled": 0.9734999999999999,
-    "def": "handle_mean = mean over n 3..8 and t <= n of the per-t handle accuracy; k8_pooled = mean over n 3..8 of the answer accuracy at K' = 8"
-   }
-  }
+  "status": "open"
  },
  "s184_reweight_s2": {
-  "status": "done",
-  "label": "partial",
-  "control": true,
-  "binding_frac": 1.0,
-  "unclamped": {
-   "9": {
-    "items": 596,
-    "mean_t3_6": 0.9035234899328859,
-    "onset": 6
-   },
-   "10": {
-    "items": 528,
-    "mean_t3_6": 0.740530303030303,
-    "onset": 5
-   },
-   "11": {
-    "items": 427,
-    "mean_t3_6": 0.6176814988290398,
-    "onset": 4
-   },
-   "12": {
-    "items": 328,
-    "mean_t3_6": 0.5228658536585366,
-    "onset": 3
-   }
-  },
-  "clamped": {
-   "9": {
-    "items": 596,
-    "mean_t3_6": 0.9060402684563759,
-    "onset": 6
-   },
-   "10": {
-    "items": 528,
-    "mean_t3_6": 0.7732007575757576,
-    "onset": 5
-   },
-   "11": {
-    "items": 427,
-    "mean_t3_6": 0.7037470725995316,
-    "onset": 4
-   },
-   "12": {
-    "items": 328,
-    "mean_t3_6": 0.6676829268292683,
-    "onset": 4
-   }
-  },
-  "indist": {
+  "status": "open"
+ },
+ "pad_deflated_original": {
+  "s184_reweight_s1": {
+   "status": "done",
+   "label": "partial",
+   "control": true,
+   "binding_frac": 1.0,
    "unclamped": {
-    "handle_mean": 0.999,
-    "k8_pooled": 0.9998333333333332,
-    "def": "handle_mean = mean over n 3..8 and t <= n of the per-t handle accuracy; k8_pooled = mean over n 3..8 of the answer accuracy at K' = 8"
+    "9": {
+     "items": 596,
+     "mean_t3_6": 0.9597315436241611,
+     "onset": 8
+    },
+    "10": {
+     "items": 528,
+     "mean_t3_6": 0.8001893939393939,
+     "onset": 5
+    },
+    "11": {
+     "items": 427,
+     "mean_t3_6": 0.6229508196721312,
+     "onset": 4
+    },
+    "12": {
+     "items": 328,
+     "mean_t3_6": 0.5167682926829268,
+     "onset": 3
+    }
    },
    "clamped": {
-    "handle_mean": 0.999,
-    "k8_pooled": 0.9998333333333332,
-    "def": "handle_mean = mean over n 3..8 and t <= n of the per-t handle accuracy; k8_pooled = mean over n 3..8 of the answer accuracy at K' = 8"
+    "9": {
+     "items": 596,
+     "mean_t3_6": 0.9605704697986577,
+     "onset": 8
+    },
+    "10": {
+     "items": 528,
+     "mean_t3_6": 0.8210227272727273,
+     "onset": 5
+    },
+    "11": {
+     "items": 427,
+     "mean_t3_6": 0.6955503512880562,
+     "onset": 4
+    },
+    "12": {
+     "items": 328,
+     "mean_t3_6": 0.6234756097560975,
+     "onset": 4
+    }
+   },
+   "indist": {
+    "unclamped": {
+     "handle_mean": 0.9872727272727272,
+     "k8_pooled": 0.9734999999999999,
+     "def": "handle_mean = mean over n 3..8 and t <= n of the per-t handle accuracy; k8_pooled = mean over n 3..8 of the answer accuracy at K' = 8"
+    },
+    "clamped": {
+     "handle_mean": 0.9871818181818182,
+     "k8_pooled": 0.9734999999999999,
+     "def": "handle_mean = mean over n 3..8 and t <= n of the per-t handle accuracy; k8_pooled = mean over n 3..8 of the answer accuracy at K' = 8"
+    }
+   }
+  },
+  "s184_reweight_s2": {
+   "status": "done",
+   "label": "partial",
+   "control": true,
+   "binding_frac": 1.0,
+   "unclamped": {
+    "9": {
+     "items": 596,
+     "mean_t3_6": 0.9035234899328859,
+     "onset": 6
+    },
+    "10": {
+     "items": 528,
+     "mean_t3_6": 0.740530303030303,
+     "onset": 5
+    },
+    "11": {
+     "items": 427,
+     "mean_t3_6": 0.6176814988290398,
+     "onset": 4
+    },
+    "12": {
+     "items": 328,
+     "mean_t3_6": 0.5228658536585366,
+     "onset": 3
+    }
+   },
+   "clamped": {
+    "9": {
+     "items": 596,
+     "mean_t3_6": 0.9060402684563759,
+     "onset": 6
+    },
+    "10": {
+     "items": 528,
+     "mean_t3_6": 0.7732007575757576,
+     "onset": 5
+    },
+    "11": {
+     "items": 427,
+     "mean_t3_6": 0.7037470725995316,
+     "onset": 4
+    },
+    "12": {
+     "items": 328,
+     "mean_t3_6": 0.6676829268292683,
+     "onset": 4
+    }
+   },
+   "indist": {
+    "unclamped": {
+     "handle_mean": 0.999,
+     "k8_pooled": 0.9998333333333332,
+     "def": "handle_mean = mean over n 3..8 and t <= n of the per-t handle accuracy; k8_pooled = mean over n 3..8 of the answer accuracy at K' = 8"
+    },
+    "clamped": {
+     "handle_mean": 0.999,
+     "k8_pooled": 0.9998333333333332,
+     "def": "handle_mean = mean over n 3..8 and t <= n of the per-t handle accuracy; k8_pooled = mean over n 3..8 of the answer accuracy at K' = 8"
+    }
    }
   }
  },
- "reading": "partial; s1: t3-6 n9..12 unclamped [0.96, 0.8, 0.623, 0.517] -> clamped [0.961, 0.821, 0.696, 0.623], onsets [8, 5, 4, 3] -> [8, 5, 4, 4], binding 1.00, control True; s2: t3-6 n9..12 unclamped [0.904, 0.741, 0.618, 0.523] -> clamped [0.906, 0.773, 0.704, 0.668], onsets [6, 5, 4, 3] -> [6, 5, 4, 4], binding 1.00, control True"
+ "reading": "pending (s184_reweight_s1 open, s184_reweight_s2 open) | pad-deflated original (descriptive): partial / partial"
 }
