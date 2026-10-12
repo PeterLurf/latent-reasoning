@@ -118,7 +118,8 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
         - s2 pooled 0.9997. SERIAL-NEST 0.85 / 0.94.
         - Big seed spread beyond training (n 9–12: 0.486 / 0.665). C2 / C6 are not claimed. 184-1's capped s2 read is on the 4060 about 23:00.
         - Depth limit: 187-3 COUNT-OOD (size-keyed; s1 / NOFADE). 187-2 STRUCTURAL, so ADD-DECAY is dropped.
-          - Pending: 187-4 (SELF-DEPTH precondition), 187-5 (position offset), and the s2 re-runs.
+          - 187-4 BLOCKED-BY-TOKEN-EDGE (373c6d69). Pending: 187-5 (position offset) and the s2 re-runs.
+          - **173-2 / 173-2a (0ca69ee0, 22ca3a1f; Audit's lead):** §173 answer-settling halt on §184 s1 / s2 + WINDOW s1, at n 10 / 12 vs the same file's K′ = n + 2. SIZE-FREE HALT / PREMATURE. Queued 9f68e419 (3070 / 4060, ~23:00); reader `theory/score_s173_2.py`.
         - s2 queued (~$3). NORM-CAP / AUX-DONE / T-SHIFT on it run locally.
         - **The reweighted ProsQA cell (168-12) is user-approved** (16:05 via Audit; 168-14). b267 launches at the next free slot, and 168-13 (a) will then be read.
         - **§187 AUX-NOPASS registered** (87b7e23d; ~$3, after §184 s2): does pass-token keying limit depth beyond n = 8?
