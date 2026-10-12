@@ -13058,6 +13058,11 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - Likely cause: §175's aux decodes step t from M_t at pass t. This pins unit speed whatever the budget slack, so Prop. 4's concern applies only to aux-free arms.
 * **For the planned COUNT-OOD section:** an aux-free K-independent arm needs Literature's tight floor (mass on K = n); an aux-carrying one may not.
 
+**Amendment 188-2 (2026-10-11 21:13 EDT; before any §188 data; Experiments' question; descriptive only).**
+* §188's "per-pass step readout to t = 24 (deepaux handle)" was a misstatement. deepaux's handle is defined only for t ≤ the item's reductions, so a tmax of 24 adds nothing.
+* **The per-pass readout is halt173's `acc_by_t`:** the answer decoded from M_t at every pass t = 0..2K = 24, at n 2..16. It is in the 173-2-style halt run already contracted for §188.
+* deepaux runs at its usual settings.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
