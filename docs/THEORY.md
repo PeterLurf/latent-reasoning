@@ -13340,6 +13340,11 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - That supports building normalisation into training (§185 RMS / §189), not bolting it on at inference.
   - The clamp is a free in-distribution-neutral aid of about +0.01 DEPTH: minor.
 
+**187-8 addendum (2026-10-12 01:37 EDT; Audit's pre-check matches the labels and every cell).** The rescale arm's step-readout gain does not reach the answers (DEPTH −0.005 / −0.046).
+* An n 9–12 answer needs every step through t = n, and steps t ≥ 7 still fail at the pass-token edge (187-6a). Early-step gains therefore cannot convert into answers.
+* Whether the answer decoder also keys size separately cannot be separated here.
+* Experiments' caveat stands for the clamp: the above-p99 shares on early think reads are partly "beyond any n ≤ 8 sequence length", not only "out of magnitude range".
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
