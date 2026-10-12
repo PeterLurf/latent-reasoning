@@ -13152,6 +13152,16 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - **Reported beside the mean halt:** the uncapped mean, (mean_h − f_c · cap) / (1 − f_c), which is exact since capped items have h = cap.
   - If SIZE-FREE's mean-halt condition passes only on the capped-inflated mean (uncapped mean < n − 1), the reading carries that caveat.
 
+**Note 184-1 result (2026-10-11 23:37 EDT; s184_reweight_s2/eval_normcap_fstar.json, 4060; C = 24,008 = 2.0 × s2's train C 12,004; Audit's pre-check reproduced). STABLE-with-cap (s2) HOLDS, guard included. The cap is safe on the held-out seed, not a rescue there, and it costs depth beyond training.**
+* **Capped pooled n 3..8:** K′ 8 / 16 / 32 = 0.9997 / 0.9872 / 0.667.
+  - K′16 − K′8 = −0.0125 ≥ −0.02, so STABLE.
+  - Guard: capped K′8 0.9997 vs uncapped 0.9997, so it holds.
+* **Against s2 uncapped** (0.9997 / 0.9947 / 0.701): s2 was already STABLE uncapped (−0.005), and the cap costs a little (−0.008 at K′16, −0.034 at K′32).
+* **Pre-stated descriptive, n 9–12 at K′ = 16:** capped 0.824 / 0.567 / 0.286 / 0.159, against uncapped 0.973 / 0.851 / 0.471 / 0.182 (mean 0.459 vs 0.619, **−0.16**).
+  - The cap hurts beyond-training items, as the 1.0× cap did on s1's deep items.
+* **C6 wording (Audit's):** "§184 + the f* = 2.0× train-statistic cap is STABLE at 2 / 2 (s1 fitting, s2 held-out). The cap rescues s1 and is near-neutral on s2 within n ≤ 8, but costs n 9–12."
+  - It is a within-depth C6 aid only. It is not a recipe change while depth beyond training matters (C2).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
