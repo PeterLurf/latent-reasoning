@@ -13421,6 +13421,16 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - The onsets move earlier with n, but monotonicity fails at t = 3 by 0.01 (n 10 1.00 vs n 9 0.99), so **by 187-3's letter it is not COUNT-OOD (mixed).**
   - In substance WINDOW is size-keyed, more mildly than §184 (s1: 0.958 → 0.517). This is context for §188.
 
+**173-4 addendum (2026-10-12 02:33 EDT; Audit verified from the raw files; the wording leads with substance, and the registered label stands as written).**
+* **(2) AUX-DONE:** WEAKENED by the letter. That is an artefact: no-halt items count as 16 and inflate the mean.
+  - **Among items that halt, 100% halt at t = 8 at both n** (halted-only mean 8.0 / 8.0; 419 / 1,000 and 155 / 1,000 halt).
+  - In substance AUX-DONE remains a pass counter at the token edge, so the token account is not weakened.
+  - **Process lesson:** any halt criterion must state how never-halting items count. 173-3a did, and 173-4 did not.
+* **(1), stated plainly:** RMS's answer completes at t ≈ n past the training edge (n 10: 0.14 / 0.35 / 0.84 at t 8 / 9 / 10). §184's answer is pinned at t = 8.
+  - RMS's answer path, which has no pass token, is therefore not pass-capped, while its aux step readout, which carries the pass token, is.
+  - That fits 187-6a's token × remaining-work account, and **predicts that RMS × NOPASS repairs the aux side.** This is the strongest support so far for that lead.
+  - It waits for §189 (RMS replication) and §187 (whether NOPASS costs depth within training).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
