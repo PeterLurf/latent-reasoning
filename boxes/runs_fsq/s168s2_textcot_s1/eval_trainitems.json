@@ -1,0 +1,56 @@
+{
+ "arm": "textcot",
+ "data": "na",
+ "seed": 1,
+ "steps": 12000,
+ "think_k": 0,
+ "acc": 1.0,
+ "n": 1000,
+ "acc_by_depth": {
+  "3": 1.0,
+  "4": 1.0,
+  "5": 1.0,
+  "6": 1.0,
+  "7": 1.0,
+  "8": 1.0,
+  "9": 1.0,
+  "10": 1.0
+ },
+ "n_by_depth": {
+  "3": 64,
+  "4": 147,
+  "5": 128,
+  "6": 174,
+  "7": 133,
+  "8": 138,
+  "9": 144,
+  "10": 72
+ },
+ "acc_ctl": 0.6654088050314465,
+ "n_ctl": 795,
+ "train_sec": 14362,
+ "n_nonfinite": 0,
+ "micro": 1,
+ "eval_dtype": "torch.bfloat16",
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "train_gpu": "NVIDIA GeForce RTX 3090",
+ "train_driver": "570.172.08",
+ "acc_def": "candidate accuracy: log p('### ' + correct) > log p(the negative's) after the arm's prefix (stepaux: + the memory after K passes)",
+ "mean_cot_tokens": 84.51142061281337,
+ "eval_gpu": "NVIDIA GeForce RTX 4060",
+ "eval_only": true,
+ "eval_partial": false,
+ "clip": {
+  "clip_rate": null,
+  "grad_norm_preclip": {
+   "median": null,
+   "p90": null,
+   "n_steps": 0
+  },
+  "aux_reweight": false,
+  "weights": null,
+  "source": "not logged",
+  "def": "clip_grad_norm_(..., 1.0)'s pre-clip total norm per step; clip fires when > 1.0"
+ },
+ "eval_sec": 997
+}
