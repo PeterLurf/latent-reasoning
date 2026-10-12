@@ -13547,6 +13547,10 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - **DONE-SILENT:** < 50% of items halt (uninformative about tracking).
   - The halted-only mean and no-halt share are reported for every model.
 
+**187-7 size probe on §187 s1 (2026-10-12 11:00 EDT; descriptive; 3070, 7ccab663).** The NOPASS read's magnitude still carries size, like §184's: the norm probe at t 2 / 4 / 6 reads 0.603 / 0.629 / 0.650, against §184 s1's 0.703 / 0.643 / 0.558 and RMS's 0.107 / 0.106 / 0.097. The full read decodes n at 0.848–0.872.
+* NOPASS keeps the magnitude channel, consistent with its size-keyed early steps (187-9) and its t = 8 "done" halt (the state counter).
+* §190 removes this channel as well as the token.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
