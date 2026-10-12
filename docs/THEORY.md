@@ -13321,6 +13321,25 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - So absolute position alone is not what forces size-keying.
   - **The randomised-position-offset remedy (Ruoss 2305.16843) is deprioritised.** The read's form (187-7 / 187-8) is the live line.
 
+**187-8 result (2026-10-12 01:36 EDT; s184_reweight_s1 / s2 on the 3070, three arms in one process; theory/score_s187_8.py). PARTIAL in both seeds: clamping out-of-range read magnitudes recovers part of the deep items' early-step accuracy at zero in-distribution cost, but does not induce RMS-like size-freeness. Provisional until Experiments' refpad diagnostic (references without padding tokens) lands.**
+* **CONTROL holds:** in-distribution handle 0.9873 → 0.9872 and 0.999 → 0.999; K′8 unchanged.
+* **BINDING is 1.0:** every n 10–12 item has a clamped read at t 3–6. The deep items' share of reads above the p99 is 0.39–0.41 on think passes k 1–3, and 0.59–0.88 on aux reads at k 11–12.
+  - Experiments' caveat: the early think-pass shares probably include position effects. Deep items are longer, so their later tokens have no in-distribution counterpart.
+* **Mean handle at t 3–6, nesting ≤ 2, n 9 / 10 / 11 / 12** (onsets in brackets):
+  - s1: unclamped 0.960 / 0.800 / 0.623 / **0.517** (8 / 5 / 4 / 3) → clamped 0.961 / 0.821 / 0.696 / **0.623** (8 / 5 / 4 / 4);
+  - s2: 0.904 / 0.741 / 0.618 / **0.523** (6 / 5 / 4 / 3) → 0.906 / 0.773 / 0.704 / **0.668** (6 / 5 / 4 / 4).
+  - n 12 gains +0.106 / +0.145, short of NORM-CHANNEL's bar (n 9 − 0.05). The onsets barely move.
+* **DEPTH (n 9–12 at K′ = n + 2):** 0.486 → 0.498 (s1) and 0.665 → 0.676 (s2), about +0.01.
+* **RESCALE arm (187-8a; not read for the label because the clamp binds; descriptive only):**
+  - s1: 0.908 / 0.876 / 0.860 / 0.809, onsets 8 / 7 / 7 / 5. Much flatter, at a small in-distribution cost (0.980 / 0.965 against 0.987 / 0.974).
+  - s2: 0.894 / 0.818 / 0.770 / 0.699, onsets 9 / 6 / 3 / 3.
+  - DEPTH 0.481 / 0.619, down at K′ = n + 2.
+* **Reading:**
+  - The norm channel is causally part of §184's size-keying. Removing out-of-range magnitude helps deep items' early steps, and forcing in-distribution magnitude (rescale) helps more on s1.
+  - Neither reproduces RMS's size-freeness (n 12 ≈ n 9). The rest comes from training with a constant-norm read, i.e. what the readout learned.
+  - That supports building normalisation into training (§185 RMS / §189), not bolting it on at inference.
+  - The clamp is a free in-distribution-neutral aid of about +0.01 DEPTH: minor.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
