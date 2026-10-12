@@ -2,7 +2,7 @@
 RMS-REP: §185 RMS exactly with seed 2 (s185_rms_s2). Comparator = §184 s2 (s184_reweight_s2, same seed). DEEP = >= 0.90 at every n 3..8 at K' 8;
 THINK-NECESSARY = 170-4 removal (K' 0 / 1); DEPTH = mean n 9-12 at K' = n + 2.
 SUBSTITUTE = DEEP and THINK-NECESSARY and DEPTH >= §184 s2's - 0.05; DEEP-ONLY = DEEP and THINK-NECESSARY, DEPTH below that; NOT REPLICATED = not DEEP.
-Descriptive: two-seed means vs §184's, K' curve, §182 STABLE.
+Descriptive: two-seed means vs §184's and the per-seed pair differences (Audit), K' curve, §182 STABLE.
     python theory/score_s189.py
 """
 import json
@@ -41,7 +41,8 @@ def main():
         rd += ": s2 K'8 %.3f, DEEP %s, THINK-NECESSARY %s, DEPTH %.3f vs §184 s2 %.3f (bar %.3f); K'16 %.3f (STABLE %s)" % (
             r2["pooled_k8"], r2["deep"], r2["think_necessary"], r2["depth_9_12_n2"], c2["depth_9_12_n2"], c2["depth_9_12_n2"] - TOL, r2["pooled_k16"], r2["stable"])
         if r1.get("status") == "done" and c1.get("status") == "done":
-            rd += "; two-seed DEPTH RMS %.3f vs §184 %.3f" % ((r1["depth_9_12_n2"] + r2["depth_9_12_n2"]) / 2, (c1["depth_9_12_n2"] + c2["depth_9_12_n2"]) / 2)
+            rd += "; two-seed DEPTH RMS %.3f vs §184 %.3f; seed pairs RMS - §184: s1 %+.3f, s2 %+.3f (Audit)" % ((r1["depth_9_12_n2"] + r2["depth_9_12_n2"]) / 2, (c1["depth_9_12_n2"] + c2["depth_9_12_n2"]) / 2,
+                  r1["depth_9_12_n2"] - c1["depth_9_12_n2"], r2["depth_9_12_n2"] - c2["depth_9_12_n2"])
     out["reading"] = rd; print("READING:", rd)
     errs = S185.ERRORS + S187.ERRORS
     if errs:
