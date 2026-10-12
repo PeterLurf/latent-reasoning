@@ -1,0 +1,49 @@
+{
+ "comparator": {
+  "status": "done",
+  "pooled_k8": 0.9736666666666666,
+  "depth_9_12_n2": 0.48625,
+  "by_n_n2": {
+   "3": 0.994,
+   "4": 0.989,
+   "5": 0.984,
+   "6": 0.978,
+   "7": 0.961,
+   "8": 0.934,
+   "9": 0.822,
+   "10": 0.638,
+   "11": 0.32,
+   "12": 0.165
+  },
+  "deep": true,
+  "think_necessary": true,
+  "gpu": "NVIDIA GeForce RTX 3090"
+ },
+ "runs": {
+  "1": {
+   "status": "done",
+   "pooled_k8": 0.9976666666666666,
+   "depth_9_12_n2": 0.6234999999999999,
+   "by_n_n2": {
+    "3": 1.0,
+    "4": 1.0,
+    "5": 0.999,
+    "6": 1.0,
+    "7": 0.994,
+    "8": 0.993,
+    "9": 0.978,
+    "10": 0.853,
+    "11": 0.488,
+    "12": 0.175
+   },
+   "deep": true,
+   "think_necessary": true,
+   "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "2": {
+   "status": "open"
+  }
+ },
+ "reading": "TOKEN-WAS-THE-LIMIT: DEPTH (n 9-12 at K'=n+2) 0.623 vs \u00a7184 0.486 (+0.137; TEXT-COT 0.535); K'8 pooled 0.998; DEEP True, THINK-NECESSARY True; s2 opens",
+ "errors": []
+}

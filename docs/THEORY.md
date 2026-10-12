@@ -274,7 +274,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 184 | AUX-REWEIGHT: §182 NOFADE + per-pass aux weights w_t = Ē / E_t (pass 8 got 1/22 of pass 1's signal), equal signal per pass position; HELPS / HURTS / NO EFFECT vs NOFADE | **HELPS; DEEP + THINK-NECESSARY + SERIAL-NEST at 2 / 2 seeds = §170's C1 conjunction met on nested** (s1 0.974 / s2 0.9997 pooled; SERIAL-NEST 0.85 / 0.94); depth beyond n 8 count-limited | closed |
 | 185 | ADD-NORM: §182 NOFADE with the additive read normalised: DEN (φ(q)ᵀS / φ(q)ᵀz) or RMS (TransNormer's NormAttention); STABLE + NO-COST vs NOFADE (NORM-CLAMP: the unnormalised read's growth causes ~80% of overthinking) | registered | **closed: NO-FIX (both arms). Descriptive: RMS alone DEEP + depth n 9–12 0.587 (one seed; §189 replicates)** |
 | 186 | INTERLEAVE-BLIND-K4: §183 with 4 passes per token, the closing test of the mult interleave line; HIT / PARTLY vs §183, else the line closes (pre-registered stop) | **FAIL / NOT** (columns 3–7 0.210 vs 0.182; within-token passes idle, cos 0.993): **the mult interleave line closes** | closed |
-| 187 | AUX-NOPASS: §184 with the aux prompt's pass token removed; does pass-token keying limit depth beyond training (C2)? DEPTH = n 9–12 at K′ = n + 2 vs §184 (0.486) and TEXT-COT (0.535) | registered | **open** |
+| 187 | AUX-NOPASS: §184 with the aux prompt's pass token removed; does pass-token keying limit depth beyond training (C2)? DEPTH = n 9–12 at K′ = n + 2 vs §184 (0.486) and TEXT-COT (0.535) | registered | **s1 TOKEN-WAS-THE-LIMIT (depth 0.623 vs 0.486), DEEP; descriptively STABLE to 4× K (0.942 at K′32); s2 running** |
 | 188 | REWEIGHT × WINDOW: §182 WINDOW + §184's --aux_reweight in one cell; JOINT = DEEP + THINK-NECESSARY + STABLE (K′16); a C6 claim needs LONG-STABLE (K′24 ≥ K′8 − 0.05) at 2 / 2 | registered | **open** |
 | 189 | RMS-REP: §185 RMS at seed 2 (descriptive replication); SUBSTITUTE = DEEP + THINK-NECESSARY + depth n 9–12 ≥ §184 s2 − 0.05 / DEEP-ONLY / NOT REPLICATED | registered | **open** |
 
@@ -13467,6 +13467,25 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **Caution on the 0.735 bar:** TEXT-COT's test accuracy is flat over depth 3–14 (0.69–0.85, highest at depth 14).
   - Search should degrade with depth, so this looks like a partial heuristic, not graph search.
   - "Beating TEXT-COT" on this set is a weak bar, and §191's NAME-MEM (≥ 0.65) is read with that in mind.
+
+**§187 result, s1 (2026-10-12 09:28 EDT; s187_nopass_s1, b266, RTX 3090, 48k, 0 non-finite, c0aea65f; score_s187). TOKEN-WAS-THE-LIMIT: dropping the pass token from the aux prompt lifts depth beyond training at no within-depth cost. s2 opens by the rule. Descriptively, it also removes overthinking: the most stable model yet.**
+* **Registered reading:**
+  - DEPTH (n 9–12 at K′ = n + 2): **0.623** = 0.978 / 0.853 / 0.488 / 0.175, against same-seed §184 s1's 0.486 (+0.137) and TEXT-COT's 0.535.
+  - DEEP: n 3–8 at K′ 8 reads 1.0 / 1.0 / 0.999 / 1.0 / 0.994 / 0.993. THINK-NECESSARY holds.
+  - The in-distribution aux handle at t 1–8 is ≥ 0.992. Without a token, the aux decoder identifies the step from memory alone at no cost.
+  - Caveat (the seed spread): §184 s2 reads 0.665 on the same measure, so the s2 replication decides.
+* **Descriptive, C6 (unregistered for §187; §182's letter):** pooled n 3–8 at K′ 4 / 8 / 12 / 16 / 24 / 32 reads 0.558 / **0.998** / 0.998 / **0.996** / 0.983 / 0.942.
+  - K′16 − K′8 = −0.0015, so **STABLE**. At 3× the trained K it reads 0.983, and at 4× 0.942.
+  - §184 s1 / s2 at K′ 24 / 32: 0.566 / 0.345 and 0.903 / 0.701.
+  - The clip rate is 0.667 (§184 s1 0.984). path_indep agree is 0.114, so the model is path-dependent, as the good-depth models are.
+* **Reading:**
+  - The pass token limited both depth (187-6a: token × remaining work) and stability.
+  - Without it, the memory must carry progress itself, and passes past completion become near no-ops: a state-driven rather than counter-driven computation (cf. Fixed-Point Reasoners 2606.18206).
+  - **On one seed, §184 + NOPASS meets C1 (DEEP + THINK-NECESSARY) and C6 (STABLE to 4×) and beats TEXT-COT on depth.**
+* **Consequences:**
+  - s2 (s187_nopass_s2, about $3, registered) launches in the free slot.
+  - §190 (RMS × NOPASS) is no longer at risk of COSTLY: NOPASS's in-distribution cost is nil. It still waits for §189.
+  - Pending descriptive post-hocs (187-3 rows, selfdepth, size probe, halting) will show whether the fixed-t onset is gone (187-6a's partial read) and whether AUX-DONE can now track n.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
