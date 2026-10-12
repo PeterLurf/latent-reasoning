@@ -13216,6 +13216,18 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - Then RMS × NOPASS, past the edge.
   - Together this is a route to depth beyond training that does not change the training distribution.
 
+**Note 187-6a (2026-10-12 00:44 EDT; Audit reproduced 187-6 from both raw row files, ±0.002, same labels; before any §187, §189 or composition data; descriptive). Correction: the t ≈ 7 onset is better explained by pass token × remaining work than by undertrained late passes.**
+* **The correction:** 187-6's "pass 8 gets about 1/22 of the signal" does not fit RMS s1's own in-distribution handle: t = 7 / 8 read 0.988 / 0.992 on n ≤ 8 (`s175.aux_acc_by_role`). The late passes are well trained on the items they saw.
+* **Audit's account:**
+  - In training, the aux prompt for pass t only co-occurred with ≤ 8 − t operators left: ≤ 1 at t = 7, and 0 at t = 8.
+  - A deep n = 12 item at t = 7 has 5 left.
+  - The onset's fixed position (7 / 7 / 7 across n) fits a pass-indexed cue: the pass token × remaining work is out of distribution in the step readout.
+* **The discriminating prediction (pre-stated):**
+  - **Token × remaining-work account:** RMS × NOPASS moves the t ≈ 7 onset later or removes it; RMS × REWEIGHT does not.
+  - **Undertrained-late-pass account:** the reverse.
+  - §187 (§184 + NOPASS, running) gives only a partial read, since §184's onset is size-keyed rather than fixed. A fixed-t onset absent from §187's deep handle would lean to the token account.
+* **The lead order changes:** RMS × NOPASS comes first, ahead of RMS × REWEIGHT. Neither is registered; both wait for §189 and §187.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
