@@ -13374,6 +13374,21 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - RMS, trained with a constant-norm read, learned a computation that does not need it.
   - So the lever is **training with a normalised read** (§185 RMS; §189 replicates). No inference-time patch is adopted.
 
+**Note 173-4 (2026-10-12 02:16 EDT; before any measurement; Audit's idle-card tick; descriptive, eval-only). Halting is re-assessed on RMS s1, the first model with size-free early steps. 187-3 rows are added for WINDOW s1.**
+* **Why:** 173-3 parked halting "until a COUNT-OOD lever gives size-free computation". RMS s1's early steps are size-free (187-6), so its halting picture is the unpark check.
+* **Runs (the 3070, about 5–15 min in total):**
+  - (1) halt173's default §173 path on s185_rms_s1 (answer2 + moved2, cap 16), giving `eval_s173_halt.json`;
+  - (2) 187-4's selfdepth on s185_rms_s1 (the AUX-DONE halt at n 9 / 10);
+  - (3) 187-3's per-item rows (n 9–12, all items) on s182_window_s1, giving `eval_s187_deepaux_items_n9_12.json`.
+* **Readouts (fixed now):**
+  - **(1):** 173-2 / 173-2a / 173-3a's SIZE-FREE HALT / PREMATURE at n = 10 and 12 against the same file's acc_by_t[n][n + 2], for answer2 and MOVED2, with the uncapped mean halt.
+    - Also reported: where acc_by_t jumps (t at which accuracy first exceeds 0.5) for each n, against §184's (≈ n − 1 for n ≤ 8, at the training edge for n = 10).
+  - **(2):** the AUX-DONE halt distribution at n 9 / 10.
+    - **Prediction (187-6a's token account):** still pinned at t = 8, because the completion signal is pass-token-keyed even when the early steps are size-free.
+    - If instead the halt tracks n (mean halt at n 10 ≥ that at n 9 + 0.5, with < 50% of items at t = 8), the token account is weakened for the done signal.
+  - **(3):** 187-3's computation (mean handle at t 3–6, nesting ≤ 2, onsets by n). COUNT-OOD or not, as defined in 187-3. This is context for reading §188's DEPTH.
+* No training, and halting stays C5 (low priority). A training lever is drafted only if (1) reads SIZE-FREE HALT for MOVED2.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
