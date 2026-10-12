@@ -283,7 +283,7 @@ def main():
         if not a.train_n:
             from collections import Counter
             assert dict(Counter(it["depth"] for it in Dtr)) == HIST_168, "168-12: the train histogram the weights were derived from"
-    opt = torch.optim.AdamW(params.parameters(), lr=a.lr, weight_decay=0.01); hist = []; n_nonfinite = 0; wg = []; gn_hist = []
+    opt = torch.optim.AdamW(params.parameters(), lr=a.lr, weight_decay=0.01); hist = []; n_nonfinite = 0; wg = []; gn_hist = []; clip_src = "run"
     log = open(os.devnull, "w") if a.eval_only else open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time(); step0 = 1
     if a.resume:
         ck = torch.load(a.resume, map_location=dev, weights_only=False); params.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"]); rng.bit_generator.state = ck["np_rng"]
@@ -291,6 +291,12 @@ def main():
     last_ = a.steps if not a.time_steps else min(a.steps, a.time_steps); tt0 = time.time()
     if a.eval_only:                                                         # the trained model; no training step runs
         params.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev, weights_only=False)); last_ = 0
+        cp_ = os.path.join(a.out, "ckpt_last.pt")                           # Theory: the clip rate from the kept checkpoint's gn_hist when it has one
+        if os.path.exists(cp_):
+            ck_ = torch.load(cp_, map_location="cpu", weights_only=False); gn_hist = list(ck_.get("gn_hist", []))
+            clip_src = ("ckpt_last.pt gn_hist (steps 1..%s)" % ck_.get("step")) if gn_hist else "not logged"; del ck_
+        else:
+            clip_src = "not logged"
     for step in range(step0, last_ + 1):
         for gr in opt.param_groups:
             gr["lr"] = lr_at(a.lr, gr, step, a.steps)
@@ -487,7 +493,7 @@ def main():
     g_ = np.array([v for v in gn_hist if math.isfinite(v)]) if gn_hist else np.zeros(0)   # 168-12: clip rate (every arm; s168s2.clip for stepaux)
     res["clip"] = {"clip_rate": float((g_ > 1.0).mean()) if len(g_) else None, "grad_norm_preclip": {"median": float(np.median(g_)) if len(g_) else None,
                    "p90": float(np.percentile(g_, 90)) if len(g_) else None, "n_steps": int(len(g_))}, "aux_reweight": bool(a.aux_reweight),
-                   "weights": list(AUX_W) if a.aux_reweight else None, "def": "clip_grad_norm_(..., 1.0)'s pre-clip total norm per step; clip fires when > 1.0"}
+                   "weights": list(AUX_W) if a.aux_reweight else None, "source": clip_src, "def": "clip_grad_norm_(..., 1.0)'s pre-clip total norm per step; clip fires when > 1.0"}
     if SA:
         res["s168s2"]["clip"] = res["clip"]
     res.pop("eval_partial_through", None); res["eval_partial"] = False       # the complete eval (Theory: score_s168s2 reads eval_partial true as running)
