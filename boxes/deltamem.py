@@ -19,11 +19,15 @@ H_ADD, H_DEL, DH = 6, 6, 64
 FAST_ADD = False                                                            # Audit 2026-10-09: R-mode additive writes as one sum over the pass (opt-in per run)
 CHUNK_DELTA = 0                                                             # 2026-10-10: R-mode delta writes in chunks of this many tokens (WY form; 0 = the token loop; needs FAST_ADD)
 POS_OFFSET = 0                                                              # note 187-5 (eval only): every forward path adds wpe[POS_OFFSET : POS_OFFSET + T] (0 = wpe[:T], unchanged)
+POS_KEEP0 = False                                                           # note 187-5a KEEP-SINK: with an offset, position 0 keeps wpe[0] and p >= 1 takes wpe[p + off]
 
 
 def wpe_slice(g, T):
     """the position embeddings a T-token forward adds: wpe[POS_OFFSET : POS_OFFSET + T] (note 187-5; POS_OFFSET 0 = the usual wpe[:T])."""
-    return g.w("wpe.weight")[POS_OFFSET:POS_OFFSET + T]
+    w = g.w("wpe.weight")
+    if POS_KEEP0 and POS_OFFSET and T > 1:                                  # 187-5a: keep GPT-2's position-0 (attention-sink) row under the leading EOT
+        return torch.cat([w[0:1], w[1 + POS_OFFSET:T + POS_OFFSET]], 0)
+    return w[POS_OFFSET:POS_OFFSET + T]
 
 
 class DeltaMem(nn.Module):
