@@ -198,6 +198,7 @@ def main():
     ap.add_argument("--probe_n_fit", type=int, default=4000); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes")
     ap.add_argument("--chunk_delta", type=int, default=0, help="stepaux: DM.CHUNK_DELTA - the delta heads' writes in chunks of this many tokens (WY form, exact in exact arithmetic; needs --fast_add; gate_chunk_delta.json)")
     ap.add_argument("--aux_reweight", action="store_true", help="note 168-12 STEP-AUX-REWEIGHT: the aux CE of hop t weighted by AUX_W[t-1] inside the per-item mean (stepaux)")
+    ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt (no training; args_eval.json; model.pt / args.json / log.jsonl untouched)")
     ap.add_argument("--resume", default=None, help="a ckpt_last.pt / kept ckpt of this run (model, opt, np_rng, step, elapsed)")
     ap.add_argument("--no_normcap", action="store_true", help="stepaux: skip note 185-1's inference-only NORM-CAP eval (smokes)")
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
@@ -253,7 +254,7 @@ def main():
         torch.cuda.reset_peak_memory_stats(dev); its = [Dtr[longest]] * (a.bs // micro); params.train()
         loss_items(its, 1).backward(); params.zero_grad(set_to_none=True)
         return torch.cuda.max_memory_allocated(dev) / 2 ** 30 + 3 * sum(p_.numel() * 4 for p_ in params.parameters()) / 2 ** 30
-    if a.mem_check or (a.auto_micro and dev.startswith("cuda")):
+    if a.mem_check or (a.auto_micro and dev.startswith("cuda") and not a.eval_only):
         mc = []
         while True:
             try:
@@ -270,8 +271,8 @@ def main():
             return
     info = {**vars(a), "task": "prosqa_na", "train_items": len(Dtr), "test_items": len(Dte), "train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
             "train_driver": driver_version(), **env_info(), "stage_len": L_STAGE if a.arm == "currdirect" else None}
-    json.dump(info, open(os.path.join(a.out, ("args_resume_%d.json" % int(time.time())) if a.resume else "args.json"), "w", newline="\n"), indent=1)
-    if SA and not a.resume:                                                 # note 147-2: g_add calibration at step 0 (a resume loads the calibrated s_add)
+    json.dump(info, open(os.path.join(a.out, "args_eval.json" if a.eval_only else (("args_resume_%d.json" % int(time.time())) if a.resume else "args.json")), "w", newline="\n"), indent=1)
+    if SA and not a.resume and not a.eval_only:                                                 # note 147-2: g_add calibration at step 0 (a resume loads the calibrated s_add)
         its = [Dtr[i] for i in np.random.default_rng(16801).permutation(len(Dtr))[:32]]; x, msk = m.think_inputs(its, dev); m.mem.norms = []
         with torch.no_grad(), ac():
             m.think(m.mem.zero_state(len(its), dev), x, msk, min(K, 4))
@@ -283,11 +284,13 @@ def main():
             from collections import Counter
             assert dict(Counter(it["depth"] for it in Dtr)) == HIST_168, "168-12: the train histogram the weights were derived from"
     opt = torch.optim.AdamW(params.parameters(), lr=a.lr, weight_decay=0.01); hist = []; n_nonfinite = 0; wg = []; gn_hist = []
-    log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time(); step0 = 1
+    log = open(os.devnull, "w") if a.eval_only else open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time(); step0 = 1
     if a.resume:
         ck = torch.load(a.resume, map_location=dev, weights_only=False); params.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"]); rng.bit_generator.state = ck["np_rng"]
         step0 = ck["step"] + 1; n_nonfinite = ck.get("n_nonfinite", 0); gn_hist = list(ck.get("gn_hist", [])); t0 = time.time() - ck["elapsed"]; log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
     last_ = a.steps if not a.time_steps else min(a.steps, a.time_steps); tt0 = time.time()
+    if a.eval_only:                                                         # the trained model; no training step runs
+        params.load_state_dict(torch.load(os.path.join(a.out, "model.pt"), map_location=dev, weights_only=False)); last_ = 0
     for step in range(step0, last_ + 1):
         for gr in opt.param_groups:
             gr["lr"] = lr_at(a.lr, gr, step, a.steps)
@@ -325,7 +328,11 @@ def main():
         for f_ in ("timing.json", "eval.json"):
             json.dump(tj, open(os.path.join(a.out, f_), "w", newline="\n"), indent=1)
         print("TIMING", sps, flush=True); return
-    train_sec = round(time.time() - t0); torch.save(params.state_dict(), os.path.join(a.out, "model.pt")); opt.zero_grad(set_to_none=True); opt.state.clear()
+    if a.eval_only:
+        lg_ = [json.loads(l_) for l_ in open(os.path.join(a.out, "log.jsonl")) if '"sec"' in l_]; train_sec = lg_[-1]["sec"] if lg_ else None
+    else:
+        train_sec = round(time.time() - t0); torch.save(params.state_dict(), os.path.join(a.out, "model.pt"))
+    opt.zero_grad(set_to_none=True); opt.state.clear()
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
     params.eval(); t1 = time.time(); bs = a.eval_bs; dep = np.array([it["depth"] for it in Dte])
@@ -384,8 +391,16 @@ def main():
            "acc_def": "candidate accuracy: log p('### ' + correct) > log p(the negative's) after the arm's prefix (stepaux: + the memory after K passes)"}
     if a.arm == "textcot":
         res["mean_cot_tokens"] = float(np.mean(cot_len)) if cot_len else None
+    res["eval_gpu"] = torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"
+    res["eval_only"] = bool(a.eval_only)
+
+    def _partial(tag, s_=None):                                             # Audit 2026-10-11 (b263 lost its eval to a late crash): eval.json after each block
+        if s_ is not None:
+            res["s168s2"] = s_
+        res["eval_partial_through"] = tag; res["eval_partial"] = True; json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
+    _partial("base")
     if SA:
-        s = {"acc_by_depth_kprime": {str(kp): by_depth(sa_margins(Dte, kp), dep) for kp in KPRIMES}}
+        s = {"acc_by_depth_kprime": {str(kp): by_depth(sa_margins(Dte, kp), dep) for kp in KPRIMES}}; _partial("acc_by_depth_kprime", s)
         ex = [Dte[i] for i in np.random.default_rng(16802).permutation(len(Dte))[:a.extras_n]]; exd = np.array([it["depth"] for it in ex])
         hop = {}                                                            # per-hop aux exact match (greedy steps[t-1] + EOT), t <= min(depth, K)
         for i in range(0, len(ex), bs):
@@ -398,7 +413,7 @@ def main():
                         L_ = max(len(ch[j]["step_ids"][t - 1]) + 1 for j in ix); gen = m.aux_greedy(S[ix], t, L_)
                         for r_, j in enumerate(ix):
                             tgt = ch[j]["step_ids"][t - 1] + [EOT]; hop.setdefault(t, []).append(bool(list(gen[r_, :len(tgt)]) == tgt))
-        s["aux_exact_by_hop"] = {str(t): float(np.mean(v)) for t, v in sorted(hop.items())}; s["aux_n_by_hop"] = {str(t): len(v) for t, v in sorted(hop.items())}
+        s["aux_exact_by_hop"] = {str(t): float(np.mean(v)) for t, v in sorted(hop.items())}; s["aux_n_by_hop"] = {str(t): len(v) for t, v in sorted(hop.items())}; _partial("aux_exact_by_hop", s)
         St = states(ex, 2 * K)                                              # 173-1's statistic: mean over items of cos(Sd_t, Sd_t-1), Sd = the delta-head state
         def dcos(St_):
             o_ = {}
@@ -411,13 +426,13 @@ def main():
         torch.manual_seed(a.seed); m_keep = m; m = ProsMem(s5.load_gpt2(dev)).to(dev)   # cos at init: pretrained trunk + fresh memory (seed), gamma 1 (halt173 init)
         with torch.no_grad():
             m.mem.gamma.fill_(1.0); m.mem.fade.fill_(1.0)
-        m.eval(); s["delta_cos_at_init"] = dcos(states(ex, 2 * K)); del m; m = m_keep
+        m.eval(); s["delta_cos_at_init"] = dcos(states(ex, 2 * K)); del m; m = m_keep; _partial("delta_cos", s)
         if dev.startswith("cuda"):
             torch.cuda.empty_cache()
         donor = np.roll(np.arange(len(ex)), 1); S8 = states(ex, 8)[8][donor]  # PATH-INDEP (as §182): K' = 16 from 0 vs from another item's 8-pass memory
         M0 = sa_margins(ex, 16); M1 = sa_margins(ex, 16, S8)
         s["path_indep"] = {"answer_agree": float(((M0 > 0) == (M1 > 0)).mean()), "acc_from_zero": float((M0 > 0).mean()), "acc_from_donor": float((M1 > 0).mean()),
-                           "n_items": len(ex), "kprime": 16, "donor_passes": 8, "derangement": "np.roll(sample order, 1)", "items": "test, rng 16802 permutation[:extras_n]"}
+                           "n_items": len(ex), "kprime": 16, "donor_passes": 8, "derangement": "np.roll(sample order, 1)", "items": "test, rng 16802 permutation[:extras_n]"}; _partial("path_indep", s)
         Sall = states(ex, 16); h = np.full(len(ex), 16); hit = np.zeros(len(ex), bool); pick = np.zeros(len(ex), bool)   # AUX-DONE on ProsQA (Theory 168-7 point 1)
         for t in range(1, 17):
             for i in range(0, len(ex), bs):
@@ -433,7 +448,7 @@ def main():
                          "mean_halt_minus_depth": float(d_.mean()), "frac_capped": float((~hit).mean()), "n_items": len(ex),
                          "halt_minus_depth_share": {"early": float((d_ < 0).mean()), "at_depth": float((d_ == 0).mean()), "+1": float((d_ == 1).mean()), "+2": float((d_ == 2).mean()), "later": float((d_ > 2).mean())},
                          "acc_at_halt_by_bucket": {k_: (float((Mh[v_] > 0).mean()) if v_.any() else None) for k_, v_ in {"early": d_ < 0, "at_depth": d_ == 0, "+1": d_ == 1, "later": d_ > 1}.items()},
-                         "rule": "halt at the first pass t (1..16) whose greedy aux step's object (last word) is EITHER option named in the question; cap 16 (descriptive; T-SHIFT's pass-token caveat applies)"}
+                         "rule": "halt at the first pass t (1..16) whose greedy aux step's object (last word) is EITHER option named in the question; cap 16 (descriptive; T-SHIFT's pass-token caveat applies)"}; _partial("aux_done", s)
         ext_ = [it for it in Dte if 11 <= it["depth"] <= 14][:a.extras_n]; hx = {}   # aux_acc_by_pass_ext (Theory point 2): depths 11..14 to K' 16
         for i in range(0, len(ext_), bs):
             ch = ext_[i:i + bs]; x, msk = m.think_inputs(ch, dev)
@@ -445,7 +460,7 @@ def main():
                         gen = m.aux_greedy(S[ix], t, max(len(ch[j]["step_ids"][t - 1]) + 1 for j in ix))
                         for r_, j in enumerate(ix):
                             tg_ = ch[j]["step_ids"][t - 1] + [EOT]; hx.setdefault(t, []).append(bool(list(gen[r_, :len(tg_)]) == tg_))
-        s["aux_acc_by_pass_ext"] = {str(t): float(np.mean(v)) for t, v in sorted(hx.items())}; s["n_by_pass_ext"] = {str(t): len(v) for t, v in sorted(hx.items())}
+        s["aux_acc_by_pass_ext"] = {str(t): float(np.mean(v)) for t, v in sorted(hx.items())}; s["n_by_pass_ext"] = {str(t): len(v) for t, v in sorted(hx.items())}; _partial("aux_acc_by_pass_ext", s)
         from boxes.nested170 import logreg_acc                              # STEP-RECOVER: logreg M_t (delta state) -> hop t's node id
         tr = [Dtr[i] for i in np.random.default_rng(16803).permutation(len(Dtr))[:a.probe_n_fit]]; Str = states(tr, K); sr = {}
         for t in range(1, K + 1):
@@ -453,8 +468,10 @@ def main():
             if len(fi) > 50 and ti:
                 Xf = Str[t][fi][:, DM.H_ADD:].reshape(len(fi), -1); Xt = St[t][ti][:, DM.H_ADD:].reshape(len(ti), -1)
                 VOC = {nm: c_ for c_, nm in enumerate(sorted({it["node"][t - 1] for it in tr + ex if t <= it["depth"]}))}
-                sr[str(t)] = logreg_acc(Xf, np.array([VOC[tr[i]["node"][t - 1]] for i in fi]), Xt, np.array([VOC[ex[i]["node"][t - 1]] for i in ti]), dev)
-        s["step_recover"] = sr; s["step_recover_def"] = "classes = concept NAMES (shared vocabulary); multinomial logreg (nested170.logreg_acc) from the flattened delta-head state after pass t to hop t's node id; fit on probe_n_fit train items"
+                yf_ = np.array([VOC[tr[i]["node"][t - 1]] for i in fi]); yt_ = np.array([VOC[ex[i]["node"][t - 1]] for i in ti])
+                assert yf_.max() < len(VOC) and yt_.max() < len(VOC), "STEP-RECOVER labels exceed n_cls"   # Audit: the probe is sized to len(VOC)
+                sr[str(t)] = logreg_acc(Xf, yf_, Xt, yt_, dev, n_cls=len(VOC))   # b263: > 11 classes (nested170.logreg_acc defaulted to P = 11)
+        s["step_recover"] = sr; s["step_recover_def"] = "classes = concept NAMES (shared vocabulary); multinomial logreg (nested170.logreg_acc) from the flattened delta-head state after pass t to hop t's node id; fit on probe_n_fit train items"; _partial("step_recover", s)
         if not a.no_normcap:                                                # note 185-1 (descriptive, no rule reads it): inference-only NORM-CAP, C from TRAIN items
             trc = [Dtr[i] for i in np.random.default_rng(18502).permutation(len(Dtr))[:1000]]; nrm = []
             for i in range(0, len(trc), bs):
@@ -473,6 +490,7 @@ def main():
                    "weights": list(AUX_W) if a.aux_reweight else None, "def": "clip_grad_norm_(..., 1.0)'s pre-clip total norm per step; clip fires when > 1.0"}
     if SA:
         res["s168s2"]["clip"] = res["clip"]
+    res.pop("eval_partial_through", None); res["eval_partial"] = False       # the complete eval (Theory: score_s168s2 reads eval_partial true as running)
     res["eval_sec"] = round(time.time() - t1); json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     for ck_ in ("ckpt_last.pt", "ckpt_prev.pt"):
         if os.path.exists(os.path.join(a.out, ck_)):
