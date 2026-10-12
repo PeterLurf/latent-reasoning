@@ -13431,6 +13431,21 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - That fits 187-6a's token × remaining-work account, and **predicts that RMS × NOPASS repairs the aux side.** This is the strongest support so far for that lead.
   - It waits for §189 (RMS replication) and §187 (whether NOPASS costs depth within training).
 
+**§168 step 2 result, STEP-AUX s1 (2026-10-12 02:42 EDT; s168s2_stepaux_s1, b263, RTX 3090, bs 64, 12k steps; eval-only on the 4060 per 168-15; 168-16's check GENUINE; score_s168s2). Not DEEP-LATENT: at chance on test at every depth and K′. The latent path memorised its training items and learned no transferable search.**
+* **Test:** accuracy 0.490 (ctl 0.521). Pooled depth 3..10 at K′ = 10 is 0.492; 11–14 at K′ = 16 is 0.485. Flat at about 0.5 for every K′ from 0 to 16.
+  - aux exact by hop: 0.53 / 0.25 / ≤ 0.15 from hop 3.
+  - Not DEEP-LATENT, not DEPTH-GENERAL, not BEYOND TEXT (TEXT-COT 11–14 reads 0.776).
+* **Training items (168-16; 1,000 items, same path):** accuracy 1.000 at every depth; aux exact 1.0 at every hop. **GENUINE memorisation.**
+  - At K′ = 0 the training answers already read 0.91–0.97, and K′ ≥ 4 reads 1.0. The trunk maps question text to answer, and each item's latent chain is memorised as well.
+* **The likely structural cause:**
+  - Nested arithmetic samples fresh training items every step (`train_items(rng, …)`), so its data is effectively unlimited, and there the recipe generalises (§184).
+  - §168's ProsQA training set is fixed (about 12k items, seen about 43–64 times).
+  - TEXT-COT transferred (0.735) on the same fixed set, so text CoT is more data-efficient here than the identical-input latent path. The latent path needs a procedure-forcing signal or more data.
+* **Consequences:**
+  - (1) 168-12's STEP-AUX-REWEIGHT (b267) proceeds and is read as registered. The same memorisation is expected.
+  - (2) **Before any further ProsQA or GSM8K spend:** GSM8K's training set is also fixed and small (about 7.5k), so this failure mode applies directly. The roadmap's "test on a smaller language task, then GSM8K" step has failed as-is.
+  - (3) **Candidate lead (not registered):** ProsQA-FRESH, the same STEP-AUX recipe trained on procedurally generated graphs (fresh every step, as nested). It tests whether data volume is the barrier. Literature is asked whether a ProsQA / ProsQA-Ext generator is available.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
