@@ -13405,6 +13405,22 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **Independent check, if available:** any accuracy lines the crashed in-run eval printed to the host's stdout log before STEP-RECOVER (same code, original environment).
 * 168-15's re-evaluation rule does not trigger: 0.49 is far from every boundary.
 
+**173-4 result (2026-10-12 02:32 EDT; 3070, a94166ab; score_s173_2 and 187-3's computation). Halting stays parked: both answer-settling rules are PREMATURE on RMS too. RMS's answer timing follows n one step past the edge, while its completion signal still only fires at t = 8. WINDOW is size-keyed but misses 187-3's COUNT-OOD letter.**
+* **(1) RMS s1 halting:**
+  - answer2: n 10 0.199 vs 0.751 at K′ = n + 2 (mean halt 4.40); n 12 0.095 vs 0.174.
+  - MOVED2: n 10 0.336 vs 0.751 (mean halt 6.67); n 12 0.139 vs 0.174.
+  - **Both PREMATURE.** HALT-EQUAL holds only at n ≤ 4 (MOVED2), as on §184.
+  - **acc_by_t jumps** (first t > 0.5): n 2 / 4 / 6 / 8 / 10 at t = 1 / 3 / 5 / 7 / **9**, i.e. n − 1 throughout. n = 12 never jumps (max 0.23).
+  - §184 jumped at t = 8 (the edge) for n = 10. So RMS's answer computation follows the item's own size one step past training, consistent with 187-6.
+* **(2) RMS s1 AUX-DONE (selfdepth):**
+  - n 9: 419 / 1,000 halt at t = 8 and 581 never halt. n 10: 155 at t = 8 and 845 never.
+  - **No halt ever occurs at any t other than 8.** §184 s1: 976 / 714 at t = 8.
+  - **By the letter of 173-4's criterion this reads "weakened":** the mean halt with no-halt counted as 16 is 12.65 → 14.76 (+2.1), and the share at 8 is < 50%. That criterion did not anticipate no-halts.
+  - **In substance, the prediction holds:** the completion signal fires only at the token edge (t = 8) or not at all. Its size-dependence is in whether it fires, not when. Both are stated; the token account is not weakened by this.
+* **(3) WINDOW s1, 187-3 rows** (mean handle t 3–6, nesting ≤ 2, n 9 / 10 / 11 / 12): 0.978 / 0.942 / 0.838 / 0.682, onsets 9 / 7 / 6 / 4.
+  - The onsets move earlier with n, but monotonicity fails at t = 3 by 0.01 (n 10 1.00 vs n 9 0.99), so **by 187-3's letter it is not COUNT-OOD (mixed).**
+  - In substance WINDOW is size-keyed, more mildly than §184 (s1: 0.958 → 0.517). This is context for §188.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
