@@ -277,6 +277,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 187 | AUX-NOPASS: §184 with the aux prompt's pass token removed; does pass-token keying limit depth beyond training (C2)? DEPTH = n 9–12 at K′ = n + 2 vs §184 (0.486) and TEXT-COT (0.535) | registered | **s1 TOKEN-WAS-THE-LIMIT (depth 0.623 vs 0.486), DEEP; descriptively STABLE to 4× K (0.942 at K′32); s2 running** |
 | 188 | REWEIGHT × WINDOW: §182 WINDOW + §184's --aux_reweight in one cell; JOINT = DEEP + THINK-NECESSARY + STABLE (K′16); a C6 claim needs LONG-STABLE (K′24 ≥ K′8 − 0.05) at 2 / 2 | registered | **open** |
 | 189 | RMS-REP: §185 RMS at seed 2 (descriptive replication); SUBSTITUTE = DEEP + THINK-NECESSARY + depth n 9–12 ≥ §184 s2 − 0.05 / DEEP-ONLY / NOT REPLICATED | registered | **closed: SUBSTITUTE (s2 DEEP, depth 0.662 vs §184 s2 0.665; two-seed 0.625 vs 0.576)** |
+| 190 | RMS × NOPASS: §185 RMS + §187's --aux_nopass; LATE (t 7–8, n 10–12) vs RMS s1 0.648; COSTLY-AUX / COSTLY / TOKEN-FIX (opens s2; claim 2 / 2) / TOKEN-NOT-THE-LIMIT; FLAT and AUX-DONE descriptives | registered | **open** |
 
 ## Live sections
 
@@ -13574,6 +13575,45 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **Descriptive (§182's letter):** pooled K′ 8 / 16 / 24 / 32 reads 0.9988 / 0.9875 / 0.871 / 0.709. s2 is **STABLE** (−0.011); s1 was not (−0.065).
 * **The SIZE-FREE-EARLY expectation (187-6, pre-stated)** is read from s2's 187-3 rows, landing now.
 * **Consequence:** §190 (RMS × NOPASS)'s precondition (RMS replicates) is met. It registers now.
+
+## 190. RMS × NOPASS: does removing the pass token free RMS's late steps, and does composing it with RMS give a flat depth curve? (Audit-reviewed; pre-registered 2026-10-12 11:52 EDT, after §187 s1 (not COSTLY) and §189 (SUBSTITUTE), before any §190 run)
+
+**Why.**
+* RMS's early steps are size-free (187-6), and its answer completes at t ≈ n past the training edge (173-4).
+* Its aux step readout fails from t ≈ 7 at every n 10–12 and collapses at t = 9.
+  - That readout is the one path that carries the pass token.
+  - 187-6a's account: the pass token co-occurred in training only with ≤ 8 − t operators left, so "Step 7" with 5 left is out of distribution.
+* Removing the token (§187's `--aux_nopass`) should move or remove that onset. The undertraining account predicts it won't (187-6a, pre-stated).
+* **§187 / 187-9 (NOPASS alone, on §184):** the token edge is gone (no fixed-t onset; final steps recover), but the early steps stay size-keyed (t 3–6: 0.901 → 0.440 over n 9–12).
+  - RMS fixes the size cue; NOPASS fixes the edge. They are complementary.
+  - **The composition prediction (187-9):** early steps size-free and no fixed-t edge, the first candidate for a flat n 9–12 handle curve.
+  - **Descriptive, added: FLAT** = mean handle t 3–6 at n 12 ≥ n 9's − 0.05 and no onset before t = n − 1 at n 10–12.
+
+**Design.** s185_rms_s1's args exactly plus `--aux_nopass` (seed 1, RTX 3090, uncached). Gates passed (gate_rmsnopass/gate.json): flags-off bitwise, the combined step, gradflow, memory reused at 18.1 GiB. Dir `s190_rmsnopass_s1`.
+
+**Rules (comparator s185_rms_s1, same seed; aux handle per item from 187-3's rows, nesting ≤ 2):**
+* **LATE** = mean handle over t ∈ {7, 8} at n 10–12. RMS s1: 0.648.
+* **DEEP** (≥ 0.90 at n 3..8, K′8) and **THINK-NECESSARY** (170-4). **DEPTH** = n 9–12 at K′ = n + 2. RMS s1: 0.587.
+* **Readings:**
+  - **COSTLY-AUX (checked first; Audit):** the in-distribution aux handle at t 7–8 (`s175.aux_acc_by_role`, mean of t = 7 and 8) drops ≥ 0.05 below RMS s1's 0.990.
+    - NOPASS then costs step identification itself, so a low deep LATE is confounded.
+  - **TOKEN-FIX:** DEEP, LATE ≥ 0.798 (+0.15), and DEPTH ≥ 0.687 (+0.10). It opens s2.
+    - **The claim needs 2 / 2,** with §189's RMS s2 as s2's comparator (same margins on its own LATE and DEPTH). §184's seeds differed by 0.18 in depth, more than the margin.
+  - **TOKEN-NOT-THE-LIMIT:** DEEP and |LATE − 0.648| < 0.05.
+  - **COSTLY:** not DEEP (an answer-side cost).
+  - Otherwise mixed.
+* **Descriptive:**
+  - EDGE = mean handle at t 9–10 on n 10–12 (RMS s1 0.105; the unseen-token collapse should vanish without a token);
+  - onsets by n;
+  - **AUX-DONE (pre-stated in the 187-4-on-§187 note):** on n 9 / 10,
+    - DONE-TRACKS-N: ≥ 50% halt, the halted-only mean at n 9 ≥ 8.5, and < 50% of all items at t = 8;
+    - DONE-PINNED: ≥ 50% of all items at t = 8;
+    - DONE-SILENT: < 50% halt.
+    - Without the token, §187 pinned 991 / 1,000 at t = 8, so a state counter exists. §190 also removes the magnitude counter.
+  - 173 halting.
+
+**Placement.** About 11.8 h on a 3090, about $3, within Audit's line. It launches now in the free slot.
+* §187 s1 showed NOPASS has no within-depth cost (in-distribution handle ≥ 0.992), and §189 read SUBSTITUTE, so both preconditions are met.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
