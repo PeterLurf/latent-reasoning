@@ -11,7 +11,15 @@
   "gpu": "NVIDIA GeForce RTX 3090"
  },
  "rms_s2": {
-  "status": "open"
+  "status": "done",
+  "pooled_k8": 0.9988333333333334,
+  "pooled_k16": 0.9874999999999999,
+  "pooled_k32": 0.7086666666666667,
+  "stable": true,
+  "depth_9_12_n2": 0.662,
+  "deep": true,
+  "think_necessary": true,
+  "gpu": "NVIDIA GeForce RTX 3090"
  },
  "s184_s1": {
   "status": "done",
@@ -53,6 +61,6 @@
   "think_necessary": true,
   "gpu": "NVIDIA GeForce RTX 3090"
  },
- "reading": "pending (RMS s2 open; \u00a7184 s2 done)",
+ "reading": "SUBSTITUTE: s2 K'8 0.999, DEEP True, THINK-NECESSARY True, DEPTH 0.662 vs \u00a7184 s2 0.665 (bar 0.615); K'16 0.987 (STABLE True); two-seed DEPTH RMS 0.625 vs \u00a7184 0.576; seed pairs RMS - \u00a7184: s1 +0.101, s2 -0.003 (Audit)",
  "errors": []
 }
