@@ -1,0 +1,10 @@
+{
+ "A": {
+  "status": "open"
+ },
+ "B": {
+  "status": "open"
+ },
+ "reading": "pending (A open; B open)",
+ "errors": []
+}
