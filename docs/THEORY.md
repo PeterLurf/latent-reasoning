@@ -13278,6 +13278,27 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - This fits 184-1's 2× cap not changing the deep decay: that cap is global (2× the median after K = 8), while the excess here is relative to pass t. A size-12 item at t = 4 is within 2× of the global median but above any n ≤ 8 item at t = 4.
   - **The per-item test it predicts (a candidate 187-8):** on §184 / NOFADE, deep items (n 10–12) whose read norm at t 3–6 exceeds the n ≤ 8 maximum at the same t should fail the handle more often than deep items within that range.
 
+**Note 187-8 (2026-10-12 01:14 EDT; before any measurement; Audit's READ-RENORM, in clamp form; descriptive, eval-only, no training). READ-CLAMP: does §184's size-keying run through the read's per-pass magnitude?**
+* **Why:** 187-7 showed that a size code by direction is present in every read, RMS included, so size-free computation does not need the code to be absent.
+  - What survives is the norm channel: present in §184 (norm probe 0.50–0.64), absent in RMS by construction.
+  - The refined account is that a larger item's read at pass t is out of the trained range for that pass.
+  - 184-1's global 2× state cap does not test this, because it binds only above 2× the median after K = 8.
+* **The intervention (inference only, on s184_reweight_s1 and s2):**
+  - **References:** from 500 n ≤ 8 training items, the per-token p99 of each additive head's read norm, per read path (think pass, main decoder, aux decoder) and per state pass-count k (reads on S_k, k = 0..12).
+  - **The clamp:** at evaluation, any token's per-head additive read whose norm exceeds its (path, head, k) reference is scaled down to it. Direction is unchanged; reads within range are untouched; the delta heads are untouched.
+  - **Re-measured:** 187-3's rows (n 9–12, all items, handle by t) and in-distribution n 3–8 (handle and K′ = 8 answer). Every path is clamped, in one process per model.
+* **Readouts (per model; both §184 seeds must agree for a label):**
+  - **CONTROL:** in-distribution n 3–8 handle (mean over t ≤ n) and K′ = 8 pooled answer are each within 0.03 of unclamped. If not, the clamp itself harms, and the result is **INCONCLUSIVE**.
+  - **BINDING:** at least 5% of n 10–12 items have at least one clamped read at t = 3–6. If not, **NOT-BINDING** (uninformative).
+  - **NORM-CHANNEL:** control and binding hold, and the clamped n = 12 mean handle at t = 3–6 is ≥ its n = 9 value − 0.05, with onsets at n 10–12 within one pass of each other. That is RMS-like size-freeness induced without training.
+  - **NOT-NORM:** control and binding hold, and the n = 12 mean handle at t = 3–6 moves by < 0.05 from unclamped. The decoder keys on something else (direction or the delta read), so RMS's size-freeness comes from training, not from the read's form.
+  - Otherwise **partial**.
+* **Descriptive:**
+  - the fraction of reads clamped by (n, t, path);
+  - the per-item correlation, among unclamped deep items, between the excess over the in-range maximum and handle failure;
+  - DEPTH (n 9–12 at K′ = n + 2) clamped vs unclamped.
+* **Output:** `<run>/eval_s187_readclamp.json`, on the 3070, about 10–20 min per model. Reader: `theory/score_s187_8.py`.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
