@@ -13446,6 +13446,16 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - (2) **Before any further ProsQA or GSM8K spend:** GSM8K's training set is also fixed and small (about 7.5k), so this failure mode applies directly. The roadmap's "test on a smaller language task, then GSM8K" step has failed as-is.
   - (3) **Candidate lead (not registered):** ProsQA-FRESH, the same STEP-AUX recipe trained on procedurally generated graphs (fresh every step, as nested). It tests whether data volume is the barrier. Literature is asked whether a ProsQA / ProsQA-Ext generator is available.
 
+**Note 168-17 (2026-10-12 04:17 EDT; before measurement; descriptive, eval-only; the idle 4060). Did the text baselines memorise too?**
+* **Why:** §168 s2 STEP-AUX memorised its fixed set (train 1.000, test 0.490). §191's framing ("TEXT-COT memorised and still transferred") rests on the baselines' train fit, which was never measured.
+* **The measurement:** 168-16's train-item path (`--eval_only --eval_train_n 1000`, rng 16816) on s168s2_textcot_s1 and s168s2_currdirect_s1. Candidate accuracy on 1,000 of their own training items, with test accuracy from their eval.json beside it.
+* **Readouts (descriptive):**
+  - **MEMORISED-AND-TRANSFERRED** (TEXT-COT): train ≥ 0.95 with test 0.735.
+  - **FIT-WITHOUT-MEMORISING:** train within 0.05 of test.
+  - Otherwise report both.
+  - CURR-DIRECT (test 0.508) is read the same way.
+* **What it informs:** whether the latent path's failure is "memorises *instead of* generalising" (TEXT-COT memorises and generalises) or "the fixed set only supports memorisation without per-token supervision".
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
