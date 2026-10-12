@@ -242,6 +242,86 @@
     "16": 1000
    }
   },
+  "rms_s1": {
+   "status": "done",
+   "label": "PREMATURE",
+   "above_fixed": [],
+   "by_n": {
+    "2": {
+     "acc_halt": 1.0,
+     "mean_h": 3.373,
+     "frac_capped": 0.0,
+     "mean_h_uncapped": 3.373,
+     "acc_k_n2": 1.0,
+     "diff": 0.0,
+     "fixed_k": 1.0,
+     "halt_equal": true
+    },
+    "4": {
+     "acc_halt": 0.957,
+     "mean_h": 4.777,
+     "frac_capped": 0.0,
+     "mean_h_uncapped": 4.777,
+     "acc_k_n2": 1.0,
+     "diff": -0.04300000000000004,
+     "fixed_k": 1.0,
+     "halt_equal": false
+    },
+    "6": {
+     "acc_halt": 0.471,
+     "mean_h": 4.544,
+     "frac_capped": 0.0,
+     "mean_h_uncapped": 4.544,
+     "acc_k_n2": 1.0,
+     "diff": -0.529,
+     "fixed_k": 1.0,
+     "halt_equal": false
+    },
+    "8": {
+     "acc_halt": 0.21,
+     "mean_h": 4.197,
+     "frac_capped": 0.0,
+     "mean_h_uncapped": 4.197,
+     "acc_k_n2": 0.991,
+     "diff": -0.781,
+     "fixed_k": 0.994,
+     "halt_equal": false
+    },
+    "10": {
+     "acc_halt": 0.199,
+     "mean_h": 4.399,
+     "frac_capped": 0.0,
+     "mean_h_uncapped": 4.399,
+     "acc_k_n2": 0.751,
+     "diff": -0.552
+    },
+    "12": {
+     "acc_halt": 0.095,
+     "mean_h": 4.261,
+     "frac_capped": 0.003,
+     "mean_h_uncapped": 4.22567703109328,
+     "acc_k_n2": 0.174,
+     "diff": -0.07899999999999999
+    },
+    "16": {
+     "acc_halt": 0.112,
+     "mean_h": 3.983,
+     "frac_capped": 0.005,
+     "mean_h_uncapped": 3.922613065326633
+    }
+   },
+   "cap": 16,
+   "gpu": "NVIDIA GeForce RTX 3070",
+   "n_items": {
+    "2": 1000,
+    "4": 1000,
+    "6": 1000,
+    "8": 1000,
+    "10": 1000,
+    "12": 1000,
+    "16": 1000
+   }
+  },
   "reading": "PREMATURE (s184_s1, s184_s2)"
  },
  "moved2": {
@@ -476,6 +556,86 @@
     }
    },
    "cap": 24,
+   "gpu": "NVIDIA GeForce RTX 3070",
+   "n_items": {
+    "2": 1000,
+    "4": 1000,
+    "6": 1000,
+    "8": 1000,
+    "10": 1000,
+    "12": 1000,
+    "16": 1000
+   }
+  },
+  "rms_s1": {
+   "status": "done",
+   "label": "PREMATURE",
+   "above_fixed": [],
+   "by_n": {
+    "2": {
+     "acc_halt": 1.0,
+     "mean_h": 4.985,
+     "frac_capped": 0.12,
+     "mean_h_uncapped": 3.482954545454546,
+     "acc_k_n2": 1.0,
+     "diff": 0.0,
+     "fixed_k": 1.0,
+     "halt_equal": true
+    },
+    "4": {
+     "acc_halt": 0.998,
+     "mean_h": 5.98,
+     "frac_capped": 0.098,
+     "mean_h_uncapped": 4.891352549889136,
+     "acc_k_n2": 1.0,
+     "diff": -0.0020000000000000018,
+     "fixed_k": 1.0,
+     "halt_equal": true
+    },
+    "6": {
+     "acc_halt": 0.719,
+     "mean_h": 6.382,
+     "frac_capped": 0.056,
+     "mean_h_uncapped": 5.811440677966102,
+     "acc_k_n2": 1.0,
+     "diff": -0.281,
+     "fixed_k": 1.0,
+     "halt_equal": false
+    },
+    "8": {
+     "acc_halt": 0.303,
+     "mean_h": 5.236,
+     "frac_capped": 0.029,
+     "mean_h_uncapped": 4.914521112255406,
+     "acc_k_n2": 0.991,
+     "diff": -0.688,
+     "fixed_k": 0.994,
+     "halt_equal": false
+    },
+    "10": {
+     "acc_halt": 0.336,
+     "mean_h": 6.667,
+     "frac_capped": 0.022,
+     "mean_h_uncapped": 6.457055214723926,
+     "acc_k_n2": 0.751,
+     "diff": -0.415
+    },
+    "12": {
+     "acc_halt": 0.139,
+     "mean_h": 6.856,
+     "frac_capped": 0.032,
+     "mean_h_uncapped": 6.553719008264462,
+     "acc_k_n2": 0.174,
+     "diff": -0.034999999999999976
+    },
+    "16": {
+     "acc_halt": 0.119,
+     "mean_h": 7.041,
+     "frac_capped": 0.021,
+     "mean_h_uncapped": 6.848825331971399
+    }
+   },
+   "cap": 16,
    "gpu": "NVIDIA GeForce RTX 3070",
    "n_items": {
     "2": 1000,
