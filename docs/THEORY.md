@@ -13615,6 +13615,15 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 **Placement.** About 11.8 h on a 3090, about $3, within Audit's line. It launches now in the free slot.
 * §187 s1 showed NOPASS has no within-depth cost (in-distribution handle ≥ 0.992), and §189 read SUBSTITUTE, so both preconditions are met.
 
+**187-6's SIZE-FREE-EARLY on RMS s2 (2026-10-12 11:56 EDT; s185_rms_s2 187-3 rows, RTX 4060 bf16, 5d2f747c; pre-stated in 187-6). Not replicated by the letter, because the onset part fails. In substance the size-free early steps replicate.**
+* **Mean handle at t 3–6, nesting ≤ 2, n 9 / 10 / 11 / 12:** 0.990 / 0.969 / 0.964 / **0.971**.
+  - n 12 ≥ n 9 − 0.05, so **this part holds.** §184 s2: 0.903 / 0.742 / 0.620 / 0.522.
+* **Onsets (first t < 0.80) at n 9–12:** 9 / 9 / 7 / 7. At n 10–12 they span two passes, not one, so **this part fails.**
+  - n 10 holds 0.83 / 0.83 at t 7–8, just above the 0.80 line, before the unseen-token collapse at t = 9 (0.16).
+  - n 11 / 12 cross at t = 7 (0.75 / 0.76).
+  - All of n 10–12 sit at 0.75–0.83 at t = 7: the same fixed late decline as s1, slightly milder on s2.
+* **Reading:** RMS's size-free early steps replicate at 2 / 2 (s1 0.985 → 0.953; s2 0.990 → 0.971). The registered conjunction fails only on how a 0.80 threshold falls on the late decline.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
