@@ -13629,6 +13629,11 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * It fits "fails once remaining work exceeds a bound": n 10 holds at t 7 with 3 left, while n 11 / 12 break at t 7 with 4 / 5 left. That is consistent with 187-6a's token × remaining-work account.
 * §190's design is unchanged.
 
+**SIZE-FREE-EARLY on RMS s2, reconciled (2026-10-12 11:56 EDT; Audit's per-pass check).** At t 5 / 6 / 7, n 10 reads 0.97 / 0.92 / 0.83, n 11 0.97 / 0.89 / 0.75, and n 12 0.99 / 0.90 / 0.76.
+* All three decline together from t ≈ 6, and the 0.80 line separates them at t 7 by only 0.03–0.08.
+* On these numbers a shared fixed late decline (from t ≈ 6–7) and a remaining-work bound cannot be told apart. The previous note's lean toward the latter is withdrawn as over-reading.
+* RMS s2 is the clean baseline for §190, which is predicted to differ exactly here: no token, and no shared late decline.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
