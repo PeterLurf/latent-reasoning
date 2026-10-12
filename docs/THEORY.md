@@ -13456,6 +13456,18 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - CURR-DIRECT (test 0.508) is read the same way.
 * **What it informs:** whether the latent path's failure is "memorises *instead of* generalising" (TEXT-COT memorises and generalises) or "the fixed set only supports memorisation without per-token supervision".
 
+**168-17 result (2026-10-12 04:40 EDT; e9400362; eval-only train-item fit, 1,000 items, rng 16816, on the 4060, 3090-trained models). All three ProsQA arms memorised their fixed 12k-item set. Only TEXT-COT transfers, and its transfer is depth-flat.**
+* **Train / test:**
+  - TEXT-COT: **1.000** / 0.735 (MEMORISED-AND-TRANSFERRED);
+  - CURR-DIRECT: **1.000** / 0.508 (every test depth 0.41–0.58);
+  - STEP-AUX (168-16): **1.000** / 0.490.
+* **Reading:**
+  - Memorising the training set does not by itself block transfer when the chain is explicit text. The latent arms, direct and memory, are what fail to generalise from 12k fixed items.
+  - Per-token text supervision gives TEXT-COT a transferable procedure that a view-free latent read does not get from the same data.
+* **Caution on the 0.735 bar:** TEXT-COT's test accuracy is flat over depth 3–14 (0.69–0.85, highest at depth 14).
+  - Search should degrade with depth, so this looks like a partial heuristic, not graph search.
+  - "Beating TEXT-COT" on this set is a weak bar, and §191's NAME-MEM (≥ 0.65) is read with that in mind.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
