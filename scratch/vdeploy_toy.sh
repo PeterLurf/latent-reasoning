@@ -5,6 +5,7 @@
 # scratch/queue_worker2.sh <tag> cuda:0 <queue file>. Prints INSTANCE <id> <host> <port>, the cuInit/clock line, and
 # STARTED; prints BAD HOST if cuInit fails (the instance is left for the caller to destroy).
 set -u
+T00=$(date +%s)                                                          # 2026-10-12 (b273: 4 bare CREATE FAILEDs): timing + the raw create reply on failure
 O=$1; LBL=$2; Q=$3; TAG=$4; W=${5:-scratch/queue_worker2.sh}
 EXTRA=""; [ "$W" = scratch/queue_worker3.sh ] && EXTRA="scratch/queue_worker3.sh scratch/p9_frozen"
 [ "$W" = scratch/queue_worker_t12.sh ] && EXTRA="scratch/queue_worker_t12.sh scratch/t12_frozen"
@@ -37,9 +38,10 @@ cd "$(dirname "$0")/.."
 CAPLOCK=scratch/.vdeploy_cap.lock; for w in $(seq 1 60); do mkdir $CAPLOCK 2>/dev/null && break; sleep 5; done
 NLIVE=$(bash "$V" show instances --raw 2>/dev/null | python -c "import json,sys;print(len(json.load(sys.stdin)))" 2>/dev/null)
 if [ -z "$NLIVE" ] || [ "$NLIVE" -ge 16 ]; then rmdir $CAPLOCK 2>/dev/null; echo "CREATE FAILED (fleet cap: ${NLIVE:-unknown} live >= 16)"; exit 1; fi
-ID=$(bash "$V" create instance $O --image pytorch/pytorch:2.5.1-cuda12.4-cudnn9-devel --disk 30 --ssh --direct --label $LBL --raw 2>&1 | grep -o '"new_contract": *[0-9]*' | grep -o '[0-9]*$')
+T0C=$(date +%s); CR=$(bash "$V" create instance $O --image pytorch/pytorch:2.5.1-cuda12.4-cudnn9-devel --disk 30 --ssh --direct --label $LBL --raw 2>&1)
+ID=$(echo "$CR" | grep -o '"new_contract": *[0-9]*' | grep -o '[0-9]*$')
 sleep 3; rmdir $CAPLOCK 2>/dev/null                                      # the new instance is listed before the next deploy counts
-[ -n "$ID" ] || { echo "CREATE FAILED"; exit 1; }
+[ -n "$ID" ] || { echo "CREATE FAILED (create call $(( $(date +%s) - T0C )) s, $(( T0C - T00 )) s after vdeploy start): $(echo "$CR" | tr '\n' ' ' | sed -E 's/api_key=[^&" ]*/api_key=REDACTED/g; s/[0-9a-fA-F]{40,}/<redacted>/g' | cut -c1-400)"; exit 1; }   # no key in logs
 echo "$ID vast offer $O created $(date '+%Y-%m-%d %H:%M'): label $LBL, queue $Q (logged at create by vdeploy_toy.sh)" >> scratch/pods.txt
 # STUCK_POLL_BEGIN (Audit 2026-10-09 ~17:16: b240 lost 3 hosts that read cur_state stopped mid image pull) - a poll counts toward STUCK_LOADING only if
 # cur_state is stopped AND status_msg shows no image-pull progress (actual_status dropped 18:1x: real stuck hosts read loading); the 60-poll (20-min) loop stays the hard cap.
