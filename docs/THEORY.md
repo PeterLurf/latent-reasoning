@@ -12999,6 +12999,15 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - This corrects 173-2's "s1 0.643" to 0.638.
 * **n = 16** is descriptive only: K′ = 18 is past the 2K = 16 cap.
 
+**Amendment 173-2b (2026-10-11 20:55 EDT; before any data; Audit's review; wording and scorer only, no rule change).**
+* **answer2** halts at the first t ≥ 2 with a(t) = a(t − 1) = a(t − 2): **three equal consecutive answers**, i.e. unchanged across 2 consecutive transitions. This is §173's rule as registered.
+* **WINDOW s1** has think_k 12, so halt173 gives it a cap of 2K = 24, a larger halting budget than §184's 16.
+  - It is read beside §184, not in the reading.
+  - Its n = 16 has a K′ = 18 comparator; §184's does not.
+* **score_s173_2.py** now asserts each run's own think_k (8 / 8 / 12) and cap = 2K.
+  - Before this fix, a WINDOW file would have crashed the scorer.
+  - Re-checked with a WINDOW-shaped fixture.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
