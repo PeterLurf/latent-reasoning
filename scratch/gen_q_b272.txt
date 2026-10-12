@@ -1,0 +1,4 @@
+# THEORY §191 PROSQA-RELABEL cell B, control (Theory's sec191 draft; gate191.json): s191_textcot_relabel_s1 = s168s2_textcot_s1's exact args + --relabel --test500_every 1000. NOT LAUNCHED: awaits the user's approval. ~4.5 h + eval (textcot rate +~3% relabel CPU)
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s191_textcot_relabel_s1 boxes.prosqa168s2 --arm textcot --relabel --test500_every 1000 --seed 1 --steps 12000 --bs 64 --auto_micro
