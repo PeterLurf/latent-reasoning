@@ -13143,6 +13143,15 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - Mean halt by n.
 * **Code (Experiments):** add "moved2" to halt173's halts(). All three halt files are re-run (about 100 s each); the existing files are kept as `*.answer2only.json`.
 
+**Amendment 173-3a (2026-10-11 23:29 EDT; before any moved2 output; Audit's cautions; descriptive, no rule change).**
+* **(1) MOVED2's premise** is that the pre-completion default equals a(0). If the default drifts (a different stable wrong answer at t 3–6), MOVED2 still fires early.
+  - The s1 re-run's own moved2 result tests this on design data. **It is read before s2's file is opened.**
+  - If s1's moved2 is PREMATURE, the premise has failed. s2's registered reading still stands.
+* **(2) Items whose truth equals a(0)** (about 1 / 11 by chance) never fire and are capped at 2K. They are correct, but they raise frac_capped and the mean halt by about 0.09 × (2K − n).
+  - A capped share near 0.09 is expected, not a failure.
+  - **Reported beside the mean halt:** the uncapped mean, (mean_h − f_c · cap) / (1 − f_c), which is exact since capped items have h = cap.
+  - If SIZE-FREE's mean-halt condition passes only on the capped-inflated mean (uncapped mean < n − 1), the reading carries that caveat.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
