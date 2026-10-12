@@ -508,3 +508,5 @@
 5.0 boxes/runs_fsq/s182_window_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_window_s1 --bs 125 --device {DEV}
 # 2026-10-11 23:28 note 173-3 MOVED2: s184 s1 halt re-run with the moved2 rule (the answer2-only file kept as eval_s173_halt.answer2only.json); s2 / WINDOW lines above run the new code
 5.0 boxes/runs_fsq/s184_reweight_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s184_reweight_s1 --n 1000 --bs 125 --device {DEV}
+# 2026-10-11 23:41 173-3 gate: the s184 s1 moved2 re-run landed on the 4060 (bf16 differs from the 3070 answer2-only file by <= 0.008 in acc_by_t); re-run on the 3070 (same card as the original and as s2 / WINDOW) for the bitwise gate
+5.0 boxes/runs_fsq/s184_reweight_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s184_reweight_s1 --n 1000 --bs 125 --device {DEV} --out boxes/runs_fsq/s184_reweight_s1/eval_s173_halt.json
