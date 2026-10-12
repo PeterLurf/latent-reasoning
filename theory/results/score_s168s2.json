@@ -5,6 +5,8 @@
   "1": {
    "status": "done",
    "gpu": "NVIDIA GeForce RTX 3090",
+   "eval_gpu": null,
+   "eval_only": null,
    "aux_fade": "12000,12000",
    "D_star": 3,
    "acc_by_depth": {
@@ -32,6 +34,8 @@
   "1": {
    "status": "done",
    "gpu": "NVIDIA GeForce RTX 3090",
+   "eval_gpu": null,
+   "eval_only": null,
    "aux_fade": "12000,12000",
    "acc_by_depth": {
     "3": 0.7386934673366834,
@@ -56,13 +60,40 @@
  ],
  "stepaux": {
   "1": {
-   "status": "open"
+   "status": "done",
+   "gpu": "NVIDIA GeForce RTX 4060",
+   "eval_gpu": "NVIDIA GeForce RTX 4060",
+   "eval_only": true,
+   "aux_fade": "12000,12000",
+   "pooled_3_10": 0.49234680585671503,
+   "late_aux": 0.07338886363227744,
+   "clip_rate": null,
+   "pooled_window_k10": 0.49234680585671503,
+   "pooled_window_k0": 0.5009547385785283,
+   "pooled_window_k1": 0.49488728213012395,
+   "think_necessary": null,
+   "deep_at_window": false,
+   "deep_latent": false,
+   "mean_11_14_k16": 0.4845011299818226,
+   "depth_general": false,
+   "mean_11_14_by_kprime": {
+    "0": 0.47965369984264444,
+    "1": 0.48393973818346747,
+    "2": 0.4836931599309106,
+    "4": 0.48732117528798735,
+    "6": 0.48502056179105485,
+    "8": 0.492756647636883,
+    "10": 0.48493885001713066,
+    "12": 0.48433684533011906,
+    "14": 0.481215367128521,
+    "16": 0.4845011299818226
+   }
   },
   "2": {
    "status": "open"
   }
  },
- "reading_stepaux": "pending (stepaux s1 open)",
+ "reading_stepaux": "not DEEP-LATENT (s1: DEEP at window False, THINK-NECESSARY None; pooled 0.492 at K'=10 over 3..10); DEPTH-GENERAL False (11-14 at K'=16: 0.485); BEYOND TEXT False (TEXT-COT 11-14 0.776)",
  "stepauxrw": {
   "1": {
    "status": "open"
@@ -72,6 +103,6 @@
   }
  },
  "reading_stepauxrw": "pending (stepauxrw s1 open)",
- "reading": "pending (stepaux s1 open)",
+ "reading": "not DEEP-LATENT (s1: DEEP at window False, THINK-NECESSARY None; pooled 0.492 at K'=10 over 3..10); DEPTH-GENERAL False (11-14 at K'=16: 0.485); BEYOND TEXT False (TEXT-COT 11-14 0.776)",
  "errors": []
 }
