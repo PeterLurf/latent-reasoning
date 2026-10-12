@@ -13228,6 +13228,29 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - §187 (§184 + NOPASS, running) gives only a partial read, since §184's onset is size-keyed rather than fixed. A fixed-t onset absent from §187's deep handle would lean to the token account.
 * **The lead order changes:** RMS × NOPASS comes first, ahead of RMS × REWEIGHT. Neither is registered; both wait for §189 and §187.
 
+**Note 187-7 (2026-10-12 00:46 EDT; before any measurement; Literature 495765e1 + Audit's spec; descriptive, eval-only). SIZE-PROBE: does the read's magnitude carry the size cue that RMS removes?**
+* **Why:** 187-6 found RMS s1 size-free in its early steps, and the candidate account is that the unnormalised read's magnitude leaks size.
+  - Prior work documents magnitude as a position / count code (Csordás 2408.10920; Haviv 2203.16634), but none frames normalisation as removing a size-keyed computation (Literature).
+  - DEN's mean read may keep a count channel through its dispersion, which would fit DEN not helping depth.
+* **The measurement:**
+  - The additive read r_t (`halt173.read_vec`'s additive part, g_add · read_add, 6 heads) at the main decoder's read position.
+  - Read after t ∈ {2, 4, 6} passes, on test items n = 3..12 at nesting ≤ 2, balanced per n (min count over n, capped at 300). Half fit, half test, stratified. 10 classes, chance 0.10.
+  - Models: NOFADE s1, DEN s1, RMS s1, §184 s1 / s2.
+  - Probe: `nested170.logreg_acc`, with n_cls = 10, as STEP-RECOVER uses it.
+* **Three probes per (model, t):**
+  - (a) **full:** r_t → n;
+  - (b) **norm-only:** the 6 per-head norms ‖r_t,h‖ → n;
+  - (c) **direction-only:** the per-head unit vectors r_t,h / ‖r_t,h‖ → n.
+  - The full read (additive ‖ delta) is reported beside (a).
+* **Readouts at t = 4 (t = 2 and 6 reported):**
+  - **PREMISE** (magnitude carries size): (b) ≥ 0.30 for NOFADE and §184 s1 and s2, and (b) ≤ 0.15 for RMS.
+  - **The account:**
+    - **SUPPORTED:** RMS (a) ≤ 0.15 while §184 (a) ≥ 0.30 (both seeds). RMS's read holds no usable size code.
+    - **WEAKENED:** RMS (a) ≥ 0.30. A size code is present in RMS's read (by direction), yet its early steps ignore it, so "removing the cue" is not the whole account.
+    - Otherwise **mixed**.
+  - **Descriptive:** (c) for all models (RMS vs §184 compares direction with direction); DEN vs RMS on (a) and (b) (Literature's dispersion prediction: DEN > RMS); and (b) by t.
+* **Output:** `<run>/eval_s187_sizeprobe.json`. Run on one local card (the 3070), about 10 min per model. Reader: `theory/score_s187_7.py`.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
