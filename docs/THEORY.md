@@ -13389,6 +13389,22 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - **(3):** 187-3's computation (mean handle at t 3–6, nesting ≤ 2, onsets by n). COUNT-OOD or not, as defined in 187-3. This is context for reading §188's DEPTH.
 * No training, and halting stays C5 (low priority). A training lever is drafted only if (1) reads SIZE-FREE HALT for MOVED2.
 
+**Note 168-16 (2026-10-12 02:22 EDT; stepaux's eval-only output has been read; the verdict is held for one check, fixed now).** s168s2_stepaux_s1's eval-only (4060) reads at chance.
+* **The numbers:** accuracy 0.490 (ctl 0.521).
+  - Flat over depth 3–14 and over K′ 0 / 1 / 4 / 10 / 16; pooled 3..10 at K′ = 10 is 0.492.
+  - aux exact by hop: 0.53 / 0.25 / ≤ 0.15 from hop 3.
+  - delta_cos ≥ 0.97 from t = 3 (the state barely moves).
+* **Training reached** answer_ce 2.5e-6 and aux_ce 5e-5 at 12k steps.
+* **Two explanations:**
+  - (i) the latent path memorised training items with no transfer (TEXT-COT, same data and steps, reads 0.735);
+  - (ii) a defect in the new eval-only path. Weights load strictly and the model args match, but torch 2.5.1 → 2.14 and the path itself are new.
+* **The check (fixed now):** through the same eval-only path, answer accuracy at K′ = 10 and aux exact by hop on 1,000 training items (the run's own training split).
+  - **GENUINE (memorisation):** train answer accuracy ≥ 0.95. Then the registered reading stands (not DEEP-LATENT; at chance on test).
+  - **DEFECT:** train answer accuracy ≤ 0.60. Then the eval-only result is void, and the eval is redone on the 3090 environment.
+  - Otherwise, both are reported and Theory decides with Audit.
+* **Independent check, if available:** any accuracy lines the crashed in-run eval printed to the host's stdout log before STEP-RECOVER (same code, original environment).
+* 168-15's re-evaluation rule does not trigger: 0.49 is far from every boundary.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
