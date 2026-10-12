@@ -13692,6 +13692,14 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **Premise shuffle vs test order (Experiments' check):** p8's own premise order is already random (path-edge relative position mean 0.50; increasing-order 0.50; adjacency 0.045 vs about 0.05 at random; train and test match). The shuffle is no distribution shift.
 * **Reader:** `theory/score_s191.py` (test acc = eval.json `acc`; train_fit_relabel; test500_acc from log.jsonl). STILL-RISING = (test500 at the final step − at final − 3000) / 3 ≥ 0.02.
 
+**Note 190-1 (2026-10-12 19:46 EDT; operational, before any §190 output; Experiments / Audit). s190_rmsnopass_s1 is a resumed run.**
+* Its host (b274) rebooted at about step 27,200. The run resumes from ckpt_last.pt (step 27,000; model, optimizer, numpy RNG and elapsed restored; n_nonfinite 0) on b275, again an RTX 3090.
+* torch / CUDA RNG is not restored, so the run is not bitwise-identical to an uninterrupted run after step 27,000. No rule depends on bitwise identity.
+* **score_s190 reads only eval.json and the 187-3 rows**, not log.jsonl.
+  - log.jsonl holds steps 27,100 and 27,200 twice (pre-crash, then after the "resumed" record).
+  - Any raw-value reader of this log must dedupe by step, keeping the last occurrence.
+* The resumed host's gpu and driver are recorded. The comparator RMS s1 was uninterrupted.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
