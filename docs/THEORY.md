@@ -13063,6 +13063,25 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **The per-pass readout is halt173's `acc_by_t`:** the answer decoded from M_t at every pass t = 0..2K = 24, at n 2..16. It is in the 173-2-style halt run already contracted for §188.
 * deepaux runs at its usual settings.
 
+**Amendment 187-5a (2026-10-11 21:15 EDT; before any 187-5 output exists; Audit's review). KEEP-SINK offsets replace the all-position shift.**
+* **The flaw (Audit):** the registered shift adds wpe[off : off + T] to every position, so the leading EOT loses wpe[0], GPT-2's large-norm attention-sink row. The model was fine-tuned with EOT always at position 0.
+  - That is a different perturbation from "this question sits where a bigger one would".
+  - The CPU smoke (60 items) already collapses from 0.983 at off 0 to 0.133 at off 3, which is the sink signature.
+* **The new design (KEEP-SINK):** on every forward path that carries the question, position 0 (EOT on all of them) keeps wpe[0], and position p ≥ 1 takes wpe[p + off]:
+  - wpe = cat(wpe[0:1], wpe[1 + off : T + off]), giving a gap after EOT.
+  - The paths are the think passes, the main decoder (dec_logits) and dec_reads.
+  - **The aux decoder's prompt carries no question, so it keeps wpe[:T].** Only the question's positions move.
+  - Offsets {0, 3, 6, 9}, the models (s184_reweight_s1, s182_nofade_s1) and the K′ = n + 2 readout are unchanged.
+  - Output: `<run>/eval_s187_posoffset_keep0.json`.
+* **Readings and bands unchanged** (CONTROL-BROKEN / POSITION-KEYED / CONTENT-KEYED / mixed; both models must agree).
+  - **Clarified:** the handle's "< 0.80 onset" for n = 7 and 8 is the first t ≤ n with handle_by_t < 0.80 (n + 1 if none). "Moving earlier" means the mean over n 7–8 is smaller at off 9 than at off 0.
+* **The all-shift output** (`eval_s187_posoffset.json`, if the current chain writes it) is descriptive only. It is labelled ALL-SHIFT, confounded with losing position 0, and is not read for the reading.
+* **Gates (Experiments):**
+  - off 0 is bitwise equal to the pre-change modules on every path;
+  - at off 3 the layer-0 input at position 0 equals off 0's, and positions ≥ 1 differ;
+  - the aux path is unchanged at every off.
+* **Reader:** `theory/score_s187_5.py`.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
