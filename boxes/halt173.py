@@ -524,6 +524,52 @@ def posoffset_fields(m, a, dev, amp, bs=125, offs=(0, 3, 6, 9), ns=(3, 4, 5, 6, 
 
 
 @torch.no_grad()
+def sizeprobe_fields(m, a, dev, amp, bs=125, ts=(2, 4, 6), cap=300):
+    """note 187-7 SIZE-PROBE (Theory; Literature / Audit): does the decoder's memory read encode the problem SIZE n? Items: test n = 3..12 with nesting
+    depth <= 2, m = min over n of the count (cap 300), the first m per n; half fit / half test per n. After t passes from M_0 = 0 (t in ts), the read at the
+    main decoder's read position (its " =" token; ReadTap + read_vec as trace()): additive part r_add = g_add read_add (h_add heads), delta part.
+    Probes (nested170.logreg_acc, n_cls 10, labels n - 3): full = r_add; norm = the per-head norms ||r_add,h||; dir = per-head unit vectors;
+    full_adddel = r_add || r_del."""
+    from boxes.nested170 import test_set, ids, pad, TID, EOT as NEOT, logreg_acc
+    TE = test_set(a.get("per_n", 1000)); ns = list(range(3, 13)); pool = {n: [it for it in TE if it["n"] == n and it["depth"] <= 2] for n in ns}
+    mm = min(cap, min(len(v) for v in pool.values())); fit, tst = [], []
+    for n in ns:
+        fit += pool[n][:mm // 2]; tst += pool[n][mm // 2:mm]
+    ha, dh = m.mem.h_add, DM.DH; out = {}
+
+    def feats(items, t):
+        F, Pn = [], []
+        with ReadTap() as tap, amp_ctx(amp):
+            for i in range(0, len(items), bs):
+                ch = items[i:i + bs]; x, msk = m.think_inputs(ch, dev); S = m.mem.zero_state(len(ch), dev)
+                for _ in range(t):
+                    S = m.write(S, x, msk)
+                seqs = [[NEOT] + ids(it["syms"]) + [TID[" ="]] for it in ch]; rpos = torch.tensor([len(q) - 1 for q in seqs], device=dev)
+                tap.arm(); m.dec_logits(S, ch, dev); assert tap.x is not None, "SIZE-PROBE: the read tap did not fire"
+                xr = tap.x[torch.arange(len(ch), device=dev), rpos]; F.append(read_vec(m.mem, xr, S).float().cpu().numpy())
+                with torch.autocast("cuda", enabled=False):                 # 187-7a norm_pre: phi(q)^T S_add before any RMS scaling / DEN division
+                    D_ = xr.shape[-1]; q_ = m.mem.qkv(m.mem.ln(xr.float()))[..., :D_].view(len(ch), ha + m.mem.h_del, dh)
+                    pre = torch.einsum("bhk,bhkv->bhv", Fn.elu(q_[:, :ha]) + 1, S[:, :ha].float()); Pn.append(pre.norm(dim=-1).cpu().numpy())
+        return np.concatenate(F), np.concatenate(Pn)
+    yf = np.array([it["n"] - 3 for it in fit]); ys = np.array([it["n"] - 3 for it in tst])
+    for t in ts:
+        (Rf, Pf), (Rs, Ps) = feats(fit, t), feats(tst, t); r = {}
+        for nm, fn in (("full", lambda R: R[:, :ha * dh]),
+                       ("norm", lambda R: np.linalg.norm(R[:, :ha * dh].reshape(len(R), ha, dh), axis=2)),
+                       ("dir", lambda R: (R[:, :ha * dh].reshape(len(R), ha, dh) / (np.linalg.norm(R[:, :ha * dh].reshape(len(R), ha, dh), axis=2, keepdims=True) + 1e-12)).reshape(len(R), -1)),
+                       ("full_adddel", lambda R: R)):
+            r[nm] = logreg_acc(fn(Rf), yf, fn(Rs), ys, dev, n_cls=10)
+        r["norm_pre"] = logreg_acc(Pf, yf, Ps, ys, dev, n_cls=10)
+        nr = np.linalg.norm(Rs[:, :ha * dh].reshape(len(Rs), ha, dh), axis=2)
+        if a.get("add_norm") == "rms":                                      # 187-7a: the post-RMS read's per-head norm is constant across items (wrong-tensor tripwire)
+            sp_ = (nr.max(0) - nr.min(0)) / (nr.mean(0) + 1e-12); assert float(sp_.max()) < 1e-3, "187-7a: RMS read norm not constant (%s)" % sp_
+            r["rms_norm_rel_spread_max"] = float(sp_.max())
+        r.update({"n_fit": int(len(fit)), "n_test": int(len(tst)), "norm_cv_mean": float((nr.std(0) / (nr.mean(0) + 1e-12)).mean())})
+        out[str(t)] = r; print("sizeprobe t", t, {k: round(v, 3) for k, v in r.items() if isinstance(v, float)}, flush=True)
+    return out, mm
+
+
+@torch.no_grad()
 def auxdone_fields(m, a, dev, amp, n_items=1000, bs=100, cap=16, ns=(2, 4, 6, 8, 10, 12), cap_c=None):
     """note 182-2 AUX-DONE (Theory, descriptive; nested runs with §175's aux decoder): per n, n_items test items, think passes t = 1..cap from M_0 = 0.
     After each pass: the main decoder's answer, and §175's aux decoder greedy from [EOT, " Step", " t", " :"] reading M_t. The item halts at the first t
@@ -646,6 +692,8 @@ def main():
     ap.add_argument("--selfdepth", action="store_true", help="note 187-4: self-verified depth filter (aux chain + AUX-DONE halt + answer at K' = n + 2) on ALL n 9 / 10 test items -> eval_s187_selfdepth_pre.json")
     ap.add_argument("--posoffset_keep0", action="store_true", help="note 187-5a KEEP-SINK: --posoffset with position 0 kept at wpe[0] -> eval_s187_posoffset_keep0.json")
     ap.add_argument("--posoffset", action="store_true", help="note 187-5: answer (K' n+2) + aux handle by t on n 3..8 with wpe offset 0 / 3 / 6 / 9 on every forward -> eval_s187_posoffset.json")
+    ap.add_argument("--sizeprobe", action="store_true", help="note 187-7 SIZE-PROBE: probes for n from the decoder read after t = 2 / 4 / 6 passes -> eval_s187_sizeprobe.json")
+    ap.add_argument("--sizeprobe_cap", type=int, default=300, help="--sizeprobe: items per n cap (smokes)")
     ap.add_argument("--normcap", action="store_true", help="note 185-1 inference-only NORM-CAP (nested) only -> eval_s185_normcap.json")
     ap.add_argument("--normcap_c", default="", help="--normcap: C given instead of computed: a number ('inf' = the uncapped arm) or an eval_s185_normcap.json path (its normcap.C)")
     ap.add_argument("--normcap_factor", type=float, default=1.0, help="--normcap with --normcap_c: C x this factor (the cap-level sweep, Theory 2026-10-11)")
@@ -666,6 +714,13 @@ def main():
               "normcap_factor": o.normcap_factor if o.normcap_c else None, "normcap_c_source": o.normcap_c.replace(os.sep, "/") or None, "run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
               "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)}
         json.dump(r_, open(o.out or os.path.join(o.run, "eval_s185_normcap.json"), "w", newline="\n"), indent=1); print("DONE normcap", o.run, flush=True); return
+    if o.sizeprobe:                                                         # note 187-7 (Theory): SIZE-PROBE -> eval_s187_sizeprobe.json
+        assert kind == "nested", "SIZE-PROBE is for nested runs"
+        bt_, mm_ = sizeprobe_fields(m, a, dev, amp, o.bs, cap=o.sizeprobe_cap)
+        r_ = {"by_t": bt_, "chance": 0.1, "per_n": mm_, "run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
+              "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0),
+              "def": "test n 3..12, nesting <= 2, first per_n per n, half fit / half test per n; read at the main decoder's ' =' after t passes from 0; logreg n_cls 10 (labels n-3) on full = g_add read_add (h_add heads), norm = per-head norms, dir = per-head unit vectors, full_adddel = add || delta; norm_cv_mean = mean over heads of the test-set coefficient of variation of the per-head norm"}
+        json.dump(r_, open(o.out or os.path.join(o.run, "eval_s187_sizeprobe.json"), "w", newline="\n"), indent=1); print("DONE sizeprobe", o.run, flush=True); return
     if o.posoffset or o.posoffset_keep0:                                    # note 187-5 / 5a (Theory): position-offset eval -> eval_s187_posoffset(_keep0).json
         assert kind == "nested" and a.get("aux_step"), "posoffset needs a nested run trained with §175's aux decoder"
         r_ = {"by_offset": posoffset_fields(m, a, dev, amp, o.bs, keep0=o.posoffset_keep0), "keep0": bool(o.posoffset_keep0), "run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
