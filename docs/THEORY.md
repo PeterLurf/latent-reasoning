@@ -13162,6 +13162,24 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **C6 wording (Audit's):** "§184 + the f* = 2.0× train-statistic cap is STABLE at 2 / 2 (s1 fitting, s2 held-out). The cap rescues s1 and is near-neutral on s2 within n ≤ 8, but costs n 9–12."
   - It is a within-depth C6 aid only. It is not a recipe change while depth beyond training matters (C2).
 
+**173-2 / 173-3 result (2026-10-11 23:49 EDT; all three halt files on the RTX 3070, 1,000 items per n; the s1 re-run is bitwise equal to its answer2-only file; theory/score_s173_2.py). Both answer-settling rules are PREMATURE on held-out models. No output-stability halt works on these models, and the halting line is parked behind COUNT-OOD.**
+* **answer2 (173-2): PREMATURE in both §184 seeds and in WINDOW.**
+  - n 10: halt / K′ = n + 2 = 0.112 / 0.641 (s1), 0.187 / 0.902 (s2), 0.171 / 0.604 (WINDOW).
+  - The mean halt is 2.5–4.5 at every n.
+* **MOVED2 (173-3; the reading is on held-out s2): PREMATURE.**
+  - s2: n 10 0.708 vs 0.902 (−0.194); n 12 0.223 vs 0.210. Mean halt 8.4 / 8.8 (uncapped 7.8 / 8.6, below n − 1).
+  - WINDOW: n 10 0.264 vs 0.604.
+  - s1 (design data, read first per 173-3a) is PREMATURE as well (n 10: 0.503 vs 0.641). So the premise failed there already: wrong answers move off a(0) and settle.
+  - HALT-EQUAL in-distribution holds at n ≤ 4 only (both §184 seeds). n 6 / 8 halt 0.25–0.36 below fixed K.
+  - The memory-change rules never fire (mean halt = cap) on all three models.
+* **acc_by_t (the step-function computation, all three models):**
+  - The answer jumps from ≈ 0.1 to correct at about t = n − 1 (s2 n 8: 0.13 → 0.80 → 1.0 at t = 6 / 7 / 8).
+  - For n = 10 the jump is at the training edge (t = 8 for §184 K 8; t = 9–10 for WINDOW K 12), not at n − 1. This is 187-3's count-keying, visible in the answer too (Audit).
+  - Before the jump, the read gives stable wrong answers, sometimes ≠ a(0).
+* **Consequence:** a size-free halt needs a size-free completion signal, and these models' only completion signal (AUX-DONE) is a pass counter (187-4).
+  - Halting (C5) is parked until a COUNT-OOD lever gives size-free computation.
+  - No training lever is drafted from this.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

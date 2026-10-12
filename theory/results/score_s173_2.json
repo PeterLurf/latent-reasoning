@@ -9,6 +9,7 @@
      "acc_halt": 1.0,
      "mean_h": 2.886,
      "frac_capped": 0.0,
+     "mean_h_uncapped": 2.886,
      "acc_k_n2": 1.0,
      "diff": 0.0,
      "fixed_k": 1.0,
@@ -18,6 +19,7 @@
      "acc_halt": 0.92,
      "mean_h": 4.531,
      "frac_capped": 0.0,
+     "mean_h_uncapped": 4.531,
      "acc_k_n2": 0.989,
      "diff": -0.06899999999999995,
      "fixed_k": 0.988,
@@ -27,6 +29,7 @@
      "acc_halt": 0.475,
      "mean_h": 4.51,
      "frac_capped": 0.0,
+     "mean_h_uncapped": 4.51,
      "acc_k_n2": 0.977,
      "diff": -0.502,
      "fixed_k": 0.977,
@@ -36,6 +39,7 @@
      "acc_halt": 0.138,
      "mean_h": 2.667,
      "frac_capped": 0.0,
+     "mean_h_uncapped": 2.667,
      "acc_k_n2": 0.933,
      "diff": -0.795,
      "fixed_k": 0.935,
@@ -45,6 +49,7 @@
      "acc_halt": 0.112,
      "mean_h": 2.513,
      "frac_capped": 0.0,
+     "mean_h_uncapped": 2.513,
      "acc_k_n2": 0.641,
      "diff": -0.529
     },
@@ -52,13 +57,15 @@
      "acc_halt": 0.115,
      "mean_h": 2.619,
      "frac_capped": 0.0,
+     "mean_h_uncapped": 2.619,
      "acc_k_n2": 0.161,
      "diff": -0.046
     },
     "16": {
      "acc_halt": 0.088,
      "mean_h": 3.54,
-     "frac_capped": 0.0
+     "frac_capped": 0.0,
+     "mean_h_uncapped": 3.54
     }
    },
    "cap": 16,
@@ -74,23 +81,412 @@
    }
   },
   "s184_s2": {
-   "status": "open"
+   "status": "done",
+   "label": "PREMATURE",
+   "above_fixed": [],
+   "by_n": {
+    "2": {
+     "acc_halt": 1.0,
+     "mean_h": 2.856,
+     "frac_capped": 0.0,
+     "mean_h_uncapped": 2.856,
+     "acc_k_n2": 1.0,
+     "diff": 0.0,
+     "fixed_k": 1.0,
+     "halt_equal": true
+    },
+    "4": {
+     "acc_halt": 0.947,
+     "mean_h": 4.447,
+     "frac_capped": 0.0,
+     "mean_h_uncapped": 4.447,
+     "acc_k_n2": 1.0,
+     "diff": -0.05300000000000005,
+     "fixed_k": 1.0,
+     "halt_equal": false
+    },
+    "6": {
+     "acc_halt": 0.387,
+     "mean_h": 3.37,
+     "frac_capped": 0.0,
+     "mean_h_uncapped": 3.37,
+     "acc_k_n2": 1.0,
+     "diff": -0.613,
+     "fixed_k": 1.0,
+     "halt_equal": false
+    },
+    "8": {
+     "acc_halt": 0.242,
+     "mean_h": 3.251,
+     "frac_capped": 0.0,
+     "mean_h_uncapped": 3.251,
+     "acc_k_n2": 1.0,
+     "diff": -0.758,
+     "fixed_k": 1.0,
+     "halt_equal": false
+    },
+    "10": {
+     "acc_halt": 0.187,
+     "mean_h": 3.101,
+     "frac_capped": 0.0,
+     "mean_h_uncapped": 3.101,
+     "acc_k_n2": 0.902,
+     "diff": -0.7150000000000001
+    },
+    "12": {
+     "acc_halt": 0.094,
+     "mean_h": 2.783,
+     "frac_capped": 0.0,
+     "mean_h_uncapped": 2.783,
+     "acc_k_n2": 0.21,
+     "diff": -0.11599999999999999
+    },
+    "16": {
+     "acc_halt": 0.082,
+     "mean_h": 2.614,
+     "frac_capped": 0.0,
+     "mean_h_uncapped": 2.614
+    }
+   },
+   "cap": 16,
+   "gpu": "NVIDIA GeForce RTX 3070",
+   "n_items": {
+    "2": 1000,
+    "4": 1000,
+    "6": 1000,
+    "8": 1000,
+    "10": 1000,
+    "12": 1000,
+    "16": 1000
+   }
   },
   "window_s1": {
-   "status": "open"
+   "status": "done",
+   "label": "PREMATURE",
+   "above_fixed": [],
+   "by_n": {
+    "2": {
+     "acc_halt": 1.0,
+     "mean_h": 3.226,
+     "frac_capped": 0.0,
+     "mean_h_uncapped": 3.226,
+     "acc_k_n2": 1.0,
+     "diff": 0.0,
+     "fixed_k": 0.998,
+     "halt_equal": true
+    },
+    "4": {
+     "acc_halt": 0.872,
+     "mean_h": 4.906,
+     "frac_capped": 0.0,
+     "mean_h_uncapped": 4.906,
+     "acc_k_n2": 0.977,
+     "diff": -0.10499999999999998,
+     "fixed_k": 0.973,
+     "halt_equal": false
+    },
+    "6": {
+     "acc_halt": 0.495,
+     "mean_h": 5.412,
+     "frac_capped": 0.0,
+     "mean_h_uncapped": 5.412,
+     "acc_k_n2": 0.885,
+     "diff": -0.39,
+     "fixed_k": 0.885,
+     "halt_equal": false
+    },
+    "8": {
+     "acc_halt": 0.242,
+     "mean_h": 4.96,
+     "frac_capped": 0.0,
+     "mean_h_uncapped": 4.96,
+     "acc_k_n2": 0.764,
+     "diff": -0.522,
+     "fixed_k": 0.764,
+     "halt_equal": false
+    },
+    "10": {
+     "acc_halt": 0.171,
+     "mean_h": 4.334,
+     "frac_capped": 0.0,
+     "mean_h_uncapped": 4.334,
+     "acc_k_n2": 0.604,
+     "diff": -0.43299999999999994
+    },
+    "12": {
+     "acc_halt": 0.095,
+     "mean_h": 4.449,
+     "frac_capped": 0.0,
+     "mean_h_uncapped": 4.449,
+     "acc_k_n2": 0.16,
+     "diff": -0.065
+    },
+    "16": {
+     "acc_halt": 0.112,
+     "mean_h": 4.976,
+     "frac_capped": 0.0,
+     "mean_h_uncapped": 4.976,
+     "acc_k_n2": 0.123,
+     "diff": -0.010999999999999996
+    }
+   },
+   "cap": 24,
+   "gpu": "NVIDIA GeForce RTX 3070",
+   "n_items": {
+    "2": 1000,
+    "4": 1000,
+    "6": 1000,
+    "8": 1000,
+    "10": 1000,
+    "12": 1000,
+    "16": 1000
+   }
   },
-  "reading": "PREMATURE (decided by s184_s1; other seed open)"
+  "reading": "PREMATURE (s184_s1, s184_s2)"
  },
  "moved2": {
   "s184_s1": {
-   "status": "no moved2 in file"
+   "status": "done",
+   "label": "PREMATURE",
+   "above_fixed": [],
+   "by_n": {
+    "2": {
+     "acc_halt": 1.0,
+     "mean_h": 4.9,
+     "frac_capped": 0.144,
+     "mean_h_uncapped": 3.0327102803738324,
+     "acc_k_n2": 1.0,
+     "diff": 0.0,
+     "fixed_k": 1.0,
+     "halt_equal": true
+    },
+    "4": {
+     "acc_halt": 0.986,
+     "mean_h": 5.981,
+     "frac_capped": 0.106,
+     "mean_h_uncapped": 4.793064876957494,
+     "acc_k_n2": 0.989,
+     "diff": -0.0030000000000000027,
+     "fixed_k": 0.988,
+     "halt_equal": true
+    },
+    "6": {
+     "acc_halt": 0.732,
+     "mean_h": 6.485,
+     "frac_capped": 0.064,
+     "mean_h_uncapped": 5.83440170940171,
+     "acc_k_n2": 0.977,
+     "diff": -0.245,
+     "fixed_k": 0.977,
+     "halt_equal": false
+    },
+    "8": {
+     "acc_halt": 0.577,
+     "mean_h": 7.527,
+     "frac_capped": 0.05,
+     "mean_h_uncapped": 7.081052631578948,
+     "acc_k_n2": 0.933,
+     "diff": -0.3560000000000001,
+     "fixed_k": 0.935,
+     "halt_equal": false
+    },
+    "10": {
+     "acc_halt": 0.503,
+     "mean_h": 8.914,
+     "frac_capped": 0.051,
+     "mean_h_uncapped": 8.533192834562698,
+     "acc_k_n2": 0.641,
+     "diff": -0.138
+    },
+    "12": {
+     "acc_halt": 0.158,
+     "mean_h": 9.093,
+     "frac_capped": 0.042,
+     "mean_h_uncapped": 8.790187891440501,
+     "acc_k_n2": 0.161,
+     "diff": -0.0030000000000000027
+    },
+    "16": {
+     "acc_halt": 0.095,
+     "mean_h": 8.755,
+     "frac_capped": 0.042,
+     "mean_h_uncapped": 8.437369519832986
+    }
+   },
+   "cap": 16,
+   "gpu": "NVIDIA GeForce RTX 3070",
+   "n_items": {
+    "2": 1000,
+    "4": 1000,
+    "6": 1000,
+    "8": 1000,
+    "10": 1000,
+    "12": 1000,
+    "16": 1000
+   }
   },
   "s184_s2": {
-   "status": "open"
+   "status": "done",
+   "label": "PREMATURE",
+   "above_fixed": [],
+   "by_n": {
+    "2": {
+     "acc_halt": 1.0,
+     "mean_h": 5.194,
+     "frac_capped": 0.167,
+     "mean_h_uncapped": 3.027611044417767,
+     "acc_k_n2": 1.0,
+     "diff": 0.0,
+     "fixed_k": 1.0,
+     "halt_equal": true
+    },
+    "4": {
+     "acc_halt": 1.0,
+     "mean_h": 5.629,
+     "frac_capped": 0.087,
+     "mean_h_uncapped": 4.640744797371303,
+     "acc_k_n2": 1.0,
+     "diff": 0.0,
+     "fixed_k": 1.0,
+     "halt_equal": true
+    },
+    "6": {
+     "acc_halt": 0.939,
+     "mean_h": 6.881,
+     "frac_capped": 0.085,
+     "mean_h_uncapped": 6.033879781420764,
+     "acc_k_n2": 1.0,
+     "diff": -0.061000000000000054,
+     "fixed_k": 1.0,
+     "halt_equal": false
+    },
+    "8": {
+     "acc_halt": 0.819,
+     "mean_h": 7.763,
+     "frac_capped": 0.075,
+     "mean_h_uncapped": 7.095135135135134,
+     "acc_k_n2": 1.0,
+     "diff": -0.18100000000000005,
+     "fixed_k": 1.0,
+     "halt_equal": false
+    },
+    "10": {
+     "acc_halt": 0.708,
+     "mean_h": 8.408,
+     "frac_capped": 0.07,
+     "mean_h_uncapped": 7.836559139784946,
+     "acc_k_n2": 0.902,
+     "diff": -0.19400000000000006
+    },
+    "12": {
+     "acc_halt": 0.223,
+     "mean_h": 8.808,
+     "frac_capped": 0.033,
+     "mean_h_uncapped": 8.562564632885211,
+     "acc_k_n2": 0.21,
+     "diff": 0.013000000000000012
+    },
+    "16": {
+     "acc_halt": 0.112,
+     "mean_h": 8.17,
+     "frac_capped": 0.018,
+     "mean_h_uncapped": 8.026476578411405
+    }
+   },
+   "cap": 16,
+   "gpu": "NVIDIA GeForce RTX 3070",
+   "n_items": {
+    "2": 1000,
+    "4": 1000,
+    "6": 1000,
+    "8": 1000,
+    "10": 1000,
+    "12": 1000,
+    "16": 1000
+   }
   },
   "window_s1": {
-   "status": "open"
+   "status": "done",
+   "label": "PREMATURE",
+   "above_fixed": [],
+   "by_n": {
+    "2": {
+     "acc_halt": 0.994,
+     "mean_h": 6.556,
+     "frac_capped": 0.149,
+     "mean_h_uncapped": 3.5017626321974156,
+     "acc_k_n2": 1.0,
+     "diff": -0.006000000000000005,
+     "fixed_k": 0.998,
+     "halt_equal": true
+    },
+    "4": {
+     "acc_halt": 0.897,
+     "mean_h": 6.734,
+     "frac_capped": 0.088,
+     "mean_h_uncapped": 5.06798245614035,
+     "acc_k_n2": 0.977,
+     "diff": -0.07999999999999996,
+     "fixed_k": 0.973,
+     "halt_equal": false
+    },
+    "6": {
+     "acc_halt": 0.606,
+     "mean_h": 7.194,
+     "frac_capped": 0.061,
+     "mean_h_uncapped": 6.10223642172524,
+     "acc_k_n2": 0.885,
+     "diff": -0.279,
+     "fixed_k": 0.885,
+     "halt_equal": false
+    },
+    "8": {
+     "acc_halt": 0.332,
+     "mean_h": 7.024,
+     "frac_capped": 0.036,
+     "mean_h_uncapped": 6.390041493775934,
+     "acc_k_n2": 0.764,
+     "diff": -0.432,
+     "fixed_k": 0.764,
+     "halt_equal": false
+    },
+    "10": {
+     "acc_halt": 0.264,
+     "mean_h": 7.156,
+     "frac_capped": 0.025,
+     "mean_h_uncapped": 6.724102564102563,
+     "acc_k_n2": 0.604,
+     "diff": -0.33999999999999997
+    },
+    "12": {
+     "acc_halt": 0.131,
+     "mean_h": 6.974,
+     "frac_capped": 0.019,
+     "mean_h_uncapped": 6.644240570846076,
+     "acc_k_n2": 0.16,
+     "diff": -0.028999999999999998
+    },
+    "16": {
+     "acc_halt": 0.121,
+     "mean_h": 7.381,
+     "frac_capped": 0.02,
+     "mean_h_uncapped": 7.041836734693877,
+     "acc_k_n2": 0.123,
+     "diff": -0.0020000000000000018
+    }
+   },
+   "cap": 24,
+   "gpu": "NVIDIA GeForce RTX 3070",
+   "n_items": {
+    "2": 1000,
+    "4": 1000,
+    "6": 1000,
+    "8": 1000,
+    "10": 1000,
+    "12": 1000,
+    "16": 1000
+   }
   },
-  "reading": "pending (s184 s2 open)"
+  "reading": "PREMATURE (held-out s184 s2)"
  }
 }
