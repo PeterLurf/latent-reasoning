@@ -1,4 +1,4 @@
-# THEORY §191 PROSQA-RELABEL cell A (Theory's sec191 draft; gate191.json): s191_stepaux_relabel_s1 = s168s2_stepaux_s1's exact args + --relabel --test500_every 1000. NOT LAUNCHED: awaits the user's approval (pair ~$8-12). ~23 h + eval (stepaux rate; relabel ~45 ms/step CPU)
+# THEORY §191 PROSQA-RELABEL cell A (Theory's sec191 draft; gate191.json): s191_stepaux_relabel_s1 = s168s2_stepaux_s1's exact args + --relabel --test500_every 1000. USER-APPROVED 2026-10-12 16:40 EDT (via Audit); registered ab7d85cb; launches FIRST in the next free slot (fleet <= 5). ~23 h + eval (stepaux rate; relabel ~45 ms/step CPU)
 # HOSTPROBE
 # P=1
 boxes/runs_fsq/s191_stepaux_relabel_s1 boxes.prosqa168s2 --arm stepaux --think_k 10 --aux_step 1.0 --aux_fade 12000,12000 --fast_add --chunk_delta 64 --ckpt_passes --cache_lower --relabel --test500_every 1000 --seed 1 --steps 12000 --bs 64 --auto_micro
