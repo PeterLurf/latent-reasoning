@@ -155,6 +155,11 @@ def halts(cor, ans, chg, T):
     for t in range(2, T + 1):
         hit = cap & same[t] & same[t - 1]; h[hit] = t; cap[hit] = False
     out["answer2"] = (h, cap)
+    moved = [None] + [(ans[t] != ans[0]).any(1) if ans[t].ndim == 2 else ans[t] != ans[0] for t in range(1, T + 1)]   # note 173-3 MOVED2: the answer has left a(0)
+    h = np.full(b, T); cap = np.ones(b, bool)
+    for t in range(2, T + 1):
+        hit = cap & same[t] & same[t - 1] & moved[t]; h[hit] = t; cap[hit] = False
+    out["moved2"] = (h, cap)
     for k in ("read", "delta", "full"):
         h = np.full(b, T); cap = np.ones(b, bool)
         for t in range(1, T + 1):
