@@ -13049,6 +13049,15 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - (c) gradflow; (d) mem check at micro 2; (e) Audit's diff review.
   - (f) A run tripwire (Audit): log the mean w over the kept aux terms at step 1 on the window path, and assert it is not 1.0 under `--aux_reweight`.
 
+**Note 188-1 (2026-10-11 21:01 EDT; before any §188 data; Literature 4c1c175e; descriptive, no rule change). DWELL readout.**
+* **Why:** Prop. 4 (archive §22.2) says that if every training budget has slack (K ≥ steps needed + 1), a dwell schedule (idle, then unit speed) also reaches zero loss. Only tight budgets (K = steps needed) force unit speed.
+  - WINDOW / §188's K = n + U{1..4} never gives the tight budget.
+* **Readout (fixed now):** DWELL = acc at K′ = n + 2 minus acc at K′ = n, per n 3..8 (`s170.acc_by_n_kprime`), for §188 beside WINDOW and §184.
+  - A gap > 0.05 at any n would mean the model needs slack passes.
+* **Existing data (read now):** WINDOW s1's gap is ≤ 0.012 at every n 3..8, so there is no dwell. §184 s1 / s2 show ≤ 0.002.
+  - Likely cause: §175's aux decodes step t from M_t at pass t. This pins unit speed whatever the budget slack, so Prop. 4's concern applies only to aux-free arms.
+* **For the planned COUNT-OOD section:** an aux-free K-independent arm needs Literature's tight floor (mass on K = n); an aux-carrying one may not.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
