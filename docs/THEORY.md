@@ -13487,6 +13487,13 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - §190 (RMS × NOPASS) is no longer at risk of COSTLY: NOPASS's in-distribution cost is nil. It still waits for §189.
   - Pending descriptive post-hocs (187-3 rows, selfdepth, size probe, halting) will show whether the fixed-t onset is gone (187-6a's partial read) and whether AUX-DONE can now track n.
 
+**§187 s1, wording addendum (2026-10-12 09:30 EDT; Audit reproduced every number from the raw eval.json; s2 approved, about $3, launching). This tempers the result note's reading line.**
+* **(1) One seed.** The depth gain (+0.138 vs same-seed §184 s1) is smaller than §184's own cross-seed spread (+0.18; s2 reads 0.665). "The pass token limited depth" is therefore a 1 / 2 statement until s2 lands, and s2 decides.
+* **(2) Depth beyond training is not solved.** Per n: 0.978 / 0.853 / 0.488 / 0.175 at n 9–12. NOPASS moved the edge outward; it did not remove size-keying.
+  - Whether NOPASS also makes the early steps size-free, as RMS did (187-6), or only lifts the edge, is read from its 187-3 rows (queued first on the local cards).
+  - That bears on whether §190 (RMS × NOPASS) adds anything over §187.
+* The C6 stability descriptive (STABLE to 4× K) is likewise a single-seed fact.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
