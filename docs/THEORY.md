@@ -13634,6 +13634,15 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * On these numbers a shared fixed late decline (from t ≈ 6–7) and a remaining-work bound cannot be told apart. The previous note's lean toward the latter is withdrawn as over-reading.
 * RMS s2 is the clean baseline for §190, which is predicted to differ exactly here: no token, and no shared late decline.
 
+**173-4 / 187-4 descriptives on RMS s2 (2026-10-12 12:09 EDT; a5b5e7c9; 3070 / 2070 fp32). RMS s1's picture replicates.**
+* **AUX-DONE** fires only at t = 8 or never:
+  - n 9: 618 at t = 8, 382 never;
+  - n 10: 170 at t = 8, 830 never.
+  - Halted-only mean 8.0 at both.
+* **Halting is PREMATURE:** n 10 answer2 0.198 and MOVED2 0.282, against 0.882 at K′ = n + 2.
+* **The answer at n 10 arrives at t = 9 = n − 1,** past the edge (0.41 / 0.88 at t 8 / 9), as on s1.
+* The answer-only filter at n 9 has precision 0.996 at keep 0.502.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
