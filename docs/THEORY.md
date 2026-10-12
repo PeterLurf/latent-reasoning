@@ -13357,6 +13357,23 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - **That run decides 187-8's label**, with the same readouts and guards (and the same 187-8a rule for the rescale arm).
   - The original run is kept as a descriptive "pad-deflated reference" arm.
 
+**187-8 final (2026-10-12 02:15 EDT; the pad-free re-run per 187-8b, 4d2a98e2, 3070; references equal refpad's p99_real exactly; theory/score_s187_8.py). PARTIAL in both seeds, confirmed. 187-8 closes.**
+* **Clamp (decides the label):** CONTROL intact (handle 0.9873 / 0.999 and K′8 unchanged); BINDING 1.0 (n 12 reads above the p99 at 0.31–0.37 on think k 1–4, and 0.60–0.88 on aux k 11–12).
+  - **n 12, t 3–6 handle:** s1 0.517 → **0.598** (+0.081), s2 0.523 → **0.649** (+0.126). Onsets n 12: 3 → 4.
+  - That is short of NORM-CHANNEL (≥ n 9 − 0.05) and beyond NOT-NORM (< 0.05).
+  - DEPTH +0.015 / +0.005.
+  - The pad-deflated original's +0.106 / +0.145 was, as expected, an upper bound.
+* **Rescale to the in-distribution mean norm (187-8a; descriptive, since the clamp binds):**
+  - s1: 0.938 / 0.913 / 0.915 / 0.880 at n 9–12, onsets 7 / 7 / 7 / 6. Nearly RMS-like.
+  - s2: 0.933 / 0.853 / 0.827 / 0.787.
+  - In-distribution cost: −0.013 / −0.026 (s1), −0.003 / −0.002 (s2).
+  - **But answers get worse:** DEPTH 0.486 → 0.416 (s1), 0.665 → 0.527 (s2).
+* **Reading (with 187-6 / 187-7):**
+  - Per-pass read magnitude is causally part of §184's size-keyed early steps. Equalising it at inference makes them nearly size-free on s1.
+  - §184's trained downstream computation (later steps and the answer decoder) relies on that magnitude, so equalising it costs answers.
+  - RMS, trained with a constant-norm read, learned a computation that does not need it.
+  - So the lever is **training with a normalised read** (§185 RMS; §189 replicates). No inference-time patch is adopted.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
