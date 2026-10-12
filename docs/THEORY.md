@@ -278,6 +278,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 188 | REWEIGHT × WINDOW: §182 WINDOW + §184's --aux_reweight in one cell; JOINT = DEEP + THINK-NECESSARY + STABLE (K′16); a C6 claim needs LONG-STABLE (K′24 ≥ K′8 − 0.05) at 2 / 2 | registered | **open** |
 | 189 | RMS-REP: §185 RMS at seed 2 (descriptive replication); SUBSTITUTE = DEEP + THINK-NECESSARY + depth n 9–12 ≥ §184 s2 − 0.05 / DEEP-ONLY / NOT REPLICATED | registered | **closed: SUBSTITUTE (s2 DEEP, depth 0.662 vs §184 s2 0.665; two-seed 0.625 vs 0.576)** |
 | 190 | RMS × NOPASS: §185 RMS + §187's --aux_nopass; LATE (t 7–8, n 10–12) vs RMS s1 0.648; COSTLY-AUX / COSTLY / TOKEN-FIX (opens s2; claim 2 / 2) / TOKEN-NOT-THE-LIMIT; FLAT and AUX-DONE descriptives | registered | **open** |
+| 191 | PROSQA-RELABEL: §168 s2 STEP-AUX and TEXT-COT with per-step name relabelling + premise shuffle + option swap (user-approved 2026-10-12); NAME-MEM (test ≥ 0.65) / UNDERFIT / CHANCE (STILL-RISING or FLAT) / mixed; TEXT-COT control ≥ 0.70 | registered | **open** |
 
 ## Live sections
 
@@ -13642,6 +13643,54 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **Halting is PREMATURE:** n 10 answer2 0.198 and MOVED2 0.282, against 0.882 at K′ = n + 2.
 * **The answer at n 10 arrives at t = 9 = n − 1,** past the edge (0.41 / 0.88 at t 8 / 9), as on s1.
 * The answer-only filter at n 9 has precision 0.996 at keep 0.502.
+
+## 191. PROSQA-RELABEL: was name memorisation the barrier? (Literature ddf3dbd6; Audit-reviewed, code 097d69ee; **user-approved 2026-10-12 16:40 EDT**, typed in Audit's session and relayed; pre-registered 2026-10-12 16:42 EDT, before any §191 run)
+
+**Why.**
+* §168 step 2's STEP-AUX memorised its fixed 12k-item set: train 1.000, aux exact 1.0; test 0.490 at every K′.
+* Nested arithmetic, trained on fresh items per step, generalises.
+* Latent and implicit composition is known to be data-hungry: ProsQA-Ext trained on 400k fresh graphs; Wang 2405.15071's grokking; Saparov 2412.04703.
+* The cheapest test of "memorisation was the barrier" removes **name** memorisation and keeps the graphs fixed.
+
+**Transform (RELABEL, applied freshly to every training item at every step; test items are untouched):**
+* (i) A random injective relabelling of the item's entity names over p8's 17 entity names, and of its concept names over p8's 38 concept names, applied consistently to the question, answer and steps (and so to the aux targets);
+* (ii) the premise statements shuffled;
+* (iii) the two candidate options in the question swapped with probability 0.5.
+* Graph structure, depth histogram and shortcut-freeness are unchanged, since the graphs are the same.
+
+**Cells (RTX 3090, bs 64, 12k steps, seed 1; §168 s2's settings exactly, plus `--relabel`):**
+* **A, `s191_stepaux_relabel_s1`:** s168s2_stepaux_s1's args plus `--relabel`.
+* **B, `s191_textcot_relabel_s1` (control):** s168s2_textcot_s1's args plus `--relabel`.
+* **Both:** test accuracy every 1k steps on a fixed 500-item subset of p8_na_test (grokking, per Audit).
+* **Both:** the end-of-run train fit on 1,000 relabelled training items (168-16's path), at K′ 0, 1 and 10 (Audit).
+  - Under RELABEL, names cannot be memorised, so K′ 0 train fit reads structural memorisation (graph shape plus option slot) by the trunk alone.
+  - **Descriptive split of the CHANCE branch:**
+    - K′ 0 train fit ≥ 0.90 with test at chance: structure memorisation in the trunk, which points to the generator.
+    - K′ 0 train fit near chance with K′ 10 high: the memory path does the item-specific work.
+
+**Gates.**
+* The transform is bijective per item, and the answer, steps and question stay consistent (a parse round-trip on 1,000 items).
+* Flags-off bitwise.
+* **Dedupe:** no p8_na_train graph equals a p8_na_test graph by (edges, root, target, neg_target) index structure. This is asserted once; relabelling cannot create new structures.
+* gradflow, and a memory check.
+* **Audit's checks:**
+  - assert that test items are never relabelled (train only);
+  - test names come from the same 17 / 38 vocabulary, so there are no out-of-distribution names;
+  - log the option-swap rate, so p = 0.5 can be verified.
+
+**Readings (cell A; §168 s2's registered readings are reported as well):**
+* **NAME-MEM:** test accuracy ≥ 0.65. Name memorisation was the barrier, so no from-scratch generator is needed yet.
+* **UNDERFIT:** end-of-run relabelled train fit < 0.90. The latent path cannot fit the task without name shortcuts.
+* **CHANCE** (test < 0.60 with train fit ≥ 0.90): ambiguous between structural memorisation and a reader limit.
+  - **STILL-RISING** if test accuracy on the 500-item subset rose ≥ 0.02 per 1k steps over the last 3k. Longer training is the next step.
+  - Otherwise the next step is a from-scratch DAG generator (Coconut's Alg. 1).
+* Otherwise **mixed**.
+* **Control fidelity:** B's test accuracy ≥ 0.70 (fixed-set TEXT-COT 0.735). If B < 0.70, the transform itself harms the task, and A's reading is flagged.
+
+**Cost and placement.** A takes about 23.8 h and B about 4.0 h on a 3090, about $8–12 in total; approved by the user.
+* **A launches first,** in the next free slot (about 22:00), then B in the following one. That finishes the pair about 3 h sooner than the reverse, within fleet ≤ 5.
+* **Premise shuffle vs test order (Experiments' check):** p8's own premise order is already random (path-edge relative position mean 0.50; increasing-order 0.50; adjacency 0.045 vs about 0.05 at random; train and test match). The shuffle is no distribution shift.
+* **Reader:** `theory/score_s191.py` (test acc = eval.json `acc`; train_fit_relabel; test500_acc from log.jsonl). STILL-RISING = (test500 at the final step − at final − 3000) / 3 ≥ 0.02.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
