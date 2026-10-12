@@ -570,6 +570,110 @@ def sizeprobe_fields(m, a, dev, amp, bs=125, ts=(2, 4, 6), cap=300):
 
 
 @torch.no_grad()
+def readclamp_fields(m, a, dev, amp, bs=125, n_ref=500, kmax=12, ns_in=(3, 4, 5, 6, 7, 8), ns_deep=(9, 10, 11, 12)):
+    """note 187-8 READ-CLAMP (Theory / Audit): (refs) 500 n <= 8 training items (rng 18708): per additive head, the per-token norm of the post-gain read on
+    S_k, k = 0..12, per read path think (the pass k+1 read) / dec (dec_logits) / aux (aux_logits at t = k, items with k <= n; kmax 8 for aux) -> p99.
+    Two arms in one process: unclamped (deltamem.READ_CLAMP None) and clamped (any token's head read above its (path, head, k) p99 scaled to it).
+    (1) per-item rows on ALL n 9..12 test items: n, nest_depth, handle_by_t (t <= n; as deepaux), clamped arm + clamped_t3_6 (any read of the item clamped in
+    passes 3..6 or the aux at t 3..6); (2) indist: handle_mean (t <= n, n 3..8 test items) and k8_pooled (pooled n 3..8 answer at K' = 8);
+    (3) frac_clamped by n / t / path (share of items with any clamped read) and depth_n2 (n 9..12 answer at K' = n + 2)."""
+    from contextlib import nullcontext
+    from boxes.nested170 import test_set, train_items, aux_of, NUM_IDS
+    ctx = (lambda: torch.autocast("cuda", dtype=amp)) if amp is not None else nullcontext
+    TE = test_set(a.get("per_n", 1000)); EX = {tuple(it["syms"]) for it in TE if it["n"] >= int(a.get("excl_min_n", 1))}
+
+    def rc(path, k):
+        if DM.READ_CLAMP is not None:
+            DM.READ_CLAMP["path"], DM.READ_CLAMP["k"] = path, int(k)
+    try:
+        DM.READ_CLAMP = {"mode": "collect", "store": {}, "path": None, "k": 0}; tr = train_items(np.random.default_rng(18708), n_ref, 8, EX)
+        for i in range(0, len(tr), bs):
+            ch = tr[i:i + bs]; x, msk = m.think_inputs(ch, dev)
+            with ctx():
+                S = m.mem.zero_state(len(ch), dev)
+                for k in range(0, kmax + 1):
+                    rc("dec", k); m.dec_logits(S, ch, dev)
+                    idx = [j for j, it in enumerate(ch) if 1 <= k <= len(aux_of(it))]
+                    if idx:
+                        rc("aux", k); m.aux_logits(S[idx], [ch[j] for j in idx], k, dev)
+                    rc("think", k); S = m.write(S, x, msk)
+        st = DM.READ_CLAMP["store"]; ref = {key: torch.quantile(torch.cat(v).float(), 0.99, dim=0) for key, v in st.items()}
+        ref_mean = {key: torch.cat(v).float().mean(0) for key, v in st.items()}
+        kmx = {p_: max(k_ for (pp, k_) in ref if pp == p_) for p_ in ("think", "dec", "aux")}
+
+        def arm(mode):
+            clamp = mode == "clamp"
+            DM.READ_CLAMP = {"mode": mode, "ref": ref, "ref_mean": ref_mean, "kmax": kmx, "hits": [], "path": None, "k": 0} if mode else None
+            res = {"items": [], "fc": {}, "fr": {}}
+            fr_acc = {}
+
+            def call(path, k, fn, rows):                                    # one read-path call; returns the per-row clamp hits of that call
+                if DM.READ_CLAMP is None or not clamp:
+                    rc(path, k); return fn(), None
+                DM.READ_CLAMP["hits"] = []; rc(path, k); r_ = fn(); h_ = torch.zeros(rows, dtype=torch.bool); na, nt = 0, 0
+                for (_, _, hit, nab, per) in DM.READ_CLAMP["hits"]:
+                    h_ |= hit[:rows]; na += int(nab[:rows].sum()); nt += per * rows
+                fr_acc.setdefault((path, k), [0, 0]); fr_acc[(path, k)][0] += na; fr_acc[(path, k)][1] += nt
+                return r_, h_.numpy()
+
+            def run(items, n, K, want_items):
+                hand, ans, cl36, fcn = {t: [] for t in range(1, n + 1)}, [], [], {}; fr_acc.clear()
+                for i in range(0, len(items), bs):
+                    ch = items[i:i + bs]; b = len(ch); x, msk = m.think_inputs(ch, dev); c36 = np.zeros(b, bool)
+                    with ctx():
+                        S = m.mem.zero_state(b, dev)
+                        for t in range(1, K + 1):
+                            S, h_ = call("think", t - 1, lambda: m.write(S, x, msk), b)
+                            if h_ is not None:
+                                fcn.setdefault("t%d_think" % t, []).append(h_); c36 |= h_ if 3 <= t <= 6 else False
+                            if t <= n:
+                                (lg_a, y_a), h_ = call("aux", t, lambda: m.aux_logits(S, ch, t, dev), b)
+                                pr = lg_a.argmax(-1).cpu().numpy(); yy = y_a.cpu().numpy()
+                                for r_, it in enumerate(ch):
+                                    sy, hi = aux_of(it)[t - 1]; hand[t].append(bool(pr[r_, hi] == yy[r_, hi]))
+                                if h_ is not None:
+                                    fcn.setdefault("t%d_aux" % t, []).append(h_); c36 |= h_ if 3 <= t <= 6 else False
+                        lg, h_ = call("dec", K, lambda: m.dec_logits(S, ch, dev), b)
+                        if h_ is not None:
+                            fcn.setdefault("K%d_dec" % K, []).append(h_)
+                        ans.append(lg[:, NUM_IDS].argmax(-1).cpu().numpy() == np.array([it["t"] for it in ch])); cl36.append(c36)
+                acc = float(np.concatenate(ans).mean()); fc = {k_: float(np.concatenate(v).mean()) for k_, v in fcn.items()}
+                if clamp:
+                    res["fr"][str(n)] = {"%s_k%d" % k_: (v[0] / v[1] if v[1] else None) for k_, v in fr_acc.items()}
+                if want_items:
+                    H = {t: np.array(v) for t, v in hand.items()}; C = np.concatenate(cl36)
+                    for j, it in enumerate(items):
+                        row = {"n": it["n"], "nest_depth": it["depth"], "handle_by_t": {str(t): int(H[t][j]) for t in range(1, n + 1)}}
+                        if clamp:
+                            row["clamped_t3_6"] = bool(C[j])
+                        res["items"].append(row)
+                return acc, {t: float(np.mean(v)) for t, v in hand.items()}, fc
+            hm, k8 = [], []
+            for n in ns_in:
+                its = [it for it in TE if it["n"] == n]; acc8, hd, fc = run(its, n, 8, False); hm += [hd[t] for t in hd]; k8.append(acc8)
+                if clamp:
+                    res["fc"][str(n)] = fc
+            res["indist"] = {"handle_mean": float(np.mean(hm)), "k8_pooled": float(np.mean(k8)), "def": "handle_mean = mean over n 3..8 and t <= n of the per-t handle accuracy; k8_pooled = mean over n 3..8 of the answer accuracy at K' = 8"}
+            dn = {}
+            for n in ns_deep:
+                its = [it for it in TE if it["n"] == n]; accn, _, fc = run(its, n, n + 2, True); dn[str(n)] = accn
+                if clamp:
+                    res["fc"][str(n)] = fc
+            res["depth_n2"] = {"by_n": dn, "mean": float(np.mean(list(dn.values())))}
+            print("readclamp", mode or "unclamped", res["indist"]["handle_mean"], res["indist"]["k8_pooled"], res["depth_n2"]["mean"], flush=True)
+            return res
+        un = arm(None); cl = arm("clamp"); rs = arm("rescale")
+        for d_ in (un, rs):
+            d_.pop("fc", None); d_.pop("fr", None)
+        cl["frac_clamped"] = cl.pop("fc"); cl["frac_reads_above_p99"] = cl.pop("fr")
+    finally:
+        DM.READ_CLAMP = None
+    refs = {"%s_k%d" % k_: [float(v) for v in r_] for k_, r_ in ref.items()}
+    return {"unclamped": un, "clamped": cl, "rescaled": rs, "ref": refs, "ref_mean": {"%s_k%d" % k_: [float(v) for v in r_] for k_, r_ in ref_mean.items()},
+            "frac_def": "frac_clamped[n][t<t>_<path> | K<K>_dec] = share of items with any clamped read in that call; frac_reads_above_p99[n][<path>_k<k>] = share of (token, head) reads above the p99 ref", "ref_def": "p99 over tokens (padding included) of each additive head's post-gain read norm on S_k, per path; 500 n<=8 train items rng 18708; aux refs k 1..8 (k > 8 uses k 8)"}
+
+
+@torch.no_grad()
 def auxdone_fields(m, a, dev, amp, n_items=1000, bs=100, cap=16, ns=(2, 4, 6, 8, 10, 12), cap_c=None):
     """note 182-2 AUX-DONE (Theory, descriptive; nested runs with §175's aux decoder): per n, n_items test items, think passes t = 1..cap from M_0 = 0.
     After each pass: the main decoder's answer, and §175's aux decoder greedy from [EOT, " Step", " t", " :"] reading M_t. The item halts at the first t
@@ -694,6 +798,7 @@ def main():
     ap.add_argument("--posoffset", action="store_true", help="note 187-5: answer (K' n+2) + aux handle by t on n 3..8 with wpe offset 0 / 3 / 6 / 9 on every forward -> eval_s187_posoffset.json")
     ap.add_argument("--sizeprobe", action="store_true", help="note 187-7 SIZE-PROBE: probes for n from the decoder read after t = 2 / 4 / 6 passes -> eval_s187_sizeprobe.json")
     ap.add_argument("--sizeprobe_cap", type=int, default=300, help="--sizeprobe: items per n cap (smokes)")
+    ap.add_argument("--readclamp", action="store_true", help="note 187-8 READ-CLAMP (unclamped vs p99-clamped additive reads; per-item rows n 9..12) -> eval_s187_readclamp.json")
     ap.add_argument("--normcap", action="store_true", help="note 185-1 inference-only NORM-CAP (nested) only -> eval_s185_normcap.json")
     ap.add_argument("--normcap_c", default="", help="--normcap: C given instead of computed: a number ('inf' = the uncapped arm) or an eval_s185_normcap.json path (its normcap.C)")
     ap.add_argument("--normcap_factor", type=float, default=1.0, help="--normcap with --normcap_c: C x this factor (the cap-level sweep, Theory 2026-10-11)")
@@ -714,6 +819,11 @@ def main():
               "normcap_factor": o.normcap_factor if o.normcap_c else None, "normcap_c_source": o.normcap_c.replace(os.sep, "/") or None, "run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
               "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)}
         json.dump(r_, open(o.out or os.path.join(o.run, "eval_s185_normcap.json"), "w", newline="\n"), indent=1); print("DONE normcap", o.run, flush=True); return
+    if o.readclamp:                                                         # note 187-8 (Theory): READ-CLAMP -> eval_s187_readclamp.json
+        assert kind == "nested" and a.get("aux_step"), "READ-CLAMP needs a nested run with §175's aux decoder"
+        r_ = readclamp_fields(m, a, dev, amp, o.bs); r_.update({"run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
+                                                       "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)})
+        json.dump(r_, open(o.out or os.path.join(o.run, "eval_s187_readclamp.json"), "w", newline="\n"), indent=1); print("DONE readclamp", o.run, flush=True); return
     if o.sizeprobe:                                                         # note 187-7 (Theory): SIZE-PROBE -> eval_s187_sizeprobe.json
         assert kind == "nested", "SIZE-PROBE is for nested runs"
         bt_, mm_ = sizeprobe_fields(m, a, dev, amp, o.bs, cap=o.sizeprobe_cap)
