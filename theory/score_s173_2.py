@@ -14,8 +14,8 @@ import os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 R = os.path.join(ROOT, "boxes", "runs_fsq")
-RUNS = {"s184_s1": "s184_reweight_s1", "s184_s2": "s184_reweight_s2", "window_s1": "s182_window_s1"}
-KEXP = {"s184_reweight_s1": 8, "s184_reweight_s2": 8, "s182_window_s1": 12}   # each run's think_k (args.json); halt173 cap = 2K
+RUNS = {"s184_s1": "s184_reweight_s1", "s184_s2": "s184_reweight_s2", "window_s1": "s182_window_s1", "rms_s1": "s185_rms_s1"}   # 173-4: rms_s1 descriptive (beside)
+KEXP = {"s184_reweight_s1": 8, "s184_reweight_s2": 8, "s182_window_s1": 12, "s185_rms_s1": 8}   # each run's think_k (args.json); halt173 cap = 2K
 READ_N, TOL, PRE, EPS = (10, 12), 0.03, 0.05, 1e-9
 
 
