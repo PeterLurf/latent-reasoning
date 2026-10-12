@@ -1,0 +1,48 @@
+{
+ "g1": {
+  "fwd_fast0_mask_out": true,
+  "fwd_fast0_mask_state": true,
+  "fwd_fast0_nomask_out": true,
+  "fwd_fast0_nomask_state": true,
+  "fwd_fast1_mask_out": true,
+  "fwd_fast1_mask_state": true,
+  "fwd_fast1_nomask_out": true,
+  "fwd_fast1_nomask_state": true,
+  "lower": true,
+  "fwd_read": true,
+  "dec_reads": true
+ },
+ "g1_pass": true,
+ "g2": {
+  "pos0_equal": true,
+  "pos_ge1_are_shifted": true,
+  "pos_ge1_differ": true
+ },
+ "g2_pass": true,
+ "g3": {
+  "aux_offsets": [
+   [
+    0,
+    true
+   ]
+  ],
+  "write_offsets": [
+   [
+    3,
+    true
+   ]
+  ],
+  "dec_offsets": [
+   [
+    3,
+    true
+   ]
+  ],
+  "reset_after": [
+   0,
+   false
+  ]
+ },
+ "g3_pass": true,
+ "all_pass": true
+}

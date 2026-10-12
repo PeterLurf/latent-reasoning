@@ -482,17 +482,18 @@ def selfdepth_fields(m, a, dev, amp, bs=100, ns=(9, 10), T=16):
 
 
 @torch.no_grad()
-def posoffset_fields(m, a, dev, amp, bs=125, offs=(0, 3, 6, 9), ns=(3, 4, 5, 6, 7, 8)):
+def posoffset_fields(m, a, dev, amp, bs=125, offs=(0, 3, 6, 9), ns=(3, 4, 5, 6, 7, 8), keep0=False):
     """note 187-5 (Theory / Audit, descriptive): every forward path (think passes, main decoder, aux decoder) adds wpe[off : off + T] instead of wpe[:T]
     (deltamem.POS_OFFSET; gate187_posoffset.json). Per off and n (ALL test items at n): the answer accuracy at K' = n + 2, and the aux handle accuracy
-    by pass t <= n (teacher-forced, as s175.aux_acc_by_role.handle)."""
+    by pass t <= n (teacher-forced, as s175.aux_acc_by_role.handle). keep0 (187-5a KEEP-SINK): position 0 keeps wpe[0] on the think / main-decoder
+    paths, and the aux decoder (no question in its prompt) is read at offset 0."""
     from contextlib import nullcontext
     from boxes.nested170 import test_set, aux_of, NUM_IDS
     ctx = (lambda: torch.autocast("cuda", dtype=amp)) if amp is not None else nullcontext
     TE = test_set(a.get("per_n", 1000)); out = {}
     try:
         for off in offs:
-            DM.POS_OFFSET = int(off); res = {}
+            DM.POS_OFFSET = int(off); DM.POS_KEEP0 = bool(keep0); res = {}
             for n in ns:
                 its = [it for it in TE if it["n"] == n]; kp = n + 2; corr = []; hd = {t: [] for t in range(1, n + 1)}
                 for i in range(0, len(its), bs):
@@ -502,7 +503,10 @@ def posoffset_fields(m, a, dev, amp, bs=125, offs=(0, 3, 6, 9), ns=(3, 4, 5, 6, 
                         for t in range(1, kp + 1):
                             S = m.write(S, x, msk)
                             if t <= n:
+                                if keep0:                                       # 187-5a: the aux prompt has no question -> wpe[:T]
+                                    DM.POS_OFFSET = 0
                                 lg_a, y_a = m.aux_logits(S, ch, t, dev); pr = lg_a.argmax(-1).cpu().numpy(); yy = y_a.cpu().numpy()
+                                DM.POS_OFFSET = int(off)
                                 for r_, it in enumerate(ch):
                                     sy, hi = aux_of(it)[t - 1]; hd[t].append(bool(pr[r_, hi] == yy[r_, hi]))
                         corr.append(m.dec_logits(S, ch, dev)[:, NUM_IDS].argmax(-1).cpu().numpy() == tg)
@@ -510,7 +514,7 @@ def posoffset_fields(m, a, dev, amp, bs=125, offs=(0, 3, 6, 9), ns=(3, 4, 5, 6, 
             res["pooled_answer_n3_8"] = float(np.mean([res[str(n)]["answer_acc_kprime_n2"] for n in ns])); out[str(off)] = res
             print("posoffset", off, round(res["pooled_answer_n3_8"], 4), flush=True)
     finally:
-        DM.POS_OFFSET = 0
+        DM.POS_OFFSET = 0; DM.POS_KEEP0 = False
     return out
 
 
@@ -635,6 +639,7 @@ def main():
     ap.add_argument("--items_tmax", type=int, default=0, help="--deepaux_items(_only): passes recorded (0 = 12)")
     ap.add_argument("--items_file", default="eval_s187_deepaux_items.json", help="--deepaux_items(_only): the rows file name in the run dir")
     ap.add_argument("--selfdepth", action="store_true", help="note 187-4: self-verified depth filter (aux chain + AUX-DONE halt + answer at K' = n + 2) on ALL n 9 / 10 test items -> eval_s187_selfdepth_pre.json")
+    ap.add_argument("--posoffset_keep0", action="store_true", help="note 187-5a KEEP-SINK: --posoffset with position 0 kept at wpe[0] -> eval_s187_posoffset_keep0.json")
     ap.add_argument("--posoffset", action="store_true", help="note 187-5: answer (K' n+2) + aux handle by t on n 3..8 with wpe offset 0 / 3 / 6 / 9 on every forward -> eval_s187_posoffset.json")
     ap.add_argument("--normcap", action="store_true", help="note 185-1 inference-only NORM-CAP (nested) only -> eval_s185_normcap.json")
     ap.add_argument("--normcap_c", default="", help="--normcap: C given instead of computed: a number ('inf' = the uncapped arm) or an eval_s185_normcap.json path (its normcap.C)")
@@ -656,12 +661,12 @@ def main():
               "normcap_factor": o.normcap_factor if o.normcap_c else None, "normcap_c_source": o.normcap_c.replace(os.sep, "/") or None, "run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
               "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)}
         json.dump(r_, open(o.out or os.path.join(o.run, "eval_s185_normcap.json"), "w", newline="\n"), indent=1); print("DONE normcap", o.run, flush=True); return
-    if o.posoffset:                                                         # note 187-5 (Theory): position-offset eval -> eval_s187_posoffset.json
+    if o.posoffset or o.posoffset_keep0:                                    # note 187-5 / 5a (Theory): position-offset eval -> eval_s187_posoffset(_keep0).json
         assert kind == "nested" and a.get("aux_step"), "posoffset needs a nested run trained with §175's aux decoder"
-        r_ = {"by_offset": posoffset_fields(m, a, dev, amp, o.bs), "run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
+        r_ = {"by_offset": posoffset_fields(m, a, dev, amp, o.bs, keep0=o.posoffset_keep0), "keep0": bool(o.posoffset_keep0), "run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp),
               "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0),
               "def": "deltamem.POS_OFFSET = off: think passes, main decoder and aux decoder all add wpe[off : off + T]; answer at K' = n + 2; handle = teacher-forced aux argmax at the reduced value after pass t <= n"}
-        json.dump(r_, open(o.out or os.path.join(o.run, "eval_s187_posoffset.json"), "w", newline="\n"), indent=1); print("DONE posoffset", o.run, flush=True); return
+        json.dump(r_, open(o.out or os.path.join(o.run, "eval_s187_posoffset_keep0.json" if o.posoffset_keep0 else "eval_s187_posoffset.json"), "w", newline="\n"), indent=1); print("DONE posoffset", o.run, flush=True); return
     if o.selfdepth:                                                         # note 187-4 (Theory): self-verified depth -> eval_s187_selfdepth_pre.json
         assert kind == "nested" and a.get("aux_step"), "selfdepth needs a nested run trained with §175's aux decoder"
         r_ = {"by_n": selfdepth_fields(m, a, dev, amp, o.bs), "run": o.run.replace(os.sep, "/"), "kind": kind, "eval_dtype": str(amp), "passes": 16,
