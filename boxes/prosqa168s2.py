@@ -395,9 +395,12 @@ def main():
                 cot_len.append(len(q) - len(it["pre"])); out.append((q, it["a1"], it["a2"], it["depth"]))
             return out
         M = candidate_margins(g, cot_items(Dte), dev, amp, bs); Mc = candidate_margins(g, cot_items(Dctl), dev, amp, bs)
+    trg_, trd_ = info["train_gpu"], info.get("train_driver")
+    if a.eval_only and os.path.exists(os.path.join(a.out, "args.json")):      # Theory: an eval-only run reports the TRAINING card from args.json (eval_gpu = this card)
+        ta_ = json.load(open(os.path.join(a.out, "args.json"))); trg_, trd_ = ta_.get("train_gpu", trg_), ta_.get("train_driver", trd_)
     res = {"arm": a.arm, "data": "na", "seed": a.seed, "steps": a.steps, "think_k": K, "acc": float((M > 0).mean()), "n": int(len(M)), "acc_by_depth": by_depth(M, dep),
            "n_by_depth": {str(d): int((dep == d).sum()) for d in range(3, 15) if (dep == d).any()}, "acc_ctl": float((Mc > 0).mean()), "n_ctl": int(len(Mc)),
-           "train_sec": train_sec, "n_nonfinite": n_nonfinite, "micro": a.micro, "eval_dtype": str(amp), "gpu": info["train_gpu"], "train_gpu": info["train_gpu"],
+           "train_sec": train_sec, "n_nonfinite": n_nonfinite, "micro": a.micro, "eval_dtype": str(amp), "gpu": trg_, "train_gpu": trg_, "train_driver": trd_,
            "acc_def": "candidate accuracy: log p('### ' + correct) > log p(the negative's) after the arm's prefix (stepaux: + the memory after K passes)"}
     if a.arm == "textcot":
         res["mean_cot_tokens"] = float(np.mean(cot_len)) if cot_len else None
