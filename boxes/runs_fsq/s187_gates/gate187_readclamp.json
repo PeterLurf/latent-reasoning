@@ -1,0 +1,111 @@
+{
+ "g1": {
+  "fwd_fast0_mask_out": true,
+  "fwd_fast0_mask_state": true,
+  "fwd_fast0_nomask_out": true,
+  "fwd_fast0_nomask_state": true,
+  "fwd_fast1_mask_out": true,
+  "fwd_fast1_mask_state": true,
+  "fwd_fast1_nomask_out": true,
+  "fwd_fast1_nomask_state": true,
+  "lower": true,
+  "fwd_read": true,
+  "dec_reads": true
+ },
+ "g1_pass": true,
+ "g2": {
+  "fwd_fast0_mask_out": true,
+  "fwd_fast0_mask_state": true,
+  "fwd_fast0_nomask_out": true,
+  "fwd_fast0_nomask_state": true,
+  "fwd_fast1_mask_out": true,
+  "fwd_fast1_mask_state": true,
+  "fwd_fast1_nomask_out": true,
+  "fwd_fast1_nomask_state": true,
+  "lower": true,
+  "fwd_read": true,
+  "dec_reads": true
+ },
+ "g2_pass": true,
+ "g3": {
+  "n_clamped": 30,
+  "min_cos": 0.9999998807907104,
+  "clamped_norm_max_rel_err": 1.1458758564231175e-07,
+  "unclamped_unchanged": true,
+  "rescale_min_cos": 0.9999998807907104,
+  "rescale_norm_max_rel_err": 1.1458758564231175e-07
+ },
+ "g3_pass": true,
+ "g4": {
+  "keys": [
+   "clamped",
+   "frac_def",
+   "ref",
+   "ref_def",
+   "ref_mean",
+   "rescaled",
+   "unclamped"
+  ],
+  "arms": {
+   "unclamped": [
+    "depth_n2",
+    "indist",
+    "items"
+   ],
+   "clamped": [
+    "depth_n2",
+    "frac_clamped",
+    "frac_reads_above_p99",
+    "indist",
+    "items"
+   ],
+   "rescaled": [
+    "depth_n2",
+    "indist",
+    "items"
+   ]
+  },
+  "n_items_rows": [
+   32,
+   32,
+   32
+  ],
+  "any_clamp_on_deep": true,
+  "row0_clamped": {
+   "n": 9,
+   "nest_depth": 3,
+   "handle_by_t": {
+    "1": 1,
+    "2": 1,
+    "3": 1,
+    "4": 1,
+    "5": 1,
+    "6": 1,
+    "7": 1,
+    "8": 1,
+    "9": 1
+   },
+   "clamped_t3_6": true
+  },
+  "indist": {
+   "unclamped": {
+    "handle_mean": 0.9962121212121212,
+    "k8_pooled": 1.0,
+    "def": "handle_mean = mean over n 3..8 and t <= n of the per-t handle accuracy; k8_pooled = mean over n 3..8 of the answer accuracy at K' = 8"
+   },
+   "clamped": {
+    "handle_mean": 0.9962121212121212,
+    "k8_pooled": 1.0,
+    "def": "handle_mean = mean over n 3..8 and t <= n of the per-t handle accuracy; k8_pooled = mean over n 3..8 of the answer accuracy at K' = 8"
+   },
+   "rescaled": {
+    "handle_mean": 0.9848484848484849,
+    "k8_pooled": 1.0,
+    "def": "handle_mean = mean over n 3..8 and t <= n of the per-t handle accuracy; k8_pooled = mean over n 3..8 of the answer accuracy at K' = 8"
+   }
+  },
+  "reset": true
+ },
+ "g4_pass": true,
+ "all_pass": true
+}

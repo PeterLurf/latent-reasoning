@@ -20,6 +20,22 @@ FAST_ADD = False                                                            # Au
 CHUNK_DELTA = 0                                                             # 2026-10-10: R-mode delta writes in chunks of this many tokens (WY form; 0 = the token loop; needs FAST_ADD)
 POS_OFFSET = 0                                                              # note 187-5 (eval only): every forward path adds wpe[POS_OFFSET : POS_OFFSET + T] (0 = wpe[:T], unchanged)
 POS_KEEP0 = False                                                           # note 187-5a KEEP-SINK: with an offset, position 0 keeps wpe[0] and p >= 1 takes wpe[p + off]
+READ_CLAMP = None                                                           # note 187-8 READ-CLAMP (eval only): None = off; else a dict set by the eval loop (see read_clamp)
+
+
+def read_clamp(oa):
+    """note 187-8: oa (B, T, H_ADD, DH) = the post-gain additive reads of one read_fixed call. READ_CLAMP['mode'] 'collect': append the per-token, per-head
+    norms to store[(path, k)]; 'clamp': scale any token's head read whose norm exceeds ref[(path, min(k, kmax[path]))] (H,) down to it (direction kept) and
+    append (path, k, per-row any-clamped) to hits. path / k (the state's pass count) are set by the eval loop before each call."""
+    rc = READ_CLAMP; nrm = oa.norm(dim=-1); key = (rc["path"], rc["k"])
+    if rc["mode"] == "collect":
+        rc["store"].setdefault(key, []).append(nrm.detach().reshape(-1, nrm.shape[-1]).cpu()); return oa
+    kk = (rc["path"], min(rc["k"], rc["kmax"][rc["path"]]))
+    if rc["mode"] == "rescale":                                             # 187-8a: every token's head read rescaled to the n <= 8 mean norm (direction kept)
+        return oa * (rc["ref_mean"][kk].to(oa.device) / nrm.clamp_min(1e-30))[..., None]
+    ref = rc["ref"][kk].to(oa.device); ab = nrm > ref
+    f = torch.clamp(ref / nrm.clamp_min(1e-30), max=1.0); rc["hits"].append((rc["path"], rc["k"], ab.flatten(1).any(1).cpu(), ab.flatten(1).sum(1).cpu(), ab[0].numel()))
+    return oa * f[..., None]
 
 
 def wpe_slice(g, T):
@@ -144,6 +160,8 @@ def read_fixed(mem, x, S, rec=None):
     with torch.autocast("cuda", enabled=False):
         B, T, D = x.shape; a = mem.ln(x.float()); q = mem.qkv(a)[..., :D].view(B, T, H_ADD + H_DEL, DH)
         oa = torch.exp(mem.s_add) * add_read(mem, F.elu(q[:, :, :H_ADD]) + 1, S[:, :H_ADD].float(), state_z(mem, S))
+        if READ_CLAMP is not None:                                          # note 187-8 (eval only; off = unchanged)
+            oa = read_clamp(oa)
         od = torch.exp(mem.s_del) * torch.einsum("bhvk,bthk->bthv", S[:, H_ADD:H_ADD + H_DEL].float(), F.normalize(q[:, :, H_ADD:], dim=-1))
         if mem.norms is not None:
             mem.norms.append((od[:, -1].flatten(1).norm(dim=1).detach(), oa[:, -1].flatten(1).norm(dim=1).detach()))
