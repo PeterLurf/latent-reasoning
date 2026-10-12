@@ -13180,6 +13180,19 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - Halting (C5) is parked until a COUNT-OOD lever gives size-free computation.
   - No training lever is drafted from this.
 
+**Note 188-3 (2026-10-11 23:58 EDT; operational, before launch; Audit agreed; no rule change). §188 launches now, not after WINDOW s2.**
+* §188's registered reading (JOINT / DEEP-ONLY / STABLE-ONLY / NEITHER, and LONG-STABLE) is against s184_reweight_s1 and s182_window_s1, so it does not use WINDOW s2.
+  - The "hold if WINDOW s2 is not STABLE" placement condition was an operational hedge, and it is dropped. The composition question is worth answering either way.
+* **WINDOW s2's §182 verdict is read beside §188's, not as a gate.**
+* Rationale: b268 lands about 23:00 on 2026-10-12, which would leave a fleet slot idle for about 23 h.
+* Cost is unchanged (about $4–7; Audit's approval stands). The fleet goes to 5.
+
+**Note 168-15 (2026-10-11 23:58 EDT; before any stepaux eval is read; Audit; operational).** b263's in-run eval crashed at STEP-RECOVER (a probe sized to 11 classes against ProsQA's concept vocabulary), so no eval.json was written and nothing was read.
+* The eval is redone with `--eval_only` from the drained model.pt, on a local card (the 4060), with the eval gpu recorded. b267 gets the same.
+* **The cross-card rule:** if any registered §168 s2 reading lands within 0.02 of its boundary, that cell is re-evaluated on an RTX 3090 (the baselines' class) before the verdict.
+  - This covers the DEEP-type ≥ 0.90 bars, the TEXT-COT 0.735 comparison, and 168-13's ±0.05 bands.
+  - Otherwise the local read stands. bf16 cross-card noise is about ±0.01, so it should not decide a verdict.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
