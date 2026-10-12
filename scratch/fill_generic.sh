@@ -17,7 +17,7 @@ import json,sys
 ex={l.split()[0] for l in open('scratch/vast_exclude_ips.txt') if l.strip() and not l.startswith('#')}   # first token: lines may carry a trailing comment
 used={l.split()[0] for l in open('scratch/live_hosts.txt') if l.strip()}
 pf=[l.strip() for l in open('scratch/vast_prefer_ips.txt') if l.strip() and not l.startswith('#')] if __import__('os').path.exists('scratch/vast_prefer_ips.txt') else []   # Audit 2026-10-10: known-fast hosts first
-rows=[(0 if any(str(x.get('public_ipaddr','')).startswith(q) for q in pf) else 1, 0 if str(x.get('driver_version','')).startswith('595.71') else 1, x['dph_total'], x['id']) for x in json.load(sys.stdin) if x.get('public_ipaddr') not in ex and x.get('public_ipaddr') not in used and not str(x.get('driver_version','')).startswith('580')]
+rows=[(0 if any(str(x.get('public_ipaddr','')).startswith(q) for q in pf) else 1, 0 if str(x.get('driver_version','')).startswith('595.71') else 1, x['dph_total'], x['id']) for x in json.load(sys.stdin) if x.get('public_ipaddr') not in ex and 'oid:%s' % x.get('id') not in ex and 'mid:%s' % x.get('machine_id') not in ex and x.get('public_ipaddr') not in used and not str(x.get('driver_version','')).startswith('580')]
 print(sorted(rows)[0][3] if rows else '')")
       if [ -n "$o" ]; then
         log "b$n: deploying on offer $o ($cnt live, \$${burn}/h)"; bash scratch/gen_deploy_120.sh "$o $n"
