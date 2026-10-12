@@ -604,6 +604,8 @@ def main():
                    "weights": list(AUX_W) if a.aux_reweight else None, "source": clip_src, "def": "clip_grad_norm_(..., 1.0)'s pre-clip total norm per step; clip fires when > 1.0"}
     if SA:
         res["s168s2"]["clip"] = res["clip"]
+    if a.eval_train_n:                                                      # 168-17: the label for the non-stepaux arms (stepaux returned above with it)
+        res["items"] = "TRAIN items (rng 16816 permutation[:%d]) of p8_na_train" % a.eval_train_n
     res.pop("eval_partial_through", None); res["eval_partial"] = False       # the complete eval (Theory: score_s168s2 reads eval_partial true as running)
     res["eval_sec"] = round(time.time() - t1); json.dump(res, open(os.path.join(a.out, EVAL_FN), "w", newline="\n"), indent=1)
     for ck_ in ("ckpt_last.pt", "ckpt_prev.pt"):
