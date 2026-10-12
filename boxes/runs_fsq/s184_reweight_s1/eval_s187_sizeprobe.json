@@ -1,0 +1,42 @@
+{
+ "by_t": {
+  "2": {
+   "full": 0.8486666679382324,
+   "norm": 0.70333331823349,
+   "dir": 0.8119999766349792,
+   "full_adddel": 0.8566666841506958,
+   "norm_pre": 0.70333331823349,
+   "n_fit": 1500,
+   "n_test": 1500,
+   "norm_cv_mean": 0.24414728581905365
+  },
+  "4": {
+   "full": 0.8799999952316284,
+   "norm": 0.6426666378974915,
+   "dir": 0.8579999804496765,
+   "full_adddel": 0.8893333077430725,
+   "norm_pre": 0.6426666378974915,
+   "n_fit": 1500,
+   "n_test": 1500,
+   "norm_cv_mean": 0.23073358833789825
+  },
+  "6": {
+   "full": 0.8899999856948853,
+   "norm": 0.5579999685287476,
+   "dir": 0.8653333187103271,
+   "full_adddel": 0.9039999842643738,
+   "norm_pre": 0.5579999685287476,
+   "n_fit": 1500,
+   "n_test": 1500,
+   "norm_cv_mean": 0.2217678427696228
+  }
+ },
+ "chance": 0.1,
+ "per_n": 300,
+ "run": "boxes/runs_fsq/s184_reweight_s1",
+ "kind": "nested",
+ "eval_dtype": "torch.bfloat16",
+ "gpu": "NVIDIA GeForce RTX 3070",
+ "sec": 75,
+ "def": "test n 3..12, nesting <= 2, first per_n per n, half fit / half test per n; read at the main decoder's ' =' after t passes from 0; logreg n_cls 10 (labels n-3) on full = g_add read_add (h_add heads), norm = per-head norms, dir = per-head unit vectors, full_adddel = add || delta; norm_cv_mean = mean over heads of the test-set coefficient of variation of the per-head norm"
+}
