@@ -13193,6 +13193,29 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - This covers the DEEP-type ≥ 0.90 bars, the TEXT-COT 0.735 comparison, and 168-13's ±0.05 bands.
   - Otherwise the local read stands. bf16 cross-card noise is about ±0.01, so it should not decide a verdict.
 
+**Note 187-6 (2026-10-12 00:43 EDT; descriptive; the 187-3 count test on §184 s2 and RMS s1, from per-item rows on all n 9–12 test items, 3070, deab963a; computed exactly as 187-3, which reproduces §184 s1's recorded rows and onsets). COUNT-OOD replicates on §184 s2. The RMS read removes it: RMS s1's early passes are size-free, and its failure sits at a fixed pass.**
+* **Handle at matched nesting ≤ 2, mean over t = 3–6, at n 9 / 10 / 11 / 12** (with the first t where handle < 0.80):
+
+  | model | n 9 | n 10 | n 11 | n 12 | onsets | COUNT-OOD |
+  |---|---|---|---|---|---|---|
+  | §184 s1 | 0.958 | 0.800 | 0.623 | 0.517 | 8 / 5 / 4 / 3 | yes |
+  | §184 s2 | 0.903 | 0.742 | 0.620 | 0.522 | 6 / 5 / 4 / 3 | yes |
+  | NOFADE s1 | 0.912 | 0.885 | 0.775 | 0.637 | 8 / 6 / 5 / 4 | yes |
+  | **RMS s1** | **0.985** | **0.960** | **0.950** | **0.953** | **8 / 7 / 7 / 7** | **no** |
+
+* **RMS s1 by pass at n 12:** 1.00 / 1.00 / 0.99 / 0.99 / 0.96 / 0.87 / 0.62 / 0.51 / 0.15 at t = 1–9.
+  - n 10 and 11 have the same shape.
+  - Steps 1–6 hold at any size. The failure starts at t ≈ 7 whatever n is, and collapses at t = 9 (the unseen pass token).
+  - So under RMS the limit is pass-keyed (late passes, then the token edge), not size-keyed.
+* **A candidate mechanism (not tested):** the additive state sums writes over every input token on every pass, so the unnormalised read's magnitude grows with input length × passes. That is a size and count cue, and RMS's constant-norm read (7.21 from pass 2 on) removes it.
+  - The t ≈ 7–8 weakness fits the RMS arm having no reweight: under NOFADE's weighting, pass 8 gets about 1/22 of pass 1's aux signal.
+* **§184 s2's SELF-DEPTH (187-4):** BLOCKED-BY-TOKEN-EDGE again. The halt is pinned at t = 8 (n 9: 993 / 1,000). Filter precision at n 9 / 10 is 0.991 / 0.919, against all-item 0.990 / 0.902.
+* **§189's s2 expectation, pre-stated now (RMS s2's rows do not exist yet), descriptive:** SIZE-FREE-EARLY replicates if RMS s2's mean handle at t = 3–6 at n = 12 is ≥ its n = 9 value − 0.05, and its onsets at n 10–12 lie within one pass of each other.
+* **The lead this opens (not registered; it waits for §189 and §187):**
+  - RMS × REWEIGHT, to train the late passes. The prediction is that the failure onset moves to the token edge (t = 8–9).
+  - Then RMS × NOPASS, past the edge.
+  - Together this is a route to depth beyond training that does not change the training distribution.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
