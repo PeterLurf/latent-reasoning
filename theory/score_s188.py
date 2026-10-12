@@ -2,7 +2,7 @@
 REWEIGHT x WINDOW: s182_window_s1's args + --aux_reweight. Comparators s184_reweight_s1 (DEEP) and s182_window_s1 (STABLE), from their eval.json.
 DEEP = >= 0.90 at every n 3..8 at K' 8; THINK-NECESSARY = 170-4 removal (K' 0 / 1); STABLE = pooled (n 3..8) K'16 >= K'8 - 0.02 (§182's letter).
 JOINT = DEEP and THINK-NECESSARY and STABLE (opens s2; the claim needs 2 / 2); DEEP-ONLY = DEEP, not STABLE; STABLE-ONLY = STABLE, not DEEP; else NEITHER.
-LONG-STABLE = pooled K'24 >= K'8 - 0.05; K'32 reported. C6 CLAIM (Audit) = JOINT and LONG-STABLE in both seeds. Descriptive: DEPTH (n 9-12 at K' = n + 2), clip rate.
+Note 188-1: DWELL = acc K'=n+2 - K'=n per n 3..8 (descriptive; > 0.05 = needs slack passes). LONG-STABLE = pooled K'24 >= K'8 - 0.05; K'32 reported. C6 CLAIM (Audit) = JOINT and LONG-STABLE in both seeds. Descriptive: DEPTH (n 9-12 at K' = n + 2), clip rate.
     python theory/score_s188.py
 """
 import json
@@ -41,7 +41,8 @@ def read(d, want):
     rem = (p[0] - CH) <= 0.5 * (p[8] - CH) + EPS and (p[1] - CH) <= 0.5 * (p[8] - CH) + EPS
     return {"status": "done", "pooled": p, "min_k8_3_8": min(S170.acc(k8, n) or 0 for n in range(NS, 9)), "deep": all((S170.acc(k8, n) or 0) >= 0.90 - EPS for n in range(NS, 9)),
             "think_necessary": None if p[8] - CH < 0.1 else bool(rem), "stable": bool(p[16] >= p[8] - 0.02 - EPS), "long_stable": bool(p[24] >= p[8] - LONG_TOL - EPS),
-            "depth_9_12_n2": depth, "clip_rate": (r.get("s184") or {}).get("clip_rate"), "gpu": r.get("train_gpu")}
+            "depth_9_12_n2": depth, "clip_rate": (r.get("s184") or {}).get("clip_rate"), "gpu": r.get("train_gpu"),
+            "dwell_by_n": {n: (None if None in (S170.acc(kn2, n), S170.acc(S170.kseries(x, "n"), n)) else S170.acc(kn2, n) - S170.acc(S170.kseries(x, "n"), n)) for n in range(NS, 9)} if kn2 else None}   # note 188-1
 
 
 def label(r):
