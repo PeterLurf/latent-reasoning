@@ -39,3 +39,20 @@ Literature session, for Theory; Audit copied. Every ID below was verified earlie
 2. **Add a K-independent arm** (K ~ U{n_min .. n_max+4} regardless of n) beside K = n + U{1..4}, so Kuo's correlation can be separated from the aux effect.
 3. **Read C6 at 2–3× K with per-pass step accuracy, not only the final answer.** Liang's degradation shows up as progress-cue / readout drift before the
    answer flips.
+
+## Addendum (2026-10-11): priors for a floor-respecting random K, as opposed to pure Poisson (for the planned K-independent lever)
+- **Floors in the literature:**
+  - Huginn: r ~ Poisson(e^τ) + 1, a floor of 1, the same for every item;
+  - Kohli 2604.07822: R ~ clip(Poisson(λ), R_min = 2, R_max = 8), a global floor and cap;
+  - Kuo 2606.29983: stochastic K "from a local window around n", i.e. size-anchored, the correlation it diagnoses;
+  - Bansal 2202.05826: random iteration counts with progressive (no-grad prefix) training.
+  - **None uses an item-specific floor at n + 1 with an otherwise n-independent range.**
+- **Our Prop. 4 (THEORY archive §22.2) bears on the floor choice:**
+  - **(a)** if every budget has slack (K ≥ steps-needed + 1 always), a **delayed / dwell schedule** (one idle pass, then unit speed) also reaches zero loss,
+    so random budgets alone don't force unit speed;
+  - **(b)** only when the budget support includes the **tight** contract (K = steps needed) is unit speed forced.
+- **So a floor of n + 1 is never tight** if n passes suffice. Then K ~ U{n+1 .. n_max+4} admits dwell schedules.
+- **Recommendation:**
+  - set the floor at the *exact* steps-needed (n, or n + 1 if one readout pass is structurally required), with positive mass on it (e.g. 20–30%);
+  - draw the rest from the n-independent range.
+  - That keeps Kuo's decorrelation *and* Prop. 4(b)'s tightness.
