@@ -13624,6 +13624,11 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - All of n 10–12 sit at 0.75–0.83 at t = 7: the same fixed late decline as s1, slightly milder on s2.
 * **Reading:** RMS's size-free early steps replicate at 2 / 2 (s1 0.985 → 0.953; s2 0.990 → 0.971). The registered conjunction fails only on how a 0.80 threshold falls on the late decline.
 
+**SIZE-FREE-EARLY on RMS s2, wording (2026-10-12 11:56 EDT; Audit's pre-check matches).** The reading is: "SIZE-FREE-EARLY: the early-step clause replicates (2 / 2). The onset clause is not met on s2 (spread 2: n 10 at t 9, n 11–12 at t 7)."
+* This corrects the earlier "same fixed late decline" phrasing. s2's late failure is not a single fixed pass.
+* It fits "fails once remaining work exceeds a bound": n 10 holds at t 7 with 3 left, while n 11 / 12 break at t 7 with 4 / 5 left. That is consistent with 187-6a's token × remaining-work account.
+* §190's design is unchanged.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
