@@ -538,3 +538,19 @@
 5.0 boxes/runs_fsq/s185_rms_s1/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s185_rms_s1 --bs 125 --device {DEV}
 5.0 boxes/runs_fsq/s185_rms_s1/eval_s187_selfdepth_pre.json python -u -m boxes.halt173 --run boxes/runs_fsq/s185_rms_s1 --selfdepth --bs 125 --device {DEV}
 5.0 boxes/runs_fsq/s182_window_s1/eval_s187_deepaux_items_n9_12.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_window_s1 --deepaux --deepaux_items_only --items_n 9,10,11,12 --items_tmax 14 --items_file eval_s187_deepaux_items_n9_12.json --bs 125 --device {DEV}
+# 2026-10-12 03:16 3070 filler (Audit 03:14; descriptive): WINDOW s1's halting package = §188 b269's comparator post-hocs (auxdone / tshift / normcap), then the 187 package (selfdepth_pre, sizeprobe). RTX 3070 bf16 (b269's run on a 3090: card noted)
+5.0 boxes/runs_fsq/s182_window_s1/eval_s182_auxdone.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_window_s1 --auxdone --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s182_window_s1/eval_s182_tshift.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_window_s1 --tshift --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s182_window_s1/eval_s185_normcap.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_window_s1 --normcap --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s182_window_s1/eval_s187_selfdepth_pre.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_window_s1 --selfdepth --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s182_window_s1/eval_s187_sizeprobe.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_window_s1 --sizeprobe --bs 125 --device {DEV}
+# 2026-10-12 03:56 3070 filler (Audit 03:54; descriptive): 187-5a keep0 + 187-8b readclamp_padfree gaps on WINDOW s1, RMS s1, DEN s1
+5.0 boxes/runs_fsq/s182_window_s1/eval_s187_posoffset_keep0.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_window_s1 --posoffset_keep0 --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s182_window_s1/eval_s187_readclamp_padfree.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_window_s1 --readclamp_padfree --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s185_rms_s1/eval_s187_readclamp_padfree.json python -u -m boxes.halt173 --run boxes/runs_fsq/s185_rms_s1 --readclamp_padfree --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s185_den_s1/eval_s187_posoffset_keep0.json python -u -m boxes.halt173 --run boxes/runs_fsq/s185_den_s1 --posoffset_keep0 --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s185_den_s1/eval_s187_readclamp_padfree.json python -u -m boxes.halt173 --run boxes/runs_fsq/s185_den_s1 --readclamp_padfree --bs 125 --device {DEV}
+# 2026-10-12 09:27 3070: §187 NOPASS local post-hocs, descriptive: sizeprobe, keep0, readclamp_padfree (no tshift: refuses §187)
+5.0 boxes/runs_fsq/s187_nopass_s1/eval_s187_sizeprobe.json python -u -m boxes.halt173 --run boxes/runs_fsq/s187_nopass_s1 --sizeprobe --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s187_nopass_s1/eval_s187_posoffset_keep0.json python -u -m boxes.halt173 --run boxes/runs_fsq/s187_nopass_s1 --posoffset_keep0 --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s187_nopass_s1/eval_s187_readclamp_padfree.json python -u -m boxes.halt173 --run boxes/runs_fsq/s187_nopass_s1 --readclamp_padfree --bs 125 --device {DEV}
