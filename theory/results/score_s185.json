@@ -32,13 +32,22 @@
  "rms": {
   "runs": {
    "1": {
-    "status": "open"
+    "status": "done",
+    "pooled_k8": 0.9981666666666666,
+    "pooled_k16": 0.9331666666666667,
+    "pooled_k32": 0.6198333333333333,
+    "stable": false,
+    "depth_9_12_n2": 0.587,
+    "deep": true,
+    "think_necessary": true,
+    "gpu": "NVIDIA GeForce RTX 3090"
    },
    "2": {
     "status": "open"
    }
   },
-  "reading": "pending (RMS s1 open; NOFADE done)"
+  "reading": "NO-FIX: RMS K'8 0.998 -> K'16 0.933 (K'32 0.62) vs NOFADE 0.787 -> 0.418; DEEP True, THINK-NECESSARY True; [185-2, descriptive] n 9-12 at K'=n+2: 0.587 vs NOFADE 0.174 (+0.413) -> LIFTS depth (refs: \u00a7184 0.486, TEXT-COT 0.535)"
  },
+ "pair": "neither STABLE: C6 rests on HOLD / NORM-CAP",
  "errors": []
 }

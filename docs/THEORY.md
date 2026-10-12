@@ -272,7 +272,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 182 | STEP-AUX-HOLD: §175 with the aux to the end (NOFADE), + a sampled step-matched K (WINDOW), + hold targets on passes past n (HOLD); DEEP at K′ 8, STABLE (C6) K′ 16 vs 8 | registered | **open** |
 | 183 | INTERLEAVE-BLIND: §181 k1 with a blind per-token decoder ([EOT, ' =', ans_<j] + memory); tests 'per-pass signal through a view-free reader' (MIX / §175 vs every failure) | **FAIL; NOT SUPPORTED** (columns 3–7 0.182 vs 0.165). Descriptively the passes become causal (skip drops 0.88 / 0.31 / 0.36 / 0.75 at columns 1 / 2 / 7 / 8), but the inner columns stay at chance: per-pass compute binds | closed |
 | 184 | AUX-REWEIGHT: §182 NOFADE + per-pass aux weights w_t = Ē / E_t (pass 8 got 1/22 of pass 1's signal), equal signal per pass position; HELPS / HURTS / NO EFFECT vs NOFADE | **HELPS; DEEP + THINK-NECESSARY + SERIAL-NEST at 2 / 2 seeds = §170's C1 conjunction met on nested** (s1 0.974 / s2 0.9997 pooled; SERIAL-NEST 0.85 / 0.94); depth beyond n 8 count-limited | closed |
-| 185 | ADD-NORM: §182 NOFADE with the additive read normalised: DEN (φ(q)ᵀS / φ(q)ᵀz) or RMS (TransNormer's NormAttention); STABLE + NO-COST vs NOFADE (NORM-CLAMP: the unnormalised read's growth causes ~80% of overthinking) | registered | **open** |
+| 185 | ADD-NORM: §182 NOFADE with the additive read normalised: DEN (φ(q)ᵀS / φ(q)ᵀz) or RMS (TransNormer's NormAttention); STABLE + NO-COST vs NOFADE (NORM-CLAMP: the unnormalised read's growth causes ~80% of overthinking) | registered | **closed: NO-FIX (both arms). Descriptive: RMS alone DEEP + depth n 9–12 0.587 (one seed; §189 replicates)** |
 | 186 | INTERLEAVE-BLIND-K4: §183 with 4 passes per token, the closing test of the mult interleave line; HIT / PARTLY vs §183, else the line closes (pre-registered stop) | **FAIL / NOT** (columns 3–7 0.210 vs 0.182; within-token passes idle, cos 0.993): **the mult interleave line closes** | closed |
 | 187 | AUX-NOPASS: §184 with the aux prompt's pass token removed; does pass-token keying limit depth beyond training (C2)? DEPTH = n 9–12 at K′ = n + 2 vs §184 (0.486) and TEXT-COT (0.535) | registered | **open** |
 | 188 | REWEIGHT × WINDOW: §182 WINDOW + §184's --aux_reweight in one cell; JOINT = DEEP + THINK-NECESSARY + STABLE (K′16); a C6 claim needs LONG-STABLE (K′24 ≥ K′8 − 0.05) at 2 / 2 | registered | **open** |
@@ -13081,6 +13081,21 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - at off 3 the layer-0 input at position 0 equals off 0's, and positions ≥ 1 differ;
   - the aux path is unchanged at every off.
 * **Reader:** `theory/score_s187_5.py`.
+
+**§185 result, RMS arm, and §185 closes (2026-10-11 23:10 EDT; s185_rms_s1, b262, RTX 3090, 48k, 0 non-finite; score_s185). NO-FIX for both arms by rule (pair: neither STABLE). Descriptively, RMS alone is DEEP and LIFTS depth beyond training, so 185-3's prediction fails for RMS. One seed.**
+* **RMS pooled n 3..8:** 0.098 / 0.094 / 0.544 / **0.998** / 0.995 / **0.933** / 0.746 / 0.620 at K′ = 0 / 1 / 4 / 8 / 12 / 16 / 24 / 32.
+  - Not STABLE (K′16 − K′8 = −0.065, against the 0.02 band).
+  - NO-COST (0.998 vs NOFADE 0.787). THINK-NECESSARY holds.
+* **Unregistered, descriptive (Audit's pre-check agrees):**
+  - **DEEP without the reweight:** n 3..8 at K′ = 8 reads 1.0 / 1.0 / 0.999 / 1.0 / 0.996 / 0.994. The late-pass handle stays ≥ 0.988 (NOFADE 0.681 / 0.481 at t = 7 / 8).
+    - A constant-norm additive read fixes the late-pass collapse as §184's reweight did. It is a second route to the same C1 fix.
+  - **185-2 LIFTS depth:** n 9–12 at K′ = n + 2 reads 0.963 / 0.751 / 0.458 / 0.176, mean **0.587**.
+    - NOFADE 0.174 (+0.413); same-seed §184 s1 0.486; TEXT-COT 0.535; §184 s2 0.665.
+    - **185-3's interference prediction ("no depth change") fails for RMS** and holds for DEN (0.188). With 187-2 STRUCTURAL already dropping interference, depth here tracks late-pass quality.
+  - **Overthinking under RMS is direction drift, not magnitude:** the read norm is constant (7.21 from pass 2 on), yet accuracy falls past K′ = 12. NORM-CAP's magnitude account cannot explain or fix this arm's tail.
+  - path_indep answer_agree 0.132 fits the anti-correlation of path independence with depth (now 6 runs). Clip rate 0.67.
+* **The 8k local preview** (proto185_rms_s1_4060) did not learn (K′ 8 0.174). The compressed schedule is uninformative for RMS; descriptive only.
+* **Next:** "RMS as a reweight substitute" is a new claim on one seed, so it needs seed 2 first: §189 (a descriptive replication). Compositions (RMS × reweight / WINDOW) are not bundled into §188.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
