@@ -1,0 +1,62 @@
+{
+ "a": {
+  "boxes/nested170.py": true,
+  "boxes/deltamem.py": true,
+  "boxes/halt173.py": true
+ },
+ "a_pass": true,
+ "b": {
+  "rc": 0,
+  "err": "",
+  "args_aux_nopass": true,
+  "args_add_norm": "rms",
+  "aux_prompt_no_pass_token": true,
+  "rms_read_norm_rel_spread_by_t": [
+   1.7298623333772412e-07,
+   2.3560656359222776e-07,
+   1.7194489032590354e-07,
+   2.3560653517051833e-07
+  ]
+ },
+ "b_pass": true,
+ "c": {
+  "answer": {
+   "add_gain": 0.13409565389156342,
+   "q_add": 1.1121606826782227,
+   "k_add": 2.994281768798828,
+   "v_add": 295.549560546875,
+   "q_del": 19.245878219604492,
+   "loss": 3.3483681678771973
+  },
+  "aux": {
+   "add_gain": 0.5867577195167542,
+   "q_add": 3.969259262084961,
+   "k_add": 9.200301170349121,
+   "v_add": 941.1669311523438,
+   "q_del": 64.82100677490234,
+   "loss": 6.470175743103027
+  }
+ },
+ "c_pass": true,
+ "d": {
+  "s185_rms_s1_mem_check": {
+   "checks": [
+    {
+     "micro": 1,
+     "peak_gib": 18.106811672449112
+    }
+   ],
+   "micro": 1,
+   "peak_gib": 18.106811672449112,
+   "train": "the longest of 4 bs draws at n <= 8",
+   "eval": "n = 16 at K' = 2K"
+  },
+  "note": "the combined cell adds no tensors (nopass shortens the aux prompt by one token); reuse micro 1 (18.1 GiB on the 3090)"
+ },
+ "d_pass": true,
+ "e": {
+  "smoke_plain": "SMOKE_PLAIN PASS (70 s)"
+ },
+ "e_pass": true,
+ "all_pass": true
+}
