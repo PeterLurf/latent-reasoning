@@ -11,6 +11,8 @@ Three arms (--arm):
 Candidate accuracy (all arms): log p("### " + correct answer) > log p(the negative's) after the arm's prefix (+ memory for stepaux); chance 0.5.
 eval.json: acc, acc_by_depth, n_by_depth, acc_ctl (p8_ctl.json); stepaux adds s168s2 {acc_by_depth_kprime, aux_exact_by_hop, delta_cos (+ at init),
 aux_done, path_indep, step_recover, normcap (note 185-1: K' curve with S_add capped at C from train items)}. --resume <ckpt> continues a run.
+§191 PROSQA-RELABEL (--relabel): every training item drawn is relabelled afresh (entity / concept names, premise order, option order; relabel()); test items never are.
+--test500_every N logs test500_acc on a fixed 500-item test subset; with --relabel the eval adds train_fit_relabel (1,000 relabelled train items).
     python -m boxes.prosqa168s2 --arm stepaux --think_k 10 --aux_step 1.0 --aux_fade 12000,12000 --out boxes/runs_fsq/s168s2_stepaux_s1"""
 import os
 os.environ["BOXES_NB"] = "5"
@@ -43,6 +45,13 @@ _E = [sum(c / d for d, c in HIST_168.items() if d >= t) for t in range(1, 11)]
 assert all(abs(w - sum(_E) / 10 / e) < 1e-3 for w, e in zip(AUX_W, _E)) and abs(sum(e * w for e, w in zip(_E, AUX_W)) - sum(_E)) < 1e-2 * sum(_E) / 10, "168-12: the weight table"
 
 
+ENT17 = ("Alex", "Bob", "Carol", "Davis", "Eva", "Fae", "Gabriel", "Jack", "Max", "Oliver", "Polly", "Rex", "Sally", "Sam", "Stella", "Tom", "Wren")   # p8's entity names
+CON38 = ("bompus", "boompus", "brimpus", "chorpus", "dumpus", "felpus", "fompus", "gerpus", "gorpus", "grimpus", "gwompus", "hilpus", "impus", "jelpus", "jompus",
+         "kerpus", "lempus", "lorpus", "numpus", "quimpus", "rempus", "rompus", "rorpus", "scrompus", "shumpus", "sterpus", "storpus", "terpus", "timpus", "tumpus",
+         "vumpus", "worpus", "wumpus", "yerpus", "yimpus", "yumpus", "zhorpus", "zumpus")                                   # p8's concept names (train = test = ctl vocabulary)
+Q_RE = re.compile(r"(.*\.) Is (\w+) a (\w+) or (\w+)\?")
+
+
 def pass_tok(t):
     tk = ENC.encode(" %d" % t); assert len(tk) == 1; return tk[0]
 
@@ -51,16 +60,49 @@ def _lit(v):
     return ast.literal_eval(v) if isinstance(v, str) else v
 
 
-def load(path):
-    """-> list of dicts: q (question ids), pre (question + "\\n" ids), a1 / a2 ("### " + correct / negative answer ids), depth, steps (texts), step_ids
+def encode(x):
+    """one raw p8 item -> dict: q (question ids), pre (question + "\\n" ids), a1 / a2 ("### " + correct / negative answer ids), depth, steps (texts), step_ids
     (" " + step ids), node (hop t's node id = the object of steps[t-1], an index into idx_to_symbol)."""
+    sym = _lit(x["idx_to_symbol"]); steps = _lit(x["steps"]); tgt, neg = sym[int(x["target"])], sym[int(x["neg_target"])]; ans = x["answer"]
+    a_neg = re.sub(rf"\b{tgt}\.$", f"{neg}.", ans); assert a_neg != ans
+    node = [s.rstrip(".").split()[-1] for s in steps]                     # hop t's node = the CONCEPT NAME (shared vocabulary; Theory 168-7 point 6)
+    return {"q": ENC.encode(x["question"]), "pre": ENC.encode(x["question"] + "\n"), "a1": ENC.encode("### " + ans), "a2": ENC.encode("### " + a_neg),
+            "depth": len(steps), "steps": steps, "step_ids": [ENC.encode(" " + s) for s in steps], "node": node, "opt_true": tgt, "opt_false": neg}
+
+
+def load(path):
+    return [encode(x) for x in json.load(open(path))]
+
+
+def relabel(x, rng, worst=False):
+    """§191 RELABEL (Theory's draft): a raw TRAINING item (load_train_raw) -> (relabelled raw item, options swapped). Injective random maps of the item's entity
+    names into ENT17 and its concept names into CON38, applied (one regex pass) to question, answer and steps (so to every aux target) and idx_to_symbol
+    (edges / root / target / neg_target are indices: the graph is unchanged); premises shuffled; the question's two options swapped with p 0.5.
+    worst=True (memory check): no shuffle / swap; the longest-token names go to the most frequent symbols."""
+    assert x.get("_split") == "train", "§191: only training items are relabelled"
+    sym = _lit(x["idx_to_symbol"]); steps = _lit(x["steps"]); ents = [w for w in sym if w[0].isupper()]; cons = [w for w in sym if not w[0].isupper()]
+    assert set(ents) <= set(ENT17) and set(cons) <= set(CON38) and len(ents) + len(cons) == len(set(sym)), "§191: a name outside p8's 17 / 38 vocabulary"
+    mq = Q_RE.fullmatch(x["question"]); assert mq, "§191: question format"
+    prem = [p_.strip() for p_ in re.findall(r"[^.]+\.", mq.group(1))]; assert " ".join(prem) == mq.group(1), "§191: premise split"
+    if worst:
+        txt = x["question"] + " " + " ".join(steps); cnt = {w: len(re.findall(rf"\b{w}\b", txt)) for w in sym}; tl = lambda w: len(ENC.encode(" " + w))   # noqa: E731
+        mp = {}
+        for grp, V in ((ents, ENT17), (cons, CON38)):
+            mp.update(zip(sorted(grp, key=lambda w: -cnt[w]), sorted(V, key=lambda w: -tl(w))))
+        sw = False
+    else:
+        mp = dict(zip(ents, [ENT17[i] for i in rng.permutation(len(ENT17))[:len(ents)]])); mp.update(zip(cons, [CON38[i] for i in rng.permutation(len(CON38))[:len(cons)]]))
+        prem = [prem[i] for i in rng.permutation(len(prem))]; sw = bool(rng.random() < 0.5)
+    o1, o2 = (mq.group(4), mq.group(3)) if sw else (mq.group(3), mq.group(4))
+    pat = re.compile(r"\b(" + "|".join(sorted(map(re.escape, mp), key=len, reverse=True)) + r")\b"); sub = lambda t_: pat.sub(lambda m_: mp[m_.group(1)], t_)   # noqa: E731
+    y = dict(x); y.update(question=sub(" ".join(prem) + " Is %s a %s or %s?" % (mq.group(2), o1, o2)), answer=sub(x["answer"]), steps=[sub(t_) for t_ in steps], idx_to_symbol=[mp[w] for w in sym])
+    return y, sw
+
+
+def load_train_raw(path):
     out = []
     for x in json.load(open(path)):
-        sym = _lit(x["idx_to_symbol"]); steps = _lit(x["steps"]); tgt, neg = sym[int(x["target"])], sym[int(x["neg_target"])]; ans = x["answer"]
-        a_neg = re.sub(rf"\b{tgt}\.$", f"{neg}.", ans); assert a_neg != ans
-        node = [s.rstrip(".").split()[-1] for s in steps]                 # hop t's node = the CONCEPT NAME (shared vocabulary; Theory 168-7 point 6)
-        out.append({"q": ENC.encode(x["question"]), "pre": ENC.encode(x["question"] + "\n"), "a1": ENC.encode("### " + ans), "a2": ENC.encode("### " + a_neg),
-                    "depth": len(steps), "steps": steps, "step_ids": [ENC.encode(" " + s) for s in steps], "node": node, "opt_true": tgt, "opt_false": neg})
+        x["_split"] = "train"; out.append(x)
     return out
 
 
@@ -198,6 +240,8 @@ def main():
     ap.add_argument("--probe_n_fit", type=int, default=4000); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes")
     ap.add_argument("--chunk_delta", type=int, default=0, help="stepaux: DM.CHUNK_DELTA - the delta heads' writes in chunks of this many tokens (WY form, exact in exact arithmetic; needs --fast_add; gate_chunk_delta.json)")
     ap.add_argument("--aux_reweight", action="store_true", help="note 168-12 STEP-AUX-REWEIGHT: the aux CE of hop t weighted by AUX_W[t-1] inside the per-item mean (stepaux)")
+    ap.add_argument("--relabel", action="store_true", help="§191 PROSQA-RELABEL: each training item drawn is relabelled afresh (relabel(); own rng seed + 19100); test never; eval adds train_fit_relabel")
+    ap.add_argument("--test500_every", type=int, default=0, help="§191: test500_acc (fixed rng 19101 500-item subset of the test set, the arm's eval path) every N steps and at the last step")
     ap.add_argument("--eval_train_n", type=int, default=0, help="note 168-16: with --eval_only, evaluate (acc / acc_by_depth / aux_exact_by_hop) on this many TRAINING items (rng 16816) -> eval_trainitems.json")
     ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt (no training; args_eval.json; model.pt / args.json / log.jsonl untouched)")
     ap.add_argument("--resume", default=None, help="a ckpt_last.pt / kept ckpt of this run (model, opt, np_rng, step, elapsed)")
@@ -212,8 +256,23 @@ def main():
     if a.eval_train_n:                                                      # note 168-16: the eval path on the run's own training items (eval-path sanity check)
         assert a.eval_only, "--eval_train_n needs --eval_only"; Dte = [Dtr[i] for i in np.random.default_rng(16816).permutation(len(Dtr))[:a.eval_train_n]]
     EVAL_FN = "eval_trainitems.json" if a.eval_train_n else "eval.json"; Dctl = Dctl[:a.test_n] if a.test_n else Dctl
+    if a.relabel:                                                           # §191: the raw training items (relabelled per draw); test / ctl stay as loaded
+        Rtr = load_train_raw(os.path.join(pr, "p8_na_train.json")); Rtr = Rtr[:a.train_n] if a.train_n else Rtr; assert len(Rtr) == len(Dtr)
+        rl_rng = np.random.default_rng(a.seed + 19100); rl_n = [0, 0]      # [items relabelled, options swapped]
+        if not a.train_n:
+            assert {w for x in Rtr for w in _lit(x["idx_to_symbol"])} == set(ENT17) | set(CON38), "§191: the train vocabulary = ENT17 + CON38"
+        for D_ in (Dte, Dctl):                                              # Audit: test names come from the same 17 / 38 vocabulary (no OOD names)
+            assert all(set(re.findall(r"\b[A-Z][a-z]+\b", ENC.decode(it["q"]))) <= set(ENT17) | {"Every", "Is"} for it in D_), "§191: a test entity name outside ENT17"
+            assert all(set(re.findall(r"\b[a-z]+pus\b", ENC.decode(it["q"]))) <= set(CON38) for it in D_), "§191: a test concept name outside CON38"
+
+        def rl_item(i):
+            y, sw = relabel(Rtr[i], rl_rng); rl_n[0] += 1; rl_n[1] += int(sw); return encode(y)
     g = s5.load_gpt2(dev); m = ProsMem(g).to(dev) if SA else None; params = m if SA else g
     longest = max(range(len(Dtr)), key=lambda i: len(Dtr[i]["q"]) + sum(len(s) for s in Dtr[i]["step_ids"]))
+    it_long = Dtr[longest]
+    if a.relabel:                                                           # §191: the memory check on the worst relabel of the 200 longest items
+        cand = sorted(range(len(Dtr)), key=lambda i: -(len(Dtr[i]["q"]) + sum(len(s) for s in Dtr[i]["step_ids"])))[:200]
+        it_long = max((encode(relabel(Rtr[i], None, worst=True)[0]) for i in cand), key=lambda it: len(it["q"]) + sum(len(s) for s in it["step_ids"]))
     L_STAGE = max(1, a.steps // (a.stages + 2))                             # Theory 168-7 point 3: 12 stages of 1000 at 12k
 
     def stage(step):
@@ -255,7 +314,7 @@ def main():
         lg = g.logits(h[:, :-1]).float(); return Fn.cross_entropy(lg.reshape(-1, lg.shape[-1]), torch.tensor(lab, device=dev)[:, 1:].reshape(-1), ignore_index=-100)
 
     def mem_check(micro):
-        torch.cuda.reset_peak_memory_stats(dev); its = [Dtr[longest]] * (a.bs // micro); params.train()
+        torch.cuda.reset_peak_memory_stats(dev); its = [it_long] * (a.bs // micro); params.train()
         loss_items(its, 1).backward(); params.zero_grad(set_to_none=True)
         return torch.cuda.max_memory_allocated(dev) / 2 ** 30 + 3 * sum(p_.numel() * 4 for p_ in params.parameters()) / 2 ** 30
     if a.mem_check or (a.auto_micro and dev.startswith("cuda") and not a.eval_only):
@@ -269,7 +328,7 @@ def main():
             if pk <= a.mem_budget or a.micro >= a.bs or a.mem_check:
                 break
             a.micro *= 2
-        json.dump({"checks": mc, "micro": a.micro, "peak_gib": mc[-1]["peak_gib"], "longest_question_tokens": len(Dtr[longest]["q"]), "K": K, "aux": bool(SA and a.aux_step)},
+        json.dump({"checks": mc, "micro": a.micro, "peak_gib": mc[-1]["peak_gib"], "longest_question_tokens": len(it_long["q"]), "relabel_worst": bool(a.relabel), "K": K, "aux": bool(SA and a.aux_step)},
                   open(os.path.join(a.out, "mem_check.json"), "w", newline="\n"), indent=1)
         if a.mem_check:
             return
@@ -291,6 +350,8 @@ def main():
     log = open(os.devnull, "w") if a.eval_only else open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time(); step0 = 1
     if a.resume:
         ck = torch.load(a.resume, map_location=dev, weights_only=False); params.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"]); rng.bit_generator.state = ck["np_rng"]
+        if a.relabel:
+            rl_rng.bit_generator.state = ck["rl_rng"]; rl_n[:] = ck["rl_n"]
         step0 = ck["step"] + 1; n_nonfinite = ck.get("n_nonfinite", 0); gn_hist = list(ck.get("gn_hist", [])); t0 = time.time() - ck["elapsed"]; log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
     last_ = a.steps if not a.time_steps else min(a.steps, a.time_steps); tt0 = time.time()
     if a.eval_only:                                                         # the trained model; no training step runs
@@ -301,6 +362,25 @@ def main():
             clip_src = ("ckpt_last.pt gn_hist (steps 1..%s)" % ck_.get("step")) if gn_hist else "not logged"; del ck_
         else:
             clip_src = "not logged"
+    T500 = [Dte[i] for i in np.random.default_rng(19101).permutation(len(Dte))[:500]] if a.test500_every else []
+
+    def test500():
+        """§191: candidate accuracy on T500 by the arm's eval path (stepaux: K passes; textcot: greedy CoT first). No rng is drawn (training unchanged)."""
+        params.eval()
+        with torch.no_grad():
+            if SA:
+                Mx = []
+                for i in range(0, len(T500), a.eval_bs):
+                    ch = T500[i:i + a.eval_bs]; x, msk = m.think_inputs(ch, dev)
+                    with ac():
+                        Mx.append(m.margins(m.think(m.mem.zero_state(len(ch), dev), x, msk, K, cache=a.cache_lower), ch, dev))
+                Mx = np.concatenate(Mx)
+            elif a.arm == "currdirect":
+                Mx = candidate_margins(g, [(it["pre"], it["a1"], it["a2"], it["depth"]) for it in T500], dev, amp, a.eval_bs)
+            else:
+                Q = generate_cot_batched(g, [it["pre"] for it in T500], a.max_new, dev, amp, a.cot_eval_bs) if a.cot_eval_bs > 1 else [generate_cot(g, it["pre"], a.max_new, dev, amp) for it in T500]
+                Mx = candidate_margins(g, [(q, it["a1"], it["a2"], it["depth"]) for q, it in zip(Q, T500)], dev, amp, a.eval_bs)
+        params.train(); return float((Mx > 0).mean())
     for step in range(step0, last_ + 1):
         for gr in opt.param_groups:
             gr["lr"] = lr_at(a.lr, gr, step, a.steps)
@@ -310,7 +390,7 @@ def main():
             m.mem.gamma.fill_(0.0 if step <= a.write_mix_start * sc else min(1.0, (step - a.write_mix_start * sc) / max(1.0, (a.write_mix_end - a.write_mix_start) * sc)))
         idx = rng.integers(0, len(Dtr), a.bs); opt.zero_grad(); tot = 0.0; ch = a.bs // a.micro
         for k in range(a.micro):
-            lk = loss_items([Dtr[i] for i in idx[k * ch:(k + 1) * ch]], step); (lk / a.micro).backward(); tot += float(lk.item()) / a.micro
+            lk = loss_items([rl_item(i) if a.relabel else Dtr[i] for i in idx[k * ch:(k + 1) * ch]], step); (lk / a.micro).backward(); tot += float(lk.item()) / a.micro
         if SA:
             wg.append(write_grad_norm(m))
         gn = torch.nn.utils.clip_grad_norm_(params.parameters(), 1.0); gn_hist.append(float(gn))   # pre-clip total norm (168-12: clip rate)
@@ -326,12 +406,17 @@ def main():
                             "write_grad_norm": float(np.mean(wg)) if wg else None}); aux_hist.clear(); wg = []
             if a.arm == "currdirect":
                 rec["stage"] = stage(step)
+            if a.relabel:                                                   # Audit: the option-swap rate (p 0.5), cumulative over the run
+                rec.update({"relabel_n": rl_n[0], "relabel_swap_rate": rl_n[1] / max(1, rl_n[0])})
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
+        if a.test500_every and not a.time_steps and (step % a.test500_every == 0 or step == last_):
+            tq_ = time.time(); r5 = {"step": step, "test500_acc": test500(), "test500_sec": round(time.time() - tq_, 1)}; log.write(json.dumps(r5) + "\n"); log.flush(); print(r5, flush=True)
         if a.ckpt_every and step % a.ckpt_every == 0 and step < a.steps and not a.time_steps:
             cp = os.path.join(a.out, "ckpt_last.pt")
             if os.path.exists(cp):
                 os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))
-            torch.save({"model": params.state_dict(), "opt": opt.state_dict(), "np_rng": rng.bit_generator.state, "step": step, "elapsed": time.time() - t0, "n_nonfinite": n_nonfinite, "gn_hist": gn_hist}, cp)
+            torch.save({"model": params.state_dict(), "opt": opt.state_dict(), "np_rng": rng.bit_generator.state, "step": step, "elapsed": time.time() - t0, "n_nonfinite": n_nonfinite, "gn_hist": gn_hist,
+                        **({"rl_rng": rl_rng.bit_generator.state, "rl_n": list(rl_n)} if a.relabel else {})}, cp)
     if a.time_steps:
         sps = (time.time() - tt0) / max(1, last_); tj = {"arm": a.arm, "think_k": K, "steps_timed": last_, "sec_per_step": sps, "steps": a.steps,
                                                         "est_hours_steps": sps * a.steps / 3600, "micro": a.micro, "gpu": info["train_gpu"]}
@@ -412,6 +497,19 @@ def main():
             res["s168s2"] = s_
         res["eval_partial_through"] = tag; res["eval_partial"] = True; json.dump(res, open(os.path.join(a.out, EVAL_FN), "w", newline="\n"), indent=1)
     _partial("base")
+    if a.relabel and not a.eval_train_n:                                    # §191: train fit on 1,000 relabelled TRAIN items (rng 16816 picks, rng 19102 relabels)
+        fr_ = np.random.default_rng(19102); Dfit = [encode(relabel(Rtr[i], fr_)[0]) for i in np.random.default_rng(16816).permutation(len(Rtr))[:1000]]
+        if SA:
+            tf_ = {str(kp): float((sa_margins(Dfit, kp) > 0).mean()) for kp in sorted({0, 1, 10, K})}
+        elif a.arm == "currdirect":
+            tf_ = {"acc": float((candidate_margins(g, [(it["pre"], it["a1"], it["a2"], it["depth"]) for it in Dfit], dev, amp, bs) > 0).mean())}
+        else:
+            Qf = generate_cot_batched(g, [it["pre"] for it in Dfit], a.max_new, dev, amp, a.cot_eval_bs) if a.cot_eval_bs > 1 else [generate_cot(g, it["pre"], a.max_new, dev, amp) for it in Dfit]
+            tf_ = {"acc": float((candidate_margins(g, [(q, it["a1"], it["a2"], it["depth"]) for q, it in zip(Qf, Dfit)], dev, amp, bs) > 0).mean())}
+        res["train_fit_relabel"] = {"acc_by_kprime" if SA else "acc_cot" if a.arm == "textcot" else "acc_direct": tf_, "n": len(Dfit),
+                                    "items": "TRAIN items (rng 16816 permutation[:1000]) relabelled once (rng 19102)", "relabel_n": rl_n[0] or None,
+                                    "relabel_swap_rate": rl_n[1] / rl_n[0] if rl_n[0] else None, "relabel_counts_def": "training draws of this process (None under --eval_only: see log.jsonl)"}
+        _partial("train_fit_relabel")
     if SA:
         s = {"acc_by_depth_kprime": {str(kp): by_depth(sa_margins(Dte, kp), dep) for kp in KPRIMES}}; _partial("acc_by_depth_kprime", s)
         ex = [Dte[i] for i in np.random.default_rng(16802).permutation(len(Dte))[:a.extras_n]]; exd = np.array([it["depth"] for it in ex])

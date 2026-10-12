@@ -1,0 +1,210 @@
+{
+ "g1": {
+  "swapped": 524,
+  "renamed_any": 1000,
+  "premise_order_changed": 1000,
+  "n": 1000,
+  "ok_injective": 1000,
+  "ok_in_vocab": 1000,
+  "ok_premises_multiset": 1000,
+  "ok_tail": 1000,
+  "ok_answer": 1000,
+  "ok_steps": 1000,
+  "ok_premises_are_edges": 1000,
+  "ok_a1": 1000,
+  "ok_a2": 1000,
+  "ok_aux_targets": 1000,
+  "ok_node": 1000,
+  "ok_options_in_question": 1000,
+  "ok_steps_path": 1000,
+  "swap_rate": 0.524,
+  "first_failures": []
+ },
+ "g1_pass": true,
+ "g2": {
+  "refuses_test_ctl": [
+   true,
+   true
+  ],
+  "call_site_first_args": [
+   "Rtr[i]",
+   "Rtr[i]",
+   "Rtr[i]"
+  ]
+ },
+ "g2_pass": true,
+ "g5": {
+  "n_train_sigs": 11985,
+  "n_test": 4053,
+  "test_in_train": 0
+ },
+ "g5_pass": true,
+ "g7": {
+  "answer": {
+   "mem_qkv": 14389.197265625,
+   "mem_wo": 72159.3828125,
+   "mem_all": 87772.515625,
+   "trunk": 298167.84375,
+   "loss": 22.302364349365234
+  },
+  "aux": {
+   "mem_qkv": 9915.8193359375,
+   "mem_wo": 51311.1171875,
+   "mem_all": 62121.609375,
+   "trunk": 232489.53125,
+   "loss": 19.955699920654297
+  }
+ },
+ "g7_pass": true,
+ "g3": {
+  "stepaux": {
+   "log_equal": true,
+   "model_equal": true,
+   "eval_equal": true
+  },
+  "stepaux_n_log": 3,
+  "textcot": {
+   "log_equal": true,
+   "model_equal": true,
+   "eval_equal": true
+  },
+  "textcot_n_log": 3
+ },
+ "g3_pass": true,
+ "g4": {
+  "stepaux": {
+   "test500_steps": [
+    2,
+    3
+   ],
+   "test500_acc": [
+    0.5,
+    0.5
+   ],
+   "swap_rate_log": [
+    1.0,
+    0.5,
+    0.5
+   ],
+   "relabel_n_last": [
+    6
+   ],
+   "train_fit_relabel": {
+    "acc_by_kprime": {
+     "0": 0.525,
+     "1": 0.525,
+     "2": 0.525,
+     "10": 0.525
+    },
+    "n": 40,
+    "items": "TRAIN items (rng 16816 permutation[:1000]) relabelled once (rng 19102)",
+    "relabel_n": 6,
+    "relabel_swap_rate": 0.5,
+    "relabel_counts_def": "training draws of this process (None under --eval_only: see log.jsonl)"
+   },
+   "acc": 0.5,
+   "test500_only_log_equal": true,
+   "test500_only_model_equal": true,
+   "test500_only_n_records": 3
+  },
+  "stepaux_pass": true,
+  "textcot": {
+   "test500_steps": [
+    2,
+    3
+   ],
+   "test500_acc": [
+    0.5,
+    0.5
+   ],
+   "swap_rate_log": [
+    1.0,
+    0.5,
+    0.5
+   ],
+   "relabel_n_last": [
+    6
+   ],
+   "train_fit_relabel": {
+    "acc_cot": {
+     "acc": 0.575
+    },
+    "n": 40,
+    "items": "TRAIN items (rng 16816 permutation[:1000]) relabelled once (rng 19102)",
+    "relabel_n": 6,
+    "relabel_swap_rate": 0.5,
+    "relabel_counts_def": "training draws of this process (None under --eval_only: see log.jsonl)"
+   },
+   "acc": 0.5,
+   "test500_only_log_equal": true,
+   "test500_only_model_equal": true,
+   "test500_only_n_records": 3
+  },
+  "textcot_pass": true
+ },
+ "g4_pass": true,
+ "g6": {
+  "ckpt_step": 2,
+  "ckpt_rl_n": [
+   4,
+   2
+  ],
+  "has_rl_rng": true,
+  "model_equal": true
+ },
+ "g6_pass": true,
+ "g8": {
+  "orig_max_q": 721,
+  "orig_max_qsteps": 818,
+  "worst_max_q_all": 754,
+  "worst_max_qsteps_all": 854,
+  "worst_max_qsteps_top200": 854,
+  "random20k_max_q": 735,
+  "random20k_max_qsteps": 839,
+  "worst_ge_random": true,
+  "top200_worst_is_global": true,
+  "s168s2_stepaux_args": {
+   "cache_lower": true,
+   "ckpt_passes": true,
+   "chunk_delta": 64,
+   "micro": 4
+  },
+  "chunk4_peak": {
+   "off": {
+    "checks": [
+     {
+      "micro": 1,
+      "peak_gib": 6.578090347349644
+     }
+    ],
+    "micro": 1,
+    "peak_gib": 6.578090347349644,
+    "longest_question_tokens": 721,
+    "relabel_worst": false,
+    "K": 10,
+    "aux": true
+   },
+   "relabel": {
+    "checks": [
+     {
+      "micro": 1,
+      "peak_gib": 6.750526584684849
+     }
+    ],
+    "micro": 1,
+    "peak_gib": 6.750526584684849,
+    "longest_question_tokens": 754,
+    "relabel_worst": true,
+    "K": 10,
+    "aux": true
+   }
+  },
+  "chunk4_ratio_relabel_over_off": 1.026213722863305,
+  "gpu": "NVIDIA GeForce RTX 4060",
+  "proj_3090_stepaux_micro4_gib": 18.174245031909134,
+  "proj_3090_textcot_micro4_gib_upper": 15.126390275005116,
+  "note": "the 3090 cells run --auto_micro, whose mem_check uses the worst relabel of the 200 longest items (it_long); projection = s168s2's chunk-16 peak x the chunk-4 ratio"
+ },
+ "g8_pass": true,
+ "all_pass": true
+}
