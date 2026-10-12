@@ -410,14 +410,15 @@ def dec_reads(m, items, T, dev, ac, bs):
     return np.concatenate(out, 1)
 
 
-def logreg_acc(Xf, yf, Xs, ys, dev, wd=1e-3, iters=200):
+def logreg_acc(Xf, yf, Xs, ys, dev, wd=1e-3, iters=200, n_cls=None):
     """multinomial logistic probe (standardised features, L2 wd, LBFGS) fit on (Xf, yf) -> accuracy on (Xs, ys)."""
     import torch.nn.functional as F_
     mu, sd = Xf.mean(0), Xf.std(0) + 1e-6
     Xf_ = torch.tensor((Xf - mu) / sd, device=dev, dtype=torch.float32); Xs_ = torch.tensor((Xs - mu) / sd, device=dev, dtype=torch.float32)
     yf_ = torch.tensor(yf, device=dev, dtype=torch.long); ys_ = torch.tensor(ys, device=dev, dtype=torch.long)
     with torch.enable_grad(), torch.autocast("cuda", enabled=False):
-        W = torch.zeros(Xf.shape[1], P, device=dev, requires_grad=True); b = torch.zeros(P, device=dev, requires_grad=True)
+        nc_ = int(n_cls or P)                                                # 2026-10-11: n_cls for probes with more than P classes (prosqa168s2's concept names)
+        W = torch.zeros(Xf.shape[1], nc_, device=dev, requires_grad=True); b = torch.zeros(nc_, device=dev, requires_grad=True)
         opt = torch.optim.LBFGS([W, b], lr=1.0, max_iter=iters, line_search_fn="strong_wolfe")
 
         def clos():
