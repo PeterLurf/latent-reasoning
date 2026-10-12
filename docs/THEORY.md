@@ -276,6 +276,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 186 | INTERLEAVE-BLIND-K4: §183 with 4 passes per token, the closing test of the mult interleave line; HIT / PARTLY vs §183, else the line closes (pre-registered stop) | **FAIL / NOT** (columns 3–7 0.210 vs 0.182; within-token passes idle, cos 0.993): **the mult interleave line closes** | closed |
 | 187 | AUX-NOPASS: §184 with the aux prompt's pass token removed; does pass-token keying limit depth beyond training (C2)? DEPTH = n 9–12 at K′ = n + 2 vs §184 (0.486) and TEXT-COT (0.535) | registered | **open** |
 | 188 | REWEIGHT × WINDOW: §182 WINDOW + §184's --aux_reweight in one cell; JOINT = DEEP + THINK-NECESSARY + STABLE (K′16); a C6 claim needs LONG-STABLE (K′24 ≥ K′8 − 0.05) at 2 / 2 | registered | **open** |
+| 189 | RMS-REP: §185 RMS at seed 2 (descriptive replication); SUBSTITUTE = DEEP + THINK-NECESSARY + depth n 9–12 ≥ §184 s2 − 0.05 / DEEP-ONLY / NOT REPLICATED | registered | **open** |
 
 ## Live sections
 
@@ -13096,6 +13097,30 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - path_indep answer_agree 0.132 fits the anti-correlation of path independence with depth (now 6 runs). Clip rate 0.67.
 * **The 8k local preview** (proto185_rms_s1_4060) did not learn (K′ 8 0.174). The compressed schedule is uninformative for RMS; descriptive only.
 * **Next:** "RMS as a reweight substitute" is a new claim on one seed, so it needs seed 2 first: §189 (a descriptive replication). Compositions (RMS × reweight / WINDOW) are not bundled into §188.
+
+## 189. RMS-REP: is the RMS-normalised read a substitute for the aux reweight? (seed-2 replication of §185 RMS; Audit's suggestion; pre-registered 2026-10-11 23:12 EDT, before any seed-2 run; descriptive replication, no rule change to §185)
+
+**Why.** §185 RMS s1 (cbdba1ef) was NO-FIX by rule, but descriptively it is DEEP without the reweight (min 0.994 at K′8) and lifts depth to 0.587 at n 9–12 (same-seed §184 0.486). That is a new claim on one seed, and §184's seeds differed by 0.18 in depth. So it needs seed 2 before anything builds on it.
+
+**Design.** §185 RMS exactly (s185_rms_s1's args: NOFADE + `--add_norm rms`, think_k 8, no reweight, no window) with **seed 2**, RTX 3090, uncached. Dir `s185_rms_s2`. No code change.
+
+**Readouts (fixed now; `theory/score_s189.py`; comparator §184 s2 = s184_reweight_s2, same seed):**
+* **DEEP** (≥ 0.90 at every n 3..8 at K′ 8) and **THINK-NECESSARY** (170-4), as §182 / §184 define them.
+* **DEPTH** = mean n 9–12 at K′ = n + 2. §184 s2 reads 0.665.
+* **Readings:**
+  - **SUBSTITUTE:** s2 is DEEP and THINK-NECESSARY, and DEPTH ≥ §184 s2's − 0.05 (≥ 0.615). With s1, the RMS read alone matches the reweight on C1 and depth at 2 / 2.
+  - **DEEP-ONLY:** DEEP and THINK-NECESSARY, but DEPTH < 0.615. RMS replicates the within-depth fix, not the depth lift.
+  - **NOT REPLICATED:** not DEEP. s1 was seed luck.
+* **Descriptive:**
+  - Two-seed means (RMS vs §184's 0.576).
+  - K′ curve and §182's STABLE.
+  - The handle by pass.
+  - COUNT-OOD onsets (187-3's deepaux rows, n 9–12) on both RMS seeds against §184's same seeds.
+    - A question for the mechanism: does removing the read's magnitude growth (a possible pass counter) move the count-keyed onset later?
+  - path_indep.
+
+**Placement.** One cell at §185 RMS's cost (42.5k s on a 3090, about $2.5–3.5), in the free fleet slot (fleet 4 → 5). Post-hocs: dir177 / auxdone / tshift on host, and the 187-3 deepaux rows locally.
+* Compositions (RMS × reweight, RMS × WINDOW) wait for this reading and are not registered here.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
