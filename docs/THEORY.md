@@ -13259,6 +13259,25 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **Descriptive "norm_pre":** the norm-only probe on the pre-normalisation read φ(q)ᵀ S_add (before RMS scaling or DEN's division), for every model.
   - The expectation for RMS is that it is high: the state still accumulates, and only the read hides it.
 
+**187-7 SIZE-PROBE result (2026-10-12 01:13 EDT; all five models on the RTX 3070; 300 items per n, n 3–12, nesting ≤ 2; 1,500 fit / 1,500 test; chance 0.10; theory/score_s187_7.py). PREMISE True; account WEAKENED. The size code is present in RMS's read, by direction, so RMS is size-free without lacking size information.**
+* **t = 4 (full / norm / dir / norm_pre):**
+  - NOFADE: 0.816 / 0.581 / 0.772 / 0.581;
+  - DEN: 0.741 / 0.278 / 0.711 / 0.369;
+  - **RMS: 0.895 / 0.106 / 0.897 / 0.571;**
+  - §184 s1: 0.880 / 0.643 / 0.858 / 0.643;
+  - §184 s2: 0.869 / 0.500 / 0.835 / 0.500.
+* **RMS's tripwire:** per-head norm spread 3.7e-7, so its norm probe is at chance by construction (187-7a).
+* **Over t = 2 / 4 / 6:** the norm signal fades for NOFADE (0.625 → 0.457) and §184 s1 (0.703 → 0.558). n and t both grow the norm. The direction codes stay at 0.71–0.90 throughout.
+* **Reading:**
+  - **PREMISE holds:** the unnormalised read's magnitude carries size.
+  - The state still carries size under RMS: norm_pre is 0.571, about NOFADE's.
+  - **WEAKENED:** the read the decoder sees holds a linear size code under RMS (0.895, all by direction) as strongly as under §184 (0.880). Yet RMS's early steps are size-free (187-6). So size-free computation does not require size information to be absent, and "RMS removes the cue" is not the account.
+* **A refined account (unregistered; consistent with all of the above, untested):**
+  - Magnitude acts on the computation physically, not as decoded information. At pass t, a larger item's read is larger, which puts the residual stream out of its trained range at that pass (cf. SANE 2608.22354, Stuffed Mamba 2410.07145).
+  - A direction code has to be read out deliberately, and the readout learned to ignore it.
+  - This fits 184-1's 2× cap not changing the deep decay: that cap is global (2× the median after K = 8), while the excess here is relative to pass t. A size-12 item at t = 4 is within 2× of the global median but above any n ≤ 8 item at t = 4.
+  - **The per-item test it predicts (a candidate 187-8):** on §184 / NOFADE, deep items (n 10–12) whose read norm at t 3–6 exceeds the n ≤ 8 maximum at the same t should fail the handle more often than deep items within that range.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
