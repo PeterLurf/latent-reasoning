@@ -1,0 +1,9 @@
+# THEORY §188 REWEIGHT x WINDOW (5b2ebd2e; Audit-reviewed, ~$4-7; scorer theory/score_s188.py): s182_window_s1's exact args + --aux_reweight (kmatch_aux_loss applies AUX_W on the real steps; gate188.json), RTX 3090, micro 2, uncached; launch at the next free slot after b268 (WINDOW s2) lands AND reads STABLE (else hold for Theory); then dir177 / auxdone / tshift / normcap / the 173 halt path
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s188_rwwin_s1 boxes.nested170 --arm inject --think_k 12 --aux_step 1.0 --aux_fade 48000,48000 --aux_reweight --k_window 1,4 --kmatch_impl masked --fast_add --seed 1 --steps 48000 --kprimes 0,1,4,8,12,16,24,32 --path_indep --ckpt_every 1000 --micro 2
+boxes/runs_fsq/s188_rwwin_s1_pkg boxes.halt173 --run boxes/runs_fsq/s188_rwwin_s1 --dir177 --bs 125
+boxes/runs_fsq/s188_rwwin_s1_auxdone boxes.halt173 --run boxes/runs_fsq/s188_rwwin_s1 --auxdone --bs 125
+boxes/runs_fsq/s188_rwwin_s1_tshift boxes.halt173 --run boxes/runs_fsq/s188_rwwin_s1 --tshift --bs 125
+boxes/runs_fsq/s188_rwwin_s1_normcap boxes.halt173 --run boxes/runs_fsq/s188_rwwin_s1 --normcap --bs 125
+boxes/runs_fsq/s188_rwwin_s1_halt boxes.halt173 --run boxes/runs_fsq/s188_rwwin_s1 --bs 125

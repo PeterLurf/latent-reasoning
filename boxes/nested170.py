@@ -307,11 +307,13 @@ _E = [sum(1.0 / n for n in range(t, 9)) / 8 for t in range(1, 9)]
 assert all(abs(w - sum(_E) / 8 / e) < 1e-3 for w, e in zip(AUX_W, _E)) and abs(sum(e * w for e, w in zip(_E, AUX_W)) - sum(_E)) < 1e-3, "§184: the weight table"
 
 
-def kmatch_aux_loss(m, items, kitem, dev, ac, hold=False):
+def kmatch_aux_loss(m, items, kitem, dev, ac, hold=False, reweight=False, wrec=None):
     """§182 WINDOW / HOLD: note 177-5's masked single batch (item i thinks kitem[i] passes; S frozen after its K) + §175's aux CE (token mean per pass,
     mean over each item's REAL steps t <= n, then over items: §175's weighting, identical in every cell). HOLD (Audit 8e20d709 review): the hold passes
     n < t <= K_i (target e_{n+1}) form a SEPARATE term hold_aux = mean over items of the mean over their hold passes (0 without hold), so the real-step
-    weight is not diluted. -> (answer CE, aux, hold_aux, S); the caller adds lambda * (aux + hold_aux)."""
+    weight is not diluted. -> (answer CE, aux, hold_aux, S); the caller adds lambda * (aux + hold_aux).
+    §188 (5b2ebd2e): reweight -> each REAL-step CE (t <= n) times AUX_W[t-1] inside the per-item mean, as loss_items does (§184); wrec (a list) collects
+    the weight of every kept real-step term (the run's step-1 tripwire)."""
     tgt = torch.tensor(NUM_IDS[[it["t"] for it in items]], device=dev); x, msk = m.think_inputs(items, dev); kv = torch.tensor(np.asarray(kitem), device=dev)
     per = [[] for _ in items]; perh = [[] for _ in items]
     with ac():
@@ -323,7 +325,13 @@ def kmatch_aux_loss(m, items, kitem, dev, ac, hold=False):
                 lg_a, y_a = m.aux_logits(S[idx], [items[i] for i in idx], t, dev, hold=hold)
                 ce = Fn.cross_entropy(lg_a.transpose(1, 2), y_a, ignore_index=-100, reduction="none").sum(1) / (y_a != -100).sum(1)
                 for r_, i in enumerate(idx):
-                    (per if t <= len(aux_of(items[i])) else perh)[i].append(ce[r_])
+                    if t <= len(aux_of(items[i])):
+                        w_ = AUX_W[t - 1] if reweight else 1.0                     # §188: w_t on the real steps only (hold terms: §188 refuses --aux_hold)
+                        per[i].append(ce[r_] * w_ if reweight else ce[r_])
+                        if wrec is not None:
+                            wrec.append(w_)
+                    else:
+                        perh[i].append(ce[r_])
         lg = m.dec_logits(S, items, dev)
     aux = torch.stack([torch.stack(p_).mean() for p_ in per if p_]).mean()
     hold_aux = torch.stack([torch.stack(p_).mean() for p_ in perh if p_]).mean() if any(perh) else aux.new_zeros(())
@@ -444,7 +452,9 @@ def main():
     ap.add_argument("--cot_eval_bs", type=int, default=64, help="TEXT-COT generation batch (KV cache; b223 OOMed at 250 on n = 16 chains)"); ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt (no training; writes args_eval.json; model.pt / args.json / log untouched)"); ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--per_n", type=int, default=1000); ap.add_argument("--serial_pool", type=int, default=2200); ap.add_argument("--auto_micro", action="store_true")
     ap.add_argument("--mem_budget", type=float, default=21.0); ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--time_steps", type=int, default=0, help="cost check: train this many steps, report s/step, exit")
     ap.add_argument("--eval_at", type=int, default=0, help="also evaluate acc_by_n at this step -> eval_<k>k.json"); ap.add_argument("--aux_step", type=float, default=0.0, help="§175: lambda of the read-only step decoder CE (0 = off: the §170 path)"); ap.add_argument("--aux_fade", default="36000,48000", help="§175: lambda constant to the first step, then linear to 0 at the second"); ap.add_argument("--kmatch_impl", default="masked", choices=["masked", "bucketed"], help="§177 (f): note 177-5's masked single batch, or the per-K groups"); ap.add_argument("--add_norm", default="", choices=["", "den", "rms"], help="§185 ADD-NORM: the additive reads normalised by phi(q)^T z (den) or per-head RMS (rms); '' = off"); ap.add_argument("--aux_nopass", action="store_true", help="§187 AUX-NOPASS: the aux prompt [EOT, ' Step', ' :'] (no pass token) in training and every aux eval"); ap.add_argument("--aux_reweight", action="store_true", help="§184: the aux CE of pass t <= n weighted by AUX_W[t-1] (equal expected weight per pass position)"); ap.add_argument("--aux_hold", action="store_true", help="§182 HOLD: aux target e_{n+1} on passes n < t <= K (with --k_window and --aux_step)"); ap.add_argument("--kprimes", default="", help="§182: the K' set for s170.acc_by_n_kprime ('' = {0, 1, K/2, K, 2K})"); ap.add_argument("--path_indep", action="store_true", help="§182: s182.path_indep (K' = 16 from M_0 = 0 vs another item's 8-pass memory)"); ap.add_argument("--excl_min_n", type=int, default=1, help="note 178-3 (s178b): exclude test items from training only for n >= this (1 = §170's protocol)"); ap.add_argument("--scratch", default="", help="§178: 'L,D,H' -> a RANDOM-INIT GPT-2 trunk (no pretrained weights), memory after block L // 2 with D / 128 + D / 128 heads"); ap.add_argument("--warmup", type=int, default=100, help="LR warm-up steps (§178: 1000)"); ap.add_argument("--k_window", default="", help="§177 (f): 'lo,hi' -> each n-bucketed micro-batch runs K = n + U{lo..hi} think passes (inject)"); ap.add_argument("--fast_add", action="store_true", help="deltamem.FAST_ADD: the additive heads' pass writes as one sum (Audit 2026-10-09; scratch/gate_fastadd.py)"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
-    a = ap.parse_args(); a.task = "nested"; import boxes.deltamem as DM_; DM_.FAST_ADD = bool(a.fast_add); os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale; K = a.think_k if a.arm == "inject" else 0
+    a = ap.parse_args(); a.task = "nested"
+    assert not (a.aux_reweight and a.aux_hold), "§188: --aux_reweight with --aux_hold is not defined (reweight applies to the real steps only)"
+    import boxes.deltamem as DM_; DM_.FAST_ADD = bool(a.fast_add); os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale; K = a.think_k if a.arm == "inject" else 0
     if a.arm != "inject":
         a.mem_write = a.write_mix_start = a.write_mix_end = None; a.think_k = 0
     from boxes import s5
@@ -506,7 +516,7 @@ def main():
         its = sorted(its, key=lambda it: -len(it["syms"]))[:a.bs // micro]
         if KW:                                                              # §177 (f) (Audit): the path that trains - the masked kmatch loss, every item at K_max
             if lam_now[0]:                                                  # §182: the aux on the masked kmatch path (every item at K_max)
-                la_, ax_, hx_, _ = kmatch_aux_loss(m, its, [a.n_max_train + KW[1]] * len(its), dev, ac, a.aux_hold); l_ = la_ + lam_now[0] * (ax_ + hx_)
+                la_, ax_, hx_, _ = kmatch_aux_loss(m, its, [a.n_max_train + KW[1]] * len(its), dev, ac, a.aux_hold, a.aux_reweight); l_ = la_ + lam_now[0] * (ax_ + hx_)
             else:
                 l_, _ = kmatch_loss(m, its, [a.n_max_train + KW[1]] * len(its), dev, ac, masked=a.kmatch_impl == "masked")
         else:
@@ -741,7 +751,12 @@ def main():
             for c_ in range(0, len(its), ch):
                 sub, ks = its[c_:c_ + ch], kit[c_:c_ + ch]
                 if lam_now[0]:                                              # §182 WINDOW / HOLD
-                    la_, ax_, hx_, _ = kmatch_aux_loss(m, sub, ks, dev, ac, a.aux_hold); aux_hist.append((float(la_), float(ax_), float(hx_))); lk = la_ + lam_now[0] * (ax_ + hx_)
+                    wr_ = [] if (step == step0 and c_ == 0) else None              # §188 tripwire: the kept real-step weights of step 1's first chunk
+                    la_, ax_, hx_, _ = kmatch_aux_loss(m, sub, ks, dev, ac, a.aux_hold, a.aux_reweight, wr_); aux_hist.append((float(la_), float(ax_), float(hx_))); lk = la_ + lam_now[0] * (ax_ + hx_)
+                    if wr_ is not None:
+                        wm_ = float(np.mean(wr_)) if wr_ else None
+                        json.dump({"step": step, "aux_w_mean_kept": wm_, "n_terms": len(wr_), "aux_reweight": bool(a.aux_reweight)}, open(os.path.join(a.out, "s188_tripwire.json"), "w", newline="\n"))
+                        assert (wm_ is not None and wm_ != 1.0) if a.aux_reweight else True, "§188 tripwire: --aux_reweight set but the window path's kept aux weights average 1.0"
                 else:
                     lk, _ = kmatch_loss(m, sub, ks, dev, ac, masked=a.kmatch_impl == "masked")
                 (lk * len(sub) / a.bs).backward(); tot += float(lk.item()) * len(sub) / a.bs

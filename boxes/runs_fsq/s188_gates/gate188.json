@@ -1,0 +1,39 @@
+{
+ "a": {
+  "reweight0": {
+   "window": 19.214260751873535,
+   "loss_items": 19.214260751873535,
+   "rel": 0.0
+  },
+  "reweight1": {
+   "window": 23.04927955702401,
+   "loss_items": 23.04927955702401,
+   "rel": 0.0
+  }
+ },
+ "a_pass": true,
+ "b": {
+  "hold0": true,
+  "hold1": true
+ },
+ "b_pass": true,
+ "c": {
+  "n_mem_params_with_grad": 12,
+  "all_nonzero": true,
+  "differs_from_unweighted": true
+ },
+ "c_pass": true,
+ "d": {
+  "rc": 0,
+  "tripwire": {
+   "step": 1,
+   "aux_w_mean_kept": 1.099761904761905,
+   "n_terms": 21,
+   "aux_reweight": true
+  },
+  "err": "",
+  "hold_refused": true
+ },
+ "d_pass": true,
+ "all_pass": true
+}
