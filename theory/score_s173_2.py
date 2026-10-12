@@ -31,6 +31,7 @@ def model(d, RULE="answer2"):
     rows = {}
     for s in sorted(h, key=int):
         n = int(s); r = {"acc_halt": h[s]["acc"], "mean_h": h[s]["mean_h"], "frac_capped": h[s]["frac_capped"]}
+        fc = r["frac_capped"]; r["mean_h_uncapped"] = None if fc >= 1 else (r["mean_h"] - fc * cap) / (1 - fc)   # 173-3a: capped items have h = cap
         assert len(bt[s]) == cap + 1, (d, s, len(bt[s]))
         if n + 2 <= cap:
             r["acc_k_n2"] = bt[s][n + 2]; r["diff"] = r["acc_halt"] - r["acc_k_n2"]
@@ -49,7 +50,8 @@ def line(k, m):
     if m["status"] != "done":
         return "%s %s" % (k, m["status"])
     return "%s %s: " % (k, m["label"]) + "; ".join("n %d halt %.3f vs K'=n+2 %.3f (%+.3f), mean h %.2f, capped %.3f" % (
-        n, m["by_n"][n]["acc_halt"], m["by_n"][n]["acc_k_n2"], m["by_n"][n]["diff"], m["by_n"][n]["mean_h"], m["by_n"][n]["frac_capped"]) for n in READ_N) + (
+        n, m["by_n"][n]["acc_halt"], m["by_n"][n]["acc_k_n2"], m["by_n"][n]["diff"], m["by_n"][n]["mean_h"], m["by_n"][n]["frac_capped"]) + (
+        " (uncapped mean h %.2f%s)" % (m["by_n"][n]["mean_h_uncapped"], "; below n - 1: caveat" if m["by_n"][n]["mean_h_uncapped"] < n - 1 else "") if m["by_n"][n]["mean_h_uncapped"] is not None else "") for n in READ_N) + (
         "; ABOVE fixed K' at n %s" % m["above_fixed"] if m["above_fixed"] else "")
 
 
