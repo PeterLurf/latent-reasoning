@@ -4,7 +4,8 @@ At n = 10 and 12 (173-2a: halt173's n set is fixed), comparator = the same file'
   SIZE-FREE HALT(model) = at both n, |acc at halt - acc_by_t[n][n+2]| <= 0.03 and mean halt >= n - 1;
   PREMATURE(model)      = at either n, acc at halt <= acc_by_t[n][n+2] - 0.05;  else mixed.
   SIZE-FREE HALT (the 173-2 reading) needs both §184 seeds; WINDOW s1 is read beside them. A halt more than 0.03 ABOVE K'=n+2 is flagged, not counted.
-Descriptive: mean halt and frac_capped by n (2..16) against n; n = 16 has no comparator (K' 18 > cap 16).
+Descriptive: mean halt and frac_capped by n (2..16) against n; n = 16 has no comparator for §184 (K' 18 > cap 16). WINDOW's think_k is 12, so halt173
+gives it cap 24 (2K) - a larger halting budget than §184's; reported beside, not in the reading.
     python theory/score_s173_2.py
 """
 import json
@@ -13,6 +14,7 @@ import os
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 R = os.path.join(ROOT, "boxes", "runs_fsq")
 RUNS = {"s184_s1": "s184_reweight_s1", "s184_s2": "s184_reweight_s2", "window_s1": "s182_window_s1"}
+KEXP = {"s184_reweight_s1": 8, "s184_reweight_s2": 8, "s182_window_s1": 12}   # each run's think_k (args.json); halt173 cap = 2K
 READ_N, RULE, TOL, PRE, EPS = (10, 12), "answer2", 0.03, 0.05, 1e-9
 
 
@@ -21,7 +23,7 @@ def model(d):
     if not os.path.exists(p):
         return {"status": "open"}
     x = json.load(open(p)); h, bt, cap = x["halt"][RULE], x["acc_by_t"], x["cap"]
-    assert int(x["think_k"]) == 8 and int(cap) == 16 and x["kind"] == "nested", (d, x["think_k"], cap, x["kind"])
+    assert int(cap) == 2 * int(x["think_k"]) and int(x["think_k"]) == KEXP.get(d, int(x["think_k"])) and x["kind"] == "nested", (d, x["think_k"], cap, x["kind"])
     rows = {}
     for s in sorted(h, key=int):
         n = int(s); r = {"acc_halt": h[s]["acc"], "mean_h": h[s]["mean_h"], "frac_capped": h[s]["frac_capped"]}
@@ -34,7 +36,7 @@ def model(d):
     pre = any(r["diff"] <= -PRE + EPS for r in rd)
     above = [n for n, r in zip(READ_N, rd) if r["diff"] > TOL + EPS]
     lab = "SIZE-FREE HALT" if free else "PREMATURE" if pre else "mixed"
-    return {"status": "done", "label": lab, "above_fixed": above, "by_n": rows, "gpu": x.get("gpu"), "n_items": x.get("n")}
+    return {"status": "done", "label": lab, "above_fixed": above, "by_n": rows, "cap": int(cap), "gpu": x.get("gpu"), "n_items": x.get("n")}
 
 
 def line(k, m):
