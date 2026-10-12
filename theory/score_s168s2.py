@@ -40,6 +40,8 @@ def header(cell, s):
     d = "s168s2_%s_s%d" % (cell, s); a = load(d, "args.json") or {}; r = load(d)
     if r is None:
         return d, None, {"status": "running" if a else "open"}
+    if r.get("eval_partial", False) is not False:                         # note 168-15: eval-only writes a partial eval.json after each block
+        return d, None, {"status": "eval running (partial eval.json)"}
     bad = {k: a.get(k) for k, v in dict(CELLS[cell], seed=s).items() if str(a.get(k)) != str(v)}
     if cell in ("stepaux", "stepauxrw") and str(a.get("aux_fade")) not in FADES:
         bad["aux_fade"] = a.get("aux_fade")
@@ -47,7 +49,7 @@ def header(cell, s):
         bad["aux_reweight"] = a.get("aux_reweight")
     if bad:
         ERRORS.append((d, bad)); return d, None, {"status": "error", "error": bad}
-    return d, r, {"status": "done", "gpu": r.get("train_gpu"), "aux_fade": a.get("aux_fade")}
+    return d, r, {"status": "done", "gpu": r.get("train_gpu"), "eval_gpu": r.get("eval_gpu"), "eval_only": r.get("eval_only"), "aux_fade": a.get("aux_fade")}
 
 
 def dstar_of(ab):
