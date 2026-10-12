@@ -516,3 +516,9 @@
 5.0 boxes/runs_fsq/s184_reweight_s2/eval_s187_posoffset_keep0.json python -u -m boxes.halt173 --run boxes/runs_fsq/s184_reweight_s2 --posoffset_keep0 --bs 125 --device {DEV}
 5.0 boxes/runs_fsq/s184_reweight_s2/eval_s187_selfdepth_pre.json python -u -m boxes.halt173 --run boxes/runs_fsq/s184_reweight_s2 --selfdepth --bs 125 --device {DEV}
 5.0 boxes/runs_fsq/s185_rms_s1/eval_s187_deepaux_items_n9_12.json python -u -m boxes.halt173 --run boxes/runs_fsq/s185_rms_s1 --deepaux --deepaux_items_only --items_n 9,10,11,12 --items_tmax 14 --items_file eval_s187_deepaux_items_n9_12.json --bs 125 --device {DEV}
+# 2026-10-12 00:52 note 187-7 SIZE-PROBE (+ 187-7a norm_pre / RMS-constancy assert), 3070 only, five models
+5.0 boxes/runs_fsq/s182_nofade_s1/eval_s187_sizeprobe.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_nofade_s1 --sizeprobe --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s185_den_s1/eval_s187_sizeprobe.json python -u -m boxes.halt173 --run boxes/runs_fsq/s185_den_s1 --sizeprobe --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s185_rms_s1/eval_s187_sizeprobe.json python -u -m boxes.halt173 --run boxes/runs_fsq/s185_rms_s1 --sizeprobe --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s184_reweight_s1/eval_s187_sizeprobe.json python -u -m boxes.halt173 --run boxes/runs_fsq/s184_reweight_s1 --sizeprobe --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s184_reweight_s2/eval_s187_sizeprobe.json python -u -m boxes.halt173 --run boxes/runs_fsq/s184_reweight_s2 --sizeprobe --bs 125 --device {DEV}
