@@ -12968,6 +12968,17 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * Audit's PATH-INDEP-training lead is demoted below 187-5, SELF-DEPTH and K-randomisation.
 * If drafted at all, its premise must be self-correction specifically (for example, recovery when the donor shares the target's first k steps), with that as its readout, not generic donor agreement.
 
+**187-4 result: the SELF-DEPTH precondition on §184 s1 (2026-10-11 20:40 EDT; eval_s187_selfdepth_pre.json, 1,000 items each at n = 9 / 10). BLOCKED-BY-TOKEN-EDGE, by the pre-stated clause. SELF-DEPTH is not drafted on §184, and it is re-assessed on §187's no-pass-token model when that lands.**
+* **The clause is met:**
+  - base keep is 0.0 (< 30%);
+  - (i ∧ iii) keep is 0.836 (≥ 30%);
+  - halt_hist at n = 9 has t = 8 for 976 items, t = 7 for 1, and no halt for 23. At n = 10: t = 8 for 714, no halt for 285.
+  - **No item halts at t = n.** AUX-DONE acts as a pass counter at the training edge (T-SHIFT's "Step 8"). Once the aux emits its bare number at t = 8, steps past 8 cannot match, so whole-chain precision is unreachable past n = 8 by construction (chain_exact 0.0).
+* **The components** (answer precision given kept, against all items):
+  - n = 9: (i) keep 0.859, precision 0.870; (iii) 0.954 / 0.846; **(i ∧ iii) 0.836 / 0.886**; all items 0.822;
+  - n = 10: (i) 0.549 / 0.719; (iii) 0.864 / 0.669; **(i ∧ iii) 0.481 / 0.726**; all items 0.643.
+* **Descriptive caution for any later answer-only variant:** even the best answer-agreement filter is only 0.886 precise at n = 9 and 0.726 at n = 10. That is well under the 0.95 bar, and under the error level that sank §103's self-training.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
