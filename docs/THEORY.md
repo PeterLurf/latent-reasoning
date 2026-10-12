@@ -13251,6 +13251,14 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - **Descriptive:** (c) for all models (RMS vs §184 compares direction with direction); DEN vs RMS on (a) and (b) (Literature's dispersion prediction: DEN > RMS); and (b) by t.
 * **Output:** `<run>/eval_s187_sizeprobe.json`. Run on one local card (the 3070), about 10 min per model. Reader: `theory/score_s187_7.py`.
 
+**Amendment 187-7a (2026-10-12 00:47 EDT; before any measurement; Audit). Which tensor is measured.**
+* **The primary representation for (a) / (b) / (c) is the post-normalisation additive read the decoder sees:** `read_vec`'s additive part, exp(s_add) · `add_read(...)`.
+  - For RMS, `add_read` scales each head to unit RMS over DH, then multiplies by a learned per-head scalar gain. Each head's norm is therefore exp(s_add) · gain_h · √DH, constant across items.
+  - So **RMS's norm-only probe (b) is at chance by construction, and that half of PREMISE is vacuous.** The informative halves are NOFADE / §184's (b), and SUPPORTED / WEAKENED (RMS full vs §184 full) on this tensor.
+  - **Code assert:** under add_norm = rms, the per-head norm of the primary read is constant across items to 1e-3 relative at every t (t ≥ 1).
+* **Descriptive "norm_pre":** the norm-only probe on the pre-normalisation read φ(q)ᵀ S_add (before RMS scaling or DEN's division), for every model.
+  - The expectation for RMS is that it is high: the state still accumulates, and only the read hides it.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
