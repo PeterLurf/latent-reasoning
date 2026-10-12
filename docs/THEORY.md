@@ -13500,6 +13500,18 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **Chen 2603.21676 is not in conflict.** Its "per-step" loss demands the final answer at every step, which forces shortcuts. §175 / §184 supervise each step's own reachable intermediate.
 * So there are two distinct failure modes: premature final targets (Chen), and index-conditioned targets, i.e. counter-driven computation (§187, Liang).
 
+**Note 168-18 (2026-10-12 09:31 EDT; a dated correction, not a rewrite; before b267 / 168-12's output is read; Literature 82da54cd, Audit). Chen 2603.21676 was mis-cited in three places.**
+* **What Chen actually tests (their Eq. 12):** L = (1 − α) CE(ŷ^T, y) + (α / T) Σ_t CE(ŷ^t, y). That demands the *final* answer y at every recurrence step, which forces shortcuts.
+  - It says nothing about intermediate-step targets (ours: step t's own result at pass t) or about index conditioning.
+* **(1) The C2 line's "Against Chen" contrast** (§184 depth readout) is not a contrast. Chen tested a different loss, so there is neither contradiction nor tension.
+* **(2) 168-13's Chen prediction is withdrawn as mis-cited.**
+  - Its bands are kept as plain descriptives:
+    - (a) STEP-AUX-REWEIGHT vs STEP-AUX on depth 11–14 at K′ = 16: "reweight higher", "reweight lower" (each by ≥ 0.05), or "neither";
+    - (b) STEP-AUX vs CURR-DIRECT the same way.
+  - Neither is read as bearing on Chen.
+  - On ProsQA both arms are expected to memorise (168-16 / 168-17).
+* **(3) §188's "Risk" line** credited Chen with the risk that pass-index-keyed targets hurt extrapolation. That risk is Liang 2609.33144's (a progress cue), shown here by §187. Chen's failure mode is premature final targets.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
