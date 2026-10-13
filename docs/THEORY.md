@@ -14100,6 +14100,11 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **Caution:** these are end states. A non-learner can be expanding *because* it never learned, so a trajectory read (BUDGET-ANNEAL with 2k checkpoints) would be needed for cause.
   - No contraction lever is drafted from this alone.
 
+**192-2, citation scope (2026-10-13 15:51 EDT; before any measurement; Literature e5c66cc2).** PASS-LYAPUNOV is **our own definition**: the growth of a small *state* perturbation over later passes.
+* Duraipandian et al. 2607.09698's "Lyapunov sensitivity" is a step-size ratio on the clean trajectory, and its perturbation test perturbs *input embeddings*. It is cited only for the qualitative attractor / expanding classes.
+* Bai, Koltun & Kolter 2106.14342 is a Jacobian-norm regulariser, cited only as a possible contraction lever.
+* The 192-2 readings are unchanged.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
