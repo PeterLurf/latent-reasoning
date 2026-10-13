@@ -7,3 +7,6 @@
 5.0 boxes/runs_fsq/s187_nopass_s2/eval_s187_sizeprobe.json python -u -m boxes.halt173 --run boxes/runs_fsq/s187_nopass_s2 --sizeprobe --bs 125 --device {DEV}
 5.0 boxes/runs_fsq/s187_nopass_s2/eval_s187_posoffset_keep0.json python -u -m boxes.halt173 --run boxes/runs_fsq/s187_nopass_s2 --posoffset_keep0 --bs 125 --device {DEV}
 5.0 boxes/runs_fsq/s187_nopass_s2/eval_s187_readclamp_padfree.json python -u -m boxes.halt173 --run boxes/runs_fsq/s187_nopass_s2 --readclamp_padfree --bs 125 --device {DEV}
+# 2026-10-13 01:19 3070: §190 s1 selfdepth_pre (AUX-DONE 3-way) + sizeprobe
+5.0 boxes/runs_fsq/s190_rmsnopass_s1/eval_s187_selfdepth_pre.json python -u -m boxes.halt173 --run boxes/runs_fsq/s190_rmsnopass_s1 --selfdepth --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s190_rmsnopass_s1/eval_s187_sizeprobe.json python -u -m boxes.halt173 --run boxes/runs_fsq/s190_rmsnopass_s1 --sizeprobe --bs 125 --device {DEV}
