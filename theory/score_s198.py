@@ -59,6 +59,8 @@ def main():
         else:
             lab = "CHEAPER-WORSE"
         c["label"] = lab
+        if lab == "CHEAPER-EQUAL":                                          # note 198-1 (Audit): quality measured on nested; cost at L 300 is a projection
+            lab = "CHEAPER-EQUAL (equal quality on nested L~30; PROJECTED cost at L 300; M=8 slots at L 300 untested)" if k == "c" else "CHEAPER-EQUAL (equal quality on nested; cost ratio L-independent)"
         lines.append("(%s) %s: DEEP %s, THINK-NECESSARY %s, DEPTH %.3f vs (a) %.3f; cost ratio vs current %.3f at L 300 (%.3f at nested L; Meter %s); entry %s/%s" % (
             k, lab, c["deep"], c["think_necessary"], c["depth_9_12_n2"], a["depth_9_12_n2"], c["cost"]["ratio_vs_current"], c["cost"]["ratio_at_nested_L"], c["cost"]["meter_flops"],
             c["entry"]["entry_0.5"], c["entry"]["entry_0.1"]))

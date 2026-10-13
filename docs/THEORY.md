@@ -14207,6 +14207,11 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * (a) + (b) launch once gated; (c) after its port. All on 3090s, with gpu recorded per cell.
 * If realised spend on (a) + (b) projects the family over $10, (c) stops and goes to the user.
 
+**Note 198-1 (2026-10-13 17:31 EDT; before any §198 run; Audit). Readout wording.** The L = 300 cost ratio is a **projection** (analytic block-token forwards, plus projected Meter FLOPs). Quality is measured only on nested (L ≈ 30) with M = 8 slots.
+* So a CHEAPER-EQUAL for (c) reads "equal quality on nested; **projected** cost at L 300; whether 8 slots suffice for a 300-token natural input is untested". The −87% is never quoted as a measured natural-task result.
+* (b)'s ratio is L-independent (0.333), so its cost clause is not a projection.
+* score_s198 prints this qualifier in the label.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
