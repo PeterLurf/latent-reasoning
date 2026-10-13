@@ -1,1 +1,4 @@
 # compacted 2026-10-12 13:05: done / claimed lines in c1_backlog_2070.archive.txt
+# 2026-10-12 22:13 2070 (fp32, within-file): WINDOW s2 halt + selfdepth_pre
+5.0 boxes/runs_fsq/s182_window_s2/eval_s173_halt.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_window_s2  --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s182_window_s2/eval_s187_selfdepth_pre.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_window_s2 --selfdepth --bs 125 --device {DEV}

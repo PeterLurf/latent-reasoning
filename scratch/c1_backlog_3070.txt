@@ -1,1 +1,5 @@
 # compacted 2026-10-12 13:07: done / claimed lines in c1_backlog_3070.archive.txt
+# 2026-10-12 22:12 3070: WINDOW s2 tshift, normcap, sizeprobe
+5.0 boxes/runs_fsq/s182_window_s2/eval_s182_tshift.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_window_s2 --tshift --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s182_window_s2/eval_s185_normcap.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_window_s2 --normcap --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s182_window_s2/eval_s187_sizeprobe.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_window_s2 --sizeprobe --bs 125 --device {DEV}
