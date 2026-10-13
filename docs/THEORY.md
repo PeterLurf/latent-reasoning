@@ -14085,6 +14085,21 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 **196-1, disclosure (2026-10-13 15:36 EDT).** When the bin-mean clarification above was committed, the continuation's first appended bin (6,001–7,000: mean 1.345) was already visible: it was printed while the 6k bins were being recomputed.
 * The 12k thresholds (< 0.5 / ≥ 1.0, handle ≥ 0.95) are unchanged from 196-1. The clarification only made explicit that they read bin means.
 
+**Note 192-2 (2026-10-13 15:50 EDT; before any measurement; Audit's research pass; descriptive, eval-only, local fp32). PASS-LYAPUNOV: is s3's pass map expanding where the solved seeds' maps contract?**
+* **Why:** 192-1's across-items read cosine settles for s1 / s2 (0.73 → 0.57; 0.75 → 0.61) but keeps falling for s3 (0.76 → 0.39 at t 8, still falling) while its handle decays.
+  - That is the attractor vs expanding split of Duraipandian et al. 2607.09698 (pending Literature's ID check).
+* **The measurement:** the final model.pt of s185_rms_s1 / s2 / s3, the same 256 n 6–8 test items (rng 19201), fp32.
+  - At pass t0, perturb the memory state S by δ with ‖δ‖ = 1e-3 · ‖S‖, 8 random draws per item.
+  - Run passes t0 + 1 … T and record g(t) = ‖S′_t − S_t‖ / ‖δ‖.
+  - λ̂ is the least-squares slope of log g against t (a finite-time Lyapunov estimate), averaged over items and draws.
+* **(A) Pre-completion, at t0 ∈ {2, 3, 4}, T = 8:**
+  - **EXPANDING-S3:** s3 λ̂ > 0 at t0 = 3, with s1 and s2 both ≤ 0.
+  - **SAME-CLASS:** all three on the same side of 0, or within ±0.05 of each other.
+  - Otherwise mixed.
+* **(B) Post-completion (descriptive, a C6 link), at t0 = n + 1, T = n + 9:** do extra passes contract? Compared across s1 (not STABLE: K′32 0.620) and s2 (STABLE: 0.709 at K′32, K′16 within 0.02).
+* **Caution:** these are end states. A non-learner can be expanding *because* it never learned, so a trajectory read (BUDGET-ANNEAL with 2k checkpoints) would be needed for cause.
+  - No contraction lever is drafted from this alone.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
