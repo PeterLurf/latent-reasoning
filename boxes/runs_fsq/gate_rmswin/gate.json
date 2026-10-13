@@ -1,0 +1,125 @@
+{
+ "a": {
+  "boxes/nested170.py": true,
+  "boxes/deltamem.py": true,
+  "boxes/deltas5.py": true,
+  "boxes/halt173.py": true
+ },
+ "a_pass": true,
+ "b": {
+  "rc": 0,
+  "err": "",
+  "args": {
+   "add_norm": "rms",
+   "k_window": "1,4",
+   "kmatch_impl": "masked",
+   "think_k": 12,
+   "fast_add": true,
+   "aux_step": 1.0
+  },
+  "fixture_K": [
+   4,
+   5,
+   8,
+   9,
+   8,
+   9
+  ],
+  "fixture_n": [
+   3,
+   3,
+   5,
+   5,
+   7,
+   7
+  ],
+  "rms_read_norm": {
+   "write": {
+    "n_reads": 1296,
+    "max_rel_spread_per_head": 3.438898090735165e-07,
+    "per_head_norm": [
+     6.071609973907471,
+     5.5463948249816895,
+     6.664461135864258,
+     7.978508949279785,
+     11.026016235351562,
+     9.132233619689941
+    ]
+   },
+   "aux": {
+    "n_reads": 518,
+    "max_rel_spread_per_head": 3.438898090735165e-07,
+    "per_head_norm": [
+     6.071609973907471,
+     5.5463948249816895,
+     6.664460182189941,
+     7.978507995605469,
+     11.026015281677246,
+     9.132234573364258
+    ]
+   }
+  }
+ },
+ "b_pass": true,
+ "c": {
+  "answer": {
+   "add_gain": 0.11191525310277939,
+   "q_add": 1.2195935249328613,
+   "k_add": 3.0296592712402344,
+   "v_add": 299.6695556640625,
+   "q_del": 23.6530818939209,
+   "loss": 2.9467551708221436
+  },
+  "aux": {
+   "add_gain": 0.22888299822807312,
+   "q_add": 1.0683791637420654,
+   "k_add": 2.6743969917297363,
+   "v_add": 324.10357666015625,
+   "q_del": 17.100936889648438,
+   "loss": 5.428462982177734
+  }
+ },
+ "c_pass": true,
+ "d": {
+  "chunk4": {
+   "off": {
+    "checks": [
+     {
+      "micro": 16,
+      "peak_gib": 4.027114495635033
+     }
+    ],
+    "micro": 16,
+    "peak_gib": 4.027114495635033,
+    "train": "the longest of 4 bs draws at n <= 8",
+    "eval": "n = 16 at K' = 2K"
+   },
+   "rms": {
+    "checks": [
+     {
+      "micro": 16,
+      "peak_gib": 4.03295436501503
+     }
+    ],
+    "micro": 16,
+    "peak_gib": 4.03295436501503,
+    "train": "the longest of 4 bs draws at n <= 8",
+    "eval": "n = 16 at K' = 2K"
+   }
+  },
+  "ratio_rms_over_off": 1.0014501374088884,
+  "window_s1_cloud": {
+   "micro": 2,
+   "peak_gib": 12.766422376036644
+  },
+  "gpu": "NVIDIA GeForce RTX 4060",
+  "proj_3090_micro2_gib": 12.784935442701805,
+  "note": "the cell runs --auto_micro (budget 21 GiB): its own cloud check decides micro"
+ },
+ "d_pass": true,
+ "e": {
+  "smoke_plain": "SMOKE_PLAIN PASS (77 s)"
+ },
+ "e_pass": true,
+ "all_pass": true
+}
