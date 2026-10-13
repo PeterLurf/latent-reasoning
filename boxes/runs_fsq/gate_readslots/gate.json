@@ -1,0 +1,140 @@
+{
+ "a": {
+  "log_equal": true,
+  "model_equal": true,
+  "opt_equal": true
+ },
+ "a_pass": true,
+ "b": {
+  "rc": 0,
+  "args": {
+   "arm": "readslots",
+   "add_norm": "rms",
+   "n_slots": 8,
+   "aux_step": 1.0,
+   "think_k": 2
+  },
+  "first_loss": [
+   7.85853385925293
+  ]
+ },
+ "b_pass": true,
+ "c": {
+  "n_encode": 1,
+  "n_slot_pass": 4
+ },
+ "c_pass": true,
+ "d": {
+  "slot_passes_at_k0": 0,
+  "state_all_zero": true,
+  "logits_eq_zero_state": true,
+  "finite": true
+ },
+ "d_pass": true,
+ "e": {
+  "state_rel": 2.0055278474007223e-15,
+  "logits_rel": 1.2374328789127558e-15,
+  "len_short": 8,
+  "len_long": 26
+ },
+ "e_pass": true,
+ "f": {
+  "answer": {
+   "slots": 2.188107490539551,
+   "mem": 1094.372802734375,
+   "trunk": 44865.03515625
+  },
+  "aux": {
+   "slots": 5.786677837371826,
+   "mem": 2200.7626953125,
+   "trunk": 51726.51171875
+  }
+ },
+ "f_pass": true,
+ "g": {
+  "rc": 0,
+  "err": "",
+  "kprime_keys": [
+   "0",
+   "1",
+   "12",
+   "16",
+   "24",
+   "32",
+   "4",
+   "8",
+   "n",
+   "n+2"
+  ],
+  "readslots": {
+   "L_mean": 26.425,
+   "L_mean_by_n": {
+    "1": 4.0,
+    "2": 6.9,
+    "3": 10.0,
+    "4": 13.5,
+    "5": 16.2,
+    "6": 18.8,
+    "7": 21.5,
+    "8": 24.3,
+    "9": 27.9,
+    "10": 30.9,
+    "11": 34.9,
+    "12": 36.8,
+    "13": 39.2,
+    "14": 42.9,
+    "15": 45.8,
+    "16": 49.2
+   },
+   "n_slots": 8,
+   "def": "L = encoded input tokens [EOT, expr]; FLOPs per item in compute_by_n (Meter: encode once, K slot passes of n_slots after it, ' =')"
+  },
+  "has_compute_by_n": true,
+  "step_recover": "n/a for --arm readslots (dec_reads assumes InjectN's [EOT, expr, ' ='] read position)",
+  "s175_keys": [
+   "aux_acc_by_pass",
+   "aux_acc_by_pass_ext",
+   "aux_acc_by_role",
+   "ext_kprime",
+   "items",
+   "n_by_pass",
+   "n_by_pass_ext",
+   "step_recover",
+   "step_recover_info"
+  ]
+ },
+ "g_pass": true,
+ "h": {
+  "chunk4": {
+   "inject_cached": {
+    "checks": [
+     {
+      "micro": 16,
+      "peak_gib": 3.5571424067020416
+     }
+    ],
+    "micro": 16,
+    "peak_gib": 3.5571424067020416,
+    "train": "the longest of 4 bs draws at n <= 8",
+    "eval": "n = 16 at K' = 2K"
+   },
+   "readslots": {
+    "checks": [
+     {
+      "micro": 16,
+      "peak_gib": 3.3744188845157623
+     }
+    ],
+    "micro": 16,
+    "peak_gib": 3.3744188845157623,
+    "train": "the longest of 4 bs draws at n <= 8",
+    "eval": "n = 16 at K' = 2K"
+   }
+  },
+  "ratio_rs_over_injc": 0.9486319350493226,
+  "proj_gib_from_b280_15.37": 14.582370105578187,
+  "gpu": "NVIDIA GeForce RTX 3070"
+ },
+ "h_pass": true,
+ "all_pass": true
+}
