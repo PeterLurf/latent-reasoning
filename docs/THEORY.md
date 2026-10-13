@@ -13777,6 +13777,14 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - §187 s2 28k / 32k / 0.003.
 * "Never < 0.1" for §184 s1 and WINDOW s1 is by bin mean (minimum bins 0.110 / 0.239).
 
+**187-9 on §187 s2 (2026-10-12 23:14 EDT; descriptive; 4060, 537ccce2). NOPASS's per-step pattern replicates qualitatively at 2 / 2, though its depth claim failed (§187 s2 note).**
+* **Mean handle at t 3–6, nesting ≤ 2, n 9 / 10 / 11 / 12:** 0.996 / 0.792 / 0.484 / 0.332, onsets 10 (none) / 5 / 3 / 3. s1: 0.901 / 0.705 / 0.561 / 0.440.
+* **The pattern:**
+  - No fixed-t edge: n 9 holds through t = 9 (0.98).
+  - The early steps are size-keyed, more steeply than s1.
+  - A partial late recovery: n 10 reaches 0.74 at t 9, and n 11 / 12 reach 0.48 / 0.46 at t 10. It is weaker than s1's.
+* So "removing the token removes the fixed-t edge but not size-keying" is a 2 / 2 mechanism description. Whether it buys depth depends on more than the token: on these two seeds it tracked basin entry.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
