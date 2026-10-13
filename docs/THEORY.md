@@ -279,7 +279,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 189 | RMS-REP: §185 RMS at seed 2 (descriptive replication); SUBSTITUTE = DEEP + THINK-NECESSARY + depth n 9–12 ≥ §184 s2 − 0.05 / DEEP-ONLY / NOT REPLICATED | registered | **closed: SUBSTITUTE (s2 DEEP, depth 0.662 vs §184 s2 0.665; two-seed 0.625 vs 0.576)** |
 | 190 | RMS × NOPASS: §185 RMS + §187's --aux_nopass; LATE (t 7–8, n 10–12) vs RMS s1 0.648; COSTLY-AUX / COSTLY / TOKEN-FIX (opens s2; claim 2 / 2) / TOKEN-NOT-THE-LIMIT; FLAT and AUX-DONE descriptives | registered | **s1 mixed (LATE 0.878 vs 0.648, DEPTH 0.659 vs 0.587); descriptively size-free early, no token edge, AUX-DONE tracks n to ~10** |
 | 191 | PROSQA-RELABEL: §168 s2 STEP-AUX and TEXT-COT with per-step name relabelling + premise shuffle + option swap (user-approved 2026-10-12); NAME-MEM (test ≥ 0.65) / UNDERFIT / CHANCE (STILL-RISING or FLAT) / mixed; TEXT-COT control ≥ 0.70 | registered | **open** |
-| 192 | RMS-SEED3: §185 RMS at seed 3 (SEED-1's rule before C2 wording); CONSISTENT (DEEP, depth ≥ 0.537) / LOW-SEED / NOT-DEEP; entry reported | registered | **open** |
+| 192 | RMS-SEED3: §185 RMS at seed 3 (SEED-1's rule before C2 wording); CONSISTENT (DEEP, depth ≥ 0.537) / LOW-SEED / NOT-DEEP; entry reported | registered | **closed: NOT-DEEP (s3 never entered the basin; clip rate 1.0). RMS seed-robustness refuted at 3 seeds** |
 | 193 | RMS × WINDOW: §182 WINDOW + --add_norm rms; §188's rules (JOINT / DEEP-ONLY / STABLE-ONLY / NEITHER; C6 claim = JOINT + LONG-STABLE at 2 / 2) | registered | **open** |
 | 194 | §190-S2: descriptive replication of §190's one-seed findings (size-free per-pass curve, AUX-DONE tracking n); REPLICATES = (i) + (ii) + (iii); never a claim | registered | **open** |
 
@@ -13954,6 +13954,20 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * Its training log showed the same memorisation as STEP-AUX: answer_ce 3.5e-6 and aux_ce 6.3e-5 at step 11k, under 1e-3 from 7k.
 * There is no eval. The partial log is kept and committed as **aborted unread** (04d5b020).
 * 168-12's lever reading and 168-13 / 168-18's descriptive bands are **not read.** §168 step 2 closes on STEP-AUX's result (memorisation, 168-16 / 168-17). The ProsQA question continues in §191.
+
+**§192 result (2026-10-13 11:48 EDT; s185_rms_s3, b276, RTX 3090, 48k, 0 non-finite, 01ca5ec6; score_s192). NOT-DEEP: RMS seed 3 never entered the basin. SEED-1's "RMS is seed-robust" is refuted at 3 seeds. Two corrections follow.**
+* **s3:**
+  - Pooled n 3–8 at K′ 8 / 16 / 32: 0.589 / 0.564 / 0.536.
+  - acc by n is graded by size (n 3 0.96 → n 8 0.23).
+  - DEPTH 0.138. THINK-NECESSARY holds.
+  - **Basin entry: never** (1k-bin loss 3.09 at 1k → 1.35 at 24k → 1.02 at 48k, still falling slowly). Clip rate **1.0** (pre-clip norm median 5.13).
+* **Correction 1 (SEED-1):** RMS entered at 19k / 19k on s1 / s2 and never on s3. Basin entry is seed-dependent under RMS too. The two-seed "RMS is seed-robust" was premature.
+  - §189's SUBSTITUTE (s1 / s2) stands as registered. Its scope is 2 seeds.
+* **Correction 2 (§188's mechanism):** nested170 trains with **AdamW**, which normalises the update by its running gradient scale.
+  - Clipping every step to norm 1 therefore does **not** cut the effective step about 7×, as the §188 note said. It equalises per-step gradient norms instead.
+  - **The clip rate is a correlate of non-convergence, not an established cause:** §188 1.0 and RMS s3 1.0 never entered; §184 s1 0.98 entered late (42k); §184 s2 0.62 and RMS s1 0.67 entered early.
+* **Consequence:** reliable basin entry, not the read's form, is now the main obstacle to a dependable recipe (3 of 11 two-or-more-seed cells failed or lagged badly).
+  - **The Grokfast lead's trigger has fired:** a carried-recipe seed never entered.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
