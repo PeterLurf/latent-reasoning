@@ -4,3 +4,5 @@
 5.0 boxes/runs_fsq/s182_window_s2/eval_s182_auxdone.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_window_s2 --auxdone --bs 125 --device {DEV}
 # 2026-10-12 23:10 4060: §187 s2 (b273 landed) 187-3 rows n9-12 first
 5.0 boxes/runs_fsq/s187_nopass_s2/eval_s187_deepaux_items_n9_12.json python -u -m boxes.halt173 --run boxes/runs_fsq/s187_nopass_s2 --deepaux --deepaux_items_only --items_n 9,10,11,12 --items_tmax 14 --items_file eval_s187_deepaux_items_n9_12.json --bs 125 --device {DEV}
+# 2026-10-13 01:19 4060: §190 s1 (b275 landed) 187-3 rows n9-12 first (score_s190 LATE)
+5.0 boxes/runs_fsq/s190_rmsnopass_s1/eval_s187_deepaux_items_n9_12.json python -u -m boxes.halt173 --run boxes/runs_fsq/s190_rmsnopass_s1 --deepaux --deepaux_items_only --items_n 9,10,11,12 --items_tmax 14 --items_file eval_s187_deepaux_items_n9_12.json --bs 125 --device {DEV}
