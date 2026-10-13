@@ -14061,6 +14061,18 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - s3's REPEAT at t 8 is 0.087 in fp32 vs 0.141 in bf16 (low-confidence handles flip). It is far below 0.5 either way.
 * **Wording:** COLLAPSE-T was computed on the **main decoder's read at " ="** (192-1's r_t), not on the aux decoder's state as 192-1b's text said. The NO-SIGNATURE call is unchanged.
 
+**196-1 pilot result at 6k, and a continuation to 12k (2026-10-13 15:34 EDT; pilot196_s3_small_4060, RTX 4060 bf16, the 48k schedule's first 6k; descriptive).**
+* **6k reading by the letter: STUCK-SMALL.** The 1k-bin loss at 6k is 1.36 (≥ 1.0), and the handle at t 1–4 reads 0.813 / 0.606 / 0.331 / 0.197 (< 0.95).
+  - acc_by_n at n 1–4 (K 4): 0.858 / 0.927 / 0.502 / 0.288.
+* **In substance it is not stuck:** loss 2.95 / 2.73 / 2.50 / 2.09 / 1.64 / 1.36 at 1–6k, falling about 0.3–0.45 per 1k with no plateau.
+  - clip_frac_100 is 1.0 throughout, with gn_preclip 6–17. There are no old runs' per-step curves to compare against (§196 logs them).
+* **The planned anneal stage 1 runs 12k steps,** so a 6k pilot is shorter than the stage it vets.
+* **Continuation (pre-stated now, before it runs):** resume the kept ckpt_last.pt (step 6000) to 12,000 on the 4060, with an eval at 12k.
+  - **COMPOSES-SMALL-12k:** 1k-bin loss < 0.5 by 12k, with handle ≥ 0.95 at t 1–4 (n ≤ 4).
+  - **STUCK-SMALL-12k:** loss ≥ 1.0 at 12k.
+  - Otherwise unclear.
+  - This, not the 6k read, is BUDGET-ANNEAL's stage-1 precondition.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
