@@ -13761,6 +13761,22 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - **For §188:** §184 s1 (41.1k) and WINDOW s1 (23.2k).
   - **For §190:** RMS s1 (17.9k).
 
+**Basin entry, definition pinned (2026-10-12 23:13 EDT; before any §188 / §190 output; Audit's fixed-bin form; `theory/basin_entry.py`).** This supersedes the rolling-window values in the §187 s2 note. The ordering, the early / late split, and every pair's flag are unchanged.
+* **Loss:** `loss` from log.jsonl, deduped by step (the last occurrence wins).
+* **Bins:** bin b covers steps 1000b + 1 .. 1000(b + 1). The bin mean is over its logged steps.
+* **entry(thr):** the end step 1000(b + 1) of the first bin from which every later bin's mean is < thr. "Never" if there is none.
+* **CONFOUNDED-BY-ENTRY:** |entry(0.5) difference| > 5,000 steps, or either run has entry(0.1) = never.
+* **Values (entry 0.5 / entry 0.1 / minimum bin mean):**
+  - §184 s1 42k / never / 0.110;
+  - §184 s2 20k / 27k / 0.003;
+  - WINDOW s1 25k / never / 0.239;
+  - WINDOW s2 17k / 22k / 0.0004;
+  - RMS s1 19k / 29k / 0.004;
+  - RMS s2 19k / 28k / 0.003;
+  - §187 s1 19k / 34k / 0.009;
+  - §187 s2 28k / 32k / 0.003.
+* "Never < 0.1" for §184 s1 and WINDOW s1 is by bin mean (minimum bins 0.110 / 0.239).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
