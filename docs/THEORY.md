@@ -13897,6 +13897,21 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 
 **Note 190-3 (2026-10-13 01:26 EDT; Audit).** §190's LATE is the **mean of the per-(n, t) cell means** (n 10–12 × t 7–8, nesting ≤ 2; score_s190.rows_stat): 0.878. Pooling all (item, t) cells gives 0.890. Both clear the 0.798 bar, so the label is unchanged.
 
+**Note 190-4 (2026-10-13 01:36 EDT; §190 s1's eval_s187_selfdepth_pre.json, RTX 3070; Audit's pre-check reproduced). AUX-DONE: DONE-TRACKS-N (the three-way pre-stated in the 187-4-on-§187 note). SELF-DEPTH's chain labels are still too noisy; answer-only labels at n 9 are 99.5% precise.**
+* **Halts:**
+  - n 9: t 8 / 9 = 4 / **996**; 100% halt; halted mean **9.00**; 0.4% at t = 8.
+  - n 10: t 8 / 9 / 10 = 1 / 339 / **660**; 100% halt; halted mean 9.66; 0.1% at t = 8.
+  - ≥ 50% halt, n 9 halted mean ≥ 8.5, and < 50% at t = 8, so **DONE-TRACKS-N** (one seed; §194 tests s2).
+  - This is the first self-generated completion signal at t = n beyond the training edge. RMS (token) and NOPASS (magnitude) pinned at t = 8.
+* **SELF-DEPTH components (187-4's bars, descriptive):**
+  - n 9: base keep 0.994, **chain precision 0.796** (DROP-level, < 0.90), answer precision (i ∧ iii) **0.995** at keep 0.994;
+  - n 10: base keep 0.654, chain precision 0.061, answer precision 0.927 at keep 0.845.
+  - The halt edge is gone, so 187-4's BLOCKED-BY-TOKEN-EDGE no longer applies. But about 20% of kept n 9 chains contain a wrong step.
+* **Lead (not registered):** SELF-DEPTH-ANS, answer-only self-training on §190's recipe.
+  - Add n = 9 items with the model's own answers as labels (answer CE only; no aux targets past the trained steps). The precision at n 9 is 0.995.
+  - It targets §190's remaining content-level size limit (e.g. done + remaining > 8).
+  - It is drafted after §194 shows whether §190's behaviour replicates on s2.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
