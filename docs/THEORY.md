@@ -13932,6 +13932,19 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * No §190 reading uses them.
 * Going forward, Experiments adds gn_hist to nested170's checkpoint and logs the pre-clip norm and a clip fraction. This is gated log-only and goes in after b278 ships.
 
+**§191 control B result (2026-10-13 04:12 EDT; s191_textcot_relabel_s1, b272, RTX 3090, 0 non-finite, e9673083). Fidelity passes by a wide margin: relabelling alone lifts TEXT-COT from 0.735 to 0.938 on the same graphs, flat across depth including 11–14. Name memorisation was costing even the explicit-CoT arm about 0.2. This revises 168-17's caution.**
+* **Test:** accuracy **0.938** (4,053 items; fixed-set TEXT-COT 0.735); acc_ctl 0.816 (0.664).
+  - By depth 3–14: 0.955 / 0.933 / 0.952 / 0.931 / 0.931 / 0.938 / 0.931 / 0.931 / 0.940 / 0.942 / 0.958 / 0.941.
+* **Relabelled train fit** 0.936 (fixed-set train fit 1.000), so it no longer memorises.
+* **test500_acc** climbs steadily: 0.768 at 1k → 0.934 at 9k → 0.950 at 12k.
+* Swap rate 0.501 over 768k draws (p = 0.5 verified); clip rate 0.005.
+* **Control fidelity (≥ 0.70): OK.** A's reading will not be flagged.
+* **Revision of 168-17's caution:**
+  - The fixed-set TEXT-COT's depth-flat 0.735 is better read as a procedure that works at every depth, capped uniformly by memorisation.
+  - Relabelled, it reaches 0.94 at every depth 3–14, including 11–14 beyond the training depths (3–10), which a "partial heuristic" would not.
+  - The text bar on this set is therefore **0.938**, not 0.735.
+  - §191 A's registered NAME-MEM bar (≥ 0.65) stands as written. A beating relabelled TEXT-COT would need ≥ 0.938.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
