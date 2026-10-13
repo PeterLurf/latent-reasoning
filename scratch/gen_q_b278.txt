@@ -1,0 +1,6 @@
+# THEORY §194 §190-S2 (8433d73f; Audit-agreed, ~$3; scorer theory/score_s194.py): s190_rmsnopass_s2 = s190_rmsnopass_s1's args (s185_rms_s1 + --aux_nopass) with --seed 2, RTX 3090, uncached; then dir177 / auxdone (the reader needs eval_s182_auxdone.json)
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s190_rmsnopass_s2 boxes.nested170 --arm inject --think_k 8 --aux_step 1.0 --aux_fade 48000,48000 --fast_add --seed 2 --steps 48000 --kprimes 0,1,4,8,12,16,24,32 --path_indep --add_norm rms --aux_nopass --ckpt_every 1000 --auto_micro
+boxes/runs_fsq/s190_rmsnopass_s2_pkg boxes.halt173 --run boxes/runs_fsq/s190_rmsnopass_s2 --dir177 --bs 125
+boxes/runs_fsq/s190_rmsnopass_s2_auxdone boxes.halt173 --run boxes/runs_fsq/s190_rmsnopass_s2 --auxdone --bs 125
