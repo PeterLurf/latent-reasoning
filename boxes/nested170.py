@@ -472,6 +472,8 @@ def main():
     ap.add_argument("--mem_write", default="top", choices=["top"]); ap.add_argument("--write_mix_start", type=int, default=2000); ap.add_argument("--write_mix_end", type=int, default=6000)
     ap.add_argument("--anneal", default="", help="note 196-1 BUDGET-ANNEAL: 'nmax:K:until,...' stages (n_max_train, think_k, last step); each continues the previous "
                     "stage's weights / optimiser; the last stage must equal --n_max_train / --think_k / --steps ('' = off)")
+    ap.add_argument("--probe_loss_every", type=int, default=0, help="note 196-1: every N steps, the mean answer / aux CE on 256 FIXED full-task items (n <= --n_max_train, "
+                    "K = --think_k; own rng seed + 19700; no_grad, eval mode; logged as probe_loss / probe_aux; 0 = off)")
     ap.add_argument("--grokfast", default="", choices=["", "ema"], help="§196: Grokfast EMA gradient filter (grokfast_ema) after backward, before the clip; '' = off")
     ap.add_argument("--gf_alpha", type=float, default=0.98); ap.add_argument("--gf_lamb", type=float, default=2.0)
     ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", default=None); ap.add_argument("--log_every", type=int, default=100)
@@ -768,6 +770,24 @@ def main():
         sec_ = [r_["sec"] for r_ in lg_ if "sec" in r_]; t0 = time.time() - (sec_[-1] if sec_ else 0)
         wg_hist = [{"step": r_["step"], "mean": r_["write_grad_norm"], "spike_100x_floor": bool(r_.get("write_grad_spike_100x_floor", False)), "from_log": True}
                    for r_ in lg_ if "write_grad_norm" in r_]                 # 2026-10-10: log records -> the training wg_hist form (the eval reads spike_100x_floor)
+    PROBE = train_items(np.random.default_rng(a.seed + 19700), 256, a.n_max_train, EXCL) if (a.probe_loss_every and m is not None) else []   # final shape, drawn once
+    PROBE_K = K                                                             # the base (final-stage) K: the loop's anneal stages change K, not this
+    if PROBE and not a.eval_only:
+        import hashlib
+        log.write(json.dumps({"step": step0 - 1, "probe_items": len(PROBE), "probe_n_max": a.n_max_train, "probe_k": PROBE_K,
+                              "probe_items_sha": hashlib.sha256(json.dumps([it["syms"] for it in PROBE]).encode()).hexdigest()[:16]}) + "\n"); log.flush()
+
+    def probe_losses():
+        """note 196-1: mean answer / aux CE on PROBE at PROBE_K; no_grad, eval mode; draws no rng; recorders paused (training state untouched)."""
+        params.eval(); zr_ = getattr(m.mem, "zmin_rec", None); m.mem.zmin_rec = None; gon_ = gf_rec["on"]; gf_rec["on"] = False; la_s, ax_s, n_s = 0.0, 0.0, 0
+        try:
+            with torch.no_grad():
+                for i_ in range(0, len(PROBE), a.eval_bs):
+                    ch_ = PROBE[i_:i_ + a.eval_bs]; la_, ax_, _, _ = kmatch_aux_loss(m, ch_, [PROBE_K] * len(ch_), dev, ac)
+                    la_s += float(la_) * len(ch_); ax_s += float(ax_) * len(ch_); n_s += len(ch_)
+        finally:
+            m.mem.zmin_rec = zr_; gf_rec["on"] = gon_
+        return la_s / n_s, ax_s / n_s
     gf_named = [(n_, p_) for n_, p_ in params.named_parameters() if p_.requires_grad] if a.grokfast else []; gf_rec = {"on": False, "maxlogit": None}
     if a.grokfast and m is not None:                                        # §196 log field: the answer head's max logit on the step's batch (logging steps only)
         _dl_orig = m.dec_logits
@@ -870,6 +890,8 @@ def main():
             if gn_log:                                                      # pre-clip total grad norm at this step + the clip share of the last 100 steps (log only)
                 rec.update({"gn_preclip": gn_log[-1], "clip_frac_100": float(np.mean([v_ > 1.0 for v_ in gn_log[-100:]]))})
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
+        if PROBE and step % a.probe_loss_every == 0:                       # note 196-1: the fixed full-task probe (descriptive)
+            pl_, pa_ = probe_losses(); log.write(json.dumps({"step": step, "probe_loss": pl_, "probe_aux": pa_, **({"anneal_stage": an_cur[0]} if ANNEAL else {})}) + "\n"); log.flush()
         if a.ckpt_every and step % a.ckpt_every == 0 and step < a.steps:
             cp = os.path.join(a.out, "ckpt_last.pt")
             if os.path.exists(cp):

@@ -1,0 +1,78 @@
+{
+ "a": {
+  "log_equal": true,
+  "model_equal": true,
+  "opt_equal": true,
+  "np_rng_equal": true
+ },
+ "a_pass": true,
+ "b": {
+  "model_equal": true,
+  "opt_equal": true,
+  "np_rng_equal": true,
+  "train_log_equal": true,
+  "probe_steps": [
+   2,
+   4
+  ],
+  "probe_finite": true,
+  "header": [
+   {
+    "step": 0,
+    "probe_items": 256,
+    "probe_n_max": 8,
+    "probe_k": 2,
+    "probe_items_sha": "5f4129dc2763ae2c"
+   }
+  ],
+  "probe_sample": [
+   {
+    "step": 2,
+    "probe_loss": 3.13184255361557,
+    "probe_aux": 4.99654757976532
+   },
+   {
+    "step": 4,
+    "probe_loss": 3.048677980899811,
+    "probe_aux": 4.809913516044617
+   }
+  ]
+ },
+ "b_pass": true,
+ "c": {
+  "model_equal": true,
+  "opt_equal": true,
+  "sha_full": [
+   "188d8b7005218237"
+  ],
+  "sha_resumed": [
+   "188d8b7005218237"
+  ],
+  "probe4_full": [
+   [
+    3.1159457564353943,
+    6.604177474975586,
+    1
+   ]
+  ],
+  "probe4_resumed": [
+   [
+    3.1159457564353943,
+    6.604177474975586,
+    1
+   ]
+  ],
+  "stages_on_probe_records": [
+   [
+    2,
+    0
+   ],
+   [
+    4,
+    1
+   ]
+  ]
+ },
+ "c_pass": true,
+ "all_pass": true
+}
