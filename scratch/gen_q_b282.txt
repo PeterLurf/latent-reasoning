@@ -1,0 +1,4 @@
+# THEORY §198 CHEAP-THINK (e69bc32a; user request, Audit-approved ONE item, $10 hard cap; scorer theory/score_s198.py; gate_readslots.json) cell (c) s198_rsaux_s1 = s185_rms_s1's args with --arm readslots (8 slots; RMS + step aux), RTX 3090, seed 1; no halt173 post-hocs (halt173 loads INJECT only; the scorer reads eval.json s170 fields). LAUNCH ONLY after the (a)+(b) realised-cost check keeps the family <= $10
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s198_rsaux_s1 boxes.nested170 --arm readslots --think_k 8 --aux_step 1.0 --aux_fade 48000,48000 --fast_add --seed 1 --steps 48000 --kprimes 0,1,4,8,12,16,24,32 --path_indep --add_norm rms --ckpt_every 1000 --auto_micro
