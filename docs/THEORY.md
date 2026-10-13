@@ -14039,6 +14039,14 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - This is closer to Gopalani & Hu's across-positions collapse than 192-1's across-items COLLAPSE.
 * It is reported beside the registered REPEAT / COLLAPSE. The SIGNATURE / NO-SIGNATURE readings are unchanged.
 
+**Amendment 192-1b (2026-10-13 14:52 EDT; before any measurement; Audit, after Literature bb99f2bc). The primary collapse measure becomes within-item, across passes, matching Gopalani & Hu's within-sequence collapse.**
+* **COLLAPSE-T (primary):** for each item, the mean pairwise cosine between the reads r_t, r_t′ the aux decoder sees at passes t ≠ t′ with 3 ≤ t, t′ ≤ n, averaged over the 256 items.
+  - One value per model. Their initial baseline is about 0.4, and a plateau reads > 0.9.
+* **COLLAPSE-ITEMS** (192-1's original across-items cosine at fixed t) and **COLLAPSE-PASS** (192-1a) become descriptive only. The across-items version measures input-insensitivity, not Gopalani's collapse.
+* **SIGNATURE:** s3 REPEAT ≥ 0.5 at some t ≥ 3, **or** COLLAPSE-T ≥ 0.9, with both s1 and s2 below on that measure.
+* **NO-SIGNATURE:** s3 within ±0.1 of both s1 and s2 on REPEAT at every t ≥ 3 and on COLLAPSE-T.
+* REPEAT is unchanged.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
