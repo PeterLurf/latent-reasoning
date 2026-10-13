@@ -281,6 +281,46 @@ class InjectN(torch.nn.Module):
         return x[:, len(pre):].cpu().numpy()
 
 
+class AnnealGate:
+    """note 196-1 entry-gated --anneal (Theory): pre-final stages advance after `need` consecutive bin means of the training loss < thr (bins aligned to
+    steps bin*b+1 .. bin*(b+1), over the stage's own steps; non-finite steps skipped), or after max_steps in the stage ('fallback'); the final stage runs
+    exactly final_len steps from its first step s_full. update(step, loss) is called after every training step; -> (new stage, reason, bin mean) or None.
+    state() / load() round-trip the whole gate (partial bin, consecutive count) for --resume."""
+    def __init__(self, n_stages, thr, need, max_steps, final_len, bin_=1000):
+        self.n_stages, self.thr, self.need, self.max_steps, self.final_len, self.bin = n_stages, thr, need, max_steps, final_len, bin_
+        self.stage, self.stage_start, self.bin_sum, self.bin_n, self.consec, self.s_full = 0, 1, 0.0, 0, 0, None
+
+    def final(self):
+        return self.stage == self.n_stages - 1
+
+    def end(self):
+        return None if self.s_full is None else self.s_full + self.final_len - 1
+
+    def update(self, step, loss):
+        if self.final():
+            return None
+        if loss is not None and math.isfinite(loss):
+            self.bin_sum += loss; self.bin_n += 1
+        if step % self.bin:
+            return None
+        mean = self.bin_sum / self.bin_n if self.bin_n else float("inf"); self.bin_sum, self.bin_n = 0.0, 0
+        self.consec = self.consec + 1 if mean < self.thr else 0
+        reason = "gate" if self.consec >= self.need else ("fallback" if step - self.stage_start + 1 >= self.max_steps else None)
+        if reason is None:
+            return None
+        self.stage += 1; self.stage_start = step + 1; self.consec = 0
+        if self.final():
+            self.s_full = step + 1
+        return self.stage, reason, mean
+
+    def state(self):
+        return dict(vars(self))
+
+    def load(self, st):
+        for k_, v_ in st.items():
+            setattr(self, k_, v_)
+
+
 def grokfast_ema(named, ema, alpha, lamb, norms=False):
     """§196 GROKFAST (ironjr/grokfast gradfilter_ema; Theory 78487d7a): per parameter h <- alpha * h + (1 - alpha) * g, h initialised from the first
     gradient (h = g at step 1), then g <- g + lamb * h in place on p.grad. Called after backward, before clip_grad_norm_. norms -> (||g|| before the
@@ -480,6 +520,8 @@ def main():
                     "K = --think_k; own rng seed + 19700; no_grad, eval mode; logged as probe_loss / probe_aux; 0 = off)")
     ap.add_argument("--cache_lower", action="store_true", help="training only: blocks 0..mem.layer-1 on the (identical) think input once per batch, shared by the K "
                     "passes (exact in exact arithmetic; gate_cache_lower_n170). Held: never compare a cached cell with an uncached comparator (Theory)")
+    ap.add_argument("--anneal_gate", default="", help="note 196-1 entry-gated --anneal: 'thr:need:max_steps[:bin]'; --anneal stages 'nmax:K:G' (gated) and a final "
+                    "'nmax:K:final_len'; --steps must equal the cap (#gated x max_steps + final_len); LR = the cosine over that cap; '' = fixed-step --anneal")
     ap.add_argument("--grokfast", default="", choices=["", "ema"], help="§196: Grokfast EMA gradient filter (grokfast_ema) after backward, before the clip; '' = off")
     ap.add_argument("--gf_alpha", type=float, default=0.98); ap.add_argument("--gf_lamb", type=float, default=2.0)
     ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", default=None); ap.add_argument("--log_every", type=int, default=100)
@@ -634,12 +676,23 @@ def main():
     if KW:
         assert a.arm == "inject" and K >= a.n_max_train + KW[1], "§177 (f): --think_k must cover the largest bucket's K (memcheck / calibration)"
 
-    ANNEAL = [tuple(int(v_) for v_ in st_.split(":")) for st_ in a.anneal.split(",")] if a.anneal else []   # note 196-1: [(n_max_train, K, until), ...]
+    GATE, GST = None, []
+    if a.anneal_gate:                                                       # note 196-1 entry-gated mode: [(n_max_train, K), ...] + the gate
+        GST = [tuple(st_.split(":")) for st_ in a.anneal.split(",")]; gp_ = a.anneal_gate.split(":")
+        assert len(GST) >= 2 and all(st_[2] == "G" for st_ in GST[:-1]) and GST[-1][2] != "G", "--anneal_gate: stages 'n:K:G', ..., 'n:K:final_len'"
+        GATE = AnnealGate(len(GST), float(gp_[0]), int(gp_[1]), int(gp_[2]), int(GST[-1][2]), int(gp_[3]) if len(gp_) > 3 else 1000)
+        GST = [(int(st_[0]), int(st_[1])) for st_ in GST]
+        assert a.arm == "inject" and not a.k_window and GST[-1] == (a.n_max_train, a.think_k), "--anneal_gate: inject, no --k_window, last stage = (--n_max_train, --think_k)"
+        assert a.steps == (len(GST) - 1) * GATE.max_steps + GATE.final_len, "--anneal_gate: --steps must be the cap (#gated x max_steps + final_len)"
+        assert GATE.max_steps % GATE.bin == 0
+    ANNEAL = [tuple(int(v_) for v_ in st_.split(":")) for st_ in a.anneal.split(",")] if (a.anneal and not GATE) else []   # note 196-1: [(n_max_train, K, until), ...]
     if ANNEAL:
         assert a.arm == "inject" and not KW, "--anneal: inject without --k_window"
         assert all(u0 < u1 for (_, _, u0), (_, _, u1) in zip(ANNEAL, ANNEAL[1:])) and ANNEAL[-1] == (a.n_max_train, a.think_k, a.steps), \
             "--anneal: increasing stage ends; the last stage = (--n_max_train, --think_k, --steps) (memcheck / calibration / eval use it)"
-    an_cur = [None]
+    an_cur = [None]; an_reason = [None]
+    if GATE and a.aux_step:
+        assert float(a.aux_fade.split(",")[1]) >= a.steps, "--anneal_gate: --aux_fade must reach the cap (the aux on to the end)"
 
     def lam_at(step):
         """§175: lambda = aux_step to f0, then linear to 0 at f1 (sched_scale-scaled)."""
@@ -760,6 +813,8 @@ def main():
         step0 = ck["step"] + 1; n_nonfinite = ck["n_nonfinite"]; wg_hist = ck.get("wg_hist", []); gn_hist = list(ck.get("gn_hist", [])); gn_log = list(ck.get("gn_log", [])); t0 = time.time() - ck["elapsed"]
         if KW and "rng_kw" in ck:                                           # older checkpoints lack it: the K stream then restarts (not bitwise)
             rng_kw.bit_generator.state = ck["rng_kw"]; kcount = ck.get("kcount", kcount)
+        if GATE and "anneal_gate" in ck:                                    # note 196-1: the gate continues (partial bin, consecutive count, stage)
+            GATE.load(ck["anneal_gate"]); an_reason[0] = ck.get("an_reason")
         if a.grokfast:                                                      # §196: the EMA state continues (absent -> re-initialised from the next gradient)
             gf_ema = {k_: v_.to(dev) for k_, v_ in ck.get("gf_ema", {}).items()}
         log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
@@ -805,6 +860,13 @@ def main():
             return lg_
         m.dec_logits = _dl_rec
     for step in range(step0, last + 1):
+        if GATE:                                                            # note 196-1 entry-gated: the gate's stage; stop after the final stage's length
+            if GATE.end() is not None and step > GATE.end():
+                break
+            if GATE.stage != an_cur[0]:
+                a.n_max_train, K = GST[GATE.stage]; an_cur[0] = GATE.stage
+                log.write(json.dumps({"step": step, "anneal_stage": GATE.stage, "n_max_train": a.n_max_train, "think_k": K, "reason": an_reason[0] or "start",
+                                      "s_full": GATE.s_full, "end": GATE.end()}) + "\n"); log.flush()
         if ANNEAL:                                                          # note 196-1: the stage of this step (a resume lands in its own stage)
             st_ = next(i_ for i_, (_, _, u_) in enumerate(ANNEAL) if step <= u_)
             if st_ != an_cur[0]:
@@ -867,6 +929,10 @@ def main():
         else:
             gf_pre = [p_.detach().clone() for _, p_ in gf_named] if gf_log else None   # §196 log field: the AdamW update norm (logging steps only)
             opt.step(); hist.append(tot)
+        if GATE:                                                            # note 196-1: the gate sees every step's training loss (non-finite: skipped)
+            tr_ = GATE.update(step, tot if math.isfinite(tot) else None)
+            if tr_ is not None:
+                an_reason[0] = tr_[1]; log.write(json.dumps({"step": step, "gate_bin_mean": tr_[2], "next_stage": tr_[0], "reason": tr_[1]}) + "\n"); log.flush()
             if gf_pre is not None:
                 gf_upd = float(torch.stack([(p_.detach() - q_).float().pow(2).sum() for (_, p_), q_ in zip(gf_named, gf_pre)]).sum().sqrt()); del gf_pre
         if a.eval_at and step == a.eval_at:                                 # Theory 7caa3a82 (§174's matched budget): acc_by_n at this step, no checkpoint kept
@@ -888,8 +954,10 @@ def main():
                 w_rec = {"step": step, "mean": float(np.mean(wwin)), "max": mx_, "median_prev_1k": md_, "spike_100x_floor": bool(late and mx_ > 100 * md_ > 0 and mx_ > 1.0)}
                 wlast.extend(wwin); del wlast[:-int(1000 * sc) or None]; wwin = []; wg_hist.append(w_rec)
                 rec.update({"gamma": float(m.mem.gamma), "fade": float(m.mem.fade), "write_grad_norm": w_rec["mean"], "write_grad_spike_100x_floor": w_rec["spike_100x_floor"]})
-            if ANNEAL:
+            if ANNEAL or GATE:
                 rec.update({"anneal_stage": an_cur[0], "n_max_train": a.n_max_train, "think_k": K})
+            if GATE:
+                rec["lr"] = opt.param_groups[0]["lr"]
             if gf_log:                                                      # §196: slow share, AdamW update norm, answer max logit, total weight norm
                 rec.update({"gf_slow_share": (gf_s / gf_g) if gf_g else None, "gf_update_norm": gf_upd, "gf_ans_max_logit": gf_rec["maxlogit"],
                             "gf_weight_norm": float(torch.stack([p_.detach().float().pow(2).sum() for _, p_ in gf_named]).sum().sqrt())})
@@ -903,7 +971,8 @@ def main():
             if os.path.exists(cp):
                 os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))
             torch.save({"model": params.state_dict(), "opt": opt.state_dict(), "np_rng": rng.bit_generator.state, "step": step, "n_nonfinite": n_nonfinite, "wg_hist": wg_hist, "gn_hist": gn_hist, "gn_log": gn_log,
-                        **({"rng_kw": rng_kw.bit_generator.state, "kcount": kcount} if KW else {}), **({"gf_ema": gf_ema} if a.grokfast else {}),   # 2026-10-13: a WINDOW resume continues the same K draws
+                        **({"rng_kw": rng_kw.bit_generator.state, "kcount": kcount} if KW else {}), **({"gf_ema": gf_ema} if a.grokfast else {}),
+                        **({"anneal_gate": GATE.state(), "an_reason": an_reason[0]} if GATE else {}),   # 2026-10-13: a WINDOW resume continues the same K draws
                         "elapsed": time.time() - t0}, cp)
     if a.time_steps:                                                        # Audit's cost check
         sps = (time.time() - tt0) / max(1, last - step0 + 1); json.dump({"arm": a.arm, "think_k": K, "steps_timed": last - step0 + 1, "sec_per_step": sps, "est_hours_48k": sps * a.steps / 3600,
