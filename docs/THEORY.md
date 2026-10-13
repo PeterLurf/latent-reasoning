@@ -14130,6 +14130,13 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - After completion the order reverses (s3 lowest).
   - There is a weak hint that s3's pre-completion map is less contractive, on one end state each. It is not a finding, and it does not reopen end-state work. A trajectory read with relative g′ on §196 / BUDGET-ANNEAL checkpoints would test it.
 
+**192-2 post-data descriptive, wording corrected (2026-10-13 16:15 EDT; Audit).** The normalised λ on g′ equals the raw λ minus the clean log-norm slope, to the third decimal (t0 = 3: s1 0.183 − 0.185 = −0.002; s2 0.179 − 0.148 = 0.031; s3 0.168 − 0.091 = 0.077).
+* **s3 does not amplify perturbations more.** Its raw λ is the lowest of the three.
+* **Its "gradient" comes from s3's state growing slowest.** The log-norm slope is 0.091 at t0 = 3, against 0.185 / 0.148; over t 1–16 it is 0.111, against 0.168 / 0.145.
+* **The corrected descriptive:** s3 writes less per pass (slower state growth). That fits its handle decaying with t.
+  - It replaces the previous note's "s3 most expanding".
+  - It can be checked on any training checkpoint with no new code (the clean ‖S_t‖ slope).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
