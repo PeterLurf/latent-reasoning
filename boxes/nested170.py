@@ -470,6 +470,8 @@ def main():
     ap.add_argument("--steps", type=int, default=48000); ap.add_argument("--bs", type=int, default=64); ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--n_max_train", type=int, default=8); ap.add_argument("--micro", type=int, default=1); ap.add_argument("--ckpt_passes", action="store_true")
     ap.add_argument("--mem_write", default="top", choices=["top"]); ap.add_argument("--write_mix_start", type=int, default=2000); ap.add_argument("--write_mix_end", type=int, default=6000)
+    ap.add_argument("--anneal", default="", help="note 196-1 BUDGET-ANNEAL: 'nmax:K:until,...' stages (n_max_train, think_k, last step); each continues the previous "
+                    "stage's weights / optimiser; the last stage must equal --n_max_train / --think_k / --steps ('' = off)")
     ap.add_argument("--grokfast", default="", choices=["", "ema"], help="§196: Grokfast EMA gradient filter (grokfast_ema) after backward, before the clip; '' = off")
     ap.add_argument("--gf_alpha", type=float, default=0.98); ap.add_argument("--gf_lamb", type=float, default=2.0)
     ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", default=None); ap.add_argument("--log_every", type=int, default=100)
@@ -624,6 +626,13 @@ def main():
     if KW:
         assert a.arm == "inject" and K >= a.n_max_train + KW[1], "§177 (f): --think_k must cover the largest bucket's K (memcheck / calibration)"
 
+    ANNEAL = [tuple(int(v_) for v_ in st_.split(":")) for st_ in a.anneal.split(",")] if a.anneal else []   # note 196-1: [(n_max_train, K, until), ...]
+    if ANNEAL:
+        assert a.arm == "inject" and not KW, "--anneal: inject without --k_window"
+        assert all(u0 < u1 for (_, _, u0), (_, _, u1) in zip(ANNEAL, ANNEAL[1:])) and ANNEAL[-1] == (a.n_max_train, a.think_k, a.steps), \
+            "--anneal: increasing stage ends; the last stage = (--n_max_train, --think_k, --steps) (memcheck / calibration / eval use it)"
+    an_cur = [None]
+
     def lam_at(step):
         """§175: lambda = aux_step to f0, then linear to 0 at f1 (sched_scale-scaled)."""
         if not a.aux_step:
@@ -770,6 +779,11 @@ def main():
             return lg_
         m.dec_logits = _dl_rec
     for step in range(step0, last + 1):
+        if ANNEAL:                                                          # note 196-1: the stage of this step (a resume lands in its own stage)
+            st_ = next(i_ for i_, (_, _, u_) in enumerate(ANNEAL) if step <= u_)
+            if st_ != an_cur[0]:
+                a.n_max_train, K = ANNEAL[st_][0], ANNEAL[st_][1]; an_cur[0] = st_
+                log.write(json.dumps({"step": step, "anneal_stage": st_, "n_max_train": a.n_max_train, "think_k": K}) + "\n"); log.flush()
         gf_log = a.grokfast and (step % a.log_every == 0 or step == a.steps); gf_rec["on"] = bool(gf_log); gf_rec["maxlogit"] = None; gf_upd = None
         for gr in opt.param_groups:
             gr["lr"] = lr_at(a.lr, gr, step, a.steps) if a.warmup == 100 else lr_at(a.lr, gr, step, a.steps) / min(1, step / 100) * min(1, step / a.warmup)   # §178: --warmup
@@ -848,6 +862,8 @@ def main():
                 w_rec = {"step": step, "mean": float(np.mean(wwin)), "max": mx_, "median_prev_1k": md_, "spike_100x_floor": bool(late and mx_ > 100 * md_ > 0 and mx_ > 1.0)}
                 wlast.extend(wwin); del wlast[:-int(1000 * sc) or None]; wwin = []; wg_hist.append(w_rec)
                 rec.update({"gamma": float(m.mem.gamma), "fade": float(m.mem.fade), "write_grad_norm": w_rec["mean"], "write_grad_spike_100x_floor": w_rec["spike_100x_floor"]})
+            if ANNEAL:
+                rec.update({"anneal_stage": an_cur[0], "n_max_train": a.n_max_train, "think_k": K})
             if gf_log:                                                      # §196: slow share, AdamW update norm, answer max logit, total weight norm
                 rec.update({"gf_slow_share": (gf_s / gf_g) if gf_g else None, "gf_update_norm": gf_upd, "gf_ans_max_logit": gf_rec["maxlogit"],
                             "gf_weight_norm": float(torch.stack([p_.detach().float().pow(2).sum() for _, p_ in gf_named]).sum().sqrt())})

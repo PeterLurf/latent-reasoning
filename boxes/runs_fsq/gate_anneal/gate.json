@@ -1,0 +1,117 @@
+{
+ "a": {
+  "log_equal": true,
+  "model_equal": true,
+  "opt_equal": true,
+  "no_anneal_keys": true
+ },
+ "a_pass": true,
+ "b": {
+  "per_step_(nmax_arg, max_n_drawn, writes)": [
+   [
+    2,
+    2,
+    1
+   ],
+   [
+    2,
+    2,
+    1
+   ],
+   [
+    3,
+    3,
+    2
+   ],
+   [
+    3,
+    3,
+    2
+   ]
+  ],
+  "stage_records": [
+   [
+    1,
+    0
+   ],
+   [
+    3,
+    1
+   ]
+  ],
+  "logged_think_k": [
+   [
+    1,
+    1
+   ],
+   [
+    2,
+    1
+   ],
+   [
+    3,
+    2
+   ],
+   [
+    4,
+    2
+   ]
+  ]
+ },
+ "b_pass": true,
+ "c": {
+  "half_step": 2,
+  "resumed_step": 4,
+  "model_equal": true,
+  "opt_equal": true,
+  "resumed_stage_records": [
+   [
+    3,
+    1
+   ]
+  ]
+ },
+ "c_pass": true,
+ "d": {
+  "4": {
+   "answer": {
+    "mem": 2600.3408203125,
+    "trunk": 51031.23046875
+   },
+   "aux": {
+    "mem": 2443.369384765625,
+    "trunk": 58004.40234375
+   }
+  },
+  "6": {
+   "answer": {
+    "mem": 2114.76513671875,
+    "trunk": 41740.609375
+   },
+   "aux": {
+    "mem": 2145.733642578125,
+    "trunk": 47037.40625
+   }
+  },
+  "8": {
+   "answer": {
+    "mem": 3447.994384765625,
+    "trunk": 64411.7890625
+   },
+   "aux": {
+    "mem": 1919.7119140625,
+    "trunk": 42316.15625
+   }
+  }
+ },
+ "d_pass": true,
+ "e": {
+  "s185_rms_s3_cloud": {
+   "micro": 1,
+   "peak_gib": 18.106811672449112
+  },
+  "note": "the last stage is asserted == the base args, so the cell's --auto_micro check and eval run the base shape; earlier stages are smaller (n_max, K <=)"
+ },
+ "e_pass": true,
+ "all_pass": true
+}
