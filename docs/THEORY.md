@@ -14137,6 +14137,21 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - It replaces the previous note's "s3 most expanding".
   - It can be checked on any training checkpoint with no new code (the clean ‖S_t‖ slope).
 
+**196-1 pilot result at 12k (2026-10-13 17:08 EDT; pilot196_s3_small_4060, RTX 4060 bf16, the 48k schedule's first 12k at n ≤ 4, K 4; resumed at 6k). Unclear by the letter, because the handle criterion can't be read. In substance seed 3 composes at small n once given the budget.**
+* **Loss (pinned bin means):** 1.475 / 1.217 / 0.944 / 0.713 / **0.405 / 0.239 / 0.162** at 6–12k.
+  - entry(0.5) = **10,000**, and every later bin is < 0.5. **COMPOSES-SMALL-12k's loss clause is met.**
+  - STUCK-SMALL-12k (last bin ≥ 1.0) is not met.
+  - The clip fraction eases from 1.0 to 0.92 at 11–12k, after the loss breaks through.
+* **The handle clause (≥ 0.95 at t 1–4 on n ≤ 4) cannot be evaluated.** That is Theory's error.
+  - eval_12k's `s175.aux_acc_by_role` pools test items with n 1–8 (n_by_pass 1000 / 873 / 752 / 628, i.e. n ≥ t from a uniform n ≤ 8 set). So it includes n 5–8, outside the pilot's training range: 0.933 / 0.772 / 0.586 / 0.435.
+  - The file has no per-item handle records. The pilot saved no model.pt (a --time_steps run), and its checkpoints were deleted on Theory's instruction before the field was checked.
+  - **Answer accuracy at n ≤ 4 (K 4)** reads 0.985 / 1.000 / 0.987 / 0.938, against 0.858 / 0.927 / 0.502 / 0.288 at 6k. n 5 reads 0.628.
+* **Reading:**
+  - By the letter, **unclear** (one clause unreadable).
+  - In substance BUDGET-ANNEAL's stage-1 precondition holds: at n ≤ 4, seed 3 enters the basin by 10k, inside the planned 12k stage, and solves n ≤ 4.
+  - Caveat: this was a 4060 run, and GPU class can change the basin.
+* **Process lesson:** a pre-stated criterion must be checked against the actual eval output fields before data, and artefacts are not deleted until the criterion has been read.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
