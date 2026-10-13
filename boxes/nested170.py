@@ -425,9 +425,10 @@ def make_trunk(a, dev):
 
 
 def mem_geometry(a):
-    """(memory layer, additive heads, delta heads): §170 = (6, 6, 6); §178 scratch 'L,D,H' = (L // 2, D / 128, D / 128) (DH 64)."""
+    """(memory layer, additive heads, delta heads): §170 = (6, 6, 6); §198 --mem_layer l -> (l, 6, 6) on the pretrained trunk; §178 scratch 'L,D,H'
+    = (L // 2, D / 128, D / 128) (DH 64)."""
     if not a.get("scratch"):
-        return 6, 6, 6
+        return int(a.get("mem_layer") or 6), 6, 6
     L, D, _ = (int(x) for x in a["scratch"].split(",")); assert D % 128 == 0
     return L // 2, D // 128, D // 128
 
@@ -518,6 +519,7 @@ def main():
                     "stage's weights / optimiser; the last stage must equal --n_max_train / --think_k / --steps ('' = off)")
     ap.add_argument("--probe_loss_every", type=int, default=0, help="note 196-1: every N steps, the mean answer / aux CE on 256 FIXED full-task items (n <= --n_max_train, "
                     "K = --think_k; own rng seed + 19700; no_grad, eval mode; logged as probe_loss / probe_aux; 0 = off)")
+    ap.add_argument("--mem_layer", type=int, default=6, help="§198 MEM-HIGH: the block the memory branch enters (pretrained trunk; default 6 = §170); --cache_lower caches 0..mem_layer-1")
     ap.add_argument("--cache_lower", action="store_true", help="training only: blocks 0..mem.layer-1 on the (identical) think input once per batch, shared by the K "
                     "passes (exact in exact arithmetic; gate_cache_lower_n170). Held: never compare a cached cell with an uncached comparator (Theory)")
     ap.add_argument("--anneal_gate", default="", help="note 196-1 entry-gated --anneal: 'thr:need:max_steps[:bin]'; --anneal stages 'nmax:K:G' (gated) and a final "

@@ -1,0 +1,91 @@
+{
+ "a": {
+  "log_equal": true,
+  "model_equal": true,
+  "opt_equal": true
+ },
+ "a_pass": true,
+ "b": {
+  "args_mem_layer": 9,
+  "args_cache_lower": true,
+  "loaded_mem_layer": 9,
+  "read_input_eq_lower9": true
+ },
+ "b_pass": true,
+ "c": {
+  "kmatch_loss_masked": {
+   "loss_rel_diff": 0.0,
+   "grad_rel": 5.703217773375983e-17,
+   "same_keys": true
+  },
+  "kmatch_aux_answer": {
+   "loss_rel_diff": 0.0,
+   "grad_rel": 5.703217773375983e-17,
+   "same_keys": true
+  },
+  "kmatch_aux_aux": {
+   "loss_rel_diff": 0.0,
+   "grad_rel": 8.968059137747503e-17,
+   "same_keys": true
+  },
+  "think_answer": {
+   "loss_rel_diff": 0.0,
+   "grad_rel": 5.70428798655714e-17,
+   "same_keys": true
+  }
+ },
+ "c_pass": true,
+ "d": {
+  "kmatch_aux_answer": {
+   "mem": 1208.337110145251,
+   "trunk_below_9": 33181.08296369922,
+   "trunk_9_up": 5983.210966039682,
+   "trunk_any": 40280.23535331339
+  },
+  "kmatch_aux_aux": {
+   "mem": 1484.349735492401,
+   "trunk_below_9": 44436.914569809254,
+   "trunk_9_up": 8245.549917508706,
+   "trunk_any": 53639.58147656128
+  }
+ },
+ "d_pass": true,
+ "e": {
+  "chunk4": {
+   "6": {
+    "checks": [
+     {
+      "micro": 16,
+      "peak_gib": 3.5571424067020416
+     }
+    ],
+    "micro": 16,
+    "peak_gib": 3.5571424067020416,
+    "train": "the longest of 4 bs draws at n <= 8",
+    "eval": "n = 16 at K' = 2K"
+   },
+   "9": {
+    "checks": [
+     {
+      "micro": 16,
+      "peak_gib": 3.4749576151371
+     }
+    ],
+    "micro": 16,
+    "peak_gib": 3.4749576151371,
+    "train": "the longest of 4 bs draws at n <= 8",
+    "eval": "n = 16 at K' = 2K"
+   }
+  },
+  "ratio_l9_over_l6": 0.9768958388030526,
+  "cloud_l6_cached": {
+   "micro": 1,
+   "peak_gib": 15.372199207544327,
+   "src": "b280 host log 17:39"
+  },
+  "proj_l9_gib": 15.017037439101637,
+  "gpu": "NVIDIA GeForce RTX 3070"
+ },
+ "e_pass": true,
+ "all_pass": true
+}
