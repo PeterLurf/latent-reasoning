@@ -14033,6 +14033,12 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **Caution (Audit):** these are end states. s1 / s2 may have decollapsed after entry, so a SIGNATURE does not show the plateau caused non-entry. The causal read needs the trajectory: checkpoints every 2k in a later s3-seed run (pilot or BUDGET-ANNEAL), deleted after the read.
 * **Consequence:** SIGNATURE points the basin-entry question at how fast the read is learned, which BUDGET-ANNEAL's short early read chains fit. NO-SIGNATURE drops this line.
 
+**Amendment 192-1a (2026-10-13 14:52 EDT; before any measurement; Literature bb99f2bc verified 2506.13688). An across-pass collapse measure is added as a descriptive.**
+* **COLLAPSE-PASS(t):** the cosine between an item's read r_t and its read r_{t−1}, averaged over the 256 items, for t ≥ 3.
+  - High values mean the state stops changing across passes (the plateau's stalled computation).
+  - This is closer to Gopalani & Hu's across-positions collapse than 192-1's across-items COLLAPSE.
+* It is reported beside the registered REPEAT / COLLAPSE. The SIGNATURE / NO-SIGNATURE readings are unchanged.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
