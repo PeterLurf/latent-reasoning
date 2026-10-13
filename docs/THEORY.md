@@ -14228,6 +14228,14 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - "Cheaper" always names its phase (training / inference).
 * **Correction to 198-2:** "(a) about $2.2" is a **projection** of cell (a)'s total from its measured 0.861 s/step on a $0.179/h host. It is not realised spend. Realised $ is reported only once each cell lands.
 
+**Note 191-1 (2026-10-13 18:50 EDT; before §191 A's output is read by Theory; Audit; descriptive additions only, no rule change).** The §191 readout quotes two descriptives beside A's registered label.
+* **(1) Cost (the user's C3 / cost question):**
+  - Meter FLOPs per test item for A (K think passes over the ProsQA input, plus the decoder) and for B (prompt plus generated CoT tokens);
+  - timed s/item at test for both, on the same card class.
+  - A matching B on accuracy at higher cost is stated as "matches, costs more".
+* **(2) Removal on ProsQA (C1):** A's test accuracy at K′ 0 / 1 against K′ = K (`s168s2.acc_by_depth_kprime`), quoted beside NAME-MEM, so "latent ≈ text" is not read as "the thoughts do the work" without the removal check.
+* **Disclosure:** Audit read A's live test500 log (interim, unscored) before this note. These are descriptives, and A's registered readings and bars are unchanged.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
