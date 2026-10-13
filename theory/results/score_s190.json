@@ -1,7 +1,27 @@
 {
  "s1": {
   "cell": {
-   "status": "open"
+   "status": "done",
+   "pooled_k8": 0.9998333333333332,
+   "depth_9_12_n2": 0.65925,
+   "by_n_n2": {
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 0.999,
+    "8": 1.0,
+    "9": 0.994,
+    "10": 0.897,
+    "11": 0.522,
+    "12": 0.224
+   },
+   "deep": true,
+   "think_necessary": true,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "indist_t7_8": 1.0,
+   "late": 0.8780353298795922,
+   "edge": 0.6810639741217511
   },
   "comp": {
    "status": "done",
@@ -25,7 +45,8 @@
    "indist_t7_8": 0.990404025628273,
    "late": 0.6481861440128133,
    "edge": 0.10504521135268836
-  }
+  },
+  "label": "mixed"
  },
  "s2": {
   "cell": {
@@ -51,10 +72,27 @@
    "think_necessary": true,
    "gpu": "NVIDIA GeForce RTX 3090",
    "indist_t7_8": 1.0,
-   "late": null,
-   "edge": null
+   "late": 0.7377666718305463,
+   "edge": 0.1713543298409352
   }
  },
- "reading": "pending (s1 cell open; comp done)",
+ "entry": {
+  "s185_rms_s1": {
+   "cell": {
+    "entry_0.5": 22000,
+    "entry_0.1": 25000,
+    "min_bin": 0.0007036217885415681,
+    "last_bin": 0.0018364164476170116
+   },
+   "comp": {
+    "entry_0.5": 19000,
+    "entry_0.1": 29000,
+    "min_bin": 0.004362799933722272,
+    "last_bin": 0.00567593143902559
+   },
+   "confounded_by_entry": false
+  }
+ },
+ "reading": "mixed (s1): LATE 0.878 vs 0.648, DEPTH 0.659 vs 0.587, in-dist t7-8 1.0 vs 0.99, DEEP True; EDGE 0.681 vs 0.105; entry(0.5/0.1) cell (22000, 25000) vs s185_rms_s1 19000/29000",
  "errors": []
 }
