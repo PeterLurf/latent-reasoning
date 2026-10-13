@@ -281,7 +281,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 191 | PROSQA-RELABEL: §168 s2 STEP-AUX and TEXT-COT with per-step name relabelling + premise shuffle + option swap (user-approved 2026-10-12); NAME-MEM (test ≥ 0.65) / UNDERFIT / CHANCE (STILL-RISING or FLAT) / mixed; TEXT-COT control ≥ 0.70 | registered | **open** |
 | 192 | RMS-SEED3: §185 RMS at seed 3 (SEED-1's rule before C2 wording); CONSISTENT (DEEP, depth ≥ 0.537) / LOW-SEED / NOT-DEEP; entry reported | registered | **closed: NOT-DEEP (s3 never entered the basin; clip rate 1.0). RMS seed-robustness refuted at 3 seeds** |
 | 193 | RMS × WINDOW: §182 WINDOW + --add_norm rms; §188's rules (JOINT / DEEP-ONLY / STABLE-ONLY / NEITHER; C6 claim = JOINT + LONG-STABLE at 2 / 2) | registered | **open** |
-| 194 | §190-S2: descriptive replication of §190's one-seed findings (size-free per-pass curve, AUX-DONE tracking n); REPLICATES = (i) + (ii) + (iii); never a claim | registered | **open** |
+| 194 | §190-S2: descriptive replication of §190's one-seed findings (size-free per-pass curve, AUX-DONE tracking n); REPLICATES = (i) + (ii) + (iii); never a claim | registered | **REPLICATES (2 seeds, descriptive): size-free early steps, AUX-DONE tracks n; s2 under-converged (entry-confounded)** |
 | 195 | (reserved: SELF-DEPTH-ANS, drafted; registers after §194) | — | — |
 | 196 | GROKFAST-S3: RMS s3 (never entered) + Grokfast-EMA (α 0.98, λ 2); exact same-seed control; ACCELERATES (entry ≤ 25k, final < 0.1) / NO-EFFECT / partial | registered | **open** |
 | 197 | (reserved: BUDGET-ANNEAL-S3, drafted; registers only if §196 reads NO-EFFECT) | — | — |
@@ -14249,6 +14249,18 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **Reading:** no positive gn ↔ answer-error link (high-gradient steps had, if anything, lower answer loss). The aux link is mixed. So this run does not support "clipping down-weights the failing batches".
   - **Limits:** one run, single-step snapshots, and loss as a proxy for the batch's deep-item share (batch mean n is not logged).
   - CLIP-LIFT is not added to the lever list on this evidence. §196's gn-logged log is checked when it lands.
+
+**§194 result (2026-10-13 19:57 EDT; s190_rmsnopass_s2, b278, RTX 3090, 48k, 0 non-finite, the gn-logging code per 194-1; 884bc3c5 / bfe71ccf; score_s194). REPLICATES (descriptive, 2 seeds; never a claim). §190's mechanism findings hold on a seed that under-converged and is not DEEP.**
+* **(i)** Mean handle at t 3–6, nesting ≤ 2: n 9 / 10 / 11 / 12 = 0.978 / 0.974 / 0.970 / **0.960**. n 12 ≥ n 9 − 0.05. ✓
+* **(ii)** Onsets 9 / **10** / 8 / 8: no onset at n 10 before t 9. ✓
+* **(iii)** AUX-DONE at n 10: mean 9.63, median **10**, capped 0. ✓ (s1: 9.66 / 10.) n 12: median 10, as on s1.
+* **Upgraded to "2 seeds, descriptive":**
+  - 190-2 / 190-4's done signal tracking n past the edge;
+  - §190's size-free early steps, with a late decline only at n 11–12 from t 8.
+* **Context (the pinned entry flag):** entry(0.5) 26k vs s1's 22k, but entry(0.1) never (final bin 0.228), so CONFOUNDED-BY-ENTRY against s1.
+  - s2 is not DEEP: K′8 n 3–8 reads 1.0 / 0.977 / 0.955 / 0.882 / 0.848 / 0.773. DEPTH 0.501 vs s1's 0.659. Accuracy at the AUX-DONE halt at n 10 is 0.569 vs 0.889.
+  - So the qualitative per-pass behaviour replicates while overall quality tracks convergence.
+  - clip_frac_100 was 1.0 to 24k and 0.85 at the end: the first full-run clip curve (note CLIP-1).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

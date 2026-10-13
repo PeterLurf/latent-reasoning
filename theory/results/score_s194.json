@@ -1,3 +1,75 @@
 {
- "reading": "pending (rows missing, auxdone missing)"
+ "rows": {
+  "9": {
+   "mean_t3_6": 0.9781879194630873,
+   "onset": 9
+  },
+  "10": {
+   "mean_t3_6": 0.9744318181818182,
+   "onset": 10
+  },
+  "11": {
+   "mean_t3_6": 0.9695550351288056,
+   "onset": 8
+  },
+  "12": {
+   "mean_t3_6": 0.9596036585365854,
+   "onset": 8
+  }
+ },
+ "auxdone_n10": {
+  "n_items": 1000,
+  "acc_at_halt": 0.569,
+  "mean_halt": 9.635,
+  "median_halt": 10.0,
+  "mean_halt_minus_n": -0.365,
+  "frac_capped": 0.0,
+  "aux_num_acc": 0.521,
+  "agree": 0.679,
+  "aux_done_by_t": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.365,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "halt_minus_n": {
+   "share": {
+    "early": 0.365,
+    "at_n": 0.635,
+    "n+1": 0.0,
+    "n+2": 0.0,
+    "later": 0.0
+   },
+   "counts": {
+    "-1": 365,
+    "0": 635
+   }
+  },
+  "acc_at_halt_by_bucket": {
+   "early": 0.35342465753424657,
+   "at_n": 0.6929133858267716,
+   "n+1": null,
+   "later": null
+  }
+ },
+ "replicates": true,
+ "entry": {
+  "entry_0.5": 26000,
+  "entry_0.1": null,
+  "min_bin": 0.2256708191423677,
+  "last_bin": 0.22811689725704493
+ },
+ "reading": "REPLICATES (descriptive, 2 seeds; not a claim): (i) n12 t3-6 0.960 vs n9 0.978 True; (ii) n10 onset 10 True; (iii) AUX-DONE n10 median 10.0, capped 0.00 True; entry(0.5/0.1) 26000/None, last bin 0.2281"
 }
