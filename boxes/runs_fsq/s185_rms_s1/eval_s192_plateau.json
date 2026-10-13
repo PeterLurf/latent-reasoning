@@ -1,0 +1,94 @@
+{
+ "collapse_t": 0.9149271356873214,
+ "collapse_t_by_n": {
+  "6": 0.9181775148600748,
+  "7": 0.9131870819972112,
+  "8": 0.9140691705372023
+ },
+ "by_t": {
+  "1": {
+   "repeat": null,
+   "repeat_truth": null,
+   "handle_acc": 1.0,
+   "collapse_items": 0.7315255403518677,
+   "collapse_pass": null,
+   "n_repeat_items": 0,
+   "n_read_items": 256
+  },
+  "2": {
+   "repeat": 0.09375,
+   "repeat_truth": 0.09375,
+   "handle_acc": 0.99609375,
+   "collapse_items": 0.6950013637542725,
+   "collapse_pass": 0.919884204864502,
+   "n_repeat_items": 256,
+   "n_read_items": 256
+  },
+  "3": {
+   "repeat": 0.08203125,
+   "repeat_truth": 0.08203125,
+   "handle_acc": 1.0,
+   "collapse_items": 0.6565831899642944,
+   "collapse_pass": 0.9557348489761353,
+   "n_repeat_items": 256,
+   "n_read_items": 256
+  },
+  "4": {
+   "repeat": 0.078125,
+   "repeat_truth": 0.07421875,
+   "handle_acc": 0.99609375,
+   "collapse_items": 0.6210955381393433,
+   "collapse_pass": 0.9679804444313049,
+   "n_repeat_items": 256,
+   "n_read_items": 256
+  },
+  "5": {
+   "repeat": 0.10546875,
+   "repeat_truth": 0.10546875,
+   "handle_acc": 1.0,
+   "collapse_items": 0.5942709445953369,
+   "collapse_pass": 0.9747458100318909,
+   "n_repeat_items": 256,
+   "n_read_items": 256
+  },
+  "6": {
+   "repeat": 0.0859375,
+   "repeat_truth": 0.0859375,
+   "handle_acc": 0.99609375,
+   "collapse_items": 0.5776541829109192,
+   "collapse_pass": 0.9809011220932007,
+   "n_repeat_items": 256,
+   "n_read_items": 256
+  },
+  "7": {
+   "repeat": 0.10382513661202186,
+   "repeat_truth": 0.10382513661202186,
+   "handle_acc": 0.994535519125683,
+   "collapse_items": 0.5720836520195007,
+   "collapse_pass": 0.9867532253265381,
+   "n_repeat_items": 183,
+   "n_read_items": 256
+  },
+  "8": {
+   "repeat": 0.11956521739130435,
+   "repeat_truth": 0.13043478260869565,
+   "handle_acc": 1.0,
+   "collapse_items": 0.5718408823013306,
+   "collapse_pass": 0.992104172706604,
+   "n_repeat_items": 92,
+   "n_read_items": 256
+  }
+ },
+ "n_items": 256,
+ "n_by_n": {
+  "6": 73,
+  "7": 91,
+  "8": 92
+ },
+ "run": "boxes/runs_fsq/s185_rms_s1",
+ "kind": "nested",
+ "gpu": "NVIDIA GeForce RTX 3070",
+ "eval_dtype": "torch.bfloat16",
+ "nopass": false,
+ "def": "items: test n in {6,7,8}, rng 19201 permutation[:256]; passes from M_0 = 0. repeat(t): handle-token argmax (teacher-forced aux_logits at pass t, the step-t handle index) == the pass t-1 prediction, over items with t <= n; collapse_t: per item mean pairwise cos of r_3..r_n, averaged; collapse_pass(t): mean cos(r_t, r_t-1) per item; collapse_items(t): mean off-diagonal cosine of the additive read (read_vec[:, :h_add*DH], post-normalisation) at the main decoder's ' =' position"
+}
