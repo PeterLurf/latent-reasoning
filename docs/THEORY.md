@@ -14163,6 +14163,13 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **Reproduction check (descriptive):** the first 12k should reproduce 196-1's 4060 trajectory exactly (same seed, card and args), compared bin by bin.
 * **What it informs:** whether a BUDGET-ANNEAL 3090 run risks a fallback-advanced, un-entered stage 2. A 4060 result does not transfer exactly (GPU class changes the basin).
 
+**Amendment 196-2a (2026-10-13 17:16 EDT; before launch; Audit).** The stage-2 pilot's arguments are corrected, and its reproduction claim is dropped.
+* **(a) LR:** the fixed-step --anneal requires the last stage to end at --steps.
+  - The pilot runs `--anneal "4:4:12000,6:6:48000" --steps 48000 --time_steps 24000 --n_max_train 6 --think_k 6`: the first 24k of a 48k schedule. That matches 196-1's LR and is closer to BUDGET-ANNEAL's real run.
+* **(b) Calibration:** the g_add calibration draws items at the final --n_max_train (6, not 196-1's 4), so s_add starts differently.
+  - The first 12k is therefore **a same-card stage-1 replication under the anneal path, not a bitwise reproduction** of 196-1. Its bins are compared descriptively only.
+* The criteria (STAGE2-ENTERS / STAGE2-STALLS) are unchanged.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
