@@ -1,0 +1,15 @@
+{
+ "cells": {
+  "a": {
+   "status": "open"
+  },
+  "b": {
+   "status": "open"
+  },
+  "c": {
+   "status": "open"
+  }
+ },
+ "reading": "(b) pending (cell open; comparator (a) open) | (c) pending (cell open; comparator (a) open)",
+ "errors": []
+}

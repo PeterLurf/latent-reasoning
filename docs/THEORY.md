@@ -284,6 +284,8 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 194 | §190-S2: descriptive replication of §190's one-seed findings (size-free per-pass curve, AUX-DONE tracking n); REPLICATES = (i) + (ii) + (iii); never a claim | registered | **open** |
 | 195 | (reserved: SELF-DEPTH-ANS, drafted; registers after §194) | — | — |
 | 196 | GROKFAST-S3: RMS s3 (never entered) + Grokfast-EMA (α 0.98, λ 2); exact same-seed control; ACCELERATES (entry ≤ 25k, final < 0.1) / NO-EFFECT / partial | registered | **open** |
+| 197 | (reserved: BUDGET-ANNEAL-S3, drafted; registers only if §196 reads NO-EFFECT) | — | — |
+| 198 | CHEAP-THINK (the user's request): an all-cached family; (a) cached INJECT, (b) MEM-HIGH l_m 9, (c) READ-SLOTS + RMS + step aux; CHEAPER-EQUAL / CHEAPER-WORSE / UNCLEAR-ENTRY / FAILS vs (a); $10 cap | registered | **open** |
 
 ## Live sections
 
@@ -14169,6 +14171,41 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **(b) Calibration:** the g_add calibration draws items at the final --n_max_train (6, not 196-1's 4), so s_add starts differently.
   - The first 12k is therefore **a same-card stage-1 replication under the anneal path, not a bitwise reproduction** of 196-1. Its bins are compared descriptively only.
 * The criteria (STAGE2-ENTERS / STAGE2-STALLS) are unchanged.
+
+## 198. CHEAP-THINK: a cheaper think pass (the user's request, 2026-10-13, "research an architecture change that is cheaper"; Literature 71523bbf / 0958d04c; Audit-approved as ONE item, a $10 hard cap; pre-registered 2026-10-13 17:31 EDT, before any §198 implementation or run)
+
+**Why.** INJECT re-reads the whole input through all 12 blocks on every think pass: (K + 1) · L · 12 block-token forwards per item. At K = 8 that is 3,240 at nested lengths (L ≈ 30) and 32,400 at natural-task lengths (L ≈ 300). Three constraint-safe options keep the memory as the only cross-pass channel, so the removal and serial tests stay clean:
+* **(a) Lower-half cache** (built and fp64-exact, `--cache_lower`). Blocks below the memory run once per item: L · 12 + K · L · 6, **−44%**. Published prior: Penelope 2607.25915.
+* **(b) MEM-HIGH:** the memory at block 9 plus the cache, so each pass recomputes 3 blocks: L · 12 + K · L · 3, **−67%** at any L. Penelope loops only its top 5 of 16 blocks.
+* **(c) READ-SLOTS:** encode once, then each pass runs M = 8 learned slots cross-attending to the frozen input KV and reading / writing the memory: L · 12 + K · M · 12, **−65% at L 30, −87% at L 300.** Penelope's second cut is the same idea.
+  - §171 failed only under the pre-aux recipe, when INJECT also read about 0, so it does not count against slots.
+* **Ruled out (they carry KV or token state across loops, a second cross-pass channel):** MELT 2605.07721, LLA 2607.15456, RLT 2610.07591, T²MLR 2607.15178.
+
+**Design: one all-cached family on nested,** seed 1, RTX 3090, cached from step 0, the RMS + per-pass step-aux recipe (s185_rms_s1's args; NOPASS not included):
+* **(a)** `s198_injc_s1`: + `--cache_lower` (the family comparator);
+* **(b)** `s198_memhi_s1`: + `--cache_lower --mem_layer 9` (a new flag; the cache covers the blocks below the memory layer);
+* **(c)** `s198_rsaux_s1`: `--arm readslots` (M 8, the input KV computed once per item, no memory read while encoding) + RMS + step aux. A port of §171's ReadSlots into nested170.
+* Any pass signal must enter at or above the memory layer (Literature).
+
+**Readings (`theory/score_s198.py`; the pinned basin-entry flag on every cell).** Cost is relative to the current uncached INJECT. The cost clause is evaluated at the natural-task target L = 300, with the nested-L ratio reported beside it. For (b) and (c), compared with (a):
+* **CHEAPER-EQUAL:** DEEP, THINK-NECESSARY, DEPTH (n 9–12 at K′ = n + 2) ≥ (a)'s − 0.05, and cost ratio ≤ 0.5. Opens s2 (a new decision).
+* **CHEAPER-WORSE:** DEEP, DEPTH below that.
+* **UNCLEAR-ENTRY:** not DEEP and entry(0.5) never. Seed 2 is a new decision (the §192 seed lottery).
+* **FAILS:** entered the basin but not DEEP.
+* **(a) vs s185_rms_s1** (uncached, same recipe) is descriptive: the cached-family check.
+* Block-token and Meter FLOPs are reported per cell. Slots' cross-attention to L narrows (c)'s real saving somewhat.
+
+**Gates (Experiments):**
+* flags-off bitwise;
+* (b): the memory-layer flag, the cache at the new layer, and an fp64 identity of the cached vs uncached paths at l_m 9;
+* (c): the arm constructs and steps with RMS + aux, and the input KV object is reused across passes (assert);
+* gradflow per cell;
+* memory checks.
+
+**Cost and placement (Audit):** about $2–3 per cell, $7–9 for the family, with a hard cap of $10.
+* It is one design and is never split.
+* (a) + (b) launch once gated; (c) after its port. All on 3090s, with gpu recorded per cell.
+* If realised spend on (a) + (b) projects the family over $10, (c) stops and goes to the user.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
