@@ -1,7 +1,35 @@
 {
  "s3": {
-  "status": "open"
+  "status": "done",
+  "pooled_k8": 0.5885,
+  "pooled_k16": 0.564,
+  "pooled_k32": 0.5358333333333333,
+  "stable": false,
+  "depth_9_12_n2": 0.1375,
+  "deep": false,
+  "think_necessary": true,
+  "gpu": "NVIDIA GeForce RTX 3090"
  },
- "reading": "pending (s3 open)",
+ "entry": {
+  "1": {
+   "entry_0.5": 19000,
+   "entry_0.1": 29000,
+   "min_bin": 0.004362799933722272,
+   "last_bin": 0.00567593143902559
+  },
+  "2": {
+   "entry_0.5": 19000,
+   "entry_0.1": 28000,
+   "min_bin": 0.0025455203205001454,
+   "last_bin": 0.0027247395945905737
+  },
+  "3": {
+   "entry_0.5": null,
+   "entry_0.1": null,
+   "min_bin": 1.0255438113808633,
+   "last_bin": 1.0311523047685625
+  }
+ },
+ "reading": "NOT-DEEP: s3 K'8 0.589, DEEP False, THINK-NECESSARY True, DEPTH 0.138 (bar 0.537; s1 0.587, s2 0.662); K'16 0.564 (STABLE False); entry(0.5/0.1) s1 19000/29000, s2 19000/28000, s3 None/None",
  "errors": []
 }
