@@ -279,6 +279,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 189 | RMS-REP: §185 RMS at seed 2 (descriptive replication); SUBSTITUTE = DEEP + THINK-NECESSARY + depth n 9–12 ≥ §184 s2 − 0.05 / DEEP-ONLY / NOT REPLICATED | registered | **closed: SUBSTITUTE (s2 DEEP, depth 0.662 vs §184 s2 0.665; two-seed 0.625 vs 0.576)** |
 | 190 | RMS × NOPASS: §185 RMS + §187's --aux_nopass; LATE (t 7–8, n 10–12) vs RMS s1 0.648; COSTLY-AUX / COSTLY / TOKEN-FIX (opens s2; claim 2 / 2) / TOKEN-NOT-THE-LIMIT; FLAT and AUX-DONE descriptives | registered | **open** |
 | 191 | PROSQA-RELABEL: §168 s2 STEP-AUX and TEXT-COT with per-step name relabelling + premise shuffle + option swap (user-approved 2026-10-12); NAME-MEM (test ≥ 0.65) / UNDERFIT / CHANCE (STILL-RISING or FLAT) / mixed; TEXT-COT control ≥ 0.70 | registered | **open** |
+| 192 | RMS-SEED3: §185 RMS at seed 3 (SEED-1's rule before C2 wording); CONSISTENT (DEEP, depth ≥ 0.537) / LOW-SEED / NOT-DEEP; entry reported | registered | **open** |
 
 ## Live sections
 
@@ -13784,6 +13785,28 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - The early steps are size-keyed, more steeply than s1.
   - A partial late recovery: n 10 reaches 0.74 at t 9, and n 11 / 12 reach 0.48 / 0.46 at t 10. It is weaker than s1's.
 * So "removing the token removes the fixed-t edge but not size-keying" is a 2 / 2 mechanism description. Whether it buys depth depends on more than the token: on these two seeds it tracked basin entry.
+
+## 192. RMS-SEED3: a third seed for the carried base recipe (note SEED-1's rule, Audit; pre-registered 2026-10-13 01:20 EDT, before any seed-3 run)
+
+**Why.**
+* RMS (§185 RMS, §189 SUBSTITUTE) is the carried base. §187 failed at 2 / 2, and §190 builds on RMS.
+* RMS is DEEP at 2 / 2 with depth 0.587 / 0.662, and its two seeds entered the basin together (19k / 19k).
+* SEED-1 found seed 2 the stronger seed in every two-seed recipe, so two seeds cannot separate a recipe's typical behaviour from a seed artefact.
+* Note SEED-1 requires a seed-3 replication before any C2 wording on the carried recipe.
+
+**Design.** s185_rms_s1's args exactly with **seed 3** (RTX 3090, uncached). Dir `s185_rms_s3`. No code change.
+
+**Readouts (fixed now; `theory/score_s192.py`):**
+* **DEEP** (≥ 0.90 at n 3..8, K′8), **THINK-NECESSARY**, and **DEPTH** (n 9–12 at K′ = n + 2), as §189.
+* **Basin entry** (`theory/basin_entry.py`), reported beside.
+* **Readings:**
+  - **CONSISTENT:** DEEP, and DEPTH ≥ 0.587 − 0.05 = 0.537 (RMS s1's minus the band).
+  - **LOW-SEED:** DEEP, but DEPTH < 0.537. A seed exists on which the RMS depth falls below the two-seed range.
+  - **NOT-DEEP:** not DEEP. RMS's DEEP is not seed-robust.
+* **Note:** SEED-1's SEED-2-OUTLIER label needs s2 ≥ 0.10 above s1. RMS's gap is 0.075, so that label is not applicable here.
+* **Descriptive:** STABLE (§182's letter; RMS is STABLE at 1 / 2), the 187-3 rows (SIZE-FREE-EARLY early-step clause), and entry against s1 / s2.
+
+**Placement.** One cell at RMS's cost (about 11.8 h on a 3090, about $3), within Audit's line, in the free fleet slot now.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
