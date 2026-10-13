@@ -282,6 +282,8 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 192 | RMS-SEED3: §185 RMS at seed 3 (SEED-1's rule before C2 wording); CONSISTENT (DEEP, depth ≥ 0.537) / LOW-SEED / NOT-DEEP; entry reported | registered | **closed: NOT-DEEP (s3 never entered the basin; clip rate 1.0). RMS seed-robustness refuted at 3 seeds** |
 | 193 | RMS × WINDOW: §182 WINDOW + --add_norm rms; §188's rules (JOINT / DEEP-ONLY / STABLE-ONLY / NEITHER; C6 claim = JOINT + LONG-STABLE at 2 / 2) | registered | **open** |
 | 194 | §190-S2: descriptive replication of §190's one-seed findings (size-free per-pass curve, AUX-DONE tracking n); REPLICATES = (i) + (ii) + (iii); never a claim | registered | **open** |
+| 195 | (reserved: SELF-DEPTH-ANS, drafted; registers after §194) | — | — |
+| 196 | GROKFAST-S3: RMS s3 (never entered) + Grokfast-EMA (α 0.98, λ 2); exact same-seed control; ACCELERATES (entry ≤ 25k, final < 0.1) / NO-EFFECT / partial | registered | **open** |
 
 ## Live sections
 
@@ -13968,6 +13970,43 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - **The clip rate is a correlate of non-convergence, not an established cause:** §188 1.0 and RMS s3 1.0 never entered; §184 s1 0.98 entered late (42k); §184 s2 0.62 and RMS s1 0.67 entered early.
 * **Consequence:** reliable basin entry, not the read's form, is now the main obstacle to a dependable recipe (3 of 11 two-or-more-seed cells failed or lagged badly).
   - **The Grokfast lead's trigger has fired:** a carried-recipe seed never entered.
+
+## 196. GROKFAST-S3: does a slow-gradient amplifier make a non-entering seed enter the basin? (Audit's conditional lead, its trigger fired by §192; Audit-reviewed, about $3 approved; pre-registered 2026-10-13 11:51 EDT, before any §196 run)
+
+**Why.**
+* Basin entry decides depth across recipes (§187 s2 note), and it is seed-dependent even under RMS: s1 / s2 entered at 19k, s3 never (§192, loss 1.02 at 48k, still falling slowly).
+* Grokfast (Lee et al. 2405.20233) low-pass filters the gradient with an EMA and amplifies the slow component. It speeds delayed transitions up to about 50× in their tasks.
+* The question: is non-entry a slow-gradient problem?
+
+**Design.** s185_rms_s3's args exactly (RMS, seed 3, RTX 3090, uncached) **plus `--grokfast ema`** with α = 0.98 and λ = 2.0 (their EMA defaults).
+* **The update is exactly Grokfast-EMA, per parameter:** h ← α·h + (1 − α)·g, then g ← g + λ·h, after backward and **before** clip_grad_norm_(1.0) and AdamW.
+  - **h is initialised from the first gradient,** as in the reference implementation (ironjr/grokfast; Literature 1edc9d95). It is saved in the checkpoint for resume.
+  - The order is backward → filter → clip → AdamW. Clip-then-filter would let up to (1 + λ) = 3× the clipped norm through.
+* **Optimiser:** AdamW, lr 1e-4, weight decay 0.01 (nested170's make_opt). Weight decay is > 0 but small next to the grokking literature's (about 1.0; Power 2201.02177). That is a candidate follow-up lever if this reads NO-EFFECT.
+* **Clipping keeps only the amplified gradient's direction** (its norm is clipped back to 1). AdamW's per-coordinate scale then sees the slow component boosted relative to the fast one. That is still a valid test, so a NO-EFFECT reads as "not a slow-gradient problem under this stack", not as "Grokfast cannot work".
+* **Exact control (Audit):** the same seed on the same GPU class reproduces exactly. The cell is pinned to the RTX 3090, so plain s185_rms_s3 is an exact control, and any entry difference is caused by the filter. gpu and driver are recorded.
+* Dir `s196_rmsgf_s3`. Logged with gn_preclip / clip_frac_100 (the new code).
+
+**Readings (fixed at registration; `theory/score_s196.py`; comparator s185_rms_s3; pinned `basin_entry.py`):**
+* **ACCELERATES:** entry(0.5) ≤ 25k and final 1k-bin loss < 0.1. Non-entry was a slow-gradient problem.
+* **NO-EFFECT:** entry(0.5) never, or > 40k. Non-entry is not a slow-gradient problem (the transplant precondition fails).
+* Otherwise **partial**.
+* **Descriptive (pre-stated):** the control's loss slope over its last 6k (−0.0006 per 1k, nearly flat), so plain s3 might enter only well after 48k. ACCELERATES (≤ 25k) is unambiguous against it.
+  - **Logged (Literature):** the slow share ‖λ·h‖ / ‖g‖, the AdamW update norm, the answer head's max logit, and the total weight norm, to separate "slow" from "numerically stuck" (Softmax Collapse, 2501.04697).
+  - DEEP / DEPTH / STABLE against RMS s1 / s2 (does accelerated entry reach their quality?);
+  - the clip-fraction curve against non-entry;
+  - whether Grokfast changes in-distribution accuracy once entered.
+
+**Gates:**
+* flags-off bitwise;
+* λ = 0 is identical to the baseline;
+* an EMA unit test (per-parameter h, initialised from the first gradient, the update formula above);
+* h is saved in and restored from the checkpoint;
+* gradflow;
+* a memory check (one extra parameter-sized buffer).
+
+**Cost.** One cell at about 11.8 h on a 3090, about $3 (Audit's line), in one of the 2 free slots.
+**If ACCELERATES:** test whether Grokfast hurts a seed that already enters (s1), before adopting it.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
