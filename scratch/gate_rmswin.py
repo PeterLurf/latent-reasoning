@@ -46,7 +46,7 @@ def main():
     DM.FAST_ADD = True; g = s5.load_gpt2("cpu"); torch.manual_seed(1); m = N.InjectN(g, 6, "top", 6, 6, "rms")
     with torch.no_grad():
         m.mem.wo.weight.normal_(0, 0.02); m.mem.fade.fill_(1.0); m.mem.gamma.fill_(0.5); m.mem.add_gain.uniform_(0.5, 1.5)
-    TE = N.test_set(1000); its = [it for it in TE if it["n"] in (3, 5, 7)][:6]; ks = [it["n"] + 1 + (i % 4) for i, it in enumerate(its)]
+    TE = N.test_set(1000); its = [it for n_ in (3, 5, 7) for it in [x for x in TE if x["n"] == n_][:2]]; ks = [it["n"] + 1 + (i % 4) for i, it in enumerate(its)]
     rec = {"write": [], "aux": []}; cur = {"p": None}; orig_add, orig_write, orig_aux = DM.add_read, m.write, m.aux_logits
 
     def add_read_rec(mem, pq, Sa, z=None):
