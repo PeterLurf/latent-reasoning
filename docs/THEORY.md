@@ -269,7 +269,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 179 | READOUT (diagnostic): §177 (d)'s scaffold with a BLIND end decoder, p = 0 to 24k; SHORTCUT (the decoder's view of the problem starves the memory) vs CAPACITY (end readout cannot carry the product) | **CAPACITY** (blind 0.0 at 12k / 24k, column 3 0.351; columns 1–2 exact from memory alone); the seeing twin's 24k is descriptive | closed |
 | 180 | (unused: the DEC-DROP draft, conditional on a §179 SHORTCUT, was never registered) | — | — |
 | 181 | INTERLEAVE: k think passes before every answer token, the memory carried across tokens (MIX's timing without its schedule); arms k1 / k2 on §161's mix | **neither HIT** (both FAIL, 4×4 ≤ 0.001; the single-pass column profile; skip drops about 0; not under-trained) | closed |
-| 182 | STEP-AUX-HOLD: §175 with the aux to the end (NOFADE), + a sampled step-matched K (WINDOW), + hold targets on passes past n (HOLD); DEEP at K′ 8, STABLE (C6) K′ 16 vs 8 | registered | **open** |
+| 182 | STEP-AUX-HOLD: §175 with the aux to the end (NOFADE), + a sampled step-matched K (WINDOW), + hold targets on passes past n (HOLD); DEEP at K′ 8, STABLE (C6) K′ 16 vs 8 | registered | **WINDOW STABLE at 2 / 2 (s2 also DEEP); NOFADE / HOLD not STABLE (1 seed each)** |
 | 183 | INTERLEAVE-BLIND: §181 k1 with a blind per-token decoder ([EOT, ' =', ans_<j] + memory); tests 'per-pass signal through a view-free reader' (MIX / §175 vs every failure) | **FAIL; NOT SUPPORTED** (columns 3–7 0.182 vs 0.165). Descriptively the passes become causal (skip drops 0.88 / 0.31 / 0.36 / 0.75 at columns 1 / 2 / 7 / 8), but the inner columns stay at chance: per-pass compute binds | closed |
 | 184 | AUX-REWEIGHT: §182 NOFADE + per-pass aux weights w_t = Ē / E_t (pass 8 got 1/22 of pass 1's signal), equal signal per pass position; HELPS / HURTS / NO EFFECT vs NOFADE | **HELPS; DEEP + THINK-NECESSARY + SERIAL-NEST at 2 / 2 seeds = §170's C1 conjunction met on nested** (s1 0.974 / s2 0.9997 pooled; SERIAL-NEST 0.85 / 0.94); depth beyond n 8 count-limited | closed |
 | 185 | ADD-NORM: §182 NOFADE with the additive read normalised: DEN (φ(q)ᵀS / φ(q)ᵀz) or RMS (TransNormer's NormAttention); STABLE + NO-COST vs NOFADE (NORM-CLAMP: the unnormalised read's growth causes ~80% of overthinking) | registered | **closed: NO-FIX (both arms). Descriptive: RMS alone DEEP + depth n 9–12 0.587 (one seed; §189 replicates)** |
@@ -13699,6 +13699,15 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - log.jsonl holds steps 27,100 and 27,200 twice (pre-crash, then after the "resumed" record).
   - Any raw-value reader of this log must dedupe by step, keeping the last occurrence.
 * The resumed host's gpu and driver are recorded. The comparator RMS s1 was uninterrupted.
+
+**§182 WINDOW s2 result (2026-10-12 22:13 EDT; s182_window_s2, b268, RTX 3090, 48k, 0 non-finite, ff2a3aab; score_s182). WINDOW is STABLE at 2 / 2, so §182's window claim holds: the sampled step-matched pass count gives stability. s2 is also DEEP, which s1 was not.**
+* **Pooled n 3–8, K′ 4 / 8 / 12 / 16 / 24 / 32:** 0.503 / **0.9995** / 0.9995 / **0.9995** / 0.9985 / 0.996.
+  - STABLE (K′16 − K′8 = 0.000). At K′ 24 (2× its max K of 12) it reads 0.9985.
+  - s1 read 0.900 / 0.899 / 0.859 / 0.739.
+* **DEEP:** n 3–8 at K′ 8 reads 1.0 / 1.0 / 1.0 / 1.0 / 1.0 / 0.997 (s1: min 0.753). So DEEP is 1 / 2.
+* **DEPTH (n 9–12 at K′ = n + 2):** 0.995 / 0.913 / 0.536 / 0.191, mean **0.659** (s1 0.465).
+* **Seed spread:** as with §184 (s1 / s2 depth 0.486 / 0.665) and RMS (0.587 / 0.662), seed 2 is the stronger seed in every arm run on both. Single-seed comparisons are only meaningful same-seed.
+* **For §188** (REWEIGHT × WINDOW, s1, landing about 01:00): its registered comparator is WINDOW s1. WINDOW s2 is read beside it, per 188-3.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
