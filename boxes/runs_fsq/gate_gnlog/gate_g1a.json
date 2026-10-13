@@ -1,0 +1,29 @@
+{
+ "g1a": {
+  "inject_aux": {
+   "log_equal_minus_new": true,
+   "new_keys_on_every_train_record": true,
+   "pre_has_no_new_keys": true,
+   "model_equal": true,
+   "eval_equal": true,
+   "gn_sample": [
+    [
+     1,
+     117.9542236328125,
+     1.0
+    ],
+    [
+     2,
+     134.3952178955078,
+     1.0
+    ],
+    [
+     3,
+     119.56449127197266,
+     1.0
+    ]
+   ]
+  }
+ },
+ "g1a_pass": true
+}

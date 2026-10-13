@@ -1,0 +1,27 @@
+{
+ "g2": {
+  "log_equal_minus_new": true,
+  "new_keys_on_every_train_record": true,
+  "pre_has_no_new_keys": true,
+  "model_equal": true,
+  "eval_equal": true,
+  "gn_sample": [
+   [
+    1,
+    99.53873443603516,
+    1.0
+   ],
+   [
+    2,
+    45.19281768798828,
+    1.0
+   ],
+   [
+    3,
+    48.713348388671875,
+    1.0
+   ]
+  ]
+ },
+ "g2_pass": true
+}
