@@ -1,0 +1,18 @@
+A t0 2 lambda_gprime -0.0379 clean_log_norm_slope 0.1941
+A t0 3 lambda_gprime -0.0016 clean_log_norm_slope 0.1849
+A t0 4 lambda_gprime 0.0419 clean_log_norm_slope 0.1797
+B lambda_gprime 0.0958 clean_log_norm_slope 0.1026
+DONE norm addendum boxes/runs_fsq/s185_rms_s1 0.16790402917300953
+s1 rc 0
+A t0 2 lambda_gprime -0.0041 clean_log_norm_slope 0.1561
+A t0 3 lambda_gprime 0.031 clean_log_norm_slope 0.148
+A t0 4 lambda_gprime 0.0702 clean_log_norm_slope 0.1453
+B lambda_gprime 0.1093 clean_log_norm_slope 0.0958
+DONE norm addendum boxes/runs_fsq/s185_rms_s2 0.1454894640866448
+s2 rc 0
+A t0 2 lambda_gprime 0.0343 clean_log_norm_slope 0.107
+A t0 3 lambda_gprime 0.0772 clean_log_norm_slope 0.091
+A t0 4 lambda_gprime 0.1216 clean_log_norm_slope 0.0824
+B lambda_gprime 0.055 clean_log_norm_slope 0.0779
+DONE norm addendum boxes/runs_fsq/s185_rms_s3 0.11097845470204074
+s3 rc 0
