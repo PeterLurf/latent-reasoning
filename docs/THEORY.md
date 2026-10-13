@@ -14018,6 +14018,21 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - Otherwise unclear.
   - Descriptive only. The pilot's GPU class (4060) differs from the cloud cells', so it says nothing about the 3090 basin.
 
+**Note 192-1 (2026-10-13 14:51 EDT; before any measurement; Audit's research pass; descriptive, eval-only, local). PLATEAU-SIGNATURE: is RMS s3's non-entry a loss-plateau "partial solution" with repetition and representation collapse?**
+* **Source (pending Literature's ID check):** Gopalani & Hu 2506.13688, "What Happens During the Loss Plateau?".
+  - On algorithmic tasks, plateaus hold a partial solution plus a repetition bias and representation collapse (mean pairwise cosine > 0.9).
+  - The bottleneck is slow learning of the attention map.
+* **Fit:** s3 learns the operator (handle t 1–2 ≥ 0.998) and fails composition from t 3 (§192).
+* **The measurement:** final model.pt of s185_rms_s1 / s2 (entered) and s185_rms_s3 (never), on 256 fixed n 6–8 test items, passes t = 1..8 from M_0 = 0.
+  - **(a) REPEAT(t):** the share of items whose aux-decoder handle prediction at pass t equals its prediction at pass t − 1, for t ≥ 3.
+  - **(b) COLLAPSE(t):** the mean pairwise cosine across items of the additive read r_t at the decoder read position (`read_vec`, post-normalisation).
+* **Readings (fixed now):**
+  - **SIGNATURE:** s3 has REPEAT ≥ 0.5 or COLLAPSE ≥ 0.9 at some t ≥ 3, with both s1 and s2 below that value at the same t.
+  - **NO-SIGNATURE:** s3 is within ±0.1 of both s1 and s2 on both measures at every t ≥ 3.
+  - Otherwise mixed.
+* **Caution (Audit):** these are end states. s1 / s2 may have decollapsed after entry, so a SIGNATURE does not show the plateau caused non-entry. The causal read needs the trajectory: checkpoints every 2k in a later s3-seed run (pilot or BUDGET-ANNEAL), deleted after the read.
+* **Consequence:** SIGNATURE points the basin-entry question at how fast the read is learned, which BUDGET-ANNEAL's short early read chains fit. NO-SIGNATURE drops this line.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
