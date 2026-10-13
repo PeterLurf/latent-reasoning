@@ -14212,6 +14212,16 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * (b)'s ratio is L-independent (0.333), so its cost clause is not a projection.
 * score_s198 prints this qualifier in the label.
 
+**Note 198-2 (2026-10-13 18:20 EDT; before any (b) / (c) run; descriptive; Experiments' gate timing). Wall-clock is reported beside the analytic cost, because they diverge at nested scale.**
+* **Measured locally (RTX 3070, micro 16):** READ-SLOTS (c) runs at 12.34 s/step against cached INJECT (a)'s 14.47, i.e. **0.853×**.
+* The block-token count predicts about 0.69× against cached INJECT at nested L ≈ 26.4 (readslots.L_mean): 26.4·12 + 8·8·12 = 1,085 vs 26.4·12 + 8·26.4·6 = 1,584.
+* The gap is the work the block count omits: the aux decoder's own forward on every pass, the main decoder, and kernel-launch overhead, which dominates with tiny tensors at this scale.
+* **Reported per cell, beside the registered (analytic) cost clause:**
+  - realised s/step on its cloud host;
+  - train_sec and $.
+  - The user's question is about real cost, so the analytic projection is never presented without the measured wall-clock beside it.
+* **Realised so far:** (a) runs at 0.861 s/step on a $0.179/h host (about $2.2). The family projects to about $8.8–9.1, under the $10 cap.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
