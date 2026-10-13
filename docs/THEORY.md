@@ -14222,6 +14222,12 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - The user's question is about real cost, so the analytic projection is never presented without the measured wall-clock beside it.
 * **Realised so far:** (a) runs at 0.861 s/step on a $0.179/h host (about $2.2). The family projects to about $8.8–9.1, under the $10 cap.
 
+**Amendment 198-2a (2026-10-13 18:21 EDT; before any (b) / (c) output; Audit).**
+* **Both phases are reported.** The per-pass aux decoder is training-only (dropped at test), so a training s/step ratio understates the inference saving.
+  - Each cell reports **eval-time cost**: Meter FLOPs per item and timed s/item at K′ = K with no aux, beside its training s/step and $.
+  - "Cheaper" always names its phase (training / inference).
+* **Correction to 198-2:** "(a) about $2.2" is a **projection** of cell (a)'s total from its measured 0.861 s/step on a $0.179/h host. It is not realised spend. Realised $ is reported only once each cell lands.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
