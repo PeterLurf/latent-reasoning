@@ -1,0 +1,104 @@
+{
+ "a": {
+  "inject_aux": {
+   "log_equal": true,
+   "model_equal": true,
+   "opt_equal": true
+  },
+  "window_aux": {
+   "log_equal": true,
+   "model_equal": true,
+   "opt_equal": true
+  }
+ },
+ "a_pass": true,
+ "b": {
+  "kmatch_loss_masked": {
+   "loss_a": 3.4210915806190285,
+   "loss_rel_diff": 0.0,
+   "grad_max_abs_diff": 7.105427357601002e-15,
+   "grad_scale": 59.12318845240684,
+   "grad_rel": 1.201800434582575e-16,
+   "same_keys": true,
+   "n_grads": 161
+  },
+  "kmatch_aux_answer": {
+   "loss_a": 3.4210915806190285,
+   "loss_rel_diff": 0.0,
+   "grad_max_abs_diff": 7.105427357601002e-15,
+   "grad_scale": 59.12318845240684,
+   "grad_rel": 1.201800434582575e-16,
+   "same_keys": true,
+   "n_grads": 161
+  },
+  "kmatch_aux_aux": {
+   "loss_a": 6.016687731976785,
+   "loss_rel_diff": 0.0,
+   "grad_max_abs_diff": 3.552713678800501e-15,
+   "grad_scale": 38.82812274481512,
+   "grad_rel": 9.14984662572931e-17,
+   "same_keys": true,
+   "n_grads": 161
+  },
+  "think_answer": {
+   "loss_a": 3.4215792506267757,
+   "loss_rel_diff": 0.0,
+   "grad_max_abs_diff": 3.552713678800501e-15,
+   "grad_scale": 59.05749882617039,
+   "grad_rel": 6.015685983007077e-17,
+   "same_keys": true,
+   "n_grads": 161
+  },
+  "aux_loop_ckpt_False": {
+   "loss_a": 8.323087105105953,
+   "loss_rel_diff": 0.0,
+   "grad_max_abs_diff": 1.887379141862766e-15,
+   "grad_scale": 61.14812348710164,
+   "grad_rel": 3.086569193347173e-17,
+   "same_keys": true,
+   "n_grads": 161
+  },
+  "aux_loop_ckpt_True": {
+   "loss_a": 8.323087105105953,
+   "loss_rel_diff": 0.0,
+   "grad_max_abs_diff": 1.887379141862766e-15,
+   "grad_scale": 61.14812348710164,
+   "grad_rel": 3.086569193347173e-17,
+   "same_keys": true,
+   "n_grads": 161
+  }
+ },
+ "b_pass": true,
+ "c": {
+  "chunk4_ckpt_passes": {
+   "off": {
+    "checks": [
+     {
+      "micro": 16,
+      "peak_gib": 4.027114495635033
+     }
+    ],
+    "micro": 16,
+    "peak_gib": 4.027114495635033,
+    "train": "the longest of 4 bs draws at n <= 8",
+    "eval": "n = 16 at K' = 2K"
+   },
+   "cache": {
+    "checks": [
+     {
+      "micro": 16,
+      "peak_gib": 3.763593778014183
+     }
+    ],
+    "micro": 16,
+    "peak_gib": 3.763593778014183,
+    "train": "the longest of 4 bs draws at n <= 8",
+    "eval": "n = 16 at K' = 2K"
+   }
+  },
+  "ratio_cache_over_off": 0.9345633907586988,
+  "gpu": "NVIDIA GeForce RTX 3070"
+ },
+ "c_pass": true,
+ "all_pass": true
+}
