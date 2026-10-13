@@ -13927,6 +13927,11 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - REWEIGHT × WINDOW is not a viable recipe as specified.
   - The C1 + C6 composition is tested by §193 (RMS × WINDOW, launching now). RMS needs no reweight, and both RMS seeds entered early.
 
+**Note 190-1, addendum (2026-10-13 02:50 EDT; Experiments).** A `--resume` starts nested170's in-memory gn_hist empty, and nested170 does not checkpoint it (nested170.py l. 812).
+* So s190_rmsnopass_s1's eval.json `s185.clip_rate` and `grad_norm_preclip` cover only steps 27,001–48,000. They are not comparable with other runs' full-run clip rates.
+* No §190 reading uses them.
+* Going forward, Experiments adds gn_hist to nested170's checkpoint and logs the pre-clip norm and a clip fraction. This is gated log-only and goes in after b278 ships.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
