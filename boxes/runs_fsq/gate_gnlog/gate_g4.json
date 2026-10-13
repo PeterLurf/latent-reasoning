@@ -1,0 +1,22 @@
+{
+ "g4": {
+  "ckpt_has_rng_kw": true,
+  "ckpt_kcount": {
+   "4": {
+    "5": 1
+   },
+   "6": {
+    "8": 1
+   },
+   "7": {
+    "8": 2
+   },
+   "1": {
+    "3": 1
+   }
+  },
+  "model_equal": true,
+  "kmatch_counts_equal": true
+ },
+ "g4_pass": true
+}

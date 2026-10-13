@@ -1,0 +1,112 @@
+{
+ "g2": {
+  "log_equal_minus_new": true,
+  "new_keys_on_every_train_record": true,
+  "pre_has_no_new_keys": true,
+  "model_equal": true,
+  "eval_equal": true,
+  "gn_sample": [
+   [
+    1,
+    99.53873443603516,
+    1.0
+   ],
+   [
+    2,
+    45.19281768798828,
+    1.0
+   ],
+   [
+    3,
+    48.713348388671875,
+    1.0
+   ]
+  ]
+ },
+ "g2_pass": true,
+ "g3": {
+  "ckpt_step": 2,
+  "ckpt_gn_log_len": 2,
+  "ckpt_gn_hist_len": 2,
+  "model_equal": true,
+  "clip_frac_100_step4_full": [
+   1.0
+  ],
+  "clip_frac_100_step4_resumed": [
+   1.0
+  ]
+ },
+ "g3_pass": true,
+ "g4": {
+  "ckpt_has_rng_kw": true,
+  "ckpt_kcount": {
+   "4": {
+    "5": 1
+   },
+   "6": {
+    "8": 1
+   },
+   "7": {
+    "8": 2
+   },
+   "1": {
+    "3": 1
+   }
+  },
+  "model_equal": true,
+  "kmatch_counts_equal": true
+ },
+ "g4_pass": true,
+ "g1": {
+  "inject_aux": {
+   "log_equal_minus_new": true,
+   "new_keys_on_every_train_record": true,
+   "pre_has_no_new_keys": true,
+   "model_equal": true,
+   "eval_equal": true,
+   "gn_sample": [
+    [
+     1,
+     117.9542236328125,
+     1.0
+    ],
+    [
+     2,
+     134.3952178955078,
+     1.0
+    ],
+    [
+     3,
+     119.56449127197266,
+     1.0
+    ]
+   ]
+  },
+  "window_rms": {
+   "log_equal_minus_new": true,
+   "new_keys_on_every_train_record": true,
+   "pre_has_no_new_keys": true,
+   "model_equal": true,
+   "eval_equal": true,
+   "gn_sample": [
+    [
+     1,
+     135.4091033935547,
+     1.0
+    ],
+    [
+     2,
+     140.16073608398438,
+     1.0
+    ],
+    [
+     3,
+     130.36756896972656,
+     1.0
+    ]
+   ]
+  }
+ },
+ "g1_pass": true,
+ "all_pass": true
+}
