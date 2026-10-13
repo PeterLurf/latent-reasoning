@@ -14262,6 +14262,10 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - So the qualitative per-pass behaviour replicates while overall quality tracks convergence.
   - clip_frac_100 was 1.0 to 24k and 0.85 at the end: the first full-run clip curve (note CLIP-1).
 
+**§194, scope caveat (2026-10-13 19:58 EDT; Audit).** Criterion (i) was registered and met at **nesting ≤ 2** (0.960 vs 0.978).
+* Over all nestings it reads n 12 0.908 vs n 9 0.966 (a gap of 0.058, outside the 0.05 margin).
+* So "§190's size-free early steps" holds **at shallow nesting only**. That fits the nesting-structural component (187-2). Every citation of it as 2 seeds says "(nesting ≤ 2)".
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
