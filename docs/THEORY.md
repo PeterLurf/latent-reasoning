@@ -14082,6 +14082,9 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - "≥ 1.0 at 12k" refers to the last full bin's mean.
   - The handle criterion (≥ 0.95 at t 1–4, n ≤ 4) reads eval_12k.json.
 
+**196-1, disclosure (2026-10-13 15:36 EDT).** When the bin-mean clarification above was committed, the continuation's first appended bin (6,001–7,000: mean 1.345) was already visible: it was printed while the 6k bins were being recomputed.
+* The 12k thresholds (< 0.5 / ≥ 1.0, handle ≥ 0.95) are unchanged from 196-1. The clarification only made explicit that they read bin means.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
