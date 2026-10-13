@@ -13714,6 +13714,25 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * The window gives stability (§182, 2 / 2) but does not remove size-keying. That is RMS's contribution (187-6).
 * This is context for §188 (REWEIGHT × WINDOW), which adds neither RMS nor NOPASS.
 
+**Note SEED-1 (2026-10-12 22:50 EDT; descriptive, from existing log.jsonl, no spend; Audit's seed-pattern lead). Seed 2's advantage is not an early init or data-order effect: seed 1 enters the solution basin later and under-converges in 48k, except under RMS.**
+* **Training loss, s1 / s2, by step window:**
+
+  | recipe | 100–1k | 1k–3k | 5k–8k | 20k–24k | 44k–48k |
+  |---|---|---|---|---|---|
+  | §184 | 3.79 / 3.79 | 3.26 / 3.25 | 3.01 / 3.06 | **0.67 / 0.27** | **0.12 / 0.005** |
+  | WINDOW | 3.59 / 3.59 | 2.96 / 2.97 | 2.50 / 2.65 | **0.64 / 0.08** | **0.24 / 0.001** |
+  | RMS | 3.57 / 3.55 | 2.96 / 2.96 | 2.56 / 2.62 | 0.24 / 0.25 | 0.005 / 0.003 |
+
+* **Reading:**
+  - No early difference, and s1 is slightly ahead at 5–8k. The gap opens mid-training (8k–20k), where s2 enters the low-loss basin earlier.
+  - In §184 and WINDOW, s1 ends unconverged (train loss 0.12 / 0.24), which matches its weaker DEEP / depth.
+  - Under RMS both seeds converge in step, and RMS has the smallest seed gap in depth (+0.08 vs +0.18 / +0.19). **The RMS read makes training more seed-robust.**
+  - This is consistent with the basin-entry behaviour seen in fsq120 (memory: GPU class and seed change the basin).
+* **The consequence (Audit's lead, adopted):** when a recipe is chosen to carry forward (§190 or §187, after their s1 / s2), a **seed-3 replication** is registered before any C2 wording, pre-stating:
+  - CONSISTENT: s3 within the s1–s2 range on DEPTH, or ≥ s1;
+  - SEED-2-OUTLIER: s3 within 0.05 of s1 while s2 is ≥ 0.10 higher.
+  - Training loss at 20–24k is reported beside it.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
