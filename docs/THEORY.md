@@ -280,6 +280,8 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 190 | RMS × NOPASS: §185 RMS + §187's --aux_nopass; LATE (t 7–8, n 10–12) vs RMS s1 0.648; COSTLY-AUX / COSTLY / TOKEN-FIX (opens s2; claim 2 / 2) / TOKEN-NOT-THE-LIMIT; FLAT and AUX-DONE descriptives | registered | **s1 mixed (LATE 0.878 vs 0.648, DEPTH 0.659 vs 0.587); descriptively size-free early, no token edge, AUX-DONE tracks n to ~10** |
 | 191 | PROSQA-RELABEL: §168 s2 STEP-AUX and TEXT-COT with per-step name relabelling + premise shuffle + option swap (user-approved 2026-10-12); NAME-MEM (test ≥ 0.65) / UNDERFIT / CHANCE (STILL-RISING or FLAT) / mixed; TEXT-COT control ≥ 0.70 | registered | **open** |
 | 192 | RMS-SEED3: §185 RMS at seed 3 (SEED-1's rule before C2 wording); CONSISTENT (DEEP, depth ≥ 0.537) / LOW-SEED / NOT-DEEP; entry reported | registered | **open** |
+| 193 | RMS × WINDOW: §182 WINDOW + --add_norm rms; §188's rules (JOINT / DEEP-ONLY / STABLE-ONLY / NEITHER; C6 claim = JOINT + LONG-STABLE at 2 / 2) | registered | **open** |
+| 194 | §190-S2: descriptive replication of §190's one-seed findings (size-free per-pass curve, AUX-DONE tracking n); REPLICATES = (i) + (ii) + (iii); never a claim | registered | **open** |
 
 ## Live sections
 
@@ -13843,6 +13845,57 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - An architecture change cannot remove that. It needs larger items in training: a depth curriculum, or self-labelled depth (SELF-DEPTH, 187-4), whose precondition can now be re-read on §190, since the done signal no longer pins at t = 8.
   - Answers (DEPTH) lag the step readout because n 11–12 need the failing late steps.
 * **s2:** not opened by the rule. A descriptive s2 replication (as §189 did for RMS) is proposed to Audit, given the one-seed descriptives (190-2, the per-pass curve) and SEED-1.
+
+## 193. RMS × WINDOW: C1 and C6 on the seed-robust base? (Audit-agreed, about $5–7; pre-registered 2026-10-13 01:26 EDT, before any §193 run; §188's rules exactly, for comparability)
+
+**Why.**
+* RMS is DEEP at 2 / 2 (§189) and seed-robust (both seeds enter the basin at 19k; SEED-1), but STABLE only at 1 / 2: K′32 is 0.62 / 0.71.
+* WINDOW is STABLE at 2 / 2 (§182) but DEEP at 1 / 2, and size-keyed.
+* The combination targets the user's two top criteria (C1 > C6) on the seed-robust base.
+* §188 (REWEIGHT × WINDOW) asks the same question with the reweight as the depth lever.
+
+**Design.** s182_window_s1's args exactly (`--k_window 1,4 --kmatch_impl masked`, think_k 12, micro 2, fast_add, seed 1, RTX 3090, uncached) **plus `--add_norm rms`**. Dir `s193_rmswin_s1`.
+* **Gates:**
+  - flags-off bitwise;
+  - a combined construct plus 1 step, asserting the RMS per-head read norm is constant to 1e-3 on the window path;
+  - gradflow per term;
+  - a memory check at micro 2.
+
+**Rules (§188's, verbatim in meaning; `theory/score_s193.py`; comparators s185_rms_s1 and s182_window_s1):**
+* DEEP (≥ 0.90 at n 3..8, K′8), THINK-NECESSARY (170-4), STABLE (pooled K′16 ≥ K′8 − 0.02).
+* **Readings:**
+  - **JOINT:** DEEP, THINK-NECESSARY and STABLE. Opens s2.
+  - **DEEP-ONLY**, **STABLE-ONLY**, or **NEITHER**.
+* **LONG-STABLE:** pooled K′24 ≥ K′8 − 0.05. **A C6 claim needs JOINT and LONG-STABLE at 2 / 2.**
+* **Descriptive:**
+  - DEPTH (n 9–12 at K′ = n + 2) vs RMS s1 0.587 and WINDOW s1 0.465, with the pinned basin-entry flag (RMS s1 19k / 29k; WINDOW s1 25k / never, so a WINDOW-s1 depth comparison will be CONFOUNDED-BY-ENTRY);
+  - 187-3 rows (are the early steps size-free, as RMS?);
+  - AUX-DONE (the token is present, so the prediction is pinned at t = 8 or never);
+  - DWELL (188-1).
+
+**Placement.** One cell at WINDOW's cost (27 h on a 3090, about $5–7), within Audit's line. It takes §188's slot (about 03:30) once the gates pass.
+
+## 194. §190-S2: a descriptive replication of §190's one-seed findings (Audit-agreed, about $3; pre-registered 2026-10-13 01:26 EDT, before any s2 run)
+
+**Why.**
+* §190 s1 read "mixed" by its rule, so its registered s2 did not open.
+* Its strongest results are one-seed descriptives: AUX-DONE tracks n past the edge (190-2), and the per-pass curve is near-flat to n 10.
+* SEED-1 and §187's s2 reversal show one seed is not enough.
+
+**Design.** s190_rmsnopass_s1's args with **seed 2** (RTX 3090, uncached). Dir `s190_rmsnopass_s2`.
+
+**Criteria (`theory/score_s194.py`). REPLICATES needs all of:**
+* (i) mean handle at t 3–6 at n 12 ≥ its n 9 value − 0.05 (187-3 rows, nesting ≤ 2);
+* (ii) n 10 has no onset (handle < 0.80) before t = 9;
+* (iii) AUX-DONE at n 10 has median halt ≥ 9.5 and frac_capped < 0.5.
+
+**Reported beside:** basin entry (0.5 / 0.1) and final loss (pinned rule), and §190's registered labels applied to s2 vs RMS s2.
+
+**Wording limit (Audit):** this is a non-registered-claim replication. A pass upgrades 190-2 and the per-pass findings only to "2 seeds, descriptive", never to a claim.
+
+**Placement.** About 11.8 h on a 3090 (about $3), in the next free slot after §193's (§191 B's, about 04:00–05:00).
+
+**Note 190-3 (2026-10-13 01:26 EDT; Audit).** §190's LATE is the **mean of the per-(n, t) cell means** (n 10–12 × t 7–8, nesting ≤ 2; score_s190.rows_stat): 0.878. Pooling all (item, t) cells gives 0.890. Both clear the 0.798 bar, so the label is unchanged.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
