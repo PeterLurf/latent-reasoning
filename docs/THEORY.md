@@ -14105,6 +14105,20 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * Bai, Koltun & Kolter 2106.14342 is a Jacobian-norm regulariser, cited only as a possible contraction lever.
 * The 192-2 readings are unchanged.
 
+**192-2 result (2026-10-13 15:58 EDT; fp32 with TF32 off, RTX 3070, 256 n 6–8 items, 8 draws, perturbation of the whole state; eval_s192_lyapunov.json per run). SAME-CLASS by the letter, but the registered measure is likely dominated by the additive state's norm growth, so it may be unable to show contraction. EXPANDING-S3 is not supported.**
+* **λ̂ (the LS slope of mean log g):**
+  - (A) t0 = 2 / 3 / 4: s1 0.156 / 0.183 / 0.222; s2 0.152 / 0.179 / 0.215; s3 0.141 / 0.168 / 0.204.
+  - At t0 = 3, all are > 0 and within 0.015 of each other, so **SAME-CLASS**.
+  - (B) post-completion, t0 = n + 1: s1 0.198, s2 0.205, s3 0.133.
+  - The per-item share of λ̂ > 0 is 1.000 in every setting and model.
+* **Caveat (Experiments):** g = ‖S′_t − S_t‖ / ‖δ‖ is the absolute gap. The additive state accumulates (‖S_t‖ grows with t), so a positive λ̂ everywhere may largely reflect norm growth, not divergence of the dynamics.
+  - Uniform positivity, including in the converged seeds and in their STABLE post-completion setting, fits that reading.
+  - **A post-data descriptive (labelled as such) is requested:** the normalised gap g′(t) = (‖S′_t − S_t‖ / ‖S_t‖) / (‖δ‖ / ‖S_t0‖), and the clean log ‖S_t‖ slope.
+* **Clean step-ratio surrogate (2607.09698's measure):** for all three, successive steps grow slightly through t ≈ 7 and shrink a little from t ≈ 8 (≈ −0.01 to −0.03). s3's early steps contract (−0.18 / −0.15 at t 2 / 3) where s1 / s2 are near 0.
+  - The two measures disagree in sign after t ≈ 8, consistent with the norm-growth caveat.
+* **Consequence:** this does not support "s3's pass map is expanding". With 192-1, two mechanism diagnostics on s3's end state have come back negative or uninformative.
+  - **Further end-state diagnostics on s3 are stopped.** The causal question needs a trajectory: checkpoints in a BUDGET-ANNEAL or §196 run.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
