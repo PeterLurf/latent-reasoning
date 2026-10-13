@@ -41,9 +41,26 @@
    "gpu": "NVIDIA GeForce RTX 3090"
   },
   "2": {
-   "status": "open"
+   "status": "done",
+   "pooled_k8": 0.999,
+   "depth_9_12_n2": 0.4935,
+   "by_n_n2": {
+    "3": 1.0,
+    "4": 1.0,
+    "5": 0.999,
+    "6": 1.0,
+    "7": 0.998,
+    "8": 0.997,
+    "9": 0.957,
+    "10": 0.588,
+    "11": 0.282,
+    "12": 0.147
+   },
+   "deep": true,
+   "think_necessary": true,
+   "gpu": "NVIDIA GeForce RTX 3090"
   }
  },
- "reading": "TOKEN-WAS-THE-LIMIT: DEPTH (n 9-12 at K'=n+2) 0.623 vs \u00a7184 0.486 (+0.137; TEXT-COT 0.535); K'8 pooled 0.998; DEEP True, THINK-NECESSARY True; s2 opens",
+ "reading": "TOKEN-WAS-THE-LIMIT: DEPTH (n 9-12 at K'=n+2) 0.623 vs \u00a7184 0.486 (+0.137; TEXT-COT 0.535); K'8 pooled 0.998; DEEP True, THINK-NECESSARY True; s2 depth 0.4935",
  "errors": []
 }
