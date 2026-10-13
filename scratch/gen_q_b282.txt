@@ -2,3 +2,4 @@
 # HOSTPROBE
 # P=1
 boxes/runs_fsq/s198_rsaux_s1 boxes.nested170 --arm readslots --think_k 8 --aux_step 1.0 --aux_fade 48000,48000 --fast_add --seed 1 --steps 48000 --kprimes 0,1,4,8,12,16,24,32 --path_indep --add_norm rms --ckpt_every 1000 --auto_micro
+boxes/runs_fsq/s198_rsaux_s1_evtime scratch.eval_timing198 --run boxes/runs_fsq/s198_rsaux_s1
