@@ -14008,6 +14008,16 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 **Cost.** One cell at about 11.8 h on a 3090, about $3 (Audit's line), in one of the 2 free slots.
 **If ACCELERATES:** test whether Grokfast hurts a seed that already enters (s1), before adopting it.
 
+**Note 196-1 (2026-10-13 13:56 EDT; before any pilot output; Audit's idle-card suggestion; descriptive pre-work for a conditional BUDGET-ANNEAL, nothing registered).** Pre-staging for BUDGET-ANNEAL (Zhang 2607.20594's fix for its A5 lottery). It registers only if §196 reads NO-EFFECT.
+* **(a) Code and gates (Experiments, local CPU):** a nested170 `--anneal` schedule of stages (n_max_train, K, until-step), each warm-started from the previous stage's weights and optimiser.
+  - Candidate: n ≤ 4 / K 4 until 12k → n ≤ 6 / K 6 until 24k → n ≤ 8 / K 8 until 48k.
+  - Gates: flags-off bitwise; stage transitions at the right steps; resume restores the stage; gradflow; a memory check at the last stage.
+* **(b) Pilot on the 4060 (short, local, memory-checked):** s185_rms_s3's args at n_max_train 4, think_k 4, 6k steps, seed 3. **Stage-1 precondition (fixed now):**
+  - **COMPOSES-SMALL:** the 1k-bin training loss stays < 0.5 by 6k, with handle ≥ 0.95 at t 1–4 on n ≤ 4 test items.
+  - **STUCK-SMALL:** loss ≥ 1.0 at 6k. Annealing would then have no solved stage to grow from.
+  - Otherwise unclear.
+  - Descriptive only. The pilot's GPU class (4060) differs from the cloud cells', so it says nothing about the 3090 basin.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
