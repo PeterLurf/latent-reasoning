@@ -1,0 +1,7 @@
+# THEORY §196 GROKFAST-S3 (78487d7a; Audit-approved ~$3; scorer theory/score_s196.py; gate_grokfast/gate.json): s196_rmsgf_s3 = s185_rms_s3's exact args + --grokfast ema (alpha 0.98, lamb 2.0 defaults), RTX 3090 (plain s185_rms_s3 = the exact control), uncached; logs gn_preclip / clip_frac_100 + gf_*; then dir177 / auxdone / tshift
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s196_rmsgf_s3 boxes.nested170 --arm inject --think_k 8 --aux_step 1.0 --aux_fade 48000,48000 --fast_add --seed 3 --steps 48000 --kprimes 0,1,4,8,12,16,24,32 --path_indep --add_norm rms --grokfast ema --ckpt_every 1000 --auto_micro
+boxes/runs_fsq/s196_rmsgf_s3_pkg boxes.halt173 --run boxes/runs_fsq/s196_rmsgf_s3 --dir177 --bs 125
+boxes/runs_fsq/s196_rmsgf_s3_auxdone boxes.halt173 --run boxes/runs_fsq/s196_rmsgf_s3 --auxdone --bs 125
+boxes/runs_fsq/s196_rmsgf_s3_tshift boxes.halt173 --run boxes/runs_fsq/s196_rmsgf_s3 --tshift --bs 125

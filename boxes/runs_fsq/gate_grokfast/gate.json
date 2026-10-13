@@ -1,0 +1,88 @@
+{
+ "ga": {
+  "log_equal": true,
+  "model_equal": true,
+  "opt_equal": true,
+  "no_gf_keys_off": true,
+  "ckpt_step": 4
+ },
+ "ga_pass": true,
+ "gb": {
+  "model_equal": true,
+  "opt_equal": true,
+  "log_equal_minus_gf": true,
+  "gf_keys_present": true,
+  "ckpt_has_gf_ema": true
+ },
+ "gb_pass": true,
+ "gc": {
+  "grads_bitwise_vs_ref_5_steps": true,
+  "ema_bitwise_vs_ref": true,
+  "ema_step1_formula": true,
+  "lamb0_grads_untouched": true
+ },
+ "gc_pass": true,
+ "gd": {
+  "half_ckpt_step": 2,
+  "half_has_gf_ema": true,
+  "resumed_step": 4,
+  "model_equal": true,
+  "opt_equal": true,
+  "gf_ema_equal": true
+ },
+ "gd_pass": true,
+ "gl": {
+  "n_train_records": 4,
+  "sample": [
+   {
+    "step": 1,
+    "gf_slow_share": 2.0,
+    "gf_update_norm": 0.009381496347486973,
+    "gf_ans_max_logit": -67.90069580078125,
+    "gf_weight_norm": 1515.1658935546875
+   },
+   {
+    "step": 2,
+    "gf_slow_share": 2.10870187345989,
+    "gf_update_norm": 0.017750434577465057,
+    "gf_ans_max_logit": -93.86738586425781,
+    "gf_weight_norm": 1515.1658935546875
+   },
+   {
+    "step": 3,
+    "gf_slow_share": 1.8672674539450076,
+    "gf_update_norm": 0.026057971641421318,
+    "gf_ans_max_logit": -92.95291900634766,
+    "gf_weight_norm": 1515.166015625
+   },
+   {
+    "step": 4,
+    "gf_slow_share": 1.4713022159255138,
+    "gf_update_norm": 0.03421027958393097,
+    "gf_ans_max_logit": -95.90599060058594,
+    "gf_weight_norm": 1515.1661376953125
+   }
+  ]
+ },
+ "gl_pass": true,
+ "ge": {
+  "n_with_grad": 161,
+  "all_finite": true,
+  "grad_eq_g_plus_lamb_h": true,
+  "mem_grad_abs_sum": 10435.6923828125,
+  "trunk_grad_abs_sum": 240612.171875
+ },
+ "ge_pass": true,
+ "gf": {
+  "trainable_bytes_gib": 0.4724207669496536,
+  "added_gib_upper": 0.9448415338993073,
+  "s185_rms_s3_cloud": {
+   "micro": 1,
+   "peak_gib": 18.106811672449112
+  },
+  "proj_gib": 19.05165320634842,
+  "note": "ema (1 x trainable, fp32) + the logging-step snapshot (1 x, transient); the cell's own --auto_micro check runs before training (filter off)"
+ },
+ "gf_pass": true,
+ "all_pass": true
+}
