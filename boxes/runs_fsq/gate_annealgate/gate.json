@@ -1,0 +1,169 @@
+{
+ "a": {
+  "off": {
+   "log_equal": true,
+   "model_equal": true,
+   "opt_equal": true
+  },
+  "fixed_anneal": {
+   "log_equal": true,
+   "model_equal": true,
+   "opt_equal": true
+  }
+ },
+ "a_pass": true,
+ "b": {
+  "stream_1": [
+   [
+    4000,
+    1,
+    "gate"
+   ]
+  ],
+  "stream_1_s_full": 4001,
+  "stream_alternating": []
+ },
+ "b_pass": true,
+ "c": {
+  "uninterrupted": [
+   [
+    5000,
+    1,
+    "gate"
+   ]
+  ],
+  "resumed": [
+   [
+    5000,
+    1,
+    "gate"
+   ]
+  ],
+  "state_equal": true,
+  "mid_state": {
+   "n_stages": 3,
+   "thr": 0.5,
+   "need": 2,
+   "max_steps": 16000,
+   "final_len": 24000,
+   "bin": 1000,
+   "stage": 0,
+   "stage_start": 1,
+   "bin_sum": 299.99999999999994,
+   "bin_n": 500,
+   "consec": 1,
+   "s_full": null
+  },
+  "integration": {
+   "full_ckpt_step": 6,
+   "resumed_ckpt_step": 6,
+   "model_equal": true,
+   "opt_equal": true,
+   "gate_state_equal": true,
+   "transitions_full": [
+    [
+     2,
+     1,
+     "gate"
+    ]
+   ],
+   "transitions_split": [
+    [
+     2,
+     1,
+     "gate"
+    ]
+   ],
+   "full_train_steps": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "gate_state_full": {
+    "n_stages": 2,
+    "thr": 100.0,
+    "need": 2,
+    "max_steps": 3,
+    "final_len": 4,
+    "bin": 1,
+    "stage": 1,
+    "stage_start": 3,
+    "bin_sum": 0.0,
+    "bin_n": 0,
+    "consec": 0,
+    "s_full": 3
+   }
+  }
+ },
+ "c_pass": true,
+ "d": {
+  "two_stage": [
+   [
+    16000,
+    1,
+    "fallback"
+   ]
+  ],
+  "three_stage": [
+   [
+    16000,
+    1,
+    "fallback"
+   ],
+   [
+    32000,
+    2,
+    "fallback"
+   ]
+  ],
+  "three_stage_s_full": 32001,
+  "three_stage_end": 56000
+ },
+ "d_pass": true,
+ "e": {
+  "n_records": 9,
+  "max_abs_diff": 0.0,
+  "sample": [
+   [
+    1,
+    9.504844339512096e-07,
+    9.504844339512096e-07
+   ],
+   [
+    2,
+    1.6234898018587338e-06,
+    1.6234898018587338e-06
+   ],
+   [
+    3,
+    1.8337814009344715e-06,
+    1.8337814009344715e-06
+   ],
+   [
+    4,
+    1.5549581320873715e-06,
+    1.5549581320873715e-06
+   ],
+   [
+    5,
+    9.412754953531664e-07,
+    9.412754953531664e-07
+   ],
+   [
+    6,
+    2.970933962927429e-07,
+    2.970933962927429e-07
+   ],
+   [
+    4,
+    1.5549581320873715e-06,
+    1.5549581320873715e-06
+   ]
+  ]
+ },
+ "e_pass": true,
+ "all_pass": true
+}
