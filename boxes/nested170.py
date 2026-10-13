@@ -235,14 +235,18 @@ class InjectN(torch.nn.Module):
     def think_inputs(self, items, dev):
         ids_, m_ = pad([[EOT] + ids(it["syms"]) + [TID[" ."]] for it in items]); return torch.tensor(ids_, device=dev), torch.tensor(m_, device=dev)
 
-    def write(self, S, x, mask):
-        return self.DM.gpt_forward_mem(self.g, self.g.embed(x), self.mem, S, mask=mask)[1]
+    def write(self, S, x, mask, h_low=None):
+        return self.DM.gpt_forward_mem(self.g, self.g.embed(x), self.mem, S, mask=mask, h_low=h_low)[1]
 
-    def think(self, S, x, mask, K, skip=(), override=None, ckpt=False):
+    def lower(self, x):
+        """--cache_lower (Theory / Audit 2026-10-13): blocks 0..layer-1 on the think input, once per batch (every pass sees the identical input)."""
+        return self.DM.gpt_lower(self.g, self.g.embed(x), self.mem.layer)
+
+    def think(self, S, x, mask, K, skip=(), override=None, ckpt=False, h_low=None):
         from torch.utils.checkpoint import checkpoint
         for t in range(1, K + 1):
             if t not in skip:
-                S = checkpoint(self.write, S, x, mask, use_reentrant=False) if (ckpt and torch.is_grad_enabled()) else self.write(S, x, mask)
+                S = checkpoint(self.write, S, x, mask, h_low, use_reentrant=False) if (ckpt and torch.is_grad_enabled()) else self.write(S, x, mask, h_low)
             if override is not None and override[0] == t:
                 S = override[1]
         return S
@@ -298,7 +302,7 @@ def grokfast_ema(named, ema, alpha, lamb, norms=False):
     return float(torch.stack(g2).sum().sqrt()), float(torch.stack(s2).sum().sqrt())
 
 
-def kmatch_loss(m, items, kitem, dev, ac, masked=True):
+def kmatch_loss(m, items, kitem, dev, ac, masked=True, cache=False):
     """§177 (f) (notes 177-4 / 177-5): the answer CE (mean over items) with item i thinking kitem[i] passes -> (loss, final S in item order).
     masked (the training form): ONE batch for K_max passes; after pass t each item's state is the new one only while t <= its K (a state-level select,
     Audit: the gated-delta decay / gamma / fade could move S on a pass with no token writes), so S is frozen at its own K and the gradient flows through
@@ -307,9 +311,9 @@ def kmatch_loss(m, items, kitem, dev, ac, masked=True):
     if masked:
         x, msk = m.think_inputs(items, dev); kv = torch.tensor(np.asarray(kitem), device=dev)
         with ac():
-            S = m.mem.zero_state(len(items), dev)
+            S = m.mem.zero_state(len(items), dev); hl = m.lower(x) if cache else None
             for t in range(1, int(max(kitem)) + 1):
-                S = torch.where((kv >= t)[:, None, None, None], m.write(S, x, msk), S)
+                S = torch.where((kv >= t)[:, None, None, None], m.write(S, x, msk, hl), S)
             lg = m.dec_logits(S, items, dev)
         return Fn.cross_entropy(lg, tgt), S
     tot, Sall = 0.0, [None] * len(items)
@@ -328,7 +332,7 @@ _E = [sum(1.0 / n for n in range(t, 9)) / 8 for t in range(1, 9)]
 assert all(abs(w - sum(_E) / 8 / e) < 1e-3 for w, e in zip(AUX_W, _E)) and abs(sum(e * w for e, w in zip(_E, AUX_W)) - sum(_E)) < 1e-3, "§184: the weight table"
 
 
-def kmatch_aux_loss(m, items, kitem, dev, ac, hold=False, reweight=False, wrec=None):
+def kmatch_aux_loss(m, items, kitem, dev, ac, hold=False, reweight=False, wrec=None, cache=False):
     """§182 WINDOW / HOLD: note 177-5's masked single batch (item i thinks kitem[i] passes; S frozen after its K) + §175's aux CE (token mean per pass,
     mean over each item's REAL steps t <= n, then over items: §175's weighting, identical in every cell). HOLD (Audit 8e20d709 review): the hold passes
     n < t <= K_i (target e_{n+1}) form a SEPARATE term hold_aux = mean over items of the mean over their hold passes (0 without hold), so the real-step
@@ -338,9 +342,9 @@ def kmatch_aux_loss(m, items, kitem, dev, ac, hold=False, reweight=False, wrec=N
     tgt = torch.tensor(NUM_IDS[[it["t"] for it in items]], device=dev); x, msk = m.think_inputs(items, dev); kv = torch.tensor(np.asarray(kitem), device=dev)
     per = [[] for _ in items]; perh = [[] for _ in items]
     with ac():
-        S = m.mem.zero_state(len(items), dev)
+        S = m.mem.zero_state(len(items), dev); hl = m.lower(x) if cache else None
         for t in range(1, int(max(kitem)) + 1):
-            S = torch.where((kv >= t)[:, None, None, None], m.write(S, x, msk), S)
+            S = torch.where((kv >= t)[:, None, None, None], m.write(S, x, msk, hl), S)
             idx = [i for i, it in enumerate(items) if t <= len(aux_of(it)) or (hold and t <= int(kitem[i]))]
             if idx:
                 lg_a, y_a = m.aux_logits(S[idx], [items[i] for i in idx], t, dev, hold=hold)
@@ -474,6 +478,8 @@ def main():
                     "stage's weights / optimiser; the last stage must equal --n_max_train / --think_k / --steps ('' = off)")
     ap.add_argument("--probe_loss_every", type=int, default=0, help="note 196-1: every N steps, the mean answer / aux CE on 256 FIXED full-task items (n <= --n_max_train, "
                     "K = --think_k; own rng seed + 19700; no_grad, eval mode; logged as probe_loss / probe_aux; 0 = off)")
+    ap.add_argument("--cache_lower", action="store_true", help="training only: blocks 0..mem.layer-1 on the (identical) think input once per batch, shared by the K "
+                    "passes (exact in exact arithmetic; gate_cache_lower_n170). Held: never compare a cached cell with an uncached comparator (Theory)")
     ap.add_argument("--grokfast", default="", choices=["", "ema"], help="§196: Grokfast EMA gradient filter (grokfast_ema) after backward, before the clip; '' = off")
     ap.add_argument("--gf_alpha", type=float, default=0.98); ap.add_argument("--gf_lamb", type=float, default=2.0)
     ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", default=None); ap.add_argument("--log_every", type=int, default=100)
@@ -520,14 +526,14 @@ def main():
         x, msk = m.think_inputs(items, dev)
         if not lam_now[0]:                                                  # §170 (and §175 at lambda 0): unchanged
             with ac():
-                S = m.think(m.mem.zero_state(len(items), dev), x, msk, K if Kb is None else Kb, ckpt=a.ckpt_passes); lg = m.dec_logits(S, items, dev)
+                S = m.think(m.mem.zero_state(len(items), dev), x, msk, K if Kb is None else Kb, ckpt=a.ckpt_passes, h_low=m.lower(x) if a.cache_lower else None); lg = m.dec_logits(S, items, dev)
             return Fn.cross_entropy(lg, torch.tensor(NUM_IDS[[it["t"] for it in items]], device=dev))
         from torch.utils.checkpoint import checkpoint
         per = [[] for _ in items]                                           # §175: the aux CE (token mean) of each item's passes 1..#steps
         with ac():
-            S = m.mem.zero_state(len(items), dev)
+            S = m.mem.zero_state(len(items), dev); hl = m.lower(x) if a.cache_lower else None
             for t in range(1, K + 1):
-                S = checkpoint(m.write, S, x, msk, use_reentrant=False) if (a.ckpt_passes and torch.is_grad_enabled()) else m.write(S, x, msk)
+                S = checkpoint(m.write, S, x, msk, hl, use_reentrant=False) if (a.ckpt_passes and torch.is_grad_enabled()) else m.write(S, x, msk, hl)
                 idx = [i for i, it in enumerate(items) if len(aux_of(it)) >= t]
                 if idx:
                     lg_a, y_a = m.aux_logits(S[idx], [items[i] for i in idx], t, dev)
@@ -544,9 +550,9 @@ def main():
         its = sorted(its, key=lambda it: -len(it["syms"]))[:a.bs // micro]
         if KW:                                                              # §177 (f) (Audit): the path that trains - the masked kmatch loss, every item at K_max
             if lam_now[0]:                                                  # §182: the aux on the masked kmatch path (every item at K_max)
-                la_, ax_, hx_, _ = kmatch_aux_loss(m, its, [a.n_max_train + KW[1]] * len(its), dev, ac, a.aux_hold, a.aux_reweight); l_ = la_ + lam_now[0] * (ax_ + hx_)
+                la_, ax_, hx_, _ = kmatch_aux_loss(m, its, [a.n_max_train + KW[1]] * len(its), dev, ac, a.aux_hold, a.aux_reweight, cache=a.cache_lower); l_ = la_ + lam_now[0] * (ax_ + hx_)
             else:
-                l_, _ = kmatch_loss(m, its, [a.n_max_train + KW[1]] * len(its), dev, ac, masked=a.kmatch_impl == "masked")
+                l_, _ = kmatch_loss(m, its, [a.n_max_train + KW[1]] * len(its), dev, ac, masked=a.kmatch_impl == "masked", cache=a.cache_lower)
         else:
             l_ = loss_items(its)
         l_.backward(); (m or g).zero_grad(set_to_none=True)
@@ -826,13 +832,13 @@ def main():
                 sub, ks = its[c_:c_ + ch], kit[c_:c_ + ch]
                 if lam_now[0]:                                              # §182 WINDOW / HOLD
                     wr_ = [] if (step == step0 and c_ == 0) else None              # §188 tripwire: the kept real-step weights of step 1's first chunk
-                    la_, ax_, hx_, _ = kmatch_aux_loss(m, sub, ks, dev, ac, a.aux_hold, a.aux_reweight, wr_); aux_hist.append((float(la_), float(ax_), float(hx_))); lk = la_ + lam_now[0] * (ax_ + hx_)
+                    la_, ax_, hx_, _ = kmatch_aux_loss(m, sub, ks, dev, ac, a.aux_hold, a.aux_reweight, wr_, cache=a.cache_lower); aux_hist.append((float(la_), float(ax_), float(hx_))); lk = la_ + lam_now[0] * (ax_ + hx_)
                     if wr_ is not None:
                         wm_ = float(np.mean(wr_)) if wr_ else None
                         json.dump({"step": step, "aux_w_mean_kept": wm_, "n_terms": len(wr_), "aux_reweight": bool(a.aux_reweight)}, open(os.path.join(a.out, "s188_tripwire.json"), "w", newline="\n"))
                         assert (wm_ is not None and wm_ != 1.0) if a.aux_reweight else True, "§188 tripwire: --aux_reweight set but the window path's kept aux weights average 1.0"
                 else:
-                    lk, _ = kmatch_loss(m, sub, ks, dev, ac, masked=a.kmatch_impl == "masked")
+                    lk, _ = kmatch_loss(m, sub, ks, dev, ac, masked=a.kmatch_impl == "masked", cache=a.cache_lower)
                 (lk * len(sub) / a.bs).backward(); tot += float(lk.item()) * len(sub) / a.bs
         else:
           for k_ in range(a.micro):
