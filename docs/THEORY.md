@@ -14236,6 +14236,20 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **(2) Removal on ProsQA (C1):** A's test accuracy at K′ 0 / 1 against K′ = K (`s168s2.acc_by_depth_kprime`), quoted beside NAME-MEM, so "latent ≈ text" is not read as "the thoughts do the work" without the removal check.
 * **Disclosure:** Audit read A's live test500 log (interim, unscored) before this note. These are descriptives, and A's registered readings and bars are unchanged.
 
+**Note CLIP-1 (2026-10-13 19:56 EDT; descriptive, from §194 s2's gn-logged log.jsonl; Audit's mechanism question; no spend).** Does variable per-step clipping down-weight the high-error batches?
+* **Audit's mechanism:** with clip 1.0 binding on 85–100% of steps (gn_preclip 6–17), each step's update is scaled by 1 / ‖g‖, which re-weights batches even under Adam. If the high-gradient batches were the high-error ones, clipping would under-weight exactly what the model fails on.
+* **Check:** per logged step (every 100), the correlation of gn_preclip with that step's answer_ce and aux_ce, after linearly detrending both within the window:
+
+  | steps | gn vs answer_ce | gn vs aux_ce |
+  |---|---|---|
+  | 1–12k (n = 120) | −0.33 | +0.67 |
+  | 12–24k (n = 120) | −0.28 | −0.29 |
+  | 24–48k (n = 240) | +0.04 | +0.02 |
+
+* **Reading:** no positive gn ↔ answer-error link (high-gradient steps had, if anything, lower answer loss). The aux link is mixed. So this run does not support "clipping down-weights the failing batches".
+  - **Limits:** one run, single-step snapshots, and loss as a proxy for the batch's deep-item share (batch mean n is not logged).
+  - CLIP-LIFT is not added to the lever list on this evidence. §196's gn-logged log is checked when it lands.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
