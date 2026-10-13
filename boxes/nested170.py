@@ -713,11 +713,14 @@ def main():
         info["aux_decoder"] = ("the SAME GPT-2 trunk and LM head as the main decoder (shared weights, no new parameters), read-only on M_t via fwd_read: "
                                "[EOT, ' Step', ' t', ' :'] + e_{t+1} + EOT (teacher-forced); no problem text, no write, never fed back; dropped at test")
     json.dump(info, open(os.path.join(a.out, "args_eval.json" if a.eval_only else (("args_resume_%d.json" % int(time.time())) if a.resume else "args.json")), "w", newline="\n"), indent=1)
-    params = m if m is not None else g; opt = make_opt(params, a.lr); step0 = 1; n_nonfinite = 0; hist = []; wg_hist = []; wwin = []; wlast = []; gn_hist = []; gadd_hist = []; zmin_hist = []
+    params = m if m is not None else g; opt = make_opt(params, a.lr); step0 = 1; n_nonfinite = 0; hist = []; wg_hist = []; wwin = []; wlast = []; gn_hist = []; gadd_hist = []; zmin_hist = []; gn_log = []   # gn_log: every step's pre-clip norm (log only; Theory / Audit 2026-10-13)
     log = open(os.path.join(a.out, "log.jsonl"), "a" if (a.resume or a.eval_only) else "w", newline="\n"); t0 = time.time()
     if a.resume:
         ck = torch.load(a.resume, map_location=dev, weights_only=False); params.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"]); rng.bit_generator.state = ck["np_rng"]
-        step0 = ck["step"] + 1; n_nonfinite = ck["n_nonfinite"]; wg_hist = ck.get("wg_hist", []); t0 = time.time() - ck["elapsed"]; log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
+        step0 = ck["step"] + 1; n_nonfinite = ck["n_nonfinite"]; wg_hist = ck.get("wg_hist", []); gn_hist = list(ck.get("gn_hist", [])); gn_log = list(ck.get("gn_log", [])); t0 = time.time() - ck["elapsed"]
+        if KW and "rng_kw" in ck:                                           # older checkpoints lack it: the K stream then restarts (not bitwise)
+            rng_kw.bit_generator.state = ck["rng_kw"]; kcount = ck.get("kcount", kcount)
+        log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
     elif m is not None and K > 0:                                           # note 147-2: g_add calibration at the think hand-offs
         its = train_items(np.random.default_rng(17001), 64, a.n_max_train, set()); x, msk = m.think_inputs(its, dev); m.mem.norms = []
         with torch.no_grad(), ac():
@@ -767,7 +770,7 @@ def main():
         if m is not None:
             from boxes.deltas5 import write_grad_norm
             wwin.append(write_grad_norm(m))
-        gn = torch.nn.utils.clip_grad_norm_(params.parameters(), 1.0)
+        gn = torch.nn.utils.clip_grad_norm_(params.parameters(), 1.0); gn_log.append(float(gn))
         if a.aux_reweight or a.add_norm:                                    # §184 / §185: the pre-clip grad norm per step (clip fires above 1.0)
             gn_hist.append(float(gn))
         if a.add_norm == "den" and m is not None and step <= 500:           # Audit: min phi(q)^T z over this step's reads, steps 1..500
@@ -804,12 +807,15 @@ def main():
                 w_rec = {"step": step, "mean": float(np.mean(wwin)), "max": mx_, "median_prev_1k": md_, "spike_100x_floor": bool(late and mx_ > 100 * md_ > 0 and mx_ > 1.0)}
                 wlast.extend(wwin); del wlast[:-int(1000 * sc) or None]; wwin = []; wg_hist.append(w_rec)
                 rec.update({"gamma": float(m.mem.gamma), "fade": float(m.mem.fade), "write_grad_norm": w_rec["mean"], "write_grad_spike_100x_floor": w_rec["spike_100x_floor"]})
+            if gn_log:                                                      # pre-clip total grad norm at this step + the clip share of the last 100 steps (log only)
+                rec.update({"gn_preclip": gn_log[-1], "clip_frac_100": float(np.mean([v_ > 1.0 for v_ in gn_log[-100:]]))})
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
         if a.ckpt_every and step % a.ckpt_every == 0 and step < a.steps:
             cp = os.path.join(a.out, "ckpt_last.pt")
             if os.path.exists(cp):
                 os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))
-            torch.save({"model": params.state_dict(), "opt": opt.state_dict(), "np_rng": rng.bit_generator.state, "step": step, "n_nonfinite": n_nonfinite, "wg_hist": wg_hist,
+            torch.save({"model": params.state_dict(), "opt": opt.state_dict(), "np_rng": rng.bit_generator.state, "step": step, "n_nonfinite": n_nonfinite, "wg_hist": wg_hist, "gn_hist": gn_hist, "gn_log": gn_log,
+                        **({"rng_kw": rng_kw.bit_generator.state, "kcount": kcount} if KW else {}),   # 2026-10-13: a WINDOW resume continues the same K draws
                         "elapsed": time.time() - t0}, cp)
     if a.time_steps:                                                        # Audit's cost check
         sps = (time.time() - tt0) / max(1, last - step0 + 1); json.dump({"arm": a.arm, "think_k": K, "steps_timed": last - step0 + 1, "sec_per_step": sps, "est_hours_48k": sps * a.steps / 3600,

@@ -406,6 +406,8 @@ def main():
                             "write_grad_norm": float(np.mean(wg)) if wg else None}); aux_hist.clear(); wg = []
             if a.arm == "currdirect":
                 rec["stage"] = stage(step)
+            if gn_hist:                                                     # pre-clip total grad norm at this step + the clip share of the last 100 steps (log only)
+                rec.update({"gn_preclip": gn_hist[-1], "clip_frac_100": float(np.mean([v_ > 1.0 for v_ in gn_hist[-100:]]))})
             if a.relabel:                                                   # Audit: the option-swap rate (p 0.5), cumulative over the run
                 rec.update({"relabel_n": rl_n[0], "relabel_swap_rate": rl_n[1] / max(1, rl_n[0])})
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)

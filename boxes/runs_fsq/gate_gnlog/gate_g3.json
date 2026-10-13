@@ -1,0 +1,15 @@
+{
+ "g3": {
+  "ckpt_step": 2,
+  "ckpt_gn_log_len": 2,
+  "ckpt_gn_hist_len": 2,
+  "model_equal": true,
+  "clip_frac_100_step4_full": [
+   1.0
+  ],
+  "clip_frac_100_step4_resumed": [
+   1.0
+  ]
+ },
+ "g3_pass": true
+}
