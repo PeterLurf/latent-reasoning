@@ -13,3 +13,6 @@
 # 2026-10-13 02:47 3070: §188 selfdepth_pre + sizeprobe
 5.0 boxes/runs_fsq/s188_rwwin_s1/eval_s187_selfdepth_pre.json python -u -m boxes.halt173 --run boxes/runs_fsq/s188_rwwin_s1 --selfdepth --bs 125 --device {DEV}
 5.0 boxes/runs_fsq/s188_rwwin_s1/eval_s187_sizeprobe.json python -u -m boxes.halt173 --run boxes/runs_fsq/s188_rwwin_s1 --sizeprobe --bs 125 --device {DEV}
+# 2026-10-13 11:47 3070: §192 RMS s3 selfdepth_pre + sizeprobe
+5.0 boxes/runs_fsq/s185_rms_s3/eval_s187_selfdepth_pre.json python -u -m boxes.halt173 --run boxes/runs_fsq/s185_rms_s3 --selfdepth --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s185_rms_s3/eval_s187_sizeprobe.json python -u -m boxes.halt173 --run boxes/runs_fsq/s185_rms_s3 --sizeprobe --bs 125 --device {DEV}

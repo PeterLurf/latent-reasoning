@@ -8,3 +8,5 @@
 5.0 boxes/runs_fsq/s190_rmsnopass_s1/eval_s187_deepaux_items_n9_12.json python -u -m boxes.halt173 --run boxes/runs_fsq/s190_rmsnopass_s1 --deepaux --deepaux_items_only --items_n 9,10,11,12 --items_tmax 14 --items_file eval_s187_deepaux_items_n9_12.json --bs 125 --device {DEV}
 # 2026-10-13 02:47 4060: §188 (b269 landed) 187-3 rows n9-12 first
 5.0 boxes/runs_fsq/s188_rwwin_s1/eval_s187_deepaux_items_n9_12.json python -u -m boxes.halt173 --run boxes/runs_fsq/s188_rwwin_s1 --deepaux --deepaux_items_only --items_n 9,10,11,12 --items_tmax 14 --items_file eval_s187_deepaux_items_n9_12.json --bs 125 --device {DEV}
+# 2026-10-13 11:47 4060: §192 RMS s3 (b276 landed) 187-3 rows n9-12 first
+5.0 boxes/runs_fsq/s185_rms_s3/eval_s187_deepaux_items_n9_12.json python -u -m boxes.halt173 --run boxes/runs_fsq/s185_rms_s3 --deepaux --deepaux_items_only --items_n 9,10,11,12 --items_tmax 14 --items_file eval_s187_deepaux_items_n9_12.json --bs 125 --device {DEV}
