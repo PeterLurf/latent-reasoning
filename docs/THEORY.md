@@ -14152,6 +14152,17 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - Caveat: this was a 4060 run, and GPU class can change the basin.
 * **Process lesson:** a pre-stated criterion must be checked against the actual eval output fields before data, and artefacts are not deleted until the criterion has been read.
 
+**Note 196-2 (2026-10-13 17:15 EDT; before any run; Audit's idle-card suggestion; descriptive, local pilot). STAGE-2 PILOT: does s3 re-enter at n ≤ 6 after stage 1?**
+* **Run (RTX 4060):** s185_rms_s3's args with fixed-step `--anneal "4:4:12000,6:6:24000"` (the code from 4f4f5ff1; the gated code is not ready), under the 48k schedule (--steps 48000), stopped at 24,000 (--time_steps 24000), seed 3.
+  - --eval_at 12000 and 24000. Memory-checked at n ≤ 6 / K 6 first, with no co-tenants.
+  - **model.pt and the checkpoints are kept until this note's criteria are read** (196-1's lesson).
+* **Criteria (only fields the eval writes per n: the pinned training-loss bins and eval acc_by_n):**
+  - **STAGE2-ENTERS:** within the stage-2 bins (12,001–24,000), two consecutive 1k-bin means < 0.5 occur, and eval_24k acc_by_n ≥ 0.90 at every n ≤ 6 (K 6).
+  - **STAGE2-STALLS:** the last stage-2 bin (23,001–24,000) has mean ≥ 1.0.
+  - Otherwise unclear.
+* **Reproduction check (descriptive):** the first 12k should reproduce 196-1's 4060 trajectory exactly (same seed, card and args), compared bin by bin.
+* **What it informs:** whether a BUDGET-ANNEAL 3090 run risks a fallback-advanced, un-entered stage 2. A 4060 result does not transfer exactly (GPU class changes the basin).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
