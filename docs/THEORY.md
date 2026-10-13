@@ -274,7 +274,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 184 | AUX-REWEIGHT: §182 NOFADE + per-pass aux weights w_t = Ē / E_t (pass 8 got 1/22 of pass 1's signal), equal signal per pass position; HELPS / HURTS / NO EFFECT vs NOFADE | **HELPS; DEEP + THINK-NECESSARY + SERIAL-NEST at 2 / 2 seeds = §170's C1 conjunction met on nested** (s1 0.974 / s2 0.9997 pooled; SERIAL-NEST 0.85 / 0.94); depth beyond n 8 count-limited | closed |
 | 185 | ADD-NORM: §182 NOFADE with the additive read normalised: DEN (φ(q)ᵀS / φ(q)ᵀz) or RMS (TransNormer's NormAttention); STABLE + NO-COST vs NOFADE (NORM-CLAMP: the unnormalised read's growth causes ~80% of overthinking) | registered | **closed: NO-FIX (both arms). Descriptive: RMS alone DEEP + depth n 9–12 0.587 (one seed; §189 replicates)** |
 | 186 | INTERLEAVE-BLIND-K4: §183 with 4 passes per token, the closing test of the mult interleave line; HIT / PARTLY vs §183, else the line closes (pre-registered stop) | **FAIL / NOT** (columns 3–7 0.210 vs 0.182; within-token passes idle, cos 0.993): **the mult interleave line closes** | closed |
-| 187 | AUX-NOPASS: §184 with the aux prompt's pass token removed; does pass-token keying limit depth beyond training (C2)? DEPTH = n 9–12 at K′ = n + 2 vs §184 (0.486) and TEXT-COT (0.535) | registered | **s1 TOKEN-WAS-THE-LIMIT (depth 0.623 vs 0.486), DEEP; descriptively STABLE to 4× K (0.942 at K′32); s2 running** |
+| 187 | AUX-NOPASS: §184 with the aux prompt's pass token removed; does pass-token keying limit depth beyond training (C2)? DEPTH = n 9–12 at K′ = n + 2 vs §184 (0.486) and TEXT-COT (0.535) | registered | **s1 TOKEN-WAS-THE-LIMIT, s2 reverses (depth 0.493 vs §184 s2 0.665): claim fails at 2 / 2; depth confounded by basin-entry timing** |
 | 188 | REWEIGHT × WINDOW: §182 WINDOW + §184's --aux_reweight in one cell; JOINT = DEEP + THINK-NECESSARY + STABLE (K′16); a C6 claim needs LONG-STABLE (K′24 ≥ K′8 − 0.05) at 2 / 2 | registered | **open** |
 | 189 | RMS-REP: §185 RMS at seed 2 (descriptive replication); SUBSTITUTE = DEEP + THINK-NECESSARY + depth n 9–12 ≥ §184 s2 − 0.05 / DEEP-ONLY / NOT REPLICATED | registered | **closed: SUBSTITUTE (s2 DEEP, depth 0.662 vs §184 s2 0.665; two-seed 0.625 vs 0.576)** |
 | 190 | RMS × NOPASS: §185 RMS + §187's --aux_nopass; LATE (t 7–8, n 10–12) vs RMS s1 0.648; COSTLY-AUX / COSTLY / TOKEN-FIX (opens s2; claim 2 / 2) / TOKEN-NOT-THE-LIMIT; FLAT and AUX-DONE descriptives | registered | **open** |
@@ -13732,6 +13732,34 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - CONSISTENT: s3 within the s1–s2 range on DEPTH, or ≥ s1;
   - SEED-2-OUTLIER: s3 within 0.05 of s1 while s2 is ≥ 0.10 higher.
   - Training loss at 20–24k is reported beside it.
+
+**§187 s2 result, and a basin-entry confound across recipes (2026-10-12 23:11 EDT; s187_nopass_s2, b273, RTX 3090, 48k, 0 non-finite, 06a6f7df; score_s187; written before any §188 / §190 output). §187's claim does not replicate: s2 is DEEP but its depth is 0.172 *below* same-seed §184. Across all eight two-seed runs, depth tracks when training entered the low-loss basin, so §187's s1 effect is confounded.**
+* **s2:**
+  - DEEP (n 3–8 at K′ 8 ≥ 0.997); THINK-NECESSARY holds; handle ≥ 0.998.
+  - **DEPTH 0.493** (0.957 / 0.588 / 0.282 / 0.147), against same-seed §184 s2's **0.665** (−0.172) and TEXT-COT's 0.535.
+  - **Stability also does not replicate:** K′ 8 / 16 / 24 / 32 reads 0.999 / 0.997 / 0.921 / 0.695 (§184 s2: 1.000 / 0.995 / 0.903 / 0.701; §187 s1: 0.998 / 0.996 / 0.983 / 0.942).
+* **§187's reading:** TOKEN-WAS-THE-LIMIT holds at 1 / 2 only. s2 reverses it, so **the 2 / 2 claim fails.** 187-9's and 187-10's per-step descriptives are single-seed (s2's rows are pending).
+* **Basin entry** (the first step from which every 1k-step mean training loss stays < 0.5; < 0.1 in brackets) against DEPTH:
+
+  | run | entry < 0.5 (< 0.1) | final loss | DEPTH |
+  |---|---|---|---|
+  | WINDOW s2 | 15.8k (20.6k) | 0.0005 | 0.659 |
+  | RMS s2 | 17.3k (26.8k) | 0.002 | 0.662 |
+  | RMS s1 | 17.9k (28.0k) | 0.008 | 0.587 |
+  | §187 s1 | 18.0k (29.2k) | 0.017 | 0.623 |
+  | §184 s2 | 18.7k (25.7k) | 0.011 | 0.665 |
+  | WINDOW s1 | 23.2k (never) | 0.226 | 0.465 |
+  | §187 s2 | 26.2k (30.7k) | 0.007 | 0.493 |
+  | §184 s1 | 41.1k (never) | 0.105 | 0.486 |
+
+  - Late entry (≥ 23k) or no convergence gives DEPTH 0.465–0.493. Early entry (≤ 19k) gives 0.587–0.665.
+  - §187 s1 vs §184 s1 compared 18.0k with 41.1k entries; s2 reversed the order (26.2k vs 18.7k) and the depth difference reversed with it.
+  - **RMS's two seeds entered within 0.6k of each other**, consistent with SEED-1 (RMS is seed-robust).
+* **Pre-stated now, before §188 / §190 / later outputs (descriptive flag; no label changes):**
+  - Every depth comparison reports both runs' entry steps (< 0.5 and < 0.1) and final loss, from log.jsonl deduped by step.
+  - **CONFOUNDED-BY-ENTRY** is flagged when the cell's and comparator's entry (< 0.5) differ by > 5k steps, or either never reaches < 0.1. Such a depth difference is not attributed to the recipe.
+  - **For §188:** §184 s1 (41.1k) and WINDOW s1 (23.2k).
+  - **For §190:** RMS s1 (17.9k).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
