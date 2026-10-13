@@ -14119,6 +14119,17 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **Consequence:** this does not support "s3's pass map is expanding". With 192-1, two mechanism diagnostics on s3's end state have come back negative or uninformative.
   - **Further end-state diagnostics on s3 are stopped.** The causal question needs a trajectory: checkpoints in a BUDGET-ANNEAL or §196 run.
 
+**192-2, post-data descriptive (2026-10-13 16:04 EDT; the norm-normalised gap g′ and the clean log ‖S_t‖ slope, same items and draws; labelled post-data, so no reading changes).**
+* **λ̂ on g′:**
+  - (A) t0 = 2 / 3 / 4: s1 −0.038 / −0.002 / +0.042; s2 −0.004 / +0.031 / +0.070; s3 +0.034 / +0.077 / +0.122.
+  - (B) post-completion: s1 0.096, s2 0.109, s3 0.055.
+* **The clean log ‖S_t‖ slope** (t 1–16) is s1 0.168, s2 0.145, s3 0.111. Most of the raw λ̂ was the state's own norm growth, as Experiments flagged.
+* **Read:**
+  - Normalised, s3 is the most expanding before completion, a gradient (s1 ≈ 0 < s2 < s3) rather than a class split.
+  - Even on g′, 192-2's EXPANDING-S3 (s3 > 0 with both s1 and s2 ≤ 0) would not be met, since s2 is +0.031.
+  - After completion the order reverses (s3 lowest).
+  - There is a weak hint that s3's pre-completion map is less contractive, on one end state each. It is not a finding, and it does not reopen end-state work. A trajectory read with relative g′ on §196 / BUDGET-ANNEAL checkpoints would test it.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
