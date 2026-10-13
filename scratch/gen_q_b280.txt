@@ -1,0 +1,8 @@
+# THEORY §198 CHEAP-THINK (e69bc32a; user request, Audit-approved ONE item, $10 hard cap; scorer theory/score_s198.py; gate_cache_lower_n170.json) cell (a) s198_injc_s1 = s185_rms_s1's exact args + --cache_lower (all-cached family comparator), RTX 3090, seed 1; then dir177 / auxdone / tshift / normcap
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s198_injc_s1 boxes.nested170 --arm inject --think_k 8 --aux_step 1.0 --aux_fade 48000,48000 --fast_add --seed 1 --steps 48000 --kprimes 0,1,4,8,12,16,24,32 --path_indep --add_norm rms --cache_lower --ckpt_every 1000 --auto_micro
+boxes/runs_fsq/s198_injc_s1_pkg boxes.halt173 --run boxes/runs_fsq/s198_injc_s1 --dir177 --bs 125
+boxes/runs_fsq/s198_injc_s1_auxdone boxes.halt173 --run boxes/runs_fsq/s198_injc_s1 --auxdone --bs 125
+boxes/runs_fsq/s198_injc_s1_tshift boxes.halt173 --run boxes/runs_fsq/s198_injc_s1 --tshift --bs 125
+boxes/runs_fsq/s198_injc_s1_normcap boxes.halt173 --run boxes/runs_fsq/s198_injc_s1 --normcap --bs 125
