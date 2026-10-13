@@ -1,0 +1,181 @@
+{
+ "by_n": {
+  "4": {
+   "real3_prompt2": {
+    "real_t": 3,
+    "prompt_t": 2,
+    "done": 0.0,
+    "done_and_correct": 0.0
+   },
+   "real3_prompt3": {
+    "real_t": 3,
+    "prompt_t": 3,
+    "done": 0.0,
+    "done_and_correct": 0.0
+   },
+   "real3_prompt4": {
+    "real_t": 3,
+    "prompt_t": 4,
+    "done": 0.0,
+    "done_and_correct": 0.0
+   },
+   "real4_prompt3": {
+    "real_t": 4,
+    "prompt_t": 3,
+    "done": 1.0,
+    "done_and_correct": 0.834
+   },
+   "real4_prompt4": {
+    "real_t": 4,
+    "prompt_t": 4,
+    "done": 1.0,
+    "done_and_correct": 0.838
+   },
+   "real4_prompt5": {
+    "real_t": 4,
+    "prompt_t": 5,
+    "done": 1.0,
+    "done_and_correct": 0.836
+   },
+   "real5_prompt4": {
+    "real_t": 5,
+    "prompt_t": 4,
+    "done": 1.0,
+    "done_and_correct": 0.838
+   },
+   "real5_prompt5": {
+    "real_t": 5,
+    "prompt_t": 5,
+    "done": 1.0,
+    "done_and_correct": 0.848
+   },
+   "real5_prompt6": {
+    "real_t": 5,
+    "prompt_t": 6,
+    "done": 1.0,
+    "done_and_correct": 0.843
+   },
+   "n_items": 1000
+  },
+  "6": {
+   "real5_prompt4": {
+    "real_t": 5,
+    "prompt_t": 4,
+    "done": 0.0,
+    "done_and_correct": 0.0
+   },
+   "real5_prompt5": {
+    "real_t": 5,
+    "prompt_t": 5,
+    "done": 0.0,
+    "done_and_correct": 0.0
+   },
+   "real5_prompt6": {
+    "real_t": 5,
+    "prompt_t": 6,
+    "done": 0.052,
+    "done_and_correct": 0.011
+   },
+   "real6_prompt5": {
+    "real_t": 6,
+    "prompt_t": 5,
+    "done": 0.937,
+    "done_and_correct": 0.448
+   },
+   "real6_prompt6": {
+    "real_t": 6,
+    "prompt_t": 6,
+    "done": 1.0,
+    "done_and_correct": 0.49
+   },
+   "real6_prompt7": {
+    "real_t": 6,
+    "prompt_t": 7,
+    "done": 1.0,
+    "done_and_correct": 0.496
+   },
+   "real7_prompt6": {
+    "real_t": 7,
+    "prompt_t": 6,
+    "done": 1.0,
+    "done_and_correct": 0.489
+   },
+   "real7_prompt7": {
+    "real_t": 7,
+    "prompt_t": 7,
+    "done": 1.0,
+    "done_and_correct": 0.506
+   },
+   "real7_prompt8": {
+    "real_t": 7,
+    "prompt_t": 8,
+    "done": 1.0,
+    "done_and_correct": 0.49
+   },
+   "n_items": 1000
+  },
+  "8": {
+   "real7_prompt6": {
+    "real_t": 7,
+    "prompt_t": 6,
+    "done": 0.0,
+    "done_and_correct": 0.0
+   },
+   "real7_prompt7": {
+    "real_t": 7,
+    "prompt_t": 7,
+    "done": 0.0,
+    "done_and_correct": 0.0
+   },
+   "real7_prompt8": {
+    "real_t": 7,
+    "prompt_t": 8,
+    "done": 0.931,
+    "done_and_correct": 0.109
+   },
+   "real8_prompt7": {
+    "real_t": 8,
+    "prompt_t": 7,
+    "done": 0.203,
+    "done_and_correct": 0.056
+   },
+   "real8_prompt8": {
+    "real_t": 8,
+    "prompt_t": 8,
+    "done": 1.0,
+    "done_and_correct": 0.238
+   },
+   "real8_prompt9": {
+    "real_t": 8,
+    "prompt_t": 9,
+    "done": 0.0,
+    "done_and_correct": 0.0
+   },
+   "real9_prompt10": {
+    "real_t": 9,
+    "prompt_t": 10,
+    "done": 0.001,
+    "done_and_correct": 0.0
+   },
+   "real9_prompt8": {
+    "real_t": 9,
+    "prompt_t": 8,
+    "done": 1.0,
+    "done_and_correct": 0.246
+   },
+   "real9_prompt9": {
+    "real_t": 9,
+    "prompt_t": 9,
+    "done": 0.0,
+    "done_and_correct": 0.0
+   },
+   "n_items": 1000
+  }
+ },
+ "run": "boxes/runs_fsq/s185_rms_s3",
+ "kind": "nested",
+ "eval_dtype": "torch.bfloat16",
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "sec": 9,
+ "def": "cells real<t>_prompt<p>: M_t after exactly t real passes (t in n-1..n+1), aux greedy 2 tokens with pass token p (t-1..t+1); done = one number token then EOT; done_and_correct = done and the number is the answer"
+}
