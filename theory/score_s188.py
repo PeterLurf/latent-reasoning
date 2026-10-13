@@ -73,6 +73,14 @@ def main():
             rd += "; s2 opens" if r2.get("status") != "done" else "; s2 %s, LONG-STABLE %s" % (label(r2), r2["long_stable"])
             res["c6_claim"] = None if r2.get("status") != "done" else bool(r1["long_stable"] and label(r2) == "JOINT" and r2["long_stable"])
             rd += "; C6 CLAIM (JOINT + LONG-STABLE, 2 / 2) %s" % ("pending s2" if res["c6_claim"] is None else res["c6_claim"])
+    try:                                                                    # basin-entry flag (pinned before output; theory/basin_entry.py; descriptive)
+        import basin_entry as BE
+        if os.path.exists(os.path.join(R, "s188_rwwin_s1", "log.jsonl")):
+            res["entry"] = {c: BE.confounded("s188_rwwin_s1", c) for c in ('s184_reweight_s1', 's182_window_s1', 's182_window_s2')}
+            rd += "; entry(0.5/0.1) cell %s vs " % ((res["entry"]['s184_reweight_s1']["cell"]["entry_0.5"], res["entry"]['s184_reweight_s1']["cell"]["entry_0.1"]),) + ", ".join(
+                "%s %s/%s%s" % (c, v["comp"]["entry_0.5"], v["comp"]["entry_0.1"], " CONFOUNDED-BY-ENTRY" if v["confounded_by_entry"] else "") for c, v in res["entry"].items())
+    except Exception as ex:                                                 # noqa: BLE001  (descriptive; never blocks the reading)
+        rd += "; entry flag unavailable (%s)" % ex
     res["reading"] = rd; print("READING:", rd)
     if ERRORS:
         print("ERRORS:", ERRORS)
