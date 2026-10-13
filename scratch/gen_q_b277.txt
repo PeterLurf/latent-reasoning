@@ -1,0 +1,7 @@
+# THEORY §193 RMS x WINDOW (8433d73f; Audit-agreed, ~$5-7; scorer theory/score_s193.py; gate_rmswin/gate.json): s193_rmswin_s1 = s182_window_s1's exact args + --add_norm rms (RTX 3090, uncached, ~27 h); then dir177 / auxdone / tshift
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s193_rmswin_s1 boxes.nested170 --arm inject --think_k 12 --aux_step 1.0 --aux_fade 48000,48000 --k_window 1,4 --kmatch_impl masked --fast_add --seed 1 --steps 48000 --kprimes 0,1,4,8,12,16,24,32 --path_indep --add_norm rms --ckpt_every 1000 --auto_micro
+boxes/runs_fsq/s193_rmswin_s1_pkg boxes.halt173 --run boxes/runs_fsq/s193_rmswin_s1 --dir177 --bs 125
+boxes/runs_fsq/s193_rmswin_s1_auxdone boxes.halt173 --run boxes/runs_fsq/s193_rmswin_s1 --auxdone --bs 125
+boxes/runs_fsq/s193_rmswin_s1_tshift boxes.halt173 --run boxes/runs_fsq/s193_rmswin_s1 --tshift --bs 125
