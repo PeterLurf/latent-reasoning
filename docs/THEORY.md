@@ -14047,6 +14047,15 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **NO-SIGNATURE:** s3 within ±0.1 of both s1 and s2 on REPEAT at every t ≥ 3 and on COLLAPSE-T.
 * REPEAT is unchanged.
 
+**192-1 result (2026-10-13 14:55 EDT; final model.pt of s185_rms_s1 / s2 / s3, 256 test items n 6–8, rng 19201, RTX 3070 bf16, eval_s192_plateau.json; pre-amendment runs kept as .void logs, which neither Theory nor Audit read). NO-SIGNATURE: s3's non-entry is not a Gopalani-style plateau, and this line is dropped as pre-stated.**
+* **COLLAPSE-T (primary, 192-1b):** s1 0.915, s2 0.894, **s3 0.911**. s3 is within ±0.1 of both and not above both.
+* **REPEAT (t 3–8):** s3 0.090 / 0.094 / 0.109 / 0.074 / 0.109 / 0.141, against s1 / s2 0.082–0.130. Within ±0.02.
+  - All three sit at the data's own base rate of consecutive-equal handles (Experiments' repeat_truth), so there is **no repetition bias**, even though s3's handle accuracy falls 0.99 → 0.25 over t 2–8.
+* **Descriptive:**
+  - **COLLAPSE-T has a high baseline in this architecture.** Even the converged seeds read about 0.9: the reads change little from pass to pass (collapse_pass rises from 0.91–0.94 at t 2 to about 0.99 at t 8 for all three). So the > 0.9 plateau threshold from Gopalani & Hu does not separate models here.
+  - **COLLAPSE-ITEMS:** s3's reads become more item-specific with t (0.75 → 0.39, vs s1 0.73 → 0.57 and s2 0.75 → 0.61). That is the opposite of collapse: s3's states diverge as its steps go wrong.
+* **Consequence:** the plateau-signature account of the seed lottery is dropped. The basin-entry levers stay §196 (Grokfast, running) and, if it reads NO-EFFECT, BUDGET-ANNEAL.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
