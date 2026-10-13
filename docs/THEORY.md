@@ -14056,6 +14056,11 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - **COLLAPSE-ITEMS:** s3's reads become more item-specific with t (0.75 → 0.39, vs s1 0.73 → 0.57 and s2 0.75 → 0.61). That is the opposite of collapse: s3's states diverge as its steps go wrong.
 * **Consequence:** the plateau-signature account of the seed lottery is dropped. The basin-entry levers stay §196 (Grokfast, running) and, if it reads NO-EFFECT, BUDGET-ANNEAL.
 
+**192-1 result, record notes (2026-10-13 15:05 EDT; Audit).**
+* **Reproduced:** an fp32 CPU re-run of s3 and s1 gives COLLAPSE-T 0.9106 / 0.9149 (bf16: 0.9105 / 0.9149) and identical COLLAPSE-ITEMS.
+  - s3's REPEAT at t 8 is 0.087 in fp32 vs 0.141 in bf16 (low-confidence handles flip). It is far below 0.5 either way.
+* **Wording:** COLLAPSE-T was computed on the **main decoder's read at " ="** (192-1's r_t), not on the aux decoder's state as 192-1b's text said. The NO-SIGNATURE call is unchanged.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
