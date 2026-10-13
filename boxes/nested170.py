@@ -277,6 +277,27 @@ class InjectN(torch.nn.Module):
         return x[:, len(pre):].cpu().numpy()
 
 
+def grokfast_ema(named, ema, alpha, lamb, norms=False):
+    """§196 GROKFAST (ironjr/grokfast gradfilter_ema; Theory 78487d7a): per parameter h <- alpha * h + (1 - alpha) * g, h initialised from the first
+    gradient (h = g at step 1), then g <- g + lamb * h in place on p.grad. Called after backward, before clip_grad_norm_. norms -> (||g|| before the
+    filter, ||lamb * h||) as global L2 norms (one sync), else (None, None)."""
+    g2, s2 = [], []
+    for n_, p_ in named:
+        if p_.grad is None:
+            continue
+        g_ = p_.grad.detach()
+        if norms:
+            g2.append(g_.float().pow(2).sum())
+        h_ = ema.get(n_, g_)                                                # the reference's arithmetic exactly (init h = g, then the update also at step 1)
+        ema[n_] = h_ * alpha + g_ * (1 - alpha)
+        if norms:
+            s2.append((ema[n_] * lamb).float().pow(2).sum())
+        p_.grad.add_(ema[n_] * lamb)
+    if not norms or not g2:
+        return None, None
+    return float(torch.stack(g2).sum().sqrt()), float(torch.stack(s2).sum().sqrt())
+
+
 def kmatch_loss(m, items, kitem, dev, ac, masked=True):
     """§177 (f) (notes 177-4 / 177-5): the answer CE (mean over items) with item i thinking kitem[i] passes -> (loss, final S in item order).
     masked (the training form): ONE batch for K_max passes; after pass t each item's state is the new one only while t <= its K (a state-level select,
@@ -449,6 +470,8 @@ def main():
     ap.add_argument("--steps", type=int, default=48000); ap.add_argument("--bs", type=int, default=64); ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--n_max_train", type=int, default=8); ap.add_argument("--micro", type=int, default=1); ap.add_argument("--ckpt_passes", action="store_true")
     ap.add_argument("--mem_write", default="top", choices=["top"]); ap.add_argument("--write_mix_start", type=int, default=2000); ap.add_argument("--write_mix_end", type=int, default=6000)
+    ap.add_argument("--grokfast", default="", choices=["", "ema"], help="§196: Grokfast EMA gradient filter (grokfast_ema) after backward, before the clip; '' = off")
+    ap.add_argument("--gf_alpha", type=float, default=0.98); ap.add_argument("--gf_lamb", type=float, default=2.0)
     ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", default=None); ap.add_argument("--log_every", type=int, default=100)
     ap.add_argument("--cot_eval_bs", type=int, default=64, help="TEXT-COT generation batch (KV cache; b223 OOMed at 250 on n = 16 chains)"); ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt (no training; writes args_eval.json; model.pt / args.json / log untouched)"); ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--per_n", type=int, default=1000); ap.add_argument("--serial_pool", type=int, default=2200); ap.add_argument("--auto_micro", action="store_true")
     ap.add_argument("--mem_budget", type=float, default=21.0); ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--time_steps", type=int, default=0, help="cost check: train this many steps, report s/step, exit")
@@ -713,13 +736,15 @@ def main():
         info["aux_decoder"] = ("the SAME GPT-2 trunk and LM head as the main decoder (shared weights, no new parameters), read-only on M_t via fwd_read: "
                                "[EOT, ' Step', ' t', ' :'] + e_{t+1} + EOT (teacher-forced); no problem text, no write, never fed back; dropped at test")
     json.dump(info, open(os.path.join(a.out, "args_eval.json" if a.eval_only else (("args_resume_%d.json" % int(time.time())) if a.resume else "args.json")), "w", newline="\n"), indent=1)
-    params = m if m is not None else g; opt = make_opt(params, a.lr); step0 = 1; n_nonfinite = 0; hist = []; wg_hist = []; wwin = []; wlast = []; gn_hist = []; gadd_hist = []; zmin_hist = []; gn_log = []   # gn_log: every step's pre-clip norm (log only; Theory / Audit 2026-10-13)
+    params = m if m is not None else g; opt = make_opt(params, a.lr); step0 = 1; n_nonfinite = 0; hist = []; wg_hist = []; wwin = []; wlast = []; gn_hist = []; gadd_hist = []; zmin_hist = []; gn_log = []; gf_ema = {}   # gn_log: every step's pre-clip norm (log only; Theory / Audit 2026-10-13)
     log = open(os.path.join(a.out, "log.jsonl"), "a" if (a.resume or a.eval_only) else "w", newline="\n"); t0 = time.time()
     if a.resume:
         ck = torch.load(a.resume, map_location=dev, weights_only=False); params.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"]); rng.bit_generator.state = ck["np_rng"]
         step0 = ck["step"] + 1; n_nonfinite = ck["n_nonfinite"]; wg_hist = ck.get("wg_hist", []); gn_hist = list(ck.get("gn_hist", [])); gn_log = list(ck.get("gn_log", [])); t0 = time.time() - ck["elapsed"]
         if KW and "rng_kw" in ck:                                           # older checkpoints lack it: the K stream then restarts (not bitwise)
             rng_kw.bit_generator.state = ck["rng_kw"]; kcount = ck.get("kcount", kcount)
+        if a.grokfast:                                                      # §196: the EMA state continues (absent -> re-initialised from the next gradient)
+            gf_ema = {k_: v_.to(dev) for k_, v_ in ck.get("gf_ema", {}).items()}
         log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
     elif m is not None and K > 0:                                           # note 147-2: g_add calibration at the think hand-offs
         its = train_items(np.random.default_rng(17001), 64, a.n_max_train, set()); x, msk = m.think_inputs(its, dev); m.mem.norms = []
@@ -734,7 +759,18 @@ def main():
         sec_ = [r_["sec"] for r_ in lg_ if "sec" in r_]; t0 = time.time() - (sec_[-1] if sec_ else 0)
         wg_hist = [{"step": r_["step"], "mean": r_["write_grad_norm"], "spike_100x_floor": bool(r_.get("write_grad_spike_100x_floor", False)), "from_log": True}
                    for r_ in lg_ if "write_grad_norm" in r_]                 # 2026-10-10: log records -> the training wg_hist form (the eval reads spike_100x_floor)
+    gf_named = [(n_, p_) for n_, p_ in params.named_parameters() if p_.requires_grad] if a.grokfast else []; gf_rec = {"on": False, "maxlogit": None}
+    if a.grokfast and m is not None:                                        # §196 log field: the answer head's max logit on the step's batch (logging steps only)
+        _dl_orig = m.dec_logits
+
+        def _dl_rec(S, items, dev_):
+            lg_ = _dl_orig(S, items, dev_)
+            if gf_rec["on"]:
+                v_ = float(lg_.detach().max()); gf_rec["maxlogit"] = v_ if gf_rec["maxlogit"] is None else max(gf_rec["maxlogit"], v_)
+            return lg_
+        m.dec_logits = _dl_rec
     for step in range(step0, last + 1):
+        gf_log = a.grokfast and (step % a.log_every == 0 or step == a.steps); gf_rec["on"] = bool(gf_log); gf_rec["maxlogit"] = None; gf_upd = None
         for gr in opt.param_groups:
             gr["lr"] = lr_at(a.lr, gr, step, a.steps) if a.warmup == 100 else lr_at(a.lr, gr, step, a.steps) / min(1, step / 100) * min(1, step / a.warmup)   # §178: --warmup
         params.train()
@@ -770,6 +806,8 @@ def main():
         if m is not None:
             from boxes.deltas5 import write_grad_norm
             wwin.append(write_grad_norm(m))
+        if a.grokfast:                                                      # §196: backward -> filter -> clip -> AdamW
+            gf_g, gf_s = grokfast_ema(gf_named, gf_ema, a.gf_alpha, a.gf_lamb, norms=gf_log)
         gn = torch.nn.utils.clip_grad_norm_(params.parameters(), 1.0); gn_log.append(float(gn))
         if a.aux_reweight or a.add_norm:                                    # §184 / §185: the pre-clip grad norm per step (clip fires above 1.0)
             gn_hist.append(float(gn))
@@ -787,7 +825,10 @@ def main():
         if not (math.isfinite(tot) and bool(torch.isfinite(gn))):
             n_nonfinite += 1; opt.zero_grad(); log.write(json.dumps({"step": step, "nonfinite": 1}) + "\n"); log.flush()
         else:
+            gf_pre = [p_.detach().clone() for _, p_ in gf_named] if gf_log else None   # §196 log field: the AdamW update norm (logging steps only)
             opt.step(); hist.append(tot)
+            if gf_pre is not None:
+                gf_upd = float(torch.stack([(p_.detach() - q_).float().pow(2).sum() for (_, p_), q_ in zip(gf_named, gf_pre)]).sum().sqrt()); del gf_pre
         if a.eval_at and step == a.eval_at:                                 # Theory 7caa3a82 (§174's matched budget): acc_by_n at this step, no checkpoint kept
             params.eval(); Ne = np.array([it["n"] for it in TE]); Ce = evaluate_n(TE) == np.array([it["t"] for it in TE])
             e_ = {"step": step, "acc_by_n": {str(n): float(Ce[Ne == n].mean()) for n in range(1, 17)}}
@@ -807,6 +848,9 @@ def main():
                 w_rec = {"step": step, "mean": float(np.mean(wwin)), "max": mx_, "median_prev_1k": md_, "spike_100x_floor": bool(late and mx_ > 100 * md_ > 0 and mx_ > 1.0)}
                 wlast.extend(wwin); del wlast[:-int(1000 * sc) or None]; wwin = []; wg_hist.append(w_rec)
                 rec.update({"gamma": float(m.mem.gamma), "fade": float(m.mem.fade), "write_grad_norm": w_rec["mean"], "write_grad_spike_100x_floor": w_rec["spike_100x_floor"]})
+            if gf_log:                                                      # §196: slow share, AdamW update norm, answer max logit, total weight norm
+                rec.update({"gf_slow_share": (gf_s / gf_g) if gf_g else None, "gf_update_norm": gf_upd, "gf_ans_max_logit": gf_rec["maxlogit"],
+                            "gf_weight_norm": float(torch.stack([p_.detach().float().pow(2).sum() for _, p_ in gf_named]).sum().sqrt())})
             if gn_log:                                                      # pre-clip total grad norm at this step + the clip share of the last 100 steps (log only)
                 rec.update({"gn_preclip": gn_log[-1], "clip_frac_100": float(np.mean([v_ > 1.0 for v_ in gn_log[-100:]]))})
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
@@ -815,7 +859,7 @@ def main():
             if os.path.exists(cp):
                 os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))
             torch.save({"model": params.state_dict(), "opt": opt.state_dict(), "np_rng": rng.bit_generator.state, "step": step, "n_nonfinite": n_nonfinite, "wg_hist": wg_hist, "gn_hist": gn_hist, "gn_log": gn_log,
-                        **({"rng_kw": rng_kw.bit_generator.state, "kcount": kcount} if KW else {}),   # 2026-10-13: a WINDOW resume continues the same K draws
+                        **({"rng_kw": rng_kw.bit_generator.state, "kcount": kcount} if KW else {}), **({"gf_ema": gf_ema} if a.grokfast else {}),   # 2026-10-13: a WINDOW resume continues the same K draws
                         "elapsed": time.time() - t0}, cp)
     if a.time_steps:                                                        # Audit's cost check
         sps = (time.time() - tt0) / max(1, last - step0 + 1); json.dump({"arm": a.arm, "think_k": K, "steps_timed": last - step0 + 1, "sec_per_step": sps, "est_hours_48k": sps * a.steps / 3600,
