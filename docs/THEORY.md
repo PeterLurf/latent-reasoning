@@ -13709,6 +13709,11 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **Seed spread:** as with §184 (s1 / s2 depth 0.486 / 0.665) and RMS (0.587 / 0.662), seed 2 is the stronger seed in every arm run on both. Single-seed comparisons are only meaningful same-seed.
 * **For §188** (REWEIGHT × WINDOW, s1, landing about 01:00): its registered comparator is WINDOW s1. WINDOW s2 is read beside it, per 188-3.
 
+**WINDOW s2, 187-3 rows (2026-10-12 22:43 EDT; descriptive; 4060, 53168b08).** Mean handle at t 3–6, nesting ≤ 2, n 9 / 10 / 11 / 12: 0.998 / 0.978 / 0.861 / 0.643, onsets 9 / 9 / 6 / 4 (s1: 0.978 → 0.682, onsets 9 / 7 / 6 / 4).
+* WINDOW is size-keyed in both seeds.
+* The window gives stability (§182, 2 / 2) but does not remove size-keying. That is RMS's contribution (187-6).
+* This is context for §188 (REWEIGHT × WINDOW), which adds neither RMS nor NOPASS.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
