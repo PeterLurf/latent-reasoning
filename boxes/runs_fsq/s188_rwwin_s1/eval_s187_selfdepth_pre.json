@@ -1,0 +1,146 @@
+{
+ "by_n": {
+  "9": {
+   "n_items": 1000,
+   "kprime_answer": 11,
+   "keep_rate": 0.0,
+   "n_kept": 0,
+   "chain_precision": null,
+   "answer_precision": null,
+   "all_items": {
+    "chain_exact": 0.0,
+    "answer_acc": 0.28,
+    "halt_at_n": 0.0,
+    "final_eq_answer": 0.019,
+    "no_halt": 0.938,
+    "answer_acc_kprime_n4": 0.276,
+    "answer_n2_eq_n4": 0.833
+   },
+   "strict": {
+    "def": "keep AND answer at K' n+2 == answer at K' n+4",
+    "keep_rate": 0.0,
+    "n_kept": 0,
+    "chain_precision": null,
+    "answer_precision": null
+   },
+   "halt_hist": {
+    "8": 60,
+    "12": 2,
+    "16": 938
+   },
+   "components": {
+    "i_answer_agree": {
+     "keep_rate": 0.019,
+     "n_kept": 19,
+     "chain_precision": 0.0,
+     "answer_precision": 0.5789473684210527
+    },
+    "ii_halt_at_n": {
+     "keep_rate": 0.0,
+     "n_kept": 0,
+     "chain_precision": null,
+     "answer_precision": null
+    },
+    "iii_kprime_agree": {
+     "keep_rate": 0.833,
+     "n_kept": 833,
+     "chain_precision": 0.0,
+     "answer_precision": 0.30732292917166865
+    },
+    "i_and_iii": {
+     "keep_rate": 0.018,
+     "n_kept": 18,
+     "chain_precision": 0.0,
+     "answer_precision": 0.6111111111111112
+    },
+    "base_i_and_ii": {
+     "keep_rate": 0.0,
+     "n_kept": 0,
+     "chain_precision": null,
+     "answer_precision": null
+    },
+    "strict_i_ii_iii": {
+     "keep_rate": 0.0,
+     "n_kept": 0,
+     "chain_precision": null,
+     "answer_precision": null
+    }
+   },
+   "components_def": "i: aux bare number == answer at K' n+2; ii: halt t == n; iii: answer n+2 == answer n+4"
+  },
+  "10": {
+   "n_items": 1000,
+   "kprime_answer": 12,
+   "keep_rate": 0.0,
+   "n_kept": 0,
+   "chain_precision": null,
+   "answer_precision": null,
+   "all_items": {
+    "chain_exact": 0.0,
+    "answer_acc": 0.223,
+    "halt_at_n": 0.0,
+    "final_eq_answer": 0.033,
+    "no_halt": 0.895,
+    "answer_acc_kprime_n4": 0.219,
+    "answer_n2_eq_n4": 0.795
+   },
+   "strict": {
+    "def": "keep AND answer at K' n+2 == answer at K' n+4",
+    "keep_rate": 0.0,
+    "n_kept": 0,
+    "chain_precision": null,
+    "answer_precision": null
+   },
+   "halt_hist": {
+    "8": 105,
+    "16": 895
+   },
+   "components": {
+    "i_answer_agree": {
+     "keep_rate": 0.033,
+     "n_kept": 33,
+     "chain_precision": 0.0,
+     "answer_precision": 0.3333333333333333
+    },
+    "ii_halt_at_n": {
+     "keep_rate": 0.0,
+     "n_kept": 0,
+     "chain_precision": null,
+     "answer_precision": null
+    },
+    "iii_kprime_agree": {
+     "keep_rate": 0.795,
+     "n_kept": 795,
+     "chain_precision": 0.0,
+     "answer_precision": 0.2440251572327044
+    },
+    "i_and_iii": {
+     "keep_rate": 0.029,
+     "n_kept": 29,
+     "chain_precision": 0.0,
+     "answer_precision": 0.3793103448275862
+    },
+    "base_i_and_ii": {
+     "keep_rate": 0.0,
+     "n_kept": 0,
+     "chain_precision": null,
+     "answer_precision": null
+    },
+    "strict_i_ii_iii": {
+     "keep_rate": 0.0,
+     "n_kept": 0,
+     "chain_precision": null,
+     "answer_precision": null
+    }
+   },
+   "components_def": "i: aux bare number == answer at K' n+2; ii: halt t == n; iii: answer n+2 == answer n+4"
+  }
+ },
+ "run": "boxes/runs_fsq/s188_rwwin_s1",
+ "kind": "nested",
+ "eval_dtype": "torch.bfloat16",
+ "passes": 16,
+ "gpu": "NVIDIA GeForce RTX 3070",
+ "sec": 83,
+ "def": "keep iff the aux chain's bare-number halt is at t = n AND its number equals the answer decoder at K' = n + 2; chain_precision = all n aux steps exact (greedy, + EOT) among kept; answer_precision = answer right among kept"
+}
