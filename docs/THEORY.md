@@ -277,7 +277,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 187 | AUX-NOPASS: §184 with the aux prompt's pass token removed; does pass-token keying limit depth beyond training (C2)? DEPTH = n 9–12 at K′ = n + 2 vs §184 (0.486) and TEXT-COT (0.535) | registered | **s1 TOKEN-WAS-THE-LIMIT, s2 reverses (depth 0.493 vs §184 s2 0.665): claim fails at 2 / 2; depth confounded by basin-entry timing** |
 | 188 | REWEIGHT × WINDOW: §182 WINDOW + §184's --aux_reweight in one cell; JOINT = DEEP + THINK-NECESSARY + STABLE (K′16); a C6 claim needs LONG-STABLE (K′24 ≥ K′8 − 0.05) at 2 / 2 | registered | **open** |
 | 189 | RMS-REP: §185 RMS at seed 2 (descriptive replication); SUBSTITUTE = DEEP + THINK-NECESSARY + depth n 9–12 ≥ §184 s2 − 0.05 / DEEP-ONLY / NOT REPLICATED | registered | **closed: SUBSTITUTE (s2 DEEP, depth 0.662 vs §184 s2 0.665; two-seed 0.625 vs 0.576)** |
-| 190 | RMS × NOPASS: §185 RMS + §187's --aux_nopass; LATE (t 7–8, n 10–12) vs RMS s1 0.648; COSTLY-AUX / COSTLY / TOKEN-FIX (opens s2; claim 2 / 2) / TOKEN-NOT-THE-LIMIT; FLAT and AUX-DONE descriptives | registered | **open** |
+| 190 | RMS × NOPASS: §185 RMS + §187's --aux_nopass; LATE (t 7–8, n 10–12) vs RMS s1 0.648; COSTLY-AUX / COSTLY / TOKEN-FIX (opens s2; claim 2 / 2) / TOKEN-NOT-THE-LIMIT; FLAT and AUX-DONE descriptives | registered | **s1 mixed (LATE 0.878 vs 0.648, DEPTH 0.659 vs 0.587); descriptively size-free early, no token edge, AUX-DONE tracks n to ~10** |
 | 191 | PROSQA-RELABEL: §168 s2 STEP-AUX and TEXT-COT with per-step name relabelling + premise shuffle + option swap (user-approved 2026-10-12); NAME-MEM (test ≥ 0.65) / UNDERFIT / CHANCE (STILL-RISING or FLAT) / mixed; TEXT-COT control ≥ 0.70 | registered | **open** |
 | 192 | RMS-SEED3: §185 RMS at seed 3 (SEED-1's rule before C2 wording); CONSISTENT (DEEP, depth ≥ 0.537) / LOW-SEED / NOT-DEEP; entry reported | registered | **open** |
 
@@ -13824,6 +13824,25 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - At n 10 the learned halt reaches accuracy 0.889 against 0.897 at fixed K′ = n + 2, with a mean halt of 9.66 (≥ n − 1).
   - On 173-2's thresholds that would be size-free at n 10. At n 12, accuracy matches (0.237 vs 0.224), but the mean halt (10.4) is below n − 1.
   - This is an AUX-DONE halt, not 173's answer-settling rule, so it is not a 173-2 reading.
+
+**§190 result, s1 (2026-10-13 01:23 EDT; s190_rmsnopass_s1, b274 → b275, resumed at 27k per 190-1, RTX 3090, 0 non-finite; score_s190; entry 22k / 25k vs RMS s1 19k / 29k, not confounded). Mixed by the rule: LATE rises past its bar, DEPTH does not. Descriptively, it is the most size-free model yet. With both pass counters removed, the remaining limit is content-level: items larger than any training item.**
+* **Registered reading:**
+  - COSTLY-AUX not met (in-distribution handle t 7–8 = 1.0); DEEP (n 3–8 at K′ 8 ≥ 0.999).
+  - LATE = **0.878** vs RMS s1's 0.648 (+0.230, ≥ +0.15).
+  - DEPTH = **0.659** vs 0.587 (+0.072, < +0.10). So TOKEN-FIX is not met, the reading is **mixed**, and **s2 does not open by the rule.**
+* **Descriptive:**
+  - **EDGE** (t 9–10, n 10–12) = **0.681 vs 0.105**: RMS's unseen-token collapse is gone.
+  - **Early steps size-free:** mean handle at t 3–6 reads 1.000 / 0.998 / 0.995 / 0.992 at n 9–12.
+  - **Per pass:** n 9 is 1.0 at every t ≤ 9; n 10 is ≥ 0.95 through t 10 (no onset); n 11 / 12 cross 0.80 at t = 8 (0.80 / 0.73), then 0.67–0.70 / 0.27–0.48.
+  - FLAT (n 12 ≥ n 9 − 0.05 *and* no onset before t = n − 1) fails by the letter on the n 11–12 onset at t = 8, and holds on the early-step clause.
+  - Stability: pooled K′ 8 / 16 / 24 / 32 reads 1.000 / 0.995 / 0.890 / 0.692. STABLE by §182's letter.
+  - **AUX-DONE tracks n past the edge** (190-2). The DONE-TRACKS-N label waits for the selfdepth rows.
+* **Reading:**
+  - The token (187-6a) and the magnitude counter (187-7 / 187-8 / 187-10) are gone, and the fixed-t edge with them.
+  - What fails now is n ≥ 11 at t ≥ 8: 8 reductions done with ≥ 3 still to do. In training, done + remaining never exceeded 8, so the state's own content is out of distribution once an item is larger than any training item.
+  - An architecture change cannot remove that. It needs larger items in training: a depth curriculum, or self-labelled depth (SELF-DEPTH, 187-4), whose precondition can now be re-read on §190, since the done signal no longer pins at t = 8.
+  - Answers (DEPTH) lag the step readout because n 11–12 need the failing late steps.
+* **s2:** not opened by the rule. A descriptive s2 replication (as §189 did for RMS) is proposed to Audit, given the one-seed descriptives (190-2, the per-pass curve) and SEED-1.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
