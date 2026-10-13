@@ -14073,6 +14073,15 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - Otherwise unclear.
   - This, not the 6k read, is BUDGET-ANNEAL's stage-1 precondition.
 
+**196-1 pilot, a correction and the 12k criterion pinned (2026-10-13 15:36 EDT; Audit; before the 12k continuation reports).**
+* **Correction:** the 6k note quoted single logged values at steps 1000 … 6000 (2.95 / 2.73 / 2.50 / 2.09 / 1.64 / 1.36) as "1k-bin" losses.
+  - The pinned bin means (basin_entry.py: mean over steps 1000b + 1 .. 1000(b + 1)) are **3.408 / 2.844 / 2.613 / 2.285 / 1.806 / 1.475**.
+  - On a falling curve the point value sits below the bin mean, which flatters every threshold. The 6k call is unchanged (1.475 ≥ 1.0, so STUCK-SMALL by the letter).
+* **COMPOSES-SMALL-12k / STUCK-SMALL-12k read the basin_entry bin MEAN,** not the step-12,000 logged value.
+  - "Loss < 0.5 by 12k" means entry(0.5) ≤ 12,000: every bin from entry through the last full bin (11,001–12,000) has a mean < 0.5.
+  - "≥ 1.0 at 12k" refers to the last full bin's mean.
+  - The handle criterion (≥ 0.95 at t 1–4, n ≤ 4) reads eval_12k.json.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
