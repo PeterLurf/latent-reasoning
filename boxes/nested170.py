@@ -424,6 +424,81 @@ def make_trunk(a, dev):
     return bc.GPT2KV(bc.random_gpt2_sd(L, D, H, gen), H).to(dev)
 
 
+def rs_run(g, x, pos, past, kvalid, mem=None, S=None, write=False):
+    """§198 (c) READ-SLOTS forward (after readslots171.run): x (B, T, D) input embeddings at absolute positions pos (B, T); past = per-layer (k, v)
+    (B, H, P0, hd) of the encoded input or None; kvalid (B, P0 + T) bool = the keys a query may see (past: the row's real input tokens; own: all), with
+    causal order among this call's own tokens. mem / S: the read on S entering block mem.layer; write: §155's top writes from these T positions.
+    -> (hidden after ln_f, per-layer (k, v) of this call's own tokens INCLUDING past, S_new)."""
+    import boxes.deltamem as DM
+    B, T, D = x.shape; hd = D // g.H; P0 = 0 if past is None else past[0][0].shape[2]; h = x + g.w("wpe.weight")[pos]; h6 = None; kv = []
+    own = torch.ones(T, T, dtype=torch.bool, device=x.device).tril()
+    allow = torch.cat([kvalid[:, None, :P0].expand(B, T, P0), own[None].expand(B, T, T) & kvalid[:, None, P0:]], 2)[:, None]   # (B, 1, T, P0 + T)
+    for i in range(g.L):
+        if mem is not None and i == mem.layer:
+            h6 = h; h = DM.read_fixed(mem, h, S)
+        pre = f"h.{i}."
+        a_ = Fn.layer_norm(h, (D,), g.w(pre + "ln_1.weight"), g.w(pre + "ln_1.bias"))
+        q, k, v = (a_ @ g.w(pre + "attn.c_attn.weight") + g.w(pre + "attn.c_attn.bias")).split(D, -1)
+        q, k, v = (t_.view(B, T, g.H, hd).transpose(1, 2) for t_ in (q, k, v))
+        if past is not None:
+            k = torch.cat([past[i][0].to(k.dtype), k], 2); v = torch.cat([past[i][1].to(v.dtype), v], 2)
+        kv.append((k, v))
+        o = Fn.scaled_dot_product_attention(q, k, v, attn_mask=allow)
+        h = h + o.transpose(1, 2).reshape(B, T, D) @ g.w(pre + "attn.c_proj.weight") + g.w(pre + "attn.c_proj.bias")
+        a_ = Fn.layer_norm(h, (D,), g.w(pre + "ln_2.weight"), g.w(pre + "ln_2.bias"))
+        mm = Fn.gelu(a_ @ g.w(pre + "mlp.c_fc.weight") + g.w(pre + "mlp.c_fc.bias"), approximate="tanh")
+        h = h + mm @ g.w(pre + "mlp.c_proj.weight") + g.w(pre + "mlp.c_proj.bias")
+    S_new = DM.write_seq(mem, h6, h, S) if write else None
+    return Fn.layer_norm(h, (D,), g.w("ln_f.weight"), g.w("ln_f.bias")), kv, S_new
+
+
+class RSEnc:
+    """§198 (c): one batch's encoded input (per-layer KV as a tuple: no pass can extend it), real-token mask and lengths."""
+    def __init__(self, kv, valid, L):
+        self.kv, self.valid, self.L = tuple(kv), valid, L
+
+
+class ReadSlotsN(InjectN):
+    """§198 (c) READ-SLOTS on nested (port of boxes/readslots171.ReadSlots; Theory e69bc32a): the input [EOT, expr] is encoded ONCE per batch with no
+    memory read (think_inputs; the RSEnc is cached on the model and reused by every slot pass and the decoder - n_encode counts encodes); a think pass =
+    M learned slot tokens (wte(' .') + N(0, 0.02^2)) after each row's own input (positions L_i .. L_i + M - 1), attending to that row's real input
+    tokens and causally to the slots, the read on the pass-start state entering mem.layer and the top writes from the slot positions (a fresh slot cache
+    per pass; no pass token anywhere in the slot input); the decoder = ' =' at position L_i after the input KV, reading the memory, seeing no slot. The
+    step aux decoder is InjectN's (memory only, no problem text). K' = 0: no slot pass, the decoder reads the zero memory."""
+    def __init__(self, g, layer=6, write="top", h_add=6, h_del=6, add_norm=None, n_slots=8):
+        super().__init__(g, layer, write, h_add, h_del, add_norm); assert write == "top"
+        with torch.no_grad():
+            e = g.w("wte.weight")[TID[" ."]].float()
+        self.slots = torch.nn.Parameter(e[None].repeat(n_slots, 1) + 0.02 * torch.randn(n_slots, e.shape[0], device=e.device))
+        self._enc_items, self._enc = None, None; self.n_encode = 0; self.n_slot_pass = 0
+
+    def encode(self, items, dev):
+        ids_, m_ = pad([[EOT] + ids(it["syms"]) for it in items]); x = torch.tensor(ids_, device=dev); valid = torch.tensor(m_, device=dev)
+        P0 = x.shape[1]; pos = torch.arange(P0, device=dev)[None].expand(len(items), P0)
+        _, kv, _ = rs_run(self.g, self.g.embed(x), pos, None, valid); self.n_encode += 1
+        return RSEnc(kv, valid, valid.sum(1))
+
+    def think_inputs(self, items, dev):
+        enc = self.encode(items, dev); self._enc_items, self._enc = items, enc; return enc, enc.valid
+
+    def lower(self, x):
+        raise AssertionError("--cache_lower does not apply to --arm readslots")
+
+    def write(self, S, enc, mask, h_low=None):
+        assert h_low is None and isinstance(enc, RSEnc) and S.shape[0] == enc.valid.shape[0]
+        B, M = S.shape[0], self.slots.shape[0]; P0 = enc.valid.shape[1]; dev = S.device
+        pos = enc.L[:, None] + torch.arange(M, device=dev)[None]; kvalid = torch.cat([enc.valid, torch.ones(B, M, dtype=torch.bool, device=dev)], 1)
+        _, kv2, S2 = rs_run(self.g, self.slots[None].expand(B, -1, -1).to(self.g.w("wte.weight").dtype), pos, enc.kv, kvalid, self.mem, S, write=True)
+        assert kv2[0][0].shape[2] == P0 + M and enc.kv[0][0].shape[2] == P0     # the slot KV lives only in kv2, dropped here
+        self.n_slot_pass += 1; return S2
+
+    def dec_logits(self, S, items, dev):
+        enc = self._enc if (items is self._enc_items and self._enc is not None and self._enc.valid.shape[0] == S.shape[0]) else self.encode(items, dev)
+        B = S.shape[0]; toks = torch.full((B, 1), TID[" ="], device=dev); kvalid = torch.cat([enc.valid, torch.ones(B, 1, dtype=torch.bool, device=dev)], 1)
+        h, _, _ = rs_run(self.g, self.g.embed(toks), enc.L[:, None], enc.kv, kvalid, self.mem, S)
+        return self.g.logits(h[:, 0]).float()
+
+
 def mem_geometry(a):
     """(memory layer, additive heads, delta heads): §170 = (6, 6, 6); §198 --mem_layer l -> (l, 6, 6) on the pretrained trunk; §178 scratch 'L,D,H'
     = (L // 2, D / 128, D / 128) (DH 64)."""
@@ -511,7 +586,7 @@ def step_recover(m, excl, TE, T, dev, ac, bs, n_fit=int(os.environ.get("NESTED17
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--arm", required=True, choices=["direct", "inject", "textcot"]); ap.add_argument("--think_k", type=int, default=0)
+    ap = argparse.ArgumentParser(); ap.add_argument("--arm", required=True, choices=["direct", "inject", "textcot", "readslots"]); ap.add_argument("--n_slots", type=int, default=8); ap.add_argument("--think_k", type=int, default=0)
     ap.add_argument("--steps", type=int, default=48000); ap.add_argument("--bs", type=int, default=64); ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--n_max_train", type=int, default=8); ap.add_argument("--micro", type=int, default=1); ap.add_argument("--ckpt_passes", action="store_true")
     ap.add_argument("--mem_write", default="top", choices=["top"]); ap.add_argument("--write_mix_start", type=int, default=2000); ap.add_argument("--write_mix_end", type=int, default=6000)
@@ -532,8 +607,8 @@ def main():
     ap.add_argument("--eval_at", type=int, default=0, help="also evaluate acc_by_n at this step -> eval_<k>k.json"); ap.add_argument("--aux_step", type=float, default=0.0, help="§175: lambda of the read-only step decoder CE (0 = off: the §170 path)"); ap.add_argument("--aux_fade", default="36000,48000", help="§175: lambda constant to the first step, then linear to 0 at the second"); ap.add_argument("--kmatch_impl", default="masked", choices=["masked", "bucketed"], help="§177 (f): note 177-5's masked single batch, or the per-K groups"); ap.add_argument("--add_norm", default="", choices=["", "den", "rms"], help="§185 ADD-NORM: the additive reads normalised by phi(q)^T z (den) or per-head RMS (rms); '' = off"); ap.add_argument("--aux_nopass", action="store_true", help="§187 AUX-NOPASS: the aux prompt [EOT, ' Step', ' :'] (no pass token) in training and every aux eval"); ap.add_argument("--aux_reweight", action="store_true", help="§184: the aux CE of pass t <= n weighted by AUX_W[t-1] (equal expected weight per pass position)"); ap.add_argument("--aux_hold", action="store_true", help="§182 HOLD: aux target e_{n+1} on passes n < t <= K (with --k_window and --aux_step)"); ap.add_argument("--kprimes", default="", help="§182: the K' set for s170.acc_by_n_kprime ('' = {0, 1, K/2, K, 2K})"); ap.add_argument("--path_indep", action="store_true", help="§182: s182.path_indep (K' = 16 from M_0 = 0 vs another item's 8-pass memory)"); ap.add_argument("--excl_min_n", type=int, default=1, help="note 178-3 (s178b): exclude test items from training only for n >= this (1 = §170's protocol)"); ap.add_argument("--scratch", default="", help="§178: 'L,D,H' -> a RANDOM-INIT GPT-2 trunk (no pretrained weights), memory after block L // 2 with D / 128 + D / 128 heads"); ap.add_argument("--warmup", type=int, default=100, help="LR warm-up steps (§178: 1000)"); ap.add_argument("--k_window", default="", help="§177 (f): 'lo,hi' -> each n-bucketed micro-batch runs K = n + U{lo..hi} think passes (inject)"); ap.add_argument("--fast_add", action="store_true", help="deltamem.FAST_ADD: the additive heads' pass writes as one sum (Audit 2026-10-09; scratch/gate_fastadd.py)"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes only"); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); a.task = "nested"
     assert not (a.aux_reweight and a.aux_hold), "§188: --aux_reweight with --aux_hold is not defined (reweight applies to the real steps only)"
-    import boxes.deltamem as DM_; DM_.FAST_ADD = bool(a.fast_add); os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale; K = a.think_k if a.arm == "inject" else 0
-    if a.arm != "inject":
+    import boxes.deltamem as DM_; DM_.FAST_ADD = bool(a.fast_add); os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale; K = a.think_k if a.arm in ("inject", "readslots") else 0
+    if a.arm not in ("inject", "readslots"):
         a.mem_write = a.write_mix_start = a.write_mix_end = None; a.think_k = 0
     from boxes import s5
     from boxes import core as bc
@@ -548,7 +623,10 @@ def main():
     EXCL |= {tuple(it["syms"]) for it in SPOOL}
     r_ex = np.random.default_rng(17899)                                     # note 178-3: the share of training draws surviving the exclusion, per n (own stream)
     a.excl_survive_by_n = {str(n_): round(float(np.mean([tuple(render(generate(r_ex, n_)[0])) not in EXCL for _ in range(2000)])), 4) for n_ in range(1, a.n_max_train + 1)}
-    m = InjectN(g, ML, a.mem_write, HA, HD, a.add_norm or None).to(dev) if a.arm == "inject" else None
+    if a.arm == "readslots":                                                # §198 (c)
+        assert not (a.cache_lower or a.k_window or a.anneal or a.grokfast), "--arm readslots: no --cache_lower / --k_window / --anneal / --grokfast"
+    m = ((ReadSlotsN(g, ML, a.mem_write, HA, HD, a.add_norm or None, a.n_slots) if a.arm == "readslots" else InjectN(g, ML, a.mem_write, HA, HD, a.add_norm or None)).to(dev)
+         if a.arm in ("inject", "readslots") else None)
     if m is not None:
         m.nopass = bool(a.aux_nopass)                                       # §187
 
@@ -747,7 +825,8 @@ def main():
     def s175_fields():
         pool = [it for it in TE if it["n"] <= 8]; te8 = [pool[i] for i in np.random.default_rng(17022).permutation(len(pool))[:1000]]
         pe = [it for it in TE if 9 <= it["n"] <= 12]; te12 = [pe[i] for i in np.random.default_rng(17023).permutation(len(pe))[:1000]]
-        acc8, role8, n8 = aux_eval(te8, K, K); acc12, _, n12 = aux_eval(te12, 16, 16); sr, sri = step_recover(m, EXCL, TE, K, dev, ac, a.eval_bs)
+        acc8, role8, n8 = aux_eval(te8, K, K); acc12, _, n12 = aux_eval(te12, 16, 16)
+        sr, sri = (None, "n/a for --arm readslots") if a.arm == "readslots" else step_recover(m, EXCL, TE, K, dev, ac, a.eval_bs)
         out = {"aux_acc_by_pass": acc8, "aux_acc_by_pass_ext": acc12, "aux_acc_by_role": role8, "step_recover": sr, "step_recover_info": sri,
                "n_by_pass": n8, "n_by_pass_ext": n12, "ext_kprime": 16, "items": {"n_le_8": {"n": len(te8), "seed": 17022}, "n_9_12": {"n": len(te12), "seed": 17023}}}
         if a.aux_hold:                                                      # §182 HOLD: the hold passes n < t <= K on the same n <= 8 items
@@ -800,7 +879,8 @@ def main():
         assert mc[-1]["peak_gib"] <= a.mem_budget
     info = {**vars(a), "train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version(), **env_info(), "hostprobe_sps": os.environ.get("HOSTPROBE_SPS"),
             "format": {"direct": "[EOT, expr, ' ='] -> the answer token", "inject": "think [EOT, expr, ' .'] (padded writes masked); decoder [EOT, expr, ' ='] -> answer (read-only)",
-                       "textcot": "[EOT, expr, ' ='] then ' e2 = e3 = ... = t' EOT (Feng; loss on all generated tokens)"}[a.arm]}
+                       "textcot": "[EOT, expr, ' ='] then ' e2 = e3 = ... = t' EOT (Feng; loss on all generated tokens)",
+                       "readslots": "§198 (c): input [EOT, expr] encoded once (no memory read); K passes of n_slots slot tokens after it (read + top writes); decoder ' =' after the input KV (read-only)"}[a.arm]}
     if a.eval_only:                                                         # Theory 2026-10-09: train_gpu / train_driver are the training run's (args.json); the eval GPU is "gpu"
         a0_ = json.load(open(os.path.join(a.out, "args.json"))); info["eval_gpu"], info["eval_driver"] = info["train_gpu"], info["train_driver"]
         info["train_gpu"], info["train_driver"] = a0_.get("train_gpu"), a0_.get("train_driver")
@@ -1012,13 +1092,21 @@ def main():
             for _ in range(n + 1 if KW else K):                             # §177 (f): K' = n + 1 per item
                 M_.step(int(round(L_)), 0, 0)
             M_.step(int(round(L_)), 0, 1)
+        elif a.arm == "readslots":                                          # §198 (c): input [EOT, expr] once; K passes of M slots after it; ' =' after it
+            Li_ = int(round(L_)) - 1; M_.step(Li_, 0, 0)
+            for _ in range(K):
+                M_.step(a.n_slots, Li_, 0)
+            M_.step(1, Li_, 1)
         else:
             M_.step(int(round(L_)), 0, 1)
             for j in range(int(round(res["cot_tokens_by_n"][str(n)])) - 1):
                 M_.step(1, int(round(L_)) + j, 1)
         cb[str(n)] = {"flops_trunk": M_.flops, "sequential_passes": M_.passes}
     res["compute_by_n"] = cb; res["compute_note"] = "boxes.core.Meter per item at the mean length of each n (trunk; the DeltaMem branch adds < 5% at these lengths)"
-    if a.arm == "inject":
+    if a.arm == "readslots":                                                # §198 (c) eval fields
+        res["readslots"] = {"L_mean": float(np.mean([len(it["syms"]) + 1 for it in TE])), "L_mean_by_n": {str(n): float(np.mean([len(it["syms"]) + 1 for it in TE if it["n"] == n])) for n in range(1, 17)},
+                            "n_slots": a.n_slots, "def": "L = encoded input tokens [EOT, expr]; FLOPs per item in compute_by_n (Meter: encode once, K slot passes of n_slots after it, ' =')"}
+    if a.arm in ("inject", "readslots"):
         s = {"acc_by_n_kprime": {}, "skip_pass": {}, "serial": {}, "write_grad_norm": wg_hist, "write_grad_spikes_floor": [x_ for x_ in wg_hist if x_["spike_100x_floor"]], "n_nonfinite": n_nonfinite}
         for kp in sorted({int(x_) for x_ in a.kprimes.split(",")} | {K} if a.kprimes else {0, 1, K // 2, K, 2 * K}):   # §182: --kprimes
             Ak = A_ if kp == K else inject_answers(TE, kp); s["acc_by_n_kprime"][str(kp)] = {str(n): float((Ak == T_)[N == n].mean()) for n in range(1, 17)}
@@ -1036,7 +1124,9 @@ def main():
             perm = np.random.default_rng(17201).permutation(len(rec_)); tnull = sorted(s["serial"])[0] if s["serial"] else None
             if tnull is not None:
                 Sn = inject_states([rec_[i] for i in perm], int(tnull)); gotn = inject_answers(rec_, K, override=(int(tnull), Sn)); s["serial_null"] = {"t": int(tnull), "hybrid": float((gotn == th).mean())}
-        if K:                                                               # note 170-2 (descriptive)
+        if K and a.arm == "readslots":
+            s["step_recover"], s["step_recover_info"] = None, "n/a for --arm readslots (dec_reads assumes InjectN's [EOT, expr, ' ='] read position)"
+        elif K:                                                             # note 170-2 (descriptive)
             s["step_recover"], s["step_recover_info"] = step_recover(m, EXCL, TE, K, dev, ac, a.eval_bs)
         res["s170"] = s
         if KW:                                                              # §177 (f) fields
@@ -1055,7 +1145,7 @@ def main():
             tl = ll[-max(2, len(ll) // 10):]; h_ = len(tl) // 2
             s7["train_loss_tail"] = {"first_half": float(np.mean(tl[:h_])) if h_ else None, "second_half": float(np.mean(tl[h_:])) if tl else None, "n_logged": len(tl)}
             res["s177"] = s7; json.dump(kcount, open(os.path.join(a.out, "kmatch_counts.json"), "w", newline="\n"), indent=1)
-        if a.path_indep and a.arm == "inject":                              # §182 s182.path_indep: K' = 16 from M_0 = 0 vs from another item's 8-pass memory
+        if a.path_indep and a.arm in ("inject", "readslots"):                              # §182 s182.path_indep: K' = 16 from M_0 = 0 vs from another item's 8-pass memory
             pool = [it for it in TE if 3 <= it["n"] <= 8]; its_ = [pool[i] for i in np.random.default_rng(18201).permutation(len(pool))[:500]]
             der = np.roll(np.arange(len(its_)), 1); S8 = inject_states(its_, 8)[der]; A0, A1, F0, F1 = [], [], [], []   # a fixed derangement (no fixed point)
             with torch.no_grad():
