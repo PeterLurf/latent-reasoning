@@ -75,6 +75,14 @@ def main():
             c["edge"] and round(c["edge"], 3), k["edge"] and round(k["edge"], 3))
         if a["label"] == "TOKEN-FIX":
             rd += "; s2 opens" if "label" not in res["s2"] else "; s2 %s -> claim %s" % (res["s2"]["label"], res["s2"]["label"] == "TOKEN-FIX")
+    try:                                                                    # basin-entry flag (pinned before output; theory/basin_entry.py; descriptive)
+        import basin_entry as BE
+        if os.path.exists(os.path.join(R, "s190_rmsnopass_s1", "log.jsonl")):
+            res["entry"] = {c: BE.confounded("s190_rmsnopass_s1", c) for c in ('s185_rms_s1',)}
+            rd += "; entry(0.5/0.1) cell %s vs " % ((res["entry"]['s185_rms_s1']["cell"]["entry_0.5"], res["entry"]['s185_rms_s1']["cell"]["entry_0.1"]),) + ", ".join(
+                "%s %s/%s%s" % (c, v["comp"]["entry_0.5"], v["comp"]["entry_0.1"], " CONFOUNDED-BY-ENTRY" if v["confounded_by_entry"] else "") for c, v in res["entry"].items())
+    except Exception as ex:                                                 # noqa: BLE001  (descriptive; never blocks the reading)
+        rd += "; entry flag unavailable (%s)" % ex
     res["reading"] = rd; print("READING:", rd)
     errs = S185.ERRORS + S187.ERRORS
     if errs:
