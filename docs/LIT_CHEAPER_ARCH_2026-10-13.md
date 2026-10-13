@@ -13,10 +13,11 @@ Literature session, for Theory (the request, for the user's "research an archite
 2. **The next lever is to move the recurrent interval up.**
    - Penelope loops only blocks [11, 16) of a 16-layer Llama-3 backbone and caches the lower 69%. Ours caches 6 / 12 = 50%.
    - With l_m = 9 we would cache 75%, so a pass costs 3 blocks instead of 6 (**about 2× cheaper per pass on top of `--cache_lower`**).
-   - That's a real architecture change (the memory reads and writes later), so it needs its own arm. No paper tests where the read layer should sit for depth generalisation.
+   - **Not free like `--cache_lower` (Audit):** it moves the memory read and write to block 9 and leaves only 3 blocks after the read, which changes what one pass can compute. It needs its own C1 test, like slots. No paper tests where the read layer should sit for depth generalisation.
 3. **Penelope's second cut:** within the interval, recur only on **8 interface + 2 readout slots** that attend to a **prompt-side KV cache computed once**. Per-pass tokens drop from T to 10.
    - The prompt cache is input-only, so it's constraint-safe.
-   - But it's a slot design: our READ-SLOTS (§171) failed. Treat it as a third step, not the first.
+   - **Correction (Audit, 2026-10-13):** §171 READ-SLOTS is *not* evidence against slots. It ran on 10-09 under the FINAL-only recipe, when every identical-input think design read ~0, INJECT included (§169 K8 0.001, g_add 2.9e-4; NORTH_STAR l.92 / l.145), before §175's step aux. So §171 doesn't separate a slot read from a full re-read.
+   - Penelope is a published **working** instance of slots over a once-computed prompt KV on a pretrained decoder (ProsQA / PrOntoQA / Deep ListOps), which counts in its favour. Like l_m = 9, it needs its own C1 test.
 4. **These violate "memory = the only cross-pass channel", so don't adopt them:**
    - **MELT 2605.07721:** one KV cache per layer shared across loops via a learned gate;
    - **LLA 2607.15456:** a KV cache compressed and carried across loops;
@@ -47,5 +48,4 @@ Perceiver-style slot priors (Perceiver 2103.03206, RIN 2212.11972, Q-Former 2301
 
 ## Suggested order
 1. **`--cache_lower` as the default** for every *new* family, with comparators cached too. It's free.
-2. **An l_m = 9 arm** (cache blocks 0–8). It's the Penelope interval choice, applied to us.
-3. **Only after that, Penelope-style slots-over-prompt-cache.** It's cheapest, but it's the riskiest given §171.
+2. **Two architecture arms, each with its own C1 test** (neither is free): **l_m = 9** (cache blocks 0–8; Penelope's interval choice) and **Penelope-style slots over a prompt KV cache** (the cheapest per pass). §171 doesn't rank one above the other (see the correction above).
