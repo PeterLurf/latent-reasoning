@@ -1,1 +1,4 @@
 # compacted 2026-10-12 13:08: done / claimed lines in c1_backlog_4060.archive.txt
+# 2026-10-12 22:12 4060: §182 WINDOW s2 (b268 landed) 187-3 rows n9-12, then auxdone
+5.0 boxes/runs_fsq/s182_window_s2/eval_s187_deepaux_items_n9_12.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_window_s2 --deepaux --deepaux_items_only --items_n 9,10,11,12 --items_tmax 14 --items_file eval_s187_deepaux_items_n9_12.json --bs 125 --device {DEV}
+5.0 boxes/runs_fsq/s182_window_s2/eval_s182_auxdone.json python -u -m boxes.halt173 --run boxes/runs_fsq/s182_window_s2 --auxdone --bs 125 --device {DEV}
