@@ -13950,6 +13950,11 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * gate_gnlog shows the training path is bitwise equal to the code s190 s1 ran on (flags-off equality; model.pt and existing log fields unchanged). So the comparability of §194 s2 with §190 s1 is unaffected.
 * s2 gains a full-run clip curve, which s1's resumed run lacks (190-1 addendum).
 
+**Note 168-19 (2026-10-13 08:45 EDT; operational).** 168-12 STEP-AUX-REWEIGHT (s168s2_stepauxrw_s1, b267) was **cancelled at about 08:50 on the user's instruction** ("check the reweighted runs, if they look bad just cancel them", relayed by Audit).
+* Its training log showed the same memorisation as STEP-AUX: answer_ce 3.5e-6 and aux_ce 6.3e-5 at step 11k, under 1e-3 from 7k.
+* There is no eval. The partial log is kept and committed as **aborted unread** (04d5b020).
+* 168-12's lever reading and 168-13 / 168-18's descriptive bands are **not read.** §168 step 2 closes on STEP-AUX's result (memorisation, 168-16 / 168-17). The ProsQA question continues in §191.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
