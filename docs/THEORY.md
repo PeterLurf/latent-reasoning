@@ -275,7 +275,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 185 | ADD-NORM: §182 NOFADE with the additive read normalised: DEN (φ(q)ᵀS / φ(q)ᵀz) or RMS (TransNormer's NormAttention); STABLE + NO-COST vs NOFADE (NORM-CLAMP: the unnormalised read's growth causes ~80% of overthinking) | registered | **closed: NO-FIX (both arms). Descriptive: RMS alone DEEP + depth n 9–12 0.587 (one seed; §189 replicates)** |
 | 186 | INTERLEAVE-BLIND-K4: §183 with 4 passes per token, the closing test of the mult interleave line; HIT / PARTLY vs §183, else the line closes (pre-registered stop) | **FAIL / NOT** (columns 3–7 0.210 vs 0.182; within-token passes idle, cos 0.993): **the mult interleave line closes** | closed |
 | 187 | AUX-NOPASS: §184 with the aux prompt's pass token removed; does pass-token keying limit depth beyond training (C2)? DEPTH = n 9–12 at K′ = n + 2 vs §184 (0.486) and TEXT-COT (0.535) | registered | **s1 TOKEN-WAS-THE-LIMIT, s2 reverses (depth 0.493 vs §184 s2 0.665): claim fails at 2 / 2; depth confounded by basin-entry timing** |
-| 188 | REWEIGHT × WINDOW: §182 WINDOW + §184's --aux_reweight in one cell; JOINT = DEEP + THINK-NECESSARY + STABLE (K′16); a C6 claim needs LONG-STABLE (K′24 ≥ K′8 − 0.05) at 2 / 2 | registered | **open** |
+| 188 | REWEIGHT × WINDOW: §182 WINDOW + §184's --aux_reweight in one cell; JOINT = DEEP + THINK-NECESSARY + STABLE (K′16); a C6 claim needs LONG-STABLE (K′24 ≥ K′8 − 0.05) at 2 / 2 | registered | **closed: NEITHER (s1 never converged: loss ~0.90, clip rate 1.0; CONFOUNDED-BY-ENTRY)** |
 | 189 | RMS-REP: §185 RMS at seed 2 (descriptive replication); SUBSTITUTE = DEEP + THINK-NECESSARY + depth n 9–12 ≥ §184 s2 − 0.05 / DEEP-ONLY / NOT REPLICATED | registered | **closed: SUBSTITUTE (s2 DEEP, depth 0.662 vs §184 s2 0.665; two-seed 0.625 vs 0.576)** |
 | 190 | RMS × NOPASS: §185 RMS + §187's --aux_nopass; LATE (t 7–8, n 10–12) vs RMS s1 0.648; COSTLY-AUX / COSTLY / TOKEN-FIX (opens s2; claim 2 / 2) / TOKEN-NOT-THE-LIMIT; FLAT and AUX-DONE descriptives | registered | **s1 mixed (LATE 0.878 vs 0.648, DEPTH 0.659 vs 0.587); descriptively size-free early, no token edge, AUX-DONE tracks n to ~10** |
 | 191 | PROSQA-RELABEL: §168 s2 STEP-AUX and TEXT-COT with per-step name relabelling + premise shuffle + option swap (user-approved 2026-10-12); NAME-MEM (test ≥ 0.65) / UNDERFIT / CHANCE (STILL-RISING or FLAT) / mixed; TEXT-COT control ≥ 0.70 | registered | **open** |
@@ -13911,6 +13911,21 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - Add n = 9 items with the model's own answers as labels (answer CE only; no aux targets past the trained steps). The precision at n 9 is 0.995.
   - It targets §190's remaining content-level size limit (e.g. done + remaining > 8).
   - It is drafted after §194 shows whether §190's behaviour replicates on s2.
+
+**§188 result, s1 (2026-10-13 02:48 EDT; s188_rwwin_s1, b269, RTX 3090, 48k, 0 non-finite, 456119b4; the tripwire confirms the reweight was live, aux_w_mean 1.302; score_s188). NEITHER by the rule. Descriptively, the run never converged: CONFOUNDED-BY-ENTRY against every comparator. The composition question is unanswered at this seed. The likely cause is clipping.**
+* **Registered reading: NEITHER.**
+  - Pooled n 3–8 K′ 8 / 16 / 24 / 32: 0.715 / 0.686 / 0.600 / 0.513.
+  - Not DEEP: n 3–8 at K′ 8 reads 0.998 / 0.937 / 0.806 / 0.674 / 0.504 / 0.369. Not STABLE; not LONG-STABLE. THINK-NECESSARY holds.
+  - DEPTH 0.199. s2 does not open.
+* **Basin entry (the pinned rule): never.** The 1k-bin training loss stays at about 0.90 to the end (minimum bin 0.900).
+  - CONFOUNDED-BY-ENTRY against §184 s1 (42k), WINDOW s1 (25k) and WINDOW s2 (17k).
+  - The handle decays from t 4 (0.93 → 0.38 at t 8), the under-trained signature.
+* **Likely cause:** the clip rate is **1.0**, so every step was clipped, with a median pre-clip gradient norm of 6.9.
+  - Compare §184 s1 at 0.98 (late entry, 42k) and §184 s2 at 0.62 (early entry, 20k).
+  - The window's longer K plus the reweight's large late-pass weights (w_8 = 8) inflate the aux gradient. Clipping at 1.0 then cuts the effective step about 7×, and the run stays on the plateau (Audit's 188 caution: "the reweight may be partly clipped away").
+* **Consequences:**
+  - REWEIGHT × WINDOW is not a viable recipe as specified.
+  - The C1 + C6 composition is tested by §193 (RMS × WINDOW, launching now). RMS needs no reweight, and both RMS seeds entered early.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

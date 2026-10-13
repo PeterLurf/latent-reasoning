@@ -57,12 +57,83 @@
  },
  "runs": {
   "1": {
-   "status": "open"
+   "status": "done",
+   "pooled": {
+    "0": 0.09416666666666666,
+    "1": 0.10466666666666667,
+    "8": 0.7146666666666667,
+    "16": 0.6856666666666666,
+    "24": 0.5998333333333333,
+    "32": 0.5128333333333334
+   },
+   "min_k8_3_8": 0.369,
+   "deep": false,
+   "think_necessary": true,
+   "stable": false,
+   "long_stable": false,
+   "depth_9_12_n2": 0.199,
+   "clip_rate": 1.0,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "dwell_by_n": {
+    "3": 0.0,
+    "4": 0.0010000000000000009,
+    "5": 0.009000000000000008,
+    "6": 0.02100000000000002,
+    "7": -0.0040000000000000036,
+    "8": 0.007000000000000006
+   }
   },
   "2": {
    "status": "open"
   }
  },
- "reading": "pending (s188 s1 open)",
+ "entry": {
+  "s184_reweight_s1": {
+   "cell": {
+    "entry_0.5": null,
+    "entry_0.1": null,
+    "min_bin": 0.900074737727642,
+    "last_bin": 0.9012165140360594
+   },
+   "comp": {
+    "entry_0.5": 42000,
+    "entry_0.1": null,
+    "min_bin": 0.1100654233939713,
+    "last_bin": 0.1100654233939713
+   },
+   "confounded_by_entry": true
+  },
+  "s182_window_s1": {
+   "cell": {
+    "entry_0.5": null,
+    "entry_0.1": null,
+    "min_bin": 0.900074737727642,
+    "last_bin": 0.9012165140360594
+   },
+   "comp": {
+    "entry_0.5": 25000,
+    "entry_0.1": null,
+    "min_bin": 0.23891400540307223,
+    "last_bin": 0.23891400540307223
+   },
+   "confounded_by_entry": true
+  },
+  "s182_window_s2": {
+   "cell": {
+    "entry_0.5": null,
+    "entry_0.1": null,
+    "min_bin": 0.900074737727642,
+    "last_bin": 0.9012165140360594
+   },
+   "comp": {
+    "entry_0.5": 17000,
+    "entry_0.1": 22000,
+    "min_bin": 0.00039051002181463446,
+    "last_bin": 0.0006512014306526908
+   },
+   "confounded_by_entry": true
+  }
+ },
+ "reading": "NEITHER: K'8 0.715 -> K'16 0.686 (STABLE False), K'24 0.600 (LONG-STABLE False), K'32 0.513; min n 3-8 at K'8 0.369 (DEEP False); THINK-NECESSARY True; DEPTH n 9-12 0.199; vs s184 K'8 0.974 K'16 0.928 K'24 0.566 DEPTH 0.486; vs window K'8 0.900 K'16 0.899 K'24 0.859 DEPTH 0.465; entry(0.5/0.1) cell (None, None) vs s184_reweight_s1 42000/None CONFOUNDED-BY-ENTRY, s182_window_s1 25000/None CONFOUNDED-BY-ENTRY, s182_window_s2 17000/22000 CONFOUNDED-BY-ENTRY",
  "errors": []
 }
