@@ -13945,6 +13945,11 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - The text bar on this set is therefore **0.938**, not 0.735.
   - §191 A's registered NAME-MEM bar (≥ 0.65) stands as written. A beating relabelled TEXT-COT would need ≥ 0.938.
 
+**Note 194-1 (2026-10-13 04:46 EDT; operational, before §194 starts; Experiments).** b278's first host failed HOSTPROBE (1.163 s/step, limit 0.854) and was destroyed before any training.
+* b278 relaunches on the gn-logging code (gn_preclip / clip_frac_100 in log.jsonl).
+* gate_gnlog shows the training path is bitwise equal to the code s190 s1 ran on (flags-off equality; model.pt and existing log fields unchanged). So the comparability of §194 s2 with §190 s1 is unaffected.
+* s2 gains a full-run clip curve, which s1's resumed run lacks (190-1 addendum).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
