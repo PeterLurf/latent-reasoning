@@ -1,0 +1,74 @@
+{
+ "arm": "textcot",
+ "data": "na",
+ "seed": 1,
+ "steps": 12000,
+ "think_k": 0,
+ "acc": 0.9380705650135702,
+ "n": 4053,
+ "acc_by_depth": {
+  "3": 0.9547738693467337,
+  "4": 0.9330143540669856,
+  "5": 0.9522673031026253,
+  "6": 0.9307875894988067,
+  "7": 0.9307875894988067,
+  "8": 0.9379474940334129,
+  "9": 0.9307875894988067,
+  "10": 0.930622009569378,
+  "11": 0.9395465994962217,
+  "12": 0.941717791411043,
+  "13": 0.9578313253012049,
+  "14": 0.9411764705882353
+ },
+ "n_by_depth": {
+  "3": 199,
+  "4": 418,
+  "5": 419,
+  "6": 419,
+  "7": 419,
+  "8": 419,
+  "9": 419,
+  "10": 418,
+  "11": 397,
+  "12": 326,
+  "13": 166,
+  "14": 34
+ },
+ "acc_ctl": 0.8163522012578617,
+ "n_ctl": 795,
+ "train_sec": 16180,
+ "n_nonfinite": 0,
+ "micro": 4,
+ "eval_dtype": "torch.bfloat16",
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "train_gpu": "NVIDIA GeForce RTX 3090",
+ "train_driver": "550.163.01",
+ "acc_def": "candidate accuracy: log p('### ' + correct) > log p(the negative's) after the arm's prefix (stepaux: + the memory after K passes)",
+ "mean_cot_tokens": 91.1200495049505,
+ "eval_gpu": "NVIDIA GeForce RTX 3090",
+ "eval_only": false,
+ "eval_partial": false,
+ "train_fit_relabel": {
+  "acc_cot": {
+   "acc": 0.936
+  },
+  "n": 1000,
+  "items": "TRAIN items (rng 16816 permutation[:1000]) relabelled once (rng 19102)",
+  "relabel_n": 768000,
+  "relabel_swap_rate": 0.5009231770833333,
+  "relabel_counts_def": "training draws of this process (None under --eval_only: see log.jsonl)"
+ },
+ "clip": {
+  "clip_rate": 0.004666666666666667,
+  "grad_norm_preclip": {
+   "median": 0.09523490071296692,
+   "p90": 0.19356547892093662,
+   "n_steps": 12000
+  },
+  "aux_reweight": false,
+  "weights": null,
+  "source": "run",
+  "def": "clip_grad_norm_(..., 1.0)'s pre-clip total norm per step; clip fires when > 1.0"
+ },
+ "eval_sec": 872
+}
