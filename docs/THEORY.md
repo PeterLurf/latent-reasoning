@@ -13808,6 +13808,23 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 
 **Placement.** One cell at RMS's cost (about 11.8 h on a 3090, about $3), within Audit's line, in the free fleet slot now.
 
+**Note 190-2 (2026-10-13 01:22 EDT; descriptive, from §190 s1's in-queue eval_s182_auxdone.json; Audit's pre-check reproduced; the registered DONE-TRACKS-N label waits for the selfdepth rows at n 9 / 10). With neither the pass token nor the magnitude counter, the learned done signal tracks n past the training edge, for the first time in the project.**
+* **AUX-DONE halt (mean / median), accuracy at the halt, and capped share:**
+
+  | model | counters | n 8 | n 10 | n 12 |
+  |---|---|---|---|---|
+  | RMS s1 / s2 | token | 8 / 8 | 14.8 / 16, acc 0.44 / 0.64, capped 0.84 / 0.83 | capped 0.97 / 0.89 |
+  | §187 s1 / s2 | magnitude | 8 / 8 | 8.07 / 8.14, acc 0.85 / 0.43 | 8.06 / 8.15 |
+  | **§190 s1** | **neither** | **8 (exact)** | **9.66 / 10, acc 0.889, capped 0** | **10.43 / 10, acc 0.237, capped 0** |
+
+  - §190 halts at exactly t = n for n 2–8 (accuracy at halt 1.0).
+* **The pass-counter account is confirmed descriptively:** the done signal is pinned by whichever counter exists (the token gives t = 8 or never; magnitude gives t = 8). With neither, it follows the item's own size.
+  - It does so to about n = 10. At n = 12 it halts about 2 passes early, where the computation also fails (accuracy at halt 0.237 vs 0.224 at fixed K′ = n + 2).
+* **The first positive C5 signal (descriptive, one seed):**
+  - At n 10 the learned halt reaches accuracy 0.889 against 0.897 at fixed K′ = n + 2, with a mean halt of 9.66 (≥ n − 1).
+  - On 173-2's thresholds that would be size-free at n 10. At n 12, accuracy matches (0.237 vs 0.224), but the mean halt (10.4) is below n − 1.
+  - This is an AUX-DONE halt, not 173's answer-settling rule, so it is not a 173-2 reading.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
