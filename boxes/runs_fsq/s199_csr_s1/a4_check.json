@@ -1,0 +1,117 @@
+{
+ "verdict": "UNPAIRED",
+ "verdict_excl_step500_loss": "PAIRED",
+ "step500_decomposition": {
+  "loss_diff": 0.0005263805389406073,
+  "predicted_0.1xcsr_over_100": 0.000526380181312561,
+  "csr_loss_500": 0.526380181312561
+ },
+ "steps": [
+  100,
+  200,
+  300,
+  400,
+  500
+ ],
+ "cell_steps": [
+  100,
+  200,
+  300,
+  400,
+  500
+ ],
+ "rows": [
+  {
+   "step": 100,
+   "loss": {
+    "cell": 4.720894417762756,
+    "control": 4.720894417762756,
+    "equal": true
+   },
+   "answer_ce": {
+    "cell": 2.519747842656504,
+    "control": 2.519747842656504,
+    "equal": true
+   },
+   "aux_ce": {
+    "cell": 2.2343905408783713,
+    "control": 2.2343905408783713,
+    "equal": true
+   }
+  },
+  {
+   "step": 200,
+   "loss": {
+    "cell": 3.92258508682251,
+    "control": 3.92258508682251,
+    "equal": true
+   },
+   "answer_ce": {
+    "cell": 2.384184203147888,
+    "control": 2.384184203147888,
+    "equal": true
+   },
+   "aux_ce": {
+    "cell": 1.5384008884429932,
+    "control": 1.5384008884429932,
+    "equal": true
+   }
+  },
+  {
+   "step": 300,
+   "loss": {
+    "cell": 3.643212592601776,
+    "control": 3.643212592601776,
+    "equal": true
+   },
+   "answer_ce": {
+    "cell": 2.359177973270416,
+    "control": 2.359177973270416,
+    "equal": true
+   },
+   "aux_ce": {
+    "cell": 1.2840346252918244,
+    "control": 1.2840346252918244,
+    "equal": true
+   }
+  },
+  {
+   "step": 400,
+   "loss": {
+    "cell": 3.607303113937378,
+    "control": 3.607303113937378,
+    "equal": true
+   },
+   "answer_ce": {
+    "cell": 2.3572984552383422,
+    "control": 2.3572984552383422,
+    "equal": true
+   },
+   "aux_ce": {
+    "cell": 1.25000465631485,
+    "control": 1.25000465631485,
+    "equal": true
+   }
+  },
+  {
+   "step": 500,
+   "loss": {
+    "cell": 3.474618513584137,
+    "control": 3.4740921330451964,
+    "equal": false
+   },
+   "answer_ce": {
+    "cell": 2.3383229541778565,
+    "control": 2.3383229541778565,
+    "equal": true
+   },
+   "aux_ce": {
+    "cell": 1.135769169330597,
+    "control": 1.135769169330597,
+    "equal": true
+   }
+  }
+ ],
+ "host": "89.221.67.137",
+ "def": "\u00a7199-A A4: every record at steps 100-500 (loss, answer_ce, aux_ce) == the control's log.jsonl, float equality"
+}
