@@ -1,0 +1,4 @@
+# THEORY §200 GSM8K-AUG PILOT cell B (contract 58947b26 + clarification 200-2; user-approved Tier 1, Audit cap $7; gate_s200 all PASS 64c98681): A + per-draw R_x then R_nu (train only). RTX 3090, seed 1, 24k. LAUNCH ONLY after the b286 projection went to Audit and the user. Data via .extra
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/gsm_lat_augrs_s1 boxes.gsm8k_stepaux --arm stepaux --think_k 10 --aux_fade 24000,24000 --cache_lower --fast_add --chunk_delta 64 --steps 24000 --bs 64 --lr 1e-4 --seed 1 --valid_every 2000 --ckpt_every 1000 --auto_micro --relabel_names --resample_numbers
