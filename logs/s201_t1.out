@@ -1,0 +1,127 @@
+s185_rms_s1 memcheck n16 bs 250 peak 1.50 GiB
+s185_rms_s1 n 2 {'CLEAN': 0.999, 'FA': 0.999, 'FD': 1.0, 'FB': 1.0} 147s
+s185_rms_s1 n 3 {'CLEAN': 0.975, 'FA': 0.977, 'FD': 1.0, 'FB': 1.0} 287s
+s185_rms_s1 n 4 {'CLEAN': 0.931, 'FA': 0.939, 'FD': 1.0, 'FB': 1.0} 463s
+s185_rms_s1 n 5 {'CLEAN': 0.833, 'FA': 0.853, 'FD': 0.999, 'FB': 0.999} 670s
+s185_rms_s1 n 6 {'CLEAN': 0.702, 'FA': 0.739, 'FD': 1.0, 'FB': 1.0} 912s
+s185_rms_s1 n 7 {'CLEAN': 0.571, 'FA': 0.578, 'FD': 0.996, 'FB': 0.996} 1178s
+s185_rms_s1 n 8 {'CLEAN': 0.463, 'FA': 0.43, 'FD': 0.993, 'FB': 0.993} 1481s
+s185_rms_s1 n 9 {'CLEAN': 0.339, 'FA': 0.34, 'FD': 0.978, 'FB': 0.978} 1811s
+s185_rms_s1 n 10 {'CLEAN': 0.232, 'FA': 0.238, 'FD': 0.826, 'FB': 0.828} 2166s
+s185_rms_s1 n 11 {'CLEAN': 0.152, 'FA': 0.153, 'FD': 0.502, 'FB': 0.51} 2545s
+s185_rms_s1 n 12 {'CLEAN': 0.127, 'FA': 0.13, 'FD': 0.205, 'FB': 0.202} 2953s
+s185_rms_s1 n 16 {'CLEAN': 0.123, 'FA': 0.119, 'FD': 0.118, 'FB': 0.118} 3481s
+s185_rms_s1 T1 test done {'CLEAN': {'pool_3_8': 0.7458333373069763, 'pool_9_10': 0.2854999899864197}, 'FA': {'pool_3_8': 0.7526666720708212, 'pool_9_10': 0.289000004529953}, 'FD': {'pool_3_8': 0.9979999959468842, 'pool_9_10': 0.9019999802112579}, 'FB': {'pool_3_8': 0.9979999959468842, 'pool_9_10': 0.902999997138977}} {'fb_identity': True, 'clean_vs_s173_maxdiff': 0.008000001549720762, 's173_dtype': 'torch.bfloat16'} 3483s
+s185_rms_s1 T1 train dump done 2000 3652s
+s185_rms_s1 rc 0 2026-10-14 02:00:44
+s185_rms_s2 memcheck n16 bs 250 peak 1.50 GiB
+s185_rms_s2 n 2 {'CLEAN': 1.0, 'FA': 1.0, 'FD': 1.0, 'FB': 1.0} 144s
+s185_rms_s2 n 3 {'CLEAN': 0.996, 'FA': 0.999, 'FD': 1.0, 'FB': 1.0} 286s
+s185_rms_s2 n 4 {'CLEAN': 0.983, 'FA': 0.99, 'FD': 1.0, 'FB': 1.0} 470s
+s185_rms_s2 n 5 {'CLEAN': 0.951, 'FA': 0.962, 'FD': 1.0, 'FB': 1.0} 682s
+s185_rms_s2 n 6 {'CLEAN': 0.904, 'FA': 0.924, 'FD': 1.0, 'FB': 1.0} 927s
+s185_rms_s2 n 7 {'CLEAN': 0.786, 'FA': 0.809, 'FD': 0.997, 'FB': 0.997} 1193s
+s185_rms_s2 n 8 {'CLEAN': 0.604, 'FA': 0.621, 'FD': 0.997, 'FB': 0.996} 1500s
+s185_rms_s2 n 9 {'CLEAN': 0.413, 'FA': 0.425, 'FD': 0.989, 'FB': 0.987} 1828s
+s185_rms_s2 n 10 {'CLEAN': 0.282, 'FA': 0.283, 'FD': 0.911, 'FB': 0.913} 2185s
+s185_rms_s2 n 11 {'CLEAN': 0.19, 'FA': 0.18, 'FD': 0.598, 'FB': 0.606} 2563s
+s185_rms_s2 n 12 {'CLEAN': 0.133, 'FA': 0.141, 'FD': 0.246, 'FB': 0.255} 2970s
+s185_rms_s2 n 16 {'CLEAN': 0.122, 'FA': 0.127, 'FD': 0.142, 'FB': 0.143} 3498s
+s185_rms_s2 T1 test done {'CLEAN': {'pool_3_8': 0.8706666529178619, 'pool_9_10': 0.3474999964237213}, 'FA': {'pool_3_8': 0.8841666777928671, 'pool_9_10': 0.3540000021457672}, 'FD': {'pool_3_8': 0.9989999930063883, 'pool_9_10': 0.9500000178813934}, 'FB': {'pool_3_8': 0.9988333284854889, 'pool_9_10': 0.949999988079071}} {'fb_identity': True, 'clean_vs_s173_maxdiff': 2.9087066644173376e-08, 's173_dtype': 'None'} 3500s
+s185_rms_s2 T1 train dump done 2000 3668s
+s185_rms_s2 rc 0 2026-10-14 03:01:55
+s190_rmsnopass_s1 memcheck n16 bs 250 peak 1.50 GiB
+s190_rmsnopass_s1 n 2 {'CLEAN': 1.0, 'FA': 1.0, 'FD': 1.0, 'FB': 1.0} 140s
+s190_rmsnopass_s1 n 3 {'CLEAN': 0.996, 'FA': 0.997, 'FD': 1.0, 'FB': 1.0} 277s
+s190_rmsnopass_s1 n 4 {'CLEAN': 0.983, 'FA': 0.988, 'FD': 1.0, 'FB': 1.0} 450s
+s190_rmsnopass_s1 n 5 {'CLEAN': 0.958, 'FA': 0.972, 'FD': 1.0, 'FB': 1.0} 654s
+s190_rmsnopass_s1 n 6 {'CLEAN': 0.916, 'FA': 0.948, 'FD': 1.0, 'FB': 1.0} 894s
+s190_rmsnopass_s1 n 7 {'CLEAN': 0.809, 'FA': 0.879, 'FD': 0.999, 'FB': 0.999} 1157s
+s190_rmsnopass_s1 n 8 {'CLEAN': 0.682, 'FA': 0.805, 'FD': 1.0, 'FB': 1.0} 1457s
+s190_rmsnopass_s1 n 9 {'CLEAN': 0.53, 'FA': 0.651, 'FD': 0.994, 'FB': 0.993} 1781s
+s190_rmsnopass_s1 n 10 {'CLEAN': 0.337, 'FA': 0.445, 'FD': 0.895, 'FB': 0.897} 2133s
+s190_rmsnopass_s1 n 11 {'CLEAN': 0.152, 'FA': 0.187, 'FD': 0.521, 'FB': 0.543} 2511s
+s190_rmsnopass_s1 n 12 {'CLEAN': 0.122, 'FA': 0.128, 'FD': 0.225, 'FB': 0.236} 2914s
+s190_rmsnopass_s1 n 16 {'CLEAN': 0.114, 'FA': 0.113, 'FD': 0.128, 'FB': 0.124} 3434s
+s190_rmsnopass_s1 T1 test done {'CLEAN': {'pool_3_8': 0.890666663646698, 'pool_9_10': 0.4334999918937683}, 'FA': {'pool_3_8': 0.9314999977747599, 'pool_9_10': 0.5480000078678131}, 'FD': {'pool_3_8': 0.9998333354791006, 'pool_9_10': 0.9444999992847443}, 'FB': {'pool_3_8': 0.9998333354791006, 'pool_9_10': 0.9449999928474426}} {'fb_identity': True, 'clean_vs_s173_maxdiff': 2.9087066644173376e-08, 's173_dtype': 'None'} 3436s
+s190_rmsnopass_s1 T1 train dump done 2000 3602s
+s190_rmsnopass_s1 rc 0 2026-10-14 04:01:59
+s187_nopass_s1 memcheck n16 bs 250 peak 1.50 GiB
+s187_nopass_s1 n 2 {'CLEAN': 0.999, 'FA': 0.997, 'FD': 1.0, 'FB': 1.0} 141s
+s187_nopass_s1 n 3 {'CLEAN': 0.997, 'FA': 0.991, 'FD': 1.0, 'FB': 1.0} 278s
+s187_nopass_s1 n 4 {'CLEAN': 0.995, 'FA': 0.944, 'FD': 0.999, 'FB': 1.0} 451s
+s187_nopass_s1 n 5 {'CLEAN': 0.989, 'FA': 0.876, 'FD': 0.994, 'FB': 0.999} 654s
+s187_nopass_s1 n 6 {'CLEAN': 0.984, 'FA': 0.762, 'FD': 0.998, 'FB': 1.0} 893s
+s187_nopass_s1 n 7 {'CLEAN': 0.973, 'FA': 0.685, 'FD': 0.995, 'FB': 0.995} 1155s
+s187_nopass_s1 n 8 {'CLEAN': 0.963, 'FA': 0.625, 'FD': 0.992, 'FB': 0.993} 1453s
+s187_nopass_s1 n 9 {'CLEAN': 0.922, 'FA': 0.594, 'FD': 0.971, 'FB': 0.979} 1774s
+s187_nopass_s1 n 10 {'CLEAN': 0.736, 'FA': 0.517, 'FD': 0.826, 'FB': 0.856} 2124s
+s187_nopass_s1 n 11 {'CLEAN': 0.39, 'FA': 0.322, 'FD': 0.459, 'FB': 0.5} 2500s
+s187_nopass_s1 n 12 {'CLEAN': 0.154, 'FA': 0.159, 'FD': 0.166, 'FB': 0.175} 2900s
+s187_nopass_s1 n 16 {'CLEAN': 0.107, 'FA': 0.117, 'FD': 0.113, 'FB': 0.12} 3420s
+s187_nopass_s1 T1 test done {'CLEAN': {'pool_3_8': 0.9835000038146973, 'pool_9_10': 0.8289999961853027}, 'FA': {'pool_3_8': 0.8138333360354105, 'pool_9_10': 0.5555000007152557}, 'FD': {'pool_3_8': 0.9963333408037821, 'pool_9_10': 0.898499995470047}, 'FB': {'pool_3_8': 0.9978333314259847, 'pool_9_10': 0.9174999892711639}} {'fb_identity': True, 'clean_vs_s173_maxdiff': 2.9087066644173376e-08, 's173_dtype': 'None'} 3422s
+s187_nopass_s1 T1 train dump done 2000 3586s
+s187_nopass_s1 rc 0 2026-10-14 05:01:47
+s187_nopass_s2 memcheck n16 bs 250 peak 1.50 GiB
+s187_nopass_s2 n 2 {'CLEAN': 0.993, 'FA': 0.998, 'FD': 1.0, 'FB': 0.999} 138s
+s187_nopass_s2 n 3 {'CLEAN': 0.994, 'FA': 0.975, 'FD': 1.0, 'FB': 1.0} 274s
+s187_nopass_s2 n 4 {'CLEAN': 0.978, 'FA': 0.94, 'FD': 1.0, 'FB': 1.0} 446s
+s187_nopass_s2 n 5 {'CLEAN': 0.95, 'FA': 0.928, 'FD': 0.999, 'FB': 0.999} 649s
+s187_nopass_s2 n 6 {'CLEAN': 0.945, 'FA': 0.867, 'FD': 0.999, 'FB': 1.0} 887s
+s187_nopass_s2 n 7 {'CLEAN': 0.861, 'FA': 0.797, 'FD': 0.993, 'FB': 0.998} 1152s
+s187_nopass_s2 n 8 {'CLEAN': 0.8, 'FA': 0.732, 'FD': 0.985, 'FB': 0.997} 1452s
+s187_nopass_s2 n 9 {'CLEAN': 0.632, 'FA': 0.673, 'FD': 0.92, 'FB': 0.955} 1774s
+s187_nopass_s2 n 10 {'CLEAN': 0.321, 'FA': 0.436, 'FD': 0.493, 'FB': 0.6} 2126s
+s187_nopass_s2 n 11 {'CLEAN': 0.175, 'FA': 0.222, 'FD': 0.237, 'FB': 0.287} 2500s
+s187_nopass_s2 n 12 {'CLEAN': 0.117, 'FA': 0.129, 'FD': 0.113, 'FB': 0.154} 2899s
+s187_nopass_s2 n 16 {'CLEAN': 0.101, 'FA': 0.089, 'FD': 0.102, 'FB': 0.083} 3417s
+s187_nopass_s2 T1 test done {'CLEAN': {'pool_3_8': 0.9213333328564962, 'pool_9_10': 0.4765000194311142}, 'FA': {'pool_3_8': 0.8731666604677836, 'pool_9_10': 0.5544999837875366}, 'FD': {'pool_3_8': 0.9960000018278757, 'pool_9_10': 0.7065000087022781}, 'FB': {'pool_3_8': 0.9990000029404958, 'pool_9_10': 0.7775000035762787}} {'fb_identity': True, 'clean_vs_s173_maxdiff': 2.5749206544745107e-08, 's173_dtype': 'None'} 3419s
+s187_nopass_s2 T1 train dump done 2000 3582s
+s187_nopass_s2 rc 0 2026-10-14 06:01:32
+s184_reweight_s1 memcheck n16 bs 250 peak 1.50 GiB
+s184_reweight_s1 n 2 {'CLEAN': 0.981, 'FA': 1.0, 'FD': 0.997, 'FB': 1.0} 142s
+s184_reweight_s1 n 3 {'CLEAN': 0.87, 'FA': 0.955, 'FD': 0.886, 'FB': 0.995} 282s
+s184_reweight_s1 n 4 {'CLEAN': 0.735, 'FA': 0.917, 'FD': 0.817, 'FB': 0.99} 458s
+s184_reweight_s1 n 5 {'CLEAN': 0.624, 'FA': 0.889, 'FD': 0.82, 'FB': 0.984} 664s
+s184_reweight_s1 n 6 {'CLEAN': 0.503, 'FA': 0.869, 'FD': 0.753, 'FB': 0.978} 906s
+s184_reweight_s1 n 7 {'CLEAN': 0.379, 'FA': 0.856, 'FD': 0.675, 'FB': 0.96} 1170s
+s184_reweight_s1 n 8 {'CLEAN': 0.282, 'FA': 0.82, 'FD': 0.597, 'FB': 0.935} 1471s
+s184_reweight_s1 n 9 {'CLEAN': 0.229, 'FA': 0.667, 'FD': 0.49, 'FB': 0.823} 1796s
+s184_reweight_s1 n 10 {'CLEAN': 0.197, 'FA': 0.497, 'FD': 0.325, 'FB': 0.657} 2148s
+s184_reweight_s1 n 11 {'CLEAN': 0.123, 'FA': 0.224, 'FD': 0.161, 'FB': 0.345} 2524s
+s184_reweight_s1 n 12 {'CLEAN': 0.112, 'FA': 0.151, 'FD': 0.137, 'FB': 0.164} 2924s
+s184_reweight_s1 n 16 {'CLEAN': 0.114, 'FA': 0.109, 'FD': 0.115, 'FB': 0.101} 3446s
+s184_reweight_s1 T1 test done {'CLEAN': {'pool_3_8': 0.5655000110467275, 'pool_9_10': 0.21299999952316284}, 'FA': {'pool_3_8': 0.884333332379659, 'pool_9_10': 0.5820000022649765}, 'FD': {'pool_3_8': 0.7579999963442484, 'pool_9_10': 0.4074999988079071}, 'FB': {'pool_3_8': 0.9736666679382324, 'pool_9_10': 0.7400000095367432}} {'fb_identity': True, 'clean_vs_s173_maxdiff': 0.010000001430511468, 's173_dtype': 'torch.bfloat16'} 3448s
+s184_reweight_s1 T1 train dump done 2000 3616s
+s184_reweight_s1 rc 0 2026-10-14 07:01:51
+s184_reweight_s2 memcheck n16 bs 250 peak 1.50 GiB
+s184_reweight_s2 n 2 {'CLEAN': 0.992, 'FA': 1.0, 'FD': 0.998, 'FB': 1.0} 142s
+s184_reweight_s2 n 3 {'CLEAN': 0.959, 'FA': 0.971, 'FD': 0.996, 'FB': 1.0} 285s
+s184_reweight_s2 n 4 {'CLEAN': 0.945, 'FA': 0.939, 'FD': 0.994, 'FB': 1.0} 462s
+s184_reweight_s2 n 5 {'CLEAN': 0.911, 'FA': 0.908, 'FD': 0.993, 'FB': 1.0} 675s
+s184_reweight_s2 n 6 {'CLEAN': 0.902, 'FA': 0.856, 'FD': 0.989, 'FB': 1.0} 933s
+s184_reweight_s2 n 7 {'CLEAN': 0.878, 'FA': 0.823, 'FD': 0.971, 'FB': 0.999} 1217s
+s184_reweight_s2 n 8 {'CLEAN': 0.825, 'FA': 0.789, 'FD': 0.954, 'FB': 0.999} 1526s
+s184_reweight_s2 n 9 {'CLEAN': 0.659, 'FA': 0.801, 'FD': 0.897, 'FB': 0.991} 1853s
+s184_reweight_s2 n 10 {'CLEAN': 0.397, 'FA': 0.753, 'FD': 0.707, 'FB': 0.907} 2207s
+s184_reweight_s2 n 11 {'CLEAN': 0.176, 'FA': 0.474, 'FD': 0.342, 'FB': 0.569} 2584s
+s184_reweight_s2 n 12 {'CLEAN': 0.136, 'FA': 0.184, 'FD': 0.154, 'FB': 0.217} 2984s
+s184_reweight_s2 n 16 {'CLEAN': 0.117, 'FA': 0.112, 'FD': 0.117, 'FB': 0.116} 3509s
+s184_reweight_s2 T1 test done {'CLEAN': {'pool_3_8': 0.9033333361148834, 'pool_9_10': 0.527999997138977}, 'FA': {'pool_3_8': 0.8810000022252401, 'pool_9_10': 0.7770000100135803}, 'FD': {'pool_3_8': 0.982833335796992, 'pool_9_10': 0.8020000159740448}, 'FB': {'pool_3_8': 0.999666670958201, 'pool_9_10': 0.9490000009536743}} {'fb_identity': True, 'clean_vs_s173_maxdiff': 0.007999988317489604, 's173_dtype': 'torch.bfloat16'} 3511s
+s184_reweight_s2 T1 train dump done 2000 3680s
+s184_reweight_s2 rc 0 2026-10-14 08:03:14
+s182_window_s2 memcheck n16 bs 250 peak 1.50 GiB
+s182_window_s2 n 2 {'CLEAN': 0.997, 'FA': 0.995, 'FD': 1.0, 'FB': 1.0} 145s
+s182_window_s2 n 3 {'CLEAN': 1.0, 'FA': 0.983, 'FD': 1.0, 'FB': 1.0} 286s
+s182_window_s2 n 4 {'CLEAN': 0.994, 'FA': 0.976, 'FD': 1.0, 'FB': 1.0} 462s
+s182_window_s2 n 5 {'CLEAN': 1.0, 'FA': 0.977, 'FD': 1.0, 'FB': 1.0} 668s
+s182_window_s2 n 6 {'CLEAN': 1.0, 'FA': 0.986, 'FD': 1.0, 'FB': 1.0} 913s
+s182_window_s2 n 7 {'CLEAN': 1.0, 'FA': 0.989, 'FD': 1.0, 'FB': 1.0} 1182s
+s182_window_s2 n 8 {'CLEAN': 0.997, 'FA': 0.99, 'FD': 0.997, 'FB': 0.997} 1485s
+s182_window_s2 n 9 {'CLEAN': 0.995, 'FA': 0.988, 'FD': 0.995, 'FB': 0.995} 1808s
+s182_window_s2 n 10 {'CLEAN': 0.906, 'FA': 0.886, 'FD': 0.907, 'FB': 0.911} 2158s
+s182_window_s2 n 11 {'CLEAN': 0.522, 'FA': 0.528, 'FD': 0.519, 'FB': 0.532} 2532s
+s182_window_s2 n 12 {'CLEAN': 0.184, 'FA': 0.179, 'FD': 0.185, 'FB': 0.191} 2933s
+s182_window_s2 n 16 {'CLEAN': 0.11, 'FA': 0.115, 'FD': 0.117, 'FB': 0.112} 3470s
+s182_window_s2 T1 test done {'CLEAN': {'pool_3_8': 0.99849999944369, 'pool_9_10': 0.9505000114440918}, 'FA': {'pool_3_8': 0.9835000038146973, 'pool_9_10': 0.9369999766349792}, 'FD': {'pool_3_8': 0.9994999965031942, 'pool_9_10': 0.9510000050067902}, 'FB': {'pool_3_8': 0.9994999965031942, 'pool_9_10': 0.953000009059906}} {'fb_identity': True, 'clean_vs_s173_maxdiff': 2.622604367008563e-08, 's173_dtype': 'None'} 3471s
+s182_window_s2 rc 0 2026-10-14 09:01:09
