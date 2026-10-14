@@ -7,6 +7,9 @@
 cd "$(dirname "$0")/.."
 log() { echo "$(date +%T) fill_s199_dual $*" >> logs/gen_deploy.log; echo "$(date '+%F %T') $*"; }
 declare -A DRV=( [285]=595.84 [284]=570.172.08 ); SEED=( [285]=3 [284]=2 ); TRYIP=194.228.55.129
+# Audit 09:0x cap: a seed stops after BADMAX more BAD HOSTs (this run), or everything stops when FAMILY_BASE + the billed BAD-HOST total > FAMILY_CAP
+declare -A BADN=( [285]=0 [284]=0 ); BADMAX=4; FAMILY_BASE=8.0; FAMILY_CAP=9.50; BADLOG=logs/s199_bad_cost.log
+badtotal() { awk '!/^#/ {s += $NF} END {printf "%.4f", s + 0}' "$BADLOG" 2>/dev/null || echo 0; }
 probe() {   # $1 n, $2 host, $3 port -> "OK" / "SLOW" / "" (unknown)
   local r; r=$(timeout 40 ssh -o ConnectTimeout=15 -i "$HOME/.ssh/runpod_ed25519" -p "$3" "root@$2" "grep -h 'HOSTPROBE' /workspace/Latent/logs/queue_gen_b$1.out | tail -n 1" 2>/dev/null)
   echo "$r" | grep -q "HOSTPROBE_SLOW" && { echo SLOW; return; }; echo "$r" | grep -q "s/step" && echo OK
@@ -16,12 +19,17 @@ while [ ${#DRV[@]} -gt 0 ] && [ ! -f scratch/fill_s199_dual.stop ]; do
   bash scratch/rebuild_live_hosts.sh > /dev/null 2>&1
   for n in 285 284; do
     [ -n "${DRV[$n]:-}" ] || continue
-    read -r o ip <<<"$(python scratch/offer_pick.py "${DRV[$n]}" 0.33)"
+    read -r o ip dph <<<"$(python scratch/offer_pick.py "${DRV[$n]}" 0.33)"
     if [ -z "${o:-}" ]; then log "b$n: no matching offer (driver ${DRV[$n]}, <= \$0.33); retry in 10 min"; continue; fi
-    log "b$n: deploying on offer $o ($ip, driver ${DRV[$n]})"; bash scratch/gen_deploy_120.sh "$o $n"
+    log "b$n: deploying on offer $o ($ip, driver ${DRV[$n]}, \$$dph/h)"; t0=$(date +%s); bash scratch/gen_deploy_120.sh "$o $n"
     line=$(grep "gen host b$n offer $o:" logs/gen_deploy.log | tail -1)
     if ! echo "$line" | grep -q STARTED; then
-      log "b$n: did not start"; [ "$ip" = "$TRYIP" ] && reexclude "never started / left loading"; continue
+      mins=$(( ($(date +%s) - t0) / 60 + 1 )); c=$(python -c "print(round($mins / 60 * ${dph:-0.33}, 4))"); BADN[$n]=$(( BADN[$n] + 1 ))
+      echo "$(date '+%F %T') b$n offer $o $ip ${mins}min \$${dph:-0.33}/h $c" >> "$BADLOG"; tot=$(badtotal)
+      log "b$n: did not start (BAD HOST ${BADN[$n]} / $BADMAX this run; billed ~\$$c; §199 BAD-HOST total \$$tot)"; [ "$ip" = "$TRYIP" ] && reexclude "never started / left loading"
+      if python -c "import sys; sys.exit(0 if $FAMILY_BASE + $tot > $FAMILY_CAP else 1)"; then log "CAP: family base \$$FAMILY_BASE + BAD-HOST \$$tot > \$$FAMILY_CAP - ALL seeds held; tell Audit / Theory"; exit 3; fi
+      [ "${BADN[$n]}" -ge "$BADMAX" ] && { log "CAP: b$n reached $BADMAX BAD HOSTs - seed ${SEED[$n]} held; tell Audit / Theory"; unset "DRV[$n]"; }
+      continue
     fi
     log "b$n: STARTED"; echo "$(date +%T) fill_s199_b$n b$n: STARTED" >> logs/gen_deploy.log   # the A4 auto-arm keys on this line
     mv "scratch/gen_q_b$n.txt" "scratch/gen_q_b$n.txt.norequeue"
