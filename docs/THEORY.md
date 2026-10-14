@@ -15056,6 +15056,21 @@ Each registers separately, after T1 / T2.
 * FA (freeze the additive state) **fails no-harm**: 0.9985 → 0.9835 (−0.015 > 0.01), as on §187 s1 (−0.170).
 * **Reading (descriptive):** in well-behaved models the additive path still does useful post-completion work, while the delta path's post-completion writes are what cost accuracy elsewhere. Freezing delta writes after completion is the safe intervention; freezing the additive writes is not.
 
+**196-2 result (2026-10-14 09:18 EDT; pilot196_s3_stage2_4060, RTX 4060 bf16, both legs rc 0; 713057f7 / 3fad2fb2). UNCLEAR by the letter: the loss entered stage 2, the accuracy bar was not met.**
+* **STAGE2-ENTERS, loss part met:** within 12,001–24,000, the 1k bins fall from 1.135 (13k) through **0.446 (20k), 0.391 (21k)** to 0.270 (24k), so two consecutive bins are < 0.5 from 20k.
+* **STAGE2-ENTERS, accuracy part not met:** eval_24k at K 6 reads n 1–6 = 0.996 / 1.0 / 0.991 / 0.963 / **0.888 / 0.793**, so n 5 and n 6 are < 0.90.
+* **Not STAGE2-STALLS:** the last bin is 0.270 < 1.0.
+* **Descriptive:**
+  - The order parameter at 24k stays **contractive**: standard probe delta_cos 0.909 / agree 0.734; stage-matched (n 3..6, K′ 12) 0.880 / 0.760, rising with n (n 3–6: 0.936 / 0.928 / 0.921 / 0.915).
+  - s175 aux by pass t 1–6: 0.735 / 0.711 / 0.662 / 0.549 / 0.420 / 0.261, falling with pass as in the contractive class.
+  - acc_by_n beyond stage 2 (n 7 / 8): 0.607 / 0.302.
+* **Reading (for the §197 redesign):**
+  - The curriculum lowers seed 3's loss and partly solves the small stages, but **within the contractive regime**. That is consistent with the resolution bound (a contractive map resolves a few steps).
+  - THEORY_SEEDSTAB Part II's P5 says curriculum should rescue by ESCAPE: contractive first, then a crossing. No crossing has happened by 24k.
+  - So a BUDGET-ANNEAL redesign should not assume stage entry implies leaving the contractive class. It should read the order parameter per stage.
+  - The 9k–12k stage probes ran on the 2070 in fp32 and the 24k ones on the 4060 in bf16, so the series is descriptive across precisions.
+* The held checkpoints may now be deleted (196-2 is read).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
