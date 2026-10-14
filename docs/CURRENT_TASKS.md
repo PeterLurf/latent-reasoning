@@ -151,6 +151,24 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
           - **§168 s2 STEP-AUX: not DEEP-LATENT, GENUINE memorisation** (train 1.0, test 0.49 at every K′). Fixed ~12k-item ProsQA vs nested's fresh items. Lead (unregistered): ProsQA-FRESH (procedural graphs). b267 is read as registered.
           - **Conditional lead, not registered (Audit 04:5x): GSM8K template resampling.** Per-draw renaming and number resampling of GSM8K's own 7.5k items as a training augmentation. **The source must be TemplateGSM 2411.18104** (from the 7,473 TRAIN problems, CC-BY-4.0) or our own templating of GSM8K-Aug train items, with the equation CoT recomputed. **Never GSM-Symbolic 2410.05229**: its templates come from the GSM8K TEST set and are CC-BY-NC-ND, so they are eval-only (Literature 2d3828d8). The trigger is §191 A reading NAME-MEM (≥ 0.65). The shape is a GSM8K-short pilot of fixed vs resampled templates on TEXT-COT and the current latent base (RMS, or RMS + NOPASS, not §184's reweight), with GSM8K-Aug (385k) as the reference. GSM8K-scale spend needs the user's approval.
           - **§198 CHEAP-THINK registered (e69bc32a; the user's request; Audit: one item, $10 cap):** an all-cached nested family. (a) cached INJECT (−44%), (b) MEM-HIGH l_m 9 (−67%), (c) READ-SLOTS + RMS + step aux (−87% at L 300). Experiments is building (b)'s --mem_layer and porting (c). The cost clause is at L = 300. Ruled out: MELT / LLA / RLT / T²MLR (cross-loop KV).
+          - **Theory status 2026-10-14 08:1x (supersedes the §199 / general lines below where they differ):**
+            - **§199 (seed stability):**
+              - M1 PREDICTED (α^L tracks the size-keyed depth limit, not the lottery).
+              - M2 LMC: no pair is connected.
+              - M3 / M3a PREDICTED: the failed models make right-structure, wrong-value errors.
+              - E1: converged models gate β with progress; failed models offload to the integrator.
+              - T1: path_indep co-moves with the loss, so it is not an 8k detector.
+              - **CSR (199-A, ~$8.4 cap $10):** s1 b283 is running, PAIRED (A4 pass). s3 is waiting for a 595.84 host (Audit: one try on the bad-listed host, else wait). s2 is waiting for s1's 570.172.08 host (~16:00). Reader: score_s199_a.
+            - **§200 GSM8K-Aug pilot** (user-approved, cap $7):
+              - C TEXT-COT landed 0.321 (budget-limited; note 200-4; published CoT is 15–40 epochs vs our 4);
+              - A / B / D running;
+              - LOOP-NOT-FORMED rule (200-1); clarifications 200-2 / 200-3.
+            - **§201 overthinking (the user's request) RESULT:** the additive account is FALSIFIED. Overthinking = post-completion DELTA writes (freezing them recovers ~all). The learned halt gives NO-OVERTHINK on 7/7. Next ($0): the FD-on-signal soft halt (descriptive), the ProsQA T1, the window control.
+            - **§193 RMS × WINDOW s1:** JOINT + LONG-STABLE (K′24 0.989, DEPTH 0.688). s2 (~$7–8) is with the USER via Audit.
+            - **§198:** (b) CHEAPER-WORSE (confounded); (c) FAILS. Family ~$6.29.
+            - **§191:** NAME-MEM.
+            - **§196:** NO-EFFECT. §197 is not registered as drafted (needs fresh seeds plus a derivation).
+            - **Rules added:** math backing for every change (user); a seed-rate OC block and conservative censoring (to the user via Audit); match the original --bs in bf16 reproductions (201-5).
           - **§199 CONTRACTION-TRAP (the user's seed-stability request, 2026-10-13 20:5x via Audit; Theory, with Opus subagents per the user):**
             - Opened with M1 only (ac074515 / 0531d0b9; scorer theory/score_s199_m1.py). The order parameter is s182.path_indep: converged models have delta_cos 0.44–0.63, failed models 0.69–0.98, across 19 models (Audit-reproduced). The failed models compute contractively.
             - Derivations are in the scratchpad (seedstab/MATH_contraction.md, MATH_selection.md, LIT_contraction.md).
