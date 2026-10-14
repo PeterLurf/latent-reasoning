@@ -57,12 +57,84 @@
  },
  "runs": {
   "1": {
-   "status": "open"
+   "status": "done",
+   "pooled": {
+    "0": 0.09449999999999999,
+    "1": 0.09733333333333333,
+    "8": 0.999,
+    "16": 0.999,
+    "24": 0.989,
+    "32": 0.934
+   },
+   "min_k8_3_8": 0.996,
+   "deep": true,
+   "think_necessary": true,
+   "stable": true,
+   "long_stable": true,
+   "depth_9_12_n2": 0.68825,
+   "clip_rate": null,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "dwell_by_n": {
+    "3": 0.0,
+    "4": 0.0,
+    "5": 0.0,
+    "6": 0.0,
+    "7": 0.0,
+    "8": 0.0010000000000000009
+   }
   },
   "2": {
    "status": "open"
   }
  },
- "reading": "pending (s193 s1 open)",
+ "c6_claim": null,
+ "entry": {
+  "s185_rms_s1": {
+   "cell": {
+    "entry_0.5": 22000,
+    "entry_0.1": 29000,
+    "min_bin": 0.0037290655628103193,
+    "last_bin": 0.00471732879810861
+   },
+   "comp": {
+    "entry_0.5": 19000,
+    "entry_0.1": 29000,
+    "min_bin": 0.004362799933722272,
+    "last_bin": 0.00567593143902559
+   },
+   "confounded_by_entry": false
+  },
+  "s182_window_s1": {
+   "cell": {
+    "entry_0.5": 22000,
+    "entry_0.1": 29000,
+    "min_bin": 0.0037290655628103193,
+    "last_bin": 0.00471732879810861
+   },
+   "comp": {
+    "entry_0.5": 25000,
+    "entry_0.1": null,
+    "min_bin": 0.23891400540307223,
+    "last_bin": 0.23891400540307223
+   },
+   "confounded_by_entry": true
+  },
+  "s182_window_s2": {
+   "cell": {
+    "entry_0.5": 22000,
+    "entry_0.1": 29000,
+    "min_bin": 0.0037290655628103193,
+    "last_bin": 0.00471732879810861
+   },
+   "comp": {
+    "entry_0.5": 17000,
+    "entry_0.1": 22000,
+    "min_bin": 0.00039051002181463446,
+    "last_bin": 0.0006512014306526908
+   },
+   "confounded_by_entry": false
+  }
+ },
+ "reading": "JOINT: K'8 0.999 -> K'16 0.999 (STABLE True), K'24 0.989 (LONG-STABLE True), K'32 0.934; min n 3-8 at K'8 0.996 (DEEP True); THINK-NECESSARY True; DEPTH n 9-12 0.688; vs rms K'8 0.998 K'16 0.933 K'24 0.746 DEPTH 0.587; vs window K'8 0.900 K'16 0.899 K'24 0.859 DEPTH 0.465; s2 opens; C6 CLAIM (JOINT + LONG-STABLE, 2 / 2) pending s2; entry(0.5/0.1) cell (22000, 29000) vs s185_rms_s1 19000/29000, s182_window_s1 25000/None CONFOUNDED-BY-ENTRY, s182_window_s2 17000/22000",
  "errors": []
 }
