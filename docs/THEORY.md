@@ -14636,6 +14636,15 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - "Never stalls" (M3) now holds without M3b's qualifier.
   - This fits Cor. 1.2: the structure comes from the input plus the pass token, and the value computation runs out of one-shot depth.
 
+**Clarification 199-A3 (2026-10-13 23:28 EDT; before any s2 / s3 A4 check; Audit's ruling). The tolerance basis of 199-A2 (iii).**
+* **The scorer's committed basis governs:** |d500 − pred| ≤ 1e-6 · |loss_ctrl_500| (≈ 3.5e-6 absolute).
+  - a4_check.json's pred-relative verdict (≈ 5e-10 absolute) is descriptive only.
+* **Why (derivation):**
+  - The step-500 total la + λ·aux + 0.1·csr is summed in fp32 at magnitude about 3.5, where one ulp is about 2.4e-7. Divided by 100 in the record mean, that leaves a pure-rounding residual of up to about 2.4–3.6e-9.
+  - A pred-relative 1e-6 bound (5e-10) sits below that floor and could fail a correctly paired cell.
+  - Clause (ii), step 500's answer_ce / aux_ce bitwise, already establishes identical parameters and batch. So (iii) only checks the CSR term's accounting, and a bound well above rounding and far below any real change is right.
+* **s1 (b283):** |d500 − pred| = 3.6e-10, which passes on every basis.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
