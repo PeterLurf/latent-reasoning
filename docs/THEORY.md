@@ -15051,6 +15051,11 @@ Each registers separately, after T1 / T2.
   - the ProsQA descriptive T1;
   - the s182_window_s2 control.
 
+**§201 control (2026-10-14 09:03 EDT; s182_window_s2, T1 only, 20d97e07; fb_identity True; s173 maxdiff 0 items, an fp32 reference).** NOTHING-TO-RECOVER, as the negative control should read: D = 0.001 at K′24.
+* FD (freeze the delta state after completion) is harmless: 0.9985 → 0.9995.
+* FA (freeze the additive state) **fails no-harm**: 0.9985 → 0.9835 (−0.015 > 0.01), as on §187 s1 (−0.170).
+* **Reading (descriptive):** in well-behaved models the additive path still does useful post-completion work, while the delta path's post-completion writes are what cost accuracy elsewhere. Freezing delta writes after completion is the safe intervention; freezing the additive writes is not.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
