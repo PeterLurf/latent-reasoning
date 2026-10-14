@@ -18,12 +18,14 @@ import json,sys
 ex={l.split()[0] for l in open('scratch/vast_exclude_ips.txt') if l.strip() and not l.startswith('#')}   # first token: lines may carry a trailing comment
 used={l.split()[0] for l in open('scratch/live_hosts.txt') if l.strip()}
 pf=[l.strip() for l in open('scratch/vast_prefer_ips.txt') if l.strip() and not l.startswith('#')] if __import__('os').path.exists('scratch/vast_prefer_ips.txt') else []   # Audit 2026-10-10: known-fast hosts first
-rows=[(0 if any(str(x.get('public_ipaddr','')).startswith(q) for q in pf) else 1, 0 if str(x.get('driver_version','')).startswith('595.71') else 1, x['dph_total'], x['id']) for x in json.load(sys.stdin) if (not __import__('os').environ.get('DRIVER_EQ') or str(x.get('driver_version','')) == __import__('os').environ['DRIVER_EQ']) and x.get('public_ipaddr') not in ex and 'oid:%s' % x.get('id') not in ex and 'mid:%s' % x.get('machine_id') not in ex and x.get('public_ipaddr') not in used and not str(x.get('driver_version','')).startswith('580')]
+rows=[(0 if any(str(x.get('public_ipaddr','')).startswith(q) for q in pf) else 1, 0 if str(x.get('driver_version','')).startswith('595.71') else 1, x['dph_total'], x['id']) for x in json.load(sys.stdin) if (not __import__('os').environ.get('DRIVER_EQ') or str(x.get('driver_version','')) == __import__('os').environ['DRIVER_EQ']) and (__import__('os').environ.get('DRIVER_EQ') or str(x.get('driver_version','')) not in ({l.split()[0] for l in open('scratch/reserved_drivers.txt') if l.strip() and not l.startswith('#')} if __import__('os').path.exists('scratch/reserved_drivers.txt') else set()))and x.get('public_ipaddr') not in ex and 'oid:%s' % x.get('id') not in ex and 'mid:%s' % x.get('machine_id') not in ex and x.get('public_ipaddr') not in used and not str(x.get('driver_version','')).startswith('580')]
 print(sorted(rows)[0][3] if rows else '')")
       if [ -n "$o" ]; then
         log "b$n: deploying on offer $o ($cnt live, \$${burn}/h)"; bash scratch/gen_deploy_120.sh "$o $n"
         grep "gen host b$n offer $o:" logs/gen_deploy.log | tail -1 | grep -q STARTED && { log "b$n: STARTED"; bash scratch/rebuild_live_hosts.sh > /dev/null 2>&1; sleep 60; break; }
         log "b$n: did not start, retrying"
+      else
+        log "b$n: no matching offer (DRIVER_EQ=${DRIVER_EQ:-any}, DPH_MAX=${DPH_MAX:-0.30}, reserved=$(grep -v '^#' scratch/reserved_drivers.txt 2>/dev/null | awk '{print $1}' | tr '\n' ' ')); retry in 10 min"   # Audit 2026-10-14: a silent wait is visible
       fi
     fi
     sleep 600
