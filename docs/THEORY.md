@@ -15277,7 +15277,7 @@ Each registers separately, after T1 / T2.
   - **P5 FALSIFIED:** THINK-NECESSARY fails for A.
   - **P6 reads LENGTH-ROBUST:** the size-keyed transfer from ProsQA does not hold here.
   - **P7 holds.**
-  - P2 is unreadable without D. P8: see the GSM-Symbolic note below (FALSIFIED).
+  - P2 and P8 are unreadable without D and the latent GSM-Symbolic evals. *(Update 17:35: P8 is decided on the landed arms, FALSIFIED; see the GSM-Symbolic note below.)*
 * **IDLE-PASSES (descriptive):** K′ = m + 2 is not above K′10 at any m. Extra idle passes do not hurt, so risk 0 did not materialise.
 * **Realised spend:** about $7.8, over the $7.50 cap, including $0.64 for D's idle slow host. D is not refilled; that is Audit's / the user's call.
 * **Reading:**
