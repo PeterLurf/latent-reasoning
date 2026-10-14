@@ -63,7 +63,7 @@ def main():
                     if info[n]["step"] >= mark and mark not in done[n]:
                         done[n].add(mark)
                         log("CHECK b%d @%d: %s | family projection $%.2f (cells with data %s; b286 $%.2f)" % (n, mark, info, fam, sorted(proj), B286["dph"] * B286["hours"]))
-                        if not missing and fam > CAP:
+                        if fam > CAP:                               # 05:1x (Audit): D held, so the cells present alone must stay under the cap
                             log("ALERT family projection $%.2f > cap $%.2f - pause decision to Audit / the user" % (fam, CAP)); raise SystemExit(3)
         if all({2000, 6000} <= done[n] for n in done):
             log("guard done: A and B past 6k; last family projection $%.2f" % fam); return
