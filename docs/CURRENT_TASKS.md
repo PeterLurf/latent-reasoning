@@ -159,6 +159,11 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
           - **§168 s2 STEP-AUX: not DEEP-LATENT, GENUINE memorisation** (train 1.0, test 0.49 at every K′). Fixed ~12k-item ProsQA vs nested's fresh items. Lead (unregistered): ProsQA-FRESH (procedural graphs). b267 is read as registered.
           - **Conditional lead, not registered (Audit 04:5x): GSM8K template resampling.** Per-draw renaming and number resampling of GSM8K's own 7.5k items as a training augmentation. **The source must be TemplateGSM 2411.18104** (from the 7,473 TRAIN problems, CC-BY-4.0) or our own templating of GSM8K-Aug train items, with the equation CoT recomputed. **Never GSM-Symbolic 2410.05229**: its templates come from the GSM8K TEST set and are CC-BY-NC-ND, so they are eval-only (Literature 2d3828d8). The trigger is §191 A reading NAME-MEM (≥ 0.65). The shape is a GSM8K-short pilot of fixed vs resampled templates on TEXT-COT and the current latent base (RMS, or RMS + NOPASS, not §184's reweight), with GSM8K-Aug (385k) as the reference. GSM8K-scale spend needs the user's approval.
           - **§198 CHEAP-THINK registered (e69bc32a; the user's request; Audit: one item, $10 cap):** an all-cached nested family. (a) cached INJECT (−44%), (b) MEM-HIGH l_m 9 (−67%), (c) READ-SLOTS + RMS + step aux (−87% at L 300). Experiments is building (b)'s --mem_layer and porting (c). The cost clause is at L = 300. Ruled out: MELT / LLA / RLT / T²MLR (cross-loop KV).
+          - **Theory 16:2x (after the 13:45 MACHINE REBOOT; this session is now named claude-5a):**
+            - Local §201 T4 runs died: rms s1 (2070), §184 s2 (4060) and s193 (3070, note 201-8). s190 s1 and rms s2 are done (6a4c5e39). Re-queue, $0.
+            - Cloud §200 A / B / D and §193 s2 need their drain watchers checked.
+            - §199-A is CLOSED (1 of 3 seeds; CSR FLOOR-GAMED, harmful).
+            - Ready: the WARM-START-FROM-COT conditional draft (scratchpad warmcot/WARMCOT_DRAFT.md; registers only if A / B read LOOP-NOT-FORMED or below; user-pre-approved ≤ $4 for the pair; latent cost 1.48 s/step at micro 4, not 0.89).
           - **Theory status 2026-10-14 08:1x (supersedes the §199 / general lines below where they differ):**
             - **§199 (seed stability):**
               - M1 PREDICTED (α^L tracks the size-keyed depth limit, not the lottery).
