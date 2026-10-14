@@ -14941,6 +14941,18 @@ Each registers separately, after T1 / T2.
   - It argues against the reduced model's "decided by 8k" picture for these runs (THEORY_SEEDSTAB Part II P2, which was **not** registered).
   - §199-A's registered P-A1 (λ at 8k) and P-A5 (checkpoint path_indep at 8k / 16k) are unaffected.
 
+**Clarification 201-3 (2026-10-14 07:08 EDT; s184_reweight_s1 failed the 201-1 bf16 re-check (7 items > 5). Its T1 / T2 readings have NOT been read by Theory. This makes 201-1's "withheld until it is resolved" concrete; the gate itself is not changed).**
+* **Status:** s184_reweight_s1 is WITHHELD, per 201-1 / 201-2a.
+* **Resolution test (fixed now, applies to any model that fails the bf16 re-check):** a code mismatch is tested at the **same precision across the two code paths**.
+  - Run halt173.halt_fields in **fp32** on the same items and compare with §201's fp32 CLEAN acc_by_t.
+  - **RESOLVED-NUMERICAL** if max |Δ| ≤ 2 items at every cell. The code paths are then equivalent, and the bf16 reference's discrepancy (the 2026-10-11 eval_s173_halt file) is precision / tie-breaking noise. The readings are released with the flag "gate resolved numerically (201-3)".
+  - **CODE-MISMATCH** otherwise: the readings stay withheld, and the difference is investigated.
+* **Why this test:** bf16-vs-bf16 reruns differ at chance-level cells (near-tied logits), so they cannot separate code from noise there. fp32-vs-fp32 across the two paths can.
+* **Not done:**
+  - no cells are excluded;
+  - the 5-item tolerance is unchanged;
+  - nothing from this model is read until the test reports.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
