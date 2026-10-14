@@ -14445,6 +14445,47 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - (the cells run uncached for pairing; --cache_lower compatibility is gated only if a later stage uses it);
   - memory check.
 
+**Clarification 199-A1 (2026-10-13 22:22 EDT; before any §199 cell; Experiments' gate_csr run 1). Two definitional details. The registered cells' math is unchanged.**
+* **The pre range is t ∈ [2, min(n − 1, K − 1)]**, since λ_t exists for t ≤ K − 1.
+  - For the registered cells (K 8, n ≤ 8), n − 1 ≤ 7 = K − 1, so this is identical to 199-A's [2, n − 1].
+  - The slip only showed at the gate's think_k 2 (an empty mean, NaN). Gates g1c and a finiteness check were added.
+* **Fixture g3:**
+  - With ε₀ > 0, d_t includes ε₀‖R_t‖, so λ_t = log κ holds exactly only at ε₀ = 0.
+  - The fixture checks ε₀ = 0 against log κ, and ε₀ = 1e-3 against the closed form d_t² = κ^{2t}|v|² + ε₀²|v|²((1 − κ^t)/(1 − κ))². Both errors are about 5e-7.
+  - At κ 0.5 and t 7, ε₀ = 1e-3 shifts λ by 0.023. ε₀ matters only when the displacement nears the floor, as 199-A states.
+
+**Note 199-M2 (2026-10-13 22:22 EDT; before any interpolation is computed; Audit's design with one correction by Theory; descriptive, $0, local idle card). SAME-INIT LINEAR MODE CONNECTIVITY: is the failed seed in a separate basin?**
+* **Basis:**
+  - The init is deterministic and identical across seeds (pretrained GPT-2 plus a copied or zero memory branch). So s185_rms s1 / s2 / s3 are three SGD trajectories from **one** point.
+  - Same-init fine-tunes are often linearly connected [THEOREM-free, EMPIRICAL: Frankle 1912.05671; Neyshabur 2008.11687; Wortsman 2203.05482].
+  - §199's account (docs/THEORY_SEEDSTAB Part I §3–5, Part II §2) predicts two basins:
+    - s1–s2 connected (both path-dependent);
+    - a loss barrier on the s1–s3 and s2–s3 paths, where the order parameter crosses from path-dependent to contractive.
+* **Paths:** θ(λ) = (1 − λ)θ_A + λθ_B for **every** parameter (trunk, memory branch, gains, gates; buffers fade = gamma = 1 in all), λ ∈ {0, 0.1, …, 1}.
+  - Pairs: s1–s2 (same-class control), s1–s3, s2–s3.
+  - Eval in fp32 (no autocast), on one card for all points; the card and dtype are recorded.
+* **Eval sets (fixed before computing):**
+  - **TRAIN-DIST:** 256 items from train_items(np.random.default_rng(19900), 256, 8, EXCL) at K 8;
+  - **TEST:** the s182.path_indep items (test n 3..8, rng 18201 permutation[:500]).
+* **Loss:** L = answer CE + 1.0 × aux CE (the training objective, per-pass aux at t ≤ n, pass-token prompt as trained). Reported on both sets.
+* **Barrier (Theory's correction):**
+  - B = max over λ of [L(λ) − ((1 − λ)L(0) + λL(1))], i.e. above the **linear interpolation of the endpoint losses**.
+  - Audit's "max minus the mean of the endpoints" would read about 0.5 nats on a smooth monotone path between s1 (≈ 0.006) and s3 (≈ 1.03).
+  - The criterion reads TRAIN-DIST. TEST is reported beside.
+* **Readings:**
+  - **SEPARATE-BASIN** if B(s1–s3) > 3·B(s1–s2) and B(s1–s3) > 0.5 nats, **and** the same holds for s2–s3.
+  - **CONNECTED** if, for both s1–s3 and s2–s3, B ≤ 0.1 nats or ≤ 1.5·B(s1–s2).
+  - **UNCLEAR** otherwise.
+* **Order parameter along each path (descriptive):** s182.path_indep (delta_cos_final, answer_agree, acc_from_zero / donor) at every λ.
+  - The cleanest picture is a single crossing of delta_cos = 0.65 on s1–s3 / s2–s3, with none on s1–s2.
+  - Its λ is reported, with the barrier's argmax beside it.
+* **Output and scorer:**
+  - Output: `boxes/runs_fsq/s199_lmc/lmc_<A>_<B>.json` = {lam: [...], loss_train: [...], loss_test: [...], ans_ce_train, aux_ce_train, path_indep: [{...} per λ], gpu, dtype}.
+  - theory/score_s199_m2.py is written and fixture-checked before the files land.
+* **Limits:**
+  - Three final models, one per seed, and post hoc in the sense that the outcomes are known.
+  - A barrier shows separate basins at the END of training. It does not show that the basin was selected early: that is the trajectory probe's job.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
