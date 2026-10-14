@@ -15256,6 +15256,10 @@ Each registers separately, after T1 / T2.
   - a floor on **decodable progress** (the aux margin between e_{t+1} and e_t) or a two-sided band;
   - with a Goodhart analysis inside its derivation (Audit).
 
+**Note 201-8 (2026-10-14 13:35 EDT; before its output; descriptive).** T4 SNAP-CHAIN is also run on **s193_rmswin_s1** (RMS × WINDOW, the best beyond-range nested model) on the 3070, with the same policies, items and fields as note 201-7.
+* It is read with score_s201_t4's per-model logic as a **descriptive** extension. It is not in the registered four, and it enters no prediction (T4-a / b / c).
+* **Question:** does a text checkpoint extend this model's reach past its latent horizon (latent n 11 / 12: 0.598 / 0.244 at K′ 8 per §193)?
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
