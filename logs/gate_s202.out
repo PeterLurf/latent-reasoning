@@ -1,0 +1,11 @@
+COPY-INIT {"tensors": {"qkv.weight": {"equal_C": true, "differs_raw": true}, "qkv.bias": {"equal_C": true, "differs_raw": true}, "ln.weight": {"equal_C": true, "differs_raw": true}, "ln.bias": {"equal_C": true, "differs_raw": true}, "ln_w.weight": {"equal_C": true, "differs_raw": true}, "ln_w.bias": {"equal_C": true, "differs_raw": true}}, "trunk_equals_C_state_dict": true, "pass": true}
+K' 0 {'acc': 0.02, 'answers_equal_plain': 200, 'n': 200, 'max_abs_hidden_diff': 0.0}
+K' 1 {'acc': 0.02, 'answers_equal_plain': 200, 'n': 200, 'max_abs_hidden_diff': 0.0}
+K' 2 {'acc': 0.02, 'answers_equal_plain': 200, 'n': 200, 'max_abs_hidden_diff': 0.0}
+K' 4 {'acc': 0.02, 'answers_equal_plain': 200, 'n': 200, 'max_abs_hidden_diff': 0.0}
+K' 6 {'acc': 0.02, 'answers_equal_plain': 200, 'n': 200, 'max_abs_hidden_diff': 0.0}
+K' 8 {'acc': 0.02, 'answers_equal_plain': 200, 'n': 200, 'max_abs_hidden_diff': 0.0}
+K' 10 {'acc': 0.02, 'answers_equal_plain': 200, 'n': 200, 'max_abs_hidden_diff': 0.0}
+K' 12 {'acc': 0.02, 'answers_equal_plain': 200, 'n': 200, 'max_abs_hidden_diff': 0.0}
+K' 16 {'acc': 0.02, 'answers_equal_plain': 200, 'n': 200, 'max_abs_hidden_diff': 0.0}
+GATE_S202 PASS

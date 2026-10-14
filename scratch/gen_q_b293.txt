@@ -1,0 +1,4 @@
+# THEORY §202 WARM-START cell C+ (30401c78; equal-exposure text control for W): C's TEXT-COT flags + --init_from C's model.pt, 12k. RTX 3090, seed 1. LAUNCH ONLY after Audit's diff + gate OK. Data via .extra; C's model.pt ships as a file argument
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/gsm_txt_aug_cont_s1 boxes.gsm8k_stepaux --arm textcot --steps 12000 --bs 64 --lr 1e-4 --seed 1 --valid_every 2000 --ckpt_every 1000 --auto_micro --init_from boxes/runs_fsq/gsm_txt_aug_s1/model.pt

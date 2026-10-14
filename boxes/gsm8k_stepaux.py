@@ -12,6 +12,8 @@ test / valid question. Aug valid accuracy every --valid_every steps (the valid-b
 eval.json (score_s200 fields): acc, n, acc_by_m, acc_valid_best, valid_best_step, acc_test_validsel, fit {fit_fix, fit_rs}, struct {gap_mstrat,
 seen_acc, unseen_acc}, filler {base, k16, k32}, dedupe {n_flagged, acc_excl_flagged}; stepaux adds acc_by_kprime, idle {m: {n, k_m2, k10}}, path_indep,
 aux_exact_by_pass. symbolic / cost come from separate eval-only passes (--symbolic_dir; scratch eval_timing) and are null here.
+§202 WARM-START (30401c78): --init_from <trunk state dict> (strict, into g before ProsMem(g); sha256 + path in args.json), --cot_valid (stepaux: the
+plain trunk's TEXT-COT accuracy on Aug valid at each valid eval -> cot_valid_acc in log.jsonl), and eval.json aux_exact_by_grounding (stepaux).
     python -m boxes.gsm8k_stepaux --arm stepaux --think_k 10 --aux_fade 24000,24000 --cache_lower --fast_add --chunk_delta 64 --steps 24000 --out <dir>"""
 import os
 os.environ["BOXES_NB"] = "5"
@@ -135,6 +137,8 @@ def main():
     ap.add_argument("--fit_n", type=int, default=1000); ap.add_argument("--extras_n", type=int, default=500); ap.add_argument("--fp32", action="store_true")
     ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes"); ap.add_argument("--symbolic_dir", default="", help="eval-only: GSM-Symbolic main / p1 / p2 jsonl dir (fetched at eval time, never committed)")
     ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt (no training; args_eval.json)"); ap.add_argument("--eval_model", default="model.pt")
+    ap.add_argument("--init_from", default="", help="§202: a GPT-2 trunk state dict (e.g. a textcot run's model.pt) loaded strictly into g before ProsMem(g)")
+    ap.add_argument("--cot_valid", action="store_true", help="§202 stepaux: also the plain trunk's TEXT-COT accuracy on Aug valid at each valid eval (cot_valid_acc)")
     ap.add_argument("--resume", default=None); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); os.makedirs(a.out, exist_ok=True); dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
     DM.FAST_ADD = bool(a.fast_add); DM.CHUNK_DELTA = int(a.chunk_delta); sc = a.sched_scale; SA = a.arm == "stepaux"; K = a.think_k if SA else 0
@@ -161,7 +165,15 @@ def main():
         if TPL is not None or pools is not None:
             assert r["q"] not in HOLD, "§200: a transformed training question equals a test / valid question"
         return enc(r)
-    g = s5.load_gpt2(dev); m = ProsMem(g).to(dev) if SA else None; params = m if SA else g
+    g = s5.load_gpt2(dev); init_meta = None
+    if a.init_from:                                                         # §202: before ProsMem(g), so DeltaMem's copies (block 6 ln_1 / c_attn,
+        import hashlib                                                      # block 11 ln_1) come from the loaded trunk
+        h_ = hashlib.sha256()
+        with open(a.init_from, "rb") as f_:
+            for b_ in iter(lambda: f_.read(1 << 24), b""):
+                h_.update(b_)
+        g.load_state_dict(torch.load(a.init_from, map_location=dev, weights_only=False), strict=True); init_meta = {"init_from": a.init_from, "init_sha256": h_.hexdigest()}
+    m = ProsMem(g).to(dev) if SA else None; params = m if SA else g
     Lq = [len(v) for v in ENC.encode_ordinary_batch([r["q"] for r in Rtr], num_threads=4)]
     La = [len(v) for v in ENC.encode_ordinary_batch(["".join(" <<%s>>" % e for e in r["eqs"][:K]) if SA else "".join("<<%s>>\n" % e for e in r["eqs"]) for r in Rtr], num_threads=4)]
     if SA:                                                                  # the memory check's worst case: the longest question (K passes) carrying the
@@ -225,7 +237,7 @@ def main():
             return
     info = {**vars(a), "task": "gsm8k_aug", "train_items": len(Rtr), "train_filter": fcnt, "test_items": len(Dte), "valid_items": len(Dva),
             "train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version(), **env_info(),
-            "recomputable_items": int(sum(t is not None for t in TPL)) if TPL is not None else None}
+            "recomputable_items": int(sum(t is not None for t in TPL)) if TPL is not None else None, **(init_meta or {})}
     json.dump(info, open(os.path.join(a.out, "args_eval.json" if a.eval_only else (("args_resume_%d.json" % int(time.time())) if a.resume else "args.json")), "w", newline="\n"), indent=1)
     if SA and not a.resume and not a.eval_only:                             # note 147-2: g_add calibration at step 0
         its = [enc(Rtr[i]) for i in np.random.default_rng(16801).permutation(len(Rtr))[:32]]; x, msk = m.think_inputs(its, dev); m.mem.norms = []
@@ -260,6 +272,10 @@ def main():
         if SA:
             S = think_states(D, K if Kp is None else Kp, M0)
             return greedy_after(Fwd(g, m.mem, S), [[EOT] + it["pre"] + [ANS] for it in D], dev, ac, bs)
+        return cot_answers(D)
+
+    def cot_answers(D):
+        """the plain trunk g's TEXT-COT answers (the textcot arm's path; §202 --cot_valid reads it on a stepaux model's shared trunk)."""
         co = cot_batched(g, [it["pre"] for it in D], a.max_new, dev, amp, a.cot_eval_bs); out = [None] * len(D); hit = [i for i, (_, h_) in enumerate(co) if h_]
         if hit:
             pr = greedy_after(Fwd(g), [co[i][0] + [ANS] for i in hit], dev, ac, bs)
@@ -267,6 +283,9 @@ def main():
                 out[i] = p_
         answers.cot_len = [len(c) - len(it["pre"]) for (c, _), it in zip(co, D)]
         return out
+
+    def cot_valid_acc():
+        params.eval(); v = acc_of(Dva, cot_answers(Dva)); params.train(); return v
 
     def acc_of(D, P):
         return float(np.mean([ans_ok(p_, it["ans"]) for p_, it in zip(P, D)])) if D else None
@@ -303,6 +322,8 @@ def main():
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
         if a.valid_every and not a.time_steps and (step % a.valid_every == 0 or step == last_):
             tv = time.time(); va = valid_acc(); vhist.append((step, va)); r5 = {"step": step, "valid_acc": va, "valid_sec": round(time.time() - tv, 1)}
+            if SA and a.cot_valid:                                          # §202 COT-RETAIN(t): descriptive, never used for selection
+                tc = time.time(); r5.update({"cot_valid_acc": cot_valid_acc(), "cot_valid_sec": round(time.time() - tc, 1)})
             if va >= max(v for _, v in vhist):                               # ties: the later step
                 torch.save(params.state_dict(), os.path.join(a.out, "model_validbest.pt")); r5["valid_best"] = True
             log.write(json.dumps(r5) + "\n"); log.flush(); print(r5, flush=True)
@@ -384,8 +405,11 @@ def main():
             Dm = [it for it in Dte if it["m"] == k_]
             idle[str(k_)] = {"n": len(Dm), "k_m2": acc_of(Dm, answers(Dm, k_ + 2)), "k10": float(C[mt == k_].mean())}
         res["idle"] = idle; _partial("idle")
-        ex = [Dte[i] for i in np.random.default_rng(16802).permutation(len(Dte))[:a.extras_n]]
-        hop = {}
+        ex_i = np.random.default_rng(16802).permutation(len(Dte))[:a.extras_n]; ex = [Dte[i] for i in ex_i]
+        hop = {}; hop_gr = {}; grd = []                                      # §202 P-W8: step t's operand grounding from gsm8k_data.parse_recomputable:
+        for i in ex_i:                                                      # "R" = any operand is a previous result, "Q" = question literals /
+            tp_, _ = G.parse_recomputable(Rte[i])                           # constants only, "unparsed" = the item is not recomputable (no labels)
+            grd.append([("R" if any(o_[3] == "r" for o_ in e_["ops"]) else "Q") for e_ in tp_["eqt"]] if tp_ is not None else None)
         for i in range(0, len(ex), bs):
             ch = ex[i:i + bs]; x, msk = m.think_inputs(ch, dev)
             with torch.no_grad(), ac():
@@ -395,8 +419,14 @@ def main():
                     if ix:
                         gen = m.aux_greedy(S[ix], t, max(len(ch[j]["step_ids"][t - 1]) + 1 for j in ix))
                         for r_, j in enumerate(ix):
-                            tg_ = ch[j]["step_ids"][t - 1] + [EOT]; hop.setdefault(t, []).append(bool(list(gen[r_, :len(tg_)]) == tg_))
+                            tg_ = ch[j]["step_ids"][t - 1] + [EOT]; ok_ = bool(list(gen[r_, :len(tg_)]) == tg_); hop.setdefault(t, []).append(ok_)
+                            gl_ = grd[i + j]; hop_gr.setdefault(gl_[t - 1] if gl_ is not None else "unparsed", {}).setdefault(t, []).append(ok_)
         res["aux_exact_by_pass"] = {str(t): float(np.mean(v)) for t, v in sorted(hop.items())}; res["aux_n_by_pass"] = {str(t): len(v) for t, v in sorted(hop.items())}
+        res["aux_exact_by_grounding"] = {c_: {"acc": float(np.mean([x_ for v in d_.values() for x_ in v])), "n": sum(len(v) for v in d_.values()),
+                                              "by_pass": {str(t): float(np.mean(v)) for t, v in sorted(d_.items())}, "n_by_pass": {str(t): len(v) for t, v in sorted(d_.items())}}
+                                         for c_, d_ in sorted(hop_gr.items())}
+        res["aux_exact_by_grounding"]["def"] = ("§202 P-W8: the aux_exact_by_pass items split by step t's operand grounding (gsm8k_data.parse_recomputable on the test raw item): "
+                                                "R = any operand is a previous result, Q = question literals / constants only, unparsed = item not recomputable")
         S8 = think_states(ex, 8); donor = torch.tensor(np.roll(np.arange(len(ex)), 1)); S0 = think_states(ex, 16); S1 = think_states(ex, 16, S8[donor].cpu())
         P0 = greedy_after(Fwd(g, m.mem, S0), [[EOT] + it["pre"] + [ANS] for it in ex], dev, ac, bs); P1 = greedy_after(Fwd(g, m.mem, S1), [[EOT] + it["pre"] + [ANS] for it in ex], dev, ac, bs)
         hd = slice(m.mem.h_add, m.mem.h_add + m.mem.h_del)

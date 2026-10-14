@@ -1,0 +1,4 @@
+# THEORY §202 WARM-START cell W (30401c78; docs/THEORY_WARMCOT_DRAFT_2026-10-14.md §5; reader theory/score_s202.py; user pre-approval via Audit <= $4 for the pair): §200 A's latent flags exactly + --init_from C's TEXT-COT model.pt + --cot_valid, 12k, aux_fade 12000,12000. RTX 3090, seed 1. LAUNCH ONLY after Audit's diff + gate OK. Data via .extra; C's model.pt ships as a file argument (sha256 c5b52282...2ebe recorded in args.json)
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/gsm_lat_warm_s1 boxes.gsm8k_stepaux --arm stepaux --think_k 10 --aux_fade 12000,12000 --cache_lower --fast_add --chunk_delta 64 --steps 12000 --bs 64 --lr 1e-4 --seed 1 --valid_every 2000 --ckpt_every 1000 --auto_micro --init_from boxes/runs_fsq/gsm_txt_aug_s1/model.pt --cot_valid
