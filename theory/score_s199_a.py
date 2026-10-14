@@ -44,8 +44,13 @@ def paired(cell, ctrl):
     ok1 = all(a[k][x] == b[k][x] for k in a if k <= 400 for x in f)
     ok2 = a[500]["answer_ce"] == b[500]["answer_ce"] and a[500]["aux_ce"] == b[500]["aux_ce"]
     cs = a[500].get("csr_loss"); pred = None if cs is None else 0.1 * cs / 100; d500 = a[500]["loss"] - b[500]["loss"]
+    import numpy as np                                                      # 199-A3 governs: 1e-6 x |loss_ctrl_500|; 199-A3a: the 2-ulp bound is a descriptive flag
     ok3 = pred is not None and abs(d500 - pred) <= 1e-6 * max(abs(b[500]["loss"]), 1e-12)
-    return bool(ok1 and ok2 and ok3), {"i_100_400": ok1, "ii_500_ce": ok2, "iii_500_loss": ok3, "d500": d500, "pred": pred}
+    tol_ulp = 2 * float(np.spacing(np.float32(abs(b[500]["loss"])))) / 100
+    mc = lambda d: (json.load(open(os.path.join(R, d, "args.json"))).get("micro") if os.path.exists(os.path.join(R, d, "args.json")) else None)   # noqa: E731
+    ok_micro = mc(cell) == mc(ctrl)                                         # A4: the same micro / auto_micro outcome as the control
+    return bool(ok1 and ok2 and ok3 and ok_micro), {"i_100_400": ok1, "ii_500_ce": ok2, "iii_500_loss": ok3, "same_micro": ok_micro, "d500": d500, "pred": pred,
+                                                    "ulp_flag_above_2ulp": None if pred is None else abs(d500 - pred) > tol_ulp, "tol_2ulp": tol_ulp}
 
 
 def pa1(d):
