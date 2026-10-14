@@ -27,6 +27,11 @@ touching fsq120 / table132 / core. Never edit a module while a deploy is in flig
 deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `vast destroy` aborts at its y/N prompt).
 
 ### Vast (7 hosts, ~$1.4/h; 14:27 2026-10-10)
+* 01:2x 10-14 (Experiments): §200 GSM8K-AUG PILOT (user-approved Tier 1, $7 cap): harness 2d0964ab + name fix 64c98681, gate_s200 run 4 all 8 PASS,
+  Audit OK. Timing host b286 (scratch/gen_q_b286.txt + .extra data sidecar) takes the FIRST free slot (chain_s200t_s199 in scratchpad: b286, then §199 s2
+  570.172.08, then s3 595.84). b286's timing.json -> projection to Audit AND the user before any of the four §200 cells (A/B/C/D queues not built yet).
+  §201 OVERTHINK-EXIT T1 running on the 2070 (scratchpad run_s201_t1.sh, 8 models ~6 h, dumps in scratchpad/s201_dump); T2 (scratch/s201_t2.py) runs per
+  model after its T1 (CPU); T2-e (FA-on-signal) and the ProsQA s191 descriptive T1 still to build.
 * 23:4x 10-13 (Experiments): fleet 5 = b277 §193, b280 §198a, b281 §198b, b282 §198c (STARTED 22:41, family proj ~$6.5), b283 §199 s1 (STARTED 23:13,
   570.172.08; A4 PAIRED under 199-A2, e4fb6c7b). Pairing rule = score_s199_a.paired() (step-500 tolerance 1e-6 x |loss_ctrl|, Audit
   settled); a4_check.json's pred-relative residual is descriptive only. s2 / s3: chain_s199c (DRIVER_EQ 570.172.08 then 595.84) waits for slots (~06:00); scratchpad a4_arm_s23.sh
