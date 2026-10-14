@@ -1,0 +1,180 @@
+{
+ "arm": "stepaux",
+ "data": "gsm8k_aug",
+ "seed": 1,
+ "steps": 2,
+ "think_k": 10,
+ "n": 1319,
+ "train_sec": 7,
+ "n_nonfinite": 0,
+ "micro": 4,
+ "eval_dtype": "torch.bfloat16",
+ "train_gpu": "NVIDIA GeForce RTX 3090",
+ "train_driver": "595.84",
+ "eval_gpu": "NVIDIA GeForce RTX 3090",
+ "eval_only": false,
+ "transforms": {
+  "draws": 128,
+  "rs_tried": 0,
+  "rs_accepted": 0,
+  "rl_items": 0,
+  "rl_names": 0
+ },
+ "acc_def": "greedy after '###' (<= 12 tokens, stop at EOS / newline), bench.tasks.norm_number exact match; the text arm generates its CoT to '###' first",
+ "symbolic": null,
+ "cost": null,
+ "acc": 0.0,
+ "acc_by_m": {
+  "0": 0.0,
+  "1": 0.0,
+  "2": 0.0,
+  "3": 0.0,
+  "4": 0.0,
+  "5": 0.0,
+  "6": 0.0,
+  "7": 0.0,
+  "8": 0.0
+ },
+ "n_by_m": {
+  "0": 18,
+  "1": 65,
+  "2": 357,
+  "3": 364,
+  "4": 290,
+  "5": 138,
+  "6": 57,
+  "7": 21,
+  "8": 9
+ },
+ "eval_partial": false,
+ "acc_valid_best": 0.0,
+ "valid_best_step": 2,
+ "valid_hist": [
+  [
+   2,
+   0.0
+  ]
+ ],
+ "acc_test_validsel": 0.0,
+ "struct": {
+  "gap_mstrat": 0.0,
+  "seen_acc": 0.0,
+  "unseen_acc": 0.0,
+  "n_seen": 733,
+  "n_unseen": 387,
+  "n_nokey": 199,
+  "def": "theory/gsmtpl/seen_split.py's functional fingerprint (extra_stats.fingerprint at two random value vectors + m) seen in Aug train (unfiltered)"
+ },
+ "dedupe": {
+  "n_flagged": 3,
+  "acc_excl_flagged": 0.0,
+  "def": "gsmlen/dedupe.py: lower-case, numbers -> #, word 8-grams; score = max over Aug train items of shared / test shingles (shingles in >= 5000 items skipped); flagged >= 0.5"
+ },
+ "filler": {
+  "base": 0.0,
+  "def": "prepended to the question; exactly 16 / 32 GPT-2 tokens incl. the trailing space",
+  "k16": 0.0,
+  "k32": 0.0
+ },
+ "fit": {
+  "fit_fix": 0.0,
+  "n_fix": 1000,
+  "fit_rs": 0.0,
+  "n_rs": 565,
+  "def": "fit_fix: 1000 train items (rng 20010) as drawn; fit_rs: one fresh R_x draw (rng 20011) of each recomputable one, accepted draws only"
+ },
+ "acc_by_kprime": {
+  "0": 0.0,
+  "1": 0.0,
+  "2": 0.0,
+  "4": 0.0,
+  "6": 0.0,
+  "8": 0.0,
+  "10": 0.0,
+  "12": 0.0,
+  "16": 0.0
+ },
+ "idle": {
+  "0": {
+   "n": 18,
+   "k_m2": 0.0,
+   "k10": 0.0
+  },
+  "1": {
+   "n": 65,
+   "k_m2": 0.0,
+   "k10": 0.0
+  },
+  "2": {
+   "n": 357,
+   "k_m2": 0.0,
+   "k10": 0.0
+  },
+  "3": {
+   "n": 364,
+   "k_m2": 0.0,
+   "k10": 0.0
+  },
+  "4": {
+   "n": 290,
+   "k_m2": 0.0,
+   "k10": 0.0
+  },
+  "5": {
+   "n": 138,
+   "k_m2": 0.0,
+   "k10": 0.0
+  },
+  "6": {
+   "n": 57,
+   "k_m2": 0.0,
+   "k10": 0.0
+  },
+  "7": {
+   "n": 21,
+   "k_m2": 0.0,
+   "k10": 0.0
+  },
+  "8": {
+   "n": 9,
+   "k_m2": 0.0,
+   "k10": 0.0
+  }
+ },
+ "aux_exact_by_pass": {
+  "1": 0.0,
+  "2": 0.0,
+  "3": 0.0,
+  "4": 0.0,
+  "5": 0.0,
+  "6": 0.0,
+  "7": 0.0,
+  "8": 0.0
+ },
+ "aux_n_by_pass": {
+  "1": 491,
+  "2": 470,
+  "3": 352,
+  "4": 215,
+  "5": 101,
+  "6": 46,
+  "7": 16,
+  "8": 7
+ },
+ "path_indep": {
+  "answer_agree": 1.0,
+  "acc_from_zero": 0.0,
+  "acc_from_donor": 0.0,
+  "delta_cos_final": 0.9999602437019348,
+  "n_items": 500,
+  "kprime": 16,
+  "donor_passes": 8,
+  "derangement": "np.roll(sample order, 1)",
+  "items": "test, rng 16802 permutation[:extras_n]"
+ },
+ "clip": {
+  "clip_rate": 1.0,
+  "n_steps": 2
+ },
+ "eval_sec": 97
+}
