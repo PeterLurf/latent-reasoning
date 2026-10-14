@@ -1,0 +1,4 @@
+# THEORY §199-A CSR (amendment 199-A + clarification 199-A1; Audit-approved ONE item ~$7, cap $10; reader theory/score_s199_a.py; gate_csr/gate.json all PASS 478a572f): s199_csr_s2 = s185_rms_s2's exact line + --csr 0.1,-0.0513,-0.6931,0.05,500 + --keep_ckpt_steps 4000,8000,12000,16000; RTX 3090 on the control driver 570.172.08 (DRIVER_EQ); uncached; launch check A4: log records 100-500 bitwise == s185_rms_s2
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s199_csr_s2 boxes.nested170 --arm inject --think_k 8 --aux_step 1.0 --aux_fade 48000,48000 --fast_add --seed 2 --steps 48000 --kprimes 0,1,4,8,12,16,24,32 --path_indep --add_norm rms --ckpt_every 1000 --auto_micro --csr 0.1,-0.0513,-0.6931,0.05,500 --keep_ckpt_steps 4000,8000,12000,16000
