@@ -1,0 +1,111 @@
+{
+ "step": 8000,
+ "ckpt": "ckpt_model_8000.pt",
+ "path_indep": {
+  "answer_agree": 0.902,
+  "delta_cos_final": 0.9099223017692566,
+  "n_items": 500,
+  "acc_from_zero": 0.174,
+  "acc_from_donor": 0.18,
+  "kprime": 16,
+  "donor_passes": 8,
+  "items_n": [
+   3,
+   8
+  ],
+  "by_n": {
+   "3": {
+    "n_items": 84,
+    "answer_agree": 0.8571428571428571,
+    "delta_cos_final": 0.9032178521156311
+   },
+   "4": {
+    "n_items": 87,
+    "answer_agree": 0.8620689655172413,
+    "delta_cos_final": 0.9177156686782837
+   },
+   "5": {
+    "n_items": 81,
+    "answer_agree": 0.9012345679012346,
+    "delta_cos_final": 0.9291873574256897
+   },
+   "6": {
+    "n_items": 93,
+    "answer_agree": 0.9354838709677419,
+    "delta_cos_final": 0.9169179201126099
+   },
+   "7": {
+    "n_items": 76,
+    "answer_agree": 0.9473684210526315,
+    "delta_cos_final": 0.894538164138794
+   },
+   "8": {
+    "n_items": 79,
+    "answer_agree": 0.9113924050632911,
+    "delta_cos_final": 0.895280659198761
+   }
+  }
+ },
+ "path_indep_all_n": null,
+ "stage": null,
+ "train_loss_bin_1k": {
+  "window": [
+   7000,
+   8000
+  ],
+  "n_records": 10,
+  "loss_mean": 2.5365515835285186,
+  "answer_ce_mean": 2.114920984864235
+ },
+ "loss_seen_before_probe": "no",
+ "gpu": "NVIDIA GeForce RTX 3070",
+ "eval_dtype": "torch.bfloat16",
+ "run": "boxes/runs_fsq/s199_csr_s1",
+ "def": "nested170 s182.path_indep reproduced (items test n 3..8 rng 18201 [:500]; derangement np.roll 1; K' 16; delta_cos = mean cos of final delta-head states)",
+ "s175": {
+  "aux_acc_by_pass": {
+   "1": 0.919,
+   "2": 0.5395189003436426,
+   "3": 0.2752659574468085,
+   "4": 0.1480891719745223,
+   "5": 0.09430255402750491,
+   "6": 0.09560723514211886,
+   "7": 0.0622568093385214,
+   "8": 0.14285714285714285
+  },
+  "aux_acc_by_role": {
+   "1": {
+    "handle": 0.969,
+    "copy": 0.9938259109311741
+   },
+   "2": {
+    "handle": 0.563573883161512,
+    "copy": 0.9948745616401403
+   },
+   "3": {
+    "handle": 0.44148936170212766,
+    "copy": 0.971815107102593
+   },
+   "4": {
+    "handle": 0.34394904458598724,
+    "copy": 0.9423622941510506
+   },
+   "5": {
+    "handle": 0.3005893909626719,
+    "copy": 0.9029268292682927
+   },
+   "6": {
+    "handle": 0.2868217054263566,
+    "copy": 0.8468085106382979
+   },
+   "7": {
+    "handle": 0.19455252918287938,
+    "copy": 0.7669172932330827
+   },
+   "8": {
+    "handle": 0.15037593984962405,
+    "copy": null
+   }
+  }
+ }
+}
