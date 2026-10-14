@@ -15162,6 +15162,43 @@ Each registers separately, after T1 / T2.
   - A deployable overthinking fix for the RMS family is therefore: train with WINDOW (§193) plus a learned halt, then freeze the delta writes after the halt.
 * All one-seed, final models, descriptive.
 
+**Note 201-7 (2026-10-14 11:17 EDT; before any output; $0 eval-only; the ENTRY / EXIT half of the user's "teach models when to transition in and out of latent thinking"). T4, SNAP-CHAIN: when does writing a text checkpoint beat more latent passes?**
+* **Derivation:** docs/THEORY_OVERTHINK_2026-10-14.md Part III, Prop. 8 (PROVED, given two horizons).
+  - A single checkpoint at pass k needs k ≤ H_L (the latent is reliable) and n − k ≤ H_W (the remainder is decodable as a step string). So it reaches n ≤ H_L + H_W ≈ 14–15.
+  - More checkpoints do not extend that.
+  - The write-late rule is k* = H_L. A checkpoint also resets the integrator, so no segment enters the untrained post-K region.
+* **Models:** §190 s1, rms s1 / s2, §184 s2. **Items:** n ∈ {9, 10, 11, 12, 14, 16}, 1,000 each (test_set as halt173). fp32, an idle local card.
+* **Write step W:**
+  - greedily decode the step text e_{t+1} with the model's own aux decoder (its own prompt);
+  - if it parses as a valid expression of the grammar, restart with think input [EOT, e_{t+1}, " ."] and S = 0, and the answer decoder sees e_{t+1} as the expression;
+  - otherwise continue latent.
+* **Policies:**
+  - **LATENT-BEST:** the best fixed K′ chosen on training items (§201 T2);
+  - **LATENT-HALT:** §201 T2's primary halt;
+  - **TIMEOUT7 (PRIMARY):** latent until the T2 halt fires; if it has not fired by pass 7, W at 7. Each later segment follows the same rule, with ≤ 3 checkpoints, and the final segment halts by T2's rule (cap 32 total);
+  - **FIX2 / FIX4 / FIX7:** W at that pass (≤ 3 checkpoints);
+  - **LEN-IN-RANGE:** W at the first pass whose decoded string has ≤ 7 operators.
+* **Measured per n:**
+  - accuracy;
+  - mean total passes, including after checkpoints;
+  - mean decoded tokens;
+  - q_W, the greedy whole-string aux exact match at the write pass;
+  - the parse-valid share;
+  - per-segment K′ = 0 accuracy (T4-d).
+* **Readings (per model, PRIMARY TIMEOUT7; n 11–12 pooled = the mean of the n 11 and n 12 accuracies):**
+  - LAT = max(LATENT-BEST, LATENT-HALT) at n 11–12;
+  - **SNAP-HELPS:** TIMEOUT7 ≥ LAT + 0.15, with mean total passes ≤ best fixed K′ + 4;
+  - **SNAP-NEUTRAL:** within ±0.05;
+  - **SNAP-HURTS:** ≤ LAT − 0.05;
+  - otherwise **mixed**.
+* **Predictions:**
+  - **T4-a:** SNAP-HELPS on §190 s1, conditional on its q_W at pass 7 ≥ 0.6 (n 11–12 mean).
+  - **T4-b:** at n 11–12, FIX7 ≥ FIX4 ≥ FIX2. **Falsifier:** FIX4 > FIX7 + 0.05.
+  - **T4-c (reach boundary):** n 14 is helped (TIMEOUT7 ≥ LAT_14 + 0.15) and n 16 is not. **Falsifier:** n 16 helped by ≥ 0.15.
+  - **T4-d:** per-segment K′ = 0 accuracy at chance (descriptive).
+* **Output:** `<run>/eval_s201_snap.json` = {"policies": {NAME: {"acc_by_n", "mean_passes_by_n", "mean_tokens_by_n"}}, "qW_kw7_by_n", "parse_valid_by_n", "segment_k0_by_n", "best_fixed_k_train"}.
+  - Reader: theory/score_s201_t4.py, fixture-checked before any output.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
