@@ -1,0 +1,50 @@
+{
+ "by_t": {
+  "5": {
+   "n": 500,
+   "correct": 499,
+   "lag1": 0,
+   "lag2plus": 0,
+   "other": 1
+  },
+  "6": {
+   "n": 500,
+   "correct": 498,
+   "lag1": 0,
+   "lag2plus": 0,
+   "other": 2
+  },
+  "7": {
+   "n": 343,
+   "correct": 341,
+   "lag1": 0,
+   "lag2plus": 0,
+   "other": 2
+  },
+  "8": {
+   "n": 160,
+   "correct": 160,
+   "lag1": 0,
+   "lag2plus": 0,
+   "other": 0
+  }
+ },
+ "items": "test n in {6, 7, 8}, rng 18201 permutation[:500] of that pool (n=6: 157, n=7: 183, n=8: 160)",
+ "think_k": 8,
+ "t_range": [
+  5,
+  "n"
+ ],
+ "gpu": "NVIDIA GeForce RTX 2070",
+ "dtype": "float32 (no autocast)",
+ "nopass": false,
+ "memcheck_peak_gib": 0.598,
+ "sec": 36,
+ "def": "note 199-M3: greedy aux output at pass t vs the item's e_2..e_{n+1}; precedence correct (e_{t+1}) > lag1 (e_t) > lag2plus (e_{t'+1}, t' <= t-2) > other; match = the first len(c) greedy tokens == c (ids + EOT), as s175",
+ "sanity_eval_json_aux_acc_by_pass": {
+  "5": 0.9960707269155207,
+  "6": 0.9922480620155039,
+  "7": 0.9883268482490273,
+  "8": 0.9924812030075187
+ }
+}
