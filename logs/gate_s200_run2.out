@@ -1,0 +1,9 @@
+g1 True
+g2 True
+g3 True
+g4 True
+g5 True
+g6 True
+g7 False
+g8 True
+{"g1_pass": true, "g2_pass": true, "g3_pass": true, "g4_pass": true, "g5_pass": true, "g6_pass": true, "g7_pass": false, "g8_pass": true, "all_pass": false}

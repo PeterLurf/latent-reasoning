@@ -1,0 +1,3488 @@
+{
+ "male": [
+  "John",
+  "Tom",
+  "Mike",
+  "Sam",
+  "Peter",
+  "Alex",
+  "Jack",
+  "Bob",
+  "Mark",
+  "James",
+  "Jake",
+  "Liam",
+  "Paul",
+  "Tim",
+  "Ben",
+  "Billy",
+  "George",
+  "David",
+  "Jerry",
+  "Michael",
+  "Max",
+  "Joe",
+  "Adam",
+  "Jacob",
+  "Steve",
+  "Lucas",
+  "Jim",
+  "Andy",
+  "Charlie",
+  "Jason",
+  "Daniel",
+  "Ethan",
+  "Kevin",
+  "Robert",
+  "Harry",
+  "Brian",
+  "Oliver",
+  "Luke",
+  "Chris",
+  "Ryan",
+  "Martin",
+  "Leo",
+  "Henry",
+  "Andrew",
+  "Noah",
+  "Thomas",
+  "Tommy",
+  "Matt",
+  "Tony",
+  "Josh",
+  "Fred",
+  "Danny",
+  "Dave",
+  "Bobby",
+  "Simon",
+  "Nick",
+  "Larry",
+  "Richard",
+  "Carlos",
+  "Jimmy",
+  "Johnny",
+  "Frank",
+  "Samuel",
+  "Dan",
+  "Greg",
+  "Carl",
+  "Jeff",
+  "Matthew",
+  "Brad",
+  "Pete",
+  "Benjamin",
+  "Ron",
+  "Gary",
+  "Roger",
+  "Nathan",
+  "Jeremy",
+  "Joey",
+  "Eric",
+  "Kyle",
+  "Jordan",
+  "Timmy",
+  "Ken",
+  "Charles",
+  "Rob",
+  "Joseph",
+  "Jackson",
+  "Patrick",
+  "Marvel",
+  "Joshua",
+  "Jonathan",
+  "Steven",
+  "Albert",
+  "Anthony",
+  "Alan",
+  "Aaron",
+  "William",
+  "Bryan",
+  "Ted",
+  "Marcus",
+  "Rick",
+  "Benny",
+  "Sean",
+  "Derek",
+  "Jay",
+  "Ali",
+  "Oscar",
+  "Scott",
+  "Phil",
+  "Jon",
+  "Justin",
+  "Caleb",
+  "Tyler",
+  "Jesse",
+  "Dylan",
+  "Arthur",
+  "Toby",
+  "Lee",
+  "Marco",
+  "Ricky",
+  "Brandon",
+  "Edward",
+  "Neil",
+  "Evan",
+  "Eli",
+  "Barry",
+  "Jared",
+  "Randy",
+  "Harold",
+  "Shawn",
+  "Zack",
+  "Bruce",
+  "Ian",
+  "Connor",
+  "Adrian",
+  "Marvin",
+  "Marc",
+  "Julian",
+  "Timothy",
+  "Stephen",
+  "Kenny",
+  "Austin",
+  "Craig",
+  "Eddie",
+  "Juan",
+  "Aiden",
+  "Ralph",
+  "Mario",
+  "Todd",
+  "Leon",
+  "Zach",
+  "Alfred",
+  "Joel",
+  "Carter",
+  "Hank",
+  "Logan",
+  "Trevor",
+  "Jaden",
+  "Owen",
+  "Felix",
+  "Pedro",
+  "Ronald",
+  "Elliot",
+  "Arnold",
+  "Jonas",
+  "Gabriel",
+  "Philip",
+  "Dean",
+  "Clark",
+  "Miguel",
+  "Bradley",
+  "Dennis",
+  "Luis",
+  "Shane",
+  "Allen",
+  "Calvin",
+  "Lenny",
+  "Darren",
+  "Christopher",
+  "Pablo",
+  "Gregory",
+  "Cody",
+  "Jonah",
+  "Travis",
+  "Blake",
+  "Roy",
+  "Isaac",
+  "Jayden",
+  "Keith",
+  "Marty",
+  "Leonard",
+  "Louis",
+  "Jonny",
+  "Gerald",
+  "Jerome",
+  "Karl",
+  "Ravi",
+  "Colin",
+  "Jasper",
+  "Jose",
+  "Mitchell",
+  "Stan",
+  "Erik",
+  "Cameron",
+  "Walter",
+  "Perry",
+  "Mathew",
+  "Doug",
+  "Stanley",
+  "Raj",
+  "Roberto",
+  "Harvey"
+ ],
+ "female": [
+  "Sarah",
+  "Emily",
+  "Lisa",
+  "Emma",
+  "Mary",
+  "Jane",
+  "Alice",
+  "Lucy",
+  "Amy",
+  "Anna",
+  "Maria",
+  "Jenny",
+  "Samantha",
+  "Sally",
+  "Laura",
+  "Susan",
+  "Linda",
+  "Sara",
+  "Rachel",
+  "Mia",
+  "Bella",
+  "Jessica",
+  "Jill",
+  "Julia",
+  "Hannah",
+  "Sophie",
+  "Jenna",
+  "Sophia",
+  "Olivia",
+  "Ella",
+  "Tina",
+  "Kate",
+  "Jennifer",
+  "Katie",
+  "Karen",
+  "Kelly",
+  "Kim",
+  "Grace",
+  "Cindy",
+  "Amanda",
+  "Nina",
+  "Julie",
+  "Melissa",
+  "Megan",
+  "Sue",
+  "Martha",
+  "Lara",
+  "Molly",
+  "Beth",
+  "Nancy",
+  "Helen",
+  "Sandra",
+  "Abby",
+  "Sandy",
+  "Rebecca",
+  "Eva",
+  "Carla",
+  "Ava",
+  "Betty",
+  "Zoe",
+  "Ann",
+  "Amelia",
+  "Claire",
+  "Mandy",
+  "Monica",
+  "Chloe",
+  "Michelle",
+  "Annie",
+  "Leah",
+  "Clara",
+  "Paula",
+  "Angela",
+  "Sofia",
+  "Maggie",
+  "Anne",
+  "Stacy",
+  "Janet",
+  "Lilly",
+  "Ellie",
+  "Ashley",
+  "Carol",
+  "Susie",
+  "Lena",
+  "Lola",
+  "Jackie",
+  "Brenda",
+  "Maya",
+  "Becky",
+  "Stella",
+  "Marie",
+  "Madison",
+  "Gina",
+  "Sasha",
+  "Lana",
+  "Fiona",
+  "Liz",
+  "Ana",
+  "Elizabeth",
+  "Judy",
+  "Jen",
+  "Melanie",
+  "Diana",
+  "Rita",
+  "Eve",
+  "Natalie",
+  "Tara",
+  "Nicole",
+  "Cathy",
+  "Joan",
+  "Caroline",
+  "Liza",
+  "Donna",
+  "Lauren",
+  "Patricia",
+  "Joy",
+  "Abigail",
+  "Ellen",
+  "Luna",
+  "Kathy",
+  "Jess",
+  "Barbara",
+  "Elaine",
+  "Janice",
+  "Eliza",
+  "Dana",
+  "Melinda",
+  "Tracy",
+  "Zara",
+  "Alexa",
+  "Joyce",
+  "Catherine",
+  "Lila",
+  "Alicia",
+  "Danielle",
+  "Stephanie",
+  "Rosa",
+  "Alyssa",
+  "Erin",
+  "Victoria",
+  "Charlotte",
+  "Elena",
+  "Wendy",
+  "Isabella",
+  "Vanessa",
+  "Maddie",
+  "Lucia",
+  "Allison",
+  "Carrie",
+  "Christine",
+  "Erica",
+  "Lydia",
+  "Elsa",
+  "Kylie",
+  "Joanna",
+  "Pam",
+  "Sharon",
+  "Margaret",
+  "Evelyn",
+  "Ruth",
+  "Suzie",
+  "Angie",
+  "Lina",
+  "Louise",
+  "Kayla",
+  "Shelly",
+  "Diane",
+  "Mila",
+  "Heather",
+  "Naomi",
+  "Hanna",
+  "Nora",
+  "Lea",
+  "Emilia",
+  "Rosie",
+  "Haley",
+  "Jan",
+  "Meg",
+  "Christina",
+  "Veronica",
+  "Katy",
+  "Alison",
+  "Layla",
+  "Tammy",
+  "Lizzy",
+  "Kimberly",
+  "Suzy",
+  "Andrea",
+  "Marta",
+  "Holly",
+  "Joanne",
+  "Miranda",
+  "Cynthia",
+  "Stacey",
+  "Pamela",
+  "Selena",
+  "Gabby",
+  "Josie",
+  "Ada",
+  "Janine",
+  "Katherine",
+  "Audrey",
+  "Mina",
+  "Sonia",
+  "Marcy",
+  "Leila",
+  "Anita",
+  "Tamara",
+  "Sabrina",
+  "Alexis",
+  "Hazel",
+  "Debbie",
+  "Lori",
+  "Katrina",
+  "Pauline",
+  "Bethany",
+  "Lynn",
+  "Sylvia",
+  "Kira",
+  "Mariah",
+  "Jillian",
+  "Suzanne",
+  "Erika",
+  "Esther"
+ ],
+ "stats": {
+  "John": {
+   "items": 10617,
+   "single": 6567,
+   "male": 5127,
+   "female": 34,
+   "lower_ratio": 0.0003129346314325452
+  },
+  "Tom": {
+   "items": 4501,
+   "single": 2502,
+   "male": 1926,
+   "female": 21,
+   "lower_ratio": 0.00016341204346760355
+  },
+  "Mike": {
+   "items": 4317,
+   "single": 2339,
+   "male": 1810,
+   "female": 10,
+   "lower_ratio": 0.00026292725679228745
+  },
+  "Sam": {
+   "items": 4255,
+   "single": 2091,
+   "male": 1488,
+   "female": 98,
+   "lower_ratio": 0.0
+  },
+  "Peter": {
+   "items": 3780,
+   "single": 2194,
+   "male": 1744,
+   "female": 7,
+   "lower_ratio": 0.0002882675122513693
+  },
+  "Alex": {
+   "items": 3327,
+   "single": 1859,
+   "male": 1360,
+   "female": 92,
+   "lower_ratio": 0.0
+  },
+  "Jack": {
+   "items": 3180,
+   "single": 1632,
+   "male": 1227,
+   "female": 13,
+   "lower_ratio": 0.0017645576002016637
+  },
+  "Bob": {
+   "items": 2928,
+   "single": 1212,
+   "male": 819,
+   "female": 21,
+   "lower_ratio": 0.0005841974587410544
+  },
+  "Mark": {
+   "items": 2651,
+   "single": 1291,
+   "male": 929,
+   "female": 23,
+   "lower_ratio": 0.019882860665844635
+  },
+  "James": {
+   "items": 2340,
+   "single": 1437,
+   "male": 1127,
+   "female": 5,
+   "lower_ratio": 0.0
+  },
+  "Jake": {
+   "items": 2167,
+   "single": 1183,
+   "male": 898,
+   "female": 14,
+   "lower_ratio": 0.00017969451931716083
+  },
+  "Liam": {
+   "items": 1985,
+   "single": 1261,
+   "male": 1044,
+   "female": 12,
+   "lower_ratio": 0.00016204829039053638
+  },
+  "Paul": {
+   "items": 1963,
+   "single": 1076,
+   "male": 813,
+   "female": 8,
+   "lower_ratio": 0.0001859773107680863
+  },
+  "Tim": {
+   "items": 1680,
+   "single": 728,
+   "male": 532,
+   "female": 15,
+   "lower_ratio": 0.0
+  },
+  "Ben": {
+   "items": 1644,
+   "single": 747,
+   "male": 575,
+   "female": 11,
+   "lower_ratio": 0.00023674242424242425
+  },
+  "Billy": {
+   "items": 1637,
+   "single": 1057,
+   "male": 880,
+   "female": 5,
+   "lower_ratio": 0.0
+  },
+  "George": {
+   "items": 1517,
+   "single": 970,
+   "male": 764,
+   "female": 1,
+   "lower_ratio": 0.0002340276152586005
+  },
+  "David": {
+   "items": 1501,
+   "single": 911,
+   "male": 727,
+   "female": 3,
+   "lower_ratio": 0.0
+  },
+  "Jerry": {
+   "items": 1321,
+   "single": 536,
+   "male": 297,
+   "female": 5,
+   "lower_ratio": 0.00032133676092544985
+  },
+  "Michael": {
+   "items": 1229,
+   "single": 696,
+   "male": 530,
+   "female": 5,
+   "lower_ratio": 0.0
+  },
+  "Max": {
+   "items": 1184,
+   "single": 578,
+   "male": 422,
+   "female": 20,
+   "lower_ratio": 0.006777363605557438
+  },
+  "Joe": {
+   "items": 1171,
+   "single": 658,
+   "male": 486,
+   "female": 9,
+   "lower_ratio": 0.0
+  },
+  "Adam": {
+   "items": 1147,
+   "single": 687,
+   "male": 535,
+   "female": 2,
+   "lower_ratio": 0.0
+  },
+  "Jacob": {
+   "items": 1036,
+   "single": 678,
+   "male": 565,
+   "female": 4,
+   "lower_ratio": 0.00033344448149383126
+  },
+  "Steve": {
+   "items": 1027,
+   "single": 511,
+   "male": 398,
+   "female": 5,
+   "lower_ratio": 0.0003816793893129771
+  },
+  "Lucas": {
+   "items": 960,
+   "single": 626,
+   "male": 524,
+   "female": 4,
+   "lower_ratio": 0.0007057163020465773
+  },
+  "Jim": {
+   "items": 905,
+   "single": 475,
+   "male": 345,
+   "female": 3,
+   "lower_ratio": 0.0
+  },
+  "Andy": {
+   "items": 815,
+   "single": 504,
+   "male": 419,
+   "female": 6,
+   "lower_ratio": 0.0
+  },
+  "Charlie": {
+   "items": 806,
+   "single": 326,
+   "male": 240,
+   "female": 8,
+   "lower_ratio": 0.0004764173415912339
+  },
+  "Jason": {
+   "items": 788,
+   "single": 517,
+   "male": 403,
+   "female": 4,
+   "lower_ratio": 0.0
+  },
+  "Daniel": {
+   "items": 783,
+   "single": 494,
+   "male": 400,
+   "female": 4,
+   "lower_ratio": 0.0
+  },
+  "Ethan": {
+   "items": 761,
+   "single": 299,
+   "male": 206,
+   "female": 2,
+   "lower_ratio": 0.0
+  },
+  "Kevin": {
+   "items": 761,
+   "single": 440,
+   "male": 339,
+   "female": 2,
+   "lower_ratio": 0.0
+  },
+  "Robert": {
+   "items": 747,
+   "single": 428,
+   "male": 341,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Harry": {
+   "items": 745,
+   "single": 344,
+   "male": 267,
+   "female": 7,
+   "lower_ratio": 0.0
+  },
+  "Brian": {
+   "items": 735,
+   "single": 363,
+   "male": 279,
+   "female": 8,
+   "lower_ratio": 0.0
+  },
+  "Oliver": {
+   "items": 688,
+   "single": 402,
+   "male": 334,
+   "female": 3,
+   "lower_ratio": 0.0
+  },
+  "Luke": {
+   "items": 679,
+   "single": 323,
+   "male": 255,
+   "female": 0,
+   "lower_ratio": 0.0005530973451327434
+  },
+  "Chris": {
+   "items": 634,
+   "single": 286,
+   "male": 223,
+   "female": 3,
+   "lower_ratio": 0.0
+  },
+  "Ryan": {
+   "items": 631,
+   "single": 327,
+   "male": 247,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Martin": {
+   "items": 584,
+   "single": 408,
+   "male": 342,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Leo": {
+   "items": 564,
+   "single": 342,
+   "male": 273,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Henry": {
+   "items": 554,
+   "single": 358,
+   "male": 285,
+   "female": 0,
+   "lower_ratio": 0.0019723865877712033
+  },
+  "Andrew": {
+   "items": 541,
+   "single": 344,
+   "male": 272,
+   "female": 3,
+   "lower_ratio": 0.0006510416666666666
+  },
+  "Noah": {
+   "items": 514,
+   "single": 133,
+   "male": 69,
+   "female": 4,
+   "lower_ratio": 0.0
+  },
+  "Thomas": {
+   "items": 461,
+   "single": 300,
+   "male": 230,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Tommy": {
+   "items": 447,
+   "single": 245,
+   "male": 189,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Matt": {
+   "items": 429,
+   "single": 190,
+   "male": 129,
+   "female": 3,
+   "lower_ratio": 0.0
+  },
+  "Tony": {
+   "items": 429,
+   "single": 236,
+   "male": 184,
+   "female": 0,
+   "lower_ratio": 0.0008920606601248885
+  },
+  "Josh": {
+   "items": 426,
+   "single": 198,
+   "male": 147,
+   "female": 4,
+   "lower_ratio": 0.0
+  },
+  "Fred": {
+   "items": 408,
+   "single": 204,
+   "male": 166,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Danny": {
+   "items": 407,
+   "single": 278,
+   "male": 219,
+   "female": 3,
+   "lower_ratio": 0.0
+  },
+  "Dave": {
+   "items": 398,
+   "single": 202,
+   "male": 164,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Bobby": {
+   "items": 387,
+   "single": 179,
+   "male": 144,
+   "female": 1,
+   "lower_ratio": 0.011190233977619531
+  },
+  "Simon": {
+   "items": 383,
+   "single": 254,
+   "male": 200,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Nick": {
+   "items": 365,
+   "single": 169,
+   "male": 135,
+   "female": 2,
+   "lower_ratio": 0.0
+  },
+  "Larry": {
+   "items": 359,
+   "single": 206,
+   "male": 161,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Richard": {
+   "items": 350,
+   "single": 209,
+   "male": 160,
+   "female": 3,
+   "lower_ratio": 0.0
+  },
+  "Carlos": {
+   "items": 348,
+   "single": 201,
+   "male": 168,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Jimmy": {
+   "items": 347,
+   "single": 220,
+   "male": 179,
+   "female": 2,
+   "lower_ratio": 0.0
+  },
+  "Johnny": {
+   "items": 338,
+   "single": 231,
+   "male": 186,
+   "female": 2,
+   "lower_ratio": 0.0
+  },
+  "Frank": {
+   "items": 334,
+   "single": 191,
+   "male": 152,
+   "female": 1,
+   "lower_ratio": 0.002188183807439825
+  },
+  "Samuel": {
+   "items": 333,
+   "single": 219,
+   "male": 187,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Dan": {
+   "items": 322,
+   "single": 198,
+   "male": 153,
+   "female": 2,
+   "lower_ratio": 0.001142857142857143
+  },
+  "Greg": {
+   "items": 314,
+   "single": 179,
+   "male": 142,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Carl": {
+   "items": 311,
+   "single": 117,
+   "male": 92,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Jeff": {
+   "items": 306,
+   "single": 185,
+   "male": 150,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Matthew": {
+   "items": 295,
+   "single": 179,
+   "male": 144,
+   "female": 4,
+   "lower_ratio": 0.0
+  },
+  "Brad": {
+   "items": 289,
+   "single": 154,
+   "male": 126,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Pete": {
+   "items": 286,
+   "single": 137,
+   "male": 107,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Benjamin": {
+   "items": 275,
+   "single": 178,
+   "male": 149,
+   "female": 2,
+   "lower_ratio": 0.0
+  },
+  "Ron": {
+   "items": 265,
+   "single": 114,
+   "male": 87,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Gary": {
+   "items": 259,
+   "single": 157,
+   "male": 125,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Roger": {
+   "items": 243,
+   "single": 162,
+   "male": 130,
+   "female": 0,
+   "lower_ratio": 0.0014925373134328358
+  },
+  "Nathan": {
+   "items": 238,
+   "single": 156,
+   "male": 123,
+   "female": 2,
+   "lower_ratio": 0.0
+  },
+  "Jeremy": {
+   "items": 235,
+   "single": 147,
+   "male": 110,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Joey": {
+   "items": 235,
+   "single": 136,
+   "male": 110,
+   "female": 3,
+   "lower_ratio": 0.001564945226917058
+  },
+  "Eric": {
+   "items": 234,
+   "single": 125,
+   "male": 96,
+   "female": 3,
+   "lower_ratio": 0.0
+  },
+  "Kyle": {
+   "items": 232,
+   "single": 111,
+   "male": 76,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Jordan": {
+   "items": 219,
+   "single": 119,
+   "male": 80,
+   "female": 13,
+   "lower_ratio": 0.0
+  },
+  "Timmy": {
+   "items": 213,
+   "single": 116,
+   "male": 86,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Ken": {
+   "items": 213,
+   "single": 115,
+   "male": 89,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Charles": {
+   "items": 213,
+   "single": 74,
+   "male": 56,
+   "female": 3,
+   "lower_ratio": 0.0
+  },
+  "Rob": {
+   "items": 207,
+   "single": 111,
+   "male": 77,
+   "female": 1,
+   "lower_ratio": 0.0018867924528301887
+  },
+  "Joseph": {
+   "items": 202,
+   "single": 139,
+   "male": 102,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Jackson": {
+   "items": 201,
+   "single": 113,
+   "male": 91,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Patrick": {
+   "items": 197,
+   "single": 108,
+   "male": 82,
+   "female": 2,
+   "lower_ratio": 0.0
+  },
+  "Marvel": {
+   "items": 195,
+   "single": 57,
+   "male": 49,
+   "female": 3,
+   "lower_ratio": 0.015873015873015872
+  },
+  "Joshua": {
+   "items": 190,
+   "single": 128,
+   "male": 105,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Jonathan": {
+   "items": 190,
+   "single": 119,
+   "male": 91,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Steven": {
+   "items": 189,
+   "single": 135,
+   "male": 112,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Albert": {
+   "items": 185,
+   "single": 106,
+   "male": 87,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Anthony": {
+   "items": 179,
+   "single": 101,
+   "male": 85,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Alan": {
+   "items": 175,
+   "single": 97,
+   "male": 80,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Aaron": {
+   "items": 172,
+   "single": 94,
+   "male": 76,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "William": {
+   "items": 167,
+   "single": 91,
+   "male": 66,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Bryan": {
+   "items": 164,
+   "single": 84,
+   "male": 54,
+   "female": 2,
+   "lower_ratio": 0.0
+  },
+  "Ted": {
+   "items": 161,
+   "single": 86,
+   "male": 62,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Marcus": {
+   "items": 161,
+   "single": 90,
+   "male": 78,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Rick": {
+   "items": 160,
+   "single": 94,
+   "male": 77,
+   "female": 2,
+   "lower_ratio": 0.0
+  },
+  "Benny": {
+   "items": 154,
+   "single": 64,
+   "male": 46,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Sean": {
+   "items": 153,
+   "single": 86,
+   "male": 59,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Derek": {
+   "items": 143,
+   "single": 77,
+   "male": 63,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Jay": {
+   "items": 143,
+   "single": 86,
+   "male": 72,
+   "female": 0,
+   "lower_ratio": 0.005333333333333333
+  },
+  "Ali": {
+   "items": 141,
+   "single": 84,
+   "male": 62,
+   "female": 4,
+   "lower_ratio": 0.0
+  },
+  "Oscar": {
+   "items": 140,
+   "single": 78,
+   "male": 58,
+   "female": 3,
+   "lower_ratio": 0.0
+  },
+  "Scott": {
+   "items": 138,
+   "single": 74,
+   "male": 57,
+   "female": 2,
+   "lower_ratio": 0.0
+  },
+  "Phil": {
+   "items": 119,
+   "single": 52,
+   "male": 45,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Jon": {
+   "items": 119,
+   "single": 65,
+   "male": 51,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Justin": {
+   "items": 118,
+   "single": 68,
+   "male": 53,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Caleb": {
+   "items": 118,
+   "single": 67,
+   "male": 52,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Tyler": {
+   "items": 117,
+   "single": 57,
+   "male": 42,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Jesse": {
+   "items": 114,
+   "single": 65,
+   "male": 50,
+   "female": 5,
+   "lower_ratio": 0.0
+  },
+  "Dylan": {
+   "items": 110,
+   "single": 62,
+   "male": 41,
+   "female": 2,
+   "lower_ratio": 0.0
+  },
+  "Arthur": {
+   "items": 109,
+   "single": 63,
+   "male": 49,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Toby": {
+   "items": 106,
+   "single": 51,
+   "male": 42,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Lee": {
+   "items": 104,
+   "single": 63,
+   "male": 53,
+   "female": 3,
+   "lower_ratio": 0.0
+  },
+  "Marco": {
+   "items": 104,
+   "single": 57,
+   "male": 43,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Ricky": {
+   "items": 104,
+   "single": 64,
+   "male": 50,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Brandon": {
+   "items": 103,
+   "single": 54,
+   "male": 45,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Edward": {
+   "items": 101,
+   "single": 54,
+   "male": 43,
+   "female": 0,
+   "lower_ratio": 0.003355704697986577
+  },
+  "Neil": {
+   "items": 95,
+   "single": 50,
+   "male": 42,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Evan": {
+   "items": 93,
+   "single": 44,
+   "male": 29,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Eli": {
+   "items": 93,
+   "single": 43,
+   "male": 34,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Barry": {
+   "items": 93,
+   "single": 47,
+   "male": 37,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Jared": {
+   "items": 89,
+   "single": 53,
+   "male": 41,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Randy": {
+   "items": 89,
+   "single": 60,
+   "male": 46,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Harold": {
+   "items": 89,
+   "single": 53,
+   "male": 44,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Shawn": {
+   "items": 88,
+   "single": 58,
+   "male": 51,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Zack": {
+   "items": 86,
+   "single": 39,
+   "male": 28,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Bruce": {
+   "items": 85,
+   "single": 29,
+   "male": 22,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Ian": {
+   "items": 83,
+   "single": 47,
+   "male": 40,
+   "female": 0,
+   "lower_ratio": 0.004484304932735426
+  },
+  "Connor": {
+   "items": 79,
+   "single": 45,
+   "male": 35,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Adrian": {
+   "items": 76,
+   "single": 45,
+   "male": 38,
+   "female": 3,
+   "lower_ratio": 0.0
+  },
+  "Marvin": {
+   "items": 76,
+   "single": 49,
+   "male": 35,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Marc": {
+   "items": 75,
+   "single": 43,
+   "male": 35,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Julian": {
+   "items": 71,
+   "single": 44,
+   "male": 37,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Timothy": {
+   "items": 70,
+   "single": 46,
+   "male": 37,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Stephen": {
+   "items": 70,
+   "single": 44,
+   "male": 34,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Kenny": {
+   "items": 69,
+   "single": 37,
+   "male": 28,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Austin": {
+   "items": 69,
+   "single": 30,
+   "male": 20,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Craig": {
+   "items": 68,
+   "single": 32,
+   "male": 27,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Eddie": {
+   "items": 68,
+   "single": 40,
+   "male": 32,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Juan": {
+   "items": 67,
+   "single": 34,
+   "male": 25,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Aiden": {
+   "items": 67,
+   "single": 42,
+   "male": 32,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Ralph": {
+   "items": 66,
+   "single": 41,
+   "male": 30,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Mario": {
+   "items": 66,
+   "single": 29,
+   "male": 21,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Todd": {
+   "items": 65,
+   "single": 32,
+   "male": 27,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Leon": {
+   "items": 64,
+   "single": 42,
+   "male": 33,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Zach": {
+   "items": 64,
+   "single": 36,
+   "male": 31,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Alfred": {
+   "items": 64,
+   "single": 33,
+   "male": 27,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Joel": {
+   "items": 61,
+   "single": 37,
+   "male": 30,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Carter": {
+   "items": 61,
+   "single": 26,
+   "male": 20,
+   "female": 2,
+   "lower_ratio": 0.0
+  },
+  "Hank": {
+   "items": 60,
+   "single": 39,
+   "male": 33,
+   "female": 0,
+   "lower_ratio": 0.006060606060606061
+  },
+  "Logan": {
+   "items": 59,
+   "single": 31,
+   "male": 26,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Trevor": {
+   "items": 59,
+   "single": 34,
+   "male": 30,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Jaden": {
+   "items": 57,
+   "single": 31,
+   "male": 28,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Owen": {
+   "items": 57,
+   "single": 28,
+   "male": 24,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Felix": {
+   "items": 56,
+   "single": 29,
+   "male": 22,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Pedro": {
+   "items": 56,
+   "single": 27,
+   "male": 20,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Ronald": {
+   "items": 56,
+   "single": 39,
+   "male": 33,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Elliot": {
+   "items": 55,
+   "single": 35,
+   "male": 29,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Arnold": {
+   "items": 53,
+   "single": 24,
+   "male": 17,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Jonas": {
+   "items": 53,
+   "single": 39,
+   "male": 28,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Gabriel": {
+   "items": 52,
+   "single": 30,
+   "male": 24,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Philip": {
+   "items": 52,
+   "single": 24,
+   "male": 17,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Dean": {
+   "items": 52,
+   "single": 24,
+   "male": 19,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Clark": {
+   "items": 52,
+   "single": 30,
+   "male": 23,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Miguel": {
+   "items": 51,
+   "single": 25,
+   "male": 20,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Bradley": {
+   "items": 51,
+   "single": 26,
+   "male": 18,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Dennis": {
+   "items": 51,
+   "single": 36,
+   "male": 29,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Luis": {
+   "items": 50,
+   "single": 30,
+   "male": 20,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Shane": {
+   "items": 50,
+   "single": 25,
+   "male": 17,
+   "female": 3,
+   "lower_ratio": 0.0
+  },
+  "Allen": {
+   "items": 49,
+   "single": 25,
+   "male": 21,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Calvin": {
+   "items": 48,
+   "single": 26,
+   "male": 23,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Lenny": {
+   "items": 48,
+   "single": 29,
+   "male": 21,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Darren": {
+   "items": 48,
+   "single": 32,
+   "male": 26,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Christopher": {
+   "items": 47,
+   "single": 33,
+   "male": 26,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Pablo": {
+   "items": 47,
+   "single": 29,
+   "male": 22,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Gregory": {
+   "items": 46,
+   "single": 30,
+   "male": 24,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Cody": {
+   "items": 46,
+   "single": 22,
+   "male": 20,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Jonah": {
+   "items": 46,
+   "single": 23,
+   "male": 19,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Travis": {
+   "items": 46,
+   "single": 20,
+   "male": 16,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Blake": {
+   "items": 45,
+   "single": 21,
+   "male": 15,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Roy": {
+   "items": 45,
+   "single": 23,
+   "male": 17,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Isaac": {
+   "items": 45,
+   "single": 20,
+   "male": 18,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Jayden": {
+   "items": 44,
+   "single": 25,
+   "male": 22,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Keith": {
+   "items": 44,
+   "single": 21,
+   "male": 17,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Marty": {
+   "items": 43,
+   "single": 21,
+   "male": 14,
+   "female": 2,
+   "lower_ratio": 0.0
+  },
+  "Leonard": {
+   "items": 43,
+   "single": 27,
+   "male": 24,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Louis": {
+   "items": 43,
+   "single": 22,
+   "male": 15,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Jonny": {
+   "items": 43,
+   "single": 22,
+   "male": 17,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Gerald": {
+   "items": 42,
+   "single": 27,
+   "male": 22,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Jerome": {
+   "items": 42,
+   "single": 25,
+   "male": 20,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Karl": {
+   "items": 41,
+   "single": 20,
+   "male": 14,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Ravi": {
+   "items": 40,
+   "single": 27,
+   "male": 21,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Colin": {
+   "items": 40,
+   "single": 22,
+   "male": 19,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Jasper": {
+   "items": 40,
+   "single": 24,
+   "male": 17,
+   "female": 0,
+   "lower_ratio": 0.007633587786259542
+  },
+  "Jose": {
+   "items": 39,
+   "single": 20,
+   "male": 17,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Mitchell": {
+   "items": 39,
+   "single": 23,
+   "male": 17,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Stan": {
+   "items": 38,
+   "single": 27,
+   "male": 20,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Erik": {
+   "items": 38,
+   "single": 25,
+   "male": 21,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Cameron": {
+   "items": 37,
+   "single": 26,
+   "male": 18,
+   "female": 2,
+   "lower_ratio": 0.0
+  },
+  "Walter": {
+   "items": 36,
+   "single": 25,
+   "male": 18,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Perry": {
+   "items": 35,
+   "single": 20,
+   "male": 12,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Mathew": {
+   "items": 33,
+   "single": 20,
+   "male": 17,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Doug": {
+   "items": 32,
+   "single": 20,
+   "male": 17,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Stanley": {
+   "items": 31,
+   "single": 20,
+   "male": 14,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Raj": {
+   "items": 31,
+   "single": 25,
+   "male": 20,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Roberto": {
+   "items": 30,
+   "single": 23,
+   "male": 16,
+   "female": 1,
+   "lower_ratio": 0.0
+  },
+  "Harvey": {
+   "items": 26,
+   "single": 22,
+   "male": 19,
+   "female": 0,
+   "lower_ratio": 0.0
+  },
+  "Sarah": {
+   "items": 5402,
+   "single": 3263,
+   "male": 43,
+   "female": 2528,
+   "lower_ratio": 0.0
+  },
+  "Emily": {
+   "items": 3986,
+   "single": 2540,
+   "male": 20,
+   "female": 2006,
+   "lower_ratio": 9.498480243161094e-05
+  },
+  "Lisa": {
+   "items": 3804,
+   "single": 2234,
+   "male": 23,
+   "female": 1703,
+   "lower_ratio": 0.0
+  },
+  "Emma": {
+   "items": 2993,
+   "single": 1902,
+   "male": 17,
+   "female": 1521,
+   "lower_ratio": 0.0
+  },
+  "Mary": {
+   "items": 2931,
+   "single": 1604,
+   "male": 11,
+   "female": 1169,
+   "lower_ratio": 0.0
+  },
+  "Jane": {
+   "items": 2533,
+   "single": 1459,
+   "male": 21,
+   "female": 1115,
+   "lower_ratio": 0.00015661707126076742
+  },
+  "Alice": {
+   "items": 2438,
+   "single": 1328,
+   "male": 15,
+   "female": 1032,
+   "lower_ratio": 0.0
+  },
+  "Lucy": {
+   "items": 2359,
+   "single": 1378,
+   "male": 11,
+   "female": 1101,
+   "lower_ratio": 0.0
+  },
+  "Amy": {
+   "items": 2116,
+   "single": 1315,
+   "male": 9,
+   "female": 1042,
+   "lower_ratio": 0.0
+  },
+  "Anna": {
+   "items": 1989,
+   "single": 1204,
+   "male": 9,
+   "female": 937,
+   "lower_ratio": 0.0
+  },
+  "Maria": {
+   "items": 1700,
+   "single": 1146,
+   "male": 9,
+   "female": 883,
+   "lower_ratio": 0.0
+  },
+  "Jenny": {
+   "items": 1696,
+   "single": 995,
+   "male": 11,
+   "female": 760,
+   "lower_ratio": 0.0002207505518763797
+  },
+  "Samantha": {
+   "items": 1675,
+   "single": 1247,
+   "male": 2,
+   "female": 1046,
+   "lower_ratio": 0.0
+  },
+  "Sally": {
+   "items": 1548,
+   "single": 987,
+   "male": 12,
+   "female": 748,
+   "lower_ratio": 0.00023369946249123628
+  },
+  "Laura": {
+   "items": 1294,
+   "single": 746,
+   "male": 2,
+   "female": 579,
+   "lower_ratio": 0.0
+  },
+  "Susan": {
+   "items": 1268,
+   "single": 798,
+   "male": 10,
+   "female": 606,
+   "lower_ratio": 0.0
+  },
+  "Linda": {
+   "items": 1255,
+   "single": 852,
+   "male": 5,
+   "female": 678,
+   "lower_ratio": 0.0
+  },
+  "Sara": {
+   "items": 1067,
+   "single": 558,
+   "male": 4,
+   "female": 427,
+   "lower_ratio": 0.0
+  },
+  "Rachel": {
+   "items": 984,
+   "single": 582,
+   "male": 9,
+   "female": 462,
+   "lower_ratio": 0.0
+  },
+  "Mia": {
+   "items": 969,
+   "single": 404,
+   "male": 13,
+   "female": 297,
+   "lower_ratio": 0.0
+  },
+  "Bella": {
+   "items": 938,
+   "single": 428,
+   "male": 4,
+   "female": 309,
+   "lower_ratio": 0.0
+  },
+  "Jessica": {
+   "items": 931,
+   "single": 527,
+   "male": 1,
+   "female": 422,
+   "lower_ratio": 0.0
+  },
+  "Jill": {
+   "items": 840,
+   "single": 406,
+   "male": 9,
+   "female": 235,
+   "lower_ratio": 0.00044943820224719103
+  },
+  "Julia": {
+   "items": 781,
+   "single": 456,
+   "male": 5,
+   "female": 365,
+   "lower_ratio": 0.0
+  },
+  "Hannah": {
+   "items": 774,
+   "single": 442,
+   "male": 2,
+   "female": 345,
+   "lower_ratio": 0.0
+  },
+  "Sophie": {
+   "items": 734,
+   "single": 450,
+   "male": 3,
+   "female": 369,
+   "lower_ratio": 0.0
+  },
+  "Jenna": {
+   "items": 672,
+   "single": 427,
+   "male": 2,
+   "female": 333,
+   "lower_ratio": 0.0
+  },
+  "Sophia": {
+   "items": 659,
+   "single": 400,
+   "male": 3,
+   "female": 314,
+   "lower_ratio": 0.0
+  },
+  "Olivia": {
+   "items": 645,
+   "single": 256,
+   "male": 4,
+   "female": 183,
+   "lower_ratio": 0.0
+  },
+  "Ella": {
+   "items": 599,
+   "single": 363,
+   "male": 0,
+   "female": 296,
+   "lower_ratio": 0.0
+  },
+  "Tina": {
+   "items": 566,
+   "single": 303,
+   "male": 4,
+   "female": 234,
+   "lower_ratio": 0.0
+  },
+  "Kate": {
+   "items": 556,
+   "single": 247,
+   "male": 8,
+   "female": 175,
+   "lower_ratio": 0.0
+  },
+  "Jennifer": {
+   "items": 548,
+   "single": 352,
+   "male": 2,
+   "female": 290,
+   "lower_ratio": 0.0
+  },
+  "Katie": {
+   "items": 538,
+   "single": 349,
+   "male": 2,
+   "female": 279,
+   "lower_ratio": 0.0
+  },
+  "Karen": {
+   "items": 486,
+   "single": 320,
+   "male": 3,
+   "female": 261,
+   "lower_ratio": 0.0
+  },
+  "Kelly": {
+   "items": 481,
+   "single": 281,
+   "male": 4,
+   "female": 223,
+   "lower_ratio": 0.0
+  },
+  "Kim": {
+   "items": 473,
+   "single": 237,
+   "male": 10,
+   "female": 170,
+   "lower_ratio": 0.0007473841554559044
+  },
+  "Grace": {
+   "items": 466,
+   "single": 296,
+   "male": 4,
+   "female": 239,
+   "lower_ratio": 0.0007451564828614009
+  },
+  "Cindy": {
+   "items": 425,
+   "single": 224,
+   "male": 0,
+   "female": 184,
+   "lower_ratio": 0.0
+  },
+  "Amanda": {
+   "items": 422,
+   "single": 247,
+   "male": 1,
+   "female": 207,
+   "lower_ratio": 0.0
+  },
+  "Nina": {
+   "items": 421,
+   "single": 268,
+   "male": 3,
+   "female": 205,
+   "lower_ratio": 0.0
+  },
+  "Julie": {
+   "items": 420,
+   "single": 276,
+   "male": 1,
+   "female": 208,
+   "lower_ratio": 0.0
+  },
+  "Melissa": {
+   "items": 388,
+   "single": 285,
+   "male": 0,
+   "female": 233,
+   "lower_ratio": 0.0
+  },
+  "Megan": {
+   "items": 372,
+   "single": 213,
+   "male": 1,
+   "female": 173,
+   "lower_ratio": 0.0
+  },
+  "Sue": {
+   "items": 372,
+   "single": 208,
+   "male": 1,
+   "female": 152,
+   "lower_ratio": 0.0
+  },
+  "Martha": {
+   "items": 368,
+   "single": 231,
+   "male": 0,
+   "female": 182,
+   "lower_ratio": 0.0
+  },
+  "Lara": {
+   "items": 342,
+   "single": 203,
+   "male": 1,
+   "female": 173,
+   "lower_ratio": 0.0
+  },
+  "Molly": {
+   "items": 337,
+   "single": 171,
+   "male": 2,
+   "female": 136,
+   "lower_ratio": 0.007608695652173913
+  },
+  "Beth": {
+   "items": 336,
+   "single": 169,
+   "male": 1,
+   "female": 124,
+   "lower_ratio": 0.0
+  },
+  "Nancy": {
+   "items": 321,
+   "single": 169,
+   "male": 3,
+   "female": 123,
+   "lower_ratio": 0.0
+  },
+  "Helen": {
+   "items": 314,
+   "single": 189,
+   "male": 1,
+   "female": 137,
+   "lower_ratio": 0.0
+  },
+  "Sandra": {
+   "items": 312,
+   "single": 199,
+   "male": 2,
+   "female": 153,
+   "lower_ratio": 0.0
+  },
+  "Abby": {
+   "items": 310,
+   "single": 179,
+   "male": 1,
+   "female": 147,
+   "lower_ratio": 0.0
+  },
+  "Sandy": {
+   "items": 306,
+   "single": 228,
+   "male": 3,
+   "female": 182,
+   "lower_ratio": 0.014018691588785047
+  },
+  "Rebecca": {
+   "items": 304,
+   "single": 204,
+   "male": 0,
+   "female": 158,
+   "lower_ratio": 0.0
+  },
+  "Eva": {
+   "items": 296,
+   "single": 176,
+   "male": 0,
+   "female": 151,
+   "lower_ratio": 0.0
+  },
+  "Carla": {
+   "items": 295,
+   "single": 177,
+   "male": 1,
+   "female": 145,
+   "lower_ratio": 0.0
+  },
+  "Ava": {
+   "items": 293,
+   "single": 138,
+   "male": 2,
+   "female": 101,
+   "lower_ratio": 0.0
+  },
+  "Betty": {
+   "items": 281,
+   "single": 126,
+   "male": 0,
+   "female": 97,
+   "lower_ratio": 0.0
+  },
+  "Zoe": {
+   "items": 277,
+   "single": 130,
+   "male": 1,
+   "female": 89,
+   "lower_ratio": 0.0
+  },
+  "Ann": {
+   "items": 276,
+   "single": 135,
+   "male": 1,
+   "female": 103,
+   "lower_ratio": 0.0
+  },
+  "Amelia": {
+   "items": 273,
+   "single": 198,
+   "male": 2,
+   "female": 157,
+   "lower_ratio": 0.0
+  },
+  "Claire": {
+   "items": 270,
+   "single": 145,
+   "male": 1,
+   "female": 113,
+   "lower_ratio": 0.0
+  },
+  "Mandy": {
+   "items": 260,
+   "single": 156,
+   "male": 0,
+   "female": 129,
+   "lower_ratio": 0.0
+  },
+  "Monica": {
+   "items": 256,
+   "single": 133,
+   "male": 0,
+   "female": 95,
+   "lower_ratio": 0.0
+  },
+  "Chloe": {
+   "items": 253,
+   "single": 127,
+   "male": 2,
+   "female": 100,
+   "lower_ratio": 0.0
+  },
+  "Michelle": {
+   "items": 249,
+   "single": 162,
+   "male": 4,
+   "female": 132,
+   "lower_ratio": 0.0
+  },
+  "Annie": {
+   "items": 245,
+   "single": 147,
+   "male": 1,
+   "female": 115,
+   "lower_ratio": 0.0
+  },
+  "Leah": {
+   "items": 244,
+   "single": 129,
+   "male": 5,
+   "female": 91,
+   "lower_ratio": 0.0
+  },
+  "Clara": {
+   "items": 239,
+   "single": 112,
+   "male": 2,
+   "female": 84,
+   "lower_ratio": 0.0
+  },
+  "Paula": {
+   "items": 235,
+   "single": 156,
+   "male": 1,
+   "female": 125,
+   "lower_ratio": 0.0
+  },
+  "Angela": {
+   "items": 232,
+   "single": 153,
+   "male": 2,
+   "female": 126,
+   "lower_ratio": 0.0
+  },
+  "Sofia": {
+   "items": 229,
+   "single": 140,
+   "male": 1,
+   "female": 108,
+   "lower_ratio": 0.0
+  },
+  "Maggie": {
+   "items": 222,
+   "single": 135,
+   "male": 0,
+   "female": 115,
+   "lower_ratio": 0.0
+  },
+  "Anne": {
+   "items": 222,
+   "single": 114,
+   "male": 1,
+   "female": 87,
+   "lower_ratio": 0.0
+  },
+  "Stacy": {
+   "items": 216,
+   "single": 140,
+   "male": 2,
+   "female": 109,
+   "lower_ratio": 0.0
+  },
+  "Janet": {
+   "items": 212,
+   "single": 150,
+   "male": 0,
+   "female": 116,
+   "lower_ratio": 0.0031007751937984496
+  },
+  "Lilly": {
+   "items": 208,
+   "single": 104,
+   "male": 0,
+   "female": 85,
+   "lower_ratio": 0.001658374792703151
+  },
+  "Ellie": {
+   "items": 192,
+   "single": 128,
+   "male": 0,
+   "female": 105,
+   "lower_ratio": 0.0
+  },
+  "Ashley": {
+   "items": 192,
+   "single": 116,
+   "male": 2,
+   "female": 91,
+   "lower_ratio": 0.0
+  },
+  "Carol": {
+   "items": 183,
+   "single": 90,
+   "male": 1,
+   "female": 69,
+   "lower_ratio": 0.0
+  },
+  "Susie": {
+   "items": 181,
+   "single": 127,
+   "male": 0,
+   "female": 104,
+   "lower_ratio": 0.0
+  },
+  "Lena": {
+   "items": 179,
+   "single": 124,
+   "male": 0,
+   "female": 107,
+   "lower_ratio": 0.0
+  },
+  "Lola": {
+   "items": 178,
+   "single": 96,
+   "male": 2,
+   "female": 75,
+   "lower_ratio": 0.0
+  },
+  "Jackie": {
+   "items": 177,
+   "single": 123,
+   "male": 3,
+   "female": 92,
+   "lower_ratio": 0.0
+  },
+  "Brenda": {
+   "items": 177,
+   "single": 98,
+   "male": 0,
+   "female": 70,
+   "lower_ratio": 0.0
+  },
+  "Maya": {
+   "items": 177,
+   "single": 74,
+   "male": 1,
+   "female": 56,
+   "lower_ratio": 0.0
+  },
+  "Becky": {
+   "items": 174,
+   "single": 99,
+   "male": 0,
+   "female": 87,
+   "lower_ratio": 0.0
+  },
+  "Stella": {
+   "items": 171,
+   "single": 95,
+   "male": 1,
+   "female": 73,
+   "lower_ratio": 0.0
+  },
+  "Marie": {
+   "items": 166,
+   "single": 104,
+   "male": 1,
+   "female": 80,
+   "lower_ratio": 0.0
+  },
+  "Madison": {
+   "items": 157,
+   "single": 102,
+   "male": 0,
+   "female": 80,
+   "lower_ratio": 0.0
+  },
+  "Gina": {
+   "items": 154,
+   "single": 93,
+   "male": 0,
+   "female": 75,
+   "lower_ratio": 0.0
+  },
+  "Sasha": {
+   "items": 154,
+   "single": 100,
+   "male": 1,
+   "female": 78,
+   "lower_ratio": 0.0
+  },
+  "Lana": {
+   "items": 154,
+   "single": 80,
+   "male": 1,
+   "female": 65,
+   "lower_ratio": 0.002036659877800407
+  },
+  "Fiona": {
+   "items": 145,
+   "single": 97,
+   "male": 3,
+   "female": 77,
+   "lower_ratio": 0.0
+  },
+  "Liz": {
+   "items": 143,
+   "single": 66,
+   "male": 1,
+   "female": 49,
+   "lower_ratio": 0.0
+  },
+  "Ana": {
+   "items": 142,
+   "single": 61,
+   "male": 1,
+   "female": 47,
+   "lower_ratio": 0.0
+  },
+  "Elizabeth": {
+   "items": 142,
+   "single": 94,
+   "male": 2,
+   "female": 68,
+   "lower_ratio": 0.0
+  },
+  "Judy": {
+   "items": 138,
+   "single": 76,
+   "male": 0,
+   "female": 58,
+   "lower_ratio": 0.0
+  },
+  "Jen": {
+   "items": 137,
+   "single": 71,
+   "male": 0,
+   "female": 52,
+   "lower_ratio": 0.0
+  },
+  "Melanie": {
+   "items": 129,
+   "single": 99,
+   "male": 0,
+   "female": 84,
+   "lower_ratio": 0.0
+  },
+  "Diana": {
+   "items": 126,
+   "single": 83,
+   "male": 0,
+   "female": 68,
+   "lower_ratio": 0.0
+  },
+  "Rita": {
+   "items": 124,
+   "single": 65,
+   "male": 0,
+   "female": 51,
+   "lower_ratio": 0.0
+  },
+  "Eve": {
+   "items": 124,
+   "single": 43,
+   "male": 2,
+   "female": 23,
+   "lower_ratio": 0.014814814814814815
+  },
+  "Natalie": {
+   "items": 118,
+   "single": 61,
+   "male": 0,
+   "female": 43,
+   "lower_ratio": 0.0
+  },
+  "Tara": {
+   "items": 117,
+   "single": 66,
+   "male": 1,
+   "female": 52,
+   "lower_ratio": 0.0
+  },
+  "Nicole": {
+   "items": 114,
+   "single": 63,
+   "male": 0,
+   "female": 54,
+   "lower_ratio": 0.0
+  },
+  "Cathy": {
+   "items": 111,
+   "single": 57,
+   "male": 2,
+   "female": 42,
+   "lower_ratio": 0.0
+  },
+  "Joan": {
+   "items": 107,
+   "single": 68,
+   "male": 0,
+   "female": 53,
+   "lower_ratio": 0.0
+  },
+  "Caroline": {
+   "items": 107,
+   "single": 62,
+   "male": 0,
+   "female": 54,
+   "lower_ratio": 0.0
+  },
+  "Liza": {
+   "items": 105,
+   "single": 67,
+   "male": 2,
+   "female": 53,
+   "lower_ratio": 0.0
+  },
+  "Donna": {
+   "items": 105,
+   "single": 75,
+   "male": 2,
+   "female": 54,
+   "lower_ratio": 0.0
+  },
+  "Lauren": {
+   "items": 104,
+   "single": 57,
+   "male": 1,
+   "female": 44,
+   "lower_ratio": 0.0
+  },
+  "Patricia": {
+   "items": 103,
+   "single": 60,
+   "male": 1,
+   "female": 45,
+   "lower_ratio": 0.0
+  },
+  "Joy": {
+   "items": 101,
+   "single": 52,
+   "male": 0,
+   "female": 44,
+   "lower_ratio": 0.0
+  },
+  "Abigail": {
+   "items": 101,
+   "single": 62,
+   "male": 0,
+   "female": 51,
+   "lower_ratio": 0.0
+  },
+  "Ellen": {
+   "items": 100,
+   "single": 57,
+   "male": 0,
+   "female": 47,
+   "lower_ratio": 0.0
+  },
+  "Luna": {
+   "items": 97,
+   "single": 50,
+   "male": 0,
+   "female": 39,
+   "lower_ratio": 0.0
+  },
+  "Kathy": {
+   "items": 97,
+   "single": 57,
+   "male": 0,
+   "female": 44,
+   "lower_ratio": 0.0
+  },
+  "Jess": {
+   "items": 93,
+   "single": 44,
+   "male": 1,
+   "female": 30,
+   "lower_ratio": 0.0
+  },
+  "Barbara": {
+   "items": 93,
+   "single": 56,
+   "male": 0,
+   "female": 45,
+   "lower_ratio": 0.0
+  },
+  "Elaine": {
+   "items": 93,
+   "single": 64,
+   "male": 0,
+   "female": 48,
+   "lower_ratio": 0.0
+  },
+  "Janice": {
+   "items": 90,
+   "single": 55,
+   "male": 0,
+   "female": 45,
+   "lower_ratio": 0.0
+  },
+  "Eliza": {
+   "items": 90,
+   "single": 52,
+   "male": 0,
+   "female": 46,
+   "lower_ratio": 0.0
+  },
+  "Dana": {
+   "items": 89,
+   "single": 53,
+   "male": 0,
+   "female": 40,
+   "lower_ratio": 0.0
+  },
+  "Melinda": {
+   "items": 88,
+   "single": 67,
+   "male": 1,
+   "female": 59,
+   "lower_ratio": 0.0
+  },
+  "Tracy": {
+   "items": 88,
+   "single": 51,
+   "male": 0,
+   "female": 43,
+   "lower_ratio": 0.0
+  },
+  "Zara": {
+   "items": 86,
+   "single": 48,
+   "male": 1,
+   "female": 34,
+   "lower_ratio": 0.0
+  },
+  "Alexa": {
+   "items": 85,
+   "single": 53,
+   "male": 1,
+   "female": 42,
+   "lower_ratio": 0.0
+  },
+  "Joyce": {
+   "items": 85,
+   "single": 67,
+   "male": 0,
+   "female": 55,
+   "lower_ratio": 0.0
+  },
+  "Catherine": {
+   "items": 85,
+   "single": 58,
+   "male": 0,
+   "female": 50,
+   "lower_ratio": 0.0
+  },
+  "Lila": {
+   "items": 84,
+   "single": 46,
+   "male": 0,
+   "female": 38,
+   "lower_ratio": 0.0
+  },
+  "Alicia": {
+   "items": 83,
+   "single": 47,
+   "male": 1,
+   "female": 40,
+   "lower_ratio": 0.0
+  },
+  "Danielle": {
+   "items": 83,
+   "single": 62,
+   "male": 0,
+   "female": 55,
+   "lower_ratio": 0.0
+  },
+  "Stephanie": {
+   "items": 82,
+   "single": 55,
+   "male": 0,
+   "female": 48,
+   "lower_ratio": 0.0
+  },
+  "Rosa": {
+   "items": 82,
+   "single": 34,
+   "male": 1,
+   "female": 26,
+   "lower_ratio": 0.0
+  },
+  "Alyssa": {
+   "items": 80,
+   "single": 56,
+   "male": 0,
+   "female": 44,
+   "lower_ratio": 0.0
+  },
+  "Erin": {
+   "items": 79,
+   "single": 50,
+   "male": 2,
+   "female": 36,
+   "lower_ratio": 0.0
+  },
+  "Victoria": {
+   "items": 75,
+   "single": 54,
+   "male": 0,
+   "female": 39,
+   "lower_ratio": 0.0
+  },
+  "Charlotte": {
+   "items": 74,
+   "single": 30,
+   "male": 0,
+   "female": 25,
+   "lower_ratio": 0.0
+  },
+  "Elena": {
+   "items": 74,
+   "single": 42,
+   "male": 0,
+   "female": 35,
+   "lower_ratio": 0.0
+  },
+  "Wendy": {
+   "items": 73,
+   "single": 38,
+   "male": 0,
+   "female": 23,
+   "lower_ratio": 0.0
+  },
+  "Isabella": {
+   "items": 72,
+   "single": 32,
+   "male": 0,
+   "female": 27,
+   "lower_ratio": 0.0
+  },
+  "Vanessa": {
+   "items": 72,
+   "single": 38,
+   "male": 1,
+   "female": 33,
+   "lower_ratio": 0.0
+  },
+  "Maddie": {
+   "items": 72,
+   "single": 50,
+   "male": 0,
+   "female": 42,
+   "lower_ratio": 0.0
+  },
+  "Lucia": {
+   "items": 72,
+   "single": 51,
+   "male": 0,
+   "female": 42,
+   "lower_ratio": 0.0
+  },
+  "Allison": {
+   "items": 71,
+   "single": 43,
+   "male": 0,
+   "female": 35,
+   "lower_ratio": 0.0
+  },
+  "Carrie": {
+   "items": 69,
+   "single": 36,
+   "male": 1,
+   "female": 28,
+   "lower_ratio": 0.0
+  },
+  "Christine": {
+   "items": 68,
+   "single": 42,
+   "male": 0,
+   "female": 32,
+   "lower_ratio": 0.0
+  },
+  "Erica": {
+   "items": 68,
+   "single": 32,
+   "male": 0,
+   "female": 26,
+   "lower_ratio": 0.0
+  },
+  "Lydia": {
+   "items": 67,
+   "single": 35,
+   "male": 0,
+   "female": 25,
+   "lower_ratio": 0.0
+  },
+  "Elsa": {
+   "items": 66,
+   "single": 31,
+   "male": 0,
+   "female": 25,
+   "lower_ratio": 0.0
+  },
+  "Kylie": {
+   "items": 66,
+   "single": 34,
+   "male": 0,
+   "female": 30,
+   "lower_ratio": 0.0
+  },
+  "Joanna": {
+   "items": 66,
+   "single": 39,
+   "male": 0,
+   "female": 28,
+   "lower_ratio": 0.0
+  },
+  "Pam": {
+   "items": 65,
+   "single": 35,
+   "male": 1,
+   "female": 24,
+   "lower_ratio": 0.0
+  },
+  "Sharon": {
+   "items": 65,
+   "single": 43,
+   "male": 0,
+   "female": 37,
+   "lower_ratio": 0.0
+  },
+  "Margaret": {
+   "items": 63,
+   "single": 39,
+   "male": 1,
+   "female": 29,
+   "lower_ratio": 0.0
+  },
+  "Evelyn": {
+   "items": 62,
+   "single": 42,
+   "male": 0,
+   "female": 34,
+   "lower_ratio": 0.0
+  },
+  "Ruth": {
+   "items": 62,
+   "single": 37,
+   "male": 0,
+   "female": 30,
+   "lower_ratio": 0.0
+  },
+  "Suzie": {
+   "items": 61,
+   "single": 44,
+   "male": 0,
+   "female": 37,
+   "lower_ratio": 0.0
+  },
+  "Angie": {
+   "items": 61,
+   "single": 41,
+   "male": 0,
+   "female": 35,
+   "lower_ratio": 0.0
+  },
+  "Lina": {
+   "items": 61,
+   "single": 28,
+   "male": 0,
+   "female": 20,
+   "lower_ratio": 0.0
+  },
+  "Louise": {
+   "items": 58,
+   "single": 36,
+   "male": 0,
+   "female": 33,
+   "lower_ratio": 0.0
+  },
+  "Kayla": {
+   "items": 58,
+   "single": 27,
+   "male": 0,
+   "female": 22,
+   "lower_ratio": 0.0
+  },
+  "Shelly": {
+   "items": 57,
+   "single": 32,
+   "male": 2,
+   "female": 22,
+   "lower_ratio": 0.005555555555555556
+  },
+  "Diane": {
+   "items": 57,
+   "single": 29,
+   "male": 1,
+   "female": 18,
+   "lower_ratio": 0.0
+  },
+  "Mila": {
+   "items": 56,
+   "single": 28,
+   "male": 1,
+   "female": 23,
+   "lower_ratio": 0.0
+  },
+  "Heather": {
+   "items": 56,
+   "single": 29,
+   "male": 1,
+   "female": 21,
+   "lower_ratio": 0.0
+  },
+  "Naomi": {
+   "items": 56,
+   "single": 31,
+   "male": 0,
+   "female": 24,
+   "lower_ratio": 0.0
+  },
+  "Hanna": {
+   "items": 55,
+   "single": 29,
+   "male": 0,
+   "female": 26,
+   "lower_ratio": 0.0
+  },
+  "Nora": {
+   "items": 54,
+   "single": 34,
+   "male": 0,
+   "female": 26,
+   "lower_ratio": 0.0
+  },
+  "Lea": {
+   "items": 53,
+   "single": 25,
+   "male": 2,
+   "female": 19,
+   "lower_ratio": 0.0
+  },
+  "Emilia": {
+   "items": 53,
+   "single": 33,
+   "male": 0,
+   "female": 31,
+   "lower_ratio": 0.0
+  },
+  "Rosie": {
+   "items": 53,
+   "single": 29,
+   "male": 0,
+   "female": 24,
+   "lower_ratio": 0.0
+  },
+  "Haley": {
+   "items": 53,
+   "single": 27,
+   "male": 1,
+   "female": 20,
+   "lower_ratio": 0.0
+  },
+  "Jan": {
+   "items": 52,
+   "single": 31,
+   "male": 2,
+   "female": 21,
+   "lower_ratio": 0.0
+  },
+  "Meg": {
+   "items": 51,
+   "single": 24,
+   "male": 0,
+   "female": 20,
+   "lower_ratio": 0.0
+  },
+  "Christina": {
+   "items": 50,
+   "single": 35,
+   "male": 0,
+   "female": 30,
+   "lower_ratio": 0.0
+  },
+  "Veronica": {
+   "items": 50,
+   "single": 25,
+   "male": 0,
+   "female": 16,
+   "lower_ratio": 0.0
+  },
+  "Katy": {
+   "items": 50,
+   "single": 23,
+   "male": 0,
+   "female": 16,
+   "lower_ratio": 0.0
+  },
+  "Alison": {
+   "items": 49,
+   "single": 33,
+   "male": 0,
+   "female": 30,
+   "lower_ratio": 0.0
+  },
+  "Layla": {
+   "items": 48,
+   "single": 27,
+   "male": 0,
+   "female": 21,
+   "lower_ratio": 0.007692307692307693
+  },
+  "Tammy": {
+   "items": 47,
+   "single": 35,
+   "male": 0,
+   "female": 29,
+   "lower_ratio": 0.0
+  },
+  "Lizzy": {
+   "items": 47,
+   "single": 29,
+   "male": 0,
+   "female": 21,
+   "lower_ratio": 0.0
+  },
+  "Kimberly": {
+   "items": 47,
+   "single": 33,
+   "male": 0,
+   "female": 25,
+   "lower_ratio": 0.0
+  },
+  "Suzy": {
+   "items": 46,
+   "single": 27,
+   "male": 0,
+   "female": 23,
+   "lower_ratio": 0.0
+  },
+  "Andrea": {
+   "items": 46,
+   "single": 24,
+   "male": 0,
+   "female": 20,
+   "lower_ratio": 0.0
+  },
+  "Marta": {
+   "items": 45,
+   "single": 34,
+   "male": 0,
+   "female": 26,
+   "lower_ratio": 0.0
+  },
+  "Holly": {
+   "items": 45,
+   "single": 23,
+   "male": 1,
+   "female": 18,
+   "lower_ratio": 0.0
+  },
+  "Joanne": {
+   "items": 45,
+   "single": 32,
+   "male": 0,
+   "female": 21,
+   "lower_ratio": 0.0
+  },
+  "Miranda": {
+   "items": 44,
+   "single": 26,
+   "male": 0,
+   "female": 20,
+   "lower_ratio": 0.0
+  },
+  "Cynthia": {
+   "items": 43,
+   "single": 28,
+   "male": 0,
+   "female": 25,
+   "lower_ratio": 0.0
+  },
+  "Stacey": {
+   "items": 42,
+   "single": 28,
+   "male": 0,
+   "female": 21,
+   "lower_ratio": 0.0
+  },
+  "Pamela": {
+   "items": 42,
+   "single": 23,
+   "male": 0,
+   "female": 22,
+   "lower_ratio": 0.0
+  },
+  "Selena": {
+   "items": 41,
+   "single": 21,
+   "male": 0,
+   "female": 16,
+   "lower_ratio": 0.0
+  },
+  "Gabby": {
+   "items": 41,
+   "single": 27,
+   "male": 0,
+   "female": 24,
+   "lower_ratio": 0.0
+  },
+  "Josie": {
+   "items": 40,
+   "single": 27,
+   "male": 0,
+   "female": 20,
+   "lower_ratio": 0.0
+  },
+  "Ada": {
+   "items": 40,
+   "single": 25,
+   "male": 0,
+   "female": 22,
+   "lower_ratio": 0.0
+  },
+  "Janine": {
+   "items": 40,
+   "single": 33,
+   "male": 0,
+   "female": 25,
+   "lower_ratio": 0.0
+  },
+  "Katherine": {
+   "items": 39,
+   "single": 27,
+   "male": 0,
+   "female": 22,
+   "lower_ratio": 0.0
+  },
+  "Audrey": {
+   "items": 39,
+   "single": 21,
+   "male": 0,
+   "female": 19,
+   "lower_ratio": 0.0
+  },
+  "Mina": {
+   "items": 38,
+   "single": 21,
+   "male": 0,
+   "female": 20,
+   "lower_ratio": 0.0
+  },
+  "Sonia": {
+   "items": 37,
+   "single": 24,
+   "male": 0,
+   "female": 19,
+   "lower_ratio": 0.0
+  },
+  "Marcy": {
+   "items": 37,
+   "single": 26,
+   "male": 0,
+   "female": 20,
+   "lower_ratio": 0.0
+  },
+  "Leila": {
+   "items": 37,
+   "single": 20,
+   "male": 0,
+   "female": 17,
+   "lower_ratio": 0.0
+  },
+  "Anita": {
+   "items": 37,
+   "single": 21,
+   "male": 0,
+   "female": 18,
+   "lower_ratio": 0.0
+  },
+  "Tamara": {
+   "items": 36,
+   "single": 20,
+   "male": 0,
+   "female": 15,
+   "lower_ratio": 0.0
+  },
+  "Sabrina": {
+   "items": 36,
+   "single": 24,
+   "male": 0,
+   "female": 19,
+   "lower_ratio": 0.0
+  },
+  "Alexis": {
+   "items": 34,
+   "single": 21,
+   "male": 0,
+   "female": 14,
+   "lower_ratio": 0.0
+  },
+  "Hazel": {
+   "items": 34,
+   "single": 21,
+   "male": 1,
+   "female": 14,
+   "lower_ratio": 0.011111111111111112
+  },
+  "Debbie": {
+   "items": 34,
+   "single": 23,
+   "male": 0,
+   "female": 17,
+   "lower_ratio": 0.0
+  },
+  "Lori": {
+   "items": 33,
+   "single": 20,
+   "male": 0,
+   "female": 16,
+   "lower_ratio": 0.0
+  },
+  "Katrina": {
+   "items": 33,
+   "single": 22,
+   "male": 0,
+   "female": 18,
+   "lower_ratio": 0.0
+  },
+  "Pauline": {
+   "items": 32,
+   "single": 26,
+   "male": 0,
+   "female": 22,
+   "lower_ratio": 0.0
+  },
+  "Bethany": {
+   "items": 31,
+   "single": 21,
+   "male": 0,
+   "female": 19,
+   "lower_ratio": 0.0
+  },
+  "Lynn": {
+   "items": 31,
+   "single": 20,
+   "male": 0,
+   "female": 19,
+   "lower_ratio": 0.0
+  },
+  "Sylvia": {
+   "items": 31,
+   "single": 21,
+   "male": 0,
+   "female": 15,
+   "lower_ratio": 0.0
+  },
+  "Kira": {
+   "items": 31,
+   "single": 21,
+   "male": 0,
+   "female": 16,
+   "lower_ratio": 0.0
+  },
+  "Mariah": {
+   "items": 30,
+   "single": 20,
+   "male": 0,
+   "female": 19,
+   "lower_ratio": 0.0
+  },
+  "Jillian": {
+   "items": 30,
+   "single": 25,
+   "male": 0,
+   "female": 20,
+   "lower_ratio": 0.0
+  },
+  "Suzanne": {
+   "items": 29,
+   "single": 22,
+   "male": 0,
+   "female": 18,
+   "lower_ratio": 0.0
+  },
+  "Erika": {
+   "items": 27,
+   "single": 21,
+   "male": 1,
+   "female": 16,
+   "lower_ratio": 0.0
+  },
+  "Esther": {
+   "items": 24,
+   "single": 21,
+   "male": 0,
+   "female": 17,
+   "lower_ratio": 0.0
+  }
+ },
+ "rule": "capitalised non-initial word (audit_aug.CAP, STOP removed); >= 20 single-name items; one gender's pronoun share >= 0.85; lower-case occurrences <= 2% of capitalised; top 250 per gender by item count",
+ "filter_counts": {
+  "lines": 384622,
+  "kept": 380567,
+  "wrong": 2959,
+  "unparsed": 1094,
+  "malformed": 2
+ }
+}
