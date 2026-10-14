@@ -1,0 +1,83 @@
+{
+ "step": 10000,
+ "ckpt": "ckpt_10k.pt",
+ "path_indep": {
+  "answer_agree": 0.736,
+  "delta_cos_final": 0.8705760836601257,
+  "n_items": 500,
+  "acc_from_zero": 0.552,
+  "acc_from_donor": 0.52,
+  "kprime": 8,
+  "donor_passes": 4,
+  "items_n": [
+   3,
+   4
+  ],
+  "by_n": {
+   "3": {
+    "n_items": 248,
+    "answer_agree": 0.7782258064516129,
+    "delta_cos_final": 0.8561787605285645
+   },
+   "4": {
+    "n_items": 252,
+    "answer_agree": 0.6944444444444444,
+    "delta_cos_final": 0.8847450017929077
+   }
+  }
+ },
+ "path_indep_all_n": {
+  "answer_agree": 0.87,
+  "delta_cos_final": 0.8616301417350769,
+  "n_items": 500,
+  "acc_from_zero": 0.768,
+  "acc_from_donor": 0.71,
+  "kprime": 8,
+  "donor_passes": 4,
+  "items_n": [
+   1,
+   4
+  ],
+  "by_n": {
+   "1": {
+    "n_items": 122,
+    "answer_agree": 0.9016393442622951,
+    "delta_cos_final": 0.7865568399429321
+   },
+   "2": {
+    "n_items": 130,
+    "answer_agree": 0.9461538461538461,
+    "delta_cos_final": 0.8556414842605591
+   },
+   "3": {
+    "n_items": 122,
+    "answer_agree": 0.8934426229508197,
+    "delta_cos_final": 0.8982605934143066
+   },
+   "4": {
+    "n_items": 126,
+    "answer_agree": 0.7380952380952381,
+    "delta_cos_final": 0.9050310850143433
+   }
+  }
+ },
+ "stage": {
+  "n_max": 4,
+  "K": 4,
+  "spec": "auto"
+ },
+ "train_loss_bin_1k": {
+  "window": [
+   9000,
+   10000
+  ],
+  "n_records": 10,
+  "loss_mean": 0.9220699910172261,
+  "answer_ce_mean": 0.7784383140688588
+ },
+ "loss_seen_before_probe": "yes",
+ "gpu": "NVIDIA GeForce RTX 2070",
+ "eval_dtype": "None",
+ "run": "boxes/runs_fsq/pilot196_s3_stage2_4060",
+ "def": "STAGE-MATCHED path_indep (headline test n 3..4 rng 18201 [:500] of that pool; path_indep_all_n = n 1..4, the same draw rule; derangement np.roll 1; 4-pass donor; K' 8; delta_cos as s182)"
+}

@@ -24,29 +24,9 @@ import boxes.nested170 as N  # noqa: E402
 
 
 @torch.no_grad()
-def main():
-    run, ckp = sys.argv[1], sys.argv[2]; dev = sys.argv[3] if len(sys.argv) > 3 and not sys.argv[3].startswith("--") else "cuda:1"; no_aux = "--no_aux" in sys.argv
-    opt = lambda k_, d_=None: sys.argv[sys.argv.index(k_) + 1] if k_ in sys.argv else d_  # noqa: E731
-    stage_arg, log_p, seen = opt("--stage"), opt("--log", os.path.join(run, "log.jsonl")), opt("--loss_seen", "unrecorded")
-    assert seen in ("yes", "no", "unrecorded"), seen
-    a = json.load(open(os.path.join(run, "args.json"))); DM.FAST_ADD = bool(a.get("fast_add")); K = int(a["think_k"]); bs = int(a.get("eval_bs") or 250)
-    g = N.make_trunk(a, dev); ML, HA, HD = N.mem_geometry(a)
-    m = (N.ReadSlotsN(g, ML, "top", HA, HD, a.get("add_norm") or None, int(a.get("n_slots") or 8)) if a["arm"] == "readslots"
-         else N.InjectN(g, ML, "top", HA, HD, a.get("add_norm") or None)).to(dev)
-    m.nopass = bool(a.get("aux_nopass")); ck = torch.load(ckp, map_location=dev, weights_only=False); sd = ck["model"] if isinstance(ck, dict) and "model" in ck else ck
-    step = int(ck.get("step")) if isinstance(ck, dict) and "step" in ck else None; m.load_state_dict(sd); m.eval(); del ck
-    amp = None if (not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
-    ac = lambda: torch.autocast("cuda", dtype=amp, enabled=amp is not None)  # noqa: E731
-    TE = N.test_set(int(a.get("per_n") or 1000))
-    n_lo, n_hi, KD, KP, stage = 3, 8, 8, 16, None                           # the standard probe: n 3..8, an 8-pass donor, K' 16
-    if stage_arg:
-        if stage_arg == "auto":                                             # --anneal 'nmax:K:until,...': the first stage whose until >= the ckpt step
-            assert a.get("anneal") and step is not None, "--stage auto needs a fixed-step --anneal run and a ckpt step"
-            st_ = [tuple(int(v_) for v_ in s_.split(":")) for s_ in a["anneal"].split(",")]; nm_, k_ = next((nm, kk) for nm, kk, un in st_ if step <= un)
-        else:
-            nm_, k_ = (int(v_) for v_ in stage_arg.split(":"))
-        n_lo, n_hi, KD, KP, stage = 1, nm_, k_, 2 * k_, {"n_max": nm_, "K": k_, "spec": stage_arg}
-
+def path_indep(m, TE, n_lo, n_hi, KD, KP, dev, ac, bs):
+    """s182.path_indep on the test items n_lo..n_hi (rng 18201 permutation[:500] of that pool): K' = KP passes from M_0 = 0 vs from a derangement
+    donor's (np.roll by 1) KD-pass memory -> answer_agree, delta_cos_final (mean cos of the final delta-head states), acc_from_zero / _donor, by_n."""
     def states(items, t):
         out = []
         for i in range(0, len(items), bs):
@@ -72,17 +52,46 @@ def main():
     cs_ = Fn.cosine_similarity(F0, F1, dim=1).numpy(); nn_ = np.array([it["n"] for it in its_])
     by_n = {str(n_): {"n_items": int((nn_ == n_).sum()), "answer_agree": float((A0 == A1)[nn_ == n_].mean()), "delta_cos_final": float(cs_[nn_ == n_].mean())}
             for n_ in sorted(set(nn_.tolist()))}
+    return {"answer_agree": float((A0 == A1).mean()), "delta_cos_final": float(cs_.mean()), "n_items": len(its_), "acc_from_zero": float((A0 == tt_).mean()),
+            "acc_from_donor": float((A1 == tt_).mean()), "kprime": KP, "donor_passes": KD, "items_n": [n_lo, n_hi], "by_n": by_n}
+
+
+@torch.no_grad()
+def main():
+    run, ckp = sys.argv[1], sys.argv[2]; dev = sys.argv[3] if len(sys.argv) > 3 and not sys.argv[3].startswith("--") else "cuda:1"; no_aux = "--no_aux" in sys.argv
+    opt = lambda k_, d_=None: sys.argv[sys.argv.index(k_) + 1] if k_ in sys.argv else d_  # noqa: E731
+    stage_arg, log_p, seen = opt("--stage"), opt("--log", os.path.join(run, "log.jsonl")), opt("--loss_seen", "unrecorded")
+    assert seen in ("yes", "no", "unrecorded"), seen
+    a = json.load(open(os.path.join(run, "args.json"))); DM.FAST_ADD = bool(a.get("fast_add")); K = int(a["think_k"]); bs = int(a.get("eval_bs") or 250)
+    g = N.make_trunk(a, dev); ML, HA, HD = N.mem_geometry(a)
+    m = (N.ReadSlotsN(g, ML, "top", HA, HD, a.get("add_norm") or None, int(a.get("n_slots") or 8)) if a["arm"] == "readslots"
+         else N.InjectN(g, ML, "top", HA, HD, a.get("add_norm") or None)).to(dev)
+    m.nopass = bool(a.get("aux_nopass")); ck = torch.load(ckp, map_location=dev, weights_only=False); sd = ck["model"] if isinstance(ck, dict) and "model" in ck else ck
+    step = int(ck.get("step")) if isinstance(ck, dict) and "step" in ck else None; m.load_state_dict(sd); m.eval(); del ck
+    amp = None if (not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
+    ac = lambda: torch.autocast("cuda", dtype=amp, enabled=amp is not None)  # noqa: E731
+    TE = N.test_set(int(a.get("per_n") or 1000))
+    n_lo, n_hi, KD, KP, stage = 3, 8, 8, 16, None                           # the standard probe: n 3..8, an 8-pass donor, K' 16
+    if stage_arg:
+        if stage_arg == "auto":                                             # --anneal 'nmax:K:until,...': the first stage whose until >= the ckpt step
+            assert a.get("anneal") and step is not None, "--stage auto needs a fixed-step --anneal run and a ckpt step"
+            st_ = [tuple(int(v_) for v_ in s_.split(":")) for s_ in a["anneal"].split(",")]; nm_, k_ = next((nm, kk) for nm, kk, un in st_ if step <= un)
+        else:
+            nm_, k_ = (int(v_) for v_ in stage_arg.split(":"))
+        n_lo, n_hi, KD, KP, stage = 3, nm_, k_, 2 * k_, {"n_max": nm_, "K": k_, "spec": stage_arg}
+
+    PI = path_indep(m, TE, n_lo, n_hi, KD, KP, dev, ac, bs)
+    PI_all = path_indep(m, TE, 1, n_hi, KD, KP, dev, ac, bs) if stage else None   # Theory: the stage probe's all-n set beside the n >= 3 headline
     tl = None
     if step is not None and os.path.exists(log_p):                          # read AFTER the probe is computed
         rr_ = [json.loads(l_) for l_ in open(log_p) if l_.strip()]; rr_ = [r_ for r_ in rr_ if "loss" in r_ and step - 1000 < r_["step"] <= step]
         tl = {"window": [step - 1000, step], "n_records": len(rr_), "loss_mean": float(np.mean([r_["loss"] for r_ in rr_])) if rr_ else None,
               "answer_ce_mean": float(np.mean([r_["answer_ce"] for r_ in rr_ if r_.get("answer_ce") is not None])) if any(r_.get("answer_ce") is not None for r_ in rr_) else None}
-    out = {"step": step, "ckpt": os.path.basename(ckp), "path_indep": {"answer_agree": float((A0 == A1).mean()), "delta_cos_final": float(cs_.mean()),
-           "n_items": len(its_), "acc_from_zero": float((A0 == tt_).mean()), "acc_from_donor": float((A1 == tt_).mean()), "kprime": KP, "donor_passes": KD,
-           "items_n": [n_lo, n_hi], "by_n": by_n}, "stage": stage, "train_loss_bin_1k": tl, "loss_seen_before_probe": seen,
+    out = {"step": step, "ckpt": os.path.basename(ckp), "path_indep": PI, "path_indep_all_n": PI_all, "stage": stage, "train_loss_bin_1k": tl, "loss_seen_before_probe": seen,
            "gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "eval_dtype": str(amp), "run": run,
            "def": ("nested170 s182.path_indep reproduced (items test n 3..8 rng 18201 [:500]; derangement np.roll 1; K' 16; delta_cos = mean cos of final delta-head states)"
-                   if stage is None else "STAGE-MATCHED path_indep (test n %d..%d rng 18201 [:500]; derangement np.roll 1; %d-pass donor; K' %d; delta_cos as s182)" % (n_lo, n_hi, KD, KP))}
+                   if stage is None else "STAGE-MATCHED path_indep (headline test n %d..%d rng 18201 [:500] of that pool; path_indep_all_n = n 1..%d, the same draw rule; derangement np.roll 1; "
+                                         "%d-pass donor; K' %d; delta_cos as s182)" % (n_lo, n_hi, n_hi, KD, KP))}
     if not no_aux:                                                          # s175 aux_acc_by_pass / by_role (nested170.aux_eval) on rng 17022 n <= 8 [:1000], t <= K
         p8 = [it for it in TE if it["n"] <= 8]; te8 = [p8[i] for i in np.random.default_rng(17022).permutation(len(p8))[:1000]]; ex, role = {}, {}
         for i in range(0, len(te8), bs):
