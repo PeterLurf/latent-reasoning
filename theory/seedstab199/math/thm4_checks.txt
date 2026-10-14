@@ -1,0 +1,15 @@
+2 keys cos 0.00 beta 1: span sv [0. 0.]
+2 keys cos 0.50 beta 1: span sv [0.5 0. ]
+2 keys cos 0.90 beta 1: span sv [0.9 0. ]
+2 keys cos 0.99 beta 1: span sv [0.99 0.  ]
+L 8 beta U(0,2)   span sv max 0.9983 min 0.2381
+L 8 beta all 1    span sv max 0.4252 min 2.283e-17
+L 8 beta all 2    span sv max 1.0000 min 1
+L 8 beta all 0.02 span sv max 0.9885 min 0.971
+L 8 beta all 1.98 span sv max 0.9886 min 0.9713
+L 30 beta U(0,2)   span sv max 0.9651 min 0.0001534
+L 30 beta all 1    span sv max 0.8377 min 3.809e-17
+L 30 beta all 2    span sv max 1.0000 min 1
+L 30 beta all 0.02 span sv max 0.9970 min 0.9511
+L 30 beta all 1.98 span sv max 0.9968 min 0.9472
+merge sv unique [0.388 0.97 ] expected 0.97 0.388

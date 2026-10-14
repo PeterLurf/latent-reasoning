@@ -1,0 +1,32 @@
+{
+ "aux_conditional_t3_8": {
+  "kappa": 0.783983964275455,
+  "m0_over_sigma": 3.9872936520487174,
+  "rms_resid_log": 0.10410135767823311
+ },
+ "answer_ratio_n3_8": {
+  "ratios": [
+   0.962,
+   0.878,
+   0.764,
+   0.755,
+   0.736,
+   0.643
+  ],
+  "kappa": 0.7566452111236817,
+  "m0_over_sigma": 3.6520369986881156,
+  "rms_resid_log": 0.13425850062902156
+ },
+ "step_ratio": {
+  "kappa_t2": 0.8394570207692074,
+  "kappa_t3": 0.8607079764250578,
+  "kappa_t4": 0.9093729344682314
+ },
+ "delta_cos_kappa_c0_0.0": 0.8875661050875253,
+ "delta_cos_kappa_c0_0.3": 0.8975143375128164,
+ "delta_cos_kappa_c0_0.5": 0.9070012720309821,
+ "halving_passes_aux": 2.848159360977381,
+ "tenfold_passes_aux": 9.461380599947201,
+ "halving_passes_answer": 2.4856385280597637,
+ "tenfold_passes_answer": 8.257112460096199
+}
