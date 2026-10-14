@@ -286,7 +286,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 196 | GROKFAST-S3: RMS s3 (never entered) + Grokfast-EMA (α 0.98, λ 2); exact same-seed control; ACCELERATES (entry ≤ 25k, final < 0.1) / NO-EFFECT / partial | registered | **NO-EFFECT (never entered; final bin 1.394 vs control 1.031; path_indep 0.930 contractive, as 199-A predicted). §197 not registered as drafted (one-seed rescue weak; needs fresh seeds + derivation)** |
 | 197 | (reserved: BUDGET-ANNEAL-S3, drafted; registers only if §196 reads NO-EFFECT) | — | — |
 | 198 | CHEAP-THINK (the user's request): an all-cached family; (a) cached INJECT, (b) MEM-HIGH l_m 9, (c) READ-SLOTS + RMS + step aux; CHEAPER-EQUAL / CHEAPER-WORSE / UNCLEAR-ENTRY / FAILS vs (a); $10 cap | registered | **(a) comparator holds; (b) CHEAPER-WORSE (confounded by entry); (c) FAILS (entry 33k, not DEEP, depth 0.364); family ≈ $6.29; 198-3 pred 1 FALSIFIED (READ-SLOTS more path-independent)** |
-| 199 | CONTRACTION-TRAP (the user's seed-stability request): order parameter s182.path_indep separates converged / failed across 19 models; M1 = within-n rank test, per-pass delta decay ᾱ vs handle onset (ρ̄ > 0 predicted; falsified ≤ 0 or < 0.3); 199-A method CSR (completion-switched step-ratio target), RMS s1–s3 on 3090 paired with s185, SUPPORTED / MIXED / FALSIFIED (P-A5 on checkpoint path_indep) | registered (M1, 199-A) | **open** |
+| 199 | CONTRACTION-TRAP (the user's seed-stability request): order parameter s182.path_indep separates converged / failed across 19 models; M1 = within-n rank test, per-pass delta decay ᾱ vs handle onset (ρ̄ > 0 predicted; falsified ≤ 0 or < 0.3); 199-A method CSR (completion-switched step-ratio target), RMS s1–s3 on 3090 paired with s185, SUPPORTED / MIXED / FALSIFIED (P-A5 on checkpoint path_indep) | registered (M1, M2, M3, 199-A) | **closed: M1 PREDICTED, M3 PREDICTED, M2 no pair connected; CSR (199-A) FLOOR-GAMED + harmful on its paired seed (1 of 3 seeds; s3 stopped, s2 cancelled); account untested** |
 | 200 | GSM8K-AUG PILOT (user-approved 2026-10-13 ~23:5x via Audit, "make sure its augmented dataset"; Tier 1 only, cap $7): latent step-aux A / A+resample B vs TEXT-COT C / D on GSM8K-Aug, 24k, final checkpoint; R1 C3 in-house ±2.8, R2 vs PCCoT 49.48 (no 1-seed SOTA claim), R3 resample, R4 THINK-NECESSARY, R6 length, R7 STABLE, LOOP-NOT-FORMED, IDLE-PASSES | registered | **open** |
 | 201 | OVERTHINK-EXIT (the user's overthinking + latent-transition requests; $0 eval-only): T1 FREEZE 2×2 (which channel drives post-completion decay; ADD-COUPLED / ADD-DIRECT / DELTA-INTRINSIC / JOINT; additive account falsified if R_FA ≤ 0.3 in ≥ 2 of 3 key models), T2 SHIRYAEV-HEAD halt (NO-OVERTHINK / SIZE-FREE / PREMATURE; β-cue falsifier) | registered | **T1: additive account FALSIFIED - overthinking is post-completion DELTA writes (R_FD ~1.0 in 5/7); T2: learned halt NO-OVERTHINK on 7/7 (= best fixed K′ vs K′32 0.34-0.94), size-free on RMS; T2-b fails narrowly, T2-c fails** |
 
@@ -15241,6 +15241,20 @@ Each registers separately, after T1 / T2.
     - a **two-sided band** before completion (no expansion), or a floor on **decodable progress** (e.g. the aux decoder's margin between e_{t+1} and e_t) rather than raw read displacement;
     - no penalty structure that rewards growth.
 * The overall §199-A reading waits on s3 (running) and s2 (held). One seed already rules out SUPPORTED.
+
+**§199-A closed (2026-10-14 13:28 EDT; Audit's decision after s1's reading). 1 of 3 seeds:**
+* **s1:** FLOOR-GAMED, and harmful on its paired seed (9e04d254).
+* **s3 (b285): STOPPED**, aborted unread. Its partial log is kept per the abort rule.
+* **s2: CANCELLED** before launch.
+* **Reading:**
+  - **not SUPPORTED** (P-A2 fails on s1);
+  - **P-A5 not tested** (FLOOR-GAMED; the 16k input was lost anyway);
+  - **CSR as registered does not work.** Its pre-completion floor on raw read displacement is gameable by expanding motion, and on s1 it prevented entry.
+  - The contraction account (A1) is neither confirmed nor falsified by §199-A. Its support rests on M1 (PREDICTED), M3 / M3a (PREDICTED), E1 (descriptive) and the 19-model order parameter. The causal question stays open: T1 says the order parameter co-moves with the loss.
+* **Realised spend:** s1 about $2.5 plus s3's partial. Under the $10 item.
+* **Redesign (not registered; a new spend decision):**
+  - a floor on **decodable progress** (the aux margin between e_{t+1} and e_t) or a two-sided band;
+  - with a Goodhart analysis inside its derivation (Audit).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
