@@ -31,7 +31,7 @@ def main():
     for it in Dte:
         if len(byd.setdefault(it["depth"], [])) < NPER:
             byd[it["depth"]].append(it)
-    acc = {A: {} for A in ARMS}; atf = {A: {} for A in ARMS}; fb_ok = True; cuda = dev.startswith("cuda")
+    acc = {A: {} for A in ARMS}; atf = {A: {} for A in ARMS}; agree = {"FA": {}, "FD": {}}; fb_ok = True; cuda = dev.startswith("cuda")
     if cuda:
         torch.cuda.reset_peak_memory_stats(dev)
     for d in sorted(byd):
@@ -59,10 +59,13 @@ def main():
                 Mc = M
             if A == "FB":
                 fb_ok = fb_ok and all(np.array_equal(M[k], Mc[f]) for k in ks if k >= f)
+            if A in ("FA", "FD"):                                           # Theory: the share of items whose answer at K' equals CLEAN's answer at f
+                agree[A][str(d)] = {str(k): float(((M[k] > 0) == (Mc[f] > 0)).mean()) for k in KEV}
         print(run, "depth", d, {A: acc[A][str(d)][str(max(KEV))] for A in ARMS}, "%.0fs" % (time.time() - t0), flush=True)
     pool = lambda A, k, ds: float(np.mean([acc[A][str(d)][str(k)] for d in ds if str(d) in acc[A]]))   # noqa: E731
     out = {"arms": {A: {"acc_by_depth_kprime": {str(k): {d: acc[A][d][str(k)] for d in acc[A]} for k in KEV}, "acc_at_f_by_depth": atf[A]} for A in ARMS},
            "pools": {str(k): {A: {"d3_10": pool(A, k, range(3, 11)), "d11_14": pool(A, k, range(11, 15))} for A in ARMS} for k in KEV},
+           "agree_with_f_by_depth_kprime": {A: {str(k): {d: agree[A][d][str(k)] for d in agree[A]} for k in KEV} for A in agree},
            "gates": {"fb_identity": bool(fb_ok)}, "scope": {"n_per_depth": NPER, "kprimes": list(KEV), "plus": "f = depth + 1", "tmax": TMAX, "items": "the first 200 p8_na_test items per depth"},
            "status": "DESCRIPTIVE (§201 T1 ProsQA)", "card": torch.cuda.get_device_name(dev) if cuda else "cpu", "dtype": "float32 (no autocast)", "bs": BS,
            "peak_gib": round(torch.cuda.max_memory_allocated(dev) / 2 ** 30, 2) if cuda else None, "sec": round(time.time() - t0)}
