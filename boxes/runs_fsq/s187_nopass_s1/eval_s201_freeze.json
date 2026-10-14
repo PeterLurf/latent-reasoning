@@ -5229,5 +5229,6 @@
  "memcheck_peak_gib_n16": 1.499,
  "n_items_per_n": 1000,
  "tmax": 32,
- "def": "\u00a7201 T1 (121eb9ef): oracle f = n + 1; FA / FD / FB reset after every write past f; pool_3_8 = mean of per-n accuracies n 3..8; acc_by_n_t index t = 0..32"
+ "def": "\u00a7201 T1 (121eb9ef): oracle f = n + 1; FA / FD / FB reset after every write past f; pool_3_8 = mean of per-n accuracies n 3..8; acc_by_n_t index t = 0..32",
+ "bs": 250
 }
