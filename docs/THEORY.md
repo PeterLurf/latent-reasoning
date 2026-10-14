@@ -14625,6 +14625,17 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - 199-A's "nonzero … at step 501" is off by one against the code. It means "the CSR gradient is present from step 500's update". Gate g2 tested exactly that.
 * **Unchanged:** everything else in 199-A. score_s199_a.py's pairing check now implements (i)–(iii).
 
+**199-M3a / M3b result (2026-10-13 23:26 EDT; ad1645bd; 2070 fp32; the same items and models as M3; M3's fields are byte-equal to the committed JSONs). As expected: STRUCT-RIGHT is 0.99–1.00 of wrong outputs, and ECHO-INPUT is 0.**
+* **Failed models:**
+  - **s185_rms_s3** 667 / 667 STRUCT-RIGHT (1.000);
+  - **den_s1** 466 / 470 (0.991);
+  - **rwwin_s1** 478 / 480 (0.996).
+  - ECHO-INPUT (= e_1) is 0 at every pass in every model. s1 / s2's 5 / 4 misses are all STRUCT-RIGHT.
+* **Reading (descriptive):** the contractive pass-token models' late errors are right-position, right-structure reductions with a wrong value.
+  - They never re-emit an earlier step, never echo the input, and almost never break the expression's form.
+  - "Never stalls" (M3) now holds without M3b's qualifier.
+  - This fits Cor. 1.2: the structure comes from the input plus the pass token, and the value computation runs out of one-shot depth.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
