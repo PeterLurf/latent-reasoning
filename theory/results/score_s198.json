@@ -1,15 +1,113 @@
 {
  "cells": {
   "a": {
-   "status": "open"
+   "status": "done",
+   "pooled_k8": 0.9994999999999999,
+   "depth_9_12_n2": 0.56975,
+   "by_n_n2": {
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 0.999,
+    "8": 0.997,
+    "9": 0.989,
+    "10": 0.793,
+    "11": 0.333,
+    "12": 0.164
+   },
+   "deep": true,
+   "think_necessary": true,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "cost": {
+    "L_mean": 18.5,
+    "K": 8,
+    "M": 8,
+    "ratio_at_nested_L": 0.5555555555555556,
+    "ratio_vs_current": 0.5555555555555556,
+    "meter_flops": null
+   },
+   "entry": {
+    "entry_0.5": 18000,
+    "entry_0.1": 23000,
+    "min_bin": 0.00021530553044522092,
+    "last_bin": 0.0006020620336544197
+   },
+   "note198_3": {
+    "path_indep": {
+     "answer_agree": 0.12,
+     "delta_cos_final": 0.54954993724823,
+     "n_items": 500,
+     "acc_from_zero": 0.982,
+     "acc_from_donor": 0.12,
+     "kprime": 16,
+     "donor_passes": 8,
+     "items": "test n 3..8, rng 18201 permutation[:500]",
+     "derangement": "np.roll(sample order, 1)",
+     "delta_cos_def": "mean over items of cos of the final delta-head states S[:, h_add:h_add + h_del]"
+    },
+    "size": null
+   }
   },
   "b": {
-   "status": "open"
+   "status": "done",
+   "pooled_k8": 0.9638333333333332,
+   "depth_9_12_n2": 0.4535,
+   "by_n_n2": {
+    "3": 0.999,
+    "4": 0.994,
+    "5": 0.984,
+    "6": 0.957,
+    "7": 0.948,
+    "8": 0.895,
+    "9": 0.798,
+    "10": 0.577,
+    "11": 0.276,
+    "12": 0.163
+   },
+   "deep": true,
+   "think_necessary": true,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "cost": {
+    "L_mean": 18.5,
+    "K": 8,
+    "M": 8,
+    "ratio_at_nested_L": 0.3333333333333333,
+    "ratio_vs_current": 0.3333333333333333,
+    "meter_flops": null
+   },
+   "entry": {
+    "entry_0.5": 24000,
+    "entry_0.1": 48000,
+    "min_bin": 0.09882904268614948,
+    "last_bin": 0.09882904268614948
+   },
+   "label": "CHEAPER-WORSE",
+   "note198_3": {
+    "path_indep": {
+     "answer_agree": 0.19,
+     "delta_cos_final": 0.5239884853363037,
+     "n_items": 500,
+     "acc_from_zero": 0.866,
+     "acc_from_donor": 0.17,
+     "kprime": 16,
+     "donor_passes": 8,
+     "items": "test n 3..8, rng 18201 permutation[:500]",
+     "derangement": "np.roll(sample order, 1)",
+     "delta_cos_def": "mean over items of cos of the final delta-head states S[:, h_add:h_add + h_del]"
+    },
+    "size": null
+   }
   },
   "c": {
-   "status": "open"
+   "status": "open",
+   "note198_3": {
+    "path_indep": null,
+    "size": null
+   }
   }
  },
- "reading": "(b) pending (cell open; comparator (a) open) | (c) pending (cell open; comparator (a) open)",
+ "note198_3": "(a) delta_cos 0.550 (agree 0.120), SIZE-KEY pending | (b) delta_cos 0.524 (agree 0.190), SIZE-KEY pending | (c) delta_cos pending, SIZE-KEY pending",
+ "reading": "(a) cached INJECT: DEEP True, DEPTH 0.570 (uncached s185_rms_s1 0.587), entry 18000/23000, cost ratio 0.556 | (b) CHEAPER-WORSE: DEEP True, THINK-NECESSARY True, DEPTH 0.454 vs (a) 0.570; cost ratio vs current 0.333 at L 300 (0.333 at nested L; Meter None); entry 24000/48000 | (c) pending (cell open; comparator (a) done)",
  "errors": []
 }

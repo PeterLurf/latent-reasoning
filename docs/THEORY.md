@@ -14906,6 +14906,41 @@ Each registers separately, after T1 / T2.
   - A SOTA-relevant number would need a matched-budget run at the published exposure: a new cost item for the user.
 * No threshold, cell or reading is changed.
 
+**§198 interim result (2026-10-14 05:58 EDT; (a) s198_injc_s1 b280 and (b) s198_memhi_s1 b281 landed, 42400a2a; theory/score_s198.py; (c) READ-SLOTS still running).**
+* **(a) cached INJECT, the family comparator:**
+  - DEEP; DEPTH 0.570 (uncached s185_rms_s1 0.587, so the cached-family check holds);
+  - entry(0.5 / 0.1) 18k / 23k;
+  - acc_by_n 1.0 at n 1–6, 0.999 / 0.998 / 0.986 at n 7–9, 0.261 / 0.139 / 0.135 at n 10–12;
+  - s182 delta_cos 0.550, agree 0.12.
+* **(b) MEM-HIGH (mem_layer 9): CHEAPER-WORSE, and CONFOUNDED-BY-ENTRY** (pinned basin_entry: entry(0.5) 24k vs 18k, a 6k gap > 5k; entry(0.1) 48k vs 23k).
+  - DEEP and THINK-NECESSARY;
+  - DEPTH 0.454 vs (a) 0.570;
+  - analytic cost ratio 0.333 (L-independent).
+  - **The DEPTH shortfall cannot be separated from (b)'s later entry** (§187's lesson: depth across recipes tracks entry).
+* **198-2a, both phases:**
+  - training: (a) 41,031 s on a $0.179/h host (about $2.15); (b) 31,253 s on a $0.228/h host (about $2.12). Different hosts, so not a same-host speed comparison;
+  - eval: (b) 0.00181 s/item (3090, bf16, K′ 8, no aux). (a)'s eval_timing is pending, so no eval-time ratio is stated yet.
+
+**Note 199-T1 (2026-10-14 05:58 EDT; descriptive, the path_indep trajectory; Experiments' probes, loss_seen = no except the first).** The order parameter co-moves with the loss. In these two runs it is not an early (≤ 8k) detector.
+
+| (a) injc step | 16k | 19k | 22k | 24k | 26k | 28k |
+|---|---|---|---|---|---|---|
+| delta_cos | 0.672 | 0.658 | 0.590 | 0.592 | 0.528 | 0.541 |
+| loss bin | 1.039 | 0.278 | 0.108 | 0.083 | 0.044 | 0.028 |
+
+* entry(0.5) is 18k. delta_cos crosses 0.65 between 19k and 22k, **1–4k after** entry.
+
+| (b) memhi step | 10k | 15k | 20k | 23k | 25k | 26k | 28k | 30k |
+|---|---|---|---|---|---|---|---|---|
+| delta_cos | 0.856 | 0.734 | 0.652 | 0.607 | 0.611 | 0.584 | 0.566 | 0.534 |
+| loss bin | — | 1.534 | 0.724 | 0.528 | 0.466 | 0.421 | 0.341 | 0.276 |
+
+* entry(0.5) is 24k. delta_cos crosses 0.65 at about 20k, **about 4k before** entry. It declined steadily from 10k while the loss was > 1.5.
+* **Reading:** in both entering runs the order parameter declines gradually together with the loss, and its 0.65 crossing falls within ±4k of entry. It neither leads clearly nor lags clearly.
+  - This does not settle cause vs consequence.
+  - It argues against the reduced model's "decided by 8k" picture for these runs (THEORY_SEEDSTAB Part II P2, which was **not** registered).
+  - §199-A's registered P-A1 (λ at 8k) and P-A5 (checkpoint path_indep at 8k / 16k) are unaffected.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
