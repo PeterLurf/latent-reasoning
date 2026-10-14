@@ -23,3 +23,18 @@ Literature session, for Theory (the request) and Audit.
 
 ## Implication worth stating
 D1 predicts that **SIM-CoT's step decoder mainly trains operand / plan identity, not results**, on the string format. That's a cheap, testable reading on the public SIM-CoT checkpoint we already bench: decode the step tokens from z_k, with vs without z_k, on the value positions.
+
+## Addendum (2026-10-14): the SIM-CoT checkpoint test (THEORY note 204-2, 5b14cc44)
+- **Setup:** internlm SIM_COT-GPT2-Coconut checkpoint_28, using its own step decoder, on Aug valid 500, stages 1–4. Teacher-forced top-1 under three latent conditions: TRUE / MEAN-latent / ZERO-latent.
+
+  | token type | TRUE | MEAN | ZERO |
+  |---|---|---|---|
+  | value | 0.939 | 0.915 | 0.447 |
+  | operand q | 0.692 | 0.091 | 0.029 |
+  | operand r | 0.530 | 0.053 | 0.024 |
+  | format | 0.963 | 0.999 | 0.499 |
+
+- **Reading:** under the in-distribution MEAN replacement, the decoder reads results from the in-context operands and needs z_k only for operand / plan identity, as D1 predicts.
+- **The ZERO collapse is off-distribution:** it even breaks the item-free format tokens.
+- **Prefer MEAN (or resample) over ZERO as the ablation baseline.** Zero ablation is a known off-distribution corruption: Zhang & Nanda 2309.16042 ("Towards Best Practices of Activation Patching") show the corruption method can change the conclusions. Mean ablation is the IOI-circuit convention (Wang et al. 2211.00593). Both are EMPIRICAL.
+- **By its pre-stated letter the test reads MIXED.** Report it as: "replacing the step latents with their mean leaves value-token accuracy at 0.915 (vs 0.939) while operand accuracy falls to 0.05–0.09; ZERO, an off-distribution baseline, collapses all token types (value 0.447, format 0.499)."
