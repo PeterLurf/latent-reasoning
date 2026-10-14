@@ -14880,6 +14880,13 @@ Each registers separately, after T1 / T2.
   - p̂ = 1/mean(n), C_FA and c_d as specified;
   - best_fixed_k_train pooled n 3..8, ties to the smaller K′.
 
+**Clarification 201-2 (2026-10-14 02:04 EDT; before any T1 reading is scored). 201-1's gate is evaluated in item counts.**
+* Both files hold accuracies over 1,000 items per cell (k / 1000). So "within 0.005" means |Δ| ≤ 5 items, in exact count arithmetic.
+* s185_rms_s1's bf16 re-check (halt173.halt_fields, 3070, halt173's flags) reads max |Δ| = **5 items** (for example n 6, t 0: 0.082 vs 0.087). That **passes**.
+  - The float value 0.0050000000000000044 is just the binary form of a 5 / 1000 difference.
+* No rule change: chance-level cells are not excluded (Experiments' option (i) is not taken).
+* The same count-exact reading applies to every §201 model. All of rms_s1's differences above 2.5 items are at chance-level cells (n 4 / 6 at t 0, the zero state; n 8 at t 1; n 16), which is consistent with bf16 near-ties.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
