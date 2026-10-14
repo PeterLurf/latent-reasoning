@@ -1,0 +1,5 @@
+s187_nopass_s2 V_probe {'rank': 10, 'acc_test_pooled': 0.642554393896581, 'acc_test_ablated': 0.10398417632099463, 'chance': 0.09090909090909091, 'majority': 0.09296411415654139, 'n_fit': 15950, 'n_test': 3539, 'gate_G_abl': True}
+s187_nopass_s2 IDENT {'equal_items': 2400, 'n': 2400, 'pass': True}
+s187_nopass_s2 ABL {'base_acc': 0.9995833333333334, 'drop_V': 0.0, 'drop_rank': [0.0, 0.0, 0.0, 0.0, 0.0], 'drop_energy': [0.008333333333333333, 0.009583333333333333, 0.05708333333333333, 0.02666666666666667, 0.024166666666666666], 'Delta_E': -0.025166666666666667, 'Delta_E_ci95': (-0.02908333333333334, -0.021750000000000002), 'Delta_rank': 0.0, 'Delta_rank_ci95': (0.0, 0.0), 'drop_V_above_all_10': False, 'reading': 'ABL-NULL'}
+s187_nopass_s2 SWAP {'n_items': 2252, 'n_undefined_cf': 48, 'F': 0.0, 'F_null': 0.0, 'F_minus_null': 0.0, 'F_minus_null_ci95': (0.0, 0.0), 'own_acc_noswap': 0.9995559502664298, 'own_acc_sameswap': 0.9995559502664298, 'own_acc_diffswap': 0.9995559502664298, 'donor_match_op_height': 1.0, 'disruption': 0.0, 'reading': 'IGNORES'}
+s187_nopass_s2 USE NOT-USED 199 s

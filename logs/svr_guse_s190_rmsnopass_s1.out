@@ -1,0 +1,5 @@
+s190_rmsnopass_s1 V_probe {'rank': 10, 'acc_test_pooled': 0.7753602712630686, 'acc_test_ablated': 0.06866346425543939, 'chance': 0.09090909090909091, 'majority': 0.09296411415654139, 'n_fit': 15950, 'n_test': 3539, 'gate_G_abl': False}
+s190_rmsnopass_s1 IDENT {'equal_items': 2400, 'n': 2400, 'pass': True}
+s190_rmsnopass_s1 ABL {'base_acc': 1.0, 'drop_V': 0.0, 'drop_rank': [0.0, 0.0, 0.0, 0.0004166666666666667, 0.0], 'drop_energy': [0.014583333333333334, 0.0075, 0.04625, 0.05875, 0.011666666666666667], 'Delta_E': -0.027750000000000004, 'Delta_E_ci95': (-0.03208541666666667, -0.02391666666666667), 'Delta_rank': -8.333333333333334e-05, 'Delta_rank_ci95': (-0.00025000000000000006, 0.0), 'drop_V_above_all_10': False, 'reading': 'ABL-NULL'}
+s190_rmsnopass_s1 SWAP {'n_items': 2252, 'n_undefined_cf': 48, 'F': 0.0, 'F_null': 0.0, 'F_minus_null': 0.0, 'F_minus_null_ci95': (0.0, 0.0), 'own_acc_noswap': 1.0, 'own_acc_sameswap': 1.0, 'own_acc_diffswap': 1.0, 'donor_match_op_height': 1.0, 'disruption': 0.0, 'reading': 'IGNORES'}
+s190_rmsnopass_s1 USE NOT-USED 245 s

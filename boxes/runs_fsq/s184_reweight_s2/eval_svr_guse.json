@@ -1,0 +1,130 @@
+{
+ "run": "s184_reweight_s2",
+ "K": 8,
+ "K_ablation": 8,
+ "bs": 250,
+ "card": "NVIDIA GeForce RTX 4060",
+ "dtype": "torch.bfloat16",
+ "v_probe": {
+  "rank": 10,
+  "acc_test_pooled": 0.6007346708109635,
+  "acc_test_ablated": 0.08703023452952811,
+  "chance": 0.09090909090909091,
+  "majority": 0.09296411415654139,
+  "n_fit": 15950,
+  "n_test": 3539,
+  "gate_G_abl": true
+ },
+ "sigma": {
+  "n_sites": 77634,
+  "E_V": 8.696018976477097,
+  "E_total": 969.382367219892,
+  "E_rank": [
+   31.69477554865413,
+   32.482003328015125,
+   25.277998959204737,
+   21.98943279945465,
+   27.7538344634537
+  ],
+  "E_energy": [
+   102.63593999658016,
+   106.91807180452837,
+   109.28042131683445,
+   111.6316298111955,
+   113.53573926859646
+  ],
+  "energy_cands": [
+   {
+    "j": 120,
+    "beta": 0.5
+   },
+   {
+    "j": 162,
+    "beta": 0.5
+   },
+   {
+    "j": 51,
+    "beta": 0.5
+   },
+   {
+    "j": 57,
+    "beta": 0.5
+   },
+   {
+    "j": 183,
+    "beta": 0.5
+   }
+  ]
+ },
+ "gate_IDENT": {
+  "equal_items": 2400,
+  "n": 2400,
+  "pass": true
+ },
+ "ablation": {
+  "base_acc": 1.0,
+  "drop_V": 0.0004166666666666667,
+  "drop_rank": [
+   0.0,
+   0.0004166666666666667,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "drop_energy": [
+   0.0020833333333333333,
+   0.00125,
+   0.005,
+   0.0020833333333333333,
+   0.00125
+  ],
+  "Delta_E": -0.001916666666666667,
+  "Delta_E_ci95": [
+   -0.003,
+   -0.0009166666666666668
+  ],
+  "Delta_rank": 0.0003333333333333334,
+  "Delta_rank_ci95": [
+   0.0,
+   0.0010000000000000002
+  ],
+  "drop_V_above_all_10": false,
+  "base_acc_by_n": {
+   "3": 1.0,
+   "4": 1.0,
+   "5": 1.0,
+   "6": 1.0,
+   "7": 1.0,
+   "8": 1.0
+  },
+  "drop_V_by_n": {
+   "3": 0.0,
+   "4": 0.0,
+   "5": 0.0,
+   "6": 0.0,
+   "7": 0.0,
+   "8": 0.0025
+  },
+  "reading": "ABL-NULL"
+ },
+ "swap": {
+  "n_items": 2252,
+  "n_undefined_cf": 48,
+  "F": 0.0,
+  "F_null": 0.0,
+  "F_minus_null": 0.0,
+  "F_minus_null_ci95": [
+   0.0,
+   0.0
+  ],
+  "own_acc_noswap": 1.0,
+  "own_acc_sameswap": 1.0,
+  "own_acc_diffswap": 1.0,
+  "donor_match_op_height": 1.0,
+  "disruption": 0.0,
+  "reading": "IGNORES"
+ },
+ "use_label": "NOT-USED",
+ "sec": 198,
+ "def": "SVR G-use (THEORY_SEEDSTAB2 draft rev 3 \u00a74.3, V_probe): see scratch/svr_guse.py's docstring"
+}

@@ -1,0 +1,5 @@
+s185_rms_s2 V_probe {'rank': 10, 'acc_test_pooled': 0.6685504379768296, 'acc_test_ablated': 0.09183385137044363, 'chance': 0.09090909090909091, 'majority': 0.09296411415654139, 'n_fit': 15950, 'n_test': 3539, 'gate_G_abl': True}
+s185_rms_s2 IDENT {'equal_items': 2400, 'n': 2400, 'pass': True}
+s185_rms_s2 ABL {'base_acc': 0.99875, 'drop_V': 0.0, 'drop_rank': [-0.0004166666666666667, -0.0004166666666666667, -0.0004166666666666667, -0.0004166666666666667, 0.0004166666666666667], 'drop_energy': [0.01125, 0.0020833333333333333, 0.014583333333333334, 0.0033333333333333335, 0.00625], 'Delta_E': -0.0075, 'Delta_E_ci95': (-0.009916666666666667, -0.00525), 'Delta_rank': 0.00025000000000000006, 'Delta_rank_ci95': (-0.0003333333333333334, 0.0011666666666666665), 'drop_V_above_all_10': False, 'reading': 'ABL-NULL'}
+s185_rms_s2 SWAP {'n_items': 2252, 'n_undefined_cf': 48, 'F': 0.0, 'F_null': 0.0, 'F_minus_null': 0.0, 'F_minus_null_ci95': (0.0, 0.0), 'own_acc_noswap': 0.9986678507992895, 'own_acc_sameswap': 0.9986678507992895, 'own_acc_diffswap': 0.9986678507992895, 'donor_match_op_height': 1.0, 'disruption': 0.0, 'reading': 'IGNORES'}
+s185_rms_s2 USE NOT-USED 256 s
