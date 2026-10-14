@@ -1,0 +1,16 @@
+s185_rms_s2 rc 0
+s190_rmsnopass_s1 rc 0
+s190_rmsnopass_s2 rc 0
+s187_nopass_s1 rc 0
+s187_nopass_s2 rc 0
+s182_window_s1 rc 0
+s182_window_s2 rc 0
+s184_reweight_s2 rc 0
+s185_rms_s3 rc 0
+s199_csr_s1 rc 0
+s185_den_s1 rc 0
+s188_rwwin_s1 rc 0
+s196_rmsgf_s3 rc 0
+s182_hold_s1 rc 0
+s182_nofade_s1 rc 0
+DONE
