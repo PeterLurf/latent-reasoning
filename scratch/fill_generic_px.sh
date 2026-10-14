@@ -13,7 +13,7 @@ for n in "$@"; do
     read -r cnt burn <<<"$(bash $V show instances --raw 2>/dev/null | python -c "import json,sys;r=json.load(sys.stdin);print(len(r), round(sum((o.get('dph_total') or 0) for o in r), 3))" 2>/dev/null)"
     if [ -n "$cnt" ] && [ "$cnt" -le 15 ] && python -c "import sys;sys.exit(0 if $burn + 0.25 < 4.0 else 1)"; then
       bash scratch/rebuild_live_hosts.sh > /dev/null 2>&1
-      o=$(bash $V search offers 'gpu_name=RTX_3090 num_gpus=1 reliability>0.97 dph<=${DPH_MAX:-0.30} disk_space>=40 rentable=true inet_down>=300 cuda_vers>=12.4' -o dph --raw --limit 150 2>/dev/null | python -c "
+      o=$(bash $V search offers 'gpu_name=RTX_3090 num_gpus=1 reliability>0.97 dph<='"${DPH_MAX:-0.30}"' disk_space>=40 rentable=true inet_down>=300 cuda_vers>=12.4' -o dph --raw --limit 150 2>/dev/null | python -c "
 import json,sys
 ex={l.split()[0] for l in open('scratch/vast_exclude_ips.txt') if l.strip() and not l.startswith('#')}   # first token: lines may carry a trailing comment
 used={l.split()[0] for l in open('scratch/live_hosts.txt') if l.strip()}
