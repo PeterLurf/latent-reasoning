@@ -21,7 +21,24 @@
   "rl_names": 0
  },
  "acc_def": "greedy after '###' (<= 12 tokens, stop at EOS / newline), bench.tasks.norm_number exact match; the text arm generates its CoT to '###' first",
- "symbolic": null,
+ "symbolic": {
+  "main": {
+   "acc": 0.061,
+   "n": 5000,
+   "sd_over_templates": 0.14168627315304755
+  },
+  "p1": {
+   "acc": 0.0196,
+   "n": 5000,
+   "sd_over_templates": 0.04261267417095528
+  },
+  "p2": {
+   "acc": 0.0116,
+   "n": 2500,
+   "sd_over_templates": 0.0212
+  },
+  "note": "local post-landing eval-only pass (clarification 200-2): NVIDIA GeForce RTX 3070, torch.bfloat16; GSM-Symbolic fetched at eval time from huggingface apple/GSM-Symbolic, never committed; test acc reproduced the landed value exactly (acc_by_kprime differs by bf16 card effects; full eval-only record in eval_local3070.json)"
+ },
  "cost": null,
  "acc": 0.1470811220621683,
  "acc_by_m": {
