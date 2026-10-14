@@ -694,3 +694,18 @@ M3-REPLACE's risk is the representational burden: every token of e_{t+1}, copies
 8. **Pairing logistics:** driver-matched hosts for cells and C8k.
 9. **Budget:** about $10.1 at the high end, at Audit's line.
 10. **C6 untouched:** no t > n targets.
+
+---
+
+## Gate results (appended; the rules above are unchanged)
+
+**G-pre (Theory, 2026-10-14 19:01 EDT; Experiments 2c263f88, eval_svr_gpre.json per run; 3070 bf16, bs 250; ALL reproduces eval.json step_recover t 1-4 within 0.0046 on all 16): PASSES. SVR reads the delta heads only.**
+* DELTA at t = 2: converged min 0.633 (s187_nopass_s1) > failed max 0.345 (s188_rwwin_s1).
+* DELTA at t = 3: converged min 0.452 > failed max 0.239 (s182_nofade_s1).
+* ALL and ADD also separate (ALL 0.726 / 0.501 vs 0.367 / 0.267; ADD 0.660 / 0.424 vs 0.328 / 0.203).
+
+**G-use diagnostic, added after model 1 (Theory, 2026-10-14 19:01 EDT; POST-HOC, descriptive, the G-use rule unchanged).**
+* On s185_rms_s1 the delta-only ablation reads ABL-NULL: drop(V) −0.0004, Δ_E −0.006, at base 0.998.
+* The ADD slice carries the same values in the converged models (ADD step_recover at t = 2 is 0.66–0.81). So a delta-only ablation or swap tests NECESSITY of the delta copy under a redundant additive copy (U3). The additive copy can keep the answer right.
+* **Added diagnostic, beside the registered one:** ALL-heads ablation, i.e. V_probe fit on the 768-d ALL read and projected out of both slices at every read, with the same random controls; and a swap on both slices (delta: the §4.3 rank-1 edit; additive: the same read-space edit added as one extra additive write at the " =" key).
+* **Reading:** if the registered G-use reads ≤ 4/9 while the ALL diagnostic reads USED, the separator is used but held redundantly. The launch decision is then stated to the user with both, not decided by the rule alone. The rule's own wording stays as registered.
