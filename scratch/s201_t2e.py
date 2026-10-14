@@ -22,7 +22,7 @@ import boxes.halt173 as H  # noqa: E402
 import boxes.nested170 as N  # noqa: E402
 import s201_t2 as T2  # noqa: E402
 
-TMAX = 32; NS = (2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 16); BS = 250; ARMS = ("FA", "FD"); KP = (16, 24, 32)
+TMAX = 32; NS = (2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 16); BS = 250; KP0 = (16, 24, 32)
 
 
 def t_hat(run):
@@ -39,10 +39,12 @@ def t_hat(run):
 
 def main():
     run = sys.argv[1]; dev = sys.argv[2] if len(sys.argv) > 2 and not sys.argv[2].startswith("--") else "cuda:2"
+    ARMS = tuple(sys.argv[sys.argv.index("--arms") + 1].split(",")) if "--arms" in sys.argv else ("FA", "FD")   # note 201-6: FD only on the other models
     th, cens, nte, cte, A = t_hat(run); rd = os.path.join(ROOT, "boxes", "runs_fsq", run)
     kind, m, a = H.load_model(rd, dev); DM.FAST_ADD = bool(a.get("fast_add")); DM.CHUNK_DELTA = 0; m.eval(); mem = m.mem; HA, HD = mem.h_add, mem.h_del
     den = getattr(mem, "add_norm", None) == "den"; TE = N.test_set(int(a.get("per_n", 1000))); out = {}; off = 0
     hp = os.path.join(rd, "eval_s201_halt.json"); hj = json.load(open(hp)); prim = hj["primary"]["acc_by_n"]   # the recompute must reproduce T2's primary exactly
+    bk = int(hj["best_fixed_k_train"]); KP = tuple(sorted(set(KP0) | {bk}))     # note 201-6: also K' = the best fixed K' on train (no-harm vs CLEAN)
     for n in NS:
         its = [it for it in TE if it["n"] == n][:1000]; k = len(its); thn = th[off:off + k]; assert (nte[off:off + k] == n).all(); tgt = torch.tensor([it["t"] for it in its])
         hard = cte[off:off + k][np.arange(k), thn]
@@ -71,12 +73,15 @@ def main():
                        **{arm.lower() + "_signal": {str(kp): float((torch.cat(v) == tgt).float().mean()) for kp, v in ans[arm].items()} for arm in ARMS}}
         print(run, "n", n, out[str(n)], flush=True); off += k
     card = torch.cuda.get_device_name(dev)
-    res = {"by_n": out, "A": A, "bs": BS, "card": card, "dtype": "float32 (no autocast)",
+    res = {"by_n": out, "A": A, "arms": list(ARMS), "kprimes": list(KP), "bs": BS, "card": card, "dtype": "float32 (no autocast)",
            "def": "§201 T2-e: FA (registered) and FD (descriptive) from each item's T2-primary t_hat (that block reset to its t_hat value after every later write); hard = a(t_hat)"}
-    json.dump(res, open(os.path.join(rd, "eval_s201_t2e.json"), "w", newline="\n"), indent=1)
-    hj["soft_halt"] = {"FA_on_signal": {"acc_by_n_kprime": {str(kp): {n_: out[n_]["fa_signal"][str(kp)] for n_ in out} for kp in KP}, "status": "registered (T2-e)"},
-                       "FD_on_signal": {"acc_by_n_kprime": {str(kp): {n_: out[n_]["fd_signal"][str(kp)] for n_ in out} for kp in KP}, "status": "DESCRIPTIVE (motivated after T1)"},
-                       "hard_halt_acc_by_n": {n_: out[n_]["hard"] for n_ in out}, "bs": BS, "card": card, "def": res["def"]}
+    json.dump(res, open(os.path.join(rd, "eval_s201_t2e%s.json" % ("" if set(ARMS) == {"FA", "FD"} else "_" + "_".join(a.lower() for a in ARMS))), "w", newline="\n"), indent=1)
+    sh = hj.get("soft_halt", {})                                            # merged: an FD-only run keeps an earlier FA_on_signal
+    for arm, key, st in (("FA", "FA_on_signal", "registered (T2-e)"), ("FD", "FD_on_signal", "DESCRIPTIVE (motivated after T1; note 201-6 on all models)")):
+        if arm in ARMS:
+            sh[key] = {"acc_by_n_kprime": {str(kp): {n_: out[n_][arm.lower() + "_signal"][str(kp)] for n_ in out} for kp in KP}, "status": st, "best_fixed_k_train": bk,
+                       "clean_at_best_fixed_k_by_n": hj["acc_by_n_kprime"][str(bk)], "card": card}
+    sh.update({"hard_halt_acc_by_n": {n_: out[n_]["hard"] for n_ in out}, "bs": BS, "card": card, "def": res["def"]}); hj["soft_halt"] = sh
     json.dump(hj, open(hp, "w", newline="\n"), indent=1); print(run, "T2-e done", flush=True)
 
 
