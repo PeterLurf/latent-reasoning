@@ -37,7 +37,12 @@ def gate_ok(j):
     if md is not None and int(round(md * 1000)) <= 5:
         return True, "fp32 within 5 items"
     bi = g.get("bf16_recheck_max_items")
-    return (bi is not None and int(bi) <= 5), ("bf16 re-check %s items" % bi)
+    if bi is not None and int(bi) <= 5:
+        return True, "bf16 re-check %s items" % bi
+    xc = g.get("fp32_crosscode_max_items")                                  # 201-3: fp32 halt173 vs fp32 CLEAN, same items
+    if xc is not None and int(xc) <= 2:
+        return True, "gate resolved numerically (201-3): bf16 %s items, fp32 cross-code %s items" % (bi, xc)
+    return False, "bf16 re-check %s items; fp32 cross-code %s" % (bi, xc)
 
 
 def t1(d):
