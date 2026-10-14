@@ -15109,6 +15109,18 @@ Each registers separately, after T1 / T2.
   - **The plan's weak T1-d ("R_FA ≥ R_FD on ProsQA") is wrong.** The delta writes dominate on ProsQA too.
 * **Overall:** on nested (5 of 7 converged models) and on ProsQA, post-completion **delta** writes are the main source of overthinking, and freezing them recovers nearly all of it. The §184 s1 exception has an unnormalised additive read.
 
+**Note 199-A5 (2026-10-14 10:57 EDT; BEFORE s1's landing readout; Theory has seen only Audit's relay of s1's live loss bins (about 1.41 at 44.5k, never entered, against the paired control's 19k entry). Descriptive diagnostic, pre-stated.) A candidate mechanism for CSR harm, gradient crowding, and the check that reads it.**
+* **Derivation flaw (Theory's own, DERIVED):** λ_t is scale-free in **value**, but not in **gradient**.
+  - With R = fade·W_o·o, ∂log‖R_{t+1} − R_t‖/∂W_o = (ΔR Δoᵀ)/‖ΔR‖², which has magnitude ∝ 1/‖W_o‖ (for fixed Δo).
+  - CSR switches on at step 500, when W_o has just faded in from 0 and is small, so its gradient on the memory branch is ∝ 1/‖W_o‖ and can be very large.
+  - Under the global-norm clip (binding on about all steps), a large CSR gradient shrinks the CE / aux share of every update. That is **gradient crowding**, which could prevent entry regardless of the contraction account.
+  - 199-A's Thm A2 (scalar model) did not model this. It is a dose / schedule property of the registered w = 0.1 at start step 500, not of the target's sign structure.
+* **Diagnostic, $0, on the kept CSR checkpoints at 4k / 8k / 12k / 16k (Experiments):** on 4 batches of 64 training items, the gradient norms G_csr = ‖∇(0.1·CSR)‖ and G_task = ‖∇(CE + aux)‖. Report the ratio, overall and on the memory-branch parameters, plus ‖W_o‖.
+  - **GRADIENT-CROWDING:** G_csr / G_task ≥ 1 on the memory branch at 4k or 8k.
+  - Otherwise **NOT-CROWDED**. CSR's harm then has another cause, and the P-A5 reading carries the weight.
+* **The registered label is untouched.** The per-seed label (INSUFFICIENT-DOSE / FALSIFIER / FLOOR-GAMED / ENTERED) is read exactly as registered. This diagnostic is reported beside it.
+  - If it reads CROWDING, any re-test of CSR (a new registration) would need a gradient-normalised or warm-started dose, with its own derivation.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
