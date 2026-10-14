@@ -22,7 +22,7 @@ from boxes.prosqa168 import candidate_margins  # noqa: E402
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", default="")
+    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", default=""); ap.add_argument("--fname", default="eval_timing.json", help="output file name in the run dir (note 201-6: eval_timing_4060.json for the local same-card timing)")
     ap.add_argument("--n_items", type=int, default=500); ap.add_argument("--no_load", action="store_true"); o = ap.parse_args(); dev = o.device
     a = json.load(open(os.path.join(o.run, "args.json"))); SA = a["arm"] == "stepaux"; K = int(a.get("think_k") or 0) if SA else 0
     DM.FAST_ADD = bool(a.get("fast_add")); DM.CHUNK_DELTA = int(a.get("chunk_delta") or 0)
@@ -73,7 +73,7 @@ def main():
            "flops_per_item": M_.flops, "meter": M_.as_dict(), "mean_lengths": {"question_plus_eot": qL, "pre": preL, "answer": aL},
            "def": "191-1: wall s/item for the answer path on test500's items (rng 19101), the run's eval batch(es) and dtype, one warm-up batch, cuda-synced; "
                   "Meter FLOPs per item at the mean lengths (stepaux: K passes over [EOT, question] + 2 candidate decodes; textcot: prompt + generated CoT + 2 candidates)"}
-    json.dump(out, open(os.path.join(o.run, "eval_timing.json"), "w", newline="\n"), indent=1); print("EVAL_TIMING", o.run, out["eval_timing"]["s_per_item"], out["flops_per_item"], flush=True)
+    json.dump(out, open(os.path.join(o.run, o.fname), "w", newline="\n"), indent=1); print("EVAL_TIMING", o.run, out["eval_timing"]["s_per_item"], out["flops_per_item"], flush=True)
 
 
 if __name__ == "__main__":
