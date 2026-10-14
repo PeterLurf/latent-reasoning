@@ -219,6 +219,16 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
 
 * **Pre-register before running.** THEORY § and notes are committed before launch. PROTOCOL files are append-only:
   dated notes, never rewrites. Keep aborted-run logs (`*.void`, commit, "aborted unread").
+* **Mathematical backing (user, 2026-10-13: "any revised architectural/methodological changes should come with
+  mathematical backing").** Every new or revised architecture, training-objective, schedule or methodology change
+  carries a derivation in its registration:
+  - the assumptions;
+  - the mechanism linking the change to the targeted failure;
+  - each claim tagged PROVED / DERIVED-UNDER-ASSUMPTIONS / CONJECTURE / DATA (post-hoc data marked);
+  - falsifiable predictions derived from the math.
+  Long derivations go in `docs/THEORY_*.md` with CPU check scripts in `theory/`. The user wants proofs and research
+  delegated to Opus subagents, with their key proofs reviewed before use. Audit checks for the section before
+  approving spend. Bug fixes and logging-only changes are exempt.
 * **Spend.**
   - Projection to Audit for > $5.
   - Keep ≥ $10 credit.
