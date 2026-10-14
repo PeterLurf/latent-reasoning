@@ -1,0 +1,8 @@
+halt 2 done 13
+halt 4 done 36
+halt 6 done 68
+halt 8 done 109
+halt 10 done 156
+halt 12 done 211
+halt 16 done 281
+s184_reweight_s1 fp32 cross-code: max 0 items -> RESOLVED-NUMERICAL {'FAST_ADD': False, 'CHUNK_DELTA': 0} NVIDIA GeForce RTX 2070
