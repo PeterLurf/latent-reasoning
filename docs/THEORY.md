@@ -14537,6 +14537,28 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
      - It does not touch §199-A's test: P-A5 is causal by design (a non-contractive order parameter at 8k / 16k with non-entry falsifies), and CSR's predictions stand as registered.
 * **Methodology lesson:** an LMC criterion needs its control pair verified as connected first, or one stated reading for "no pair connected". Noted for future registrations.
 
+**Note 199-M3 (2026-10-13 23:01 EDT; before any output; descriptive, $0, local idle 2070; tests docs/THEORY_SEEDSTAB Part I Corollary 1.2, committed cef47a44 before this data). LAG-SPLIT: what kind of errors does a contractive pass-token model make?**
+* **Derived prediction (Cor. 1.2, DERIVED under A1).**
+  - With the pass token, a contractive model's step decoder reads a state near the input-determined fixed point S*(x), plus the token t. It computes the missing reductions itself, up to its one-shot depth.
+  - So its late-pass errors should be mostly **arithmetic / non-lag**: wrong strings that are not an earlier step's target.
+  - It should not mostly re-emit an earlier intermediate expression (**lag**), which is what a stalled state read by a pass-free decoder would give.
+* **Measure** (Experiments; nested170 InjectN aux_greedy, as the s175 eval):
+  - items: test n ∈ {6, 7, 8}, rng 18201 permutation[:500] of that pool;
+  - at every pass t ∈ {5, …, n}, the greedy aux output vs that item's targets e_2..e_{n+1};
+  - classes: **correct** (= e_{t+1}); **lag1** (= e_t, one step behind); **lag2+** (= e_{t′+1} for some t′ ≤ t − 2); **other**.
+  - Output `<run>/eval_s199_lag.json` = {"by_t": {"5": {"n", "correct", "lag1", "lag2plus", "other"}, …}, "items", "gpu", "dtype"}.
+* **Models:**
+  - the three failed pass-token models (s185_rms_s3, s185_den_s1, s188_rwwin_s1), which read the prediction;
+  - s185_rms_s1 / s2, descriptive (few errors).
+* **Reading:** LAGFRAC = (lag1 + lag2+) / (wrong) pooled over t 5..8.
+  - **PREDICTED** LAGFRAC < 0.5 in each failed model.
+  - **FALSIFIED** if LAGFRAC ≥ 0.5 in ≥ 2 of the 3.
+  - **INSUFFICIENT** if a model has < 30 wrong outputs.
+  - **MIXED** if exactly 1 of the 3 has LAGFRAC ≥ 0.5.
+* **Limits:**
+  - It reads Cor. 1.2's shortcut mechanism, not causation.
+  - A NOPASS failed model (none exists) would be the contrasting arm: Cor. 1.2 predicts lag errors there.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
