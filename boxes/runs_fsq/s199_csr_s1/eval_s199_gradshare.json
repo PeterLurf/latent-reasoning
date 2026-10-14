@@ -1,0 +1,64 @@
+{
+ "by_step": {
+  "4000": {
+   "G_task_all": 3.1032447203121376,
+   "G_task_mem": 0.21313549398130857,
+   "G_task_all_mean_of_batch_norms": 7.736151508322919,
+   "G_task_mem_mean_of_batch_norms": 0.32530421552244526,
+   "G_csr_all": 0.21736277851975996,
+   "G_csr_mem": 0.07248661041211538,
+   "G_csr_all_mean_of_batch_norms": 0.22836036704610588,
+   "G_csr_mem_mean_of_batch_norms": 0.07683878209683986,
+   "wo_norm": 9.615306854248047,
+   "gamma": 0.5,
+   "fade": 1.0,
+   "ratio_csr_over_task_all": 0.07004371169860452,
+   "ratio_csr_over_task_mem": 0.34009638215618965
+  },
+  "8000": {
+   "G_task_all": 3.8223018341023054,
+   "G_task_mem": 0.4519956751200555,
+   "G_task_all_mean_of_batch_norms": 6.8914909895028496,
+   "G_task_mem_mean_of_batch_norms": 0.7676518773789125,
+   "G_csr_all": 0.06135706077272941,
+   "G_csr_mem": 0.018671331251888655,
+   "G_csr_all_mean_of_batch_norms": 0.07246888910223426,
+   "G_csr_mem_mean_of_batch_norms": 0.023820548887721865,
+   "wo_norm": 12.030741691589355,
+   "gamma": 1.0,
+   "fade": 1.0,
+   "ratio_csr_over_task_all": 0.016052385038069487,
+   "ratio_csr_over_task_mem": 0.04130865023637521
+  },
+  "12000": {
+   "G_task_all": 3.371346486773049,
+   "G_task_mem": 0.8024048294986785,
+   "G_task_all_mean_of_batch_norms": 7.268715358782691,
+   "G_task_mem_mean_of_batch_norms": 1.4772637329313199,
+   "G_csr_all": 0.04297247254713759,
+   "G_csr_mem": 0.024574219638240104,
+   "G_csr_all_mean_of_batch_norms": 0.04463529012212138,
+   "G_csr_mem_mean_of_batch_norms": 0.0250733852661957,
+   "wo_norm": 13.072439193725586,
+   "gamma": 1.0,
+   "fade": 1.0,
+   "ratio_csr_over_task_all": 0.012746382703686308,
+   "ratio_csr_over_task_mem": 0.030625712526672393
+  },
+  "16000": {
+   "missing": true
+  }
+ },
+ "csr": [
+  0.1,
+  -0.0513,
+  -0.6931,
+  0.05,
+  500.0
+ ],
+ "batches": "4 x 64 train_items(rng 19950), n <= n_max_train, test-excluded",
+ "chunk": 8,
+ "dtype": "float32 (no autocast)",
+ "card": "NVIDIA GeForce RTX 3070",
+ "def": "note 199-A5: G = ||grad||_2 of the batch-mean-of-4 gradient, separate backward per term (task = CE + aux_step aux; csr = w CSR); mem = m.mem.* params"
+}
