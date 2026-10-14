@@ -1,0 +1,4 @@
+[W1014 09:20:38.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 171966464 bytes (free: 0, total: 8585216000).
+EVAL {"acc": 0.3214556482183472, "acc_by_m": {"0": 0.16666666666666666, "1": 0.27692307692307694, "2": 0.5322128851540616, "3": 0.37362637362637363, "4": 0.19655172413793104, "5": 0.13768115942028986, "6": 0.017543859649122806, "7": 0.0, "8": 0.0}}
+DONE D:/Latent_s200sym/gsm_txt_aug_s1
+rc 0
