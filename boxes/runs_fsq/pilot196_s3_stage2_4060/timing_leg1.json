@@ -1,0 +1,9 @@
+{
+ "arm": "inject",
+ "think_k": 4,
+ "steps_timed": 12000,
+ "sec_per_step": 1.841733818034331,
+ "est_hours_48k": 24.556450907124415,
+ "gpu": "NVIDIA GeForce RTX 4060",
+ "micro": 4
+}
