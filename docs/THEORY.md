@@ -14965,6 +14965,18 @@ Each registers separately, after T1 / T2.
   - The old commit reproduces its own 10-11 file bitwise → code drift since then; bisect the commits touching halt173 / deltamem / core / s5.
   - The old commit does NOT reproduce it → environment drift. Record the torch / CUDA / driver versions then and now.
 
+**Note 201-5 (2026-10-14 07:21 EDT; Experiments' 201-4 investigation, boxes/runs_fsq/s201_drift/). No drift: the bf16 re-check used a different batch size. s184_reweight_s1 PASSES 201-1 as written.**
+* **Findings:**
+  - halt173 at d2b76964 and at HEAD give bitwise-identical results on the 3070 in bf16 at bs 250, and HEAD is deterministic run to run.
+  - The environment is identical to 10-11 (torch 2.14.0+cu130, CUDA 13.0, cuDNN 92400, driver 591.86, model.pt unchanged).
+  - **Every eval_s173_halt file used `--bs 125`.** The 201-1 re-check had used 250.
+  - At bs 125, HEAD reproduces the 10-11 s184_reweight_s1 file **bitwise (0 items)**, and s185_rms_s1's as well (0, previously 5).
+* **Cause:** bf16 batched kernels at a different batch size flip near-tied argmaxes in chance-level cells. Same code, same environment.
+* **So the re-check's batch-size mismatch was an implementation error,** corrected to match the original computation (as 201-1 intended: "a bf16 CLEAN pass … on the same items").
+  - s184_reweight_s1: bf16_recheck_max_items **0**, so its readings are **released** under 201-1 / 201-2a, with no 201-3 flag needed. The 201-3 fp32 cross-code check still runs, for the record.
+  - The fp32-vs-bf16 maxdiffs (8 / 10 items) are descriptive.
+* **Lesson (all reproductions that re-run a bf16 eval):** match the original `--bs`. Batch size changes bf16 numerics at near-ties.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
