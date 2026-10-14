@@ -1,0 +1,63 @@
+{
+ "step": 41000,
+ "ckpt": "ckpt_last.pt",
+ "path_indep": {
+  "answer_agree": 0.532,
+  "delta_cos_final": 0.931990385055542,
+  "n_items": 500,
+  "acc_from_zero": 0.442,
+  "acc_from_donor": 0.296,
+  "kprime": 16,
+  "donor_passes": 8
+ },
+ "gpu": "NVIDIA GeForce RTX 3070",
+ "eval_dtype": "torch.bfloat16",
+ "run": "boxes/runs_fsq/s196_rmsgf_s3",
+ "def": "nested170 s182.path_indep reproduced (items test n 3..8 rng 18201 [:500]; derangement np.roll 1; K' 16; delta_cos = mean cos of final delta-head states)",
+ "s175": {
+  "aux_acc_by_pass": {
+   "1": 0.99,
+   "2": 0.9667812142038946,
+   "3": 0.8311170212765957,
+   "4": 0.6464968152866242,
+   "5": 0.4361493123772102,
+   "6": 0.3049095607235142,
+   "7": 0.21011673151750973,
+   "8": 0.22556390977443608
+  },
+  "aux_acc_by_role": {
+   "1": {
+    "handle": 0.999,
+    "copy": 0.999089068825911
+   },
+   "2": {
+    "handle": 0.9713631156930126,
+    "copy": 0.9994604801726463
+   },
+   "3": {
+    "handle": 0.8417553191489362,
+    "copy": 0.9983089064261556
+   },
+   "4": {
+    "handle": 0.697452229299363,
+    "copy": 0.9889267461669506
+   },
+   "5": {
+    "handle": 0.550098231827112,
+    "copy": 0.9639024390243902
+   },
+   "6": {
+    "handle": 0.45219638242894056,
+    "copy": 0.9276595744680851
+   },
+   "7": {
+    "handle": 0.32684824902723736,
+    "copy": 0.849624060150376
+   },
+   "8": {
+    "handle": 0.22556390977443608,
+    "copy": null
+   }
+  }
+ }
+}
