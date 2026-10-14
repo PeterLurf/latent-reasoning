@@ -15071,6 +15071,17 @@ Each registers separately, after T1 / T2.
   - The 9k–12k stage probes ran on the 2070 in fp32 and the 24k ones on the 4060 in bf16, so the series is descriptive across precisions.
 * The held checkpoints may now be deleted (196-2 is read).
 
+**Note 201-6 (2026-10-14 09:56 EDT; before any of these outputs; $0 local, descriptive, Audit's idle-card list). Extensions of §201, read descriptively. No new labels.**
+* **(a) T1 + T2 on s193_rmswin_s1** (RMS × WINDOW; the 4060 in fp32, card recorded): does WINDOW leave anything for FD or the halt to recover?
+  - **Expected** (from §193's K′24 0.989): T1 reads NOTHING-TO-RECOVER at K′24 (D < 0.03), with FD no-harm holding, and T2's halt ≈ the best fixed K′.
+  - This is not a strong test, since §193's K′ profile is known. What it adds: whether FD or the halt add anything **beyond** WINDOW at K′32 (0.934) and at n 9–12. If they do, WINDOW plus a halt is the combined overthinking fix.
+* **(b) T2 on §191 A (ProsQA)** after the 3070's ProsQA T1 (same scope cut).
+* **(c) FD-on-signal (delta freeze from the T2 halt t̂) on all 7 nested models plus s193** (the 2070). Read at K′ 16 / 24 / 32, against the hard halt, K′ n+2 and CLEAN.
+  - This is the deployable form of the T1 finding: stop the delta writes once the halt fires, and keep reading.
+  - It is reported per model with the no-harm comparison (FD-on-signal vs CLEAN at K′ = best fixed).
+* **(d) eval_timing for §198 (a) / (b) / (c) and §191 A / B on ONE local card** (the 4060, bf16, the same items as 198-2a). A same-card relative cost, labelled with the card.
+  - It does not replace 198-2a's 3090 numbers. It is the fair within-card ratio beside them.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
