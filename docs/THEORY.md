@@ -15121,6 +15121,14 @@ Each registers separately, after T1 / T2.
 * **The registered label is untouched.** The per-seed label (INSUFFICIENT-DOSE / FALSIFIER / FLOOR-GAMED / ENTERED) is read exactly as registered. This diagnostic is reported beside it.
   - If it reads CROWDING, any re-test of CSR (a new registration) would need a gradient-normalised or warm-started dose, with its own derivation.
 
+**Note 199-A5a (2026-10-14 10:57 EDT; before s1's landing readout).** How 199-A5's diagnostic qualifies the P-A5 label.
+* P-A5's falsifier logic ("non-contractive by the order parameter, yet not entered, so contraction is not the barrier") assumes the task gradient was still training the model.
+* If the diagnostic reads **GRADIENT-CROWDING** (G_csr / G_task ≥ 1 on the memory branch at 4k or 8k), a FALSIFIER label is reported as **"FALSIFIER, confounded by gradient crowding"**: non-entry has an alternative cause (a starved task gradient).
+  - The contraction account is then neither confirmed nor cleanly falsified by this seed.
+  - The **method** reading is unaffected: CSR as registered (w 0.1, start 500) failed on the paired seed.
+* If the diagnostic reads NOT-CROWDED, a FALSIFIER label stands unqualified.
+* FLOOR-GAMED / INSUFFICIENT-DOSE readings carry the diagnostic beside them.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
