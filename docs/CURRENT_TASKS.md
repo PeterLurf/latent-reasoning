@@ -27,11 +27,12 @@ touching fsq120 / table132 / core. Never edit a module while a deploy is in flig
 deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `vast destroy` aborts at its y/N prompt).
 
 ### Vast (7 hosts, ~$1.4/h; 14:27 2026-10-10)
-* 22:5x 10-13 (Experiments): §199-A CSR committed 478a572f (gate_csr run 3 all PASS; runs 1-2 kept), Audit OK; queues b283-b285 (3d883121);
-  chain_s199b (scratchpad) runs launch_when_slot s199 283 284 (DRIVER_EQ 570.172.08) then 285 (595.84) as slots free; A4 bitwise check 100-500 per cell;
-  ckpt_model 4/8/12/16k come with the drain -> probe -> delete. b282 §198c STARTED 22:41 (89.221.67.136, $0.227/h) - family cost recompute pending.
-  §191 A LANDED a7aced23 (Theory: NAME-MEM 14c71ca3); eval_timing191 (A+B, ~$0.15) when a slot frees. path_indep cadence (probe_cadence.sh; b280 host
-  uploads ~1.2 MB/s, ~20 min per fetch). 199-M2 LMC (scratch/lmc199.py, 2070 fp32, full lam grid) -> boxes/runs_fsq/s199_lmc/.
+* 23:4x 10-13 (Experiments): fleet 5 = b277 §193, b280 §198a, b281 §198b, b282 §198c (STARTED 22:41, family proj ~$6.5), b283 §199 s1 (STARTED 23:13,
+  570.172.08; A4 PAIRED under 199-A2, e4fb6c7b). s2 / s3: chain_s199c (DRIVER_EQ 570.172.08 then 595.84) waits for slots (~06:00); scratchpad a4_arm_s23.sh
+  starts their A4 checks at STARTED (logs/a4_s199_s{2,3}.out). §199 ckpt_model 4/8/12/16k come with the drain -> probe_pathindep -> delete.
+  Landed tonight: §191 A (a7aced23; NAME-MEM), §196 (208a3a6c; NO-EFFECT). Local $0 notes done: 199-M2 LMC (cc3061a7), 199-M3/M3a/M3b lag split
+  (5225b140, ad1645bd). eval_timing191 (~$0.15) when a slot frees. path_indep cadence (probe_cadence.sh, 3070). Pilot 12k eval waiter armed.
+  §197 NOT registering (Theory) - no §197 cell. GSM8K pilot is a DRAFT (7ce8c78a) - nothing to build until the user approves via Audit.
 * Live cells (check git status on each dir every turn; drain waiters cap at 2 h):
   - b251 §182 s182_nofade_s1 LANDED 20:35 (3a0253c7; Theory 384a00c2: not DEEP, not STABLE, pooled 0.786); post-hocs normcap / auxdone / tshift on the 4060 backlog
   - rq253 §182 s182_window_s1 (89.221.67.136, from 12:29, ~26 h) / b254 §182 s182_hold_s1 (77.29.35.113, from 12:48, ~28 h) - user-approved
