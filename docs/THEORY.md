@@ -14328,6 +14328,12 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - No ᾱ or P value had been computed by anyone.
 * **Descriptive; it is not the method's test.** A CPU subagent computes x; Theory scores M1 by script once x is in.
 
+**Amendment 199-M1a (2026-10-13 21:36 EDT; before any ᾱ / P value; Audit's scorer review of fd800ea9).**
+* ρ_n is undefined when either side is constant across models (all onsets tied at that n). That n drops out of ρ̄.
+* **score_s199_m1 prints the n used and the n dropped beside ρ̄.**
+* **If fewer than 3 of the 4 n are usable, M1 reads INSUFFICIENT,** not PREDICTED / FALSIFIED.
+* The fixture checks cover all three cases: 4 of 4; 3 of 4 with n 9 dropped; 2 of 4 → INSUFFICIENT.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
