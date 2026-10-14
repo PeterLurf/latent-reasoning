@@ -18,7 +18,8 @@ V_probe: a step_recover-protocol probe (nested170 dec_reads at the decoder's " =
   delta = P_V(r_d - r), r = Delta_2 qhat_eq(x) the item's own pre-gain delta read at its " =" query, r_d = the donor's at its own query; passes 3..K
   unchanged. Items: the 2,400 above; donors from the same n's 1,000 test items (rng 19960, one permutation per item): first a different-value donor
   (v_2^d != v_2) with the same (operator, original-tree height) at reduction 2, else any different-value donor of that n; the same-value control donor
-  likewise with v_2^d == v_2 (another item). answer' = x's tree re-evaluated with reduction 2's node set to v_2^d; items kept iff answer' != answer.
+  likewise with v_2^d == v_2 (another item). answer' = x's tree re-evaluated with reduction 2's node set to v_2^d; items kept iff answer' != answer (answer' undefined by a
+  later division by 0 -> dropped, counted).
   F = P(answer = answer') under the different-value swap; F_null = the same rate under the same-value swap; disruption = own accuracy (no swap) - own
   accuracy under the same-value swap. FOLLOWS: F - F_null >= 0.15 and its 95% lower bound > 0.05; IGNORES: F - F_null <= 0.05; SWAP-DISRUPTIVE
   (void): disruption > 0.05. Use label: USED = ABL-USED or FOLLOWS; NOT-USED = ABL-NULL and IGNORES; else USE-UNCLEAR.
@@ -131,13 +132,17 @@ def red2(root):
 
 
 def answer_cf(root, v2):
-    """the root value with reduction 2's node set to v2 (same reduction order; later reductions recomputed)."""
+    """the root value with reduction 2's node set to v2 (same reduction order; later reductions recomputed); None when a later division by 0 makes the
+    counterfactual undefined in Z_11 (such items are dropped, counted as n_undefined)."""
     nd = copy.deepcopy(root); k = 0
     while nd.op is not None:
         path = N._leftmost_ready(nd); tgt = nd
         for p_ in path:
             tgt = getattr(tgt, p_)
-        k += 1; tgt.v = v2 if k == 2 else N.apply(tgt.op, tgt.l.v, tgt.r.v); tgt.op = tgt.l = tgt.r = None
+        k += 1
+        if k != 2 and tgt.op == "/" and tgt.r.v == 0:
+            return None
+        tgt.v = v2 if k == 2 else N.apply(tgt.op, tgt.l.v, tgt.r.v); tgt.op = tgt.l = tgt.r = None
     return nd.v
 
 
@@ -232,7 +237,7 @@ def main():
     for it in TE:
         if 3 <= it["n"] <= 8:
             byn.setdefault(it["n"], []).append(it)
-    r2 = {id(it): red2(it["root"]) for v_ in byn.values() for it in v_}; S_it, Dd, Ds, acf = [], [], [], []
+    r2 = {id(it): red2(it["root"]) for v_ in byn.values() for it in v_}; S_it, Dd, Ds, acf = [], [], [], []; n_undef = 0
     for it, (op_, h_, v2) in zip(A_it, info):
         cand = byn[it["n"]]; order = r60.permutation(len(cand)); pick = {}
         for want in ("diff", "same"):
@@ -241,8 +246,8 @@ def main():
             m2 = m1 or [cand[j] for j in order if ok_(cand[j])]; pick[want] = m2[0] if m2 else None
         if pick["diff"] is None or pick["same"] is None:
             continue
-        a2 = answer_cf(it["root"], r2[id(pick["diff"])][2])
-        if a2 != it["t"]:
+        a2 = answer_cf(it["root"], r2[id(pick["diff"])][2]); n_undef += a2 is None
+        if a2 is not None and a2 != it["t"]:
             S_it.append(it); Dd.append(pick["diff"]); Ds.append(pick["same"]); acf.append(a2)
     acf = np.array(acf); goldS = np.array([it["t"] for it in S_it]); Qt = torch.tensor(Qv, device=dev, dtype=torch.float32)
     qi = qhat_eq(m, S_it, dev, ac)
@@ -258,7 +263,7 @@ def main():
         return sw
     p0 = answers(m, S_it, K, dev, ac, bs); pd_ = answers(m, S_it, K, dev, ac, bs, swap=mk_swap(rD)); ps_ = answers(m, S_it, K, dev, ac, bs, swap=mk_swap(rS))
     fl = (pd_ == acf).astype(float) - (ps_ == acf).astype(float); flo, fhi = boot(fl, rb)
-    sw = {"n_items": len(S_it), "F": float((pd_ == acf).mean()), "F_null": float((ps_ == acf).mean()), "F_minus_null": float(fl.mean()), "F_minus_null_ci95": (flo, fhi),
+    sw = {"n_items": len(S_it), "n_undefined_cf": int(n_undef), "F": float((pd_ == acf).mean()), "F_null": float((ps_ == acf).mean()), "F_minus_null": float(fl.mean()), "F_minus_null_ci95": (flo, fhi),
           "own_acc_noswap": float((p0 == goldS).mean()), "own_acc_sameswap": float((ps_ == goldS).mean()), "own_acc_diffswap": float((pd_ == goldS).mean()),
           "donor_match_op_height": float(np.mean([r2[id(d_)][:2] == red2(it["root"])[:2] for d_, it in zip(Dd, S_it)]))}
     sw["disruption"] = sw["own_acc_noswap"] - sw["own_acc_sameswap"]
