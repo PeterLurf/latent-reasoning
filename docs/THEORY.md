@@ -15487,6 +15487,18 @@ Each registers separately, after T1 / T2.
 
 **Cost:** about $8.5 central, $10.1 high (3 cells $6.6–8.7 + C8k $1.1–1.4). Approved ≤ $10.10, and the guard alerts at it. Realised $ replaces the projection at landing.
 
+**Note 203-1 (2026-10-14 19:14 EDT; prior art; no rule change). Literature's novelty check, docs/LIT_SVR_NOVELTY_2026-10-14.md (ccfc0543; IDs verified on the arXiv abstract pages). It supersedes the draft §8 novelty rows where they differ.**
+* **KNOWN:** per-step intermediate-value supervision through shared linear decoders, i.e. CLRS hints (2205.15659) and the Generalist learner (2209.11142, which feeds its predictions back; SVR does not). This is the closest precedent.
+* **RISK evidence for presence ≠ use**, which §4.3's use tests and the MET-NOT-USED label exist to catch:
+  - Rodionov & Prokhorenkova 2306.13411: hint-aligned, but no dependency on the result;
+  - "Cosine Misleads" 2606.05753: supervised latents are largely bypassed, with r = −0.94 between alignment and accuracy;
+  - 2606.12689: decodable patterns appear in controls too.
+* **NEW (the claim line):**
+  - a selectivity-constrained head (linear, bias-free, pass-free, stop-gradient query, never fed back) that is derived to be unable to compute the value (Lemma L), used as a loss;
+  - on a pretrained LM's recurrent memory;
+  - aimed at seed-robust basin entry.
+* **Wording to avoid in any §203 result:** "first per-step value supervision", "first probe-as-loss", and anything that treats decodability as use.
+
 ## 204. STEP-TARGET-FACTOR: a factored per-pass target on GSM8K-Aug (Audit's lead; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $3.90; launches only after §202 lands; pre-registered 2026-10-14 19:13 EDT, before any §204 code or run)
 
 **Registered text:**
