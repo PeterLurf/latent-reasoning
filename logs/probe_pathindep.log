@@ -1,0 +1,8 @@
+PATHINDEP boxes/runs_fsq/s196_rmsgf_s3 41000 {'answer_agree': 0.532, 'delta_cos_final': 0.931990385055542, 'n_items': 500, 'acc_from_zero': 0.442, 'acc_from_donor': 0.296, 'kprime': 16, 'donor_passes': 8}
+21:38:45 s196_rmsgf_s3: probe done, local ckpt copy deleted
+PATHINDEP boxes/runs_fsq/s198_injc_s1 16000 {'answer_agree': 0.352, 'delta_cos_final': 0.6720834374427795, 'n_items': 500, 'acc_from_zero': 0.62, 'acc_from_donor': 0.24, 'kprime': 16, 'donor_passes': 8}
+21:57:06 s198_injc_s1: probe done, local ckpt copy deleted
+PATHINDEP boxes/runs_fsq/s198_memhi_s1 10000 {'answer_agree': 0.79, 'delta_cos_final': 0.8563503623008728, 'n_items': 500, 'acc_from_zero': 0.256, 'acc_from_donor': 0.26, 'kprime': 16, 'donor_passes': 8}
+22:05:07 s198_memhi_s1: probe done, local ckpt copy deleted
+PATHINDEP boxes/runs_fsq/pilot196_s3_stage2_4060 9000 {'answer_agree': 0.75, 'delta_cos_final': 0.8886796832084656, 'n_items': 500, 'acc_from_zero': 0.26, 'acc_from_donor': 0.264, 'kprime': 16, 'donor_passes': 8}
+round1 done 22:06:33
