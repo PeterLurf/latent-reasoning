@@ -15141,6 +15141,27 @@ Each registers separately, after T1 / T2.
   - (b) saves no wall time at nested lengths: kernel-launch overhead dominates there, as note 198-2 measured in training.
   - (c) takes 0.53× of (a). (c) also FAILED on quality (§198 result), so this is a cost datum, not a recommendation.
 
+**§201 FD-on-signal on all models (2026-10-14 11:12 EDT; note 201-6 (c), descriptive, motivated after T1; 2070 fp32).** Freezing the **delta** state from the learned halt t̂ (additive heads still writing), against the hard halt. Pooled n 3..10 at K′24:
+
+| model | FD-on-signal | hard halt | max per-n gap | T1 reading |
+|---|---|---|---|---|
+| rms s1 | 0.968 | 0.968 | 0.005 | DELTA-INTRINSIC |
+| rms s2 | 0.976 | 0.976 | 0.000 | DELTA-INTRINSIC |
+| §190 s1 | 0.985 | 0.985 | 0.004 | mixed |
+| s193 RMS × WINDOW | 0.984 | 0.984 | 0.001 | (in range: nothing to recover) |
+| §187 s1 | 0.966 | 0.977 | 0.051 | NOTHING-TO-RECOVER |
+| §187 s2 | 0.879 | 0.895 | 0.064 | DELTA-INTRINSIC |
+| §184 s2 | 0.925 | 0.987 | 0.243 | DELTA-INTRINSIC |
+| §184 s1 | **0.613** | 0.910 | 0.443 | **ADD-DIRECT** |
+
+* **No-harm holds on all 8:** at each model's best fixed K′, FD-on-signal − CLEAN is within ±0.0006 (mean over n 3..10).
+* **Reading:**
+  - On the **RMS-normalised** models (rms s1 / s2, §190, s193), "stop the delta writes once the halt fires, keep running" is **accuracy-equivalent to halting** (≤ 0.005).
+  - It falls short where the additive path still drifts. That is most of all on §184 s1, which T1 read as ADD-DIRECT (unnormalised additive read), and partly on §184 s2 and NOPASS.
+  - **The channel-specific soft halt works exactly where T1 put the drift in the delta channel.**
+  - A deployable overthinking fix for the RMS family is therefore: train with WINDOW (§193) plus a learned halt, then freeze the delta writes after the halt.
+* All one-seed, final models, descriptive.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
