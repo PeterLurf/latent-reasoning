@@ -1,0 +1,75 @@
+"""§202 running cost guard (Audit 2026-10-14, review of 091f4e12, note 3): for W (b292) and C+ (b293), at >= 1k and >= 4k steps of each started cell,
+re-project the pair's $ from realised s/step (each host's log step / sec fields only - no loss is read) x the host's $/h + EVAL_SETUP_H, with a not-yet-started
+cell at Theory's §5.7 HIGH figure, plus $0.04 per BAD HOST deploy of b292 / b293 (8 min at <= $0.30/h). A pair projection above CAP ($4, the user's
+pre-approval) writes an ALERT line and exits 3 - the pause itself is a decision for Audit / the user. Every check -> logs/s202_guard.log. Read-only ssh.
+    python scratch/s202_guard.py   (runs until both cells passed 4k, or an ALERT)"""
+import json
+import os
+import re
+import subprocess
+import time
+
+ROOT = "D:/Latent"; os.chdir(ROOT); CAP = 4.0; V = "C:/Users/peter/.local/vastai/vast.sh"; KEY = os.path.expanduser("~/.ssh/runpod_ed25519")
+CELLS = {292: "gsm_lat_warm_s1", 293: "gsm_txt_aug_cont_s1"}; STEPS = 12000; EVAL_SETUP_H = 0.35; HIGH = {292: 1.82, 293: 0.41}; MARKS = (1000, 4000)
+
+
+def log(s):
+    line = "%s %s" % (time.strftime("%Y-%m-%d %H:%M:%S"), s); open("logs/s202_guard.log", "a", newline="\n").write(line + "\n"); print(line, flush=True)
+
+
+def hosts():
+    out = {}; bad = 0
+    for l in open("logs/gen_deploy.log", encoding="utf-8", errors="replace"):
+        m_ = re.search(r"gen host b(\d+) offer \d+: INSTANCE (\d+) (\S+) (\d+) .*STARTED", l)
+        if m_ and int(m_.group(1)) in CELLS:
+            out[int(m_.group(1))] = (m_.group(2), m_.group(3), m_.group(4))
+        if re.search(r"gen host b(292|293) offer \d+: INSTANCE .*BAD HOST", l):
+            bad += 1
+    return out, bad
+
+
+def prices():
+    try:
+        d = json.loads(subprocess.run(["bash", V, "show", "instances", "--raw"], capture_output=True, text=True, timeout=120).stdout)
+        return {str(x["id"]): float(x["dph_total"]) for x in d}
+    except Exception:
+        return {}
+
+
+def last_rec(h, p, cell):
+    cmd = "grep -o '\"step\": [0-9]*, \"loss\": [^,]*, \"sec\": [0-9]*' /workspace/Latent/boxes/runs_fsq/%s/log.jsonl | tail -n 1 | sed 's/\"loss\": [^,]*, //'" % cell
+    try:
+        r = subprocess.run(["ssh", "-o", "ConnectTimeout=15", "-i", KEY, "-p", p, "root@" + h, cmd], capture_output=True, text=True, timeout=60).stdout
+        m_ = re.search(r'"step": (\d+), "sec": (\d+)', r); return (int(m_.group(1)), int(m_.group(2))) if m_ else None
+    except Exception:
+        return None
+
+
+def main():
+    done = {n: set() for n in CELLS}; proj = {}; info = {}                 # kept across polls: a landed (destroyed) cell keeps its last projection
+    log("start: cap $%.2f, cells %s" % (CAP, CELLS))
+    while True:
+        H, bad = hosts(); P = prices()
+        for n, cell in CELLS.items():
+            if n not in H:
+                continue
+            iid, h, p = H[n]; rec = last_rec(h, p, cell); dph = P.get(iid)
+            if rec is None or dph is None or rec[0] < 200:
+                continue
+            sps = rec[1] / rec[0]; hours = STEPS * sps / 3600 + EVAL_SETUP_H; proj[n] = hours * dph; info[n] = {"step": rec[0], "s_per_step": round(sps, 3), "dph": dph, "proj_usd": round(proj[n], 2)}
+        pair = sum(proj.get(n, HIGH[n]) for n in CELLS) + 0.04 * bad
+        for n in CELLS:
+            if n in info:
+                for mark in MARKS:
+                    if info[n]["step"] >= mark and mark not in done[n]:
+                        done[n].add(mark)
+                        log("CHECK b%d @%d: %s | pair projection $%.2f (cells with data %s, others at HIGH %s; BAD HOSTs %d)" % (n, mark, info, pair, sorted(proj), HIGH, bad))
+                        if pair > CAP:
+                            log("ALERT pair projection $%.2f > cap $%.2f - pause decision to Audit / the user" % (pair, CAP)); raise SystemExit(3)
+        if all(set(MARKS) <= done[n] for n in done):
+            log("guard done: both cells past 4k; last pair projection $%.2f" % pair); return
+        time.sleep(600)
+
+
+if __name__ == "__main__":
+    main()
