@@ -14733,6 +14733,12 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * Projected $4.28 central / $6.32 high for A–D (latent about $1.54 / $2.26 per cell, text $0.60 / $0.90), plus gates about $0.2.
 * **Hard cap $7 (Audit).** Realised $ replaces the projection per cell.
 
+**Amendment 200-1 (2026-10-14 00:01 EDT; before any §200 code; Audit). Two additions to LOOP-NOT-FORMED.**
+* **K′ 0 itself is reported beside the rule** for each latent cell: the no-CoT level, for scale.
+  - References: RiM's GPT-2 no-CoT 15.4; the no-CoT GPT-2 range of 16–19 cited in the draft (P5); our bench's no-CoT checkpoint, when evaluated.
+* **One item set and one grid.** THINK-NECESSARY (R4) and LOOP-NOT-FORMED are evaluated on the **same items** (the 1,319 GSM8K test) and the **same K′ grid** (eval.json acc_by_kprime). A cell cannot read "loop formed" on one item set and "think-necessary" on another.
+  - score_s200.py reads both from acc_by_kprime and prints K′0 beside them.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
