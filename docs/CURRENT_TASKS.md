@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-10 14:27 EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-14 16:3x EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -27,6 +27,12 @@ touching fsq120 / table132 / core. Never edit a module while a deploy is in flig
 deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `vast destroy` aborts at its y/N prompt).
 
 ### Vast (7 hosts, ~$1.4/h; 14:27 2026-10-10)
+* 16:3x 10-14 (Experiments, after the 13:45 LOCAL REBOOT killed every watcher / filler / local job): §200 A b287 + B b288 FINISHED on host
+  (QUEUE_DONE 16:13 / 14:52 local); gen8 drains re-armed 16:27 (scratch/post_reboot_redrain_1014.sh). D b290's host 55966557 failed HOSTPROBE_SLOW
+  (1.03 s/step) at 13:46 and idled -> DESTROYED 16:28 ($0.64); §200 family ≈ $7.88 > $7.50 cap, so D is NOT refilled (asked Audit). §199 s3 b285
+  stopping: temp fetch scratch/_tmp/s3_fetch.sh -> md5 -> boxes/runs_fsq/s199_csr_s3, then vdestroy 55929684 + clear reserved_drivers.txt.
+  §193 s2 b291 refilling (fill_generic_px DPH_MAX 0.30; the 13:43 attempt made no instance). Restarted: requeue_watch3, autoexclude_watch.
+  Local T4 (201-7 / 201-8) restarted from scratch: 2070 s185_rms_s1, 4060 s184_reweight_s2, 3070 s193_rmswin_s1 (logs/s201_t4_*_r.out; partials *.void_reboot).
 * 10:5x 10-14 (Experiments): §200: A b287 (218.150.198.117 / 570.172.08, $0.248) and B b288 (209.226.246.174 / 595.84, $0.258) training, land
   ~16:20 / ~15:00; C LANDED 0.321 (+ local GSM-Symbolic main 0.156 / p1 0.059 / p2 0.022); D HELD (family $6.58 w/o D vs the $7 cap; Audit asked the user
   for $7.50). Fillers: fill_generic_px (DPH_MAX, reserved drivers file, heartbeat), requeue_watch3 (per-queue .dph caps). §199: s1 b283 + s3 b285 (595.84,
