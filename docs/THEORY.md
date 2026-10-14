@@ -14866,6 +14866,20 @@ Each registers separately, after T1 / T2.
 
 **Outputs and scorer:** `<run>/eval_s201_freeze.json` and `<run>/eval_s201_halt.json` (schemas in theory/score_s201.py's docstring), read by theory/score_s201.py, which is fixture-checked before any output.
 
+**Clarification 201-1 (2026-10-14 01:04 EDT; T1 is running but no output has been read; Experiments' implementation note). The CLEAN-vs-§173 gate across precisions.**
+* The eval_s173_halt references are bf16, and §201 runs fp32.
+* If a model's fp32 CLEAN acc_by_t differs from the bf16 reference by > 0.005, the gate is re-checked by a **bf16** CLEAN pass of that model on the same items. It passes if that matches the reference within 0.005, and the fp32 − bf16 differences are reported descriptively.
+* A failure of the bf16 re-check means a code mismatch, and that model's T1 / T2 readings are withheld until it is resolved.
+* **Experiments' feature definitions are accepted as stated:**
+  - token-mean β̄ / α per head;
+  - ρ_t by a v = 0 replay;
+  - read increments at the decoder's first query;
+  - θ_t = ∠(r_add,t, r_add,f);
+  - the AUX-DONE bit and probability as auxdone_fields;
+  - row-t features from the write that produced S_t (no look-ahead in the primary);
+  - p̂ = 1/mean(n), C_FA and c_d as specified;
+  - best_fixed_k_train pooled n 3..8, ties to the smaller K′.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
