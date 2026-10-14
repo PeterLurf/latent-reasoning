@@ -15584,6 +15584,25 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
   - **Falsifier (for this external instance):** value top-1 drops by ≥ 0.15 without z_k.
   - If the decoder is not in the release, the check is N/A and is not substituted.
 
+**Note 204-2: the external D1 check on SIM-CoT (2026-10-14 19:28 EDT; note 204-1's pre-stated check; Experiments 00d08bc4, script 453f1ebc; boxes/runs_fsq/s204_simcot_d1/eval_simcot_d1.json; internlm SIM_COT-GPT2-Coconut checkpoint_28's own step decoder, expainable_llm; 3070 fp32; Aug valid 500, stages 1–4 primary). MIXED by the letter: supported under MEAN, falsified under ZERO.**
+* **Teacher-forced top-1, stages 1–4, TRUE / ZERO / MEAN:**
+  - value (n 1,613): 0.939 / 0.447 / 0.915;
+  - q-operands: 0.692 / 0.029 / 0.091;
+  - r-operands: 0.530 / 0.024 / 0.053;
+  - operator: 0.744 / 0.210 / 0.386;
+  - format: 0.963 / 0.499 / 0.999;
+  - EOS: 0.999 / 0.680 / 0.993.
+* **The rule as pre-stated:** value within 0.05 without z_k; operands drop ≥ 0.20; falsifier: value drop ≥ 0.15. The note named "a zeroed or mean latent" without making either one primary.
+  - **MEAN** (the per-stage mean latent pair): value drop 0.024, operand drops 0.60 / 0.48. **As D1 predicts.**
+  - **ZERO** (an all-zero latent pair): value drop 0.49. **Falsified as written.**
+* **Interpretation (stated after the output, not a re-ruling):**
+  - ZERO also degrades tokens that need no item information: format 0.963 → 0.499 and EOS 0.999 → 0.680, while MEAN keeps them at 0.99.
+  - That pattern fits an off-distribution prefix (the decoder never saw an all-zero latent pair) rather than result tokens that depend on the latent.
+  - MEAN is the in-distribution "no item information" condition. Under it, SIM-CoT's step decoder reads results from the in-context operands (0.915 vs 0.939) and needs the latent only for operand and plan identity.
+  - Our own D1 measurement used M = 0, which is a natural in-distribution state for DeltaMem (the pass-0 memory). That is unlike SIM-CoT's input-embedding prefix.
+* **Stage 5 (merged steps, n 82, descriptive):** value 0.707 / 0.350 / 0.713. MEAN again matches TRUE.
+* **Wording:** "on the released SIM-CoT GPT-2 checkpoint, replacing the step latents with their mean leaves value-token accuracy at 0.915 (vs 0.939) while operand accuracy falls to 0.05–0.09", with the ZERO falsification reported beside it.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
