@@ -72,6 +72,8 @@ def auroc(s, y):
 
 def main():
     run = sys.argv[1]; Dtr = np.load(os.path.join(DUMP, run + "_train.npz")); Dte = np.load(os.path.join(DUMP, run + "_test.npz"))
+    global TMAX; TMAX = int(Dtr["logits"].shape[1]) - 1                    # the dump's own pass cap (32 nested; 24 ProsQA, note 201-6)
+    assert int(Dte["logits"].shape[1]) - 1 == TMAX
     Xtr, atr, ctr, mptr = feats(Dtr); Xte, ate, cte, mpte = feats(Dte); ntr, nte = Dtr["n"], Dte["n"]; T = np.arange(TMAX + 1)
     rows = (slice(None), slice(1, None)); ytr = (T[None, :] >= ntr[:, None])
     head = logistic(Xtr[rows].reshape(-1, Xtr.shape[-1]), ytr[rows].reshape(-1))
