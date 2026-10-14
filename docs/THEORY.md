@@ -288,6 +288,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 198 | CHEAP-THINK (the user's request): an all-cached family; (a) cached INJECT, (b) MEM-HIGH l_m 9, (c) READ-SLOTS + RMS + step aux; CHEAPER-EQUAL / CHEAPER-WORSE / UNCLEAR-ENTRY / FAILS vs (a); $10 cap | registered | **open** |
 | 199 | CONTRACTION-TRAP (the user's seed-stability request): order parameter s182.path_indep separates converged / failed across 19 models; M1 = within-n rank test, per-pass delta decay ᾱ vs handle onset (ρ̄ > 0 predicted; falsified ≤ 0 or < 0.3); 199-A method CSR (completion-switched step-ratio target), RMS s1–s3 on 3090 paired with s185, SUPPORTED / MIXED / FALSIFIED (P-A5 on checkpoint path_indep) | registered (M1, 199-A) | **open** |
 | 200 | GSM8K-AUG PILOT (user-approved 2026-10-13 ~23:5x via Audit, "make sure its augmented dataset"; Tier 1 only, cap $7): latent step-aux A / A+resample B vs TEXT-COT C / D on GSM8K-Aug, 24k, final checkpoint; R1 C3 in-house ±2.8, R2 vs PCCoT 49.48 (no 1-seed SOTA claim), R3 resample, R4 THINK-NECESSARY, R6 length, R7 STABLE, LOOP-NOT-FORMED, IDLE-PASSES | registered | **open** |
+| 201 | OVERTHINK-EXIT (the user's overthinking + latent-transition requests; \$0 eval-only): T1 FREEZE 2×2 (which channel drives post-completion decay; ADD-COUPLED / ADD-DIRECT / DELTA-INTRINSIC / JOINT; additive account falsified if R_FA ≤ 0.3 in ≥ 2 of 3 key models), T2 SHIRYAEV-HEAD halt (NO-OVERTHINK / SIZE-FREE / PREMATURE; β-cue falsifier) | registered | **open** |
 
 ## Live sections
 
@@ -14793,6 +14794,77 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * λ_post = log 0.5 bounds post-completion read drift to at most one last code distance (Thm A1(ii)). Certifying correct decoding needs a ceiling ≤ log(1/3), so P-A4's STABLE is not guaranteed by the target even where it is met.
 * Under K = 8, items with n = 8 get **no** ceiling term, yet they carry most of the K′16 loss in the controls.
 * So P-A4 (descriptive) is read per n, with n = 8 marked "untargeted".
+
+## 201. OVERTHINK-EXIT: which memory channel drives overthinking, and can a learned halt stop it? (the user's requests via Audit, 2026-10-13 ~23:55 "also try to fix over thinking decreases acc" and 2026-10-14 ~00:0x "teach models when to transision in and out of latent thinking"; $0 eval-only on existing models; pre-registered 2026-10-14 00:27 EDT, before any §201 code or output)
+
+**Derivation:** docs/THEORY_OVERTHINK_2026-10-14.md (9848d193; Opus subagent, reviewed by Theory). Tags as there, and the data in it are POST-HOC.
+* **Part I:**
+  - the additive heads have no post-completion fixed point (PROVED): the RMS read turns at about 1/t per pass toward the write direction;
+  - the delta heads' fixed point under frozen inputs (PROVED) is worn down through the gate by the additive drift;
+  - passes past K get zero gradient.
+* **Part II:**
+  - halting as quickest change detection (one-step Shiryaev threshold);
+  - answer settling is uninformative before completion, which is why §173 read PREMATURE;
+  - freezing all writes ≡ halting (PROVED).
+* Nothing here is stacked on §199 / §200.
+
+**Common:**
+* eval-only on the final model.pt; an idle local card with no co-tenants; fp32; the card recorded;
+* 1,000 test items per n (test_set, as halt173), n 2..12 and 16;
+* 2,000 training-distribution items (n 2..8; train_items rng 19900) for every threshold or head fit;
+* passes up to T_max = 32;
+* **pooled n 3..8 = the mean of the per-n accuracies.**
+
+**T1, FREEZE 2×2** (models: s185_rms s1 / s2, s190_rmsnopass_s1, s187_nopass s1 / s2, s184_reweight s1 / s2; negative control s182_window_s2; ProsQA s191_stepaux_relabel_s1 descriptive).
+* **Arms**, with the oracle freeze point f = n + 1:
+  - CLEAN;
+  - FA: S_add reset to S_add,f after every write past f;
+  - FD: S_delta reset to S_delta,f;
+  - FB: both frozen.
+* **Gates:**
+  - FB's answers equal CLEAN's answer at f bitwise, at every K′ ≥ f;
+  - CLEAN reproduces eval_s173_halt acc_by_t within 0.005.
+* **Readout at K′ 24, pooled n 3..8:**
+  - D = acc_FB − acc_CLEAN.
+  - If D < 0.03, the model reads NOTHING-TO-RECOVER, a no-harm control: |acc_FA − acc_CLEAN| and |acc_FD − acc_CLEAN| ≤ 0.01.
+  - Otherwise R_FA = (acc_FA − acc_CLEAN)/D and R_FD likewise, read as:
+    - **ADD-COUPLED:** R_FA ≥ 0.7 and R_FD ≥ 0.5;
+    - **ADD-DIRECT:** R_FA ≥ 0.7 and R_FD < 0.5;
+    - **DELTA-INTRINSIC:** R_FD ≥ 0.7 and R_FA ≤ 0.3;
+    - **JOINT:** both ≤ 0.3;
+    - otherwise **mixed**.
+  - K′ 16 / 32 and n 9–10 are beside, descriptive.
+* **Predictions:**
+  - **T1-a:** rms s1 / s2 and §190 s1 read ADD-COUPLED;
+  - **T1-b:** §184 s1 / s2 read ADD-DIRECT or ADD-COUPLED, with R_FD < R_FA.
+* **Falsifier:** in ≥ 2 of {rms s1, rms s2, §190 s1}, R_FA ≤ 0.3, i.e. the additive-integrator account of converged-model overthinking is false.
+
+**T2, HALT** (the same nested models; features from T1's CLEAN dump).
+* **PRIMARY = SHIRYAEV-HEAD:**
+  - a logistic π̂_t for label 1[t ≥ n], fit on training items only;
+  - features: answer max-prob, entropy and top-2 margin; answer-change flags at t−1 and t−2; the AUX-DONE bit and probability; β̄_t and retention ρ_t per head and their one-pass differences; additive and delta read relative increments. **No t, and no additive norm.**
+  - **Stop** at the first t with π̂_t ≥ A = p̂·C_FA/(p̂·C_FA + c_d). p̂, C_FA and c_d are estimated on training items as in docs/THEORY_OVERTHINK Part V.
+  - **Censoring:** a rule that never fires stops at T_max with the answer at T_max. It counts in every accuracy; the event-only mean halt and the censored share are reported beside.
+* **Comparators:** the best fixed K′ chosen on TRAINING items, and K′ = n + 2 per n.
+* **Readings per model:**
+  - **NO-OVERTHINK:** pooled n 3..8 ≥ acc(best fixed K′) − 0.01;
+  - **SIZE-FREE:** at n 9 and 10, acc ≥ acc(K′ n+2) − 0.03, with the event-only mean halt in [n−1, n+3] and censored ≤ 0.10;
+  - **PREMATURE:** ≥ 0.05 below K′ n+2 at any n ∈ 3..10.
+* **Predictions:**
+  - **T2-a:** NO-OVERTHINK on all 7 nested models;
+  - **T2-b:** SIZE-FREE at n 9 on rms s1 and s2, and at n 10 on s2;
+  - **T2-c:** §184 s1 / s2 PREMATURE, or censored share > 0.10 at n 10.
+* **Falsifier of the β cue (T2-b):** on both RMS seeds, ≥ 50% of n = 10 halts fall at t ∈ {8, 9} **and** the rule's n = 10 accuracy is ≥ 0.05 below K′12.
+* **Descriptive rules** (AUX-DONE, MIN-BETA, RET-JUMP, CONF, TRM-HEAD, answer2 / MOVED2) and the per-n AUROC are reported beside.
+* **Halting is not expected to raise the peak.** A tuned fixed K′ is within 0.03 of the per-n oracle (POST-HOC). The gains are robustness past K and compute.
+
+**Not registered here:**
+* T3 (reading CSR's post-completion behaviour when §199's cells land);
+* T4 (SNAP-CHAIN text checkpoints, the ENTRY / EXIT half);
+* T5 (a training cell, ≤ $10).
+Each registers separately, after T1 / T2.
+
+**Outputs and scorer:** `<run>/eval_s201_freeze.json` and `<run>/eval_s201_halt.json` (schemas in theory/score_s201.py's docstring), read by theory/score_s201.py, which is fixture-checked before any output.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
