@@ -32,7 +32,9 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
   settled); a4_check.json's pred-relative residual is descriptive only. s2 / s3: chain_s199c (DRIVER_EQ 570.172.08 then 595.84) waits for slots (~06:00); scratchpad a4_arm_s23.sh
   starts their A4 checks at STARTED (logs/a4_s199_s{2,3}.out). §199 ckpt_model 4/8/12/16k come with the drain -> probe_pathindep -> delete.
   Landed tonight: §191 A (a7aced23; NAME-MEM), §196 (208a3a6c; NO-EFFECT). Local $0 notes done: 199-M2 LMC (cc3061a7), 199-M3/M3a/M3b lag split
-  (5225b140, ad1645bd). eval_timing191 (~$0.15) when a slot frees. path_indep cadence (probe_cadence.sh, 3070). Pilot 12k eval waiter armed.
+  (5225b140, ad1645bd). eval_timing191 (~$0.15) when a slot frees. path_indep cadence (probe_cadence.sh, 3070). Pilot leg 1 done 12k (1e3661cb); leg 2 -> 24k ~05:00-06:00:
+  then the standard probe (n 3..8, K' 16) + --stage 6:6 (n <= 6, K' 12, 6-pass donor) on the final, loss_seen yes. KEEP ckpt_12k_leg1_end.pt until
+  Theory posts the 196-2 reading, then delete it.
   §197 NOT registering (Theory) - no §197 cell. GSM8K pilot is a DRAFT (7ce8c78a) - nothing to build until the user approves via Audit.
 * Live cells (check git status on each dir every turn; drain waiters cap at 2 h):
   - b251 §182 s182_nofade_s1 LANDED 20:35 (3a0253c7; Theory 384a00c2: not DEEP, not STABLE, pooled 0.786); post-hocs normcap / auxdone / tshift on the 4060 backlog
