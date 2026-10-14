@@ -100,14 +100,57 @@
    }
   },
   "c": {
-   "status": "open",
+   "status": "done",
+   "pooled_k8": 0.9331666666666667,
+   "depth_9_12_n2": 0.36375,
+   "by_n_n2": {
+    "3": 1.0,
+    "4": 0.999,
+    "5": 0.981,
+    "6": 0.944,
+    "7": 0.895,
+    "8": 0.766,
+    "9": 0.613,
+    "10": 0.419,
+    "11": 0.26,
+    "12": 0.163
+   },
+   "deep": false,
+   "think_necessary": true,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "cost": {
+    "L_mean": 26.479125,
+    "K": 8,
+    "M": 8,
+    "ratio_at_nested_L": 0.3796664773141526,
+    "ratio_vs_current": 0.1348148148148148,
+    "meter_flops": null
+   },
+   "entry": {
+    "entry_0.5": 33000,
+    "entry_0.1": null,
+    "min_bin": 0.20859596886858345,
+    "last_bin": 0.20859596886858345
+   },
+   "label": "FAILS",
    "note198_3": {
-    "path_indep": null,
+    "path_indep": {
+     "answer_agree": 0.87,
+     "delta_cos_final": 0.8405105471611023,
+     "n_items": 500,
+     "acc_from_zero": 0.936,
+     "acc_from_donor": 0.854,
+     "kprime": 16,
+     "donor_passes": 8,
+     "items": "test n 3..8, rng 18201 permutation[:500]",
+     "derangement": "np.roll(sample order, 1)",
+     "delta_cos_def": "mean over items of cos of the final delta-head states S[:, h_add:h_add + h_del]"
+    },
     "size": null
    }
   }
  },
- "note198_3": "(a) delta_cos 0.550 (agree 0.120), SIZE-KEY pending | (b) delta_cos 0.524 (agree 0.190), SIZE-KEY pending | (c) delta_cos pending, SIZE-KEY pending",
- "reading": "(a) cached INJECT: DEEP True, DEPTH 0.570 (uncached s185_rms_s1 0.587), entry 18000/23000, cost ratio 0.556 | (b) CHEAPER-WORSE: DEEP True, THINK-NECESSARY True, DEPTH 0.454 vs (a) 0.570; cost ratio vs current 0.333 at L 300 (0.333 at nested L; Meter None); entry 24000/48000 | (c) pending (cell open; comparator (a) done)",
+ "note198_3": "(a) delta_cos 0.550 (agree 0.120), SIZE-KEY pending | (b) delta_cos 0.524 (agree 0.190), SIZE-KEY pending | (c) delta_cos 0.841 (agree 0.870), SIZE-KEY pending | pred 1 (c delta_cos < a; band 0.06): FALSIFIED as stated",
+ "reading": "(a) cached INJECT: DEEP True, DEPTH 0.570 (uncached s185_rms_s1 0.587), entry 18000/23000, cost ratio 0.556 | (b) CHEAPER-WORSE: DEEP True, THINK-NECESSARY True, DEPTH 0.454 vs (a) 0.570; cost ratio vs current 0.333 at L 300 (0.333 at nested L; Meter None); entry 24000/48000 | (c) FAILS: DEEP False, THINK-NECESSARY True, DEPTH 0.364 vs (a) 0.570; cost ratio vs current 0.135 at L 300 (0.380 at nested L; Meter None); entry 33000/None",
  "errors": []
 }

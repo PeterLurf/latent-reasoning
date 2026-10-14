@@ -280,12 +280,12 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 190 | RMS × NOPASS: §185 RMS + §187's --aux_nopass; LATE (t 7–8, n 10–12) vs RMS s1 0.648; COSTLY-AUX / COSTLY / TOKEN-FIX (opens s2; claim 2 / 2) / TOKEN-NOT-THE-LIMIT; FLAT and AUX-DONE descriptives | registered | **s1 mixed (LATE 0.878 vs 0.648, DEPTH 0.659 vs 0.587); descriptively size-free early, no token edge, AUX-DONE tracks n to ~10** |
 | 191 | PROSQA-RELABEL: §168 s2 STEP-AUX and TEXT-COT with per-step name relabelling + premise shuffle + option swap (user-approved 2026-10-12); NAME-MEM (test ≥ 0.65) / UNDERFIT / CHANCE (STILL-RISING or FLAT) / mixed; TEXT-COT control ≥ 0.70 | registered | **NAME-MEM (A 0.950; removal K′0/1 at chance; B 0.938). Descriptive: 11–14 0.745 at K′10, ≥ 0.91 at all depths at K′12 (post hoc), degrades K′14/16; p8_ctl 0.640 vs 0.816. GSM8K template lead's trigger fired (needs derivation + user approval)** |
 | 192 | RMS-SEED3: §185 RMS at seed 3 (SEED-1's rule before C2 wording); CONSISTENT (DEEP, depth ≥ 0.537) / LOW-SEED / NOT-DEEP; entry reported | registered | **closed: NOT-DEEP (s3 never entered the basin; clip rate 1.0). RMS seed-robustness refuted at 3 seeds** |
-| 193 | RMS × WINDOW: §182 WINDOW + --add_norm rms; §188's rules (JOINT / DEEP-ONLY / STABLE-ONLY / NEITHER; C6 claim = JOINT + LONG-STABLE at 2 / 2) | registered | **open** |
+| 193 | RMS × WINDOW: §182 WINDOW + --add_norm rms; §188's rules (JOINT / DEEP-ONLY / STABLE-ONLY / NEITHER; C6 claim = JOINT + LONG-STABLE at 2 / 2) | registered | **s1 JOINT + LONG-STABLE (K′8/16/24/32 0.999/0.999/0.989/0.934; DEPTH 0.688, best nested); C6 claim pending s2 (Audit's line)** |
 | 194 | §190-S2: descriptive replication of §190's one-seed findings (size-free per-pass curve, AUX-DONE tracking n); REPLICATES = (i) + (ii) + (iii); never a claim | registered | **REPLICATES (2 seeds, descriptive): size-free early steps, AUX-DONE tracks n; s2 under-converged (entry-confounded)** |
 | 195 | (reserved: SELF-DEPTH-ANS, drafted; registers after §194) | — | — |
 | 196 | GROKFAST-S3: RMS s3 (never entered) + Grokfast-EMA (α 0.98, λ 2); exact same-seed control; ACCELERATES (entry ≤ 25k, final < 0.1) / NO-EFFECT / partial | registered | **NO-EFFECT (never entered; final bin 1.394 vs control 1.031; path_indep 0.930 contractive, as 199-A predicted). §197 not registered as drafted (one-seed rescue weak; needs fresh seeds + derivation)** |
 | 197 | (reserved: BUDGET-ANNEAL-S3, drafted; registers only if §196 reads NO-EFFECT) | — | — |
-| 198 | CHEAP-THINK (the user's request): an all-cached family; (a) cached INJECT, (b) MEM-HIGH l_m 9, (c) READ-SLOTS + RMS + step aux; CHEAPER-EQUAL / CHEAPER-WORSE / UNCLEAR-ENTRY / FAILS vs (a); $10 cap | registered | **open** |
+| 198 | CHEAP-THINK (the user's request): an all-cached family; (a) cached INJECT, (b) MEM-HIGH l_m 9, (c) READ-SLOTS + RMS + step aux; CHEAPER-EQUAL / CHEAPER-WORSE / UNCLEAR-ENTRY / FAILS vs (a); $10 cap | registered | **(a) comparator holds; (b) CHEAPER-WORSE (confounded by entry); (c) FAILS (entry 33k, not DEEP, depth 0.364); family ≈ $6.29; 198-3 pred 1 FALSIFIED (READ-SLOTS more path-independent)** |
 | 199 | CONTRACTION-TRAP (the user's seed-stability request): order parameter s182.path_indep separates converged / failed across 19 models; M1 = within-n rank test, per-pass delta decay ᾱ vs handle onset (ρ̄ > 0 predicted; falsified ≤ 0 or < 0.3); 199-A method CSR (completion-switched step-ratio target), RMS s1–s3 on 3090 paired with s185, SUPPORTED / MIXED / FALSIFIED (P-A5 on checkpoint path_indep) | registered (M1, 199-A) | **open** |
 | 200 | GSM8K-AUG PILOT (user-approved 2026-10-13 ~23:5x via Audit, "make sure its augmented dataset"; Tier 1 only, cap $7): latent step-aux A / A+resample B vs TEXT-COT C / D on GSM8K-Aug, 24k, final checkpoint; R1 C3 in-house ±2.8, R2 vs PCCoT 49.48 (no 1-seed SOTA claim), R3 resample, R4 THINK-NECESSARY, R6 length, R7 STABLE, LOOP-NOT-FORMED, IDLE-PASSES | registered | **open** |
 | 201 | OVERTHINK-EXIT (the user's overthinking + latent-transition requests; $0 eval-only): T1 FREEZE 2×2 (which channel drives post-completion decay; ADD-COUPLED / ADD-DIRECT / DELTA-INTRINSIC / JOINT; additive account falsified if R_FA ≤ 0.3 in ≥ 2 of 3 key models), T2 SHIRYAEV-HEAD halt (NO-OVERTHINK / SIZE-FREE / PREMATURE; β-cue falsifier) | registered | **open** |
@@ -14976,6 +14976,33 @@ Each registers separately, after T1 / T2.
   - s184_reweight_s1: bf16_recheck_max_items **0**, so its readings are **released** under 201-1 / 201-2a, with no 201-3 flag needed. The 201-3 fp32 cross-code check still runs, for the record.
   - The fp32-vs-bf16 maxdiffs (8 / 10 items) are descriptive.
 * **Lesson (all reproductions that re-run a bf16 eval):** match the original `--bs`. Batch size changes bf16 numerics at near-ties.
+
+**§193 result (2026-10-14 07:57 EDT; s193_rmswin_s1, b277, RTX 3090 / 595.71.05, micro 2, 0 non-finite, about $7.81; theory/score_s193.py). JOINT: DEEP and STABLE, plus LONG-STABLE. s2 opens per the registration.**
+* **Accuracy by K′:**
+  - K′8 0.999 → K′16 0.999 (STABLE) → K′24 0.989 (LONG-STABLE) → K′32 0.934;
+  - min n 3–8 at K′8 is 0.996 (DEEP); THINK-NECESSARY holds.
+* **DEPTH** (n 9–12 at K′ n+2) is **0.688**, the best of any nested model. RMS s1 is 0.587 and WINDOW s1 0.465.
+* **The comparators:**
+  - RMS (s185_rms_s1): K′16 0.933, K′24 0.746;
+  - WINDOW s1: K′24 0.859.
+* **Entry** (22k / 29k) is not confounded vs RMS s1 (19k / 29k), and is CONFOUNDED vs WINDOW s1 (which never reached < 0.1).
+* **The C6 claim** (JOINT + LONG-STABLE at 2 / 2) is pending s2. The s2 cell (about $7.8 at this cell's realised cost) needs Audit's line. Per G3's methodology, 2 / 2 is a replication, not a rate claim.
+* **For the user's overthinking request:** this is the WINDOW remedy, trained post-completion passes (docs/THEORY_OVERTHINK Lemma W, Part IV), on the RMS base, with one seed. Post-completion decay is largely removed out to 3× K.
+
+**§198 result, (c) (2026-10-14 07:57 EDT; s198_rsaux_s1, b282, 3090 / 590.48.01, about $2.02; the §198 family realised about $6.29, under the $10 cap). (c) READ-SLOTS FAILS: it entered late but is not DEEP.**
+* entry(0.5) 33k; entry(0.1) none (final bin 0.209).
+* acc n 3–8 at K′8: 1.0 / 0.999 / 0.977 / 0.944 / 0.898 / 0.781. DEPTH 0.364; THINK-NECESSARY holds.
+* Cost ratio 0.135 at L 300 (projected), 0.380 at nested L.
+* **Eval:** (c) 0.000875 s/item vs (b) 0.00181. (a)'s eval_timing is pending, so no ratio to (a) yet.
+* **Family summary:**
+  - (a) cached INJECT: the comparator holds;
+  - (b) MEM-HIGH: CHEAPER-WORSE, confounded by entry;
+  - (c) READ-SLOTS: FAILS.
+  - No cheaper design read CHEAPER-EQUAL at one seed.
+* **198-3 prediction 1 is FALSIFIED as stated:** (c)'s delta_cos 0.841 (agree 0.870) is far above (a)'s 0.550.
+  - The per-pass α^M argument (M = 8 slot tokens gives less decay) predicted the opposite.
+  - This fits 199-E1 / 199-M1: the class separator is a progress-gated β, not α^L. (c)'s slot writes evidently do not gate with progress.
+  - Its SIZE-KEY (prediction 2) waits for its 187-3 rows.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
