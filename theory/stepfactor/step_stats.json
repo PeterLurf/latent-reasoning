@@ -1,0 +1,375 @@
+{
+ "train_sample": {
+  "split": "train",
+  "n_items": 20000,
+  "n_parsed_recomputable": 12063,
+  "parse_reasons": {
+   "ok": 12063,
+   "ungrounded": 1425,
+   "ambiguous_q_word": 1611,
+   "ambiguous_r_q": 1077,
+   "q_not_unique": 1797,
+   "identity_render": 766,
+   "answer_not_last": 395,
+   "not_exact": 635,
+   "no_q_literal": 140,
+   "rhs_or_dollar": 88,
+   "no_equation": 3
+  },
+  "m_hist": {
+   "0": 3,
+   "1": 3269,
+   "2": 7404,
+   "3": 5326,
+   "4": 2570,
+   "5": 966,
+   "6": 301,
+   "7": 133,
+   "8": 21,
+   "9": 5,
+   "10": 1,
+   "11": 1
+  },
+  "mean_m": 2.6068,
+  "mean_target_tokens_per_step_incl_eot": 8.815214055547031,
+  "token_share_raw": {
+   "fmt": 0.2269,
+   "val": 0.1458,
+   "op": 0.1293,
+   "opd_u": 0.1278,
+   "eot": 0.1134,
+   "eq": 0.1123,
+   "opd_q": 0.0813,
+   "opd_r": 0.0428,
+   "opd_k": 0.0173,
+   "mixed:op+opd_u": 0.0013,
+   "mixed:eq+op": 0.0009,
+   "mixed:op+opd_k": 0.0005,
+   "mixed:eq+oth": 0.0003,
+   "oth": 0.0001,
+   "mixed:op+opd_q": 0.0,
+   "mixed:op+opd_r": 0.0,
+   "mixed:op+oth": 0.0
+  },
+  "token_share_grouped": {
+   "format (' <<', '>>', EOT, '=')": 0.4526,
+   "operator": 0.1293,
+   "operand_q (question literal)": 0.0813,
+   "operand_r (previous result)": 0.0428,
+   "operand_k (constant/word)": 0.0173,
+   "operand_unparsed_item": 0.1278,
+   "value (RHS)": 0.1458,
+   "mixed/other": 0.003
+  },
+  "first_content_token_category": {
+   "opd_k": 1506,
+   "opd_r": 9217,
+   "opd_u": 23754,
+   "opd_q": 17497,
+   "op": 160,
+   "oth": 2
+  },
+  "parsed_only": {
+   "operand_kind_share": {
+    "k": 0.1269,
+    "q": 0.5876,
+    "r": 0.2855
+   },
+   "first_operand_kind": {
+    "k": 1511,
+    "r": 9227,
+    "q": 17549
+   },
+   "operands_per_equation": {
+    "1": 39,
+    "2": 24725,
+    "3": 3282,
+    "4": 196,
+    "5": 32,
+    "6": 6,
+    "7": 7
+   },
+   "eq_with_R_operand_share": 0.4822,
+   "distinct_question_numbers": {
+    "1": 1273,
+    "2": 4135,
+    "3": 4474,
+    "4": 1722,
+    "5": 321,
+    "6": 114,
+    "7": 17,
+    "8": 5,
+    "9": 1,
+    "11": 1
+   },
+   "mean_distinct_question_numbers": 2.6793500787532123,
+   "used_question_literals": {
+    "1": 1516,
+    "2": 4409,
+    "3": 4279,
+    "4": 1507,
+    "5": 240,
+    "6": 97,
+    "7": 11,
+    "8": 4
+   },
+   "operand_tokens_per_literal": {
+    "1": 57328,
+    "2": 1208,
+    "3": 1809,
+    "4": 15,
+    "6": 1,
+    "7": 1,
+    "8": 1,
+    "10": 1
+   },
+   "value_tokens": {
+    "1": 25033,
+    "2": 1391,
+    "3": 1806,
+    "4": 42,
+    "5": 6,
+    "6": 4,
+    "7": 1,
+    "8": 1,
+    "9": 2,
+    "10": 1
+   },
+   "dag_depth_dstar": {
+    "1": 2477,
+    "2": 6589,
+    "3": 2318,
+    "4": 581,
+    "5": 77,
+    "6": 13,
+    "7": 7,
+    "8": 1
+   },
+   "mean_dstar": 2.110005802868275,
+   "max_level_width": {
+    "1": 9575,
+    "2": 2287,
+    "3": 191,
+    "4": 10
+   },
+   "dstar_by_m": {
+    "1": {
+     "1": 2399
+    },
+    "2": {
+     "1": 69,
+     "2": 5038
+    },
+    "3": {
+     "1": 9,
+     "2": 1435,
+     "3": 1637
+    },
+    "4": {
+     "2": 110,
+     "3": 544,
+     "4": 421
+    },
+    "5": {
+     "2": 6,
+     "3": 115,
+     "4": 119,
+     "5": 63
+    },
+    "6": {
+     "3": 17,
+     "4": 36,
+     "5": 10,
+     "6": 9
+    },
+    "7": {
+     "3": 5,
+     "4": 5,
+     "5": 3,
+     "6": 4,
+     "7": 7
+    },
+    "8": {
+     "5": 1,
+     "8": 1
+    }
+   }
+  },
+  "operator_vocab": {
+   "*": 24578,
+   "()": 548,
+   "-": 9843,
+   "/": 10658,
+   "+": 14793
+  }
+ },
+ "test": {
+  "split": "test",
+  "n_items": 1319,
+  "n_parsed_recomputable": 570,
+  "parse_reasons": {
+   "ok": 570,
+   "ambiguous_q_word": 122,
+   "ungrounded": 125,
+   "q_not_unique": 284,
+   "identity_render": 48,
+   "ambiguous_r_q": 82,
+   "no_equation": 16,
+   "answer_not_last": 48,
+   "no_q_literal": 22,
+   "rhs_or_dollar": 2
+  },
+  "m_hist": {
+   "0": 18,
+   "1": 65,
+   "2": 357,
+   "3": 364,
+   "4": 290,
+   "5": 138,
+   "6": 57,
+   "7": 21,
+   "8": 9
+  },
+  "mean_m": 3.246398786959818,
+  "mean_target_tokens_per_step_incl_eot": 8.606959364782812,
+  "token_share_raw": {
+   "fmt": 0.2324,
+   "opd_u": 0.161,
+   "val": 0.1343,
+   "op": 0.129,
+   "eot": 0.1162,
+   "eq": 0.1156,
+   "opd_q": 0.0558,
+   "opd_r": 0.0365,
+   "opd_k": 0.0151,
+   "mixed:op+opd_u": 0.0028,
+   "mixed:op+opd_k": 0.0005,
+   "mixed:eq+op": 0.0005,
+   "mixed:op+opd_q": 0.0002,
+   "mixed:eq+oth": 0.0001,
+   "oth": 0.0
+  },
+  "token_share_grouped": {
+   "format (' <<', '>>', EOT, '=')": 0.4642,
+   "operator": 0.129,
+   "operand_q (question literal)": 0.0558,
+   "operand_r (previous result)": 0.0365,
+   "operand_k (constant/word)": 0.0151,
+   "operand_unparsed_item": 0.161,
+   "value (RHS)": 0.1343,
+   "mixed/other": 0.0042
+  },
+  "first_content_token_category": {
+   "opd_q": 934,
+   "opd_r": 658,
+   "opd_u": 2544,
+   "opd_k": 131,
+   "op": 15
+  },
+  "parsed_only": {
+   "operand_kind_share": {
+    "q": 0.5137,
+    "k": 0.1489,
+    "r": 0.3373
+   },
+   "first_operand_kind": {
+    "q": 937,
+    "r": 658,
+    "k": 131
+   },
+   "operands_per_equation": {
+    "1": 8,
+    "2": 1516,
+    "3": 181,
+    "4": 15,
+    "5": 6
+   },
+   "eq_with_R_operand_share": 0.5585,
+   "distinct_question_numbers": {
+    "1": 64,
+    "2": 138,
+    "3": 205,
+    "4": 107,
+    "5": 38,
+    "6": 15,
+    "7": 2,
+    "8": 1
+   },
+   "mean_distinct_question_numbers": 2.956140350877193,
+   "used_question_literals": {
+    "1": 72,
+    "2": 160,
+    "3": 195,
+    "4": 101,
+    "5": 28,
+    "6": 13,
+    "8": 1
+   },
+   "operand_tokens_per_literal": {
+    "1": 3447,
+    "2": 139,
+    "3": 87
+   },
+   "value_tokens": {
+    "1": 1569,
+    "2": 116,
+    "3": 41
+   },
+   "dag_depth_dstar": {
+    "1": 11,
+    "2": 292,
+    "3": 183,
+    "4": 66,
+    "5": 16,
+    "6": 2
+   },
+   "mean_dstar": 2.6315789473684212,
+   "max_level_width": {
+    "1": 390,
+    "2": 158,
+    "3": 21,
+    "4": 1
+   },
+   "dstar_by_m": {
+    "1": {
+     "1": 8
+    },
+    "2": {
+     "1": 3,
+     "2": 209
+    },
+    "3": {
+     "2": 67,
+     "3": 117
+    },
+    "4": {
+     "2": 15,
+     "3": 50,
+     "4": 43
+    },
+    "5": {
+     "2": 1,
+     "3": 16,
+     "4": 12,
+     "5": 11
+    },
+    "6": {
+     "4": 10,
+     "5": 4,
+     "6": 2
+    },
+    "7": {
+     "4": 1,
+     "5": 1
+    }
+   }
+  },
+  "operator_vocab": {
+   "-": 810,
+   "()": 26,
+   "*": 1881,
+   "/": 784,
+   "+": 1390
+  }
+ }
+}
