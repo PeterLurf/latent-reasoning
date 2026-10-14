@@ -14739,6 +14739,31 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **One item set and one grid.** THINK-NECESSARY (R4) and LOOP-NOT-FORMED are evaluated on the **same items** (the 1,319 GSM8K test) and the **same K′ grid** (eval.json acc_by_kprime). A cell cannot read "loop formed" on one item set and "think-necessary" on another.
   - score_s200.py reads both from acc_by_kprime and prints K′0 beside them.
 
+**199-M1 result (2026-10-14 00:05 EDT; x from a CPU subagent's EMP_alpha_pass.json → theory/data/s199_m1_alpha.json via theory/seedstab199/m1_convert.py; theory/score_s199_m1.py). PREDICTED by the letter: ρ̄ = 0.391 ≥ 0.3 over all four n.**
+* **Per n:** ρ_9 0.05, ρ_10 0.658, ρ_11 0.431, ρ_12 0.424. n 9 alone is near 0.
+* **Beside it:** the continuous y′ (mean handle t 6–9) gives 0.362 (agrees); the open-loop P-spectrum x gives 0.243 (below 0.3); converged models only give 0.563.
+* **Reading:** across models, more per-pass delta decay means an earlier handle onset at n 9–12, most clearly within the converged class.
+  - The per-token α^L is a correlate of the **size-keyed depth limit (C2)**.
+  - It is not a correlate of the seed lottery: per the subagent's descriptive table, α_pass vs delta_cos_final has rank correlation −0.09 to +0.08, and the failed s188 has the second-highest α_pass.
+
+**Note 199-E1 (2026-10-14 00:05 EDT; descriptive, POST-HOC, final models only; files in theory/seedstab199/emp/; CPU fp32, gate replay error ≤ 2.9e-7). Where the converged and failed classes differ in the memory.**
+* **The delta write strength β, by pass (the main separator):**
+  - Converged models lower β pass by pass, e.g. rms s1 / s2 0.95 → 0.44 / 0.40 over passes 1 → 8, and switch to a near-hold after the last reduction. Retention rises to 0.81–0.86 by pass 8, with a jump at the completion pass t = n + 1.
+  - Failed models keep β at about 0.85–0.9 every pass (s3 0.80 → 0.89, den 0.94 → 0.86, hold 0.92 → 0.83; s188 partly, 1.02 → 0.73), and show no completion jump.
+  - Every pass sees the identical input, so a pass-dependent gate can only come from the memory read. **The converged models' gates track progress; the failed models' are nearly pass-invariant.**
+* **Contraction:**
+  - Failed models are more contractive on average (mean log singular value −0.73 vs −0.57; retention 0.64 vs 0.73), but with no margin (s188 ≈ the converged ones), and with no gap at passes 1–2.
+  - The isotropic decay α does not separate the classes.
+* **Channel ablation (late passes 5–8, aux exact):**
+  - Ablating the delta read kills every model (≤ 0.06).
+  - Ablating the **additive think-read kills the failed models' late passes** (≤ 0.08), against 0.22–0.88 in converged models. rms s1 / s2 compute almost entirely in the delta heads.
+  - So the failed models route step-to-step computation through the additive integrator. Its RMS-normalised read dilutes algebraically with each pass (docs/THEORY_SEEDSTAB Part I Lemma 1.3), which fits their per-step accuracy falling with pass index.
+* **Revised account (CONJECTURE; it replaces the "contractive delta channel" wording of §199's opening as the mechanism; the order parameter stands):**
+  - The working solution is a **progress-gated delta memory**: strong overwrite while computing, hold after completion. The failed solution offloads the computation to the additive integrator, under a pass-invariant overwrite.
+  - The donor-start test separates the two because a pass-invariant overwrite forgets the start.
+  - This also bears on overthinking: the converged models' post-completion hold (β ↓) is a learned version of Thm 3's post-completion contraction. The remaining drift after completion sits in the additive integrator and in α.
+  - §199-A's CSR acts on the read displacement of both channels, so it is unaffected. Its per-head-type λ logs (csr_lam_pre_med_add / _del) will show which channel it moves.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
