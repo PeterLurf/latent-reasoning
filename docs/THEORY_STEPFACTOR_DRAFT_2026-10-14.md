@@ -2,7 +2,9 @@
 
 > **Theory review (2026-10-14 18:10 EDT):** D1 (value tokens memory-free under teacher forcing: val top-1 M0 0.92 / 0.92 / 0.88 vs M_t 0.94 / 0.92 / 0.90 at t 1-3), the plan leak (exact from M_1 0.128 / 0.035 vs M_t 0.147 / 0.045 at t 2 / 3) and D5's code premise (ProsMem builds DeltaMem with add_norm None, prosqa168s2.py:119) verified against theory/stepfactor/diag_A.json and the code. Not registered; it runs only after §202 lands and needs the user's OK (~$3-3.9). Scripts moved from the scratchpad to theory/stepfactor/.
 
-Opus subagent for Theory. **Not registered.** It would run only after §202 (WARM-START) lands, and only with **the user's OK** (a peer's OK is not that). D:\Latent was read only: no repo edit, no git, no score script. CPU scripts and JSON are in this folder (§8.5). Literature should re-check the citations and the novelty marks (§9).
+Opus subagent for Theory. **Not registered.** It would run only after §202 (WARM-START) lands, and only with **the user's OK** (a peer's OK is not that). No git and no score script were run. CPU scripts and JSON are in theory/stepfactor/ (§8.5). Literature should re-check the citations and the novelty marks (§9).
+
+**Follow-up (2026-10-14 evening; Audit's RMS question, relayed by Theory):** D5b added, plus §1.5 (comparator m ≥ 3 data and the ProsQA contrast); §0 / §5 / §6 / §7 / §8 / §10 updated. **F-N (NOPASS only) is replaced by F-NR (NOPASS + RMS).** The clock measurement is theory/stepfactor/clock_A.py → clock_A.json.
 
 **Tags.**
 * **PROVED (code):** by inspection of the cited lines.
@@ -19,10 +21,10 @@ Opus subagent for Theory. **Not registered.** It would run only after §202 (WAR
 1. **The string target's loss is operand identity.** In A, 74% of the teacher-forced aux CE sits on operand tokens (DATA, POST-HOC). The value tokens are memory-free: 0.880 top-1 with zero memory against 0.894 (D1, PROVED + DATA). Only 2.2% of string tokens carry serial content (calc).
 2. **The plan is parallel.** Operators and pointers are a parse of the question (D2, PROVED). A already reads step t from M_1 at 0.86–0.92 of M_t (the plan leak, measured). Only values on R-chains (48% of steps) force passes.
 3. **Pointers for literals, values for results (D3).** The answer decoder sees q, so a pointer (≈ 1.5 bits) replaces the literal (≈ 6 bits). In A, though, 79–86% of operand errors are selection, not precision, so the pointer's precision gain is about +0.08.
-4. **The pooled THINK-NECESSARY test checks decoder self-computation, not seriality (D4, calc).** A serial loop whose decoder finishes one step gives K′1/K′10 = 0.51–0.78. On m ≥ 3 the ratio is ≤ 0.38. So Audit's pooled prediction is not supported as central; the m ≥ 3 reading is added.
-5. **NOPASS is not leak-closing here.** The non-RMS additive read is a free pass counter ∝ t (D5, PROVED), so Lemma 4's floor does not bind. The replacement tests are a probe and a counter swap.
-6. **Design.** WARM-HELPS: F (value from memory + operator + 2 content pointers) vs W, and F-NOPASS vs F, for $2.97 / $3.85 high. Otherwise F vs A, for $2.82 / $3.70.
-7. **Central predictions.** Value exact 0.35 / 0.22 / 0.13 by pass (Audit's ≥ 0.5 at pass 3 is not predicted). Accuracy +1.5 (−3 to +6). Pooled THINK-NECESSARY P ≈ 0.5 (W base) / 0.3 (A base); the m ≥ 3 version P ≈ 0.6.
+4. **Pooled THINK-NECESSARY checks decoder self-computation, not seriality (D4).** A serial loop whose decoder finishes a step reads 0.51–0.78. Floor-corrected, ProsQA reads 0.004 against GSM8K's 0.66–0.72 (the comparators' m ≥ 3 raw ratio is 0.88 / 0.70): the state target gives a serial loop, the plan target does not.
+5. **NOPASS alone is not leak-closing.** The non-RMS additive read is an exact counter (raw change exactly 1/t). RMS removes it exactly but leaves the delta transient: a probe separates passes 1 / 2 at 0.93, 2 / 3 at 0.72 and 3 / 4 at 0.63 (D5b). NOPASS + RMS closes the index only from t ≈ 3.
+6. **Design.** WARM-HELPS: F-P vs W, and **F-NR (NOPASS + RMS)** vs F-P, for $2.97 / $3.85 high. Otherwise F-P vs A, for $2.82 / $3.70. RMS alone is not proposed: D1–D4 predict no change from it.
+7. **Central predictions.** Value exact 0.35 / 0.22 / 0.13 by pass (Audit's ≥ 0.5 at pass 3 not predicted); accuracy +1.5. Pooled THINK-NECESSARY P ≈ 0.4 / 0.2 and DEEP P ≈ 0.4 / 0.25 (W / A base). F-NR is more serial than F-P on m ≥ 3 by ≈ 0.12, floor-corrected.
 
 ---
 
@@ -112,6 +114,28 @@ Opus subagent for Theory. **Not registered.** It would run only after §202 (WAR
     - This is the plan leak (L1), measured. It is Lemma 4's "the reader computes the missing reductions itself" (SEEDSTAB:817).
     - It accounts for A's K′1 ≈ K′10. Passes 2+ add about 0.01–0.02 absolute.
 
+### 1.5 Comparator m ≥ 3 data and the ProsQA contrast (DATA, POST-HOC)
+* **Sources:**
+  - GSM8K: note 202-1's reference data (0038e04f; boxes/runs_fsq/gsm_lat_aug_s1/ and gsm_lat_augrs_s1/eval_m_kprime.json; 3070 bf16, bs 64);
+  - ProsQA: §191 A, from boxes/runs_fsq/s191_stepaux_relabel_s1/eval.json, s168s2.acc_by_depth_kprime × n_by_depth (recomputed here).
+* **Floor-corrected ratio:** (K′1 − K′0)/(K′10 − K′0), so both tasks sit on one scale. On ProsQA K′0 is chance; on GSM8K it is the decoder's no-memory accuracy.
+
+| cell (stratum) | K′0 / K′1 / K′10 | raw K′1/K′10 | floor-corrected |
+|---|---|---|---|
+| §200 A, pooled | 0.083 / 0.125 / 0.147 | 0.85 | **0.66** |
+| §200 A, m ≥ 3 (n 879) | 0.064 / 0.097 / 0.110 | **0.88** | **0.72** |
+| §200 B (R_x), m ≥ 3 | 0.057 / 0.077 / 0.110 | 0.70 | 0.38 |
+| §191 ProsQA A, pooled (K′2 / K′4 = 0.505 / 0.582) | 0.483 / 0.485 / 0.950 | — | **0.004** |
+| ProsQA, depth 3–5 / ≥ 6 | 0.489 / 0.502 / 0.978; 0.480 / 0.479 / 0.940 | — | 0.027 / ≈ 0 |
+
+* **Noise:** deep K′10 = 0.110 at n 879 has SE ≈ 0.011.
+  - The raw deep ratio's SE is ≈ 0.03 if K′1-correct items nest inside K′10-correct ones, and ≈ 0.12 if they are independent. Take ≈ 0.08; eval_m_kprime has no per-item rows for a paired bootstrap.
+  - The floor-corrected ratio divides by 0.046, so its SE is ≳ 0.2. It is **descriptive only**.
+* **Reading (agreed with Theory's):** this is the state-vs-plan prediction of D2 / D4 / D6.
+  - **ProsQA:** the step target carries the chain *state*. The decoder can do no hop alone (K′0 is chance), and future states cannot be pre-stored at pass 1 (each needs the previous hop). The loop is strictly serial.
+  - **GSM8K:** the string carries the *plan*, which is parallel and stored at pass 1 (§1.4(d)), and the decoder computes values in context. One pass does most of the work, even on m ≥ 3.
+  - **B's lower deep ratio** under R_x fits L3 (recall feeds the one-pass shortcut). Descriptive, one seed.
+
 ---
 
 ## 2. Derivation
@@ -165,6 +189,9 @@ Opus subagent for Theory. **Not registered.** It would run only after §202 (WAR
 * **So the pooled rule tests s (how much the decoder computes itself), not seriality.** Items with m ≤ 2 are 33% of the test but carry most of the solvable mass when ρ < 1.
   - A's 0.85 exceeds every s ≤ 1 serial model. Its accuracy comes from the decoder plus a one-pass summary (s ≥ 2), not from the loop.
   - §1.4(d) shows the mechanism on the aux side: step t's content is already in M_1 (0.86–0.92 of M_t), read out through the pass token.
+  - **On the floor-corrected scale (§1.5)** the s ≤ 1 serial bound for m ≥ 3 is exactly 0, because no m ≥ 3 item can finish by K′1.
+    - ProsQA reads 0.004. GSM8K A reads 0.72 on m ≥ 3 (raw 0.88; B 0.38 / 0.70).
+    - So **the deep stratum is not protected by composition in practice:** the decoder plus the pass-1 store carries deep items too. That lowers DEEP's P (§6).
 * **What the target can do:** a value target puts v_m = y into M_m for d* ≥ 2 items. Wherever that is more accurate than self-computation, the answer CE gradient moves f_ans toward copying (s ↓).
   - A plan-only target does the opposite: f_ans must execute the plan in one forward pass (s ↑, an "executor" decoder).
   - The THINK-NECESSARY lever is therefore the value term. Even so, s ≥ 1 on easy last steps is the likely equilibrium (CONJECTURE).
@@ -175,7 +202,81 @@ Opus subagent for Theory. **Not registered.** It would run only after §202 (WAR
   - This is THEORY_SEEDSTAB_2026-10-13.md §5.1(iii), l.452–455: "the none read is ∝ t (a counter)". Under rms / den it is t-invariant.
 * For γ > 0 the additive read is a sum of the pass writes' values with positive weights φ(q)ᵀφ(k_tok) > 0, so it still grows ~t unless the values cancel.
 * The injected vector x + fade·W_o·read changes direction relative to the residual as t grows, so later blocks can decode t.
-* **So every decoder has the pass index with or without the pass token.** Under RMS (not this arm) only the geometric delta transient Δ*Pᵗ would carry it (SEEDSTAB §5.1(iv)).
+* **So every decoder has the pass index with or without the pass token.** Under RMS (not this arm) only the geometric delta transient Δ*Pᵗ would carry it (SEEDSTAB §5.1(iv)). It is measured in D5b.
+* **Measured on A (D5b, open regime):** the raw additive read changes by exactly 1/t between passes (1.000 / 0.500 / 0.333 / 0.250).
+* **Nested DATA, one seed, descriptive:** the counter is *used*, not just available. On NOPASS without RMS, per-pass magnitude acted as a pass counter: a fixed t = 7 onset with no token (note 187-10, THEORY.md:13567).
+
+**D5b. What `--add_norm rms` removes and what it leaves (Audit's question; PROVED (code + algebra) where stated; measurements DATA, POST-HOC on A's final model, theory/stepfactor/clock_A.json).**
+
+*The rms read and the measurement.*
+* **The read:** per head h and query position, N_h(r) = e^{s_add}·g_h·r / √(mean_DH(r²) + 10⁻⁶) (deltamem add_read :153–154, then read_fixed :164). The gain g_h = `add_gain` (init 1) is registered only under rms (:75–76).
+* **The measurement:**
+  - 200 Aug-valid items, CPU fp32.
+  - Reads at the 3 positions of the fixed NOPASS prompt [EOT, " Step", " :"], whose queries are item- and pass-independent.
+  - States M_1..M_8 in two regimes: **trained** (A's buffers, γ 1, fade 1) and **open** (γ forced to 0, the first 2k steps of any run).
+  - "rel" = ‖r_{t+1} − r_t‖/‖r_t‖ for t = 1..4.
+  - Probes: multinomial logistic for t from the read (100 fit / 100 test items, L2 by grouped CV). "Pairs" are binary t vs t+1 decisions.
+* A was trained without rms, so the "rms" rows apply the normalisation post hoc to A's states. They are a proxy for an rms-trained model.
+
+*(a) γ = 0: the counter is removed exactly (PROVED).*
+* r_t = t·r_1 (D5), so N_h(r_t) = e^{s}g_h·r_1/√(ms(r_1) + 10⁻⁶/t²). The only t-dependence is the ε term, of relative size ≈ 10⁻⁶/(2·ms) ≈ 10⁻¹².
+  - A's raw additive read is ≈ 3·10⁴ at t = 1: the post-gain norm is 8.5 with g_add = 2.5·10⁻⁴.
+  - The gains are pass-invariant.
+* **Measured:** rms rel = 0.000 at every t, and the rms-additive probe sits at chance (0.25 / 0.125). Without rms the raw rel is exactly 1/t.
+
+*(b) γ > 0: what survives in the normalised additive read (DERIVED, SEEDSTAB Lemma 1.3).*
+* Write r_t = Σ_{s≤t} a_s with a_s = ā + δ_s. Then N(r_t) = N(ā + (1/t)·Σ_{s≤t} δ_s), so all t-dependence comes through the running mean of the pass-specific writes.
+* The consecutive change is ≈ J_N·(δ_{t+1} − mean_{s≤t} δ_s)/(t+1) = O(‖δ‖/(t‖ā‖)), algebraic in 1/t.
+* So under rms an additive clock exists only if the passes write different content through the closed loop (γ·fade·W_o). **It must be learned, it is not free, and it fades ∝ 1/t.**
+* **Measured** (trained regime, synthetic rms): rel 0.20 / 0.11 / 0.079 / 0.063 (≈ 0.2/t); probe for t ∈ 1–4: 0.51 (chance 0.25); pairs 0.76 / 0.67 / 0.60.
+
+*(c) What rms does not remove: the delta transient (PROVED for γ = 0; DATA).*
+* **The map.** With identical input and γ = 0, one pass composes the token updates S ← αS(I − βkkᵀ) + βvkᵀ into an affine map Sd ← Sd·P + C, with P = Π_τ α_τ(I − β_τk_τk_τᵀ) in token order.
+  - From Sd_0 = 0: Sd_t = C(I + P + … + P^{t−1}), and r_{t+1} − r_t = C·P^t·q̂.
+  - With a single rate π, rel(t) = π^t(1−π)/(1−π^t): 0.50 / 0.17 / 0.07 at π = 0.5. Several modes give a slower tail.
+* **Measured** (A's gate biases are still ≈ init, 4.97–5.03 / 0.02–0.06):
+
+  | delta read | rel t 1→2 / 2→3 / 3→4 / 4→5 | probe t ∈ 1–4 (chance 0.25) | pairs 1v2 / 2v3 / 3v4 | probe t ∈ 1–8 (chance 0.125) |
+  |---|---|---|---|---|
+  | open (γ 0) | 0.42 / 0.20 / 0.12 / 0.078 | 0.675 | **0.93 / 0.72 / 0.63** | 0.375 |
+  | trained (γ 1) | 0.41 / 0.20 / 0.13 / 0.10 | 0.668 | 0.90 / 0.77 / 0.66 | 0.373 |
+  | rms additive + delta, open / trained | — | 0.655 / 0.665 | 0.90 / 0.75 / 0.62; 0.89 / 0.79 / 0.69 | 0.37 / 0.42 |
+
+* **Reading:**
+  - Successive rel ratios are 0.48 / 0.59 / 0.66: a multi-rate tail.
+  - Item-to-item spread of the read is ≈ 0.90 of its norm, so it dwarfs the clock. The clock's direction is shared across items, though, so a linear reader separates passes 1 / 2 well, 2 / 3 partly, and ≥ 3 weakly.
+  - **The clock is strongest exactly at GSM8K's t ≤ 2 (mean m 2.6), as Audit expected.**
+  - Descriptive: the additive read's norm grows 8.5 → 55.8 over t 1–8 while the delta read saturates (23.7 → 34.0), so in A the counter dominates the injected read from t ≈ 5.
+
+*(d) Can Lemma 4's floor bind under NOPASS + RMS? (DERIVED from (a)–(c) + L4's bottleneck argument.)*
+* The floor is 2 ln 2 − 4ε_t per differing token pair. The reader's memory input is a fixed linear image of S (L4), so the linear probe measures how distinguishable passes are to it.
+  - **t = 1 vs 2:** separable (0.93), so the floor does not bind.
+  - **2 vs 3:** partly (0.72).
+  - **3 vs 4 and later:** weak (0.63, falling), so the floor binds progressively from t ≈ 3.
+* **What that covers:** Aug-valid aux pass-items split 31% / 30% / 20% / 19% over t = 1 / 2 / 3 / ≥ 4 (diag_A).
+  - NOPASS + RMS still leaves an index for about 60% of pass-items.
+  - It penalises "store at pass 1 + index" on the ≈ 40% at t ≥ 3, which are the deep items' later steps that THINK-NECESSARY-DEEP reads.
+* **Contrast:** on nested, §190 (RMS × NOPASS) removed the fixed-t edge (THEORY.md:13838). The relevant t there was 7–12, where the transient has long faded.
+
+*(e) A single-change RMS cell (string target, pass token kept, + rms vs W / A) (DERIVED + nested DATA, POST-HOC).*
+* **D1–D4 predict no change.** They concern the target's information content and the decoder's self-computation, and none involves the read normalisation.
+  - A's measured leak runs through the pass token (§1.4(d), M_1 read with prompt t), which rms does not touch.
+  - So nothing predicts a change in K′1/K′10 or accuracy: central Δ = 0, within ±T.
+* **The nested RMS record is about beyond-training and late passes:**
+  - DEEP without the reweight, and depth beyond training: §185 s1 0.587 vs NOFADE 0.174 (THEORY.md:13099); §189 two-seed 0.625 vs §184's 0.576 (:13582);
+  - seed robustness (:13740);
+  - size-free early steps (187-6, :13209);
+  - STABLE with WINDOW (§193, :14981);
+  - and under RMS the read still carries size by direction (187-7, 0.895, :13275): rms removes magnitude, not information.
+* GSM8K's test depth lies inside training (m ≤ 8), and m ≥ 5 items are 17% of the test at ≈ 0.05 accuracy. So those effects have little to act on in one seed. **A single-change RMS cell is not proposed.**
+
+*(f) Recommendation (within ≈ $4; detail in §5–§7).*
+* **Options:**
+  - **F-N (NOPASS only)** tests D5's null. Given 187-10, the NOPASS model will use the magnitude counter, so F-N ≈ F-P is the likely and weakly informative outcome.
+  - **F-NR (NOPASS + RMS)** removes both free index channels and leaves only the measured delta transient (strong at t ≤ 2, fading from 3) plus any learned clock. It is a joint change, but it is the stronger leak test and the composition that worked on nested (§190).
+  - **RMS as a base change for both F cells** would make F vs W differ by two changes. **Rejected.**
+* **Recommended: replace F-N by F-NR**, at unchanged cost.
+* On the A base only F-P runs, since two 24k cells exceed $4.
 
 **D6. Relation to ProsQA (DATA + CONJECTURE).**
 * **Correction to the brief:** ProsQA step strings are 8–11 tokens, not one (" Every sc rom p us is a rem p us ."). Each pass does add only **one new concept**: 38 names with 32 distinct first tokens, ≤ 5.2 bits. The subject repeats the previous object.
@@ -210,11 +311,12 @@ Opus subagent for Theory. **Not registered.** It would run only after §202 (WAR
   - **Removes:** the prompt index. P is identical across passes.
   - **Does not remove:** the index itself. The additive counter re-supplies it at zero learning cost (D5), so plan-at-pass-1 + counter is reachable from step 0.
   - **Is it cheaper than serial computation?** For plan content, the serial solution *is* a counter plus the parse, because the plan has no serial dependency (D2), so they coincide. For level ≥ 2 values the counter does not help: the content is absent at pass 1.
-  - So F-NOPASS is predicted ≈ F on the serial readings (DERIVED|D5, A-OP). The cell's value is to test that claim.
+  - So F-NOPASS is predicted ≈ F on the serial readings (DERIVED|D5, A-OP). That cell is therefore replaced by F-NR, NOPASS + RMS (D5b(f)).
   - **Lemma 4** (THEORY_SEEDSTAB:808–818, PROVED; the derivation behind NOPASS): without the token, two passes with indistinguishable states and different targets pay ≥ 2 ln 2 nats per differing token.
     - Its premise is a contraction (L < 1, indistinguishable states).
     - The additive map A ↦ A + a is a translation (Lipschitz 1), and it keeps passes distinguishable.
-    - **So the floor does not bind in this arm** (DERIVED). It would bind under RMS reads, a separate architecture change (F3).
+    - **So the floor does not bind in this arm** (DERIVED).
+    - Under RMS reads (a separate architecture change, F3) it binds only where the delta transient has faded, from t ≈ 3 (D5b(d), measured).
   - **Evidence grading:**
     - "4/4 NOPASS models in the converged class vs 6/11 with the token" is **DATA, POST-HOC, P = 0.15** (THEORY.md:14358; SEEDSTAB:692) and carries no reading.
     - §187's depth claim **FAILED at 2/2** under a basin-entry confound (THEORY.md:13747).
@@ -268,7 +370,7 @@ Opus subagent for Theory. **Not registered.** It would run only after §202 (WAR
 
 | §202 reading (W − A, registered) | base init | cells | comparator |
 |---|---|---|---|
-| **WARM-HELPS** (≥ +2.8) | C's model.pt via `--init_from` (W's recipe, 12k) | **F-P** and **F-N** | F-P vs **W**; F-N vs F-P |
+| **WARM-HELPS** (≥ +2.8) | C's model.pt via `--init_from` (W's recipe, 12k) | **F-P** and **F-NR** | F-P vs **W**; F-NR vs F-P |
 | NEUTRAL or WARM-HURTS | raw GPT-2 (A's recipe, 24k) | **F-P** only | F-P vs **A** |
 | §202 voided / not landed | — | nothing runs | — |
 
@@ -284,8 +386,14 @@ Opus subagent for Theory. **Not registered.** It would run only after §202 (WAR
   3. **Pointers j = 1, 2:** logits ⟨W_pj·h_last, wte[c]⟩ (wte detached) over C_t = {first tokens of the question's literals} ∪ {first tokens of previous results} ∪ {the target token}; the label is the operand's first token.
      - Pointers are defined on recomputable items only (60.5%) and masked otherwise. The value is defined wherever the RHS is a number token.
   - **Aggregation:** L_aux,t = the mean of the terms present, so there is one mean CE per pass as in the string arm. λ = 1 as the base.
-* **F-N (factor, NOPASS):** F-P plus `--aux_nopass`, with P = [EOT, " Step", " :"] for every term, in training and in every aux eval.
+* **F-NR (factor, NOPASS + RMS):** F-P plus `--aux_nopass` and `--add_norm rms`.
+  - P = [EOT, " Step", " :"] for every term, in training and in every aux eval.
+  - The additive reads are RMS-normalised per head, with a learned gain (deltamem's existing §185 path).
+  - It removes both free index channels (D5b). It is a **joint change** vs F-P, stated as such; attribution between NOPASS and RMS would need F-R (pass token + rms), a later decision.
 * **Not run:**
+  - **F-N (NOPASS only):** replaced by F-NR. D5 and 187-10 predict the magnitude counter takes over the token's role, so F-N ≈ F-P is weakly informative (D5b(f)).
+  - **String + RMS** (single-change): D1–D4 predict no change (D5b(e)).
+  - **RMS as a base change for both F cells:** F vs W would differ by two changes.
   - **String × NOPASS** (§187's question on GSM8K): the 2×2's fourth corner. The derivation gives NOPASS a role only once the target has serial content, and the counter neutralises it here (L4). A third W-base cell would also cross $4 (§7).
   - **V (value only, zero new parameters):** the minimal alternative, and the substitute second cell if Audit prefers isolating the plan heads (F − V) over NOPASS.
   - **WINDOW / halting:** not stacked, for three reasons:
@@ -300,18 +408,22 @@ Opus subagent for Theory. **Not registered.** It would run only after §202 (WAR
 
 ### 5.4 Readings (paired on the 1,319 test items)
 * **Thresholds:** T = 0.028 (2 SE, pooled); T_D = 0.034 (= T·√(1319/879), the m ≥ 3 stratum).
-* **ACC:** F − comparator reads LIFTS (≥ +T) / MATCHES / HURTS (≤ −T). F-N − F-P is read the same way.
+* **ACC:** F − comparator reads LIFTS (≥ +T) / MATCHES / HURTS (≤ −T). F-NR − F-P is read the same way.
 * **LOOP-FORMED (per cell):** K′10 − K′0 ≥ T.
 * **THINK-NECESSARY (pooled, as registered):** K′0 ≤ 0.5·K′10 and K′1 ≤ 0.5·K′10. **SHORTCUT-RATIO** = K′1/K′10 is reported per cell, with F's minus the comparator's.
 * **THINK-NECESSARY-DEEP (new):** the same rule on m ≥ 3 items (n 879), from a new eval field `acc_by_m_kprime`.
   - **SERIAL-GAIN-DEEP** = (K′10 − K′1) on m ≥ 3, as F minus the comparator: MORE-SERIAL if ≥ T_D.
+  - The floor-corrected ratio (K′1 − K′0)/(K′10 − K′0) is reported beside it, descriptive only (SE ≳ 0.2, §1.5).
+  - Per-item rows are saved so that the ratio's paired SE can be bootstrapped.
+* **CLOCK (per final model, eval-only, clock_A.py's protocol):** the pass probe from the delta read and from the (rms) additive read, pairs 1v2 / 2v3 / 3v4.
+  - **CLOCK-REBUILT** (F-NR) if 3v4 ≥ 0.90, i.e. a learned clock replaced the removed channels.
 * **VALUE-EXACT(t):** greedy value from M_t, by pass and by R / Q grounding.
   - The comparator's like-for-like proxy is the value tokens right inside its own greedy string (VALUE-IN-STRING).
 * **PLAN-ACC(t):** operator-head and pointer accuracies by pass. The comparator's proxies are the signature and the first-operand token in its greedy string.
 * **Leak diagnostics:**
   - PLAN-LEAK and VALUE-LEAK for the pass-token cells and the comparator (M_1 with P_t);
   - PROBE-LEAK for all;
-  - COUNTER-SWAP for all, read primarily for F-N;
+  - COUNTER-SWAP for all. Under rms the synthetic magnitude counter is inert by D5b(a), so for F-NR only the head-type swaps are informative;
   - every one against the M_0 floor.
 * **Descriptive:** acc, acc_by_m, aux_exact_by_grounding, IDLE-PASSES, STABLE-12 / 16, path_indep, recall share, the valid curve, entry(0.5 / 0.1), clip rate and the per-term aux CE logs.
 
@@ -326,12 +438,27 @@ Opus subagent for Theory. **Not registered.** It would run only after §202 (WAR
 | P-F3 | **VALUE-SERIAL:** on ℓ ≥ 2 R-steps at t = 2–3, VALUE-EXACT from M_t ≥ M_0 floor + 0.10, and VALUE-LEAK ≤ floor + 0.05 | D2(b), A-OP | VALUE-LEAK ≥ 0.7 × VALUE-EXACT from M_t (a one-pass chain: A-OP fails) |
 | P-F4 | VALUE-EXACT by pass ≈ 0.35 / 0.22 / 0.13 (range at pass 3: 0.05–0.25); A base 0.30 / 0.17 / 0.09 | calc. Pass 1 ≈ A's plan-right rate (string exact 0.32 ÷ in-context value 0.94 ≈ 0.34) × latent arithmetic (0.8–0.9). Later passes: × the R-identity rate (A: 0.21–0.25 from M_t; F trains it directly) | — (central only) |
 | P-F4a (**Audit's**, registered beside) | VALUE-EXACT(3) ≥ 0.5 | Audit's lead | < 0.5. **This derivation predicts the falsification (P ≈ 0.05).** Audit's 0.08 baseline is the full-string exact; the TF value token is already 0.89 and memory-free (§1.4(b)), so the two are not comparable |
-| P-F5 | SHORTCUT-RATIO(F) ≤ SHORTCUT-RATIO(comparator) − 0.10 (central −0.2) | D4 (s ↓ under the value target) | F's ratio ≥ the comparator's − 0.03 |
-| P-F5a (**Audit's**) | pooled THINK-NECESSARY passes for F | Audit's lead | K′1 > 0.5·K′10. The derivation gives P ≈ 0.5 (W base) / 0.3 (A base): **not supported as a central outcome** |
-| P-F6 | THINK-NECESSARY-DEEP passes for F (central m ≥ 3 ratio 0.40), and MORE-SERIAL vs the comparator | D4 | F's deep ratio > 0.5 (the value target did not force serial use where D2 / D4 say it must) |
+| P-F5 | SHORTCUT-RATIO(F) ≤ SHORTCUT-RATIO(comparator) − 0.10 (central −0.15; A base: A's 0.85 → F ≈ 0.70) | D4 (s ↓ under the value target) | F's ratio ≥ the comparator's − 0.03 |
+| P-F5a (**Audit's**) | pooled THINK-NECESSARY passes for F | Audit's lead | K′1 > 0.5·K′10. The derivation gives **P ≈ 0.4 (W base) / 0.2 (A base)**, lowered from 0.5 / 0.3 by the comparator deep data (§1.5): **not supported as a central outcome** |
+| P-F6 | THINK-NECESSARY-DEEP passes for F: **P ≈ 0.4 (W base) / 0.25 (A base)**, lowered from 0.6. Central deep raw ratio 0.60 (W base) / 0.70 (A base, vs A's 0.88 and B's 0.70; SE ≈ 0.08); MORE-SERIAL vs the comparator, central +0.03 (≈ T_D; P ≈ 0.45) | D4 + §1.5 | F's deep ratio ≥ the comparator's − 0.05 (the value target did not move the deep stratum at all) |
 | P-F7 | ACC: MATCHES or LIFTS; central +1.5 (range −3 to +6) | D3(b), D4 | HURTS (≤ −2.8) |
-| P-F8 | F-N ≈ F-P: ACC within ±T, \|Δ deep ratio\| ≤ 0.10, and COUNTER-SWAP plan heads from M̃_t ≥ 0.7 × from M_t | D5, L4 | F-N − F-P ≥ +T with deep ratio −0.10 or more (then NOPASS mattered: the counter was not used) |
+| P-F8 (F-NR vs F-P) | ACC within ±T (central −0.5, range −4 to +3). Deep floor-corrected ratio lower by ≈ 0.12 and raw deep ratio lower by ≥ 0.08. PROBE-LEAK(3) on plan targets ≤ 0.7 (F-P ≥ 0.8). Plan-head CE at t ≥ 3 ≥ F-P's + 0.05 nats. CLOCK 3v4 ≈ 0.70 (not rebuilt) | D5b(c, d) + Lemma 4: store-at-pass-1 + index is penalised from t ≈ 3 | raw deep ratio ≥ F-P's − 0.02 **and** PROBE-LEAK(3) ≥ 0.8 (closing the free channels changed nothing) |
 | P-F9 (descriptive) | VALUE-EXACT is ≥ 0.10 lower on R-steps than on Q-steps | D2(b) | the gap is ≤ 0.02 |
+
+**Why the comparator's 0.88 lowers P-F6 from 0.6 (answering Theory).**
+* D4's ≤ 0.38 deep bound assumed the decoder finishes at most one level itself (s ≤ 1). The comparator's deep 0.88 (floor-corrected 0.72) shows the decoder plus the pass-1 store carries deep items too.
+* For F to pass, its deep K′10 must reach ≥ 2·K′1. With K′1 near A's 0.097, that means deep K′10 ≥ 0.19: +0.08 over A's 0.110, about twice A's entire deep loop gain (0.046).
+* It is reachable only through the s ↓ mechanism. If the decoder learns to trust a memory value, M_1's value is wrong for deep items and K′1 falls toward K′0.
+* The W base starts with K′0 ≈ 0.022 (C forced direct), which leaves more room. That is why its P stays higher.
+
+**What F-NR's outcomes would mean (vs F-P).**
+
+| outcome | meaning | next (each its own decision) |
+|---|---|---|
+| **MORE-SERIAL:** deep ratio lower by ≥ 0.08, PROBE-LEAK(3) ≤ 0.7, ACC not HURTS | the free index channels let F store at pass 1. Closing them forces serial use at t ≥ 3 | F-R (pass token + rms) to attribute; D5b(e) predicts F-R ≈ F-P |
+| **NO-CHANGE + CLOCK-REBUILT** (3v4 ≥ 0.90) | a clock is cheap to learn, so removing channels cannot close the leak | the lever is target content (D2) or R_x (L3, §1.5's B) |
+| **NO-CHANGE**, clock not rebuilt | the index was not what kept F one-pass. Seriality is set by A-OP / content | drop the index line on GSM8K |
+| **HURTS** (≤ −T), with plan-head CE at t ≥ 3 up | Lemma 4's floor paid as loss, with no learned clock: NOPASS + RMS is costly at this budget | keep F-P's prompt; consider HOLD / content changes |
 
 **No derivation predicts SOTA** (budget-limited, as 200-4). A one-seed reading is worded "on seed 1".
 
@@ -346,7 +473,9 @@ Opus subagent for Theory. **Not registered.** It would run only after §202 (WAR
 | comparator eval-only re-run (3090; A's eval was 192 s) | ≈ 0.2 | 0.15 |
 | gates (CPU / local smokes; optional `--time_steps 200` on the cell's host) | — | ≈ 0 (+0.03) |
 
-* **W base (F-P + F-N + W eval-only): $2.97 central / $3.85 high / $3.55 at A's rate.** That is under $4, with only $0.15 of margin at high.
+* **W base (F-P + F-NR + W eval-only): $2.97 central / $3.85 high / $3.55 at A's rate.** That is under $4, with only $0.15 of margin at high.
+  - The rms read adds a per-head normalisation and no state, so F-NR's cost equals F-N's.
+  - The clock probe (eval-only, CPU or a local card) is ≈ $0.
 * **A base (F-P + A eval-only): $2.82 / $3.70 / $3.40.**
 * **Flags (> $4):**
   - adding the 2×2's fourth W-base cell: $4.38 / $5.70;
@@ -364,12 +493,18 @@ Opus subagent for Theory. **Not registered.** It would run only after §202 (WAR
 * `aux_logits`: `pre = self.aux_prompt(t)`; the assert compares `x[:, :len(pre)]`.
 * `aux_greedy`: the prompt from `aux_prompt(t)`; returns `x[:, len(pre):]`.
 * **Alternative with zero risk to ProsMem:** a subclass `FactorMem(ProsMem)` in a new boxes/gsm8k_factor.py, holding nopass and the factor heads. gsm8k_stepaux constructs it only when a new flag is on.
+* **RMS plumbing (D5b, for F-NR):**
+  - `ProsMem.__init__(self, g, add_norm=None)` builds `DM.DeltaMem(g, 6, "top", add_norm=add_norm)`. The default is the identical call (bitwise default path). With "rms", `mem.add_gain` is registered.
+  - No deltamem code changes: this is the §185 / §189 / §190 / §193 path.
+  - With `--init_from` (W base), only the trunk g is loaded, so there is no state_dict conflict with `mem.add_gain`.
+  - The step-0 g_add calibration then runs on the rms read (deltamem records post-normalisation norms), so the ratio is computed on what is read.
 
 ### 8.2 boxes/gsm8k_stepaux.py: new flags
 * `--aux_target {string, value, factor}` (default `string` = today's path):
   - `value`: L_val only.
   - `factor`: L_val + L_op + L_ptr,1 + L_ptr,2, mean of the present terms.
 * `--aux_nopass`: sets `m.nopass`. It applies to aux_logits, aux_greedy, the factor terms and every aux eval.
+* `--add_norm {"", rms}` (default ""): passed to ProsMem and recorded in args.json. `--eval_only` asserts that it matches args.json, because a strict load would otherwise fail or silently differ.
 * `--op_vocab <json>`: the frozen top-16 signature list, computed once from the full filtered train set (counts and tie order recorded). It is written to the out dir and its sha256 to args.json.
 * **Heads:** constructed only when `--aux_target factor`, with a dedicated torch generator (seed + 30000) so that the global RNG stream is untouched.
 
@@ -404,12 +539,20 @@ Opus subagent for Theory. **Not registered.** It would run only after §202 (WAR
 5. **Eval-path identity:** with the heads deleted after training (or never called), `answers()` is identical. The K′ grid and test items are unchanged (200-1).
 6. **mem_check** at the longest item with `--aux_target factor`, which must stay at micro 4.
 7. **Fixtures:** the scorer reads every new field by name on a synthetic eval.json (the scorer field-path rule).
+8. **RMS default path:** without `--add_norm`, the state_dict has no `mem.add_gain` and gate 1 holds.
+9. **RMS-INVARIANCE (fp64, CPU; D5b(a) as a gate):**
+   - Setup: `--add_norm rms`, γ = 0, fade 1, W_o ~ N(0, 10⁻³).
+   - The additive read at the aux prompt after t = 1..4 passes must be identical to ≤ 10⁻¹² relative.
+   - Sanity: the delta read differs, and without rms the raw additive read scales exactly ∝ t.
+10. **Gradflow (rms):** `mem.add_gain.grad` ≠ 0 from L_aux and from L_ans.
+11. **CLOCK:** clock_A.py's probe, run eval-only on each final model, for the CLOCK reading (§5.4).
 
-Scripts in this folder:
+Scripts in theory/stepfactor/:
 * step_stats.py → step_stats.json;
 * calc_bits_serial.py → calc_bits_serial.json;
 * serial_share.py → serial_share.json;
-* diag_A.py → diag_A.json.
+* diag_A.py → diag_A.json (imports step_stats.py);
+* clock_A.py → clock_A.json (D5b; about 10 min CPU).
 
 All are CPU, ≤ 3 threads, Idle priority.
 
@@ -458,7 +601,14 @@ All are CPU, ≤ 3 threads, Idle priority.
 | D4 value target lowers s; plan target raises it | CONJECTURE (gradient-preference argument) |
 | D5 free additive counter | PROVED (code + algebra) for γ = 0; DERIVED for γ > 0 |
 | L4 Lemma 4's floor does not bind here | DERIVED (premise fails: translation, not contraction) |
-| L4 F-N ≈ F-P | DERIVED\|D5, A-OP |
+| L4 F-N ≈ F-P (cell replaced by F-NR) | DERIVED\|D5, A-OP; nested 187-10 (the magnitude counter used) DATA, POST-HOC |
+| D5b(a) rms removes the γ = 0 counter exactly (≈ 10⁻¹²) | PROVED (code + algebra); DATA (rel 0.000, probe at chance) |
+| D5b(b) under rms an additive clock must be learned and fades ∝ 1/t | DERIVED (Lemma 1.3); DATA proxy (synthetic rms on A: rel ≈ 0.2/t, probe 0.51) |
+| D5b(c) delta transient: Sd_t = C Σ P^s; a clock strongest at t ≤ 2 | PROVED for γ = 0; DATA (pairs 0.93 / 0.72 / 0.63 open, 0.90 / 0.77 / 0.66 trained) |
+| D5b(d) Lemma 4's floor binds under NOPASS + RMS only from t ≈ 3 (≈ 40% of pass-items) | DERIVED from (a)–(c) + the L4 bottleneck; DATA |
+| D5b(e) RMS alone predicts no change in K′1/K′10 or accuracy | DERIVED (no D1–D4 term involves the normalisation); nested record DATA, POST-HOC |
+| P-F8 (F-NR more serial at m ≥ 3) | DERIVED\|D5b + Lemma 4; central values CONJECTURE |
+| §1.5 comparator deep ratios 0.88 / 0.70; ProsQA floor-corrected 0.004 | DATA, POST-HOC |
 | D6 ProsQA = state target | DATA + CONJECTURE |
 | D7 factoring helps exactness | DERIVED\|WARMCOT A1 + Lemma S |
 | L6 C1 preserved | PROVED (code), conditional on the §8 contract |
@@ -479,3 +629,5 @@ All are CPU, ≤ 3 threads, Idle priority.
 7. **Single seed, one GPU class** (3090), and the comparators ran on other 3090 hosts. Same-class pairing is accepted; it is not bitwise.
 8. **Post-hoc:** A's eval.json and §1.4's diagnostic were read while drafting, and P-F4 / P-F7 were set with that knowledge. **§202's outcome is not assumed**: the branches are fixed in §5.1.
 9. **Shared-module edit:** if ProsMem is edited rather than subclassed, a running §202 / §191 eval could lazily import the new code. Use the subclass, or edit only when no job imports prosqa168s2.
+10. **F-NR is a joint change** (NOPASS + RMS), so a difference vs F-P cannot be split between the two. D5b(e) predicts RMS alone does nothing on these readings; F-R would test that.
+    - D5b's clock numbers come from A, a no-RMS model, with RMS applied post hoc. An rms-trained model's delta dynamics may differ, and the CLOCK reading on F-NR's own final model is the check.
