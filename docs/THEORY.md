@@ -286,7 +286,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 196 | GROKFAST-S3: RMS s3 (never entered) + Grokfast-EMA (α 0.98, λ 2); exact same-seed control; ACCELERATES (entry ≤ 25k, final < 0.1) / NO-EFFECT / partial | registered | **open** |
 | 197 | (reserved: BUDGET-ANNEAL-S3, drafted; registers only if §196 reads NO-EFFECT) | — | — |
 | 198 | CHEAP-THINK (the user's request): an all-cached family; (a) cached INJECT, (b) MEM-HIGH l_m 9, (c) READ-SLOTS + RMS + step aux; CHEAPER-EQUAL / CHEAPER-WORSE / UNCLEAR-ENTRY / FAILS vs (a); $10 cap | registered | **open** |
-| 199 | CONTRACTION-TRAP (the user's seed-stability request): order parameter s182.path_indep separates converged / failed across 19 models; M1 = within-n rank test, per-pass delta decay ᾱ vs handle onset (ρ̄ > 0 predicted; falsified ≤ 0 or < 0.3); method + test to follow as amendments | registered (M1 only) | **open** |
+| 199 | CONTRACTION-TRAP (the user's seed-stability request): order parameter s182.path_indep separates converged / failed across 19 models; M1 = within-n rank test, per-pass delta decay ᾱ vs handle onset (ρ̄ > 0 predicted; falsified ≤ 0 or < 0.3); 199-A method CSR (completion-switched step-ratio target), RMS s1–s3 on 3090 paired with s185, SUPPORTED / MIXED / FALSIFIED (P-A5 on checkpoint path_indep) | registered (M1, 199-A) | **open** |
 
 ## Live sections
 
@@ -14333,6 +14333,117 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **score_s199_m1 prints the n used and the n dropped beside ρ̄.**
 * **If fewer than 3 of the 4 n are usable, M1 reads INSUFFICIENT,** not PREDICTED / FALSIFIED.
 * The fixture checks cover all three cases: 4 of 4; 3 of 4 with n 9 dropped; 2 of 4 → INSUFFICIENT.
+
+**Amendment 199-A (2026-10-13 22:05 EDT; before any §199 run; Literature 67329f72 (novelty), Audit's review (5 points, all in)). The derivation, the method (CSR: a completion-switched step-ratio target) and the predictions.**
+
+*Derivations:* docs/THEORY_SEEDSTAB_2026-10-13.md (Opus subagents per the user; reviewed by Theory; every claim tagged PROVED / DERIVED-UNDER-ASSUMPTIONS / CONJECTURE). Scripts are in theory/seedstab199/.
+
+**A1. Why seeds split (the account).**
+1. **Resolution bound (PROVED).** Let the pass map be κ-contractive (κ < 1) in a norm where a pass-free decoder is L-Lipschitz.
+   - The margins of consecutive distinct steps satisfy m_t + m_{t+1} ≤ 2Lκ^t d₀, so at most 1 + log(Ld₀/μ)/log(1/κ) steps decode at margin μ.
+   - Start states are forgotten as κ^t.
+   - The measurable form is in read space: Π g_s ≥ μ/(L_R‖ΔR‖) is needed.
+   - A global Banach contraction cannot compute chains of every length (Prop. 3.2). Multi-basin local contraction can (Thm 3, the CASM class).
+   - The harmful forgetting is of **progress** before completion. Transverse forgetting is error correction (the Anil 2211.09961 reconciliation).
+2. **The init is inside the contractive regime (PROVED + computed on the GPT-2 weights).**
+   - The open-loop delta pass map has ‖P‖ ≤ Π α. At init ‖P‖ ≈ α^L: 0.91 at n 4, 0.77 at n 12, 0.05 at ProsQA length.
+   - For γ = 0 (steps ≤ 2000) the loop gain is identically 0. The write ignores the read, and under RMS the additive read cannot see the pass index.
+   - So the first 2k steps train only open-loop (contractive / pass-blind) memories: the bad regime gets a deterministic head start.
+3. **The pass token removes the aux penalty on contraction (PROVED).**
+   - Without a pass token, two passes whose states are indistinguishable but whose targets differ pay ≥ 2 ln 2 nats per differing token.
+   - With the token, the shared-trunk aux decoder can compute the missing reductions itself.
+   - DATA (**POST-HOC**, carries no reading): 4 / 4 NOPASS models are in the converged class, vs 6 / 11 with the token (P = 0.15).
+4. **Selection probability (PROVED for the linearised SDE, MC-checked).**
+   - For a selection coordinate dm = (b + a m − c m³) dt + σ dW from m₀ ≈ 0: P(computing basin) = Φ(μ_Z/σ_Z).
+   - Noise-side levers (batch, window length, Grokfast's amplification, ramp speed) scale z only as √ (or ^¼). They need 15–42× to move P from 0.6 to 0.95. A tilt (bias) needs 4–7×.
+   - DATA (**POST-HOC**, found after looking; carries no reading): the failed seeds were AHEAD at 8k. Answer-CE ranks {1, 2, 4, 6} of 10, p 0.033; aux CE the 3 lowest of 9, p 0.012. This is the fast-dead-end (hare) signature.
+5. **Assumptions:**
+   - a one-dimensional selection coordinate;
+   - the threshold / race mapping (CONJECTURE);
+   - "contraction causes non-entry" is not yet shown (final models only). Experiments' checkpoint probe and P-A5 test it.
+
+**A2. Method: CSR, the completion-switched step-ratio target (training-loss term; model, input, test unchanged; Literature 67329f72).**
+* **Naming:** "step-ratio", not "Lyapunov". λ_t is 2607.09698's Eq. 3 step-size ratio, taken in read space. ΔR is the realised read displacement, not verified progress.
+* **R_t:** the block-6 read contribution r(S_t) = fade · W_o[g_add·oa ‖ g_del·od] at the real think tokens, flattened per item. It is decoder-visible, so read motion that W_o ignores does not count.
+  - Pass t+1 computes it anyway. R_K costs one read_fixed on the cached h6.
+* **d_t** = sqrt(‖R_{t+1} − R_t‖² + ε₀²‖R_t‖² + 1e-12), with ε₀ = 1e-3 (smooth: no 0/0 gradient while W_o ≈ 0). **λ_t** = log d_t − log d_{t−1}, scale-free.
+* **Per item, with its n (training only):**
+
+  L = mean_{2≤t≤n−1} τ·softplus((λ_min − λ_t)/τ) + mean_{n≤t≤K−1} τ·softplus((λ_t − λ_post)/τ)
+
+  with λ_min = log 0.95, λ_post = log 0.5, τ = 0.05.
+  - The batch mean is added to the loss with w_P = 0.1, active from step 500 (fade complete).
+  - n ≥ 3 has a pre term; n ≤ 7 has a post term (K = 8 fixed).
+* **Certified properties:**
+  - (Thm A1) The floor gives Thm 1′'s necessary condition for chains up to about 2 + log(L_R‖ΔR‖/μ)/|λ_min| (≈ 46 at ratio 10). The ceiling makes post-completion read drift summable, at most one last increment.
+  - (Thm A2, **scalar model only**) ∂λ_t/∂θ = ∂log κ/∂θ at every t. The escape signal is not κ^t-attenuated, and adds an O(1) drive at the threshold, so in that model escape is deterministic rather than noise-decided. This is not claimed beyond the scalar model; the motivation is shared with Gradient Flossing.
+  - (Thm A3) C1 is untouched: n enters only the training loss.
+* **The open-loop phase (Literature):**
+  - For 500 < step ≤ 2000 (γ = 0, identical input), S_add,t = t·ΔS, so the rms additive read is pass-invariant and ΔR_add = 0. The floor therefore falls entirely on the delta heads and W_o (intended).
+  - Where the displacement is about 0, the ε₀ term sets λ ≈ log(‖R_{t+1}‖/‖R_t‖), so a constant-norm stall satisfies the floor except at the stall transition, which costs about |log ε₀| per item.
+  - λ_t is logged **per head type** (additive / delta read contribution) as well as combined.
+* **Prior-art distinctions (Literature 67329f72: the sign switch is NEW; the step-ratio measure is KNOWN; using it as a training target is PARTLY KNOWN):**
+  - Gradient Flossing 2312.17306: all exponents of the full state, toward 0, at all times.
+  - STARS 2605.26733: convergent throughout.
+  - Bai 2106.14342: the full Jacobian at equilibrium.
+  - Wöhrer & Kuehn 2602.09613: an early-window FTLE regulariser for neural ODEs.
+  - Parcae 2604.12946 also uses a dynamics target.
+  - CSR constrains the realised read displacement, with a sign switch at each item's completion step.
+  - **Claim line:** "to our knowledge the first dynamics regulariser for a looped / latent model whose sign is indexed by each item's completion step", motivated by a classical bias-vs-noise branch-selection law (noisy imperfect pitchfork, Kondepudi et al. 1986) applied, conditionally on a CONJECTURE-tagged mapping, to the seed lottery.
+
+**A3. Predictions (registered before any run; RMS recipe, seeds 1–3, RTX 3090; paired exact controls s185_rms_s1 / s2 / s3).**
+* **P-A1 (mechanism, early):** the mean of the log field `csr_lam_pre_med` (A5) over the records in the 1k bin 7001–8000 is ≥ log 0.95 (−0.0513), in all 3 seeds.
+* **P-A2 (entry):** all 3 seeds have entry(0.5) ≤ 24k and a final 1k bin < 0.1 (pinned basin_entry).
+* **P-A3 (class):** in all 3 seeds, final s182.path_indep delta_cos_final ≤ 0.65 and acc_from_zero ≥ 0.95. No contractive (B-class) model.
+* **P-A4 (stability, descriptive):** pooled K′16 ≥ K′8 − 0.02 (STABLE). For comparison, control s1 is not STABLE (n 8: 0.75 at K′16 vs 0.99 at K′8).
+* **P-A5 (falsifies "contraction causes non-entry"; Audit: read on the ORDER PARAMETER, not on λ, which can be met by motion that is not progress):**
+  - Falsified only if a seed's 8k and 16k checkpoint s182.path_indep reads NON-contractive (delta_cos_final ≤ 0.65 and answer_agree ≤ 0.2, via Experiments' probe_pathindep.py) **and** the run ends non-entered (final 1k bin ≥ 0.5).
+  - A seed that meets P-A1 but reads contractive by checkpoint path_indep is **FLOOR-GAMED**: the target was met without leaving the contractive class. That is a method failure, not a falsification of the account.
+  - If the floor itself is never met (P-A1 fails), the reading is INSUFFICIENT-DOSE, not a falsification.
+* **Separation from the other levers:**
+  - **Grokfast** (§196, running): predicted NO-EFFECT, with the checkpoint probe staying on the contractive side (delta_cos ≥ 0.69).
+  - **BUDGET-ANNEAL** (§197 draft): predicted to rescue by escape. It starts contractive, then crosses after the full-task stage, with spread entry times.
+  - **CSR:** predicted never contractive and tightly entered.
+* **The pass token (Audit):**
+  - CSR runs on the pass-token RMS recipe for exact pairing.
+  - A CSR rescue shows that a tilt through the objective works **with the token kept**. It does not show that CSR beats removing the token: "NOPASS alone would have done it" stays the named alternative account.
+  - Its evidence: §190 (RMS + NOPASS) s1 / s2 are both converged-class (s2 under-converged, final 0.228). A NOPASS s3 cell, not run, would be the direct comparison.
+  - Any wording comparing CSR with NOPASS needs that cell.
+* **Claim limits:**
+  - 3 / 3 alone does not separate CSR from the control's 2 / 3: P(3 / 3 | p 2/3) = 0.30.
+  - The registered reading is the conjunction P-A1 + P-A2 + P-A3. Any "raises P(enter)" wording needs the pre-registered second stage (G3 design), which goes to the user if it is above $10.
+
+**A4. Pairing (Audit, BLOCKING; a registered launch check per cell).**
+* "Paired exact control" holds only if a CSR cell is **bitwise identical to its s185 control up to step 500**: every loss record at steps 100–500 (loss, answer_ce, aux_ce) equal to the control's log.jsonl.
+  - The control's step-500 losses are 3.47409 / 3.47601 / 3.48550 (s1 / s2 / s3).
+  - The code has gained many flag-gated paths since s185, so bitwise reproduction is checked, not assumed.
+* **Requirements:**
+  - the same **uncached** code path (no --cache_lower);
+  - an RTX 3090 with **that seed's control driver**: s1 / s2 on 570.172.08, s3 on 595.84 (eval.json train_driver);
+  - the same micro / auto_micro outcome;
+  - the CSR flag off before its start step, with no extra rng draws (the λ log must not consume rng).
+* **A cell that fails the check is UNPAIRED.** It reads against the 2 / 3 base rate only, and the check result is recorded beside the verdict.
+
+**A5. Cells, cost and gates.**
+* **Cells:** `s199_csr_s1` / `s2` / `s3` = s185_rms_s{seed}'s args.json + `--csr 0.1,-0.0513,-0.6931,0.05,500`. Seeds 1–3, RTX 3090, 48k.
+* **Reader:** theory/score_s199_a.py, fixture-checked on real files across every label: SUPPORTED / MIXED / FALSIFIED, FLOOR-GAMED, INSUFFICIENT-DOSE and the UNPAIRED detection of a 1e-7 change.
+* About $2.3 per 48k 3090 cell (CSR adds no trunk pass). 3 seeds ≈ $7, one item under Audit's $10 line.
+* **Code (Experiments, boxes/nested170.py):**
+  - --csr w,λmin,λpost,τ,start;
+  - the λ_t log every log_every, combined and per head type. **Field names** (theory/score_s199_a.py reads them):
+    - `csr_lam_pre_med`: the median, over the step's batch items with n ≥ 3, of each item's mean λ_t over t ∈ [2, min(5, n − 1)];
+    - `csr_lam_pre_med_add` / `csr_lam_pre_med_del`: the same, with R restricted to the additive or delta read contribution (W_o's columns for that head type, times its gain);
+    - `csr_lam_post_med`: the median, over items with n ≤ 7, of the mean λ_t over t ∈ [n, K − 1];
+    - `csr_loss`.
+    - P-A1 reads the mean of `csr_lam_pre_med` over the records in the 1k bin 7001–8000.
+  - **Checkpoint probes (registered for P-A5):** `<run>/pathindep_8000.json` and `pathindep_16000.json` from scratch/probe_pathindep.py (s182.path_indep fields). The 4k / 12k probes are descriptive;
+  - checkpoints kept at 4k / 8k / 12k / 16k for the path_indep probe.
+* **Gates:**
+  - flags-off bitwise identity;
+  - gradflow: the CSR gradient is exactly zero before step 500; nonzero and finite on W_o and the delta gates at step 501; on LN_w only once γ > 0 (step > 2000), because the open-loop lemma makes LN_w's gradient exactly 0 while γ = 0;
+  - fixtures: λ_t on a synthetic κ-geometric read sequence recovers log κ, and a constant-increment state through the real rms add_read path gives λ = 0 (Literature);
+  - (the cells run uncached for pairing; --cache_lower compatibility is gated only if a later stage uses it);
+  - memory check.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
