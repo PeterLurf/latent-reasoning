@@ -14486,6 +14486,14 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - Three final models, one per seed, and post hoc in the sense that the outcomes are known.
   - A barrier shows separate basins at the END of training. It does not show that the basin was selected early: that is the trajectory probe's job.
 
+**Correction 199-M2a (2026-10-13 22:28 EDT; before any interpolation is computed; Literature 980374f3). The citation basis for M2's prior is corrected. The readings are unchanged.**
+* **Frankle 1912.05671 shows the opposite at k = 0.** From-scratch networks other than the smallest MNIST net are linearly UNSTABLE from init. They become stable only after about 3% (ResNet-20) or 20% (ResNet-50) of training.
+* **The connectivity priors are for fine-tuning from pretrained weights** [EMPIRICAL]:
+  - Neyshabur 2008.11687: "from pre-trained weights … stays in the same basin"; from-scratch models do not;
+  - Wortsman 2203.05482.
+* **Our case is a hybrid:** a pretrained trunk plus an identical zero / copied memory branch (verified in deltamem: no random branch init). So both priors apply.
+* **The s1–s2 control decides which one holds here.** A low B(s1–s2) supports the pretrained-basin prior.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
