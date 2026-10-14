@@ -1,0 +1,150 @@
+{
+ "g1": {
+  "log_equal": true,
+  "model_equal": true,
+  "opt_equal": true
+ },
+ "g1_pass": true,
+ "g1b": {
+  "steps_1_2_equal": true,
+  "step3_differs": true,
+  "csr_field_steps": [
+   3,
+   4
+  ],
+  "keep_ckpt": {
+   "2": true,
+   "4": true
+  },
+  "ckpt_model_2_keys": [
+   "model",
+   "step"
+  ],
+  "csr_sample": [
+   {
+    "step": 3,
+    "csr_loss": 0.9381943941116333,
+    "csr_lam_pre_med": -1.0143775939941406,
+    "csr_lam_post_med": null
+   },
+   {
+    "step": 4,
+    "csr_loss": 0.21567466855049133,
+    "csr_lam_pre_med": -0.06783294677734375,
+    "csr_lam_post_med": -0.6715369820594788
+   }
+  ],
+  "csr_fields_finite": true
+ },
+ "g1b_pass": true,
+ "g1c": {
+  "think_k": 4,
+  "csr_steps": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "fields_finite": true,
+  "pre_present": true,
+  "post_present": false,
+  "sample": [
+   {
+    "step": 1,
+    "csr_loss": 0.015316769480705261,
+    "csr_lam_pre_med": 0.0,
+    "csr_lam_post_med": null
+   },
+   {
+    "step": 2,
+    "csr_loss": 0.6710875630378723,
+    "csr_lam_pre_med": -0.8831124305725098,
+    "csr_lam_post_med": -0.7660077214241028
+   },
+   {
+    "step": 3,
+    "csr_loss": 0.42888692021369934,
+    "csr_lam_pre_med": -0.474224328994751,
+    "csr_lam_post_med": null
+   },
+   {
+    "step": 4,
+    "csr_loss": 0.24941623210906982,
+    "csr_lam_pre_med": 0.14578461647033691,
+    "csr_lam_post_med": -0.5593721270561218
+   }
+  ]
+ },
+ "g1c_pass": true,
+ "g2": {
+  "0.0": {
+   "csr": 0.7049129605293274,
+   "wo": 138.12782287597656,
+   "wo_finite": true,
+   "gate_delta_rows": 12.365067481994629,
+   "ln_w": 0.0,
+   "ln_w_grad_is_none_or_zero": true
+  },
+  "0.5": {
+   "csr": 0.7413902282714844,
+   "wo": 248.71450805664062,
+   "wo_finite": true,
+   "gate_delta_rows": 7.395702362060547,
+   "ln_w": 2.9256680011749268,
+   "ln_w_grad_is_none_or_zero": false
+  }
+ },
+ "g2_pass": true,
+ "g3": {
+  "kappa_0.5_eps0_0": 4.76837158203125e-07,
+  "kappa_0.5_eps0_1e-3_vs_closed_form": 4.561445222650562e-07,
+  "kappa_0.9_eps0_0": 7.450580596923828e-09,
+  "kappa_0.9_eps0_1e-3_vs_closed_form": 2.580646536465281e-07,
+  "kappa_1.1_eps0_0": 2.9802322387695312e-08,
+  "kappa_1.1_eps0_1e-3_vs_closed_form": 2.545807991083393e-07,
+  "const_increment_lambda_add_t2plus_max_abs": 2.384185791015625e-07
+ },
+ "g3_pass": true,
+ "g4": {
+  "max_rel": 2.0004478074042709e-07,
+  "bitwise": false
+ },
+ "g4_pass": true,
+ "g5": {
+  "chunk4": {
+   "off": {
+    "checks": [
+     {
+      "micro": 16,
+      "peak_gib": 3.405175358057022
+     }
+    ],
+    "micro": 16,
+    "peak_gib": 3.405175358057022,
+    "train": "the longest of 4 bs draws at n <= 8",
+    "eval": "n = 16 at K' = 2K"
+   },
+   "csr": {
+    "checks": [
+     {
+      "micro": 16,
+      "peak_gib": 3.4373189508914948
+     }
+    ],
+    "micro": 16,
+    "peak_gib": 3.4373189508914948,
+    "train": "the longest of 4 bs draws at n <= 8",
+    "eval": "n = 16 at K' = 2K"
+   }
+  },
+  "ratio_csr_over_off": 1.0094396292274397,
+  "s185_rms_s1_cloud": {
+   "micro": 1,
+   "peak_gib": 18.106811672449112
+  },
+  "proj_gib": 18.27773326112811,
+  "gpu": "NVIDIA GeForce RTX 2070"
+ },
+ "g5_pass": true,
+ "all_pass": true
+}

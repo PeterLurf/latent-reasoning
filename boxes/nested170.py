@@ -499,6 +499,52 @@ class ReadSlotsN(InjectN):
         return self.g.logits(h[:, 0]).float()
 
 
+def read_parts(mem, h6, S):
+    """§199 CSR (Theory 199-A): the memory read's additive and delta contributions to the residual, (R_add, R_del) each (B, T, 768), the same math
+    as deltamem.read_fixed without the W_o bias: read_fixed(mem, h6, S) - h6 == R_add + R_del + fade * b_o."""
+    import boxes.deltamem as DM
+    H_ADD, H_DEL = mem.h_add, mem.h_del
+    with torch.autocast("cuda", enabled=False):
+        B, T, D = h6.shape; a_ = mem.ln(h6.float()); q = mem.qkv(a_)[..., :D].view(B, T, H_ADD + H_DEL, DM.DH)
+        oa = torch.exp(mem.s_add) * DM.add_read(mem, Fn.elu(q[:, :, :H_ADD]) + 1, S[:, :H_ADD].float(), DM.state_z(mem, S))
+        od = torch.exp(mem.s_del) * torch.einsum("bhvk,bthk->bthv", S[:, H_ADD:H_ADD + H_DEL].float(), Fn.normalize(q[:, :, H_ADD:], dim=-1))
+        W = mem.wo.weight; na = H_ADD * DM.DH
+        return mem.fade * (oa.reshape(B, T, -1) @ W[:, :na].T), mem.fade * (od.reshape(B, T, -1) @ W[:, na:].T)
+
+
+def csr_lams(Rs, msk, eps0=1e-3):
+    """§199: Rs = [R_0 .. R_K] (B, T, 768); msk (B, T) real tokens -> lambda (B, K - 1), lambda[:, t - 1] = log d_t - log d_{t-1} (t = 1 .. K - 1),
+    d_t = sqrt(||R_{t+1} - R_t||^2 + eps0^2 ||R_t||^2 + 1e-12) over the item's real tokens x 768."""
+    mk = msk[:, :, None].to(Rs[0].dtype); K = len(Rs) - 1
+    d = torch.stack([torch.sqrt(((Rs[t + 1] - Rs[t]) * mk).pow(2).sum((1, 2)) + eps0 ** 2 * (Rs[t] * mk).pow(2).sum((1, 2)) + 1e-12) for t in range(K)], 1)
+    return torch.log(d[:, 1:]) - torch.log(d[:, :-1])
+
+
+def csr_terms(lam, ns, K, lam_min, lam_post, tau):
+    """§199: per item pre = mean_{t in [2, min(n-1, K-1)]} tau softplus((lam_min - lam_t) / tau) (n >= 3), post = mean_{t in [n, K-1]} tau softplus((lam_t - lam_post) / tau)
+    (n <= 7); each only where its range is non-empty (lam has K - 1 columns: t = 1 .. K - 1); csr = mean over items of (pre + post) -> csr (scalar)."""
+    tot = []
+    for b, n in enumerate(ns):
+        v = lam.new_zeros(())
+        if n >= 3 and min(n - 1, K - 1) >= 2:
+            v = v + (tau * Fn.softplus((lam_min - lam[b, 1:min(n - 1, K - 1)]) / tau)).mean()
+        if n <= 7 and K - 1 >= n:
+            v = v + (tau * Fn.softplus((lam[b, n - 1:K - 1] - lam_post) / tau)).mean()
+        tot.append(v)
+    return torch.stack(tot).mean()
+
+
+def csr_item_stats(lam, ns, K):
+    """§199 log fields: per item the mean lambda over t in [2, min(5, n-1, K-1)] (n >= 3) and over t in [n, K-1] (n <= 7), non-empty ranges only -> (pre list, post list)."""
+    pre, post = [], []
+    for b, n in enumerate(ns):
+        if n >= 3 and min(5, n - 1, K - 1) >= 2:
+            pre.append(float(lam[b, 1:min(5, n - 1, K - 1)].mean()))
+        if n <= 7 and K - 1 >= n:
+            post.append(float(lam[b, n - 1:K - 1].mean()))
+    return pre, post
+
+
 def mem_geometry(a):
     """(memory layer, additive heads, delta heads): §170 = (6, 6, 6); §198 --mem_layer l -> (l, 6, 6) on the pretrained trunk; §178 scratch 'L,D,H'
     = (L // 2, D / 128, D / 128) (DH 64)."""
@@ -599,6 +645,8 @@ def main():
                     "passes (exact in exact arithmetic; gate_cache_lower_n170). Held: never compare a cached cell with an uncached comparator (Theory)")
     ap.add_argument("--anneal_gate", default="", help="note 196-1 entry-gated --anneal: 'thr:need:max_steps[:bin]'; --anneal stages 'nmax:K:G' (gated) and a final "
                     "'nmax:K:final_len'; --steps must equal the cap (#gated x max_steps + final_len); LR = the cosine over that cap; '' = fixed-step --anneal")
+    ap.add_argument("--csr", default="", help="§199 CSR (Theory 199-A): 'w,lam_min,lam_post,tau,start' - the contraction-schedule regulariser on the aux path's per-pass read R_t, active from step start ('' = off)")
+    ap.add_argument("--keep_ckpt_steps", default="", help="§199: comma steps at which a model-only copy ckpt_model_<step>.pt is kept (for the local path_indep probe)")
     ap.add_argument("--grokfast", default="", choices=["", "ema"], help="§196: Grokfast EMA gradient filter (grokfast_ema) after backward, before the clip; '' = off")
     ap.add_argument("--gf_alpha", type=float, default=0.98); ap.add_argument("--gf_lamb", type=float, default=2.0)
     ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", default=None); ap.add_argument("--log_every", type=int, default=100)
@@ -630,6 +678,12 @@ def main():
     if m is not None:
         m.nopass = bool(a.aux_nopass)                                       # §187
 
+    CSR = [float(v_) for v_ in a.csr.split(",")] if a.csr else None       # §199: [w, lam_min, lam_post, tau, start]
+    if CSR:
+        assert a.arm == "inject" and not (a.cache_lower or a.k_window or a.anneal or a.ckpt_passes), "--csr: the RMS recipe's uncached inject aux path"
+    cur_step = [0]; csr_acc = {"pre": [], "pre_add": [], "pre_del": [], "post": [], "loss": []}
+    KEEP_CK = {int(v_) for v_ in a.keep_ckpt_steps.split(",")} if a.keep_ckpt_steps else set()
+
     def loss_items(items, Kb=None):
         if a.arm == "direct":
             seqs = [[EOT] + ids(it["syms"]) + [TID[" ="]] for it in items]; ids_, _ = pad(seqs); x = torch.tensor(ids_, device=dev)
@@ -652,10 +706,17 @@ def main():
             return Fn.cross_entropy(lg, torch.tensor(NUM_IDS[[it["t"] for it in items]], device=dev))
         from torch.utils.checkpoint import checkpoint
         per = [[] for _ in items]                                           # §175: the aux CE (token mean) of each item's passes 1..#steps
+        csr_on = bool(CSR) and cur_step[0] >= CSR[4] and torch.is_grad_enabled()
         with ac():
             S = m.mem.zero_state(len(items), dev); hl = m.lower(x) if a.cache_lower else None
+            if csr_on:                                                      # §199: h6 = blocks 0..layer-1 once, no gradient into them from the CSR
+                with torch.no_grad():
+                    h6c = DM_.gpt_lower(g, g.embed(x), m.mem.layer)
+                ra_, rd_ = read_parts(m.mem, h6c, S); R_ = [ra_ + rd_]; RA_ = [ra_.detach()]; RD_ = [rd_.detach()]
             for t in range(1, K + 1):
                 S = checkpoint(m.write, S, x, msk, hl, use_reentrant=False) if (a.ckpt_passes and torch.is_grad_enabled()) else m.write(S, x, msk, hl)
+                if csr_on:
+                    ra_, rd_ = read_parts(m.mem, h6c, S); R_.append(ra_ + rd_); RA_.append(ra_.detach()); RD_.append(rd_.detach())
                 idx = [i for i, it in enumerate(items) if len(aux_of(it)) >= t]
                 if idx:
                     lg_a, y_a = m.aux_logits(S[idx], [items[i] for i in idx], t, dev)
@@ -665,9 +726,16 @@ def main():
             lg = m.dec_logits(S, items, dev)
         la = Fn.cross_entropy(lg, torch.tensor(NUM_IDS[[it["t"] for it in items]], device=dev))
         aux = torch.stack([torch.stack(p_).mean() for p_ in per if p_]).mean(); aux_hist.append((float(la), float(aux)))
+        if csr_on:                                                          # §199: + w * csr; log stats (no rng drawn)
+            ns_ = [it["n"] for it in items]; lam_ = csr_lams(R_, msk); csr_ = csr_terms(lam_, ns_, K, CSR[1], CSR[2], CSR[3])
+            with torch.no_grad():
+                pr_, po_ = csr_item_stats(lam_.detach(), ns_, K); pa_, _ = csr_item_stats(csr_lams(RA_, msk), ns_, K); pd_, _ = csr_item_stats(csr_lams(RD_, msk), ns_, K)
+            csr_acc["pre"] += pr_; csr_acc["post"] += po_; csr_acc["pre_add"] += pa_; csr_acc["pre_del"] += pd_; csr_acc["loss"].append(float(csr_))
+            return la + lam_now[0] * aux + CSR[0] * csr_
         return la + lam_now[0] * aux
 
     def mem_check(micro):
+        cur_step[0] = 10 ** 9 if CSR else cur_step[0]                       # §199: the memory check includes the CSR path (largest shape)
         torch.cuda.reset_peak_memory_stats(dev); r_ = np.random.default_rng(0); its = [it for it in train_items(r_, 4 * a.bs, a.n_max_train, set()) if True]
         its = sorted(its, key=lambda it: -len(it["syms"]))[:a.bs // micro]
         if KW:                                                              # §177 (f) (Audit): the path that trains - the masked kmatch loss, every item at K_max
@@ -942,6 +1010,10 @@ def main():
             return lg_
         m.dec_logits = _dl_rec
     for step in range(step0, last + 1):
+        cur_step[0] = step
+        if CSR:                                                             # §199: this step's batch stats only
+            for k_ in csr_acc:
+                csr_acc[k_].clear()
         if GATE:                                                            # note 196-1 entry-gated: the gate's stage; stop after the final stage's length
             if GATE.end() is not None and step > GATE.end():
                 break
@@ -1040,6 +1112,10 @@ def main():
                 rec.update({"anneal_stage": an_cur[0], "n_max_train": a.n_max_train, "think_k": K})
             if GATE:
                 rec["lr"] = opt.param_groups[0]["lr"]
+            if CSR and step >= CSR[4]:                                     # §199 fields (this step's batch; micro chunks pooled)
+                md_ = lambda v_: float(np.median(v_)) if v_ else None      # noqa: E731
+                rec.update({"csr_lam_pre_med": md_(csr_acc["pre"]), "csr_lam_pre_med_add": md_(csr_acc["pre_add"]), "csr_lam_pre_med_del": md_(csr_acc["pre_del"]),
+                            "csr_lam_post_med": md_(csr_acc["post"]), "csr_loss": float(np.mean(csr_acc["loss"])) if csr_acc["loss"] else None})
             if gf_log:                                                      # §196: slow share, AdamW update norm, answer max logit, total weight norm
                 rec.update({"gf_slow_share": (gf_s / gf_g) if gf_g else None, "gf_update_norm": gf_upd, "gf_ans_max_logit": gf_rec["maxlogit"],
                             "gf_weight_norm": float(torch.stack([p_.detach().float().pow(2).sum() for _, p_ in gf_named]).sum().sqrt())})
@@ -1048,6 +1124,8 @@ def main():
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
         if PROBE and step % a.probe_loss_every == 0:                       # note 196-1: the fixed full-task probe (descriptive)
             pl_, pa_ = probe_losses(); log.write(json.dumps({"step": step, "probe_loss": pl_, "probe_aux": pa_, **({"anneal_stage": an_cur[0]} if ANNEAL else {})}) + "\n"); log.flush()
+        if step in KEEP_CK:                                                 # §199: a model-only copy for the local path_indep probe
+            torch.save({"model": params.state_dict(), "step": step}, os.path.join(a.out, "ckpt_model_%d.pt" % step))
         if a.ckpt_every and step % a.ckpt_every == 0 and step < a.steps:
             cp = os.path.join(a.out, "ckpt_last.pt")
             if os.path.exists(cp):
