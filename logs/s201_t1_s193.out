@@ -1,0 +1,18 @@
+s193_rmswin_s1 memcheck n16 bs 250 peak 1.50 GiB
+s193_rmswin_s1 n 2 {'CLEAN': 0.988, 'FA': 0.988, 'FD': 1.0, 'FB': 1.0} 127s
+s193_rmswin_s1 n 3 {'CLEAN': 0.994, 'FA': 0.994, 'FD': 1.0, 'FB': 1.0} 249s
+s193_rmswin_s1 n 4 {'CLEAN': 0.987, 'FA': 0.989, 'FD': 1.0, 'FB': 1.0} 404s
+s193_rmswin_s1 n 5 {'CLEAN': 0.991, 'FA': 0.99, 'FD': 1.0, 'FB': 1.0} 592s
+s193_rmswin_s1 n 6 {'CLEAN': 0.995, 'FA': 0.992, 'FD': 1.0, 'FB': 1.0} 812s
+s193_rmswin_s1 n 7 {'CLEAN': 0.988, 'FA': 0.987, 'FD': 0.998, 'FB': 0.998} 1055s
+s193_rmswin_s1 n 8 {'CLEAN': 0.98, 'FA': 0.979, 'FD': 0.997, 'FB': 0.997} 1330s
+s193_rmswin_s1 n 9 {'CLEAN': 0.956, 'FA': 0.956, 'FD': 0.994, 'FB': 0.994} 1630s
+s193_rmswin_s1 n 10 {'CLEAN': 0.81, 'FA': 0.828, 'FD': 0.912, 'FB': 0.913} 1954s
+s193_rmswin_s1 n 11 {'CLEAN': 0.43, 'FA': 0.453, 'FD': 0.598, 'FB': 0.604} 2301s
+s193_rmswin_s1 n 12 {'CLEAN': 0.173, 'FA': 0.176, 'FD': 0.241, 'FB': 0.243} 2672s
+s193_rmswin_s1 n 16 {'CLEAN': 0.109, 'FA': 0.114, 'FD': 0.125, 'FB': 0.127} 3148s
+s193_rmswin_s1 T1 test done {'CLEAN': {'pool_3_8': 0.989166667064031, 'pool_9_10': 0.882999986410141}, 'FA': {'pool_3_8': 0.9884999990463257, 'pool_9_10': 0.8919999897480011}, 'FD': {'pool_3_8': 0.9991666674613953, 'pool_9_10': 0.953000009059906}, 'FB': {'pool_3_8': 0.9991666674613953, 'pool_9_10': 0.9535000026226044}} {'fb_identity': True, 'clean_vs_s173_maxdiff': None, 's173_dtype': None} 3150s
+s193_rmswin_s1 T1 train dump done 2000 3305s
+s193_rmswin_s1 rc 0
+s193_rmswin_s1 T2 primary acc {'2': 1.0, '3': 1.0, '4': 1.0, '5': 1.0, '6': 1.0, '7': 0.998, '8': 0.996, '9': 0.993, '10': 0.887, '11': 0.595, '12': 0.24, '16': 0.118} A 0.977 best K' 8
+t2 rc 0
