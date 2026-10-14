@@ -14604,6 +14604,12 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **Added descriptive class ECHO-INPUT** (an output equal to e_1), computed in the same pass as 199-M3a and reported beside STRUCT-RIGHT / STRUCT-WRONG.
 * **"Never stalls" in the M3 result is qualified** ("never re-emits e_2..e_t") until ECHO-INPUT is in. M3's registered LAGFRAC label is unchanged.
 
+**Correction 191-2 (2026-10-13 23:15 EDT; descriptive wording only; the GSM8K-draft subagent's measurement, verified by Theory).**
+* **p8_ctl is not an out-of-range input-length control.** Its items (mean 475 GPT-2 tokens) lie inside the training length range: 0% above the train maximum, and 10% above the train p95, the same rate as test.
+* **What it changes is the length–depth relation:** long inputs with shallow answers (depth 3–4). Length overstates depth by about 3.6 hops relative to training.
+* **So the §191 result's "not robust to input length" should read:** the latent arm partly uses input length as a proxy for depth (A 0.640 vs B 0.816 on that mismatch). The registered NAME-MEM reading is unchanged.
+* **Also:** §191 A's 6.99 s/step anchor is a **cached** figure (args: cache_lower true, ckpt_passes true, chunk_delta 64, micro 4). Theory's message to Audit had said "uncached".
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
