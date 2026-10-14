@@ -170,6 +170,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
             - Cloud §200 A / B / D and §193 s2 need their drain watchers checked.
             - §199-A is CLOSED (1 of 3 seeds; CSR FLOOR-GAMED, harmful).
             - Ready: the WARM-START-FROM-COT conditional draft (scratchpad warmcot/WARMCOT_DRAFT.md; registers only if A / B read LOOP-NOT-FORMED or below; user-pre-approved ≤ $4 for the pair; latent cost 1.48 s/step at micro 4, not 0.89).
+          - **Theory 16:53:** §200 read BELOW → §202 WARM-START registered (30401c78), waiting on Experiments' fp32 gate + Audit's diff review; reader theory/score_s202.py. W's g_add_init 6.2e-4 vs A's 2.29e-4 (same calibration; no confound). Seed-stability successor to CSR: Opus-subagent derivation in progress (scratchpad seedstab2/; candidates SHALLOW STEP READER / decodable-progress floor / two-sided band, with a Goodhart analysis); not registered, needs the user's OK via Audit.
           - **Theory status 2026-10-14 08:1x (supersedes the §199 / general lines below where they differ):**
             - **§199 (seed stability):**
               - M1 PREDICTED (α^L tracks the size-keyed depth limit, not the lottery).
