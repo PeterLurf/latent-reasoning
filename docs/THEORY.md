@@ -15096,6 +15096,19 @@ Each registers separately, after T1 / T2.
 * That is a 16.5-point drop on template instances, where P8 predicts ≤ 3 points for every arm. If it holds at landing, P8 reads FALSIFIED for C.
 * It fits C's recall gap: fit_fix 0.829 vs fit_rs 0.409.
 
+**§201 extensions (2026-10-14 10:53 EDT; note 201-6, descriptive; cacadcff; fb_identity True for both).**
+* **s193 RMS × WINDOW (4060 fp32; its gate is fb_identity alone, since there is no s173 file).** At K′24:
+  - pool n 3..8: CLEAN 0.989 / FA 0.988 / FD 0.999 / FB 0.999, so NOTHING-TO-RECOVER within the training range (D 0.010);
+  - pool n 9..10: CLEAN 0.883 / FA 0.892 / **FD 0.953** / FB 0.954.
+  - **WINDOW removes most in-range overthinking, and a post-completion delta freeze adds about +0.07 beyond the training range.** WINDOW plus the delta freeze (FD-on-signal) is the candidate combined fix.
+* **ProsQA §191 A (3070 fp32, first 200 per depth, f = depth + 1).** At K′24:
+  - d3–10: CLEAN 0.810 / FA 0.910 / **FD 0.964** / FB 0.966;
+  - d11–14: CLEAN 0.580 / FA 0.610 / **FD 0.738** / FB 0.741.
+  - R_FD ≈ 0.99 against R_FA ≈ 0.64 (d3–10).
+  - FD's answer at K′24 equals CLEAN's answer at f on 0.94–1.00 of items at every depth.
+  - **The plan's weak T1-d ("R_FA ≥ R_FD on ProsQA") is wrong.** The delta writes dominate on ProsQA too.
+* **Overall:** on nested (5 of 7 converged models) and on ProsQA, post-completion **delta** writes are the main source of overthinking, and freezing them recovers nearly all of it. The §184 s1 exception has an unnormalised additive read.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
