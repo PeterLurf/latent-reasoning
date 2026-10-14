@@ -1,0 +1,11 @@
+EVAL_TIMING boxes/runs_fsq/s198_injc_s1 0.003979425191879273
+s198_injc_s1 rc 0
+EVAL_TIMING boxes/runs_fsq/s198_memhi_s1 0.003968390067418416
+s198_memhi_s1 rc 0
+EVAL_TIMING boxes/runs_fsq/s198_rsaux_s1 0.002093873699506124
+s198_rsaux_s1 rc 0
+EVAL_TIMING boxes/runs_fsq/s191_stepaux_relabel_s1 0.06912367248535156 984167694336.0
+s191_stepaux_relabel_s1 rc 0
+[W1014 11:01:39.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 333447168 bytes (free: 0, total: 8585216000).
+EVAL_TIMING boxes/runs_fsq/s191_textcot_relabel_s1 0.7017781291007995 109883874816.0
+s191_textcot_relabel_s1 rc 0
