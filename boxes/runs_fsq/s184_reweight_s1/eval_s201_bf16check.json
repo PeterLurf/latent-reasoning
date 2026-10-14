@@ -278,5 +278,6 @@
   "FAST_ADD": false,
   "CHUNK_DELTA": 0
  },
- "def": "clarification 201-1: halt173.halt_fields at bf16 on the same items; pass iff within 0.005 of eval_s173_halt acc_by_t"
+ "def": "clarification 201-1: halt173.halt_fields at bf16 on the same items; pass iff within 0.005 of eval_s173_halt acc_by_t",
+ "bs": 125
 }
