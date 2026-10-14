@@ -287,6 +287,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 197 | (reserved: BUDGET-ANNEAL-S3, drafted; registers only if §196 reads NO-EFFECT) | — | — |
 | 198 | CHEAP-THINK (the user's request): an all-cached family; (a) cached INJECT, (b) MEM-HIGH l_m 9, (c) READ-SLOTS + RMS + step aux; CHEAPER-EQUAL / CHEAPER-WORSE / UNCLEAR-ENTRY / FAILS vs (a); $10 cap | registered | **open** |
 | 199 | CONTRACTION-TRAP (the user's seed-stability request): order parameter s182.path_indep separates converged / failed across 19 models; M1 = within-n rank test, per-pass delta decay ᾱ vs handle onset (ρ̄ > 0 predicted; falsified ≤ 0 or < 0.3); 199-A method CSR (completion-switched step-ratio target), RMS s1–s3 on 3090 paired with s185, SUPPORTED / MIXED / FALSIFIED (P-A5 on checkpoint path_indep) | registered (M1, 199-A) | **open** |
+| 200 | GSM8K-AUG PILOT (user-approved 2026-10-13 ~23:5x via Audit, "make sure its augmented dataset"; Tier 1 only, cap $7): latent step-aux A / A+resample B vs TEXT-COT C / D on GSM8K-Aug, 24k, final checkpoint; R1 C3 in-house ±2.8, R2 vs PCCoT 49.48 (no 1-seed SOTA claim), R3 resample, R4 THINK-NECESSARY, R6 length, R7 STABLE, LOOP-NOT-FORMED, IDLE-PASSES | registered | **open** |
 
 ## Live sections
 
@@ -14646,6 +14647,91 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **s1 (b283):** |d500 − pred| = 3.6e-10, which passes on every basis.
 
 **Note 199-A3a (2026-10-13 23:29 EDT; Audit; no rule change).** Beside 199-A3's governing bound, the scorer reports the 2-ulp bound (2·ulp_fp32(|loss_ctrl_500|)/100 ≈ 4.8e-9, which assumes micro 1) as a **descriptive flag**: a residual between about 4.8e-9 and 3.5e-6 is flagged in the readout without changing the verdict. paired() also checks A4's existing same-micro requirement explicitly.
+
+## 200. GSM8K-AUG PILOT: §191's recipe on GSM8K-Aug, with per-draw name relabelling and exact number resampling (the user's approval relayed by Audit, 2026-10-13 ~23:5x: "go ahead on the gsm8k, make sure its augmented dataset"; Tier 1 only, hard cap $7; pre-registered 2026-10-13 23:59 EDT, before any §200 code or run)
+
+**Full derivations and measurements:** docs/THEORY_GSM8K_TEMPLATE_DRAFT_2026-10-13.md (7ce8c78a / 4b2df248; Opus subagent, reviewed by Theory and Audit), scripts in theory/gsmtpl/. This section fixes the binding rules.
+
+**Scope.**
+* **Approved, Tier 1:** four 24k cells on **GSM8K-Aug** (bench/data/gsm8k_aug, 384,623 train items; items with a wrong or unparsable equation filtered out, 0.77%).
+* **Not approved:**
+  - Tier 2 (raw-GSM8K cells), dropped: the user specified the augmented dataset;
+  - stage 2 (more seeds) and cell E (WINDOW): later, separate decisions.
+
+**Why (summary of the derivations; tags as in the draft).**
+* **Theorem N (PROVED):** under per-draw injective relabelling, names carry zero information about the targets given the structure, so a name-keyed predictor is at chance on fresh draws.
+* **Theorem X (PROVED):** under exact number resampling, recall of a stored answer is worth at most the resampled answer's collision probability. About 71% of target numbers stop being recallable; 77.2% of Aug items can be resampled exactly.
+* **Prop. S (PROVED):** resampling leaves structure (template) memorisation unchanged.
+* **D4 (CONJECTURE + DATA):** 24k × 64 = 4.0 Aug epochs, against §168's memorisation at 64 epochs, so the name / number lever is predicted small on Aug.
+* **D5 (DERIVED α^L + CONJECTURE transfer):** the per-pass contraction is length-dependent, so a length-keyed latent arm should lose more than text under neutral filler.
+* **D6:** K = 10 = the test maximum of 8 equations + 2. Most items idle 7+ passes after completion (Audit), which risks post-completion drift (docs/THEORY_SEEDSTAB Part I §2).
+
+**Cells** (RTX 3090, seed 1, 24k, bs 64, lr 1e-4; recipe = §191 A's, per the draft §3.2; run dirs in boxes/runs_fsq/):
+
+| cell | dir | model | train transform |
+|---|---|---|---|
+| A | `gsm_lat_aug_s1` | latent step-aux (DeltaMem INJECT, K 10, --cache_lower, pass token kept, λ 1) | none |
+| B | `gsm_lat_augrs_s1` | same | R_ν (names) + R_x (numbers, the 77% exactly recomputable) per draw |
+| C | `gsm_txt_aug_s1` | TEXT-COT (equations as CoT lines) | none |
+| D | `gsm_txt_augrs_s1` | TEXT-COT | R_ν + R_x |
+
+* **Step targets:** at pass t ≤ min(m, 10), the read-only aux emits " <<e_t>>".
+* **Answer:** "### " + answer, greedy, exact numeric match (bench norm_number).
+
+**Checkpoint rule:** every reading uses the **FINAL** checkpoint.
+* The Aug-valid-selected checkpoint (every 2k) is reported beside it, labelled. **The test is never used for selection.**
+* Published bars may be test-selected; PCCoT's rule is unverified.
+
+**Readings** (theory/score_s200.py; ±2.8 points = 2 SE at n 1,319):
+* **R1, C3 in-house:** A − C and B − D, each reads above (≥ +2.8) / matches (within ±2.8) / below (≤ −2.8).
+  - Quoted beside: our bench CoT 41.8, CODI's CoT-SFT 44.1, SIM-CoT's re-run 42.7.
+* **R2, SOTA vs PCCoT 49.48 ± 0.31:**
+  - per latent cell, ABOVE-PCCOT-1SEED if ≥ 52.28;
+  - **STAGE-2-ELIGIBLE** if ≥ 49.48 and R1 reads matches or above. Stage 2 is a new user decision; the carried arm is chosen on Aug valid only.
+  - No SOTA claim from one seed.
+* **R3, RESAMPLE:** B − A and D − C read RS-HELPS (≥ +2.8) / RS-HURTS (≤ −2.8) / RS-NEUTRAL. LATENT-SPECIFIC if the latent pair helps and the text pair is neutral.
+* **R4, THINK-NECESSARY (C1):** A and B have K′ 0 and K′ 1 each ≤ 0.5 × K′ 10. Quoted beside every "latent ≈ text" statement.
+* **R5, STRUCTURE (Tier-1 part):** per cell, the m-stratified gap between seen and unseen test structures (computation fingerprints in Aug train). Descriptive, with P4's comparison.
+* **R6, LENGTH (FILLER-N, fixed neutral sentences, k ∈ {16, 32}):** the excess = latent drop − text drop (A vs C).
+  - SIZE-KEYED: ≥ 0.04 at k 32 and ≥ 0.015 at k 16.
+  - LENGTH-ROBUST: ≤ 0.015 at k 32.
+  - Otherwise mixed.
+* **R7, STABLE (A):** STABLE-12 = K′12 ≥ K′10 − 0.02; STABLE-16 = K′16 ≥ K′10 − 0.05.
+* **IDLE-PASSES (descriptive, Audit):** per m, accuracy at K′ = m + 2 vs K′ 10, for A and B.
+* **LOOP-NOT-FORMED (replaces the draft's UNCLEAR-ENTRY; Theory, for Audit's review):**
+  - **The draft's rule doesn't transfer.** The pinned basin_entry thresholds total training loss < 0.5, calibrated on nested arithmetic's plateau-then-drop. GSM8K's mixed answer + equation loss has no such calibration, and a working but imperfect latent cell could stay above 0.5. The rule would then turn a genuine "below" into "unclear", a bias in the method's favour.
+  - **The rule:** a latent cell is **LOOP-NOT-FORMED** if K′ 10 accuracy − K′ 0 accuracy < 2.8 points (the passes add nothing; the §169 / §171 memory-unused class). Its R1 / R2 / R3 then read LOOP-NOT-FORMED, not below.
+  - A loop that formed but is contractive (the §199 lottery class) is read as a genuine result. The order parameter is reported beside it: s182-style path_indep at the final checkpoint, plus K′ by m.
+  - entry(0.5 / 0.1) per basin_entry is reported, descriptive only.
+* **Descriptive:**
+  - train-fit decomposition (fit_fix vs fit_rs; recall share);
+  - GSM-Symbolic main / p1 / p2, eval-only, fetched at eval time;
+  - Meter FLOPs and timed s/item for every cell on one 3090 ("matches, costs more" wording);
+  - an 8-gram near-duplicate scan of test vs Aug train, with the headline reported with and without flagged items.
+
+**Predictions (from the draft §3.5; Tier-1 ones only):**
+* **P1:** A's recall share ≤ 0.05 (falsified > 0.10).
+* **P2:** RS-NEUTRAL for both pairs (falsified if B − A ≥ +2.8).
+* **P4:** |gap(B) − gap(A)| ≤ 0.05 (falsified if gap(B) < gap(A) − 0.05).
+* **P5:** THINK-NECESSARY holds for A (falsified if K′0 ≥ 0.5 × K′10).
+* **P6:** FILLER-N excess at k 32 is about 0.075 if size-keyed (bar 0.04); LENGTH-ROBUST ≤ 0.015; the mixed band falsifies the linear transfer.
+* **P7:** STABLE-12 and STABLE-16 hold for A (falsified if either fails).
+* **P8:** GSM-Symbolic main is within 3 points of the GSM8K test for every arm, and B's drop ≤ A's.
+* **No derivation predicts SOTA.** On priors, BELOW PCCoT is the likelier outcome.
+
+**Gates** (the draft §3.6; Audit reviews the diff):
+* data round-trip;
+* R_ν / R_x correctness, with the test asserted never transformed;
+* fp64 cached-vs-uncached identity;
+* gradflow per loss term;
+* the plain-path smoke;
+* mem_check at the longest Aug item;
+* the near-duplicate scan;
+* `--time_steps 200` on a 3090 for one latent and one text cell. **The projection is restated to Audit and the user before launch.**
+
+**Cost:**
+* Projected $4.28 central / $6.32 high for A–D (latent about $1.54 / $2.26 per cell, text $0.60 / $0.90), plus gates about $0.2.
+* **Hard cap $7 (Audit).** Realised $ replaces the projection per cell.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
