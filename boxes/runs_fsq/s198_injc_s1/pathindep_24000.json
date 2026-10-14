@@ -1,0 +1,111 @@
+{
+ "step": 24000,
+ "ckpt": "ckpt_last.pt",
+ "path_indep": {
+  "answer_agree": 0.16,
+  "delta_cos_final": 0.5923120379447937,
+  "n_items": 500,
+  "acc_from_zero": 0.912,
+  "acc_from_donor": 0.136,
+  "kprime": 16,
+  "donor_passes": 8,
+  "items_n": [
+   3,
+   8
+  ],
+  "by_n": {
+   "3": {
+    "n_items": 84,
+    "answer_agree": 0.17857142857142858,
+    "delta_cos_final": 0.5344039797782898
+   },
+   "4": {
+    "n_items": 87,
+    "answer_agree": 0.20689655172413793,
+    "delta_cos_final": 0.5698908567428589
+   },
+   "5": {
+    "n_items": 81,
+    "answer_agree": 0.13580246913580246,
+    "delta_cos_final": 0.5844871401786804
+   },
+   "6": {
+    "n_items": 93,
+    "answer_agree": 0.07526881720430108,
+    "delta_cos_final": 0.6003325581550598
+   },
+   "7": {
+    "n_items": 76,
+    "answer_agree": 0.10526315789473684,
+    "delta_cos_final": 0.6228948831558228
+   },
+   "8": {
+    "n_items": 79,
+    "answer_agree": 0.26582278481012656,
+    "delta_cos_final": 0.6477363109588623
+   }
+  }
+ },
+ "path_indep_all_n": null,
+ "stage": null,
+ "train_loss_bin_1k": {
+  "window": [
+   23000,
+   24000
+  ],
+  "n_records": 10,
+  "loss_mean": 0.0828100203734357,
+  "answer_ce_mean": 0.0684434376033314
+ },
+ "loss_seen_before_probe": "no",
+ "gpu": "NVIDIA GeForce RTX 3070",
+ "eval_dtype": "torch.bfloat16",
+ "run": "boxes/runs_fsq/s198_injc_s1",
+ "def": "nested170 s182.path_indep reproduced (items test n 3..8 rng 18201 [:500]; derangement np.roll 1; K' 16; delta_cos = mean cos of final delta-head states)",
+ "s175": {
+  "aux_acc_by_pass": {
+   "1": 0.972,
+   "2": 0.979381443298969,
+   "3": 0.9773936170212766,
+   "4": 0.9745222929936306,
+   "5": 0.9685658153241651,
+   "6": 0.9431524547803618,
+   "7": 0.9377431906614786,
+   "8": 0.9097744360902256
+  },
+  "aux_acc_by_role": {
+   "1": {
+    "handle": 1.0,
+    "copy": 0.9972672064777328
+   },
+   "2": {
+    "handle": 0.9965635738831615,
+    "copy": 0.9978419206905854
+   },
+   "3": {
+    "handle": 0.9920212765957447,
+    "copy": 0.9979331078541902
+   },
+   "4": {
+    "handle": 0.9856687898089171,
+    "copy": 0.9974446337308348
+   },
+   "5": {
+    "handle": 0.9842829076620825,
+    "copy": 0.9960975609756098
+   },
+   "6": {
+    "handle": 0.9560723514211886,
+    "copy": 0.9957446808510638
+   },
+   "7": {
+    "handle": 0.9416342412451362,
+    "copy": 0.9924812030075187
+   },
+   "8": {
+    "handle": 0.9097744360902256,
+    "copy": null
+   }
+  }
+ }
+}

@@ -1,0 +1,289 @@
+{
+ "by_n": {
+  "2": {
+   "n_items": 1000,
+   "acc_at_halt": 1.0,
+   "mean_halt": 2.0,
+   "median_halt": 2.0,
+   "mean_halt_minus_n": 0.0,
+   "frac_capped": 0.0,
+   "aux_num_acc": 1.0,
+   "agree": 1.0,
+   "aux_done_by_t": [
+    0.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "halt_minus_n": {
+    "share": {
+     "early": 0.0,
+     "at_n": 1.0,
+     "n+1": 0.0,
+     "n+2": 0.0,
+     "later": 0.0
+    },
+    "counts": {
+     "0": 1000
+    }
+   },
+   "acc_at_halt_by_bucket": {
+    "early": null,
+    "at_n": 1.0,
+    "n+1": null,
+    "later": null
+   }
+  },
+  "4": {
+   "n_items": 1000,
+   "acc_at_halt": 1.0,
+   "mean_halt": 4.0,
+   "median_halt": 4.0,
+   "mean_halt_minus_n": 0.0,
+   "frac_capped": 0.0,
+   "aux_num_acc": 1.0,
+   "agree": 1.0,
+   "aux_done_by_t": [
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "halt_minus_n": {
+    "share": {
+     "early": 0.0,
+     "at_n": 1.0,
+     "n+1": 0.0,
+     "n+2": 0.0,
+     "later": 0.0
+    },
+    "counts": {
+     "0": 1000
+    }
+   },
+   "acc_at_halt_by_bucket": {
+    "early": null,
+    "at_n": 1.0,
+    "n+1": null,
+    "later": null
+   }
+  },
+  "6": {
+   "n_items": 1000,
+   "acc_at_halt": 1.0,
+   "mean_halt": 6.0,
+   "median_halt": 6.0,
+   "mean_halt_minus_n": 0.0,
+   "frac_capped": 0.0,
+   "aux_num_acc": 1.0,
+   "agree": 1.0,
+   "aux_done_by_t": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "halt_minus_n": {
+    "share": {
+     "early": 0.0,
+     "at_n": 1.0,
+     "n+1": 0.0,
+     "n+2": 0.0,
+     "later": 0.0
+    },
+    "counts": {
+     "0": 1000
+    }
+   },
+   "acc_at_halt_by_bucket": {
+    "early": null,
+    "at_n": 1.0,
+    "n+1": null,
+    "later": null
+   }
+  },
+  "8": {
+   "n_items": 1000,
+   "acc_at_halt": 0.998,
+   "mean_halt": 8.0,
+   "median_halt": 8.0,
+   "mean_halt_minus_n": 0.0,
+   "frac_capped": 0.0,
+   "aux_num_acc": 0.998,
+   "agree": 1.0,
+   "aux_done_by_t": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "halt_minus_n": {
+    "share": {
+     "early": 0.0,
+     "at_n": 1.0,
+     "n+1": 0.0,
+     "n+2": 0.0,
+     "later": 0.0
+    },
+    "counts": {
+     "0": 1000
+    }
+   },
+   "acc_at_halt_by_bucket": {
+    "early": null,
+    "at_n": 0.998,
+    "n+1": null,
+    "later": null
+   }
+  },
+  "10": {
+   "n_items": 1000,
+   "acc_at_halt": 0.356,
+   "mean_halt": 14.28,
+   "median_halt": 16.0,
+   "mean_halt_minus_n": 4.28,
+   "frac_capped": 0.785,
+   "aux_num_acc": 0.3023255813953488,
+   "agree": 0.5767441860465117,
+   "aux_done_by_t": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.215,
+    0.215,
+    0.215,
+    0.215,
+    0.215,
+    0.215,
+    0.215,
+    0.215,
+    0.215
+   ],
+   "halt_minus_n": {
+    "share": {
+     "early": 0.215,
+     "at_n": 0.0,
+     "n+1": 0.0,
+     "n+2": 0.0,
+     "later": 0.785
+    },
+    "counts": {
+     "-2": 215,
+     "6": 785
+    }
+   },
+   "acc_at_halt_by_bucket": {
+    "early": 0.34418604651162793,
+    "at_n": null,
+    "n+1": null,
+    "later": 0.3592356687898089
+   }
+  },
+  "12": {
+   "n_items": 1000,
+   "acc_at_halt": 0.138,
+   "mean_halt": 15.328,
+   "median_halt": 16.0,
+   "mean_halt_minus_n": 3.328,
+   "frac_capped": 0.916,
+   "aux_num_acc": 0.17857142857142858,
+   "agree": 0.4642857142857143,
+   "aux_done_by_t": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.084,
+    0.084,
+    0.084,
+    0.084,
+    0.084,
+    0.084,
+    0.084,
+    0.084,
+    0.084
+   ],
+   "halt_minus_n": {
+    "share": {
+     "early": 0.084,
+     "at_n": 0.0,
+     "n+1": 0.0,
+     "n+2": 0.0,
+     "later": 0.916
+    },
+    "counts": {
+     "-4": 84,
+     "4": 916
+    }
+   },
+   "acc_at_halt_by_bucket": {
+    "early": 0.17857142857142858,
+    "at_n": null,
+    "n+1": null,
+    "later": 0.13427947598253276
+   }
+  }
+ },
+ "run": "boxes/runs_fsq/s198_injc_s1",
+ "kind": "nested",
+ "cap": 16,
+ "eval_dtype": "torch.bfloat16",
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "sec": 53,
+ "rule": "halt at the first pass t (1..16) whose aux greedy output is one number token then EOT (2 greedy tokens); acc_at_halt = main decoder at the halt pass; aux_num_acc / agree over halted items; aux_done_by_t = cumulative share halted (note 182-2)"
+}
