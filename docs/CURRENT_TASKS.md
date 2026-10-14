@@ -27,6 +27,14 @@ touching fsq120 / table132 / core. Never edit a module while a deploy is in flig
 deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `vast destroy` aborts at its y/N prompt).
 
 ### Vast (7 hosts, ~$1.4/h; 14:27 2026-10-10)
+* 10:5x 10-14 (Experiments): §200: A b287 (218.150.198.117 / 570.172.08, $0.248) and B b288 (209.226.246.174 / 595.84, $0.258) training, land
+  ~16:20 / ~15:00; C LANDED 0.321 (+ local GSM-Symbolic main 0.156 / p1 0.059 / p2 0.022); D HELD (family $6.58 w/o D vs the $7 cap; Audit asked the user
+  for $7.50). Fillers: fill_generic_px (DPH_MAX, reserved drivers file, heartbeat), requeue_watch3 (per-queue .dph caps). §199: s1 b283 + s3 b285 (595.84,
+  PAIRED 199-A3) running; s2 waits PAIRED for 570.172.08 via scratch/s199_dual_fill.sh (Audit cap: 4 more BAD HOSTs / family $9.50; logs/s199_bad_cost.log).
+  Landed today: §198 a / b / c (family ~$6.29), §193 (~$7.81, 187-3 rows done), stage-2 pilot 24k (196-2 read UNCLEAR; ckpts deleted).
+  §201: T1 / T2 on all 7 nested + control scored (fb1d39ed); T2-e scored (FD-on-signal = the soft halt); 201-6 queue: 4060 eval_timing_4060 (§198 / §191),
+  2070 FD-on-signal on all models (+ s193), 3070 ProsQA dump -> T2. Owed: §198 (a) + §191 A / B eval_timing on a 3090.
+  USER: please delete D:/Latent_s200sym (scratch copy; a safety check blocked my rm).
 * 01:2x 10-14 (Experiments): §200 GSM8K-AUG PILOT (user-approved Tier 1, $7 cap): harness 2d0964ab + name fix 64c98681, gate_s200 run 4 all 8 PASS,
   Audit OK. Timing host b286 (scratch/gen_q_b286.txt + .extra data sidecar) takes the FIRST free slot (chain_s200t_s199 in scratchpad: b286, then §199 s2
   570.172.08, then s3 595.84). b286's timing.json -> projection to Audit AND the user before any of the four §200 cells (A/B/C/D queues not built yet).
