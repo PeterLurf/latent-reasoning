@@ -15603,6 +15603,15 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 * **Stage 5 (merged steps, n 82, descriptive):** value 0.707 / 0.350 / 0.713. MEAN again matches TRUE. *(Correction 19:38, Audit: n 82 is the item count; the stage-5 value-token count is 157.)*
 * **Wording:** "on the released SIM-CoT GPT-2 checkpoint, replacing the step latents with their mean leaves value-token accuracy at 0.915 (vs 0.939) while operand accuracy falls to 0.05–0.09", with the ZERO falsification reported beside it.
 
+**Note 204-3 (2026-10-14 19:58 EDT; before any §204 output; measurement definitions, no rule change; Audit's review of the harness 781f678d).**
+* **Pointer collisions.**
+  - The ptr*_acc candidate sets are deduplicated *first BPE tokens*, so operands that share a first token collapse into one candidate.
+  - Gate 3 reports the collision rate: the share of pointer targets whose first token is shared with another candidate.
+  - PLAN-ACC for the pointers is reported on all items and on collision-free items. The registered P-F1 reads the all-items value, with collision-free beside it.
+* **One equality across arms.**
+  - Any reading that compares the factor / value arms with the string arm (P-F1's proxies, P-F9, any VALUE-EXACT vs VALUE-IN-STRING contrast) uses **string equality**: the factor arm's greedy value output is decoded to a string and compared with the gold RHS string, exactly as the string arm's value_in_string does.
+  - Token-id equality is reported beside it for the factor arm only.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
