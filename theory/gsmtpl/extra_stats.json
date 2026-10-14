@@ -1,0 +1,95 @@
+{
+ "prosqa": {
+  "corr_L_depth_train": 0.5377,
+  "R2": 0.2891,
+  "slope_depth_per_token": 0.01537,
+  "ctl_mean_overstatement_hops": 3.575,
+  "ctl_overstatement_by_ext": {
+   "4": 3.058,
+   "8": 4.15
+  },
+  "test_d3to10_mean_overstatement_hops": -0.194,
+  "bin_tokens": 20
+ },
+ "gsm8k": {
+  "corr_L_m_aug_train": 0.5104,
+  "R2": 0.2605,
+  "slope_m_per_token": 0.04707,
+  "corr_L_m_test": 0.359,
+  "test_mean_size_keyed_depth_error_eq": -0.06,
+  "aug_valid_mean_error_eq": -0.012,
+  "test_error_by_length_residual_tercile_eq": [
+   -0.807,
+   -0.054,
+   0.68
+  ],
+  "test_m_mean_by_tercile": [
+   3.198,
+   3.198,
+   3.343
+  ],
+  "test_mean_m": 3.246,
+  "aug_mean_m": 2.598,
+  "bin_tokens": 4,
+  "note": "size-keyed depth error = E_aug[m | L-bin] - m (negative = length UNDER-states depth)"
+ },
+ "fingerprint": {
+  "def": "skeleton evaluated with question literal q_i := fixed pseudo-random values (2 assignments), constants kept; key = (value1, value2, n_eq); commutation / step-order variants of one function collide (intended); items with an ungrounded or unparsed operand get no key",
+  "aug_train_distinct": 50426,
+  "gsm8k_train_distinct": 4226,
+  "test_keyed": 1120,
+  "test_seen_in_aug_train": 0.5557,
+  "test_seen_in_gsm8k_train": 0.3434,
+  "test_seen_by_m": {
+   "0": [
+    0,
+    18,
+    0.0
+   ],
+   "1": [
+    40,
+    65,
+    0.615
+   ],
+   "2": [
+    305,
+    357,
+    0.854
+   ],
+   "3": [
+    253,
+    364,
+    0.695
+   ],
+   "4": [
+    103,
+    290,
+    0.355
+   ],
+   "5": [
+    29,
+    138,
+    0.21
+   ],
+   "6": [
+    2,
+    57,
+    0.035
+   ],
+   "7": [
+    1,
+    21,
+    0.048
+   ],
+   "8": [
+    0,
+    9,
+    0.0
+   ]
+  }
+ },
+ "numerals_recomputable_items": {
+  "variable_share": 0.9154,
+  "def": "operands Q + R + one result per equation vary under literal resampling; W + K stay"
+ }
+}

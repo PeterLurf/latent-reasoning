@@ -1,0 +1,945 @@
+{
+ "aug_train": {
+  "n_items": 384620,
+  "n_equations": 999252,
+  "eq_status": {
+   "exact": [
+    977400,
+    0.97813
+   ],
+   "round": [
+    17468,
+    0.01748
+   ],
+   "wrong": [
+    3105,
+    0.00311
+   ],
+   "unparsed": [
+    1279,
+    0.00128
+   ]
+  },
+  "items_all_exact": 0.9493,
+  "items_exact_or_round": 0.9895,
+  "items_any_wrong": 0.0077,
+  "items_any_unparsed": 0.0029,
+  "items_no_equation": 0.0002,
+  "answer_eq_last_rhs": 0.9563,
+  "answer_eq_any_rhs": 0.9567,
+  "operand_categories": {
+   "Q": [
+    1187550,
+    0.553
+   ],
+   "R": [
+    659050,
+    0.3069
+   ],
+   "W": [
+    182272,
+    0.0849
+   ],
+   "K": [
+    72640,
+    0.0338
+   ],
+   "U": [
+    45811,
+    0.0213
+   ]
+  },
+  "items_with_ungrounded_operand": 0.095,
+  "items_all_int_intermediates": 0.8346,
+  "recomputable": 0.7722,
+  "recomputable_def": "all equations parse and are exact; every operand is a question literal, a previous result, a number word in the question or a common constant; answer == last equation's value; each question literal value occurs once in the question (unambiguous substitution)",
+  "name_heuristic": {
+   "items_with_capitalised_candidate": 0.4225,
+   "distinct_candidates": 8403,
+   "top30": [
+    [
+     "John",
+     10721
+    ],
+    [
+     "Sarah",
+     5460
+    ],
+    [
+     "Tom",
+     4548
+    ],
+    [
+     "Mike",
+     4354
+    ],
+    [
+     "Sam",
+     4304
+    ],
+    [
+     "Emily",
+     4023
+    ],
+    [
+     "Lisa",
+     3848
+    ],
+    [
+     "Peter",
+     3811
+    ],
+    [
+     "Alex",
+     3367
+    ],
+    [
+     "Jack",
+     3210
+    ],
+    [
+     "Emma",
+     3020
+    ],
+    [
+     "Bob",
+     2967
+    ],
+    [
+     "Mary",
+     2953
+    ],
+    [
+     "Mark",
+     2679
+    ],
+    [
+     "Jane",
+     2559
+    ],
+    [
+     "Alice",
+     2463
+    ],
+    [
+     "Lucy",
+     2376
+    ],
+    [
+     "James",
+     2359
+    ],
+    [
+     "Jake",
+     2190
+    ],
+    [
+     "Amy",
+     2142
+    ],
+    [
+     "Anna",
+     2004
+    ],
+    [
+     "Liam",
+     2004
+    ],
+    [
+     "Paul",
+     1981
+    ],
+    [
+     "Lily",
+     1888
+    ],
+    [
+     "Maria",
+     1716
+    ],
+    [
+     "Jenny",
+     1714
+    ],
+    [
+     "Tim",
+     1700
+    ],
+    [
+     "Samantha",
+     1692
+    ],
+    [
+     "Ben",
+     1663
+    ],
+    [
+     "Billy",
+     1649
+    ]
+   ]
+  },
+  "recomputable_subset": {
+   "n": 296990,
+   "mean_think_L": 41.89,
+   "mean_m": 2.483,
+   "all_mean_think_L": 43.34,
+   "all_mean_m": 2.598
+  },
+  "wrong_examples": [
+   {
+    "eqs": [
+     "2*.01=.02",
+     "3*.01=.03",
+     "4*.01=.04",
+     "5*.01=.05",
+     "6*.01=.06",
+     "7*.01=.07",
+     "8*.01=.08",
+     ".01+.02+.03+.04+.05+.06+.07+.08=.45"
+    ],
+    "st": [
+     "exact",
+     "exact",
+     "exact",
+     "exact",
+     "exact",
+     "exact",
+     "exact",
+     "wrong"
+    ]
+   },
+   {
+    "eqs": [
+     "40*.25=10",
+     "20*(1/2)=10",
+     "10+10=20",
+     "40+20=60",
+     "20/60=.333",
+     ".333*100=33.33"
+    ],
+    "st": [
+     "exact",
+     "exact",
+     "exact",
+     "exact",
+     "round",
+     "wrong"
+    ]
+   },
+   {
+    "eqs": [
+     "2*20=40",
+     "100*40=4000",
+     "2500-4000=-1500",
+     "1500/20=-75"
+    ],
+    "st": [
+     "exact",
+     "exact",
+     "exact",
+     "wrong"
+    ]
+   },
+   {
+    "eqs": [
+     "50/2=25",
+     "25-15/2=10"
+    ],
+    "st": [
+     "exact",
+     "wrong"
+    ]
+   },
+   {
+    "eqs": [
+     "7*7=49",
+     "5*7+49+10=87",
+     "87/7=12.428571428571429"
+    ],
+    "st": [
+     "exact",
+     "wrong",
+     "exact"
+    ]
+   },
+   {
+    "eqs": [
+     "30/4.5=6.66",
+     "7/2=3.5"
+    ],
+    "st": [
+     "wrong",
+     "exact"
+    ]
+   },
+   {
+    "eqs": [
+     "5000-750=4250",
+     "3750/59=63.55"
+    ],
+    "st": [
+     "exact",
+     "wrong"
+    ]
+   },
+   {
+    "eqs": [
+     "18*50=900",
+     "900/3.785=237.67"
+    ],
+    "st": [
+     "exact",
+     "wrong"
+    ]
+   }
+  ]
+ },
+ "gsm8k_train": {
+  "n_items": 7473,
+  "n_equations": 23716,
+  "eq_status": {
+   "exact": [
+    23716,
+    1.0
+   ]
+  },
+  "items_all_exact": 1.0,
+  "items_exact_or_round": 1.0,
+  "items_any_wrong": 0.0,
+  "items_any_unparsed": 0.0,
+  "items_no_equation": 0.0127,
+  "answer_eq_last_rhs": 0.9368,
+  "answer_eq_any_rhs": 0.9386,
+  "operand_categories": {
+   "Q": [
+    24500,
+    0.4812
+   ],
+   "W": [
+    5269,
+    0.1035
+   ],
+   "R": [
+    17743,
+    0.3485
+   ],
+   "U": [
+    1353,
+    0.0266
+   ],
+   "K": [
+    2046,
+    0.0402
+   ]
+  },
+  "items_with_ungrounded_operand": 0.1476,
+  "items_all_int_intermediates": 0.964,
+  "recomputable": 0.6514,
+  "recomputable_def": "all equations parse and are exact; every operand is a question literal, a previous result, a number word in the question or a common constant; answer == last equation's value; each question literal value occurs once in the question (unambiguous substitution)",
+  "name_heuristic": {
+   "items_with_capitalised_candidate": 0.5215,
+   "distinct_candidates": 2741,
+   "top30": [
+    [
+     "John",
+     73
+    ],
+    [
+     "James",
+     49
+    ],
+    [
+     "Mark",
+     45
+    ],
+    [
+     "Mary",
+     45
+    ],
+    [
+     "Tom",
+     45
+    ],
+    [
+     "Bob",
+     42
+    ],
+    [
+     "Bill",
+     34
+    ],
+    [
+     "Jack",
+     33
+    ],
+    [
+     "Peter",
+     32
+    ],
+    [
+     "Mike",
+     31
+    ],
+    [
+     "Sam",
+     31
+    ],
+    [
+     "Sarah",
+     29
+    ],
+    [
+     "Joe",
+     26
+    ],
+    [
+     "Jerry",
+     25
+    ],
+    [
+     "Janet",
+     24
+    ],
+    [
+     "Jim",
+     24
+    ],
+    [
+     "Martha",
+     23
+    ],
+    [
+     "Harry",
+     23
+    ],
+    [
+     "Jason",
+     23
+    ],
+    [
+     "Lisa",
+     22
+    ],
+    [
+     "Jane",
+     22
+    ],
+    [
+     "Billy",
+     21
+    ],
+    [
+     "Matt",
+     21
+    ],
+    [
+     "Ben",
+     20
+    ],
+    [
+     "Steve",
+     20
+    ],
+    [
+     "Frank",
+     20
+    ],
+    [
+     "Tony",
+     19
+    ],
+    [
+     "Sally",
+     19
+    ],
+    [
+     "Michael",
+     19
+    ],
+    [
+     "Betty",
+     18
+    ]
+   ]
+  }
+ },
+ "gsm8k_test": {
+  "n_items": 1319,
+  "n_equations": 4282,
+  "eq_status": {
+   "exact": [
+    4282,
+    1.0
+   ]
+  },
+  "items_all_exact": 1.0,
+  "items_exact_or_round": 1.0,
+  "items_any_wrong": 0.0,
+  "items_any_unparsed": 0.0,
+  "items_no_equation": 0.0136,
+  "answer_eq_last_rhs": 0.9158,
+  "answer_eq_any_rhs": 0.9158,
+  "operand_categories": {
+   "Q": [
+    4438,
+    0.4857
+   ],
+   "W": [
+    901,
+    0.0986
+   ],
+   "R": [
+    3248,
+    0.3554
+   ],
+   "U": [
+    225,
+    0.0246
+   ],
+   "K": [
+    326,
+    0.0357
+   ]
+  },
+  "items_with_ungrounded_operand": 0.1372,
+  "items_all_int_intermediates": 0.9583,
+  "recomputable": 0.624,
+  "recomputable_def": "all equations parse and are exact; every operand is a question literal, a previous result, a number word in the question or a common constant; answer == last equation's value; each question literal value occurs once in the question (unambiguous substitution)",
+  "name_heuristic": {
+   "items_with_capitalised_candidate": 0.5299,
+   "distinct_candidates": 784,
+   "top30": [
+    [
+     "John",
+     22
+    ],
+    [
+     "James",
+     14
+    ],
+    [
+     "Mark",
+     12
+    ],
+    [
+     "Sam",
+     7
+    ],
+    [
+     "Bill",
+     6
+    ],
+    [
+     "Sally",
+     6
+    ],
+    [
+     "Ali",
+     6
+    ],
+    [
+     "Peter",
+     6
+    ],
+    [
+     "Martha",
+     6
+    ],
+    [
+     "Ben",
+     5
+    ],
+    [
+     "David",
+     5
+    ],
+    [
+     "Sarah",
+     5
+    ],
+    [
+     "Charlie",
+     5
+    ],
+    [
+     "Joe",
+     5
+    ],
+    [
+     "Robert",
+     5
+    ],
+    [
+     "Jason",
+     5
+    ],
+    [
+     "Mike",
+     5
+    ],
+    [
+     "Jim",
+     5
+    ],
+    [
+     "Bob",
+     5
+    ],
+    [
+     "Jack",
+     5
+    ],
+    [
+     "Paul",
+     5
+    ],
+    [
+     "Raymond",
+     4
+    ],
+    [
+     "Billy",
+     4
+    ],
+    [
+     "Jean",
+     4
+    ],
+    [
+     "Cindy",
+     4
+    ],
+    [
+     "Amy",
+     4
+    ],
+    [
+     "Harry",
+     4
+    ],
+    [
+     "Julia",
+     4
+    ],
+    [
+     "Jordan",
+     4
+    ],
+    [
+     "Carl",
+     4
+    ]
+   ]
+  }
+ },
+ "aug_valid": {
+  "n_items": 500,
+  "n_equations": 1573,
+  "eq_status": {
+   "exact": [
+    1573,
+    1.0
+   ]
+  },
+  "items_all_exact": 1.0,
+  "items_exact_or_round": 1.0,
+  "items_any_wrong": 0.0,
+  "items_any_unparsed": 0.0,
+  "items_no_equation": 0.012,
+  "answer_eq_last_rhs": 0.932,
+  "answer_eq_any_rhs": 0.938,
+  "operand_categories": {
+   "Q": [
+    1609,
+    0.4779
+   ],
+   "R": [
+    1177,
+    0.3496
+   ],
+   "W": [
+    342,
+    0.1016
+   ],
+   "K": [
+    147,
+    0.0437
+   ],
+   "U": [
+    92,
+    0.0273
+   ]
+  },
+  "items_with_ungrounded_operand": 0.152,
+  "items_all_int_intermediates": 0.96,
+  "recomputable": 0.656,
+  "recomputable_def": "all equations parse and are exact; every operand is a question literal, a previous result, a number word in the question or a common constant; answer == last equation's value; each question literal value occurs once in the question (unambiguous substitution)",
+  "name_heuristic": {
+   "items_with_capitalised_candidate": 0.518,
+   "distinct_candidates": 361,
+   "top30": [
+    [
+     "John",
+     9
+    ],
+    [
+     "Sam",
+     5
+    ],
+    [
+     "Mike",
+     5
+    ],
+    [
+     "Matt",
+     4
+    ],
+    [
+     "James",
+     4
+    ],
+    [
+     "Central",
+     3
+    ],
+    [
+     "Martha",
+     3
+    ],
+    [
+     "Henry",
+     3
+    ],
+    [
+     "Mary",
+     3
+    ],
+    [
+     "Janet",
+     3
+    ],
+    [
+     "Maria",
+     3
+    ],
+    [
+     "Max",
+     3
+    ],
+    [
+     "Jake",
+     3
+    ],
+    [
+     "Steve",
+     3
+    ],
+    [
+     "Bob",
+     3
+    ],
+    [
+     "Hannah",
+     2
+    ],
+    [
+     "Kenny",
+     2
+    ],
+    [
+     "William",
+     2
+    ],
+    [
+     "Ken",
+     2
+    ],
+    [
+     "Alex",
+     2
+    ],
+    [
+     "Roger",
+     2
+    ],
+    [
+     "Peter",
+     2
+    ],
+    [
+     "Jim",
+     2
+    ],
+    [
+     "David",
+     2
+    ],
+    [
+     "Marla",
+     2
+    ],
+    [
+     "Jenna",
+     2
+    ],
+    [
+     "Johann",
+     2
+    ],
+    [
+     "Park",
+     2
+    ],
+    [
+     "Day",
+     2
+    ],
+    [
+     "Joe",
+     2
+    ]
+   ]
+  }
+ },
+ "skeletons": {
+  "aug_train_distinct_skel": 107754,
+  "aug_train_distinct_shape": 13268,
+  "gsm8k_train_distinct_skel": 6126,
+  "aug_train_skel_count_covering_50pct": 984,
+  "aug_train_skel_count_covering_90pct": 69292,
+  "overlap": {
+   "gsm8k_test": {
+    "skel_seen_in_aug_train": 0.4102,
+    "shape_seen_in_aug_train": 0.8855,
+    "skel_seen_in_gsm8k_train": 0.2388
+   },
+   "gsm8k_train": {
+    "skel_seen_in_aug_train": 0.9616,
+    "shape_seen_in_aug_train": 0.9933,
+    "skel_seen_in_gsm8k_train": 1.0
+   },
+   "aug_valid": {
+    "skel_seen_in_aug_train": 0.44,
+    "shape_seen_in_aug_train": 0.9,
+    "skel_seen_in_gsm8k_train": 1.0
+   }
+  },
+  "top10_aug_skel": [
+   [
+    "q0*q1",
+    12588
+   ],
+   [
+    "q0/q1",
+    10222
+   ],
+   [
+    "q1/q0",
+    6512
+   ],
+   [
+    "q0*q1;r1*q2",
+    5778
+   ],
+   [
+    "q1+q2;q0-r1",
+    3680
+   ],
+   [
+    "q0*q1;r1-q2",
+    3457
+   ],
+   [
+    "q0*q1;q2*q3;r2+r1",
+    3044
+   ],
+   [
+    "q0*q1;r1/q2",
+    2963
+   ],
+   [
+    "q0*q2;q1*q3;r2+r1",
+    2789
+   ],
+   [
+    "q1*q0",
+    2745
+   ]
+  ],
+  "skel_def": "each equation's LHS with numbers -> q<i> (i-th distinct question number), r<j> (result of the j-th previous equation), k<v> (number word / common constant), u (ungrounded); equations joined by ';'. shape = skel with all symbols -> x"
+ },
+ "question_overlap": {
+  "gsm8k_train": {
+   "exact_in_aug_train": 6955
+  },
+  "gsm8k_test": {
+   "exact_in_aug_train": 0
+  },
+  "aug_valid": {
+   "exact_in_aug_train": 0
+  }
+ },
+ "draws": {
+  "12k_steps_bs64": {
+   "draws": 768000,
+   "epochs_aug_train": 2.0,
+   "epochs_gsm8k_train_7473": 102.8,
+   "epochs_p8_na_train_11985": 64.1
+  },
+  "24k_steps_bs64": {
+   "draws": 1536000,
+   "epochs_aug_train": 3.99,
+   "epochs_gsm8k_train_7473": 205.5,
+   "epochs_p8_na_train_11985": 128.2
+  },
+  "48k_steps_bs64": {
+   "draws": 3072000,
+   "epochs_aug_train": 7.99,
+   "epochs_gsm8k_train_7473": 411.1,
+   "epochs_p8_na_train_11985": 256.3
+  }
+ },
+ "length_residual_test_vs_aug": {
+  "aug_tokens_per_equation_ols_m1to8": 5.586,
+  "aug_mean_L_by_m": {
+   "0": 48.84,
+   "1": 34.51,
+   "2": 39.87,
+   "3": 45.63,
+   "4": 51.34,
+   "5": 57.51,
+   "6": 62.23,
+   "7": 65.16,
+   "8": 68.36,
+   "9": 64.53,
+   "10": 52.79,
+   "11": 60.75,
+   "12": 50.0,
+   "13": 43.0
+  },
+  "test_resid_mean": 10.58,
+  "test_resid_median": 7.12935392866121,
+  "tercile_cuts": [
+   -0.34,
+   14.66
+  ],
+  "tercile_mean_resid": [
+   -8.57,
+   7.06,
+   33.01
+  ],
+  "tercile_n": [
+   437,
+   440,
+   442
+  ],
+  "tercile_mean_resid_in_equations": [
+   -1.53,
+   1.26,
+   5.91
+  ],
+  "frac_test_resid_gt_0": 0.6626,
+  "aug_valid_resid_mean": 9.6
+ }
+}
