@@ -1,0 +1,3 @@
+2026-10-14 02:10:24 s200 b287-b290: launched on ADDITIONAL hosts (user permission via Audit 01:5x; projection ~$6.6 <= $7)
+2026-10-14 03:01:22 s200re: A b287, B b288, D b290 sequential, DPH_MAX 0.26 (Audit's $7 arithmetic); one filler
+2026-10-14 03:36:14 s200re restarted after the DPH_MAX quoting fix (the single-quoted search passed the literal ${DPH_MAX...}; 0 offers, no spend)

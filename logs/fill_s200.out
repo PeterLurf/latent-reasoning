@@ -1,0 +1,11 @@
+02:10:28 b287: deploying on offer 49980276 (6 live, $1.43/h)
+02:16:50 b287: STARTED
+02:17:57 b288: deploying on offer 45859551 (7 live, $1.705/h)
+02:24:28 b288: STARTED
+02:25:35 b289: deploying on offer 25325621 (8 live, $1.9/h)
+02:33:38 b289: did not start, retrying
+02:43:42 b289: deploying on offer 48399578 (6 live, $1.38/h)
+02:47:04 b289: STARTED
+02:48:12 b290: deploying on offer 45636823 (7 live, $1.696/h)
+02:50:27 b290: STARTED
+02:51:28 done: 287 288 289 290
