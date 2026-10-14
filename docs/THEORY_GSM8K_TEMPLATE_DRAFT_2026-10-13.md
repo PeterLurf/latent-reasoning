@@ -22,6 +22,11 @@
 
 ## 0. Summary
 
+**The decision this asks of the user (Audit, 2026-10-13):** whether to move up the ladder to GSM8K **now**.
+* §191 A matches or edges text CoT on deep ProsQA: one seed, with thinking necessary (K′ 0 / 1 at chance).
+* That is not a published-SOTA win on a smaller task.
+* The ask is Stage 1 (Tier 1 + Tier 2, about $6.2–9.0). Stage 2 and cell E are later, separate decisions.
+
 1. **Measured lengths: GSM8K inputs are 7.6× shorter than ProsQA, not longer.** Think input = [EOT] + question, in GPT-2 tokens (mean / p95 / max):
    - ProsQA p8_na_train: 440 / 560 / 722;
    - GSM8K test: 57.8 / 99 / 183;
@@ -454,6 +459,9 @@ while its train fit can be 1.
 * Only the final checkpoint and the valid-best checkpoint are kept (data retention).
 
 **Latent-only readouts.**
+* **IDLE PASSES (Audit, descriptive, Tier 1):**
+  - accuracy by equation count m at K′ = m + 2, against K′ 10, for A and B;
+  - with fixed K 10 and Aug's mean m of 2.6 (80% of items have m ≤ 3), most items get 7+ unsupervised post-completion passes before the answer is read.
 * K′ ∈ {0, 1, 2, 4, 6, 8, 10, 12, 16}, overall and by m.
 * aux exact by pass on test, teacher-forced (descriptive).
 
@@ -489,6 +497,7 @@ while its train fit can be 1.
 * Quoted beside, never in place: our bench CoT 41.8 (the Dilgren checkpoint), CoT-SFT as reported by CODI 44.1, and SIM-CoT's re-run 42.7.
 
 **R2, SOTA (PCCoT 49.48 ± 0.31, 3 runs, its own).**
+* **Wording (Audit):** our number is the FINAL checkpoint. PCCoT's checkpoint rule is unverified (Literature checked only Coconut / DART), so the bar may be test-selected.
 * Per seed, "above PCCoT" iff accuracy ≥ **52.28** (49.48 + 2.8).
 * **Stage 2 opens** iff the carried latent arm's s1 is ≥ 49.48 *and* R1 reads matches or above.
   - The carried arm is A or B, whichever is higher on **Aug valid**, never on test.
@@ -650,6 +659,11 @@ while its train fit can be 1.
 ## 4. Risks, and what would falsify the approach
 
 **Risks.**
+0. **Post-completion drift on shallow items (Audit).**
+   - Most Aug / test items finish in ≤ 3 passes, then idle for 7+.
+   - The latent arm's GSM8K accuracy may be capped by integrator drift after completion. This is the docs/THEORY_SEEDSTAB Part I §2 / CSR story; on ProsQA, depth 3 at K′ 10 is 0.955 vs 0.99+ at depths 6–8.
+   - The IDLE-PASSES readout measures it.
+   - The design is unchanged: the WINDOW cell E is the registered remedy, and CSR is not stacked.
 1. **Undertraining.** 4 Aug epochs is fewer than the published runs; Literature should check PCCoT's and CODI's epochs. A BELOW-SOTA reading with STILL-RISING is "undertrained", not "method fails". Extending to 48k is a user decision (+$1.4–2.0 per cell).
 2. **Aux noise.** Wrong equations are filtered (0.77% of items). Rounded equations are kept (1.7%). The answer ≠ last equation in 4.4% of items, versus 6.3% in GSM8K itself.
 3. **The resampling shift.** Resampled magnitudes can change difficulty, which A-fit covers. Gate: digit-count and integrality preservation, the acceptance rate, and TEXT-COT's fit_fix ≈ fit_rs within 0.03.
