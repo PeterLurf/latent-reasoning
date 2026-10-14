@@ -15220,6 +15220,28 @@ Each registers separately, after T1 / T2.
 * The method reading (CSR as registered vs its paired control) does not depend on P-A5 and is unaffected.
 * score_s199_a.py implements this. Fixture-checked: 16k missing with 8k non-contractive → UNDECIDABLE; 16k missing with 8k contractive → FLOOR-GAMED.
 
+**§199-A s1 result (2026-10-14 13:26 EDT; s199_csr_s1, b283, RTX 3090 / 570.172.08, PAIRED (A4 / 199-A2 / A3); theory/score_s199_a.py; the 16k checkpoint was lost, see 199-A6). FLOOR-GAMED, and CSR as registered FAILED on its paired seed.**
+* **Registered fields:**
+  - **P-A1 met:** csr_lam_pre_med mean over 7001–8000 = **+0.325** (≥ −0.0513).
+  - **P-A2 not met:** entry(0.5 / 0.1) none; final 1k bin 1.395. The paired control s185_rms_s1 entered at 19k and ended at 0.006.
+  - **P-A3 not met:** final delta_cos 0.918, agree 0.588, acc_from_zero 0.346.
+  - **8k probe (registered): contractive**, 0.910 / 0.902. So the label is **FLOOR-GAMED**, decidable from 8k alone under 199-A6.
+  - The 4k (0.956 / 0.850) and 12k (0.916 / 0.706) probes are descriptive.
+  - P-A4: not STABLE.
+* **199-A5 gradshare: NOT-CROWDED.** G_csr / G_task on the memory branch is 0.34 at 4k, 0.041 at 8k and 0.031 at 12k, all below 1 (overall 0.070 / 0.016 / 0.013), with ‖W_o‖ 9.6 → 13.1. **Theory's crowding mechanism is refuted for s1**, so CSR's harm is not a starved task gradient.
+* **How the floor was met (descriptive, per head type):**
+  - λ_pre on the **delta** read: +0.12 (2k), +0.30 (4k), +0.44 (8k), +0.23 (24k). The delta read's per-pass displacement grew by about 25–55% per pass.
+  - On the **additive** read: 0 (open loop) then −0.53 (4k), −0.37 (8k), −0.27 (48k).
+  - The post-completion ceiling was met (λ_post about −0.9).
+  - So CSR's floor (λ ≥ log 0.95, no upper bound before completion) was satisfied by **expanding delta-read motion that is not progress**, while the model stayed in the contractive class. That is the "motion without progress" risk named in 199-A §A2 and in Audit's P-A5 critique.
+* **Readings:**
+  - **Method:** CSR as registered (w 0.1, start 500, floor-only before completion) does not rescue entry, and on its paired seed it **prevents** entry the control achieved. Harmful at this design.
+  - **Account:** not tested by s1 (FLOOR-GAMED), and not falsified.
+  - **What a redesign would need** (a new registration with a derivation):
+    - a **two-sided band** before completion (no expansion), or a floor on **decodable progress** (e.g. the aux decoder's margin between e_{t+1} and e_t) rather than raw read displacement;
+    - no penalty structure that rewards growth.
+* The overall §199-A reading waits on s3 (running) and s2 (held). One seed already rules out SUPPORTED.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
