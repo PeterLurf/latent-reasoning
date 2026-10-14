@@ -20,6 +20,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import basin_entry as BE  # noqa: E402
 import score_s185 as S185  # noqa: E402
 import score_s187 as S187  # noqa: E402
+import score_s194 as S194  # noqa: E402  (note 198-3: rows_table's onset rule)
 
 R = os.path.join(ROOT, "boxes", "runs_fsq")
 EPS = 1e-9
@@ -64,6 +65,20 @@ def main():
         lines.append("(%s) %s: DEEP %s, THINK-NECESSARY %s, DEPTH %.3f vs (a) %.3f; cost ratio vs current %.3f at L 300 (%.3f at nested L; Meter %s); entry %s/%s" % (
             k, lab, c["deep"], c["think_necessary"], c["depth_9_12_n2"], a["depth_9_12_n2"], c["cost"]["ratio_vs_current"], c["cost"]["ratio_at_nested_L"], c["cost"]["meter_flops"],
             c["entry"]["entry_0.5"], c["entry"]["entry_0.1"]))
+    desc = []                                                                # note 198-3 (descriptive, never a label): delta_cos_final and SIZE-KEY, (c) vs (a)
+    for k, (d, _) in CELLS.items():
+        e_ = os.path.join(R, d, "eval.json"); pi = ((json.load(open(e_)).get("s182") or {}).get("path_indep") if os.path.exists(e_) else None)
+        tb = S194.rows_table(d) if os.path.exists(os.path.join(R, d, "eval_s187_deepaux_items_n9_12.json")) else None
+        sk = None if tb is None else {"size_key": tb[9]["onset"] - tb[12]["onset"], "t3_6_drop": tb[9]["mean_t3_6"] - tb[12]["mean_t3_6"], "onset_by_n": {n: tb[n]["onset"] for n in tb}}
+        res[k]["note198_3"] = {"path_indep": pi, "size": sk}
+        desc.append("(%s) delta_cos %s, SIZE-KEY %s" % (k, "pending" if pi is None else "%.3f (agree %.3f)" % (pi["delta_cos_final"], pi["answer_agree"]),
+                                                       "pending" if sk is None else "%d (onsets %s, t3-6 drop %.3f)" % (sk["size_key"], sk["onset_by_n"], sk["t3_6_drop"])))
+    pa, pc = res["a"]["note198_3"], res["c"]["note198_3"]
+    if pa["path_indep"] and pc["path_indep"]:
+        desc.append("pred 1 (c delta_cos < a): %s" % ("as predicted" if pc["path_indep"]["delta_cos_final"] < pa["path_indep"]["delta_cos_final"] else "FALSIFIED as stated"))
+    if pa["size"] and pc["size"]:
+        desc.append("pred 2 (c SIZE-KEY < a): %s" % ("as predicted" if pc["size"]["size_key"] < pa["size"]["size_key"] else "FALSIFIED as stated"))
+    out["note198_3"] = " | ".join(desc); print("NOTE 198-3 (descriptive, one seed per cell, not a label):", out["note198_3"])
     out["reading"] = " | ".join(lines); print("READING:", out["reading"])
     errs = S187.ERRORS
     if errs:
