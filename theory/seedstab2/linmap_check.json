@@ -1,0 +1,67 @@
+{
+ "super_+_linear": [
+  0.248,
+  0.231
+ ],
+ "super_+_perhead": [
+  1.0,
+  1.0
+ ],
+ "super_*_linear": [
+  0.25,
+  0.34
+ ],
+ "super_*_perhead": [
+  1.0,
+  1.0
+ ],
+ "bilin_+_linear": [
+  1.0,
+  1.0
+ ],
+ "bilin_+_perhead": [
+  1.0,
+  1.0
+ ],
+ "bilin_*_linear": [
+  1.0,
+  1.0
+ ],
+ "bilin_*_perhead": [
+  1.0,
+  1.0
+ ],
+ "pair3_+_linear": [
+  0.381,
+  0.389
+ ],
+ "pair3_+_perhead": [
+  1.0,
+  1.0
+ ],
+ "pair3_*_linear": [
+  0.361,
+  0.375
+ ],
+ "pair3_*_perhead": [
+  1.0,
+  1.0
+ ],
+ "erase3_+_linear": [
+  1.0,
+  1.0
+ ],
+ "erase3_+_perhead": [
+  1.0,
+  1.0
+ ],
+ "erase3_*_linear": [
+  1.0,
+  1.0
+ ],
+ "erase3_*_perhead": [
+  1.0,
+  1.0
+ ],
+ "_note": "best training accuracy over Adam steps, seeds 0 / 1; linear = rev-2 map (per-head stop-gradient batch-RMS constants, global cosine, no bias); perhead = rev-1 map (per-head RMS + bias); rows 1-11 from the first run (cut at 1100 s), rows 12-16 from part 2"
+}

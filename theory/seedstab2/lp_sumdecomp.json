@@ -1,0 +1,27 @@
+{
+ "+": {
+  "best_train_acc": 0.1487603305785124,
+  "pairs": 121
+ },
+ "-": {
+  "best_train_acc": 0.14049586776859505,
+  "pairs": 121
+ },
+ "*": {
+  "best_train_acc": 0.2975206611570248,
+  "pairs": 121
+ },
+ "/": {
+  "best_train_acc": 0.21818181818181817,
+  "pairs": 110
+ },
+ "ctrl_first": {
+  "best_train_acc": 1.0,
+  "pairs": 121
+ },
+ "ctrl_max": {
+  "best_train_acc": 1.0,
+  "pairs": 121
+ },
+ "bilinear_rank10_add_exact": true
+}
