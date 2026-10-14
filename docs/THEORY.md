@@ -288,7 +288,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 198 | CHEAP-THINK (the user's request): an all-cached family; (a) cached INJECT, (b) MEM-HIGH l_m 9, (c) READ-SLOTS + RMS + step aux; CHEAPER-EQUAL / CHEAPER-WORSE / UNCLEAR-ENTRY / FAILS vs (a); $10 cap | registered | **(a) comparator holds; (b) CHEAPER-WORSE (confounded by entry); (c) FAILS (entry 33k, not DEEP, depth 0.364); family ≈ $6.29; 198-3 pred 1 FALSIFIED (READ-SLOTS more path-independent)** |
 | 199 | CONTRACTION-TRAP (the user's seed-stability request): order parameter s182.path_indep separates converged / failed across 19 models; M1 = within-n rank test, per-pass delta decay ᾱ vs handle onset (ρ̄ > 0 predicted; falsified ≤ 0 or < 0.3); 199-A method CSR (completion-switched step-ratio target), RMS s1–s3 on 3090 paired with s185, SUPPORTED / MIXED / FALSIFIED (P-A5 on checkpoint path_indep) | registered (M1, 199-A) | **open** |
 | 200 | GSM8K-AUG PILOT (user-approved 2026-10-13 ~23:5x via Audit, "make sure its augmented dataset"; Tier 1 only, cap $7): latent step-aux A / A+resample B vs TEXT-COT C / D on GSM8K-Aug, 24k, final checkpoint; R1 C3 in-house ±2.8, R2 vs PCCoT 49.48 (no 1-seed SOTA claim), R3 resample, R4 THINK-NECESSARY, R6 length, R7 STABLE, LOOP-NOT-FORMED, IDLE-PASSES | registered | **open** |
-| 201 | OVERTHINK-EXIT (the user's overthinking + latent-transition requests; $0 eval-only): T1 FREEZE 2×2 (which channel drives post-completion decay; ADD-COUPLED / ADD-DIRECT / DELTA-INTRINSIC / JOINT; additive account falsified if R_FA ≤ 0.3 in ≥ 2 of 3 key models), T2 SHIRYAEV-HEAD halt (NO-OVERTHINK / SIZE-FREE / PREMATURE; β-cue falsifier) | registered | **open** |
+| 201 | OVERTHINK-EXIT (the user's overthinking + latent-transition requests; $0 eval-only): T1 FREEZE 2×2 (which channel drives post-completion decay; ADD-COUPLED / ADD-DIRECT / DELTA-INTRINSIC / JOINT; additive account falsified if R_FA ≤ 0.3 in ≥ 2 of 3 key models), T2 SHIRYAEV-HEAD halt (NO-OVERTHINK / SIZE-FREE / PREMATURE; β-cue falsifier) | registered | **T1: additive account FALSIFIED - overthinking is post-completion DELTA writes (R_FD ~1.0 in 5/7); T2: learned halt NO-OVERTHINK on 7/7 (= best fixed K′ vs K′32 0.34-0.94), size-free on RMS; T2-b fails narrowly, T2-c fails** |
 
 ## Live sections
 
@@ -15003,6 +15003,53 @@ Each registers separately, after T1 / T2.
   - The per-pass α^M argument (M = 8 slot tokens gives less decay) predicted the opposite.
   - This fits 199-E1 / 199-M1: the class separator is a progress-gated β, not α^L. (c)'s slot writes evidently do not gate with progress.
   - Its SIZE-KEY (prediction 2) waits for its 187-3 rows.
+
+**§201 result (2026-10-14 08:06 EDT; T1 + T2 on the 7 nested models, 2070 fp32; every gate passes, s184 s1 / s2 and rms s1 via the bs-125 bf16 re-check (201-5); theory/score_s201.py). T1: the additive-integrator account is FALSIFIED. Overthinking in the converged models comes from the post-completion DELTA writes. T2: the learned halt removes overthinking within the training range on all 7 models.**
+
+**T1, FREEZE 2×2** (K′24, pooled n 3..8; D = FB − CLEAN):
+
+| model | CLEAN | FA | FD | FB | R_FA | R_FD | reading |
+|---|---|---|---|---|---|---|---|
+| rms s1 | 0.746 | 0.753 | 0.998 | 0.998 | 0.03 | 1.00 | DELTA-INTRINSIC |
+| rms s2 | 0.871 | 0.884 | 0.999 | 0.999 | 0.11 | 1.00 | DELTA-INTRINSIC |
+| §190 s1 | 0.891 | 0.931 | 1.000 | 1.000 | 0.37 | 1.00 | mixed |
+| §187 s1 | 0.984 | **0.814** | 0.996 | 0.998 | — | — | NOTHING-TO-RECOVER (D 0.014); **no-harm FAILED** (freezing the additive writes hurts) |
+| §187 s2 | 0.921 | 0.873 | 0.996 | 0.999 | −0.62 | 0.96 | DELTA-INTRINSIC |
+| §184 s1 | 0.566 | 0.884 | 0.758 | 0.974 | 0.78 | 0.47 | ADD-DIRECT |
+| §184 s2 | 0.903 | 0.881 | 0.983 | 1.000 | −0.23 | 0.83 | DELTA-INTRINSIC |
+
+* **The registered falsifier fires:** R_FA ≤ 0.3 in rms s1 and s2 (2 of 3 key models). T1-a and T1-b are both false.
+* Freezing the delta state after completion alone recovers essentially everything (R_FD 0.96–1.00) in 5 of 7 models. Freezing the additive state recovers little, and **hurts** where the additive path does post-completion work (§187).
+* §184 s1, with an unnormalised additive read, is the only ADD-DIRECT model, which is what the derivation expected for that read.
+* **Consequence (pre-stated in the plan's falsifier):** the fix ranking flips to delta-side fixes:
+  - trained post-completion passes (WINDOW; §193 RMS × WINDOW reads JOINT, K′24 0.989);
+  - a post-completion stop or ceiling on the **delta** writes;
+  - halting (T2).
+* docs/THEORY_OVERTHINK Part I's integrator account fails for RMS / NOPASS models. The corrected account is CONJECTURE: the delta heads' learned hold is lost because their gate re-opens (199-E1's β re-rise after completion), and that is intrinsic to the delta path, not driven by additive drift.
+
+**T2, SHIRYAEV-HEAD halt** (fit on training items only; capped at 32; no censoring at n ≤ 10):
+
+| model | halt pool 3..8 | best fixed K′ (train) | K′32 pool | n 9: halt / K′11 | n 10: halt / K′12 | event mean halt n 10 |
+|---|---|---|---|---|---|---|
+| rms s1 | 0.998 | 0.998 (K′8) | 0.620 | 0.957 / 0.963 | **0.800 / 0.753** | 9.76 |
+| rms s2 | 0.999 | 0.999 | 0.708 | 0.968 / 0.983 | 0.849 / 0.882 | 9.81 |
+| §190 s1 | 1.000 | 1.000 | 0.692 | 0.993 / 0.993 | 0.889 / 0.896 | 9.65 |
+| §187 s1 | 0.998 | 0.998 | 0.943 | 0.976 / 0.978 | 0.856 / 0.855 | 8.22 |
+| §187 s2 | 0.999 | 0.999 | 0.695 | 0.727 / 0.955 | 0.435 / 0.593 | 8.15 (PREMATURE) |
+| §184 s1 | 0.973 | 0.974 | 0.344 | 0.802 / 0.822 | 0.638 / 0.643 | 8.36 |
+| §184 s2 | 1.000 | 1.000 (K′7) | 0.700 | 0.991 / 0.990 | 0.909 / 0.904 | 8.18 |
+
+* **T2-a holds:** NO-OVERTHINK on all 7. The halt equals the best fixed K′, against K′32's 0.34–0.94.
+* **T2-b fails narrowly:** rms s2 at n 10 is 0.849 vs the bar 0.852. rms s1 is SIZE-FREE at n 9 and 10, and §190 s1 too.
+* **T2-c fails:** §184 is neither PREMATURE nor censored. Its halts sit near K = 8 with little loss.
+* **The β-cue falsifier does not fire:** 25% / 21% of n = 10 halts fall at t 8–9 on rms s1 / s2.
+* **Reading:**
+  - In the RMS models the halt tracks n beyond training (mean 9.7–9.8 at n 10).
+  - In the NOPASS / reweight models it stays pinned near the trained K (8.0–8.4), which is PREMATURE on §187 s2.
+* **Not yet run:**
+  - T2-e (soft halt). As registered it is FA-on-signal; given T1, an **FD-on-signal** arm (freeze the delta writes from the halt) is added as **descriptive**, motivated post-T1 and marked so;
+  - the ProsQA descriptive T1;
+  - the s182_window_s2 control.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

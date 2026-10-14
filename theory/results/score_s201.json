@@ -1,0 +1,222 @@
+{
+ "T1": {
+  "s185_rms_s1": {
+   "acc_k24": {
+    "CLEAN": 0.7458333373069763,
+    "FA": 0.7526666720708212,
+    "FD": 0.9979999959468842,
+    "FB": 0.9979999959468842
+   },
+   "D": 0.25216665863990784,
+   "gates": {
+    "fb_identity": true,
+    "clean_vs_s173_maxdiff": 0.008000001549720762,
+    "s173_dtype": "torch.bfloat16",
+    "bf16_recheck_pass": true,
+    "bf16_recheck_card": "NVIDIA GeForce RTX 3070",
+    "bf16_recheck_max_items": 0
+   },
+   "R_FA": 0.027098486376832227,
+   "R_FD": 1.0,
+   "reading": "DELTA-INTRINSIC"
+  },
+  "s185_rms_s2": {
+   "acc_k24": {
+    "CLEAN": 0.8706666529178619,
+    "FA": 0.8841666777928671,
+    "FD": 0.9989999930063883,
+    "FB": 0.9988333284854889
+   },
+   "D": 0.12816667556762695,
+   "gates": {
+    "fb_identity": true,
+    "clean_vs_s173_maxdiff": 2.9087066644173376e-08,
+    "s173_dtype": "None"
+   },
+   "R_FA": 0.1053317862479928,
+   "R_FD": 1.0013003732847192,
+   "reading": "DELTA-INTRINSIC"
+  },
+  "s190_rmsnopass_s1": {
+   "acc_k24": {
+    "CLEAN": 0.890666663646698,
+    "FA": 0.9314999977747599,
+    "FD": 0.9998333354791006,
+    "FB": 0.9998333354791006
+   },
+   "D": 0.10916667183240258,
+   "gates": {
+    "fb_identity": true,
+    "clean_vs_s173_maxdiff": 2.9087066644173376e-08,
+    "s173_dtype": "None"
+   },
+   "R_FA": 0.37404579110693237,
+   "R_FD": 1.0,
+   "reading": "mixed"
+  },
+  "s187_nopass_s1": {
+   "acc_k24": {
+    "CLEAN": 0.9835000038146973,
+    "FA": 0.8138333360354105,
+    "FD": 0.9963333408037821,
+    "FB": 0.9978333314259847
+   },
+   "D": 0.014333327611287472,
+   "gates": {
+    "fb_identity": true,
+    "clean_vs_s173_maxdiff": 2.9087066644173376e-08,
+    "s173_dtype": "None"
+   },
+   "reading": "NOTHING-TO-RECOVER (no-harm FAILED)"
+  },
+  "s187_nopass_s2": {
+   "acc_k24": {
+    "CLEAN": 0.9213333328564962,
+    "FA": 0.8731666604677836,
+    "FD": 0.9960000018278757,
+    "FB": 0.9990000029404958
+   },
+   "D": 0.07766667008399963,
+   "gates": {
+    "fb_identity": true,
+    "clean_vs_s173_maxdiff": 2.5749206544745107e-08,
+    "s173_dtype": "None"
+   },
+   "R_FA": -0.6201717202066014,
+   "R_FD": 0.9613733779319303,
+   "reading": "DELTA-INTRINSIC"
+  },
+  "s184_reweight_s1": {
+   "acc_k24": {
+    "CLEAN": 0.5655000110467275,
+    "FA": 0.884333332379659,
+    "FD": 0.7579999963442484,
+    "FB": 0.9736666679382324
+   },
+   "D": 0.4081666568915049,
+   "gates": {
+    "fb_identity": true,
+    "clean_vs_s173_maxdiff": 0.010000001430511468,
+    "s173_dtype": "torch.bfloat16",
+    "bf16_recheck_max_items": 0,
+    "bf16_recheck_pass": true,
+    "bf16_recheck_card": "NVIDIA GeForce RTX 3070"
+   },
+   "R_FA": 0.7811351465136479,
+   "R_FD": 0.47162104509847175,
+   "reading": "ADD-DIRECT"
+  },
+  "s184_reweight_s2": {
+   "acc_k24": {
+    "CLEAN": 0.9033333361148834,
+    "FA": 0.8810000022252401,
+    "FD": 0.982833335796992,
+    "FB": 0.999666670958201
+   },
+   "D": 0.09633333484331763,
+   "gates": {
+    "fb_identity": true,
+    "clean_vs_s173_maxdiff": 0.007999988317489604,
+    "s173_dtype": "torch.bfloat16",
+    "bf16_recheck_max_items": 0,
+    "bf16_recheck_pass": true,
+    "bf16_recheck_card": "NVIDIA GeForce RTX 3070"
+   },
+   "R_FA": -0.23183391217554755,
+   "R_FD": 0.8252594993354287,
+   "reading": "DELTA-INTRINSIC"
+  },
+  "s182_window_s2": null
+ },
+ "T2": {
+  "s185_rms_s1": {
+   "NO-OVERTHINK": true,
+   "SIZE-FREE": {
+    "9": true,
+    "10": true
+   },
+   "PREMATURE": false,
+   "beta_cue_falsifier_condition": false,
+   "share_n10_halts_t8_9": 0.253,
+   "censored_n10": 0.0
+  },
+  "s185_rms_s2": {
+   "NO-OVERTHINK": true,
+   "SIZE-FREE": {
+    "9": true,
+    "10": false
+   },
+   "PREMATURE": false,
+   "beta_cue_falsifier_condition": false,
+   "share_n10_halts_t8_9": 0.205,
+   "censored_n10": 0.0
+  },
+  "s190_rmsnopass_s1": {
+   "NO-OVERTHINK": true,
+   "SIZE-FREE": {
+    "9": true,
+    "10": true
+   },
+   "PREMATURE": false,
+   "beta_cue_falsifier_condition": false,
+   "share_n10_halts_t8_9": 0.344,
+   "censored_n10": 0.0
+  },
+  "s187_nopass_s1": {
+   "NO-OVERTHINK": true,
+   "SIZE-FREE": {
+    "9": true,
+    "10": false
+   },
+   "PREMATURE": false,
+   "beta_cue_falsifier_condition": false,
+   "share_n10_halts_t8_9": 0.997,
+   "censored_n10": 0.0
+  },
+  "s187_nopass_s2": {
+   "NO-OVERTHINK": true,
+   "SIZE-FREE": {
+    "9": false,
+    "10": false
+   },
+   "PREMATURE": true,
+   "beta_cue_falsifier_condition": true,
+   "share_n10_halts_t8_9": 0.998,
+   "censored_n10": 0.0
+  },
+  "s184_reweight_s1": {
+   "NO-OVERTHINK": true,
+   "SIZE-FREE": {
+    "9": true,
+    "10": false
+   },
+   "PREMATURE": false,
+   "beta_cue_falsifier_condition": false,
+   "share_n10_halts_t8_9": 0.921,
+   "censored_n10": 0.0
+  },
+  "s184_reweight_s2": {
+   "NO-OVERTHINK": true,
+   "SIZE-FREE": {
+    "9": false,
+    "10": false
+   },
+   "PREMATURE": false,
+   "beta_cue_falsifier_condition": false,
+   "share_n10_halts_t8_9": 0.935,
+   "censored_n10": 0.0
+  }
+ },
+ "T1_summary": {
+  "additive_account_FALSIFIED": true,
+  "T1-a": false,
+  "T1-b": false
+ },
+ "T2_summary": {
+  "T2-a": true,
+  "T2-b": false,
+  "T2-c": false,
+  "beta_cue_FALSIFIED": false
+ },
+ "reading": "T1: additive account FALSIFIED; T1-a False, T1-b False :: s185_rms_s1 DELTA-INTRINSIC, s185_rms_s2 DELTA-INTRINSIC, s190_rmsnopass_s1 mixed, s187_nopass_s1 NOTHING-TO-RECOVER (no-harm FAILED), s187_nopass_s2 DELTA-INTRINSIC, s184_reweight_s1 ADD-DIRECT, s184_reweight_s2 DELTA-INTRINSIC | T2: T2-a True, T2-b False, T2-c False, beta cue not falsified"
+}
