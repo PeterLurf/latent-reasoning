@@ -27,10 +27,26 @@ def jl(d, f):
     return json.load(open(p)) if os.path.exists(p) else None
 
 
+def gate_ok(j):
+    """201-1 / 201-2 (Audit): count-exact gate. fb_identity True, and the CLEAN-vs-s173 difference <= 5 items of 1000 in fp32
+    (round(maxdiff * 1000)), else the bf16 re-check (gates.bf16_recheck_max_items, an int) <= 5. Otherwise the model's readings are WITHHELD."""
+    g = (j or {}).get("gates") or {}
+    if g.get("fb_identity") is not True:
+        return False, "fb_identity not True"
+    md = g.get("clean_vs_s173_maxdiff")
+    if md is not None and int(round(md * 1000)) <= 5:
+        return True, "fp32 within 5 items"
+    bi = g.get("bf16_recheck_max_items")
+    return (bi is not None and int(bi) <= 5), ("bf16 re-check %s items" % bi)
+
+
 def t1(d):
     j = jl(d, "eval_s201_freeze.json")
     if j is None:
         return None
+    ok, why = gate_ok(j)
+    if not ok:
+        return {"reading": "WITHHELD (gate: %s)" % why, "gate": why}
     a = {k: j["arms"][k]["acc"]["24"]["pool_3_8"] for k in ("CLEAN", "FA", "FD", "FB")}; D = a["FB"] - a["CLEAN"]
     out = {"acc_k24": a, "D": D, "gates": j.get("gates")}
     if D < 0.03 - EPS:
@@ -63,8 +79,12 @@ def t2(d):
 
 
 def main():
-    T1 = {d: t1(d) for d in NESTED + [CONTROL]}; T2 = {d: t2(d) for d in NESTED}; out = {"T1": T1, "T2": T2}; lines = []
-    if all(T1[d] for d in NESTED):
+    T1 = {d: t1(d) for d in NESTED + [CONTROL]}; out = {"T1": T1}; lines = []
+    T2 = {d: (t2(d) if not (T1[d] and T1[d]["reading"].startswith("WITHHELD")) else None) for d in NESTED}; out["T2"] = T2
+    wh = [d for d in NESTED if T1[d] and T1[d]["reading"].startswith("WITHHELD")]
+    if wh:
+        lines.append("WITHHELD (201-2 gate): %s" % wh)
+    if all(T1[d] for d in NESTED) and not wh:
         key = ["s185_rms_s1", "s185_rms_s2", "s190_rmsnopass_s1"]
         fal = sum(1 for d in key if T1[d].get("R_FA") is not None and T1[d]["R_FA"] <= 0.3 + EPS) >= 2
         a = all(T1[d]["reading"] == "ADD-COUPLED" for d in key)
