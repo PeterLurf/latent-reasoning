@@ -290,7 +290,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 200 | GSM8K-AUG PILOT (user-approved 2026-10-13 ~23:5x via Audit, "make sure its augmented dataset"; Tier 1 only, cap $7): latent step-aux A / A+resample B vs TEXT-COT C / D on GSM8K-Aug, 24k, final checkpoint; R1 C3 in-house ±2.8, R2 vs PCCoT 49.48 (no 1-seed SOTA claim), R3 resample, R4 THINK-NECESSARY, R6 length, R7 STABLE, LOOP-NOT-FORMED, IDLE-PASSES | registered | **latent BELOW text (A 0.147 vs C 0.321); loop forms weakly but THINK-NECESSARY fails (K′1 ≈ K′10); recall share 0.48 (P1 falsified), resampling cut it to 0.15 at no test cost; D unavailable; WARM-START trigger met** |
 | 201 | OVERTHINK-EXIT (the user's overthinking + latent-transition requests; $0 eval-only): T1 FREEZE 2×2 (which channel drives post-completion decay; ADD-COUPLED / ADD-DIRECT / DELTA-INTRINSIC / JOINT; additive account falsified if R_FA ≤ 0.3 in ≥ 2 of 3 key models), T2 SHIRYAEV-HEAD halt (NO-OVERTHINK / SIZE-FREE / PREMATURE; β-cue falsifier) | registered | **T1: additive account FALSIFIED - overthinking is post-completion DELTA writes (R_FD ~1.0 in 5/7); T2: learned halt NO-OVERTHINK on 7/7 (= best fixed K′ vs K′32 0.34-0.94), size-free on RMS; T2-b fails narrowly, T2-c fails; T4 SNAP-CHAIN: SNAP-HURTS 4/4 (the pass-7 text write is exact ~0 beyond n 10; Prop 8 untested)** |
 | 202 | WARM-START-FROM-COT (user pre-approval via Audit, ≤ $4; triggered by §200 BELOW): latent W initialised from §200 C's TEXT-COT model + equal-exposure text control C+; W-LIFT (W − A), R1-W (W − C+), LOOP-FORMED, THINK-NECESSARY; matches the field's initialisation, not a new method | registered | **open** |
-| 203 | SVR seed-stability successor to CSR (user-approved ≤ $10.10): a training-only, linear, pass-free value readout on the delta reads; 3 seeds + C8k paired to s185 RMS; labels ENTERED-AND-USED / MET-NOT-USED / MET-NOT-ENTERED; launches only if G-use ≥ 7/9 (G-pre PASSED) | registered (conditional) | pending G-use |
+| 203 | SVR seed-stability successor to CSR (user-approved ≤ $10.10): a training-only, linear, pass-free value readout on the delta reads; 3 seeds + C8k paired to s185 RMS; labels ENTERED-AND-USED / MET-NOT-USED / MET-NOT-ENTERED; launches only if G-use ≥ 7/9 (G-pre PASSED) | registered (conditional) | **G-use DO NOT LAUNCH: D7's separator NOT-USED 9/9 (ablation null, donor swap ignored; probe subspace ~1% of read energy) - decodable-but-unused; $0 spent** |
 | 204 | STEP-TARGET-FACTOR on GSM8K-Aug (user-approved ≤ $3.90; after §202): value-from-memory + operator + pointer targets; F-P vs W (or A), F-NR (NOPASS + RMS) vs F-P; THINK-NECESSARY-DEEP, leak / clock diagnostics | registered (conditional) | waits for §202 |
 
 ## Live sections
@@ -15498,6 +15498,29 @@ Each registers separately, after T1 / T2.
   - on a pretrained LM's recurrent memory;
   - aimed at seed-robust basin entry.
 * **Wording to avoid in any §203 result:** "first per-step value supervision", "first probe-as-loss", and anything that treats decodability as use.
+
+**§203 result: G-use reads DO NOT LAUNCH (2026-10-14 19:24 EDT; Experiments 5b2b9994, eval_svr_guse.json on the 9 converged D7 final models, 4060 bf16; registered rule fixed at 17c06299, before any G-use output). D7's linear value separator is decodable but unused: NOT-USED 9 / 9. SVR is not run, so $0 of the ≤ $10.10 is spent.**
+* **Per model** (base accuracy K′ 8, n 3–8 on 2,400 items; ablation of V_probe at every delta read; pass-2 rank-1 donor swap on 2,252 items):
+  - drop(V) ≤ 0.0004 in every model.
+  - Δ_rank −0.002 to +0.0003; Δ_E −0.062 to −0.002, with every CI below +0.06. So **ABL-NULL 9 / 9**.
+  - F − F_null between −0.0014 and 0. The swap's own-accuracy disruption is 0. So **IGNORES 9 / 9**.
+  - Base accuracy 0.90–1.00.
+* **USED 0 / 9**, against the ≤ 4 / 9 line. **The registered outcome is DO NOT LAUNCH; return to Theory.**
+* **Caveats, stated:**
+  - **G-abl (the ablation's validity gate: probe accuracy after projection = chance ± 0.02) fails as written on s190_rmsnopass_s1 and s182_window_s1.** Both read 0.0687.
+    - Under P_V the probe's class logits differ only by its bias, so it predicts one constant class (U1 as intended). Its accuracy is that class's test frequency, which here lies 0.002 outside the band.
+    - The gate is not reinterpreted after output. For those two, NOT-USED rests on the swap arm alone.
+    - The verdict is unchanged: 7 / 9 with both arms valid read NOT-USED.
+  - **The energy-matched controls are not energy-matched.** V carries 0.6–1.1% of the read energy (E_V 11.2 of 1,012 on rms s1). Every Σ^β candidate removes about 10× more (E 122–132), which makes Δ_E negative by construction. The NULL reading rests on drop(V) ≈ 0 and Δ_rank ≈ 0, which need no energy matching.
+* **Reading:**
+  - The standardised linear probe (D7) separates converged from failed models through low-energy directions that the converged models' own computation does not use.
+  - It is a correlate of convergence, not the mechanism.
+  - This matches the presence ≠ use evidence of note 203-1 (2606.05753, 2606.12689) and the decodable-but-unused risk that rev 3 added the gate for.
+  - SVR's rationale (training the property behind D7) fails before any spend.
+* **Not tested:** whether a *used* value representation exists elsewhere, in other directions, non-linearly, or by magnitude.
+  - That is the next question (DAS-USED, a $0 diagnostic draft in progress; Literature 2b6bfd25).
+  - Only a causally used separator could justify a supervision target.
+* **The ALL-heads diagnostic** (POST-HOC, descriptive; cee1d8d9) is running on all 9. On s185_rms_s1: ABL-NULL, and the swap IGNORES with edit success 0.854 and fidelity cos 0.9999. The result is appended when complete. If ALL reads USED anywhere, it goes to the user beside the registered count.
 
 ## 204. STEP-TARGET-FACTOR: a factored per-pass target on GSM8K-Aug (Audit's lead; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $3.90; launches only after §202 lands; pre-registered 2026-10-14 19:13 EDT, before any §204 code or run)
 
